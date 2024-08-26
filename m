@@ -4,43 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFA14C5472E
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 09:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE989C5472F
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 09:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JqUxa4C1Nf0P8LZXrIn8ueTP5zNW749tO9T0mGlqbgU=; b=mpWq05g8RGIkvO
-	VsupWbnaKFdHTmT6TXcik6GhSMAa9ZkH8kxLPy0ttMTxrmE6J5fwzJcGd/py7qUKsdMv/vKAeRIfD
-	DX3kd6a6OZcM03QFgyDD0yxsg52CbvNPMTuThujxAGzlUvRbi+SD3gKuTCi+plgPW/RXtusiwBURP
-	mqJhZoAwnD8/6faykb9/tAPjDBX6JtIYgKqTZnuZqqaA0vd31B39n1M5isgzWL8ZXNqcboTZ3jx19
-	J2ZFmh6WISy6pgpqnzVg/Qf+JnXcjYNHSQq764v7OON5dSLiTXy+4kEYUyj9vXDCc1D0sBu61bReg
-	UxixZV8LIlduSRXD/MLw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xHJwyF1CGRzqMb/MaYJYcEhkV5LmyIEejpdHrCwaqVI=; b=xZouSzL07UE+2G
+	hWhH5MK1wpMGt3EosVKCP2+pthsAuoJ0lheLlU5L9zG2ppmyj+4GNhl8B8m3cCLHJfXv/ywGHlO9R
+	jlNFbH1lRCO993kY+wWO8+hJpgeQwzSUEmjfA2zDw2j5Zyq5jkY9OsfxHy5xr5st8P5121tjm4RM1
+	qtuv+5J94nA54VJ6A0vO7ZzOsVyqHTrV0zuewyUNlYl3i28xOxso08ZNOL3iMeLIthLUFLeZDkPqw
+	ntF84QwxX9MFhcjZlwSA3JZNN8bu2VHoWim3geTC5oQ/TodbAqJxMn5Jj2sunTh3eoC101SJFXmd9
+	R7M8nMLC7fRbU/12ZcpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWMv-00000006loJ-1iRF;
-	Mon, 26 Aug 2024 09:50:37 +0000
+	id 1siWMw-00000006loy-0hQN;
+	Mon, 26 Aug 2024 09:50:38 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWJ2-00000006kTY-08wc
+	id 1siWJ0-00000006kSr-3Sjn
 	for linux-mtd@lists.infradead.org;
 	Mon, 26 Aug 2024 09:46:38 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 24B1EC000E;
-	Mon, 26 Aug 2024 09:46:34 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C7987C0005;
+	Mon, 26 Aug 2024 09:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1724665594;
+	t=1724665592;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dFDvS7sF20/Fxav7jaL4726PvDjY4xIbA67yymawCpo=;
-	b=ehbgM7A8z6tuQOItCUaLMvqmxhJ84qwlcY4ptboJxHzQjnG6YYPFHtKHzGigh83tws4KKP
-	D2Yxc8Uxuk+fzE0BmJOJhS7tH+FQXRV26COxiragr86T50iQfODwGgo915B0tksMCuOPqq
-	RylGOXiUZTVNqk5mE6BEoz2d7X40qUiCNTmTjoltBnEDqldo+zBW6niYLloylpsLn4X4zk
-	GfX+ty/jkKaaddFoVLJGZ1X8Mw0GVquup/fASS2g69hmZXUt81f+tCJAFyuaqhrHdTnwjn
-	9CnAmhvCb6EDRY+4ycdmziRISTXJqOzCB6gptrC/y9Kxnnxf2VtFM5oBqN4LWw==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fktrxDpGjZx9RYrVOfEfR03imxbM6fKsx9kORcu0ut4=;
+	b=Ync4v9ZvpDFv9GY34U5r2OPUv35zUOR/ayN7MuIvhJkdD+amP5uT8uCkZFwe/DDvfCxSl5
+	XauG1uS835lPbdSDsRwPRCeEfMx4dDczYD764dT+GeO13ui+B/9zy0KNxVEvRClxVyPprl
+	Jy++JhABi5yTn69k09iDyp58MkVcCFpU5cR7zmVD2LFVSnAYyO+8dNdEKSrYJPt/fL/oCj
+	Ka4JWb+wQ/e/x3SjZvORXwsQkjSlpMzAyuXpddLgEcxfzn8pN2birz8agM46ro3fp9YeO2
+	9q9okEASRTlrNyhXhTiIlSTRT38dkxf1auWKuho4hofnV4WrLBReQMiY78ZtTA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -53,17 +52,15 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Alvin Zhou <alvinzhou@mxic.com.tw>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH mtd-utils 04/10] mtd-tests: nandbiterrs: Store the chunks size in an intermediate variable
-Date: Mon, 26 Aug 2024 11:46:23 +0200
-Message-ID: <20240826094629.19065-5-miquel.raynal@bootlin.com>
+Subject: [PATCH mtd-utils 00/10] New options for hardening continuous read support
+Date: Mon, 26 Aug 2024 11:46:19 +0200
+Message-ID: <20240826094629.19065-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240826094629.19065-1-miquel.raynal@bootlin.com>
-References: <20240826094629.19065-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_024636_552801_22B7A481 
-X-CRM114-Status: GOOD (  14.40  )
+X-CRM114-CacheID: sfid-20240826_024635_106412_6AF26EF6 
+X-CRM114-Status: GOOD (  11.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,112 +72,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-'pagesize' is used for two purposes:
-- accessing the size of a page
-- getting the size of the test buffer, which happen to be the size of a
-  page for now.
-Use an intermediate variable when getting the size of the test buffer,
-as we will later increase its size.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- tests/mtd-tests/nandbiterrs.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/tests/mtd-tests/nandbiterrs.c b/tests/mtd-tests/nandbiterrs.c
-index f583c14..30954f5 100644
---- a/tests/mtd-tests/nandbiterrs.c
-+++ b/tests/mtd-tests/nandbiterrs.c
-@@ -68,7 +68,7 @@ static int peb = -1, page = -1, max_overwrite = -1, seed = -1;
- static const char *mtddev;
- 
- static unsigned char *wbuffer, *rbuffer, *old_data;
--static int fd, pagesize, pagecount, flags;
-+static int fd, pagesize, bs, pagecount, flags;
- static struct mtd_dev_info mtd;
- static libmtd_t mtd_desc;
- 
-@@ -235,9 +235,9 @@ static void init_buffer(void)
- 	unsigned int i;
- 
- 	if (flags & PAGE_ERASED) {
--		memset(wbuffer, 0xff, pagesize);
-+		memset(wbuffer, 0xff, bs);
- 	} else {
--		for (i = 0; i < pagesize; ++i)
-+		for (i = 0; i < bs; ++i)
- 			wbuffer[i] = hash(i+seed);
- 	}
- }
-@@ -251,7 +251,7 @@ static int write_page(void)
- 		goto fail_mode;
- 
- 	err = mtd_write(mtd_desc, &mtd, fd, peb, page*pagesize,
--					wbuffer, pagesize, NULL, 0, 0);
-+					wbuffer, bs, NULL, 0, 0);
- 
- 	if (err)
- 		fprintf(stderr, "Failed to write page %d in block %d\n", peb, page);
-@@ -290,7 +290,7 @@ static int read_page(void)
- 	if (ioctl(fd, ECCGETSTATS, &old) != 0)
- 		goto failstats;
- 
--	err = mtd_read(&mtd, fd, peb, page*pagesize, rbuffer, pagesize);
-+	err = mtd_read(&mtd, fd, peb, page*pagesize, rbuffer, bs);
- 	if (err) {
- 		fputs("Read failed!\n", stderr);
- 		return -1;
-@@ -316,7 +316,7 @@ static int verify_page(void)
- 	int erased = flags & PAGE_ERASED;
- 	unsigned int i, errs = 0;
- 
--	for (i = 0; i < pagesize; ++i) {
-+	for (i = 0; i < bs; ++i) {
- 		if (rbuffer[i] != (erased ? 0xff : hash(i+seed)))
- 			++errs;
- 	}
-@@ -332,7 +332,7 @@ static int insert_biterror(void)
- {
- 	int bit, mask, byte;
- 
--	for (byte = 0; byte < pagesize; ++byte) {
-+	for (byte = 0; byte < bs; ++byte) {
- 		for (bit = 7, mask = 0x80; bit >= 0; bit--, mask >>= 1) {
- 			if (wbuffer[byte] & mask) {
- 				wbuffer[byte] &= ~mask;
-@@ -461,6 +461,7 @@ int main(int argc, char **argv)
- 
- 	pagesize = mtd.subpage_size;
- 	pagecount = mtd.eb_size / pagesize;
-+	bs = pagesize;
- 
- 	if (peb >= mtd.eb_cnt)
- 		return errmsg("Physical erase block %d is out of range!", peb);
-@@ -483,13 +484,13 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
--	wbuffer = malloc(pagesize);
-+	wbuffer = malloc(bs);
- 	if (!wbuffer) {
- 		perror(NULL);
- 		goto fail_dev;
- 	}
- 
--	rbuffer = malloc(pagesize);
-+	rbuffer = malloc(bs);
- 	if (!rbuffer) {
- 		perror(NULL);
- 		goto fail_rbuffer;
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Q29udGludW91cyByZWFkcyBjYW4gc2lnbmlmaWNhbnRseSBpbXByb3ZlIHRoZSByZWFkIHNwZWVk
+IHdoZW4gc2V2ZXJhbApzZXF1ZW50aWFsIHBhZ2VzIGFyZSByZWFkLiBTdXBwb3J0IGhhcyBiZWVu
+IChpcyBiZWluZykgY29udHJpYnV0ZWQgdG8KdGhlIExpbnV4IGtlcm5lbCBhbmQgaW4gb3JkZXIg
+dG8gdGVzdCB0aGUgZmVhdHVyZXMgSSBoYWQgdG8gaGFjayBpbiB0bwp0aGUgbXRkLXV0aWxzIGlu
+IG9yZGVyIHRvIGFkZCBzZXZlcmFsIG9wdGlvbnMuCgpUaGUgb3B0aW9ucyBhcmUgbmFtZWQgLWMs
+IGV4Y2VwdCB3aGVuIC1jIHdhcyBhbHJlYWR5IGluLXVzZSwgd2hlcmUgSQpzd2l0Y2hlZCB0byAt
+QzoKCiogbmFuZGR1bXA6IFdoZW4gYXNraW5nIGZvciBtb3JlIHRoYW4gb25lIHBhZ2UsIHdlIGNh
+biBhc2sgdG8gZW5hYmxlIHRoZQogIAkgICAgZmVhdHVyZSBhbmQgY29tcGFyZSB0d28gb3V0cHV0
+cy4KKiBuYW5kYml0ZXJyczogVGhlIGJpZmxpcHMgd2lsbCBvbmx5IGhhcHBlbiBpbiB0aGUgZmly
+c3QgcGFnZSwgYnV0IHR3bwogIAkgICAgICAgcGFnZXMgd2lsbCBiZSByZWFkLiBUaGUgcmV0dXJu
+ZWQgdmFsdWVzIGNvbmNlcm4gdGhlCgkgICAgICAgZW50aXJlIHJlYWQuCiogZmxhc2hfdGVzdDog
+SXQgaXMgaW50ZXJlc3RpbmcgdG8gc2VlIHRoZSByZWFkIHNwZWVkIGluY3JlYXNpbmcgd2l0aAog
+IAkgICAgICB0aGUgbnVtYmVyIG9mIHBhZ2VzLiBUaGUgbmV3IG1lYXN1cmVtZW50cyBhcmUgbWFk
+ZQoJICAgICAgb3B0aW9uYWxzLgoKQ2hlZXJzLApNaXF1w6hsCgpNaXF1ZWwgUmF5bmFsICgxMCk6
+CiAgbmFuZC11dGlsczogbmFuZGR1bXA6IFVzZSBhIHNwZWNpZmljIHZhcmlhYmxlIGZvciB0aGUg
+YnVmZmVyIHNpemUKICBuYW5kLXV0aWxzOiBuYW5kZHVtcDogRXhwbGljaXRlbHkgdXNlIHRoZSBw
+YWdlIHNpemUgd2hlbiByZWxldmFudAogIG5hbmQtdXRpbHM6IG5hbmRkdW1wOiBBZGQgc3VwcG9y
+dCBmb3IgdGVzdGluZyBjb250aW51b3VzIHJlYWRzCiAgbXRkLXRlc3RzOiBuYW5kYml0ZXJyczog
+U3RvcmUgdGhlIGNodW5rcyBzaXplIGluIGFuIGludGVybWVkaWF0ZQogICAgdmFyaWFibGUKICBt
+dGQtdGVzdHM6IG5hbmRiaXRlcnJzOiBBZGQgc3VwcG9ydCBmb3IgdGVzdGluZyBjb250aW51b3Vz
+IHJlYWRzCiAgbXRkLXRlc3RzOiBmbGFzaF9zcGVlZDogRHJvcCBhbiBhcHBhcmVudGx5IHVzZWxl
+c3MgYmxvY2sKICBtdGQtdGVzdHM6IGZsYXNoX3NwZWVkOiBDbGFyaWZ5IHRoZSBudW1iZXIgb2Yg
+cGFnZXMgaW4gZWFjaCBzZXQgd2hpbGUKICAgIG1lYXN1cmluZwogIG10ZC10ZXN0czogZmxhc2hf
+c3BlZWQ6IEdlbmVyYWxpemUgcmVhZF9lcmFzZWJsb2NrX2J5XzJwYWdlcygpCiAgbXRkLXRlc3Rz
+OiBmbGFzaF9zcGVlZDogRHJvcCByZWFkX2VyYXNlYmxvY2tfYnlfcGFnZSgpCiAgbXRkLXRlc3Rz
+OiBmbGFzaF9zcGVlZDogQmVuY2htYXJrIGNvbnRpbnVvdXMgcmVhZHMKCiBuYW5kLXV0aWxzL25h
+bmRkdW1wLmMgICAgICAgICB8ICAzNCArKysrKysrKy0tLQogdGVzdHMvbXRkLXRlc3RzL2ZsYXNo
+X3NwZWVkLmMgfCAxMTEgKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLQogdGVzdHMv
+bXRkLXRlc3RzL25hbmRiaXRlcnJzLmMgfCAgMzUgKysrKysrKy0tLS0KIDMgZmlsZXMgY2hhbmdl
+ZCwgMTA2IGluc2VydGlvbnMoKyksIDc0IGRlbGV0aW9ucygtKQoKLS0gCjIuNDMuMAoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
