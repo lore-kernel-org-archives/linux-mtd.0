@@ -4,61 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EA6DC5321D
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 15:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6D37C5321D
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 16:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2+riFAPy4l3lyPbFhDYjkD3ufRkc0s1UMjMXQklr8Ig=; b=v7eyttixMmTy1v
-	2yO6xx1Q36qkhcq3KlB7JA0Ts3m+xZTeJs7yG8CK2vhsFMJg6tbTdcYvDgtkEO2K01zw5g4+LzX2t
-	hLhyWy+cjy5jFWt+FpZkeVEo2DiOXPTu0omgjbNDyrvb+Zbln+mHEYa+AYIy3toRKlmVDZp0Jk1QH
-	mBjNy3MQt+ea6cI0UOgljWemqWEhTGBICvqJeoeWiM2jPfL8bGUX2Qikckue8DFH4kFCa6Oksyduz
-	wOdmaulsWYqPAmuopezfW6qZ/yIxIDrasyJb1+E6mxXSc+7xGxdQ/jJMCUCuJE991auf7ni1tpDVa
-	3ePYInsw7h7pL2AxOn8g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rj/tNUVbPDYzquxxGKfI/TH9bknV6D5HjV1OPe7X4lw=; b=cI/Nc5pjeTr2Vy
+	ZAbKPI7qT89xWhtaBx8mBULP5mj5owqW4kSAnaZwX3F0o8pua49EEKjmI9kWxUKONKA0eySGDpymK
+	cWgE29WcPa2qQYXiUggP2cZnvbeCCzIslDuNgQ3YLBRNxIKeUfvo7xVLn0+GBwDFR25pP6uY/upBm
+	tudoVdTrMg4ZkPa77gyXvSeiimHv1u/QZ0h4BQdkVRTsfIV0JwCnYCdbO4JryULB/EhAwdpZieWRr
+	98cLbtegl/m7RFXYHOamaRODDKr4Ry4metaKy0/WxcQTOmPFSrYnw3gM3oCROfRWzxhFcFc6rnfs3
+	gtXLMCX4sZMr1rannMog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sibiS-00000007q3s-28Nh;
-	Mon, 26 Aug 2024 15:33:12 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1siccm-000000080xD-16OX;
+	Mon, 26 Aug 2024 16:31:24 +0000
+Received: from mail-northeuropeazlp170130004.outbound.protection.outlook.com ([2a01:111:f403:c200::4] helo=DUZPR83CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sibhK-00000007pZB-2e9D
-	for linux-mtd@lists.infradead.org;
-	Mon, 26 Aug 2024 15:32:04 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9F852FF807;
-	Mon, 26 Aug 2024 15:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1724686319;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=RZxAu0I6Vof5zJX526HnIkoP+pn3kd1ph2IcJF9w6bg=;
-	b=Nh7cbRYXhPx1QUk3iiTanQognF9JgP/6puKt4ctC8DvD7Ve5pVREtCRtAfFoMhRJi2FkF9
-	i4QYHDFsLYop0mk3mrZK6EPM99ZmDtHCTXG8fwOlNa3wHytRN7+aPKIxcI/x80Zacwmxur
-	uxy/s9FFAdikcwMKblRUys0fBgeqe4GLX/vKStJo5ZZjLeqdO/Ip2BArx4e8tFgFAJoiVW
-	Kbq+QfB1VugYcl+JGhDJcbcnjz6w9lFsuKhaIz0UY36hW2SGSLrbrNF9Vm91n/hXlrxPx0
-	YHkY7o/+VXQixq4HGxsDkcRtb58SNaEEJFHKSdC/slm/0jgZ5xN/z8MgWkzctg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: rawnand: meson: Fix typo in function name
-Date: Mon, 26 Aug 2024 17:31:58 +0200
-Message-ID: <20240826153158.67334-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.43.0
+	id 1siccj-000000080v7-29oM;
+	Mon, 26 Aug 2024 16:31:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=XW7r5wxSXiR7zqyGunM9FFwrubSWhiUp2UbLxz0rQmPYoREGzw+SCHG/eyNKasSPOYeab5v7ovWBDbMzwHZqJUf22qCDd89mgtTLdusiNg3rpzr3uO71Nmcyn8r3qzgGKQtLR/bUVqrrLyPVoP5q6TdSxqvCDPuBUfIQfxftc17hU5udKxuQ4PNevKFOY5ehUwyOPbl6XO2lsBPffzxvl7mQhzfPeB4p/4WzJnPD/FT8UlI/yKuTnIBETr+ea8G46iSkSswFznPCdzYhUoDmuefZWApRCaxN21xjh0RAddVZ4ClqwUNZqjkCc/C207Hst38jqXK3isYnnFSbTbRzhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/0u089mwEQFQc5YPfD0eArkFQhi+AYchIVRea6dPbxQ=;
+ b=RvwufiraItvL1MPp6z19CBqCrRJDVv94WGC24cnw7CCheJ/48tDWVxFjMPjJEwTwTF3Nsn6NgVdKub47DMRMvxLd19fD+TmFo5rCa5o6khx3d8QF9PKWXXaTsnRGYJOp4RW673fKjx454L6FUD1FKxYDKKDek8JgHewPo0VywS7UQ1iUwnkc4M45A0Gu1al2nXLKIv+yE+yHd6BXnK8kmgcFoAaYoLwTc5sOVRfJLl0oC/pXQx54JeNFvevO2CvDQVoXJy2I4pUzX9dLkbNrVS5ofEC4Efyeq3Wz2xmh1Z0Hg/wfoJqunBnvxmXY0NDl+g4ez6VGTsAXy6ABJpE/6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/0u089mwEQFQc5YPfD0eArkFQhi+AYchIVRea6dPbxQ=;
+ b=PpbCKo1pR7Vk3nXm6nGRLw5Z1D5k69HqiUw/ke9ZZTsgzSR3SxH70xE/dZB24DJg2rsFB0HRsfNEYFdYOLo/keYcvfAZvTfLkSQJz9dM+dsGLHLtwctrTqj1F3UHNa3YjwD+T1dnkDlQ72s4mRO3lZzHSLIvjwgVsChtOixE3zEU+OoiQrCCg7Ipq2GhRs21UD5vwx8Gtf5lMdIGJcMGql5KFO8GWEhB0Fn7W9Q1SV2B7Diqx154bSVNh/VoO4qeBJRIdMaEqzrs1eezGALY9ENj69WeYkfce+rU73303h+pXD6zOOdV6gjO/FO4l6QsRPFvbUX5IJYVdANcwgt2hA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB8371.eurprd04.prod.outlook.com (2603:10a6:20b:3b2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.24; Mon, 26 Aug
+ 2024 16:31:13 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06%4]) with mapi id 15.20.7875.019; Mon, 26 Aug 2024
+ 16:31:10 +0000
+Date: Mon, 26 Aug 2024 12:31:01 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: miquel.raynal@bootlin.com, vkoul@kernel.org
+Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org, festevam@gmail.com, han.xu@nxp.com,
+	imx@lists.linux.dev, kernel@pengutronix.de, krzk+dt@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, marex@denx.de, richard@nod.at,
+	robh@kernel.org, s.hauer@pengutronix.de, shawnguo@kernel.org,
+	vigneshr@ti.com
+Subject: Re: [PATCH v3 1/1] dt-bindings: dma: fsl-mxs-dma: Add compatible
+ string "fsl,imx8qxp-dma-apbh"
+Message-ID: <ZsytxXE/4Binsl26@lizhi-Precision-Tower-5810>
+References: <20240801214601.2620843-1-Frank.Li@nxp.com>
+Content-Disposition: inline
+In-Reply-To: <20240801214601.2620843-1-Frank.Li@nxp.com>
+X-ClientProxiedBy: SJ0PR05CA0148.namprd05.prod.outlook.com
+ (2603:10b6:a03:33d::33) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8371:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4fb3cd7f-0efe-444e-397f-08dcc5ec7e9d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|52116014|376014|366016|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?KkCMRrNMPnGFjs/XiSBWjIklRNwuW498WBCD8w/NzIbFsNEecr4HIhB7uMAP?=
+ =?us-ascii?Q?aGVJUAmvAMnj0q7g8xuYY9SbshwjPASQT5g2HFZ5LylwNFKElDMyFS352cnw?=
+ =?us-ascii?Q?wwojKquzj3uoTAmB4EsqL8d2dPvWuyQ8/MgvNEvUy8xbXX5AgbIrXY7baONE?=
+ =?us-ascii?Q?v7Mz7GH/oJ6f1OuCBCzWyi63FTWtkTFrMzeM+Sr9L4Bl2r1Rka/RbUnNNJzX?=
+ =?us-ascii?Q?lwxJa6UsmTnZ4fZ71ByHrqDCx6aYIODBSIlUGEGiD4V8n4QDfvGq81RtzCKI?=
+ =?us-ascii?Q?y1grzpY8YGt3UxAKYA+syK7tiry0+2UoLenoJwmiGN2KyRD+Zyyl9ZEr8B/l?=
+ =?us-ascii?Q?VR8EkuvuwTAYZICG+HCyKksxigT5P9qVAQJOl0qeycLdEj2eacJLoa7GgLcR?=
+ =?us-ascii?Q?ZyIbs6LMZ4ON6Jgf/Q3J5+2dItxTiVs8fjex66IvbHsyfnNAEMJIZA8yHfOm?=
+ =?us-ascii?Q?dgzD8Em/yrCO4Jy6uvH9AgqlmE2XZpdkkcxgTHCyJYHPl2B4B/FsNapOOy9c?=
+ =?us-ascii?Q?KtlYhXgYXpWU6OMD1pP0LYf/0K3wYRDwmiaw4Ydu2vgKaSR7cSKnK2hYXY3q?=
+ =?us-ascii?Q?Uq7nT9tNV03E2Qti8rgnl1jciKeZkoBtMaGRuHJ2ck3BycogfFP16Ix+Zuc+?=
+ =?us-ascii?Q?yvQJQNZC9xN+1jZu/9Nhh1HpAgVKVcihWtTXoTeKYzZzp0sPk7IM6xyN7yDs?=
+ =?us-ascii?Q?i8Usmz2ScJmmiOaNpYVZD/dR1Nv2Xo6JYN2ceE5nHnf1nZ5/CYCDl25zpuAF?=
+ =?us-ascii?Q?Aa7NB9e2VPqHOW/+6ww1X+IWwVvA2quWKD9pv73WSGQLgfa7ywMPA1a7u/id?=
+ =?us-ascii?Q?bRBrGnAD1I8im00Q98v0U85h7IkWPWCBTUW5HKg8e7N8oAx7HkhbNu/U7sXW?=
+ =?us-ascii?Q?tfGAdFzRfqQyr3ZE84yNWSDm/V5sVZis5NC+0ihFnYD/p6Nlxl0Fs40A7xZa?=
+ =?us-ascii?Q?JwD1fB3tUwBrZLHfypEstV84KA9E99fnVkasha2F8r6eMIsjddpYHCQp3tBg?=
+ =?us-ascii?Q?dPCCZKiQ+TEr42RAJcKsaivfaHlNQAwe+qmgffyyJUz0vM6RV6cY5COYsUdv?=
+ =?us-ascii?Q?qnJTloSPovkulbcOqE5wGr06cTvJpJ1B9D8LTijbVtv/RMfZLhVbs6bes0uY?=
+ =?us-ascii?Q?0oT7fALhm4PLKtxc+JQOqas+5XGVL1BdLkmqdi0ApdVzllzpiLaMFSjH17fP?=
+ =?us-ascii?Q?KC4If4y1YMRgE3K3p1O3ryXTg1+fdVIouqviEKuypQZ0csQn7+D6P77jhD6U?=
+ =?us-ascii?Q?mCvIdx9yCB1zvA0pUNR10zJMejqVQWo1KmXSFwjlOOykjQVilKdsWdKInbVM?=
+ =?us-ascii?Q?OwcIX7Ch4baqFM28d5bRo3X0Ns5D0Ramt420ke2E7Wr82xBo0DT8Gdf1VHAP?=
+ =?us-ascii?Q?spq2J5X1wylrIBVeJQT93dNAOxspFf2PZjpshNckF6gD3KMCMg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(52116014)(376014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YcY90YGaHdz56L3TvJ/PZt05qndc5tS96obMcetrss5Qwxjg7dy5xxDxvgDK?=
+ =?us-ascii?Q?tuy4RLecB0+TFIxrKuPbY/q9qsZfH3AeaHaAy7mfFobDmKyvh83v4J4zfSAd?=
+ =?us-ascii?Q?puGq5u+9i3RQDZ19MruM5q0x1Dw/Pm9D+PkA+ham5YIjU0IByWzHWTja+RQd?=
+ =?us-ascii?Q?Fp4hoAkYCt5HX3/HnYvn6OEvxJP4GIFee6mHnNfkqF9DKu6foWiO8I/pv2Om?=
+ =?us-ascii?Q?JoWNQFgYYunGk1ZBz4FoAU7qImTgAsZRH1aPklZTpyFb0lr2U50EwdyRwHms?=
+ =?us-ascii?Q?q7C6KeitjwZXgFMCqGOXY1Z+Cs6SBGWEPUOiUYdJOUlcSe01Hbk8WwtC++01?=
+ =?us-ascii?Q?eKaegUWcsMccvNrjVrtsCFHiTlN9gL9ZSTo15KCgFXy3skDIqtdSvDcCUTNQ?=
+ =?us-ascii?Q?PcxoXpACdXyGfC6p0ebA8LXsdVhlZHRdZmkUcs3RIN20MLF8GqEUE/lnlSvI?=
+ =?us-ascii?Q?nZCThywFFOridH8xfjZCK3wyWf5F/ueUYS8SELlgJV2dBOkMFKQmEobFI67h?=
+ =?us-ascii?Q?5TYOPYULs0TR/tJMgFNiClE/nLatTCXwdrhBWVy3jJNNeXwA9o1WbSw5rhfw?=
+ =?us-ascii?Q?Wf723tjU10FoD+z8ifrc2rEP/okmHyYJEgDcqynBCe4SvFQSVsPGBDcUlknk?=
+ =?us-ascii?Q?zpVGzD0Srhm3ZGngSGD/IxgqzWJ8Q5NsTlB2uPEm/eKmAxjtQhD7VTDZU53L?=
+ =?us-ascii?Q?b6bjRM/qpAsW7n6U7pPC5n1HbdVdjH463KnQoO4nxg3YfSYfwijedRi5CWVa?=
+ =?us-ascii?Q?GK7c72OKo9mXGdM9AVGefo4uq9mdu4AjrWGXM6QVEcGu9ZZM/WBkeBE/yIBS?=
+ =?us-ascii?Q?NmxmWznf30fd3qNchDtWIPY1SYFaF50gbZaSRb/j8xlHRN1lMPL5+yDnvN7l?=
+ =?us-ascii?Q?BE3LWCQKxwdhH3n6GBXXV8PoWJkTPIZei1IWLLe+EhYbFMP9z1g9tqOH1MyK?=
+ =?us-ascii?Q?Cx3cVyeZa76h6lxjbEu4SHfS6U9Nw5NGhyB4DavYhOQF3yVs8oWirH5wOaCQ?=
+ =?us-ascii?Q?MtKEzzzr4IAOL/Bb8a/wyzpst3h/Bs98fUULSbd5oIACzfigPxizqsVXxpH3?=
+ =?us-ascii?Q?VftxtCEGF5PgZ/vRO+vJmalG6P3IRcc1zMMDnq18JICbSufgtFyyouEYyfYb?=
+ =?us-ascii?Q?omJDACrGy6rjtDdyy2GE3VDPoXjFuqRyj1Wem6PkSgaKzwJ4rmFYuseFIky9?=
+ =?us-ascii?Q?tK5MylQ7iNcajbEM4CA8HLtOa8PbR5fSgsz2VJe+3BjC9YLAER7n5dACK+D+?=
+ =?us-ascii?Q?EbbNtJoqk9DCVyfhiu7rlk+ZlegRMEFP9PTSV7NZA+ktd1Ebqcxqog+9m4lu?=
+ =?us-ascii?Q?xObrglGM0xhHgWtUGh1kIHbNNIjTNKCSJa/J1tv/3/pvKe2CVXnV2+yVWTip?=
+ =?us-ascii?Q?9vWZBhFky1K1JMmQ8DoickFlkFz2bA/j0kT65d2wUzSZk5FbfQz4tdH2lQUk?=
+ =?us-ascii?Q?TVQI4Iww619hV8zfnut6z9Uf5E5zT5buEXbr0zXeQQnzPemUw0jypGdCjY6F?=
+ =?us-ascii?Q?od4au9zSLVlYnf6wlQelIiKan5Mdl2WNjsLMotOfHUPOtF1xFulX3e27V6/d?=
+ =?us-ascii?Q?/dEiQigJd4dNvBmHFY2UnAAV+VEdC80JLLEASjlB?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fb3cd7f-0efe-444e-397f-08dcc5ec7e9d
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2024 16:31:10.8168
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YeIyIBheDfESNuYRReKF1Uxpzd8ocG3M5UD455+g7zkbgKIwfhrTlyJaidzl1ELfWiIDGKkaYR9tLdAq5t0Y5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8371
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_083202_836229_4267FB5D 
-X-CRM114-Status: GOOD (  11.69  )
+X-CRM114-CacheID: sfid-20240826_093121_581119_8E0F3096 
+X-CRM114-Status: GOOD (  17.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,52 +160,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is a reason why sometime we write "NAND chip" with an 's'. It
-usually means several chips can be managed by the same controller. So
-when initializing a single chip at a time, the wording "chip" must be
-used, otherwise when talking about all the chips managed by the
-controller, we want to use "chips". Fix the function name to clarify the
-meson_nfc_nand_chip*s*_cleanup() helper intend.
+On Thu, Aug 01, 2024 at 05:46:01PM -0400, Frank Li wrote:
+> Add compatible string "fsl,imx8qxp-dma-apbh". It requires power-domains
+> compared with "fsl,imx28-dma-apbh".
+>
+> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
+> it.
+>
+> Keep the same restriction about 'power-domains' for other compatible
+> strings.
+>
+> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/meson_nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+vkoul:
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 8806a06462ac..fbb06aa305cb 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -1475,7 +1475,7 @@ meson_nfc_nand_chip_init(struct device *dev,
- 	return 0;
- }
- 
--static void meson_nfc_nand_chip_cleanup(struct meson_nfc *nfc)
-+static void meson_nfc_nand_chips_cleanup(struct meson_nfc *nfc)
- {
- 	struct meson_nfc_nand_chip *meson_chip;
- 	struct mtd_info *mtd;
-@@ -1500,7 +1500,7 @@ static int meson_nfc_nand_chips_init(struct device *dev,
- 	for_each_child_of_node_scoped(np, nand_np) {
- 		ret = meson_nfc_nand_chip_init(dev, nfc, nand_np);
- 		if (ret) {
--			meson_nfc_nand_chip_cleanup(nfc);
-+			meson_nfc_nand_chips_cleanup(nfc);
- 			return ret;
- 		}
- 	}
-@@ -1614,7 +1614,7 @@ static void meson_nfc_remove(struct platform_device *pdev)
- {
- 	struct meson_nfc *nfc = platform_get_drvdata(pdev);
- 
--	meson_nfc_nand_chip_cleanup(nfc);
-+	meson_nfc_nand_chips_cleanup(nfc);
- 
- 	meson_nfc_disable_clk(nfc);
- }
--- 
-2.43.0
+    Could you please take care this patch?
 
+Frank
+
+> Change from v2 to v3
+> - Add rob's review tag
+> - resend because it is dropped from mtd tree at
+> https://lore.kernel.org/imx/20240717103846.306bf9fd@xps-13/
+> ---
+>  .../devicetree/bindings/dma/fsl,mxs-dma.yaml      | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml b/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml
+> index add9c77e8b52a..a17cf2360dd4a 100644
+> --- a/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml
+> @@ -11,6 +11,17 @@ maintainers:
+>
+>  allOf:
+>    - $ref: dma-controller.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx8qxp-dma-apbh
+> +    then:
+> +      required:
+> +        - power-domains
+> +    else:
+> +      properties:
+> +        power-domains: false
+>
+>  properties:
+>    compatible:
+> @@ -20,6 +31,7 @@ properties:
+>                - fsl,imx6q-dma-apbh
+>                - fsl,imx6sx-dma-apbh
+>                - fsl,imx7d-dma-apbh
+> +              - fsl,imx8qxp-dma-apbh
+>            - const: fsl,imx28-dma-apbh
+>        - enum:
+>            - fsl,imx23-dma-apbh
+> @@ -42,6 +54,9 @@ properties:
+>    dma-channels:
+>      enum: [4, 8, 16]
+>
+> +  power-domains:
+> +    maxItems: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+> --
+> 2.34.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
