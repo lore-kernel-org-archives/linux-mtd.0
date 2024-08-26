@@ -4,85 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F3C9C5321E
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 09:58:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F325C5321E
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 10:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hFPQ5+fTxyoEZ4CTkEYtpMV6WN5rqMIf/DBMLZcKUgA=; b=ELnOm5ybgcvPzl
-	VMCa987z+EHAYFh2nd7/4cFPNhOR28ioOie5tL6gywgrkbnN9nr/2EKMCdgu9fG7ddc3DWLXjN3oc
-	HrdrnmEkeVA6Up1iLXYtV7VhOMOLEB3OD3+qQi9YZjyhQ8iyRKXvMURG75LjztT4ahHAZi2nekIxZ
-	cfFEx5MSrhm9V2xyWTQ44LdlljPwvOBIxK0+S4gLI+mZdHTPzzK/IUjO9AS6xZ8l+fSnUKdo6co66
-	J6qltOGeqeeyKsffnG1owrGjTLijGtpIy2+nVgEXTPFXveh+ufrdBphUKgBV37uies9Q0NnD9+xqx
-	Xh3CdyFeebXsUn4MmLzA==;
+	List-Owner; bh=+P+B8jdqennVrFxWysbjwPVPJNLiZRhVC4rZBW9bLJc=; b=ul71hT/Ld0djzX
+	yni7yWZXpuNtxqUV5ieeBYgptc5158pY8eCJ9hEvyauHUmBmm7hS8XQU8LyM9LApN02d/fD4o41C+
+	PSw0B+eGM0hLsZi3Iqqo5/JAmlks0FFn+BAwTLh4afpUBBZ1vEYgYNE4xkLyIfY8PTmkHte37G4go
+	or50LVqrEgTAPncbrlQ0jBhQ7u+fubeGoDpAFsdCml1N1pGc/oq4YVbq8wlJjY5Dh6MNUjJy+ezJ9
+	RfaQJ6uILYrBPKfOg/HyVKfsOE4bO7M5Jr0RzJzCJLtYcJLKNduSG7UKnwk+gqbV2kxqMk65N3obT
+	7YKVr+YIvcJ4t1gT41/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWUg-00000006o8e-1NWx;
-	Mon, 26 Aug 2024 09:58:38 +0000
-Received: from mail-yw1-f179.google.com ([209.85.128.179])
+	id 1siWWL-00000006odr-1mE5;
+	Mon, 26 Aug 2024 10:00:21 +0000
+Received: from dggsgout11.his.huawei.com ([45.249.212.51])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWUd-00000006o7b-3H1x;
-	Mon, 26 Aug 2024 09:58:36 +0000
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6b4412fac76so36892517b3.1;
-        Mon, 26 Aug 2024 02:58:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724666314; x=1725271114;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xIxHgySimhudfjPoZi8j1w/98XwT2TmQjMhDhWg7BtU=;
-        b=CaoD7UeDFzQtmApTPE6gDSx21JC5nfv17aPPu4Gqkr9KYDV+jknDGUeFa6eiKpXBS3
-         fOi7px1P6LIcGwViHP7LmSGU/r6FZS36AbYw8JwYad0zD065dqchALrNvQPHFQ5n+Ln5
-         RMW1hB3ri5QbWgKvAmbsnZLCagRoN488e/W2MxPXUlESwZ8Gm9nkAKnoa5ug8o8chh4i
-         H6SUCh9VFaOfkikFmU/3tS7MtXXUon+L3Q9xvPE0tsNmugFThT1ub+B3H2fQ2qiaAKCN
-         2gfuXAvR3jdEe47DsXFrc48fb+6h5dfTQ76kReASwdAhL1S2QEg13dbAGNPr5QwbzGaV
-         eRNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+FN8iyp03WDsPXB1E9aDpWPiUUQrI6Ep9GcBXBYGGWESRC/Tgnj+fujfnMgJxQJtVwnRT1ofG/D6k@lists.infradead.org, AJvYcCVwUMukjrY/bow8Zdct7oie+/hCtaGFm9Dho9i8MxfPfU6v82hKn6WjYUFXkphU5L60djHTBr4SKc1C2m1vRdQ=@lists.infradead.org, AJvYcCVymCVWVILMTr94TscpS1gBtKElaITQIzUmPXVbtskO8mjvLPV9yPLAAm4g1xVV19cH0R+vqLw+HLgI/Py+h7o=@lists.infradead.org, AJvYcCX1nuc2UffZt9COCOd5jjyyQuKFUFQmvBj9UvGoLVhYB+vGg4aAgMZckWwMUkzW3zuZ+otlfigVOIjPo+Ns@lists.infradead.org, AJvYcCXHQuukWZIWUVMMUKUYm6MbRUohVE9WKqnhgME7Q/U8fLb+7n+m+Ri0DimZxq5TUysXiy93x8yrV4OIbE7RlWS+KA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxpzcIJMqCootajn3txdiHOwlGOIVeCEwKN+LQpOmhThmY+M10d
-	C6wLq/0SWfPOGpECmvspjksJHXV+N/uSfPox9tqtdhv6yX6h4wqVJh53YzR6
-X-Google-Smtp-Source: AGHT+IE+BSr3vSJyvCKiBS5TJxW0xNaioQcrCekukgUcEjWum8SDdelZO1MfxInNrfOSHuBPjrA8vA==
-X-Received: by 2002:a05:690c:ec9:b0:615:2a14:4ea6 with SMTP id 00721157ae682-6c62422c0b8mr125625867b3.8.1724666314093;
-        Mon, 26 Aug 2024 02:58:34 -0700 (PDT)
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a67f3d5c8csm438811785a.98.2024.08.26.02.58.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Aug 2024 02:58:33 -0700 (PDT)
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7a1dcc7bc05so267417985a.0;
-        Mon, 26 Aug 2024 02:58:33 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU3ogmls0xilJ3I4UAh+6GPsTCfPzcgFedwR5pEN56VQEQvnxN1wiEuPvN9O9id78YCpb3u6I4OxANn@lists.infradead.org, AJvYcCVUUggp5XsfBx5fXRGyr0dkzDaxVYkje1/NHeeWdZYw9PB3Rn15NUIskNjgUP+9EtHmg7A+mDreHLGPppB1EU8=@lists.infradead.org, AJvYcCWzE/K4HqfIHFx9dx8CWzv1VpsbSxHS71+YNBwGcRm6nA+krx7AON+lZqEbDOeNKk2pP3cw5DCXO1KAo7uK@lists.infradead.org, AJvYcCXC9S/GhlAKw88AUY4tdvqQoaNI+Bw9gNRAdM2YnBThytYBfvvqTkGY7xO93N/K27Mty0q1BKRPTdadNPhWws0=@lists.infradead.org, AJvYcCXYBFaszURqICEyhpj9xeNGuZOtql9jEZ3y6hZd3ysVmfVwjn2mQ2ZNS8td73SYe5n922yq3YkDFHVYXLGVjsYThA==@lists.infradead.org
-X-Received: by 2002:a05:690c:4246:b0:6b2:4154:e598 with SMTP id
- 00721157ae682-6c6262f43e4mr95411167b3.26.1724665994139; Mon, 26 Aug 2024
- 02:53:14 -0700 (PDT)
+	id 1siVLs-00000006Xyb-3eHO
+	for linux-mtd@lists.infradead.org;
+	Mon, 26 Aug 2024 08:45:31 +0000
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wskky6wHlz4f3lfZ
+	for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2024 16:44:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 53DFB1A0359
+	for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2024 16:45:14 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP1 (Coremail) with SMTP id cCh0CgC3CUyZQMxmdfy0Cg--.2846S2;
+	Mon, 26 Aug 2024 16:45:14 +0800 (CST)
+Message-ID: <9849096d-1bf2-423d-ac7e-492a77d09282@huaweicloud.com>
+Date: Mon, 26 Aug 2024 16:45:13 +0800
 MIME-Version: 1.0
-References: <20240826094328.2991664-1-ruanjinjie@huawei.com> <20240826094328.2991664-9-ruanjinjie@huawei.com>
-In-Reply-To: <20240826094328.2991664-9-ruanjinjie@huawei.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Aug 2024 11:53:02 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWhfDmRONWLjqgeCa4ZPKKXxXDv6T60OVSmEdvdm1RvvQ@mail.gmail.com>
-Message-ID: <CAMuHMdWhfDmRONWLjqgeCa4ZPKKXxXDv6T60OVSmEdvdm1RvvQ@mail.gmail.com>
-Subject: Re: [PATCH -next RESEND 08/10] mtd: rawnand: renesas: Use for_each_child_of_node_scoped()
-To: Jinjie Ruan <ruanjinjie@huawei.com>
-Cc: miquel.raynal@bootlin.com, michal.simek@amd.com, richard@nod.at, 
-	vigneshr@ti.com, liang.yang@amlogic.com, neil.armstrong@linaro.org, 
-	khilman@baylibre.com, jbrunet@baylibre.com, 
-	martin.blumenstingl@googlemail.com, matthias.bgg@gmail.com, 
-	angelogioacchino.delregno@collabora.com, heiko@sntech.de, 
-	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, wens@csie.org, 
-	jernej.skrabec@gmail.com, samuel@sholland.org, kees@kernel.org, 
-	gustavoars@kernel.org, linux@treblig.org, robh@kernel.org, 
-	u.kleine-koenig@pengutronix.de, erick.archer@gmx.com, 
-	christophe.jaillet@wanadoo.fr, val@packett.cool, 
-	christophe.kerello@foss.st.com, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, krzk@kernel.org, jic23@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 -next] mtd: rawnand: denali: Fix missing
+ pci_release_regions in probe and remove
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org
+References: <20240826024339.476921-1-chenridong@huawei.com>
+ <20240826101136.7849f040@xps-13>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20240826101136.7849f040@xps-13>
+X-CM-TRANSID: cCh0CgC3CUyZQMxmdfy0Cg--.2846S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5Q7kC6x804xWl14x267AKxVWUJVW8JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+	v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
+	IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_025835_844002_6D125748 
-X-CRM114-Status: GOOD (  13.51  )
+X-CRM114-CacheID: sfid-20240826_014529_201167_58046650 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,22 +78,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBBdWcgMjYsIDIwMjQgYXQgMTE6MzfigK9BTSBKaW5qaWUgUnVhbiA8cnVhbmppbmpp
-ZUBodWF3ZWkuY29tPiB3cm90ZToKPiBBdm9pZHMgdGhlIG5lZWQgZm9yIG1hbnVhbCBjbGVhbnVw
-IG9mX25vZGVfcHV0KCkgaW4gZWFybHkgZXhpdHMKPiBmcm9tIHRoZSBsb29wLgo+Cj4gU2lnbmVk
-LW9mZi1ieTogSmluamllIFJ1YW4gPHJ1YW5qaW5qaWVAaHVhd2VpLmNvbT4KClJldmlld2VkLWJ5
-OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlPgoKR3J7b2V0amUs
-ZWV0aW5nfXMsCgogICAgICAgICAgICAgICAgICAgICAgICBHZWVydAoKLS0gCkdlZXJ0IFV5dHRl
-cmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGlu
-dXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVv
-cGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJJ20gdGFsa2luZyB0byBqb3Vy
-bmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0Lgog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+CgpPbiAyMDI0LzgvMjYgMTY6MTEsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gSGkgQ2hlbiwKPiAK
+PiBjaGVucmlkb25nQGh1YXdlaS5jb20gd3JvdGUgb24gTW9uLCAyNiBBdWcgMjAyNCAwMjo0Mzoz
+OSArMDAwMDoKPiAKPj4gVGhlIHBjaV9yZWxlYXNlX3JlZ2lvbnMgd2FzIG1pc3MgYXQgZXJyb3Ig
+Y2FzZSwganVzdCBhZGQgaXQuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IENoZW4gUmlkb25nIDxjaGVu
+cmlkb25nQGh1YXdlaS5jb20+Cj4+IC0tLQo+IAo+IE5leHQgdGltZSBwbGVhc2UgYWRkIGEgY2hh
+bmdlbG9nIGhlcmUsIGJlbG93IHRoZSAtLS0uCj4gCj4gTm8gbmVlZCB0byByZXNlbmQgZm9yIHRo
+aXMgdGltZS4KPiAKPj4gICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGlfcGNpLmMgfCAxMSAr
+KysrKysrKy0tLQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRp
+b25zKC0pCj4gCj4gVGhhbmtzLAo+IE1pcXXDqGwKCkFwb2xvZ2llcyBmb3IgdGhlIG1pc3Npbmcg
+Y2hhbmdlIGxvZy4KClRoYW5rIHlvdSBmb3IgeW91ciByZW1pbmRlci4KCkJlc3QgcmVnYXJkcywK
+Umlkb25nCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
