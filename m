@@ -4,55 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2EE2C5321D
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 09:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4BCDC5321D
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 09:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5QHOWwwOI0mOmoIO0n25mnwz6dgnD6jMmCSz8DFg2rI=; b=IkeGrM3iwi0pw3
-	dOHfgkRvUHWDF/PjcAuek+ws+ElqXPg3wcdty8EUWKMlDugWikHfRCuBnrNPBMp+wiKXCLgOwQd2+
-	SrB2uZkDBfvpqgFwPeJjh/ijAn+ctoOnzR5h7PLYubpQlCW3X4VBZZ2zOjnACmVw2cidCcqmSjvBD
-	r+1CaL5p87J5E49yV40x3qscuw81UgXtkwS1BvHoOVDsLXm9xkbsMPZZut7kLLaaF/axrhGHzo1Wt
-	Yb6GKpy8KpYAtWygmi5x0t5SgmXLCPIAR6hDot1NUIN6QM5TXa7avCjuk3LgXNK6Q/7AOySyiJvvQ
-	HzoRZOUpCUzzX5PcFZgQ==;
+	List-Owner; bh=cIFee0W9w6AXCcgB0vL4BXquSk9PiSBDulF88SiKn/k=; b=ANHYR94AH5Ok2O
+	2PDq6IJhYNz2CClCucP2nUuTBaY65VfZVhSeOb223wdpEIz2hviq/WFwiqenPewAXY8QsAu8aURCg
+	GgIdxzoydfOcAzhdelQZ2YgU02SZa7sMziyOzGhLpk4+1uJI+UPjO2p1k2EDnkWftvCcUNAuvM7L9
+	GxPl+LLxfGFzHdB5GxUeueAG2IYSob/tgIQP3VWPQlFeh6uCZTCDwcL/DFxrsCtqgH+tJ6vi0uGdV
+	83KZ2UVjAqXUxH9Ins8Vb5tinZ2oXFoZK1O2+Vh7Sf8dDutYDN0xtxq11Hc70ot/JM+Cwq3pATRe3
+	9b72cscZonEhZTgHCSCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siVj3-00000006bpf-0va1;
-	Mon, 26 Aug 2024 09:09:25 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1siWC3-00000006iFY-0kWz;
+	Mon, 26 Aug 2024 09:39:23 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siViy-00000006bnt-1QYy
-	for linux-mtd@lists.infradead.org;
-	Mon, 26 Aug 2024 09:09:22 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WslG71zpGzpVt0;
-	Mon, 26 Aug 2024 17:08:31 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0809E1800F2;
-	Mon, 26 Aug 2024 17:09:17 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 26 Aug
- 2024 17:09:16 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>
-CC: <linux-mtd@lists.infradead.org>, <lihongbo22@huawei.com>
-Subject: [PATCH -next 2/2] ubifs: add support for FS_IOC_GETFSSYSFSPATH
-Date: Mon, 26 Aug 2024 17:17:00 +0800
-Message-ID: <20240826091700.2812779-3-lihongbo22@huawei.com>
+	id 1siW8p-00000006hA1-0YLM;
+	Mon, 26 Aug 2024 09:36:05 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WslmH2tT2z69Ly;
+	Mon, 26 Aug 2024 17:31:11 +0800 (CST)
+Received: from kwepemh500013.china.huawei.com (unknown [7.202.181.146])
+	by mail.maildlp.com (Postfix) with ESMTPS id E1569140258;
+	Mon, 26 Aug 2024 17:35:58 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemh500013.china.huawei.com
+ (7.202.181.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 26 Aug
+ 2024 17:35:57 +0800
+From: Jinjie Ruan <ruanjinjie@huawei.com>
+To: <miquel.raynal@bootlin.com>, <michal.simek@amd.com>, <richard@nod.at>,
+	<vigneshr@ti.com>, <liang.yang@amlogic.com>, <neil.armstrong@linaro.org>,
+	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
+	<martin.blumenstingl@googlemail.com>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>, <heiko@sntech.de>,
+	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>, <wens@csie.org>,
+	<jernej.skrabec@gmail.com>, <samuel@sholland.org>, <kees@kernel.org>,
+	<ruanjinjie@huawei.com>, <gustavoars@kernel.org>, <linux@treblig.org>,
+	<robh@kernel.org>, <u.kleine-koenig@pengutronix.de>, <erick.archer@gmx.com>,
+	<christophe.jaillet@wanadoo.fr>, <val@packett.cool>,
+	<christophe.kerello@foss.st.com>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-renesas-soc@vger.kernel.org>, <linux-rockchip@lists.infradead.org>,
+	<linux-stm32@st-md-mailman.stormreply.com>, <krzk@kernel.org>,
+	<jic23@kernel.org>
+Subject: [PATCH -next RESEND 02/10] mtd: rawnand: cadence: Use for_each_child_of_node_scoped()
+Date: Mon, 26 Aug 2024 17:43:20 +0800
+Message-ID: <20240826094328.2991664-3-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240826091700.2812779-1-lihongbo22@huawei.com>
-References: <20240826091700.2812779-1-lihongbo22@huawei.com>
+In-Reply-To: <20240826094328.2991664-1-ruanjinjie@huawei.com>
+References: <20240826094328.2991664-1-ruanjinjie@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.90.53.73]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+ kwepemh500013.china.huawei.com (7.202.181.146)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_020921_247530_736420B3 
-X-CRM114-Status: GOOD (  10.93  )
+X-CRM114-CacheID: sfid-20240826_023603_456598_6877F8FE 
+X-CRM114-Status: UNSURE (   8.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,47 +83,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In commit ae8c51175730 ("fs: add FS_IOC_GETFSSYSFSPATH"), a
-new fs ioctl was introduced to standardize exporting data from
-sysfs across filesystems. The returned path will always be of the
-form "$FSTYP/$SYSFS_IDENTIFIER", where the sysfs identifier may
-be a UUID or a device name.
+Avoids the need for manual cleanup of_node_put() in early exits
+from the loop by using for_each_child_of_node_scoped().
 
-The ubifs is a file system based on char device, and the common
-method to fill s_sysfs_name (super_set_sysfs_name_bdev) is
-unavialable. So in order to support FS_IOC_GETFSSYSFSPATH ioctl,
-we fill the s_sysfs_name with ubi_volume_info member which keeps
-the format defined in macro UBIFS_DFS_DIR_NAME by using
-super_set_sysfs_name_generic.
-
-That's for ubifs, it will output "ubifs/<dev>".
-
-```
-$ ./ioctl_getfssysfs_path /mnt/ubifs/testfile
-path: ubifs/ubi0_0
-
-$ ls /sys/fs/ubifs/ubi0_0/
-errors_crc  errors_magic  errors_node
-```
-
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 ---
- fs/ubifs/super.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/nand/raw/cadence-nand-controller.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 291583005dd1..cb26b8b27ef6 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2249,6 +2249,8 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
+index ff92c17def83..3bc89b356963 100644
+--- a/drivers/mtd/nand/raw/cadence-nand-controller.c
++++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
+@@ -2836,7 +2836,6 @@ static void cadence_nand_chips_cleanup(struct cdns_nand_ctrl *cdns_ctrl)
+ static int cadence_nand_chips_init(struct cdns_nand_ctrl *cdns_ctrl)
+ {
+ 	struct device_node *np = cdns_ctrl->dev->of_node;
+-	struct device_node *nand_np;
+ 	int max_cs = cdns_ctrl->caps2.max_banks;
+ 	int nchips, ret;
+ 
+@@ -2849,10 +2848,9 @@ static int cadence_nand_chips_init(struct cdns_nand_ctrl *cdns_ctrl)
+ 		return -EINVAL;
  	}
  
- 	super_set_uuid(sb, c->uuid, sizeof(c->uuid));
-+	super_set_sysfs_name_generic(sb, UBIFS_DFS_DIR_NAME,
-+				     c->vi.ubi_num, c->vi.vol_id);
- 
- 	mutex_unlock(&c->umount_mutex);
- 	return 0;
+-	for_each_child_of_node(np, nand_np) {
++	for_each_child_of_node_scoped(np, nand_np) {
+ 		ret = cadence_nand_chip_init(cdns_ctrl, nand_np);
+ 		if (ret) {
+-			of_node_put(nand_np);
+ 			cadence_nand_chips_cleanup(cdns_ctrl);
+ 			return ret;
+ 		}
 -- 
 2.34.1
 
