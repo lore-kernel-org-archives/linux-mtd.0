@@ -4,69 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F325C5321E
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 10:00:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03AEAC5321D
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 10:16:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+P+B8jdqennVrFxWysbjwPVPJNLiZRhVC4rZBW9bLJc=; b=ul71hT/Ld0djzX
-	yni7yWZXpuNtxqUV5ieeBYgptc5158pY8eCJ9hEvyauHUmBmm7hS8XQU8LyM9LApN02d/fD4o41C+
-	PSw0B+eGM0hLsZi3Iqqo5/JAmlks0FFn+BAwTLh4afpUBBZ1vEYgYNE4xkLyIfY8PTmkHte37G4go
-	or50LVqrEgTAPncbrlQ0jBhQ7u+fubeGoDpAFsdCml1N1pGc/oq4YVbq8wlJjY5Dh6MNUjJy+ezJ9
-	RfaQJ6uILYrBPKfOg/HyVKfsOE4bO7M5Jr0RzJzCJLtYcJLKNduSG7UKnwk+gqbV2kxqMk65N3obT
-	7YKVr+YIvcJ4t1gT41/g==;
+	List-Owner; bh=bWqTkB3vOwpPkvAkyCheUWwtdOFfo+rUJgNeo54AJNQ=; b=OFdX0N9oHnZI6Q
+	az89eMiREf+VXE7CBkVms4Q5VYbecuMyUvAOOrkvqRJfW66DH6/3nn/hDlPEAA2n9lzfd1gUOCxDA
+	IpxJSLoVRg7IdL1q+XTWK7+VNsFtFvb1twgOB8hsvgZMxGr7GDwbPanWEsTVXsoHOmh3twZZorvvf
+	GEZlArpKjSwmiClk0jgvJMaZ8RXt9lVKmCt+QYnNyBvBqPRBFqgu9tO3xWS5COWuuJiABRI6GA5Gb
+	cKmrT5QwJz+lkLWVCUuzZ/KZyxxqTtWW/kh5qPjxElze9hT+trArypvD/G1fvY6iU6T8T6wOfcFN5
+	WRAggve2ByqVZbGHniHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWWL-00000006odr-1mE5;
-	Mon, 26 Aug 2024 10:00:21 +0000
-Received: from dggsgout11.his.huawei.com ([45.249.212.51])
+	id 1siWln-00000006t0W-0eDF;
+	Mon, 26 Aug 2024 10:16:19 +0000
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siVLs-00000006Xyb-3eHO
+	id 1siWjp-00000006sJV-0nmR
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Aug 2024 08:45:31 +0000
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wskky6wHlz4f3lfZ
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2024 16:44:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 53DFB1A0359
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2024 16:45:14 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP1 (Coremail) with SMTP id cCh0CgC3CUyZQMxmdfy0Cg--.2846S2;
-	Mon, 26 Aug 2024 16:45:14 +0800 (CST)
-Message-ID: <9849096d-1bf2-423d-ac7e-492a77d09282@huaweicloud.com>
-Date: Mon, 26 Aug 2024 16:45:13 +0800
+	Mon, 26 Aug 2024 10:14:18 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 306E61BF206;
+	Mon, 26 Aug 2024 10:14:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1724667255;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0qPjFom3cX4AY0bA9CUyGy7bryc8ThIM9/98PzSDXm8=;
+	b=hhVL+5oIFfizBUniSq1FfY2A+LVfyymojH8KMpvtC3iotFGSrJ6dV+ywrktVEpaO7/PUKK
+	/ZNLVYpz7qwvysJbjfdQTrV79PTQmhcYgQdPrNLm7Oxh5XES2awExL+Wm4PX1i9jHg9S0U
+	WilBPHgV8Sb95uUKqktIpwMyLu2rEVMz/L4NBuU/VeLJSLfuuy7c366zQJMShA8r/FSd3j
+	ZcX6y4um7gXnyc1MHRNorWKNpu+VSUiqjKf5qBv4MjZ77Ilb+23I4LFX/qSgP0VmnnhqGV
+	RQQxiO2Sv0Nc9LloHAUq5zFFs+4MMc3pzTXT8wCNzumeJrnH4IkMkrSGPCqF3Q==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Julien Su <juliensu@mxic.com.tw>,
+	Alvin Zhou <alvinzhou@mxic.com.tw>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 1/9] mtd: nand: Rename the NAND IO iteration helper
+Date: Mon, 26 Aug 2024 12:14:04 +0200
+Message-ID: <20240826101412.20644-2-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240826101412.20644-1-miquel.raynal@bootlin.com>
+References: <20240826101412.20644-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -next] mtd: rawnand: denali: Fix missing
- pci_release_regions in probe and remove
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org
-References: <20240826024339.476921-1-chenridong@huawei.com>
- <20240826101136.7849f040@xps-13>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20240826101136.7849f040@xps-13>
-X-CM-TRANSID: cCh0CgC3CUyZQMxmdfy0Cg--.2846S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5Q7kC6x804xWl14x267AKxVWUJVW8JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
-	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCF
-	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-	v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
-	IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_014529_201167_58046650 
-X-CRM114-Status: GOOD (  10.89  )
+X-CRM114-CacheID: sfid-20240826_031417_405687_40AEBBDA 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,21 +74,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyMDI0LzgvMjYgMTY6MTEsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gSGkgQ2hlbiwKPiAK
-PiBjaGVucmlkb25nQGh1YXdlaS5jb20gd3JvdGUgb24gTW9uLCAyNiBBdWcgMjAyNCAwMjo0Mzoz
-OSArMDAwMDoKPiAKPj4gVGhlIHBjaV9yZWxlYXNlX3JlZ2lvbnMgd2FzIG1pc3MgYXQgZXJyb3Ig
-Y2FzZSwganVzdCBhZGQgaXQuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IENoZW4gUmlkb25nIDxjaGVu
-cmlkb25nQGh1YXdlaS5jb20+Cj4+IC0tLQo+IAo+IE5leHQgdGltZSBwbGVhc2UgYWRkIGEgY2hh
-bmdlbG9nIGhlcmUsIGJlbG93IHRoZSAtLS0uCj4gCj4gTm8gbmVlZCB0byByZXNlbmQgZm9yIHRo
-aXMgdGltZS4KPiAKPj4gICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGlfcGNpLmMgfCAxMSAr
-KysrKysrKy0tLQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRp
-b25zKC0pCj4gCj4gVGhhbmtzLAo+IE1pcXXDqGwKCkFwb2xvZ2llcyBmb3IgdGhlIG1pc3Npbmcg
-Y2hhbmdlIGxvZy4KClRoYW5rIHlvdSBmb3IgeW91ciByZW1pbmRlci4KCkJlc3QgcmVnYXJkcywK
-Umlkb25nCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Soon a helper for iterating over blocks will be needed (for continuous
+read purposes). In order to clarify the intend of this helper, let's
+rename it with the "page" wording inside.
+
+While at it, improve the doc and fix a typo.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+---
+ include/linux/mtd/nand.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index b2996dc987ff..92e06ac33815 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -906,19 +906,19 @@ static inline void nanddev_pos_next_page(struct nand_device *nand,
+ }
+ 
+ /**
+- * nand_io_iter_init - Initialize a NAND I/O iterator
++ * nand_io_page_iter_init - Initialize a NAND I/O iterator
+  * @nand: NAND device
+  * @offs: absolute offset
+  * @req: MTD request
+  * @iter: NAND I/O iterator
+  *
+  * Initializes a NAND iterator based on the information passed by the MTD
+- * layer.
++ * layer for page jumps.
+  */
+-static inline void nanddev_io_iter_init(struct nand_device *nand,
+-					enum nand_page_io_req_type reqtype,
+-					loff_t offs, struct mtd_oob_ops *req,
+-					struct nand_io_iter *iter)
++static inline void nanddev_io_page_iter_init(struct nand_device *nand,
++					     enum nand_page_io_req_type reqtype,
++					     loff_t offs, struct mtd_oob_ops *req,
++					     struct nand_io_iter *iter)
+ {
+ 	struct mtd_info *mtd = nanddev_to_mtd(nand);
+ 
+@@ -990,10 +990,10 @@ static inline bool nanddev_io_iter_end(struct nand_device *nand,
+  * @req: MTD I/O request
+  * @iter: NAND I/O iterator
+  *
+- * Should be used for iterate over pages that are contained in an MTD request.
++ * Should be used for iterating over pages that are contained in an MTD request.
+  */
+ #define nanddev_io_for_each_page(nand, type, start, req, iter)		\
+-	for (nanddev_io_iter_init(nand, type, start, req, iter);	\
++	for (nanddev_io_page_iter_init(nand, type, start, req, iter);	\
+ 	     !nanddev_io_iter_end(nand, iter);				\
+ 	     nanddev_io_iter_next_page(nand, iter))
+ 
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
