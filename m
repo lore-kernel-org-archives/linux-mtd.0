@@ -4,55 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF394C5321E
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 02:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB2DEC5321E
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 07:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KtLU1wk5PNREI2zwzRYCCUrMiki9Eie7VcUkAqpl8RA=; b=KseeiWqrMTdw7Q
-	hnsikouZxpKBfkh4KP/NLWcayel19RquCgXUn/LbugQNcj+oFOTOIaZYu7mWpzPCiBxodHVyuqkAk
-	3oZYZ9lcfqzyY36qXYZlunPQk7Y5CzHKWYancYtCyIg9K6ivkOJwvLLOGRaogFigBJllnJMVtbJ8a
-	HZ/GPUegkhLu715Zt/nqGiRaB04wHKG6NPivFZ8CTdmQzrTr57JDK3uuW9S/mKowGjuDtxREDCilY
-	aRtWJGN7LN+zDw4tBUSJdDPXeh4QTIcyVV/10j2MNVk087JIMbbCTXtPLWaI7RAL0RYTlxDuuCeBC
-	3ukrgMl/g8QvjKBuIMxQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+AYE8Sn6VXt3dw+//RXNvvAtEC4Da1iQJiWWYCrnGSU=; b=BT00fOL3yKj8NO
+	7PdkBzhqo2yv8x6Gpu6ldYwZ2JG3RjXJa/7SvB3anyx0VWkBNzErUAPAF7fse8h5PuGMkeZ00Wf9Y
+	rTmHKSSkXEYtqMPxKHbjrzebUD/+APu8GlNBCsNTqcS+mMu1WtslJH23/FSHG+F582/vDAkRgXj5B
+	Uu6tIpo9vEPQbGg8kyYLF4N/n4M3IODZHXizi1e+8isoJtMDpNagdsg23mLW7AmrDVVlXsuNQMrB7
+	rNZEaMbwt6Jolbd+rLj1pr4oKn/qp6AEvXo4g3ufq+rWetO0WjiE7tZfU0HxYh6KwHX4Q7ddKL303
+	QEj/siwaj12C0qGi2NSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siPpL-00000005aGa-48Ym;
-	Mon, 26 Aug 2024 02:51:32 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1siUWx-00000006KjG-3pBq;
+	Mon, 26 Aug 2024 07:52:51 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siPpJ-00000005aFs-2Lzu
+	id 1siUWu-00000006KfK-2ZGw
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Aug 2024 02:51:31 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WsZtr4WDbz2CnXt;
-	Mon, 26 Aug 2024 10:51:16 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id E8AE8180043;
-	Mon, 26 Aug 2024 10:51:24 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Mon, 26 Aug
- 2024 10:51:24 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<chenridong@huaweicloud.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 -next] mtd: rawnand: denali: Fix missing pci_release_regions in probe and remove
-Date: Mon, 26 Aug 2024 02:43:39 +0000
-Message-ID: <20240826024339.476921-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	Mon, 26 Aug 2024 07:52:50 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1siUVR-0006mO-Jk; Mon, 26 Aug 2024 09:51:17 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1siUVK-0038Ph-Cg; Mon, 26 Aug 2024 09:51:10 +0200
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1siUVK-006xmZ-0b;
+	Mon, 26 Aug 2024 09:51:10 +0200
+Date: Mon, 26 Aug 2024 09:51:10 +0200
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Russell King <linux@armlinux.org.uk>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Vladimir Zapolskiy <vz@mleia.com>, Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+	imx@lists.linux.dev, linux-omap@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+	openbmc@lists.ozlabs.org, linuxppc-dev@lists.ozlabs.org,
+	linux-mips@vger.kernel.org, loongarch@lists.linux.dev
+Subject: Re: [PATCH 0/9] AT24 EEPROM MTD Support
+Message-ID: <20240826075110.u3cxc6dootou72eq@pengutronix.de>
+References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
+ <Zsi3s9XithGEROwX@smile.fi.intel.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.121]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Disposition: inline
+In-Reply-To: <Zsi3s9XithGEROwX@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240825_195129_864243_D69D26D9 
-X-CRM114-Status: UNSURE (   8.99  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240826_005248_680520_230165D2 
+X-CRM114-Status: GOOD (  28.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,61 +112,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pci_release_regions was miss at error case, just add it.
+Hi Andy,
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- drivers/mtd/nand/raw/denali_pci.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+On 24-08-23, Andy Shevchenko wrote:
+> On Mon, Jul 01, 2024 at 03:53:39PM +0200, Marco Felsch wrote:
+> > This series adds the intial support to handle EEPROMs via the MTD layer
+> > as well. This allow the user-space to have separate paritions since
+> > EEPROMs can become quite large nowadays.
+> > 
+> > With this patchset applied EEPROMs can be accessed via:
+> >   - legacy 'eeprom' device
+> >   - nvmem device
+> >   - mtd device(s)
+> > 
+> > The patchset targets only the AT24 (I2C) EEPROMs since I have no access
+> > to AT25 (SPI) EEPROMs nor to one of the other misc/eeprom/* devices.
+> > 
+> > Note: I'm not familiar with Kconfig symbol migration so I don't know if
+> > the last patch is required at the moment. Please be notified that the
+> > list of recipients is quite large due to the defconfig changes.
+> 
+> FWIW, I think that MTD is *not* the place for EEPROMs.
+> 
+> Yeah, we have the driver spread over the kernel for EEPROMs (mostly due to
+> historical reasons and absence an umbrella subsystem for them), but it's not
+> the reason to hack them into something which is not quite suitable.
 
-diff --git a/drivers/mtd/nand/raw/denali_pci.c b/drivers/mtd/nand/raw/denali_pci.c
-index de7e722d3826..e22094e39546 100644
---- a/drivers/mtd/nand/raw/denali_pci.c
-+++ b/drivers/mtd/nand/raw/denali_pci.c
-@@ -77,18 +77,20 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	denali->reg = devm_ioremap(denali->dev, csr_base, csr_len);
- 	if (!denali->reg) {
- 		dev_err(&dev->dev, "Spectra: Unable to remap memory region\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto regions_release;
- 	}
- 
- 	denali->host = devm_ioremap(denali->dev, mem_base, mem_len);
- 	if (!denali->host) {
- 		dev_err(&dev->dev, "Spectra: ioremap failed!");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto regions_release;
- 	}
- 
- 	ret = denali_init(denali);
- 	if (ret)
--		return ret;
-+		goto regions_release;
- 
- 	nsels = denali->nbanks;
- 
-@@ -116,6 +118,8 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 
- out_remove_denali:
- 	denali_remove(denali);
-+regions_release:
-+	pci_release_regions(dev);
- 	return ret;
- }
- 
-@@ -123,6 +127,7 @@ static void denali_pci_remove(struct pci_dev *dev)
- {
- 	struct denali_controller *denali = pci_get_drvdata(dev);
- 
-+	pci_release_regions(dev);
- 	denali_remove(denali);
- }
- 
--- 
-2.34.1
+Thank you for you input. There are two things to mention:
+ 1st) I send a RFC patch and asked for feedback and all I got was: looks
+      okay, please send a proper patch [1] which I did.
+ 2nd) I don't see the hacky part in this patchset.
 
+Anyway the customer doesn't need the nvmem-partitions anymore and
+therefore this patchset can be seen as obsolote.
+
+Regards,
+  Marco
+
+[1] https://lore.kernel.org/lkml/20231201144441.imk7rrjnv2dugo7p@pengutronix.de/T/#m1e0e5778448971b50a883f62bd95622f6422b9a2
+
+> 
+> If NVMEM needs to be updated and may cover these cases after all (and do not
+> forget about *small* size EEPROMs that most likely appear on the devices with
+> limited amount of resources!) in a reasonable size and performance, why not?
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
