@@ -4,146 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6D37C5321D
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 16:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41C6BC52D6F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 03:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rj/tNUVbPDYzquxxGKfI/TH9bknV6D5HjV1OPe7X4lw=; b=cI/Nc5pjeTr2Vy
-	ZAbKPI7qT89xWhtaBx8mBULP5mj5owqW4kSAnaZwX3F0o8pua49EEKjmI9kWxUKONKA0eySGDpymK
-	cWgE29WcPa2qQYXiUggP2cZnvbeCCzIslDuNgQ3YLBRNxIKeUfvo7xVLn0+GBwDFR25pP6uY/upBm
-	tudoVdTrMg4ZkPa77gyXvSeiimHv1u/QZ0h4BQdkVRTsfIV0JwCnYCdbO4JryULB/EhAwdpZieWRr
-	98cLbtegl/m7RFXYHOamaRODDKr4Ry4metaKy0/WxcQTOmPFSrYnw3gM3oCROfRWzxhFcFc6rnfs3
-	gtXLMCX4sZMr1rannMog==;
+	List-Owner; bh=h471W/J/Ka+nz8mKZqsd2dAEg6OnBuwKSxaGlqLnp6I=; b=v/n3r+tchmBdUk
+	L4V0nyBzE2Kb0V/aIz7iTr7EdnjgWLwj9VD3BW+cFqYhO4KjPbmBC63YnogbvT1CMQpTJKsf4xs5M
+	g96ZvFsBRXMXqg7QmBD1OMWhgULQKvifFfXMvdMTCF4NNRfLB2vJ3IXawnPk6dwW/HTbRz9hB8Np7
+	8qfmGRq8Mt8CSLHP69P1fAqVkm38/9VY5NZM8fF9GtXVvJIulRSj6q2h+M5pjqD+p4Tc2wZxUReh9
+	8Lc1N5zMJd9conRSmIa87E08yrRQOVWuayBUNiDLVdWG+bYVNrg2hloS9mBQ9wXQyWBf0GHeV+Xgs
+	QqVv/kNbG8OdEeaO/SwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siccm-000000080xD-16OX;
-	Mon, 26 Aug 2024 16:31:24 +0000
-Received: from mail-northeuropeazlp170130004.outbound.protection.outlook.com ([2a01:111:f403:c200::4] helo=DUZPR83CU001.outbound.protection.outlook.com)
+	id 1simu7-00000009bKB-38Cb;
+	Tue, 27 Aug 2024 03:29:59 +0000
+Received: from mgamail.intel.com ([192.198.163.9])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siccj-000000080v7-29oM;
-	Mon, 26 Aug 2024 16:31:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=XW7r5wxSXiR7zqyGunM9FFwrubSWhiUp2UbLxz0rQmPYoREGzw+SCHG/eyNKasSPOYeab5v7ovWBDbMzwHZqJUf22qCDd89mgtTLdusiNg3rpzr3uO71Nmcyn8r3qzgGKQtLR/bUVqrrLyPVoP5q6TdSxqvCDPuBUfIQfxftc17hU5udKxuQ4PNevKFOY5ehUwyOPbl6XO2lsBPffzxvl7mQhzfPeB4p/4WzJnPD/FT8UlI/yKuTnIBETr+ea8G46iSkSswFznPCdzYhUoDmuefZWApRCaxN21xjh0RAddVZ4ClqwUNZqjkCc/C207Hst38jqXK3isYnnFSbTbRzhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/0u089mwEQFQc5YPfD0eArkFQhi+AYchIVRea6dPbxQ=;
- b=RvwufiraItvL1MPp6z19CBqCrRJDVv94WGC24cnw7CCheJ/48tDWVxFjMPjJEwTwTF3Nsn6NgVdKub47DMRMvxLd19fD+TmFo5rCa5o6khx3d8QF9PKWXXaTsnRGYJOp4RW673fKjx454L6FUD1FKxYDKKDek8JgHewPo0VywS7UQ1iUwnkc4M45A0Gu1al2nXLKIv+yE+yHd6BXnK8kmgcFoAaYoLwTc5sOVRfJLl0oC/pXQx54JeNFvevO2CvDQVoXJy2I4pUzX9dLkbNrVS5ofEC4Efyeq3Wz2xmh1Z0Hg/wfoJqunBnvxmXY0NDl+g4ez6VGTsAXy6ABJpE/6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/0u089mwEQFQc5YPfD0eArkFQhi+AYchIVRea6dPbxQ=;
- b=PpbCKo1pR7Vk3nXm6nGRLw5Z1D5k69HqiUw/ke9ZZTsgzSR3SxH70xE/dZB24DJg2rsFB0HRsfNEYFdYOLo/keYcvfAZvTfLkSQJz9dM+dsGLHLtwctrTqj1F3UHNa3YjwD+T1dnkDlQ72s4mRO3lZzHSLIvjwgVsChtOixE3zEU+OoiQrCCg7Ipq2GhRs21UD5vwx8Gtf5lMdIGJcMGql5KFO8GWEhB0Fn7W9Q1SV2B7Diqx154bSVNh/VoO4qeBJRIdMaEqzrs1eezGALY9ENj69WeYkfce+rU73303h+pXD6zOOdV6gjO/FO4l6QsRPFvbUX5IJYVdANcwgt2hA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS8PR04MB8371.eurprd04.prod.outlook.com (2603:10a6:20b:3b2::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.24; Mon, 26 Aug
- 2024 16:31:13 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06%4]) with mapi id 15.20.7875.019; Mon, 26 Aug 2024
- 16:31:10 +0000
-Date: Mon, 26 Aug 2024 12:31:01 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: miquel.raynal@bootlin.com, vkoul@kernel.org
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
-	dmaengine@vger.kernel.org, festevam@gmail.com, han.xu@nxp.com,
-	imx@lists.linux.dev, kernel@pengutronix.de, krzk+dt@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, marex@denx.de, richard@nod.at,
-	robh@kernel.org, s.hauer@pengutronix.de, shawnguo@kernel.org,
-	vigneshr@ti.com
-Subject: Re: [PATCH v3 1/1] dt-bindings: dma: fsl-mxs-dma: Add compatible
- string "fsl,imx8qxp-dma-apbh"
-Message-ID: <ZsytxXE/4Binsl26@lizhi-Precision-Tower-5810>
-References: <20240801214601.2620843-1-Frank.Li@nxp.com>
-Content-Disposition: inline
-In-Reply-To: <20240801214601.2620843-1-Frank.Li@nxp.com>
-X-ClientProxiedBy: SJ0PR05CA0148.namprd05.prod.outlook.com
- (2603:10b6:a03:33d::33) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	id 1simu4-00000009bJf-3QGO
+	for linux-mtd@lists.infradead.org;
+	Tue, 27 Aug 2024 03:29:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724729397; x=1756265397;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nDDZZa2NUt3MBOd2plEH/XJHDllkd3y93u3Wq/0eZ0w=;
+  b=BkzKBDkMl8hsSPOfBiQNrzKzuEqqpMO4JyYEWCp8iwPNVNq00HS6ftpg
+   FHq+gz+M2MAkMIqNFcpcUUmdnrha1FSCDFfejElQ7WZ5JmpzdKEDYJzFn
+   LftsfRxTp6s/K0JrIZGdnHgGAom6hS72eHV9d6LOIH8awfSUAqOOp8aPa
+   baxYUo2aJI2dMmq93iBH+aFIPnQgqx1Z9a28vRDOFCksRLUv8eeL2Tp53
+   YASm+xSMR4VylaPPgkBkUHqSwefrq7NTc53b5IhVtEoVYK/Zi3G+P8krL
+   DzhAO3ZDxDg2/6hlFm2TmjD+FJTheK/7QGbBV8C1sLXvjQKCAqPn0IjwB
+   w==;
+X-CSE-ConnectionGUID: XPmT27GkS0O3mjC8bZrFxQ==
+X-CSE-MsgGUID: CQewLz7NTLeCdu3ahktCGw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="33847369"
+X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
+   d="scan'208";a="33847369"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 20:27:47 -0700
+X-CSE-ConnectionGUID: LTtUaULPSgmoe1IavD1cNA==
+X-CSE-MsgGUID: Srw/+DRkTUS+v7mgMETgnw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
+   d="scan'208";a="62552107"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 26 Aug 2024 20:27:44 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1simru-000Hqs-0Q;
+	Tue, 27 Aug 2024 03:27:42 +0000
+Date: Tue, 27 Aug 2024 11:26:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Wang Zhaolong <wangzhaolong1@huawei.com>, richard@nod.at,
+	miquel.raynal@bootlin.com, vigneshr@ti.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	wangzhaolong1@huawei.com, yi.zhang@huawei.com
+Subject: Re: [PATCH] mtd: ubi: remove unused parameter 'pnum' from
+ add_volume()
+Message-ID: <202408271041.ttLMjF8z-lkp@intel.com>
+References: <20240825083515.4074081-1-wangzhaolong1@huawei.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8371:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4fb3cd7f-0efe-444e-397f-08dcc5ec7e9d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|52116014|376014|366016|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?KkCMRrNMPnGFjs/XiSBWjIklRNwuW498WBCD8w/NzIbFsNEecr4HIhB7uMAP?=
- =?us-ascii?Q?aGVJUAmvAMnj0q7g8xuYY9SbshwjPASQT5g2HFZ5LylwNFKElDMyFS352cnw?=
- =?us-ascii?Q?wwojKquzj3uoTAmB4EsqL8d2dPvWuyQ8/MgvNEvUy8xbXX5AgbIrXY7baONE?=
- =?us-ascii?Q?v7Mz7GH/oJ6f1OuCBCzWyi63FTWtkTFrMzeM+Sr9L4Bl2r1Rka/RbUnNNJzX?=
- =?us-ascii?Q?lwxJa6UsmTnZ4fZ71ByHrqDCx6aYIODBSIlUGEGiD4V8n4QDfvGq81RtzCKI?=
- =?us-ascii?Q?y1grzpY8YGt3UxAKYA+syK7tiry0+2UoLenoJwmiGN2KyRD+Zyyl9ZEr8B/l?=
- =?us-ascii?Q?VR8EkuvuwTAYZICG+HCyKksxigT5P9qVAQJOl0qeycLdEj2eacJLoa7GgLcR?=
- =?us-ascii?Q?ZyIbs6LMZ4ON6Jgf/Q3J5+2dItxTiVs8fjex66IvbHsyfnNAEMJIZA8yHfOm?=
- =?us-ascii?Q?dgzD8Em/yrCO4Jy6uvH9AgqlmE2XZpdkkcxgTHCyJYHPl2B4B/FsNapOOy9c?=
- =?us-ascii?Q?KtlYhXgYXpWU6OMD1pP0LYf/0K3wYRDwmiaw4Ydu2vgKaSR7cSKnK2hYXY3q?=
- =?us-ascii?Q?Uq7nT9tNV03E2Qti8rgnl1jciKeZkoBtMaGRuHJ2ck3BycogfFP16Ix+Zuc+?=
- =?us-ascii?Q?yvQJQNZC9xN+1jZu/9Nhh1HpAgVKVcihWtTXoTeKYzZzp0sPk7IM6xyN7yDs?=
- =?us-ascii?Q?i8Usmz2ScJmmiOaNpYVZD/dR1Nv2Xo6JYN2ceE5nHnf1nZ5/CYCDl25zpuAF?=
- =?us-ascii?Q?Aa7NB9e2VPqHOW/+6ww1X+IWwVvA2quWKD9pv73WSGQLgfa7ywMPA1a7u/id?=
- =?us-ascii?Q?bRBrGnAD1I8im00Q98v0U85h7IkWPWCBTUW5HKg8e7N8oAx7HkhbNu/U7sXW?=
- =?us-ascii?Q?tfGAdFzRfqQyr3ZE84yNWSDm/V5sVZis5NC+0ihFnYD/p6Nlxl0Fs40A7xZa?=
- =?us-ascii?Q?JwD1fB3tUwBrZLHfypEstV84KA9E99fnVkasha2F8r6eMIsjddpYHCQp3tBg?=
- =?us-ascii?Q?dPCCZKiQ+TEr42RAJcKsaivfaHlNQAwe+qmgffyyJUz0vM6RV6cY5COYsUdv?=
- =?us-ascii?Q?qnJTloSPovkulbcOqE5wGr06cTvJpJ1B9D8LTijbVtv/RMfZLhVbs6bes0uY?=
- =?us-ascii?Q?0oT7fALhm4PLKtxc+JQOqas+5XGVL1BdLkmqdi0ApdVzllzpiLaMFSjH17fP?=
- =?us-ascii?Q?KC4If4y1YMRgE3K3p1O3ryXTg1+fdVIouqviEKuypQZ0csQn7+D6P77jhD6U?=
- =?us-ascii?Q?mCvIdx9yCB1zvA0pUNR10zJMejqVQWo1KmXSFwjlOOykjQVilKdsWdKInbVM?=
- =?us-ascii?Q?OwcIX7Ch4baqFM28d5bRo3X0Ns5D0Ramt420ke2E7Wr82xBo0DT8Gdf1VHAP?=
- =?us-ascii?Q?spq2J5X1wylrIBVeJQT93dNAOxspFf2PZjpshNckF6gD3KMCMg=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(52116014)(376014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YcY90YGaHdz56L3TvJ/PZt05qndc5tS96obMcetrss5Qwxjg7dy5xxDxvgDK?=
- =?us-ascii?Q?tuy4RLecB0+TFIxrKuPbY/q9qsZfH3AeaHaAy7mfFobDmKyvh83v4J4zfSAd?=
- =?us-ascii?Q?puGq5u+9i3RQDZ19MruM5q0x1Dw/Pm9D+PkA+ham5YIjU0IByWzHWTja+RQd?=
- =?us-ascii?Q?Fp4hoAkYCt5HX3/HnYvn6OEvxJP4GIFee6mHnNfkqF9DKu6foWiO8I/pv2Om?=
- =?us-ascii?Q?JoWNQFgYYunGk1ZBz4FoAU7qImTgAsZRH1aPklZTpyFb0lr2U50EwdyRwHms?=
- =?us-ascii?Q?q7C6KeitjwZXgFMCqGOXY1Z+Cs6SBGWEPUOiUYdJOUlcSe01Hbk8WwtC++01?=
- =?us-ascii?Q?eKaegUWcsMccvNrjVrtsCFHiTlN9gL9ZSTo15KCgFXy3skDIqtdSvDcCUTNQ?=
- =?us-ascii?Q?PcxoXpACdXyGfC6p0ebA8LXsdVhlZHRdZmkUcs3RIN20MLF8GqEUE/lnlSvI?=
- =?us-ascii?Q?nZCThywFFOridH8xfjZCK3wyWf5F/ueUYS8SELlgJV2dBOkMFKQmEobFI67h?=
- =?us-ascii?Q?5TYOPYULs0TR/tJMgFNiClE/nLatTCXwdrhBWVy3jJNNeXwA9o1WbSw5rhfw?=
- =?us-ascii?Q?Wf723tjU10FoD+z8ifrc2rEP/okmHyYJEgDcqynBCe4SvFQSVsPGBDcUlknk?=
- =?us-ascii?Q?zpVGzD0Srhm3ZGngSGD/IxgqzWJ8Q5NsTlB2uPEm/eKmAxjtQhD7VTDZU53L?=
- =?us-ascii?Q?b6bjRM/qpAsW7n6U7pPC5n1HbdVdjH463KnQoO4nxg3YfSYfwijedRi5CWVa?=
- =?us-ascii?Q?GK7c72OKo9mXGdM9AVGefo4uq9mdu4AjrWGXM6QVEcGu9ZZM/WBkeBE/yIBS?=
- =?us-ascii?Q?NmxmWznf30fd3qNchDtWIPY1SYFaF50gbZaSRb/j8xlHRN1lMPL5+yDnvN7l?=
- =?us-ascii?Q?BE3LWCQKxwdhH3n6GBXXV8PoWJkTPIZei1IWLLe+EhYbFMP9z1g9tqOH1MyK?=
- =?us-ascii?Q?Cx3cVyeZa76h6lxjbEu4SHfS6U9Nw5NGhyB4DavYhOQF3yVs8oWirH5wOaCQ?=
- =?us-ascii?Q?MtKEzzzr4IAOL/Bb8a/wyzpst3h/Bs98fUULSbd5oIACzfigPxizqsVXxpH3?=
- =?us-ascii?Q?VftxtCEGF5PgZ/vRO+vJmalG6P3IRcc1zMMDnq18JICbSufgtFyyouEYyfYb?=
- =?us-ascii?Q?omJDACrGy6rjtDdyy2GE3VDPoXjFuqRyj1Wem6PkSgaKzwJ4rmFYuseFIky9?=
- =?us-ascii?Q?tK5MylQ7iNcajbEM4CA8HLtOa8PbR5fSgsz2VJe+3BjC9YLAER7n5dACK+D+?=
- =?us-ascii?Q?EbbNtJoqk9DCVyfhiu7rlk+ZlegRMEFP9PTSV7NZA+ktd1Ebqcxqog+9m4lu?=
- =?us-ascii?Q?xObrglGM0xhHgWtUGh1kIHbNNIjTNKCSJa/J1tv/3/pvKe2CVXnV2+yVWTip?=
- =?us-ascii?Q?9vWZBhFky1K1JMmQ8DoickFlkFz2bA/j0kT65d2wUzSZk5FbfQz4tdH2lQUk?=
- =?us-ascii?Q?TVQI4Iww619hV8zfnut6z9Uf5E5zT5buEXbr0zXeQQnzPemUw0jypGdCjY6F?=
- =?us-ascii?Q?od4au9zSLVlYnf6wlQelIiKan5Mdl2WNjsLMotOfHUPOtF1xFulX3e27V6/d?=
- =?us-ascii?Q?/dEiQigJd4dNvBmHFY2UnAAV+VEdC80JLLEASjlB?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fb3cd7f-0efe-444e-397f-08dcc5ec7e9d
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2024 16:31:10.8168
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YeIyIBheDfESNuYRReKF1Uxpzd8ocG3M5UD455+g7zkbgKIwfhrTlyJaidzl1ELfWiIDGKkaYR9tLdAq5t0Y5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8371
+Content-Disposition: inline
+In-Reply-To: <20240825083515.4074081-1-wangzhaolong1@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_093121_581119_8E0F3096 
-X-CRM114-Status: GOOD (  17.17  )
+X-CRM114-CacheID: sfid-20240826_202956_906889_15FD54AF 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -160,77 +91,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Aug 01, 2024 at 05:46:01PM -0400, Frank Li wrote:
-> Add compatible string "fsl,imx8qxp-dma-apbh". It requires power-domains
-> compared with "fsl,imx28-dma-apbh".
->
-> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
-> it.
->
-> Keep the same restriction about 'power-domains' for other compatible
-> strings.
->
-> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+Hi Wang,
 
-vkoul:
+kernel test robot noticed the following build warnings:
 
-    Could you please take care this patch?
+[auto build test WARNING on rw-ubifs/next]
+[also build test WARNING on rw-ubifs/fixes linus/master v6.11-rc5 next-20240826]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Frank
+url:    https://github.com/intel-lab-lkp/linux/commits/Wang-Zhaolong/mtd-ubi-remove-unused-parameter-pnum-from-add_volume/20240826-142424
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
+patch link:    https://lore.kernel.org/r/20240825083515.4074081-1-wangzhaolong1%40huawei.com
+patch subject: [PATCH] mtd: ubi: remove unused parameter 'pnum' from add_volume()
+config: i386-buildonly-randconfig-005-20240827 (https://download.01.org/0day-ci/archive/20240827/202408271041.ttLMjF8z-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240827/202408271041.ttLMjF8z-lkp@intel.com/reproduce)
 
-> Change from v2 to v3
-> - Add rob's review tag
-> - resend because it is dropped from mtd tree at
-> https://lore.kernel.org/imx/20240717103846.306bf9fd@xps-13/
-> ---
->  .../devicetree/bindings/dma/fsl,mxs-dma.yaml      | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml b/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml
-> index add9c77e8b52a..a17cf2360dd4a 100644
-> --- a/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml
-> +++ b/Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml
-> @@ -11,6 +11,17 @@ maintainers:
->
->  allOf:
->    - $ref: dma-controller.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: fsl,imx8qxp-dma-apbh
-> +    then:
-> +      required:
-> +        - power-domains
-> +    else:
-> +      properties:
-> +        power-domains: false
->
->  properties:
->    compatible:
-> @@ -20,6 +31,7 @@ properties:
->                - fsl,imx6q-dma-apbh
->                - fsl,imx6sx-dma-apbh
->                - fsl,imx7d-dma-apbh
-> +              - fsl,imx8qxp-dma-apbh
->            - const: fsl,imx28-dma-apbh
->        - enum:
->            - fsl,imx23-dma-apbh
-> @@ -42,6 +54,9 @@ properties:
->    dma-channels:
->      enum: [4, 8, 16]
->
-> +  power-domains:
-> +    maxItems: 1
-> +
->  required:
->    - compatible
->    - reg
-> --
-> 2.34.1
->
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408271041.ttLMjF8z-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/mtd/ubi/attach.c:398: warning: Excess function parameter 'pnum' description in 'add_volume'
+
+
+vim +398 drivers/mtd/ubi/attach.c
+
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  382  
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  383  /**
+a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  384   * add_volume - add volume to the attaching information.
+a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  385   * @ai: attaching information
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  386   * @vol_id: ID of the volume to add
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  387   * @pnum: physical eraseblock number
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  388   * @vid_hdr: volume identifier header
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  389   *
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  390   * If the volume corresponding to the @vid_hdr logical eraseblock is already
+a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  391   * present in the attaching information, this function does nothing. Otherwise
+a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  392   * it adds corresponding volume to the attaching information. Returns a pointer
+fbd0107f4d33be0 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  393   * to the allocated "av" object in case of success and a negative error code in
+fbd0107f4d33be0 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  394   * case of failure.
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  395   */
+beba9855702e14c drivers/mtd/ubi/attach.c Wang Zhaolong       2024-08-25  396  static struct ubi_ainf_volume *add_volume(struct ubi_attach_info *ai, int vol_id,
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  397  					  const struct ubi_vid_hdr *vid_hdr)
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27 @398  {
+517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  399  	struct ubi_ainf_volume *av;
+de4c455b3e9f630 drivers/mtd/ubi/attach.c Boris Brezillon     2016-09-16  400  	bool created;
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  401  
+3261ebd7d4194ff drivers/mtd/ubi/scan.c   Christoph Hellwig   2007-05-21  402  	ubi_assert(vol_id == be32_to_cpu(vid_hdr->vol_id));
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  403  
+de4c455b3e9f630 drivers/mtd/ubi/attach.c Boris Brezillon     2016-09-16  404  	av = ubi_find_or_add_av(ai, vol_id, &created);
+de4c455b3e9f630 drivers/mtd/ubi/attach.c Boris Brezillon     2016-09-16  405  	if (IS_ERR(av) || !created)
+517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  406  		return av;
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  407  
+517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  408  	av->used_ebs = be32_to_cpu(vid_hdr->used_ebs);
+517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  409  	av->data_pad = be32_to_cpu(vid_hdr->data_pad);
+517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  410  	av->compat = vid_hdr->compat;
+517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  411  	av->vol_type = vid_hdr->vol_type == UBI_VID_DYNAMIC ? UBI_DYNAMIC_VOLUME
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  412  							    : UBI_STATIC_VOLUME;
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  413  
+517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  414  	return av;
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  415  }
+801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  416  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
