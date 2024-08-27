@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CD35C54731
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 17:58:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E1FFC5472F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 19:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cObciV+10+oNYNBcbEq8o0eMrWPkZGdADJ3XTle+94o=; b=tigyyY943tUNkR
-	QXjyxWOuNQ/U7GuaZX+cgQZSWmjPmJ6SApOGyY4wa0cm4G4GsPVv9aZMFi71EnX8L9gac31wn+/rV
-	Ns3YI9V6e4/k5Ymu+4Ic0UhIdwyyQGgHfmC4HWT35XjJNcGYa0sCPsbCYqEGkvtwCmLpZ4L5XTkLM
-	QCDaeCRHXEkfU6mT1bbrhN0rTzngJcr0P+7YS+3SlxMt2LgPe9KBnEUzJwb9q7HZg1VdxdAQaxruK
-	viTQZwsQOsz3WFRs0EugTyw5hllKtyfggCpUajvrbMAuz7Jpbd7KY6GkQ6IdGElK5wY95B8Y3ZIqm
-	uxsc+6Z2eod94BOAeBJQ==;
+	List-Owner; bh=HlkNGhhiJ1iXkXG83grdBWcFEm3Ev5eeAgbogszQRpI=; b=x2KN58L4CNxQI1
+	o/a/b2d3AehhXLOgSgtqsrWhnGzl8+2KQM8apr6AbbnqLvmtSkgfOCFzZYlPfW7KRhaK9y0BkN2Je
+	w8dhjzfspKXANzzMpgNhlgIQTPcQickPqH8rb9GfKF0rHPO9uDgpqHwO8Y9RMSWfG+9DePA3Y1Q+t
+	OTHDeww8hOQEWFy3IPA4bEyLHy8zLVXCYb7XfickHmC1JeoPKfUVULwee2gBxSDPnS2NLFKlGOtva
+	bypCoYbKS8t2cPmvjdScJ+9m6goW9sd2Ky3J16S/z5tiU/KuIl3Gp+1oeQBtxM5A4RBTY84j+Qkf0
+	SQFgqDBUPtTyRXsDyBOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sj0Sd-0000000CO6e-0zOt;
-	Tue, 27 Aug 2024 17:58:31 +0000
-Received: from mx1.sberdevices.ru ([37.18.73.165])
+	id 1sj1Qf-0000000CZLP-2f2Y;
+	Tue, 27 Aug 2024 19:00:33 +0000
+Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sj0RH-0000000CNqQ-29qG
+	id 1sj0KE-0000000CMZ0-2Iv5
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Aug 2024 17:57:51 +0000
-Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id ED750100002;
-	Tue, 27 Aug 2024 20:57:05 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru ED750100002
+	Tue, 27 Aug 2024 17:50:03 +0000
+Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id B5D4512000C;
+	Tue, 27 Aug 2024 20:49:43 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B5D4512000C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1724781425;
-	bh=U2ci6JcFVWV1xQ922NnZ/fyC+kd/ELTpXWy2qyn4+ns=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=PU27pTUz9HsVfSkBsPJiMbBaH/NVtquwCVxb9NuEnqHZPn5OmQHuAEBi9vEEjRptm
-	 rppEfSr9sWugoNH3kku8zGNg/TMPQV/f45FlmhfZU1P20k1Vf85mFsTFek5f31eQxD
-	 DhN0k98wIR9BzeabRYx+HE4pKfyCd5kymqzajM6Z8B7HVBKGSezd819w+sw0hJyoAz
-	 DQNGgDm9QCuNNPV2aXVZk3XKxQSYZnme16Mom1FbrkpNEjAgWoUcFeWIZlypqSzUG3
-	 42LHzbOZjC7Onxj0mDqha/xE3/KywK0Q6hXTo9VGVPLuiECdwUK4oJpgaSSrwjAvVU
-	 g4ef3i36zylJg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	s=mail; t=1724780983;
+	bh=YcHG6WWlH0ElSTuFNLEX2yBk3OYum4OtJYp6S6fudRY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=IO8gKJpxDrWfFSZC+POojJ4gYkYz8ToI8HKe/V0aCZsbiYyfmgvrvqE7EJnEaBmnE
+	 UqoN4pKyUq0KVnQ2GUWLluFw6XKsVLCL4mVQkFU1WByCV9ria/mW6/rTN+wFfiPZa1
+	 VDD4C4yD+GHIBD4RAWkiGH6omFV/v9h/+USHKbuIQZpS/6fH3mK8fhNKtAgHJ28icm
+	 x5iw5VF/9kjHVWXZMnRsT2d9ZSSOhNzeyYUhqqVWtZX6Cs2SNWtgDiWXfO2WTUf57/
+	 sbYNoFXhDFqFQvNrhqgwzTm/kpE2vScv9iOPTLsqdkj4ScAPa1HM2mbCwbecfuz3av
+	 1kgVjCVEtj/+A==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 27 Aug 2024 20:57:05 +0300 (MSK)
-Message-ID: <bb137aef-4ca9-4825-99b7-12f7e17c9550@salutedevices.com>
-Date: Tue, 27 Aug 2024 20:57:04 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] mtd: spinand: add OTP support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<kernel@salutedevices.com>, Richard Weinberger <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>, Mika Westerberg
+	Tue, 27 Aug 2024 20:49:43 +0300 (MSK)
+From: Martin Kurbanov <mmkurbanov@salutedevices.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mika Westerberg
 	<mika.westerberg@linux.intel.com>, Michael Walle <michael@walle.cc>, "Mark
  Brown" <broonie@kernel.org>, Chia-Lin Kao <acelan.kao@canonical.com>, "Md
  Sadre Alam" <quic_mdalam@quicinc.com>, Ezra Buehler
 	<ezra.buehler@husqvarnagroup.com>, Sridharan S N <quic_sridsn@quicinc.com>,
 	Frieder Schrempf <frieder.schrempf@kontron.de>, Alexey Romanov
 	<avromanov@salutedevices.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
+Subject: [PATCH v2 5/5] mtd: spinand: esmt: OTP access for F50{L,D}1G41LB
+Date: Tue, 27 Aug 2024 20:49:03 +0300
+Message-ID: <20240827174920.316756-6-mmkurbanov@salutedevices.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240827174920.316756-1-mmkurbanov@salutedevices.com>
 References: <20240827174920.316756-1-mmkurbanov@salutedevices.com>
- <20240827174920.316756-3-mmkurbanov@salutedevices.com>
-Content-Language: en-US
-From: Martin Kurbanov <mmkurbanov@salutedevices.com>
-In-Reply-To: <20240827174920.316756-3-mmkurbanov@salutedevices.com>
+MIME-Version: 1.0
 X-Originating-IP: [172.28.129.118]
 X-ClientProxiedBy: p-i-exch-a-m1.sberdevices.ru (172.24.196.116) To
  p-i-exch-a-m1.sberdevices.ru (172.24.196.116)
@@ -78,17 +76,16 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 27 0.3.27 71302da218a62dcd84ac43314e19b5cc6b38e0b6, {Tracking_arrow_text}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s
+X-KSMG-AntiSpam-Info: LuaCore: 27 0.3.27 71302da218a62dcd84ac43314e19b5cc6b38e0b6, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/08/27 07:21:00
-X-KSMG-LinksScanning: Clean, bases: 2024/08/27 07:12:00
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/08/27 16:21:00 #26445643
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240827_105707_920552_9CA3750C 
-X-CRM114-Status: UNSURE (   6.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240827_104951_485906_871614E4 
+X-CRM114-Status: GOOD (  15.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,26 +102,116 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello, Miquel. Thank you for the review.
-Regarding your question ( https://lore.kernel.org/all/20240717103623.6d6b63be@xps-13/ ):
+Support for OTP area access on ESMT F50L1G41LB and F50D1G41LB chips.
 
->> +int spinand_otp_read(struct spinand_device *spinand, loff_t from, size_t len,
->> +		     u8 *buf, size_t *retlen);
->> +
->> +int spinand_otp_write(struct spinand_device *spinand, loff_t from, size_t len,
->> +		      const u8 *buf, size_t *retlen);
->> +
-> 
-> Why exposing spinand_otp_read and spinand_otp_write ?
+Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+---
+ drivers/mtd/nand/spi/esmt.c | 69 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 67 insertions(+), 2 deletions(-)
 
-For the SPI-NAND chips we have (Micron, ESMT, FORESEE), the command
-sequence for reading/writing OTP is the same. I decided to make these
-functions global because other chips probably have similar read/write
-OTP operations as well.
-
+diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+index 4597a82de23a4..1806e9d48c176 100644
+--- a/drivers/mtd/nand/spi/esmt.c
++++ b/drivers/mtd/nand/spi/esmt.c
+@@ -12,6 +12,13 @@
+ /* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
+ #define SPINAND_MFR_ESMT_C8			0xc8
+ 
++#define ESMT_F50L1G41LB_CFG_OTP_PROTECT		BIT(7)
++#define ESMT_F50L1G41LB_CFG_OTP_LOCK		\
++	(CFG_OTP_ENABLE | ESMT_F50L1G41LB_CFG_OTP_PROTECT)
++
++#define ESMT_F50L1G41LB_PAGE_SIZE		2112
++#define ESMT_F50L1G41LB_OTP_PAGES		28
++
+ static SPINAND_OP_VARIANTS(read_cache_variants,
+ 			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+ 			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
+@@ -102,6 +109,60 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
+ 	.free = f50l1g41lb_ooblayout_free,
+ };
+ 
++static int f50l1g41lb_otp_info(struct spinand_device *spinand, size_t len,
++			       struct otp_info *buf, size_t *retlen)
++{
++	if (len < sizeof(*buf))
++		return -EINVAL;
++
++	buf->locked = 0;
++	buf->start = 0;
++	buf->length = ESMT_F50L1G41LB_PAGE_SIZE * ESMT_F50L1G41LB_OTP_PAGES;
++
++	*retlen = sizeof(*buf);
++	return 0;
++}
++
++static int f50l1g41lb_otp_lock(struct spinand_device *spinand, loff_t from,
++			       size_t len)
++{
++	struct spi_mem_op write_op = SPINAND_WR_EN_DIS_OP(true);
++	struct spi_mem_op exec_op = SPINAND_PROG_EXEC_OP(0);
++	int ret;
++
++	ret = spinand_upd_cfg(spinand, ESMT_F50L1G41LB_CFG_OTP_LOCK,
++			      ESMT_F50L1G41LB_CFG_OTP_LOCK);
++	if (!ret)
++		return ret;
++
++	ret = spi_mem_exec_op(spinand->spimem, &write_op);
++	if (!ret)
++		goto out;
++
++	ret = spi_mem_exec_op(spinand->spimem, &exec_op);
++	if (!ret)
++		goto out;
++
++	ret = spinand_wait(spinand, 10, 5, NULL);
++	if (!ret)
++		goto out;
++
++out:
++	if (spinand_upd_cfg(spinand, ESMT_F50L1G41LB_CFG_OTP_LOCK, 0)) {
++		WARN(1, "Can not disable OTP mode\n");
++		ret = -EIO;
++	}
++
++	return ret;
++}
++
++static const struct spinand_otp_ops f50l1g41lb_otp_ops = {
++	.info = f50l1g41lb_otp_info,
++	.lock = f50l1g41lb_otp_lock,
++	.read = spinand_otp_read,
++	.write = spinand_otp_write,
++};
++
+ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 	SPINAND_INFO("F50L1G41LB",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
+@@ -112,7 +173,9 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL),
++		     SPINAND_OTP_INFO(ESMT_F50L1G41LB_OTP_PAGES,
++				      &f50l1g41lb_otp_ops)),
+ 	SPINAND_INFO("F50D1G41LB",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
+ 				0x7f, 0x7f),
+@@ -122,7 +185,9 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL),
++		     SPINAND_OTP_INFO(ESMT_F50L1G41LB_OTP_PAGES,
++				      &f50l1g41lb_otp_ops)),
+ 	SPINAND_INFO("F50D2G41KA",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
+ 				0x7f, 0x7f),
 -- 
-Best Regards,
-Martin Kurbanov
+2.43.2
 
 
 ______________________________________________________
