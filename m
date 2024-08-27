@@ -4,77 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41C6BC52D6F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 03:30:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C532C5320E
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 03:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=h471W/J/Ka+nz8mKZqsd2dAEg6OnBuwKSxaGlqLnp6I=; b=v/n3r+tchmBdUk
-	L4V0nyBzE2Kb0V/aIz7iTr7EdnjgWLwj9VD3BW+cFqYhO4KjPbmBC63YnogbvT1CMQpTJKsf4xs5M
-	g96ZvFsBRXMXqg7QmBD1OMWhgULQKvifFfXMvdMTCF4NNRfLB2vJ3IXawnPk6dwW/HTbRz9hB8Np7
-	8qfmGRq8Mt8CSLHP69P1fAqVkm38/9VY5NZM8fF9GtXVvJIulRSj6q2h+M5pjqD+p4Tc2wZxUReh9
-	8Lc1N5zMJd9conRSmIa87E08yrRQOVWuayBUNiDLVdWG+bYVNrg2hloS9mBQ9wXQyWBf0GHeV+Xgs
-	QqVv/kNbG8OdEeaO/SwA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FvZLVYySdg/AkqhvgGKUzh59pMAQGkm3G4ceixyjMKE=; b=gYD/4h0w5mXQx0aCINLEXVgPpF
+	SLMU1wgmGPQHimhYt8MrrRJfxyWC7e3Jwz8reaxR4ei1rLN5GcuhDjy1X3X0jlmguOZaA6TMO1u/3
+	yaPvAdff1ejZvtNEPm5ZGjHEiOvc/HaO0t7g0/1JVvdvLI0JuoWyEgcPDOpWLuD3MP263V1Zsls9j
+	zEBxvY6ciGfV1bHz9rO3kFIQ6rAlhDcEcpgvpinE75yIqi5jtnn6VVQTzK6raB5nQskfI419B/lFK
+	LJG4JUc22HO7CRwg26Itpks8i4ZLPaCzAKc4yxVCWekKGcFuvBHCxDUad4IqSz1BfQPCRIHt8dYur
+	lXHC2ucw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1simu7-00000009bKB-38Cb;
-	Tue, 27 Aug 2024 03:29:59 +0000
-Received: from mgamail.intel.com ([192.198.163.9])
+	id 1sinFw-00000009dzC-13hO;
+	Tue, 27 Aug 2024 03:52:32 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1simu4-00000009bJf-3QGO
+	id 1sinFr-00000009dxP-3bgD
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Aug 2024 03:29:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724729397; x=1756265397;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nDDZZa2NUt3MBOd2plEH/XJHDllkd3y93u3Wq/0eZ0w=;
-  b=BkzKBDkMl8hsSPOfBiQNrzKzuEqqpMO4JyYEWCp8iwPNVNq00HS6ftpg
-   FHq+gz+M2MAkMIqNFcpcUUmdnrha1FSCDFfejElQ7WZ5JmpzdKEDYJzFn
-   LftsfRxTp6s/K0JrIZGdnHgGAom6hS72eHV9d6LOIH8awfSUAqOOp8aPa
-   baxYUo2aJI2dMmq93iBH+aFIPnQgqx1Z9a28vRDOFCksRLUv8eeL2Tp53
-   YASm+xSMR4VylaPPgkBkUHqSwefrq7NTc53b5IhVtEoVYK/Zi3G+P8krL
-   DzhAO3ZDxDg2/6hlFm2TmjD+FJTheK/7QGbBV8C1sLXvjQKCAqPn0IjwB
-   w==;
-X-CSE-ConnectionGUID: XPmT27GkS0O3mjC8bZrFxQ==
-X-CSE-MsgGUID: CQewLz7NTLeCdu3ahktCGw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="33847369"
-X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
-   d="scan'208";a="33847369"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 20:27:47 -0700
-X-CSE-ConnectionGUID: LTtUaULPSgmoe1IavD1cNA==
-X-CSE-MsgGUID: Srw/+DRkTUS+v7mgMETgnw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
-   d="scan'208";a="62552107"
-Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 26 Aug 2024 20:27:44 -0700
-Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1simru-000Hqs-0Q;
-	Tue, 27 Aug 2024 03:27:42 +0000
-Date: Tue, 27 Aug 2024 11:26:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Wang Zhaolong <wangzhaolong1@huawei.com>, richard@nod.at,
-	miquel.raynal@bootlin.com, vigneshr@ti.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	wangzhaolong1@huawei.com, yi.zhang@huawei.com
+	Tue, 27 Aug 2024 03:52:30 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WtD9n2Ptkz13k4s;
+	Tue, 27 Aug 2024 11:51:25 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id C68A1180105;
+	Tue, 27 Aug 2024 11:52:11 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Tue, 27 Aug 2024 11:52:10 +0800
 Subject: Re: [PATCH] mtd: ubi: remove unused parameter 'pnum' from
  add_volume()
-Message-ID: <202408271041.ttLMjF8z-lkp@intel.com>
+To: kernel test robot <lkp@intel.com>, Wang Zhaolong
+	<wangzhaolong1@huawei.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
+	<vigneshr@ti.com>
+CC: <llvm@lists.linux.dev>, <oe-kbuild-all@lists.linux.dev>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>
 References: <20240825083515.4074081-1-wangzhaolong1@huawei.com>
+ <202408271041.ttLMjF8z-lkp@intel.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <8e511b87-f8e2-7e95-f212-5f2dd318c234@huawei.com>
+Date: Tue, 27 Aug 2024 11:52:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240825083515.4074081-1-wangzhaolong1@huawei.com>
+In-Reply-To: <202408271041.ttLMjF8z-lkp@intel.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_202956_906889_15FD54AF 
-X-CRM114-Status: GOOD (  12.78  )
+X-CRM114-CacheID: sfid-20240826_205228_483650_E3FC199C 
+X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,81 +71,111 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Wang,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on rw-ubifs/next]
-[also build test WARNING on rw-ubifs/fixes linus/master v6.11-rc5 next-20240826]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Wang-Zhaolong/mtd-ubi-remove-unused-parameter-pnum-from-add_volume/20240826-142424
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
-patch link:    https://lore.kernel.org/r/20240825083515.4074081-1-wangzhaolong1%40huawei.com
-patch subject: [PATCH] mtd: ubi: remove unused parameter 'pnum' from add_volume()
-config: i386-buildonly-randconfig-005-20240827 (https://download.01.org/0day-ci/archive/20240827/202408271041.ttLMjF8z-lkp@intel.com/config)
-compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240827/202408271041.ttLMjF8z-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408271041.ttLMjF8z-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mtd/ubi/attach.c:398: warning: Excess function parameter 'pnum' description in 'add_volume'
-
-
-vim +398 drivers/mtd/ubi/attach.c
-
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  382  
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  383  /**
-a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  384   * add_volume - add volume to the attaching information.
-a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  385   * @ai: attaching information
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  386   * @vol_id: ID of the volume to add
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  387   * @pnum: physical eraseblock number
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  388   * @vid_hdr: volume identifier header
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  389   *
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  390   * If the volume corresponding to the @vid_hdr logical eraseblock is already
-a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  391   * present in the attaching information, this function does nothing. Otherwise
-a4e6042f1d07307 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  392   * it adds corresponding volume to the attaching information. Returns a pointer
-fbd0107f4d33be0 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  393   * to the allocated "av" object in case of success and a negative error code in
-fbd0107f4d33be0 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  394   * case of failure.
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  395   */
-beba9855702e14c drivers/mtd/ubi/attach.c Wang Zhaolong       2024-08-25  396  static struct ubi_ainf_volume *add_volume(struct ubi_attach_info *ai, int vol_id,
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  397  					  const struct ubi_vid_hdr *vid_hdr)
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27 @398  {
-517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  399  	struct ubi_ainf_volume *av;
-de4c455b3e9f630 drivers/mtd/ubi/attach.c Boris Brezillon     2016-09-16  400  	bool created;
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  401  
-3261ebd7d4194ff drivers/mtd/ubi/scan.c   Christoph Hellwig   2007-05-21  402  	ubi_assert(vol_id == be32_to_cpu(vid_hdr->vol_id));
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  403  
-de4c455b3e9f630 drivers/mtd/ubi/attach.c Boris Brezillon     2016-09-16  404  	av = ubi_find_or_add_av(ai, vol_id, &created);
-de4c455b3e9f630 drivers/mtd/ubi/attach.c Boris Brezillon     2016-09-16  405  	if (IS_ERR(av) || !created)
-517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  406  		return av;
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  407  
-517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  408  	av->used_ebs = be32_to_cpu(vid_hdr->used_ebs);
-517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  409  	av->data_pad = be32_to_cpu(vid_hdr->data_pad);
-517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  410  	av->compat = vid_hdr->compat;
-517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  411  	av->vol_type = vid_hdr->vol_type == UBI_VID_DYNAMIC ? UBI_DYNAMIC_VOLUME
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  412  							    : UBI_STATIC_VOLUME;
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  413  
-517af48c0540e61 drivers/mtd/ubi/scan.c   Artem Bityutskiy    2012-05-17  414  	return av;
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  415  }
-801c135ce73d5df drivers/mtd/ubi/scan.c   Artem B. Bityutskiy 2006-06-27  416  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC84LzI3IDExOjI2LCBrZXJuZWwgdGVzdCByb2JvdCDQtLXAOgo+IEhpIFdhbmcsCj4g
+Cj4ga2VybmVsIHRlc3Qgcm9ib3Qgbm90aWNlZCB0aGUgZm9sbG93aW5nIGJ1aWxkIHdhcm5pbmdz
+Ogo+IAo+IFthdXRvIGJ1aWxkIHRlc3QgV0FSTklORyBvbiBydy11Ymlmcy9uZXh0XQo+IFthbHNv
+IGJ1aWxkIHRlc3QgV0FSTklORyBvbiBydy11Ymlmcy9maXhlcyBsaW51cy9tYXN0ZXIgdjYuMTEt
+cmM1IG5leHQtMjAyNDA4MjZdCj4gW0lmIHlvdXIgcGF0Y2ggaXMgYXBwbGllZCB0byB0aGUgd3Jv
+bmcgZ2l0IHRyZWUsIGtpbmRseSBkcm9wIHVzIGEgbm90ZS4KPiBBbmQgd2hlbiBzdWJtaXR0aW5n
+IHBhdGNoLCB3ZSBzdWdnZXN0IHRvIHVzZSAnLS1iYXNlJyBhcyBkb2N1bWVudGVkIGluCj4gaHR0
+cHM6Ly9naXQtc2NtLmNvbS9kb2NzL2dpdC1mb3JtYXQtcGF0Y2gjX2Jhc2VfdHJlZV9pbmZvcm1h
+dGlvbl0KPiAKPiB1cmw6ICAgIGh0dHBzOi8vZ2l0aHViLmNvbS9pbnRlbC1sYWItbGtwL2xpbnV4
+L2NvbW1pdHMvV2FuZy1aaGFvbG9uZy9tdGQtdWJpLXJlbW92ZS11bnVzZWQtcGFyYW1ldGVyLXBu
+dW0tZnJvbS1hZGRfdm9sdW1lLzIwMjQwODI2LTE0MjQyNAo+IGJhc2U6ICAgaHR0cHM6Ly9naXQu
+a2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvcncvdWJpZnMuZ2l0IG5leHQKPiBw
+YXRjaCBsaW5rOiAgICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjQwODI1MDgzNTE1LjQw
+NzQwODEtMS13YW5nemhhb2xvbmcxJTQwaHVhd2VpLmNvbQo+IHBhdGNoIHN1YmplY3Q6IFtQQVRD
+SF0gbXRkOiB1Ymk6IHJlbW92ZSB1bnVzZWQgcGFyYW1ldGVyICdwbnVtJyBmcm9tIGFkZF92b2x1
+bWUoKQo+IGNvbmZpZzogaTM4Ni1idWlsZG9ubHktcmFuZGNvbmZpZy0wMDUtMjAyNDA4MjcgKGh0
+dHBzOi8vZG93bmxvYWQuMDEub3JnLzBkYXktY2kvYXJjaGl2ZS8yMDI0MDgyNy8yMDI0MDgyNzEw
+NDEudHRMTWpGOHotbGtwQGludGVsLmNvbS9jb25maWcpCj4gY29tcGlsZXI6IGNsYW5nIHZlcnNp
+b24gMTguMS41IChodHRwczovL2dpdGh1Yi5jb20vbGx2bS9sbHZtLXByb2plY3QgNjE3YTE1YTll
+YWM5NjA4OGFlNWU5MTM0MjQ4ZDgyMzZlMzRiOTFiMSkKPiByZXByb2R1Y2UgKHRoaXMgaXMgYSBX
+PTEgYnVpbGQpOiAoaHR0cHM6Ly9kb3dubG9hZC4wMS5vcmcvMGRheS1jaS9hcmNoaXZlLzIwMjQw
+ODI3LzIwMjQwODI3MTA0MS50dExNakY4ei1sa3BAaW50ZWwuY29tL3JlcHJvZHVjZSkKPiAKPiBJ
+ZiB5b3UgZml4IHRoZSBpc3N1ZSBpbiBhIHNlcGFyYXRlIHBhdGNoL2NvbW1pdCAoaS5lLiBub3Qg
+anVzdCBhIG5ldyB2ZXJzaW9uIG9mCj4gdGhlIHNhbWUgcGF0Y2gvY29tbWl0KSwga2luZGx5IGFk
+ZCBmb2xsb3dpbmcgdGFncwo+IHwgUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BA
+aW50ZWwuY29tPgo+IHwgQ2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQt
+YWxsLzIwMjQwODI3MTA0MS50dExNakY4ei1sa3BAaW50ZWwuY29tLwo+IAo+IEFsbCB3YXJuaW5n
+cyAobmV3IG9uZXMgcHJlZml4ZWQgYnkgPj4pOgo+IAo+Pj4gZHJpdmVycy9tdGQvdWJpL2F0dGFj
+aC5jOjM5ODogd2FybmluZzogRXhjZXNzIGZ1bmN0aW9uIHBhcmFtZXRlciAncG51bScgZGVzY3Jp
+cHRpb24gaW4gJ2FkZF92b2x1bWUnCj4gCj4gCj4gdmltICszOTggZHJpdmVycy9tdGQvdWJpL2F0
+dGFjaC5jCj4gCj4gODAxYzEzNWNlNzNkNWRmIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRl
+bSBCLiBCaXR5dXRza2l5IDIwMDYtMDYtMjcgIDM4Mgo+IDgwMWMxMzVjZTczZDVkZiBkcml2ZXJz
+L210ZC91Ymkvc2Nhbi5jICAgQXJ0ZW0gQi4gQml0eXV0c2tpeSAyMDA2LTA2LTI3ICAzODMgIC8q
+Kgo+IGE0ZTYwNDJmMWQwNzMwNyBkcml2ZXJzL210ZC91Ymkvc2Nhbi5jICAgQXJ0ZW0gQml0eXV0
+c2tpeSAgICAyMDEyLTA1LTE3ICAzODQgICAqIGFkZF92b2x1bWUgLSBhZGQgdm9sdW1lIHRvIHRo
+ZSBhdHRhY2hpbmcgaW5mb3JtYXRpb24uCj4gYTRlNjA0MmYxZDA3MzA3IGRyaXZlcnMvbXRkL3Vi
+aS9zY2FuLmMgICBBcnRlbSBCaXR5dXRza2l5ICAgIDIwMTItMDUtMTcgIDM4NSAgICogQGFpOiBh
+dHRhY2hpbmcgaW5mb3JtYXRpb24KPiA4MDFjMTM1Y2U3M2Q1ZGYgZHJpdmVycy9tdGQvdWJpL3Nj
+YW4uYyAgIEFydGVtIEIuIEJpdHl1dHNraXkgMjAwNi0wNi0yNyAgMzg2ICAgKiBAdm9sX2lkOiBJ
+RCBvZiB0aGUgdm9sdW1lIHRvIGFkZAo+IDgwMWMxMzVjZTczZDVkZiBkcml2ZXJzL210ZC91Ymkv
+c2Nhbi5jICAgQXJ0ZW0gQi4gQml0eXV0c2tpeSAyMDA2LTA2LTI3ICAzODcgICAqIEBwbnVtOiBw
+aHlzaWNhbCBlcmFzZWJsb2NrIG51bWJlcgoKSGkgWmhhb0xvbmcsIHlvdSBuZWVkIHRvIHJlbW92
+ZSB0aGUgcGFyYW1ldGVyIGRlc2NyaXB0aW9uIGZyb20gY29tbWVudHMgdG9vLgoKPiA4MDFjMTM1
+Y2U3M2Q1ZGYgZHJpdmVycy9tdGQvdWJpL3NjYW4uYyAgIEFydGVtIEIuIEJpdHl1dHNraXkgMjAw
+Ni0wNi0yNyAgMzg4ICAgKiBAdmlkX2hkcjogdm9sdW1lIGlkZW50aWZpZXIgaGVhZGVyCj4gODAx
+YzEzNWNlNzNkNWRmIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRlbSBCLiBCaXR5dXRza2l5
+IDIwMDYtMDYtMjcgIDM4OSAgICoKPiA4MDFjMTM1Y2U3M2Q1ZGYgZHJpdmVycy9tdGQvdWJpL3Nj
+YW4uYyAgIEFydGVtIEIuIEJpdHl1dHNraXkgMjAwNi0wNi0yNyAgMzkwICAgKiBJZiB0aGUgdm9s
+dW1lIGNvcnJlc3BvbmRpbmcgdG8gdGhlIEB2aWRfaGRyIGxvZ2ljYWwgZXJhc2VibG9jayBpcyBh
+bHJlYWR5Cj4gYTRlNjA0MmYxZDA3MzA3IGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRlbSBC
+aXR5dXRza2l5ICAgIDIwMTItMDUtMTcgIDM5MSAgICogcHJlc2VudCBpbiB0aGUgYXR0YWNoaW5n
+IGluZm9ybWF0aW9uLCB0aGlzIGZ1bmN0aW9uIGRvZXMgbm90aGluZy4gT3RoZXJ3aXNlCj4gYTRl
+NjA0MmYxZDA3MzA3IGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRlbSBCaXR5dXRza2l5ICAg
+IDIwMTItMDUtMTcgIDM5MiAgICogaXQgYWRkcyBjb3JyZXNwb25kaW5nIHZvbHVtZSB0byB0aGUg
+YXR0YWNoaW5nIGluZm9ybWF0aW9uLiBSZXR1cm5zIGEgcG9pbnRlcgo+IGZiZDAxMDdmNGQzM2Jl
+MCBkcml2ZXJzL210ZC91Ymkvc2Nhbi5jICAgQXJ0ZW0gQml0eXV0c2tpeSAgICAyMDEyLTA1LTE3
+ICAzOTMgICAqIHRvIHRoZSBhbGxvY2F0ZWQgImF2IiBvYmplY3QgaW4gY2FzZSBvZiBzdWNjZXNz
+IGFuZCBhIG5lZ2F0aXZlIGVycm9yIGNvZGUgaW4KPiBmYmQwMTA3ZjRkMzNiZTAgZHJpdmVycy9t
+dGQvdWJpL3NjYW4uYyAgIEFydGVtIEJpdHl1dHNraXkgICAgMjAxMi0wNS0xNyAgMzk0ICAgKiBj
+YXNlIG9mIGZhaWx1cmUuCj4gODAxYzEzNWNlNzNkNWRmIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMg
+ICBBcnRlbSBCLiBCaXR5dXRza2l5IDIwMDYtMDYtMjcgIDM5NSAgICovCj4gYmViYTk4NTU3MDJl
+MTRjIGRyaXZlcnMvbXRkL3ViaS9hdHRhY2guYyBXYW5nIFpoYW9sb25nICAgICAgIDIwMjQtMDgt
+MjUgIDM5NiAgc3RhdGljIHN0cnVjdCB1YmlfYWluZl92b2x1bWUgKmFkZF92b2x1bWUoc3RydWN0
+IHViaV9hdHRhY2hfaW5mbyAqYWksIGludCB2b2xfaWQsCj4gODAxYzEzNWNlNzNkNWRmIGRyaXZl
+cnMvbXRkL3ViaS9zY2FuLmMgICBBcnRlbSBCLiBCaXR5dXRza2l5IDIwMDYtMDYtMjcgIDM5NyAg
+CQkJCQkgIGNvbnN0IHN0cnVjdCB1YmlfdmlkX2hkciAqdmlkX2hkcikKPiA4MDFjMTM1Y2U3M2Q1
+ZGYgZHJpdmVycy9tdGQvdWJpL3NjYW4uYyAgIEFydGVtIEIuIEJpdHl1dHNraXkgMjAwNi0wNi0y
+NyBAMzk4ICB7Cj4gNTE3YWY0OGMwNTQwZTYxIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRl
+bSBCaXR5dXRza2l5ICAgIDIwMTItMDUtMTcgIDM5OSAgCXN0cnVjdCB1YmlfYWluZl92b2x1bWUg
+KmF2Owo+IGRlNGM0NTViM2U5ZjYzMCBkcml2ZXJzL210ZC91YmkvYXR0YWNoLmMgQm9yaXMgQnJl
+emlsbG9uICAgICAyMDE2LTA5LTE2ICA0MDAgIAlib29sIGNyZWF0ZWQ7Cj4gODAxYzEzNWNlNzNk
+NWRmIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRlbSBCLiBCaXR5dXRza2l5IDIwMDYtMDYt
+MjcgIDQwMQo+IDMyNjFlYmQ3ZDQxOTRmZiBkcml2ZXJzL210ZC91Ymkvc2Nhbi5jICAgQ2hyaXN0
+b3BoIEhlbGx3aWcgICAyMDA3LTA1LTIxICA0MDIgIAl1YmlfYXNzZXJ0KHZvbF9pZCA9PSBiZTMy
+X3RvX2NwdSh2aWRfaGRyLT52b2xfaWQpKTsKPiA4MDFjMTM1Y2U3M2Q1ZGYgZHJpdmVycy9tdGQv
+dWJpL3NjYW4uYyAgIEFydGVtIEIuIEJpdHl1dHNraXkgMjAwNi0wNi0yNyAgNDAzCj4gZGU0YzQ1
+NWIzZTlmNjMwIGRyaXZlcnMvbXRkL3ViaS9hdHRhY2guYyBCb3JpcyBCcmV6aWxsb24gICAgIDIw
+MTYtMDktMTYgIDQwNCAgCWF2ID0gdWJpX2ZpbmRfb3JfYWRkX2F2KGFpLCB2b2xfaWQsICZjcmVh
+dGVkKTsKPiBkZTRjNDU1YjNlOWY2MzAgZHJpdmVycy9tdGQvdWJpL2F0dGFjaC5jIEJvcmlzIEJy
+ZXppbGxvbiAgICAgMjAxNi0wOS0xNiAgNDA1ICAJaWYgKElTX0VSUihhdikgfHwgIWNyZWF0ZWQp
+Cj4gNTE3YWY0OGMwNTQwZTYxIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRlbSBCaXR5dXRz
+a2l5ICAgIDIwMTItMDUtMTcgIDQwNiAgCQlyZXR1cm4gYXY7Cj4gODAxYzEzNWNlNzNkNWRmIGRy
+aXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRlbSBCLiBCaXR5dXRza2l5IDIwMDYtMDYtMjcgIDQw
+Nwo+IDUxN2FmNDhjMDU0MGU2MSBkcml2ZXJzL210ZC91Ymkvc2Nhbi5jICAgQXJ0ZW0gQml0eXV0
+c2tpeSAgICAyMDEyLTA1LTE3ICA0MDggIAlhdi0+dXNlZF9lYnMgPSBiZTMyX3RvX2NwdSh2aWRf
+aGRyLT51c2VkX2Vicyk7Cj4gNTE3YWY0OGMwNTQwZTYxIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMg
+ICBBcnRlbSBCaXR5dXRza2l5ICAgIDIwMTItMDUtMTcgIDQwOSAgCWF2LT5kYXRhX3BhZCA9IGJl
+MzJfdG9fY3B1KHZpZF9oZHItPmRhdGFfcGFkKTsKPiA1MTdhZjQ4YzA1NDBlNjEgZHJpdmVycy9t
+dGQvdWJpL3NjYW4uYyAgIEFydGVtIEJpdHl1dHNraXkgICAgMjAxMi0wNS0xNyAgNDEwICAJYXYt
+PmNvbXBhdCA9IHZpZF9oZHItPmNvbXBhdDsKPiA1MTdhZjQ4YzA1NDBlNjEgZHJpdmVycy9tdGQv
+dWJpL3NjYW4uYyAgIEFydGVtIEJpdHl1dHNraXkgICAgMjAxMi0wNS0xNyAgNDExICAJYXYtPnZv
+bF90eXBlID0gdmlkX2hkci0+dm9sX3R5cGUgPT0gVUJJX1ZJRF9EWU5BTUlDID8gVUJJX0RZTkFN
+SUNfVk9MVU1FCj4gODAxYzEzNWNlNzNkNWRmIGRyaXZlcnMvbXRkL3ViaS9zY2FuLmMgICBBcnRl
+bSBCLiBCaXR5dXRza2l5IDIwMDYtMDYtMjcgIDQxMiAgCQkJCQkJCSAgICA6IFVCSV9TVEFUSUNf
+Vk9MVU1FOwo+IDgwMWMxMzVjZTczZDVkZiBkcml2ZXJzL210ZC91Ymkvc2Nhbi5jICAgQXJ0ZW0g
+Qi4gQml0eXV0c2tpeSAyMDA2LTA2LTI3ICA0MTMKPiA1MTdhZjQ4YzA1NDBlNjEgZHJpdmVycy9t
+dGQvdWJpL3NjYW4uYyAgIEFydGVtIEJpdHl1dHNraXkgICAgMjAxMi0wNS0xNyAgNDE0ICAJcmV0
+dXJuIGF2Owo+IDgwMWMxMzVjZTczZDVkZiBkcml2ZXJzL210ZC91Ymkvc2Nhbi5jICAgQXJ0ZW0g
+Qi4gQml0eXV0c2tpeSAyMDA2LTA2LTI3ICA0MTUgIH0KPiA4MDFjMTM1Y2U3M2Q1ZGYgZHJpdmVy
+cy9tdGQvdWJpL3NjYW4uYyAgIEFydGVtIEIuIEJpdHl1dHNraXkgMjAwNi0wNi0yNyAgNDE2Cj4g
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
