@@ -4,78 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81E31C52D6F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 08:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18019C5472F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 17:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aX5sYnKBde8MLt8wGFsaevQFSR2m0Hn92Mc/cqzsYpA=; b=ZDH5t/Dyvux+GS/YPb9LjHjkRF
-	3R11YzknOwaPsbqSjWmR6bipJe8KqdwSvgREvidMdoz3k1gNAxsOY1EaWmyeMIbYOP5m8HkYVhKSR
-	LiDf+rjgiG4PC4HRxMDTuCzfJvxECY8CxP9T5G3jZ0WrCiEeYPEEQUfpdPLL4t+mK5dyeHylZd/DB
-	exy/7bT/PsulZwXJ5AUu0Z2jpmjSq9RPtPxbpM+y7sCfO+6bgShhlTFfFwme1yiLEGdKSTSOeTuW9
-	nXbdCW6CQcmg8+Q9VySOJKT2CEAKY5ezR1OPiU4PmFvuUBe2CLE0JCBExqoNourqMoodNSjLqljRA
-	aj+MjCoQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lfhadEHkaTZcuy5qKfB6Q1hjcDAoGT2U7zrkzwMjJjg=; b=Jd4uMsGicvN1hv
+	HmFu+okMNeRBr0FfcJtxKNPmQm0kSYM/mAfHOU9lLwK7w9Tm4Azgi64HlxQ5GKU/rgZAKEV39wM6i
+	t3n1YBDXcFFq1XbkWSzjICoVpcnligbYF59eZiAhgSd9RmGQq7oq/w6zCbTXKxZWuNg9HL+9DSUDD
+	YKwVLtJEIsiEDkPHtq61mYGybSR4heyaxoc+G45+X9+McaMAkctEEsSuEPct+Co7LRuXvV/gd9gRf
+	AhF5UlKXSmP9N5RAAhqui5y1ydrmLT7VFalnnAr4MLzf8c4Gva2e6Qx0PpccEDjVBMrXMl1bzxuZX
+	yJcdSRJjvmkR5HSY7frQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sirat-0000000APGJ-3UQn;
-	Tue, 27 Aug 2024 08:30:27 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1sj0KW-0000000CMhw-1JlZ;
+	Tue, 27 Aug 2024 17:50:08 +0000
+Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siqQN-0000000AAbv-2PTb
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 27 Aug 2024 07:15:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=FM3eDnPFcDB4U8vPk2HWyi9oA+NLZFHl+PJkKZxk3cc=; b=pXGLUKhXu7hWukBfWq6AweDIoN
-	h8za3H5tpxa1nrhgLq6jElKjC7d5ZOrgsCeNHn6f4Sbb7oO1Opqz4dfeS8tAQ5U59ODAVj8uPJq1V
-	qHTkdY8twkmyGs1fnewOXF2Mb9vt1SccOKl88bwJnSE8L8IXVgazN7H/5oQgv1AYfwLM0v/3YyaCS
-	qs622Cvopk5XX7JzEfaAJoS1Vi3HIId25qVRioKssAOYhiRt4In44c1yjASsGLN3HL04PAABcUOtq
-	JLigJ6a089USqJq9oWCaNq9FENB1w+wv6kbOOEaL8a7Yua8Btj6Izxahos4fcx+Gqx4Mxps6GC++W
-	b/EhG2aw==;
-Received: from szxga04-in.huawei.com ([45.249.212.190])
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siqQJ-0000000AoHg-3PkJ
+	id 1sj0KE-0000000CMYt-2Lae
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Aug 2024 07:15:30 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WtJhf41mdz2CnVs;
-	Tue, 27 Aug 2024 15:14:58 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 623101400F4;
-	Tue, 27 Aug 2024 15:15:08 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 27 Aug 2024 15:15:07 +0800
-Subject: Re: [PATCH 1/2] ubi: wl: Put source PEB into correct list if trying
- locking LEB failed
-To: Ryder Wang <rydercoding@hotmail.com>, "richard@nod.at" <richard@nod.at>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-	"daniel@makrotopia.org" <daniel@makrotopia.org>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <20240819032622.2241165-1-chengzhihao1@huawei.com>
- <20240819032622.2241165-2-chengzhihao1@huawei.com>
- <MEYP282MB316452BB4702F6B48314C57BBF942@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
- <6857c06d-fa16-40ea-a14e-bb67e4406148@huawei.com>
- <MEYP282MB3164273F8D66D202F6A9F5C2BF942@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <3623fa55-9f42-d844-5dfd-79a534d85bbe@huawei.com>
-Date: Tue, 27 Aug 2024 15:15:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Tue, 27 Aug 2024 17:50:05 +0000
+Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 4A483100008;
+	Tue, 27 Aug 2024 20:49:43 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4A483100008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1724780983;
+	bh=VEj0fYsVIaOzwyFGgrYOTl2VCZffYkmOOZ4d1Z242Yk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=J48f4r7XQhY420s3WX0DyiAi0/duFa65Lb80pT7r8KBEGNL1dT7BcXaQwuKtCZRY5
+	 /lleqq0qif1pu6XLm1A8xzJ+Td7IxJ8eH1U7ybVTOpKFXO8xvkDfGIti7cRd2uGxFx
+	 sFU2fTwvfW1Q+Ar1nCn7E+qWF2d8DNyphSse2lVgNwmU5e4FSzabV6tBt4L16MRVGx
+	 9X1PoJX0B/Ryl1a6r34dXet3d4XDnfJtHbifoJsV2DnQrdGJPmk7CGdoBrKrHjr4we
+	 ModMFF3TF8ZcDmPqT8eMtJGB9ZaXFZa2qzkjjgIR/4UZen8oyb4SLodmuPL/cfYgwy
+	 lnrNF4ogyauDQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 27 Aug 2024 20:49:43 +0300 (MSK)
+From: Martin Kurbanov <mmkurbanov@salutedevices.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mika Westerberg
+	<mika.westerberg@linux.intel.com>, Michael Walle <michael@walle.cc>, "Mark
+ Brown" <broonie@kernel.org>, Chia-Lin Kao <acelan.kao@canonical.com>, "Md
+ Sadre Alam" <quic_mdalam@quicinc.com>, Ezra Buehler
+	<ezra.buehler@husqvarnagroup.com>, Sridharan S N <quic_sridsn@quicinc.com>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>, Alexey Romanov
+	<avromanov@salutedevices.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
+Subject: [PATCH v2 3/5] mtd: spinand: make spinand_wait() global
+Date: Tue, 27 Aug 2024 20:49:01 +0300
+Message-ID: <20240827174920.316756-4-mmkurbanov@salutedevices.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240827174920.316756-1-mmkurbanov@salutedevices.com>
+References: <20240827174920.316756-1-mmkurbanov@salutedevices.com>
 MIME-Version: 1.0
-In-Reply-To: <MEYP282MB3164273F8D66D202F6A9F5C2BF942@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+X-Originating-IP: [172.28.129.118]
+X-ClientProxiedBy: p-i-exch-a-m1.sberdevices.ru (172.24.196.116) To
+ p-i-exch-a-m1.sberdevices.ru (172.24.196.116)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 187372 [Aug 27 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 27 0.3.27 71302da218a62dcd84ac43314e19b5cc6b38e0b6, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/08/27 16:21:00 #26445643
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240827_081528_433772_179F9F6E 
-X-CRM114-Status: GOOD (  13.51  )
+X-CRM114-CacheID: sfid-20240827_104951_559341_E383CDD5 
+X-CRM114-Status: GOOD (  14.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,45 +97,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC84LzI3IDE0OjI1LCBSeWRlciBXYW5nINC0tcA6Cj4+IE5vdywgZTEgaXMgdGhlIHNv
-dXJjZSBQRUIgd2l0aCBzbWFsbGVyIGVyYXNlIGNvdW50ZXIsIGl0IHdpbGwgYmUgcGlja2VkCj4+
-IGFzIHNvdXJjZSBQRUIgYWdhaW4gaW4gbmV4dCBXTCBpZiBpdCBub3QgYmVjb21lcyBmcmVlIHll
-dC4KPj4KPj4gV2UgZG9uJ3QgcHV0IGl0IGludG8gc2NydWIgdHJlZSwgYmVjYXVzZSB0aGUgc2Ny
-dWIgdHlwZSBQRUIgbWVhbnMgdGhhdAo+PiBiaWZsaXBzIGV2ZXIgaGFwcGVuIGR1cmluZyByZWFk
-aW5nLCB0aGUgZGF0YSBpcyBub3Qgc3RhYmxlIGFueW1vcmUgaW4KPj4gdGhhdCBQRUIsIHNvIFVC
-SSBtb3ZlcyBkYXRhIGZyb20gc2NydWIgdHlwZSBQRUIganVzdCB0YWtlIHRoZQo+PiBvcHBvcnR1
-bml0eSBvZiBXTCBwcm9jZXNzLgo+Pgo+PiBJT1csIGluIHRoaXMgY2FzZSwgdGhlIFdMIHdvbid0
-IGxvc3Qga2VlcGluZyBlYyBiYWxhbmNlZCB3aGV0aGVyIHdlIGtlZXAKPj4gZTEgaW4gdXNlZCB0
-cmVlIG9yIG1vdmUgaXQgaW50byBzY3J1YiB0cmVlLiBJdCdzIHRoZSBzYW1lIHRoaW5nIGFzIHRo
-ZQo+PiBNT1ZFX1RBUkdFVF9XUl9FUlIvTU9WRV9UQVJHRVRfUkRfRVJSIGNhc2UuCj4gCj4gVGhl
-biB3aGF0J3MgdGhlIHBvc2l0aXZlIHJldHVybiBhbmQgbmVjZXNzaXR5IG9mIHRoaXMgcGF0Y2g/
-IEl0IGxvb2tzIHRoZXJlIGlzIGZldyBkaWZmZXJlbmNlIGJlZm9yZSBhbmQgYWZ0ZXIgYXBwbHlp
-bmcgdGhlIHBhdGNoLgo+IC4KPiAKClRoZSBtb3N0IG5lY2Vzc2l0eSBpcyB0aGF0IG1ha2UgdGhl
-IG1lc3NhZ2UgJ3ViaTA6IHNjcnViYmVkIFBFQiA2NiAoTEVCIAowOjEwKSwgZGF0YSBtb3ZlZCB0
-byBQRUIgMTY1JyBub3QgYmUgZmFsc2UgcG9zaXRpdmUsIHVzZXIgY291bGQgYmUgCmNvbmZ1c2Vk
-IHdoZW4gaGUgZ2V0IHRoZSBrZXJuZWwgbWVzc2FnZSB3aGlsZSBydW5uaW5nIHRlc3RzIG9uIGEg
-Cm5hbmRzaW0oYSBuYW5kIHNpbXVsYXRvciBiYXNlZCBvbiBtZW1vcnksIHdoaWNoIHdvbid0IGdl
-bmVyYXRlIGJpdGZsaXBzKS4KQXMgZm9yIHRoZSB0ZXN0aW5nIHJlc3VsdHMoYSBzbWFsbCBkZWNy
-ZW1lbnQgb2YgZWMgY291bnRlcikgYmFzZWQgb24gdGhlIApwYXRjaGVzLCB0aGVyZSBpcyBhIHNt
-YWxsIGRpZmZlcmVuY2U6CgpCZWZvcmUgcGF0Y2hlczoKc3RlcCAxLiBJbiBmaXJzdCB3bCwgZTEg
-aXMgcHV0IGludG8gc2NydWIgdHJlZSwgZTIgaXMgcHV0IGludG8gZnJlZSB0cmVlLgpzdGVwIDIu
-IFRoZSBzZWNvbmQgd2wgbXVzdCBiZSBzY2hlZHVsZWQgYWNjb3JkaW5nIHRvIHRoZSBpbXBsZW1l
-bnRhdGlvbiAKb2YgZW5zdXJlX3dlYXJfbGV2ZWxpbmcoKSwgYmVjYXVzZSBzY3J1YiB0cmVlIGlz
-IG5vdCBlbXB0eS4Kc3RlcCAzLiBJbiBzZWNvbmQgd2wsIGUxIGlzIHN0aWxsIGUxIGluIHN0ZXAg
-MSwgZTIgaXMgcGlja2VkIGZyb20gCnViaS0+Zm1fd2xfcG9vbCwgd2hpY2ggaXMgbm90IHRoZSBz
-YW1lIGUyIGluIHN0ZXAgMiwgd2hpY2ggbWVhbnMgdGhhdCAKdGhlIGUyLT5lYyBjb3VsZCBiZSBz
-bWFsbGVyIHRoYW4gZTEtPmVjICsgVUJJX1dMX1RIUkVTSE9MRCwgdGhlcmUgaXMgbm8gCm5lZWQg
-dG8gZG8gdGhlIHNlY29uZCB3bCBhY3R1YWxseS4KCkFmdGVyIHBhdGNoZXM6CnN0ZXAgMS4gSW4g
-Zmlyc3Qgd2wsIGUxIGlzIHB1dCBpbnRvIHVzZWQgdHJlZSwgZTIgaXMgcHV0IGludG8gZnJlZSB0
-cmVlLgpzdGVwIDIuIFRoZSBzZWNvbmQgd2wgbWF5IG5vdCBiZSBzY2hlZHVsZWQgYWNjb3JkaW5n
-IHRvIHRoZSAKaW1wbGVtZW50YXRpb24gb2YgZW5zdXJlX3dlYXJfbGV2ZWxpbmcoKSwgYmVjYXVz
-ZSBzY3J1YiB0cmVlIGlzIGVtcHR5IAphbmQgdGhlIGVjIGNvdW50ZXIgb2YgZmlyc3QgZW50cnkg
-aW4gdWJpLT5mbV93bF9wb29sIGlzIG5vdCBncmVhdGVyIHRoYW4gCmUxLT5lYyArIFVCSV9XTF9U
-SFJFU0hPTEQuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Change the function spinand_wait() from static to global so that SPI
+NAND flash drivers don't duplicate it.
+
+Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+---
+ drivers/mtd/nand/spi/core.c | 18 ++++++++++++++----
+ include/linux/mtd/spinand.h |  3 +++
+ 2 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 2cb825edd49d0..c3e3d1e9599f1 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -496,10 +496,20 @@ static int spinand_erase_op(struct spinand_device *spinand,
+ 	return spi_mem_exec_op(spinand->spimem, &op);
+ }
+ 
+-static int spinand_wait(struct spinand_device *spinand,
+-			unsigned long initial_delay_us,
+-			unsigned long poll_delay_us,
+-			u8 *s)
++/**
++ * spinand_wait() - Poll memory device status
++ * @spinand: the spinand device
++ * @initial_delay_us: delay in us before starting to poll
++ * @poll_delay_us: time to sleep between reads in us
++ * @s: the pointer to variable to store the value of REG_STATUS
++ *
++ * This function polls a status register (REG_STATUS) and returns when
++ * the STATUS_READY bit is 0 or when the timeout has expired.
++ *
++ * Return: 0 on success, a negative error code otherwise.
++ */
++int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
++		 unsigned long poll_delay_us, u8 *s)
+ {
+ 	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
+ 						      spinand->scratchbuf);
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 8099f35f0e051..5768968933530 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -567,6 +567,9 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
+ int spinand_select_target(struct spinand_device *spinand, unsigned int target);
+ 
++int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
++		 unsigned long poll_delay_us, u8 *s);
++
+ int spinand_read_page(struct spinand_device *spinand,
+ 		      const struct nand_page_io_req *req);
+ 
+-- 
+2.43.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
