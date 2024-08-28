@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E1FFC5472F
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Aug 2024 19:00:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E18FC5479A
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Aug 2024 02:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HlkNGhhiJ1iXkXG83grdBWcFEm3Ev5eeAgbogszQRpI=; b=x2KN58L4CNxQI1
-	o/a/b2d3AehhXLOgSgtqsrWhnGzl8+2KQM8apr6AbbnqLvmtSkgfOCFzZYlPfW7KRhaK9y0BkN2Je
-	w8dhjzfspKXANzzMpgNhlgIQTPcQickPqH8rb9GfKF0rHPO9uDgpqHwO8Y9RMSWfG+9DePA3Y1Q+t
-	OTHDeww8hOQEWFy3IPA4bEyLHy8zLVXCYb7XfickHmC1JeoPKfUVULwee2gBxSDPnS2NLFKlGOtva
-	bypCoYbKS8t2cPmvjdScJ+9m6goW9sd2Ky3J16S/z5tiU/KuIl3Gp+1oeQBtxM5A4RBTY84j+Qkf0
-	SQFgqDBUPtTyRXsDyBOw==;
+	List-Owner; bh=zsVfbAhJ0HqroEMQL3GPPOZlAYAeikM2pRPxkaYZjzk=; b=uH3zLYdW4C7dUW
+	0M6gwgk0QaYeyddZ+3Cz5IaWb9cVkORviysdgmITMNpyrHbiURaLfbm9x9GK4m8Ip4bnoPHx/0yiR
+	3a+OqhnWCk7Nva1GxrvJ4V0zfsf7RCGJAcHv+k9iRfTFYOOAMJj5RX7Uj/NSmVX1Kb+u1RBGndGAD
+	tkVVoEAb+amSCDFDmemKl/1BGQye3aDdWsq+h2vrD6FotzLr9EcZWk86yE1J/uUKmpfHzpreDxoia
+	sh1VVXBhxAszqGU3IdY7krEI3T8+3yVFzA+Aqbv6+5TO8AYr5PDYeSl3GvpC5dZAA4ljeJmI/9NsZ
+	f5NMyb11xHaHhbaV7fhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sj1Qf-0000000CZLP-2f2Y;
-	Tue, 27 Aug 2024 19:00:33 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1sj8jI-0000000DWnJ-1Va7;
+	Wed, 28 Aug 2024 02:48:16 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sj0KE-0000000CMZ0-2Iv5
-	for linux-mtd@lists.infradead.org;
-	Tue, 27 Aug 2024 17:50:03 +0000
-Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id B5D4512000C;
-	Tue, 27 Aug 2024 20:49:43 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B5D4512000C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1724780983;
-	bh=YcHG6WWlH0ElSTuFNLEX2yBk3OYum4OtJYp6S6fudRY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=IO8gKJpxDrWfFSZC+POojJ4gYkYz8ToI8HKe/V0aCZsbiYyfmgvrvqE7EJnEaBmnE
-	 UqoN4pKyUq0KVnQ2GUWLluFw6XKsVLCL4mVQkFU1WByCV9ria/mW6/rTN+wFfiPZa1
-	 VDD4C4yD+GHIBD4RAWkiGH6omFV/v9h/+USHKbuIQZpS/6fH3mK8fhNKtAgHJ28icm
-	 x5iw5VF/9kjHVWXZMnRsT2d9ZSSOhNzeyYUhqqVWtZX6Cs2SNWtgDiWXfO2WTUf57/
-	 sbYNoFXhDFqFQvNrhqgwzTm/kpE2vScv9iOPTLsqdkj4ScAPa1HM2mbCwbecfuz3av
-	 1kgVjCVEtj/+A==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 27 Aug 2024 20:49:43 +0300 (MSK)
-From: Martin Kurbanov <mmkurbanov@salutedevices.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mika Westerberg
-	<mika.westerberg@linux.intel.com>, Michael Walle <michael@walle.cc>, "Mark
- Brown" <broonie@kernel.org>, Chia-Lin Kao <acelan.kao@canonical.com>, "Md
- Sadre Alam" <quic_mdalam@quicinc.com>, Ezra Buehler
-	<ezra.buehler@husqvarnagroup.com>, Sridharan S N <quic_sridsn@quicinc.com>,
-	Frieder Schrempf <frieder.schrempf@kontron.de>, Alexey Romanov
-	<avromanov@salutedevices.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
-Subject: [PATCH v2 5/5] mtd: spinand: esmt: OTP access for F50{L,D}1G41LB
-Date: Tue, 27 Aug 2024 20:49:03 +0300
-Message-ID: <20240827174920.316756-6-mmkurbanov@salutedevices.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240827174920.316756-1-mmkurbanov@salutedevices.com>
-References: <20240827174920.316756-1-mmkurbanov@salutedevices.com>
+	id 1sj8iR-0000000DWcv-1i9o;
+	Wed, 28 Aug 2024 02:47:25 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-202376301e6so48065495ad.0;
+        Tue, 27 Aug 2024 19:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724813242; x=1725418042; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lnF917HMalhfVI2HE4Sr2jQntbMdyS+RrizYBcr5oUo=;
+        b=dxEp3gdYdbCITSXcSK4BIXKWyoBXx/rLSvjUKWRVTPU0XOy4mE3f5hwqXjC075SHMo
+         P5hXjyitoynhvSMxJzpIjqeGHxOTD94JZWK98qf4G/1tHo0LFKAC+tPXfkUj1lGUHNDF
+         HG8dGhXkwpOfTclqWlu0pl3+aQKe/Kl5TdoGnvthC3aYST39FziBNUWK0sCBsUtnaZAn
+         eCcbTTmgiyl9E06xAE4n1vU9WIDkq5rwPa4QwfK6OpLJtaRzkcUHFXbvAG9HPTyz1n8C
+         czE8Z2fiv/I8sCy0MO9doiUohzZHQX0OohcJ1RRL7wLWOoQgtRecFEE1MWKWbjrqgSPx
+         AuSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724813242; x=1725418042;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lnF917HMalhfVI2HE4Sr2jQntbMdyS+RrizYBcr5oUo=;
+        b=wuhiiKcGUuyL3qu6AlvriHDfCDDggl3Kg2CAsjBhdrokuiAlqPeObk1yi+izCSIXr3
+         SkkQ6BytSmMviaBARj/VRq+buom6zD6b3XIAIgWGLpk6QnSySQHcOy6V/fzOW0fGnod0
+         OnEkM9RbteeZJ7u4bOof1cKSyUO8rdqOf6yrpOQiKVzylveD+f54o6jvrp6Slxj8uiN1
+         YGZg17ACsL6l0lxQdd4ELZqjEu8a8zEE8jfvIuXUyZba2zYY4O8Ten/PHzOP7LUhetIe
+         f/PcxGFrE/2pGd+U4d5LhrI+aUaw0xNUwZAKr+S3tzVgKZ/p1pUlmO1+lmpK99MWZvBD
+         swEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUjX2xdD+h+Z17TczWONTSOOCPcUkn14kmzp+6n+K3BlXXesy3fm9Ko2NPNj3PmfzLzZ6j86gquxHlttp1FubFk@lists.infradead.org, AJvYcCVqxbqxH6Vobi1jNY0YKf19qU0wgvmZ30CaqNgRXgB/pDryS2qxsv1c+K7leoXXaSBcMpubCrg8FNRs@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx1/7uyC+ZpnxmN6F0kzpBoAQe0fnnkXYcTp8RZoaJPiP4P5gOe
+	jpyA0g6xwd2eWFgLQg7c/bDwzT9iVCAZRNg0e6Kfa9UvQRrduZ55
+X-Google-Smtp-Source: AGHT+IF0GEyxFOWbUu+ExQlyAJXiGNDV52VSUO4649Opxz3OpCXsbg5OuD8s1mKSDmM48NIESs5/IA==
+X-Received: by 2002:a17:90a:ac17:b0:2d3:b8eb:9c3c with SMTP id 98e67ed59e1d1-2d646b9083cmr13244361a91.2.1724813241838;
+        Tue, 27 Aug 2024 19:47:21 -0700 (PDT)
+Received: from [172.19.1.53] (60-250-196-139.hinet-ip.hinet.net. [60.250.196.139])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9ac97f5fsm9869216a12.11.2024.08.27.19.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Aug 2024 19:47:21 -0700 (PDT)
+Message-ID: <fd0d73cf-6bce-4f7b-9513-5f434ab9ae00@gmail.com>
+Date: Wed, 28 Aug 2024 10:47:17 +0800
 MIME-Version: 1.0
-X-Originating-IP: [172.28.129.118]
-X-ClientProxiedBy: p-i-exch-a-m1.sberdevices.ru (172.24.196.116) To
- p-i-exch-a-m1.sberdevices.ru (172.24.196.116)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 187372 [Aug 27 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 27 0.3.27 71302da218a62dcd84ac43314e19b5cc6b38e0b6, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/08/27 16:21:00 #26445643
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: nuvoton,ma35d1-nand: add new
+ bindings
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: richard@nod.at, vigneshr@ti.com, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, sumit.semwal@linaro.org, christian.koenig@amd.com,
+ esben@geanix.com, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240821071132.281018-1-hpchen0nvt@gmail.com>
+ <20240821071132.281018-2-hpchen0nvt@gmail.com>
+ <20240823182616.5a85e1ae@xps-13>
+Content-Language: en-US
+From: Hui-Ping Chen <hpchen0nvt@gmail.com>
+In-Reply-To: <20240823182616.5a85e1ae@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240827_104951_485906_871614E4 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20240827_194723_473926_8F90D403 
+X-CRM114-Status: GOOD (  15.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,123 +96,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Support for OTP area access on ESMT F50L1G41LB and F50D1G41LB chips.
-
-Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
----
- drivers/mtd/nand/spi/esmt.c | 69 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 67 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
-index 4597a82de23a4..1806e9d48c176 100644
---- a/drivers/mtd/nand/spi/esmt.c
-+++ b/drivers/mtd/nand/spi/esmt.c
-@@ -12,6 +12,13 @@
- /* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
- #define SPINAND_MFR_ESMT_C8			0xc8
- 
-+#define ESMT_F50L1G41LB_CFG_OTP_PROTECT		BIT(7)
-+#define ESMT_F50L1G41LB_CFG_OTP_LOCK		\
-+	(CFG_OTP_ENABLE | ESMT_F50L1G41LB_CFG_OTP_PROTECT)
-+
-+#define ESMT_F50L1G41LB_PAGE_SIZE		2112
-+#define ESMT_F50L1G41LB_OTP_PAGES		28
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
- 			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
- 			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-@@ -102,6 +109,60 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
- 	.free = f50l1g41lb_ooblayout_free,
- };
- 
-+static int f50l1g41lb_otp_info(struct spinand_device *spinand, size_t len,
-+			       struct otp_info *buf, size_t *retlen)
-+{
-+	if (len < sizeof(*buf))
-+		return -EINVAL;
-+
-+	buf->locked = 0;
-+	buf->start = 0;
-+	buf->length = ESMT_F50L1G41LB_PAGE_SIZE * ESMT_F50L1G41LB_OTP_PAGES;
-+
-+	*retlen = sizeof(*buf);
-+	return 0;
-+}
-+
-+static int f50l1g41lb_otp_lock(struct spinand_device *spinand, loff_t from,
-+			       size_t len)
-+{
-+	struct spi_mem_op write_op = SPINAND_WR_EN_DIS_OP(true);
-+	struct spi_mem_op exec_op = SPINAND_PROG_EXEC_OP(0);
-+	int ret;
-+
-+	ret = spinand_upd_cfg(spinand, ESMT_F50L1G41LB_CFG_OTP_LOCK,
-+			      ESMT_F50L1G41LB_CFG_OTP_LOCK);
-+	if (!ret)
-+		return ret;
-+
-+	ret = spi_mem_exec_op(spinand->spimem, &write_op);
-+	if (!ret)
-+		goto out;
-+
-+	ret = spi_mem_exec_op(spinand->spimem, &exec_op);
-+	if (!ret)
-+		goto out;
-+
-+	ret = spinand_wait(spinand, 10, 5, NULL);
-+	if (!ret)
-+		goto out;
-+
-+out:
-+	if (spinand_upd_cfg(spinand, ESMT_F50L1G41LB_CFG_OTP_LOCK, 0)) {
-+		WARN(1, "Can not disable OTP mode\n");
-+		ret = -EIO;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct spinand_otp_ops f50l1g41lb_otp_ops = {
-+	.info = f50l1g41lb_otp_info,
-+	.lock = f50l1g41lb_otp_lock,
-+	.read = spinand_otp_read,
-+	.write = spinand_otp_write,
-+};
-+
- static const struct spinand_info esmt_c8_spinand_table[] = {
- 	SPINAND_INFO("F50L1G41LB",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
-@@ -112,7 +173,9 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL),
-+		     SPINAND_OTP_INFO(ESMT_F50L1G41LB_OTP_PAGES,
-+				      &f50l1g41lb_otp_ops)),
- 	SPINAND_INFO("F50D1G41LB",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
- 				0x7f, 0x7f),
-@@ -122,7 +185,9 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL),
-+		     SPINAND_OTP_INFO(ESMT_F50L1G41LB_OTP_PAGES,
-+				      &f50l1g41lb_otp_ops)),
- 	SPINAND_INFO("F50D2G41KA",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
- 				0x7f, 0x7f),
--- 
-2.43.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RGVhciBNaXF1w6hsLAoKVGhhbmsgeW91IGZvciB5b3VyIHJlcGx5LgoKCgpPbiAyMDI0LzgvMjQg
+5LiK5Y2IIDEyOjI2LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpLAo+Cj4gaHBjaGVuMG52dEBn
+bWFpbC5jb20gd3JvdGUgb24gV2VkLCAyMSBBdWcgMjAyNCAwNzoxMTozMSArMDAwMDoKPgo+PiBB
+ZGQgZHQtYmluZGluZ3MgZm9yIHRoZSBOdXZvdG9uIE1BMzUgU29DIE5BTkQgQ29udHJvbGxlci4K
+Pj4KPj4gU2lnbmVkLW9mZi1ieTogSHVpLVBpbmcgQ2hlbiA8aHBjaGVuMG52dEBnbWFpbC5jb20+
+Cj4+IFJldmlld2VkLWJ5OiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tp
+QGxpbmFyby5vcmc+Cj4+IC0tLQo+PiAgIC4uLi9iaW5kaW5ncy9tdGQvbnV2b3RvbixtYTM1ZDEt
+bmFuZC55YW1sICAgICB8IDkzICsrKysrKysrKysrKysrKysrKysKPj4gICAxIGZpbGUgY2hhbmdl
+ZCwgOTMgaW5zZXJ0aW9ucygrKQo+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbXRkL251dm90b24sbWEzNWQxLW5hbmQueWFtbAo+Pgo+PiBk
+aWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9udXZvdG9u
+LG1hMzVkMS1uYW5kLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
+L251dm90b24sbWEzNWQxLW5hbmQueWFtbAo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRl
+eCAwMDAwMDAwMDAwMDAuLjE1Mjc4NGU3MzI2Mwo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL0Rv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbnV2b3RvbixtYTM1ZDEtbmFuZC55
+YW1sCj4+IEBAIC0wLDAgKzEsOTMgQEAKPj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChH
+UEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKQo+PiArJVlBTUwgMS4yCj4+ICstLS0KPj4gKyRp
+ZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbXRkL251dm90b24sbWEzNWQxLW5hbmQu
+eWFtbCMKPj4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29y
+ZS55YW1sIwo+PiArCj4+ICt0aXRsZTogTnV2b3RvbiBNQTM1RDEgTkFORCBGbGFzaCBJbnRlcmZh
+Y2UgKE5GSSkgQ29udHJvbGxlcgo+PiArCj4+ICttYWludGFpbmVyczoKPj4gKyAgLSBIdWktUGlu
+ZyBDaGVuIDxocGNoZW4wbnZ0QGdtYWlsLmNvbT4KPj4gKwo+PiArYWxsT2Y6Cj4+ICsgIC0gJHJl
+ZjogbmFuZC1jb250cm9sbGVyLnlhbWwjCj4+ICsKPj4gK3Byb3BlcnRpZXM6Cj4+ICsgIGNvbXBh
+dGlibGU6Cj4+ICsgICAgZW51bToKPj4gKyAgICAgIC0gbnV2b3RvbixtYTM1ZDEtbmFuZAo+IENh
+biB3ZSBwbGVhc2UgdXNlIHRoZSAtbmFuZC1jb250cm9sbGVyIHN1ZmZpeC4gQSBOQU5EIGlzIGEg
+dGhlIGNvbW1vbgo+IG5hbWUgZm9yIGEgY2hpcCB3aXRoIHN0b3JhZ2UgaW5zaWRlLiBZb3UgYXJl
+IGRlc2NyaWJpbmcgYSBob3N0Cj4gY29udHJvbGxlciB0aGF0IGNhbiBiZSBjb25uZWN0ZWQgdG8g
+aW4gb3JkZXIgdG8gdGFsayB0byBhIE5BTkQuCgoKT2theSwgSSB3aWxsIGNoYW5nZSBpdCB0byBu
+dXZvdG9uLG1hMzVkMS1uZmkuCgpCZWNhdXNlIGluIG91ciBwbGF0Zm9ybSwgaXQgaXMgdGhlIE5B
+TkQgRmxhc2ggSW50ZXJmYWNlLgoKCgo+IFRoYW5rcywKPiBNaXF1w6hsCgoKQmVzdCByZWdhcmRz
+LAoKSHVpLVBpbmcgQ2hlbgoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
