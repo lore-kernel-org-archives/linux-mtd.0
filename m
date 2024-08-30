@@ -4,76 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A369ACA0EE5
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Aug 2024 06:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F694CA0EE5
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Aug 2024 07:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mN33xKhw20mbWa170X9OwMQNzdBg6h5St9qEa1nASOw=; b=OxrCb8kq/xwcsg
-	gEzMMFXyq3KsxyvNczvbMj64oS+QDzTGE52oIKAgQc7Lkkzv3zWW0YqR0UYsRJVPfl9wEoi9vzfUE
-	fCMXfkp+iGqIIRxIuA0Sw8ppXzIeA1sMFYqPIsKOIS6cU98EwUOXCPInjLH1/Yee/S85yI/L4PJzb
-	crEHh1SqUvwWhiETYd3uScWmtEnOwU48q8gwTQst49yAd1RqDOiQwMXs1yJUIM7HQI+a//1Z5OFvk
-	6Oyn7iXfD6bmHY2S4TUeJj2Btz/YhJxpT5yDM9R6wCkBS8/7l5QLMuPFg2sgwtC/nJb7MrE44IlTn
-	Vtcj1PXn1N9pw8jDLLVw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MiE7C2e4rOsqdsi80gU6zw0Dm9B5YijsoGvsQjG7/SE=; b=gv2Pvsw+yB4l2WqQPWxK2J518w
+	hCQDtDgG9iwiyAFvcO2jDwrtTr6upa/vIerFWLoxqdV2jDs3tlcJB/GzTiEKdexK7Ik1kPM0d42hl
+	qKemEAhhtAoFgFjlXzr26qrx5/eXs8sp56Bhtw4H/ONRHmqE6YkrnBs+u4UJm8KK+d4uDjYgfabWa
+	k87Zdfgd4Mf0mMYijWN8HixDXdaAXtcQHhvGkwpi61hXvOt51aCIlTWbYGE2Ppah82O7k/bfcNrdB
+	KdrWL18iLDlS2pm5Z4B/VUR0zfcQUROGlz1stq/YG5IdgjebslnvYNY9vcGbl1RXIdtIG0GbQrNr6
+	IdpGr+tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjvEa-00000004yZv-1uso;
-	Fri, 30 Aug 2024 06:35:48 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1sjvc8-000000051Yq-17Fr;
+	Fri, 30 Aug 2024 07:00:08 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjvDf-00000004yJd-44eG;
-	Fri, 30 Aug 2024 06:34:54 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Ww7dp3fr0z18MyV;
-	Fri, 30 Aug 2024 14:33:50 +0800 (CST)
-Received: from kwepemh500013.china.huawei.com (unknown [7.202.181.146])
-	by mail.maildlp.com (Postfix) with ESMTPS id 14CA1140202;
-	Fri, 30 Aug 2024 14:34:41 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- kwepemh500013.china.huawei.com (7.202.181.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 30 Aug 2024 14:34:39 +0800
-Message-ID: <c29263ae-89f1-edd7-003a-bd03cdddc821@huawei.com>
-Date: Fri, 30 Aug 2024 14:34:38 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH -next RESEND 00/10] mtd: Use
- for_each_child_of_node_scoped()
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Krzysztof Kozlowski
-	<krzk@kernel.org>
-CC: <michal.simek@amd.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<liang.yang@amlogic.com>, <neil.armstrong@linaro.org>,
-	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>, <heiko@sntech.de>,
-	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>, <wens@csie.org>,
-	<jernej.skrabec@gmail.com>, <samuel@sholland.org>, <kees@kernel.org>,
-	<gustavoars@kernel.org>, <linux@treblig.org>, <robh@kernel.org>,
-	<u.kleine-koenig@pengutronix.de>, <erick.archer@gmx.com>,
-	<christophe.jaillet@wanadoo.fr>, <val@packett.cool>,
-	<christophe.kerello@foss.st.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-renesas-soc@vger.kernel.org>, <linux-rockchip@lists.infradead.org>,
-	<linux-stm32@st-md-mailman.stormreply.com>, <jic23@kernel.org>
-References: <20240826094328.2991664-1-ruanjinjie@huawei.com>
- <20240826115213.389acaef@xps-13>
- <f7430f87-88d2-4c08-bc1e-6bb3da4e332c@kernel.org>
- <20240826144917.2c4e202d@xps-13>
-From: Jinjie Ruan <ruanjinjie@huawei.com>
-In-Reply-To: <20240826144917.2c4e202d@xps-13>
-X-Originating-IP: [10.67.109.254]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemh500013.china.huawei.com (7.202.181.146)
+	id 1sjvc5-000000051Y8-03P6
+	for linux-mtd@lists.infradead.org;
+	Fri, 30 Aug 2024 07:00:06 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id B0985A43F14;
+	Fri, 30 Aug 2024 06:59:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8AA6C4CEC2;
+	Fri, 30 Aug 2024 07:00:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725001203;
+	bh=a0f2Jy1yD083mHkvQ7FHb/FwZAVvcLZHMIJomd6/J1Q=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=aKnAfFNnhqxjsSVtYhZa6tLIzUHH+lig/jgn02Ytht7fyv4BPcWvVDhI58qaXiKKr
+	 DscAs+0gUiqS0fKgIq358on1Hu8kfwYxYax1xKbop8GfU5IZiuS4i3Dzmlk7xOzB0y
+	 qx2Bi0nlRpmBmPyZ03rzG6mWxIaIaJeBOWhk/yOaYYIQNkZw4OuyJ/XhIxD6hcAFPe
+	 q6mryDG9xe9kvge35DVYFUqy/vK7F+pzNzKh/7p6wgkelLWRipBFrXb7xLLDqnU8kt
+	 NK2JuRPvkcqGSMXHIDOX/t5QJFCE3Pi8PpkUphQa5SCuqfcSfjFAU/dBb1CgxKJRcP
+	 hWkPfbgv7Hujg==
+Date: Fri, 30 Aug 2024 08:59:59 +0200
+Message-Id: <D3T1W2VQFGNG.14DUML0OSKRH@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for S28HS256T
+Cc: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <Bacem.Daassi@infineon.com>, "Takahiro Kuwano"
+ <Takahiro.Kuwano@infineon.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: <tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.16.0
+References: <20240830030841.24500-1-Takahiro.Kuwano@infineon.com>
+In-Reply-To: <20240830030841.24500-1-Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240829_233452_900341_802BCD0B 
-X-CRM114-Status: UNSURE (   6.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240830_000005_146150_17F10A9D 
+X-CRM114-Status: GOOD (  14.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,26 +68,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============8725142548550816670=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyMDI0LzgvMjYgMjA6NDksIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gSGkgS3J6eXN6dG9m
-LAo+IAo+IGtyemtAa2VybmVsLm9yZyB3cm90ZSBvbiBNb24sIDI2IEF1ZyAyMDI0IDEyOjE5OjA3
-ICswMjAwOgo+IAo+PiBPbiAyNi8wOC8yMDI0IDExOjUyLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+
-Pj4gSGkgSmluamllLAo+Pj4KPj4+IHJ1YW5qaW5qaWVAaHVhd2VpLmNvbSB3cm90ZSBvbiBNb24s
-IDI2IEF1ZyAyMDI0IDE3OjQzOjE4ICswODAwOgo+Pj4gICAKPj4+PiBVc2Ugc2NvcGVkIGZvcl9l
-YWNoX2F2YWlsYWJsZV9jaGlsZF9vZl9ub2RlX3Njb3BlZCgpIHdoZW4gaXRlcmF0aW5nIG92ZXIK
-Pj4+PiBkZXZpY2Ugbm9kZXMgdG8gbWFrZSBjb2RlIGEgYml0IHNpbXBsZXIuICAKPj4+Cj4+PiBX
-aHkgaXMgdGhpcyBhIHJlc2VuZCA/IERpZCBJIG1pc3MgYSBwcmV2aW91cyBpdGVyYXRpb24/ICAK
-Pj4KPj4gWW91IHdlcmUgbm90IGNjLWVkIG9uIHByZXZpb3VzIGl0ZXJhdGlvbi4gSSBhc2tlZCBm
-b3IgcHJvcGVyIHNwbGl0Cj4+IGJldHdlZW4gc3Vic3lzdGVtcyBhbmQgc2VuZGluZyB0byBtYWlu
-dGFpbmVycywgdGh1cyB0aGlzIHJlc2VuZC4KPiAKPiBPay4gTWFrZXMgc2Vuc2UsIGFuZCB0aGUg
-cGF0Y2hzZXQgbG9va3MgZmluZS4KCkhpLCBNaXF1ZWwsCgpDb3VsZCB0aGlzIHNlcmllcyBiZSBt
-ZXJnZWQsIHRoYW5rIHlvdSEKCj4gCj4gSmluamllLCBwbGVhc2UgYWx3YXlzIGluY2x1ZGUgYSBj
-aGFuZ2Vsb2cgd2hlbiB5b3Ugc2VuZCBuZXcgdmVyc2lvbnMsCj4gYW5kIGV4cGxhbmF0aW9ucyBm
-b3IgYSBSRVNFTkQuCj4gCj4gVGhhbmtzLAo+IE1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+--===============8725142548550816670==
+Content-Type: multipart/signed;
+ boundary=97bdceaecf9e9846c3df111f97009d5e4dae3b210ff7ca24b435d7fb1101;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--97bdceaecf9e9846c3df111f97009d5e4dae3b210ff7ca24b435d7fb1101
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>
+> Infineon S28HS256T is 256Mb Octal SPI device which has same
+> functionalities with 512Mb and 1Gb parts.
+>
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+> Datasheet can be found:
+> https://www.infineon.com/dgdl/Infineon-S28HS256T_S28HL256T_256Mb_SEMPER_F=
+lash_Octal_interface_1_8V_3-DataSheet-v02_00-EN.pdf?fileId=3D8ac78c8c8fc2dd=
+9c018fc66787aa0657
+
+As Link: tag above your SoB please.
+
+..
+
+
+> ---
+>  drivers/mtd/spi-nor/spansion.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansio=
+n.c
+> index 6cc237c24e07..1390fe6f811d 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -966,6 +966,11 @@ static const struct flash_info spansion_nor_parts[] =
+=3D {
+>  		.name =3D "s28hl01gt",
+>  		.mfr_flags =3D USE_CLPEF,
+>  		.fixups =3D &s28hx_t_fixups,
+> +	}, {
+> +		.id =3D SNOR_ID(0x34, 0x5b, 0x19),
+> +		.name =3D "s28hs256t",
+
+Skip the name, we don't use names for new flashes anymore.
+
+With that fixed you can add
+Reviewed-by: Michael Walle <mwalle@kernel.org>
+
+-michael
+
+> +		.mfr_flags =3D USE_CLPEF,
+> +		.fixups =3D &s28hx_t_fixups,
+>  	}, {
+>  		.id =3D SNOR_ID(0x34, 0x5b, 0x1a),
+>  		.name =3D "s28hs512t",
+
+
+--97bdceaecf9e9846c3df111f97009d5e4dae3b210ff7ca24b435d7fb1101
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZtFt7xIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/im8wGAwAWZSfjF6nVH/vORw+w5sASfJLe+v3bJ
+dmbR2SE9tgNI8ibR7VK+UCbR/SQ4slBlAYCjCsSb8UXQT6j0eouK0uMCPD4HSuSB
+xVvNP0heVfteHObiNJS1qszPFlShcjRgg3M=
+=ihon
+-----END PGP SIGNATURE-----
+
+--97bdceaecf9e9846c3df111f97009d5e4dae3b210ff7ca24b435d7fb1101--
+
+
+--===============8725142548550816670==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8725142548550816670==--
+
