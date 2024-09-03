@@ -4,92 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBCA6CD343B
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Sep 2024 14:22:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95278CD3448
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Sep 2024 16:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hyzbeyM7FVC0TUY5vTNcqD/3B7On858LcL0wEozfWZo=; b=ZPisN3DKnHUlOePFMo6y1uk8BC
-	nmD/CaA36HbcoVGN2Jr9lOpFZTHPfU+J2bSxEmof3rAV+yCZW3R2+/Zj0m9AT7jND1ac5uBX4oHPg
-	qG/1tI3cLR+oDRfN6wot/KrAYI7kB2uwG8yoZiDcMlgxwUbl4UFiXk6jvrzL9ncrmijHbdC8oXJRE
-	ENf2znfmrjeuCW78xJbqjvbqE9jPqpQdeTbPX0rtI3Ut7PwNmFQcfyJaZVUUAsxBIpvLMvwftI1JA
-	XiWbrakp7qjxp3O+B9M06errtkWo2gkPAaC4eH8mKQVn58JDzUU1b45WJ1S/0UGJHQXlLIlPjHNJO
-	dDV97BNA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=SCA6PcWLI3jvV7iBNnrFk1VqkZZNYAy4Fz9+Iaj0oFs=; b=DynAYdUg5ZX8Zp
+	nydZaf6GXJmFmALRQBPLMLURDnNMV7HExMbaqGctGHJC1jB8zO/zWdib7RSdkJNZdHMRDIB8hHnua
+	SwAeWxgoJtnT3r9xpbCN8Bpl9/DJ6BDmGZ+2xWPLLV5go60eO1yOZUR7Y8kAZfgygeu28/Drfun2B
+	+slV1zjeFB1/vdlk8NdEkpEvDsxz8XkMQKa6ueykAR9h6Lx8WYaO9r6gkEFjMsi77tss1RPJbIzvO
+	x0L53i94kcvzc6CEHDN3cjz0VjM1BwUSXG79bzM6zq/wnp60UW4nDTybfWwWD5gNf43gSMS5aVUw3
+	z/qBtsJVRlIgavyfnvHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slUQo-00000000XxR-0yc0;
-	Tue, 03 Sep 2024 14:22:54 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1slWR1-000000017aO-0BM9;
+	Tue, 03 Sep 2024 16:31:15 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slUQl-00000000Xvp-23rH
-	for linux-mtd@lists.infradead.org;
-	Tue, 03 Sep 2024 14:22:52 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 483BJZQO018884;
-	Tue, 3 Sep 2024 14:22:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	5X5QFp29hmQ7by+9qCpUoFC+TAzM7t4IqLCLAuIpOTE=; b=gPkkoc7bp40UJapE
-	X7PfAT3pqWVLbGb4bc5RujGXS38oqPup31do8NZhBRKgJaZrF7wtDgwOn0cKtw4/
-	LOpxMnAXbrtTQpnjaQGn3cE2BwkDD2T5icoOuVZ7b8hCFaJSQNsC5eyrmtcKHDZU
-	zNeJgMUY+hVcYaqYZLoAlzCb5IPlACFatRyB6nHTmA/SrM37pXDfeT2O4jNUzvZm
-	VascZVMDjj0x52vFsR5GoIZuGxz9hOwr8OaXSppbbuTaGdETjcqqHCxSzA4qD23T
-	W3E01byOSK9p/FZDZqrdBpwJ1z7nRo/1c/29VN8BDjKSTECdBijq3BtRaKBWXkhx
-	blbwLQ==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41bt4rfnra-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 03 Sep 2024 14:22:35 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 483EMYMt025782
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 3 Sep 2024 14:22:34 GMT
-Received: from [10.216.9.110] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 3 Sep 2024
- 07:22:29 -0700
-Message-ID: <57a810e0-c072-7792-1f5f-3ddbeb0c97a3@quicinc.com>
-Date: Tue, 3 Sep 2024 19:52:25 +0530
+	id 1slWPu-0000000175y-1cnW;
+	Tue, 03 Sep 2024 16:30:08 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3CA155C59F4;
+	Tue,  3 Sep 2024 16:30:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C65EC4CEC4;
+	Tue,  3 Sep 2024 16:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725381005;
+	bh=ZB0ZGid7oYvX+NEZ2K4bE2HWU1BmgbIDt4uG0XbOQ00=;
+	h=From:Date:Subject:To:Cc:From;
+	b=obYyIdBi0lHyyRze0F9LXfG3EYfQ3K2Ec2vQyalVmEezN0wqQ645aFB/1OqMgJle1
+	 O2TpvXlGt8N2LpVsrG5vH2y6JCNTNhPIek2dVQHOhCWATjfGLXCtwxvSanqPh/sAyj
+	 nHd4J7n5SxJLL0vo34KObKKHHH1x3jFl0WD4u+V13WC3uHLoXuxZXX+6eJMFN00kEn
+	 gCSkyTbUiA+HJRqKe4r272tzHMsttb/Xcm81pKSNsderfddwX2XHWpNJI2NCqrs7Xf
+	 gPZv+s8FORKHdv2tJXoFlnlBd+CdIo/vbOO3tLLxndb61nmLQgg0WzJyvwWGa95D+D
+	 f4QzY23Lpn6wA==
+From: Roger Quadros <rogerq@kernel.org>
+Date: Tue, 03 Sep 2024 19:29:57 +0300
+Subject: [PATCH v2] dt-bindings: mtd: ti, gpmc-nand: support partitions
+ node
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v8 0/8] Add QPIC SPI NAND driver
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzk@kernel.org>, <broonie@kernel.org>,
-        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
-        <andersson@kernel.org>, <konradybcio@kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <esben@geanix.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>
-References: <20240820104239.1774600-1-quic_mdalam@quicinc.com>
- <5169761b-422d-70ab-ba53-a898cb7bfa2f@quicinc.com>
- <fed18a8f-446f-4d61-a9ce-4c5e09bf0aaa@kernel.org>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <fed18a8f-446f-4d61-a9ce-4c5e09bf0aaa@kernel.org>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rttAid4ooQgcOR3iwRLcnkjL--9ZVPR3
-X-Proofpoint-ORIG-GUID: rttAid4ooQgcOR3iwRLcnkjL--9ZVPR3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-03_02,2024-09-03_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- bulkscore=0 malwarescore=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1015 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2409030117
+Message-Id: <20240903-gpmc-dtb-v2-1-8046c1915b96@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAIQ512YC/23MQQ7CIBCF4as0sxYD1Gh11XuYLugwUKLSZmiIp
+ uHuYtcu/5eXb4NEHCjBrdmAKYcU5lhDHxrAyURPItjaoKU+ya6Vwi8vFHYdhSWNpDuDbjxDvS9
+ MLrx36j7UnkJaZ/7scla/9Q+SlVDictVoUJFrEfsHcaTncWYPQynlCyBjt9WhAAAA
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+ Nishanth Menon <nm@ti.com>, Enric Balletbo i Serra <eballetbo@gmail.com>, 
+ Javier Martinez Canillas <javier@dowhile0.org>
+Cc: srk@ti.com, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, Roger Quadros <rogerq@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1396; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=ZB0ZGid7oYvX+NEZ2K4bE2HWU1BmgbIDt4uG0XbOQ00=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBm1zmJbaVP/ewIJ9pyrYDtWXsaHySvmZFudVp4y
+ qiaMKE3kUKJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZtc5iQAKCRDSWmvTvnYw
+ k921D/9P8/VEILXiD9ZI1cn1LOZMD27ku1ZqmP9k0r3XFDDrmuuJhm7DKSetMG6jU7HEVEEDYvU
+ qIjK5KlIY6XJfWcrvo5eVhPXrUD3NChWFYdOz8Os1TIxlsP153tC50xZ7vJ/1HtHJk94zR6cYhX
+ wZ9zB9aWQqe8u78Fn9KFovJlmpmn2ABDIbNBuW/l6nljG9QOwWhNRm8KgcmcERfIkof0RQUl6st
+ oni8LAqlLfaUkH69B0nd/PotqKpvGsr5xv0/W5TDvqLLj4WtFBMEVk/9dzxm0MUqnxm1czWtezT
+ Y47sbwzn9gCcgBEV/ZJ9vpxCJalNnAa3kigTmf0Kr/j/8ptmsNYVo46CQrxFbbqXxfvLMjSZ/dA
+ WT9zLxy2ji0hCHYBl6h80EiwfijSLT0Dx7yCz/PYQFLV10WOr9UiHJIDqY9o0RRw3oXkZj/JpBH
+ Ygeo0wpv5+fbxUx8igsC5Z2oa/PXzfsnw5EEGtz2gY5gU1Y2gNMXfcwXglIq+AHx3CoMJJvUbsu
+ foZkWHPL1OXkIf6tTEb0WeEeehAzYrJ2ggLBWGk13hzqth0WWBYKyMqugAsLXCK8fQ3TtMTILw+
+ SuMa1Vyks4q9F60ELtKmqK0yXbO1gtC1G2kxDbuLpJO/u0wofmC3eEpKyiOrAdch1gyyVlQhxzV
+ I+QnRMJUTQ1DEJw==
+X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
+ fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240903_072251_570772_92DE317D 
-X-CRM114-Status: GOOD (  13.36  )
+X-CRM114-CacheID: sfid-20240903_093006_641906_C9A5B5F5 
+X-CRM114-Status: UNSURE (   8.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,43 +91,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Allow fixed-partitions to be specified through a partitions
+node.
 
+Fixes the below dtbs_check warning:
 
-On 9/3/2024 7:14 PM, Krzysztof Kozlowski wrote:
-> On 03/09/2024 11:15, Md Sadre Alam wrote:
->> Hi Miquel,
->>
->> On 8/20/2024 4:12 PM, Md Sadre Alam wrote:
->>> v8:
->>>    * Fixed compilation warning reported by kernel test robot
->>>    * Added "chip" description in nandc_set_read_loc_first()
->>>    * Added "chip" description" in nandc_set_read_loc_last()
->>>    * Changed data type of read_location0, read_location1,
->>>      read_location2, read_location3, addr0, addr1, cmd, cfg0,
->>>      cfg1, ecc_bch_cfg, ecc_buf_cfg, clrflashstatus, clrreadstatus,
->>>      orig_cmd1, orig_vld to __le32 to fix compilation warning.
->>>    * Included bitfield.h header file in spi-qpic-snand.c to
->>>      fix compilation warning
->>>    * Removed unused variable "steps" variable from
->>>      qcom_spi_ecc_init_ctx_pipelined()
->>>
->>       I have addressed your comments to v6 and further posted till v8.
->>       Could you please let me know if this is fine.
->>       and how to get this merged ?
-> 
-> Two weeks ago you received reports that your code does not build
-> properly. So no, it is not fine. Please respond to the reports and/or
-> send corrected code.
-   Sorry I missed it, will fix and post next revision.
-> 
-> Best regards,
-> Krzysztof
-> 
+arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtb: nand@0,0: Unevaluated properties are not allowed ('partitions' was unexpected)
+
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+Changes in v2:
+- reference mtd.yaml for standard mtd properties like partition as
+  suggested by Rob Herring.
+- Link to v1: https://lore.kernel.org/r/20240830-gpmc-dtb-v1-1-792cac1ef3cc@kernel.org
+---
+ Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+index 115682fa81b7..00540302bcae 100644
+--- a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+@@ -61,12 +61,9 @@ properties:
+       GPIO connection to R/B signal from NAND chip
+     maxItems: 1
+ 
+-patternProperties:
+-  "@[0-9a-f]+$":
+-    $ref: /schemas/mtd/partitions/partition.yaml
+-
+ allOf:
+   - $ref: /schemas/memory-controllers/ti,gpmc-child.yaml
++  - $ref: mtd.yaml#
+ 
+ required:
+   - compatible
+
+---
+base-commit: 5be63fc19fcaa4c236b307420483578a56986a37
+change-id: 20240830-gpmc-dtb-de2ce28acfb6
+
+Best regards,
+-- 
+Roger Quadros <rogerq@kernel.org>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
