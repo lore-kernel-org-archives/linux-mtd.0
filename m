@@ -4,81 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95278CD3448
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Sep 2024 16:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77EF0CA0ED3
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Sep 2024 14:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SCA6PcWLI3jvV7iBNnrFk1VqkZZNYAy4Fz9+Iaj0oFs=; b=DynAYdUg5ZX8Zp
-	nydZaf6GXJmFmALRQBPLMLURDnNMV7HExMbaqGctGHJC1jB8zO/zWdib7RSdkJNZdHMRDIB8hHnua
-	SwAeWxgoJtnT3r9xpbCN8Bpl9/DJ6BDmGZ+2xWPLLV5go60eO1yOZUR7Y8kAZfgygeu28/Drfun2B
-	+slV1zjeFB1/vdlk8NdEkpEvDsxz8XkMQKa6ueykAR9h6Lx8WYaO9r6gkEFjMsi77tss1RPJbIzvO
-	x0L53i94kcvzc6CEHDN3cjz0VjM1BwUSXG79bzM6zq/wnp60UW4nDTybfWwWD5gNf43gSMS5aVUw3
-	z/qBtsJVRlIgavyfnvHA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=35Z8eEd8nzFi4tVkG0fIQspdTX1I8TwLJ+1qqVDeRac=; b=0JLxWD9sJWFtcu
+	ItVmX6c61BGQpkGQGrq00X9mZFTbnOnvIxBBU7ukRGul1Rw3HBxZwchWUtallzngXfClEhOz4hvG1
+	PNI24QGo2/+NBXKItLUc/cbrctV0lBASyV29oX4LdSfWULG6Q0hn9KoGoY2ojrk2xaESpmCS3fu9r
+	R8FYYVmDPiMgFZa9Dr1K64FbdeOhRaBmJMiBXjIVyBWI6IrGTz3vsmi4SlXSWzjqkalXM7REWDFip
+	dPSSYLSSQNrFWJBiXyV3oPo3qKG/F4nhWKaIQt26slXFE8aRmKSO1jHBLUzvL//u8ah/J2AwQ9ZmA
+	t8z9eEDEBN8cA9J4JPbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slWR1-000000017aO-0BM9;
-	Tue, 03 Sep 2024 16:31:15 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1slqYj-00000004faJ-3vAb;
+	Wed, 04 Sep 2024 14:00:33 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slWPu-0000000175y-1cnW;
-	Tue, 03 Sep 2024 16:30:08 +0000
+	id 1slqYg-00000004fZR-2YEu
+	for linux-mtd@lists.infradead.org;
+	Wed, 04 Sep 2024 14:00:31 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3CA155C59F4;
-	Tue,  3 Sep 2024 16:30:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C65EC4CEC4;
-	Tue,  3 Sep 2024 16:30:01 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id EA185A44398;
+	Wed,  4 Sep 2024 14:00:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85D6DC4CEC6;
+	Wed,  4 Sep 2024 14:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725381005;
-	bh=ZB0ZGid7oYvX+NEZ2K4bE2HWU1BmgbIDt4uG0XbOQ00=;
-	h=From:Date:Subject:To:Cc:From;
-	b=obYyIdBi0lHyyRze0F9LXfG3EYfQ3K2Ec2vQyalVmEezN0wqQ645aFB/1OqMgJle1
-	 O2TpvXlGt8N2LpVsrG5vH2y6JCNTNhPIek2dVQHOhCWATjfGLXCtwxvSanqPh/sAyj
-	 nHd4J7n5SxJLL0vo34KObKKHHH1x3jFl0WD4u+V13WC3uHLoXuxZXX+6eJMFN00kEn
-	 gCSkyTbUiA+HJRqKe4r272tzHMsttb/Xcm81pKSNsderfddwX2XHWpNJI2NCqrs7Xf
-	 gPZv+s8FORKHdv2tJXoFlnlBd+CdIo/vbOO3tLLxndb61nmLQgg0WzJyvwWGa95D+D
-	 f4QzY23Lpn6wA==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 03 Sep 2024 19:29:57 +0300
-Subject: [PATCH v2] dt-bindings: mtd: ti, gpmc-nand: support partitions
- node
+	s=k20201202; t=1725458428;
+	bh=RMcBzsfPKn0VFKK+q6cn1224QUjbLG3SRwjvEetOfL0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=mJzwvSwTTctvN0VsrTgqUOCYROkui0e/OesPtyDp9nS/0IuAPJYkySiE9z7HD3QOo
+	 xaQmgvudniNSOGX1GDWw74RPkJAtuNC6lhPhqDkIB5VP7MxVu+Deivd0sohCdO8czm
+	 15Qn2C1MyFlkiUAP5ZUjOvzzdjf+K+w28ho+YaoI4UUT3AQLcpZvMLYJzuDtM7x8qR
+	 PwBXmqQds6a7bAswMbAma9+6AewOBuvvyTLAYVyv/vwklMIjaMFLKbXajHfhsb+uhf
+	 sbOAkF8QqfhxTUFakjWffYMST30vk1+crtUJmIjzQNPHwhe/yCnOw0udDR0wbYZS+h
+	 92QHKzTi3EmPg==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush
+ Yadav <pratyush@kernel.org>,  Michael Walle <michael@walle.cc>,
+  <linux-mtd@lists.infradead.org>,  Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,  Liang Yang <liang.yang@amlogic.com>
+Subject: Re: [PATCH] mtd: rawnand: meson: Fix typo in function name
+In-Reply-To: <20240826153158.67334-1-miquel.raynal@bootlin.com> (Miquel
+	Raynal's message of "Mon, 26 Aug 2024 17:31:58 +0200")
+References: <20240826153158.67334-1-miquel.raynal@bootlin.com>
+Date: Wed, 04 Sep 2024 16:00:26 +0200
+Message-ID: <mafs0a5gnikn9.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Message-Id: <20240903-gpmc-dtb-v2-1-8046c1915b96@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAIQ512YC/23MQQ7CIBCF4as0sxYD1Gh11XuYLugwUKLSZmiIp
- uHuYtcu/5eXb4NEHCjBrdmAKYcU5lhDHxrAyURPItjaoKU+ya6Vwi8vFHYdhSWNpDuDbjxDvS9
- MLrx36j7UnkJaZ/7scla/9Q+SlVDictVoUJFrEfsHcaTncWYPQynlCyBjt9WhAAAA
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, 
- Nishanth Menon <nm@ti.com>, Enric Balletbo i Serra <eballetbo@gmail.com>, 
- Javier Martinez Canillas <javier@dowhile0.org>
-Cc: srk@ti.com, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1396; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=ZB0ZGid7oYvX+NEZ2K4bE2HWU1BmgbIDt4uG0XbOQ00=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBm1zmJbaVP/ewIJ9pyrYDtWXsaHySvmZFudVp4y
- qiaMKE3kUKJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZtc5iQAKCRDSWmvTvnYw
- k921D/9P8/VEILXiD9ZI1cn1LOZMD27ku1ZqmP9k0r3XFDDrmuuJhm7DKSetMG6jU7HEVEEDYvU
- qIjK5KlIY6XJfWcrvo5eVhPXrUD3NChWFYdOz8Os1TIxlsP153tC50xZ7vJ/1HtHJk94zR6cYhX
- wZ9zB9aWQqe8u78Fn9KFovJlmpmn2ABDIbNBuW/l6nljG9QOwWhNRm8KgcmcERfIkof0RQUl6st
- oni8LAqlLfaUkH69B0nd/PotqKpvGsr5xv0/W5TDvqLLj4WtFBMEVk/9dzxm0MUqnxm1czWtezT
- Y47sbwzn9gCcgBEV/ZJ9vpxCJalNnAa3kigTmf0Kr/j/8ptmsNYVo46CQrxFbbqXxfvLMjSZ/dA
- WT9zLxy2ji0hCHYBl6h80EiwfijSLT0Dx7yCz/PYQFLV10WOr9UiHJIDqY9o0RRw3oXkZj/JpBH
- Ygeo0wpv5+fbxUx8igsC5Z2oa/PXzfsnw5EEGtz2gY5gU1Y2gNMXfcwXglIq+AHx3CoMJJvUbsu
- foZkWHPL1OXkIf6tTEb0WeEeehAzYrJ2ggLBWGk13hzqth0WWBYKyMqugAsLXCK8fQ3TtMTILw+
- SuMa1Vyks4q9F60ELtKmqK0yXbO1gtC1G2kxDbuLpJO/u0wofmC3eEpKyiOrAdch1gyyVlQhxzV
- I+QnRMJUTQ1DEJw==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240903_093006_641906_C9A5B5F5 
-X-CRM114-Status: UNSURE (   8.94  )
+X-CRM114-CacheID: sfid-20240904_070030_731957_B68FA544 
+X-CRM114-Status: UNSURE (   9.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -96,50 +77,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allow fixed-partitions to be specified through a partitions
-node.
+On Mon, Aug 26 2024, Miquel Raynal wrote:
 
-Fixes the below dtbs_check warning:
+> There is a reason why sometime we write "NAND chip" with an 's'. It
+> usually means several chips can be managed by the same controller. So
+> when initializing a single chip at a time, the wording "chip" must be
+> used, otherwise when talking about all the chips managed by the
+> controller, we want to use "chips". Fix the function name to clarify the
+> meson_nfc_nand_chip*s*_cleanup() helper intend.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtb: nand@0,0: Unevaluated properties are not allowed ('partitions' was unexpected)
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
-Changes in v2:
-- reference mtd.yaml for standard mtd properties like partition as
-  suggested by Rob Herring.
-- Link to v1: https://lore.kernel.org/r/20240830-gpmc-dtb-v1-1-792cac1ef3cc@kernel.org
----
- Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-index 115682fa81b7..00540302bcae 100644
---- a/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
-@@ -61,12 +61,9 @@ properties:
-       GPIO connection to R/B signal from NAND chip
-     maxItems: 1
- 
--patternProperties:
--  "@[0-9a-f]+$":
--    $ref: /schemas/mtd/partitions/partition.yaml
--
- allOf:
-   - $ref: /schemas/memory-controllers/ti,gpmc-child.yaml
-+  - $ref: mtd.yaml#
- 
- required:
-   - compatible
-
----
-base-commit: 5be63fc19fcaa4c236b307420483578a56986a37
-change-id: 20240830-gpmc-dtb-de2ce28acfb6
-
-Best regards,
 -- 
-Roger Quadros <rogerq@kernel.org>
-
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
