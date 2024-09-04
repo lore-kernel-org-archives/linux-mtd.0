@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC6A4CD37B4
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Sep 2024 14:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A83CA0ED3
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Sep 2024 14:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=n7u18fHn2dCAz9qImgl+iS2VzgLylZ3P/776zhnsAfw=; b=COWq83RMZPtl10
-	35ci1jFrK8C3eLDG3c5VyX+yHOjaguW0q3CULQPJ15bMF/gpjkuFNOs9og64urniXu4Tzr+RrlZPy
-	pysZm7s/vVksSPpg7mEUZegNvyVLeUpYl9/zhF12e584oOrZtgZwp/AYeARD/gK24TgxmDtkBw6Ju
-	0ZvA7apKFZdqqjITzyF/P3gR1I0yEe08LWaNIB58WEndthWPT7DmYucG0g+xtl3RGGXaM2t4gMqpc
-	QbaKKo5hrdI/Wd0Lg3dli/p2N7ImcVHMhjj2FPrMre6UZ/kmmG1A+SW44h/x9+fuS8k2e7w/nHGYC
-	ZtI4iehFmw24ZvV3a3aw==;
+	List-Owner; bh=JbeZNaA9ZglNFN3xGtOvqlAyhrTerznjXczWn7N/uDY=; b=4bC+Jch+nkCXwc
+	nQn2v8QuiUPl3E7wHij0rpCxILVEeNOKAzMfPf12wwcffD1fXoY/QvaEpNxagHFPQXMu7dat5f8ci
+	akZfX6aYcX/4qksLVznREcAc95wRE9C7DI6zi/gFtelzfmRiOtQURbrTm/uKjvAaUJfzNQqnbq7P8
+	94qoaWZm0mfvJh3XQ2/NC4v+0QN+vA8t03YJsB8y88Lbid910XCkNztE5X9u0nrwS6XcwgMeJIT9U
+	lA/K7OaQlw6jfVYBBrXtlu+Zaealz/aHZbBnW6Q9Od3KfY0exsuYL/iu5/usCSdSOI6H2AO8sohB2
+	zkV/hqnZiRA3xi2QVnAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slqjy-00000004iRa-1KWh;
-	Wed, 04 Sep 2024 14:12:10 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1slqnn-00000004jJ0-0zQN;
+	Wed, 04 Sep 2024 14:16:07 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slqgF-00000004hUI-24n7;
-	Wed, 04 Sep 2024 14:08:20 +0000
+	id 1slqmo-00000004j7O-1a82;
+	Wed, 04 Sep 2024 14:15:08 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 18C565C555E;
-	Wed,  4 Sep 2024 14:08:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7D5AC4CEC2;
-	Wed,  4 Sep 2024 14:08:16 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id EB49D5C4C72;
+	Wed,  4 Sep 2024 14:15:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7AF8C4CEC2;
+	Wed,  4 Sep 2024 14:15:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725458898;
-	bh=3q29PgcQ2KYbEcJauFATC6sMPQysTk+ZOJKpqoIZtgY=;
+	s=k20201202; t=1725459304;
+	bh=8CHw7H3PN3nnBty6sIGCZZcBUVbUzFhJlewKHpVFNe8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=AK75AI5zKferY+Gqc5ROJeCW1lOZK5vJL8aQ/JR8oTEgAupYZwsDGQUNM7SR3Y8Nl
-	 aN9CARNwUf4lFYiqcGKxHQrxAzdvbLz4tZ9l6v6yfDHLyk+g3fync0P/DpELqdueM4
-	 VqMSWSuAvvj0/qJ9sgI2KMTJg2u+GhpFtR+4VYOcDUJl+X8uAeJGzMvYMJmagGkhrT
-	 aPs+HGBEhsoWn2TVEc07oG3wm9e2f2TibwTGdhEdYRSHQ9tGL4go/lztRpysx7aMRX
-	 4iUguOX+jtRsz9ymoOCQOdS2boyKOyySgJVZ/+MpzSTJTPobuvOMZW9uS/xHEOCHDr
-	 hvYU6RPff+xEg==
+	b=SiqkyfwL+AB0UYJDOiVswVD0shUppcfokOXsiT8IRR7ArweWabLtm1tqDaVyvWjxN
+	 WXFhwL2ggNII8R6cVIYqPFSjeNLDSRIuZjIJgGfSXPgnyeIDZ5zkSouzpjWQeO8cpN
+	 2cBjIqkMKv74mwLy+ffpGUeW7KrTTAEFAT5pEn+UiBqFSJg+ZGHMgrATYHHGBZOQQB
+	 3I7YFo43jUTF2eORu5lzgNqLfcr9a+UBVfa+tv4bji8l3V8+pJH+9epbL81NcFTZvv
+	 op/tMHWXSGj0H/otmmmWcezl3yYTopvLlzkSU6lHMNQ1T+WEj8DihJrZB1e9Kesyqx
+	 U3WXGm8h7z+eg==
 From: Pratyush Yadav <pratyush@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
@@ -51,18 +51,19 @@ Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
  <angelogioacchino.delregno@collabora.com>,
   <linux-arm-kernel@lists.infradead.org>,  Thomas Petazzoni
  <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH next 2/2] mtd: rawnand: mtk: Fix init error path
-In-Reply-To: <20240826153019.67106-2-miquel.raynal@bootlin.com> (Miquel
-	Raynal's message of "Mon, 26 Aug 2024 17:30:19 +0200")
+Subject: Re: [PATCH next 1/2] mtd: rawnand: mtk: Factorize out the logic
+ cleaning mtk chips
+In-Reply-To: <20240826153019.67106-1-miquel.raynal@bootlin.com> (Miquel
+	Raynal's message of "Mon, 26 Aug 2024 17:30:18 +0200")
 References: <20240826153019.67106-1-miquel.raynal@bootlin.com>
-	<20240826153019.67106-2-miquel.raynal@bootlin.com>
-Date: Wed, 04 Sep 2024 16:08:15 +0200
-Message-ID: <mafs05xrbika8.fsf@kernel.org>
+Date: Wed, 04 Sep 2024 16:15:01 +0200
+Message-ID: <mafs01q1zijyy.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240904_070819_670388_9EFD0EC0 
-X-CRM114-Status: GOOD (  10.36  )
+X-CRM114-CacheID: sfid-20240904_071506_485725_BD0A3791 
+X-CRM114-Status: UNSURE (   8.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,17 +82,14 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Mon, Aug 26 2024, Miquel Raynal wrote:
 
-> Reviewing a series converting the for_each_chil_of_node() loops into
-> their _scoped variants made me realize there was no cleanup of the
-> already registered NAND devices upon error which may leak memory on
-> systems with more than a chip when this error occurs. We should call the
-> _nand_chips_cleanup() function when this happens.
+> There are some un-freed resources in one of the error path which would
+> benefit from a helper going through all the registered mtk chips one by
+> one and perform all the necessary cleanup. This is precisely what the
+> remove path does, so let's extract the logic in a helper.
 >
-> Fixes: Fixes: 1d6b1e464950 ("mtd: mediatek: driver for MTK Smart Device")
+> There is no functional change.
+>
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Did a quick scan. Can't see anything (obvious) else being leaked on
-error paths.
 
 Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
 
