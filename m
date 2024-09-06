@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19AF3E6FE27
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A33D2E6FE2D
 	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2024 15:25:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,55 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v55hc/5vL72ht3PEoSaHI16RTeY1VXrZOdhc+ExomgI=; b=n33EzuoUrJLEfq
-	zzhHR1Uc57TTFJvrnFRsHhjbIDW1oiSkyFliX3eDxs1t83lLfp0gIj5HQWT2xw+7T/EstJ+T4GAzy
-	WrV1PAR+7HPiE+gXvBOgwRGRV9zr+I/2vvvNaVB1zts97Z2Tcht+GsDZ2ptrCNYc4RtzkItDqENhy
-	O3kFIcCCk0lBxWnvekcCib+a8+WuZSA9EAMvWB3NTHero/xWe8LGD0k1O0x8v9o2ouTvsfqinPEkq
-	ZEhpuesZF6DDqhcANG/LQOpJeGl8Kx05YRZ4XTSL2IQXAAlTIN4FtVjYL6H6zHYJEXNZb1c07OayW
-	03xEHUUufpO2Ad1yL1Nw==;
+	List-Owner; bh=WfrZeX1+rhMxC/rJTKkGD/SCGvCuV/0Sq7cDOIjk794=; b=GR7uHaRLDId+GT
+	SXIgqnUjBIXRELT/WHlKsoSc+3Q2LmJ58gQu2IM/0CLqJr1cphBu976NOvlymMYi88WytZ/PJ1lau
+	eSThLfqxAxuSlljsJyCCn9JdTkD9wHToF2Tknr/V4k6ShdCqOqfeOrKJ/dIzNl12wzPJityZiiUKy
+	0Qvo8fm3p8hVZjKF5WJ45rh6y146WRX48pBYWBgSPQeFay6leV834hM/Wt/pHXkM7169H4hvt56an
+	FKdcscnSFDcmju35X5T1kL9aXPtzDyOtf3MKNZaM+zGRQsVQpHfvNxl3ewvnempNqBVjyRgoa/pmM
+	upqZYnItKsOjm/HR3iWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smapo-0000000Cl4I-1B1a;
-	Fri, 06 Sep 2024 15:25:16 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1smapn-0000000Cl44-2uNU;
+	Fri, 06 Sep 2024 15:25:15 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smabP-0000000Ci0r-2hGD
-	for linux-mtd@lists.infradead.org;
-	Fri, 06 Sep 2024 15:10:25 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 982941C0003;
-	Fri,  6 Sep 2024 15:10:21 +0000 (UTC)
+	id 1smaZz-0000000Chez-2nSN;
+	Fri, 06 Sep 2024 15:09:06 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BC05EE000A;
+	Fri,  6 Sep 2024 15:08:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1725635421;
+	t=1725635333;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2ZUTVAepqA+jwCEzGkgSw+Dy++rZGvQ4PU8h+QLC69A=;
-	b=M5owgzrfDtz62VtH/Mb5OyRrqhUwReZC3YK7qTz8CR+5MKjjWw32W7y3S6V0Ec2Nw3A80t
-	I8rbMtTiHV1Gs4gSN/IAcqPJ84qXf002ZvWJvkBMg6Rvy+dbU/n9yW8t1j3fJw7rEx3cIo
-	nRxvFdnhw3j4/7NKzzK3It43BzhRpaNY02TxslEg7RRGh3wNFf9umYZ4fehJ/KuB2Eriu1
-	AGemnkOKo/vj0LrNOUKAUVK9fatosuHEaszal35qrzNYPMp/4IshMeK0nYPhXE853KdaZ+
-	+8SujWPGnVVw5CL5q4Y42NrLBUSejtXKzvMv9TgpyDOyMj7Md1o/Mvb825Y3Ig==
+	bh=9Ly2d9EwxQYn8DsfJBD5rt/wTDTZaYNKWP55jAE7dZA=;
+	b=nxej4J1szwQNb1526tnOEqIYdaSYKyTg99r7lIAHy+8jraW2VD1gInuPLTh7TYgx1JR1dO
+	49sUgcOl5cp/jMtfQP8+x6Sv/K3bYaa7akahCPO5igBULKjfrDdZQTG+cehBvOss+9IjSJ
+	9nx+8alEBf9roHUCupZEq74/iYz1H4Qju5ZEHbOhlcqcYJ0JKt7EJGEfnTUNATFZ+ntZkV
+	94KKc3q0ZBQqcfHevFK0EKtPPaJG2i3AQclVd0R6k97iQys6HdlrbRT17UPinIAPPp/mjD
+	6hPMD0x34ZLlIfD9FdBwJ2dWnLrgsOVdILs8QTxurFHuk7P7Xr06xK1nNOQ8+A==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Uros Bizjak <ubizjak@gmail.com>,
-	linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Roger Quadros <rogerq@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 05/18] mtd: tests: Include <linux/prandom.h> instead of <linux/random.h>
-Date: Fri,  6 Sep 2024 17:10:21 +0200
-Message-ID: <20240906151021.736425-1-miquel.raynal@bootlin.com>
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Tony Lindgren <tony@atomide.com>,
+	Nishanth Menon <nm@ti.com>,
+	Enric Balletbo i Serra <eballetbo@gmail.com>,
+	Javier Martinez Canillas <javier@dowhile0.org>
+Cc: srk@ti.com,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] dt-bindings: mtd: ti, gpmc-nand: support partitions node
+Date: Fri,  6 Sep 2024 17:08:52 +0200
+Message-ID: <20240906150852.735663-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240905122020.872466-6-ubizjak@gmail.com>
+In-Reply-To: <20240903-gpmc-dtb-v2-1-8046c1915b96@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'098a573b6e8b8515354c1e07a1c54990435340b6'
+X-linux-mtd-patch-commit: b'9e1a23aa86fc404af953e2ae8b1149a31f743f72'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240906_081023_863952_431ADC4F 
-X-CRM114-Status: UNSURE (   6.16  )
+X-CRM114-CacheID: sfid-20240906_080856_029144_EDFF8DF9 
+X-CRM114-Status: UNSURE (   6.42  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,17 +88,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2024-09-05 at 12:17:13 UTC, Uros Bizjak wrote:
-> Usage of pseudo-random functions requires inclusion of
-> <linux/prandom.h> header instead of <linux/random.h>.
+On Tue, 2024-09-03 at 16:29:57 UTC, Roger Quadros wrote:
+> Allow fixed-partitions to be specified through a partitions
+> node.
 > 
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: linux-mtd@lists.infradead.org
+> Fixes the below dtbs_check warning:
+> 
+> arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtb: nand@0,0: Unevaluated properties are not allowed ('partitions' was unexpected)
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
 Miquel
 
