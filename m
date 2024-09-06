@@ -4,131 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DC35CD5BCC
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Sep 2024 15:38:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2102C54FC6
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2024 05:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fXY2DEA8Sp++NNwF8oNpKNsnyHcb6okgMcXdaEgmOU8=; b=zv1yncAIWjjfHc
-	9SkmgNMr+QUHw5c/1XQ9+98Le3Qg7EzDF1XTDDkoA62s6CKdC+MHrer6DDzPZlkNIU5m0H5DCoLqz
-	nixvbj2mQMJhH3mTV1GraWYoiCMj07sn16tg/lDm7/+xrx2KrXmIxKn1UdsMsY6UTua4CWQKvG3SE
-	Xxd/oO+YKivl+fVvXV7BvJ4s6nwXdn5or8VTOJwKWTJU9EblSUPjSdUYpALlWfkVF8q651uk4cWzC
-	4Zxb/UVStQ2koEuHYs6B4Cc2DBFzt4DMtqz35+uhZdQD4GD16QKtmUAEfcnNu6gnhwhzjsTFI1RYJ
-	piHRIythip9FThe4uT+A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UIWJhZu1rIWzoUBz3QlqO+eC7wcx0HpBIe9Ye+4mPMU=; b=zmqMbZ7C9T46Dm
+	qfR1EORERzZBwbbvyq6SxOqJbXO5M9LsRG/ki3SOo6jBZFxEJvff0fhyBy06l3kOirm4Sx0EVnTR3
+	odkANHXPaGau1FVL+Ab0/QNyemfUd54k0fKApg2yghl5o9lom/gnG/3RjijpcR1FkWccuvSML+eRJ
+	4hnC+sfg1f8d2btWrNX+N4pm988VKafnYEa644qEZqH4/BqNT3mfJrEO8ImI8x3bvUpGfy3QHJ/KS
+	UiY50vDhZL4N8HXE8TF8MvrUoQZEtGPb8wJ0tTrd0oXVRQfTAFqi3qU/BSO2cnqyeTYEpe/IhwqRB
+	AwOasRUmBR1rsMwm9xFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smEZJ-00000008y8u-0w8f;
-	Thu, 05 Sep 2024 15:38:45 +0000
-Received: from mgamail.intel.com ([198.175.65.12])
+	id 1smRiY-0000000Akul-3OLV;
+	Fri, 06 Sep 2024 05:41:10 +0000
+Received: from smtpbguseast2.qq.com ([54.204.34.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smEZ2-00000008y3p-1OJr
-	for linux-mtd@lists.infradead.org;
-	Thu, 05 Sep 2024 15:38:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725550708; x=1757086708;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=WqFaPHVKKRJUrSjh96WSLvDVpyIouu48maZXtKVDdA8=;
-  b=kRxXWoaLkZ+7oM0La0Gpa4XLXTr2HjKsjCDAYauJtKvuf2EdltOOdV9Q
-   Da3/iHFH/kDsCoWqet5ZeoflDr8s9I3P+NmDsnOdqRH6NlK7UVpUlpCmO
-   0/+0eK0GI0NHt4opBEXBEKjVc48t0+1BqOpCehfwQvUsAneWn+M+LncYn
-   VQ4FrkDhjLQKrPRlm53D+EcPswjkWZunKXbU0arbHGAIyWeUYnQ3yS+JU
-   reKKk/zRuztGB8pcS+lRUukcW9/WsNrp9fJuYrV9k3Z5xbviE/5jF5UBB
-   GD774Ika5KRr/6+n9JGqCKNilJbNX9freFyd3pqvuolCgftXwSaxqeml0
-   w==;
-X-CSE-ConnectionGUID: OcCRTTPrS/WeHX1t/1Jprg==
-X-CSE-MsgGUID: cwUIie+UT0Ch6hOkWTZQ3A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11186"; a="35634046"
-X-IronPort-AV: E=Sophos;i="6.10,205,1719903600"; 
-   d="scan'208";a="35634046"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 08:38:24 -0700
-X-CSE-ConnectionGUID: u6pWWqheTeempRaYMfBO/g==
-X-CSE-MsgGUID: pKR7g3A+S6q/KP0BCfW6iQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,205,1719903600"; 
-   d="scan'208";a="65652927"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 08:38:09 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.98)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1smEWm-00000005Rhy-32CS;
-	Thu, 05 Sep 2024 18:36:08 +0300
-Date: Thu, 5 Sep 2024 18:36:08 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Hannes Reinecke <hare@suse.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com
-Subject: Re: [PATCH 00/18] random: Include <linux/percpu.h> and resolve
- circular include dependency
-Message-ID: <ZtnP6CK-Zd8SJAgY@smile.fi.intel.com>
-References: <20240905122020.872466-1-ubizjak@gmail.com>
- <Ztmm00eLBQGtiwRM@smile.fi.intel.com>
- <CAFULd4bzyNGcJqeg7w2ZQ0Xmw-HsBhczf8yPna7mSgG4NmdcWw@mail.gmail.com>
+	id 1smRiW-0000000AkoD-1peZ;
+	Fri, 06 Sep 2024 05:41:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1725601221;
+	bh=Um2fielNufiPq2gPF+cakRDGheYfuE60dnAlgqaba+4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=V1rwoY2egq7hA2t5O3yhm3k956+fErfFJ3lPNm6EyY5JEHnaocmMIs58Cg2dPlbK0
+	 GSCuM0IOVepEkI+moHM5X+ySAPoWJEzlRXL5XREgx2G0YiQaJ0bHutsGuf5q2IytHc
+	 zvYEJ/TVCMCqfUrz9rq0dv0qTy0mibq3grAl0/cA=
+X-QQ-mid: bizesmtp89t1725601217t86fmi1u
+X-QQ-Originating-IP: pp2HEb8VFRV3OyePs+K/oTB0T0vJNpih3CUIsTHdOR4=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 06 Sep 2024 13:40:11 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 3399184416924761505
+From: WangYuli <wangyuli@uniontech.com>
+To: aaro.koskinen@iki.fi,
+	andreas@kemnade.info,
+	khilman@baylibre.com,
+	rogerq@kernel.org,
+	tony@atomide.com,
+	linux@armlinux.org.uk,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	wangyuli@uniontech.com,
+	gustavoars@kernel.org,
+	mitr@volny.cz,
+	dmitry.torokhov@gmail.com,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	anil.gurumurthy@qlogic.com,
+	sudarsana.kalluru@qlogic.com,
+	James.Bottomley@HansenPartnership.com,
+	martin.petersen@oracle.com,
+	obdclark@gmail.com,
+	quic_abhinavk@quicinc.com,
+	dmitry.baryshkov@linaro.org,
+	sean@poorly.run,
+	marijn.suijten@somainline.org,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org,
+	abhinavk@codeaurora.org,
+	architt@codeaurora.org,
+	chandanu@codeaurora.org,
+	jsanka@codeaurora.org,
+	jcrouse@codeaurora.org,
+	ryadav@codeaurora.org,
+	skolluku@codeaurora.org,
+	seanpaul@chromium.org,
+	robdclark@gmail.com,
+	anil_ravindranath@pmc-sierra.com,
+	standby24x7@gmail.com,
+	jkosina@suse.cz,
+	don.hiatt@intel.com,
+	ira.weiny@intel.com,
+	dasaratharaman.chandramouli@intel.com,
+	dledford@redhat.com,
+	eric.piel@tremplin-utc.net,
+	akpm@linux-foundation.org,
+	dtor@mail.ru,
+	vijaykumar@bravegnu.org,
+	dwmw2@infradead.org,
+	kgudipat@brocade.com,
+	James.Bottomley@suse.de,
+	guanwentao@uniontech.com,
+	zhanjun@uniontech.com
+Subject: [PATCH] treewide: Correct the typo 'retun'
+Date: Fri,  6 Sep 2024 13:40:08 +0800
+Message-ID: <63D0F870EE8E87A0+20240906054008.390188-1-wangyuli@uniontech.com>
+X-Mailer: git-send-email 2.43.4
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFULd4bzyNGcJqeg7w2ZQ0Xmw-HsBhczf8yPna7mSgG4NmdcWw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240905_083828_553125_E397DB83 
-X-CRM114-Status: GOOD (  37.10  )
+X-CRM114-CacheID: sfid-20240905_224108_956890_DB3E632A 
+X-CRM114-Status: GOOD (  13.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,68 +124,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBTZXAgMDUsIDIwMjQgYXQgMDM6MDM6MjRQTSArMDIwMCwgVXJvcyBCaXpqYWsgd3Jv
-dGU6Cj4gT24gVGh1LCBTZXAgNSwgMjAyNCBhdCAyOjQx4oCvUE0gQW5keSBTaGV2Y2hlbmtvCj4g
-PGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gVGh1
-LCBTZXAgMDUsIDIwMjQgYXQgMDI6MTc6MDhQTSArMDIwMCwgVXJvcyBCaXpqYWsgd3JvdGU6Cj4g
-PiA+IFRoZXJlIHdlcmUgc2V2ZXJhbCBhdHRlbXB0cyB0byByZXNvbHZlIGNpcmN1bGFyIGluY2x1
-ZGUgZGVwZW5kZW5jeQo+ID4gPiBhZnRlciB0aGUgYWRkaXRpb24gb2YgcGVyY3B1Lmg6IDFjOWRm
-OTA3ZGE4MyAoInJhbmRvbTogZml4IGNpcmN1bGFyCj4gPiA+IGluY2x1ZGUgZGVwZW5kZW5jeSBv
-biBhcm02NCBhZnRlciBhZGRpdGlvbiBvZiBwZXJjcHUuaCIpLCBjMDg0MmZiYzFiMTgKPiA+ID4g
-KCJyYW5kb20zMjogbW92ZSB0aGUgcHNldWRvLXJhbmRvbSAzMi1iaXQgZGVmaW5pdGlvbnMgdG8g
-cHJhbmRvbS5oIikgYW5kCj4gPiA+IGZpbmFsbHkgZDlmMjlkZWI3ZmU4ICgicHJhbmRvbTogUmVt
-b3ZlIHVudXNlZCBpbmNsdWRlIikgdGhhdCBjb21wbGV0ZWx5Cj4gPiA+IHJlbW92ZXMgaW5jbHVz
-aW9uIG9mIDxsaW51eC9wZXJjcHUuaD4uCj4gPiA+Cj4gPiA+IER1ZSB0byBsZWdhY3kgcmVhc29u
-cywgPGxpbnV4L3JhbmRvbS5oPiBpbmNsdWRlcyA8bGludXgvcHJhbmRvbS5oPiwgYnV0Cj4gPiA+
-IHdpdGggdGhlIGNvbW1pdCBlbnRyeSByZW1hcms6Cj4gPiA+Cj4gPiA+IC0tcXVvdGUtLQo+ID4g
-PiBBIGZ1cnRoZXIgY2xlYW51cCBzdGVwIHdvdWxkIGJlIHRvIHJlbW92ZSB0aGlzIGZyb20gPGxp
-bnV4L3JhbmRvbS5oPgo+ID4gPiBlbnRpcmVseSwgYW5kIG1ha2UgcGVvcGxlIHdobyB1c2UgdGhl
-IHByYW5kb20gaW5mcmFzdHJ1Y3R1cmUgaW5jbHVkZQo+ID4gPiBqdXN0IHRoZSBuZXcgaGVhZGVy
-IGZpbGUuICBUaGF0J3MgYSBiaXQgb2YgYSBjaHVybiBwYXRjaCwgYnV0IGdyZXBwaW5nCj4gPiA+
-IGZvciAicHJhbmRvbV8iIGFuZCAibmV4dF9wc2V1ZG9fcmFuZG9tMzIiICJzdHJ1Y3Qgcm5kX3N0
-YXRlIiBzaG91bGQKPiA+ID4gY2F0Y2ggbW9zdCB1c2Vycy4KPiA+ID4KPiA+ID4gQnV0IGl0IHR1
-cm5zIG91dCB0aGF0IHRoYXQgbmljZSBjbGVhbnVwIHN0ZXAgaXMgZmFpcmx5IHBhaW5mdWwsIGJl
-Y2F1c2UKPiA+ID4gYSBfbG90XyBvZiBjb2RlIGN1cnJlbnRseSBzZWVtcyB0byBkZXBlbmQgb24g
-dGhlIGltcGxpY2l0IGluY2x1ZGUgb2YKPiA+ID4gPGxpbnV4L3JhbmRvbS5oPiwgd2hpY2ggY2Fu
-IGN1cnJlbnRseSBjb21lIGluIGEgbG90IG9mIHdheXMsIGluY2x1ZGluZwo+ID4gPiBzdWNoIGZh
-aXJseSBjb3JlIGhlYWRmZXJzIGFzIDxsaW51eC9uZXQuaD4uCj4gPiA+Cj4gPiA+IFNvIHRoZSAi
-bmljZSBjbGVhbnVwIiBwYXJ0IG1heSBvciBtYXkgbmV2ZXIgaGFwcGVuLgo+ID4gPiAtLS9xdW90
-ZS0tCj4gPiA+Cj4gPiA+IF9fcGVyY3B1IHRhZyBpcyBjdXJyZW50bHkgZGVmaW5lZCBpbiBpbmNs
-dWRlL2xpbnV4L2NvbXBpbGVyX3R5cGVzLmgsCj4gPiA+IHNvIHRoZXJlIGlzIG5vIGRpcmVjdCBu
-ZWVkIGZvciB0aGUgaW5jbHVzaW9uIG9mIDxsaW51eC9wZXJjcHUuaD4uCj4gPiA+IEhvd2V2ZXIs
-IGluIFsxXSB3ZSB3b3VsZCBsaWtlIHRvIHJlcHVycG9zZSBfX3BlcmNwdSB0YWcgYXMgYSBuYW1l
-ZAo+ID4gPiBhZGRyZXNzIHNwYWNlIHF1YWxpZmllciwgd2hlcmUgX19wZXJjcHUgbWFjcm8gdXNl
-cyBkZWZpbmVzIGZyb20KPiA+ID4gPGxpbnV4L3BlcmNwdS5oPi4KPiA+ID4KPiA+ID4gVGhpcyBw
-YXRjaCBzZXJpZXMgaXMgdGhlICJuaWNlIGNsZWFudXAiIHBhcnQsIGFuZCBhbGxvd3MgdXMgdG8g
-ZmluYWxseQo+ID4gPiBpbmNsdWRlIDxsaW51eC9wZXJjcHUuaD4gaW4gcHJhbmRvbS5oLgo+ID4g
-Pgo+ID4gPiBUaGUgd2hvbGUgc2VyaWVzIHdhcyB0ZXN0ZWQgYnkgY29tcGlsaW5nIHRoZSBrZXJu
-ZWwgZm9yIHg4Nl82NCBhbGxjb25maWcKPiA+ID4gYW5kIHNvbWUgcG9wdWxhciBhcmNoaXRlY3R1
-cmVzLCBuYW1lbHkgYXJtNjQgZGVmY29uZmlnLCBwb3dlcnBjIGRlZmNvbmZpZwo+ID4gPiBhbmQg
-bG9vbmdhcmNoIGRlZmNvbmZpZy4KPiA+Cj4gPiBPYnZpb3VzIHF1ZXN0aW9uKHMpIGlzKGFyZSk6
-Cj4gPiAxKSBoYXZlIHlvdSBzZWVuIHRoZSBJbmdvJ3MgZ2lnYW50aWMgcGF0Y2ggc2VyaWVzIHRv
-d2FyZHMgcmVzb2x2aW5nIGlzc3VlcyB3aXRoCj4gPiB0aGUgaGVhZGVycz8KPiA+IDIpIGlmIG5v
-dCwgcGxlYXNlIGxvb2sgYXQgdGhlIHByZWxpbWluYXJ5IHdvcmsgYW5kIHRha2Ugc29tZXRoaW5n
-IGZyb20gdGhlcmUsIEkKPiA+IGJlbGlldmUgdGhlcmUgYXJlIG1hbnkgdXNlZnVsIGNoYW5nZXMg
-YWxyZWFkeSB3YWl0aW5nIGZvciBhIGNvdXBsZSBvZiB5ZWFycyB0bwo+ID4gYmUgYXBwbGllZC4K
-PiA+Cj4gPiBCZWNhdXNlIEkgaGF2ZW4ndCBmb3VuZCBhbnkgcmVmZXJlbmNlcyBub3IgbWVudGlv
-bnMgb2YgdGhhdCBpbiB0aGUgY292ZXIgbGV0dGVyCj4gPiBoZXJlIGFuZCBleHBsYW5hdGlvbiB3
-aHkgaXQgd2FzIG5vdCB0YWtpbmcgaW50byBjb25zaWRlcmF0aW9uLgo+IAo+IEkgYW0gYXdhcmUg
-b2YgdGhlIHNlcmllcywgYnV0IHRoZSBwYXRjaCB0YWtlcyBvbmx5IGEgc21hbGwgYml0ZSBvZiBp
-dAo+IGFuZCBzcGVjaWZpY2FsbHkgcmVzb2x2ZXMgdGhlIGluY2x1c2lvbiBvZiA8bGludXgvcHJh
-bmRvbS5oPiBmcm9tCj4gbGludXgvcmFuZG9tLmguIFRoZSBzZXJpZXMgZml4ZXMgdGhlIG1pc3Np
-bmcgaW5jbHVzaW9uIG9mCj4gPGxpbnV4L3ByYW5kb20uaD4gaW4gZmlsZXMgdGhhdCB1c2UgcHNl
-dWRvLXJhbmRvbSBmdW5jdGlvbiBhbmQgaXQgd2FzCj4gbm90IG1lYW50IHRvIGJlIGEgZ2VuZXJh
-bCBoZWFkZXIgY2xlYW51cC4gVGhlIGVuZCBnb2FsIGlzIHRvIGFsbG93IHVzCj4gdG8gaW5jbHVk
-ZSA8bGludXgvcGVyY3B1Lmg+IGluIGxpbnV4L3ByYW5kb20uaCAtIHdoaWNoIHVzZXMgX19wZXJj
-cHUKPiB0YWcgd2l0aG91dCB0aGUgY29ycmVjdCBpbmNsdWRlLgoKVGhhbmsgeW91IGZvciBlbGFi
-b3JhdGlvbiwgaXQncyBhbGwgY2xlYXIgbm93LgoKPiBUaHVzLCB0aGUgcGF0Y2ggc2VyaWVzIGlz
-IG9ubHkgdGFuZ2VudGlhbGx5IGNvbm5lY3RlZCB0byBJbmdvJ3MgcGF0Y2ggc2VyaWVzLgoKLS0g
-CldpdGggQmVzdCBSZWdhcmRzLApBbmR5IFNoZXZjaGVua28KCgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+There are some spelling mistakes of 'retun' in comments which
+should be instead of 'return'.
+
+Signed-off-by: WangYuli <wangyuli@uniontech.com>
+---
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c | 2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h  | 2 +-
+ drivers/infiniband/core/sa_query.c        | 2 +-
+ drivers/input/misc/wistron_btns.c         | 2 +-
+ drivers/mtd/nand/raw/nandsim.c            | 2 +-
+ drivers/scsi/bfa/bfa_fcs.c                | 2 +-
+ drivers/scsi/pmcraid.c                    | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/omap-mpuss-lowpower.c b/arch/arm/mach-omap2/omap-mpuss-lowpower.c
+index 7ad74db951f6..f18ef45e2fe1 100644
+--- a/arch/arm/mach-omap2/omap-mpuss-lowpower.c
++++ b/arch/arm/mach-omap2/omap-mpuss-lowpower.c
+@@ -333,7 +333,7 @@ int omap4_hotplug_cpu(unsigned int cpu, unsigned int power_state)
+ 	omap_pm_ops.scu_prepare(cpu, power_state);
+ 
+ 	/*
+-	 * CPU never retuns back if targeted power state is OFF mode.
++	 * CPU never returns back if targeted power state is OFF mode.
+ 	 * CPU ONLINE follows normal CPU ONLINE ptah via
+ 	 * omap4_secondary_startup().
+ 	 */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
+index b26d5fe40c72..febc3e764a63 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
+@@ -231,7 +231,7 @@ struct dpu_crtc_state {
+ 	container_of(x, struct dpu_crtc_state, base)
+ 
+ /**
+- * dpu_crtc_frame_pending - retun the number of pending frames
++ * dpu_crtc_frame_pending - return the number of pending frames
+  * @crtc: Pointer to drm crtc object
+  */
+ static inline int dpu_crtc_frame_pending(struct drm_crtc *crtc)
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 8175dde60b0a..53571e6b3162 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1420,7 +1420,7 @@ enum opa_pr_supported {
+ /*
+  * opa_pr_query_possible - Check if current PR query can be an OPA query.
+  *
+- * Retuns PR_NOT_SUPPORTED if a path record query is not
++ * Returns PR_NOT_SUPPORTED if a path record query is not
+  * possible, PR_OPA_SUPPORTED if an OPA path record query
+  * is possible and PR_IB_SUPPORTED if an IB path record
+  * query is possible.
+diff --git a/drivers/input/misc/wistron_btns.c b/drivers/input/misc/wistron_btns.c
+index 5c4956678cd0..39d6f642cd19 100644
+--- a/drivers/input/misc/wistron_btns.c
++++ b/drivers/input/misc/wistron_btns.c
+@@ -1075,7 +1075,7 @@ static void wistron_led_init(struct device *parent)
+ 	}
+ 
+ 	if (leds_present & FE_MAIL_LED) {
+-		/* bios_get_default_setting(MAIL) always retuns 0, so just turn the led off */
++		/* bios_get_default_setting(MAIL) always returns 0, so just turn the led off */
+ 		wistron_mail_led.brightness = LED_OFF;
+ 		if (led_classdev_register(parent, &wistron_mail_led))
+ 			leds_present &= ~FE_MAIL_LED;
+diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+index 179b28459b4b..df48b7d01d16 100644
+--- a/drivers/mtd/nand/raw/nandsim.c
++++ b/drivers/mtd/nand/raw/nandsim.c
+@@ -1381,7 +1381,7 @@ static inline union ns_mem *NS_GET_PAGE(struct nandsim *ns)
+ }
+ 
+ /*
+- * Retuns a pointer to the current byte, within the current page.
++ * Returns a pointer to the current byte, within the current page.
+  */
+ static inline u_char *NS_PAGE_BYTE_OFF(struct nandsim *ns)
+ {
+diff --git a/drivers/scsi/bfa/bfa_fcs.c b/drivers/scsi/bfa/bfa_fcs.c
+index 5023c0ab4277..e52ce9b01f49 100644
+--- a/drivers/scsi/bfa/bfa_fcs.c
++++ b/drivers/scsi/bfa/bfa_fcs.c
+@@ -1431,7 +1431,7 @@ bfa_cb_lps_flogo_comp(void *bfad, void *uarg)
+  *	param[in]	vf_id - VF_ID
+  *
+  *	return
+- *	If lookup succeeds, retuns fcs vf object, otherwise returns NULL
++ *	If lookup succeeds, returns fcs vf object, otherwise returns NULL
+  */
+ bfa_fcs_vf_t   *
+ bfa_fcs_vf_lookup(struct bfa_fcs_s *fcs, u16 vf_id)
+diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
+index a2a084c8075e..72a4c6e3d0c8 100644
+--- a/drivers/scsi/pmcraid.c
++++ b/drivers/scsi/pmcraid.c
+@@ -4009,7 +4009,7 @@ static void pmcraid_tasklet_function(unsigned long instance)
+  * This routine un-registers registered interrupt handler and
+  * also frees irqs/vectors.
+  *
+- * Retun Value
++ * Return Value
+  *	None
+  */
+ static
+-- 
+2.43.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
