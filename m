@@ -4,167 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 326CDE6FE33
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Sep 2024 17:23:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52284CD4846
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Sep 2024 06:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:Cc:To:
-	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TEA4PBBdUuMb5uFFbP5RVwGb5RcU1V1Q3e4kY/tRD+U=; b=dgukM+mvI8m6pB9JdMVxtkSgpl
-	VOa5KZdzqkupSYpIZjUEyLdNxp2aVoLwY1eJ+L7dgdegM/QhL29vAndRE+tvLGBx0ZM8Ycx5MNlKe
-	F0wdvArrSysz0KZuTYfAcZ50mGI3u83u8H4MBJPhpvX6DYu154aTUVP0+NC5M7LPbZFK1Q3xS2ZkX
-	xLYWsVjYeatAjr9hFpcpH0jBx60/pecWT4h8M3uTyMEcX1xRbLRbt4WKzD2TkpbRpB3RAS2U8RlgG
-	8+oXDcf/aUcmccHs+UFJuG34sv1wNcpt4qs8XF0ufKpgjLO8R4IsWg/ar7TZQ5jxS1heArMFD5FqD
-	xibBwntg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Subject:Cc:To:From:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=X9aHhF/KQTTV/Umo5Epg68d+Ps4YaNbEAi0yLTNaAos=; b=sKej0dF29771k3
+	Re2GP4q3ybsQNJEoe5+XAVx2Qj4fbexffDwq739bNrUxXze9O3yL/ra/nSKkG+ERz7rVJfslso6au
+	dKhf2JUxtl9XSqYRPyYhLdN2pZZ0rIptx7Io+TCl8UIGvyLOyza4vJb4W/ep6yJkE7m61idp8jRv+
+	yxu1/ueRsCsKZE2WixeFYXNBsSJfn+x6P1PpxTqJioJY5YjT9firH70dWF6ZXyvI3cwGzW99f27mU
+	0eiQwJ0401HMfs56mrPhf89Oju1l0EyYhAejZX2TozM//yho6KYkC+lVsuGLvTnJrfnR6fOIORBHO
+	6klTtp2NjSxTuBlf5flg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smcg2-0000000D6gs-1kwn;
-	Fri, 06 Sep 2024 17:23:18 +0000
-Received: from mail-dm6nam10on20619.outbound.protection.outlook.com ([2a01:111:f400:7e88::619] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
+	id 1smozd-0000000EUG2-34L2;
+	Sat, 07 Sep 2024 06:32:21 +0000
+Received: from out203-205-221-205.mail.qq.com ([203.205.221.205])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smcg0-0000000D6gF-1dmh
+	id 1smozZ-0000000EUEy-38ZV
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Sep 2024 17:23:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qvpiGFOKlJDiCEQSJp0sUVkSLA/97AP7wVBmNaQq23uIABgf+iVIBIREqf+BjztOqSCgQDU6aRrPxW5Z6kwzG+nshV7eRJFcGCvwTUqp4kQSikUWI7iWmll9Jl8efRCR2Hu8cM+77mM8+zgSRXs/bRt/VZS9PLqGykJ1pB6u/B29fbY6gygB0fsn3uABVDxocg+s4ZDwjmM7c4Dx+TWk29xp0t2+wx1zMz7XfY+8zLrU4S580xJa+Ab6nYVIRz6fpe+1UWHWdF/kOtGTNOJWkCfDW/gLsHZbI8WPV6ICnwNuuQixGUZBWOVKRYWuspbNffQC1sSCTjb7FrbAxtgGAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ffYFxZia1M2ps0jdAjCyXg+bXPF/SqEkr8DxQdSjiqM=;
- b=MDPEJz8dMkI57TdHgs46kmIoYHrL/0l5SxO/r47ufusHY6dLEGNtcdtxS9XMSK7ZK8HsAcfQNqFhHICjhv0/Qk2Yvcw5dZijAlWMqxah/YCYRBIbvFvuqGrpC0te4QdmTi6jW++Y4Dyg9r8eWngxlHst83G7EIWsZnk99T/0nVmkG8C2a3aYmfhX2IVmCrPEgLQIWCWj/5gzHiY4Y0SArhRz61ervS1cw/CdHNxIyL6emIagR0/BGMsVyrboQ+JUm7Hwf0gHg/FyN2NEDsKVmJGblWI4zLJFbobRD0/2jB4OX9U7AILj36gPfCi8w2wjrc8W51kJu1bUsgCIHhCZBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ffYFxZia1M2ps0jdAjCyXg+bXPF/SqEkr8DxQdSjiqM=;
- b=n8xLePdyUTqu77Uf/W2WRyqClq2afPrSgJ4vWktmyrMHUeOw6rQiQ5+XJUCghKaTawITqU2WUir6mtowCD+xPaOWaBsFlY1cvA8DcflDpkdbFFnhpAbw3lpt4qKldfm0lw3gnhfkFJCuWW55q0MbFUXX1/qRNrBjwktX8aqruQn9cSbWO8lplIj70pkjPP8nVC/P2E1fiiaYKjGiHNBXHdko3xe4aFu1OvRxZzgRoSZf7kD6VgVGIDCcD90dv5Luiy7tDx6Q+6pNLXwTu4pGP+5SIeSCHr+lvtLl3b/zTBdd7QvEWLO6gRdvQb9Os9DodFlZoucFgl4ZsKfY3JESNA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM8PR12MB5447.namprd12.prod.outlook.com (2603:10b6:8:36::7) by
- PH7PR12MB9102.namprd12.prod.outlook.com (2603:10b6:510:2f8::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.25; Fri, 6 Sep
- 2024 17:23:05 +0000
-Received: from DM8PR12MB5447.namprd12.prod.outlook.com
- ([fe80::5f8:82ee:7da9:219b]) by DM8PR12MB5447.namprd12.prod.outlook.com
- ([fe80::5f8:82ee:7da9:219b%4]) with mapi id 15.20.7918.024; Fri, 6 Sep 2024
- 17:23:05 +0000
-Message-ID: <c64154f0-25b9-4943-a3f5-52ee08b5f3be@nvidia.com>
-Date: Fri, 6 Sep 2024 18:23:00 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for S28HS256T
-To: Michael Walle <mwalle@kernel.org>, tkuw584924@gmail.com,
- linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20240830030841.24500-1-Takahiro.Kuwano@infineon.com>
- <D3T1W2VQFGNG.14DUML0OSKRH@kernel.org>
- <66c8ebb0-1324-4ad9-9926-8d4eb7e1e63a@nvidia.com>
- <D3Z80PI18VZB.1ZLQ2TMR10UTG@kernel.org>
-From: Jon Hunter <jonathanh@nvidia.com>
-Content-Language: en-US
-In-Reply-To: <D3Z80PI18VZB.1ZLQ2TMR10UTG@kernel.org>
-X-ClientProxiedBy: LO4P265CA0320.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:390::13) To DM8PR12MB5447.namprd12.prod.outlook.com
- (2603:10b6:8:36::7)
+	Sat, 07 Sep 2024 06:32:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1725690727;
+	bh=6PCxOPhH4pc5zWqAmBT2Y6vNrLexjd5OGQB7tCEPWPI=;
+	h=From:To:Cc:Subject:Date;
+	b=vbq//FlCN4MlmSSSO8bw/h585sNx3tRtFZya/AYlZq6nvZQvOz+yhphM+eOu18A/w
+	 47i4aZoC+xwuVam8nmXR9vrBEUN0D5+XebPew4X6gXYF8h+GHwBw2bvHLGqrhMBy7J
+	 VlsU5rFrYvEjr9ljGiqemQ7dmiqmeW9Gsq02WnNg=
+Received: from localhost.localdomain ([171.223.88.74])
+	by newxmesmtplogicsvrsza15-1.qq.com (NewEsmtp) with SMTP
+	id 7FB19A96; Sat, 07 Sep 2024 14:31:59 +0800
+X-QQ-mid: xmsmtpt1725690719t11a4eqc4
+Message-ID: <tencent_E68F624B67F256EA24115857B3DEB5E84907@qq.com>
+X-QQ-XMAILINFO: OZZSS56D9fAjIMeIJKLpiTQNDy6iX/T1YBneIZWcd/EK1ZCjdRoe+ZBf3EG6U1
+	 7r2kxiPMEzMqbFfDaurB1lRYGIVSFDS6qfX424/Ei1KJ9ZGuPU/K7INTFHDbaugvOZDaVpNVQTtn
+	 5C8Pzsf5k2OL4kq5BypDJLWfOuBCF6nni3Nl438FpBKvg6wf8Rcpm+w7fzch3l1jdappwDw+6zad
+	 LkeNt8s9Fy7+rRXl2N4NKnDEh8Uaq8SwIqbHn+9lMIqKFO46LBXYdmaWz4CAfbUHYnIEetZK9zf8
+	 A3BiwKqUSwAfwyMpLj6AMx0tRJinTd0fL+xY9gw6rh2IoGCCLmFp0EC2iJigwvodhac74C+fv72p
+	 qYBnpN6SjTm3UHqj2QA2xCV/2ldKlqAND+XjrWnDiR9hMheKIvAm2PtkWb9325D5NV/uRzXjZkJh
+	 QI16/CK7vvfBSn5hJ80rpgoTc/5Zg8cTqM4ryxvEezkIGvMt55c37lrwWr9XXfZaaQ2fCCBw4TlF
+	 b8EdoloQCVWc4T564Txjnr0JStrZdEtrarnisd7tu7NQjKRzdLW3bzygqfw1BOpKqP+agcqh6Yj1
+	 8jKk38xRDQxN1VXR9LK0Gl9uuq1AZuzivmYE1DaM0BvgaI5u9QG33srF6fDOTC59LJ0140YQmBzN
+	 JLdXeLHlahOd1SG6YFaTxV2segVBJ6pXylGCa3k4c2XGfF0JMSDPpqpaEn371bMpsnXVVM9XuXf1
+	 uJFS/jKlh5VnfFJiGAITt/z5pANCJnvIHQorYbqJDdXUhKMkFwsB0URgk2CVxfgyJ8vEIGH8ImPt
+	 vlUlmVWmlBpfnzmVKzKyhtRpT4R0pLTeOArU86p0P6Kw4nbsJCcKBz+4F+e455x3XhQlBJH7x0Z/
+	 Spsw3Ahd/dVFP3/nGmU6wgPVY4F145Oam/tmQZhXcOB7scEUeqMbgJKxmUKkRyFvYPe811RlcNf0
+	 +rvBialJk9R4Ce65lvPkX8zD4HtW4c10RRtY9kVTUnkc7VnbrV9BPl2Gw80pst1OiJVf+4gmaBED
+	 QHyrWEKIU458FGdIzhHdX1m86huEL8C7Yp9zA/4M2mMWJwc+5K
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Renjun Wang <renjunw0@foxmail.com>
+To: tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Renjun Wang <renjunw0@foxmail.com>
+Subject: [PATCH] mtd: spi-nor: Add support for XM25Q series chips.
+Date: Sat,  7 Sep 2024 14:31:36 +0800
+X-OQ-MSGID: <20240907063136.387184-1-renjunw0@foxmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5447:EE_|PH7PR12MB9102:EE_
-X-MS-Office365-Filtering-Correlation-Id: 89d51984-4980-4454-5ec8-08dcce98917f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?NFl6TlpSbHdnR2crN2JmSDBaOVdiRXZTUVhuY0t0YWNEdnNOVldaSG9ONmxZ?=
- =?utf-8?B?KzRDVk5kZFByRTQ0R1hkVEp6SHFzUWdiNVZKQTlXQUhtbUsvN2I4NEVnL2tD?=
- =?utf-8?B?d1N4aDhDK3I2azBJbFk3Z2xkNVdpQUxTc0ZwSEtncDlNeTdOZWhHQzVRdlFi?=
- =?utf-8?B?RWJBb0tSZmU0M09nM3Z6VThicmd0c1gwWkxDeFpFdy9EK2RNVDZXRzMyMHpU?=
- =?utf-8?B?dE8xYWoyOTBRUitwU2xETC9oWnZqMGR1N29qMm50cHRyc3NPWjNrSU1PVkxT?=
- =?utf-8?B?ZEhnZFhQbkFQcmYwMlZVRlRuU2dzUkU2UUtLUjBFTnUxNDIxVG1jc1EvQ0lS?=
- =?utf-8?B?bVQwdFZhUU1UelE2T2w5RnJmOHVXbEFIUDdCa1piRXA4aXBOaEdvL3JXUTc0?=
- =?utf-8?B?OExaQS9mcGNCR2lqdkFjUUcrUXIva1l2VUR6S1k4TnZpa1RlV1R3d2cyUUph?=
- =?utf-8?B?NUpBb3lFSkF6THVzUGRvdUttT1k1OTZHd1ExMUhsZ1JoSEJCRE1qR0h0ajFm?=
- =?utf-8?B?SFowUzN2NXAvbGl1ZGJkQkMzOC9jbUxNUWx0TWpJSkxlWGQ3K2RocS9aZWtY?=
- =?utf-8?B?RlNIazdQMkpVUE1JZXhkcldBTTlVcGdCblUzdnhQeFo3c0x5TE93ZkIreU40?=
- =?utf-8?B?bGVqSVNZTm5Odm04WjdjMnNjeEJNUEdlZEFtOFJsMzRDcDZBUWcyV3lkVW5v?=
- =?utf-8?B?MEJoOGNmbjlLZlh2amd5Y1pOOUJqNldCeHhsUE54dHpTSUlLNkw0WGdTRDFD?=
- =?utf-8?B?YjZJdFNuc3VaMVl0dlRlcXVWMFM2VC9sMEZSTzY0amIrSTFWODNMTlM1L05s?=
- =?utf-8?B?cnNMTnJsN3NGbUdlNDNyN0E3SCtCUS9DZHowMXNNbzBNUlp6d2ZRS3lIcERS?=
- =?utf-8?B?VGtJaXlxRXloK2ZvNmt4b0Q1aWZtR3BBSUFBLy96eGd3eGlONzRXSG5mMXY4?=
- =?utf-8?B?WWhabDc1QUVmbXkzYUNENkdLR2pLeDhIclpVeVVxRHFDNUprVitoM0xraVBZ?=
- =?utf-8?B?bFFnQUR0K0l0dVVhUTE0ZjE4S1FXa1Y4Y3RkU2xOdEg2cWF3TFlQM1A1c2Qv?=
- =?utf-8?B?ZEFmRkZFUXRveFNVWS9mUmNjVXpQVHdQbmxrWkZsa1U3TGV0dmI4YWlGK2dt?=
- =?utf-8?B?VURlWGdFWDVOUFErY0I4QzRxQXNxNzlpOTByc2xtMTRjRVFrZjF2NGc1QXR5?=
- =?utf-8?B?dHdkT0VhQnQxWmE0bkp5aUMwazNyS0NLcWhaVlk5V2JSM2hKeDl5R1dybTEw?=
- =?utf-8?B?TWV3bVBvSFpzMlVSa3grVmo2b2dyeEFuUGJ4SWhEWnBuWFl0VnRBRThSd2RB?=
- =?utf-8?B?YTF2MGlOcCtSZi80WHc0OVhhU045dFYrbXZSQmhJVGMwRUR0c2IvNjN3VjNm?=
- =?utf-8?B?V0poTk9vdlJxT2QrSjU2dWFNSVRldHd1QXFpam1mclhOd2FiWW5pcVIrOEtX?=
- =?utf-8?B?MUxFdWJ1dXd3V1p2d2t2aGJsVTIxMDJNSUJTV1d1VzZNZHV0aG5QQk1uQ0ZC?=
- =?utf-8?B?Wkc3Q0VydHQxd094cy9lWDFjTy9lOEpQdjVRa01NZU1Sa1RTeVlWbW9mOWY2?=
- =?utf-8?B?aXVKSVpGWFROSWRTOFkwcFBlbWpWUDVwYmZUbXExdUNYNmlxWUZjMVl2dHky?=
- =?utf-8?B?eEgrbnM5NWFBWHFHSm5Fak9OMkRxVDFLTVJhUWp2MjYwWmtOZkV6Vk1lSVhu?=
- =?utf-8?B?OTRKMXI3dk9MZ0xic1Q3ZWd0QXFHL0ZTME1LZ1pNK1VraUtBTk0wVllaeXFC?=
- =?utf-8?B?Nm9lclNXNFc5K1B0djVSRFpDdUVsU1F0YkliaWlKaWhaV0xKSWJqYTBlb05l?=
- =?utf-8?B?NDNNQTJDaXlKRlppVzRzZz09?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5447.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UVhrQVVKS3FCTFFzMFMxbzVJVmNXMHBiUFdpZThQZWd6UjBQRDQrTWZQNmJj?=
- =?utf-8?B?NFV1SjN0Y3p3b2NFbnUrWE9mUVpkbkUrSzhjZzUrNkFPMTJtRHpOdGZTa1BJ?=
- =?utf-8?B?cjBjek9JVkRpakZzMVk0L2VGUUE5WmpvK2Y3UjVHZnJjNFY0SS92R1IzdWlm?=
- =?utf-8?B?MHo0bDl1UXJjYnRHYlpiOTV0WE9Fcm5LeFJEanNEcFJLZHpWWVoyRjZLazBr?=
- =?utf-8?B?ZTExM3dUS1BlclMyUWFzK3RBaTUra3JhVkViN0RRTGRUc1ZLYm1kb3lGc2lq?=
- =?utf-8?B?c1FiaEdNZ1BqbFM0UGU0MlZUTTlWNFBrOTQwbUhlOC93UzZYM2wwWU1aUlh6?=
- =?utf-8?B?MTBnd3Ardkl1TUVtMXJ1WEJRcUpFNTk1OTUybVhvQlpBeXZJdU52clFEUUlD?=
- =?utf-8?B?ZWpMSzFvbDVoL000QVFzaHc2bjh0WGhwWm9rZmFvOWFoNUxiU0ZrQkRDa3Br?=
- =?utf-8?B?SjlHQnd4Vm94aFBrQUVyK2h1Um11UnNheFpseEhMdmoxbVYvY3drdmFPMzJC?=
- =?utf-8?B?RkRhaERudHNHMWxSS2h4TlRSS1o0VmtUSDdDekhhVFZUTERabTZMNXVieWpv?=
- =?utf-8?B?SkQ5aktEcGw4NlF4ODRkVGN6S3V1Uk9ZZGlxM1dvOUhDQklZbzJwM1F2cXNL?=
- =?utf-8?B?QTBPZU53OG1DYno2Uzg5RW1ZWlhabXhXODJqbFVhWTRWVnFWYnV5K3R0dXp0?=
- =?utf-8?B?bkp6NkRJaU5mOHRxNFY3Qy9ZTEs2c1pEMG1SZnVUNnVyd1BGc3hzY292bjlw?=
- =?utf-8?B?aEtCWnJGVEZBUXJQbjNqdVhSUEwzck54YktKNDNGU21MRVBwbUZXSGdxdHlT?=
- =?utf-8?B?UGNGUEliSGora1VjVFhiRkxxRklLN3ovSjl0TjdLT1NpbEpWTk9jK1Y2R3Fp?=
- =?utf-8?B?WWtmU2E0ZU5EaHZqK0dZVlJpYU94NlNybTY4MGNjTkp5RGZ5NVVmbmpiWnk2?=
- =?utf-8?B?MWNrMXp6djZ3QUROVjRXRVJUeksvTmFqN2k5OVc0N2E4T0p3c2tzRXNLRE1x?=
- =?utf-8?B?UzJWRlJTVVJCaU1jUUdyWGRudmlVT3dFdDFUbUNMWFlrTUpBOVZiQnV6UXFQ?=
- =?utf-8?B?czhiOENCamg3cnd6aHJ3MVhsdGY4VElYU3pDUHVwVS9nOEk1RjZkK01HcFVU?=
- =?utf-8?B?cmFJeHlhT3dsVU5idFpPQ3k5L3NEYVFqL3BjTmlHdytYY2h4Z2hITVZWUFFR?=
- =?utf-8?B?UVBnYXlRQThUbE5LRDJFSnBPU1ZvTEZhdm1mL3FrS2VncnA5ZEhnNFhWc08r?=
- =?utf-8?B?eldsUTNZTmRFR1hOUEE5U0dsZms1SDMyQ0JMZGs4dXlQN2NTVmlPS2swNlVU?=
- =?utf-8?B?c20xdjJqc2ZMWHVza0RUV1hBUndrRnJFaWVpMnhnWEdoVysyQ200VEVvSW0w?=
- =?utf-8?B?Q1cxNEVGdllCR1V0SUFoQ0UyUTJUM21VcVprVk1WaVdmTzVFYUZRUDdvZnQ1?=
- =?utf-8?B?bU52b3dtOVN0b255MkFaK2dVdmRHakRpYUV1UjBjR0tIZ1pja3RaRitvMEtw?=
- =?utf-8?B?UGpMQkY4RUVDdXlYcGNFSFdZbjZLQUpYYUtwMnk5eFEvRXlhNS9xTXY2QWlx?=
- =?utf-8?B?cFhtVUxiS2M1T2VyWXUrQ1MyVkxuQkdTVVlZbEdvdGJNellmL0Z6dUxkenNl?=
- =?utf-8?B?UHZ4ZDYrelhsK0ZwT04wY0hObzFuVFI3QndWNVZPRlJCK2NrU05jYUJwNVZ5?=
- =?utf-8?B?QysyRjNndDhrWEl1RXNJbmZZMmNjQ2NseFhuZUFMRGRhQVZBT0RxdkladVl5?=
- =?utf-8?B?SHJQVURqQVJ0RERVa2pYN2ZxK21ieSs3UXNnMHRrbnpKQ1Z2dk5IT1k0Z1NO?=
- =?utf-8?B?cklvdDZFRzAzM3c3dDdTRkFWb1RaSVAveElJbnBxMGprRCs0U3poS0JqR1Y3?=
- =?utf-8?B?QkZvUUYwcUoxU3FpRHdOLzIvNVFqZVl6eUttVjUzbXNyK1dTZksyWDY0QXBZ?=
- =?utf-8?B?SzVyRm93bDREbWtuYmw5WVBqODI5cnQ3RXVveVdIeUViT1A3cU5reGFlOHJu?=
- =?utf-8?B?MXg2Smt6NDdxSXN4WkFQNjBBUDBxS0JzY3JLTno2Umk1WGlJenU0cHFuY3cz?=
- =?utf-8?B?SnVsU3VvQ1h6amwzWnRXZU1tY283M3Rvd3cvbHRCUkNLR3oySHJ3ZTYyUklJ?=
- =?utf-8?B?eVhwdUNzems1M0JDWitJZm1QMndHOHVpWm1Rd2tCT0Q3aDNTU3RZYTdUVnRO?=
- =?utf-8?B?SFE3SkVqdDNFckx0Qm5pTkNvRFZzVGFqQUlXU0ZCS1ZYb3dyUzdiWk83eUpU?=
- =?utf-8?B?ZkpwTWdwWFY3eGxGMGFycjc4djNBPT0=?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89d51984-4980-4454-5ec8-08dcce98917f
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5447.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2024 17:23:05.3423
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dSjtJtgf2Qi8IpcZvi+dOdPyvxqexSIINUIISlXRRF0gzUb1I+Moblz222CzxbEIhX2bGnvmJqMmkDmsGt1sMg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9102
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240906_102316_470781_47DFE80C 
-X-CRM114-Status: GOOD (  15.34  )
+X-CRM114-CacheID: sfid-20240906_233218_166549_99C720CF 
+X-CRM114-Status: UNSURE (   8.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -176,48 +85,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
+Add support for XM25QH32A, XM25QH64C, XM25QU64C, XM25QH128B, XM25QH128C,
+XM25QU128C, XM25QH256C. These series chips are already tested on Orange
+Pi boards[1].
 
-On 06/09/2024 14:04, Michael Walle wrote:
-> Hi Jon,
-> 
->> Bisect is pointing to this commit and adding the 'name' field does fix
->> it. So it would appear the SPI NOR code still wants the name field.
-> 
-> Thanks for the report, could you try the following patch.
-> 
-> -michael
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index d8e551fd2e2a..101ee5b0ddeb 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3281,7 +3281,8 @@ static const struct flash_info *spi_nor_match_name(struct spi_nor *nor,
-> 
->   	for (i = 0; i < ARRAY_SIZE(manufacturers); i++) {
->   		for (j = 0; j < manufacturers[i]->nparts; j++) {
-> -			if (!strcmp(name, manufacturers[i]->parts[j].name)) {
-> +			if (manufacturers[i]->parts[j].name &&
-> +			    !strcmp(name, manufacturers[i]->parts[j].name)) {
->   				nor->manufacturer = manufacturers[i];
->   				return &manufacturers[i]->parts[j];
->   			}
+[1]https://github.com/orangepi-xunlong/linux-orangepi/blob/orange-pi-6.1-rk35xx/drivers/mtd/spi-nor/xmc.c
 
+Signed-off-by: Renjun Wang <renjunw0@foxmail.com>
+---
+ drivers/mtd/spi-nor/xmc.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-Works for me! If you plan to send a patch feel free to add my ...
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Thanks
-Jon
-
+diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+index d5a06054b0dd..0532d2e2f193 100644
+--- a/drivers/mtd/spi-nor/xmc.c
++++ b/drivers/mtd/spi-nor/xmc.c
+@@ -10,15 +10,49 @@
+ 
+ static const struct flash_info xmc_nor_parts[] = {
+ 	{
++		.id = SNOR_ID(0x20, 0x70, 0x16),
++		.name = "XM25QH32A",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
+ 		.id = SNOR_ID(0x20, 0x70, 0x17),
+ 		.name = "XM25QH64A",
+ 		.size = SZ_8M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0x40, 0x17),
++		.name = "XM25QH64C",
++		.size = SZ_8M,
++	}, {
++		.id = SNOR_ID(0x20, 0x41, 0x17),
++		.name = "XM25QU64C",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 	}, {
+ 		.id = SNOR_ID(0x20, 0x70, 0x18),
+ 		.name = "XM25QH128A",
+ 		.size = SZ_16M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0x60, 0x18),
++		.name = "XM25QH128B",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0x40, 0x18),
++		.name = "XM25QH128C",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0x41, 0x18),
++		.name = "XM25QU128C",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0x40, 0x19),
++		.name = "XM25QH256C",
++		.size = SZ_32M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 	},
+ };
+ 
 -- 
-nvpublic
+2.39.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
