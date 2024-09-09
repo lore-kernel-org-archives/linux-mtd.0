@@ -4,97 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59534CE7AB0
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 07:09:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AF97CE7AB0
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 07:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0UqjpPr9wGgiuSnaZY+Kim99mLnGxibgsg3S4LmtBPQ=; b=cFuC7aQQlWSG/I
-	kD7vi1wzj8GxHWh+AxBW9Had/4oayN9JQrks3lZXd1BN37kgK/79FztF5EXfyLDswolQu3924vpt2
-	zhqN/tEe8vpvhJCOpyaOnIIoK2+mGUnzrD4mlX536UVLn9n9QG63U8njTHg2HQU/KRJyhUdXddCPY
-	pEm0v4h++vuKISh/NVYboq9gL1KuIJGDh8g0wEZ2VfP+OffKEZQaCdq+NRJ+u0+YUVQ6whGo3GaC0
-	jqf48qYQ20kFNYz+zdKFN+S3Oy85Z6AYPV/9v6KWCY25xUm+h6GZxGMQI+dVIgC3GYUq5pg4u1/5Y
-	XlbikbIReyTVHluHMfFw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=XQiRgRX78Xl7T4232KxUzoCtzx5/qZSriQOG+/me1Z8=; b=4xPT5XgojbUpI7
+	rF+7ObXZV81XNN2cniNAr9BYo5pjtZ7dzVS3ke+zG1MeRl6D39tUzQsAytPlnNYVJrY2TvhEVkzI9
+	BuwmACD1aka391LsAAP2qEPU1IOEf6qpDjzQ6ZI3/RX6AuuPRKMu4fD7r7ptLUi3u7P3KN2LLHP0k
+	5BK6yE2KSsC0OcRVGs+HnjLHeTslx/pUgDcrv+tGQO4ONN3HKTFujrdxJwB/BczQ4UhR4TG5tuMFt
+	Oo1pD8Mc0WvQg/gayM2Gte7U5lJJyzMfoTEayCuTrW2M6Y0Q28ekBeCpDcDbrO5RVylCnz0fuT0th
+	imqgis1uvEBB3uiDt83A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snYWa-00000000kPq-40np;
-	Mon, 09 Sep 2024 07:09:25 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1snYph-00000000pBB-2WUU;
+	Mon, 09 Sep 2024 07:29:09 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snYVw-00000000joC-3XXh
+	id 1snYpd-00000000p8N-3te5
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Sep 2024 07:08:54 +0000
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-374ca65cafdso2457365f8f.2
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2024 00:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725865723; x=1726470523; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k/MFlMnrTNocZP8/Uv97NsCue+ROk0MIWVg6GOd8r8g=;
-        b=JVPUK/urLzzRhPpQ/D3dooBFZ9/hPLX+bxxVkhEprs6aBNiEHVPn9tlOFO6nOmB3c2
-         sxriHg0yux9ytfKMk9dqbs6U5NGPWbJPhjY5njTyt9BnoDfB+oiCJOVbiJtLWiabsHOK
-         hZ8SixgZ97em2Q1EbiqqQ0aEiAZs7BG6XfHf9Uocu+daqT2dfgoqAhzfOoge0bRWq5vt
-         MDyWj8O74tR6prkiQveGAl5KLRJlqXfXwOcUHaI9gEZpbjE6oUdKH7Y98wN13PMqiX0s
-         YwMElb+0cgJUKGuMj1kJPRXqxIjLH25aERbxwSnT/NzCMXoZCZy5Dsrnog29nm7y3IMn
-         EV8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725865723; x=1726470523;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k/MFlMnrTNocZP8/Uv97NsCue+ROk0MIWVg6GOd8r8g=;
-        b=BlF34mo54gE7ycRlQ+K0UsRVjcWcnxZXcY72zxDuvJvW4+E/mAKg2crsB1PZTk9U8H
-         DcZwE1/eC3OQnvQBlwKSWTsE9T7EwetqWmcyCh4o/elEQkURx63TFJLhQg9ln38AQAdM
-         VmTfRZ/uDo7q+I4qCbuN6dmg3LbElslWQrdMdajb6iSN6f77nMBjhcjUo5JqiY/5/Wek
-         tEZNvD00OGybD9JxpU6uaNTqA2jsu49qkbB6z8MyBSQ7SbXETyv5Mw27jqwDvNRuWcrF
-         GdZnyD6BaK7WMO972fhngybKkBeM9BhkcftuAHYq6BONhAKwCn99AwxBHfrvS23xNH0x
-         ovew==
-X-Forwarded-Encrypted: i=1; AJvYcCVHBDxh69p8mDbU7hLtc90BVtv99d6TlI/662T7NgB0J6kxKuhMkiLTwhO9a87jowAsXY+agAwlsGA=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxrtiCtLyg/1RRDCn7kEJEw+N5aZQiHroeWt9h0DC9hoOgsHCS7
-	YS7McCBnPBtUZH5LdbITXIMugJpiZ7g5mKErXPzHMLqWC4rQivkv
-X-Google-Smtp-Source: AGHT+IF/jsmfALn+XbJWo7DbJRUOtQ19Xtb/ZppZO8Lnb9QwaZtsxMP8/xIAWo66GB7XqojzBH2ExQ==
-X-Received: by 2002:adf:fd12:0:b0:374:baeb:2fb with SMTP id ffacd0b85a97d-37894a0d0b6mr3746464f8f.35.1725865722690;
-        Mon, 09 Sep 2024 00:08:42 -0700 (PDT)
-Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378956d375asm5178754f8f.66.2024.09.09.00.08.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2024 00:08:42 -0700 (PDT)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: x86@kernel.org,
-	linux-crypto@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-media@vger.kernel.org,
+	Mon, 09 Sep 2024 07:29:07 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 16E96A4019E;
+	Mon,  9 Sep 2024 07:28:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E847C4CEC5;
+	Mon,  9 Sep 2024 07:29:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725866944;
+	bh=gLORX5kNyb8Wx4wp2/yGi9iofYmB9JEz1cojrS4yw90=;
+	h=From:To:Cc:Subject:Date:From;
+	b=d3e1ucj4AhArJNEXjeAmQ/6yyGYVNiPYMe2PMGZxPVp54qEk3LKKG+x1+O6GbuBlE
+	 XynLX1OZyD8Hz/D6I1r2WW/UyQh8h5ot9gd/9OYAl2cxic8dmG9ajmELNNAHGFNDSf
+	 dtK+q6isWXeOuf/MTYzPpRt2S1Fy2OGNaa1DRYnfXh+l+yt6QxtDP0mzIEUWMfnukj
+	 GJroeindJ68Sa7Rt/XFvGq7FefENsEXgoYtDWTJ5anaf6b36wHl0nw4xiNPiJF/6J9
+	 IbVCZSdI3QB/OiaWJgpHS87kdqtivrgb/x7jclf1QoqAfstPcg3XcHyRyu7cmJbixj
+	 O2TBEztnPg6yg==
+From: Michael Walle <mwalle@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
 	linux-mtd@lists.infradead.org,
-	linux-fscrypt@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH v2 17/19] netem: Include <linux/prandom.h> in sch_netem.c
-Date: Mon,  9 Sep 2024 09:05:31 +0200
-Message-ID: <20240909070742.75425-18-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240909070742.75425-1-ubizjak@gmail.com>
-References: <20240909070742.75425-1-ubizjak@gmail.com>
+	linux-kernel@vger.kernel.org,
+	Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] mtd: spi-nor: fix flash probing
+Date: Mon,  9 Sep 2024 09:28:54 +0200
+Message-Id: <20240909072854.812206-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240909_000845_928752_5F907249 
-X-CRM114-Status: UNSURE (   9.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240909_002906_049425_8F4727AF 
+X-CRM114-Status: GOOD (  12.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,36 +77,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Include <linux/prandom.h> header to allow the removal of legacy
-inclusion of <linux/prandom.h> from <linux/random.h>.
+Fix flash probing by name. Flash entries without a name are allowed
+since commit 15eb8303bb42 ("mtd: spi-nor: mark the flash name as
+obsolete"). But it was just until recently that a flash entry without a
+name was actually introduced. This triggers a bug in the legacy probe by
+name path. Skip entries without a name to fix it.
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Stephen Hemminger <stephen@networkplumber.org>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
+Fixes: 2095e7da8049 ("mtd: spi-nor: spansion: Add support for S28HS256T")
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Closes: https://lore.kernel.org/r/66c8ebb0-1324-4ad9-9926-8d4eb7e1e63a@nvidia.com/
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- net/sched/sch_netem.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/spi-nor/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
-index 0f8d581438c3..2d919f590772 100644
---- a/net/sched/sch_netem.c
-+++ b/net/sched/sch_netem.c
-@@ -17,6 +17,7 @@
- #include <linux/errno.h>
- #include <linux/skbuff.h>
- #include <linux/vmalloc.h>
-+#include <linux/prandom.h>
- #include <linux/rtnetlink.h>
- #include <linux/reciprocal_div.h>
- #include <linux/rbtree.h>
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index d8e551fd2e2a..101ee5b0ddeb 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3281,7 +3281,8 @@ static const struct flash_info *spi_nor_match_name(struct spi_nor *nor,
+ 
+ 	for (i = 0; i < ARRAY_SIZE(manufacturers); i++) {
+ 		for (j = 0; j < manufacturers[i]->nparts; j++) {
+-			if (!strcmp(name, manufacturers[i]->parts[j].name)) {
++			if (manufacturers[i]->parts[j].name &&
++			    !strcmp(name, manufacturers[i]->parts[j].name)) {
+ 				nor->manufacturer = manufacturers[i];
+ 				return &manufacturers[i]->parts[j];
+ 			}
 -- 
-2.46.0
+2.39.2
 
 
 ______________________________________________________
