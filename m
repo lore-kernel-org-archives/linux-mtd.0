@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C5F1ECE57C
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 07:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41EBDE6FE49
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 07:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f6hK1avpZzPxZGLtx0wO4MwBBa6BmImXrIJ9XFAqdaQ=; b=Vhsazfd+LyGvYK
-	3zyzrPr84zEdur0aKrecWmMo9zCwOE2YTgDzEBok3nHmuSvr19nG6EHjK/INP0qxSByWMsTl/+xrZ
-	PPyj+wYyxEETS0RbMinIRyQCaugw6fCwae9MGPduTOXR2bI8LFtE4uY0ozb6ea4vAbfuLXSM0fEPQ
-	LSQcfuI44fvJZ0lIdE2IAKujFflBH8pcIEmxQugw6KcNtT/y371kt2WhgY+zew6MqZsXIdadRsjCk
-	bra9NXk928JNWAOYfYdI8K9JzAlA4rzLtLHs7Cd6ZcfxOxJufnCC101CjJJdhkZ3FHmlqNEN4PM4y
-	pOw+09jAMeYuH5zmTBDg==;
+	List-Owner; bh=LnBxD9u5qE41um6/sPNObJWQsFnABpr7HRUlyBqqxyk=; b=DeYDWI9YwuCwxx
+	mi19Dr5VQvvzyugI2hP1s6f5hfpt+cOfTMIBxIot57U1bzrFs+ZEAyg7o9ZZDoUfv26id5lNy059i
+	srCjDk7FMk6BAuo2jXUfEBFET/S4bLhbvKkAUYf6d4Dktmu1h9t3F3YSgTZ6eBKQ2N68Acbw1fTzp
+	N/M2+fZJ0IgrpqyjTwwZvJbP/ekIgT+uecJnoN5BszXX0sNsQjAB45Gp3ZNLV3FtpMLYkMbdVMaXg
+	xa3rid+HubAdJr5FIEZU0nPsWHGptpkIROv/vRepABEkkxlGyx2skdQpQQ8vNYwQHM2HkRW9otKuv
+	9l2iivkLzkDLC7UkAr1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snZGk-00000000wDA-0pYQ;
-	Mon, 09 Sep 2024 07:57:06 +0000
-Received: from mail-wm1-f43.google.com ([209.85.128.43])
+	id 1snZGn-00000000wGW-1uwF;
+	Mon, 09 Sep 2024 07:57:09 +0000
+Received: from mail-wr1-f51.google.com ([209.85.221.51])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snZGb-00000000w3n-2vp7
+	id 1snZGc-00000000w4Q-1TCB
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Sep 2024 07:57:01 +0000
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-42cbb08a1a5so890075e9.3
+	Mon, 09 Sep 2024 07:57:02 +0000
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-374c7d14191so2727409f8f.0
         for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2024 00:56:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725868615; x=1726473415; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1725868616; x=1726473416; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ShjJx/ObaG+8g3GTS0ZEXmep/OHlf8GgKk/3WiVwkKM=;
-        b=gxf1reepCvMyBVdSBBqXkdZ2rvdOSs4WaePa6hJTJKbKhW7gaEebQsR7VglLeAvv4c
-         5Ez5XJ5fPZ8NST8ssi4M5bdfA4giVzb2YA60Lw/v98XZtK5Bkoj98xaC0I8mo2Vn40Mz
-         g9hepXZq/hs7S+QATrbCgWRWuIVhXGvEpkJ61dDknT0SVKrD0d7fJft/yzx3VYQGyy2r
-         Te13ZlxlQDYjhjIxA+9RMKqJrwCByjszJFEfrHwtHuK3Rij62WGAIq4IBa9GY23Y06f4
-         Q3eRiQuJbVdJECQ94/ozAQyFe/G9u+t2hkAxBt4ezRX6cNIlJzUNceUg2DPtKEEkxRPF
-         8IIw==
+        bh=tT07a8fYg2mX8zdZb0NUXYrNfwc3Lxt6djOa1kz4aGg=;
+        b=el5hTfyhoUtIJF6oT4Y2mFcmtvZMRAoNr5pme6WTHnkwkB4Sl9zJjcNgKwJtjC53xB
+         dA7lyigbGGvCuWb90Z7Qaxa4niV1fQRKVK6hUTEl1ZQSWfRrfU08Zkjcy1J9A5EkQoiW
+         YqeewD/o+yHw1VYHLEJ2U8iFdF8SnO1jYDPL4frkH9M5B/jF42rDj+4k8qwt7v09u+ji
+         F+k208rKuFMVi/yORIsE+neBWXUsnF/RoSE6Ru6dcFSIyrQ/3i8hp3dASSrmfcsls09c
+         G7duwRfsgf+EVYULwTDJKC1AZQI4X7V88Bm8jd/srMdtPOmwpsYQTy9rZbHxehVTADKk
+         Cgfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725868615; x=1726473415;
+        d=1e100.net; s=20230601; t=1725868616; x=1726473416;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ShjJx/ObaG+8g3GTS0ZEXmep/OHlf8GgKk/3WiVwkKM=;
-        b=vrlCA6g/uwhqlmxbBKdOwtGuPwA5Hy9JSj+Bqm8D2xhsIkJIcCbEWOqvUiX0rX6sxr
-         XzQHbEw4u4/C8mI9HoXqXMvzSw8Fq9Y8FVXo6Mv6weDftD/8RrJE95KTEPQ/Qg6oLD/j
-         uoO6iOOSf/MpZIil6xP2C5ehDT1cwtY0fwoU0vWHSpNagBEyQA5dA2zh0/d4WbZsT2Bh
-         q5vmzi2wk1bbA1RvEAy7wENjAGapd8Kr7iZvJDdyHXLHsFKzIa6ByeVER5e6ixMdQWX2
-         /jCZ3to7JEFXG9kt1e/gYSECPM7JX2BXezRVcnb2D/Gl3ur2Vx1VBj479zR2mkwzZk9a
-         oC4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ05oc1DXwswb7H80Wiy6XjLXr7zg8ulpWRFFmxqyJsnl9llIzOCfHnPfOLBNepMyKUrkL7iJXSFg=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzO3jMCnvKNfiIkZIPzqE+CFR5fFlSCPd3Kwi1ivrDaoEbdisFs
-	NOAOru5iTKyu8GU7cR0heZ4ZSbw2Iy7p3MGu/2bqn7j4XzTDBLm6
-X-Google-Smtp-Source: AGHT+IHjtALJXHfeHvlFfFIGF/Jv7NubOC1i9OVehC29v/06Ma4HBUto2Yd3NbJZOwnM97uKL0s69Q==
-X-Received: by 2002:a05:600c:511f:b0:42c:bb41:a077 with SMTP id 5b1f17b1804b1-42cbb41a1b2mr1246555e9.23.1725868614984;
-        Mon, 09 Sep 2024 00:56:54 -0700 (PDT)
+        bh=tT07a8fYg2mX8zdZb0NUXYrNfwc3Lxt6djOa1kz4aGg=;
+        b=TiNIJLm8g2pGvjvltkvbnMiciXQPE8e06C7fpER2tWirG2gDSf3TZT0DBpwAOt4n0u
+         FhC4jctMfRIhEOlVYXCp7S8HIL9w8+kwnlUo+rttgVU866y+IAY4uhJ9cQAMrtDpTnlg
+         0jW5wYVzPv3xG2y10mFvFKJwVrk4V9o601jjmUZr2Ux/xaR7XzS0j7X7s0J0wXWAyc37
+         66BFVLhnXIUQAnNm+hKUUlVmqW/dqVDI27PsCcF2JEOt1BCFYMdPA6hfTmpUqjvq23To
+         FyjnyNsQO5uOnLn2hd0oNRCMRaWuGeXNPiF+44epH6wzblmmROLe1Trd98Esdh3CKx+m
+         SUxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTOUOn8EzuRfBs6jMlGQfiHKHW2yVupR2TrMGCAsCSmBFhqePnXi8h6yVqsBFURPOFXA49H8YuSLc=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxNiQY8jaV6xdI72nK/p7hHW7cb130qUy6ipiEeWT4jUHg4JekX
+	+dRIVEe9NKtp8xctXDNcO0R6MV741isTLc3m1FX2aZX+eO9D7QWW
+X-Google-Smtp-Source: AGHT+IGmZsYZCmG7YYhzHupjmmuJRGqS/FOf75V/9MKd4VXHMgO9wuyXejXAu7fFGUQHBhuwF3txfA==
+X-Received: by 2002:a05:6000:a8c:b0:374:d006:ffae with SMTP id ffacd0b85a97d-378885c04ebmr6261181f8f.6.1725868615928;
+        Mon, 09 Sep 2024 00:56:55 -0700 (PDT)
 Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37895675b7esm5303001f8f.50.2024.09.09.00.56.53
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37895675b7esm5303001f8f.50.2024.09.09.00.56.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2024 00:56:53 -0700 (PDT)
+        Mon, 09 Sep 2024 00:56:55 -0700 (PDT)
 From: Uros Bizjak <ubizjak@gmail.com>
 To: x86@kernel.org,
 	linux-crypto@vger.kernel.org,
@@ -77,18 +77,19 @@ To: x86@kernel.org,
 	kunit-dev@googlegroups.com,
 	linux-kernel@vger.kernel.org
 Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: [PATCH RESEND v2 05/19] media: vivid: Include <linux/prandom.h> in vivid-vid-cap.c
-Date: Mon,  9 Sep 2024 09:53:48 +0200
-Message-ID: <20240909075641.258968-6-ubizjak@gmail.com>
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH RESEND v2 06/19] mtd: tests: Include <linux/prandom.h> instead of <linux/random.h>
+Date: Mon,  9 Sep 2024 09:53:49 +0200
+Message-ID: <20240909075641.258968-7-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240909075641.258968-1-ubizjak@gmail.com>
 References: <20240909075641.258968-1-ubizjak@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240909_005657_813475_4DCB71AE 
-X-CRM114-Status: GOOD (  10.73  )
+X-CRM114-CacheID: sfid-20240909_005658_523967_4EC0A4DE 
+X-CRM114-Status: GOOD (  11.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,25 +111,54 @@ Substitute the inclusion of <linux/random.h> header with
 of <linux/prandom.h> from <linux/random.h>.
 
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- drivers/media/test-drivers/vivid/vivid-vid-cap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/tests/oobtest.c     | 2 +-
+ drivers/mtd/tests/pagetest.c    | 2 +-
+ drivers/mtd/tests/subpagetest.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/test-drivers/vivid/vivid-vid-cap.c b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-index 69620e0a35a0..184460eb356e 100644
---- a/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-+++ b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-@@ -10,6 +10,7 @@
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index 13fed398937e..e1ee68f8b8f8 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -17,7 +17,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/slab.h>
  #include <linux/sched.h>
- #include <linux/vmalloc.h>
- #include <linux/videodev2.h>
+-#include <linux/random.h>
 +#include <linux/prandom.h>
- #include <linux/v4l2-dv-timings.h>
- #include <media/v4l2-common.h>
- #include <media/v4l2-event.h>
+ 
+ #include "mtd_test.h"
+ 
+diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
+index 8eb40b6e6dfa..6878700d2fc0 100644
+--- a/drivers/mtd/tests/pagetest.c
++++ b/drivers/mtd/tests/pagetest.c
+@@ -17,7 +17,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+-#include <linux/random.h>
++#include <linux/prandom.h>
+ 
+ #include "mtd_test.h"
+ 
+diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
+index 05250a080139..f34bbf033c4d 100644
+--- a/drivers/mtd/tests/subpagetest.c
++++ b/drivers/mtd/tests/subpagetest.c
+@@ -15,7 +15,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+-#include <linux/random.h>
++#include <linux/prandom.h>
+ 
+ #include "mtd_test.h"
+ 
 -- 
 2.46.0
 
