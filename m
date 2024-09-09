@@ -4,67 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48C33ECE57E
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 14:10:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55971ECE579
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 15:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NtKhKkpr9SkkPhz6CHQanSjKhFVNsk29QpHezEGF4+8=; b=k3cAOXQY74n7ZE
-	qmMSJuaOr+0oGnXBFsM11nf7P6J0On5c+jyutdvf1dzeaBJS21YfmB+uI5LSIJwF/7q3DW9gB2zXM
-	sGv6qfgYecG+rwmAGhSuSzLo7eVvWRF20h+6IANgglhgHTgdz/rAOTq5KqSLz03I5paqyCQs76mBK
-	Nr0Y/eJLplxmbsZ0AU/48Y4jqnxQyftEjW+/BA0zR6TqjwTdTYBlJxDcEz4BRcvXHeGAmpDzQNP19
-	XgywLh/ru8gkcmPLHdST5OYLP9HntGFwe1WnaFmjwZw3N9k5mGGNbeX35cBDqlxEHpaySNzKRXiqq
-	Iqey85OmtlGkOB7Jy6yw==;
+	List-Owner; bh=m0OQhj2+xVVlLv9t2VVGq2revV65O660pDNW54tUzro=; b=bCXBc1ZeQSjz4G
+	7fw1Yl6/XIOnFH6JnR/ikDn3eyxeUOcE52DRHb6HQNFLj8mYdGgY+cUqh/2NikLWDDQzjbyQiokyY
+	FBeHEfM0mRsATKYUJ/7PBxFvF5FC8cd9FDm1dOebNqA98tl50I5iKpDnxrgmHvbzmILpjTSwTtyaK
+	1GnF15GRe76/BuPsTZZkdg8EoVq7s7irAHYXTX3+fMrFbi3HINaZSvVmpt2uNVkR1IoIz9JS6pErE
+	55Ah8++DWaJ3Zo00o8mi0dkhRUun3hx1njl64xTmeYBbWKA4u8OA3swmzIxvHh6CQHD0NkhL8XdwI
+	JPyxy0t7FtMdjll9Z7jQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snf6R-00000002DWX-2O52;
-	Mon, 09 Sep 2024 14:10:51 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1snglt-00000002ZFm-0bVM;
+	Mon, 09 Sep 2024 15:57:45 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sneoT-000000028s8-2iMH
+	id 1snglq-00000002ZDS-0zHf
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Sep 2024 13:52:19 +0000
+	Mon, 09 Sep 2024 15:57:43 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 488DBA4320D;
-	Mon,  9 Sep 2024 13:52:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06675C4CEC5;
-	Mon,  9 Sep 2024 13:52:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725889936;
-	bh=6I0KDNkGMAXRNHGe9spyVHeJ5YDo7zX/iCZiLN03fbI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=AVDzIztp30tX+CaV0suKoMd8+sXQnTK94H3BXn+ALOKyWs8nsVxyv5XbjjxUpUZH4
-	 yh8VaF9qqeK6lP3BG1SfHZpirlzbh+Kx34ESq6heOBoKE3EnJWeJ/Ya6Wj+nonpx/a
-	 uqPF+GOQ1CN98/kQp00XDRNvG7d1IceJyuC9594sb5JnR80WQQvXXvUBcakj2BfPw/
-	 CJrGSCIg7Fn+qNZ21+cZbjFuA+poEQw9GUI108tKrmyWQa3wRqVdSdRWEzBZmrqkoB
-	 A+Qc3ZVcXdDaThNsaISGrmzoWR/2a/2/SZLKDi6T7s/5jwNZRvff2QixUYKDFC7wGi
-	 2APfD1WLFcrbQ==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Michael Walle
- <mwalle@kernel.org>,  Pratyush Yadav <pratyush@kernel.org>,  Richard
- Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  Jon Hunter
- <jonathanh@nvidia.com>
-Subject: Re: [PATCH] mtd: spi-nor: fix flash probing
-In-Reply-To: <20240909104753.0ce41fb8@xps-13> (Miquel Raynal's message of
-	"Mon, 9 Sep 2024 10:47:53 +0200")
-References: <20240909072854.812206-1-mwalle@kernel.org>
-	<ad9ee29c-b96a-4861-a7cd-b8649a3d1f3a@linaro.org>
-	<20240909095247.48358afa@xps-13>
-	<b2d0ce1d-fa46-43e9-bb29-c98d1161aae7@linaro.org>
-	<20240909104753.0ce41fb8@xps-13>
-Date: Mon, 09 Sep 2024 15:52:13 +0200
-Message-ID: <mafs0y141exyq.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by dfw.source.kernel.org (Postfix) with ESMTP id B7B8D5C01DF;
+	Mon,  9 Sep 2024 15:57:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA2F1C4CEC8;
+	Mon,  9 Sep 2024 15:57:33 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="bOIXjvAE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1725897452;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bbWr4vi9pa8+Cqp83onNnmk1v5W+k1MGPgiQ/1MwNSc=;
+	b=bOIXjvAESpiyWOLfxiXwIhAtPOG1y1+0opyH9Q87ZwFnbiPRA4b3wNogUcxJqtsfJjafy2
+	EIPyfn290ab/wumQZS8/Njm/fN604qRqGzCtPRB3Oi6XyRiwcddBL2PngABSxf1zQ6eimS
+	KerTR+BY/Q0Rag++udJH9dHwTPIZMJ8=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 242879eb (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Mon, 9 Sep 2024 15:57:32 +0000 (UTC)
+Date: Mon, 9 Sep 2024 17:57:31 +0200
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Hannes Reinecke <hare@suse.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>
+Subject: Re: [PATCH RESEND v2 00/19] random: Resolve circular include
+ dependency and include <linux/percpu.h>
+Message-ID: <Zt8a6_RwLG2pEnZ6@zx2c4.com>
+References: <20240909075641.258968-1-ubizjak@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240909075641.258968-1-ubizjak@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240909_065217_765701_8DB40789 
-X-CRM114-Status: GOOD (  15.50  )
+X-CRM114-CacheID: sfid-20240909_085742_415770_2FF98D11 
+X-CRM114-Status: GOOD (  13.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,39 +130,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 09 2024, Miquel Raynal wrote:
+Hi Uros,
 
-> Hi Tudor,
->
->> >>> Fixes: 2095e7da8049 ("mtd: spi-nor: spansion: Add support for S28HS256T")
->> >>> Reported-by: Jon Hunter <jonathanh@nvidia.com>
->> >>> Closes: https://lore.kernel.org/r/66c8ebb0-1324-4ad9-9926-8d4eb7e1e63a@nvidia.com/
->> >>> Tested-by: Jon Hunter <jonathanh@nvidia.com>
->> >>> Signed-off-by: Michael Walle <mwalle@kernel.org>    
->> >>
->> >> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>  
->> > 
->> > This patch will only apply on top of spi-nor/next. It would spend more
->> > time in -next if one of you applied it to this branch before sending
->> > the MR?
->> >   
->> 
->> The patch is intended for spi-nor/next indeed, as the blamed commit was
->> just recently queued. No need to take it through mtd/fixes. Pratyush
->> will take it via spi-nor/next.
+On Mon, Sep 09, 2024 at 09:53:43AM +0200, Uros Bizjak wrote:
+> a) Substitutes the inclusion of <linux/random.h> with the
+> inclusion of <linux/prandom.h> where needed (patches 1 - 17).
+> 
+> b) Removes legacy inclusion of <linux/prandom.h> from
+> <linux/random.h> (patch 18).
+> 
+> c) Includes <linux/percpu.h> in <linux/prandom.h> (patch 19).
+ 
+Thanks for doing this. That seems like a fine initiative to me. (I'm
+also curious about the future percpu changes you've got planned.)
 
-Right.
+Tree-wise, were you expecting me to take this through random.git? And if
+so, what timeframe did you have in mind? For 6.12 next week (can you
+poke folks for acks in time?), or punt it for 6.13? Or did you have a
+different tree in mind for treewide changes (in which case, I'll send
+you an ack for the [p]random.h changes).
 
-I have applied this to spi-nor/next. I plan to send the pull request by
-Wednesday/Thursday so it should get at least a couple days of testing in
-linux-next.
-
->
-> Ok perfect, thanks!
-
--- 
 Regards,
-Pratyush Yadav
+Jason
 
 ______________________________________________________
 Linux MTD discussion mailing list
