@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F75FECE57B
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 09:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 591FFECE579
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 09:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=+BusmRlz4g7HtY61q7GeC615dROpwj9xdY/a53wQu90=; b=jzUEwR8YYGN9wji4adiaZe61cB
-	EdQjEOSMlwjQ1JOLE7uJH7O0SOIfH245AlPLPP2ja23V5OC2GRWPmy0PvAG/3H2YXCEPGg2bY8FrD
-	/KaFPHe3GPAnYIa+8rUD0QdL/6tEnCBUfhcUUHViTCjioVCsCQd3uLpdD8DL9Z/fSXfenc28IzZ+u
-	aVeTlzRsgToWMB1bStw7+7yOFUiKjK8lZ2q/Zlz8u4fo9OfR+nTzl8Da4Ix1HbxEMTyqrppnNGu1g
-	FBgCxccChx7Q6LEaQ/XrL/BEJ3+Lgf5xfnVhR0NYFiRDNMHCncjz9tUHHojtdai++gkvdHLon9MxS
-	7eWgd1VA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=xocOV3YjkvPuchNHsqpKE+ml+nT62KP2wI4uXUWxeKg=; b=lPnrh4T1fvh48A
+	LQOToLrt5zzwnqrq6GAH2w5bAuAV8Tatre+MihbfB3RdU66qBagYUNZOA1Kg8tpTiJKoEXE9ZVpE3
+	EFOS+NJT8o2CAnVHSOih7VGHtaKDJ5ImFUCTj7iVD0OqksfPABX3j8JBfJ12DrQExqXGoEk+/BlaB
+	3CZBIXtAx9g+7WOxO8+tFgPlEHPLHRGlyLJhEOL9eDfuWuGHLJvk26j9tXFiqP1PH+asu/dtoYGmL
+	vZkostKQGfsKYQ2j3TZdEBwbM8FFb/xAXeIbyXxfx812OFI+61ELECbyxiBP1v2a7l2NTntBG3AF3
+	lTrYvvBP0Ot9mUVT1W+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snb1C-00000001O6w-3RJO;
-	Mon, 09 Sep 2024 09:49:10 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1snb2x-00000001OXv-2p95;
+	Mon, 09 Sep 2024 09:50:59 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snaxO-00000001NVX-1Rew
+	id 1snb1x-00000001OJt-0rD7
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Sep 2024 09:45:29 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7CCB75C57BD;
-	Mon,  9 Sep 2024 09:45:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4EEC4CEC8;
-	Mon,  9 Sep 2024 09:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725875112;
-	bh=OpoEq4rq2tR/fK1v7ChPxH80mWmyJhcEfy4/a87kMhE=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=VwCz+g3mUFf+nc1DPxX053KtYES3DWrH2oz2tPjikFd0evUqUl3ZOjg9NfG+bZras
-	 9ZALv+uFcbQHW6jKOuh0mjxQr1b+F8NZsYsN4j8r/Yjjj9+OPm1k0MeM1x9koacCW1
-	 8gOd36sELxt06KofkZK6O+clK5jexyGHq8smwUxmWe2mHupGS+FdDOMS+9rnTdLLCD
-	 BLhFzALlfmPGlCJxqC5TpfJCC0xShq9lxMewXlzNVahOfRT5YPCRqEiCghuSqVjTX+
-	 DusYW3ifJ0v+4ApkTFb0Ct8ymahJQRyesAPBDdca0tG2T8Qfs//ny1wUxbhUEM/XCK
-	 4cVcwXJnYbEag==
-Date: Mon, 09 Sep 2024 04:45:11 -0500
+	Mon, 09 Sep 2024 09:50:57 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4E39A60004;
+	Mon,  9 Sep 2024 09:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1725875393;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WGSfmjP2xpkg9kRW5SbVOyZniCqkxswImo1NnnS+ve8=;
+	b=GdmvvxhnbXhVuPkYO7n179XVJp7AbyHe8ARxaB9MFEmiuv0He1KV7+s4eR8nN5poH/Pqbv
+	G8oRLw1kcLxNNqI/+HTJH2usCsBO6aqQUtpIfch36TlTno0TZN3rb/eiln5vFTcNJ5IOyx
+	KvdUmn/QCstJE/OUH9tyZmmMxau/Er6iFShK2kds9JZzoubHtzxiEODcN4URT1ko7xcLO/
+	hAt1Kq14aY3TnyOO//hdPfnQmECNAokNOXbt8o/p08JT3YJIeyICLXw/bFCtvHh0FrZUZE
+	g7IS3JlxRdYYUkURGlA/kUfMvuFpdB02g7rPa62+wPJHvGa4E6ftaJ0Dz/sSRQ==
+Date: Mon, 9 Sep 2024 11:49:52 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 05/18] mtd: tests: Include <linux/prandom.h> instead of
+ <linux/random.h>
+Message-ID: <20240909114952.580d0c20@xps-13>
+In-Reply-To: <CAFULd4ZwEcv-KZSpoQznMvd2wZBqAvqvr_JzK7fboR_Ec6721g@mail.gmail.com>
+References: <20240905122020.872466-6-ubizjak@gmail.com>
+	<20240906151021.736425-1-miquel.raynal@bootlin.com>
+	<CAFULd4ZwEcv-KZSpoQznMvd2wZBqAvqvr_JzK7fboR_Ec6721g@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Conor Dooley <conor+dt@kernel.org>
-In-Reply-To: <20240909-ep93xx-v12-18-e86ab2423d4b@maquefel.me>
-References: <20240909-ep93xx-v12-0-e86ab2423d4b@maquefel.me>
- <20240909-ep93xx-v12-18-e86ab2423d4b@maquefel.me>
-Message-Id: <172587510150.3289209.1561633350794103525.robh@kernel.org>
-Subject: Re: [PATCH v12 18/38] dt-bindings: mtd: Add ts7200 nand-controller
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240909_024514_514267_1E6AE023 
-X-CRM114-Status: UNSURE (   9.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240909_024957_885596_3A2B30E3 
+X-CRM114-Status: GOOD (  14.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,47 +71,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Mon, 09 Sep 2024 11:10:43 +0300, Nikita Shubin wrote:
-> Add YAML bindings for ts7200 NAND Controller.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../devicetree/bindings/mtd/technologic,nand.yaml  | 45 ++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240909-ep93xx-v12-18-e86ab2423d4b@maquefel.me
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVXJvcywKCnViaXpqYWtAZ21haWwuY29tIHdyb3RlIG9uIEZyaSwgNiBTZXAgMjAyNCAxNzo1
+ODozOSArMDIwMDoKCj4gT24gRnJpLCBTZXAgNiwgMjAyNCBhdCA1OjEw4oCvUE0gTWlxdWVsIFJh
+eW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gVGh1LCAy
+MDI0LTA5LTA1IGF0IDEyOjE3OjEzIFVUQywgVXJvcyBCaXpqYWsgd3JvdGU6ICAKPiA+ID4gVXNh
+Z2Ugb2YgcHNldWRvLXJhbmRvbSBmdW5jdGlvbnMgcmVxdWlyZXMgaW5jbHVzaW9uIG9mCj4gPiA+
+IDxsaW51eC9wcmFuZG9tLmg+IGhlYWRlciBpbnN0ZWFkIG9mIDxsaW51eC9yYW5kb20uaD4uCj4g
+PiA+Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IFVyb3MgQml6amFrIDx1Yml6amFrQGdtYWlsLmNvbT4K
+PiA+ID4gQ2M6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gPiA+
+IENjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+ID4gPiBDYzogVmlnbmVz
+aCBSYWdoYXZlbmRyYSA8dmlnbmVzaHJAdGkuY29tPgo+ID4gPiBDYzogbGludXgtbXRkQGxpc3Rz
+LmluZnJhZGVhZC5vcmcgIAo+ID4KPiA+IEFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2VybmVsLm9y
+Zy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBtdGQvbmV4dCwgdGhhbmtz
+LiAgCj4gCj4gTWlxdWVsLCBpcyBpdCBwb3NzaWJsZSB0byBqdXN0IEFDSyB0aGUgcGF0Y2ggZm9y
+IG5vdz8gVGhlIHNlcmllcwo+IHRvdWNoZXMgbWFueSBwYXJ0cyBvZiB0aGUga2VybmVsLCBzbyBJ
+IGd1ZXNzIGl0IGlzIGJlc3QgdG8gaGFydmVzdAo+IEFja2VkLWJ5OnMgaW4gdGhpcyBzdGFnZSBv
+ZiBkZXZlbG9wbWVudCBhbmQgY29tbWl0IGFsbCB0aGUgcGF0Y2hlcwo+IHNvbWUgdGltZSBhZnRl
+ciB0aGUgbWVyZ2Ugd2luZG93LiBUaGlzIHdpbGwgYXZvaWQgbWVyZ2UgY29uZmxpY3RzIHdpdGgK
+PiB0aGUgc2VyaWVzLgoKQ2hhbmdpbmcgYW4gaW5jbHVkZSB3aXRoIGEgbW9yZSBzcGVjaWZpYyBp
+bmNsdWRlIGRpZG4ndCBsb29rIGxpa2UgYQpkYW5nZXJvdXMgY2hhbmdlLCBidXQgSSdtIGZpbmUg
+ZHJvcHBpbmcgdGhlIHBhdGNoLiBQbGVhc2UgbWVudGlvbiBpdApuZXh0IHRpbWUsIGJlY2F1c2Ug
+SSBkaWRuJ3Qgc2VlIGl0LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
