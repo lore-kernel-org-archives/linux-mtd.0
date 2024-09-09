@@ -4,90 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BA20ECE579
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 13:06:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39161ECE57A
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 13:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZqJJn9udKQopDlZO/UpJMI3tZA0Py1r5+5HHbrTIQ+c=; b=Mg0Ql1QST+G8jR
-	zjdS6JPR+MrV629WMhD3p90uOKZVO+VBk50++8yh7OMDmpozej7pe2tObrHvQSwJst4zxE+SMqID8
-	WAwwr/NRfkkfLNhp5GGY5FMCCoOp9Sf/fqMG5Z8sq2DCYPNHK8gWhwiMrr4n9ZWHY+dNkIpQz9l7a
-	s62VZMqMkelCGOuEGj0qdCAYmQd6x/RkaodY6J1E/u82lSY28+SSKveuJdbrtJa3NjCUMg5vBpclo
-	ZgNzfGHUd4EDJpEbsI389ECG1AxqO5iOqEL1Prxnv78h9CcmTc/CJ7T8KJrZW0SiYEFw1gV0Ok61H
-	cRvIpTP4MgQADnpu4KDg==;
+	List-Owner; bh=ncllb38+yJlRiHakI3htUNf5/H6v0ss1tFyWKuZ2H7c=; b=jhHZy09HBFx1cQ
+	LydkmR+bpf0uHox3lsxKcR+LD9OWqysAJli7ZZ11OGeHJzGwFcRPkxWJ5L6LQ1+mXzf4iJT8Kzq3M
+	RP+rpDiZN+uoKibVdWEHigiYHm1ES/lFupQaBPtfYDNqN1MPFNAdYvF7kHR2+1CsjivWlRiRcmirA
+	zFKK4Eg/baInhHSlPE+eOERB9fSnFQAfNn1xFneBgseq0uP7YBjE+idtWwzvx0lcIQlk7ImrmI6Cp
+	tDwyJ9citFhMZaxZvBCxhWekf3B9yz/93stEyEyKLLA2gjZ28spONJ9eUfQ3ZjXXVx48dEahnJ5Cq
+	mGRjsHz8IA2CDt/gmWsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sne6F-00000001zVg-35ZF;
-	Mon, 09 Sep 2024 13:06:35 +0000
-Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
+	id 1snekw-000000027q2-1FLj;
+	Mon, 09 Sep 2024 13:48:38 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sne2f-00000001ykc-3NZ5
+	id 1snek2-000000027dF-05WZ
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Sep 2024 13:02:55 +0000
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a7a843bef98so199620566b.2
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2024 06:02:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725886971; x=1726491771; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7mMqU87htuX/vKBzsNQkDBJ4RpNR7Zr8uFLI9xAQvGQ=;
-        b=aF6SOgoEiOl4KMRPKnazYD38lGXvAMEd8+blZfbZ/NT5GkXOWLKL0KDOIhN7OZoXpo
-         Sr/OBy85Diy4TMtCTTjP7kEuU2hP6bP19F2RqmXqk75YGs1GiksJdERFCVzQWCXIzLU2
-         X0XRW+50e+cuin6GmV6T4NMNazgn2+zVxuN7E1h0VLqJaaCX4CDN1NkThh5PH1fJHBRC
-         zfnAXJ6F4WmLYJiQdGztSyErMkrvr/Eh2YLhKQEryVsv4kbNSo0a7jAQn/pr6QuWgsZk
-         rtyoW+EaGdi6jRluF2FFEqTI6XIKoOF4ZwIg5Y6EFr8a7ZnsN3RzmKlTurY8IL8qWF39
-         AxZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725886971; x=1726491771;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7mMqU87htuX/vKBzsNQkDBJ4RpNR7Zr8uFLI9xAQvGQ=;
-        b=fjEhZuG4O5SF1Z4UgdKDl+R5qnyrh7/2jyB24r9fcry7wQzhEwYC3fok2BbvLQXAco
-         8DYEPEQoXp31r2SuYLsP0xRpZeO5rfsITcwWyYFh+KMwdDXu6b8wXnS29TmOSB2Nso6D
-         J4a7PF86ZvESY36raEHjNcFq0l5GBtrNtZJcAvf0bqcNvneZN+XE5cyVAHWaG8J9SRT4
-         ssTG0rDMODoyrxVMrBI5VQQJPlLBuXsgAcBK+WdpZPLKKibPHtCZqj7EUiD0+PtRMJde
-         WTmigoXXWtRoBbPNCQNFElrr0HwwNWEBRkLS5jdaKUaOUM3WvB9wAHhwI0V31+uefHaL
-         1WgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX7KGqagZyYVZlfoOB97xC3I3ECkib2RWF9fCg5M5wXBK48Jg7hriiBxIWXb78T69gp47O7+f7iS+s=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx+jqyegWDJerE8kTNT1IVuCVWoIew+CyQvLmD4Ex2AwQtugi/I
-	I/LHIXvfc9AebwqKc8AeyuXBz466UREIR/WUaF46Hl8DsH5+apZRTivAdfwwXOs=
-X-Google-Smtp-Source: AGHT+IGBCWEcHjOnjDa3tv0OU9sQsIWi0rYKMo1x8pgZwqnvO0g9WWezq8axRIpo3yitGDVIG7HaOA==
-X-Received: by 2002:a17:907:368a:b0:a86:8953:e1fe with SMTP id a640c23a62f3a-a8a8884be2cmr906103366b.47.1725886971281;
-        Mon, 09 Sep 2024 06:02:51 -0700 (PDT)
-Received: from pathway.suse.cz ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8d25d54abbsm337715666b.203.2024.09.09.06.02.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2024 06:02:51 -0700 (PDT)
-Date: Mon, 9 Sep 2024 15:02:49 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: x86@kernel.org, linux-crypto@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-fscrypt@vger.kernel.org, linux-scsi@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH RESEND v2 16/19] lib/test_scanf: Include
- <linux/prandom.h> instead of <linux/random.h>
-Message-ID: <Zt7x-dJF6RzEByBO@pathway.suse.cz>
-References: <20240909075641.258968-1-ubizjak@gmail.com>
- <20240909075641.258968-17-ubizjak@gmail.com>
+	Mon, 09 Sep 2024 13:47:43 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 20E1A5C5957;
+	Mon,  9 Sep 2024 13:47:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2E88C4CEC5;
+	Mon,  9 Sep 2024 13:47:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725889660;
+	bh=ZGoU2kTAV4IE6TEddBrFeiotEx7bqq31YAXRA183Pp8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=bJ/RoyiUEbTffx3q685g32a2Xvf2JGZsqO5PGUN1h7VnC44/5TEcH2hoQBbiafyhf
+	 IVSnnPg53KBhECV5ZqiJw2+Wx919hcly8fMBGfZsgzihr/JrzuBIVxJk0OC1QFbnxJ
+	 dwwvZTrc3RwOubk/JuoOz7pSJVaMTxxfihJUw7p57AXScFq7OJHLIOhLT0CTu2F96X
+	 iSDUMZAoUZNPaFVUiWJX6R5uYunyCAK1q1EGNIpvgWdhBfmXbPkmgsQik+s3fCWKaw
+	 OPflEi79g6PGs6ia/P1ArFCk2GDZ/bjBzBf6RSiHfZO1FqnePJYC9RsVxKz8isVzBr
+	 FtbaEtIQHRQGQ==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  Jon Hunter
+ <jonathanh@nvidia.com>
+Subject: Re: [PATCH] mtd: spi-nor: fix flash probing
+In-Reply-To: <20240909072854.812206-1-mwalle@kernel.org> (Michael Walle's
+	message of "Mon, 9 Sep 2024 09:28:54 +0200")
+References: <20240909072854.812206-1-mwalle@kernel.org>
+Date: Mon, 09 Sep 2024 15:47:37 +0200
+Message-ID: <mafs04j6pgcqu.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240909075641.258968-17-ubizjak@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240909_060253_862524_30FB97F2 
-X-CRM114-Status: UNSURE (   9.21  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240909_064742_147219_8A8089CD 
+X-CRM114-Status: GOOD (  14.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,20 +77,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon 2024-09-09 09:53:59, Uros Bizjak wrote:
-> Substitute the inclusion of <linux/random.h> header with
-> <linux/prandom.h> to allow the removal of legacy inclusion
-> of <linux/prandom.h> from <linux/random.h>.
-> 
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Hi Michael,
 
-I have just acked v1 and missed that there already is v2.
-Just for record:
+Thanks for the quick fix!
 
-Acked-by: Petr Mladek <pmladek@suse.com>
+On Mon, Sep 09 2024, Michael Walle wrote:
 
-Best Regards,
-Petr
+> Fix flash probing by name. Flash entries without a name are allowed
+> since commit 15eb8303bb42 ("mtd: spi-nor: mark the flash name as
+> obsolete"). But it was just until recently that a flash entry without a
+> name was actually introduced. This triggers a bug in the legacy probe by
+> name path. Skip entries without a name to fix it.
+
+We also use name in a couple other places:
+
+1. spi_nor_get_flash_info() prints jinfo->name and info->name() in the
+   dev_warn() call.
+
+2. spi_nor_params_show() prints nor->info->name for the debugfs entry.
+
+Since both of these are prints, it should probably be fine since they
+should be converted to "(null)" instead. Still, something we should fix.
+I don't think those are critical so those can be fixed as follow up
+patches. I unfortunately am swamped and don't have the time to fix them
+right now.
+
+I also did a quick check to make sure we don't have other flashes
+without a name.
+
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+
+Applied to spi-nor/next. Thanks!
+
+>
+> Fixes: 2095e7da8049 ("mtd: spi-nor: spansion: Add support for S28HS256T")
+> Reported-by: Jon Hunter <jonathanh@nvidia.com>
+> Closes: https://lore.kernel.org/r/66c8ebb0-1324-4ad9-9926-8d4eb7e1e63a@nvidia.com/
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+[...]
+
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
