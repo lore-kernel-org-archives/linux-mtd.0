@@ -4,84 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0179ACE7AB0
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 07:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13F9ECE7AB0
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Sep 2024 07:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wY9v53+I4xPcLygHT1RSRrSCDIeaTrWWuNcokLdtIIA=; b=i3D7lWAORkBTVx
-	Ah+21pnIPsJD7jOC7HYqrWDVsWBQgyW7Lh0KUFSSqjO9f02/z2Yk+XnyuJ0MGtAV/YAhHm3opdPBX
-	IHV8Cm8OLoCsNskfc4VlUEzdjtRcvautH65bYntiGUpUOQhHA+fLM6GKmK/btoFs7s9HjTackdIO0
-	Mwlc+7iQSg4/2wiryCZrkn9QE/vWBvm6rgpmTEI3BXVgucPwoMYtHnPT7UnHNVcGOuFi1bn72wxlY
-	jNuOQ4ndacMcXJeM6yxYaT4ZnAgf+N9rDvddy//0cX8s2HrWiw9GtjhuoAyv3w5qWl0ad+eeV45zK
-	bPiVAP4LgNuGlm28jr2A==;
+	List-Owner; bh=mTA+jSbuRDjGYqKxCiBQ9VsJnXIZ4B9XNX42lzqhxvs=; b=gRgYGAuqc/Xdmh
+	ANs8vBdqHJlQI6xZKNf7gFxnHHr23usxrtfkX70XVhTJ12OiO2WF2e8cBTqPJ79dSwIt5BKtEmvEw
+	80eylACX1yVKyZnu8gb2aPjGX1esVU/V+KE9nqc3ZdZc1tURdP9dT25wNlEEj0QnftfK/klhQJEKx
+	cNTaROEbWrJOMapsJS85ZTkW0vioQHP56gNDPTzZGHGB0ZjJtqGwl2ZOcZWAvI8523tpwEUe9qe4f
+	B753/8/fjoPDrspCxpr2NMEwiXZkyLK2mXpybAaWFE95wyraSuxnPPQJZvVhr0pyxekkA6wFW6hVR
+	IjoViIsil6M2PvohQQ1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snYvr-00000000rFe-3yks;
-	Mon, 09 Sep 2024 07:35:31 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1snZD3-00000000v0g-26me;
+	Mon, 09 Sep 2024 07:53:17 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snYvp-00000000rEG-04Xl
+	id 1snZCi-00000000ut3-25Ci
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Sep 2024 07:35:30 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a8a7929fd64so474732666b.0
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2024 00:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1725867326; x=1726472126; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JSyWMbLAIiVLQsXdks3HCLYLCsP3mSrbhpF0vqvBOCg=;
-        b=zQzm9rE23PAVM5P3ukATaq4Gro2NR9xFizKBLw9/zvlLfxoEFFobJhjpYmY46/2q2i
-         cFX7J9q5ZQC8Ei5mSO6aJQGZoJgvsm43XQpF0X5NTNiqg7ynw7waaC7+f3Gdio8+G8fJ
-         dvoi25kFIaeWeMTQQtGsHgsokLQrEA7rahjpdP0tXy+0NhSrJO2ioYgR1gqUk1hzdizf
-         Dc+1iv7mMZCfXM+TYTfnbK55V86tk0XE6bA8jz8u1qbGUYWsHZpupu0tmQHEfaZ+uOWO
-         0KC3mB3qgR51YidNDUcJzFngGaU+8ZvPC2eJec29fG13S1xrAQcE/BAcfZM/KUFMRB7i
-         hlSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725867326; x=1726472126;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JSyWMbLAIiVLQsXdks3HCLYLCsP3mSrbhpF0vqvBOCg=;
-        b=nqDp423iHR4wnewMPSLexpOJ3HMZ+o6W/eeWBbV4fYHrTHEYD3pS86ihmnynvX4E/n
-         MZb656givaHJdG5PjYoeCvs29lSVJc0mtjYVgv1VLzExwXM1UQo1RmaY/i/ML9onPvST
-         Ghjcs7moDmEDpxFy5E4UlEbZOb/gYSAaSVWI7BVODK4Qh121HqDbt7DrxwIOQLA6TcG+
-         ZPXrEfgEAlD1pfT+b9jCCa5Pg6lHJvvnj4VXK278zTKWqQhgyjYqIy1Q7wi5l4QUInLP
-         Et6QfvGHuT0qHzrfimkgjgpdBLArCClNy/pou68pZobXeDv8EzWQbKJe0+RLmGgGTB0F
-         Yang==
-X-Forwarded-Encrypted: i=1; AJvYcCVzKmxzoBMHYqKanigM2gibLAobqkbXkBuWGejKPX3la+97ruD611tBu8N14+ypxfRb3CrBasd40Bo=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yytd7mcsS8naPXAV6vpfOJknsllAWLIz8dI7428lmWiP1YsXIac
-	0IvJRw1diKfuoVZqkoPCji0cDPVPSyLfhFzrapWzvKsy5SvsEMRBUpfGar1YBkbY0tq8GzdY4wy
-	Q
-X-Google-Smtp-Source: AGHT+IEiPJXGsX5J1tk213MU20LHOyQWs711l73TpOnftb+1B1+yCMOVrh07U1XusjImbewemB7MXg==
-X-Received: by 2002:a17:907:98c:b0:a86:ac91:a571 with SMTP id a640c23a62f3a-a8a88867469mr791091866b.56.1725867325770;
-        Mon, 09 Sep 2024 00:35:25 -0700 (PDT)
-Received: from [192.168.0.157] ([79.115.63.155])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8d25950cc6sm299397466b.54.2024.09.09.00.35.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Sep 2024 00:35:25 -0700 (PDT)
-Message-ID: <ad9ee29c-b96a-4861-a7cd-b8649a3d1f3a@linaro.org>
-Date: Mon, 9 Sep 2024 08:35:23 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Mon, 09 Sep 2024 07:52:58 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 63215E0002;
+	Mon,  9 Sep 2024 07:52:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1725868370;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mlxlmUquTmFkGQqdmXvdPV3nUNa9fBi5zLHacZJ5o/8=;
+	b=jz/w9S0UQaB4D8O0Wr59wr3duykztU3f2WTxMBQ0sM6bQJT53Rb9IgVadC5YSYXscBy1iJ
+	tEkekPl2LG5xUJBLtFZSXyCfk9iK/++xGGAkvZMyrt4R9M7OMfD5C+glg5gWPiOxRpw2cJ
+	2pGMOK1eHHLY0aX6D+DxTA4khYh+i9eLwXdk2tsKH5aK9fpxsYmO4qp4sg/KXDkxZ4wNFn
+	8hEYruSZU1HrWuwKoqUv7ONkscsX3IgrQGnp4+wKaPmBEedzSKcMFvGBP1yVDOou37RK8w
+	mK9ZHGa3sy5pTppMsbiGKqLbA+Fg5SzaM/yWl9ItW8DtAMmT9mE+vcEoc5RHBQ==
+Date: Mon, 9 Sep 2024 09:52:47 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Jon Hunter
+ <jonathanh@nvidia.com>
 Subject: Re: [PATCH] mtd: spi-nor: fix flash probing
-To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <20240909095247.48358afa@xps-13>
+In-Reply-To: <ad9ee29c-b96a-4861-a7cd-b8649a3d1f3a@linaro.org>
 References: <20240909072854.812206-1-mwalle@kernel.org>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240909072854.812206-1-mwalle@kernel.org>
+	<ad9ee29c-b96a-4861-a7cd-b8649a3d1f3a@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240909_003529_094453_581E819F 
-X-CRM114-Status: GOOD (  18.92  )
+X-CRM114-CacheID: sfid-20240909_005256_697283_0F665ECC 
+X-CRM114-Status: GOOD (  12.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,47 +72,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 9/9/24 8:28 AM, Michael Walle wrote:
-> Fix flash probing by name. Flash entries without a name are allowed
-> since commit 15eb8303bb42 ("mtd: spi-nor: mark the flash name as
-> obsolete"). But it was just until recently that a flash entry without a
-> name was actually introduced. This triggers a bug in the legacy probe by
-> name path. Skip entries without a name to fix it.
-> 
-> Fixes: 2095e7da8049 ("mtd: spi-nor: spansion: Add support for S28HS256T")
-> Reported-by: Jon Hunter <jonathanh@nvidia.com>
-> Closes: https://lore.kernel.org/r/66c8ebb0-1324-4ad9-9926-8d4eb7e1e63a@nvidia.com/
-> Tested-by: Jon Hunter <jonathanh@nvidia.com>
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
-> ---
->  drivers/mtd/spi-nor/core.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index d8e551fd2e2a..101ee5b0ddeb 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3281,7 +3281,8 @@ static const struct flash_info *spi_nor_match_name(struct spi_nor *nor,
->  
->  	for (i = 0; i < ARRAY_SIZE(manufacturers); i++) {
->  		for (j = 0; j < manufacturers[i]->nparts; j++) {
-> -			if (!strcmp(name, manufacturers[i]->parts[j].name)) {
-> +			if (manufacturers[i]->parts[j].name &&
-> +			    !strcmp(name, manufacturers[i]->parts[j].name)) {
->  				nor->manufacturer = manufacturers[i];
->  				return &manufacturers[i]->parts[j];
->  			}
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGV5LAoKdHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnIHdyb3RlIG9uIE1vbiwgOSBTZXAgMjAyNCAw
+ODozNToyMyArMDEwMDoKCj4gT24gOS85LzI0IDg6MjggQU0sIE1pY2hhZWwgV2FsbGUgd3JvdGU6
+Cj4gPiBGaXggZmxhc2ggcHJvYmluZyBieSBuYW1lLiBGbGFzaCBlbnRyaWVzIHdpdGhvdXQgYSBu
+YW1lIGFyZSBhbGxvd2VkCj4gPiBzaW5jZSBjb21taXQgMTVlYjgzMDNiYjQyICgibXRkOiBzcGkt
+bm9yOiBtYXJrIHRoZSBmbGFzaCBuYW1lIGFzCj4gPiBvYnNvbGV0ZSIpLiBCdXQgaXQgd2FzIGp1
+c3QgdW50aWwgcmVjZW50bHkgdGhhdCBhIGZsYXNoIGVudHJ5IHdpdGhvdXQgYQo+ID4gbmFtZSB3
+YXMgYWN0dWFsbHkgaW50cm9kdWNlZC4gVGhpcyB0cmlnZ2VycyBhIGJ1ZyBpbiB0aGUgbGVnYWN5
+IHByb2JlIGJ5Cj4gPiBuYW1lIHBhdGguIFNraXAgZW50cmllcyB3aXRob3V0IGEgbmFtZSB0byBm
+aXggaXQuCj4gPiAKPiA+IEZpeGVzOiAyMDk1ZTdkYTgwNDkgKCJtdGQ6IHNwaS1ub3I6IHNwYW5z
+aW9uOiBBZGQgc3VwcG9ydCBmb3IgUzI4SFMyNTZUIikKPiA+IFJlcG9ydGVkLWJ5OiBKb24gSHVu
+dGVyIDxqb25hdGhhbmhAbnZpZGlhLmNvbT4KPiA+IENsb3NlczogaHR0cHM6Ly9sb3JlLmtlcm5l
+bC5vcmcvci82NmM4ZWJiMC0xMzI0LTRhZDktOTkyNi04ZDRlYjdlMWU2M2FAbnZpZGlhLmNvbS8K
+PiA+IFRlc3RlZC1ieTogSm9uIEh1bnRlciA8am9uYXRoYW5oQG52aWRpYS5jb20+Cj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBNaWNoYWVsIFdhbGxlIDxtd2FsbGVAa2VybmVsLm9yZz4gIAo+IAo+IFJldmll
+d2VkLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+CgpUaGlzIHBh
+dGNoIHdpbGwgb25seSBhcHBseSBvbiB0b3Agb2Ygc3BpLW5vci9uZXh0LiBJdCB3b3VsZCBzcGVu
+ZCBtb3JlCnRpbWUgaW4gLW5leHQgaWYgb25lIG9mIHlvdSBhcHBsaWVkIGl0IHRvIHRoaXMgYnJh
+bmNoIGJlZm9yZSBzZW5kaW5nCnRoZSBNUj8KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
