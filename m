@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AE95ECE582
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2024 17:13:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B74EE01EB
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Sep 2024 22:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mRpC1aygZSKmfYIdioPhulw6uNbWmYq6v9cHWjrn/7E=; b=wEXKB2WsRAcl+D
-	Ux6Ox6U2w0LeujfYmQu10G2K+Sf5AWDjQHvsXRRQMxrH7Jj9JcarAx4fCZ7wqNpJ+2lZNUd/gV9Mq
-	eRnnGXY7gg8/mU3+cf/T/czeDHAW83FNrMPM+g3Qza5cRf6sr8+jSF7BdAm4t4oyMvhyzYeAHqd51
-	QbfTLv0bH5M5BXzHAOFxDSyiD6uccdWRidoM+Hyn6glXZFlrXEaxPglQFasN0CJ+PmWuYXYcpbyUT
-	fGNMhvvwPkTbkjz6h0bqLWj1W4H2IjFp8wObfMe+IEhhyRZewFOaBtv1iG4HATF+S81q5k9FWxB6Q
-	5AndqnQtAXygsgb0ZLhg==;
+	List-Owner; bh=lQ0ZNTFm3ScEAG08ScfncvFq4Pj5NqkqaDMNtm4vPyk=; b=r9881a5cvVi/gA
+	NO5rDkS6ofTGyLdr335cJwC3prjFKfi3SsDkbbOAvNrLwHNY6YRwC2nuWSy7H/MISvDuCRLZnsoz2
+	gJBeyHvPRls1LdwuISvG4xVHbH5bqy1exnH4Zxjnx3ZVs4NSQK8qDjRvtagyvQheLMYSNUvmrZKCV
+	uchN36itfTxqy7xYIB5q68IfTexwuUbRHz+xkAhQgIlr5iT4oQLieO0jDkoqfk2yBeIGvCqoeMQOm
+	aVnUVdPxpg4ibImIoEDEH9VDbjFaD6pTg67jZ9QARsYDTGjwfd+l+e70hZdnZ3MoSOcmCzdvGUMdM
+	Q0kg1aKwPNFd5JNaSXuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1so4Qm-00000006URR-0qwd;
-	Tue, 10 Sep 2024 17:13:32 +0000
-Received: from 008.lax.mailroute.net ([199.89.1.11])
+	id 1so9Eb-00000007JDa-0Npe;
+	Tue, 10 Sep 2024 22:21:17 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1so4Qi-00000006UQr-3uVk
-	for linux-mtd@lists.infradead.org;
-	Tue, 10 Sep 2024 17:13:30 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4X39Jk3hpPz6ClY9D;
-	Tue, 10 Sep 2024 17:13:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1725988399; x=1728580400; bh=VhmV9oFSRsxf1YqVbemrPn92
-	eKvNnqMS4KCaVT2K6OM=; b=MYo1X4XBYoXLUfKyol0i8lFTKOk2NaIWDRTxGCNG
-	uKoOnMI5w0U/6b5FFZd7UDUCiRVlwq3oiJI1zW7xRRP9uh6nBg+9sKN2B77TnJlD
-	bK/HawOGs8m00YgCnYQArT/y/BXi0U3IF9GyHWceEUD4s7nvcfCoTduzTohYzQd1
-	T5zxUZJzoANEJAm5mOx4eOC1GzXwU2EPY/98crXPajt9SMVhFG6BlrjSLBNXDaBL
-	fQB2LsOA4sytKDzRLjEV2g0NCquB8k+r9wdP1omWTldl+WHfRRwrP7Snlo6Cfdoc
-	jD3Yx88NwPaTj5WXKdkwZwp7VMrPnTzVXqyqTshgUDsmaQ==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id tJodp6nfa-sQ; Tue, 10 Sep 2024 17:13:19 +0000 (UTC)
-Received: from [100.66.154.22] (unknown [104.135.204.82])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4X39JZ1wvqz6ClY97;
-	Tue, 10 Sep 2024 17:13:18 +0000 (UTC)
-Message-ID: <7ea6ad5b-a569-4f0a-8fc2-fd66bff19387@acm.org>
-Date: Tue, 10 Sep 2024 10:13:17 -0700
+	id 1so9DW-00000007Itr-06dU;
+	Tue, 10 Sep 2024 22:20:11 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id ABD535C054A;
+	Tue, 10 Sep 2024 22:20:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA255C4CEC3;
+	Tue, 10 Sep 2024 22:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726006808;
+	bh=48YI4pbgmYlCiPT43kBVwkkPa58PT2DK2GN26WL06Zs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bXvC/AMdALgzeciEYcNb3c7MPlwl1Ldpk8m3EmiuiaLfyLLWLC4BnWS4SIe+MdZa6
+	 6mZMlroCrRgIPDG8EyJyzVb39LE+5OAes1gED325p1M9hGm7e8hNTrWk1oAxCuxmy9
+	 iEVZo/7+4ouPBj6jySGz6RzsogWcFaGmQrpjVQchYuIJoCEY5cSdDgGO/udItb1/3t
+	 MqPWOsC7+j7ZUEm8A9BmF0Es+nKRaVpzowcRgRqJMhsA0rYSK6BUJoTclK4mXQN8iV
+	 dPdtSGzTqhto6BkXQMoVkYE3eQs122rcEq6o1b5I1D5+KbbY3Ry5QIsFY3f/9nVqAJ
+	 /zH+eyi3rKtdA==
+Date: Tue, 10 Sep 2024 17:20:07 -0500
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+Cc: Stephen Boyd <sboyd@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Li Zetao <lizetao1@huawei.com>, linux-clk@vger.kernel.org,
+	dmaengine@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	Yangtao Li <frank.li@vivo.com>, alsa-devel@alsa-project.org,
+	Andi Shyti <andi.shyti@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Chancel Liu <chancel.liu@nxp.com>,
+	Russell King <linux@armlinux.org.uk>, linux-sound@vger.kernel.org,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Corentin Labbe <clabbe@baylibre.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"J.M.B. Downing" <jonathan.downing@nautel.com>,
+	Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>, Arnd Bergmann <arnd@arndb.de>,
+	Vinod Koul <vkoul@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [Patch v5 02/12] dt-bindings: dma: Add lpc32xx DMA mux binding
+Message-ID: <172600677256.860315.3249804427139743181.robh@kernel.org>
+References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
+ <20240627150046.258795-3-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v2 08/19] scsi: libfcoe: Include <linux/prandom.h>
- instead of <linux/random.h>
-To: Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
- linux-crypto@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fscrypt@vger.kernel.org,
- linux-scsi@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
- linux-kernel@vger.kernel.org
-Cc: Hannes Reinecke <hare@suse.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>
-References: <20240909075641.258968-1-ubizjak@gmail.com>
- <20240909075641.258968-9-ubizjak@gmail.com>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240909075641.258968-9-ubizjak@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20240627150046.258795-3-piotr.wojtaszczyk@timesys.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240910_101329_019912_4579C7F8 
-X-CRM114-Status: GOOD (  13.09  )
+X-CRM114-CacheID: sfid-20240910_152010_151245_DC26FAB4 
+X-CRM114-Status: GOOD (  12.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,39 +86,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9/9/24 12:53 AM, Uros Bizjak wrote:
-> Substitute the inclusion of <linux/random.h> header with
-> <linux/prandom.h> to allow the removal of legacy inclusion
-> of <linux/prandom.h> from <linux/random.h>.
+On Thu, 27 Jun 2024 17:00:20 +0200, Piotr Wojtaszczyk wrote:
+> LPC32XX SoCs use pl080 dma controller which have few request signals
+> multiplexed between peripherals. This binding describes how devices can
+> use the multiplexed request signals.
 > 
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Hannes Reinecke <hare@suse.de>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 > ---
->   include/scsi/libfcoe.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes for v5:
+> - Corrected property order
+> - Added maxItems to properties
+> - Fixed example
+> - Removed "N:: from the MAINTAINERS entry
+> - Added Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com> to LPC32XX maintainers
 > 
-> diff --git a/include/scsi/libfcoe.h b/include/scsi/libfcoe.h
-> index 3c5899290aed..6616348e59b9 100644
-> --- a/include/scsi/libfcoe.h
-> +++ b/include/scsi/libfcoe.h
-> @@ -15,7 +15,7 @@
->   #include <linux/skbuff.h>
->   #include <linux/workqueue.h>
->   #include <linux/local_lock.h>
-> -#include <linux/random.h>
-> +#include <linux/prandom.h>
->   #include <scsi/fc/fc_fcoe.h>
->   #include <scsi/libfc.h>
->   #include <scsi/fcoe_sysfs.h>
+> Changes for v4:
+> - This patch is new in v4
+> 
+>  .../bindings/dma/nxp,lpc3220-dmamux.yaml      | 49 +++++++++++++++++++
+>  MAINTAINERS                                   |  9 ++++
+>  2 files changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
+> 
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Applied, thanks!
 
 ______________________________________________________
 Linux MTD discussion mailing list
