@@ -4,92 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23E44EE6458
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Sep 2024 07:31:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9E99EEB58A
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Sep 2024 10:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3viOvpFGu4VpPUqNDem6pJ0VN2WXX6ZObUAMwPYzmUo=; b=hZVAs0vluCgc7G
-	5Lyo01AjAlbiOL63rNLPzKzB5q7iGtvsOA/Bb8cYr9NnorBAoOgJ23Ftlp/kJ4jYZrAnPgL2aMrPv
-	rKdxy+WZNL2MialcebCffc4XbZ/fC4b9af3K8y7mRGCmJGAZwtgGJiJoYCOyHbu7j7GL794ehuB7M
-	CW6bUeWqsyIxAm3APZ1PvWJUtP8QjvP6fQp0cxBjuzzlauFffos6B0yMD8eyI2C8zgAbgsGwdb47+
-	jiqk2iG2I8nKEgybT1GbxRfGQS8N1L2Kg2dPcYc6Egk/RZ9sYzEC2H3Eko6JZIcU/aDZ+sQ8IJydl
-	++GV+VWNscFO/cUNLRzg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=gJcyBAvbEO++CT0Xi3Z4nh/8rc/mYkaUUVSz6RtteDI=; b=eUTgWpHGXNXvzv
+	/VLIvOENvXW5HHB2RliHhhJgr3lT/RzdvQe7sOmoJfIDcQ/cxybq7zlmQYyxruAESA9OkOjI+DCK1
+	mKQYobEVshENar9/3ImDYVuQJb/snc1MseQtlnZZR5gCzJIwnOPe2RNMOKuADOAfNnF3KqiwKpXJM
+	HDaTHEdbJ5qW9NMdwSFswd/m3FICpZK3A14KIHDdrbAiOFsqsGOm4OvlnhqFWC1duYZzfOGCIuQLy
+	ktpTgVFeoRkxuX4MWbkSfPBwoOvNApJF7QHKW/B5u7jkdRJXXTrSW//sln797ahuMB1kECIFtBkCn
+	eO2Xj1Y/ml+BnxDMZLJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1soeHv-0000000CArn-07F3;
-	Thu, 12 Sep 2024 07:30:47 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1soh4T-0000000Chgp-21gg;
+	Thu, 12 Sep 2024 10:29:05 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sod7K-0000000Bz1X-3aMM
+	id 1soh4Q-0000000ChgM-0K5H
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Sep 2024 06:15:48 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48C2KqwT007652;
-	Thu, 12 Sep 2024 06:15:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	1u6hAK53BFy2xr2q5A3du731E6lIVLbDFAFvDE2hXeQ=; b=Ccfj5cr3nGGv9tn/
-	nfuOEcXYDmB93c4wygWoupwLk2KLVZ8rNHJ5dbRBp896EQMOe21u3BpqV+fblr5K
-	sD4kVSxVw/tRivBAJKidAfRZiU29VUkMkuscrrRnILDdP9ci7r1hnEWWxSdmEcLD
-	GJEcHYDvPXaO6zyvpw/wfTARVTwh24IbfBr9U12sf5ye5gaM9vN5vdlGwCUK1bA2
-	NitcZtz3NomZnO5N7Jgwq1vLE56AhMcEE2bhqDK8aRlfmliPZ0956bo4BZE4ZkDr
-	co06D2zk0gZiwjjCv71R68h10KxKX+Wwx2JtFWDXbl80E125Hwtv/jL4Kxyxc2Hn
-	ITyGAw==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41j6gn0a75-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Sep 2024 06:15:30 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 48C6FTuK007627
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Sep 2024 06:15:29 GMT
-Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 11 Sep 2024 23:15:23 -0700
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <andersson@kernel.org>,
-        <konradybcio@kernel.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <esben@geanix.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>
-CC: <quic_mdalam@quicinc.com>, <quic_varada@quicinc.com>,
-        <quic_srichara@quicinc.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v9 1/8] spi: dt-bindings: Introduce qcom,spi-qpic-snand
-Date: Thu, 12 Sep 2024 11:44:56 +0530
-Message-ID: <20240912061503.3468147-2-quic_mdalam@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240912061503.3468147-1-quic_mdalam@quicinc.com>
-References: <20240912061503.3468147-1-quic_mdalam@quicinc.com>
+	Thu, 12 Sep 2024 10:29:03 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id E71BA5C59DE;
+	Thu, 12 Sep 2024 10:28:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFC51C4CEC3;
+	Thu, 12 Sep 2024 10:28:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726136940;
+	bh=jWAK/NmqSyCvRohQe/08YAse6V24XA89RG8riBEsnTw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Z6g0ZSQyc44vMIV6l1C56rVtx2yJWqzlzPtFu1Qg4bBOVlpDDCdlHb3ffqR8IxQ70
+	 VAZIKu+Nv4x9T3xorrTa84Ck2u33cI8DDbLFkkozxblF8QsUGK0COivGgaJXdKapKL
+	 9prlU8G0rUFTJFRmj1cZapZKD1pTI5fFrbb665vrWEnqbpOXh1DuggaT3htwDcmyHR
+	 fO1Z44dAer3U3Yx7J8KbGYZGP2UMQmHCbS/bV2BTP0vJB17ifYgDeCEnV8vFk9hJBu
+	 T1M0J+x13XytygPMGZge0wy/H8r+u5yi2yIfQE4LtgXjTZgQH3AdASY99prOctn3uv
+	 ZunxFGsd15dhg==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
+ <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+	linux-mtd@lists.infradead.org
+Subject: [GIT PULL] mtd: spi-nor: changes for v6.12
+Date: Thu, 12 Sep 2024 12:28:57 +0200
+Message-ID: <mafs0bk0tf9na.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 8znoFeMDr4zTAGWawYjdkzmaSKIbuITw
-X-Proofpoint-GUID: 8znoFeMDr4zTAGWawYjdkzmaSKIbuITw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- clxscore=1015 phishscore=0 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 mlxscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2408220000 definitions=main-2409120042
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240911_231546_929532_2D021534 
-X-CRM114-Status: GOOD (  15.44  )
+X-CRM114-CacheID: sfid-20240912_032902_205428_F97794CC 
+X-CRM114-Status: GOOD (  11.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,175 +68,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document the QPIC-SPI-NAND flash controller present in the IPQ SoCs.
-It can work both in serial and parallel mode and supports typical
-SPI-NAND page cache operations.
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
-
-Change in [v9]
-
-* No change
-
-Change in [v8]
-
-* No change
-
-Change in [v7]
-
-* No change
-
-Change in [v6]
-
-* No change
-
-Change in [v5]
-
-* No change
-
-Change in [v4]
-
-* Fix spelling mistake in HW description
-
-* Added commit message
-
-* Removed '|' from description
-
-* Removed minItems in clock
-
-* Added blank line
-
-* Removed co-developed by
-
-Change in [v3]
-
-* Updated commit message, removed "dt-bindings" from commit
-  message
-
-* Updated compatible name as file name
-
-* Added hardware description
-
-* Documented clock-name
-
-* Moved dma-names property to top
-
-* Droped unused label "qpic_nand"
-
-* Fixed indentation in example dt node
-
-Change in [v2]
-
-* Added initial support for dt-bindings
-
-Change in [v1]
-
-* This patch was not included in [v1]
-
- .../bindings/spi/qcom,spi-qpic-snand.yaml     | 83 +++++++++++++++++++
- 1 file changed, 83 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
-
-diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
-new file mode 100644
-index 000000000000..f0d9f7643849
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/qcom,spi-qpic-snand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm QPIC NAND controller
-+
-+maintainers:
-+  - Md sadre Alam <quic_mdalam@quicinc.com>
-+
-+description:
-+  The QCOM QPIC-SPI-NAND flash controller is an extended version of
-+  the QCOM QPIC NAND flash controller. It can work both in serial
-+  and parallel mode. It supports typical SPI-NAND page cache
-+  operations in single, dual or quad IO mode with pipelined ECC
-+  encoding/decoding using the QPIC ECC HW engine.
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-controller.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,spi-qpic-snand
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 3
-+
-+  clock-names:
-+    items:
-+      - const: core
-+      - const: aon
-+      - const: iom
-+
-+  dmas:
-+    items:
-+      - description: tx DMA channel
-+      - description: rx DMA channel
-+      - description: cmd DMA channel
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+      - const: cmd
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
-+    spi@79b0000 {
-+        compatible = "qcom,spi-qpic-snand";
-+        reg = <0x1ac00000 0x800>;
-+
-+        clocks = <&gcc GCC_QPIC_CLK>,
-+                 <&gcc GCC_QPIC_AHB_CLK>,
-+                 <&gcc GCC_QPIC_IO_MACRO_CLK>;
-+        clock-names = "core", "aon", "iom";
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        flash@0 {
-+            compatible = "spi-nand";
-+            reg = <0>;
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+            nand-ecc-engine = <&qpic_nand>;
-+            nand-ecc-strength = <4>;
-+            nand-ecc-step-size = <512>;
-+        };
-+    };
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLAoKSGVyZSBhcmUgdGhlIFNQSSBOT1IgY2hhbmdlcyBmb3IgdjYuMTIuIEkgdXN1
+YWxseSBiYXNlIG15IGJyYW5jaCBvbiB0b3AKb2YgLXJjMSwgYnV0IHRoaXMgdGltZSBhcm91bmQg
+aXQgc2VlbXMgSSBkaWQgaXQgYSBmZXcgY29tbWl0cyBhZnRlcgp2Ni4xMS1yYzEuIFByb2JhYmx5
+IGp1c3QgZGlkbid0IG5vdGljZSB0b3J2YWxkcy9tYXN0ZXIgaGFkIG1vdmVkLiBTaG91bGQKbWFr
+ZSBubyBkaWZmZXJlbmNlIGluIHByYWN0aWNlIGFueXdheS4KClJlZ2FyZHMsClByYXR5dXNoIFlh
+ZGF2CgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IGRjMWM4MDM0ZTMxYjE0YTJl
+NWUyMTIxMDRlYzUwOGFlYzQ0Y2UxYjk6CgogIG1pbm1heDogc2ltcGxpZnkgbWluKCkvbWF4KCkv
+Y2xhbXAoKSBpbXBsZW1lbnRhdGlvbiAoMjAyNC0wNy0yOCAyMDoyNDoxMiAtMDcwMCkKCmFyZSBh
+dmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0OgoKICBodHRwczovL2dpdC5rZXJuZWwu
+b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGludXguZ2l0IHRhZ3Mvc3BpLW5vci9m
+b3ItNi4xMgoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIDUyN2QwZmE2NTQyNmI5OTU3
+NDIyZDBlNzE2ZmRlMGQwNjAyYzc1YzI6CgogIG10ZDogc3BpLW5vcjogZml4IGZsYXNoIHByb2Jp
+bmcgKDIwMjQtMDktMDkgMTU6NDI6NTAgKzAyMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNQSSBOT1IgY2hhbmdlcyBm
+b3IgNi4xMgoKTm90YWJsZSBjaGFuZ2VzOgoKLSBBZGQgV3JpdGUgUHJvdGVjdCBzdXBwb3J0IGZv
+ciBOMjVRMDY0QS4KCi0gTmV3IGZsYXNoIHN1cHBvcnQgZm9yIFpldHRhIFpEMjVRMTI4QyBhbmQg
+U3BhbnNpb24gUzI4SFMyNTZULgoKLSBGaXggYSBOVUxMIGRlcmVmZXJlbmNlIGluIHByb2JlIHBh
+dGggZm9yIGZsYXNoZXMgd2l0aG91dCBhIG5hbWUuIFRoZQogIHByb2JlIHBhdGggdHJpZXMgdG8g
+YWNjZXNzIHRoZSBuYW1lIHdpdGhvdXQgY2hlY2tpbmcgaXRzIGV4aXN0ZW5jZQogIGZpcnN0LiBT
+MjhIUzI1NlQgaXMgdGhlIGZpcnN0IGZsYXNoIHRvIGRlZmluZSBpdHMgZW50cnkgd2l0aG91dCBh
+CiAgbmFtZSwgdW5jb3ZlcmluZyB0aGlzIGlzc3VlLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCcmlhbiBOb3JyaXMgKDEp
+OgogICAgICBtdGQ6IHNwaS1ub3I6IG1pY3Jvbi1zdDogQWRkIG4yNXEwNjRhIFdQIHN1cHBvcnQK
+CkNzw7Nrw6FzLCBCZW5jZSAoMSk6CiAgICAgIG10ZDogc3BpLW5vcjogc3N0OiBGYWN0b3Igb3V0
+IGNvbW1vbiB3cml0ZSBvcGVyYXRpb24gdG8gYHNzdF9ub3Jfd3JpdGVfZGF0YSgpYAoKTWljaGFl
+bCBXYWxsZSAoMik6CiAgICAgIG10ZDogc3BpLW5vcjogd2luYm9uZDogYWRkIFpldHRhIFpEMjVR
+MTI4QyBzdXBwb3J0CiAgICAgIG10ZDogc3BpLW5vcjogZml4IGZsYXNoIHByb2JpbmcKClRha2Fo
+aXJvIEt1d2FubyAoMSk6CiAgICAgIG10ZDogc3BpLW5vcjogc3BhbnNpb246IEFkZCBzdXBwb3J0
+IGZvciBTMjhIUzI1NlQKCiBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyAgICAgIHwgIDMgKyst
+CiBkcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jIHwgIDIgKysKIGRyaXZlcnMvbXRkL3Nw
+aS1ub3Ivc3BhbnNpb24uYyAgfCAgNCArKysrCiBkcml2ZXJzL210ZC9zcGktbm9yL3NzdC5jICAg
+ICAgIHwgMzkgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tCiBkcml2ZXJz
+L210ZC9zcGktbm9yL3dpbmJvbmQuYyAgIHwgMjYgKysrKysrKysrKysrKysrKysrKysrKysrKysK
+IDUgZmlsZXMgY2hhbmdlZCwgNTMgaW5zZXJ0aW9ucygrKSwgMjEgZGVsZXRpb25zKC0pCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
