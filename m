@@ -4,59 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9E99EEB58A
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Sep 2024 10:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EFB4FA3736
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Sep 2024 09:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=gJcyBAvbEO++CT0Xi3Z4nh/8rc/mYkaUUVSz6RtteDI=; b=eUTgWpHGXNXvzv
-	/VLIvOENvXW5HHB2RliHhhJgr3lT/RzdvQe7sOmoJfIDcQ/cxybq7zlmQYyxruAESA9OkOjI+DCK1
-	mKQYobEVshENar9/3ImDYVuQJb/snc1MseQtlnZZR5gCzJIwnOPe2RNMOKuADOAfNnF3KqiwKpXJM
-	HDaTHEdbJ5qW9NMdwSFswd/m3FICpZK3A14KIHDdrbAiOFsqsGOm4OvlnhqFWC1duYZzfOGCIuQLy
-	ktpTgVFeoRkxuX4MWbkSfPBwoOvNApJF7QHKW/B5u7jkdRJXXTrSW//sln797ahuMB1kECIFtBkCn
-	eO2Xj1Y/ml+BnxDMZLJQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=w6mKob+B2K5Gy3Vi0WJJFu1HtIhc/iJmFJ/CPsMEr/E=; b=4sk984xnoMl8wU
+	dfzxvJK5IZ+Zu6Ww5q9AI+8qU9tubq8xSWR44E/xsfN/c5JLAmbrEhiT/pNzyqVNX7fKnlfnWIb7n
+	KS9DNN0RB7nnwPxGlWowWZvaOfyMaLu7sURfVa0piTpEoUPIZDgcbTaXb//8YIX0QzhXzNn9P9lkW
+	hy26OPKhUSPFgfd+BYciOj/Bd+i0fXipiD/RqsaPvGURrRqje2QZL9A9IAsMRIuQ9p2/USE2qynUF
+	4L/67tny9pj2IcmEcd75AtNXm5+8mhleaxc9YUqwu/bgxZpnNMchbzEVjKDtWxATKJwcaIkPD96D/
+	oh2UgZ7Kx6n/h1h/3yrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1soh4T-0000000Chgp-21gg;
-	Thu, 12 Sep 2024 10:29:05 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sp2X1-0000000FTDW-2Mwg;
+	Fri, 13 Sep 2024 09:23:59 +0000
+Received: from mgamail.intel.com ([192.198.163.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1soh4Q-0000000ChgM-0K5H
+	id 1sp2Wx-0000000FTCk-3uNW
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Sep 2024 10:29:03 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id E71BA5C59DE;
-	Thu, 12 Sep 2024 10:28:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFC51C4CEC3;
-	Thu, 12 Sep 2024 10:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726136940;
-	bh=jWAK/NmqSyCvRohQe/08YAse6V24XA89RG8riBEsnTw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Z6g0ZSQyc44vMIV6l1C56rVtx2yJWqzlzPtFu1Qg4bBOVlpDDCdlHb3ffqR8IxQ70
-	 VAZIKu+Nv4x9T3xorrTa84Ck2u33cI8DDbLFkkozxblF8QsUGK0COivGgaJXdKapKL
-	 9prlU8G0rUFTJFRmj1cZapZKD1pTI5fFrbb665vrWEnqbpOXh1DuggaT3htwDcmyHR
-	 fO1Z44dAer3U3Yx7J8KbGYZGP2UMQmHCbS/bV2BTP0vJB17ifYgDeCEnV8vFk9hJBu
-	 T1M0J+x13XytygPMGZge0wy/H8r+u5yi2yIfQE4LtgXjTZgQH3AdASY99prOctn3uv
-	 ZunxFGsd15dhg==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
- <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+	Fri, 13 Sep 2024 09:23:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1726219436; x=1757755436;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BB2Qli8K7W5hKcfadq8joRx/Kr5Qk4bl0eg10xz/VGQ=;
+  b=mF/jtmfNlUuSpNURrqaFzzJJwuFeaKOKrbwfOG+SCG3J7fknSdsnJd+Z
+   DSZGpIwExXuIxYmgnRT/3dovh5GuDcejlMCgMDmLokRHHu5KCcC4pRrVN
+   LOVzGOwyTjNkf/Xpm4EPDki/d7gDjDFJb6zsjcyGzGnUXlTFDgYl0OIFd
+   C5ZBtZeOXpZj3OFVm0pFTEzoWrv3EwbVhxQtLs4DdqsseVCiPhC+XotUc
+   tQFeI2VV6q80orbp7ViNh1ZoSKqengGVYaAgqHfkkWwLvO6gh74LN6K6x
+   TkmzUSP403dcDeeZYpTJO5AJTBdwzI4aTTUG45TVNRhRVmLZ3t6AD5w1H
+   w==;
+X-CSE-ConnectionGUID: 3hPprNZfQg+jKtxlXll0qw==
+X-CSE-MsgGUID: 25RBdhjZS7yZR5LYiPxiNQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11193"; a="13509275"
+X-IronPort-AV: E=Sophos;i="6.10,225,1719903600"; 
+   d="scan'208";a="13509275"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2024 02:23:50 -0700
+X-CSE-ConnectionGUID: DxnFPH8UQWS397PPeOpDAg==
+X-CSE-MsgGUID: /Y7yQKqjRv2MDyRvxMazew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,225,1719903600"; 
+   d="scan'208";a="68498886"
+Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 13 Sep 2024 02:23:45 -0700
+Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sp2Wk-0006IR-2o;
+	Fri, 13 Sep 2024 09:23:42 +0000
+Date: Fri, 13 Sep 2024 17:22:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, broonie@kernel.org,
+	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	andersson@kernel.org, konradybcio@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	manivannan.sadhasivam@linaro.org, esben@geanix.com,
+	linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [GIT PULL] mtd: spi-nor: changes for v6.12
-Date: Thu, 12 Sep 2024 12:28:57 +0200
-Message-ID: <mafs0bk0tf9na.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	quic_mdalam@quicinc.com, quic_varada@quicinc.com,
+	quic_srichara@quicinc.com
+Subject: Re: [PATCH v9 6/8] spi: spi-qpic: add driver for QCOM SPI NAND flash
+ Interface
+Message-ID: <202409131702.oP75WEmL-lkp@intel.com>
+References: <20240912061503.3468147-7-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240912061503.3468147-7-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240912_032902_205428_F97794CC 
-X-CRM114-Status: GOOD (  11.32  )
+X-CRM114-CacheID: sfid-20240913_022356_017751_63FF7146 
+X-CRM114-Status: GOOD (  16.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,45 +92,184 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKSGVyZSBhcmUgdGhlIFNQSSBOT1IgY2hhbmdlcyBmb3IgdjYuMTIuIEkgdXN1
-YWxseSBiYXNlIG15IGJyYW5jaCBvbiB0b3AKb2YgLXJjMSwgYnV0IHRoaXMgdGltZSBhcm91bmQg
-aXQgc2VlbXMgSSBkaWQgaXQgYSBmZXcgY29tbWl0cyBhZnRlcgp2Ni4xMS1yYzEuIFByb2JhYmx5
-IGp1c3QgZGlkbid0IG5vdGljZSB0b3J2YWxkcy9tYXN0ZXIgaGFkIG1vdmVkLiBTaG91bGQKbWFr
-ZSBubyBkaWZmZXJlbmNlIGluIHByYWN0aWNlIGFueXdheS4KClJlZ2FyZHMsClByYXR5dXNoIFlh
-ZGF2CgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IGRjMWM4MDM0ZTMxYjE0YTJl
-NWUyMTIxMDRlYzUwOGFlYzQ0Y2UxYjk6CgogIG1pbm1heDogc2ltcGxpZnkgbWluKCkvbWF4KCkv
-Y2xhbXAoKSBpbXBsZW1lbnRhdGlvbiAoMjAyNC0wNy0yOCAyMDoyNDoxMiAtMDcwMCkKCmFyZSBh
-dmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0OgoKICBodHRwczovL2dpdC5rZXJuZWwu
-b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGludXguZ2l0IHRhZ3Mvc3BpLW5vci9m
-b3ItNi4xMgoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIDUyN2QwZmE2NTQyNmI5OTU3
-NDIyZDBlNzE2ZmRlMGQwNjAyYzc1YzI6CgogIG10ZDogc3BpLW5vcjogZml4IGZsYXNoIHByb2Jp
-bmcgKDIwMjQtMDktMDkgMTU6NDI6NTAgKzAyMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNQSSBOT1IgY2hhbmdlcyBm
-b3IgNi4xMgoKTm90YWJsZSBjaGFuZ2VzOgoKLSBBZGQgV3JpdGUgUHJvdGVjdCBzdXBwb3J0IGZv
-ciBOMjVRMDY0QS4KCi0gTmV3IGZsYXNoIHN1cHBvcnQgZm9yIFpldHRhIFpEMjVRMTI4QyBhbmQg
-U3BhbnNpb24gUzI4SFMyNTZULgoKLSBGaXggYSBOVUxMIGRlcmVmZXJlbmNlIGluIHByb2JlIHBh
-dGggZm9yIGZsYXNoZXMgd2l0aG91dCBhIG5hbWUuIFRoZQogIHByb2JlIHBhdGggdHJpZXMgdG8g
-YWNjZXNzIHRoZSBuYW1lIHdpdGhvdXQgY2hlY2tpbmcgaXRzIGV4aXN0ZW5jZQogIGZpcnN0LiBT
-MjhIUzI1NlQgaXMgdGhlIGZpcnN0IGZsYXNoIHRvIGRlZmluZSBpdHMgZW50cnkgd2l0aG91dCBh
-CiAgbmFtZSwgdW5jb3ZlcmluZyB0aGlzIGlzc3VlLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCcmlhbiBOb3JyaXMgKDEp
-OgogICAgICBtdGQ6IHNwaS1ub3I6IG1pY3Jvbi1zdDogQWRkIG4yNXEwNjRhIFdQIHN1cHBvcnQK
-CkNzw7Nrw6FzLCBCZW5jZSAoMSk6CiAgICAgIG10ZDogc3BpLW5vcjogc3N0OiBGYWN0b3Igb3V0
-IGNvbW1vbiB3cml0ZSBvcGVyYXRpb24gdG8gYHNzdF9ub3Jfd3JpdGVfZGF0YSgpYAoKTWljaGFl
-bCBXYWxsZSAoMik6CiAgICAgIG10ZDogc3BpLW5vcjogd2luYm9uZDogYWRkIFpldHRhIFpEMjVR
-MTI4QyBzdXBwb3J0CiAgICAgIG10ZDogc3BpLW5vcjogZml4IGZsYXNoIHByb2JpbmcKClRha2Fo
-aXJvIEt1d2FubyAoMSk6CiAgICAgIG10ZDogc3BpLW5vcjogc3BhbnNpb246IEFkZCBzdXBwb3J0
-IGZvciBTMjhIUzI1NlQKCiBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyAgICAgIHwgIDMgKyst
-CiBkcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jIHwgIDIgKysKIGRyaXZlcnMvbXRkL3Nw
-aS1ub3Ivc3BhbnNpb24uYyAgfCAgNCArKysrCiBkcml2ZXJzL210ZC9zcGktbm9yL3NzdC5jICAg
-ICAgIHwgMzkgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tCiBkcml2ZXJz
-L210ZC9zcGktbm9yL3dpbmJvbmQuYyAgIHwgMjYgKysrKysrKysrKysrKysrKysrKysrKysrKysK
-IDUgZmlsZXMgY2hhbmdlZCwgNTMgaW5zZXJ0aW9ucygrKSwgMjEgZGVsZXRpb25zKC0pCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Md,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on broonie-spi/for-next robh/for-next linus/master v6.11-rc7 next-20240912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/spi-dt-bindings-Introduce-qcom-spi-qpic-snand/20240912-141925
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20240912061503.3468147-7-quic_mdalam%40quicinc.com
+patch subject: [PATCH v9 6/8] spi: spi-qpic: add driver for QCOM SPI NAND flash Interface
+config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240913/202409131702.oP75WEmL-lkp@intel.com/config)
+compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project bf684034844c660b778f0eba103582f582b710c9)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240913/202409131702.oP75WEmL-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409131702.oP75WEmL-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/spi/spi-qpic-snand.c:14:
+   In file included from include/linux/dmaengine.h:12:
+   In file included from include/linux/scatterlist.h:8:
+   In file included from include/linux/mm.h:2228:
+   include/linux/vmstat.h:514:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     514 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   In file included from drivers/spi/spi-qpic-snand.c:14:
+   In file included from include/linux/dmaengine.h:12:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:548:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     548 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:561:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     561 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from drivers/spi/spi-qpic-snand.c:14:
+   In file included from include/linux/dmaengine.h:12:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:574:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     574 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from drivers/spi/spi-qpic-snand.c:14:
+   In file included from include/linux/dmaengine.h:12:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:585:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     585 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:595:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     595 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:605:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     605 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+>> drivers/spi/spi-qpic-snand.c:1018:10: warning: equality comparison with extraneous parentheses [-Wparentheses-equality]
+    1018 |                 if ((i == (num_cw - 1))) {
+         |                      ~~^~~~~~~~~~~~~~~
+   drivers/spi/spi-qpic-snand.c:1018:10: note: remove extraneous parentheses around the comparison to silence this warning
+    1018 |                 if ((i == (num_cw - 1))) {
+         |                     ~  ^              ~
+   drivers/spi/spi-qpic-snand.c:1018:10: note: use '=' to turn this equality comparison into an assignment
+    1018 |                 if ((i == (num_cw - 1))) {
+         |                        ^~
+         |                        =
+   8 warnings generated.
+
+
+vim +1018 drivers/spi/spi-qpic-snand.c
+
+   973	
+   974	static int qcom_spi_program_raw(struct qcom_nand_controller *snandc,
+   975					const struct spi_mem_op *op)
+   976	{
+   977		struct qpic_ecc *ecc_cfg = snandc->qspi->ecc;
+   978		struct mtd_info *mtd = snandc->qspi->mtd;
+   979		u8 *data_buf = NULL, *oob_buf = NULL;
+   980		int i, ret;
+   981		int num_cw = snandc->qspi->num_cw;
+   982		u32 cfg0, cfg1, ecc_bch_cfg;
+   983	
+   984		cfg0 = (ecc_cfg->cfg0_raw & ~(7U << CW_PER_PAGE)) |
+   985				(num_cw - 1) << CW_PER_PAGE;
+   986		cfg1 = ecc_cfg->cfg1_raw;
+   987		ecc_bch_cfg = ECC_CFG_ECC_DISABLE;
+   988	
+   989		data_buf = snandc->qspi->data_buf;
+   990	
+   991		oob_buf = snandc->qspi->oob_buf;
+   992		memset(oob_buf, 0xff, OOB_BUF_SIZE);
+   993	
+   994		snandc->buf_count = 0;
+   995		snandc->buf_start = 0;
+   996		qcom_clear_read_regs(snandc);
+   997		qcom_clear_bam_transaction(snandc);
+   998	
+   999		snandc->regs->addr0 = snandc->qspi->addr1;
+  1000		snandc->regs->addr1 = snandc->qspi->addr2;
+  1001		snandc->regs->cmd = snandc->qspi->cmd;
+  1002		snandc->regs->cfg0 = cpu_to_le32(cfg0);
+  1003		snandc->regs->cfg1 = cpu_to_le32(cfg1);
+  1004		snandc->regs->ecc_bch_cfg = cpu_to_le32(ecc_bch_cfg);
+  1005		snandc->regs->clrflashstatus = cpu_to_le32(ecc_cfg->clrflashstatus);
+  1006		snandc->regs->clrreadstatus = cpu_to_le32(ecc_cfg->clrreadstatus);
+  1007		snandc->regs->exec = cpu_to_le32(1);
+  1008	
+  1009		qcom_spi_config_page_write(snandc);
+  1010	
+  1011		for (i = 0; i < num_cw; i++) {
+  1012			int data_size1, data_size2, oob_size1, oob_size2;
+  1013			int reg_off = FLASH_BUF_ACC;
+  1014	
+  1015			data_size1 = mtd->writesize - ecc_cfg->cw_size * (num_cw - 1);
+  1016			oob_size1 = ecc_cfg->bbm_size;
+  1017	
+> 1018			if ((i == (num_cw - 1))) {
+  1019				data_size2 = NANDC_STEP_SIZE - data_size1 -
+  1020					     ((num_cw - 1) << 2);
+  1021				oob_size2 = (num_cw << 2) + ecc_cfg->ecc_bytes_hw +
+  1022					    ecc_cfg->spare_bytes;
+  1023			} else {
+  1024				data_size2 = ecc_cfg->cw_data - data_size1;
+  1025				oob_size2 = ecc_cfg->ecc_bytes_hw + ecc_cfg->spare_bytes;
+  1026			}
+  1027	
+  1028			qcom_write_data_dma(snandc, reg_off, data_buf, data_size1,
+  1029					    NAND_BAM_NO_EOT);
+  1030			reg_off += data_size1;
+  1031			data_buf += data_size1;
+  1032	
+  1033			qcom_write_data_dma(snandc, reg_off, oob_buf, oob_size1,
+  1034					    NAND_BAM_NO_EOT);
+  1035			oob_buf += oob_size1;
+  1036			reg_off += oob_size1;
+  1037	
+  1038			qcom_write_data_dma(snandc, reg_off, data_buf, data_size2,
+  1039					    NAND_BAM_NO_EOT);
+  1040			reg_off += data_size2;
+  1041			data_buf += data_size2;
+  1042	
+  1043			qcom_write_data_dma(snandc, reg_off, oob_buf, oob_size2, 0);
+  1044			oob_buf += oob_size2;
+  1045	
+  1046			qcom_spi_config_cw_write(snandc);
+  1047		}
+  1048	
+  1049		ret = qcom_submit_descs(snandc);
+  1050		if (ret) {
+  1051			dev_err(snandc->dev, "failure to write raw page\n");
+  1052			return ret;
+  1053		}
+  1054	
+  1055		return 0;
+  1056	}
+  1057	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
