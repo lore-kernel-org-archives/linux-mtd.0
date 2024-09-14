@@ -4,58 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C67BFC616B
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Sep 2024 18:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9B64C02194
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 Sep 2024 11:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/fW/6AF9h3HLjtjSVZaBGktT5jmoJsTuhG1f0wrtEp8=; b=2lrDAEdLL6lNN5
-	e7ZMlpQEv2u/pLmQG03WL0xey/BwfyoHk7NPH3lQAh2bkrLgWq+plWrjARC8gZyG0vlm88ll1F18/
-	jVg5qFXMy+vZ6DGLVfxGcaCWFl5Z5Gap8tezjnnHqLDFjTVFYqYXqHcXrNKmgC3Ugtl3MSSZDdqY1
-	p8K4vhx4Q4imIhXOTOSbGAJBzwk9AQoVqaYHkNKu5Tmyw+ldc2amnMk8OEZGAl3oek0z8J8wWCaw0
-	NXKTGnvjzGRyLmm65uDo98XoNClo3ckfhA+uh8+k5vwq9+Q9bX7afMKKTHigOLzfoTwbpO1ckZ+wf
-	3dvET2h4yXjt/tHp9etg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ur9CQc6RH394VSWYS0x3sAe99AidGBc4iSR7YECxVBU=; b=XOd6DPOlMO8jYq
+	GSwFl3l1I2fBECcDDnb9CiROApnYFL9z72I6tl6uC+zPXLNiAgovFTtJ4A0ZUhHTcX+rGXGbV+pEO
+	c6s3HclHPb791ZPTn8Mg0nvXgvrznw3rnFOp/QiBvL52SUWaCCOJcAYU+xEj7z+dT1m41iZaoXuqa
+	dc23sXzBfUV4o7oiRVfbia2tm4xO1hawdUC/vOPnEu0P2UBljPzQvpqxD6btZlYpxaEVDaFqYdmcX
+	zpxPJ0iYdC/K+fdzzFQKVAQaHYSxyc02CCwcsz4cWx0gPlJNw2C1+BXw5HiWNPhcXIL+DLY5w8lG4
+	umojVRLLh9RCSAD755UQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1spAf2-0000000Gl3v-0Q2I;
-	Fri, 13 Sep 2024 18:04:48 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1spRBF-00000000clm-3axW;
+	Sat, 14 Sep 2024 11:43:09 +0000
+Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1spAbi-0000000GkED-2OoF
+	id 1spRBB-00000000cl8-2Kai
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Sep 2024 18:01:25 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B26C540002;
-	Fri, 13 Sep 2024 18:01:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1726250479;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VknIwZfstMr3cVAJERTkOObxeAZYI+8APGlhzuzHxiE=;
-	b=OnMoxfTQFEajFCnOFs18jL0SeMOfnvdO+U7g76e9iUZcxkEkBisdFIlPdmC3Pyc56AIgsH
-	Fb+Z4uRZ+cr+/8xY+WgF8BVUrhLi4yolrRkAqIUz1DprCfHE7jCnXM4mmsYqbFZks0N6wI
-	i/q/YfWy4iflwKuEcESC0Mon9apY1bVsneAu8wPJbBmfloySandeZRArtiTvJbDb8zbC9c
-	WLRustfPDcGWhTBg6zpo7IKhi62nvn6IupxiEnx7/WsXuhZwaNL4SMnljb6KdvOF4b0TOa
-	qu5xBQE8J6qgGWUdeYS1w7B7Id4LYYtcg6MehTaSLsSoUpOb0dBpkiaHfZ4IRQ==
-Date: Fri, 13 Sep 2024 20:01:13 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <Tudor.Ambarus@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush
- Yadav <pratyush@kernel.org>
-Subject: [GIT PULL] mtd: nand: Changes for 6.12
-Message-ID: <20240913200113.0a899012@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	Sat, 14 Sep 2024 11:43:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1726314186; x=1757850186;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IttjkCQSBf9NbEnR71sQfuFl0VYCaS4hWpmUrJuBJNY=;
+  b=WjnxBYVJHm/1lAcJTfqEX+htOODiBivBFj/if6PHfn3kGyE8paBaXQ+j
+   zYwmhY+NsBGS3XkC5ggQo178DE1sabViM2PYKlIo3U44DxHZSCc69ICuv
+   BIERWyCdQv3E/fcT3GfX76X8Ij2agA6P88z7i7n0Z10BX7D3qhFYCUogK
+   5cNF6YOwTBlJGm1W5hB/yixEx2CX0NbsAbO5r5C7bJldXIYhbXvFHhKUz
+   BpveLrZ8bpbPEnBOpq2BLddWMLKB8t5X+Lwm6ddI1fQ4gFZbrFh2B3pXS
+   C3ducGEjxC7w8JaJ5I/k0wbI0uuMGG3oBK2G7mRSm0KgUlHynEwR9jwjl
+   Q==;
+X-CSE-ConnectionGUID: okhBX9QzS0SrT+CChUgJqg==
+X-CSE-MsgGUID: EbtIBueRRNmzY1FksV/5IA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11194"; a="29107105"
+X-IronPort-AV: E=Sophos;i="6.10,229,1719903600"; 
+   d="scan'208";a="29107105"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2024 04:43:03 -0700
+X-CSE-ConnectionGUID: cfdzYlx5R22BuSAhdqbY4w==
+X-CSE-MsgGUID: gcHHmbr1RCa6kfZjHkpXOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,229,1719903600"; 
+   d="scan'208";a="68887902"
+Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 14 Sep 2024 04:42:58 -0700
+Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1spRB1-0007i6-1K;
+	Sat, 14 Sep 2024 11:42:55 +0000
+Date: Sat, 14 Sep 2024 19:42:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, broonie@kernel.org,
+	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	andersson@kernel.org, konradybcio@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	manivannan.sadhasivam@linaro.org, esben@geanix.com,
+	linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev, quic_mdalam@quicinc.com,
+	quic_varada@quicinc.com, quic_srichara@quicinc.com
+Subject: Re: [PATCH v9 6/8] spi: spi-qpic: add driver for QCOM SPI NAND flash
+ Interface
+Message-ID: <202409141932.JyCSfNIc-lkp@intel.com>
+References: <20240912061503.3468147-7-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20240912061503.3468147-7-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240913_110122_909910_F961D79E 
-X-CRM114-Status: GOOD (  13.28  )
+X-CRM114-CacheID: sfid-20240914_044305_681261_4BEB8B6A 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,110 +91,246 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIGlzIHRoZSBOQU5EIFBSIGZvciA2LjEyLgoKVGhhbmtzLApNaXF1w6hsCgpU
-aGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDg0MDAyOTFlMjg5ZWU2YjJiZjk3Nzlm
-ZjFjODNhMjkxNTAxZjAxN2I6CgogIExpbnV4IDYuMTEtcmMxICgyMDI0LTA3LTI4IDE0OjE5OjU1
-IC0wNzAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6CgogIGdpdDov
-L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGludXguZ2l0IHRh
-Z3MvbmFuZC9mb3ItNi4xMgoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIDQ3NWFhZGVi
-YTVkZjY4NzUyNGJkOWJjNWM3N2NiYTQ0YzE3MzZlMDg6CgogIG10ZDogc3BpbmFuZDogbWFjcm9u
-aXg6IEZsYWcgcGFydHMgbmVlZGluZyBleHBsaWNpdCBwbGFuZSBzZWxlY3QgKDIwMjQtMDktMDkg
-MTE6NTI6MDYgKzAyMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiogUmF3IE5BTkQgY2hhbmdlcwoKVGhlIHVzZSBvZiBm
-b3JfZWFjaF9jaGlsZF9vZl9ub2RlX3Njb3BlZCgpIGhhcyBiZWVuIHNwcmVhZCBpbnRvIHRoZQpz
-dWJzeXN0ZW0gZHJpdmVycy4gQXNpZGUgZnJvbSB0aGF0LCBhIGNvdXBsZSBvZiBleGl0IHBhdGgg
-aGF2ZSBiZWVuCmZpeGVkIChtdGssIGRlbmFsaSksIHRoZSBUSSBHUE1DIGJpbmRpbmdzIGhhdmUg
-YmVlbiBlbmhhbmNlZCB0byBjb21wbHkKd2l0aCB1cC10by1kYXRlIHBhcnRpdGlvbiBkZXNjcmlw
-dGlvbnMgYW5kIGFzIGFsd2F5cyB0aGVyZSBpcyBhIGxvYWQgb2YKc21hbGwgYW5kIG1pc2MgZml4
-ZXMuCgoqIFNQSS1OQU5EIGNoYW5nZXMKClRoZSBtb3N0IGltcGFjdGluZyBzZXJpZXMgdGhpcyBj
-eWNsZSBpcyBicmluZ2luZyBzdXBwb3J0IGZvciBjb250aW51b3VzCnJlYWRzIGluIHRoZSBTUEkt
-TkFORCBzdWJzeXN0ZW0uIFRoaXMgaXMgYSBmZWF0dXJlIGFscmVhZHkgbWVyZ2VkIGluIHRoZQpy
-YXcgTkFORCBzdWJzeXN0ZW0gd2hpY2ggYWxsb3dzIG9wdGltaXppbmcgdGhlIGludGVybmFsIGZl
-dGNoIHRpbWVzIGluCnRoZSBjaGlwIHdoaWxlIHJlYWRpbmcgc2VxdWVudGlhbCBwYWdlcyB3aXRo
-aW4gYW4gZXJhc2VibG9jay4gRm9yIG5vdwpvbmx5IE1hY3Jvbml4IE5BTkRzIGJlbmVmaXQgZnJv
-bSB0aGlzIGZlYXR1cmUuIFdoaWxlIHdlIGFyZSB0YWxraW5nCmFib3V0IE1hY3Jvbml4LCBzb21l
-IG9mIHRoZWlyIGNoaXAgbmVlZCBhbiBleHBsaWNpdCBhY3Rpb24gZm9yIHNlbGVjdGluZwphIGRp
-ZmZlcmVudCBwbGFuZSwgYW5kIHN1cHBvcnQgZm9yIGl0IGhhcyBhbHNvIGJlZW4gYnJvdWdodC4K
-ClRoZSBiaXRmbGlwIHRocmVzaG9sZCBoYXMgYWxzbyBiZWVuIHNldCB0byB0aGUgc2FtZSBhcmJp
-dHJhcnkgbGV2ZWwgYXMKaW4gdGhlIHJhdyBOQU5EIHN1YnN5c3RlbSB0byBvcHRpbWl6ZSB3ZWFy
-IGxldmVsaW5nIGRlY2lzaW9ucywgYW5kCmZpbmFsbHkgc3VwcG9ydCBmb3IgYSBuZXcgV2luYm9u
-ZCBjaGlwIGhhcyBiZWVuIGFkZGVkLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBbGV4YW5kZXIgRGFobCAoMSk6CiAgICAg
-IG10ZDogcmF3bmFuZDogYXRtZWw6IEFkZCBtZXNzYWdlIG9uIERNQSB1c2FnZQoKQmFydG9zeiBH
-b2xhc3pld3NraSAoMSk6CiAgICAgIG10ZDogcmF3bmFuZDogZGF2aW5jaTogbWFrZSBwbGF0Zm9y
-bV9kYXRhIHByaXZhdGUKCkNoZW4gUmlkb25nICgxKToKICAgICAgbXRkOiByYXduYW5kOiBkZW5h
-bGk6IEZpeCBtaXNzaW5nIHBjaV9yZWxlYXNlX3JlZ2lvbnMgaW4gcHJvYmUgYW5kIHJlbW92ZQoK
-Q2hlbmcgTWluZyBMaW4gKDIpOgogICAgICBtdGQ6IHNwaW5hbmQ6IEFkZCBzdXBwb3J0IGZvciBz
-ZXR0aW5nIHBsYW5lIHNlbGVjdCBiaXRzCiAgICAgIG10ZDogc3BpbmFuZDogbWFjcm9uaXg6IEZs
-YWcgcGFydHMgbmVlZGluZyBleHBsaWNpdCBwbGFuZSBzZWxlY3QKCkRhbmllbCBHb2xsZSAoMSk6
-CiAgICAgIG10ZDogc3BpbmFuZDogc2V0IGJpdGZsaXBfdGhyZXNob2xkIHRvIDc1JSBvZiBFQ0Mg
-c3RyZW5ndGgKCkppbmppZSBSdWFuICgxMSk6CiAgICAgIG10ZDogcmF3bmFuZDogZGVuYWxpOiBV
-c2UgdGhlIGRldm1fY2xrX2dldF9lbmFibGVkKCkgaGVscGVyIGZ1bmN0aW9uCiAgICAgIG10ZDog
-cmF3bmFuZDogYXJhc2FuOiBVc2UgZm9yX2VhY2hfY2hpbGRfb2Zfbm9kZV9zY29wZWQoKQogICAg
-ICBtdGQ6IHJhd25hbmQ6IGNhZGVuY2U6IFVzZSBmb3JfZWFjaF9jaGlsZF9vZl9ub2RlX3Njb3Bl
-ZCgpCiAgICAgIG10ZDogcmF3bmFuZDogcGwzNTM6IFVzZSBmb3JfZWFjaF9jaGlsZF9vZl9ub2Rl
-X3Njb3BlZCgpCiAgICAgIG10ZDogcmF3bmFuZDogbWFydmVsbDogZHJtL3JvY2tjaGlwOiBVc2Ug
-Zm9yX2VhY2hfY2hpbGRfb2Zfbm9kZV9zY29wZWQoKQogICAgICBtdGQ6IHJhd25hbmQ6IHJvY2tj
-aGlwOiBVc2UgZm9yX2VhY2hfY2hpbGRfb2Zfbm9kZV9zY29wZWQoKQogICAgICBtdGQ6IHJhd25h
-bmQ6IG1lc29uOiBVc2UgZm9yX2VhY2hfY2hpbGRfb2Zfbm9kZV9zY29wZWQoKQogICAgICBtdGQ6
-IHJhd25hbmQ6IG10azogVXNlIGZvcl9lYWNoX2NoaWxkX29mX25vZGVfc2NvcGVkKCkKICAgICAg
-bXRkOiByYXduYW5kOiByZW5lc2FzOiBVc2UgZm9yX2VhY2hfY2hpbGRfb2Zfbm9kZV9zY29wZWQo
-KQogICAgICBtdGQ6IHJhd25hbmQ6IHN0bTMyX2ZtYzI6IFVzZSBmb3JfZWFjaF9jaGlsZF9vZl9u
-b2RlX3Njb3BlZCgpCiAgICAgIG10ZDogcmF3bmFuZDogc3VueGk6IFVzZSBmb3JfZWFjaF9jaGls
-ZF9vZl9ub2RlX3Njb3BlZCgpCgpNaXF1ZWwgUmF5bmFsICgxMik6CiAgICAgIG10ZDogbmFuZDog
-UmVuYW1lIHRoZSBOQU5EIElPIGl0ZXJhdGlvbiBoZWxwZXIKICAgICAgbXRkOiBuYW5kOiBJbnRy
-b2R1Y2UgYSBibG9jayBpdGVyYXRvcgogICAgICBtdGQ6IHNwaS1uYW5kOiBJc29sYXRlIHRoZSBN
-VEQgcmVhZCBsb2dpYyBpbiBhIGhlbHBlcgogICAgICBtdGQ6IHNwaS1uYW5kOiBBZGQgY29udGlu
-dW91cyByZWFkIHN1cHBvcnQKICAgICAgbXRkOiBzcGktbmFuZDogRXhwb3NlIHNwaW5hbmRfd3Jp
-dGVfcmVnX29wKCkKICAgICAgbXRkOiBzcGktbmFuZDogbWFjcm9uaXg6IEZpeCBoZWxwZXIgbmFt
-ZQogICAgICBtdGQ6IHNwaS1uYW5kOiBtYWNyb25peDogRXh0cmFjdCB0aGUgYml0ZmxpcCByZXRy
-aWV2YWwgbG9naWMKICAgICAgbXRkOiBzcGktbmFuZDogbWFjcm9uaXg6IEFkZCBhIHBvc3NpYmxl
-IGJpdGZsaXAgc3RhdHVzIGZsYWcKICAgICAgbXRkOiBzcGktbmFuZDogbWFjcm9uaXg6IENvbnRp
-bnVvdXMgcmVhZCBzdXBwb3J0CiAgICAgIG10ZDogcmF3bmFuZDogbWVzb246IEZpeCB0eXBvIGlu
-IGZ1bmN0aW9uIG5hbWUKICAgICAgbXRkOiByYXduYW5kOiBtdGs6IEZhY3Rvcml6ZSBvdXQgdGhl
-IGxvZ2ljIGNsZWFuaW5nIG10ayBjaGlwcwogICAgICBtdGQ6IHJhd25hbmQ6IG10azogRml4IGlu
-aXQgZXJyb3IgcGF0aAoKUm9iZXJ0IE1hcmtvICgxKToKICAgICAgbXRkOiBzcGluYW5kOiB3aW5i
-b25kOiBhZGQgc3VwcG9ydCBmb3IgVzI1TjAxS1YKClJvZ2VyIFF1YWRyb3MgKDEpOgogICAgICBk
-dC1iaW5kaW5nczogbXRkOiB0aSwgZ3BtYy1uYW5kOiBzdXBwb3J0IHBhcnRpdGlvbnMgbm9kZQoK
-IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvdGksZ3BtYy1uYW5kLnlhbWwg
-fCAgIDUgKy0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMg
-ICAgICAgICAgIHwgICA1ICstLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvbmFuZC1jb250
-cm9sbGVyLmMgICAgICAgICAgICB8ICAgNSArKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2NhZGVu
-Y2UtbmFuZC1jb250cm9sbGVyLmMgICAgICAgICAgfCAgIDQgKy0KIGRyaXZlcnMvbXRkL25hbmQv
-cmF3L2RhdmluY2lfbmFuZC5jICAgICAgICAgICAgICAgICAgICAgfCAgNzAgKysrKysrKysrKysr
-KysrKysrKysrKysrKysrLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGlfZHQuYyAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDI5ICsrLS0tLS0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQv
-cmF3L2RlbmFsaV9wY2kuYyAgICAgICAgICAgICAgICAgICAgICAgfCAgMTEgKysrLS0KIGRyaXZl
-cnMvbXRkL25hbmQvcmF3L21hcnZlbGxfbmFuZC5jICAgICAgICAgICAgICAgICAgICAgfCAgMTIg
-KystLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDEwICsrLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtfbmFuZC5jICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDM2ICsrKysrKysrKy0tLS0tLS0KIGRyaXZlcnMvbXRkL25h
-bmQvcmF3L3BsMzV4LW5hbmQtY29udHJvbGxlci5jICAgICAgICAgICAgfCAgIDUgKy0tCiBkcml2
-ZXJzL210ZC9uYW5kL3Jhdy9yZW5lc2FzLW5hbmQtY29udHJvbGxlci5jICAgICAgICAgIHwgIDEy
-ICsrLS0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvcm9ja2NoaXAtbmFuZC1jb250cm9sbGVyLmMg
-ICAgICAgICB8ICAgNSArLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3N0bTMyX2ZtYzJfbmFuZC5j
-ICAgICAgICAgICAgICAgICAgfCAgIDcgKy0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zdW54aV9u
-YW5kLmMgICAgICAgICAgICAgICAgICAgICAgIHwgICA0ICstCiBkcml2ZXJzL210ZC9uYW5kL3Nw
-aS9jb3JlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMjIzICsrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKy0tLS0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvc3BpL21hY3Jvbml4LmMg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAxNDYgKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9zcGkv
-d2luYm9uZC5jICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyNiArKysrKysrKysrKwogaW5j
-bHVkZS9saW51eC9tdGQvbmFuZC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA5
-MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQogaW5jbHVkZS9saW51eC9t
-dGQvc3BpbmFuZC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxOSArKysrKysrKwog
-aW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL210ZC1kYXZpbmNpLWFlbWlmLmggICAgICAgICB8
-ICAzNiAtLS0tLS0tLS0tLS0tLS0tCiBpbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvbXRkLWRh
-dmluY2kuaCAgICAgICAgICAgICAgIHwgIDg4IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KIDIyIGZpbGVzIGNoYW5nZWQsIDU1OSBpbnNlcnRpb25zKCspLCAyODkgZGVsZXRp
-b25zKC0pCiBkZWxldGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL210
-ZC1kYXZpbmNpLWFlbWlmLmgKIGRlbGV0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L3BsYXRm
-b3JtX2RhdGEvbXRkLWRhdmluY2kuaAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Md,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on mtd/nand/next]
+[also build test ERROR on broonie-spi/for-next robh/for-next linus/master v6.11-rc7 next-20240913]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/spi-dt-bindings-Introduce-qcom-spi-qpic-snand/20240912-141925
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20240912061503.3468147-7-quic_mdalam%40quicinc.com
+patch subject: [PATCH v9 6/8] spi: spi-qpic: add driver for QCOM SPI NAND flash Interface
+config: arm64-randconfig-r063-20240914 (https://download.01.org/0day-ci/archive/20240914/202409141932.JyCSfNIc-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240914/202409141932.JyCSfNIc-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409141932.JyCSfNIc-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+   aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+   aarch64-linux-ld: drivers/spi/spi-qpic-snand.o: in function `qcom_spi_remove':
+>> drivers/spi/spi-qpic-snand.c:1597:(.text+0x1f8): undefined reference to `qcom_nandc_unalloc'
+   aarch64-linux-ld: drivers/spi/spi-qpic-snand.o: in function `qcom_spi_probe':
+>> drivers/spi/spi-qpic-snand.c:1540:(.text+0x680): undefined reference to `qcom_nandc_alloc'
+   aarch64-linux-ld: drivers/spi/spi-qpic-snand.o: in function `qcom_spi_init':
+>> drivers/spi/spi-qpic-snand.c:192:(.text+0x6d0): undefined reference to `qcom_write_reg_dma'
+>> aarch64-linux-ld: drivers/spi/spi-qpic-snand.c:197:(.text+0x6f4): undefined reference to `qcom_write_reg_dma'
+   aarch64-linux-ld: drivers/spi/spi-qpic-snand.c:199:(.text+0x710): undefined reference to `qcom_write_reg_dma'
+   aarch64-linux-ld: drivers/spi/spi-qpic-snand.c:200:(.text+0x72c): undefined reference to `qcom_write_reg_dma'
+>> aarch64-linux-ld: drivers/spi/spi-qpic-snand.c:203:(.text+0x734): undefined reference to `qcom_submit_descs'
+   aarch64-linux-ld: drivers/spi/spi-qpic-snand.o: in function `qcom_spi_probe':
+   drivers/spi/spi-qpic-snand.c:1576:(.text+0x754): undefined reference to `qcom_nandc_unalloc'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_submit_wmt_recv_urb':
+   drivers/bluetooth/btmtk.c:531:(.text+0x928): undefined reference to `usb_alloc_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:537:(.text+0x958): undefined reference to `usb_free_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:550:(.text+0x998): undefined reference to `usb_free_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:561:(.text+0x9ec): undefined reference to `usb_anchor_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:562:(.text+0x9f8): undefined reference to `usb_submit_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:567:(.text+0xa3c): undefined reference to `usb_unanchor_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:570:(.text+0xa44): undefined reference to `usb_free_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_submit_intr_urb':
+   drivers/bluetooth/btmtk.c:1174:(.text+0xab4): undefined reference to `usb_alloc_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:1181:(.text+0xadc): undefined reference to `usb_free_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:1195:(.text+0xb94): undefined reference to `usb_anchor_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:1197:(.text+0xba0): undefined reference to `usb_submit_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:1202:(.text+0xbe4): undefined reference to `usb_unanchor_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:1205:(.text+0xbec): undefined reference to `usb_free_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_suspend':
+   drivers/bluetooth/btmtk.c:1265:(.text+0xce0): undefined reference to `usb_kill_anchored_urbs'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_hci_wmt_sync':
+   drivers/bluetooth/btmtk.c:610:(.text+0xdc0): undefined reference to `usb_autopm_get_interface'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:618:(.text+0xe24): undefined reference to `usb_autopm_put_interface'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:625:(.text+0xe3c): undefined reference to `usb_autopm_put_interface'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_recv_acl':
+   drivers/bluetooth/btmtk.c:946:(.text+0x13a0): undefined reference to `usb_disable_autosuspend'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `__set_mtk_intr_interface':
+   drivers/bluetooth/btmtk.c:991:(.text+0x14c8): undefined reference to `usb_set_interface'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_isointf_init':
+   drivers/bluetooth/btmtk.c:1224:(.text+0x15d8): undefined reference to `usb_kill_anchored_urbs'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_wmt_recv':
+   drivers/bluetooth/btmtk.c:508:(.text+0x1884): undefined reference to `usb_anchor_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:509:(.text+0x1890): undefined reference to `usb_submit_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:518:(.text+0x18dc): undefined reference to `usb_unanchor_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `alloc_mtk_intr_urb':
+   drivers/bluetooth/btmtk.c:1037:(.text+0x1958): undefined reference to `usb_alloc_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_reg_read':
+   drivers/bluetooth/btmtk.c:790:(.text+0x1af0): undefined reference to `usb_control_msg'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_uhw_reg_write':
+   drivers/bluetooth/btmtk.c:738:(.text+0x1bd0): undefined reference to `usb_control_msg'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_usb_uhw_reg_read':
+   drivers/bluetooth/btmtk.c:761:(.text+0x1cbc): undefined reference to `usb_control_msg'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.o: in function `btmtk_intr_complete':
+   drivers/bluetooth/btmtk.c:1145:(.text+0x1f48): undefined reference to `usb_anchor_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:1147:(.text+0x1f54): undefined reference to `usb_submit_urb'
+   aarch64-linux-ld: drivers/bluetooth/btmtk.c:1157:(.text+0x1fb4): undefined reference to `usb_unanchor_urb'
+
+
+vim +1597 drivers/spi/spi-qpic-snand.c
+
+  1463	
+  1464	static int qcom_spi_probe(struct platform_device *pdev)
+  1465	{
+  1466		struct device *dev = &pdev->dev;
+  1467		struct spi_controller *ctlr;
+  1468		struct qcom_nand_controller *snandc;
+  1469		struct qpic_spi_nand *qspi;
+  1470		struct qpic_ecc *ecc;
+  1471		struct resource *res;
+  1472		const void *dev_data;
+  1473		int ret;
+  1474	
+  1475		ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
+  1476		if (!ecc)
+  1477			return -ENOMEM;
+  1478	
+  1479		qspi = devm_kzalloc(dev, sizeof(*qspi), GFP_KERNEL);
+  1480		if (!qspi)
+  1481			return -ENOMEM;
+  1482	
+  1483		ctlr = __devm_spi_alloc_controller(dev, sizeof(*snandc), false);
+  1484		if (!ctlr)
+  1485			return -ENOMEM;
+  1486	
+  1487		platform_set_drvdata(pdev, ctlr);
+  1488	
+  1489		snandc = spi_controller_get_devdata(ctlr);
+  1490		qspi->snandc = snandc;
+  1491	
+  1492		snandc->dev = dev;
+  1493		snandc->qspi = qspi;
+  1494		snandc->qspi->ctlr = ctlr;
+  1495		snandc->qspi->ecc = ecc;
+  1496	
+  1497		dev_data = of_device_get_match_data(dev);
+  1498		if (!dev_data) {
+  1499			dev_err(&pdev->dev, "failed to get device data\n");
+  1500			return -ENODEV;
+  1501		}
+  1502	
+  1503		snandc->props = dev_data;
+  1504		snandc->dev = &pdev->dev;
+  1505	
+  1506		snandc->core_clk = devm_clk_get(dev, "core");
+  1507		if (IS_ERR(snandc->core_clk))
+  1508			return PTR_ERR(snandc->core_clk);
+  1509	
+  1510		snandc->aon_clk = devm_clk_get(dev, "aon");
+  1511		if (IS_ERR(snandc->aon_clk))
+  1512			return PTR_ERR(snandc->aon_clk);
+  1513	
+  1514		snandc->qspi->iomacro_clk = devm_clk_get(dev, "iom");
+  1515		if (IS_ERR(snandc->qspi->iomacro_clk))
+  1516			return PTR_ERR(snandc->qspi->iomacro_clk);
+  1517	
+  1518		snandc->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+  1519		if (IS_ERR(snandc->base))
+  1520			return PTR_ERR(snandc->base);
+  1521	
+  1522		snandc->base_phys = res->start;
+  1523		snandc->base_dma = dma_map_resource(dev, res->start, resource_size(res),
+  1524						    DMA_BIDIRECTIONAL, 0);
+  1525		if (dma_mapping_error(dev, snandc->base_dma))
+  1526			return -ENXIO;
+  1527	
+  1528		ret = clk_prepare_enable(snandc->core_clk);
+  1529		if (ret)
+  1530			goto err_dis_core_clk;
+  1531	
+  1532		ret = clk_prepare_enable(snandc->aon_clk);
+  1533		if (ret)
+  1534			goto err_dis_aon_clk;
+  1535	
+  1536		ret = clk_prepare_enable(snandc->qspi->iomacro_clk);
+  1537		if (ret)
+  1538			goto err_dis_iom_clk;
+  1539	
+> 1540		ret = qcom_nandc_alloc(snandc);
+  1541		if (ret)
+  1542			goto err_snand_alloc;
+  1543	
+  1544		ret = qcom_spi_init(snandc);
+  1545		if (ret)
+  1546			goto err_spi_init;
+  1547	
+  1548		/* setup ECC engine */
+  1549		snandc->qspi->ecc_eng.dev = &pdev->dev;
+  1550		snandc->qspi->ecc_eng.integration = NAND_ECC_ENGINE_INTEGRATION_PIPELINED;
+  1551		snandc->qspi->ecc_eng.ops = &qcom_spi_ecc_engine_ops_pipelined;
+  1552		snandc->qspi->ecc_eng.priv = snandc;
+  1553	
+  1554		ret = nand_ecc_register_on_host_hw_engine(&snandc->qspi->ecc_eng);
+  1555		if (ret) {
+  1556			dev_err(&pdev->dev, "failed to register ecc engine:%d\n", ret);
+  1557			goto err_spi_init;
+  1558		}
+  1559	
+  1560		ctlr->num_chipselect = QPIC_QSPI_NUM_CS;
+  1561		ctlr->mem_ops = &qcom_spi_mem_ops;
+  1562		ctlr->mem_caps = &qcom_spi_mem_caps;
+  1563		ctlr->dev.of_node = pdev->dev.of_node;
+  1564		ctlr->mode_bits = SPI_TX_DUAL | SPI_RX_DUAL |
+  1565				    SPI_TX_QUAD | SPI_RX_QUAD;
+  1566	
+  1567		ret = spi_register_controller(ctlr);
+  1568		if (ret) {
+  1569			dev_err(&pdev->dev, "spi_register_controller failed.\n");
+  1570			goto err_spi_init;
+  1571		}
+  1572	
+  1573		return 0;
+  1574	
+  1575	err_spi_init:
+  1576		qcom_nandc_unalloc(snandc);
+  1577	err_snand_alloc:
+  1578		clk_disable_unprepare(snandc->qspi->iomacro_clk);
+  1579	err_dis_iom_clk:
+  1580		clk_disable_unprepare(snandc->aon_clk);
+  1581	err_dis_aon_clk:
+  1582		clk_disable_unprepare(snandc->core_clk);
+  1583	err_dis_core_clk:
+  1584		dma_unmap_resource(dev, res->start, resource_size(res),
+  1585				   DMA_BIDIRECTIONAL, 0);
+  1586		return ret;
+  1587	}
+  1588	
+  1589	static void qcom_spi_remove(struct platform_device *pdev)
+  1590	{
+  1591		struct spi_controller *ctlr = platform_get_drvdata(pdev);
+  1592		struct qcom_nand_controller *snandc = spi_controller_get_devdata(ctlr);
+  1593		struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+  1594	
+  1595		spi_unregister_controller(ctlr);
+  1596	
+> 1597		qcom_nandc_unalloc(snandc);
+  1598	
+  1599		clk_disable_unprepare(snandc->aon_clk);
+  1600		clk_disable_unprepare(snandc->core_clk);
+  1601		clk_disable_unprepare(snandc->qspi->iomacro_clk);
+  1602	
+  1603		dma_unmap_resource(&pdev->dev, snandc->base_dma, resource_size(res),
+  1604				   DMA_BIDIRECTIONAL, 0);
+  1605	}
+  1606	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
