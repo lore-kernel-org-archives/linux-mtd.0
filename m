@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD370C3600A
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2024 10:28:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1872FC3600C
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2024 10:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zw8YywIxgnBUDRBZPAVpz2pSk1ZxJlyWFQmeAiAueD8=; b=Gijd6RXuXM6YD+
-	EZgBlWfN+5JXT50zPP9ufRKws/Agx27px4n46JQ4yRqOfrj96Gt0NlpSV1kJC6vmf7A75rByIpSrT
-	kCwZW1aEMFb7A1rJNnwEIQwcx0117MMO03NNqUPM1iGQWCF1nDX/0yXZZ0kECPRyxc/W+2LgD1gMl
-	rrvEM4Fx4oO/2HFrelxxaMHBOsnrIos/r96oZ+iww/Uz+hc44IHKAZvvFY0xRBfqW0Dy5asWR4q5m
-	KTeEY/UML+blRu97tyuNjlPDhmA2W70f/5+NiWQSR2gsyebJlQThpLHTnMSr3JB+98W3B1cFt4qFG
-	cELcjSHXZm0i2LKSDkhg==;
+	List-Owner; bh=CsrdbxOjIrR/mWUmMvJF06zUcgm7yqBgMJo+zmcKldA=; b=bFfcT0rt1dtOCv
+	DoXqKLBNuZ6QbhD8A8BQCoSDnhS12hFBdq9hqOD24HAbGNTB1rsH4YUC8wfYt1cJIJ9yhTyHb/QbZ
+	vM1m/ti2C2NzEDXkfNU+xvIhNUX3TrVJ3o1IJkFT6/o54bU1uNp4rgzpGVtfafdJxv2pFmEisdtM5
+	Uda0dbjqoeYHILfdhTv7K+pTWg5Wsh/6e5sryJkOv7Dm0ghMIni+RaK/wooxnkGgUbYz20Z38C+AQ
+	e4dP2KtTAnvZs/wLby52yUpaqQodTlYerTwLVN5IpZh6yGBl1lnY1FQw7GeX9xfGk7r8saoP4SPfd
+	ogIb6wWm6atliAWad2kw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqVRe-00000005wWd-1OGn;
-	Tue, 17 Sep 2024 10:28:30 +0000
-Received: from out203-205-221-164.mail.qq.com ([203.205.221.164])
+	id 1sqVWf-00000005wwz-2meM;
+	Tue, 17 Sep 2024 10:33:41 +0000
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqVRN-00000005wS3-3lOB
+	id 1sqVVu-00000005ws9-38BX
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Sep 2024 10:28:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1726568891;
-	bh=6z33IIKt4FbUhsPdsPA+iW/KHxWmVjzuOsPQKjuX3Bg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=GAi+XDI+zFJydJNfb1pSSiDUXlPkB+J5oc47vYu/sITEVeTy841U/k7b63Ron3Grl
-	 rpqUJFoLErynwCF3bUg9XUNHVArnEXBpWWXost5BiTPGReqa6vifJX3n/L/7QndkN+
-	 zZL8uAwtpAIIgc97GGi6OE4GDX7nWyMRPwHkhzc0=
-Received: from [198.18.0.1] ([171.223.88.248])
-	by newxmesmtplogicsvrsza29-0.qq.com (NewEsmtp) with SMTP
-	id 3B4A38E0; Tue, 17 Sep 2024 18:14:52 +0800
-X-QQ-mid: xmsmtpt1726568092tonmzfhgm
-Message-ID: <tencent_56E242E79B56D8242E5853B3FD35A849AA07@qq.com>
-X-QQ-XMAILINFO: NkDBiFrpY1d6gKYthOMwghg3UJfKWOcyqzGOMCHHmj5wmnlz8fGTshl045Bydu
-	 sn61/A2UJ6eHCS1EZIrlqyRWB6GT6JI/QybvtyJ4/3/unuHt/+ycTO515eYK15UUYpppfWcybg1R
-	 ipYaT8eIkTtCLIsmZ1dL1lUZXrFeU+AbOkNzajznaScV9Rm5S9ZIHPR7awT8Rc0+aPGcmXkHsoaS
-	 /j0FF0tZu8R8i0WfK8N08j6BdK7wUcdsZ27QuCQmAViLiwRjwuQLXqZcSec7azG0zwhtM8BDDhId
-	 Aodkjl9igEVIYdw76Gal8oT9MpNe8YXdozVOBbqLJepjjsUDxF8nW3WzT1/iD+Ob653B02GlsE+S
-	 sVZUvem57wxdhll+8AZP+QwEz6EOddo4PGFmdo2g6ny4XaSxs8vh7SjoXZXEKoDb61PQvUmDUuRa
-	 4xq0XTFnlFzo390Aazbtm2NN1nXz6n24aiZzfINxdimSMY5gykUrW0m5/kkxU1MrUHBGAaA79X/u
-	 +z5o6POQMusNYtnrGtQDEiVmbcg1y0BDTY5AeyRZCJVT0/7YW5aXn48ZidPfHYd6BuOxoFFQApWU
-	 3Nt29DRJvZNG3mmB/OCixB/6DkEKeOAv79iEvXiSv4/YtGqitcYS+F/N5Hu98ftMNejenh2vVv0f
-	 MekZkY1IYZbAJSrpWLURw9e8mIgPtU35WOfr71JBE6dgRJo1/1dHIrXc8pvcbJd+oGnwkskvWs1T
-	 gcsH8oR6vnDNsAxR4ul1hsXhWKfvijGdk2auRIyCDhiwvcByVVdIkmpy+1t+JH8NDNgNA+tuq/d4
-	 qanxisyvnrGOEi+aDD/aNkTi1pgoiCmTlxj6KWpyXjgjOahWvU+fnGXGQDxSFwb1oyD2OxIOZ21i
-	 VMns0hayHEeHvAjtYbUF3SAHIBB1UW7q36+9ZexfCmA1uiZiyL8F5X18kIfBxKgG42oT3j/88A2M
-	 a++801mk5uxax5Xywye4QTzeoR9MtQHEGWN5YHkluqZihdH8nxpKsec9XK7entwFFpYXx1O6sIKn
-	 BEdXEFxvY+F13eGCpzuHted52mwo+rikaJ9p61NAB5iXm4TWApixmIRqCbb/QuPCq+L/D+ILFQVy
-	 CsFAmMYfG2tICLK7Eku29KkKf/t9sYmmiWEcHVLoL5AhftpLU=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-OQ-MSGID: <ec2ff7dc-82b0-416c-bb4e-d6f4115b5c15@foxmail.com>
-Date: Tue, 17 Sep 2024 18:14:52 +0800
+	Tue, 17 Sep 2024 10:33:39 +0000
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5c2561e8041so5001148a12.2
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Sep 2024 03:32:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726569173; x=1727173973; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=urw93t9dgeqJfpnW0Vddrv1JySfFGP+z7gLlYb3sLUw=;
+        b=e+jLrrGelcOZI8dnkowbmacyRvoypkGDwyrKiLvnxPdZ34ZTafI+f7af1Cb8zfTIen
+         v2+XvuRqDURwfLZ+RQ82kDzYwHNsOu26rwNFoaBPV4obcGxr0gy0/qiqLyHNCiGa4L6Z
+         Vqhmx/+Abp1P+E3LCATBBYeog1W7tMG6aYYlrOeVCWpA6WsgKPUQYPdiSIC6AHHdDQd3
+         15OZG3pzsTPcOV+K6tL4FJO76Xz2FiZQOZ7/WQjKWoLmSTfQQ8DiHO35RrzLdztU0Z0a
+         VbPFZQ9PtbWhW5z0ubTH6XPPdj8pOYMTfuzR4sn2CY7WCpF70Ed8dv9ls47QyXm+vbK5
+         H+Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726569173; x=1727173973;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=urw93t9dgeqJfpnW0Vddrv1JySfFGP+z7gLlYb3sLUw=;
+        b=UkZ71eLgU3Zx9qg/46I4ogYDSH1OoLi0a5pDvTiFEoo3gn6si4B0u3NOabccPNQX4h
+         NK/ecC/a4HXcOq0ur6dSCFg0ZzrkhkwzJGhsAI2rRFJOZpcSu00JY0OVHaGPTjPJT1JF
+         uWfmRzicGBpCvwZR/u9UJuzqLj/9Lvxh1JxCHpCAXX3QBJEP/m53AN6ugm8KwRqgX35s
+         HjGcfC29qe7RkynXwvZz+d6WhMl9GhErWvSG7qp9RHSudKpa9PnzvaDS/ABN63ED98rC
+         6w00NT/lLKhkNIlfMYhcIHzIJKcp1G2r9lwm3S6/RGqUP3JIWsSCYkMk/UGIQMbmInSl
+         wFKg==
+X-Gm-Message-State: AOJu0YyRoMm3QE2UVOBo6tpWgMhpk+rH6SlWEebU3caYzKoqTqYxRydY
+	h/lg86EmRi1w/kfKBk/OWb42m5Qif97K0iTjGrw0X6qxjbNuPhZceaKucZVxhkzzMPDB9rSfbcH
+	NzKV5Qh1H3zWTdo7xQikivgM0Ig1kqUTreg==
+X-Google-Smtp-Source: AGHT+IHzw0PEUSjwbeoB50lNCJxhRmwmchGr8DJxZWRkSMgFxsN/7POvekxN1y4jscottow7M2YGBODgeFPz5dPsdLc=
+X-Received: by 2002:a05:6402:278b:b0:5c2:6d16:ad5e with SMTP id
+ 4fb4d7f45d1cf-5c41e1906e8mr12620913a12.19.1726569172271; Tue, 17 Sep 2024
+ 03:32:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: Add support for gd25 and gd55 series chips.
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- tudor.ambarus@linaro.org, pratyush@kernel.org, mwalle@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <tencent_983A0FB4662661C03E98E1AC214E32179F0A@qq.com>
- <47e0745c-e7a4-4201-b1bf-bb8e44e5911d@wanadoo.fr>
-Content-Language: en-US
-From: Renjun Wang <renjunw0@foxmail.com>
-In-Reply-To: <47e0745c-e7a4-4201-b1bf-bb8e44e5911d@wanadoo.fr>
+References: <20240917094956.437078-1-erezgeva@nwtime.org> <20240917094956.437078-5-erezgeva@nwtime.org>
+In-Reply-To: <20240917094956.437078-5-erezgeva@nwtime.org>
+From: Erez <erezgeva2@gmail.com>
+Date: Tue, 17 Sep 2024 12:32:15 +0200
+Message-ID: <CANeKEMNouQi+L8qUjayaNwyWwi6v=4PsX+VcgqiJgz4z9S91hQ@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] mtd: spi-nor: macronix: add support for OTP
+To: Erez Geva <erezgeva@nwtime.org>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Esben Haabendal <esben@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240917_032814_246352_8890F576 
-X-CRM114-Status: GOOD (  16.28  )
+X-CRM114-CacheID: sfid-20240917_033254_819169_99B34C82 
+X-CRM114-Status: GOOD (  27.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,80 +87,247 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ck9uIDkvNy8yNCAxNTowNCwgQ2hyaXN0b3BoZSBKQUlMTEVUIHdyb3RlOgo+IExlIDA3LzA5LzIw
-MjQgw6AgMDg6MzIsIFJlbmp1biBXYW5nIGEgw6ljcml0wqA6Cj4+IEFkZCBzdXBwb3J0IGZvciBn
-ZDI1bHEyNTUsIGdkMjVsYjI1NiwgZ2QyNWxiNTEybSwgZ2QyNWI1MTJtLCBnZDU1YjAxZ2UKPj4g
-YW5kIGdkNTVsYjAxZ2UuIEFsbCB0aGVzZSBjaGlwcyBhcmUgdGVzdGVkIG9uIFJvY2tjaGlwIGJv
-YXJkc1sxXS4KPj4KPj4gWzFdaHR0cHM6Ly9naXRodWIuY29tL3JvY2tjaGlwLWxpbnV4L2tlcm5l
-bC9ibG9iL2RldmVsb3AtNS4xMC9kcml2ZXJzL210ZC9zcGktbm9yL2dpZ2FkZXZpY2UuYyAKPj4K
-Pj4KPj4gU2lnbmVkLW9mZi1ieTogUmVuanVuIFdhbmcgPHJlbmp1bncwQGZveG1haWwuY29tPgo+
-PiAtLS0KPj4gwqAgZHJpdmVycy9tdGQvc3BpLW5vci9naWdhZGV2aWNlLmMgfCA0MyArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKwo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgNDMgaW5zZXJ0
-aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9naWdhZGV2aWNl
-LmMgCj4+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9naWdhZGV2aWNlLmMKPj4gaW5kZXggZWYxZWRk
-MGFkZDcwLi5mMDA2OWE0YWRiYmYgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
-Z2lnYWRldmljZS5jCj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvZ2lnYWRldmljZS5jCj4+
-IEBAIC02MSw2ICs2MSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyAKPj4gZ2ln
-YWRldmljZV9ub3JfcGFydHNbXSA9IHsKPj4gwqDCoMKgwqDCoCB9LCB7Cj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCAuaWQgPSBTTk9SX0lEKDB4YzgsIDB4NDAsIDB4MTkpLAo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqAgLm5hbWUgPSAiZ2QyNXEyNTYiLAo+PiArwqDCoMKgwqDCoMKgwqAgLnNpemUgPSBTWl8z
-Mk0sCj4KPiBIaSwganVzdCBmb3IgbXkgdW5kZXJzdGFuZGluZywgd2h5IHRoaXMgY2hhbmdlPwo+
-Cj4gSWYgaXQgaXMgYSBmaXgsIHNob3VsZCBpdCBiZSBkb25lIGEgc2VwYXJhdGUgcGF0Y2g/Cj4g
-T3Igc2hvdWxkIGl0IGJlIG1lbnRpb25lZCBpbiB0aGUgY29tbWl0IGRlc2NyaXB0aW9uPwo+Cj4g
-Q0oKPgo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgLmZsYWdzID0gU1BJX05PUl9IQVNfTE9DSyB8IFNQ
-SV9OT1JfSEFTX1RCIHwgCj4+IFNQSV9OT1JfVEJfU1JfQklUNiwKPj4gwqDCoMKgwqDCoMKgwqDC
-oMKgIC5maXh1cHMgPSAmZ2QyNXEyNTZfZml4dXBzLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgLmZp
-eHVwX2ZsYWdzID0gU1BJX05PUl80Ql9PUENPREVTLAo+PiBAQCAtODIsNiArODMsNDggQEAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIAo+PiBnaWdhZGV2aWNlX25vcl9wYXJ0c1tdID0g
-ewo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgLnNpemUgPSBTWl8xNk0sCj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoCAuZmxhZ3MgPSBTUElfTk9SX0hBU19MT0NLIHwgU1BJX05PUl9IQVNfVEIsCj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoCAubm9fc2ZkcF9mbGFncyA9IFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVB
-RCB8IAo+PiBTUElfTk9SX1FVQURfUkVBRCwKPj4gK8KgwqDCoCB9LCB7Cj4+ICvCoMKgwqDCoMKg
-wqDCoCAuaWQgPSBTTk9SX0lEKDB4YzgsIDB4NjAsIDB4MTkpLAo+PiArwqDCoMKgwqDCoMKgwqAg
-Lm5hbWUgPSAiZ2QyNWxxMjU1IiwKPj4gK8KgwqDCoMKgwqDCoMKgIC5zaXplID0gU1pfMzJNLAo+
-PiArwqDCoMKgwqDCoMKgwqAgLmZsYWdzID0gU1BJX05PUl9IQVNfTE9DSywKPj4gK8KgwqDCoMKg
-wqDCoMKgIC5ub19zZmRwX2ZsYWdzID0gU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgCj4+
-IFNQSV9OT1JfUVVBRF9SRUFELAo+PiArwqDCoMKgwqDCoMKgwqAgLmZpeHVwX2ZsYWdzID0gU1BJ
-X05PUl80Ql9PUENPREVTLAo+PiArwqDCoMKgIH0sIHsKPj4gK8KgwqDCoMKgwqDCoMKgIC5pZCA9
-IFNOT1JfSUQoMHhjOCwgMHg2NywgMHgxOSksCj4+ICvCoMKgwqDCoMKgwqDCoCAubmFtZSA9ICJn
-ZDI1bGIyNTYiLAo+PiArwqDCoMKgwqDCoMKgwqAgLnNpemUgPSBTWl8zMk0sCj4+ICvCoMKgwqDC
-oMKgwqDCoCAuZmxhZ3MgPSBTUElfTk9SX0hBU19MT0NLLAo+PiArwqDCoMKgwqDCoMKgwqAgLm5v
-X3NmZHBfZmxhZ3MgPSBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfCAKPj4gU1BJX05PUl9R
-VUFEX1JFQUQsCj4+ICvCoMKgwqDCoMKgwqDCoCAuZml4dXBfZmxhZ3MgPSBTUElfTk9SXzRCX09Q
-Q09ERVMsCj4+ICvCoMKgwqAgfSwgewo+PiArwqDCoMKgwqDCoMKgwqAgLmlkID0gU05PUl9JRCgw
-eGM4LCAweDY3LCAweDFhKSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5uYW1lID0gImdkMjVsYjUxMm0i
-LAo+PiArwqDCoMKgwqDCoMKgwqAgLnNpemUgPSBTWl82NE0sCj4+ICvCoMKgwqDCoMKgwqDCoCAu
-ZmxhZ3MgPSBTUElfTk9SX0hBU19MT0NLLAo+PiArwqDCoMKgwqDCoMKgwqAgLm5vX3NmZHBfZmxh
-Z3MgPSBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfCAKPj4gU1BJX05PUl9RVUFEX1JFQUQs
-Cj4+ICvCoMKgwqDCoMKgwqDCoCAuZml4dXBfZmxhZ3MgPSBTUElfTk9SXzRCX09QQ09ERVMsCj4+
-ICvCoMKgwqAgfSwgewo+PiArwqDCoMKgwqDCoMKgwqAgLmlkID0gU05PUl9JRCgweGM4LCAweDQ3
-LCAweDFhKSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5uYW1lID0gImdkMjViNTEybSIsCj4+ICvCoMKg
-wqDCoMKgwqDCoCAuc2l6ZSA9IFNaXzY0TSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5mbGFncyA9IFNQ
-SV9OT1JfSEFTX0xPQ0ssCj4+ICvCoMKgwqDCoMKgwqDCoCAubm9fc2ZkcF9mbGFncyA9IFNFQ1Rf
-NEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IAo+PiBTUElfTk9SX1FVQURfUkVBRCwKPj4gK8KgwqDC
-oMKgwqDCoMKgIC5maXh1cF9mbGFncyA9IFNQSV9OT1JfNEJfT1BDT0RFUywKPj4gK8KgwqDCoCB9
-LCB7Cj4+ICvCoMKgwqDCoMKgwqDCoCAuaWQgPSBTTk9SX0lEKDB4YzgsIDB4NDcsIDB4MWIpLAo+
-PiArwqDCoMKgwqDCoMKgwqAgLm5hbWUgPSAiZ2Q1NWIwMWdlIiwKPj4gK8KgwqDCoMKgwqDCoMKg
-IC5zaXplID0gU1pfMTI4TSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5mbGFncyA9IFNQSV9OT1JfSEFT
-X0xPQ0ssCj4+ICvCoMKgwqDCoMKgwqDCoCAubm9fc2ZkcF9mbGFncyA9IFNFQ1RfNEsgfCBTUElf
-Tk9SX0RVQUxfUkVBRCB8IAo+PiBTUElfTk9SX1FVQURfUkVBRCwKPj4gK8KgwqDCoMKgwqDCoMKg
-IC5maXh1cF9mbGFncyA9IFNQSV9OT1JfNEJfT1BDT0RFUywKPj4gK8KgwqDCoCB9LCB7Cj4+ICvC
-oMKgwqDCoMKgwqDCoCAuaWQgPSBTTk9SX0lEKDB4YzgsIDB4NjcsIDB4MWIpLAo+PiArwqDCoMKg
-wqDCoMKgwqAgLm5hbWUgPSAiZ2Q1NWxiMDFnZSIsCj4+ICvCoMKgwqDCoMKgwqDCoCAuc2l6ZSA9
-IFNaXzEyOE0sCj4+ICvCoMKgwqDCoMKgwqDCoCAuZmxhZ3MgPSBTUElfTk9SX0hBU19MT0NLLAo+
-PiArwqDCoMKgwqDCoMKgwqAgLm5vX3NmZHBfZmxhZ3MgPSBTRUNUXzRLIHwgU1BJX05PUl9EVUFM
-X1JFQUQgfCAKPj4gU1BJX05PUl9RVUFEX1JFQUQsCj4+ICvCoMKgwqDCoMKgwqDCoCAuZml4dXBf
-ZmxhZ3MgPSBTUElfTk9SXzRCX09QQ09ERVMsCj4+IMKgwqDCoMKgwqAgfSwKPj4gwqAgfTsKPgo+
-Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cj4gaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCgpIaSBDaHJpc3RvcGhlLApJdCBk
-ZWZpbml0ZWx5IG1pc3MgdGhlIC5zaXplIGZpZWxkIGZvciBnZDI1cTI1NiwgSSB3aWxsIHNlbmQg
-b25lIApzZXBhcmF0ZWQgcGF0Y2ggZm9yIHRoaXMuCgpCZXN0IFJlZ2FyZHMsCgoKCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue, 17 Sept 2024 at 11:50, Erez Geva <erezgeva@nwtime.org> wrote:
+>
+> From: Erez Geva <ErezGeva2@gmail.com>
+>
+> Macronix SPI-NOR support OTP.
+> Add callbacks to read, write and lock the OTP.
+>
+> Notice Macronix OTP do not support erase.
+> Every bit written with '0', can not be changed further.
+>
+> Notice Macronix OTP do not support single region lock!
+> The locking includes all regions at once!
+>
+> Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/macronix.c | 167 +++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h    |   9 ++
+>  2 files changed, 176 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index ea6be95e75a5..02aa844d641b 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -8,6 +8,162 @@
+>
+>  #include "core.h"
+>
+> +/**
+> + * macronix_nor_otp_enter() - Send Enter Secured OTP instruction to the chip.
+> + * @nor:       pointer to 'struct spi_nor'.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int macronix_nor_otp_enter(struct spi_nor *nor)
+> +{
+> +       int error;
+> +
+> +       error = spi_nor_send_cmd(nor, SPINOR_OP_ENSO);
+> +       if (error)
+> +               dev_dbg(nor->dev, "error %d on Macronix Enter Secured OTP\n", error);
+> +
+> +       return error;
+> +}
+> +
+> +/**
+> + * macronix_nor_otp_exit() - Send Exit Secured OTP instruction to the chip.
+> + * @nor:       pointer to 'struct spi_nor'.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int macronix_nor_otp_exit(struct spi_nor *nor)
+> +{
+> +       int error;
+> +
+> +       error = spi_nor_send_cmd(nor, SPINOR_OP_EXSO);
+> +       if (error)
+> +               dev_dbg(nor->dev, "error %d on Macronix Exit Secured OTP\n", error);
+> +
+> +       return error;
+> +}
+> +
+> +/**
+> + * macronix_nor_otp_read() - read security register
+
+Sorry, it should be "read OTP data".
+
+> + * @nor:       pointer to 'struct spi_nor'
+> + * @addr:       offset to read from
+> + * @len:        number of bytes to read
+> + * @buf:        pointer to dst buffer
+> + *
+> + * Return: number of bytes read successfully, -errno otherwise
+> + */
+> +static int macronix_nor_otp_read(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
+> +{
+> +       int ret, error;
+> +
+> +       error = macronix_nor_otp_enter(nor);
+> +       if (error)
+> +               return error;
+> +
+> +       ret = spi_nor_read_data(nor, addr, len, buf);
+> +
+> +       error = macronix_nor_otp_exit(nor);
+> +
+> +       if (ret < 0)
+> +               dev_dbg(nor->dev, "error %d on Macronix read OTP data\n", ret);
+> +       else if (error)
+> +               return error;
+> +
+> +       return ret;
+> +}
+> +
+> +/**
+> + * macronix_nor_otp_write() - write security register
+
+Sorry, it should be "write data to OTP".
+
+> + * @nor:        pointer to 'struct spi_nor'
+> + * @addr:       offset to write to
+> + * @len:        number of bytes to write
+> + * @buf:        pointer to src buffer
+> + *
+> + * Return: number of bytes written successfully, -errno otherwise
+> + */
+> +static int macronix_nor_otp_write(struct spi_nor *nor, loff_t addr, size_t len, const u8 *buf)
+> +{
+> +       int error, ret = 0;
+> +
+> +       error = macronix_nor_otp_enter(nor);
+> +       if (error)
+> +               return error;
+> +
+> +       error = spi_nor_write_enable(nor);
+> +       if (error)
+> +               goto otp_write_err;
+> +
+> +       ret = spi_nor_write_data(nor, addr, len, buf);
+> +       if (ret < 0) {
+> +               dev_dbg(nor->dev, "error %d on Macronix write OTP data\n", ret);
+> +               goto otp_write_err;
+> +       }
+> +
+> +       error = spi_nor_wait_till_ready(nor);
+> +       if (error)
+> +               dev_dbg(nor->dev, "error %d on Macronix waiting write OTP finish\n", error);
+> +
+> +otp_write_err:
+> +
+> +       error = macronix_nor_otp_exit(nor);
+> +
+> +       return ret;
+> +}
+> +
+> +/**
+> + * macronix_nor_otp_lock() - lock the OTP region
+> + * @nor:        pointer to 'struct spi_nor'
+> + * @region:     OTP region
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int macronix_nor_otp_lock(struct spi_nor *nor, unsigned int region)
+> +{
+> +       int error;
+> +       u8 *rdscur = nor->bouncebuf;
+> +
+> +       error = spi_nor_read_reg(nor, SPINOR_OP_RDSCUR, 1);
+> +       if (error) {
+> +               dev_dbg(nor->dev, "error %d on read security register\n", error);
+> +               return error;
+> +       }
+> +
+> +       if (rdscur[0] & SEC_REG_LDSO)
+> +               return 0;
+> +
+> +       error = spi_nor_write_enable(nor);
+> +       if (error) {
+> +               dev_dbg(nor->dev, "error %d on enable write before update security register\n",
+> +                       error);
+> +               return error;
+> +       }
+> +
+> +       error = spi_nor_send_cmd(nor, SPINOR_OP_WRSCUR);
+> +       if (error)
+> +               dev_dbg(nor->dev, "error %d on update security register\n", error);
+> +
+> +       return error;
+> +}
+> +
+> +/**
+> + * macronix_nor_otp_is_locked() - get the OTP region lock status
+> + * @nor:        pointer to 'struct spi_nor'
+> + * @region:     OTP region
+> + *
+> + * Return: 1 on lock, 0 on not locked, -errno otherwise.
+> + */
+> +static int macronix_nor_otp_is_locked(struct spi_nor *nor, unsigned int region)
+> +{
+> +       int error;
+> +       u8 *rdscur = nor->bouncebuf;
+> +
+> +       error = spi_nor_read_reg(nor, SPINOR_OP_RDSCUR, 1);
+> +       if (error) {
+> +               dev_dbg(nor->dev, "error %d on read security register\n", error);
+> +               return error;
+> +       }
+> +       return rdscur[0] & SEC_REG_LDSO ? 1 : 0;
+> +}
+> +
+>  static int
+>  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+>                             const struct sfdp_parameter_header *bfpt_header,
+> @@ -190,8 +346,19 @@ static void macronix_nor_default_init(struct spi_nor *nor)
+>         nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+>  }
+>
+> +static const struct spi_nor_otp_ops macronix_nor_otp_ops = {
+> +       .read = macronix_nor_otp_read,
+> +       .write = macronix_nor_otp_write,
+> +       /* .erase = Macronix OTP do not support erase, */
+> +       .lock = macronix_nor_otp_lock,
+> +       .is_locked = macronix_nor_otp_is_locked,
+> +};
+> +
+>  static int macronix_nor_late_init(struct spi_nor *nor)
+>  {
+> +       if (nor->params->otp.org.n_regions)
+> +               nor->params->otp.ops = &macronix_nor_otp_ops;
+> +
+>         if (!nor->params->set_4byte_addr_mode)
+>                 nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
+>
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index cdcfe0fd2e7d..ef834e7fc0ac 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -81,6 +81,15 @@
+>  #define SPINOR_OP_BP           0x02    /* Byte program */
+>  #define SPINOR_OP_AAI_WP       0xad    /* Auto address increment word program */
+>
+> +/* Macronix OTP registers. */
+> +#define SPINOR_OP_RDSCUR       0x2b    /* read security register */
+> +#define SPINOR_OP_WRSCUR       0x2f    /* write security register */
+> +#define SPINOR_OP_ENSO         0xb1    /* enter secured OTP */
+> +#define SPINOR_OP_EXSO         0xc1    /* exit secured OTP */
+> +
+> +/* Macronix security register values */
+> +#define SEC_REG_LDSO           BIT(1)  /* Lock-down Secured OTP */
+> +
+>  /* Used for Macronix and Winbond flashes. */
+>  #define SPINOR_OP_EN4B         0xb7    /* Enter 4-byte mode */
+>  #define SPINOR_OP_EX4B         0xe9    /* Exit 4-byte mode */
+> --
+> 2.39.5
+>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
