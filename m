@@ -4,81 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A16FAC3600A
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2024 10:42:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C673FCAC580
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2024 14:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1SHTcungl17cqmPDi5LbBGBz8jZKyldV4Uzl95QaK3o=; b=TwEfgLNnIElBF8
-	7HD4+a8Ju6nNCMxq94e6Nrh/w0dG26nzUN99HfX9RBGX5oRv9oTKHz9qOyFeB7dVPRgecMvHMiHzP
-	PpzVU5W8Quin/RFkDjS+BCiYLZpofI4y5nMdvWJzuaOD2yLQx4borGPBWQ8cnOTKBQ2dL8JY88PmC
-	T906Wsqci9EbIrxohDf9R8rjC6YD3lWAIL6Mh2EtPgqnDb1X62OJXuhh+RiDxixF7mKCEOM3fD5JW
-	EV2+CeHVlJF6hq+wbhebTzcEnw7ATEYFWRYGdvSsnp2KFXY4R9iYI39VVbZhVhTkTJuNhfP8brMgn
-	uQZlRoQZEH8Sl9cWe2fw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=pFgI3jBi2+mMpPJxxKZEgLPbL/T7Bi+LbxVzCb2Spts=; b=uT0jLlW73jGfX6
+	G2KDYv1DAYRls6vuCuaa6bgj7EBqvBmb1hR99AF4r/PIzsjnvo00cK7k6kKZe1fuKFAftTlSuGe5c
+	Ypv5OCRnacN1qKN2CiMugeeHN+p/VW+AgLrQOt3j+NJKeim7+LU9+4mWDBKe3lB0Vg20mUuPXv2X7
+	r/jKb3KP7g24WsDCBTVJJlcW7Z7Eybzv2nRoW4lQT3b3hOG5ti9wpCWBtOJ23qMaiCSaj2Dqs5HOA
+	w8vM00c2aMeVECcLJntoW6uo2gBx7JxoriJgmjoqt7v9z40Z6yQCwbDsBil8MLUoS8mYLFvAbDyN7
+	2coOYhI8yGmAUsZpqHmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqVfT-00000005ynY-2h8Q;
-	Tue, 17 Sep 2024 10:42:47 +0000
-Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
+	id 1sqZUY-00000006L6A-19k6;
+	Tue, 17 Sep 2024 14:47:46 +0000
+Received: from mx.swemel.ru ([95.143.211.150])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqVfP-00000005ymL-3U49
+	id 1sqZUV-00000006L5c-0LOw
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Sep 2024 10:42:45 +0000
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2f758f84dfbso43070781fa.0
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Sep 2024 03:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726569762; x=1727174562; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ofmX+HKXE00WtuM13hFGpW8n7y4t1BDYpJWpTwCfwYg=;
-        b=mZ+4eg2su0zV09d3BKDXYYLH1AhOYft2783yZAZGSpg9yj8sABFwUrJ4MLukBpk8VQ
-         7CxL3cEgpHh2HPUxBQ4kWxdITOJst/YGiTyQm+1tlP8uyW5ZGscOKzHYE9+BlVaIdt9b
-         palA0rM71cos/cArw3X0/SK+AmFBkVjgVF5M5UB45HKnh+m0aRqrE5t8KAWZd1mw4/Ak
-         21lSsbPFatZXspqmSK/mQKQhicWe8CzQepOP1J65igQcFPiuzmUJrE+zabd0EGltnkwU
-         lP9f2UMsi6oe6wFoA5DDfnf1pv+U9xUbsXS9EIGef9NAmeT5SpgxnpG6IkBrLmRQmNmD
-         WXvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726569762; x=1727174562;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ofmX+HKXE00WtuM13hFGpW8n7y4t1BDYpJWpTwCfwYg=;
-        b=YGZ7nG46E1o57sHrN8kF1upPpjH5d/yHrRBxKtZxX5K3usWu0VCvJIf9cuY8MtZG8o
-         VxkQ4FaE3ei+cWGLeDkgQpvggKb6A3ORRPTmWR3sYWn0CoeOtD9Sy2AYmQrLYdTkeE0J
-         GEU5zO7a1Sdjm3T3f0U25pyF7m+3NR6chnsMZBg1bftjECGndxvVYptYJrpRitCeA0oH
-         sRiwD7rgyFtUE6lz26+vJqjHFkylyuk7oe5hlf/3MSoWQ3XbfrySpsd1OzBpbvW3HUnm
-         6Qm/9FR8CsB4zsmbbfwxz+kb9iQn1+OtITy9FZMFPYEDoEPwH3DRANrUgjfaHfWLv2CJ
-         xxPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWNglFeV8oVyc67KKHaRROYP8BGHqobrtnXlTPS4dhS/Gal99cb/M7PnVKN+5F8rF6KWCqTFSy6m0I=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxyAa7s4aFHSdB6512gjMp6EDwtl+14VfaH36/wg9ZoHK+si68r
-	8bjjoIrXRIh9ZHpJh8qnYpN5smAQWkaB1yJGCulGvtlY7GunYzUH3dJU/A56AsfvIkSFNujXHxe
-	0ItFMCZJX249qHB5snKMS+WkXPA==
-X-Google-Smtp-Source: AGHT+IE7wDEsYvo3hu0cfYozzAesa6JgzseU8Or3sJo+TYtS5n5WmyOVSXkx1QfoYY8onXcByFX6eMTMS9XFQBUU0jU=
-X-Received: by 2002:a05:651c:b12:b0:2f7:6812:d0ae with SMTP id
- 38308e7fff4ca-2f787dc301amr101396411fa.13.1726569761761; Tue, 17 Sep 2024
- 03:42:41 -0700 (PDT)
+	Tue, 17 Sep 2024 14:47:44 +0000
+From: Denis Arefev <arefev@swemel.ru>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
+	t=1726584453;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=D2tUHWrlbsrsSeaQbFVGiyfoPkRoLq2KwPhMPJ3F3JU=;
+	b=X0nCawQwbGEgDMmhhMD4sukzDsJaEkSWLq7/ZjBOlgl1XJSqJnpJDcRicCxFwHe/Pt9zEN
+	JscIr4xZCtAp3Kg1cRWlnKmUyaMXL0QEniR6DvoJ+XIAxCdPll6a6fPbbYlSq0ecRVQiW0
+	q1wx1vYhEoaAPE3wZOWDFCZFMUIoVb8=
+To: stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH 5.10] mtd: rawnand: mxc: Remove platform data support
+Date: Tue, 17 Sep 2024 17:47:33 +0300
+Message-Id: <20240917144733.47815-1-arefev@swemel.ru>
 MIME-Version: 1.0
-References: <20240917094956.437078-1-erezgeva@nwtime.org> <20240917094956.437078-4-erezgeva@nwtime.org>
- <9c273945-5a70-408e-a9da-a0797aa6d935@kernel.org>
-In-Reply-To: <9c273945-5a70-408e-a9da-a0797aa6d935@kernel.org>
-From: Erez <erezgeva2@gmail.com>
-Date: Tue, 17 Sep 2024 12:42:05 +0200
-Message-ID: <CANeKEMN+ZUAGKGsqnaToDB3AxX9NN_JeCBWHwd-wwnTWLU3R+g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] dt-bindings: mtd: spi-nor: add OTP parameters
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
-	Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
-	Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Esben Haabendal <esben@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240917_034244_499172_BF601132 
-X-CRM114-Status: GOOD (  21.38  )
+X-CRM114-CacheID: sfid-20240917_074743_326174_D4501649 
+X-CRM114-Status: GOOD (  25.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,51 +70,210 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 17 Sept 2024 at 12:36, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On 17/09/2024 11:49, Erez Geva wrote:
-> > From: Erez Geva <ErezGeva2@gmail.com>
-> >
-> > Some flash devices need OTP parameters in device tree.
-> > As we can not deduce the parameters based on JEDEC ID or SFDP.
-> >
-> > Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
-> > ---
-> >  .../bindings/mtd/jedec,spi-nor.yaml           | 37 +++++++++++++++++++
-> >  1 file changed, 37 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > index 6e3afb42926e..d502b7fab2ce 100644
-> > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > @@ -90,6 +90,43 @@ properties:
-> >        the SRWD bit while writing the status register. WP# signal hard strapped to GND
-> >        can be a valid use case.
-> >
-> > +  opt_n_regions:
->
-> No underscores, but hyphens.
+From: Fabio Estevam <festevam@gmail.com>
 
-I'll fix this.
+[ Upstream commit 0f6b791955a6365b5ebe8b6a5b01de69a47ee92e ]
 
->
-> > +    type: u32
->
-> It does not look like you tested the bindings, at least after quick
-> look. Please run `make dt_binding_check` (see
+i.MX is a devicetree-only platform now and the existing platform data
+support in this driver was only useful for old non-devicetree platforms.
 
-I run "make dt_binding_check" on kernel 6.6.
+Get rid of the platform data support since it is no longer used.
 
-> Documentation/devicetree/bindings/writing-schema.rst for instructions).
-> Maybe you need to update your dtschema and yamllint.
->
->
->
-> Best regards,
-> Krzysztof
->
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20201110121908.19400-1-festevam@gmail.com
+Signed-off-by: Denis Arefev <arefev@swemel.ru>
+---
+ drivers/mtd/nand/raw/Kconfig               |  2 +-
+ drivers/mtd/nand/raw/mxc_nand.c            | 75 ++--------------------
+ include/linux/platform_data/mtd-mxc_nand.h | 19 ------
+ 3 files changed, 5 insertions(+), 91 deletions(-)
+ delete mode 100644 include/linux/platform_data/mtd-mxc_nand.h
 
-Thanks for the feedback.
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 6c46f25b57e2..58421866bdc3 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -313,7 +313,7 @@ config MTD_NAND_VF610_NFC
+ config MTD_NAND_MXC
+ 	tristate "Freescale MXC NAND controller"
+ 	depends on ARCH_MXC || COMPILE_TEST
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM && OF
+ 	help
+ 	  This enables the driver for the NAND flash controller on the
+ 	  MXC processors.
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index 684c51e5e60d..f896364968d8 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -21,7 +21,6 @@
+ #include <linux/completion.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+-#include <linux/platform_data/mtd-mxc_nand.h>
+ 
+ #define DRIVER_NAME "mxc_nand"
+ 
+@@ -184,7 +183,6 @@ struct mxc_nand_host {
+ 	unsigned int		buf_start;
+ 
+ 	const struct mxc_nand_devtype_data *devtype_data;
+-	struct mxc_nand_platform_data pdata;
+ };
+ 
+ static const char * const part_probes[] = {
+@@ -1611,29 +1609,6 @@ static inline int is_imx53_nfc(struct mxc_nand_host *host)
+ 	return host->devtype_data == &imx53_nand_devtype_data;
+ }
+ 
+-static const struct platform_device_id mxcnd_devtype[] = {
+-	{
+-		.name = "imx21-nand",
+-		.driver_data = (kernel_ulong_t) &imx21_nand_devtype_data,
+-	}, {
+-		.name = "imx27-nand",
+-		.driver_data = (kernel_ulong_t) &imx27_nand_devtype_data,
+-	}, {
+-		.name = "imx25-nand",
+-		.driver_data = (kernel_ulong_t) &imx25_nand_devtype_data,
+-	}, {
+-		.name = "imx51-nand",
+-		.driver_data = (kernel_ulong_t) &imx51_nand_devtype_data,
+-	}, {
+-		.name = "imx53-nand",
+-		.driver_data = (kernel_ulong_t) &imx53_nand_devtype_data,
+-	}, {
+-		/* sentinel */
+-	}
+-};
+-MODULE_DEVICE_TABLE(platform, mxcnd_devtype);
+-
+-#ifdef CONFIG_OF
+ static const struct of_device_id mxcnd_dt_ids[] = {
+ 	{
+ 		.compatible = "fsl,imx21-nand",
+@@ -1655,26 +1630,6 @@ static const struct of_device_id mxcnd_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, mxcnd_dt_ids);
+ 
+-static int mxcnd_probe_dt(struct mxc_nand_host *host)
+-{
+-	struct device_node *np = host->dev->of_node;
+-	const struct of_device_id *of_id =
+-		of_match_device(mxcnd_dt_ids, host->dev);
+-
+-	if (!np)
+-		return 1;
+-
+-	host->devtype_data = of_id->data;
+-
+-	return 0;
+-}
+-#else
+-static int mxcnd_probe_dt(struct mxc_nand_host *host)
+-{
+-	return 1;
+-}
+-#endif
+-
+ static int mxcnd_attach_chip(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -1759,6 +1714,7 @@ static const struct nand_controller_ops mxcnd_controller_ops = {
+ 
+ static int mxcnd_probe(struct platform_device *pdev)
+ {
++	const struct of_device_id *of_id;
+ 	struct nand_chip *this;
+ 	struct mtd_info *mtd;
+ 	struct mxc_nand_host *host;
+@@ -1800,20 +1756,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	if (IS_ERR(host->clk))
+ 		return PTR_ERR(host->clk);
+ 
+-	err = mxcnd_probe_dt(host);
+-	if (err > 0) {
+-		struct mxc_nand_platform_data *pdata =
+-					dev_get_platdata(&pdev->dev);
+-		if (pdata) {
+-			host->pdata = *pdata;
+-			host->devtype_data = (struct mxc_nand_devtype_data *)
+-						pdev->id_entry->driver_data;
+-		} else {
+-			err = -ENODEV;
+-		}
+-	}
+-	if (err < 0)
+-		return err;
++	of_id = of_match_device(mxcnd_dt_ids, host->dev);
++	host->devtype_data = of_id->data;
+ 
+ 	if (!host->devtype_data->setup_interface)
+ 		this->options |= NAND_KEEP_TIMINGS;
+@@ -1843,14 +1787,6 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 
+ 	this->legacy.select_chip = host->devtype_data->select_chip;
+ 
+-	/* NAND bus width determines access functions used by upper layer */
+-	if (host->pdata.width == 2)
+-		this->options |= NAND_BUSWIDTH_16;
+-
+-	/* update flash based bbt */
+-	if (host->pdata.flash_bbt)
+-		this->bbt_options |= NAND_BBT_USE_FLASH;
+-
+ 	init_completion(&host->op_completion);
+ 
+ 	host->irq = platform_get_irq(pdev, 0);
+@@ -1891,9 +1827,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 		goto escan;
+ 
+ 	/* Register the partitions */
+-	err = mtd_device_parse_register(mtd, part_probes, NULL,
+-					host->pdata.parts,
+-					host->pdata.nr_parts);
++	err = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
+ 	if (err)
+ 		goto cleanup_nand;
+ 
+@@ -1930,7 +1864,6 @@ static struct platform_driver mxcnd_driver = {
+ 		   .name = DRIVER_NAME,
+ 		   .of_match_table = of_match_ptr(mxcnd_dt_ids),
+ 	},
+-	.id_table = mxcnd_devtype,
+ 	.probe = mxcnd_probe,
+ 	.remove = mxcnd_remove,
+ };
+diff --git a/include/linux/platform_data/mtd-mxc_nand.h b/include/linux/platform_data/mtd-mxc_nand.h
+deleted file mode 100644
+index d1230030c6db..000000000000
+--- a/include/linux/platform_data/mtd-mxc_nand.h
++++ /dev/null
+@@ -1,19 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Copyright 2004-2007 Freescale Semiconductor, Inc. All Rights Reserved.
+- * Copyright 2008 Sascha Hauer, kernel@pengutronix.de
+- */
+-
+-#ifndef __ASM_ARCH_NAND_H
+-#define __ASM_ARCH_NAND_H
+-
+-#include <linux/mtd/partitions.h>
+-
+-struct mxc_nand_platform_data {
+-	unsigned int width;	/* data bus width in bytes */
+-	unsigned int hw_ecc:1;	/* 0 if suppress hardware ECC */
+-	unsigned int flash_bbt:1; /* set to 1 to use a flash based bbt */
+-	struct mtd_partition *parts;	/* partition table */
+-	int nr_parts;			/* size of parts */
+-};
+-#endif /* __ASM_ARCH_NAND_H */
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
