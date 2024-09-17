@@ -4,56 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C673FCAC580
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2024 14:47:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EFA5CAC58F
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Sep 2024 17:00:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=pFgI3jBi2+mMpPJxxKZEgLPbL/T7Bi+LbxVzCb2Spts=; b=uT0jLlW73jGfX6
-	G2KDYv1DAYRls6vuCuaa6bgj7EBqvBmb1hR99AF4r/PIzsjnvo00cK7k6kKZe1fuKFAftTlSuGe5c
-	Ypv5OCRnacN1qKN2CiMugeeHN+p/VW+AgLrQOt3j+NJKeim7+LU9+4mWDBKe3lB0Vg20mUuPXv2X7
-	r/jKb3KP7g24WsDCBTVJJlcW7Z7Eybzv2nRoW4lQT3b3hOG5ti9wpCWBtOJ23qMaiCSaj2Dqs5HOA
-	w8vM00c2aMeVECcLJntoW6uo2gBx7JxoriJgmjoqt7v9z40Z6yQCwbDsBil8MLUoS8mYLFvAbDyN7
-	2coOYhI8yGmAUsZpqHmQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sV5yQBzmMguvOSXTnqhEK/M3YqyXqBFb0TUC74xKB88=; b=x+4FItGuzTOMXX
+	m1ZpuvP7l90JDnx+V5MRosHnxG2mPBuzOS33xpQmHTV3u4u5oyWwiomU//+jUDgHMmKYTEwwLo4ww
+	7lMFQaLBwOq343DMSjUQOfvE/88K+TD8ghrl9XAwsiIeL35gGBXIvkv9xKaCxeQ9zu956Cx4VXjdT
+	576KEp4itQnOLyJSudXrvOvMhNFaNNdvXts0tjvlWM5y1gUUf8TE82m45pd/0KEp4sV1lsbG+3zYr
+	GiJw2tpZy9c6JpR9KhlwTP7bmWCDWdUMfrHlF3+4S30yZKID4k/z7xLLxXyhX4LNPFKlZyod1kyJg
+	q4uV+Nm9UcWuwlnxymsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqZUY-00000006L6A-19k6;
-	Tue, 17 Sep 2024 14:47:46 +0000
-Received: from mx.swemel.ru ([95.143.211.150])
+	id 1sqbYy-00000006YUG-1j22;
+	Tue, 17 Sep 2024 17:00:28 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqZUV-00000006L5c-0LOw
+	id 1sqbYv-00000006YTt-2PWF
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Sep 2024 14:47:44 +0000
-From: Denis Arefev <arefev@swemel.ru>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
-	t=1726584453;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=D2tUHWrlbsrsSeaQbFVGiyfoPkRoLq2KwPhMPJ3F3JU=;
-	b=X0nCawQwbGEgDMmhhMD4sukzDsJaEkSWLq7/ZjBOlgl1XJSqJnpJDcRicCxFwHe/Pt9zEN
-	JscIr4xZCtAp3Kg1cRWlnKmUyaMXL0QEniR6DvoJ+XIAxCdPll6a6fPbbYlSq0ecRVQiW0
-	q1wx1vYhEoaAPE3wZOWDFCZFMUIoVb8=
-To: stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH 5.10] mtd: rawnand: mxc: Remove platform data support
-Date: Tue, 17 Sep 2024 17:47:33 +0300
-Message-Id: <20240917144733.47815-1-arefev@swemel.ru>
+	Tue, 17 Sep 2024 17:00:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id BF8B1A40F00;
+	Tue, 17 Sep 2024 17:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABF2BC4CEC5;
+	Tue, 17 Sep 2024 17:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726592424;
+	bh=GAURM/YpBS3b+LFfu7l4gm2U3fbk1Pb0IzBDDQmwEQ8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dfdzwgPG2XXaTFn0dKbJoXVeq0xtyAZbpqyLthVnoFis280XRLn/tUT4CwdTXiFXQ
+	 8nsJxD1v2IH7Gh3Woz7J+4S6NoPXmlK4ijYgCUwJCkDrQiH+S60e1WWdY37stzizHL
+	 wad792dwJ/VJn2pCQG57WR3jy/vK5ckaFPjcWPHbOcvd4WG0as1R7qKnuqjbMAGwnc
+	 s+s1vWcSAVM78Ub5LCmBbESR+q/2rLJVDQZtTSlNa3d7VQVoaVUacaHZkqDW5eNK/K
+	 WzVkXIWr59+F8v7mcXde6+1S9LFmZlGEAyw7KquNvm22CTlY38z7dm1nF5MOtRUDDp
+	 lMbLHMaTFXttg==
+Message-ID: <64ef46b1-7908-4b15-866d-9cabe2e5dc9e@kernel.org>
+Date: Tue, 17 Sep 2024 19:00:17 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/5] dt-bindings: mtd: spi-nor: add OTP parameters
+To: Erez <erezgeva2@gmail.com>
+Cc: Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Esben Haabendal <esben@geanix.com>
+References: <20240917094956.437078-1-erezgeva@nwtime.org>
+ <20240917094956.437078-4-erezgeva@nwtime.org>
+ <9c273945-5a70-408e-a9da-a0797aa6d935@kernel.org>
+ <CANeKEMN+ZUAGKGsqnaToDB3AxX9NN_JeCBWHwd-wwnTWLU3R+g@mail.gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <CANeKEMN+ZUAGKGsqnaToDB3AxX9NN_JeCBWHwd-wwnTWLU3R+g@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240917_074743_326174_D4501649 
-X-CRM114-Status: GOOD (  25.14  )
+X-CRM114-CacheID: sfid-20240917_100025_790042_AC8BC26B 
+X-CRM114-Status: GOOD (  14.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,209 +125,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Fabio Estevam <festevam@gmail.com>
+On 17/09/2024 12:42, Erez wrote:
+> On Tue, 17 Sept 2024 at 12:36, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>
+>> On 17/09/2024 11:49, Erez Geva wrote:
+>>> From: Erez Geva <ErezGeva2@gmail.com>
+>>>
+>>> Some flash devices need OTP parameters in device tree.
+>>> As we can not deduce the parameters based on JEDEC ID or SFDP.
+>>>
+>>> Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
+>>> ---
+>>>  .../bindings/mtd/jedec,spi-nor.yaml           | 37 +++++++++++++++++++
+>>>  1 file changed, 37 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+>>> index 6e3afb42926e..d502b7fab2ce 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+>>> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+>>> @@ -90,6 +90,43 @@ properties:
+>>>        the SRWD bit while writing the status register. WP# signal hard strapped to GND
+>>>        can be a valid use case.
+>>>
+>>> +  opt_n_regions:
+>>
+>> No underscores, but hyphens.
+> 
+> I'll fix this.
+> 
+>>
+>>> +    type: u32
+>>
+>> It does not look like you tested the bindings, at least after quick
+>> look. Please run `make dt_binding_check` (see
+> 
+> I run "make dt_binding_check" on kernel 6.6.
 
-[ Upstream commit 0f6b791955a6365b5ebe8b6a5b01de69a47ee92e ]
+Yeah, we are no on kernel 6.6. You can run it also on kernel v4.1 -
+still does not matter.
 
-i.MX is a devicetree-only platform now and the existing platform data
-support in this driver was only useful for old non-devicetree platforms.
+Don't develop on ancient code because then you ask us to review same
+broken stuff we already fixed.
 
-Get rid of the platform data support since it is no longer used.
-
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20201110121908.19400-1-festevam@gmail.com
-Signed-off-by: Denis Arefev <arefev@swemel.ru>
----
- drivers/mtd/nand/raw/Kconfig               |  2 +-
- drivers/mtd/nand/raw/mxc_nand.c            | 75 ++--------------------
- include/linux/platform_data/mtd-mxc_nand.h | 19 ------
- 3 files changed, 5 insertions(+), 91 deletions(-)
- delete mode 100644 include/linux/platform_data/mtd-mxc_nand.h
-
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 6c46f25b57e2..58421866bdc3 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -313,7 +313,7 @@ config MTD_NAND_VF610_NFC
- config MTD_NAND_MXC
- 	tristate "Freescale MXC NAND controller"
- 	depends on ARCH_MXC || COMPILE_TEST
--	depends on HAS_IOMEM
-+	depends on HAS_IOMEM && OF
- 	help
- 	  This enables the driver for the NAND flash controller on the
- 	  MXC processors.
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 684c51e5e60d..f896364968d8 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -21,7 +21,6 @@
- #include <linux/completion.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
--#include <linux/platform_data/mtd-mxc_nand.h>
- 
- #define DRIVER_NAME "mxc_nand"
- 
-@@ -184,7 +183,6 @@ struct mxc_nand_host {
- 	unsigned int		buf_start;
- 
- 	const struct mxc_nand_devtype_data *devtype_data;
--	struct mxc_nand_platform_data pdata;
- };
- 
- static const char * const part_probes[] = {
-@@ -1611,29 +1609,6 @@ static inline int is_imx53_nfc(struct mxc_nand_host *host)
- 	return host->devtype_data == &imx53_nand_devtype_data;
- }
- 
--static const struct platform_device_id mxcnd_devtype[] = {
--	{
--		.name = "imx21-nand",
--		.driver_data = (kernel_ulong_t) &imx21_nand_devtype_data,
--	}, {
--		.name = "imx27-nand",
--		.driver_data = (kernel_ulong_t) &imx27_nand_devtype_data,
--	}, {
--		.name = "imx25-nand",
--		.driver_data = (kernel_ulong_t) &imx25_nand_devtype_data,
--	}, {
--		.name = "imx51-nand",
--		.driver_data = (kernel_ulong_t) &imx51_nand_devtype_data,
--	}, {
--		.name = "imx53-nand",
--		.driver_data = (kernel_ulong_t) &imx53_nand_devtype_data,
--	}, {
--		/* sentinel */
--	}
--};
--MODULE_DEVICE_TABLE(platform, mxcnd_devtype);
--
--#ifdef CONFIG_OF
- static const struct of_device_id mxcnd_dt_ids[] = {
- 	{
- 		.compatible = "fsl,imx21-nand",
-@@ -1655,26 +1630,6 @@ static const struct of_device_id mxcnd_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, mxcnd_dt_ids);
- 
--static int mxcnd_probe_dt(struct mxc_nand_host *host)
--{
--	struct device_node *np = host->dev->of_node;
--	const struct of_device_id *of_id =
--		of_match_device(mxcnd_dt_ids, host->dev);
--
--	if (!np)
--		return 1;
--
--	host->devtype_data = of_id->data;
--
--	return 0;
--}
--#else
--static int mxcnd_probe_dt(struct mxc_nand_host *host)
--{
--	return 1;
--}
--#endif
--
- static int mxcnd_attach_chip(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-@@ -1759,6 +1714,7 @@ static const struct nand_controller_ops mxcnd_controller_ops = {
- 
- static int mxcnd_probe(struct platform_device *pdev)
- {
-+	const struct of_device_id *of_id;
- 	struct nand_chip *this;
- 	struct mtd_info *mtd;
- 	struct mxc_nand_host *host;
-@@ -1800,20 +1756,8 @@ static int mxcnd_probe(struct platform_device *pdev)
- 	if (IS_ERR(host->clk))
- 		return PTR_ERR(host->clk);
- 
--	err = mxcnd_probe_dt(host);
--	if (err > 0) {
--		struct mxc_nand_platform_data *pdata =
--					dev_get_platdata(&pdev->dev);
--		if (pdata) {
--			host->pdata = *pdata;
--			host->devtype_data = (struct mxc_nand_devtype_data *)
--						pdev->id_entry->driver_data;
--		} else {
--			err = -ENODEV;
--		}
--	}
--	if (err < 0)
--		return err;
-+	of_id = of_match_device(mxcnd_dt_ids, host->dev);
-+	host->devtype_data = of_id->data;
- 
- 	if (!host->devtype_data->setup_interface)
- 		this->options |= NAND_KEEP_TIMINGS;
-@@ -1843,14 +1787,6 @@ static int mxcnd_probe(struct platform_device *pdev)
- 
- 	this->legacy.select_chip = host->devtype_data->select_chip;
- 
--	/* NAND bus width determines access functions used by upper layer */
--	if (host->pdata.width == 2)
--		this->options |= NAND_BUSWIDTH_16;
--
--	/* update flash based bbt */
--	if (host->pdata.flash_bbt)
--		this->bbt_options |= NAND_BBT_USE_FLASH;
--
- 	init_completion(&host->op_completion);
- 
- 	host->irq = platform_get_irq(pdev, 0);
-@@ -1891,9 +1827,7 @@ static int mxcnd_probe(struct platform_device *pdev)
- 		goto escan;
- 
- 	/* Register the partitions */
--	err = mtd_device_parse_register(mtd, part_probes, NULL,
--					host->pdata.parts,
--					host->pdata.nr_parts);
-+	err = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
- 	if (err)
- 		goto cleanup_nand;
- 
-@@ -1930,7 +1864,6 @@ static struct platform_driver mxcnd_driver = {
- 		   .name = DRIVER_NAME,
- 		   .of_match_table = of_match_ptr(mxcnd_dt_ids),
- 	},
--	.id_table = mxcnd_devtype,
- 	.probe = mxcnd_probe,
- 	.remove = mxcnd_remove,
- };
-diff --git a/include/linux/platform_data/mtd-mxc_nand.h b/include/linux/platform_data/mtd-mxc_nand.h
-deleted file mode 100644
-index d1230030c6db..000000000000
---- a/include/linux/platform_data/mtd-mxc_nand.h
-+++ /dev/null
-@@ -1,19 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright 2004-2007 Freescale Semiconductor, Inc. All Rights Reserved.
-- * Copyright 2008 Sascha Hauer, kernel@pengutronix.de
-- */
--
--#ifndef __ASM_ARCH_NAND_H
--#define __ASM_ARCH_NAND_H
--
--#include <linux/mtd/partitions.h>
--
--struct mxc_nand_platform_data {
--	unsigned int width;	/* data bus width in bytes */
--	unsigned int hw_ecc:1;	/* 0 if suppress hardware ECC */
--	unsigned int flash_bbt:1; /* set to 1 to use a flash based bbt */
--	struct mtd_partition *parts;	/* partition table */
--	int nr_parts;			/* size of parts */
--};
--#endif /* __ASM_ARCH_NAND_H */
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
