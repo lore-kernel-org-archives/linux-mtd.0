@@ -4,72 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CFAACCD19A
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Sep 2024 11:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3B7ECE8D49
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Sep 2024 05:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nWoxrQHhU5AGzl+0l2wLMK84hCpLV5MQTtXlZQ7i3rk=; b=qcIp9EtHudNh0g
-	YpgtTmujYWXuX6NNekEdH3Ypd8WvoaM3DHoESQeTb7Oo+SfhIev8l0ovtWiPdq/JVNdQOg1n120G4
-	ivYMaKpar54DWC1pb2OtYrrIhBbTeRdde85BShmnh0InWb8S7J0k81M9WG1aTanHABinkYmI1vQEi
-	jKsZv8uMY6P2sBiQ6wYa64VQoQuJo3yxQxlZy4PSVCpRLPUAbsOiAgMM29qjYkpmvF0hPDskJ7vHJ
-	q+i45EaGlANwdXoobz0+6kh709kA9TCO8XN63sRfAeC2BjgnJLrrbFKl+k1UzZt4JnWHySn8BKbjn
-	lEozVBa76AVyPiWeKjUw==;
+	List-Owner; bh=NOxpPcbxo6ebFwNhtf3KSsrxNXR2iSDipBtSlxQB9mo=; b=dCWyEVEM6AtpbD
+	P8py+YwggWJ+l+ynwj4fGlSuM3Pr2mq49GTfhd+LARXHYEDtVbGo/+hwE58sPmxJE2rokvJOukjNr
+	QnyzRvkV34kbBdhDj4kWNr/9CQYhmnLuyfS+Tcgh7ykHL1yLPzboW03fuYJDxpgHFRzKOrH3oTzCW
+	8YHS/SYL6KJhxE/XSFOnE5qzkdt6VIWvftJ1s598+7do7NXtugGglczP1ZLlncUG88hIXB/xC5wWx
+	Y2U+IdBKA8EltnYDHtgTzEh8iTyMByO+6Zp1s7eX05lbU5IdxbTY87iNwmmfbtRzZ0Li++rzcb0gw
+	Pd7STjFrmLPQsjWSCRlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqsPX-0000000857h-3opo;
-	Wed, 18 Sep 2024 10:59:51 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1sr9OQ-00000009THF-2tdr;
+	Thu, 19 Sep 2024 05:07:50 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqsOQ-000000084s7-0z7Z
-	for linux-mtd@lists.infradead.org;
-	Wed, 18 Sep 2024 10:58:43 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1sqsNz-0004yv-FL; Wed, 18 Sep 2024 12:58:15 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1sqsNx-008nPU-TV; Wed, 18 Sep 2024 12:58:13 +0200
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1sqsNx-00F7vT-2Y;
-	Wed, 18 Sep 2024 12:58:13 +0200
-Date: Wed, 18 Sep 2024 12:58:13 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Hui-Ping Chen <hpchen0nvt@gmail.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	sumit.semwal@linaro.org, christian.koenig@amd.com, esben@geanix.com,
-	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org
+	id 1sr9NI-00000009T8U-19lf;
+	Thu, 19 Sep 2024 05:06:41 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2059204f448so4485035ad.0;
+        Wed, 18 Sep 2024 22:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726722399; x=1727327199; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xRZ6kZIXMDkvuvzVlk8DqRdvcI2YElVnlDqYB8dJ4es=;
+        b=KzY4Hq9ZniD/PptsK9k5J3JZ+CEl0GaG08+FF3dFDT81XsmawY3J9Jy4sR3DtZikYA
+         pNt2QYORKyPFZAXcK8K/jofVDAX25DrNmxOufEvEc7WFSOO0RsIkzj+SxzZaWgAC12C4
+         eR7+N0e1x0HzTeAdoDF7s27/R7L2GV+rZYV4JNksikSn/j3CnjZF24lfkcDm+8tpac/F
+         xIM0ezJcBWBYYdqAtf8FWXPEosm3+UZwz+CsYf+/6bW1e+5iW4Wf0L499x7ihVYOelWL
+         w536XLhbxB/1xeuegAQz2ej1eGQO7o9disgYGmyViiv2juKrfI9GsLJgIOlAFWZELggo
+         s3rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726722399; x=1727327199;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xRZ6kZIXMDkvuvzVlk8DqRdvcI2YElVnlDqYB8dJ4es=;
+        b=mVHmEYmQ1RM+UrV5z2PzF1w5fIhzZpu5//8xkNyeHJ/KtJubQARhQdVN91KbmifdB0
+         Zvg72B9mPPMtsGhQv9E2cE3lf4RxvLWyoc9PhPmfDtZmwr0/Rza87N3E7E2fhv/R5lx3
+         +BoncQNSB6LJUAeO0rOxXRM9qu8Vh6+CGDBxWGfSKlDXcUq+pi6OazHSB1JbVAcqkUZg
+         dVTc9Alz2759icfYOb0TZJDVa/TTPwhzv2yYfw8m3BMJ+qB0EtkX6Yiq1QXTkJmjmBw3
+         4zWLegH5IOKbE7RvtuQLvBNkH5Ly0pxmjEDsiIjmC5ko21N2C8ilF7OhWj0z56xS16Ev
+         3h+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUBdp01y3YSMQ7rgkaD19Hsue7ERf4J18qk1eob5pelbVXCfIx59pyR6ALP+adPX/CCGQoT4voDccHP@lists.infradead.org, AJvYcCURVR5/Mwpp5MDbOrdpmRy2vAHH8+AcnDMdvfvEQcpCgp46ahVWgVbExM0KWpk/V2gsK6EZ/IkRQ9IjROMw5CsX@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz+Rp4r2SFxsA34M7ASDojCurHtTB6C01VKjuPg1PSBBPCF9Ag2
+	YY9TTa3ulzLp7NaCKj8LjlMYx7DuDbtdzO9TFGI3jXrams+HEjlq
+X-Google-Smtp-Source: AGHT+IEBzBgKJNZ9ImAhnxz5MW6/LIqkckCtdwbFUVbzpE4n8F6xLUpmtGRYLkYQYN6R+O6sc+4A5A==
+X-Received: by 2002:a17:902:cf42:b0:202:3711:6fe9 with SMTP id d9443c01a7336-2076e4485fbmr369904095ad.51.1726722398917;
+        Wed, 18 Sep 2024 22:06:38 -0700 (PDT)
+Received: from [172.19.1.53] (60-250-196-139.hinet-ip.hinet.net. [60.250.196.139])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946d28b4sm72515445ad.177.2024.09.18.22.06.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Sep 2024 22:06:38 -0700 (PDT)
+Message-ID: <efe29129-ce26-44a5-ac02-b3cb3786662e@gmail.com>
+Date: Thu, 19 Sep 2024 13:06:33 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 2/2] mtd: rawnand: nuvoton: add new driver for the
  Nuvoton MA35 SoC
-Message-ID: <ZuqyRXi-LWZ7-Qgw@pengutronix.de>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+ sumit.semwal@linaro.org, christian.koenig@amd.com, esben@geanix.com,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
 References: <20240918090308.292617-1-hpchen0nvt@gmail.com>
  <20240918090308.292617-3-hpchen0nvt@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240918090308.292617-3-hpchen0nvt@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+ <ZuqyRXi-LWZ7-Qgw@pengutronix.de>
+Content-Language: en-US
+From: Hui-Ping Chen <hpchen0nvt@gmail.com>
+In-Reply-To: <ZuqyRXi-LWZ7-Qgw@pengutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240918_035842_597344_D25C1C4E 
-X-CRM114-Status: GOOD (  46.37  )
+X-CRM114-CacheID: sfid-20240918_220640_370170_8954A9E4 
+X-CRM114-Status: GOOD (  46.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,405 +96,233 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-The driver has a few minor whitespace issues, please run through
-checkpatch.pl to catch them.
-
-Some more things inline.
-
-On Wed, Sep 18, 2024 at 09:03:08AM +0000, Hui-Ping Chen wrote:
-> Nuvoton MA35 SoCs NAND Flash Interface Controller
-> supports 2kiB, 4kiB and 8kiB page size, and up to
-> 8-bit, 12-bit, and 24-bit hardware ECC calculation
-> circuit to protect data.
-> 
-> Signed-off-by: Hui-Ping Chen <hpchen0nvt@gmail.com>
-> ---
->  drivers/mtd/nand/raw/Kconfig               |   8 +
->  drivers/mtd/nand/raw/Makefile              |   1 +
->  drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c | 935 +++++++++++++++++++++
->  3 files changed, 944 insertions(+)
->  create mode 100644 drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c
-> 
-> +#define SKIP_SPARE_BYTES	4
-
-Unused, please drop.
-
-> +static int ma35_nfi_ecc_check(struct nand_chip *chip, unsigned long addr)
-> +{
-> +	struct ma35_nand_info *nand = nand_get_controller_data(chip);
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	int status, i, j, nchunks = 0;
-
-status should be unsigned.
-
-> +	int report_err = 0;
-> +	int err_cnt = 0;
-> +
-> +	nchunks = mtd->writesize / chip->ecc.steps;
-> +	if (nchunks < 4)
-> +		nchunks = 1;
-> +	else
-> +		nchunks /= 4;
-> +
-> +	for (j = 0; j < nchunks; j++) {
-> +		status = readl(nand->regs + MA35_NFI_REG_NANDECCES0 + j*4);
-> +		if (!status)
-> +			continue;
-> +
-> +		for (i = 0; i < 4; i++) {
-> +			if (!(status & ECC_STATUS_MASK)) {
-> +				/* No error */
-> +				status >>= 8;
-> +				continue;
-> +
-> +			} else if ((status & ECC_STATUS_MASK) == 0x01) {
-> +				/* Correctable error */
-> +				err_cnt = (status >> 2) & ECC_ERR_CNT_MASK;
-> +				dev_warn(nand->dev, "nchunks (%d, %d) have %d error!\n",
-> +					j, i, err_cnt);
-
-Correctable bitflips are expected. Please don't spam the log with it.
-
-> +				ma35_nfi_correct(nand, j*4+i, err_cnt, (u8 *)addr);
-> +				report_err += err_cnt;
-> +
-> +			} else {
-> +				/* uncorrectable error */
-> +				dev_warn(nand->dev, "uncorrectable error! 0x%4x\n", status);
-> +				return -1;
-> +			}
-> +			status >>= 8;
-> +		}
-> +	}
-> +	return report_err;
-
-There are a few things wrong here. Your chip->ecc.read_page op must
-return the maximum number of bitflips occured on a subpage while
-reading a page.
-
-To archieve this I suggest you fix the return value of this function
-accordingly and call it from chip->ecc.read_page rather than from the
-interrupt handler.
-
-Nevertheless mtd->ecc_stats.corrected counts the total number of
-bitflips, so you must handle this counter in this function.
-
-See rk_nfc_read_page_hwecc() as an example of a driver which gets it
-right.
-
-The background is that we have to rewrite the page once one ECC block
-hits a critical bitflip limit. A whole page might be fine when the
-bitflips are evenly distributed across the subpages, but it's not when
-all bitflips are occur in a single subpage.
-
-> +static int ma35_nand_do_write(struct nand_chip *chip, const u8 *addr, u32 len)
-> +{
-> +	struct ma35_nand_info *nand = nand_get_controller_data(chip);
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	dma_addr_t dma_addr;
-> +	int ret = 0, i;
-> +	u32 val, reg;
-> +
-> +	ma35_nand_target_enable(nand);
-> +
-> +	if (len != mtd->writesize) {
-> +		for (i = 0; i < len; i++)
-> +			writel(addr[i], nand->regs + MA35_NFI_REG_NANDDATA);
-> +		ma35_nand_target_disable(nand);
-> +		return ret;
-> +	}
-> +
-> +	/* Check the DMA status before enabling the DMA */
-> +	ret = readl_poll_timeout(nand->regs + MA35_NFI_REG_DMACTL, val,
-> +				 !(val & DMA_BUSY), 50, HZ/2);
-> +	if (ret)
-> +		dev_warn(nand->dev, "dma busy\n");
-> +
-> +	/* Reinitial dmac */
-> +	ma35_nand_dmac_init(nand);
-
-The function name already says it and the comment doesn't offer any
-additional information. Please drop such comments.
-
-> +
-> +	writel(mtd->oobsize, nand->regs + MA35_NFI_REG_NANDRACTL);
-> +
-> +	/* setup and start DMA using dma_addr */
-> +	writel(INT_DMA, nand->regs + MA35_NFI_REG_NANDINTEN);
-> +	/* To mark this page as dirty. */
-> +	reg = readl(nand->regs + MA35_NFI_REG_NANDRA0);
-> +	if (reg & 0xffff0000)
-> +		writel(reg & 0xffff, nand->regs + MA35_NFI_REG_NANDRA0);
-> +
-> +	/* Fill dma_addr */
-> +	dma_addr = dma_map_single(nand->dev, (void *)addr, len, DMA_TO_DEVICE);
-> +	dma_sync_single_for_device(nand->dev, dma_addr, len, DMA_TO_DEVICE);
-> +	ret = dma_mapping_error(nand->dev, dma_addr);
-> +	if (ret) {
-> +		dev_err(nand->dev, "dma mapping error\n");
-> +		return -EINVAL;
-> +	}
-
-Call dma_sync_single_for_device() after you have checked for an error
-with dma_mapping_error().
-
-That said, I think calling dma_sync_single_for_device() after
-dma_map_single() is unnecessary.
-
-> +
-> +	writel((unsigned long)dma_addr, nand->regs + MA35_NFI_REG_DMASA);
-> +	writel(readl(nand->regs + MA35_NFI_REG_NANDCTL) | DMA_W_EN,
-> +		nand->regs + MA35_NFI_REG_NANDCTL);
-> +	ret = wait_for_completion_timeout(&nand->complete, msecs_to_jiffies(1000));
-> +	if (!ret) {
-> +		dev_err(nand->dev, "write timeout\n");
-> +		ret = -ETIMEDOUT;
-> +	}
-> +
-> +	dma_unmap_single(nand->dev, dma_addr, len, DMA_TO_DEVICE);
-> +
-> +	ma35_nand_target_disable(nand);
-> +
-> +	return ret;
-> +}
-> +
-> +static int ma35_nand_do_read(struct nand_chip *chip, const u8 *addr, u32 len)
-
-The addr argument shouldn't be const. You are supposed to write to this
-buffer and you actually do so.
-
-> +{
-> +	struct ma35_nand_info *nand = nand_get_controller_data(chip);
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	u8 *ptr = (u8 *)addr;
-> +	dma_addr_t dma_addr;
-> +	int ret = 0, i;
-> +	u32 val;
-> +
-> +	ma35_nand_target_enable(nand);
-> +
-> +	if (len != mtd->writesize) {
-> +		for (i = 0; i < len; i++)
-> +			*(ptr+i) = (u8)readl(nand->regs + MA35_NFI_REG_NANDDATA);
-> +		ma35_nand_target_disable(nand);
-> +		return ret;
-
-Just return 0 here. It's easier to read than having to look up the
-initialization value.
-
-> +	}
-> +
-> +	/* Check the DMA status before enabling the DMA */
-> +	ret = readl_poll_timeout(nand->regs + MA35_NFI_REG_DMACTL, val,
-> +				 !(val & DMA_BUSY), 50, HZ/2);
-> +	if (ret)
-> +		dev_warn(nand->dev, "dma busy\n");
-> +
-> +	/* Reinitial dmac */
-> +	ma35_nand_dmac_init(nand);
-> +
-> +	writel(mtd->oobsize, nand->regs + MA35_NFI_REG_NANDRACTL);
-> +
-> +	/* setup and start DMA using dma_addr */
-> +	dma_addr = dma_map_single(nand->dev, (void *)addr, len, DMA_FROM_DEVICE);
-> +	ret = dma_mapping_error(nand->dev, dma_addr);
-> +	if (ret) {
-> +		dev_err(nand->dev, "dma mapping error\n");
-> +		return -EINVAL;
-> +	}
-> +	nand->dma_buf = (u8 *)addr;
-> +	nand->dma_addr = dma_addr;
-> +
-> +	writel((unsigned long)dma_addr, nand->regs + MA35_NFI_REG_DMASA);
-> +	writel(readl(nand->regs + MA35_NFI_REG_NANDCTL) | DMA_R_EN,
-> +		nand->regs + MA35_NFI_REG_NANDCTL);
-> +	ret = wait_for_completion_timeout(&nand->complete, msecs_to_jiffies(1000));
-> +	if (!ret) {
-> +		dev_err(nand->dev, "read timeout\n");
-> +		ret = -ETIMEDOUT;
-> +	}
-> +
-> +	dma_sync_single_for_cpu(nand->dev, dma_addr, len, DMA_FROM_DEVICE);
-> +	dma_unmap_single(nand->dev, dma_addr, len, DMA_FROM_DEVICE);
-
-No need to call dma_sync_single_for_cpu() before dma_unmap_single().
-
-> +
-> +	ma35_nand_target_disable(nand);
-> +
-> +	return ret;
-> +}
-> +
-> +
-> +static int ma35_nand_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
-> +				      int oob_required, int page)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	u8 *ecc_calc = chip->ecc.calc_buf;
-
-Make this a void * to get rid of the explicit casting below.
-
-> +
-> +	ma35_clear_spare(chip, mtd->oobsize);
-> +	ma35_write_spare(chip, mtd->oobsize - chip->ecc.total, (u32 *)chip->oob_poi);
-> +
-> +	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
-> +	nand_prog_page_end_op(chip);
-> +
-> +	/* Copy parity code in NANDRA to calc */
-> +	ma35_read_spare(chip, chip->ecc.total, (u32 *)ecc_calc,
-> +			mtd->oobsize - chip->ecc.total);
-> +
-> +	/* Copy parity code in calc to oob_poi */
-> +	memcpy((void *)(chip->oob_poi + (mtd->oobsize - chip->ecc.total)),
-> +		(void *)ecc_calc, chip->ecc.total);
-> +
-> +	return 0;
-> +}
-> +
-> +static irqreturn_t ma35_nand_irq(int irq, void *id)
-> +{
-> +	struct ma35_nand_info *nand = (struct ma35_nand_info *)id;
-> +	struct mtd_info *mtd = nand_to_mtd(&nand->chip);
-> +	int stat = 0;
-> +	u32 isr;
-> +
-> +	spin_lock(&nand->dma_lock);
-> +
-> +	isr = readl(nand->regs + MA35_NFI_REG_NANDINTSTS);
-> +	if (isr & INT_ECC) {
-> +		dma_sync_single_for_cpu(nand->dev, nand->dma_addr, mtd->writesize,
-> +					DMA_FROM_DEVICE);
-> +		stat = ma35_nfi_ecc_check(&nand->chip, (unsigned long)nand->dma_buf);
-
-nand->dma_buf already is a pointer which you cast to unisgned long here
-and back to a pointer in ma35_nfi_ecc_check(). ma35_nfi_ecc_check()
-should take a poiner instead.
-
-> +		if (stat < 0) {
-> +			mtd->ecc_stats.failed++;
-> +			writel(DMA_RST | DMA_EN, nand->regs + MA35_NFI_REG_DMACTL);
-> +			writel(readl(nand->regs + MA35_NFI_REG_NANDCTL) | SWRST,
-> +				nand->regs + MA35_NFI_REG_NANDCTL);
-> +		} else if (stat > 0) {
-> +			mtd->ecc_stats.corrected += stat;   /* Add corrected bit count */
-> +		}
-> +		writel(INT_ECC, nand->regs + MA35_NFI_REG_NANDINTSTS);
-> +	}
-> +	if (isr & INT_DMA) {
-> +		writel(INT_DMA, nand->regs + MA35_NFI_REG_NANDINTSTS);
-> +		complete(&nand->complete);
-> +	}
-> +	spin_unlock(&nand->dma_lock);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int ma35_nfc_exec_op(struct nand_chip *chip,
-> +			  const struct nand_operation *op,
-> +			  bool check_only)
-> +{
-> +	struct ma35_nand_info *nand = nand_get_controller_data(chip);
-> +	u32 i, reg;
-> +	int ret = 0;
-> +
-> +	if (check_only)
-> +		return 0;
-> +
-> +	ma35_nand_target_enable(nand);
-> +	reg = readl(nand->regs + MA35_NFI_REG_NANDINTSTS);
-> +	reg |= INT_RB0;
-> +	writel(reg, nand->regs + MA35_NFI_REG_NANDINTSTS);
-> +
-> +	for (i = 0; i < op->ninstrs; i++) {
-> +		ret = ma35_nfc_exec_instr(chip, &op->instrs[i]);
-> +		if (ret)
-> +			break;
-> +	}
-
-The way ma35_nand_target_[en|dis]able() is called looks inconsistent.
-
-This function calls ma35_nand_target_enable(), so I would expect that
-the corresponding ma35_nand_target_disable() should be called here as
-well.
-
-ma35_nand_do_read() is called from here which has its own call to
-ma35_nand_target_enable(), but it doesn't call ma35_nand_target_disable()
-from all of its return pathes.
-
-> +
-> +	ret = devm_request_irq(&pdev->dev, nand->irq, ma35_nand_irq,
-> +				  IRQF_TRIGGER_HIGH, "ma35d1-nand", nand);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to request NAND irq\n");
-> +		clk_disable_unprepare(nand->clk);
-
-You used devm_clk_get_enabled(), so this will be done automatically.
-
-> +		return -ENXIO;
-> +	}
-> +
-> +	nand->chip.controller = &nand->controller;
-> +	platform_set_drvdata(pdev, nand);
-> +
-> +	chip->options |= NAND_NO_SUBPAGE_WRITE | NAND_USES_DMA;
-> +
-> +	/* set default mode in case dt entry is missing */
-> +	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
-> +
-> +	chip->ecc.write_page = ma35_nand_write_page_hwecc;
-> +	chip->ecc.read_page  = ma35_nand_read_page_hwecc;
-> +	chip->ecc.read_oob   = ma35_nand_read_oob_hwecc;
-> +
-> +	mtd = nand_to_mtd(chip);
-> +	mtd->priv = chip;
-> +	mtd->owner = THIS_MODULE;
-> +	mtd->dev.parent = &pdev->dev;
-> +
-> +	writel(NAND_EN, nand->regs + MA35_NFI_REG_GCTL);
-> +
-> +	ret = nand_scan(chip, 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = mtd_device_register(mtd, NULL, 0);
-> +	if (ret) {
-> +		nand_cleanup(chip);
-> +		devm_kfree(&pdev->dev, nand);
-
-Unnecessary free. Drop it.
-
-> +		return ret;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static void ma35_nand_remove(struct platform_device *pdev)
-> +{
-> +	struct ma35_nand_info *nand = platform_get_drvdata(pdev);
-> +	int ret;
-> +
-> +	devm_free_irq(&pdev->dev, nand->irq, nand);
-
-devm_ is a mechanism to let resources be freed automatically. There's
-normally no need to do this manually.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RGVhciBTYXNjaGEsCgpUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuCgoKCk9uIDIwMjQvOS8xOCDk
+uIvljYggMDY6NTgsIFNhc2NoYSBIYXVlciB3cm90ZToKPiBIaSwKPgo+IFRoZSBkcml2ZXIgaGFz
+IGEgZmV3IG1pbm9yIHdoaXRlc3BhY2UgaXNzdWVzLCBwbGVhc2UgcnVuIHRocm91Z2gKPiBjaGVj
+a3BhdGNoLnBsIHRvIGNhdGNoIHRoZW0uCgpJIHdpbGwgZml4IGl0LgoKCj4gU29tZSBtb3JlIHRo
+aW5ncyBpbmxpbmUuCj4KPiBPbiBXZWQsIFNlcCAxOCwgMjAyNCBhdCAwOTowMzowOEFNICswMDAw
+LCBIdWktUGluZyBDaGVuIHdyb3RlOgo+PiBOdXZvdG9uIE1BMzUgU29DcyBOQU5EIEZsYXNoIElu
+dGVyZmFjZSBDb250cm9sbGVyCj4+IHN1cHBvcnRzIDJraUIsIDRraUIgYW5kIDhraUIgcGFnZSBz
+aXplLCBhbmQgdXAgdG8KPj4gOC1iaXQsIDEyLWJpdCwgYW5kIDI0LWJpdCBoYXJkd2FyZSBFQ0Mg
+Y2FsY3VsYXRpb24KPj4gY2lyY3VpdCB0byBwcm90ZWN0IGRhdGEuCj4+Cj4+IFNpZ25lZC1vZmYt
+Ynk6IEh1aS1QaW5nIENoZW4gPGhwY2hlbjBudnRAZ21haWwuY29tPgo+PiAtLS0KPj4gICBkcml2
+ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAgICAgICAgICAgfCAgIDggKwo+PiAgIGRyaXZl
+cnMvbXRkL25hbmQvcmF3L01ha2VmaWxlICAgICAgICAgICAgICB8ICAgMSArCj4+ICAgZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvbnV2b3Rvbl9tYTM1ZDFfbmFuZC5jIHwgOTM1ICsrKysrKysrKysrKysr
+KysrKysrKwo+PiAgIDMgZmlsZXMgY2hhbmdlZCwgOTQ0IGluc2VydGlvbnMoKykKPj4gICBjcmVh
+dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvbmFuZC9yYXcvbnV2b3Rvbl9tYTM1ZDFfbmFuZC5j
+Cj4+Cj4+ICsjZGVmaW5lIFNLSVBfU1BBUkVfQllURVMJNAo+IFVudXNlZCwgcGxlYXNlIGRyb3Au
+CgpJIHdpbGwgcmVtb3ZlIGl0LgoKCj4+ICtzdGF0aWMgaW50IG1hMzVfbmZpX2VjY19jaGVjayhz
+dHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1bnNpZ25lZCBsb25nIGFkZHIpCj4+ICt7Cj4+ICsJc3Ry
+dWN0IG1hMzVfbmFuZF9pbmZvICpuYW5kID0gbmFuZF9nZXRfY29udHJvbGxlcl9kYXRhKGNoaXAp
+Owo+PiArCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gbmFuZF90b19tdGQoY2hpcCk7Cj4+ICsJaW50
+IHN0YXR1cywgaSwgaiwgbmNodW5rcyA9IDA7Cj4gc3RhdHVzIHNob3VsZCBiZSB1bnNpZ25lZC4K
+Ck9rYXksIEkgd2lsbCBtb2RpZnkgaXQuCgoKPj4gKwlpbnQgcmVwb3J0X2VyciA9IDA7Cj4+ICsJ
+aW50IGVycl9jbnQgPSAwOwo+PiArCj4+ICsJbmNodW5rcyA9IG10ZC0+d3JpdGVzaXplIC8gY2hp
+cC0+ZWNjLnN0ZXBzOwo+PiArCWlmIChuY2h1bmtzIDwgNCkKPj4gKwkJbmNodW5rcyA9IDE7Cj4+
+ICsJZWxzZQo+PiArCQluY2h1bmtzIC89IDQ7Cj4+ICsKPj4gKwlmb3IgKGogPSAwOyBqIDwgbmNo
+dW5rczsgaisrKSB7Cj4+ICsJCXN0YXR1cyA9IHJlYWRsKG5hbmQtPnJlZ3MgKyBNQTM1X05GSV9S
+RUdfTkFOREVDQ0VTMCArIGoqNCk7Cj4+ICsJCWlmICghc3RhdHVzKQo+PiArCQkJY29udGludWU7
+Cj4+ICsKPj4gKwkJZm9yIChpID0gMDsgaSA8IDQ7IGkrKykgewo+PiArCQkJaWYgKCEoc3RhdHVz
+ICYgRUNDX1NUQVRVU19NQVNLKSkgewo+PiArCQkJCS8qIE5vIGVycm9yICovCj4+ICsJCQkJc3Rh
+dHVzID4+PSA4Owo+PiArCQkJCWNvbnRpbnVlOwo+PiArCj4+ICsJCQl9IGVsc2UgaWYgKChzdGF0
+dXMgJiBFQ0NfU1RBVFVTX01BU0spID09IDB4MDEpIHsKPj4gKwkJCQkvKiBDb3JyZWN0YWJsZSBl
+cnJvciAqLwo+PiArCQkJCWVycl9jbnQgPSAoc3RhdHVzID4+IDIpICYgRUNDX0VSUl9DTlRfTUFT
+SzsKPj4gKwkJCQlkZXZfd2FybihuYW5kLT5kZXYsICJuY2h1bmtzICglZCwgJWQpIGhhdmUgJWQg
+ZXJyb3IhXG4iLAo+PiArCQkJCQlqLCBpLCBlcnJfY250KTsKPiBDb3JyZWN0YWJsZSBiaXRmbGlw
+cyBhcmUgZXhwZWN0ZWQuIFBsZWFzZSBkb24ndCBzcGFtIHRoZSBsb2cgd2l0aCBpdC4KCkkgd2ls
+bCByZW1vdmUgaXQuCgoKPj4gKwkJCQltYTM1X25maV9jb3JyZWN0KG5hbmQsIGoqNCtpLCBlcnJf
+Y250LCAodTggKilhZGRyKTsKPj4gKwkJCQlyZXBvcnRfZXJyICs9IGVycl9jbnQ7Cj4+ICsKPj4g
+KwkJCX0gZWxzZSB7Cj4+ICsJCQkJLyogdW5jb3JyZWN0YWJsZSBlcnJvciAqLwo+PiArCQkJCWRl
+dl93YXJuKG5hbmQtPmRldiwgInVuY29ycmVjdGFibGUgZXJyb3IhIDB4JTR4XG4iLCBzdGF0dXMp
+Owo+PiArCQkJCXJldHVybiAtMTsKPj4gKwkJCX0KPj4gKwkJCXN0YXR1cyA+Pj0gODsKPj4gKwkJ
+fQo+PiArCX0KPj4gKwlyZXR1cm4gcmVwb3J0X2VycjsKPiBUaGVyZSBhcmUgYSBmZXcgdGhpbmdz
+IHdyb25nIGhlcmUuIFlvdXIgY2hpcC0+ZWNjLnJlYWRfcGFnZSBvcCBtdXN0Cj4gcmV0dXJuIHRo
+ZSBtYXhpbXVtIG51bWJlciBvZiBiaXRmbGlwcyBvY2N1cmVkIG9uIGEgc3VicGFnZSB3aGlsZQo+
+IHJlYWRpbmcgYSBwYWdlLgo+Cj4gVG8gYXJjaGlldmUgdGhpcyBJIHN1Z2dlc3QgeW91IGZpeCB0
+aGUgcmV0dXJuIHZhbHVlIG9mIHRoaXMgZnVuY3Rpb24KPiBhY2NvcmRpbmdseSBhbmQgY2FsbCBp
+dCBmcm9tIGNoaXAtPmVjYy5yZWFkX3BhZ2UgcmF0aGVyIHRoYW4gZnJvbSB0aGUKPiBpbnRlcnJ1
+cHQgaGFuZGxlci4KPgo+IE5ldmVydGhlbGVzcyBtdGQtPmVjY19zdGF0cy5jb3JyZWN0ZWQgY291
+bnRzIHRoZSB0b3RhbCBudW1iZXIgb2YKPiBiaXRmbGlwcywgc28geW91IG11c3QgaGFuZGxlIHRo
+aXMgY291bnRlciBpbiB0aGlzIGZ1bmN0aW9uLgo+Cj4gU2VlIHJrX25mY19yZWFkX3BhZ2VfaHdl
+Y2MoKSBhcyBhbiBleGFtcGxlIG9mIGEgZHJpdmVyIHdoaWNoIGdldHMgaXQKPiByaWdodC4KPgo+
+IFRoZSBiYWNrZ3JvdW5kIGlzIHRoYXQgd2UgaGF2ZSB0byByZXdyaXRlIHRoZSBwYWdlIG9uY2Ug
+b25lIEVDQyBibG9jawo+IGhpdHMgYSBjcml0aWNhbCBiaXRmbGlwIGxpbWl0LiBBIHdob2xlIHBh
+Z2UgbWlnaHQgYmUgZmluZSB3aGVuIHRoZQo+IGJpdGZsaXBzIGFyZSBldmVubHkgZGlzdHJpYnV0
+ZWQgYWNyb3NzIHRoZSBzdWJwYWdlcywgYnV0IGl0J3Mgbm90IHdoZW4KPiBhbGwgYml0ZmxpcHMg
+YXJlIG9jY3VyIGluIGEgc2luZ2xlIHN1YnBhZ2UuCgpJIHdpbGwgcmVmZXIgdG8gcmtfbmZjX3Jl
+YWRfcGFnZV9od2VjYygpIGFuZCB0aGVuIHJld3JpdGUgaXQuCgoKPj4gK3N0YXRpYyBpbnQgbWEz
+NV9uYW5kX2RvX3dyaXRlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGNvbnN0IHU4ICphZGRyLCB1
+MzIgbGVuKQo+PiArewo+PiArCXN0cnVjdCBtYTM1X25hbmRfaW5mbyAqbmFuZCA9IG5hbmRfZ2V0
+X2NvbnRyb2xsZXJfZGF0YShjaGlwKTsKPj4gKwlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IG5hbmRf
+dG9fbXRkKGNoaXApOwo+PiArCWRtYV9hZGRyX3QgZG1hX2FkZHI7Cj4+ICsJaW50IHJldCA9IDAs
+IGk7Cj4+ICsJdTMyIHZhbCwgcmVnOwo+PiArCj4+ICsJbWEzNV9uYW5kX3RhcmdldF9lbmFibGUo
+bmFuZCk7Cj4+ICsKPj4gKwlpZiAobGVuICE9IG10ZC0+d3JpdGVzaXplKSB7Cj4+ICsJCWZvciAo
+aSA9IDA7IGkgPCBsZW47IGkrKykKPj4gKwkJCXdyaXRlbChhZGRyW2ldLCBuYW5kLT5yZWdzICsg
+TUEzNV9ORklfUkVHX05BTkREQVRBKTsKPj4gKwkJbWEzNV9uYW5kX3RhcmdldF9kaXNhYmxlKG5h
+bmQpOwo+PiArCQlyZXR1cm4gcmV0Owo+PiArCX0KPj4gKwo+PiArCS8qIENoZWNrIHRoZSBETUEg
+c3RhdHVzIGJlZm9yZSBlbmFibGluZyB0aGUgRE1BICovCj4+ICsJcmV0ID0gcmVhZGxfcG9sbF90
+aW1lb3V0KG5hbmQtPnJlZ3MgKyBNQTM1X05GSV9SRUdfRE1BQ1RMLCB2YWwsCj4+ICsJCQkJICEo
+dmFsICYgRE1BX0JVU1kpLCA1MCwgSFovMik7Cj4+ICsJaWYgKHJldCkKPj4gKwkJZGV2X3dhcm4o
+bmFuZC0+ZGV2LCAiZG1hIGJ1c3lcbiIpOwo+PiArCj4+ICsJLyogUmVpbml0aWFsIGRtYWMgKi8K
+Pj4gKwltYTM1X25hbmRfZG1hY19pbml0KG5hbmQpOwo+IFRoZSBmdW5jdGlvbiBuYW1lIGFscmVh
+ZHkgc2F5cyBpdCBhbmQgdGhlIGNvbW1lbnQgZG9lc24ndCBvZmZlciBhbnkKPiBhZGRpdGlvbmFs
+IGluZm9ybWF0aW9uLiBQbGVhc2UgZHJvcCBzdWNoIGNvbW1lbnRzLgoKSSB3aWxsIHJlbW92ZSBp
+dC4KCgo+PiArCj4+ICsJd3JpdGVsKG10ZC0+b29ic2l6ZSwgbmFuZC0+cmVncyArIE1BMzVfTkZJ
+X1JFR19OQU5EUkFDVEwpOwo+PiArCj4+ICsJLyogc2V0dXAgYW5kIHN0YXJ0IERNQSB1c2luZyBk
+bWFfYWRkciAqLwo+PiArCXdyaXRlbChJTlRfRE1BLCBuYW5kLT5yZWdzICsgTUEzNV9ORklfUkVH
+X05BTkRJTlRFTik7Cj4+ICsJLyogVG8gbWFyayB0aGlzIHBhZ2UgYXMgZGlydHkuICovCj4+ICsJ
+cmVnID0gcmVhZGwobmFuZC0+cmVncyArIE1BMzVfTkZJX1JFR19OQU5EUkEwKTsKPj4gKwlpZiAo
+cmVnICYgMHhmZmZmMDAwMCkKPj4gKwkJd3JpdGVsKHJlZyAmIDB4ZmZmZiwgbmFuZC0+cmVncyAr
+IE1BMzVfTkZJX1JFR19OQU5EUkEwKTsKPj4gKwo+PiArCS8qIEZpbGwgZG1hX2FkZHIgKi8KPj4g
+KwlkbWFfYWRkciA9IGRtYV9tYXBfc2luZ2xlKG5hbmQtPmRldiwgKHZvaWQgKilhZGRyLCBsZW4s
+IERNQV9UT19ERVZJQ0UpOwo+PiArCWRtYV9zeW5jX3NpbmdsZV9mb3JfZGV2aWNlKG5hbmQtPmRl
+diwgZG1hX2FkZHIsIGxlbiwgRE1BX1RPX0RFVklDRSk7Cj4+ICsJcmV0ID0gZG1hX21hcHBpbmdf
+ZXJyb3IobmFuZC0+ZGV2LCBkbWFfYWRkcik7Cj4+ICsJaWYgKHJldCkgewo+PiArCQlkZXZfZXJy
+KG5hbmQtPmRldiwgImRtYSBtYXBwaW5nIGVycm9yXG4iKTsKPj4gKwkJcmV0dXJuIC1FSU5WQUw7
+Cj4+ICsJfQo+IENhbGwgZG1hX3N5bmNfc2luZ2xlX2Zvcl9kZXZpY2UoKSBhZnRlciB5b3UgaGF2
+ZSBjaGVja2VkIGZvciBhbiBlcnJvcgo+IHdpdGggZG1hX21hcHBpbmdfZXJyb3IoKS4KPgo+IFRo
+YXQgc2FpZCwgSSB0aGluayBjYWxsaW5nIGRtYV9zeW5jX3NpbmdsZV9mb3JfZGV2aWNlKCkgYWZ0
+ZXIKPiBkbWFfbWFwX3NpbmdsZSgpIGlzIHVubmVjZXNzYXJ5LgoKSSB3aWxsIG1vZGlmeSB0aGUg
+Y2FsbGluZyBzZXF1ZW5jZS4KCgo+PiArCj4+ICsJd3JpdGVsKCh1bnNpZ25lZCBsb25nKWRtYV9h
+ZGRyLCBuYW5kLT5yZWdzICsgTUEzNV9ORklfUkVHX0RNQVNBKTsKPj4gKwl3cml0ZWwocmVhZGwo
+bmFuZC0+cmVncyArIE1BMzVfTkZJX1JFR19OQU5EQ1RMKSB8IERNQV9XX0VOLAo+PiArCQluYW5k
+LT5yZWdzICsgTUEzNV9ORklfUkVHX05BTkRDVEwpOwo+PiArCXJldCA9IHdhaXRfZm9yX2NvbXBs
+ZXRpb25fdGltZW91dCgmbmFuZC0+Y29tcGxldGUsIG1zZWNzX3RvX2ppZmZpZXMoMTAwMCkpOwo+
+PiArCWlmICghcmV0KSB7Cj4+ICsJCWRldl9lcnIobmFuZC0+ZGV2LCAid3JpdGUgdGltZW91dFxu
+Iik7Cj4+ICsJCXJldCA9IC1FVElNRURPVVQ7Cj4+ICsJfQo+PiArCj4+ICsJZG1hX3VubWFwX3Np
+bmdsZShuYW5kLT5kZXYsIGRtYV9hZGRyLCBsZW4sIERNQV9UT19ERVZJQ0UpOwo+PiArCj4+ICsJ
+bWEzNV9uYW5kX3RhcmdldF9kaXNhYmxlKG5hbmQpOwo+PiArCj4+ICsJcmV0dXJuIHJldDsKPj4g
+K30KPj4gKwo+PiArc3RhdGljIGludCBtYTM1X25hbmRfZG9fcmVhZChzdHJ1Y3QgbmFuZF9jaGlw
+ICpjaGlwLCBjb25zdCB1OCAqYWRkciwgdTMyIGxlbikKPiBUaGUgYWRkciBhcmd1bWVudCBzaG91
+bGRuJ3QgYmUgY29uc3QuIFlvdSBhcmUgc3VwcG9zZWQgdG8gd3JpdGUgdG8gdGhpcwo+IGJ1ZmZl
+ciBhbmQgeW91IGFjdHVhbGx5IGRvIHNvLgoKSSB3aWxsIGNoYW5nZSB0aGlzIGFyZ3VtZW50IHRv
+IHU4ICouCgoKPj4gK3sKPj4gKwlzdHJ1Y3QgbWEzNV9uYW5kX2luZm8gKm5hbmQgPSBuYW5kX2dl
+dF9jb250cm9sbGVyX2RhdGEoY2hpcCk7Cj4+ICsJc3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5k
+X3RvX210ZChjaGlwKTsKPj4gKwl1OCAqcHRyID0gKHU4ICopYWRkcjsKPj4gKwlkbWFfYWRkcl90
+IGRtYV9hZGRyOwo+PiArCWludCByZXQgPSAwLCBpOwo+PiArCXUzMiB2YWw7Cj4+ICsKPj4gKwlt
+YTM1X25hbmRfdGFyZ2V0X2VuYWJsZShuYW5kKTsKPj4gKwo+PiArCWlmIChsZW4gIT0gbXRkLT53
+cml0ZXNpemUpIHsKPj4gKwkJZm9yIChpID0gMDsgaSA8IGxlbjsgaSsrKQo+PiArCQkJKihwdHIr
+aSkgPSAodTgpcmVhZGwobmFuZC0+cmVncyArIE1BMzVfTkZJX1JFR19OQU5EREFUQSk7Cj4+ICsJ
+CW1hMzVfbmFuZF90YXJnZXRfZGlzYWJsZShuYW5kKTsKPj4gKwkJcmV0dXJuIHJldDsKPiBKdXN0
+IHJldHVybiAwIGhlcmUuIEl0J3MgZWFzaWVyIHRvIHJlYWQgdGhhbiBoYXZpbmcgdG8gbG9vayB1
+cCB0aGUKPiBpbml0aWFsaXphdGlvbiB2YWx1ZS4KCkkgd2lsbCBjaGFuZ2UgaXQgdG8gcmV0dXJu
+IDAgZGlyZWN0bHkuCgoKPj4gKwl9Cj4+ICsKPj4gKwkvKiBDaGVjayB0aGUgRE1BIHN0YXR1cyBi
+ZWZvcmUgZW5hYmxpbmcgdGhlIERNQSAqLwo+PiArCXJldCA9IHJlYWRsX3BvbGxfdGltZW91dChu
+YW5kLT5yZWdzICsgTUEzNV9ORklfUkVHX0RNQUNUTCwgdmFsLAo+PiArCQkJCSAhKHZhbCAmIERN
+QV9CVVNZKSwgNTAsIEhaLzIpOwo+PiArCWlmIChyZXQpCj4+ICsJCWRldl93YXJuKG5hbmQtPmRl
+diwgImRtYSBidXN5XG4iKTsKPj4gKwo+PiArCS8qIFJlaW5pdGlhbCBkbWFjICovCj4+ICsJbWEz
+NV9uYW5kX2RtYWNfaW5pdChuYW5kKTsKPj4gKwo+PiArCXdyaXRlbChtdGQtPm9vYnNpemUsIG5h
+bmQtPnJlZ3MgKyBNQTM1X05GSV9SRUdfTkFORFJBQ1RMKTsKPj4gKwo+PiArCS8qIHNldHVwIGFu
+ZCBzdGFydCBETUEgdXNpbmcgZG1hX2FkZHIgKi8KPj4gKwlkbWFfYWRkciA9IGRtYV9tYXBfc2lu
+Z2xlKG5hbmQtPmRldiwgKHZvaWQgKilhZGRyLCBsZW4sIERNQV9GUk9NX0RFVklDRSk7Cj4+ICsJ
+cmV0ID0gZG1hX21hcHBpbmdfZXJyb3IobmFuZC0+ZGV2LCBkbWFfYWRkcik7Cj4+ICsJaWYgKHJl
+dCkgewo+PiArCQlkZXZfZXJyKG5hbmQtPmRldiwgImRtYSBtYXBwaW5nIGVycm9yXG4iKTsKPj4g
+KwkJcmV0dXJuIC1FSU5WQUw7Cj4+ICsJfQo+PiArCW5hbmQtPmRtYV9idWYgPSAodTggKilhZGRy
+Owo+PiArCW5hbmQtPmRtYV9hZGRyID0gZG1hX2FkZHI7Cj4+ICsKPj4gKwl3cml0ZWwoKHVuc2ln
+bmVkIGxvbmcpZG1hX2FkZHIsIG5hbmQtPnJlZ3MgKyBNQTM1X05GSV9SRUdfRE1BU0EpOwo+PiAr
+CXdyaXRlbChyZWFkbChuYW5kLT5yZWdzICsgTUEzNV9ORklfUkVHX05BTkRDVEwpIHwgRE1BX1Jf
+RU4sCj4+ICsJCW5hbmQtPnJlZ3MgKyBNQTM1X05GSV9SRUdfTkFORENUTCk7Cj4+ICsJcmV0ID0g
+d2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0KCZuYW5kLT5jb21wbGV0ZSwgbXNlY3NfdG9famlm
+ZmllcygxMDAwKSk7Cj4+ICsJaWYgKCFyZXQpIHsKPj4gKwkJZGV2X2VycihuYW5kLT5kZXYsICJy
+ZWFkIHRpbWVvdXRcbiIpOwo+PiArCQlyZXQgPSAtRVRJTUVET1VUOwo+PiArCX0KPj4gKwo+PiAr
+CWRtYV9zeW5jX3NpbmdsZV9mb3JfY3B1KG5hbmQtPmRldiwgZG1hX2FkZHIsIGxlbiwgRE1BX0ZS
+T01fREVWSUNFKTsKPj4gKwlkbWFfdW5tYXBfc2luZ2xlKG5hbmQtPmRldiwgZG1hX2FkZHIsIGxl
+biwgRE1BX0ZST01fREVWSUNFKTsKPiBObyBuZWVkIHRvIGNhbGwgZG1hX3N5bmNfc2luZ2xlX2Zv
+cl9jcHUoKSBiZWZvcmUgZG1hX3VubWFwX3NpbmdsZSgpLgoKSSB3aWxsIHJlbW92ZSBpdC4KCgo+
+PiArCj4+ICsJbWEzNV9uYW5kX3RhcmdldF9kaXNhYmxlKG5hbmQpOwo+PiArCj4+ICsJcmV0dXJu
+IHJldDsKPj4gK30KPj4gKwo+PiArCj4+ICtzdGF0aWMgaW50IG1hMzVfbmFuZF93cml0ZV9wYWdl
+X2h3ZWNjKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGNvbnN0IHU4ICpidWYsCj4+ICsJCQkJICAg
+ICAgaW50IG9vYl9yZXF1aXJlZCwgaW50IHBhZ2UpCj4+ICt7Cj4+ICsJc3RydWN0IG10ZF9pbmZv
+ICptdGQgPSBuYW5kX3RvX210ZChjaGlwKTsKPj4gKwl1OCAqZWNjX2NhbGMgPSBjaGlwLT5lY2Mu
+Y2FsY19idWY7Cj4gTWFrZSB0aGlzIGEgdm9pZCAqIHRvIGdldCByaWQgb2YgdGhlIGV4cGxpY2l0
+IGNhc3RpbmcgYmVsb3cuCgpJIHdpbGwgbW9kaWZ5IGl0LgoKCj4+ICsKPj4gKwltYTM1X2NsZWFy
+X3NwYXJlKGNoaXAsIG10ZC0+b29ic2l6ZSk7Cj4+ICsJbWEzNV93cml0ZV9zcGFyZShjaGlwLCBt
+dGQtPm9vYnNpemUgLSBjaGlwLT5lY2MudG90YWwsICh1MzIgKiljaGlwLT5vb2JfcG9pKTsKPj4g
+Kwo+PiArCW5hbmRfcHJvZ19wYWdlX2JlZ2luX29wKGNoaXAsIHBhZ2UsIDAsIGJ1ZiwgbXRkLT53
+cml0ZXNpemUpOwo+PiArCW5hbmRfcHJvZ19wYWdlX2VuZF9vcChjaGlwKTsKPj4gKwo+PiArCS8q
+IENvcHkgcGFyaXR5IGNvZGUgaW4gTkFORFJBIHRvIGNhbGMgKi8KPj4gKwltYTM1X3JlYWRfc3Bh
+cmUoY2hpcCwgY2hpcC0+ZWNjLnRvdGFsLCAodTMyICopZWNjX2NhbGMsCj4+ICsJCQltdGQtPm9v
+YnNpemUgLSBjaGlwLT5lY2MudG90YWwpOwo+PiArCj4+ICsJLyogQ29weSBwYXJpdHkgY29kZSBp
+biBjYWxjIHRvIG9vYl9wb2kgKi8KPj4gKwltZW1jcHkoKHZvaWQgKikoY2hpcC0+b29iX3BvaSAr
+IChtdGQtPm9vYnNpemUgLSBjaGlwLT5lY2MudG90YWwpKSwKPj4gKwkJKHZvaWQgKillY2NfY2Fs
+YywgY2hpcC0+ZWNjLnRvdGFsKTsKPj4gKwo+PiArCXJldHVybiAwOwo+PiArfQo+PiArCj4+ICtz
+dGF0aWMgaXJxcmV0dXJuX3QgbWEzNV9uYW5kX2lycShpbnQgaXJxLCB2b2lkICppZCkKPj4gK3sK
+Pj4gKwlzdHJ1Y3QgbWEzNV9uYW5kX2luZm8gKm5hbmQgPSAoc3RydWN0IG1hMzVfbmFuZF9pbmZv
+ICopaWQ7Cj4+ICsJc3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5kX3RvX210ZCgmbmFuZC0+Y2hp
+cCk7Cj4+ICsJaW50IHN0YXQgPSAwOwo+PiArCXUzMiBpc3I7Cj4+ICsKPj4gKwlzcGluX2xvY2so
+Jm5hbmQtPmRtYV9sb2NrKTsKPj4gKwo+PiArCWlzciA9IHJlYWRsKG5hbmQtPnJlZ3MgKyBNQTM1
+X05GSV9SRUdfTkFORElOVFNUUyk7Cj4+ICsJaWYgKGlzciAmIElOVF9FQ0MpIHsKPj4gKwkJZG1h
+X3N5bmNfc2luZ2xlX2Zvcl9jcHUobmFuZC0+ZGV2LCBuYW5kLT5kbWFfYWRkciwgbXRkLT53cml0
+ZXNpemUsCj4+ICsJCQkJCURNQV9GUk9NX0RFVklDRSk7Cj4+ICsJCXN0YXQgPSBtYTM1X25maV9l
+Y2NfY2hlY2soJm5hbmQtPmNoaXAsICh1bnNpZ25lZCBsb25nKW5hbmQtPmRtYV9idWYpOwo+IG5h
+bmQtPmRtYV9idWYgYWxyZWFkeSBpcyBhIHBvaW50ZXIgd2hpY2ggeW91IGNhc3QgdG8gdW5pc2du
+ZWQgbG9uZyBoZXJlCj4gYW5kIGJhY2sgdG8gYSBwb2ludGVyIGluIG1hMzVfbmZpX2VjY19jaGVj
+aygpLiBtYTM1X25maV9lY2NfY2hlY2soKQo+IHNob3VsZCB0YWtlIGEgcG9pbmVyIGluc3RlYWQu
+CgpJIHdpbGwgZml4IGl0LgoKCj4+ICsJCWlmIChzdGF0IDwgMCkgewo+PiArCQkJbXRkLT5lY2Nf
+c3RhdHMuZmFpbGVkKys7Cj4+ICsJCQl3cml0ZWwoRE1BX1JTVCB8IERNQV9FTiwgbmFuZC0+cmVn
+cyArIE1BMzVfTkZJX1JFR19ETUFDVEwpOwo+PiArCQkJd3JpdGVsKHJlYWRsKG5hbmQtPnJlZ3Mg
+KyBNQTM1X05GSV9SRUdfTkFORENUTCkgfCBTV1JTVCwKPj4gKwkJCQluYW5kLT5yZWdzICsgTUEz
+NV9ORklfUkVHX05BTkRDVEwpOwo+PiArCQl9IGVsc2UgaWYgKHN0YXQgPiAwKSB7Cj4+ICsJCQlt
+dGQtPmVjY19zdGF0cy5jb3JyZWN0ZWQgKz0gc3RhdDsgICAvKiBBZGQgY29ycmVjdGVkIGJpdCBj
+b3VudCAqLwo+PiArCQl9Cj4+ICsJCXdyaXRlbChJTlRfRUNDLCBuYW5kLT5yZWdzICsgTUEzNV9O
+RklfUkVHX05BTkRJTlRTVFMpOwo+PiArCX0KPj4gKwlpZiAoaXNyICYgSU5UX0RNQSkgewo+PiAr
+CQl3cml0ZWwoSU5UX0RNQSwgbmFuZC0+cmVncyArIE1BMzVfTkZJX1JFR19OQU5ESU5UU1RTKTsK
+Pj4gKwkJY29tcGxldGUoJm5hbmQtPmNvbXBsZXRlKTsKPj4gKwl9Cj4+ICsJc3Bpbl91bmxvY2so
+Jm5hbmQtPmRtYV9sb2NrKTsKPj4gKwo+PiArCXJldHVybiBJUlFfSEFORExFRDsKPj4gK30KPj4g
+Kwo+PiArc3RhdGljIGludCBtYTM1X25mY19leGVjX29wKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAs
+Cj4+ICsJCQkgIGNvbnN0IHN0cnVjdCBuYW5kX29wZXJhdGlvbiAqb3AsCj4+ICsJCQkgIGJvb2wg
+Y2hlY2tfb25seSkKPj4gK3sKPj4gKwlzdHJ1Y3QgbWEzNV9uYW5kX2luZm8gKm5hbmQgPSBuYW5k
+X2dldF9jb250cm9sbGVyX2RhdGEoY2hpcCk7Cj4+ICsJdTMyIGksIHJlZzsKPj4gKwlpbnQgcmV0
+ID0gMDsKPj4gKwo+PiArCWlmIChjaGVja19vbmx5KQo+PiArCQlyZXR1cm4gMDsKPj4gKwo+PiAr
+CW1hMzVfbmFuZF90YXJnZXRfZW5hYmxlKG5hbmQpOwo+PiArCXJlZyA9IHJlYWRsKG5hbmQtPnJl
+Z3MgKyBNQTM1X05GSV9SRUdfTkFORElOVFNUUyk7Cj4+ICsJcmVnIHw9IElOVF9SQjA7Cj4+ICsJ
+d3JpdGVsKHJlZywgbmFuZC0+cmVncyArIE1BMzVfTkZJX1JFR19OQU5ESU5UU1RTKTsKPj4gKwo+
+PiArCWZvciAoaSA9IDA7IGkgPCBvcC0+bmluc3RyczsgaSsrKSB7Cj4+ICsJCXJldCA9IG1hMzVf
+bmZjX2V4ZWNfaW5zdHIoY2hpcCwgJm9wLT5pbnN0cnNbaV0pOwo+PiArCQlpZiAocmV0KQo+PiAr
+CQkJYnJlYWs7Cj4+ICsJfQo+IFRoZSB3YXkgbWEzNV9uYW5kX3RhcmdldF9bZW58ZGlzXWFibGUo
+KSBpcyBjYWxsZWQgbG9va3MgaW5jb25zaXN0ZW50Lgo+Cj4gVGhpcyBmdW5jdGlvbiBjYWxscyBt
+YTM1X25hbmRfdGFyZ2V0X2VuYWJsZSgpLCBzbyBJIHdvdWxkIGV4cGVjdCB0aGF0Cj4gdGhlIGNv
+cnJlc3BvbmRpbmcgbWEzNV9uYW5kX3RhcmdldF9kaXNhYmxlKCkgc2hvdWxkIGJlIGNhbGxlZCBo
+ZXJlIGFzCj4gd2VsbC4KPgo+IG1hMzVfbmFuZF9kb19yZWFkKCkgaXMgY2FsbGVkIGZyb20gaGVy
+ZSB3aGljaCBoYXMgaXRzIG93biBjYWxsIHRvCj4gbWEzNV9uYW5kX3RhcmdldF9lbmFibGUoKSwg
+YnV0IGl0IGRvZXNuJ3QgY2FsbCBtYTM1X25hbmRfdGFyZ2V0X2Rpc2FibGUoKQo+IGZyb20gYWxs
+IG9mIGl0cyByZXR1cm4gcGF0aGVzLgoKT2theS4gSSB3aWxsIGNoZWNrIGFuZCBmaXggaXQuCgoK
+Pj4gKwo+PiArCXJldCA9IGRldm1fcmVxdWVzdF9pcnEoJnBkZXYtPmRldiwgbmFuZC0+aXJxLCBt
+YTM1X25hbmRfaXJxLAo+PiArCQkJCSAgSVJRRl9UUklHR0VSX0hJR0gsICJtYTM1ZDEtbmFuZCIs
+IG5hbmQpOwo+PiArCWlmIChyZXQpIHsKPj4gKwkJZGV2X2VycigmcGRldi0+ZGV2LCAiZmFpbGVk
+IHRvIHJlcXVlc3QgTkFORCBpcnFcbiIpOwo+PiArCQljbGtfZGlzYWJsZV91bnByZXBhcmUobmFu
+ZC0+Y2xrKTsKPiBZb3UgdXNlZCBkZXZtX2Nsa19nZXRfZW5hYmxlZCgpLCBzbyB0aGlzIHdpbGwg
+YmUgZG9uZSBhdXRvbWF0aWNhbGx5LgoKSSB3aWxsIHJlbW92ZSBpdC4KCgo+PiArCQlyZXR1cm4g
+LUVOWElPOwo+PiArCX0KPj4gKwo+PiArCW5hbmQtPmNoaXAuY29udHJvbGxlciA9ICZuYW5kLT5j
+b250cm9sbGVyOwo+PiArCXBsYXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIG5hbmQpOwo+PiArCj4+
+ICsJY2hpcC0+b3B0aW9ucyB8PSBOQU5EX05PX1NVQlBBR0VfV1JJVEUgfCBOQU5EX1VTRVNfRE1B
+Owo+PiArCj4+ICsJLyogc2V0IGRlZmF1bHQgbW9kZSBpbiBjYXNlIGR0IGVudHJ5IGlzIG1pc3Np
+bmcgKi8KPj4gKwljaGlwLT5lY2MuZW5naW5lX3R5cGUgPSBOQU5EX0VDQ19FTkdJTkVfVFlQRV9P
+Tl9IT1NUOwo+PiArCj4+ICsJY2hpcC0+ZWNjLndyaXRlX3BhZ2UgPSBtYTM1X25hbmRfd3JpdGVf
+cGFnZV9od2VjYzsKPj4gKwljaGlwLT5lY2MucmVhZF9wYWdlICA9IG1hMzVfbmFuZF9yZWFkX3Bh
+Z2VfaHdlY2M7Cj4+ICsJY2hpcC0+ZWNjLnJlYWRfb29iICAgPSBtYTM1X25hbmRfcmVhZF9vb2Jf
+aHdlY2M7Cj4+ICsKPj4gKwltdGQgPSBuYW5kX3RvX210ZChjaGlwKTsKPj4gKwltdGQtPnByaXYg
+PSBjaGlwOwo+PiArCW10ZC0+b3duZXIgPSBUSElTX01PRFVMRTsKPj4gKwltdGQtPmRldi5wYXJl
+bnQgPSAmcGRldi0+ZGV2Owo+PiArCj4+ICsJd3JpdGVsKE5BTkRfRU4sIG5hbmQtPnJlZ3MgKyBN
+QTM1X05GSV9SRUdfR0NUTCk7Cj4+ICsKPj4gKwlyZXQgPSBuYW5kX3NjYW4oY2hpcCwgMSk7Cj4+
+ICsJaWYgKHJldCkKPj4gKwkJcmV0dXJuIHJldDsKPj4gKwo+PiArCXJldCA9IG10ZF9kZXZpY2Vf
+cmVnaXN0ZXIobXRkLCBOVUxMLCAwKTsKPj4gKwlpZiAocmV0KSB7Cj4+ICsJCW5hbmRfY2xlYW51
+cChjaGlwKTsKPj4gKwkJZGV2bV9rZnJlZSgmcGRldi0+ZGV2LCBuYW5kKTsKPiBVbm5lY2Vzc2Fy
+eSBmcmVlLiBEcm9wIGl0LgoKSSB3aWxsIHJlbW92ZSBpdC4KCgo+PiArCQlyZXR1cm4gcmV0Owo+
+PiArCX0KPj4gKwo+PiArCXJldHVybiByZXQ7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyB2b2lkIG1h
+MzVfbmFuZF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPj4gK3sKPj4gKwlz
+dHJ1Y3QgbWEzNV9uYW5kX2luZm8gKm5hbmQgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsK
+Pj4gKwlpbnQgcmV0Owo+PiArCj4+ICsJZGV2bV9mcmVlX2lycSgmcGRldi0+ZGV2LCBuYW5kLT5p
+cnEsIG5hbmQpOwo+IGRldm1fIGlzIGEgbWVjaGFuaXNtIHRvIGxldCByZXNvdXJjZXMgYmUgZnJl
+ZWQgYXV0b21hdGljYWxseS4gVGhlcmUncwo+IG5vcm1hbGx5IG5vIG5lZWQgdG8gZG8gdGhpcyBt
+YW51YWxseS4KCk9rYXkuIEkgd2lsbCBjaGVjayBhbmQgcmVtb3ZlIGl0LgoKCj4gU2FzY2hhCgoK
+QmVzdCByZWdhcmRzLAoKSHVpLVBpbmcgQ2hlbgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
