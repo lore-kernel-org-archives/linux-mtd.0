@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 220F3CF58F1
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Sep 2024 09:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4379DC78820
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Sep 2024 11:20:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6yUpRoGMPHtsOTW1nP6qr7r+bn4w81w8qyuiJVK6SD8=; b=OUGj1doaDYIdMQ
-	73CP5dxqInhsI8VDcaPcN2GQw9w2GrZJJ/6aLKCaEOIrkVaSCKQgNuSZE0FdfoCCeQMqtZJ7gAizn
-	pUyWkUwxAu/5Qyd6dqWvg80ZoOAGTktMR6hQ+I2ACjOFDWt7WZo6+zgHSlGqUTMok9qUBP81socCG
-	nWBv2rRCPU1DzNTXzyv7ceYbwB9N3znidW7sPPqobdXeWXAFLnTcBCs4PLj1O0lomT5xpM7fASYMD
-	BpRIcKWKpqHSD/Mqp+cZdfA96koVHR+YMMq9Coee4F90mS6NsRjRL7hD5PwrQTXgsnQ1hXffM8z3Q
-	B3XJlqz1aTpszs3zjkZw==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
+	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=IvbIv+J/U6GeDrpPIwDHQUTqIoCSSOZFRGxtXCSVUrQ=; b=VN/v9lX+i0w36h
+	fatfA37xFNBcIPH6OGdgYhfugzhNaiDUMBbpkWkxZq68zKTJce2FzRSs/ny+tvmLxCULCQ7FnS5kQ
+	7ZxLFK47J5YOxcB7ZaHSSknW9g6LyazCiqlbqdp7bkQuddUoCHPDvTOJnOH/MmArXWSUejQUhCXLC
+	Dn2Tcy06ljcmPVtVB1ZRLx5chEV+j9aFoVzn4fAySg4xnHi4gPQ1OEnzLjjl5ymgeO6SWO9fERLdL
+	yWowmQSRowLSGy+ez/RALrETagyxDy6QK4TR9ZWJKBr7F9Si6/v91GdcsiGCP2SJrgd2x4wfIEKZ6
+	M8W2aeyjRF2gjuQRGr6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1srZfK-0000000BtTf-0NPa;
-	Fri, 20 Sep 2024 09:11:02 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1srbg2-0000000C4p0-1r3n;
+	Fri, 20 Sep 2024 11:19:54 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1srZex-0000000BtPl-0rVM
+	id 1srbf9-0000000C4Zi-0iqX
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Sep 2024 09:10:40 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1srZeN-0007IG-6w; Fri, 20 Sep 2024 11:10:03 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1srZeJ-000Dah-Pf; Fri, 20 Sep 2024 11:09:59 +0200
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1srZeJ-001rh8-2C;
-	Fri, 20 Sep 2024 11:09:59 +0200
-Date: Fri, 20 Sep 2024 11:09:59 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>, imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] mtd: spi-nor: support vcc-supply regulator
-Message-ID: <20240920090959.67y7h57yirtahfuh@pengutronix.de>
-References: <20240920-spi-v1-0-97f220c2e10c@nxp.com>
- <20240920-spi-v1-2-97f220c2e10c@nxp.com>
+	Fri, 20 Sep 2024 11:19:00 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id A3634A4322F;
+	Fri, 20 Sep 2024 11:18:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 42830C4CEC3;
+	Fri, 20 Sep 2024 11:18:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726831137;
+	bh=Gjm/OXw8AryyA1/fNIlK2HMCrdcZH4b/R9DMBkpA7VE=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=Hb+QmlIKCvIlhOiJ9vJuC0V6H/rHbiy58toxZc5K+5tQu0I7fSwRy3IZMP3QHvZ1t
+	 1xg6zfW3KK1EqUFc271G/q15ZeyeQFwAm/Da69vDCzoU6QgiXAHrog15V/wx9mqm0J
+	 KA3njhNj85Ryt6A5BV/K9JztN5u0sfXucGC72Ec/YWlHUtzATkYDJ4vk1eJ2pxK5O5
+	 kkJbwk4bMPiJ7jGpEK0mWwe0Mffpf30jkRWH/5Wj7hnnXJdFBdUm23JYd0M4dP4ouU
+	 ak0vN//1/uN8GxPOp6YxK2M5UQAfal9p6/a9WcwYWvnEsCf2U58ZQNN5Vg38acCmTF
+	 CEjCs/rRDSHxA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28E61C78829;
+	Fri, 20 Sep 2024 11:18:57 +0000 (UTC)
+From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
+Subject: [PATCH v9 0/2] Add support for Loongson-1 NAND
+Date: Fri, 20 Sep 2024 19:18:52 +0800
+Message-Id: <20240920-loongson1-nand-v9-0-9cc7b9345a03@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240920-spi-v1-2-97f220c2e10c@nxp.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-B4-Tracking: v=1; b=H4sIABxa7WYC/2WOzW7DIBAGXyXiXKzlpyzuqe9R5UDxYqPGUEFit
+ Y387sVRq0TJZaXvMLNzZpVKpMpedmdWaIk15tRG/7RjfnJpJB6HtpkEqUEJww85p7HmJHhyaeC
+ 9VRIHRIJgWIM+C4X4dRG+7dsOJc/8OBVy/xoBz+1KLYXqsAfkgn/QeGq/up/t4+s4u3jofJ433
+ xTrMZfvS99iNutfisT7lMVw4Bh6JYSnABJuTFvKgldcK3jAseEG0KJXQgen73F7xS3YB9w23Pd
+ mIKeFfdfiFl/X9RdTr3CGagEAAA==
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-media@vger.kernel.org, 
+ Keguang Zhang <keguang.zhang@gmail.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1726831135; l=3339;
+ i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
+ bh=Gjm/OXw8AryyA1/fNIlK2HMCrdcZH4b/R9DMBkpA7VE=;
+ b=q7t6wP+CKt0Ahu7sAppj6dtSYbC4IZd4qMaPVejH+1Li+NItb/JHeT0K6k6juHKYOtWTBL7y0
+ nA18aZZWJDoCFpw4Sx5CZYKjbUo3BnKJEoxZdcOzH85OT6WvzuMRuG/
+X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
+ pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
+X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
+ auth_id=102
+X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240920_021039_265791_BC682658 
-X-CRM114-Status: GOOD (  16.58  )
+X-CRM114-CacheID: sfid-20240920_041859_401471_5489D61D 
+X-CRM114-Status: GOOD (  13.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,63 +87,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: keguang.zhang@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 24-09-20, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> spi nor flash needs power supply to work properly. The power supply
-> maybe software controllable per board design. So add the support
-> for an optional vcc-supply regulator.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 9d6e85bf227b..0449afe6bb20 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -17,6 +17,7 @@
->  #include <linux/mtd/spi-nor.h>
->  #include <linux/mutex.h>
->  #include <linux/of_platform.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/sched/task_stack.h>
->  #include <linux/sizes.h>
->  #include <linux/slab.h>
-> @@ -3462,6 +3463,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  	if (!nor->bouncebuf)
->  		return -ENOMEM;
->  
-> +	ret = devm_regulator_get_enable_optional(dev, "vcc");
-> +	if (ret)
+Add the driver and dt-binding document for Loongson-1 NAND.
 
-This returns -ENODEV if no regulator was specified. In general all
-SPI-NOR devices need a VCC supply, so don't use the regulator optional
-API here, please check the regulator API doc.
+Changes in v9:
+- Change the compatible to 'loongson,ls1*-nand-controller'.
+- Rename the dt-binding file to loongson,ls1b-nand-controller.yaml.
+- Update MAINTAINERS file accordingly.
+- Some minor adjustments.
+- Rebasing due to recent upstream changes.
+- Link to v8: https://lore.kernel.org/r/20240808-loongson1-nand-v8-0-c96dea418b41@gmail.com
 
-In contrast to that the dt-bindings should have the vcc-supply as
-optional to not cause a regression for exisiting systems.
+Changes in v8:
+- Add a description part.
+- Adjust the compatible because the match data for ls1c-nfc differs from ls1b-nfc.
+- Mark 'nand-use-soft-ecc-engine' and 'nand-ecc-algo' as mandatory.
+- Delete the superfluous blank lines.
+- Drop NAND_MONOLITHIC_READ and add support for real subpage read instead.
+- Simplify the logic of ls1b_nand_parse_address() and ls1c_nand_parse_address().
+- Split ls1x_nand_set_controller() into ls1x_nand_parse_instructions()
+  and ls1x_nand_trigger_op().
+- Implement ls1x_nand_op_cmd_mapping() to convert the opcodes instead of forcing them.
+- Add ls1x_nand_check_op().
+- Remove struct ls1x_nand after moving its members to struct ls1x_nfc.
+- Add the prefix 'LS1X_' for all registers and their bits.
+- Drop the macros: nand_readl() and nand_writel().
+- Some minor fixes and improvements.
+- Link to v7: https://lore.kernel.org/r/20240430-loongson1-nand-v7-0-60787c314fa4@gmail.com
 
-Regards,
-  Marco
+Changes in v7:
+- Rename the file to loongson,ls1b-nfc.yaml
+- Rename the Kconfig dependency to LOONGSON1_APB_DMA
+- Link to v6: https://lore.kernel.org/r/20240327-loongson1-nand-v6-0-7f9311cef020@gmail.com
 
-> +		return ret;
-> +
->  	ret = spi_nor_hw_reset(nor);
->  	if (ret)
->  		return ret;
-> 
-> -- 
-> 2.37.1
-> 
-> 
-> 
+Changes in v6:
+- Amend Kconfig
+- Add the dt-binding document
+- Modify nand_read_subpage() to allow subpage read by a single operation
+- Add DT support for driver
+- Use DT data instead of platform data
+- Remove MAX_ID_SIZE
+- Remove case NAND_OP_CMD_INSTR in ls1x_nand_set_controller()
+- Move ECC configuration to ls1x_nand_attach_chip()
+- Rename variable "nand" to "ls1x"
+- Rename variable "nc" to "nfc"
+- Some minor fixes
+- Link to v5: https://lore.kernel.org/all/20210520224213.7907-1-keguang.zhang@gmail.com
+
+Changes in v5:
+- Update the driver to fit the raw NAND framework.
+- Implement exec_op() instead of legacy cmdfunc().
+- Use dma_request_chan() instead of dma_request_channel().
+- Some minor fixes and cleanups.
+
+Changes in v4:
+- Retrieve the controller from nand_hw_control.
+
+Changes in v3:
+- Replace __raw_readl/__raw_writel with readl/writel.
+- Split ls1x_nand into two structures:
+ls1x_nand_chip and ls1x_nand_controller.
+
+Changes in v2:
+- Modify the dependency in Kconfig due to the changes of DMA module.
+
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
+Keguang Zhang (2):
+      dt-bindings: mtd: Add Loongson-1 NAND Controller
+      mtd: rawnand: Add Loongson-1 NAND Controller Driver
+
+ .../mtd/loongson,ls1b-nand-controller.yaml         |  75 ++
+ MAINTAINERS                                        |   1 +
+ drivers/mtd/nand/raw/Kconfig                       |   7 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/loongson1_nand.c              | 824 +++++++++++++++++++++
+ 5 files changed, 908 insertions(+)
+---
+base-commit: 62f92d634458a1e308bb699986b9147a6d670457
+change-id: 20240316-loongson1-nand-98327d77e0f6
+
+Best regards,
+-- 
+Keguang Zhang <keguang.zhang@gmail.com>
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
