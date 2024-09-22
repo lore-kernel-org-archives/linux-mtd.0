@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87281CF9C69
-	for <linux-mtd@archiver.kernel.org>; Sun, 22 Sep 2024 20:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D530CF9C6D
+	for <linux-mtd@archiver.kernel.org>; Sun, 22 Sep 2024 20:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RLWlhSp9oQGIdvvjtUMY7+sCMk1yCrMutrTNA6iJwmI=; b=wsIGlSp3UlOTtO
-	LN73CGOjNaqhOlN7nB6TGm5l4P+/FkqH59Q/zaEfgANY5jKsNCXekl8rggur5H7Uy9O45IuvB1sd2
-	FvB9QqJZLHTEPoI7bUuBdBCicAGe4pk0TLHCIJXAw+lQn5BRs/EEH84Q+S8+GFGIeWvH/Nj6lFPdH
-	mAlpc0lxOB+6Wy1wSCoP0uyVH7BHm5XOoqQ63chyqZDNwxFcVHvAjz2k4MpTZM7oKxsPzZRbNvS0h
-	VdyCTFMuSi3Mp4bj5Pv62y2WHtW9PppyEgh+KP0zqU5jrP/CRH+Jay9LJqS4CxGYDlGJzqMxS5aWG
-	daGVXzoQqHkyWLHXHFZA==;
+	List-Owner; bh=c2/wHP+htQ3iCzvSU2LiCgn1b5+RCBQ+u5b0dZOArls=; b=EWkRERi293hCTp
+	Yd286fq+eXRAHbutjDjJYYJEoffb4v8pBHiaszLgQ4dIu4teq8a5yQIUjSTMB7smiy+myqFyMsNIn
+	MYRUBWP4A8yWd4/kkmdjebD9CTGwdcGte+BRsV+hm519wMi5VcBjADi/iGa1PtZ4t8zCmfgVTMqma
+	iMs2tNpL139uOXYhwC7jzA0DRHdaH/rmhLAI8O3K7ai0bcignrUfHOA+jXvlqSFpB4UsnOL7uPdnJ
+	QdxPEh3/k2yFYVtB61vtB2y5PXbMBxKxfow0NiMuUpF6uLtjTGdCios39XZju44QaTnH9AQdO67HG
+	8dJUeUxM1CY4bleTLdyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssTFl-0000000Fi0K-36Pq;
-	Sun, 22 Sep 2024 20:32:21 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1ssTGg-0000000Fi7n-2HhV;
+	Sun, 22 Sep 2024 20:33:18 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssTFh-0000000Fhzx-3itU
+	id 1ssTGd-0000000Fi7S-1oKQ
 	for linux-mtd@lists.infradead.org;
-	Sun, 22 Sep 2024 20:32:19 +0000
+	Sun, 22 Sep 2024 20:33:16 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id CD662A41036;
-	Sun, 22 Sep 2024 20:32:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88F6C4CEC3;
-	Sun, 22 Sep 2024 20:32:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id DE7C55C5595;
+	Sun, 22 Sep 2024 20:33:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D5BAC4CEC4;
+	Sun, 22 Sep 2024 20:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727037136;
-	bh=Wkhxr7zFNFIazgoASlMplbrwcKNgSTWyidioOVkTuBk=;
+	s=k20201202; t=1727037193;
+	bh=kQgm3SZGxW+gvFOufHSVT4h1ipvIYBkI2AYeB6f+NW4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TiDvsu+9gnBUH6LkeNAgFbvmb8NH/msjU0IY5ssA4B4yiyvdSIJOBNVt6vCf+X7YG
-	 WJLbqLlUuc/Te1whGHFwEypeKUFrWs71Bh1+fpInwHV33FhGbpBUTX1jbQ35xmxPB+
-	 TsRxgFFUXsyxhtsD6eQEYfuYmqPak4IBWdVMSgU0lQU2Heut0HrZPS2AbY6B2oADnt
-	 7YwYx+QHfAM1IuTPAuwvjZfHbrt35b0tjZFzqpVzv1x1X4eQoeWM2AhxApYf44d4B0
-	 L8HdmiZEjiRvmc7YWNKlO/6nxa1GF/orW/YVi89RdHNyHrLYhQPcExR94FdWMG1Ya0
-	 aq9rHAbK56XIg==
-Date: Sun, 22 Sep 2024 22:32:12 +0200
+	b=C8nnl1TYczuFzs7OUpbOUX77WRhBHEaYd61DyEXSuzoQJ94NW6pXWJ410gB3wryFP
+	 60K/2/hpjOS0aHHjt/r0PbJUOf+iHyDTr5naM95n7oF8gl4iwrhSUkZ69PBZP9XG/H
+	 wcm0cUEVGZ2iRB8MLOi9GE+aM3LtUhknj0jB1GOqgdaAvryYyZiDC+/kY3f5RRxsrl
+	 Wq9IdDJxVBIVQ/GeiihTQdAtesYasAP48yfkBhQpNxnfnjFjjQle+XqFMtpeXznpzk
+	 zu7/RlEpKvjZ8s5Y8yhz3Kzwtuo6mjJL7m/gZj3j4L009g+rw3aIMPx5T7PU50wEsR
+	 Ft+HfQ6hoi46w==
+Date: Sun, 22 Sep 2024 22:33:09 +0200
 From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org, 
-	conor+dt@kernel.org, andersson@kernel.org, konradybcio@kernel.org, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
-	manivannan.sadhasivam@linaro.org, vkoul@kernel.org, nikita.shubin@maquefel.me, esben@geanix.com, 
-	linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, quic_srichara@quicinc.com, 
-	quic_varada@quicinc.com
-Subject: Re: [PATCH v10 1/8] spi: dt-bindings: Introduce qcom,spi-qpic-snand
-Message-ID: <k3id2ywyghhmoiekehko7ear2nef5ygmizvkax5s6sdi2zhn5d@yfhgl5xte4dw>
-References: <20240922113351.2390195-1-quic_mdalam@quicinc.com>
- <20240922113351.2390195-2-quic_mdalam@quicinc.com>
+To: Keguang Zhang <keguang.zhang@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v9 1/2] dt-bindings: mtd: Add Loongson-1 NAND Controller
+Message-ID: <n3u4licmep32gs23lucnelczhinhri3arsu4j6p3yf66j63oaq@3zoazav65x4j>
+References: <20240920-loongson1-nand-v9-0-9cc7b9345a03@gmail.com>
+ <20240920-loongson1-nand-v9-1-9cc7b9345a03@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240922113351.2390195-2-quic_mdalam@quicinc.com>
+In-Reply-To: <20240920-loongson1-nand-v9-1-9cc7b9345a03@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240922_133218_010320_C0ACAAAB 
-X-CRM114-Status: GOOD (  11.01  )
+X-CRM114-CacheID: sfid-20240922_133315_532248_7411ED07 
+X-CRM114-Status: UNSURE (   7.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,47 +77,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Sep 22, 2024 at 05:03:44PM +0530, Md Sadre Alam wrote:
-> Document the QPIC-SPI-NAND flash controller present in the IPQ SoCs.
-> It can work both in serial and parallel mode and supports typical
-> SPI-NAND page cache operations.
+On Fri, Sep 20, 2024 at 07:18:53PM +0800, Keguang Zhang wrote:
+> Add devicetree binding document for Loongson-1 NAND controller.
 > 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 > ---
-> 
-> Change in [v10]
-> 
-> * No change
+> Changes in v9:
+> - Change the compatible to 'loongson,ls1*-nand-controller'.
+> - Rename the file to loongson,ls1b-nand-controller.yaml
+> - Some minor adjustments.
 
-...
-
-> +title: Qualcomm QPIC NAND controller
-> +
-> +maintainers:
-> +  - Md sadre Alam <quic_mdalam@quicinc.com>
-> +
-> +description:
-> +  The QCOM QPIC-SPI-NAND flash controller is an extended version of
-> +  the QCOM QPIC NAND flash controller. It can work both in serial
-> +  and parallel mode. It supports typical SPI-NAND page cache
-> +  operations in single, dual or quad IO mode with pipelined ECC
-> +  encoding/decoding using the QPIC ECC HW engine.
-> +
-> +allOf:
-> +  - $ref: /schemas/spi/spi-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,spi-qpic-snand
-
-Recently it turned out that Qualcomm generic compatibles are not
-generic... That was odd, but to me it is a clear signal that something
-should not be called generic if it is not generic enough.
-
-Please switch to soc-specific compatibles (and drop my reviewed-by, so
-this will appear in my review queue).
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
