@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11811CF9C6F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 10:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ACD0CF9C69
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 11:02:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Cc:
-	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1Iv2AVsgB7DNguv3KO/u0dfF76lNoeUAor3BokEes1k=; b=0ZQK0HKSuJycFd
-	hyc+pkOvIj91IxXmgBwGF14qv8OibxMCgZZCyfGtHvVREcmoZ6a5vxUujmk4mAVgQ4JTfFDG1jdXU
-	n3uWC5YCnGlriLWyRBbnBUH1LZcEZJt9EO87XGiYil14BmgBf77/T4tclSzHiDKZLMHazSBh2E3OF
-	zN1mfmuRvd0HR5F0MydM+qMFNY3aTWk1r3HkzbjmsmA90jHpkThSAb+bCy8wYwzdp/urL0HGJX7Ev
-	/l646wBeHiyB0Av8hZKkGNslqUkCN++TexCY9CLsKUxPLYzStaWd3QnubaOkZl4gmf2VxuP0hoGRc
-	enl5iizSa1j2rVuZLJ0A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2di72MP0i+R4k3MopVF/i68BX0C9kRxuEPjYfUxFCkQ=; b=Bn84s9nV1lxasclOoDLwE7guJm
+	3qbVCL70BgTAjniM9R+NRzx2yM06fiuounF1NeQlBi4yNbmkIgiJS8dZkOAtC3bE79oSrFgiDyZtB
+	/ghkyxdWKJAptvonSgJHN8yksz+Mw2tAWZlI3J/qYrtoqa8g5QFal6kl6/eZ5zJLORC0+r5SHojOP
+	vV0JVt16F+vDl0pdJEZocUFsr2PCufCXlY5XC5pqr100KYYOwzHShnT1ZR7BEN85wQ6MRKloNAJE1
+	ulcZqp1GRtzfQQAAe12u0Dtru3kad/oNY/tTnJQjFuJ+UZ0KcRtO6z8g+3LRNl5to8gfJFTlJuedw
+	T6ns7WYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssgaI-0000000H0Ep-0kGa;
-	Mon, 23 Sep 2024 10:46:26 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1ssgpZ-0000000H2Nz-1VgD;
+	Mon, 23 Sep 2024 11:02:13 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssgaF-0000000H0DR-28Bp
+	id 1ssgpW-0000000H2MH-30V3
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Sep 2024 10:46:24 +0000
-Received: from localhost (unknown [IPv6:2a02:810b:4340:4ee9:4685:ff:fe12:5967])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 5BF0D67;
-	Mon, 23 Sep 2024 12:46:20 +0200 (CEST)
-Mime-Version: 1.0
-Date: Mon, 23 Sep 2024 12:46:20 +0200
-Message-Id: <D4DLQGLJSKPB.3OOW4RU9Q3K5O@kernel.org>
-Subject: Re: [PATCH v5 1/5] mtd: spi-nor: core: add manufacturer flags
-Cc: "Erez Geva" <erezgeva@nwtime.org>, <linux-mtd@lists.infradead.org>,
- "Pratyush Yadav" <pratyush@kernel.org>, <linux-kernel@vger.kernel.org>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- <devicetree@vger.kernel.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
- Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Esben Haabendal" <esben@geanix.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Erez" <erezgeva2@gmail.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>
-X-Mailer: aerc 0.16.0
-References: <20240920181231.20542-1-erezgeva@nwtime.org>
- <20240920181231.20542-2-erezgeva@nwtime.org>
- <4e0cf43c-4843-451c-ac6f-86775dbccb2b@linaro.org>
- <CANeKEMOmhAPM1j1_ihzcC2wL6jKsWXPCGfZs+euS8mRvtqgE5A@mail.gmail.com>
-In-Reply-To: <CANeKEMOmhAPM1j1_ihzcC2wL6jKsWXPCGfZs+euS8mRvtqgE5A@mail.gmail.com>
+	Mon, 23 Sep 2024 11:02:12 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XC0Mk3dKJz1HKWw;
+	Mon, 23 Sep 2024 18:58:10 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id C99C61A016C;
+	Mon, 23 Sep 2024 19:01:58 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 23 Sep 2024 19:01:58 +0800
+Subject: Re: [PATCH v1] jffs2: Correct some typos in comments
+To: Shen Lichuan <shenlichuan@vivo.com>, <dwmw2@infradead.org>,
+	<richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<opensource.kernel@vivo.com>
+References: <20240923083322.13383-1-shenlichuan@vivo.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <ece4eab6-b8e6-603a-5c59-26c025d394bb@huawei.com>
+Date: Mon, 23 Sep 2024 19:01:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20240923083322.13383-1-shenlichuan@vivo.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240923_034623_713058_FB69AA0F 
-X-CRM114-Status: GOOD (  21.83  )
+X-CRM114-CacheID: sfid-20240923_040211_028505_0229E22F 
+X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,53 +67,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-> I would gladly remove the obsolete mx25l12805d.
-
-Why? I don't see any need for that.
-
-> > If there isn't any way to distinguish the flashes at runtime (which I
-> > doubt/challenge btw), then as a last resort we introduce a dedicated
-> > compatible for the flash in cause and specify all needed parameters in a
-> > dedicated flash entry. This shall be more generic as further flash
-> > parameters can be statically specified in the dedicated flash entry,
-> > less invasive for dt, and less confusing for people when they decide
-> > whether to use OTP or not. OTP params in device tree is a no-go.
-> >
-> > But again, you have to prove why you can't distinguish the flash at
-> > runtime before introducing a new flash compatible. So don't go this path
-> > before sharing with us what you're trying to achieve.
->
-> You keep sending me contradictory messages.
->
-> I told you we can not "guess" OTP settings based on JEDEC ID and
-> SFDP existence.
-
-What are you trying to achieve here? I've told you we are trying
-hard to figure out everything out at runtime. I'd suggest you start
-with one particular device where you want OTP support for. If the
-flash id is already in our database, find a way to distinguish
-between the old and the new one; probably by looking at some SFDP
-parameters. No need for any new compatible. Don't try to solve the
-problem for all the chips out there.
-
-Again, the reason why we are trying hard to determine that at
-runtime is that these flashes are usually second source devices and
-a manufacturer might just replace it with a (more or less)
-compatible one. Therefore, the less information we put into the
-devicetree the better. So before you are sending a new version with
-the flash compatibles, you actually have to convince us that there
-is no other way of knowing what kind of flash there is on your
-board except for providing the name by the firmware.
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC85LzIzIDE2OjMzLCBTaGVuIExpY2h1YW4g0LS1wDoKPiBGaXhlZCBzb21lIGNvbmZ1
+c2luZyBzcGVsbGluZyBlcnJvcnMsIHRoZSBkZXRhaWxzIGFyZSBhcyBmb2xsb3dzOgo+IAo+IC1p
+biB0aGUgY29kZSBjb21tZW50czoKPiAJd2F0aW5nCQktPiB3YWl0aW5nCj4gCXN1Y2NlZnVsbHkJ
+LT4gc3VjY2Vzc2Z1bGx5Cj4gCj4gU2lnbmVkLW9mZi1ieTogU2hlbiBMaWNodWFuIDxzaGVubGlj
+aHVhbkB2aXZvLmNvbT4KPiAtLS0KPiAgIGZzL2pmZnMyL2djLmMgICAgICAgIHwgMiArLQo+ICAg
+ZnMvamZmczIvcmVhZGlub2RlLmMgfCAyICstCj4gICAyIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0
+aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPiAKClJldmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNo
+ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IGRpZmYgLS1naXQgYS9mcy9qZmZzMi9nYy5jIGIvZnMv
+amZmczIvZ2MuYwo+IGluZGV4IDgyMjk0OWQwZWIwMC4uMWI4MzNiYmZmY2Y1IDEwMDY0NAo+IC0t
+LSBhL2ZzL2pmZnMyL2djLmMKPiArKysgYi9mcy9qZmZzMi9nYy5jCj4gQEAgLTgyLDcgKzgyLDcg
+QEAgc3RhdGljIHN0cnVjdCBqZmZzMl9lcmFzZWJsb2NrICpqZmZzMl9maW5kX2djX2Jsb2NrKHN0
+cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICAgCj4gICAJCW5leHRsaXN0ID0gJmMtPmVyYXNhYmxl
+X2xpc3Q7Cj4gICAJfSBlbHNlIGlmICghbGlzdF9lbXB0eSgmYy0+ZXJhc2FibGVfcGVuZGluZ193
+YnVmX2xpc3QpKSB7Cj4gLQkJLyogVGhlcmUgYXJlIGJsb2NrcyBhcmUgd2F0aW5nIGZvciB0aGUg
+d2J1ZiBzeW5jICovCj4gKwkJLyogVGhlcmUgYXJlIGJsb2NrcyBhcmUgd2FpdGluZyBmb3IgdGhl
+IHdidWYgc3luYyAqLwo+ICAgCQlqZmZzMl9kYmcoMSwgIlN5bmNoaW5nIHdidWYgaW4gb3JkZXIg
+dG8gcmV1c2UgZXJhc2FibGVfcGVuZGluZ193YnVmX2xpc3QgYmxvY2tzXG4iKTsKPiAgIAkJc3Bp
+bl91bmxvY2soJmMtPmVyYXNlX2NvbXBsZXRpb25fbG9jayk7Cj4gICAJCWpmZnMyX2ZsdXNoX3di
+dWZfcGFkKGMpOwo+IGRpZmYgLS1naXQgYS9mcy9qZmZzMi9yZWFkaW5vZGUuYyBiL2ZzL2pmZnMy
+L3JlYWRpbm9kZS5jCj4gaW5kZXggMDNiNGY5OTYxNGJlLi5mOTg3Zjc4YTg5NGUgMTAwNjQ0Cj4g
+LS0tIGEvZnMvamZmczIvcmVhZGlub2RlLmMKPiArKysgYi9mcy9qZmZzMi9yZWFkaW5vZGUuYwo+
+IEBAIC03Miw3ICs3Miw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfbm9kZV9kYXRhKHN0cnVjdCBqZmZz
+Ml9zYl9pbmZvICpjLCBzdHJ1Y3QgamZmczJfdG1wX2Rub2RlX2luZm8KPiAgIAkJaWYgKGVyciAh
+PSAtRU9QTk9UU1VQUCkKPiAgIAkJCUpGRlMyX1dBUk5JTkcoIk1URCBwb2ludCBmYWlsZWQ6IGVy
+cm9yIGNvZGUgJWQuXG4iLCBlcnIpOwo+ICAgCX0gZWxzZQo+IC0JCXBvaW50ZWQgPSAxOyAvKiBz
+dWNjZWZ1bGx5IHBvaW50ZWQgdG8gZGV2aWNlICovCj4gKwkJcG9pbnRlZCA9IDE7IC8qIHN1Y2Nl
+c3NmdWxseSBwb2ludGVkIHRvIGRldmljZSAqLwo+ICAgI2VuZGlmCj4gICAKPiAgIAlpZiAoIXBv
+aW50ZWQpIHsKPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
