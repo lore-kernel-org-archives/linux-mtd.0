@@ -4,64 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA2DCF9C69
-	for <linux-mtd@archiver.kernel.org>; Sun, 22 Sep 2024 20:40:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FB5CCF9C6F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 06:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HIZcdbpnLX9aLxEPmPFte3ZR4aaFZh8S5bGblESytDs=; b=QEb5LrCTh01Q3r
-	7fme5vYWu2v+y0FJqnlukdG4bcPhek9xH7j/ME1vjfwXP9pJpk4Wo0QJqe13OCmAnhwL3PV/8w8Ff
-	QL/xWiYatu3jeGUFg0cKe93x99ebHQVo13xnYoaRGAuLQHU2fmPf33Qd6gBVXF7TfzDJimjHVYJUp
-	QJIiRfF2Ubh+dA8MyXRabFL+16s7mYfSyyPymulZE0aIRHu4LMVU8tteZG2kVvHGT9opztKaeCkel
-	yjxtg+hXqURTt7bqbZEHFsPu+lMNOiFNZX3enUm5Xlc2CRI4AVAXFCCFln9YzFqmpFt+VjzsVlE0b
-	t3ThLjAe7isK+FtsYskw==;
+	List-Owner; bh=eSqUiK6jeUNXpUIaSQJo4Gs17i//+G2a2WRFRaS9aT4=; b=dBbsLs8hsJdcI3
+	cDRTu43PLs5WoLv/kedBawUJMRiE2DrQNfTjuVEotZ5/R8POpYhbLDcGAv4fXoDRtb+91Kgy1pti+
+	KlG8oBQLKoZ84nJhUrL1bZ1bkVyKoQlnmaRxhPwPCi/yxiyYKzMxQpS5p8TVxIcRVleYcrjrdqaBD
+	tocieu9O4kNCHfvNCbeHG1qqH4VBL5L64+yT+FUl6p47I+1OfiVQQjQT1DMYtClLJE6BvGDxl94xo
+	aBxlJkKS+OE/5N5UK1x/SLLLkFkZeAoGtLzSi1zYpgtH6YDrR6Oabge9O8XJVUQDlt5ckFREIlray
+	8QoRHZ98IadKlf3B5zwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssTNk-0000000Fibc-0xv1;
-	Sun, 22 Sep 2024 20:40:36 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1sscBT-0000000GO9h-1cDp;
+	Mon, 23 Sep 2024 06:04:31 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssTNg-0000000FibD-1S3z
+	id 1sscBQ-0000000GO9E-2WSe
 	for linux-mtd@lists.infradead.org;
-	Sun, 22 Sep 2024 20:40:34 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 39960A40FA6;
-	Sun, 22 Sep 2024 20:40:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD987C4CEC3;
-	Sun, 22 Sep 2024 20:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727037630;
-	bh=u0jmX+4P2TILi/C5bbfXVYKw7H7u1hfnwLxWdlhqJoY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KKGM6gv9O6G8jgE9+u+lvgLW4qhclGBONgrrz9SSyQHLhhR3n3an2CoUw/itQcVY/
-	 7VAMBV4CIu3Drh5bTRP9bTFECJbJ20DNU9AuidonqXo+PHHFN6y6xdUot/q1dRVNw6
-	 p8DvGirrorChkaBwIE0xYxDZeImL5Z3/IkQA1qnvrzb/q6O9Iy8DTl3ookfnLMXNxU
-	 PEZNdIs4MEirQkY+a3q22B1VhEdUqXp9PoP/HESsWpBT0ijj43uSl6QqK8zPwJH//I
-	 7y9YYH9NWzLSQmdoB3a3KAhCI7TDKDIfQZ6U2g1UPlsUQuFYapxEbRXBxAP1QjY7K8
-	 /atRYQSkqrShw==
-Date: Sun, 22 Sep 2024 22:40:26 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Erez Geva <erezgeva@nwtime.org>
-Cc: linux-mtd@lists.infradead.org, 
-	Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
-	Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Esben Haabendal <esben@geanix.com>, Erez Geva <ErezGeva2@gmail.com>
-Subject: Re: [PATCH v5 3/5] dt-bindings: mtd: spi-nor: add OTP parameters
-Message-ID: <2fo7pndjqieq6lfydmq2pnwb374oqoqnrcsezycgougmr7mtl5@2wm6fe3inf5u>
-References: <20240920181231.20542-1-erezgeva@nwtime.org>
- <20240920181231.20542-4-erezgeva@nwtime.org>
+	Mon, 23 Sep 2024 06:04:29 +0000
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-374ca65cafdso2071527f8f.2
+        for <linux-mtd@lists.infradead.org>; Sun, 22 Sep 2024 23:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727071466; x=1727676266; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0RNmrHmblvHO2guL4VXF8jdLa/bnTwxzeoY4QaRaHx8=;
+        b=p78LHbDMOujVSl8wAWkBdCoC1FkzP91TEyRXYHha5tX59bcddeQzcutQHdzqON4qQU
+         RvYX+RtAU4i63z0lCbJPP4kAUwO4FMLyK0y9PHFYf77DvZ9tU/9t9cpc0AqmaJbEN0kP
+         l8xyxU0gIpHJ63bTkE5mL2rYqZWMVFJJO9nfuw+SzQza7v6v+JRJc2eqGiDUptVOADpC
+         2MJCEYoEdoodOriK1aU+TyWfkUjLAZtBk5uWAOuxwJvsA1yIOp9s0Va679pzDoZw/gfL
+         VBr4hJ1QUsFrzXOCC5bV3qPKcFzkF238KJi+X+B9An1lNQyl3SD4KaDB/GL92uAnsahk
+         /kBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727071466; x=1727676266;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0RNmrHmblvHO2guL4VXF8jdLa/bnTwxzeoY4QaRaHx8=;
+        b=wPY/QW7RMHVr0Rpla+qayINemTXL2Z1/tCcuhc2vtxsFbcBtMbELvxxDyNlvbsCefe
+         45+LyZeO4at50vIcm92UOj0MA52u9pHoBGEoaKUu4fwvyl8h4yc4HV0ErsDavBtDyCdH
+         LoGGmhzFgXlGllhvOE6R2tbekSx05yvIWmouDyI3ZjYKrdtWEu3biyif3NoN8TJ50V/b
+         8fQvONCmcC8P9sbaRTbD+o8eIK63d8Ek9gTJ1yg1SSd1Ygbvb5PXZA425+5S57ah5QhV
+         WpKBvE5nH01ayfugNBt50g5fBGyeLezYw/mZHfAXd7HwlbSDJ+oJo7SEQMn0COTbsdOf
+         FJhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWpsL0aswzOadW4qXq81YKzvOX8PJDgml+srAOErTydkhlIFU1lUbu8brgSec8Zc7z+LeHWJCaCiHg=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzW8EKGT5S+htIu/sVDEavEXZsVcNfectcsHcEq2Oko7VGCtN3i
+	txNfi0rnErJRl7aO8cw5e0Pjqrtf6lyDLhw0JOmYgHzO6ZXM/qw0dcOZ9e7QAHs=
+X-Google-Smtp-Source: AGHT+IH1eCn5MZAMQDZuDWL0pLjlXPrn6Z677C5pwlLNhKPM9d7744cqjDFZzGFS65Nkq1OxkrDYuQ==
+X-Received: by 2002:a5d:58d9:0:b0:374:bd48:fae9 with SMTP id ffacd0b85a97d-37a422658aamr4808393f8f.20.1727071465802;
+        Sun, 22 Sep 2024 23:04:25 -0700 (PDT)
+Received: from [10.11.12.107] ([79.115.63.20])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e71f060bsm23742088f8f.1.2024.09.22.23.04.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Sep 2024 23:04:25 -0700 (PDT)
+Message-ID: <4e0cf43c-4843-451c-ac6f-86775dbccb2b@linaro.org>
+Date: Mon, 23 Sep 2024 07:04:22 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240920181231.20542-4-erezgeva@nwtime.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/5] mtd: spi-nor: core: add manufacturer flags
+To: Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Esben Haabendal <esben@geanix.com>,
+ Erez Geva <ErezGeva2@gmail.com>
+References: <20240920181231.20542-1-erezgeva@nwtime.org>
+ <20240920181231.20542-2-erezgeva@nwtime.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240920181231.20542-2-erezgeva@nwtime.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240922_134032_543592_C460B5D5 
-X-CRM114-Status: GOOD (  22.59  )
+X-CRM114-CacheID: sfid-20240922_230428_677524_E23CD286 
+X-CRM114-Status: GOOD (  14.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,95 +100,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sep 20, 2024 at 08:12:29PM +0200, Erez Geva wrote:
+Hi,
+
+On 9/20/24 7:12 PM, Erez Geva wrote:
 > From: Erez Geva <ErezGeva2@gmail.com>
 > 
-> Some flash devices need OTP parameters in device tree.
-> As we can not deduce the parameters based on JEDEC ID or SFDP.
+> Add flag for always trying reading SFDP:
+> Some vendors reuse all JEDEC IDs on manufacture table
+>  with new chips that support SFDP.
 > 
-> Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
-> ---
->  .../bindings/mtd/jedec,spi-nor.yaml           | 39 +++++++++++++++++++
->  1 file changed, 39 insertions(+)
+> Add flag for reading OTP parameters from device tree.
+> Some vendors reuse JEDEC IDs
+>  with several chips with different OTP parameters.
+> Alternatively we read parameters from SFDP.
+> But the OTP parameters are absent from the SFDP.
+
+Do you have some specific flashes that you try to identify? Why can't
+they be differentiated at runtime?
+
+> So there is not other way but to add the OTP parameters in the device tree.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 6e3afb42926e..4f7bb3f41cb1 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -90,6 +90,43 @@ properties:
->        the SRWD bit while writing the status register. WP# signal hard strapped to GND
->        can be a valid use case.
->  
-> +  otp-n-regions:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Some flash devices need OTP parameters in the device tree.
-> +      As we can not deduce the parameters based on JEDEC ID or SFDP.
-> +      This parameter indicates the number of OTP regions.
 
-OTP regions where? In DTS? On flash itself?
+If there isn't any way to distinguish the flashes at runtime (which I
+doubt/challenge btw), then as a last resort we introduce a dedicated
+compatible for the flash in cause and specify all needed parameters in a
+dedicated flash entry. This shall be more generic as further flash
+parameters can be statically specified in the dedicated flash entry,
+less invasive for dt, and less confusing for people when they decide
+whether to use OTP or not. OTP params in device tree is a no-go.
 
-> +      The value must be larger or equal to 1 and mandatory for OTP.
+But again, you have to prove why you can't distinguish the flash at
+runtime before introducing a new flash compatible. So don't go this path
+before sharing with us what you're trying to achieve.
 
-Don't repeat constraints in free form text. Add proper minimum and
-default, although it is confusing - property is not required but it is
-mandatory for OTP?
-
-
-
-> +
-> +  otp-len:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Some flash devices need OTP parameters in the device tree.
-> +      As we can not deduce the parameters based on JEDEC ID or SFDP.
-
-Don't repeat the same.
-
-> +      This parameter indicates the size (length) in bytes of an OTP region.
-
-What if each region has different length? Is it possible?
-
-> +      Currently the driver supports symmetric OTP,
-> +       which means all regions must use the same size.
-
-Drop unneeded space in front.
-
-> +      The value must be positive and mandatory for OTP.
-
-Same comments as before.
-
-> +
-> +  otp-offset:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Some flash devices need OTP parameters in the device tree.
-> +      As we can not deduce the parameters based on JEDEC ID or SFDP.
-> +      This parameter indicates the offset in bytes of
-> +       an OTP region relative to its previous.
-> +      User can omit it if the offset equals the length.
-> +      Or in case we have a single OTP region.
-> +
-> +  otp-base:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Some flash devices need OTP parameters in the device tree.
-> +      As we can not deduce the parameters based on JEDEC ID or SFDP.
-> +      This parameter indicates the base in bytes of the first OTP region.
-> +      User can omit it if the base is zero.
-
-so default: 0?
-
-I am not sure, but all this looks like duplicated description of nvmem
-cells or some sort of partitions.
-
-Considering that this is first time the binding mentions OTP, I really
-do not get what you are doing it. If the properties are to stay, please
-describe better the problem (and hardware!) in commit msg.
-
-Best regards,
-Krzysztof
-
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
