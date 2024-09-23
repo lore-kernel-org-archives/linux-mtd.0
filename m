@@ -4,57 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91EE5CF9C5B
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 07:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A21CF9C6F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 08:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:Subject:To:
-	From:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=we/zdqsFWlQVUnJdHv+T4HIKYvCxXdideqbcaF4y1Qg=; b=bqJFeApcXCa0y9
-	j4Ws/hVtEm9/9omUpePmLaTILrDM/P4uD0h/XaLt0MBggvkh9UDPXz6oDTra5Dv74DqgWWqIL9CHd
-	z/v9iW/0VNLAI8CfwVA5mZF21uasZYa6gE/V/5BBLPbzn6+SPpNvrzHvPbDoYVx3yOD1KSrCe8Drd
-	LvtWNEdUyXVTwr/WsviSzItRiSVNVCMxaNExpBEcXsjYsJTUydbyN+3QbI/9v/jspET2li0+npKTo
-	X6EnbLTjbRa6dffMkuGMy5L1i9kNAi5NB73/g8cD7Ixf0lIuBQ4IgURQskVtWzh5aBCB3t18NdJUJ
-	ngY34hOxK2a79bGWzOOQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=hDeaHZU6MFyXzwIXlXclwujsJ+rQ3lQcTAc3LJSrOxg=; b=TtOz8lN8tLoMQP
+	qiOe+xv+oR6dA5o8cdRe6uNKrzDk6vCVsh1a4S9UDpf4lEhVdB6ZqyuHctkbZN4T38HqY9ecXMkzL
+	z/v9rf5M33Am16zEN8l/dqQYye0QGiToTj2URZi8lDj4/ho6/OcaWZbWO0zHknFO4xzqsyzazLGNz
+	aUQl7y0j0Izo6uSV/hDMBq0i94bEHAO7KfjMQF6YZdWXOi0XGLqVnq13WSfGN8kMKFr+4L4sc09mo
+	f7+PJFiI4WHFnWQS1d1luHQnRJrCongsR1XoQQcGM6HovPe9r/wmb/FCp/Cw1DDdzYwT9M8+JSzCK
+	TEdgTQypLAo2AVos5peA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssdKq-0000000GVUY-47Fm;
-	Mon, 23 Sep 2024 07:18:16 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1sseVx-0000000Gg9F-0ohL;
+	Mon, 23 Sep 2024 08:33:49 +0000
+Received: from mail-eastasiaazlp170100000.outbound.protection.outlook.com ([2a01:111:f403:c400::] helo=HK2PR02CU002.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssdKn-0000000GVTG-2IPU
+	id 1sseVt-0000000Gg80-2pSU
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Sep 2024 07:18:14 +0000
-Received: from localhost (unknown [IPv6:2a02:810b:4340:4ee9:4685:ff:fe12:5967])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 4C90C4CF;
-	Mon, 23 Sep 2024 09:18:02 +0200 (CEST)
-Mime-Version: 1.0
-Date: Mon, 23 Sep 2024 09:18:01 +0200
-Message-Id: <D4DHAZ1MIJV2.1G810GI4K5DVV@kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "AlvinZhou"
- <alvinzhou.tw@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <broonie@kernel.org>
-Subject: Re: [PATCH v9 6/6] mtd: spi-nor: add support for Macronix Octal
- flash
-Cc: <chengminglin@mxic.com.tw>, <leoyu@mxic.com.tw>, "AlvinZhou"
- <alvinzhou@mxic.com.tw>, "JaimeLiao" <jaimeliao@mxic.com.tw>, "Bough Chen"
- <haibo.chen@nxp.com>
-X-Mailer: aerc 0.16.0
-References: <20240718034614.484018-1-alvinzhou.tw@gmail.com>
- <20240718034614.484018-7-alvinzhou.tw@gmail.com>
- <97134efb-398d-4c21-a915-87a5b4f1b29a@linaro.org>
-In-Reply-To: <97134efb-398d-4c21-a915-87a5b4f1b29a@linaro.org>
+	Mon, 23 Sep 2024 08:33:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=qkh3QqQMtmY2vG0r4666jEH50C2uy/aIUOs39JOeU7kJEz338NpFyDb7nye1OnBV+WCeahIAdMsvzC7oD9nW4NQa/GQtZ5DskTTXHuxypyboxIXnaGPgnZp/YgNg8Iz4XVpi7GhSgUw0C3OX4fAJbOQpIKnnY7YPwF4VAS8ORQo+hoXfkFY57VqhPSXMUrB6kbMIgPs9stTxzw0kVThfXbWp5Zgp6213JyZpLIgeAEngXLMC8+Dqf5Bvv3uXpq3Vfl3iCtnv2/dwDODKKh02/3h6cuH9sbB7M0TEhdK7moQ8uAP4IUXeQFSbcfFlso04iWHv1CrT2lLG7MtXvimoKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bfTttx0oHkrSfZLf5eXWFq8XONAiSv2viBcMv5w5Un0=;
+ b=tKwUScloswuKHf69pMDFb1yP6n2jdbYZHA9hOiLvlwmHWgaC05XCcQzLImqnLCVU7G38MbrSU0C0MokxBhqTncnYJmRx6Y/zJehSnFeSbfF5ZJQZ6BGI9ySeog6mdZKuaatVMXClqmbQWtNFsJcmHWK522KcsN+Ny9gyz5LU7ctjZt24SyJaea+feVaF499tdomRUERk3ucPBGblO1m24d6ssivq1sU5lGtnA6BPyRAzvgYXFd8iyKKMzbfCa/TK2aJ2PLJnz2sRHBlchB5hdp3xQuN0nzp7D15n9ou79mt8LMpPPcn3NKoTOalKaOibvk/BurrQL+gGgLyQtaWp5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bfTttx0oHkrSfZLf5eXWFq8XONAiSv2viBcMv5w5Un0=;
+ b=YKZ2jG0Ziu4AVR7hFp0O60e+VWQdCxTZWhnSZmOzol/iMkhTcZC9ubiHzLVhzifiNQlQ8OrsaprbGlF0U3gokWh7WkJHdvxCsZxZdDHS36WK3VXqyy0yp5GCrN0xVMbnw6hcFE45YOW7A7WOYJjppHhYTkOdmH5n3POq/hQfF9qmneoDjAsaddSeWc+c4OsnXNcQz5l9AsFQe5BR/dmLZlVroI6dXjka8AUWotEf1AU0sLMFA2RXq3uO/u0gTyhDfdYFKSNQMYdO6tF4eh6lVfn6DsgEOKJtD1aIkpZsAOGOibnUlT8M/XrTXPSk6rycicC3awr4VPd00YPbWM4QuA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEZPR06MB5899.apcprd06.prod.outlook.com (2603:1096:101:e3::16)
+ by SEYPR06MB6358.apcprd06.prod.outlook.com (2603:1096:101:13a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.25; Mon, 23 Sep
+ 2024 08:33:34 +0000
+Received: from SEZPR06MB5899.apcprd06.prod.outlook.com
+ ([fe80::8bfc:f1ee:8923:77ce]) by SEZPR06MB5899.apcprd06.prod.outlook.com
+ ([fe80::8bfc:f1ee:8923:77ce%3]) with mapi id 15.20.7982.022; Mon, 23 Sep 2024
+ 08:33:34 +0000
+From: Shen Lichuan <shenlichuan@vivo.com>
+To: dwmw2@infradead.org,
+	richard@nod.at
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	opensource.kernel@vivo.com,
+	Shen Lichuan <shenlichuan@vivo.com>
+Subject: [PATCH v1] jffs2: Correct some typos in comments
+Date: Mon, 23 Sep 2024 16:33:22 +0800
+Message-Id: <20240923083322.13383-1-shenlichuan@vivo.com>
+X-Mailer: git-send-email 2.17.1
+X-ClientProxiedBy: SI2P153CA0016.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::17) To SEZPR06MB5899.apcprd06.prod.outlook.com
+ (2603:1096:101:e3::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5899:EE_|SEYPR06MB6358:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6bbcf7f7-dfe9-4617-0120-08dcdbaa6966
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|52116014|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?gY2KafTaqXPEXL8zsoH2s0tIrkc/arUqLWFbua/0SpGOPfGtU1/tXp8mUMVF?=
+ =?us-ascii?Q?l6IaRsCSWE2QRwPvQbgPHwBN9m4pa1uTztskBd5y9RAgqE6Yuf+dtJvx2FgP?=
+ =?us-ascii?Q?o+e8QUVCJ+f7dUjrufaNJy9yLemnwRDvJI7KyBhl2P2nrACBSewuYxc5ydvD?=
+ =?us-ascii?Q?D+ZwE9smr2c0/ZOtEzz6w8JmWJDb9VS4IaVU17MkNTd4lyAAc5o90uuDsMCz?=
+ =?us-ascii?Q?6HROwKsATPDnK7l9EOQ/Z7eKca5+ydLPiFi9nIeH3Dvs3DvTwpFJ2mOftyBI?=
+ =?us-ascii?Q?f0CugfSmHz8RV3N+nmjW2P9sQRC8Oq1tNSDcNI2r6vAPtGd9yCBWgtRWscjB?=
+ =?us-ascii?Q?srBJxxS2woOZcgMAKmnraCfcrWAUL2iQ8WQ1ZKRX5yb9R7dhmR/BTiCBIKO3?=
+ =?us-ascii?Q?pqIMCKYsK2j/KPzzJB/E98960F5UJ7Y5GIgXyTAOo3EWTBUV3S9gNkSp09+N?=
+ =?us-ascii?Q?94W8+uxzwocysHUaH5c42H83GD0muGItvCo3vbmdnHD6NrsifGUP1EnHbhyf?=
+ =?us-ascii?Q?Av/j8/WcI73INmO5H5MK8VqpI+grP1HOWJkJBPDAqwCuwZhBzhcOE3Ad/wds?=
+ =?us-ascii?Q?0HdOcx8kMSl1f/L2sIwxo9yN1FHemPO0xhcVBaLaqijJJGX2XBr+JZCn9h4X?=
+ =?us-ascii?Q?N5dhNkNumZYt5C/Z6J9Mli2MDt9RVr2Fwu/XaIejtbZxZLV8qbRPT429Q/aY?=
+ =?us-ascii?Q?ApQMJ2h+s8lfekz+CjRYYwfBlUKw3ExTAMAUVXvMgSXFMapqK2aP+iX1WRQV?=
+ =?us-ascii?Q?jLM+w2aWOmBEmNVR/iJeeR8w5InX/Azr9at+W9l2FFWgO+/UPvUUWmBvrRqM?=
+ =?us-ascii?Q?FbmxoHG9QQ3EGciGq+BeqOSk7bFEFomVn2baTXz8gdDbIy0L8iG3SrHuqsRa?=
+ =?us-ascii?Q?eQyBExLka5a7nGb/XBz7fVxN2fPBMfmdOMOmT1oDEGqVqL4Wi7V3iYHBX9PW?=
+ =?us-ascii?Q?YcklnQSMpy5kvn7ubsW1EdlUEJ+kZAzrbvYz28JWntIK+3eqvNQPQ30I0m3s?=
+ =?us-ascii?Q?etHiGuT4Hy65tlrTYfkLbsJiJZmoC4lOdCcbnO0/H0uW71O3PFqlnle1MHLN?=
+ =?us-ascii?Q?5YzaxKzlRR9692LN3ScIFhN0AZnnc2DJ2I77RrJxxH8Wv2kQEAZhU2rfLbzp?=
+ =?us-ascii?Q?3LY/RaxiftXI/P9pzc2/oYi4qD58LdF1C1Z5pcRTMakdYjUv0ncVSRR9DjUg?=
+ =?us-ascii?Q?pz9xuBosbYRkjx7cnbQn2q+JRgBU71KNIm1+uz4s5OQ/VM5q7tfkXhWokFrU?=
+ =?us-ascii?Q?3P5yQ4Ozw2ghyyarEYiBKCOcVaG3MqLlhyGP24LW6lu+Dlull/F1Nna2N2Ma?=
+ =?us-ascii?Q?sopCgsLODaQ0ELL4OR9nUpX/dHpRsguo9POSbcVuiPpANQ=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5899.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(52116014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N1wDDgbycn/67aFx4qz4ZF0czvLKcEDDqTmpxxW3lZiOPGQyBjLFiz4UoAne?=
+ =?us-ascii?Q?MRnOUzq1LUw/CvcYGKHzZJUzZOUOhz1bQEkvyfXUFB6OHfYDFJHmrwuT3IMA?=
+ =?us-ascii?Q?v+qM2A756uPYHXB1a6XdGNC2w6Jne9g0MFSXnuMc//C09NDKR+FSW5NmD1Ww?=
+ =?us-ascii?Q?mzS8mqQS+sNUDcvkgCnM8flWt5GiWEUSD3Drl6CpualWpidagWBUVmcCZFMk?=
+ =?us-ascii?Q?Lyzo5W/u3MK0rHBdd2KyTKZywa+SFCcQfxlRK9MTliqNVlqQb6ZlPdGiraw7?=
+ =?us-ascii?Q?2hVww7e91VQnyUMtAkhnloniGSLIiKQ9zoPj/SwJW0TsEAA7m8yuC+7SyUAN?=
+ =?us-ascii?Q?QRKxo6G0G+knIFHRUHAj4HU1M20syM22bqObTwjhB8UasrT3hIHiLBMAeCA5?=
+ =?us-ascii?Q?/usJkDcwDThvRCE12V2YGjhOurWlyIIK6xRE31KQWjItCrzqKZw9fT+5VYzw?=
+ =?us-ascii?Q?sPs0xYnDfHEnFpWXHGcbG2DuxvPF8InRwpsQYxXigxL5PFqlXNXyZ1N6hqH5?=
+ =?us-ascii?Q?R/lcTao/gPMjh02jrbeC48kxklJRxoum4HKmluQboFfuLj6ZCwwaHcmrksfS?=
+ =?us-ascii?Q?ei6tJPhwQnjBd90/JFbvX4R+4z5w80RgLovJcaJYQZ8LaFH6MqPDY2RxDesQ?=
+ =?us-ascii?Q?R7wytK7QUx75hNAsusTS9Qrfal6abg4XRYHf/FNmG6bICsrDoFNhENZh1MFk?=
+ =?us-ascii?Q?KOXUYZY2AqLN0Q3vEditTMQAjwnSYICmdAjSJzg1Xd2X0KzSJDg8Ofy/afQV?=
+ =?us-ascii?Q?TPWAF13jH4u65Fb0kt1E9VvqB/9pbwdcUI5YcyU04cYEz2yknYKYS7mGF0IC?=
+ =?us-ascii?Q?SAaJQTLyRaW2rb4nYwknNFrfBCUGUY3hL3dhuxxbKHZgWqwllRgmyLYuNXOd?=
+ =?us-ascii?Q?EYYoyXEisjw5P2P9ZdO4rHX/3a7Nzb5slThzpdl3XKQ6J7/GF1RXA2+L+lhC?=
+ =?us-ascii?Q?iSPf+cF66dP5LxB+VdQCd6ka7E/whSYshVkAxffs7SMV90zepXZbsF4TFonw?=
+ =?us-ascii?Q?9zznkLNmBAx2SvMlHs3tEI4pLDCJn9pOTwoTSInrzIBve1/jkH6ShfgBbdz/?=
+ =?us-ascii?Q?CbKr64b+lCfQTusk8xrTa42a/xeR1i+bW5AwNCm6+D1sJRXEtJP8LGP8dFGX?=
+ =?us-ascii?Q?sjHOjPE/qBeL5vpuwURRJklvI7PIkrvDhyLUjt7QsO+obm+KSuIhpe0ztFFa?=
+ =?us-ascii?Q?yc8vjDHgIiQhFe+HPGSJ056mDflx+Gn8V/xBPgFTc3w/IQPiQZHnSQB/lDDC?=
+ =?us-ascii?Q?ntFQOE9o6u+Vayacbaast0BAltJLGULdnQtqPBgDKTU4t4zOaxNr7yhXHiXV?=
+ =?us-ascii?Q?r7x/sXYZK5r9d1kLwHNw4cvY/HfkD3WkXvhMTrIKcDnSjBaOZPORYj6DTWDJ?=
+ =?us-ascii?Q?JWleew5vpSAHJGUDEMyJ6XvsJpS05IeNXQJlNKWnLEnpfl5BR2KkXo+oL3NW?=
+ =?us-ascii?Q?wt9uyzXmETskis61HN+9r+JNZko7RVDboNmTQ1bEX+4lYGaCFXEJqt1xnbbG?=
+ =?us-ascii?Q?GzvTS2uHhA3G01D84FnUu+399aeLZb5O/lZK+jGnGlS1h7AFV83LQETcANMf?=
+ =?us-ascii?Q?sqW1NSwSEbk9SGQrxjjyhD+igBAT7qrG6bfnzWaB?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bbcf7f7-dfe9-4617-0120-08dcdbaa6966
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5899.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2024 08:33:34.2880
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7BhJDdn3YItu2fe0C2EkYCMaEUne0wRQEBapgNiO0KIoaLqYEWnf3PxagzVxxKISfNY52ljhmj1NxPFW2GVsfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6358
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240923_001813_749035_68C3D846 
-X-CRM114-Status: GOOD (  11.75  )
+X-CRM114-CacheID: sfid-20240923_013345_737822_DCE7BB16 
+X-CRM114-Status: GOOD (  11.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,30 +155,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Fixed some confusing spelling errors, the details are as follows:
 
-> > --- a/drivers/mtd/spi-nor/macronix.c
-> > +++ b/drivers/mtd/spi-nor/macronix.c
-> > @@ -200,7 +200,9 @@ static const struct flash_info macronix_nor_parts[] = {
-> >  		.name = "mx25l3255e",
-> >  		.size = SZ_4M,
-> >  		.no_sfdp_flags = SECT_4K,
-> > -	}
-> > +	},
-> > +	/* Need the manufacturer fixups, Keep this last */
-> > +	{ .id = SNOR_ID(0xc2) }
-> >  };
-> >  
->
-> Could you please elaborate why you need just the manufacturer id here? I
-> would have expected to see a specific flash entry instead.
+-in the code comments:
+	wating		-> waiting
+	succefully	-> successfully
 
-I can't find the thread anymore as this is going on for forever, but
-that was my suggestion. That's a catch all to have the manufacturer
-fixup applied for any macronix flashes instead of having to list
-each flash id here.
+Signed-off-by: Shen Lichuan <shenlichuan@vivo.com>
+---
+ fs/jffs2/gc.c        | 2 +-
+ fs/jffs2/readinode.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
--michael
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 822949d0eb00..1b833bbffcf5 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -82,7 +82,7 @@ static struct jffs2_eraseblock *jffs2_find_gc_block(struct jffs2_sb_info *c)
+ 
+ 		nextlist = &c->erasable_list;
+ 	} else if (!list_empty(&c->erasable_pending_wbuf_list)) {
+-		/* There are blocks are wating for the wbuf sync */
++		/* There are blocks are waiting for the wbuf sync */
+ 		jffs2_dbg(1, "Synching wbuf in order to reuse erasable_pending_wbuf_list blocks\n");
+ 		spin_unlock(&c->erase_completion_lock);
+ 		jffs2_flush_wbuf_pad(c);
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 03b4f99614be..f987f78a894e 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -72,7 +72,7 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
+ 		if (err != -EOPNOTSUPP)
+ 			JFFS2_WARNING("MTD point failed: error code %d.\n", err);
+ 	} else
+-		pointed = 1; /* succefully pointed to device */
++		pointed = 1; /* successfully pointed to device */
+ #endif
+ 
+ 	if (!pointed) {
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
