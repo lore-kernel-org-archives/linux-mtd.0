@@ -4,95 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B76CF9C5B
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 10:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EA8BCF9C6F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 10:32:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ua+fE4wUA09TQlcBicOPwfYIYSn4n/PPtAaT2wdiAPY=; b=QuOmPzufdCyPI6
-	RqQWlNO/x0Ft8soq8HtfZMd51/dka36xGm3ZcvpHBqlP0QT+QA+h9AhiV/YDsEw1cuavl5AawSST5
-	uSh5ppdH+cxosy7Opi/ZxZm2i8+ThqCfen7vGu8aE4XQRaQcmxUBTST8Vlp04PkUKHKWU88KotR+b
-	zOnZwGwZi54MltSwgEqv6rMmDpQau5dv2tfPgqREVkFlVFErCu6qwUcmY58GoWB39i0x4EHv/4Cqk
-	a9DPdHdx49qALe+L6H9Bz7LiMDb7hHUc0dDzq7ZcnsUh78fCNbeJ+Qz1ZQ4jSZSuOSTDvg7+rsMl3
-	0Zcys2Jmd3rejTYaGWqw==;
+	List-Owner; bh=HKy6IUazqVEMTpNiIGbTwaDCixIYsuH23DTK1XykacI=; b=nWhxexvSrNfwA9
+	6eAYG37nQV4ES9M/26U+jGADWtl8QzcVA9tDfN8oFnMpJRlRrSjhn3ZoDuvTIx6NrFg3Kdeg0OtNJ
+	6OqioOJOBqvTlmtu2UUCqkPpD1ZIygaC0hY+GB93EDyqJesMdtiq/DYq6/5Ym5s7nsALSeu++K0fs
+	YMJP44WYpt4QDpaI+hYjskofDJ4q68ztOcafyFVKHFZmuerzTJEGLMfq6YMhv1xLQ1JuB7HR3Qq3U
+	k658eLUpb/CS96meiAvJTV2Id5LrvoBe3HKuhXsyjlUTdN2KH6c3HwwS0h6dh+mAj+6UnNmy8JBW9
+	UmJ9YtzLhvj324prPvpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssfwl-0000000Gunf-08O3;
-	Mon, 23 Sep 2024 10:05:35 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1ssgMi-0000000Gymz-40Wh;
+	Mon, 23 Sep 2024 10:32:24 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssfwi-0000000Guma-06q8
+	id 1ssgMf-0000000GymL-3tVs
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Sep 2024 10:05:33 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48MNhLlP007866;
-	Mon, 23 Sep 2024 10:05:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	eSxU2k9NCbNUH2pf9Tm0ETZbHPtkd038byigFo8KTng=; b=B5xC5zV7dwltOMj5
-	vIuvg1AIUKpFLgKliL4Ii1k+KK+joATUL/rBQ5KXIztaV2f0qOL62jdtuSbFLlVn
-	85ZBmbYCtq76U3NCrJ6ZnjFROeIx1iQPy39U6cx1BqZVbVwaIv6KBsdWk7czaW40
-	bks0T2ZIsD+a+zmIg4p36UAMZ/aiYQWUJ2eV+JIkuZUoplsDSU9LkIqdKM4bSybf
-	/+/z+2pLJ3YtC0QPQmVD1FrbJjxtjkbccnk4XeMZtDa3HBn+aICBjfjf92u0d8QW
-	AQxQrb1qRExMDm6mtCoSQQfXFb25RMMo/HdNV59u+Hnzykcdo7w1mT7pAcda2Ny5
-	2+dBGQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41sn5bmkpt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Sep 2024 10:05:14 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 48NA5DWX013041
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Sep 2024 10:05:13 GMT
-Received: from [10.216.21.87] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 23 Sep
- 2024 03:05:06 -0700
-Message-ID: <15cc4380-9ca7-c558-2aaf-7cc845c28854@quicinc.com>
-Date: Mon, 23 Sep 2024 15:34:55 +0530
+	Mon, 23 Sep 2024 10:32:23 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a8a789c4fc5so2075166b.0
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Sep 2024 03:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727087540; x=1727692340; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=t7WybMhTFjyQNe3MuiaKvgD14pvzxhatRQ1+PvPY2Qk=;
+        b=EoQjgMC+TkkeV2C22cHv1K+Dg5r97W8hC5bVgRZjWNwHlyM8z7jUbOHPk0sATd1oCG
+         MDQY+sS8/n1vRY5x07rskOtASfmWRBE3o6K9GYa2A3dOni7jbyVAhmzZeHs4gntdLbdl
+         UUQ89Xsiyo+GIOlr8zByfwwNB7lxHVl9utpXCDJcGCVf6JTersinM7FcMQUL0Ckhl19x
+         NBvf4JHzD52RCidlyMHkaqfseTphRcZGWBGpbAS2IYF+LXMgj3MG83RIe/6bHIbTUAxr
+         3WpZ8hadY2WvmOu63oRyq7T1InuklWrmdIlNvnCaAMSZ6c9l+rhNpcajbXWmXr0kQHOS
+         nrVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727087540; x=1727692340;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t7WybMhTFjyQNe3MuiaKvgD14pvzxhatRQ1+PvPY2Qk=;
+        b=I5ueZA23DjQGdb35tmcxH3zOgKZE7SZxdBVtFLFSQ0LieQazKZia4jQFNpwxwMK4d4
+         gihdXBc10zcuBZCgp6xM/L8d8c58rX06Avefra7hgZVyb22YAAiYIrqsTdTb2QMHgQiR
+         ty+HBr/aRxUCHvwk/PKNPv3VHlZsy3TQ8MDC09Fbg284KsXB5oJnwkviOGiocAAho7JL
+         GV67ZWIFSp0EI/eoT90ABh/DGGP5aJEvwkbmYXf0/urNSLm9+bPNbu/KAJf4yyNGMoLX
+         OvpA57UzaSfUg2XqEt7VAguLUxamKdmvtEnTGVipzkTnb3NHfxeraksaB3aXfgpO8awG
+         R3Iw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+fyNMDrHcXY5OCBv2v+5tBwZHGGDgwY4OH5Bknf/y1ZGFWbgtRwDSjsWBaRT/5BPthiOwQ/l51kQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyETkS2vXQE7K22MZgkGDXU3pqYVdStvRhaJEBL8gwyb2z/GqdK
+	iw64xcMcfdlt8dVeWRr8ph5uhhRC/xnAhy0GkWhqYXJ1nazjUz7enHJuG3VBLis02Tc6zrob/FM
+	mHukR91Rb4G2nAG84w9m2EoCBMA==
+X-Google-Smtp-Source: AGHT+IHeqaggM+UXfU/T/6f5PbCqBXtnxIWll8SaceKEzyUrkfKVLbRY45ZmR2+j9VeHTNJR6u24o1KKU9NZSFh29b8=
+X-Received: by 2002:a17:907:3daa:b0:a86:6a9a:d719 with SMTP id
+ a640c23a62f3a-a90d364310fmr1068934966b.29.1727087539905; Mon, 23 Sep 2024
+ 03:32:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v10 1/8] spi: dt-bindings: Introduce qcom,spi-qpic-snand
-To: Krzysztof Kozlowski <krzk@kernel.org>
-CC: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <andersson@kernel.org>,
-        <konradybcio@kernel.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <vkoul@kernel.org>,
-        <nikita.shubin@maquefel.me>, <esben@geanix.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>
-References: <20240922113351.2390195-1-quic_mdalam@quicinc.com>
- <20240922113351.2390195-2-quic_mdalam@quicinc.com>
- <k3id2ywyghhmoiekehko7ear2nef5ygmizvkax5s6sdi2zhn5d@yfhgl5xte4dw>
-Content-Language: en-US
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <k3id2ywyghhmoiekehko7ear2nef5ygmizvkax5s6sdi2zhn5d@yfhgl5xte4dw>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: fy0GyvuLSc280jdhAX0gFWgmbOmFECCu
-X-Proofpoint-GUID: fy0GyvuLSc280jdhAX0gFWgmbOmFECCu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 impostorscore=0 malwarescore=0 mlxlogscore=889
- spamscore=0 mlxscore=0 priorityscore=1501 bulkscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2408220000 definitions=main-2409230074
+References: <20240920181231.20542-1-erezgeva@nwtime.org> <20240920181231.20542-2-erezgeva@nwtime.org>
+ <4e0cf43c-4843-451c-ac6f-86775dbccb2b@linaro.org>
+In-Reply-To: <4e0cf43c-4843-451c-ac6f-86775dbccb2b@linaro.org>
+From: Erez <erezgeva2@gmail.com>
+Date: Mon, 23 Sep 2024 12:31:42 +0200
+Message-ID: <CANeKEMOmhAPM1j1_ihzcC2wL6jKsWXPCGfZs+euS8mRvtqgE5A@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] mtd: spi-nor: core: add manufacturer flags
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
+	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Esben Haabendal <esben@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240923_030532_220226_6654BD1D 
-X-CRM114-Status: GOOD (  16.32  )
+X-CRM114-CacheID: sfid-20240923_033222_012259_AE0B23BC 
+X-CRM114-Status: GOOD (  28.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,60 +89,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Mon, 23 Sept 2024 at 08:04, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>
+> Hi,
+>
+> On 9/20/24 7:12 PM, Erez Geva wrote:
+> > From: Erez Geva <ErezGeva2@gmail.com>
+> >
+> > Add flag for always trying reading SFDP:
+> > Some vendors reuse all JEDEC IDs on manufacture table
+> >  with new chips that support SFDP.
+> >
+> > Add flag for reading OTP parameters from device tree.
+> > Some vendors reuse JEDEC IDs
+> >  with several chips with different OTP parameters.
+> > Alternatively we read parameters from SFDP.
+> > But the OTP parameters are absent from the SFDP.
+>
+> Do you have some specific flashes that you try to identify? Why can't
+> they be differentiated at runtime?
+
+You can not figure OTP parameters based on  JEDEC ID and SFDP existence.
+I did send a few examples.
+
+One of them:
+"How?
+
+When using mx25l12805d, we do not read SFDP.
+As it uses the no-SFDP flags.
+When using mx25l12833f hardware with mx25l12805d driver, it did not
+try to read the SFDP.
+Yet mx25l12833f does have SFDP, when I remove the no-SFDP flags, the
+driver fetch the SFDP.
+
+Secondly SFDP does not contain OTP information.
+
+mx25l12805d has two OTP regions of 128 KiB and 384 KiB (yes asymmetric).
+While mx25l12833f has two OTP regions of 512 KiB.
+
+How do we handle it?
+I would gladly remove the obsolete mx25l12805d.
+And skp compatibles all together."
 
 
-On 9/23/2024 2:02 AM, Krzysztof Kozlowski wrote:
-> On Sun, Sep 22, 2024 at 05:03:44PM +0530, Md Sadre Alam wrote:
->> Document the QPIC-SPI-NAND flash controller present in the IPQ SoCs.
->> It can work both in serial and parallel mode and supports typical
->> SPI-NAND page cache operations.
->>
->> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> ---
->>
->> Change in [v10]
->>
->> * No change
-> 
-> ...
-> 
->> +title: Qualcomm QPIC NAND controller
->> +
->> +maintainers:
->> +  - Md sadre Alam <quic_mdalam@quicinc.com>
->> +
->> +description:
->> +  The QCOM QPIC-SPI-NAND flash controller is an extended version of
->> +  the QCOM QPIC NAND flash controller. It can work both in serial
->> +  and parallel mode. It supports typical SPI-NAND page cache
->> +  operations in single, dual or quad IO mode with pipelined ECC
->> +  encoding/decoding using the QPIC ECC HW engine.
->> +
->> +allOf:
->> +  - $ref: /schemas/spi/spi-controller.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,spi-qpic-snand
-> 
-> Recently it turned out that Qualcomm generic compatibles are not
-> generic... That was odd, but to me it is a clear signal that something
-> should not be called generic if it is not generic enough.
-> 
-> Please switch to soc-specific compatibles (and drop my reviewed-by, so
-> this will appear in my review queue).
-Ok , will add in next revision.
-> 
-> Best regards,
-> Krzysztof
-> 
+>
+> > So there is not other way but to add the OTP parameters in the device tree.
+> >
+>
+> If there isn't any way to distinguish the flashes at runtime (which I
+> doubt/challenge btw), then as a last resort we introduce a dedicated
+> compatible for the flash in cause and specify all needed parameters in a
+> dedicated flash entry. This shall be more generic as further flash
+> parameters can be statically specified in the dedicated flash entry,
+> less invasive for dt, and less confusing for people when they decide
+> whether to use OTP or not. OTP params in device tree is a no-go.
+>
+> But again, you have to prove why you can't distinguish the flash at
+> runtime before introducing a new flash compatible. So don't go this path
+> before sharing with us what you're trying to achieve.
+
+You keep sending me contradictory messages.
+
+I told you we can not "guess" OTP settings based on JEDEC ID and SFDP existence.
+It may be partial and Macronix may add new chips in the future.
+They reuse JEDEC ID only retaining flash size and blocks.
+This is why compatibilities work with new Macronix chips . Although by
+reading the SFDP, we can use higher speeds.
+We can use SFDP parameters to read  flash size, blocks and speed.
+But it does not contain any OTP parameters.
+I found only one Macronix chip with an enterprise SFDP table with a
+boolean flag for OTP, this does not help us much.
+Macronix technical support was explicit on OTP settings. You can not
+deduce them. You must know what chip you use.
+As far as I can see, Macronix does not reuse module names (god thanks for that).
+
+I do not mind using flash compatible.
+Just clarify that point.
+And I will send the patches accordingly.
+
+Thanks
+Erez
+
+>
+> Cheers,
+> ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
