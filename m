@@ -4,141 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A21CF9C6F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 08:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37408CF9C5B
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 08:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hDeaHZU6MFyXzwIXlXclwujsJ+rQ3lQcTAc3LJSrOxg=; b=TtOz8lN8tLoMQP
-	qiOe+xv+oR6dA5o8cdRe6uNKrzDk6vCVsh1a4S9UDpf4lEhVdB6ZqyuHctkbZN4T38HqY9ecXMkzL
-	z/v9rf5M33Am16zEN8l/dqQYye0QGiToTj2URZi8lDj4/ho6/OcaWZbWO0zHknFO4xzqsyzazLGNz
-	aUQl7y0j0Izo6uSV/hDMBq0i94bEHAO7KfjMQF6YZdWXOi0XGLqVnq13WSfGN8kMKFr+4L4sc09mo
-	f7+PJFiI4WHFnWQS1d1luHQnRJrCongsR1XoQQcGM6HovPe9r/wmb/FCp/Cw1DDdzYwT9M8+JSzCK
-	TEdgTQypLAo2AVos5peA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8mKJTiISicQzC0hJcXNHWW/wjN2UQfZuX9JsY9+mO8U=; b=YZx5ZrsR9vBKxz
+	Gs72pR9hCkkShR/PhMVDKG4QevTGQ3SuIyyr1u2NFFgNpmFelcGq8Vu75sO2dHUJAPzNXzWsxlmWc
+	daAYxTQVjt341jbBG3arh8CwKhapYIxEyIYWNZJksbXjbGsYq2mzT6uG/+rgCflgl63khVxMZGX1v
+	aN83UBXQMNKD/n+gpZjo2NBx1DQoRAWxx2AMjY9cl2E+oGqjyVlY+oi9dRnXrtnkN2/zYbPFXhrrr
+	G3aX1YvUlgoS8tXAB0nCvutKyQqNbNhKkSnt6IHaRh5zH2WypYCHqz3/QUjvgzZL5Pt0VoS7x3W7P
+	dOBsn1QzY7zYReaSJezQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sseVx-0000000Gg9F-0ohL;
-	Mon, 23 Sep 2024 08:33:49 +0000
-Received: from mail-eastasiaazlp170100000.outbound.protection.outlook.com ([2a01:111:f403:c400::] helo=HK2PR02CU002.outbound.protection.outlook.com)
+	id 1sseqX-0000000Gjif-31xc;
+	Mon, 23 Sep 2024 08:55:05 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sseVt-0000000Gg80-2pSU
+	id 1sseqU-0000000Gji0-1BDF
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Sep 2024 08:33:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qkh3QqQMtmY2vG0r4666jEH50C2uy/aIUOs39JOeU7kJEz338NpFyDb7nye1OnBV+WCeahIAdMsvzC7oD9nW4NQa/GQtZ5DskTTXHuxypyboxIXnaGPgnZp/YgNg8Iz4XVpi7GhSgUw0C3OX4fAJbOQpIKnnY7YPwF4VAS8ORQo+hoXfkFY57VqhPSXMUrB6kbMIgPs9stTxzw0kVThfXbWp5Zgp6213JyZpLIgeAEngXLMC8+Dqf5Bvv3uXpq3Vfl3iCtnv2/dwDODKKh02/3h6cuH9sbB7M0TEhdK7moQ8uAP4IUXeQFSbcfFlso04iWHv1CrT2lLG7MtXvimoKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bfTttx0oHkrSfZLf5eXWFq8XONAiSv2viBcMv5w5Un0=;
- b=tKwUScloswuKHf69pMDFb1yP6n2jdbYZHA9hOiLvlwmHWgaC05XCcQzLImqnLCVU7G38MbrSU0C0MokxBhqTncnYJmRx6Y/zJehSnFeSbfF5ZJQZ6BGI9ySeog6mdZKuaatVMXClqmbQWtNFsJcmHWK522KcsN+Ny9gyz5LU7ctjZt24SyJaea+feVaF499tdomRUERk3ucPBGblO1m24d6ssivq1sU5lGtnA6BPyRAzvgYXFd8iyKKMzbfCa/TK2aJ2PLJnz2sRHBlchB5hdp3xQuN0nzp7D15n9ou79mt8LMpPPcn3NKoTOalKaOibvk/BurrQL+gGgLyQtaWp5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bfTttx0oHkrSfZLf5eXWFq8XONAiSv2viBcMv5w5Un0=;
- b=YKZ2jG0Ziu4AVR7hFp0O60e+VWQdCxTZWhnSZmOzol/iMkhTcZC9ubiHzLVhzifiNQlQ8OrsaprbGlF0U3gokWh7WkJHdvxCsZxZdDHS36WK3VXqyy0yp5GCrN0xVMbnw6hcFE45YOW7A7WOYJjppHhYTkOdmH5n3POq/hQfF9qmneoDjAsaddSeWc+c4OsnXNcQz5l9AsFQe5BR/dmLZlVroI6dXjka8AUWotEf1AU0sLMFA2RXq3uO/u0gTyhDfdYFKSNQMYdO6tF4eh6lVfn6DsgEOKJtD1aIkpZsAOGOibnUlT8M/XrTXPSk6rycicC3awr4VPd00YPbWM4QuA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5899.apcprd06.prod.outlook.com (2603:1096:101:e3::16)
- by SEYPR06MB6358.apcprd06.prod.outlook.com (2603:1096:101:13a::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.25; Mon, 23 Sep
- 2024 08:33:34 +0000
-Received: from SEZPR06MB5899.apcprd06.prod.outlook.com
- ([fe80::8bfc:f1ee:8923:77ce]) by SEZPR06MB5899.apcprd06.prod.outlook.com
- ([fe80::8bfc:f1ee:8923:77ce%3]) with mapi id 15.20.7982.022; Mon, 23 Sep 2024
- 08:33:34 +0000
-From: Shen Lichuan <shenlichuan@vivo.com>
-To: dwmw2@infradead.org,
-	richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	opensource.kernel@vivo.com,
-	Shen Lichuan <shenlichuan@vivo.com>
-Subject: [PATCH v1] jffs2: Correct some typos in comments
-Date: Mon, 23 Sep 2024 16:33:22 +0800
-Message-Id: <20240923083322.13383-1-shenlichuan@vivo.com>
-X-Mailer: git-send-email 2.17.1
-X-ClientProxiedBy: SI2P153CA0016.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::17) To SEZPR06MB5899.apcprd06.prod.outlook.com
- (2603:1096:101:e3::16)
+	Mon, 23 Sep 2024 08:55:04 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-42e5e1e6d37so40610975e9.3
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Sep 2024 01:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727081700; x=1727686500; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MKHXyXv8u9rhkwRUOZ/ML3LklCgz5A4fWbLYE4hpCrw=;
+        b=TM9+fODVfLmTcCkqx+akBstKE2/mEJX6s3zNgku+knqeYt6ngNNX0d0jovTddE2uPG
+         4Pf8Ql4v989LcrFyqdg4WIXMz3NfagDxYcOvP5nL17F3yNyZd6TTO2uKUQzdK6CODEpI
+         kNDF5PWTmkxMHjHbZ6XfmNZ1w8ShDwHNBsx2IQso5RmdMnkwPxQZTLQKgrKohZXyMpPM
+         f4CEhiBedBApta4PRJ7fv73OiUemR8yrB76yvaVFZW3coYwpftrW3vLmNqeuKUgODCuG
+         HG1pzZUlvwftCNNHLPXqMaytQRjE7nKrn97QMTz/7TPX5xutx4ZcibHUv7N0+H8u4Sjt
+         cSFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727081700; x=1727686500;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MKHXyXv8u9rhkwRUOZ/ML3LklCgz5A4fWbLYE4hpCrw=;
+        b=HT+NEZlV+LiQ0J9WZesCDsuK1xjJU3yY77dxhKR9Qm5sJbTXL56lI7RTa5yz+gM5/U
+         xzxy8/F6M9/uRpjJZc8DeozxImJFqwJQifQUcBbhLqTI4nCwkOEL2wZkgYWl2ODlaxmi
+         oUubaxygtx5BCXgJDWohdbj9o9sbFy6ZxQfyAY2h3FvypP4jMmwdvP0VBRC4SC/k+CcX
+         eAbBWa9OtS7w57GNtDwmxLcL8itMbuSgBsOklaDfbcON54/pQ+z0zJpOMPmWXgzU8K8M
+         jfOL4UlnN6ftoYXmF1FU5F3xDATVsbvJvStQXglQ4mNtP9wuBk24vLYU+HbBfd5UGmYx
+         ICOg==
+X-Forwarded-Encrypted: i=1; AJvYcCXg24NxJjUaXmmbyFAMJSRIAB/DXzmPE+RSBL0YNkYccRhM6846Vx0HvGYzwPuQRrhug1M2i7R0qjE=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxft9DMMWBb4wLnvP5jWsxPdHdKVXQNLDp3s3ZWIzwuxuzSvNnF
+	62JDfXgv4KT0h0nJCJWeUMfAHn9EBZnLnbQDeT90u/xFS+go9OV8n1zm4YdeNZM=
+X-Google-Smtp-Source: AGHT+IFD9FZW3owM5RP6khtxxFcvSKuoQVXgqiUYUHkdAGP3MqPAxsF9w69ZtKP+xWv4akFLPoz8XA==
+X-Received: by 2002:a05:600c:46c3:b0:42c:baf9:bee7 with SMTP id 5b1f17b1804b1-42e7c1640ccmr53682555e9.12.1727081699963;
+        Mon, 23 Sep 2024 01:54:59 -0700 (PDT)
+Received: from [10.11.12.107] ([79.115.63.20])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e7afec0c3sm94245065e9.37.2024.09.23.01.54.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Sep 2024 01:54:59 -0700 (PDT)
+Message-ID: <0e0f1195-fd08-4d8b-a247-3c94b5628081@linaro.org>
+Date: Mon, 23 Sep 2024 09:54:57 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5899:EE_|SEYPR06MB6358:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6bbcf7f7-dfe9-4617-0120-08dcdbaa6966
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|52116014|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?gY2KafTaqXPEXL8zsoH2s0tIrkc/arUqLWFbua/0SpGOPfGtU1/tXp8mUMVF?=
- =?us-ascii?Q?l6IaRsCSWE2QRwPvQbgPHwBN9m4pa1uTztskBd5y9RAgqE6Yuf+dtJvx2FgP?=
- =?us-ascii?Q?o+e8QUVCJ+f7dUjrufaNJy9yLemnwRDvJI7KyBhl2P2nrACBSewuYxc5ydvD?=
- =?us-ascii?Q?D+ZwE9smr2c0/ZOtEzz6w8JmWJDb9VS4IaVU17MkNTd4lyAAc5o90uuDsMCz?=
- =?us-ascii?Q?6HROwKsATPDnK7l9EOQ/Z7eKca5+ydLPiFi9nIeH3Dvs3DvTwpFJ2mOftyBI?=
- =?us-ascii?Q?f0CugfSmHz8RV3N+nmjW2P9sQRC8Oq1tNSDcNI2r6vAPtGd9yCBWgtRWscjB?=
- =?us-ascii?Q?srBJxxS2woOZcgMAKmnraCfcrWAUL2iQ8WQ1ZKRX5yb9R7dhmR/BTiCBIKO3?=
- =?us-ascii?Q?pqIMCKYsK2j/KPzzJB/E98960F5UJ7Y5GIgXyTAOo3EWTBUV3S9gNkSp09+N?=
- =?us-ascii?Q?94W8+uxzwocysHUaH5c42H83GD0muGItvCo3vbmdnHD6NrsifGUP1EnHbhyf?=
- =?us-ascii?Q?Av/j8/WcI73INmO5H5MK8VqpI+grP1HOWJkJBPDAqwCuwZhBzhcOE3Ad/wds?=
- =?us-ascii?Q?0HdOcx8kMSl1f/L2sIwxo9yN1FHemPO0xhcVBaLaqijJJGX2XBr+JZCn9h4X?=
- =?us-ascii?Q?N5dhNkNumZYt5C/Z6J9Mli2MDt9RVr2Fwu/XaIejtbZxZLV8qbRPT429Q/aY?=
- =?us-ascii?Q?ApQMJ2h+s8lfekz+CjRYYwfBlUKw3ExTAMAUVXvMgSXFMapqK2aP+iX1WRQV?=
- =?us-ascii?Q?jLM+w2aWOmBEmNVR/iJeeR8w5InX/Azr9at+W9l2FFWgO+/UPvUUWmBvrRqM?=
- =?us-ascii?Q?FbmxoHG9QQ3EGciGq+BeqOSk7bFEFomVn2baTXz8gdDbIy0L8iG3SrHuqsRa?=
- =?us-ascii?Q?eQyBExLka5a7nGb/XBz7fVxN2fPBMfmdOMOmT1oDEGqVqL4Wi7V3iYHBX9PW?=
- =?us-ascii?Q?YcklnQSMpy5kvn7ubsW1EdlUEJ+kZAzrbvYz28JWntIK+3eqvNQPQ30I0m3s?=
- =?us-ascii?Q?etHiGuT4Hy65tlrTYfkLbsJiJZmoC4lOdCcbnO0/H0uW71O3PFqlnle1MHLN?=
- =?us-ascii?Q?5YzaxKzlRR9692LN3ScIFhN0AZnnc2DJ2I77RrJxxH8Wv2kQEAZhU2rfLbzp?=
- =?us-ascii?Q?3LY/RaxiftXI/P9pzc2/oYi4qD58LdF1C1Z5pcRTMakdYjUv0ncVSRR9DjUg?=
- =?us-ascii?Q?pz9xuBosbYRkjx7cnbQn2q+JRgBU71KNIm1+uz4s5OQ/VM5q7tfkXhWokFrU?=
- =?us-ascii?Q?3P5yQ4Ozw2ghyyarEYiBKCOcVaG3MqLlhyGP24LW6lu+Dlull/F1Nna2N2Ma?=
- =?us-ascii?Q?sopCgsLODaQ0ELL4OR9nUpX/dHpRsguo9POSbcVuiPpANQ=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5899.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(52116014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N1wDDgbycn/67aFx4qz4ZF0czvLKcEDDqTmpxxW3lZiOPGQyBjLFiz4UoAne?=
- =?us-ascii?Q?MRnOUzq1LUw/CvcYGKHzZJUzZOUOhz1bQEkvyfXUFB6OHfYDFJHmrwuT3IMA?=
- =?us-ascii?Q?v+qM2A756uPYHXB1a6XdGNC2w6Jne9g0MFSXnuMc//C09NDKR+FSW5NmD1Ww?=
- =?us-ascii?Q?mzS8mqQS+sNUDcvkgCnM8flWt5GiWEUSD3Drl6CpualWpidagWBUVmcCZFMk?=
- =?us-ascii?Q?Lyzo5W/u3MK0rHBdd2KyTKZywa+SFCcQfxlRK9MTliqNVlqQb6ZlPdGiraw7?=
- =?us-ascii?Q?2hVww7e91VQnyUMtAkhnloniGSLIiKQ9zoPj/SwJW0TsEAA7m8yuC+7SyUAN?=
- =?us-ascii?Q?QRKxo6G0G+knIFHRUHAj4HU1M20syM22bqObTwjhB8UasrT3hIHiLBMAeCA5?=
- =?us-ascii?Q?/usJkDcwDThvRCE12V2YGjhOurWlyIIK6xRE31KQWjItCrzqKZw9fT+5VYzw?=
- =?us-ascii?Q?sPs0xYnDfHEnFpWXHGcbG2DuxvPF8InRwpsQYxXigxL5PFqlXNXyZ1N6hqH5?=
- =?us-ascii?Q?R/lcTao/gPMjh02jrbeC48kxklJRxoum4HKmluQboFfuLj6ZCwwaHcmrksfS?=
- =?us-ascii?Q?ei6tJPhwQnjBd90/JFbvX4R+4z5w80RgLovJcaJYQZ8LaFH6MqPDY2RxDesQ?=
- =?us-ascii?Q?R7wytK7QUx75hNAsusTS9Qrfal6abg4XRYHf/FNmG6bICsrDoFNhENZh1MFk?=
- =?us-ascii?Q?KOXUYZY2AqLN0Q3vEditTMQAjwnSYICmdAjSJzg1Xd2X0KzSJDg8Ofy/afQV?=
- =?us-ascii?Q?TPWAF13jH4u65Fb0kt1E9VvqB/9pbwdcUI5YcyU04cYEz2yknYKYS7mGF0IC?=
- =?us-ascii?Q?SAaJQTLyRaW2rb4nYwknNFrfBCUGUY3hL3dhuxxbKHZgWqwllRgmyLYuNXOd?=
- =?us-ascii?Q?EYYoyXEisjw5P2P9ZdO4rHX/3a7Nzb5slThzpdl3XKQ6J7/GF1RXA2+L+lhC?=
- =?us-ascii?Q?iSPf+cF66dP5LxB+VdQCd6ka7E/whSYshVkAxffs7SMV90zepXZbsF4TFonw?=
- =?us-ascii?Q?9zznkLNmBAx2SvMlHs3tEI4pLDCJn9pOTwoTSInrzIBve1/jkH6ShfgBbdz/?=
- =?us-ascii?Q?CbKr64b+lCfQTusk8xrTa42a/xeR1i+bW5AwNCm6+D1sJRXEtJP8LGP8dFGX?=
- =?us-ascii?Q?sjHOjPE/qBeL5vpuwURRJklvI7PIkrvDhyLUjt7QsO+obm+KSuIhpe0ztFFa?=
- =?us-ascii?Q?yc8vjDHgIiQhFe+HPGSJ056mDflx+Gn8V/xBPgFTc3w/IQPiQZHnSQB/lDDC?=
- =?us-ascii?Q?ntFQOE9o6u+Vayacbaast0BAltJLGULdnQtqPBgDKTU4t4zOaxNr7yhXHiXV?=
- =?us-ascii?Q?r7x/sXYZK5r9d1kLwHNw4cvY/HfkD3WkXvhMTrIKcDnSjBaOZPORYj6DTWDJ?=
- =?us-ascii?Q?JWleew5vpSAHJGUDEMyJ6XvsJpS05IeNXQJlNKWnLEnpfl5BR2KkXo+oL3NW?=
- =?us-ascii?Q?wt9uyzXmETskis61HN+9r+JNZko7RVDboNmTQ1bEX+4lYGaCFXEJqt1xnbbG?=
- =?us-ascii?Q?GzvTS2uHhA3G01D84FnUu+399aeLZb5O/lZK+jGnGlS1h7AFV83LQETcANMf?=
- =?us-ascii?Q?sqW1NSwSEbk9SGQrxjjyhD+igBAT7qrG6bfnzWaB?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6bbcf7f7-dfe9-4617-0120-08dcdbaa6966
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5899.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2024 08:33:34.2880
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7BhJDdn3YItu2fe0C2EkYCMaEUne0wRQEBapgNiO0KIoaLqYEWnf3PxagzVxxKISfNY52ljhmj1NxPFW2GVsfw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6358
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Add SMPT fixup for S25FS512S
+To: Marek Vasut <marek.vasut+renesas@mailbox.org>,
+ linux-mtd@lists.infradead.org
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+ Michael Walle <mwalle@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-renesas-soc@vger.kernel.org
+References: <20240914220859.128540-1-marek.vasut+renesas@mailbox.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240914220859.128540-1-marek.vasut+renesas@mailbox.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240923_013345_737822_DCE7BB16 
-X-CRM114-Status: GOOD (  11.43  )
+X-CRM114-CacheID: sfid-20240923_015502_376582_153FB0BB 
+X-CRM114-Status: GOOD (  43.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,46 +98,178 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fixed some confusing spelling errors, the details are as follows:
+Hi, Marek,
 
--in the code comments:
-	wating		-> waiting
-	succefully	-> successfully
+On 9/14/24 11:08 PM, Marek Vasut wrote:
+> The S25FS512S chip datasheet rev.O Table 71 on page 153 JEDEC Sector Map
+> Parameter Dword-6 Config. Detect-3 does use CR3NV bit 1 to discern 64kiB
+> and 256kiB uniform sectors device configuration, however according to
+> section 7.5.5.1 Configuration Register 3 Non-volatile (CR3NV) page 61,
+> the CR3NV bit 1 is RFU Reserved for Future Use, and is set to 0 on newly
+> manufactured devices, which means 64kiB sectors. Since the device does not
+> support 64kiB uniform sectors in any configuration, parsing SMPT table
+> cannot find a valid sector map entry and fails.
+> 
+> Fix this up by setting SMPT configuration index bit 0, which is populated
+> exactly by the CR3NV bit 1 being 1. This is implemented via new .post_smpt
+> fixup hook and a wrapper function. The only implementation of the hook is
+> currently specific to S25FS512S.
+> 
+> This fixes the following failure on S25FS512S:
+> spi-nor spi0.0: Failed to parse optional parameter table: ff81 (err=-22)
+> 
+> Signed-off-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
+> ---
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Michael Walle <mwalle@kernel.org>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Pratyush Yadav <pratyush@kernel.org>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-renesas-soc@vger.kernel.org
+> ---
+>  drivers/mtd/spi-nor/core.c     | 17 +++++++++++++++++
+>  drivers/mtd/spi-nor/core.h     |  5 +++++
+>  drivers/mtd/spi-nor/sfdp.c     |  4 ++++
+>  drivers/mtd/spi-nor/spansion.c | 27 ++++++++++++++++++++++++++-
+>  4 files changed, 52 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 9d6e85bf227b..ca65f36e5638 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2405,6 +2405,23 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+>  	return 0;
+>  }
+>  
+> +int spi_nor_post_smpt_fixups(struct spi_nor *nor, u8 *smpt)
+> +{
+> +	int ret;
+> +
+> +	if (nor->manufacturer && nor->manufacturer->fixups &&
+> +	    nor->manufacturer->fixups->post_smpt) {
+> +		ret = nor->manufacturer->fixups->post_smpt(nor, smpt);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (nor->info->fixups && nor->info->fixups->post_smpt)
+> +		return nor->info->fixups->post_smpt(nor, smpt);
+> +
+> +	return 0;
+> +}
+> +
+>  static int spi_nor_select_read(struct spi_nor *nor,
+>  			       u32 shared_hwcaps)
+>  {
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 1516b6d0dc37..d5294424ab9d 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -413,6 +413,8 @@ struct spi_nor_flash_parameter {
+>   *             parameters that could not be extracted by other means (i.e.
+>   *             when information provided by the SFDP/flash_info tables are
+>   *             incomplete or wrong).
+> + * @post_smpt: update sector map configuration ID selector according to
+> + *             chip-specific quirks.
+>   * @late_init: used to initialize flash parameters that are not declared in the
+>   *             JESD216 SFDP standard, or where SFDP tables not defined at all.
+>   *             Will replace the default_init() hook.
+> @@ -426,6 +428,7 @@ struct spi_nor_fixups {
+>  			 const struct sfdp_parameter_header *bfpt_header,
+>  			 const struct sfdp_bfpt *bfpt);
+>  	int (*post_sfdp)(struct spi_nor *nor);
+> +	int (*post_smpt)(struct spi_nor *nor, u8 *smpt);
+>  	int (*late_init)(struct spi_nor *nor);
+>  };
+>  
+> @@ -660,6 +663,8 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+>  			     const struct sfdp_parameter_header *bfpt_header,
+>  			     const struct sfdp_bfpt *bfpt);
+>  
+> +int spi_nor_post_smpt_fixups(struct spi_nor *nor, u8 *stmp);
+> +
+>  void spi_nor_init_default_locking_ops(struct spi_nor *nor);
+>  void spi_nor_try_unlock_all(struct spi_nor *nor);
+>  void spi_nor_set_mtd_locking_ops(struct spi_nor *nor);
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index 5b1117265bd2..542c775918ad 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -765,6 +765,10 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  		map_id = map_id << 1 | !!(*buf & read_data_mask);
+>  	}
+>  
+> +	err = spi_nor_post_smpt_fixups(nor, &map_id);
+> +	if (err)
+> +		return ERR_PTR(err);
+> +
+>  	/*
+>  	 * If command descriptors are provided, they always precede map
+>  	 * descriptors in the table. There is no need to start the iteration
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index d6c92595f6bc..d446d12371e1 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -757,6 +757,31 @@ static const struct spi_nor_fixups s25fs_s_nor_fixups = {
+>  	.post_bfpt = s25fs_s_nor_post_bfpt_fixups,
+>  };
+>  
+> +static int s25fs512s_nor_post_smpt_fixups(struct spi_nor *nor, u8 *smpt)
+> +{
+> +	/*
+> +	 * The S25FS512S chip datasheet rev.O Table 71 on page 153
+> +	 * JEDEC Sector Map Parameter Dword-6 Config. Detect-3 does
+> +	 * use CR3NV bit 1 to discern 64kiB/256kiB uniform sectors
+> +	 * device configuration, however according to section 7.5.5.1
+> +	 * Configuration Register 3 Non-volatile (CR3NV) page 61, the
+> +	 * CR3NV bit 1 is RFU Reserved for Future Use, and is set to
+> +	 * 0 on newly manufactured devices, which means 64kiB sectors.
+> +	 * Since the device does not support 64kiB uniform sectors in
+> +	 * any configuration, parsing SMPT table cannot find a valid
+> +	 * sector map entry and fails. Fix this up by setting SMPT
+> +	 * configuration index bit 0, which is populated exactly by
+> +	 * the CR3NV bit 1 being 1.
+> +	 */
+> +	*smpt |= BIT(0);
 
-Signed-off-by: Shen Lichuan <shenlichuan@vivo.com>
----
- fs/jffs2/gc.c        | 2 +-
- fs/jffs2/readinode.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Please help me understand this. Maybe a link to your revision of
+datasheet would help me. In the flash datasheets that I see, there shall
+be a "Sector Map Parameter Table Notes" where a "Sector Map Parameter"
+table is described showing an Index Value constructed by the CRxNV[y]
+return values. That index value is the map_id in the code.
 
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 822949d0eb00..1b833bbffcf5 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -82,7 +82,7 @@ static struct jffs2_eraseblock *jffs2_find_gc_block(struct jffs2_sb_info *c)
- 
- 		nextlist = &c->erasable_list;
- 	} else if (!list_empty(&c->erasable_pending_wbuf_list)) {
--		/* There are blocks are wating for the wbuf sync */
-+		/* There are blocks are waiting for the wbuf sync */
- 		jffs2_dbg(1, "Synching wbuf in order to reuse erasable_pending_wbuf_list blocks\n");
- 		spin_unlock(&c->erase_completion_lock);
- 		jffs2_flush_wbuf_pad(c);
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 03b4f99614be..f987f78a894e 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -72,7 +72,7 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
- 		if (err != -EOPNOTSUPP)
- 			JFFS2_WARNING("MTD point failed: error code %d.\n", err);
- 	} else
--		pointed = 1; /* succefully pointed to device */
-+		pointed = 1; /* successfully pointed to device */
- #endif
- 
- 	if (!pointed) {
--- 
-2.17.1
+By reading your description I understand CR3NV[1] has value zero as it
+is marked as RFU, but at the same time that bit is expected in SMPT to
+always have value 1. That's why datasheets like this one [1] in their
+"Table 70. Sector Map Parameter" do not describe CR3NV[1] at all, and
+define the index value as CR3NV[3] << 2 | CR1NV[2] << 1 | 1.
+
+I assume what you're doing is fine as it shouldn't break backward
+compatibility with other older flashes as their CR3NV[1] has value one
+anyway. Correct me if I'm wrong.
+
+Now looking at the code, what we usually do is to save the flash
+parameters described by SFDP in nor->params, then amend those parameters
+with fixup hooks if that's needed. Here you modify the map_id and then
+let the code use it in order to determine the sector_map. Then that
+sector_map (which is SMPT data from the table itself) is used to
+initialize erase regions. That sector_map can contain wrong data too.
+
+I'd suggest saving a nor->params->sector_map then call a
+int spi_nor_post_smpt_fixups(struct spi_nor *nor,
+	const struct sfdp_parameter_header *smpt_header,
+	const u32 *smpt)
+in case spi_nor_get_map_in_use() fails. This way others can update
+sector_map as well if that's ever needed. What do you think?
+
+Cheers,
+ta
+
+[1]
+https://www.mouser.com/datasheet/2/100/CYPR_S_A0011121083_1-2541215.pdf?srsltid=AfmBOorpMLKdybn-E_tAUjSBW0AigP0bQ3JR3tD9VUPwf4nGVBYBC1fB
 
 
 ______________________________________________________
