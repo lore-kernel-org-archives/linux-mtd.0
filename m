@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37408CF9C5B
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 08:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD58CF9C5B
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 09:22:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8mKJTiISicQzC0hJcXNHWW/wjN2UQfZuX9JsY9+mO8U=; b=YZx5ZrsR9vBKxz
-	Gs72pR9hCkkShR/PhMVDKG4QevTGQ3SuIyyr1u2NFFgNpmFelcGq8Vu75sO2dHUJAPzNXzWsxlmWc
-	daAYxTQVjt341jbBG3arh8CwKhapYIxEyIYWNZJksbXjbGsYq2mzT6uG/+rgCflgl63khVxMZGX1v
-	aN83UBXQMNKD/n+gpZjo2NBx1DQoRAWxx2AMjY9cl2E+oGqjyVlY+oi9dRnXrtnkN2/zYbPFXhrrr
-	G3aX1YvUlgoS8tXAB0nCvutKyQqNbNhKkSnt6IHaRh5zH2WypYCHqz3/QUjvgzZL5Pt0VoS7x3W7P
-	dOBsn1QzY7zYReaSJezQ==;
+	List-Owner; bh=syVKkLxn4LGoTiuCZEbaZhVC58BEo9LauLyYc0qzp1k=; b=L+3g5ibjK1tMks
+	1bWhDVrvOxXf35zFJ2dse62+U30accXlQaX8QZ6UNTdBRVd0l+uIC26mfLmf6Oan6DzSe6mSagJPp
+	QLAKUd6MADOoxO4PekYiu/wMbHO7wibT/etG/khtKaFoENgRia1JBR7Yr0FfTeN4ai+cF2xqAMwMT
+	EteH1AKQB6Mg2I3BHuCR1JuFnkKz0SX/GLBFVnmbM3GckDagxLcAYPgQIPtalmeIRkAZ3A9mfzjIT
+	+FW2FrClkJYo8GbJ2xAiWO5FGhZ2+xP3V9PmeUcHWdlDmInvHwY+iDJZdduYhi7xpZNcEAfzTvMsA
+	dWjQ9fvAKLl1kktdp+mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sseqX-0000000Gjif-31xc;
-	Mon, 23 Sep 2024 08:55:05 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1ssfGy-0000000GoTI-3IRq;
+	Mon, 23 Sep 2024 09:22:24 +0000
+Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sseqU-0000000Gji0-1BDF
+	id 1ssfGX-0000000GoPC-0GBj
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Sep 2024 08:55:04 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-42e5e1e6d37so40610975e9.3
-        for <linux-mtd@lists.infradead.org>; Mon, 23 Sep 2024 01:55:01 -0700 (PDT)
+	Mon, 23 Sep 2024 09:21:58 +0000
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a8d43657255so660410866b.0
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Sep 2024 02:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1727081700; x=1727686500; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MKHXyXv8u9rhkwRUOZ/ML3LklCgz5A4fWbLYE4hpCrw=;
-        b=TM9+fODVfLmTcCkqx+akBstKE2/mEJX6s3zNgku+knqeYt6ngNNX0d0jovTddE2uPG
-         4Pf8Ql4v989LcrFyqdg4WIXMz3NfagDxYcOvP5nL17F3yNyZd6TTO2uKUQzdK6CODEpI
-         kNDF5PWTmkxMHjHbZ6XfmNZ1w8ShDwHNBsx2IQso5RmdMnkwPxQZTLQKgrKohZXyMpPM
-         f4CEhiBedBApta4PRJ7fv73OiUemR8yrB76yvaVFZW3coYwpftrW3vLmNqeuKUgODCuG
-         HG1pzZUlvwftCNNHLPXqMaytQRjE7nKrn97QMTz/7TPX5xutx4ZcibHUv7N0+H8u4Sjt
-         cSFQ==
+        d=gmail.com; s=20230601; t=1727083314; x=1727688114; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BeTrBA1N+lrnARk4DKq2IC2AoEA+AXYxT54TqSLaEmk=;
+        b=jbT2aZE9bWQ8R8j9KJQJWxV+ru+mnHWFULTQFG1PbuGL7GTg22DS/chqy+IFPgQnvw
+         iFpwosxVIjYuJj5w4gBP0c2u2qYLuOdD8jgOmyKZ6O8frB/QuoKgF1PX5xrxS7KilBnj
+         yo1f5iHEKOWsHUSF1IPgdBe8XeTBAQx/6KagYt2cyT1q5SgX3//oRM+yFAKfZmE42/3F
+         SYWIoLCJyqoJ8DQRLxgmf58mG1gTE/AVMhYOu7oijx4xlGsjn4TjUfRicYe40ASMERxR
+         8PmI4j9yjuDfVY97pnYst2f3/GeyjgJgel+FPJ3sPwntSrfHDp9dyZKJnhxl0VP+bNF/
+         az4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727081700; x=1727686500;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MKHXyXv8u9rhkwRUOZ/ML3LklCgz5A4fWbLYE4hpCrw=;
-        b=HT+NEZlV+LiQ0J9WZesCDsuK1xjJU3yY77dxhKR9Qm5sJbTXL56lI7RTa5yz+gM5/U
-         xzxy8/F6M9/uRpjJZc8DeozxImJFqwJQifQUcBbhLqTI4nCwkOEL2wZkgYWl2ODlaxmi
-         oUubaxygtx5BCXgJDWohdbj9o9sbFy6ZxQfyAY2h3FvypP4jMmwdvP0VBRC4SC/k+CcX
-         eAbBWa9OtS7w57GNtDwmxLcL8itMbuSgBsOklaDfbcON54/pQ+z0zJpOMPmWXgzU8K8M
-         jfOL4UlnN6ftoYXmF1FU5F3xDATVsbvJvStQXglQ4mNtP9wuBk24vLYU+HbBfd5UGmYx
-         ICOg==
-X-Forwarded-Encrypted: i=1; AJvYcCXg24NxJjUaXmmbyFAMJSRIAB/DXzmPE+RSBL0YNkYccRhM6846Vx0HvGYzwPuQRrhug1M2i7R0qjE=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxft9DMMWBb4wLnvP5jWsxPdHdKVXQNLDp3s3ZWIzwuxuzSvNnF
-	62JDfXgv4KT0h0nJCJWeUMfAHn9EBZnLnbQDeT90u/xFS+go9OV8n1zm4YdeNZM=
-X-Google-Smtp-Source: AGHT+IFD9FZW3owM5RP6khtxxFcvSKuoQVXgqiUYUHkdAGP3MqPAxsF9w69ZtKP+xWv4akFLPoz8XA==
-X-Received: by 2002:a05:600c:46c3:b0:42c:baf9:bee7 with SMTP id 5b1f17b1804b1-42e7c1640ccmr53682555e9.12.1727081699963;
-        Mon, 23 Sep 2024 01:54:59 -0700 (PDT)
-Received: from [10.11.12.107] ([79.115.63.20])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e7afec0c3sm94245065e9.37.2024.09.23.01.54.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Sep 2024 01:54:59 -0700 (PDT)
-Message-ID: <0e0f1195-fd08-4d8b-a247-3c94b5628081@linaro.org>
-Date: Mon, 23 Sep 2024 09:54:57 +0100
+        d=1e100.net; s=20230601; t=1727083314; x=1727688114;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BeTrBA1N+lrnARk4DKq2IC2AoEA+AXYxT54TqSLaEmk=;
+        b=E/8PeeIfk//9U3LTsA3afJz3Zp72ZRLEFLlqNweZtO4+9FbxcBCiGhwlplzKRQ8wLV
+         +tw+R00lRHVPY8IO5jFkIX8dbQb9W28kkCgtiOl+w400dGlpvixa/LFnuc6qQgNwLuYQ
+         4PsisQZOB2T2BT1bwb2Imypf3s8ryU3NUSNbn85EmmPsA4+dsISJVDGeruDhSoHs4lVr
+         xy2R2bKDTDt/e3V3lJjOCZ6OPEsFYDLDeR/VYefMTGy5e/nClBjqGoCVk9LVjDB35PBK
+         p1HixERNWwHkgUyKzTBhpCpHMx5DOgG824M0mH4YLHbFPk5VwS/D9eoR52nlks+Nr1yh
+         ojSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlJAlDLxTDTfbu0EVLeVq6O/IeX6t3EzAWdJxl3Y3hI8utPIpGdjuHewT71jwlqcMMbd7qBvBHJOQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyR/isOAXsalKXxLETR2hCaFgzedIjEiXVokmlCfBS2SUQzFxMT
+	TMa7IejFgZeSIbOSImdONAAqkGwAYZyWjBWoLOyY0Dh2WhNUIWw4yJF4cIKpDseTUJ8ZnxnI4pk
+	OIe4N5QWPXUjN9PgvHjJwlJ2UTA==
+X-Google-Smtp-Source: AGHT+IHjgBHsrSF7iNusLMRgxzz/fWBBlO0MNCoYDwKJjaxi1mIfKT0+RFXnJc+GyzvY9qykBS2XovckNAslXQJxNNU=
+X-Received: by 2002:a17:907:c7c3:b0:a86:96ca:7f54 with SMTP id
+ a640c23a62f3a-a90d4fde858mr992207466b.21.1727083314069; Mon, 23 Sep 2024
+ 02:21:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Add SMPT fixup for S25FS512S
-To: Marek Vasut <marek.vasut+renesas@mailbox.org>,
- linux-mtd@lists.infradead.org
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- Michael Walle <mwalle@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Pratyush Yadav <pratyush@kernel.org>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-renesas-soc@vger.kernel.org
-References: <20240914220859.128540-1-marek.vasut+renesas@mailbox.org>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240914220859.128540-1-marek.vasut+renesas@mailbox.org>
+References: <20240920181231.20542-1-erezgeva@nwtime.org> <20240920181231.20542-4-erezgeva@nwtime.org>
+ <2fo7pndjqieq6lfydmq2pnwb374oqoqnrcsezycgougmr7mtl5@2wm6fe3inf5u>
+In-Reply-To: <2fo7pndjqieq6lfydmq2pnwb374oqoqnrcsezycgougmr7mtl5@2wm6fe3inf5u>
+From: Erez <erezgeva2@gmail.com>
+Date: Mon, 23 Sep 2024 11:21:17 +0200
+Message-ID: <CANeKEMPjLYbBi0AXkEdNum=kqtVe_mfTcVf4zUvJsszVhnh+pw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] dt-bindings: mtd: spi-nor: add OTP parameters
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
+	Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Esben Haabendal <esben@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240923_015502_376582_153FB0BB 
-X-CRM114-Status: GOOD (  43.40  )
+X-CRM114-CacheID: sfid-20240923_022157_143847_8F2EA128 
+X-CRM114-Status: GOOD (  36.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,179 +95,132 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Marek,
+On Sun, 22 Sept 2024 at 22:40, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Fri, Sep 20, 2024 at 08:12:29PM +0200, Erez Geva wrote:
+> > From: Erez Geva <ErezGeva2@gmail.com>
+> >
+> > Some flash devices need OTP parameters in device tree.
+> > As we can not deduce the parameters based on JEDEC ID or SFDP.
+> >
+> > Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
+> > ---
+> >  .../bindings/mtd/jedec,spi-nor.yaml           | 39 +++++++++++++++++++
+> >  1 file changed, 39 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > index 6e3afb42926e..4f7bb3f41cb1 100644
+> > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > @@ -90,6 +90,43 @@ properties:
+> >        the SRWD bit while writing the status register. WP# signal hard strapped to GND
+> >        can be a valid use case.
+> >
+> > +  otp-n-regions:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Some flash devices need OTP parameters in the device tree.
+> > +      As we can not deduce the parameters based on JEDEC ID or SFDP.
+> > +      This parameter indicates the number of OTP regions.
+>
+> OTP regions where? In DTS? On flash itself?
 
-On 9/14/24 11:08 PM, Marek Vasut wrote:
-> The S25FS512S chip datasheet rev.O Table 71 on page 153 JEDEC Sector Map
-> Parameter Dword-6 Config. Detect-3 does use CR3NV bit 1 to discern 64kiB
-> and 256kiB uniform sectors device configuration, however according to
-> section 7.5.5.1 Configuration Register 3 Non-volatile (CR3NV) page 61,
-> the CR3NV bit 1 is RFU Reserved for Future Use, and is set to 0 on newly
-> manufactured devices, which means 64kiB sectors. Since the device does not
-> support 64kiB uniform sectors in any configuration, parsing SMPT table
-> cannot find a valid sector map entry and fails.
-> 
-> Fix this up by setting SMPT configuration index bit 0, which is populated
-> exactly by the CR3NV bit 1 being 1. This is implemented via new .post_smpt
-> fixup hook and a wrapper function. The only implementation of the hook is
-> currently specific to S25FS512S.
-> 
-> This fixes the following failure on S25FS512S:
-> spi-nor spi0.0: Failed to parse optional parameter table: ff81 (err=-22)
-> 
-> Signed-off-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
-> ---
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Michael Walle <mwalle@kernel.org>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Pratyush Yadav <pratyush@kernel.org>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-renesas-soc@vger.kernel.org
-> ---
->  drivers/mtd/spi-nor/core.c     | 17 +++++++++++++++++
->  drivers/mtd/spi-nor/core.h     |  5 +++++
->  drivers/mtd/spi-nor/sfdp.c     |  4 ++++
->  drivers/mtd/spi-nor/spansion.c | 27 ++++++++++++++++++++++++++-
->  4 files changed, 52 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 9d6e85bf227b..ca65f36e5638 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2405,6 +2405,23 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
->  	return 0;
->  }
->  
-> +int spi_nor_post_smpt_fixups(struct spi_nor *nor, u8 *smpt)
-> +{
-> +	int ret;
-> +
-> +	if (nor->manufacturer && nor->manufacturer->fixups &&
-> +	    nor->manufacturer->fixups->post_smpt) {
-> +		ret = nor->manufacturer->fixups->post_smpt(nor, smpt);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	if (nor->info->fixups && nor->info->fixups->post_smpt)
-> +		return nor->info->fixups->post_smpt(nor, smpt);
-> +
-> +	return 0;
-> +}
-> +
->  static int spi_nor_select_read(struct spi_nor *nor,
->  			       u32 shared_hwcaps)
->  {
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 1516b6d0dc37..d5294424ab9d 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -413,6 +413,8 @@ struct spi_nor_flash_parameter {
->   *             parameters that could not be extracted by other means (i.e.
->   *             when information provided by the SFDP/flash_info tables are
->   *             incomplete or wrong).
-> + * @post_smpt: update sector map configuration ID selector according to
-> + *             chip-specific quirks.
->   * @late_init: used to initialize flash parameters that are not declared in the
->   *             JESD216 SFDP standard, or where SFDP tables not defined at all.
->   *             Will replace the default_init() hook.
-> @@ -426,6 +428,7 @@ struct spi_nor_fixups {
->  			 const struct sfdp_parameter_header *bfpt_header,
->  			 const struct sfdp_bfpt *bfpt);
->  	int (*post_sfdp)(struct spi_nor *nor);
-> +	int (*post_smpt)(struct spi_nor *nor, u8 *smpt);
->  	int (*late_init)(struct spi_nor *nor);
->  };
->  
-> @@ -660,6 +663,8 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
->  			     const struct sfdp_parameter_header *bfpt_header,
->  			     const struct sfdp_bfpt *bfpt);
->  
-> +int spi_nor_post_smpt_fixups(struct spi_nor *nor, u8 *stmp);
-> +
->  void spi_nor_init_default_locking_ops(struct spi_nor *nor);
->  void spi_nor_try_unlock_all(struct spi_nor *nor);
->  void spi_nor_set_mtd_locking_ops(struct spi_nor *nor);
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index 5b1117265bd2..542c775918ad 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -765,6 +765,10 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
->  		map_id = map_id << 1 | !!(*buf & read_data_mask);
->  	}
->  
-> +	err = spi_nor_post_smpt_fixups(nor, &map_id);
-> +	if (err)
-> +		return ERR_PTR(err);
-> +
->  	/*
->  	 * If command descriptors are provided, they always precede map
->  	 * descriptors in the table. There is no need to start the iteration
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index d6c92595f6bc..d446d12371e1 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -757,6 +757,31 @@ static const struct spi_nor_fixups s25fs_s_nor_fixups = {
->  	.post_bfpt = s25fs_s_nor_post_bfpt_fixups,
->  };
->  
-> +static int s25fs512s_nor_post_smpt_fixups(struct spi_nor *nor, u8 *smpt)
-> +{
-> +	/*
-> +	 * The S25FS512S chip datasheet rev.O Table 71 on page 153
-> +	 * JEDEC Sector Map Parameter Dword-6 Config. Detect-3 does
-> +	 * use CR3NV bit 1 to discern 64kiB/256kiB uniform sectors
-> +	 * device configuration, however according to section 7.5.5.1
-> +	 * Configuration Register 3 Non-volatile (CR3NV) page 61, the
-> +	 * CR3NV bit 1 is RFU Reserved for Future Use, and is set to
-> +	 * 0 on newly manufactured devices, which means 64kiB sectors.
-> +	 * Since the device does not support 64kiB uniform sectors in
-> +	 * any configuration, parsing SMPT table cannot find a valid
-> +	 * sector map entry and fails. Fix this up by setting SMPT
-> +	 * configuration index bit 0, which is populated exactly by
-> +	 * the CR3NV bit 1 being 1.
-> +	 */
-> +	*smpt |= BIT(0);
+Where can OTP regions be?
+Can you please be serious?
+If you have any suggestions, I am happy to hear.
+I did ask before.
 
-Please help me understand this. Maybe a link to your revision of
-datasheet would help me. In the flash datasheets that I see, there shall
-be a "Sector Map Parameter Table Notes" where a "Sector Map Parameter"
-table is described showing an Index Value constructed by the CRxNV[y]
-return values. That index value is the map_id in the code.
+>
+> > +      The value must be larger or equal to 1 and mandatory for OTP.
+>
+> Don't repeat constraints in free form text. Add proper minimum and
 
-By reading your description I understand CR3NV[1] has value zero as it
-is marked as RFU, but at the same time that bit is expected in SMPT to
-always have value 1. That's why datasheets like this one [1] in their
-"Table 70. Sector Map Parameter" do not describe CR3NV[1] at all, and
-define the index value as CR3NV[3] << 2 | CR1NV[2] << 1 | 1.
+Sure, I will add a minimum.
 
-I assume what you're doing is fine as it shouldn't break backward
-compatibility with other older flashes as their CR3NV[1] has value one
-anyway. Correct me if I'm wrong.
+> default, although it is confusing - property is not required but it is
+> mandatory for OTP?
 
-Now looking at the code, what we usually do is to save the flash
-parameters described by SFDP in nor->params, then amend those parameters
-with fixup hooks if that's needed. Here you modify the map_id and then
-let the code use it in order to determine the sector_map. Then that
-sector_map (which is SMPT data from the table itself) is used to
-initialize erase regions. That sector_map can contain wrong data too.
+You are welcome to suggest a better rephrase.
+Using OTP settings is optional.
+If you set OTP then the number of regions and region length are mandatory.
+While offset and base are optional for OTP settings.
 
-I'd suggest saving a nor->params->sector_map then call a
-int spi_nor_post_smpt_fixups(struct spi_nor *nor,
-	const struct sfdp_parameter_header *smpt_header,
-	const u32 *smpt)
-in case spi_nor_get_map_in_use() fails. This way others can update
-sector_map as well if that's ever needed. What do you think?
 
-Cheers,
-ta
+>
+>
+>
+> > +
+> > +  otp-len:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Some flash devices need OTP parameters in the device tree.
+> > +      As we can not deduce the parameters based on JEDEC ID or SFDP.
+>
+> Don't repeat the same.
 
-[1]
-https://www.mouser.com/datasheet/2/100/CYPR_S_A0011121083_1-2541215.pdf?srsltid=AfmBOorpMLKdybn-E_tAUjSBW0AigP0bQ3JR3tD9VUPwf4nGVBYBC1fB
+Is there a grouping description?
 
+>
+> > +      This parameter indicates the size (length) in bytes of an OTP region.
+>
+> What if each region has different length? Is it possible?
+
+Yes, there are. Old Mactronix have chips with the first region bigger
+than the second region.
+As these are old chips, we may skip the support of them.
+
+>
+> > +      Currently the driver supports symmetric OTP,
+> > +       which means all regions must use the same size.
+>
+> Drop unneeded space in front.
+
+OK
+
+>
+> > +      The value must be positive and mandatory for OTP.
+>
+> Same comments as before.
+>
+> > +
+> > +  otp-offset:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Some flash devices need OTP parameters in the device tree.
+> > +      As we can not deduce the parameters based on JEDEC ID or SFDP.
+> > +      This parameter indicates the offset in bytes of
+> > +       an OTP region relative to its previous.
+> > +      User can omit it if the offset equals the length.
+> > +      Or in case we have a single OTP region.
+> > +
+> > +  otp-base:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Some flash devices need OTP parameters in the device tree.
+> > +      As we can not deduce the parameters based on JEDEC ID or SFDP.
+> > +      This parameter indicates the base in bytes of the first OTP region.
+> > +      User can omit it if the base is zero.
+>
+> so default: 0?
+
+Sure.
+
+>
+> I am not sure, but all this looks like duplicated description of nvmem
+> cells or some sort of partitions.
+>
+> Considering that this is first time the binding mentions OTP, I really
+> do not get what you are doing it. If the properties are to stay, please
+> describe better the problem (and hardware!) in commit msg.
+
+OK, good point.
+
+Thanks for the feedback.
+
+>
+> Best regards,
+> Krzysztof
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
