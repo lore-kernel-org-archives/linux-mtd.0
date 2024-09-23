@@ -4,85 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CF92CF9C6F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 06:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A893FCF9C6F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Sep 2024 06:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=U1EZBOXkuRTN/KkKTEVZKiOnbOeRl9IKlyKSQZxGUzM=; b=qQ3v5ehd1F235T
-	R828l7pk6ufWFTG9zhCSlRJMWQEEyEn+woN2S9eG6ORDnJ2z7J6GL4MtVWp9Ndyq7WjtnBg4TruOg
-	EnEQslwtHVMxn/hOCfYz9qTyv+eTUr4bAWQFTGkqPxmua2mQFejbkUii3eEw/CuZ90vNxYyV+GD8s
-	aWXTw9QQZMqMfjFiTsJEbauWjnsDd/vuoUT7oO4bjGYXfFCCnp6Al8O+O58tbguHIJ2vZYwOxUF0X
-	WTdReWPr2oATuXCkiJ01JCHtjSIasgUBvS+BvDZNGvS+u6L+HXLLx7UZ3hUnG+yn7mpkuY22NX2kB
-	RRvpW9X7xdYw/1WWgH7w==;
+	List-Owner; bh=HcfIlWtq7sfGToQ+2Megcls3XZFN0J4ialhxN0GOZ1I=; b=V/jqhu/IKH+9r5
+	Q+lwMJqjFvVgmgIkZCrHBuiy6PIgZRkjyrGqdIHhdvgPenUhP5fLSy5myQHao0Aflzw2MkCFG+Hm+
+	T+7HH+SkHCLdZoC39JxRiHi4JIyHN2XWbq97+Eg+ie7yfbX4iUoApvzLlwy+d4la4kzbFRjqZiEeD
+	OFIG7OP+mFTjzPeuBDYMb3OfD016C7sOBuQZhBNcCYcJ8+0/ozzx5U4us78R32uWpUol1FHlbGRqv
+	ufVkL5xmhjP90VbYC8YOU+2ctOq42q6RAt1mbuyKjFFUvOziS3Vyqq6kqSFxrVRnqgIb3qzb+agQY
+	wgAMGt8nMSaHehqlMe3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ssd1g-0000000GTQd-0pud;
-	Mon, 23 Sep 2024 06:58:28 +0000
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+	id 1ssd2n-0000000GTi5-28lP;
+	Mon, 23 Sep 2024 06:59:37 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sscxN-0000000GSRH-0ZQR
+	id 1ssd0I-0000000GSqq-0H8y
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Sep 2024 06:54:02 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-378f90ad32dso2398275f8f.0
-        for <linux-mtd@lists.infradead.org>; Sun, 22 Sep 2024 23:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1727074439; x=1727679239; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0IrKYwdcplB4PqG5MUDB7kDHEBg4+7QsR9hwNRsCDwA=;
-        b=qKBm+r3U4YURgxoSZ6GBLdB2R1VTjqPhZUJ7mM6cZQ85ExKDXNzW+IX8abcu476K/b
-         +z0nozwLdDS9Xlzwu2Oxxk60/1q9P1fZRi3PF7MFI8plbuClm7feoT8XRegDDvd+YoyU
-         g/ElioCpoYkPGqyLoKhOSjZSUgJ3lKt4E7F4lcOZOrq0NNDV6sHrqQG9rZEWDcRinbil
-         SpTAyvgc0mBoLhBRUYvpN8xswRvz+RqZis0yw1v684n5oVkOC4usXrQjXQST2nHrM15J
-         RoEil53zmcVw5LOftyb6vykDRK/i+B4D4hi3cQulQeY74z+rGHXp2eVGp/pzhuw6hRif
-         t48g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727074439; x=1727679239;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0IrKYwdcplB4PqG5MUDB7kDHEBg4+7QsR9hwNRsCDwA=;
-        b=rsrR8mXcj0jqaJXgck6To4EWwXFIHGk9WLexV0VoFwI2KFg6QHz2fdt8LRfsgaMtO1
-         XyTwJM+hQNxwRc9RzEFgCpbtjmUxEpZMLPq67jGqCpFS2zwgtAJV5sJzlzMFVaqwd1dP
-         zPZCxBJucpdF+vYGE5Dn1QaOyYy67dyfdu1lwbgG9Xt2/J5RXy0BcGBupXllQ4EhBTNj
-         vdQI7QWrpqyKiwjI26gQayS+TepvaMAf2gMQ4KjQCNyrEqQZjiVQqxrq0I5x+M3NpkkK
-         utjSobBy18Szdot3K9zIeR6P6HUsh6t2ic9/AnbEAdUSbr36rpoICyS2t4KsSFG7lmJT
-         3p2A==
-X-Forwarded-Encrypted: i=1; AJvYcCUEKvS431aLLAtqFdfpoGB4H9Pc/cF0CXh44a4KBaKlYOsECrXFtQnneqos4ayOaHjqvYYYQHLpTHU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzBU/FDQF8xTLZo0dm+7KD4vQO3/uy1d32cudM95srjI/qplHtN
-	/6vmHz0SDc3QdiepwndjKkIlYp/R0DGjGExbfTFcRvoSwJJLCn3XTbgkJSCfKLg=
-X-Google-Smtp-Source: AGHT+IEaPMxTl8BZwywGoBhw6tY+/KStLZzFF7wxzFciOYoL1eb6lQA+E2sOa2JobaYCp65dgoUFgA==
-X-Received: by 2002:a5d:4f0e:0:b0:374:bf97:ba10 with SMTP id ffacd0b85a97d-37a43154b16mr5364814f8f.25.1727074439272;
-        Sun, 22 Sep 2024 23:53:59 -0700 (PDT)
-Received: from [10.11.12.107] ([79.115.63.20])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e72e49bfsm23626562f8f.21.2024.09.22.23.53.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Sep 2024 23:53:58 -0700 (PDT)
-Message-ID: <97134efb-398d-4c21-a915-87a5b4f1b29a@linaro.org>
-Date: Mon, 23 Sep 2024 07:53:56 +0100
+	Mon, 23 Sep 2024 06:57:03 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1ssczs-0000bS-CI; Mon, 23 Sep 2024 08:56:36 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1ssczr-000teD-7N; Mon, 23 Sep 2024 08:56:35 +0200
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1ssczr-007QLc-0P;
+	Mon, 23 Sep 2024 08:56:35 +0200
+Date: Mon, 23 Sep 2024 08:56:35 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Amit Singh Tomar <amitsinght@marvell.com>
+Cc: Hui-Ping Chen <hpchen0nvt@gmail.com>, miquel.raynal@bootlin.com,
+	richard@nod.at, vigneshr@ti.com, robh@kernel.org,
+	krzk+dt@kernel.org, conor+dt@kernel.org, esben@geanix.com,
+	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] mtd: rawnand: nuvoton: add new driver for the
+ Nuvoton MA35 SoC
+Message-ID: <ZvERI9fscLBC09_F@pengutronix.de>
+References: <20240920063749.475604-1-hpchen0nvt@gmail.com>
+ <20240920063749.475604-3-hpchen0nvt@gmail.com>
+ <9245120b-9901-45c3-9a6e-600653f94bba@marvell.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 6/6] mtd: spi-nor: add support for Macronix Octal flash
-To: AlvinZhou <alvinzhou.tw@gmail.com>, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, broonie@kernel.org
-Cc: chengminglin@mxic.com.tw, leoyu@mxic.com.tw,
- AlvinZhou <alvinzhou@mxic.com.tw>, JaimeLiao <jaimeliao@mxic.com.tw>,
- Bough Chen <haibo.chen@nxp.com>
-References: <20240718034614.484018-1-alvinzhou.tw@gmail.com>
- <20240718034614.484018-7-alvinzhou.tw@gmail.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240718034614.484018-7-alvinzhou.tw@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <9245120b-9901-45c3-9a6e-600653f94bba@marvell.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240922_235401_213897_856FDC04 
-X-CRM114-Status: GOOD (  17.01  )
+X-CRM114-CacheID: sfid-20240922_235702_110524_BD540D62 
+X-CRM114-Status: GOOD (  20.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,45 +85,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Alvin,
+Hi Amit,
 
-I quickly skimmed over the previous 5 patches and they are looking fine.
-
-I don't get this patch however.
-
-On 7/18/24 4:46 AM, AlvinZhou wrote:
-> From: AlvinZhou <alvinzhou@mxic.com.tw>
+On Mon, Sep 23, 2024 at 01:19:03AM +0530, Amit Singh Tomar wrote:
+> Hi,
 > 
-> Adding Manufacture ID 0xC2 in last of ID table because of
-> Octal Flash need manufacturer fixup for enabling/disabling
-> Octal DTR mode.
-> 
-> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
-> Signed-off-by: AlvinZhou <alvinzhou@mxic.com.tw>
-> ---
->  drivers/mtd/spi-nor/macronix.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index f039819a5252..1a8ccebdfe0e 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -200,7 +200,9 @@ static const struct flash_info macronix_nor_parts[] = {
->  		.name = "mx25l3255e",
->  		.size = SZ_4M,
->  		.no_sfdp_flags = SECT_4K,
-> -	}
-> +	},
-> +	/* Need the manufacturer fixups, Keep this last */
-> +	{ .id = SNOR_ID(0xc2) }
->  };
->  
+> > +static int ma35_nand_do_write(struct nand_chip *chip, const u8 *addr, u32 len)
+> > +{
+> > +	struct ma35_nand_info *nand = nand_get_controller_data(chip);
+> > +	struct mtd_info *mtd = nand_to_mtd(chip);
+> > +	dma_addr_t dma_addr;
+> > +	int ret = 0, i;
+> > +	u32 reg;
+> > +
+> > +	if (len != mtd->writesize) {
+> > +		for (i = 0; i < len; i++)
+> > +			writel(addr[i], nand->regs + MA35_NFI_REG_NANDDATA);
+> > +		return 0;
+> > +	}
+> > +
+> > +	ma35_nand_dmac_init(nand);
+> > +
+> > +	writel(mtd->oobsize, nand->regs + MA35_NFI_REG_NANDRACTL);
+> > +
+> > +	writel(INT_DMA, nand->regs + MA35_NFI_REG_NANDINTEN);
+> > +	/* To mark this page as dirty. */
+> > +	reg = readl(nand->regs + MA35_NFI_REG_NANDRA0);
+> > +	if (reg & 0xffff0000)
+> > +		writel(reg & 0xffff, nand->regs + MA35_NFI_REG_NANDRA0);
+> > +
+> > +	dma_addr = dma_map_single(nand->dev, (void *)addr, len, DMA_TO_DEVICE);
+> > +	ret = dma_mapping_error(nand->dev, dma_addr);
+> > +	if (ret) {
+> > +		dev_err(nand->dev, "dma mapping error\n");
+> > +		return -EINVAL;
+> Shouldn't this return -ENOMEM or simply ret when there's an error? Also,
+> should we consider unmapping the page with dma_unmap_single in that case?
 
-Could you please elaborate why you need just the manufacturer id here? I
-would have expected to see a specific flash entry instead.
+When dma_map_single() returns an error the pages are not mapped, no
+need to unmap then.
 
-Thanks,
-ta
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
