@@ -4,80 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E43C0CF9C5B
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2024 03:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E52BCF9C6B
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2024 06:01:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fAXtMaDjHxGEPA0IqLrDQ2HrG6+7YTsHirhWRf5XIAk=; b=HBuKop++p2rFTf
-	PfSrikiSSCfU8UQgOdO4VTq776RK5H4/gBnoZMSs+lT2P4g/dsx7APdWYjBZQsvSpE0gmcXZqt1p4
-	cufnZqoCjWnxRCOlOpZfJekLaQMyXbSNQb00A1z2fUO9aNiODVSyXaiXBeM9j1rY5NAILcOR4sfvS
-	B0D7RXq+dqAT8VUU4ayd3Wzpqvsiaie2L1MlrqQIFPmstIyTHwbqH1k+ol8CxFwQ8RL3NxeQNMrxM
-	+8Orchg5NInN/Nvm5r3At+hz941TWMD/U4p0iIrK5nBwh/taaFx/XlK3+CcPsTbebYNmhWyn751st
-	p/8TROX6hR1voPY1jh6w==;
+	List-Owner; bh=Uav9HDFeVjlpIIA5gjPD/XDXOgF6pVU4JmRSKJVRCZc=; b=GTbeeL5I4/zB8G
+	TeWHhCczCgFrTLfUHUeDSnfORJpe3/T+iC6BJQxC53zcrw1QV2cwqkXiEldd7JZtDDey8zYu/rQ2M
+	BDEi8i+u1usDvV4JRiu91its7jLsQ3Hji6E8lGu3fbAdSnNicR9Q6zc/Nh1cg+2BudXXRt5f391f6
+	w/WkCEah1+/AP95jeRIHZXHZltOdkMRQXWX3XoDD2jf/WRdTuQagibEY2SvtCwVOYoWb9x7rloT27
+	ZYgVdZc2PO8sAgMNL2S0ZOuAvn3JnAXdItk5m4Uyip81Q5JUgUBTamT7Db6H/SFsCVCVLqDQB3gUn
+	dsTgJXibces6RtXpk7aQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sswCA-00000000ybN-2bAz;
-	Tue, 24 Sep 2024 03:26:34 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1ssycS-00000001AF9-3llh;
+	Tue, 24 Sep 2024 06:01:52 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sswC7-00000000yaf-2zzi
+	id 1ssycQ-00000001AER-08ei
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Sep 2024 03:26:32 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a7a843bef98so676422866b.2
-        for <linux-mtd@lists.infradead.org>; Mon, 23 Sep 2024 20:26:30 -0700 (PDT)
+	Tue, 24 Sep 2024 06:01:51 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-42cacabd2e0so43521095e9.3
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Sep 2024 23:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727148389; x=1727753189; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=56PjDxigXVOIzQ1oNphT+JNMfW878D/s9pl7IGdWoto=;
-        b=anoTL4f9x7wdWYNfLLq+Z35Q2sYmwRHQIFfBGOqIuHepyS1p10AzJUz0eBXNcr4gsD
-         2kto6o690Dvkuc+Y1IX4M38Cj4p7QUXIrp487NcGeNQ7BETMb8x17J6HA2lM6Dmkp48v
-         Rxm4/P8nTOoNEXszc6IIiUA7zTTU75HoZtkO0C/VkZHOIeqWmvGkGoGd0+WrPr+HJuT2
-         O720ZxgxSM4GqvIFrAAAwcy843fS9hf42kdjW1TB7LVUfE7IzFJ8lCOaooeXABfgFlh/
-         PbV4GSqad+fJ0GO2tgnpstkucWukFUeljY6Y4Jqe3+r4BOzHGfHLpGUUTjXaj3Vq0DSl
-         oaeg==
+        d=linaro.org; s=google; t=1727157708; x=1727762508; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ob6JTIBEgbtmPq1rO6JYwsnKZNVP+SaaSo/Eueelb/I=;
+        b=CPyWLfkm2wYSJW3yYHvfWxX7+oJIUBlQk4DK0Dck/7+JwqSldChzgZtrAgNJ5zqOG5
+         3/OAQyTCDZULXh4Cf18dcz9+0xcIuYbQRJNMvU8ThQ2dUFf80bTXYzYuC5OLuOMirq21
+         gTPBlzLotgyp+n9RO1iGKIXKogp+XS5IpKmOwy2mE3r5C1lL5K6cZXiQIhfr/IohrFtf
+         KT5p/pnlm5tCHQsdDhrH3xzTP8nxSQzvaYSi9Pq0TyX9FNY4XLZJVPdhq4Z7oSR1SjUT
+         FKHk4ye8NcpOEY6dLEWj99C33GKc3jV2ZfnsZ/CfHOOY1A20d992W7F9NJ8P7Fs0Ni4D
+         ho7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727148389; x=1727753189;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=56PjDxigXVOIzQ1oNphT+JNMfW878D/s9pl7IGdWoto=;
-        b=KxjPUGeO73QQIzEL6891YWVsIyqRIwXa2derQrfKGK3NTuiKZf6aGScULzwd5KndJl
-         tbawlG8Vjiit16Zm1WeIfOQ66f8auANvH3xKG2BpXlxy6ueGzbgv6HZwHYNOn3Egi42h
-         noH2xdfmdYMcgDIEcIdlXv8MmrWQ6d7oq/heI2ItbGbJGy3kGCcOdbwyMYAuiNMzbykI
-         Tt3h/VyCDMzAanoN/WIpuVtHYBRQLgBMoOy1dbajZS1KxWljM6F5+Pzo9Hxu4ddV8m2O
-         uuJ93zxQjxtTCEI6y+29EWvVfNvkE5R8QHK3CxsUFOXdM+jZWzPu8xLJNdOvURONBfwV
-         3fEQ==
-X-Gm-Message-State: AOJu0YwYlqVeu8ONpWiR4rH6npuDXEidKuDpqLkDK0rxsMesvTX+3g4r
-	iacPvGvTxEw3n+3rbRN8NFph+8oXNxCcd3C9PKbceFD0s8lq4BMcakodlBSSG/xyte5S3G7tds1
-	IaXBURHNaagYNQJpHPHPv1A0OhXs=
-X-Google-Smtp-Source: AGHT+IGhbAJwqXzVtJkfn2cS/fzTwtEm2nUykTxtIPRIuWSQCFK/QHe70KrLsbuDrVEt9/2u3Glg6ejNSJlGt4J1q+k=
-X-Received: by 2002:a17:907:f148:b0:a86:700f:93c0 with SMTP id
- a640c23a62f3a-a90d504f5c6mr1240193466b.35.1727148389175; Mon, 23 Sep 2024
- 20:26:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727157708; x=1727762508;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ob6JTIBEgbtmPq1rO6JYwsnKZNVP+SaaSo/Eueelb/I=;
+        b=exWDlbCsnMUdo/E7kXJXz2FTwbYeX9L7jT432O2Si1HPUJlC755CQ9DVvb8hRhok9E
+         2RpDmGllSFQkAe3eMzeQNEFdt3QHJvzbhrSa356D+fCyjJrzkOAKskskh/UfUY1uWuBf
+         O7SpwzNVLJaar1vOo8tTRVWtT9yrANkfpcrbm0ueybA1acRVWzGmdqPYe6vQnNhLIT5L
+         rQLqVl0h/q/27/EtCbZ24uwCS6mg6V3XBCw1lOdgemhI8QPwWGkNNkgRSjplLLKCHsrT
+         PO7hRSfXXK1nzpIRmgTrYflQhRWH2rqqzl/2V+hOp9wlGl+rKqG4gmZacNamVlS4GNsh
+         TXZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCAFmu2Uf3NiBEidmr02TKviT40BzEwbLSfWyM9nLEfPk+yBnP+proZ8Gmmj5IjNAkGzDOa8Rk5BQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyV0/+QWsWoFi41QoH4V7HqIXiIPqJbBSwmA+mlVnBkx2Ky7/TW
+	Fs+zpZzIZ7jZhHXobdvC6rFXJyjDi8W/vHEWSc0shA/tT08MRvzdzJPRJtVx9+bV5Rh7OBZ6Yy6
+	j
+X-Google-Smtp-Source: AGHT+IEc8dE1z8mjns2BVZvJiZddndWZFguZectKEyuhnGt4xCUxbxBYcfUzToBufPGSfnqeHYygsg==
+X-Received: by 2002:a05:600c:3b17:b0:42c:bd4d:e8ba with SMTP id 5b1f17b1804b1-42e7abe7af6mr102913185e9.8.1727157708060;
+        Mon, 23 Sep 2024 23:01:48 -0700 (PDT)
+Received: from [192.168.0.157] ([79.115.63.20])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc2cec13sm655158f8f.51.2024.09.23.23.01.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Sep 2024 23:01:46 -0700 (PDT)
+Message-ID: <d10ab191-d75b-4fad-aed2-33d08815f7a5@linaro.org>
+Date: Tue, 24 Sep 2024 07:01:42 +0100
 MIME-Version: 1.0
-References: <20240718034614.484018-1-alvinzhou.tw@gmail.com>
- <20240718034614.484018-7-alvinzhou.tw@gmail.com> <97134efb-398d-4c21-a915-87a5b4f1b29a@linaro.org>
-In-Reply-To: <97134efb-398d-4c21-a915-87a5b4f1b29a@linaro.org>
-From: Alvin Zhou <alvinzhou.tw@gmail.com>
-Date: Tue, 24 Sep 2024 11:25:34 +0800
-Message-ID: <CAPhrvRR3U9=0DuG_FQ81ZJq+RLe6Bn9YO831Mx2n3NkeV3MCdA@mail.gmail.com>
-Subject: Re: [PATCH v9 6/6] mtd: spi-nor: add support for Macronix Octal flash
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, pratyush@kernel.org, mwalle@kernel.org, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
-	broonie@kernel.org, chengminglin@mxic.com.tw, leoyu@mxic.com.tw, 
-	AlvinZhou <alvinzhou@mxic.com.tw>, JaimeLiao <jaimeliao@mxic.com.tw>, 
-	Bough Chen <haibo.chen@nxp.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/5] mtd: spi-nor: core: add manufacturer flags
+To: Erez <erezgeva2@gmail.com>
+Cc: Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Esben Haabendal <esben@geanix.com>
+References: <20240920181231.20542-1-erezgeva@nwtime.org>
+ <20240920181231.20542-2-erezgeva@nwtime.org>
+ <4e0cf43c-4843-451c-ac6f-86775dbccb2b@linaro.org>
+ <CANeKEMOmhAPM1j1_ihzcC2wL6jKsWXPCGfZs+euS8mRvtqgE5A@mail.gmail.com>
+ <2c87568d-3caa-4162-91de-094684f1b268@linaro.org>
+ <CANeKEMO4ckeJZHKEOKHVeamPzR045jpwkXWfJS9S6rBiMTayuQ@mail.gmail.com>
+ <688d3e68-c339-4a44-b6b5-366dd5f12965@linaro.org>
+ <CANeKEMNKF5WtVgzxbMnLFsqRHNOz=+gD-if8aBqsWwjgDvz3GA@mail.gmail.com>
+ <ca2c03f7-0769-4b2a-b743-3ebda9e29755@linaro.org>
+ <CANeKEMNdGvteumpvLHhDoiVoZwPJ4iOs+Ej8KDoXR9-Vz0-rvQ@mail.gmail.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <CANeKEMNdGvteumpvLHhDoiVoZwPJ4iOs+Ej8KDoXR9-Vz0-rvQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240923_202631_775714_CBBFE8D1 
-X-CRM114-Status: GOOD (  22.33  )
+X-CRM114-CacheID: sfid-20240923_230150_142661_97604294 
+X-CRM114-Status: GOOD (  21.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,40 +104,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgpUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+IOaWvCAy
-MDI05bm0OeaciDIz5pelIOmAseS4gCDkuIvljYgyOjU05a+r6YGT77yaCj4KPiBIaSwgQWx2aW4s
-Cj4KPiBJIHF1aWNrbHkgc2tpbW1lZCBvdmVyIHRoZSBwcmV2aW91cyA1IHBhdGNoZXMgYW5kIHRo
-ZXkgYXJlIGxvb2tpbmcgZmluZS4KPgo+IEkgZG9uJ3QgZ2V0IHRoaXMgcGF0Y2ggaG93ZXZlci4K
-Pgo+IE9uIDcvMTgvMjQgNDo0NiBBTSwgQWx2aW5aaG91IHdyb3RlOgo+ID4gRnJvbTogQWx2aW5a
-aG91IDxhbHZpbnpob3VAbXhpYy5jb20udHc+Cj4gPgo+ID4gQWRkaW5nIE1hbnVmYWN0dXJlIElE
-IDB4QzIgaW4gbGFzdCBvZiBJRCB0YWJsZSBiZWNhdXNlIG9mCj4gPiBPY3RhbCBGbGFzaCBuZWVk
-IG1hbnVmYWN0dXJlciBmaXh1cCBmb3IgZW5hYmxpbmcvZGlzYWJsaW5nCj4gPiBPY3RhbCBEVFIg
-bW9kZS4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBKYWltZUxpYW8gPGphaW1lbGlhb0BteGljLmNv
-bS50dz4KPiA+IFNpZ25lZC1vZmYtYnk6IEFsdmluWmhvdSA8YWx2aW56aG91QG14aWMuY29tLnR3
-Pgo+ID4gLS0tCj4gPiAgZHJpdmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jIHwgNCArKystCj4g
-PiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4KPiA+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMgYi9kcml2ZXJzL210
-ZC9zcGktbm9yL21hY3Jvbml4LmMKPiA+IGluZGV4IGYwMzk4MTlhNTI1Mi4uMWE4Y2NlYmRmZTBl
-IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jCj4gPiArKysg
-Yi9kcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMKPiA+IEBAIC0yMDAsNyArMjAwLDkgQEAg
-c3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIG1hY3Jvbml4X25vcl9wYXJ0c1tdID0gewo+
-ID4gICAgICAgICAgICAgICAubmFtZSA9ICJteDI1bDMyNTVlIiwKPiA+ICAgICAgICAgICAgICAg
-LnNpemUgPSBTWl80TSwKPiA+ICAgICAgICAgICAgICAgLm5vX3NmZHBfZmxhZ3MgPSBTRUNUXzRL
-LAo+ID4gLSAgICAgfQo+ID4gKyAgICAgfSwKPiA+ICsgICAgIC8qIE5lZWQgdGhlIG1hbnVmYWN0
-dXJlciBmaXh1cHMsIEtlZXAgdGhpcyBsYXN0ICovCj4gPiArICAgICB7IC5pZCA9IFNOT1JfSUQo
-MHhjMikgfQo+ID4gIH07Cj4gPgo+Cj4gQ291bGQgeW91IHBsZWFzZSBlbGFib3JhdGUgd2h5IHlv
-dSBuZWVkIGp1c3QgdGhlIG1hbnVmYWN0dXJlciBpZCBoZXJlPyBJCj4gd291bGQgaGF2ZSBleHBl
-Y3RlZCB0byBzZWUgYSBzcGVjaWZpYyBmbGFzaCBlbnRyeSBpbnN0ZWFkLgoKR3JhdGVmdWwgdG8g
-TWljaGFlbCBmb3IgdGhlIHZhbHVhYmxlIHN1Z2dlc3Rpb24uIFRoaXMgYWRkaXRpb24gb2YgdGhl
-Ck1hY3Jvbml4IG1hbnVmYWN0dXJlciBJRCBlbmFibGVzIHRoZSBmaXh1cCBmdW5jdGlvbnMgc3Vj
-aCBhcwptYWNyb25peF9ub3Jfc2V0X29jdGFsX2R0ciB0byBiZSBleGVjdXRlZCB3aXRob3V0IHRo
-ZSBuZWVkIHRvCmNyZWF0ZSBzZXBhcmF0ZSBJRCBlbnRyaWVzIGZvciBlYWNoIE9jdGFsIERUUiBO
-T1IgRmxhc2ggaW4gdGhlCmZsYXNoX2luZm8uCgo+Cj4gVGhhbmtzLAo+IHRhCgpUaGFua3MsCkFs
-dmluCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+
+On 9/23/24 8:30 PM, Erez wrote:
+> On Mon, 23 Sept 2024 at 19:53, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+
+cut
+
+>>>>> You ask if it is possible to deduce it from JEDEC ID and SFDP,
+>>>>> I answer that this is not possible, at least in some cases..
+>>>>
+>>>> I'm interested just about your case, not all the possible cases.
+>>>
+>>> Actually it is the MX25L3233F and its previous chips.
+>>
+>> Which previous chips? Do you have any such chip at hand? If not, why are
+>> we talking about collisions?
+> 
+> JEDEC ID 0xc22016
+> MX25L3205D - No SFDP, 2 OTP  regions of 128-bit, 384-bit, Status:End of Life,
+> Recommended Product MX25L3206E
+> MX25L3206E - support SFDP, 2 OTP  regions of 128-bit, 384-bit, Status:
+> Not recommend for new design Recommended Product MX25L3233F
+> MX25L3233F - support SFDP, 1 OTP region of 4096-bit, Status Production
+> 
+
+Okay. So you have just MX25L3233F on your table and you are worried
+about possible ID collisions with MX25L3206E and MX25L3205D. But you
+don't have access to MX25L3206E and MX25L3205D. Is my understanding correct?
+
+If it's a yes, then don't worry about ID collisions at all, you can't
+test the other flashes anyway. OTP is not used by the older flashes as
+there's no support right now, so you don't break anything. Just add your
+OTP organization to your flash and I (or other SPI NOR maintainer) will
+decide on how to handle the ID collisions when/if they appear.
+
+> JEDEC ID 0xc22017
+> MX25L6405D - No SFDP,  2 OTP  regions of 128-bit, 384-bit, Status: End
+> of Life, recommend Product MX25L6406E.
+> MX25L6406E - support SFDP, 2 OTP  regions of 128-bit, 384-bit,
+> Status:Not recommended for new design,
+> Recommended Product MX25L6433F.
+> MX25L6433F - support SFDP, 2 OTP regions of 4096-bit, 4096-bit, Status
+> Production.
+> 
+> JEDEC ID 0xc22015
+> MX25L1606E - support SFDP, 2 OTP  regions of 128-bit, 384-bit,Status:
+> Not recommend for new design,
+> Recommended Product MX25V16066
+> MX25V16066 - support SFDP, No OTP. Status Production.
+
+Thanks for the dive. We can ignore these because you can't test any of
+them. I'll worry about them when someone adds OTP support for them.
+
+cut
+
+>>
+>>> This is not because I oppose probing,
+>>>  this is because you ask for indirect probing, against Macronix own
+>>> recommendation.
+>>
+>> What did macronix exactly recommend? Did they say that we shouldn't
+>> interrogate the SFDP data in order to differentiate the flashes at
+>> run-time? If yes, why is that?
+> 
+> 
+> I forward the reply from Holger Schulze, Field Application Engineer,
+> Macronix Europe N.V. I received on the 3 Jul.
+> 
+> I ask:
+> "But the OTP setting is not in the SFDP.
+> How can we know which OTP size and number of regions to set?"
+> 
+> And the reply:
+> "You are correct, the OTP setting is not defined in the JEDEC spec for
+> the SFDP table. The only way is to refer to the data sheet."
+
+We already know that the OTP is not defined in any SFDP table. This
+doesn't mean that we can't compare SFDP tables to determine which flavor
+of flash is present. That is the reason why we ask for SFDP dumps when
+someone proposes a flash update or addition. So that we can compare the
+SFDP dumps and correctly identify the flash or assure backward
+compatibility for it.
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
