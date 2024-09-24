@@ -4,65 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3288ECF9C6B
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2024 14:52:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0BA3CF9C6B
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Sep 2024 20:34:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=L0zJBUnxxTIKn3epVwU1pnul3dbHtLJ564Yu3Hi2Ktg=; b=gRVDk1RRyqkjUEiv0w4DsD4AP0
-	JAu0Klp+COupkClaW42YNRAlXxkjs+SV65d/lMQGSlqK0GLvqWmizjXROPcW8DDZZ3NR28QFeuorN
-	8ydIKfmnepZHKPG/tHbsba8ecwOCriQMEAtyt1VBZmb95oTBaeIp4XPLfG0fRhnAN9qbTu+qTxduG
-	BQ6u3Mmm42IaeNKT3LBihKrLBBvF66VzFVsD0pxEHjtGA3KFHXfJMDEIFP7tgVJIA+ST9dNalGzKF
-	VHI6fbTxP68Uwvfq1Zet94pAkqvDDwkWi/uOWHwb35tyxwber2+tOf/K2lX9nrLqgw149xvRDuJZr
-	6cka/UoA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=r+WCrFpDm6VjHan6erHEU3/6IJPMF7kXrPv/k7PGwTs=; b=YXMa9xfrlyGlRg
+	a8GVdmYmAgyldgUIgQagVWL9TUYzuE1RJT+1iAwV15tgJ9QO2sqys25qHSnnYtoUY2oK+86M19ZTW
+	7g4GxprxYRpzBYcaUuALY/cRG6RmIWUmfKOfdhS6szYgwT2a1NTkFA7TMCBs23THo/IzmBC6mpDGF
+	7lq5LPFH+QJG1jHnHFsr0MdU72UvBfhuiQIQa4foybYPBvi5omo1NQcxjJziMlw0el+/PClr0/Ek/
+	EzyYfx5pjGSYb9UYNg3iWOl8dFkZqYIz0TsyScphGedttBFid/whdgWo5lz5eBOmz6O/mz5/bmfQH
+	k/6jbWHRNCPr3BC2SB9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1st6u6-00000002aoa-2yUm;
-	Tue, 24 Sep 2024 14:52:38 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1stCF3-00000003G8Q-4355;
+	Tue, 24 Sep 2024 20:34:37 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1st6u3-00000002aoE-2Ynx
-	for linux-mtd@lists.infradead.org;
-	Tue, 24 Sep 2024 14:52:36 +0000
+	id 1stCDl-00000003FmH-0Ptn;
+	Tue, 24 Sep 2024 20:33:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 5F1615C473A;
-	Tue, 24 Sep 2024 14:52:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42CB8C4CEC4;
-	Tue, 24 Sep 2024 14:52:32 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 37B26A4251C;
+	Tue, 24 Sep 2024 20:33:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0CB2C4CEC4;
+	Tue, 24 Sep 2024 20:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727189554;
-	bh=keRaJN5JmeP4cnnXSTQ7GucBOsaTPwdcyRxc4LBX160=;
+	s=k20201202; t=1727209995;
+	bh=McE1ehFOOaO9ZsLkHofB1vea/POcgDPEQ4Svju5Kh8o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uCCiGp55YCoqto6GQhdXR/7ya2p+SYO5Z2YwXnD22jI2LPyil/seZusg5f0GSqLOW
-	 8bl8gTNnE16Zkxgz/ZzIpJXlhFnbgooDOYUjyKgQJgyQJhLInIIT1AOWHJPqzdKSTU
-	 KnNyV5ViGbkQ4SDrGb+hT2GlOBZ9AA8PEIFC5Jq3FnhVxozXJwh57H0NViZowMKDxW
-	 KQcxnwH8i/aHt194FHhmmpbigpqSCnoRzdVuFzrfT7ZPSlSFX0T3+eAVSeZHZqVv6O
-	 zr2T1fFQwgImTo7nPGnsUKGSfFi/Q9vXot2OirPhQWLv3oePZVBKcwH612/qTH/yfl
-	 fZFY+UoNSLWwg==
-Date: Tue, 24 Sep 2024 16:52:30 +0200
-From: Mark Brown <broonie@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: AlvinZhou <alvinzhou.tw@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
-	richard@nod.at, vigneshr@ti.com, chengminglin@mxic.com.tw,
-	leoyu@mxic.com.tw, AlvinZhou <alvinzhou@mxic.com.tw>,
-	JaimeLiao <jaimeliao@mxic.com.tw>
-Subject: Re: [PATCH v9 5/6] spi: mxic: Add support for swapping byte
-Message-ID: <ZvLSLt95Hrd7JYj3@finisterre.sirena.org.uk>
-References: <20240718034614.484018-1-alvinzhou.tw@gmail.com>
- <20240718034614.484018-6-alvinzhou.tw@gmail.com>
- <ZvKktPc0luV9hItN@finisterre.sirena.org.uk>
- <a87a159e-eff1-45c3-bf26-115d4ca5a9be@linaro.org>
+	b=bodrovcqo2at7klVob1pQ8dfshpDN3ftJaleaWJhqKX0QyftgtY0HZBhdiSUEnQOj
+	 NRDpHVdnC4XJB+AfXU/uqU3dVQosPVr7u/SE+x6LOyY0m5vpBCFVR8h8gr1rifkNkn
+	 9WfOZp2Q4p4/MoWfLZTvJSsHgbuAwjwNweWvNTgsTwyKUPiiZmq1BYC6mLETTLwKV5
+	 EXtHoYpgZJqalgyxmGMYDstfj2SkYzOWwGqissDa2154PZuGHbYlOvkI31Iouoh3Eh
+	 J9EBYeakfhnX6EGA+KyXAQQJPum4vuSkO7UNUQNn/9kGmFzfcVL/i5sD3fvgdd1G4W
+	 4L0lF1Ti8X/7g==
+Date: Tue, 24 Sep 2024 15:33:15 -0500
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
+	Michael Walle <mwalle@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	linux-mtd@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-kernel@vger.kernel.org, Pratyush Yadav <pratyush@kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: mtd: jedec,spi-nor: add optional
+ vcc-supply
+Message-ID: <172720999440.288956.7630447926663790865.robh@kernel.org>
+References: <20240920-spi-v1-0-97f220c2e10c@nxp.com>
+ <20240920-spi-v1-1-97f220c2e10c@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <a87a159e-eff1-45c3-bf26-115d4ca5a9be@linaro.org>
-X-Cookie: Editing is a rewording activity.
+Content-Disposition: inline
+In-Reply-To: <20240920-spi-v1-1-97f220c2e10c@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240924_075235_715345_8279C3E4 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20240924_133317_224279_91BF4802 
+X-CRM114-Status: UNSURE (   8.43  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,62 +79,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3346212173478278997=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============3346212173478278997==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RdxPtqe1G7U3rehe"
-Content-Disposition: inline
+On Fri, 20 Sep 2024 16:54:06 +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Introduce optional vcc-supply property, spi nor flash needs power supply
+> to work properly. The power supply maybe software controlable per board
+> design.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
+Acked-by: Rob Herring (Arm) <robh@kernel.org>
 
---RdxPtqe1G7U3rehe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Sep 24, 2024 at 03:29:37PM +0100, Tudor Ambarus wrote:
-> On 9/24/24 12:38 PM, Mark Brown wrote:
-
-> > Acked-by: Mark Brown <broonie@kernel.org>
-
-> I'm fine with the SPI bits as well. Shall I take the SPI/SPIMEM patches
-> through mtd and provide you an immutable tag? I can do that after -rc1
-> is out.
-
-> Or you can take them directly through spi/, but I'll need an immutable tag.
-
-If you apply and send me a pull request with the tag that should be
-good.
-
---RdxPtqe1G7U3rehe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmby0ioACgkQJNaLcl1U
-h9AqJQf/WnsU8mtfyhIc1dUx0L/KK1z+R/rUY8OIQJxsLZg7e/OKyep//NQjPV0C
-6L6xsnHFR5+IvJMbsTyJAQuOxL/G+M4xkUOOYpYgjlMkNPOgrk18ePdUFcWa60q5
-dzMkkvH5y2DsBkC/vvedANvFzLjCPgkSUa4TEEe3Qt4yrgKPNeR4ctyVregZr8eK
-B/nO7Xhcs/epbXlNc5h8xLwzbVAjPROAIz0hyX0y12z0qYgWbP30ykLsR+D2cycG
-R6iv19NkP8wpHBwx/1P4nFfFFFkujgJuHWDVC1anREgfjsnhy2VBK1SsSb1bNidX
-pJvlkoC6XYed7tqABVCGiqBn3NJHYQ==
-=mo0n
------END PGP SIGNATURE-----
-
---RdxPtqe1G7U3rehe--
-
-
---===============3346212173478278997==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3346212173478278997==--
-
