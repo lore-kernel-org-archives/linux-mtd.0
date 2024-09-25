@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4BABC369C9
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8E67C369C8
 	for <linux-mtd@archiver.kernel.org>; Wed, 25 Sep 2024 10:15:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YRw/8P1Mw/mJjjmTNRIGfF6y4trrNaBQJPJViSrSm64=; b=UlflmyZ/LAvSKn
-	IU2EY7cSQjnqXWP/4Vqnvhu6MyXcoqopBZvXLj7pHKclJAk4wzX37DLyAJOVveLzqa3JqhYZKqJyy
-	rLhInptg0Sig0GyxcoV00yCX+1rpnYxyKx/ctM8pkq/l8v0FzstdmTrVDjcht3ApuFi5tExNuSP1d
-	AaxZlT6IrYO0iaakCslkmcwNT97r1bfwZ+m9+gJNKvYFJobkz6eAZZClmLqCsSDiq01hdUA66G7PQ
-	dB1rgOKc9UJLkM7AqT3jtGGl6f/rzRry0Y5w03CTwmqT3v+UTMJNTlskZ6jo6LAzGXMuAoJmWqDt5
-	707vpdrdEq7a5Y47Jj8Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MKsE4l4p6VQoG0JPrAtn5q8lyHe+y0zpgO26jqpXZ7M=; b=vLNzWBK6sRbZ3W
+	CYCXEOFHxFSPS9G1ZIGhVsdDHkiUyKtvHtpIrHWjJkQUOzz8EhBDuIUt1B61XE6cpB+/U3tXYGnUx
+	908a52egmT9lORzb7O9loUF4iL/5jAIxcPHsM+RW7Qfqask+3osEPPVuiWT3gkr5GDZQhWKkuibED
+	S7e1FFYXFQQZVkDvbjZCm+dIJ7hrlGspoLI/din2A/UQ3ER3bGA1/H+cuVZcOLzwfidC/iBaxefm+
+	XaZu5m1AGE1MP8qQRqlj136qmQKBMUK5qxcKS406iAF+c8SpDJ8Lo/IStYvpBSm9R+RszgW2o86JH
+	g9i9JSOuCdG/MjR3bj3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1stP3C-00000004isJ-2ZZe;
+	id 1stP3C-00000004is0-0B7u;
 	Wed, 25 Sep 2024 10:15:14 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1stP38-00000004iqw-3dIG
+	id 1stP39-00000004ir1-2eqs
 	for linux-mtd@lists.infradead.org;
 	Wed, 25 Sep 2024 10:15:13 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-374c4c6cb29so6443535f8f.3
-        for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2024 03:15:10 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-42cde6b5094so61130655e9.3
+        for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2024 03:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727259309; x=1727864109; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ilIaUtbIEpTD2StWHvTRKlM/sRvr3jwjW7JtAZ7o8Ew=;
-        b=WDd9RpbR9mo+gWixx0s0W8KkQ/QS8pX4vVugvZZi6PTulEZo7UanCZDMCgqalt/NN5
-         qXvpZiGWSpA87PABG39JoqPlF+ZtM2GouaKsdfnLG39AGQld4U3G6Ri+fpQ0y1kpiFEn
-         QnszyPhV67x8gcc6ZlGxAoulx+iKhZPcScowBgZ3Ql/0nmAYQBS6lWLPZY2HLAKSBvMO
-         kmKDxYsdKkiljLyO/5Re1Tg6Lc0M6dg54o3CL0RCEqL52DEqzhDXuCW08YFiDpRxLu22
-         zCpeYDzDqFq2uhcZl3QQWsHVr/J/H28nHCkBnpY5BDYF6dSxcgue/C8zvSI/TqsZgDnC
-         vqwQ==
+        d=gmail.com; s=20230601; t=1727259310; x=1727864110; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mH3iAq1TAeBK36lg95WliQsOcKLSEbditM8M8e4wTwE=;
+        b=YrXgTvIi0MZWTQllnf7o/aP+iDfZ35hbGtglL34esLMroCmSRLZN8UWstbKzzDOksF
+         e+ee1g2MF8PSfMpyfCWEPNCjHsXrw9PIxOIrqwOfuAFjMlgIBAUaeOIqM7AUaJ7z1GYl
+         qlL02470t7DsjISBKWRTDeK2wxOIPNQjgTld/Q70Sxn+ClFiFvOdQ+69rey1bTxuKt2W
+         vsRDRWOR+z0N7haE9Ff77jT2kSX21ZTblVoKSne6Rzsk+cHfdNaFn/zH0OtlCDt/7lwC
+         zuEepnC6UGgnTDXoU2iDH7rqsezCBQgl10+raA0l6XNhtb8oVKud7SvLOmMGJ/8ROS+4
+         bpWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727259309; x=1727864109;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ilIaUtbIEpTD2StWHvTRKlM/sRvr3jwjW7JtAZ7o8Ew=;
-        b=VwZZgdWwbm7LJc8EpP9E2Oq+Nqiah5zKp+OM7EpKf7sbj+9X/LhnIM4ncoJit3jqGh
-         vW/YEmuKvndk1Trlhf9XSlqGxIx9MdGmObAh2SGrU5cQSMO9i2rrrfP9z8WWDkzGRXl+
-         PNkDM7KYmZcdJEywA2wFqxYiL/omQB8tWLZvNWR8GvqHmwduZPQB9teZydj8vbJVxjwy
-         Yi+/pturou3wqigM9tnhR9/qZX8+CjjDTvYTDnsEc4e0j+Lhm9Oe6+o/FI2kYgWlWLyG
-         rLNgm0AdVD51j2g5wKnVsb1AA8rczUX4pCULXGXJsm3VtSksrhWHjzdyzwuLfUJhCPkD
-         WfHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcpbfM5nyN7X5ZTFD9GN2JPvnmn680NmY6MLSd0Dqszri6BKkgh32kLzr4l78Ny3PQCXNWrvwkJOE=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxsz1nX3Dlk523eO9BSoIh48yDfRZdXbF42whSHIwrjG58j74Zn
-	FQv+k8Xsq9gGuj15HK03BaV8NB2UZEFDaRV7ulmhUqIp0hIFxLXn
-X-Google-Smtp-Source: AGHT+IEmsRgIRfzVIU5fak3npQDb5hJ8p1AtivNkdH9EjqCFOo9Ah8NVO0bkOdgO29790nCRUCu71g==
-X-Received: by 2002:a05:6000:1141:b0:374:c90e:990c with SMTP id ffacd0b85a97d-37cc2480bcdmr1731315f8f.33.1727259308798;
-        Wed, 25 Sep 2024 03:15:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727259310; x=1727864110;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mH3iAq1TAeBK36lg95WliQsOcKLSEbditM8M8e4wTwE=;
+        b=ae1aGr4jCZQo/pvVzO8jFESHtVBsmu6ziafvCz7VF266yNjzH8DqvxkJC2+brQ1EhH
+         CM1xXr/LMxd+crSyx3YuJSMm2BPbhcVNLVgB0jcYy7Tws1EkQQKnFBztA3UzRavWNOm+
+         wVnwaV3noOLK/OGAslxzYgRyNONS5FAP/TvngwousGEeoumb8PVKFZoqiYOMRxWfmGjX
+         QJY5JyuXKeyvzqWrG0p097ggnYsuftMWe2nWRThVdjFVoksRYYI35msyF+Tl37b//yUe
+         ylRWSZ/zSF9Z2oYCBMBpo4V909ZLaJDi8baxGch2W2JylO8xGwZCp7SrM9z7Jek9FUUL
+         XQug==
+X-Forwarded-Encrypted: i=1; AJvYcCV03uXJpz5g+2Qz1cnSWOaB85/X88Rn+cY+65TP+gixg6BEDmGt58oMdNObpqJJOWGQpePs2gFh+PY=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx0KeQWcuBWKnEybCXRDCUDAvweB/cRxTIVQefSW5u1ugxjw4f7
+	lZgJUxSoG6AkNGDIMvkdJCgdZC3m2V82LdAHgh21ciZvneWY5TgJ
+X-Google-Smtp-Source: AGHT+IEDuMF7AmbE72EiRIWfTyj8UDV6s6Ac8BVbi1Q8y0Keq8ajGW2UzIm9myAL8AG1LUQcAtjFmA==
+X-Received: by 2002:adf:f1ca:0:b0:374:c8cc:1bb1 with SMTP id ffacd0b85a97d-37cc24b575bmr1521519f8f.39.1727259309987;
+        Wed, 25 Sep 2024 03:15:09 -0700 (PDT)
 Received: from localhost.localdomain (93-34-90-105.ip49.fastwebnet.it. [93.34.90.105])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-37cbc1560a7sm3628194f8f.0.2024.09.25.03.15.07
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-37cbc1560a7sm3628194f8f.0.2024.09.25.03.15.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2024 03:15:08 -0700 (PDT)
+        Wed, 25 Sep 2024 03:15:09 -0700 (PDT)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -78,14 +80,17 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-kernel@vger.kernel.org,
 	Lorenzo Bianconi <lorenzo@kernel.org>,
 	upstream@airoha.com
-Subject: [PATCH 0/3] mtd: Add support for Airoha partition scheme
-Date: Wed, 25 Sep 2024 12:13:56 +0200
-Message-ID: <20240925101422.8373-1-ansuelsmth@gmail.com>
+Subject: [PATCH 1/3] of: also export of_update_property
+Date: Wed, 25 Sep 2024 12:13:57 +0200
+Message-ID: <20240925101422.8373-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240925101422.8373-1-ansuelsmth@gmail.com>
+References: <20240925101422.8373-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240925_031510_939307_FC1DBA77 
-X-CRM114-Status: GOOD (  17.02  )
+X-CRM114-CacheID: sfid-20240925_031511_712182_DF2E9FBE 
+X-CRM114-Status: UNSURE (   9.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,42 +107,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is split from a different series called "mtd: improve block2mtd +
-airoha parser" with only the parser changes.
+Similar to how is done for of_add_property and of_remove_property, also
+export of_update_property to permit kmod to use this additional function
+and correctly update entry in DT.
 
-This series add support for the Airoha partition table where
-the last partition is always ART and is placed at the end of the flash.
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/of/base.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-This require dynamic calculation of the offset as some dedicated
-driver for bad block management might be used that reserve some space
-at the end of the flash for bad block accounting. This special driver
-change the end offset of the flash hence a dynamic parser is needed.
-
-New aarch64 Airoha SoC (EN7581) make use of this partition scheme or
-calibration data is not accessible.
-
-Relevant Changes from old series:
-Changes v3:
-- Add compatible to partitions.yaml
-
-Christian Marangi (3):
-  of: also export of_update_property
-  dt-bindings: mtd: Add Documentation for Airoha fixed-partitions
-  mtd: parser: add support for Airoha parser
-
- .../partitions/airoha,fixed-partitions.yaml   | 80 +++++++++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- drivers/mtd/parsers/Kconfig                   | 10 +++
- drivers/mtd/parsers/Makefile                  |  1 +
- drivers/mtd/parsers/ofpart_airoha.c           | 57 +++++++++++++
- drivers/mtd/parsers/ofpart_airoha.h           | 18 +++++
- drivers/mtd/parsers/ofpart_core.c             |  6 ++
- drivers/of/base.c                             |  1 +
- 8 files changed, 174 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/airoha,fixed-partitions.yaml
- create mode 100644 drivers/mtd/parsers/ofpart_airoha.c
- create mode 100644 drivers/mtd/parsers/ofpart_airoha.h
-
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 20603d3c9931..b2d523cf4925 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -1746,6 +1746,7 @@ int of_update_property(struct device_node *np, struct property *newprop)
+ 
+ 	return rc;
+ }
++EXPORT_SYMBOL_GPL(of_update_property);
+ 
+ static void of_alias_add(struct alias_prop *ap, struct device_node *np,
+ 			 int id, const char *stem, int stem_len)
 -- 
 2.45.2
 
