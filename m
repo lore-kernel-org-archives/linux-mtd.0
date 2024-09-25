@@ -4,92 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59466C369D2
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Sep 2024 11:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47782C369D5
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Sep 2024 11:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AhL9+qp9elE+bR+Nb1K784TyTRq7UvsLQUhYuUdMmIY=; b=1B6e5fpEfvcH7J
-	pn31eIH3B7aLWvqDuwEjzKKl2qhYZiaUlODe8otjjy579iNnmILIVqHWBbLeIGaepjaX8UiwNnC5P
-	/Vj++f0kdx6q9dnjKPD2S7DAd2mHjmKT5odi12fotgb7cZitGZL9GdCKYopnSnq3xAOR3LVhSJozR
-	lscAu4evHFdelfycaFegtKwM+g6UgjBlVZ3Y52W00/vADSkDl9+gJyp2YZVv+5Ds+MlEkHBmdMdT5
-	nXHzLsXY85VKHT8h7TQA21QXE0AQQU1trU+nCH6tg45/flBvG5RnbxTYuNbtuxzacJtmHl0n6sCtz
-	EPN0cItmZpIVXMBaMExg==;
+	List-Owner; bh=JyjHnwNwDrzXQTUwxhqXsHSsbjesbLHrb4gOQs8xIHE=; b=VMNcemyEc6nK1k
+	crZ455hB1wmG5Vffglpco0woAfQMdM+hX80zGRQUh1P/eAQyfcZSuKuCyC7kgh7HqkrrJ+fUB6cSg
+	Rg3NlFKiVsyPFf3Xh5g6Yg1dja7/TxKwDnv75zOD12o3fO1PkrUKYBqaqlfGMVbJnVmDzXUkmz4vq
+	MNfSQ3wXoUuBlOYZJMoxETyLCWi5uRmennxH43H+B8XjlLUpDI9f+wy2/pWdUzLLJNeZ2M0VPdcir
+	QA1N20DZsSUXnpV9///Ou7PboSDbBQ50L7vtwT8F4I7PjW8+XcRuaYb55MGPaauF++XyG1ckzvL7N
+	ypUgyQpWH3o8B8EJ+yJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1stQJA-00000004tFB-05AE;
-	Wed, 25 Sep 2024 11:35:48 +0000
-Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
+	id 1stQf8-00000004z8e-1hTQ;
+	Wed, 25 Sep 2024 11:58:30 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1stQJ7-00000004tEn-05cl
+	id 1stQZp-00000004xfZ-2nq8
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Sep 2024 11:35:46 +0000
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-42cacabd2e0so57539535e9.3
-        for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2024 04:35:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727264143; x=1727868943; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=qWs4MKWn4IG5TDYW4mkeYaUP9TdSrJm2s49LW7b6huE=;
-        b=Sa+wJ5Tz5vyX5FNAXhIYJZL5joZdxlq4mqgyJU98/EhaULfYar5+JZNqy6BykNJBf2
-         pIZ9C6iwC1PBOgXe3q8Es+IOP+8EYHkSL1+Osx5krlt96KUTyTeDLrOuvdg5+YgNJO9p
-         0i14bGU4L/6QC6+7pnur9va0KUVg3LalW/SXVvu/D5iIBDOhxJq8Lig1yiBIipKs/cHk
-         yhgsksyTJfdG+CWAsHEOB6hMwg9Fd+jZU3TzsmQMCxJFIZ/sKSJD+iVxZJ0VdI/lED6n
-         ZgJHQ8YjqbFxAwqb2ZrcOFf5th2flvXPzDghHUZ+XtEmxBfdvFFrbMUfEqOjCPVFIDou
-         +2rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727264143; x=1727868943;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qWs4MKWn4IG5TDYW4mkeYaUP9TdSrJm2s49LW7b6huE=;
-        b=OTZensHo8M1KiqCI8G2THXt5I+tq7s/HBWaJHdJ5CVGLt0A/JXbh55MSn6DaemnzbM
-         qMwk1DuSts5DvjFp1wH0r3+Xy3kaS/+ltFe7IYZHynsBQr5ymOkRZEcTGkgfTIXUDy4a
-         WV2VXIUmTpRZa03YHk9kUYLLOFj5fQN2a1xPkVLWppQrsuy7SBGlVMAZbvQU5UcPOscG
-         DTmKBHSXjpWW2FK/js8KLrVkpI4Ipch31ppZOt7H3b2kjsMxX7iF3+X+4U+6W08EyheJ
-         7k77lEXQTDH5u6NrGuo27nNusuT/UowGebLF2fpR+IfNl4c+8hgKKJ0uzoCEFI68J14t
-         RT+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX7703k6klhrZuHPW8KiDWAFYaXU/GzXht6UCsTEYhZ3L6Qvx+bxAv445ge2loR7AoYu8UNTXhIPco=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxPw1d+jKRNVkd+TXvuo8RR3VPwu5OWU2sjYIv31iTyst0/dS9k
-	oYyR+aflvyHp1RvHoR/PVeHYtqOw75w/lUKLgWVUTWkgkHIzJSZ2
-X-Google-Smtp-Source: AGHT+IHRdPtqmM9PLpkqO4zrDeiSAfnuAfG5Sq385VHJ2FgMeMRF8IuH66Jm6m6MGMrtVGh0FU9tAA==
-X-Received: by 2002:a5d:4b07:0:b0:374:c1bd:f7c0 with SMTP id ffacd0b85a97d-37cc2479fa9mr1649530f8f.22.1727264142558;
-        Wed, 25 Sep 2024 04:35:42 -0700 (PDT)
-Received: from Ansuel-XPS. (93-34-90-105.ip49.fastwebnet.it. [93.34.90.105])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc32add1sm3713658f8f.114.2024.09.25.04.35.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2024 04:35:42 -0700 (PDT)
-Message-ID: <66f3f58e.5d0a0220.5d655.b48a@mx.google.com>
-X-Google-Original-Message-ID: <ZvP1isSJk2ebHdLz@Ansuel-XPS.>
-Date: Wed, 25 Sep 2024 13:35:38 +0200
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Saravana Kannan <saravanak@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-	upstream@airoha.com
+	Wed, 25 Sep 2024 11:53:03 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4A1B4FF803;
+	Wed, 25 Sep 2024 11:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1727265178;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rEB2l7uMtdKl3fE8fywDslPAGKGpR8hMKHGK5fGclE0=;
+	b=dgh4/71kLNp+tfE+mazcuCvgP5lMlVVsW2znVEw6E3ALQZLnLgpfBO+yAJ4aJhTmbi1Atb
+	8m/3NxWtLwLSYMbN+j+SFfZ7VBcDMEkdz6OqtWlJZQVeWEcii+PX7mh1LzCR93Ch0VZ1KE
+	6B6PgdNSSVECwXBW1RPOUDRf+j/iCEm+6qZSMlja6AMGQiOjXbmtnMa7r48TpPhnnGmn7V
+	C/efCLt2z+aFw8lOAuHZlA7DII8kyQ9CYHTQM4P+QDfVTW0DHzIxCg6vGLk+A++rTtpGtR
+	pk6Mb0iGSL3pGZxDHjThVX9Meu5aefbTpp1jtX2UekudfYcNym8G3oR/dLGPqg==
+Date: Wed, 25 Sep 2024 13:52:56 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Saravana Kannan
+ <saravanak@google.com>, Florian Fainelli <f.fainelli@gmail.com>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Wolfram Sang
+ <wsa+renesas@sang-engineering.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Lorenzo Bianconi
+ <lorenzo@kernel.org>, upstream@airoha.com
 Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add Documentation for Airoha
  fixed-partitions
+Message-ID: <20240925135256.32d3a0f7@xps-13>
+In-Reply-To: <66f3f58e.5d0a0220.5d655.b48a@mx.google.com>
 References: <20240925101422.8373-1-ansuelsmth@gmail.com>
- <20240925101422.8373-3-ansuelsmth@gmail.com>
- <20240925133003.619c40c4@xps-13>
+	<20240925101422.8373-3-ansuelsmth@gmail.com>
+	<20240925133003.619c40c4@xps-13>
+	<66f3f58e.5d0a0220.5d655.b48a@mx.google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240925133003.619c40c4@xps-13>
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240925_043545_089818_23F0952E 
-X-CRM114-Status: GOOD (  30.23  )
+X-CRM114-CacheID: sfid-20240925_045302_167339_80EC4211 
+X-CRM114-Status: GOOD (  34.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,141 +78,109 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 25, 2024 at 01:30:03PM +0200, Miquel Raynal wrote:
-> Hi Christian,
-> 
-> ansuelsmth@gmail.com wrote on Wed, 25 Sep 2024 12:13:58 +0200:
-> 
-> > Add Documentation for Airoha fixed-partitions compatibles.
-> > 
-> > Airoha based SoC declare a dedicated partition at the end of the flash to
-> > store calibration and device specific data, in addition to fixed
-> > partitions.
-> > 
-> > The offset of this special partition is not well defined as a custom bad
-> > block management driver is used that reserve space at the end of the flash.
-> > 
-> > This binding allows defining all fixed partitions and marking the last one
-> > to detect the correct offset.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  .../partitions/airoha,fixed-partitions.yaml   | 80 +++++++++++++++++++
-> >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
-> >  2 files changed, 81 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/airoha,fixed-partitions.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/partitions/airoha,fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/airoha,fixed-partitions.yaml
-> > new file mode 100644
-> > index 000000000000..a45df51065af
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/partitions/airoha,fixed-partitions.yaml
-> > @@ -0,0 +1,80 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/partitions/airoha,fixed-partitions.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Airoha SoC partitioning
-> > +
-> > +description: |
-> > +  Airoha based SoC declare a dedicated partition at the end of the flash to
-> > +  store calibration and device specific data, in addition to fixed partitions.
-> > +
-> > +  The offset of this special partition is not well defined as a custom bad block
-> > +  management driver is used that reserve space at the end of the flash.
-> > +
-> > +  This binding allows defining all fixed partitions and marking the last one to
-> > +  detect the correct offset from the new end of the flash.
-> > +
-> > +maintainers:
-> > +  - Christian Marangi <ansuelsmth@gmail.com>
-> > +
-> > +select: false
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: airoha,fixed-partitions
-> > +
-> > +  "#address-cells":
-> > +    enum: [ 1, 2 ]
-> > +
-> > +  "#size-cells":
-> > +    enum: [ 1, 2 ]
-> > +
-> > +patternProperties:
-> > +  "^partition@[0-9a-f]+$":
-> > +    $ref: partition.yaml#
-> > +    properties:
-> > +      compatible:
-> > +        const: airoha,dynamic-art
-> > +    unevaluatedProperties: false
-> > +
-> > +required:
-> > +  - "#address-cells"
-> > +  - "#size-cells"
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    partitions {
-> > +        compatible = "airoha,fixed-partitions";
-> > +        #address-cells = <1>;
-> > +        #size-cells = <1>;
-> > +
-> > +        partition@0 {
-> > +          label = "bootloader";
-> > +          reg = <0x00000000 0x00080000>;
-> > +        };
-> > +
-> > +        partition@80000 {
-> > +          label = "tclinux";
-> > +          reg = <0x00080000 0x02800000>;
-> > +        };
-> > +
-> > +        partition@2880000 {
-> > +          label = "tclinux_slave";
-> > +          reg = <0x02880000 0x02800000>;
-> > +        };
-> > +
-> > +        partition@5080000 {
-> > +          label = "rootfs_data";
-> > +          reg = <0x5080000 0x00800000>;
-> > +        };
-> > +
-> > +        partition@ffffffff {
-> > +          compatible = "airoha,dynamic-art";
-> > +          label = "art";
-> > +          reg = <0xffffffff 0x00300000>;
-> 
-> I'm a little bit puzzled by this kind of information which is known to
-> be wrong. As the partition offset and size must be dynamically
-> calculated, this reg property (as well as the size parameter of the
-> previous one) are notably wrong. I guess we are not fully constrained
-> by the fixed-partitions schema here, so could we avoid the reg property
-> in the airoha,dynamic-art partition? Maybe we also need a #define for a
-> specific placeholder in the penultimate reg property too (for the size).
->
-
-Maybe instead of reg we can use a property like size?
-
-Can you better elaborate the suggestion about the #define?
-
-Do you mean for case where the last partition might overlap
-with the penultimate? Honestly in such case I would error hard, that
-case happen when too much space is reserved and that is a
-misconfiguration of the system (developer error)
-
--- 
-	Ansuel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hyaXN0aWFuLAoKYW5zdWVsc210aEBnbWFpbC5jb20gd3JvdGUgb24gV2VkLCAyNSBTZXAg
+MjAyNCAxMzozNTozOCArMDIwMDoKCj4gT24gV2VkLCBTZXAgMjUsIDIwMjQgYXQgMDE6MzA6MDNQ
+TSArMDIwMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IEhpIENocmlzdGlhbiwKPiA+IAo+ID4g
+YW5zdWVsc210aEBnbWFpbC5jb20gd3JvdGUgb24gV2VkLCAyNSBTZXAgMjAyNCAxMjoxMzo1OCAr
+MDIwMDoKPiA+ICAgCj4gPiA+IEFkZCBEb2N1bWVudGF0aW9uIGZvciBBaXJvaGEgZml4ZWQtcGFy
+dGl0aW9ucyBjb21wYXRpYmxlcy4KPiA+ID4gCj4gPiA+IEFpcm9oYSBiYXNlZCBTb0MgZGVjbGFy
+ZSBhIGRlZGljYXRlZCBwYXJ0aXRpb24gYXQgdGhlIGVuZCBvZiB0aGUgZmxhc2ggdG8KPiA+ID4g
+c3RvcmUgY2FsaWJyYXRpb24gYW5kIGRldmljZSBzcGVjaWZpYyBkYXRhLCBpbiBhZGRpdGlvbiB0
+byBmaXhlZAo+ID4gPiBwYXJ0aXRpb25zLgo+ID4gPiAKPiA+ID4gVGhlIG9mZnNldCBvZiB0aGlz
+IHNwZWNpYWwgcGFydGl0aW9uIGlzIG5vdCB3ZWxsIGRlZmluZWQgYXMgYSBjdXN0b20gYmFkCj4g
+PiA+IGJsb2NrIG1hbmFnZW1lbnQgZHJpdmVyIGlzIHVzZWQgdGhhdCByZXNlcnZlIHNwYWNlIGF0
+IHRoZSBlbmQgb2YgdGhlIGZsYXNoLgo+ID4gPiAKPiA+ID4gVGhpcyBiaW5kaW5nIGFsbG93cyBk
+ZWZpbmluZyBhbGwgZml4ZWQgcGFydGl0aW9ucyBhbmQgbWFya2luZyB0aGUgbGFzdCBvbmUKPiA+
+ID4gdG8gZGV0ZWN0IHRoZSBjb3JyZWN0IG9mZnNldC4KPiA+ID4gCj4gPiA+IFNpZ25lZC1vZmYt
+Ynk6IENocmlzdGlhbiBNYXJhbmdpIDxhbnN1ZWxzbXRoQGdtYWlsLmNvbT4KPiA+ID4gLS0tCj4g
+PiA+ICAuLi4vcGFydGl0aW9ucy9haXJvaGEsZml4ZWQtcGFydGl0aW9ucy55YW1sICAgfCA4MCAr
+KysrKysrKysrKysrKysrKysrCj4gPiA+ICAuLi4vYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFy
+dGl0aW9ucy55YW1sICAgfCAgMSArCj4gPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDgxIGluc2VydGlv
+bnMoKykKPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvYWlyb2hhLGZpeGVkLXBhcnRpdGlvbnMueWFtbAo+ID4g
+PiAKPiA+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
+dGQvcGFydGl0aW9ucy9haXJvaGEsZml4ZWQtcGFydGl0aW9ucy55YW1sIGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2Fpcm9oYSxmaXhlZC1wYXJ0aXRp
+b25zLnlhbWwKPiA+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+ID4gaW5kZXggMDAwMDAwMDAw
+MDAwLi5hNDVkZjUxMDY1YWYKPiA+ID4gLS0tIC9kZXYvbnVsbAo+ID4gPiArKysgYi9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvYWlyb2hhLGZpeGVkLXBh
+cnRpdGlvbnMueWFtbAo+ID4gPiBAQCAtMCwwICsxLDgwIEBACj4gPiA+ICsjIFNQRFgtTGljZW5z
+ZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlCj4gPiA+ICslWUFNTCAx
+LjIKPiA+ID4gKy0tLQo+ID4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9t
+dGQvcGFydGl0aW9ucy9haXJvaGEsZml4ZWQtcGFydGl0aW9ucy55YW1sIwo+ID4gPiArJHNjaGVt
+YTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjCj4gPiA+ICsK
+PiA+ID4gK3RpdGxlOiBBaXJvaGEgU29DIHBhcnRpdGlvbmluZwo+ID4gPiArCj4gPiA+ICtkZXNj
+cmlwdGlvbjogfAo+ID4gPiArICBBaXJvaGEgYmFzZWQgU29DIGRlY2xhcmUgYSBkZWRpY2F0ZWQg
+cGFydGl0aW9uIGF0IHRoZSBlbmQgb2YgdGhlIGZsYXNoIHRvCj4gPiA+ICsgIHN0b3JlIGNhbGli
+cmF0aW9uIGFuZCBkZXZpY2Ugc3BlY2lmaWMgZGF0YSwgaW4gYWRkaXRpb24gdG8gZml4ZWQgcGFy
+dGl0aW9ucy4KPiA+ID4gKwo+ID4gPiArICBUaGUgb2Zmc2V0IG9mIHRoaXMgc3BlY2lhbCBwYXJ0
+aXRpb24gaXMgbm90IHdlbGwgZGVmaW5lZCBhcyBhIGN1c3RvbSBiYWQgYmxvY2sKPiA+ID4gKyAg
+bWFuYWdlbWVudCBkcml2ZXIgaXMgdXNlZCB0aGF0IHJlc2VydmUgc3BhY2UgYXQgdGhlIGVuZCBv
+ZiB0aGUgZmxhc2guCj4gPiA+ICsKPiA+ID4gKyAgVGhpcyBiaW5kaW5nIGFsbG93cyBkZWZpbmlu
+ZyBhbGwgZml4ZWQgcGFydGl0aW9ucyBhbmQgbWFya2luZyB0aGUgbGFzdCBvbmUgdG8KPiA+ID4g
+KyAgZGV0ZWN0IHRoZSBjb3JyZWN0IG9mZnNldCBmcm9tIHRoZSBuZXcgZW5kIG9mIHRoZSBmbGFz
+aC4KPiA+ID4gKwo+ID4gPiArbWFpbnRhaW5lcnM6Cj4gPiA+ICsgIC0gQ2hyaXN0aWFuIE1hcmFu
+Z2kgPGFuc3VlbHNtdGhAZ21haWwuY29tPgo+ID4gPiArCj4gPiA+ICtzZWxlY3Q6IGZhbHNlCj4g
+PiA+ICsKPiA+ID4gK3Byb3BlcnRpZXM6Cj4gPiA+ICsgIGNvbXBhdGlibGU6Cj4gPiA+ICsgICAg
+Y29uc3Q6IGFpcm9oYSxmaXhlZC1wYXJ0aXRpb25zCj4gPiA+ICsKPiA+ID4gKyAgIiNhZGRyZXNz
+LWNlbGxzIjoKPiA+ID4gKyAgICBlbnVtOiBbIDEsIDIgXQo+ID4gPiArCj4gPiA+ICsgICIjc2l6
+ZS1jZWxscyI6Cj4gPiA+ICsgICAgZW51bTogWyAxLCAyIF0KPiA+ID4gKwo+ID4gPiArcGF0dGVy
+blByb3BlcnRpZXM6Cj4gPiA+ICsgICJecGFydGl0aW9uQFswLTlhLWZdKyQiOgo+ID4gPiArICAg
+ICRyZWY6IHBhcnRpdGlvbi55YW1sIwo+ID4gPiArICAgIHByb3BlcnRpZXM6Cj4gPiA+ICsgICAg
+ICBjb21wYXRpYmxlOgo+ID4gPiArICAgICAgICBjb25zdDogYWlyb2hhLGR5bmFtaWMtYXJ0Cj4g
+PiA+ICsgICAgdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOiBmYWxzZQo+ID4gPiArCj4gPiA+ICtyZXF1
+aXJlZDoKPiA+ID4gKyAgLSAiI2FkZHJlc3MtY2VsbHMiCj4gPiA+ICsgIC0gIiNzaXplLWNlbGxz
+Igo+ID4gPiArCj4gPiA+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UKPiA+ID4gKwo+ID4g
+PiArZXhhbXBsZXM6Cj4gPiA+ICsgIC0gfAo+ID4gPiArICAgIHBhcnRpdGlvbnMgewo+ID4gPiAr
+ICAgICAgICBjb21wYXRpYmxlID0gImFpcm9oYSxmaXhlZC1wYXJ0aXRpb25zIjsKPiA+ID4gKyAg
+ICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gPiA+ICsgICAgICAgICNzaXplLWNlbGxzID0g
+PDE+Owo+ID4gPiArCj4gPiA+ICsgICAgICAgIHBhcnRpdGlvbkAwIHsKPiA+ID4gKyAgICAgICAg
+ICBsYWJlbCA9ICJib290bG9hZGVyIjsKPiA+ID4gKyAgICAgICAgICByZWcgPSA8MHgwMDAwMDAw
+MCAweDAwMDgwMDAwPjsKPiA+ID4gKyAgICAgICAgfTsKPiA+ID4gKwo+ID4gPiArICAgICAgICBw
+YXJ0aXRpb25AODAwMDAgewo+ID4gPiArICAgICAgICAgIGxhYmVsID0gInRjbGludXgiOwo+ID4g
+PiArICAgICAgICAgIHJlZyA9IDwweDAwMDgwMDAwIDB4MDI4MDAwMDA+Owo+ID4gPiArICAgICAg
+ICB9Owo+ID4gPiArCj4gPiA+ICsgICAgICAgIHBhcnRpdGlvbkAyODgwMDAwIHsKPiA+ID4gKyAg
+ICAgICAgICBsYWJlbCA9ICJ0Y2xpbnV4X3NsYXZlIjsKPiA+ID4gKyAgICAgICAgICByZWcgPSA8
+MHgwMjg4MDAwMCAweDAyODAwMDAwPjsKPiA+ID4gKyAgICAgICAgfTsKPiA+ID4gKwo+ID4gPiAr
+ICAgICAgICBwYXJ0aXRpb25ANTA4MDAwMCB7Cj4gPiA+ICsgICAgICAgICAgbGFiZWwgPSAicm9v
+dGZzX2RhdGEiOwo+ID4gPiArICAgICAgICAgIHJlZyA9IDwweDUwODAwMDAgMHgwMDgwMDAwMD47
+Cj4gPiA+ICsgICAgICAgIH07Cj4gPiA+ICsKPiA+ID4gKyAgICAgICAgcGFydGl0aW9uQGZmZmZm
+ZmZmIHsKPiA+ID4gKyAgICAgICAgICBjb21wYXRpYmxlID0gImFpcm9oYSxkeW5hbWljLWFydCI7
+Cj4gPiA+ICsgICAgICAgICAgbGFiZWwgPSAiYXJ0IjsKPiA+ID4gKyAgICAgICAgICByZWcgPSA8
+MHhmZmZmZmZmZiAweDAwMzAwMDAwPjsgIAo+ID4gCj4gPiBJJ20gYSBsaXR0bGUgYml0IHB1enps
+ZWQgYnkgdGhpcyBraW5kIG9mIGluZm9ybWF0aW9uIHdoaWNoIGlzIGtub3duIHRvCj4gPiBiZSB3
+cm9uZy4gQXMgdGhlIHBhcnRpdGlvbiBvZmZzZXQgYW5kIHNpemUgbXVzdCBiZSBkeW5hbWljYWxs
+eQo+ID4gY2FsY3VsYXRlZCwgdGhpcyByZWcgcHJvcGVydHkgKGFzIHdlbGwgYXMgdGhlIHNpemUg
+cGFyYW1ldGVyIG9mIHRoZQo+ID4gcHJldmlvdXMgb25lKSBhcmUgbm90YWJseSB3cm9uZy4gSSBn
+dWVzcyB3ZSBhcmUgbm90IGZ1bGx5IGNvbnN0cmFpbmVkCj4gPiBieSB0aGUgZml4ZWQtcGFydGl0
+aW9ucyBzY2hlbWEgaGVyZSwgc28gY291bGQgd2UgYXZvaWQgdGhlIHJlZyBwcm9wZXJ0eQo+ID4g
+aW4gdGhlIGFpcm9oYSxkeW5hbWljLWFydCBwYXJ0aXRpb24/IE1heWJlIHdlIGFsc28gbmVlZCBh
+ICNkZWZpbmUgZm9yIGEKPiA+IHNwZWNpZmljIHBsYWNlaG9sZGVyIGluIHRoZSBwZW51bHRpbWF0
+ZSByZWcgcHJvcGVydHkgdG9vIChmb3IgdGhlIHNpemUpLgo+ID4gIAo+IAo+IE1heWJlIGluc3Rl
+YWQgb2YgcmVnIHdlIGNhbiB1c2UgYSBwcm9wZXJ0eSBsaWtlIHNpemU/Cj4gCj4gQ2FuIHlvdSBi
+ZXR0ZXIgZWxhYm9yYXRlIHRoZSBzdWdnZXN0aW9uIGFib3V0IHRoZSAjZGVmaW5lPwo+IAo+IERv
+IHlvdSBtZWFuIGZvciBjYXNlIHdoZXJlIHRoZSBsYXN0IHBhcnRpdGlvbiBtaWdodCBvdmVybGFw
+Cj4gd2l0aCB0aGUgcGVudWx0aW1hdGU/IEhvbmVzdGx5IGluIHN1Y2ggY2FzZSBJIHdvdWxkIGVy
+cm9yIGhhcmQsIHRoYXQKPiBjYXNlIGhhcHBlbiB3aGVuIHRvbyBtdWNoIHNwYWNlIGlzIHJlc2Vy
+dmVkIGFuZCB0aGF0IGlzIGEKPiBtaXNjb25maWd1cmF0aW9uIG9mIHRoZSBzeXN0ZW0gKGRldmVs
+b3BlciBlcnJvcikKClRoYXQncyBub3Qgd2hhdCBJIG1lYW4uCgpJbiB0aGUgYWJvdmUgY2FzZSB5
+b3Ugc2F5IHBhcnRpdGlvbiAicGFydGl0aW9uQDUwODAwMDAiIGlzIDB4ODAwMDAwCmJ5dGVzIGxv
+bmcuIFRoaXMgaXMgb2J2aW91c2x5IHdyb25nIG90aGVyd2lzZSB5b3Ugd291bGQga25vdyB3aGVy
+ZSB0aGUKYXJ0IHBhcnRpdGlvbiBzdGFydHMuIEFuZCByaWdodCBhZnRlciB5b3UncmUgc2F5aW5n
+IHBhcnRpdGlvbgoicGFydGl0aW9uQGZmZmZmZmZmIiBzdGFydHMgYXQgMHhmZmZmZmZmZiBhbmQg
+aXMgMHgzMDAwMDAgYnl0ZXMgbG9uZy4KVGhpcyBpcyBhbHNvIHdyb25nIGJlY2F1c2UgMHhmZmZm
+ZmZmZiBpcyBub3QgYSB2YWxpZCBzdGFydCBhZGRyZXNzIGFuZApJSVVDIDB4MzAwMDAwIGlzIGFs
+c28gdW5rbm93biBhbmQgZHluYW1pY2FsbHkgZGVyaXZlZC4KClNvIGZvciB0aGUgYXJ0IHBhcnRp
+dGlvbiBteSBhZHZpc2UgaWYgeW91IGtub3cgbm90aGluZyBhYm91dCB0aGUKc3RhcnQvbGVuZ3Ro
+IGlzIHRvIGp1c3Qgc2tpcCB0aGUgcmVnIHByb3BlcnR5LiBGb3IgdGhlIHByZXZpb3VzCnBhcnRp
+dGlvbiBJJ2QgbWF5YmUgdXNlIGEgZGVmaW5pdGlvbiAod2hvc2UgbmFtZSBpcyB0byBkaXNjdXNz
+KSBpbnN0ZWFkCm9mIHRoZSB3cm9uZyBzaXplIGFyZ3VtZW50ICh0aGUgc3RhcnQgb2Zmc2V0IGJl
+aW5nIGNvcnJlY3Qgb24gaGlzIHNpZGUpLgoKVGhhbmtzLCBNaXF1w6hsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
