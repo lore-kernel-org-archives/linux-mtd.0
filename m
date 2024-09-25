@@ -4,59 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93095C369CA
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Sep 2024 10:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EC4CC369C7
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Sep 2024 10:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=0of6zRdij6SkNHELaHhi6pFrr6ZHKiWcyb6lTHSaqAs=; b=AF+iXtzSKyIsc0geDfDpgWP8L6
-	9K8NbeuyF7LzV8RO53h87KNnY1bWJNUYJ1cHxV2j71iAi2FsfCxbwus10O6m8zCE02arcrtmsjwsx
-	e61r0sR4B6Dknz9LgSfFmvrf68ZgVQBqA8r/AhTIC9PezGlj2btyZkMThUlnxqk67WPkuqu6M2rhD
-	ecNJrf4Tq0WZA9ztYa/FGAj4aBGLYKE9Kjyr78C5zfGlmojMuKW5qNgp9WCHh1a/STnf6UIJXvP25
-	+kPYKNomfmYnfBHndYkYZeWVwhSWTayHxuklWTV8mfUBukK4G/fmlfpjO2/WbnLmmCBosmkZgjcOe
-	WkxeJlNQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=nTNDd18feXuzHG28mws+XCHZql
+	YmayS1Y6xHD4JdpeN89wJcfSGP8VmiBD0agdeVP6CTgZ3VSXoq0U/P6Do8EfMXROkwsGWjvmna3YA
+	hjZX0aH5dWZyL56dj8nEZFQFlU0J7CXsq5kn+XgOAQhA8RONIiLQ1bWsvKk4f4YBZewgtZMVPohz4
+	G3to2Ftow/aF7MitvkLKcHqqw1dtOg5AQIcc9VYfs0NiKYIV9yipH5ALbWmL7hTb6m8dqIWfkok4d
+	qiQBksvfiqJrnVtHA05zV2NCd0TRtBlq0y++LjNOXevDu1ctmkFcvxX9eY7ubGI68+KsG7jCY0sZH
+	dMKpgDew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1stPQ3-00000004lPR-2qdj;
-	Wed, 25 Sep 2024 10:38:51 +0000
-Received: from mail.ispras.ru ([83.149.199.84])
+	id 1stPfj-00000004nRH-0Cwj;
+	Wed, 25 Sep 2024 10:55:03 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1stPQ0-00000004lOp-0Sh5
+	id 1stPff-00000004nQL-3z0x
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Sep 2024 10:38:49 +0000
-Received: from [10.10.2.52] (unknown [10.10.2.52])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 8F3944076175;
-	Wed, 25 Sep 2024 10:38:40 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 8F3944076175
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1727260720;
-	bh=QA2W00UTct8IwOfot8FLWZuYzEf/7eHlnAikYCPfKaw=;
-	h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-	b=Lh6fCk0WN6tDrZyOiUZcmq7PpaywwRqJqD3ZxNGlXVyy61BxCprLgzyAjMMePy4CW
-	 543L7E1TwF2J2goi3mxGkO1DL4L9VwUufOWYYoqO8gsMpexyrEDMNsJXDkwxoSQ49d
-	 amrYrZBnvdUm9/nt6aWOl2wkuG5Z+lzpJei1VFS0=
-Subject: Re: [lvc-project] [PATCH] mtd: partitions: redboot: Added conversion
- of operands to a larger type
-To: Denis Arefev <arefev@swemel.ru>, Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: lvc-project@linuxtesting.org, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org
-References: <20240910101133.18020-1-arefev@swemel.ru>
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Message-ID: <396dc03f-b4dd-0644-f50a-18613730845c@ispras.ru>
-Date: Wed, 25 Sep 2024 13:38:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	Wed, 25 Sep 2024 10:55:01 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-42cafda818aso64568045e9.2
+        for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2024 03:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1727261698; x=1727866498; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
+        b=F8pBim1i/wg5O7HyGgN29+2+KVDdxt7OkaF3PyZRGtz5fMSrHmfnOwPCekiXNFYl9J
+         JtISaZ6W8CJy04AmiPe9g66mVdNpAQrfx+1RwIexpiCSos/ZHuIvggP8F2QU8hlaZen3
+         zJyf+TbB3+EhJKmkv4H71iWEYf3eOV98NodSKw5+zF/9Y5pRCqSa7Q9f7Dv/n8qwisuj
+         ZDQMVvZYb4zBg6XxW7lAgg0heSDxtTMRfdB4DzH6kbXjlLR/yucXCr0mwXHzJ9lw0UrT
+         EpB9SSVg1OI10T65h9ehQLPmOm3pKPUzRgWuY7cW4fz8xx381SgCPHaRTZr6SGObZPre
+         gcgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727261698; x=1727866498;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
+        b=sepC52+u4+BlSCySZB6eZO/lGj7lKWXJhkwZDhH6VAFi1UHd3zv8YRvCSUdHJ4gadk
+         ta6cQej3q6OftD+xYfquNmrqJoq0S0wRap2f0QYcmoR18cEuyyRxcRA0kAoKU8qa8Kfs
+         v5GjHS7hyo2r5WItv5dOVT0M9XRXiviDRehLAjqLeif4HsL3+Up06qfaAmT8E57VKk0m
+         wbg02YpDuzAhIpD9B8vIjoj4pRSqbzrJaovnqA2YCp9pX7/WMBf4GVs7c8IpWi33xjp5
+         f2MRLVrHWHYZm8oGPN22Q+dACErIuRsEsMfuDr2otFG5xx5leZfzeRvIC0EWgDhGAJL5
+         AHtA==
+X-Forwarded-Encrypted: i=1; AJvYcCWWmEEJl9Pkw055Giv58nEndTi2RRLsNvQemQErNTWzgD4+N8bIgpAWjbuXMNvd8dzUf/Nv+PTOoLM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwV5vKyD4p5pXDPoxhRBVuCBW2pUzGhDKu1WMFyalboyagFbkL6
+	CptST3K2zaT1hB1NIqH8ArcZPn5og9ZGbSMVsUJzLIaQjee6s6b25oQXvZWQTZeOv0crdc4S/xu
+	e
+X-Google-Smtp-Source: AGHT+IE6XDlnf79LGIbbyGT3MOV3JTA1T7RNLds85WPLWOjvZ/o9gc+siMgXQZYlAlBhlOH3GfwKNA==
+X-Received: by 2002:a05:600c:198c:b0:42c:ba1f:5482 with SMTP id 5b1f17b1804b1-42e96245715mr14660005e9.35.1727261697870;
+        Wed, 25 Sep 2024 03:54:57 -0700 (PDT)
+Received: from [192.168.40.74] (046075014122.atmpu0009.highway.a1.net. [46.75.14.122])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e96a08967sm14442675e9.22.2024.09.25.03.54.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Sep 2024 03:54:57 -0700 (PDT)
+Message-ID: <e1658bdb-dc50-4848-ac68-56bd00e0a2f9@sigma-star.at>
+Date: Wed, 25 Sep 2024 12:54:56 +0200
 MIME-Version: 1.0
-In-Reply-To: <20240910101133.18020-1-arefev@swemel.ru>
-Content-Language: ru-RU
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd-utils: also check for static libuuid
+To: Rosen Penev <rosenp@gmail.com>, linux-mtd@lists.infradead.org
+References: <20240923204502.823673-1-rosenp@gmail.com>
+Content-Language: en-US
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+In-Reply-To: <20240923204502.823673-1-rosenp@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240925_033848_436587_6424A6FD 
-X-CRM114-Status: GOOD (  19.99  )
+X-CRM114-CacheID: sfid-20240925_035500_287444_D6608A37 
+X-CRM114-Status: UNSURE (   4.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,40 +89,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10.09.2024 13:11, Denis Arefev wrote:
-> The value of an arithmetic expression directory * master->erasesize is
-> subject to overflow due to a failure to cast operands to a larger data
-> type before perfroming arithmetic
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> ---
->  drivers/mtd/parsers/redboot.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
-> index 3b55b676ca6b..c8f7e7b351d7 100644
-> --- a/drivers/mtd/parsers/redboot.c
-> +++ b/drivers/mtd/parsers/redboot.c
-> @@ -92,7 +92,7 @@ static int parse_redboot_partitions(struct mtd_info *master,
->  	parse_redboot_of(master);
->  
->  	if (directory < 0) {
-> -		offset = master->size + directory * master->erasesize;
-> +		offset = master->size + (unsigned long) directory * master->erasesize;
->  		while (mtd_block_isbad(master, offset)) {
->  			if (!offset) {
->  nogood:
-> 
+Applied to mtd-utils.git master.
 
-I guess the message has been sent by a mistake, the patch is already
-upstream 1162bc2f8f5de7da23d18aa4b7fbd4e93c369c50
+Thanks,
+
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
