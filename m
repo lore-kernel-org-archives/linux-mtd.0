@@ -4,77 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53167CDE006
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2024 14:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60FFBCDE00D
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2024 14:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u/KJIWLpII66eTDas7TZ5pUMjB+MaZN/LLn2Pu8Dkls=; b=bYli9sfsGD/Xi2
-	JszAY+phYZTP68eAIant5ff/r2Px1buZw9AVU8orjdiUmUiCMidPco94KaiLN61+0/SUKJuSlDWiX
-	GBNiPDxT5lwKWp5zEZ/j5JkcknYdx1Xs25j5Sg5ywPUS13pUpfcxiPQLBrKIESlFZkOi7uLXBG73k
-	giQfmPH6i991nPlblCm1jdLiwSIbwu+AYy9ypiXAM7p5mb2BiElrC4v0VNjwOkJC1Wuk9AE+wcZsu
-	Mfe5yKLPcg245AyyTXM40AeiRKO9nQnXl0ay4fgV4C7T0SKI2icWmHfY5gByZQ6nAOd9i8auDrpC0
-	MwHC6HFmNQkAbIDdVhCA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9D2bJqQCOwDaVvjV9CvTOmHwe14xi9WKSnBKJGAAxfI=; b=IxSdZ3TiWjVhsh
+	+O1m5Isj+VCkI51BG6NEZgV4P/qImbxjnyghp5/1IxLbIxuQNSHJ/32acTnCpVwYhv4Omenz1MjvZ
+	zJ9lsbdn4wAoBzhfE0udVTWHZlrvQdAKjzUuGIXeutzanCEVja94zPXmDYoy/GK5Bn6hO9wIwtXAz
+	AsCeSH0b96PTFwrTdeApN93q0QDR4zlMoexBZH1xZAjcDz/n8OLl9fXOEIeTZC83/Jv6oSOqcBwMQ
+	eZPNs/Mr205jgx8tPAsL4wRl4THPhbMNg3gjgCSxrZTH+jovfq3UEe4Q2kxBGlOEgbL1mBF/dt6r0
+	jYEYXceRW/xgOu8dpKBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1stpHW-00000008YpJ-0Hvj;
-	Thu, 26 Sep 2024 14:15:46 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1stpQg-00000008aMZ-3vDv;
+	Thu, 26 Sep 2024 14:25:14 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1stpHT-00000008Yok-2z9P
+	id 1stpQc-00000008aKR-20mz
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Sep 2024 14:15:45 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B05325C3E7D;
-	Thu, 26 Sep 2024 14:15:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DECBCC4CEC5;
-	Thu, 26 Sep 2024 14:15:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727360142;
-	bh=Kv1Cdy6l+gouokDZ3e4xVwNd6beXKTj/+T6t59ybc2A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j7B2f0rcTDtiVBhyi6eeIT3fTA82VCjbUR0AY1bfVe8pnmhl8uVy+JDFnVDxuikdY
-	 blzfgrjf+udZhHHqnk5feo9ATaHui45Hp3V9VvMylh8yxWbARg/0VreYeJ4uOnDX+/
-	 BErfw9UvWnepSpuMxj5lmJ5due2iWYH5iUNrBwU5+iEpru8pYYGem9HZjr1/CM4jQ0
-	 n2/r+GERvb58j5IGvJq4I1gWuUDOiWT8f3oi8L2xhQU+InsAO2GWA1zXZdwkWtAtyA
-	 UfKZd0SNxWLg46UCZ1vKg8jlsxeaOHjSVuE9qNgD2HA2OKj2MVQDBd5KIMTIeowgmD
-	 fCg9LNU/RxXKQ==
-Date: Thu, 26 Sep 2024 09:15:41 -0500
-From: Rob Herring <robh@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Simon Glass <sjg@chromium.org>,
-	INAGAKI Hiroshi <musashino.open@gmail.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Li Lingfeng <lilingfeng3@huawei.com>,
-	Christian Heusel <christian@heusel.eu>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Lorenzo Bianconi <lorenzo@kernel.org>
-Subject: Re: [RFC PATCH v2 5/5] dt-bindings: mmc: Document support for
- partition table in mmc-card
-Message-ID: <20240926141541.GA2625953-robh@kernel.org>
-References: <20240925214544.6114-1-ansuelsmth@gmail.com>
- <20240925214544.6114-6-ansuelsmth@gmail.com>
+	Thu, 26 Sep 2024 14:25:13 +0000
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-2068bee21d8so10771275ad.2
+        for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2024 07:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727360710; x=1727965510; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gDfixlWfB11NTzG+DiZcp+HxxNjjLl7YE7F3FyH5220=;
+        b=JTuEeNbl6ADCoUffG6zpe2u6fJHYiCjcMzijl0Kuu+by0SYSmHwrKwSRCydwUgGI2U
+         VV57XI9z3F0gv3ncbFFOyfJaUt1eGqKvHratzxyLGzoifrVrTf5NRc+kwG5jn0u6IJln
+         AoPIJgzATJynWjA/+OcSV4kDtzBirU8nxJAWzGGrdjtvQdfJhbXUyqemlN4MaBjTuDWE
+         OQpXMk9veVjpgwJgXJ8AgoRLUDkmAIjHnpde+lSl/gaicceyOAbVb97+Mfnpqx+vzNPN
+         0MQizKgMTH+70oNtjoSqsxi3ZRmDlCWSWGxj01kY2FcXzZrgSsr+Cp+V1MHe/l+KNkBf
+         8rDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727360710; x=1727965510;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gDfixlWfB11NTzG+DiZcp+HxxNjjLl7YE7F3FyH5220=;
+        b=MwiBoCVb6lnCcpCzn9qlQjAMDDzMBqx2gy+YO7WmEyupQdcr3jzV1ybLap8OColysO
+         WKR5oiB5z2xVE/uRbW/0SPVW4435Url6ziVhpUO0LIZPv26QA7fCVxJRp6YkX0HM4gf6
+         LrMGVvEn31uwyVo+w0e5NAUNgqJ+RGweKAZyPt5/3oVfJew3HGmcVJttTih0BLhAMA4G
+         QSnerkzKekMI5HKyl8ccQrkXqhhDqj3nhBPmRNCmLyINLqH/KURMvuiiYc26r4U47cEC
+         qr7P5xKpkvL5XEweMhcpIvVPSRvGtAEvpbtyXbvtJmhkkLOjgwRCflOePJme+NYNRxa9
+         MqFA==
+X-Gm-Message-State: AOJu0Yz/rlSiXqoRFdqrMA4e3Hl1t5oPTCH6GNo+a+0TMv8onBUY4mr8
+	7g/ynzZCbyp1L7tb1cTQXaxHu/svPN1zuZf5T/NTe2SnjGOt0L0b
+X-Google-Smtp-Source: AGHT+IE333dRtcjB/bH25gT70pEVLd2X2WNyQw8Cm5nP+frUF66NPd8Bf0+H2KFZjKoSYqFWdRqr2A==
+X-Received: by 2002:a17:903:2a85:b0:206:8acc:8871 with SMTP id d9443c01a7336-20afc4b98b8mr84561385ad.31.1727360709537;
+        Thu, 26 Sep 2024 07:25:09 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20b25059b5bsm10130265ad.155.2024.09.26.07.25.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2024 07:25:09 -0700 (PDT)
+Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
+	by twhmp6px (Postfix) with ESMTPS id 5A1AB802C9;
+	Thu, 26 Sep 2024 22:32:57 +0800 (CST)
+From: AlvinZhou <alvinzhou.tw@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	broonie@kernel.org
+Cc: chengminglin@mxic.com.tw,
+	leoyu@mxic.com.tw,
+	AlvinZhou <alvinzhou@mxic.com.tw>
+Subject: [PATCH v10 0/6] Add octal DTR support for Macronix flash
+Date: Thu, 26 Sep 2024 22:19:50 +0800
+Message-Id: <20240926141956.2386374-1-alvinzhou.tw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240925214544.6114-6-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240926_071543_958492_7ED3BE48 
-X-CRM114-Status: GOOD (  28.47  )
+X-CRM114-CacheID: sfid-20240926_072510_607409_A216F5A1 
+X-CRM114-Status: GOOD (  11.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,70 +102,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 25, 2024 at 11:45:25PM +0200, Christian Marangi wrote:
-> Document support for defining a partition table in the mmc-card node.
-> 
-> This is needed if the eMMC doesn't have a partition table written and
-> the bootloader of the device load data by using absolute offset of the
-> block device. This is common on embedded device that have eMMC installed
-> to save space and have non removable block devices.
-> 
-> If an OF partition table is detected, any partition table written in the
-> eMMC will be ignored and won't be parsed.
-> 
-> eMMC provide a generic disk for user data and if supported (JEDEC 4.4+)
-> also provide two additional disk ("boot0" and "boot1") for special usage
-> of boot operation where normally is stored the bootloader or boot info.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->  .../devicetree/bindings/mmc/mmc-card.yaml     | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/mmc-card.yaml b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
-> index fd347126449a..58b6593a0f60 100644
-> --- a/Documentation/devicetree/bindings/mmc/mmc-card.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
-> @@ -13,6 +13,10 @@ description: |
->    This documents describes the devicetree bindings for a mmc-host controller
->    child node describing a mmc-card / an eMMC.
->  
-> +  It's possible to define a fixed partition table for an eMMC for the user
-> +  partition and one of the 2 boot partition (boot0/boot1) if supported by the
-> +  eMMC.
-> +
->  properties:
->    compatible:
->      const: mmc-card
-> @@ -26,6 +30,30 @@ properties:
->        Use this to indicate that the mmc-card has a broken hpi
->        implementation, and that hpi should not be used.
->  
-> +  "#address-cells":
-> +    const: 0
-> +
-> +  "#size-cells":
-> +    const: 0
+From: AlvinZhou <alvinzhou@mxic.com.tw>
 
-Don't need these properties.
+Add method for Macronix Octal DTR Enable/Disable.
+Merge Tudor's patch "Allow specifying the byte order in DTR mode"
 
-> +
-> +patternProperties:
-> +  "^partitions(-boot[01])?$":
-> +    $ref: /schemas/block/partitions/partitions.yaml
-> +
-> +    patternProperties:
-> +      "^partition@[0-9a-f]+$":
-> +        $ref: /schemas/block/partitions/partition.yaml
-> +
-> +        properties:
-> +          reg:
-> +            multipleOf: 512
+v10:
+* Further explanation on adding Macronix manufacturer ID in ID table.
+* Correct some typos.
 
-I was going to suggest this, but I think it won't actually work because 
-it could be 2 cells for address and/or size.
+v9:
+* Change the name of the configuration register 2 for Macronix Octal 
+  flash.
+* Fix the bit value in __pad of struct spi_mem_op.
+* Use the local variable proto instead of nor->read_proto.
 
-Rob
+v8:
+* Supplement missing S-o-b
+* Remove function spi_nor_is_octal_dtr_swab16
+* Split IDs by MX25 & MX66
+* Add dump of capability in debugfs
+* Add dump of parameters in debugfs
+* Add dump of result for mtd-utils tests
+* Add SNOR_ID(0xC2) in last of Macronix ID table
+
+v7:
+* Add dtr_swab16 judgement to enable/disable Macronix xSPI host
+  controller swap byte feature.
+
+v6:
+* Add byte swap support for spi-mxic.c
+* Remove flash name in ID table.
+
+v5:
+* Remove manufacturer read id function.
+* For increased readability, separate Flash IDs based on whether
+  it supports RWW feature.
+
+v4:
+* Add patch for adding manufacturer read id function.
+  remove patch "hook manufacturer by checking first byte id" 
+
+v3:
+* Add patch for hook manufacturer by comparing ID 1st byte.
+* Add patches for specifying the byte order in DTR mode by merging
+  Tudor's patch.
+
+v2:
+* Following exsiting rules to re-create Macronix specify Octal DTR 
+  method.
+* change signature to jaimeliao@mxic.com.tw
+* Clear sector size information in flash INFO.
+
+AlvinZhou (6):
+  mtd: spi-nor: add Octal DTR support for Macronix flash
+  spi: spi-mem: Allow specifying the byte order in Octal DTR mode
+  mtd: spi-nor: core: Allow specifying the byte order in Octal DTR mode
+  mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order from BFPT
+  spi: mxic: Add support for swapping byte
+  mtd: spi-nor: add support for Macronix Octal flash
+
+ drivers/mtd/spi-nor/core.c     |  4 ++
+ drivers/mtd/spi-nor/core.h     |  1 +
+ drivers/mtd/spi-nor/macronix.c | 95 +++++++++++++++++++++++++++++++++-
+ drivers/mtd/spi-nor/sfdp.c     |  4 ++
+ drivers/mtd/spi-nor/sfdp.h     |  1 +
+ drivers/spi/spi-mem.c          |  3 ++
+ drivers/spi/spi-mxic.c         | 17 ++++--
+ include/linux/spi/spi-mem.h    |  8 ++-
+ 8 files changed, 127 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
