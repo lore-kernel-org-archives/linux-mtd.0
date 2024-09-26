@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB395CDE00E
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2024 14:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D4F3CDE00F
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2024 14:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dXU2uWX/i5EAGvENQks/B1aAu1FsnPR2podXW5HiGhs=; b=oTewLIWmSRuYVz
-	ly9MZ6fwG8KylkG6mRbw+7nR1/zSljBm2bgXLRFsyzcrHwHcIqm6mDqELvVL8YCuxBMdJSMiLPu4Q
-	IUrb/OubcZd/k9XqLNSPUFohVb/2/J8oIUF3+fTCtLUivNY6uUMU89fohtqxIzfiHJ3jQV5Px45IM
-	XVGQdmDmwEd45KtJhsVqJPobPB1EcNJhoVwCSQfHQSJZX1yqvIwLyOZzW7KQn6Xxh7apZSy/JqmYN
-	+Kx0dCItVnY9Wt/b25tF/8e5QlB7a9Qvi319LKw/JtO5pcDIgRfkQ19NrvVzywtFHd30i2BDn5VoW
-	JbNwlhxvGBK3ySj6GuSA==;
+	List-Owner; bh=shIzYCBPwz5/+gNzpqGbhCXbs/rirNr0LthVh+/GwhY=; b=acNNc/YYTHRSlA
+	/apb34bfr69gad7taBQsUY0MvKPxEJ/2iAOmsJa2rcEB5eD665dn3yFmhXaKDjRNVxachYoo7H0oz
+	xqYdRUGBeM8mmW3vBiatOpHJ+8hsADuTLvyx5WtDQvx1KBG71UTYiqO+o5UbFlvbJXjpuSJ0NismH
+	SFMKD0wVSTGYk9bW/WpD0uE50PIlWXdAZDRaBZbourc+I3UsfQEbj1ZXS2uFTmiFLoUZRHqC7MfTJ
+	RTNVmw8Pm0vt8nddLmBE/kqEH0vGwHTIzUuN4fanHfda10XMYoDlUz2SgUWMCPETz3oEDS3g+82Ig
+	m03fSnsXHGCI3FAxBDXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1stpQl-00000008aPL-0aJS;
-	Thu, 26 Sep 2024 14:25:19 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1stpQm-00000008aQG-1xZI;
+	Thu, 26 Sep 2024 14:25:20 +0000
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1stpQh-00000008aMe-2n3z
+	id 1stpQh-00000008aMh-37eZ
 	for linux-mtd@lists.infradead.org;
 	Thu, 26 Sep 2024 14:25:17 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-717934728adso814927b3a.2
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-7d4f85766f0so808948a12.2
         for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2024 07:25:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1727360715; x=1727965515; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r/MUwzKscwhtX7s3jSH4IlHx8F0q+vgLMrLzXFhkBRw=;
-        b=LzBVGAfhlOzljhgBd/8DRBtCEZwUUITUoCIDIZfyd5irYYIJhQtjLbLRHS7FYXWx7R
-         lgJYNKkC5p7W0r2UoADVdCa1XKDtqrnA4NoaLPDibDRj/CwGUvbtqJiomHiH6eyUvHYF
-         p5GT+of+JY/CtbX/mWXyC1kkg0f8VZUOI1/9PblRX3gfoQjUhg/D75EwKpg8gm7+DeQM
-         LMuyAEzZm2+dnUMPxKhZsacpHbzzVvXsI9U8D/Zzad4UYfuU7b+OauNz7FaIZVr+TqEV
-         6jA8vW2EkMWTqdrFuDwnakm5r9K8O6ZwVRnaFGUu/piZSar1rRpgvhoSkFdsZW9+IZ89
-         2LZA==
+        bh=RGxTXo990ti5lAyVI8ZehxzUFXPwz6MqQx7qAzjMfhw=;
+        b=TK6gqmYfUPT7RaXSlj/mKZdovjf1dsvuiCdwabUW916dGQNADh0lMFeOMQvWXld+po
+         EiC9HuFJekitjgUEgKmPwJHOEZhTxHHohV4xGww4+JPZPRarOV3/PskMZuG5FEO8HVrJ
+         2JiMovwNKyBcUwhXKKiCjLfgTMc4YUta/wjb9vM3m7PF1nb6flawkkP2hRFlstvxPg0w
+         GMcy4XSc4/8xGAjkaC4vCALzsO7GTjnUe72RkcvVBU8hED06Q/cnE6P57JktJthtJrL9
+         RNTsoqsiWoi8KrQQdeBfkVntEGN7KCvSeOAbbUCcUcUGZZM/ewgT9le6Pk9mBtrR3UVS
+         hNdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1727360715; x=1727965515;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r/MUwzKscwhtX7s3jSH4IlHx8F0q+vgLMrLzXFhkBRw=;
-        b=ZhwZYWRSyb3JLEuOWYkUs1902JSx9U/Uem5l3USiJquvU5nf1nZij51l2nsbQNoeTS
-         0frjAaV4W1Z1qgeTCd8svNLdpCZWfJA2Pvr5cido2dHLaa4jXrjsWw7sMBFNXYLIclCZ
-         uG++ZtbzTPUktPwSSSN4vxxS3yy6Eau0C+3LVcniB1ofHujjYrH16EzoGMML0RJ6OVC1
-         bn9W+fD8IyVJo49TxYdUqnSS8OMx3xN0XzY7SRyRq+vK8zBe8Q2VjTl+TP4mAUiSXG6y
-         wNaaoSoaIC5+EthgKor2I3B0F6ulTSj303tjBmo/z1IxGOntOVL0gO9FEyVbIjh6z6oA
-         bM1w==
-X-Gm-Message-State: AOJu0YySmc+QjIPrk5rr/uiEz089u4EsKQ37xztfe5pec13CZJf7/g/j
-	kUxgvFLtvU3tnK38u9R2bJW6nRZlVEi1HO08QZQPzw8i9MhCL9CT
-X-Google-Smtp-Source: AGHT+IGS0nM82au/EzeP06wausitoOEDIM3uRThhNjvR3ugckuZHWCaNJRiYUN2+/U97e/3zZ/d4TA==
-X-Received: by 2002:a05:6a00:9284:b0:718:db7c:3a49 with SMTP id d2e1a72fcca58-71b0ac993b2mr8763854b3a.27.1727360714488;
+        bh=RGxTXo990ti5lAyVI8ZehxzUFXPwz6MqQx7qAzjMfhw=;
+        b=mSvbOwAumFran2F5xboEyuSII0oOcl2lP7TLQ1da0QcJlQDLaCpPUntfk7kL89NIfe
+         k+aGx8C+LcolffLHzIkbBKjeEAyAdHzmA/20/NA42xDEkNyffMlaAYJyc3l/88gDCAI5
+         Wq2FrPW5Kdr0IRl63vad7TTjsIwtjtXW4ncb0efiwgQtKcUJJZrAGHsfpP7a294zoiLS
+         ZsrpV2zg9sowwVQlWv2rtLueEALF6kle8FKe2aEu6pEyPW0N5QHhJn6eAerBdURHh7KZ
+         u7EknbEw5Haj9uVlir2cN3p81X50Q38pT2FtIEweM1AYWbbeCeetcJUzONHCJx20ZbxP
+         0wXw==
+X-Gm-Message-State: AOJu0YzbvXXM0TN1jaMdneWqxB3k6BxRjVDWCTfPOJvVmpTFfpVvzm7x
+	L2xRnNeU0LVhuPO9Z77pHeFFAf5LpjA8Nk3EvQC4X4qb04Aa1i6e
+X-Google-Smtp-Source: AGHT+IGJwQwDCJBexl9tEe801nzR8/z6arvXHTxHSnx3fsr9XAE3/M0h4vZLwCeKudo7PtJWcCWLpw==
+X-Received: by 2002:a05:6a21:78e:b0:1d2:e1cc:649c with SMTP id adf61e73a8af0-1d4d4aaf073mr8517160637.15.1727360714640;
         Thu, 26 Sep 2024 07:25:14 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e6b7c732c8sm4360707a12.71.2024.09.26.07.25.13
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc985c99sm4374462b3a.180.2024.09.26.07.25.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 26 Sep 2024 07:25:14 -0700 (PDT)
 Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 2374780529;
-	Thu, 26 Sep 2024 22:33:01 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id 0432080580;
+	Thu, 26 Sep 2024 22:33:02 +0800 (CST)
 From: AlvinZhou <alvinzhou.tw@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	linux-spi@vger.kernel.org,
@@ -80,16 +80,16 @@ Cc: chengminglin@mxic.com.tw,
 	leoyu@mxic.com.tw,
 	AlvinZhou <alvinzhou@mxic.com.tw>,
 	JaimeLiao <jaimeliao@mxic.com.tw>
-Subject: [PATCH v10 2/6] spi: spi-mem: Allow specifying the byte order in Octal DTR mode
-Date: Thu, 26 Sep 2024 22:19:52 +0800
-Message-Id: <20240926141956.2386374-3-alvinzhou.tw@gmail.com>
+Subject: [PATCH v10 3/6] mtd: spi-nor: core: Allow specifying the byte order in Octal DTR mode
+Date: Thu, 26 Sep 2024 22:19:53 +0800
+Message-Id: <20240926141956.2386374-4-alvinzhou.tw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240926141956.2386374-1-alvinzhou.tw@gmail.com>
 References: <20240926141956.2386374-1-alvinzhou.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240926_072515_774096_EA7646F4 
-X-CRM114-Status: GOOD (  17.07  )
+X-CRM114-CacheID: sfid-20240926_072515_850388_913CC4B8 
+X-CRM114-Status: GOOD (  14.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,19 +110,16 @@ From: AlvinZhou <alvinzhou@mxic.com.tw>
 
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-There are NOR flashes (Macronix) that swap the bytes on a 16-bit
-boundary when configured in Octal DTR mode. The byte order of
-16-bit words is swapped when read or written in Octal Double
-Transfer Rate (DTR) mode compared to Single Transfer Rate (STR)
-modes. If one writes D0 D1 D2 D3 bytes using 1-1-1 mode, and uses
-8D-8D-8D SPI mode for reading, it will read back D1 D0 D3 D2.
-Swapping the bytes may introduce some endianness problems. It can
-affect the boot sequence if the entire boot sequence is not handled
-in either 8D-8D-8D mode or 1-1-1 mode. Therefore, it is necessary
-to swap the bytes back to ensure the same byte order as in STR modes.
-Fortunately there are controllers that could swap the bytes back at
-runtime, addressing the flash's endianness requirements. Provide a
-way for the upper layers to specify the byte order in Octal DTR mode.
+Macronix swaps bytes on a 16-bit boundary when configured in Octal DTR.
+The byte order of 16-bit words is swapped when read or written in 8D-8D-8D
+mode compared to STR modes. Allow operations to specify the byte order in
+DTR mode, so that controllers can swap the bytes back at run-time to
+address the flash's endianness requirements, if they are capable. If the
+controller is not capable of swapping the bytes, the protocol is downgrade
+via spi_nor_spimem_adjust_hwcaps(). When available, the swapping of the
+bytes is always done regardless if it's a data or register access, so that
+it comply with the JESD216 requirements: "Byte order of 16-bit words is
+swapped when read in 8D-8D-8D mode compared to 1-1-1".
 
 Merge Tudor's patch and add modifications for suiting newer version
 of Linux kernel.
@@ -131,63 +128,38 @@ Suggested-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 Signed-off-by: AlvinZhou <alvinzhou@mxic.com.tw>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/spi-mem.c       | 3 +++
- include/linux/spi/spi-mem.h | 8 +++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c | 4 ++++
+ drivers/mtd/spi-nor/core.h | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 17b8baf749e6..abc6792e738c 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -172,6 +172,9 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
- 		if (!spi_mem_controller_is_capable(ctlr, dtr))
- 			return false;
- 
-+		if (op->data.swap16 && !spi_mem_controller_is_capable(ctlr, swap16))
-+			return false;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 028514c6996f..31f57b17023f 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -113,6 +113,10 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 		op->cmd.opcode = (op->cmd.opcode << 8) | ext;
+ 		op->cmd.nbytes = 2;
+ 	}
 +
- 		if (op->cmd.nbytes != 2)
- 			return false;
- 	} else {
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index f866d5c8ed32..c46d2b8029be 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -90,6 +90,8 @@ enum spi_mem_data_dir {
-  * @data.buswidth: number of IO lanes used to send/receive the data
-  * @data.dtr: whether the data should be sent in DTR mode or not
-  * @data.ecc: whether error correction is required or not
-+ * @data.swap16: whether the byte order of 16-bit words is swapped when read
-+ *		 or written in Octal DTR mode compared to STR mode.
-  * @data.dir: direction of the transfer
-  * @data.nbytes: number of data bytes to send/receive. Can be zero if the
-  *		 operation does not involve transferring data
-@@ -124,7 +126,8 @@ struct spi_mem_op {
- 		u8 buswidth;
- 		u8 dtr : 1;
- 		u8 ecc : 1;
--		u8 __pad : 6;
-+		u8 swap16 : 1;
-+		u8 __pad : 5;
- 		enum spi_mem_data_dir dir;
- 		unsigned int nbytes;
- 		union {
-@@ -297,10 +300,13 @@ struct spi_controller_mem_ops {
-  * struct spi_controller_mem_caps - SPI memory controller capabilities
-  * @dtr: Supports DTR operations
-  * @ecc: Supports operations with error correction
-+ * @swap16: Supports swapping bytes on a 16 bit boundary when configured in
-+ *	    Octal DTR
-  */
- struct spi_controller_mem_caps {
- 	bool dtr;
- 	bool ecc;
-+	bool swap16;
++	/* SWAP16 is only applicable when Octal DTR mode */
++	if (proto == SNOR_PROTO_8_8_8_DTR && nor->flags & SNOR_F_SWAP16)
++		op->data.swap16 = true;
+ }
+ 
+ /**
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 442786685515..baf6c4b5912b 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -140,6 +140,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_RWW		= BIT(14),
+ 	SNOR_F_ECC		= BIT(15),
+ 	SNOR_F_NO_WP		= BIT(16),
++	SNOR_F_SWAP16		= BIT(17),
  };
  
- #define spi_mem_controller_is_capable(ctlr, cap)	\
+ struct spi_nor_read_command {
 -- 
 2.25.1
 
