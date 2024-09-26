@@ -4,92 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7B75CDE00D
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2024 14:25:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF7D0CDE017
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Sep 2024 15:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jXjqo1gFCNCkV0MpCjPxWbacsdwrUXdp37D9lpwdiT4=; b=Zeq6FboX9GE5+x
-	nL1pAsrsmpIP2l3nKAIM4CBrq5cWHdADj55UJ6RSH1cZ2hBEAp79WqUVxwHL7bd3mOjNZr2+PI2Sa
-	Soo/Syek3bz9oECeu0TLgghM0DBdTiLFVRMTtoid7Enhued079Gv1QU/zVdUqc0g4STr8H/K053KS
-	Lf/FUici8yq2gx6oIRdL5lSwrd4imaGBbiBAvW29GVpZr7DRjSCkt+J78FPLxPDAoZiiw0h+FOioS
-	5cRWvky3HrAkB8ETPlb+aazeO1meiL/8jCcIBXev7F8ZPCe+XfefvyeHzZATS0QbEHpwcFVvt/cKT
-	Dk0WVtOOh8wm+/wLmhmA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=F3asXofYPAn3PNMx2CVtkXVsV97e0sR7HdNK16ARpaw=; b=o50v/4BOxFsdA0
+	7Rkpt6FvpqRQKCXchgwvmxEc0uQLJwt+CRsmwhackvU9bS+wX63E42cJ0s3+d8oi+KHzJlLH8zgs3
+	LVAYoTIKg3kst2s7ZsA9bVuoyVOYmd2EPnFmVxWZtjdvx5aRGDkECmmETePlK4rPRY8JM25ElC6NH
+	dVNcBI4YTCV8evegDyC0DmTx55tMN4wBWxENFb1C4sAYZzJjF+UrTKT5xI8rWRZy7yNLu5qOy+8Dx
+	ynsSTzmHEMtjOw9K/QANTKI0i2dzh2yXkZ8jUeFwA3C8FzeBSTaPJCaCsjCGLauO7H7gwFEjAuiep
+	bjg96B8TilQQ27LM+S+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1stpQy-00000008aaU-35v6;
-	Thu, 26 Sep 2024 14:25:32 +0000
-Received: from mail-pg1-x531.google.com ([2607:f8b0:4864:20::531])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1stpQo-00000008aQE-0Rqy
+	id 1stqmb-00000008nKC-0LdG;
+	Thu, 26 Sep 2024 15:51:57 +0000
+Received: from chessie.fmt1.pfcs.com ([2001:470:1:205::234] helo=chessie.everett.org)
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1stqmY-00000008nIr-0aRd
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Sep 2024 14:25:23 +0000
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-7e6cbf6cd1dso770081a12.3
-        for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2024 07:25:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727360720; x=1727965520; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LbPIZJpcVIEhpHEVG/j37aleyqQqnMhNui3ve62e6y8=;
-        b=IBcLyRdJWuJR9ABqsMRxreBojpJEGowyoAoSaZGUzMF3QrwpvTnuaRtawKBIk6kzXq
-         gk2+EY7GqOZclGX0W82SnH1X3GBNqO2H+hSEmHRKleTbVcUkzkf3JTsghn6Vf1XC7TGp
-         ybDdpDmyyzeXT8Jws6fXs5PslKDbqC22nhKLePaRuuatLHJcmdIkVoSpp8xhZqksx3FB
-         DuqKGlhG7jl52kCnLF8pD/Tg9aKL7oYnbYINwJoMbFgNeI92avpy6ZlceqMos21PpBDq
-         zzsQtbxrbtHh9d5lRor1cRzepSFW4uRojt8VIS6OvwQUU295MRt3lkNLggXZvwG94r+o
-         Ln1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727360720; x=1727965520;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LbPIZJpcVIEhpHEVG/j37aleyqQqnMhNui3ve62e6y8=;
-        b=pcu/1u4eOTTDhi2bBYFv6FqBtlWvnrI8YS53QxuY502Ib+kkTfgMNxnCDEz4JOogSR
-         Yqe/CeoxNQANpuUzfNabaa5M6MztoSXkhxqkbpViggsiQF1UMqxNPxnmKmxED16TrtCD
-         ta9mM4PnnfNBoaTwp6rw2wXsXyDGjuIsUfI4bq0JN5YQ7zwzKgnR9cS6/IJdAVynXr9q
-         KPT6zhSG17J8S4BKHIxhqPqo5CDF6pREwKgw+Sgc3mzdjripyIUYqQwU3prDztx+1CN1
-         0I72JmHNDu22Z0IlQsBhDkmVLNUZtYg2wJkqeh3MxQI0xQIyAynlIcmPSOm+7j5+oWOi
-         J6Ag==
-X-Gm-Message-State: AOJu0YzJA9E0k0omABIrV2IUTbWBm0SZBq2nQdfPSFJVFwHGIQj7lFnH
-	uuSEyOOqUmG7NnKw8Uk3NNAvutoWwupI8CEY5SZrOPmS+5+m0fLI
-X-Google-Smtp-Source: AGHT+IHisqnk7KIiPORJnFsqOHN+dwrtS5lGQysFzmZKGyTwiAq/CDdvSpjHomonSIfnNNGUcrdOyg==
-X-Received: by 2002:a17:90b:3e82:b0:2d8:dd14:79ed with SMTP id 98e67ed59e1d1-2e06afbe5c7mr7237287a91.31.1727360719702;
-        Thu, 26 Sep 2024 07:25:19 -0700 (PDT)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e085341490sm2751779a91.21.2024.09.26.07.25.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 07:25:19 -0700 (PDT)
-Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id CB751802C9;
-	Thu, 26 Sep 2024 22:33:06 +0800 (CST)
-From: AlvinZhou <alvinzhou.tw@gmail.com>
+	Thu, 26 Sep 2024 15:51:55 +0000
+Received: from localhost.localdomain (ip-77-25-16-238.web.vodafone.de [77.25.16.238])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by chessie.everett.org (Postfix) with ESMTPSA id 4XDyl71svwzMQYm;
+	Thu, 26 Sep 2024 15:51:47 +0000 (UTC)
+From: Erez Geva <erezgeva@nwtime.org>
 To: linux-mtd@lists.infradead.org,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	broonie@kernel.org
-Cc: chengminglin@mxic.com.tw,
-	leoyu@mxic.com.tw,
-	AlvinZhou <alvinzhou@mxic.com.tw>,
-	JaimeLiao <jaimeliao@mxic.com.tw>
-Subject: [PATCH v10 6/6] mtd: spi-nor: add support for Macronix Octal flash
-Date: Thu, 26 Sep 2024 22:19:56 +0800
-Message-Id: <20240926141956.2386374-7-alvinzhou.tw@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240926141956.2386374-1-alvinzhou.tw@gmail.com>
-References: <20240926141956.2386374-1-alvinzhou.tw@gmail.com>
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	devicetree@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Esben Haabendal <esben@geanix.com>,
+	Erez Geva <ErezGeva2@gmail.com>
+Subject: [PATCH v6 0/3] Add support for SPI-NOR Macronix OTP
+Date: Thu, 26 Sep 2024 17:51:24 +0200
+Message-Id: <20240926155127.2450246-1-erezgeva@nwtime.org>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240926_072522_256753_D5ECF7F3 
-X-CRM114-Status: GOOD (  12.67  )
+X-CRM114-CacheID: sfid-20240926_085154_201303_EB8D77F6 
+X-CRM114-Status: GOOD (  10.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,42 +72,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: AlvinZhou <alvinzhou@mxic.com.tw>
+From: Erez Geva <ErezGeva2@gmail.com>
 
-Adding manufacturer ID 0xC2 at the end of ID table
-to allow manufacturer fixup to be applied for any
-Macronix flashes instead of needing to list each
-flash ID in the ID table.
+Add support for SPI-NOR Macronix OTP.
 
-Such as macronix_nor_set_octal_dtr function in the
-manufacturer fixup can be applied to any Macronix
-Octal Flashes without the need to add the specific
-ID in the ID table.
+v2:
+Improve description of mx25l12833f.
+Add note about mx25l12833f using the same JEDEC ID as mx25l12805d.
 
-Suggested-by: Michael Walle <mwalle@kernel.org>
-Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
-Signed-off-by: AlvinZhou <alvinzhou@mxic.com.tw>
----
- drivers/mtd/spi-nor/macronix.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+v3:
+Improve description.
+Rename _nor_send_cmd() to spi_nor_send_cmd_internal().
+Remove MX25L12833F specific changes.
+Add reading SFDP to all Macronix chips.
+Add support of reading OTP parameters from device tree.
+Reorgenize patches to 2 SPI-NOR patches and 2 Macronix patches.
+Testing with MX25L3233F using BeagleBone Black.
+Test results are in "mtd: spi-nor: macronix: add manufacturer flags" patch.
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index f039819a5252..1a8ccebdfe0e 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -200,7 +200,9 @@ static const struct flash_info macronix_nor_parts[] = {
- 		.name = "mx25l3255e",
- 		.size = SZ_4M,
- 		.no_sfdp_flags = SECT_4K,
--	}
-+	},
-+	/* Need the manufacturer fixups, Keep this last */
-+	{ .id = SNOR_ID(0xc2) }
- };
- 
- static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
+v4:
+Add DT bindings of new OTP parameters.
+Test OTP with 'flash_otp_write' and 'flash_otp_lock'.
+Fix macronix_nor_otp_lock() and macronix_nor_otp_is_locked(),
+Macronix uses a single flag for all regions.
+
+v5:
+Fix DT binding errors.
+Fix functions description of Macronix OTP functions.
+
+v6:
+Remove DT.
+The patch contain the Macronix OTP functions.
+But this patch seria do not contain any means to configure the OTP.
+As a proper way to do it was not concluded!
+I think we do need dynamic OTP for future use.
+
+Erez Geva (3):
+  mtd: spi-nor: core: make OTP configuration dynamic
+  mtd: spi-nor: core: add generic functions
+  mtd: spi-nor: macronix: add support for OTP
+
+ drivers/mtd/spi-nor/core.c     | 134 +++++++++++++++++++-------
+ drivers/mtd/spi-nor/core.h     |  29 +-----
+ drivers/mtd/spi-nor/macronix.c | 167 +++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/otp.c      |   6 +-
+ drivers/mtd/spi-nor/winbond.c  |   2 +-
+ include/linux/mtd/spi-nor.h    |   9 ++
+ 6 files changed, 283 insertions(+), 64 deletions(-)
+
 -- 
-2.25.1
+2.39.5
 
 
 ______________________________________________________
