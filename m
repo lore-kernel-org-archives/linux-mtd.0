@@ -4,56 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FA1FCF6493
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Sep 2024 12:48:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E32A8CF6495
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Sep 2024 13:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=12euPOWYc5sOjPFf7yGsvTsPutXVYD6V+juK2cIdrj0=; b=EQHLNmf87eyqpM
-	qZbuQEnmn4XcWQyNSZK47dQFMH8VNGKHP3Epq4iBTo+KoO7XgUubfMLvAAycwby/dpYiTWtpZBd/w
-	LFZCXDCScrjPPmyKfgI5XcHfB26JXOHdN/pEpxB/m4aI3bhEr0jKMhkIWAHxVZ96+g4rYBpy5O8FS
-	GdbLtvyQFiExUVEXiImtlmTyoFRi28vRyzancpLkO+c+bPzC8DcAFw6Fio9q8M8+I3QhEr5H7eAmk
-	IjQCQrbY5vYGsL9pbvD0z+t+xA6P8mMcMNpM4n1X44i9YIw07s3Gmbw8lMR2zts0Gn7xWwX5msj6W
-	oEX/eZZUOKmcZ6LJHDew==;
+	List-Owner; bh=O/mxjT2nLNSPsPxYEGFi5gpeu0wbcraLO7W++CK8ou8=; b=mW9SnLBR+AgyBz
+	4KVDbCk9t1cvvxl082tq26mkhs9CET35U2/nA+MHrcJ6DNIo7UsGO7wRfXz26Yn4ku39hHD3fjqPi
+	08OGqSVzcNkThvhW70VpFp02ilCCgEheC5MS+y7FjidC9080Vswua9Vt8itGzbSPkObaXMP8P5fTQ
+	HH2l0z3zfBPGtiyLeRmuRTMR0nHeNWENZ7ptR/n6f6e2yu3NsFYaOM1xMshsWe7OwQ8djYq3WwFrT
+	CLYlxsz0So6InUHxwKuDiv9MCNGVRJzrfATM3oPm+VCP09IFwhHHt9XGv1/va9H6okAVNQDai2Lxm
+	VrjRpTSKP8rTfaH9khRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1suWs8-0000000D4YA-25Fl;
-	Sat, 28 Sep 2024 12:48:28 +0000
-Received: from pidgin.makrotopia.org ([2a07:2ec0:3002::65])
+	id 1suX73-0000000D5mg-2z9w;
+	Sat, 28 Sep 2024 13:03:53 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1suWs3-0000000D4XC-2ZpK
+	id 1suX66-0000000D5ha-1KuJ
 	for linux-mtd@lists.infradead.org;
-	Sat, 28 Sep 2024 12:48:25 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.98)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1suWrr-000000004VK-3Rm6;
-	Sat, 28 Sep 2024 12:48:11 +0000
-Date: Sat, 28 Sep 2024 13:48:08 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	John Crispin <john@phrozen.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 2/2] mtd: ubi: add support for protecting critical volumes
-Message-ID: <b43a7155f80995c3986893951c092291caf3a5f4.1727527457.git.daniel@makrotopia.org>
-References: <e0936674dd1d6c98322e35831b8f0538a5cfa7a3.1727527457.git.daniel@makrotopia.org>
+	Sat, 28 Sep 2024 13:02:55 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7F5DF5C553E;
+	Sat, 28 Sep 2024 13:02:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38213C4CEC3;
+	Sat, 28 Sep 2024 13:02:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727528573;
+	bh=urz7cW1OH9XkyT5GAilgziDYPmw013WbO3RQCNixOsc=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=VX1wH/Aw3LgHIRk8asB6TLmzWoWD6+i8+ctwZL7EWlZocXZTKTyhQHlqeTVHCAMU7
+	 Vp+ZjwUS1YvDPps1shoV2dwis0FpzshNDthcE8AmKA7Ex05TtQj/P2JiKBMdJAvoEH
+	 bGywmBCHDj/MW48VLi9fOz8MND0wPHMVzj7EvP4z/hMSp69P/kcDOnSxQGT8SPEldv
+	 s0K8uVk50WrYUO6AkSddibLBpJp7bmT8FwYGXcRBCqDctQNLGAN+3hCYAGoI85WJls
+	 9L/UhOfM24Aod9ZNmRRgiENEBzQ2D2mOqDNFU8C8ABpOY62chPtVfmHiiVZ7wlV5Nk
+	 2ynOkpdFQcEHw==
+Message-ID: <7a2e8819-ac70-4070-a731-53994c72cd79@kernel.org>
+Date: Sat, 28 Sep 2024 15:02:47 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/2] dt-bindings: mtd: ubi-volume: add
+ 'volume-is-critical' property
+To: Daniel Golle <daniel@makrotopia.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ John Crispin <john@phrozen.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <e0936674dd1d6c98322e35831b8f0538a5cfa7a3.1727527457.git.daniel@makrotopia.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
 In-Reply-To: <e0936674dd1d6c98322e35831b8f0538a5cfa7a3.1727527457.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240928_054823_680169_0C4DEDCE 
-X-CRM114-Status: GOOD (  21.26  )
+X-CRM114-CacheID: sfid-20240928_060254_492323_3C81DC2E 
+X-CRM114-Status: GOOD (  17.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,228 +121,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allow the boot firmware to define volumes which are critical for the
-system to boot, such as the bootloader itself if stored inside a UBI
-volume. Protect critical volumes by preventing the user from removing,
-resizing or writing to them, and also prevent the UBI device from
-being detached if a critical volume is present.
+On 28/09/2024 14:47, Daniel Golle wrote:
+> Add the 'volume-is-critical' boolean property which marks a UBI volume
+> as critical for the device to boot. If set it prevents the user from
+> all kinds of write access to the volume as well as from renaming it or
+> detaching the UBI device it is located on.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../devicetree/bindings/mtd/partitions/ubi-volume.yaml   | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> index 19736b26056b..2bd751bb7f9e 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> @@ -29,6 +29,15 @@ properties:
+>      description:
+>        This container may reference an NVMEM layout parser.
+>  
+> +  volume-is-critical:
+> +    description: This parameter, if present, indicates that the UBI volume
+> +      contains early-boot firmware images or data which should not be clobbered.
+> +      If set, it prevents the user from renaming the volume, writing to it or
+> +      making any changes affecting it, as well as detaching the UBI device it is
+> +      located on, so direct access to the underlying MTD device is prevented as
+> +      well.
+> +    type: boolean
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/build.c | 29 +++++++++++++++++++++++++++++
- drivers/mtd/ubi/cdev.c  | 33 +++++++++++++++++++++++++++++++++
- drivers/mtd/ubi/ubi.h   |  1 +
- drivers/mtd/ubi/vmt.c   | 27 ++++++++++++++++++++++++++-
- 4 files changed, 89 insertions(+), 1 deletion(-)
+UBI volumes are mapping to partitions 1-to-1, right? So rather I would
+propose to use partition.yaml - we already have read-only there with
+very similar description.
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 30be4ed68fad..7a96329c5fd9 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -314,6 +314,30 @@ struct ubi_device *ubi_get_by_major(int major)
- 	return NULL;
- }
- 
-+/**
-+ * ubi_device_got_critical_volume - check if device contains critical volume
-+ * @ubi: UBI device description object
-+ *
-+ * This function checks if any volume on a given UBI device is critical.
-+ *
-+ * Context: Expects ubi_devices_lock to be held by caller.
-+ * Returns: True if there is a critical volume, false otherwise.
-+ */
-+static bool ubi_device_got_critical_volume(struct ubi_device *ubi)
-+{
-+	int i;
-+
-+	for (i = 0; i < ubi->vtbl_slots; i++) {
-+		if (!ubi->volumes[i])
-+			continue;
-+
-+		if (ubi->volumes[i]->critical)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /**
-  * ubi_major2num - get UBI device number by character device major number.
-  * @major: major number
-@@ -1102,6 +1126,11 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 		return -EINVAL;
- 
- 	spin_lock(&ubi_devices_lock);
-+	if (ubi_device_got_critical_volume(ubi)) {
-+		spin_unlock(&ubi_devices_lock);
-+		return -EPERM;
-+	}
-+
- 	ubi->ref_count -= 1;
- 	if (ubi->ref_count) {
- 		if (!anyway) {
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 0d8f04cf03c5..897791ebb71c 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -328,6 +328,9 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
- 	struct ubi_volume *vol = desc->vol;
- 	struct ubi_device *ubi = vol->ubi;
- 
-+	if (vol->critical)
-+		return -EPERM;
-+
- 	if (!vol->updating && !vol->changing_leb)
- 		return vol_cdev_direct_write(file, buf, count, offp);
- 
-@@ -390,6 +393,11 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 	{
- 		int64_t bytes, rsvd_bytes;
- 
-+		if (vol->critical) {
-+			err = -EPERM;
-+			break;
-+		}
-+
- 		if (!capable(CAP_SYS_RESOURCE)) {
- 			err = -EPERM;
- 			break;
-@@ -430,6 +438,11 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 	{
- 		struct ubi_leb_change_req req;
- 
-+		if (vol->critical) {
-+			err = -EPERM;
-+			break;
-+		}
-+
- 		err = copy_from_user(&req, argp,
- 				     sizeof(struct ubi_leb_change_req));
- 		if (err) {
-@@ -464,6 +477,11 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 	{
- 		int32_t lnum;
- 
-+		if (vol->critical) {
-+			err = -EPERM;
-+			break;
-+		}
-+
- 		err = get_user(lnum, (__user int32_t *)argp);
- 		if (err) {
- 			err = -EFAULT;
-@@ -495,6 +513,11 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 	{
- 		struct ubi_map_req req;
- 
-+		if (vol->critical) {
-+			err = -EPERM;
-+			break;
-+		}
-+
- 		err = copy_from_user(&req, argp, sizeof(struct ubi_map_req));
- 		if (err) {
- 			err = -EFAULT;
-@@ -509,6 +532,11 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 	{
- 		int32_t lnum;
- 
-+		if (vol->critical) {
-+			err = -EPERM;
-+			break;
-+		}
-+
- 		err = get_user(lnum, (__user int32_t *)argp);
- 		if (err) {
- 			err = -EFAULT;
-@@ -537,6 +565,11 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 	{
- 		struct ubi_set_vol_prop_req req;
- 
-+		if (vol->critical) {
-+			err = -EPERM;
-+			break;
-+		}
-+
- 		err = copy_from_user(&req, argp,
- 				     sizeof(struct ubi_set_vol_prop_req));
- 		if (err) {
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 1c9e874e8ede..21b8ce77426b 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -364,6 +364,7 @@ struct ubi_volume {
- 	unsigned int updating:1;
- 	unsigned int changing_leb:1;
- 	unsigned int direct_writes:1;
-+	unsigned int critical:1;
- 
- #ifdef CONFIG_MTD_UBI_FASTMAP
- 	unsigned long *checkmap;
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 5a3558bbb903..a16b84e009a1 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -370,6 +370,11 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
- 		return -EROFS;
- 
- 	spin_lock(&ubi->volumes_lock);
-+	if (vol->critical) {
-+		err = -EPERM;
-+		goto out_unlock;
-+	}
-+
- 	if (vol->ref_count > 1) {
- 		/*
- 		 * The volume is busy, probably someone is reading one of its
-@@ -472,6 +477,12 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 		return PTR_ERR(new_eba_tbl);
- 
- 	spin_lock(&ubi->volumes_lock);
-+	if (vol->critical) {
-+		spin_unlock(&ubi->volumes_lock);
-+		err = -EPERM;
-+		goto out_free;
-+	}
-+
- 	if (vol->ref_count > 1) {
- 		spin_unlock(&ubi->volumes_lock);
- 		err = -EBUSY;
-@@ -578,9 +589,22 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
-  */
- int ubi_rename_volumes(struct ubi_device *ubi, struct list_head *rename_list)
- {
--	int err;
-+	int err = 0;
- 	struct ubi_rename_entry *re;
- 
-+	spin_lock(&ubi->volumes_lock);
-+	list_for_each_entry(re, rename_list, list) {
-+		struct ubi_volume *vol = re->desc->vol;
-+
-+		if (vol->critical) {
-+			err = -EPERM;
-+			break;
-+		}
-+	}
-+	spin_unlock(&ubi->volumes_lock);
-+	if (err)
-+		return err;
-+
- 	err = ubi_vtbl_rename_volumes(ubi, rename_list);
- 	if (err)
- 		return err;
-@@ -641,6 +665,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
- 	vol->dev.groups = volume_dev_groups;
- 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
- 	device_set_node(&vol->dev, find_volume_fwnode(vol));
-+	vol->critical = device_property_read_bool(&vol->dev, "volume-is-critical");
- 	err = device_register(&vol->dev);
- 	if (err) {
- 		cdev_del(&vol->cdev);
--- 
-2.46.2
+Best regards,
+Krzysztof
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
