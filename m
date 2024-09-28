@@ -4,58 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 433F6CF6491
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Sep 2024 13:09:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01C42CF6493
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Sep 2024 13:46:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DxNN6ObDPviK66IBXCN/qbHlM55h/iDaktZ0+VJacGc=; b=fwGRHqkBpz9fB9
-	7vyDco0hl/MEsmYxyzApCQQgT5DJREKIDIL4InDrSZB0tSuTSpMGIck/EnzVc8chqvAjWHUZ2/qEA
-	f9pFUznAZ/KkCqV6949oRg337flUeQqZ2vueRg9ok43ZQveH/QIz+DiO5oMw1U95SlTrUmZLsuMJL
-	7+2XWOdOhjEAm65SO18RbKmYciw068Td3vqy8A2cuJ1tqNSNwh7GrSXoK6Crn8w9211j3NEjMJNnP
-	jZqSjltNxtCj2AJeKEdUx31bTNCws9zkXP73rZ3z9uaKR5pjH+aXY21/Ot7NdAyEh2La/ijdHaKVH
-	F4UkXYcUqOodBld4yPoA==;
+	List-Owner; bh=AnvRjbmnhVpimKbWsbIx/1a4PqYkWVQaE03QJK+6s2o=; b=OyDUvzhrnn5j8b
+	Wr8VgLgKo/ViA6WJf7y3UAG8It4y7XztkkbwpAvbAJY5S0rox2Hlf8+/z/ecHVvSUdd9DPiCqprbs
+	xR66leAz0QJPBGdkEuIfUFuBHY1oBg++HA4Tf1gu1pXItjn/nGZSRIqon42iVnaSkiAFa9aRJk77m
+	j1c/Misg0MGTgeI3mh4iNjerjZSjBQEBZpvTAszyWEK74cJ6WBlqKOTD6+7Ou+NcBD6h7GkMW0zsA
+	wbRScmswMmexOxo2ONdYVJJZyu0K5OJXJ5MtPCkYVG13aAc3nU+d5iR7YqzMEC/ljzSM3T/XwS5kp
+	aKkofEXegPLpbV/xHZAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1suXCO-0000000D6Aq-3qoO;
-	Sat, 28 Sep 2024 13:09:24 +0000
-Received: from pidgin.makrotopia.org ([2a07:2ec0:3002::65])
+	id 1suXln-0000000D8fR-24dL;
+	Sat, 28 Sep 2024 13:45:59 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1suXCM-0000000D6AU-08oA
+	id 1suXlk-0000000D8ey-1dkM
 	for linux-mtd@lists.infradead.org;
-	Sat, 28 Sep 2024 13:09:23 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.98)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1suXCD-000000004YR-36QG;
-	Sat, 28 Sep 2024 13:09:13 +0000
-Date: Sat, 28 Sep 2024 14:09:07 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	John Crispin <john@phrozen.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+	Sat, 28 Sep 2024 13:45:57 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 197E3A404EF;
+	Sat, 28 Sep 2024 13:45:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9470FC4CEC3;
+	Sat, 28 Sep 2024 13:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727531154;
+	bh=Em0L9ku5aG9RNOTHFg9WI2703n/XMa40ZjERGqjIMys=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=jjugqKHrIv3vNaDuhfHJ1jxkwavZfKlmJCtAseRoK1162VHFQERDhTi0E37QmTb+J
+	 gzjDRq6hT4HUMXvV+MUE5JUw+Mi2i+eFGPvl2h822iTkbkRe42cYejCSYvMidto82G
+	 OtchMtSO7HMIBa6b+2bMLKo4byvZ5SwsI92V2UvZY2U4jsNU9UfDwfkfHClMPLXzKH
+	 QtMd8kf/i+aGbLBXhbo/NkY24Bt/Bn4TfqBD7YDN788jxsNPZKqgsT/WJGzoePAu8g
+	 chZgKbr6FwcZ07ExusgJ3+TUPwQ3xg+/fSiW5/Pp4pPPgayJgmoCQlgLyPzOrt1X+Y
+	 uyCVg43JL+3Qg==
+Message-ID: <18e9d774-813b-427e-9938-53853d695e18@kernel.org>
+Date: Sat, 28 Sep 2024 15:45:49 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH RFC 1/2] dt-bindings: mtd: ubi-volume: add
  'volume-is-critical' property
-Message-ID: <Zvf_84xxhxwpPgee@makrotopia.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ John Crispin <john@phrozen.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <e0936674dd1d6c98322e35831b8f0538a5cfa7a3.1727527457.git.daniel@makrotopia.org>
  <7a2e8819-ac70-4070-a731-53994c72cd79@kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7a2e8819-ac70-4070-a731-53994c72cd79@kernel.org>
+ <Zvf_84xxhxwpPgee@makrotopia.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <Zvf_84xxhxwpPgee@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240928_060922_095043_991C5253 
-X-CRM114-Status: GOOD (  24.67  )
+X-CRM114-CacheID: sfid-20240928_064556_603801_5AF7632E 
+X-CRM114-Status: GOOD (  23.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,57 +123,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Sep 28, 2024 at 03:02:47PM +0200, Krzysztof Kozlowski wrote:
-> On 28/09/2024 14:47, Daniel Golle wrote:
-> > Add the 'volume-is-critical' boolean property which marks a UBI volume
-> > as critical for the device to boot. If set it prevents the user from
-> > all kinds of write access to the volume as well as from renaming it or
-> > detaching the UBI device it is located on.
-> > 
-> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> > ---
-> >  .../devicetree/bindings/mtd/partitions/ubi-volume.yaml   | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-> > index 19736b26056b..2bd751bb7f9e 100644
-> > --- a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-> > @@ -29,6 +29,15 @@ properties:
-> >      description:
-> >        This container may reference an NVMEM layout parser.
-> >  
-> > +  volume-is-critical:
-> > +    description: This parameter, if present, indicates that the UBI volume
-> > +      contains early-boot firmware images or data which should not be clobbered.
-> > +      If set, it prevents the user from renaming the volume, writing to it or
-> > +      making any changes affecting it, as well as detaching the UBI device it is
-> > +      located on, so direct access to the underlying MTD device is prevented as
-> > +      well.
-> > +    type: boolean
+On 28/09/2024 15:09, Daniel Golle wrote:
+> On Sat, Sep 28, 2024 at 03:02:47PM +0200, Krzysztof Kozlowski wrote:
+>> On 28/09/2024 14:47, Daniel Golle wrote:
+>>> Add the 'volume-is-critical' boolean property which marks a UBI volume
+>>> as critical for the device to boot. If set it prevents the user from
+>>> all kinds of write access to the volume as well as from renaming it or
+>>> detaching the UBI device it is located on.
+>>>
+>>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+>>> ---
+>>>  .../devicetree/bindings/mtd/partitions/ubi-volume.yaml   | 9 +++++++++
+>>>  1 file changed, 9 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+>>> index 19736b26056b..2bd751bb7f9e 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+>>> +++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+>>> @@ -29,6 +29,15 @@ properties:
+>>>      description:
+>>>        This container may reference an NVMEM layout parser.
+>>>  
+>>> +  volume-is-critical:
+>>> +    description: This parameter, if present, indicates that the UBI volume
+>>> +      contains early-boot firmware images or data which should not be clobbered.
+>>> +      If set, it prevents the user from renaming the volume, writing to it or
+>>> +      making any changes affecting it, as well as detaching the UBI device it is
+>>> +      located on, so direct access to the underlying MTD device is prevented as
+>>> +      well.
+>>> +    type: boolean
+>>
+>> UBI volumes are mapping to partitions 1-to-1, right? So rather I would
+>> propose to use partition.yaml - we already have read-only there with
+>> very similar description.
 > 
-> UBI volumes are mapping to partitions 1-to-1, right? So rather I would
-> propose to use partition.yaml - we already have read-only there with
-> very similar description.
+> No, that's not the case.
+> 
+> An MTD partition can be used as UBI device. A UBI device (and hence MTD
+> partition) can host *several* UBI volumes.
+> 
+> Marking the MTD partition as 'read-only' won't work, as UBI needs
+> read-write access to perform bad block relocation, scrubbing, ...
 
-No, that's not the case.
+OK, so not partition but read-only volume.
 
-An MTD partition can be used as UBI device. A UBI device (and hence MTD
-partition) can host *several* UBI volumes.
+> 
+> Also, typically not all UBI volumes on a UBI device are
+> read-only/critical but only a subset of them.
+> 
+> But you are right that the description is inspired by the description
+> of the 'read-only' property in partition.yaml ;)
+> 
+> I initially thought to also name the property 'read-only', just like
+> for MTD partitions. However, as the desired effect goes beyond
+> preventing write access to the volume itself, I thought it'd be
+> better to use a new name.
 
-Marking the MTD partition as 'read-only' won't work, as UBI needs
-read-write access to perform bad block relocation, scrubbing, ...
+Yeah, maybe... critical indeed covers multiple cases but is also
+subjective. For some bootloader is critical, for other bootloader still
+might be fully A/B updateable thus could be modifiable. For others, they
+want to use fw_setenv from user-space so not critical at all.
 
-Also, typically not all UBI volumes on a UBI device are
-read-only/critical but only a subset of them.
+I am in general not so happy in describing flash layout in DT, because
+it sounds way too policy or one-use-case specific.
 
-But you are right that the description is inspired by the description
-of the 'read-only' property in partition.yaml ;)
+UBI volume is purely SW construct. One OS can partition MTD in multiple
+ways, so maybe I just do not understand why we have in the first place.
 
-I initially thought to also name the property 'read-only', just like
-for MTD partitions. However, as the desired effect goes beyond
-preventing write access to the volume itself, I thought it'd be
-better to use a new name.
+Best regards,
+Krzysztof
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
