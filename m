@@ -4,73 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40C07CEBF82
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Sep 2024 21:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E75CF6495
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Sep 2024 12:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IRdTrPfy8NMucWDSuKMgtja9OMFgePqApWDLmCJEfWM=; b=g7jejBjUXXdnVS
-	N3aP0m/YSXl5OCgNMI6FKFZ4PdkGxE4Fws6xtCWEeZBkiwb6CMZQQ6TmVqhdIPJqeB2urQwQB8nSw
-	S63e7b7C4iPLEWADpqYfax8dPCbo1ClLV8AZNBLa7cZ3MMoc8Yts2FCfHvS5e5n4SmWEo0MG+T3zG
-	nGrz0qWYdyw1VHxiA9Fcd5447XRR+MH2dncSgBYvYuVnDAAvUa2KM4ZgOQjgIcMj4fYMfBPT9zWf5
-	mapGWs7QbgpSXk4nB8z6yWayxaIVKkYs2TIf2EbX9sMweJUucZa8ecp28aEGICG89oF3jOAkpNi1p
-	uJBkGUId141HF7ss6kqQ==;
+	List-Owner; bh=7pFU91egNZ69fVA9IxxRSLIiub3T9NhYCFHICvG5xNs=; b=T0RUAHzlMuZQh/
+	J5Rao91ns/tm0zdNASmvp8UBpNCvKXq27JxlUuBFu2JfdCzsEMBhjFneJdEg6CowCqBZzAQlreiqO
+	lRPAFr9RBekl7ZXhH/IDPbU8x9AFh8IqPDkp380K+9xR5UGyAwn5FdSOflXfOeWwTCPupjCl5RXHe
+	5BenW1rBDP0P5pvljykenceSKh7kRx58CaUnXpSznH4NP5oViB1BomxTPzjXmDennJeIRDpGxc+mm
+	N9pxBBzzZOHZd9G+QlOH+tvUsZh+ALzbRytlkGuAxd2PlqVmr1nHZ5I/hZQvjhK0QnxBcLS0BlxSH
+	WeAZ2atpA8iqngLQwZeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1suII2-0000000C7sG-3jJH;
-	Fri, 27 Sep 2024 21:14:14 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1suWs7-0000000D4Xx-47YH;
+	Sat, 28 Sep 2024 12:48:27 +0000
+Received: from pidgin.makrotopia.org ([2a07:2ec0:3002::65])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1suII0-0000000C7rk-2CIi
+	id 1suWs3-0000000D4X9-2ZKt
 	for linux-mtd@lists.infradead.org;
-	Fri, 27 Sep 2024 21:14:13 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-7db908c9c83so1635035a12.2
-        for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2024 14:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727471651; x=1728076451; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XP4LzL4IeCpLDQjoepaMUdGnz+CdY644MQkaaILCoGM=;
-        b=UM11PXLvepYtxolxzPtZ0ft9k/hAgnghJt6tu1RJYNFhL18HrYAn/6+16W/BRDaoFj
-         MOI4w07U0UAteTU1YKa2CjKS0MGcuZDtoeISp2qGRvSr9S9ZF+K4e2gZIOasEvP4mF5R
-         YDtuev8E+I4VoOAsnzKj+gT2lzU6oSZl9Oxcm0qbEWwyTIUaC7unlh9BJ4B2jrEpcwjn
-         XN8JZutPVz5RC8OoYwK+mInO0VhZg/MU90nij+PqujMFdEo+NGnbB2gfAbBWHhm+x6xM
-         +CPcWGHsarlw/RlPP4vzUpbfgpz1DiDzKex4mmJSWhdXJHcqXiJFgjdHrzqnz7rCMkgR
-         m1/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727471651; x=1728076451;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XP4LzL4IeCpLDQjoepaMUdGnz+CdY644MQkaaILCoGM=;
-        b=q4Fhm7u1kWkHzfqXDy42rihEtMG0pDYFXWt8+noDDkgIWSGo4F2OMZa4QU7UgO+34X
-         R/BPD55ZgYwbzueyAAxYk7cHcMy+1zotJvshqogcXH/03VjzrHvr0VG03w4j9JpN8dt5
-         tWilUyCYwuntiMeEFaFMMrE8tBYsidMmKOTUSEcwIzh0QEO2e+jzq0WecV7NdAMKn9Qz
-         Ca1Mv1R/6sM1+t7NNqrYaChTrDXpuwPbu0YsfrNaCqdSUxywwfQMI6R7nWSjyF/Z90xr
-         gvYCwGPP2J71RIooPWC1bVvEXE/2px1aPzEgEAb8e01sJFbDfQXBBTDpdT7uYDg/4PRn
-         ebSQ==
-X-Gm-Message-State: AOJu0YwKP2wcOHwpxl07BYlWwupL3hzfwTAorOuwRA9c0LyRielBYWhL
-	iGoGJekzowaH4nrFbFSw+lU2HHyrMqraXaIe9L5Tzu48PTJTorkQrFTfmg==
-X-Google-Smtp-Source: AGHT+IGVMMTIpYHD0JsA1Jn1IdEBRctR1DqQuqGkvplNuJHk79XSdBzMFnLw0Ccy9wACElg79nlKzg==
-X-Received: by 2002:a17:90a:644f:b0:2c9:9643:98f4 with SMTP id 98e67ed59e1d1-2e0b89ac7a2mr5340915a91.5.1727471650666;
-        Fri, 27 Sep 2024 14:14:10 -0700 (PDT)
-Received: from ryzen.lan ([2601:644:8200:dab8::a86])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e0b6e147c3sm2572471a91.38.2024.09.27.14.14.10
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Sep 2024 14:14:10 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.jffs2: fix segfault when parsing dev table
-Date: Fri, 27 Sep 2024 14:14:08 -0700
-Message-ID: <20240927211409.874433-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.46.1
+	Sat, 28 Sep 2024 12:48:24 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.98)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1suWrh-000000004V2-2pUt;
+	Sat, 28 Sep 2024 12:48:01 +0000
+Date: Sat, 28 Sep 2024 13:47:54 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	John Crispin <john@phrozen.org>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC 1/2] dt-bindings: mtd: ubi-volume: add
+ 'volume-is-critical' property
+Message-ID: <e0936674dd1d6c98322e35831b8f0538a5cfa7a3.1727527457.git.daniel@makrotopia.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240927_141412_585684_360D940F 
-X-CRM114-Status: GOOD (  11.45  )
+X-CRM114-CacheID: sfid-20240928_054823_676456_478526E8 
+X-CRM114-Status: UNSURE (   9.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,30 +70,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Make sure that all 10 items are parsed correctly. One issue otherwise is
-a null pointer dereference when the first item is not found.
+Add the 'volume-is-critical' boolean property which marks a UBI volume
+as critical for the device to boot. If set it prevents the user from
+all kinds of write access to the volume as well as from renaming it or
+detaching the UBI device it is located on.
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- jffsX-utils/mkfs.jffs2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/mtd/partitions/ubi-volume.yaml   | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/jffsX-utils/mkfs.jffs2.c b/jffsX-utils/mkfs.jffs2.c
-index b9dd96b..63dac1c 100644
---- a/jffsX-utils/mkfs.jffs2.c
-+++ b/jffsX-utils/mkfs.jffs2.c
-@@ -428,7 +428,7 @@ static int interpret_table_entry(struct filesystem_entry *root, char *line)
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+index 19736b26056b..2bd751bb7f9e 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+@@ -29,6 +29,15 @@ properties:
+     description:
+       This container may reference an NVMEM layout parser.
  
- 	if (sscanf (line, "%" SCANF_PREFIX "s %c %lo %lu %lu %lu %lu %lu %lu %lu",
- 				SCANF_STRING(name), &type, &mode, &uid, &gid, &major, &minor,
--				&start, &increment, &count) < 0)
-+				&start, &increment, &count) < 10)
- 	{
- 		return 1;
- 	}
++  volume-is-critical:
++    description: This parameter, if present, indicates that the UBI volume
++      contains early-boot firmware images or data which should not be clobbered.
++      If set, it prevents the user from renaming the volume, writing to it or
++      making any changes affecting it, as well as detaching the UBI device it is
++      located on, so direct access to the underlying MTD device is prevented as
++      well.
++    type: boolean
++
+ anyOf:
+   - required:
+       - volid
 -- 
-2.46.1
-
+2.46.2
 
 ______________________________________________________
 Linux MTD discussion mailing list
