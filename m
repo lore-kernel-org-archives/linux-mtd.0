@@ -4,92 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A7D3CF6497
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2024 16:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0374CF6495
+	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2024 17:05:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bfdlMvrL7YLFy5lUO9P40j/3RoGiCPwDySypLIuWpAs=; b=h2QUiv4dZrPHLN
-	75s9yXvlCcydnUkZuiEs5a6QhJ0cb2r65EGTHYu942pYkvQTu6ewCXNPgWcN9gMqludMuMHS3eqvp
-	stC5EqLibSwDLc5klwIVgScOQMx6E6Y6DEYG9Eu+RpSjKqSGtDNto98z6UF3e9NNV5c8ssDH2nerV
-	WwHHMqOX9faklI7WM+w1T+NjDmBWAwyUPn799kvdv/q/BFev9C74+nMzS9iK/dXob8bMI7VrmtZVr
-	LIazx4PzolJd2+ojdQI+hxIY7ft2wWPSf/PY2dme/ibQ/Fdsu7Dct7tsxmPoBeEHTnx/TgiQZ7eNU
-	npESlw+F1Egul4ckvwTg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wtLRCuh2/HhOCkOTqTcKO08W902p4CKUP321/jFaMxw=; b=RGReAGAwdEKL+3
+	nist+A9xSXDIinunxRlZ5/A9IHgigFuHAdteRjuTqpNlmtFnl+8NI62eigXP8RUwtQuHpNxC0Cz7a
+	yh0dXOn09g7Q46pqV1X62i53NfZMBksNKAsTSwqVo4YxkF+sKXuCfaLTYFlTXXp5W4Hafr2KkMoEc
+	pTBQW5nLslEG9LLQfoczpsd71Lo1psKTMqiH+mEQpUzCSfbvAGgnzXbWiassJs1q1IGpoaAD6yH+l
+	TrwGx9VCHKtpOT6dbIIZ5H3ZaDgMpEN5kABqYQSqdcdlLcMugbGirI9MovQw93jTJcYEAVQL5hWT9
+	1w8EYSQd2ABRND+f9Tig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sux3k-0000000F2tA-3X8m;
-	Sun, 29 Sep 2024 16:46:12 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1suxMl-0000000F4Xd-1DFQ;
+	Sun, 29 Sep 2024 17:05:51 +0000
+Received: from mx.treblig.org ([2a00:1098:5b::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sux3g-0000000F2si-3D6V
-	for linux-mtd@lists.infradead.org;
-	Sun, 29 Sep 2024 16:46:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727628366;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s3vEZhvYn8tPQDHoqmt/r0UXfxhs3Vvrfcdx9VtAA9I=;
-	b=UMqkHTX62dCaFKkZi6/ZCQA3kOUm2JgqB9+K4b1SLoRMHxD0Z7CQRmjSbAgZLD+SkSnh82
-	PY8DSGTeuk2SG+z4f9sFmhAo7ijaLrisWMUTRi61hNYhoQUScnsqVfUPxPg8C7cfHz7fYJ
-	SmDPJRzIaptB+u3TMio6cGZX314Nvv4=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-688-14QygH-jO--D_rZYrfjn3w-1; Sun, 29 Sep 2024 12:46:05 -0400
-X-MC-Unique: 14QygH-jO--D_rZYrfjn3w-1
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a345a02c23so22143835ab.1
-        for <linux-mtd@lists.infradead.org>; Sun, 29 Sep 2024 09:46:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727628364; x=1728233164;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s3vEZhvYn8tPQDHoqmt/r0UXfxhs3Vvrfcdx9VtAA9I=;
-        b=kJTs5uLDwA4DHKeTD5n7Bk4t1OH5H6/kVT2LYMxzwPcB36T7zJxXCxk7sbDk3paM9Q
-         PqNCa+tlU1hM2GQ0f360gN1ZAMTBCqNZhfYUzlJZV5KGPUkFI9epdMExTjQLVB47W4aW
-         4baeauS3pgm+j9NByjhkR/0LtEydxsALo0G2ocsiQQS0c+HFrfVt82Ms7/m7JZ4wvTv5
-         uq4/FU4QGh9SaCMQ1RAOynmU1TDI1IWWrI3rHYmiG4hdx62qbQvClL1S6J+RNTesroR7
-         p+6/19lne1zgqCm2vUtIMDXQCmPyY7V2OiE4J5kp6t9Tm2g1+qidF3+MdhC3tpkziP9A
-         LwrA==
-X-Forwarded-Encrypted: i=1; AJvYcCWFttcY7QtS9M9Lubs9xaD27ORPglHjUWeG6Ff1CzA51SAentB8h9Z0y2MZBhZF7bRqsvZk/7Y4P4o=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxPEfy7gSUTR4Uvl3aPNiLtohusZyoLXK0fYeRLd0oFYJjTlG0e
-	3eBB+vqFrQw3lt6nfjpHPMF/asItvk0CsfxWLli0YYR0nFSA4C9/l7vVrJ+Xl+lDI/UxAPGDU7+
-	cxSTnnb4mgRDS/vanjwDqO5Gz1ZAhBt176Z8f0M5TRHWFmvukozr6w0aqpzSErgD775/0Z1sTRg
-	==
-X-Received: by 2002:a05:6e02:1c24:b0:3a0:8eb3:5160 with SMTP id e9e14a558f8ab-3a34516a29fmr78182845ab.11.1727628364335;
-        Sun, 29 Sep 2024 09:46:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFKa7iEJhrKcFLLID+TvlSnmBtqAkS9qOuzY/z62/4liU5QoeOkpdnBpuco3ODLgZovG2MfQ==
-X-Received: by 2002:a05:6e02:1c24:b0:3a0:8eb3:5160 with SMTP id e9e14a558f8ab-3a34516a29fmr78182735ab.11.1727628364020;
-        Sun, 29 Sep 2024 09:46:04 -0700 (PDT)
-Received: from [10.0.0.71] (67-4-202-127.mpls.qwest.net. [67.4.202.127])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a344d82abbsm19671135ab.33.2024.09.29.09.46.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Sep 2024 09:46:03 -0700 (PDT)
-Message-ID: <fde1e3c9-f3ba-450c-ae5d-83abb912d2fe@redhat.com>
-Date: Sun, 29 Sep 2024 11:46:02 -0500
+	id 1suxM5-0000000F4Np-3LfL;
+	Sun, 29 Sep 2024 17:05:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
+	:Subject; bh=zJoVyOezk87flQP/T1rSos3kBIbqevdYSEXyE/WYDJI=; b=EBo2Yob6sbucRYfk
+	BLsjh54oBHEjhrLQtNgvOvjz/amc+KQrHrEbUx5bskLdfZ3lBzdBa3S0F4OYQChomNI7uk3VZbUvm
+	FVASiw9lpM207UxUx62KpMEjly+Dg6QO8xzv/7J+dYQEFtnwFNpVpvVMDyaLhiGC/sSCtSmmbBoH1
+	K/Zw/KUkJFPzLudaAxRJ/VgQOz8aEy/f9O64+dbvFqiOjofOFLW8y51tv25sqCVK1o9Y+SYx9oQmd
+	6YlzgPEyKr0o+n2SHI+qt9ThIzl9ab/JJuOzeR/+aO6/CDYVFJkCikQskWyI3XuhhB1/Lng5cXaim
+	wIrmTZfabkYwhgrClw==;
+Received: from dg by mx.treblig.org with local (Exim 4.96)
+	(envelope-from <dg@treblig.org>)
+	id 1suxLx-007pnh-38;
+	Sun, 29 Sep 2024 17:05:01 +0000
+Date: Sun, 29 Sep 2024 17:05:01 +0000
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
+To: boris.brezillon@collabora.com
+Cc: nicolas.ferre@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: of atmel_pmecc_destroy_user
+Message-ID: <ZvmIvRJCf6VhHvpo@gallifrey>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ubifs: Convert ubifs to use the new mount API
-To: Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org
-Cc: brauner@kernel.org, David Howells <dhowells@redhat.com>,
- Richard Weinberger <richard@nod.at>
-References: <20240926203604.23622-1-sandeen@redhat.com>
- <6081021a-be81-7877-8c1d-5311d9968124@huawei.com>
- <a2ff7d9b-799c-46e3-bd43-1b34bf8fdc66@redhat.com>
- <1075eb6d-9de8-8dcb-cd26-b548e6477206@huawei.com>
-From: Eric Sandeen <sandeen@redhat.com>
-In-Reply-To: <1075eb6d-9de8-8dcb-cd26-b548e6477206@huawei.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
+Content-Disposition: inline
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
+X-Uptime: 16:56:56 up 144 days,  4:10,  1 user,  load average: 0.00, 0.00,
+ 0.00
+User-Agent: Mutt/2.2.12 (2023-09-09)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240929_094608_913773_A9C2EDC7 
-X-CRM114-Status: GOOD (  12.43  )
+X-CRM114-CacheID: sfid-20240929_100509_944478_712C5C9D 
+X-CRM114-Status: UNSURE (   6.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,24 +73,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9/28/24 8:57 PM, Zhihao Cheng wrote:
-> Above modification can fix the problem, but it looks not so clean.
-> There are two main steps for mount/remount in the new API framework:
-> 1. Get filesystem configurations by parsing the paramaters from the user data.
-> 2. Apply the filesystem configurations to superblock(For mount, a superblock should be allocated first.).
-> 
-> So, how about doing that like ext4 does:
-> 1) the filesystem specified superblock is allocated in fill_super(), not in init_fs_context(), it looks more reasonable, because filesystem doesn't need a new private superblock in remounting process. But, UBIFS has onething different, sb_test() needs volume information which comes from private superblock, so UBFIS private superblock(struct ubifs_info) is allocated in ubifs_mount(). Here, I prefer to keep private superblock allocation still in ubifs_mount(for new mount API, it is called ubifs_get_tree).
-> 2) the filesystem configurations(contains mount options) are stored in a separated structure(in ext4, it is called ext4_fs_context), which is allocated in init_fs_context(). For UBIFS, we can define a similar structure to store the filesystem configurations.
+Hi Boris and co,
+  One of my scripts noticed that 'atmel_pmecc_destroy_user'
+isn't called anywhere; I was going to delete it, but hmm, I wonder
+if it's actually a missing call and leaking (in the unlikely case
+the device was ever removed).
 
-Yes, this is what I had mentioned above, i.e. having a separate mount
-context in ->fs_private raather than using ->fs_info, I can do it this
-way if you prefer. I had just started with dhowell's original
-implementation for speed. :)
+It was added by your:
+  commit f88fc122cc34c2545dec9562eaab121494e401ef
+  Author: Boris Brezillon <bbrezillon@kernel.org>
+  Date:   Thu Mar 16 09:02:40 2017 +0100
+
+    mtd: nand: Cleanup/rework the atmel_nand driver
+
+and I see the allocation in:
+     user = kzalloc(size, GFP_KERNEL);
+       in
+     nand->pmecc = atmel_pmecc_create_user(nc->pmecc, &req);
+       called in atmel_nand_pmecc_init
+         from atmel_nand_ecc_init
+           from atmel_hsmc_nand_ecc_init
+ 
+But I don't see any freeing.
+
+(I don't knowingly have hardware to test a fix, although I guess
+there's probably one somewhere....)
+
+Suggestions?
 
 Thanks,
--Eric
 
+Dave
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
 
 ______________________________________________________
 Linux MTD discussion mailing list
