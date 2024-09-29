@@ -4,55 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C31CF6499
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2024 12:17:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 594F3CF6499
+	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2024 12:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HrrMD6RNibyLvCdC4uKBdqP9a+O7bv4ojyv5U8izx8U=; b=1labcBbuRPRFQT
-	FwHhmRSfzBmLKXyaEaBZ22szDCGQdQ860vIyIeihc4PIhy4bX3PZnTa+3vBI0NFzoJxXIc4qR93u3
-	JgydcpIt5xIjWC+l1Bq53kEIFOTeDw+3ULFm5QSNO6Lwv+W3m4x3Kmf+uhHxFOy2aZWK4ZSlRN6ea
-	5BgonqkzfmtxtcgHCZsY8lA+09sj4Tb6ozYsOMsGOk5aMMSbF9jetF6LATr3vAtrChI8TUHCo7FE+
-	HfTlhmsGh6Evbg1r4Ff3VJ37RFSUAdltNMGd0pJ80u74Umk84wV7eaaXszC3LAUMoyUKiyZBumFda
-	YRdXzF5m7JsjsaImbQNQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=rjszOoVnhhpoNXdyh0ynRWcGVwYjgClfeaUINi2oUJ8=; b=bIGt4oQaburGr+O/WAoMdEVbfQ
+	wEMg7f4Bs6rvsK07YmIXZoHNgXZKAVSNjBcp8QCpEhU/jO6alyHqtqQRZT57AAaWcWkQb6Bkb8+jI
+	DkTIxjurQEDCSAVxdtM3RRZ2pN0WzQAUoJvZUJnsoyNtNkXFIBroWM93HAr0kZbPsSoc6FLWwRGUd
+	SIuu4/N1/heXbqWof9vXSGDpXjAHEgfQUyyXLuK4W1Lguhk6dKTmdGGRQHB/BXzBI3DoqEBiXom3F
+	0axaJkSNc1V+u6ZXqC5VrkH3fk9kMMqkpkVc4BRmvSmOi0SG237sJOI7nt9u6voyJHGzJ2MNoqcSg
+	SNRCQgww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1susrV-0000000EjL5-1DGT;
-	Sun, 29 Sep 2024 12:17:17 +0000
-Received: from pidgin.makrotopia.org ([2a07:2ec0:3002::65])
+	id 1sut0D-0000000Ejt1-3fmB;
+	Sun, 29 Sep 2024 12:26:17 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1susrS-0000000EjKY-0fCP
+	id 1sut0A-0000000EjsC-1t9C
 	for linux-mtd@lists.infradead.org;
-	Sun, 29 Sep 2024 12:17:15 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_128_GCM_SHA256:128)
-	 (Exim 4.98)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1susrI-000000007Nu-0u24;
-	Sun, 29 Sep 2024 12:17:04 +0000
-Date: Sun, 29 Sep 2024 12:16:58 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-CC: Krzysztof Kozlowski <krzk@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, John Crispin <john@phrozen.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_1/2=5D_dt-bindings=3A_mtd=3A_ubi?=
- =?US-ASCII?Q?-volume=3A_add_=27volume-is-critical=27_property?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <3fbc4221-5967-fb9a-3cee-91cd5de2b805@huawei.com>
-References: <e0936674dd1d6c98322e35831b8f0538a5cfa7a3.1727527457.git.daniel@makrotopia.org> <7a2e8819-ac70-4070-a731-53994c72cd79@kernel.org> <Zvf_84xxhxwpPgee@makrotopia.org> <18e9d774-813b-427e-9938-53853d695e18@kernel.org> <ZvgU0eBEwTJ3sHuN@makrotopia.org> <ad5a3811-c856-4f4b-f569-bb67a0e3f751@huawei.com> <Zvkxi-6J8R1K95PQ@makrotopia.org> <3fbc4221-5967-fb9a-3cee-91cd5de2b805@huawei.com>
-Message-ID: <5FEB28F8-BE2B-4C97-848C-914CA760BF7F@makrotopia.org>
+	Sun, 29 Sep 2024 12:26:16 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 5B7C064CD878;
+	Sun, 29 Sep 2024 14:26:03 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id AVCXFA8yoKkP; Sun, 29 Sep 2024 14:26:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id C8C2464CD88C;
+	Sun, 29 Sep 2024 14:26:02 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 594Xe0yKtZV8; Sun, 29 Sep 2024 14:26:02 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 96B2164CD878;
+	Sun, 29 Sep 2024 14:26:02 +0200 (CEST)
+Date: Sun, 29 Sep 2024 14:26:02 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, robh <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	chengzhihao1 <chengzhihao1@huawei.com>, 
+	John Crispin <john@phrozen.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	devicetree <devicetree@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <251386789.117942.1727612762462.JavaMail.zimbra@nod.at>
+In-Reply-To: <b43a7155f80995c3986893951c092291caf3a5f4.1727527457.git.daniel@makrotopia.org>
+References: <e0936674dd1d6c98322e35831b8f0538a5cfa7a3.1727527457.git.daniel@makrotopia.org> <b43a7155f80995c3986893951c092291caf3a5f4.1727527457.git.daniel@makrotopia.org>
+Subject: Re: [PATCH RFC 2/2] mtd: ubi: add support for protecting critical
+ volumes
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF130 (Linux)/8.8.12_GA_3809)
+Thread-Topic: add support for protecting critical volumes
+Thread-Index: FCmHecnztBfMlrKyZF8gLM/3GCQN9w==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240929_051714_224273_D3DB7817 
-X-CRM114-Status: GOOD (  16.67  )
+X-CRM114-CacheID: sfid-20240929_052614_660560_C1E2AB56 
+X-CRM114-Status: UNSURE (   8.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,51 +85,21 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyOSBTZXB0ZW1iZXIgMjAyNCAxMToyMzoxMiBVVEMsIFpoaWhhbyBDaGVuZyA8Y2hlbmd6
-aGloYW8xQGh1YXdlaS5jb20+IHdyb3RlOgo+5ZyoIDIwMjQvOS8yOSAxODo1MiwgRGFuaWVsIEdv
-bGxlIOWGmemBkzoKPj4gT24gU3VuLCBTZXAgMjksIDIwMjQgYXQgMTI6MDM6MTFQTSArMDgwMCwg
-WmhpaGFvIENoZW5nIHdyb3RlOgo+Pj4g5ZyoIDIwMjQvOS8yOCAyMjozOCwgRGFuaWVsIEdvbGxl
-IOWGmemBkzoKPj4+PiBPbiBTYXQsIFNlcCAyOCwgMjAyNCBhdCAwMzo0NTo0OVBNICswMjAwLCBL
-cnp5c3p0b2YgS296bG93c2tpIHdyb3RlOgo+Pj4+IFsuLi5dCj4+Pj4gVGhlIGNhc2UgSSB3YW50
-IHRvIGNvdmVyIGhlcmUgaXMgdGhlIGJvb3Rsb2FkZXIgaXRzZWxmIGJlaW5nIHN0b3JlZAo+Pj4+
-IGluc2lkZSBhIFVCSSB2b2x1bWUuIE1lZGlhVGVrJ3MgZm9yayBvZiBBUk0gVHJ1c3RlZEZpcm13
-YXJlLUEgYmwyIGNvbWVzCj4+Pj4gd2l0aCBzdXBwb3J0IGZvciBVQkkgYW5kIGxvYWRzIEJMMyAo
-d2hpY2ggaXMgVEYtQSBCTDMxIGFuZCBVLUJvb3QsIGFuZAo+Pj4+IG1heWJlIE9QLVRFRSBhcyB3
-ZWxsKSBmcm9tIGEgc3RhdGljIFVCSSB2b2x1bWUuIFJlbW92aW5nLCByZW5hbWluZyBvcgo+Pj4+
-IGFsdGVyaW5nIHRoYXQgdm9sdW1lIHJlc3VsdHMgaW4gdGhlIGRldmljZSBub3QgYmVpbmcgYWJs
-ZSB0byBib290IGFueQo+Pj4+IG1vcmUgYW5kIHJlcXVpcmluZyBhIGNvbXBsaWNhdGVkIGludGVy
-dmVudGlvbiAoYXQgYXR0YWNoaW5nIGRlYnVnZ2luZwo+Pj4+IFVBUlQgYW5kIHVzaW5nIGxvdy1s
-ZXZlbCByZWNvdmVyeSB0b29sKSBpbiBvcmRlciB0byByZWNvdmVyLgo+Pj4gCj4+PiBXaG8gcmVt
-b3Zlcy9yZW5hbWVzIHRoZSAnY3JpdGljYWwnIHZvbHVtZT8gSSBzdWdnZXN0IHRvIGZpeCBpdCBp
-biB0aGUgdXBwZXIKPj4+IGxheWVyKG5vdCBpbiBrZXJuZWwpLiBBZnRlciBsb29raW5nIHRocm91
-Z2ggdGhlIHBhdGNoIDIsIGl0IHNlZW1zIGEgaGFjawo+Pj4gc29sdXRpb24uCj4+IAo+PiBUaGUg
-ZW5lbXkgaXMgdGhlIHVzZXIsIHRoZSB1cHBlciBsYXllciBpcyBiZXR3ZWVuIHRoZSBrZXlib2Fy
-ZCBhbmQgdGhlCj4+IHNjcmVlbi4gSnVzdCBsaWtlIGZvciAncmVhZC1vbmx5JyBNVEQgcGFydGl0
-aW9ucyBJJ20gbG9va2luZwo+PiBmb3IgYSBzaW1pbGFyIHNvbHV0aW9uIGZvciBVQkkgd2hpY2gg
-cHJldmVudHMgdGhlIHVzZXIgZnJvbSBhY2NpZGVudGFsbHkKPj4gZGVsZXRpbmcgb3IgZGVzdHJv
-eWluZyB0aGUgYm9vdGxvYWRlciwgbGV0cyBzYXksIHdoZW4gbG9nZ2VkIGluIHZpYSBTU0guCj4+
-IC4KPj4gCj4KPkkgZ3Vlc3MgdGhhdCBvdGhlciBwYXJ0aXRpb25zKGV4Y2VwdHMgbXRkKSBoYXZl
-IHRoZSBzaW1pbGFyIHNpdHVhdGlvbnMsIHVzZXJzIGNvdWxkIGRlbGV0ZSBhIHJvb3RmcyhleHQ0
-KSBwYXJ0aXRpb24gYnkgb3BlcmF0aW9uIHRoZSByYXcgYmxvY2sgZGV2aWNlLiBUaGUga2VybmVs
-IGhhcyBubyB3YXkgdG8gc3RvcCB1c2VyIGRvaW5nIHRoaXMsIHdoYXQgaWYgdGhlIHVzZXIganVz
-dCB3YW50IHRvIHJlYnVpbGQgcGFydGlvbnM/CgpUcnVlLCBidXQgYXMgeW91IGNvcnJlY3RseSBw
-b2ludGVkIG91dCB0aGUgd29yc3QtY2FzZSBzY2VuYXJpbyB3b3VsZCBiZSBMaW51eCBubyBsb25n
-ZXIgYm9vdGluZy4gWW91IHdvdWxkIGZpeCB0aGF0IGJ5IHVzaW5nIGEgYm9vdGFibGUgVVNCIHBl
-bmRyaXZlLgpIb3dldmVyLCB0aGUgdXNlciB3b250IGVhc2lseSBtYW5hZ2UgdG8gZGVsZXRlIHRo
-ZSBib290bG9hZGVyIG9yIEJJT1MgYnkgYWNjaWRlbnQsIHN1Y2ggYXMgYSBzaW1wbGUgdHlwbyBv
-ZiB0aGUgcGFydGl0aW9uIG51bWJlciBvciBhY2NpZGVudGFsbHkgZGVzdHJveWluZyBHUFQuIElm
-IHRoZSBzdG9yYWdlIG9mIGxvdy1sZXZlbCBib290IGZpcm13YXJlIGlzIGFjY2lzc2libGUgZnJv
-bSB3aXRoaW4gTGludXggdGhlbiB0aGVyZSBhcmUgYWx3YXlzIGFkZGl0aW9uYWwgc2FmZWd1YXJk
-cywgc3VjaCBhcyB0aGUgd3JpdGUtcHJvdGVjdGlvbiBvZiBtbWNibGtYYm9vdFkgaHctcGFydGl0
-aW9uLCBvciBNVEQgcGFydGl0b25zIGhvbGRpbmcgYm9vdGxvYWRlciBjb21wb25lbnRzIGJlaW5n
-IG1hcmtlZCBhcyByZWFkLW9ubHkuCgo+TWFya2luZyB2b2x1bWUgYXMgY3JpdGljYWwoYnkgYSBz
-dG9wcGVyIGluIGtlcm5lbCkgY291bGQgcHJldmVudCB1c2VyIG1pc3Rha2VubHkgb3BlcmF0aW5n
-LCBidXQgSSB0aGluayBpdCBpcyBtb3JlIGltcG9ydGFudCB0aGF0IHVzZXIgbmVlZCB0byBrbm93
-IHdoYXQgaGUvc2hlIGlzIGRvaW5nLgoKSSBhZ3JlZSB0aGF0IGVkdWNhdGlvbiBvZiB1c2VycyBp
-cyBjcnVjaWFsLCB5ZXQgSSB0aGluayB0aGUgcmlzayBvZiBuZWVkaW5nIGNvbXBsaWNhdGVkIGhh
-cmR3YXJlIGludGVydmVudGlvbnMgKGRpcmVjdCBhY2Nlc3MgdG8gTkFORCBmbGFzaCBjaGlwLCBh
-dHRhY2hpbmcgSlRBRywgLi4uKSB3aGljaCBhcmUgcmVxdWlyZWQgaW4gb3JkZXIgdG8gcmVjb3Zl
-ciBmcm9tIGEgbWlzdGFrZSBzaG91bGQgYWxzbyBiZSB0YWtlbiBpbnRvIGFjY291bnQuCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkRhbmllbCBHb2xsZSIgPGRh
+bmllbEBtYWtyb3RvcGlhLm9yZz4KPiBBbGxvdyB0aGUgYm9vdCBmaXJtd2FyZSB0byBkZWZpbmUg
+dm9sdW1lcyB3aGljaCBhcmUgY3JpdGljYWwgZm9yIHRoZQo+IHN5c3RlbSB0byBib290LCBzdWNo
+IGFzIHRoZSBib290bG9hZGVyIGl0c2VsZiBpZiBzdG9yZWQgaW5zaWRlIGEgVUJJCj4gdm9sdW1l
+LiBQcm90ZWN0IGNyaXRpY2FsIHZvbHVtZXMgYnkgcHJldmVudGluZyB0aGUgdXNlciBmcm9tIHJl
+bW92aW5nLAo+IHJlc2l6aW5nIG9yIHdyaXRpbmcgdG8gdGhlbSwgYW5kIGFsc28gcHJldmVudCB0
+aGUgVUJJIGRldmljZSBmcm9tCj4gYmVpbmcgZGV0YWNoZWQgaWYgYSBjcml0aWNhbCB2b2x1bWUg
+aXMgcHJlc2VudC4KCkkgYWdyZWUgd2l0aCB0aGUgZG91YnRzIHJhaXNlZCBpbiBwYXRjaCAxLzIs
+IGlmIHVzZXJzcGFjZSBpcyBzbyBob3N0aWxlCnRvIGRlbGV0ZSBzeXN0ZW0gcGFydGl0aW9ucywg
+dGhlcmUgaXMgbGl0dGxlIGhvcGUuCkJ1dCBJJ20gc3RpbGwgb3BlbiBmb3IgZGlzY3Vzc2lvbi4K
+CldoYXQgSSB2ZXRvIGlzIHByZXZlbnRpbmcgZGV0YWNoLgpUaGlzIG1ha2VzIGEgY2xlYW4gdGVh
+ciBkb3duIG9mIHRoZSBzeXN0ZW0gaW1wb3NzaWJsZS4KSXQgYmVjb21lcyBtb3JlIGFuZCBtb3Jl
+IGNvbW1vbiB0aGF0IGFkdmFuY2VkIHVzZXJzcGFjZSBzaHV0cyBkb3duCmV2ZXJ5dGhpbmcgaXQg
+c2V0dXAgZHVyaW5nIGJvb3QuIGUuZy4gd2hpbGUgcmVib290IHN3aXRjaGluZyBiYWNrCnRvIGFu
+IGluaXRyYW1mcywgdW1vdW50aW5nIHJvb3QsIHNodXR0aW5nIGRvd24gYWxsIHN0b3JhZ2UsIGV0
+Yy4uLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
