@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0374CF6495
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Sep 2024 17:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C881BCF6495
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Sep 2024 01:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wtLRCuh2/HhOCkOTqTcKO08W902p4CKUP321/jFaMxw=; b=RGReAGAwdEKL+3
-	nist+A9xSXDIinunxRlZ5/A9IHgigFuHAdteRjuTqpNlmtFnl+8NI62eigXP8RUwtQuHpNxC0Cz7a
-	yh0dXOn09g7Q46pqV1X62i53NfZMBksNKAsTSwqVo4YxkF+sKXuCfaLTYFlTXXp5W4Hafr2KkMoEc
-	pTBQW5nLslEG9LLQfoczpsd71Lo1psKTMqiH+mEQpUzCSfbvAGgnzXbWiassJs1q1IGpoaAD6yH+l
-	TrwGx9VCHKtpOT6dbIIZ5H3ZaDgMpEN5kABqYQSqdcdlLcMugbGirI9MovQw93jTJcYEAVQL5hWT9
-	1w8EYSQd2ABRND+f9Tig==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=1SkrSdDiiUiMjdEtAqUfrfDSpU+DHC/HLklwbOoOeNo=; b=CEC1eNOIEeLMgYR00dte8w9csp
+	rmWtuyNCqIDbkEKfjDUCTjTLvRvrn14w9Qw4dDJJ/LlWnEKOR4+ieg73QgBDk7mvb86LropFxfeH4
+	WaZVA/qWzYLU8NGqj93EI4OAXhvaeEtaaH4dTMsYlUvQXWuIRxxWWUz/6Ra113I15jI07YFb5NnVw
+	xgO1UuKaiuu6kB9xq8ZVVHlY8F0sehuBHzY1clZOQ+kdrApcPr4hAkt6Pk7041ZrdxaL9N7iCnPmt
+	XgnOjFgfIaenj93Zj4GuuMqKlMW6erFVt3gUO0JDpfCh0x02lxipUIppo5VpcizAuyDFcpQ7lawHn
+	m673OQXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1suxMl-0000000F4Xd-1DFQ;
-	Sun, 29 Sep 2024 17:05:51 +0000
-Received: from mx.treblig.org ([2a00:1098:5b::1])
+	id 1sv57y-0000000Fe4m-0ns6;
+	Mon, 30 Sep 2024 01:23:06 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1suxM5-0000000F4Np-3LfL;
-	Sun, 29 Sep 2024 17:05:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
-	:Subject; bh=zJoVyOezk87flQP/T1rSos3kBIbqevdYSEXyE/WYDJI=; b=EBo2Yob6sbucRYfk
-	BLsjh54oBHEjhrLQtNgvOvjz/amc+KQrHrEbUx5bskLdfZ3lBzdBa3S0F4OYQChomNI7uk3VZbUvm
-	FVASiw9lpM207UxUx62KpMEjly+Dg6QO8xzv/7J+dYQEFtnwFNpVpvVMDyaLhiGC/sSCtSmmbBoH1
-	K/Zw/KUkJFPzLudaAxRJ/VgQOz8aEy/f9O64+dbvFqiOjofOFLW8y51tv25sqCVK1o9Y+SYx9oQmd
-	6YlzgPEyKr0o+n2SHI+qt9ThIzl9ab/JJuOzeR/+aO6/CDYVFJkCikQskWyI3XuhhB1/Lng5cXaim
-	wIrmTZfabkYwhgrClw==;
-Received: from dg by mx.treblig.org with local (Exim 4.96)
-	(envelope-from <dg@treblig.org>)
-	id 1suxLx-007pnh-38;
-	Sun, 29 Sep 2024 17:05:01 +0000
-Date: Sun, 29 Sep 2024 17:05:01 +0000
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
-To: boris.brezillon@collabora.com
-Cc: nicolas.ferre@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: of atmel_pmecc_destroy_user
-Message-ID: <ZvmIvRJCf6VhHvpo@gallifrey>
+	id 1sv57t-0000000Fe48-3CdR
+	for linux-mtd@lists.infradead.org;
+	Mon, 30 Sep 2024 01:23:03 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XH3B45y19z1HKLf;
+	Mon, 30 Sep 2024 09:18:52 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id 586D01A016C;
+	Mon, 30 Sep 2024 09:22:48 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 30 Sep 2024 09:22:47 +0800
+Subject: Re: [PATCH] ubifs: Convert ubifs to use the new mount API
+To: Eric Sandeen <sandeen@redhat.com>, <linux-mtd@lists.infradead.org>
+CC: <brauner@kernel.org>, David Howells <dhowells@redhat.com>, Richard
+ Weinberger <richard@nod.at>
+References: <20240926203604.23622-1-sandeen@redhat.com>
+ <6081021a-be81-7877-8c1d-5311d9968124@huawei.com>
+ <a2ff7d9b-799c-46e3-bd43-1b34bf8fdc66@redhat.com>
+ <1075eb6d-9de8-8dcb-cd26-b548e6477206@huawei.com>
+ <fde1e3c9-f3ba-450c-ae5d-83abb912d2fe@redhat.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <3418947d-36ad-0fe9-e27c-0fd0540f0918@huawei.com>
+Date: Mon, 30 Sep 2024 09:22:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
-X-Uptime: 16:56:56 up 144 days,  4:10,  1 user,  load average: 0.00, 0.00,
- 0.00
-User-Agent: Mutt/2.2.12 (2023-09-09)
+In-Reply-To: <fde1e3c9-f3ba-450c-ae5d-83abb912d2fe@redhat.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240929_100509_944478_712C5C9D 
-X-CRM114-Status: UNSURE (   6.72  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240929_182302_082518_8B6493DE 
+X-CRM114-Status: GOOD (  13.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,48 +70,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris and co,
-  One of my scripts noticed that 'atmel_pmecc_destroy_user'
-isn't called anywhere; I was going to delete it, but hmm, I wonder
-if it's actually a missing call and leaking (in the unlikely case
-the device was ever removed).
-
-It was added by your:
-  commit f88fc122cc34c2545dec9562eaab121494e401ef
-  Author: Boris Brezillon <bbrezillon@kernel.org>
-  Date:   Thu Mar 16 09:02:40 2017 +0100
-
-    mtd: nand: Cleanup/rework the atmel_nand driver
-
-and I see the allocation in:
-     user = kzalloc(size, GFP_KERNEL);
-       in
-     nand->pmecc = atmel_pmecc_create_user(nc->pmecc, &req);
-       called in atmel_nand_pmecc_init
-         from atmel_nand_ecc_init
-           from atmel_hsmc_nand_ecc_init
- 
-But I don't see any freeing.
-
-(I don't knowingly have hardware to test a fix, although I guess
-there's probably one somewhere....)
-
-Suggestions?
-
-Thanks,
-
-Dave
--- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjQvOS8zMCAwOjQ2LCBFcmljIFNhbmRlZW4g5YaZ6YGTOgo+IE9uIDkvMjgvMjQgODo1
+NyBQTSwgWmhpaGFvIENoZW5nIHdyb3RlOgo+PiBBYm92ZSBtb2RpZmljYXRpb24gY2FuIGZpeCB0
+aGUgcHJvYmxlbSwgYnV0IGl0IGxvb2tzIG5vdCBzbyBjbGVhbi4KPj4gVGhlcmUgYXJlIHR3byBt
+YWluIHN0ZXBzIGZvciBtb3VudC9yZW1vdW50IGluIHRoZSBuZXcgQVBJIGZyYW1ld29yazoKPj4g
+MS4gR2V0IGZpbGVzeXN0ZW0gY29uZmlndXJhdGlvbnMgYnkgcGFyc2luZyB0aGUgcGFyYW1hdGVy
+cyBmcm9tIHRoZSB1c2VyIGRhdGEuCj4+IDIuIEFwcGx5IHRoZSBmaWxlc3lzdGVtIGNvbmZpZ3Vy
+YXRpb25zIHRvIHN1cGVyYmxvY2soRm9yIG1vdW50LCBhIHN1cGVyYmxvY2sgc2hvdWxkIGJlIGFs
+bG9jYXRlZCBmaXJzdC4pLgo+Pgo+PiBTbywgaG93IGFib3V0IGRvaW5nIHRoYXQgbGlrZSBleHQ0
+IGRvZXM6Cj4+IDEpIHRoZSBmaWxlc3lzdGVtIHNwZWNpZmllZCBzdXBlcmJsb2NrIGlzIGFsbG9j
+YXRlZCBpbiBmaWxsX3N1cGVyKCksIG5vdCBpbiBpbml0X2ZzX2NvbnRleHQoKSwgaXQgbG9va3Mg
+bW9yZSByZWFzb25hYmxlLCBiZWNhdXNlIGZpbGVzeXN0ZW0gZG9lc24ndCBuZWVkIGEgbmV3IHBy
+aXZhdGUgc3VwZXJibG9jayBpbiByZW1vdW50aW5nIHByb2Nlc3MuIEJ1dCwgVUJJRlMgaGFzIG9u
+ZXRoaW5nIGRpZmZlcmVudCwgc2JfdGVzdCgpIG5lZWRzIHZvbHVtZSBpbmZvcm1hdGlvbiB3aGlj
+aCBjb21lcyBmcm9tIHByaXZhdGUgc3VwZXJibG9jaywgc28gVUJGSVMgcHJpdmF0ZSBzdXBlcmJs
+b2NrKHN0cnVjdCB1Ymlmc19pbmZvKSBpcyBhbGxvY2F0ZWQgaW4gdWJpZnNfbW91bnQoKS4gSGVy
+ZSwgSSBwcmVmZXIgdG8ga2VlcCBwcml2YXRlIHN1cGVyYmxvY2sgYWxsb2NhdGlvbiBzdGlsbCBp
+biB1Ymlmc19tb3VudChmb3IgbmV3IG1vdW50IEFQSSwgaXQgaXMgY2FsbGVkIHViaWZzX2dldF90
+cmVlKS4KPj4gMikgdGhlIGZpbGVzeXN0ZW0gY29uZmlndXJhdGlvbnMoY29udGFpbnMgbW91bnQg
+b3B0aW9ucykgYXJlIHN0b3JlZCBpbiBhIHNlcGFyYXRlZCBzdHJ1Y3R1cmUoaW4gZXh0NCwgaXQg
+aXMgY2FsbGVkIGV4dDRfZnNfY29udGV4dCksIHdoaWNoIGlzIGFsbG9jYXRlZCBpbiBpbml0X2Zz
+X2NvbnRleHQoKS4gRm9yIFVCSUZTLCB3ZSBjYW4gZGVmaW5lIGEgc2ltaWxhciBzdHJ1Y3R1cmUg
+dG8gc3RvcmUgdGhlIGZpbGVzeXN0ZW0gY29uZmlndXJhdGlvbnMuCj4gCj4gWWVzLCB0aGlzIGlz
+IHdoYXQgSSBoYWQgbWVudGlvbmVkIGFib3ZlLCBpLmUuIGhhdmluZyBhIHNlcGFyYXRlIG1vdW50
+Cj4gY29udGV4dCBpbiAtPmZzX3ByaXZhdGUgcmFhdGhlciB0aGFuIHVzaW5nIC0+ZnNfaW5mbywg
+SSBjYW4gZG8gaXQgdGhpcwo+IHdheSBpZiB5b3UgcHJlZmVyLiBJIGhhZCBqdXN0IHN0YXJ0ZWQg
+d2l0aCBkaG93ZWxsJ3Mgb3JpZ2luYWwKPiBpbXBsZW1lbnRhdGlvbiBmb3Igc3BlZWQuIDopCgpG
+aW5lLCB3ZSd2ZSBjb21lIHRvIGFuIGFncmVlbWVudC4KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
