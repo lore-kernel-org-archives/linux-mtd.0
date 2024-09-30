@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F080FCE8341
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Sep 2024 13:11:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61DE3CE8343
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Sep 2024 13:11:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pxQONLjBmCPPQnAdCtxl9w0RLVXqNNuSbkXagqOK4LQ=; b=LXc+nRBDy75rYi
-	ag+MNiYH3ri4GdtNU6+xWHNTL9oNmDcn54KADraLX0MyZMbmMrdqm4xul8dJ3OczYzKzexqBFvRBE
-	q2YMvwWyQEDtWAftnUqKgy2DTWqAzj6qnDKWAqBXTL+Da4Sh37mqfXWXbFck5vHDWAN14kHN2qsv5
-	h4FEjVmiyqVbN9+/PPYSRLQAvTQoEfGaEKYcP0XUdVgbDobmmYXBbjTrcvQ7MaihG3SyVly24w2eN
-	eXYrjgURrHveb8wpk+rLBTPNrijMwlyMPyuPj1j/maU3OuSyWuD2BrrGUIQZqHiQimLOeBUaEw3gF
-	nDC/GTSKsXOk89v3aXEQ==;
+	List-Owner; bh=ryRjd5TZJ4mBdm1Zvx3LYOfqV5nOmGeEkDKXpk6tnuA=; b=RMvOZS9agohghn
+	di9Rl/Ps30q/t43E7UBhdCXOQ3AgfDH3eIupTCwaOBydrSN5T848jRDDQ82ZOCCUF3CfycA58suC0
+	bcjDfNONJUahwDnTciKRehHriomoH2DucdVrKC7QgvxVitW5jgQ693D7pG9amWcVki+GfX7lEEbGr
+	jwTIjjk1thDbvK2tbXcAnKJut41GuJ350msuF0hVX839iuUUkFXqn40XbLNfP2rxkvqmLNFgzosfV
+	HIcx68Ue0A4RSCnThgK6EoO1ym0p3eyyQ4IdAdYNQt6Ovydmn96FQIk1jmBjjXj6SYN4dUrb9JV9j
+	8JjqB3hvhMrY9DNIQvtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svGB4-0000000HDhw-3WPg;
-	Mon, 30 Sep 2024 13:11:02 +0000
+	id 1svGB6-0000000HDix-1ck7;
+	Mon, 30 Sep 2024 13:11:04 +0000
 Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svFeU-0000000H4s9-0rpP
+	id 1svFeU-0000000H4tk-10f5
 	for linux-mtd@lists.infradead.org;
 	Mon, 30 Sep 2024 12:37:26 +0000
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-42cb0f28bfbso33243385e9.1
-        for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2024 05:37:20 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-42cc43454d5so31345315e9.3
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2024 05:37:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727699839; x=1728304639; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1727699841; x=1728304641; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tn+GOzQztHgHcIfRc1gU/LmX7CJxu4Do9s+iY4ufzHw=;
-        b=HDOE9HyFnjuKMUmKZyVDTDjbud52aLA616g7+Y9Ic47Q21o407aH003zFlGsHvfQ83
-         24eiRrAu9aBdm41uMGoVIbE9wiX65RYlemvxYh1bFMpitOXy5enIAOR7E/3tILIKE0Q+
-         WsFTOrVPnOAbWhZVeSAL6UmR63reL5NEXhwerNXrnSP2c9ZVKC+VUC6oTvqknZU5PpiC
-         nFTb7fn2uTpm1vILjs9wRiuFpeL1FnSh/0GRg1SucBlnYH1YB8Cqk/aUqkNFzi4aoWC9
-         PY9z4zOiDHqRFhN8ObE7QSugRAfGqy7gh4wk5l4dwBKpn3xcB2x5e35fd8jgCfXVWP7p
-         5KCg==
+        bh=6rs5JfkaX4vjLfXsqAZRoDkbs0NL2Tu6uf8tfOBZdKA=;
+        b=fYlQlBks8wRp9hyY01Cdvfz1ttfXBYEHG5wiA1RC1GaNKcyFTyn6VFxcJH72uayNRf
+         vT6Saa4A7a3er6LTC27UYuBEQ9iuq9BZHKdJ6cSp/hPXIxm7dDQ6GbzbuhFFV/QWv4E7
+         XBPsIaK+8985UTSEMl73GMtZ56ESnBXBc2NFW5M1GdzQNRpadG0J6JuvpG90909SwESA
+         7ZlLeGeNkL3oH5unrmjRmueyx4+v0KW7kCqWSqAi1g6LDODB3E7zuQUVTy7GFbDXHsbz
+         5K+t7QO+QI60Lu6Ebtv2lY/FxBIOaV2wJJfEDJ47lZnWvTGC4AjzyS7f9Nsv1eNgORLi
+         5z6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727699839; x=1728304639;
+        d=1e100.net; s=20230601; t=1727699841; x=1728304641;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tn+GOzQztHgHcIfRc1gU/LmX7CJxu4Do9s+iY4ufzHw=;
-        b=RXbCFgtLrF8gCmFe8zK9Vn2ToCU3XegClN8gIkdOVqUMInJCcX9eRWGPjr/o4zbYn0
-         Yrk+9Rf9O+sEqwvc0uhK2RnfKKuzPPhRlP1pQfhPcnxolbxGWjtG6uzWsJ9ICmUesWan
-         yYqgLmZB4k6mMIrVB+ILqTnPcJ0D0WS90kb0ktEnV8I1xzJzW4cP9O6XUi44TgQe294u
-         Qmc3cCNdHWbtDouhL0hAEQccTdbQe5PvwJoITGCMtJKtjJcn+0GueKhQ3LWO1z9pB8VC
-         Ru7YIG1NLh5GHAQn4AhDWz526CN9uiUW7EF1Vlp/3KpCXM7sD7w4A2x2+6QPwIMqOGS3
-         Z2aQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCT81Lp+OMyy1pcqZ94oy8LlSX7LA/7gBaNIhjdaScbAmPhmxHk+mYLUfLX/QXwe5Dfv/l7oe1y9w=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz2601iXeApcpyZqlJPzxpV5mM9m6Q0uNXQjXP4eM6IJ0UfSLLC
-	XXxMcCLzSAo4JOUBQwXSNyzavkn4CDILhAsoRWJQO0Bj3zo9xMt4
-X-Google-Smtp-Source: AGHT+IGvq6NRT6JufQmn6LdLh9JuzzheTPsAQprqBquWz6qQ+pBzTt6Ksdb4rtzF4i0KxoWpmKQ3VA==
-X-Received: by 2002:a05:600c:1c26:b0:42c:b950:680a with SMTP id 5b1f17b1804b1-42f5843a723mr78695175e9.20.1727699839348;
-        Mon, 30 Sep 2024 05:37:19 -0700 (PDT)
+        bh=6rs5JfkaX4vjLfXsqAZRoDkbs0NL2Tu6uf8tfOBZdKA=;
+        b=lJFFQ9/odnFGC/TPJ/w0G1H84QcADEFgBB+j5OVjZuN1tbUETpwT+N1tl9HIbbRsJr
+         3zU39NLnue8lwUTpnlvZ3IL/Mq/lf14YGpCeocoY1aOUfq4agYj3BTaP+8RGXyVUk+IR
+         JE+sRFkHTbz3zvvsV0SKMjvGEMceytgFMrMwEtGCmgRf5TVmmfv69aNBG2g5R09wUhyv
+         hEBpKX1taZTzq32w3zzBfAgABWGAjZE0ziyCU6xLKkeoY8CqgMusTfiDJYvHSHn8G3IR
+         Wu4cXG9jjY1m6mjEX2ApbtCR3ldiQ2xfuyvDTtrXLyRAfL/sX96zOMUGaDbg99sK9Dn7
+         BPHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWtzxsv/fe4L9s5yCHo8KZSTdB9hkUi2uoMmvu4WKYC1dZMwixscCmcY96ndi91qGS1i0c+HVsvs/E=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyqhsJ7bINhqQ3JUorx5Gt3nkTXDRI+fQj+EQSvj4H6FYCCuBB9
+	y6uSQwoj/vz0Z2A8YW4oYtrhDHM+H8OsD0NGxSf9XVlQWfGigDSh
+X-Google-Smtp-Source: AGHT+IFHgMvS9GhqstV2aQ3xEgJPZmWF5RO5X6f+ra7fPCRYNUY7uUx6XjXf5I/swT371oPEEJv2gg==
+X-Received: by 2002:a05:600c:1d8a:b0:426:593c:935d with SMTP id 5b1f17b1804b1-42f58409f9dmr84281535e9.5.1727699840695;
+        Mon, 30 Sep 2024 05:37:20 -0700 (PDT)
 Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e96a52308sm149011355e9.43.2024.09.30.05.37.18
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e96a52308sm149011355e9.43.2024.09.30.05.37.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2024 05:37:18 -0700 (PDT)
+        Mon, 30 Sep 2024 05:37:20 -0700 (PDT)
 From: Uros Bizjak <ubizjak@gmail.com>
 To: x86@kernel.org,
 	linux-crypto@vger.kernel.org,
@@ -77,20 +77,28 @@ To: x86@kernel.org,
 	kunit-dev@googlegroups.com,
 	linux-kernel@vger.kernel.org
 Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Hannes Reinecke <hare@suse.de>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH v3 08/19] scsi: libfcoe: Include <linux/prandom.h> instead of <linux/random.h>
-Date: Mon, 30 Sep 2024 14:33:19 +0200
-Message-ID: <20240930123702.803617-9-ubizjak@gmail.com>
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH v3 09/19] bpf: Include <linux/prandom.h> instead of <linux/random.h>
+Date: Mon, 30 Sep 2024 14:33:20 +0200
+Message-ID: <20240930123702.803617-10-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <20240930123702.803617-1-ubizjak@gmail.com>
 References: <20240930123702.803617-1-ubizjak@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240930_053722_379934_75E9F59B 
-X-CRM114-Status: GOOD (  11.60  )
+X-CRM114-CacheID: sfid-20240930_053722_436497_641AD9E2 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,27 +120,35 @@ Substitute the inclusion of <linux/random.h> header with
 of <linux/prandom.h> from <linux/random.h>.
 
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@fomichev.me>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
 ---
- include/scsi/libfcoe.h | 2 +-
+ kernel/bpf/core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/scsi/libfcoe.h b/include/scsi/libfcoe.h
-index 3c5899290aed..6616348e59b9 100644
---- a/include/scsi/libfcoe.h
-+++ b/include/scsi/libfcoe.h
-@@ -15,7 +15,7 @@
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 4e07cc057d6f..66474021f84e 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -21,7 +21,7 @@
+ #include <linux/filter.h>
  #include <linux/skbuff.h>
- #include <linux/workqueue.h>
- #include <linux/local_lock.h>
+ #include <linux/vmalloc.h>
 -#include <linux/random.h>
 +#include <linux/prandom.h>
- #include <scsi/fc/fc_fcoe.h>
- #include <scsi/libfc.h>
- #include <scsi/fcoe_sysfs.h>
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
+ #include <linux/objtool.h>
 -- 
 2.46.2
 
