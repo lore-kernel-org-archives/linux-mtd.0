@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84D5ACE8340
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94995CE8341
 	for <linux-mtd@archiver.kernel.org>; Mon, 30 Sep 2024 13:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,57 +12,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6mblkVrb4aPwMDR0URuxvbin6X2Y16Wi7+PmEBiyS5M=; b=noMG0KN/TamlVH
-	vrTReRc6CjjQmiibTE1CKkJZeAAZq6pDRRwebbW0NC5wc6morf1KxW8fJs0ptobLRhwGAPFZhbug5
-	UZ+h3F3yRS839z4175igUmmKiT5HFjZHlJp5ok1DpRRfIiVfxmDra9I2iW5nMbh+hzx0hnhMJCq1n
-	jNCy5CU7+eERZTDNrtHPJTp/oiXZRN9+k9p4AcO7TznEcnEyetuBlu3RB+dtAfmJdPiBHoj787+pN
-	prfjQZ2+cm0ry/jdFNehNSQ9RvqrP8afAm34+8xOaHgxsSOLJhn6pszRbwsqK/+GiAeL9FgF6aT0L
-	nWXjlRKSfr3pad6T99IQ==;
+	List-Owner; bh=B4p6M5aws8hbn6upy2WaNVS+a1H+QAFPseIrfMJ2XUU=; b=0WKERncc1Ecycf
+	gsSG2Jfts+hrqSKYDhvyrm+/8cLURP29uZfPQoJLO1gHLyCpNghO/rJMz4qLKHDtVbI63sUm2X0wb
+	p76a3kVRSktp7eSBmYev+zvo2HJGu7MDd+UbFW6TZo4qCxRaJr5iE/HxRWEj4bdsZoF8XprsfxVMX
+	FwEQv7BFwyGitRRz7fNWOdC4gVZuCObe8jeLSCY8bEq2DplCLKMPwaWLojD5s+pJgCLf527fr6unl
+	l1SvH3Dhl93g1K5kGLmFOlOR5LUMQuvn33oa/rM3iuMOAHPX8Jiwy8QJnhDtR+gt59cEzZPTCl5BK
+	zqn1Nsrqm8y8BM9Nvuqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svGB0-0000000HDfJ-3NRc;
-	Mon, 30 Sep 2024 13:10:58 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1svGAy-0000000HDeK-3VZV;
+	Mon, 30 Sep 2024 13:10:56 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svFeO-0000000H4nl-1cYL
+	id 1svFeK-0000000H4lT-0o72
 	for linux-mtd@lists.infradead.org;
-	Mon, 30 Sep 2024 12:37:17 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-42cd74c0d16so39960365e9.1
-        for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2024 05:37:15 -0700 (PDT)
+	Mon, 30 Sep 2024 12:37:13 +0000
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-42e7b7bef42so34734275e9.3
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2024 05:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727699834; x=1728304634; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1727699830; x=1728304630; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iIz4XxD/MXWvSuHKaNsZDh3MppYU6Ey9Ren8dN/1Nnw=;
-        b=a+LlLtWL9GIPgGx+Bq4yiQVYeJhQ62VS33WL6gf8HjV1Wl5LegrYazW0XKzC/H3Uuk
-         3vO0hjqUXDz0PW+N/i8DQEenOQ4x5F48xT6Rs/N9mlgoBXGPZd4zUV5UbuvzGerubt3A
-         9tVNTuO5+EFZbyTEZ9OR8UeMiI96ew9QC1Iclc8RvBmqmLG+CnsTHTIS6OXbiA+oGr3L
-         MAiLLBkDDD/gc5hvnd7F+MSTr/wVFIH3RpxBhke9Tlb2mI+Xtsx3dM4y9i1bCTyuIkKa
-         rgqzqehp/8r2ZoCbf6mC0iIXScBAwOeJQcfmDN/g83S2OzB2LK+NI+VvKOU9+xMVU/gi
-         q+Ww==
+        bh=nRI6G1zgxxf6ByUGqs3lmNwTcdt012WbdG6WrxIrfn4=;
+        b=K5dNvoKNViNjBbqWIPr6crfCn0Fb5ni8093nwAFBvQHdarSRfQPS15XIvYFfnRrLpN
+         5WJALhWF12VrmX2CWK9w7JNeqBLJJIEgS6OD/yRZGbCDYmVDtgIFe1xPrT8SlSVLJnhy
+         O5qD6rIPuguK5f5t037bCwrMpFzDwhjMe9cuqPI8lB7Ke/Ft4IaSs2tAR1Pnfh1Fd2vM
+         dvA/65jGTgDlB9D/xqjAFXmmhqi59cer5fvxCVbYbKxnkr6IkfhsdOyeS1d8PeUbsAwG
+         IJSpisR8mkLdHI2kXC7CWg9hYW2G2h4URJ4liFmSgewFAbkfXAFa0AsNV8dLYvVkygfU
+         ea+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727699834; x=1728304634;
+        d=1e100.net; s=20230601; t=1727699830; x=1728304630;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iIz4XxD/MXWvSuHKaNsZDh3MppYU6Ey9Ren8dN/1Nnw=;
-        b=DQEf6jIdmVR1LR36POWxSpiIsue/LpGFb++oRqTynZg4pzAWVYfrqXQPCR9+KzuF0l
-         vD2oAwAbxLLLBbLGQ5G/cNE86Nlm9lhggMubhAxx7gVOMZ9qb7kXI82niIWXgffwFoAO
-         PZeV08/IQnGXOHHkK4sSNzQtflVKt7oxKMjlVTCAEItqXzj+O2deoQ51htlKkfl/Z9S9
-         FI0mSLemqo3T3vp2SlsShv7r+fhp9AhGMu12cLiAnOwdSRBCgjF5u1V/xbNed2+PxtZM
-         7hXu6BdxZN6+HubiBoba9tMS7FoZ0NbBlW2dZDJfs3wKwQiMmfoZzgjUXkR3S++kXLYu
-         ABEg==
-X-Forwarded-Encrypted: i=1; AJvYcCWaJUJR9EEMK5pQ40Mev0SsT31c5TgDURcGxD7Tt3ms7d1uPFMbHz1HJDOlBJTb1Uly2d3uzg2PGj4=@lists.infradead.org
-X-Gm-Message-State: AOJu0YylG7tsvhxvVAwWyFmuv2VpkCE5XTzDBudCMw6J+bQ6zrZrj/Bu
-	9tC0UcT+1V5dlmVdysb9FvyuQ9VeEg+5jlN2FupBrumRmmAyDk9k
-X-Google-Smtp-Source: AGHT+IHLebdUj03VIWRmjVk+jZmmDpfIAH8/fQg7ILqXr2avcVfhMeGRYFMjONtxE6BzkKSMTbFFfw==
-X-Received: by 2002:a05:600c:1549:b0:42c:a574:6360 with SMTP id 5b1f17b1804b1-42f584a1d5cmr91192685e9.29.1727699834409;
-        Mon, 30 Sep 2024 05:37:14 -0700 (PDT)
+        bh=nRI6G1zgxxf6ByUGqs3lmNwTcdt012WbdG6WrxIrfn4=;
+        b=vphEOcA+TNyCcvu56bbUkEeh4KxFkgpHQRgSaMfRhZwJ9wQFdLfLBirR2RCTCzdBM5
+         TncKPp5gDKwMpS6lxhwiq8TDq6tKp8ErA5L6g7dwHDvBmgkxyLc879yjLtNZIhSs1hAs
+         ZszjaxW8t9U4X0K3CJBQf6oZajiAe4nME3H/qu91tKC1T9wG0TKrbi26B6CcgNHZhy3e
+         nRPeZHMQGSIHX5GHJbthVGSZaWt6JQZahMkpv8UCIf3I2bSxxPzSjU+6r8UHgQG5T/jF
+         VW4jtWT6o4GpsJyzn/qZZN1E5k1mENdYxXE04bhlO1xlbowLvXKGxg5w3cNB2H08XBiW
+         wn1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXKN7HjCrQBZPtHvYvLutHfUP7Ww9B2JJZMt3QCxbpKBUX2UT7Qy+VkJRa/kcWRhYj3/uYpzlo92ME=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz4wQFQlf5bWNshot4WC13N/RA0hIQNv9hDraL01J5wA3c5xOdf
+	r2LfnS/lc6M95Sk9WPqsM3jts4fgHXmqls0p+2VVcFoAm/EMHexmgWig4If9zvg=
+X-Google-Smtp-Source: AGHT+IFu5Oiwuj+i68aKGbWWitLMicT3QOqH4yvr2CkBBlw3Y4l78E7VTBxoGWeYODKBQH4FUNaUOw==
+X-Received: by 2002:a05:600c:3b17:b0:426:50e1:ea6e with SMTP id 5b1f17b1804b1-42f5844c301mr92255225e9.18.1727699830327;
+        Mon, 30 Sep 2024 05:37:10 -0700 (PDT)
 Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e96a52308sm149011355e9.43.2024.09.30.05.37.13
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e96a52308sm149011355e9.43.2024.09.30.05.37.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2024 05:37:13 -0700 (PDT)
+        Mon, 30 Sep 2024 05:37:09 -0700 (PDT)
 From: Uros Bizjak <ubizjak@gmail.com>
 To: x86@kernel.org,
 	linux-crypto@vger.kernel.org,
@@ -77,21 +77,23 @@ To: x86@kernel.org,
 	kunit-dev@googlegroups.com,
 	linux-kernel@vger.kernel.org
 Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>
-Subject: [PATCH v3 04/19] drm/lib: Include <linux/prandom.h> instead of <linux/random.h>
-Date: Mon, 30 Sep 2024 14:33:15 +0200
-Message-ID: <20240930123702.803617-5-ubizjak@gmail.com>
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v3 01/19] x86/kaslr: Include <linux/prandom.h> instead of <linux/random.h>
+Date: Mon, 30 Sep 2024 14:33:12 +0200
+Message-ID: <20240930123702.803617-2-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <20240930123702.803617-1-ubizjak@gmail.com>
 References: <20240930123702.803617-1-ubizjak@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240930_053716_451866_DF8AED6E 
-X-CRM114-Status: GOOD (  12.74  )
+X-CRM114-CacheID: sfid-20240930_053712_254997_D74C4BEE 
+X-CRM114-Status: GOOD (  13.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,28 +115,30 @@ Substitute the inclusion of <linux/random.h> header with
 of <linux/prandom.h> from <linux/random.h>.
 
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: David Airlie <airlied@gmail.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 ---
- drivers/gpu/drm/lib/drm_random.h | 2 +-
+ arch/x86/mm/kaslr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/lib/drm_random.h b/drivers/gpu/drm/lib/drm_random.h
-index 5543bf0474bc..9f827260a89d 100644
---- a/drivers/gpu/drm/lib/drm_random.h
-+++ b/drivers/gpu/drm/lib/drm_random.h
-@@ -6,7 +6,7 @@
-  * be transposed to lib/ at the earliest convenience.
-  */
+diff --git a/arch/x86/mm/kaslr.c b/arch/x86/mm/kaslr.c
+index 230f1dee4f09..e17e6e27b7ec 100644
+--- a/arch/x86/mm/kaslr.c
++++ b/arch/x86/mm/kaslr.c
+@@ -22,7 +22,7 @@
  
+ #include <linux/kernel.h>
+ #include <linux/init.h>
 -#include <linux/random.h>
 +#include <linux/prandom.h>
+ #include <linux/memblock.h>
+ #include <linux/pgtable.h>
  
- #define DRM_RND_STATE_INITIALIZER(seed__) ({				\
- 	struct rnd_state state__;					\
 -- 
 2.46.2
 
