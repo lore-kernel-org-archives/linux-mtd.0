@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 614DECE7D1C
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Oct 2024 20:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49CACCF3180
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Oct 2024 20:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SX0ROUiq2mQD5UkGnUzxXak9NZVe1ADxSbJRfPJG5Ys=; b=SKyeVN+Yrj6kh1
-	OIpXzcRr9EuRaGb+xTkpJ8TsWgBauy1V4ObLEr0+lO6dueNZr911IJCwNLvAabXI/TiK6ty+TFAeU
-	yrSAV16/fPSxeZAk2if4ZoGbVTrZWTd2UDq+d51p/ZDUKJeXq24zADa7hivDyhz3fNrNAUyPYahZu
-	x5dLJgPWLupENXz7HOfZkClqduamt2VbZcmdMz5kMZBA+PUFSTYN2hLTuouo4iWLvMzxIbSx07p7z
-	I3Shrb1Ovaxs+73m9Z0+jK2Atkqm3dLLL2YTBtRTcwBHBl2H7m4SYNBjiy1SHuNCzzcFNpeSyXPws
-	txeF9kGfZIfk+oj/nQuw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jRpOhS1Y9RJ/kVS/wtCq+7GnteqrfxE5g86NZ590res=; b=GtQiVwbLvgjXmo
+	JFn3rTYCRJjYDr+bu+PV6DdBbZRvzq5RZQlNsTicWOfaAOPNRDHSBJHMlQ7Uv4BQNzBrTQ8rIi0S4
+	6uGWsJ82Vg+u4qWpGnuasoZPMr77Y09jN0Rb0ye0Ow+nK81DZym2s9yZY4eR8kNPBi77jqIVRVUha
+	Hbr68+OnonockkL6hqVijleuPdHmOUknBKgNEfzDM5wFYTphqLYwjDjxhCecGXup6De33mQPXf1QC
+	7Pdw53ndJ8vHULrEk9Bl35zG7widqIseGFSgtFKvWmLWKn9iFn7BuPvGW8rt1OnUfGxXAG+K399X1
+	cxGdOBePkASwFz967pAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svjYS-000000040ab-1my3;
-	Tue, 01 Oct 2024 20:33:08 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1svjcf-00000004150-0T6C;
+	Tue, 01 Oct 2024 20:37:29 +0000
+Received: from mx.treblig.org ([2a00:1098:5b::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svjXI-000000040TD-1etJ
-	for linux-mtd@lists.infradead.org;
-	Tue, 01 Oct 2024 20:31:58 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AA34320005;
-	Tue,  1 Oct 2024 20:31:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1727814712;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=AMRHhshq3KGKfk3yt2DF0Y9Caw0bFPcZ5M4ne6YT/Ec=;
-	b=Z0Acy7hpMqdxi8/Fpq33SPDN2efoMGN139HcXh+EhrGC40f/d2WnEIT5/lEjq9uP5JFsDQ
-	1cV8aFWY5t8tCp17KhdQ0Vb34oJTNjoGvbecBCr9/hb1iz4UAslpGulNPReRv0MyRUC+Aa
-	qzCPI+Vji14YTuK9JyAOPsey0flq0e4COCfYV3EmiY13nDaKi2XESnIYFv8Wm58+0mJlya
-	Xp3VlrUxH+Y9GQ04gQI/cgMG5AZApFtgSCx2E28Z/ZBeX0dCdQOFrkDCAkcbP33Gt108EL
-	6jMALWi/jSQupdH1oxY2lnfEfC83LhbJF8Cyuht29QfPbHDZgLyJ21H4Xc2RWQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux@treblig.org,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: rawnand: atmel: Fix possible memory leak
-Date: Tue,  1 Oct 2024 22:31:49 +0200
-Message-ID: <20241001203149.387655-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.43.0
+	id 1svjcb-0000000414M-3olo;
+	Tue, 01 Oct 2024 20:37:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
+	:Subject; bh=7fnSGYhniQwLAJoqqmgeDP6zdAognPdAB/UHbLqgj10=; b=nwQ9EuUczb92u4w9
+	OxhpSgqKBefhixFpJfhHESG9v2gP0xrDG4pfFb8At2gpuq9hXgrIOtgl6qrjGyT5s39I+Y6QCQY6X
+	7lv4o/A/K1m0TnOm8cUnQq7TtDf+0iOlp/udMQ211uEH4rp6Dg6A7ooHpWO41uZuyk6Esskm51emU
+	zDxDaipqvy++8DHQiDWlS5pdZPCHes7IV6fti+RsWiJIcuc1mepUwkUHNxsVhhomju+voXmveHG/F
+	ACGFonZ8pAOtDedSuViBhxENqhrQPhcINwRRNFgBoU07MJ0sWd5eFZt8Bv6l4ZIgyTAmptrZDBD6f
+	mXtk7m27mP9tPrEb1A==;
+Received: from dg by mx.treblig.org with local (Exim 4.96)
+	(envelope-from <dg@treblig.org>)
+	id 1svjcU-008Jvz-3A;
+	Tue, 01 Oct 2024 20:37:18 +0000
+Date: Tue, 1 Oct 2024 20:37:18 +0000
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: nicolas.ferre@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: of atmel_pmecc_destroy_user
+Message-ID: <Zvxdfh3FobjpvcRb@gallifrey>
+References: <ZvmIvRJCf6VhHvpo@gallifrey>
+ <20240930090817.0a86e538@collabora.com>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20240930090817.0a86e538@collabora.com>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
+X-Uptime: 20:36:38 up 146 days,  7:50,  1 user,  load average: 0.00, 0.00,
+ 0.00
+User-Agent: Mutt/2.2.12 (2023-09-09)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241001_133156_776232_F6965A00 
-X-CRM114-Status: GOOD (  11.14  )
+X-CRM114-CacheID: sfid-20241001_133726_059227_DCB8E1C6 
+X-CRM114-Status: GOOD (  21.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,65 +75,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pmecc "user" structure is allocated in atmel_pmecc_create_user() and
-was supposed to be freed with atmel_pmecc_destroy_user(), but this other
-helper is never called. One solution would be to find the proper
-location to call the destructor, but the trend today is to switch to
-device managed allocations, which in this case fits pretty well.
+* Boris Brezillon (boris.brezillon@collabora.com) wrote:
+> Hi David,
+> 
+> On Sun, 29 Sep 2024 17:05:01 +0000
+> "Dr. David Alan Gilbert" <linux@treblig.org> wrote:
+> 
+> > Hi Boris and co,
+> >   One of my scripts noticed that 'atmel_pmecc_destroy_user'
+> > isn't called anywhere; I was going to delete it, but hmm, I wonder
+> > if it's actually a missing call and leaking (in the unlikely case
+> > the device was ever removed).
+> > 
+> > It was added by your:
+> >   commit f88fc122cc34c2545dec9562eaab121494e401ef
+> >   Author: Boris Brezillon <bbrezillon@kernel.org>
+> >   Date:   Thu Mar 16 09:02:40 2017 +0100
+> > 
+> >     mtd: nand: Cleanup/rework the atmel_nand driver
+> > 
+> > and I see the allocation in:
+> >      user = kzalloc(size, GFP_KERNEL);
+> >        in
+> >      nand->pmecc = atmel_pmecc_create_user(nc->pmecc, &req);
+> >        called in atmel_nand_pmecc_init
+> >          from atmel_nand_ecc_init
+> >            from atmel_hsmc_nand_ecc_init
+> >  
+> > But I don't see any freeing.
+> > 
+> > (I don't knowingly have hardware to test a fix, although I guess
+> > there's probably one somewhere....)
+> > 
+> > Suggestions?
+> 
+> There's definitely a leak. I haven't looked at NAND stuff for a while
+> though, so I'll let Miquel advise you on where
+> atmel_pmecc_destroy_user() should be called.
 
-Replace kzalloc() by devm_kzalloc() and drop the destructor entirely.
+I see Miquel has posted a fix.
 
-Reported-by: "Dr. David Alan Gilbert" <linux@treblig.org>
-Closes: https://lore.kernel.org/all/ZvmIvRJCf6VhHvpo@gallifrey/
-Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/atmel/pmecc.c | 8 +-------
- drivers/mtd/nand/raw/atmel/pmecc.h | 2 --
- 2 files changed, 1 insertion(+), 9 deletions(-)
+Thanks to both of you!
 
-diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
-index 4d7dc8a9c373..a22aab4ed4e8 100644
---- a/drivers/mtd/nand/raw/atmel/pmecc.c
-+++ b/drivers/mtd/nand/raw/atmel/pmecc.c
-@@ -362,7 +362,7 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
- 	size = ALIGN(size, sizeof(s32));
- 	size += (req->ecc.strength + 1) * sizeof(s32) * 3;
- 
--	user = kzalloc(size, GFP_KERNEL);
-+	user = devm_kzalloc(pmecc->dev, size, GFP_KERNEL);
- 	if (!user)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -408,12 +408,6 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
- }
- EXPORT_SYMBOL_GPL(atmel_pmecc_create_user);
- 
--void atmel_pmecc_destroy_user(struct atmel_pmecc_user *user)
--{
--	kfree(user);
--}
--EXPORT_SYMBOL_GPL(atmel_pmecc_destroy_user);
--
- static int get_strength(struct atmel_pmecc_user *user)
- {
- 	const int *strengths = user->pmecc->caps->strengths;
-diff --git a/drivers/mtd/nand/raw/atmel/pmecc.h b/drivers/mtd/nand/raw/atmel/pmecc.h
-index 7851c05126cf..cc0c5af1f4f1 100644
---- a/drivers/mtd/nand/raw/atmel/pmecc.h
-+++ b/drivers/mtd/nand/raw/atmel/pmecc.h
-@@ -55,8 +55,6 @@ struct atmel_pmecc *devm_atmel_pmecc_get(struct device *dev);
- struct atmel_pmecc_user *
- atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
- 			struct atmel_pmecc_user_req *req);
--void atmel_pmecc_destroy_user(struct atmel_pmecc_user *user);
--
- void atmel_pmecc_reset(struct atmel_pmecc *pmecc);
- int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op);
- void atmel_pmecc_disable(struct atmel_pmecc_user *user);
+Dave
+
+> Regards,
+> 
+> Boris
+> 
 -- 
-2.43.0
-
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
 
 ______________________________________________________
 Linux MTD discussion mailing list
