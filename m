@@ -4,79 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48AE2CEB2E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 17:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E86CEB2E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 17:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=QI8RIFxZ4aAvTEGVz64XVsjL8eDAhNYJhHjt8iVlcvc=; b=kh3HQKaiu+mRIY
-	hypXfvvn7n5hnMBeWD4WcyFR8pKrj9u2wXjyYlSqP5q/KG34ZLUhE32XVDYg4QPHPaXHG+i2lVuA1
-	p79PtnMJaylALfNjhdCReuoyH90/MzR4sViEBNdPdIeMUSzU4fTL12h48mTMsBMZoxY0rJVG4YWH+
-	GQx6mnqe6an7oZi+qkywP4F0Yi3eag0NUyIeJB4wKbvKX+iin5Ac5tC/gbRc0Vko0esw6AbDJ5LEj
-	cURBfQPytKmLa5LrMvW3vAiGuEIBQYS5OXy9+GuDDoOK/XXZfcT+po7rxni4SMZTYGF7Gkm0LitLU
-	ui75D7Z1+cuG9hmYygaw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Y/0byp+1MLpcsaoxOT3pseaf4sFmK4Q0je+zjxLEm+g=; b=AtQtSs1nLhiSOV
+	Ug8BlnsZTRpgELa70ZwAvwT2PrW2QDSAcnLOXdi/4oI5NgGBYdWL8wTEuOB3oKTb4AbP7mk2dZA2i
+	diBWhBUgmw6+t3N8yRBa/0+FqevVoQ1cOxoC492D0vjvtnquf9g1LLoU6YuG44M3Gz6trSc1IQ7mR
+	SPVUR5bdT1RX8qITZe+O+JB1MXYpgcjnXHSWyJSbeWiXeXbeQzeHddI7B6ZzBoKVpS/PL2eSaeLxj
+	+qd2ofMKMRXlG+GXpynuu/TGlY9FAFNGjzfUdm827UovVLSYAB/y+c3QpI0/R8RHp4RiWBoeELj58
+	dDO2j0d1BHI8tMaKaX3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sw345-00000007357-2M87;
-	Wed, 02 Oct 2024 17:23:05 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1sw3An-000000073Yk-1jRi;
+	Wed, 02 Oct 2024 17:30:01 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sw342-0000000734d-1lmx
+	id 1sw3Ak-000000073YO-1G3w
 	for linux-mtd@lists.infradead.org;
-	Wed, 02 Oct 2024 17:23:04 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a8a7cdfdd80so1134414566b.0
-        for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2024 10:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727889779; x=1728494579; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FrtYZnJmhnzVc3g3gqJpSVt6lMuSvSPEflszJlzR0nM=;
-        b=S8Dwo6gzXj3nA8EF5lxr54paJsnWaebVPA0rbSwwu/8OcwSW/xUoMmV0ABL7Ate+tw
-         Exfm/SmvTMhrBLSY/qyJCtxE+qVd3dLyEHa30zXRL1J7MxJ1BlbeItys8gk3Rgy0Ys+R
-         P6NKz/29e+AodIgE1888ElLJeSD4EbsrLsTnaI5/j+M+F9lAK2br5Y5jnpXXqqba9IQg
-         Dq0m7AS3jGuxVAqI7TaRHKNzA5emgnkaPjgQNz7lIiO1O4Eh8/o59uToixQmK4RD5pvN
-         mSaGslHP4mvrm7EoyyLqMBfi2GZOhmYXu0beLdcTjnkr6wDFGorfX+WQwoCjf3ae5h8Y
-         4xrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727889779; x=1728494579;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FrtYZnJmhnzVc3g3gqJpSVt6lMuSvSPEflszJlzR0nM=;
-        b=qvYrmSbHUBehLHT8lGLvC5flODNHZfqibciwhZDPJdlfydc0wi7w3px3mYTpX+8sLK
-         tHDioR6ZZXNxTc0KSV2xfRXxtB15UmsEnAbcXBlky5ge7tKCv6RMUC/aTvB47VPm8DLU
-         H9cy3YWxW2RhcQu2RUODwU9ElYrL+1B0KAym0duVFcYGlWPdezapD7FGOb7JpJxcAIrh
-         afS48AGv71q7OWDotiRTfyvfCref23Wjx4Eemuf/FsTT50fdxOP4LYgl4OSj0O9X+umb
-         dHXfYlEY/mGMgSSbpnmMu2q2cPix/1GcOGKm+WBftoBMFA1nr4K6ahoPysdoLeNk7bjh
-         FaKg==
-X-Forwarded-Encrypted: i=1; AJvYcCVEI070wSKd454P0U5JaMy1spLPgMKYSgUMlG3BWZN0OMmgqpDZG0M8YNEu1JOn3t2P14PcPkfr1uY=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxwuc/GxiPip2Ow3dV/8HXMP1Cy1iu0GfPbrEOuKyENju1n3FGY
-	KZlk5lM7Y1A/Z5ttMSeXn25xT2ghFBBoz0LG3U4+EzRwodJqSQsl
-X-Google-Smtp-Source: AGHT+IFGrsopjTclFGJVXmRNx7rFlw56ClSxMQyHigziZsbEMOUUTrVwOrOTfgup+dPCSfeklGxdgQ==
-X-Received: by 2002:a17:907:1c24:b0:a8d:51a7:d5ec with SMTP id a640c23a62f3a-a98f821ca1emr383865366b.13.1727889779427;
-        Wed, 02 Oct 2024 10:22:59 -0700 (PDT)
-Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c27c58fbsm889697266b.56.2024.10.02.10.22.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 10:22:58 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Wed, 02 Oct 2024 17:29:59 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 656925C045A;
+	Wed,  2 Oct 2024 17:29:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D88CEC4CECD;
+	Wed,  2 Oct 2024 17:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727890196;
+	bh=euTbIsusSo0TN7GQC3gr8HVYHu0/z+hrLKfLWfB/pHM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LgWwaYDl6Js4BsVRqODHfKzyEdBFSRxhFJzHY67W9nVfKtVPfnkm3QsZUZfXEL4Pf
+	 XjA5UCvfqKpSMXVnb+FCFqBaWJSLjDkEgFYuwhYhqpTnE4FcKD6pCKRr5fI97rQ5nR
+	 Nv+kbr8LZAa2digbaNtZR/BP0NtRcjCkhbqYUfe16SPPQjsixGqG5WZqByvL7QEuvb
+	 ScQTuam4gy7UCU43ba7kKlrJ8gD+AytEwUpCUwP0joc/2uxS95x1WMid/MB/034DLx
+	 cl3KWrw4zP3tva75Kt8SpQjotqFieejQUo20L/GGrIhzsfwDollxDzoHzYg5eNZ+LI
+	 YR6vAxHblfXnQ==
+Date: Wed, 2 Oct 2024 12:29:54 -0500
+From: Rob Herring <robh@kernel.org>
+To: Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mtd: cfi_cmdset_0002: remove redundant assignment to variable ret
-Date: Wed,  2 Oct 2024 18:22:58 +0100
-Message-Id: <20241002172258.958113-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: mtd: davinci: convert to yaml
+Message-ID: <20241002172954.GA1001788-robh@kernel.org>
+References: <20241002-ondie-v2-0-318156d8c7b4@gmail.com>
+ <20241002-ondie-v2-2-318156d8c7b4@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20241002-ondie-v2-2-318156d8c7b4@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241002_102302_487715_1CED7314 
-X-CRM114-Status: GOOD (  13.52  )
+X-CRM114-CacheID: sfid-20241002_102958_450260_D36B22EF 
+X-CRM114-Status: GOOD (  20.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,43 +77,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Variable ret is being assigned a value that is never read, the following
-goto statement jumps to a statement that assigns ret a return from the
-call to function do_write_oneword_once. The assignment is redundant
-and can be removed.
+On Wed, Oct 02, 2024 at 11:01:31AM +0200, Marcus Folkesson wrote:
+> Convert the bindings to yaml format.
+> 
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> ---
+>  .../devicetree/bindings/mtd/davinci-nand.txt       |  94 ------------------
+>  .../devicetree/bindings/mtd/ti,davinci-nand.yaml   | 105 +++++++++++++++++++++
+>  2 files changed, 105 insertions(+), 94 deletions(-)
+> 
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..c0e09cccea8e65a6fcb98291c0cee0db56a97def
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml
+> @@ -0,0 +1,105 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/ti,davinci-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI DaVinci NAND controller
+> +
+> +maintainers:
+> +  - Marcus Folkesson <marcus.folkesson@gmail.com>
+> +
+> +allOf:
+> +  - $ref: nand-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,davinci-nand
+> +      - ti,keystone-nand
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  ti,davinci-chipselect:
+> +    description: |
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 9f2223d3e8e1..7c91429a670b 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1775,18 +1775,16 @@ static int __xipram do_write_oneword_retry(struct map_info *map,
-  retry:
- 	ret = do_write_oneword_once(map, chip, adr, datum, mode, cfi);
- 	if (ret) {
- 		/* reset on all failures. */
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_RETRIES) {
--			ret = 0;
-+		if (++retry_cnt <= MAX_RETRIES)
- 			goto retry;
--		}
- 	}
- 	xip_enable(map, chip, adr);
- 
- 	return ret;
- }
- 
- static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
--- 
-2.39.5
+Don't need '|' if no formatting.
 
+> +      Number of chipselect. Indicate on the davinci_nand
+> +      driver which chipselect is used for accessing
+> +      the nand.
+
+Wrap lines at 80 char.
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 3]
+> +
+> +  ti,davinci-mask-ale:
+> +    description: |
+> +      Mask for ALE. Needed for executing address
+> +      phase. These offset will be added to the base
+> +      address for the chip select space the NAND Flash
+> +      device is connected to.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0x08
+> +
+> +  ti,davinci-mask-cle:
+> +    description: |
+> +      Mask for CLE. Needed for executing command
+> +      phase. These offset will be added to the base
+> +      address for the chip select space the NAND Flash
+> +      device is connected to.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0x10
+> +
+> +  ti,davinci-mask-chipsel:
+> +    description: |
+> +      Mask for chipselect address. Needed to mask
+> +      addresses for given chipselect.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0
+> +
+> +  ti,davinci-ecc-bits:
+> +    description: Used ECC bits.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 4]
+> +
+> +  ti,davinci-ecc-mode:
+> +    description: Operation mode of the NAND ECC mode.
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    enum: [none, soft, hw, on-die]
+> +    deprecated: true
+> +
+> +  ti,davinci-nand-buswidth:
+> +    description: Bus width to the NAND chip
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [8, 16]
+> +    default: 8
+> +    deprecated: true
+> +
+> +  ti,davinci-nand-use-bbt:
+> +    type: boolean
+> +    description: |
+> +      Use flash based bad block table support. OOB
+> +      identifier is saved in OOB area.
+> +    deprecated: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - ti,davinci-chipselect
+> +
+> +examples:
+> +  - |
+> +    nand_cs3@62000000 {
+
+nand-controller@...
+
+> +    compatible = "ti,davinci-nand";
+> +    reg = <0x62000000 0x807ff
+> +    0x68000000 0x8000>;
+> +    ti,davinci-chipselect = <1>;
+> +    ti,davinci-mask-ale = <0>;
+> +    ti,davinci-mask-cle = <0>;
+> +    ti,davinci-mask-chipsel = <0>;
+> +    nand-ecc-mode = "hw";
+> +    ti,davinci-ecc-bits = <4>;
+> +    nand-on-flash-bbt;
+
+Wrong indentation.
+
+> +
+> +        partition@180000 {
+> +            label = "ubifs";
+> +            reg = <0x180000 0x7e80000>;
+> +        };
+> +    };
+> 
+> -- 
+> 2.46.0
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
