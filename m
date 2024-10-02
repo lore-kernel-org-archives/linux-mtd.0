@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95563CF3199
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 07:28:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ADCBCF3199
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 07:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9BHXnTY9ldqy8MHF916fOgTtfmkBe2iEPoHT9j30N38=; b=Q96JFsJC1fVy+N
-	HBhxhA81JnIa0BQ2Sx1AzpRV+9jDt2FCvxufSHF/HZWoUjcqhrRiLZGm2J+gYs5kEVyYX24/yS05T
-	2uCUHQRj2sJHv14a0yed8+E5I7lnjuB39hzzdUZEjXgrRR0u8HmMgJ7yCPlcYH+026MNZw+VX3ugC
-	jXZdiyBaWF7JrsXKXojo2PKcAL/b7ttE4E0PXo+9YWr4rG9dgUGrI4JXIgX82Ye+g+2DEZoyYFxB/
-	vT/3AUA4VX3/KLaYLVbU8lCaAY6SI6TNfdirafJV1me4942iLWy6PqhG9ZbV6V0rTEp1w+jvItvs/
-	PG0dA8Lx4bomPk3OfjAQ==;
+	List-Owner; bh=yMzG7RsKnjDdpdIvCrHah+MTz23wOeRtBpuG+YdLFXg=; b=WiLDNxpcjO8nzN
+	d3y5gvSSDIDq2eviUTxUA0gvzMeA0XPsCe+iaWReJ0f0l+rBcTnNHIFtyQtlr4tLtE5Z+VUnYs3nc
+	NxjevSIHdmNPcO13GvolF1l0L2aqHXBnfIObDOIpzeRxF49znA6j8VFofgvxdn7OPuC9HBYkRKGgs
+	iehrZw+0rKTbnhWtzUkX2lhtoCvYrn/nxa6LuYbbOwFiQdHZn7Hx0iH1RfWuCKaoPxqxcqrsFIjtB
+	GLO1u39bsoUYfSeYZztg+pragK4GmPzUbbVRK1y44ZsKD8Ps4pP0iPBL8m5GRAlJa5TDZajGh6Bo2
+	0STcMNkcjkLJg6RMT+tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svtmf-000000051pC-21aG;
-	Wed, 02 Oct 2024 07:28:29 +0000
-Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
+	id 1svu2w-000000053fN-1tkg;
+	Wed, 02 Oct 2024 07:45:18 +0000
+Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svtmc-000000051ns-2UAD
+	id 1svu2t-000000053ed-2EIJ
 	for linux-mtd@lists.infradead.org;
-	Wed, 02 Oct 2024 07:28:28 +0000
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5c882864d3aso6139782a12.2
-        for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2024 00:28:26 -0700 (PDT)
+	Wed, 02 Oct 2024 07:45:17 +0000
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a8d4093722bso945066466b.0
+        for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2024 00:45:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1727854105; x=1728458905; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1727855114; x=1728459914; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2hl8FCKc64Ssu2GNc1972+PuKRGXuRwQabL9GP2xv2w=;
-        b=x2E0Ba1cT7/Lg3PPP3dOzWkpRN9j86NNEpVBYGrDRYSa/6wkH7Mt9lDZuU6P9oprY1
-         +nAJEBoWGg5P5M9NqVAxyTndX7I3GxWJ8ccpLqbSe7kW80qvZSfvLD/u+n+c8WygfEG1
-         JKUrKU6PPYWocLbb4cJJDi627OoiPNxz1mJ/YytVOyVfHSKaNwnMVCXpzBUSAuKVC8xC
-         B+SV3mVTyI0PSYR82Nd8Liyl1VXXA804Sb/hvAfzrUX7c7kh5OLp6T8DK5wY6bQx+hUJ
-         BB+o5mCjrH0Kr5LzNJZD62m4vEgdu2+OsaF6sSpxEIBpTFeYZ8IwuBKmooSlhdXXx4yZ
-         TkSw==
+        bh=FNRdu4560cxyW4H48SPNRuOsXYe3wo5Kz8Tevusjh/Q=;
+        b=PedlS/1/zQzhKNBePIjQyQyzswOBhcRRJkBrYknkGKE9+PmnEtLAxt9OWhyh4z5epe
+         j42yVaQPSwqmge4Aqn/zZx3EcQsR5Ap+b4SyQDhoFkAnNC/3WCUKBjAVKwSLDVuXVgkf
+         vtorhRk/rDB+YVm8BmRbxX8m6HMz3WgOt/wybEhA8DdnoxRNx8CEDTlv3bz9HMDxUbtY
+         bEcf2Q9+wFSnFLw7YGm1GTt/LvTyfuI8/wfpmrZzoy23/2/kb6OGR/O5UKrJLTg9lbKy
+         qyYLNcMwDbMdBelsnDirpREOEhsVbJwOfPVPegMJ+vKPy9cEUGAddHzT0bm2wTHAU1Bo
+         U02g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727854105; x=1728458905;
+        d=1e100.net; s=20230601; t=1727855114; x=1728459914;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2hl8FCKc64Ssu2GNc1972+PuKRGXuRwQabL9GP2xv2w=;
-        b=P+vGcDjk34a9ha5EPpk2Mlkyq3GJ9RYYawQxHZjITBvpiLIL3FBpHJY3u8H5V5U2Vb
-         g4eo51tazQ+52fMC9OsXaASn0KJNHyNnTF+p2TkBwN9Fsj724J3n0EE+E1ylq0QoPDjE
-         LKGjlSC7SmeeDSHQXo8rr81SsrOv1wQnhvYopRm2+ftlO2+6z/aerKTagimId7paa0ZC
-         kdz4i8uRWvj/3DA0gLKn7e/eIBnGBemNJAc//53TXKH9cg3SXPmhPKVO3Jt5HGCzZt21
-         NmITuu5RGe7I/J1rI0PwwNECwZn/O0h27wvys83o5Wa6ycXR+4GHDHOthqQm5UwifBeG
-         k3Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ/eXCEvCz8QYmiQTYsQLZQNYxDDJ/zu2cWZ2AW7cZ6en6aqpD+MefzGjnOemRCMCPTFJZYGMQX3U=@lists.infradead.org
-X-Gm-Message-State: AOJu0YywlE/GdNDEc+h+5BjUqLel8SGELIuw2tzJPTVVFlHImooT8had
-	HgRUcT1PqcAw/rzg294lMe5u2F3IR0S2rlgavUu8py7CzJPzsZbG08cfROFm6RY=
-X-Google-Smtp-Source: AGHT+IHcfQc9l8CIqhgpaESQ2s1HdIuuIEefyoKHY8MCEZ4FaqpllkEYkfaFFBTq9cnf7X9RZ20zIA==
-X-Received: by 2002:a05:6402:2114:b0:5c5:cdf0:177b with SMTP id 4fb4d7f45d1cf-5c8b1a3c3e8mr1401881a12.21.1727854104762;
-        Wed, 02 Oct 2024 00:28:24 -0700 (PDT)
+        bh=FNRdu4560cxyW4H48SPNRuOsXYe3wo5Kz8Tevusjh/Q=;
+        b=lx6u4CVRkwds8rVFhcVUtQKipgPXIJ2MROnMrxigov8o2y7uEfc74hGXr0PgXITXL7
+         naEnlvEr3eqelpsw4OQ9stFEkwBPe29Aer31AW2KVAxiUEPGExQ3qsNWaE8j99WApybr
+         n7YS6d1VlW94tLXtFC1z35BD37LMK5oC6kNW7Ka0wUngyi+KRmEc8x/RdzTTFzTcpTiE
+         1STzYHo2+YEfgGxX178WZV41hVH0h0QuoNEWf6SpZXapgImQYP1yUaibWploCnwa2t3f
+         1loQwWjJ0ahXJEal7LQn3R1RSB390hVWADnYMnaoWhk9LH75PL6dwg74RQrBDRXOsAYK
+         5xRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnVdwpsXmgjHFGzKXpjnHwmuEtdAc1NZExhLOSH0+dsZUCpVOvevK+s3A8gS6QKjDZzMHH+/v99Nk=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwGBLUysOGWtgsnHKW7Fm4R11pfKgc8q7MOaVaYAxFr3c8f7+vo
+	8YQN9dIsPMXMtwPXcoLD8yxI3wWIHiAaZ6O3aKEFjEllh0A2f5v/OUS7fmIJywA=
+X-Google-Smtp-Source: AGHT+IHVRBvw4u/Hgc+95QlfN8nSdnQa/vKgvNfz2NepqXg9A9A3Xuj0DuZM4kdWAhwKx81HVNgdGA==
+X-Received: by 2002:a17:907:97c4:b0:a93:d6dc:d047 with SMTP id a640c23a62f3a-a98f836ee86mr222771766b.49.1727855113507;
+        Wed, 02 Oct 2024 00:45:13 -0700 (PDT)
 Received: from [10.11.12.174] ([82.76.204.61])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c88240a325sm7234101a12.33.2024.10.02.00.28.22
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c27c59bdsm815585666b.50.2024.10.02.00.45.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Oct 2024 00:28:24 -0700 (PDT)
-Message-ID: <5ef0b8bc-9728-45d1-9566-3f780fb70ee2@linaro.org>
-Date: Wed, 2 Oct 2024 10:28:21 +0300
+        Wed, 02 Oct 2024 00:45:13 -0700 (PDT)
+Message-ID: <5e7e0aa4-74b0-4262-8e8b-de86be54f0bc@linaro.org>
+Date: Wed, 2 Oct 2024 10:45:08 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 4/6] mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order
- from BFPT
+Subject: Re: [PATCH v10 6/6] mtd: spi-nor: add support for Macronix Octal
+ flash
 To: AlvinZhou <alvinzhou.tw@gmail.com>, linux-mtd@lists.infradead.org,
  linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
  pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
@@ -76,14 +76,13 @@ To: AlvinZhou <alvinzhou.tw@gmail.com>, linux-mtd@lists.infradead.org,
 Cc: chengminglin@mxic.com.tw, leoyu@mxic.com.tw,
  AlvinZhou <alvinzhou@mxic.com.tw>, JaimeLiao <jaimeliao@mxic.com.tw>
 References: <20240926141956.2386374-1-alvinzhou.tw@gmail.com>
- <20240926141956.2386374-5-alvinzhou.tw@gmail.com>
+ <20240926141956.2386374-7-alvinzhou.tw@gmail.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 Content-Language: en-US
-In-Reply-To: <20240926141956.2386374-5-alvinzhou.tw@gmail.com>
+In-Reply-To: <20240926141956.2386374-7-alvinzhou.tw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241002_002826_674348_E6C6FE8E 
-X-CRM114-Status: UNSURE (   5.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241002_004515_633730_CA051FAD 
+X-CRM114-Status: GOOD (  20.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,11 +102,58 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 26.09.2024 17:19, AlvinZhou wrote:
-> +#define BFPT_DWORD18_BYTE_ORDER_SWAPPED		BIT(31)	/* Byte sawp of 16-bit in 8D-8D-8D mode */
-typo: sawp. I'll replace the comment with
-/* Byte order swapped in 8D-8D-8D mode */
+> From: AlvinZhou <alvinzhou@mxic.com.tw>
+> 
+> Adding manufacturer ID 0xC2 at the end of ID table
+> to allow manufacturer fixup to be applied for any
+> Macronix flashes instead of needing to list each
+> flash ID in the ID table.
+> 
+> Such as macronix_nor_set_octal_dtr function in the
+> manufacturer fixup can be applied to any Macronix
+> Octal Flashes without the need to add the specific
+> ID in the ID table.
+> 
+> Suggested-by: Michael Walle <mwalle@kernel.org>
+> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+> Signed-off-by: AlvinZhou <alvinzhou@mxic.com.tw>
+> ---
+>  drivers/mtd/spi-nor/macronix.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index f039819a5252..1a8ccebdfe0e 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -200,7 +200,9 @@ static const struct flash_info macronix_nor_parts[] = {
+>  		.name = "mx25l3255e",
+>  		.size = SZ_4M,
+>  		.no_sfdp_flags = SECT_4K,
+> -	}
+> +	},
+> +	/* Need the manufacturer fixups, Keep this last */
 
-No need to resend.
+you have a capital letter in the middle of the sentence.
+
+I'll replace the comment with:
+
+/*
+
+ * This spares us of adding new flash entries for flashes that can be
+ * initialized solely based on the SFDP data, but still need the
+ * manufacturer hooks to set parameters that can't be discovered at SFDP
+ * parsing time.
+ */
+
+Which brings me to why you really set this. I remember SFDP contains
+tables with sequence of commands for enabling/disabling Octal DTR mode.
+Would you please remember me, why you didn't use those SFDP tables and
+implemented your own enable/disable methods?
+
+> +	{ .id = SNOR_ID(0xc2) }
+>  };
+>  
+>  static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
 
 ______________________________________________________
 Linux MTD discussion mailing list
