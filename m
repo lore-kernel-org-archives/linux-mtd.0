@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B3A2CF6D24
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 13:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94FCDCF6D2C
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 14:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xvuthzvDyo0N+hXFQSUaq/nXHl5NWR5VZC3VWKvTEf0=; b=VKzTXR7XeEWT/c
-	I8SVwBQZNHnt24hRtKgYbLq8LRTP0MBMDS2DG+w05+ioQUCOFlBUUIgeYdBLuar0yh/e3bo5VDKuM
-	ItOm0bO5ZDeqtqOZV6wI3PlaA37STY+UdIZkvXetoulyVwMP2gJLvOgCV6LL6vHzietuu+S6UEAdp
-	3ams1TdSt4mhBCzKuGHoo243pgpzF1gVqbHpBbnUoyZ6x0O1C7Z6AC1nI7bPcNv1Zjba8SihIB0e7
-	dKH+Ft7FVHtL/dif7s4S/XqDLb99aoYLLiiDcTgEptLvxBH8s6lVNrZ2DudFrsyueaXXypZTf0avD
-	iaGFwjzknMcwM3Kq/mFA==;
+	List-Owner; bh=RWLndFL+XAFtTcvXmpMDYC+krnirdidx1dmWSLRA7L4=; b=any9zTnX/pt5A8
+	H5jBSFr4M9uB8zFKDHv+E5PuuDDsh4z3V2ILidw8Vv6NkzDuoTYQIO7alLGiHbCrq/Yj/kEvG8+zg
+	+dq7gTtUjb7WeyYmHo87ZfFFTkr4VLWhG4KWTXaF5+X8dK5PKkWXd8/++U/9LwTRGYN8qn1ee/Nmc
+	aesvd+gzcIMZsCLvrBM1jPdxqYVtq6O8SKpf4Fk4Mm+g06StfnEmqsw8RGODfvqa6B51TObIa2n3m
+	ulpDRD3yv+r/vSh2kCFi0md9qAR/BBRSQBTIicnYuAgLCDvHzYEIHezoQSxuXV6/iRaAGRENVcYOq
+	etDjh2VcjRUjEfbthPGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svzPc-0000000687j-1ln1;
-	Wed, 02 Oct 2024 13:29:04 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1sw02U-00000006JY5-2vj5;
+	Wed, 02 Oct 2024 14:09:14 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svzOL-000000067jF-19nK
+	id 1svzux-00000006H7a-0zlt
 	for linux-mtd@lists.infradead.org;
-	Wed, 02 Oct 2024 13:27:46 +0000
+	Wed, 02 Oct 2024 14:01:28 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id D5C64A43CE8;
-	Wed,  2 Oct 2024 13:27:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E114C4CEC5;
-	Wed,  2 Oct 2024 13:27:43 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9168B5C0715;
+	Wed,  2 Oct 2024 14:01:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09318C4CEC2;
+	Wed,  2 Oct 2024 14:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1727875663;
-	bh=Ke73fpBSTBcPwHgL8MZF5HU8ow/Y9/NPq939+UNevL4=;
+	s=korg; t=1727877686;
+	bh=Ya1g/I6gRjrOqcYBLn1RWbaQsMWxcpKZMt2JB2H4PT8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=yQ0TQbGvH8sviws5Xr6YGA/poaYfKXGsfYu9Eu6w8r6V8nWPDn2Odk9tcQmx835bv
-	 NbPl3jon1q9DEHFfP5Qj+y+i6t+476uHmPnXBV2DTTtYE/Rp2I6LyaxbTEs5O+2U1n
-	 OpzSzkDcCctUQVYbL6EOAL0Yu6sWw1fP2EvwCArU=
+	b=RkNIpYgRdH0FxOmTAjoi1SxvViN/0DJJE58ySopqY/qgnunpXTW1lB1C+FP3k3uBf
+	 4e2vm/yepSn8iUuA8oXSwXRVA6/fa/2BGPiApmGWbo2eb9CeZiD92vE4BwcXWNuVgl
+	 dmyNIBy+R/L3+KcKxuz53du4rlWebUwmhg6Vhdmw=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,18 +49,18 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-mtd@lists.infradead.org,
 	Mirsad Todorovac <mtodorovac69@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.11 178/695] mtd: slram: insert break after errors in parsing the map
-Date: Wed,  2 Oct 2024 14:52:56 +0200
-Message-ID: <20241002125829.577375847@linuxfoundation.org>
+Subject: [PATCH 6.10 159/634] mtd: slram: insert break after errors in parsing the map
+Date: Wed,  2 Oct 2024 14:54:19 +0200
+Message-ID: <20241002125817.388116329@linuxfoundation.org>
 X-Mailer: git-send-email 2.46.2
-In-Reply-To: <20241002125822.467776898@linuxfoundation.org>
-References: <20241002125822.467776898@linuxfoundation.org>
+In-Reply-To: <20241002125811.070689334@linuxfoundation.org>
+References: <20241002125811.070689334@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241002_062745_398711_E4DD7C7C 
+X-CRM114-CacheID: sfid-20241002_070127_341902_91F7BA70 
 X-CRM114-Status: GOOD (  11.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,7 +78,7 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ni4xMS1zdGFibGUgcmV2aWV3IHBhdGNoLiAgSWYgYW55b25lIGhhcyBhbnkgb2JqZWN0aW9ucywg
+Ni4xMC1zdGFibGUgcmV2aWV3IHBhdGNoLiAgSWYgYW55b25lIGhhcyBhbnkgb2JqZWN0aW9ucywg
 cGxlYXNlIGxldCBtZSBrbm93LgoKLS0tLS0tLS0tLS0tLS0tLS0tCgpGcm9tOiBNaXJzYWQgVG9k
 b3JvdmFjIDxtdG9kb3JvdmFjNjlAZ21haWwuY29tPgoKWyBVcHN0cmVhbSBjb21taXQgMzM2YzIx
 OGRkN2YwNTg4ZWQ4YTczNDVmMzY3OTc1YTAwYTRmMDAzZiBdCgpHQ0MgMTIuMy4wIGNvbXBpbGVy
