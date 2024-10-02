@@ -4,144 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C6EDCF6D3B
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 15:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF155CF6D3B
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Oct 2024 16:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X3oXINLNQewEMkO1wkrM8IxyST1V3eV0wP+uHaFJM2Y=; b=Phwm4vCGOR15oN
-	o9iE5BXrf7yx5PVJ+o8jCR2djZ4C3a8AakMG9DiyrpgyWwfB2POru05Rj7cZ7YZVOtgu936SKNwJF
-	zzeuGqPwVowwfl/BA74n1ui+LV9+CzVyuwBQkciw4eEPUx72BbLWIiqc44TqLB0uplIIFdHhHKuae
-	VM9z6ojn9GAJAybNJkLVcXRCM9hr+bWlX+To+MlWIb6MAWWlrucm3etuT6ULiQTscuDkTo4AJDClT
-	rZk+lJ98cVDatWQtFtbZsiRTQ53G11F8u8xds76gvfhiGLMQc1np4MoXAM3eWbgVdUZzwF60NBifn
-	U0iTcoiNM6GPBbdaQrbA==;
+	List-Owner; bh=i4kMEL7QTtt5RtkP9F2/wMc7N4TIVSF1P5eS5Tdgxrg=; b=gJ6jfEec8OXAU5
+	7ieZ4twzIB5B5CcTRodsqBR6Q5h2GXg2DguE/xZ0kiewhUP10iVtj/ixEw73SfMlZiiRWl3cryfbD
+	d23mVY8wHk/IMUxWvjuISQlMju3PuoAH27FKZZTUFaQmPSsu44rJOqDZEY26FUCTiYSrrH4PbcxZ9
+	+EikcfF7+0Yv9QSBjD9FUwDve043V39B2VmOJL5sl1CfdUizq/tga633VzDiw2ZuSA5SepJeZRy1X
+	JJcbKMrccm+oaX5r+cG2PmFNlSlRKU7rjspGxkpyiYzQI+Y2O54tCiGVpdbE9oF/LOSxUOdl3e3v0
+	Kxx0Y+jHehtM6SGep70w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sw1WD-00000006jec-1iNS;
-	Wed, 02 Oct 2024 15:44:01 +0000
+	id 1sw28g-00000006v9m-3wJe;
+	Wed, 02 Oct 2024 16:23:46 +0000
 Received: from mail-westeuropeazlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c201::3] helo=AS8PR04CU009.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sw1Sl-00000006ifE-06AJ
+	id 1sw28d-00000006v7h-31pD
 	for linux-mtd@lists.infradead.org;
-	Wed, 02 Oct 2024 15:40:28 +0000
+	Wed, 02 Oct 2024 16:23:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UYQoZvfS8kyoiKlMGE2BZDF3UcOBRZ8L8TWopjgp1SHjRC0+FtOWGmepNAxhY4Xc6xTiEzaBEPHcFoX7Jf4fhu93KmupOQw98A6dixX/YA0GilUO8C7xA3yuE4JJmhaTzl1tdSBBQd6SGTIFPZDEStG94KP+UrB2wnZDendLNw4bVadNa4SVJKVBtO5g5121kNIyHr7EqnyTPW9d8MO89WSxdT5Koz40uuGUY+C9FqIOap8bqitx+Tyq0AjTQ8MldV2A6EqkYp0E9kJxWPrOY/8ATlDU9PoTO/sV9cylmwiDguyIjfrkUeiStJLx38Jyw7fubv0UDmRATGB/J0ROhg==
+ b=DfgUyZh3afNDJuCcBwi0NYfDHXRDLs3hPnoEE1pqZzDq9cwjOn3fSNGIV3xNENJwa6XQuoyVAT/PXAvGpQF7STUhup/1ZL27am3uv/96/iUIJgLlDKW9YC4xMblFVuC3ZJzfVmgESaNqBDRwwpqigTaqeQENV5wyaWzgWvOZwaeDCpYAVYAaEY2SygPhLRB0sP3GRzZfZvo/I5onJMOeDS4dGuzKyK1fVfrJV0pS74jyoj6kzIm6O1SITId1ybLxMCBbgQPg0LPxisheiwVloDI5zLgp1FRLuRe5/K1xgIaFr+c7wqUw3HYgWL93AvlDpR4Le8le96PChwSsXR4NhA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QQzzCjfkLMWr0bpgVIP1oSZbfwvDcllYPWTGFraoRdU=;
- b=f+92vYCXKpmfFXathCcijVbkzFuqhGMFwx+TOzl7W7DgUTdFXYE8Lxc2kqfO518d8uEMyRl/VwZhTlAcigrNbwkAUumLCR3GL6avkq+/Rhsf97e4/bnLPEsmDYycoB4bI3K3+xJBKNXSWw9u3H/VpnOKCb64hw7T6HsSPktOM7T82ruW6DiGRbLK+qlHcA6P+c11WaVyWpPs0mT5DO0+p35Y/0MFBLT+U1B3tnAIuEt9gVL7dszRp1j26ApW43pcPtLtwqhNuUyA2CBi0qcoA6JHLKHrFo1T0T42ulD+Qz92NXtbUiSYgOwXXE1q0wGLSzos4u+nyKIicT9gLtQ+8w==
+ bh=N+ObNRdJMUscD2H+aBd+nzbAm7kbO+d2AFxjbiY2zas=;
+ b=NyeCjQO5dma+gb/lB5w5Nkrv4cvbuMe1zNHz67A3Pz4Azk5gRKdHCZvoAHRiLq/zzjgU0Y1SCIDLSZVd/7E6BhVXXsGoJWB3AlRJc5rwavOr8wTGszjzLnrHofPMRBPpx/y6kb9LTPXSjeFPshO2B7/s+Y5Ki4hsdGUSxDZXULrdNhjNE6m5uT+Hds/sa1zoxQLTJf+BKueJJp9eeiAGjauOuwFKZBvDyeWeDPhYnun7Gt9Wdc1oEE5rQeYKjWyAEUIUq9OJIgEvkoTgH3UOy9t/7VEyJBCEYL71EwRiSPy5yi2MD19dySGXs0Lp3AAC7nsmBYcBREIdzKoFY5iYDw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QQzzCjfkLMWr0bpgVIP1oSZbfwvDcllYPWTGFraoRdU=;
- b=ULZmeden3w8BAYVOsVvI1Vp05ieGHryIjnvJ4jJPRWl/PQR2YMfTM/jMnsSFd+CK+OO2XzVXMUF6FvU1qy4+7g7g+/D4JJZytP2FHnT0VxHatd5gQNaLxGKHo3pYzCdhcjQg+K5KuTwaVEYoYnmD+jUTpvqY2jGFduqx6KR0V3ErIK7UgHSS1BkzuxsDxjyoTwmAg8GIk7XOwbzuPrx3Xjl8GEYj3mcNEJhf3y61ZqVZS50N+MA1EwTrSpqdw9FVKim/F0Rtf5ACTTAizxbA16t73fyoV0lmnOGYn+1Yh0zJzN3GqEWm1WPObXMkwN9vkntyLSn3/lcFOLMO5MqDXg==
+ bh=N+ObNRdJMUscD2H+aBd+nzbAm7kbO+d2AFxjbiY2zas=;
+ b=NlbSaCH7DH+J4wEzNFCfdDUrQXEFkdhli1NXLItTgHlnZ6vxRnSZg4NRyEwRBXgOR3phtGnQEImPb0jd3HYiddZ5omcRE0/YQuEzdhzwWr7IQkmh4PPpSjhVy8gVK+w9CJMbtmo5P5aZCvzDM/8oeWXrIWVADSFfTmovBRygO1ekPYVMjVRnZsJRfp6RqZbOTutzuzZ1wjsAbfhXp+RT1uo0UO6sc1x0Q6yMy6fjf/wAhcYP3VHN+fgcuDlCo09jAxV56bbsg/QWr6qr2UArcVuGWM0hLWIatnU1leim9pILqI2kIvlo9FQe4TKF2s/zYXkXd8nDcXG3NBhenD+cFA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from GV1PR04MB9071.eurprd04.prod.outlook.com (2603:10a6:150:22::11)
- by AM0PR04MB7106.eurprd04.prod.outlook.com (2603:10a6:208:191::14) with
+Received: from DB9PR04MB9626.eurprd04.prod.outlook.com (2603:10a6:10:309::18)
+ by PAXPR04MB8720.eurprd04.prod.outlook.com (2603:10a6:102:21f::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.16; Wed, 2 Oct
- 2024 15:40:18 +0000
-Received: from GV1PR04MB9071.eurprd04.prod.outlook.com
- ([fe80::b7f2:1d0:6b6a:ba58]) by GV1PR04MB9071.eurprd04.prod.outlook.com
- ([fe80::b7f2:1d0:6b6a:ba58%7]) with mapi id 15.20.8005.026; Wed, 2 Oct 2024
- 15:40:16 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Han Xu <han.xu@nxp.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.25; Wed, 2 Oct
+ 2024 16:23:32 +0000
+Received: from DB9PR04MB9626.eurprd04.prod.outlook.com
+ ([fe80::e81:b393:ebc5:bc3d]) by DB9PR04MB9626.eurprd04.prod.outlook.com
+ ([fe80::e81:b393:ebc5:bc3d%3]) with mapi id 15.20.8026.016; Wed, 2 Oct 2024
+ 16:23:31 +0000
+Date: Wed, 2 Oct 2024 12:23:24 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: imx@lists.linux.dev,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] mtd: nand: raw: gpmi: improve power management handling
-Date: Wed,  2 Oct 2024 10:39:44 -0500
-Message-Id: <20241002153944.69733-2-han.xu@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241002153944.69733-1-han.xu@nxp.com>
+	Vignesh Raghavendra <vigneshr@ti.com>, imx@lists.linux.dev,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mtd: nand: raw: gpmi: improve power management
+ handling
+Message-ID: <Zv1zfJVzg1GYnzeA@lizhi-Precision-Tower-5810>
 References: <20241002153944.69733-1-han.xu@nxp.com>
-X-ClientProxiedBy: SJ0PR13CA0044.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::19) To GV1PR04MB9071.eurprd04.prod.outlook.com
- (2603:10a6:150:22::11)
+ <20241002153944.69733-2-han.xu@nxp.com>
+Content-Disposition: inline
+In-Reply-To: <20241002153944.69733-2-han.xu@nxp.com>
+X-ClientProxiedBy: SA1P222CA0029.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:22c::24) To DB9PR04MB9626.eurprd04.prod.outlook.com
+ (2603:10a6:10:309::18)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR04MB9071:EE_|AM0PR04MB7106:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1ae2eebf-7c2c-43f2-5b6f-08dce2f88314
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9626:EE_|PAXPR04MB8720:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06f16612-2a43-45be-a6ca-08dce2fe8dcd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|52116014|1800799024|366016|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?vBgQigix2GMhFXt6b60Yt0jOr2YxIRStDKWE9EQDzMY4wt0IuhDEqFD/IJbb?=
- =?us-ascii?Q?aq1LX/g4WIKBMjelNKVMyXVbcipoIZREqBc3r+0hYr+ZOLtP/8ET5/IKl3+O?=
- =?us-ascii?Q?MCZEAjYxqmrfcN+gkYD3+6LW2D39d/ezoQnB5tvxSo2NMBtphtZ2R7Yb7iX+?=
- =?us-ascii?Q?9EYXbkYaaQzENqEeaq9kUWR3iQ01n6usfRPD9AK+dssp9f1weiHqHXuisEfX?=
- =?us-ascii?Q?oSD+Si6eSgqdHa9yUdTJCrePQNZP6zTfzrY8gvblhptByBXHKfQi0j6NQWEE?=
- =?us-ascii?Q?YiIeGGtxEdk1lepjRmcEswK5gSnbpE6ANdygOZ4QRM8Sqy4JfXcRi4KHFGWm?=
- =?us-ascii?Q?cIV7JginO7YG803Owg1rym8qbeuwaHa80KmQH4TAwIaf9+NtiKHOMumr91XD?=
- =?us-ascii?Q?SnGgEUO6GmNrVLuu9XoJgWmvfGCybMOptUwiG7bxiuEWmjxhK2S7PXURRcNy?=
- =?us-ascii?Q?ffZ9coPr6nnop40XnGO52FMudxdf39wdEp8xfA8Cc2p81pdNOPhTZgkGfWTp?=
- =?us-ascii?Q?WAxIi48DhvVLDPICCeKw7bmuGIOBGoyS2riPRK5Tg9kdeDZGeMoijcqTmsB3?=
- =?us-ascii?Q?OYQbUgfdA3UbArJ5u4QBTleJSXoSMddxvXIa2J75y14S7zvcuqv8YiT4EWOs?=
- =?us-ascii?Q?DjhqHx5REElb4uJ2gB3SlJKef65bDaSSHBJfEfdkiwQtgUg1ngvCi3Olu44u?=
- =?us-ascii?Q?B0vDkO49gIyo6842hciD7mv1Fbf+8RlVag6cUb3FV2vt9dZh5HFaVysxPxJE?=
- =?us-ascii?Q?F7e/nPvVPuiMWJ0OBar2iD8Ke0r5ikYRu5VyKLstBxwsZ1aP+03I3PNoNW49?=
- =?us-ascii?Q?fPioUURau3/t+NLO9quVlNI3QnXMHMd2QO/aFlDPzR70/InDxnjxZx6U06nq?=
- =?us-ascii?Q?1Jy7jPhcBT/LB4B2EH/BY7ZIA7ML+HjWM/8Eq3NHlhBvlzgSFvceMfMIlGHm?=
- =?us-ascii?Q?nLX5LKq0RLwyM6xya1mToq38jF+3T69wmeHREl3LJUc9NOeB9UJZl0RqjHFA?=
- =?us-ascii?Q?JMw4vXxKh/u4Kbj75F93Qw4xCBjm47ozpkC8BfU41KUODlR1nyqSXXdsu7xa?=
- =?us-ascii?Q?JW6fqa+UccV7omIKBy0/IHJ1iUYQqR0RYXobhMmV329IoxfTojnNyCjuaQoW?=
- =?us-ascii?Q?4jj9W0OgYfVF+wqc3/2AKYANpZ+nD4DcXPNQNLrPYD/h+hQipYywRk4cpDm6?=
- =?us-ascii?Q?2R0+B4jE77RP/5H4ZypjWdTpEmQaxTowvHcTRI7I/vh5Mmbhy2mw9tordxDY?=
- =?us-ascii?Q?x2m8YplXyJJBlmYHBwQvsieKIrlEs5Yda0WQrfTYwFpgdeSj8Poruan8avuZ?=
- =?us-ascii?Q?TarXOMN4HSf73bWFRfbSrRm03zzLnujOMVj3k6JhSZOfKQ=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR04MB9071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(52116014)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|52116014|366016|376014|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?bPJa/TFp8F6IxdJHbhlzPnzhRzehymXxIr8v1/z0BxAXQiw4P+KLm5wRb0rD?=
+ =?us-ascii?Q?3rUmN2TA/tVHGDH2Qn/2RkgdSP0X1SmpSttugB3W0mpBz6oSldVMgGYxzajT?=
+ =?us-ascii?Q?Qi0QqhPaP5JT0A0rlZQC/OVHd5vAfjHzQs+27xm9VOQSTAXpRplP/s2gyfxK?=
+ =?us-ascii?Q?T2M1LBru56R9Q1ESVvk/Bb9SYfKuUc3hzxFgud1j6Y85Rhz000/M14MhN49S?=
+ =?us-ascii?Q?zMaEgCtZ/xW4hGVimxVrU6AuYOO3tD9mkRz+M8T2Mj078MM7j3oH7u/vE4nc?=
+ =?us-ascii?Q?i2OvgAiyniDDrZ7klK99RSCia9p7WdqoFCU78mDlZwv+gHYD919tew5EW6XB?=
+ =?us-ascii?Q?ClCGe/2ZQTZJVxbi+Y1kQVZsl3YYFLmCgf9f9VqULooKx4w/QH1Bfv0+IQJC?=
+ =?us-ascii?Q?3YUTT4BiUQ9PqYQKPawsjq/sORAe7rl3E1xGvr3VuTKIJcb73TjayYFqixt2?=
+ =?us-ascii?Q?bWsWYIFpmmN4KHU0KUSjiLK6A3Ssti9Qm4B7otSP7S65LPsg8mHE5d19Ez08?=
+ =?us-ascii?Q?9CDoSDKJDZFkFjbMXJIA/4+ILQnHiVHbC7dZS6YI0baBXwvF+XGd2VOVxx50?=
+ =?us-ascii?Q?5Ks8nCIiBIwE0ytu9gz+exbmyO83oKtXYRE8/pdIopW9X/Bdph1W3/eTnpyN?=
+ =?us-ascii?Q?b6VpQt+EbPoPzrRr+d2RW5Rmk9oXwOgX9BoMYiq/FJwSMeuPNNQ5voPI9nIL?=
+ =?us-ascii?Q?7gwEImp+RvCoKJvn5mvV0Gs2UvoFi2XbqH6zm6sQ+aYkQVNr9iSILHXuil8t?=
+ =?us-ascii?Q?w/M9WKqTaE1Pa2kClx2+K3qvuCXZPQVIKFGt4JcsH0HHITM8CDBM/Z6F3XqS?=
+ =?us-ascii?Q?Be5rAdQY/sb7wn9s/lk1DcfTKKi8WYz5toN+0t+dN4cNnoqYTMR6ZVLkHyn2?=
+ =?us-ascii?Q?kgEase85qR8yNx/UeepomtkHlYAIeClrPGRulHftoZekN2GCi/FmP+6NDOP4?=
+ =?us-ascii?Q?32qhjjQJbB/HmHvGaa5NOiXZ7Jc3IlGLNg2+K/cLMoJR1UBj36uZVDEo9VED?=
+ =?us-ascii?Q?Jowx7HcPkcskfxwNmzAhIhooDm3vjURMeAgsu5KPidrzPwHCbf+AK6Y943GA?=
+ =?us-ascii?Q?HYy5Hi4Ymg6qdZ7AayCZnad90gPwxsuMHxeNfpLyqCNXw6Mqjg+jSoURoq64?=
+ =?us-ascii?Q?Kl5NV5BE4uj02meVKFeZ/s/u9GjxAO53fXskVlm0blIrSw0rgiix9CASzDKQ?=
+ =?us-ascii?Q?BxtfejE6G7jQcrEtV1Jd59LsTYWUcmYP/VJlF7VA5RfVnDfCQRC5SJuo1ryF?=
+ =?us-ascii?Q?+aqNhxLM/YLns005VcSnMvTegRU1zAnEq9n9k5HPUxjZQMdwEC8zHCiWLDKV?=
+ =?us-ascii?Q?CXx0TW68StYlHJJbYns8IzA9MygNv06Lc3tPlL3kziyLiQ=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9626.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(52116014)(366016)(376014)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JKQjG8Z4kKWQRIbmIj/SiHBSw3IcU0JrEyuzgWksxtkr6HkdfwaTwsRg5Hqs?=
- =?us-ascii?Q?tK0S8y/JWa9xk9vmFVQcv1J154CTpQ2qUptJ6G7MuROipCchKGeFh4/53Jr/?=
- =?us-ascii?Q?L70ahAFlz7AvQQV7RHYCE4jueC7Hn4DT5rmonOpfgzrfsdtHTJ2OH+sMxFfM?=
- =?us-ascii?Q?VEvil63j4YrEaVAOUlwAGsD2WhJEvDKHiqNMtfQJdeBhxlhU4BSvJhNxk2z6?=
- =?us-ascii?Q?Mb8cBvF0Rbkk3I29Y0GdCzCLYdI/Adbsu48mf9AvkoxwOf662c/BlUbRk2hg?=
- =?us-ascii?Q?H1keDXHu7CMr5n1tYt+h+ky1tl8QnESbHsg9GpgjQ6d1e7Hu82KDD/jlxlYP?=
- =?us-ascii?Q?Z3BVyahtcRdH1gX5rO3jf7lrkR/yWZ4MYe6gBnGiDwRhGZE25vxIHpRFrchB?=
- =?us-ascii?Q?jFZLswnxdN7XZDkLQP4JZ3CI+TQJnfiI7TtboNO1Hnf819d/85o2QvkjFf1V?=
- =?us-ascii?Q?12mPe2Dl+CZFpLOaiXOgs5FqT7ORfKeIu3IsrRscM4ToTOz1Uesj+XmbQZwv?=
- =?us-ascii?Q?qyxz5kZHv9+S72ECbwvjgReFhTm7XOocjn0cryoMnE6LRGHvNvBKc4lvo2oM?=
- =?us-ascii?Q?JGuflEixXGh2YzdJ2Fj9GuZaaGfwo8izvRCXOgRCGOZueQUgNor3lVV/fxIk?=
- =?us-ascii?Q?03s1iZQwPfDeCQIeC9qVpJgi8K0XQiqfNAv0Ea+AHsUo5fB2eGENNRHbfPmu?=
- =?us-ascii?Q?O94Q6NazJCQfwrFx1zXFmgt41v4pou4ivbT8z47RZuOFJcSxW4o5cvKopXj1?=
- =?us-ascii?Q?5z1C3Xgs3MpK7fT4ADbUPquP+4I2qPI3v2KAq9JOQXEZD/tDig0w2BYBg1Xw?=
- =?us-ascii?Q?oRcXMOSN3RLZg9IyGdPpjWweMtKac37/H4OOpR005UxuIeuknTYtHH9yTGjr?=
- =?us-ascii?Q?KWPa+tXQdPSZjLcz/hewS782AmOLjgLszJbpiNVUwC4cvwe8R0Fu2OOAnWDM?=
- =?us-ascii?Q?2bcnGldHGIIEg6KGRyd2Bzk1q0idf9LjYF4bMnm2ENmx0BstJF7VjVZpjK9D?=
- =?us-ascii?Q?btl2yM8bu1apH1dow65/nUkZYiWlsBu9+mx/O9Oe0AJAhEh/A8B/iY1j6yTA?=
- =?us-ascii?Q?CNahICRUVvHQFKLf6l0d3+GEjFOKrPsxvPf2gNA1SuUoFKwkByzaze8Ae2T0?=
- =?us-ascii?Q?V9IPsKKjB0Z93kSOSJr7o9mWAF8qPi4ODVHm2dfQPGSW+Fj6g3N7pm4NLGO3?=
- =?us-ascii?Q?oFzNg1KPuib/dJO10F2yW0i++eAJAh4kvVHLbDpJ4JqzGbN2vtpMxcnYZI5L?=
- =?us-ascii?Q?/HepJbMG9gQEb81+ryLwbEJFUNjwTEATZhG4i0FcWFLYynr4p25CLUEuB+m0?=
- =?us-ascii?Q?QJflud0tzpIH74lylBoLOOROF+Vx69hu/ubHHXxROBS2NEdyDnmrIvAe+cLV?=
- =?us-ascii?Q?tIjyAh+iYpeaVQisBe9emed4B5RewA199TZU2DMsdf7QCI5skVbppEJSX8vQ?=
- =?us-ascii?Q?F+Tp7xW49z7Z8kiNDx2IM66keoqmnpbNg0Hv89CDhyk67fyH54nhfK98gtIO?=
- =?us-ascii?Q?vdYm6ey623O4gIcES0R4FVd1yPIgneKLai3krIdNNRlFnExXNZ39V7gsUCtN?=
- =?us-ascii?Q?wjpsAjZIpfdLX4eTxl6Stzwz1M0J/q76nVOQFc35?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vvcgaEamzuijqdIRPO5GvNNy+tGdFt6sZ+p+bTW84Z1bIbbIcjiw3BmN4u9g?=
+ =?us-ascii?Q?JpWHf56ci8MjfNG4pozNntKLCHHaNtbL3W5EcZjHcQ7UMQ4eJnLYJ1Gc6DeC?=
+ =?us-ascii?Q?H2BJrCekYuO3NjtttJIMDla7HlhjO3tLJqS9pUp7pM8hUecUgzZDBQSPjbgD?=
+ =?us-ascii?Q?BGgERplAlu5MJ3/FWINoffCjxoi7HBmouLNvyP8wJN5i/tmrKvKSl0aZicmC?=
+ =?us-ascii?Q?M8Sj29VIjz3+UTCIejCUJrgQcOxshvEBeEHpHrcODL22+fZfeLOxrgHAiFpo?=
+ =?us-ascii?Q?nbSrtSLqgalt4m9H83cJKJndbYhJeq9S9602agDWhDM76SnBUOJzW6QjPgk0?=
+ =?us-ascii?Q?EGIbbU4Wsic+85u1fwjjB+Ppk/0eUFITG4jMqVUUz0KlSGt83fAQ9Lc9RDVb?=
+ =?us-ascii?Q?rWBYY/cDhMMOJe0E20nh1NZFjJqgUK3Rfkh9v4Qg6Zsvpd44DTDJqTTw9iPH?=
+ =?us-ascii?Q?OdXHmYX7+GpssA1gX4/2NpVyM3pzGH9TRrGUbo1Ux0sTorZwXVNd8JcxMvta?=
+ =?us-ascii?Q?VSUkSDnv73x0tpNY8fvb2kxZOD4KeTVEESsRcv+w8ujZhp2g1gTWQMTvgPgK?=
+ =?us-ascii?Q?NPiqRyWzmctEdufC9SyP4g8d5p78MpM0qno7diXYo2wGBiUjdqgEzpvsG1cY?=
+ =?us-ascii?Q?94CcBBhCZiC6M4WQBpG71Vcc5F5YirQjECgUn/PfsNFrT62hZMBdrxDbBxHB?=
+ =?us-ascii?Q?HXIGQ6fOmLL4d2IhVDxEXyU/6PuAc9URoUpT1SA8m0md1E33f2WlSDQB5e1k?=
+ =?us-ascii?Q?YHWYkKGh0krcOVQAf8ERHk07bhWRf/9ak0Si6mf5DB4GlPMn+Xko+rzqZIPw?=
+ =?us-ascii?Q?ZFYWg/ihAFAEypPbFW+YJDNbid9PdcRdM8YDY9bunw1f/rAx5OPGE1RzNJ5W?=
+ =?us-ascii?Q?cnPEIxiKcZ0CIyNF1WTyuy5kvqnE4OHYiSLLH4L3qpJI88Ezdckp7n1x6b1y?=
+ =?us-ascii?Q?U0FBKmCgISc0DH4ro+ABDxD9IBpG3edZReBjYk6hFyuSFyrVTTf51gcZ7CSR?=
+ =?us-ascii?Q?s0vV82m8MxymBTd/uuNHOURLMNHuDTr0Fo1guCnmydinePodOHf0I4/a/Fcu?=
+ =?us-ascii?Q?X64mFLMDGJldHffUgg0gOP9BjxwMaMbiiYIXJrftjSfXdOdWsjnLfqBx9kYY?=
+ =?us-ascii?Q?Kmax+mXSX6BBeg4esnqN526w4qUenQhx5shrJtppQPinCwgxAg0Dhl4aaep/?=
+ =?us-ascii?Q?l1V/NFRD/maCOgJaBgIxdZ0jiHJD/iou7UZKsXOlyI4w9B5s1T3vKEqkdY8N?=
+ =?us-ascii?Q?qXnKuXK+QhozVLpcF+mR10VRnAGUKk3YSoUG1MfKtruL5O2FDF4DL6EOHEnF?=
+ =?us-ascii?Q?iP7tMmUq7imf/mh6BzwXCCfvURqsW9dlPmxaeNIMBpQ/VnM1R9L7HaAW0Pnu?=
+ =?us-ascii?Q?MuaBNvatP3s0kk4A4XLynXc8gBKR8b26KbYz5+MppTBu0UBlEcnTz9l1tIFq?=
+ =?us-ascii?Q?S58nfFX7WSSVB4zXAJJ9cn1wcyxqSH8n4sOgm3P/BN8QL/ju4qHvIHKZwVi2?=
+ =?us-ascii?Q?UOUCPJPiFe5acmvhPXdRojb67D5BLYJlnur3giujn1IfID9x34345DYyqTwn?=
+ =?us-ascii?Q?GGSBafKVFmU7tFIdzswWtWfp3k2beuev5GZ7sddF?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ae2eebf-7c2c-43f2-5b6f-08dce2f88314
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR04MB9071.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06f16612-2a43-45be-a6ca-08dce2fe8dcd
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9626.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2024 15:40:16.0218
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2024 16:23:31.8291
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +nEXzRxZhsunaTT3ajLTnkNPAMsXKLH/pPqeOKM0cn5wsDc7bIY/yyOItv9/MeYj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7106
+X-MS-Exchange-CrossTenant-UserPrincipalName: 36SEECIX7a1Oon3IKoplI7yAI6rgpUB1Gg2oFqTojTZl8zAyj6v/KumSYm888y692gK15gHelA0sLxF0wtleVQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8720
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241002_084027_129297_8A70CF0F 
-X-CRM114-Status: GOOD (  20.10  )
+X-CRM114-CacheID: sfid-20241002_092343_796466_8D37C371 
+X-CRM114-Status: GOOD (  25.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -158,173 +158,197 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The commit refactors the power management handling in the gpmi nand
-driver. It removes redundant pm_runtime calls in the probe function,
-handles the pad control in suspend and resume, and moves the calls to
-acquire and release DMA channels to the runtime suspend and resume
-functions.
+On Wed, Oct 02, 2024 at 10:39:44AM -0500, Han Xu wrote:
+> The commit refactors the power management handling in the gpmi nand
+> driver. It removes redundant pm_runtime calls in the probe function,
+> handles the pad control in suspend and resume, and moves the calls to
+> acquire and release DMA channels to the runtime suspend and resume
+> functions.
 
-Signed-off-by: Han Xu <han.xu@nxp.com>
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 66 ++++++++++++----------
- 1 file changed, 37 insertions(+), 29 deletions(-)
+Use  imperative mode
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index a7d79679248d..76e4b89e2451 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -15,6 +15,7 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/dma/mxs-dma.h>
- #include "gpmi-nand.h"
- #include "gpmi-regs.h"
-@@ -737,9 +738,8 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
- 	if (ret)
- 		return ret;
- 
--	ret = pm_runtime_get_sync(this->dev);
-+	ret = pm_runtime_resume_and_get(this->dev);
- 	if (ret < 0) {
--		pm_runtime_put_autosuspend(this->dev);
- 		return ret;
- 	}
- 
-@@ -1301,10 +1301,6 @@ static int acquire_resources(struct gpmi_nand_data *this)
- 	if (ret)
- 		goto exit_regs;
- 
--	ret = acquire_dma_channels(this);
--	if (ret)
--		goto exit_regs;
--
- 	ret = gpmi_get_clks(this);
- 	if (ret)
- 		goto exit_clock;
-@@ -2761,15 +2757,9 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto exit_acquire_resources;
- 
--	ret = __gpmi_enable_clk(this, true);
--	if (ret)
--		goto exit_acquire_resources;
--
-+	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
- 	pm_runtime_use_autosuspend(&pdev->dev);
--	pm_runtime_set_active(&pdev->dev);
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_get_sync(&pdev->dev);
- 
- 	ret = gpmi_init(this);
- 	if (ret)
-@@ -2779,15 +2769,12 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto exit_nfc_init;
- 
--	pm_runtime_mark_last_busy(&pdev->dev);
--	pm_runtime_put_autosuspend(&pdev->dev);
--
- 	dev_info(this->dev, "driver registered.\n");
- 
- 	return 0;
- 
- exit_nfc_init:
--	pm_runtime_put(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	release_resources(this);
- exit_acquire_resources:
-@@ -2801,22 +2788,23 @@ static void gpmi_nand_remove(struct platform_device *pdev)
- 	struct nand_chip *chip = &this->nand;
- 	int ret;
- 
--	pm_runtime_put_sync(&pdev->dev);
--	pm_runtime_disable(&pdev->dev);
--
- 	ret = mtd_device_unregister(nand_to_mtd(chip));
- 	WARN_ON(ret);
- 	nand_cleanup(chip);
- 	gpmi_free_dma_buffer(this);
- 	release_resources(this);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- }
- 
- static int gpmi_pm_suspend(struct device *dev)
- {
--	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+	int ret;
- 
--	release_dma_channels(this);
--	return 0;
-+	pinctrl_pm_select_sleep_state(dev);
-+	ret = pm_runtime_force_suspend(dev);
-+
-+	return ret;
- }
- 
- static int gpmi_pm_resume(struct device *dev)
-@@ -2824,9 +2812,13 @@ static int gpmi_pm_resume(struct device *dev)
- 	struct gpmi_nand_data *this = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = acquire_dma_channels(this);
--	if (ret < 0)
-+	ret = pm_runtime_force_resume(dev);
-+	if (ret) {
-+		dev_err(this->dev, "Error in resume %d\n", ret);
- 		return ret;
-+	}
-+
-+	pinctrl_pm_select_default_state(dev);
- 
- 	/* re-init the GPMI registers */
- 	ret = gpmi_init(this);
-@@ -2849,18 +2841,34 @@ static int gpmi_pm_resume(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused gpmi_runtime_suspend(struct device *dev)
-+#define gpmi_enable_clk(x)	__gpmi_enable_clk(x, true)
-+#define gpmi_disable_clk(x)	__gpmi_enable_clk(x, false)
-+
-+static int gpmi_runtime_suspend(struct device *dev)
- {
- 	struct gpmi_nand_data *this = dev_get_drvdata(dev);
- 
--	return __gpmi_enable_clk(this, false);
-+	gpmi_disable_clk(this);
-+	release_dma_channels(this);
-+
-+	return 0;
- }
- 
--static int __maybe_unused gpmi_runtime_resume(struct device *dev)
-+static int gpmi_runtime_resume(struct device *dev)
- {
- 	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = gpmi_enable_clk(this);
-+	if (ret)
-+		return ret;
-+
-+	ret = acquire_dma_channels(this);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
- 
--	return __gpmi_enable_clk(this, true);
- }
- 
- static const struct dev_pm_ops gpmi_pm_ops = {
--- 
-2.34.1
+Refactor the power management. Remove redundate pm_runtime calls and pad
+control in the probe function. Move acquire and release DMA channels to
+the runtime suspend and resume because dma engine use DMA channel used/free
+to do power saving.
 
+>
+> Signed-off-by: Han Xu <han.xu@nxp.com>
+> ---
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 66 ++++++++++++----------
+>  1 file changed, 37 insertions(+), 29 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> index a7d79679248d..76e4b89e2451 100644
+> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/pinctrl/consumer.h>
+
+order by alphabet
+
+>  #include <linux/dma/mxs-dma.h>
+>  #include "gpmi-nand.h"
+>  #include "gpmi-regs.h"
+> @@ -737,9 +738,8 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
+>  	if (ret)
+>  		return ret;
+>
+> -	ret = pm_runtime_get_sync(this->dev);
+> +	ret = pm_runtime_resume_and_get(this->dev);
+>  	if (ret < 0) {
+> -		pm_runtime_put_autosuspend(this->dev);
+>  		return ret;
+>  	}
+>
+> @@ -1301,10 +1301,6 @@ static int acquire_resources(struct gpmi_nand_data *this)
+>  	if (ret)
+>  		goto exit_regs;
+>
+> -	ret = acquire_dma_channels(this);
+> -	if (ret)
+> -		goto exit_regs;
+> -
+>  	ret = gpmi_get_clks(this);
+>  	if (ret)
+>  		goto exit_clock;
+> @@ -2761,15 +2757,9 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto exit_acquire_resources;
+>
+> -	ret = __gpmi_enable_clk(this, true);
+> -	if (ret)
+> -		goto exit_acquire_resources;
+> -
+> +	pm_runtime_enable(&pdev->dev);
+>  	pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
+>  	pm_runtime_use_autosuspend(&pdev->dev);
+> -	pm_runtime_set_active(&pdev->dev);
+> -	pm_runtime_enable(&pdev->dev);
+> -	pm_runtime_get_sync(&pdev->dev);
+>
+>  	ret = gpmi_init(this);
+>  	if (ret)
+> @@ -2779,15 +2769,12 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto exit_nfc_init;
+>
+> -	pm_runtime_mark_last_busy(&pdev->dev);
+> -	pm_runtime_put_autosuspend(&pdev->dev);
+> -
+>  	dev_info(this->dev, "driver registered.\n");
+>
+>  	return 0;
+>
+>  exit_nfc_init:
+> -	pm_runtime_put(&pdev->dev);
+> +	pm_runtime_dont_use_autosuspend(&pdev->dev);
+>  	pm_runtime_disable(&pdev->dev);
+>  	release_resources(this);
+>  exit_acquire_resources:
+> @@ -2801,22 +2788,23 @@ static void gpmi_nand_remove(struct platform_device *pdev)
+>  	struct nand_chip *chip = &this->nand;
+>  	int ret;
+>
+> -	pm_runtime_put_sync(&pdev->dev);
+> -	pm_runtime_disable(&pdev->dev);
+> -
+>  	ret = mtd_device_unregister(nand_to_mtd(chip));
+>  	WARN_ON(ret);
+>  	nand_cleanup(chip);
+>  	gpmi_free_dma_buffer(this);
+>  	release_resources(this);
+> +	pm_runtime_dont_use_autosuspend(&pdev->dev);
+> +	pm_runtime_disable(&pdev->dev);
+>  }
+>
+>  static int gpmi_pm_suspend(struct device *dev)
+>  {
+> -	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+> +	int ret;
+>
+> -	release_dma_channels(this);
+> -	return 0;
+> +	pinctrl_pm_select_sleep_state(dev);
+> +	ret = pm_runtime_force_suspend(dev);
+> +
+> +	return ret;
+
+needn't define varible ret
+
+return pm_runtime_force_suspend(dev);
+
+>  }
+>
+>  static int gpmi_pm_resume(struct device *dev)
+> @@ -2824,9 +2812,13 @@ static int gpmi_pm_resume(struct device *dev)
+>  	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+>  	int ret;
+>
+> -	ret = acquire_dma_channels(this);
+> -	if (ret < 0)
+> +	ret = pm_runtime_force_resume(dev);
+> +	if (ret) {
+> +		dev_err(this->dev, "Error in resume %d\n", ret);
+>  		return ret;
+> +	}
+> +
+> +	pinctrl_pm_select_default_state(dev);
+>
+>  	/* re-init the GPMI registers */
+>  	ret = gpmi_init(this);
+> @@ -2849,18 +2841,34 @@ static int gpmi_pm_resume(struct device *dev)
+>  	return 0;
+>  }
+>
+> -static int __maybe_unused gpmi_runtime_suspend(struct device *dev)
+> +#define gpmi_enable_clk(x)	__gpmi_enable_clk(x, true)
+> +#define gpmi_disable_clk(x)	__gpmi_enable_clk(x, false)
+> +
+> +static int gpmi_runtime_suspend(struct device *dev)
+
+remove __maybe should below previous patch.
+
+>  {
+>  	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+>
+> -	return __gpmi_enable_clk(this, false);
+> +	gpmi_disable_clk(this);
+> +	release_dma_channels(this);
+> +
+> +	return 0;
+>  }
+>
+> -static int __maybe_unused gpmi_runtime_resume(struct device *dev)
+> +static int gpmi_runtime_resume(struct device *dev)
+>  {
+>  	struct gpmi_nand_data *this = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = gpmi_enable_clk(this);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = acquire_dma_channels(this);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+>
+> -	return __gpmi_enable_clk(this, true);
+
+It will be simple if
+
+	return acquire_dma_channels(this);
+>  }
+>
+>  static const struct dev_pm_ops gpmi_pm_ops = {
+> --
+> 2.34.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
