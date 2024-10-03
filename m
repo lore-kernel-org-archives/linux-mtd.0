@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4553CF34CC
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2024 21:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90FA2CF34CC
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Oct 2024 22:00:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K3rsogE0wpR9j/bQPejoiO4PSp2VU4t9p7l073XxJdI=; b=pftBMLfZw5uO5P
-	6/sUfIe3OnUCIpzmJoxSc8xSPzAR3yQdsiIideycm7C+6Ec5LpJDihmBepznR4V31CdWDu2lcqg9n
-	n4koq71yCBTy3IilxbRMf0gvTWO1zrPGgapthcaS+SOsa/Bi1nkHFD0aIltCw+ubkbt2ASZkGUwW8
-	v2tdu1tXzMdu+4W4LYsGK7CVvC7bWsP2I7zpr/CxD/s/Z6+OJWXUZpg9ArZbFGrBtkOowV4GoFmLw
-	B2fkNjH7Fkve7YhrsaS6z1ebgzgcAsMYsDvF+enqunr3CpvyJ6DwfGlI2TDcwNa6lG8QePkL+9jIR
-	U9xGAmHuNgumN2TcV2zQ==;
+	List-Owner; bh=ip0+9JqT2v0kA8JWM6fM0irmBJ8B/2sGJwhHEq1DT78=; b=1JXz0SMvEh9uwe
+	w4Ypt+dULMdzTa9HUroIRLLLAX8YGO2+jVwq1tDAmYi7oNuLzF2u7Ud5MZzbz83QOyACshBxdg/Bv
+	XHM0Nc/G4uOb7vqVk4iTUlEfv6q1iOReMg+ZKF7Pnje6VoAE6bxmn5z1gKepbI7UddAl/scxSet8a
+	UeITsarO2bzcIpCUbEb3xtxJLktCPAwgY7cLewc2GfwMbDYS0slg4DsDz/i5nJdYRTD46fJglE3pe
+	mzkALuxEvT4jPw1H8RsUoZoxj8B0zqva7FTqwINgEAKU0wC+Uc8qiGMMAUZ3G7VAmk3D2LTex9gqK
+	+1E2hyQHLwRBeYIwPJYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swTqp-0000000AS49-261A;
-	Thu, 03 Oct 2024 21:59:11 +0000
-Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
+	id 1swTs6-0000000ASSj-3xwQ;
+	Thu, 03 Oct 2024 22:00:30 +0000
+Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swTpa-0000000ARkM-2whx;
-	Thu, 03 Oct 2024 21:57:55 +0000
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-7d7a9200947so935198a12.3;
-        Thu, 03 Oct 2024 14:57:54 -0700 (PDT)
+	id 1swTpd-0000000ARl6-3eXQ;
+	Thu, 03 Oct 2024 21:57:59 +0000
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-718e2855479so1234460b3a.1;
+        Thu, 03 Oct 2024 14:57:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727992673; x=1728597473; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1727992677; x=1728597477; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DckmO3GetrEG9p87L1DNtWdqDrBGlrP6K5aSd93K3po=;
-        b=mVJV8sYyKIPY3bQM/fBRbCsMRxf/4kz3c2HLQABS7ZuXP0wQwNsVOEKBlEJ3s4ZrA8
-         GLktz8/HjEed5tnHRgFAb4m12wSlbm52heo9rgyt22nngxa5XWijhacidLcIQxLiold0
-         UM65EhhvSe0evE4fADRSOLt7EQ/zlOsg5vhDwXjYN+XhM9g2P7b0I9dQkdNaEv2k+fA8
-         EfAaqQFmFjXCfJjPJ82V/2lj68Cm8DBIkg3Zvi/a25Eo68DHWF2JK9sR3kKE0gaeTtuU
-         QqyLgjzLoF5XZa4Wqg8Ed1/GJKATDjYGqienEJyAbPWqNc7/thTXZ76MhVeeDKrtx6ri
-         Ptbg==
+        bh=GhcJclvvKlTVpqudlmq/F4CEOdWcM7OU7+3pakydX7w=;
+        b=UbrVq1uCOkSDvwdbvpnFArVMxEdpZKD/TQqaUKyVYukCxPt8GiurKUiAI41tQmX+hr
+         py4XWWgZtoJHVQ6+ijoeLlNQrfWLXwsqnU9xQ7DodlBxsuA3qUCw6EXMV7HTP8gDeaqg
+         f+2TBjBpff2WZjzDvbmA60kb1o3dOVINTPok9M/ChMzbmS/u1qDTx9XKNUuBGnEw56Iy
+         SVHq/9TA1sCcIzWEV+OY6zARUh9HA1iICEsYbhJecf9YYf1iIrstPJbzeBjT/80c9rCB
+         qA+x4ubUZkWcVNjliAFbXtDw6KPNsGVPU2yQ9XDq+sV3RjhBcLARAcaJp/80PRujheF+
+         pCjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727992673; x=1728597473;
+        d=1e100.net; s=20230601; t=1727992677; x=1728597477;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DckmO3GetrEG9p87L1DNtWdqDrBGlrP6K5aSd93K3po=;
-        b=p4N54zHMX+lsDkfjoIPJ/htiHrTOTdlzzhGdDV8QmNTSdP/QZLXSpeyREcdFA5boxh
-         63ofmuSVZAIqaslbfQAr7OvmGAXMUPmB+Gh8Yr5C3rGiEezM5f8G2yOZxp+DMuddC+t0
-         7lpShrIEdfMuZp+Z0QnnuWN/cyTE6m4M6f6+izC33dC1DN5tRBQpwE4baBF/Atf5YgGc
-         uYZeYOfHVkCH+lT2/1GbWYNh5jNd6/DA7ScTfO1wvAxMOvDSI4rUqckCtDEuHTusaDTj
-         S6ULzuCFRK+P9T7I2N4kBnmmP7E9RaWFpVAjLf1CO89fNsVCFdQhVX6qc7D+D1YUi+qx
-         vhBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZHtHyu08HGAd5o963Plsm1GouXOtS62GIscb+nhCDW+Lu1C31F6fAAX8cyWovyScfbAPTSXgX65hZUKpZn2o=@lists.infradead.org, AJvYcCWIfCisrwpwpJnJPdKNLKO+SEWGDjJFg+kcBts5eU0JqUxlMXMX+ZiibjFyrOdqWZg68fvZvC13aYaRuvdBHcc8@lists.infradead.org, AJvYcCXJ2aPNsHQ9lCbSFkoFr4sRiXHgVimJpWEUqXLERGLvt7QFPFCbb1NdYqcSaL2ab1LtwnHTOOVs2pSU@lists.infradead.org
-X-Gm-Message-State: AOJu0YztA18MUJT+xumW+xUz1o05tK6QjeTGjx13zdqQWpCMRBhADBvI
-	cTUUQeYSfwyzAxAQRU6OzDy/7wF5Xgb1XGgQL1iYysxM6zOP6x3Y
-X-Google-Smtp-Source: AGHT+IHV0ZruXNJv6AzhOrEEhOLFYJ67nUgRR/hs4aYDbbI5bNfk9FeWWoW2cIPBdRwzo2izo5msvg==
-X-Received: by 2002:a05:6a21:a34b:b0:1d2:eb91:c0c1 with SMTP id adf61e73a8af0-1d6dfaef79cmr986798637.42.1727992673503;
-        Thu, 03 Oct 2024 14:57:53 -0700 (PDT)
+        bh=GhcJclvvKlTVpqudlmq/F4CEOdWcM7OU7+3pakydX7w=;
+        b=vQcH3Gw/z1oItvvIEVme/hZL6vkzzun69WQcW1/FoJdVpdqloHs/Yhqs/gEIhVJIOI
+         QJEfFnaN7yfeZ7rodZQ9+ao6/Fnxyi8dZQejGikHCL4py9SiMdpYRHXJlMCeLfUEOxPq
+         DEY16CfQihW457dvYL9R0bGvvh5i6WduSsviMOCWZ/EhQuyvwK0MrkuPkpCzL3rBtmfW
+         ptAYs9I/WW3BqyyO3m6vpM6eYYmU0ZbfrffWRiSS1Ywy4hq+h1iVp3szIepRobD8odeF
+         aoa5Rv5akDqwxNFbv+eaPmCYIoa1O9GetErvCtFJmHqoLoMf+JcueNn6+Ioc3onjf3bp
+         1XvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUK3YftQ4PdyGvJv5kX+nBTjXPBwuM7xNP74Jb+j1frtumCZ/crk53sxTdS7YAKRxrZ4IgXLxOTDHCdawPIEca9@lists.infradead.org, AJvYcCVIpwEZ62tS71wQOG7i2WrbaZJlNidavyT1pzyqAw95gPdUxpHAbMVdA6LZOnxhhjxfEPUjQke7GQpw/Rxr728=@lists.infradead.org, AJvYcCXfe5BTOF92eRnyXotcKvwSslPINjfRwiyMz6xkN7RZ9Ev5hmtA+KLAxeXatps5iYFgn6+fvIg04/oL@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw+cp+nBgB6WrIQyUYtJwnhESwMkM5moVcIxOdVdbh1zhbAclid
+	wXoWrLrb3JuUkp72xghOCncVo44FPkHbbK7d6bJ8BZI16iI/kuzo
+X-Google-Smtp-Source: AGHT+IF2A+OiaIcWGLxGd8MeHk5wY3Ar7PK8Rihzo/zaHvJamB//ytcahyJROu787wdayCYZ6ZY2mQ==
+X-Received: by 2002:a05:6a00:181a:b0:719:7475:f07e with SMTP id d2e1a72fcca58-71de23a7b55mr858114b3a.4.1727992676621;
+        Thu, 03 Oct 2024 14:57:56 -0700 (PDT)
 Received: from ryzen.lan ([2601:644:8200:dab8::a86])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71dd9d6e67esm1863026b3a.39.2024.10.03.14.57.50
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71dd9d6e67esm1863026b3a.39.2024.10.03.14.57.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2024 14:57:52 -0700 (PDT)
+        Thu, 03 Oct 2024 14:57:56 -0700 (PDT)
 From: Rosen Penev <rosenp@gmail.com>
 To: devicetree@vger.kernel.org
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -96,16 +96,17 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM MAILING LIST),
 	linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCMBCA ARM ARCHITECTURE),
 	linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC support)
-Subject: [PATCH 1/5] ARM: dts: qcom: ipq4019: use nvmem-layout
-Date: Thu,  3 Oct 2024 14:57:42 -0700
-Message-ID: <20241003215746.275349-2-rosenp@gmail.com>
+Subject: [PATCH 2/5] arm64: dts: bcm4908: nvmem-layout conversion
+Date: Thu,  3 Oct 2024 14:57:43 -0700
+Message-ID: <20241003215746.275349-3-rosenp@gmail.com>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <20241003215746.275349-1-rosenp@gmail.com>
 References: <20241003215746.275349-1-rosenp@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241003_145754_760449_17AF7A49 
-X-CRM114-Status: GOOD (  10.34  )
+X-CRM114-CacheID: sfid-20241003_145757_931985_3A5E0510 
+X-CRM114-Status: UNSURE (   9.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,40 +127,37 @@ nvmem-layout is a more flexible replacement for nvmem-cells.
 
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- .../boot/dts/qcom/qcom-ipq4018-ap120c-ac.dtsi | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ .../dts/broadcom/bcmbca/bcm4906-netgear-r8000p.dts | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-ipq4018-ap120c-ac.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq4018-ap120c-ac.dtsi
-index 0d23c03fae33..a6d4390efa7c 100644
---- a/arch/arm/boot/dts/qcom/qcom-ipq4018-ap120c-ac.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-ipq4018-ap120c-ac.dtsi
-@@ -166,16 +166,19 @@ partition@170000 {
- 				label = "ART";
- 				reg = <0x00170000 0x00010000>;
- 				read-only;
--				compatible = "nvmem-cells";
--				#address-cells = <1>;
--				#size-cells = <1>;
+diff --git a/arch/arm64/boot/dts/broadcom/bcmbca/bcm4906-netgear-r8000p.dts b/arch/arm64/boot/dts/broadcom/bcmbca/bcm4906-netgear-r8000p.dts
+index 999d93730240..df47fc75fa3a 100644
+--- a/arch/arm64/boot/dts/broadcom/bcmbca/bcm4906-netgear-r8000p.dts
++++ b/arch/arm64/boot/dts/broadcom/bcmbca/bcm4906-netgear-r8000p.dts
+@@ -144,16 +144,18 @@ partitions {
+ 		#size-cells = <1>;
  
--				precal_art_1000: precal@1000 {
--					reg = <0x1000 0x2f20>;
--				};
-+				nvmem-layout {
-+					compatible = "fixed-layout";
-+					#address-cells = <1>;
-+					#size-cells = <1>;
+ 		partition@0 {
+-			compatible = "nvmem-cells";
+ 			label = "cferom";
+ 			reg = <0x0 0x100000>;
+-
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+ 			ranges = <0 0x0 0x100000>;
+ 
+-			base_mac_addr: mac@106a0 {
+-				reg = <0x106a0 0x6>;
++			nvmem-layout {
++				compatible = "fixed-layout";
++				#address-cells = <1>;
++				#size-cells = <1>;
 +
-+					precal_art_1000: precal@1000 {
-+						reg = <0x1000 0x2f20>;
-+					};
- 
--				precal_art_5000: precal@5000 {
--					reg = <0x5000 0x2f20>;
-+					precal_art_5000: precal@5000 {
-+						reg = <0x5000 0x2f20>;
-+					};
- 				};
++				base_mac_addr: mac@106a0 {
++					reg = <0x106a0 0x6>;
++				};
  			};
+ 		};
  
 -- 
 2.46.2
