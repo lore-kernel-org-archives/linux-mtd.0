@@ -4,74 +4,128 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38B69CF34D7
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2024 00:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 538CACFA74A
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2024 06:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Subject:To:
-	Message-ID:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NTSMGK6GIK1lGBAQMGf7SN+59lONX8SAzHGoT5W22/A=; b=q1zLXeV+o58JsW
-	SFCVWf4XPbfw7RMXMQx3aMkAzHP5gs9L/n3KEmhnx4qbtR8kQcBo317NBewchSxsabYzaF4ACgznd
-	AoaEYDFFkgzRuF/qqaIHP+SO7dbIyv+rq/tEl0DbadHlWfSfUVQbGDFcUbSJERJS/yfV/sVum0MNk
-	5apnttQ1PpEZpUs6NvKDc2OM8PeyzoMjo/Uh9MyMSbLUfMwFdZTXCxssr7wUGxMFOpkqQgDRZ2CEV
-	kSYy3LLzoYvE52v7Qplp44OEMhTpjsXrLd5KjUVlgSyCRvhhKdte80w8NE0kqTBUkNNhRMg1bra/L
-	cVvUmLdlPxcsU1O1WivA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=iKwPw41fG6g0l3fP8UgDDCiouy6um2ik/w9OP43t9yw=; b=AVUlF8jkcy0i6h
+	z6EVgYCGzQL/wgAnadn6uPEVpzwSMhfhp26pBSolXgjqa1b0euEuoZ7d907NoVSorUMLw44NHlhaD
+	QkAiJaL5UWbOTufTav6hgdoahUumuI5O4aLZnUbP/WcDRDSAxyfZYv4NGoCMfQkJpfPEzomhU/J7+
+	ijKgul3OWH7W7059HhVSLr7ABgxQ+PpdmJJUMBFPogtVsnt76wyiZhTs4zOTC3T3nhtlmeisb3h16
+	LQsFh4a+nptWvRYr7HgkzBGSYQ4wxQRq9vSSLcvwH/jyHhtkCiHnpe/2UsNM3xrbf4QVv/6t2syV/
+	uGqYjnRgdzwDr6eu8mEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swWBy-0000000Ajec-0Lm9;
-	Fri, 04 Oct 2024 00:29:10 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1swblj-0000000B8E2-2Iml;
+	Fri, 04 Oct 2024 06:26:27 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swWBv-0000000AjeE-0pfT
-	for linux-mtd@lists.infradead.org;
-	Fri, 04 Oct 2024 00:29:08 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2e07d87adc2so208251a91.3
-        for <linux-mtd@lists.infradead.org>; Thu, 03 Oct 2024 17:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728001746; x=1728606546; darn=lists.infradead.org;
-        h=mime-version:date:subject:to:reply-to:message-id:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G3MYC8SASoZ/ndWRkqJRsLIGEaMN4yR8qugkGycdBeU=;
-        b=Gkpx7KgM8Jt2G+ZCNT+wjmlVSBFpIoTssP+u2FbgLBVZX71YplMKCXRxt/f5TZldo3
-         aGzfqKQIFepSBWnl8l7866i4AFA3umN+FcScpoGxLJlaRNjo1NhDS9SO58MNdEifRiWw
-         hnR+PCmm5f3q2SGW4sWFXSCBMU6p2ou5bgnN/yTU57V+ESrF/1mAACp+rWjI+gzhYqux
-         Fzb5oW6m3fhAsEgdXnrfWQ/eLgouwOGfyfPcqnlEewfENnsynK1PJuLKvXoufmdlW7LK
-         7+X7nZI30/2DrJakEW+0cW9UC9J/YqCr2ZXPLKcGOHk5oEXBPDgMHn/9jY/mQJAO18gN
-         HRMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728001746; x=1728606546;
-        h=mime-version:date:subject:to:reply-to:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G3MYC8SASoZ/ndWRkqJRsLIGEaMN4yR8qugkGycdBeU=;
-        b=mY8GUHREgFYjMK78cdt+/9nrRhzhRkW0td3yWy0s95p/AT+RwT4Oi1SeevWSHOvmMz
-         tc4azN38E+AaLeFh/IVSzg+vbfdVa3wg5rcF5gOUCmEgnLxJF+pLsrJhvUnEAHxHPY1s
-         pzB0ynRh2lbsWWAUC//hOXhI0+suQILOU2Ae+Oc4aLO53VLxBwRtsiO85yTPgeEFTMxq
-         lzy1bZkU/RhyN3PXs0J7BcEYnfsN1NjwYaY1dVQupdR3FqZVlua3sr/Eu187KeOuzotO
-         UHDbKMZVQOTbV1wVdPp+QIVbCK/bpyEGtDtax/qkfrwz8IC4TvPmqJboqJT30YSc+yik
-         DKHA==
-X-Gm-Message-State: AOJu0YzZCbaBPWoe44MsEu3XBFekHv7/MogLmMmydcFH1zV1+QfSkQ3c
-	Tn9SNSdKN6c8xV0gkTKZQu/uNcXMEnIhJb0nqDc0mwgE7sWzgKi1q8nmyg==
-X-Google-Smtp-Source: AGHT+IHQzExoCqASNIB4kS9uKCpwP2xfW+pF3WIDuSG2bmUcxSySe5TksRULZNdshxzrOHdxqyFFhw==
-X-Received: by 2002:a17:90a:b112:b0:2dd:5137:a9ca with SMTP id 98e67ed59e1d1-2e1e63ea3a8mr413944a91.8.1728001745735;
-        Thu, 03 Oct 2024 17:29:05 -0700 (PDT)
-Received: from [103.67.163.162] ([103.67.163.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e1e85d93b1sm147650a91.25.2024.10.03.17.29.05
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Oct 2024 17:29:05 -0700 (PDT)
-From: "Doris M. Support" <herikaeronna73@gmail.com>
-X-Google-Original-From: "Doris M. Support" <helpdesk@sourcemedia.com>
-Message-ID: <fdb4e851c0ae1b275a84a60c3829933b7db9069ed8d3294de1eb3c80de5c60ba@mx.google.com>
-To: linux-mtd@lists.infradead.org
-Subject: Oct 03 2024
-Date: Thu, 03 Oct 2024 20:29:04 -0400
+	id 1swbkR-0000000B82y-3Waj;
+	Fri, 04 Oct 2024 06:25:09 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id B11EE5C5D39;
+	Fri,  4 Oct 2024 06:25:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EC17C4CEC6;
+	Fri,  4 Oct 2024 06:24:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728023106;
+	bh=QLlbe7kMB+b9u7ZG3irWvRK0uRuPGQO24j2MgfFK5EY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=WrIS+4y+bVQsJZ2N5ELjeQLmRaCNi0iV5mBdewlZ9/HlEVqMEj3x/UxXvgYbq3HBG
+	 OptA/6pJNiyQTaf/ypXbnBhrXjL4wF1TGLPydRUAdTFgl4F3g7p4jFYUUbQ8WWEh0Q
+	 S3EynK4slr4vG3wZizivpclUHqKDSyXTs4dMhiN1F+ejiqYfJ6LDF7hY9W2ycqC+0m
+	 +Bad2Vi2d6YR97s6k4DuYx6hv/r/r6BQ8o3dPTKTPEtNwN6mNLS2k/kno717/0+ahM
+	 /1j4t8hh/rmw1OjW7/SWEJvilCMMyjtlqA8x0RB5JfrLUnsoYxUHy6s3DTQraEBw/s
+	 5tPaKj8sj3odQ==
+Message-ID: <39dcfa4b-1a22-4296-b190-ac39480d034a@kernel.org>
+Date: Fri, 4 Oct 2024 08:24:52 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 5/5] documentation: use nvmem-layout in examples
+To: Rosen Penev <rosenp@gmail.com>, devicetree@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konradybcio@kernel.org>,
+ William Zhang <william.zhang@broadcom.com>,
+ Anand Gore <anand.gore@broadcom.com>, Kursad Oney
+ <kursad.oney@broadcom.com>, Florian Fainelli
+ <florian.fainelli@broadcom.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Christian Marangi <ansuelsmth@gmail.com>,
+ "open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+ "open list:ARM/QUALCOMM MAILING LIST" <linux-arm-msm@vger.kernel.org>,
+ "moderated list:BROADCOM BCMBCA ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-mediatek@lists.infradead.org>
+References: <20241004000015.544297-1-rosenp@gmail.com>
+ <20241004000015.544297-6-rosenp@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20241004000015.544297-6-rosenp@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241003_172907_246073_24FA25CC 
-X-CRM114-Status: UNSURE (   2.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241003_232508_009061_AF5F9746 
+X-CRM114-Status: GOOD (  14.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,18 +137,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: dorisjmiller80@outlook.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-I'm giving out my late husband's Yamaha Baby Grand Piano to any passionate instrument lover, kindly let me know if you will be interested or have someone who will.
+On 04/10/2024 02:00, Rosen Penev wrote:
+> nvmem-cells are deprecated and replaced with nvmem-layout. For these
+> examples, replace. They're not relevant to the main point of the
+> document anyway.
 
-Thanks,
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching. For bindings, the preferred subjects are
+explained here:
+https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters
 
-Doris.
+
+> 
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
+> ---
+>  .../mtd/partitions/qcom,smem-part.yaml        | 19 +++++++++++--------
+>  .../bindings/net/marvell,aquantia.yaml        | 13 ++++++++-----
+>  2 files changed, 19 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> index 1c2b4e780ca9..8ae149534b23 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> @@ -45,17 +45,20 @@ examples:
+>              compatible = "qcom,smem-part";
+>  
+>              partition-art {
+> -                compatible = "nvmem-cells";
+> -                #address-cells = <1>;
+> -                #size-cells = <1>;
+>                  label = "0:art";
+>  
+> -                macaddr_art_0: macaddr@0 {
+> -                    reg = <0x0 0x6>;
+> -                };
+> +                nvmem-layout {
+> +                    compatible = "fixed-layout";
+
+This does not look right - the binding still expects nvmem-cells. I
+wonder how does the nvmem-cells.yaml work if the compatible is being
+removed so it is not being selected.
+
+
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
