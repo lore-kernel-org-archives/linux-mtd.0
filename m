@@ -4,128 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 538CACFA74A
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2024 06:26:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 257DDCFA74F
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2024 07:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iKwPw41fG6g0l3fP8UgDDCiouy6um2ik/w9OP43t9yw=; b=AVUlF8jkcy0i6h
-	z6EVgYCGzQL/wgAnadn6uPEVpzwSMhfhp26pBSolXgjqa1b0euEuoZ7d907NoVSorUMLw44NHlhaD
-	QkAiJaL5UWbOTufTav6hgdoahUumuI5O4aLZnUbP/WcDRDSAxyfZYv4NGoCMfQkJpfPEzomhU/J7+
-	ijKgul3OWH7W7059HhVSLr7ABgxQ+PpdmJJUMBFPogtVsnt76wyiZhTs4zOTC3T3nhtlmeisb3h16
-	LQsFh4a+nptWvRYr7HgkzBGSYQ4wxQRq9vSSLcvwH/jyHhtkCiHnpe/2UsNM3xrbf4QVv/6t2syV/
-	uGqYjnRgdzwDr6eu8mEg==;
+	List-Owner; bh=ZqNlE0F5+PnP2KNTt+Tn0UXdbRBV6JRB4HK3Ic/xq4g=; b=vBUga+oUbGG5yR
+	+CikbfwCXYDH+XBDcDE0jRhzIYo5iXNYXv2VC2iaeAXVHOt9m47bPkNkAA58Sn46FdDLn9q0eDWwl
+	f3d6J6H1u9Xu8m7obg2yeuM/wE+zuvwcWVKe11LoPqsorNbzRpivzPEbUn67ShgsaY/e6cd1BsWZI
+	VTCI0+/U7DIDlVTU/+8WOBGHI+lrdK0AGmRHH7MCtWC74F0Ckjqu/xGxbbYYFhApIWxN0D65aoBsf
+	6SO5tXqzXqS2Njt7WTybC9gvwajKqrC8uDPztb6mAitzEJ2rRtaIqtshZP6Y/MwbrnpLpltImlgoW
+	TpLq+5AxjsfGYyy/SX5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swblj-0000000B8E2-2Iml;
-	Fri, 04 Oct 2024 06:26:27 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1swcdN-0000000BDG7-3mdV;
+	Fri, 04 Oct 2024 07:21:53 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swbkR-0000000B82y-3Waj;
-	Fri, 04 Oct 2024 06:25:09 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B11EE5C5D39;
-	Fri,  4 Oct 2024 06:25:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EC17C4CEC6;
-	Fri,  4 Oct 2024 06:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728023106;
-	bh=QLlbe7kMB+b9u7ZG3irWvRK0uRuPGQO24j2MgfFK5EY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=WrIS+4y+bVQsJZ2N5ELjeQLmRaCNi0iV5mBdewlZ9/HlEVqMEj3x/UxXvgYbq3HBG
-	 OptA/6pJNiyQTaf/ypXbnBhrXjL4wF1TGLPydRUAdTFgl4F3g7p4jFYUUbQ8WWEh0Q
-	 S3EynK4slr4vG3wZizivpclUHqKDSyXTs4dMhiN1F+ejiqYfJ6LDF7hY9W2ycqC+0m
-	 +Bad2Vi2d6YR97s6k4DuYx6hv/r/r6BQ8o3dPTKTPEtNwN6mNLS2k/kno717/0+ahM
-	 /1j4t8hh/rmw1OjW7/SWEJvilCMMyjtlqA8x0RB5JfrLUnsoYxUHy6s3DTQraEBw/s
-	 5tPaKj8sj3odQ==
-Message-ID: <39dcfa4b-1a22-4296-b190-ac39480d034a@kernel.org>
-Date: Fri, 4 Oct 2024 08:24:52 +0200
+	id 1swcdK-0000000BDFM-0X1m
+	for linux-mtd@lists.infradead.org;
+	Fri, 04 Oct 2024 07:21:52 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0B0B01BF205;
+	Fri,  4 Oct 2024 07:21:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1728026507;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EB50ZWS7pX3weSaYhuDUsmGhx18VRAut/5Y88goDLAs=;
+	b=T2s4OCbSOKMvGOHD6OxayLMLTxecMZym5OYdLujEe7H4xs0nCrgOAvHLLfNOa2GfC9cjWm
+	0pNeenGg0ExLblVpsEvQOeLHb1QhZ3l1v8GxuN/VOyZ9lX6pUmnoJYtCX5YVNiGA/ycR51
+	ShQINcdSv9RPwKw8QIzy6pI8TMh8iYxgRI/MHm8fWzKzmsYTgvQR+ma6mlA8Jsmbm55N4Q
+	ffn/zyYmvXcPrdRFa5Xb0NkS+kJv5kURt2KxMKCz22acMTKuOfudWi5vMc7Gw8SlL+QeiH
+	+w2l+R77SyZ/bz3JY0bKlpWDj8xk2w8zMEZJK5rsT8P0Gr04zosNtYL1Sh4Nnw==
+Date: Fri, 4 Oct 2024 09:21:44 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, imx@lists.linux.dev, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mtd: nand: raw: gpmi: improve power management
+ handling
+Message-ID: <20241004092144.3e0d89b5@xps-13>
+In-Reply-To: <20241003200508.x7tbf2lpbg6ngm7q@cozumel>
+References: <20241002153944.69733-1-han.xu@nxp.com>
+	<20241002153944.69733-2-han.xu@nxp.com>
+	<20241003093840.2965be20@xps-13>
+	<20241003150500.uz2efay7kadu47if@cozumel>
+	<20241003172820.50324192@xps-13>
+	<20241003200508.x7tbf2lpbg6ngm7q@cozumel>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2 5/5] documentation: use nvmem-layout in examples
-To: Rosen Penev <rosenp@gmail.com>, devicetree@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>,
- William Zhang <william.zhang@broadcom.com>,
- Anand Gore <anand.gore@broadcom.com>, Kursad Oney
- <kursad.oney@broadcom.com>, Florian Fainelli
- <florian.fainelli@broadcom.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Christian Marangi <ansuelsmth@gmail.com>,
- "open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
- "open list:ARM/QUALCOMM MAILING LIST" <linux-arm-msm@vger.kernel.org>,
- "moderated list:BROADCOM BCMBCA ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- "moderated list:ARM/Mediatek SoC support"
- <linux-mediatek@lists.infradead.org>
-References: <20241004000015.544297-1-rosenp@gmail.com>
- <20241004000015.544297-6-rosenp@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20241004000015.544297-6-rosenp@gmail.com>
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241003_232508_009061_AF5F9746 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20241004_002150_772734_AE6A7E46 
+X-CRM114-Status: GOOD (  21.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,58 +75,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 04/10/2024 02:00, Rosen Penev wrote:
-> nvmem-cells are deprecated and replaced with nvmem-layout. For these
-> examples, replace. They're not relevant to the main point of the
-> document anyway.
-
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching. For bindings, the preferred subjects are
-explained here:
-https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters
-
-
-> 
-> Signed-off-by: Rosen Penev <rosenp@gmail.com>
-> ---
->  .../mtd/partitions/qcom,smem-part.yaml        | 19 +++++++++++--------
->  .../bindings/net/marvell,aquantia.yaml        | 13 ++++++++-----
->  2 files changed, 19 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> index 1c2b4e780ca9..8ae149534b23 100644
-> --- a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> @@ -45,17 +45,20 @@ examples:
->              compatible = "qcom,smem-part";
->  
->              partition-art {
-> -                compatible = "nvmem-cells";
-> -                #address-cells = <1>;
-> -                #size-cells = <1>;
->                  label = "0:art";
->  
-> -                macaddr_art_0: macaddr@0 {
-> -                    reg = <0x0 0x6>;
-> -                };
-> +                nvmem-layout {
-> +                    compatible = "fixed-layout";
-
-This does not look right - the binding still expects nvmem-cells. I
-wonder how does the nvmem-cells.yaml work if the compatible is being
-removed so it is not being selected.
-
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSGFuLAoKaGFuLnh1QG54cC5jb20gd3JvdGUgb24gVGh1LCAzIE9jdCAyMDI0IDE1OjA1OjA4
+IC0wNTAwOgoKPiBPbiAyNC8xMC8wMyAwNToyOFBNLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4g
+SGkgSGFuLAo+ID4gCj4gPiBoYW4ueHVAbnhwLmNvbSB3cm90ZSBvbiBUaHUsIDMgT2N0IDIwMjQg
+MTA6MDU6MTYgLTA1MDA6Cj4gPiAgIAo+ID4gPiBPbiAyNC8xMC8wMyAwOTozOEFNLCBNaXF1ZWwg
+UmF5bmFsIHdyb3RlOiAgCj4gPiA+ID4gSGkgSGFuLAo+ID4gPiA+IAo+ID4gPiA+IGhhbi54dUBu
+eHAuY29tIHdyb3RlIG9uIFdlZCwgIDIgT2N0IDIwMjQgMTA6Mzk6NDQgLTA1MDA6Cj4gPiA+ID4g
+ICAgIAo+ID4gPiA+ID4gVGhlIGNvbW1pdCByZWZhY3RvcnMgdGhlIHBvd2VyIG1hbmFnZW1lbnQg
+aGFuZGxpbmcgaW4gdGhlIGdwbWkgbmFuZAo+ID4gPiA+ID4gZHJpdmVyLiBJdCByZW1vdmVzIHJl
+ZHVuZGFudCBwbV9ydW50aW1lIGNhbGxzIGluIHRoZSBwcm9iZSBmdW5jdGlvbiwKPiA+ID4gPiA+
+IGhhbmRsZXMgdGhlIHBhZCBjb250cm9sIGluIHN1c3BlbmQgYW5kIHJlc3VtZSwgYW5kIG1vdmVz
+IHRoZSBjYWxscyB0bwo+ID4gPiA+ID4gYWNxdWlyZSBhbmQgcmVsZWFzZSBETUEgY2hhbm5lbHMg
+dG8gdGhlIHJ1bnRpbWUgc3VzcGVuZCBhbmQgcmVzdW1lCj4gPiA+ID4gPiBmdW5jdGlvbnMuICAg
+IAo+ID4gPiA+IAo+ID4gPiA+IE1heSBJIGtub3cgdGhlIG1vdGl2YXRpb24gdG8gYWNxdWlyZSBh
+bmQgcmVsZWFzZSB0aGUgRE1BIGNoYW5uZWxzCj4gPiA+ID4gZHVyaW5nIHN1c3BlbmQ/IEluIGdl
+bmVyYWwgaXQgc2VlbXMgbGlrZSBhIGRpZmZlcmVudCBjaGFuZ2Ugd2hpY2ggSSdkCj4gPiA+ID4g
+cHJlZmVyIHRvIHNlZSBpbiBpdHMgb3duIGNvbW1pdCB3aXRoIGEganVzdGlmaWNhdGlvbi4gVGhl
+IHJlc3QgbG9va3MKPiA+ID4gPiBvayBvdGhlcndpc2UuICAgIAo+ID4gPiAKPiA+ID4gSGkgTWlx
+dWVsLAo+ID4gPiAKPiA+ID4gVGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLiBJTUhPIHRoZXJlIGlz
+IG5vIG11Y2ggbG9naWMgY2hhbmdlcyBpbmRlZWQsIGp1c3QgbW92ZQo+ID4gPiB0aGUgZG1hIGNo
+YW5uZWwgYWNxdWlyZSBhbmQgcmVsZWFzZSBmcm9tIHN5c3RlbSBwbSB0byB0aGUgcnVudGltZSBw
+bSwgcmVsZWFzaW5nCj4gPiA+IHRoZSB1bnVzZWQgcmVzb3VyY2VzIGFzIGVhcmx5IGFzIHBvc3Np
+YmxlLiBJZiB5b3UgdGhpbmsgaXQncyBuZWNlc3NhcnkgSSB3aWxsCj4gPiA+IHNwbGl0IHRoZSBw
+YXRjaCBpbnRvIHR3byBwYXJ0cy4gIAo+ID4gCj4gPiBBY3R1YWxseSBJIGRvbid0IHVuZGVyc3Rh
+bmQgd2h5IHRoZXNlIGNoYW5uZWxzIGFyZSByZWxlYXNlZCBhbmQKPiA+IGFjcXVpcmVkIGFnYWlu
+LiBEb2VzIGl0IG1ha2Ugc2Vuc2UgdG8gZG8gdGhhdCBpbiB0aGUgKHJ1bnRpbWUpCj4gPiBzdXNw
+ZW5kL3Jlc3VtZSBwYXRoPyBJJ2QgYmUgaW4gZmF2b3Igb2YgYXZvaWRpbmcgdGhpcyBleHRyYQo+
+ID4gY29uZmlndXJhdGlvbiB3aGljaCBhcyBhIGZpcnN0IHNpZ2h0IGRvZXMgbm90IHNlZW0gcmVx
+dWlyZWQgaGVyZS4gIAo+IAo+IE91ciBsb2NhbCBteHMtZG1hIGRyaXZlciAod2lsbCB1cHN0cmVh
+bSB0aGUgY2hhbmdlcyBsYXRlcikgaW1wbGVtZW50ZWQgdGhlIHJ1bnRpbWUKPiByZXN1bWUvc3Vz
+cGVuZCBpbiBjaGFubmVsIGFsbG9jL3JlbGVhc2UgZnVuY3Rpb25zLCBzbyBJIGRpZCB0aGlzIGlu
+IHRoZSBncG1pCj4gbmFuZCBkcml2ZXIgc3VzcGVuZC9yZXN1bWUgcGF0aC4KCkkgdGhpbmsgaXQg
+bm8gbG9uZ2VyIG1ha2VzIHNlbnNlLiBSUE0gdGFrZXMgY2FyZSBvZiB0aGUKc3VwcGxpZXJzLCBh
+dCBsZWFzdCBzaW5jZSBmd19kZXZsaW5rPXJwbS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
