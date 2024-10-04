@@ -4,83 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 740B7CFA750
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2024 08:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9A83CFA750
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2024 08:27:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=I1Qod7x1+/FYNrx63E9ouUGXp2A9RgMEj86b+OdykqU=; b=vVadqEJiV/9n6e
-	qAxWVtbFX15Nqdzca3HZn248I1NqwUd6Wj6wwH72aeiP6sKZvTGVCiwPV7GE15M42DcM2huvn/BrD
-	ZU9wFr32Snj+kZ60vX48jvLdWK6paEJTOX03Up8PCIbwvLU+njT1meB1Kofar4hOCyWMWrdmhqrzP
-	F8KsG3/+bLJw+bCk/1SurzH4Z85ZHBOJJTxlphOuh4MkJgXMoq0y/tZXdeQGfiQ+NdUSSZ6BdjA/T
-	4W5DDmW8Vp0FadQkLs4P8kAJ91OlonNs/INDstYY04ISVVv8JyRS/JkD0Qs5Itjk2CaZFJj+DU5lg
-	kUbN9V1kFqJw6VF8tLSA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LJVwrsngAnJbuo9bkRQB0FfvE9asBV9pexF1E3jSqHM=; b=meHbT5GL78fi33
+	hQI9CagSVufT5Ftyaweox/IIY5Omv6gndSnDBxsK62kKWfgOqhGPzKjnVyyBCq4aLZqNIvLh7QAI9
+	LA5YFddVlnsvaeUdI4GeITS6lR/nmgfC1Qc/af4mSZgsc1xUYI9d2NFzK75/yZIuqcczqX0e6sxtt
+	mxcRHbLxTvX89A3Sx7VCXkEpIBnXzSF+nYmrq7SNImxcIXx5cl50N9hmFWrrO6/AQ9Oit8MDJpzdw
+	RxbPdP4cPhU5LM2dFJu/fpxbT23KqFVF4T92olqHcelWFKB8/9OMcmeUrpDOvaME016RVjWFBQcyv
+	A2TXcy8V8y9tpN7ME0Qg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swdSL-0000000BMYg-0jd0;
-	Fri, 04 Oct 2024 08:14:33 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	id 1swdf5-0000000BPFe-05v7;
+	Fri, 04 Oct 2024 08:27:43 +0000
+Received: from mail-northeuropeazlp170110001.outbound.protection.outlook.com ([2a01:111:f403:c200::1] helo=DB3PR0202CU003.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swdMv-0000000BLKZ-0Evy
+	id 1swdaH-0000000BOOz-0MAn
 	for linux-mtd@lists.infradead.org;
-	Fri, 04 Oct 2024 08:08:58 +0000
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a8d4093722bso261764166b.0
-        for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2024 01:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1728029335; x=1728634135; darn=lists.infradead.org;
-        h=content-transfer-encoding:subject:cc:to:content-language:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4auiUipRSvioY5qlUieN0FCimA2FylPsygyRNrf3t9I=;
-        b=UczJ3pBKMSDXNI+VP/iFGWFzQhVnYlO94fMPy33om6gWxS6YMWc/9/er3r8fjUtBx7
-         zAZQ95tdGMui7Py84OTaqrwQ3VHV0wDNGpPYivUmTqNBtBbPb4uYwtyUYv8gVo9d3zqF
-         BH/3Sy7ThMQfJwAO2u60IcEt0kJhtGR3WATUvTv4wWRkkoVlnyLw5RtRzP+0g/mCTwsm
-         S/gmSKdi/dU/2+9QPOw6//obHA530XYVVIwjjw5v1ABQAv2kWiejiUPU2AHhKKC4str3
-         W+IyHqSibYzUFbPYrdyQ/L1eSElqANmLOo8H/0jd+8Df73imFXcLdF69DDuK+jXICQeC
-         OKFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728029335; x=1728634135;
-        h=content-transfer-encoding:subject:cc:to:content-language:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4auiUipRSvioY5qlUieN0FCimA2FylPsygyRNrf3t9I=;
-        b=TuWUSQT0tXniWApeOdVuQSgWG+Ny2PMtwsrUlb9C9DuXor7ZnuqChIkUQWOjogStNv
-         3xtWtzyfmV0y7mi7yX182MnA+9S9+SHGMnC2Ey3eL21HjNftFooQNfZhijKaO/B2uCrZ
-         C+N0v4Nh1Np5oxzwhXVy2udY6HW/5TR9U/hK3bWPAun03F6dxvSU/3ebikKnqfG7rMQB
-         qrGGGQm1POfXnjSEqan3fGBO2lx9Z45KFmhFOvSBDgYHjXdUUj8GGi5b7NIP361b7/zS
-         HhHwO6SZwr8E6p3v7Rf2pVNcUAMOBfiWE+QULWgFz/ZE/g2xl8EFg7qx50QQK532oNLS
-         xtHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWo4YkBBRvYHsmhaZTph8fa3OZPtqLozbQGGZcIrc3MLwwbr0MEXK52qmBgM9dTN3QkyjuDq72WksU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxluLABkm63NfJmTq+NaCYA7q3InQCCHHjEOG5aoq2g+/EuRaqu
-	wiBXWDaoUW+W1Dhw5FdBPsHS9gVTcu8BdadrLGJluPOjvlxZPeAizf5BeUVLg5s=
-X-Google-Smtp-Source: AGHT+IFgl/nvfLhcNVun/syHAmXlZefx9G+73C15fAoSRXNCIuh634p0eFrgfM/y8L+b25rL7WLqkA==
-X-Received: by 2002:a17:907:9306:b0:a86:b64e:bc4d with SMTP id a640c23a62f3a-a991c033557mr210668066b.44.1728029335197;
-        Fri, 04 Oct 2024 01:08:55 -0700 (PDT)
-Received: from [10.11.12.174] ([82.76.204.61])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9910473a89sm193047166b.149.2024.10.04.01.08.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Oct 2024 01:08:54 -0700 (PDT)
-Message-ID: <5b2bcd4d-faae-40f6-908a-63f4dbb02adc@linaro.org>
-Date: Fri, 4 Oct 2024 11:08:51 +0300
+	Fri, 04 Oct 2024 08:22:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=NjMUARRD5ZKN3qPbWH0tQpfkbdHwhJqBZKQJAWJ2IYgfXkJWeNkx7mGFsWdP3BoW6WljCbjR/NbPRhF0d3gdN0bQ/G0OYZIqNCFCVhetaCh8BzJBj6R/sSmo0AQnjRaEYjH2Yrf5UszvPcKjAx3vJXahZhQeiWObrCYdXWzjAn8vz83eUrSXDpE4eIYQVcqra//6H06UkIQ4SmHrxP2KnlZP7OsOWfspf4nTe5eoxBMwH8co+JDeoebVvsrWkL8SClQpBO45c3xthT0Gzb3AOvqWTTTokidW5m8+GP5QKBtgFUNRCS9zt9osgmltMKBGwvv/q9XzeYM+/UpdhVmblQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x9nLXAL3BuK3ElR8df9lx96zr2PUrfIR9SsaSlH9XYE=;
+ b=X3w+F/JQ4jgT291DT/5xIZhrcaD18IB+ptZ5hFigkcIYNtqUKkuMbvHYBE3JJes7QQIU9HHJ2AQc6DWPEt4qU9TfOy//qAg2Llne++w/Nol/oYmM0kZWXDgGVaVyqihJIJJ9jNbWqhDleCKuOGZRm6iFOHIfgZ4/E866OkDx+Haphpcinc/Wxhzw0dFuATPFIOhXbEvquWh467QcCaNoewQ6YnBwJF/wEUw/7RzWtAVHbcO9r2EY+x0YstbcCaVQnura7mAkdhOaBQqQb9ujxdVUyi/USi/Dg0I8Phv71QCmitIy+TWQjx3bN+0A72PNhIUtiSOwiu4LOoXwypRbuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=nod.at smtp.mailfrom=axis.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=axis.com; dkim=none (message
+ not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x9nLXAL3BuK3ElR8df9lx96zr2PUrfIR9SsaSlH9XYE=;
+ b=LIBCZBnMzYs6iYIkR+AKmylJ1ZutDga3QxOEgWGTjBwUzwWuo8j80QdbqpfxeNxIqtbcvGK2IQ8BrjOKh+7xsKzLtSYJasctDuP+O2SlFrbTTByZuhqCbIcfhF7RIgOs+MsfuYnA3XQF5kfe1KyVF2TjUp6Jo/XBS3+spinrj48=
+Received: from AM4PR0302CA0004.eurprd03.prod.outlook.com (2603:10a6:205:2::17)
+ by GVXPR02MB11087.eurprd02.prod.outlook.com (2603:10a6:150:217::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.18; Fri, 4 Oct
+ 2024 08:22:32 +0000
+Received: from AM4PEPF00027A68.eurprd04.prod.outlook.com
+ (2603:10a6:205:2:cafe::4a) by AM4PR0302CA0004.outlook.office365.com
+ (2603:10a6:205:2::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.18 via Frontend
+ Transport; Fri, 4 Oct 2024 08:22:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=axis.com;
+Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
+ 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com; pr=C
+Received: from mail.axis.com (195.60.68.100) by
+ AM4PEPF00027A68.mail.protection.outlook.com (10.167.16.85) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.8026.11 via Frontend Transport; Fri, 4 Oct 2024 08:22:31 +0000
+Received: from pc50632-2232.se.axis.com (10.0.5.60) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 4 Oct
+ 2024 10:22:28 +0200
+From: Rickard Andersson <rickard.andersson@axis.com>
+To: <richard@nod.at>, <chengzhihao1@huawei.com>,
+	<linux-mtd@lists.infradead.org>, <rickard314.andersson@gmail.com>
+CC: <rickard.andersson@axis.com>, <kernel@axis.com>
+Subject: [PATCH 2/4] ubi: Expose mean erase counter for fastmap in sysfs
+Date: Fri, 4 Oct 2024 10:22:06 +0200
+Message-ID: <20241004082208.1103202-2-rickard.andersson@axis.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20241004082208.1103202-1-rickard.andersson@axis.com>
+References: <20241004082208.1103202-1-rickard.andersson@axis.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Cc: AlvinZhou <alvinzhou.tw@gmail.com>, Pratyush Yadav <pratyush@kernel.org>,
- mwalle@kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- richard@nod.at, "open list:SPI NOR SUBSYSTEM"
- <linux-mtd@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>,
- chengminglin@mxic.com.tw, leoyu@mxic.com.tw
-Subject: [GIT PULL] spi-mem/swap16 changes for v6.13
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail01w.axis.com
+ (10.20.40.7)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM4PEPF00027A68:EE_|GVXPR02MB11087:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9eafa1ff-9ea8-40e6-a34f-08dce44db162
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700013|376014|1800799024|82310400026;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?xf6x2nZNXwG9Yd2XfndhAjRNWfECY250T9gLTBKVef9ZmmjEhuEYqGO/VXh9?=
+ =?us-ascii?Q?DZLEKBRaiKw690cTCynCwbezDX1P0RFgRg3yqfZHaALO0WlzDvosNNYV+y7a?=
+ =?us-ascii?Q?0MzlaLXcubrj+Wu4GqEnlOVbLWIBOVhbbr/jd9HN6j8Mlcp9euCirMrF8PGL?=
+ =?us-ascii?Q?Dz5K580tToRJB2MgsfXfNPv759IQ3DJg5VvL4/imege4jYmp/GHwKQFyiQKk?=
+ =?us-ascii?Q?dBQiHMkz5DCMRAT9O3iXulVYzJwyp/qUirfNAUSLRxjpLQBAB0YMtCczxOAZ?=
+ =?us-ascii?Q?77EPFAPTovPKPrd0xNWWiOFZM1JJCn2JBm0elGkciQMKl6AZHgsWrBjDnyeh?=
+ =?us-ascii?Q?F+d8Xb0piwtYTIVMI5XDIDsSCV3oRtq6Zph4v3UmcmvZNvjgMEFe1ajXZJa0?=
+ =?us-ascii?Q?PkZtLFJjszsvEQCiLpCu4K/IZ5WTrbKKL3Zc8U+MPUHxeywV3smWpm+OF1pq?=
+ =?us-ascii?Q?iGS/yP9oqvrMKUB2gOJOgq0CFVHXI6cJ32vw9M+KEwNyzZGIPsuxRsgp8dk/?=
+ =?us-ascii?Q?c6qAvooPo3RLDxD0zbMRHrOxq1I41Ym4V3a+TE8l2nqOJQT6h7We9QMdgNse?=
+ =?us-ascii?Q?naM30FPg4yrnL8tXCesiPoAdH9lRQi/WFASXXFvIh6aIH7qeS2zAV482b9hF?=
+ =?us-ascii?Q?9hxTsAIE1STvoCnZzZ5zfBsqIBRt2OOZ1dAcDmIZjsyesGKzx1kKCYiUdwLy?=
+ =?us-ascii?Q?0YwgZG95FmGpTcbpLkx3MJWdB9VhbrTkvOWj+IGwpd88Fj/9JGlLnQHYJUct?=
+ =?us-ascii?Q?IKL8hgRLD71jS9k50T4gorcJGJnD3SResop2ESI11FUOOiJG9KbnCMmsM7PB?=
+ =?us-ascii?Q?Khf77iR+Zx6asc55sPsrmpqLFaDixF96cfkTOfzdzzC40K/sJJ4I03AVRoW3?=
+ =?us-ascii?Q?8c86bpneswGLxdGHKZSHMSCVTu4D97EtfColVU22/f36mwLf3SkVodlD6EWX?=
+ =?us-ascii?Q?GTz37Au0IXLSUgLTTo/IxkvgO41Baw95Eg83dcjo25RcveS8Mvpd3TwkCeM1?=
+ =?us-ascii?Q?erSxQa2l8g4kmPXknaxrAqtpojq9jmFmFkRi/IWKn/qan4hGRStnorVIRj65?=
+ =?us-ascii?Q?YVyQuLF9VJ0lSjgvrs79cR/SXjnyvWyvZhULfhZ3pWS176hB6IofcoshLJJU?=
+ =?us-ascii?Q?EOquO3scS0kY/kTUlcuiPnCdlCvwZoEEO5vmJWgBnDTuuD1R3eANIs+4uH2p?=
+ =?us-ascii?Q?IKDu8xQ5wC4WhW3aG+tdfXSQjDecI2S6/SXgBpYiJGMAz1J5ZhELDQWEi18W?=
+ =?us-ascii?Q?7VJKMJx0UXP3s7hin3EfWJInzKM8Kc8RFl7myS9u3t7VtPPM+zWTs5+9mc7k?=
+ =?us-ascii?Q?VRNRSCCTORiPmH7lQd/GEFkBJcnkcVQONc4JkB36tfowF8b3OZ6UbBI3lHJG?=
+ =?us-ascii?Q?tEOdB6lBphvW5/RFT1exQ879BOf0?=
+X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(376014)(1800799024)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2024 08:22:31.8945
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9eafa1ff-9ea8-40e6-a34f-08dce44db162
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource: AM4PEPF00027A68.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR02MB11087
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241004_010857_139749_2A3B4B7F 
-X-CRM114-Status: UNSURE (   9.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241004_012245_151321_A1D122A5 
+X-CRM114-Status: GOOD (  19.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,55 +141,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Mark,
+Since the fastmap area has its own wear levelling it is valuable to
+provide a mean value for that area. This value can be used in order
+to estimate life expectancy of the flash.
 
-I've made an immutable tag for the spi-mem swap16 changes. I let the
-0day bot run on them, I got no complains. Pull if you need them.
+Signed-off-by: Rickard Andersson <rickard.andersson@axis.com>
+---
+ drivers/mtd/ubi/build.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-Thanks,
-ta
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 8bdfc51cacb1..af67cefd3e5e 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -133,6 +133,8 @@ static struct device_attribute dev_max_ec =
+ 	__ATTR(max_ec, S_IRUGO, dev_attribute_show, NULL);
+ static struct device_attribute dev_mean_ec =
+ 	__ATTR(mean_ec, S_IRUGO, dev_attribute_show, NULL);
++static struct device_attribute dev_mean_ec_fastmap =
++	__ATTR(mean_ec_fastmap, S_IRUGO, dev_attribute_show, NULL);
+ static struct device_attribute dev_reserved_for_bad =
+ 	__ATTR(reserved_for_bad, S_IRUGO, dev_attribute_show, NULL);
+ static struct device_attribute dev_bad_peb_count =
+@@ -345,19 +347,33 @@ int ubi_major2num(int major)
+ /**
+  * ubi_calc_mean_ec - calculate mean erase counter value.
+  * @ubi: UBI device description object
++ * @fastmap: true if mean value of just the fastmap area should be calculated
+  *
+- * Returns the mean value of the all blocks of the device.
+- * Returns zero if it was not possible to calculate the mean value.
++ * Returns the mean value of the all non-bad blocks of the device if fastmap is
++ * false.
++ * If fastmap is true then only a mean value of the fastmap area is calculated.
++ * Returns zero if it was not possible to calculate the mean value or if no
++ * fastmap exists.
+  */
+-int ubi_calc_mean_ec(struct ubi_device *ubi)
++int ubi_calc_mean_ec(struct ubi_device *ubi, bool fastmap)
+ {
+ 	struct ubi_wl_entry *wl;
+ 	int peb;
+ 	int ec_count = 0;
++	int peb_count;
+ 	int mean_ec = 0;
+ 	uint64_t ec_sum = 0;
+ 
+-	for (peb = 0; peb < ubi->peb_count; peb++) {
++	peb_count = ubi->peb_count;
++
++	if (fastmap) {
++		if ((!ubi->fm_disabled) && (peb_count > UBI_FM_MAX_START))
++			peb_count = UBI_FM_MAX_START;
++		else
++			return 0; /* No fastmap on this UBI device */
++	}
++
++	for (peb = 0; peb < peb_count; peb++) {
+ 		int err;
+ 
+ 		err = ubi_io_is_bad(ubi, peb);
+@@ -411,7 +427,9 @@ static ssize_t dev_attribute_show(struct device *dev,
+ 	else if (attr == &dev_max_ec)
+ 		ret = sprintf(buf, "%d\n", ubi->max_ec);
+ 	else if (attr == &dev_mean_ec)
+-		ret = sprintf(buf, "%d\n", ubi_calc_mean_ec(ubi));
++		ret = sprintf(buf, "%d\n", ubi_calc_mean_ec(ubi, false));
++	else if (attr == &dev_mean_ec_fastmap)
++		ret = sprintf(buf, "%d\n", ubi_calc_mean_ec(ubi, true));
+ 	else if (attr == &dev_reserved_for_bad)
+ 		ret = sprintf(buf, "%d\n", ubi->beb_rsvd_pebs);
+ 	else if (attr == &dev_bad_peb_count)
+@@ -439,6 +457,7 @@ static struct attribute *ubi_dev_attrs[] = {
+ 	&dev_volumes_count.attr,
+ 	&dev_max_ec.attr,
+ 	&dev_mean_ec.attr,
++	&dev_mean_ec_fastmap.attr,
+ 	&dev_reserved_for_bad.attr,
+ 	&dev_bad_peb_count.attr,
+ 	&dev_max_vol_count.attr,
+-- 
+2.30.2
 
-The following changes since commit 9852d85ec9d492ebef56dc5f229416c925758edc:
-
-  Linux 6.12-rc1 (2024-09-29 15:06:19 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
-tags/mtd/spi-mem-swap16-for-6.13
-
-for you to fetch changes up to 50cb86f21ec2ede08d0ec0479fbd8697a8a25616:
-
-  spi: mxic: Add support for swapping byte (2024-10-02 09:44:57 +0300)
-
-----------------------------------------------------------------
-This allows specifying the byte order in Octal DTR mode.
-
-There are NOR flashes (Macronix) that swap the bytes on a 16-bit
-boundary when configured in Octal DTR mode. The byte order of
-16-bit words is swapped when read or written in Octal Double
-Transfer Rate (DTR) mode compared to Single Transfer Rate (STR)
-modes. If one writes D0 D1 D2 D3 bytes using 1-1-1 mode, and uses
-8D-8D-8D SPI mode for reading, it will read back D1 D0 D3 D2.
-Swapping the bytes may introduce some endianness problems. It can
-affect the boot sequence if the entire boot sequence is not handled
-in either 8D-8D-8D mode or 1-1-1 mode. Therefore, it is necessary
-to swap the bytes back to ensure the same byte order as in STR modes.
-Fortunately there are controllers that could swap the bytes back at
-runtime, addressing the flash's endianness requirements. Provide a
-way for the upper layers to specify the byte order in Octal DTR mode.
-
-----------------------------------------------------------------
-AlvinZhou (1):
-      spi: mxic: Add support for swapping byte
-
-Tudor Ambarus (1):
-      spi: spi-mem: Allow specifying the byte order in Octal DTR mode
-
- drivers/spi/spi-mem.c       |  3 +++
- drivers/spi/spi-mxic.c      | 17 +++++++++++++----
- include/linux/spi/spi-mem.h |  8 +++++++-
- 3 files changed, 23 insertions(+), 5 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
