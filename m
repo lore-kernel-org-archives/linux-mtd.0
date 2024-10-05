@@ -4,107 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB5FACF8857
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Oct 2024 20:17:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21AB4CF8869
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Oct 2024 00:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6v7ty0ggorouZvGznT18bOKjGDCZqrP1Rf5Xk7nq+p4=; b=mlcWPLsg5bw5wM
-	Cgq1fMTVq2BhVGL5eR5XhzJAgN/ymQRkjIysKnz0+/7pP1TZEoH7mqDgjmQ+9dHD8IVVQCkKHOSP7
-	JAVtLHy2zSRuGWoja8DBeTnJY/6Xtrpg1yU/dxILUdKx1PN8BBTIxXWaUbjY3yFfqWeEtMnG8OUP7
-	DeHJ3x9iuSXw0qdpqAJBh2AcHSrubBflQxRO8oIvfKN2dw9cEcgpaxpD9JW2VKNyDIGWZKkyYKmZN
-	87Gq8qGJo4Z84Lwrlt4DgtZzMGzhoE7OY2ptZlTud7IBNl0cucJaWd70m3P1TsQz+gdWy5sDo0CkM
-	Y9OxuFJLCbv4ODFlOtlA==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
+	In-Reply-To:Cc:To:From:MIME-Version:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=WF8G/Pw7dx6bL63Eeo3ClkpOALiPSHRnbX0Pt40gcLM=; b=Ww58aJJC1Wudy0sDsGKGzBEtYU
+	gzOfq6R12iFQwVqgBzCBXdvV3QoZOly/kpldO0hN8H/IN20VBkiky0cR8A66nyrV56iOcWRpUkPo9
+	e4Eeg3BGOPKKqxKA62iZ0GGA7xIY5KnyyVE/CfG9oQDU4qO1HptsBlOnCotvftRFh99Y2/tvDYImv
+	NoFeFvk/4Jgzodyu3H5fsT7YZMVxr1rsfiQxSJh+55cW7CZkw7iyr/8mH8XAm0UD8073P6LaVBchv
+	6zF+4SO33GV3lPsdGgbp2xVivabH8SIjAmodVrHGye4Yz7WLk2S4fsfeBvkpROocppbZwgELIN/p3
+	rJmGR5Dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swojb-0000000E67I-1bTz;
-	Fri, 04 Oct 2024 20:17:07 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1swsyB-0000000EYT1-1XAB;
+	Sat, 05 Oct 2024 00:48:27 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swnbY-0000000Dowg-0VO4;
-	Fri, 04 Oct 2024 19:04:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=B5HfbdgHbABODTaTjHs2WrlvZ31IfcWLv08zvorE0ME=; b=RJ2LnklGF1Fw7+oucTXKLqyVKl
-	lBweDFp1A6G40dexxEAbW5xrm002ht6fY6vr3ru7txjuzf55xf6Ce7XgYBHYwwROKFyUSmrY7bswz
-	vYk/COS0iCQvJ3TfnQNotFRuGafqPlM2DAtpHEGNbLoW/SEKj/xzE0QQjE/Dg67LJxj+0QtCWH2aA
-	g74wubNGuLUQ+7ihRiCotZbYysGiGVci0zd6FHicP4mFK0wlCl40I06I3PV1xpm572SM4w6kvF023
-	5yeswmYFghOWf/ELL1jKKBMhETTZs2uu+QHVXXvqLjAbvZ8W5/5+inFJlPk3R+/PFCNrw+bU+/0mw
-	G7ScPuRA==;
-Received: from mail-yw1-x1129.google.com ([2607:f8b0:4864:20::1129])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swnbU-00000003uPb-3bbq;
-	Fri, 04 Oct 2024 19:04:42 +0000
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-6e129c01b04so21546987b3.1;
-        Fri, 04 Oct 2024 12:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728068677; x=1728673477; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B5HfbdgHbABODTaTjHs2WrlvZ31IfcWLv08zvorE0ME=;
-        b=LWLH3KWiND0kyFsxU2wDJ5twWG6f3A2p84R9QaSNja4h5SjWjs1GDev2bR9loAU6yf
-         GA6Wyacvm+ibVL9JO1UQJwDB09yXp2OjNCxrPD6/y7ngFGSTk6M2xfjw/Z4MXQVX/r18
-         fN807zF3Tar7++ZNfv81yUc4WmK+//DznohjvXs0MOcOnLRg3a6g6mzC2ssNpwaOhuza
-         NT8uKDNNQ9f7NTl9w8Whc2LEvyy0kEy7dkmOMhz6jbyahcooSVVCx9fxvvh0a5XG5NMR
-         /nuhDu+GJgSTlNpRBU0m+QVtuCgtD9xLsSW6Dvh7juUNTh0k5RhErHpMaPNaSVMjohjK
-         DwxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728068677; x=1728673477;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B5HfbdgHbABODTaTjHs2WrlvZ31IfcWLv08zvorE0ME=;
-        b=MAs8ViCYwXkD9SnaQKpO48sfL+KpDKD00sNZWXqln7uWbSwp+ky863nWguov8mhCN9
-         BcL3pnNz5mEgjymKl+ovZT+4g0sdJF8P6BqiXnf5R8Z2U7BJoQIJcwyx2KkpvaP7Iekn
-         vbxRZM1U1Ss+qF+SQQL9k358cmIX+JaZ/emC/Kfg9s1S1aY3PbadDxE54FllWErfSqq2
-         NJCwAMLQmEh7jMSUYqIZ6akEqv4aPU8zONhB/kxfR4fSzx4S0dq/ktHrkPjHI+bTqXhj
-         U6dZHCGiGKd0VF5vVSnA+oF5iVcO3T+ICnQ08wS1iAaDCgrzZxbfjmirvEYxwmZ59clD
-         unAg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdAgsP2lMUYQes416EES2Omev+ZdFwyDtuaeeyed0VEbm/H1q+LXGp7OprA9EAv8UoFsH4ed5USTEqwfPHGUM=@lists.infradead.org, AJvYcCVQAXjj0a+j50rhAi80JnY8XCNrl8uI/dUg0fab9GnqNVQ4bjpkQgA3j+CU93NEcCH2eDG59yU5sZ4q@lists.infradead.org, AJvYcCX+B4OeTTugjk4wm8N/ziYFXqir8DVLAiS2NS8bUr5ipReqP8dWs9eZIFgfsw7H+/POJkAHaxmTa2zZzUYbiwXp@lists.infradead.org
-X-Gm-Message-State: AOJu0YwiVwBSzpLO4ltHb5NwxKh+1tkG+G69CByH6JTLFjVKbOFa8LV3
-	ZiHI7iUgd5CHt1ss43wp00QYyD21B+VQXbJDLpj+HwvszNw7EBERgWRh6RwNAu8ouYh+1bPB9lf
-	GXRxTXy5CuZc3ZKxfImK0DJqVbYA=
-X-Google-Smtp-Source: AGHT+IH9scQLWNqJQHayBVbx3/oOvir8TuLyhF6I1u9sp0NdVUUfeeiiIOFw8tGmDwqe/ZpBUA1tc6SRGklljrBAiUA=
-X-Received: by 2002:a05:690c:6813:b0:6e2:2600:ed86 with SMTP id
- 00721157ae682-6e2c72f779cmr34932837b3.45.1728068677613; Fri, 04 Oct 2024
- 12:04:37 -0700 (PDT)
+	id 1swsvf-0000000EY5V-0SUT;
+	Sat, 05 Oct 2024 00:45:52 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 9634AA441DA;
+	Sat,  5 Oct 2024 00:45:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D340C4CEC6;
+	Sat,  5 Oct 2024 00:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728089149;
+	bh=D8THuL/WtjamRz9W5coZAbJh0EtstxtlVs5yWnjdESk=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=uKARuMy09Q0qxfk2hLo/lsJCQT/NM+khzdhiyM6w+mtS8zviqo4UBbJDBF98P8Wwd
+	 jsTTIfqaD90nJcc+qR03NlkSHw7l29eLm/0q6TqZD/ZwlPZIpO5EGP5kmQqnqYQBdG
+	 j7Yjr4ZrDUOPy2kf5PoSISmH2ZA0MMMK/BBbrlteWeZ4oshlKFDkL6rGBYxrEhSihJ
+	 0ixbLATSjwhFXnIqvgS3rtAHPGRdHJktsqYpKpfvMOHaVMNR9N+97Ku/7a4wP26AaH
+	 pDx17AqmbqfoC0qFh2JEgrGMHAY04nPlFnfTsbwEfn1/FgrpbRuVejpUdjbQZVVriL
+	 OMVHSO67n5Bhw==
+Date: Fri, 04 Oct 2024 19:45:47 -0500
 MIME-Version: 1.0
-References: <20241004000015.544297-1-rosenp@gmail.com> <20241004000015.544297-6-rosenp@gmail.com>
- <39dcfa4b-1a22-4296-b190-ac39480d034a@kernel.org>
-In-Reply-To: <39dcfa4b-1a22-4296-b190-ac39480d034a@kernel.org>
-From: Rosen Penev <rosenp@gmail.com>
-Date: Fri, 4 Oct 2024 12:04:26 -0700
-Message-ID: <CAKxU2N9-DxfsANMfT8DZ-LuKJ3bqjckyfd=+Lg_qtRn985BuoQ@mail.gmail.com>
-Subject: Re: [PATCHv2 5/5] documentation: use nvmem-layout in examples
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
-	William Zhang <william.zhang@broadcom.com>, Anand Gore <anand.gore@broadcom.com>, 
-	Kursad Oney <kursad.oney@broadcom.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Gregory Clement <gregory.clement@bootlin.com>, 
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Christian Marangi <ansuelsmth@gmail.com>, 
-	"open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, 
-	"open list:ARM/QUALCOMM MAILING LIST" <linux-arm-msm@vger.kernel.org>, 
-	"moderated list:BROADCOM BCMBCA ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
-	"moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: devicetree@vger.kernel.org, Eric Dumazet <edumazet@google.com>, 
+ Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Christian Marangi <ansuelsmth@gmail.com>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ "David S. Miller" <davem@davemloft.net>, Conor Dooley <conor+dt@kernel.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ linux-mediatek@lists.infradead.org, 
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, netdev@vger.kernel.org, 
+ Andrew Lunn <andrew@lunn.ch>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Gregory Clement <gregory.clement@bootlin.com>, 
+ Anand Gore <anand.gore@broadcom.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Jakub Kicinski <kuba@kernel.org>, linux-mtd@lists.infradead.org, 
+ Richard Weinberger <richard@nod.at>, 
+ William Zhang <william.zhang@broadcom.com>, linux-arm-msm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, 
+ Konrad Dybcio <konradybcio@kernel.org>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Kursad Oney <kursad.oney@broadcom.com>
+In-Reply-To: <20241004000015.544297-1-rosenp@gmail.com>
+References: <20241004000015.544297-1-rosenp@gmail.com>
+Message-Id: <172808887889.121631.5291340274404319375.robh@kernel.org>
+Subject: Re: [PATCHv2 0/5] devicetree: move nvmem-cells users to
+ nvmem-layout
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241004_200441_004120_0647E753 
-X-CRM114-Status: GOOD (  18.95  )
+X-CRM114-CacheID: sfid-20241004_174551_651711_EFF53980 
+X-CRM114-Status: GOOD (  11.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,47 +89,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBPY3QgMywgMjAyNCBhdCAxMToyNeKAr1BNIEtyenlzenRvZiBLb3psb3dza2kgPGty
-emtAa2VybmVsLm9yZz4gd3JvdGU6Cj4KPiBPbiAwNC8xMC8yMDI0IDAyOjAwLCBSb3NlbiBQZW5l
-diB3cm90ZToKPiA+IG52bWVtLWNlbGxzIGFyZSBkZXByZWNhdGVkIGFuZCByZXBsYWNlZCB3aXRo
-IG52bWVtLWxheW91dC4gRm9yIHRoZXNlCj4gPiBleGFtcGxlcywgcmVwbGFjZS4gVGhleSdyZSBu
-b3QgcmVsZXZhbnQgdG8gdGhlIG1haW4gcG9pbnQgb2YgdGhlCj4gPiBkb2N1bWVudCBhbnl3YXku
-Cj4KPiBQbGVhc2UgdXNlIHN1YmplY3QgcHJlZml4ZXMgbWF0Y2hpbmcgdGhlIHN1YnN5c3RlbS4g
-WW91IGNhbiBnZXQgdGhlbSBmb3IKPiBleGFtcGxlIHdpdGggYGdpdCBsb2cgLS1vbmVsaW5lIC0t
-IERJUkVDVE9SWV9PUl9GSUxFYCBvbiB0aGUgZGlyZWN0b3J5Cj4geW91ciBwYXRjaCBpcyB0b3Vj
-aGluZy4gRm9yIGJpbmRpbmdzLCB0aGUgcHJlZmVycmVkIHN1YmplY3RzIGFyZQo+IGV4cGxhaW5l
-ZCBoZXJlOgo+IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvbGF0ZXN0L2RldmljZXRy
-ZWUvYmluZGluZ3Mvc3VibWl0dGluZy1wYXRjaGVzLmh0bWwjaS1mb3ItcGF0Y2gtc3VibWl0dGVy
-cwo+Cj4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBSb3NlbiBQZW5ldiA8cm9zZW5wQGdtYWlsLmNv
-bT4KPiA+IC0tLQo+ID4gIC4uLi9tdGQvcGFydGl0aW9ucy9xY29tLHNtZW0tcGFydC55YW1sICAg
-ICAgICB8IDE5ICsrKysrKysrKysrLS0tLS0tLS0KPiA+ICAuLi4vYmluZGluZ3MvbmV0L21hcnZl
-bGwsYXF1YW50aWEueWFtbCAgICAgICAgfCAxMyArKysrKysrKy0tLS0tCj4gPiAgMiBmaWxlcyBj
-aGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkKPiA+Cj4gPiBkaWZmIC0t
-Z2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3Fj
-b20sc21lbS1wYXJ0LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
-L3BhcnRpdGlvbnMvcWNvbSxzbWVtLXBhcnQueWFtbAo+ID4gaW5kZXggMWMyYjRlNzgwY2E5Li44
-YWUxNDk1MzRiMjMgMTAwNjQ0Cj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbXRkL3BhcnRpdGlvbnMvcWNvbSxzbWVtLXBhcnQueWFtbAo+ID4gKysrIGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3Fjb20sc21lbS1wYXJ0
-LnlhbWwKPiA+IEBAIC00NSwxNyArNDUsMjAgQEAgZXhhbXBsZXM6Cj4gPiAgICAgICAgICAgICAg
-Y29tcGF0aWJsZSA9ICJxY29tLHNtZW0tcGFydCI7Cj4gPgo+ID4gICAgICAgICAgICAgIHBhcnRp
-dGlvbi1hcnQgewo+ID4gLSAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm52bWVtLWNlbGxz
-IjsKPiA+IC0gICAgICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gPiAtICAgICAg
-ICAgICAgICAgICNzaXplLWNlbGxzID0gPDE+Owo+ID4gICAgICAgICAgICAgICAgICBsYWJlbCA9
-ICIwOmFydCI7Cj4gPgo+ID4gLSAgICAgICAgICAgICAgICBtYWNhZGRyX2FydF8wOiBtYWNhZGRy
-QDAgewo+ID4gLSAgICAgICAgICAgICAgICAgICAgcmVnID0gPDB4MCAweDY+Owo+ID4gLSAgICAg
-ICAgICAgICAgICB9Owo+ID4gKyAgICAgICAgICAgICAgICBudm1lbS1sYXlvdXQgewo+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJmaXhlZC1sYXlvdXQiOwo+Cj4gVGhpcyBk
-b2VzIG5vdCBsb29rIHJpZ2h0IC0gdGhlIGJpbmRpbmcgc3RpbGwgZXhwZWN0cyBudm1lbS1jZWxs
-cy4gSQo+IHdvbmRlciBob3cgZG9lcyB0aGUgbnZtZW0tY2VsbHMueWFtbCB3b3JrIGlmIHRoZSBj
-b21wYXRpYmxlIGlzIGJlaW5nCj4gcmVtb3ZlZCBzbyBpdCBpcyBub3QgYmVpbmcgc2VsZWN0ZWQu
-Ck5vdCBzdXJlIEkgZm9sbG93IGhlcmUuIFlvdSBtZWFuIHJlcGxhY2UgbnZtZW0tY2VsbHMueWFt
-bCB3aXRoCm52bWVtLWxheW91dC55YW1sID8KPgo+Cj4gQmVzdCByZWdhcmRzLAo+IEtyenlzenRv
-Zgo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+On Thu, 03 Oct 2024 17:00:10 -0700, Rosen Penev wrote:
+> The former has been soft deprecated by the latter. Move all users to the
+> latter to avoid having nvmem-cells as an example.
+> 
+> v2: add missing semicolon to fix dt_binding_check
+> 
+> Rosen Penev (5):
+>   ARM: dts: qcom: ipq4019: use nvmem-layout
+>   arm64: dts: bcm4908: nvmem-layout conversion
+>   arm64: dts: armada-3720-gl-mv1000: use nvmem-layout
+>   arm64: dts: mediatek: 7886cax: use nvmem-layout
+>   documentation: use nvmem-layout in examples
+> 
+>  .../mtd/partitions/qcom,smem-part.yaml        | 19 +++++++-----
+>  .../bindings/net/marvell,aquantia.yaml        | 13 ++++----
+>  .../boot/dts/qcom/qcom-ipq4018-ap120c-ac.dtsi | 19 +++++++-----
+>  .../bcmbca/bcm4906-netgear-r8000p.dts         | 14 +++++----
+>  .../dts/marvell/armada-3720-gl-mv1000.dts     | 30 +++++++++----------
+>  .../mediatek/mt7986a-acelink-ew-7886cax.dts   |  1 -
+>  6 files changed, 53 insertions(+), 43 deletions(-)
+> 
+> --
+> 2.46.2
+> 
+> 
+> 
+
+
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
+
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
+
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
+
+  pip3 install dtschema --upgrade
+
+
+New warnings running 'make CHECK_DTBS=y broadcom/bcmbca/bcm4906-netgear-r8000p.dtb marvell/armada-3720-gl-mv1000.dtb mediatek/mt7986a-acelink-ew-7886cax.dtb' for 20241004000015.544297-1-rosenp@gmail.com:
+
+arch/arm64/boot/dts/broadcom/bcmbca/bcm4906-netgear-r8000p.dts:149.4-30: Warning (ranges_format): /bus@ff800000/nand-controller@1800/nand@0/partitions/partition@0:ranges: "ranges" property has invalid length (12 bytes) (parent #address-cells == 1, child #address-cells == 2, #size-cells == 1)
+
+
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
