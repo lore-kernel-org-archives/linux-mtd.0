@@ -4,65 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC587CED27F
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2024 08:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68E0FCFA757
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2024 09:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UKfC2W5gmImwDJ5E53rO3av0a8mvB1806EzW3nzNEfs=; b=JhII5AyJnoL93K
-	p0rBobiOAU8g03iYG1r0ofXZFqE7onIG0qwieXvaprB9JKR78tzmYVasybMyNz+1c5jMgNTABJYr7
-	l1WzA/IrrbG445da91Yw5uUK/bmbfkYX9DgWawbz2V4tKtGyrrsz/XA/xyGC1oNQ62sT+ulzBTIky
-	cuiplYwNPw7k8OTskAr2AWS9AkecPXQYGUR6dw1ZvxPWEePJfwEoJILBV0nPDT1NYmXX9D/y1RUq0
-	p4ex9jltOJPwvd19h/BifMfNesjndOCIXuLWTdvRIDohZbNcLyW1AQddrGgjy28NOUSkc5fiu2kKf
-	14Rb7EWwx+jHBI4coVQg==;
+	List-Owner; bh=Ia0M1lqL+f1iPwclFjh+EXgXt4j942C6IWS520sxwz8=; b=fnfmWn9SK9WYfl
+	YB3DWHgc9FX978WPpn9dNvzCPig3jkY0knX0aUpvB+YLzZszbbaNbd08QKG+yU/qXyOh3H+sk8oTi
+	nld0dfWWl2DUYYePOqRIaPT96jENNiSgwiWrQw5dvRCqt77LtLOrlB4gVZoUGwXkREXM1GDBYdHMk
+	qgmkPK/pKFIia5c5yZ0koW5ktwX1ro4aMpfqiAMtwz+wg9pIHufMOBtM2xEW4yB7BYa1RDee3Hfo9
+	r6RkpK11Iauig+x0A9BeLqlgP3UVU2jnzHiV48uEcOFCN3fi86QL40C2Ky56EdwOkyJ6HsD2t4Wg3
+	9PmjlFDnx0Kcj0U1whHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sy64M-00000005BcV-06Z3;
-	Tue, 08 Oct 2024 08:59:50 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1sy65C-00000005BzZ-1nmx;
+	Tue, 08 Oct 2024 09:00:42 +0000
+Received: from smtpout45.security-mail.net ([85.31.212.45])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sy609-00000005AFv-0YBu
+	id 1sy50D-00000004sby-1Ox8
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Oct 2024 08:55:30 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 56AF2FF80A;
-	Tue,  8 Oct 2024 08:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1728377725;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X2J2kZz9XVQBtjS6G6EvCariDJ3hTXnxYgwv1j+Fa0w=;
-	b=JtcB8O/llg/5QP86K1t+19Ewr2z92DZa5seey/ztVjdg2NouCwZwjHasybz7L6F5piBgTe
-	16Gjp173ZX06TfRVBifaOQ8I10L+pUjs4bO3r4DMuZ+o9ICSQkI+dsYCHV8+EWj0gItxBp
-	MbXwj2DUdQn3FXTMulXteL6lGcNpeblGkKTD8u8yR4Jz1LMst/1SPYq+aePDnLBfQu/O3l
-	oKre/abPfEt87jQkj9KP3iV1N5otY9242mOHoPyzqxOrgPe8w9UqM5suhgnZc5hxae+zPs
-	HU0Q0t22JXXA6xfPhK2SX6zL8RnitH1mA6eoybSGGa8vU8bXaj52JuDjbzpeHw==
-Date: Tue, 8 Oct 2024 10:55:23 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Cheng Ming Lin <linchengming884@gmail.com>
-Cc: vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, richard@nod.at, alvinzhou@mxic.com.tw,
- leoyu@mxic.com.tw, Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH 1/2] mtd: spi-nand: Add fixups for read retry
-Message-ID: <20241008105523.1647f2ca@xps-13>
-In-Reply-To: <CAAyq3SaZKMqJrv7caVwO0+u+nk8JWZ8qTRHdUqQOfQhx9gBF7Q@mail.gmail.com>
-References: <20240905055333.2363358-1-linchengming884@gmail.com>
-	<20240905055333.2363358-2-linchengming884@gmail.com>
-	<20241001114039.67bab21e@xps-13>
-	<CAAyq3SbP4kSW47ZaT7V9ZzeHauj_EwfU5GPipZjNK6j69qm7Vw@mail.gmail.com>
-	<20241007103331.55f37dcb@xps-13>
-	<CAAyq3SaZKMqJrv7caVwO0+u+nk8JWZ8qTRHdUqQOfQhx9gBF7Q@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	Tue, 08 Oct 2024 07:51:31 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by fx301.security-mail.net (Postfix) with ESMTP id BD7A645DF20
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2024 09:51:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
+	s=sec-sig-email; t=1728373885;
+	bh=Vugnc9JNjdRomyxy00yZbAjjGE3NVMfMf5WMnR6OLyU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=VYyaRSGtQQsT41qmV2tMcLOVkmrtFjDV6c8J26NalKweZ7eK0roWH8+LcJhuoQ9lT
+	 x62oONt1ik7witAWivayM9/akiGtEH7HSc9JgvlPKmamciheIEOdrzzm3W1fBban0e
+	 wpb2wrtO0dSQuQqbCnUT2myJqiuQqEfinsd7kBSo=
+Received: from fx301 (localhost [127.0.0.1]) by fx301.security-mail.net
+ (Postfix) with ESMTP id EAC0B45D7EF; Tue, 08 Oct 2024 09:51:24 +0200 (CEST)
+Received: from PR0P264CU014.outbound.protection.outlook.com
+ (mail-francecentralazlp17012050.outbound.protection.outlook.com
+ [40.93.76.50]) by fx301.security-mail.net (Postfix) with ESMTPS id
+ 98FEC45D8B3; Tue, 08 Oct 2024 09:51:23 +0200 (CEST)
+Received: from PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:118::6)
+ by PR1P264MB3357.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.24; Tue, 8 Oct
+ 2024 07:51:21 +0000
+Received: from PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::6fc2:2c8c:edc1:f626]) by PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::6fc2:2c8c:edc1:f626%4]) with mapi id 15.20.8026.020; Tue, 8 Oct 2024
+ 07:51:21 +0000
+X-Secumail-id: <3233.6704e47b.96c09.0>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=l/x53jWi8aAsrvOh4D4dLiKsMOg4BrJQhsd5/Mn+1Ng5A3c95oki2n4NXYWff9/ce3vmGU6XUSro0eaPzCOrsneVomCoZGrlFYqMqJf//FjoVj6cnc0sTJvCPUX3xvswaUBVCZBbuC85zeeRV5KDOZRAALdXjh/hmFgpR85rTxgzskbwW51MNToRyxs4t5fI7xnlFK3OlExMZquSVSYTJemF09zKOzQN508gBcBFC3zBbHcWh7FKH0ZksC2GU2Xdm/FQg1M4DT2Y2nQtBJuPBQq2gJmNn1o7DtRR4jskLibZ2+ZY0Qhbzuva8G/Fu/zq2l6j86jd5smpCK30PwOCPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microsoft.com; s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=24NFZOMeT6FafPTylyEnXkpcymOn4pxoBqjTMqt99s4=;
+ b=xWg2gfw1krBK9FPdHOr/Ruy6WWIhNexPoMKyIEpeUTL3LEEXnDF2zeuenlo1bJth7/nI/5N9voYLyBPBBGT8VUE53+C4jbX1fr0NhNdE5RTd2GtgSgrEcBmUAYZQ9mmmWSQT/G6kz4SqiqyoSXfxGWcJA2yKC3eSZG6i2bOFyOR5B9ykqltOXQ1ieZX3vNt9TXofMbkBFmoAwUswtJnymv+fnCH3f4tXE6Fshdsd5un3wuXsAb8Ylk9p+BDCOC7BWLfa+zwTTfsJ6i3V30iP78HkLYiO5Uqp7LU9Rdl+Az2XfkTM0cfFd1bpI3AauoB9uG29Li74tSOj+czEe5W9XA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
+ header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=24NFZOMeT6FafPTylyEnXkpcymOn4pxoBqjTMqt99s4=;
+ b=jr4JltfPTQlF6wUt6i2Vz/cbYZPUxEh2aIY6+TDHTX2SV46DNutd8Bja7Ik7lVJgtCHJj8x+Qm9/t2z/yIotblyJmZHMtZ6ORd4rKvdUGKUwGP9z92k5chGxALb5h36uvbb69E8y36ldYtnhXs1b6O2nblahM482/G02MN03JzWSheua2xyFQyKHXG9SJNj2iNbZcLSaO7Pq4602QAEpn+EkT3CB91MKbQW9bx8xe7xYyMCacsmdCy+Bn8hKM7g63I6Zra/P42dAz+r0ig6hHGIC5bbQy/pwKA088q3KIDnQDvXJ0W8luQCozWAQX+D4salUwmDvKJBRqdbPLZXzew==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kalrayinc.com;
+From: Julian Vetter <jvetter@kalrayinc.com>
+To: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG
+ Xuerui <kernel@xen0n.name>, Andrew Morton <akpm@linux-foundation.org>, Geert
+ Uytterhoeven <geert@linux-m68k.org>, Richard Henderson
+ <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>, "James E . J . Bottomley"
+ <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Richard Weinberger
+ <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes
+ Berg <johannes@sipsolutions.net>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
+ Srinivasan <maddy@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily
+ Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
+ <svens@linux.ibm.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Manivannan
+ Sadhasivam <manivannan.sadhasivam@linaro.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-sound@vger.kernel.org, Yann Sionneau
+ <ysionneau@kalrayinc.com>, Julian Vetter <jvetter@kalrayinc.com>
+Subject: [PATCH v8 11/14] s390: Add wrappers around zpci_memcpy/zpci_memset
+Date: Tue,  8 Oct 2024 09:50:19 +0200
+Message-ID: <20241008075023.3052370-12-jvetter@kalrayinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20241008075023.3052370-1-jvetter@kalrayinc.com>
+References: <20241008075023.3052370-1-jvetter@kalrayinc.com>
+X-ClientProxiedBy: AM4PR07CA0019.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::32) To PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:118::6)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAYP264MB3766:EE_|PR1P264MB3357:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5a8046c-f4a5-49be-865a-08dce76e001e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|52116014|7416014|376014|1800799024|366016|921020|38350700014;
+X-Microsoft-Antispam-Message-Info: OatTSMHyljcbQh4QB2kQXsYpM9he7Ny4RdRKHV7173uvZ3BHZNdwbmh00wa/qAjKRvsY+28FnbOBtp/xdUYjYjr67J7ys+TjgQKK7B8Js4nKDyqXSP+PJhRoFkSryUTId2PxjWSCh7Baf+VHGMhKG7QFjdWeyx/sYRkaG0EgCf3Hdp8X3zIW8BtY9lC3V5bFEfrKFpqiQ18JmOmBmi/w/Q6o69f89+7MBpls3HA/NMjO63mNRLoHdiGjpLDPK3oEjbbWEYlX/LmkBWaAOTctEDzI5WTXC3QXcOr+wJJkYIgG0+LFtp7rd9Bwe78NbBa8lhgrWn7qC575CPHlpTiHoZe4nBwjROxlb1F/6A0LvYcTpWvdm/azdrvJjnAwGx6UbZqYawM+4bbwNeET81oHcz16tS29lJsOuc55mJjgTSZv4+DOmmv6v7PVPvmaL3C8TeVks952M84/4ridHJxJIG0G4p1xEmj+6hOhfVIxML17rPjfEfEOKTGjtKvhn/YdT2UdxljHs+GD3BzlpdPEchs2a8YQ/jcnrk0urx6+7dGiEJN6O/r/swQ8Kx6jy6y5ztKfLUKe71l3mMIxcWQMXXPzK6URBS7SV1CITDuqwEYS9QusjX+miqK9QubojefkcuKaYpAdYzOCNYf4JHS2taME+8RVPx6MrxBFW30CMD5cwZz8rIbdyxDq6CvzpKn5hYMWXgCKinrP1H17xYUi+I633fOhDouoeJgDyIRcETtyndcME7/PgDNgnEC3tI2S81FQJcvBOob/sNsUbyr8IaXT1M+sSBdIScgvikpGmhQPus5titFTx+0mNQa8We2rH/9v7c1wrrd/IV0RzAYVQ9NQyvE2uXBhL13JMo3WKLq35X2bI+gOmGG4Q0lS7vNUaxV16rg6Duc/Sdv0U/YOaWSQrPHgL1NzRMj9TOqVgtBlE+YV5b/cyF0prY3GgAWBAIp
+ ZzfYC83jaBHjStlwrBA7MT+jGW3sRERUn4QA/bKFDrITc+Ts4JcNj8IM82v4aveD0sJFcN3RcS36z06WxzQ2yxqAEQoxqk1SS4U8Pw5Lgxd5MTiqT6DAao5t7a/tJpd4sLO8WuUEIHx/7d34wXcDHxK0PiE6pi/nKhdufEBDJXh+mFwsiSSb2HCQ432q0Zx/TYV2XhM6DDFC7aPg+WdTkNoZdbroO0NmaAH41lHXKspq2W9AXg6dujmKLN5ggU3iUumy3QY82EvGpKE629A2Yipf8XzGQtB8BOe2cPOp0GjxtoaY2r0oPqN8/I8NVKM3kNI981FVm/s0VdbSUQ5UV3LfyUY1TIwKCec7wDn33M5r7U3/DkSFxNS24u2XxSIwGA7/BNYloaoMhtHdJ9Q0H8C/Cr8JbERxQUyn/274=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(52116014)(7416014)(376014)(1800799024)(366016)(921020)(38350700014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: oymbwlXR9pRYt8GdV4hHX8v5Ch11eMM677r4a4SnbFKpUZEm2SN20fj2aWpMqAppAn6AvAMZ4Z29LcPnPKqduJ06X0/5zjT2HFB/vxwC4/xFbqEAKxh+tDfFS9hxSIX99bZiriCbD75LI48+r5XYQoMRIijFWUa4OgJ/lkUwTP92UjEmwxUeRZCk4wpNe55JQhp5qaEJhWIIRk9XR9usCm+ydeK1ATkuNa5AC0Z2FbYOna2ctvuqrN/f9mz/2C2UVDEDZbQLuedTsEExgls2DiNB2HcLDaGJWWil4aaSj2mw88EFQnwH9SSxGoao6e800ebL5YceESTq57+qIZgP0wI0LLuAvMywHN44rwREb0VjaF5jhFmAnLzgECzRBjbHHaZHwljOA1yVJcFQDC00ktZXM74qh0hPc4BfkO6Er82tuRvbosIfZRaRU06Xh07tZ8aclldGMwKC42QMiUznVabJR2uwgC+PLI3Cntqq+MnlNDhbPuV2nVMNZvhBaJBwOLhRAdxLPDTMRqqixbwvIlbes3HF64TrWm3dxJONN2AD/oHmASU4sa2K8E4FI3SyC5sw1YS/yyxXeNDY9uUf1FbvDYfbxMlCg0a00sb08EpLhSxJ4bm8280eyW5jjJJDEVyAwt9OOwM78cSAGSjf2B071cW2KX+pw4lIoeeavaHLxHPfoV7CxVUXZm9s0iwpC+H8pPGvMsXuKNd3gyno0OGw2bZ4Pk6OSraH1zUSHA9nvY6jPS/d4W4ZEYg3PCRVnyXaqPrNNVgNlYn4OzPYzzJYZ7EtXbyyhPAnP3lSDktetZbu1RmHEuk2VsCjiXUGIKQW3NE1VDQVQT1Q0eHoh77JSZ3UXfFqdFVzeFlnvVAcSNZL3AdDk5ZtIu79m30dpovngRD247YzrvkzKhXreye+jNQzkbQrf/S/2T+GBtXb7NKXJ86NmHP1U2i+D0mQ
+ 6xOrGUtA9Soqxg8ZJE85OgsP/qDnhFCVzZclxXjcKt+PfhPMbn0rPCym+6tXGyolRecUMlL/+qkhwZscC3R5ol8uuBGa4ke5xmB0TCZSFOKy81A/HdvAuJxeoie9OlN6gOFmR5LMoTbfiJK9LUrbUONhYeKS5hsPqUuz7iga1xMVJzjdFUAQ8S26csgdFUnTTfA5lW3ks86cv8SCsu0/oZgTiuWBhmvpnasmrWhPe6zydz3PlDrZ4ESnsUrUPNgX8VwXwUKqMfwRdxn+5UcpkGcnjyGETOwxK7A+JF1XWYP50vNdPqXMh7pSGOkRMtZOLpIclfKlcrXe9DzwUbNIORKZbUm+1jycTAprK7I8tQX5OB/ydp+T92uIQf7S3kVga4CjdRjyXb3IZ3o9BQSJoBLkKIH0zU49kfPtKWoSNCGdznaqwncSfZcnw10uqAZff/h1vte2Uff/HvUh4deU+sdVnvYnkIKhHbHIRNl0LI19l3YUSLzgBaKiLXvNpFlyidjnM1uE+QmMWDNNCReTQ9Cp3qP6bBHE+KZWB4HNW2vQjFkKcSfjazs/0D0RohyYCtpzPlUmi3cmUdwFo8XvaPJ2eAMFkjg7Jt9CM6HUTq4vaD0TMptbW2A3xhGvWM3A
+X-OriginatorOrg: kalrayinc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5a8046c-f4a5-49be-865a-08dce76e001e
+X-MS-Exchange-CrossTenant-AuthSource: PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2024 07:51:21.5640
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: srSK9zKa7OBuWRE9rEsp5SZNrnp2Hx5sz3CNM7GYMItE12AnArnFqb9IY7mxJBF+ihhZZQJIsqw7VYXm52Uzsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3357
+X-ALTERMIMEV2_out: done
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241008_015529_338838_57E462A4 
-X-CRM114-Status: GOOD (  19.63  )
+X-CRM114-CacheID: sfid-20241008_005129_558819_A5AD191A 
+X-CRM114-Status: GOOD (  14.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,44 +149,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpsaW5jaGVuZ21pbmc4ODRAZ21haWwuY29tIHdyb3RlIG9uIFR1ZSwgOCBPY3QgMjAyNCAx
-NDoyNToyNSArMDgwMDoKCj4gSGkgTWlxdWVsLAo+IAo+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5y
-YXluYWxAYm9vdGxpbi5jb20+IOaWvCAyMDI05bm0MTDmnIg35pelIOmAseS4gCDkuIvljYg0OjMz
-5a+r6YGT77yaCj4gPgo+ID4gSGkgQ2hlbmcgTWluZywKPiA+ICAKPiA+ID4gPiA+IEBAIC0zMjUs
-NyArMzczLDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzcGluYW5kX2luZm8gbWFjcm9uaXhfc3Bp
-bmFuZF90YWJsZVtdID0gewo+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAmdXBkYXRlX2NhY2hlX3ZhcmlhbnRzKSwKPiA+ID4gPiA+ICAgICAgICAg
-ICAgICAgICAgICBTUElOQU5EX0hBU19RRV9CSVQsCj4gPiA+ID4gPiAgICAgICAgICAgICAgICAg
-ICAgU1BJTkFORF9FQ0NJTkZPKCZteDM1bGZ4Z2U0YWJfb29ibGF5b3V0LAo+ID4gPiA+ID4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBteDM1bGYxZ2U0YWJfZWNjX2dldF9zdGF0
-dXMpKSwKPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXgzNWxm
-MWdlNGFiX2VjY19nZXRfc3RhdHVzKSwKPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICBTUElO
-QU5EX0ZJWFVQUygmcmVhZF9yZXRyeV9maXh1cHMpKSwKPiA+ID4gPiA+ICAgICAgIFNQSU5BTkRf
-SU5GTygiTVgzNVVGMUdFNEFDIiwKPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICBTUElOQU5E
-X0lEKFNQSU5BTkRfUkVBRElEX01FVEhPRF9PUENPREVfRFVNTVksIDB4OTIsIDB4MDEpLAo+ID4g
-PiA+ID4gICAgICAgICAgICAgICAgICAgIE5BTkRfTUVNT1JHKDEsIDIwNDgsIDY0LCA2NCwgMTAy
-NCwgMjAsIDEsIDEsIDEpLCAgCj4gPiA+ID4KPiA+ID4gPiBJIGV4cGVjdCBhIHBhdGNoIHRhcmdl
-dGluZyB0aGUgY29yZSBmaXJzdCwgYW5kIHRoZW4gdGhlIGNoYW5nZXMgaW4gdGhlCj4gPiA+ID4g
-TWFjcm9uaXggZHJpdmVyLiAgCj4gPiA+Cj4gPiA+IEdvdCBpdCwgc28gZG8geW91IHByZWZlciB0
-aGF0IHdlIHN3aXRjaCB0byB1c2luZyBmbGFncyBpbnN0ZWFkPyAgCj4gPgo+ID4gTm90IG5lY2Vz
-c2FyaWx5LCBkaWQgST8KPiA+Cj4gPiAuLi4KPiA+ICAKPiAKPiBVc2luZyBhIGZsYWcgaW5zdGVh
-ZCBvZiBmaXh1cHMgYWxsb3dzIHRoaXMgcGF0Y2ggdG8gdGFyZ2V0IHRoZSBjb3JlIGZpcnN0LAo+
-IGFuZCByZWR1Y2VzIGNoYW5nZXMgaW4gdGhlIE1hY3Jvbml4IGRyaXZlci4KClByb3Bvc2Ugd2hh
-dCBldmVyIHlvdSB0aGluayBpcyBiZXN0LiBZb3UgY2FuIGFsc28gbG9vayBhdCBob3cgaXQgaXMK
-ZG9uZSBpbiByYXcgTkFORC4gQnV0IGFsd2F5cyBpbmNsdWRlIHRoZSBjb3JlIGNoYW5nZXMgZmly
-c3QsIHBsZWFzZS4KSXQgaXMgbm90IHJlbGF0ZWQgdG8gaG93IHlvdSBpbXBsZW1lbnQgaXQuCgo+
-IAo+ID4gPiA+ID4gICAgICAgY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyICptYW51
-ZmFjdHVyZXI7Cj4gPiA+ID4gPiAgICAgICB2b2lkICpwcml2Owo+ID4gPiA+ID4gKyAgICAgaW50
-IHJlYWRfcmV0cmllczsgIAo+ID4gPiA+Cj4gPiA+ID4gQW55IHJlYXNvbiB0byBrZWVwIHRoaXMg
-dmFyaWFibGUgc2lnbmVkPyAgCj4gPiA+Cj4gPiA+IE5vLCB3ZSBjYW4gc2ltcGx5IGNoYW5nZSBm
-cm9tIGludCB0byB1OC4gIAo+ID4KPiA+IEp1c3QgdW5zaWduZWQgaW50IGlzIGZpbmUuCj4gPiAg
-Cj4gCj4gU3VyZSwgdGhhbmtzIQo+IAo+ID4gVGhhbmtzLAo+ID4gTWlxdcOobCAgCj4gCj4gVGhh
-bmtzLAo+IENoZW5nIE1pbmcgTGluCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+Add wrapper functions around zpci_memcpy_{from,to}io and zpci_memset_io,
+which have aligned prototypes with the ones from iomap_copy.c. These
+wrappers are necessary because the prototypes of the zpci_ functions
+can't be changed. In s390 arch code they are directly being called and
+the return value is checked, At the same time they serve as generic
+memcpy_{from,to}io and memset_io functions, without a return value.
+
+Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
+Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
+---
+Changes for v8:
+- New patch
+---
+ arch/s390/include/asm/io.h     | 27 +++++++++++++++++++++++----
+ arch/s390/include/asm/pci_io.h |  6 +++---
+ 2 files changed, 26 insertions(+), 7 deletions(-)
+
+diff --git a/arch/s390/include/asm/io.h b/arch/s390/include/asm/io.h
+index 0fbc992d7a5e..f3ef6d4130b3 100644
+--- a/arch/s390/include/asm/io.h
++++ b/arch/s390/include/asm/io.h
+@@ -58,10 +58,6 @@ static inline void ioport_unmap(void __iomem *p)
+ #define pci_iomap_wc pci_iomap_wc
+ #define pci_iomap_wc_range pci_iomap_wc_range
+ 
+-#define memcpy_fromio(dst, src, count)	zpci_memcpy_fromio(dst, src, count)
+-#define memcpy_toio(dst, src, count)	zpci_memcpy_toio(dst, src, count)
+-#define memset_io(dst, val, count)	zpci_memset_io(dst, val, count)
+-
+ #define mmiowb()	zpci_barrier()
+ 
+ #define __raw_readb	zpci_read_u8
+@@ -73,6 +69,10 @@ static inline void ioport_unmap(void __iomem *p)
+ #define __raw_writel	zpci_write_u32
+ #define __raw_writeq	zpci_write_u64
+ 
++#define memcpy_fromio memcpy_fromio
++#define memcpy_toio memcpy_toio
++#define memset_io memset_io
++
+ /* combine single writes by using store-block insn */
+ static inline void __iowrite32_copy(void __iomem *to, const void *from,
+ 				    size_t count)
+@@ -88,6 +88,25 @@ static inline void __iowrite64_copy(void __iomem *to, const void *from,
+ }
+ #define __iowrite64_copy __iowrite64_copy
+ 
++static inline void memcpy_fromio(void *dst, const volatile void __iomem *src,
++			    size_t n)
++{
++	zpci_memcpy_fromio(dst, src, n);
++}
++
++static inline void memcpy_toio(volatile void __iomem *dst,
++			      const void *src, size_t n)
++{
++	zpci_memcpy_toio(dst, src, n);
++}
++
++static inline void memset_io(volatile void __iomem *dst,
++			    int val, size_t count)
++{
++	zpci_memset_io(dst, val, count);
++}
++
++
+ #endif /* CONFIG_PCI */
+ 
+ #include <asm-generic/io.h>
+diff --git a/arch/s390/include/asm/pci_io.h b/arch/s390/include/asm/pci_io.h
+index 2686bee800e3..43a5ea4ee20f 100644
+--- a/arch/s390/include/asm/pci_io.h
++++ b/arch/s390/include/asm/pci_io.h
+@@ -143,7 +143,7 @@ static inline int zpci_get_max_io_size(u64 src, u64 dst, int len, int max)
+ 
+ static inline int zpci_memcpy_fromio(void *dst,
+ 				     const volatile void __iomem *src,
+-				     unsigned long n)
++				     size_t n)
+ {
+ 	int size, rc = 0;
+ 
+@@ -162,7 +162,7 @@ static inline int zpci_memcpy_fromio(void *dst,
+ }
+ 
+ static inline int zpci_memcpy_toio(volatile void __iomem *dst,
+-				   const void *src, unsigned long n)
++				   const void *src, size_t n)
+ {
+ 	int size, rc = 0;
+ 
+@@ -187,7 +187,7 @@ static inline int zpci_memcpy_toio(volatile void __iomem *dst,
+ }
+ 
+ static inline int zpci_memset_io(volatile void __iomem *dst,
+-				 unsigned char val, size_t count)
++				 int val, size_t count)
+ {
+ 	u8 *src = kmalloc(count, GFP_KERNEL);
+ 	int rc;
+-- 
+2.34.1
+
+
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
