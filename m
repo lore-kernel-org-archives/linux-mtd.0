@@ -4,142 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12CD4CEF164
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2024 12:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D856BCEF161
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2024 12:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:References:In-Reply-To:
-	Message-Id:Cc:To:From:Date:MIME-Version:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=KGTkBnT5186y5wAHD1479tfRFLLOukHZ8pHRAoIGqy4=; b=QMxN2g6VDtOVqpRN0ExCwX1lcZ
-	ZR/ZNGxAOQ4LDbG5kueAF0J9Sl+lcZ4cfLgVhpciinlTkwh2Q4y4aYvPRj/s4uxNZMCjzgv/KCkGD
-	Y6QAAAF+wMqYOM7iY6qnuu6gKZlLraQhGGdU2pF4IVHX98ADzrl5Jc4Zh5YXMmhHIb6QuZ0g1LgoV
-	nAKRy+bfhDwleRrEiQvFgg6NJQ6DdP4+/jUQsuWtupuDrhAqkmmo4gxmz+05Jub81JHmk7HOefXFJ
-	k4ERfrmWntOPfxYfj+OyXuEgz6MLONoQuQifgeoR9ljnipyRRzy4KiTV2VS1Z7krYCQ+6vCZL/mpB
-	N0lMmo2w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6MNjBFbl9giTLtBhQtGvENtsm8u60hKAEtyFD4S0mrs=; b=llBaQtejpxq8YO
+	bPecsNCiwr6tBwq6tMb5qrpipeWuMMbzV4OIernHLuwkziHAZPooKqBAME9gTQJ+UT9F9d6TBiKa7
+	gMkoCc7x9PywZs/zH5GJBpnFzezvVP96vTn2aqH0olFyKQxnm7tLzo0sJJu9jkJyG02UD4pSmOcgt
+	kyXTTt0ACh/d885OCiUwzdiH6Ni/EByxMkPIi0vjUeOHrP87UAOEV/uIk4r6DvfEt6zksnEAr1Xl4
+	z/JXsAlgoCo2gO54pfmw68RlU/YDmHflq57s8SokBQAiqPmjAJOw9sLr1jH1kus//h4vHXxmEjycN
+	SqTvvV4DBFC998e6AdMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sy9NG-00000005p2O-1Ibg;
-	Tue, 08 Oct 2024 12:31:34 +0000
-Received: from flow-a3-smtp.messagingengine.com ([103.168.172.138])
+	id 1sy9Rk-00000005pwT-3ZRu;
+	Tue, 08 Oct 2024 12:36:12 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sy9Li-00000005oj5-17a0;
-	Tue, 08 Oct 2024 12:30:00 +0000
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailflow.phl.internal (Postfix) with ESMTP id 3443C2006F4;
-	Tue,  8 Oct 2024 08:29:56 -0400 (EDT)
-Received: from phl-imap-11 ([10.202.2.101])
-  by phl-compute-10.internal (MEProxy); Tue, 08 Oct 2024 08:29:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1728390596;
-	 x=1728397796; bh=UAD8NfSy5gmGeQl+E5iRkYF97RER4uEtGdtfvJHOxzw=; b=
-	sP5CoCMsvWtNg92ykp0ui/Ue3nHw3oTNECqS2IzrNwt4GIFIv46ErsPMVU60J3Lu
-	ddjCzsPXinEkY342h4vUYYG6H430MbR8qbJIJLymtNK/kulDuSBqVMPA+Fe3Uysq
-	J0wTpvL0pM/tGj43qO8NxS/yK+UPWz9rH7yq7UCCatZYhqtnXIxJpBHY1klSBt8P
-	moR3Kg8daYHw1IxfJXNw/o+tFc/45rkbq071DwQz6OvaaZUhjHJ3pH3DDomH+aFp
-	qfAHyGcT47cxz9/FWB5i39qPIxLv3IvE2SZa0eJCYz2ZaS7a76zc13VKEi8jx9zB
-	dzRgrBBoG9ybsWIuqi/fPw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728390596; x=
-	1728397796; bh=UAD8NfSy5gmGeQl+E5iRkYF97RER4uEtGdtfvJHOxzw=; b=d
-	UrYXwy1mGCaJxx8eNdVrRYylV15yjyqyPiXWJGQmD5t6JaMa3ZkBzsvHoUxahe9p
-	xXBwOSmVP9TA8Z6nMsj2mTIJsOSKKTGRFnRvAU90kgHaTg9JyfD56rhdiwCFOhf/
-	buWc6cxz74kFCmsPSIu2gxefNTm/euHmH4XUVPDDzAzkG7dCAMctG2n2hMwuxHAH
-	BDdoMDI5BQhtOZkumlVGHyd9lXc1ILcKkXH2GUNFCjB6zG/wRdN+kRzMtyNp7z+w
-	1D1kkuYoNpDCE6oybck8EfdSCXxITtIaQ1nA/I+TF1HodWOYtC2h76Nyeyy57XyY
-	xPXJA2L6tn4kwoV1/+x1w==
-X-ME-Sender: <xms:wCUFZ-iJGwvzPE8nix2a16h8A0_vo8cISUscsF4O6JEnEffbmvmyXg>
-    <xme:wCUFZ_BDdhL9_G1zbpqk3xOVURIT3K8CJ2iMVRamFnZ8WfRCOQ8hxy167-oqfHgir
-    CKwhoc8utZ3SCm6H3k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddt
-    necuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrd
-    guvgeqnecuggftrfgrthhtvghrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefg
-    gfevudegudevledvkefhvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohephedt
-    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegtrghtrghlihhnrdhmrghrihhnrg
-    hssegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugiesrghrmhhlihhnuhigrdhorhhg
-    rdhukhdprhgtphhtthhopehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtoh
-    hmpdhrtghpthhtoheprghnthhonhdrihhvrghnohhvsegtrghmsghrihgughgvghhrvgih
-    shdrtghomhdprhgtphhtthhopegthhhrihhsthhophhhvgdrlhgvrhhohiestghsghhroh
-    huphdrvghupdhrtghpthhtohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghp
-    thhtohepmhgrthhtshhtkeeksehgmhgrihhlrdgtohhmpdhrtghpthhtohepnhhpihhggh
-    hinhesghhmrghilhdrtghomhdprhgtphhtthhopeguvghllhgvrhesghhmgidruggv
-X-ME-Proxy: <xmx:wCUFZ2HlBNZwY4mnSHZdZzNxbehNHwgnB8hhonJDgBbKx7vaVDsgcw>
-    <xmx:wCUFZ3Q8el7Z6qda2BHCthGLfbb8Ds2qtqLa_KfBmYIKmAg9lJJooQ>
-    <xmx:wCUFZ7y5j5vRnz5oY_e5dafS_A-mhgmr-1-4cOE22nlDwH6iZgDIxQ>
-    <xmx:wCUFZ16ZRx-hWNNhZ4rr0wnQvf9zcQoVo1SURaXHKlp5EwELdbn_tw>
-    <xmx:xCUFZ0CHdFwvQjJDwttyR4lvWRMhmyKj7_bs2R_T_Z0KS-c7GPljodcN>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id C4FC22220071; Tue,  8 Oct 2024 08:29:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	id 1sy9Qw-00000005pp6-0Dzb
+	for linux-mtd@lists.infradead.org;
+	Tue, 08 Oct 2024 12:35:23 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3D3255C58D4;
+	Tue,  8 Oct 2024 12:35:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B175CC4CEC7;
+	Tue,  8 Oct 2024 12:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728390921;
+	bh=FwU6Q3NEFYrCL1JxhohqoQDiR0nthXcHrwGbPQbLxvg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=pezpW88PtzeA0AN1VL5bPOeF9NsrK3guSUPRtPMp88U3ezngEAte0ldEiUdLc9twA
+	 Zdh+ykvM2+VSPi8Ygmz6o6nsATA7oK23vd6e+K1trY6XxXL6lekpbTxtB35a+mu8dZ
+	 p68bjOXaIgTHJJSZ5ENFKfTQV5L0D3wQZiJLtggK8UPFW5cqZX4qPEX3/3mfDlhxr6
+	 OdMHCb08HujA0RSufUQcnd1IKlE8uEPW9f+FL61HGnbdAkJZwR6Qo2zg+g3nsVGmk4
+	 vEroiuxcUZELC9GlgTc8Rej8v5HShsnipEMBcQfiWo+mUf3ZG42oOmxGsoiZh7gvbt
+	 WcPalxtMeD8wQ==
+From: Christian Brauner <brauner@kernel.org>
+To: linux-mtd@lists.infradead.org,
+	Eric Sandeen <sandeen@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>
+Subject: Re: [PATCH V2] ubifs: Convert ubifs to use the new mount API
+Date: Tue,  8 Oct 2024 14:35:11 +0200
+Message-ID: <20241008-kaleidoskop-vorfahren-a517fbb94ec5@brauner>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20241002165834.868046-1-sandeen@redhat.com>
+References: <20241002165834.868046-1-sandeen@redhat.com>
 MIME-Version: 1.0
-Date: Tue, 08 Oct 2024 12:29:32 +0000
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Christoph Hellwig" <hch@infradead.org>,
- "Julian Vetter" <jvetter@kalrayinc.com>
-Cc: "Russell King" <linux@armlinux.org.uk>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, guoren <guoren@kernel.org>,
- "Huacai Chen" <chenhuacai@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Richard Henderson" <richard.henderson@linaro.org>,
- "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
- "Matt Turner" <mattst88@gmail.com>,
- "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
- "Helge Deller" <deller@gmx.de>,
- "Yoshinori Sato" <ysato@users.sourceforge.jp>,
- "Rich Felker" <dalias@libc.org>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Naveen N Rao" <naveen@kernel.org>,
- "Madhavan Srinivasan" <maddy@linux.ibm.com>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Sven Schnelle" <svens@linux.ibm.com>,
- "Niklas Schnelle" <schnelle@linux.ibm.com>,
- "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Jaroslav Kysela" <perex@perex.cz>, "Takashi Iwai" <tiwai@suse.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-alpha@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
- Linux-Arch <linux-arch@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, mhi@lists.linux.dev,
- linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-sound@vger.kernel.org, "Yann Sionneau" <ysionneau@kalrayinc.com>
-Message-Id: <b54a6f76-fcfd-40bd-b478-ca0a7e1af128@app.fastmail.com>
-In-Reply-To: <ZwUbsviaqFUtjKEQ@infradead.org>
-References: <20241008075023.3052370-1-jvetter@kalrayinc.com>
- <20241008075023.3052370-2-jvetter@kalrayinc.com>
- <ZwUbsviaqFUtjKEQ@infradead.org>
-Subject: Re: [PATCH v8 01/14] Consolidate IO memcpy/memset into iomap_copy.c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1149; i=brauner@kernel.org; h=from:subject:message-id; bh=FwU6Q3NEFYrCL1JxhohqoQDiR0nthXcHrwGbPQbLxvg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSzqrO4nFqkznFpgsDH/rlezJzWd6se7nd//Teun/VP+ velgSvmdpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzkEDMjw6KcBH+H31zKmzQ2 HBP7dHlK/YWY/fHB76ck2OVM7i29t4qR4VfVv8qzXzWP2/Lf9Q+J/fQroZjt9LO6rTsVTnyV+zH 7HxMA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241008_052958_744876_71751079 
-X-CRM114-Status: UNSURE (   8.40  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241008_053522_166228_B4816998 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,24 +77,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 8, 2024, at 11:46, Christoph Hellwig wrote:
-> On Tue, Oct 08, 2024 at 09:50:09AM +0200, Julian Vetter wrote:
->>  lib/iomap_copy.c         | 127 +++++++++++++++++++++++++++++++++++++++
->
-> On top of the previous comments:  this really should be iomem_copy.c
-> instead.
+On Wed, 02 Oct 2024 11:58:34 -0500, Eric Sandeen wrote:
+> Convert the ubifs filesystem to the new internal mount API as the old
+> one will be obsoleted and removed.  This allows greater flexibility in
+> communication of mount parameters between userspace, the VFS and the
+> filesystem.
+> 
+> See Documentation/filesystems/mount_api.txt for more information.
+> 
+> [...]
 
-Right, I suggested adding it to the existing file since the
-functions are logically related, but the naming of that file
-identifiers in it is unfortunate:
+Applied to the vfs.mount.api branch of the vfs/vfs.git tree.
+Patches in the vfs.mount.api branch should appear in linux-next soon.
 
-__iowrite32_copy/__iowrite64_copy/__ioread32_copy sound like
-they are meant to work on both IORESOURCE_MEM and IORESOURCE_IO
-mappings the same way that iowrite64/ioread64/ioread32 do,
-but actually using them on x86 port I/O (from pci_iomap or
-ioport_map) would lead to a NULL pointer dereference.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-      Arnd
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.mount.api
+
+[1/1] ubifs: Convert ubifs to use the new mount API
+      https://git.kernel.org/vfs/vfs/c/11716e86804b
 
 ______________________________________________________
 Linux MTD discussion mailing list
