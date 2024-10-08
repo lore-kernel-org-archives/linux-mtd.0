@@ -4,58 +4,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB297CEF145
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2024 09:28:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD2FCCEF147
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Oct 2024 09:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5ezC/No67E0Aq6a/TyRSFFbYCCp4JkBlcgt10Ww+vR8=; b=Lxh7WRxaaS6w0XsAcH+GaNUi/4
-	/z0UbI24ck6Vu4HeRtJ4ABEsRmv6gDk5Wf4hrAKhWj1/sRDkXG0le+Dpi5Z+YUbmADds1GLfLErJS
-	xgv51FM/OWVKQoZyiSkbeP4uDUQz5m9QZUADGcPbiMSL+Pb9YLjHCrn1S3eepzLuge+BRscxXm0e2
-	fSJEY+AdGlRiuWRV2J5rXF2tCF9n3oACU2RD+7BC4fkImozMac4eelKPJkR9QTUS02j+d1aiAEmDe
-	gj1y3rUS48zNeTUg/x2DqPaoAmfc3JouVGcQvpluaHu5mcbnmGI8F6Vz79bwLVFekFOTXyftbqPqs
-	QX1CWInw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:References:In-Reply-To:
+	Message-Id:Cc:To:From:Date:MIME-Version:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=m/6uUkERU9VZ9A87AmvTbkyZFEZtrVmaxTw03jpLdC0=; b=kO2C6Uk2NwxNNfmYGZQ0CC+2XW
+	kruDN3kzMKk2GNzlQwM9gTc/ft+auSimwo5aGfffqVHp3MWSBIsJ0JGpEGlTznEbpsDYEHlDUgfRw
+	BZGB2Dz2oa4sPon02MQrThhAVfEqoWxZO6/g79n8jq0PVu4QzKEIaOz1TJGwlu+F64VEBoTxmtvfy
+	YqABHx1TNBZHSwu/7j+1eyC3rcKy4Cgr2IV+8wOX4izVJ6ozGPg64yauNVV1J5tAxQ65im2oed6no
+	Zyxez8q+evzSMM7uTrklsD0wwIhf05zxUwkF9zPEwrELhCFV9OfaLEUbZGm+5AuHWQCFgOX4WdYgH
+	Ddr/OHYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sy6Vn-00000005Ivg-1Tx0;
-	Tue, 08 Oct 2024 09:28:11 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1sy6Vo-00000005IwZ-3l8Y;
+	Tue, 08 Oct 2024 09:28:12 +0000
+Received: from flow-a6-smtp.messagingengine.com ([103.168.172.141])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sy6VJ-00000005ImR-0yIi
-	for linux-mtd@lists.infradead.org;
-	Tue, 08 Oct 2024 09:27:43 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XN9YV2WPdz1HKL6;
-	Tue,  8 Oct 2024 17:23:26 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id E499D1401F1;
-	Tue,  8 Oct 2024 17:27:30 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 8 Oct 2024 17:27:30 +0800
-Subject: Re: [PATCH 2/4] ubi: Expose mean erase counter for fastmap in sysfs
-To: Rickard Andersson <rickard.andersson@axis.com>, <richard@nod.at>,
-	<linux-mtd@lists.infradead.org>, <rickard314.andersson@gmail.com>
-CC: <kernel@axis.com>
-References: <20241004082208.1103202-1-rickard.andersson@axis.com>
- <20241004082208.1103202-2-rickard.andersson@axis.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <1351167a-6313-9e98-eafd-c8c9e6fe1a5f@huawei.com>
-Date: Tue, 8 Oct 2024 17:27:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1sy6VZ-00000005Iqg-3RzW;
+	Tue, 08 Oct 2024 09:27:59 +0000
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailflow.phl.internal (Postfix) with ESMTP id 51CC0200791;
+	Tue,  8 Oct 2024 05:27:54 -0400 (EDT)
+Received: from phl-imap-11 ([10.202.2.101])
+  by phl-compute-10.internal (MEProxy); Tue, 08 Oct 2024 05:27:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1728379674;
+	 x=1728386874; bh=vXVXlSmeQt3lDbjU6nzfzfDoQAW9RRomvBadp2xogcw=; b=
+	bjNgc0cUBA4uZdH1q47ixH6gx6ApEG2i+6J6MPi8YvLMk08HDLdfZy8hT8Zg6yKe
+	2NNW+K4vM+BLpVDgWKXQdLIKSYik0I3IB7tJont13em6PzKvSbkr1B06qXFqKd2M
+	d0ejs6pFeYw/YXyhY+Lcf2huo4OyJRBX1xHiNcSNQmv5p+6ZX+wr7Pd1lBixTgNN
+	hy3ySSe4YK4xve31mXcvCM9P9Iw3LCUZGsP9K1m9N7p5Xb7ubYL9XZcAEES2eqKH
+	q4Bj/X1CPUurJVbo5pIPpwwN0hbRGOj6w0V/7h1MK76aEfaffRgEVf3txqnhVsaH
+	NQLl8GS7yuUNX9Q5G2TmCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728379674; x=
+	1728386874; bh=vXVXlSmeQt3lDbjU6nzfzfDoQAW9RRomvBadp2xogcw=; b=p
+	sOjcXwit6BXpazNlyHcp7RQtet3ms/ShGIHVtIXjHH7z2u/WnegtOxGTuiQ548AQ
+	+QeNCeOEnTuopzDdr6d1WJbi0tqer+OAMlHpYNMA4rKYXQSYp8xhdFdowZELsMYk
+	mPiA+7k1yhl45NYwlOZiplxm5RqztnqU39N1c1aWbEv2VrChje997BHNId6Fidh8
+	f/66rTIRr/Rf8m4bRDMcg+3Et00AosDHyah9nBj+ZrujjgTGAUXfWePzzlS94iIY
+	R0idMtIh3pgHEw8KwMyxu5rrZ+cNSTvxzSNz15dfdF6tlWKdZbu29sjFAq+ca8xW
+	Sb+T7NjbiudHSJhRasvgA==
+X-ME-Sender: <xms:FvsEZxj4OSOJO5R_iNsz2YcNkoHn0yLCSkYK6NBW46UzHpbVeaOylw>
+    <xme:FvsEZ2BOquKh3Ly6rs2-r88YflJwtYbElvZlqzUDwQxS0vX2aRowkRAfJok_DDP9J
+    pVcVjM_bJaqf2Jtc-M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddt
+    necuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrd
+    guvgeqnecuggftrfgrthhtvghrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefg
+    gfevudegudevledvkefhvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohephedt
+    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegtrghtrghlihhnrdhmrghrihhnrg
+    hssegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugiesrghrmhhlihhnuhigrdhorhhg
+    rdhukhdprhgtphhtthhopehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtoh
+    hmpdhrtghpthhtoheprghnthhonhdrihhvrghnohhvsegtrghmsghrihgughgvghhrvgih
+    shdrtghomhdprhgtphhtthhopegthhhrihhsthhophhhvgdrlhgvrhhohiestghsghhroh
+    huphdrvghupdhrtghpthhtohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghp
+    thhtohepmhgrthhtshhtkeeksehgmhgrihhlrdgtohhmpdhrtghpthhtohepnhhpihhggh
+    hinhesghhmrghilhdrtghomhdprhgtphhtthhopeguvghllhgvrhesghhmgidruggv
+X-ME-Proxy: <xmx:FvsEZxH3zfzkJa8RVVsQJZoKvnwBlHYLBK33c0RZVMnXZVlSu1AFqQ>
+    <xmx:FvsEZ2TkOnb2xmY6R_aU2VmL8HDxOWOBk8tgzBsUripCRCPzrK9zmw>
+    <xmx:FvsEZ-zauMDlD6bC6qkUsSUnHXG1P0xy_37njpHP8yhxpPZjQln2mQ>
+    <xmx:FvsEZ87a2x1N0-w1vvIsh6Lf1hOcJGqvGuZ7q-fy_-iHchmecU6CvA>
+    <xmx:GvsEZ3DPdeCYlhTq-fZUHLeUnTw2J7FWdf8IfVzPa0rAh4jeq3MQ4aNK>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id C545D2220071; Tue,  8 Oct 2024 05:27:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 MIME-Version: 1.0
-In-Reply-To: <20241004082208.1103202-2-rickard.andersson@axis.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+Date: Tue, 08 Oct 2024 09:27:20 +0000
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Julian Vetter" <jvetter@kalrayinc.com>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Will Deacon" <will@kernel.org>, guoren <guoren@kernel.org>,
+ "Huacai Chen" <chenhuacai@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
+ "Matt Turner" <mattst88@gmail.com>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "Helge Deller" <deller@gmx.de>,
+ "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+ "Rich Felker" <dalias@libc.org>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Nicholas Piggin" <npiggin@gmail.com>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Naveen N Rao" <naveen@kernel.org>,
+ "Madhavan Srinivasan" <maddy@linux.ibm.com>,
+ "Heiko Carstens" <hca@linux.ibm.com>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+ "Sven Schnelle" <svens@linux.ibm.com>,
+ "Niklas Schnelle" <schnelle@linux.ibm.com>,
+ "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Jaroslav Kysela" <perex@perex.cz>, "Takashi Iwai" <tiwai@suse.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-alpha@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+ Linux-Arch <linux-arch@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, mhi@lists.linux.dev,
+ linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-sound@vger.kernel.org, "Yann Sionneau" <ysionneau@kalrayinc.com>
+Message-Id: <a9fa56b4-b00c-4941-8c8c-1d3b58b573e2@app.fastmail.com>
+In-Reply-To: <20241008075023.3052370-2-jvetter@kalrayinc.com>
+References: <20241008075023.3052370-1-jvetter@kalrayinc.com>
+ <20241008075023.3052370-2-jvetter@kalrayinc.com>
+Subject: Re: [PATCH v8 01/14] Consolidate IO memcpy/memset into iomap_copy.c
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241008_022741_832969_E116C15B 
-X-CRM114-Status: GOOD (  25.67  )
+X-CRM114-CacheID: sfid-20241008_022758_284392_73D57D95 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,78 +148,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8xMC80IDE2OjIyLCBSaWNrYXJkIEFuZGVyc3NvbiDQtLXAOgo+IFNpbmNlIHRoZSBm
-YXN0bWFwIGFyZWEgaGFzIGl0cyBvd24gd2VhciBsZXZlbGxpbmcgaXQgaXMgdmFsdWFibGUgdG8K
-PiBwcm92aWRlIGEgbWVhbiB2YWx1ZSBmb3IgdGhhdCBhcmVhLiBUaGlzIHZhbHVlIGNhbiBiZSB1
-c2VkIGluIG9yZGVyCj4gdG8gZXN0aW1hdGUgbGlmZSBleHBlY3RhbmN5IG9mIHRoZSBmbGFzaC4K
-PiAKClRoZXJlIGFyZSAyIGNhc2VzIHNob3duIGFzIGZvbGxvd2luZzoKMSkgZmFzdG1hcCBpcyBk
-aXNhYmxlZDogV2UgY2FuIGRldGVybWluZSB3aGV0aGVyIHRoZSB3ZWFyLWxldmVsaW5nIAphbGdv
-cml0aG0gd29ya3MgZmluZSBieSBjb21wYXJpbmcgJ21heF9lYycgd2l0aCAnbWVhbl9lYycuCjIp
-IGZhc3RtYXAgaXMgZW5hYmxlZDogVGhlIG1heF9lYyBtYXkgY29tZSBmcm9tIGZpcnN0IDY0IFBF
-QnMoZmFzdG1hcCAKYXJlYSksIG9yIGl0IG1heSBjb21lIGZyb20gZGF0YSBhcmVhKHBudW0gPiA2
-NCksIGhvdyBjYW4gd2UgZGV0ZXJtaW5lIAp3aGV0aGVyIHRoZSB3ZWFyLWxldmVsaW5nIGFsZ29y
-aXRobSB3b3JrcyBmaW5lIGZvciBkYXRhIGFyZWE/Cj4gU2lnbmVkLW9mZi1ieTogUmlja2FyZCBB
-bmRlcnNzb24gPHJpY2thcmQuYW5kZXJzc29uQGF4aXMuY29tPgo+IC0tLQo+ICAgZHJpdmVycy9t
-dGQvdWJpL2J1aWxkLmMgfCAyOSArKysrKysrKysrKysrKysrKysrKysrKystLS0tLQo+ICAgMSBm
-aWxlIGNoYW5nZWQsIDI0IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMK
-PiBpbmRleCA4YmRmYzUxY2FjYjEuLmFmNjdjZWZkM2U1ZSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJz
-L210ZC91YmkvYnVpbGQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jCj4gQEAgLTEz
-Myw2ICsxMzMsOCBAQCBzdGF0aWMgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgZGV2X21heF9lYyA9
-Cj4gICAJX19BVFRSKG1heF9lYywgU19JUlVHTywgZGV2X2F0dHJpYnV0ZV9zaG93LCBOVUxMKTsK
-PiAgIHN0YXRpYyBzdHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSBkZXZfbWVhbl9lYyA9Cj4gICAJX19B
-VFRSKG1lYW5fZWMsIFNfSVJVR08sIGRldl9hdHRyaWJ1dGVfc2hvdywgTlVMTCk7Cj4gK3N0YXRp
-YyBzdHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSBkZXZfbWVhbl9lY19mYXN0bWFwID0KPiArCV9fQVRU
-UihtZWFuX2VjX2Zhc3RtYXAsIFNfSVJVR08sIGRldl9hdHRyaWJ1dGVfc2hvdywgTlVMTCk7Cj4g
-ICBzdGF0aWMgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgZGV2X3Jlc2VydmVkX2Zvcl9iYWQgPQo+
-ICAgCV9fQVRUUihyZXNlcnZlZF9mb3JfYmFkLCBTX0lSVUdPLCBkZXZfYXR0cmlidXRlX3Nob3cs
-IE5VTEwpOwo+ICAgc3RhdGljIHN0cnVjdCBkZXZpY2VfYXR0cmlidXRlIGRldl9iYWRfcGViX2Nv
-dW50ID0KPiBAQCAtMzQ1LDE5ICszNDcsMzMgQEAgaW50IHViaV9tYWpvcjJudW0oaW50IG1ham9y
-KQo+ICAgLyoqCj4gICAgKiB1YmlfY2FsY19tZWFuX2VjIC0gY2FsY3VsYXRlIG1lYW4gZXJhc2Ug
-Y291bnRlciB2YWx1ZS4KPiAgICAqIEB1Ymk6IFVCSSBkZXZpY2UgZGVzY3JpcHRpb24gb2JqZWN0
-Cj4gKyAqIEBmYXN0bWFwOiB0cnVlIGlmIG1lYW4gdmFsdWUgb2YganVzdCB0aGUgZmFzdG1hcCBh
-cmVhIHNob3VsZCBiZSBjYWxjdWxhdGVkCj4gICAgKgo+IC0gKiBSZXR1cm5zIHRoZSBtZWFuIHZh
-bHVlIG9mIHRoZSBhbGwgYmxvY2tzIG9mIHRoZSBkZXZpY2UuCj4gLSAqIFJldHVybnMgemVybyBp
-ZiBpdCB3YXMgbm90IHBvc3NpYmxlIHRvIGNhbGN1bGF0ZSB0aGUgbWVhbiB2YWx1ZS4KPiArICog
-UmV0dXJucyB0aGUgbWVhbiB2YWx1ZSBvZiB0aGUgYWxsIG5vbi1iYWQgYmxvY2tzIG9mIHRoZSBk
-ZXZpY2UgaWYgZmFzdG1hcCBpcwo+ICsgKiBmYWxzZS4KPiArICogSWYgZmFzdG1hcCBpcyB0cnVl
-IHRoZW4gb25seSBhIG1lYW4gdmFsdWUgb2YgdGhlIGZhc3RtYXAgYXJlYSBpcyBjYWxjdWxhdGVk
-Lgo+ICsgKiBSZXR1cm5zIHplcm8gaWYgaXQgd2FzIG5vdCBwb3NzaWJsZSB0byBjYWxjdWxhdGUg
-dGhlIG1lYW4gdmFsdWUgb3IgaWYgbm8KPiArICogZmFzdG1hcCBleGlzdHMuCj4gICAgKi8KPiAt
-aW50IHViaV9jYWxjX21lYW5fZWMoc3RydWN0IHViaV9kZXZpY2UgKnViaSkKPiAraW50IHViaV9j
-YWxjX21lYW5fZWMoc3RydWN0IHViaV9kZXZpY2UgKnViaSwgYm9vbCBmYXN0bWFwKQo+ICAgewo+
-ICAgCXN0cnVjdCB1Ymlfd2xfZW50cnkgKndsOwo+ICAgCWludCBwZWI7Cj4gICAJaW50IGVjX2Nv
-dW50ID0gMDsKPiArCWludCBwZWJfY291bnQ7Cj4gICAJaW50IG1lYW5fZWMgPSAwOwo+ICAgCXVp
-bnQ2NF90IGVjX3N1bSA9IDA7Cj4gICAKPiAtCWZvciAocGViID0gMDsgcGViIDwgdWJpLT5wZWJf
-Y291bnQ7IHBlYisrKSB7Cj4gKwlwZWJfY291bnQgPSB1YmktPnBlYl9jb3VudDsKPiArCj4gKwlp
-ZiAoZmFzdG1hcCkgewo+ICsJCWlmICgoIXViaS0+Zm1fZGlzYWJsZWQpICYmIChwZWJfY291bnQg
-PiBVQklfRk1fTUFYX1NUQVJUKSkKCidpZiAoIXViaS0+Zm1fZGlzYWJsZWQpKScgaXMgZW5vdWdo
-Lgo+ICsJCQlwZWJfY291bnQgPSBVQklfRk1fTUFYX1NUQVJUOwo+ICsJCWVsc2UKPiArCQkJcmV0
-dXJuIDA7IC8qIE5vIGZhc3RtYXAgb24gdGhpcyBVQkkgZGV2aWNlICovCgpJZiB3ZSBmb3JtYXQg
-L2Rldi9tdGRYIGJ5IGNvbW1hbmQgJ3ViaWZvcm1hdCAtZSAwJywgdGhlIHJldHVybiB2YWx1ZSAn
-MCcgCm1heSBjb25mdXNlIHVzLCBpdCBtZWFucyB0aGF0IHRoZSBmYXN0bWFwIGlzIGRpc2FibGVk
-IG9yIHRoZSAKbWVhbl9lY19mYXN0bWFwIGlzIDAuCj4gKwl9Cj4gKwo+ICsJZm9yIChwZWIgPSAw
-OyBwZWIgPCBwZWJfY291bnQ7IHBlYisrKSB7Cj4gICAJCWludCBlcnI7Cj4gICAKPiAgIAkJZXJy
-ID0gdWJpX2lvX2lzX2JhZCh1YmksIHBlYik7Cj4gQEAgLTQxMSw3ICs0MjcsOSBAQCBzdGF0aWMg
-c3NpemVfdCBkZXZfYXR0cmlidXRlX3Nob3coc3RydWN0IGRldmljZSAqZGV2LAo+ICAgCWVsc2Ug
-aWYgKGF0dHIgPT0gJmRldl9tYXhfZWMpCj4gICAJCXJldCA9IHNwcmludGYoYnVmLCAiJWRcbiIs
-IHViaS0+bWF4X2VjKTsKPiAgIAllbHNlIGlmIChhdHRyID09ICZkZXZfbWVhbl9lYykKPiAtCQly
-ZXQgPSBzcHJpbnRmKGJ1ZiwgIiVkXG4iLCB1YmlfY2FsY19tZWFuX2VjKHViaSkpOwo+ICsJCXJl
-dCA9IHNwcmludGYoYnVmLCAiJWRcbiIsIHViaV9jYWxjX21lYW5fZWModWJpLCBmYWxzZSkpOwo+
-ICsJZWxzZSBpZiAoYXR0ciA9PSAmZGV2X21lYW5fZWNfZmFzdG1hcCkKPiArCQlyZXQgPSBzcHJp
-bnRmKGJ1ZiwgIiVkXG4iLCB1YmlfY2FsY19tZWFuX2VjKHViaSwgdHJ1ZSkpOwo+ICAgCWVsc2Ug
-aWYgKGF0dHIgPT0gJmRldl9yZXNlcnZlZF9mb3JfYmFkKQo+ICAgCQlyZXQgPSBzcHJpbnRmKGJ1
-ZiwgIiVkXG4iLCB1YmktPmJlYl9yc3ZkX3BlYnMpOwo+ICAgCWVsc2UgaWYgKGF0dHIgPT0gJmRl
-dl9iYWRfcGViX2NvdW50KQo+IEBAIC00MzksNiArNDU3LDcgQEAgc3RhdGljIHN0cnVjdCBhdHRy
-aWJ1dGUgKnViaV9kZXZfYXR0cnNbXSA9IHsKPiAgIAkmZGV2X3ZvbHVtZXNfY291bnQuYXR0ciwK
-PiAgIAkmZGV2X21heF9lYy5hdHRyLAo+ICAgCSZkZXZfbWVhbl9lYy5hdHRyLAo+ICsJJmRldl9t
-ZWFuX2VjX2Zhc3RtYXAuYXR0ciwKPiAgIAkmZGV2X3Jlc2VydmVkX2Zvcl9iYWQuYXR0ciwKPiAg
-IAkmZGV2X2JhZF9wZWJfY291bnQuYXR0ciwKPiAgIAkmZGV2X21heF92b2xfY291bnQuYXR0ciwK
-PiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue, Oct 8, 2024, at 07:50, Julian Vetter wrote:
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index 80de699bf6af..f14655ed4d9d 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -102,6 +102,12 @@ static inline void log_post_read_mmio(u64 val, u8 
+> width, const volatile void __i
+> 
+>  #endif /* CONFIG_TRACE_MMIO_ACCESS */
+> 
+> +extern void memcpy_fromio(void *to, const volatile void __iomem *from,
+> +			  size_t count);
+> +extern void memcpy_toio(volatile void __iomem *to, const void *from,
+> +			size_t count);
+> +extern void memset_io(volatile void __iomem *dst, int c, size_t count);
+> +
+
+I think having this globally visible is the reason you are running
+into the mismatched prototypes. The patches to change the architecture
+specific implementations are all good, but I would instead add
+#ifdef checks around the prototypes the same way you do for the
+implementation, to make the series bisectible and shorter.
+
+ include/asm-generic/io.h |  58 ++----------------
+ lib/iomap_copy.c         | 127 +++++++++++++++++++++++++++++++++++++++
+
+Along the same lines, I would change lib/Makefile to build
+this file unconditionally even on architectures that don't
+set CONFIG_HAS_IOMEM. Again, strengthening the driver dependencies
+is good, but it feels like a distraction here when we just need the
+common implementation to be available.
+
+       Arnd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
