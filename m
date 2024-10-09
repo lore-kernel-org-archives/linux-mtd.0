@@ -4,66 +4,167 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A98CCEDD8F
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Oct 2024 12:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37034CEDD90
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Oct 2024 13:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hI/wFRz8Xs5ZRCRip3adWpB4g0cakRLswgtsX19Cirs=; b=n2ZJdy6XzEsE4m
-	zrBBUYGCq5XdJwRN9ZHHQeVAqjg2yDBEfuyVfdYGMQeGf6RriKq339hRF6Uhdn/PW3fkB/cxPXGE/
-	cnd6cOmqzWF0LuHHCUBo2M1NIHguRGAOQzaajaspD6mdxBL7OLJ5+CqhYt7R/FMMfUrr/nWDS0ncp
-	doPS5zklK8gHC2f+CdFdVcYtTPFsdyaPIRhg262qTcdBTv0Ae3t5vX6pCWqd6WdXgdq8vvCqH12Ru
-	J0MWyWM4CFRM3rnaQoKD0teAiOIPHLp+k7lWy9AQ1LDSJBF3kfPKcxsoFuFxQioW044Ubvki68ryA
-	cfc5omtn2YxTP1JytCzA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=pIk45HPUjpSVt+GqhlNMUk8GbMWMC73392ajPtyveJ8=; b=ZUYa5WV3zSj4CsN8UXQkeB5GFa
+	aqXt04JT8ooLOqEuRh7wNpEb3sTmGvVM3PX8mna52jR3Bo/qhry2pb8IupK4wYrSyW0lYHpXHr15e
+	NMr0w24kiEBZLf/A575QoIdgcTdMbX2mTFiPb5lmSEP5GFc6NaWQobAcq7Fd+QWi6CL7TBboe+6Ip
+	Jp+fZJBf43YnnujoF8toYyFC84H19JSU0Lo5YBkXewRLbxFEeDusXMh2H2NYHTRMcqEz9Erml666c
+	JVxKIxYU7ETBQ3QVv7CQQdpLEokbeJS5MHKHvBjvSYpFbrCW0JrYrjzGyOwujA+RR7nHjPo5Emjnd
+	dYXpy3zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syW8x-00000009HoU-46pA;
-	Wed, 09 Oct 2024 12:50:19 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1syWYO-00000009MyD-0XFt;
+	Wed, 09 Oct 2024 13:16:36 +0000
+Received: from mail-db8eur05on20701.outbound.protection.outlook.com ([2a01:111:f403:2614::701] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1syW8o-00000009HfI-0zGY
+	id 1syWYK-00000009Mwq-1Nxg
 	for linux-mtd@lists.infradead.org;
-	Wed, 09 Oct 2024 12:50:13 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 289D61C0010;
-	Wed,  9 Oct 2024 12:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1728478206;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j58tUS4RsMkK957S9Ourhgng3aiA7Gu/7uvmChWQbgQ=;
-	b=N7+kA7jBj3vkCR6BIVf2N/D1Mb1rzqbLdzBJYECo7wZTkXkiNBsI/o5Grp6JBn5m8l1HQ1
-	EIdfeX3whiBSPb8kyjXunKXNHmj58jdUWcRDzYgmwbzX1hTviq5DSL4aBUoBIYKctMVNWt
-	7xRybNVxED7C5XRdJHDdScYdv6Nz6sHz1Qluh0+OV9k12WMU9k2H6YrJ1IEDP6BHtyT9C6
-	fLubaFsUcp6+g7vx4suBp5wJCU862a37SAflGc986W2YsDw1vvWgGIDn2PHGNTiur+pR6x
-	FGbdPc0H+xRb+jx7z//UIh70MyRAqhJqvx0CWvmeCVqq3XfOC2jklcFVZpBluw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
+	Wed, 09 Oct 2024 13:16:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=UZ9Z3oa/GF6z0zYUMJa0KOSM+YBpEplJtwuQ+1+gOHCy756LTqIEgC2bRcuJrdHa+uowImuoJCXJ5obpy4GhbZeeCMpsKHMNplgEV1SR8Hr8mFDR082m654WDRbw1XUAXi/Ov5GDyhsG8B39xKJcS+4/GELCrIHVLtcdL4WOa1mx0JcKB058uBZqRxKdC6WTLiYfOpa4Sr+fA8NHtTpfmnw+ZXRa5VppFg3Q0Hf5dtZwhHWYEggTxzW0IOCHk1BXhEYxKtReJ7r5/roVsVpJA+Qpx8knvSK26F8CvU961N4AAz2hZjQ014U5J3u2sdm/cL382immU0vr/1YnXS/Nzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HFVHWyvoShcn0W7XcjBx1kntLnPnLlhpIGRoAY69CsY=;
+ b=RyXiBwoJbT/f8EhSTfVnNNyO+1aURjMy3NVBd/a0crL95NI7OefCwM1wxsa6qQh1AwdwYJ/dHizqw71rDxnCtWoogf/wV5GxgC1U5xtOPzDFhwPWj9siFCfhQblO6qLKIh+L2MoKyR2nXk4ZATM5eXcrYR4/sFvE0rFC+C48fyUINcuTF1/Z/RC45JpgUj501mUrTun9SZB9/H+XbZJlcwNXJG10jj6LmY2Kw2eHB7jcV5fD8QcTkZw9SH7TgPjhgxJRxVxzpynGH6WEMi2lkWyY4KJm6gQSmYJoH7aEkLM2VbVMDqq9dJwnYdnqZzaKbTj7cRkWoY2XMMqS7OFKXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HFVHWyvoShcn0W7XcjBx1kntLnPnLlhpIGRoAY69CsY=;
+ b=TtJ3oyNF8oWPoQsD9kotYpI/RtxqUOqwJ8DdTJVhfWM+Y45jCL1omW8cthVgHA4LoNRAArflqqIOgB/iLM+mgc/HIFo2I+BGvH7gFD3QzUXjWNiwrMQXAf/fgGYXo4okTnZ3W1mSTlUdCDaqEocj18rUonlZ1gWTOkcLnx5swOo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by GVXPR10MB8313.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:1dc::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.16; Wed, 9 Oct
+ 2024 13:16:25 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::b854:7611:1533:2a19]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::b854:7611:1533:2a19%4]) with mapi id 15.20.8048.013; Wed, 9 Oct 2024
+ 13:16:25 +0000
+Message-ID: <adce33d0-f68d-4bef-bd37-accdc2e83dde@kontron.de>
+Date: Wed, 9 Oct 2024 15:16:23 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] mtd: spi-nand: winbond: Fix 512GW and 02JW OOB layout
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org
 Cc: Steam Lin <stlin2@winbond.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
-	Sridharan S N <quic_sridsn@quicinc.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4/4] mtd: spi-nand: winbond: Sort the devices
-Date: Wed,  9 Oct 2024 14:50:02 +0200
-Message-ID: <20241009125002.191109-5-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241009125002.191109-1-miquel.raynal@bootlin.com>
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Md Sadre Alam <quic_mdalam@quicinc.com>,
+ Sridharan S N <quic_sridsn@quicinc.com>, stable@vger.kernel.org
 References: <20241009125002.191109-1-miquel.raynal@bootlin.com>
+ <20241009125002.191109-2-miquel.raynal@bootlin.com>
+Content-Language: en-US, de-DE
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20241009125002.191109-2-miquel.raynal@bootlin.com>
+X-ClientProxiedBy: FR2P281CA0150.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:98::11) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|GVXPR10MB8313:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5bae75f-0390-405d-2775-08dce8649383
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?UXdleUhhb1owQnB5WnhjUFpDYUNNWnB2RzM5U1lVKzJRL2MzQ2pQb3ZKVG1T?=
+ =?utf-8?B?UHVibkd2WEoyL1FYQ3JzYW5TOUoyZXIvMGg5OVFZYzRLUUxJVjYxczJ0aE42?=
+ =?utf-8?B?amVyMlFwYUxJYUEzdGhCV0RZSGpXMWdxZUZ1QkhHYStBMFFMeEN2YS9XWno5?=
+ =?utf-8?B?K2JHd3hsSWFEOTV4aTA5cWZvQVo1VVl5RityVEtrQmlneFhaNzcvRUdPZHZx?=
+ =?utf-8?B?NmhmUjJYcUdsSUUwc3JGeXRKcXRVYTFsZDQ1VVRmM1lUaVhadWJJTk5KaEJm?=
+ =?utf-8?B?b0djaWNGZm5BUnZQU0p5VzRoOVVQbEpEY1h1WjlUWURNTGY4WTJ4UGRPUjJu?=
+ =?utf-8?B?bXhkZzNHWmtmc244Z1AreUV4cS9IWXBXTUgxMzJvR1UzWWorSmt1RGFlSjRZ?=
+ =?utf-8?B?ZTJkRjk4ZUV0a0UvS29xUk5Jck9VMGxBbFpSR3VFZDkwckdYWEdTVVkvbUQ0?=
+ =?utf-8?B?a1UwVFRpV0I1dGw0VnJIczF3aHFDTGM5M0R2bE5Qd05EVW5ERXRLM00zdEFR?=
+ =?utf-8?B?RXdYdVc1dU0zQjRhdWFabkc1eG1ta2FXTmdPMFRLWkRIUlZ6NEJQUXd0Z2dP?=
+ =?utf-8?B?WHJjTU9GWkhaTjhELzlNei9HbUJhRGkvV1hwckUzc3l5Z0R5OWY3MWpnL2cx?=
+ =?utf-8?B?ZnY1VGFLbEdtUmc4dzJUQ0s2eHNCcERhSDR2TmwvMkNsOTRiMktEeHA2c2VQ?=
+ =?utf-8?B?cnBLblpuTStGQ3ZuYlRrR0M4Z0puWStDUU8vSFB3aXNNSTAxR25wUzhxLzJn?=
+ =?utf-8?B?c2VSZ1V5NWdFVi9yUFgwODlrZlJyMVhLSEpJbm9IbHBzdnIyYzhwYktpWnBa?=
+ =?utf-8?B?eUg2ZVkrWEx6VDJvT29nK0R2Z3RnMjN4aXFBYU5lNDNuUXdmSFdVc2h3bVpn?=
+ =?utf-8?B?cEZNcnpyQ05ZWUgxd0x2Q0t6d01aOXdpM3RWcFVlSkI2TGN0UU5pdnBoWVVy?=
+ =?utf-8?B?cFVJQ1J5ejJ0aU53ZmhHbkd2Y2s3UkhkcG9ELzNYS29UditzSjhyMnVzUndx?=
+ =?utf-8?B?QVNpa2ZmSjJ4R2J5S2d2a1QrL2xFUE9acFo3MzFRUHBrZGFMQUM5b3dNNHBD?=
+ =?utf-8?B?c1hxOG5IaW9GVXJIOWVnZ0NBazNCeW40UFZFQjFKTm1ZcXI4d00raWJOcFlC?=
+ =?utf-8?B?YXRLdUdyNUhqQ2dSTlpPY1cybktLaW9vMjFiNUxXa2NYcXpUREMyRW8xTUpQ?=
+ =?utf-8?B?ajhxS2JkcWFPMU5EUHQ2d3plUm1xR0Z3dkhrcDRVVS96MXVkZU9YZ3pTMWE0?=
+ =?utf-8?B?b2M4QjkwbjFVVGVzZHdGYmpxbUFGcjJPSTJ0UTVBaVVhaWdhRS96VUJ0dGFF?=
+ =?utf-8?B?dEVzaHlNS1lRdXVoblNWTmM2a1oxc2IvOXlTNG9VcTBjbGI0Z1pzNVBHZ2l6?=
+ =?utf-8?B?Y2N5QnB1ZTF1R1FWNFVCRWNkMjJjN3h0NCszOGlyakdKSHg3RStyUitEaHQ2?=
+ =?utf-8?B?OXg5MTNhWk50T2JEcDVqU05lRkk5YnhKeDRvMVkzamZhM1EwRlFXR210SzYz?=
+ =?utf-8?B?bTJNMzl3UFNYN1NQaU1aQVlqZHRlWDJkVE5QbE44R3NGeTJYWkN0aVJ2QTZI?=
+ =?utf-8?B?NElGcXZQczZsZDhMNlZ4cEswWHJUUmZ6bFpXNmpzWlFnMlBybjQ3M2JDbEFw?=
+ =?utf-8?B?Qm5wVXVIZDkxTkRseHJGblpxSUZVdHRya2VvcTJLZ1YxUnJDZWJYR0luQXBK?=
+ =?utf-8?B?RFpxUVAwUWFtQmduNS85L0dWQXNObXMxUTMyRlhKVWdZK3pUbE42UHVRPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEFlTWhkY1gzckVkR2lqY3Z5QWhmMXM2QXBuUUpxOUVDc0JxcnI2cGtBbmVv?=
+ =?utf-8?B?ZWxKMXF6ekJ6bUFsR0tPSjRndWR1ei9ya3dCL0lyZFp3U0pVLzloYk9sdlJS?=
+ =?utf-8?B?MkM0NHFJOGR6TThlRGREL0tNd0p6c3dYNDBGdVAzWG5jdE1hM295SXlvT3Ro?=
+ =?utf-8?B?V2lIeDhMWVBtUUY5OWYzTEdDVko2OFkxNlpWUXBMTlo0UkkrOUU4VmsrYTRB?=
+ =?utf-8?B?SU5XbHZzK0dYMmhPZFdpSER4K2QxSFlkbndxQkVUdkc1ZE1YcjFBeGZVR2Ey?=
+ =?utf-8?B?Rks3YTJQODFsSTBDaExNZCtGaGNEM1pJMTk5aG1jckNQQWlzYUdNMWhHNTBw?=
+ =?utf-8?B?QURlcjY1SzU4U3VqNndsblVEVThrVmI2ZkYxdDN6QmRVVlNoTzVMRTExWnpU?=
+ =?utf-8?B?eDFhRVFBcFpJOXlLWDVRdHY5N1dsQWdGNzZQbkNxK2hoeFB4cWVYWjZ1NWl3?=
+ =?utf-8?B?MHpBQzVJcjRtczdjSGdMcWs2UlRRaUppcUJSeVBjN3JrdUJqdlA4M2ZNQkhK?=
+ =?utf-8?B?ZGkvSWJkeFc0dmZnT2ljSGlmUk1WWm5QaVo4YmJYbWk3M2g4OW96OVpmT0lS?=
+ =?utf-8?B?UWhCaXp4dzYxMWxIUitFYzVWd2FHK2dQUU95MTdSQTIxNnpNb2FUdG5heSti?=
+ =?utf-8?B?SnVObGhOd09JaGtvenBLZ1dCT0RSZ0x5QjM1T0dFVlpSSVVGSHRHMkE4d1ZC?=
+ =?utf-8?B?b0c1ZDFKOVR5TUNJWWszVWZZTkc2SXV5VVFSWjlGS25iVUhkTFdua2tqOStR?=
+ =?utf-8?B?UU16WGJ3MzRxUmRGZys1TUV4SVFhZEFaN1RaWEJ1UWZudW5UU0RGRkVNN0dj?=
+ =?utf-8?B?NnFhNWgvV3JMSFVxMU5ZYlFMeTgrbDFkcXJOSmlBYW5DZkJySjcyTUlBa0lB?=
+ =?utf-8?B?L3lnK1QwVG12c3NjWUlPa3ZWZlkrOFJNOTR4eTFnUEdwZllQR0dTV0MyZnZh?=
+ =?utf-8?B?aWNjM1ZjaENGSitiWFpobytBemFtcXRwYkJ4eEJNcEs2UnZ1NlM2eSsrWGJj?=
+ =?utf-8?B?eGZwK2FJSlUxTHhHbWlTRkJCZUdEOXl2bGJoZ01WeXQ4eDhXNktTVmhsOU1h?=
+ =?utf-8?B?dnlyQkRIZ0VHQ3kwckoyMnNqMXJ0SE5GTER1T0FLcE1BYi85ZFU0ZVNBWDM0?=
+ =?utf-8?B?VW5PNWl3dmJFVjlFbFJYS1BXaE1iTERHTnRMV0Q4ckVZVTVzV3BjZTlqT25T?=
+ =?utf-8?B?ODFoczZvZWV5NlAvV2VNc25JaWhMVXhVUXJQQ0FkSkVLRkpGNlhtR2RNWU9H?=
+ =?utf-8?B?RS91K25KMERDQXozVG9sVlpFeXMySytYb3d2ejBrWUdKUmdNdEJFaTJUaUwy?=
+ =?utf-8?B?MEt1WTdqM21DQTg4bElqUjNVd1RhZlB5WnFXZnRNWXlYa092K08vY3dvUytE?=
+ =?utf-8?B?eW1qd3B3b1A1eGJhSWZQMFh2TGlZV0FOdlc1K1VBZWppdVFKTk1DTTJ3RzNP?=
+ =?utf-8?B?QWRKRDRWRktsN2plUTl6blIzK3orOFJoczlxcm5LMVlJbnBaZHl2ZkNkU3JC?=
+ =?utf-8?B?ZFVvTlpnbjczaE56WldQOTMvZFVBbjFXc2RwYWdKZzNoeC9LT09UdHhRU1Yv?=
+ =?utf-8?B?c01JQUY2dFBCeldGNVZlTWNHcWRXNEF6eDQ0OXBycjVQVnYyVFRzMVlVSCt0?=
+ =?utf-8?B?SnJRVGJYdUZkUlRUNHdtWVY0Z0dnNmZjZ2pPRDBVb2k1RWd1OVZna2xDYXph?=
+ =?utf-8?B?V1BYWnVhN0JEaC9SUVQ0UlVYWVZFV0RxWUc1cWNOU2tqVGI1NHZCQjFaRFRz?=
+ =?utf-8?B?TGRpWjVoNjJ2RnlHWXNYN0pjUlNWVG9mMXkxM3ZSTENMNU1MdC8xNlNSemlx?=
+ =?utf-8?B?YTBsYVN3SG1WMkduSmF3c0czc0ZMRDgzMFF2MWRpS0docGNFY1dkcjBXQmNq?=
+ =?utf-8?B?WUx3NStSNUtNNmJXK2hoSkNYZGM1UlVzSDY4N0ttR1dROE1NYW5JWExvMVNP?=
+ =?utf-8?B?ako4VWJDanQyakZnL0RqcVVyaWVZTU9ERGtHL3dpZndpcE1KUFlRRFo5S01W?=
+ =?utf-8?B?dG04SnNKSndLOE5CblgrSnUrUG1vbXhnRkF5TmdZbUFUd21sZWxXdUJrbW5q?=
+ =?utf-8?B?VEZsSmxJeUFBUkpQcHJSNkcwcG9RNkFxQk9TbHFNM2R4bHFzck45eXpPbncz?=
+ =?utf-8?B?aFIzT0tvNzZoS25LVEoza3p2RVdGYjhndXhxUWVEOXdEdVZ3SzRKczZnUDZw?=
+ =?utf-8?B?dkE9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5bae75f-0390-405d-2775-08dce8649383
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2024 13:16:25.0040
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IjGrmyABq351nliGIvzVP1ZnpmVIFHDiLWXXaMtDrF3Ws83Qc1K3NiRW9IoUei0J4+5FoA9ESR5WIfTHydwD2Hv1P1tf1vbuXxK0XHMrMWQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB8313
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241009_055010_667616_74A08F97 
-X-CRM114-Status: GOOD (  10.21  )
+X-CRM114-CacheID: sfid-20241009_061632_894201_650E08C8 
+X-CRM114-Status: UNSURE (   6.87  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,175 +181,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use alphabetical order, not because it's pretty, but because it makes
-sense. This way the devices are listed by density, and then by hardware
-feature set. Add comments to make the list more understandable.
+On 09.10.24 2:49 PM, Miquel Raynal wrote:
+> Both W25N512GW and W25N02JW chips have 64 bytes of OOB and thus cannot
+> use the layout for 128 bytes OOB. Reference the correct layout instead.
+> 
+> Fixes: 6a804fb72de5 ("mtd: spinand: winbond: add support for serial NAND flash")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-There is no intended functional change.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/spi/winbond.c | 112 +++++++++++++++++----------------
- 1 file changed, 58 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index a987df1755c6..e472d0f692c2 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -144,7 +144,46 @@ static int w25n02kv_ecc_get_status(struct spinand_device *spinand,
- }
- 
- static const struct spinand_info winbond_spinand_table[] = {
--	SPINAND_INFO("W25M02GV",
-+	/* 512M-bit densities */
-+	SPINAND_INFO("W25N512GW", /* 1.8V */
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x20),
-+		     NAND_MEMORG(1, 2048, 64, 64, 512, 10, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
-+	/* 1G-bit densities */
-+	SPINAND_INFO("W25N01GV", /* 3.3V */
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x21),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
-+	SPINAND_INFO("W25N01GW", /* 1.8V */
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x21),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
-+	SPINAND_INFO("W25N01JW", /* high-speed 1.8V */
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbc, 0x21),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
-+	/* 2G-bit densities */
-+	SPINAND_INFO("W25M02GV", /* 2x1G-bit 3.3V */
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab, 0x21),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 2),
- 		     NAND_ECCREQ(1, 512),
-@@ -154,34 +193,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
- 		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
--	SPINAND_INFO("W25N01GV",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x21),
--		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
--		     NAND_ECCREQ(1, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
--	SPINAND_INFO("W25N02KV",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x22),
--		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
--	SPINAND_INFO("W25N01JW",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbc, 0x21),
--		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
--		     NAND_ECCREQ(1, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
--	SPINAND_INFO("W25N02JW",
-+	SPINAND_INFO("W25N02JW", /* high-speed 1.8V */
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbf, 0x22),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 2, 1),
- 		     NAND_ECCREQ(1, 512),
-@@ -190,16 +202,16 @@ static const struct spinand_info winbond_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
--	SPINAND_INFO("W25N512GW",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x20),
--		     NAND_MEMORG(1, 2048, 64, 64, 512, 10, 1, 1, 1),
--		     NAND_ECCREQ(1, 512),
-+	SPINAND_INFO("W25N02KV", /* 3.3V */
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x22),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
--	SPINAND_INFO("W25N02KW",
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N02KW", /* 1.8V */
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x22),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -208,25 +220,8 @@ static const struct spinand_info winbond_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
--	SPINAND_INFO("W25N04KW",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x23),
--		     NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
--		     NAND_ECCREQ(8, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
--	SPINAND_INFO("W25N01GW",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x21),
--		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
--		     NAND_ECCREQ(1, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
--					      &write_cache_variants,
--					      &update_cache_variants),
--		     0,
--		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
--	SPINAND_INFO("W25N04KV",
-+	/* 4G-bit densities */
-+	SPINAND_INFO("W25N04KV", /* 3.3V */
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x23),
- 		     NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 2, 1, 1),
- 		     NAND_ECCREQ(8, 512),
-@@ -235,6 +230,15 @@ static const struct spinand_info winbond_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N04KW", /* 1.8V */
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x23),
-+		     NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
- };
- 
- static int winbond_spinand_init(struct spinand_device *spinand)
--- 
-2.43.0
-
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
 ______________________________________________________
 Linux MTD discussion mailing list
