@@ -4,128 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94085CF07A0
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2024 04:52:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC331CF07BA
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2024 07:44:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=csGH6QKLRoCRyI3dGgd270YXot+zHyUIBvi8pDoKo4E=; b=kmhBO7ah/oChTd
-	7AOHqUuhLXlo4ImaOsSOJHwEy3df98d3otzIyi02z+8JxGYu2fTnYnXwftDNootJx32zxmgP/6yID
-	SMi1+rvHvxW8/LjkdpGdmWbMsYRZNoazTPuTg2yw70wfkAzqIwznxBljZsoYgHOQ9gD8lTaXBud7W
-	HegXtAASE95/r3OFsBnxZfe51yWduuzdXdt49CWawa2tUS+WdDPvD18rpCTuYpCbMNJbEJtUxde7D
-	/u6E2tkoNmYJQ7fFH8DBRSf+G7LQhVaREB0H3XGnOA+MAFeNAOn01dLzqCHPVHI+W6/I0Ta+ET8X8
-	5UTD8/Gs5OyepGRSzrZQ==;
+	List-Owner; bh=dDqRuU3Gv6gljELh55bVKJpWxZlpEvM9NcCu4HOcbOA=; b=RkA20TjKM6kBTj
+	BF7BNh0BfMBf4veYl2G9o/mN3g1ojckf0pNOAp/ted0qdYrSqpKTUtvDE4tEaiD4goMuBUG8reDtV
+	DXkqOJlO52bGMp+Kzh7P4P20DrL0xlhC9MHnjtAPQqBrG50txFPPhig22ZG1dnq58LEi2GgCVIgpe
+	l9RfwpvTdGM+B+uF+HZldbpyvBwnCc2zExP1ky+I2H8D3ja7O+yXrxldcR5zXpXNKdNfxqU+wlegk
+	Lt9BFm1zRP3tEs2mJ+iJ0D5rZyNEWnLBJ/mMiQ/eD+Jt2qAqLkeDPsPsGfvFoFkx3wceu4MX73vsP
+	mZOl2cqTLVSbHGRA+ygQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syl9h-0000000BVj9-2iGF;
-	Thu, 10 Oct 2024 04:52:05 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1synqc-0000000Brda-1s0p;
+	Thu, 10 Oct 2024 07:44:34 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1syl8L-0000000BVaR-1sHM;
-	Thu, 10 Oct 2024 04:50:43 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id CCD3A5C5E62;
-	Thu, 10 Oct 2024 04:50:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7059C4CECD;
-	Thu, 10 Oct 2024 04:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728535839;
-	bh=SJQtIAt6QYdCs7oBad8yA/2kIDjGnFvxdNmmodWlddc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=O1h08fyzrJINl9jgqXJ7H/tJQxtp9rsWinT/+y31r42NSekGF972T9S/rVng+YOHU
-	 egfswxQKok59csdpdAmbJDNdZIMUfw1xPRIyKncDyq/anqJFiBnLWfVZwIUlS7jG8x
-	 phm4zl5mKZa4BdzrBFTHI+th9AmK+ldwz33qiLzWanwrHv//OE9k/3FkCBcgqcs02c
-	 i7V6Z0hnwnJhKjUtaNUc/N+Djylmjaa9QaPNR2EdFjhtiMwuqqyxu+Z0pbKr+ncnio
-	 yq2fnlpjAi21NDmPWOoSNC1YqjQp3kV4e4cZdqqA+6IG+wIfUdvSaslBq2yLkZaYo/
-	 0iFzweyXcF26w==
-Message-ID: <997f9f43-d8dd-499d-b37a-7109d06f4e8d@kernel.org>
-Date: Thu, 10 Oct 2024 06:50:28 +0200
+	id 1synFQ-0000000BnEP-1OzO
+	for linux-mtd@lists.infradead.org;
+	Thu, 10 Oct 2024 07:06:10 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49A1bRaK011409;
+	Thu, 10 Oct 2024 07:05:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	HV7wLxSG/0y/7LJuPiLwo0JLAEH8eqTCf8bZt96mzpE=; b=TqELFFNM4QsH9dZg
+	CXTpzTEr4AaNA6+oj7ddq/w8g4eVgWr4YS48ItrkWl3+4oojBd5TSoS/r1zsUu6Q
+	41k08axNvueue9dHFtgDYC8hKgKFOAcn4ihUvdhqiZ0kA0wsVB0Id5ajR2PQoEX1
+	2Z+2iTONWWEq+odEQ14RW/XxlacMouqe4y4HiWVXfQdrnPiYJOJBtoiFBitcdmCb
+	5K/0oRUuy14OZeHTpHCVdyESD6Z4SgZndAlszEOxYhBKILD4LfwXOxDhXKIL0vGi
+	hM8l/6DaVAYNOEGXhN3ogM78gwN615cqtNyqJtU/FRch7DMykQH2G7QuqaXA7B0x
+	cwpQ/w==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 425xthshfs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Oct 2024 07:05:48 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49A75mY8025049
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Oct 2024 07:05:48 GMT
+Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 10 Oct 2024 00:05:42 -0700
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konradybcio@kernel.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <arnd@arndb.de>,
+        <esben@geanix.com>, <nikita.shubin@maquefel.me>,
+        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>
+CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
+Subject: [PATCH v11 1/8] spi: dt-bindings: Introduce qcom,spi-qpic-snand
+Date: Thu, 10 Oct 2024 12:35:03 +0530
+Message-ID: <20241010070510.1504250-2-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20241010070510.1504250-1-quic_mdalam@quicinc.com>
+References: <20241010070510.1504250-1-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv3 5/5] documentation: use nvmem-layout in examples
-To: Rosen Penev <rosenp@gmail.com>, devicetree@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>,
- William Zhang <william.zhang@broadcom.com>,
- Anand Gore <anand.gore@broadcom.com>, Kursad Oney
- <kursad.oney@broadcom.com>, Florian Fainelli
- <florian.fainelli@broadcom.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Christian Marangi <ansuelsmth@gmail.com>,
- "open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
- "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
- "moderated list:BROADCOM BCMBCA ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- "moderated list:ARM/Mediatek SoC support"
- <linux-mediatek@lists.infradead.org>
-References: <20241009214847.67188-1-rosenp@gmail.com>
- <20241009214847.67188-6-rosenp@gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20241009214847.67188-6-rosenp@gmail.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4_aSUEPS07dchRSkemm10m_67JsdhsyA
+X-Proofpoint-GUID: 4_aSUEPS07dchRSkemm10m_67JsdhsyA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 priorityscore=1501 bulkscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=999 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
+ definitions=main-2410100045
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241009_215041_613841_925047AB 
-X-CRM114-Status: GOOD (  14.30  )
+X-CRM114-CacheID: sfid-20241010_000608_439271_39AF9F38 
+X-CRM114-Status: GOOD (  15.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -142,45 +104,176 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/10/2024 23:48, Rosen Penev wrote:
-> nvmem-cells are deprecated and replaced with nvmem-layout. For these
-> examples, replace. They're not relevant to the main point of the
-> document anyway.
-> 
-> Signed-off-by: Rosen Penev <rosenp@gmail.com>
-> ---
+Document the QPIC-SPI-NAND flash controller present in the IPQ SoCs.
+It can work both in serial and parallel mode and supports typical
+SPI-NAND page cache operations.
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching. For bindings, the preferred subjects are
-explained here:
-https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
 
-You already got this comment, is something unclear?
+Change in [v11]
 
->  .../mtd/partitions/qcom,smem-part.yaml        | 21 +++++++++++--------
->  .../bindings/net/marvell,aquantia.yaml        | 13 +++++++-----
->  2 files changed, 20 insertions(+), 14 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> index 1c2b4e780ca9..c2cc11286d80 100644
-> --- a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> @@ -23,7 +23,7 @@ properties:
->  
->  patternProperties:
->    "^partition-[0-9a-z]+$":
-> -    $ref: nvmem-cells.yaml
-> +    $ref: nvmem-layout.yaml
+* Dropped Reviewed-by tag
+* Added Soc based compitable "qcom,ipq9574-snand"
+ 
+Change in [v10]
 
-There is no such file here, so this should be full path /schemas/nvmem/....
+* No change
 
-but is this a nvmem? Looks like MTD and NAND. Previously this was a
-partition, now it is not. I don't understand what you are trying to
-achieve here.
+Change in [v9]
 
-Best regards,
-Krzysztof
+* No change
+
+Change in [v8]
+
+* No change
+
+Change in [v7]
+
+* No change
+
+Change in [v6]
+
+* No change
+
+Change in [v5]
+
+* No change
+
+Change in [v4]
+
+* Fix spelling mistake in HW description
+
+* Added commit message
+
+* Removed '|' from description
+
+* Removed minItems in clock
+
+* Added blank line
+
+* Removed co-developed by
+
+Change in [v3]
+
+* Updated commit message, removed "dt-bindings" from commit
+  message
+
+* Updated compatible name as file name
+
+* Added hardware description
+
+* Documented clock-name
+
+* Moved dma-names property to top
+
+* Droped unused label "qpic_nand"
+
+* Fixed indentation in example dt node
+
+Change in [v2]
+
+* Added initial support for dt-bindings
+
+Change in [v1]
+
+* This patch was not included in [v1]
+
+ .../bindings/spi/qcom,spi-qpic-snand.yaml     | 83 +++++++++++++++++++
+ 1 file changed, 83 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+
+diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+new file mode 100644
+index 000000000000..aa3f93319203
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+@@ -0,0 +1,83 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/qcom,spi-qpic-snand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm QPIC NAND controller
++
++maintainers:
++  - Md sadre Alam <quic_mdalam@quicinc.com>
++
++description:
++  The QCOM QPIC-SPI-NAND flash controller is an extended version of
++  the QCOM QPIC NAND flash controller. It can work both in serial
++  and parallel mode. It supports typical SPI-NAND page cache
++  operations in single, dual or quad IO mode with pipelined ECC
++  encoding/decoding using the QPIC ECC HW engine.
++
++allOf:
++  - $ref: /schemas/spi/spi-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - qcom,ipq9574-snand
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 3
++
++  clock-names:
++    items:
++      - const: core
++      - const: aon
++      - const: iom
++
++  dmas:
++    items:
++      - description: tx DMA channel
++      - description: rx DMA channel
++      - description: cmd DMA channel
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++      - const: cmd
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
++    spi@79b0000 {
++        compatible = "qcom,ipq9574-snand";
++        reg = <0x1ac00000 0x800>;
++
++        clocks = <&gcc GCC_QPIC_CLK>,
++                 <&gcc GCC_QPIC_AHB_CLK>,
++                 <&gcc GCC_QPIC_IO_MACRO_CLK>;
++        clock-names = "core", "aon", "iom";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@0 {
++            compatible = "spi-nand";
++            reg = <0>;
++            #address-cells = <1>;
++            #size-cells = <1>;
++            nand-ecc-engine = <&qpic_nand>;
++            nand-ecc-strength = <4>;
++            nand-ecc-step-size = <512>;
++        };
++    };
+-- 
+2.34.1
 
 
 ______________________________________________________
