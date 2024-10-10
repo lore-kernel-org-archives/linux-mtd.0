@@ -4,90 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66650CF07C9
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2024 08:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9F65CF07DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Oct 2024 09:29:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z71vrV6XiaKVPOEQwV8+2ZRKTHHVaJvujW3M8/3d+nI=; b=mrW3TiBR2ZnFVH
-	lPUjSWWGUGAkTD24aWs2FGfS43E+zLzgFzG31zn9fXQ2LBoJAQ976/r5dPeVtKHV+HF5FtTqAkjah
-	XYIg1AFxdzKtl+xKN4kW7RfTgnCuGEXwiIEb8U9eg+97S3RBCktOxiFRq5S3j6cEKiVkb8ZA5Wtra
-	0q5edKEImaO4hQfgEm3kHTaFrHcCOiZ4ACveJTdXo3u0O8r+jlzvidX7n2Yo23Ylh1Qg0qy+rpJLJ
-	zzxoUTIbzlgOxQsVVki98QWrzrZSEdnNJgvuFARo/vywHwnIkDgzJy2nKZmzqcWyZ8WUPQiOUm/Nd
-	94zPisap0FUGvraisyLQ==;
+	List-Owner; bh=MBMDo8dgihyexikCYbWaSkCCLWmIknOFmMOBtzKab2k=; b=IMsuOH4URZFXOL
+	198zKYD60LUeIE5KZLIipl6L8wgEnWR6To7rQLZRaCt4WXHxhDJp1QJASo4Uv0rg2wa9ZkdwkgvnN
+	RY6CdE05/LSmFEhNcQAJWfu282ORDlX/GFjCd9jviYPLfsL1of2nF1JOy4WvhM4JLNDgSP3AiNtz9
+	PEV47eCHn6Id6EciY0FB+nPzxnnJOqhnGSMGAMkqVnfGw7a1qGJaDXWhqPzMnYaWp3fql4vtlk7i2
+	VSwaoZYDd5VMksOTr7IG/GwMDjlvENvvYVKgS3/1MFENkeUdFgR7nKiy4fPojIapD8ZBVP2C9g/43
+	KYVPlCqd7XAkqKTqB2mQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syoop-0000000C4lM-2gAF;
-	Thu, 10 Oct 2024 08:46:47 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1sypU6-0000000CEXz-22C1;
+	Thu, 10 Oct 2024 09:29:26 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1synFy-0000000BnVB-0Pw4
-	for linux-mtd@lists.infradead.org;
-	Thu, 10 Oct 2024 07:06:45 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49A1bRcA032567;
-	Thu, 10 Oct 2024 07:06:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	BPSwiRp4dMlA/cipSaoG9ZCaK6g49AdtlHdJTcjrviU=; b=UcvcLLNvX6OaHsPu
-	Ie3hhSdV7HHygHEF+Oiw/cBHPhM0IY88m6sDIDoFvyX1QOWeryM6uvI/zGlzwOh7
-	M4B0k11LuG3rH8c4HKQ1fq48PpULxwnCReqN2B0fZB8kzOq0mVCJ6SKdqnLMIXQA
-	t5UTUAGNznqquZMgwZ1Ns/9QPhocYqO3OKDl6Yvm5rl7KsJEFzPuM58cJDOISYDF
-	bu+/3dPLyT9FaM7ExqG37gNsN4PzAEvcL6bUyx5YH7uvljtzFpDCekZqdzbAmgqb
-	otIlr4xVFzH80lZ0ZcRfZ2P5T037x5sILfNd6yOs3aEE60LY16FsVEg8b0csUTGn
-	1XrzhA==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 424cy7j3x7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Oct 2024 07:06:25 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49A76OEH025704
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Oct 2024 07:06:24 GMT
-Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 10 Oct 2024 00:06:18 -0700
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <andersson@kernel.org>,
-        <konradybcio@kernel.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <arnd@arndb.de>,
-        <esben@geanix.com>, <nikita.shubin@maquefel.me>,
-        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>
-CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
-Subject: [PATCH v11 7/8] arm64: dts: qcom: ipq9574: Add SPI nand support
-Date: Thu, 10 Oct 2024 12:35:09 +0530
-Message-ID: <20241010070510.1504250-8-quic_mdalam@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241010070510.1504250-1-quic_mdalam@quicinc.com>
-References: <20241010070510.1504250-1-quic_mdalam@quicinc.com>
+	id 1sypSg-0000000CEDg-00Va;
+	Thu, 10 Oct 2024 09:28:00 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E8E0C240009;
+	Thu, 10 Oct 2024 09:27:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1728552473;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SIpvFyTZgLUu94xOGDEGcr970RAQUxKWuf6ktquG0pA=;
+	b=HYHexWZbzisi+7I32KvQ/3MgFxTE0vqgO/bvfPgFfvjFRZ5OL9sONbUEfexGaj3nIYFNBg
+	rFZUaS9+M6En3zav/tnEjpEGrVtrUchLMaFKubrwz/WPA5PkH2uATnZ/FxbUUIIlOa9i79
+	LftYlIOBb1T/NFh5hwpmp7x5qIojm8Qgq4Z8BE9AXAPsz6/N6EONB62+aL71r4rZPTGC05
+	TbrVH8EBsOkG8a8EwJ/WP7/2wT5erFKgJoylTC6JKbG3f2l7lguUKdnT57IhBnrziOxfBW
+	oyZsmZ5SKpI9QmYRMdUhHMS9zuORceU+OxkeXy4uL2O+2ozkIJp+R2VbWKooGA==
+Date: Thu, 10 Oct 2024 11:27:51 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, "michael@walle.cc"
+ <michael@walle.cc>, "broonie@kernel.org" <broonie@kernel.org>,
+ "pratyush@kernel.org" <pratyush@kernel.org>, "richard@nod.at"
+ <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>, Rob Herring
+ <robh@kernel.org>, "cornor+dt@kernel.org" <cornor+dt@kernel.org>,
+ "krzk+dt@kernel.org" <krzk+dt@kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "nicolas.ferre@microchip.com"
+ <nicolas.ferre@microchip.com>, "alexandre.belloni@bootlin.com"
+ <alexandre.belloni@bootlin.com>, "claudiu.beznea@tuxon.dev"
+ <claudiu.beznea@tuxon.dev>, "Simek, Michal" <michal.simek@amd.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org"
+ <alsa-devel@alsa-project.org>, "patches@opensource.cirrus.com"
+ <patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
+ <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
+ "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, Conor Dooley
+ <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
+Subject: Re: Add stacked and parallel memories support in spi-nor
+Message-ID: <20241010112751.01e5afa1@xps-13>
+In-Reply-To: <IA0PR12MB769930E81D3D66B51CDC8213DC782@IA0PR12MB7699.namprd12.prod.outlook.com>
+References: <IA0PR12MB7699B360C7CF59E0A3D095F9DC8D2@IA0PR12MB7699.namprd12.prod.outlook.com>
+	<20240930110408.6ec43e97@xps-13>
+	<IA0PR12MB769930E81D3D66B51CDC8213DC782@IA0PR12MB7699.namprd12.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: cOhtEX6VuX59Fyw6oEfg-cVlCJuS_ZbF
-X-Proofpoint-GUID: cOhtEX6VuX59Fyw6oEfg-cVlCJuS_ZbF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410100045
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241010_000642_290120_2EF99452 
-X-CRM114-Status: GOOD (  10.29  )
+X-CRM114-CacheID: sfid-20241010_022759_132395_0C2165D5 
+X-CRM114-Status: GOOD (  22.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,162 +86,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add SPI NAND support for ipq9574 SoC.
-
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
-
-Change in [v11]
-
-* No change
-
-Change in [v10]
-
-* No change 
-
-Change in [v9]
-
-* No change
-
-Change in [v8]
-
-* No change
-
-Change in [v7]
-
-* No change
-
-Change in [v6]
-
-* No change
-
-Change in [v5]
-
-* No change
-
-Change in [v4]
-
-* No change
-
-Change in [v3]
-
-* Updated gpio number as per pin control driver
-
-* Fixed alignment issue
-
-Change in [v2]
-
-* Added initial enablement for spi-nand 
-
-Change in [v1]
-
-* Posted as RFC patch for design review
-
- .../boot/dts/qcom/ipq9574-rdp-common.dtsi     | 43 +++++++++++++++++++
- arch/arm64/boot/dts/qcom/ipq9574.dtsi         | 27 ++++++++++++
- 2 files changed, 70 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-index 91e104b0f865..6429a6b3b903 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-@@ -139,6 +139,49 @@ gpio_leds_default: gpio-leds-default-state {
- 		drive-strength = <8>;
- 		bias-pull-up;
- 	};
-+
-+	qpic_snand_default_state: qpic-snand-default-state {
-+		clock-pins {
-+			pins = "gpio5";
-+			function = "qspi_clk";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+
-+		cs-pins {
-+			pins = "gpio4";
-+			function = "qspi_cs";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+
-+		data-pins {
-+			pins = "gpio0", "gpio1", "gpio2", "gpio3";
-+			function = "qspi_data";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+	};
-+};
-+
-+&qpic_bam {
-+	status = "okay";
-+};
-+
-+&qpic_nand {
-+	pinctrl-0 = <&qpic_snand_default_state>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "spi-nand";
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		nand-ecc-engine = <&qpic_nand>;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+	};
- };
- 
- &usb_0_dwc3 {
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-index 14c7b3a78442..86eec9657523 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-@@ -330,6 +330,33 @@ tcsr: syscon@1937000 {
- 			reg = <0x01937000 0x21000>;
- 		};
- 
-+		qpic_bam: dma-controller@7984000 {
-+			compatible = "qcom,bam-v1.7.0";
-+			reg = <0x7984000 0x1c000>;
-+			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gcc GCC_QPIC_AHB_CLK>;
-+			clock-names = "bam_clk";
-+			#dma-cells = <1>;
-+			qcom,ee = <0>;
-+			status = "disabled";
-+		};
-+
-+		qpic_nand: spi@79b0000 {
-+			compatible = "qcom,ipq9574-snand";
-+			reg = <0x79b0000 0x10000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			clocks = <&gcc GCC_QPIC_CLK>,
-+				 <&gcc GCC_QPIC_AHB_CLK>,
-+				 <&gcc GCC_QPIC_IO_MACRO_CLK>;
-+			clock-names = "core", "aon", "iom";
-+			dmas = <&qpic_bam 0>,
-+			       <&qpic_bam 1>,
-+			       <&qpic_bam 2>;
-+			dma-names = "tx", "rx", "cmd";
-+			status = "disabled";
-+		};
-+
- 		sdhc_1: mmc@7804000 {
- 			compatible = "qcom,ipq9574-sdhci", "qcom,sdhci-msm-v5";
- 			reg = <0x07804000 0x1000>,
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQW1pdCwKCmFtaXQua3VtYXItbWFoYXBhdHJhQGFtZC5jb20gd3JvdGUgb24gVGh1LCAxMCBP
+Y3QgMjAyNCAwOToxNzo1OCArMDAwMDoKCj4gSGVsbG8gTWlxdWVsLAo+IAo+ID4gPiAtIFRoZSBz
+dGFja2VkLW1lbW9yaWVzIERUIGJpbmRpbmdzIHdpbGwgY29udGFpbiB0aGUgcGhhbmRsZXMgb2Yg
+dGhlIGZsYXNoIG5vZGVzICAKPiA+IGNvbm5lY3RlZCBpbiBzdGFja2VkIG1vZGUuICAKPiA+ID4K
+PiA+ID4gLSBUaGUgZmlyc3QgZmxhc2ggbm9kZSB3aWxsIGNvbnRhaW4gdGhlIG10ZCBwYXJ0aXRp
+b24gdGhhdCB3b3VsZCBoYXZlCj4gPiA+IHRoZSBjcm9zcyBvdmVyIG1lbW9yeSBzdGFyaW5nIGF0
+IGEgbWVtb3J5IGxvY2F0aW9uIGluIHRoZSBmaXJzdCBmbGFzaAo+ID4gPiBhbmQgZW5kaW5nIGF0
+IHNvbWUgbWVtb3J5IGxvY2F0aW9uIG9mIHRoZSAybmQgZmxhc2ggIAo+ID4gCj4gPiBJIGRvbid0
+IGxpa2UgdGhhdCBtdWNoLiBEZXNjcmliaW5nIHBhcnRpdGlvbnMgcGFzdCB0aGUgYWN0dWFsIGRl
+dmljZSBzb3VuZHMgd3JvbmcuIElmCj4gPiB5b3UgbG9vayBpbnRvIFsxXSB0aGVyZSBpcyBhIHN1
+Z2dlc3Rpb24gZnJvbSBSb2IgdG8gaGFuZGxlIHRoaXMgY2FzZSB1c2luZyBhIHByb3BlcnR5Cj4g
+PiB0aGF0IHRlbGxzIHVzIHRoZXJlIGlzIGEgY29udGludWF0aW9uLCBzbyBmcm9tIGEgc29mdHdh
+cmUgcGVyc3BlY3RpdmUgd2UgY2FuIGVhc2lseQo+ID4gbWFrZSB0aGUgbGluaywgYnV0IG9uIHRo
+ZSBoYXJkd2FyZSBkZXNjcmlwdGlvbiBzaWRlIHRoZSBpbmZvcm1hdGlvbiBhcmUgY29ycmVjdC4g
+IAo+IAo+IEkgcmV2aWV3ZWQgUm9iJ3Mgc3VnZ2VzdGlvbnMgaW4gWzFdLCBhbmQgSSBuZWVkIHRv
+IGV4YW1pbmUgdGhlIE1URCBsYXllciAKPiB0byBkZXRlcm1pbmUgaG93IHRoaXMgY2FuIGJlIGlt
+cGxlbWVudGVkIGZyb20gYSBzb2Z0d2FyZSBwZXJzcGVjdGl2ZS4gCj4gRm9yIHJlZmVyZW5jZSwg
+aGVyZSBpcyBSb2IncyBzdWdnZXN0aW9uOgo+IAo+IERlc2NyaWJlIGVhY2ggZGV2aWNlIGFuZCBw
+YXJ0aXRpb24gc2VwYXJhdGVseSBhbmQgYWRkIGxpbmsocykgZnJvbSBvbmUgCj4gcGFydGl0aW9u
+IHRvIHRoZSBuZXh0IAo+IAo+IGZsYXNoMCB7Cj4gICBwYXJ0aXRpb25zIHsKPiAgICAgY29tcGF0
+aWJsZSA9ICJmaXhlZC1wYXJ0aXRpb25zIjsKPiAgICAgY29uY2F0LXBhcnRpdGlvbiA9IDwmZmxh
+c2gxX3BhcnRpdGlvbnM+Owo+ICAgICAuLi4KPiAgIH07Cj4gfTsKPiAKPiBmbGFzaDEgewo+ICAg
+Zmxhc2gxX3BhcnRpdGlvbjogcGFydGl0aW9ucyB7Cj4gICAgIGNvbXBhdGlibGUgPSAiZml4ZWQt
+cGFydGl0aW9ucyI7Cj4gICAgIC4uLgo+ICAgfTsKPiB9Owo+IAo+ID4gCj4gPiBJZiB0aGlzIGRl
+c2NyaXB0aW9uIGlzIGFjY2VwdGVkLCB0aGVuIGZpbmUsIHlvdSBjYW4gZGVwcmVjYXRlIHRoZSAi
+c3RhY2tlZC1tZW1vcmllcyIKPiA+IHByb3BlcnR5LiAgCj4gCj4gSSBiZWxpZXZlIHRoYXQgaW4g
+YWRkaXRpb24gdG8gUm9iJ3MgZGVzY3JpcHRpb24sIHdlIHNob3VsZCBhbHNvIGluY2x1ZGUgCj4g
+dGhlICdzdGFja2VkLW1lbW9yaWVzJyBwcm9wZXJ0eS4gVGhpcyBwcm9wZXJ0eSBoZWxwcyB1cyBp
+ZGVudGlmeSB3aGljaCAKPiBmbGFzaGVzIGFyZSBzdGFja2VkLCB3aGlsZSBSb2IncyBzdWdnZXN0
+aW9uIGV4cGxhaW5zIGhvdyB0aGUgcGFydGl0aW9ucyAKPiB3aXRoaW4gdGhlIHN0YWNrZWQgZmxh
+c2hlcyBhcmUgY29ubmVjdGVkLgo+IAo+IEZvciBleGFtcGxlLCBpZiB3ZSBoYXZlIHRocmVlIGZs
+YXNoZXMgY29ubmVjdGVkIHRvIGFuIFNQSSBob3N0LCB3aXRoIAo+IGZsYXNoQDAgYW5kIGZsYXNo
+QDEgb3BlcmF0aW5nIGluIHN0YWNrZWQgbW9kZSBhbmQgZmxhc2hAMiBmdW5jdGlvbmluZyBhcyBh
+IAo+IHN0YW5kYWxvbmUgZmxhc2gsIHRoZSBEZXZpY2UgVHJlZSBiaW5kaW5nIG1pZ2h0IGxvb2sg
+c29tZXRoaW5nIGxpa2UgdGhpczogCj4gUGxlYXNlIHNoYXJlIHlvdXIgdGhvdWdodHMgb24gdGhp
+cy4KPiAKPiBzcGlAMCB7Cj4gICAuLi4KPiAgIGZsYXNoQDAgewo+ICAgICBjb21wYXRpYmxlID0g
+ImplZGVjLHNwaS1ub3IiCj4gICAgIHJlZyA9IDwweDAwPjsKPiAgICAgc3RhY2tlZC1tZW1vcmll
+cyA9IDwmZmxhc2hAMCAmZmxhc2hAMT47Cj4gICAgIHNwaS1tYXgtZnJlcXVlbmN5ID0gPDUwMDAw
+MDAwPjsKPiAgICAgLi4uCj4gICAgICAgICBmbGFzaDBfcGFydGl0aW9uOiBwYXJ0aXRpb25zIHsK
+PiAgICAgICAgICAgICBjb21wYXRpYmxlID0gImZpeGVkLXBhcnRpdGlvbnMiOwo+IAljb25jYXQt
+cGFydGl0aW9uID0gPCZmbGFzaDFfcGFydGl0aW9ucz47CQo+ICAgICAgICAgCXBhcnRpdGlvbkAw
+IHsKPiAgICAgICAgICAgCSAgICBsYWJlbCA9ICJTdGFja2VkLUZsYXNoLTEiOwo+ICAgICAgICAg
+ICAgICAgICByZWcgPSA8MHgwIDB4ODAwMDAwPjsKPiAJfQo+ICAgICAgICAgfQo+ICAgICB9Cj4g
+ICBmbGFzaEAxIHsKPiAgICAgY29tcGF0aWJsZSA9ICJqZWRlYyxzcGktbm9yIgo+ICAgICAgcmVn
+ID0gPDB4MDE+Owo+ICAgICBzcGktbWF4LWZyZXF1ZW5jeSA9IDw1MDAwMDAwMD47Cj4gICAgIC4u
+Lgo+ICAgICAgICAgZmxhc2gxX3BhcnRpdGlvbjogcGFydGl0aW9ucyB7Cj4gICAgICAgICAgICAg
+Y29tcGF0aWJsZSA9ICJmaXhlZC1wYXJ0aXRpb25zIjsKPiAJY29uY2F0LXBhcnRpdGlvbiA9IDwm
+Zmxhc2gwX3BhcnRpdGlvbnM+OwkKPiAgICAgICAgIAlwYXJ0aXRpb25AMCB7Cj4gICAgICAgICAg
+IAkgICAgbGFiZWwgPSAiIFN0YWNrZWQtRmxhc2gtMiI7Cj4gICAgICAgICAgICAgICAgIHJlZyA9
+IDwweDAgMHg4MDAwMDA+Owo+IAl9Cj4gICAgICAgICB9Cj4gICB9Cj4gCj4gICBmbGFzaEAyIHsK
+PiAgICAgY29tcGF0aWJsZSA9ICJqZWRlYyxzcGktbm9yIgo+ICAgICAgcmVnID0gPDB4MDE+Owo+
+ICAgICBzcGktbWF4LWZyZXF1ZW5jeSA9IDw1MDAwMDAwMD47Cj4gICAgIC4uLgo+ICAgICAgICAg
+cGFydGl0aW9ucyB7Cj4gICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJmaXhlZC1wYXJ0aXRpb25z
+IjsKPiAJY29uY2F0LXBhcnRpdGlvbiA9IDwmZmxhc2gwX3BhcnRpdGlvbnM+OwkKPiAgICAgICAg
+IAlwYXJ0aXRpb25AMCB7Cj4gICAgICAgICAgIAkgICAgbGFiZWwgPSAiU2luZ2xlLUZsYXNoIjsK
+PiAgICAgICAgICAgICAgICAgcmVnID0gPDB4MCAweDgwMDAwMD47Cj4gCX0KPiAgICAgICAgIH0K
+PiAgIH0KCkknbSBzb3JyeSBidXQgdGhpcyBpcyBwcmV0dHkgbWVzc2VkIHVwLiBUaGUgYWxpZ25t
+ZW50cyBhcmUgd3JvbmcsIEkKYmVsaWV2ZSB0aGUgbGFiZWxzIGFyZSB3cm9uZywgdGhlIHJlZyBw
+cm9wZXJ0aWVzIGFzIHdlbGwuIENhbiB5b3UKcGxlYXNlIHdvcmsgb24gdGhpcyBleGFtcGxlIGFu
+ZCBzZW5kIGFuIHVwZGF0ZWQgdmVyc2lvbj8KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
