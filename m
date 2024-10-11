@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B885CFD372
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2024 12:17:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53C82CFD36E
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2024 12:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=45uLvlT6D4IzzDexxP74Hbb9PI2ILVx2RpgBVp3/yYo=; b=UVX3huzwMJJbxz7dYu66vyrauZ
-	X9cOih6/cDFXo/dfoFmXEKiU5jDN+1vxVaP5mlaQPbkVGDRDv9rZVjPgyAp6jTaANZVId+NI4TDIH
-	3Wj+xj4hBgZxmg83kjEzzGX4tRvB/cucjtyhc/iWIBa+/ESXFW7XpskmcQ++o1TbqC1qCVXbgZqZl
-	dLXY6W9v4+fVO46sYaqmaEIqvEtC1U50DG6hgTLrOvQLXQ4pK6ofPAfS0KsJ9WXLtk9hqn2isY37l
-	dtDPgRQKp1ms7nzVmSGHruG2gq4yx91KYoqTg5Wb6zarmxnSbBotuauOBUS2/QCNjdcC7V1ZD1UwY
-	UVDB+vuQ==;
+	bh=ZgPfAtdX6AQ20ku4fpYIINlgmbI9S7u2oyV+PzxNcFY=; b=Aw3xvNiVeiKsWPtJqpsokVHAJJ
+	xPOXDWmdyjs5zlQkIOAbvOqJzcExzF87XxIkIUyV2CeVM6afVTKmKowmncL1I7AlsNwnbAMU+FL/f
+	cn3W8fdJ18x8TgimtodxSTM1qIx2FqphwHuCmu0AhLIw4gO6uV23+6RjDcWshYUM7pQmgDEiFwP/O
+	XrldYDITs4h5UCut7BGaRn6NbFl2/N6mgpJik40/9ANeIj7o8DtXT8mAQ6NFSoLAjqgLPtGzaPfx/
+	Yeod8JVSYTznz0b/t1DQxIrSVn4eN9E1Our1NSzD1WZYnv/l7jj6nbtYXVIX5pm75iNwbdPafohWN
+	PfKPT5uw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1szEZz-0000000GGbG-0lhv;
-	Fri, 11 Oct 2024 12:17:11 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1szEZw-0000000GGZV-190v;
+	Fri, 11 Oct 2024 12:17:08 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szERx-0000000GEYw-2IHk
+	id 1szEPd-0000000GDzs-0NYe
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Oct 2024 12:08:56 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XQ5015rYwz1HKWW;
-	Fri, 11 Oct 2024 20:04:33 +0800 (CST)
+	Fri, 11 Oct 2024 12:06:31 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4XQ4zp2rRhz10N5x;
+	Fri, 11 Oct 2024 20:04:22 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id C1F1C140123;
-	Fri, 11 Oct 2024 20:08:41 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id ACD0B140157;
+	Fri, 11 Oct 2024 20:06:08 +0800 (CST)
 Received: from [10.174.178.46] (10.174.178.46) by
  kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 11 Oct 2024 20:08:41 +0800
-Subject: Re: [PATCH v2 10/10] ubi: Add max erase counter sysfs attribute for
- data area
+ 15.2.1544.11; Fri, 11 Oct 2024 20:06:07 +0800
+Subject: Re: [PATCH v2 06/10] ubi: Add mean erase counter sysfs attribute
 To: Rickard Andersson <rickard.andersson@axis.com>, <richard@nod.at>,
 	<linux-mtd@lists.infradead.org>, <rickard314.andersson@gmail.com>
 CC: <kernel@axis.com>
 References: <20241011092134.2909496-1-rickard.andersson@axis.com>
- <20241011092134.2909496-10-rickard.andersson@axis.com>
+ <20241011092134.2909496-6-rickard.andersson@axis.com>
 From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <9d8d3a8c-1761-e1af-f938-5b00d3cb5aeb@huawei.com>
-Date: Fri, 11 Oct 2024 20:08:40 +0800
+Message-ID: <e65b5621-472e-5f5f-4fcd-ee21be9b1bb5@huawei.com>
+Date: Fri, 11 Oct 2024 20:06:07 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20241011092134.2909496-10-rickard.andersson@axis.com>
+In-Reply-To: <20241011092134.2909496-6-rickard.andersson@axis.com>
 X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241011_050853_901354_8464A4F2 
-X-CRM114-Status: GOOD (  10.15  )
+X-CRM114-CacheID: sfid-20241011_050629_990004_50404A72 
+X-CRM114-Status: GOOD (  11.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,25 +72,23 @@ Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8xMC8xMSAxNzoyMSwgUmlja2FyZCBBbmRlcnNzb24g0LS1wDoKPiBEYXRhIGFyZWEg
-aW5jbHVkZXMgYWxsIGJsb2NrcyBleGNlcHQgZm9yIHRoZSBmYXN0bWFwIGFyZWEuCj4gCj4gU2ln
-bmVkLW9mZi1ieTogUmlja2FyZCBBbmRlcnNzb24gPHJpY2thcmQuYW5kZXJzc29uQGF4aXMuY29t
-Pgo+IC0tLQo+ICAgRG9jdW1lbnRhdGlvbi9BQkkvc3RhYmxlL3N5c2ZzLWNsYXNzLXViaSB8IDgg
-KysrKysrKysKPiAgIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKykKClJldmlld2VkLWJ5
-OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IAo+IGRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL0FCSS9zdGFibGUvc3lzZnMtY2xhc3MtdWJpIGIvRG9jdW1lbnRhdGlv
-bi9BQkkvc3RhYmxlL3N5c2ZzLWNsYXNzLXViaQo+IGluZGV4IDEwMGUxYzA2OThhMy4uZmY0NTM1
-NTdiMGRiIDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vQUJJL3N0YWJsZS9zeXNmcy1jbGFz
-cy11YmkKPiArKysgYi9Eb2N1bWVudGF0aW9uL0FCSS9zdGFibGUvc3lzZnMtY2xhc3MtdWJpCj4g
-QEAgLTg2LDYgKzg2LDE0IEBAIERlc2NyaXB0aW9uOgo+ICAgCQlNYXhpbXVtIHBoeXNpY2FsIGVy
-YXNlYmxvY2sgZXJhc2UgY291bnRlciB2YWx1ZSBmb3IgYSBibG9jawo+ICAgCQlpbiB0aGUgZmFz
-dG1hcCBhcmVhLgo+ICAgCj4gK1doYXQ6CQkvc3lzL2NsYXNzL3ViaS91YmlYL21heF9lY19kYXRh
-Cj4gK0RhdGU6CQlPY3RvYmVyIDIwMjQKPiArS2VybmVsVmVyc2lvbjoJNi5YCj4gK0NvbnRhY3Q6
-CWxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnCj4gK0Rlc2NyaXB0aW9uOgo+ICsJCU1heCBw
-aHlzaWNhbCBlcmFzZWJsb2NrIGVyYXNlIGNvdW50ZXIgdmFsdWUgZm9yIGRhdGEgYXJlYS4KPiAr
-CQlEYXRhIGFyZWEgaW5jbHVkZXMgYWxsIGJsb2NrcyBleGNlcHQgZm9yIHRoZSBmYXN0bWFwIGFy
-ZWEuCj4gKwo+ICAgV2hhdDoJCS9zeXMvY2xhc3MvdWJpL3ViaVgvbWF4X3ZvbF9jb3VudAo+ICAg
-RGF0ZToJCUp1bHkgMjAwNgo+ICAgS2VybmVsVmVyc2lvbjoJMi42LjIyCj4gCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+1NogMjAyNC8xMC8xMSAxNzoyMSwgUmlja2FyZCBBbmRlcnNzb24g0LS1wDoKPiBBIG1lYW4gZXJh
+c2UgY291bnRlciBnaXZlcyBhIGJldHRlciB1bmRlcnN0YW5kaW5nIG9mIHRoZSBmbGFzaAo+IHdl
+YXIuCj4gCj4gU2lnbmVkLW9mZi1ieTogUmlja2FyZCBBbmRlcnNzb24gPHJpY2thcmQuYW5kZXJz
+c29uQGF4aXMuY29tPgo+IC0tLQo+ICAgRG9jdW1lbnRhdGlvbi9BQkkvc3RhYmxlL3N5c2ZzLWNs
+YXNzLXViaSB8IDcgKysrKysrKwo+ICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQo+
+IAoKUmV2aWV3ZWQtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+Cj4g
+ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vQUJJL3N0YWJsZS9zeXNmcy1jbGFzcy11YmkgYi9E
+b2N1bWVudGF0aW9uL0FCSS9zdGFibGUvc3lzZnMtY2xhc3MtdWJpCj4gaW5kZXggYTZiMzI0MDE0
+NjkyLi41MzVhM2U2ZGFiMTIgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9BQkkvc3RhYmxl
+L3N5c2ZzLWNsYXNzLXViaQo+ICsrKyBiL0RvY3VtZW50YXRpb24vQUJJL3N0YWJsZS9zeXNmcy1j
+bGFzcy11YmkKPiBAQCAtMjE5LDMgKzIxOSwxMCBAQCBEZXNjcmlwdGlvbjoKPiAgIAkJTG9naWNh
+bCBlcmFzZWJsb2NrIHNpemUgb2YgdGhpcyB2b2x1bWUuIEVxdWl2YWxlbnQgdG8gbG9naWNhbAo+
+ICAgCQllcmFzZWJsb2NrIHNpemUgb2YgdGhlIGRldmljZSBhbGlnbmVkIG9uIHRoZSB2b2x1bWUg
+YWxpZ25tZW50Cj4gICAJCXZhbHVlLgo+ICsKPiArV2hhdDoJCS9zeXMvY2xhc3MvdWJpL3ViaVgv
+bWVhbl9lYwo+ICtEYXRlOgkJT2N0b2JlciAyMDI0Cj4gK0tlcm5lbFZlcnNpb246CTYuWAo+ICtD
+b250YWN0OglsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZwo+ICtEZXNjcmlwdGlvbjoKPiAr
+CQlNZWFuIHBoeXNpY2FsIGVyYXNlYmxvY2sgZXJhc2UgY291bnRlciB2YWx1ZS4KPiAKCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
