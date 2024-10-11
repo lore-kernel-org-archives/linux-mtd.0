@@ -4,69 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1299AD0D785
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2024 13:01:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3B8BD0D789
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2024 13:01:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8JXAKnKkHgTs6p/w9keNpUZFFudjtGdoCaL+BEL3bTI=; b=ume+EnkFqz+V+5
-	GEpN8Od953x5Fq+Nfc+IryeWNww5yfjxSRVDqLDrP6Ina4f1I2IVtb4amrkHOvBiNDK4l5mU4uWUy
-	tAO9ejsHn49444+Wdaov+eXygJHTHvvX1ccquRU8xm2iAiGcjB8wqdzBivhSKy8fXQavCnCy7yzEe
-	Ia2I90qjJrNiv0aDYzvCXrGrOYnBHvxu3DTDfhyKAuMipAOverZj4W24h0XW+wh7A7iJaXZF55tY8
-	cKMSWBX59LSrr8XCmokhWZ3//qsJsE15ztbmHhH+k2uliGGZAcCfImVfWxZW6Vn4XaM+ljxhnidsd
-	9Tuv4amrpVOkf+RhLp2A==;
+	List-Owner; bh=ikxZ89fkanjJc6U1Cfrtrse98/5MGydQveRSYJe1s9E=; b=Qeq8bPrzwlE46k
+	6JnGHlyZsKQR8eyyPLx83mRMKTdTvdmwS69gwVutoiBxSWAjryyP96FNBQ42JxhPNYzThQz+vV8nu
+	ZAmEqUUMXU7iQaLGndjyIusLnzjpP/12tAMj8kpCAEhOEbaEKTmT/CZNVYEPVyWjxF9415Hj6RlPK
+	Bl53TzckRyDIpXfHmezOwuOOP2mJgv1Z/UiAWPzA0sbf/X13c5TsbLJtla9uPx1wQKL/ha8h+Byy9
+	yOfw10kUN8jftBKm1dtiTUZjOYG6NaktuF87OTXdtSTzJaWMXyAT5OOUyN3WekDHz7ito8T841FVZ
+	ambSh/Y5RpJRn8stJpvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1szFGk-0000000GNN2-0eud;
-	Fri, 11 Oct 2024 13:01:22 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1szFGj-0000000GNMk-1OQ2;
+	Fri, 11 Oct 2024 13:01:21 +0000
+Received: from mail-am7eur03on20608.outbound.protection.outlook.com ([2a01:111:f403:260e::608] helo=EUR03-AM7-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szFFT-0000000GNFE-1pNH
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 11 Oct 2024 13:00:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=1B10oyCUrTPXVSrHydbBrB3E4vQPxRWVPIcZF1Iaopw=; b=Cwtp2xivV2OaxvhRHI9goutVAq
-	L0uGVGpRd5vofnOL3jP6ndC3vo/FExC0CBb2YPxlrT87euG/L9gWqUf52ki8h4eD067RCchhUJTGD
-	DFlzvoG6k1XVZD7IC6FR6dPSFDFZvVYrFz3WoHX1YjPwvA52aTt0C9fOaleWcKO74nDSWQ2LsQUPQ
-	Pky+F+2hMgH3Ymx8j+CSvSKOhKhjGxzz/wgBpeOUK8PLgsi/7i1QwnNTfCHj3TqQA0W/47Y0DpNH7
-	WNYbXJHLpvh8cR4EJz3Uk9r8idZEAuFo0dXoaTb8bO2wHcBoGL9g5LZ29yf/AT9C79f0xt4FA4lTw
-	HCofXWwg==;
-Received: from mail-dbaeur03on2060e.outbound.protection.outlook.com ([2a01:111:f403:260d::60e] helo=EUR03-DBA-obe.outbound.protection.outlook.com)
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szFFP-00000005tGj-3FXK
+	id 1szFFN-0000000GNDr-1w25
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Oct 2024 13:00:01 +0000
+	Fri, 11 Oct 2024 12:59:59 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=w5arpN1SQZiQZgvq5Cr/NohY/NnVHYi5l+qRlakzrZwt7zn5Jix/w+M9Pz0YS7HmFpiHtYe1NnKHUvCuNjhEIc0trQ7BnhDxmXV9bfxG9wFSxE/FV4Ox7ilTEUreHL/EzB/FQXNoY8lRRd2b+lBqBcb5IuIJOuxoS8J2zGqsAMDhg3WEPbaNrVFSv8qYseUEHLmPnfrHNbrAMWI8rSd2d6Ti48iUw4ax2IB0Wl1IMdlU7poPbPLoCAjpjWNjgnQPFTcs2BwnHaRHvKtOYVf8TI8EDsdPyn6WsqgMcSrw3M4p6T6VPYS1Mz8kYDn98qNF/D/mndNn8iOKyoERnS6taw==
+ b=cnG1NRZij5Rf8Ya55rM+yCwlTEmQ83UF/958kJ2DLj27wLWzvnNbXRocHiaruBNfDFhjE97xG/ob+g73nFxRkgYz5DGjy2WHkjUuouK2Mmoj4BOWC6SCkWE2D7vbOV40n2GAm/hVymCKeZrg4kjZyeBE65rPAKlM+60S3kq2wisXqHExcKQyA2dyesLg3XMwmsB+H/LLZZLkO59zBDLvwDmIFFSOIEPE1sEUY1O0NEKM9mqDRHguBnTdJ6RIfVdt6GvB77GyZ1q4pdN8fSEMuDdwtz9zG77O1szfGyA74EWKUzkgtlj9mZ8PAOEAQR3u7gr8Gc49fAirPyxb4Ojsow==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1B10oyCUrTPXVSrHydbBrB3E4vQPxRWVPIcZF1Iaopw=;
- b=GzVZOjM1B3z0UQshI9FVDXxqYYpNL2O5vpnFPHlgEbKqLJfeDITf4F2D3ZCdtj9WIrHc7qz6Bm1CsakhHP9Xqo1e0vA6ueTN0/AqSGPQwent8GfCsBkbgrQ6MgZ9Z0DodJJVjMzOf7n6i3kGNkgiY7qRjgZ2W80AvW4857QsRw15PXfDu+16VBSyIUnU9f7MBLNKAhtBNfBmVefxyMTFoKzu537r8xEOrHovDyrO6e8CAwaLlz3ht5HSCFV9u67unc7/lrqJzs4fAk10NyNgWgIhZ48EbVi2Q+ej2chd3xO3XsRSsSo7uJugNugEr092TmT8e0mXdvhcftCDpqlyWg==
+ bh=KQeXsWB7gUI6TMbl6UVNFCkyNjySorZGYESRlnIw+bM=;
+ b=CRl2Pw8l3StcncY1PTZyCNrghFjwIJW2Lb32ZL4XqUpF6DU7QYGJnXoZHAq/dMfix+k/idOrzxrlbJbegdo/03HljA66EwXwfnMNbFxqTksEkqTP+ucjF+T8cDYoveT9CSSEMiBnGTwoDhs130UWlyAwn4QzhVGMGiz037qf+q6CjzBVtfRcp7gqX49XWxqmI1CnGXUm22/V0QbrBzhP+ebd0HN9JSZVcb++IVxnzh5aPYzys/6b7GmLjfzuxIaeVVgFhm/6a5zbcuhx6kRghDuJygYavMmrmPEyMEUeQNDfeCwjVs7vxzGsArzDsn2HADyzczgYvllhIRhtxPSjTA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  195.60.68.100) smtp.rcpttodomain=nod.at smtp.mailfrom=axis.com; dmarc=pass
  (p=none sp=none pct=100) action=none header.from=axis.com; dkim=none (message
  not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1B10oyCUrTPXVSrHydbBrB3E4vQPxRWVPIcZF1Iaopw=;
- b=eMpfPErSxQCtIeRcA7sfQ7ddukvUhW+zA47lpHXiGn+f/4tP5yOTMXpFE3nDZ0qoWIgZ4ebfm0qfizIRvO833X+9/eGOyEN2uStuF3pjhIgcQwNa3/yqEIfIrXkk0sBdbCoirmELfUI+Q9ELkMjtJHtF7Kh/uCl1cqYGYvfsbpI=
-Received: from DUZPR01CA0209.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b6::22) by DBBPR02MB10844.eurprd02.prod.outlook.com
- (2603:10a6:10:530::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.18; Fri, 11 Oct
- 2024 12:59:52 +0000
+ bh=KQeXsWB7gUI6TMbl6UVNFCkyNjySorZGYESRlnIw+bM=;
+ b=eVyhadZiLtUTOUpbLUu+BDlXt6qQgSy7J8muaAoFtBK21y6aWAYD0Yi65x8MxAIrCuuQhG1pt3s1mdFdx+/+gAe1xr7Q609IWL+woq4IlaGAnYeoTpE7G63TV7gn/P8RT9aJjUoIsDgHtfZNiUBxoYdDISGatxkssIrTu2RH/8E=
+Received: from DUZPR01CA0202.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:4b6::13) by AS8PR02MB6519.eurprd02.prod.outlook.com
+ (2603:10a6:20b:23a::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.19; Fri, 11 Oct
+ 2024 12:59:53 +0000
 Received: from DU2PEPF00028D00.eurprd03.prod.outlook.com
- (2603:10a6:10:4b6:cafe::b4) by DUZPR01CA0209.outlook.office365.com
- (2603:10a6:10:4b6::22) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10a6:10:4b6:cafe::bd) by DUZPR01CA0202.outlook.office365.com
+ (2603:10a6:10:4b6::13) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.20 via Frontend
- Transport; Fri, 11 Oct 2024 12:59:52 +0000
+ Transport; Fri, 11 Oct 2024 12:59:53 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
  smtp.mailfrom=axis.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=axis.com;
@@ -76,18 +61,18 @@ Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
 Received: from mail.axis.com (195.60.68.100) by
  DU2PEPF00028D00.mail.protection.outlook.com (10.167.242.184) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8048.13 via Frontend Transport; Fri, 11 Oct 2024 12:59:52 +0000
+ 15.20.8048.13 via Frontend Transport; Fri, 11 Oct 2024 12:59:53 +0000
 Received: from pc50632-2232.se.axis.com (10.0.5.60) by se-mail01w.axis.com
  (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 11 Oct
- 2024 14:59:47 +0200
+ 2024 14:59:48 +0200
 From: Rickard Andersson <rickard.andersson@axis.com>
 To: <richard@nod.at>, <chengzhihao1@huawei.com>,
 	<linux-mtd@lists.infradead.org>, <rickard314.andersson@gmail.com>
 CC: <rickard.andersson@axis.com>, <kernel@axis.com>
-Subject: [PATCH v3 08/10] ubi: Add max erase counter sysfs attribute for fastmap area
-Date: Fri, 11 Oct 2024 14:59:02 +0200
-Message-ID: <20241011125904.2915983-8-rickard.andersson@axis.com>
+Subject: [PATCH v3 09/10] ubi: Add mean erase counter sysfs attribute for data area
+Date: Fri, 11 Oct 2024 14:59:03 +0200
+Message-ID: <20241011125904.2915983-9-rickard.andersson@axis.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241011125904.2915983-1-rickard.andersson@axis.com>
 References: <20241011125904.2915983-1-rickard.andersson@axis.com>
@@ -97,49 +82,49 @@ X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail01w.axis.com
  (10.20.40.7)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PEPF00028D00:EE_|DBBPR02MB10844:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4609fc05-c26d-4a9b-be8e-08dce9f498e5
+X-MS-TrafficTypeDiagnostic: DU2PEPF00028D00:EE_|AS8PR02MB6519:EE_
+X-MS-Office365-Filtering-Correlation-Id: d7a5fec0-94c2-4ffd-08bf-08dce9f49951
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700013|82310400026|376014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?4P+c9L+QnRCUs2LSikldQvGZUl7lrEyqfOeUL4806bU8CZpFljSZp5+KHaYK?=
- =?us-ascii?Q?9UpUNCkfk2h3QI9hW6W49sbnqCS1dOsBtxihX5kKIcCDxq+2yb8tmuxy4X8F?=
- =?us-ascii?Q?EbpU9AlQbBSRyRORbEODdZY9GnXErYwULAqb2G8ae4FH3Vj8T+3+AHQ2Yt+k?=
- =?us-ascii?Q?dIPYwyD84ODfuE9/er8TdqtnSMHtzIe6HFijBiGZ8jLOrD0cOW5cdxnDp+yX?=
- =?us-ascii?Q?3TDcFDG0XZ53JomwPgQ6qW7pNOf3PTtaGgpAHXD7tVaQlT0H+gzn0gYhvp1V?=
- =?us-ascii?Q?JEUlODrWRNxNuv24CXwgyOZWXt44ysKchrhH1KGxfrlaJBgvX55wgZ+hNlgk?=
- =?us-ascii?Q?FdB0eXKs6+3YKcscPvCc157i800TIFun4yF41cDA8TQNcxd3S1htkN43v/nS?=
- =?us-ascii?Q?MXZ/xLPf7mMYGC+9jo7HVamRH+Qriv4rrzs8x/fGACIwoOt0H+Uw+5t9IBFg?=
- =?us-ascii?Q?xCJtgRNUHROk7yz/kKk7n7+rNQ6dbeZnbZp+4IHHxpvi890z6qCbX+YfYd9D?=
- =?us-ascii?Q?89IVJIG2LCpFRmz/VdAd7BqR8IHTloWR2vlPwJlViAMJtQgOHav6BKyyL2i+?=
- =?us-ascii?Q?Mitxe9+x0rZ+SrD2rpBE6evct8Y69o2Sq+2gxewIo7PrbnfQWTPkzm/ajINq?=
- =?us-ascii?Q?Bihr6OMrFiMDzH9Wtqb+FBpkLtSkTEweHfYePOR8/Qj0jd0m9hQdofpb78ac?=
- =?us-ascii?Q?SrgN0h/vsthmAIrTh3F4IrWWyzuIJ9o3afbOdYBDCNVCSGjRzz3rPn3y2W59?=
- =?us-ascii?Q?HVeQ8/rrR5LG3oJtVMjzAjr6wxkXaDC0HlT2FEtZpnx9RaRrm1E630RZmjU/?=
- =?us-ascii?Q?VL1ER0P/5Tocu3NCw7hGMNibqqZJK3mg/HMCa8FwxZxS9XuMnDKWSKWHU8ZL?=
- =?us-ascii?Q?VuMqZj6TcBZ26AenU0fU3j5igq3m9DPg+zuSbRkGoEf1dS10aHHT/CrTkHeF?=
- =?us-ascii?Q?ACSFQmz8ToZ8OeK7Ua5BKp45AH7nmafLSNeNUcIJG6/38FhEZATmjM5Ba0ls?=
- =?us-ascii?Q?LEUNoPivTprwSID2f7T2zIyoBIz6ftYEzubWYJSVVfGTiQAfgsopuLXADYp5?=
- =?us-ascii?Q?IdeZMf1z9i/ciSllafKiyeXpvA3A7t8dIUxc54bvayDiwNl//584V1g8RDcL?=
- =?us-ascii?Q?CIngknP+nZ7QxC8XmQTkysgDHSgNaNh8H01GasU8qHXCMzKr5oRKFswoNK7J?=
- =?us-ascii?Q?JVlNB7kqwChMvxkoU6QU9WH9mChwUlJR+dfWbfzy68grXy9Wo1BMcmjq2PaN?=
- =?us-ascii?Q?tfM3AQnuhBf/tFU9lXtZuYqbrskbJksgfDEfyQXdxHUNNDhv/muD6TxFnw2A?=
- =?us-ascii?Q?I3fQYEQ0WaTsMfrw4qoFBU4DWr6wklbTWkG1erUrUFxJrkSXTF2x/3EJScJm?=
- =?us-ascii?Q?gaAQFXbV1lsiB7TtsPxclNjHxYKK?=
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|82310400026|36860700013|376014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?vZD+mf45BIgdhMVOQcZzVSYDG/hUOzmt0tqmN9k6+b0tv8Yq+xe7VAy29cRv?=
+ =?us-ascii?Q?/SANrmxwU7UMKivsUo8vGkG8EKTFugYMeviP+9WluiEW2mP856E1UZKk+GUw?=
+ =?us-ascii?Q?EgXaLJFt5qpXQtn/OaNO7vJxMMB+qUj69HJtV13L3Z0jkrKhEkZjZZTpGfSB?=
+ =?us-ascii?Q?NfqvgGuDhLVekgPKho2ZZPtJWfG0YesCwIiC9w9h/hxFkS4fKbaxiWcqKXFg?=
+ =?us-ascii?Q?l7nFfayZ+Ka5TSoOR/rKACnzX5wOL3Zx5Cqi2jT471hojOvjn287kTH31jC6?=
+ =?us-ascii?Q?pKuRjdVxxpjSI5i03+1oe/TRWWTXatFY3QaA2CPEm71us36A1JwAMJApPaJz?=
+ =?us-ascii?Q?LbvJ/nERubB+q4F5FASEarbcMifNqYDXdXDV149ScuI4FP8NsXIVm4y8bknq?=
+ =?us-ascii?Q?BQ6h8DaMhrqVEkAqiNKEdB7THNgSA+0RdLcc6fnNSwwerUvLAyF9d6QnTHc2?=
+ =?us-ascii?Q?dZ4Gh80tzXSOTAokGeSdxYk73u9Q/yACZVYAQM7QwXzb/JgVKGeFiAQrLo4e?=
+ =?us-ascii?Q?zjaqZDr9QJibBxy4DnrDduWNCq9U/3WgGeWNDgpGWdd5B+04k7OYzfBnXmpH?=
+ =?us-ascii?Q?GzcGLew3wtTp2NtWUJI6SgUp92JxqSTwuI8x/2LUuqUa9XEVEy9CmMYR9ZR3?=
+ =?us-ascii?Q?TrYEb43lOF8349vIJ2cCrgWg9gJ2VxUASk1yKGMd2YmkCvkD1sdy1gWrUWxN?=
+ =?us-ascii?Q?70BuGUixJNP8aUahKLpfU4qCt0DbVSxED5NqeEDd97v0TbiIX6J3lERMIJg8?=
+ =?us-ascii?Q?1oi0fMsm+/9x+cLwoAUZ1ZZ/Koq0t9GlNQwjQhtGkdDAPgwnZDskTWyroU6w?=
+ =?us-ascii?Q?PLbWfu1jiinzhRi72Sz6EIVzyEMe4X8dy5kO+Z3hgJFysmuWGX8ZX5217ovR?=
+ =?us-ascii?Q?f5DZCzdGfDNMX4dRS+vdSjMpkMgZmWY3AcA8Ivv4bQZ6Oq1zUNFYh4JiRLZ/?=
+ =?us-ascii?Q?cO1yIuTTFtPCu6zTWtA0M/iYCA57P2hpH3NM1xtHbrWBngrA3Rqdpb0z9r5o?=
+ =?us-ascii?Q?CHUmDeqbwHx4K/WO3hmUzRZxjXXumcAR+xe6GiMLRkWNG1v/ugTU1CPqqn0m?=
+ =?us-ascii?Q?lAT1GGhlSHrAdBKpHiKlXud4BdlQc2ekj+1izeEyXCfJwd7KvEHUyk8FYuRj?=
+ =?us-ascii?Q?tGrVPy5lrWAEmvICh+beAiQNBO9DSP12xs3rvNmyV9F3b+UwdVS3RzIr6OQ+?=
+ =?us-ascii?Q?tolAu5LQc47gjMsuNbMDmtlL2cu4GY01EoEsL3mbl8SLlNqc72/pHu2XbwEW?=
+ =?us-ascii?Q?3VlFoGGYHW4CzS5c1NPJXLO9ykY6AFW7rjqMAW/Ue3GV809pSSgH/ao6TiyY?=
+ =?us-ascii?Q?A4KNTpyZ49+fWsbUFVriU9mbD3dACvtFamFfZDr9Pe9UkLPVoENusaNE3Szx?=
+ =?us-ascii?Q?J7YkiUg=3D?=
+X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 12:59:52.5628
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 12:59:53.2659
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4609fc05-c26d-4a9b-be8e-08dce9f498e5
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7a5fec0-94c2-4ffd-08bf-08dce9f49951
 X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
 X-MS-Exchange-CrossTenant-AuthSource: DU2PEPF00028D00.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR02MB10844
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR02MB6519
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241011_140000_064337_AE5C4A4B 
-X-CRM114-Status: UNSURE (   8.58  )
+X-CRM114-CacheID: sfid-20241011_055957_532677_BAD38FC7 
+X-CRM114-Status: UNSURE (   7.38  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -157,8 +142,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A max erase counter specifically for the fastmap area gives a better
-understanding of the flash wear.
+Data area includes all blocks except for the fastmap area.
 
 Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Rickard Andersson <rickard.andersson@axis.com>
@@ -167,24 +151,21 @@ Signed-off-by: Rickard Andersson <rickard.andersson@axis.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/Documentation/ABI/stable/sysfs-class-ubi b/Documentation/ABI/stable/sysfs-class-ubi
-index 05a701b03a9a..62c93fda0bc4 100644
+index 62c93fda0bc4..100e1c0698a3 100644
 --- a/Documentation/ABI/stable/sysfs-class-ubi
 +++ b/Documentation/ABI/stable/sysfs-class-ubi
-@@ -78,6 +78,14 @@ Contact:	Artem Bityutskiy <dedekind@infradead.org>
+@@ -242,3 +242,11 @@ Contact:	linux-mtd@lists.infradead.org
  Description:
- 		Maximum physical eraseblock erase counter value.
- 
-+What:		/sys/class/ubi/ubiX/max_ec_fastmap
+ 		Mean physical eraseblock erase counter value for the fastmap
+ 		area.
++
++What:		/sys/class/ubi/ubiX/mean_ec_data
 +Date:		October 2024
 +KernelVersion:	6.X
 +Contact:	linux-mtd@lists.infradead.org
 +Description:
-+		Maximum physical eraseblock erase counter value for a block
-+		in the fastmap area.
-+
- What:		/sys/class/ubi/ubiX/max_vol_count
- Date:		July 2006
- KernelVersion:	2.6.22
++		Mean physical eraseblock erase counter value for data area.
++		Data area includes all blocks except for the fastmap area.
 -- 
 2.30.2
 
