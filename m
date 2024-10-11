@@ -4,143 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E09AD0D791
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2024 13:01:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90D7CD0EE19
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Oct 2024 18:27:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8nOq6WhKjLfCDjkfC/uLP1J4uk3Jw6j4BocKr+vIb4g=; b=sZTkDDgWXaba7A
-	k7dDp+SkKPqqjF5hTlt20dSGZqqQmbtGbv/jYLYYgB/waD2Pz04oiVxL9QZOME6H8rAfQGCFrnIKR
-	9TfjRCtKDuCns5jqaA9zf7aX1aIETBwBjRmPobEA5c+lpAt4qnDKXF5V8zDN89gD93W+j6HXV4JaH
-	YMnQcIq/YYDPGMIUpFFCPQdCJRNElh1cZz2IOtR5MaVfLgnsOEpdVNUVzRLMK1RkprMInyDdTYSB6
-	oCeqsLNPErGNDrJWuIj5zjS8KKJbCrB+3LfPKrN41iLm7vkEb25Oja25MEYvpeZOLFfY3//xqvPOV
-	7XNXIO8Ry8t61KmM4Itg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=XrxFCAmsrqLamxC/oLBqYoc7tnHDQl0+CUi3h73WtFk=; b=S/jir96Zop5gGp
+	E4wIiznY6YPI0XdljLoPn9Asqhd0WIK/csVaWrkAfReC4Ldmha9es2CPGVS4I6m0S1lVcPsShA+86
+	Gyl7bThmWMCpZ8D06Anyy+/VGkmaqLpRq9YGwl/WDnM+fXDsbLah2RHQe/L2R3iAeXIga6AVPyIWj
+	BI+GNFL/+98MJ1aTsl4M+omJ7PacJ9vVTYKmnmvkPyzv85K4vcbAjc+yS7f8ok8jhqQ42MenT6/To
+	y1XuBLTL2+wX8kBzL5lE7nHRRXlHBBZPULtOI10LOvLUVD1bsU5Fj7FHICvLdWG1GdvuAXwpExt8F
+	KRRyw43nRr0GpIVOsl6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1szFGl-0000000GNNV-0j9K;
-	Fri, 11 Oct 2024 13:01:23 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1szKLr-0000000HEA5-2HUs;
+	Fri, 11 Oct 2024 18:26:59 +0000
+Received: from mail-db5eur02on2061b.outbound.protection.outlook.com ([2a01:111:f403:2608::61b] helo=EUR02-DB5-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szFFT-0000000GNFD-3M1s
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 11 Oct 2024 13:00:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=BncWQRUuUZ+HE5Ok7Vjufrqhf7livi2yvpMPu96d6LA=; b=YAx4Ckn7kldY+gCChhJDkSyNqh
-	VEFeb49umM1lHU1aMMjSdrEALt2zLCmM4qVXglo6IEyuKeZPxsapR2oLINu03NPM5nLKLseNzoZ9o
-	781UcykTGC3qOdn9hSYO/XhbCAkFRs7CcMEetIOXBhXqefn0U7RZ5HVz9ZWA9NDfl5MT0BNDMxjsQ
-	K/gxCsr5vhNd3Z8/uHQwoT8b9CES607PsNECXFlcayi1Ukl/ccnG54VNb2Bg5N8Z9HorhipujblBD
-	RYHovyw3PyuiJGbg6mxHWXeY8wOuLqj4GIp44mBGGIycwC6m8Qfyr/PMS63FhmgEgQVlV4rSMRAwO
-	k7WCeopQ==;
-Received: from mail-db8eur05on2062f.outbound.protection.outlook.com ([2a01:111:f403:2614::62f] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szFFP-00000005tGi-3Ne6
+	id 1szKLo-0000000HE9E-3wVw
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Oct 2024 13:00:01 +0000
+	Fri, 11 Oct 2024 18:26:58 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=aMUjue3scbk+qX4noDMOanPZFNpJSuLyCikxPDk5kdyq85b7Ji5BmMnARKrHjpzZ1FJwsVAJM6jwByCFgSHu6TNdIzi9HTY2fD84IySPR6x8ITV8+tbtYVUMELUSCEBCA7mDHtkjBU3//RQqKXhBNKHyfabZh1/nNzUv6h4tJQUO+pjTH++C9JkJPeEMib7E4yk7t/YHw/pdJd1xh5svf/f+3wWIYXaAGc7pVHWAtwWYm6yVfAtWJRkopiuUZw4914poaR3DtKeEn33USZbaCvEQ8+yhcyp1eC6VG7mNlqbfu4hIltA1oLhqoTsuPrx6Mq0o+dcxi1mL0dEFn8LwUQ==
+ b=JKGNPHosVqLsvjbfzBCXOeMf17rlE+niKvMPi9hA6bo4Xyw8OtqThETAnP3i+lclWG1odzIdSBZtpFn0VwouR/2jtJcaX0d4oMQ6Igau2L98YPRCcGD33gTweSmuxx1xjleXw4xaMfuLp40y0vHt9dirMkrOPUzfXh+TzVl9AhD0f8VSqzcaHz3XZibn+QhiPvlHKvtgkHv1HZbeuyT18YYHZOApNzC3vUHFVl+z3MWRdyQwVCgZl2g6plpTFgMO2FdDYTLJa+Owwv5dpvE8tAPwdDlniIT4HcSDD7Qzrg2IJ+0Wbkt8Gy5kQ0cdh3pnS+QDw529Jl/4Ga+b9AgBYg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BncWQRUuUZ+HE5Ok7Vjufrqhf7livi2yvpMPu96d6LA=;
- b=XXIh7s9jZ+8bxk8Q0gwJs2agdbsqYfYH03vH7WIjqog73c9wiidamRlRZg2ULirGlXnTuFO5vlxtkMSTMWIN3WO7Iv+G7iSJZibnQisdlb8dW0ZbcmCpskc8cN2iKkHNSn/zd2Okj3dcwMts45m5QNiik9WNRXlv074Q595jr23sK5PuL+dcWr9ZabARZUU0CjUiY86b3MmmFcWib2a+CTejZnrqmrYc+LPFSribvK0QxXjk0poAV0Jju2wA2Szr46w3YeUwn7VnZcB961BSamBsTEwpnoX9R3dTQ3Owu5Lmmk8oBzaesoHVy79ro5z8/62xTMqjw1YFdSCZvmW65Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 195.60.68.100) smtp.rcpttodomain=nod.at smtp.mailfrom=axis.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=axis.com; dkim=none (message
- not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ bh=Wd4CNz8cCk+L+fhgI2chcn6YiK4VuiNGrvdgclep7kk=;
+ b=td6Qye48SLHYM2WFAdLWI4tDCDbamxed8sYmXI2xL1pF+K+5vmjyp9y8zj59+V6+OFN8GK7QJYBC4cXUZesgdEIAZhvHtAZ04r9YJS3suhvIaq8QGK9YS/yQqHD6lOlrFV1MyM4OYPFQ7jBNrpJZLU1IZcDABhC4B3V+l3RxaHADtpeVnITf1Z+TKQro2HmVCyTwTHyvdBh9MDTmuZ5RFoY4bFNkBl2nOr/FbwDMN+mIYzZIK4Q/NfGKepR9Sz8eXrXsaZEhcU92i1X6swmGtTBLjrg0HwIc+WgnpbkcuuEBuFzRSiu7Ax0LuvM08IPVNkB1Jlya6lJLlzMJCU2OSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BncWQRUuUZ+HE5Ok7Vjufrqhf7livi2yvpMPu96d6LA=;
- b=H66v4tq91Gq0KYQ4/0TuwvQxy4fIFo0bx1mNWhcMF8xesdRecRxaxDW/2ev+t45uqSuEiVLYRuUcmzCa7bs6+jUujz0lx9IS2fALUXDD6k1OeyQX7i+5VpnMnuzYIxgQZCuKE4owNFzVmSWzIGyrq1U40bam0B8RBzO1bdL6QJk=
-Received: from DUZPR01CA0205.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b6::18) by PA4PR02MB6591.eurprd02.prod.outlook.com
- (2603:10a6:102:fd::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.20; Fri, 11 Oct
- 2024 12:59:52 +0000
-Received: from DU2PEPF00028D00.eurprd03.prod.outlook.com
- (2603:10a6:10:4b6:cafe::b6) by DUZPR01CA0205.outlook.office365.com
- (2603:10a6:10:4b6::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.20 via Frontend
- Transport; Fri, 11 Oct 2024 12:59:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=axis.com;
-Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
- 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com; pr=C
-Received: from mail.axis.com (195.60.68.100) by
- DU2PEPF00028D00.mail.protection.outlook.com (10.167.242.184) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8048.13 via Frontend Transport; Fri, 11 Oct 2024 12:59:49 +0000
-Received: from pc50632-2232.se.axis.com (10.0.5.60) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 11 Oct
- 2024 14:59:45 +0200
-From: Rickard Andersson <rickard.andersson@axis.com>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>,
-	<linux-mtd@lists.infradead.org>, <rickard314.andersson@gmail.com>
-CC: <rickard.andersson@axis.com>, <kernel@axis.com>
-Subject: [PATCH v3 07/10] ubi: Add mean erase counter sysfs attribute for fastmap area
-Date: Fri, 11 Oct 2024 14:59:01 +0200
-Message-ID: <20241011125904.2915983-7-rickard.andersson@axis.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20241011125904.2915983-1-rickard.andersson@axis.com>
-References: <20241011125904.2915983-1-rickard.andersson@axis.com>
+ bh=Wd4CNz8cCk+L+fhgI2chcn6YiK4VuiNGrvdgclep7kk=;
+ b=HHnHdyM3s0GrlpjHogcqFp+CKX7tJi5nmdqWkv0w79dnQnWnLdXRzjdoqEKySyOg3oOj/zbh6Ng9tDIrppoS6JXYTTRtC1zSRt9pRVXk7rwuAOm6kw4wj6vK7wJl79PFa4VbToHSd1AhQX5yqXDlwsRZSbWCaBXA8IHGHN8GI/AiVrLJrvRMIW7rFzTm6PP/1NnkZCZZgIk0mDEvVECQUpKovEBESfOIZXH22NWZIOPHejXskfbF7xUT3wMc4PBADQnJEDmf3bt++lH6SMJXnIi3xSxVmDjvUJHFM9COm0dAVaSRa8KcE09x34X7JMIYfDS4kg+FSTXgNQjvWyfssg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com (2603:10a6:150:22::11)
+ by DU2PR04MB8821.eurprd04.prod.outlook.com (2603:10a6:10:2e0::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.18; Fri, 11 Oct
+ 2024 18:26:44 +0000
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::b7f2:1d0:6b6a:ba58]) by GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::b7f2:1d0:6b6a:ba58%7]) with mapi id 15.20.8048.018; Fri, 11 Oct 2024
+ 18:26:44 +0000
+From: Han Xu <han.xu@nxp.com>
+To: 
+Cc: miquel.raynal@bootlin.com,
+	imx@lists.linux.dev,
+	linux-mtd@lists.infradead.org,
+	Han Xu <han.xu@nxp.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: add mailing list for GPMI NAND driver
+Date: Fri, 11 Oct 2024 13:26:03 -0500
+Message-Id: <20241011182603.346435-1-han.xu@nxp.com>
+X-Mailer: git-send-email 2.34.1
+X-ClientProxiedBy: SA9PR13CA0166.namprd13.prod.outlook.com
+ (2603:10b6:806:28::21) To GV1PR04MB9071.eurprd04.prod.outlook.com
+ (2603:10a6:150:22::11)
 MIME-Version: 1.0
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail01w.axis.com
- (10.20.40.7)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PEPF00028D00:EE_|PA4PR02MB6591:EE_
-X-MS-Office365-Filtering-Correlation-Id: 08354678-8bb6-42f7-3514-08dce9f49717
+X-MS-TrafficTypeDiagnostic: GV1PR04MB9071:EE_|DU2PR04MB8821:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a318017-bf60-4e91-2e8f-08dcea22421d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700013|376014|82310400026|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?rPWlPl8nEvQUF3uxJSUnDv/rn13DOP8iUbLO0zpxfWbO25i7xGcWlu6ZX2u3?=
- =?us-ascii?Q?FEZrzMD8vfdHewwO5Xbc9oO3iODKvLy2C0PyxPDNKFimt5alYhLUOWAnidF+?=
- =?us-ascii?Q?QI3LaZR1UZLwLxFPFJ4v5rQrw52bL1+B6s9af8P1/Kk6T6F5VabOD4x3vfHo?=
- =?us-ascii?Q?rqz/BbeDLhaBrH2bopXqTC4SXZ8UgDmuUosWKJfE15wQyXPDKYSjn0cO4Qvl?=
- =?us-ascii?Q?Dzu82hJK5Ytc+pOfsasu3V5Fm40JIOxABEIcYoTEc7no1B73HPt0pjw1Pgmg?=
- =?us-ascii?Q?FXU57lkff3BC3EjqpdFwV/2TlV/iI6LxFSNr8Y13/TLhkh1k3qO7grQY8RNy?=
- =?us-ascii?Q?GIIYiJlFMIWo3U5oDqQoQTYOWI4jGzZAN0xXC1w1ETP+AVU/QHQxkj+D0X/U?=
- =?us-ascii?Q?I94yIhKhUJeNcdSpKcyr8a1ZDXsW8Y+VZ1JynTsrqEFOUXRm//FXxQO7Gj2w?=
- =?us-ascii?Q?wy6fr4wAhvK6s5+58V0HsOlj9GXHdkw0MayxGIhlqBuVruAAjnxSvBpOiK2e?=
- =?us-ascii?Q?se/ixSkFvj62IhwBIIcoeiMWr+sSVl/+wYbAAtegA47zR7ik3NXy73B4a68x?=
- =?us-ascii?Q?FqRVNYp5lY7YfQRkyyO/8RY32Rv7+UDU5AckbYTo7ZHymM41JJoCVU83Onct?=
- =?us-ascii?Q?ZTfnbzmn4k3iDOrR7becPxjoEP7Y/6QYVc3prcMHgNgWM5DuweTfUzpDQ5uC?=
- =?us-ascii?Q?w/WoxGJF1s8mstrNFJd4UNSbhgT9C/f5rZE/aL4/NGWwZTlxjgj1W54U1ufd?=
- =?us-ascii?Q?vh6nm1yvqkk9fffr61CFJrfFr1OpX0MHZaMlrbsOC9V3aGyn1Q/3N3WmQ0vs?=
- =?us-ascii?Q?Q/TrmLAGzA7dZ/jm+C9YbDpgtpfBK+73T0Zzk5nvcJo0daDy8uOxAaw94J5B?=
- =?us-ascii?Q?2vJ7ZZVmWqUGLifihCfTJohSHKkYd5sutzIRQV5ME1ssVg8BqCwdvCGzVDUs?=
- =?us-ascii?Q?2pGTWyHJY4S3lMO2yVfHLXRgcOzsvtFSt/IdQjOdAwrxiOe4q67VX39z2dvk?=
- =?us-ascii?Q?uzL1MEYt8xc+ygw4G4KOh9+x4LXiOwoKZHzi25mwXUejxaC71Hq6OSZTj7X0?=
- =?us-ascii?Q?wz0yKdXUt0P9K8bO+aqQOXy0Fn0k4Yud7ie3WhuyiIufPRi1CaGKY11FvJ/U?=
- =?us-ascii?Q?MfcChzC/m1zrB6AROcGProCslPMCfgXfYeafzJ8KyyA/a6KxA9fOKhpfDJgo?=
- =?us-ascii?Q?bFq4/8e9YXt1xq7lx7rDtjjq/nVkfeYTLGFN7rVD41TIBD6Li9hXlkdbpkZe?=
- =?us-ascii?Q?uSKCuClqmNa2MqUp2uaEDepSlRb77W6LdSRuCmLgnzaxnRiMPmiYvgGWnq7S?=
- =?us-ascii?Q?wW75PDD4JybhIVZA1iP4ugcBp8d4CyP9KpDXjKUCIjkIBYdqgq4k//lEB23W?=
- =?us-ascii?Q?PTUj0b4=3D?=
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 12:59:49.5159
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|52116014|366016|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?8/ZzSebw68xpD/dP7+wFyvS8SmLRpBhbfC8LbGRRNnxtTgVqz/QlO86l/17r?=
+ =?us-ascii?Q?d+SxtxMDi7l3WyjFNpNXGmwh6HUfMzou0eIlk7vtbBfseeR+tMD+8J3mqmdv?=
+ =?us-ascii?Q?40G01tmlTj8xXuXHB811b9A5dakQWzRZes50LMU3/eRtGAq0UwweEM/QrkST?=
+ =?us-ascii?Q?k5KizjILNHJM6C+2OH61LAkNQtkS83ZANpI1PRy6BeN/DxWGAp8gN2PdbUjd?=
+ =?us-ascii?Q?4JWVphUpg8RGI6S7VT6Ed0ruyOg33VxYe7OXBQIeHRbd8fr8uOwkTV+W/eYM?=
+ =?us-ascii?Q?kGQfhtxCarz2cLIPucDfXFUHT/kY9E5BKqjJVCszJQwoPH8dRUdcWW3gLwXZ?=
+ =?us-ascii?Q?8urfR9dnq9uZ6V5fBWUE52mlXqC5X/m96NgGEDSr3vclFwe/Rgx9bNjQ6BLy?=
+ =?us-ascii?Q?tyWi+6wf7hXNT73Zxht5+pdUWdAJbsjwp32d9Fz88aXKCxVbDM+X6dum1oXp?=
+ =?us-ascii?Q?ICM9WuvHqvm9ZLkFhY1jN94m8mqCGuAvroHrntF1EahuYQITQeE0Yavxx7Ld?=
+ =?us-ascii?Q?2AVH4TKL+W5JVZ5kZwVr9iipww6MiWXnmULejQ5BxxzK54yU+UsMGL6w9UHx?=
+ =?us-ascii?Q?D5EWk9jWwEsSXbbd6+ppeFhLrs9QoJAqj0V9N0NM/XUaUN3NFXoS7Y+y6xAg?=
+ =?us-ascii?Q?ruzfg8tazoUuJhh4K3O6fbJTo5pZ5FApZwx1oq8pKQ421mviaDlPyqnZEdQ8?=
+ =?us-ascii?Q?En0t940p0feRfw4IU0JIQXe6UG65zVg5KOJfB5tr/KYONObedUTdxwpeWJC6?=
+ =?us-ascii?Q?9eiwXZ7m09qFBmF03qSMrQT2GiboAv07GZZ70HQdoR0QJ0OkAUMHTmfp6dOA?=
+ =?us-ascii?Q?eRn5sx9tYSI3Bix8iAA8zgU99JipycztWkREDVJeSxq9NDoOxw2W5fxbAvLe?=
+ =?us-ascii?Q?gm3AcVA2lqYeZX3fI1o2KekkBde1sbOLlAZcNIv3IzqVDEIL2sMCJVKBiQ2P?=
+ =?us-ascii?Q?s7BOeq1fgoc0XWSzURVn5BTETWGokVW3avPFL4xfmVVg6kxb4kFZTl5Y2+Ns?=
+ =?us-ascii?Q?VfR/smcLnxCNRu9WE0EKnSfqiLFOK7aMKIGFgOkdAjlJieeDEIeHVnnGHr04?=
+ =?us-ascii?Q?WiExLxy5PaNQa0/jk+Tm+eXb4pGEij8QY/18Ex1fOSzZ/RDKjiZ30//wRKYf?=
+ =?us-ascii?Q?NFY45z4oOvedsVZxgMyXXmJHZeXX5pFxYpnjPj/jZXdq/ujP0vHykNI5xFyA?=
+ =?us-ascii?Q?t8j48fRY9nQc1E5X85vjKRf2ceSEjxoJBxQFukNf8KNSZrQl0za/jy8dpX6i?=
+ =?us-ascii?Q?2xCCEFRIwnMPym/A3zZOkpTBOb6Yd/8j9z5mDra8bQV5y7HHwjW+jyidXV9J?=
+ =?us-ascii?Q?LSSLlDHmPXQP60h16VhBRkZweIDyVGVtFF0AWIT15xps2g=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR04MB9071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(52116014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?q+yi51soj4rUJqVi64GA5XkzUJ7ooN+DpjNhBX4RQR0NP4Aw6DCcEriwYDiY?=
+ =?us-ascii?Q?moSKVrhqHZjsSXfLqO577Eq8GrEw9EIi4Mwi75oZf62RSmBLSbX7LWvDAsHa?=
+ =?us-ascii?Q?PbQml9cira09izWyRD+tgEcL/1CF0L8kwbXfk6+sSUY2OR2YOuCGq/lINF4E?=
+ =?us-ascii?Q?71odQedTB2f26Ev3UJ4UXthwfwbOSDQV2Bp4ybeE3mYnABwbDXAqoq6Xx2/X?=
+ =?us-ascii?Q?pPLUE7b5v4YEoT1PNwQeLUw0scLeiotYWpIxipDkTmwrAiHvdkPS19FGNntH?=
+ =?us-ascii?Q?141D32nd5cAHSUVMSW7fY6sq4JCFX8rngqgajyezC2fRM+gm+EkwUcJf4MSi?=
+ =?us-ascii?Q?B4gyDQ4zeWlNR/xLyYCQDn9Du3RlDfnRBa3sGY23mVNHvB3ADLsv1KWDSZaW?=
+ =?us-ascii?Q?YHZCVYzNrtHj/YjLmlbxUXmodcpRHzNaaE641SlJASEm8G3W1ki+8O2mNFDH?=
+ =?us-ascii?Q?JsJZtlE1jzg/UHTih8lr+d7dIJWj3wPmMvcXfCvvl5uBAqbY1o1Idz+BGsxI?=
+ =?us-ascii?Q?MpBoAu6osElk10qFg7M129DPgjHHdjOZ5afRcNAQgrjonkh29tWC/s1aF2gW?=
+ =?us-ascii?Q?TNHRIizVtoAKMM8+4y6XvWccz49mGV4/U7hyMQBbpae9ux87TeCjKs7UX4Rr?=
+ =?us-ascii?Q?9OzenOwVPlrwDU2lak18hsA64qz/TAp2raOm6tryAf1IHHjOKhOsrh3jZY8F?=
+ =?us-ascii?Q?iTWTvmA/INRqFUaZ0g8w2o44WxDd2ap2OGjGusbv7O8HYcoH1fh38T/Lvhsc?=
+ =?us-ascii?Q?L//EpGi9DXjjtTGEpOlXEPlsAUD//p9bibMH+3hjOg4wn0mw2wPfBbxPpLj+?=
+ =?us-ascii?Q?N/yPID9zE19oo+G9OY1fVq3uTtmPHeL3DLU/37cFNO1Yhmet8iCEEZxj2XXB?=
+ =?us-ascii?Q?g2uR59xRPcrSZSscp6uutig0S0nlD2CPw+flxx5leBo+JYqwmEK0KZHelCaH?=
+ =?us-ascii?Q?EGKn7K2LXBuzvjcCl1htOAWvvt2fYHGOpZw09SRDJtJbWBdc4WjRykz1/e5+?=
+ =?us-ascii?Q?xGBkliE5LA7BfhtdKf70Nq5Fy82EHyzJ8vbw+VvAwfN5ozerIxbFH60yn0F/?=
+ =?us-ascii?Q?KCcoGp2CumqLs4QJItRDI9/3cmVyw/SRaKL1YlfCQ9xOw8fFCGmq5L2MBQM1?=
+ =?us-ascii?Q?ulotPvrtoucvHQ7dPUlBpYBEALHKnFH1WFxBL+rNnUX5ZuBLLLgKRplajwJJ?=
+ =?us-ascii?Q?LfRGZ4LWosK7+suTD/5U/CWOhN2oszB83btI1OCDt4dI4sXiLEi0fAk8Xu9w?=
+ =?us-ascii?Q?YGP/pOR/EEuOp6XTPhRHZaUCQUbpG5GZxYabA6yvEKaRJ40Xl8SfotNWT/cM?=
+ =?us-ascii?Q?fPxioppboDxWiPKZKp4i1DXhhb/ggMiNvs3SweznkFEHR4Xn4DBHEgOgHEdI?=
+ =?us-ascii?Q?DrEcyx2EfJnVLnV+8FjXixSKsRa/ltCuL7gKgpPuxysO+JxZyMWpdFU5el17?=
+ =?us-ascii?Q?uzacCF6FqT9P4DJeCwuRg8GcnWMWTQEraAWQFGjQ0Z3QpSIR5nEMf5/Ka/Js?=
+ =?us-ascii?Q?ckHdROyb6s6HYrLbcEGgNE8UgIVOQQXHLuQt6MSaFkggGrdAUgvCF1jQsmrz?=
+ =?us-ascii?Q?kVsQ1x2QzFgM+VqZQ2+fEfvB5wm/rQ7vGBLUlhTp?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a318017-bf60-4e91-2e8f-08dcea22421d
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR04MB9071.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 18:26:44.2136
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08354678-8bb6-42f7-3514-08dce9f49717
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource: DU2PEPF00028D00.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR02MB6591
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +Rj+T/7hEqliMOxBjNW6d0cM+phBEeJNIuJcOKyPilbsFUv6WIfO55ZrWCAAqK+X
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8821
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241011_140000_021025_9F437AE5 
-X-CRM114-Status: UNSURE (   7.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241011_112656_986489_A55D6898 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,33 +155,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A mean erase counter gives a better understanding of the flash
-wear of the fastmap area.
+Add the imx@lists.linux.dev mailing list for the GPMI NAND driver.
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Rickard Andersson <rickard.andersson@axis.com>
+Signed-off-by: Han Xu <han.xu@nxp.com>
 ---
- Documentation/ABI/stable/sysfs-class-ubi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/ABI/stable/sysfs-class-ubi b/Documentation/ABI/stable/sysfs-class-ubi
-index 535a3e6dab12..05a701b03a9a 100644
---- a/Documentation/ABI/stable/sysfs-class-ubi
-+++ b/Documentation/ABI/stable/sysfs-class-ubi
-@@ -226,3 +226,11 @@ KernelVersion:	6.X
- Contact:	linux-mtd@lists.infradead.org
- Description:
- 		Mean physical eraseblock erase counter value.
-+
-+What:		/sys/class/ubi/ubiX/mean_ec_fastmap
-+Date:		October 2024
-+KernelVersion:	6.X
-+Contact:	linux-mtd@lists.infradead.org
-+Description:
-+		Mean physical eraseblock erase counter value for the fastmap
-+		area.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 42decde38320..ee80982bd991 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8888,6 +8888,7 @@ F:	drivers/net/ethernet/freescale/gianfar*
+ 
+ FREESCALE GPMI NAND DRIVER
+ M:	Han Xu <han.xu@nxp.com>
++L:	imx@lists.linux.dev
+ L:	linux-mtd@lists.infradead.org
+ S:	Maintained
+ F:	drivers/mtd/nand/raw/gpmi-nand/*
 -- 
-2.30.2
+2.34.1
 
 
 ______________________________________________________
