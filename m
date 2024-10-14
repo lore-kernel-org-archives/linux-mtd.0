@@ -4,81 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A8E2CF2572
-	for <linux-mtd@archiver.kernel.org>; Sat, 12 Oct 2024 18:00:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A708D16243
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2024 11:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OpigMKzVyD0/TwbXfmU8NaEfEPdoXH9VrENnva7E93s=; b=XehUoCrQujA2fs
-	kw+Hb7h3U2/JvH5nbs0asf2e+XxzJ9BcMjxPCi8LH/oLjl3koBqfG4UuZ9JtxcnA4poJLHPGmXgiM
-	cUM5uREH+AOR/dre19XvWcKmZsx9KxxeTyuMXna28bQ/r8WxMjXXukNe5lE5cJYhjZlgqjjx3E4Zn
-	4nOJ8uas8yOx0OgQ+BN6rZJzNeFX1llLMxIlOC9gTLXFYPh/mfjLrSDiC+tfYgvS4X1Zvr71r1xDW
-	odXoLFHJnKcDW77kq/ib05zD5jlBUp2erRXtSgbvpdvQgnhlNpVFjUdl9j/9U+Os/UY7QGH/Bo8Dg
-	w4pq2A44iBOM5J/e7yBw==;
+	List-Owner; bh=ek8dv2dLKb8rEvOkxRAjZlmlyKnMiR5Iyj2P2QhWoTU=; b=hD8ULQ+pQIaDUd
+	ChzjF88KMv6USQfNBRmnU1BWeVePNtI0JHuDBdpRkpdFDjRbnK0l4CxuENDTzFNPQrvyaCPbjiUVu
+	Ebje91MHajWkwEdkcSDD1LrMUnMM869zypvBhq274kT40UdXbmsBIUNqNgDT5+g5+kmjZopRSvevu
+	6tA7Dq5S5FdoCJMmX6UcM7DVWzym/hdwxnIyQlwXiCi9PWW1oDM6KWybPOwssLqHy2YG6wIGeysxp
+	4+vI1jY2FQPceWILXuesErkFmK8oz87UbXQCXCPgQztpJ4Dby7MZ++Dst30ldod4lnduy6WKz7Oif
+	WFMsewkBwr0vcLfWtysg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1szgPi-00000001bU3-3vdv;
-	Sat, 12 Oct 2024 18:00:26 +0000
-Received: from mgamail.intel.com ([192.198.163.14])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szgPf-00000001bT5-2Fyf
-	for linux-mtd@lists.infradead.org;
-	Sat, 12 Oct 2024 18:00:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728756024; x=1760292024;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=QZbghKMG5mddRcnYL0oUUjDtFdAbMtMB+WmbxAp1KO4=;
-  b=jvkzbq+M+n1cPQmMnVwu4pQvDLFpl1Zcpisj9rcuMXCdYVtx244ufqb2
-   HF8cXKktFKGl1cpk6xfYYoABvqZWR0UjWkwd0EmwXLFpT2k43vDCYBKKJ
-   KcYa9Dfhe8/spMBrQsHSgcR9+b8v+AXWmM10qWHDMitE8GbWScvlHrZyS
-   QFQqi66/QupT+kUZFZFT/S8+D9IZNfVX8PPkM3eIT1b+i0w7gyQDRspP5
-   8ie0P4FxjactRVZuY9lHJR+FdWcJ17R4ZCNTbMu3UMTRilUUpdYXzxRB8
-   pSMVPOdSsS6i6OUxR20gJ1/mBO/q8VzY4yd/g0fmQtk4YXFNTLwFPySQY
-   w==;
-X-CSE-ConnectionGUID: U0XYt0KsQNa547bPRpCgyg==
-X-CSE-MsgGUID: 8zFXP3JwSG2TtATlfey5Gw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="28315441"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="28315441"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2024 11:00:18 -0700
-X-CSE-ConnectionGUID: 2TXqMIK5QayDULncJRh8vA==
-X-CSE-MsgGUID: 9KGUO9srSdGv0XhB8YEqRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="81974009"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 12 Oct 2024 10:58:12 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1szgNV-000DaJ-2b;
-	Sat, 12 Oct 2024 17:58:09 +0000
-Date: Sun, 13 Oct 2024 01:57:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, broonie@kernel.org,
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	andersson@kernel.org, konradybcio@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	manivannan.sadhasivam@linaro.org, arnd@arndb.de, esben@geanix.com,
-	nikita.shubin@maquefel.me, linux-arm-msm@vger.kernel.org,
-	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, quic_srichara@quicinc.com,
-	quic_varada@quicinc.com
-Subject: Re: [PATCH v11 4/8] mtd: nand: Add qpic_common API file
-Message-ID: <202410130129.M8J7VJoG-lkp@intel.com>
-References: <20241010070510.1504250-5-quic_mdalam@quicinc.com>
+	id 1t0JIq-00000004w3C-080s;
+	Mon, 14 Oct 2024 11:31:56 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1t0Ini-00000004nUB-16Qe;
+	Mon, 14 Oct 2024 10:59:49 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DC7F1424;
+	Mon, 14 Oct 2024 04:00:15 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 979593F51B;
+	Mon, 14 Oct 2024 03:59:41 -0700 (PDT)
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Lameter <cl@linux.com>,
+	David Hildenbrand <david@redhat.com>,
+	David Rientjes <rientjes@google.com>,
+	Greg Marsden <greg.marsden@oracle.com>,
+	Ivan Ivanov <ivan.ivanov@suse.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Kalesh Singh <kaleshsingh@google.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Matthias Brugger <mbrugger@suse.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Miroslav Benes <mbenes@suse.cz>,
+	Pekka Enberg <penberg@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Will Deacon <will@kernel.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+	cgroups@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-mtd@lists.infradead.org
+Subject: [RFC PATCH v1 06/57] mm: Remove PAGE_SIZE compile-time constant assumption
+Date: Mon, 14 Oct 2024 11:58:13 +0100
+Message-ID: <20241014105912.3207374-6-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20241014105912.3207374-1-ryan.roberts@arm.com>
+References: <20241014105514.3206191-1-ryan.roberts@arm.com>
+ <20241014105912.3207374-1-ryan.roberts@arm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241010070510.1504250-5-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241012_110023_622632_BC66EE65 
-X-CRM114-Status: GOOD (  10.60  )
+X-CRM114-CacheID: sfid-20241014_035946_449607_16743C9E 
+X-CRM114-Status: GOOD (  25.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,227 +86,354 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Md,
+To prepare for supporting boot-time page size selection, refactor code
+to remove assumptions about PAGE_SIZE being compile-time constant. Code
+intended to be equivalent when compile-time page size is active.
 
-kernel test robot noticed the following build errors:
+Refactor "struct vmap_block" to use a flexible array for used_mmap since
+VMAP_BBMAP_BITS is not a compile time constant for the boot-time page
+size case.
 
-[auto build test ERROR on mtd/nand/next]
-[also build test ERROR on broonie-spi/for-next robh/for-next linus/master v=
-6.12-rc2 next-20241011]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Update various BUILD_BUG_ON() instances to check against appropriate
+page size limit.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/spi-dt=
--bindings-Introduce-qcom-spi-qpic-snand/20241010-161236
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/=
-next
-patch link:    https://lore.kernel.org/r/20241010070510.1504250-5-quic_mdal=
-am%40quicinc.com
-patch subject: [PATCH v11 4/8] mtd: nand: Add qpic_common API file
-config: csky-randconfig-r123-20241012 (https://download.01.org/0day-ci/arch=
-ive/20241013/202410130129.M8J7VJoG-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 14.1.0
-reproduce: (https://download.01.org/0day-ci/archive/20241013/202410130129.M=
-8J7VJoG-lkp@intel.com/reproduce)
+Re-define "union swap_header" so that it's no longer exactly page-sized.
+Instead define a flexible "magic" array with a define which tells the
+offset to where the magic signature begins.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new versio=
-n of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410130129.M8J7VJoG-lkp@i=
-ntel.com/
+Consider page size limit in some CPP condditionals.
 
-All errors (new ones prefixed by >>):
+Wrap global variables that are initialized with PAGE_SIZE derived values
+using DEFINE_GLOBAL_PAGE_SIZE_VAR() so their initialization can be
+deferred for boot-time page size builds.
 
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_remove':
->> drivers/mtd/nand/raw/qcom_nandc.c:2347:(.text+0x3ce): undefined referenc=
-e to `nand_cleanup'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `config_na=
-nd_page_write':
-   drivers/mtd/nand/raw/qcom_nandc.c:377:(.text+0x538): undefined reference=
- to `nand_cleanup'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_pars=
-e_instructions':
->> drivers/mtd/nand/raw/qcom_nandc.c:1626:(.text+0x756): undefined referenc=
-e to `nand_subop_get_addr_start_off'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1627:(.text+0x766): und=
-efined reference to `nand_subop_get_num_addr_cyc'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_misc=
-_cmd_type_exec':
-   drivers/mtd/nand/raw/qcom_nandc.c:1823:(.text+0x8a8): undefined referenc=
-e to `nand_subop_get_addr_start_off'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1823:(.text+0x8ac): und=
-efined reference to `nand_subop_get_num_addr_cyc'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_para=
-m_page_type_exec':
->> drivers/mtd/nand/raw/qcom_nandc.c:1917:(.text+0xa3e): undefined referenc=
-e to `nand_subop_get_data_len'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1951:(.text+0xb64): und=
-efined reference to `nand_subop_get_data_len'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_read=
-_status_exec':
-   drivers/mtd/nand/raw/qcom_nandc.c:1747:(.text+0xcc6): undefined referenc=
-e to `nand_subop_get_data_len'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1752:(.text+0xd14): und=
-efined reference to `nand_subop_get_data_len'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_read=
-_id_type_exec':
-   drivers/mtd/nand/raw/qcom_nandc.c:1794:(.text+0xdee): undefined referenc=
-e to `nand_subop_get_data_len'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-_attach_chip':
->> drivers/mtd/nand/raw/qcom_nandc.c:1393:(.text+0xe4c): undefined referenc=
-e to `nand_ecc_choose_conf'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1403:(.text+0xed8): und=
-efined reference to `nand_subop_get_data_len'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1403:(.text+0xee8): und=
-efined reference to `nand_ecc_choose_conf'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_write_page_raw':
->> drivers/mtd/nand/raw/qcom_nandc.c:1054:(.text+0x10cc): undefined referen=
-ce to `nand_prog_page_begin_op'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1109:(.text+0x11fe): un=
-defined reference to `nand_prog_page_end_op'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1110:(.text+0x1218): un=
-defined reference to `nand_prog_page_begin_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1110:(.text+0x1238): un=
-defined reference to `nand_prog_page_end_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_read_cw_raw':
->> drivers/mtd/nand/raw/qcom_nandc.c:482:(.text+0x1266): undefined referenc=
-e to `nand_read_page_op'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:542:(.text+0x1468): und=
-efined reference to `nand_read_page_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `check_for=
-_erased_page':
->> drivers/mtd/nand/raw/qcom_nandc.c:600:(.text+0x15bc): undefined referenc=
-e to `nand_check_erased_ecc_chunk'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:613:(.text+0x1618): und=
-efined reference to `nand_check_erased_ecc_chunk'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `nand_scan=
-':
->> include/linux/mtd/rawnand.h:1592:(.text+0x1af6): undefined reference to =
-`nand_scan_with_ids'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-_host_parse_boot_partitions':
->> drivers/mtd/nand/raw/qcom_nandc.c:2091:(.text+0x1bb0): undefined referen=
-ce to `nand_scan_with_ids'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-_host_init_and_register':
-   drivers/mtd/nand/raw/qcom_nandc.c:2195:(.text+0x1c88): undefined referen=
-ce to `nand_cleanup'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_chec=
-k_op':
-   drivers/mtd/nand/raw/qcom_nandc.c:2008:(.text+0x1d4c): undefined referen=
-ce to `nand_cleanup'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-_exec_op':
->> drivers/mtd/nand/raw/qcom_nandc.c:2017:(.text+0x1d60): undefined referen=
-ce to `nand_op_parser_exec_op'
->> csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:2018:(.text+0x1d94): un=
-defined reference to `nand_op_parser_exec_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_read_page':
-   drivers/mtd/nand/raw/qcom_nandc.c:905:(.text+0x20fe): undefined referenc=
-e to `nand_read_page_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:919:(.text+0x2198): und=
-efined reference to `nand_read_page_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_block_markbad':
->> drivers/mtd/nand/raw/qcom_nandc.c:1234:(.text+0x228c): undefined referen=
-ce to `nand_prog_page_end_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_write_oob':
-   drivers/mtd/nand/raw/qcom_nandc.c:1158:(.text+0x239a): undefined referen=
-ce to `nand_prog_page_end_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1159:(.text+0x23cc): un=
-defined reference to `nand_prog_page_end_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_write_page':
-   drivers/mtd/nand/raw/qcom_nandc.c:980:(.text+0x2410): undefined referenc=
-e to `nand_prog_page_begin_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1036:(.text+0x2524): un=
-defined reference to `nand_prog_page_end_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.o: in function `qcom_nand=
-c_block_bad':
-   drivers/mtd/nand/raw/qcom_nandc.c:1167:(.text+0x2648): undefined referen=
-ce to `nand_prog_page_begin_op'
-   csky-linux-ld: drivers/mtd/nand/raw/qcom_nandc.c:1167:(.text+0x2668): un=
-defined reference to `nand_prog_page_end_op'
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+---
 
+***NOTE***
+Any confused maintainers may want to read the cover note here for context:
+https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
 
-vim +2347 drivers/mtd/nand/raw/qcom_nandc.c
+ drivers/mtd/mtdswap.c         |  4 ++--
+ include/linux/mm.h            |  2 +-
+ include/linux/mm_types_task.h |  2 +-
+ include/linux/mmzone.h        |  3 ++-
+ include/linux/slab.h          |  7 ++++---
+ include/linux/swap.h          | 17 ++++++++++++-----
+ include/linux/swapops.h       |  6 +++++-
+ mm/memcontrol.c               |  2 +-
+ mm/memory.c                   |  4 ++--
+ mm/mmap.c                     |  2 +-
+ mm/page-writeback.c           |  2 +-
+ mm/slub.c                     |  2 +-
+ mm/sparse.c                   |  2 +-
+ mm/swapfile.c                 |  2 +-
+ mm/vmalloc.c                  |  7 ++++---
+ 15 files changed, 39 insertions(+), 25 deletions(-)
 
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2334  =
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index 680366616da24..7412a32708114 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -1062,13 +1062,13 @@ static int mtdswap_auto_header(struct mtdswap_dev *d, char *buf)
+ {
+ 	union swap_header *hd = (union swap_header *)(buf);
+ 
+-	memset(buf, 0, PAGE_SIZE - 10);
++	memset(buf, 0, SWAP_HEADER_MAGIC);
+ 
+ 	hd->info.version = 1;
+ 	hd->info.last_page = d->mbd_dev->size - 1;
+ 	hd->info.nr_badpages = 0;
+ 
+-	memcpy(buf + PAGE_SIZE - 10, "SWAPSPACE2", 10);
++	memcpy(buf + SWAP_HEADER_MAGIC, "SWAPSPACE2", 10);
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 09a840517c23a..49c2078354e6e 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2927,7 +2927,7 @@ static inline spinlock_t *pte_lockptr(struct mm_struct *mm, pmd_t *pmd)
+ static inline spinlock_t *ptep_lockptr(struct mm_struct *mm, pte_t *pte)
+ {
+ 	BUILD_BUG_ON(IS_ENABLED(CONFIG_HIGHPTE));
+-	BUILD_BUG_ON(MAX_PTRS_PER_PTE * sizeof(pte_t) > PAGE_SIZE);
++	BUILD_BUG_ON(MAX_PTRS_PER_PTE * sizeof(pte_t) > PAGE_SIZE_MAX);
+ 	return ptlock_ptr(virt_to_ptdesc(pte));
+ }
+ 
+diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
+index a2f6179b672b8..c356897d5f41c 100644
+--- a/include/linux/mm_types_task.h
++++ b/include/linux/mm_types_task.h
+@@ -37,7 +37,7 @@ struct page;
+ 
+ struct page_frag {
+ 	struct page *page;
+-#if (BITS_PER_LONG > 32) || (PAGE_SIZE >= 65536)
++#if (BITS_PER_LONG > 32) || (PAGE_SIZE_MAX >= 65536)
+ 	__u32 offset;
+ 	__u32 size;
+ #else
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 1dc6248feb832..cd58034b82c81 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1744,6 +1744,7 @@ static inline bool movable_only_nodes(nodemask_t *nodes)
+  */
+ #define PA_SECTION_SHIFT	(SECTION_SIZE_BITS)
+ #define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)
++#define PFN_SECTION_SHIFT_MIN	(SECTION_SIZE_BITS - PAGE_SHIFT_MAX)
+ 
+ #define NR_MEM_SECTIONS		(1UL << SECTIONS_SHIFT)
+ 
+@@ -1753,7 +1754,7 @@ static inline bool movable_only_nodes(nodemask_t *nodes)
+ #define SECTION_BLOCKFLAGS_BITS \
+ 	((1UL << (PFN_SECTION_SHIFT - pageblock_order)) * NR_PAGEBLOCK_BITS)
+ 
+-#if (MAX_PAGE_ORDER + PAGE_SHIFT) > SECTION_SIZE_BITS
++#if (MAX_PAGE_ORDER + PAGE_SHIFT_MAX) > SECTION_SIZE_BITS
+ #error Allocator MAX_PAGE_ORDER exceeds SECTION_SIZE
+ #endif
+ 
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index eb2bf46291576..11c6ff3a12579 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -347,7 +347,7 @@ static inline unsigned int arch_slab_minalign(void)
+  */
+ #define __assume_kmalloc_alignment __assume_aligned(ARCH_KMALLOC_MINALIGN)
+ #define __assume_slab_alignment __assume_aligned(ARCH_SLAB_MINALIGN)
+-#define __assume_page_alignment __assume_aligned(PAGE_SIZE)
++#define __assume_page_alignment __assume_aligned(PAGE_SIZE_MIN)
+ 
+ /*
+  * Kmalloc array related definitions
+@@ -358,6 +358,7 @@ static inline unsigned int arch_slab_minalign(void)
+  * (PAGE_SIZE*2).  Larger requests are passed to the page allocator.
+  */
+ #define KMALLOC_SHIFT_HIGH	(PAGE_SHIFT + 1)
++#define KMALLOC_SHIFT_HIGH_MAX	(PAGE_SHIFT_MAX + 1)
+ #define KMALLOC_SHIFT_MAX	(MAX_PAGE_ORDER + PAGE_SHIFT)
+ #ifndef KMALLOC_SHIFT_LOW
+ #define KMALLOC_SHIFT_LOW	3
+@@ -426,7 +427,7 @@ enum kmalloc_cache_type {
+ 	NR_KMALLOC_TYPES
+ };
+ 
+-typedef struct kmem_cache * kmem_buckets[KMALLOC_SHIFT_HIGH + 1];
++typedef struct kmem_cache * kmem_buckets[KMALLOC_SHIFT_HIGH_MAX + 1];
+ 
+ extern kmem_buckets kmalloc_caches[NR_KMALLOC_TYPES];
+ 
+@@ -524,7 +525,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
+ 	/* Will never be reached. Needed because the compiler may complain */
+ 	return -1;
+ }
+-static_assert(PAGE_SHIFT <= 20);
++static_assert(PAGE_SHIFT_MAX <= 20);
+ #define kmalloc_index(s) __kmalloc_index(s, true)
+ 
+ #include <linux/alloc_tag.h>
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index ba7ea95d1c57a..e85df0332979f 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -132,10 +132,17 @@ static inline int current_is_kswapd(void)
+  * bootbits...
+  */
+ union swap_header {
+-	struct {
+-		char reserved[PAGE_SIZE - 10];
+-		char magic[10];			/* SWAP-SPACE or SWAPSPACE2 */
+-	} magic;
++	/*
++	 * Exists conceptually, but since PAGE_SIZE may not be known at compile
++	 * time, we must access through pointer arithmetic at run time.
++	 *
++	 * struct {
++	 * 	char reserved[PAGE_SIZE - 10];
++	 * 	char magic[10];			   SWAP-SPACE or SWAPSPACE2
++	 * } magic;
++	 */
++#define SWAP_HEADER_MAGIC	(PAGE_SIZE - 10)
++	char magic[1];
+ 	struct {
+ 		char		bootbits[1024];	/* Space for disklabel etc. */
+ 		__u32		version;
+@@ -201,7 +208,7 @@ struct swap_extent {
+  * Max bad pages in the new format..
+  */
+ #define MAX_SWAP_BADPAGES \
+-	((offsetof(union swap_header, magic.magic) - \
++	((SWAP_HEADER_MAGIC - \
+ 	  offsetof(union swap_header, info.badpages)) / sizeof(int))
+ 
+ enum {
+diff --git a/include/linux/swapops.h b/include/linux/swapops.h
+index cb468e418ea11..890fe6a3e6702 100644
+--- a/include/linux/swapops.h
++++ b/include/linux/swapops.h
+@@ -34,10 +34,14 @@
+  */
+ #ifdef MAX_PHYSMEM_BITS
+ #define SWP_PFN_BITS		(MAX_PHYSMEM_BITS - PAGE_SHIFT)
++#define SWP_PFN_BITS_MAX	(MAX_PHYSMEM_BITS - PAGE_SHIFT_MIN)
+ #else  /* MAX_PHYSMEM_BITS */
+ #define SWP_PFN_BITS		min_t(int, \
+ 				      sizeof(phys_addr_t) * 8 - PAGE_SHIFT, \
+ 				      SWP_TYPE_SHIFT)
++#define SWP_PFN_BITS_MAX	min_t(int, \
++				      sizeof(phys_addr_t) * 8 - PAGE_SHIFT_MIN, \
++				      SWP_TYPE_SHIFT)
+ #endif	/* MAX_PHYSMEM_BITS */
+ #define SWP_PFN_MASK		(BIT(SWP_PFN_BITS) - 1)
+ 
+@@ -519,7 +523,7 @@ static inline struct folio *pfn_swap_entry_folio(swp_entry_t entry)
+ static inline bool is_pfn_swap_entry(swp_entry_t entry)
+ {
+ 	/* Make sure the swp offset can always store the needed fields */
+-	BUILD_BUG_ON(SWP_TYPE_SHIFT < SWP_PFN_BITS);
++	BUILD_BUG_ON(SWP_TYPE_SHIFT < SWP_PFN_BITS_MAX);
+ 
+ 	return is_migration_entry(entry) || is_device_private_entry(entry) ||
+ 	       is_device_exclusive_entry(entry) || is_hwpoison_entry(entry);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c5f9195f76c65..4b17bec566fbd 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4881,7 +4881,7 @@ static int __init mem_cgroup_init(void)
+ 	 * to work fine, we should make sure that the overfill threshold can't
+ 	 * exceed S32_MAX / PAGE_SIZE.
+ 	 */
+-	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S32_MAX / PAGE_SIZE);
++	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S32_MAX / PAGE_SIZE_MIN);
+ 
+ 	cpuhp_setup_state_nocalls(CPUHP_MM_MEMCQ_DEAD, "mm/memctrl:dead", NULL,
+ 				  memcg_hotplug_cpu_dead);
+diff --git a/mm/memory.c b/mm/memory.c
+index ebfc9768f801a..14b5ef6870486 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4949,8 +4949,8 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+ 	return ret;
+ }
+ 
+-static unsigned long fault_around_pages __read_mostly =
+-	65536 >> PAGE_SHIFT;
++static __DEFINE_GLOBAL_PAGE_SIZE_VAR(unsigned long, fault_around_pages,
++				     __read_mostly, 65536 >> PAGE_SHIFT);
+ 
+ #ifdef CONFIG_DEBUG_FS
+ static int fault_around_bytes_get(void *data, u64 *val)
+diff --git a/mm/mmap.c b/mm/mmap.c
+index d0dfc85b209bb..d9642aba07ac4 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2279,7 +2279,7 @@ int expand_downwards(struct vm_area_struct *vma, unsigned long address)
+ }
+ 
+ /* enforced gap between the expanding stack and other mappings. */
+-unsigned long stack_guard_gap = 256UL<<PAGE_SHIFT;
++DEFINE_GLOBAL_PAGE_SIZE_VAR(unsigned long, stack_guard_gap, 256UL<<PAGE_SHIFT);
+ 
+ static int __init cmdline_parse_stack_guard_gap(char *p)
+ {
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 4430ac68e4c41..8fc9ac50749bd 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2292,7 +2292,7 @@ static int page_writeback_cpu_online(unsigned int cpu)
+ #ifdef CONFIG_SYSCTL
+ 
+ /* this is needed for the proc_doulongvec_minmax of vm_dirty_bytes */
+-static const unsigned long dirty_bytes_min = 2 * PAGE_SIZE;
++static DEFINE_GLOBAL_PAGE_SIZE_VAR_CONST(unsigned long, dirty_bytes_min, 2 * PAGE_SIZE);
+ 
+ static struct ctl_table vm_page_writeback_sysctls[] = {
+ 	{
+diff --git a/mm/slub.c b/mm/slub.c
+index a77f354f83251..82f6e98cf25bb 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5001,7 +5001,7 @@ init_kmem_cache_node(struct kmem_cache_node *n)
+ static inline int alloc_kmem_cache_cpus(struct kmem_cache *s)
+ {
+ 	BUILD_BUG_ON(PERCPU_DYNAMIC_EARLY_SIZE <
+-			NR_KMALLOC_TYPES * KMALLOC_SHIFT_HIGH *
++			NR_KMALLOC_TYPES * KMALLOC_SHIFT_HIGH_MAX *
+ 			sizeof(struct kmem_cache_cpu));
+ 
+ 	/*
+diff --git a/mm/sparse.c b/mm/sparse.c
+index dc38539f85603..2491425930c4d 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -277,7 +277,7 @@ static unsigned long sparse_encode_mem_map(struct page *mem_map, unsigned long p
+ {
+ 	unsigned long coded_mem_map =
+ 		(unsigned long)(mem_map - (section_nr_to_pfn(pnum)));
+-	BUILD_BUG_ON(SECTION_MAP_LAST_BIT > PFN_SECTION_SHIFT);
++	BUILD_BUG_ON(SECTION_MAP_LAST_BIT > PFN_SECTION_SHIFT_MIN);
+ 	BUG_ON(coded_mem_map & ~SECTION_MAP_MASK);
+ 	return coded_mem_map;
+ }
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 38bdc439651ac..6311a1cc7e46b 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2931,7 +2931,7 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
+ 	unsigned long swapfilepages;
+ 	unsigned long last_page;
+ 
+-	if (memcmp("SWAPSPACE2", swap_header->magic.magic, 10)) {
++	if (memcmp("SWAPSPACE2", &swap_header->magic[SWAP_HEADER_MAGIC], 10)) {
+ 		pr_err("Unable to find swap-space signature\n");
+ 		return 0;
+ 	}
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index a0df1e2e155a8..b4fbba204603c 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2497,12 +2497,12 @@ struct vmap_block {
+ 	spinlock_t lock;
+ 	struct vmap_area *va;
+ 	unsigned long free, dirty;
+-	DECLARE_BITMAP(used_map, VMAP_BBMAP_BITS);
+ 	unsigned long dirty_min, dirty_max; /*< dirty range */
+ 	struct list_head free_list;
+ 	struct rcu_head rcu_head;
+ 	struct list_head purge;
+ 	unsigned int cpu;
++	unsigned long used_map[];
+ };
+ 
+ /* Queue of free and dirty vmap blocks, for allocation and flushing purposes */
+@@ -2600,11 +2600,12 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+ 	unsigned long vb_idx;
+ 	int node, err;
+ 	void *vaddr;
++	size_t size;
+ 
+ 	node = numa_node_id();
+ 
+-	vb = kmalloc_node(sizeof(struct vmap_block),
+-			gfp_mask & GFP_RECLAIM_MASK, node);
++	size = struct_size(vb, used_map, BITS_TO_LONGS(VMAP_BBMAP_BITS));
++	vb = kmalloc_node(size, gfp_mask & GFP_RECLAIM_MASK, node);
+ 	if (unlikely(!vb))
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+2.43.0
 
-ec185b18c22323 drivers/mtd/nand/raw/qcom_nandc.c Uwe Kleine-K=F6nig 2023-04=
--11  2335  static void qcom_nandc_remove(struct platform_device *pdev)
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2336  {
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2337  	struct qcom_nand_controller *nandc =3D platform_get_drvdata(pdev);
-7330fc505af4af drivers/mtd/nand/raw/qcom_nandc.c Arnd Bergmann    2018-07-1=
-7  2338  	struct resource *res =3D platform_get_resource(pdev, IORESOURCE_M=
-EM, 0);
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2339  	struct qcom_nand_host *host;
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9  2340  	struct nand_chip *chip;
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9  2341  	int ret;
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2342  =
-
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9  2343  	list_for_each_entry(host, &nandc->host_list, node) {
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9  2344  		chip =3D &host->chip;
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9  2345  		ret =3D mtd_device_unregister(nand_to_mtd(chip));
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9  2346  		WARN_ON(ret);
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9 @2347  		nand_cleanup(chip);
-0a2bc9919cf74e drivers/mtd/nand/raw/qcom_nandc.c Miquel Raynal    2020-05-1=
-9  2348  	}
-7330fc505af4af drivers/mtd/nand/raw/qcom_nandc.c Arnd Bergmann    2018-07-1=
-7  2349  =
-
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2350  	qcom_nandc_unalloc(nandc);
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2351  =
-
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2352  	clk_disable_unprepare(nandc->aon_clk);
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2353  	clk_disable_unprepare(nandc->core_clk);
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2354  =
-
-7330fc505af4af drivers/mtd/nand/raw/qcom_nandc.c Arnd Bergmann    2018-07-1=
-7  2355  	dma_unmap_resource(&pdev->dev, nandc->base_dma, resource_size(res=
-),
-7330fc505af4af drivers/mtd/nand/raw/qcom_nandc.c Arnd Bergmann    2018-07-1=
-7  2356  			   DMA_BIDIRECTIONAL, 0);
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2357  }
-c76b78d8ec05a2 drivers/mtd/nand/qcom_nandc.c     Archit Taneja    2016-02-0=
-3  2358  =
-
-
--- =
-
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
