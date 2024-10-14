@@ -4,77 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A708D16243
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2024 11:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3C9FD16262
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2024 13:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ek8dv2dLKb8rEvOkxRAjZlmlyKnMiR5Iyj2P2QhWoTU=; b=hD8ULQ+pQIaDUd
-	ChzjF88KMv6USQfNBRmnU1BWeVePNtI0JHuDBdpRkpdFDjRbnK0l4CxuENDTzFNPQrvyaCPbjiUVu
-	Ebje91MHajWkwEdkcSDD1LrMUnMM869zypvBhq274kT40UdXbmsBIUNqNgDT5+g5+kmjZopRSvevu
-	6tA7Dq5S5FdoCJMmX6UcM7DVWzym/hdwxnIyQlwXiCi9PWW1oDM6KWybPOwssLqHy2YG6wIGeysxp
-	4+vI1jY2FQPceWILXuesErkFmK8oz87UbXQCXCPgQztpJ4Dby7MZ++Dst30ldod4lnduy6WKz7Oif
-	WFMsewkBwr0vcLfWtysg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Lf7i2kWrjvPzmjXICvyp19DDLFCCvYbtzk3x97t3o3Y=; b=hjGcHhx2vcIHF7dyP6CcjNMxjI
+	DMRVWiXw0R1OZcJkFmbgwHpCaW8zVAEFioPLFjxd1wt/1YYA6qxWmRwq4PygzM54E9ap7crEHeT4/
+	jVt15URqQKIwFVv/jq7+zysq7r06sNt9u2ttgiyoBsMsK3Wwuw+KwHJLwTrwvTSnB/XkEt98aRUJF
+	LWr6ciyhk2huK1dmaAl45WQjM1nMmZszulJNx04QZ4mmVTvBnnonEYYBMv785kWo83YtXWKwf/TUV
+	5zyqkJc+5Xfe74I8SBm+AJZEYUWDUMLMqHVd9513X/z1+NoF+qaW8jB2Xf2bzjXWT0UjvugZSvL4n
+	vuGVXwuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0JIq-00000004w3C-080s;
-	Mon, 14 Oct 2024 11:31:56 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0Ini-00000004nUB-16Qe;
-	Mon, 14 Oct 2024 10:59:49 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DC7F1424;
-	Mon, 14 Oct 2024 04:00:15 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 979593F51B;
-	Mon, 14 Oct 2024 03:59:41 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Lameter <cl@linux.com>,
-	David Hildenbrand <david@redhat.com>,
-	David Rientjes <rientjes@google.com>,
-	Greg Marsden <greg.marsden@oracle.com>,
-	Ivan Ivanov <ivan.ivanov@suse.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Kalesh Singh <kaleshsingh@google.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Matthias Brugger <mbrugger@suse.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Pekka Enberg <penberg@kernel.org>,
+	id 1t0LC3-00000005IkJ-01cB;
+	Mon, 14 Oct 2024 13:33:03 +0000
+Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1t0JoL-000000051Me-0a1u
+	for linux-mtd@lists.infradead.org;
+	Mon, 14 Oct 2024 12:04:30 +0000
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-539f6e1f756so953076e87.0
+        for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2024 05:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728907466; x=1729512266; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gAhKE9vd5VoPEDERdDcAkweB+/fuBqaQlx8ZWt7jHoE=;
+        b=Y/MD9r0Rlz2YQ9cQCTcSQdwFHvShjzPNSAI2xZOoTQT4jSbZtTYcTMYPLS4qAbHr/F
+         ezJS7/m5s+bhq9DIHUi68ZS4g/2r8kZrhEDJ++z5PwaEeWm/erzWWATjp2bwsvGsMfAA
+         QZAix0q3K/RTYRCK/UPnpmwj6ceOjM1dFGmvPNw6l7bzeO7zBBdSOZ99apmW+F1fG0oy
+         VAVTRI6Jta7yZUMZHOyDtsmT33crPMRYXruwfExtYmcS29FVIvYyd4+qYPVZwbX1Z3TX
+         b0xG5lfWWhKXWww+gVMSVL6Q6AvgETIzpZtirLP4mMkPP7B5EAb4cBzawvKMx3cXWXah
+         87lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728907466; x=1729512266;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gAhKE9vd5VoPEDERdDcAkweB+/fuBqaQlx8ZWt7jHoE=;
+        b=h/IlgQ7TVmHpqZR7Q6p4xO1spLoDFYhCQW58gR4HUNRuNuazohkT+j3nhi4wowRU26
+         f7vwAiSV2wIYJoFmFKwzQwj4P0MGxw6TrTG0CNAEtldTqNcO2CpIc3LrffnrWIzDqyDW
+         H/DbG7DBXIEPMJhk/1huOTfFci56dC2cYBHlrStIJgqysDC16w00nkmtYwWq/J741XA3
+         TDjbpSHLGCGVXRmFl3rA6Cic+7NIf7A/BbKygpa/qCVJpq7wjXerB/evdW/Vqqa7xNuW
+         BJQ0RE9FHr8riME8tzbNmkAD7TR5sIkJvfWRL2/TDgWLyehz3DUIwuwrPf3IcR62Dcsj
+         kV7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUGzoMHxuZvKmGADydme3TnMaaoln1Cl6v5WK1kyFa0N4fh7nXpVFv1KvP92TanfRSePvc9DrCTyzo=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwrzDSKmUQEDvHL9wom8FR9D/mNBPK3bp7+BfO5u1j57ynpmyyA
+	vebVOsq1YlRn7rAfXom3NA2snDDA8LIEx7IrPocclBK56jqIoskbBf3pOZvf
+X-Google-Smtp-Source: AGHT+IGstZmxwNsompie+aLTNH6Adpdfi+FGz/MmaD5OGfP/FGHcH7YFWNRG3hj+N8YDPneCt2WGoA==
+X-Received: by 2002:a05:6512:1105:b0:539:fc42:e5ee with SMTP id 2adb3069b0e04-539fc42e6femr776977e87.29.1728907466071;
+        Mon, 14 Oct 2024 05:04:26 -0700 (PDT)
+Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-539e2c4a137sm1111628e87.243.2024.10.14.05.04.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Oct 2024 05:04:25 -0700 (PDT)
+Date: Mon, 14 Oct 2024 14:04:23 +0200
+From: Marcus Folkesson <marcus.folkesson@gmail.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Will Deacon <will@kernel.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	cgroups@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-mtd@lists.infradead.org
-Subject: [RFC PATCH v1 06/57] mm: Remove PAGE_SIZE compile-time constant assumption
-Date: Mon, 14 Oct 2024 11:58:13 +0100
-Message-ID: <20241014105912.3207374-6-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241014105912.3207374-1-ryan.roberts@arm.com>
-References: <20241014105514.3206191-1-ryan.roberts@arm.com>
- <20241014105912.3207374-1-ryan.roberts@arm.com>
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] dt-bindings: mtd: davinci: convert to yaml
+Message-ID: <Zw0Ixx9Qu9tgGXGP@gmail.com>
+References: <20241008-ondie-v5-0-041ca4ccc5ee@gmail.com>
+ <20241008-ondie-v5-2-041ca4ccc5ee@gmail.com>
+ <4u5iv24enpz46funfvbo2aggx6yiqxy7beaa3ldt5ai5wf65kl@bnlm4eyuwkui>
 MIME-Version: 1.0
+In-Reply-To: <4u5iv24enpz46funfvbo2aggx6yiqxy7beaa3ldt5ai5wf65kl@bnlm4eyuwkui>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241014_035946_449607_16743C9E 
-X-CRM114-Status: GOOD (  25.35  )
+X-CRM114-CacheID: sfid-20241014_050429_273108_E7D2A4EA 
+X-CRM114-Status: GOOD (  34.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,355 +93,292 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2225985356004055670=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-To prepare for supporting boot-time page size selection, refactor code
-to remove assumptions about PAGE_SIZE being compile-time constant. Code
-intended to be equivalent when compile-time page size is active.
 
-Refactor "struct vmap_block" to use a flexible array for used_mmap since
-VMAP_BBMAP_BITS is not a compile time constant for the boot-time page
-size case.
+--===============2225985356004055670==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="D0LLp9JK1EE8uudv"
+Content-Disposition: inline
 
-Update various BUILD_BUG_ON() instances to check against appropriate
-page size limit.
 
-Re-define "union swap_header" so that it's no longer exactly page-sized.
-Instead define a flexible "magic" array with a define which tells the
-offset to where the magic signature begins.
+--D0LLp9JK1EE8uudv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Consider page size limit in some CPP condditionals.
 
-Wrap global variables that are initialized with PAGE_SIZE derived values
-using DEFINE_GLOBAL_PAGE_SIZE_VAR() so their initialization can be
-deferred for boot-time page size builds.
+Krzysztof,
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
+I'm sorry for all these iterations, it wouldn't have been necessary if I had
+done my homework better. I'm not too familiar with writing these and I do
+often find the descriptions unclear and not obvious.
+Anyway, thank you for your patience, reviews and help.
 
-***NOTE***
-Any confused maintainers may want to read the cover note here for context:
-https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
 
- drivers/mtd/mtdswap.c         |  4 ++--
- include/linux/mm.h            |  2 +-
- include/linux/mm_types_task.h |  2 +-
- include/linux/mmzone.h        |  3 ++-
- include/linux/slab.h          |  7 ++++---
- include/linux/swap.h          | 17 ++++++++++++-----
- include/linux/swapops.h       |  6 +++++-
- mm/memcontrol.c               |  2 +-
- mm/memory.c                   |  4 ++--
- mm/mmap.c                     |  2 +-
- mm/page-writeback.c           |  2 +-
- mm/slub.c                     |  2 +-
- mm/sparse.c                   |  2 +-
- mm/swapfile.c                 |  2 +-
- mm/vmalloc.c                  |  7 ++++---
- 15 files changed, 39 insertions(+), 25 deletions(-)
+On Tue, Oct 08, 2024 at 03:28:33PM +0200, Krzysztof Kozlowski wrote:
+> On Tue, Oct 08, 2024 at 09:02:45AM +0200, Marcus Folkesson wrote:
+> > Convert the bindings to yaml format.
+> >=20
+> > Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> > ---
+> >  .../devicetree/bindings/mtd/davinci-nand.txt       |  94 -------------=
+----
+> >  .../devicetree/bindings/mtd/ti,davinci-nand.yaml   | 115 +++++++++++++=
+++++++++
+> >  2 files changed, 115 insertions(+), 94 deletions(-)
+> >=20
+>=20
+>=20
+> > diff --git a/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml=
+ b/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml
+> > new file mode 100644
+> > index 0000000000000000000000000000000000000000..1263616593532e8483d556b=
+4242b004a16620ddf
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml
+> > @@ -0,0 +1,115 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/ti,davinci-nand.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: TI DaVinci NAND controller
+> > +
+> > +maintainers:
+> > +  - Marcus Folkesson <marcus.folkesson@gmail.com>
+> > +
+> > +allOf:
+> > +  - $ref: nand-controller.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - ti,davinci-nand
+> > +      - ti,keystone-nand
+> > +
+> > +  reg:
+> > +    maxItems: 1
+>=20
+> This was different in original binding and commit msg does not explain
+> changes.  Be sure any change from pure conversion is explained in the
+> commit msg.
 
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index 680366616da24..7412a32708114 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -1062,13 +1062,13 @@ static int mtdswap_auto_header(struct mtdswap_dev *d, char *buf)
- {
- 	union swap_header *hd = (union swap_header *)(buf);
- 
--	memset(buf, 0, PAGE_SIZE - 10);
-+	memset(buf, 0, SWAP_HEADER_MAGIC);
- 
- 	hd->info.version = 1;
- 	hd->info.last_page = d->mbd_dev->size - 1;
- 	hd->info.nr_badpages = 0;
- 
--	memcpy(buf + PAGE_SIZE - 10, "SWAPSPACE2", 10);
-+	memcpy(buf + SWAP_HEADER_MAGIC, "SWAPSPACE2", 10);
- 
- 	return 0;
- }
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 09a840517c23a..49c2078354e6e 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2927,7 +2927,7 @@ static inline spinlock_t *pte_lockptr(struct mm_struct *mm, pmd_t *pmd)
- static inline spinlock_t *ptep_lockptr(struct mm_struct *mm, pte_t *pte)
- {
- 	BUILD_BUG_ON(IS_ENABLED(CONFIG_HIGHPTE));
--	BUILD_BUG_ON(MAX_PTRS_PER_PTE * sizeof(pte_t) > PAGE_SIZE);
-+	BUILD_BUG_ON(MAX_PTRS_PER_PTE * sizeof(pte_t) > PAGE_SIZE_MAX);
- 	return ptlock_ptr(virt_to_ptdesc(pte));
- }
- 
-diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
-index a2f6179b672b8..c356897d5f41c 100644
---- a/include/linux/mm_types_task.h
-+++ b/include/linux/mm_types_task.h
-@@ -37,7 +37,7 @@ struct page;
- 
- struct page_frag {
- 	struct page *page;
--#if (BITS_PER_LONG > 32) || (PAGE_SIZE >= 65536)
-+#if (BITS_PER_LONG > 32) || (PAGE_SIZE_MAX >= 65536)
- 	__u32 offset;
- 	__u32 size;
- #else
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 1dc6248feb832..cd58034b82c81 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1744,6 +1744,7 @@ static inline bool movable_only_nodes(nodemask_t *nodes)
-  */
- #define PA_SECTION_SHIFT	(SECTION_SIZE_BITS)
- #define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)
-+#define PFN_SECTION_SHIFT_MIN	(SECTION_SIZE_BITS - PAGE_SHIFT_MAX)
- 
- #define NR_MEM_SECTIONS		(1UL << SECTIONS_SHIFT)
- 
-@@ -1753,7 +1754,7 @@ static inline bool movable_only_nodes(nodemask_t *nodes)
- #define SECTION_BLOCKFLAGS_BITS \
- 	((1UL << (PFN_SECTION_SHIFT - pageblock_order)) * NR_PAGEBLOCK_BITS)
- 
--#if (MAX_PAGE_ORDER + PAGE_SHIFT) > SECTION_SIZE_BITS
-+#if (MAX_PAGE_ORDER + PAGE_SHIFT_MAX) > SECTION_SIZE_BITS
- #error Allocator MAX_PAGE_ORDER exceeds SECTION_SIZE
- #endif
- 
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index eb2bf46291576..11c6ff3a12579 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -347,7 +347,7 @@ static inline unsigned int arch_slab_minalign(void)
-  */
- #define __assume_kmalloc_alignment __assume_aligned(ARCH_KMALLOC_MINALIGN)
- #define __assume_slab_alignment __assume_aligned(ARCH_SLAB_MINALIGN)
--#define __assume_page_alignment __assume_aligned(PAGE_SIZE)
-+#define __assume_page_alignment __assume_aligned(PAGE_SIZE_MIN)
- 
- /*
-  * Kmalloc array related definitions
-@@ -358,6 +358,7 @@ static inline unsigned int arch_slab_minalign(void)
-  * (PAGE_SIZE*2).  Larger requests are passed to the page allocator.
-  */
- #define KMALLOC_SHIFT_HIGH	(PAGE_SHIFT + 1)
-+#define KMALLOC_SHIFT_HIGH_MAX	(PAGE_SHIFT_MAX + 1)
- #define KMALLOC_SHIFT_MAX	(MAX_PAGE_ORDER + PAGE_SHIFT)
- #ifndef KMALLOC_SHIFT_LOW
- #define KMALLOC_SHIFT_LOW	3
-@@ -426,7 +427,7 @@ enum kmalloc_cache_type {
- 	NR_KMALLOC_TYPES
- };
- 
--typedef struct kmem_cache * kmem_buckets[KMALLOC_SHIFT_HIGH + 1];
-+typedef struct kmem_cache * kmem_buckets[KMALLOC_SHIFT_HIGH_MAX + 1];
- 
- extern kmem_buckets kmalloc_caches[NR_KMALLOC_TYPES];
- 
-@@ -524,7 +525,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
- 	/* Will never be reached. Needed because the compiler may complain */
- 	return -1;
- }
--static_assert(PAGE_SHIFT <= 20);
-+static_assert(PAGE_SHIFT_MAX <= 20);
- #define kmalloc_index(s) __kmalloc_index(s, true)
- 
- #include <linux/alloc_tag.h>
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index ba7ea95d1c57a..e85df0332979f 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -132,10 +132,17 @@ static inline int current_is_kswapd(void)
-  * bootbits...
-  */
- union swap_header {
--	struct {
--		char reserved[PAGE_SIZE - 10];
--		char magic[10];			/* SWAP-SPACE or SWAPSPACE2 */
--	} magic;
-+	/*
-+	 * Exists conceptually, but since PAGE_SIZE may not be known at compile
-+	 * time, we must access through pointer arithmetic at run time.
-+	 *
-+	 * struct {
-+	 * 	char reserved[PAGE_SIZE - 10];
-+	 * 	char magic[10];			   SWAP-SPACE or SWAPSPACE2
-+	 * } magic;
-+	 */
-+#define SWAP_HEADER_MAGIC	(PAGE_SIZE - 10)
-+	char magic[1];
- 	struct {
- 		char		bootbits[1024];	/* Space for disklabel etc. */
- 		__u32		version;
-@@ -201,7 +208,7 @@ struct swap_extent {
-  * Max bad pages in the new format..
-  */
- #define MAX_SWAP_BADPAGES \
--	((offsetof(union swap_header, magic.magic) - \
-+	((SWAP_HEADER_MAGIC - \
- 	  offsetof(union swap_header, info.badpages)) / sizeof(int))
- 
- enum {
-diff --git a/include/linux/swapops.h b/include/linux/swapops.h
-index cb468e418ea11..890fe6a3e6702 100644
---- a/include/linux/swapops.h
-+++ b/include/linux/swapops.h
-@@ -34,10 +34,14 @@
-  */
- #ifdef MAX_PHYSMEM_BITS
- #define SWP_PFN_BITS		(MAX_PHYSMEM_BITS - PAGE_SHIFT)
-+#define SWP_PFN_BITS_MAX	(MAX_PHYSMEM_BITS - PAGE_SHIFT_MIN)
- #else  /* MAX_PHYSMEM_BITS */
- #define SWP_PFN_BITS		min_t(int, \
- 				      sizeof(phys_addr_t) * 8 - PAGE_SHIFT, \
- 				      SWP_TYPE_SHIFT)
-+#define SWP_PFN_BITS_MAX	min_t(int, \
-+				      sizeof(phys_addr_t) * 8 - PAGE_SHIFT_MIN, \
-+				      SWP_TYPE_SHIFT)
- #endif	/* MAX_PHYSMEM_BITS */
- #define SWP_PFN_MASK		(BIT(SWP_PFN_BITS) - 1)
- 
-@@ -519,7 +523,7 @@ static inline struct folio *pfn_swap_entry_folio(swp_entry_t entry)
- static inline bool is_pfn_swap_entry(swp_entry_t entry)
- {
- 	/* Make sure the swp offset can always store the needed fields */
--	BUILD_BUG_ON(SWP_TYPE_SHIFT < SWP_PFN_BITS);
-+	BUILD_BUG_ON(SWP_TYPE_SHIFT < SWP_PFN_BITS_MAX);
- 
- 	return is_migration_entry(entry) || is_device_private_entry(entry) ||
- 	       is_device_exclusive_entry(entry) || is_hwpoison_entry(entry);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c5f9195f76c65..4b17bec566fbd 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4881,7 +4881,7 @@ static int __init mem_cgroup_init(void)
- 	 * to work fine, we should make sure that the overfill threshold can't
- 	 * exceed S32_MAX / PAGE_SIZE.
- 	 */
--	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S32_MAX / PAGE_SIZE);
-+	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S32_MAX / PAGE_SIZE_MIN);
- 
- 	cpuhp_setup_state_nocalls(CPUHP_MM_MEMCQ_DEAD, "mm/memctrl:dead", NULL,
- 				  memcg_hotplug_cpu_dead);
-diff --git a/mm/memory.c b/mm/memory.c
-index ebfc9768f801a..14b5ef6870486 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4949,8 +4949,8 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
- 	return ret;
- }
- 
--static unsigned long fault_around_pages __read_mostly =
--	65536 >> PAGE_SHIFT;
-+static __DEFINE_GLOBAL_PAGE_SIZE_VAR(unsigned long, fault_around_pages,
-+				     __read_mostly, 65536 >> PAGE_SHIFT);
- 
- #ifdef CONFIG_DEBUG_FS
- static int fault_around_bytes_get(void *data, u64 *val)
-diff --git a/mm/mmap.c b/mm/mmap.c
-index d0dfc85b209bb..d9642aba07ac4 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2279,7 +2279,7 @@ int expand_downwards(struct vm_area_struct *vma, unsigned long address)
- }
- 
- /* enforced gap between the expanding stack and other mappings. */
--unsigned long stack_guard_gap = 256UL<<PAGE_SHIFT;
-+DEFINE_GLOBAL_PAGE_SIZE_VAR(unsigned long, stack_guard_gap, 256UL<<PAGE_SHIFT);
- 
- static int __init cmdline_parse_stack_guard_gap(char *p)
- {
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 4430ac68e4c41..8fc9ac50749bd 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2292,7 +2292,7 @@ static int page_writeback_cpu_online(unsigned int cpu)
- #ifdef CONFIG_SYSCTL
- 
- /* this is needed for the proc_doulongvec_minmax of vm_dirty_bytes */
--static const unsigned long dirty_bytes_min = 2 * PAGE_SIZE;
-+static DEFINE_GLOBAL_PAGE_SIZE_VAR_CONST(unsigned long, dirty_bytes_min, 2 * PAGE_SIZE);
- 
- static struct ctl_table vm_page_writeback_sysctls[] = {
- 	{
-diff --git a/mm/slub.c b/mm/slub.c
-index a77f354f83251..82f6e98cf25bb 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5001,7 +5001,7 @@ init_kmem_cache_node(struct kmem_cache_node *n)
- static inline int alloc_kmem_cache_cpus(struct kmem_cache *s)
- {
- 	BUILD_BUG_ON(PERCPU_DYNAMIC_EARLY_SIZE <
--			NR_KMALLOC_TYPES * KMALLOC_SHIFT_HIGH *
-+			NR_KMALLOC_TYPES * KMALLOC_SHIFT_HIGH_MAX *
- 			sizeof(struct kmem_cache_cpu));
- 
- 	/*
-diff --git a/mm/sparse.c b/mm/sparse.c
-index dc38539f85603..2491425930c4d 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -277,7 +277,7 @@ static unsigned long sparse_encode_mem_map(struct page *mem_map, unsigned long p
- {
- 	unsigned long coded_mem_map =
- 		(unsigned long)(mem_map - (section_nr_to_pfn(pnum)));
--	BUILD_BUG_ON(SECTION_MAP_LAST_BIT > PFN_SECTION_SHIFT);
-+	BUILD_BUG_ON(SECTION_MAP_LAST_BIT > PFN_SECTION_SHIFT_MIN);
- 	BUG_ON(coded_mem_map & ~SECTION_MAP_MASK);
- 	return coded_mem_map;
- }
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 38bdc439651ac..6311a1cc7e46b 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2931,7 +2931,7 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
- 	unsigned long swapfilepages;
- 	unsigned long last_page;
- 
--	if (memcmp("SWAPSPACE2", swap_header->magic.magic, 10)) {
-+	if (memcmp("SWAPSPACE2", &swap_header->magic[SWAP_HEADER_MAGIC], 10)) {
- 		pr_err("Unable to find swap-space signature\n");
- 		return 0;
- 	}
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index a0df1e2e155a8..b4fbba204603c 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2497,12 +2497,12 @@ struct vmap_block {
- 	spinlock_t lock;
- 	struct vmap_area *va;
- 	unsigned long free, dirty;
--	DECLARE_BITMAP(used_map, VMAP_BBMAP_BITS);
- 	unsigned long dirty_min, dirty_max; /*< dirty range */
- 	struct list_head free_list;
- 	struct rcu_head rcu_head;
- 	struct list_head purge;
- 	unsigned int cpu;
-+	unsigned long used_map[];
- };
- 
- /* Queue of free and dirty vmap blocks, for allocation and flushing purposes */
-@@ -2600,11 +2600,12 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
- 	unsigned long vb_idx;
- 	int node, err;
- 	void *vaddr;
-+	size_t size;
- 
- 	node = numa_node_id();
- 
--	vb = kmalloc_node(sizeof(struct vmap_block),
--			gfp_mask & GFP_RECLAIM_MASK, node);
-+	size = struct_size(vb, used_map, BITS_TO_LONGS(VMAP_BBMAP_BITS));
-+	vb = kmalloc_node(size, gfp_mask & GFP_RECLAIM_MASK, node);
- 	if (unlikely(!vb))
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.43.0
+Hm. Another misinterpretation from my side.
+Should I use items instead? E.g.
 
+  reg:
+    items:
+      - description: |
+        Contains 2 offset/length values:
+        - offset and length for the access window.
+        - offset and length for accessing the AEMIF
+        control registers.
+
+>=20
+> > +
+> > +  partitions:
+> > +    $ref: /schemas/mtd/partitions/partitions.yaml
+> > +
+> > +  ti,davinci-chipselect:
+> > +    description:
+> > +      Number of chipselect. Indicate on the davinci_nand driver which
+> > +      chipselect is used for accessing the nand.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1, 2, 3]
+> > +
+> > +  ti,davinci-mask-ale:
+> > +    description:
+> > +      Mask for ALE. Needed for executing address phase. These offset w=
+ill be
+> > +      added to the base address for the chip select space the NAND Fla=
+sh
+> > +      device is connected to.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    default: 0x08
+> > +
+> > +  ti,davinci-mask-cle:
+> > +    description:
+> > +      Mask for CLE. Needed for executing command phase. These offset w=
+ill be
+> > +      added to the base address for the chip select space the NAND Fla=
+sh device
+> > +      is connected to.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    default: 0x10
+> > +
+> > +  ti,davinci-mask-chipsel:
+> > +    description:
+> > +      Mask for chipselect address. Needed to mask addresses for given
+> > +      chipselect.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    default: 0
+> > +
+> > +  ti,davinci-ecc-bits:
+> > +    description: Used ECC bits.
+> > +    enum: [1, 4]
+> > +
+> > +  ti,davinci-ecc-mode:
+> > +    description: Operation mode of the NAND ECC mode.
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [none, soft, hw, on-die]
+> > +    deprecated: true
+> > +
+> > +  ti,davinci-nand-buswidth:
+> > +    description: Bus width to the NAND chip
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [8, 16]
+> > +    default: 8
+> > +    deprecated: true
+> > +
+> > +  ti,davinci-nand-use-bbt:
+> > +    type: boolean
+> > +    description:
+> > +      Use flash based bad block table support. OOB identifier is saved=
+ in OOB
+> > +      area.
+> > +    deprecated: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - ti,davinci-chipselect
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    nand-controller@2000000 {
+> > +      compatible =3D "ti,davinci-nand";
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <0>;
+>=20
+> I did not notice it last time.... but what is this? How could you have
+> no sizes?
+>=20
+> > +
+> > +      reg =3D <0 0x02000000>;
+>=20
+> This is odd. Address is not 0... and size should be 0.
+>=20
+> I don't get how it even works. For sure it is not correct.
+
+Outch. It slipped through when I was laborating.
+
+This was the example I wanted to get working:
+
+
+```
+examples:
+  - |
+    nand-controller@2000000,0 {
+      compatible =3D "ti,davinci-nand";
+      #address-cells =3D <1>;
+      #size-cells =3D <1>;
+      reg =3D <0 0x02000000 0x02000000
+      1 0x00000000 0x00008000>;
+
+      ti,davinci-chipselect =3D <1>;
+      ti,davinci-mask-ale =3D <0>;
+      ti,davinci-mask-cle =3D <0>;
+      ti,davinci-mask-chipsel =3D <0>;
+
+      ti,davinci-nand-buswidth =3D <16>;
+      ti,davinci-ecc-mode =3D "hw";
+      ti,davinci-ecc-bits =3D <4>;
+      ti,davinci-nand-use-bbt;
+
+      partitions {
+        compatible =3D "fixed-partitions";
+        #address-cells =3D <1>;
+        #size-cells =3D <1>;
+
+        partition@0 {
+          label =3D "u-boot env";
+          reg =3D <0 0x020000>;
+        };
+      };
+    };
+```
+
+
+But I'm getting the following errors:
+
+```
+=2E../ti,davinci-nand.example.dtb: nand-controller@2000000,0: #size-cells: =
+0 was expected
+        from schema $id: http://devicetree.org/schemas/mtd/ti,davinci-nand.=
+yaml#
+=2E../ti,davinci-nand.example.dtb: nand-controller@2000000,0: reg: [[0, 335=
+54432], [33554432, 1], [0, 32768]] is too long
+        from schema $id: http://devicetree.org/schemas/mtd/ti,davinci-nand.=
+yaml#
+=2E../ti,davinci-nand.example.dtb: nand-controller@2000000,0: Unevaluated p=
+roperties are not allowed ('reg' was unexpected)
+        from schema $id: http://devicetree.org/schemas/mtd/ti,davinci-nand.=
+yaml#
+```
+
+The resuling 'ti,davinci-nand.example.dts' contains the following:
+
+```
+    example-0 {
+        #address-cells =3D <1>;
+        #size-cells =3D <1>;
+
+        nand-controller@2000000,0 {
+          compatible =3D "ti,davinci-nand";
+          #address-cells =3D <1>;
+          #size-cells =3D <1>;
+          reg =3D <0 0x02000000 0x02000000
+          1 0x00000000 0x00008000>;
+```
+       =20
+
+How do I set #address-cells in example-0 to 2?
+I guess that is the problem.
+>=20
+> Best regards,
+> Krzysztof
+
+Thanks,
+Marcus
+
+--D0LLp9JK1EE8uudv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmcNCMEACgkQiIBOb1ld
+UjItAxAApvXS5J63yVeffC/7GhIWALzNCxsP8G8svrNF+6jz0b6j/FkvhWVYsTxQ
+FpPEkVM8KBOY9ZBYEHeNVlJNciDJMV9SNNiWbiPTTLFofBED14eXEbCN5yorUCjY
+PFDcYYPDJYdwkHsdyMkH7XrSNVl0y8mT5hM1FsTR0zm0CO7SDvN4riQ+1Bdbh2Xh
+3s7bdcnfOE8YY+UQYf6c85SfGQWmw5WX3voQzuBlo1rh7G2rLkg7UM4vQ4+A5Bsp
+Ht1pAy0RieodHZziuTnYWGvHhMCS8gIRO/NiLUEL1GUjye2tY6JJ4vptLdH1lvmQ
++8fW0RKnTnuvwaxpYVDQl1NVF3388U1hRlLTID3etPZ34ig1NB/JfAg/W6VbrLOk
+R4myKdRvnfNC6Ets/K8KsPvu+vUbJ/HMcAeI09dCXni3m+NScoZQx8iOcdBSMxL+
+SGznacfKhW+d4R1cqv9sgcmwCDApYDOnWfg7bB/bGSEKYSAWvgkX/1j6A9b6IpNw
+ZV++pw07YcrAW3Ex2n/2GyozuiWl5tjua8VXX2xbwkkk2mpUfq5Kg++yipDSPtet
+F74nk3kgheUZvNqhuHiEyG6LhBeNfP2WLlDn1vg70R8TpyPJazdVjH100ZI/cbbG
+PfqOeAiUVfOaoKCOvHUOYq3U3Xk0vF5y9gnCtPXtSNi3anvN3w0=
+=2XDV
+-----END PGP SIGNATURE-----
+
+--D0LLp9JK1EE8uudv--
+
+
+--===============2225985356004055670==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2225985356004055670==--
+
