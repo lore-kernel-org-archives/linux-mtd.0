@@ -4,108 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2E96D1813A
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Oct 2024 18:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE561CFC264
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Oct 2024 03:41:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zxkfkk5pX2M10ilovdVDq2tzFM25E/ce9T+LYNfZd+g=; b=V4wVjqm6dcDHMQ
-	saJiipCWm7DV8qy5Z08z6kzXe+Mr8cjCIsEnOO2FZxFMY88xOTZFr+RjqI7FLXupksvE0mnBk4RNp
-	m9mILhUO7X9CLTPu+cVhsK+gZXhXKqJQb1UXXGsWkEXJmZLySCOi5/JkGd3ok4ry2ZdDsa7LgoNOV
-	Gnh4rnJpv8TC993TtSwZ5IBXJJ1zfaBuUbAwLb6Ai2YqBVorlzje9hjZjsXisCtKFOf5vCRK7hhKr
-	JpKMr5WcShYIqg01L5aKtjqtWgkFghnjemkrWW00/jo7GxB2PMQlKPNxeJiHnEy9+Fty1sGfxnvvG
-	gIieJWlkCKXcxCawWx1A==;
+	List-Owner; bh=KnLZZKWbQ8kRMCFUMVCtKU1Zshwchtaqp2z7Tgbmp2U=; b=jyO3c9GMhaMKiC
+	wDRdwNor96CVTny+dJsisYXBz3FfQiuR+wjKdUOqZ1BakMY9KRyz8jlRR3GmFAyPYUw22kEqGYTYG
+	bS6mvrDhDIyvFafaZ5WcMntgr0CiHyTtXJhHy/1gyZaxyQi6e5zCSqgyYZVSuZSm8avuPgQjHNlHL
+	OYoeMXopUrCdod74IxDw0yPtUeQuskKsMvFFEZocac4pJS74XhVHKGh9pTHT70vi3AobrV0i9PD8W
+	dIuB5q9Wcop8TbVW6m+32rQ1sH/B4CzBgmFSgVn2zf1ngm2fdIMZ6avJXnARNSH7G84bM0WXxQWUq
+	rcV7katiB1BpkRHD9ULQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0PUY-000000068q0-0ZBd;
-	Mon, 14 Oct 2024 18:08:26 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1t0YRT-00000006zvX-2JGA;
+	Tue, 15 Oct 2024 03:41:51 +0000
+Received: from mail-sy4aus01olkn2080a.outbound.protection.outlook.com ([2a01:111:f403:2819::80a] helo=AUS01-SY4-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0PUV-000000068pb-119L
+	id 1t0YRR-00000006zui-0BYS
 	for linux-mtd@lists.infradead.org;
-	Mon, 14 Oct 2024 18:08:25 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 0419BA426AC;
-	Mon, 14 Oct 2024 18:08:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1BAAC4CEC3;
-	Mon, 14 Oct 2024 18:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728929301;
-	bh=89RXUbw94+itBiGwoDiSPK0QbKcmSjywB23uPuz+WWk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PDIuK8XUy+k/pz1Yo6bjfCsIGJax61feiTXb77kidj8/BleKEXxSpGvou835mK3jT
-	 Nyg8bkhQE4gcl7Pf9yN2y+3QP7ZNLcaOhRZPUSk7ghhmmn/bzmLhPby/NKMFXcbJIt
-	 WmZaM3YMJbCOlmhh+jEDQVHurI0/TGT/+geJEoQEw79kdI6loJh9n7e4R4uD25ewfe
-	 Yr5P7TlOJ1SENUs8G5ccap7DT0wJC4rpIh4bSlTX9RZ5adUkTh5fBH+ENnXAciiaFP
-	 PierN5SNeY6A7fYKurTu+H+DlBo/VY/mqaT5GpkBy0KGjH4/YqTR1BDRMOW73J5D9d
-	 gDpFl4OgR6Srg==
-Message-ID: <10a0efab-83a8-4168-993a-c4482a568c96@kernel.org>
-Date: Mon, 14 Oct 2024 20:08:15 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/2] dt-bindings: mtd: davinci: convert to yaml
-To: Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20241008-ondie-v5-0-041ca4ccc5ee@gmail.com>
- <20241008-ondie-v5-2-041ca4ccc5ee@gmail.com>
- <4u5iv24enpz46funfvbo2aggx6yiqxy7beaa3ldt5ai5wf65kl@bnlm4eyuwkui>
- <Zw0Ixx9Qu9tgGXGP@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+	Tue, 15 Oct 2024 03:41:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LJCCJ6aO4i+FqjRXInxLpq+j+iN9jS1I9BOWH9/2u5+5gQX5MyNThVISiKQixsZIZNsQW3cFMcCXyasaSkeRQ5mBav8+O/7AKQcAqmp3q1jRD+MgbPwKI1WfEgJAafXQOcTn/ZcvoPE98eXyKZQjFQIoDwM8j/vjK5glsyHgctOzjR16Qxb116PBXmk2miWSvolS3oZlS1E8+aw2XoSj/+CyUf1OxjDMnzXs6Ietxh57WhYAsEefXBXrvJ+KCuP16zmJqRRLLSurYbJeGm/Mx1l4eKQrOsRKiq3HivPWoCZ3fDZgcprGq9Yr21YiDnwvDlRVi2Y3rqBIeCh1W/OSvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PSYgzcsaNeDuDEP1weKvvuI2xpcPS5d22x8epljC4kw=;
+ b=Hxi8WA8fyxxlMX86CfN6CWhOHpOlh7rJPXzDPg/2G6w/NGwfaLPdddUYjb8I4xnxfokifq1g70jc5Is0tIK5/wdXsLzfbPNOkZOOOHhcmDonsdrhFJTFztlrNYRDSYbJiC2s0KdcUohhD4fnanJ/ViNgG6sOrFBXq+oy+tEly64yx36ZoKsJ1w/iJZfbd3CrmwdEpjTFsTQG+5GYUuZPL/tNddU5EGjU3Cf1+sGwlDaxSmVhVXqJ7I0NpSpeQgpBKWr3dvHqc+65Dzw+8DlQNf2ilrALl7CHjUeubQr61Y+FUO7Gd+nBAA6Nc5fThrp+GmIS6BY/5lN53qrb5BQRlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PSYgzcsaNeDuDEP1weKvvuI2xpcPS5d22x8epljC4kw=;
+ b=AHnhSXDsvT2XNoYsYIJiAXPVUdE8Z54WJZkX+949BQuGfuuI2HWwIKKj+DhF6XJtFugYYGcCsLRliyYGpSJFWzoUS+AIdf2PRkTSg0hTXAZquV+EHBxhObapWtWgDnpl9oHQoYn4RcgLbs244DNywdvRgjzmtqN81kuFIJjZi1LHLzjTwLFWgzwZmMTp8fHJ+Trt8hFs82TvKkgZA4Ki3slIQ1ViFpDfTg2Cq/sQZPAZtvV5/GlYBN+JjxUazzIZ2ub08dCKwEFIRl/yYtivYCSXQ5GSYCzrPpJwQTtBimEtMVCzk1Q3sgUA5/ItO8jj7sNFFA53JwciDoXIpCXNMg==
+Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:159::11)
+ by SYBP282MB3624.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1a0::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.17; Tue, 15 Oct
+ 2024 03:41:24 +0000
+Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::f65e:52a:9bfb:525f]) by MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::f65e:52a:9bfb:525f%5]) with mapi id 15.20.8069.016; Tue, 15 Oct 2024
+ 03:41:24 +0000
+From: Ryder Wang <rydercoding@hotmail.com>
+To: Chenyuan Yang <chenyuan0y@gmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+CC: "richard@nod.at" <richard@nod.at>, "miquel.raynal@bootlin.com"
+	<miquel.raynal@bootlin.com>, Zhihao Cheng <chengzhihao1@huawei.com>,
+	"vigneshr@ti.com" <vigneshr@ti.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "syzkaller@googlegroups.com"
+	<syzkaller@googlegroups.com>, Zijie Zhao <zzjas98@gmail.com>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"rafael@kernel.org" <rafael@kernel.org>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>
+Subject: Re: [Linux Kernel Bug] memory leak in ubi_attach
+Thread-Topic: [Linux Kernel Bug] memory leak in ubi_attach
+Thread-Index: AQHaTa/69LFeKWppOEeGLUZjajwXzbDm1VmAgAAAfgCAAhT1AIAAIIYAgAesOQCBkaVnAIAGbErw
+Date: Tue, 15 Oct 2024 03:41:24 +0000
+Message-ID: <MEYP282MB31641A7FD666B1EA23C1C22FBF452@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+References: <CALGdzuo8_EXr4aUAw6X9S+yzMPi25Y82netPLWsd+3n-Ov9Pnw@mail.gmail.com>
+ <10779b09-3413-6374-b4a1-1efd8821c5f2@huawei.com>
+ <CALGdzuryBbCqGAhox9ZWaQHD5dSQNApfGmCP+rYZ7O4MCRH+rw@mail.gmail.com>
+ <7138a98c-1562-3059-07b6-4d918bec9d1a@huawei.com>
+ <CALGdzuokUpWhUk7uvWcDT2tXRRMk07dmKGS-rFANOE6ZwZZW8w@mail.gmail.com>
+ <0171b6cc-95ee-3538-913b-65a391a446b3@huawei.com>
+ <CALGdzuoWvy5WvpttC1pab309kZ9cUyfT5O7JB8VjsqwU2HD0Xg@mail.gmail.com>
+In-Reply-To: <CALGdzuoWvy5WvpttC1pab309kZ9cUyfT5O7JB8VjsqwU2HD0Xg@mail.gmail.com>
+Accept-Language: en-US, zh-CN
 Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <Zw0Ixx9Qu9tgGXGP@gmail.com>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MEYP282MB3164:EE_|SYBP282MB3624:EE_
+x-ms-office365-filtering-correlation-id: b6e0b925-70de-4284-5c8c-08dceccb3e5c
+x-microsoft-antispam: BCL:0;ARA:14566002|8060799006|461199028|15030799003|8062599003|19110799003|7092599003|15080799006|4302099013|3412199025|440099028|102099032|10035399004|56899033|1602099012;
+x-microsoft-antispam-message-info: 5tzyGdYtB8jfCUz3hZZ2FyejgQvrxzp33zy1KUBjUdWzgDrk/Y5GcZStuBR+pnolrbzbGMGkAGovQ/N2WnnwQTNNfdAlMhPTiQo/AyyfN75c3qm7WUWJmevVmxZ47Jk3mU3Z/M3eXIcEKfCB9/Xk/ZxLC2xlevCJzteoW0DNkqxSjBWAOGL3gvxl1DXVeyxPme7bCrNbE5n7V7mtPkXyRenqq7JqEEZGdWUQNUjkRsy7wzE+S/9plHwY9b5z4Oy4E3oMY1ASP3CwbEGGoc1pBvrMlUZ8ryYtwKid4Liciwi52CSRqYET9PxPXmqcMZnhwYkJCHAc422ACX39LWo3FZgBLCenzUPjrYx11glTJtL9t2jxBYaNCOifK80YwtPd+zjKQ7xLII89WHmtJ5taAMoa3xHheVxwIgPJZ6DIJRaLLvKVmA+GsCLY5rBEoYvhwQoQ5jBumA9cVmhc7n5G1Yv9zwrhm0CmRLzl4ApxRIUFCxFTdnDWj7Sj9ttdde4Baj6N5K4rnNg+OAdeAjsk6ELBGAyWGbKOhKmsX3tXwVtbXm78o6r8h/8+ava31NK0VY79NBbHGBKNboO2m7ws7HRXIl89rp5murB10g7a0KNiI3+7tiXOOzOVC73zJFXKY7AnKCFbTETinZpKKwjuTZ3OM5WcXbQjw/gQ/4LV2iqt88i6QpF10d3jQIh1TLXoOmA7IPcm4L+PT2T1gTLvG2k9N/WEc06IjwtZcPp+VVhBJWQlZtlTrhM5y8659rHClRWmrmYJfeeru4ZKWOQYewaGR6ixBrx713VeJIAmUEqhC8+Rb/oiO4yN328XFAnT5iw5JcnaUEsNmbQd5KpnBG+q4KFds7rAgHhXezcHm0WAnmpPPwCEvs0Lnq3ArkOztcnER30Ui8kjIKHNbTGj9w==
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RDU3SWkwQ1hXWE9lQU16YlArajJpdmJMTkR5dmxvQzBKd21IV1gwTEhPWmJC?=
+ =?utf-8?B?R1RtRXlqdnNZcFRvTitBbHZMRStRWFQxUHk4TFlteEwwQlhJMU1XeitIRWdk?=
+ =?utf-8?B?UCs1elBLTzVodzlucERHT00rYS91UjBtSHVLVW12eDBQSUlBVjJqd2ZRKzN4?=
+ =?utf-8?B?cE1FbGhLd2hwTnpoWjJVM2pZKzJmdWtkcXdvZGFCTUhHNmt2VDczK3dUZzNk?=
+ =?utf-8?B?UGpSY3F1N3lmMGFaNGlXZXArS0dod0N3Y2xnd080VEluOVJDQ1Q5NFVEUXp0?=
+ =?utf-8?B?aEtWY0RqTmhHSm9kU1VYZXFDODJ4UGVJbFVhMmdncWxSb21rZ0tRblJlWUta?=
+ =?utf-8?B?SnFYQkZKQnNzaGU1dS9kN2w3alBJYS8xMEJxWFhDZHVqbisxY0lYZHNNVzBC?=
+ =?utf-8?B?TTE3eE1rbWJSYStnLzZNMFdTcUhxWjdDRTBrdTFtQUc5c0FuT3ZxZUlpbnBx?=
+ =?utf-8?B?Tk9aYVVlM1Y2c3N6VEM1K3QvVldHQ3dNZVdUTHZjUWhFUlgzSnRLUWIrNjNP?=
+ =?utf-8?B?dERxQUd3encyVjVwVzErWlYzWE4wRjhTMUlnc2RlZSswb3hHWmhFa3NTZW4x?=
+ =?utf-8?B?dXk2Y0NGaGNHNnNkZ2hYZkJaOUY5dXFoN2dBNU1zeSszS1FVYlNRNzJuZERv?=
+ =?utf-8?B?NHVjcmJqQUNXRXdsWVRZN2M3YlZBdmNkRHlQQzJBZE5VdW1pb2Urb1hLWGZi?=
+ =?utf-8?B?dmRUUmxNcCt0OFZqTWVsWDBRN1hpMlI4Mk5TOXVHZGh2a0x2cndCSmxHZktj?=
+ =?utf-8?B?S0xMUnlIcG9SR2g3bEdQQnd1NnErN3BFM21XREt1VW5nT1p2R1NVUHpKYUxG?=
+ =?utf-8?B?Y2NSK2J6OWRuMEJ1NjBzUGdNM2JmdjdkS21YcGxZSW8rZ2E1bExzK01TcDk2?=
+ =?utf-8?B?K0hodkthVnRTZ2ZNVXM3S2RUQTMrUmtPN21NLzFtQjE4WHNPSUsvY2NzY2ww?=
+ =?utf-8?B?UG5ZWnBWQmpPS0ZZL29LUWo1cGtiSWFZbnhpLzVhdVAydnlRV2YxNEp5eGdq?=
+ =?utf-8?B?YURBYkpxUGJCb21Vb1lubWp4cTltZ25QZ3ZMVEx0ZXFXZkY2TEhlb1dvMEtR?=
+ =?utf-8?B?aGJjcEcxVzgvZGFmMld4NVFjY1B0OXlrOGxZaVYrM0NWQ0JqcE5xaTZmMzR4?=
+ =?utf-8?B?L3BSS2h2eXJzQmh4RDdGak16clpNY0VrTUs4bGxELzBOeFZGdmNpNk9telQ3?=
+ =?utf-8?B?bWZVcnJ6MXBzWWNTQXMzcncxYjBtK2M5bWUwNWF4YmZZNnhVbTFsbDV2Ylht?=
+ =?utf-8?B?ckpyazhhcjNwYSsxQUNxR3RMdlJSSGR0VSswbGQ3UHhJbjRxSWp5WitEeGM0?=
+ =?utf-8?B?K21keHl4WjNqaTFKeVdmZnB6UHBjNFZET0hwak9iT2hVMFFtcVByRnQzcm1i?=
+ =?utf-8?B?cUlyeXZQeDJPWmQ3ZFJHQlFwbXBjL3VlTG1aL1VldUZVUmFmUlBTbGZiRHV2?=
+ =?utf-8?B?YTQ5bjlmMGI4NURPa1pPRWxJc3VUajFNUm1wZ1ZyczN1RUdEbEttSmhPR3ph?=
+ =?utf-8?B?aW5IajhZVnZiU1JWSjZLMS81QnBYbXkvVFlrbWhUeGxwR3pKNSsrV3dDNTli?=
+ =?utf-8?B?UUlCdE9Kb1pPZGUvQmJIL3hyb3NicW5UMHAzM0Riekl2UkpQUEhkRSt6UDBY?=
+ =?utf-8?Q?b090VpE5XCc5u83rncw0L2hRhQ0saXXJdnaWEswlq3xY=3D?=
+MIME-Version: 1.0
+X-OriginatorOrg: sct-15-20-7719-20-msonline-outlook-722bc.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6e0b925-70de-4284-5c8c-08dceccb3e5c
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2024 03:41:24.8273
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBP282MB3624
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241014_110823_463606_EC9CD91F 
-X-CRM114-Status: GOOD (  34.78  )
+X-CRM114-CacheID: sfid-20241014_204149_293926_8B8EAF14 
+X-CRM114-Status: GOOD (  32.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,262 +140,106 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 14/10/2024 14:04, Marcus Folkesson wrote:
-> 
-> Krzysztof,
-> 
-> I'm sorry for all these iterations, it wouldn't have been necessary if I had
-> done my homework better. I'm not too familiar with writing these and I do
-> often find the descriptions unclear and not obvious.
-> Anyway, thank you for your patience, reviews and help.
-> 
-> 
-> On Tue, Oct 08, 2024 at 03:28:33PM +0200, Krzysztof Kozlowski wrote:
->> On Tue, Oct 08, 2024 at 09:02:45AM +0200, Marcus Folkesson wrote:
->>> Convert the bindings to yaml format.
->>>
->>> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
->>> ---
->>>  .../devicetree/bindings/mtd/davinci-nand.txt       |  94 -----------------
->>>  .../devicetree/bindings/mtd/ti,davinci-nand.yaml   | 115 +++++++++++++++++++++
->>>  2 files changed, 115 insertions(+), 94 deletions(-)
->>>
->>
->>
->>> diff --git a/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml b/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml
->>> new file mode 100644
->>> index 0000000000000000000000000000000000000000..1263616593532e8483d556b4242b004a16620ddf
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/mtd/ti,davinci-nand.yaml
->>> @@ -0,0 +1,115 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/mtd/ti,davinci-nand.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: TI DaVinci NAND controller
->>> +
->>> +maintainers:
->>> +  - Marcus Folkesson <marcus.folkesson@gmail.com>
->>> +
->>> +allOf:
->>> +  - $ref: nand-controller.yaml#
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - ti,davinci-nand
->>> +      - ti,keystone-nand
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>
->> This was different in original binding and commit msg does not explain
->> changes.  Be sure any change from pure conversion is explained in the
->> commit msg.
-> 
-> Hm. Another misinterpretation from my side.
-> Should I use items instead? E.g.
-> 
->   reg:
->     items:
->       - description: |
->         Contains 2 offset/length values:
->         - offset and length for the access window.
->         - offset and length for accessing the AEMIF
->         control registers.
-
-You need to list two items, so two times "- description:"
-(and drop redundant parts like "offset and length" because this cannot
-be anything else)
-
-and this should be pointed out by testing, so open the example and try
-to explain why it is so different than expected.
-
-
-Unless, it is supposed to be one item... but how do I know? You are
-looking at the device and its driver, not  me.
-
-> 
->>
->>> +
->>> +  partitions:
->>> +    $ref: /schemas/mtd/partitions/partitions.yaml
->>> +
->>> +  ti,davinci-chipselect:
->>> +    description:
->>> +      Number of chipselect. Indicate on the davinci_nand driver which
->>> +      chipselect is used for accessing the nand.
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [0, 1, 2, 3]
->>> +
->>> +  ti,davinci-mask-ale:
->>> +    description:
->>> +      Mask for ALE. Needed for executing address phase. These offset will be
->>> +      added to the base address for the chip select space the NAND Flash
->>> +      device is connected to.
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    default: 0x08
->>> +
->>> +  ti,davinci-mask-cle:
->>> +    description:
->>> +      Mask for CLE. Needed for executing command phase. These offset will be
->>> +      added to the base address for the chip select space the NAND Flash device
->>> +      is connected to.
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    default: 0x10
->>> +
->>> +  ti,davinci-mask-chipsel:
->>> +    description:
->>> +      Mask for chipselect address. Needed to mask addresses for given
->>> +      chipselect.
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    default: 0
->>> +
->>> +  ti,davinci-ecc-bits:
->>> +    description: Used ECC bits.
->>> +    enum: [1, 4]
->>> +
->>> +  ti,davinci-ecc-mode:
->>> +    description: Operation mode of the NAND ECC mode.
->>> +    $ref: /schemas/types.yaml#/definitions/string
->>> +    enum: [none, soft, hw, on-die]
->>> +    deprecated: true
->>> +
->>> +  ti,davinci-nand-buswidth:
->>> +    description: Bus width to the NAND chip
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [8, 16]
->>> +    default: 8
->>> +    deprecated: true
->>> +
->>> +  ti,davinci-nand-use-bbt:
->>> +    type: boolean
->>> +    description:
->>> +      Use flash based bad block table support. OOB identifier is saved in OOB
->>> +      area.
->>> +    deprecated: true
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - ti,davinci-chipselect
->>> +
->>> +unevaluatedProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    nand-controller@2000000 {
->>> +      compatible = "ti,davinci-nand";
->>> +      #address-cells = <1>;
->>> +      #size-cells = <0>;
->>
->> I did not notice it last time.... but what is this? How could you have
->> no sizes?
->>
->>> +
->>> +      reg = <0 0x02000000>;
->>
->> This is odd. Address is not 0... and size should be 0.
->>
->> I don't get how it even works. For sure it is not correct.
-> 
-> Outch. It slipped through when I was laborating.
-> 
-> This was the example I wanted to get working:
-> 
-> 
-> ```
-> examples:
->   - |
->     nand-controller@2000000,0 {
->       compatible = "ti,davinci-nand";
->       #address-cells = <1>;
->       #size-cells = <1>;
->       reg = <0 0x02000000 0x02000000
->       1 0x00000000 0x00008000>;
-
-But that's not what is being used. Open the DTS and look how it is
-encoded there. You have unnecessary 64-bit addressing here, plus you
-still have technically one item, not two. Maybe existing DTS uses it,
-then it's fine, but then take DTS (and correct it if it does not define
-proper tuples/items).
-
-> 
->       ti,davinci-chipselect = <1>;
->       ti,davinci-mask-ale = <0>;
->       ti,davinci-mask-cle = <0>;
->       ti,davinci-mask-chipsel = <0>;
-> 
->       ti,davinci-nand-buswidth = <16>;
->       ti,davinci-ecc-mode = "hw";
->       ti,davinci-ecc-bits = <4>;
->       ti,davinci-nand-use-bbt;
-> 
->       partitions {
->         compatible = "fixed-partitions";
->         #address-cells = <1>;
->         #size-cells = <1>;
-> 
->         partition@0 {
->           label = "u-boot env";
->           reg = <0 0x020000>;
->         };
->       };
->     };
-> ```
-> 
-> 
-> But I'm getting the following errors:
-> 
-> ```
-> .../ti,davinci-nand.example.dtb: nand-controller@2000000,0: #size-cells: 0 was expected
->         from schema $id: http://devicetree.org/schemas/mtd/ti,davinci-nand.yaml#
-> .../ti,davinci-nand.example.dtb: nand-controller@2000000,0: reg: [[0, 33554432], [33554432, 1], [0, 32768]] is too long
->         from schema $id: http://devicetree.org/schemas/mtd/ti,davinci-nand.yaml#
-> .../ti,davinci-nand.example.dtb: nand-controller@2000000,0: Unevaluated properties are not allowed ('reg' was unexpected)
->         from schema $id: http://devicetree.org/schemas/mtd/ti,davinci-nand.yaml#
-> ```
-
-Well, obviously. That's the point of the schema. The example part is
-embedded in node with some address/size cells, which might fit your case
-or might not.
-
-> 
-> The resuling 'ti,davinci-nand.example.dts' contains the following:
-> 
-> ```
->     example-0 {
->         #address-cells = <1>;
->         #size-cells = <1>;
-> 
->         nand-controller@2000000,0 {
->           compatible = "ti,davinci-nand";
->           #address-cells = <1>;
->           #size-cells = <1>;
->           reg = <0 0x02000000 0x02000000
->           1 0x00000000 0x00008000>;
-> ```
->         
-> 
-> How do I set #address-cells in example-0 to 2?
-> I guess that is the problem.
-
-
-
-You just set it... There are dozens/hundreds of schemas doing it, what
-is exactly a problem here?
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Qnkgd2Fsa2luZyB0aHJvdWdoIGFsbCB0aGUgcmVsYXRlZCBjb2RlLCBpdCBsb29rcyB0byBiZSBh
+IGJ1ZyBpbiBzbHViLmMgcmF0aGVyIHRoYW4ga29iamVjdCBvciB1Ymlmcy4KCnN5c2ZzX3NsYWJf
+YWRkKCkgY2FsbHMga29iamVjdF9pbml0X2FuZF9hZGQoKToKICAtIElmIGtvYmplY3RfaW5pdF9h
+bmRfYWRkIGZhaWxzLCBzeXNmc19zbGFiX2FkZCgpICB3aWxsIGdvIHRvICpvdXQqLiBCdXQgdW5s
+dWNraWx5LCAqb3V0KiBjb2RlIGJsb2NrIHdpbGwgbmV2ZXIgcmVsZWFzZSBzLT5rb2JqLCBidXQg
+aXQgaXMgZXhwZWN0ZWQgdG8gZG8gc28uCgpCZWxvdyBpcyB0aGUgZnVuY3Rpb24gY29tbWVudCBv
+ZiBrb2JqZWN0X2luaXRfYW5kX2FkZCgpOgoqIElmIHRoaXMgZnVuY3Rpb24gcmV0dXJucyBhbiBl
+cnJvciwga29iamVjdF9wdXQoKSBtdXN0IGJlIGNhbGxlZCB0byBwcm9wZXJseSBjbGVhbiB1cCB0
+aGUgbWVtb3J5IGFzc29jaWF0ZWQgd2l0aCB0aGUgb2JqZWN0LiAqCj09PiBJdCBtZWFucyBzeXNm
+c19zbGFiX2FkZCgpIHNoYWxsIHJlbGVhc2UgdGhlIHJlbGF0ZWQga29iamVjdC4KCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KRnJvbTogbGludXgtbXRkIDxsaW51eC1t
+dGQtYm91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnPiBvbiBiZWhhbGYgb2YgQ2hlbnl1YW4gWWFu
+ZyA8Y2hlbnl1YW4weUBnbWFpbC5jb20+ClNlbnQ6IEZyaWRheSwgT2N0b2JlciAxMSwgMjAyNCAw
+OToyMwpUbzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IHJpY2hhcmRAbm9kLmF0
+OyBtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tOyBaaGloYW8gQ2hlbmc7IHZpZ25lc2hyQHRpLmNv
+bTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgc3l6a2FsbGVyQGdvb2dsZWdyb3Vwcy5j
+b207IFppamllIFpoYW87IGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOyByYWZhZWxAa2VybmVs
+Lm9yZzsgYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZwpTdWJqZWN0OiBSZTogW0xpbnV4IEtlcm5l
+bCBCdWddIG1lbW9yeSBsZWFrIGluIHViaV9hdHRhY2gKCkRlYXIgTGludXggS2VybmVsIERldmVs
+b3BlcnMgZm9yIFVCSSBhbmQgS2VybmVsIE9iamVjdCwKCkkgYW0gd3JpdGluZyB0byBpbnF1aXJl
+IGlmIHRoZXJlIGhhdmUgYmVlbiBhbnkgdXBkYXRlcyByZWdhcmRpbmcgdGhpcwptZW1vcnkgbGVh
+ayBpc3N1ZS4gVGhpcyBpc3N1ZSByZW1haW5zIHJlcHJvZHVjaWJsZSBvbiB0aGUgbGF0ZXN0Ckxp
+bnV4IHZlcnNpb24gKDYuMTItcmMyLCBjb21taXQKOGNmMGI5MzkxOWUxM2QxZThkNDQ2NmViNDA4
+MGE0YzRkOWQ2NmQ3YikuCgpUaGFuayB5b3UgZm9yIHlvdXIgYXR0ZW50aW9uIHRvIHRoaXMgbWF0
+dGVyLgoKQmVzdCwKQ2hlbnl1YW4KCk9uIE1vbiwgSmFuIDI5LCAyMDI0IGF0IDU6NTHigK9BTSAn
+WmhpaGFvIENoZW5nJyB2aWEgc3l6a2FsbGVyCjxzeXprYWxsZXJAZ29vZ2xlZ3JvdXBzLmNvbT4g
+d3JvdGU6Cj4KPiDlnKggMjAyNC8xLzI0IDIyOjQxLCBDaGVueXVhbiBZYW5nIOWGmemBkzoKPiA+
+IEhpIFpoaWhhbywKPiA+Cj4gPiBUaGFua3MgdmVyeSBtdWNoIGZvciB5b3VyIHJlcGx5IGFuZCBm
+dXJ0aGVyIGV4cGxvcmF0aW9uIG9mIHRoaXMgY3Jhc2ghCj4gPgo+ID4gSSBoYXZlIGF0dGFjaGVk
+IHRoZSBjb25maWcgdG8gcmVwcm9kdWNlIHRoaXMgbWVtb3J5IGxlYWsuIEZvciB0aGUKPiA+IGNv
+bW1hbmQgbGluZSwgeW91IGNhbiB1c2UgcWVtdSB0byBib290IHRoZSBrZXJuZWwgKFlvdSBuZWVk
+IHRvIGJ1aWxkCj4gPiB0aGUgYnVsbHNleWUtaW1hZ2UgZmlyc3QpLgo+ID4gYGBgCj4gPiBta2Rp
+ciAtcCBsb2dzCj4gPiBxZW11LXN5c3RlbS14ODZfNjQgXAo+ID4gLW0gMkcgXAo+ID4gLXNtcCAy
+IFwKPiA+IC1rZXJuZWwgbGludXgvYXJjaC94ODYvYm9vdC9iekltYWdlIFwKPiA+IC1hcHBlbmQg
+ImNvbnNvbGU9dHR5UzAgcm9vdD0vZGV2L3NkYSBlYXJseXByaW50az1zZXJpYWwgbmV0LmlmbmFt
+ZXM9MCIgXAo+ID4gLWRyaXZlIGZpbGU9aW1hZ2UvYnVsbHNleWUtcWVtdS5pbWcsZm9ybWF0PXJh
+dyBcCj4gPiAtbmV0IHVzZXIsaG9zdD0xMC4wLjIuMTAsaG9zdGZ3ZD10Y3A6MTI3LjAuMC4xOjEw
+MDIxLToyMiBcCj4gPiAtbmV0IG5pYyxtb2RlbD1lMTAwMCBcCj4gPiAtZW5hYmxlLWt2bSBcCj4g
+PiAtbm9ncmFwaGljIFwKPiA+IC1waWRmaWxlIHZtLnBpZCBcCj4gPiBgYGAKPiA+Cj4gPiBJbiBx
+ZW11LCB5b3UgY2FuIHJ1bgo+ID4gYGBgCj4gPiBnY2MgLXB0aHJlYWQgcmVwcm8uYyAtbyBleGUK
+PiA+IC4vZXhlCj4gPiBgYGAKPiA+IHRvIHJlcHJvZHVjZSB0aGUgbWVtb3J5IGxlYWsuCj4gPgo+
+Cj4gVGhlIGJhZCBuZXdzIGlzIHRoYXQgSSBjYW4ndCByZXByb2R1Y2UgdGhlIHByb2JsZW0gd2l0
+aCB5b3VyIGtlcm5lbAo+IGNvbmZpZy4gVGhlIGdvb2QgbmV3cyBpcyB0aGF0IEkgc2VlbSB0byBm
+aW5kIHRoZSBjYXVzZSBvZiB0aGUgcHJvYmxlbSBieQo+IGNvZGUgcmV2aWV3aW5nOgo+IGFsbG9j
+X2FpIC0+IGttZW1fY2FjaGVfY3JlYXRlIC0+IGttZW1fY2FjaGVfY3JlYXRlX3VzZXJjb3B5Ogo+
+ICAgcyA9IF9fa21lbV9jYWNoZV9hbGlhcwo+ICAgIHMgPSBmaW5kX21lcmdlYWJsZSAvLyBjYW5u
+b3QgZmluZCBtZXJnZWFibGUga21lbV9jYWNoZSwgcyA9IE5VTEwKPiAgIGNyZWF0ZV9jYWNoZQo+
+ICAgIHMgPSBrbWVtX2NhY2hlX3phbGxvYwo+ICAgIF9fa21lbV9jYWNoZV9jcmVhdGUocykKPiAg
+ICAgc3lzZnNfc2xhYl9hZGQKPiAgICAgIGtvYmplY3RfaW5pdF9hbmRfYWRkKCZzLT5rb2JqKQo+
+ICAgICAgIGtvYmplY3RfaW5pdChrb2JqKSAvLyBrb2JqLT5rcmVmID0gMQo+ICAgICAgIGtvYmpl
+Y3RfYWRkX3ZhcmcKPiAgICAgICAga29iamVjdF9zZXRfbmFtZV92YXJncwo+ICAgICAgICAga3Zh
+c3ByaW50Zl9jb25zdAo+ICAgICAgICAgIGtzdHJkdXBfY29uc3QKPiAgICAgICAgICAga3N0cmR1
+cAo+ICAgICAgICAgICAga21hbGxvY190cmFja19jYWxsZXIgLy8gYWxsb2NhdGVkIG1lbW9yeQo+
+ICAgICAgICAga29iai0+bmFtZSA9IHMgIC8vIGFzc2lnbiBhbGxvY2F0ZWQgbWVtb3J5IHRvIGtv
+YmotPm5hbWUKPiAgICAgICAga29iamVjdF9hZGRfaW50ZXJuYWwKPiAgICAgICAgIGNyZWF0ZV9k
+aXIgLy8gZmFpbGVkIGNhdXNlZCBieSBFTk9NRU0KPiAgICAgICAgIC8vIGtvYmotPm5hbWUgd29u
+J3QgYmUgcmVsZWFzZWQgZXZlbiAncycgaXMgcmVsZWFzZWQKPgo+IFlvdSBjYW4gcmVwcm9kdWNl
+IGl0IGJ5IGV4ZWN1dGluZyB1YmlhdHRhY2ggLW0wIHdpdGggcmVwcm9kdWNlLmRpZmYgYXBwbGll
+ZDoKPiBbcm9vdEBsb2NhbGhvc3Qgfl0jIGNhdCAvc3lzL2tlcm5lbC9kZWJ1Zy9rbWVtbGVhawo+
+IHVucmVmZXJlbmNlZCBvYmplY3QgMHhmZmZmODg4MTNiNDg4MDgwIChzaXplIDE2KToKPiAgICBj
+b21tICJ1YmlhdHRhY2giLCBwaWQgOTUzNSwgamlmZmllcyA0Mjk0OTQzMDk1Cj4gICAgaGV4IGR1
+bXAgKGZpcnN0IDE2IGJ5dGVzKToKPiAgICAgIDNhIDMwIDMwIDMwIDMwIDMwIDM1IDM2IDAwIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwICA6MDAwMDA1Ni4uLi4uLi4uCj4gICAgYmFja3RyYWNlIChjcmMg
+OGExMTdhYjkpOgo+ICAgICAgWzxmZmZmZmZmZjgxNWY5MWMyPl0gX19rbWFsbG9jX25vZGVfdHJh
+Y2tfY2FsbGVyKzB4MzIyLzB4NDIwCj4gICAgICBbPGZmZmZmZmZmODE1NzVlZmM+XSBrc3RyZHVw
+KzB4M2MvMHg3MAo+ICAgICAgWzxmZmZmZmZmZjgxNTc1ZjhmPl0ga3N0cmR1cF9jb25zdCsweDVm
+LzB4NzAKPiAgICAgIFs8ZmZmZmZmZmY4MjUzNTQyNj5dIGt2YXNwcmludGZfY29uc3QrMHhjNi8w
+eDExMAo+ICAgICAgWzxmZmZmZmZmZjg0Yjg4Y2IwPl0ga29iamVjdF9zZXRfbmFtZV92YXJncysw
+eDQwLzB4ZDAKPiAgICAgIFs8ZmZmZmZmZmY4NGI4OTExYj5dIGtvYmplY3RfaW5pdF9hbmRfYWRk
+KzB4OGIvMHhmMAo+ICAgICAgWzxmZmZmZmZmZjgxNWZhYmE5Pl0gc3lzZnNfc2xhYl9hZGQrMHgx
+MTkvMHgxZTAKPiAgICAgIFs8ZmZmZmZmZmY4MTVmYzJkYz5dIF9fa21lbV9jYWNoZV9jcmVhdGUr
+MHg0MWMvMHg1OTAKPiAgICAgIFs8ZmZmZmZmZmY4MTU4NjAxOT5dIGttZW1fY2FjaGVfY3JlYXRl
+X3VzZXJjb3B5KzB4MTY5LzB4MzAwCj4gICAgICBbPGZmZmZmZmZmODE1ODYxYzE+XSBrbWVtX2Nh
+Y2hlX2NyZWF0ZSsweDExLzB4MjAKPiAgICAgIFs8ZmZmZmZmZmY4MmVjODg5Nj5dIHViaV9hdHRh
+Y2grMHhjNi8weDFkZTAKPiAgICAgIFs8ZmZmZmZmZmY4MmViNzdhMz5dIHViaV9hdHRhY2hfbXRk
+X2RldisweDhhMy8weDExMjAKPiAgICAgIFs8ZmZmZmZmZmY4MmViOGJmYz5dIGN0cmxfY2Rldl9p
+b2N0bCsweDFmYy8weDI3MAo+ICAgICAgWzxmZmZmZmZmZjgxNmNhMzEyPl0gX194NjRfc3lzX2lv
+Y3RsKzB4ZjIvMHgxNDAKPiAgICAgIFs8ZmZmZmZmZmY4NGJjMzk3MD5dIGRvX3N5c2NhbGxfNjQr
+MHg1MC8weDE0MAo+ICAgICAgWzxmZmZmZmZmZjg0YzAwMDhiPl0gZW50cnlfU1lTQ0FMTF82NF9h
+ZnRlcl9od2ZyYW1lKzB4NjMvMHg2Ygo+Cj4gVGhlcmUgYXJlIHR3byB3YXlzIHRvIGZpeCBpdDoK
+PiAxLiBSZWxlYXNlIGtvYmotPm5hbWUgZGlyZWN0bHkgaW4gdGhlIGVycm9yIGJhcmFuY2ggb2YK
+PiBrb2JqZWN0X2FkZF9pbnRlcm5hbCgpIGFmdGVyIGNhbGxpbmcgY3JlYXRlX2RpcigpLgo+IDIu
+IFB1dCBrb2JqJ3MgcmVmY250IGluIHRoZSBlcnJvciBiYXJhbmNoIG9mIGtvYmplY3RfYWRkX2lu
+dGVybmFsKCkKPiBhZnRlciBjYWxsaW5nIGNyZWF0ZV9kaXIoKS4KPiBJJ20gbm90IHN1cmUgd2hp
+Y2ggb25lIGlzIGJldHRlciBvciB3aGV0aGVyIHRoZXJlIGFyZSBvdGhlciBmaXggbWV0aG9kcywK
+PiBtYXliZSB5b3UgY2FuIHNlbmQgYW4gZW1haWwgaW4ga29iaiByZWxhdGVkIG1haWxpaW5nIGxp
+c3RzIHRvIGNvbmZpcm0KPiB0aGUgcHJvYmxlbS4KPgo+IC0tCj4gWW91IHJlY2VpdmVkIHRoaXMg
+bWVzc2FnZSBiZWNhdXNlIHlvdSBhcmUgc3Vic2NyaWJlZCB0byB0aGUgR29vZ2xlIEdyb3VwcyAi
+c3l6a2FsbGVyIiBncm91cC4KPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgZ3JvdXAgYW5kIHN0
+b3AgcmVjZWl2aW5nIGVtYWlscyBmcm9tIGl0LCBzZW5kIGFuIGVtYWlsIHRvIHN5emthbGxlcit1
+bnN1YnNjcmliZUBnb29nbGVncm91cHMuY29tLgo+IFRvIHZpZXcgdGhpcyBkaXNjdXNzaW9uIG9u
+IHRoZSB3ZWIgdmlzaXQgaHR0cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9kL21zZ2lkL3N5emthbGxl
+ci8wMTcxYjZjYy05NWVlLTM1MzgtOTEzYi02NWEzOTFhNDQ2YjMlNDBodWF3ZWkuY29tLgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
