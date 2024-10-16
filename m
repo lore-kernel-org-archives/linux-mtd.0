@@ -4,66 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD763D2A523
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2024 14:39:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFA4CD2A533
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2024 16:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JM58mkVwKguUEFy/cRJcd9GJ7PtmGcBnFw4ZX3ZF1nQ=; b=TXPLkxjp6McZZo
-	1aWMU4iCBrzv0RCfkzrHOYkRtkxRjf/ed6l9i3/s4UADeq4FJfnv03ZiteUqfDTaUI0p3D/5u9Urs
-	ko4Y3zj7h6GBchBnMFcOBHIYSwfsWIoGi7LDBMughYkbzYNJqbMXSpfDB4dwo0RfgufewlpsfAN9R
-	Gouh2wsoF3fsfRnsIYOaMfuKOXjdjRrHav2n8+DS7TfvrYaA41csjswSykOqNihfEFi3V7zYwXcaC
-	DXI1eU+QagZtkIQIKVhf66fgcL0xIG6xrQTLNy4NWKXeOU5+bBTe4Qh6Yp6D9eFU+0JSSsh9mMoQa
-	EdxETCAjR0frDTA+Gzug==;
+	List-Owner; bh=rXx4gZuOECmjGZEdZOTAkqlZwkfExWmCJG6u7dNUtHE=; b=jN4YS0nFH5ZBhq
+	RJ8WT1fHthgPOSuZqxm4Tcvso1OrU1/17kxQkhd8hHk6FK7XsToLRQB9Q/dZ3ilS4oZSNdWfdK84K
+	oVodQG2TgJ/EPw7A5VlZwMstLMBE/jVx2HmlQJpJLY04bzb1gRy11geZtYlUyKWe5C8zHVXOlVHf2
+	MUY3/U5SJguG2UrkZZ/Ih2rHZLJzyD6qePfWdViQZfylfFkhbOSghxps+dXcDV67LeKvU6Svx/JAD
+	dVkjIwRoyfFT6FaJ8hAjC+YGVDTL+lTzpdtbVvyUxxDl0khKv94Jz5BezpIuUx0sDyAgQtWiAV6xn
+	pxjaQZMrsDc8mnz24/8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t15Bg-0000000C6LE-3Giv;
-	Wed, 16 Oct 2024 14:39:44 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t15A5-0000000C635-1zUz;
-	Wed, 16 Oct 2024 14:38:07 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9160BFEC;
-	Wed, 16 Oct 2024 07:38:34 -0700 (PDT)
-Received: from [10.1.28.177] (XHFQ2J9959.cambridge.arm.com [10.1.28.177])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 77FA33F71E;
-	Wed, 16 Oct 2024 07:37:59 -0700 (PDT)
-Message-ID: <18546e4a-81c7-41f4-b07f-2e6501a936b8@arm.com>
-Date: Wed, 16 Oct 2024 15:37:57 +0100
+	id 1t176P-0000000CSJN-2rz1;
+	Wed, 16 Oct 2024 16:42:25 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1t16vW-0000000CQda-3v7T
+	for linux-mtd@lists.infradead.org;
+	Wed, 16 Oct 2024 16:31:12 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id F1EC05C5ED8;
+	Wed, 16 Oct 2024 16:31:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A09B4C4CECE;
+	Wed, 16 Oct 2024 16:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729096270;
+	bh=P2tQFea5riMs1qnv001mgNQqNTCOHkt73obbZJ49unc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Yn4aGNrq/szKu5EVu0D+IyfetymvHjidLRIO+Ti54llUzIVuKGIhXMXeelRbBXlIw
+	 El8FHJt5HWDXyaWvo/EPcJKLZJATI9seeB9aSLsGcr+LmwQib33RNAHKPsrX1d1DYx
+	 Dg0gZZ1o6KloEM2Lgzr3yepBMQx1kUUXH+Uu1yD80k3TUDcwa66qZzqgvrdOlpin+B
+	 qp8jmYrVmiPPU5IFAos0p0u9jFRrMlZsS+CCmZbxUq9FVTKoDGxgLoR21+gFdWFpMZ
+	 7x5ZSDHNCa6e+okA//fQzP8cGEjxTL5cZaEWhpcy6cYK3Hw/eBwXsTODvAt06wL39S
+	 OaRnRaaUtz7jA==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  tkuw584924@gmail.com,
+  linux-mtd@lists.infradead.org,  tudor.ambarus@linaro.org,
+  mwalle@kernel.org,  richard@nod.at,  vigneshr@ti.com,
+  Bacem.Daassi@infineon.com,  Takahiro Kuwano
+ <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Use nor->addr_nbytes in octal
+ DTR mode in RD_ANY_REG_OP
+In-Reply-To: <20241016143953.32b66612@xps-13> (Miquel Raynal's message of
+	"Wed, 16 Oct 2024 14:39:53 +0200")
+References: <20241016000837.17951-1-Takahiro.Kuwano@infineon.com>
+	<mafs0y12ocl7n.fsf@kernel.org> <20241016143953.32b66612@xps-13>
+Date: Wed, 16 Oct 2024 18:31:07 +0200
+Message-ID: <mafs0ed4g80xg.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 06/57] mm: Remove PAGE_SIZE compile-time constant
- assumption
-Content-Language: en-GB
-To: Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Ard Biesheuvel <ardb@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Christoph Lameter <cl@linux.com>, David Hildenbrand <david@redhat.com>,
- David Rientjes <rientjes@google.com>, Greg Marsden
- <greg.marsden@oracle.com>, Ivan Ivanov <ivan.ivanov@suse.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Kalesh Singh <kaleshsingh@google.com>, Marc Zyngier <maz@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Matthias Brugger <mbrugger@suse.com>,
- Michal Hocko <mhocko@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Miroslav Benes <mbenes@suse.cz>, Pekka Enberg <penberg@kernel.org>,
- Richard Weinberger <richard@nod.at>, Shakeel Butt <shakeel.butt@linux.dev>,
- Vignesh Raghavendra <vigneshr@ti.com>, Vlastimil Babka <vbabka@suse.cz>,
- Will Deacon <will@kernel.org>, Matthew Wilcox <willy@infradead.org>
-Cc: cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org
-References: <20241014105514.3206191-1-ryan.roberts@arm.com>
- <20241014105912.3207374-1-ryan.roberts@arm.com>
- <20241014105912.3207374-6-ryan.roberts@arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20241014105912.3207374-6-ryan.roberts@arm.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241016_073805_659310_268059C8 
-X-CRM114-Status: GOOD (  36.94  )
+X-CRM114-CacheID: sfid-20241016_093111_090323_98B952F7 
+X-CRM114-Status: GOOD (  26.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,358 +78,102 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+ Matthew Wilcox
+Hi,
 
-This was a rather tricky series to get the recipients correct for and my script
-did not realize that "supporter" was a pseudonym for "maintainer" so you were
-missed off the original post. Appologies!
+On Wed, Oct 16 2024, Miquel Raynal wrote:
 
-More context in cover letter:
-https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
+> Hi Pratyush,
+>
+> pratyush@kernel.org wrote on Wed, 16 Oct 2024 13:59:24 +0200:
+>
+>> Side note: honestly, this whole thing with params->addr_nbytes,
+>> params->addr_mode_nbytes, and nor->addr_nbytes is quite confusing. I
+>> hope to find some time to clean it up some day.
+>
+> I am currently looking into dtr for spi-nands, would you mind quickly
+> going through the approaches you think don't work well/would be better?
 
+I don't think the addr_mode_nbytes and addr_nbytes has a lot to do with
+Octal DTR. We just forgot to record the fact that internal address mode
+changes when enabling Octal DTR.
 
-On 14/10/2024 11:58, Ryan Roberts wrote:
-> To prepare for supporting boot-time page size selection, refactor code
-> to remove assumptions about PAGE_SIZE being compile-time constant. Code
-> intended to be equivalent when compile-time page size is active.
-> 
-> Refactor "struct vmap_block" to use a flexible array for used_mmap since
-> VMAP_BBMAP_BITS is not a compile time constant for the boot-time page
-> size case.
-> 
-> Update various BUILD_BUG_ON() instances to check against appropriate
-> page size limit.
-> 
-> Re-define "union swap_header" so that it's no longer exactly page-sized.
-> Instead define a flexible "magic" array with a define which tells the
-> offset to where the magic signature begins.
-> 
-> Consider page size limit in some CPP condditionals.
-> 
-> Wrap global variables that are initialized with PAGE_SIZE derived values
-> using DEFINE_GLOBAL_PAGE_SIZE_VAR() so their initialization can be
-> deferred for boot-time page size builds.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
-> 
-> ***NOTE***
-> Any confused maintainers may want to read the cover note here for context:
-> https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
-> 
->  drivers/mtd/mtdswap.c         |  4 ++--
->  include/linux/mm.h            |  2 +-
->  include/linux/mm_types_task.h |  2 +-
->  include/linux/mmzone.h        |  3 ++-
->  include/linux/slab.h          |  7 ++++---
->  include/linux/swap.h          | 17 ++++++++++++-----
->  include/linux/swapops.h       |  6 +++++-
->  mm/memcontrol.c               |  2 +-
->  mm/memory.c                   |  4 ++--
->  mm/mmap.c                     |  2 +-
->  mm/page-writeback.c           |  2 +-
->  mm/slub.c                     |  2 +-
->  mm/sparse.c                   |  2 +-
->  mm/swapfile.c                 |  2 +-
->  mm/vmalloc.c                  |  7 ++++---
->  15 files changed, 39 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-> index 680366616da24..7412a32708114 100644
-> --- a/drivers/mtd/mtdswap.c
-> +++ b/drivers/mtd/mtdswap.c
-> @@ -1062,13 +1062,13 @@ static int mtdswap_auto_header(struct mtdswap_dev *d, char *buf)
->  {
->  	union swap_header *hd = (union swap_header *)(buf);
->  
-> -	memset(buf, 0, PAGE_SIZE - 10);
-> +	memset(buf, 0, SWAP_HEADER_MAGIC);
->  
->  	hd->info.version = 1;
->  	hd->info.last_page = d->mbd_dev->size - 1;
->  	hd->info.nr_badpages = 0;
->  
-> -	memcpy(buf + PAGE_SIZE - 10, "SWAPSPACE2", 10);
-> +	memcpy(buf + SWAP_HEADER_MAGIC, "SWAPSPACE2", 10);
->  
->  	return 0;
->  }
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 09a840517c23a..49c2078354e6e 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2927,7 +2927,7 @@ static inline spinlock_t *pte_lockptr(struct mm_struct *mm, pmd_t *pmd)
->  static inline spinlock_t *ptep_lockptr(struct mm_struct *mm, pte_t *pte)
->  {
->  	BUILD_BUG_ON(IS_ENABLED(CONFIG_HIGHPTE));
-> -	BUILD_BUG_ON(MAX_PTRS_PER_PTE * sizeof(pte_t) > PAGE_SIZE);
-> +	BUILD_BUG_ON(MAX_PTRS_PER_PTE * sizeof(pte_t) > PAGE_SIZE_MAX);
->  	return ptlock_ptr(virt_to_ptdesc(pte));
->  }
->  
-> diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
-> index a2f6179b672b8..c356897d5f41c 100644
-> --- a/include/linux/mm_types_task.h
-> +++ b/include/linux/mm_types_task.h
-> @@ -37,7 +37,7 @@ struct page;
->  
->  struct page_frag {
->  	struct page *page;
-> -#if (BITS_PER_LONG > 32) || (PAGE_SIZE >= 65536)
-> +#if (BITS_PER_LONG > 32) || (PAGE_SIZE_MAX >= 65536)
->  	__u32 offset;
->  	__u32 size;
->  #else
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 1dc6248feb832..cd58034b82c81 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1744,6 +1744,7 @@ static inline bool movable_only_nodes(nodemask_t *nodes)
->   */
->  #define PA_SECTION_SHIFT	(SECTION_SIZE_BITS)
->  #define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)
-> +#define PFN_SECTION_SHIFT_MIN	(SECTION_SIZE_BITS - PAGE_SHIFT_MAX)
->  
->  #define NR_MEM_SECTIONS		(1UL << SECTIONS_SHIFT)
->  
-> @@ -1753,7 +1754,7 @@ static inline bool movable_only_nodes(nodemask_t *nodes)
->  #define SECTION_BLOCKFLAGS_BITS \
->  	((1UL << (PFN_SECTION_SHIFT - pageblock_order)) * NR_PAGEBLOCK_BITS)
->  
-> -#if (MAX_PAGE_ORDER + PAGE_SHIFT) > SECTION_SIZE_BITS
-> +#if (MAX_PAGE_ORDER + PAGE_SHIFT_MAX) > SECTION_SIZE_BITS
->  #error Allocator MAX_PAGE_ORDER exceeds SECTION_SIZE
->  #endif
->  
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index eb2bf46291576..11c6ff3a12579 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -347,7 +347,7 @@ static inline unsigned int arch_slab_minalign(void)
->   */
->  #define __assume_kmalloc_alignment __assume_aligned(ARCH_KMALLOC_MINALIGN)
->  #define __assume_slab_alignment __assume_aligned(ARCH_SLAB_MINALIGN)
-> -#define __assume_page_alignment __assume_aligned(PAGE_SIZE)
-> +#define __assume_page_alignment __assume_aligned(PAGE_SIZE_MIN)
->  
->  /*
->   * Kmalloc array related definitions
-> @@ -358,6 +358,7 @@ static inline unsigned int arch_slab_minalign(void)
->   * (PAGE_SIZE*2).  Larger requests are passed to the page allocator.
->   */
->  #define KMALLOC_SHIFT_HIGH	(PAGE_SHIFT + 1)
-> +#define KMALLOC_SHIFT_HIGH_MAX	(PAGE_SHIFT_MAX + 1)
->  #define KMALLOC_SHIFT_MAX	(MAX_PAGE_ORDER + PAGE_SHIFT)
->  #ifndef KMALLOC_SHIFT_LOW
->  #define KMALLOC_SHIFT_LOW	3
-> @@ -426,7 +427,7 @@ enum kmalloc_cache_type {
->  	NR_KMALLOC_TYPES
->  };
->  
-> -typedef struct kmem_cache * kmem_buckets[KMALLOC_SHIFT_HIGH + 1];
-> +typedef struct kmem_cache * kmem_buckets[KMALLOC_SHIFT_HIGH_MAX + 1];
->  
->  extern kmem_buckets kmalloc_caches[NR_KMALLOC_TYPES];
->  
-> @@ -524,7 +525,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
->  	/* Will never be reached. Needed because the compiler may complain */
->  	return -1;
->  }
-> -static_assert(PAGE_SHIFT <= 20);
-> +static_assert(PAGE_SHIFT_MAX <= 20);
->  #define kmalloc_index(s) __kmalloc_index(s, true)
->  
->  #include <linux/alloc_tag.h>
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index ba7ea95d1c57a..e85df0332979f 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -132,10 +132,17 @@ static inline int current_is_kswapd(void)
->   * bootbits...
->   */
->  union swap_header {
-> -	struct {
-> -		char reserved[PAGE_SIZE - 10];
-> -		char magic[10];			/* SWAP-SPACE or SWAPSPACE2 */
-> -	} magic;
-> +	/*
-> +	 * Exists conceptually, but since PAGE_SIZE may not be known at compile
-> +	 * time, we must access through pointer arithmetic at run time.
-> +	 *
-> +	 * struct {
-> +	 * 	char reserved[PAGE_SIZE - 10];
-> +	 * 	char magic[10];			   SWAP-SPACE or SWAPSPACE2
-> +	 * } magic;
-> +	 */
-> +#define SWAP_HEADER_MAGIC	(PAGE_SIZE - 10)
-> +	char magic[1];
->  	struct {
->  		char		bootbits[1024];	/* Space for disklabel etc. */
->  		__u32		version;
-> @@ -201,7 +208,7 @@ struct swap_extent {
->   * Max bad pages in the new format..
->   */
->  #define MAX_SWAP_BADPAGES \
-> -	((offsetof(union swap_header, magic.magic) - \
-> +	((SWAP_HEADER_MAGIC - \
->  	  offsetof(union swap_header, info.badpages)) / sizeof(int))
->  
->  enum {
-> diff --git a/include/linux/swapops.h b/include/linux/swapops.h
-> index cb468e418ea11..890fe6a3e6702 100644
-> --- a/include/linux/swapops.h
-> +++ b/include/linux/swapops.h
-> @@ -34,10 +34,14 @@
->   */
->  #ifdef MAX_PHYSMEM_BITS
->  #define SWP_PFN_BITS		(MAX_PHYSMEM_BITS - PAGE_SHIFT)
-> +#define SWP_PFN_BITS_MAX	(MAX_PHYSMEM_BITS - PAGE_SHIFT_MIN)
->  #else  /* MAX_PHYSMEM_BITS */
->  #define SWP_PFN_BITS		min_t(int, \
->  				      sizeof(phys_addr_t) * 8 - PAGE_SHIFT, \
->  				      SWP_TYPE_SHIFT)
-> +#define SWP_PFN_BITS_MAX	min_t(int, \
-> +				      sizeof(phys_addr_t) * 8 - PAGE_SHIFT_MIN, \
-> +				      SWP_TYPE_SHIFT)
->  #endif	/* MAX_PHYSMEM_BITS */
->  #define SWP_PFN_MASK		(BIT(SWP_PFN_BITS) - 1)
->  
-> @@ -519,7 +523,7 @@ static inline struct folio *pfn_swap_entry_folio(swp_entry_t entry)
->  static inline bool is_pfn_swap_entry(swp_entry_t entry)
->  {
->  	/* Make sure the swp offset can always store the needed fields */
-> -	BUILD_BUG_ON(SWP_TYPE_SHIFT < SWP_PFN_BITS);
-> +	BUILD_BUG_ON(SWP_TYPE_SHIFT < SWP_PFN_BITS_MAX);
->  
->  	return is_migration_entry(entry) || is_device_private_entry(entry) ||
->  	       is_device_exclusive_entry(entry) || is_hwpoison_entry(entry);
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c5f9195f76c65..4b17bec566fbd 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4881,7 +4881,7 @@ static int __init mem_cgroup_init(void)
->  	 * to work fine, we should make sure that the overfill threshold can't
->  	 * exceed S32_MAX / PAGE_SIZE.
->  	 */
-> -	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S32_MAX / PAGE_SIZE);
-> +	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S32_MAX / PAGE_SIZE_MIN);
->  
->  	cpuhp_setup_state_nocalls(CPUHP_MM_MEMCQ_DEAD, "mm/memctrl:dead", NULL,
->  				  memcg_hotplug_cpu_dead);
-> diff --git a/mm/memory.c b/mm/memory.c
-> index ebfc9768f801a..14b5ef6870486 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4949,8 +4949,8 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
->  	return ret;
->  }
->  
-> -static unsigned long fault_around_pages __read_mostly =
-> -	65536 >> PAGE_SHIFT;
-> +static __DEFINE_GLOBAL_PAGE_SIZE_VAR(unsigned long, fault_around_pages,
-> +				     __read_mostly, 65536 >> PAGE_SHIFT);
->  
->  #ifdef CONFIG_DEBUG_FS
->  static int fault_around_bytes_get(void *data, u64 *val)
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index d0dfc85b209bb..d9642aba07ac4 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2279,7 +2279,7 @@ int expand_downwards(struct vm_area_struct *vma, unsigned long address)
->  }
->  
->  /* enforced gap between the expanding stack and other mappings. */
-> -unsigned long stack_guard_gap = 256UL<<PAGE_SHIFT;
-> +DEFINE_GLOBAL_PAGE_SIZE_VAR(unsigned long, stack_guard_gap, 256UL<<PAGE_SHIFT);
->  
->  static int __init cmdline_parse_stack_guard_gap(char *p)
->  {
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 4430ac68e4c41..8fc9ac50749bd 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2292,7 +2292,7 @@ static int page_writeback_cpu_online(unsigned int cpu)
->  #ifdef CONFIG_SYSCTL
->  
->  /* this is needed for the proc_doulongvec_minmax of vm_dirty_bytes */
-> -static const unsigned long dirty_bytes_min = 2 * PAGE_SIZE;
-> +static DEFINE_GLOBAL_PAGE_SIZE_VAR_CONST(unsigned long, dirty_bytes_min, 2 * PAGE_SIZE);
->  
->  static struct ctl_table vm_page_writeback_sysctls[] = {
->  	{
-> diff --git a/mm/slub.c b/mm/slub.c
-> index a77f354f83251..82f6e98cf25bb 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -5001,7 +5001,7 @@ init_kmem_cache_node(struct kmem_cache_node *n)
->  static inline int alloc_kmem_cache_cpus(struct kmem_cache *s)
->  {
->  	BUILD_BUG_ON(PERCPU_DYNAMIC_EARLY_SIZE <
-> -			NR_KMALLOC_TYPES * KMALLOC_SHIFT_HIGH *
-> +			NR_KMALLOC_TYPES * KMALLOC_SHIFT_HIGH_MAX *
->  			sizeof(struct kmem_cache_cpu));
->  
->  	/*
-> diff --git a/mm/sparse.c b/mm/sparse.c
-> index dc38539f85603..2491425930c4d 100644
-> --- a/mm/sparse.c
-> +++ b/mm/sparse.c
-> @@ -277,7 +277,7 @@ static unsigned long sparse_encode_mem_map(struct page *mem_map, unsigned long p
->  {
->  	unsigned long coded_mem_map =
->  		(unsigned long)(mem_map - (section_nr_to_pfn(pnum)));
-> -	BUILD_BUG_ON(SECTION_MAP_LAST_BIT > PFN_SECTION_SHIFT);
-> +	BUILD_BUG_ON(SECTION_MAP_LAST_BIT > PFN_SECTION_SHIFT_MIN);
->  	BUG_ON(coded_mem_map & ~SECTION_MAP_MASK);
->  	return coded_mem_map;
->  }
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 38bdc439651ac..6311a1cc7e46b 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -2931,7 +2931,7 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
->  	unsigned long swapfilepages;
->  	unsigned long last_page;
->  
-> -	if (memcmp("SWAPSPACE2", swap_header->magic.magic, 10)) {
-> +	if (memcmp("SWAPSPACE2", &swap_header->magic[SWAP_HEADER_MAGIC], 10)) {
->  		pr_err("Unable to find swap-space signature\n");
->  		return 0;
->  	}
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index a0df1e2e155a8..b4fbba204603c 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2497,12 +2497,12 @@ struct vmap_block {
->  	spinlock_t lock;
->  	struct vmap_area *va;
->  	unsigned long free, dirty;
-> -	DECLARE_BITMAP(used_map, VMAP_BBMAP_BITS);
->  	unsigned long dirty_min, dirty_max; /*< dirty range */
->  	struct list_head free_list;
->  	struct rcu_head rcu_head;
->  	struct list_head purge;
->  	unsigned int cpu;
-> +	unsigned long used_map[];
->  };
->  
->  /* Queue of free and dirty vmap blocks, for allocation and flushing purposes */
-> @@ -2600,11 +2600,12 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
->  	unsigned long vb_idx;
->  	int node, err;
->  	void *vaddr;
-> +	size_t size;
->  
->  	node = numa_node_id();
->  
-> -	vb = kmalloc_node(sizeof(struct vmap_block),
-> -			gfp_mask & GFP_RECLAIM_MASK, node);
-> +	size = struct_size(vb, used_map, BITS_TO_LONGS(VMAP_BBMAP_BITS));
-> +	vb = kmalloc_node(size, gfp_mask & GFP_RECLAIM_MASK, node);
->  	if (unlikely(!vb))
->  		return ERR_PTR(-ENOMEM);
->  
+It has been some time since I worked on it so I have forgotten some
+details. I remember working with Apurva Nandan on doing Octal DTR on SPI
+NANDs. He sent out 3 revisions of a series [0], but IIRC we didn't quite
+nail down the design and see it through. Below is a random collection of
+ideas and things I can remember.
 
+For one, I think I didn't do the Octal DTR support in SPI NOR as well as
+I could have. It is kind of shoehorned into the core and not very neat.
+For example, we create an op in functions like
+spi_nor_spimem_read_data() or spi_nor_spimem_write_data() that is
+partially filled in with the opcode, address width, etc. and then
+spi_nor_spimem_setup_op() fills in the rest of the data, adjusting
+things on the fly.
+
+	if (spi_nor_protocol_is_dtr(proto)) {
+		/*
+		 * SPIMEM supports mixed DTR modes, but right now we can only
+		 * have all phases either DTR or STR. IOW, SPIMEM can have
+		 * something like 4S-4D-4D, but SPI NOR can't. So, set all 4
+		 * phases to either DTR or STR.
+		 */
+		op->cmd.dtr = true;
+		op->addr.dtr = true;
+		op->dummy.dtr = true;
+		op->data.dtr = true;
+
+		/* 2 bytes per clock cycle in DTR mode. */
+		op->dummy.nbytes *= 2;
+
+		ext = spi_nor_get_cmd_ext(nor, op);
+		op->cmd.opcode = (op->cmd.opcode << 8) | ext;
+		op->cmd.nbytes = 2;
+	}
+
+This is hacky. It allowed me to implement this without a major refactor
+of the core, but it makes things harder to understand and debug, and
+harder to extend in the future to support more modes.
+
+I think SPI NAND already does the right thing by having
+spinand_op_variants. I think you should use those for Octal DTR ops as
+well, and that is what Apurva's patch series already does.
+
+Another problem is how we enable the modes. We select each of read, page
+program, and erase operations individually in spi_nor_setup(). But if
+you select an 8D-8D-8D read, you _have_ select page program and erases
+in the same mode. While it does happen in practice, there is nothing in
+the code that makes sure of it. Tying the op selection to an overall
+mode would help scale to supporting other modes like 8S-8S-8D or
+4S-4S-4D. I see SPI NAND doing something similar via
+spinand_match_and_init() and spinand_init_quad_enable(). Similarly, once
+you have an overall mode you want to enable, instead of doing
+spinand_init_quad_enable() and spinand_init_octal_enable(), etc. in
+series and seeing which one accepts the command, you can just call the
+enable function for that mode. Apurva's patches don't do that so you'd
+have to refactor them.
+
+One problem we didn't really solve in SPI NOR yet is mode detection.
+When a flash comes up, how do you detect if it is 1S-1S-1S or 8D-8D-8D
+or something else? One idea was to use the Read SFDP command in all
+modes and see which one comes up with correct signature. For now, SPI
+NOR assumes the flash is in 1S-1S-1S mode. IIUC there is nothing similar
+to SFDP for NANDs, so you might have to have that information in device
+tree, or detect some other way.
+
+Overall, I think Apurva's patches are a good starting point that you
+should use and fix/improve parts you don't like. We already spent some
+time figuring out the design with Boris, so they should be in decent
+shape already.
+
+Hope the brain dump helps, and gives you what you were looking for. Let
+me know if you would like to know something else.
+
+[0] https://lore.kernel.org/linux-mtd/20220101074250.14443-1-a-nandan@ti.com/
+
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
