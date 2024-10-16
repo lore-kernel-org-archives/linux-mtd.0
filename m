@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2138CD1AD4F
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2024 12:01:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA992D1AD50
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2024 12:41:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5GM5KOcMt+MhccF55ELiSmRl3wukoaZh/t1u0R8Kvx8=; b=tZnhJvG+21aoO5
-	1PhKjclOsqRDD0gGii6XDqgnd/MmXuKxVsLTJyaBydImUow76IM/8aBZeY7XKryY43wucSrjdxsxY
-	GWkamRf+nG981xrT314cEEWgc2QhFf6r2gUBnXvkl3NYJzhuxzKLCVPUHrgXbomC8S2cq9W3qMOYM
-	mq+fqoGaUrsWEcFvKgfuepnhd2YWi549iSFqjhZJoFrkbrLi/6eaxzSTAf3GGk0NBuLe1kIIwjvOL
-	06sUTc6O6NOseskplehY2GZ+1VLpM2UnxxlfChibR9G+UZmCOOlMeCsA4tksMeQhZjx7EgEFUdMqG
-	PK71p2E5Ce4Yo2TO7xsg==;
+	List-Owner; bh=lFj4nrPT6NJQf/qyMCFzFSyEDljbWGMwd4ow8D7CoKk=; b=aWj0L3PSaPA5Zr
+	bOk/4GWULp5mOkqTaY1KQVOiqpnSZG3c28gGTKLM89Rezwi7Ea+xuehstSIdi0Imj8e2ySREBGv/f
+	YPLtWFC4aBms8UZRcdHufPhgheXAXI6+DHpfnAuwqhpCyQssr6/bzCQbO4NJLP9Lh0WtFXRnWlpIg
+	spluNr92jelS4tTo+QAah3DluX3jXp88HxKK5qI8KZHAOAz+39QSHoli72q1C/ImmYALG6bqH09MH
+	6NWTkVVXftJ5XKYPjf79aYU/5JPLP/Fe6ckVcFU+5H/ieWqpzdM7UdE8z77UCje7OoISyf81gHxlf
+	HtGq1GqXTT6n+DmCDO6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t12iJ-0000000BfwG-1NVO;
-	Wed, 16 Oct 2024 12:01:15 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1t13Kt-0000000BmER-1Vjr;
+	Wed, 16 Oct 2024 12:41:07 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t12iG-0000000Bfto-0CyN
+	id 1t13Jn-0000000BmAj-3cgF
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Oct 2024 12:01:14 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E19181C000E;
-	Wed, 16 Oct 2024 12:01:08 +0000 (UTC)
+	Wed, 16 Oct 2024 12:40:01 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6AE5C20008;
+	Wed, 16 Oct 2024 12:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1729080069;
+	t=1729082396;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8krP1VYwxBLXUznJQJXAi4O+kQ5+/JlOE4x1ZUEOX5Q=;
-	b=GiHCUWumFVs/jO1YMHSG7rA16gQjs6pbBAiCcd4D2BnG68yciTjh4sr3vI4BbD9wRFLIXZ
-	ywhlWbF+mgFQwXe8c1SIWmQNHhsrjT6sGcDurP5aun4v/ivL8cPFVvZyLItnCUQ7XewBtN
-	c5gqEnGoTBWStvdi7oiwdUi14SRLV2TW6k4UiWI+VFbCQB27jBALEMzf4IiFcy4PnGkkXV
-	GDfhB1mXcf04qYRnZXW28xbwqJU7EJy070PC6YGk4VKniMql09sBrx5GtrSLl51wXLInSc
-	w/j8sZE2guTIgfjVs1SL84HeOdp94leXtZtxTRIu5hSOOecqNhrnL139Ra9YRA==
-Date: Wed, 16 Oct 2024 14:01:08 +0200
+	bh=mwCLWg+RLvZ1CazX84WO0lBv6IP5vanGGdAexVe8kqo=;
+	b=GM2OhyQdXgsftdngqhuGrez6uwrzyhaZms8F5aCPa5OJwVR9/S25ywkmzf+tn3I65oT7o9
+	sVLqW7NnDOufPyhotCEJYJqp3/r79lYrQx3Hj0KZ8DxXfHouQScFq1s58UrC4EilYvzsF1
+	o7TADG43n+zI2Nineu/XKmQEHNYvsYZEMHUrp51mjPkFXeWTxISQ1M3I3yzQpArpgw279C
+	2BrNyeSuq7NtODH1BZqawR123HiN4EfC+eIREKFQ/abYB1iXM5xgWD0boSUtHqb1rTkAuY
+	Va5UPhQvbMsofpBYXYzt4j1MdftHQAKTcYtuEtg+bu8vKxr5nnnn24+HmzRTVw==
+Date: Wed, 16 Oct 2024 14:39:53 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Keguang Zhang <keguang.zhang@gmail.com>
-Cc: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-media@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v10 1/2] dt-bindings: mtd: Add Loongson-1 NAND
- Controller
-Message-ID: <20241016140108.00273712@xps-13>
-In-Reply-To: <CAJhJPsW+cRY13in41NpTrEB4VP7jYLFdgrt8+9EJSwgkvXZR=g@mail.gmail.com>
-References: <20241002-loongson1-nand-v10-0-17162eff80e2@gmail.com>
-	<20241002-loongson1-nand-v10-1-17162eff80e2@gmail.com>
-	<20241007161027.386e7409@xps-13>
-	<CAJhJPsW+cRY13in41NpTrEB4VP7jYLFdgrt8+9EJSwgkvXZR=g@mail.gmail.com>
+To: Pratyush Yadav <pratyush@kernel.org>
+Cc: tkuw584924@gmail.com, linux-mtd@lists.infradead.org,
+ tudor.ambarus@linaro.org, mwalle@kernel.org, richard@nod.at,
+ vigneshr@ti.com, Bacem.Daassi@infineon.com, Takahiro Kuwano
+ <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Use nor->addr_nbytes in octal
+ DTR mode in RD_ANY_REG_OP
+Message-ID: <20241016143953.32b66612@xps-13>
+In-Reply-To: <mafs0y12ocl7n.fsf@kernel.org>
+References: <20241016000837.17951-1-Takahiro.Kuwano@infineon.com>
+	<mafs0y12ocl7n.fsf@kernel.org>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241016_050112_255986_83422FF0 
-X-CRM114-Status: UNSURE (   9.16  )
+X-CRM114-CacheID: sfid-20241016_054000_071796_1DF4ADE9 
+X-CRM114-Status: UNSURE (   5.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,17 +78,13 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgS2VndWFuZywKCmtlZ3VhbmcuemhhbmdAZ21haWwuY29tIHdyb3RlIG9uIFdlZCwgMTYgT2N0
-IDIwMjQgMTY6MDY6MDkgKzA4MDA6Cgo+IE9uIE1vbiwgT2N0IDcsIDIwMjQgYXQgMTA6MTDigK9Q
-TSBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPiA+Cj4g
-PiBIaSBLZWd1YW5nLAo+ID4gIAo+ID4gPiArcGF0dGVyblByb3BlcnRpZXM6Cj4gPiA+ICsgICJe
-bmFuZEBbMC0zXSQiOgo+ID4gPiArICAgIHR5cGU6IG9iamVjdAo+ID4gPiArICAgICRyZWY6IHJh
-dy1uYW5kLWNoaXAueWFtbAo+ID4gPiArCj4gPiA+ICsgICAgcmVxdWlyZWQ6Cj4gPiA+ICsgICAg
-ICAtIG5hbmQtdXNlLXNvZnQtZWNjLWVuZ2luZQo+ID4gPiArICAgICAgLSBuYW5kLWVjYy1hbGdv
-ICAKPiA+Cj4gPiBBY3R1YWxseSBJIHRvbGQgeW91IGEgbWlzdGFrZS4gVGhlIG5vLWVjYy1lbmdp
-bmUgY2FzZSBzaG91bGQgcmVtYWluCj4gPiB2YWxpZCwgc28gd2UgY2Fubm90IHJlcXVpcmUgdGhl
-c2UgcHJvcGVydGllcyBpbiB0aGUgYmluZGluZ3MuCj4gPiAgCj4gVGhlbiwgcmVtb3ZlIHRoaXMg
-c2VjdGlvbiwgcmlnaHQ/CgpZZXMsIHBsZWFzZS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+SGkgUHJhdHl1c2gsCgpwcmF0eXVzaEBrZXJuZWwub3JnIHdyb3RlIG9uIFdlZCwgMTYgT2N0IDIw
+MjQgMTM6NTk6MjQgKzAyMDA6Cgo+IFNpZGUgbm90ZTogaG9uZXN0bHksIHRoaXMgd2hvbGUgdGhp
+bmcgd2l0aCBwYXJhbXMtPmFkZHJfbmJ5dGVzLAo+IHBhcmFtcy0+YWRkcl9tb2RlX25ieXRlcywg
+YW5kIG5vci0+YWRkcl9uYnl0ZXMgaXMgcXVpdGUgY29uZnVzaW5nLiBJCj4gaG9wZSB0byBmaW5k
+IHNvbWUgdGltZSB0byBjbGVhbiBpdCB1cCBzb21lIGRheS4KCkkgYW0gY3VycmVudGx5IGxvb2tp
+bmcgaW50byBkdHIgZm9yIHNwaS1uYW5kcywgd291bGQgeW91IG1pbmQgcXVpY2tseQpnb2luZyB0
+aHJvdWdoIHRoZSBhcHByb2FjaGVzIHlvdSB0aGluayBkb24ndCB3b3JrIHdlbGwvd291bGQgYmUg
+YmV0dGVyPwoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
