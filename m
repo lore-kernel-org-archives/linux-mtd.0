@@ -4,76 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 950B5D1AD2E
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2024 09:01:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ED32D1AD4B
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2024 11:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4qzJEAlUnSdTQRTbxFjxFIvEHVkA/3pg/WnNbm/VzgQ=; b=Rc1XFnvBtV4Md+
-	6r7C4yuY5nxmkZ3T8BLTtVgZXLUuYMOtrignyVU12cEnlv3563cpHSVG2kdlS6WPljLTxRDSeUEkz
-	WuR+r/lGuYs5Sln3okJgDkmlU58YHOypwbGHiPF8siPQ7K4L9cof3gfFN/SSQeA6hYjx865WaeMOI
-	E7WXBMGOxvZqA1Ylu8sNOv4e+BAagRuqAzUU3slvEkhMjehnNtzLXRpNgDoEkoaSv3xjs/wkys1yu
-	YrvNmmpotqpcZMXE7k2tj/Ib23xtGd2zRB6vbXt2uxvIrcfZS9IV+7i+fyAENdn1fRZT4z+mn1UQw
-	mp/D2IumMDE2W/7Yr4ow==;
+	List-Owner; bh=OOTcuTlZclriYPtXAvNe3GSLWHCuLOI4TxPEkyWb2H8=; b=O+Xv6HEg034k7V
+	bikUI6lYi304ypj5VKws96X4wg02ZV7NbRnghfoxMnhJ1f/JU02iuMmVxYEhlZCbM1Yu8Wv/TQhll
+	eXAy+8URcopxlMQ8Fp7u/qWgcdAU6YT2W0cOxYp1lMnZN3GPYuP4Y9b2sGw96VaswYUa2HLQnGpKg
+	T5qFK870kCGZKQUKnHnQmP0QWCvx8xP/Yc0YhIVjW1MJA92n9RM8uHkoT8aJ66QDttNyGroGlB0md
+	Slzoi43kTeLFh6v72b0HctZLorPXxppyrD5r85MEEjGKkVcGEhovLb+xOCNjwXQwwaUzoNS9CdzD+
+	BlxhVl92KaVmi7fyxYHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0zuJ-0000000B90O-2iFc;
-	Wed, 16 Oct 2024 09:01:27 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1t12ge-0000000BfgC-20Ay;
+	Wed, 16 Oct 2024 11:59:32 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0zrV-0000000B8UQ-1rPZ
+	id 1t12gb-0000000Bffo-0iAF
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Oct 2024 08:58:35 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C8FAE240008;
-	Wed, 16 Oct 2024 08:58:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1729069109;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x3U/ETveGyfKnjLcVyYOTm+ngXWvKY86THZrnq130qU=;
-	b=CrynI8QCFY+rV6CUfg7oqNg5Cn+axWaZvu7why2KR7lINNVmbCFmYzoaV/z7/evseoEgkG
-	CMupTxXlD0rF9cm6UkwEwGYZRoofd7GLOm9aSc5zQdX7l7EK0mIPk1p0m2slbJi/kitpY2
-	r5irEDbDgCDXsmVvpMqVen3IBSKf93tn7szEEkbY8UKTnsUxBAEmQHLnJTjzz1fpjbkPVk
-	9eOGicU+Yfa6iKRHmzRbfxJ85A8E4jvjqHOrDMeGzuFTcaAJR6SC5DoCwlopXjcilEjSXL
-	iowz7wqk8gWADsiWx5xhNSc2wthSPU3G6hjJlfOFOZEsucpUbduPKlgPlY81yg==
-Date: Wed, 16 Oct 2024 10:58:27 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Saravana Kannan
- <saravanak@google.com>, Florian Fainelli <f.fainelli@gmail.com>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Wolfram Sang
- <wsa+renesas@sang-engineering.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Lorenzo Bianconi
- <lorenzo@kernel.org>, upstream@airoha.com
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add Documentation for Airoha
- fixed-partitions
-Message-ID: <20241016105827.22a6bb45@xps-13>
-In-Reply-To: <670f6c5e.170a0220.373da5.7bb7@mx.google.com>
-References: <20240925101422.8373-3-ansuelsmth@gmail.com>
-	<20240925133003.619c40c4@xps-13>
-	<66f3f58e.5d0a0220.5d655.b48a@mx.google.com>
-	<20240925135256.32d3a0f7@xps-13>
-	<66f3fcb7.5d0a0220.3ca4c2.ba83@mx.google.com>
-	<20240930114819.609f9341@xps-13>
-	<66fa7915.050a0220.1da288.aeca@mx.google.com>
-	<20241001104225.67483dab@xps-13>
-	<66fbcee8.df0a0220.2ad0cb.4f6a@mx.google.com>
-	<20241002100006.5995fd10@xps-13>
-	<670f6c5e.170a0220.373da5.7bb7@mx.google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	Wed, 16 Oct 2024 11:59:30 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 8D755A43BEA;
+	Wed, 16 Oct 2024 11:59:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A24A7C4CEC5;
+	Wed, 16 Oct 2024 11:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729079967;
+	bh=aWHuNN8uPm/sYGzW8ozY9x2N/AdHYDy5NzkjX5EzEEQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=HSqszunxIbbNBKfebGMPxWVux0BF/YGp+9MaW8uqR9tEtCiBWkPgzh0aVc7Ub++s1
+	 kUcp5eVzA7oG/nn/5pM3aBXbi+YWHDFh52n+3VJ0mmAfDj5Qf40eB7LTE/pFn87g/x
+	 i2gzWGbf3ni5L9+JjWTruA9RVIzcuK5j2gaYeS3BFrSSAZh/wbLw2xICNAyGueJgzB
+	 8yi7JpYr+yuNuxAE8atqX9vEalHVz3wieDlvzwzvn2SYCMplS5hx4T+99Dl9eHOOAF
+	 5AxDTDJ9HI+AxqY2MpS3YgbhVL56+g0ZAqTtY/rwAOkbO7IRX1jBPIW3zrcoMxi7Rv
+	 SXDdLNSZRhP0g==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: tkuw584924@gmail.com
+Cc: linux-mtd@lists.infradead.org,  tudor.ambarus@linaro.org,
+  pratyush@kernel.org,  mwalle@kernel.org,  miquel.raynal@bootlin.com,
+  richard@nod.at,  vigneshr@ti.com,  Bacem.Daassi@infineon.com,  Takahiro
+ Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Use nor->addr_nbytes in octal
+ DTR mode in RD_ANY_REG_OP
+In-Reply-To: <20241016000837.17951-1-Takahiro.Kuwano@infineon.com> (tkuw's
+	message of "Wed, 16 Oct 2024 09:08:37 +0900")
+References: <20241016000837.17951-1-Takahiro.Kuwano@infineon.com>
+Date: Wed, 16 Oct 2024 13:59:24 +0200
+Message-ID: <mafs0y12ocl7n.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241016_015833_950491_D41D5BD8 
-X-CRM114-Status: GOOD (  60.85  )
+X-CRM114-CacheID: sfid-20241016_045929_292269_7A1799B5 
+X-CRM114-Status: GOOD (  17.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,118 +71,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0aWFuLAoKYW5zdWVsc210aEBnbWFpbC5jb20gd3JvdGUgb24gV2VkLCAxNiBPY3Qg
-MjAyNCAwOTozMzo0NiArMDIwMDoKCj4gT24gV2VkLCBPY3QgMDIsIDIwMjQgYXQgMTA6MDA6MDZB
-TSArMDIwMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IEhpIENocmlzdGlhbiwKPiA+ICAgCj4g
-PiA+ID4gPiA+ID4gT2sgcHJvYmFibHkgdGhlIGRlc2NyaXB0aW9uIGlzbid0IGNsZWFyIGVub3Vn
-aC4gVGhlIG1pc3NpbmcgaW5mbyB0aGF0Cj4gPiA+ID4gPiA+ID4gcmVxdWlyZSB0aGlzIHBhcnNl
-ciBpcyB0aGUgZmxhc2ggZW5kLgo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IEZvbGxvd2lu
-ZyB0aGUgZXhhbXBsZSB3ZSBrbm93IHRoZSBzaXplIG9mIHJvb3Rmc19kYXRhIGFuZCBzdGFydCBv
-ZmZzZXQKPiA+ID4gPiA+ID4gPiBBTkQgd2Uga25vdyB0aGUgc2l6ZSBvZiB0aGUgQVJUIHBhcnRp
-dGlvbi4KPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBUaGVyZSBtaWdodCBiZSBhIHNwYWNl
-IGluIHRoZSBtaWRkbGUgdW51c2VkIGJldHdlZW4gdGhlIHJvb3Rmc19kYXRhCj4gPiA+ID4gPiA+
-ID4gcGFydGl0aW9uIGFuZCB0aGUgYXJ0IHBhcnRpdGlvbi4gV2hhdCBpcyBkZXJpdmVkIGlzIHRo
-ZSBzdGFydGluZyBvZmZzZXQKPiA+ID4gPiA+ID4gPiBvZiB0aGUgYXJ0IHBhcnRpdGlvbiB0aGF0
-IGlzIGZsYXNoIGVuZCAtIGFydCBwYXJ0aXRpb24gc2l6ZS4KPiA+ID4gPiA+ID4gPiAod2hlcmUg
-Zmxhc2ggZW5kIGNoYW5nZSBhbmQgaXMgbm90IGFsd2F5cyB0aGUgc2FtZSBkdWUgdG8gaG93IHRo
-ZSBzcGVjaWFsCj4gPiA+ID4gPiA+ID4gYmFkIGJsb2NrIG1hbmFnYW1lbnQgdGFibGUgcmVzZXJ2
-ZWQgc3BhY2UgaXMgaGFuZGxlZCkKPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBUaGlzIGlz
-IHdoeSAweGZmZmZmZmZmLCB1c2VkIGFzIGEgZHVtbXkgb2Zmc2V0IHRvIHNpZ25hbCBpdCB3aWxs
-IGJlIHBhcnNlZCBhdAo+ID4gPiA+ID4gPiA+IHJ1bnRpbWUuIE9uIHNlY29uZCB0b3VnaHQgdGhv
-IG1heWJlIHVzaW5nIHRoaXMgZHVtbXkgb2Zmc2V0IGlzIHdyb25nIGFuZAo+ID4gPiA+ID4gPiA+
-IEkgc2hvdWxkIGp1c3QgaGF2ZSBzb21ldGhpbmcgbGlrZQo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+
-ID4gPiA+IGxlbmd0aCA9IDwweDMwMDAwMD47Cj4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4g
-SXMgaXQgY2xlYXIgbm93PyBTb3JyeSBmb3IgYW55IGNvbmZ1c2lvbi4gICAgICAKPiA+ID4gPiA+
-ID4gCj4gPiA+ID4gPiA+IEknbSBzb3JyeSBidXQgbm90IHJlYWxseS4gWW91IGtub3cgdGhlIGVu
-ZCBvZiB0aGUgcGh5c2ljYWwgZGV2aWNlIGFuZAo+ID4gPiA+ID4gPiB0aGUgc2l6ZSBvZiB0aGUg
-QVJUIHBhcnRpdGlvbiwgc28geW91IG11c3Qga25vdyBpdHMgc3RhcnQgYXMgd2VsbD8KPiA+ID4g
-PiA+ID4gICAgICAKPiA+ID4gPiA+IAo+ID4gPiA+ID4gQmVmb3JlIHRoZSBzeXN0ZW0gYm9vdCB3
-ZSBrbm93Ogo+ID4gPiA+ID4gLSBzaXplIG9mIHRoZSBBUlQgcGFydGl0aW9uCj4gPiA+ID4gPiAt
-IHJlYWwgc2l6ZSBvZiB0aGUgcGh5c2ljYWwgZGV2aWNlICg1MTJtYi4uLiAxRy4uLiA2NG1iLi4u
-KQo+ID4gPiA+ID4gCj4gPiA+ID4gPiBXaGVuIHRoZSBwaHlzaWNhbCBkZXZpY2UgaXMgcHJvYmVk
-IChuYW5kKSBhIHNwZWNpYWwgZHJpdmVyIGlzIGxvYWRlZAo+ID4gPiA+ID4gKGJlZm9yZSBtdGQg
-cGFyc2luZyBsb2dpYykgdGhhdCBjaGFuZ2UgdGhlIHBoeXNpY2FsIHNpemUgb2YgdGhlIGRldmlj
-ZQo+ID4gPiA+ID4gKG10ZC0+c2l6ZSkgYXMgYXQgdGhlIGVuZCBvZiB0aGUgbmFuZCBzb21lIHNw
-YWNlIGlzIHJlc2VydmVkIGZvciBiYWQKPiA+ID4gPiA+IGJsb2NrIG1hbmFnZW1lbnQgYW5kIG90
-aGVyIG1ldGFkYXRhIGluZm8uICAgIAo+ID4gPiA+IAo+ID4gPiA+IEhlcmUgeW91IGFyZSBleHBs
-YWluaW5nIHdoYXQgeW91IGludGVuZCBMaW51eCB0byBkbywgcmlnaHQ/IEkgd291bGQKPiA+ID4g
-PiBsaWtlIHRvIHVuZGVyc3RhbmQgd2hhdCB5b3UgYXJlIHRyeWluZyB0byBzb2x2ZS4gSSBkb250
-IHVuZGVyc3RhbmQgd2h5Cj4gPiA+ID4geW91IG5lZWQgdGhlIHNpemUgY2hhbmdlLCBJIGRvbid0
-IHVuZGVyc3RhbmQgd2h5IHlvdSBkb24ndCBrbm93IHRoZQo+ID4gPiA+IHN0YXJ0IG9mIHRoZSBB
-UlQgcGFydGl0aW9uLCBJIGRvbid0IHVuZGVyc3RhbmQgd2hhdCB0aGUgZGF0YSB5b3UgYXJlCj4g
-PiA+ID4gaGlkaW5nIGNvbnRhaW5zIGFuZCB3aG8gdXNlcyBpdCA6LSkgSSdtIHNvcnJ5LCB0aGlz
-IGlzIHRvbyB1bmNsZWFyIHlldC4gICAgCj4gPiA+IAo+ID4gPiBUb3RhbGx5IG5vdCBhIHByb2Js
-ZW0gYW5kIHRoYW5rcyBhIGxvdCBmb3IgeW91IGtlZXAgYXNraW5nIHRoZW0uLi4gTW9yZQo+ID4g
-PiB0aGFuIGhhcHB5IHRvIGNsZWFyIHRoaW5ncywgSSdtIHRyeWluZyB0byBzb2x2ZSBhIHByb2Js
-ZW0gcHJlc2VudCBvbgo+ID4gPiBBaXJvaGEgU29DIGFuZCB1cHN0cmVhbWluZyBhIGNvcnJlY3Qg
-cGFyc2VyIGZvciBpdC4KPiA+ID4gCj4gPiA+IFdoYXQgSSdtIHRyeWluZyB0byBzb2x2ZToKPiA+
-ID4gCj4gPiA+IENvcnJlY3QgYWNjZXNzIHRvIHRoaXMgcGFydGl0aW9uIGF0IHRoZSBlbmQgb2Yg
-dGhlIGZsYXNoIGluIGFuIGF1dG9tYXRlZAo+ID4gPiB3YXkuCj4gPiA+IAo+ID4gPiBUaGUgY29u
-dGVudCBvZiB0aGlzIHBhcnRpdGlvbiBpcyB0aGUgdXN1YWwgQVJUIHBhcnRpdGlvbiBmb3VuZCBv
-biBsb3RzIG9mCj4gPiA+IGVtYmVkZGVkIGRldmljZXMuIE1BQyBhZGRyZXNzLCB3aWZpIGNhbGli
-cmF0aW9uIGRhdGEsIHNlcmlhbC4gVXNhZ2UgaXMKPiA+ID4gTlZNRU0gY2VsbHMgYW5kIHVzZXJz
-cGFjZSB3aXRoIGRkIGNvbW1hbmQgdG8gZXh0cmFjdCBkYXRhIGZyb20uCj4gPiA+IAo+ID4gPiBB
-aXJvaGEgdXNlIHNvbWV0aGluZyBhbHNvIHVzZWQgYnkgc29tZSBtZWRpYXRlayBTb0MuIFRoZXkg
-Y2FsbCBpdCBCTVQKPiA+ID4gYW5kIGl0J3MgY3VycmVudGx5IHVzZWQgZG93bnN0cmVhbSBpbiBP
-cGVuV3J0IGFuZCB0aGV5IGZpcm13YXJlLiBUaGlzIGlzCj4gPiA+IGFsc28gdXNlZCBpbiB0aGUg
-Ym9vdGxvYWRlci4KPiA+ID4gCj4gPiA+IFRoZSB1c2FnZSBvZiBCTVQgaXMgYSBjdXN0b20gd2F5
-IHRvIGhhbmRsZSBiYWQgYmxvY2tzIGVudGlyZWx5IGJ5Cj4gPiA+IHNvZnR3YXJlLiBBdCB0aGUg
-ZW5kIG9mIHRoZSBmbGFzaCBzb21lIHNwYWNlIGlzIHJlc2VydmVkIHdoZXJlIGluZm8KPiA+ID4g
-YWJvdXQgYWxsIHRoZSBibG9ja3Mgb2YgdGhlIGZsYXNoIGFyZSBwdXQuIEknbSBub3QgMTAwJSBz
-dXJlIGFib3V0IHRoZQo+ID4gPiBmdW5jdGlvbmFsaXR5IG9mIHRoaXMgYnV0IGl0IGNhbiByZWxv
-Y2F0ZSBibG9jayBhbmQgZG8gbWFnaWMgdGhpbmdzIHRvCj4gPiA+IGhhbmRsZSBiYWQgYmxvY2tz
-LiBGb3IgdGhlIHNjb3BlIG9mIHRoaXMgY2hhbmdlLCB0aGUgaW1wb3J0YW50IGluZm8gaXMKPiA+
-ID4gdGhhdCBhZnRlciB0aGUgQk1UIGlzIHByb2JlZCwgdGhlIG9wZXJhdGlvbiBvZiAicmVzZXJ2
-aW5nIHNwYWNlIiBpcyBkb25lCj4gPiA+IGJ5IHJlZHVjaW5nIHRoZSBNVEQgZmxhc2ggc2l6ZS4g
-U28gZnJvbSB0aGUgTVREIHN1YnN5c3RlbSwgaXQgZG9lcyBzZWUgYQo+ID4gPiBzbWFsbGVyIGZs
-YXNoIHRoYW4gaXQgYWN0dWFsbHkgaXMuCj4gPiA+IAo+ID4gPiBUaGUgcmVzZXJ2ZWQgc3BhY2Ug
-Y2hhbmdlISBBY3Jvc3MgU29DIG9yIGV2ZW4gZGV2aWNlcyBidXQgdGhlIEJNVCBpcyBhCj4gPiA+
-IG11c3Qgd2hlcmUgaXQncyB1c2VkIGFzIGJvb3Rsb2FkZXIgbWFrZXMgdXNlIG9mIGl0IGFuZCB3
-cml0aW5nIHRvIGl0Cj4gPiA+IG1pZ2h0IGNvbmZ1c2UgdGhlIGJvb3Rsb2FkZXIgY29ycnVwdGlu
-ZyBkYXRhLiAob25lIGJsb2NrIG1pZ2h0IGJlCj4gPiA+IGZsYWdnZWQgYXMgYmFkIGFkIGRhdGEg
-bW92ZWQsIEJNVCBkcml2ZXIgdmFsaWRhdGVzIGhpcyB0YWJsZSBhbmQgZG8KPiA+ID4gb3BlcmF0
-aW9uKSAgCj4gPiAKPiA+IE9rLCBJIHRoaW5rIHRoYXQncyB3YXkgY2xlYXJlciBub3cuCj4gPiAg
-Cj4gCj4gSGkgc29ycnkgZm9yIHRoZSBkZWxheSwgdmVyeSBoYXBweSB0aGlzIGlzIGJldHRlciBu
-b3cuCj4gCj4gPiBTbyB0aGUgQk1UIGRyaXZlciBkb2VzIG5vdCBleGlzdCBpbiBtYWlubGluZSBM
-aW51eCwgYnV0IHlvdSB3b3VsZCBsaWtlCj4gPiB0byBza2lwIHRoaXMgcGFydCBvZiB0aGUgTVRE
-IGRldmljZSB0byBhdm9pZCBzbWFzaGluZyBpdC4gQW5kIGl0IGlzIGluCj4gPiB1c2UgYnkgdGhl
-IHZlbmRvciBCb290bG9hZGVyIEkgZ3Vlc3M/ICAKPiAKPiBZZXMgY29ycmVjdCwgaWRlYSBpcyB0
-byBwZXJtaXQgZWFzaWVyIGFjY2VzcyB0byB0aGUgcGFydGl0aW9uLiBJIGhvcGUKPiAoYW5kIGFz
-c3VtZSkgdGhpcyBkcml2ZXIgd2lsbCBjb21lIHVwc3RyZWFtLgo+IAo+ID4gCj4gPiBJcyBpdCBz
-b21lIGtpbmQgb2YgdGFibGUgdGhhdCBpcyB3cml0dGVuIGJ5IHRoZSBjaGlwIGl0c2VsZiBpbiBv
-cmRlciB0bwo+ID4gbWFpbnRhaW4gYSBsaXN0IG9mIGF1dG8tcmVwbGFjZW1lbnQgYmxvY2tzIGZv
-ciBiYWQgYmxvY2tzPyBDYW4gdGhlIHNpemUKPiA+IG9mIHRoaXMgdGFibGUgbW92ZSB3aXRoIHRo
-ZSB1c2Ugb2YgdGhlIGRldmljZT8gKGlmIHllcywgaXQncwo+ID4gcHJvYmxlbWF0aWMsIHdlIGRv
-bid0IHdhbnQgdG8gcmVzaXplIE1URCBwYXJ0aXRpb25zIHdpdGhvdXQgbm90aWNpbmcsCj4gPiBp
-dCB3b3VsZCBicmVhayBlZy4gVUJJKS4KPiA+ICAgCj4gCj4gTm8gY2hpcCBodyBiYWQgYmxvY2sg
-aXMgZGlzYWJsZWQgd2l0aCB0aGlzIGltcGxlbWVudGF0aW9uIGFuZCB0aGUgdGFibGUKPiBzaXpl
-IGRvZXNuJ3QgbW92ZS9jaGFuZ2Ugc28gTVREIHBhcnRpdGlvbnMgd2lsbCBzdGF5IGF0IHRoZSBz
-YW1lIG9mZnNldAo+IGFmdGVyIHRoZSBmaXJzdCBwYXJzZSBvbiBib290Lgo+IAo+ID4gSSBiZWxp
-ZXZlIHRoaXMgQk1UIGJsb2NrIGlzIGdvaW5nIGFnYWluc3QgdGhlIGJhZCBibG9jayBoYW5kbGlu
-ZyBpbgo+ID4gTGludXgsIHNvIEkgcmVhbGx5IHdvbmRlciBob3cgb25lIGNhbiB1c2UgYm90aCBt
-ZWNoYW5pc21zIGluIGEgc3lzdGVtLgo+ID4gSWYgdGhlIEJNVCBsYXllciB0YWtlcyAib25lIHJh
-bmRvbSBibG9jayIgdG8gbWFwIGEgY29ycnVwdGVkIG9uZSBvbiBpdCwKPiA+IGl0IHRvdGFsbHkg
-ZGVmZWF0cyB0aGUgY3VycmVudCBiYWQgYmxvY2sgbW9kZWwgd2UgaGF2ZSBpbiBNVEQvVUJJCj4g
-PiBhbmQgc2ltcGx5IGNhbm5vdCBiZSBzdXBwb3J0ZWQgYXQgYWxsLiBKdXN0IHNraXBwaW5nIHRo
-ZQo+ID4gY3VycmVudGx5LXVzZWQtZm9yLUJNVCBibG9ja3Mgc291bmRzIGxpa2UgYSB2ZXJ5IGJh
-ZCBpZGVhIHRoYXQgd2lsbAo+ID4gYnJlYWsgeW91ciBzeXN0ZW0sIGxhdGVyLgo+ID4gIAo+IAo+
-IFdlbGwgd2UgZGlzYWJsZSBpdCBhbmQgc2luY2UgaXQncyByZXNlcnZlZCwgZnJvbSB0aGUgc3lz
-dGVtIHNpZGUgeW91IGNhbgo+IGRvIGFsbCBraW5kIG9mIG1hZ2ljIHNpbmNlIHRoZSBzcGFjZSB1
-c2VkIGZvciB0aGUgZHJpdmVyIGlzIG5vdAo+IGF2YWlsYWJsZSB0byB0aGUgc3lzdGVtIGJ1dCBJ
-IHdpbGwgdHJ5IHRvIGdhdGhlciBtb3JlIGluZm8gYWJvdXQgdGhpcyBpbgo+IHRoZSBuZXh0IGZl
-dyBkYXlzLgoKSSB1bmRlcnN0YW5kLCBidXQgaWYgeW91IGNhbm5vdCBnZXQgcmlkIG9mIGl0LCBp
-dCBtZWFucyAic29tZW9uZSIgaXMKdXNpbmcgaXQsIHByZXN1bWFibHkgdGhlIGJvb3Rsb2FkZXIs
-IHJpZ2h0PyBIb3cgY2FuIHRoZSBib290bG9hZGVyIHVzZQp0aGlzIGZlYXR1cmU/CgpPciBtYXli
-ZSB5b3UgbmVlZCB0aGlzIHRhYmxlIHRvIHNob3cgdGhlICh2ZW5kb3IpIGJvb3Rsb2FkZXIgIm5v
-dGhpbmcKY2hhbmdlZCwgdXNlIFBFQiBub3JtYWxseSwgbm9uZSBvZiB0aGVtIGlzIGJhZCwgdGhl
-cmUgaXMgbm8gb25nb2luZwpyZW1hcHBpbmciPwoKSW4gdGhpcyBjYXNlIEkgZ3Vlc3MgdGhlIHNp
-emUgb2YgdGhlIHRhYmxlIGlzIGEgbGluZWFyIGZ1bmN0aW9uIGFnYWluc3QKdGhlIHNpemUgb2Yg
-dGhlIGNoaXAgYW5kIHRodXMgY2FuIGJlIHN0YXRpY2FsbHkgZGVyaXZlZD8KClRoYW5rcywKTWlx
-dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Wed, Oct 16 2024, tkuw584924@gmail.com wrote:
+
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>
+> In octal DTR mode, RD_ANY_REG_OP needs to use 4-byte address regardless
+> of flash's internal address mode. Use nor->addr_nbytes which is set to 4
+> during setup.
+
+If the flash is in Octal DTR mode, shouldn't addr_mode_nbytes also be 4?
+IIUC addr_mode_nbytes is supposed to track the flash's internal address
+mode. If the flash goes into Octal DTR mode then its internal address
+mode switches to 4, and we should update params->addr_mode_nbytes as
+well. We do that in spi_nor_set_4byte_addr_mode() for example.
+
+I suppose the best place to do it for Octal DTR would be
+spi_nor_set_octal_dtr().
+
+Side note: honestly, this whole thing with params->addr_nbytes,
+params->addr_mode_nbytes, and nor->addr_nbytes is quite confusing. I
+hope to find some time to clean it up some day.
+
+>
+> Fixes: eff9604390d6 ("mtd: spi-nor: spansion: add octal DTR support in RD_ANY_REG_OP")
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+>  drivers/mtd/spi-nor/spansion.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index d6c92595f6bc..5a88a6096ca8 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -106,6 +106,7 @@ static int cypress_nor_sr_ready_and_clear_reg(struct spi_nor *nor, u64 addr)
+>  	int ret;
+>  
+>  	if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
+> +		op.addr.nbytes = nor->addr_nbytes;
+>  		op.dummy.nbytes = params->rdsr_dummy;
+>  		op.data.nbytes = 2;
+>  	}
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
