@@ -4,177 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E30FFD2A52F
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Oct 2024 17:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18EA3D2F7E5
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Oct 2024 04:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:Cc:To:
-	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rg0knZI1QZhDasC51rvNvbjczaNAweiaXssjA+nC3Jw=; b=afjn8fx1KhGyG+Zx1MWEek/15J
-	fayB0KrZ/xsF6GstEK3JCyHxIXI4yWEfSZrEN/6QBj52p6IRBR9htkodSOQjHxXT+Y/Cw68J2/uka
-	k7BPQUZMx6ixlwqYKaxzPBXG7YmUPkI9xXuGxnPBHZJWbwdPDh2FqumT0U8JIlyLG0AS7ATDwOF8N
-	Q6iD+XxRiF6W3QpfIkPc9h3E0Wds2C4hI8hImP7cijAIINPsj0HQjrEH8SsLoT9Yn92YzG5cszH7P
-	TlJC8RJyXMnFrbZ+WX9uD8k5SAL6ChHpZf0l1C7Y5FuWdoqF6PhGTc2DuUcMl35de9Jtv4RfW2gtG
-	JbCxY2WA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9fD0LD2JBRQNcEQjcbyi7scqW/kL07dr6stgkzpLaAc=; b=DbEvEGSuun7XMQ
+	f0VlK20PGulcpjXF1YRPPUMxR4Y4et1AAhH1klhr1a61mBBNb7O6tq7We+e88FxQstwCBBHpgxvUp
+	muOUL3beNRs9vEAxTaDokgmYd+PvPUQRaFwrozQVpNHHa+VyZG3hEK3+urD6XwA22nhUqP7+rzpDB
+	aaMr2VnYUFkJxTPGgmBS9QzrXhyf5EIh1Hp7+KTZQr+sTZKSWbnUB0+DSxOSiPa7R/FsexIi0VbKH
+	ZqFfwq+i3LVLEwSQ4otzFmERNgjxf3C03Tt8EdRve29YrH9CbK9JjZ7SRD0wyRKZyh9uPmVk66rWO
+	ONOaILcrrtoDSc8rAL4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t17v0-0000000CYvR-0MWY;
-	Wed, 16 Oct 2024 17:34:42 +0000
-Received: from mail-am6eur05on20724.outbound.protection.outlook.com ([2a01:111:f403:2612::724] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
+	id 1t1ICI-0000000Dj5O-2ChR;
+	Thu, 17 Oct 2024 04:33:14 +0000
+Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t17tj-0000000CYfz-1SOT
+	id 1t1ICF-0000000Dj4w-31Im
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Oct 2024 17:33:25 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AlIwlL3QA/q6NzG4mJTwu65oYgemLSf7466tU4YNbPOB1lWvnm3zEJKoJxPnMi3IE4qob2Oz4+VwxEi8b8TB+H4K0qQGLShy7T4a5jFHxmO3lOiTGyxp3wT4t1FUcRQG5xy1+5teroEsc8P8FpqmYjIWM1KyfAL+gkqxGYtw2MvFusfwwa79fUdbwelNushjhaWoIMR9gdYmNHO16ntcaL2FM4buVlYLNAn5BVIViJ0quRGSm9HKuu3xoGeWA5EAnds/JLLFO0GKNy/P5G2+me4es0Z+gsCQvIUP7wVtFFGgVNQzHl3a6uzxA4uMjkt/GXwgWqyT8WLPbHP1VD8zjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KypmDt5nVWEed5RSFGvMROhOUDVAguDyPo/ccJIpXoA=;
- b=XDIFqoHzs/PJeKek9sS1VLVstHpAJqIR6ObtfdzB6NrnOvUPAq+AUlm4ZGrL8G5B9lnxdvJeolGjONfb9OmaEbXTx0m9OcBZsIHypL9y1Pkt9QetbDn5YBF7Xnfhhdz+vnN/ghvaCsy/bT1kmrj8OeIfMiSJMEPWJ9TNB5QVVk2JJzkbbtEx0zjX/b9hQFdckLYivtn0uthBTLVMoa4ZbJnAb/sNVsRx550S+HoEHaCgMa7wxcCGad3h8GxOdw78oIisPLZiO/tIltbePT29aho5CZ1nluKXTquY1lGNnRi4ONab3zieVwmB9xoRwQO6yTQ8otCaDnXsaHGfE6+YUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=genexis.eu; dmarc=pass action=none header.from=iopsys.eu;
- dkim=pass header.d=iopsys.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iopsys.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KypmDt5nVWEed5RSFGvMROhOUDVAguDyPo/ccJIpXoA=;
- b=jArNPyf3KPPVXk8N3kUiGsvpNFRJuHcn6m9X4WvegrfNF4MUdkUXeeK0HPrm/FtjUJ0KwxjTH7/V0XAayIs3x9T6I70/BBWO8eh4LVsMC43OBecFRy8Kj1tiy78FpKjwr8d4B0c2BqGhBCHJo5gb1gWd+VpS8UITO6HCuHnX5kzo99VCRXVmIEJVtTs3uEIHBTFzofrAQFkQJL53jNZ2ZaLHzEQ2Yhl8Z6CE8QM41ChWZ68l9afHfYP8AWSwWDZt9anMEks8H2k5El4p5NVy9wfhL72OEdGvV0ldD2gwqm0Kzm0CuXehxlfbcOB/mKeyjhMuYeKA/tna1DeNPsfNVQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=iopsys.eu;
-Received: from DB9PR08MB7512.eurprd08.prod.outlook.com (2603:10a6:10:303::14)
- by DU0PR08MB9486.eurprd08.prod.outlook.com (2603:10a6:10:42d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.18; Wed, 16 Oct
- 2024 17:33:13 +0000
-Received: from DB9PR08MB7512.eurprd08.prod.outlook.com
- ([fe80::fd8d:f047:ac4f:6d6]) by DB9PR08MB7512.eurprd08.prod.outlook.com
- ([fe80::fd8d:f047:ac4f:6d6%5]) with mapi id 15.20.8048.020; Wed, 16 Oct 2024
- 17:33:13 +0000
-Message-ID: <2cbac0a6-08d7-4ec1-8f19-0fc009a34705@iopsys.eu>
-Date: Wed, 16 Oct 2024 19:33:10 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add Documentation for Airoha
- fixed-partitions
-To: Christian Marangi <ansuelsmth@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Saravana Kannan <saravanak@google.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
- upstream@airoha.com
-References: <20240925101422.8373-3-ansuelsmth@gmail.com>
- <20240925133003.619c40c4@xps-13> <66f3f58e.5d0a0220.5d655.b48a@mx.google.com>
- <20240925135256.32d3a0f7@xps-13>
- <66f3fcb7.5d0a0220.3ca4c2.ba83@mx.google.com>
- <20240930114819.609f9341@xps-13>
- <66fa7915.050a0220.1da288.aeca@mx.google.com>
- <20241001104225.67483dab@xps-13>
- <66fbcee8.df0a0220.2ad0cb.4f6a@mx.google.com>
- <20241002100006.5995fd10@xps-13>
- <670f6c5e.170a0220.373da5.7bb7@mx.google.com>
-Content-Language: en-US
-From: Andreas Gnau <andreas.gnau@iopsys.eu>
-In-Reply-To: <670f6c5e.170a0220.373da5.7bb7@mx.google.com>
-X-ClientProxiedBy: GV2PEPF00003849.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:144:1:0:9:0:7) To DB9PR08MB7512.eurprd08.prod.outlook.com
- (2603:10a6:10:303::14)
+	Thu, 17 Oct 2024 04:33:12 +0000
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-71e483c83dbso385023b3a.3
+        for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2024 21:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729139590; x=1729744390; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=igWUH4+zFZyTVY+s03eo1LIH3mhnE39F45/f44DU7Ws=;
+        b=Do/X9mNpGVj8HZrtwAnsirupbSNfPyIG0AuXfugR8sQ9Yp9xQvOHc7aaJLue+ddGri
+         iIPn7EPYx4BhZZ1hLhttVNIO7iZGmYExQOn9iwX1Y/HjoSlLr2aQAkgsrSPcMIXvNjd+
+         AAhsPCXZ8ib9Sb2CIWQpJ5hag+6aTfFsfyjz2rHrDpXwlr/JZZMTKxsvv7ss9l0nAZWA
+         0LTl6df84w5atGqrskjcSOsSOGTvtFmEo7MTa+7sa4JIaqFGlfP0pKjGEjlwLuR2eEm3
+         S2JpF7tJM0fN9xiNW1a58hzB4W8FtTKaSsAjb1wCK2PCbsA9estWqlxyhH50MDqT92zd
+         NmRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729139590; x=1729744390;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=igWUH4+zFZyTVY+s03eo1LIH3mhnE39F45/f44DU7Ws=;
+        b=cgyLrW38Lja2rukq8n0FAJE90jGY8bP7QouSY66O8+NgQgbzpUNA/PHder8jKfIJHF
+         L3B8fmr7RwDC5NeHxkBySgOZasc7yMcg5HbOiQi/zMTx3xj2j+mr2syfckcksRQG8+gr
+         Q0PTpoJMCdgZvX99wrhbn6tncTtA1IuwtxP7DSZmy1wYRGY5c5BXsr9+FGDWo6nmIOoU
+         CKENbyIgNHvHEY+7SR9l+wTfpVvmqZTgIjEEy/H55nkPczIFm8TNpGYJQQmcphHCQuHz
+         mK4Z9LVXE/EzRV7kg9sF2iuV6/3EmkqLpj/QLSFvKdh4PJ53VIdlUELgdduyUK8oiHwV
+         sjBw==
+X-Gm-Message-State: AOJu0YyiAzsWR+HoOC9jU0jhV6ERMaeX080pti2I8OQWCcwWwLx8r+1a
+	VHy4vV8FHasCtQRI1snrdV0ceptYGOQox4OL4AyGnvi6U+vECY9L
+X-Google-Smtp-Source: AGHT+IHnJbMrTmDYaEy8rkOJkZYS/bFtEHgxCGz4vhyGqOKmPStZr3Eop5Tn72B33FohEK5FfN5DqQ==
+X-Received: by 2002:a05:6a00:1782:b0:71e:55e2:2c48 with SMTP id d2e1a72fcca58-71e7da8c0a3mr9185032b3a.16.1729139589999;
+        Wed, 16 Oct 2024 21:33:09 -0700 (PDT)
+Received: from [192.168.0.9] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e7750a74csm3864533b3a.212.2024.10.16.21.33.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Oct 2024 21:33:09 -0700 (PDT)
+Message-ID: <909a6720-188c-4261-8411-a7d87c746f5b@gmail.com>
+Date: Thu, 17 Oct 2024 13:33:05 +0900
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR08MB7512:EE_|DU0PR08MB9486:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c760f2e-9e4d-4a46-6e28-08dcee089c2c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014|10070799003;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?OG1pU05GbXZhL2Rja3IveVRBUE5KaEswTEc5cktRTGg5ZWt3dFR6STlJS3Zj?=
- =?utf-8?B?T3JUZE9MQ1hxTmJ6UlFaVDVQTmRaY05kSjdPWnZNeHVkUHBZS2RBVUczbzRv?=
- =?utf-8?B?RUdyR0ZQczQ0a2FVMVdXd3ZHNnJWVFh1Yngwb0pKaGpjNnNRNUx5Q0hhcU12?=
- =?utf-8?B?WTVtbUhiZFM0dEhhZnR1ejZqdk10QUx0NlJjQm0vT3JMcHVFdm1OTzJpTU9F?=
- =?utf-8?B?UWRRVEw3YkUrM3JsR3ZKMnN2VlZSRnVZSlVKcjN6bDNGMjdGN01qOTZZTkdH?=
- =?utf-8?B?dllrQ3MyQ3JvUXRrVWhmQ2ZPcGVvNXlObzdUUUNEdlQrR0hxU0FFOFBZdk1G?=
- =?utf-8?B?cDFGa0h5R0xUWmgybHYyWEJYTW1vV2dGTEhvcG9MVGNTbUh3MjE4K1NVWGsy?=
- =?utf-8?B?VlNGY3R5U3gvNWtHVHI2UVU0dHNRb0tJMWEzdU1lYzY4OFFuUmRNR0YxZTNB?=
- =?utf-8?B?QTIrTmp4dE9VYnZoRGJ6ZzFVMjNyZ2c4bVAyWDNoOEphQU84REN6ZStBbGQ3?=
- =?utf-8?B?QWxUbXlpK3ZHR3d2Z1REdEllakpiemVUcEU2SHhkSU1LRWR3aG1kV3BCR3BH?=
- =?utf-8?B?U3FFYXRNOWtKbzczdW83b0JmM2FYSENoUkJKQytjUUlackw2ZkhBSmVBOFRL?=
- =?utf-8?B?Zk1SdTJEUnZCY1lwWXVXcWVqZHJQZmpyMlRWazZ6ME9NYVhzU1d0dVZjUG0w?=
- =?utf-8?B?ZFptbURwblZkZ0RtTnFVUnR2MXYzTVFUekJJK3BEQ1JGNVNLLzhYMFF3cWVD?=
- =?utf-8?B?cHY2bkVDR04ySVRMU1o5U1FwQlJhMEY1V2FYU1Qxa3NsTlFkbzFpU0U5L2VZ?=
- =?utf-8?B?S1phVitzNkllYll0RWdBcWN3cExNYzJZb1FuYUFYUWNQbmpjK21oeFBhWGtu?=
- =?utf-8?B?am52UG1RZlg4NWxOT3Rmc3A1WlJwOU5nbjcyYnZzR1FhQXpnUEdxNmlnTFBh?=
- =?utf-8?B?cTRNWFdUWE5EVkVzYVU3bHBTTXkwUy9iM0RId3JpMVlZSFliRHFpQXdZcWp2?=
- =?utf-8?B?VzhBWnd1WWxLYXJQa3lSTVYrNGluQ2xZa0JDUkkvTlJ3QVRZTTZPRkVBSUNa?=
- =?utf-8?B?SUt3Q24zNzhKc1dPZHpkRUxZR0lhWCtRbmpIbytoYnFQTVlOWjh0V2twdTVR?=
- =?utf-8?B?ZFRHYk40VFA2UXREV3AvbThoRCtHOU5yeHJLKzlqUEYwaUFBYWV4bUYxZGtq?=
- =?utf-8?B?UEZtbzlSdFU1bkhTbE02UUVGMUZoRURFa0Z4cFpsSk12WkZsU29ZZHJFR1BR?=
- =?utf-8?B?UjF3WkRIU3hVQ0M3cWJjbXIwRmFsWlJFOVJRZEZWMEFaMVEvcjV2WDNQYnZM?=
- =?utf-8?B?NERsb2ppRm9VR0pMSzBUN2xLWU52anBFY2ZrQTNwWEJ2Ri9ZaTl3ekp5UEY5?=
- =?utf-8?B?TEsyTkx1dlFLVHJOdkUzcUdqRkNaNnU3NUcwNERaZmttN2xLUGhqbTZmeVNZ?=
- =?utf-8?B?T0JHdzhXKzRXSkNjRWhHa1FHb2hxcE56c0Fvb1NRdEI2aUJQVDNQZ2FoMms2?=
- =?utf-8?B?RW8wUDZLQmd5aEN4WXhKTTN2bnNaRGI3TVdZYWRobUxyMjJ4NmdYM1Z0MXZ2?=
- =?utf-8?B?bVB4U2VFeURsbzFMTkRiK2tIa2k0RFZ5Q2RZelk0d1I5b2xZMXNLUW8yUURD?=
- =?utf-8?B?dTFIL0Fvd2NJOThETzJBc1lKUEtyalN5dXlGSlFnZVhBSDhlQ3duZW9jdTh1?=
- =?utf-8?B?RDFCN0lVZXluditBS2tiSkZMOXRQTk1JVzcxbkxnTURsOHpxTnFiQnZnPT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7512.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(10070799003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZXkvRU9CL05Qd2toVFBVTVN5ZjBiZ0xzSVc5WjlNY29XY3BIR2lLUnd4ZkVD?=
- =?utf-8?B?OGxsRVRwV2M2VER4TDRBS0RzNVJhbTlmYVZZQ0ZETGYzQklGSVpDeGd4aVNO?=
- =?utf-8?B?T2NKOEdqYis0V1ZUemozMTlEMnlQaHJRc2QvSDFuZ0tQYkR5eDM5WDRUQ3lY?=
- =?utf-8?B?SW5ZWkQzWVdBV3RsOVFEbm5TWWRxVElCdFlTTXcrRXV0SzdmUlNpSVJJRzRO?=
- =?utf-8?B?cldxQ3JvQUU5REVGeXV6SW05djZjYUZveHBnNVNmOGpVMFJNbVJEdXUvU01j?=
- =?utf-8?B?VjQ1YjdjWklqY1Q3cXREUDJKOXJOVjJnblY3UWxFZE00WmxRS1lWeERGbkxt?=
- =?utf-8?B?SDc5eDAzd3hSS2JYUkxmZmExOUU3R1IvUVRJVTR6aTd0bHZ6ZnBGTkJxT3Ny?=
- =?utf-8?B?MlBzcmRwRkN3c0NHVEdESmhpZ1hOeXM0NkxBZkxtb0lJLzlnMDh6b3JxODZy?=
- =?utf-8?B?dDcvc3p0ektNZndrT2lPOU9oanhhVzNkR201RGoySDJkZ0FLbHU0Y1VoOUF4?=
- =?utf-8?B?M2R4LzFVWHNHMEpUdEdESTd5ZGpxMmpOSCtCMnEwdUZKSnM4d2NJM1hzL0hm?=
- =?utf-8?B?ZEdIT1dKNEFmU1dldExZOGk2OW84VHorL05VakI1S29zakNQdzFUbXdZbG9m?=
- =?utf-8?B?T2d5U3daM0doaUE5ajhKTHNUR1I5UG1XaDNXK2dYb0hzQllaSE1oV1lrK1V5?=
- =?utf-8?B?NVpwZUV0MlVRUWtQYm9nWTRoUXdtL1Mvd0QxNnA1OXpqcjN6S09PUk95Nzlk?=
- =?utf-8?B?TElVTTF6aGVheklwOWVFdVNZbkJ5eXFMdEJ2U1BmTDRmdXFlaGF3UG13eGZW?=
- =?utf-8?B?bzVhcEVqMzRzWHFxZEkzZWFVNzQyL1BCMU4rWC9jNmh3Rk9tZ0l5aEkyZUsx?=
- =?utf-8?B?VGVvSUlpQnhRM3I2U3M4dXVFTUtFU2hsSzBNdlFUWXVUTTlxY05mR0VhdTJa?=
- =?utf-8?B?eGJMdU9ZMnRONklyVzBreXArdng3aHAvY1JBZjVZVzl0dFRkTFpVZ1dVZzNW?=
- =?utf-8?B?RVBGZjZGdVpmZ3k2OExvWTkxSkxhamliR084S0tIRkorNWlPejZWSGFEZVdT?=
- =?utf-8?B?akpqd2Ixdi85ZDVXNHhzcUNLYm1ZMW5ZVm9DWTZ6OUsyczBxR3VjaUllRk80?=
- =?utf-8?B?a245M1RML3hnK2tJVEhsaCtpbThLOGJkZHJXbXByYlVsaSt0dzFwRG1YN2ox?=
- =?utf-8?B?N3BMVFJIcnZTRkk3bnF1aE9qNWVqZUlQVGdpWlZiMFM0ZHlqNjFVSEFZNW9k?=
- =?utf-8?B?VmMrSzBYOHExL254NXRyWlJETzZ0bmJYcWtBOXpzaHhsYTVTai9Ea0Y4SS9i?=
- =?utf-8?B?TWRLZUJHYnpXRXZjek5aSUtUNWV1NWpKeWNIaC96Y3hZaTRmY3FCSlZyWlho?=
- =?utf-8?B?TTRpSW95WDNEZWRnTStKU3hDNzZlbS9zRjlRY0FpTm4vUHZoYTNkZ3pPeGZt?=
- =?utf-8?B?cEdremFYL05tbHd6cjZqdW1yYnRLblhZSldGeVgvcU9Nck9ZTEFIdlZPdm5k?=
- =?utf-8?B?Q2NjS2YzUHRHSHNWbWx3N2V2RHBrVmVhZzRLU2xVMU1hR2FLaGxUcFJUaXE5?=
- =?utf-8?B?amhOSGVCU052YUJnMk15ODhLcVNWa2xDMExJcTNydGg3K3E1M3kzcVpHS3hO?=
- =?utf-8?B?SVhtTElFQXg2QTVmTGcvZHdjWkl0Y2U4QWlLMTVjb3hBb2NPbkY2VzlrbkRK?=
- =?utf-8?B?QWJiMVcxMkE3S0pYZFM5UmUrelNOb3V3MEZERXBLWHE3dC9XeG92TjRUdDAw?=
- =?utf-8?B?U2tiSXJqd0Q2alptSTU1MW14VGhEYk43SXNsQ3hYWU5uVmcrbXIrc0dTRy9w?=
- =?utf-8?B?Tys5UjNhR1lBZmRoU0dWUWZud3ZGMncxdWFXY2RsT1d1dGNvcU9PdGNjQ3do?=
- =?utf-8?B?RWsrdisvZjVEUjhJdnB2VnZXZ1ArY3hKVWtiOU5oT3lKYkRMZStUcUhzbm9U?=
- =?utf-8?B?R0tNaXdOQ3lCc1I3RkxpeWZVbjhBbVh5N3dScm5hOU9sSHNLWHFjaWdST2pP?=
- =?utf-8?B?K2Y4aTA5a3FOS0RQYlJVczh5UFgydWlGeTlUWTBXVm1IczJhbkpOTmJDZUFH?=
- =?utf-8?B?bW9FYXJKeFJWTkp2bUtuelZLWExwYUs3c2tHNFJNU1lsN2FzZ3oxN1hBMVQ4?=
- =?utf-8?B?YXA5c2ZkNm1aWXowWDlVbTJPZW9OdkJ5QWw2Z1NObGJ0c1psUmtWWTc2RU9R?=
- =?utf-8?Q?fZgRCZWfu8AeAqZEJUBhJBE=3D?=
-X-OriginatorOrg: iopsys.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c760f2e-9e4d-4a46-6e28-08dcee089c2c
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR08MB7512.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2024 17:33:12.9138
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8d891be1-7bce-4216-9a99-bee9de02ba58
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j/XTWxJzV1CuWHP9kI1z5i046def5Y+nyLj62/nLJfMJTx+SBsOoVbOUZXauhUfWsWiPmbwIF/CPftxNmGMY+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB9486
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Use nor->addr_nbytes in octal DTR
+ mode in RD_ANY_REG_OP
+To: Pratyush Yadav <pratyush@kernel.org>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ mwalle@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <20241016000837.17951-1-Takahiro.Kuwano@infineon.com>
+ <mafs0y12ocl7n.fsf@kernel.org>
+Content-Language: en-US
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <mafs0y12ocl7n.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241016_103323_892983_09664F4E 
-X-CRM114-Status: GOOD (  34.48  )
+X-CRM114-CacheID: sfid-20241016_213311_797775_41773185 
+X-CRM114-Status: GOOD (  19.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -186,171 +92,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Christian,
+Hi Pratyush,
 
-On 2024-10-16 09:33, Christian Marangi wrote:
-> On Wed, Oct 02, 2024 at 10:00:06AM +0200, Miquel Raynal wrote:
->> Hi Christian,
+On 10/16/2024 8:59 PM, Pratyush Yadav wrote:
+> On Wed, Oct 16 2024, tkuw584924@gmail.com wrote:
+> 
+>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 >>
->>>>>>> Ok probably the description isn't clear enough. The missing info that
->>>>>>> require this parser is the flash end.
->>>>>>>
->>>>>>> Following the example we know the size of rootfs_data and start offset
->>>>>>> AND we know the size of the ART partition.
->>>>>>>
->>>>>>> There might be a space in the middle unused between the rootfs_data
->>>>>>> partition and the art partition. What is derived is the starting offset
->>>>>>> of the art partition that is flash end - art partition size.
->>>>>>> (where flash end change and is not always the same due to how the special
->>>>>>> bad block managament table reserved space is handled)
->>>>>>>
->>>>>>> This is why 0xffffffff, used as a dummy offset to signal it will be parsed at
->>>>>>> runtime. On second tought tho maybe using this dummy offset is wrong and
->>>>>>> I should just have something like
->>>>>>>
->>>>>>> length = <0x300000>;
->>>>>>>
->>>>>>> Is it clear now? Sorry for any confusion.
->>>>>>
->>>>>> I'm sorry but not really. You know the end of the physical device and
->>>>>> the size of the ART partition, so you must know its start as well?
->>>>>>     
->>>>>
->>>>> Before the system boot we know:
->>>>> - size of the ART partition
->>>>> - real size of the physical device (512mb... 1G... 64mb...)
->>>>>
->>>>> When the physical device is probed (nand) a special driver is loaded
->>>>> (before mtd parsing logic) that change the physical size of the device
->>>>> (mtd->size) as at the end of the nand some space is reserved for bad
->>>>> block management and other metadata info.
->>>>
->>>> Here you are explaining what you intend Linux to do, right? I would
->>>> like to understand what you are trying to solve. I dont understand why
->>>> you need the size change, I don't understand why you don't know the
->>>> start of the ART partition, I don't understand what the data you are
->>>> hiding contains and who uses it :-) I'm sorry, this is too unclear yet.
->>>
->>> Totally not a problem and thanks a lot for you keep asking them... More
->>> than happy to clear things, I'm trying to solve a problem present on
->>> Airoha SoC and upstreaming a correct parser for it.
->>>
->>> What I'm trying to solve:
->>>
->>> Correct access to this partition at the end of the flash in an automated
->>> way.
->>>
->>> The content of this partition is the usual ART partition found on lots of
->>> embedded devices. MAC address, wifi calibration data, serial. Usage is
->>> NVMEM cells and userspace with dd command to extract data from.
->>>
->>> Airoha use something also used by some mediatek SoC. They call it BMT
->>> and it's currently used downstream in OpenWrt and they firmware. This is
->>> also used in the bootloader.
->>>
->>> The usage of BMT is a custom way to handle bad blocks entirely by
->>> software. At the end of the flash some space is reserved where info
->>> about all the blocks of the flash are put. I'm not 100% sure about the
->>> functionality of this but it can relocate block and do magic things to
->>> handle bad blocks. For the scope of this change, the important info is
->>> that after the BMT is probed, the operation of "reserving space" is done
->>> by reducing the MTD flash size. So from the MTD subsystem, it does see a
->>> smaller flash than it actually is.
->>>
->>> The reserved space change! Across SoC or even devices but the BMT is a
->>> must where it's used as bootloader makes use of it and writing to it
->>> might confuse the bootloader corrupting data. (one block might be
->>> flagged as bad ad data moved, BMT driver validates his table and do
->>> operation)
+>> In octal DTR mode, RD_ANY_REG_OP needs to use 4-byte address regardless
+>> of flash's internal address mode. Use nor->addr_nbytes which is set to 4
+>> during setup.
+> 
+> If the flash is in Octal DTR mode, shouldn't addr_mode_nbytes also be 4?
+> IIUC addr_mode_nbytes is supposed to track the flash's internal address
+> mode. If the flash goes into Octal DTR mode then its internal address
+> mode switches to 4, and we should update params->addr_mode_nbytes as
+> well. We do that in spi_nor_set_4byte_addr_mode() for example.
+> 
+The flash's internal address mode is represented by CFR2[7] (ADRBYT) and
+addr_mode_nbytes tracks the state of this bit. If the flash goes into Octal
+DTR mode, this configuration bit is unchanged and referred after exit from
+Octal DTR mode. We need to remember addr_mode_nbytes for MTD suspend/resume
+event that exits/enter Octal DTR mode.
+
+> I suppose the best place to do it for Octal DTR would be
+> spi_nor_set_octal_dtr().
+> 
+> Side note: honestly, this whole thing with params->addr_nbytes,
+> params->addr_mode_nbytes, and nor->addr_nbytes is quite confusing. I
+> hope to find some time to clean it up some day.
+> 
+Agree. This is because flash's behavior itself is confusing:(
+
 >>
->> Ok, I think that's way clearer now.
+>> Fixes: eff9604390d6 ("mtd: spi-nor: spansion: add octal DTR support in RD_ANY_REG_OP")
+>> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>> ---
+>>  drivers/mtd/spi-nor/spansion.c | 1 +
+>>  1 file changed, 1 insertion(+)
 >>
-> 
-> Hi sorry for the delay, very happy this is better now.
-> 
->> So the BMT driver does not exist in mainline Linux, but you would like
->> to skip this part of the MTD device to avoid smashing it. And it is in
->> use by the vendor Bootloader I guess?
-> 
-> Yes correct, idea is to permit easier access to the partition. I hope
-> (and assume) this driver will come upstream.
-
-May I ask for a better understanding what the "complete goal" is? Is the 
-goal only compatibility with the Airoha ATF as it is now? Or is the goal 
-to read flashes that have been using the Airoha SDK with BL and Linux? 
-Airoha bootloader is just software on the flash, it can be changed to 
-not write BMT, which we have done.
-
-I am asking, because I consider this BMT to be actually detrimental when 
-used together with UBI. Wear-levelling on the UBI side is no longer 
-correct when blocks can get re-located by some other entity below due to 
-bad-blocks.
-
-We have patched the Airoha bootloader components to not write BMT (and 
-of course our U-Boot fork and Linux flash drivers do not use it either).
-
-Before we had patched the bootloader, we had initially marked the BMT as 
-bad block, but if I remember correctly the BMT location might also be 
-somewhere else in case the BMT block itself is a bad block, which is 
-also the reason why we went the safe way and patched ATF.
-
-Just putting my thoughts/experiences out there, mostly because I am a 
-bit concerned to about the possible double bad block management (UBI + 
-Airoha). You might have more insight into things than we have about how 
-exactly things work. So, maybe it is not as big of an issue.
-
-I just think that this BMT can create a lot of other issues as well. And 
-maybe, I am a bit of a burnt child dreading the fire because of learning 
-about this BMT and how it works step by step the hard way. For example, 
-we had an issue where Linux and U-Boot had support for a NAND chip while 
-ATF would mis-detect that 256 MB NAND as 128 MB and thus destroy data by 
-writing BMT in the middle of the flash. Fun times...
-
-As a side-note: We have also migrated some customer devices that had 
-been deployed in the field with Airoha SDK BMT and drivers to our UBI 
-flash layout without BMT. Strategy was to load relevant data into RAM 
-from Airoha U-Boot and then chainload our U-Boot 2023 that would flash 
-everything back.
-
->> Is it some kind of table that is written by the chip itself in order to
->> maintain a list of auto-replacement blocks for bad blocks? Can the size
->> of this table move with the use of the device? (if yes, it's
->> problematic, we don't want to resize MTD partitions without noticing,
->> it would break eg. UBI).
->>
-> 
-> No chip hw bad block is disabled with this implementation and the table
-> size doesn't move/change so MTD partitions will stay at the same offset
-> after the first parse on boot.
-
-If the block that holds the BMT goes bad when BMT is being updated, 
-wouldn't the BMT location itself change? At least that is my faint 
-understanding (which could be wrong, of course and it has also been some 
-time...).
-
->> I believe this BMT block is going against the bad block handling in
->> Linux, so I really wonder how one can use both mechanisms in a system.
->> If the BMT layer takes "one random block" to map a corrupted one on it,
->> it totally defeats the current bad block model we have in MTD/UBI
->> and simply cannot be supported at all. Just skipping the
->> currently-used-for-BMT blocks sounds like a very bad idea that will
->> break your system, later.
->>
-> 
-> Well we disable it and since it's reserved, from the system side you can
-> do all kind of magic since the space used for the driver is not
-> available to the system but I will try to gather more info about this in
-> the next few days.
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index d6c92595f6bc..5a88a6096ca8 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -106,6 +106,7 @@ static int cypress_nor_sr_ready_and_clear_reg(struct spi_nor *nor, u64 addr)
+>>  	int ret;
+>>  
+>>  	if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
+>> +		op.addr.nbytes = nor->addr_nbytes;
+>>  		op.dummy.nbytes = params->rdsr_dummy;
+>>  		op.data.nbytes = 2;
+>>  	}
 > 
 
-Best Regards,
+Thanks,
+Takahiro
 
-Andreas Gnau
 
 ______________________________________________________
 Linux MTD discussion mailing list
