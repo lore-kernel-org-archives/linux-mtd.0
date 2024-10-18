@@ -4,75 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB3A7D3C537
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2024 05:00:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A55ED3C55F
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Oct 2024 07:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=uKAArym5oWROhi1jMHmaUsAoskX1U6y+YPwxw2qlah8=; b=vYkbJNraoKFJIn
-	tj12NnVB4dhbQuqa7qqrVQN0V8nuSdgcmrYgZuZievpZ4UF6auIAkHcn9plxsfQIExhHyVlhIAcjf
-	4akEwsTlIR7Bj/kJaMypgqrITgZvbbxgr2kj5uWNzCEzw2svF3/p31uTeIq+cxLoN+4bdTzS+VQ6f
-	X3Pt2aXwzN+s509cxrorgKMpe4AGw9hnbex3YIaCrwRkRinAay0xi3LxctQdz6eCQhiCNiHHXQdKu
-	R612LbA5/B4w8MMJ1sDcTaKfWV/dzd+zJYAXuxy7b3h/gdXFYFPIe5AvCoO13iyKaAhFqSylFou1f
-	fBTe03tn3zrNqONEzpKg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+pL7r62yy3OP+19nbwhSEPTy0kENbcOjJScam1zhZUQ=; b=oWdWfxiHcDFW1t
+	RBvFFfVvzCm7/5oxVZloH2lpEt9VDoaW2tQbhBC3codep8SSCUiuFf3eAJ0PNbM2zv+faUje6pGlS
+	uxlyKGAk49/XLqsGs/TUY+YW12cgZDibDyolZBp8XlQDtX/Cp3JAJVMRRcBWZsCLjEXa87bY/rT1O
+	vM5jW3nwfE/aHe1ldxf+M6UgZK2PYvyZkYY2Is6bJsghosZ11WbyfPtpFUMnG0cGChOFCDIsGN/D1
+	d1oBaRTpIYyjWUP7yhDbpvXwzQTg1E3J+jvyEDPlvso0OGCox8n1fpGP6MeOOeirgNnaKuVFePlQl
+	WuH2gXSpaPJawoWB7Qqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1f5o-0000000GuqC-2sXn;
-	Fri, 18 Oct 2024 05:00:04 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1t1hX3-0000000HM23-0fzK;
+	Fri, 18 Oct 2024 07:36:21 +0000
+Received: from mail.createsavvy.pl ([51.195.117.175])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1f5k-0000000GupK-3953
+	id 1t1hUd-0000000HLS7-3UK9
 	for linux-mtd@lists.infradead.org;
-	Fri, 18 Oct 2024 05:00:03 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3A16D2C011D;
-	Fri, 18 Oct 2024 17:59:56 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1729227596;
-	bh=dfKmpHpr76dWHkj8CFRXsuOKEzOkxqbniCqmbEn9apg=;
-	h=From:To:CC:Subject:Date:From;
-	b=E6iymVwqBUaS1//IYWS7dv9MmcfbuiN9CGaqJ1GDqKu9NKbhxvO9ByQTAAL1cLMFa
-	 cSionFiQa+GNZR4yqHB2HVHD/ZLqHLxyFaAwJACZOaFupMiaRF1cuaw/OhAdO6N9V5
-	 yLrNvIM60xIQqU/DJlyIrOvfF6pQ+xXZ9Bug0M9FhzdMmPex14PHBzWgK1mi3S8NTl
-	 ps5/9jIZbLN/pNzXO+57BT0D/S4WQoSm6VXV+fUl25Zs3LbExGYqhQ+dyioOrdbglI
-	 R0mNLdPNcX16hCPNajgRA4t/3NyPG/GX/fbai0dJ70mFzA3gRKP8WdxXDeSxr+dgnn
-	 DtIZBCUThOgdg==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6711eb4c0000>; Fri, 18 Oct 2024 17:59:56 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 18 Oct 2024 17:59:56 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1544.011; Fri, 18 Oct 2024 17:59:55 +1300
-From: Joshua Scott <Joshua.Scott@alliedtelesis.co.nz>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: Sascha Hauer <s.hauer@pengutronix.de>, "Tudor.Ambarus@microchip.com"
-	<Tudor.Ambarus@microchip.com>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Possible incorrect byte-order for identity for cy15x104q SPI-FRAM
-Thread-Topic: Possible incorrect byte-order for identity for cy15x104q
- SPI-FRAM
-Thread-Index: AQHbIRcqXQ3HjhIJwECnEjsrpJbngA==
-Date: Fri, 18 Oct 2024 04:59:55 +0000
-Message-ID: <83d742648fef4e47b831ea697e553ead@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-NZ
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.32.1.11]
+	Fri, 18 Oct 2024 07:33:54 +0000
+Received: by mail.createsavvy.pl (Postfix, from userid 1002)
+	id 68544A47E5; Fri, 18 Oct 2024 09:31:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=createsavvy.pl;
+	s=mail; t=1729236708;
+	bh=Q787bUI8wqiKELAtyWRvCTxaBwNaZfpooGhkyk63cfU=;
+	h=Date:From:To:Subject:From;
+	b=KTv7lgRF1OL9ljiI8QElFzNcWaNEjb0ihkfMonZvWNKIWpFS1pmQtsxG9hgW7lJfT
+	 O7VWxyoEYXPBpt4huZ7WbtbnFQ5daLpxoB6dR4CmJZaYrAidqvxQLv8aTWrH1mhIoJ
+	 tgxlVYl2UPI2Ef3TUIYRyDsSBeg2PdB/+Vk8lFCVoDBh5b4eWDTsHr+sheajX+UXsw
+	 qY7sGBMu6xbhPJ/dGXT7ARALEOFsLjbrXnbvYDqW8YEgP45MFTpKz8DK+O3VnSwWuu
+	 9sekD3COppBEVkYJhg7F8IAz8czLWnsz9RCQ/LVevNhzrGlAN1AYAQ3raNmLA4/AQB
+	 4V6LyuL1V+1rQ==
+Received: by mail.createsavvy.pl for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2024 07:31:07 GMT
+Message-ID: <20241018084500-0.1.hx.2wgfm.0.74cgkmp3ab@createsavvy.pl>
+Date: Fri, 18 Oct 2024 07:31:07 GMT
+From: "Maksymilian Ciszewski" <maksymilian.ciszewski@createsavvy.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
+X-Mailer: mail.createsavvy.pl
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=ca1xrWDM c=1 sm=1 tr=0 ts=6711eb4c a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=8nJEP1OIZ-IA:10 a=DAUX931o1VcA:10 a=5debuBmyMlOHIHDrEskA:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
-X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241017_220001_347067_790FDFBC 
-X-CRM114-Status: GOOD (  12.07  )
+X-CRM114-CacheID: sfid-20241018_003352_705412_58BB558C 
+X-CRM114-Status: UNSURE (   0.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,42 +62,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-We are using a 512 KB FRAM chip, the CY15B104Q. (cy15x104q)
-
-It appears that the ID in the spansion_nor_parts array does not match what we're getting from the chip.
-The datasheet shows a 9-byte ID: 7f7f7f7f7f7fc22c<xx>, with the last byte varying by package/voltage/temperature range.
-
-Looking at the kernel (currently running 6.6 LTS, but the value appears the same in the latest version), I see:
-
-    { "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
-                    FLAGS(SPI_NOR_NO_ERASE) },
-
-However, the six bytes that are read from our chip are: 0x7f7f7f 0x7f7f7f
-
-Locally, I've added an extra entry to the spansion_nor_parts[] list:
-
-    { "cy15b104q",  INFO6(0x7f7f7f, 0x7f7f7f, 512 * 1024, 1)
-                    FLAGS(SPI_NOR_NO_ERASE) },
-
-And with this entry, the chip is detected and functions correctly.
-
-My question is: Does the existing entry in the kernel work for anybody, or is it untested?
-(If it does work for somebody, I'd guess it may only work for the low-voltage 'V' version of the chip that's the only one with '04' listed as the final byte in the datasheet)
-
-I see back in 2020 some discussion around the byte order of the identity was made, when the chip was first added to the kernel. However, the conversation seemed to drop off without a conclusion about which was correct.
-
-I'm not sure what the best resolution to this would be.Is there a way to specify an 8-byte identity instead of the 6-byte identity that is currently used? (leaving off the 9th package/voltage/temperature dependent final byte)
-
-
-Thank you,
-Joshua
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
+cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
+xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
+Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
+ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbQpNYWtzeW1pbGlhbiBDaXN6ZXdza2kKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
