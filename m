@@ -4,82 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8ABBBD3C92C
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Oct 2024 20:32:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 776CFD3C930
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Oct 2024 13:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mW61Kz8pVe7qoVDoxJXm8/UFJOJTmLQjVR/vr+A/uuc=; b=Q9+rwKf8G+7Blb
-	e6OHJ9cGeKQ9c2NwnfcUWU4cHTiTPWm7Ef962+BfpywpdZ3oTBhfAr8a/sC8nBM4a5HGVlhXfC7WE
-	uzRPzTFgsT4AY+P79zGi7+gwDIVCj61P7PR4aH13Kp3xEYZsIdDv/bTv+aum6KBj6kYQFwqceXltV
-	DUzBmMZWb/KRpNcL9ShGNxLkUsYcG1LVL9Xyv5DRxP8FDDc8ISIiWoILu1py9bOLy/nd/K6iZ/nsm
-	xYJioxwaTprX55j1HNFMse5uuA3tNwAH14fa56wylYLSkfjz9vht6pPt0ZFyCnqxbON9D1xCIzd5Q
-	PW4lxgOOlmHY8CeJtTOQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=tOEHY4nyaY2EmkyyIk8yhHVUQcv62ryilgNcMDsZfJ4=; b=h0RXJIhU3I+olY
+	dtDXIVhPa67jLVwKbJo0vvY+2lPlkQmgppyfYEuftE/wnlcDYrrjyQ8ISC/xxL1DKSkclY4jmsOT+
+	Dmq5QW+gdo7D8qBqBVkEdV7nxuGKp4UXGWZNJY9S7IxeJ51YfKLw6z5MO/sFhDdSHDKTM2dfnGHJh
+	mvzofjleopCjS+N9SHxnGYKbYfHqWBso0rVpwmeswonHyfgO/dC7si/HIe+2AJk0euD8CG0TynRcw
+	/VbncEDi380htxRA6EpuQptgnYAjc6PQvED0LrIy6utz62x6K7SMqWZ5Sa+itjYXrjVjOy8OfXWA0
+	VtNrdmAjPs6XYBDBi43A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2G88-00000003tHk-0Mzq;
-	Sat, 19 Oct 2024 20:32:56 +0000
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+	id 1t2VzZ-00000004vj8-30OR;
+	Sun, 20 Oct 2024 13:29:09 +0000
+Received: from mailgw02.mediatek.com ([216.200.240.185])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2G84-00000003tHO-48kh
-	for linux-mtd@lists.infradead.org;
-	Sat, 19 Oct 2024 20:32:54 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-37d3ecad390so3077837f8f.1
-        for <linux-mtd@lists.infradead.org>; Sat, 19 Oct 2024 13:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729369971; x=1729974771; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CNSAF2YVt9nPu+f3L6phvZG/HyRYZLA36hwo/VBg3Vk=;
-        b=L7SLnyoUkGZl6NKss2szNNb9jiUpH/fX/KidQvQZ/LPS02i3HNvUoeL9DKH9dZLsXp
-         TwaNWuyx5PkXFbi/dAWNP9NS+V/M/ANq08q+waUOjIusA2M/DSJUGsklZkH/NXoHQEUt
-         JcoRTqnNX1CYSAL+l+ebhlWvghmkhdMJb149lx4fC6QQaqiQUkqV+ax4VfICLbRBcf3x
-         u0NFrgIrSDXICpQeWaeYa2zkXXJgbJpQA0RzGjP+8zIfswCnQyFFVJ7GoE6qGOwKrwG5
-         l6NZdzcceXTW/0+1269l4ZjyhZujTqznlv5yqgIebMlBfwrg70Cftgr8Iqv0lzGR6HfN
-         4Qiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729369971; x=1729974771;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CNSAF2YVt9nPu+f3L6phvZG/HyRYZLA36hwo/VBg3Vk=;
-        b=fPvRckrdYuw5YCCTUJfVmF905Hbvkj3Hx+izI/U/9IlyKpiBR9JEmCcAGVe0EDlR6D
-         DhlS0rTaXdOpmcQfGS77oz94kc9BixS+9Dk/204h2+S+GUcqqC6xV3z8JJ1ApNwc5QbV
-         K6Knidw5urdqJXAbNAlCjV8becVmAR5vqSgj71Rg5CqS2fRfuisCfjHblwgFTszpo8BN
-         McZ05uufSy7WhJnMAj3VDS4J5yDd0uQLBDErF25eqXgpBoHkmW/7PFgLbBUmFCAnmeAt
-         H+7e9caDWzpEYOHOKBMNn+Uo/qHYlhDPet9QJ1LiAO2koNn84TdqYtYX4XTIpiW8P32x
-         GNSg==
-X-Gm-Message-State: AOJu0YxK83umpnaRdYNCIX2MXmU0e1ipZ830CJJMerGYtOxazLQ6BNus
-	qhWGc3ffF79OUyIN5cXexKcQwlBQrghQeDPa3sueeMpo/9omv5A4
-X-Google-Smtp-Source: AGHT+IEWyzayYGMJQLpshYPer1gVqLQR3xttK+cV+I+7abmQHdU4CTQ7JGRRYzfkRl+43W8uZZB6AA==
-X-Received: by 2002:a5d:568d:0:b0:374:c7cd:8818 with SMTP id ffacd0b85a97d-37d93e24af8mr6583554f8f.22.1729369971093;
-        Sat, 19 Oct 2024 13:32:51 -0700 (PDT)
-Received: from ?IPV6:2a02:8389:41cf:e200:f8f1:d6d3:1513:aa34? (2a02-8389-41cf-e200-f8f1-d6d3-1513-aa34.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:f8f1:d6d3:1513:aa34])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0a58f29sm284695f8f.56.2024.10.19.13.32.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Oct 2024 13:32:50 -0700 (PDT)
-Message-ID: <40e3ba82-6697-4ed5-a593-c54c6dcd2421@gmail.com>
-Date: Sat, 19 Oct 2024 22:32:49 +0200
+	id 1t2Vy2-00000004vRn-2JL8;
+	Sun, 20 Oct 2024 13:27:36 +0000
+X-UUID: 0cc32f448ee711ef9048ed6ed365623b-20241020
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=xgv59uFY/bRi9k1+Qc9CuwJ5ULI4vYv5ePGUW0MUTIg=;
+	b=XnSJato9bHSTcLfBZOa4p+FCo76bSAv+OgbsSDEa7SKYcpKXVvRZqWQNMUjMJk8uU1bDgl4rtNancoLfYZyVR9/eh4q4zNkacge+mA5E1shyz2jpBvrhmTBzARPccMxQW1rqC5hj5ryCztMTSc6+gOjL+vCpuy4Tfz/tjcCf+ew=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.42,REQID:d57b144b-df74-400f-951f-5c421a9ce60a,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:b0fcdc3,CLOUDID:0d245925-9cd9-4037-af6e-f4241b90f84d,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
+X-UUID: 0cc32f448ee711ef9048ed6ed365623b-20241020
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+	(envelope-from <skylake.huang@mediatek.com>)
+	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1920579413; Sun, 20 Oct 2024 06:27:27 -0700
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sun, 20 Oct 2024 21:27:24 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sun, 20 Oct 2024 21:27:24 +0800
+From: Sky Huang <SkyLake.Huang@mediatek.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Daniel Golle
+	<daniel@makrotopia.org>, Chia-Lin Kao <acelan.kao@canonical.com>, Mika
+ Westerberg <mika.westerberg@linux.intel.com>, Cheng Ming Lin
+	<chengminglin@mxic.com.tw>, <linux-kernel@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>
+CC: Steven Liu <Steven.Liu@mediatek.com>, Sky Huang
+	<skylake.huang@mediatek.com>
+Subject: [RFC PATCH nand/next 0/4] mtd: nand: spi: Add CASN page support
+Date: Sun, 20 Oct 2024 21:27:18 +0800
+Message-ID: <20241020132722.20565-1-SkyLake.Huang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: ubi: fix unreleased fwnode_handle in
- find_volume_fwnode()
-To: Richard Weinberger <richard@nod.at>,
- Zhihao Cheng <chengzhihao1@huawei.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Daniel Golle <daniel@makrotopia.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20241019-mtd-uvi-fwnode_handle_put-v1-1-f5ef0d0cf9c8@gmail.com>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20241019-mtd-uvi-fwnode_handle_put-v1-1-f5ef0d0cf9c8@gmail.com>
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241019_133253_062902_F1B2A1BA 
-X-CRM114-Status: GOOD (  16.34  )
+X-CRM114-CacheID: sfid-20241020_062734_622502_94BD0791 
+X-CRM114-Status: GOOD (  11.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,50 +90,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 19/10/2024 22:27, Javier Carrasco wrote:
-> The 'fw_vols' fwnode_handle initialized via
-> device_get_named_child_node() requires explicit calls to
-> fwnode_handle_put() when the variable is no longer required.
-> 
-> Add the missing calls to fwnode_handle_put() before the function
-> returns.
-> 
-> Fixes: 51932f9fc487 ("mtd: ubi: populate ubi volume fwnode")
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
->  drivers/mtd/ubi/vmt.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-> index 5a3558bbb903..e5cf3bdca3b0 100644
-> --- a/drivers/mtd/ubi/vmt.c
-> +++ b/drivers/mtd/ubi/vmt.c
-> @@ -143,8 +143,10 @@ static struct fwnode_handle *find_volume_fwnode(struct ubi_volume *vol)
->  		    vol->vol_id != volid)
->  			continue;
->  
-> +		fwnode_handle_put(fw_vols);
->  		return fw_vol;
->  	}
-> +	fwnode_handle_put(fw_vols);
->  
->  	return NULL;
->  }
-> 
-> ---
-> base-commit: f2493655d2d3d5c6958ed996b043c821c23ae8d3
-> change-id: 20241019-mtd-uvi-fwnode_handle_put-7b220d2778b5
-> 
-> Best regards,
+From: "Sky Huang" <skylake.huang@mediatek.com>
 
-I just saw that the bug was introduced in late Dec. 2023, so maybe a
+Hi, this is Qi-Ze Huang(Sky Huang) from MediaTek. On our router platforms
+chips, we have to quality lots of SPI-NAND devices and are eager for
+a standard so that we don't need to maintain trivial flash ID table
+anymore. I also noticed a talk in 2019 Embedded Linux Conference,
+Memory Technology Devices: what's new, which mentioned "ONFI for
+SPI-NANDs? Maybe, maybe not".
 
-Cc: stable@vger.kernel.org
+So earlier this year, I proposed a bold idea, CASN page (Common Attributes
+for SPI-NAND). I worked together with top 3 SPI-NAND market share flash
+vendors and other vendors to integrate CASN page on their SPI-NAND devices
+including but not limited to:
+[ESMT]
+F50L1G41LB
+F50L2G41KA
 
-will be necessary in this case, right?
+[Etron]
+EM73C044VCF-H
+EM73D044VCO-H
+EM73E044VCE-H
+EM73F044VCA-H
 
-Best regards,
-Javier Carrasco
+[GigaDevice]
+GD5F1GM7UE
+GD5F1GQ5UEYIG
+GD5F2GM7UE
+GD5F2GQ5UEYIG
+GD5F4GM8UE
+GD5F4GQ6UEYIG
+
+[Macronix (MXIC)]
+MX35LF1GE4ABZ4IG
+
+[Winbond]
+W25N01GV
+W25N01KV
+W25N02KV
+W25N04KV
+
+A document of CASN is hosted on github(https://github.com/mtk-openwrt/
+doc/blob/main/CASN%20Page%20Introduction.pdf) So I'll try to keep it
+simple here.
+
+With CASN page, we don't need to maintain SPI-NAND flash ID table anymore.
+Currently, it's integrated in 3.3V SPI-NANDs of small density and it's not
+JEDEC standard yet. But it should be able to handle 1.8V and can be easily
+integrated by flash vendors.
+
+I believe this idea and implementation have room for improvement. Hope to
+hear you open source community's comments soon.
+
+Signed-off-by: Sky Huang <skylake.huang@mediatek.com>
+---
+Sky Huang (4):
+  mtd: nand: Create param.c to do CRC check and bitwise majority for
+    Parameter & CASN page
+  include: mtd: Add CASN page definition and related structs.
+  include: mtd: spinand: Add CASN page related macros and flags.
+  mtd: nand: spi: Add CASN page support
+
+ drivers/mtd/nand/Makefile        |   2 +-
+ drivers/mtd/nand/param.c         |  52 +++
+ drivers/mtd/nand/raw/nand_onfi.c |  43 +-
+ drivers/mtd/nand/spi/core.c      | 741 ++++++++++++++++++++++++++++++-
+ include/linux/mtd/casn.h         | 191 ++++++++
+ include/linux/mtd/param.h        |  20 +
+ include/linux/mtd/spinand.h      | 100 ++++-
+ 7 files changed, 1094 insertions(+), 55 deletions(-)
+ create mode 100644 drivers/mtd/nand/param.c
+ create mode 100644 include/linux/mtd/casn.h
+ create mode 100644 include/linux/mtd/param.h
+
+-- 
+2.45.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
