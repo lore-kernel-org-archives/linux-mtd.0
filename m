@@ -4,65 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46D21D0E6DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 10:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A233D0E6E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 10:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+k2/6AouFklXAQOE9BLDlxJQZ1WpYxFQrXzTVdC++RI=; b=o709J8aZk7Ozt5
-	f/qCdlio/GTv01l1YHQyuPYAUAKzaxXa2p1Hw3SLaRaqZI21OeWWF7dOq5EOQ11T++3kEo4FSL9Rs
-	+Vd4uWZzTzu1zHh/aoWIdFVCaIKVd3aY8aPRSVew2tS4ndQOb48J9gv89102C9au6g6YIAn9abTRI
-	5MUHi8i2WDZGl4HxZkiRsV0CMV+PtrdIwSGL1jcmpCFPQqFGz5u3N8VAj8pH6YUeIPG7twUvI2+Md
-	U4KlIPobdXXxRNIvv6l3ZFGHLRKmQ1ruwKv+huoGWnp3dkjbRF3Nosq9/f0KPlsEVSn24E/tuJim1
-	OCMpVE8yBGCgtyfTOdtg==;
+	List-Owner; bh=qUMH2fX69/rpROjPpRsnS9soZ49uqSKOWtbPTcQrmos=; b=bivSfikTtX0HAy
+	6rIMMiHRBEnFA5taqfWUE6x3sP22qdJZu2hhIUm7RzGLiHo4KXAZ5ydKzSjyqLtZWHpPBGXecc1zR
+	zGgjEbw+NZeY146PBUEITHW7XYJGMEwwOvzEe15HO5uhPQ9X5tEIUAw9453Pfbk3eEkRPD+BNu6Ay
+	cjJUzK3dROlF/jPQxkfAX+AuOGfL08hwdRQ5Lb/rMSRmEDs8sxL7NR4K8F/UZu5fO/WVmocofoaxw
+	hwBJ7kIR6NpCtreSElTSpJ6RofPP9QVh0LipZSYuD79azZAxlZUx59Te1pYA0XHErTlebVwuuDGeX
+	lxWlqPvLxaX8cCLTxGAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2pHF-00000006oZL-11Sc;
-	Mon, 21 Oct 2024 10:04:41 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1t2pNr-00000006qQ8-29bU;
+	Mon, 21 Oct 2024 10:11:31 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2pFW-00000006nv2-4C6K
+	id 1t2pFh-00000006nzY-3tiq
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Oct 2024 10:02:57 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AAA3024000E;
-	Mon, 21 Oct 2024 10:02:52 +0000 (UTC)
+	Mon, 21 Oct 2024 10:03:07 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5BB976000D;
+	Mon, 21 Oct 2024 10:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1729504973;
+	t=1729504982;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oCHkWoiDZ2NL3DMs2gZVGmNiyeQybxl46/EswM89aLQ=;
-	b=NuURmxs85KKQufA0vlRiH+G3HW5xoQTCY3IrCYwIrctoD7O3Q4AzVeQ3REZ8qarMuipoWw
-	ZQSthDhCPVQobAka3sbDgCpgVTOHQS85K9+OZ5rZOxrCCrc2lE6MwLj5GyzUE1JiJZ0dra
-	aMMS3+yA3ZXc9GCCHGmbEQvBaCGxTzcCwhDwYzME2ZEo5YwxOYtrX1xJZkZ9c93L0OSTHp
-	vWV+KAYTdvA8UiKSb79ouK2EAL8980NgDoSKLieSR35qJ8BTosiCiGmWJGJetvTNQuFFD7
-	BsErEULVuNyCDk8g0BBKRViK8fvKtlIYe2zCWmemUuv/jFhonlezLMHg3N6gJA==
+	bh=mJZhQ6CMjsh3YkdMElA00TYYsXFupRYN7sb3b64Oh9A=;
+	b=NikMChGku6eQx9kABXAlD79s3Qn7zq2DO1RJNqh3UTT7sBjzMxS8ljQxDQEmhAFkJ6GyZh
+	U7KlvWFFPcTWiG64erPJ6ra/8CVQikIuDFqqCQ/34BXcUsF+tOKkHi1TV797GRg5pDo6WD
+	8Uo56Nzf3mQyoivcQQWDGsWqflDac18P5O8FVRANc7G+kOIgxGa3tzAMnVe2WmNQA6hgyG
+	4DtecHuYev46Mh79+SAztbbXCkekOagvu0khOXpSw42InsOaUA/+9Y1PocfYwY2osLMTvR
+	BwtYYz454G12aGLtBQJF8NgqDdEPLaKx/P0ndzLpGsimylKYNJ61sQhXV/9SxQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: linux-mtd@lists.infradead.org,
+To: Shen Lichuan <shenlichuan@vivo.com>,
+	computersforpeace@gmail.com,
+	kamal.dasu@broadcom.com,
+	miquel.raynal@bootlin.com,
+	vigneshr@ti.com,
+	maximlevitsky@gmail.com
+Cc: bcm-kernel-feedback-list@broadcom.com,
+	richard@nod.at,
+	michal.simek@amd.com,
+	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 1/3] mtd: rawnand: davinci: order headers alphabetically
-Date: Mon, 21 Oct 2024 12:02:52 +0200
-Message-ID: <20241021100252.173482-1-miquel.raynal@bootlin.com>
+	opensource.kernel@vivo.com
+Subject: Re: [PATCH v1] mtd: rawnand: Correct multiple typos in comments
+Date: Mon, 21 Oct 2024 12:03:00 +0200
+Message-ID: <20241021100300.173547-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241007122350.75285-1-brgl@bgdev.pl>
+In-Reply-To: <20240923065649.11966-1-shenlichuan@vivo.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'03dbf1c9fe32c051c3e96034e196cc1054602451'
+X-linux-mtd-patch-commit: b'8ab1b51fa45e29edcbd887208f046a2af0e92a08'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241021_030255_223776_0F2B77FA 
-X-CRM114-Status: UNSURE (   5.18  )
+X-CRM114-CacheID: sfid-20241021_030306_150906_35C8F460 
+X-CRM114-Status: UNSURE (   5.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,12 +84,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2024-10-07 at 12:23:48 UTC, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Mon, 2024-09-23 at 06:56:49 UTC, Shen Lichuan wrote:
+> Fixed some confusing spelling errors, the details are as follows:
 > 
-> For better readability, put all includes in alphabetical order.
+> -in the code comments:
+> 	remaing		-> remaining
+> 	alingment	-> alignment
+> 	capabilitiies	-> capabilities
+> 	operatoin	-> operation
+> 	decriptors	-> descriptors
+> 	stareted	-> started
+> 	Unfortunelly	-> Unfortunately
+> 	compatabable	-> compatible
+> 	depenent	-> dependent
 > 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Signed-off-by: Shen Lichuan <shenlichuan@vivo.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
