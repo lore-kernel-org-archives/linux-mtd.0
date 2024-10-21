@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3963FD3C930
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 11:59:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26F31D15D81
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 11:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=uRqG0XdnsBLIb/OScibRYIinmRIiflUSzPmsFXRBqvY=; b=CaNiBSkktbySvW
-	LxQG2iPjE2ga0rw5tnjBd1h1lqpC3/ZAE15J9jqqHT7VdtJEWTtZgZPP42zJpT2BPiILO/RRjNDh6
-	X7bwk5+TYlFadG3Rwxieq8EbQlyB+UqbuxukyNMBulaHMNu10Lnt63SSuIut6HLM6vWIyq0qW1XcL
-	HpTfy7uWDo5j0B0MI6O7/aDDkGQ5VzNZmPfK83hDcfVNiH+JMvIsSK41mmuSmAmwDbin/v5Ce7DcQ
-	jadj/ODfNfkKQnMXTiRAMu1SjBz1bwBajsc6E19onM+lajyeR/h0wOk2sk/fHbsjtpSlh4yLd0CFL
-	4BjLl3RMBV4nuoMBFOzA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gvmbNW53rXfNcL9ZZVg+1GZdU771fy7ygNyDmhkBR78=; b=K14NTD+tEdsDM/
+	/Ttc1SKk9Qjf9WFesAHE9lzhrB1cqui/5MOOFy4Hyzys9Dm4OGz23vV3bwZuoYjSS7Fv9tZdw9xzb
+	0SL1Hs7rxwjCK8e+ptZmIvTx+tulBTLDLXFfETmFszZRQThAp/MeceFg3zOSSq7qs1rlzO8N96IGl
+	jTRy5cNiqtwABzcktXtqkUOHKpGbsJRV0wDBArdokLgkRxZFqnENOm7CoZEVW4YOKSK/cJcGC8jXr
+	NRlXX78Qq0Ai/pXl8hIpe4S1MMtFLfDJa53R5+cZoKf0D10nVkG4BR/Pjz6foJh4miY72GMXsWEvF
+	/pav4mV9/ZxZ+hKd7juQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2r3n-000000078HI-2USx;
-	Mon, 21 Oct 2024 11:58:55 +0000
+	id 1t2r3s-000000078JT-1UN1;
+	Mon, 21 Oct 2024 11:59:00 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2r1j-000000077kg-3gXV
+	id 1t2r2O-000000077vb-2vPt
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Oct 2024 11:56:49 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49L9w8G2026029;
-	Mon, 21 Oct 2024 11:56:42 GMT
+	Mon, 21 Oct 2024 11:57:30 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49L9WVWn016306;
+	Mon, 21 Oct 2024 11:57:20 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=c8neZn7TaSgvoMLO8XCwQm
-	u1djlpd3kk3+j/9jpHSvc=; b=aURTZVjR2th3Uj/3LkmcX/gGhDREjNK3iFUDMr
-	QiUSC8OxzdOl8KRLEb+uF7brzJqBrrx5MhUciDsvxsbdx74BlSYBzd0t2jw5SgC/
-	od9Pk1ZshBNyCQcfH4sp5CXi11YSyZTsdjYviTBOfTVOg28KewLjaEonHgAEguPD
-	hfEWuDlAFPmXvT7UYuHeErdxs7OEWz7fgX/BVkHADNfAH9gCsOHve9NdFh/+xsGo
-	0CUqnYbEAcziV9I1vuhnRlBkRE/2kc0ps9o8sp7m+2c4wjImiIMjJJxNS0oUK8S4
-	GmeNnPExniLGNMNiDQ3vX5hzpbWfcUzEi+OLGKL9Y5dlipuw==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42c6rj4k4c-1
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	63bxlXze34BhKAsJtRJu+cfLxtNttQ5kmNk8Ow28dKw=; b=N5qlHftE5xGcvixa
+	xoAWds5UmDQ2FTXrRKgAfUahFX3eZ3QfxxQNDSxXlDIx13NAnV9xGEzXhKwT0lRs
+	Jloegjfaua4kySK+cSMsCrNdKZtKRAy6Oext06zfBiyVkdtrMEwOdzDGDWhaKSlt
+	wPRhWqO+BcJQs0B2wzB32WRZv8694zdOtoboKEF0qSUS0w9sP6/fTKb6F716RQYB
+	dHDpUfncl9OMqqnzIkki/r0cmZ9eqjGBg8nIBhU1dxpoXsTZXI28EprCUkDjQcOk
+	xgEhRueK9HB0jjSW07w6OjPlRqXNOoMjkddI+2gwrXog3Wavh54FPQ+7rS+Slwg9
+	Y4VzlQ==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42dmdq8ggx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Oct 2024 11:56:41 +0000 (GMT)
+	Mon, 21 Oct 2024 11:57:19 +0000 (GMT)
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49LBueRE014074
+	by NASANPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49LBvIVl017273
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Oct 2024 11:56:40 GMT
+	Mon, 21 Oct 2024 11:57:18 GMT
 Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 21 Oct 2024 04:56:35 -0700
+ 15.2.1544.9; Mon, 21 Oct 2024 04:57:13 -0700
 From: Md Sadre Alam <quic_mdalam@quicinc.com>
 To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
         <conor+dt@kernel.org>, <andersson@kernel.org>,
@@ -61,29 +62,32 @@ To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
 CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>,
         <quic_mdalam@quicinc.com>
-Subject: [PATCH v12 0/8] Add QPIC SPI NAND driver
-Date: Mon, 21 Oct 2024 17:26:12 +0530
-Message-ID: <20241021115620.1616617-1-quic_mdalam@quicinc.com>
+Subject: [PATCH v12 7/8] arm64: dts: qcom: ipq9574: Add SPI nand support
+Date: Mon, 21 Oct 2024 17:26:19 +0530
+Message-ID: <20241021115620.1616617-8-quic_mdalam@quicinc.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20241021115620.1616617-1-quic_mdalam@quicinc.com>
+References: <20241021115620.1616617-1-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: hQE0VfBYKt3TxiJoYZWQUdTilNh1S7sC
-X-Proofpoint-ORIG-GUID: hQE0VfBYKt3TxiJoYZWQUdTilNh1S7sC
+X-Proofpoint-ORIG-GUID: 9nHRtThrfcXtpPQzlvjmnDkTv-hzDb6H
+X-Proofpoint-GUID: 9nHRtThrfcXtpPQzlvjmnDkTv-hzDb6H
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0
- impostorscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=932 adultscore=0 classifier=spam adjust=0 reason=mlx
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ adultscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.19.0-2409260000 definitions=main-2410210085
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241021_045648_061152_45295921 
-X-CRM114-Status: GOOD (  15.14  )
+X-CRM114-CacheID: sfid-20241021_045728_881966_258A2C06 
+X-CRM114-Status: UNSURE (   9.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,201 +104,157 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-v12:
- * Added EXPORT_SYMBOL() macro for all the api in qpic_common.c
- * Added MODULE_LICENSE() macro in qpic_common.c to build
-   qpic_common.c as module as well
- * Removed bool type for CONFIG_MTD_NAND_QCOM to fix build error
-   reported by kernel test bot
- * Added obj-$(CONFIG_MTD_NAND_QCOM) += qpic_common.o condition
-   in Makefile to build qpic_common.c as built-in or as module
-   based on CONFIG_MTD_NAND_QCOM
- * Added Reviewed-by tag
- * Added obj-$(CONFIG_SPI_QPIC_SNAND) += qpic_common.o in Makefile
-   to build qpic_common.c based on CONFIG_SPI_QPIC_SNAND
- * Updated commit header and commit message
- * Removed sdhci node from rdp433.dts file 
+Add SPI NAND support for ipq9574 SoC.
 
-v11:
- * Dropped Reviewed-by tag
- * Added soc based compatible "qcom,ipq9574-snand"
- * fixed build error reported by kernel test bot by
-   changing statement "depends on MTD" to "selct MTD"
-   in drivers/spi/Kconfig file
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
 
-v10:
- * Fixed compilation warnings reported by kernel test robot
- * Added depends on CONFIG_MTD for qpic-spi nand driver
- * Removed extra bracket from statement if (i == (num_cw - 1))
-   in qcom_spi_program_raw() api.
+Change in [v12]
 
-v9:
- * Fixed all the compilation warning reported by
-   kernel test robot
-  * Changed type of cmd1, vld to u32 from __le32 in qcom_nand_controller
-   structure
- * Changed type of cfg0, cfg1, cfg0_raw, cfg1_raw, clrflashstatus,
-   ecc_buf_cfg, ecc_bch_cfg, clrreadstatus to u32 in qcom_nand_host
-   structure
- * In nandc_set_read_loc_first() api added cpu_to_le32() macro to fix
-   compilation warning reported by kernel test bot
- * In nandc_set_read_loc_last() api added cpu_to_le32() macro to fix
-   compilation warning reported by kernel test bot
- * Changed data type of cw_offset, read_size, is_last_read_loc to
-   u32 in nandc_set_read_loc() api to fix compilation warning reported
-   by kernel test bot
- * In set_address() api added cpu_to_le32() macro to fix compilation
-   warning reported by kernel test bot
- * In update_rw_regs() api added cpu_to_le32() macro to fix compilation
-   warning reported by kernel test bot
- * In qcom_op_cmd_mapping() api added cpu_to_le32() macro to fix
-   compilation warning reported by kernel test bot
- * In qcom_read_status_exec() api added cpu_to_le32() macro to fix
-   compilation warning reported by kernel test bot
- * In qcom_read_id_type_exec() api added cpu_to_le32() macro to fix
-   compilation warning reported by kernel test bot
- * In qcom_misc_cmd_type_exec() api added cpu_to_le32() macro to fix
-   compilation warning reported by kernel test bot
- * In qcom_param_page_type_exec() api added cpu_to_le32() macro to fix
-   compilation warning reported by kernel test bot   
- * In update_rw_regs() api added cpu_to_le32() macro to fix compilation
-   issue reported by kernel test bot
- * In qcom_param_page_type_exec() api added cpu_to_le32() macro to fix
-   compilation issue reported by kernel test bot
- * Changed data type of addr1, addr2, cmd, to __le32 in qpic_spi_nand
-   structure
- * In qcom_spi_set_read_loc_first() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_set_read_loc_last() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_init() api added cpu_to_le32() macro to fix compilation
-   warning
- * In qcom_spi_ecc_init_ctx_pipelined() api removed unused variables
-   reqs, user, step_size, strength and added cpu_to_le32() macro as well
-   to fix compilation warning
- * In qcom_spi_read_last_cw() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_check_error() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_read_page_ecc() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_read_page_oob() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_program_raw() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_program_ecc() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_program_oob() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_send_cmdaddr() api added cpu_to_le32() macro to fix
-   compilation warning
- * In qcom_spi_io_op() api added cpu_to_le32() macro to fix compilation
-    warning
-v8:
- * Fixed compilation warning reported by kernel test robot
- * Added "chip" description in nandc_set_read_loc_first()
- * Added "chip" description" in nandc_set_read_loc_last()
- * Changed data type of read_location0, read_location1,
-   read_location2, read_location3, addr0, addr1, cmd, cfg0,
-   cfg1, ecc_bch_cfg, ecc_buf_cfg, clrflashstatus, clrreadstatus,
-   orig_cmd1, orig_vld to __le32 to fix compilation warning.
- * Included bitfield.h header file in spi-qpic-snand.c to
-   fix compilation warning
- * Removed unused variable "steps" variable from 
-   qcom_spi_ecc_init_ctx_pipelined()
+* No change
 
-v7:
- * Added read_oob() and write_oob() api
- * Added FIELD_PREP() in spi init
- * Made CONFIG_SPI_QPIC_SNAND and CONFIG_MTD_NAND_QCOM
-   as bool type
- * Removed offset 0 in oob_ecc() layout
- * Handled multiple error condition
+Change in [v11]
 
-v6:
- * Added FIELD_PREP() and GENMASK() macro
- * Added qpic_spi_nand{..} structure for
-   spi nand realted variables
- * Made qpic_common.c slectable based on
-   either CONFIG_MTD_NAND_QCOM or CONFIG_SPI_QPIC_SNAND
- * Removed rawnand.h from qpic-common.h 
- * Removed partitions.h and rawnand.h form spi-qpic-snand.c
- * Added qcom_nand_unalloc() in remove()
+* No change
 
-v5:
- * Fixes nandbiterr issue
- * Added raw_read() and raw_write() API
- * Added qcom_ prefix to all the common API
- * Removed register indirection
- * Following tests for SPI-NAND devices passed
+Change in [v10]
 
-   - mtd_oobtest
-   - mtd_pagetest
-   - mtd_readtest
-   - mtd_speedtest
-   - mtd_stresstest
-   - mtd_subpagetest
-   - mtd_nandbiterrs
-   - nandtest
-   - nanddump
-   - nandwrite
-   - nandbiterr -i
-   - mtd erase
-   - mtd write
-   - dd
-   - hexddump
+* No change 
 
-v4:
- * In this patch series fixes kernel doc for all the cmmon api
- * Also fixes dm-binding commit message
- * Fix qpic_common.c compilation based on config
+Change in [v9]
 
-v3:
- * In this patch series fixes multiple things like
-   added clock-name, added _alloc_controller api instead
-   of alloc_master, made common apis more generic etc.
+* No change
 
- * Addressed all the comment from v2 patch series
+Change in [v8]
 
-v2:
- * https://lore.kernel.org/linux-arm-msm/20240215134856.1313239-1-quic_mdalam@quicinc.com/
- * In this series of patchs we have added basic working QPIC SPI NAND
-   driver with READ, WRITE, ERASE etc functionality
+* No change
 
- * Addressed all the comments given in RFC [v1] patch
+Change in [v7]
 
-v1:
- * https://lore.kernel.org/linux-arm-msm/20231031120307.1600689-1-quic_mdalam@quicinc.com/
- * Initial set of patches for handling QPIC SPI NAND.
+* No change
 
+Change in [v6]
 
-Md Sadre Alam (8):
-  spi: dt-bindings: Introduce qcom,spi-qpic-snand
-  mtd: rawnand: qcom: cleanup qcom_nandc driver
-  mtd: rawnand: qcom: Add qcom prefix to common api
-  mtd: nand: Add qpic_common API file
-  mtd: rawnand: qcom: use FIELD_PREP and GENMASK
-  spi: spi-qpic: add driver for QCOM SPI NAND flash Interface
-  arm64: dts: qcom: ipq9574: Add SPI nand support
-  arm64: dts: qcom: ipq9574: Remove eMMC node
+* No change
 
- .../bindings/spi/qcom,spi-qpic-snand.yaml     |   83 +
- .../boot/dts/qcom/ipq9574-rdp-common.dtsi     |   43 +
- arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts   |   12 -
- arch/arm64/boot/dts/qcom/ipq9574.dtsi         |   27 +
- drivers/mtd/nand/Makefile                     |    6 +-
- drivers/mtd/nand/qpic_common.c                |  757 +++++++
- drivers/mtd/nand/raw/qcom_nandc.c             | 1763 +++--------------
- drivers/spi/Kconfig                           |    9 +
- drivers/spi/Makefile                          |    1 +
- drivers/spi/spi-qpic-snand.c                  | 1634 +++++++++++++++
- include/linux/mtd/nand-qpic-common.h          |  482 +++++
- 11 files changed, 3364 insertions(+), 1453 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
- create mode 100644 drivers/mtd/nand/qpic_common.c
- create mode 100644 drivers/spi/spi-qpic-snand.c
- create mode 100644 include/linux/mtd/nand-qpic-common.h
+Change in [v5]
 
+* No change
+
+Change in [v4]
+
+* No change
+
+Change in [v3]
+
+* Updated gpio number as per pin control driver
+
+* Fixed alignment issue
+
+Change in [v2]
+
+* Added initial enablement for spi-nand 
+
+Change in [v1]
+
+* Posted as RFC patch for design review
+
+ .../boot/dts/qcom/ipq9574-rdp-common.dtsi     | 43 +++++++++++++++++++
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         | 27 ++++++++++++
+ 2 files changed, 70 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+index 91e104b0f865..6429a6b3b903 100644
+--- a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+@@ -139,6 +139,49 @@ gpio_leds_default: gpio-leds-default-state {
+ 		drive-strength = <8>;
+ 		bias-pull-up;
+ 	};
++
++	qpic_snand_default_state: qpic-snand-default-state {
++		clock-pins {
++			pins = "gpio5";
++			function = "qspi_clk";
++			drive-strength = <8>;
++			bias-disable;
++		};
++
++		cs-pins {
++			pins = "gpio4";
++			function = "qspi_cs";
++			drive-strength = <8>;
++			bias-disable;
++		};
++
++		data-pins {
++			pins = "gpio0", "gpio1", "gpio2", "gpio3";
++			function = "qspi_data";
++			drive-strength = <8>;
++			bias-disable;
++		};
++	};
++};
++
++&qpic_bam {
++	status = "okay";
++};
++
++&qpic_nand {
++	pinctrl-0 = <&qpic_snand_default_state>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	flash@0 {
++		compatible = "spi-nand";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		nand-ecc-engine = <&qpic_nand>;
++		nand-ecc-strength = <4>;
++		nand-ecc-step-size = <512>;
++	};
+ };
+ 
+ &usb_0_dwc3 {
+diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+index 14c7b3a78442..86eec9657523 100644
+--- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+@@ -330,6 +330,33 @@ tcsr: syscon@1937000 {
+ 			reg = <0x01937000 0x21000>;
+ 		};
+ 
++		qpic_bam: dma-controller@7984000 {
++			compatible = "qcom,bam-v1.7.0";
++			reg = <0x7984000 0x1c000>;
++			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&gcc GCC_QPIC_AHB_CLK>;
++			clock-names = "bam_clk";
++			#dma-cells = <1>;
++			qcom,ee = <0>;
++			status = "disabled";
++		};
++
++		qpic_nand: spi@79b0000 {
++			compatible = "qcom,ipq9574-snand";
++			reg = <0x79b0000 0x10000>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			clocks = <&gcc GCC_QPIC_CLK>,
++				 <&gcc GCC_QPIC_AHB_CLK>,
++				 <&gcc GCC_QPIC_IO_MACRO_CLK>;
++			clock-names = "core", "aon", "iom";
++			dmas = <&qpic_bam 0>,
++			       <&qpic_bam 1>,
++			       <&qpic_bam 2>;
++			dma-names = "tx", "rx", "cmd";
++			status = "disabled";
++		};
++
+ 		sdhc_1: mmc@7804000 {
+ 			compatible = "qcom,ipq9574-sdhci", "qcom,sdhci-msm-v5";
+ 			reg = <0x07804000 0x1000>,
 -- 
 2.34.1
 
