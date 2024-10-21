@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C51F1D0E6D8
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 10:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A8B7D0E6DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 10:04:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pId/Rf3mGPprPTAi8+9382H7+tqRDdhsJgQPxilKPGQ=; b=pzhyhvBy2WHo6A
-	QLaO/k18/QO//5evvGDDuLIykJQ+RYt7jtjWLvjHqs7mtYmbhbb+UAVMsfCQmi68ublERabHtcjlH
-	RItj336pOY31P6Ja2AEkM2tup6eCdA/FSnsU06bQAAW97627S8y4UvudzNFmvQARRJxcEYArCYc/U
-	ZjwayZr/JaEfK10DjoWIgkskmBrKN8yrHE0fJJe0Tvbb0b7eZFWUqZ2WFMxdLgPE42fgFsjAEpNfh
-	Z520War2NVnoFAaPM1+0GSLDqWddB2uKMw5aVH+0I6afbz9a3X6HD1zvjxDWlT3eB1MReZFzirhmw
-	w+/G54YMtRV2W4qxnBqA==;
+	List-Owner; bh=Iibvb22cpO6v4MwNGxPIl11YF/qRv7jIPL/GPmlNmmg=; b=x9sR2wt5lb7SPQ
+	i89PMuuKw09FTaL5uW5Vf+9zZsbGU0ar9zj29T1v2oOK1OKiyqsky2hBdzFaeriyVG3kt+ItovgLk
+	VDpME5mHtXV4AFJWS8NvIMNApn6CiBTAyGt381qNz1MD4unRUJBaJKcuKaRH3rwxJxCQgOhi6CVsh
+	g1jRa2ClMLB3ntBC8LxFb199u73hOD/ufOpjT2MK1kH6cLcoxYsdFiBKR8sbFhh8QFREuT4k0gR8k
+	KkDMySRWodE+AoWGhx7RDlphpsiE9I+BXfYaNj3u9u0REepItmNqXSy+RSdr1AOqdxs+gIcj3TCvA
+	cFUEmfvFojf0C2qOktvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2pH4-00000006oOV-0aVF;
-	Mon, 21 Oct 2024 10:04:30 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1t2pH6-00000006oRS-3Es4;
+	Mon, 21 Oct 2024 10:04:32 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2pFL-00000006nrt-1OvV
+	id 1t2pFP-00000006nsf-0XhL
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Oct 2024 10:02:44 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 50C56FF813;
-	Mon, 21 Oct 2024 10:02:41 +0000 (UTC)
+	Mon, 21 Oct 2024 10:02:48 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3E900FF80A;
+	Mon, 21 Oct 2024 10:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1729504961;
+	t=1729504965;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jt4ag5MKyMd3xgYncsPFdm31U3M1z0irrsL8f/DQljI=;
-	b=nVvlQPAUCCdLBIJWZ9hiWMraywkcDWO2Y0kLB4GGWQQOQXTL1UpZkZfS8JHZlYodhZsAMc
-	JELm0CH5+uoebbZPgy1ktk7KdfNUXJVXghPoApSp4QoK+5MTim2ezKjS5BrYcYn8wLpwOS
-	TOR+J0o0U0y5dhW8tgC+t9RcPoE2K9lMm6YoRLhkMyaV1f01gh3hpWsGSte+AnBWuMZ0X8
-	kT4ZeiJSHGaApwvItirBExtns+esL2I/wqjNI9oTPmj+XY99eXoZUF0bvuuc7PrAzWDrsA
-	yLT0+r8CL9HW2o9giaap/EcQ9zNFnkIW5eUI18ltuGaqbRebgLkBOMSoM2aTlA==
+	bh=Tcu5dEoi9gB94N13JkzIpnDDgeeEc2xXKWP4KS/Ty58=;
+	b=UUZBUtrNRLfKQVFAU3PrmVGwA23zlSfyZlbpzWMhaCoYIriBg0IkBXWS8O9Ork9uSuHE8J
+	m9CR+56aGiRpLpKFcQkxGR7HOhLUzkeLe5UT/NZgEvQ5tmIIulVLy1NGUq6A5RTdnpEaXk
+	Ykh0hbByMt6TKm1LjR1gCIj4GNbuB5S7nZDNRWd0FGV5yIKvBNwiiERvggNfIjidfZEPM0
+	xUbCHfxrZIBYBNXEkFJWNvBJ5TGzn9KGfYz59w9/pxMR7funDILlFwfDYtTVNWkY+pqQEf
+	aeggP8r5kbMFa8dAvj8QvbWBZF7d1pnMmZVzTnubbyDsq8Vhmiu4XUr0gAU2zg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Han Xu <han.xu@nxp.com>,
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: imx@lists.linux.dev,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] mtd: nand: raw: gpmi: switch to SYSTEM_SLEEP_PM_OPS
-Date: Mon, 21 Oct 2024 12:02:40 +0200
-Message-ID: <20241021100240.173393-1-miquel.raynal@bootlin.com>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 3/3] mtd: rawnand: davinci: use generic device property helpers
+Date: Mon, 21 Oct 2024 12:02:44 +0200
+Message-ID: <20241021100244.173421-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241007191319.220775-1-han.xu@nxp.com>
+In-Reply-To: <20241007122350.75285-3-brgl@bgdev.pl>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'bc1bd939c4caa57a421c8cf3492140e2820a4860'
+X-linux-mtd-patch-commit: b'905050b01499fb80dbd579e8ec13b19eb8f59101'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241021_030243_537766_F1B14FC2 
-X-CRM114-Status: UNSURE (   5.43  )
+X-CRM114-CacheID: sfid-20241021_030247_317628_B20564D8 
+X-CRM114-Status: UNSURE (   7.13  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,11 +80,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2024-10-07 at 19:13:18 UTC, Han Xu wrote:
-> Replace the SET_SYSTEM_SLEEP_PM_OPS with modern SYSTEM_SLEEP_PM_OPS
-> alternatives.
+On Mon, 2024-10-07 at 12:23:50 UTC, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Signed-off-by: Han Xu <han.xu@nxp.com>
+> There's no reason for this driver to be using OF-specific property
+> accessors. Switch to using generic device property interfaces and
+> replace the of.h include with property.h. This allows us to no longer
+> check the existence of the associated of_node.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
