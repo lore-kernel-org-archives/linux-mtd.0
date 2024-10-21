@@ -4,59 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D864DD3C927
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 02:30:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B56CD3C937
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Oct 2024 07:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qMUnJ1ZmIvpeAnSqxzDzZoEAal73b6Fsz7TYemZhQJo=; b=I39nXKK+n3GV0OWPhB7aPI/N+i
-	PVgJbLxNotWWk786i79TuNxau6Qxil087pI88c+D915zgQYFI5PA1DdnICIWnEpxv9GnszttHdGdK
-	EeMWidYJr1xcKBkqkBPVTG1NowQky5/elBa72wGPlTktcetk4DrXq08FxbnZ7eMNrOfyRVMpjf8ST
-	sslbyuEUhUI2sprLxSDQYge8ZrLwa2VzJx8dleM+v1Z8Ona4h/0aSUY0VJp4cjzH+deRd/KfEqYEo
-	WUgxevbiWpKLVyy8cSp4rN01/t7J9Tns1MGPC6BtHIZAFU/CXLQS60Cfea7hAiLqELuVr6V2kH+ZZ
-	b7brNSTQ==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gC1kEN6mCGQH5jLHZBYVjIUswjsEl46/w9EKKJwGcII=; b=XCbMbbq+wGcqgO
+	UB+m5YxXcOQUB2ATMmkeCB39bKTFWDu8JupUM0TMLGSZdku5ba1Nc08I7wDObrAzIQnND+KBAZD8R
+	lUw5LgOdKUCUJDgiN8S9oeg/JBrhpusOSaVyBHR+vpbcvpTE1XY0kbX19Pc1xvvZFuCD0dDcCzNCS
+	kB8W2atCU8BIRLBj+YpYuhCu9Tq5EezpfEwO8IVhb4KjAFkvZouYLJoiWy4kvnS0Ut+oHbaVd2N3L
+	goKHyNb60CFCLSUme9d76+qAIPoxeHLkGKO9GU9/28wkp/2AAKVt4uo0Iy+lENmYuLvVQiW2gDnlh
+	Wp8ccB4AdkL3tIpZ988g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2iBT-00000005rtl-1YkW;
-	Mon, 21 Oct 2024 02:30:15 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1t2mgE-00000006L6b-3yk6;
+	Mon, 21 Oct 2024 07:18:18 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2iBO-00000005rrU-3NSg
+	id 1t2mcI-00000006KBd-2VxK
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Oct 2024 02:30:13 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XWzgM32vLz1HLDB;
-	Mon, 21 Oct 2024 10:25:35 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id C2C6314037D;
-	Mon, 21 Oct 2024 10:29:53 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 21 Oct 2024 10:29:52 +0800
-Subject: Re: [PATCH] mtd: ubi: fix unreleased fwnode_handle in
- find_volume_fwnode()
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>, Richard Weinberger
-	<richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh
- Raghavendra <vigneshr@ti.com>, Daniel Golle <daniel@makrotopia.org>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20241019-mtd-uvi-fwnode_handle_put-v1-1-f5ef0d0cf9c8@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f475a196-db30-7aef-6bc7-3c7d0e962382@huawei.com>
-Date: Mon, 21 Oct 2024 10:29:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Mon, 21 Oct 2024 07:14:16 +0000
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49KNdnZD006185;
+	Mon, 21 Oct 2024 07:13:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	hBRCfPgu1vyB4VjNQILG00Eqs1DLwICYXQAWTx5WmFE=; b=pHuDOKZUR0it44Q/
+	nHr7IGkZ4rHwX4zxV3HIaEc2MN7USMIBZ5VEAFvfoUTLvuyuPDy0Y5t6Hy0FyZ/j
+	JdJFzRcUz/69DlVb+cWKTx+e6xnlSCyHAnXEZlzKXK8HNJNiV1TMhC7Soloj8Eem
+	Pnw48cmP67eUaILBIyZJrhMQCO3K7mr99Pn3xwA6zpzCXNA0wRX8OYKWOyM9z7+a
+	RPfHX+Wp02yx/2wmUP4mqxvM0jcc1N4g/n14Q6s/KkpP7UJZ1DC/GMdx1CuCdkVl
+	piDeZs2Sn6173WlG9wxGrQrvS5yaplRnELYMx3KebW9/jnQGMvESU/9he1wQERD2
+	YRHIfA==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42c6w1kftv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 21 Oct 2024 07:13:52 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49L7DpjO027079
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 21 Oct 2024 07:13:51 GMT
+Received: from [10.151.37.94] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 21 Oct
+ 2024 00:13:45 -0700
+Message-ID: <78820059-a1fa-2402-1e7c-0a9445b4fe1f@quicinc.com>
+Date: Mon, 21 Oct 2024 12:43:24 +0530
 MIME-Version: 1.0
-In-Reply-To: <20241019-mtd-uvi-fwnode_handle_put-v1-1-f5ef0d0cf9c8@gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v11 8/8] arm64: dts: qcom: ipq9574: Disable eMMC node
+To: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>, <broonie@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <andersson@kernel.org>, <konradybcio@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <arnd@arndb.de>,
+        <esben@geanix.com>, <nikita.shubin@maquefel.me>,
+        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>
+CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
+References: <20241010070510.1504250-1-quic_mdalam@quicinc.com>
+ <20241010070510.1504250-9-quic_mdalam@quicinc.com>
+ <0bde12c0-0c36-4d7c-9538-25d1b55d2fa9@oss.qualcomm.com>
+Content-Language: en-US
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <0bde12c0-0c36-4d7c-9538-25d1b55d2fa9@oss.qualcomm.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: lfY6icX4uid13RR-7aJTQUo6jJtK_pud
+X-Proofpoint-ORIG-GUID: lfY6icX4uid13RR-7aJTQUo6jJtK_pud
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=556 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410210050
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241020_193011_139551_54225A11 
-X-CRM114-Status: GOOD (  13.80  )
+X-CRM114-CacheID: sfid-20241021_001414_684741_695C0A99 
+X-CRM114-Status: UNSURE (   8.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,31 +104,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjQvMTAvMjAgNDoyNywgSmF2aWVyIENhcnJhc2NvIOWGmemBkzoKPiBUaGUgJ2Z3X3Zv
-bHMnIGZ3bm9kZV9oYW5kbGUgaW5pdGlhbGl6ZWQgdmlhCj4gZGV2aWNlX2dldF9uYW1lZF9jaGls
-ZF9ub2RlKCkgcmVxdWlyZXMgZXhwbGljaXQgY2FsbHMgdG8KPiBmd25vZGVfaGFuZGxlX3B1dCgp
-IHdoZW4gdGhlIHZhcmlhYmxlIGlzIG5vIGxvbmdlciByZXF1aXJlZC4KPiAKPiBBZGQgdGhlIG1p
-c3NpbmcgY2FsbHMgdG8gZndub2RlX2hhbmRsZV9wdXQoKSBiZWZvcmUgdGhlIGZ1bmN0aW9uCj4g
-cmV0dXJucy4KPiAKPiBGaXhlczogNTE5MzJmOWZjNDg3ICgibXRkOiB1Ymk6IHBvcHVsYXRlIHVi
-aSB2b2x1bWUgZndub2RlIikKPiBTaWduZWQtb2ZmLWJ5OiBKYXZpZXIgQ2FycmFzY28gPGphdmll
-ci5jYXJyYXNjby5jcnV6QGdtYWlsLmNvbT4KPiAtLS0KPiAgIGRyaXZlcnMvbXRkL3ViaS92bXQu
-YyB8IDIgKysKPiAgIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKClJldmlld2VkLWJ5
-OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IAo+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC91Ymkvdm10LmMgYi9kcml2ZXJzL210ZC91Ymkvdm10LmMKPiBpbmRleCA1
-YTM1NThiYmI5MDMuLmU1Y2YzYmRjYTNiMCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC91Ymkv
-dm10LmMKPiArKysgYi9kcml2ZXJzL210ZC91Ymkvdm10LmMKPiBAQCAtMTQzLDggKzE0MywxMCBA
-QCBzdGF0aWMgc3RydWN0IGZ3bm9kZV9oYW5kbGUgKmZpbmRfdm9sdW1lX2Z3bm9kZShzdHJ1Y3Qg
-dWJpX3ZvbHVtZSAqdm9sKQo+ICAgCQkgICAgdm9sLT52b2xfaWQgIT0gdm9saWQpCj4gICAJCQlj
-b250aW51ZTsKPiAgIAo+ICsJCWZ3bm9kZV9oYW5kbGVfcHV0KGZ3X3ZvbHMpOwo+ICAgCQlyZXR1
-cm4gZndfdm9sOwo+ICAgCX0KPiArCWZ3bm9kZV9oYW5kbGVfcHV0KGZ3X3ZvbHMpOwo+ICAgCj4g
-ICAJcmV0dXJuIE5VTEw7Cj4gICB9Cj4gCj4gLS0tCj4gYmFzZS1jb21taXQ6IGYyNDkzNjU1ZDJk
-M2Q1YzY5NThlZDk5NmIwNDNjODIxYzIzYWU4ZDMKPiBjaGFuZ2UtaWQ6IDIwMjQxMDE5LW10ZC11
-dmktZndub2RlX2hhbmRsZV9wdXQtN2IyMjBkMjc3OGI1Cj4gCj4gQmVzdCByZWdhcmRzLAo+IAoK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+
+On 10/19/2024 2:55 PM, Konrad Dybcio wrote:
+> On 10.10.2024 9:05 AM, Md Sadre Alam wrote:
+>> Disable eMMC node for rdp433, since rdp433
+>> default boot mode is norplusnand
+>>
+>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+>> ---
+> 
+> If eMMC is absent on this board, remove the whole &sdhc_1{} section
+Ok, will remove in the next revision.
+> 
+> Konrad
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
