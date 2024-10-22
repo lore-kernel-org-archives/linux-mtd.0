@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35E16D15D9D
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C73AD1715A
 	for <linux-mtd@archiver.kernel.org>; Tue, 22 Oct 2024 10:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,48 +12,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BvbeAJc8OjkTjRcgCIS7QFQSJK3fADpKcpSX2EJKnfo=; b=ANPc5UGylA30OB
-	Bei/lqB4u44hbjr8sj8w8QqD6kEAVEaEOY4Qq5Hv3mfyOsgv05JTEwYBSYtkCHKLu3NHpIaYyOm+d
-	iOpBZ73iK84BZGnQvfAbminvpI5qxcxK9r6QBU5EDtpXpmF2X2y2lPd7sigJULMJL7/QIQftSxxHr
-	PRBnSWxGXzJ3l6Mj2pR/iBEw5Ubl0dojGMKVcMETsRNAVgVKI1DzXvgP1Wwjerx0GYaKQx5WlTzzL
-	0qmmMry2uG3KxlPJw71nCD3+0C1YRx5lF1LIozbP/MfZc80SKWSLYV3gtspers1RbzN8meVfd1Tkd
-	TfjEHL1qDha7vX3WJzlQ==;
+	List-Owner; bh=9ihWd+Wz2zRBeZKp9eKtN0XGhyBr2EQXoqInaZjHxLU=; b=I/hzr7fjINDjux
+	T5BtMHgG+MyHYvDJKd9txypEcwXbuVDoxDEaraK6OqImTLdY/BC1f3UjgFCPw6oKsChg4vDevaoUN
+	8Rtjf24uQOkaiYPTLUfESPY0tFKVkR8+hSs4/qYxh1hHggAV3Dtp5Vn+OlAui7Ijcp60PC73FRIay
+	qIhy84/D0/so3jsjj1B68G1tWVUbGkisR6ILbF+UaCyTqwPn1r4GFWcom5GOw5OJZEllXD5autASv
+	2LOtuPO/IyxiuHUfpwpp8ha8HfzK7CZ3ZZSbj1Cz2wz9n2dDxI1yA2SH3yvScDziEuG+RTdRFj1x+
+	ZZ/8cE43do1tw+UU/4nA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3CWV-0000000AaoL-3dni;
-	Tue, 22 Oct 2024 10:53:59 +0000
+	id 1t3CWY-0000000Aaq1-1qeU;
+	Tue, 22 Oct 2024 10:54:02 +0000
 Received: from mgamail.intel.com ([192.198.163.11])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3CWP-0000000AajQ-3ILL
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1t3CWR-0000000Aait-25vV
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Oct 2024 10:53:55 +0000
+	Tue, 22 Oct 2024 10:53:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729594434; x=1761130434;
+  t=1729594436; x=1761130436;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kxRm/gIWV9t8+mhBKVrkdxXSfSLyFC00LqaghTUcp1k=;
-  b=Ghs/wtabl97sQ/o65sy0IiSu/rC0bfbVrT+PoYy59g0AnpC+w5TggNV2
-   1KwFYy7hQaCsDiF1Z4EeKBCc3tOPdBowrH6ektJ4jS42JlejOPESnsmJ/
-   wHxKTnOLQQhaZGPefY/0+mvzPwajNWfwPhrbXGBGlaKkamSXCbhKXSZ5e
-   6VE3Czg7B8VsVUw4SKDGWnaPWoOGKWEKpd4rj/NzUY+A0Yk5c6Ul+dUak
-   +s/MV2huV/ZNM7/lUp8SM3lfHIm4V1bDcJUcojh2Na5JjSsdyXYB+N8YQ
-   CqgKgngxJnJ7SqUG9ui1OAA+IfsCALQgAeurf222FTYCWbMc0C+1nFjey
+  bh=9rCuQRTk4a6xzmX49UTKbs+xn5wHkxCiCCeZOd6g1ak=;
+  b=jNBbiVBiIPEfLNeiSkpr0g7VsnJD3VgvFSUvNACulxezEGCjhNFkVSyI
+   BG1xtOH5uLu3r0MivKJ/gnUkqOaNXEVASpyQEVZXUUuQw/RS2Ht7kB42+
+   2m8R8pfbjT/H2M2b4adhF+T1fHvPHzAJxVS8NdcHLO4Zlp3ury/myK5Lg
+   ovTKP7o1RVH3Vp9WQ9rexOzzFXDrrQ87rtIk54Ft1I+SDUQnuSeGHEdYZ
+   YiQ0nBsV3FcAzGwuOcDxNtmCGWtR5BLmkCF9XYfKWCt5C5WD5dPAQnI30
+   2PbNjpZxAU+an2E7soqmaROzSAMmk6o3O8XeZff7JKQlb4Kr7lieQ95Bj
    Q==;
-X-CSE-ConnectionGUID: 2qXv5cRzS8iC/JbsE/bSAQ==
-X-CSE-MsgGUID: HHUwTQnBRx+9omLsfXIwkw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11232"; a="39704986"
+X-CSE-ConnectionGUID: ekeXDOAtTpKhAs34n6VI9A==
+X-CSE-MsgGUID: oniE+Y1ISfarQeCoCgQpuQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11232"; a="39705031"
 X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="39704986"
+   d="scan'208";a="39705031"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa105.fm.intel.com with ESMTP; 22 Oct 2024 03:53:41 -0700
-X-CSE-ConnectionGUID: 2lhHKdamTIWdpViQnlu/pA==
-X-CSE-MsgGUID: bfY8UXGTQo2gFVlFhPRXrA==
+  by fmvoesa105.fm.intel.com with ESMTP; 22 Oct 2024 03:53:46 -0700
+X-CSE-ConnectionGUID: cKRitV/xQC+Sx46Knaz+GQ==
+X-CSE-MsgGUID: dxeUVgoETHGvRwlV71KVFA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="79847596"
+   d="scan'208";a="79847639"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 03:53:16 -0700
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 03:53:25 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -75,17 +75,18 @@ Cc: Oren Weil <oren.jer.weil@intel.com>,
 	intel-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Alexander Usyskin <alexander.usyskin@intel.com>,
-	Tomas Winkler <tomasw@gmail.com>
-Subject: [PATCH 02/10] mtd: intel-dg: implement region enumeration
-Date: Tue, 22 Oct 2024 13:41:11 +0300
-Message-ID: <20241022104119.3149051-3-alexander.usyskin@intel.com>
+	Tomas Winkler <tomasw@gmail.com>,
+	Vitaly Lubart <lubvital@gmail.com>
+Subject: [PATCH 04/10] mtd: intel-dg: register with mtd
+Date: Tue, 22 Oct 2024 13:41:13 +0300
+Message-ID: <20241022104119.3149051-5-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241022104119.3149051-1-alexander.usyskin@intel.com>
 References: <20241022104119.3149051-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241022_035353_863404_68B64775 
-X-CRM114-Status: GOOD (  21.40  )
+X-CRM114-CacheID: sfid-20241022_035355_686554_C373AED5 
+X-CRM114-Status: GOOD (  21.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,245 +103,343 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In intel-dg, there is no access to the spi controller,
-the information is extracted from the descriptor region.
+Register the on-die nvm device with the mtd subsystem.
+Refcount nvm object on _get and _put mtd callbacks.
+For erase operation address and size should be 4K aligned.
+For write operation address and size has to be 4bytes aligned.
 
 CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
 CC: Lucas De Marchi <lucas.demarchi@intel.com>
 Co-developed-by: Tomas Winkler <tomasw@gmail.com>
 Signed-off-by: Tomas Winkler <tomasw@gmail.com>
+Co-developed-by: Vitaly Lubart <lubvital@gmail.com>
+Signed-off-by: Vitaly Lubart <lubvital@gmail.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/mtd/devices/mtd-intel-dg.c | 199 +++++++++++++++++++++++++++++
- 1 file changed, 199 insertions(+)
+ drivers/mtd/devices/mtd-intel-dg.c | 230 ++++++++++++++++++++++++++++-
+ 1 file changed, 226 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/devices/mtd-intel-dg.c b/drivers/mtd/devices/mtd-intel-dg.c
-index 746c963ea540..05e333771be0 100644
+index 8d21947bcc23..2efcb4d64ebf 100644
 --- a/drivers/mtd/devices/mtd-intel-dg.c
 +++ b/drivers/mtd/devices/mtd-intel-dg.c
-@@ -3,6 +3,8 @@
-  * Copyright(c) 2019-2024, Intel Corporation. All rights reserved.
-  */
+@@ -5,6 +5,7 @@
  
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
+ #include <linux/bitfield.h>
+ #include <linux/bits.h>
++#include <linux/cleanup.h>
+ #include <linux/delay.h>
  #include <linux/device.h>
  #include <linux/intel_dg_nvm_aux.h>
- #include <linux/io.h>
-@@ -22,9 +24,199 @@ struct intel_dg_nvm {
- 		u8 id;
- 		u64 offset;
- 		u64 size;
-+		unsigned int is_readable:1;
-+		unsigned int is_writable:1;
- 	} regions[];
- };
+@@ -12,6 +13,8 @@
+ #include <linux/io-64-nonatomic-lo-hi.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
+ #include <linux/string.h>
+ #include <linux/slab.h>
+ #include <linux/sizes.h>
+@@ -19,6 +22,8 @@
  
-+#define NVM_TRIGGER_REG       0x00000000
-+#define NVM_VALSIG_REG        0x00000010
-+#define NVM_ADDRESS_REG       0x00000040
-+#define NVM_REGION_ID_REG     0x00000044
-+/*
-+ * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
-+ * [23:16]-Reserved
-+ * [31:24]-Erase MEM RegionID
-+ */
-+#define NVM_ERASE_REG         0x00000048
-+#define NVM_ACCESS_ERROR_REG  0x00000070
-+#define NVM_ADDRESS_ERROR_REG 0x00000074
-+
-+/* Flash Valid Signature */
-+#define NVM_FLVALSIG          0x0FF0A55A
-+
-+#define NVM_MAP_ADDR_MASK     GENMASK(7, 0)
-+#define NVM_MAP_ADDR_SHIFT    0x00000004
-+
-+#define NVM_REGION_ID_DESCRIPTOR  0
-+/* Flash Region Base Address */
-+#define NVM_FRBA      0x40
-+/* Flash Region __n - Flash Descriptor Record */
-+#define NVM_FLREG(__n) (NVM_FRBA + ((__n) * 4))
-+/*  Flash Map 1 Register */
-+#define NVM_FLMAP1_REG  0x18
-+#define NVM_FLMSTR4_OFFSET 0x00C
-+
-+#define NVM_ACCESS_ERROR_PCIE_MASK 0x7
-+
-+#define NVM_FREG_BASE_MASK GENMASK(15, 0)
-+#define NVM_FREG_ADDR_MASK GENMASK(31, 16)
-+#define NVM_FREG_ADDR_SHIFT 12
-+#define NVM_FREG_MIN_REGION_SIZE 0xFFF
-+
-+static inline void idg_nvm_set_region_id(struct intel_dg_nvm *nvm, u8 region)
+ struct intel_dg_nvm {
+ 	struct kref refcnt;
++	struct mtd_info mtd;
++	struct mutex lock; /* region access lock */
+ 	void __iomem *base;
+ 	size_t size;
+ 	unsigned int nregions;
+@@ -177,7 +182,6 @@ static int idg_nvm_is_valid(struct intel_dg_nvm *nvm)
+ 	return 0;
+ }
+ 
+-__maybe_unused
+ static unsigned int idg_nvm_get_region(const struct intel_dg_nvm *nvm, loff_t from)
+ {
+ 	unsigned int i;
+@@ -209,7 +213,6 @@ static ssize_t idg_nvm_rewrite_partial(struct intel_dg_nvm *nvm, loff_t to,
+ 	return len;
+ }
+ 
+-__maybe_unused
+ static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
+ 			 loff_t to, size_t len, const unsigned char *buf)
+ {
+@@ -268,7 +271,6 @@ static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
+ 	return len;
+ }
+ 
+-__maybe_unused
+ static ssize_t idg_read(struct intel_dg_nvm *nvm, u8 region,
+ 			loff_t from, size_t len, unsigned char *buf)
+ {
+@@ -327,7 +329,6 @@ static ssize_t idg_read(struct intel_dg_nvm *nvm, u8 region,
+ 	return len;
+ }
+ 
+-__maybe_unused
+ static ssize_t
+ idg_erase(struct intel_dg_nvm *nvm, u8 region, loff_t from, u64 len, u64 *fail_addr)
+ {
+@@ -416,6 +417,147 @@ static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device)
+ 	return n;
+ }
+ 
++static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_info *info)
 +{
-+	iowrite32((u32)region, nvm->base + NVM_REGION_ID_REG);
-+}
++	struct intel_dg_nvm *nvm = mtd->priv;
++	unsigned int idx;
++	u8 region;
++	u64 addr;
++	ssize_t bytes;
++	loff_t from;
++	size_t len;
++	size_t total_len;
 +
-+static inline u32 idg_nvm_error(struct intel_dg_nvm *nvm)
-+{
-+	void __iomem *base = nvm->base;
++	if (WARN_ON(!nvm))
++		return -EINVAL;
 +
-+	u32 reg = ioread32(base + NVM_ACCESS_ERROR_REG) & NVM_ACCESS_ERROR_PCIE_MASK;
++	if (!IS_ALIGNED(info->addr, SZ_4K) || !IS_ALIGNED(info->len, SZ_4K)) {
++		dev_err(&mtd->dev, "unaligned erase %llx %llx\n",
++			info->addr, info->len);
++		info->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
++		return -EINVAL;
++	}
 +
-+	/* reset error bits */
-+	if (reg)
-+		iowrite32(reg, base + NVM_ACCESS_ERROR_REG);
++	total_len = info->len;
++	addr = info->addr;
 +
-+	return reg;
-+}
++	guard(mutex)(&nvm->lock);
 +
-+static inline u32 idg_nvm_read32(struct intel_dg_nvm *nvm, u32 address)
-+{
-+	void __iomem *base = nvm->base;
++	while (total_len > 0) {
++		if (!IS_ALIGNED(addr, SZ_4K) || !IS_ALIGNED(total_len, SZ_4K)) {
++			dev_err(&mtd->dev, "unaligned erase %llx %zx\n", addr, total_len);
++			info->fail_addr = addr;
++			return -ERANGE;
++		}
 +
-+	iowrite32(address, base + NVM_ADDRESS_REG);
++		idx = idg_nvm_get_region(nvm, addr);
++		if (idx >= nvm->nregions) {
++			dev_err(&mtd->dev, "out of range");
++			info->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
++			return -ERANGE;
++		}
 +
-+	return ioread32(base + NVM_TRIGGER_REG);
-+}
++		from = addr - nvm->regions[idx].offset;
++		region = nvm->regions[idx].id;
++		len = total_len;
++		if (len > nvm->regions[idx].size - from)
++			len = nvm->regions[idx].size - from;
 +
-+static int idg_nvm_get_access_map(struct intel_dg_nvm *nvm, u32 *access_map)
-+{
-+	u32 flmap1;
-+	u32 fmba;
-+	u32 fmstr4;
-+	u32 fmstr4_addr;
++		dev_dbg(&mtd->dev, "erasing region[%d] %s from %llx len %zx\n",
++			region, nvm->regions[idx].name, from, len);
 +
-+	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
++		bytes = idg_erase(nvm, region, from, len, &info->fail_addr);
++		if (bytes < 0) {
++			dev_dbg(&mtd->dev, "erase failed with %zd\n", bytes);
++			info->fail_addr += nvm->regions[idx].offset;
++			return bytes;
++		}
 +
-+	flmap1 = idg_nvm_read32(nvm, NVM_FLMAP1_REG);
-+	if (idg_nvm_error(nvm))
-+		return -EIO;
-+	/* Get Flash Master Baser Address (FMBA) */
-+	fmba = (FIELD_GET(NVM_MAP_ADDR_MASK, flmap1) << NVM_MAP_ADDR_SHIFT);
-+	fmstr4_addr = fmba + NVM_FLMSTR4_OFFSET;
-+
-+	fmstr4 = idg_nvm_read32(nvm, fmstr4_addr);
-+	if (idg_nvm_error(nvm))
-+		return -EIO;
-+
-+	*access_map = fmstr4;
-+	return 0;
-+}
-+
-+static bool idg_nvm_region_readable(u32 access_map, u8 region)
-+{
-+	if (region < 12)
-+		return access_map & BIT(region + 8); /* [19:8] */
-+	else
-+		return access_map & BIT(region - 12); /* [3:0] */
-+}
-+
-+static bool idg_nvm_region_writeable(u32 access_map, u8 region)
-+{
-+	if (region < 12)
-+		return access_map & BIT(region + 20); /* [31:20] */
-+	else
-+		return access_map & BIT(region - 8); /* [7:4] */
-+}
-+
-+static int idg_nvm_is_valid(struct intel_dg_nvm *nvm)
-+{
-+	u32 is_valid;
-+
-+	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
-+
-+	is_valid = idg_nvm_read32(nvm, NVM_VALSIG_REG);
-+	if (idg_nvm_error(nvm))
-+		return -EIO;
-+
-+	if (is_valid != NVM_FLVALSIG)
-+		return -ENODEV;
++		addr += len;
++		total_len -= len;
++	}
 +
 +	return 0;
 +}
 +
-+static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device)
++static int intel_dg_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
++			     size_t *retlen, u_char *buf)
 +{
-+	int ret;
-+	unsigned int i, n;
-+	u32 access_map = 0;
++	struct intel_dg_nvm *nvm = mtd->priv;
++	ssize_t ret;
++	unsigned int idx;
++	u8 region;
 +
-+	/* clean error register, previous errors are ignored */
-+	idg_nvm_error(nvm);
++	if (WARN_ON(!nvm))
++		return -EINVAL;
 +
-+	ret = idg_nvm_is_valid(nvm);
-+	if (ret) {
-+		dev_err(device, "The MEM is not valid %d\n", ret);
++	idx = idg_nvm_get_region(nvm, from);
++
++	dev_dbg(&mtd->dev, "reading region[%d] %s from %lld len %zd\n",
++		nvm->regions[idx].id, nvm->regions[idx].name, from, len);
++
++	if (idx >= nvm->nregions) {
++		dev_err(&mtd->dev, "out of ragnge");
++		return -ERANGE;
++	}
++
++	from -= nvm->regions[idx].offset;
++	region = nvm->regions[idx].id;
++	if (len > nvm->regions[idx].size - from)
++		len = nvm->regions[idx].size - from;
++
++	guard(mutex)(&nvm->lock);
++
++	ret = idg_read(nvm, region, from, len, buf);
++	if (ret < 0) {
++		dev_dbg(&mtd->dev, "read failed with %zd\n", ret);
 +		return ret;
 +	}
 +
-+	if (idg_nvm_get_access_map(nvm, &access_map))
-+		return -EIO;
++	*retlen = ret;
 +
-+	for (i = 0, n = 0; i < nvm->nregions; i++) {
-+		u32 address, base, limit, region;
-+		u8 id = nvm->regions[i].id;
++	return 0;
++}
 +
-+		address = NVM_FLREG(id);
-+		region = idg_nvm_read32(nvm, address);
++static int intel_dg_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
++			      size_t *retlen, const u_char *buf)
++{
++	struct intel_dg_nvm *nvm = mtd->priv;
++	ssize_t ret;
++	unsigned int idx;
++	u8 region;
 +
-+		base = FIELD_GET(NVM_FREG_BASE_MASK, region) << NVM_FREG_ADDR_SHIFT;
-+		limit = (FIELD_GET(NVM_FREG_ADDR_MASK, region) << NVM_FREG_ADDR_SHIFT) |
-+			NVM_FREG_MIN_REGION_SIZE;
++	if (WARN_ON(!nvm))
++		return -EINVAL;
 +
-+		dev_dbg(device, "[%d] %s: region: 0x%08X base: 0x%08x limit: 0x%08x\n",
-+			id, nvm->regions[i].name, region, base, limit);
++	idx = idg_nvm_get_region(nvm, to);
 +
-+		if (base >= limit || (i > 0 && limit == 0)) {
-+			dev_dbg(device, "[%d] %s: disabled\n",
-+				id, nvm->regions[i].name);
-+			nvm->regions[i].is_readable = 0;
-+			continue;
-+		}
++	dev_dbg(&mtd->dev, "writing region[%d] %s to %lld len %zd\n",
++		nvm->regions[idx].id, nvm->regions[idx].name, to, len);
 +
-+		if (nvm->size < limit)
-+			nvm->size = limit;
-+
-+		nvm->regions[i].offset = base;
-+		nvm->regions[i].size = limit - base + 1;
-+		/* No write access to descriptor; mask it out*/
-+		nvm->regions[i].is_writable = idg_nvm_region_writeable(access_map, id);
-+
-+		nvm->regions[i].is_readable = idg_nvm_region_readable(access_map, id);
-+		dev_dbg(device, "Registered, %s id=%d offset=%lld size=%lld rd=%d wr=%d\n",
-+			nvm->regions[i].name,
-+			nvm->regions[i].id,
-+			nvm->regions[i].offset,
-+			nvm->regions[i].size,
-+			nvm->regions[i].is_readable,
-+			nvm->regions[i].is_writable);
-+
-+		if (nvm->regions[i].is_readable)
-+			n++;
++	if (idx >= nvm->nregions) {
++		dev_err(&mtd->dev, "out of range");
++		return -ERANGE;
 +	}
 +
-+	dev_dbg(device, "Registered %d regions\n", n);
++	to -= nvm->regions[idx].offset;
++	region = nvm->regions[idx].id;
++	if (len > nvm->regions[idx].size - to)
++		len = nvm->regions[idx].size - to;
 +
-+	/* Need to add 1 to the amount of memory
-+	 * so it is reported as an even block
-+	 */
-+	nvm->size += 1;
++	guard(mutex)(&nvm->lock);
 +
-+	return n;
++	ret = idg_write(nvm, region, to, len, buf);
++	if (ret < 0) {
++		dev_dbg(&mtd->dev, "write failed with %zd\n", ret);
++		return ret;
++	}
++
++	*retlen = ret;
++
++	return 0;
 +}
 +
  static void intel_dg_nvm_release(struct kref *kref)
  {
  	struct intel_dg_nvm *nvm = container_of(kref, struct intel_dg_nvm, refcnt);
-@@ -89,6 +281,13 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+@@ -424,9 +566,80 @@ static void intel_dg_nvm_release(struct kref *kref)
+ 	pr_debug("freeing intel_dg nvm\n");
+ 	for (i = 0; i < nvm->nregions; i++)
+ 		kfree(nvm->regions[i].name);
++	mutex_destroy(&nvm->lock);
+ 	kfree(nvm);
+ }
+ 
++static int intel_dg_mtd_get_device(struct mtd_info *mtd)
++{
++	struct mtd_info *master = mtd_get_master(mtd);
++	struct intel_dg_nvm *nvm = master->priv;
++
++	if (WARN_ON(!nvm))
++		return -EINVAL;
++	pr_debug("get mtd %s %d\n", mtd->name, kref_read(&nvm->refcnt));
++	kref_get(&nvm->refcnt);
++
++	return 0;
++}
++
++static void intel_dg_mtd_put_device(struct mtd_info *mtd)
++{
++	struct mtd_info *master = mtd_get_master(mtd);
++	struct intel_dg_nvm *nvm = master->priv;
++
++	if (WARN_ON(!nvm))
++		return;
++	pr_debug("put mtd %s %d\n", mtd->name, kref_read(&nvm->refcnt));
++	kref_put(&nvm->refcnt, intel_dg_nvm_release);
++}
++
++static int intel_dg_nvm_init_mtd(struct intel_dg_nvm *nvm, struct device *device,
++				 unsigned int nparts, bool writeable_override)
++{
++	unsigned int i;
++	unsigned int n;
++	struct mtd_partition *parts = NULL;
++	int ret;
++
++	dev_dbg(device, "registering with mtd\n");
++
++	nvm->mtd.owner = THIS_MODULE;
++	nvm->mtd.dev.parent = device;
++	nvm->mtd.flags = MTD_CAP_NORFLASH | MTD_WRITEABLE;
++	nvm->mtd.type = MTD_DATAFLASH;
++	nvm->mtd.priv = nvm;
++	nvm->mtd._write = intel_dg_mtd_write;
++	nvm->mtd._read = intel_dg_mtd_read;
++	nvm->mtd._erase = intel_dg_mtd_erase;
++	nvm->mtd._get_device = intel_dg_mtd_get_device;
++	nvm->mtd._put_device = intel_dg_mtd_put_device;
++	nvm->mtd.writesize = SZ_1; /* 1 byte granularity */
++	nvm->mtd.erasesize = SZ_4K; /* 4K bytes granularity */
++	nvm->mtd.size = nvm->size;
++
++	parts = kcalloc(nvm->nregions, sizeof(*parts), GFP_KERNEL);
++	if (!parts)
++		return -ENOMEM;
++
++	for (i = 0, n = 0; i < nvm->nregions && n < nparts; i++) {
++		if (!nvm->regions[i].is_readable)
++			continue;
++		parts[n].name = nvm->regions[i].name;
++		parts[n].offset  = nvm->regions[i].offset;
++		parts[n].size = nvm->regions[i].size;
++		if (!nvm->regions[i].is_writable && !writeable_override)
++			parts[n].mask_flags = MTD_WRITEABLE;
++		n++;
++	}
++
++	ret = mtd_device_register(&nvm->mtd, parts, n);
++
++	kfree(parts);
++
++	return ret;
++}
++
+ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+ 			      const struct auxiliary_device_id *aux_dev_id)
+ {
+@@ -458,6 +671,7 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+ 		return -ENOMEM;
+ 
+ 	kref_init(&nvm->refcnt);
++	mutex_init(&nvm->lock);
+ 
+ 	nvm->nregions = nregions;
+ 	for (n = 0, i = 0; i < INTEL_DG_NVM_REGIONS; i++) {
+@@ -487,6 +701,12 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
  		goto err;
  	}
  
-+	ret = intel_dg_nvm_init(nvm, device);
-+	if (ret < 0) {
-+		dev_err(device, "cannot initialize nvm\n");
-+		ret = -ENODEV;
++	ret = intel_dg_nvm_init_mtd(nvm, device, ret, invm->writeable_override);
++	if (ret) {
++		dev_err(device, "failed init mtd %d\n", ret);
 +		goto err;
 +	}
 +
  	dev_set_drvdata(&aux_dev->dev, nvm);
  
  	return 0;
+@@ -503,6 +723,8 @@ static void intel_dg_mtd_remove(struct auxiliary_device *aux_dev)
+ 	if (!nvm)
+ 		return;
+ 
++	mtd_device_unregister(&nvm->mtd);
++
+ 	dev_set_drvdata(&aux_dev->dev, NULL);
+ 
+ 	kref_put(&nvm->refcnt, intel_dg_nvm_release);
 -- 
 2.43.0
 
