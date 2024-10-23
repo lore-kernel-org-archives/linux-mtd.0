@@ -4,69 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62F1ACFA461
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Oct 2024 19:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDFE0CFA472
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Oct 2024 21:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XfTtTBDkKarm1u6anniYmnn4J6rONtUZ7hqxb2K7QZM=; b=u99dNBd6qSSbqv
-	uG7161d8s6GGVSKrYuTMpNoO+EjSsOV1zkNme9252jRXnlwHnJ56gXGxcrTrXSwMgr8bT+j+sde0D
-	y9pmkVhHZDAbuJFJlGJD4QTG3R6ioRMLArygAMaH9TGH1vkN2m3xlVsHvmPX6AMzMuC4JNGLCPvXv
-	pQbq1FqbK2uK8JRqS0ioRIL8D9cPs4+31BdB42g66YfsqKwom3p7WHTa+ecGSxeGckKb5zQ+FIW4f
-	FvURj+0st6+we1QKmhhWdu1w6qtE4P9Y3XGiayPfxhXcSXIjJtI0pei/uzc0I/WfjeTwQiAsG/pV4
-	nsyJr2kZyKg5EtTMYa8w==;
+	List-Owner; bh=HvAfMQUkFGzPIkwdmMRMmu7YcgHpl++AbQ25EHZbcW4=; b=LWeSgbah2IjP3h
+	EaOc4rJnKLPG/1t/jq9KH6SCS/3OLSCOOWcb7Yv5s0gwZ4KF9Zc9eJ5TPfkniNQP7ldL4j33jwmAV
+	81YebastirBNdX0Z5IpSJGZu8GvejOI2CX6LqB6eOzMq07BVJjfVs6QfOLpQV1fTqyevDrbN3YNfw
+	ICpPtX5kPaXCmunir7h7Deu23yWYK+VUyaecEpH72IhjFv8F4bdBsAHVywYhqHnurd1+XK/VZUKH6
+	oh+OAjk3DkhZSlxQVrryEt4qKp3EbXJhJIXXxEg9smQCWbNvOt/dNWQtEDeuglKLkM/UQpSBKaXFN
+	UGkSL4aCHQ1BJJA9e5MQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3gwH-0000000FeyH-1ppz;
-	Wed, 23 Oct 2024 19:22:37 +0000
-Received: from relay.smtp-ext.broadcom.com ([192.19.144.207])
+	id 1t3iXf-0000000FveF-37Z1;
+	Wed, 23 Oct 2024 21:05:19 +0000
+Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3fjE-0000000FT0t-0qd2
+	id 1t3iXR-0000000Fvat-1YSw
 	for linux-mtd@lists.infradead.org;
-	Wed, 23 Oct 2024 18:05:06 +0000
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B6496C00152E;
-	Wed, 23 Oct 2024 11:05:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B6496C00152E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1729706700;
-	bh=PHIMaIodTUUlEyV45AV49IkmrCm+6VlkRQLf/9XYmrE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TA9IBz3tp3NIGw06D91EY8bwvb0kXuHlFwhtBSMqP7plJhWA+8ri91Z0XnD0I8u3b
-	 SNH4d8WmyqKC0Lwhnt+XwWLQ0ahNA9ssvI4HdxQb2pyNz0C9lo+0T8IVXxT9NR0OIF
-	 7omIkQFNijtF4WWBpkt1J6P5BbtPrFYs8123XR7I=
-Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 4C65C18041CAC6;
-	Wed, 23 Oct 2024 11:05:00 -0700 (PDT)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: stable@vger.kernel.org
-Cc: kamal.dasu@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com,
-	Sean Nyekjaer <sean@geanix.com>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Marek Vasut <marek.vasut@gmail.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH stable 5.4] mtd: rawnand: protect access to rawnand devices while in suspend
-Date: Wed, 23 Oct 2024 11:04:49 -0700
-Message-ID: <20241023180449.231713-1-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.43.0
+	Wed, 23 Oct 2024 21:05:06 +0000
+Received: by mail-qv1-xf42.google.com with SMTP id 6a1803df08f44-6cbe3e99680so1605166d6.3
+        for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2024 14:05:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729717503; x=1730322303; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ajjz0prkpVOfz9Fw34WpY+TPI8EWCjFu9lXxmVOj2VQ=;
+        b=Y9fo/qK9pXgBwhCSmFznWYb7qv3kLqfmw+Nyosb+9yfWXWvfU/mRcrGsb0pP5dC7Am
+         vBOMVgrYXN5Ks69qvUauLik0dxAg/C7sYo9Jk1s4OsIIz9HfBGrpoyOpUA7DI1NRvzge
+         NdT/8NPqh2QVDy3Hd8pFU2bmf77NLY6GAxPgPHu50Il6/gLU2GfgS/xK2OsY+Gtln4zM
+         f4GtuCsrv2MLETAggspq2XW/zIl+CEKIv+7kccez9yj6RVE2q7v6/lJemwBZAnU/ptyK
+         4RXvmEfvpBK1YHOUoMinceX9OAShUjkyTKVWWR9Bpg6yTrACFbm1rLlrMbhtxBZgBlP/
+         xzeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729717503; x=1730322303;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ajjz0prkpVOfz9Fw34WpY+TPI8EWCjFu9lXxmVOj2VQ=;
+        b=dy8b41Z79qaoQrasu9UUaqeUTATOEgQwnIpPnIFjWAWrfmV+brIdr5hA4xATqhNR3+
+         NSluivdMqNpvFDBhOBibE+vW5nw8j1IdKHZCVPvQHdTg41DPCCExtC8XR7BW2dgaszuE
+         hS/ik30Qim9s3ordQVSSxfD6IOYIHK4mYKnVoQS/jCIg+208AD3IRIycDaQ/QnNW7xQz
+         olqD8vOagJaKL3imXYWBp7pYzGIXHp0SDgLQbSrtfGd+0myEkUQAUa8d1CnXLN05Y3uX
+         6ydG4MLu6z+YKFTky0WhsgVKlRuwhz0+mIJnG09Kjn5DzwD943vSi9kFi+gIOn3bSy9Q
+         LocQ==
+X-Gm-Message-State: AOJu0YyuQ9/2yO5Xa3AiFq9eMVxV2xesGoWBsXzgUNrfE4GqHAjZBpov
+	2f9I/78HJP5VWJHMe+J/MuyctjqIEoeO7dZzYbwrD0ZhLt/YHwLD
+X-Google-Smtp-Source: AGHT+IEEnQu+OKtY9n0NgCSJ5Eb6n5HoQaOnxdXuoI1XHEo8lp4VqPTom23Aiol8dBOV/Aceap3hKw==
+X-Received: by 2002:a05:6214:5b13:b0:6cc:38b6:5666 with SMTP id 6a1803df08f44-6ce34132d41mr43113076d6.8.1729717503355;
+        Wed, 23 Oct 2024 14:05:03 -0700 (PDT)
+Received: from localhost.localdomain (mobile-130-126-255-54.near.illinois.edu. [130.126.255.54])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ce009e26cdsm43114776d6.122.2024.10.23.14.05.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2024 14:05:02 -0700 (PDT)
+From: Gax-c <zichenxie0106@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	arnd@arndb.de,
+	dinghao.liu@zju.edu.cn
+Cc: linux-mtd@lists.infradead.org,
+	zzjas98@gmail.com,
+	chenyuan0y@gmail.com,
+	Zichen Xie <zichenxie0106@gmail.com>
+Subject: [PATCH v3] mtd: diskonchip: Cast an operand to prevent potential overflow
+Date: Wed, 23 Oct 2024 16:04:53 -0500
+Message-Id: <20241023210452.12677-1-zichenxie0106@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_110504_497028_BCB1829C 
-X-CRM114-Status: GOOD (  25.16  )
+X-CRM114-CacheID: sfid-20241023_140505_433423_99EC345F 
+X-CRM114-Status: GOOD (  12.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,170 +95,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Zichen Xie <zichenxie0106@gmail.com>
 
-commit 8cba323437a49a45756d661f500b324fc2d486fe upstream.
+There may be a potential integer overflow issue in inftl_partscan().
+parts[0].size is defined as "uint64_t"  while mtd->erasesize and
+ip->firstUnit are defined as 32-bit unsigned integer. The result of
+the calculation will be limited to 32 bits without correct casting.
 
-Prevent rawnand access while in a suspended state.
-
-Commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") allows the
-rawnand layer to return errors rather than waiting in a blocking wait.
-
-Tested on a iMX6ULL.
-
-Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20220208085213.1838273-1-sean@geanix.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[florian: Adjust rawnand.h members documentation and position]
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Zichen Xie <zichenxie0106@gmail.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 44 +++++++++++++++-----------------
- include/linux/mtd/rawnand.h      |  2 ++
- 2 files changed, 22 insertions(+), 24 deletions(-)
+v2: Correct "Fixes" tag.
+v3: Shorten subject and adjust commit log wrapping.
+---
+ drivers/mtd/nand/raw/diskonchip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index db66c1be6e5f..29e3a5b04778 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -359,16 +359,19 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  *
-  * Return: -EBUSY if the chip has been suspended, 0 otherwise
-  */
--static int nand_get_device(struct nand_chip *chip)
-+static void nand_get_device(struct nand_chip *chip)
- {
--	mutex_lock(&chip->lock);
--	if (chip->suspended) {
-+	/* Wait until the device is resumed. */
-+	while (1) {
-+		mutex_lock(&chip->lock);
-+		if (!chip->suspended) {
-+			mutex_lock(&chip->controller->lock);
-+			return;
-+		}
- 		mutex_unlock(&chip->lock);
--		return -EBUSY;
--	}
--	mutex_lock(&chip->controller->lock);
+diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
+index 8db7fc424571..70d6c2250f32 100644
+--- a/drivers/mtd/nand/raw/diskonchip.c
++++ b/drivers/mtd/nand/raw/diskonchip.c
+@@ -1098,7 +1098,7 @@ static inline int __init inftl_partscan(struct mtd_info *mtd, struct mtd_partiti
+ 		    (i == 0) && (ip->firstUnit > 0)) {
+ 			parts[0].name = " DiskOnChip IPL / Media Header partition";
+ 			parts[0].offset = 0;
+-			parts[0].size = mtd->erasesize * ip->firstUnit;
++			parts[0].size = (uint64_t)mtd->erasesize * ip->firstUnit;
+ 			numparts = 1;
+ 		}
  
--	return 0;
-+		wait_event(chip->resume_wq, !chip->suspended);
-+	}
- }
- 
- /**
-@@ -593,9 +596,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
- 		nand_erase_nand(chip, &einfo, 0);
- 
- 		/* Write bad block marker to OOB */
--		ret = nand_get_device(chip);
--		if (ret)
--			return ret;
-+		nand_get_device(chip);
- 
- 		ret = nand_markbad_bbm(chip, ofs);
- 		nand_release_device(chip);
-@@ -3576,9 +3577,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 	    ops->mode != MTD_OPS_RAW)
- 		return -ENOTSUPP;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	if (!ops->datbuf)
- 		ret = nand_do_read_oob(chip, from, ops);
-@@ -4122,13 +4121,11 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 			  struct mtd_oob_ops *ops)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	int ret;
-+	int ret = 0;
- 
- 	ops->retlen = 0;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	switch (ops->mode) {
- 	case MTD_OPS_PLACE_OOB:
-@@ -4184,9 +4181,7 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 		return -EINVAL;
- 
- 	/* Grab the lock and see if the device is available */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	/* Shift to get first page */
- 	page = (int)(instr->addr >> chip->page_shift);
-@@ -4273,7 +4268,7 @@ static void nand_sync(struct mtd_info *mtd)
- 	pr_debug("%s: called\n", __func__);
- 
- 	/* Grab the lock and see if the device is available */
--	WARN_ON(nand_get_device(chip));
-+	nand_get_device(chip);
- 	/* Release it and go back */
- 	nand_release_device(chip);
- }
-@@ -4290,9 +4285,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
- 	int ret;
- 
- 	/* Select the NAND device */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	nand_select_target(chip, chipnr);
- 
-@@ -4354,6 +4347,8 @@ static void nand_resume(struct mtd_info *mtd)
- 		pr_err("%s called for a chip which is not in suspended state\n",
- 			__func__);
- 	mutex_unlock(&chip->lock);
-+
-+	wake_up_all(&chip->resume_wq);
- }
- 
- /**
-@@ -5014,6 +5009,7 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
- 	chip->cur_cs = -1;
- 
- 	mutex_init(&chip->lock);
-+	init_waitqueue_head(&chip->resume_wq);
- 
- 	/* Enforce the right timings for reset/detection */
- 	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 4ab9bccfcde0..9db457532870 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1064,6 +1064,7 @@ struct nand_legacy {
-  * @lock:		lock protecting the suspended field. Also used to
-  *			serialize accesses to the NAND device.
-  * @suspended:		set to 1 when the device is suspended, 0 when it's not.
-+ * @resume_wq:		wait queue to sleep if rawnand is in suspended state.
-  * @bbt:		[INTERN] bad block table pointer
-  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
-  *			lookup.
-@@ -1117,6 +1118,7 @@ struct nand_chip {
- 
- 	struct mutex lock;
- 	unsigned int suspended : 1;
-+	wait_queue_head_t resume_wq;
- 
- 	uint8_t *oob_poi;
- 	struct nand_controller *controller;
 -- 
-2.43.0
+2.34.1
 
 
 ______________________________________________________
