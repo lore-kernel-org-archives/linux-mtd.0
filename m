@@ -4,82 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1D12D2E027
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Oct 2024 08:50:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 316B2D2E03C
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Oct 2024 09:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NwDzPN/0Rya8GWV2uPb2mNgzf9Se2zxg2M+YhdfrR3k=; b=RWnR05pX+t2SM9
-	gDdDW2cT3GKJp0suQJiigrNZ+g3wYSpZFGUMgqLESDIWGMMjZib6lBVr3To8tZgbp7s4KGGyNh1Ch
-	VpUQ957h1tRq+7ybfCilKrrU2eoQYnRlyxzujeemEy+NbTEmM8t/7p8dSQTWoRLd8OAGzvDjyDj6S
-	7pka5KVGQ5Bh88JC3tuZiAXPQhZf3e5J8V7MPhyHBZqm5z7B/0HZzfbuJxgongtKJhEnG3NuFdpYH
-	JMdx0wBrrI/wkPyaFraqcmpJfLd4u/85NuKD77qEO4Xog8wN2LYsVgAJpG1J+zGkSWYwlhCbpZCvE
-	KjTBEwX9mUeUr/FI60bQ==;
+	List-Owner; bh=gwLQYQsQ6j4J+Ew8XpuwB3Va7J/YwW1J6DXp7sd3CY4=; b=VYz9jn8BNEb2U0
+	EIIMIOyl22M2r6zDHSd/ph7eWt1MqRSfZ/NqxWMcVD4wHLu56hq7Stw+OlzbsNl5fStjRY4jq6yZW
+	PUNKyKw3528NH9w0oV1EE6OL+IHKTDt2ahKU8dcSv4Rktg6j75oB6PysJ6IO4FGC3D6BzOagyMpUF
+	+Y2U6eXf0a9p0ZTM1ss02W4XJnPhSFSn72TRNK2p02wDw50T10/rrdLfQSQIwnOG12nKAsEo20gqG
+	7yeBnKheKuYG4ngsIjN4e7n++eLDo5rhUfgmY6fNp0CqAxzhhlVFC0agD71OcUBF3lEwTFO7j65Yw
+	26MTDkOyIhm92yH9ZkRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3X4a-0000000Ddab-2jC0;
-	Wed, 23 Oct 2024 08:50:32 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1t3Y3W-0000000DsMn-42A8;
+	Wed, 23 Oct 2024 09:53:30 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3WvP-0000000DbsZ-0dSz
-	for linux-mtd@lists.infradead.org;
-	Wed, 23 Oct 2024 08:41:29 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-37d49a7207cso4739820f8f.0
-        for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2024 01:41:02 -0700 (PDT)
+	id 1t3XdH-0000000Dmp5-3cea;
+	Wed, 23 Oct 2024 09:26:25 +0000
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-20c7edf2872so5118405ad.1;
+        Wed, 23 Oct 2024 02:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1729672861; x=1730277661; darn=lists.infradead.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OTGtBlFhpF4KfA5UaZkwNHNmAJyTL8PF0NqzCKMi89Y=;
-        b=hU4AhDQj+Ypup2UZDIvFX6hkyCAvqDcwD5rymu7BPGokgHGi02PdPvKlVM0rJHtuBx
-         S5gjwNHWyZq3aSo77JBAzxi2icymcPUemI5Kn55S5RkeSGpVXnsa8p8im1Rurb4ZU1H3
-         PKvumR7ImsgaZN05tjtLGZfbePiE8EzO9b8AdEybMxoEIWXi559r3sHBBDWhgxc5CQhU
-         DaFwiosyRA/hHHrjH47SX8kzDtRnMhAzlk34apc0NDEDZls0xr8AofPqRO2UZfdSj/MQ
-         URb+vsvbf3r3DSbV3rlIPNkDEvUyyWfo/pxVD9RfJ2snpYD2CcGEh+diVENJEs+4JIwk
-         m1qA==
+        d=gmail.com; s=20230601; t=1729675582; x=1730280382; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uqMTUrlhS9c2NaDPYna570q7ZTXS8TJm8rks4GyeT0E=;
+        b=FziBP8NtNyTVFHWwspxLVp/iJpfUcJt3ymviz4Q6L+fA7XvBW/fkXq6DlCb4kkQe11
+         LsXvolutLPkiX4FI8rvB5MqqWR3+FAE6bV9zMcBEL5VD+O5Mnkb/o3nVcgN2cHx1iy0Q
+         I243JQ4SIhWXO8JiQoR48DRL97a1uY+wL7xP+8gUKFNcVYhTWizgDSAZxQvwSOj3k4ui
+         hu2R3HoZvcWbvHqL6S7vfIxuOoYnU+HecCchpqFLrnVFaDUxCgG/kD98nEwcTPVTZ8wz
+         rwHzt6w0Yw9Wo4U7MhYgY5Vt3tdLW/bBpmid4fjTT6w6lj7mX5DE9n65YDqFQJwA2UTc
+         KcVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729672861; x=1730277661;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OTGtBlFhpF4KfA5UaZkwNHNmAJyTL8PF0NqzCKMi89Y=;
-        b=MOQkdYfW5ZuUN9mZfgOX/RrEXhGU1/QZlr7n3cnxeKXZBZ9dYlK5KHGmeEj0FiqYiN
-         TzKUZZOk3U03R5gzn0zPtQU3GN2nwhfkkuYeF2VfuFddfjTIMOAtGh5eJEVvODLDj9Hi
-         xdQM/yV+GDV5TZY/s4ztZ8/D7bUrBEGMXN6bn68xfIpO33/jpIVU/ABbSjlCNvFYrhuT
-         vT/Zi3CgkgKUJ1M+UdTffyxZTdKV4X9pk7kYUY+t66RNbIDJ/0URDtgbut26Tg6m+4yt
-         jK29iDoygIUSUNt+trdxAVowV0kNH6ntZofvpdtJ53xOeWPjWuzhElj/75e5oao3C1F7
-         zKgA==
-X-Forwarded-Encrypted: i=1; AJvYcCUH9SQiXG2rjiX5M7iVCcXaglapWRpWh6BnBeWcfQ1rDfmm84wWk0RpRzkbWBAnOJCW2eoqP49MUqw=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzzu4YLWDxhw/YAL/aKxAsGKqR8W1o+QdeHCneCxCuuk1umw+Ha
-	x6aFoRIN51Ss1c7vum1W51YPnxbOU7bCwoN/1pfwUYBsSp5KWaxX0+DG/nrdZEs=
-X-Google-Smtp-Source: AGHT+IHBkbz8Gkiu8syBDS0U/jZ595MpfEdCm+s1X/ZgIeh+fOEidnPqxPO8f+s/cE9RJuzVEPDXEw==
-X-Received: by 2002:a05:6000:128d:b0:37d:4a68:61a1 with SMTP id ffacd0b85a97d-37efcf926d3mr1140382f8f.56.1729672860806;
-        Wed, 23 Oct 2024 01:41:00 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0b93e76sm8408355f8f.82.2024.10.23.01.40.59
+        d=1e100.net; s=20230601; t=1729675582; x=1730280382;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uqMTUrlhS9c2NaDPYna570q7ZTXS8TJm8rks4GyeT0E=;
+        b=VqSy/xq/BB6j13sSg/LNcjkjpc/oB8bNF9m4+GR8jSIMmPKNmjEkMq84nz/seHkpb9
+         v7eScJE1LCaJIaRQM+OYrvcSXHVXRVM9dgdFyMWhxNmuIptCqVaWAnhhIsgowyrCVHb+
+         upMyuyu4P3u+5dxmlkbC6r6ZwcJ+MfqM0IV8icMAwWmCScwUTCuE84nRI6mzbqgz8pEj
+         BxHAyz71UpF9XllmZ84hGA156hHmJphfp0a9QpGc41MJj9Qd5OP1dedO430kugU9UdNj
+         vYfd5UTi6T5mn0DdPKKa72A713YCCzT5MWJ4yCkw6FHzCP5mZUDM7EGoAUZZV29BMyVs
+         mHgg==
+X-Forwarded-Encrypted: i=1; AJvYcCXa66ElL5C+6oos40UMuZuGnv0EK8pgRJrNuXzAe7hmJfAQLa1JPMbbJ8pq0heCrP5DMXuUif/0Qjk=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzwFMPr1Ta9NpDdFFSM6IBxZLWj8AFpS0WvfJJHmWTIBDjFyzw6
+	pkRprFJyMLT4LcFGbPwAmIZLnHGjf23TJuud4uu6M6wFEZLpcSGS
+X-Google-Smtp-Source: AGHT+IFfo4At+Jz5FFc0TuU6S0hz6vT2tNATHOeyiCdyh2kU4xwiqLCx7UFSkT/v7yeJ2rOtQj9TRg==
+X-Received: by 2002:a17:902:e74d:b0:20c:9026:93a with SMTP id d9443c01a7336-20e970c63c8mr103663025ad.19.1729675582581;
+        Wed, 23 Oct 2024 02:26:22 -0700 (PDT)
+Received: from localhost.localdomain (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7f0bd376sm54041635ad.132.2024.10.23.02.26.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 01:41:00 -0700 (PDT)
-Date: Wed, 23 Oct 2024 11:40:56 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH next] mtd: rawnand: fix double free in
- atmel_pmecc_create_user()
-Message-ID: <7d809e5f-32e1-4438-9cc6-3167f27dd239@stanley.mountain>
+        Wed, 23 Oct 2024 02:26:22 -0700 (PDT)
+From: Hui-Ping Chen <hpchen0nvt@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	nikita.shubin@maquefel.me,
+	arnd@arndb.de,
+	vkoul@kernel.org,
+	esben@geanix.com
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hui-Ping Chen <hpchen0nvt@gmail.com>
+Subject: [PATCH v8 0/2] Add support for nuvoton ma35 nand controller
+Date: Wed, 23 Oct 2024 09:26:15 +0000
+Message-Id: <20241023092617.108021-1-hpchen0nvt@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_014103_226352_33396568 
-X-CRM114-Status: GOOD (  10.51  )
+X-CRM114-CacheID: sfid-20241023_022623_922566_8F91826C 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,34 +101,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The "user" pointer was converted from being allocated with kzalloc() to
-being allocated by devm_kzalloc().  Calling kfree(user) will lead to a
-double free.
+This patch series adds the mtd nand driver for the nuvoton ma35 ARMv8 SoC.
+It includes DT binding documentation and the ma35 mtd nand driver.
 
-Fixes: 6d734f1bfc33 ("mtd: rawnand: atmel: Fix possible memory leak")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/mtd/nand/raw/atmel/pmecc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+v8:
+  - Update ma35d1 mtd nand driver
+    - Rename to nuvoton-ma35d1-nand-controller.c.
+    - Use switch case instead of if else.
+    - Move some parameters to be set during initialization.
+    - Fix the ecc.read_page return value issue.
+    - Add enable/disable ECC engine before and after reading/writing the page.
+    - Return IRQ_NONE if (isr & INT_DMA) == 0.
+    - Move the HW ECC related settings to ON_HOST.
+    - Move hw_init() to probe.
 
-diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
-index a22aab4ed4e8..3c7dee1be21d 100644
---- a/drivers/mtd/nand/raw/atmel/pmecc.c
-+++ b/drivers/mtd/nand/raw/atmel/pmecc.c
-@@ -380,10 +380,8 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
- 	user->delta = user->dmu + req->ecc.strength + 1;
- 
- 	gf_tables = atmel_pmecc_get_gf_tables(req);
--	if (IS_ERR(gf_tables)) {
--		kfree(user);
-+	if (IS_ERR(gf_tables))
- 		return ERR_CAST(gf_tables);
--	}
- 
- 	user->gf_tables = gf_tables;
- 
+v7:
+  - Update nuvoton,ma35d1-nand.yaml
+    - Remove required 'nand-ecc-step-size' and 'nand-ecc-strength'.
+    - Add 'reg' for chip select.
+  - Update ma35d1 mtd nand driver
+    - Update space and comments style.
+    - Add chip select setting from DT.
+    - Add switch case which supports various ECC configurations.
+    - Set reset before NAND controller enable.
+
+v6:
+  - Update ma35d1 mtd nand driver
+    - Remove extra blank lines and add comments.
+
+v5:
+  - Update ma35d1 mtd nand driver
+    - Remove unnecessary definitions and comments.
+    - Modified DMA API call sequence.
+    - Move the ECC check out of the interrupt handler.
+      Check it after reading a page.
+
+v4:
+  - Update nuvoton,ma35d1-nand.yaml
+    - rename 'nuvoton,ma35d1-nand' to 'nuvoton,ma35d1-nand-controller'.
+  - Update ma35d1 mtd nand driver
+    - Rewrite the NAND driver using the exec_op API.
+
+v3:
+  - Update ma35d1 mtd nand driver
+    - Release IRQ handler.
+    - Remove unused functions.
+    - Remove '.owner'.
+
+v2:
+  - Update nuvoton,ma35d1-nand.yaml
+    - Adjust the order and remove any unnecessary items.
+    - Add 'nand-ecc-step-size' and 'nand-ecc-strength' to the required list.
+  - Update ma35d1 mtd nand driver
+    - Fix coding style.
+    - Use 'devm_clk_get' instead of 'of_clk_get'.
+    - Use 'dev_err_probe' instead of 'dev_err'.
+    - Remove 'pr_info' and 'of_match_ptr'.
+    - Remove 'module_init' and 'module_exit'.
+
+
+
+Hui-Ping Chen (2):
+  dt-bindings: mtd: nuvoton,ma35d1-nand: add new bindings
+  mtd: rawnand: nuvoton: add new driver for the Nuvoton MA35 SoC
+
+ .../bindings/mtd/nuvoton,ma35d1-nand.yaml     |  95 ++
+ drivers/mtd/nand/raw/Kconfig                  |   8 +
+ drivers/mtd/nand/raw/Makefile                 |   1 +
+ .../nand/raw/nuvoton-ma35d1-nand-controller.c | 932 ++++++++++++++++++
+ 4 files changed, 1036 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nuvoton,ma35d1-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/nuvoton-ma35d1-nand-controller.c
+
 -- 
-2.45.2
+2.25.1
 
 
 ______________________________________________________
