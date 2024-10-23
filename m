@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDFE0CFA472
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Oct 2024 21:05:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F665CFA474
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Oct 2024 21:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HvAfMQUkFGzPIkwdmMRMmu7YcgHpl++AbQ25EHZbcW4=; b=LWeSgbah2IjP3h
-	EaOc4rJnKLPG/1t/jq9KH6SCS/3OLSCOOWcb7Yv5s0gwZ4KF9Zc9eJ5TPfkniNQP7ldL4j33jwmAV
-	81YebastirBNdX0Z5IpSJGZu8GvejOI2CX6LqB6eOzMq07BVJjfVs6QfOLpQV1fTqyevDrbN3YNfw
-	ICpPtX5kPaXCmunir7h7Deu23yWYK+VUyaecEpH72IhjFv8F4bdBsAHVywYhqHnurd1+XK/VZUKH6
-	oh+OAjk3DkhZSlxQVrryEt4qKp3EbXJhJIXXxEg9smQCWbNvOt/dNWQtEDeuglKLkM/UQpSBKaXFN
-	UGkSL4aCHQ1BJJA9e5MQ==;
+	List-Owner; bh=+yDU+UbhI8DgzxReoyCO3rcW/mokTclR9B+LAnso5i0=; b=NR1iCVEuRC/+f9
+	ULU2f1pmW+4yfvvNitCMQ13/TXjxUtYQIJ4dY8caHi34jt2D+cgTLt2yeDZOGSxk8ifYW66J97yIe
+	SfLRcL1WVE7s4sSaPDvZRbyierdn4+VfwNTik/nWfea/EYs8cb+3fwCNNGVY63lSwuOqwJQQuNIh/
+	SQobSxbyrgwSI9/2kT5ZaGBIZkivEzhb1tdaK3T5rEVukLMXSJKr3H3ZVfCeTOUuOW+DswQva6cCb
+	BDS769gL4znjGU/wC38CFZiq2wgXv8IGjx9AzdTM+71QhKnwmaCUbE8ZrQh0fsQMtEuIKmlR+s3Ij
+	bTOQpKRAwY8+igp13y1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3iXf-0000000FveF-37Z1;
-	Wed, 23 Oct 2024 21:05:19 +0000
-Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
+	id 1t3ifP-0000000FwbP-2YtB;
+	Wed, 23 Oct 2024 21:13:19 +0000
+Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3iXR-0000000Fvat-1YSw
+	id 1t3ifM-0000000FwaU-3Vr5
 	for linux-mtd@lists.infradead.org;
-	Wed, 23 Oct 2024 21:05:06 +0000
-Received: by mail-qv1-xf42.google.com with SMTP id 6a1803df08f44-6cbe3e99680so1605166d6.3
-        for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2024 14:05:04 -0700 (PDT)
+	Wed, 23 Oct 2024 21:13:18 +0000
+Received: by mail-qk1-x742.google.com with SMTP id af79cd13be357-7b147a2ff04so15758585a.3
+        for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2024 14:13:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729717503; x=1730322303; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1729717995; x=1730322795; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ajjz0prkpVOfz9Fw34WpY+TPI8EWCjFu9lXxmVOj2VQ=;
-        b=Y9fo/qK9pXgBwhCSmFznWYb7qv3kLqfmw+Nyosb+9yfWXWvfU/mRcrGsb0pP5dC7Am
-         vBOMVgrYXN5Ks69qvUauLik0dxAg/C7sYo9Jk1s4OsIIz9HfBGrpoyOpUA7DI1NRvzge
-         NdT/8NPqh2QVDy3Hd8pFU2bmf77NLY6GAxPgPHu50Il6/gLU2GfgS/xK2OsY+Gtln4zM
-         f4GtuCsrv2MLETAggspq2XW/zIl+CEKIv+7kccez9yj6RVE2q7v6/lJemwBZAnU/ptyK
-         4RXvmEfvpBK1YHOUoMinceX9OAShUjkyTKVWWR9Bpg6yTrACFbm1rLlrMbhtxBZgBlP/
-         xzeQ==
+        bh=MCdIPw1scUzZ/qF39vP4SWy2EyXqMACy7FsQ1MZaVb4=;
+        b=mn1qqpqfuYCqPkEe3fE9/NCEft0vMrJ9rO+xNOXNy2fO3G6CxlUptn2QBxfEwhlX8m
+         8c/jz+Na2l03nJd4cR4Zi5gAWFhM7G4OTaJwixDsypJ+WEHZQkfWZsTsKCO/wNAzsp4f
+         UxXfyFtsadXsmRrzkN2NEnY6+8RrllpYc5nvPiGjt7YHUaJWzMBbOf8QEqycH2kp7yu3
+         xeb7Hvb/fMsS1qgoigv2zv9NVQvujXwjwBQiP9oaoooTBDlrUZui43DYpN6BJfYpTpan
+         oi+KR/YJ81/uZnbUvt799wdrFT5iyQJ1MFK1J3yWELQkWLa6MHbFtAuX8r1WHKWeA9qw
+         0NNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729717503; x=1730322303;
+        d=1e100.net; s=20230601; t=1729717995; x=1730322795;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ajjz0prkpVOfz9Fw34WpY+TPI8EWCjFu9lXxmVOj2VQ=;
-        b=dy8b41Z79qaoQrasu9UUaqeUTATOEgQwnIpPnIFjWAWrfmV+brIdr5hA4xATqhNR3+
-         NSluivdMqNpvFDBhOBibE+vW5nw8j1IdKHZCVPvQHdTg41DPCCExtC8XR7BW2dgaszuE
-         hS/ik30Qim9s3ordQVSSxfD6IOYIHK4mYKnVoQS/jCIg+208AD3IRIycDaQ/QnNW7xQz
-         olqD8vOagJaKL3imXYWBp7pYzGIXHp0SDgLQbSrtfGd+0myEkUQAUa8d1CnXLN05Y3uX
-         6ydG4MLu6z+YKFTky0WhsgVKlRuwhz0+mIJnG09Kjn5DzwD943vSi9kFi+gIOn3bSy9Q
-         LocQ==
-X-Gm-Message-State: AOJu0YyuQ9/2yO5Xa3AiFq9eMVxV2xesGoWBsXzgUNrfE4GqHAjZBpov
-	2f9I/78HJP5VWJHMe+J/MuyctjqIEoeO7dZzYbwrD0ZhLt/YHwLD
-X-Google-Smtp-Source: AGHT+IEEnQu+OKtY9n0NgCSJ5Eb6n5HoQaOnxdXuoI1XHEo8lp4VqPTom23Aiol8dBOV/Aceap3hKw==
-X-Received: by 2002:a05:6214:5b13:b0:6cc:38b6:5666 with SMTP id 6a1803df08f44-6ce34132d41mr43113076d6.8.1729717503355;
-        Wed, 23 Oct 2024 14:05:03 -0700 (PDT)
+        bh=MCdIPw1scUzZ/qF39vP4SWy2EyXqMACy7FsQ1MZaVb4=;
+        b=jizx32Yd3hcyMrdApKwr8aDPbXwHpv7ZVfaQ9WDSRhmqZJJTKRV2CtAaHaTOksoF5D
+         zESjXdDGVol9zirUqdCMampxD1I2tLpdRFlobL9w24hP5nSboJSDYhno2qrfuIw/Jg5S
+         CjB0Sl920VyYMVNeC7upbynE+zlt3Xge+aOumc2LhG1MEwZDxDCc6P4InRccOthUdoVe
+         hwd7zPQd3wnBy7zSXdZm+yRe2OkQsDqdtqXJk3zULKEb9GPZfscKDnIERTg6L205/zSm
+         pYKQq1AQkohuGG/RncYzhB8KP7vu/HEtH4ugrkJKILTGf/DUfkUBBEqExH6zkg+Ame4N
+         gtMw==
+X-Gm-Message-State: AOJu0YwHkElHyNL8EDIMrzSCgd1j8SAHEEfwFpq6EwVqpYAjfzakjLVz
+	SJmE18B6lo82E7mcRvLMPiiAB3YtQBsr+8v+N+YxcQhCQ7V2R/UP
+X-Google-Smtp-Source: AGHT+IG6SHQd2UbknuiJO0zSgtIat6OwS2EA3NcHpw+bDSwcHDqrbswyTjGufQI99cN8Tay7klbeKA==
+X-Received: by 2002:a05:620a:1926:b0:7b1:4a48:56bb with SMTP id af79cd13be357-7b17e5bc5a1mr443735485a.56.1729717995075;
+        Wed, 23 Oct 2024 14:13:15 -0700 (PDT)
 Received: from localhost.localdomain (mobile-130-126-255-54.near.illinois.edu. [130.126.255.54])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ce009e26cdsm43114776d6.122.2024.10.23.14.05.01
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b165a037fbsm421212785a.60.2024.10.23.14.13.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 14:05:02 -0700 (PDT)
+        Wed, 23 Oct 2024 14:13:13 -0700 (PDT)
 From: Gax-c <zichenxie0106@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
@@ -70,15 +70,16 @@ To: miquel.raynal@bootlin.com,
 Cc: linux-mtd@lists.infradead.org,
 	zzjas98@gmail.com,
 	chenyuan0y@gmail.com,
-	Zichen Xie <zichenxie0106@gmail.com>
-Subject: [PATCH v3] mtd: diskonchip: Cast an operand to prevent potential overflow
-Date: Wed, 23 Oct 2024 16:04:53 -0500
-Message-Id: <20241023210452.12677-1-zichenxie0106@gmail.com>
+	Zichen Xie <zichenxie0106@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v4] mtd: diskonchip: Cast an operand to prevent potential overflow
+Date: Wed, 23 Oct 2024 16:13:10 -0500
+Message-Id: <20241023211310.13015-1-zichenxie0106@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_140505_433423_99EC345F 
-X-CRM114-Status: GOOD (  12.02  )
+X-CRM114-CacheID: sfid-20241023_141316_901553_23BEBF55 
+X-CRM114-Status: GOOD (  11.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,9 +105,11 @@ the calculation will be limited to 32 bits without correct casting.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Zichen Xie <zichenxie0106@gmail.com>
+Cc: stable@vger.kernel.org
 ---
 v2: Correct "Fixes" tag.
 v3: Shorten subject and adjust commit log wrapping.
+v4: Add Cc tag.
 ---
  drivers/mtd/nand/raw/diskonchip.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
