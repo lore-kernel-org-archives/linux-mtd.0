@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CD35CFA478
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Oct 2024 21:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12792CE8E67
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Oct 2024 11:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HurxT248P1fWmmCR4KaSjtnYajBM/3MpKMTX0xuyJ5M=; b=Vl6aVfrSDfSnDn
-	ZN4y1nHj9X7x61FFL6oE5Vgi1+3K/Zr2/GALOmpZyr86+9xDng6WgIRnHqIGYgJuBkSoHCX6NRGST
-	OTNQYi3iBcyaun/bf0f9UOQFmTnokBoi/VzHevnzuNWNTcBRiGc5l91Q/grMLRP+1tAjqLhkmD5x6
-	fIPl5EKfyld4ooA/+75bstImPkR8GZTk3UAol7v1U+Ei0/pX14o7MoJAIqzItkIDob+22qLje3RJ1
-	j4sszZYfv5wjYcxYp2diZ0HSAEvG+tGJVKNarUIdEgBdk5a8cfN50oo1Ra7lAl0l1l4/0WJZGq82G
-	mHlrN6DvphV/faNkquNw==;
+	List-Owner; bh=nGpzD7YGzqw6YsKHqm1C6dirtNu3RDKVopTaNA6V2IY=; b=ZkwM78fZN0UWBK
+	jlK8WnZzWmbdqzJf6B4VHz0hzPk/Ena/hG6PsyweYviqWMZEPoxqunWcH68lTEkRXdH46AeCAk0r2
+	Yyq9fgpp6gPWupGlh9uUvstZIVtcmo6P5OVCTO3l1l4ied0kYygr1gZajy3CTVkfSHci/dLszOjvr
+	S/hCdSotAE2hHPjNwvLJ6dIYl/seM/i4KO+UWFci0s68gz02zkHXGME0m/sDO++pPIk1jKkd/uMkp
+	pzwdIce7NM8Vd/odn4Ff9LKYDSedkTyAAt/kuC44jVbAkZOUIufENzQok399VOw6BG8Rc0k4Oiy94
+	rp6PG3FOBCsTAXSqfvEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3irq-0000000FyXj-1Sid;
-	Wed, 23 Oct 2024 21:26:10 +0000
-Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
+	id 1t3wO0-00000000FzA-3RhA;
+	Thu, 24 Oct 2024 11:52:16 +0000
+Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3iro-0000000FyXB-0WJa
+	id 1t3wD5-00000000EjX-261o
 	for linux-mtd@lists.infradead.org;
-	Wed, 23 Oct 2024 21:26:09 +0000
-Received: by mail-oi1-x241.google.com with SMTP id 5614622812f47-3e5fbc40239so219526b6e.3
-        for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2024 14:26:07 -0700 (PDT)
+	Thu, 24 Oct 2024 11:41:00 +0000
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4315e62afe0so8500055e9.1
+        for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2024 04:40:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729718767; x=1730323567; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1729770057; x=1730374857; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8p5HKt5YmndhY1o8uIjxK2AFUhC/YradmRqWJh5d9Eg=;
-        b=P+KMkRk/z2bfY1iUSw2r+RqILsscFwqpNyM/P14CIkcTxf4u4DDM1QiVnP05+j5EnS
-         yk7BbnHJGM12D9bBbFV2a/1hkj34AvM1pRGEdixcjrvFylPER/PloRsoueLtH8jhHe+7
-         qOJ9vzKDdwqe2DLcvGJ3NxYoLvbz7YVhwJTrouol46BSdOtjr9utt+GbLFW2tzKjSkqQ
-         z7HfmiOd4HSDSL9wEbgZ5oTNtQX3EtcceWx5c2sCcTcg95G059cP5ppKn+JMCHWCDv70
-         vk5ImekwoZJeOaS98KnZJXltzv77oF6BvfloPM8+r2vP8bodLw4sPYhDX78iqGbCR71a
-         3W6g==
+        bh=idzdbKFgsUG7OY55yXSHUR0pooUCkPncNXEk/U6JGi8=;
+        b=EOB3W+tTmjrd77xboG65kPsVvkZVZrtxdqukic/iQ+OqgIUKY4A5u8q4qdOJnnZNNV
+         zzr6JmpNKvMpOVPgXFWPWLdV3jhVLZfsb4IEv9LVXDQFAFo7xJMxRUASdj4NdvbcSRQX
+         q69HXD77r9y64D6dtbdrpiyDFqwKjZUXBa5pGmuwW6pdl3iMWwmd27Vb+Aydc3+8DI5Y
+         itZcnpQuegdV4OoKSo8elzxYBk48B7/x/M4ryMRv5fKlgV3qil9z5PCWwYHZOTgcdUoo
+         3kWhOYYwvzXIyGBcQ9IhmOaASBb2bASIn9CDblpvjBcE2xG5qh7nP/cLYPYj5eaYbCse
+         /RYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729718767; x=1730323567;
+        d=1e100.net; s=20230601; t=1729770057; x=1730374857;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8p5HKt5YmndhY1o8uIjxK2AFUhC/YradmRqWJh5d9Eg=;
-        b=DtDpw+lB/muM/p/9ZrNV3kaOxfXPR+duNAWvz1LnK2si88MNYkt0uzgHUmlK+YSd4I
-         QKKZTu9y8R2MSGdJuFcy/nSlDtYdnYM85qsvonx2F0ZHePzpTf3pIJOD4thNWid2k81z
-         jYUfUuGb0YTQrQP87BEshjrloQHZf4L1T7exFPIaHQyrWq7ZNnK89cGHZKhyTr+OuDXB
-         3VOJvXFReKA6TgiKvG7QkOsNZ2X0f81Ssm+Pwm5dlSbJ9sKyaVDp9jnqR5DvgcCwcwVN
-         vTeBXiJrAApBB9AvjVBm/D6K9aC8VEY9nZiTKAC7wsHGDebgy5ZKUIFirT3YSfPirE8Z
-         qsdw==
-X-Gm-Message-State: AOJu0YwLIfWrr7ckl3OZok/x80OsfnpFnTBXqCoYrrC9ZDkYsl2wDRo7
-	hxlOVZexYwJcvngWb3bMLJZD9IRZM07LWjlgxJt1jiDw6zz8WsQ0
-X-Google-Smtp-Source: AGHT+IHTsI6MVPosv5KTKr2YlsVNIKvMtmUibTmGg9kF4sSoEA/qFmZz4n9cSciEcR6KsJ4NCkf/ug==
-X-Received: by 2002:a05:6808:211f:b0:3e6:769:354e with SMTP id 5614622812f47-3e624525cd3mr3809683b6e.25.1729718766632;
-        Wed, 23 Oct 2024 14:26:06 -0700 (PDT)
-Received: from localhost.localdomain (mobile-130-126-255-54.near.illinois.edu. [130.126.255.54])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ce0099eadasm43082536d6.87.2024.10.23.14.26.04
+        bh=idzdbKFgsUG7OY55yXSHUR0pooUCkPncNXEk/U6JGi8=;
+        b=CGORWrKnJMAiXvZPBOftDNS0kkCggLAkm3/i0dPLECk2jzQRsC7vHSExVHHTQoyDdc
+         9gsDSNM54DAGj7tii8JxpJKLurdmf5hX9aSXhhfgsHa4vjr2XRfvuSQfTFr6OXp6cZL3
+         Z0UTLiswC/+5HyhgvdawKY61ytw8Ev2XJBJAJSk/TgTDfKndFOpbu1R2LS45WsnS+S+w
+         eu5Z1z8QX3AQgItb7n/L2I/1UYGRaakbXcO9UQI0MCMjtzNov8A5PoIZxq2Z2sZ8UUyi
+         xbKnPzcf6IEjlh1uLpqWLms8bAuvgS9T6hcq9z2rYM5t/iAaPFP205yK7fryt5hWtSue
+         Q0TA==
+X-Forwarded-Encrypted: i=1; AJvYcCW5KZO486p5cpb09q300VwbwzhwcKIsBnq/KRjxuhRyNjfEJ9nO6iYCkh/wriGScV2oEMhj0Nn1iQs=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzu522/T7AKf2eQ7XV1fzIWgPBTj84vQDcgAT4NOQ+YOX4R/lSN
+	YQXwQ+auWzZwMBzWhUKFP8/mf7RzMmxxOXf1mvd7guTiDzlCM1L+bAMpBiC+
+X-Google-Smtp-Source: AGHT+IFCf69WqMZ4s8O5S2d78OdM8YtP+bJ7yi9UW7qwMQdIAywbaUYKtN2mQ9IT6hphj1T44Cy3xQ==
+X-Received: by 2002:a7b:cc88:0:b0:431:1a98:cb40 with SMTP id 5b1f17b1804b1-4318d7f2fe8mr10377555e9.18.1729770057089;
+        Thu, 24 Oct 2024 04:40:57 -0700 (PDT)
+Received: from partp-nb.corp.toradex.com (31-10-206-125.static.upc.ch. [31.10.206.125])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43186bde267sm42396385e9.13.2024.10.24.04.40.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 14:26:04 -0700 (PDT)
-From: Gax-c <zichenxie0106@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	arnd@arndb.de,
-	dinghao.liu@zju.edu.cn
-Cc: linux-mtd@lists.infradead.org,
-	zzjas98@gmail.com,
-	chenyuan0y@gmail.com,
-	Zichen Xie <zichenxie0106@gmail.com>,
-	Petr Machata <petrm@nvidia.com>,
-	Ido Schimmel <idosch@nvidia.com>
-Subject: [PATCH net v2] netdevsim: nsim_nexthop_bucket_activity_write(): Add a terminating \0
-Date: Wed, 23 Oct 2024 16:25:21 -0500
-Message-Id: <20241023212520.13376-1-zichenxie0106@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 24 Oct 2024 04:40:55 -0700 (PDT)
+From: Parth Pancholi <parth105105@gmail.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Parth Pancholi <parth.pancholi@toradex.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: macronix: enable dual and quad read for MX25U25635F
+Date: Thu, 24 Oct 2024 13:40:21 +0200
+Message-Id: <20241024114021.17567-1-parth105105@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_142608_191734_642E146C 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20241024_044059_568205_858E4B2F 
+X-CRM114-Status: GOOD (  13.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,42 +96,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Zichen Xie <zichenxie0106@gmail.com>
+From: Parth Pancholi <parth.pancholi@toradex.com>
 
-This was found by a static analyzer.
-We should not forget the trailing zero after copy_from_user()
-if we will further do some string operations, sscanf() in this
-case. Adding a trailing zero will ensure that the function
-performs properly.
+The MX25U25635F supports dual and quad read operations. Set the
+corresponding flags to enable these features in accordance with
+the hardware capabilities. This change also enables dual and quad
+read operations on the MX25U25645G, which shares the same ID and
+has a superset of the functionality provided by the MX25U25635F.
 
-Fixes: c6385c0b67c5 ("netdevsim: Allow reporting activity on nexthop buckets")
-Signed-off-by: Zichen Xie <zichenxie0106@gmail.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Link: https://www.macronix.com/Lists/Datasheet/Attachments/8663/MX25U25635F,%201.8V,%20256Mb,%20v1.5.pdf
+Signed-off-by: Parth Pancholi <parth.pancholi@toradex.com>
 ---
-v2: Adjust subject and code format.
----
- drivers/net/netdevsim/fib.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/macronix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/netdevsim/fib.c b/drivers/net/netdevsim/fib.c
-index 41e80f78b316..16c382c42227 100644
---- a/drivers/net/netdevsim/fib.c
-+++ b/drivers/net/netdevsim/fib.c
-@@ -1377,10 +1377,12 @@ static ssize_t nsim_nexthop_bucket_activity_write(struct file *file,
- 
- 	if (pos != 0)
- 		return -EINVAL;
--	if (size > sizeof(buf))
-+	if (size > sizeof(buf) - 1)
- 		return -EINVAL;
- 	if (copy_from_user(buf, user_buf, size))
- 		return -EFAULT;
-+	buf[size] = 0;
-+
- 	if (sscanf(buf, "%u %hu", &nhid, &bucket_index) != 2)
- 		return -EINVAL;
- 
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index ea6be95e75a5..be55558c8ad0 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -129,7 +129,7 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x39),
+ 		.name = "mx25u25635f",
+ 		.size = SZ_32M,
+-		.no_sfdp_flags = SECT_4K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 		.fixup_flags = SPI_NOR_4B_OPCODES,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x3a),
 -- 
 2.34.1
 
