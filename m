@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB8FD149C5
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 16:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5FA7D149C3
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 16:18:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9SNmcOc2g/R5xG5BHEo+cYs5nCSwjd25piFP8x1MB2c=; b=m9n5KyHmPEiG8L
-	g8GttB/4JXilKE1QLWcVhoFvaV2Yd5ZXCFdXNYEZ/2gd7bNiQLaXzjrDW0JFqUvJJ0l8mtpju2Ggt
-	fZCsCkPMRRL9J2KZAGfUbiwDbXcZgHxhgaSx2LwRCsTKCvWaKQMNqabfUIYwxdnvyrxMQTeJoTuWM
-	281yllAUZXrifsfWQDJgXN1yvVwjVPz0JnWLOlbxnuA98PlkXvKjdP7nBZrOZBXSz7SAlEOSSlVoM
-	aMjY/41VAkjpxZg9bxJeG8c9ZCUXH0qDzoh0OFj3O3ji/TSjMWPMJS8ez7Hy0hY7iziU865JWn6ZL
-	Bs+Q0XZWqqLgimFOF+Ew==;
+	List-Owner; bh=vWYPMhV+3SBiF84+9pfetOdo0elAiVDu4R1QjVaPkzs=; b=Kjeck0j36H5pKD
+	J0eg/6UiWVgnOOJMXUX12U8Ns8PJZ53ka1Zjk5LoNnw0vV5ipHHGXEXe+DfmGXppROwYg9rBDzdnf
+	mCbvbJU2MRcbt7vMiXEvJwGBbln3PZaHh2Q149eyZjO6Ze9vsnTSHC7OqMKrLIGEXubSsy0D6AFI+
+	+Tc0lcBoVDdvhH+9GpxbZirnn3SZ6gTr86PSa5IJfu76OvCN1nVj3HJnWNFB8N4wndOHbRIewq2/M
+	dhEV+BT/a63IfUIaLRIqO4W/pdHbk65pIB2u6TwA2oqsk9X5Sc6bZ/Dnw2LaqIbeMv/vTvR1zOmty
+	2bTACzUVovTHzHqeAOAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4N15-00000004ONn-2er4;
-	Fri, 25 Oct 2024 16:18:23 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1t4N14-00000004ONM-3cCs;
+	Fri, 25 Oct 2024 16:18:22 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4Mxx-00000004NYu-1VCT
+	id 1t4Mxw-00000004NYQ-49hh
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Oct 2024 16:15:11 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 29DD9E000A;
-	Fri, 25 Oct 2024 16:15:07 +0000 (UTC)
+	Fri, 25 Oct 2024 16:15:10 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2B20CE000B;
+	Fri, 25 Oct 2024 16:15:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1729872908;
+	t=1729872907;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Z0vC0DL0bDzRlD8Mzhgsf/g4p+1Jphg3XH+Wo7G+9lo=;
-	b=ABNP5yV+IqzOu77m+jOHMwud+fQf/AyzU0Vozov+woSMNv7sK0sTKgCGzVoFb8r8fvZ7Vo
-	bLJKp2gndHhjdWjZXMNI3KMp33uyOjnESouNzFMyZ25Oju3h2ZzjcUBYMqU4IQwjpYn6Mq
-	7yMgoI19dLaw1LrZbF453Z7AIrDG77296oall8SOEL8NanX+cVgctkosbO7gqvob12i9H8
-	sqP6dXe18Czg2HuABTTqh+R+kXHYUKj22Jnd2sABOFE/rMePdUyf+pcOXgV2Przidbk2zI
-	8NviwJGS8lwN1DdPwq5XUtLrDsqgElptOA4M2xXTjHvHRWhvZ9+rQQZHQXBFaA==
+	bh=FFZxVOQ/r2YDg2GASorm7X58OaIx5nLZNYaGkN8S2hc=;
+	b=bWifIWNMGhOzm/vMfquwTP7zgxTdpFHHCGeukY0hX9SxG1MuhfWxvEIC8k5BoOilU9QWrn
+	QYwmIYE/M+nG2XFKL9eOODTy6soZKqxDU0b5PNDUMZ3lmqTy7WznG9DbbAZGGbLpQd/6mb
+	GbNO6PJmlteeJYQBmsRvzGvNRflNotrRyO8xCvT9F8CfgrWpBmuJldPWPzzG+SBU+ErODE
+	YHZ3dD9w2hvAdtSI67yfr3rTHSkfHMnFjqwGgtQfQqlI36D2gyjhdwEExyw8bJtzWCpRkd
+	jQ54uw40l9n8uUgujgc/zsEt8+XNoMJUpivN6vh+pLmlJynydOK/WZXiRAjLXg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -63,17 +63,17 @@ Cc: Mark Brown <broonie@kernel.org>,
 	Heiko Stuebner <heiko@sntech.de>,
 	Michal Simek <michal.simek@amd.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 04/24] spi: amlogic-spifc-a1: Support per spi-mem operation frequency switches
-Date: Fri, 25 Oct 2024 18:14:41 +0200
-Message-ID: <20241025161501.485684-5-miquel.raynal@bootlin.com>
+Subject: [PATCH 03/24] spi: amd: Support per spi-mem operation frequency switches
+Date: Fri, 25 Oct 2024 18:14:40 +0200
+Message-ID: <20241025161501.485684-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241025161501.485684-1-miquel.raynal@bootlin.com>
 References: <20241025161501.485684-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_091509_944445_75556C1E 
-X-CRM114-Status: GOOD (  12.52  )
+X-CRM114-CacheID: sfid-20241025_091509_417770_B20594F1 
+X-CRM114-Status: GOOD (  14.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,46 +97,60 @@ the value that comes from the spi-mem operation structure instead. In
 case there is no specific limitation for this operation, the default spi
 device value will be given anyway.
 
+This controller however performed a frequency check, which is also
+observed during the ->check_op() phase.
+
 The per-operation frequency capability is thus advertised to the spi-mem
 core.
 
+Cc: Sanjay R Mehta <sanju.mehta@amd.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-amlogic-spifc-a1.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/spi/spi-amd.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-amlogic-spifc-a1.c b/drivers/spi/spi-amlogic-spifc-a1.c
-index fadf6667cd51..18c9aa2cbc29 100644
---- a/drivers/spi/spi-amlogic-spifc-a1.c
-+++ b/drivers/spi/spi-amlogic-spifc-a1.c
-@@ -259,7 +259,7 @@ static int amlogic_spifc_a1_exec_op(struct spi_mem *mem,
- 	size_t data_size = op->data.nbytes;
- 	int ret;
+diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
+index 2245ad54b03a..f58dc6375582 100644
+--- a/drivers/spi/spi-amd.c
++++ b/drivers/spi/spi-amd.c
+@@ -368,6 +368,9 @@ static bool amd_spi_supports_op(struct spi_mem *mem,
+ 	    op->data.buswidth > 1 || op->data.nbytes > AMD_SPI_MAX_DATA)
+ 		return false;
  
--	ret = amlogic_spifc_a1_set_freq(spifc, mem->spi->max_speed_hz);
-+	ret = amlogic_spifc_a1_set_freq(spifc, op->max_freq);
++	if (op->max_freq < AMD_SPI_MIN_HZ)
++		return false;
++
+ 	return spi_mem_default_supports_op(mem, op);
+ }
+ 
+@@ -443,7 +446,7 @@ static int amd_spi_exec_mem_op(struct spi_mem *mem,
+ 
+ 	amd_spi = spi_controller_get_devdata(mem->spi->controller);
+ 
+-	ret = amd_set_spi_freq(amd_spi, mem->spi->max_speed_hz);
++	ret = amd_set_spi_freq(amd_spi, op->max_freq);
  	if (ret)
  		return ret;
  
-@@ -320,6 +320,10 @@ static const struct spi_controller_mem_ops amlogic_spifc_a1_mem_ops = {
- 	.adjust_op_size = amlogic_spifc_a1_adjust_op_size,
+@@ -469,6 +472,10 @@ static const struct spi_controller_mem_ops amd_spi_mem_ops = {
+ 	.supports_op = amd_spi_supports_op,
  };
  
-+static const struct spi_controller_mem_caps amlogic_spifc_a1_mem_caps = {
++static const struct spi_controller_mem_caps amd_spi_mem_caps = {
 +	.per_op_freq = true,
 +};
 +
- static int amlogic_spifc_a1_probe(struct platform_device *pdev)
+ static int amd_spi_host_transfer(struct spi_controller *host,
+ 				   struct spi_message *msg)
  {
- 	struct spi_controller *ctrl;
-@@ -356,6 +360,7 @@ static int amlogic_spifc_a1_probe(struct platform_device *pdev)
- 	ctrl->bits_per_word_mask = SPI_BPW_MASK(8);
- 	ctrl->auto_runtime_pm = true;
- 	ctrl->mem_ops = &amlogic_spifc_a1_mem_ops;
-+	ctrl->mem_caps = &amlogic_spifc_a1_mem_caps;
- 	ctrl->min_speed_hz = SPIFC_A1_MIN_HZ;
- 	ctrl->max_speed_hz = SPIFC_A1_MAX_HZ;
- 	ctrl->mode_bits = (SPI_RX_DUAL | SPI_TX_DUAL |
+@@ -521,6 +528,7 @@ static int amd_spi_probe(struct platform_device *pdev)
+ 	host->setup = amd_spi_host_setup;
+ 	host->transfer_one_message = amd_spi_host_transfer;
+ 	host->mem_ops = &amd_spi_mem_ops;
++	host->mem_caps = &amd_spi_mem_caps;
+ 	host->max_transfer_size = amd_spi_max_transfer_size;
+ 	host->max_message_size = amd_spi_max_transfer_size;
+ 
 -- 
 2.43.0
 
