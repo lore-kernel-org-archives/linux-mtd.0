@@ -4,104 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63276D149E8
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 18:43:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B94BD149E7
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 19:13:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AhzeCKBcEl7exGDZlG8mrSQMGjLGNnGnKHsJGmAvtAk=; b=ZpBGSwQjOqo9r+
-	AVF+5BwEQPl+JaNBKMuo5Y0mybhszaZIo4I8qCCpdhlpT4TSmMldkqfib+HT2Tdqn/1lyRt/Ie4jd
-	5kAcDSAq5N9ooGa7YyIFpKPkBQpTR041qhe0xt3hg9Y5EFIyJUMaN+TgkyC0tupaz9f2JGv2hFK8q
-	2MHl4xe422rmVtaZb19xsFkG02rN9ZATgRLejBbl/piwCcj8/PWfqlftrBdLpI413dxV8y0wv1xY2
-	lzXQiMahZx4E4K33uVQpfmsdK+VXHKbpCMbgVV3S0akzLVIk1NwKv7T8iWyC0qWjO4d9kNXP4H7GG
-	IeQ6y1lgCYJaMVKfJRvg==;
+	List-Owner; bh=8hGDUGLjd/174yzyXpsqFpFDJxNdgwP4ejGC7WNNhz8=; b=4BcNi+Vkjru1pJ
+	znN7ShlLtiaXp9iWX338TOZPymsx5LwBdrrfrGQP2bgZH8IuGUDXWUppG0QSHoEycKsTrEU2Xq4VT
+	OkJHIudDkchu9Tx4pPPR5OSl0vQyp18cjWqv4yRH2Ez2qMszoN/GXb0eLwPNAb1TqEDKevtilgHF/
+	bYuOdqBiEE+jFwd+y+NeuV1aI6jJLJd4hGLFJ+joE5x73MLaG6lo3UOaO36F9KC3iqxEh7uKstqmK
+	FbMTpBQvMH6AWo5ERgBCPPXggRkknrUSk4PM2s6e6Fd8ZY44ByU3bqqRYjQlwL49Fg4jpbfhiZnHL
+	yAuVeLi/HQZRF3LG0N+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4PGy-00000004qIy-3m6F;
-	Fri, 25 Oct 2024 18:42:56 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1t4PkY-00000004uid-3AKV;
+	Fri, 25 Oct 2024 19:13:30 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4OoG-00000004l7O-1EsI
+	id 1t4P2b-00000004o52-3wai
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Oct 2024 18:13:56 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49PDLCjv028796
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Oct 2024 18:13:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	Fri, 25 Oct 2024 18:28:07 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49PAoKw8006951;
+	Fri, 25 Oct 2024 18:27:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	S6J/Qh2/LbR/I7UXVqELD64wgFXzyzqALoQ0edTkwr0=; b=SwPLDvLTVS/mgKUQ
-	UeA5oIB9p3422rMg16g/82HFQNxc+9oAJhncxImi/WK/bFtnKOrdW5oUhjisbTZF
-	SgTY7vH/7nC1udG5H8t5x9Fzmo4LQwGcqQ+UPaON3doWElfNS1OiCyHAaikbmtS5
-	Q6bg8+7uhm9XggVIGZPxHhAWFd1Rs4woXGk7aRn4D4Fv+F/EZPptxSsRMuNL6+Ul
-	MWqooxDK5dWQJVb0FD/kpkabGoxmiWNj8zY8CCMBXNu+1BTq3cSYT2WU6npZnu9p
-	hjmjgNVqVTZaZk+yA99JLze5MoVs83sxgs1Z2ZjQhlr9A/kECVSJAYVrY3Va8ryb
-	NIewoQ==
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com [209.85.219.70])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42fdtxnvjs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Oct 2024 18:13:14 +0000 (GMT)
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6cc290898adso4614856d6.0
-        for <linux-mtd@lists.infradead.org>; Fri, 25 Oct 2024 11:13:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729879993; x=1730484793;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S6J/Qh2/LbR/I7UXVqELD64wgFXzyzqALoQ0edTkwr0=;
-        b=NNysaCHsVgIaZ5kKB3enBRapq2XLMwvj3x53nYepDAbSO9eMHiY3U8i/VpZcE3h7kx
-         Rw6eKlvVRcg5h+8okpeApvpsWq/3IeOdHrwJWovE4jduw+PlGCxhSLOkZnJt0SDRSQqg
-         Y0Q9r47WZj8rDIVC98PA/0oMLBLIqRGqzEe8Odghx11qzaWZt3AykxLZhxPezIqAY5eW
-         gQShd6EB90PfR5QjE8R7j+HBkDr+RJg6DAP58gJ0lWZ1mZTpP9RWzFbURWao+Ha9FGXE
-         w5WhnK6Tq5/E8nix/zAzynMnGMNAfqKhsoNvSnkhDBWQZZxaz0zGYh7eWLhzCg2iPtUK
-         rd/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVqR3q3mSAUYTq9EHoas0cEE1Q5VUGKMVumgViVSQgQYTn8c4kPHgmX9s+pnz+XPVEthKynY8FK8Ik=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxIZpsVYL6eVYT586I1uySNfb2dG6sypxUCGKZdbIt1MMPEKE5G
-	yROyf2RraIEDYkyUoK5xrdOqJMsQHqOrURl4DiKDXmbuNUIiijUD2DeNkqRF1FWdTrEB5k/GvFI
-	kWtpzmoR5XP1ctfgYU7pl4625tztrViC9qVGe4V11BoXl65A+UFZUL0xonAf6/qOx
-X-Received: by 2002:a05:6214:da9:b0:6cb:e981:d7d0 with SMTP id 6a1803df08f44-6d18581d7d4mr2307886d6.7.1729879993238;
-        Fri, 25 Oct 2024 11:13:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFetU8WERXTxmTfnz8BSCC6cA2/u+vTk5Tzq/OIHDVK0c/Vs/rj3bS2lkScfXLw1sM4zfAQAw==
-X-Received: by 2002:a05:6214:da9:b0:6cb:e981:d7d0 with SMTP id 6a1803df08f44-6d18581d7d4mr2307666d6.7.1729879992907;
-        Fri, 25 Oct 2024 11:13:12 -0700 (PDT)
-Received: from [192.168.212.120] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9b1f0298dcsm95063866b.77.2024.10.25.11.13.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Oct 2024 11:13:12 -0700 (PDT)
-Message-ID: <a4c85bfc-9e76-4dcd-ab09-699d50fc73a4@oss.qualcomm.com>
-Date: Fri, 25 Oct 2024 20:13:09 +0200
+	aeiIjuiCiGELOTopIbo//bFGGETMmV3/7Vt9PUQCGes=; b=ccnyI1/pESHfxTj4
+	rE6uXuGv6QJh7vDzeWCAAWpgG4NwA9BM/xR1AHNbGYf/zgYVfZ4YWyameaCJsQak
+	ZKsq8SldZDHOR7+D5lcZQD3nzxlfPNzukq7ShECkaB4XjrcNIhcmqh+YrXlR4B90
+	okW/dvrE0yHVySq7Snza/XR+GdnzwaoqZN5FOFuXK/KgqjYMqXYohXSH+BKpwkY5
+	JFsrmpFl8y7WXzG6OwPxOHqpgZnAeGhMWzX89dxBHdtV6SrLtVHJEfxmcuv4rdel
+	WaZOdwL6mAb8aA1v6nklThvvuO6SUChjmd7HP64mlT6Nf9vdJC7YLUxJViRQ2TUr
+	kqftHQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42g9x6hdgc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 25 Oct 2024 18:27:59 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49PIRmIl000467
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 25 Oct 2024 18:27:48 GMT
+Received: from [10.48.242.80] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 25 Oct
+ 2024 11:27:47 -0700
+Message-ID: <dcdd870b-c4b8-4bb8-9c08-82474cc4d872@quicinc.com>
+Date: Fri, 25 Oct 2024 11:27:46 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 5/8] mtd: rawnand: qcom: use FIELD_PREP and GENMASK
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, broonie@kernel.org,
-        robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-        andersson@kernel.org, konradybcio@kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
+Subject: Re: [PATCH v12 4/8] mtd: nand: Add qpic_common API file
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, <broonie@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <andersson@kernel.org>, <konradybcio@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
 References: <20241021115620.1616617-1-quic_mdalam@quicinc.com>
- <20241021115620.1616617-6-quic_mdalam@quicinc.com>
+ <20241021115620.1616617-5-quic_mdalam@quicinc.com>
+ <41db541a-4de1-409b-bfec-7b9456fc200f@quicinc.com>
+ <4c239c07-799c-b910-c6e0-ff717202ceb0@quicinc.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
 Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20241021115620.1616617-6-quic_mdalam@quicinc.com>
-X-Proofpoint-GUID: 0R_F297CAX4CRCogAECTYe8gEsWogIFD
-X-Proofpoint-ORIG-GUID: 0R_F297CAX4CRCogAECTYe8gEsWogIFD
+In-Reply-To: <4c239c07-799c-b910-c6e0-ff717202ceb0@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5w8o4jkyHpExRaVzhFBXGbmxhFScf2MC
+X-Proofpoint-ORIG-GUID: 5w8o4jkyHpExRaVzhFBXGbmxhFScf2MC
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 mlxlogscore=857
- priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410250139
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ clxscore=1015 mlxscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=885 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410250141
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_111316_376275_A5467C2B 
-X-CRM114-Status: GOOD (  10.73  )
+X-CRM114-CacheID: sfid-20241025_112806_137913_13E8133A 
+X-CRM114-Status: GOOD (  11.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,31 +106,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21.10.2024 1:56 PM, Md Sadre Alam wrote:
-> Use the bitfield macro FIELD_PREP, and GENMASK to
-> do the shift and mask in one go. This makes the code
-> more readable.
+On 10/21/2024 9:39 PM, Md Sadre Alam wrote:
 > 
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> ---
+> 
+> On 10/21/2024 11:49 PM, Jeff Johnson wrote:
+>> On 10/21/24 04:56, Md Sadre Alam wrote:
+>> ...
+>>> diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
+>>> new file mode 100644
+>>> index 000000000000..570ab59ca12b
+>>> --- /dev/null
+>>> +++ b/drivers/mtd/nand/qpic_common.c
+>>> @@ -0,0 +1,757 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +/*
+>>> + * Copyright (c) 2016, The Linux Foundation. All rights reserved.
+>>
+>> I'm surprised you aren't adding a 2024 Qualcomm Innovation Center copyright
+> qpic_common.c file is derived from drivers/mtd/nand/raw/qcom_nandc.c file
+> so I am retaining the Copyright from the drivers/mtd/nand/raw/qcom_nandc.c file
 
-[...]
+If you have a derived file then you should retain the copyright of the
+original but then also add current copyright for all changes made on top of
+the original file.
 
-> +	host->cfg1 = FIELD_PREP(NAND_RECOVERY_CYCLES_MASK, 7) |
-> +		     FIELD_PREP(BAD_BLOCK_BYTE_NUM_MASK, bad_block_byte) |
-> +		     FIELD_PREP(BAD_BLOCK_IN_SPARE_AREA, 0) |
-> +		     FIELD_PREP(WR_RD_BSY_GAP_MASK, 2) |
-> +		     FIELD_PREP(WIDE_FLASH, wide_bus) |
-> +		     FIELD_PREP(ENABLE_BCH_ECC, host->bch_enabled);
-
-CS_ACTIVE_BSY is no longer set (not a functional change, but it looks
-omitted on accident)
-
-The rest looks good, thank you!
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-
-Konrad
 
 ______________________________________________________
 Linux MTD discussion mailing list
