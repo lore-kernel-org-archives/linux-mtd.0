@@ -4,81 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 087EAD149C0
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 16:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553B1D149C0
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 16:18:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YGeJxzx81FLAIMUMQ4qepsQUwfeZXft/4sZEh1Afo1Q=; b=xWNrW+ZlM3JioE
-	4tK7mkNCF9s9bzRcxuC2zZyflZ0OAznSN2rNfAS6o/GGxoj4ffpJHp8usET6r+MhUykZPwZhC/sMh
-	VgVxJAqz956lBIAoiFQJrtMgGeG7e8RD7NvFtLKVKm7zE+vAnf6qeATz1kH9psyc8d6PyGFajpSZU
-	a7EYQ/zyiJ+DQYS2yJHq9O876XOUbVdR5D6UAblgTKtz5lXzuVTWpdRimHfjK9ais+/NW6+1cXLyY
-	cq770T+yQcfim4fq0LMtf0qV0p0UVeXHIIl1pAlEEFNOtfL5BZBnTIlce0uM3yd5qmdeqHN/yRVYw
-	QAxeQOCuLSJyFU8SVz4g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vbMsBEiQUxRILanhBGJHm2awMTc8Q92IqaXuFqU0qA8=; b=24sRBruf5Qo3Ee
+	cLrq0gFxQGMbu2rPMgU+MQnAVt4rJf8kWLya86/LkmFlaiv99rC+wTXIrDpDB13Lqr9QCCXukh5K4
+	QJBWJ869Ztxmnn/yKUeJijCzaJ7CRlhXQwcyyhR3ic2PWbjRAcqOyD8NTBWqADu+i4x+AGuasWuGT
+	SO1ODif2FlSYfKTS9PLgRfY9JVxWNF+Y/mi0gHALyWsLxtPKSHdP2dHOW9ABdq6IdD7YOB5ro+o9u
+	SRlluTvm2KzB1e+POsz1F3DtENEXEhg6GtEGOO+sPWHFl2U3TNPz89KahbefLL/etUccrLNTfSoxm
+	ZxsglXm+3WsJqWKaYIYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4MsJ-00000004MHM-325w;
-	Fri, 25 Oct 2024 16:09:19 +0000
-Received: from mgamail.intel.com ([198.175.65.20])
+	id 1t4N13-00000004OM8-0f5a;
+	Fri, 25 Oct 2024 16:18:21 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4MsH-00000004MG0-0V2C
+	id 1t4Mxu-00000004NWR-1mQZ
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Oct 2024 16:09:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729872558; x=1761408558;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bg7ld2Rvq1YDUxAKGt3jeDUJXtPakerYwHO9+3j/ZH8=;
-  b=AIsa5QyvA5FU0obTz52OOE07k81Cj3gvBUFFjqXbLhP4g1Y8tJIlQ7Np
-   52rvrFkgWM6OJYWM7bKOyctQlNyqpfIU8iGZqClNIEMieJswwWVcdZcLX
-   tq62ZZEeJHDKXhFQ+c4sX/fEaus8qvd89ErW1KXOhSTHqWYCAivpQd07U
-   a46Rhocs+kl2C0lIaM0uGawFwRH6B7QE7Z0R6RTH30h0FgPfRDE4pYlXn
-   trS873vtU5IOe6QOUfBEnEXkK4lLyouAnHeVZj8E7VPUh4id/TBHhRxGq
-   9RfuEGRGfuvo+fuYSEY/aw/ZwLQncwgMPSmJtZJoBjyNVuDS5x37QuGEr
-   Q==;
-X-CSE-ConnectionGUID: MlY67YfDQNqPnvM8BJSGNg==
-X-CSE-MsgGUID: BVZVI/YHRZuqSAFchA7dCQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="29323453"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="29323453"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2024 09:09:17 -0700
-X-CSE-ConnectionGUID: yb5LgQFzSZ6QPHlWDkuyHw==
-X-CSE-MsgGUID: ZS7B1GaAQr+cJ7qU9CNZ0w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,232,1725346800"; 
-   d="scan'208";a="85541252"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 25 Oct 2024 09:09:12 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t4MsA-000YS2-0q;
-	Fri, 25 Oct 2024 16:09:10 +0000
-Date: Sat, 26 Oct 2024 00:08:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, broonie@kernel.org,
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	andersson@kernel.org, konradybcio@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, quic_srichara@quicinc.com,
-	quic_varada@quicinc.com, quic_mdalam@quicinc.com
-Subject: Re: [PATCH v12 6/8] spi: spi-qpic: add driver for QCOM SPI NAND
- flash Interface
-Message-ID: <202410252355.ZofaMeku-lkp@intel.com>
-References: <20241021115620.1616617-7-quic_mdalam@quicinc.com>
+	Fri, 25 Oct 2024 16:15:08 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D2839E0004;
+	Fri, 25 Oct 2024 16:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1729872904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/X3AgxqIhjMfS5rto4yq5EfvdDpAoHLw7VDDc2xoiJQ=;
+	b=E8qFeGtuRS2zWi/3K6VnsIH7nlWU0UiBdbLRN31umPxMjy7mLE2nz0ulstBTkFyYJH+X12
+	yoLM/QgFRIMLJZB/QzifpMO6u1pypLF6jgMDkqlBiGVHfm75wWy6VSgL1SrneyNtwtI2ia
+	VTRMvXgUeldqESFWv2mqkVBGYKf8DSrVBgt454tTh3mDd+hHBOnlMJyp34DB5JltKmfvMd
+	Q3QiY2XpkvGBVuwadZr0eosD9TJfexNiWOUPtivclLYI9KBLJlu5tbqh6RtO/HCJ4SBY1r
+	4ARxAD6fDJQd3ISpi4fgn5/+spxiJSun/ECSQ0kLpgq17/aeAsFl1cGjlYXwww==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Mark Brown <broonie@kernel.org>,
+	<linux-spi@vger.kernel.org>,
+	Steam Lin <stlin2@winbond.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Sanjay R Mehta <sanju.mehta@amd.com>,
+	Han Xu <han.xu@nxp.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Haibo Chen <haibo.chen@nxp.com>,
+	Yogesh Gaur <yogeshgaur.83@gmail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Michal Simek <michal.simek@amd.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 00/24] spi-nand/spi-mem DTR support
+Date: Fri, 25 Oct 2024 18:14:37 +0200
+Message-ID: <20241025161501.485684-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241021115620.1616617-7-quic_mdalam@quicinc.com>
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_090917_237756_40547F4A 
-X-CRM114-Status: GOOD (  10.21  )
+X-CRM114-CacheID: sfid-20241025_091506_791263_E128701E 
+X-CRM114-Status: GOOD (  15.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,129 +82,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Md,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on broonie-spi/for-next robh/for-next linus/master v6.12-rc4 next-20241025]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/spi-dt-bindings-Introduce-qcom-spi-qpic-snand/20241021-200849
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20241021115620.1616617-7-quic_mdalam%40quicinc.com
-patch subject: [PATCH v12 6/8] spi: spi-qpic: add driver for QCOM SPI NAND flash Interface
-config: sparc64-randconfig-r073-20241023 (https://download.01.org/0day-ci/archive/20241025/202410252355.ZofaMeku-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 14.1.0
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410252355.ZofaMeku-lkp@intel.com/
-
-smatch warnings:
-drivers/spi/spi-qpic-snand.c:1260 qcom_spi_write_page() warn: unsigned 'cmd' is never less than zero.
-drivers/spi/spi-qpic-snand.c:1279 qcom_spi_send_cmdaddr() warn: unsigned 'cmd' is never less than zero.
-
-vim +/cmd +1260 drivers/spi/spi-qpic-snand.c
-
-  1252	
-  1253	static int qcom_spi_write_page(struct qcom_nand_controller *snandc,
-  1254				       const struct spi_mem_op *op)
-  1255	{
-  1256		struct qpic_snand_op s_op = {};
-  1257		u32 cmd;
-  1258	
-  1259		cmd = qcom_spi_cmd_mapping(snandc, op->cmd.opcode);
-> 1260		if (cmd < 0)
-  1261			return cmd;
-  1262	
-  1263		s_op.cmd_reg = cmd;
-  1264	
-  1265		if (op->cmd.opcode == SPINAND_PROGRAM_LOAD)
-  1266			snandc->qspi->data_buf = (u8 *)op->data.buf.out;
-  1267	
-  1268		return 0;
-  1269	}
-  1270	
-  1271	static int qcom_spi_send_cmdaddr(struct qcom_nand_controller *snandc,
-  1272					 const struct spi_mem_op *op)
-  1273	{
-  1274		struct qpic_snand_op s_op = {};
-  1275		u32 cmd;
-  1276		int ret, opcode;
-  1277	
-  1278		cmd = qcom_spi_cmd_mapping(snandc, op->cmd.opcode);
-> 1279		if (cmd < 0)
-  1280			return cmd;
-  1281	
-  1282		s_op.cmd_reg = cmd;
-  1283		s_op.addr1_reg = op->addr.val;
-  1284		s_op.addr2_reg = 0;
-  1285	
-  1286		opcode = op->cmd.opcode;
-  1287	
-  1288		switch (opcode) {
-  1289		case SPINAND_WRITE_EN:
-  1290			return 0;
-  1291		case SPINAND_PROGRAM_EXECUTE:
-  1292			s_op.addr1_reg = op->addr.val << 16;
-  1293			s_op.addr2_reg = op->addr.val >> 16 & 0xff;
-  1294			snandc->qspi->addr1 = cpu_to_le32(s_op.addr1_reg);
-  1295			snandc->qspi->addr2 = cpu_to_le32(s_op.addr2_reg);
-  1296			snandc->qspi->cmd = cpu_to_le32(cmd);
-  1297			return qcom_spi_program_execute(snandc, op);
-  1298		case SPINAND_READ:
-  1299			s_op.addr1_reg = (op->addr.val << 16);
-  1300			s_op.addr2_reg = op->addr.val >> 16 & 0xff;
-  1301			snandc->qspi->addr1 = cpu_to_le32(s_op.addr1_reg);
-  1302			snandc->qspi->addr2 = cpu_to_le32(s_op.addr2_reg);
-  1303			snandc->qspi->cmd = cpu_to_le32(cmd);
-  1304			return 0;
-  1305		case SPINAND_ERASE:
-  1306			s_op.addr2_reg = (op->addr.val >> 16) & 0xffff;
-  1307			s_op.addr1_reg = op->addr.val;
-  1308			snandc->qspi->addr1 = cpu_to_le32(s_op.addr1_reg << 16);
-  1309			snandc->qspi->addr2 = cpu_to_le32(s_op.addr2_reg);
-  1310			snandc->qspi->cmd = cpu_to_le32(cmd);
-  1311			qcom_spi_block_erase(snandc);
-  1312			return 0;
-  1313		default:
-  1314			break;
-  1315		}
-  1316	
-  1317		snandc->buf_count = 0;
-  1318		snandc->buf_start = 0;
-  1319		qcom_clear_read_regs(snandc);
-  1320		qcom_clear_bam_transaction(snandc);
-  1321	
-  1322		snandc->regs->cmd = cpu_to_le32(s_op.cmd_reg);
-  1323		snandc->regs->exec = cpu_to_le32(1);
-  1324		snandc->regs->addr0 = cpu_to_le32(s_op.addr1_reg);
-  1325		snandc->regs->addr1 = cpu_to_le32(s_op.addr2_reg);
-  1326	
-  1327		qcom_write_reg_dma(snandc, &snandc->regs->cmd, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
-  1328		qcom_write_reg_dma(snandc, &snandc->regs->exec, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-  1329	
-  1330		ret = qcom_submit_descs(snandc);
-  1331		if (ret)
-  1332			dev_err(snandc->dev, "failure in submitting cmd descriptor\n");
-  1333	
-  1334		return ret;
-  1335	}
-  1336	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gTWFyaywgaGVsbG8gTVREIGZvbGtzLAoKSGVyZSBpcyBhIChiaWcpIHNlcmllcyBzdXBw
+b3NlZCB0byBicmluZyBEVFIgc3VwcG9ydCBpbiBTUEktTkFORC4KCkkgY291bGQgaGF2ZSBzcGxp
+dCB0aGlzIGludG8gdHdvIGJ1dCBJIGV2ZW50dWFsbHkgcHJlZmVycmVkIHNob3dpbmcgdGhlCmJp
+ZyBwaWN0dXJlLiBPbmNlIHYxIHdpbGwgYmUgb3ZlciwgSSBjYW4gbWFrZSBpdCB0d28uIEhvd2V2
+ZXIgd2hlbiB3ZSdsbApkaXNjdXNzIG1lcmdpbmcsIHdlJ2xsIGhhdmUgdG8gc2hhcmUgYW4gaW1t
+dXRhYmxlIHRhZyBhbW9uZyB0aGUgdHdvCnN1YnN5c3RlbXMuCgpIZXJlIGlzIHRoZSBsb2dpYzoK
+KiBwYXRjaGVzIDEgJiAyIGFkZCBzdXBwb3J0IGZvciBzcGktbWVtIG9wZXJhdGlvbnMgd2l0aCBh
+IHNwZWNpZmljCiAgZnJlcXVlbmN5IGxpbWl0YXRpb24uIFRoaXMgaXMgbm90IG9ubHkgcmVsYXRl
+ZCB0byBEVFIgc3VwcG9ydCwgYmVjYXVzZQogIGFzIHlvdSBjYW4gc2VlIEkgY291bGQgdXNlIHRo
+aXMgdG8gc3VwcG9ydCBiYXNpYyBmZWF0dXJlcyBpbiB0aGUKICBXaW5ib25kIGRyaXZlci4KKiBw
+YXRjaGVzIDMtMTYgYXJlIGdvaW5nIHRocm91Z2ggYWxsIHRoZSBlYXN5IGNvbnRyb2xsZXIgZHJp
+dmVycywgd2hlcmUKICBlZmZlY3RpdmVseSBzdXBwb3J0aW5nIHRoZXNlIHBlci1vcGVyYXRpb24g
+bGltaXRhdGlvbiB3YXMgZWFzeSB0bwogIGRvLiBJbiBwcmFjdGljZSwgSSBiZWxpZXZlIGFsbCBj
+b250cm9sbGVycyBjYW4sIGJ1dCBzb2Z0d2FyZSBpcwogIHNvbWV0aW1lcyB0aGUgbGltaXRpbmcg
+ZmFjdG9yLiBBbGwgY29udHJvbGxlcnMgd2l0aG91dCBzcGktbWVtIHN1cHBvcnQKICB3aWxsIGdy
+YWNlZnVsbHkgaGFuZGxlIHRoZSByZXF1ZXN0IChwcm92aWRlZCB0aGF0IHRoZXkgYWxyZWFkeSBj
+YXJlCiAgYWJvdXQgdGhlIG1heGltdW0gc3BlZWQgb2YgY291cnNlKSwgYW5kIGFsbCB0aGUgdXBk
+YXRlZCBjb250cm9sbGVycyBpbgogIHRoaXMgc2VyaWVzIHdpbGwgYWxzbyBoYW5kbGUgdGhlIHNp
+dHVhdGlvbiBjb3JyZWN0bHkuIEZvciB0aGUgb3RoZXJzLAogIGl0J3MgYW4gb3B0LWluIHBhcmFt
+ZXRlciwgc28gdGhleSB3aWxsIHNpbXBseSByZWZ1c2UgdGhlIG9wZXJhdGlvbgogIGR1cmluZyB0
+aGUgY2hlY2tzX29wL3N1cHBvcnRzX29wKCkgcGhhc2UuCiogcGF0Y2hlcyAxNy0xOSBtYWtlIHVz
+ZSBvZiB0aGlzIG5ldyBwb3NzaWJpbGl0eSB0byBmaXggV2luYm9uZCBzdXBwb3J0CiogcGF0Y2hl
+cyAyMC0yNCBhcmUgYWN0dWFsbHkgYWRkaW5nIERUUiBzdXBwb3J0IGluIFNQSS1OQU5ELCBhbmQg
+bWFraW5nCiAgdGhpcyBmZWF0dXJlIHVzZWZ1bCB3aXRoIFdpbmJvbmQgY2hpcHMuCgpUaGFua3Ms
+Ck1pcXXDqGwKCk1pcXVlbCBSYXluYWwgKDI0KToKICBzcGk6IHNwaS1tZW06IEV4dGVuZCBzcGkt
+bWVtIG9wZXJhdGlvbnMgd2l0aCBhIHBlci1vcGVyYXRpb24gbWF4aW11bQogICAgZnJlcXVlbmN5
+CiAgc3BpOiBzcGktbWVtOiBBZGQgYSBuZXcgY29udHJvbGxlciBjYXBhYmlsaXR5CiAgc3BpOiBh
+bWQ6IFN1cHBvcnQgcGVyIHNwaS1tZW0gb3BlcmF0aW9uIGZyZXF1ZW5jeSBzd2l0Y2hlcwogIHNw
+aTogYW1sb2dpYy1zcGlmYy1hMTogU3VwcG9ydCBwZXIgc3BpLW1lbSBvcGVyYXRpb24gZnJlcXVl
+bmN5CiAgICBzd2l0Y2hlcwogIHNwaTogY2FkZW5jZS1xc3BpOiBTdXBwb3J0IHBlciBzcGktbWVt
+IG9wZXJhdGlvbiBmcmVxdWVuY3kgc3dpdGNoZXMKICBzcGk6IGR3OiBTdXBwb3J0IHBlciBzcGkt
+bWVtIG9wZXJhdGlvbiBmcmVxdWVuY3kgc3dpdGNoZXMKICBzcGk6IGZzbC1xc3BpOiBTdXBwb3J0
+IHBlciBzcGktbWVtIG9wZXJhdGlvbiBmcmVxdWVuY3kgc3dpdGNoZXMKICBzcGk6IG1pY3JvY2hp
+cC1jb3JlLXFzcGk6IFN1cHBvcnQgcGVyIHNwaS1tZW0gb3BlcmF0aW9uIGZyZXF1ZW5jeQogICAg
+c3dpdGNoZXMKICBzcGk6IG10NjV4eDogU3VwcG9ydCBwZXIgc3BpLW1lbSBvcGVyYXRpb24gZnJl
+cXVlbmN5IHN3aXRjaGVzCiAgc3BpOiBteGljOiBTdXBwb3J0IHBlciBzcGktbWVtIG9wZXJhdGlv
+biBmcmVxdWVuY3kgc3dpdGNoZXMKICBzcGk6IG54cC1mc3BpOiBTdXBwb3J0IHBlciBzcGktbWVt
+IG9wZXJhdGlvbiBmcmVxdWVuY3kgc3dpdGNoZXMKICBzcGk6IHJvY2tjaGlwLXNmYzogU3VwcG9y
+dCBwZXIgc3BpLW1lbSBvcGVyYXRpb24gZnJlcXVlbmN5IHN3aXRjaGVzCiAgc3BpOiBzcGktc24t
+Zi1vc3BpOiBTdXBwb3J0IHBlciBzcGktbWVtIG9wZXJhdGlvbiBmcmVxdWVuY3kgc3dpdGNoZXMK
+ICBzcGk6IHNwaS10aS1xc3BpOiBTdXBwb3J0IHBlciBzcGktbWVtIG9wZXJhdGlvbiBmcmVxdWVu
+Y3kgc3dpdGNoZXMKICBzcGk6IHp5bnEtcXNwaTogU3VwcG9ydCBwZXIgc3BpLW1lbSBvcGVyYXRp
+b24gZnJlcXVlbmN5IHN3aXRjaGVzCiAgc3BpOiB6eW5xbXAtZ3FzcGk6IFN1cHBvcnQgcGVyIHNw
+aS1tZW0gb3BlcmF0aW9uIGZyZXF1ZW5jeSBzd2l0Y2hlcwogIG10ZDogc3BpbmFuZDogQ3JlYXRl
+IGRpc3RpbmN0IGZhc3QgYW5kIHNsb3cgcmVhZCBmcm9tIGNhY2hlIHZhcmlhbnRzCiAgbXRkOiBz
+cGluYW5kOiBBZGQgYW4gb3B0aW9uYWwgZnJlcXVlbmN5IHRvIHJlYWQgZnJvbSBjYWNoZSBtYWNy
+b3MKICBtdGQ6IHNwaW5hbmQ6IHdpbmJvbmQ6IEZpeCB0aGUgKkpXIGNoaXAgZGVmaW5pdGlvbnMK
+ICBzcGk6IHNwaS1tZW06IFJlb3JkZXIgU1BJX01FTV9PUF9DTUQgaW50ZXJuYWxzCiAgc3BpOiBz
+cGktbWVtOiBDcmVhdGUgbWFjcm9zIGZvciBEVFIgb3BlcmF0aW9uCiAgbXRkOiBzcGluYW5kOiBB
+ZGQgc3VwcG9ydCBmb3IgcmVhZCBEVFIgb3BlcmF0aW9ucwogIG10ZDogc3BpbmFuZDogd2luYm9u
+ZDogQWRkIGNvbW1lbnQgYWJvdXQgbmFtaW5nCiAgbXRkOiBzcGluYW5kOiB3aW5ib25kOiBBZGQg
+c3VwcG9ydCBmb3IgRFRSIG9wZXJhdGlvbnMKCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9hbGxpYW5j
+ZW1lbW9yeS5jIHwgIDQgKy0KIGRyaXZlcnMvbXRkL25hbmQvc3BpL2F0by5jICAgICAgICAgICAg
+fCAgNCArLQogZHJpdmVycy9tdGQvbmFuZC9zcGkvZXNtdC5jICAgICAgICAgICB8ICA0ICstCiBk
+cml2ZXJzL210ZC9uYW5kL3NwaS9mb3Jlc2VlLmMgICAgICAgIHwgIDQgKy0KIGRyaXZlcnMvbXRk
+L25hbmQvc3BpL2dpZ2FkZXZpY2UuYyAgICAgfCAxNiArKysrLS0tLQogZHJpdmVycy9tdGQvbmFu
+ZC9zcGkvbWFjcm9uaXguYyAgICAgICB8ICA0ICstCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9taWNy
+b24uYyAgICAgICAgIHwgIDggKystLQogZHJpdmVycy9tdGQvbmFuZC9zcGkvcGFyYWdvbi5jICAg
+ICAgICB8ICA0ICstCiBkcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMgICAgICAgIHwgIDQg
+Ky0KIGRyaXZlcnMvbXRkL25hbmQvc3BpL3dpbmJvbmQuYyAgICAgICAgfCAyNyArKysrKysrKysr
+Ky0tCiBkcml2ZXJzL210ZC9uYW5kL3NwaS94dHguYyAgICAgICAgICAgIHwgIDQgKy0KIGRyaXZl
+cnMvc3BpL3NwaS1hbWQuYyAgICAgICAgICAgICAgICAgfCAxMCArKysrLQogZHJpdmVycy9zcGkv
+c3BpLWFtbG9naWMtc3BpZmMtYTEuYyAgICB8ICA3ICsrKy0KIGRyaXZlcnMvc3BpL3NwaS1jYWRl
+bmNlLXF1YWRzcGkuYyAgICAgfCAgMyArLQogZHJpdmVycy9zcGkvc3BpLWR3LWNvcmUuYyAgICAg
+ICAgICAgICB8IDEwICsrKystCiBkcml2ZXJzL3NwaS9zcGktZnNsLXFzcGkuYyAgICAgICAgICAg
+IHwgMTIgKysrKy0tCiBkcml2ZXJzL3NwaS9zcGktbWVtLmMgICAgICAgICAgICAgICAgIHwgMTMg
+KysrKysrKwogZHJpdmVycy9zcGkvc3BpLW1pY3JvY2hpcC1jb3JlLXFzcGkuYyB8IDI2ICsrKysr
+KysrKysrLS0KIGRyaXZlcnMvc3BpL3NwaS1tdDY1eHguYyAgICAgICAgICAgICAgfCAgNyArKyst
+CiBkcml2ZXJzL3NwaS9zcGktbXhpYy5jICAgICAgICAgICAgICAgIHwgIDMgKy0KIGRyaXZlcnMv
+c3BpL3NwaS1ueHAtZnNwaS5jICAgICAgICAgICAgfCAxMiArKysrLS0KIGRyaXZlcnMvc3BpL3Nw
+aS1yb2NrY2hpcC1zZmMuYyAgICAgICAgfCAxMSArKysrLS0KIGRyaXZlcnMvc3BpL3NwaS1zbi1m
+LW9zcGkuYyAgICAgICAgICAgfCAgOCArKystCiBkcml2ZXJzL3NwaS9zcGktdGktcXNwaS5jICAg
+ICAgICAgICAgIHwgIDcgKysrLQogZHJpdmVycy9zcGkvc3BpLXp5bnEtcXNwaS5jICAgICAgICAg
+ICB8IDEzICsrKysrLS0KIGRyaXZlcnMvc3BpL3NwaS16eW5xbXAtZ3FzcGkuYyAgICAgICAgfCAx
+MyArKysrKy0tCiBpbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmggICAgICAgICAgIHwgNTYgKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tCiBpbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmggICAg
+ICAgICAgIHwgNTYgKysrKysrKysrKysrKysrKysrKysrKysrKystCiAyOCBmaWxlcyBjaGFuZ2Vk
+LCAyODIgaW5zZXJ0aW9ucygrKSwgNjggZGVsZXRpb25zKC0pCgotLSAKMi40My4wCgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
