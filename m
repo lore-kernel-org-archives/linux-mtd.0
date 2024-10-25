@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B87DFD149C7
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 16:20:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48320D149C3
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Oct 2024 16:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+qnSPAkrebiVP9iNET+TNjdlhsAOq1Rzka4EEwx7oAg=; b=Hbgmdn1fNckfzu
-	W1Tyvv0UYC+4ukzz4AJEhewn7d1gyNjCTe4ySL5LdzRo+kX4NMzmk8Nrc59+mG18TpXNurS5nMN1v
-	TXvtothQN3B9zue2vGkf48UUTScR90ydlWBsUGpItylbP39uIM6pP218EPNzs+vpiqsdDRH2hqRdN
-	/Qjc8INjplPgslLxpfsyM+67wPnnkKATZeyidip9msUg68+luU2+U+hJ3FkHme5IfTIG/cXEirxiz
-	X3LfCXHCXiXvX5DMH3bicYhe3QsNgEKBKoIxhmif8ebF0fpex54Lwmc07vP0JjEoMff2ILURcTxra
-	McRAVY4J0ogyInG+Zy4A==;
+	List-Owner; bh=GKhIb1qyRBb0ClPaOGzFeUsryv9TH9/swg4SBEijn/4=; b=FEUQx+j3QjrIn9
+	16NIIpDrYikL5ARmAi8bp/i0xCN9oanFeq9hSadASHKAaCeen1w3rJ9xNA7dnKIWtlOUbjQ8YMjcI
+	t0oX6X9z2E7zVdJCV7b0zQKeoL6Eql7AISNOTY9YBspmV8ANbyagqXTa/Nz3ee5IiivTbwMxzyHj3
+	e720kcIQDGDs4VzIu7B8al+gJgZ5njWMv4i6eBvrKQeWSh+DwWXGF34j4s/DPkS7G7mypGLYuIMGu
+	avH1ng021/ZC0CMe8nSjRyelB16UjhjY4QOsnTNH5yZFh1e3RnCTJwOHgjAHXaSemsBR9cLEpCUA2
+	ErREAcdW6Go/Pw+1r8Vg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4N3W-00000004PEJ-1FVx;
-	Fri, 25 Oct 2024 16:20:54 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1t4N3X-00000004PEz-2LCC;
+	Fri, 25 Oct 2024 16:20:55 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4My7-00000004Nfr-2INV
+	id 1t4My8-00000004Ngg-2RLj
 	for linux-mtd@lists.infradead.org;
 	Fri, 25 Oct 2024 16:15:22 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 20218E0005;
-	Fri, 25 Oct 2024 16:15:17 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A197E0006;
+	Fri, 25 Oct 2024 16:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1729872918;
+	t=1729872919;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s4t+dl7gmNqGkztIaVCZ8ld2RWttPHaiN3Tjvzd9pcg=;
-	b=nZ/w4Jbqp6BrAgG/r8hqYAPw+c7bcWRlFy+CBq9HHvWxggqA6d5bit1S9icyUqYYJeE4EN
-	erjbUA1/EWNdr0h9vWxGzYfj1XH0El/gs+OFRSQzCp8TJrUQFfmlsbSyls6PfmUBEjzcUR
-	0N2wJGbLQdgtvEzo/RJ2Ly1tZQWckRxdRivukVhPX4RLp/tneV6jQtEUIc2PpzAW6QNAxb
-	aqbn3fE2xYJpfI6+Vhdj+SAmufA8GYiArzIH4qHNuPpEujCVaDeApcluhEKwwup5rG6Q/w
-	Yp0CJYBHkedpgDOtKYN+Xtg3X/ljQILAjejMTHLfTyA1fWIivL/8D6A1fGQuqQ==
+	bh=kKND3LIYgR1AN1EmSepdOfhyWMAXG9qLwbCjvI13gwc=;
+	b=OOh5JNyhPmtZ+73pjLqAr0l8FQciiNgv0iEG2IRRyVXsPujwW1whJXrOmTyjM2HUIRvx/T
+	N6ku+z/a17z5k6nD8ipOk9ruvXp9DO1K18O+S3aQeWH6rMBAtVlufeVJJnrrQnIbymenx5
+	qIaxOz9zW8G8QsURIw8/Xeh5IAsYikcyoy6h2art9eTybBLlnkdta5CmsWCVOy3P9linrE
+	pKqZ+aq3Bg+0hdquFi8WUtCF4bfaV+hKqW048D4cCOjO/v5xkTW8TmDl/HApxvlFMbpL/G
+	ubNfpGqtKwdgXdBOcx807lKpoR51PplCRhyBL6xfBwWCePLqCpRB9s0rnwowrw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -63,17 +63,17 @@ Cc: Mark Brown <broonie@kernel.org>,
 	Heiko Stuebner <heiko@sntech.de>,
 	Michal Simek <michal.simek@amd.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 13/24] spi: spi-sn-f-ospi: Support per spi-mem operation frequency switches
-Date: Fri, 25 Oct 2024 18:14:50 +0200
-Message-ID: <20241025161501.485684-14-miquel.raynal@bootlin.com>
+Subject: [PATCH 14/24] spi: spi-ti-qspi: Support per spi-mem operation frequency switches
+Date: Fri, 25 Oct 2024 18:14:51 +0200
+Message-ID: <20241025161501.485684-15-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241025161501.485684-1-miquel.raynal@bootlin.com>
 References: <20241025161501.485684-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_091520_006976_D5489C71 
-X-CRM114-Status: GOOD (  13.93  )
+X-CRM114-CacheID: sfid-20241025_091520_950432_0E0A839F 
+X-CRM114-Status: GOOD (  13.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,49 +102,41 @@ core.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-sn-f-ospi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/spi/spi-ti-qspi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-sn-f-ospi.c b/drivers/spi/spi-sn-f-ospi.c
-index a7c3b3923b4a..6a999a103208 100644
---- a/drivers/spi/spi-sn-f-ospi.c
-+++ b/drivers/spi/spi-sn-f-ospi.c
-@@ -335,7 +335,6 @@ static void f_ospi_config_indir_protocol(struct f_ospi *ospi,
- static int f_ospi_indir_prepare_op(struct f_ospi *ospi, struct spi_mem *mem,
- 				   const struct spi_mem_op *op)
- {
--	struct spi_device *spi = mem->spi;
- 	u32 irq_stat_en;
- 	int ret;
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index 0fe6899e78dd..36a3a650160d 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -623,7 +623,7 @@ static int ti_qspi_exec_mem_op(struct spi_mem *mem,
+ 	mutex_lock(&qspi->list_lock);
  
-@@ -343,7 +342,7 @@ static int f_ospi_indir_prepare_op(struct f_ospi *ospi, struct spi_mem *mem,
- 	if (ret)
- 		return ret;
- 
--	f_ospi_config_clk(ospi, spi->max_speed_hz);
-+	f_ospi_config_clk(ospi, op->max_freq);
- 
- 	f_ospi_config_indir_protocol(ospi, mem, op);
- 
-@@ -577,6 +576,10 @@ static const struct spi_controller_mem_ops f_ospi_mem_ops = {
- 	.exec_op = f_ospi_exec_op,
+ 	if (!qspi->mmap_enabled || qspi->current_cs != spi_get_chipselect(mem->spi, 0)) {
+-		ti_qspi_setup_clk(qspi, mem->spi->max_speed_hz);
++		ti_qspi_setup_clk(qspi, op->max_freq);
+ 		ti_qspi_enable_memory_map(mem->spi);
+ 	}
+ 	ti_qspi_setup_mmap_read(mem->spi, op->cmd.opcode, op->data.buswidth,
+@@ -658,6 +658,10 @@ static const struct spi_controller_mem_ops ti_qspi_mem_ops = {
+ 	.adjust_op_size = ti_qspi_adjust_op_size,
  };
  
-+static const struct spi_controller_mem_caps f_ospi_mem_caps = {
++static const struct spi_controller_mem_caps ti_qspi_mem_caps = {
 +	.per_op_freq = true,
 +};
 +
- static int f_ospi_init(struct f_ospi *ospi)
+ static int ti_qspi_start_transfer_one(struct spi_controller *host,
+ 		struct spi_message *m)
  {
- 	int ret;
-@@ -614,6 +617,7 @@ static int f_ospi_probe(struct platform_device *pdev)
- 		| SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL
- 		| SPI_MODE_0 | SPI_MODE_1 | SPI_LSB_FIRST;
- 	ctlr->mem_ops = &f_ospi_mem_ops;
-+	ctlr->mem_caps = &f_ospi_mem_caps;
- 	ctlr->bus_num = -1;
- 	of_property_read_u32(dev->of_node, "num-cs", &num_cs);
- 	if (num_cs > OSPI_NUM_CS) {
+@@ -777,6 +781,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
+ 	host->bits_per_word_mask = SPI_BPW_MASK(32) | SPI_BPW_MASK(16) |
+ 				   SPI_BPW_MASK(8);
+ 	host->mem_ops = &ti_qspi_mem_ops;
++	host->mem_caps = &ti_qspi_mem_caps;
+ 
+ 	if (!of_property_read_u32(np, "num-cs", &num_cs))
+ 		host->num_chipselect = num_cs;
 -- 
 2.43.0
 
