@@ -4,105 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E16BD10BF7
-	for <linux-mtd@archiver.kernel.org>; Sat, 26 Oct 2024 11:45:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA8DCD10C03
+	for <linux-mtd@archiver.kernel.org>; Sat, 26 Oct 2024 18:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cPdZflrdCIDX2FaAzagWME39iPVm7PNap+xSt2aGKw4=; b=umDCfoDnq3q9Lu
-	ozfIf1NQwZcKcxLb/YkTSWekzNa58NxV/ACdHJVL9XluSCXz+JpfMbBYnzD+yDlPOwUZ8Vm9NF+EH
-	SbJB6BGOJp2jFhWaitG8w5cfH9vSOCmJdPMHapfW2Pi57ZLn4imZMHYMjvRKCo51pn6bTeXHksp6S
-	UtNW3Y12FbNOTBFYu1bEMaMCv0P8xJVnItO+Kfxq0dSBR6I86I2j+ERi62oVfXVvY4mMQCGx3s18a
-	8AKHbCzX4zPZUfy7fHCU9QRVdGXtw4X6nMlzwwjPENB+1jwsYnKy6SawXfux5n56Ax0bd2RcuwEU8
-	s/utscwQigA3XKB+J7mA==;
+	List-Owner; bh=0g6adoUhNCPI1agKGDJ934kHCA1cBxASg/cvu3iNx2k=; b=QH4NIcBhZFcmT5
+	30WHhAcOIX9E312WRzRvIe8WYPwLou2LTuLcSx3L1i20jImknpDGZrtMF8EY3EHTJIcInNIjbFKle
+	dF4hUhbKDREZXnrAcjdTeIJrW85uGxJcor/MfELSFvclW1OTAOKbLctVPBgIJ8j9iW/pB2xrEqf11
+	S4o4eKjs6w0bd/FQg00JcILomGWLZKw8oQ7ZlqAg8RNa4NRJYZupalL3KQSjefDwjBvVCKrP0ZUTT
+	le1FELGyVu8pOtYQHv3Qz8ytl5nj/5TzNfZCbzVkYzKt0danE4VNupK729UUsR589eT0KD1E/4WGq
+	DbpB7lyI3rCeUwA0ZtsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4fEv-00000006XcU-2bHF;
-	Sat, 26 Oct 2024 11:45:53 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1t4lL7-0000000746J-3Kqd;
+	Sat, 26 Oct 2024 18:16:41 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4fEr-00000006Xc8-42Rg
+	id 1t4lL3-0000000745g-30Lf
 	for linux-mtd@lists.infradead.org;
-	Sat, 26 Oct 2024 11:45:51 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49Q5lqX8023303
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2024 11:45:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	wA68l2lf8wyRrI4R0eE4ltYNmKHxDtsxldAExe2fGzY=; b=H3k2UMFairNLtfHM
-	v9W60fAGmcec5NDWUBbQWauBq6grJNNxWuCTckmZO8d78fjZS9N4T1vy29ZCtCNf
-	SqOWU0sdnN2g51KRbGko3BvTlxrYvRsPls1sJeLNOxwQz2yWIAvvLOAsbJLakULQ
-	cPPrnoj0xwLH7yZr8vRzlT5EQLGqkuHqMzLaxjRjsWU7BRnstoI8c/+fBavW9D/5
-	uT95n7F4s3367AHG/iRDVjhjxJGTZ0XS/uSiIFcwJsmltNolhbq6LbmRFNtNAypB
-	5nx0IAd5Ig1Cc89C82TdGA6U3X+gVGzkn1zEljjhHKTkgr4mB1MLEa1/lGpGN2Lz
-	LBjJwg==
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com [209.85.219.70])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42gqcqgxkb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2024 11:45:48 +0000 (GMT)
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6cbf5a3192aso6399656d6.1
-        for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2024 04:45:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729943147; x=1730547947;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wA68l2lf8wyRrI4R0eE4ltYNmKHxDtsxldAExe2fGzY=;
-        b=QtA/RkjlQuO8+L3zZtX7h7UVO4dM0PVQ2ly/bHPI6l6VnR3TfVSF6+qS1LDjzfYcjL
-         HjXtI0GmqJATiYuiF8n5mZylvlJCgy23giRHGyG+Qcoeye6SqxaxFG/Bt5anirYpf4Hn
-         O40MCuWvMbHlkkWsbVcUuu3HPZr4DCTekpdStyiXVGoprbEYx/3YDn1D60haZlIJC+eO
-         Nm9yTA8VNesrRC+Ce2aaeyXQE/tKGAS4A/R3T7KNiatXL4ltoDWRfbPShO4Hoo4UxZE/
-         smVofZn0ub0R119yyJ1sD66PEB2jmfuCWkfx6OuDqfh08urZthzpzddezlrjJV3+yOsH
-         C8Jw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSQPd5gi788wtCdCP8VvvlXCEcsR8GPQDwI+03D5/y4N58vTea9vu/kmdv30tC8a9cCfAOA5MSRk0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxA0ny6kk3ctWy6+5SJ1kzpaBQHt8OU7YnGK+7rjJIZbhEn1Jgk
-	BUpZKe+LV34NaEPnctBOsaC/fD3oarh/Xv5qBbEKIt0UYrqBDHjtQgycuRzgoiCWYfE70VPNsps
-	lE4UN/OUKG+OYGc7EggoVa/69G6WVjGpktxwR3a4gWHnKlY2rOAzkgZHwCeE2FYde
-X-Received: by 2002:ad4:5cc1:0:b0:6cb:4e9f:7370 with SMTP id 6a1803df08f44-6d185862964mr16327836d6.12.1729943147549;
-        Sat, 26 Oct 2024 04:45:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEWADU17TJTVGXKCcyZaOhFfjzC7J4Ij3YUYX4KBl8kpdlvloYKNu7sa1t17L6IFUTcv7yxJw==
-X-Received: by 2002:ad4:5cc1:0:b0:6cb:4e9f:7370 with SMTP id 6a1803df08f44-6d185862964mr16327626d6.12.1729943147166;
-        Sat, 26 Oct 2024 04:45:47 -0700 (PDT)
-Received: from [192.168.212.120] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9b30c7b5ccsm167348266b.152.2024.10.26.04.45.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Oct 2024 04:45:46 -0700 (PDT)
-Message-ID: <b153229c-3cac-48cc-8f85-7eb9bb0ff79f@oss.qualcomm.com>
-Date: Sat, 26 Oct 2024 13:45:42 +0200
+	Sat, 26 Oct 2024 18:16:39 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 214755C4904;
+	Sat, 26 Oct 2024 18:15:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91D99C4CEC6;
+	Sat, 26 Oct 2024 18:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729966594;
+	bh=3yqYGd///ushBtzSlGq/whw7X1GKbItU+IrCmH+NyMI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=f33mSFm/fUK1556F89OXJEW80dTSZcg069G7Q13AQda2v1Y2k1gw0z9DQFRsUw+iM
+	 KAmb4o+aS2JrrPnyY4csgq3jQRRidWadZZ0S9QH3p3rJe+D4Q60RQ8YWi01I//sZyQ
+	 PwJtRfIrYVf/ne1wM4kUwmO1w3KvOeWIKGwK+2IyBLJGKrQPCVirqcahZiTqWxRy2J
+	 RY060vKPN+wY5aJwifmzKLdYe32Lol3+NfeLLsVHXs7AI3FZRjkrJNrNNBv2VCRi1t
+	 0HUgG9gcIKX/6S3eX523XcCLzaYgpthZka/H/09wOMd2tYUfKVhnYgN9h3NZrgdLIc
+	 /2DBEh/1+BKHQ==
+Message-ID: <2b89379a-4d21-450e-b273-b6986dcf5b7a@kernel.org>
+Date: Sat, 26 Oct 2024 20:16:28 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 3/8] mtd: rawnand: qcom: Add qcom prefix to common api
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, broonie@kernel.org,
-        robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-        andersson@kernel.org, konradybcio@kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
-References: <20241021115620.1616617-1-quic_mdalam@quicinc.com>
- <20241021115620.1616617-4-quic_mdalam@quicinc.com>
+Subject: Re: [PATCH v5 2/2] dt-bindings: mtd: davinci: convert to yaml
+To: Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20241008-ondie-v5-0-041ca4ccc5ee@gmail.com>
+ <20241008-ondie-v5-2-041ca4ccc5ee@gmail.com>
+ <4u5iv24enpz46funfvbo2aggx6yiqxy7beaa3ldt5ai5wf65kl@bnlm4eyuwkui>
+ <Zw0Ixx9Qu9tgGXGP@gmail.com>
+ <10a0efab-83a8-4168-993a-c4482a568c96@kernel.org>
+ <ZxImhhPhOWuYqSfK@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20241021115620.1616617-4-quic_mdalam@quicinc.com>
-X-Proofpoint-ORIG-GUID: zg-VJWYPh6KzdlJVqEVeq7raN8uY02FR
-X-Proofpoint-GUID: zg-VJWYPh6KzdlJVqEVeq7raN8uY02FR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0 spamscore=0
- phishscore=0 impostorscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
- mlxlogscore=668 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410260099
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <ZxImhhPhOWuYqSfK@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241026_044550_042071_19BE822E 
-X-CRM114-Status: UNSURE (   8.70  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241026_111637_880207_F9CF3C84 
+X-CRM114-Status: GOOD (  11.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,16 +124,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21.10.2024 1:56 PM, Md Sadre Alam wrote:
-> Add qcom prefix to all the api which will be commonly
-> used by spi nand driver and raw nand driver.
+On 18/10/2024 11:12, Marcus Folkesson wrote:
+>>> ```
+>>>         
+>>>
+>>> How do I set #address-cells in example-0 to 2?
+>>> I guess that is the problem.
+>>
+>>
+>>
+>> You just set it... There are dozens/hundreds of schemas doing it, what
+>> is exactly a problem here?
 > 
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> ---
+> I think I will solve the problem by including the parent nodes.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+Just like everyone else or some other way?
 
-Konrad
+> What do you think about this?
+> 
+> examples:
+>   - |
+>     aemif: aemif@68000000 {
+>       compatible = "ti,da850-aemif";
+>       #address-cells = <2>;
+>       #size-cells = <1>;
+> 
+>       reg = <0x68000000 0x00008000>;
+>       ranges = <0 0 0x60000000 0x08000000
+>       1 0 0x68000000 0x00008000>;
+>       clocks = <&psc0 3>;
+>       clock-names = "aemif";
+>       clock-ranges;
+
+That's some other way, so no, drop unrelated properties. Look how all
+other bindings are doing it - you need some wrapper node.
+
+
+Best regards,
+Krzysztof
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
