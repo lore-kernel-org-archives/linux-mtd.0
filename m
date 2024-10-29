@@ -4,84 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30024D3E2DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 08:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2242AD5B166
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 08:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gVeuuFXANlOjc0CqrqWjEiNTFMB6jDvRULc7xg34k78=; b=NPzfF37Wh8JiUsSBKMjKY2WbO6
-	+Ug2B5Sv8l91B7TXZtEo9KKABExxJvNGhWs6rrG8vZa9HjTwGPrMu7qCzOZowpZZm3d8K463lNhR3
-	Ms0JsolKGkLBMts+zwQBoUSnk2ZKW5U/FZhQPBjc5+JQ38wi4vDRlh9YQsdwfYbTDTgZaO1V83EdU
-	tmyzz/1+ntpEbSkzZGXQArEsjAF2L07Z1aE9NMuDJu+uE/qiF/55UrOs2YKwf7byrTP/5687G/6YY
-	PUKa3Bj1SvWNKzip1mG7bg40QnfToF2+uj9YNI11JmeoYZ68nJzc5QPUa/6MLSQV1csntFlvI2oIy
-	w71C67Ag==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/xSwRKsKTY/9OntcNkU+P1TMbI85/keI1IoX3KG2oTs=; b=JkmY27AQtyjgTO
+	sl7VEVJp+1Cheorr1oWuei8xnM0mTCtyz2bJykxYZg05hx9YyZLUsyDGNVoumRgPe0+ND+XkS/y7I
+	jzUj56SrkArSMntRqNEvjMsnM8U+dk/+YRltaJjjv1xPNdTaniclPkaWpxGdgqNmsWKGg8xtHAAP8
+	D0jc6Vortj7U01XG0Z+SZ5BjETrhopSDM+QhBH1oQ/6YfUZW4Q2QmYsH6Qz0Sc0XqlLa3b4xpx0B6
+	QpB5hAoKYxtOvzLIFMCmlpWTfiOmxhFsXcU7+LaxIlB2AZMaLkDZmsCV+SP4ibULsb8H+vbxAVCiM
+	Lq21C0IaniPZjjbnRqyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5hAH-0000000DbcS-1Ywx;
-	Tue, 29 Oct 2024 08:01:21 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1t5hO5-0000000DduG-2Rq7;
+	Tue, 29 Oct 2024 08:15:37 +0000
+Received: from mail-sy4aus01olkn20802.outbound.protection.outlook.com ([2a01:111:f403:2819::802] helo=AUS01-SY4-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5hA4-0000000DbYN-2E6g;
-	Tue, 29 Oct 2024 08:01:10 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-37d495d217bso4799413f8f.0;
-        Tue, 29 Oct 2024 01:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730188866; x=1730793666; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bzhZz2GbYuomV5MFzqF3P/eLv0fnWUj7r5Lpx812OSI=;
-        b=IqMLW3sfh/HT+EAHwAQliAe/LYnn3CuXYErrQ3X6zT6S73hhMW3ecO67y/Hs0q0acb
-         BC/oceFSQCiPaUTv5XX5KkxdP9VEAdbZvUH7GXPHFScivdlJKE7HaztC6hcpFxsI+K9n
-         8/ywMEE1WaWKJja3obPtLthPHPPxM5YuKWpSyRs7wIcc3x/KAHQ36rSiC8+4caZRwhrm
-         mWYOdYiKctt/sVy7dSFj/wyeUQtlJAHu8AyioVh7WVec9VxUjtCcx5Aa87267yC3QECh
-         YmaX3AmYCH5b0PzBUoEz/5z9xaZrFA+Dak5S/bFT7XnFDMBFBSoCoBF8glrHECezQ2C3
-         OQxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730188866; x=1730793666;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bzhZz2GbYuomV5MFzqF3P/eLv0fnWUj7r5Lpx812OSI=;
-        b=cqEpftdYZea2z50l4tP2ZWWBlZk08DWec0exK5jWnOghFCKsRAj1a0hBUb9hPIFXga
-         K+wwpb39kzu3pBV2g/ZrHCf/y1hThBWWi/4GonIdwMwpbewVHm6yW9L8i8Q64gqfFuoL
-         5zGi0qCwsTEJ7PQDAKfzsTCtAXxRmj3AX+NAuJ+f2PVGt9cy2ZCKmDSHWwDI+Zy399o7
-         bfL6ffgSJtO7VWYyVjtrPF2w7aisWD0gWQ0SuE4HW4kOUR8WmafOAybYU5hEyjkQL9H3
-         hwmy1eEA15pnHCt3itOLClB4mOZ7z84wiBQoJUJCT4YoYZKMifLvy+P//53EpP1j9C7X
-         BjNw==
-X-Forwarded-Encrypted: i=1; AJvYcCVYfCoh/h/ZZ3e3iNh5WaTGAsnabeIXGnU9OfZ8C2lTHCkBViTm6y9Tz7msy7MlPH1Ty1ob1/xKWgC3@lists.infradead.org, AJvYcCXCBa5B3eBPF+J0gVYSI2RBJogp9OI8oey5FllQnGKGroiRE+fapaS6y6cT7HdnCYZmsgnHtbNCb9cjO0JLggOK@lists.infradead.org
-X-Gm-Message-State: AOJu0YwYbes+eum/eqA6SfyRe3wgDS6gGSWZ8T+4D53rlLkjKfBolipy
-	swaQNCHTToCjVbKqBqpCa+R5B0Bc9sSCU76UuDlTSa5w48fhV2KRJlsehq8Z
-X-Google-Smtp-Source: AGHT+IFr0REKzIVW7Tl7PWuzYb/YDn87kfUPNpGrBe1ZEl3WOV7PcWg4Lczgc6Zu7KIosbpcVpyrhA==
-X-Received: by 2002:a05:6512:108c:b0:539:8f68:e036 with SMTP id 2adb3069b0e04-53b348e755fmr7646927e87.34.1730188854996;
-        Tue, 29 Oct 2024 01:00:54 -0700 (PDT)
-Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53b2e1c96ebsm1305019e87.223.2024.10.29.01.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 01:00:54 -0700 (PDT)
-Date: Tue, 29 Oct 2024 09:00:52 +0100
-From: Marcus Folkesson <marcus.folkesson@gmail.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: atmel: add at25sf321b entry
-Message-ID: <ZyCWNK_xMIsW4Ibq@gmail.com>
-References: <20241018-spi-nor-v1-1-d725bfb701ec@gmail.com>
- <239d2425-52f6-4deb-964e-e22d1a1f6637@linaro.org>
+	id 1t5hJe-0000000DdTr-0B6J
+	for linux-mtd@lists.infradead.org;
+	Tue, 29 Oct 2024 08:11:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LCtoi0yEQ3wV731CJTykk5tPpNjvVw8ue3tdKJizVijnDtnsvieEyCBwtjn86WW6Wl7CHeBtowlt4zJEIFZJBV1UdEoP7NJBhnLQGQrUdFVK3raGA4V6CPKKXfjKghKiyef1lG9wk0R49LOD3+M+LViP5PE+y2bOtlD1kfS8gOUd92jCn4IxIXeaUzI5Pa9msSKm0Xo5gC51gxxc3o2qMIcvhL//96omnx6WPfKdJmJIMA0i6Aoxdc1LMwd93LaZ+YWMQi7wCaprrHM/xcPEECHo3dCDVrzgjzYsdOfIWWfkco8LXJSRgDPpmI0pvBdZy9eIiekvhy4q0s8FT8UFKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zcDNrAG6NJkFIH3iwRZ5AUl73ORSSO+/L29ONananJI=;
+ b=UF4dJWAOIN5NjnsIw5oFQYo5KHrlHGWQCjUD+QNzCiXonDLZPpCIhatK+XijAgSFLTJqbC8QZRNq492aH0BKhZ7m7P5M6HJmWxee7AMK3JNwyLLH66mHVIiAhaBW+YzhYRF8gI/b6NC8/R/E782Pu92yNl8oMamVPCRvX7MZ/iqDWvewcWyo0T0L4qojlW/DLfrK6HVMpC5xtKwQYfiWXm1EajdPtA//gs6bLDIcb/xTfmdxLl2qCnLkKisDcEBtKxO6eMoz577lawkWvYIHdvnanDnVPajJ7K1LSDsvAyNOIFBCk2CWLVH7zfDMIsZR4PTCeQkYvpj+M9Q2tWSDug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zcDNrAG6NJkFIH3iwRZ5AUl73ORSSO+/L29ONananJI=;
+ b=TWnF0YCCLsbjbsAzTkDDDQ9WWMFNB7adtcxpi+TPU5DWxkfkX983PNr2++Ic6N2UtaJFP5mlEcwsvGtMB6QJlYfudmFlun2wHepBACCFzQsRf2Hu/7Pbb2tMycD5X/nnAtnWodGzMvxggXd/ZeltOcYsO1ZCG1DMm9t3jBIv11LkyPF59zHmmvZh4IUe/yI/cHK6x39mdnXLCME3Nw6mPo6gd9lK7joOEmAiNPuNcumpDwdF4SUnoiTZQsv9tF5k9XrQStq+XGzjDHnchSyAj3wc/pJSfvXA7O1e5vPU4H5Q90OHgm4uTmA+xhpcI9w82WG5TqWhTig9pi2ipNigeg==
+Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:159::11)
+ by SYYP282MB0911.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:73::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.17; Tue, 29 Oct
+ 2024 08:10:50 +0000
+Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::f65e:52a:9bfb:525f]) by MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::f65e:52a:9bfb:525f%4]) with mapi id 15.20.8114.015; Tue, 29 Oct 2024
+ 08:10:50 +0000
+From: Ryder Wang <rydercoding@hotmail.com>
+To: Waqar Hameed <waqar.hameed@axis.com>, Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>, Sascha Hauer <s.hauer@pengutronix.de>
+CC: "kernel@axis.com" <kernel@axis.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] ubifs: Fix use-after-free in ubifs_tnc_end_commit
+Thread-Topic: [PATCH RFC] ubifs: Fix use-after-free in ubifs_tnc_end_commit
+Thread-Index: AQHbGydq3UGpSRV3ek+T5tpnLt8T+rKdeqgF
+Date: Tue, 29 Oct 2024 08:10:50 +0000
+Message-ID: <MEYP282MB316412B08A32373E5ED9B896BF4B2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+References: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
+In-Reply-To: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MEYP282MB3164:EE_|SYYP282MB0911:EE_
+x-ms-office365-filtering-correlation-id: 2dbf20b1-4006-40c6-ad25-08dcf7f1337f
+x-microsoft-antispam: BCL:0;ARA:14566002|19110799003|15080799006|7092599003|461199028|8062599003|15030799003|8060799006|102099032|3412199025|440099028;
+x-microsoft-antispam-message-info: 92RpEKHdeEztnFw+QL4VQRRS8ecuplxGZzmxNcNo1WDIEEQfU+3lyTQ8ZldKg11J2SASy6C3vpPer8ipVpQWKUxnGid2pSF4hyHbvG/XQEJD+L3WSYGvMp3WUbXuFr1y/BVgjFOlw2E5gU++zdiOduhZGQ7vho9R48yzjMSwO7kzGZHNsd1YbbpZPh595cbWenQeOzRqhv0Xye9Iy+s8FkPc+LK+K3hO5TqqP0kaKo9i0W8itjt5MoZ3tWiECSHEReOB4y0faRaKs+RXKssoeR4oNqdmAdtoqal01JaE0wxH0fsdUHhbcEVkgaEGVDIZIorFyF/6g8zpMtePQk7AwukPVO83BuADzGTcpF3H7Nnl7r1O9GRZrMhG6Cbx34IlvK22uqe0pCU501v7Xv8JcMlGh8pUDiIp7slsD92F58wb0zmwEwFFIgrL5GR4RMRgZSZ2tk6NSlncl6arhjYtW2U76pxkx0p2RUGvhUJd2lbgiGc4xKJqgL7AwjAMEPFXmqbNjaat1bMfDXBP0iPQNrLFbvZoEkPvQnzzorA2yDq0u17bx8wJxcWeoHRBRJO7y54gufqN2zstvGYfhHUpfulRUKNyQyBUgoBxlVmsxWwcCVb7Z1RB0lXI6LNHPI1J4+I734nbmelReZQTTLJ5klilC2lhqd5+MoCW7/aDzXudx0SDB4upr8NlgaGWA/YDI3OIR5B/a5rrVAPxHaY4AhsR/xojzsvRAqLg8vEAKDbHY/rX0/pPxt4UKCWv2FpgOJLlY56e3BVuG3lZsdk5ww==
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?lbqrKLr37kXwngekjm84f1smGG2Hx7AduxZ6ya35wx0kw5K/TTX1hFZO4t?=
+ =?iso-8859-1?Q?JnpCssRHa9mNNo2LuKRZ+k0NNf3dc8Jij5Q8JlR40dXAnUrELnLEFQCcNf?=
+ =?iso-8859-1?Q?0MORK6hxQ+CokWj8GqJXH31vAUjoa5WlgkEDsKFLDhoTx5UY6zgz0/yX9A?=
+ =?iso-8859-1?Q?zACjoC5h6dw0U4+ZrA5mXCCR+ZlFkaBDYTi2UOuFwb3hHIJkvxKVwiCjs8?=
+ =?iso-8859-1?Q?47/RxbNr+i4FDG4UewXtOJ9BGOOYq7i1CQIPMNKxlfrOPmi4nfnLuB0nK5?=
+ =?iso-8859-1?Q?oxHnc9I/4SXux452FVUZJGowS4/EDHTDAqUDlFoB8mgQKzhZ1UaqdfIJus?=
+ =?iso-8859-1?Q?l/8BDiy4+f4GPvproq3bb4SerEExMLv0UdHK0NGvYx9Zt2mKHhWQC2r/9J?=
+ =?iso-8859-1?Q?KlEZnlUhHvS3VZlXfooL5OceIaDLtz1ItJk56aTKlBdyKYI6pNTCStNNkZ?=
+ =?iso-8859-1?Q?gj4xjGiqx2ODqa7ecx2aBX1oR3qbWy/48YG070RwVOf2gOeq3CKXczWllj?=
+ =?iso-8859-1?Q?SKERcM2gt18ycvawpZsVfamFKfqzszMteTKDUFegWevBdX8NlPoZJ2kpnN?=
+ =?iso-8859-1?Q?EvIVLB2dhloWwVOSEvj1mcXLwG4Sd1qjsb9EJ4mcOFoSP4WwDnqXEJgHXI?=
+ =?iso-8859-1?Q?jfpx2NdgsFR9YjXQDhDLPLzGbS8mdc6GZUGcKc7/lwHuaPN+8JJ9H5TTt5?=
+ =?iso-8859-1?Q?w6KlPjhf0PEpQOFfWDfAv1WLhw/90OoxPVPE8fb4YeMC/lnah9X2zp2EVO?=
+ =?iso-8859-1?Q?K+GSioMQ273xTqlcUfaqWZ2g4xJ5xneJ/eFgact2yx06UlBfe3xKFB/HtL?=
+ =?iso-8859-1?Q?OcZoLzdvOVT9+ZmgQczQjwswASqWnCvQdij39K0WnuQ6HGfOvnqZF1CaBG?=
+ =?iso-8859-1?Q?XwdPbz7HePpuVrFJV1eJP65CA8pO9GKV8F3eEo2B5UmlMzOotkQEAZHwh4?=
+ =?iso-8859-1?Q?rCninyChkI46ahKDO2Dztd/JAKhuqJ6/7TeQWy2o2xV6hAZbwGLtBcY2+o?=
+ =?iso-8859-1?Q?OPG95tfW2rcATcPOJJlJoxU/GoPdtvs5X/r7xkmFOS65FehcTdlP1SASH9?=
+ =?iso-8859-1?Q?nwS8SUtWMYrHgS4Mg/nHon/imHGgT2ZZ20TY/6ixdKLvT8F71wlxCOrjP2?=
+ =?iso-8859-1?Q?7sIaJ2oP/qC5GEflwy4t90P3+itNMOsnfo8k5ut0DeT5/9/6gD9tsmclhA?=
+ =?iso-8859-1?Q?1dMfo7gH6hcLVC3/xsLUAXl05xlpukkSCdzLF5kpnYR9JK5WtFJiWsO3+C?=
+ =?iso-8859-1?Q?2GTdnJk7g7DPF1IXFiPd2Zpd8S3nn9tqWptzDMju4=3D?=
 MIME-Version: 1.0
-In-Reply-To: <239d2425-52f6-4deb-964e-e22d1a1f6637@linaro.org>
+X-OriginatorOrg: sct-15-20-7719-20-msonline-outlook-722bc.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dbf20b1-4006-40c6-ad25-08dcf7f1337f
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2024 08:10:50.2646
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYYP282MB0911
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241029_010108_604213_8A967AE3 
-X-CRM114-Status: GOOD (  16.97  )
+X-CRM114-CacheID: sfid-20241029_011102_117849_48C29BC1 
+X-CRM114-Status: UNSURE (   7.02  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,83 +123,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4063657749190821989=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+I just have some interesting finding.
 
---===============4063657749190821989==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="KknHUEYmorMeUoPi"
-Content-Disposition: inline
+The code of the function write_index() has a race condition bug. c->enext is used in write_index(), but it is NOT protected by c->tnc_mutex. So there must be SOME race condition problem. I believe some znode may be corrupted or misread if 2 kernel tasks are operating the same znode concurrently.
 
+The code comment of struct ubifs_info below indicates that c->enext must be protected by c->tnc_mutex.
+--------------------------------------------------------------------------------------------------
+ * @tnc_mutex: protects the Tree Node Cache (TNC), @zroot, @cnext, @enext, and
+ *             @calc_idx_sz
+--------------------------------------------------------------------------------------------------
 
---KknHUEYmorMeUoPi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Tudor,
-
-On Tue, Oct 29, 2024 at 07:16:08AM +0000, Tudor Ambarus wrote:
->=20
->=20
-> On 10/18/24 10:51 AM, Marcus Folkesson wrote:
-> > Add entry for the at25sf321b 32Mbit SPI flash which is able to provide
-> > SFDP information.
->=20
-> then we could initialize the flash based on SFDP. If you don't need
-> locking then probably you won't need a flash entry at all. See
-> https://docs.kernel.org/driver-api/mtd/spi-nor.html
-
-Hrmf. It seems like I have been looking into the wrong datasheet.
-
-The actual device is at25sf321, not at25s321b, where the former can not
-be identified using the SFDP table.
-At25sf321 and at25s321b uses the same JEDEC ID though, probably what got
-me wrong in the first place.
-
-Please see page 10 in
-https://www.renesas.cn/zh/document/apn/an201-adesto-32mbit-products-overview
-for further reading.
-
-I will send a v2 with updated details.
-
-Best regards,
-Marcus Folkesson
-
---KknHUEYmorMeUoPi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmcgli8ACgkQiIBOb1ld
-UjLqWBAAyi0k9ULJfnyCaEkxEVEnWiyzPbYA3Tb5WlQoY/FuzK9QF2YO5eAZcnX3
-1MI2jYg6AXHK5Peep8m0if7Zeul+lhXxoIbQ5rSvpg8V9emyP5H4OBMyC/Ut2Xn8
-dAmHWzZq/4x7tvioOuceQMyvom3f31ruLYj1UIQDxqkgPxph/Vs10uz6VDYD7+5m
-a2fws0yI32dprIjt17WJiNVqti7t8OB7UTtb+cMrYssTtcMJgg+ZwDbSbqKgKKgt
-jb53eSQM8o45g7W7FwZG5niwV+BDnv3+U2iBqez4Z+Az2fJxH0hUqYajlRGDtAMw
-9+OQW2YfXVuAhYBPeq1tbVRgYZYUi2gCo5QHtbXJ5dgetdzhHl1j1ZrSDTTWbSvO
-BkMoDBlW8tdik9S9WPu++i8yqq/2uvbhOFz+vlimTjJJELiu9GdGGNiuf7JG0S2g
-KuJdxtn0Md+s2+hHDK5ZguT6OljNsx0DADS1XW/K2TGsBrvHeUSsB05RvDaaUiwO
-BK47ytYmWued1tcflYvtj/9RL36rrHTJx1EQzedpzCHYqdGTPvXlfLPMqZVM7hvx
-qJOctA11w5wkDje2DUuxYzeG8uytdXglmAsnYM5DTZnTHpOtSAZf1VjCKCm9YkLh
-GeTIBZcjHffbAB4053mzvDA+Nxt88VTVteiUByfu6gKKVkcv3Jo=
-=l+pl
------END PGP SIGNATURE-----
-
---KknHUEYmorMeUoPi--
-
-
---===============4063657749190821989==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+That's why I don't think this patch can fully fix this issue because the race condition is still there.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4063657749190821989==--
-
