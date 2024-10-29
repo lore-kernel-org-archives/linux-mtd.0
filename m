@@ -4,61 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E537D5B176
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 09:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED4C3D2AB00
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 09:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uVaLs5WD7iw8HbrjQjltUEHdbCEk8vDLCltP5LyqB8Q=; b=SWK5TCN0LLNeVG/dsWvQT7R2Gf
-	s0W8CXU4lfMv2XiL+cl5Dx+7ntgdMcURnj2tVEIB6ppyju/ZRy5s5n2Ytvv6D2AicKG9Qz3FJhmpc
-	z5xI/SyPpiTsmUS5GF815CkndSJaISWfqnddBLx7sPr9gihY6J6IVFBd9F9/tGl4e7RqMxrscfhy0
-	LiZ9KqrjJsiwUlya1MP+xxAA4TWT4tcY2qS+UzbV2xV8a3u3+QoNfEOyLah8snFnlekDmGzbeVTfU
-	AoKLP77blK66Q5YB/cf1TWac/SjLGI6/0AO8UV9l/nYo7PFM2CkJtzBv8hYJAQXNdjze29qBfpKx/
-	R7FzpO8A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=RPoItOvgnCNisxQglaoQyzYGi5Cv7PzeipVmiy4k7Is=; b=jHiM3XQltZlkIX
+	Bklecw8q7B6KUQ/7oqTJkQDrcbLbpFXUq0ne54VxGDE1RKnVaU0+TxvLd5UXNkUKj2ALbEGrUrR8O
+	gAwPb5fLZDVTcmqy/iy+keQhteqjQ0zQt2PE+0ww9zYNkONaxRjfcEbSrgpvcXG12+OBpMLj6XF8g
+	Lm9vyY97JlMFAMDp6TmmDf3Wsr6mqHS27ScKm4DUZxlQUd/KbAG+S+Y3A5nXjBA5GNE2qu3/o/BPd
+	VEL+LooRf3iY8AGXZQyO49UXJwas2vIRbLus6NvrAd5Jkr40gdMJGpGEIMlGWyep67A6ZXOeHizeR
+	l2+goJ56rPFlFZz2wTXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5iGV-0000000DpsJ-0aKr;
-	Tue, 29 Oct 2024 09:11:51 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1t5iI8-0000000DqOm-0ZtT;
+	Tue, 29 Oct 2024 09:13:32 +0000
+Received: from mail-lj1-x22d.google.com ([2a00:1450:4864:20::22d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5iBT-0000000Doub-0Qcx
+	id 1t5iCH-0000000Dp5V-04Xv
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Oct 2024 09:06:41 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xd48Q4682zyTcT;
-	Tue, 29 Oct 2024 17:04:54 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7EAEF140257;
-	Tue, 29 Oct 2024 17:06:32 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 29 Oct 2024 17:06:31 +0800
-Subject: Re: [PATCH RFC] ubifs: Fix use-after-free in ubifs_tnc_end_commit
-To: Ryder Wang <rydercoding@hotmail.com>, Waqar Hameed
-	<waqar.hameed@axis.com>, Richard Weinberger <richard@nod.at>, Sascha Hauer
-	<s.hauer@pengutronix.de>
-CC: "kernel@axis.com" <kernel@axis.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-References: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
- <MEYP282MB316412B08A32373E5ED9B896BF4B2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <fc567699-59c7-265a-b7c8-7b658cc6fc05@huawei.com>
-Date: Tue, 29 Oct 2024 17:06:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Tue, 29 Oct 2024 09:07:30 +0000
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2fb51f39394so51176151fa.2
+        for <linux-mtd@lists.infradead.org>; Tue, 29 Oct 2024 02:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1730192847; x=1730797647; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VYqK7MgB2hUqbn+JD+0wFx3U0hO8t0zf70oPmP44e9A=;
+        b=ZA+sr6aQpFbsrKTaXE3jy8gXOQKcaD5yNRSbFVBg6mVd4iV9Zz8WUWv8QUpH1v4bVY
+         G7yNVtI1PTIlG1tkmEJcIMhv9wRw8C+yrOZT3gHMTY/Pen2IORJvslOOOOpPXnz7TSeO
+         VriCVa1RQDK+CTKulqcGlbvcTyNFcm2z17xm7zFMVC1dB+pkPF2hE4M026zyK0JS+uNL
+         GQwenOY7+T+Wm/Y2vyXGG4I1yqHn7B8pASFU8T+p51llUxtR6Zd06R1pDC36x1+0hyua
+         nLa0BaOcvWZzn9SXhP75COdBCl+C0XQSg9RW3e1qgtHaHLncmD/Eoce9Z+Oe8RruUOx5
+         qmBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730192847; x=1730797647;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VYqK7MgB2hUqbn+JD+0wFx3U0hO8t0zf70oPmP44e9A=;
+        b=qN7d30wjfGcVn6l9Dx66Jh5I8C2kMTWKHsI2E4fi7CwActGHngxtI27XQY4MUZUuzU
+         CKl+eTFBxGWEk9pVrjAodg0so7Kv2QTD6bLCWkcMLXJ103+AT7CYm5TvX+lpMH7HUYHw
+         b+XnrjuiDW7Pe42X7Sf6w9d9OaKwSoDzKjLKKf+EJ3EQy1x6VafNasKe2kFc+dxps/tm
+         v0lDB78H+HzSIwJ/8OFXYRziPYnX1NYA2pb0jJFwvaJra58LYfmXjsFsaSP1Fz3/+OFF
+         jj9aNkgW2SoJJZyFn/dDuew7U+fifwNC17GYzJQM4dDllGVjM5xONhHhWL2q9HFPf7ux
+         Mchw==
+X-Forwarded-Encrypted: i=1; AJvYcCWPqjP4vmaXFCFB83QRxQdyzFsy1yObPzlQxl0OpDaJyqWOOC88sjXcHXRnaj9UEPwLCH4jhuFZm0Y=@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywr5zzT86+F2k5N3RIVrl7OOkRbvMNv01sCCFPKdLyHERvKmaxr
+	s4sCKjnk4BQg+r3t2X9/jfVrhclF4mGMWPLU9spsDZEHGeAKG+YmBb/rMIrlqnA=
+X-Google-Smtp-Source: AGHT+IE3Kfc2QKyRXQkLanAfLGW+GKoM5FPYKz3wvRO3LVxeSyxR3cNX5M1xX8bds53NULsdqU26Hg==
+X-Received: by 2002:a2e:bc26:0:b0:2fb:50ce:ce94 with SMTP id 38308e7fff4ca-2fcbde05177mr50053981fa.0.1730192846924;
+        Tue, 29 Oct 2024 02:07:26 -0700 (PDT)
+Received: from [192.168.0.157] ([79.115.63.43])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431935f74f9sm139897995e9.31.2024.10.29.02.07.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Oct 2024 02:07:26 -0700 (PDT)
+Message-ID: <ddad0aa3-df80-45e4-882b-6134c87c544e@linaro.org>
+Date: Tue, 29 Oct 2024 09:07:25 +0000
 MIME-Version: 1.0
-In-Reply-To: <MEYP282MB316412B08A32373E5ED9B896BF4B2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Use nor->addr_nbytes in octal DTR
+ mode in RD_ANY_REG_OP
+To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
+Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <20241016000837.17951-1-Takahiro.Kuwano@infineon.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20241016000837.17951-1-Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241029_020639_360604_9540B9D4 
-X-CRM114-Status: GOOD (  12.60  )
+X-CRM114-CacheID: sfid-20241029_020729_626474_99D5409F 
+X-CRM114-Status: UNSURE (   6.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,33 +92,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8xMC8yOSAxNjoxMCwgUnlkZXIgV2FuZyDQtLXAOgoKSGksIFJ5ZGVyCj4gSSBqdXN0
-IGhhdmUgc29tZSBpbnRlcmVzdGluZyBmaW5kaW5nLgo+IAo+IFRoZSBjb2RlIG9mIHRoZSBmdW5j
-dGlvbiB3cml0ZV9pbmRleCgpIGhhcyBhIHJhY2UgY29uZGl0aW9uIGJ1Zy4gYy0+ZW5leHQgaXMg
-dXNlZCBpbiB3cml0ZV9pbmRleCgpLCBidXQgaXQgaXMgTk9UIHByb3RlY3RlZCBieSBjLT50bmNf
-bXV0ZXguIFNvIHRoZXJlIG11c3QgYmUgU09NRSByYWNlIGNvbmRpdGlvbiBwcm9ibGVtLiBJIGJl
-bGlldmUgc29tZSB6bm9kZSBtYXkgYmUgY29ycnVwdGVkIG9yIG1pc3JlYWQgaWYgMiBrZXJuZWwg
-dGFza3MgYXJlIG9wZXJhdGluZyB0aGUgc2FtZSB6bm9kZSBjb25jdXJyZW50bHkuCgpUaGFua3Mg
-Zm9yIHJlcG9ydGluZyB0aGF0IDotKS4gSSBub3RpY2VkIGl0IGEgcGVyaW9kIHRpbWUgYWdvIHRv
-bywgYW5kIEkgCmZvdW5kICdjLT56bmV4dCcsICdjLT5jbmV4dCcgYW5kICd6bm9kZS0+Y25leHQn
-IHdvbid0IGJlIGFjY2Vzc2VkIChpbiAKd3JpdGUgbW9kZSkgYnkgb3RoZXIgdGFza3MsIGJlY2F1
-c2UgdGhlcmUgaXMgb25seSBvbmUgZnVuY3Rpb24gCmRvX2NvbW1pdCgpIG1vZGlmeWluZyB0aGVt
-IGFuZCBkb19jb21taXQoKSBjYW4gYmUgZXhlY3V0ZWQgYnkgYXQgbW9zdCAKb25lIHRhc2sgaW4g
-YW55IHRpbWUuCj4gCj4gVGhlIGNvZGUgY29tbWVudCBvZiBzdHJ1Y3QgdWJpZnNfaW5mbyBiZWxv
-dyBpbmRpY2F0ZXMgdGhhdCBjLT5lbmV4dCBtdXN0IGJlIHByb3RlY3RlZCBieSBjLT50bmNfbXV0
-ZXguCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAgICogQHRu
-Y19tdXRleDogcHJvdGVjdHMgdGhlIFRyZWUgTm9kZSBDYWNoZSAoVE5DKSwgQHpyb290LCBAY25l
-eHQsIEBlbmV4dCwgYW5kCj4gICAqICAgICAgICAgICAgIEBjYWxjX2lkeF9zego+IC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gCj4gVGhhdCdzIHdoeSBJIGRvbid0
-IHRoaW5rIHRoaXMgcGF0Y2ggY2FuIGZ1bGx5IGZpeCB0aGlzIGlzc3VlIGJlY2F1c2UgdGhlIHJh
-Y2UgY29uZGl0aW9uIGlzIHN0aWxsIHRoZXJlLgo+IAo+IC4KPiAKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+
+
+On 10/16/24 1:08 AM, tkuw584924@gmail.com wrote:
+> In octal DTR mode, RD_ANY_REG_OP needs to use 4-byte address regardless
+> of flash's internal address mode. Use nor->addr_nbytes which is set to 4
+> during setup.
+
+Applied, thanks.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
