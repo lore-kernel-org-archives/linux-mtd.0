@@ -4,94 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D88C8D5B870
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 04:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89E73D5B87F
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 06:37:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PbynONAHuc35m/u8SOrsFgECl50Ac5KACocsLHZXwKw=; b=N8eZLN7Dlohj5z
-	//1EBMDW28RVrdiQHhQS2XceQKOfxOxQ1YVOP8fiYrn9a9BKCPt6F1EiSpBuo7LgXdS7flSX0h5JX
-	3qdInv/FCT+PCqrqC0qtltMfhpVhU2QT0fvnRoBo2qc8dPRmwM3u1GpsWdv9v7iepKc598isFgJNt
-	C1hnMFU+3q7CgoTVR0YFwayUEFMQgcvO3su34dSuV824AIZ9vwvzFDbz1/Bsr9UOqNntVmybv1t0e
-	qir+vAPm9W5e703nDQFdgVZqPKAXYK9K4arL+DD2LY+1LU+u9YBYNGQDQVZauVPO+Se/6m4s8oW99
-	qH/yoyaH5TR+dH5V0XCQ==;
+	List-Owner; bh=gzCiTBtP3VJARdBA6BXnSz+rJSEpxVNYKBzEZ+ih9ME=; b=BpOV1zFb/01Akl
+	GpKrQSVdxWqyQJcU3cK7/1gGDtU0ulRca94KkTsgVW3TMAjHOg74Ue968Kg4wL/ZkWBKMe81K+jEp
+	+eqzxrxQdR9FouOJjlBdtg2ZNbBpaI9aA7pcbw06RB2gil4Hw42YOkSJmpHE3yBRomBIJ1QoZIf2Y
+	/86eoWgfRLWDZz7g+CeL5KcjfFiqcah97aCeZrbhhVRGpzLp/h88YAvfTJgeySrCFJXsQdoTUprZn
+	+3OuWTYRFl9xH+rCGAfDhU04mpAIF5WbYGeXiBQeJtMF22nHWCuOQ44tWECQljm1myIH0lZ5IKz16
+	IshUVkh6hDp6+RletTTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5df0-0000000DAEt-3sRk;
-	Tue, 29 Oct 2024 04:16:50 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1t5fqa-0000000DNoQ-0qkx;
+	Tue, 29 Oct 2024 06:36:56 +0000
+Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5dey-0000000DAEP-00CS
+	id 1t5fow-0000000DNZp-3KLk
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Oct 2024 04:16:49 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49SIFADo010194;
-	Tue, 29 Oct 2024 04:16:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	kWAg+RtxfDkBXJrBxaZJA2nuf2JO7cnYiwXzb8lU/Lo=; b=ZVJCnqAER0rYPNNU
-	MYJRyl8RPHbsjfwhxJntLx95blYm9x3o7RNqrIVPJXCUIpT/p9mv/7tVmmslP39I
-	2BbE+NMHSnD5vLMPDflXW2yCfnRmA6QmB7ERrVdBF6AHj7+Rn0WPiEN1ssUr3Z+o
-	cOJuF1UU4tKeCzpbaXWPQkX/6o00DnkUf0d7QcmX6AMslS6oQLQCZyu3PCv+Xicj
-	fLrD1L1jBaH9phM64B2wP0kRgqd3uAQtWeFPVoivFO2J6ndyYfS8WPfu9mJjOO1s
-	0Y3ibwDzdQQ0DH9SdUeYhzJv0PmXuo8TsGTdpe2I/T2thQLOUeLThrOmZg9083mK
-	STSvEg==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42gsq8f52y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 29 Oct 2024 04:16:41 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49T4Gf2P006827
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 29 Oct 2024 04:16:41 GMT
-Received: from [10.151.37.94] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 28 Oct
- 2024 21:16:36 -0700
-Message-ID: <f56d0181-2796-e185-f2b4-c9cea8bf8daf@quicinc.com>
-Date: Tue, 29 Oct 2024 09:46:33 +0530
+	Tue, 29 Oct 2024 06:35:16 +0000
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-37d49ffaba6so3576718f8f.0
+        for <linux-mtd@lists.infradead.org>; Mon, 28 Oct 2024 23:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1730183712; x=1730788512; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oGmWguF7wto3ubSTB9eGE9Fa2Zb2k0XycKxxaDv+zCk=;
+        b=wfP3PRxQ1abdjKygaNGJ9md2/wZhjUBsUerCRFxhbQMwKfHAr81AqgDJz+XuG8yFSD
+         LZ2ama6EF+blUuV545U9npbdgccaJM1schmlXu9/65sYNnJ2kCROpFL4q2kvxeYGFub6
+         LzyVS4O5hAY49Go/xheqG3Lt0bx6oPRHhPELlfbW3NhONsLcFXATWutXYNuq+QKLXaik
+         SXN4PwhMXuPUmtY4liR3TiZ63wP2FdV3YdOaN39Y0vvuw8gZGBbsYf6gv1CnadqvBU9A
+         8+ybEGpyf505sDj6yJPuEwk+ffreT5WZ3H21MEMOQ+Xmu7HR2mtOZJuPQVUcejh+nZqr
+         3ltA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730183712; x=1730788512;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oGmWguF7wto3ubSTB9eGE9Fa2Zb2k0XycKxxaDv+zCk=;
+        b=dSqmGAhbs4W/wV2x9/vOEktJyJ/di+Bi2goImxXEkYkUHziq+C4mxkt7T0G0Y1sKrL
+         tfyVxf3jBCr1JQluFYdomAulaaOUAz3W0Zp3DSCDpzctdIosFAWmw1ThUPywhBY3nG3s
+         LCkYlqZ/Dr64LZKyP95SBff8vZ6aKVoC0WR1q63sQXrtz7BK21eBqtiCzvaDseg43JNj
+         ZZJd3m1WV53OmoD99uNY+zJr1J+uFq5exK3GGDPKf0kvkOIxG//4Y8XqwFLyu96U2Ei9
+         kkuOLA+EAKWRnUV16/CxDjndqSb7hNKT7HHAHbPX3VzN+yDQU8PzWilvrO5UBJHcindH
+         G7hA==
+X-Gm-Message-State: AOJu0Ywuj1DmceVXYFUnU9QaHRaN5LZxgfPig+0/lLODNh6HiEGA7O1d
+	S3dWR6hnYLPF2OAQzOIAnDON/gBQmDpSKEVuhTMfYJ5nnNWc4r3EoWi9jshIZQI=
+X-Google-Smtp-Source: AGHT+IGxj96uvuoQOa/k6xLtZvRpxvyjCrAdeB52b2mJkIZWiWOsgfuAxw3Jj1MvCjKhES6LQdaIEQ==
+X-Received: by 2002:a05:6000:a90:b0:37d:3eec:6214 with SMTP id ffacd0b85a97d-380611f579dmr7898417f8f.50.1730183712539;
+        Mon, 28 Oct 2024 23:35:12 -0700 (PDT)
+Received: from [192.168.0.157] ([79.115.63.43])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b4e56csm11540408f8f.65.2024.10.28.23.35.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Oct 2024 23:35:12 -0700 (PDT)
+Message-ID: <bbb8f8c0-3676-4846-b4d3-70e1c533b66d@linaro.org>
+Date: Tue, 29 Oct 2024 06:35:10 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v12 4/8] mtd: nand: Add qpic_common API file
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: atmel: provide .size to the at25ff321a
+ entry
+To: Marcus Folkesson <marcus.folkesson@gmail.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20241018-at25ff321a-v1-1-c8380f80c289@gmail.com>
 Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, <broonie@kernel.org>,
-        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
-        <andersson@kernel.org>, <konradybcio@kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
-References: <20241021115620.1616617-1-quic_mdalam@quicinc.com>
- <20241021115620.1616617-5-quic_mdalam@quicinc.com>
- <41db541a-4de1-409b-bfec-7b9456fc200f@quicinc.com>
- <4c239c07-799c-b910-c6e0-ff717202ceb0@quicinc.com>
- <dcdd870b-c4b8-4bb8-9c08-82474cc4d872@quicinc.com>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <dcdd870b-c4b8-4bb8-9c08-82474cc4d872@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VkcB9iZLWmYReGgSOPJeTo8msJPCaB6V
-X-Proofpoint-ORIG-GUID: VkcB9iZLWmYReGgSOPJeTo8msJPCaB6V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=925 impostorscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
- definitions=main-2410290031
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20241018-at25ff321a-v1-1-c8380f80c289@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241028_211648_079136_A1A6FA44 
-X-CRM114-Status: GOOD (  11.88  )
+X-CRM114-CacheID: sfid-20241028_233514_858334_D9725C2C 
+X-CRM114-Status: GOOD (  14.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,39 +95,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 10/25/2024 11:57 PM, Jeff Johnson wrote:
-> On 10/21/2024 9:39 PM, Md Sadre Alam wrote:
->>
->>
->> On 10/21/2024 11:49 PM, Jeff Johnson wrote:
->>> On 10/21/24 04:56, Md Sadre Alam wrote:
->>> ...
->>>> diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
->>>> new file mode 100644
->>>> index 000000000000..570ab59ca12b
->>>> --- /dev/null
->>>> +++ b/drivers/mtd/nand/qpic_common.c
->>>> @@ -0,0 +1,757 @@
->>>> +// SPDX-License-Identifier: GPL-2.0-only
->>>> +/*
->>>> + * Copyright (c) 2016, The Linux Foundation. All rights reserved.
->>>
->>> I'm surprised you aren't adding a 2024 Qualcomm Innovation Center copyright
->> qpic_common.c file is derived from drivers/mtd/nand/raw/qcom_nandc.c file
->> so I am retaining the Copyright from the drivers/mtd/nand/raw/qcom_nandc.c file
+On 10/18/24 10:57 AM, Marcus Folkesson wrote:
+> Set size of the flash for the at25ff321a entry.
 > 
-> If you have a derived file then you should retain the copyright of the
-> original but then also add current copyright for all changes made on top of
-> the original file.
-Ok, will update in next revision.
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/atmel.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
+> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+> index 45d1153a04a07b7c61f46b117311b24ab695038f..cc7217e96d0139a06d46f10e35c545f604464b3c 100644
+> --- a/drivers/mtd/spi-nor/atmel.c
+> +++ b/drivers/mtd/spi-nor/atmel.c
+> @@ -214,6 +214,7 @@ static const struct flash_info atmel_nor_parts[] = {
+>  	}, {
+>  		.id = SNOR_ID(0x1f, 0x47, 0x08),
+>  		.name = "at25ff321a",
+> +		.size = SZ_4M,
+
+The flash size is retrieved from SFDP. BTW size of zero triggers SFDP
+parsing, see spi_nor_needs_sfdp().
 
 ______________________________________________________
 Linux MTD discussion mailing list
