@@ -4,102 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0693CD2AB23
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2D68D2AB20
 	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 11:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+EcXP1JSibcjf0KIudeHJFADvNn9zFo9NoqQkyryWDk=; b=IYqD9rk7gZGTN3
-	wYfF2YsYfPh8rvgIOOVpg8vaYi1H/ycWRRrnOWZXqn/+zk0ShjcD8/3K9ywqO6L/5Ao+58ZWYFb6D
-	AEH+PhfUvWB8FjpeYP3XTfeA/JRTdidj55HcqSrUZhw6RlphEJ+6NtXP5ni1DWvMw3LnwwdrAEwIa
-	grLZj9G+bS09KNpEzv8uiexj5M1s2Tg6rk/Oi3K5dvye3z1ZkypMRNXYkBooxEwvbgisFDYev3ybk
-	MZB2RfhK6Eu+MC2c8UsuWSkXL8Vc1OoT7KQCXILU8Gd0iAEx307hA0Wwfi4gvyosT02Ad5q4Zz9yO
-	mbzIPzpjisHIAGGoV2+Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2CJCmvgmE/MA4icBtn9+XehICkDIBeL7NoSybOs9OQc=; b=AvsCOPp2HYpqzetuu05ulZkAo1
+	kdGqohm4miU3r/C69VXHXP8HSlqnaRDUZFN0MPdI5XNgu13egticL7rY0a9nKo6V41bkM6thf1TY0
+	iTpicGFB+kGT2apOHXxanhRKG4pVSrQ4ok2p39Jk8g/GOsWmhZQ74OHLubUJ15gLHA6+AUx31b4a2
+	TnUvK9X//eQwgStPZ/cj86pagLF15fpLiE0a2tDusNtu1oE+n5tbMy708ljo8jfeTfwHtNAlhr9sz
+	CBepT/Y4LMl1lpaXsfKU7+E8Q+1BIxwOxggrzrYvlGi2p5LQInXMBcW6wCEiKpGoyMHbuwGyMaMza
+	pUT2dy6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5khQ-0000000EHdU-1tNY;
-	Tue, 29 Oct 2024 11:47:48 +0000
-Received: from mail-lj1-x22d.google.com ([2a00:1450:4864:20::22d])
+	id 1t5khP-0000000EHdK-3lAg;
+	Tue, 29 Oct 2024 11:47:47 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5kKS-0000000EE6Q-0REU;
-	Tue, 29 Oct 2024 11:24:05 +0000
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2fb5743074bso43586101fa.1;
-        Tue, 29 Oct 2024 04:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730201042; x=1730805842; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/RlZ1TnHpvCKbzlvSM/hs6o2BD2pnpvAtKzCAXeYDfw=;
-        b=IZJYtmVF1fuj0rTJ702t+9XnPkespKcLqw+eOQtQr5FMfa9URB2bJUSAmC47G7nLwO
-         Hmd/RKhU3G+mdW3MjWwyNv0MC0BwiZAhrhqqyGGFHg7QMUfh052VJ96WRPQOz+EGnzvX
-         YsREqTVIeSJiaP9Vc15Lr+9z3Co6kem+s5TVVm0osswfLqhRCfV0HByQ1AATkWtAbFQq
-         JodNNFMnJoZ45NflPeZisOfTQQDUH00683qLO5WuZgQQglEH9ma2u46A/bOSm//oIDS/
-         hGHjReRt1sIHF0uNSgYqdoF2V7av52IFKqtxvv5DYWvo40sCyDgbJO07oNoO7yfbkkeb
-         xgOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730201042; x=1730805842;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/RlZ1TnHpvCKbzlvSM/hs6o2BD2pnpvAtKzCAXeYDfw=;
-        b=uR7z54FD7RHpSXYAsCXH+T1tAMTCCzjLWBwxp0bv5650Q2Z9Epti7bdJ9WK0Y6vzvL
-         p8ygT7ExJSSPu99DOO0GQ3SEzZIhBusNWPZMht3feDN4uEKSeYV+L5tQf79TGqeP2xWh
-         Q1xqtZicrA+okvc/wPwmu+Pls0dtYep9Rav6SlkKQHuW8ZoQD7U81jDi1VrC4tcO/rT/
-         rNdTppZxYHiYYJFVaPScJbRMrmNUDLdH7aqZZCTkOynZEKI3DjFL3jBkpYeW6RuxanRA
-         qLuz8E1wJTT6U/a7eAYlNUOTjDRtm0Bpel2aLnPeKPFiikfar6fqbIaL+/UZe+Bz/NMW
-         QUpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXrgDlWXuPStG5jM9XVI5ExOsXuKlDA7Grfrc3EkwkODH5Z+jXX9XGz7WZWLF4Hu3KJ1+UrbKqkIdUjDi+C4XQ@lists.infradead.org
-X-Gm-Message-State: AOJu0Yww6YwR8BwjTyDT4J+4EidrbL//SGPnJpUAA0oj/5vMp8gyVEwI
-	F47gR/iNxHk0XY2rqwB3zJ1co+Sw1yX2c5URTtdMJb0sAiEyybWX
-X-Google-Smtp-Source: AGHT+IEHQFQWslu58ODNcgJ0kA7mcOUn92YiGRqwT9IXE64HXJya3wT0vI60FTSmoh816Nm6CnQPvA==
-X-Received: by 2002:a2e:be09:0:b0:2fb:50e9:34cc with SMTP id 38308e7fff4ca-2fcdc7f6a51mr5886061fa.17.1730201042130;
-        Tue, 29 Oct 2024 04:24:02 -0700 (PDT)
-Received: from [192.168.1.11] (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2fcb45d20dfsm14691601fa.80.2024.10.29.04.24.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 04:24:00 -0700 (PDT)
-From: Marcus Folkesson <marcus.folkesson@gmail.com>
-Date: Tue, 29 Oct 2024 12:23:30 +0100
-Subject: [PATCH v2] mtd: spi-nor: atmel: add at25sf321 entry
+	id 1t5kFp-0000000EDSr-0sri
+	for linux-mtd@lists.infradead.org;
+	Tue, 29 Oct 2024 11:19:19 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xd72B2G1nz1HLdc;
+	Tue, 29 Oct 2024 19:14:42 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id C1BC21A016C;
+	Tue, 29 Oct 2024 19:19:09 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 29 Oct 2024 19:19:08 +0800
+Subject: Re: [PATCH RFC] ubifs: Fix use-after-free in ubifs_tnc_end_commit
+To: Ryder Wang <rydercoding@hotmail.com>, Waqar Hameed
+	<waqar.hameed@axis.com>, Richard Weinberger <richard@nod.at>, Sascha Hauer
+	<s.hauer@pengutronix.de>
+CC: "kernel@axis.com" <kernel@axis.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+References: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
+ <MEYP282MB316412B08A32373E5ED9B896BF4B2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+ <fc567699-59c7-265a-b7c8-7b658cc6fc05@huawei.com>
+ <MEYP282MB316491A32BE6F870B093540FBF4B2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <6c1295c2-5399-793b-02f4-0e078dc68d0a@huawei.com>
+Date: Tue, 29 Oct 2024 19:19:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Message-Id: <20241029-spi-nor-v2-1-e166c3900e19@gmail.com>
-X-B4-Tracking: v=1; b=H4sIALHFIGcC/2XMQQ7CIBCF4as0sxbDELWtq97DdEFhaCex0IAhm
- oa7i926/F9evh0SRaYE92aHSJkTB19DnRowi/YzCba1QUl1QYmdSBsLH6KwRvW3vrOkpYP63iI
- 5fh/SY6y9cHqF+DngjL/138goUNhWXSc3tRLJDPOq+Xk2YYWxlPIFZ9O5Hp4AAAA=
-X-Change-ID: 20241018-spi-nor-dc29698dea0f
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Marcus Folkesson <marcus.folkesson@gmail.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2442;
- i=marcus.folkesson@gmail.com; h=from:subject:message-id;
- bh=Bh/pCGhgwpeso/ZlnFF+4oo3hRtxyJ4ukGqD9q6lDhw=;
- b=owEBbQKS/ZANAwAIAYiATm9ZXVIyAcsmYgBnIMXLk1V2su/q8mCIPTOsrJENpDhv/6uVHZuvj
- k1jAj4sLd2JAjMEAAEIAB0WIQQFUaLotmy1TWTBLGWIgE5vWV1SMgUCZyDFywAKCRCIgE5vWV1S
- MtE6D/0dhDciMdCaBBKUIEVGnm65MDeeHCj5uxDQhy5EdwWO/LIrD/paTeTRKOizfdjddOCX/Yx
- nB1kBZHlvWeoTNkarX3fENeCca2t7fI4BFSG7Jq5MnhQAion0YxLsczQa73jv+WFlD3q3QN0fHo
- asVkPagkJsiIM1YHpbfPuU2mxe3jFujXT2Wg5+5zsqa5eIuH+ybMgGE+rU6nsw2KI+8eFtuOUbM
- GCss0zZqQmrQ+ASg/BwEaa9lKKprmbqzOOL3ykEopy87gXtrQgwoVXulm8qbNm7Ugf6efqRTRAm
- +0hri72DrCgi7Im5IAxGVzfG75FEDQKC7bj2xwEPbm7mG3373qWxpvqx3QNPR+wAi23hR1j+sn0
- CqonFM0Hdr7uH7pNNAf6r3AMCE0XQM+35Z5e2gO8NitmxpFt+Ep5ciHHVJ23W2gKZrbe/+1sT6G
- ZSPnr7dAu5yskxZhzV3yab+fMBrpOVNyd1FpvELpBr74tVQO1EVpNkYALlDTwLQz1Z3GGiw+8WW
- uGQr0ExilGiMuaFf2GWp18S1xOOPZjU+9GlYnfzWlQoAOVR3RY9KYN5tggIogxWv7T3fqvDI3m0
- UB6Fs9CpQCW0ACwziipYqlpbJsueJsCyRKIU7vPvCSu8f8OpzApGkwACBvJaAlcX9zBnSc+nL4A
- 6q1AR+CdoauNAtg==
-X-Developer-Key: i=marcus.folkesson@gmail.com; a=openpgp;
- fpr=AB91D46C7E0F6E6FB2AB640EC0FE25D598F6C127
+In-Reply-To: <MEYP282MB316491A32BE6F870B093540FBF4B2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241029_042404_187958_A6FAD634 
-X-CRM114-Status: GOOD (  11.86  )
+X-CRM114-CacheID: sfid-20241029_041917_462944_7F9D0DDB 
+X-CRM114-Status: GOOD (  12.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,109 +72,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add entry for the at25sf321 32Mbit SPI flash.
-
-This flash is populated on a custom board and was tested at
-10MHz frequency using the "ti,da830-spi" SPI controller.
-
-Link:
-https://www.renesas.com/en/document/dst/at25sf321-datasheet?r=1608801
-
-Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
----
-root# cat /sys/class/spi_master/spi1/spi1.1/spi-nor/partname
-at25sf321
-
-root# cat /sys/class/spi_master/spi1/spi1.1/spi-nor/jedec_id
-1f8701
-
-root# cat /sys/class/spi_master/spi1/spi1.1/spi-nor/manufacturer
-atmel
-
-root# cat /sys/kernel/debug/spi-nor/spi1.1/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode        0x03
-  mode cycles   0
-  dummy cycles  0
- 1S-1S-1S (fast read)
-  opcode        0x0b
-  mode cycles   0
-  dummy cycles  8
-
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode        0x0
-
-root# cat /sys/kernel/debug/spi-nor/spi1.1/params
-name            at25sf321
-id              1f 87 01
-size            4.00 MiB
-write size      1
-page size       256
-address nbytes  3
-flags           HAS_16BIT_SR
-
-opcodes
- read           0x0b
-  dummy cycles  8
- erase          0x20
- program        0x02
- 8D extension   none
-
-protocols
- read           1S-1S-1S
- write          1S-1S-1S
- register       1S-1S-1S
-
-erase commands
- 20 (4.00 KiB) [0]
- d8 (64.0 KiB) [1]
- c7 (4.00 MiB)
-
-sector map
- region (in hex)   | erase mask | flags
- ------------------+------------+----------
- 00000000-003fffff |     [01  ] |
----
-Changes in v2:
-- Change from at25sf321b to at25sf321
-- Link to v1: https://lore.kernel.org/r/20241018-spi-nor-v1-1-d725bfb701ec@gmail.com
----
- drivers/mtd/spi-nor/atmel.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 45d1153a04a07b7c61f46b117311b24ab695038f..8285a16b253d54ae8c4a5302850244d2248aa755 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -238,6 +238,11 @@ static const struct flash_info atmel_nor_parts[] = {
- 		.flags = SPI_NOR_HAS_LOCK,
- 		.no_sfdp_flags = SECT_4K,
- 		.fixups = &at25fs_nor_fixups
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x87, 0x01),
-+		.name = "at25sf321",
-+		.size = SZ_4M,
-+		.no_sfdp_flags = SECT_4K,
- 	},
- };
- 
-
----
-base-commit: 200289db261f0c8131a5756133e9d30966289c3b
-change-id: 20241018-spi-nor-dc29698dea0f
-
-Best regards,
--- 
-Marcus Folkesson <marcus.folkesson@gmail.com>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xMC8yOSAxNzo1NiwgUnlkZXIgV2FuZyDQtLXAOgo+PiBUaGFua3MgZm9yIHJlcG9y
+dGluZyB0aGF0IDotKS4gSSBub3RpY2VkIGl0IGEgcGVyaW9kIHRpbWUgYWdvIHRvbywgYW5kIEkK
+Pj4gZm91bmQgJ2MtPnpuZXh0JywgJ2MtPmNuZXh0JyBhbmQgJ3pub2RlLT5jbmV4dCcgd29uJ3Qg
+YmUgYWNjZXNzZWQgKGluCj4+IHdyaXRlIG1vZGUpIGJ5IG90aGVyIHRhc2tzLCBiZWNhdXNlIHRo
+ZXJlIGlzIG9ubHkgb25lIGZ1bmN0aW9uCj4+IGRvX2NvbW1pdCgpIG1vZGlmeWluZyB0aGVtIGFu
+ZCBkb19jb21taXQoKSBjYW4gYmUgZXhlY3V0ZWQgYnkgYXQgbW9zdAo+PiBvbmUgdGFzayBpbiBh
+bnkgdGltZS4KPiAKPiBJdCBsb29rcyB0aGUgcmFjZSBjb25kaXRpb24gY2FuIHJlYWxseSBoYXBw
+ZW4gaW4gdGhpcyBjYXNlIGZyb20gdGhlIGlzc3VlIHJlcG9ydGVyLgo+IDEuIGRvX2NvbW1pdCAo
+dWJpZnNfYmdfdGhyZWFkKTogaXQgY2FuIGZpbmFsbHkgdG91Y2ggdW5wcm90ZWN0ZWQgem5vZGUg
+d2hpbGUgY2FsbGluZyB0aGUgZnVuY3Rpb24gd3JpdGVfaW5kZXgoKS4KPiAyLiB1Ymlmc19ldmlj
+dF9pbm9kZSAob3RoZXIga2VybmVsIHRocmVhZCB0aGFuIHViaWZzX2JnX3RocmVhZCk6IGl0IGNh
+biBmaW5hbGx5IHRvdWNoIHRoZSB6bm9kZSBpbiB0aGUgZnVuY3Rpb24gdG5jX2RlbGV0ZSgpLiBF
+dmVuIHRoZXJlIGlzIG11dGV4IHByb3RlY3Rpb24gZm9yIHRuY19kZWxldGUoKSwgYnV0IGl0IGhh
+cyBubyBtZWFuaW5nIGJlY2F1c2Ugb2YgZG9fY29tbWl0IChhdCB0aGUgcG9pbnQgMSkgZG9lc24n
+dCBoYXZlIHN1Y2ggbXV0ZXggcHJvdGVjdGlvbiB3aGlsZSBjYWxsaW5nIHdyaXRlX2luZGV4KCku
+Cj4gLgo+IAoKRW1tLi4sIHRoaXMgaGFzIGJlZW4gZGlzY3Vzc2VkIGluIHByZXZpb3VzIHNlc3Np
+b25zLgpBbGwgZGlydHkgem5vZGVzIGFyZSBnYXRoZXJlZCBieSBmdW5jdGlvbiBnZXRfem5vZGVz
+X3RvX2NvbW1pdCgpIHdoaWNoIAppcyBwcm90ZWN0ZWQgYnkgYy0+dG5jX211dGV4LCBhbmQgdGhl
+ICdjcGFyZW50JyBtZW1iZXIgaW4gYWxsIGRpcnR5IAp6bm9kZXMgaXMgYXNzaWduZWQgd2l0aCBu
+b24tTlVMTC4gVGhlbiBJIHRoaW5rIHRoZSB6bm9kZSBtZW1vcnkgZnJlZWluZyAKcGF0aCAndG5j
+X2RlbGV0ZS0+a2ZyZWUoem5vZGUpJyBjYW5ub3QgaGFwcGVuLCBiZWNhdXNlOgoxKSBJZiBhIHpu
+b2RlIGlzIGRpcnRpZWQsIGFsbCBpdHMnIGFuY2VzdG9yIHpub2RlcyhhIHBhdGggZnJvbSB6bm9k
+ZSB0byAKcm9vdCB6bm9kZSkgbXVzdCBiZSBkaXJ0aWVkLCB3aGljaCBpcyBndWFyYW50ZWVkIGJ5
+IFVCSUZTLiBTZWUgCmRpcnR5X2Nvd19ib3R0b21fdXAvbG9va3VwX2xldmVsMF9kaXJ0eS4KMikg
+QSBkaXJ0eSB6bm9kZSB3YWl0aW5nIGZvciBjb21taXQgY2Fubm90IGJlIGZyZWVkIGJlZm9yZSB3
+cml0ZV9pbmRleCgpIApmaW5pc2hlZCwgd2hpY2ggaXMgZ3VhcmFudGVlZCBieSB0bmNfZGVsZXRl
+OgogICBpZiAoem5vZGUtPmNuZXh0KSB7CiAgICAgX19zZXRfYml0KE9CU09MRVRFX1pOT0RFLCAm
+em5vZGUtPmZsYWdzKTsKICAgICAuLi4KICAgfSBlbHNlIHsKICAgICBrZnJlZSh6bm9kZSk7CiAg
+IH0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
