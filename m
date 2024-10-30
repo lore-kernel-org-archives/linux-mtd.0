@@ -4,78 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68C4AD74947
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Oct 2024 22:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4254AD7495F
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2024 04:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=n+xEd3P5s7+eBLcDIB/5BJfoQleDEx4E8PsCHNHydmM=; b=v7PzW1eJqvxsjF
-	360rl02uKOUXRLr6PlvS8K5JbEI0qM067/nrdDHoJq4PF79HFhHWC60nwbn3YoxWp4TnJSCTKuzYJ
-	cnZtSlDYurx5zsiiwxiRMLj3GsLGJD9RtkDfkKQBP0Qrj3taRQxU2Xc6aqiT5ZirG+kooQmtxDpQR
-	FiU4WUyRbPzaiMHRT+TpR57xuV5vmOhlaryarhrcHVdsLY0KR7PAiaqw2wkUqVJcUuTdtBUQCQVh+
-	pJqYEbP7zhfBMr/m6gDqmj2OU2GAu5K8ARdyLtYO7Jq6PV8+/R0N+DgJrHyynPBZXKQNvK0Gljw8p
-	Ga5M8K0a62Iw3dAsOrvA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=/+OUg0eP9r6HEJhcC1vfWwYlGHdsNNuMFTMkdqM5dpU=; b=1qGOYKH4ylofQJp44OmzHV/+z1
+	NUsDtP1Hmp8YjWeBKdQj75cYePQoSZWWG4Qr18Xrmc0xNXjj7y6M47TFEijmSAkV4+yNDroh1FUu2
+	S7w+RTd2ETFLaJAKVaBTmvP7pY8186sxeZiG5d61P2sVc5aTsuFURcxH1h5PXhhhrjWv4/FrlsS4K
+	YidNktviWcfG0NNpgQuFuY5fQGO7Hsym+mqKXzFeqhKmvrJa3NTQupZCnrnQBCsp9D8IKGzKMk1YS
+	SGJE6Vw0a5E4s3zIPGWf+fXI9NhWm2GKWoR/IA8JnWv199qpKDhgU14Jq83S8BprgSmzJ82TlwD30
+	0vCsc1RA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5uZZ-0000000G2Oa-1qfU;
-	Tue, 29 Oct 2024 22:20:21 +0000
-Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
+	id 1t60af-0000000GhMJ-1LKW;
+	Wed, 30 Oct 2024 04:45:53 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t5uZW-0000000G2Nv-0xoz
+	id 1t60aa-0000000GhLg-2g6Q
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Oct 2024 22:20:19 +0000
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-37d41894a32so194440f8f.1
-        for <linux-mtd@lists.infradead.org>; Tue, 29 Oct 2024 15:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730240416; x=1730845216; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/7OE/QMinTNnLERT167c3CvL/M1HjMkuOBezusZau2s=;
-        b=Fd+iKgudL1u61w+r2nqlJQwqg2CQ0/yfr3wDeZCcqWJvQ8TApPARzLzVntoaecjEQD
-         3naprmhJKZGsuDnTld5KSL7+7YG8nT7vlJFdbpeE2BzAJ9+vMrePbz1KLPKPP9fQE2Mo
-         urJZl6WssJnlil0/VbIOinSNwmaNAbt2GLeNQ+RnZ1Yp/Ku/CPzv8UCTJBWYoIo91vvl
-         ky+YrNsfhl2FHsw18PaYi1+1qXqYY21B6OlpNMoa9gijQeLavW0yYWcpDMS6FW6W45U4
-         94vup1XSu0tBEOSwlDUjTbJZ2j3JS/mJvI0+G2DjBOM0V3f98Xc1dCD/Kxf9gK+Vecf7
-         /V/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730240416; x=1730845216;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/7OE/QMinTNnLERT167c3CvL/M1HjMkuOBezusZau2s=;
-        b=prDVOWpoInuel1fVNX6J82i/6jFvM4P+eBZ1WiVathobpZ0aYnjjBsoq6az5f2FJgv
-         mlidJxjJY+e1QZMkHQUNlu0sc15KaSNXswkL8uaZlDxfcwayrfq3De4NlGGfwQhE7HGo
-         t7/ZCUGcx5NCo0Oq7q/Ibt0Gi+kHqU7Qv39mw3ORKHSa7vW9FzsF05BQMxSGd6erf+TQ
-         Zj9P8LHKfzNNwlwWpSlqYSphrGnbcF24vKyeGO8S8l5dSKHO6CR0gFAeS708TOHxxrbw
-         zSKpU8BuD4xlsUK6N6fWk651gncPOMJzn9aaywHoB4bbNnKzJqNeUfSocaE501EV6kL0
-         xIEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXuuJqorh+nAaq086YZcSv7KT8oBe+OhLcYTEGcIrDW9PCQcUMroKDT8e2pK15URGROg3kyn9GXEmo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxKIJ6CGOgUe5AkL/ExhXF1tHso7rh+UipfqQAkHFPyxtwIswuH
-	yCnc/kuRm7UQfBIDdCC5dopArEm8Fy/zGnDSt4MiJuHOoX8OVx97smESoTLq
-X-Google-Smtp-Source: AGHT+IGu+nfYSmitltWyx5Bwjm+ThSqNw6TaW7O5o1H3hKftUq+FGaLL8JkRaM0CTwtlDfnaFXsyjw==
-X-Received: by 2002:adf:e810:0:b0:37d:4330:c87a with SMTP id ffacd0b85a97d-38173e61f42mr3163196f8f.4.1730240416210;
-        Tue, 29 Oct 2024 15:20:16 -0700 (PDT)
-Received: from localhost ([194.120.133.34])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b1c8a9sm13723466f8f.12.2024.10.29.15.20.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 15:20:15 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] jffs2: remove redundant check on outpos > pos
-Date: Tue, 29 Oct 2024 22:20:15 +0000
-Message-Id: <20241029222015.3069873-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	Wed, 30 Oct 2024 04:45:50 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XdZKn1Vmjz20r5F;
+	Wed, 30 Oct 2024 12:44:45 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4631B1A016C;
+	Wed, 30 Oct 2024 12:45:44 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 30 Oct 2024 12:45:43 +0800
+Subject: Re: [PATCH] jffs2: remove redundant check on outpos > pos
+To: Colin Ian King <colin.i.king@gmail.com>, David Woodhouse
+	<dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+	<linux-mtd@lists.infradead.org>
+CC: <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20241029222015.3069873-1-colin.i.king@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <cf07a880-1429-cc75-657e-55b32841cc00@huawei.com>
+Date: Wed, 30 Oct 2024 12:45:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20241029222015.3069873-1-colin.i.king@gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241029_152018_293338_512A8FC4 
-X-CRM114-Status: GOOD (  11.69  )
+X-CRM114-CacheID: sfid-20241029_214549_112853_D55BF2AC 
+X-CRM114-Status: GOOD (  15.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,40 +67,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The check for outpos > pos is always false because outpos is zero
-and pos is at least zero; outpos can never be greater than pos.
-The check is redundant and can be removed.
-
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/jffs2/compr_rubin.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/fs/jffs2/compr_rubin.c b/fs/jffs2/compr_rubin.c
-index 556de100ebd5..9854253d0108 100644
---- a/fs/jffs2/compr_rubin.c
-+++ b/fs/jffs2/compr_rubin.c
-@@ -276,11 +276,6 @@ static int rubin_do_compress(int bit_divider, int *bits, unsigned char *data_in,
- 
- 	end_rubin(&rs);
- 
--	if (outpos > pos) {
--		/* We failed */
--		return -1;
--	}
--
- 	/* Tell the caller how much we managed to compress,
- 	 * and how much space it took */
- 
--- 
-2.39.5
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xMC8zMCA2OjIwLCBDb2xpbiBJYW4gS2luZyDQtLXAOgo+IFRoZSBjaGVjayBmb3Ig
+b3V0cG9zID4gcG9zIGlzIGFsd2F5cyBmYWxzZSBiZWNhdXNlIG91dHBvcyBpcyB6ZXJvCj4gYW5k
+IHBvcyBpcyBhdCBsZWFzdCB6ZXJvOyBvdXRwb3MgY2FuIG5ldmVyIGJlIGdyZWF0ZXIgdGhhbiBw
+b3MuCj4gVGhlIGNoZWNrIGlzIHJlZHVuZGFudCBhbmQgY2FuIGJlIHJlbW92ZWQuCj4gCj4gU2ln
+bmVkLW9mZi1ieTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmkua2luZ0BnbWFpbC5jb20+Cj4gLS0t
+Cj4gICBmcy9qZmZzMi9jb21wcl9ydWJpbi5jIHwgNSAtLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2ZzL2pmZnMyL2NvbXByX3J1YmluLmMg
+Yi9mcy9qZmZzMi9jb21wcl9ydWJpbi5jCj4gaW5kZXggNTU2ZGUxMDBlYmQ1Li45ODU0MjUzZDAx
+MDggMTAwNjQ0Cj4gLS0tIGEvZnMvamZmczIvY29tcHJfcnViaW4uYwo+ICsrKyBiL2ZzL2pmZnMy
+L2NvbXByX3J1YmluLmMKPiBAQCAtMjc2LDExICsyNzYsNiBAQCBzdGF0aWMgaW50IHJ1YmluX2Rv
+X2NvbXByZXNzKGludCBiaXRfZGl2aWRlciwgaW50ICpiaXRzLCB1bnNpZ25lZCBjaGFyICpkYXRh
+X2luLAo+ICAgCj4gICAJZW5kX3J1YmluKCZycyk7Cj4gICAKCk1heWJlIHRoaXMgY2hlY2sgY291
+bGQgZGV0ZWN0IHRoZSBvdmVyZmxvdyBvZiAncG9zJywgSSBndWVzcy4KPiAtCWlmIChvdXRwb3Mg
+PiBwb3MpIHsKPiAtCQkvKiBXZSBmYWlsZWQgKi8KPiAtCQlyZXR1cm4gLTE7Cj4gLQl9Cj4gLQo+
+ICAgCS8qIFRlbGwgdGhlIGNhbGxlciBob3cgbXVjaCB3ZSBtYW5hZ2VkIHRvIGNvbXByZXNzLAo+
+ICAgCSAqIGFuZCBob3cgbXVjaCBzcGFjZSBpdCB0b29rICovCj4gICAKPiAKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
