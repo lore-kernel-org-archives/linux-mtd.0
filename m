@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B8CDD5CCB3
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2024 14:25:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44420D5CCAF
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2024 14:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TaH+sRCLCt/KsAs6G87DZFSR9ugEAWdAc5tdg5lCv/c=; b=YmpmozXUj/ljpG
-	F2bd8ySGCqULH0PlPyWwjGIxUsgkv/2Ojo/QgSEqnqR7HEudA23b78ghiwkLmZG/u4mRDgiY/y7B4
-	39rYgRzwlYMJqwo/7DmteMF/NSy2MZpjMt4brLZi4dYnybgewWZ/rNB0b+T2Er+VA1nBTLDaztyus
-	UXN/PC95X4CIPKZfADvzT5rjdvtZ+Ar0u8TE0vwVBaMbeiTiJeVlQN0qis751qFGsL1vkOyzDEjGS
-	/oYlS+MvGGJ4gJfckzi7kpdbWN28mCL2Ssp89122bf9fQT67VLwG4lAevizRccskOeervka6Vv3vU
-	OqL/2ZM3v7KdAZ+XWWJw==;
+	List-Owner; bh=FnDJcdIURWPS1Dq1O5x4T2UtMuyTPBlWf7lTH3SmCHk=; b=K1i986FtRs5z0S
+	/SqED30FMcdYuz31XcrUsAhDK9v5+0931YhiqEhN2OAEMEY99FgEiOmKlXHCkQwv6GuVnbMcZ4l1r
+	VhdmC4dT8SbsEYIXzJOKQRJoJPlQ8nngPlsCnaZUgVS5Q+e++2Oa9JdJLtEofNlws88LzfSAcgRKN
+	GA44WQ6jHZGntTrIo1hjiHj+J76tIhk+8fw2troY7BeizCY6R6AhY3x3VSfyY8IRCXrNdDh9QwtK9
+	52PzZuTMhAUoiQgfxy/FCD+jWysm5YFbsEr3wlJUs7cdXCbH5mNYSq38mRM7A/wSi//Z10imznU8t
+	y+f2qe12cGRLh6iScmhQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t69dj-00000000e1c-1tNR;
-	Wed, 30 Oct 2024 14:25:39 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1t69ej-00000000eBv-24FI;
+	Wed, 30 Oct 2024 14:26:41 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t69df-00000000e1H-2Sw5
+	id 1t69eg-00000000eB7-32t5
 	for linux-mtd@lists.infradead.org;
-	Wed, 30 Oct 2024 14:25:38 +0000
+	Wed, 30 Oct 2024 14:26:40 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A531F5C5D73;
-	Wed, 30 Oct 2024 14:24:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D5DC4CED0;
-	Wed, 30 Oct 2024 14:25:30 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 0686DA41618;
+	Wed, 30 Oct 2024 14:24:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BCD2C4CECE;
+	Wed, 30 Oct 2024 14:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730298334;
-	bh=IQeZ6TDaCLdGUVGd154p3iZAMkc5kGr3zcyvi39bK98=;
+	s=k20201202; t=1730298397;
+	bh=pp7hrh0Se/FRucahKzWEUREqzoDLBXglYMYxwuT/S1Q=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Yh6uMMti5YCgamIYTYSCP9hCPhF3P/7BbVyseX1CCoMJKBq/6xxOCXpcGn5bJiPXX
-	 9tq7xqVri08tniMZYfGpvyImbrBsp/HOpcneD1xZ4cScIg1ZAkor5J4koL8agW1PTq
-	 3VpWpcqPpu/8DO2gbE1RdMm/qrWBVjr4InvPGRVCqFG6RcnRD6yAU+yuSuYbYE5nkB
-	 mJTCY6f9DQw15p2jVyHvO7wjr5aBb0kKbzsh/IC2XNgUmjq+1HvYXSpGROoZpz4aln
-	 wO5HlXM72jzPTC93BjZ1ybNe+++TFaGQsAek4N3tlWs/6Kqs/BxONA/WwAfYuqg77k
-	 9kapcEDEtcMZw==
-Message-ID: <ae4b252d-ec74-4058-a1b4-4852e6de7eb6@kernel.org>
-Date: Wed, 30 Oct 2024 15:25:27 +0100
+	b=YuLuhEk4g9VwFxKCkZzN1DLIH/pvpYizdk8+R9pP1CmvI4iYqdB5pwYfCPZ9ng1w3
+	 vV8uAQ0fP9E5KW7dqK+75OBpiZZpnuS5RNemiugQwHZZ1h+MbhZFOQI5alp9C88ta/
+	 1TLuye98iPGPfAvIh3SQdGtJDoNj9scklPUu0J+TO/4KSkJkPeQ9Oq8xOLv2Iu0j9m
+	 k24h+6wqwwCQkgnI0I9dg6mkBX/zWOqhNNDm4JI7/xOMDbdKDalBBvDGNrbZzx6hyJ
+	 crHi0R92MRloTfR9gvUE8LS3ReedA00d4avEiBwAW5vK4mYLtX3TbeXTXK/Tnrz962
+	 k4aBwpC5cIJLQ==
+Message-ID: <1aab934c-d28e-4ee8-a857-ffc2ef739488@kernel.org>
+Date: Wed, 30 Oct 2024 15:26:32 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] Implement setup_inteface() in the DaVinci NAND
- controller
+Subject: Re: [PATCH 4/5] mtd: rawnand: davinci: Add clock resource
 To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
  Santosh Shilimkar <ssantosh@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -57,8 +56,9 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Herve Codina <herve.codina@bootlin.com>,
  Christopher Cordahi <christophercordahi@nanometrics.ca>
 References: <20241030104717.88688-1-bastien.curutchet@bootlin.com>
- <f1078ec6-209c-41bb-9a72-ee6e045231b4@kernel.org>
- <fdf3d305-d6a9-47bb-b474-92da43b8d557@bootlin.com>
+ <20241030104717.88688-5-bastien.curutchet@bootlin.com>
+ <3035aa2e-dbab-4224-a5db-d18e37003d5e@kernel.org>
+ <58a1b909-7ed7-40a4-8845-b8327a1d740c@bootlin.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -104,10 +104,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <fdf3d305-d6a9-47bb-b474-92da43b8d557@bootlin.com>
+In-Reply-To: <58a1b909-7ed7-40a4-8845-b8327a1d740c@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241030_072535_772486_D9DF2C68 
-X-CRM114-Status: GOOD (  14.72  )
+X-CRM114-CacheID: sfid-20241030_072638_930873_B3A36A07 
+X-CRM114-Status: GOOD (  11.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,30 +124,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 30/10/2024 13:39, Bastien Curutchet wrote:
+On 30/10/2024 13:20, Bastien Curutchet wrote:
 > Hi Krzysztof,
 > 
 > On 10/30/24 12:17 PM, Krzysztof Kozlowski wrote:
 >> On 30/10/2024 11:47, Bastien Curutchet wrote:
->>> Hi all,
+>>> NAND controller has a reference clock but the driver doesn't use it.
 >>>
->>> This patch series aims to implement the setup_interface() operation in
->>> the DaVinci NAND controller to enable the use of all ONFI modes and
->>> improve the NAND access speed.
+>>> Add a struct clock in the struct davinci_nand_info so it can be used
+>>> to compute timings.
 >>>
+>>> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+>>> ---
+>>>   drivers/mtd/nand/raw/davinci_nand.c | 9 +++++++++
 >>
->> Your changelog is supposed to explain also merging dependencies. Within
->> patchset or external.
+>> Where are the bindings?
+>>
 > 
-> I'm not sure I understand what you mean here. Do you mean that I need to 
-> explicitly state that the patches in the 
-> drivers/mtd/nand/raw/davinci_nand.c depend on the ones in 
-> drivers/memory/ti-aemif.c ?
+> The NAND controller bindings are in 
+> Documentation/devicetree/bindings/mtd/davinci-nand.txt but this clock is 
+> defined in the AEMIF bindings in 
+> Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
 
-Well, you target different subsystems, so maintainers need to know what
-they can take and what do you expect of them. Otherwise what do you
-expect of me exactly and how can I guess it?
-
+Mention this in commit msg so you get one reviewer question less...
 
 Best regards,
 Krzysztof
