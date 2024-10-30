@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 941FED5CC9D
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2024 11:39:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04309D5CC9A
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Oct 2024 11:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fcPgc6tm5c2X0cWeaCXOTPCB5iTZCOH18AC7zdvk7g0=; b=Jk2oFpjvkI7KEn
-	lG8CoA7TE01PKSWGvt1En3HvBb+lCRnmI1AiYT/LbCdGCcxMKn42E8OyahOglyghvoVEAm50+VT3O
-	EhWDBcYLjiRArlkqvdf1MgDmecDgJfpeVp1KXQ7M8rJBlotDtj3yQmUTzUMU19lifmXjat4NAvvE2
-	uttwhZcLWtNowwxvbu3eE8jAx1OSDyi588khQzYbz6bbtJHHuZScMAsIm/+ia/pdjiKkvOHa6nAEk
-	GtpMzANc30W4zpwlL3NG4lb0tofjjfp7bRFnLf6QqBFSw0+qnnOlgZZjakxh1YhAFGbgsxuK0S49H
-	WkQt7dSMvhvvaUfa5C1Q==;
+	List-Owner; bh=ZknDzlj8Bp3MpMlYA3jaIi2wc4AvpcO4aDfjTh/gIGk=; b=mao1yIYhmjqHQB
+	e5FF/Rl7Ec8uBmYXRHxBgsfrulPiGQ5TSodZL39WIPrPY7UAPuB1m/XggaOiDA0YCFWnWw/hujJBA
+	J94p4XVB0UOGkwseQbUD8XGc6WBgx2wT7AVh5yYsJpV28RAoNfM1r8JwHVXhWOCJZvg0Ri1MiQ6ov
+	/sdKdc4YJ7CyarZjJ1VZH/A1ULbcsXYioLf+P8ElkzAUpqGXbvPzS6f8nsR3Rx9keVTNE8NGi88F8
+	ls8dn8CRHl3saz1+CSRElDQtXSUBtlDEJYkm1Jap1VwsFloleY55NylhAJhjPHi7GCGGY5viOgzHo
+	YRs/aSFloycttp9lWekQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t673D-00000000As7-30pR;
-	Wed, 30 Oct 2024 11:39:47 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1t673B-00000000ArH-48Hg;
+	Wed, 30 Oct 2024 11:39:45 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t66he-000000006O4-3dNu
+	id 1t66hb-000000006NA-3mRJ
 	for linux-mtd@lists.infradead.org;
-	Wed, 30 Oct 2024 11:17:32 +0000
+	Wed, 30 Oct 2024 11:17:29 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 38AF95C5B97;
-	Wed, 30 Oct 2024 11:16:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D14CEC4CEE6;
-	Wed, 30 Oct 2024 11:17:26 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id E0DFEA43AA4;
+	Wed, 30 Oct 2024 11:15:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C813C4CEE3;
+	Wed, 30 Oct 2024 11:17:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730287049;
-	bh=VKXtugPZtlZaMzM86OYk90eHCx/cENAGdXefW0fkpPw=;
+	s=k20201202; t=1730287046;
+	bh=dBIiwwBcEhn14Lw69mRr5x0H14NMVKwWDSl+0W7mLh4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TOKJNrlfws1ciFhAjNQZLcOXoAgvtW3hvl7BtWm3uGZw5xwzEobUFKyampMIwi0Tz
-	 2e6nbKdeOZTAO/AJayNTawFCsBVJbJc+nSwnKpUm75hOK+9YMgu0zVYLfd4obc3APy
-	 OiOkl6Kgw3ghhB1o5D83dyxfQH+y2MgtXVN3tckBD4rJe/Hez1LRECYaNYoPDJnGB1
-	 cSmMinGdVTtb88Ttsb0kWJcGMP+KjrQ1wlkJ7z+CpTrKN2DmWovv39wkCgRbJVB9vY
-	 ee8W8YFPwTTsP+IrffUppYTJNn/GoV+0NVRNCIKnjukJupUrEcAHoKpJjStmXlKSdR
-	 h9rPOMCVPYjtw==
-Message-ID: <f1078ec6-209c-41bb-9a72-ee6e045231b4@kernel.org>
-Date: Wed, 30 Oct 2024 12:17:25 +0100
+	b=nGpWdPFfIxP5kTUlOW+O6QdsaUsaWlvDOkvM7RwRv81MXiu09IhKuCHh4EFwH1Dnt
+	 xAEazHERyuHt1C67KoNViVJBUkcx+AWLNVerexgiNjx6qjqZlauAM2XEBYhZuCzxaR
+	 HL/4BOSoYC6V1zbLCw2f3iSK31KXuWe8QT2tOifVfylvbEW5YFjL0I3WqmfI1e0xHn
+	 BLnKNGtd8242NVOquyTDW/cmZbo3kuKSvs2I7NkyB5kTPY5pVmsxuBrxNJ5t760z8E
+	 91DK7wbN3t2/FL3t7HwD2lxBAdKmlkSiqx5BCpMF9hKJZhThwpSlD4mIY1CpEo+stT
+	 sGD3weN98kkBA==
+Message-ID: <3035aa2e-dbab-4224-a5db-d18e37003d5e@kernel.org>
+Date: Wed, 30 Oct 2024 12:17:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] Implement setup_inteface() in the DaVinci NAND
- controller
+Subject: Re: [PATCH 4/5] mtd: rawnand: davinci: Add clock resource
 To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
  Santosh Shilimkar <ssantosh@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -57,6 +56,7 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Herve Codina <herve.codina@bootlin.com>,
  Christopher Cordahi <christophercordahi@nanometrics.ca>
 References: <20241030104717.88688-1-bastien.curutchet@bootlin.com>
+ <20241030104717.88688-5-bastien.curutchet@bootlin.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -102,10 +102,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20241030104717.88688-1-bastien.curutchet@bootlin.com>
+In-Reply-To: <20241030104717.88688-5-bastien.curutchet@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241030_041731_034305_4FCD5835 
-X-CRM114-Status: GOOD (  14.58  )
+X-CRM114-CacheID: sfid-20241030_041728_107745_CAC4AECE 
+X-CRM114-Status: GOOD (  18.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,29 +123,49 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 30/10/2024 11:47, Bastien Curutchet wrote:
-> Hi all,
+> NAND controller has a reference clock but the driver doesn't use it.
 > 
-> This patch series aims to implement the setup_interface() operation in
-> the DaVinci NAND controller to enable the use of all ONFI modes and
-> improve the NAND access speed.
+> Add a struct clock in the struct davinci_nand_info so it can be used
+> to compute timings.
 > 
+> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/davinci_nand.c | 9 +++++++++
 
-Your changelog is supposed to explain also merging dependencies. Within
-patchset or external.
+Where are the bindings?
 
-> This NAND controller is present in the DaVinci (OMAP L138) and Keystone2
-> SoCs and functions as a 'child' of the AEMIF controller. So its timings
-> are set by the AEMIF controller itself from device-tree properties.
-> Implementing the setup_interface() callback implies being able to update
-> dynamically these timings, so the first two patches of the series modify
-> the AEMIF driver to provide its 'children' a way to modify their chip
-> select timing configuration. To do so, I add a ti-aemif.h header, I'm not
-> sure whether this header should be located in include/memory or in
-> include/linux/memory. I put it in include/memory because the folder
-> already exists while include/linux/memory doesn't.
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+> index 3c0efbdd789e..11dc30c29957 100644
+> --- a/drivers/mtd/nand/raw/davinci_nand.c
+> +++ b/drivers/mtd/nand/raw/davinci_nand.c
+> @@ -10,6 +10,7 @@
+>   *   Dirk Behme <Dirk.Behme@gmail.com>
+>   */
+>  
+> +#include <linux/clk.h>
+>  #include <linux/err.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/kernel.h>
+> @@ -117,6 +118,8 @@ struct davinci_nand_info {
+>  	uint32_t		mask_cle;
+>  
+>  	uint32_t		core_chipsel;
+> +
+> +	struct clk		*clk;
+>  };
+>  
+>  static DEFINE_SPINLOCK(davinci_nand_lock);
+> @@ -822,6 +825,12 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>  		return -EADDRNOTAVAIL;
+>  	}
+>  
+> +	info->clk = devm_clk_get(&pdev->dev, "aemif");
+> +	if (IS_ERR(info->clk)) {
+> +		dev_err(&pdev->dev, "failed to get clock %ld", PTR_ERR(info->clk));
 
-All Linux headers go to include/linux/, so this one should as well.
-
+Syntax is return dev_err_probe.
 
 
 Best regards,
