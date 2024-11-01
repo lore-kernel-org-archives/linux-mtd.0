@@ -4,94 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEBA0E68956
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Oct 2024 06:45:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A1FBE6F07D
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Nov 2024 18:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pe3dRyaHlMmMy2owtS0ZDKr5lG44jNcBBI+SSuaaR2w=; b=RuhbDgVg7D4+xz
-	zdx7v5P/mujkI8PiZcBF9e7nd8O8Sb5QoXtFR7TokdmmP5gTMK9h0k3pz45SIEy1lb9WA4PWxEa7i
-	z6D+Kxhtn7TXZlX5G9eI/0XovlQ7Y82hKJ6rQ1xpDacptq1y6wCFL1q/HJ2Wf8CLvGieWTtR9p7Su
-	u1YnQ7McgVYUgmW+jGoOndE5m+7bTj8vV97aDS/MtpObTmJiUhCSzpSjSi1D4tfPx79tND2JwdvPV
-	hmyFTM7YTz7k23aPkmiF9j0KFrOlzA2T7r0H3oFeuQht6LQW+gSJOXKy/9HqPZoyjRCV82a3WR3Cf
-	YrJVk25DOl36Dvd44H7g==;
+	List-Owner; bh=9MJBGow+jane2V3DMVXJNRtMu5FpP6wNThXZQCGvxXU=; b=MUAqi/WzL08nPF
+	MvQZ1ufWc4AYkTldSyAdwgutYzOspNjCDIQeCJWPCVGi8prJBVkgxMLfcqR47d2upnUMBFjTPiG38
+	Vel8Hy0bvdVbxEvi8yIW/6MVBLOJIvScclPS/lAmJjxHIgAp5RbdTmz6CnpL1k7tkIdNGACu6LrtZ
+	pi6/da6rXQorUAcgW6DfwHDnFI0Zf30RrHtC8tEuIJ9pmBM4PWoKMdrvBwLR3IQJETVRtQmXCuzIh
+	CHKP60OJAa0CJYGff5Ajql+qrY2y15ThbWRbaxG5Q7N8YcIHOnts2P/jgaink5+Mskk+QmO6Jfn7K
+	0wFh70xv1sJSpa20/3rQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t6OwL-00000002iNS-2WZE;
-	Thu, 31 Oct 2024 06:45:53 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1t6w9G-00000007wfX-0eNe;
+	Fri, 01 Nov 2024 18:13:26 +0000
+Received: from mgamail.intel.com ([192.198.163.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t6OwJ-00000002iN3-06xT
+	id 1t6w8m-00000007wZP-2Fz9
 	for linux-mtd@lists.infradead.org;
-	Thu, 31 Oct 2024 06:45:52 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-431481433bdso5019695e9.3
-        for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2024 23:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1730357149; x=1730961949; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3OWm6Y24vWekejAsxWu5X3sn1wr2f2rD7TRcvjtf2NQ=;
-        b=fwlZkiGgl5JV/cMh/ZwFRwml+u/fF005QKCroG0DtBS897XQmuY8vFZX/gtXu0rZu2
-         ie8jOkbJwxQTszzv/q74Z+khoXqWq68l5qNkIBlmdjRTmBNlgIdFzQOQJYhxOlrBBU/1
-         7emDXXLhM+btaBQJS443ykPXVCrXzjbolQ0iW4t9DD2XHbC2Cu1Q1h8TxwD6A47vk7hy
-         /xlDNQlTHHGXl2aGcwUEANWbQQj05fbJmlT/EZnVywSH+4o6VSQWS0fe4z2Kf5bBgTNF
-         aVkPIaqdwomE8sM0MJFO0rY+CFGod0LdmiSx5VsCWCLqUvz2/ysdxM+bH02wsc9R4+l0
-         frgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730357149; x=1730961949;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3OWm6Y24vWekejAsxWu5X3sn1wr2f2rD7TRcvjtf2NQ=;
-        b=O5iAPb0p23a0lqIyld52D3n27bn0Ctc/Zle7WYHVw0TX3V/OQK6dYqzSURooBrzg9X
-         ZMFbnEN/WOWYfS0h4VQEAShMEwR19H+P3r8/S9G+QMJ1PN0VVDJ4rFKlvZJtviaVOAMf
-         BZy+G9mEkMFLbxNZ701ix4UvRHHieg2p2Gb+89Ufm5K6fQ33FPTnz/CXuu31C0xIlSkj
-         10KBRmPwLHzKp6lRAXDswX1oBtyPmwLkhn15Hm5i0WJqmUg5rtLHbzdNdnMgfUleivo3
-         +h7EBlk/U+MhLS212NnDwHOnr1b8+lY/SLj8H+lzWy6DCg4mOkB9kceRL61PlKB4PFI2
-         ZuiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUiCLxVoUZ/CjCgWxOgISyh3de7ANSEVjm502CXD0o7XTnb144o/U0BytKUTzpE25Y9ka2CrxGNyQ0=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz9YQRvONvj4C0yl+JOYDUv4iAUf1yWtneX2t4iT64oU1rRXDBh
-	fIaKT7b64z1IlOln+shVYJ49JLVSq/9c81jsjQdDqw+Ixai+gh6ag+rUzftpTDQ=
-X-Google-Smtp-Source: AGHT+IGCu52QNibWfbGLHARc+Q4U99DmGNqH3nGQBT77e42jajVuBVneE0F2NGfY1fDI5WmG4AbRyw==
-X-Received: by 2002:a05:600c:4511:b0:42f:8515:e490 with SMTP id 5b1f17b1804b1-4327b6f959emr18859015e9.5.1730357148888;
-        Wed, 30 Oct 2024 23:45:48 -0700 (PDT)
-Received: from [192.168.0.157] ([79.115.63.43])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d5bf429sm12987225e9.12.2024.10.30.23.45.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Oct 2024 23:45:47 -0700 (PDT)
-Message-ID: <b4564eac-2ac9-4027-87e0-9510f6be8321@linaro.org>
-Date: Thu, 31 Oct 2024 06:45:44 +0000
+	Fri, 01 Nov 2024 18:12:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730484776; x=1762020776;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JTIvPX1NvVPfItgnj8kH7ERUhn0by7vrtZ82ymU8O0g=;
+  b=O6H1zDNJeXU32V+yPf8m88w45Jdjp/0VSCz99PM5pMMEmmru/XpB54Kn
+   c1HQcU0758lcwbEXE8N9LaYGccENnwp9Y9zrFyJfA7AtCBrriL59jqNr9
+   XeoW61xQAopMltyNo9V8wlW5/gTpEYAluitkPQHptEBcLKxk14CIjEXBK
+   MrQmFtYjHXGmmzXLd67RhwMa2mnVfrskTyzuQnPCybsIFBJ6vwalKB0qd
+   P7tlIrwl97YO5+I/yCKQnL9dGNIXsJfm+EahlgvQmPP03HtLxl/0b+S6u
+   uPEb7O4lQLa0ikxhFl3SZbpxuj6zi1Tj2oaalubnGw+WCy/jwWVGlTSkp
+   Q==;
+X-CSE-ConnectionGUID: hwebKD0aRTe6KK+bqa4L+A==
+X-CSE-MsgGUID: r7tiPYWLRRCaTm+Jg4QCQA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11243"; a="40839079"
+X-IronPort-AV: E=Sophos;i="6.11,250,1725346800"; 
+   d="scan'208";a="40839079"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2024 11:12:55 -0700
+X-CSE-ConnectionGUID: QLidAFfLSBSu9CkIPxAn5A==
+X-CSE-MsgGUID: N0LO0lsDRZKVfrRVPCsi4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,250,1725346800"; 
+   d="scan'208";a="82560470"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 01 Nov 2024 11:12:53 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1t6w8g-000hrd-2L;
+	Fri, 01 Nov 2024 18:12:50 +0000
+Date: Sat, 2 Nov 2024 02:11:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
+	Santosh Shilimkar <ssantosh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Christopher Cordahi <christophercordahi@nanometrics.ca>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Subject: Re: [PATCH 5/5] mtd: rawnand: davinci: Implement setup_interface()
+ operation
+Message-ID: <202411020140.3wsKJOSB-lkp@intel.com>
+References: <20241030104717.88688-6-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/24] spi: spi-mem: Extend spi-mem operations with a
- per-operation maximum frequency
-To: Han Xu <han.xu@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
- Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
- Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- Steam Lin <stlin2@winbond.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Sanjay R Mehta <sanju.mehta@amd.com>,
- Conor Dooley <conor.dooley@microchip.com>,
- Daire McNamara <daire.mcnamara@microchip.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Haibo Chen <haibo.chen@nxp.com>, Yogesh Gaur <yogeshgaur.83@gmail.com>,
- Heiko Stuebner <heiko@sntech.de>, Michal Simek <michal.simek@amd.com>
-References: <20241025161501.485684-1-miquel.raynal@bootlin.com>
- <20241025161501.485684-2-miquel.raynal@bootlin.com>
- <20241030205252.ufylezzvhravfqr4@cozumel>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20241030205252.ufylezzvhravfqr4@cozumel>
+Content-Disposition: inline
+In-Reply-To: <20241030104717.88688-6-bastien.curutchet@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241030_234551_111041_88EB4A85 
-X-CRM114-Status: GOOD (  13.71  )
+X-CRM114-CacheID: sfid-20241101_111256_612694_102506E1 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,27 +98,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Bastien,
 
+kernel test robot noticed the following build errors:
 
-On 10/30/24 8:52 PM, Han Xu wrote:
-> Hi Miquel,
+[auto build test ERROR on krzk-mem-ctrl/for-next]
+[also build test ERROR on linus/master v6.12-rc5]
+[cannot apply to mtd/nand/next next-20241101]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Hi!
+url:    https://github.com/intel-lab-lkp/linux/commits/Bastien-Curutchet/memory-ti-aemif-Create-aemif_set_cs_timings/20241030-184949
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git for-next
+patch link:    https://lore.kernel.org/r/20241030104717.88688-6-bastien.curutchet%40bootlin.com
+patch subject: [PATCH 5/5] mtd: rawnand: davinci: Implement setup_interface() operation
+config: arc-randconfig-001-20241101 (https://download.01.org/0day-ci/archive/20241102/202411020140.3wsKJOSB-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241102/202411020140.3wsKJOSB-lkp@intel.com/reproduce)
 
-> 
-> I met the similar problem when working on the Micron MT35XU01GBBA SPI NOR chip.
-> The chip can work at 166MHz in SDR mode but 200MHz in DDR mode. I found Read ID
-> failed on some platforms when using 200MHz as maximum frequency, so I have to
-> lower the maximum frequency with some performance loss.
-> 
-> I think the patch is useful but the SPI NOR doesn't have such vendor-specific
-> predefined SPI_MEM_OPS like SPI NAND. Do you have any suggestion on how to handle
-> this case? Thanks.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202411020140.3wsKJOSB-lkp@intel.com/
 
-Why can't we add similar predefined SPI_MEM_OPS in SPI NOR?
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-Cheers,
-ta
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/zlib_inflate/zlib_inflate.o
+>> ERROR: modpost: "aemif_set_cs_timings" [drivers/mtd/nand/raw/davinci_nand.ko] undefined!
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for GET_FREE_REGION
+   Depends on [n]: SPARSEMEM [=n]
+   Selected by [m]:
+   - RESOURCE_KUNIT_TEST [=m] && RUNTIME_TESTING_MENU [=y] && KUNIT [=m]
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
