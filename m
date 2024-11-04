@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4498CD132B6
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64FF2D132B7
 	for <linux-mtd@archiver.kernel.org>; Mon,  4 Nov 2024 21:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,67 +12,67 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=atVpObXTIJqANxTslvBp6iLJs/88vr7LQ+LTKyeWPz0=; b=Ih3a7Dcav2LIKs
-	3pmX4KFmfXkGOY33k/nvFiD9E3UVMAXrj8DMWQ7ndvXG7Ke1rNRhW90mOpCtV09uM/4wtJmXv/8SV
-	jZgvRePjLx6zAcDU21VmjVEUj26VXyW97libbe2xc6dZHmxrZeHjxXSJ9YNPPAjyHwbyR61c+Ei6P
-	dePIS2mbIGyQOw6axwTROrlteV/VuYE9hUgcEEKuHNIBIiqCGNbD4C+SRMe3QTo1J4AazjhFbKGbD
-	lv7Y/Y4w6kswEHVGDkdXxgXaJonEJY+BnDo17/JtlRMdhUH0ZxQThbLOAffh7TlIAoidpf+zdir3I
-	AsRqQhVAa0JW4QK22tow==;
+	List-Owner; bh=Smgj/oXTJRw1OaSlIZrcehZAhZ2t28nXtKEXERvurSQ=; b=RCYeE+PRXhda5w
+	Ne8HgdCACuVbYLfALeZ6c4uiLCrOAmUano3frKo84Iw8AywoidnPI0N+1HKM4bgR/heETa0t3Vxc/
+	Vm0eoQIs4mdHMueC2tty2qlBkeEYNDhmdFe/rPttICNW6h3FtEd2VRCWu0xoH3Zzsj0Tp/cOC2MO+
+	3PlTi1T5SfuB/Pyw0N82nvYWfjVcb+BS9qn6wdv0UU3YdGAnmD1mmlgul+rH/+2hvQLXkZLD5Pg+4
+	yipXQh4C7HMHB1ZdHsMpA23j0J0qV+Wk+TsJ4G4ynuOpnkvRYCykUGpvfAfxlai8kMTSWGp+nwcKl
+	17r9/JcP9a8Xe0X74s7A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t84qJ-0000000FCW5-3bY1;
-	Mon, 04 Nov 2024 21:42:35 +0000
-Received: from mgamail.intel.com ([192.198.163.12])
+	id 1t84qI-0000000FCVG-1JCq;
+	Mon, 04 Nov 2024 21:42:34 +0000
+Received: from mgamail.intel.com ([198.175.65.20])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t84XG-0000000F9So-08mX
+	id 1t84Qp-0000000F8Fr-3sB9
 	for linux-mtd@lists.infradead.org;
-	Mon, 04 Nov 2024 21:22:55 +0000
+	Mon, 04 Nov 2024 21:16:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730755374; x=1762291374;
+  t=1730754976; x=1762290976;
   h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=YjdruoRWgeKOgk6wxl/fTX8r8q/B3qaB8424+UWeNwQ=;
-  b=TQaDKeZuMsktoJHFdsR2B0/zGU0yvogkaD0QVYQ0V+2iLJbpgzvOKSbg
-   /2CZ1XY804+Sw3mVjTtLDmMgSU2SMaRWTcBRFkmfWCp+8tkgwtip0X56X
-   QaVWwSFIdTdBH7YN/+SeRbjQktZqNwwSRpyg7zuCn1VGXn4obyTCdEClA
-   pLipTempUwZrXaRP6Be8jEbBNiVwTiSF6pcjA+rb4qR4XHl7YXDczoSQt
-   e+x97nZZ6Ku0SH3RO09W7TuepcTTdz1EHjXaGlsihfIzY0UJPl6pIzrbN
-   02rQDwZ/jzcFG96ZT36AfnMZjjorSR/SPkOq2tPcjn/3mTOArlUfsmjfQ
-   w==;
-X-CSE-ConnectionGUID: BHTnfXKkRG+7GyoHu1TbGQ==
-X-CSE-MsgGUID: /F3yjQHWSIKGG7fimOM+Kg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11246"; a="34406597"
-X-IronPort-AV: E=Sophos;i="6.11,258,1725346800"; 
-   d="scan'208";a="34406597"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2024 13:22:52 -0800
-X-CSE-ConnectionGUID: ERZ6TPEkQVePeJP9uMSFhA==
-X-CSE-MsgGUID: 2VonrTrWR4uNl9aGAB5HYQ==
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=Tk4zKQ/4+B9bX2uGySQ/1EraDuKIJKLJni4838F4L5g=;
+  b=kSSLrY+8/QtmkURc6GlcKmb49DU/Ci/3IXvydCGibjdbDM/s0W6alRzI
+   f3cw8F7K0TnYoUNATf57BewzvsL7A8r/C2Zl4esmF3RrcX0YvZD6OACRy
+   yxvksCZ47MoLhmqmQlcULA1dbsQ+iA8FaU0pVVM3tqaw1WRvBUEqxhgtb
+   igXC90j4ptz+mwLqN20suemLcT2lNKpKSIenRS9QVxWUkLQRxqV1m2L8K
+   n0Qvaa0SRUXCYkQgQJpmaC41EFBV3pCH0HG1h1PjiGt4NbsN50UrxZbJJ
+   k0ogUsJoaABq5841lEb0XUu0BIUCIWk3WyefoQAVhB+253FpoK8bLoQxX
+   Q==;
+X-CSE-ConnectionGUID: 5+l78tI/TGaq3jmrTLfx6A==
+X-CSE-MsgGUID: qajFDwd0Slq32s+41/1Y1w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="30252582"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="30252582"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2024 13:16:15 -0800
+X-CSE-ConnectionGUID: vmILx2BbT2WmZ6iUWBYBLw==
+X-CSE-MsgGUID: BBKX70CkS+64qZ1IMR2xVA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,258,1725346800"; 
-   d="scan'208";a="83894316"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Nov 2024 13:22:50 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+   d="scan'208";a="88919447"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Nov 2024 13:16:14 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Mon, 4 Nov 2024 13:22:48 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ 15.1.2507.39; Mon, 4 Nov 2024 13:16:13 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Mon, 4 Nov 2024 13:22:48 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2507.39 via Frontend Transport; Mon, 4 Nov 2024 13:16:13 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Mon, 4 Nov 2024 13:22:48 -0800
+ 15.1.2507.39; Mon, 4 Nov 2024 13:16:12 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=OmOBZ20IKJJIMgBC1P+KqPTt7YSYNMWdj4qXP+dWHE42ZXInYXhZxX5EMXZoCkCoW5mktM2KYFz6tYA6KfmO3yy0flw7SHJ1+ag8E7aJ17sbNKu1R4x/CxMq7U0MCCcbu/r7VQptElnuS+8YVgLML/MmInGz38Lx+QQXkqotJgSWgNhiMOWKV8pza5HNrIRB3B7iFX9xmAG8fTn8dy7K1b7kRkceg9G3W8Wi1a8blYC0ABMkLHgBdHWR0Cwzx9E600N2qklrJrwsLwC3crw7ZCzEOwvbT3MS0clfPrG0+Ng4ScE47MOAPJgPCs7A3leNBYbXSrL8mLPyBCJyyZ5Ikg==
+ b=CKNR3eWQQOqMBRIWEzR028E5MQVx4ZGNMX1QHmTqTZUUUQ5Akbj55tdQK+bq5Epq1u0NdwiTZ15lNiHV0yWs0ejIPDLiJ7W61/iEPuaZfBZOEYE7fgoVkwWaZgs1CUhz+xyoqUrd2+VyTKm2rRkh8UHqSH+xzbmP3Iir888UQL46Ccw1q1Lp4mPBp7TT21JTp8HaAwcdTkvTN1R1qhEIC9eLqwD39m8/bfAAE5hE5lz7I+m81HY0gsnHo/lsmwfrd59kh/APDoEEpYSQQH7ElRO0acjbG9lYyzcYmy2bibWGFmOG15XMIYbD1w9cQ8HNDUCr5ororRZAVMJN4aZ3Dg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rV0K9hVtmUle9pIMY1bvdYIVVYI7WQDvM/6AD56ngOg=;
- b=XohyaQTmcCK099ul7BIeYUePduKuEZ1yH7Z27pHeCEazP0frGctjfMkFxG1ZzzGWLkTLBYwfP80Q+gEf5RP83C7hbeGIsIdILDBStY+UCf8EbPZf2qk3ZlijeJllWnAPJGU56Wv4HXfT3ewNca9Fxt45iMlgf71D98XQqcIOP+HBrwXB3nnWMQRKFKxREiSq1jO5BnrXQifeWsrx7XmJ6inVpvWGIHRk0R8M+kCuokG3ybMOX/snq5yIgWUtwycAkoS/alnoAoDT+bl4l+k9wcmGjt0wnTxgMxuxtwjgkXIiVOeszIbi5Za9pOeQz054zjv2bIuOerAlumDClUDKTA==
+ bh=qSBNH0ucXgw1MsGLS9K2/u8rzG1PEB5PzbucfivQ8IQ=;
+ b=GNSbSIRfbd2K/VAxwkuAKOlJCv1NmBeM6Aiw80HkgmdZQZS6xCRsGX8vIx9V+iMRbt+qw9ykNYQ6pWSbdWZ1U5xRJeiWZ/iCLopGSQ+bgY8NYJwc+TdLbtCoYAGS8M14EJl/WN1ukrYZxQC5C8lS9grnshKGGrDZ5uNz4CV+gnOA6M9BXK19FlBbL2odgJIDV9kTznh3Aq2XnlSnCQGOqcJRvTQiJsahzFBpkZzlZYgkJihpBn+GFPZFWzssdo3nHCb62XyiI23IGklb/L7g0GouFDRAVuwrU50AEZUSPR587CeADqnvnIZanCYJRA6ypURls6ER7K77lUI+3YZHMw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -82,110 +82,118 @@ Received: from BYAPR11MB2854.namprd11.prod.outlook.com (2603:10b6:a02:c9::12)
  by PH0PR11MB7471.namprd11.prod.outlook.com (2603:10b6:510:28a::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.30; Mon, 4 Nov
- 2024 21:22:45 +0000
+ 2024 21:16:10 +0000
 Received: from BYAPR11MB2854.namprd11.prod.outlook.com
  ([fe80::8a98:4745:7147:ed42]) by BYAPR11MB2854.namprd11.prod.outlook.com
  ([fe80::8a98:4745:7147:ed42%7]) with mapi id 15.20.8114.020; Mon, 4 Nov 2024
- 21:22:45 +0000
-Date: Mon, 4 Nov 2024 16:22:40 -0500
+ 21:16:09 +0000
+Date: Mon, 4 Nov 2024 16:16:02 -0500
 From: Rodrigo Vivi <rodrigo.vivi@intel.com>
-To: Alexander Usyskin <alexander.usyskin@intel.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Lucas De Marchi
-	<lucas.demarchi@intel.com>, Thomas =?iso-8859-1?Q?Hellstr=F6m?=
-	<thomas.hellstrom@linux.intel.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
-	<tursulin@ursulin.net>, Oren Weil <oren.jer.weil@intel.com>,
-	<linux-mtd@lists.infradead.org>, <dri-devel@lists.freedesktop.org>,
-	<intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>, "Tomas
- Winkler" <tomasw@gmail.com>
-Subject: Re: [PATCH 01/10] mtd: add driver for intel graphics non-volatile
- memory device
-Message-ID: <Zyk7IDetpm5elTT7@intel.com>
+To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
+CC: "Gupta, Anshuman" <anshuman.gupta@intel.com>, "Deak, Imre"
+	<imre.deak@intel.com>, Miquel Raynal <miquel.raynal@bootlin.com>, "Richard
+ Weinberger" <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, "De
+ Marchi, Lucas" <lucas.demarchi@intel.com>, Thomas
+ =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jani Nikula
+	<jani.nikula@linux.intel.com>, Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>,
+	"Weil, Oren jer" <oren.jer.weil@intel.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "intel-gfx@lists.freedesktop.org"
+	<intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 06/10] mtd: intel-dg: wake card on operations
+Message-ID: <Zyk5kueKlusKlwqM@intel.com>
 References: <20241022104119.3149051-1-alexander.usyskin@intel.com>
- <20241022104119.3149051-2-alexander.usyskin@intel.com>
+ <20241022104119.3149051-7-alexander.usyskin@intel.com>
+ <Zx-mPQSHXv5Teq_j@intel.com>
+ <CY5PR11MB621157335FFB1089F49CEF8B954A2@CY5PR11MB6211.namprd11.prod.outlook.com>
+ <CY5PR11MB6366EF9CA6552ADF6E01A557ED4B2@CY5PR11MB6366.namprd11.prod.outlook.com>
 Content-Disposition: inline
-In-Reply-To: <20241022104119.3149051-2-alexander.usyskin@intel.com>
-X-ClientProxiedBy: MW4PR03CA0144.namprd03.prod.outlook.com
- (2603:10b6:303:8c::29) To BYAPR11MB2854.namprd11.prod.outlook.com
+In-Reply-To: <CY5PR11MB6366EF9CA6552ADF6E01A557ED4B2@CY5PR11MB6366.namprd11.prod.outlook.com>
+X-ClientProxiedBy: MW2PR16CA0067.namprd16.prod.outlook.com
+ (2603:10b6:907:1::44) To BYAPR11MB2854.namprd11.prod.outlook.com
  (2603:10b6:a02:c9::12)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BYAPR11MB2854:EE_|PH0PR11MB7471:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8bb1b82d-f646-4beb-82eb-08dcfd16d33b
+X-MS-Office365-Filtering-Correlation-Id: 9714216b-2d16-4d23-2678-08dcfd15e6f8
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?cIecZzq9zJYgCZlIC8tWwa8QUoowlzQtqnzNAm/U80kJ/WmKEZzm2LQb3l+3?=
- =?us-ascii?Q?r6MLeUZb6ZYPmA52Hd3x5sA3vQ+sVmVnrQezFW5V0HnpxDH7yD2f1/mRLHLz?=
- =?us-ascii?Q?Gh16eGBvXcoHWVzYolXmx35DyVMmBIQDlPpm4U2bdk+DkrosuDubUseCWCyb?=
- =?us-ascii?Q?3iDX/JBMPrhXpS/CLNCzzHSmAhcOustjAP+4dVUkAhbl7PmUBbZDsIutEmzS?=
- =?us-ascii?Q?sYw5qMwf43ZjxP38SCyZFveLz200Z2b1/I2tR51zShAvCmhz8v4/GAHktUl+?=
- =?us-ascii?Q?PdmjHTQRcM3LCB0/rs/kd9yeBa3xjcwp0GkidaBmTv2NLMVgHt0ATryY79e8?=
- =?us-ascii?Q?iha1vCq7RopWo4FWygvAmoG1CbFrQ8YYwtBVJ/gO8kSWdS1ITUVpSXCfV1K7?=
- =?us-ascii?Q?eQHHOGX/hd6XneTb0sM6RdMsyNFt6xYGDG9D0L1AGIhg7uJpi1kVO7VBUn8T?=
- =?us-ascii?Q?/v9aOwvpxrLkCxEwPGVJXo/PqlcRm+JkWUVMRuNTEU48MIQWRUcUCB9iAuXI?=
- =?us-ascii?Q?+zdJ2Wb/Ir4s1OhghDka6RMabJlRz/++w0PrlKsQXB/+5LM08xkKolPxRY49?=
- =?us-ascii?Q?kkFNXw65lL8o1ITnCe+KEqHV1VRpHWrBFY4Dw35brYYlJS594asfogpaoFo0?=
- =?us-ascii?Q?Mzd9wXY+Jagx+UtrVdwshYTKhX8Ww+jmLi8XW2wnjNe5UTGu7nP2+lE8vViG?=
- =?us-ascii?Q?HYI+/jGp71Q098G1C+0PK3bAwHSfY9XouQQXCuObFGBPNpp5Cf8yzqgEczhn?=
- =?us-ascii?Q?a2FTczKPI3lL9y22qM456+/M6KFPCf/4Cdjf6GqHUgQNmqDJpDYoh9qOzsIH?=
- =?us-ascii?Q?WrK22qPDRmzfbW9hfQ/5YyNMkgVeT3iPFVS8kQHvZz2Zj6vLdObU32naY9Wg?=
- =?us-ascii?Q?+D5mppqdB5kbvD0p8HdW1+/BfFy/LTEpFZ5qhDuVclPGaqe5USOk7kOCZejq?=
- =?us-ascii?Q?oLMASr+ZsBsLD5Mxx9QnZeZDNcv2/+8WLsfdh99uglt38SXoT31GeoWNPC8W?=
- =?us-ascii?Q?Ei3ll0bK4Cwi4eVEOd7P8NUcAfiF2grYOk+KUCcVH7hk2UvDi8vOdy8G6jqU?=
- =?us-ascii?Q?FYkoGO6V4Dqa2Rtw+wlikvC5g9OJ4ZiXHsafn70D39KcRIACV0gITsQ/k9Od?=
- =?us-ascii?Q?6MpL9zfwAF5AG/6xIYHmAdUiWKOs7h5YzNqWWgvkeFDWMMyq/7VcEY5JBsqc?=
- =?us-ascii?Q?VKyz1LIlk3CV8XtSwWjnGxSRPOp+QAZyUEHVQuUu01Uj7ZD1S7wEmdKh5vho?=
- =?us-ascii?Q?hG+8c0sOZo1Co62y7b5OQTO71/lG6Kma1LJ3n0lT3sK0L5bdOWtK1xv9ZlKS?=
- =?us-ascii?Q?c1NldiK4Ythu6kcV+aeDljhg?=
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?fCEMAy5SAdFFGdN3l9gWEIlE0bBOvVIU0RBv8EYwYLstOMPNk4+FQIaMTS?=
+ =?iso-8859-1?Q?C0a7UToeSgMwRECAIbqb2ogvqyoCqcRTUtOI3MHWLi2skJeyaaqMhcFfYK?=
+ =?iso-8859-1?Q?9tAo1wxURgXYVsNTVkyQ3uyjQBdkV9O2bZdBmllnXftSrk1Ht0JK/8xarD?=
+ =?iso-8859-1?Q?RYc8s/3OmHp6CjTdR3L685pcEnWyQ+Bck3j/Ke6FoMokI0udgqkpZAmUYv?=
+ =?iso-8859-1?Q?o/luoL8QvbZPjFoi4g9j6M4Ac+wUUrhvGMfTOlL03jrfsOzu9tuJ9a1eXN?=
+ =?iso-8859-1?Q?o/58ob5nYvaI0sKWMcuVtuhuclDdqs1E0Je/I3Sl5I1Fk8E3fPFtNLcntM?=
+ =?iso-8859-1?Q?p+zORBXBMvvaEVSn4WVw+ceGOPLAAZ73sw8F9krwp4xudhShc2376/dIcJ?=
+ =?iso-8859-1?Q?Ps4MAVbSH9ZjijqFcqWOswH2NdOCVGRk5EE/ZUiUXJX1br49Lyz5HjbCOK?=
+ =?iso-8859-1?Q?e9YnhsbkRoJAIm9kxM0FotYW4fjPpHSnMc1W5QsyjIXrt5ukV+kEtDi+uJ?=
+ =?iso-8859-1?Q?kz7pN/0M4mDqM5FlSE16xRpcczt3dsKrBIKt9LtNnnDH/3SELeeO52cGB0?=
+ =?iso-8859-1?Q?gj69mibiaFIIIUDhhoxrIaOr6kLdk8aMSlN7IV/BjKCx5Y42u14ZBq5N/X?=
+ =?iso-8859-1?Q?oN9QjAJN/oSbXKCzFnacKnc++koHJl4p9SaAyvXBB4zFWMdMCLOk3b1DoL?=
+ =?iso-8859-1?Q?ChZt5eLk1KuoljSpdjhpjeXdEEvPfQ1LYwrucONdxIwdP/U/xps0jsJysa?=
+ =?iso-8859-1?Q?6KDBaf1HBOlLA7/yodDuS8/wKjLoQD2xgd0bGPnDFqBX9nV9lBmnXZIkxJ?=
+ =?iso-8859-1?Q?vKjE9ouQo0lW9igUweBiAe55hQPRmnnXxECUOFs0BgTNF0YUx+kxYZDbd1?=
+ =?iso-8859-1?Q?ujpdWqBdoT3fvwbRYP9tFy+31XM3Ywr4nN92JfhaZN+gsEvEH+1WN/lD0Z?=
+ =?iso-8859-1?Q?90oh/fNAklpWTS8UblaLgVBij4kG7GwQe9nYNSYCaycjAIYVINb2vH3WTu?=
+ =?iso-8859-1?Q?+JS/3dmVPWRIEC7KKUi7FXDBuuvQtqfADHeCkjJqJxotnnF4630byNu2Jy?=
+ =?iso-8859-1?Q?iS/x1dxTXrm9too8AE/p/+mcr+SzeUhDY4jJT3FdtJBG43OqGZbq91xk1a?=
+ =?iso-8859-1?Q?B5Z3OskUmwkR08JV/keG0q8Z1OD1L3wWiwLsg8sS2Yas/VunYIFsixml/Y?=
+ =?iso-8859-1?Q?qIMO5H035imBx9t/tds/eAUDW7AA5BeUyVzHNYlFJQkcBubjwcNaE1p1Jq?=
+ =?iso-8859-1?Q?gemUXSYJQUHJ9Yop2T0LyFtfZROhaoFxiitAOGQ8lqp8SmQtNWTlgWbFfc?=
+ =?iso-8859-1?Q?4TmBuWBpdAMSHb6ATfhDENhJ6YTkXMpur6BS4P09mGCl2Cx9YRd94dvVYQ?=
+ =?iso-8859-1?Q?ezRZ+tnE9n?=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2854.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CUBQ6hyt+53jADrBl4cmDrdUlte6RFyfXxOTr6FjD/Xite8ds1XePggqu5Ly?=
- =?us-ascii?Q?lDFMfuSO4Kef3v1PsWHbd7fzhDfNPHyKS2yxfDQdjfkQXDOGKVcdyrA00FG6?=
- =?us-ascii?Q?qB8OgBl0rJqQ/IYFFkYp/3XhFBXu+PyFWBL/eLTs/9LdDHx8i/wT/AvGmSwD?=
- =?us-ascii?Q?i1o1wE+CSGgCOrGo/ac3qLN7QfCWhIRJ3n1U6fb10Y+hyB5QDBz9DLQhsbWF?=
- =?us-ascii?Q?kDiCvnDPN8aqlhcafLBAfFc7lIYSlPFaxO1EPHFCTWPWxKzR8MDek8rlFGs2?=
- =?us-ascii?Q?PzCjuolW4oD8wA+4NHupgfECxp6S0jUf6i6mW8U5M+niPdbLJ5tS8PzZt337?=
- =?us-ascii?Q?aWl+qezy0z/dE43fryakSgLygTDjNN96XCv9pqCDFPfy7o5E8Aiios1vPJos?=
- =?us-ascii?Q?e41VNbiz02tKiFRQNNtgHjowLjvSwzZQN6eacHBD5AHnUOcpvB+l17QPpaJT?=
- =?us-ascii?Q?KxiwbdYvYdEZLceS6ClcEKbjoKlxXgX9i+gwfLWugRn78pJXrxL1B0aeYeYK?=
- =?us-ascii?Q?NiIb8RbChNZbdV1u79OzoIe2QMoE8DVTzdMC8twb0fnc/WGAkj0LiJyLEr3W?=
- =?us-ascii?Q?+5Q8gv2QbF/qE83QMYpPoPbQudY5cqMQLRzv1uFYwTXddhEGNaJnle8Hphaq?=
- =?us-ascii?Q?nHwD24EgEsbkrpZb5vU4Kjqe6dSD7+uJVajY74ufaU4665M2O2EYv9VXthe9?=
- =?us-ascii?Q?cFvhdfepWd5wlx+UOxLzTQPHkJ/aaxSzxLlLGTNurcQK1U480bp79w1BsFKj?=
- =?us-ascii?Q?A5z7XRKFnWLOxt8D7xKK5zqyvoTEO04tKYPMktpRKU+3PJuoPQ6J3gotO56B?=
- =?us-ascii?Q?Aemj3ckd8oVmKcTxhDtMauzjq0BQ59vA1yPDCc40Pu1DAFNdgWRZDOP6Qvvp?=
- =?us-ascii?Q?+RzK8csJvv9i1aP7wXt9GzdWjCKkEMgdd/7o/8W8uYuZTnAh3FikDQo/+qwK?=
- =?us-ascii?Q?l5u9RieW4zbsyEGBAX1xwNpQj3mNS3x3g5/M6ZXLdh1+7nSW1EW7InUm64ks?=
- =?us-ascii?Q?xik42yC+c5/ETDCadbUPth0ds5mMOAS8dLGmxK4ZZz+pY2Z8tmQDxf8yKOPc?=
- =?us-ascii?Q?1KBp9WeHd03Zw3rHac042dBTNu+o9Yqn5kxn71zOtmW/s2JQXlE9CIdNxgGA?=
- =?us-ascii?Q?L4QY5rj2IMQkbuDfOXDE1jZi0O5ermfjzQ2w0MXSvhLJRH+9bj0uxdgQvnR6?=
- =?us-ascii?Q?o6MoTOb6V6fWG64xA6AEvAkdT00vt9O+qtGbJKL7vSeksoruGwzFpn//IdEA?=
- =?us-ascii?Q?HccM06e35F5e0MyB27+laVkhVQmoCiMtv4SloRL+AnsZ3m/t1UurUEqMGiTo?=
- =?us-ascii?Q?Z5Cl4mtZTnHdpNEt+DVR0boc6gzYuaH1VNlWozCU4EouJInA0JnMNid5XT0b?=
- =?us-ascii?Q?jAsyGXWrYeO9AljZcuphdudnXIs1xjeG+yfeE9b0Zc3uklnQzCC15rpC7Ow4?=
- =?us-ascii?Q?3I4toXdvZxex0iLHeLQYvBszYo0WIt0D+1ALoHYxQJktDjq2Zj1Qp9rQgiBb?=
- =?us-ascii?Q?SetsdzePyHKBAf1a4H99slUiwr+m7leez232Y275kWLp6eD5qOleuawTLb9e?=
- =?us-ascii?Q?K6YgMCe33qxyZXp8VVZt9KBGEhXr7v8tKfHjXFl9g4sbOQ/YeHjCH99d7rM4?=
- =?us-ascii?Q?kQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bb1b82d-f646-4beb-82eb-08dcfd16d33b
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?g+/5EydQXBIjWmfuIB2M7wkasOYh5GykcxQAwdTCowQSNuszlYWWF8v1dW?=
+ =?iso-8859-1?Q?SVjK+cCO8ySRl50lD+ju45tMsAS7tMvD6LSRz17TAVrdp4xQ+JIlwCdB01?=
+ =?iso-8859-1?Q?g8oHvgJmIaI5fWgNV27MFjjRAbr0Fk1NHVj1hN+fo83IsvctpPHAlTgrJx?=
+ =?iso-8859-1?Q?iB0ZoWJwtgDQh7Sg9WmSQm6DZ182rIPREt0IQGWKfKZa5LpueXNmtIbY6c?=
+ =?iso-8859-1?Q?JanBgJ6DHZVmQvOOwIE4s6+lhZv9/4xb7KoGfubxmRdbFBVlJH3wEKWe3D?=
+ =?iso-8859-1?Q?jgeA0Cc30deBakPKrQ873vpWowmhN6csw844HPKzGk2c1m4D+9hX//DkwA?=
+ =?iso-8859-1?Q?wN7IsoHKYOPfvrVU8HynmZnX19UAqJSgF3Ht3v0a3jc4aw0UTSpy9i08ei?=
+ =?iso-8859-1?Q?DNP3sRViC9OxLxalrL5d6CWOJLSPhdorI5HrukiH+Hu2w1nZCTQofgHrt2?=
+ =?iso-8859-1?Q?T43CckZl543K9RMNIT8mabwkBbzHkCzxGYrxAGaprE9378BTJn0TQLDvxo?=
+ =?iso-8859-1?Q?y5qFJ84HStzfrMUZAxBLvabo1kF83NR9VCeb6kG47VqeeRIpS9fNHtXeRo?=
+ =?iso-8859-1?Q?d7ZsdPB5X1T1jCgAycTbMYpuKz0EcqjjTuI81T8+x7YXfRISvaXSTclTwf?=
+ =?iso-8859-1?Q?u1ha+/MW2deFWhDqbso/i+yxHH0ywh6HzYBsEdyjNhnK+Q9Q3wQ8ZVKa2g?=
+ =?iso-8859-1?Q?LCoU+ExY60/0BzGsd7+5vXIClBlJatAn1zsGYqRMdWI7Y0ElWx6Ff1T51/?=
+ =?iso-8859-1?Q?7AGgNbKmnQ+Rlx850b3zK0UHQIzGtuVMD7DuPnE55sfiLPdr/eFosyembc?=
+ =?iso-8859-1?Q?lVlgTzBrJMskgkkYtzbt35n0/3/cY3ISjDnyCHQErnjrNV3Uq0ijKpG6H9?=
+ =?iso-8859-1?Q?x6X1NcnusT6LHbi9XyYaaSQ15BnGNAsIAfI70fP7GHOiAuvQdVCqjRUj/d?=
+ =?iso-8859-1?Q?eLb0IsGfmPg448RRKTLXI0veIspX68hD6uqHVA9Ga3cdU6SAdMCrMCupgy?=
+ =?iso-8859-1?Q?bAaYHlkDTdzTSkVeVuqjEnjmVTd+e+T/eTK6UIAgD5dhHGcBZJnQpGq+Mf?=
+ =?iso-8859-1?Q?nKqgI4/Sw7hIjtkCsOy798N3GNlrBhwgygPJmUSwW10MoPnhaZrpd++K5/?=
+ =?iso-8859-1?Q?/CcHIB1N3SA3Vm5XJ/i3/PgTYxeOpxPHFyynnTk3XzPKSen+14kxuss2T2?=
+ =?iso-8859-1?Q?iaz+nOIMRJdHxHzR22H1eYDYNz4qwvxgPC9F+891AqfBfJuthtHdDMhprm?=
+ =?iso-8859-1?Q?/bhAa/zL8NwVyxNIu714fHuNQLBNnAYXVIu9YQqy3NBbhfsFB+BujK0HOz?=
+ =?iso-8859-1?Q?wwa1IwVu/ZMMPjiF5TZYol4+0a5pydEL6JBWceZY4ONZ8019iApchZuKIr?=
+ =?iso-8859-1?Q?/JjBFtJ67OetK34t9kgP/M77sK1ghnh0u8IfPpLGZc3bETN8ClEEnjqK9u?=
+ =?iso-8859-1?Q?Ey/0B0Y9JyMzGnObywdgQrpkDfZdn9KL2teKP3WxVgxP0AYdlFbUFkr58Q?=
+ =?iso-8859-1?Q?DkGrBiQ0NUJFFexZUH+HyE1oj0VXdoJlT5YYX8ArioJjJVQTDjvpDQFODA?=
+ =?iso-8859-1?Q?CYEFbaRqO31gl9dDK2PjMNJpPLsViuodX/TiwA1UC2K44c4pMMgaWgc9MY?=
+ =?iso-8859-1?Q?NJ4fLtq4XDQX/MgM6UjKFvPkttPymDiPxObMztiVchhqr2xw0ktaWGNg?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9714216b-2d16-4d23-2678-08dcfd15e6f8
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2854.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2024 21:22:45.6858
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2024 21:16:09.7312
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PEaWY74AaksJhy8vZkNxKJbZRJURBvO4IL7mhcFnFNaD+K2b7sc30lW7NCdpjulDLrWRg3qkKbJ5Nro5mGWAew==
+X-MS-Exchange-CrossTenant-UserPrincipalName: hG4mTrqtwy4uYyOb9pQbpl4qBPaBMu9Gpg5p5AAvvuybdy97a/0mPj6jE9YmLpRKhqLKR0xXZ7091lABAOPlRw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7471
 X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241104_132254_123263_AF00FA95 
-X-CRM114-Status: GOOD (  29.25  )
+X-CRM114-CacheID: sfid-20241104_131616_067365_36BE42D4 
+X-CRM114-Status: GOOD (  24.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -197,266 +205,322 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 22, 2024 at 01:41:10PM +0300, Alexander Usyskin wrote:
-> Add auxiliary driver for intel discrete graphics
-> non-volatile memory device.
-> 
-> CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> CC: Lucas De Marchi <lucas.demarchi@intel.com>
-> Co-developed-by: Tomas Winkler <tomasw@gmail.com>
-> Signed-off-by: Tomas Winkler <tomasw@gmail.com>
-> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+On Tue, Oct 29, 2024 at 11:24:36AM +0000, Usyskin, Alexander wrote:
+> > -----Original Message-----
+> > From: Gupta, Anshuman <anshuman.gupta@intel.com>
+> > Sent: Monday, October 28, 2024 5:02 PM
+> > To: Vivi, Rodrigo <rodrigo.vivi@intel.com>; Usyskin, Alexander
+> > <alexander.usyskin@intel.com>; Deak, Imre <imre.deak@intel.com>
+> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Richard Weinberger
+> > <richard@nod.at>; Vignesh Raghavendra <vigneshr@ti.com>; De Marchi,
+> > Lucas <lucas.demarchi@intel.com>; Thomas Hellstr=F6m
+> > <thomas.hellstrom@linux.intel.com>; Maarten Lankhorst
+> > <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>;
+> > Thomas Zimmermann <tzimmermann@suse.de>; David Airlie
+> > <airlied@gmail.com>; Simona Vetter <simona@ffwll.ch>; Jani Nikula
+> > <jani.nikula@linux.intel.com>; Joonas Lahtinen
+> > <joonas.lahtinen@linux.intel.com>; Tvrtko Ursulin <tursulin@ursulin.net=
+>;
+> > Weil, Oren jer <oren.jer.weil@intel.com>; linux-mtd@lists.infradead.org=
+; dri-
+> > devel@lists.freedesktop.org; intel-gfx@lists.freedesktop.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: RE: [PATCH 06/10] mtd: intel-dg: wake card on operations
+> > =
 
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> > =
 
-> ---
->  MAINTAINERS                        |   7 ++
->  drivers/mtd/devices/Kconfig        |  11 +++
->  drivers/mtd/devices/Makefile       |   1 +
->  drivers/mtd/devices/mtd-intel-dg.c | 139 +++++++++++++++++++++++++++++
->  include/linux/intel_dg_nvm_aux.h   |  27 ++++++
->  5 files changed, 185 insertions(+)
->  create mode 100644 drivers/mtd/devices/mtd-intel-dg.c
->  create mode 100644 include/linux/intel_dg_nvm_aux.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c27f3190737f..a09c035849ef 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11360,6 +11360,13 @@ L:	linux-kernel@vger.kernel.org
->  S:	Supported
->  F:	arch/x86/include/asm/intel-family.h
->  
-> +INTEL DISCRETE GRAPHIC NVM MTD DRIVER
-> +M:	Alexander Usyskin <alexander.usyskin@intel.com>
-> +L:	linux-mtd@lists.infradead.org
-> +S:	Supported
-> +F:	drivers/mtd/devices/mtd-intel-dg.c
-> +F:	include/linux/intel_dg_nvm_aux.h
-> +
->  INTEL DRM DISPLAY FOR XE AND I915 DRIVERS
->  M:	Jani Nikula <jani.nikula@linux.intel.com>
->  M:	Rodrigo Vivi <rodrigo.vivi@intel.com>
-> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> index ff2f9e55ef28..d93edf45c0bb 100644
-> --- a/drivers/mtd/devices/Kconfig
-> +++ b/drivers/mtd/devices/Kconfig
-> @@ -183,6 +183,17 @@ config MTD_POWERNV_FLASH
->  	  platforms from Linux. This device abstracts away the
->  	  firmware interface for flash access.
->  
-> +config MTD_INTEL_DG
-> +	tristate "Intel Discrete Graphic non-volatile memory driver"
-> +	depends on AUXILIARY_BUS
-> +	depends on MTD
-> +	help
-> +	  This provides MTD device to access Intel Discrete Graphic
-> +	  non-volatile memory.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called mtd-intel-dg.
-> +
->  comment "Disk-On-Chip Device Drivers"
->  
->  config MTD_DOCG3
-> diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-> index d11eb2b8b6f8..77c05d269034 100644
-> --- a/drivers/mtd/devices/Makefile
-> +++ b/drivers/mtd/devices/Makefile
-> @@ -18,6 +18,7 @@ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
->  obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
->  obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
->  obj-$(CONFIG_MTD_POWERNV_FLASH)	+= powernv_flash.o
-> +obj-$(CONFIG_MTD_INTEL_DG)	+= mtd-intel-dg.o
->  
->  
->  CFLAGS_docg3.o			+= -I$(src)
-> diff --git a/drivers/mtd/devices/mtd-intel-dg.c b/drivers/mtd/devices/mtd-intel-dg.c
-> new file mode 100644
-> index 000000000000..746c963ea540
-> --- /dev/null
-> +++ b/drivers/mtd/devices/mtd-intel-dg.c
-> @@ -0,0 +1,139 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright(c) 2019-2024, Intel Corporation. All rights reserved.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/intel_dg_nvm_aux.h>
-> +#include <linux/io.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/string.h>
-> +#include <linux/slab.h>
-> +#include <linux/types.h>
-> +
-> +struct intel_dg_nvm {
-> +	struct kref refcnt;
-> +	void __iomem *base;
-> +	size_t size;
-> +	unsigned int nregions;
-> +	struct {
-> +		const char *name;
-> +		u8 id;
-> +		u64 offset;
-> +		u64 size;
-> +	} regions[];
-> +};
-> +
-> +static void intel_dg_nvm_release(struct kref *kref)
-> +{
-> +	struct intel_dg_nvm *nvm = container_of(kref, struct intel_dg_nvm, refcnt);
-> +	int i;
-> +
-> +	pr_debug("freeing intel_dg nvm\n");
-> +	for (i = 0; i < nvm->nregions; i++)
-> +		kfree(nvm->regions[i].name);
-> +	kfree(nvm);
-> +}
-> +
-> +static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
-> +			      const struct auxiliary_device_id *aux_dev_id)
-> +{
-> +	struct intel_dg_nvm_dev *invm = auxiliary_dev_to_intel_dg_nvm_dev(aux_dev);
-> +	struct device *device;
-> +	struct intel_dg_nvm *nvm;
-> +	unsigned int nregions;
-> +	unsigned int i, n;
-> +	size_t size;
-> +	char *name;
-> +	int ret;
-> +
-> +	device = &aux_dev->dev;
-> +
-> +	/* count available regions */
-> +	for (nregions = 0, i = 0; i < INTEL_DG_NVM_REGIONS; i++) {
-> +		if (invm->regions[i].name)
-> +			nregions++;
-> +	}
-> +
-> +	if (!nregions) {
-> +		dev_err(device, "no regions defined\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	size = sizeof(*nvm) + sizeof(nvm->regions[0]) * nregions;
-> +	nvm = kzalloc(size, GFP_KERNEL);
-> +	if (!nvm)
-> +		return -ENOMEM;
-> +
-> +	kref_init(&nvm->refcnt);
-> +
-> +	nvm->nregions = nregions;
-> +	for (n = 0, i = 0; i < INTEL_DG_NVM_REGIONS; i++) {
-> +		if (!invm->regions[i].name)
-> +			continue;
-> +
-> +		name = kasprintf(GFP_KERNEL, "%s.%s",
-> +				 dev_name(&aux_dev->dev), invm->regions[i].name);
-> +		if (!name)
-> +			continue;
-> +		nvm->regions[n].name = name;
-> +		nvm->regions[n].id = i;
-> +		n++;
-> +	}
-> +
-> +	nvm->base = devm_ioremap_resource(device, &invm->bar);
-> +	if (IS_ERR(nvm->base)) {
-> +		dev_err(device, "mmio not mapped\n");
-> +		ret = PTR_ERR(nvm->base);
-> +		goto err;
-> +	}
-> +
-> +	dev_set_drvdata(&aux_dev->dev, nvm);
-> +
-> +	return 0;
-> +
-> +err:
-> +	kref_put(&nvm->refcnt, intel_dg_nvm_release);
-> +	return ret;
-> +}
-> +
-> +static void intel_dg_mtd_remove(struct auxiliary_device *aux_dev)
-> +{
-> +	struct intel_dg_nvm *nvm = dev_get_drvdata(&aux_dev->dev);
-> +
-> +	if (!nvm)
-> +		return;
-> +
-> +	dev_set_drvdata(&aux_dev->dev, NULL);
-> +
-> +	kref_put(&nvm->refcnt, intel_dg_nvm_release);
-> +}
-> +
-> +static const struct auxiliary_device_id intel_dg_mtd_id_table[] = {
-> +	{
-> +		.name = "i915.nvm",
-> +	},
-> +	{
-> +		.name = "xe.nvm",
-> +	},
-> +	{
-> +		/* sentinel */
-> +	}
-> +};
-> +MODULE_DEVICE_TABLE(auxiliary, intel_dg_mtd_id_table);
-> +
-> +static struct auxiliary_driver intel_dg_mtd_driver = {
-> +	.probe  = intel_dg_mtd_probe,
-> +	.remove = intel_dg_mtd_remove,
-> +	.driver = {
-> +		/* auxiliary_driver_register() sets .name to be the modname */
-> +	},
-> +	.id_table = intel_dg_mtd_id_table
-> +};
-> +
-> +module_auxiliary_driver(intel_dg_mtd_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Intel Corporation");
-> +MODULE_DESCRIPTION("Intel DGFX MTD driver");
-> diff --git a/include/linux/intel_dg_nvm_aux.h b/include/linux/intel_dg_nvm_aux.h
-> new file mode 100644
-> index 000000000000..2cc4179fbde2
-> --- /dev/null
-> +++ b/include/linux/intel_dg_nvm_aux.h
-> @@ -0,0 +1,27 @@
-> +/* SPDX-License-Identifier: MIT */
-> +/*
-> + * Copyright(c) 2019-2024, Intel Corporation. All rights reserved.
-> + */
-> +
-> +#ifndef __INTEL_DG_NVM_AUX_H__
-> +#define __INTEL_DG_NVM_AUX_H__
-> +
-> +#include <linux/auxiliary_bus.h>
-> +
-> +#define INTEL_DG_NVM_REGIONS 13
-> +
-> +struct intel_dg_nvm_region {
-> +	const char *name;
-> +};
-> +
-> +struct intel_dg_nvm_dev {
-> +	struct auxiliary_device aux_dev;
-> +	bool writeable_override;
-> +	struct resource bar;
-> +	const struct intel_dg_nvm_region *regions;
-> +};
-> +
-> +#define auxiliary_dev_to_intel_dg_nvm_dev(auxiliary_dev) \
-> +	container_of(auxiliary_dev, struct intel_dg_nvm_dev, aux_dev)
-> +
-> +#endif /* __INTEL_DG_NVM_AUX_H__ */
-> -- 
-> 2.43.0
-> 
+> > =
+
+> > > -----Original Message-----
+> > > From: Vivi, Rodrigo <rodrigo.vivi@intel.com>
+> > > Sent: Monday, October 28, 2024 8:27 PM
+> > > To: Usyskin, Alexander <alexander.usyskin@intel.com>; Gupta, Anshuman
+> > > <anshuman.gupta@intel.com>; Deak, Imre <imre.deak@intel.com>
+> > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Richard Weinberger
+> > > <richard@nod.at>; Vignesh Raghavendra <vigneshr@ti.com>; De Marchi,
+> > > Lucas <lucas.demarchi@intel.com>; Thomas Hellstr=F6m
+> > > <thomas.hellstrom@linux.intel.com>; Maarten Lankhorst
+> > > <maarten.lankhorst@linux.intel.com>; Maxime Ripard
+> > <mripard@kernel.org>;
+> > > Thomas Zimmermann <tzimmermann@suse.de>; David Airlie
+> > > <airlied@gmail.com>; Simona Vetter <simona@ffwll.ch>; Jani Nikula
+> > > <jani.nikula@linux.intel.com>; Joonas Lahtinen
+> > > <joonas.lahtinen@linux.intel.com>; Tvrtko Ursulin <tursulin@ursulin.n=
+et>;
+> > > Weil, Oren jer <oren.jer.weil@intel.com>; linux-mtd@lists.infradead.o=
+rg; dri-
+> > > devel@lists.freedesktop.org; intel-gfx@lists.freedesktop.org; linux-
+> > > kernel@vger.kernel.org
+> > > Subject: Re: [PATCH 06/10] mtd: intel-dg: wake card on operations
+> > >
+> > > On Tue, Oct 22, 2024 at 01:41:15PM +0300, Alexander Usyskin wrote:
+> > > > Enable runtime PM in mtd driver to notify graphics driver that whole
+> > > > card should be kept awake while nvm operations are performed through
+> > > > this driver.
+> > > >
+> > > > CC: Lucas De Marchi <lucas.demarchi@intel.com>
+> > > > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> > > > ---
+> > > >  drivers/mtd/devices/mtd-intel-dg.c | 73
+> > > > +++++++++++++++++++++++++-----
+> > > >  1 file changed, 61 insertions(+), 12 deletions(-)
+> > > >
+> > > > diff --git a/drivers/mtd/devices/mtd-intel-dg.c
+> > > > b/drivers/mtd/devices/mtd-intel-dg.c
+> > > > index 4951438e8faf..3d53f35478e8 100644
+> > > > --- a/drivers/mtd/devices/mtd-intel-dg.c
+> > > > +++ b/drivers/mtd/devices/mtd-intel-dg.c
+> > > > @@ -15,11 +15,14 @@
+> > > >  #include <linux/module.h>
+> > > >  #include <linux/mtd/mtd.h>
+> > > >  #include <linux/mtd/partitions.h>
+> > > > +#include <linux/pm_runtime.h>
+> > > >  #include <linux/string.h>
+> > > >  #include <linux/slab.h>
+> > > >  #include <linux/sizes.h>
+> > > >  #include <linux/types.h>
+> > > >
+> > > > +#define INTEL_DG_NVM_RPM_TIMEOUT 500
+> > > > +
+> > > >  struct intel_dg_nvm {
+> > > >  	struct kref refcnt;
+> > > >  	struct mtd_info mtd;
+> > > > @@ -462,6 +465,7 @@ static int intel_dg_mtd_erase(struct mtd_info
+> > *mtd,
+> > > struct erase_info *info)
+> > > >  	loff_t from;
+> > > >  	size_t len;
+> > > >  	size_t total_len;
+> > > > +	int ret =3D 0;
+> > > >
+> > > >  	if (WARN_ON(!nvm))
+> > > >  		return -EINVAL;
+> > > > @@ -476,20 +480,28 @@ static int intel_dg_mtd_erase(struct mtd_info
+> > > *mtd, struct erase_info *info)
+> > > >  	total_len =3D info->len;
+> > > >  	addr =3D info->addr;
+> > > >
+> > > > +	ret =3D pm_runtime_resume_and_get(mtd->dev.parent);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&mtd->dev, "rpm: get failed %d\n", ret);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > >  	guard(mutex)(&nvm->lock);
+> > > >
+> > > >  	while (total_len > 0) {
+> > > >  		if (!IS_ALIGNED(addr, SZ_4K) || !IS_ALIGNED(total_len,
+> > > SZ_4K)) {
+> > > >  			dev_err(&mtd->dev, "unaligned erase %llx %zx\n",
+> > > addr, total_len);
+> > > >  			info->fail_addr =3D addr;
+> > > > -			return -ERANGE;
+> > > > +			ret =3D -ERANGE;
+> > > > +			goto out;
+> > > >  		}
+> > > >
+> > > >  		idx =3D idg_nvm_get_region(nvm, addr);
+> > > >  		if (idx >=3D nvm->nregions) {
+> > > >  			dev_err(&mtd->dev, "out of range");
+> > > >  			info->fail_addr =3D MTD_FAIL_ADDR_UNKNOWN;
+> > > > -			return -ERANGE;
+> > > > +			ret =3D -ERANGE;
+> > > > +			goto out;
+> > > >  		}
+> > > >
+> > > >  		from =3D addr - nvm->regions[idx].offset; @@ -505,14 +517,18
+> > > @@
+> > > > static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_in=
+fo
+> > *info)
+> > > >  		if (bytes < 0) {
+> > > >  			dev_dbg(&mtd->dev, "erase failed with %zd\n",
+> > > bytes);
+> > > >  			info->fail_addr +=3D nvm->regions[idx].offset;
+> > > > -			return bytes;
+> > > > +			ret =3D bytes;
+> > > > +			goto out;
+> > > >  		}
+> > > >
+> > > >  		addr +=3D len;
+> > > >  		total_len -=3D len;
+> > > >  	}
+> > > >
+> > > > -	return 0;
+> > > > +out:
+> > > > +	pm_runtime_mark_last_busy(mtd->dev.parent);
+> > > > +	pm_runtime_put_autosuspend(mtd->dev.parent);
+> > > > +	return ret;
+> > > >  }
+> > > >
+> > > >  static int intel_dg_mtd_read(struct mtd_info *mtd, loff_t from,
+> > > > size_t len, @@ -541,17 +557,25 @@ static int intel_dg_mtd_read(stru=
+ct
+> > > mtd_info *mtd, loff_t from, size_t len,
+> > > >  	if (len > nvm->regions[idx].size - from)
+> > > >  		len =3D nvm->regions[idx].size - from;
+> > > >
+> > > > +	ret =3D pm_runtime_resume_and_get(mtd->dev.parent);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > >  	guard(mutex)(&nvm->lock);
+> > > >
+> > > >  	ret =3D idg_read(nvm, region, from, len, buf);
+> > > >  	if (ret < 0) {
+> > > >  		dev_dbg(&mtd->dev, "read failed with %zd\n", ret);
+> > > > -		return ret;
+> > > > +	} else {
+> > > > +		*retlen =3D ret;
+> > > > +		ret =3D 0;
+> > > >  	}
+> > > >
+> > > > -	*retlen =3D ret;
+> > > > -
+> > > > -	return 0;
+> > > > +	pm_runtime_mark_last_busy(mtd->dev.parent);
+> > > > +	pm_runtime_put_autosuspend(mtd->dev.parent);
+> > > > +	return ret;
+> > > >  }
+> > > >
+> > > >  static int intel_dg_mtd_write(struct mtd_info *mtd, loff_t to, siz=
+e_t
+> > > > len, @@ -580,17 +604,25 @@ static int intel_dg_mtd_write(struct
+> > mtd_info
+> > > *mtd, loff_t to, size_t len,
+> > > >  	if (len > nvm->regions[idx].size - to)
+> > > >  		len =3D nvm->regions[idx].size - to;
+> > > >
+> > > > +	ret =3D pm_runtime_resume_and_get(mtd->dev.parent);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > >  	guard(mutex)(&nvm->lock);
+> > > >
+> > > >  	ret =3D idg_write(nvm, region, to, len, buf);
+> > > >  	if (ret < 0) {
+> > > >  		dev_dbg(&mtd->dev, "write failed with %zd\n", ret);
+> > > > -		return ret;
+> > > > +	} else {
+> > > > +		*retlen =3D ret;
+> > > > +		ret =3D 0;
+> > > >  	}
+> > > >
+> > > > -	*retlen =3D ret;
+> > > > -
+> > > > -	return 0;
+> > > > +	pm_runtime_mark_last_busy(mtd->dev.parent);
+> > > > +	pm_runtime_put_autosuspend(mtd->dev.parent);
+> > > > +	return ret;
+> > > >  }
+> > > >
+> > > >  static void intel_dg_nvm_release(struct kref *kref) @@ -722,6 +754=
+,17
+> > > > @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+> > > >  		n++;
+> > > >  	}
+> > > >
+> > > > +	pm_runtime_enable(device);
+> > > > +
+> > > > +	pm_runtime_set_autosuspend_delay(device,
+> > > INTEL_DG_NVM_RPM_TIMEOUT);
+> > > > +	pm_runtime_use_autosuspend(device);
+> > >
+> > > something looks strange here...
+> > > on the functions above you get and put references for the parent devi=
+ce
+> > > directly.
+> > > But here you enable the rpm for this device.
+> > >
+> > > If I remember correctly from some old experiments, the rpm is smart e=
+nough
+> > > and wake up the parent before waking up the child. So I'm wondering i=
+f we
+> > > should only do the child without the parent.
+> > Agree parent can't runtime suspend ind if it has active child.
+> > Let this driver have it's own get/put routine instead of parent.
+> > Thanks,
+> > Anshuman Gupta.
+> =
+
+> I need to wake DG card before the MTD device is established to scan the p=
+artition table on flash.
+> Thus, if I move rpm down to MTD device I should enable and take parent (a=
+uxiliary device) rpm anyway.
+
+That's the part that I'm not sure if I agree. if I remember from some exper=
+iments in the past,
+when you call to wake up the child, the parent will wakeup first anyway.
+
+> Considering above, is this move is justified?
+> Also, MTD drivers tend to enable parent rpm, not its own one.
+
+What other drivers are you looking for reference?
+
+> =
+
+> - - =
+
+> Thanks,
+> Sasha
+> =
+
+> =
+
+> =
+
+> > >
+> > > Cc: Imre Deak <imre.deak@intel.com>
+> > > Cc: Anshuman Gupta <anshuman.gupta@intel.com>
+> > >
+> > > > +
+> > > > +	ret =3D pm_runtime_resume_and_get(device);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(device, "rpm: get failed %d\n", ret);
+> > > > +		goto err_norpm;
+> > > > +	}
+> > > > +
+> > > >  	nvm->base =3D devm_ioremap_resource(device, &invm->bar);
+> > > >  	if (IS_ERR(nvm->base)) {
+> > > >  		dev_err(device, "mmio not mapped\n"); @@ -744,9 +787,13
+> > > @@ static
+> > > > int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+> > > >
+> > > >  	dev_set_drvdata(&aux_dev->dev, nvm);
+> > > >
+> > > > +	pm_runtime_put(device);
+> > > >  	return 0;
+> > > >
+> > > >  err:
+> > > > +	pm_runtime_put(device);
+> > > > +err_norpm:
+> > > > +	pm_runtime_disable(device);
+> > > >  	kref_put(&nvm->refcnt, intel_dg_nvm_release);
+> > > >  	return ret;
+> > > >  }
+> > > > @@ -758,6 +805,8 @@ static void intel_dg_mtd_remove(struct
+> > > auxiliary_device *aux_dev)
+> > > >  	if (!nvm)
+> > > >  		return;
+> > > >
+> > > > +	pm_runtime_disable(&aux_dev->dev);
+> > > > +
+> > > >  	mtd_device_unregister(&nvm->mtd);
+> > > >
+> > > >  	dev_set_drvdata(&aux_dev->dev, NULL);
+> > > > --
+> > > > 2.43.0
+> > > >
 
 ______________________________________________________
 Linux MTD discussion mailing list
