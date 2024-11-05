@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95869D1CA3A
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2024 07:01:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19DD8D12683
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Nov 2024 10:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=P79XxJNPcIUwZbdKmD0MMSVuh5FAkugLpvifwKm6bWA=; b=YXtb3SiHFYvdbh
-	ld5RgcmSPNK00uv+0cHCJCon3p4BNrCmPuU/C2ALBD9xWhxL9n852CdgvSzF0s/LwwwyriIVLzsXE
-	oQ/PmNDWSY+o4GlZbsoOpDT31qnkXnB0L3lQh1+vJT2NyURxLJYQiffGIbjfr2L9BJbrD5CoHlg/u
-	2oR0Tzo7ZdZ9hSmFDeFqJkL9NCgvqKdxEo+6Gc05QVz0zQq93/2/VyUITQp88ieK87EuV3eetr48k
-	psUausW4GT6P81UgqHt9tm5IrpsUCjGaKTXJ5Blbhf8t8IIP7x6D/XiPEFkiIlee7NEFaZInar0sV
-	aGZqnZQC76KdqqiuHzAg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oVPWf3Us54J7qQQyuO3c+Q8bINH7QT52m/NyZlNIbjc=; b=GnuijiWjWo4dDW
+	eyz9H8OOhQt+WlYSCYA8iK5BAg7eKY+tyMlB9hLZACtYo1kms2R4lGDJO8er1CN2q5FRc1R/VmENB
+	7e1PVWt3aGNabYodXCHjaNwua/Y2WufaQuUMoIfkEDkiQtxjQu5j5TuJWMq2saGIJYYMJaA5fJqeQ
+	hPqYKXY4PWCqK8Hx4yb8vKoYXBl8/CXclkuxg1tkBPKs/LXbvi5K9eZFobS2zXWy2weKXPVS7FfJC
+	fj5QQvsM/+aoXykG09h1kvh7SQJBJTvXnM/HN2uHzqQx22bWkc5INFA8CZPMKAhooCPu+EJPvLdjH
+	MMubCdgRJhKUvePaE60w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8DZ1-0000000G84l-31SX;
-	Tue, 05 Nov 2024 07:01:19 +0000
-Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
+	id 1t8HHO-0000000Gkja-0KeW;
+	Tue, 05 Nov 2024 10:59:22 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8DYx-0000000G83L-3LSO
+	id 1t8HHK-0000000Gkie-3TeP
 	for linux-mtd@lists.infradead.org;
-	Tue, 05 Nov 2024 07:01:17 +0000
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5c937b5169cso8219495a12.1
-        for <linux-mtd@lists.infradead.org>; Mon, 04 Nov 2024 23:01:15 -0800 (PST)
+	Tue, 05 Nov 2024 10:59:20 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4315eeb2601so62851985e9.2
+        for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2024 02:59:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730790074; x=1731394874; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BMC2nCHCegVHnG8968VXLv6rjHwiT0mzs5/u6u9/wQ8=;
-        b=L9hakLISaM+uLRZh9FzManuMbS6RJt7dgdkfpvjTdXXUaQJ0q/G2vemplgeqLsSyEh
-         eDMBkkZ5aEK9gfUSK7HrJETBvzqmy5ZrmIMgNjMhJTNB6EAKYUNUcQE85/OQtCl8WPCD
-         ZW3vgb8L3i1yMZZvUMiM3VZW319q8x8py5+RfI4/Sna3VThYtgffGf7fwGArIOJB1gz+
-         hGvll3feV/HBAHvnJlXbAB/zHlcQxJBbXZnutf6PvkmbR0Z9bgRn/+Jd9VMTJwmQ/tFK
-         yLvCYdBVjjRmX7Rl6yUzNM+cSIvwBq2f94nWvkukvogADISC4GA+xARemuURgkq/jmF9
-         QGuA==
+        d=gmail.com; s=20230601; t=1730804357; x=1731409157; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uNdr11hGVrcXD6Kt/ak9C3q/RmQsxEhFNmU01xZcnvs=;
+        b=SoT+A3jrwTu1spCIZMWPmsj8NhxyPBcWsJyD23OgEyki4C8aNKWVITJ3UKdmqHe4Dk
+         9WI/BJbznR71BUhbxC0wj/hGPnLJI5gGpUpKTrJE++j+jfWaPH4yco6kObo4TaizCai9
+         AnzOqaPKupxcq5cze6e5Nw7Nz1NeRBaFapoJk/UVDfmN5k1PVC5Stiz9N/8veXkLxknM
+         C95va4m6n2uGf1hsWJdQXv51XK0t5flsBhebJknZ1R0uHKIXrl2Os/bS7Bu5sWLcL+R4
+         3CDGM00XW46Kwf4qX6pwMwyj+x5QdDu43ubpWG73KENCoK64FjeWux54pBVEOHFdqtRk
+         cfuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730790074; x=1731394874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BMC2nCHCegVHnG8968VXLv6rjHwiT0mzs5/u6u9/wQ8=;
-        b=SOvt/JiSFKHwFMDxpAHOL5az9XqdD1fDmX2KHPMSSEQGX1XjfEjjRD8tmlBHcalJMU
-         HXmTNiaL3Ra83e1lz551vleTVpRTQiXMX1VWBpK45hyTU1hORrhgbL5znHT9Ckilb4iA
-         F/VWNCjNJ+PfEKURUY3i45iW1U+Ipx9XEav0Bg7C5N0yWWqYeL7eh+S716u9dBLbM+F7
-         1I2Ens2ga9LIQV+RQEI3/CqlQhGJi868E9PN8cEA8lO+uvqys6BJsXdZbMPrjsfBdtjS
-         PxmI+MNRJjD18UiCc03YIyC7xbjsdG1vm/Fsd7p3vgTJhYl8abmC5iWLFeyuLxC8dXNR
-         s/9w==
-X-Forwarded-Encrypted: i=1; AJvYcCXw20R1ah1r9PBRvciYVrWaYWAKIKXzDTwYaP39jZd/WoTB/1r7sXmHofZCdklRqXEAu/dBrjAtvjQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyeP2nKo3AxbXuArrC9Z4msaU7KupXleUDaiU10mCIzy8z7O8Dm
-	0nzvTPktltsyoxjg7EdYe0RChOeykbPOs6fKq1gw860DGniIiZkoPBr527dYWDpW1cuzront2gB
-	2vO2h5BR45SEal3lJFPVh2jBld6Q=
-X-Google-Smtp-Source: AGHT+IFpFl6d6FD3d3bHUu/f6xsx6k+d+E9VxTMNIjcz5Z/CqziON6Sge5X9IdrtoQxk42rWpFoCK55JubqqX0imrR4=
-X-Received: by 2002:a05:6402:35c9:b0:5ce:b113:4a91 with SMTP id
- 4fb4d7f45d1cf-5ceb8cb065amr15096805a12.2.1730790073799; Mon, 04 Nov 2024
- 23:01:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1730804357; x=1731409157;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uNdr11hGVrcXD6Kt/ak9C3q/RmQsxEhFNmU01xZcnvs=;
+        b=Gelm5ilBwhsO+T5VGC68LN0xvoWBNqkcvVNtOkGAeWg0UgPB0IhBcpXyhEqYSoYm94
+         SI4Hl4zjaoPpnhNH0G8Dea6ErR1H1o5XFotk8cvBiwntHdjQh1ePrUsiyv+D8y7o7Yy4
+         dOHkaAxnywEY24BUuUrNpeUCZPFeqUbjf6CT4WRv74qxNC1gxU51/wNLiMD4qkzKWBqw
+         9sA0eh0rmoY96El35DJClrVdNJvhJLZIPDE81NKgRyDA2f0vQvcbB/JdUG12sXrGAUeu
+         3H8nHg7lI5awdh3aJDbMEqamqCVJVtMo5bjRmcmuT82OaaIe9tzS39sQdF91mR27CTQI
+         mAEg==
+X-Forwarded-Encrypted: i=1; AJvYcCUi5r6rbaeYncmzdTVo5vg0RIoCe1AIGCi3xdYSanG3vflSRjWkvcTrOzf/WLeZIiXvcH753Q5HahM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzLIVjMZfu3dmfHeFncayOHoUZaqV4lGsnp+TBEaj5JQ970J5ai
+	IZWvRyC5GwwFLSRX8ThxFTW2h0KRzkWGsiHWFEL9Z0sqCXVKSGH0
+X-Google-Smtp-Source: AGHT+IHRjx4s+ZF8EEdKlpdzEHOla4kk+SpHNiqx1PefCH83gU1CHVZAtoYj/tiPyFvzDPnTQAow0Q==
+X-Received: by 2002:a05:600c:22d3:b0:431:b264:bad9 with SMTP id 5b1f17b1804b1-432849fa045mr166642935e9.14.1730804356961;
+        Tue, 05 Nov 2024 02:59:16 -0800 (PST)
+Received: from partp-nb.corp.toradex.com (31-10-206-125.static.upc.ch. [31.10.206.125])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bd9aa611sm214315245e9.34.2024.11.05.02.59.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Nov 2024 02:59:16 -0800 (PST)
+From: Parth Pancholi <parth105105@gmail.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Parth Pancholi <parth.pancholi@toradex.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: spi-nor: macronix: remove mx25u25635f from parts list to enable SFDP
+Date: Tue,  5 Nov 2024 11:58:44 +0100
+Message-Id: <20241105105844.257676-1-parth105105@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <CAOuPNLhxBBihr38p_XMQEgkiLFc+DPxkQf4oewF8U1+ihaFn-Q@mail.gmail.com>
- <5cdff557-c90f-6acc-7245-a2fb2406ecb9@huawei.com>
-In-Reply-To: <5cdff557-c90f-6acc-7245-a2fb2406ecb9@huawei.com>
-From: Pintu Agarwal <pintu.ping@gmail.com>
-Date: Tue, 5 Nov 2024 12:31:01 +0530
-Message-ID: <CAOuPNLgiPxoNjqdN2C_BbzEjkcv9tdOpiu7bz6stXwqAK0VMCw@mail.gmail.com>
-Subject: Re: Block based OTA update needs mtdblock
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241104_230115_859091_39E2AA71 
-X-CRM114-Status: GOOD (  21.33  )
+X-CRM114-CacheID: sfid-20241105_025918_899682_74088BC1 
+X-CRM114-Status: GOOD (  13.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,43 +91,189 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiBUdWUsIDUgTm92IDIwMjQgYXQgMDc6NDUsIFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGlo
-YW8xQGh1YXdlaS5jb20+IHdyb3RlOgo+Cj4g5ZyoIDIwMjQvMTEvNSAwOjAxLCBQaW50dSBBZ2Fy
-d2FsIOWGmemBkzoKPiA+IEhpIEFsbCwKPiA+Cj4gPiBGb3Igb25lIG9mIG91ciBhdXRvbW90aXZl
-IHByb2R1Y3RzIHdlIGhhdmUgdGhlIGZvbGxvd2luZyBjb25maWd1cmF0aW9uOgo+ID4gUUMgY2hp
-cHNldCwgYXJtNjQsIEtlcm5lbC01LjE1LCBOQU5EIEZsYXNoIDFHQiwgQS9CIHN5c3RlbSwgVUJJ
-Cj4gPiB2b2x1bWVzIChzcXVhc2hmcywgdWJpZnMpLCBETS12ZXJpdHkgZm9yIHJvb3RmcyAoc3F1
-YXNoZnMpLCBzaW1wbGUKPiA+IGJ1c3lib3ggcGxhdGZvcm0uCj4gPgo+ID4gRm9yIE9UQSB1cGRh
-dGVzIHdlIGhhdmUgYSBzdHJvbmcgZGVwZW5kZW5jeSB3aXRoIE1URF9CTE9DSy4KPiA+Cj4gPiBU
-aWxsIG5vdywgd2Ugd2VyZSB1c2luZyB1YmlibG9jayBmb3IgbW91bnRpbmcgc3F1YXNoZnMgdm9s
-dW1lcyBhbmQKPiA+IGNvbXBsZXRlbHkgZ290IHJpZCBvZiBtdGRfYmxvY2sgYnkgY29uZmlndXJp
-bmcgaXQgYXMgYSBsb2FkYWJsZQo+ID4gbW9kdWxlLgo+ID4gQnV0LCB3ZSBhbHNvIG5lZWQgdG8g
-c3VwcG9ydCBPVEEgdXBkYXRlcyAoRnVsbCwgSW5jcmVtZW50YWwpIG9uIEEvQgo+ID4gdm9sdW1l
-cyB1c2luZyB0aGUgc2FtZSBBbmRyb2lkIE9UQSBmcmFtZXdvcmsuCj4gPiBodHRwczovL3NvdXJj
-ZS5hbmRyb2lkLmNvbS9kb2NzL2NvcmUvb3RhL25vbmFiL2Jsb2NrCj4gPgo+ID4gT1RBIHVwZGF0
-ZSB3aWxsIGJlIGFwcGxpZWQgdG8gdGhlIEIgKGluYWN0aXZlKSBwYXJ0aXRpb24uCj4gPiBPVEEg
-dXBkYXRlcyBwcmVmZXIgYmxvY2sgYmFzZWQgdXBkYXRlIG92ZXIgZmlsZSBiYXNlZCBlc3BlY2lh
-bGx5IGZvcgo+ID4gZG0tdmVyaXR5IGVuYWJsZWQgZGV2aWNlcy4KPiA+Cj4gPiBOb3csIHRoZSBw
-cm9ibGVtIGlzLCBvbiBNVEQgd2Ugb25seSBoYXZlIDIgb3B0aW9ucyBmb3IgYmxvY2sgYmFzZWQK
-PiA+IHVwZGF0ZXM7IHViaV9ibG9jayBvciBtdGRfYmxvY2suCj4gPiBXZSBjYW5ub3QgdXNlIHVi
-aWJsb2NrIGZvciBPVEEgdXBkYXRlcyBhcyBpdCBpcyByZWFkIG9ubHkuCj4gPiBGb3IgZnVsbCB1
-cGRhdGUgdm9sdW1lLCB3ZSBjYW4gdXNlICJ1Yml1cGRhdGV2b2wiIGludGVyZmFjZSB0bwo+ID4g
-Y29tcGxldGVseSByZXBsYWNlIHRoZSB2b2x1bWUgY29udGVudCwgYnV0IGZvciBwYXJ0aWFsIG9y
-IGluY3JlbWVudGFsCj4gPiB1cGRhdGUgd2UgbmVlZCB0byB1cGRhdGUgb25seSBzcGVjaWZpYyBi
-bG9ja3MgYW5kIG5vdCBlbnRpcmUKPiA+IHBhcnRpdGlvbnMuCj4gPiBUaHVzLCB3ZSBoYXZlIHRv
-IHVzZSB0aGUgTVREX0JMT0NLICgvZGV2L210ZGJsb2NrKSBpbnRlcmZhY2UgdG8KPiA+IHN1cHBv
-cnQgYmxvY2sgYmFzZWQgT1RBIHVwZGF0ZXMgb24gVUJJIHZvbHVtZXMuCj4gPiBUaHVzLCBkdXJp
-bmcgb3RhIHVwZGF0ZXMgKG9ubHkpIHdlIG5lZWQgdG8gaW5zdGFsbCB0aGUgbXRkYmxvY2sKPiA+
-IG1vZHVsZSwgcGVyZm9ybSB0aGUgdXBkYXRlIGFuZCB0aGVuIHVuaW5zdGFsbCB0aGUgbW9kdWxl
-Lgo+Cj4gSGkgUGludHUsIGhvdyBkbyB5b3UgZXhwb3J0IHRoZSBtdGRibG9jayBkZXZpY2Ugb3Zl
-ciBvbiBhbiBVQkkgdm9sdW1lPwo+IEJ5IHRoZSBnbHVlYmk/Cj4gPgpZZXMsIHdlIGhhdmUgdGhl
-IGJlbG93IGNvbmZpZ3MgZW5hYmxlZC4KQ09ORklHX01URF9CTE9DSz1tCkNPTkZJR19NVERfVUJJ
-X0dMVUVCST1tCkNPTkZJR19NVERfVUJJX0JMT0NLPXkKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+From: Parth Pancholi <parth.pancholi@toradex.com>
+
+The Macronix mx25u25635f flash device supports SFDP initialization.
+This commit removes the specific mx25u25635f entry (NOR ID 0xc22539),
+along with its size and flags, from the NOR parts list. By removing
+this entry, both mx25u25635f and mx25u25645g (which share the same
+NOR ID) will utilize the generic flash driver configuration.
+
+This change allows both devices (mx25u25635f and mx25u25645g) to
+leverage SFDP-defined parameters, enabling dual and quad read
+operations without the need for manual adjustment of no_sfdp_flags.
+
+Link: https://www.macronix.com/Lists/Datasheet/Attachments/8663/MX25U25635F,%201.8V,%20256Mb,%20v1.5.pdf
+Signed-off-by: Parth Pancholi <parth.pancholi@toradex.com>
+---
+v2: enable SFDP for mx25u25635f(and mx25u25645g) by removing it's entry from parts list
+
+mx25u25645g flash is populated on the Toradex Aquila development carrier
+board and was tested at 66 MHz frequency using the "ti,am654-ospi" SPI controller.
+
+root@aquila-am69-02242602:~# cat /sys/bus/spi/devices/spi3.0/spi-nor/partname
+spi-nor-generic
+
+root@aquila-am69-02242602:~# cat /sys/bus/spi/devices/spi3.0/spi-nor/jedec_id
+c22539c22539
+
+root@aquila-am69-02242602:~# xxd -p /sys/bus/spi/devices/spi3.0/spi-nor/sfdp
+53464450060102ff00060110300000ffc2000104100100ff84000102c000
+00ffffffffffffffffffffffffffffffffffe520fbffffffff0f44eb086b
+083b04bbfeffffffffff00ffffff44eb0c200f5210d800ff8749b50082d2
+04d24403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffff7f8fffff215cdcffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffff002050169df9c06485cbffffffffffff
+
+root@aquila-am69-02242602:~# sha256sum /sys/bus/spi/devices/spi3.0/spi-nor/sfdp
+cc74a7490301b752a45fa147a860be43ed71a6f1cf598adae7ac38b19fb745f1  /sys/bus/spi/devices/spi3.0/spi-nor/sfdp
+
+root@aquila-am69-02242602:~# cat /sys/kernel/debug/spi-nor/spi3.0/capabilities
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode        0x13
+  mode cycles   0
+  dummy cycles  0
+ 1S-1S-2S
+  opcode        0x3c
+  mode cycles   0
+  dummy cycles  8
+ 1S-2S-2S
+  opcode        0xbc
+  mode cycles   0
+  dummy cycles  4
+ 1S-1S-4S
+  opcode        0x6c
+  mode cycles   0
+  dummy cycles  8
+ 1S-4S-4S
+  opcode        0xec
+  mode cycles   2
+  dummy cycles  4
+ 4S-4S-4S
+  opcode        0xec
+  mode cycles   2
+  dummy cycles  4
+
+Supported page program modes by the flash
+ 1S-1S-1S
+  opcode        0x12
+ 1S-4S-4S
+  opcode        0x3e
+
+root@aquila-am69-02242602:~# cat /sys/kernel/debug/spi-nor/spi3.0/params
+name            spi-nor-generic
+id              c2 25 39 c2 25 39
+size            32.0 MiB
+write size      1
+page size       256
+address nbytes  4
+flags           4B_OPCODES | HAS_4BAIT | SOFT_RESET
+
+opcodes
+ read           0xec
+  dummy cycles  6
+ erase          0x21
+ program        0x3e
+ 8D extension   none
+
+protocols
+ read           1S-4S-4S
+ write          1S-4S-4S
+ register       1S-1S-1S
+
+erase commands
+ 21 (4.00 KiB) [1]
+ 5c (32.0 KiB) [2]
+ dc (64.0 KiB) [3]
+ c7 (32.0 MiB)
+
+sector map
+ region (in hex)   | erase mask | flags
+ ------------------+------------+----------
+ 00000000-01ffffff |     [ 123] |
+
+root@aquila-am69-02242602:~# dd if=/dev/urandom of=./spi_test bs=1M count=2
+2+0 records in
+2+0 records out
+2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0147001 s, 143 MB/s
+
+root@aquila-am69-02242602:~# mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+root@aquila-am69-02242602:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+
+root@aquila-am69-02242602:~# hexdump spi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0200000
+
+root@aquila-am69-02242602:~# sha256sum spi_read
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
+
+root@aquila-am69-02242602:~# mtd_debug write /dev/mtd0 0 2097152 spi_test
+Copied 2097152 bytes from spi_test to address 0x00000000 in flash
+
+root@aquila-am69-02242602:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+
+root@aquila-am69-02242602:~# sha256sum spi*
+7156e42306db1fd79e6dfc22320adaa126b394361abde4777a679924cc9fc0fc  spi_read
+7156e42306db1fd79e6dfc22320adaa126b394361abde4777a679924cc9fc0fc  spi_test
+
+root@aquila-am69-02242602:~# mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+root@aquila-am69-02242602:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+
+root@aquila-am69-02242602:~# sha256sum spi*
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
+7156e42306db1fd79e6dfc22320adaa126b394361abde4777a679924cc9fc0fc  spi_test
+
+root@aquila-am69-02242602:~# mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 33554432 (32M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+---
+ drivers/mtd/spi-nor/macronix.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index ea6be95e75a5..5a0d1af99afe 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -125,12 +125,6 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.name = "mx25u12835f",
+ 		.size = SZ_16M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x25, 0x39),
+-		.name = "mx25u25635f",
+-		.size = SZ_32M,
+-		.no_sfdp_flags = SECT_4K,
+-		.fixup_flags = SPI_NOR_4B_OPCODES,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x3a),
+ 		.name = "mx25u51245g",
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
