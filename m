@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30B4AD29FBF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCCFAD29FBE
 	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2024 08:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,35 +12,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NM4TZfDcI0HfbLb/RWNtfX2+9jQFhXgDfFfTEAmIzk8=; b=VL4IPQv76N88Zf
-	Bhkfcf5yjR7NQBXbJwOvx6AFE4YbafVzqDiBDJHzXX6rdt5hLo5WiHGP9+B6kGiGpDwu0hM3q1ner
-	HFOReMwcw1hgzLznx6YlVgYLgjtxdIs21/zTaboIzLfSzHRPa5IIIFpSK618LCIKL9j82uflnaMbV
-	3f4h0CM0JPz+jRqxvrZNldbCVQx3jeuioB5A9EFfZtXPClT5IGCeQ25QNqFF7hdpSOdad/N1BaSMw
-	IyRIrYzKCmqTv2VhofIf4LkdpQ/vvPk5wYEeVs19Hr+FmGclVGhj0JNiTDB1nj34zOnkR0DUy5KeN
-	6KsPrLw8RbajU/ebrKsA==;
+	List-Owner; bh=MErNFD5B7YNeHrPEZhqLGM4adQyeROtOLTZbnU1PLUk=; b=hHYjXDCHgi/yfp
+	gL1AFeKYrA0Wxky80e4wEMODFvviLSHrvcrlwoYZArNcE4wCP4pUxyErxwY0tV+ospDJWvVbJlE2E
+	xLdN06IMdgGHxHof82+gQDtxbfeRuzsV2ic+DPyFOSP42Gvye8Egb0a9Ui2FUO8E2qTPiFmxDUh0H
+	1YICdRv8voEtjnH20A8kJIkwnlUY+TiH8StuRCIlam8frnTai/s5icmQcrzd1UBWljotdYByFo7Bq
+	23XncwjcCDwHGnUT6rwEdK/Mhr63krfx0KnMSXnGncnq2+rcelCHZ9P+Mc5cCJ4qMto8GNZxDWcjM
+	u/T/BpSB1fOg5b4VoNNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8bov-00000002MbX-3sFt;
-	Wed, 06 Nov 2024 08:55:21 +0000
+	id 1t8box-00000002McC-0k7V;
+	Wed, 06 Nov 2024 08:55:23 +0000
 Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8bor-00000002MXK-1kjw
+	id 1t8bos-00000002MYy-2Cgb
 	for linux-mtd@lists.infradead.org;
 	Wed, 06 Nov 2024 08:55:19 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id 13BE51C0006;
-	Wed,  6 Nov 2024 08:55:12 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 798181C000B;
+	Wed,  6 Nov 2024 08:55:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1730883312;
+	t=1730883317;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OnTNOv2IUCnGeo4ueCgcKRKkmgfN7QyKHxPbRmRTdao=;
-	b=BauBFOL9UNS92/kJNNktBTjDB8EcF6avG2E6SCuUiRg9doJzdU5xgoX6HzY7lEMBzqMVtE
-	hkmhSI21B28Q0Us6TAJFl/WPPqbIZWJsbfoxxIcD0bsoeD+z2XtBdaP5tJtybg8+Y8mXmx
-	RB2oncISyptybc8av8tBeICQAuWilVJFCeIDPllMVbzR2GqX9+VUsbXDM2s2CF+1vghj3D
-	kZBiqtTOoxVp3kjjPK2ZHzWNzQAMl5Dinii9BfQIIM4iafG6jNz9MP0a/FssgF3u9rpalt
-	G6fRFFfqFbv5fZvIMU64EtwtWNCWoYhGnC9rC5HqGoZffLX0mXEXJmcszrwXwQ==
+	bh=ONE5RIDa+M5HrCVn5iTpaeEU6VZHpy9NTdUHLDL3hak=;
+	b=ck6Y+Zlw/AlY7e/Yr2LL6isIQVn9cSua0Dpk3NWwZPCSTn6A+f93jkfzgu9Oa9tu0JyWZ2
+	8GRk+NX98DyLdS/D35+tjG0DgISGywDFKi4JS4BCOPE7S5gq43Qq3gLwB0pDFgHueP/1qP
+	VO54cKwHpddjrrWP+BlAbK645vfpvn1xWvG/cWFhD2CU2FElzE8KsTUWnbswE5VCCcRG2M
+	AoavttgMtHPyhLMlof7K7LuKu0wd0v/pnlRSIoiWFJ8KM4v9IHmmDDQLyBQj4J8giQ3GJm
+	D0+rbQ0Jy+6mp9uMM3h0/wvApZX2td/7U7/AzTR6R+xxImFkrsTzW/b9DObDwQ==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -53,17 +53,17 @@ Cc: linux-kernel@vger.kernel.org,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH v2 1/6] memory: ti-aemif: Create aemif_set_cs_timings()
-Date: Wed,  6 Nov 2024 09:55:02 +0100
-Message-ID: <20241106085507.76425-2-bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 5/6] mtd: rawnand: davinci: Add clock resource
+Date: Wed,  6 Nov 2024 09:55:06 +0100
+Message-ID: <20241106085507.76425-6-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241106085507.76425-1-bastien.curutchet@bootlin.com>
 References: <20241106085507.76425-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241106_005517_765110_F3EAFF47 
-X-CRM114-Status: GOOD (  17.55  )
+X-CRM114-CacheID: sfid-20241106_005518_736317_5E6EC81D 
+X-CRM114-Status: GOOD (  12.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,180 +80,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Create an aemif_set_cs_timings() function to isolate the setting of a
-chip select timing configuration and ease its exportation.
-Move the check of the configuration validity from aemif_calc_rate() to
-this new function.
+NAND controller has a reference clock inherited from the AEMIF
+(cf. Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt)
+This clock isn't used yet by the driver.
+
+Add a struct clock in the struct davinci_nand_info so it can be used
+to compute timings.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- drivers/memory/ti-aemif.c | 111 ++++++++++++++++++++++++++------------
- 1 file changed, 78 insertions(+), 33 deletions(-)
+ drivers/mtd/nand/raw/davinci_nand.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-index d54dc3cfff73..8d27b2513b2c 100644
---- a/drivers/memory/ti-aemif.c
-+++ b/drivers/memory/ti-aemif.c
-@@ -69,15 +69,15 @@
- #define ACR_SSTROBE_MASK	BIT(31)
- #define ASIZE_16BIT	1
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 3c0efbdd789e..563045c7ce08 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -10,6 +10,7 @@
+  *   Dirk Behme <Dirk.Behme@gmail.com>
+  */
  
--#define CONFIG_MASK	(TA(TA_MAX) | \
--				RHOLD(RHOLD_MAX) | \
--				RSTROBE(RSTROBE_MAX) |	\
--				RSETUP(RSETUP_MAX) | \
--				WHOLD(WHOLD_MAX) | \
--				WSTROBE(WSTROBE_MAX) | \
--				WSETUP(WSETUP_MAX) | \
--				EW(EW_MAX) | SSTROBE(SSTROBE_MAX) | \
--				ASIZE_MAX)
-+#define TIMINGS_MASK	(TA(TA_MAX) | \
-+			RHOLD(RHOLD_MAX) | \
-+			RSTROBE(RSTROBE_MAX) |	\
-+			RSETUP(RSETUP_MAX) | \
-+			WHOLD(WHOLD_MAX) | \
-+			WSTROBE(WSTROBE_MAX) | \
-+			WSETUP(WSETUP_MAX))
++#include <linux/clk.h>
+ #include <linux/err.h>
+ #include <linux/iopoll.h>
+ #include <linux/kernel.h>
+@@ -117,6 +118,8 @@ struct davinci_nand_info {
+ 	uint32_t		mask_cle;
+ 
+ 	uint32_t		core_chipsel;
 +
-+#define CONFIG_MASK	(EW(EW_MAX) | SSTROBE(SSTROBE_MAX) | ASIZE_MAX)
- 
- /**
-  * struct aemif_cs_data: structure to hold cs parameters
-@@ -107,6 +107,27 @@ struct aemif_cs_data {
- 	u8	asize;
++	struct clk		*clk;
  };
  
-+/**
-+ * struct aemif_cs_timings: structure to hold cs timing configuration
-+ * values are expressed in number of clock cycles - 1
-+ * @ta: minimum turn around time
-+ * @rhold: read hold width
-+ * @rstrobe: read strobe width
-+ * @rsetup: read setup width
-+ * @whold: write hold width
-+ * @wstrobe: write strobe width
-+ * @wsetup: write setup width
-+ */
-+struct aemif_cs_timings {
-+	u32	ta;
-+	u32	rhold;
-+	u32	rstrobe;
-+	u32	rsetup;
-+	u32	whold;
-+	u32	wstrobe;
-+	u32	wsetup;
-+};
-+
- /**
-  * struct aemif_device: structure to hold device data
-  * @base: base address of AEMIF registers
-@@ -125,6 +146,44 @@ struct aemif_device {
- 	struct aemif_cs_data cs_data[NUM_CS];
- };
+ static DEFINE_SPINLOCK(davinci_nand_lock);
+@@ -822,6 +825,10 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 		return -EADDRNOTAVAIL;
+ 	}
  
-+/**
-+ * aemif_set_cs_timings - Set the timing configuration of a given chip select.
-+ * @aemif: aemif device to configure
-+ * @cs: index of the chip select to configure.
-+ * @timings: timings configuration to set
-+ *
-+ * Returns 0 on success, else negative errno.
-+ */
-+static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
-+{
-+	unsigned int offset;
-+	u32 val, set;
++	info->clk = devm_clk_get_enabled(&pdev->dev, "aemif");
++	if (IS_ERR(info->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(info->clk), "failed to get clock");
 +
-+	if (!timings || !aemif)
-+		return -EINVAL;
-+
-+	if (cs > aemif->num_cs)
-+		return -EINVAL;
-+
-+	if (timings->ta > TA_MAX || timings->rhold > RHOLD_MAX || timings->rstrobe > RSTROBE_MAX ||
-+	    timings->rsetup > RSETUP_MAX || timings->whold > WHOLD_MAX ||
-+	    timings->wstrobe > WSTROBE_MAX || timings->wsetup > WSETUP_MAX)
-+		return -EINVAL;
-+
-+	set = TA(timings->ta) | RHOLD(timings->rhold) | RSTROBE(timings->rstrobe) |
-+	      RSETUP(timings->rsetup) | WHOLD(timings->whold) |
-+	      WSTROBE(timings->wstrobe) | WSETUP(timings->wsetup);
-+
-+	offset = A1CR_OFFSET + cs * 4;
-+
-+	val = readl(aemif->base + offset);
-+	val &= ~TIMINGS_MASK;
-+	val |= set;
-+	writel(val, aemif->base + offset);
-+
-+	return 0;
-+}
-+
- /**
-  * aemif_calc_rate - calculate timing data.
-  * @pdev: platform device to calculate for
-@@ -149,10 +208,6 @@ static int aemif_calc_rate(struct platform_device *pdev, int wanted,
- 	if (result < 0)
- 		result = 0;
- 
--	/* ... But configuring tighter timings is not an option. */
--	else if (result > max)
--		result = -EINVAL;
--
- 	return result;
- }
- 
-@@ -174,32 +229,22 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
- {
- 	struct aemif_device *aemif = platform_get_drvdata(pdev);
- 	struct aemif_cs_data *data = &aemif->cs_data[csnum];
--	int ta, rhold, rstrobe, rsetup, whold, wstrobe, wsetup;
- 	unsigned long clk_rate = aemif->clk_rate;
-+	struct aemif_cs_timings timings;
- 	unsigned offset;
- 	u32 set, val;
- 
- 	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
- 
--	ta	= aemif_calc_rate(pdev, data->ta, clk_rate, TA_MAX);
--	rhold	= aemif_calc_rate(pdev, data->rhold, clk_rate, RHOLD_MAX);
--	rstrobe	= aemif_calc_rate(pdev, data->rstrobe, clk_rate, RSTROBE_MAX);
--	rsetup	= aemif_calc_rate(pdev, data->rsetup, clk_rate, RSETUP_MAX);
--	whold	= aemif_calc_rate(pdev, data->whold, clk_rate, WHOLD_MAX);
--	wstrobe	= aemif_calc_rate(pdev, data->wstrobe, clk_rate, WSTROBE_MAX);
--	wsetup	= aemif_calc_rate(pdev, data->wsetup, clk_rate, WSETUP_MAX);
--
--	if (ta < 0 || rhold < 0 || rstrobe < 0 || rsetup < 0 ||
--	    whold < 0 || wstrobe < 0 || wsetup < 0) {
--		dev_err(&pdev->dev, "%s: cannot get suitable timings\n",
--			__func__);
--		return -EINVAL;
--	}
--
--	set = TA(ta) | RHOLD(rhold) | RSTROBE(rstrobe) | RSETUP(rsetup) |
--		WHOLD(whold) | WSTROBE(wstrobe) | WSETUP(wsetup);
-+	timings.ta = aemif_calc_rate(pdev, data->ta, clk_rate, TA_MAX);
-+	timings.rhold = aemif_calc_rate(pdev, data->rhold, clk_rate, RHOLD_MAX);
-+	timings.rstrobe = aemif_calc_rate(pdev, data->rstrobe, clk_rate, RSTROBE_MAX);
-+	timings.rsetup = aemif_calc_rate(pdev, data->rsetup, clk_rate, RSETUP_MAX);
-+	timings.whold = aemif_calc_rate(pdev, data->whold, clk_rate, WHOLD_MAX);
-+	timings.wstrobe = aemif_calc_rate(pdev, data->wstrobe, clk_rate, WSTROBE_MAX);
-+	timings.wsetup = aemif_calc_rate(pdev, data->wsetup, clk_rate, WSETUP_MAX);
- 
--	set |= (data->asize & ACR_ASIZE_MASK);
-+	set = (data->asize & ACR_ASIZE_MASK);
- 	if (data->enable_ew)
- 		set |= ACR_EW_MASK;
- 	if (data->enable_ss)
-@@ -210,7 +255,7 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
- 	val |= set;
- 	writel(val, aemif->base + offset);
- 
--	return 0;
-+	return aemif_set_cs_timings(aemif, data->cs - aemif->cs_offset, &timings);
- }
- 
- static inline int aemif_cycles_to_nsec(int val, unsigned long clk_rate)
+ 	info->pdev		= pdev;
+ 	info->base		= base;
+ 	info->vaddr		= vaddr;
 -- 
 2.47.0
 
