@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06977D29FB3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24C0ED29FB8
 	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2024 08:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5cZJf6BojHddKBvo+Fc0d8JR06tUy+CH3HH6dsAS8qY=; b=uG4BOM71kyEcj3
-	EVUvCFQ+yRbWr14mdxExjJVuqJNgop4QYMgGxAGxj5/zeHt3lGVs3SJDpg9pPmI8J+wJujm9Gr+FD
-	/WqgY6fI4MyWazH3dBaTYDRZM5U90ql/WXSWAK6LoZNL0rhkipclQfIR+5/GzU4BBSt27elLE34nj
-	kt65J3T8Rr9kRsF67RrbgNkRY4IreIpMJ5AblwRDB24USD/pXzjusEsY1duZU2Ivwb92Cjk26OX1f
-	FzHUeoJH44HPOCiYDnKmzaVLrX/djD/D57AXB2CVv8AGi1TvHRjWVTsaCM25O8bQm9alHgGaeAHRM
-	X68ZFxlIsrzCCD3U2d8w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cPZL5nWHuaUJtziWzAZ3AhVzWCPFlapkYN/Juspyqfg=; b=Cbk/+ru5yOMGBs
+	sKJ1sBelA0e0w2Pkg/yvTP0+xpBnrAuKaVWkVPrA+Cjr3dO2l89ZWls1cp2wyhejRrBH3nDlNiy0r
+	DTQYFPjZQuZKpZZQYuJLKiwfJBNMtKVoZ1uOSJ79Fsf5uD1HQJiUy7FiEhf3ughl/Jrl4ldhrhuSJ
+	M0f2OSV+OYmCMQhHhIPlJor8Ae9E6HfT/959MalQ8C6zDc59QE48Au7GNLXVju2MfirDosh3IdRak
+	RJPpiQibO7jfQiS+vdW3WiJFOMKTEBqz9yhLqRRhQXB4akgShSUOOH/AY8M7HPUas2h3Ofhq9rp62
+	ujT9HJgLHFtWQjkG37fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8bou-00000002Mac-0olS;
-	Wed, 06 Nov 2024 08:55:20 +0000
+	id 1t8bow-00000002Mc2-2Fst;
+	Wed, 06 Nov 2024 08:55:22 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8bop-00000002MWu-47i7
+	id 1t8bor-00000002MXr-4Ahc
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Nov 2024 08:55:18 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id 101EF1C000A;
-	Wed,  6 Nov 2024 08:55:09 +0000 (UTC)
+	Wed, 06 Nov 2024 08:55:19 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPA id 32CA31C000D;
+	Wed,  6 Nov 2024 08:55:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1730883311;
+	t=1730883313;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=DK3aO1Ft6P60EgK01AvhNU8ciFPwjwRQCU5JDKN6QFM=;
-	b=KDRfvLS9HeE6reR09UlcPAaftktG9Pcxj3vpz+diP6NOyaJ/2eajMgQIvyaweGHKzNQFuA
-	vJ7BkmT+7ZBD/SFkyPsabM8OGsu/CZnYXiszvHBAx9dqDRGmW/TM4dGoZJEt3jSk13Hi5K
-	I7Y4/PE2duw5D3zHP8lKQN4sSBYLT8VSczV81VbnTN6fWInMXnMq9px8o/ACUpORLh097X
-	nguMtvSLrXLWRcJML6LFOWDqdwMM5Wxy07SUjURfQJPf2HM/p81Sk3k9Qj6nQ2Lgxueci3
-	QX0KgYPj2gp9LdLpk7Agz+rY7yUGkumxAn3vtQmLGWah5xmfauZB00TUtR2rYQ==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s+0pt+qgA3AeaxElP0RiAUhXdYVSmYqTnFBH1A+/viM=;
+	b=F0SwiR+CYN9POeyxUNSZTLHnNidPv6k856mvl4/NeOBbuwNYouBjp15W862XgzPaAf4YpJ
+	SOGzYUzwYA5OOu2F29bS1bGF7WFR6uwcv5/oMeF2PAtcButBZehQOhozEq5NTiwsFn0Ls2
+	wqqQNXqyGP7/pwP9vONAvWSufRLEwF6GnD67SHt7W785h7AGp5zKyRZ7oAw1QJqm+7OkeG
+	QjHRDfRELlMJwmoPnJdcj0Uv5DX1zhqhsLJXf7TipQMye+dLBRIVSNPHWxObSEtPu7ukuE
+	QNo0mAhP5N7m0Yi1WOuHct2ZV9WVjr0vxGnnL9L8EVrok1gWNZuT2m8YnhTIAQ==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -52,15 +53,17 @@ Cc: linux-kernel@vger.kernel.org,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH v2 0/6] Implement setup_interface() in the DaVinci NAND controller
-Date: Wed,  6 Nov 2024 09:55:01 +0100
-Message-ID: <20241106085507.76425-1-bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 2/6] memory: ti-aemif: Export aemif_set_cs_timings()
+Date: Wed,  6 Nov 2024 09:55:03 +0100
+Message-ID: <20241106085507.76425-3-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241106085507.76425-1-bastien.curutchet@bootlin.com>
+References: <20241106085507.76425-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241106_005516_458985_F51DE7D5 
-X-CRM114-Status: GOOD (  14.13  )
+X-CRM114-CacheID: sfid-20241106_005518_322264_6E0D692C 
+X-CRM114-Status: GOOD (  18.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,53 +75,183 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgYWxsLAoKVGhpcyBwYXRjaCBzZXJpZXMgYWltcyB0byBpbXBsZW1lbnQgdGhlIHNldHVwX2lu
-dGVyZmFjZSgpIG9wZXJhdGlvbiBpbgp0aGUgRGFWaW5jaSBOQU5EIGNvbnRyb2xsZXIgdG8gZW5h
-YmxlIHRoZSB1c2Ugb2YgYWxsIE9ORkkgbW9kZXMgYW5kCmltcHJvdmUgdGhlIE5BTkQgYWNjZXNz
-IHNwZWVkLgoKUEFUQ0ggMiBkZXBlbmRzIG9uIFBBVENIIDEKUEFUQ0ggNiBkZXBlbmRzIG9uIFBB
-VENIIDItNC01CgpUaGlzIE5BTkQgY29udHJvbGxlciBpcyBwcmVzZW50IGluIHRoZSBEYVZpbmNp
-IChPTUFQIEwxMzgpIGFuZCBLZXlzdG9uZTIKU29DcyBhbmQgZnVuY3Rpb25zIGFzIGEgJ2NoaWxk
-JyBvZiB0aGUgQUVNSUYgY29udHJvbGxlci4gU28gaXRzIHRpbWluZ3MKYXJlIHNldCBieSB0aGUg
-QUVNSUYgY29udHJvbGxlciBpdHNlbGYgZnJvbSBkZXZpY2UtdHJlZSBwcm9wZXJ0aWVzLgpJbXBs
-ZW1lbnRpbmcgdGhlIHNldHVwX2ludGVyZmFjZSgpIGNhbGxiYWNrIGltcGxpZXMgYmVpbmcgYWJs
-ZSB0byB1cGRhdGUKZHluYW1pY2FsbHkgdGhlc2UgdGltaW5ncywgc28gdGhlIGZpcnN0IHR3byBw
-YXRjaGVzIG9mIHRoZSBzZXJpZXMgbW9kaWZ5CnRoZSBBRU1JRiBkcml2ZXIgdG8gcHJvdmlkZSBp
-dHMgJ2NoaWxkcmVuJyBhIHdheSB0byBtb2RpZnkgdGhlaXIgY2hpcApzZWxlY3QgdGltaW5nIGNv
-bmZpZ3VyYXRpb24uCgpUaGUgcmVtYWluaW5nIHBhdGNoZXMgaW1wbGVtZW50IHRoZSBzZXR1cF9p
-bnRlcmZhY2UoKSBvcGVyYXRpb24uClRoZSBjb21wdXRhdGlvbiBvZiB0aGUgcmVnaXN0ZXIncyBj
-b250ZW50cyBpcyBkaXJlY3RseSBiYXNlZCBvbgrCpzIwLjMuMi4zIG9mIHRoZSBPTUFQLUwxMzgg
-VFJNIFsxXQoKVGhpcyBoYXMgYmVlbiB0ZXN0ZWQgb24gdHdvIHBsYXRmb3JtcyBiYXNlZCB1cG9u
-IHRoZSBEYVZpbmNpIFNvQy4gT25lIGlzCmludGVyZmFjZWQgd2l0aCBhIE1hY3Jvbml4IE1YMzBV
-RjRHMThBQyBOQU5ELCB0aGUgb3RoZXIgd2l0aCBhIFRvc2hpYmEKTkFORC4KClsxXSA6IGh0dHBz
-Oi8vd3d3LnRpLmNvbS9saXQvdWcvc3BydWg3N2Mvc3BydWg3N2MucGRmCgpDaGFuZ2UgbG9nOgoK
-ICogdjIKICAgQ292ZXIgbGV0dGVyIDoKICAgICAtIEFkZCBkZXBlbmRlbmN5IGRldGFpbHMKICAg
-ICAtIFJlbW92ZSB0aGUgcXVlc3Rpb24gYWJvdXQgdGktYWVtaWYuaCBsb2NhdGlvbgogICBQQVRD
-SCAxIDoKICAgICAtIEZpeCBhZW1pZl9jc190aW1pbmdzJ3MgZGVzY3JpcHRpb24gaW4gdGhlIGNv
-bW1lbnRzCiAgIFBBVENIIDIgOgogICAgIC0gRml4IHR5cG8gaW4gdGhlIGNvbmZpZ19jc19sb2Nr
-J3MgZGVzY3JpcHRpb24gaW4gdGhlIGNvbW1lbnRzCiAgICAgLSBNb3ZlIGluY2x1ZGUvbWVtb3J5
-L3RpLWFlbWlmLmggdG8gaW5jbHVkZS9saW51eC9tZW1vcnkvdGktYWVtaWYuaAogICBQQVRDSCAz
-IFtORVddIDoKICAgICAtIEZpeCBkZXBlbmRlbmN5IGlzc3VlIHdpdGggYWVtaWYgY29udHJvbGxl
-ciBpbiBLY29uZmlnCiAgIFBBVENIIDUgOgogICAgIC0gQWRkIGRldGFpbHMgYWJvdXQgdGhlIGNs
-b2NrIGJpbmRpbmdzIGluIHRoZSBjb21taXQgbG9nCiAgICAgLSBSZXBsYWNlIGRldm1fY2xrX2dl
-dCgpIHdpdGggZGV2bV9jbGtfZ2V0X2VuYWJsZWQoKQogICAgIC0gVXNlIGRldl9lcnJfcHJvYmUo
-KSB0byByZXR1cm4gdGhlIGRldm1fY2xrX2dldF9lbmFibGVkKCkgZXJyb3IKCkJhc3RpZW4gQ3Vy
-dXRjaGV0ICg2KToKICBtZW1vcnk6IHRpLWFlbWlmOiBDcmVhdGUgYWVtaWZfc2V0X2NzX3RpbWlu
-Z3MoKQogIG1lbW9yeTogdGktYWVtaWY6IEV4cG9ydCBhZW1pZl9zZXRfY3NfdGltaW5ncygpCiAg
-bXRkOiByYXduYW5kOiBkYXZpbmNpOiBBbHdheXMgZGVwZW5kcyBvbiBUSV9BRU1JRgogIG10ZDog
-cmF3bmFuZDogZGF2aW5jaTogT3JkZXIgaGVhZGVycyBhbHBoYWJldGljYWxseQogIG10ZDogcmF3
-bmFuZDogZGF2aW5jaTogQWRkIGNsb2NrIHJlc291cmNlCiAgbXRkOiByYXduYW5kOiBkYXZpbmNp
-OiBJbXBsZW1lbnQgc2V0dXBfaW50ZXJmYWNlKCkgb3BlcmF0aW9uCgogZHJpdmVycy9tZW1vcnkv
-dGktYWVtaWYuYyAgICAgICAgICAgfCAxMDIgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQog
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZyAgICAgICAgfCAgIDQgKy0KIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L2RhdmluY2lfbmFuZC5jIHwgIDkzICsrKysrKysrKysrKysrKysrKysrKysrLS0K
-IGluY2x1ZGUvbGludXgvbWVtb3J5L3RpLWFlbWlmLmggICAgIHwgIDMxICsrKysrKysrKwogNCBm
-aWxlcyBjaGFuZ2VkLCAxOTEgaW5zZXJ0aW9ucygrKSwgMzkgZGVsZXRpb25zKC0pCiBjcmVhdGUg
-bW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9tZW1vcnkvdGktYWVtaWYuaAoKLS0gCjIuNDcuMAoK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Export the aemif_set_cs_timing() symbol so it can be used by other
+drivers
+
+Add a spinlock to protect the CS configuration register from concurrent
+accesses.
+
+Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+---
+ drivers/memory/ti-aemif.c       | 35 ++++++++++++---------------------
+ include/linux/memory/ti-aemif.h | 31 +++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+), 22 deletions(-)
+ create mode 100644 include/linux/memory/ti-aemif.h
+
+diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
+index 8d27b2513b2c..4587095aa703 100644
+--- a/drivers/memory/ti-aemif.c
++++ b/drivers/memory/ti-aemif.c
+@@ -13,10 +13,12 @@
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/memory/ti-aemif.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
++#include <linux/spinlock.h>
+ 
+ #define TA_SHIFT	2
+ #define RHOLD_SHIFT	4
+@@ -107,27 +109,6 @@ struct aemif_cs_data {
+ 	u8	asize;
+ };
+ 
+-/**
+- * struct aemif_cs_timings: structure to hold cs timing configuration
+- * values are expressed in number of clock cycles - 1
+- * @ta: minimum turn around time
+- * @rhold: read hold width
+- * @rstrobe: read strobe width
+- * @rsetup: read setup width
+- * @whold: write hold width
+- * @wstrobe: write strobe width
+- * @wsetup: write setup width
+- */
+-struct aemif_cs_timings {
+-	u32	ta;
+-	u32	rhold;
+-	u32	rstrobe;
+-	u32	rsetup;
+-	u32	whold;
+-	u32	wstrobe;
+-	u32	wsetup;
+-};
+-
+ /**
+  * struct aemif_device: structure to hold device data
+  * @base: base address of AEMIF registers
+@@ -136,6 +117,7 @@ struct aemif_cs_timings {
+  * @num_cs: number of assigned chip-selects
+  * @cs_offset: start number of cs nodes
+  * @cs_data: array of chip-select settings
++ * @config_cs_lock: lock used to access CS configuration
+  */
+ struct aemif_device {
+ 	void __iomem *base;
+@@ -144,6 +126,7 @@ struct aemif_device {
+ 	u8 num_cs;
+ 	int cs_offset;
+ 	struct aemif_cs_data cs_data[NUM_CS];
++	spinlock_t config_cs_lock;
+ };
+ 
+ /**
+@@ -154,8 +137,9 @@ struct aemif_device {
+  *
+  * Returns 0 on success, else negative errno.
+  */
+-static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
++int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
+ {
++	unsigned long flags;
+ 	unsigned int offset;
+ 	u32 val, set;
+ 
+@@ -176,13 +160,16 @@ static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_
+ 
+ 	offset = A1CR_OFFSET + cs * 4;
+ 
++	spin_lock_irqsave(&aemif->config_cs_lock, flags);
+ 	val = readl(aemif->base + offset);
+ 	val &= ~TIMINGS_MASK;
+ 	val |= set;
+ 	writel(val, aemif->base + offset);
++	spin_unlock_irqrestore(&aemif->config_cs_lock, flags);
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(aemif_set_cs_timings);
+ 
+ /**
+  * aemif_calc_rate - calculate timing data.
+@@ -231,6 +218,7 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+ 	struct aemif_cs_data *data = &aemif->cs_data[csnum];
+ 	unsigned long clk_rate = aemif->clk_rate;
+ 	struct aemif_cs_timings timings;
++	unsigned long flags;
+ 	unsigned offset;
+ 	u32 set, val;
+ 
+@@ -250,10 +238,12 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+ 	if (data->enable_ss)
+ 		set |= ACR_SSTROBE_MASK;
+ 
++	spin_lock_irqsave(&aemif->config_cs_lock, flags);
+ 	val = readl(aemif->base + offset);
+ 	val &= ~CONFIG_MASK;
+ 	val |= set;
+ 	writel(val, aemif->base + offset);
++	spin_unlock_irqrestore(&aemif->config_cs_lock, flags);
+ 
+ 	return aemif_set_cs_timings(aemif, data->cs - aemif->cs_offset, &timings);
+ }
+@@ -396,6 +386,7 @@ static int aemif_probe(struct platform_device *pdev)
+ 	if (IS_ERR(aemif->base))
+ 		return PTR_ERR(aemif->base);
+ 
++	spin_lock_init(&aemif->config_cs_lock);
+ 	if (np) {
+ 		/*
+ 		 * For every controller device node, there is a cs device node
+diff --git a/include/linux/memory/ti-aemif.h b/include/linux/memory/ti-aemif.h
+new file mode 100644
+index 000000000000..809f0a68605a
+--- /dev/null
++++ b/include/linux/memory/ti-aemif.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __TI_AEMIF_H
++#define __TI_AEMIF_H
++
++/**
++ * struct aemif_cs_timings: structure to hold cs timing configuration
++ * values are expressed in number of clock cycles - 1
++ * @ta: minimum turn around time
++ * @rhold: read hold width
++ * @rstrobe: read strobe width
++ * @rsetup: read setup width
++ * @whold: write hold width
++ * @wstrobe: write strobe width
++ * @wsetup: write setup width
++ */
++struct aemif_cs_timings {
++	u32	ta;
++	u32	rhold;
++	u32	rstrobe;
++	u32	rsetup;
++	u32	whold;
++	u32	wstrobe;
++	u32	wsetup;
++};
++
++struct aemif_device;
++
++int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings);
++
++#endif // __TI_AEMIF_H
+-- 
+2.47.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
