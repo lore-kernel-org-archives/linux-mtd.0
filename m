@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA73AD12664
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B07C9D33A21
 	for <linux-mtd@archiver.kernel.org>; Wed,  6 Nov 2024 08:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,35 +12,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tq0pxZqQHt1XaGHXC0Vg9kfRZ2FnaOOXE0CVAqicNXk=; b=JWpfM3x7lyK42h
-	psOPs0fAypMpPZnD5i0MXhmNgChkQ93BMJbXPshyjANTyaIv5KkGIucseor2WWhsrjcpz8mMaC2cK
-	HfJwbH0lKdpdHVb98temOhA6e5yPx2YxdZN+JJsk1gCLcrV3d+yZwoR/npoVgEzoCRjEV76bvJQF4
-	aG5rWDA8rxSCT+1XVAbB4+0rm+yTF4bvDDPiaWVbDDjZtaC7BwJUCXZkinUgzURge3vpbMT0q2B+I
-	+h8Gqp+anTngvU+eXe9DpMsHJu7VUFFHkC85682X1QDMHcLL70W462AUlBXsGgc77Vz3L+0cH8wPo
-	gC9yj/zKpeYwOqRCIfRg==;
+	List-Owner; bh=hUkUluKzwmxiXpcHDwhTO37L0QUlYbOFFuhAAJYTg7c=; b=3NHxKImUckWMai
+	nRGi+dkOY/UOYaw+r/dtSieSh+riXfR4KdQwWU9xgFFhZ8ESLzseT7TYm17blwZCgfg3U2Mrl/g6W
+	xLkFNQQgnibQeVajb1oQzba+DG/q5/7OZjDn8BuYswX2a5U2o9THaolV0yOXZHDHRt5RdvDKYHYkF
+	mb3CW9u0Qpk5heWGYCURQTZG11hIYqVIRux8XePplxHL+4XX0iXyiFB0FkztaFyijCsUZXpvBeld7
+	dfUGlUVwd0japth4vVBM+CMZLCp2xxm/no+bhLfaCnYilrfFGybR8PZ4dcg0Q1WJ0kX2i99NXmWmO
+	iJvp0xgmeoHsBeTCRFOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8bot-00000002MaE-27j8;
-	Wed, 06 Nov 2024 08:55:19 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1t8bou-00000002Mb2-3ONP;
+	Wed, 06 Nov 2024 08:55:20 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8boq-00000002MYF-1aXp
+	id 1t8bor-00000002MYS-0ySM
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Nov 2024 08:55:17 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id 43EF81C0002;
-	Wed,  6 Nov 2024 08:55:14 +0000 (UTC)
+	Wed, 06 Nov 2024 08:55:18 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPA id 5453D1C0011;
+	Wed,  6 Nov 2024 08:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1730883314;
+	t=1730883315;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=260i8Kmy1qIGGfd2CxjTGXG+BKpSWuDOsQ7KscW8IdI=;
-	b=RVDddowheMh2Y67227SddCz/E09oO7H6Uo62/Qz482isvIR8bpHboW4ogqNv0HRNzNx+HQ
-	RROWE8ReS8ZJySauLtKzS+nbf/jphrpqUt1iA0YwlOK/2pme7oYlSRl6axRD0HcH0Bit1Y
-	9X0vSqiNbAiQ4h9ffLnx4Z6mYjU89P1/nYQ9iYAaH72pZpyEyXD1+3Oh7HaIB8lwQY1uug
-	TU0twGZmgzdfDHhHxiRBLdOVqcBkwxbhgDCjc9z7WItkeWMCtTj25QKJyVyDoomx3nJoRv
-	3mSKKrEja8YKpU62+oPD3S0VUHfM+ULHIeJkhu4mlINbj8l+HUqYD73nIQqltg==
+	bh=khZM5fFii6r1q+Z9uZi3Zgk6G9+0lCTuTox0qCES4xo=;
+	b=BaOim/RiEk5dHGcktW6R1sY5hwjLW2MCkHaoo57gZKnhvU5SpYwcorRETyOoCBx9Avjx4j
+	shUfh7lcCq4+j92aGGaeV16wU/Q+DQFuV79CuG2oz4ocx6b/ph/BFswyk8Rth9n6cl9r38
+	AW9O3tJ0hjTJxHsNliUrrq3fc4laoRoS0DxR4YdmppBJBSDHXywYywfuUhQAqHaNtDE6z5
+	m3BzKNFf2c8p79+w1bAsJlBOd2rRjgpNKg6KtNe3NhNDcJuLDR49gLVAxCl4Fk9TbtFhby
+	qU7SACr8AKcKKwko16QfMj13cDveradcy7evwoCa3yN7nsC4Oto7i6XUHl9Wyw==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -52,19 +52,19 @@ Cc: linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 3/6] mtd: rawnand: davinci: Always depends on TI_AEMIF
-Date: Wed,  6 Nov 2024 09:55:04 +0100
-Message-ID: <20241106085507.76425-4-bastien.curutchet@bootlin.com>
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 4/6] mtd: rawnand: davinci: Order headers alphabetically
+Date: Wed,  6 Nov 2024 09:55:05 +0100
+Message-ID: <20241106085507.76425-5-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241106085507.76425-1-bastien.curutchet@bootlin.com>
 References: <20241106085507.76425-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241106_005516_582626_8322DB82 
-X-CRM114-Status: GOOD (  12.89  )
+X-CRM114-CacheID: sfid-20241106_005517_421776_3D38980F 
+X-CRM114-Status: UNSURE (   9.02  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,36 +81,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DAVINCI_NAND depends on TI_AEMIF only when ARCH_KEYSTONE is selected
-while the NAND controller is also always a part of the AEMIF controller
-on DaVinci SoCs.
-
-Set a dependency on TI_AEMIF regardless of the selected architecture.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202411020140.3wsKJOSB-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202411020957.X1T8T9ZR-lkp@intel.com/
+Order headers alphabetically for better readability.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- drivers/mtd/nand/raw/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/davinci_nand.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index d0aaccf72d78..bb61434347bd 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -279,8 +279,8 @@ config MTD_NAND_SH_FLCTL
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 392678143a36..3c0efbdd789e 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -10,15 +10,15 @@
+  *   Dirk Behme <Dirk.Behme@gmail.com>
+  */
  
- config MTD_NAND_DAVINCI
- 	tristate "DaVinci/Keystone NAND controller"
--	depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF) || COMPILE_TEST
--	depends on HAS_IOMEM
-+	depends on COMPILE_TEST || ARCH_DAVINCI || ARCH_KEYSTONE
-+	depends on HAS_IOMEM && TI_AEMIF
- 	help
- 	  Enable the driver for NAND flash chips on Texas Instruments
- 	  DaVinci/Keystone processors.
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+ #include <linux/err.h>
+ #include <linux/iopoll.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+-#include <linux/slab.h>
+ #include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
+ 
+ #define NRCSR_OFFSET		0x00
+ #define NANDFCR_OFFSET		0x60
 -- 
 2.47.0
 
