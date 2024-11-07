@@ -4,137 +4,198 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFB0CD5D696
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 22:41:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42C70D5D698
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 22:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fxy7O1SeCeclI84muHX3DVSliOQTt8NwnlkTCWaNsm0=; b=nkRbiTnNKb5TG9
-	TgmN/dFUxPX3KXDoa9/b8F2nNddaPoKMVVWXBpAmhLzaL+vmBqtY+Cwtb7Ul8PaoN6J1YfG4C7WKs
-	uWIQhz8ghxWD8Ub4arbtSxBiHoft63jhPkirEpxGDvoijEugwbHaWMYtzeq0aUP0YILR3caQqwec1
-	d9GyJgddAphia0Aj/QG1KNi8GIV9ZW0BqFNGuWKN3yz8JcxKM+bwEThx3vYQkNFkxpUg2v6OCW6Ao
-	1LTi5kGBhSa2Uk9LbGFILIjPojzu6gnxHFH7c0DfJHcOAjPl/0lC9JandCx2aZqFt72MSHnh6rC7e
-	0450ZFYWak4yGcKXCU/Q==;
+	List-Owner; bh=aQNVRZNsWv0pqtMaes5p/E9SiCuyB6W4d8zE3h2x0uI=; b=ZPcuiD/BQezUoL
+	ejJsJDsEJ4NvllmYyxhiKxDK6FMd2oOaN3crOKBrUBN3U2k6B1B7amYwUNcR4YAwH6QwJIfwX0t68
+	lgghshAtbm+Wk0AqOQhYXv+mr8pdF5auQdqMCMDglDPZvPGdsA3QiHFF+qE4EXX4x/OZtmX8E8tIe
+	GkL2/Lzf42Xb0DbBK13aczhYfhBB9ZRt2pb5t/gDfii7XjjpRkWR/SH3Wc9yzjoYBXhWidI7i2KTK
+	sjhrmKB5u3Fh7A5rJhwCQ7rrV+MghADcQYFP8wh9gnDsBVK0zhIbbJQvQvJ6mT8WbB8mrcEB1hvGI
+	4BIgghq1zXQPNrIDoiXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9BCE-00000008ZZ1-32sh;
-	Thu, 07 Nov 2024 22:41:46 +0000
-Received: from mail-vi1eur03on20627.outbound.protection.outlook.com ([2a01:111:f403:260c::627] helo=EUR03-VI1-obe.outbound.protection.outlook.com)
+	id 1t9BK6-00000008acU-0ksS;
+	Thu, 07 Nov 2024 22:49:54 +0000
+Received: from mgamail.intel.com ([198.175.65.16])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9B98-00000008Z6Y-2fgl
+	id 1t9BK2-00000008ac7-0NEg
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Nov 2024 22:38:35 +0000
+	Thu, 07 Nov 2024 22:49:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1731019790; x=1762555790;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=fDoCUSwlgqNKLc/HK54eDGvKp7QYSr+P1x/nWnGoeus=;
+  b=PO5DfP043dg+nvMjQRej8xu9S1WlsFtExSEmQ/AZ/HKK8JEatosuu7O2
+   Xmya+ON9ywnEQ4ocemU+XY794Jmjjv/EcnmwuLeprs0UdG5LbcW3FxU3H
+   jraAi8fCg3EGOTUY4fAC16nWxx+1PiB+ih3MElFNN7/UZp20meY35yTqV
+   X8gjzzAN+ugnSGB1G8b5zmi2L3lkpWIik7M/bvc0K/wfyZJjeCEyrh3qd
+   m0Fb7/jI17Ed0flpFI3WqAVgnc0wZPmljMZfbjamHJK++MI3x3bKZbgNE
+   pkf3KKIu/fZIQOBJSCPkkp3sKFTKkMXPINRayROQYKroqrTZ36xy50A6o
+   w==;
+X-CSE-ConnectionGUID: 1QXVJ6VDQKSvKefh4j+98Q==
+X-CSE-MsgGUID: S4CynLlrTvazdxNPJ2A1VQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="31050754"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="31050754"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 14:49:46 -0800
+X-CSE-ConnectionGUID: q1gH6pcPTHmVVb8fde8a1g==
+X-CSE-MsgGUID: OnCygkFESTyfjwQWMeS5bA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,136,1728975600"; 
+   d="scan'208";a="84883270"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Nov 2024 14:49:45 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 7 Nov 2024 14:49:44 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 7 Nov 2024 14:49:44 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 7 Nov 2024 14:49:44 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=YSIE6KX8OpEExud3aoKBhC7hBuX/cQ9jZuqtxpNjTvD6A9Uu99FS/ePF9ze9M0axn6skJMAyFHVtY5XtziqF74HZBkcZk47DJxYBDMxNlCTgDfc0UxEgK9WYUexQJPOKS+4GW/LbSpaQhHMiv5nOMm7n55gEdG2l1jR6gdcaYteQVel/6GfFqhtzMlg/c5j2uukAU7BtL2YMWFX6Jevj/hMFsZfgxwChWH3NaRaiw9XBQXzoKLwgKnzq7lBZyIOx4ye7QO5oKvMcqDKpdo4j8w/IDLXxVHWxi0f7gJwoO8+Weg3EYlR4Q6f2480P3Hdj0WjrPdmjOnBCMESZ9EM9XQ==
+ b=S2PoKMY783Whh3IcMVT/IZixoHk3rONwnndA2Yp7aiNGO04ohNy2tlsBgWJEOg8q+ybCaP/owuJ6mToi+/uYRm3zuX+M9l6rEn/sRORUl+8PLRaI4cVbn3l2brfoTZ9nJk1A1l1PEWyLj9ITWRnKB3CLfMMGCeM68FKEOXOg5oPCalsBpv9+uWaKAvj7nxvsB0qYknTe1tPqLZRDNUMm2u7G4vNSbhvcbxfMJcLKhhNOJV+SdXKQEwXJj0/ALyJH2AQPzxXHsFH7BC1u5w+Z10FEk57TPvrs5M7CQtadwiH9KYHz6rxNVj9i7qe64H7l26tLDFkOwxKuVxj1CPTQ6A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OhlZX/Gcu96IYqYv/B82Y7GNK8x8PONk0wqE7/iRxhc=;
- b=nJnZBFvV4CC1FKcTkfmt1KUiHtIMhLPetBwU2l5/Wsrc9OkBWqP50Ph5v65/vS6XPQwzkgrsCJWHIPU3QtjkAQZSi4MdSkL5BPzqsaoAb9gv9PA+QwYYFPRJzkIwOu65NpsxQLBWMSovzeJrbkhKWOoS1mr1a4QE2KOfbaXIwg1aVWFdEdoAmSsdXpIMcsirgAsTfrVK1L9rSpLp31D7UZM8p5s4mCiIGLxKlEaV5H2UZcnJlDeBnJ/P0A8xsEhysGTIzGKEZFmZOvo/YGimpPRJSUs/nnmc9JRKIw5XT/A+EvPzBurzt+QILOSu40/9zQS2BlVS5VP8jPi8k26YmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 195.60.68.100) smtp.rcpttodomain=hotmail.com smtp.mailfrom=axis.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OhlZX/Gcu96IYqYv/B82Y7GNK8x8PONk0wqE7/iRxhc=;
- b=eNFflRqeYIsFM3vNGTDVQSVfy8gROLTT4kEHXfh/8PGaL3DX1XZBClAlin2OAoQcjJQzEps5KEkELkFQg2qGzOkJ5vM5I3xMjLDae8p3q85HdZXGHcnAmFey7mI0HVJX2ldURxu930KK9qJNUm7FYr5XBwomJ9GL/OIKRDHQdR8=
-Received: from DUZP191CA0040.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:4f8::18)
- by DBBPR02MB10823.eurprd02.prod.outlook.com (2603:10a6:10:537::16) with
+ bh=58OzcucVp/kHOjZiyKhE4iuGVJMucx3zZFStvwnq0tI=;
+ b=ERPtSwWzPIQ2URABzUCFqh36j0e8omttGsA4dxWsOGr5g2Y5h22hqi5zzQ3132RxnR153m2uJj7tR/xku7kAZWtKFxbFrp8O8vfeNCumfjkJOvJoE3IZaMDKGKVzwY5HE9zLyNaORtUrvR79mGpBYWKEzmqBLAT2AEvSI9fYpYEPJ9axOMnqk3L6sY5Uv3gF1q9WQPPtOPgwGkyDiUPr6CmJSghYyzrpNeOspUquNyFs5qBAHvHoZkSi4nVPKDzChxLpJRBe82pxrhfYJaxD/W5cStWQVrmXz1NL6f/VHL6xguDHFNVusYpV77HRSu68/4mnsVn5dYwPUXdKWQs8Tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB2854.namprd11.prod.outlook.com (2603:10b6:a02:c9::12)
+ by DM4PR11MB8202.namprd11.prod.outlook.com (2603:10b6:8:18b::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.19; Thu, 7 Nov
- 2024 22:38:28 +0000
-Received: from DU6PEPF0000A7E2.eurprd02.prod.outlook.com
- (2603:10a6:10:4f8:cafe::ab) by DUZP191CA0040.outlook.office365.com
- (2603:10a6:10:4f8::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.21 via Frontend
- Transport; Thu, 7 Nov 2024 22:38:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=axis.com;
-Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
- 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com; pr=C
-Received: from mail.axis.com (195.60.68.100) by
- DU6PEPF0000A7E2.mail.protection.outlook.com (10.167.8.42) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8137.17 via Frontend Transport; Thu, 7 Nov 2024 22:38:28 +0000
-Received: from pc52311-2249 (10.4.0.13) by se-mail01w.axis.com (10.20.40.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 7 Nov
- 2024 23:38:27 +0100
-From: Waqar Hameed <waqar.hameed@axis.com>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-CC: Richard Weinberger <richard@nod.at>, Sascha Hauer
-	<s.hauer@pengutronix.de>, <kernel@axis.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Ryder Wang <rydercoding@hotmail.com>
-Subject: Re: [PATCH RFC] ubifs: Fix use-after-free in ubifs_tnc_end_commit
-In-Reply-To: <0f040e0a-c27f-2f29-6d9e-9c7152a18513@huawei.com> (Zhihao Cheng's
-	message of "Thu, 7 Nov 2024 16:39:41 +0800")
-References: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
-	<0f040e0a-c27f-2f29-6d9e-9c7152a18513@huawei.com>
-Date: Thu, 7 Nov 2024 23:38:26 +0100
-Message-ID: <pndttci1xgd.fsf@axis.com>
+ 2024 22:49:42 +0000
+Received: from BYAPR11MB2854.namprd11.prod.outlook.com
+ ([fe80::8a98:4745:7147:ed42]) by BYAPR11MB2854.namprd11.prod.outlook.com
+ ([fe80::8a98:4745:7147:ed42%7]) with mapi id 15.20.8114.020; Thu, 7 Nov 2024
+ 22:49:42 +0000
+Date: Thu, 7 Nov 2024 17:49:36 -0500
+From: Rodrigo Vivi <rodrigo.vivi@intel.com>
+To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
+CC: "Gupta, Anshuman" <anshuman.gupta@intel.com>, "Deak, Imre"
+	<imre.deak@intel.com>, Miquel Raynal <miquel.raynal@bootlin.com>, "Richard
+ Weinberger" <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, "De
+ Marchi, Lucas" <lucas.demarchi@intel.com>, Thomas
+ =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jani Nikula
+	<jani.nikula@linux.intel.com>, Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>,
+	"Weil, Oren jer" <oren.jer.weil@intel.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "intel-gfx@lists.freedesktop.org"
+	<intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 06/10] mtd: intel-dg: wake card on operations
+Message-ID: <Zy1EAIPEaY8Wlh-h@intel.com>
+References: <20241022104119.3149051-1-alexander.usyskin@intel.com>
+ <20241022104119.3149051-7-alexander.usyskin@intel.com>
+ <Zx-mPQSHXv5Teq_j@intel.com>
+ <CY5PR11MB621157335FFB1089F49CEF8B954A2@CY5PR11MB6211.namprd11.prod.outlook.com>
+ <CY5PR11MB6366EF9CA6552ADF6E01A557ED4B2@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <Zyk5kueKlusKlwqM@intel.com>
+ <CY5PR11MB636622B23A3646D58A70A920ED522@CY5PR11MB6366.namprd11.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <CY5PR11MB636622B23A3646D58A70A920ED522@CY5PR11MB6366.namprd11.prod.outlook.com>
+X-ClientProxiedBy: MW4PR04CA0289.namprd04.prod.outlook.com
+ (2603:10b6:303:89::24) To BYAPR11MB2854.namprd11.prod.outlook.com
+ (2603:10b6:a02:c9::12)
 MIME-Version: 1.0
-X-Originating-IP: [10.4.0.13]
-X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail01w.axis.com
- (10.20.40.7)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU6PEPF0000A7E2:EE_|DBBPR02MB10823:EE_
-X-MS-Office365-Filtering-Correlation-Id: e688b9c4-e18f-46e8-dd90-08dcff7ce665
+X-MS-TrafficTypeDiagnostic: BYAPR11MB2854:EE_|DM4PR11MB8202:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48090505-e6d4-46c5-ecf3-08dcff7e77d9
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|82310400026|36860700013|376014|1800799024|32650700017;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?VEhUYkt5aDZhdDVjSHFmY3J0dlYwa3JXQ0xOTlZxODQ1azkyN1BTUVNlY1ow?=
- =?utf-8?B?VG1OaFRVbWhvc0luc0NMck11dWVPeHYySmlwQXlZWU9LY1N5RnB3SHFqT3lk?=
- =?utf-8?B?TTNCZ3lseTF5MkVWS0szMjFpL1IwMWxRUkJiU0dLS2g2ZXl1VlprR3VOTlRy?=
- =?utf-8?B?bGlyRzk0d1Q3d1plUE5DOWdMSnVIcHBPYURic3Z1TS9rYWxqUE5iZFNydHJm?=
- =?utf-8?B?L0ZiVHQyOWkxUW44MnRmVmRtQjljVVc1djlwWGY5K2FMdUYrdFZQVnhYcVlr?=
- =?utf-8?B?UzVTS1VoS3JVUHRsdmJTUEdMc1E0MTNDeHNjMVFXTjNwY0NxdVBVTkdBNmN2?=
- =?utf-8?B?bUx0Q3ZVTng0UnNSK2dPRitONURQUytWcmNtU0xMOVZCM1ZMTjBXZkxyQndO?=
- =?utf-8?B?MkFpS2I3OWFEVnh6bUZwL2dvSm5CUFQ2ZzcxZEpTZWVERk85QTFML3o0Qnha?=
- =?utf-8?B?azE2a0ViMWxhOUljVU9FeU5wTVdVL052a2t2WTBobCtSVTlDTlptNmROMG83?=
- =?utf-8?B?d3FIT2RqYTg0YzgvRG5XMktYbGZCWi9DMno5ZnVtNHo5a0h4dUo0cHc2cWhh?=
- =?utf-8?B?UXF4V2t1MjgveHN0RlJHME90aHdaMmpHK3A5VmNkSkYyaXl4Q1gyMFNDRmg2?=
- =?utf-8?B?MGJ4cThwazBKZkZpQVN5aWpmQTB0Q01Ud2M0cEJBOWhOMWRmaWdDeVJjVmt6?=
- =?utf-8?B?V3gxSVRIRUthV20yTzc4aHk1SVdPVWMxaE9DQjllenp3c29kdXFtNkozK05U?=
- =?utf-8?B?ZjUzamV2cWhOSXVKVHI0UGdvN21BdHR6ZDVCNGd4Lzhwb1F6OEhxYWNkeEp3?=
- =?utf-8?B?ZGc0U0o0UXI0cGdsZUlNNGZVOHl5TFdLN3N1Y3BiSUtLbzc1eWRqM3lzNVBp?=
- =?utf-8?B?bEhBQ1ZjVzFnQUdkZHlZWUJmZTdUeUV5S2c5UXhUSlIza3pnbTZLS2pvL1lx?=
- =?utf-8?B?S2IyVHFEa3VqZEw4VzNjQW5ETTBSYjlJaGp2Q0tpL1V5WHR3TTduSXloNElE?=
- =?utf-8?B?dnNwVkl2cDV1aHRaZGV2bXZ3THgxMUlUTEc0SmFYVGhIZzlrTUNiTzJYWEZq?=
- =?utf-8?B?b1p1QmhTSlQ4TUFnbHE2RjFWcFZCMDhzOGZVbGRJWnFUZ0d1N0NBTlBZNXZQ?=
- =?utf-8?B?VDRVMkNwdHJOeHVHRXFEWlNzWjc2N3gxS21yV2UydFNXRzM0Q1ExTW5reTdG?=
- =?utf-8?B?Yk5qb3R0S1lPc3lFSXJLU25JbXB0dHhla3ByYW9VRE1EM2lKQUM0RUY2YmNp?=
- =?utf-8?B?ZU5Pb0hxTEJwSFMwSG5ueXZSWHp6V1FxTXVrSUhNNHBGcG94OWVVOXNHZloy?=
- =?utf-8?B?N1ppZEkxM0p0MjJGMGk4Z3RHc0ROcG5ITG9US3UxMkl0cmxVcjY0NzQ1R3VT?=
- =?utf-8?B?cTlGZFJVM2hSRnk3cVQxbVdNV0xtbDAxZlEwMGExK3QvVDBtVTQ3ZE44bXBV?=
- =?utf-8?B?MCtqazdxb0lsblgycVBCS05LelM3RzZBNW9yc3I1RytqZEZVNkJwandXK045?=
- =?utf-8?B?WDBkWDh3cWZib0ZrdkRoVDJTeWFvUXVDWlBqTUdoN1ZGQWpjekhDS05yVENw?=
- =?utf-8?B?K0FRWHBiSjBUcm5IQVNlaS81RG5PQXViYnlIR2phRnc3emdBaVBLNmUxaTFw?=
- =?utf-8?B?bkRRbm1aSWZNSXdnS3NUNGFQT0FhR1M0SW5GU09ORTZhc0dTZmQxUlpTYll1?=
- =?utf-8?B?dTc0RlBwOTZHc0htOVloNEw5WVNzK0VxamgzVEI5OXUvelhVelhMWndMeGtC?=
- =?utf-8?B?M3k3SXZIYWxMemZJMWllSlBuWjdqNmVYZjZWK09YSi9MTXRzeHFsNUZyVjVR?=
- =?utf-8?B?TlFzWFVDTjM2eDlNbVF6WTc4UnJHMEZ3Z29rN0hxRENETmVRQ0RvOHpodHdn?=
- =?utf-8?B?MjBJMEZYQ3ZrajBVdndhRzlaMDlCT1BRTjdjUjUyd0d0SGc9PQ==?=
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(376014)(1800799024)(32650700017);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2024 22:38:28.5605
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?UAKxrfNxLz1MufIrSLw16GLMdpWLZNrDJ5w+S2JyomW/jbt5pl1gHb20Vp?=
+ =?iso-8859-1?Q?gYhYOsyU6bii9wyOvMsaE5QYoNhU1HKhohpPS3AnVkVPRjSmf3+ha1D7fI?=
+ =?iso-8859-1?Q?OlGN1mmpqQzaftOIWepprR/DjEYnrsVNY+BH67/phESgz59a0lmLEbYYKo?=
+ =?iso-8859-1?Q?MQsvA6qChPVTsmqikA7BSu9byomv+lYcv5DSjVzZ2m0XQgbabErK6uwWuX?=
+ =?iso-8859-1?Q?ZZKYfCMIrO+B/NYHSRKopGnTEW/SrajepTwqejVMbDQ8AARbrnz881xtxt?=
+ =?iso-8859-1?Q?Z5I2uKTG2XT1ys5PiHyF3LRXjPG2RXKbsuQ9iU8qhHdFbo33evR1ISvOmk?=
+ =?iso-8859-1?Q?ZEDzUl6hu5bRO31JdOTsTPdOW26MaOxyZj5HOo9Jv10lNNeCteC71yEEjF?=
+ =?iso-8859-1?Q?VKJmkwIzPLzXs3aJDI0DUwB2WfR12EEbTCBn44jTY1psDvr+X3CLNn0hGn?=
+ =?iso-8859-1?Q?HSaAX/O/qvOUIsySr+y1mkzq7da66H9bNh6oDIh+kIYVaJmDg5V3Y+lT6H?=
+ =?iso-8859-1?Q?U5cXkPf5YTiDSPAvbqCAHY3x3NZn3K2VQgBiz7lQmGFfsLO2PTZM01mwxh?=
+ =?iso-8859-1?Q?WHK8dGW9HmQKSaGg4mBivHNCOeXuFmx+pnBcZfkKfeGmpwenorGHG4dP3/?=
+ =?iso-8859-1?Q?BSp4DumzvA8JVymXxUfm08kMW/vDI7hyDs3dwiu7d0fnkAYYp4anHKK8JE?=
+ =?iso-8859-1?Q?tZh+aK0HaRSeAWuNn1D23HHUrNwJnNJjLGZgSR6i43FyYnOl4dMw3AmDZ7?=
+ =?iso-8859-1?Q?kMahqM/oALkppgU81Y/eDOCbuq4xHw97FYV+4SVotxMU9Cy2dtGSxCboi7?=
+ =?iso-8859-1?Q?S6mETIm+OCgsj5lEWqrZEROlefBbdAdT9U8GO+AniKUm0PJx32HPfmzXNj?=
+ =?iso-8859-1?Q?ox5T1Azum65a7p/IEZBPm/BxjVTP41SK8rjNSNAG+IiJhM9H9PNH/z1fP2?=
+ =?iso-8859-1?Q?2gusjDGuuEJNGDe/qnYZbx5/PtEFLIJeJRvih2MvbujIsguVmHOTcW9FcQ?=
+ =?iso-8859-1?Q?+nscnMTWt4khC01395ehzuguVTOo5rzJWMw/acAZBK7RXi4xR9WCbXe88M?=
+ =?iso-8859-1?Q?znlfsv14XlCAYv2S61ZQFX0JKn9szXC9jfbPvTZlbQtIGvvcFMgPgwc28v?=
+ =?iso-8859-1?Q?z6RmAJ3+aFhQkskJRMHqpuOatFAzswPpQ2I8SBeWX4bcM9h3YsePhM4MtQ?=
+ =?iso-8859-1?Q?TC8AKBo7NQfZcfmRkZGMH56gTjE5iUgZBu4mofS/C7IhdohJDXcJu65e+M?=
+ =?iso-8859-1?Q?h9P+jatmQeZZYiq7lUrdFrtX8ihqPcdQBZamfW+m++o5s4qO5RxV+xGPnQ?=
+ =?iso-8859-1?Q?wpw5b34zx4+0q4mfbJidGu9TVj1ze9+hYhby4fLn1x2ENluM5eGXsWrKSo?=
+ =?iso-8859-1?Q?OQUQFsHgNm?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2854.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?L2/5NBlx5pP1/9FQAGy9RGBz2jjByLd/jXUdK+/NjnDnbVHwXkSmEVtGKa?=
+ =?iso-8859-1?Q?6Sq1uFV9hoaBk38caui5+KNVUpbMODy9N6dYVrcDBsrLuwQXTGKDsch2lJ?=
+ =?iso-8859-1?Q?LkW1EKriKIKSe0Z3oldgRxvvia/olo9qF8w8Q09Uu1C+nyotIBT/Ry/7AI?=
+ =?iso-8859-1?Q?/WVXjf4o6xJkZEvy9t2BRFrW31bK6NT6CjCX2nwfhp81N+SJkoMSWPrD8E?=
+ =?iso-8859-1?Q?XWtgZisVx9zTcchTvGhtMlEGkzFMTrJh14Lg5/7mBeDcqMoxd+QP4Inly+?=
+ =?iso-8859-1?Q?ZTF3VxUFZZwVbdPWNoM/nFuPVCkR+69ejU+wfDdXzG+RDTjOfDnASyuh8F?=
+ =?iso-8859-1?Q?d+dQ4Q1FgzkbNY57Eevk208T+wq27KEKTOPst48B4sjL0beXAkb8hYhIKV?=
+ =?iso-8859-1?Q?/orUjkE5JyULSyuWTOVtlWABNvJk8d4oEZvrrboKN/S/e/VgNXDZmIOFvy?=
+ =?iso-8859-1?Q?XyvcT2M+0PH06f8p0WNxZmjQdJU8X4/lCWXjkpqSMoGmAgM0/x4cL5Q/e0?=
+ =?iso-8859-1?Q?Rx9ChH1nih25jRiFTR+jxhoDv1EdnvSxcD7J78garGS27A8jiy8id5+G7F?=
+ =?iso-8859-1?Q?ObSkofwCMdi8EFgiuJTv/H4V6+obMvwWXT/juEJItb81uEJ9iQ4MIXj7w2?=
+ =?iso-8859-1?Q?Wulx4YUyojDMYBboaH1xm3i+Pyd1sZsNCvsghiBOFggnoPXPo3LQpqEuct?=
+ =?iso-8859-1?Q?xMP+3T5Zom7Pz/ulIWgScagnn3xMEhZfPR/GisYSpZuDtLXyFm98hgYXbX?=
+ =?iso-8859-1?Q?SoC5tBoEAN/Z2tT4WzCnExoHxcXYCDnPwDpqpEazMdukflKeiO5Nrvv0TN?=
+ =?iso-8859-1?Q?sjh9z5xlaUJCeHO648+byCtCbxOhpeKXJSl1/5fu7FfGAc5ePuEUJBdaAm?=
+ =?iso-8859-1?Q?9/RQnSHcZPVxXKdPqIIcWV7A450Kx4kwniOejiHwX44tKYvzRF29PjeT4Z?=
+ =?iso-8859-1?Q?b4TxDuPKJd44tyva+cTru1D4WKe8TnxwOpLcrH7DxyeJdX7KnhsqXFNb8o?=
+ =?iso-8859-1?Q?sQJlsir2WrVSinNeuMynAWpqPT6QwTJ4Dd/sSJlKHzG+x5zMf7MAVhXgJE?=
+ =?iso-8859-1?Q?2OsEehvcsDRX9XQADd+Yxj+s34afJCZJxWnL/pqeAR6XzGPbjZ7BfHGCXv?=
+ =?iso-8859-1?Q?dL4gJSgRsnvuksMT2ODbhkThgiYYYjPB3N2BgXAp0pKJI9Gw2MJhUu77+2?=
+ =?iso-8859-1?Q?fCvSdF+IPfnNrary9DVCBg55ElysKbPvCSVCpiEtDCx3KRONZ89IkQEuic?=
+ =?iso-8859-1?Q?MdEtytC8BGOrZ3CaSt9zWDiw8QT2ebzebwAeM/bL+aKVjNTXWqrBqacSKW?=
+ =?iso-8859-1?Q?0/EoeLbgXd7fYRn0yuh7BgU+3VUdsCIUBZ629kyoq7AsqvZ1DDa+xe5niq?=
+ =?iso-8859-1?Q?P6AFF0yFYjpK0/X60yADI9mIJ/fWhVHXMeXkrzrxIWVXFxygP3sF4Y18c0?=
+ =?iso-8859-1?Q?FLwalzX/dI8ORuJBU0fnVfHWIL7zK4dNCjXdQtGkV7t3ynBSJRZE3x5oK+?=
+ =?iso-8859-1?Q?P8dkLNnGZ5WhGmPEl8QiZYTn3F044PiFbywDMcUg3kcHEVoeAJQs1I+z6F?=
+ =?iso-8859-1?Q?RDjuq/WBjC/Sa+eZbVu6fJ2bBh8xvb2myjOpWjSy6pBn+6uirZlZovj+Kc?=
+ =?iso-8859-1?Q?yT82UaVWpoX/WwE2Orz2APdeZjk55v91AhgCeAd04XJaeh6z2t3UwMMw?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48090505-e6d4-46c5-ecf3-08dcff7e77d9
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2854.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2024 22:49:42.3934
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e688b9c4-e18f-46e8-dd90-08dcff7ce665
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource: DU6PEPF0000A7E2.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR02MB10823
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ahd52+EpCTyDPchy7InF8cPOYU/WUG3bQsNptOt8CycNuYc6MDnLV+FenaQ80Dh9HrKezQwwY8FDHj/ZDOln8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8202
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241107_143834_703419_FF80BE42 
-X-CRM114-Status: GOOD (  24.47  )
+X-CRM114-CacheID: sfid-20241107_144950_264276_765B5D87 
+X-CRM114-Status: GOOD (  17.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -146,109 +207,375 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBOb3YgMDcsIDIwMjQgYXQgMTY6MzkgKzA4MDAgWmhpaGFvIENoZW5nIDxjaGVuZ3po
-aWhhbzFAaHVhd2VpLmNvbT4gd3JvdGU6Cgo+IOWcqCAyMDI0LzEwLzkgMjI6NDYsIFdhcWFyIEhh
-bWVlZCDlhpnpgZM6Cj4+IFJ1bm5pbmcKPj4gICAgcm0gLWYgL2V0Yy90ZXN0LWZpbGUuYmluCj4+
-ICAgIGRkIGlmPS9kZXYvdXJhbmRvbSBvZj0vZXRjL3Rlc3QtZmlsZS5iaW4gYnM9MU0gY291bnQ9
-NjAgY29udj1mc3luYwo+PiBpbiBhIGxvb3AsIHdpdGggYENPTkZJR19VQklGU19GU19BVVRIRU5U
-SUNBVElPTmAsIEtBU0FOIHJlcG9ydHM6Cj4+ICAgIEJVRzogS0FTQU46IHVzZS1hZnRlci1mcmVl
-IGluIHViaWZzX3RuY19lbmRfY29tbWl0KzB4YTVjLzB4MTk1MAo+PiAgICBXcml0ZSBvZiBzaXpl
-IDMyIGF0IGFkZHIgZmZmZmZmODAwYTNhZjg2YyBieSB0YXNrIHViaWZzX2JndDBfMjAvMTUzCj4+
-ICAgIENhbGwgdHJhY2U6Cj4+ICAgICBkdW1wX2JhY2t0cmFjZSsweDAvMHgzNDAKPj4gICAgIHNo
-b3dfc3RhY2srMHgxOC8weDI0Cj4+ICAgICBkdW1wX3N0YWNrX2x2bCsweDljLzB4YmMKPj4gICAg
-IHByaW50X2FkZHJlc3NfZGVzY3JpcHRpb24uY29uc3Rwcm9wLjArMHg3NC8weDJiMAo+PiAgICAg
-a2FzYW5fcmVwb3J0KzB4MWQ4LzB4MWYwCj4+ICAgICBrYXNhbl9jaGVja19yYW5nZSsweGY4LzB4
-MWEwCj4+ICAgICBtZW1jcHkrMHg4NC8weGY0Cj4+ICAgICB1Ymlmc190bmNfZW5kX2NvbW1pdCsw
-eGE1Yy8weDE5NTAKPj4gICAgIGRvX2NvbW1pdCsweDRlMC8weDEzNDAKPj4gICAgIHViaWZzX2Jn
-X3RocmVhZCsweDIzNC8weDJlMAo+PiAgICAga3RocmVhZCsweDM2Yy8weDQxMAo+PiAgICAgcmV0
-X2Zyb21fZm9yaysweDEwLzB4MjAKPj4gICAgQWxsb2NhdGVkIGJ5IHRhc2sgNDAxOgo+PiAgICAg
-a2FzYW5fc2F2ZV9zdGFjaysweDM4LzB4NzAKPj4gICAgIF9fa2FzYW5fa21hbGxvYysweDhjLzB4
-ZDAKPj4gICAgIF9fa21hbGxvYysweDM0Yy8weDViYwo+PiAgICAgdG5jX2luc2VydCsweDE0MC8w
-eDE2YTQKPj4gICAgIHViaWZzX3RuY19hZGQrMHgzNzAvMHg1MmMKPj4gICAgIHViaWZzX2pubF93
-cml0ZV9kYXRhKzB4NWQ4LzB4ODcwCj4+ICAgICBkb193cml0ZXBhZ2UrMHgzNmMvMHg1MTAKPj4g
-ICAgIHViaWZzX3dyaXRlcGFnZSsweDE5MC8weDRkYwo+PiAgICAgX193cml0ZXBhZ2UrMHg1OC8w
-eDE1NAo+PiAgICAgd3JpdGVfY2FjaGVfcGFnZXMrMHgzOTQvMHg4MzAKPj4gICAgIGRvX3dyaXRl
-cGFnZXMrMHgxZjAvMHg1YjAKPj4gICAgIGZpbGVtYXBfZmRhdGF3cml0ZV93YmMrMHgxNzAvMHgy
-NWMKPj4gICAgIGZpbGVfd3JpdGVfYW5kX3dhaXRfcmFuZ2UrMHgxNDAvMHgxOTAKPj4gICAgIHVi
-aWZzX2ZzeW5jKzB4ZTgvMHgyOTAKPj4gICAgIHZmc19mc3luY19yYW5nZSsweGMwLzB4MWU0Cj4+
-ICAgICBkb19mc3luYysweDQwLzB4OTAKPj4gICAgIF9fYXJtNjRfc3lzX2ZzeW5jKzB4MzQvMHg1
-MAo+PiAgICAgaW52b2tlX3N5c2NhbGwuY29uc3Rwcm9wLjArMHhhOC8weDI2MAo+PiAgICAgZG9f
-ZWwwX3N2YysweGM4LzB4MWYwCj4+ICAgICBlbDBfc3ZjKzB4MzQvMHg3MAo+PiAgICAgZWwwdF82
-NF9zeW5jX2hhbmRsZXIrMHgxMDgvMHgxMTQKPj4gICAgIGVsMHRfNjRfc3luYysweDFhNC8weDFh
-OAo+PiAgICBGcmVlZCBieSB0YXNrIDQwMzoKPj4gICAgIGthc2FuX3NhdmVfc3RhY2srMHgzOC8w
-eDcwCj4+ICAgICBrYXNhbl9zZXRfdHJhY2srMHgyOC8weDQwCj4+ICAgICBrYXNhbl9zZXRfZnJl
-ZV9pbmZvKzB4MjgvMHg0Ywo+PiAgICAgX19rYXNhbl9zbGFiX2ZyZWUrMHhkNC8weDEzYwo+Cj4g
-SGkgV2FxYXIsIGlzIHRoYXQgbGluZSAyNjM5ID8KPiAyNTQwIHNzdGF0aWMgaW50IHRuY19kZWxl
-dGUoKQo+IDI1NDEgewo+IDI2MDggICAgICAgICBpZiAoIXpub2RlLT5wYXJlbnQpIHsKPiAyNjA5
-ICAgICAgICAgICAgICAgICB3aGlsZSAoem5vZGUtPmNoaWxkX2NudCA9PSAxICYmIHpub2RlLT5s
-ZXZlbCAhPSAwKSB7Cj4gMjYzNCAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoenAtPmNuZXh0
-KSB7Cj4gLi4uCj4gMjYzOCAgICAgICAgICAgICAgICAgICAgICAgICB9IGVsc2UKPiAyNjM5ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAga2ZyZWUoenApOwo+IDI2NDQgfQo+CgpgZmFk
-ZHIybGluZWAgZG9lc24ndCB3b3JrIGZvciB0aGF0IGZ1bmMrb2Zmc2V0LiBJdCBqdXN0IGNvbXBs
-YWlucyB3aXRoCgogIGJhZCBzeW1ib2wgc2l6ZTogc3ltX2FkZHI6IDB4YzA4MzBmODEgY3VyX3N5
-bV9hZGRyOiAweGMwODMxNDY0CiAgClRoZSBvZmZzZXQgYW5kIHNpemUgaGludHMgdGhhdCBpdCBz
-aG91bGQgYmUgc29tZXdoZXJlIGF0IHRoZSBlbmQgb2YKYHRuY19kZWxldGUoKWAuIEkgdHJpZWQg
-d2l0aCBgYWRkcjJsaW5lYCBhbmQgdGhlIGFkZHJlc3NlcyBhcm91bmQgdGhhdApvZmZzZXRzIHBv
-aW50cyB0byB0aGUgYGtmcmVlKClgIG9uIGxpbmUgMjYzOS4gU28geWVzLCBpdCB3b3VsZCBzYXkK
-dGhhdCdzIHRoZSBvZmZlbmRpbmcgb25lLgoKPj4gICAgIGtmcmVlKzB4YzQvMHgzYTAKPj4gICAg
-IHRuY19kZWxldGUrMHgzZjQvMHhlNDAKPj4gICAgIHViaWZzX3RuY19yZW1vdmVfcmFuZ2UrMHgz
-NjgvMHg3M2MKPj4gICAgIHViaWZzX3RuY19yZW1vdmVfaW5vKzB4MjljLzB4MmUwCj4+ICAgICB1
-Ymlmc19qbmxfZGVsZXRlX2lub2RlKzB4MTUwLzB4MjYwCj4+ICAgICB1Ymlmc19ldmljdF9pbm9k
-ZSsweDFkNC8weDJlNAo+PiAgICAgZXZpY3QrMHgxYzgvMHg0NTAKPj4gICAgIGlwdXQrMHgyYTAv
-MHgzYzQKPj4gICAgIGRvX3VubGlua2F0KzB4MmNjLzB4NDkwCj4+ICAgICBfX2FybTY0X3N5c191
-bmxpbmthdCsweDkwLzB4MTAwCj4+ICAgICBpbnZva2Vfc3lzY2FsbC5jb25zdHByb3AuMCsweGE4
-LzB4MjYwCj4+ICAgICBkb19lbDBfc3ZjKzB4YzgvMHgxZjAKPj4gICAgIGVsMF9zdmMrMHgzNC8w
-eDcwCj4+ICAgICBlbDB0XzY0X3N5bmNfaGFuZGxlcisweDEwOC8weDExNAo+PiAgICAgZWwwdF82
-NF9zeW5jKzB4MWE0LzB4MWE4Cj4+IAo+Cj4gTG9va3MgbGlrZSB0aGVyZSBpcyBvbmUgcG9zc2li
-aWxpdHk6Cj4gMS4gdG5jX2luc2VydCgpIHRyaWdnZXJzIGEgVE5DIHRyZWUgc3BsaXQ6Cj4gICAg
-enJvb3QKPiAgICAvCj4gICB6X3AxCj4gICAvCj4gem4KPiAgIHpfcDEgaXMgZnVsbCwgYWZ0ZXIg
-aW5zZXJ0aW5nIHpuX25ldyhrZXkgb3JkZXIgaXMgc21hbGxlciB0aGF0IHpuKSB1bmRlciB6X3Ax
-LAo+ICB6bi0+cGFyZW50IGlzIHN3aXRjaGVkIHRvIHpfcDIsIGJ1dCB6bi0+Y3BhcmVudCBpcyBz
-dGlsbCB6X3AxOgo+ICAgIHpyb290Cj4gICAgLyAgICBcCj4gICB6X3AxICB6X3AyCj4gICAvICAg
-ICAgXAo+IHpuX25ldyAgIHpuCj4gMi4gdG5jX2RlbGV0ZSgpIHJlbW92ZXMgYWxsIHpub2RlcyBl
-eGNlcHQgdGhlICd6bic6Cj4gICAgenJvb3QKPiAgICAgICBcCj4gICAgICAgel9wMgo+ICAgICAg
-ICAgXAo+ICAgICAgICAgem4KPiAgICAgVE5DIHRyZWUgaXMgY29sbGFwc2VkLCB6cm9vdCBhbmQg
-el9wMiBhcmUgZnJlZWQ6Cj4gICAgIHpyb290Jyh6bikKPiAzLiBnZXRfem5vZGVzX3RvX2NvbW1p
-dCgpIGZpbmRzIG9ubHkgb25lIHpub2RlKHpuLCB3aGljaCBpcyBhbHNvIHpyb290KSwKPiB6bi0+
-Y3BhcmVudCBpcyBub3QgdXBkYXRlZCBhbmQgc3RpbGwgcG9pbnRzIHRvIHpfcDEod2hpY2ggd2Fz
-IGZyZWVkKS4KPiA0LiB3cml0ZV9pbmRleCgpIGFjY2Vzc2VzIHRoZSB6bi0+Y3BhcmVudC0+emJy
-YW5jaCwgd2hpY2ggdHJpZ2dlcnMgYW4gVUFGIQo+Cj4gVHJ5IGZvbGxvd2luZyBtb2RpZmljYXRp
-b24gdG8gdmVyaWZ5IHdoZXRoZXIgdGhlIHByb2JsZW0gaXMgZml4ZWQ6Cj4gZGlmZiAtLWdpdCBh
-L2ZzL3ViaWZzL3RuY19jb21taXQuYyBiL2ZzL3ViaWZzL3RuY19jb21taXQuYwo+IGluZGV4IGE1
-NWUwNDgyMmQxNi4uN2M0M2UwY2NmNmQ0IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL3RuY19jb21t
-aXQuYwo+ICsrKyBiL2ZzL3ViaWZzL3RuY19jb21taXQuYwo+IEBAIC02NTcsNiArNjU3LDggQEAg
-c3RhdGljIGludCBnZXRfem5vZGVzX3RvX2NvbW1pdChzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKPiAg
-ICAgICAgICAgICAgICAgem5vZGUtPmFsdCA9IDA7Cj4gICAgICAgICAgICAgICAgIGNuZXh0ID0g
-ZmluZF9uZXh0X2RpcnR5KHpub2RlKTsKPiAgICAgICAgICAgICAgICAgaWYgKCFjbmV4dCkgewo+
-ICsgICAgICAgICAgICAgICAgICAgICAgIHViaWZzX2Fzc2VydChjLCAhem5vZGUtPnBhcmVudCk7
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgem5vZGUtPmNwYXJlbnQgPSBOVUxMOwo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgIHpub2RlLT5jbmV4dCA9IGMtPmNuZXh0Owo+ICAgICAgICAgICAg
-ICAgICAgICAgICAgIGJyZWFrOwo+ICAgICAgICAgICAgICAgICB9CgpZdXAsIEkgdGhpbmsgdGhp
-cyBpcyBpdCEgTmljZSB3b3JrIQoKSSd2ZSBzdGFydGVkIGEgdGVzdCBydW4gd2l0aCB0aGUgZm9s
-bG93aW5nIHBhdGNoOgoKZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3RuY19jb21taXQuYyBiL2ZzL3Vi
-aWZzL3RuY19jb21taXQuYwppbmRleCBhNTVlMDQ4MjJkMTYuLjRjODE1MGQ1ZWQ2NSAxMDA2NDQK
-LS0tIGEvZnMvdWJpZnMvdG5jX2NvbW1pdC5jCisrKyBiL2ZzL3ViaWZzL3RuY19jb21taXQuYwpA
-QCAtNjU3LDYgKzY1NywxMSBAQCBzdGF0aWMgaW50IGdldF96bm9kZXNfdG9fY29tbWl0KHN0cnVj
-dCB1Ymlmc19pbmZvICpjKQogCQl6bm9kZS0+YWx0ID0gMDsKIAkJY25leHQgPSBmaW5kX25leHRf
-ZGlydHkoem5vZGUpOwogCQlpZiAoIWNuZXh0KSB7CisJCQl1Ymlmc19hc3NlcnQoYywgIXpub2Rl
-LT5wYXJlbnQpOworCQkJaWYgKHpub2RlLT5jcGFyZW50KSB7CisJCQkJcHJpbnRrKCIlczolZFxu
-IiwgX19mdW5jX18sIF9fTElORV9fKTsKKwkJCX0KKwkJCXpub2RlLT5jcGFyZW50ID0gTlVMTDsK
-IAkJCXpub2RlLT5jbmV4dCA9IGMtPmNuZXh0OwogCQkJYnJlYWs7CiAJCX0KCmFuZCBjYW4gYWxy
-ZWFkeSBzZWUgdGhhdCB0aGUgcHJpbnQgaGl0IGEgY291cGxlIG9mIHRpbWVzIGluIGEgZmV3IGhv
-dXJzCigyNTAgaXRlcmF0aW9ucykuIEknbGwgbGV0IGl0IHNwaW4gZm9yIGEgbGl0dGxlIGxvbmdl
-ciAocmVjYWxsIHRoYXQgdGhlCm90aGVyIHBhdGNoICJtYXNrZWQiIHRoZSBwcm9ibGVtIGZvciBh
-bG1vc3QgODAwIGl0ZXJhdGlvbnMpLgoKVGhpcyB3YXMgcXVpdGUgaW50cmljYXRlIGFuZCBJIHJl
-YWxseSBlbmpveWVkIHlvdXIgbGl0dGxlIGJyZWFrZG93bi4KVGhhbmsgeW91IHZlcnkgbXVjaCBm
-b3IgdGhlIGRpc2N1c3Npb25zL2NvbGxhYm9yYXRpb24hIEknbGwgbGV0IHlvdSBub3cKYXMgc29v
-biBhcyBJIGhhdmUgYW4gdXBkYXRlZCB0ZXN0IHJlc3VsdCAoYW5kIHRodXMgc2VuZCBhIG5ldyB2
-ZXJzaW9uKS4KClAuUwpJIHdvbmRlciBob3cgbWFueSBzeXN0ZW1zIHRoYXQgbWlnaHQgaGF2ZSBl
-eHBlcmllbmNlZCB0aGlzCnVzZS1hZnRlci1mcmVlIGFuZCBnb3QgcmFuZG9tIG1lbW9yeSBjb3Jy
-dXB0aW9ucyAob3Igb3RoZXIgc2VjdXJpdHkKaXNzdWVzKS4gVGhpcyBidWcgaGFzIGJlZW4gdGhl
-cmUgc2luY2UgdjQuMjAuCkQuUwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Tue, Nov 05, 2024 at 07:17:53AM -0500, Usyskin, Alexander wrote:
+> > -----Original Message-----
+> > From: Vivi, Rodrigo <rodrigo.vivi@intel.com>
+> > Sent: Monday, November 4, 2024 11:16 PM
+> > To: Usyskin, Alexander <alexander.usyskin@intel.com>
+> > Cc: Gupta, Anshuman <anshuman.gupta@intel.com>; Deak, Imre
+> > <imre.deak@intel.com>; Miquel Raynal <miquel.raynal@bootlin.com>;
+> > Richard Weinberger <richard@nod.at>; Vignesh Raghavendra
+> > <vigneshr@ti.com>; De Marchi, Lucas <lucas.demarchi@intel.com>; Thomas
+> > Hellstr=F6m <thomas.hellstrom@linux.intel.com>; Maarten Lankhorst
+> > <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>;
+> > Thomas Zimmermann <tzimmermann@suse.de>; David Airlie
+> > <airlied@gmail.com>; Simona Vetter <simona@ffwll.ch>; Jani Nikula
+> > <jani.nikula@linux.intel.com>; Joonas Lahtinen
+> > <joonas.lahtinen@linux.intel.com>; Tvrtko Ursulin <tursulin@ursulin.net=
+>;
+> > Weil, Oren jer <oren.jer.weil@intel.com>; linux-mtd@lists.infradead.org=
+; dri-
+> > devel@lists.freedesktop.org; intel-gfx@lists.freedesktop.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: Re: [PATCH 06/10] mtd: intel-dg: wake card on operations
+> > =
+
+> > On Tue, Oct 29, 2024 at 11:24:36AM +0000, Usyskin, Alexander wrote:
+> > > > -----Original Message-----
+> > > > From: Gupta, Anshuman <anshuman.gupta@intel.com>
+> > > > Sent: Monday, October 28, 2024 5:02 PM
+> > > > To: Vivi, Rodrigo <rodrigo.vivi@intel.com>; Usyskin, Alexander
+> > > > <alexander.usyskin@intel.com>; Deak, Imre <imre.deak@intel.com>
+> > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Richard Weinberger
+> > > > <richard@nod.at>; Vignesh Raghavendra <vigneshr@ti.com>; De Marchi,
+> > > > Lucas <lucas.demarchi@intel.com>; Thomas Hellstr=F6m
+> > > > <thomas.hellstrom@linux.intel.com>; Maarten Lankhorst
+> > > > <maarten.lankhorst@linux.intel.com>; Maxime Ripard
+> > <mripard@kernel.org>;
+> > > > Thomas Zimmermann <tzimmermann@suse.de>; David Airlie
+> > > > <airlied@gmail.com>; Simona Vetter <simona@ffwll.ch>; Jani Nikula
+> > > > <jani.nikula@linux.intel.com>; Joonas Lahtinen
+> > > > <joonas.lahtinen@linux.intel.com>; Tvrtko Ursulin <tursulin@ursulin=
+.net>;
+> > > > Weil, Oren jer <oren.jer.weil@intel.com>; linux-mtd@lists.infradead=
+.org;
+> > dri-
+> > > > devel@lists.freedesktop.org; intel-gfx@lists.freedesktop.org; linux-
+> > > > kernel@vger.kernel.org
+> > > > Subject: RE: [PATCH 06/10] mtd: intel-dg: wake card on operations
+> > > >
+> > > >
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Vivi, Rodrigo <rodrigo.vivi@intel.com>
+> > > > > Sent: Monday, October 28, 2024 8:27 PM
+> > > > > To: Usyskin, Alexander <alexander.usyskin@intel.com>; Gupta,
+> > Anshuman
+> > > > > <anshuman.gupta@intel.com>; Deak, Imre <imre.deak@intel.com>
+> > > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Richard Weinberger
+> > > > > <richard@nod.at>; Vignesh Raghavendra <vigneshr@ti.com>; De March=
+i,
+> > > > > Lucas <lucas.demarchi@intel.com>; Thomas Hellstr=F6m
+> > > > > <thomas.hellstrom@linux.intel.com>; Maarten Lankhorst
+> > > > > <maarten.lankhorst@linux.intel.com>; Maxime Ripard
+> > > > <mripard@kernel.org>;
+> > > > > Thomas Zimmermann <tzimmermann@suse.de>; David Airlie
+> > > > > <airlied@gmail.com>; Simona Vetter <simona@ffwll.ch>; Jani Nikula
+> > > > > <jani.nikula@linux.intel.com>; Joonas Lahtinen
+> > > > > <joonas.lahtinen@linux.intel.com>; Tvrtko Ursulin
+> > <tursulin@ursulin.net>;
+> > > > > Weil, Oren jer <oren.jer.weil@intel.com>; linux-mtd@lists.infrade=
+ad.org;
+> > dri-
+> > > > > devel@lists.freedesktop.org; intel-gfx@lists.freedesktop.org; lin=
+ux-
+> > > > > kernel@vger.kernel.org
+> > > > > Subject: Re: [PATCH 06/10] mtd: intel-dg: wake card on operations
+> > > > >
+> > > > > On Tue, Oct 22, 2024 at 01:41:15PM +0300, Alexander Usyskin wrote:
+> > > > > > Enable runtime PM in mtd driver to notify graphics driver that =
+whole
+> > > > > > card should be kept awake while nvm operations are performed
+> > through
+> > > > > > this driver.
+> > > > > >
+> > > > > > CC: Lucas De Marchi <lucas.demarchi@intel.com>
+> > > > > > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> > > > > > ---
+> > > > > >  drivers/mtd/devices/mtd-intel-dg.c | 73
+> > > > > > +++++++++++++++++++++++++-----
+> > > > > >  1 file changed, 61 insertions(+), 12 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/mtd/devices/mtd-intel-dg.c
+> > > > > > b/drivers/mtd/devices/mtd-intel-dg.c
+> > > > > > index 4951438e8faf..3d53f35478e8 100644
+> > > > > > --- a/drivers/mtd/devices/mtd-intel-dg.c
+> > > > > > +++ b/drivers/mtd/devices/mtd-intel-dg.c
+> > > > > > @@ -15,11 +15,14 @@
+> > > > > >  #include <linux/module.h>
+> > > > > >  #include <linux/mtd/mtd.h>
+> > > > > >  #include <linux/mtd/partitions.h>
+> > > > > > +#include <linux/pm_runtime.h>
+> > > > > >  #include <linux/string.h>
+> > > > > >  #include <linux/slab.h>
+> > > > > >  #include <linux/sizes.h>
+> > > > > >  #include <linux/types.h>
+> > > > > >
+> > > > > > +#define INTEL_DG_NVM_RPM_TIMEOUT 500
+> > > > > > +
+> > > > > >  struct intel_dg_nvm {
+> > > > > >  	struct kref refcnt;
+> > > > > >  	struct mtd_info mtd;
+> > > > > > @@ -462,6 +465,7 @@ static int intel_dg_mtd_erase(struct mtd_in=
+fo
+> > > > *mtd,
+> > > > > struct erase_info *info)
+> > > > > >  	loff_t from;
+> > > > > >  	size_t len;
+> > > > > >  	size_t total_len;
+> > > > > > +	int ret =3D 0;
+> > > > > >
+> > > > > >  	if (WARN_ON(!nvm))
+> > > > > >  		return -EINVAL;
+> > > > > > @@ -476,20 +480,28 @@ static int intel_dg_mtd_erase(struct
+> > mtd_info
+> > > > > *mtd, struct erase_info *info)
+> > > > > >  	total_len =3D info->len;
+> > > > > >  	addr =3D info->addr;
+> > > > > >
+> > > > > > +	ret =3D pm_runtime_resume_and_get(mtd->dev.parent);
+> > > > > > +	if (ret < 0) {
+> > > > > > +		dev_err(&mtd->dev, "rpm: get failed %d\n", ret);
+> > > > > > +		return ret;
+> > > > > > +	}
+> > > > > > +
+> > > > > >  	guard(mutex)(&nvm->lock);
+> > > > > >
+> > > > > >  	while (total_len > 0) {
+> > > > > >  		if (!IS_ALIGNED(addr, SZ_4K) || !IS_ALIGNED(total_len,
+> > > > > SZ_4K)) {
+> > > > > >  			dev_err(&mtd->dev, "unaligned erase %llx %zx\n",
+> > > > > addr, total_len);
+> > > > > >  			info->fail_addr =3D addr;
+> > > > > > -			return -ERANGE;
+> > > > > > +			ret =3D -ERANGE;
+> > > > > > +			goto out;
+> > > > > >  		}
+> > > > > >
+> > > > > >  		idx =3D idg_nvm_get_region(nvm, addr);
+> > > > > >  		if (idx >=3D nvm->nregions) {
+> > > > > >  			dev_err(&mtd->dev, "out of range");
+> > > > > >  			info->fail_addr =3D MTD_FAIL_ADDR_UNKNOWN;
+> > > > > > -			return -ERANGE;
+> > > > > > +			ret =3D -ERANGE;
+> > > > > > +			goto out;
+> > > > > >  		}
+> > > > > >
+> > > > > >  		from =3D addr - nvm->regions[idx].offset; @@ -505,14 +517,18
+> > > > > @@
+> > > > > > static int intel_dg_mtd_erase(struct mtd_info *mtd, struct eras=
+e_info
+> > > > *info)
+> > > > > >  		if (bytes < 0) {
+> > > > > >  			dev_dbg(&mtd->dev, "erase failed with %zd\n",
+> > > > > bytes);
+> > > > > >  			info->fail_addr +=3D nvm->regions[idx].offset;
+> > > > > > -			return bytes;
+> > > > > > +			ret =3D bytes;
+> > > > > > +			goto out;
+> > > > > >  		}
+> > > > > >
+> > > > > >  		addr +=3D len;
+> > > > > >  		total_len -=3D len;
+> > > > > >  	}
+> > > > > >
+> > > > > > -	return 0;
+> > > > > > +out:
+> > > > > > +	pm_runtime_mark_last_busy(mtd->dev.parent);
+> > > > > > +	pm_runtime_put_autosuspend(mtd->dev.parent);
+> > > > > > +	return ret;
+> > > > > >  }
+> > > > > >
+> > > > > >  static int intel_dg_mtd_read(struct mtd_info *mtd, loff_t from,
+> > > > > > size_t len, @@ -541,17 +557,25 @@ static int
+> > intel_dg_mtd_read(struct
+> > > > > mtd_info *mtd, loff_t from, size_t len,
+> > > > > >  	if (len > nvm->regions[idx].size - from)
+> > > > > >  		len =3D nvm->regions[idx].size - from;
+> > > > > >
+> > > > > > +	ret =3D pm_runtime_resume_and_get(mtd->dev.parent);
+> > > > > > +	if (ret < 0) {
+> > > > > > +		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
+> > > > > > +		return ret;
+> > > > > > +	}
+> > > > > > +
+> > > > > >  	guard(mutex)(&nvm->lock);
+> > > > > >
+> > > > > >  	ret =3D idg_read(nvm, region, from, len, buf);
+> > > > > >  	if (ret < 0) {
+> > > > > >  		dev_dbg(&mtd->dev, "read failed with %zd\n", ret);
+> > > > > > -		return ret;
+> > > > > > +	} else {
+> > > > > > +		*retlen =3D ret;
+> > > > > > +		ret =3D 0;
+> > > > > >  	}
+> > > > > >
+> > > > > > -	*retlen =3D ret;
+> > > > > > -
+> > > > > > -	return 0;
+> > > > > > +	pm_runtime_mark_last_busy(mtd->dev.parent);
+> > > > > > +	pm_runtime_put_autosuspend(mtd->dev.parent);
+> > > > > > +	return ret;
+> > > > > >  }
+> > > > > >
+> > > > > >  static int intel_dg_mtd_write(struct mtd_info *mtd, loff_t to,=
+ size_t
+> > > > > > len, @@ -580,17 +604,25 @@ static int intel_dg_mtd_write(struct
+> > > > mtd_info
+> > > > > *mtd, loff_t to, size_t len,
+> > > > > >  	if (len > nvm->regions[idx].size - to)
+> > > > > >  		len =3D nvm->regions[idx].size - to;
+> > > > > >
+> > > > > > +	ret =3D pm_runtime_resume_and_get(mtd->dev.parent);
+> > > > > > +	if (ret < 0) {
+> > > > > > +		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
+> > > > > > +		return ret;
+> > > > > > +	}
+> > > > > > +
+> > > > > >  	guard(mutex)(&nvm->lock);
+> > > > > >
+> > > > > >  	ret =3D idg_write(nvm, region, to, len, buf);
+> > > > > >  	if (ret < 0) {
+> > > > > >  		dev_dbg(&mtd->dev, "write failed with %zd\n", ret);
+> > > > > > -		return ret;
+> > > > > > +	} else {
+> > > > > > +		*retlen =3D ret;
+> > > > > > +		ret =3D 0;
+> > > > > >  	}
+> > > > > >
+> > > > > > -	*retlen =3D ret;
+> > > > > > -
+> > > > > > -	return 0;
+> > > > > > +	pm_runtime_mark_last_busy(mtd->dev.parent);
+> > > > > > +	pm_runtime_put_autosuspend(mtd->dev.parent);
+> > > > > > +	return ret;
+> > > > > >  }
+> > > > > >
+> > > > > >  static void intel_dg_nvm_release(struct kref *kref) @@ -722,6
+> > +754,17
+> > > > > > @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_d=
+ev,
+> > > > > >  		n++;
+> > > > > >  	}
+> > > > > >
+> > > > > > +	pm_runtime_enable(device);
+> > > > > > +
+> > > > > > +	pm_runtime_set_autosuspend_delay(device,
+> > > > > INTEL_DG_NVM_RPM_TIMEOUT);
+> > > > > > +	pm_runtime_use_autosuspend(device);
+> > > > >
+> > > > > something looks strange here...
+> > > > > on the functions above you get and put references for the parent =
+device
+> > > > > directly.
+> > > > > But here you enable the rpm for this device.
+> > > > >
+> > > > > If I remember correctly from some old experiments, the rpm is sma=
+rt
+> > enough
+> > > > > and wake up the parent before waking up the child. So I'm wonderi=
+ng if
+> > we
+> > > > > should only do the child without the parent.
+> > > > Agree parent can't runtime suspend ind if it has active child.
+> > > > Let this driver have it's own get/put routine instead of parent.
+> > > > Thanks,
+> > > > Anshuman Gupta.
+> > >
+> > > I need to wake DG card before the MTD device is established to scan t=
+he
+> > partition table on flash.
+> > > Thus, if I move rpm down to MTD device I should enable and take parent
+> > (auxiliary device) rpm anyway.
+> > =
+
+> > That's the part that I'm not sure if I agree. if I remember from some
+> > experiments in the past,
+> > when you call to wake up the child, the parent will wakeup first anyway.
+> > =
+
+> The child (mtd device) does not exist at this point of time.
+> To create MTD device, the partition table should be provided
+> and it read directly from flash that should be powered to do read.
+
+I don't understand... you have the mtd->dev at this point... this is
+the one you should be touching, not the mtd->dev.parent... even at the
+probe, but moreover on everywhere else as well.
+
+> =
+
+> > > Considering above, is this move is justified?
+> > > Also, MTD drivers tend to enable parent rpm, not its own one.
+> > =
+
+> > What other drivers are you looking for reference?
+> =
+
+> drivers/mtd/nand/raw/tegra_nand.c
+> drivers/mtd/nand/raw/renesas-nand-controller.c
+> drivers/mtd/maps/physmap-core.c
+
+I see they getting pdev->dev... not the parent...
+
+> =
+
+> > =
+
+> > >
+> > > - -
+> > > Thanks,
+> > > Sasha
+> > >
+> > >
+> > >
+> > > > >
+> > > > > Cc: Imre Deak <imre.deak@intel.com>
+> > > > > Cc: Anshuman Gupta <anshuman.gupta@intel.com>
+> > > > >
+> > > > > > +
+> > > > > > +	ret =3D pm_runtime_resume_and_get(device);
+> > > > > > +	if (ret < 0) {
+> > > > > > +		dev_err(device, "rpm: get failed %d\n", ret);
+> > > > > > +		goto err_norpm;
+> > > > > > +	}
+> > > > > > +
+> > > > > >  	nvm->base =3D devm_ioremap_resource(device, &invm->bar);
+> > > > > >  	if (IS_ERR(nvm->base)) {
+> > > > > >  		dev_err(device, "mmio not mapped\n"); @@ -744,9 +787,13
+> > > > > @@ static
+> > > > > > int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+> > > > > >
+> > > > > >  	dev_set_drvdata(&aux_dev->dev, nvm);
+> > > > > >
+> > > > > > +	pm_runtime_put(device);
+> > > > > >  	return 0;
+> > > > > >
+> > > > > >  err:
+> > > > > > +	pm_runtime_put(device);
+> > > > > > +err_norpm:
+> > > > > > +	pm_runtime_disable(device);
+> > > > > >  	kref_put(&nvm->refcnt, intel_dg_nvm_release);
+> > > > > >  	return ret;
+> > > > > >  }
+> > > > > > @@ -758,6 +805,8 @@ static void intel_dg_mtd_remove(struct
+> > > > > auxiliary_device *aux_dev)
+> > > > > >  	if (!nvm)
+> > > > > >  		return;
+> > > > > >
+> > > > > > +	pm_runtime_disable(&aux_dev->dev);
+> > > > > > +
+> > > > > >  	mtd_device_unregister(&nvm->mtd);
+> > > > > >
+> > > > > >  	dev_set_drvdata(&aux_dev->dev, NULL);
+> > > > > > --
+> > > > > > 2.43.0
+> > > > > >
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
