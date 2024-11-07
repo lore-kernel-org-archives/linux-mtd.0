@@ -4,87 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20665D5AE79
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 09:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92669D35E5D
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 10:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Dv4sn7f4GUy7uT1fMQOrpPS1va75ujYqDczm9MtbFAY=; b=hbjbt14TZnIwxd
-	beU6zTW5TGJe+LrcBOxsK2tjGn6KmvJzNZadPl9RiNvulYKQ4otgdaxDY84l3WL8Oz4gVBNlcT1+P
-	6o9qJEshQRpSMflQRv4P4m5X9oymaaCpo5nOpdx6ddqMfSaHySbmKm5LSNzvt9Bs/GVmNXaXomSKH
-	bxiTxrQdJnEpCyKIDzGECB7DMMENmyozkX9eeEvfuMH0/8hTmm0qpNy6Ah/40HkccsykEYcXawnuD
-	78emHeoUuhCxurjDFCsgdng0UB5RUHLQbWYY46jZynoXn485BP04fgPsCXmx5hhVsSEiSD19ZC393
-	HT5ZAMjUWAr/l0OE4kQg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=n8C/O/XrKPWqpraWQad/CPqVxEjLvjfzxB3oW3ZuWaA=; b=QPyNaG9bx8bLAK
+	8cqyg2+XpfECbaRUBBBPZegkhsdF2lOz49Pr9hAV2lYRJppT/LtjcwTaJnFjoneJ1LtLK8hRgY8Gt
+	umlRfOx/M51UCm8ft69NMqFEZJTK6NXc++xVRaqqmd+v3uKo8hXjVTP8Ycpom/TZuaQMn9dO2ZNGC
+	qHyomRwBo1eSH5fR7Fng117I/9pFaoLGmDEDiPGyawPv4/w9KfKX3gtC0FjOfcUfQ0U3E3Ttiv/le
+	kzXeJQTEhathdmLlvoLfyY4dMYOkVDTovh4jqlxiDBLft+aEYTXKr1D3NyEiI4wr2AMuSV7foTPLo
+	hXuWmmjbNciijifqj40w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8yrO-00000006ImG-3uE0;
-	Thu, 07 Nov 2024 09:31:26 +0000
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	id 1t8zgz-00000006SWN-3fTY;
+	Thu, 07 Nov 2024 10:24:45 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8yrL-00000006Ilj-341p
+	id 1t8zZn-00000006R7U-3OFE
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Nov 2024 09:31:24 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2e3fca72a41so602673a91.1
-        for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2024 01:31:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730971882; x=1731576682; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JeMAIR9iEI5n6d08kWR1HWHfaPm/uZGrAZ7QGzkzYV8=;
-        b=V/Xa+SPpGO5+x9pPbbHmDyIblvwnQNSdp9aWIDCXkDac6Pb1FZiPeeQLJ3m8j2LEE3
-         0pULpreStSZ1q5AYeO1gOqkeFgUpP7ioZM2CJUtd5fzYzM7ro8fmLPgVPCTzWqtNECyK
-         PQ3G3w9h8s+99PHgh2okkULjJb8zEgSboC9XNLAk1MYulsOYTuxtrifCZNZcGxdft9xS
-         Aa/jhaDoHWFadHy45KJ90yx/rnTv5LckyR4i6zDLVY3vH1cDAAjcadZyIiO1PwWfLXqx
-         aFI100EKJD4AC9ulDuc8xIX5p9KncYUnP/G6wTr9tTDCiMzUD2h6izNZmflLq/E9IKVU
-         2GZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730971882; x=1731576682;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JeMAIR9iEI5n6d08kWR1HWHfaPm/uZGrAZ7QGzkzYV8=;
-        b=KzQUrCygLqpd6UGJZZyiDDOIXVsnB4RfnbzzAL333CjI/8c/SrI/D3LphYkxnGSM+o
-         SIODpJD77e8qXgY9OvF9NC3j5xyewCbsZTbi4KTrGWxaEzBGefkVjAiJ63GQlAtrzVYL
-         m6Yda41FaGcaVpwYEqaMg9+7VbkFBjO94H7tv3VfbotYtv9JEauXMsl5COqap732DSIm
-         q233htKHBGMCfbyIAf6Tt0ozMytcbpHhmARO1yLwIF9WTMyi61qsKCtrlXy4ijyJPzGP
-         qW9unsEa6TyvJkjLtTSinSSc5GB3ga/qlrQEtB/f295dADfgoE6YW89PiTfrubNMDfK5
-         3N9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWShJPPb7EER1jgK+UTVCLAx4D/eY/A178RQNzR1RLSlNHSjP00FvnkxcFeBacRKPw0F+Z7LojaRbc=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxSyknwvQ+w0vVPAKXimr5VQZLfe4TUm2jig5LuYNMge88ag1VI
-	PySnxw5l1DvdIM5ZwTLlJTyI1so+JaUPmtuNW4XlpM15gH45/jef
-X-Google-Smtp-Source: AGHT+IFrRRrnlLAowFtunzpTvMHx7ihaYENBpR9i88LgwFXGyQ6Dgby+fj35g8yAa++m97kR3E8MSA==
-X-Received: by 2002:a17:90b:5444:b0:2e2:8995:dd1b with SMTP id 98e67ed59e1d1-2e9aaff9a68mr467311a91.3.1730971882207;
-        Thu, 07 Nov 2024 01:31:22 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e99a4fae10sm3015116a91.11.2024.11.07.01.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 01:31:21 -0800 (PST)
-Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 181048015D;
-	Thu,  7 Nov 2024 17:37:59 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: alvinzhou@mxic.com.tw,
-	leoyu@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH] mtd: spi-nor: core: replace dummy buswidth from addr to data
-Date: Thu,  7 Nov 2024 17:30:16 +0800
-Message-Id: <20241107093016.151448-1-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	Thu, 07 Nov 2024 10:17:21 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 99E7A5C5653;
+	Thu,  7 Nov 2024 10:16:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A13DC4CED2;
+	Thu,  7 Nov 2024 10:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730974639;
+	bh=ftccsi9pXS5GYpa1yQsXJVtN5jjl2k8iuGKq2B9q32U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QxSjIUBdjmWTtcRcpmXznk3+uzGx6OZ5MaP2TX2QpIktW0c55qCsSgWRsaDfYQweM
+	 341FnzzKv+aeXrcsVWZ98VZhEQBUum4/BB0KyDkHouTN179BqBuo33OrOULgnNRAjh
+	 ChLGyerJKxLGrvYmxRToZhkqEd/FtFbwqLtaRz+we03h3FOPh7YlyPwzBOVMz8+70M
+	 hMojf8oF8caz1SC7Za8td11CknAeoMMoTnMbx4UmH9PxUJuO2XqKoMFuxaf2EEjp9c
+	 bX57oyk8qKYLDjvd1EnG3FJqg7PZB4G5OK6pOYwPJvfKNYS3WfL61CnI9iHZEL4qLu
+	 3iv1tBJGKBsyw==
+Date: Thu, 7 Nov 2024 11:17:14 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] dt-bindings: mtd: davinci: convert to yaml
+Message-ID: <5r6j26qwcxyppxicdqih6tskb2qxkb5phzjtwqv47iqb4qupkp@zxujctq7ot6k>
+References: <20241107-ondie-v6-0-f70905dc12bf@gmail.com>
+ <20241107-ondie-v6-2-f70905dc12bf@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20241107-ondie-v6-2-f70905dc12bf@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241107_013123_792587_6AA45D21 
-X-CRM114-Status: GOOD (  12.31  )
+X-CRM114-CacheID: sfid-20241107_021719_957450_4DB783E0 
+X-CRM114-Status: GOOD (  18.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,41 +76,153 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+On Thu, Nov 07, 2024 at 10:19:54AM +0100, Marcus Folkesson wrote:
+> Convert the bindings to yaml format.
+> 
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> ---
+>  .../devicetree/bindings/mtd/davinci-nand.txt       |  94 ---------------
+>  .../devicetree/bindings/mtd/ti,davinci-nand.yaml   | 134 +++++++++++++++++++++
+>  2 files changed, 134 insertions(+), 94 deletions(-)
 
-The default dummy cycle for Macronix SPI NOR flash in Octal Output
-Read Mode(1-1-8) is 20.
+...
 
-Currently, the dummy buswidth is set according to the address bus width.
-In the 1-1-8 mode, this means the dummy buswidth is 1. When converting
-dummy cycles to bytes, this results in 20 x 1 / 8 = 2 bytes, causing the
-host to read data 4 cycles too early.
+> +allOf:
+> +  - $ref: nand-controller.yaml
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,davinci-nand
+> +      - ti,keystone-nand
+> +
+> +  reg:
+> +    items:
+> +      - description:
+> +          Access window.
 
-Since the protocol data buswidth is always greater than or equal to the
-address buswidth. Setting the dummy buswidth to match the data buswidth
-increases the likelihood that the dummy cycle-to-byte conversion will be
-divisible, preventing the host from reading data prematurely.
+Merge two lines. See other files how they do it.
 
-Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
----
- drivers/mtd/spi-nor/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +      - description:
+> +          AEMIF control registers
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f9c189ed7353..c7aceaa8a43f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -89,7 +89,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 		op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
- 
- 	if (op->dummy.nbytes)
--		op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
-+		op->dummy.buswidth = spi_nor_get_protocol_data_nbits(proto);
- 
- 	if (op->data.nbytes)
- 		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
--- 
-2.25.1
+Merge two lines
+
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+
+These two properties are not needed, drop. I don't understand why did
+they appear here. Changelog also does no explain it.
+
+> +
+> +  partitions:
+> +    $ref: /schemas/mtd/partitions/partitions.yaml
+> +
+> +  ti,davinci-chipselect:
+> +    description:
+> +      Number of chipselect. Indicate on the davinci_nand driver which
+> +      chipselect is used for accessing the nand.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 3]
+> +
+> +  ti,davinci-mask-ale:
+> +    description:
+> +      Mask for ALE. Needed for executing address phase. These offset will be
+> +      added to the base address for the chip select space the NAND Flash
+> +      device is connected to.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0x08
+> +
+> +  ti,davinci-mask-cle:
+> +    description:
+> +      Mask for CLE. Needed for executing command phase. These offset will be
+> +      added to the base address for the chip select space the NAND Flash device
+> +      is connected to.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0x10
+> +
+> +  ti,davinci-mask-chipsel:
+> +    description:
+> +      Mask for chipselect address. Needed to mask addresses for given
+> +      chipselect.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0
+> +
+> +  ti,davinci-ecc-bits:
+> +    description: Used ECC bits.
+> +    enum: [1, 4]
+> +
+> +  ti,davinci-ecc-mode:
+> +    description: Operation mode of the NAND ECC mode.
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    enum: [none, soft, hw, on-die]
+> +    deprecated: true
+> +
+> +  ti,davinci-nand-buswidth:
+> +    description: Bus width to the NAND chip
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [8, 16]
+> +    default: 8
+> +    deprecated: true
+> +
+> +  ti,davinci-nand-use-bbt:
+> +    type: boolean
+> +    description:
+> +      Use flash based bad block table support. OOB identifier is saved in OOB
+> +      area.
+> +    deprecated: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+
+Drop these two.
+
+> +  - ti,davinci-chipselect
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    bus {
+> +      #address-cells = <2>;
+> +      #size-cells = <1>;
+> +
+> +      nand-controller@2000000,0 {
+> +        compatible = "ti,davinci-nand";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        reg = <0 0x02000000 0x02000000
+> +        1 0x00000000 0x00008000>;
+
+Two items must be encoded as two items, so two <> <>
+Also messed alignment. See DTS coding style.
+
+> +
+> +        ti,davinci-chipselect = <1>;
+> +        ti,davinci-mask-ale = <0>;
+> +        ti,davinci-mask-cle = <0>;
+> +        ti,davinci-mask-chipsel = <0>;
+> +
+> +        ti,davinci-nand-buswidth = <16>;
+> +        ti,davinci-ecc-mode = "hw";
+> +        ti,davinci-ecc-bits = <4>;
+> +        ti,davinci-nand-use-bbt;
+> +
+> +        partitions {
+
+Where are the partitions documented? In which binding? Don't you miss
+mtd.yaml? I think this binding misses some references, but I am not sure
+which ones.
+
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
