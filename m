@@ -4,109 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B9CFD43358
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 12:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 557C7D4335E
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 13:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WLWGsxr/ULyGB5xLViECQ3aXfUMsgikc8A5aL968o1k=; b=ruTcVG06Swtv/a
-	N5WnTsGX3dxLR5Vg709qHydaTQb23uh58YMxfIM6KaA7LKqby4kwej279KADRY6FT46UD6uQtOT48
-	LswMMzepuRvIgIIGwlfXKp+vA1cW/AC2hGGpin2jcJ35gJqZsGbee/lmBZCBNmSOicgGt9M1BlfT3
-	HHmNNLWOGwTudQAUywo8OboSQ8SxgrYh6p2PxE3udB6yDoeOLbQWXqXbxtWjCPc8YYR4NuErdSaa0
-	DD/t5my1cfUKvPdS1amVYf3HOiXWUUF+p6TXOhVpTclMOhTOeWFTWJpY0B0cb4aB80fu+x9AuOl9V
-	yh0/eO5Sa26LPRSCgY8w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zzLJZwcRZW9A+GIuB3K65P4evrA1vxiab+jyjcxxonM=; b=BdFnVCmrhke9Zr
+	LlrvjxtsJoCDHWY4rk1vZfZu4Rha0Gx2NRwbfRulsYAgrC/wmF8wP0gtWzcabWLW+pdcKbDxcU2Ao
+	MgiIcInQcdkPy4KsTp3v3np8tcjgUBjKkJ/SLawkGahSoOdXu/YXABTQk8ojjy/TBCF03SkKt57ls
+	UYEEse44l9+GwMKY1RS1pgHnnVdV8Nbn7hbMXdPpJMu8KXQdZAPA3O+UB6u6o1O3iPHzMoQVCmSLl
+	BabJmhGTyCa0oc9C1J5e7lTOFh8sl94tNYz4mlOImxVNZVL7jDlisCZu5CDo9c2vbKEcxpHp7UQ7I
+	ttBhs9ehcMpoBKUq8PQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t91dF-00000006vv8-0Tsa;
-	Thu, 07 Nov 2024 12:29:01 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1t92Wm-000000075JY-0Io2;
+	Thu, 07 Nov 2024 13:26:24 +0000
+Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t91c0-00000006vmC-0icS
+	id 1t92WM-0000000756i-16Sj
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Nov 2024 12:27:46 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 5A71CA43D50;
-	Thu,  7 Nov 2024 12:25:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2E32C4CECC;
-	Thu,  7 Nov 2024 12:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730982462;
-	bh=TnwC1JH2SMPjiUI+V5r4vt7vcJF+1LBt8EShLlaGUHs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IDZm0qDseQwJfyLNu3Y5gM1bV+kkicRCqMtwBEL8zPEGZx7ZpyHR5FVNrg95LukE9
-	 lmCnx4EmSZtL/elILuT0fS101i/ncmPV10mhAsIvRNchISdHnL2rkz8zobFquwF64t
-	 di4+BphJ+/R1fNd4pZJAb7hPVdE3+FSuv11SQV0E86e8Iw5/qo5FJSMkGIYrrs0bTt
-	 lRkku+nA9V17HSsSinD9WFaQ1RIDtqmEVFqFA/2jOi058wZlujBLgLalvfutnkmIDi
-	 JceS/6IIq4tmYzls+yIQ72smP2ZAegzQZnTuBgWRPqz8eWuUbZNJD3DZR0JPyyqEH5
-	 hut1PGv91mw/w==
-Message-ID: <e712dee2-9f53-4647-9d6c-633aa61bf494@kernel.org>
-Date: Thu, 7 Nov 2024 13:27:37 +0100
+	Thu, 07 Nov 2024 13:25:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730985958; x=1762521958;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uagjKtC12kGaC+BTqNdpDCd/i2XVgyCLnpN+l3FezaY=;
+  b=QnL5okzkEM5N4ffxrQUwSBrEDmof37RFf0iNOMIrWx5ei0Wg7zdfprX0
+   8lrL+jrJVOhMmQhPfqi7tyR8Giocv2iXLihb4ZkxYITyggkFGobNk1ChG
+   0FZi3ol8RV4HrmbG1XO/5D/5EKyitEszQ+vBJj09Ed2pRQxXOok+79eMm
+   ISX1kP+GNW9myz86vtWQ7Q7FQG2GBOJPFMxGNgEG+yp7MpIJtbh6LpDPO
+   cS7SOb2I6opAhD74ozje8cfgXNYg14ZEfgzxLlkKEt5CF+9ADGB6dD2Tq
+   /EE7/+gAyjMGoEKoemMCy0VI76iXNh3QKBN1uZnZU+GHlz77FR/L6APwM
+   w==;
+X-CSE-ConnectionGUID: fOS2Gx6WRZCMxHqfW+Vfyg==
+X-CSE-MsgGUID: W2VzK//USLeRFNGe5t8WzQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11249"; a="34750687"
+X-IronPort-AV: E=Sophos;i="6.12,266,1728975600"; 
+   d="scan'208";a="34750687"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 05:25:54 -0800
+X-CSE-ConnectionGUID: HVp9CwlkTHynF0nt3JWBsw==
+X-CSE-MsgGUID: VbVMrnp3TB2Uzjo8b9i9pw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,266,1728975600"; 
+   d="scan'208";a="89921611"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 05:25:50 -0800
+From: Alexander Usyskin <alexander.usyskin@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>
+Cc: Oren Weil <oren.jer.weil@intel.com>,
+	linux-mtd@lists.infradead.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Subject: [PATCH v2 00/10] mtd: add driver for Intel discrete graphics 
+Date: Thu,  7 Nov 2024 15:13:46 +0200
+Message-ID: <20241107131356.2796969-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/2] dt-bindings: mtd: davinci: convert to yaml
-To: Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20241107-ondie-v6-0-f70905dc12bf@gmail.com>
- <20241107-ondie-v6-2-f70905dc12bf@gmail.com>
- <5r6j26qwcxyppxicdqih6tskb2qxkb5phzjtwqv47iqb4qupkp@zxujctq7ot6k>
- <ZyyxVQww6PcYWFJU@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <ZyyxVQww6PcYWFJU@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241107_042744_378545_5135A232 
-X-CRM114-Status: UNSURE (   8.34  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241107_052558_323387_12622F9E 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,34 +99,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 07/11/2024 13:23, Marcus Folkesson wrote:
->>
->>> +
->>> +        ti,davinci-chipselect = <1>;
->>> +        ti,davinci-mask-ale = <0>;
->>> +        ti,davinci-mask-cle = <0>;
->>> +        ti,davinci-mask-chipsel = <0>;
->>> +
->>> +        ti,davinci-nand-buswidth = <16>;
->>> +        ti,davinci-ecc-mode = "hw";
->>> +        ti,davinci-ecc-bits = <4>;
->>> +        ti,davinci-nand-use-bbt;
->>> +
->>> +        partitions {
->>
->> Where are the partitions documented? In which binding? Don't you miss
->> mtd.yaml? I think this binding misses some references, but I am not sure
->> which ones.
-> 
-> I thought this covered it?
-> 
-> +  partitions:
-> +    $ref: /schemas/mtd/partitions/partitions.yaml
+Add driver for access to Intel discrete graphics card
+internal NVM device.
+Expose device on auxiliary bus by i915 and Xe drivers and
+provide mtd driver to register this device with MTD framework.
 
-O, yes, I somehow totally missed it. It's fine, thanks for explaining.
+This is a rewrite of "drm/i915/spi: spi access for discrete graphics"
+and "spi: add driver for Intel discrete graphics"
+series with connection to the Xe driver and splitting
+the spi driver part to separate module in mtd subsystem.
 
-Best regards,
-Krzysztof
+This series intended to be pushed through drm-xe-next.
+
+V2: Replace dev_* prints with drm_* prints in drm (xe and i915) patches.
+    Enable NVM device on Battlemage HW (xe driver patch)
+    Fix overwrite register address (xe driver patch)
+    Add Rodrigo's r-b
+
+Alexander Usyskin (10):
+  mtd: add driver for intel graphics non-volatile memory device
+  mtd: intel-dg: implement region enumeration
+  mtd: intel-dg: implement access functions
+  mtd: intel-dg: register with mtd
+  mtd: intel-dg: align 64bit read and write
+  mtd: intel-dg: wake card on operations
+  drm/i915/nvm: add nvm device for discrete graphics
+  drm/i915/nvm: add support for access mode
+  drm/xe/nvm: add on-die non-volatile memory device
+  drm/xe/nvm: add support for access mode
+
+ MAINTAINERS                           |   7 +
+ drivers/gpu/drm/i915/Makefile         |   4 +
+ drivers/gpu/drm/i915/i915_driver.c    |   6 +
+ drivers/gpu/drm/i915/i915_drv.h       |   3 +
+ drivers/gpu/drm/i915/i915_reg.h       |   1 +
+ drivers/gpu/drm/i915/intel_nvm.c      | 117 ++++
+ drivers/gpu/drm/i915/intel_nvm.h      |  15 +
+ drivers/gpu/drm/xe/Makefile           |   1 +
+ drivers/gpu/drm/xe/regs/xe_gsc_regs.h |   4 +
+ drivers/gpu/drm/xe/xe_device.c        |   3 +
+ drivers/gpu/drm/xe/xe_device_types.h  |   8 +
+ drivers/gpu/drm/xe/xe_heci_gsc.c      |   5 +-
+ drivers/gpu/drm/xe/xe_nvm.c           | 130 ++++
+ drivers/gpu/drm/xe/xe_nvm.h           |  15 +
+ drivers/gpu/drm/xe/xe_pci.c           |   6 +
+ drivers/mtd/devices/Kconfig           |  11 +
+ drivers/mtd/devices/Makefile          |   1 +
+ drivers/mtd/devices/mtd-intel-dg.c    | 841 ++++++++++++++++++++++++++
+ include/linux/intel_dg_nvm_aux.h      |  27 +
+ 19 files changed, 1201 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.c
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.h
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
+ create mode 100644 drivers/mtd/devices/mtd-intel-dg.c
+ create mode 100644 include/linux/intel_dg_nvm_aux.h
+
+-- 
+2.43.0
 
 
 ______________________________________________________
