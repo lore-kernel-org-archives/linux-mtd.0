@@ -4,58 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A51FD5AE72
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 08:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3722CD5AE75
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 09:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CDFJlD/05nvr6+sZdZ1BED5tQBKzG/3dIUfdD5eFAWE=; b=DT2t57os+qfwPRTsDL4B8GxzNd
-	iMfy7N3IbECFN1/2fwxLHKxzS4Rc5rrjLzSr5xkSw+y194O7nEHnJqpkwGH0xH8hFoanlsEPQGc8n
-	N0JHs5EBz+gM9jygFdqpFAV7o4I/Jk0esmaSljnq6uArUT1wutJqynB9l/LbHiCV298GsFILS+Obl
-	fg61H+Dk1PvubUE2YGgD7apK77ByLfckERuqcg3SG8VZeGdBFt2rwg5RTBUQFBKjM/4ve3sra/fYn
-	9VG2o2pVgV5KFPg+BySmj7DZk9gd/HB70CELXwveV04puJNLr80NmpTW3Bt0chhTeWK60jDalxnTA
-	QLgAo86w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=pB+lCClpETuSTNYB52D3Z/A+dyEc7Q902q6qmdSg/48=; b=d1QqVZ/AnlE0Jl
+	k9AuU2CGJsPEnRB7dvx4/QIUn9K15C4uDGOI0dnNPgqvk7uW65RiDgtTQg0mjtbeJ9qhydebWS+M1
+	4izsk91Tdytc0yRm9o+5tnyn7k5woBuSt1CLuUX7tbCBkPAbCj+MmmgzfVwsRZWkCSj8fhkU8zNx8
+	s/t5YsuvHZ6zjWjDF8qjfwjct5Pws0F5Yjz6Jq3lHPSd8TgxNRczLz3nBcsRWdBY/elygzqolyPV5
+	7drFU9+kWmTICesPDnGDZTQw2gIaaglVB1cIK7F3m3oDwxgab9kg40z1Pbv75ZVlB6n27xGyeuHhK
+	uqu/Ns+n7l2MMfdV4r7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8y3Z-000000069Hk-0NoH;
-	Thu, 07 Nov 2024 08:39:57 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35])
+	id 1t8ygg-00000006H4F-0u2Q;
+	Thu, 07 Nov 2024 09:20:22 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t8y3V-000000069Gc-3qNX
+	id 1t8yge-00000006H36-1snl
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Nov 2024 08:39:56 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xkb7D20N1z1SCjb;
-	Thu,  7 Nov 2024 16:38:00 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1837F1A0188;
-	Thu,  7 Nov 2024 16:39:43 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 7 Nov 2024 16:39:42 +0800
-Subject: Re: [PATCH RFC] ubifs: Fix use-after-free in ubifs_tnc_end_commit
-To: Waqar Hameed <waqar.hameed@axis.com>, Richard Weinberger <richard@nod.at>,
-	Sascha Hauer <s.hauer@pengutronix.de>
-CC: <kernel@axis.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Ryder Wang <rydercoding@hotmail.com>
-References: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <0f040e0a-c27f-2f29-6d9e-9c7152a18513@huawei.com>
-Date: Thu, 7 Nov 2024 16:39:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Thu, 07 Nov 2024 09:20:21 +0000
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-539f76a6f0dso577803e87.1
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2024 01:20:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730971218; x=1731576018; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=smTKmYgVjf2tZh/nJwAXDtC0KskLoU7un/mwCANgBrg=;
+        b=MhhGSwGiDDKNiTWdh9gsj1gpgy6rKWWL2s8nCV00GBMxpwGcDzzzbxKha5YhbgGuXO
+         BmPDY6Q7BDntp+FfuBNjLypozUGcxKtGvyROCBEc16pNALqdc8OOXCHxMuaS1yD+yGg/
+         CERExiot4/SbvAdDT/r5+FBhUIJx32BbWMF/4bDXRr3S97gs1Ci8AJl+oX0QVSYwBndf
+         1dsgWg0gDqiugF8Oe4x4/jGH1r+S1yYgbBn44GpsX+DVsqZGW1OK04tlVw1IaC/ZpS/m
+         GQgsHYfp7zqD4D8X0O624UpOTpDFIozBI5Xwg21HZPs2KT/yVvkrI5ffc5HfBYh1sNCi
+         6yLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730971218; x=1731576018;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=smTKmYgVjf2tZh/nJwAXDtC0KskLoU7un/mwCANgBrg=;
+        b=rlQkqxgRgp4IbqSFSr+2fPmPIxxSEUkhWFjLPJO0VJprVm2RtXTQaBodJcPCDBwU52
+         RGdYKzSIi3WsQgABSW2xhiTJ3tyCU+cpVK9d02RBBBiiDAbkr2DjDKzSF0DAk6IMHhXk
+         hRGPP065Ng+S7BgkJSzWur1Pg0TIbt4ueOCK3KiwA5xHFPafjqzKI3E4c7QMF6+udFG1
+         qgMYfTOz9UX/9Lcj1U8VMew+HHgsJ1jA3smmb8tgtibxEVrKuVCfpPNuglxnNAi+27X4
+         SqIAxX38rF8iUJiUjrjMSqXfBsTKHhsMTVcH8G5mu3OftS3OOp0VTs315MnWD0G69ExK
+         bQ8A==
+X-Gm-Message-State: AOJu0YwUhHsjmk4xDvdJk9dR7unlS5ufhwPB3WH9wynQDYbjpIFQA7Uq
+	OljHvfc3Uc3ta6t4+5EOTwMyxzKMGI6szBLtYt/UwY40DYERAVTf1QJlkt02
+X-Google-Smtp-Source: AGHT+IFuIiLW2mk1ed3zYO/2ZhWW3/RTdXo26ke6p/NuYlsoFxOGKyvFrI12iIQ0sjMuQZgqnxIZdw==
+X-Received: by 2002:a05:6512:2248:b0:53a:aea:a9e1 with SMTP id 2adb3069b0e04-53d840a6931mr152942e87.54.1730971218007;
+        Thu, 07 Nov 2024 01:20:18 -0800 (PST)
+Received: from [192.168.1.11] (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53d826a9b50sm139509e87.182.2024.11.07.01.20.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Nov 2024 01:20:16 -0800 (PST)
+From: Marcus Folkesson <marcus.folkesson@gmail.com>
+Date: Thu, 07 Nov 2024 10:19:53 +0100
+Subject: [PATCH v6 1/2] mtd: nand: davinci: add support for on-die ECC
+ engine type
 MIME-Version: 1.0
-In-Reply-To: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+Message-Id: <20241107-ondie-v6-1-f70905dc12bf@gmail.com>
+References: <20241107-ondie-v6-0-f70905dc12bf@gmail.com>
+In-Reply-To: <20241107-ondie-v6-0-f70905dc12bf@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, Marcus Folkesson <marcus.folkesson@gmail.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1761;
+ i=marcus.folkesson@gmail.com; h=from:subject:message-id;
+ bh=aEezSAYRZux5sp8R/V/BZi69L/f49HVcP44j8wR1Vf8=;
+ b=owEBbQKS/ZANAwAIAYiATm9ZXVIyAcsmYgBnLIZAFjNw3EK+EcvSnpI7MpKvyuxjbmeYprbII
+ Nj8FMoFDj+JAjMEAAEIAB0WIQQFUaLotmy1TWTBLGWIgE5vWV1SMgUCZyyGQAAKCRCIgE5vWV1S
+ MnnwEACCRn+mYJTDuG0gkPH7hwwi6zmKOcnUZD3SCKVhRNOrsVTg2PZ5Umq1fzK5h+5bE+NtpcQ
+ qifVLbFXsZRTdioh6g39Jrv/tjnmFxqWU5GaHoGpkwIBtZL3D/m/UOX+DCLhZa2X68lJs5gQBpH
+ Uh2uh2WJfKh+sPeZm1si8XFbdEH/n5c3HbALGsIcGTZ2pSMHdZmqVAkqiuc4+FPAgNZ2rhbzC+2
+ t8/LcKGCCgEpx1K6r5U66qaDxJQBXOZGcpAw3PgV61L4PaWoD+IbQgLTK8U3vqOiTWuaYHBckWy
+ 6JKidxhiuQ4LhL2L9FQ8zLyx+Q7SQ0b1qk6Vg7+heGCBXaHs+M39oaT9TFAH/b+ErC04W47hTWD
+ 3r2txc0uFt4I37L+njC8FvlU+coNkddbXzPF2anYdroxAlZ58TGuNB//yORCtwfKBAcrbUSnO4g
+ avgNppx7IgggmDscuFhSF1SUqJA+yLbypacQjgfUagaA3WXO3+GvYMQFi8RDY0bXMs9hJt/XF46
+ u8RWKZlYJS0nfN+hVEDVBS/zgcml85faQbFY7Ed1tx8L0VAREB/7vN0C+oG0+BNO/DjuDHydtH1
+ KCExe1TrVkK+xPR2gl4noWDoRbLHMj+tHZ2VnXCZAVk9glf/sj+YDMfNe08bY+UjwF+8BIkKqwV
+ d+uOlwpVh3WdK/g==
+X-Developer-Key: i=marcus.folkesson@gmail.com; a=openpgp;
+ fpr=AB91D46C7E0F6E6FB2AB640EC0FE25D598F6C127
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241107_003954_321493_3F90E784 
-X-CRM114-Status: GOOD (  12.77  )
+X-CRM114-CacheID: sfid-20241107_012020_539080_F618FC79 
+X-CRM114-Status: GOOD (  14.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,78 +108,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8xMC85IDIyOjQ2LCBXYXFhciBIYW1lZWQg0LS1wDoKPiBSdW5uaW5nCj4gCj4gICAg
-cm0gLWYgL2V0Yy90ZXN0LWZpbGUuYmluCj4gICAgZGQgaWY9L2Rldi91cmFuZG9tIG9mPS9ldGMv
-dGVzdC1maWxlLmJpbiBicz0xTSBjb3VudD02MCBjb252PWZzeW5jCj4gCj4gaW4gYSBsb29wLCB3
-aXRoIGBDT05GSUdfVUJJRlNfRlNfQVVUSEVOVElDQVRJT05gLCBLQVNBTiByZXBvcnRzOgo+IAo+
-ICAgIEJVRzogS0FTQU46IHVzZS1hZnRlci1mcmVlIGluIHViaWZzX3RuY19lbmRfY29tbWl0KzB4
-YTVjLzB4MTk1MAo+ICAgIFdyaXRlIG9mIHNpemUgMzIgYXQgYWRkciBmZmZmZmY4MDBhM2FmODZj
-IGJ5IHRhc2sgdWJpZnNfYmd0MF8yMC8xNTMKPiAKPiAgICBDYWxsIHRyYWNlOgo+ICAgICBkdW1w
-X2JhY2t0cmFjZSsweDAvMHgzNDAKPiAgICAgc2hvd19zdGFjaysweDE4LzB4MjQKPiAgICAgZHVt
-cF9zdGFja19sdmwrMHg5Yy8weGJjCj4gICAgIHByaW50X2FkZHJlc3NfZGVzY3JpcHRpb24uY29u
-c3Rwcm9wLjArMHg3NC8weDJiMAo+ICAgICBrYXNhbl9yZXBvcnQrMHgxZDgvMHgxZjAKPiAgICAg
-a2FzYW5fY2hlY2tfcmFuZ2UrMHhmOC8weDFhMAo+ICAgICBtZW1jcHkrMHg4NC8weGY0Cj4gICAg
-IHViaWZzX3RuY19lbmRfY29tbWl0KzB4YTVjLzB4MTk1MAo+ICAgICBkb19jb21taXQrMHg0ZTAv
-MHgxMzQwCj4gICAgIHViaWZzX2JnX3RocmVhZCsweDIzNC8weDJlMAo+ICAgICBrdGhyZWFkKzB4
-MzZjLzB4NDEwCj4gICAgIHJldF9mcm9tX2ZvcmsrMHgxMC8weDIwCj4gCj4gICAgQWxsb2NhdGVk
-IGJ5IHRhc2sgNDAxOgo+ICAgICBrYXNhbl9zYXZlX3N0YWNrKzB4MzgvMHg3MAo+ICAgICBfX2th
-c2FuX2ttYWxsb2MrMHg4Yy8weGQwCj4gICAgIF9fa21hbGxvYysweDM0Yy8weDViYwo+ICAgICB0
-bmNfaW5zZXJ0KzB4MTQwLzB4MTZhNAo+ICAgICB1Ymlmc190bmNfYWRkKzB4MzcwLzB4NTJjCj4g
-ICAgIHViaWZzX2pubF93cml0ZV9kYXRhKzB4NWQ4LzB4ODcwCj4gICAgIGRvX3dyaXRlcGFnZSsw
-eDM2Yy8weDUxMAo+ICAgICB1Ymlmc193cml0ZXBhZ2UrMHgxOTAvMHg0ZGMKPiAgICAgX193cml0
-ZXBhZ2UrMHg1OC8weDE1NAo+ICAgICB3cml0ZV9jYWNoZV9wYWdlcysweDM5NC8weDgzMAo+ICAg
-ICBkb193cml0ZXBhZ2VzKzB4MWYwLzB4NWIwCj4gICAgIGZpbGVtYXBfZmRhdGF3cml0ZV93YmMr
-MHgxNzAvMHgyNWMKPiAgICAgZmlsZV93cml0ZV9hbmRfd2FpdF9yYW5nZSsweDE0MC8weDE5MAo+
-ICAgICB1Ymlmc19mc3luYysweGU4LzB4MjkwCj4gICAgIHZmc19mc3luY19yYW5nZSsweGMwLzB4
-MWU0Cj4gICAgIGRvX2ZzeW5jKzB4NDAvMHg5MAo+ICAgICBfX2FybTY0X3N5c19mc3luYysweDM0
-LzB4NTAKPiAgICAgaW52b2tlX3N5c2NhbGwuY29uc3Rwcm9wLjArMHhhOC8weDI2MAo+ICAgICBk
-b19lbDBfc3ZjKzB4YzgvMHgxZjAKPiAgICAgZWwwX3N2YysweDM0LzB4NzAKPiAgICAgZWwwdF82
-NF9zeW5jX2hhbmRsZXIrMHgxMDgvMHgxMTQKPiAgICAgZWwwdF82NF9zeW5jKzB4MWE0LzB4MWE4
-Cj4gCj4gICAgRnJlZWQgYnkgdGFzayA0MDM6Cj4gICAgIGthc2FuX3NhdmVfc3RhY2srMHgzOC8w
-eDcwCj4gICAgIGthc2FuX3NldF90cmFjaysweDI4LzB4NDAKPiAgICAga2FzYW5fc2V0X2ZyZWVf
-aW5mbysweDI4LzB4NGMKPiAgICAgX19rYXNhbl9zbGFiX2ZyZWUrMHhkNC8weDEzYwoKSGkgV2Fx
-YXIsIGlzIHRoYXQgbGluZSAyNjM5ID8KMjU0MCBzc3RhdGljIGludCB0bmNfZGVsZXRlKCkKMjU0
-MSB7CjI2MDggICAgICAgICBpZiAoIXpub2RlLT5wYXJlbnQpIHsKMjYwOSAgICAgICAgICAgICAg
-ICAgd2hpbGUgKHpub2RlLT5jaGlsZF9jbnQgPT0gMSAmJiB6bm9kZS0+bGV2ZWwgIT0gMCkgewoy
-NjM0ICAgICAgICAgICAgICAgICAgICAgICAgIGlmICh6cC0+Y25leHQpIHsKLi4uCjI2MzggICAg
-ICAgICAgICAgICAgICAgICAgICAgfSBlbHNlCjI2MzkgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBrZnJlZSh6cCk7CjI2NDQgfQoKPiAgICAga2ZyZWUrMHhjNC8weDNhMAo+ICAgICB0
-bmNfZGVsZXRlKzB4M2Y0LzB4ZTQwCj4gICAgIHViaWZzX3RuY19yZW1vdmVfcmFuZ2UrMHgzNjgv
-MHg3M2MKPiAgICAgdWJpZnNfdG5jX3JlbW92ZV9pbm8rMHgyOWMvMHgyZTAKPiAgICAgdWJpZnNf
-am5sX2RlbGV0ZV9pbm9kZSsweDE1MC8weDI2MAo+ICAgICB1Ymlmc19ldmljdF9pbm9kZSsweDFk
-NC8weDJlNAo+ICAgICBldmljdCsweDFjOC8weDQ1MAo+ICAgICBpcHV0KzB4MmEwLzB4M2M0Cj4g
-ICAgIGRvX3VubGlua2F0KzB4MmNjLzB4NDkwCj4gICAgIF9fYXJtNjRfc3lzX3VubGlua2F0KzB4
-OTAvMHgxMDAKPiAgICAgaW52b2tlX3N5c2NhbGwuY29uc3Rwcm9wLjArMHhhOC8weDI2MAo+ICAg
-ICBkb19lbDBfc3ZjKzB4YzgvMHgxZjAKPiAgICAgZWwwX3N2YysweDM0LzB4NzAKPiAgICAgZWww
-dF82NF9zeW5jX2hhbmRsZXIrMHgxMDgvMHgxMTQKPiAgICAgZWwwdF82NF9zeW5jKzB4MWE0LzB4
-MWE4Cj4gCgpMb29rcyBsaWtlIHRoZXJlIGlzIG9uZSBwb3NzaWJpbGl0eToKMS4gdG5jX2luc2Vy
-dCgpIHRyaWdnZXJzIGEgVE5DIHRyZWUgc3BsaXQ6CiAgICB6cm9vdAogICAgLwogICB6X3AxCiAg
-IC8Kem4KICAgel9wMSBpcyBmdWxsLCBhZnRlciBpbnNlcnRpbmcgem5fbmV3KGtleSBvcmRlciBp
-cyBzbWFsbGVyIHRoYXQgem4pIAp1bmRlciB6X3AxLCB6bi0+cGFyZW50IGlzIHN3aXRjaGVkIHRv
-IHpfcDIsIGJ1dCB6bi0+Y3BhcmVudCBpcyBzdGlsbCB6X3AxOgogICAgenJvb3QKICAgIC8gICAg
-XAogICB6X3AxICB6X3AyCiAgIC8gICAgICBcCnpuX25ldyAgIHpuCjIuIHRuY19kZWxldGUoKSBy
-ZW1vdmVzIGFsbCB6bm9kZXMgZXhjZXB0IHRoZSAnem4nOgogICAgenJvb3QKICAgICAgIFwKICAg
-ICAgIHpfcDIKICAgICAgICAgXAogICAgICAgICB6bgogICAgIFROQyB0cmVlIGlzIGNvbGxhcHNl
-ZCwgenJvb3QgYW5kIHpfcDIgYXJlIGZyZWVkOgogICAgIHpyb290Jyh6bikKMy4gZ2V0X3pub2Rl
-c190b19jb21taXQoKSBmaW5kcyBvbmx5IG9uZSB6bm9kZSh6biwgd2hpY2ggaXMgYWxzbyB6cm9v
-dCksIAp6bi0+Y3BhcmVudCBpcyBub3QgdXBkYXRlZCBhbmQgc3RpbGwgcG9pbnRzIHRvIHpfcDEo
-d2hpY2ggd2FzIGZyZWVkKS4KNC4gd3JpdGVfaW5kZXgoKSBhY2Nlc3NlcyB0aGUgem4tPmNwYXJl
-bnQtPnpicmFuY2gsIHdoaWNoIHRyaWdnZXJzIGFuIFVBRiEKClRyeSBmb2xsb3dpbmcgbW9kaWZp
-Y2F0aW9uIHRvIHZlcmlmeSB3aGV0aGVyIHRoZSBwcm9ibGVtIGlzIGZpeGVkOgpkaWZmIC0tZ2l0
-IGEvZnMvdWJpZnMvdG5jX2NvbW1pdC5jIGIvZnMvdWJpZnMvdG5jX2NvbW1pdC5jCmluZGV4IGE1
-NWUwNDgyMmQxNi4uN2M0M2UwY2NmNmQ0IDEwMDY0NAotLS0gYS9mcy91Ymlmcy90bmNfY29tbWl0
-LmMKKysrIGIvZnMvdWJpZnMvdG5jX2NvbW1pdC5jCkBAIC02NTcsNiArNjU3LDggQEAgc3RhdGlj
-IGludCBnZXRfem5vZGVzX3RvX2NvbW1pdChzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKICAgICAgICAg
-ICAgICAgICB6bm9kZS0+YWx0ID0gMDsKICAgICAgICAgICAgICAgICBjbmV4dCA9IGZpbmRfbmV4
-dF9kaXJ0eSh6bm9kZSk7CiAgICAgICAgICAgICAgICAgaWYgKCFjbmV4dCkgeworICAgICAgICAg
-ICAgICAgICAgICAgICB1Ymlmc19hc3NlcnQoYywgIXpub2RlLT5wYXJlbnQpOworICAgICAgICAg
-ICAgICAgICAgICAgICB6bm9kZS0+Y3BhcmVudCA9IE5VTEw7CiAgICAgICAgICAgICAgICAgICAg
-ICAgICB6bm9kZS0+Y25leHQgPSBjLT5jbmV4dDsKICAgICAgICAgICAgICAgICAgICAgICAgIGJy
-ZWFrOwogICAgICAgICAgICAgICAgIH0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Some chips, e.g. Micron MT29F1G08ABBFAH4, has a mandatory on-die ECC.
+Add "on-die" as ECC engine type in order to be compatible with those.
+
+Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+---
+ drivers/mtd/nand/raw/davinci_nand.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 392678143a36b20b42c1827eee8203dc2e41889a..79e768d337ae12f6e8d7f21f1acd4e259f4f3020 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -66,6 +66,7 @@ struct davinci_nand_pdata {
+ 
+ 	/* none  == NAND_ECC_ENGINE_TYPE_NONE (strongly *not* advised!!)
+ 	 * soft  == NAND_ECC_ENGINE_TYPE_SOFT
++	 * on-die == NAND_ECC_ENGINE_TYPE_ON_DIE
+ 	 * else  == NAND_ECC_ENGINE_TYPE_ON_HOST, according to ecc_bits
+ 	 *
+ 	 * All DaVinci-family chips support 1-bit hardware ECC.
+@@ -524,6 +525,8 @@ static struct davinci_nand_pdata
+ 				pdata->engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+ 			if (!strncmp("hw", mode, 2))
+ 				pdata->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
++			if (!strncmp("on-die", mode, 6))
++				pdata->engine_type = NAND_ECC_ENGINE_TYPE_ON_DIE;
+ 		}
+ 		if (!of_property_read_u32(pdev->dev.of_node,
+ 			"ti,davinci-ecc-bits", &prop))
+@@ -580,6 +583,7 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
+ 
+ 	switch (chip->ecc.engine_type) {
+ 	case NAND_ECC_ENGINE_TYPE_NONE:
++	case NAND_ECC_ENGINE_TYPE_ON_DIE:
+ 		pdata->ecc_bits = 0;
+ 		break;
+ 	case NAND_ECC_ENGINE_TYPE_SOFT:
+@@ -914,4 +918,3 @@ module_platform_driver(nand_davinci_driver);
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Texas Instruments");
+ MODULE_DESCRIPTION("Davinci NAND flash driver");
+-
+
+-- 
+2.47.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
