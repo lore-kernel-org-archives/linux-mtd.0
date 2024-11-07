@@ -4,80 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EC22D4336D
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 15:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E16AD43373
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Nov 2024 15:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5Y0bEpn6KMVSGGawikK1vj0+atr3L/61RJww98K1/Ok=; b=kWsvzQBw/McO5I
-	sFJJnRsIvlHhyG7DiPHmrxjv7wO32/XKnkpGoV8yGEaHH0k8qWwnfM0A9rlwQ6pIiCguJqMZnT3Kh
-	rzKn78m2+rGgSYYM7T7wyFfOj51Fk5dBkFU7DTIxTUXidfI6F+zUh44EY2R1fJf7UFjLIAv8tMm3I
-	X1aEh6HeUE7Jr1BoixmyidoXZDc6OfAkgkEseXlluE2HFImNrZVpe5XQ/8mEmt73OfvuONLTVcsH5
-	vrmuvAz9EytfE33Rkvv70Hmhq1YCAo3KTtXzFeQLmgJCNK3qvgtG9lb7HYCVYtQY+93gq53Aj0HCf
-	HA7YTB7NHUtAfL9z3kUw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=odLXFJzd132DBd+YUCAslGihSbdgHGCh++z9UG8s/oQ=; b=V8lY9XFoviyfvI
+	y1WcN/loDNCO6JxqIUyhe54S7gR7yxLnY5lpudWfLHj0u0Qi5/Z7luU4v9YnWHaQpPscdFFlPLP8t
+	HNH8ngmVIKS7+Pfc13rFsgZcGgU44qmpwSjK4sJYv6YZAaIMkv40aYC/tsDagvKmuszmFFUevK1CU
+	pVDPMkSiDE2JCVWqb135r8UEaBMTf2KRvVJVIEgW6B0FrKQ/yo4IPu1oFWZTi5/YoZHJh4lcwe50W
+	HJtyT6L87K9FmWy0j3JyD8SFusCGQ4pElwApqR4onRkZxY7CkDj2kFUipJEojNUnmDdiMwQYaHpxR
+	b34QKUkbeDIr6GMEbYbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t94Me-00000007QtS-1sAg;
-	Thu, 07 Nov 2024 15:24:04 +0000
-Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
+	id 1t94mb-00000007UU1-0tVf;
+	Thu, 07 Nov 2024 15:50:53 +0000
+Received: from mail-pl1-f177.google.com ([209.85.214.177])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t94Ma-00000007QrE-38Sm
+	id 1t94mW-00000007UT6-3mL9
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Nov 2024 15:24:02 +0000
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-37d462c91a9so647504f8f.2
-        for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2024 07:24:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730993039; x=1731597839; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iu+6qwj67jqw/aMxFHS0WsWdHyUYLzz5doN8TK6GCeA=;
-        b=AYBkBkobKhb+dzVb0R7wMhuvUEqe08D67U01oBLWPxmSpmN1fhtNjwKhDWn23rMtuG
-         QAriADZJ7QsZ1LSF+VtdrAVob4SaAd8WrQXFi2h1rJd+DUXRqUgFdETv5S3pnEC3KriU
-         O074azC4Q7UxpP73FBoMBhrm4qfbWSw1pzgiUnHX66JSr6aw2VqXXOFsVNdQ8f+54jnU
-         b7MQpm55flbYSAjVyb6NOuXrMeD10mQJSyqA5F5nUbfbE6ngunjX1LseU7tsiyPGT+Qw
-         Ibo3eIs4Ydk7WWiNLfjuUmndFLyXlnfwLjlNuSSg4H7WflT0a5kwS0/cYSjwkg4sUqVA
-         eydw==
+	Thu, 07 Nov 2024 15:50:50 +0000
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20cceb8d8b4so7917815ad.1
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2024 07:50:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730993039; x=1731597839;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iu+6qwj67jqw/aMxFHS0WsWdHyUYLzz5doN8TK6GCeA=;
-        b=kbw5o4tfKQrd8Doy63IUXRnNtP7dDJVxgKdWUxC/3PrGsfJrVFp2QzqnXFB9T1BVG4
-         yghEmRRqkridrbFDe3QNuJzLrlXW8fLSnl3LMuTXRpOMn6pkwek023C+ZXZq7Z7lY1EU
-         UZhXZ+YKWCqNLN1XGC8hJ9V+VZm+Mkg8Tmmvxvyrb0GiodQWsqUC+W1e3foe6PxDR5Yk
-         mnPoYBm6WNBDrHtKJV/Mjvh4DdrejWh6wNfgC2p2hdQna1U1+9ioZ3vhe9Zq4mso8O+A
-         XJfGlY5AZVOoQet8gxVqRi0hPMO+onl+hdAciA3IPc9zPW8mRoB8aIuC4iHTj0ifUlrH
-         y6MQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWyXoRbAc8SLs4wJSsIB7+9UFFT8QQ9GU79ZEQ5sJqy9Qfnv34nUPbfi15fgckhKl7DqGAZkIWc7N8=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy5WPW653ThCuHtCb+hXf0tDPqnUkLnkF04sFrt5Ek2/3/5dYse
-	7WpKS8M6ljbCbW7f1RYuK1Yn+P1A7jWIWcKgNigJ1/vdRN9jEHoF
-X-Google-Smtp-Source: AGHT+IHGtxXAynhb3KJmGzpenqjLjpVrlz+NUezG2N9EzScTrr3fbysZ49WwOOa/gl3juBSTlHoRwA==
-X-Received: by 2002:a5d:6d89:0:b0:374:b71f:72c9 with SMTP id ffacd0b85a97d-381f09c6060mr278504f8f.16.1730993038544;
-        Thu, 07 Nov 2024 07:23:58 -0800 (PST)
-Received: from localhost ([194.120.133.65])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381ed97e46bsm1964610f8f.30.2024.11.07.07.23.58
+        d=1e100.net; s=20230601; t=1730994647; x=1731599447;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y4g9pTMBWn8NYG8DJqu2aF9WChjDh3es1iM4dJmMreI=;
+        b=jwrWX94FDjenxBKVm0/DQKmXKYTM0Tv05v2x6TTZGqio+w884B1t1gJ46fj/bIvYNY
+         1eNQlOxAC/6Ht+pkNF0wn7SHcWImipSB2dyEMZ/13KGOJ/yFG2B93FDYwfLVLTJZn+wY
+         V839loPtmvjjOMxFsxhHfkYXCKqE/ZRyGyC8I6LMqrMlfweXoGBZR5Yedd0FILFx8CdR
+         HIwpYyHKDPJFY3Ap5UG1Sm/1YNsPWWpkUXuFTExxiMWc6/ujqIxmyrd9rlyBV1ePh46x
+         KTOQ3dDN/o8o071vTCaG3rUbQrQS0tsbzU9h0qddU1tpw94hVU9fkVFQ4Tz4UTkshKLp
+         eWFA==
+X-Forwarded-Encrypted: i=1; AJvYcCVamxagF6fSs90aZXjGvDiNOtC40Uth7DaJZOBmUV/IDOo91xLnbddwj2lj489LfoHSsgiVsqL/5qQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwA/7d9+obyyqZcsEgzq/q3rAd9XN6XJGJzknx92Mjev8EfaOkZ
+	0aBTloeRlP/JxLckSrMMFNnwO9ZLYOpEPirhNi6XafxEDpf5OiVe
+X-Google-Smtp-Source: AGHT+IEfW8mc6K7WMilatY4cRGrx/jJrVZ2Go8Ums63B2x6oVuXb+zNT4RZMBtIqDecZElfJ9fn+6w==
+X-Received: by 2002:a17:903:183:b0:210:e760:77e with SMTP id d9443c01a7336-21181184b51mr5235045ad.7.1730994647037;
+        Thu, 07 Nov 2024 07:50:47 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177e6c2ecsm13637145ad.252.2024.11.07.07.50.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 07:23:58 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
+        Thu, 07 Nov 2024 07:50:46 -0800 (PST)
+Date: Fri, 8 Nov 2024 00:50:44 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Xinhui Pan <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: ubi: remove redundant check on bytes_left at end of function
-Date: Thu,  7 Nov 2024 15:23:57 +0000
-Message-Id: <20241107152357.63387-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>,
+	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	"David E. Box" <david.e.box@linux.intel.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Frederic Barrat <fbarrat@linux.ibm.com>,
+	Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-cxl@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v2 02/10] sysfs: introduce callback
+ attribute_group::bin_size
+Message-ID: <20241107155044.GA1297107@rocinante>
+References: <20241103-sysfs-const-bin_attr-v2-0-71110628844c@weissschuh.net>
+ <20241103-sysfs-const-bin_attr-v2-2-71110628844c@weissschuh.net>
+ <20241106200513.GB174958@rocinante>
+ <2024110726-hasty-obsolete-3780@gregkh>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2024110726-hasty-obsolete-3780@gregkh>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241107_072400_919932_C270E20D 
-X-CRM114-Status: GOOD (  13.70  )
+X-CRM114-CacheID: sfid-20241107_075048_963264_17C75088 
+X-CRM114-Status: UNSURE (   9.90  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,34 +129,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In function ubi_nvmem_reg_read the while-loop can only be exiting
-of bytes_left is zero or an error has occurred. There is an exit
-return path if an error occurs, so the bytes_left can only be
-zero after that point. Hence the check for a non-zero bytes_left
-at the end of the function is redundant and can be removed. Remove
-the check and just return 0.
+Hello,
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/mtd/ubi/nvmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
+> > There exist the sysfs_update_groups(), but the BAR resource sysfs objects
+> > are currently, at least not yet, added to any attribute group.
+> 
+> then maybe they should be added to one :)
 
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-index a94a1a9aaec1..34f8c1d3cdee 100644
---- a/drivers/mtd/ubi/nvmem.c
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -55,7 +55,7 @@ static int ubi_nvmem_reg_read(void *priv, unsigned int from,
- 	if (err)
- 		return err;
- 
--	return bytes_left == 0 ? 0 : -EIO;
-+	return 0;
- }
- 
- static int ubi_nvmem_add(struct ubi_volume_info *vi)
--- 
-2.39.5
+Yeah. There is work in progress that will take care of some of this.
 
+	Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
