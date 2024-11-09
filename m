@@ -4,131 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F403D64072
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Nov 2024 18:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89E9CD64086
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Nov 2024 02:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KlepnTlmitsgFEjvuoSa/7gIjarq7EO+DtBEAW/rqMQ=; b=g2m9LWtYhgRrjW
-	fHx1blHwptNxg4SWGTU2JtnkEIkGNtqqnHdbuA5IR8VwN4mALHe1ezMLHloJrMN+Bm3T4Yc3/m8pZ
-	3+gJu6IOD3I40WJNDrExmLFSPDaEhryA/cHXiikSd4CXDy/LXbWpl5pnvcC7xBJXlxfGdfpQ7v5z7
-	y8cBvgmCO9hdm2e1YCaPxDkchqwlybp5woX1R2DDnz3nGQv9E7fdVRmm+a7Dl3Yg1it5NIBSYGnx6
-	saU+OraoJbnUEEyqWwdLdf0+nU4BRRcVIMfbg3K3jp7Ubk/xgvPNocQqcQ52bE8eB94gJEEz8Ehkb
-	ko5V/6yivdYH3IkEbAKg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7lk9NQK6Jv0fvzvodFY/BPAx0c3+svx3H0amRN+oyGE=; b=ni14l5rjPIEAkRQcZZRwNeZOUG
+	72R+fCNcGMcmEyM2MiL2oamMkLT6Gv726ggnDUDX94SoVW25xHWMnvvwbaM0uJO1k9oZLQhAOPY/5
+	nS/oLHmPitokNsaBi3hNwGFrH3LAx7iH8OEkXJN/HEUDB2PgbGRdkOHUdTN+EZfz8pR5y9DPsvWqV
+	0mcWQLXM+y1zZ24vC8MB75aCJWglnIp6sRRRHx7KqUOqcNqShX4WtF72GZ8BxXmEAXDVrw7ao+oN+
+	OjnESymB7i4poQZBO783wCHSdZrYqvct61sfMIyfRNS7PMbHSrR9j9sub1yhCE7+CAvUzmReoTGGl
+	26IJZPWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9TKL-0000000BXxX-1IL1;
-	Fri, 08 Nov 2024 18:03:21 +0000
-Received: from mail-vi1eur02on20601.outbound.protection.outlook.com ([2a01:111:f403:2607::601] helo=EUR02-VI1-obe.outbound.protection.outlook.com)
+	id 1t9bKY-0000000CWdC-454n;
+	Sat, 09 Nov 2024 02:36:06 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9TK7-0000000BXsq-0tcD
+	id 1t9bJ9-0000000CWTx-3f97
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Nov 2024 18:03:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pdmhVffJaP6zwexkPiIvUFoPqics/2EKEs1Ty7do9XV9AODlKoHKw/29Aou2//J7GwzGcE7eXM/Wx1YxzSHIaEeHPPPbYZfy3WQxuUGqRNufqs87s+YXmXKQIhxeZCks5tENt+MidOKRRcoKQG6b32XOfbQYAlcL0mlPHfI2BP2SocaJ3yGZPXPvsEybYSRV7HGpKwYycPOf6ASZLegfXal4W99Daj5y9+IGfqqDysqsCA3A4YPGe2ePhNXOngejG+uDt5uj3DlV+JIe0HSglNeY9aY9km8cjCFwtJrNCa9ZHhJwdNMf1oOpoB8ZCNL7wQ8Ahl3plLuAJz/7/zY9yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h7DbveYZRwP+c3sjVZEdbcGN3285kS8jhTCVLv1GoXc=;
- b=ZH9Bi3iRAHow7hU4XRKPv9A/IaMcwR3P2j+Fx1bgQGIx/YJER+1joVcetcOe1NiGXnMqLw1JjpSN6muPS8wf3o6mS170gwrMjr8Fq6rBKMp2p/FG0gaBn1MiSSYXiHjAGKlJy5joJ+fiX1UMwYrG0zK3U+lDZzIBcIMPF8eKsv/bDI3E7Hc/N7k5FqZp0pFTjq0EeaAdixdnIW/k28561+dK8mVeFZI1lU3HWA/RBIFJ33fiuGOilbik7abM0Jky22yiBn9e9LNCPpiaBUuIHj8k7VrbbVvEQmgH62yDcJ9z3O6VA+zhII5etQ3/EzIGTCp3Q4x8lyxcXXW70Jp0bA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 195.60.68.100) smtp.rcpttodomain=hotmail.com smtp.mailfrom=axis.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h7DbveYZRwP+c3sjVZEdbcGN3285kS8jhTCVLv1GoXc=;
- b=B5rIoUMN8cgWFnCorA3mxZ+TvKeiKJrFLYdpcfD1N5VQcWqnk1vHXedrVFBbfFAKlsfsOOoUNwM/MQJ7YlKb5kHsq1/irLeZ2H3lquiJABwfzHX/Z6WTc4yrTtY1o3ZMPYTuZAuYGMZJQoyPebZ5qNP+LpiAKH5eObX9aXbVnos=
-Received: from DUZPR01CA0053.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:469::11) by AS8PR02MB6726.eurprd02.prod.outlook.com
- (2603:10a6:20b:239::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.22; Fri, 8 Nov
- 2024 18:02:57 +0000
-Received: from DU2PEPF00028D12.eurprd03.prod.outlook.com
- (2603:10a6:10:469:cafe::53) by DUZPR01CA0053.outlook.office365.com
- (2603:10a6:10:469::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.21 via Frontend
- Transport; Fri, 8 Nov 2024 18:02:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=axis.com;
-Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
- 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com; pr=C
-Received: from mail.axis.com (195.60.68.100) by
- DU2PEPF00028D12.mail.protection.outlook.com (10.167.242.26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8137.17 via Frontend Transport; Fri, 8 Nov 2024 18:02:57 +0000
-Received: from pc52311-2249 (10.4.0.13) by se-mail01w.axis.com (10.20.40.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 8 Nov
- 2024 19:02:56 +0100
-From: Waqar Hameed <waqar.hameed@axis.com>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-CC: Richard Weinberger <richard@nod.at>, Sascha Hauer
-	<s.hauer@pengutronix.de>, <kernel@axis.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Ryder Wang <rydercoding@hotmail.com>
-Subject: Re: [PATCH RFC] ubifs: Fix use-after-free in ubifs_tnc_end_commit
-In-Reply-To: <pndttci1xgd.fsf@axis.com> (Waqar Hameed's message of "Thu, 7 Nov
-	2024 23:38:26 +0100")
-References: <1225b9b5bbf5278e5ae512177712915f1bc0aebf.1728570925.git.waqar.hameed@axis.com>
-	<0f040e0a-c27f-2f29-6d9e-9c7152a18513@huawei.com>
-	<pndttci1xgd.fsf@axis.com>
-Date: Fri, 8 Nov 2024 19:02:56 +0100
-Message-ID: <pndjzddzjqn.fsf@axis.com>
+	Sat, 09 Nov 2024 02:34:41 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xlfvn0klgzkWnS;
+	Sat,  9 Nov 2024 10:31:49 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 32A40180064;
+	Sat,  9 Nov 2024 10:34:27 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 9 Nov 2024 10:34:26 +0800
+Subject: Re: [PATCH v2] ubifs: Fix use-after-free in ubifs_tnc_end_commit
+To: Waqar Hameed <waqar.hameed@axis.com>, Richard Weinberger <richard@nod.at>,
+	Sascha Hauer <s.hauer@pengutronix.de>
+CC: <kernel@axis.com>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+References: <e7b5151bb1186e2342ed677cce0ef77592923084.1731088341.git.waqar.hameed@axis.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <3c46013e-809e-cdcf-8648-2ffe2ab6c32b@huawei.com>
+Date: Sat, 9 Nov 2024 10:34:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.4.0.13]
-X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail01w.axis.com
- (10.20.40.7)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PEPF00028D12:EE_|AS8PR02MB6726:EE_
-X-MS-Office365-Filtering-Correlation-Id: a32db78d-667a-4d23-bcec-08dd001f93ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700013|32650700017|376014|82310400026|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?2Ljq3JsECBCL/Nno0GE9Ge08ivHOEhuDKBH844ET4oj7uS3bUj4WwveMRYiZ?=
- =?us-ascii?Q?60tQ4Ol5QZSMTq1Wtoyaft4Q0GwBgw/krFK4tn6dj5/NaIm8HaHw10tyyuNC?=
- =?us-ascii?Q?xY4+kktifYYw7CXm/YfadGCej0rqNO2bRUhwp0kvoh0iQ8Cvsqp0fu+rTdpV?=
- =?us-ascii?Q?WWsUXnldPnLRGQt9/56ILBiAJU7CfAJR9yXTCj4wqa5Lg9b+fcdv/Gb0nwJA?=
- =?us-ascii?Q?NBxNhqykdLWu6ARXPM4XCfrdaUI4c4qdaHm9+QrGs80aUmoe4ps1O6joAgPQ?=
- =?us-ascii?Q?RHy7kLrjMIWCR1dM4ZjEVDjPXhD/5jGeRLigVZMw5uTvUr/44/QvHHOxZnwi?=
- =?us-ascii?Q?qA9vhoUIxcX7OBuim8EkAwAuIM2uFhCIua+8hsypfrl4idou1VnyHgq9OEGh?=
- =?us-ascii?Q?0MWB2tfKzrdDopMSbm7CIL/C8sgLV1uD1cn72b8UbA6coUXZuQ0wOWQU4XLw?=
- =?us-ascii?Q?lFU7qSHuWap2JHwBG4nQdW7OfDXnjmuZEn+7AnvdSZQ3NWpDMSA/KEZ4cJVQ?=
- =?us-ascii?Q?bc0Xh4+VncUxQWSfQQHuYafLF3UVJPngEkRH96lJxZfBCIl18rlISv91L4a7?=
- =?us-ascii?Q?n/+1xOexyofmX2ZVNoWaGsMpEUAL+a3rF5wrJ3hRcggRLhn5bUV1n6V3buT8?=
- =?us-ascii?Q?rxls7snFW43dlhcUnwznP/4zBp8nD8RXGRLEbl4MZyqaTBUogGvphKe/xwSN?=
- =?us-ascii?Q?AnejtJFdtcrOaPucTlFNjPz477fzUXpnHwRGX0PLKBac/84W7sdzKL8pfr9F?=
- =?us-ascii?Q?55UfTSZ0ZG6DXdhO+4FE3/p7Bh0TuOWiNyTiG4xOTG/uK0p5Z1rY4mNscjDU?=
- =?us-ascii?Q?mblqI65WtxHtjWVbVfXHUfz/aSrA+cPxStC3b5P6BAIsW+VwqoLFqTt6WvaH?=
- =?us-ascii?Q?JREC9qhDRo9ptIApm+7uiGVQJb8d6jt5NGLnvoZx20TeaKM0ukoFOwSCgS2p?=
- =?us-ascii?Q?20/ZcmuIT3LJX4pjEDCl+pLwLbs9s2zoUQkReRTqq1xjgf3daZX41anUdWXG?=
- =?us-ascii?Q?2ySJubO57ZhJYZsnPm2DG3pv3qDVJuY/fCiiDKQH87Yw+XK5CiWuTZsM4yfk?=
- =?us-ascii?Q?R9Y+W5YoOJUIeqJd6pUl+jhk7Fq68N4zwywsln/8OWvH81wqcRwR9biTaUKl?=
- =?us-ascii?Q?SnmQXMNxCzsaIlUTLE/kf7i/I+D0QzFUx+ecBMvLh1NUNjwpEPVNrJV0wMVt?=
- =?us-ascii?Q?gA0RmyDLM0o3ONfoy7fr5xl9ht96cWet5e+QjlXZoVa4v60Nr97G3O0V9ury?=
- =?us-ascii?Q?pyttP7+jv0t3EuzJPA5ecPHo4o5XD0/0WRlPyJvx0/htRk0tVVkXxAYkjk3B?=
- =?us-ascii?Q?f4JcjPSIYPp8JMZD27lPXx1Kp35Z1xF7rxJypJ1WpKrGWdN60+9muiGJEBMN?=
- =?us-ascii?Q?zybXhkl3++T5x4/GbKgWr7hBAf1OI9G+Ku9KBwNRcvNHQ+muVw=3D=3D?=
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(32650700017)(376014)(82310400026)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2024 18:02:57.7476
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a32db78d-667a-4d23-bcec-08dd001f93ad
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource: DU2PEPF00028D12.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR02MB6726
+In-Reply-To: <e7b5151bb1186e2342ed677cce0ef77592923084.1731088341.git.waqar.hameed@axis.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241108_100307_278770_475C7243 
-X-CRM114-Status: UNSURE (   9.42  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241108_183440_089894_1379B9CD 
+X-CRM114-Status: GOOD (  12.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,26 +67,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Nov 07, 2024 at 23:38 +0100 Waqar Hameed <waqar.hameed@axis.com> wrote:
-
-[...]
-
-> I'll let it spin for a little longer (recall that the other patch
-> "masked" the problem for almost 800 iterations).
->
-> This was quite intricate and I really enjoyed your little breakdown.
-> Thank you very much for the discussions/collaboration! I'll let you now
-> as soon as I have an updated test result (and thus send a new version).
-
-It has been running for more than 2100 iterations now (almost 24 hours)
-without any issues. I just sent a new version and added you to the
-commit footers as well. Hope that's OK!
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xMC85IDIyOjQ2LCBXYXFhciBIYW1lZWQg0LS1wDoKMyBuaXRzIGJlbG93LgoKMS4g
+TWFrZSB0aGUgdGl0bGUgYXMgJ3ViaWZzOiBhdXRoZW50aWNhdGlvbjogRml4IHVzZS1hZnRlci1m
+cmVlIGluIAp1Ymlmc190bmNfZW5kX2NvbW1pdCcKCjIuIEF0IHRoZSBiZWdpbmluZyBvZiB0aGUg
+Y29tbWl0IG1zZywgZGVzY3JpYmUgdGhlIHByb2JsZW06CkFmdGVyIFROQyB0cmVlIGluc2VydGlu
+Zyh3aGljaCBtYXkgdHJpZ2dlciBhIHpub2RlIHNwbGl0IGFuZCBjaGFuZ2UgdGhlIAp6bm9kZS0+
+cGFyZW50KSBhbmQgZGVsZXRpbmcod2hpY2ggbWF5IHRyaWdnZXIgem5vZGUgZnJlZWluZyksIHRo
+ZSAKem5vZGUtPmNwYXJlbnQod2hpY2ggc3RpbGwgcG9pbnRzIHRvIGEgZnJlZWQgem5vZGUpIG1h
+eSBub3QgYmUgdXBkYXRlZCAKYXQgdGhlIGJlZ2luaW5nIG9mIGNvbW1pdCwgd2hpY2ggY291bGQg
+dHJpZ2dlciBhbiBVQUYgcHJvYmxlbSB3aGlsZSAKYWNjZXNzaW5nIHpub2RlLT5jcGFyZW50IGlu
+IHdyaXRlX2luZGV4KCkuCgo+IFJ1bm5pbmcKPiAKPiAgICBybSAtZiAvZXRjL3Rlc3QtZmlsZS5i
+aW4KPiAgICBkZCBpZj0vZGV2L3VyYW5kb20gb2Y9L2V0Yy90ZXN0LWZpbGUuYmluIGJzPTFNIGNv
+dW50PTYwIGNvbnY9ZnN5bmMKPiAKPiBpbiBhIGxvb3AsIHdpdGggYENPTkZJR19VQklGU19GU19B
+VVRIRU5USUNBVElPTmAsIEtBU0FOIHJlcG9ydHM6Cj4gCj4gICAgQlVHOiBLQVNBTjogdXNlLWFm
+dGVyLWZyZWUgaW4gdWJpZnNfdG5jX2VuZF9jb21taXQrMHhhNWMvMHgxOTUwCj4gICAgV3JpdGUg
+b2Ygc2l6ZSAzMiBhdCBhZGRyIGZmZmZmZjgwMGEzYWY4NmMgYnkgdGFzayB1Ymlmc19iZ3QwXzIw
+LzE1Mwo+IAo+ICAgIENhbGwgdHJhY2U6CgpbLi4uXQo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy90
+bmNfY29tbWl0LmMgYi9mcy91Ymlmcy90bmNfY29tbWl0LmMKPiBpbmRleCBhNTVlMDQ4MjJkMTYu
+LmE0NjRlYjU1NzU4NSAxMDA2NDQKPiAtLS0gYS9mcy91Ymlmcy90bmNfY29tbWl0LmMKPiArKysg
+Yi9mcy91Ymlmcy90bmNfY29tbWl0LmMKPiBAQCAtNjU3LDYgKzY1Nyw3IEBAIHN0YXRpYyBpbnQg
+Z2V0X3pub2Rlc190b19jb21taXQoc3RydWN0IHViaWZzX2luZm8gKmMpCj4gICAJCXpub2RlLT5h
+bHQgPSAwOwo+ICAgCQljbmV4dCA9IGZpbmRfbmV4dF9kaXJ0eSh6bm9kZSk7Cj4gICAJCWlmICgh
+Y25leHQpIHsKCjMuIEknZCBsaWtlIHRvIGFkZCB0aGUgdGhlIGFzc2VydGlvbiAndWJpZnNfYXNz
+ZXJ0KGMsICF6bm9kZS0+cGFyZW50KTsnCj4gKwkJCXpub2RlLT5jcGFyZW50ID0gTlVMTDsKPiAg
+IAkJCXpub2RlLT5jbmV4dCA9IGMtPmNuZXh0Owo+ICAgCQkJYnJlYWs7Cj4gICAJCX0KPiAKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
