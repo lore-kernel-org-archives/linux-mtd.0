@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDC5BD12D7E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76B67D12D7C
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,38 +12,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E4lmiIPyaODrhU4DjKUctZrQsIsS+riMbUq0aGSzMOA=; b=pggpvW4dgeILFp
-	XxrAU/OYp1UAW5WjrBoLxtSC2P7v9bZuN2Yof/FTY5mU0HmCUiSZlWloDONsznG07/81BlXRr+LkN
-	7V1hru7tOp0Zz62P0NAf+00EOEAfOfBXMlX+n4SHjDwkl3dhnzh25gqHj7OghOAwY3VLR/6GWHdPC
-	WAeloo4KSJbeQCoaHO7eOSPgl+RgbCgm+xgAPMrNZjmYifLEmE6TDOH3dc0RCUQzLAXEeqHMbU5IK
-	u+yj5WOrDjrWHkhbH+8NTOrGO4GZZvlesCJAGh0ZOPuKB9u+erAuJXzwFnAHUR441KfF+V0r7mEUn
-	8GoHNlVkvslpZfBSl2jA==;
+	List-Owner; bh=k2kmv66zo7CF2CSEF00YOy4oPV4CbCLGCfxx7m0Qqd0=; b=WkNHjSxIzd240B
+	b+5o2Mj7ReYRw1u50Gb1+7URCoAp1xGqBZlp43O72Gt7I/lV6lcmREQ6Hl5Nxrs8srfxpD5Gif8AQ
+	NdoUGT9zKtLMQ3ehO9ks57NLrt0qgYaPkhpK2TyzWjnD49TzPxyjn2zCIbZOTYkBw77D+WKHSO7cD
+	iDRoha01FrrHYXbGsjf2OJFKIJZrOfhHbvIakUo/slRKUGvj7ztuTaZI5Ms8JWn9q1vkQihKapAbB
+	+AckMYi2Psf/kEgQ1yJUgGNI/AqM31a1TYN1YJ8NX8ej+JPUppUHSYPl+f5J5KB1QLWZYd0yo50IM
+	AR+ac5XNh/Hi5GOG8Saw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUI-0000000GZDB-3xQI;
-	Mon, 11 Nov 2024 07:05:26 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1tAOUN-0000000GZFf-28hb;
+	Mon, 11 Nov 2024 07:05:31 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOU5-0000000GZ4S-1ZWC
+	id 1tAOU5-0000000GZ4G-3wON
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:16 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rD4s6yz1jy0b;
-	Mon, 11 Nov 2024 15:03:24 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:19 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qC4P6QzsRVP;
+	Mon, 11 Nov 2024 15:02:31 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id BAE5C14011F;
-	Mon, 11 Nov 2024 15:05:11 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id B1EBA1800A2;
+	Mon, 11 Nov 2024 15:05:10 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:11 +0800
+ 2024 15:05:10 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 021/102] ubifs-utils: Add linux hexdump implementations lib
-Date: Mon, 11 Nov 2024 15:02:24 +0800
-Message-ID: <20241111070346.1314122-22-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 019/102] ubifs-utils: Add sorting implementations
+Date: Mon, 11 Nov 2024 15:02:22 +0800
+Message-ID: <20241111070346.1314122-20-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241110_230513_951723_8D0CEC07 
-X-CRM114-Status: GOOD (  24.54  )
+X-CRM114-CacheID: sfid-20241110_230514_543798_2EB66B56 
+X-CRM114-Status: GOOD (  33.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,7 +70,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add linux hexdump implementations lib, because function print_hex_dump()
+Add sorting implementations, because the sorting function
 is used in UBIFS linux kernel libs.
 
 This is a preparation for replacing implementation of UBIFS utils with
@@ -78,265 +78,332 @@ linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am    |   1 +
- ubifs-utils/common/defs.h    |   6 ++
- ubifs-utils/common/hexdump.c | 218 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 225 insertions(+)
- create mode 100644 ubifs-utils/common/hexdump.c
+ ubifs-utils/Makemodule.am |   2 +
+ ubifs-utils/common/sort.c | 274 ++++++++++++++++++++++++++++++++++++++++++++++
+ ubifs-utils/common/sort.h |  20 ++++
+ 3 files changed, 296 insertions(+)
+ create mode 100644 ubifs-utils/common/sort.c
+ create mode 100644 ubifs-utils/common/sort.h
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 77f54695..3211d84f 100644
+index ece8a6e9..3329b6f9 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -24,6 +24,7 @@ common_SOURCES = \
- 	ubifs-utils/common/hashtable/hashtable_itr.c \
- 	ubifs-utils/common/devtable.h \
- 	ubifs-utils/common/devtable.c \
-+	ubifs-utils/common/hexdump.c \
- 	ubifs-utils/common/ubifs.h \
- 	ubifs-utils/common/key.h \
- 	ubifs-utils/common/lpt.h \
-diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
-index 6d99a2fd..548d9dfb 100644
---- a/ubifs-utils/common/defs.h
-+++ b/ubifs-utils/common/defs.h
-@@ -26,6 +26,12 @@ enum { MKFS_PROGRAM_TYPE = 0 };
- 
- enum { ERR_LEVEL = 1, WARN_LEVEL, INFO_LEVEL, DEBUG_LEVEL };
- 
-+enum {
-+	DUMP_PREFIX_NONE,
-+	DUMP_PREFIX_ADDRESS,
-+	DUMP_PREFIX_OFFSET
-+};
-+
- #define pr_debug(fmt, ...) do { if (info_.debug_level >= DEBUG_LEVEL)	\
- 	printf("<DEBUG> %s[%d] (%s): %s: " fmt, PROGRAM_NAME, getpid(),	\
- 	       info_.dev_name, __FUNCTION__, ##__VA_ARGS__);		\
-diff --git a/ubifs-utils/common/hexdump.c b/ubifs-utils/common/hexdump.c
+@@ -10,6 +10,8 @@ common_SOURCES = \
+ 	ubifs-utils/common/rwsem.h \
+ 	ubifs-utils/common/kmem.h \
+ 	ubifs-utils/common/kmem.c \
++	ubifs-utils/common/sort.h \
++	ubifs-utils/common/sort.c \
+ 	ubifs-utils/common/defs.h \
+ 	ubifs-utils/common/crc16.h \
+ 	ubifs-utils/common/crc16.c \
+diff --git a/ubifs-utils/common/sort.c b/ubifs-utils/common/sort.c
 new file mode 100644
-index 00000000..7ac46943
+index 00000000..d585836d
 --- /dev/null
-+++ b/ubifs-utils/common/hexdump.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/ubifs-utils/common/sort.c
+@@ -0,0 +1,274 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * lib/hexdump.c
++ * A fast, small, non-recursive O(n log n) sort for the Linux kernel
++ *
++ * This performs n*log2(n) + 0.37*n + o(n) comparisons on average,
++ * and 1.5*n*log2(n) + O(n) in the (very contrived) worst case.
++ *
++ * Glibc qsort() manages n*log2(n) - 1.26*n for random inputs (1.63*n
++ * better) at the expense of stack usage and much larger code to avoid
++ * quicksort's O(n^2) worst case.
 + */
 +
 +#include <stdio.h>
++#include <stdbool.h>
++#include <linux/types.h>
 +
++#include "sort.h"
 +#include "linux_types.h"
-+#include "defs.h"
 +
-+#define __get_unaligned_t(type, ptr) ({					   \
-+	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr); \
-+	__pptr->x;								\
-+})
-+
-+#define get_unaligned(ptr)      __get_unaligned_t(typeof(*(ptr)), (ptr))
-+
-+const char hex_asc[] = "0123456789abcdef";
-+
-+#define hex_asc_lo(x)   hex_asc[((x) & 0x0f)]
-+#define hex_asc_hi(x)   hex_asc[((x) & 0xf0) >> 4]
-+
-+void print_hex_dump(const char *prefix_str, int prefix_type,
-+		    int rowsize, int groupsize,
-+		    const void *buf, size_t len, bool ascii);
 +/**
-+ * hex_dump_to_buffer - convert a blob of data to "hex ASCII" in memory
-+ * @buf: data blob to dump
-+ * @len: number of bytes in the @buf
-+ * @rowsize: number of bytes to print per line; must be 16 or 32
-+ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
-+ * @linebuf: where to put the converted data
-+ * @linebuflen: total size of @linebuf, including space for terminating NUL
-+ * @ascii: include ASCII after the hex output
++ * is_aligned - is this pointer & size okay for word-wide copying?
++ * @base: pointer to data
++ * @size: size of each element
++ * @align: required alignment (typically 4 or 8)
 + *
-+ * hex_dump_to_buffer() works on one "line" of output at a time, i.e.,
-+ * 16 or 32 bytes of input data converted to hex + ASCII output.
++ * Returns true if elements can be copied using word loads and stores.
++ * The size must be a multiple of the alignment.
 + *
-+ * Given a buffer of u8 data, hex_dump_to_buffer() converts the input data
-+ * to a hex + ASCII dump at the supplied memory location.
-+ * The converted output is always NUL-terminated.
-+ *
-+ * E.g.:
-+ *   hex_dump_to_buffer(frame->data, frame->len, 16, 1,
-+ *			linebuf, sizeof(linebuf), true);
-+ *
-+ * example output buffer:
-+ * 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
-+ *
-+ * Return:
-+ * The amount of bytes placed in the buffer without terminating NUL. If the
-+ * output was truncated, then the return value is the number of bytes
-+ * (excluding the terminating NUL) which would have been written to the final
-+ * string if enough space had been available.
++ * For some reason, gcc doesn't know to optimize "if (a & mask || b & mask)"
++ * to "if ((a | b) & mask)", so we do that by hand.
 + */
-+static int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
-+			      int groupsize, char *linebuf, size_t linebuflen,
-+			      bool ascii)
++__const __always_inline
++static bool is_aligned(const void *base, size_t size, unsigned char align)
 +{
-+	const u8 *ptr = buf;
-+	int ngroups;
-+	u8 ch;
-+	int j, lx = 0;
-+	int ascii_column;
-+	int ret;
++	unsigned char lsbits = (unsigned char)size;
 +
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
-+
-+	if (len > rowsize)		/* limit to one line at a time */
-+		len = rowsize;
-+	if (!is_power_of_2(groupsize) || groupsize > 8)
-+		groupsize = 1;
-+	if ((len % groupsize) != 0)	/* no mixed size output */
-+		groupsize = 1;
-+
-+	ngroups = len / groupsize;
-+	ascii_column = rowsize * 2 + rowsize / groupsize + 1;
-+
-+	if (!linebuflen)
-+		goto overflow1;
-+
-+	if (!len)
-+		goto nil;
-+
-+	if (groupsize == 8) {
-+		const u64 *ptr8 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%16.16llx", j ? " " : "",
-+				       get_unaligned(ptr8 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else if (groupsize == 4) {
-+		const u32 *ptr4 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%8.8x", j ? " " : "",
-+				       get_unaligned(ptr4 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else if (groupsize == 2) {
-+		const u16 *ptr2 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%4.4x", j ? " " : "",
-+				       get_unaligned(ptr2 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else {
-+		for (j = 0; j < len; j++) {
-+			if (linebuflen < lx + 2)
-+				goto overflow2;
-+			ch = ptr[j];
-+			linebuf[lx++] = hex_asc_hi(ch);
-+			if (linebuflen < lx + 2)
-+				goto overflow2;
-+			linebuf[lx++] = hex_asc_lo(ch);
-+			if (linebuflen < lx + 2)
-+				goto overflow2;
-+			linebuf[lx++] = ' ';
-+		}
-+		if (j)
-+			lx--;
-+	}
-+	if (!ascii)
-+		goto nil;
-+
-+	while (lx < ascii_column) {
-+		if (linebuflen < lx + 2)
-+			goto overflow2;
-+		linebuf[lx++] = ' ';
-+	}
-+	for (j = 0; j < len; j++) {
-+		if (linebuflen < lx + 2)
-+			goto overflow2;
-+		ch = ptr[j];
-+		linebuf[lx++] = (isascii(ch) && isprint(ch)) ? ch : '.';
-+	}
-+nil:
-+	linebuf[lx] = '\0';
-+	return lx;
-+overflow2:
-+	linebuf[lx++] = '\0';
-+overflow1:
-+	return ascii ? ascii_column + len : (groupsize * 2 + 1) * ngroups - 1;
++	(void)base;
++	return (lsbits & (align - 1)) == 0;
 +}
 +
 +/**
-+ * print_hex_dump - print a text hex dump to syslog for a binary blob of data
-+ * @prefix_str: string to prefix each line with;
-+ *  caller supplies trailing spaces for alignment if desired
-+ * @prefix_type: controls whether prefix of an offset, address, or none
-+ *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
-+ * @rowsize: number of bytes to print per line; must be 16 or 32
-+ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
-+ * @buf: data blob to dump
-+ * @len: number of bytes in the @buf
-+ * @ascii: include ASCII after the hex output
++ * swap_words_32 - swap two elements in 32-bit chunks
++ * @a: pointer to the first element to swap
++ * @b: pointer to the second element to swap
++ * @n: element size (must be a multiple of 4)
 + *
-+ * Given a buffer of u8 data, print_hex_dump() prints a hex + ASCII dump
-+ * to the kernel log at the specified kernel log level, with an optional
-+ * leading prefix.
++ * Exchange the two objects in memory.  This exploits base+index addressing,
++ * which basically all CPUs have, to minimize loop overhead computations.
 + *
-+ * print_hex_dump() works on one "line" of output at a time, i.e.,
-+ * 16 or 32 bytes of input data converted to hex + ASCII output.
-+ * print_hex_dump() iterates over the entire input @buf, breaking it into
-+ * "line size" chunks to format and print.
-+ *
-+ * E.g.:
-+ *   print_hex_dump(KERN_DEBUG, "raw data: ", DUMP_PREFIX_ADDRESS,
-+ *		    16, 1, frame->data, frame->len, true);
-+ *
-+ * Example output using %DUMP_PREFIX_OFFSET and 1-byte mode:
-+ * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
-+ * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
-+ * ffffffff88089af0: 73727170 77767574 7b7a7978 7f7e7d7c  pqrstuvwxyz{|}~.
++ * For some reason, on x86 gcc 7.3.0 adds a redundant test of n at the
++ * bottom of the loop, even though the zero flag is still valid from the
++ * subtract (since the intervening mov instructions don't alter the flags).
++ * Gcc 8.1.0 doesn't have that problem.
 + */
-+void print_hex_dump(const char *prefix_str, int prefix_type,
-+		    int rowsize, int groupsize,
-+		    const void *buf, size_t len, bool ascii)
++static void swap_words_32(void *a, void *b, size_t n)
 +{
-+	const u8 *ptr = buf;
-+	int i, linelen, remaining = len;
-+	char linebuf[32 * 3 + 2 + 32 + 1];
++	do {
++		u32 t = *(u32 *)(a + (n -= 4));
++		*(u32 *)(a + n) = *(u32 *)(b + n);
++		*(u32 *)(b + n) = t;
++	} while (n);
++}
 +
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
++/**
++ * swap_words_64 - swap two elements in 64-bit chunks
++ * @a: pointer to the first element to swap
++ * @b: pointer to the second element to swap
++ * @n: element size (must be a multiple of 8)
++ *
++ * Exchange the two objects in memory.  This exploits base+index
++ * addressing, which basically all CPUs have, to minimize loop overhead
++ * computations.
++ *
++ * We'd like to use 64-bit loads if possible.  If they're not, emulating
++ * one requires base+index+4 addressing which x86 has but most other
++ * processors do not.
++ */
++static void swap_words_64(void *a, void *b, size_t n)
++{
++	do {
++		u64 t = *(u64 *)(a + (n -= 8));
++		*(u64 *)(a + n) = *(u64 *)(b + n);
++		*(u64 *)(b + n) = t;
++	} while (n);
++}
 +
-+	for (i = 0; i < len; i += rowsize) {
-+		linelen = min(remaining, rowsize);
-+		remaining -= rowsize;
++/**
++ * swap_bytes - swap two elements a byte at a time
++ * @a: pointer to the first element to swap
++ * @b: pointer to the second element to swap
++ * @n: element size
++ *
++ * This is the fallback if alignment doesn't allow using larger chunks.
++ */
++static void swap_bytes(void *a, void *b, size_t n)
++{
++	do {
++		char t = ((char *)a)[--n];
++		((char *)a)[n] = ((char *)b)[n];
++		((char *)b)[n] = t;
++	} while (n);
++}
 +
-+		hex_dump_to_buffer(ptr + i, linelen, rowsize, groupsize,
-+				   linebuf, sizeof(linebuf), ascii);
++/*
++ * The values are arbitrary as long as they can't be confused with
++ * a pointer, but small integers make for the smallest compare
++ * instructions.
++ */
++#define SWAP_WORDS_64 (swap_r_func_t)0
++#define SWAP_WORDS_32 (swap_r_func_t)1
++#define SWAP_BYTES    (swap_r_func_t)2
++#define SWAP_WRAPPER  (swap_r_func_t)3
 +
-+		switch (prefix_type) {
-+		case DUMP_PREFIX_ADDRESS:
-+			printf("%s%p: %s\n", prefix_str, ptr + i, linebuf);
++struct wrapper {
++	cmp_func_t cmp;
++	swap_func_t swap;
++};
++
++/*
++ * The function pointer is last to make tail calls most efficient if the
++ * compiler decides not to inline this function.
++ */
++static void do_swap(void *a, void *b, size_t size, swap_r_func_t swap_func, const void *priv)
++{
++	if (swap_func == SWAP_WRAPPER) {
++		((const struct wrapper *)priv)->swap(a, b, (int)size);
++		return;
++	}
++
++	if (swap_func == SWAP_WORDS_64)
++		swap_words_64(a, b, size);
++	else if (swap_func == SWAP_WORDS_32)
++		swap_words_32(a, b, size);
++	else if (swap_func == SWAP_BYTES)
++		swap_bytes(a, b, size);
++	else
++		swap_func(a, b, (int)size, priv);
++}
++
++#define _CMP_WRAPPER ((cmp_r_func_t)0L)
++
++static int do_cmp(const void *a, const void *b, cmp_r_func_t cmp, const void *priv)
++{
++	if (cmp == _CMP_WRAPPER)
++		return ((const struct wrapper *)priv)->cmp(a, b);
++	return cmp(a, b, priv);
++}
++
++/**
++ * parent - given the offset of the child, find the offset of the parent.
++ * @i: the offset of the heap element whose parent is sought.  Non-zero.
++ * @lsbit: a precomputed 1-bit mask, equal to "size & -size"
++ * @size: size of each element
++ *
++ * In terms of array indexes, the parent of element j = @i/@size is simply
++ * (j-1)/2.  But when working in byte offsets, we can't use implicit
++ * truncation of integer divides.
++ *
++ * Fortunately, we only need one bit of the quotient, not the full divide.
++ * @size has a least significant bit.  That bit will be clear if @i is
++ * an even multiple of @size, and set if it's an odd multiple.
++ *
++ * Logically, we're doing "if (i & lsbit) i -= size;", but since the
++ * branch is unpredictable, it's done with a bit of clever branch-free
++ * code instead.
++ */
++__const __always_inline
++static size_t parent(size_t i, unsigned int lsbit, size_t size)
++{
++	i -= size;
++	i -= size & -(i & lsbit);
++	return i / 2;
++}
++
++/**
++ * sort_r - sort an array of elements
++ * @base: pointer to data to sort
++ * @num: number of elements
++ * @size: size of each element
++ * @cmp_func: pointer to comparison function
++ * @swap_func: pointer to swap function or NULL
++ * @priv: third argument passed to comparison function
++ *
++ * This function does a heapsort on the given array.  You may provide
++ * a swap_func function if you need to do something more than a memory
++ * copy (e.g. fix up pointers or auxiliary data), but the built-in swap
++ * avoids a slow retpoline and so is significantly faster.
++ *
++ * Sorting time is O(n log n) both on average and worst-case. While
++ * quicksort is slightly faster on average, it suffers from exploitable
++ * O(n*n) worst-case behavior and extra memory requirements that make
++ * it less suitable for kernel use.
++ */
++void sort_r(void *base, size_t num, size_t size,
++	    cmp_r_func_t cmp_func,
++	    swap_r_func_t swap_func,
++	    const void *priv)
++{
++	/* pre-scale counters for performance */
++	size_t n = num * size, a = (num/2) * size;
++	const unsigned int lsbit = size & -size;  /* Used to find parent */
++
++	if (!a)		/* num < 2 || size == 0 */
++		return;
++
++	/* called from 'sort' without swap function, let's pick the default */
++	if (swap_func == SWAP_WRAPPER && !((struct wrapper *)priv)->swap)
++		swap_func = NULL;
++
++	if (!swap_func) {
++		if (is_aligned(base, size, 8))
++			swap_func = SWAP_WORDS_64;
++		else if (is_aligned(base, size, 4))
++			swap_func = SWAP_WORDS_32;
++		else
++			swap_func = SWAP_BYTES;
++	}
++
++	/*
++	 * Loop invariants:
++	 * 1. elements [a,n) satisfy the heap property (compare greater than
++	 *    all of their children),
++	 * 2. elements [n,num*size) are sorted, and
++	 * 3. a <= b <= c <= d <= n (whenever they are valid).
++	 */
++	for (;;) {
++		size_t b, c, d;
++
++		if (a)			/* Building heap: sift down --a */
++			a -= size;
++		else if (n -= size)	/* Sorting: Extract root to --n */
++			do_swap(base, base + n, size, swap_func, priv);
++		else			/* Sort complete */
 +			break;
-+		case DUMP_PREFIX_OFFSET:
-+			printf("%s%.8x: %s\n", prefix_str, i, linebuf);
-+			break;
-+		default:
-+			printf("%s%s\n", prefix_str, linebuf);
-+			break;
++
++		/*
++		 * Sift element at "a" down into heap.  This is the
++		 * "bottom-up" variant, which significantly reduces
++		 * calls to cmp_func(): we find the sift-down path all
++		 * the way to the leaves (one compare per level), then
++		 * backtrack to find where to insert the target element.
++		 *
++		 * Because elements tend to sift down close to the leaves,
++		 * this uses fewer compares than doing two per level
++		 * on the way down.  (A bit more than half as many on
++		 * average, 3/4 worst-case.)
++		 */
++		for (b = a; c = 2*b + size, (d = c + size) < n;)
++			b = do_cmp(base + c, base + d, cmp_func, priv) >= 0 ? c : d;
++		if (d == n)	/* Special case last leaf with no sibling */
++			b = c;
++
++		/* Now backtrack from "b" to the correct location for "a" */
++		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) >= 0)
++			b = parent(b, lsbit, size);
++		c = b;			/* Where "a" belongs */
++		while (b != a) {	/* Shift it into place */
++			b = parent(b, lsbit, size);
++			do_swap(base + b, base + c, size, swap_func, priv);
 +		}
 +	}
 +}
++
++void sort(void *base, size_t num, size_t size,
++	  cmp_func_t cmp_func,
++	  swap_func_t swap_func)
++{
++	struct wrapper w = {
++		.cmp  = cmp_func,
++		.swap = swap_func,
++	};
++
++	return sort_r(base, num, size, _CMP_WRAPPER, SWAP_WRAPPER, &w);
++}
+diff --git a/ubifs-utils/common/sort.h b/ubifs-utils/common/sort.h
+new file mode 100644
+index 00000000..89829422
+--- /dev/null
++++ b/ubifs-utils/common/sort.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_SORT_H
++#define _LINUX_SORT_H
++
++typedef void (*swap_r_func_t)(void *a, void *b, int size, const void *priv);
++typedef void (*swap_func_t)(void *a, void *b, int size);
++
++typedef int (*cmp_r_func_t)(const void *a, const void *b, const void *priv);
++typedef int (*cmp_func_t)(const void *a, const void *b);
++
++void sort_r(void *base, size_t num, size_t size,
++	    cmp_r_func_t cmp_func,
++	    swap_r_func_t swap_func,
++	    const void *priv);
++
++void sort(void *base, size_t num, size_t size,
++	  cmp_func_t cmp_func,
++	  swap_func_t swap_func);
++
++#endif
 -- 
 2.13.6
 
