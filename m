@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 185A4D5E392
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5222AD5E140
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=c7qcTeBGMJtlD000o4nOtUYvyYUxrq02naUWfoLklDg=; b=NDc4fTbzbLHhU5
-	WxwPVXx9j4TD9vGyb/8ab5wnwKRWuj2+noNYTK8aPH4fq9eTqBJFHQmT+AqzOsEZDNb00UlffUlKA
-	MLCxFGFK9g+QANcn+KezYeg4mVUUjD2MBAzRSvhs56jo8tFxhKm6czDlRz3agJekTppWV6vbJ0OJ6
-	88kAQbxcK7emkpk/3FP2XTzcUitvERztv6eIchpsmEUKJTU6ofwZi0rE3iFAjjLruBdPkx08qAhZa
-	2i++f7vffbQbAUck1oAahz7mmkK+AkvStDbsjzmzFq7AiXilsn8vL7caKOv+psahLYqdzNHR5SW7B
-	EZ4EDJDMvtpkVxlHdCuQ==;
+	List-Owner; bh=ab0Oo2YGMul9ipkfuFnlw4XvoQ7v7Kc7EHUOSzkUTjg=; b=QZ4v0pSGiiQErn
+	565ik6ncY4Lx00GWatanz7R9rUVRYBj95dR3pcQjyRMHd8ExFC7C11JYDmr5aGanKdp0jKCOljuYp
+	vpfklNS60ZlIqR+uZpiYLiGdjFHMRDGhSGxqr9v7UuODAzd5p1SwXrOJTdRufR412VPku6xVcTwJy
+	SEOydis6MsvFkKS4R9qVzN8035KDy3EThqpBMuBGPUyfta6/ewJp36nueIFmGwHqXOsJw5Llsvuh9
+	xKA7lFDxw3z+2zpU1JKzqSS2gv3M20e/GjT5DRy9Rt2S9NKdATYJF9h0n+gYFjqI6xCUK+eI5KVEO
+	F2xNsu7zX+3GtKhs5IHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPac-0000000GmY8-2loq;
-	Mon, 11 Nov 2024 08:16:02 +0000
+	id 1tAPaf-0000000Gmaf-3uVJ;
+	Mon, 11 Nov 2024 08:16:06 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUT-0000000GZLA-2bWh
+	id 1tAOUT-0000000GZL3-1rqD
 	for linux-mtd@bombadil.infradead.org;
 	Mon, 11 Nov 2024 07:05:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=dapqdDS8S7qGTfQnnjxnWtEAHt5DlobYCqXhDsmVMdg=; b=b9moSR78FzZBERXBzB2HJ7zVgd
-	kmd0C8och5Zg4PamlN04S2EfVNAbUMpbceAwhI7NtxHyAmfl9He5GLhD3ytYbtyZ88pTTvNFC1A2u
-	ZbD3TQBjGCAZF63txgcOHxEEc6WBMv+FM+gV4rTJ69cdnWl9BjTjCFh/u6zO37Wy5YmUcR8XXtadv
-	fezaaJIX9aeF5h3sVm6yo/zhYUEDEISeJKb348znaTu5J+/ZNS5B9Oy34IiiwBW1YJKHZ0Ra3DPrq
-	nxGEgjNkEm5CsO4z0/l5zZlV5GMJ07Br7FNgZKa32UNVPK0K745WEQdgTh4hFfAyTZX6l7XYMnWt6
-	KHjp9Djw==;
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	bh=t+oOJRWbf7OlDr1p4wa9VG0gEyWBCI6lVivRxMUms0I=; b=kvzQ2FwqWgT/MIYghjtw6OdkhJ
+	XR1aNjnQ+6f4z40mDNyCocquAP9Y9esLk/Xx+H4V2VAjKBk1QnXNJt4iTolT29PA90yyoRXNldA6M
+	Dkmwf/0F7RiNcnb+PIrTrVkUggU5/Z2PK31GVuleJMY5Ed0IxcHc53LXpAhs+PPMzOhYkNyMz5Ajn
+	h7FCIwc5JTx2PiOBINiuAF0z9ZFvf95MOOKHmoD6jxUABp4s/GzE0HZ6fv4z7NXnd4IxBRUh/tCsk
+	HJ2nyZqgroJBDtHMBaT36cFihoiDXkjfmrwGDPjfLddeOudKW22zfTLcnzWwOm03t/n7J8Vh0fVja
+	acp4iQwQ==;
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUO-0000000CmCu-2nls
+	id 1tAOUO-0000000CmCt-2IVX
 	for linux-mtd@lists.infradead.org;
 	Mon, 11 Nov 2024 07:05:35 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qN56CZzsRWY;
-	Mon, 11 Nov 2024 15:02:40 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rL5Djxz1jy0p;
+	Mon, 11 Nov 2024 15:03:30 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id C8C521401F1;
-	Mon, 11 Nov 2024 15:05:19 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id C43A11A016C;
+	Mon, 11 Nov 2024 15:05:17 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:19 +0800
+ 2024 15:05:17 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 037/102] ubifs-utils: Adapt commit.c in libubifs
-Date: Mon, 11 Nov 2024 15:02:40 +0800
-Message-ID: <20241111070346.1314122-38-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 033/102] ubifs-utils: Adapt auth.c in libubifs
+Date: Mon, 11 Nov 2024 15:02:36 +0800
+Message-ID: <20241111070346.1314122-34-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070534_422341_BB5F93E0 
-X-CRM114-Status: GOOD (  30.75  )
+X-CRM114-CacheID: sfid-20241111_070534_440525_FF27B012 
+X-CRM114-Status: GOOD (  25.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,441 +85,615 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt commit.c in libubifs, compared with linux kernel implementations:
- 1. Remove debug related implementations(eg. dbg_check_old_index), debug
-    functions are not needed by fsck, because fsck will check fs in
-    another way.
- 2. Remove ubifs background committing related implementations, there
-    will be no background ubifs threads in fsck.
+Adapt auth.c in libubifs, compared with linux kernel implementations:
+ 1. Only keep implementations used by mkfs, other implementations
+    are removed.
+ 2. Adapt functions based on implementations in common/sign.c.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/commit.c | 370 ++----------------------------------------
- 1 file changed, 10 insertions(+), 360 deletions(-)
+ ubifs-utils/libubifs/auth.c | 534 +++++++-------------------------------------
+ 1 file changed, 82 insertions(+), 452 deletions(-)
 
-diff --git a/ubifs-utils/libubifs/commit.c b/ubifs-utils/libubifs/commit.c
-index 5b3a8400..f3b61136 100644
---- a/ubifs-utils/libubifs/commit.c
-+++ b/ubifs-utils/libubifs/commit.c
-@@ -31,10 +31,13 @@
-  * cache.
+diff --git a/ubifs-utils/libubifs/auth.c b/ubifs-utils/libubifs/auth.c
+index 0d561ecb..fab1dba4 100644
+--- a/ubifs-utils/libubifs/auth.c
++++ b/ubifs-utils/libubifs/auth.c
+@@ -9,13 +9,51 @@
+  * This file implements various helper functions for UBIFS authentication support
   */
  
--#include <linux/freezer.h>
--#include <linux/kthread.h>
--#include <linux/slab.h>
+-#include <linux/verification.h>
+-#include <crypto/hash.h>
+-#include <crypto/utils.h>
+-#include <keys/user-type.h>
+-#include <keys/asymmetric-type.h>
+-
 +#include "linux_err.h"
-+#include "bitops.h"
-+#include "kmem.h"
  #include "ubifs.h"
-+#include "debug.h"
++#include "sign.h"
 +#include "defs.h"
-+#include "misc.h"
++
++int ubifs_shash_init(const struct ubifs_info *c,
++		     __unused struct shash_desc *desc)
++{
++	if (ubifs_authenticated(c))
++		return hash_digest_init();
++	else
++		return 0;
++}
++
++int ubifs_shash_update(const struct ubifs_info *c,
++		       __unused struct shash_desc *desc,
++		       const void *buf, unsigned int len)
++{
++	int err = 0;
++
++	if (ubifs_authenticated(c)) {
++		err = hash_digest_update(buf, len);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++int ubifs_shash_final(const struct ubifs_info *c,
++		      __unused struct shash_desc *desc, u8 *out)
++{
++	return ubifs_authenticated(c) ? hash_digest_final(out) : 0;
++}
++
++struct shash_desc *ubifs_hash_get_desc(const struct ubifs_info *c)
++{
++	int err;
++
++	err = ubifs_shash_init(c, NULL);
++	if (err)
++		return ERR_PTR(err);
++
++	return NULL;
++}
  
- /*
-  * nothing_to_commit - check if there is nothing to commit.
-@@ -216,7 +219,6 @@ static int do_commit(struct ubifs_info *c)
- out_cancel:
- 	spin_lock(&c->cs_lock);
- 	c->cmt_state = COMMIT_RESTING;
--	wake_up(&c->cmt_wq);
- 	dbg_cmt("commit end");
- 	spin_unlock(&c->cs_lock);
- 	return 0;
-@@ -227,107 +229,12 @@ out:
- 	ubifs_err(c, "commit failed, error %d", err);
- 	spin_lock(&c->cs_lock);
- 	c->cmt_state = COMMIT_BROKEN;
--	wake_up(&c->cmt_wq);
- 	spin_unlock(&c->cs_lock);
- 	ubifs_ro_mode(c, err);
- 	return err;
+ /**
+  * ubifs_node_calc_hash - calculate the hash of a UBIFS node
+@@ -25,101 +63,47 @@
+  *
+  * Returns 0 for success or a negative error code otherwise.
+  */
+-int __ubifs_node_calc_hash(const struct ubifs_info *c, const void *node,
+-			    u8 *hash)
++int __ubifs_node_calc_hash(__unused const struct ubifs_info *c,
++			   const void *node, u8 *hash)
+ {
+ 	const struct ubifs_ch *ch = node;
+ 
+-	return crypto_shash_tfm_digest(c->hash_tfm, node, le32_to_cpu(ch->len),
+-				       hash);
++	return hash_digest(node, le32_to_cpu(ch->len), hash);
  }
  
  /**
-- * run_bg_commit - run background commit if it is needed.
+- * ubifs_hash_calc_hmac - calculate a HMAC from a hash
+- * @c: UBIFS file-system description object
+- * @hash: the node to calculate a HMAC for
+- * @hmac: the returned HMAC
+- *
+- * Returns 0 for success or a negative error code otherwise.
+- */
+-static int ubifs_hash_calc_hmac(const struct ubifs_info *c, const u8 *hash,
+-				 u8 *hmac)
+-{
+-	return crypto_shash_tfm_digest(c->hmac_tfm, hash, c->hash_len, hmac);
+-}
+-
+-/**
+- * ubifs_prepare_auth_node - Prepare an authentication node
+- * @c: UBIFS file-system description object
++ * ubifs_master_node_calc_hash - calculate the hash of a UBIFS master node
+  * @node: the node to calculate a hash for
+- * @inhash: input hash of previous nodes
+- *
+- * This function prepares an authentication node for writing onto flash.
+- * It creates a HMAC from the given input hash and writes it to the node.
+- *
+- * Returns 0 for success or a negative error code otherwise.
++ * @hash: the returned hash
+  */
+-int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
+-			     struct shash_desc *inhash)
++int ubifs_master_node_calc_hash(const struct ubifs_info *c, const void *node,
++				uint8_t *hash)
+ {
+-	struct ubifs_auth_node *auth = node;
+-	u8 hash[UBIFS_HASH_ARR_SZ];
+-	int err;
+-
+-	{
+-		SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
+-
+-		hash_desc->tfm = c->hash_tfm;
+-		ubifs_shash_copy_state(c, inhash, hash_desc);
+-
+-		err = crypto_shash_final(hash_desc, hash);
+-		if (err)
+-			return err;
+-	}
+-
+-	err = ubifs_hash_calc_hmac(c, hash, auth->hmac);
+-	if (err)
+-		return err;
++	if (!ubifs_authenticated(c))
++		return 0;
+ 
+-	auth->ch.node_type = UBIFS_AUTH_NODE;
+-	ubifs_prepare_node(c, auth, ubifs_auth_node_sz(c), 0);
+-	return 0;
++	return hash_digest(node + sizeof(struct ubifs_ch),
++			   UBIFS_MST_NODE_SZ - sizeof(struct ubifs_ch), hash);
+ }
+ 
+-static struct shash_desc *ubifs_get_desc(const struct ubifs_info *c,
+-					 struct crypto_shash *tfm)
++int ubifs_sign_superblock_node(struct ubifs_info *c, void *node)
+ {
+-	struct shash_desc *desc;
+-	int err;
++	int err, len;
++	struct ubifs_sig_node *sig = node + UBIFS_SB_NODE_SZ;
+ 
+ 	if (!ubifs_authenticated(c))
+-		return NULL;
+-
+-	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
+-	if (!desc)
+-		return ERR_PTR(-ENOMEM);
+-
+-	desc->tfm = tfm;
++		return 0;
+ 
+-	err = crypto_shash_init(desc);
+-	if (err) {
+-		kfree(desc);
+-		return ERR_PTR(err);
+-	}
++	err = hash_sign_node(c->auth_key_filename, c->auth_cert_filename, node,
++			     &len, sig + 1);
++	if (err)
++		return err;
+ 
+-	return desc;
+-}
++	sig->type = UBIFS_SIGNATURE_TYPE_PKCS7;
++	sig->len = cpu_to_le32(len);
++	sig->ch.node_type  = UBIFS_SIG_NODE;
+ 
+-/**
+- * __ubifs_hash_get_desc - get a descriptor suitable for hashing a node
 - * @c: UBIFS file-system description object
 - *
-- * This function runs background commit if it is needed. Returns zero in case
-- * of success and a negative error code in case of failure.
+- * This function returns a descriptor suitable for hashing a node. Free after use
+- * with kfree.
 - */
--static int run_bg_commit(struct ubifs_info *c)
+-struct shash_desc *__ubifs_hash_get_desc(const struct ubifs_info *c)
 -{
--	spin_lock(&c->cs_lock);
--	/*
--	 * Run background commit only if background commit was requested or if
--	 * commit is required.
--	 */
--	if (c->cmt_state != COMMIT_BACKGROUND &&
--	    c->cmt_state != COMMIT_REQUIRED)
--		goto out;
--	spin_unlock(&c->cs_lock);
+-	return ubifs_get_desc(c, c->hash_tfm);
++	return 0;
+ }
+ 
+ /**
+@@ -150,103 +134,6 @@ void ubifs_bad_hash(const struct ubifs_info *c, const void *node, const u8 *hash
+ }
+ 
+ /**
+- * __ubifs_node_check_hash - check the hash of a node against given hash
+- * @c: UBIFS file-system description object
+- * @node: the node
+- * @expected: the expected hash
+- *
+- * This function calculates a hash over a node and compares it to the given hash.
+- * Returns 0 if both hashes are equal or authentication is disabled, otherwise a
+- * negative error code is returned.
+- */
+-int __ubifs_node_check_hash(const struct ubifs_info *c, const void *node,
+-			    const u8 *expected)
+-{
+-	u8 calc[UBIFS_HASH_ARR_SZ];
+-	int err;
 -
--	down_write(&c->commit_sem);
--	spin_lock(&c->cs_lock);
--	if (c->cmt_state == COMMIT_REQUIRED)
--		c->cmt_state = COMMIT_RUNNING_REQUIRED;
--	else if (c->cmt_state == COMMIT_BACKGROUND)
--		c->cmt_state = COMMIT_RUNNING_BACKGROUND;
--	else
--		goto out_cmt_unlock;
--	spin_unlock(&c->cs_lock);
+-	err = __ubifs_node_calc_hash(c, node, calc);
+-	if (err)
+-		return err;
 -
--	return do_commit(c);
+-	if (ubifs_check_hash(c, expected, calc))
+-		return -EPERM;
 -
--out_cmt_unlock:
--	up_write(&c->commit_sem);
--out:
--	spin_unlock(&c->cs_lock);
 -	return 0;
 -}
 -
 -/**
-- * ubifs_bg_thread - UBIFS background thread function.
-- * @info: points to the file-system description object
+- * ubifs_sb_verify_signature - verify the signature of a superblock
+- * @c: UBIFS file-system description object
+- * @sup: The superblock node
 - *
-- * This function implements various file-system background activities:
-- * o when a write-buffer timer expires it synchronizes the appropriate
-- *   write-buffer;
-- * o when the journal is about to be full, it starts in-advance commit.
+- * To support offline signed images the superblock can be signed with a
+- * PKCS#7 signature. The signature is placed directly behind the superblock
+- * node in an ubifs_sig_node.
 - *
-- * Note, other stuff like background garbage collection may be added here in
-- * future.
+- * Returns 0 when the signature can be successfully verified or a negative
+- * error code if not.
 - */
--int ubifs_bg_thread(void *info)
+-int ubifs_sb_verify_signature(struct ubifs_info *c,
+-			      const struct ubifs_sb_node *sup)
 -{
 -	int err;
--	struct ubifs_info *c = info;
+-	struct ubifs_scan_leb *sleb;
+-	struct ubifs_scan_node *snod;
+-	const struct ubifs_sig_node *signode;
 -
--	ubifs_msg(c, "background thread \"%s\" started, PID %d",
--		  c->bgt_name, current->pid);
--	set_freezable();
--
--	while (1) {
--		if (kthread_should_stop())
--			break;
--
--		if (try_to_freeze())
--			continue;
--
--		set_current_state(TASK_INTERRUPTIBLE);
--		/* Check if there is something to do */
--		if (!c->need_bgt) {
--			/*
--			 * Nothing prevents us from going sleep now and
--			 * be never woken up and block the task which
--			 * could wait in 'kthread_stop()' forever.
--			 */
--			if (kthread_should_stop())
--				break;
--			schedule();
--			continue;
--		} else
--			__set_current_state(TASK_RUNNING);
--
--		c->need_bgt = 0;
--		err = ubifs_bg_wbufs_sync(c);
--		if (err)
--			ubifs_ro_mode(c, err);
--
--		run_bg_commit(c);
--		cond_resched();
+-	sleb = ubifs_scan(c, UBIFS_SB_LNUM, UBIFS_SB_NODE_SZ, c->sbuf, 0);
+-	if (IS_ERR(sleb)) {
+-		err = PTR_ERR(sleb);
+-		return err;
 -	}
 -
--	ubifs_msg(c, "background thread \"%s\" stops", c->bgt_name);
--	return 0;
+-	if (sleb->nodes_cnt == 0) {
+-		ubifs_err(c, "Unable to find signature node");
+-		err = -EINVAL;
+-		goto out_destroy;
+-	}
+-
+-	snod = list_first_entry(&sleb->nodes, struct ubifs_scan_node, list);
+-
+-	if (snod->type != UBIFS_SIG_NODE) {
+-		ubifs_err(c, "Signature node is of wrong type");
+-		err = -EINVAL;
+-		goto out_destroy;
+-	}
+-
+-	signode = snod->node;
+-
+-	if (le32_to_cpu(signode->len) > snod->len + sizeof(struct ubifs_sig_node)) {
+-		ubifs_err(c, "invalid signature len %d", le32_to_cpu(signode->len));
+-		err = -EINVAL;
+-		goto out_destroy;
+-	}
+-
+-	if (le32_to_cpu(signode->type) != UBIFS_SIGNATURE_TYPE_PKCS7) {
+-		ubifs_err(c, "Signature type %d is not supported\n",
+-			  le32_to_cpu(signode->type));
+-		err = -EINVAL;
+-		goto out_destroy;
+-	}
+-
+-	err = verify_pkcs7_signature(sup, sizeof(struct ubifs_sb_node),
+-				     signode->sig, le32_to_cpu(signode->len),
+-				     NULL, VERIFYING_UNSPECIFIED_SIGNATURE,
+-				     NULL, NULL);
+-
+-	if (err)
+-		ubifs_err(c, "Failed to verify signature");
+-	else
+-		ubifs_msg(c, "Successfully verified super block signature");
+-
+-out_destroy:
+-	ubifs_scan_destroy(sleb);
+-
+-	return err;
 -}
 -
 -/**
-  * ubifs_commit_required - set commit state to "required".
+  * ubifs_init_authentication - initialize UBIFS authentication support
   * @c: UBIFS file-system description object
   *
-@@ -364,17 +271,8 @@ void ubifs_commit_required(struct ubifs_info *c)
-  * This function is called if the journal is full enough to make a commit
-  * worthwhile, so background thread is kicked to start it.
+@@ -254,292 +141,35 @@ out_destroy:
   */
--void ubifs_request_bg_commit(struct ubifs_info *c)
-+void ubifs_request_bg_commit(__unused struct ubifs_info *c)
+ int ubifs_init_authentication(struct ubifs_info *c)
  {
--	spin_lock(&c->cs_lock);
--	if (c->cmt_state == COMMIT_RESTING) {
--		dbg_cmt("old: %s, new: %s", dbg_cstate(c->cmt_state),
--			dbg_cstate(COMMIT_BACKGROUND));
--		c->cmt_state = COMMIT_BACKGROUND;
--		spin_unlock(&c->cs_lock);
--		ubifs_wake_up_bgt(c);
--	} else
--		spin_unlock(&c->cs_lock);
- }
+-	struct key *keyring_key;
+-	const struct user_key_payload *ukp;
+-	int err;
+-	char hmac_name[CRYPTO_MAX_ALG_NAME];
++	int err, hash_len, hash_algo;
  
- /**
-@@ -385,18 +283,11 @@ void ubifs_request_bg_commit(struct ubifs_info *c)
-  */
- static int wait_for_commit(struct ubifs_info *c)
- {
--	dbg_cmt("pid %d goes sleep", current->pid);
--
- 	/*
--	 * The following sleeps if the condition is false, and will be woken
--	 * when the commit ends. It is possible, although very unlikely, that we
--	 * will wake up and see the subsequent commit running, rather than the
--	 * one we were waiting for, and go back to sleep.  However, we will be
--	 * woken again, so there is no danger of sleeping forever.
-+	 * All commit operations are executed in synchronization context,
-+	 * so it is impossible that more than one threads doing commit.
- 	 */
--	wait_event(c->cmt_wq, c->cmt_state != COMMIT_RUNNING_BACKGROUND &&
--			      c->cmt_state != COMMIT_RUNNING_REQUIRED);
--	dbg_cmt("commit finished, pid %d woke up", current->pid);
-+	ubifs_assert(c, 0);
- 	return 0;
- }
+-	if (!c->auth_hash_name) {
+-		ubifs_err(c, "authentication hash name needed with authentication");
+-		return -EINVAL;
+-	}
++	if (!c->auth_key_filename && !c->auth_cert_filename && !c->hash_algo_name)
++		return 0;
  
-@@ -490,244 +381,3 @@ int ubifs_gc_should_commit(struct ubifs_info *c)
- 	spin_unlock(&c->cs_lock);
- 	return ret;
- }
+-	c->auth_hash_algo = match_string(hash_algo_name, HASH_ALGO__LAST,
+-					 c->auth_hash_name);
+-	if ((int)c->auth_hash_algo < 0) {
+-		ubifs_err(c, "Unknown hash algo %s specified",
+-			  c->auth_hash_name);
++	if (!c->auth_key_filename) {
++		ubifs_err(c, "authentication key not given (--auth-key)");
+ 		return -EINVAL;
+ 	}
+ 
+-	snprintf(hmac_name, CRYPTO_MAX_ALG_NAME, "hmac(%s)",
+-		 c->auth_hash_name);
 -
--/*
-- * Everything below is related to debugging.
-- */
+-	keyring_key = request_key(&key_type_logon, c->auth_key_name, NULL);
+-
+-	if (IS_ERR(keyring_key)) {
+-		ubifs_err(c, "Failed to request key: %ld",
+-			  PTR_ERR(keyring_key));
+-		return PTR_ERR(keyring_key);
+-	}
+-
+-	down_read(&keyring_key->sem);
+-
+-	if (keyring_key->type != &key_type_logon) {
+-		ubifs_err(c, "key type must be logon");
+-		err = -ENOKEY;
+-		goto out;
+-	}
+-
+-	ukp = user_key_payload_locked(keyring_key);
+-	if (!ukp) {
+-		/* key was revoked before we acquired its semaphore */
+-		err = -EKEYREVOKED;
+-		goto out;
+-	}
+-
+-	c->hash_tfm = crypto_alloc_shash(c->auth_hash_name, 0, 0);
+-	if (IS_ERR(c->hash_tfm)) {
+-		err = PTR_ERR(c->hash_tfm);
+-		ubifs_err(c, "Can not allocate %s: %d",
+-			  c->auth_hash_name, err);
+-		goto out;
+-	}
+-
+-	c->hash_len = crypto_shash_digestsize(c->hash_tfm);
+-	if (c->hash_len > UBIFS_HASH_ARR_SZ) {
+-		ubifs_err(c, "hash %s is bigger than maximum allowed hash size (%d > %d)",
+-			  c->auth_hash_name, c->hash_len, UBIFS_HASH_ARR_SZ);
+-		err = -EINVAL;
+-		goto out_free_hash;
+-	}
+-
+-	c->hmac_tfm = crypto_alloc_shash(hmac_name, 0, 0);
+-	if (IS_ERR(c->hmac_tfm)) {
+-		err = PTR_ERR(c->hmac_tfm);
+-		ubifs_err(c, "Can not allocate %s: %d", hmac_name, err);
+-		goto out_free_hash;
+-	}
+-
+-	c->hmac_desc_len = crypto_shash_digestsize(c->hmac_tfm);
+-	if (c->hmac_desc_len > UBIFS_HMAC_ARR_SZ) {
+-		ubifs_err(c, "hmac %s is bigger than maximum allowed hmac size (%d > %d)",
+-			  hmac_name, c->hmac_desc_len, UBIFS_HMAC_ARR_SZ);
+-		err = -EINVAL;
+-		goto out_free_hmac;
+-	}
+-
+-	err = crypto_shash_setkey(c->hmac_tfm, ukp->data, ukp->datalen);
+-	if (err)
+-		goto out_free_hmac;
+-
+-	c->authenticated = true;
+-
+-	c->log_hash = ubifs_hash_get_desc(c);
+-	if (IS_ERR(c->log_hash)) {
+-		err = PTR_ERR(c->log_hash);
+-		goto out_free_hmac;
+-	}
+-
+-	err = 0;
+-
+-out_free_hmac:
+-	if (err)
+-		crypto_free_shash(c->hmac_tfm);
+-out_free_hash:
+-	if (err)
+-		crypto_free_shash(c->hash_tfm);
+-out:
+-	up_read(&keyring_key->sem);
+-	key_put(keyring_key);
+-
+-	return err;
+-}
 -
 -/**
-- * struct idx_node - hold index nodes during index tree traversal.
-- * @list: list
-- * @iip: index in parent (slot number of this indexing node in the parent
-- *       indexing node)
-- * @upper_key: all keys in this indexing node have to be less or equivalent to
-- *             this key
-- * @idx: index node (8-byte aligned because all node structures must be 8-byte
-- *       aligned)
-- */
--struct idx_node {
--	struct list_head list;
--	int iip;
--	union ubifs_key upper_key;
--	struct ubifs_idx_node idx __aligned(8);
--};
--
--/**
-- * dbg_old_index_check_init - get information for the next old index check.
+- * __ubifs_exit_authentication - release resource
 - * @c: UBIFS file-system description object
-- * @zroot: root of the index
 - *
-- * This function records information about the index that will be needed for the
-- * next old index check i.e. 'dbg_check_old_index()'.
-- *
-- * This function returns %0 on success and a negative error code on failure.
+- * This function releases the authentication related resources.
 - */
--int dbg_old_index_check_init(struct ubifs_info *c, struct ubifs_zbranch *zroot)
+-void __ubifs_exit_authentication(struct ubifs_info *c)
 -{
--	struct ubifs_idx_node *idx;
--	int lnum, offs, len, err = 0;
--	struct ubifs_debug_info *d = c->dbg;
+-	if (!ubifs_authenticated(c))
+-		return;
 -
--	d->old_zroot = *zroot;
--	lnum = d->old_zroot.lnum;
--	offs = d->old_zroot.offs;
--	len = d->old_zroot.len;
+-	crypto_free_shash(c->hmac_tfm);
+-	crypto_free_shash(c->hash_tfm);
+-	kfree(c->log_hash);
+-}
 -
--	idx = kmalloc(c->max_idx_node_sz, GFP_NOFS);
--	if (!idx)
+-/**
+- * ubifs_node_calc_hmac - calculate the HMAC of a UBIFS node
+- * @c: UBIFS file-system description object
+- * @node: the node to insert a HMAC into.
+- * @len: the length of the node
+- * @ofs_hmac: the offset in the node where the HMAC is inserted
+- * @hmac: returned HMAC
+- *
+- * This function calculates a HMAC of a UBIFS node. The HMAC is expected to be
+- * embedded into the node, so this area is not covered by the HMAC. Also not
+- * covered is the UBIFS_NODE_MAGIC and the CRC of the node.
+- */
+-static int ubifs_node_calc_hmac(const struct ubifs_info *c, const void *node,
+-				int len, int ofs_hmac, void *hmac)
+-{
+-	SHASH_DESC_ON_STACK(shash, c->hmac_tfm);
+-	int hmac_len = c->hmac_desc_len;
+-	int err;
+-
+-	ubifs_assert(c, ofs_hmac > 8);
+-	ubifs_assert(c, ofs_hmac + hmac_len < len);
+-
+-	shash->tfm = c->hmac_tfm;
+-
+-	err = crypto_shash_init(shash);
+-	if (err)
+-		return err;
+-
+-	/* behind common node header CRC up to HMAC begin */
+-	err = crypto_shash_update(shash, node + 8, ofs_hmac - 8);
+-	if (err < 0)
+-		return err;
+-
+-	/* behind HMAC, if any */
+-	if (len - ofs_hmac - hmac_len > 0) {
+-		err = crypto_shash_update(shash, node + ofs_hmac + hmac_len,
+-			    len - ofs_hmac - hmac_len);
+-		if (err < 0)
+-			return err;
++	if (!c->hash_algo_name) {
++		ubifs_err(c, "Hash algorithm not given (--hash-algo)");
++		return -EINVAL;
+ 	}
+ 
+-	return crypto_shash_final(shash, hmac);
+-}
+-
+-/**
+- * __ubifs_node_insert_hmac - insert a HMAC into a UBIFS node
+- * @c: UBIFS file-system description object
+- * @node: the node to insert a HMAC into.
+- * @len: the length of the node
+- * @ofs_hmac: the offset in the node where the HMAC is inserted
+- *
+- * This function inserts a HMAC at offset @ofs_hmac into the node given in
+- * @node.
+- *
+- * This function returns 0 for success or a negative error code otherwise.
+- */
+-int __ubifs_node_insert_hmac(const struct ubifs_info *c, void *node, int len,
+-			    int ofs_hmac)
+-{
+-	return ubifs_node_calc_hmac(c, node, len, ofs_hmac, node + ofs_hmac);
+-}
+-
+-/**
+- * __ubifs_node_verify_hmac - verify the HMAC of UBIFS node
+- * @c: UBIFS file-system description object
+- * @node: the node to insert a HMAC into.
+- * @len: the length of the node
+- * @ofs_hmac: the offset in the node where the HMAC is inserted
+- *
+- * This function verifies the HMAC at offset @ofs_hmac of the node given in
+- * @node. Returns 0 if successful or a negative error code otherwise.
+- */
+-int __ubifs_node_verify_hmac(const struct ubifs_info *c, const void *node,
+-			     int len, int ofs_hmac)
+-{
+-	int hmac_len = c->hmac_desc_len;
+-	u8 *hmac;
+-	int err;
+-
+-	hmac = kmalloc(hmac_len, GFP_NOFS);
+-	if (!hmac)
 -		return -ENOMEM;
 -
--	err = ubifs_read_node(c, idx, UBIFS_IDX_NODE, len, lnum, offs);
+-	err = ubifs_node_calc_hmac(c, node, len, ofs_hmac, hmac);
++	err = init_authentication(c->hash_algo_name, &hash_len, &hash_algo);
+ 	if (err) {
+-		kfree(hmac);
++		ubifs_err(c, "Init authentication failed");
+ 		return err;
+ 	}
+ 
+-	err = crypto_memneq(hmac, node + ofs_hmac, hmac_len);
+-
+-	kfree(hmac);
+-
+-	if (!err)
+-		return 0;
+-
+-	return -EPERM;
+-}
+-
+-int __ubifs_shash_copy_state(const struct ubifs_info *c, struct shash_desc *src,
+-			     struct shash_desc *target)
+-{
+-	u8 *state;
+-	int err;
+-
+-	state = kmalloc(crypto_shash_descsize(src->tfm), GFP_NOFS);
+-	if (!state)
+-		return -ENOMEM;
+-
+-	err = crypto_shash_export(src, state);
 -	if (err)
 -		goto out;
 -
--	d->old_zroot_level = le16_to_cpu(idx->level);
--	d->old_zroot_sqnum = le64_to_cpu(idx->ch.sqnum);
+-	err = crypto_shash_import(target, state);
+-
 -out:
--	kfree(idx);
+-	kfree(state);
+-
 -	return err;
 -}
 -
 -/**
-- * dbg_check_old_index - check the old copy of the index.
+- * ubifs_hmac_wkm - Create a HMAC of the well known message
 - * @c: UBIFS file-system description object
-- * @zroot: root of the new index
+- * @hmac: The HMAC of the well known message
 - *
-- * In order to be able to recover from an unclean unmount, a complete copy of
-- * the index must exist on flash. This is the "old" index. The commit process
-- * must write the "new" index to flash without overwriting or destroying any
-- * part of the old index. This function is run at commit end in order to check
-- * that the old index does indeed exist completely intact.
+- * This function creates a HMAC of a well known message. This is used
+- * to check if the provided key is suitable to authenticate a UBIFS
+- * image. This is only a convenience to the user to provide a better
+- * error message when the wrong key is provided.
 - *
-- * This function returns %0 on success and a negative error code on failure.
+- * This function returns 0 for success or a negative error code otherwise.
 - */
--int dbg_check_old_index(struct ubifs_info *c, struct ubifs_zbranch *zroot)
+-int ubifs_hmac_wkm(struct ubifs_info *c, u8 *hmac)
 -{
--	int lnum, offs, len, err = 0, last_level, child_cnt;
--	int first = 1, iip;
--	struct ubifs_debug_info *d = c->dbg;
--	union ubifs_key lower_key, upper_key, l_key, u_key;
--	unsigned long long last_sqnum;
--	struct ubifs_idx_node *idx;
--	struct list_head list;
--	struct idx_node *i;
--	size_t sz;
+-	SHASH_DESC_ON_STACK(shash, c->hmac_tfm);
+-	int err;
+-	const char well_known_message[] = "UBIFS";
 -
--	if (!dbg_is_chk_index(c))
+-	if (!ubifs_authenticated(c))
 -		return 0;
 -
--	INIT_LIST_HEAD(&list);
+-	shash->tfm = c->hmac_tfm;
 -
--	sz = sizeof(struct idx_node) + ubifs_idx_node_sz(c, c->fanout) -
--	     UBIFS_IDX_NODE_SZ;
--
--	/* Start at the old zroot */
--	lnum = d->old_zroot.lnum;
--	offs = d->old_zroot.offs;
--	len = d->old_zroot.len;
--	iip = 0;
--
--	/*
--	 * Traverse the index tree preorder depth-first i.e. do a node and then
--	 * its subtrees from left to right.
--	 */
--	while (1) {
--		struct ubifs_branch *br;
--
--		/* Get the next index node */
--		i = kmalloc(sz, GFP_NOFS);
--		if (!i) {
--			err = -ENOMEM;
--			goto out_free;
--		}
--		i->iip = iip;
--		/* Keep the index nodes on our path in a linked list */
--		list_add_tail(&i->list, &list);
--		/* Read the index node */
--		idx = &i->idx;
--		err = ubifs_read_node(c, idx, UBIFS_IDX_NODE, len, lnum, offs);
--		if (err)
--			goto out_free;
--		/* Validate index node */
--		child_cnt = le16_to_cpu(idx->child_cnt);
--		if (child_cnt < 1 || child_cnt > c->fanout) {
--			err = 1;
--			goto out_dump;
--		}
--		if (first) {
--			first = 0;
--			/* Check root level and sqnum */
--			if (le16_to_cpu(idx->level) != d->old_zroot_level) {
--				err = 2;
--				goto out_dump;
--			}
--			if (le64_to_cpu(idx->ch.sqnum) != d->old_zroot_sqnum) {
--				err = 3;
--				goto out_dump;
--			}
--			/* Set last values as though root had a parent */
--			last_level = le16_to_cpu(idx->level) + 1;
--			last_sqnum = le64_to_cpu(idx->ch.sqnum) + 1;
--			key_read(c, ubifs_idx_key(c, idx), &lower_key);
--			highest_ino_key(c, &upper_key, INUM_WATERMARK);
--		}
--		key_copy(c, &upper_key, &i->upper_key);
--		if (le16_to_cpu(idx->level) != last_level - 1) {
--			err = 3;
--			goto out_dump;
--		}
--		/*
--		 * The index is always written bottom up hence a child's sqnum
--		 * is always less than the parents.
--		 */
--		if (le64_to_cpu(idx->ch.sqnum) >= last_sqnum) {
--			err = 4;
--			goto out_dump;
--		}
--		/* Check key range */
--		key_read(c, ubifs_idx_key(c, idx), &l_key);
--		br = ubifs_idx_branch(c, idx, child_cnt - 1);
--		key_read(c, &br->key, &u_key);
--		if (keys_cmp(c, &lower_key, &l_key) > 0) {
--			err = 5;
--			goto out_dump;
--		}
--		if (keys_cmp(c, &upper_key, &u_key) < 0) {
--			err = 6;
--			goto out_dump;
--		}
--		if (keys_cmp(c, &upper_key, &u_key) == 0)
--			if (!is_hash_key(c, &u_key)) {
--				err = 7;
--				goto out_dump;
--			}
--		/* Go to next index node */
--		if (le16_to_cpu(idx->level) == 0) {
--			/* At the bottom, so go up until can go right */
--			while (1) {
--				/* Drop the bottom of the list */
--				list_del(&i->list);
--				kfree(i);
--				/* No more list means we are done */
--				if (list_empty(&list))
--					goto out;
--				/* Look at the new bottom */
--				i = list_entry(list.prev, struct idx_node,
--					       list);
--				idx = &i->idx;
--				/* Can we go right */
--				if (iip + 1 < le16_to_cpu(idx->child_cnt)) {
--					iip = iip + 1;
--					break;
--				} else
--					/* Nope, so go up again */
--					iip = i->iip;
--			}
--		} else
--			/* Go down left */
--			iip = 0;
--		/*
--		 * We have the parent in 'idx' and now we set up for reading the
--		 * child pointed to by slot 'iip'.
--		 */
--		last_level = le16_to_cpu(idx->level);
--		last_sqnum = le64_to_cpu(idx->ch.sqnum);
--		br = ubifs_idx_branch(c, idx, iip);
--		lnum = le32_to_cpu(br->lnum);
--		offs = le32_to_cpu(br->offs);
--		len = le32_to_cpu(br->len);
--		key_read(c, &br->key, &lower_key);
--		if (iip + 1 < le16_to_cpu(idx->child_cnt)) {
--			br = ubifs_idx_branch(c, idx, iip + 1);
--			key_read(c, &br->key, &upper_key);
--		} else
--			key_copy(c, &i->upper_key, &upper_key);
--	}
--out:
--	err = dbg_old_index_check_init(c, zroot);
+-	err = crypto_shash_init(shash);
 -	if (err)
--		goto out_free;
+-		return err;
 -
--	return 0;
--
--out_dump:
--	ubifs_err(c, "dumping index node (iip=%d)", i->iip);
--	ubifs_dump_node(c, idx, ubifs_idx_node_sz(c, c->fanout));
--	list_del(&i->list);
--	kfree(i);
--	if (!list_empty(&list)) {
--		i = list_entry(list.prev, struct idx_node, list);
--		ubifs_err(c, "dumping parent index node");
--		ubifs_dump_node(c, &i->idx, ubifs_idx_node_sz(c, c->fanout));
--	}
--out_free:
--	while (!list_empty(&list)) {
--		i = list_entry(list.next, struct idx_node, list);
--		list_del(&i->list);
--		kfree(i);
--	}
--	ubifs_err(c, "failed, error %d", err);
--	if (err > 0)
--		err = -EINVAL;
--	return err;
--}
+-	err = crypto_shash_update(shash, well_known_message,
+-				  sizeof(well_known_message) - 1);
+-	if (err < 0)
+-		return err;
++	c->hash_len = hash_len;
++	c->hash_algo = hash_algo;
++	c->authenticated = 1;
+ 
+-	err = crypto_shash_final(shash, hmac);
+-	if (err)
+-		return err;
+ 	return 0;
+ }
+ 
+-/*
+- * ubifs_hmac_zero - test if a HMAC is zero
+- * @c: UBIFS file-system description object
+- * @hmac: the HMAC to test
+- *
+- * This function tests if a HMAC is zero and returns true if it is
+- * and false otherwise.
+- */
+-bool ubifs_hmac_zero(struct ubifs_info *c, const u8 *hmac)
++void __ubifs_exit_authentication(__unused struct ubifs_info *c)
+ {
+-	return !memchr_inv(hmac, 0, c->hmac_desc_len);
++	exit_authentication();
+ }
 -- 
 2.13.6
 
