@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D98CD2E9C4
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:00:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04674D2E9C7
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RGahIVWs4+NR0SvgTuru7Fy8yxTVMD9ttVMNYw+Bav4=; b=HF9d3FTeLBWOBD
-	zSZaSK693SktIoqrzz7Q3Yr42QFdWmZZLi2vCgccszgPUWEns9F+2k/dQvjzpf2+eBfvEBmTP19kl
-	Uc6hDz77HeQkkWFDB6vjbzhL3q5QyzfnijBfX9/galos0negp0vnO2snz4gwoWYcmSdKqsf3DJksY
-	F5HFjhzYqqiPDv6Q6SftCzt//drxETRDVS19e6HuzRdW8JOO0GBz2EVvPZBQCsOq+YL/rQDUSRjzX
-	MskQHzZqjpOPPh0UDktqdDxrpVtZcqomkWrlA04ciAJRaqG3ZrhAxZArkZyKwgsjwr92Rj9KCDAlG
-	QN1ltc6sBgOvK8urdZJg==;
+	List-Owner; bh=0+hDe27m8E6wnn7ITOQaIqxl26A2DYVVOYG8xmbTGqM=; b=38CSIU2heWCOqp
+	nvfREL95i9M/Kci5wOk6E3w0/VfYOL70NoOEshGsaOxpUYfk9dd+9tOq2lxKCXdoPn2R6GozDiPiK
+	cesJYgZPbaWkrhnY/pnqv0Q7+RlRLp/X1VcjQ4DxelTTULTY4YG2dOoziEFVS5VYhHUH3Bd46hFYq
+	/E/XmkziWk+c0pI/krrj61KUVtJkZWM7cwHRNQookjpnTsJTex4LiwzR/SB29arwkvRrTyRMXL8Ug
+	OYmLjkQkwqwYUthM3QD6Rzw2xvMqM1Kx+mYEaCSkSKaUaP+YXDRHAY0a4dxSxx/wU1jUGIY6rcJgy
+	pakfQmn2JJ/Mr+ywWYhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQHw-0000000Gwwh-1Bvs;
-	Mon, 11 Nov 2024 09:00:48 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1tAQI0-0000000Gwzp-28kV;
+	Mon, 11 Nov 2024 09:00:52 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQGJ-0000000GvdU-3RIu
+	id 1tAQGH-0000000Gvbh-2hAa
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:59:21 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Lv3vCTz1TB60;
-	Mon, 11 Nov 2024 16:56:39 +0800 (CST)
+	Mon, 11 Nov 2024 08:59:16 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn3JG3HPhz28fSM;
+	Mon, 11 Nov 2024 16:54:22 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id E2F1B1400DC;
-	Mon, 11 Nov 2024 16:59:05 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id E07AE180043;
+	Mon, 11 Nov 2024 16:59:03 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:59:05 +0800
+ 2024 16:59:03 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 068/102] fsck.ubifs: Replay journal
-Date: Mon, 11 Nov 2024 16:57:39 +0800
-Message-ID: <20241111085741.2066378-29-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 064/102] fsck.ubifs: rebuild_fs: Build LPT
+Date: Mon, 11 Nov 2024 16:57:35 +0800
+Message-ID: <20241111085741.2066378-25-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111085741.2066378-1-chengzhihao1@huawei.com>
 References: <20241111085741.2066378-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_005908_371383_B0A25DD9 
-X-CRM114-Status: GOOD (  25.91  )
+X-CRM114-CacheID: sfid-20241111_005906_291297_39188A65 
+X-CRM114-Status: GOOD (  21.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,488 +70,304 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 2/18 step of fsck. Replay journal, update TNC & LPT.
-There could be following steps and possible errors:
- Step 1. scan log LEB, get all bud LEBs
-  a. corrupted scanning data in log area: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
- Step 2. scan bud LEBs, get all nodes
-  a. corrupted scanning data in bud LEB: danger mode and normal mode with
-     'yes' answer will drop bud LEB and set %FR_LPT_INCORRECT for lpt
-     status, other modes will exit.
- Step 3. apply nodes, record latest isize into size_tree
- Step 4. apply nodes, update TNC & LPT
-  a. corrupted data searched from TNC: skip node and set %FR_LPT_INCORRECT
-     lpt status for danger mode and normal mode with 'yes' answer, other
-     modes will exit.
-  b. corrupted index node read from TNC: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
-  c. corrupted lpt: Set %FR_LPT_CORRUPTED for lpt status. Ignore the
-     error.
-  d. incorrect lpt: Set %FR_LPT_INCORRECT for lpt status. Ignore the
-     error.
-  e. If lpt status is not empty, skip updating lpt.
+This is the 10/12 step of rebuilding. All LEBs' properties can be
+calculated in previous steps according to all nodes' position, then
+construct LPT just like mkfs does, and write LPT on flash.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/fsck.ubifs.c | 11 +++++---
- ubifs-utils/fsck.ubifs/fsck.ubifs.h |  5 ++--
- ubifs-utils/fsck.ubifs/load_fs.c    | 29 ++++++++++++++++++--
- ubifs-utils/fsck.ubifs/problem.c    | 39 ++++++++++++++++++++++-----
- ubifs-utils/libubifs/lprops.c       | 21 +++++++++++++++
- ubifs-utils/libubifs/replay.c       | 54 ++++++++++++++++++++++++++++++++-----
- ubifs-utils/libubifs/tnc.c          | 13 +++++++++
- ubifs-utils/libubifs/ubifs.h        | 11 +++++---
- 8 files changed, 160 insertions(+), 23 deletions(-)
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h |   2 +
+ ubifs-utils/fsck.ubifs/rebuild_fs.c | 149 ++++++++++++++++++++++++++++--------
+ ubifs-utils/libubifs/ubifs.h        |   2 +
+ 3 files changed, 119 insertions(+), 34 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 2fd68df5..85175cf8 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -325,13 +325,17 @@ static bool fsck_can_ignore_failure(const struct ubifs_info *c,
- 	return false;
- }
- 
--static const unsigned int reason_mapping_table[] = {};
-+static const unsigned int reason_mapping_table[] = {
-+	BUD_CORRUPTED,		/* FR_H_BUD_CORRUPTED */
-+	TNC_DATA_CORRUPTED,	/* FR_H_TNC_DATA_CORRUPTED */
-+};
- 
--static bool fsck_handle_failure(const struct ubifs_info *c, unsigned int reason)
-+static bool fsck_handle_failure(const struct ubifs_info *c, unsigned int reason,
-+				void *priv)
- {
- 	ubifs_assert(c, FSCK(c)->mode != REBUILD_MODE);
- 
--	return fix_problem(c, reason_mapping_table[reason]);
-+	return fix_problem(c, reason_mapping_table[reason], priv);
- }
- 
- static void signal_cancel(int sig)
-@@ -426,6 +430,7 @@ int main(int argc, char *argv[])
- 	/*
- 	 * Init: Read superblock
- 	 * Step 1: Read master & init lpt
-+	 * Step 2: Replay journal
- 	 */
- 	err = ubifs_load_filesystem(c);
- 	if (err) {
 diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index 7f826156..f1da974b 100644
+index fb72d8af..d25ecc2d 100644
 --- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
 +++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -37,7 +37,8 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
-        DANGER_MODE1, REBUILD_MODE, CHECK_MODE };
- 
- /* Types of inconsistent problems */
--enum { SB_CORRUPTED = 0, MST_CORRUPTED };
-+enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
-+       TNC_CORRUPTED, TNC_DATA_CORRUPTED };
- 
- struct scanned_file;
- 
-@@ -259,7 +260,7 @@ static inline const char *mode_name(const struct ubifs_info *c)
- extern int exit_code;
- 
- /* problem.c */
--bool fix_problem(const struct ubifs_info *c, int problem_type);
-+bool fix_problem(const struct ubifs_info *c, int problem_type, const void *priv);
- 
- /* load_fs.c */
- int ubifs_load_filesystem(struct ubifs_info *c);
-diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
-index 036e307c..f45c4117 100644
---- a/ubifs-utils/fsck.ubifs/load_fs.c
-+++ b/ubifs-utils/fsck.ubifs/load_fs.c
-@@ -72,7 +72,7 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 	err = ubifs_read_superblock(c);
- 	if (err) {
- 		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED))
--			fix_problem(c, SB_CORRUPTED);
-+			fix_problem(c, SB_CORRUPTED, NULL);
- 		exit_code |= FSCK_ERROR;
- 		goto out_mounting;
- 	}
-@@ -103,7 +103,7 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 	err = ubifs_read_master(c);
- 	if (err) {
- 		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED)) {
--			if (fix_problem(c, MST_CORRUPTED))
-+			if (fix_problem(c, MST_CORRUPTED, NULL))
- 				FSCK(c)->try_rebuild = true;
- 		} else
- 			exit_code |= FSCK_ERROR;
-@@ -161,10 +161,34 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 		c->superblock_need_write = 0;
- 	}
- 
-+	log_out(c, "Replay journal");
-+	err = ubifs_replay_journal(c);
-+	if (err) {
-+		unsigned int reason = get_failure_reason_callback(c);
-+
-+		clear_failure_reason_callback(c);
-+		if (reason & FR_DATA_CORRUPTED) {
-+			if (fix_problem(c, LOG_CORRUPTED, NULL))
-+				FSCK(c)->try_rebuild = true;
-+		} else if (reason & FR_TNC_CORRUPTED) {
-+			if (fix_problem(c, TNC_CORRUPTED, NULL))
-+				FSCK(c)->try_rebuild = true;
-+		} else {
-+			ubifs_assert(c, reason == 0);
-+			exit_code |= FSCK_ERROR;
-+		}
-+		goto out_journal;
-+	}
-+
-+	/* Calculate 'min_idx_lebs' after journal replay */
-+	c->bi.min_idx_lebs = ubifs_calc_min_idx_lebs(c);
-+
- 	c->mounting = 0;
- 
- 	return 0;
- 
-+out_journal:
-+	destroy_journal(c);
- out_lpt:
- 	ubifs_lpt_free(c, 0);
- out_master:
-@@ -188,6 +212,7 @@ out_free:
- 
- void ubifs_destroy_filesystem(struct ubifs_info *c)
- {
-+	destroy_journal(c);
- 	free_wbufs(c);
- 	ubifs_lpt_free(c, 0);
- 
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 1af66632..9df2c2ae 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -37,12 +37,39 @@ struct fsck_problem {
- static const struct fsck_problem problem_table[] = {
- 	{0, "Corrupted superblock"},	// SB_CORRUPTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted master node"},	// MST_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted log area"},	// LOG_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted bud LEB"},	// BUD_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted index node"},	// TNC_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted data searched from TNC"},	// TNC_DATA_CORRUPTED
+@@ -186,6 +186,7 @@ struct scanned_file {
+  * @write_buf: write buffer for LEB @head_lnum
+  * @head_lnum: current writing LEB number
+  * @head_offs: current writing position in LEB @head_lnum
++ * @need_update_lpt: whether to update lpt while writing index nodes
+  */
+ struct ubifs_rebuild_info {
+ 	unsigned long *used_lebs;
+@@ -194,6 +195,7 @@ struct ubifs_rebuild_info {
+ 	void *write_buf;
+ 	int head_lnum;
+ 	int head_offs;
++	bool need_update_lpt;
  };
  
-+static const char *get_question(const struct fsck_problem *problem,
-+				int problem_type)
+ /**
+diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+index e1d1957f..085df2b9 100644
+--- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
++++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+@@ -489,6 +489,22 @@ lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
+ 	return NULL;
+ }
+ 
++static void update_lpt(struct ubifs_info *c, struct scanned_node *sn,
++		       bool deleted)
 +{
-+	if (problem->flags & PROBLEM_NEED_REBUILD)
-+		return "Rebuild filesystem?";
++	int index = sn->lnum - c->main_first;
++	int pos = sn->offs + ALIGN(sn->len, 8);
 +
-+	switch (problem_type) {
-+	case BUD_CORRUPTED:
-+		return "Drop bud?";
-+	case TNC_DATA_CORRUPTED:
-+		return "Drop it?";
-+	}
++	set_bit(index, FSCK(c)->rebuild->used_lebs);
++	FSCK(c)->rebuild->lpts[index].end = max_t(int,
++					FSCK(c)->rebuild->lpts[index].end, pos);
 +
-+	return "Fix it?";
++	if (deleted)
++		return;
++
++	FSCK(c)->rebuild->lpts[index].used += ALIGN(sn->len, 8);
 +}
 +
- static void print_problem(const struct ubifs_info *c,
--			  const struct fsck_problem *problem)
-+			  const struct fsck_problem *problem, int problem_type,
-+			  const void *priv)
+ /**
+  * remove_del_nodes - remove deleted nodes from valid node tree.
+  * @c: UBIFS file-system description object
+@@ -512,13 +528,7 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
+ 
+ 		valid_ino_node = lookup_valid_ino_node(c, si, del_ino_node);
+ 		if (valid_ino_node) {
+-			int lnum = del_ino_node->header.lnum - c->main_first;
+-			int pos = del_ino_node->header.offs +
+-				  ALIGN(del_ino_node->header.len, 8);
+-
+-			set_bit(lnum, FSCK(c)->rebuild->used_lebs);
+-			FSCK(c)->rebuild->lpts[lnum].end =
+-				max_t(int, FSCK(c)->rebuild->lpts[lnum].end, pos);
++			update_lpt(c, &del_ino_node->header, true);
+ 			rb_erase(&valid_ino_node->rb, &si->valid_inos);
+ 			kfree(valid_ino_node);
+ 		}
+@@ -534,13 +544,7 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
+ 
+ 		valid_dent_node = lookup_valid_dent_node(c, si, del_dent_node);
+ 		if (valid_dent_node) {
+-			int lnum = del_dent_node->header.lnum - c->main_first;
+-			int pos = del_dent_node->header.offs +
+-				  ALIGN(del_dent_node->header.len, 8);
+-
+-			set_bit(lnum, FSCK(c)->rebuild->used_lebs);
+-			FSCK(c)->rebuild->lpts[lnum].end =
+-				max_t(int, FSCK(c)->rebuild->lpts[lnum].end, pos);
++			update_lpt(c, &del_dent_node->header, true);
+ 			rb_erase(&valid_dent_node->rb, &si->valid_dents);
+ 			kfree(valid_dent_node);
+ 		}
+@@ -730,12 +734,12 @@ static void init_root_ino(struct ubifs_info *c, struct ubifs_ino_node *ino)
+  * get_free_leb - get a free LEB according to @FSCK(c)->rebuild->used_lebs.
+  * @c: UBIFS file-system description object
+  *
+- * This function tries to find a free LEB, %0 is returned if found, otherwise
+- * %ENOSPC is returned.
++ * This function tries to find a free LEB, lnum is returned if found, otherwise
++ * %-ENOSPC is returned.
+  */
+ static int get_free_leb(struct ubifs_info *c)
  {
--	log_out(c, "problem: %s", problem->desc);
-+	if (problem_type == BUD_CORRUPTED) {
-+		const struct ubifs_bud *bud = (const struct ubifs_bud *)priv;
-+
-+		log_out(c, "problem: %s %d:%d %s", problem->desc, bud->lnum,
-+			bud->start, dbg_jhead(bud->jhead));
-+	} else
-+		log_out(c, "problem: %s", problem->desc);
+-	int lnum, err;
++	int lnum;
+ 
+ 	lnum = find_next_zero_bit(FSCK(c)->rebuild->used_lebs, c->main_lebs, 0);
+ 	if (lnum >= c->main_lebs) {
+@@ -745,14 +749,7 @@ static int get_free_leb(struct ubifs_info *c)
+ 	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
+ 	lnum += c->main_first;
+ 
+-	err = ubifs_leb_unmap(c, lnum);
+-	if (err)
+-		return err;
+-
+-	FSCK(c)->rebuild->head_lnum = lnum;
+-	FSCK(c)->rebuild->head_offs = 0;
+-
+-	return 0;
++	return lnum;
  }
  
- static void fatal_error(const struct ubifs_info *c,
-@@ -59,17 +86,17 @@ static void fatal_error(const struct ubifs_info *c,
-  * fix_problem - whether fixing the inconsistent problem
-  * @c: UBIFS file-system description object
-  * @problem_type: the type of inconsistent problem
-+ * @priv: private data for problem instance
-  *
-  * This function decides to fix/skip the inconsistent problem or abort the
-  * program according to @problem_type, returns %true if the problem should
-  * be fixed, returns %false if the problem will be skipped.
+ /**
+@@ -780,6 +777,14 @@ static int flush_write_buf(struct ubifs_info *c)
+ 	if (err)
+ 		return err;
+ 
++	if (FSCK(c)->rebuild->need_update_lpt) {
++		int index = FSCK(c)->rebuild->head_lnum - c->main_first;
++
++		FSCK(c)->rebuild->lpts[index].free = c->leb_size - len;
++		FSCK(c)->rebuild->lpts[index].dirty = pad;
++		FSCK(c)->rebuild->lpts[index].flags = LPROPS_INDEX;
++	}
++
+ 	FSCK(c)->rebuild->head_lnum = -1;
+ 
+ 	return 0;
+@@ -797,13 +802,20 @@ static int flush_write_buf(struct ubifs_info *c)
   */
--bool fix_problem(const struct ubifs_info *c, int problem_type)
-+bool fix_problem(const struct ubifs_info *c, int problem_type, const void *priv)
+ static int reserve_space(struct ubifs_info *c, int len, int *lnum, int *offs)
  {
- 	bool ans, ask = true, def_y = true;
- 	const struct fsck_problem *problem = &problem_table[problem_type];
--	const char *question = (problem->flags & PROBLEM_NEED_REBUILD) ?
--				"Rebuild filesystem?" : "Fix it?";
-+	const char *question = get_question(problem, problem_type);
+-	int err;
++	int err, new_lnum;
  
- 	ubifs_assert(c, FSCK(c)->mode != REBUILD_MODE);
- 
-@@ -88,7 +115,7 @@ bool fix_problem(const struct ubifs_info *c, int problem_type)
- 	    (FSCK(c)->mode == DANGER_MODE0 || FSCK(c)->mode == DANGER_MODE1))
- 		ask = false;
- 
--	print_problem(c, problem);
-+	print_problem(c, problem, problem_type, priv);
- 	ans = def_y;
- 	if (FSCK(c)->mode == NORMAL_MODE) {
- 		printf("%s[%d] (%s%s)", c->program_name, getpid(),
-diff --git a/ubifs-utils/libubifs/lprops.c b/ubifs-utils/libubifs/lprops.c
-index 84cdb353..a7a23053 100644
---- a/ubifs-utils/libubifs/lprops.c
-+++ b/ubifs-utils/libubifs/lprops.c
-@@ -656,14 +656,24 @@ int ubifs_change_one_lp(struct ubifs_info *c, int lnum, int free, int dirty,
- 	int err = 0, flags;
- 	const struct ubifs_lprops *lp;
- 
-+	if (!test_lpt_valid_callback(c, lnum, LPROPS_NC, LPROPS_NC, LPROPS_NC,
-+				     LPROPS_NC))
-+		return 0;
+ 	if (FSCK(c)->rebuild->head_lnum == -1) {
+ get_new:
+-		err = get_free_leb(c);
++		new_lnum = get_free_leb(c);
++		if (new_lnum < 0)
++			return new_lnum;
 +
- 	ubifs_get_lprops(c);
- 
- 	lp = ubifs_lpt_lookup_dirty(c, lnum);
- 	if (IS_ERR(lp)) {
- 		err = PTR_ERR(lp);
-+		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+			err = 0;
- 		goto out;
- 	}
- 
-+	if (!test_lpt_valid_callback(c, lnum, lp->free, lp->dirty, free, dirty))
-+		goto out;
-+
- 	flags = (lp->flags | flags_set) & ~flags_clean;
- 	lp = ubifs_change_lp(c, lp, free, dirty, flags, idx_gc_cnt);
- 	if (IS_ERR(lp))
-@@ -695,14 +705,25 @@ int ubifs_update_one_lp(struct ubifs_info *c, int lnum, int free, int dirty,
- 	int err = 0, flags;
- 	const struct ubifs_lprops *lp;
- 
-+	if (!test_lpt_valid_callback(c, lnum, LPROPS_NC, LPROPS_NC, LPROPS_NC,
-+				     LPROPS_NC))
-+		return 0;
-+
- 	ubifs_get_lprops(c);
- 
- 	lp = ubifs_lpt_lookup_dirty(c, lnum);
- 	if (IS_ERR(lp)) {
- 		err = PTR_ERR(lp);
-+		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+			err = 0;
- 		goto out;
- 	}
- 
-+	if (!test_lpt_valid_callback(c, lnum, lp->free, lp->dirty, free,
-+				     lp->dirty + dirty))
-+		goto out;
-+
- 	flags = (lp->flags | flags_set) & ~flags_clean;
- 	lp = ubifs_change_lp(c, lp, free, lp->dirty + dirty, flags, 0);
- 	if (IS_ERR(lp))
-diff --git a/ubifs-utils/libubifs/replay.c b/ubifs-utils/libubifs/replay.c
-index 30ed2827..2741742b 100644
---- a/ubifs-utils/libubifs/replay.c
-+++ b/ubifs-utils/libubifs/replay.c
-@@ -94,11 +94,18 @@ static int set_bud_lprops(struct ubifs_info *c, struct bud_entry *b)
- 	const struct ubifs_lprops *lp;
- 	int err = 0, dirty;
- 
-+	if (!test_lpt_valid_callback(c, b->bud->lnum, LPROPS_NC, LPROPS_NC,
-+				     LPROPS_NC, LPROPS_NC))
-+		return 0;
-+
- 	ubifs_get_lprops(c);
- 
- 	lp = ubifs_lpt_lookup_dirty(c, b->bud->lnum);
- 	if (IS_ERR(lp)) {
- 		err = PTR_ERR(lp);
-+		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+			err = 0;
- 		goto out;
- 	}
- 
-@@ -140,6 +147,10 @@ static int set_bud_lprops(struct ubifs_info *c, struct bud_entry *b)
- 				b->bud->lnum, lp->free, lp->dirty, b->free,
- 				b->dirty);
- 	}
-+	if (!test_lpt_valid_callback(c, b->bud->lnum, lp->free, lp->dirty,
-+				     b->free, dirty + b->dirty))
-+		goto out;
-+
- 	lp = ubifs_change_lp(c, lp, b->free, dirty + b->dirty,
- 			     lp->flags | LPROPS_TAKEN, 0);
- 	if (IS_ERR(lp)) {
-@@ -766,6 +777,7 @@ out:
- 	return err;
- 
- out_dump:
-+	set_failure_reason_callback(c, FR_DATA_CORRUPTED);
- 	ubifs_err(c, "bad node is at LEB %d:%d", lnum, snod->offs);
- 	ubifs_dump_node(c, snod->node, c->leb_size - snod->offs);
- 	ubifs_scan_destroy(sleb);
-@@ -781,14 +793,24 @@ out_dump:
-  */
- static int replay_buds(struct ubifs_info *c)
- {
--	struct bud_entry *b;
-+	struct bud_entry *b, *tmp_b;
- 	int err;
- 	unsigned long long prev_sqnum = 0;
- 
--	list_for_each_entry(b, &c->replay_buds, list) {
-+	list_for_each_entry_safe(b, tmp_b, &c->replay_buds, list) {
- 		err = replay_bud(c, b);
--		if (err)
-+		if (err) {
-+			if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED) &&
-+			    handle_failure_callback(c, FR_H_BUD_CORRUPTED, b->bud)) {
-+				/* Set %FR_LPT_INCORRECT for lpt status. */
-+				set_lpt_invalid_callback(c, FR_LPT_INCORRECT);
-+				/* Skip replaying the bud LEB. */
-+				list_del(&b->list);
-+				kfree(b);
-+				continue;
-+			}
++		err = ubifs_leb_unmap(c, new_lnum);
+ 		if (err)
  			return err;
-+		}
- 
- 		ubifs_assert(c, b->sqnum > prev_sqnum);
- 		prev_sqnum = b->sqnum;
-@@ -1062,6 +1084,7 @@ out:
- 	return err;
- 
- out_dump:
-+	set_failure_reason_callback(c, FR_DATA_CORRUPTED);
- 	ubifs_err(c, "log error detected while replaying the log at LEB %d:%d",
- 		  lnum, offs + snod->offs);
- 	ubifs_dump_node(c, snod->node, c->leb_size - snod->offs);
-@@ -1086,11 +1109,20 @@ static int take_ihead(struct ubifs_info *c)
- 	lp = ubifs_lpt_lookup_dirty(c, c->ihead_lnum);
- 	if (IS_ERR(lp)) {
- 		err = PTR_ERR(lp);
-+		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+			err = 0;
- 		goto out;
++
++		FSCK(c)->rebuild->head_lnum = new_lnum;
++		FSCK(c)->rebuild->head_offs = 0;
  	}
  
- 	free = lp->free;
+ 	if (len > c->leb_size - FSCK(c)->rebuild->head_offs) {
+@@ -921,15 +933,9 @@ static int parse_node_info(struct ubifs_info *c, struct scanned_node *sn,
+ 			   union ubifs_key *key, char *name, int name_len,
+ 			   struct list_head *idx_list, int *idx_cnt)
+ {
+-	int lnum, pos;
+ 	struct idx_entry *e;
  
-+	if (!test_lpt_valid_callback(c, c->ihead_lnum, LPROPS_NC, LPROPS_NC,
-+				     LPROPS_NC, LPROPS_NC)) {
-+		err = free;
+-	lnum = sn->lnum - c->main_first;
+-	pos = sn->offs + ALIGN(sn->len, 8);
+-
+-	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
+-	FSCK(c)->rebuild->lpts[lnum].end = max_t(int,
+-					FSCK(c)->rebuild->lpts[lnum].end, pos);
++	update_lpt(c, sn, idx_cnt == NULL);
+ 
+ 	if (idx_cnt == NULL)
+ 		/* Skip truncation node. */
+@@ -1026,6 +1032,7 @@ static int build_tnc(struct ubifs_info *c, struct list_head *lower_idxs,
+ 		return -ENOMEM;
+ 
+ 	list_sort(c, lower_idxs, cmp_idx);
++	FSCK(c)->rebuild->need_update_lpt = true;
+ 
+ 	ubifs_assert(c, lower_cnt != 0);
+ 
+@@ -1089,6 +1096,7 @@ static int build_tnc(struct ubifs_info *c, struct list_head *lower_idxs,
+ 
+ 	/* Flush the last index LEB */
+ 	err = flush_write_buf(c);
++	FSCK(c)->rebuild->need_update_lpt = false;
+ 
+ out:
+ 	list_for_each_entry_safe(e, tmp_e, lower_idxs, list) {
+@@ -1239,6 +1247,71 @@ out_idx_list:
+ }
+ 
+ /**
++ * build_lpt - construct LPT and write it into flash.
++ * @c: UBIFS file-system description object
++ *
++ * This function builds LPT according to @FSCK(c)->rebuild->lpts and writes
++ * LPT into flash.
++ */
++static int build_lpt(struct ubifs_info *c)
++{
++	int i, len, free, dirty, lnum;
++	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
++
++	memset(&c->lst, 0, sizeof(struct ubifs_lp_stats));
++	/* Set gc lnum. */
++	lnum = get_free_leb(c);
++	if (lnum < 0)
++		return lnum;
++	c->gc_lnum = lnum;
++
++	/* Update LPT. */
++	for (i = 0; i < c->main_lebs; i++) {
++		if (!test_bit(i, FSCK(c)->rebuild->used_lebs) ||
++		    c->gc_lnum == i + c->main_first) {
++			free = c->leb_size;
++			dirty = 0;
++		} else if (FSCK(c)->rebuild->lpts[i].flags & LPROPS_INDEX) {
++			free = FSCK(c)->rebuild->lpts[i].free;
++			dirty = FSCK(c)->rebuild->lpts[i].dirty;
++		} else {
++			len = ALIGN(FSCK(c)->rebuild->lpts[i].end, c->min_io_size);
++			free = c->leb_size - len;
++			dirty = len - FSCK(c)->rebuild->lpts[i].used;
++
++			if (dirty == c->leb_size) {
++				free = c->leb_size;
++				dirty = 0;
++			}
++		}
++
++		FSCK(c)->rebuild->lpts[i].free = free;
++		FSCK(c)->rebuild->lpts[i].dirty = dirty;
++		c->lst.total_free += free;
++		c->lst.total_dirty += dirty;
++
++		if (free == c->leb_size)
++			c->lst.empty_lebs++;
++
++		if (!(FSCK(c)->rebuild->lpts[i].flags & LPROPS_INDEX)) {
++			int spc;
++
++			spc = free + dirty;
++			if (spc < c->dead_wm)
++				c->lst.total_dead += spc;
++			else
++				c->lst.total_dark += ubifs_calc_dark(c, spc);
++			c->lst.total_used += c->leb_size - spc;
++		} else {
++			c->lst.idx_lebs += 1;
++		}
++	}
++
++	/* Write LPT. */
++	return ubifs_create_lpt(c, FSCK(c)->rebuild->lpts, c->main_lebs, hash_lpt);
++}
++
++/**
+  * ubifs_rebuild_filesystem - Rebuild filesystem.
+  * @c: UBIFS file-system description object
+  *
+@@ -1302,6 +1375,14 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
+ 	 * Step 9: Build TNC.
+ 	 */
+ 	err = traverse_files_and_nodes(c);
++	if (err) {
++		exit_code |= FSCK_ERROR;
 +		goto out;
 +	}
 +
- 	lp = ubifs_change_lp(c, lp, LPROPS_NC, LPROPS_NC,
- 			     lp->flags | LPROPS_TAKEN, 0);
- 	if (IS_ERR(lp)) {
-@@ -1123,10 +1155,17 @@ int ubifs_replay_journal(struct ubifs_info *c)
- 	if (free < 0)
- 		return free; /* Error code */
++	/* Step 10. Build LPT. */
++	log_out(c, "Build LPT");
++	err = build_lpt(c);
+ 	if (err)
+ 		exit_code |= FSCK_ERROR;
  
--	if (c->ihead_offs != c->leb_size - free) {
--		ubifs_err(c, "bad index head LEB %d:%d", c->ihead_lnum,
--			  c->ihead_offs);
--		return -EINVAL;
-+	if (c->program_type != FSCK_PROGRAM_TYPE) {
-+		/*
-+		 * Skip index head checking for fsck, it is hard to check it
-+		 * caused by possible corrupted/incorrect lpt, tnc updating
-+		 * will report error code if index tree is really corrupted.
-+		 */
-+		if (c->ihead_offs != c->leb_size - free) {
-+			ubifs_err(c, "bad index head LEB %d:%d", c->ihead_lnum,
-+				  c->ihead_offs);
-+			return -EINVAL;
-+		}
- 	}
- 
- 	dbg_mnt("start replaying the journal");
-@@ -1147,6 +1186,7 @@ int ubifs_replay_journal(struct ubifs_info *c)
- 			 * something went wrong and we cannot proceed mounting
- 			 * the file-system.
- 			 */
-+			set_failure_reason_callback(c, FR_DATA_CORRUPTED);
- 			ubifs_err(c, "no UBIFS nodes found at the log head LEB %d:%d, possibly corrupted",
- 				  lnum, 0);
- 			err = -EINVAL;
-diff --git a/ubifs-utils/libubifs/tnc.c b/ubifs-utils/libubifs/tnc.c
-index 12c56e0a..cd1013d5 100644
---- a/ubifs-utils/libubifs/tnc.c
-+++ b/ubifs-utils/libubifs/tnc.c
-@@ -2402,9 +2402,22 @@ int ubifs_tnc_remove_ino(struct ubifs_info *c, ino_t inum)
- 
- 		xent = ubifs_tnc_next_ent(c, &key1, &nm);
- 		if (IS_ERR(xent)) {
-+			unsigned int reason;
-+
- 			err = PTR_ERR(xent);
- 			if (err == -ENOENT)
- 				break;
-+
-+			reason = get_failure_reason_callback(c);
-+			if (reason & FR_DATA_CORRUPTED) {
-+				test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED);
-+				if (handle_failure_callback(c, FR_H_TNC_DATA_CORRUPTED, NULL)) {
-+					/* Set %FR_LPT_INCORRECT for lpt status. */
-+					set_lpt_invalid_callback(c, FR_LPT_INCORRECT);
-+					/* Leave xattrs to be deleted by subsequent steps */
-+					break;
-+				}
-+			}
- 			kfree(pxent);
- 			return err;
- 		}
 diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index 6f965555..ae812ff8 100644
+index c9d582da..6f965555 100644
 --- a/ubifs-utils/libubifs/ubifs.h
 +++ b/ubifs-utils/libubifs/ubifs.h
-@@ -1286,7 +1286,7 @@ struct ubifs_info {
- 	bool (*can_ignore_failure_cb)(const struct ubifs_info *c,
- 				      unsigned int reason);
- 	bool (*handle_failure_cb)(const struct ubifs_info *c,
--				  unsigned int reason);
-+				  unsigned int reason, void *priv);
- };
- 
- extern atomic_long_t ubifs_clean_zn_cnt;
-@@ -1542,6 +1542,11 @@ enum {
- 	FR_LPT_CORRUPTED = 4,	/* LPT is corrupted */
- 	FR_LPT_INCORRECT = 8	/* Space statistics are wrong */
- };
-+/* Partial failure reasons in common libs, which are handled by fsck. */
-+enum {
-+	FR_H_BUD_CORRUPTED = 0,		/* Bud LEB is corrupted */
-+	FR_H_TNC_DATA_CORRUPTED,	/* Data searched from TNC is corrupted */
-+};
- /* Callback functions for failure(which can be handled by fsck) happens. */
- static inline void set_failure_reason_callback(const struct ubifs_info *c,
- 					       unsigned int reason)
-@@ -1596,10 +1601,10 @@ static inline bool can_ignore_failure_callback(const struct ubifs_info *c,
- 	return false;
- }
- static inline bool handle_failure_callback(const struct ubifs_info *c,
--					   unsigned int reason)
-+					   unsigned int reason, void *priv)
- {
- 	if (c->handle_failure_cb)
--		return c->handle_failure_cb(c, reason);
-+		return c->handle_failure_cb(c, reason, priv);
- 
- 	return false;
- }
+@@ -338,6 +338,7 @@ enum {
+  * @flags: LEB properties flags (see above)
+  * @lnum: LEB number
+  * @end: the end postition of LEB calculated by the last node
++ * @used: amount of used space in bytes
+  * @list: list of same-category lprops (for LPROPS_EMPTY and LPROPS_FREEABLE)
+  * @hpos: heap position in heap of same-category lprops (other categories)
+  */
+@@ -347,6 +348,7 @@ struct ubifs_lprops {
+ 	int flags;
+ 	int lnum;
+ 	int end;
++	int used;
+ 	union {
+ 		struct list_head list;
+ 		int hpos;
 -- 
 2.13.6
 
