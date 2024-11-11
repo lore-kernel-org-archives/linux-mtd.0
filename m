@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E92AED12D7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:08:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A483D12D7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZIsKasaHbFERU/ryTMp+HhpJNhGqciG2XZEkD0bxzoY=; b=D87QkNj0jhK00X
-	zyXuXiDyuiDU9qLt7imGSPz2hIFqAbVJA5op5NMLyNQznib/HcXrAwQg3dlV1nKumwuZQOwlNq2xb
-	NYTy/AGSSeAT0BjI9urIciFQOFedP9kSP+7Nnoqre6gyfSYE/aFm73p0cHdPYtAzHsRs/SEiVfni7
-	01J75w/EZjDdhqBq95b8QQWsLJLYfYcHXobXu9flzc2WYK3PeFDU6RBsM9BAYgeTgYmkU6It3GCGi
-	dHSzRVikwl/77XuUheDuLR3dxjyo7XqXfbJCKgi5ayjhC3LAY/FNhYOehOWaTQ22ffRa2SQLCKQvm
-	yWhZO01XhR7MC4eK2lag==;
+	List-Owner; bh=WhHZiQ8lk95sJu9KPwt41SfdRTVp4Pvihk7prK/2TNk=; b=pBVk83zvFnCOc2
+	Zw/U5pYEZLeM2eCg/T7jQ2pbJ09n0WGFenEd7vOwiuq8ZpkUJXm9J9lYauu/DW6NA1T+kwLLRFOpl
+	zNzH349stBLcSVWWsek2zLmGNTsoSAo2dDhX3NXc/Lwrwgs0mHev4K1WjFByujfenHftDuqVqfo9K
+	k+8mJEGRHBkWTPNKhf2Elaa+8UBNGHlqCj1ZJJy2f72dow05M7k/2EnikRqcC7y3VKsj396xYfjNK
+	cjUxqb1TGamgDmI86augUoaByzHNlFK7N1peKOeJShzbeDD0G4PUCBdN0690td9cBK7NwtQ3pS8Gf
+	YcMDZnQSs/b4zAKMAUew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSz-0000000GjuE-04Y2;
-	Mon, 11 Nov 2024 08:08:09 +0000
+	id 1tAPT5-0000000Gjxe-1PX2;
+	Mon, 11 Nov 2024 08:08:15 +0000
 Received: from szxga06-in.huawei.com ([45.249.212.32])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSb-0000000GjY9-1I70
+	id 1tAPSb-0000000GjY7-1FVU
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:07:49 +0000
+	Mon, 11 Nov 2024 08:07:50 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn2Gd4qgMz1ypWC;
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn2Gd3ssYz1ypVl;
 	Mon, 11 Nov 2024 16:07:53 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 88C68140391;
+	by mail.maildlp.com (Postfix) with ESMTPS id 66021140393;
 	Mon, 11 Nov 2024 16:07:42 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:07:36 +0800
+ 2024 16:07:35 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 014/102] ubifs-utils: Add atomic implementations
-Date: Mon, 11 Nov 2024 16:05:49 +0800
-Message-ID: <20241111080621.1394382-10-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 011/102] ubifs-utils: Add linux type definitions
+Date: Mon, 11 Nov 2024 16:05:47 +0800
+Message-ID: <20241111080621.1394382-8-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_000745_982709_DD723931 
-X-CRM114-Status: GOOD (  16.94  )
+X-CRM114-CacheID: sfid-20241111_000745_933280_1EEBB18D 
+X-CRM114-Status: GOOD (  17.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,170 +70,292 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add atomic implementations, because there are some atomic operations
-(eg. atomic_long_xxx) used in UBIFS linux kernel libs.
+Add linux type definitions, because there are many types
+(eg. u8/u16/u64) used in UBIFS linux kernel libs. Besides
+move type conversions (eg. cpu_to_le16, cpu_to_le32, etc.)
+into type definitions header file.
 
 This is a preparation for replacing implementation of UBIFS utils with
 linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am   |   1 +
- ubifs-utils/common/atomic.h | 133 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 134 insertions(+)
- create mode 100644 ubifs-utils/common/atomic.h
+ ubifs-utils/Makemodule.am           |  1 +
+ ubifs-utils/common/crypto.c         |  1 +
+ ubifs-utils/common/defs.h           | 30 -------------
+ ubifs-utils/common/fscrypt.c        |  3 +-
+ ubifs-utils/common/fscrypt.h        |  7 +--
+ ubifs-utils/common/linux_types.h    | 89 +++++++++++++++++++++++++++++++++++++
+ ubifs-utils/common/sign.c           |  2 +-
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  9 ++--
+ 8 files changed, 104 insertions(+), 38 deletions(-)
+ create mode 100644 ubifs-utils/common/linux_types.h
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 13171b74..58162579 100644
+index d58570fe..0f9c0fa6 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -2,6 +2,7 @@ common_SOURCES = \
+@@ -1,5 +1,6 @@
+ common_SOURCES = \
  	ubifs-utils/common/compiler_attributes.h \
- 	ubifs-utils/common/linux_types.h \
- 	ubifs-utils/common/linux_err.h \
-+	ubifs-utils/common/atomic.h \
- 	ubifs-utils/common/kmem.h \
- 	ubifs-utils/common/kmem.c \
++	ubifs-utils/common/linux_types.h \
  	ubifs-utils/common/defs.h \
-diff --git a/ubifs-utils/common/atomic.h b/ubifs-utils/common/atomic.h
+ 	ubifs-utils/common/crc16.h \
+ 	ubifs-utils/common/crc16.c \
+diff --git a/ubifs-utils/common/crypto.c b/ubifs-utils/common/crypto.c
+index 2ecd8da1..e4ef3491 100644
+--- a/ubifs-utils/common/crypto.c
++++ b/ubifs-utils/common/crypto.c
+@@ -23,6 +23,7 @@
+ #include <string.h>
+ #include <assert.h>
+ 
++#include "linux_types.h"
+ #include "fscrypt.h"
+ #include "defs.h"
+ #include "ubifs.h"
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index cafc94af..dd3b806e 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -9,7 +9,6 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <limits.h>
+-#include <byteswap.h>
+ #include <errno.h>
+ 
+ #include "ubifs.h"
+@@ -27,37 +26,8 @@ enum { MKFS_PROGRAM_TYPE = 0 };
+ 	printf("%s: %s: " fmt "\n", PROGRAM_NAME, __FUNCTION__, ##__VA_ARGS__); \
+ } while(0)
+ 
+-#define t16(x) ({ \
+-	uint16_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
+-})
+-
+-#define t32(x) ({ \
+-	uint32_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_32(__b); \
+-})
+-
+-#define t64(x) ({ \
+-	uint64_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_64(__b); \
+-})
+-
+-#define cpu_to_le16(x) ((__le16){t16(x)})
+-#define cpu_to_le32(x) ((__le32){t32(x)})
+-#define cpu_to_le64(x) ((__le64){t64(x)})
+-
+-#define le16_to_cpu(x) (t16((x)))
+-#define le32_to_cpu(x) (t32((x)))
+-#define le64_to_cpu(x) (t64((x)))
+-
+ #define unlikely(x) (x)
+ 
+-struct qstr
+-{
+-	char *name;
+-	size_t len;
+-};
+-
+ /**
+  * fls - find last (most-significant) bit set
+  * @x: the word to search
+diff --git a/ubifs-utils/common/fscrypt.c b/ubifs-utils/common/fscrypt.c
+index 895d5c72..f39faa76 100644
+--- a/ubifs-utils/common/fscrypt.c
++++ b/ubifs-utils/common/fscrypt.c
+@@ -20,6 +20,7 @@
+ 
+ #include <endian.h>
+ 
++#include "linux_types.h"
+ #include "fscrypt.h"
+ #include "defs.h"
+ #include "ubifs.h"
+@@ -88,7 +89,7 @@ unsigned int fscrypt_fname_encrypted_size(struct fscrypt_context *fctx,
+ 	return round_up(ilen, padding);
+ }
+ 
+-int encrypt_path(void **outbuf, void *data, unsigned int data_len,
++int encrypt_path(void **outbuf, const void *data, unsigned int data_len,
+ 		unsigned int max_namelen, struct fscrypt_context *fctx)
+ {
+ 	void *inbuf, *crypt_key;
+diff --git a/ubifs-utils/common/fscrypt.h b/ubifs-utils/common/fscrypt.h
+index b8a599de..4a073e97 100644
+--- a/ubifs-utils/common/fscrypt.h
++++ b/ubifs-utils/common/fscrypt.h
+@@ -107,7 +107,7 @@ struct fscrypt_context *inherit_fscrypt_context(struct fscrypt_context *fctx);
+ void free_fscrypt_context(struct fscrypt_context *fctx);
+ unsigned int fscrypt_fname_encrypted_size(struct fscrypt_context *fctx,
+ 					  unsigned int ilen);
+-int encrypt_path(void **outbuf, void *data, unsigned int data_len,
++int encrypt_path(void **outbuf, const void *data, unsigned int data_len,
+ 		 unsigned int max_namelen, struct fscrypt_context *fctx);
+ int encrypt_data_node(struct fscrypt_context *fctx, unsigned int block_no,
+ 		      struct ubifs_data_node *dn, size_t length);
+@@ -138,8 +138,9 @@ static inline void free_fscrypt_context(struct fscrypt_context *fctx)
+ 	assert(!fctx);
+ }
+ 
+-static inline int encrypt_path(void **outbuf, void *data, unsigned int data_len,
+-		 unsigned int max_namelen, struct fscrypt_context *fctx)
++static inline int encrypt_path(void **outbuf, const void *data,
++			unsigned int data_len, unsigned int max_namelen,
++			struct fscrypt_context *fctx)
+ {
+ 	(void)outbuf;
+ 	(void)data;
+diff --git a/ubifs-utils/common/linux_types.h b/ubifs-utils/common/linux_types.h
 new file mode 100644
-index 00000000..f287d435
+index 00000000..556b2e25
 --- /dev/null
-+++ b/ubifs-utils/common/atomic.h
-@@ -0,0 +1,133 @@
-+//Source: http://golubenco.org/atomic-operations.html
-+#ifndef __ATOMIC_H__
-+#define __ATOMIC_H__
++++ b/ubifs-utils/common/linux_types.h
+@@ -0,0 +1,89 @@
++#ifndef __LINUX_TYPES_H__
++#define __LINUX_TYPES_H__
 +
-+/* Check GCC version, just to be safe */
-+#if !defined(__GNUC__) || (__GNUC__ < 4) || (__GNUC_MINOR__ < 1)
-+# error atomic.h works only with GCC newer than version 4.1
-+#endif /* GNUC >= 4.1 */
++#include <linux/types.h>
++#include <sys/types.h>
++#include <byteswap.h>
++#include <stdint.h>
++#include <unistd.h>
 +
-+/**
-+ * Atomic type.
-+ */
-+typedef struct {
-+	volatile long counter;
-+} atomic_long_t;
++#include "compiler_attributes.h"
 +
-+#define ATOMIC_INIT(i)  { (i) }
++typedef __u8		u8;
++typedef __u16		u16;
++typedef __u32		u32;
++typedef __u64		u64;
 +
-+/**
-+ * Read atomic variable
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically reads the value of @v.
-+ */
-+#define atomic_long_read(v) ((v)->counter)
++typedef __s64		time64_t;
 +
-+/**
-+ * Set atomic variable
-+ * @param v pointer of type atomic_long_t
-+ * @param i required value
-+ */
-+#define atomic_long_set(v,i) (((v)->counter) = (i))
++struct qstr {
++	const char *name;
++	size_t len;
++};
 +
-+/**
-+ * Add to the atomic variable
-+ * @param i integer value to add
-+ * @param v pointer of type atomic_long_t
-+ */
-+static inline void atomic_long_add( int i, atomic_long_t *v )
++struct fscrypt_name {
++	struct qstr disk_name;
++};
++
++#define fname_name(p)	((p)->disk_name.name)
++#define fname_len(p)	((p)->disk_name.len)
++
++#define t16(x) ({ \
++	uint16_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
++})
++
++#define t32(x) ({ \
++	uint32_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_32(__b); \
++})
++
++#define t64(x) ({ \
++	uint64_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_64(__b); \
++})
++
++#define cpu_to_le16(x) ((__le16){t16(x)})
++#define cpu_to_le32(x) ((__le32){t32(x)})
++#define cpu_to_le64(x) ((__le64){t64(x)})
++
++#define le16_to_cpu(x) (t16((x)))
++#define le32_to_cpu(x) (t32((x)))
++#define le64_to_cpu(x) (t64((x)))
++
++#define check_mul_overflow(a, b, d) ({		\
++	typeof(a) __a = (a);			\
++	typeof(b) __b = (b);			\
++	typeof(d) __d = (d);			\
++	(void) (&__a == &__b);			\
++	(void) (&__a == __d);			\
++	__builtin_mul_overflow(__a, __b, __d);	\
++})
++
++static inline __must_check size_t array_size(size_t a, size_t b)
 +{
-+	(void)__sync_add_and_fetch(&v->counter, i);
++	size_t bytes;
++	if (check_mul_overflow(a, b, &bytes))
++		return SIZE_MAX;
++
++	return bytes;
 +}
 +
-+/**
-+ * Subtract the atomic variable
-+ * @param i integer value to subtract
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically subtracts @i from @v.
-+ */
-+static inline void atomic_long_sub( int i, atomic_long_t *v )
++static inline int int_log2(unsigned int arg)
 +{
-+	(void)__sync_sub_and_fetch(&v->counter, i);
++	int  l = 0;
++
++	arg >>= 1;
++	while (arg) {
++		l++;
++		arg >>= 1;
++	}
++	return l;
 +}
 +
-+/**
-+ * Subtract value from variable and test result
-+ * @param i integer value to subtract
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically subtracts @i from @v and returns
-+ * true if the result is zero, or false for all
-+ * other cases.
-+ */
-+static inline int atomic_long_sub_and_test( int i, atomic_long_t *v )
-+{
-+	return !(__sync_sub_and_fetch(&v->counter, i));
-+}
-+
-+/**
-+ * Increment atomic variable
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically increments @v by 1.
-+ */
-+static inline void atomic_long_inc( atomic_long_t *v )
-+{
-+	(void)__sync_fetch_and_add(&v->counter, 1);
-+}
-+
-+/**
-+ * @brief decrement atomic variable
-+ * @param v: pointer of type atomic_long_t
-+ *
-+ * Atomically decrements @v by 1.  Note that the guaranteed
-+ * useful range of an atomic_long_t is only 24 bits.
-+ */
-+static inline void atomic_long_dec( atomic_long_t *v )
-+{
-+	(void)__sync_fetch_and_sub(&v->counter, 1);
-+}
-+
-+/**
-+ * @brief Decrement and test
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically decrements @v by 1 and
-+ * returns true if the result is 0, or false for all other
-+ * cases.
-+ */
-+static inline int atomic_long_dec_and_test( atomic_long_t *v )
-+{
-+	return !(__sync_sub_and_fetch(&v->counter, 1));
-+}
-+
-+/**
-+ * @brief Increment and test
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically increments @v by 1
-+ * and returns true if the result is zero, or false for all
-+ * other cases.
-+ */
-+static inline int atomic_long_inc_and_test( atomic_long_t *v )
-+{
-+	return !(__sync_add_and_fetch(&v->counter, 1));
-+}
-+
-+/**
-+ * @brief add and test if negative
-+ * @param v pointer of type atomic_long_t
-+ * @param i integer value to add
-+ *
-+ * Atomically adds @i to @v and returns true
-+ * if the result is negative, or false when
-+ * result is greater than or equal to zero.
-+ */
-+static inline int atomic_long_add_negative( int i, atomic_long_t *v )
-+{
-+	return (__sync_add_and_fetch(&v->counter, i) < 0);
-+}
++#undef PAGE_SIZE
++#define PAGE_SIZE (getpagesize())
++#undef PAGE_SHIFT
++#define PAGE_SHIFT (int_log2(PAGE_SIZE))
 +
 +#endif
+diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
+index 7530503a..dfbc96bf 100644
+--- a/ubifs-utils/common/sign.c
++++ b/ubifs-utils/common/sign.c
+@@ -28,7 +28,7 @@
+ #include <openssl/conf.h>
+ #include <err.h>
+ 
+-#include "compiler_attributes.h"
++#include "linux_types.h"
+ #include "sign.h"
+ #include "defs.h"
+ #include "ubifs.h"
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 2181595e..c2f5a29d 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -46,6 +46,7 @@
+ #include <zstd.h>
+ #endif
+ 
++#include "linux_types.h"
+ #include "defs.h"
+ #include "crypto.h"
+ #include "fscrypt.h"
+@@ -1207,12 +1208,14 @@ static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st,
+ 	struct ubifs_ino_node *ino;
+ 	struct ubifs_dent_node *xent;
+ 	struct qstr nm;
++	char *tmp_name;
+ 	union ubifs_key xkey, nkey;
+ 	int len, ret;
+ 
+ 	nm.len = strlen(name);
+-	nm.name = xmalloc(nm.len + 1);
+-	memcpy(nm.name, name, nm.len + 1);
++	tmp_name = xmalloc(nm.len + 1);
++	memcpy(tmp_name, name, nm.len + 1);
++	nm.name = tmp_name;
+ 
+ 	host_ino->xattr_cnt++;
+ 	host_ino->xattr_size += CALC_DENT_SIZE(nm.len);
+@@ -1240,7 +1243,7 @@ static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st,
+ 
+ 	xent->inum = cpu_to_le64(inum);
+ 
+-	ret = add_node(&xkey, nm.name, nm.len, xent, len);
++	ret = add_node(&xkey, tmp_name, nm.len, xent, len);
+ 	if (ret)
+ 		goto out;
+ 
 -- 
 2.13.6
 
