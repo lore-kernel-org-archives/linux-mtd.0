@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E78D6D2E9CC
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:30:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1902D2E9CB
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:30:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uldaow3gihxm+6jU+GaByV5JbGbNIH9TQyFhx9xP0o4=; b=GwAFxqV9NOJkT6
-	wtc8YHmXtNohpTKEDRaKfjlu7UbtzWHsTFvrHV+ekQP43PdBBdqBZ+UsuFFcGIguSa5Ykm+kFLC3j
-	DMbVXWsxcGeSKjqUaSfkQv2rUqWDp25eOpLqhgjvUXv+2Grbam5BTOY31+sTYnpMPDe3yX2cJcFwi
-	Ey3orPwvghpf5c1YVQhx/VnhIwASqsaPzNJ0GAgzL/lzHoLRea0GRApwAhUjfGR9rbkK7Xll+k21S
-	xW2lt8822BAkm/sfm8RfHedgmieXBI2Yvg4mo3fsNX2HSJSyMZI1WaYP/pkMgtpV9itcbQ3jzA2Qg
-	G1aXp0lF0qrrrj2wsJXg==;
+	List-Owner; bh=nGu6gAchj/Cw0F2bwMdW+l0V/shDZyN2Msl0OPRNUxI=; b=2eg0Dm/FxtWaOA
+	RpJYgxaiVhN4l1Ouxs32q2a+qdZzepbL6IZ9+2BqZqc4AQXvvcIOkpEQRa8Dc3sN4fk5JX/qwpA3Q
+	5GJ0UePJhku8jr5rL+WlCV3mKf5GPj2hjJD/DtR7syiADH58Y7sPuZVYpf4EZ3n6jSy1QPTh2Rd50
+	72f8ekqjnkIfVWei2CgN3eSGiIsAeJ/4jUr9BDAOZAz6826+JPkDheWFx20jTAdOoraial1UQRDb5
+	aLb1rA6n7b765NwvpSzsnJWlxdBhkV35Jx9gDmudCfq3H0GKwwoBE4Kcp2V11MorYEgLWdTODKEIQ
+	07/jT7G54iTJqVSq0jnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQl0-0000000H6Dl-2QJl;
-	Mon, 11 Nov 2024 09:30:50 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tAQl1-0000000H6EC-0uy3;
+	Mon, 11 Nov 2024 09:30:51 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV6-0000000GZuu-2eSa
+	id 1tAOV6-0000000GZv9-3jHR
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:16 +0000
+	Mon, 11 Nov 2024 07:06:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=biuN0PEkC3/aSWElYILF1k4DknnobjWGHOHZf3nZhqw=; b=tRgV9f9C1RZPRSa5l8Fou5+Gai
-	9qsHgdI4GeKrKPEe0ruE34VCYD0JvU4J4y5TiAE3Cq3BvnUH1mhAQNIJndkyZP1NvdD0bywEELSg8
-	AMnZPPgC0VYNiL8lksZtcvCif2vQJ5ybEO4amrNUA8A7ge81uADq4do9QOroVlg0ZDfflhk09+O+p
-	thQUlee7vuAfRtUMQyEbzs9lk05BDEmAouA7Rk5Jdihuj2S+3akjtn4NvQA2APAC3SECmSR1bCvyh
-	+YUTJpLXXr7sr5cBz9+WFE4r/Y5kMhHsEPWvmL8+F6mjhs26aNtldPcXbMD3zGdOI07BJNkKV1v49
-	SPB8wUPQ==;
-Received: from szxga04-in.huawei.com ([45.249.212.190])
-	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV0-0000000CR2R-0tS2
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=vPh1BMzth0qju58pQfc56WN6HYd4RC/qwhQMvpwG4cg=; b=gPbdoP9+jmrj2VFraf2Gyp1uX2
+	mzpJsM9OADRkZ7pHgtTzTPUNfbB21qLgKfU0hbyP7g6NzI2wus7q7gooAuYMNpu4zkbClfgl0LuqA
+	/YWta6t/zu8VfxwjblSPthwpkUdh4dht85pchr78zkdUHr7vuq1ScLb9NJVRaw9VMbNi+qN2ppf1T
+	QIg24exL+ik79bYzQBbeTj3u+qjbkezdhLXW2wKJO1XVNbUnduHAZObw6M8jIIOu2dwAnxXARp3aV
+	EwKlRr6F4N/HGQKDn1nkHjDlu2LetPHGZhxq6n+QAyi/cVAYv/LNA5X/flulYl1gVX7X2jtTkOF3l
+	V6uOr3IQ==;
+Received: from szxga03-in.huawei.com ([45.249.212.189])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOUo-0000000CmMJ-1hAO
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:15 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn0sJ5j3Hz20t2P;
-	Mon, 11 Nov 2024 15:04:20 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:10 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn0s26HglzQsrX;
+	Mon, 11 Nov 2024 15:04:06 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id F06021402CE;
-	Mon, 11 Nov 2024 15:05:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 479DF18007C;
+	Mon, 11 Nov 2024 15:05:19 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:32 +0800
+ 2024 15:05:18 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 063/102] fsck.ubifs: rebuild_fs: Build TNC
-Date: Mon, 11 Nov 2024 15:03:06 +0800
-Message-ID: <20241111070346.1314122-64-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 036/102] ubifs-utils: Adapt budget.c in libubifs
+Date: Mon, 11 Nov 2024 15:02:39 +0800
+Message-ID: <20241111070346.1314122-37-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070611_212825_8AC8A66F 
-X-CRM114-Status: GOOD (  20.98  )
+X-CRM114-CacheID: sfid-20241111_070603_979421_8012C25A 
+X-CRM114-Status: GOOD (  18.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,429 +85,202 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 9/12 step of repairing. Construct TNC according to scanned
-files, and write TNC on flash, just like mkfs does.
-Building TNC can effectively solve many failed mounting problems caused
-by bad TNC (eg. bad node pointed by TNC, bad key order in znode, etc.).
+Adapt budget.c in libubifs, compared with linux kernel implementations:
+ 1. Remove writeback related functions, there are no dirty pages/inodes
+    for UBIFS in userspace process.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/rebuild_fs.c | 283 +++++++++++++++++++++++++++++++++---
- 1 file changed, 262 insertions(+), 21 deletions(-)
+ ubifs-utils/libubifs/budget.c | 133 +++---------------------------------------
+ 1 file changed, 7 insertions(+), 126 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 62bd4128..e1d1957f 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -34,6 +34,29 @@ struct scanned_info {
- 	struct rb_root del_dents;
- };
- 
-+/**
-+ * struct idx_entry - index entry.
-+ * @list: link in the list index entries for building index tree
-+ * @key: key
-+ * @name: directory entry name used for sorting colliding keys by name
-+ * @lnum: LEB number
-+ * @offs: offset
-+ * @len: length
-+ *
-+ * The index is recorded as a linked list which is sorted and used to create
-+ * the bottom level of the on-flash index tree. The remaining levels of the
-+ * index tree are each built from the level below.
-+ */
-+struct idx_entry {
-+	struct list_head list;
-+	union ubifs_key key;
-+	char *name;
-+	int name_len;
-+	int lnum;
-+	int offs;
-+	int len;
-+};
-+
- static int init_rebuild_info(struct ubifs_info *c)
- {
- 	int err;
-@@ -146,6 +169,17 @@ static int insert_or_update_ino_node(struct ubifs_info *c,
- 	return 0;
- }
- 
-+static int namecmp(const char *a, int la, const char *b, int lb)
-+{
-+	int cmp, len = min(la, lb);
-+
-+	cmp = memcmp(a, b, len);
-+	if (cmp)
-+		return cmp;
-+
-+	return la - lb;
-+}
-+
- /**
-  * insert_or_update_dent_node - insert or update dentry node.
-  * @c: UBIFS file-system description object
-@@ -160,7 +194,7 @@ static int insert_or_update_dent_node(struct ubifs_info *c,
- 				      struct scanned_dent_node *new_dent,
- 				      struct rb_root *tree)
- {
--	int cmp, nlen;
-+	int cmp;
- 	struct scanned_dent_node *dent_node, *old_dent_node = NULL;
- 	struct rb_node **p, *parent = NULL;
- 
-@@ -174,9 +208,8 @@ static int insert_or_update_dent_node(struct ubifs_info *c,
- 		} else if (cmp > 0) {
- 			p = &(*p)->rb_right;
- 		} else {
--			nlen = min(new_dent->nlen, dent_node->nlen);
--			cmp = strncmp(new_dent->name, dent_node->name, nlen) ? :
--				      new_dent->nlen - dent_node->nlen;
-+			cmp = namecmp(new_dent->name, new_dent->nlen,
-+				      dent_node->name, dent_node->nlen);
- 			if (cmp < 0) {
- 				p = &(*p)->rb_left;
- 			} else if (cmp > 0) {
-@@ -424,7 +457,7 @@ static struct scanned_dent_node *
- lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
- 		       struct scanned_dent_node *target)
- {
--	int cmp, nlen;
-+	int cmp;
- 	struct scanned_dent_node *dent_node;
- 	struct rb_node *p;
- 
-@@ -437,9 +470,8 @@ lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
- 		} else if (cmp > 0) {
- 			p = p->rb_right;
- 		} else {
--			nlen = min(target->nlen, dent_node->nlen);
--			cmp = strncmp(target->name, dent_node->name, nlen) ? :
--				      target->nlen - dent_node->nlen;
-+			cmp = namecmp(target->name, target->nlen,
-+				      dent_node->name, dent_node->nlen);
- 			if (cmp < 0) {
- 				p = p->rb_left;
- 			} else if (cmp > 0) {
-@@ -885,9 +917,12 @@ static const char *get_file_name(struct ubifs_info *c, struct scanned_file *file
- 	return name;
- }
- 
--static void parse_node_location(struct ubifs_info *c, struct scanned_node *sn)
-+static int parse_node_info(struct ubifs_info *c, struct scanned_node *sn,
-+			   union ubifs_key *key, char *name, int name_len,
-+			   struct list_head *idx_list, int *idx_cnt)
- {
- 	int lnum, pos;
-+	struct idx_entry *e;
- 
- 	lnum = sn->lnum - c->main_first;
- 	pos = sn->offs + ALIGN(sn->len, 8);
-@@ -895,11 +930,184 @@ static void parse_node_location(struct ubifs_info *c, struct scanned_node *sn)
- 	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
- 	FSCK(c)->rebuild->lpts[lnum].end = max_t(int,
- 					FSCK(c)->rebuild->lpts[lnum].end, pos);
-+
-+	if (idx_cnt == NULL)
-+		/* Skip truncation node. */
-+		return 0;
-+
-+	e = kmalloc(sizeof(struct idx_entry), GFP_KERNEL);
-+	if (!e)
-+		return -ENOMEM;
-+
-+	key_copy(c, key, &e->key);
-+	e->name = name;
-+	e->name_len = name_len;
-+	e->lnum = sn->lnum;
-+	e->offs = sn->offs;
-+	e->len = sn->len;
-+	list_add_tail(&e->list, idx_list);
-+	*idx_cnt = *idx_cnt + 1;
-+
-+	return 0;
-+}
-+
-+static int add_idx_node(struct ubifs_info *c, struct ubifs_idx_node *idx,
-+			union ubifs_key *key, int child_cnt,
-+			struct idx_entry *e)
-+{
-+	int err, lnum, offs, len;
-+
-+	len = ubifs_idx_node_sz(c, child_cnt);
-+	ubifs_prepare_node(c, idx, len, 0);
-+
-+	err = reserve_space(c, len, &lnum, &offs);
-+	if (err)
-+		return err;
-+
-+	copy_node_data(c, idx, offs, len);
-+
-+	c->calc_idx_sz += ALIGN(len, 8);
-+
-+	/* The last index node written will be the root */
-+	c->zroot.lnum = lnum;
-+	c->zroot.offs = offs;
-+	c->zroot.len = len;
-+
-+	key_copy(c, key, &e->key);
-+	e->lnum = lnum;
-+	e->offs = offs;
-+	e->len = len;
-+
-+	return err;
-+}
-+
-+static int cmp_idx(void *priv, const struct list_head *a,
-+		   const struct list_head *b)
-+{
-+	int cmp;
-+	struct ubifs_info *c = priv;
-+	struct idx_entry *ia, *ib;
-+
-+	if (a == b)
-+		return 0;
-+
-+	ia = list_entry(a, struct idx_entry, list);
-+	ib = list_entry(b, struct idx_entry, list);
-+
-+	cmp = keys_cmp(c, &ia->key, &ib->key);
-+	if (cmp)
-+		return cmp;
-+
-+	return namecmp(ia->name, ia->name_len, ib->name, ib->name_len);
-+}
-+
-+/**
-+ * build_tnc - construct TNC and write it into flash.
-+ * @c: UBIFS file-system description object
-+ * @lower_idxs: leaf entries of TNC
-+ * @lower_cnt: the count of @lower_idxs
-+ *
-+ * This function builds TNC according to @lower_idxs and writes all index
-+ * nodes into flash.
-+ */
-+static int build_tnc(struct ubifs_info *c, struct list_head *lower_idxs,
-+		     int lower_cnt)
-+{
-+	int i, j, err, upper_cnt, child_cnt, idx_sz, level = 0;
-+	struct idx_entry *pe, *tmp_e, *e = NULL;
-+	struct ubifs_idx_node *idx;
-+	struct ubifs_branch *br;
-+	union ubifs_key key;
-+	LIST_HEAD(upper_idxs);
-+
-+	idx_sz = ubifs_idx_node_sz(c, c->fanout);
-+	idx = kmalloc(idx_sz, GFP_KERNEL);
-+	if (!idx)
-+		return -ENOMEM;
-+
-+	list_sort(c, lower_idxs, cmp_idx);
-+
-+	ubifs_assert(c, lower_cnt != 0);
-+
-+	do {
-+		upper_cnt = lower_cnt / c->fanout;
-+		if (lower_cnt % c->fanout)
-+			upper_cnt += 1;
-+		e = list_first_entry(lower_idxs, struct idx_entry, list);
-+
-+		for (i = 0; i < upper_cnt; i++) {
-+			if (i == upper_cnt - 1) {
-+				child_cnt = lower_cnt % c->fanout;
-+				if (child_cnt == 0)
-+					child_cnt = c->fanout;
-+			} else
-+				child_cnt = c->fanout;
-+
-+			key_copy(c, &e->key, &key);
-+			memset(idx, 0, idx_sz);
-+			idx->ch.node_type = UBIFS_IDX_NODE;
-+			idx->child_cnt = cpu_to_le16(child_cnt);
-+			idx->level = cpu_to_le16(level);
-+			for (j = 0; j < child_cnt; j++) {
-+				ubifs_assert(c,
-+				    !list_entry_is_head(e, lower_idxs, list));
-+				br = ubifs_idx_branch(c, idx, j);
-+				key_write_idx(c, &e->key, &br->key);
-+				br->lnum = cpu_to_le32(e->lnum);
-+				br->offs = cpu_to_le32(e->offs);
-+				br->len = cpu_to_le32(e->len);
-+				e = list_next_entry(e, list);
-+			}
-+
-+			pe = kmalloc(sizeof(struct idx_entry), GFP_KERNEL);
-+			if (!pe) {
-+				err = -ENOMEM;
-+				goto out;
-+			}
-+
-+			err = add_idx_node(c, idx, &key, child_cnt, pe);
-+			if (err) {
-+				kfree(pe);
-+				goto out;
-+			}
-+
-+			list_add_tail(&pe->list, &upper_idxs);
-+		}
-+
-+		level++;
-+		list_for_each_entry_safe(e, tmp_e, lower_idxs, list) {
-+			list_del(&e->list);
-+			kfree(e);
-+		}
-+		list_splice_init(&upper_idxs, lower_idxs);
-+		lower_cnt = upper_cnt;
-+	} while (lower_cnt > 1);
-+
-+	/* Set the index head */
-+	c->ihead_lnum = FSCK(c)->rebuild->head_lnum;
-+	c->ihead_offs = ALIGN(FSCK(c)->rebuild->head_offs, c->min_io_size);
-+
-+	/* Flush the last index LEB */
-+	err = flush_write_buf(c);
-+
-+out:
-+	list_for_each_entry_safe(e, tmp_e, lower_idxs, list) {
-+		list_del(&e->list);
-+		kfree(e);
-+	}
-+	list_for_each_entry_safe(e, tmp_e, &upper_idxs, list) {
-+		list_del(&e->list);
-+		kfree(e);
-+	}
-+	kfree(idx);
-+	return err;
- }
- 
--static void record_file_used_lebs(struct ubifs_info *c,
--				  struct scanned_file *file)
-+static int record_file_used_lebs(struct ubifs_info *c,
-+				 struct scanned_file *file,
-+				 struct list_head *idx_list, int *idx_cnt)
- {
-+	int err;
- 	struct rb_node *node;
- 	struct scanned_file *xattr_file;
- 	struct scanned_dent_node *dent_node;
-@@ -911,28 +1119,46 @@ static void record_file_used_lebs(struct ubifs_info *c,
- 		 ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
- 		 c->dev_name);
- 
--	parse_node_location(c, &file->ino.header);
-+	err = parse_node_info(c, &file->ino.header, &file->ino.key,
-+			      NULL, 0, idx_list, idx_cnt);
-+	if (err)
-+		return err;
- 
--	if (file->trun.header.exist)
--		parse_node_location(c, &file->trun.header);
-+	if (file->trun.header.exist) {
-+		err = parse_node_info(c, &file->trun.header, NULL, NULL,
-+				      0, idx_list, NULL);
-+		if (err)
-+			return err;
-+	}
- 
- 	for (node = rb_first(&file->data_nodes); node; node = rb_next(node)) {
- 		data_node = rb_entry(node, struct scanned_data_node, rb);
- 
--		parse_node_location(c, &data_node->header);
-+		err = parse_node_info(c, &data_node->header, &data_node->key,
-+				      NULL, 0, idx_list, idx_cnt);
-+		if (err)
-+			return err;
- 	}
- 
- 	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
- 		dent_node = rb_entry(node, struct scanned_dent_node, rb);
- 
--		parse_node_location(c, &dent_node->header);
-+		err = parse_node_info(c, &dent_node->header, &dent_node->key,
-+				      dent_node->name, dent_node->nlen,
-+				      idx_list, idx_cnt);
-+		if (err)
-+			return err;
- 	}
- 
- 	for (node = rb_first(&file->xattr_files); node; node = rb_next(node)) {
- 		xattr_file = rb_entry(node, struct scanned_file, rb);
- 
--		record_file_used_lebs(c, xattr_file);
-+		err = record_file_used_lebs(c, xattr_file, idx_list, idx_cnt);
-+		if (err)
-+			return err;
- 	}
-+
-+	return err;
- }
- 
- /**
-@@ -946,13 +1172,16 @@ static void record_file_used_lebs(struct ubifs_info *c,
-  *    LEBs could be taken for storing new index tree.
-  * 3. Re-write data to prevent failed gc scanning in the subsequent mounting
-  *    process caused by corrupted data.
-+ * 4. Build TNC.
+diff --git a/ubifs-utils/libubifs/budget.c b/ubifs-utils/libubifs/budget.c
+index d76eb7b3..54392a93 100644
+--- a/ubifs-utils/libubifs/budget.c
++++ b/ubifs-utils/libubifs/budget.c
+@@ -18,9 +18,11 @@
+  * approximations are used.
   */
- static int traverse_files_and_nodes(struct ubifs_info *c)
- {
--	int i, err = 0;
-+	int i, err = 0, idx_cnt = 0;
- 	struct rb_node *node;
- 	struct scanned_file *file;
- 	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
-+	struct idx_entry *ie, *tmp_ie;
-+	LIST_HEAD(idx_list);
  
- 	if (rb_first(tree) == NULL) {
- 		/* No scanned files. Create root dir. */
-@@ -966,7 +1195,9 @@ static int traverse_files_and_nodes(struct ubifs_info *c)
- 	for (node = rb_first(tree); node; node = rb_next(node)) {
- 		file = rb_entry(node, struct scanned_file, rb);
++#include "bitops.h"
+ #include "ubifs.h"
+-#include <linux/writeback.h>
+-#include <linux/math64.h>
++#include "defs.h"
++#include "debug.h"
++#include "misc.h"
  
--		record_file_used_lebs(c, file);
-+		err = record_file_used_lebs(c, file, &idx_list, &idx_cnt);
-+		if (err)
-+			goto out_idx_list;
- 	}
+ /*
+  * When pessimistic budget calculations say that there is no enough space,
+@@ -30,31 +32,6 @@
+  */
+ #define MAX_MKSPC_RETRIES 3
  
- 	/* Re-write data. */
-@@ -985,16 +1216,25 @@ static int traverse_files_and_nodes(struct ubifs_info *c)
- 
- 		err = ubifs_leb_read(c, lnum, c->sbuf, 0, len, 0);
- 		if (err && err != -EBADMSG)
--			return err;
-+			goto out_idx_list;
- 
- 		if (len > end)
- 			ubifs_pad(c, c->sbuf + end, len - end);
- 
- 		err = ubifs_leb_change(c, lnum, c->sbuf, len);
- 		if (err)
--			return err;
-+			goto out_idx_list;
- 	}
- 
-+	/* Build TNC. */
-+	log_out(c, "Build TNC");
-+	err = build_tnc(c, &idx_list, idx_cnt);
-+
-+out_idx_list:
-+	list_for_each_entry_safe(ie, tmp_ie, &idx_list, list) {
-+		list_del(&ie->list);
-+		kfree(ie);
-+	}
- 	return err;
+-/*
+- * The below constant defines amount of dirty pages which should be written
+- * back at when trying to shrink the liability.
+- */
+-#define NR_TO_WRITE 16
+-
+-/**
+- * shrink_liability - write-back some dirty pages/inodes.
+- * @c: UBIFS file-system description object
+- * @nr_to_write: how many dirty pages to write-back
+- *
+- * This function shrinks UBIFS liability by means of writing back some amount
+- * of dirty inodes and their pages.
+- *
+- * Note, this function synchronizes even VFS inodes which are locked
+- * (@i_mutex) by the caller of the budgeting function, because write-back does
+- * not touch @i_mutex.
+- */
+-static void shrink_liability(struct ubifs_info *c, int nr_to_write)
+-{
+-	down_read(&c->vfs_sb->s_umount);
+-	writeback_inodes_sb_nr(c->vfs_sb, nr_to_write, WB_REASON_FS_FREE_SPACE);
+-	up_read(&c->vfs_sb->s_umount);
+-}
+-
+ /**
+  * run_gc - run garbage collector.
+  * @c: UBIFS file-system description object
+@@ -80,23 +57,6 @@ static int run_gc(struct ubifs_info *c)
  }
  
-@@ -1059,6 +1299,7 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 	/*
- 	 * Step 7: Record used LEBs.
- 	 * Step 8: Re-write data to clean corrupted data.
-+	 * Step 9: Build TNC.
- 	 */
- 	err = traverse_files_and_nodes(c);
- 	if (err)
+ /**
+- * get_liability - calculate current liability.
+- * @c: UBIFS file-system description object
+- *
+- * This function calculates and returns current UBIFS liability, i.e. the
+- * amount of bytes UBIFS has "promised" to write to the media.
+- */
+-static long long get_liability(struct ubifs_info *c)
+-{
+-	long long liab;
+-
+-	spin_lock(&c->space_lock);
+-	liab = c->bi.idx_growth + c->bi.data_growth + c->bi.dd_growth;
+-	spin_unlock(&c->space_lock);
+-	return liab;
+-}
+-
+-/**
+  * make_free_space - make more free space on the file-system.
+  * @c: UBIFS file-system description object
+  *
+@@ -117,24 +77,8 @@ static long long get_liability(struct ubifs_info *c)
+ static int make_free_space(struct ubifs_info *c)
+ {
+ 	int err, retries = 0;
+-	long long liab1, liab2;
+ 
+ 	do {
+-		liab1 = get_liability(c);
+-		/*
+-		 * We probably have some dirty pages or inodes (liability), try
+-		 * to write them back.
+-		 */
+-		dbg_budg("liability %lld, run write-back", liab1);
+-		shrink_liability(c, NR_TO_WRITE);
+-
+-		liab2 = get_liability(c);
+-		if (liab2 < liab1)
+-			return -EAGAIN;
+-
+-		dbg_budg("new liability %lld (not shrunk)", liab2);
+-
+-		/* Liability did not shrink again, try GC */
+ 		dbg_budg("Run GC");
+ 		err = run_gc(c);
+ 		if (!err)
+@@ -254,12 +198,10 @@ long long ubifs_calc_available(const struct ubifs_info *c, int min_idx_lebs)
+  * This function checks whether current user is allowed to use reserved pool.
+  * Returns %1  current user is allowed to use reserved pool and %0 otherwise.
+  */
+-static int can_use_rp(struct ubifs_info *c)
++static int can_use_rp(__unused struct ubifs_info *c)
+ {
+-	if (uid_eq(current_fsuid(), c->rp_uid) || capable(CAP_SYS_RESOURCE) ||
+-	    (!gid_eq(c->rp_gid, GLOBAL_ROOT_GID) && in_group_p(c->rp_gid)))
+-		return 1;
+-	return 0;
++	/* Fsck can always use reserved pool. */
++	return c->program_type != MKFS_PROGRAM_TYPE;
+ }
+ 
+ /**
+@@ -556,49 +498,6 @@ void ubifs_release_budget(struct ubifs_info *c, struct ubifs_budget_req *req)
+ }
+ 
+ /**
+- * ubifs_convert_page_budget - convert budget of a new page.
+- * @c: UBIFS file-system description object
+- *
+- * This function converts budget which was allocated for a new page of data to
+- * the budget of changing an existing page of data. The latter is smaller than
+- * the former, so this function only does simple re-calculation and does not
+- * involve any write-back.
+- */
+-void ubifs_convert_page_budget(struct ubifs_info *c)
+-{
+-	spin_lock(&c->space_lock);
+-	/* Release the index growth reservation */
+-	c->bi.idx_growth -= c->max_idx_node_sz << UBIFS_BLOCKS_PER_PAGE_SHIFT;
+-	/* Release the data growth reservation */
+-	c->bi.data_growth -= c->bi.page_budget;
+-	/* Increase the dirty data growth reservation instead */
+-	c->bi.dd_growth += c->bi.page_budget;
+-	/* And re-calculate the indexing space reservation */
+-	c->bi.min_idx_lebs = ubifs_calc_min_idx_lebs(c);
+-	spin_unlock(&c->space_lock);
+-}
+-
+-/**
+- * ubifs_release_dirty_inode_budget - release dirty inode budget.
+- * @c: UBIFS file-system description object
+- * @ui: UBIFS inode to release the budget for
+- *
+- * This function releases budget corresponding to a dirty inode. It is usually
+- * called when after the inode has been written to the media and marked as
+- * clean. It also causes the "no space" flags to be cleared.
+- */
+-void ubifs_release_dirty_inode_budget(struct ubifs_info *c,
+-				      struct ubifs_inode *ui)
+-{
+-	struct ubifs_budget_req req;
+-
+-	memset(&req, 0, sizeof(struct ubifs_budget_req));
+-	/* The "no space" flags will be cleared because dd_growth is > 0 */
+-	req.dd_growth = c->bi.inode_budget + ALIGN(ui->data_len, 8);
+-	ubifs_release_budget(c, &req);
+-}
+-
+-/**
+  * ubifs_reported_space - calculate reported free space.
+  * @c: the UBIFS file-system description object
+  * @free: amount of free space
+@@ -694,21 +593,3 @@ long long ubifs_get_free_space_nolock(struct ubifs_info *c)
+ 		free = 0;
+ 	return free;
+ }
+-
+-/**
+- * ubifs_get_free_space - return amount of free space.
+- * @c: UBIFS file-system description object
+- *
+- * This function calculates and returns amount of free space to report to
+- * user-space.
+- */
+-long long ubifs_get_free_space(struct ubifs_info *c)
+-{
+-	long long free;
+-
+-	spin_lock(&c->space_lock);
+-	free = ubifs_get_free_space_nolock(c);
+-	spin_unlock(&c->space_lock);
+-
+-	return free;
+-}
 -- 
 2.13.6
 
