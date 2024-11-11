@@ -4,46 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5616DD2E9C8
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:11:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B9E6D2E9C7
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xDcYOOJCPEEoUP9pdEgPJpLdxlzApWQAHlB1+VNmky4=; b=g2WbKHzgs9Bxhu
-	tMu2FRdL/9+Q3NqDqmv12/BDYn1gUMFJmgKnaYb5Ec3ReuTEDHGLXai2b6/t9PT2PpiTTc6Ic7SxQ
-	inKDym+nbZBGtPx0J2KcTypLsl+VotntYOwfUU7y2HW9ApDso+Qq9Upe2TjFSr8LlBO9Rmeh3Z6dc
-	WTW8RN0wsUvf5qlZSswSAf5z9CHoQIzBx7J2kZ1lO4VQMiZD6w1qRpC/Q7wPQfdS2OsS98nhIMVh4
-	tgBysmLjJ7NgU9NJtg1rtTar7VpbED+U/Mz5fkgYqmn+z4gwJMonQ8GbO3IYtSb3N7l+6bxtWS9v0
-	8pxPx+QzBpRs4HIhBmdw==;
+	List-Owner; bh=dSDjNc3eYp3Gt3KTgMhelKc3MdepytbQRaTzYve8Qmo=; b=DFQrbJ68/IYEGk
+	zLKKHKa6/++twmMZZM5IYgSsPnqNBkbD13IJrq/yTc5u+YlDv8iR33noHkqBiTqPzDF3euJ0sS5lh
+	DvLZaaHvJgizS1rr7LdotSVNv6UQ37R7H4mGMIJkofKTT4EwyrjudDIeZteVFV+fv7BFfBp/t9f7A
+	T4PhA9dCbpQdS1YdDPZMHHmdK65VyqLH2O9gy1Qn1Dn6QkVlxCHRKxbHQlbSbxIl9x2LzZ0DptPB5
+	hnwqg7sYkO6/mIPY3c5jn8lW6futU58dNBCemv58U9iy14BHtwg8gg+QVKeDyctuGnJn3geKdsgsa
+	+TCFf9Qoz99vafynyM+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQSL-0000000H1jV-063c;
-	Mon, 11 Nov 2024 09:11:33 +0000
-Received: from szxga06-in.huawei.com ([45.249.212.32])
+	id 1tAQSP-0000000H1lu-0MIG;
+	Mon, 11 Nov 2024 09:11:37 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQQl-0000000H0P3-3S86
-	for linux-mtd@lists.infradead.org;
+	id 1tAQQu-0000000H0VE-47iP
+	for linux-mtd@bombadil.infradead.org;
 	Mon, 11 Nov 2024 09:10:05 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn3fP3Qq7z1ypSj;
-	Mon, 11 Nov 2024 17:10:05 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=EQmLstpbDrXmGdvXZUaCEs7+UTzoGvXYE+dkUp+3Hno=; b=MaLwEIywuMfuBQZEPtfZEsGS1y
+	Meqe1aOIpBWaHlfL7H/qSad/fWaX5Ko0MuJw6r5+rhRWP/Gh8mCprIclOGYLFw9U9BwVmFfIbv6FR
+	CJ+Nk1gysyDHLE1FbhXD+6aRwf3yYIUZbAh35R01z3K9+nMu/1Nb4xeceTv3K2LFdkW/T3PvOZaMK
+	pNAQxCgyB+zmM408TUE9v0b7hNtmfcHNKR2+dKHcYrLD8bmhwBlfhu0w/brgWY2AeyMceimLPPmYV
+	UqY1TFZt3VNME2t+YFpPLs9JNnGWuEJ6Ci+l4EEeofX3puWzAxjYOCH6jOWH2Vg0mbDO2WUg67Y4P
+	OQOUQJDw==;
+Received: from szxga02-in.huawei.com ([45.249.212.188])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAQQq-0000000CoZ0-2nDc
+	for linux-mtd@lists.infradead.org;
+	Mon, 11 Nov 2024 09:10:03 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xn3c15R9YzpZPB;
+	Mon, 11 Nov 2024 17:08:01 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5A05B1A0188;
+	by mail.maildlp.com (Postfix) with ESMTPS id DA4D91400DC;
 	Mon, 11 Nov 2024 17:09:54 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:09:53 +0800
+ 2024 17:09:54 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 093/102] tests: ubifs_tools: fsck_tests: Add powercut+fsck+mount test
-Date: Mon, 11 Nov 2024 17:08:21 +0800
-Message-ID: <20241111090832.2093596-24-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 094/102] tests: ubifs_tools: fsck_tests: Add corrupt+fsck+fault_inject test
+Date: Mon, 11 Nov 2024 17:08:22 +0800
+Message-ID: <20241111090832.2093596-25-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_010956_341872_D82CC537 
-X-CRM114-Status: GOOD (  17.72  )
+X-CRM114-CacheID: sfid-20241111_091001_714424_CBBF2277 
+X-CRM114-Status: GOOD (  17.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,66 +85,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Inject powercut while doing fsstress on mounted UBIFS for kinds of
-flashes (eg. nand, nor).
-This testcase mainly makes sure that fsck.ubifs can make UBIFS image
-be consistent on different flashes (eg. nand, nor). Because the
-min_io_size of nor flash is 1, the UBIFS image on nor flash will be
-different from nand flash after doing powercut, so we need make sure
-fsck.ubifs can handle these two types of flash.
+Inject memory/io fault while doing fsck for corrupted UBIFS images.
+This testcase mainly checks whether fsck.ubifs has problems (eg.
+UAF, null-ptr-def, etc.) in random error paths. Besides, it provides
+a similar way to simulate powercut during fsck, and checks whether
+the fsck.ubifs can fix an UBIFS image after many rounds interrupted
+by kinds of errors.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
  .gitignore                                         |   1 +
  configure.ac                                       |   3 +-
  tests/ubifs_tools-tests/Makemodule.am              |   3 +-
- .../fsck_tests/powercut_fsck_mount.sh.in           | 148 +++++++++++++++++++++
- 4 files changed, 153 insertions(+), 2 deletions(-)
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh.in
+ .../cycle_corrupted_fsck_fault_inject.sh.in        | 225 +++++++++++++++++++++
+ tests/ubifs_tools-tests/lib/common.sh.in           |   3 +-
+ 5 files changed, 232 insertions(+), 3 deletions(-)
+ create mode 100755 tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh.in
 
 diff --git a/.gitignore b/.gitignore
-index 7de38e86..b63b9868 100644
+index b63b9868..ea99a614 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -116,6 +116,7 @@ tests/ubi-tests/ubi-stress-test.sh
- tests/ubifs_tools-tests/lib/common.sh
+@@ -117,6 +117,7 @@ tests/ubifs_tools-tests/lib/common.sh
  tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
  tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
-+tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh
+ tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh
++tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh
  
  #
  # Files generated by autotools
 diff --git a/configure.ac b/configure.ac
-index bcd9b63a..460109e7 100644
+index 460109e7..47efd40c 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -295,7 +295,8 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
- 	tests/ubi-tests/ubi-stress-test.sh
+@@ -296,7 +296,8 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
  	tests/ubifs_tools-tests/lib/common.sh
  	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
--	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh])
-+	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
-+	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh])
+ 	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
+-	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh])
++	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh
++	tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh])
  
  AC_OUTPUT([Makefile])
  
 diff --git a/tests/ubifs_tools-tests/Makemodule.am b/tests/ubifs_tools-tests/Makemodule.am
-index 68c77a62..d54514da 100644
+index d54514da..932a2bcb 100644
 --- a/tests/ubifs_tools-tests/Makemodule.am
 +++ b/tests/ubifs_tools-tests/Makemodule.am
-@@ -1,4 +1,5 @@
- test_SCRIPTS += \
+@@ -2,4 +2,5 @@ test_SCRIPTS += \
  	tests/ubifs_tools-tests/lib/common.sh \
  	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh \
--	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
-+	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh \
-+	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh
-diff --git a/tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh.in b/tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh.in
+ 	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh \
+-	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh
++	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh \
++	tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh
+diff --git a/tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh.in b/tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh.in
 new file mode 100755
-index 00000000..ac7128bd
+index 00000000..2073fecf
 --- /dev/null
-+++ b/tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh.in
-@@ -0,0 +1,148 @@
++++ b/tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh.in
+@@ -0,0 +1,225 @@
 +#!/bin/sh
 +# Copyright (c), 2024, Huawei Technologies Co, Ltd.
 +# Author: Zhihao Cheng <chengzhihao1@huawei.com>
@@ -137,10 +152,11 @@ index 00000000..ac7128bd
 +# Test Description:
 +# For many kinds of flash, do following things
 +#  1. mount UBIFS
-+#  2. fsstress & powercut & unmount
-+#  3. fsck UBIFS
++#  2. fsstress && unmount
++#  3. inject corruption into UBIFS image randomly
++#  3. fsck UBIFS && inject kinds of errors(memory, io)
 +#  4. check UBIFS mounting result
-+# Running time: 1h
++# Running time: 15min
 +
 +TESTBINDIR=@TESTBINDIR@
 +source $TESTBINDIR/common.sh
@@ -181,8 +197,8 @@ index 00000000..ac7128bd
 +	fi
 +
 +	fsstress -d $MNT -l0 -p4 -n10000 &
-+	sleep $((RANDOM % 120))
-+	powercut
++
++	sleep $((RANDOM % 20))
 +
 +	ps -e | grep -w fsstress > /dev/null 2>&1
 +	while [ $? -eq 0 ]
@@ -203,59 +219,138 @@ index 00000000..ac7128bd
 +		sleep 0.1
 +	done
 +
-+	fsck.ubifs -a $DEV 2>&1 > $LOG_FILE
-+	res=$?
-+	cat $LOG_FILE
-+	if [[ $res != $FSCK_OK ]]
-+	then
-+		# Powercut during layout_leb_in_gaps may change index LEBs
-+		# without updating LPT.
-+		idx_log=`cat $LOG_FILE | grep "Inconsistent properties" | grep "is_idx 1"`
-+		# The lpt nodes could be parsed incorrectly because the lpt disk
-+		# layout is too simple. See details in
-+		# https://lore.kernel.org/linux-mtd/97ca7fe4-4ad4-edd1-e97a-1d540aeabe2d@huawei.com/
-+		lpt_log=`cat $LOG_FILE | grep "dbg_check_ltab_lnum: invalid empty space in LEB"`
-+		if [[ "$idx_log" == "" ]] && [[ "$lpt_log" == "" ]]; then
-+			fatal "fsck fail $res"
-+		fi
-+		if [[ $res != $FSCK_NONDESTRUCT ]]; then
-+			fatal "fsck fail $res"
-+		fi
-+	fi
-+
-+	dmesg -c > /dev/null # powercut could reproduce error messages
-+
-+	enable_chkfs
-+
-+	mount_ubifs $DEV $MNT "noauthentication" "noatime"
-+	res=$?
-+	if [[ $res != 0 ]]
-+	then
-+		fatal "mount fail $res"
-+	fi
-+
-+	if [[ "$encryption" == "encrypted" ]]; then
-+		encryption_set_key $MNT
-+	fi
-+
-+	du -sh $MNT > /dev/null  # Make sure all files are accessible
-+	ret=$?
-+	if [[ $ret != 0 ]]; then
-+		fatal "Cannot access all files"
-+	fi
-+	check_err_msg
-+
-+	umount $MNT
-+	res=$?
-+	if [[ $res != 0 ]]
-+	then
-+		fatal "unmount fail $res"
-+	fi
-+
-+	check_err_msg
++	# inject corruption
++	times=$((RANDOM % 10))
++	let times=$times+10
++	i=0
++	tot_peb=`cat /sys/class/ubi/ubi$UBI_NUM/total_eraseblocks`;
 +
 +	modprobe -r ubifs
-+	modprobe -r ubi
++	modprobe -r ubi # Stop wear-leveling & erasing worker
++	while [[ $i -lt $times ]]
++	do
++		let i=$i+1;
++		peb=$((RANDOM % $tot_peb));
++		pg=`expr $peb_size \* 1024`;
++		peb_off=`expr $pg \* $peb`
++		pages=`expr $pg / $page_size`;
++		pg=`expr $pages - 2`;
++		pg=$((RANDOM % $pg));
++		pg_off=`expr $pg + 2`;
++		pg_start=`expr $pages \* $peb`;
++		pg=`expr $pg_start + $pg_off`;
++		vid_pg=`expr $pg_start + 1`;
++		dd if=/dev/mtd$mtdnum of=$TMP_FILE bs=$page_size skip=$vid_pg count=1 2>/dev/null;
++		content=`cat $TMP_FILE | grep UBI!`; # vid header magic
++		if [[ "$content" == "" ]]; then
++			# Skip free PEB, otherwise LEB data could be overwritten in UBIFS
++			continue;
++		fi
++		if [[ $((RANDOM % 2)) == 0 ]]; then
++			# Corrupts 1 page
++			dd if=/dev/urandom of=/dev/mtd$mtdnum bs=$page_size seek=$pg count=1;
++		else
++			# Erase 1 LEB, TNC points to an unmapped area
++			flash_erase /dev/mtd$mtdnum $peb_off 1
++		fi
++	done
++	rm -f $TMP_FILE 2>/dev/null
++	sync
++
++	skip=0
++	modprobe ubi mtd="$mtdnum,$page_size"
++	ret=$?
++	if [[ $ret != 0 ]]
++	then
++		skip=1
++		echo "UBI layout volume is corrupted, skip"
++	fi
++
++	if [[ $skip == 0 ]]; then
++		modprobe ubifs || fatal "modprobe ubifs2 fail"
++		dmesg -c > /dev/null
++
++		round=0
++		while [[ $round -lt 50 ]];
++		do
++			let round=$round+1
++			inject_mem=0
++
++			fsck.ubifs -yb $DEV 2>&1 > $LOG_FILE &
++			pid=$!
++			if [[ $((RANDOM % 2)) == 0 ]]; then
++				inject_mem_err $pid
++				inject_mem=1
++			fi
++			inject_io_err
++			wait $pid
++			cat $LOG_FILE
++			if [[ $inject_mem == 1 ]]; then
++				cancel_mem_err
++			fi
++			cancel_io_err
++
++			# UBI could become ro-mode, reload it
++			modprobe -r ubifs
++			modprobe -r ubi
++			modprobe ubi mtd="$mtdnum,$page_size" || fatal "modprobe ubi2 fail"
++			modprobe ubifs || fatal "modprobe ubifs3 fail"
++		done
++
++		fsck.ubifs -yb $DEV 2>&1 > $LOG_FILE
++		res=$?
++		cat $LOG_FILE
++		let "ret=$res&~$FSCK_NONDESTRUCT"
++		if [[ $ret != $FSCK_OK ]]
++		then
++			# Skip superblock error
++			log=`cat $LOG_FILE | grep "bad node at LEB 0:"`
++			if [[ "$log" != "" ]]
++			then
++				skip=1
++				echo "SB is corrupted, skip fsck & mounting"
++			else
++				fatal "fsck fail $res"
++			fi
++		fi
++
++		if [[ $skip == 0 ]]; then
++			enable_chkfs
++
++			mount_ubifs $DEV $MNT "noauthentication" "noatime"
++			res=$?
++			if [[ $res != 0 ]]
++			then
++				fatal "mount fail $res"
++			fi
++
++			if [[ "$encryption" == "encrypted" ]]; then
++				# Ignore the encrypting error, root dir could be
++			        # corrupted, the new root dir cannot be
++			        # encrypted because it is not empty.
++				encryption_set_key $MNT 1
++			fi
++
++			du -sh $MNT > /dev/null  # Make sure all files are accessible
++			ret=$?
++			if [[ $ret != 0 ]]; then
++				fatal "Cannot access all files"
++			fi
++			# check_err_msg is not suggested in this testcase, because
++			# ubi_io_read(triggered by wear_leveling_worker -> ubi_eba_copy_leb)
++			# could print stack if ecc uncorrectable errors are detected.
++
++			umount $MNT
++			res=$?
++			if [[ $res != 0 ]]
++			then
++				fatal "unmount fail $res"
++			fi
++		fi
++
++		modprobe -r ubifs
++		modprobe -r ubi
++	fi
 +	modprobe -r $simulator
 +
 +	echo "----------------------------------------------------------------------"
@@ -263,14 +358,11 @@ index 00000000..ac7128bd
 +
 +check_fsstress
 +start_t=$(date +%s)
-+echo "Do powercut+fsck+mount test in kinds of flashes"
++echo "Do corrruption+cycle_fsck_fault_injection test in kinds of flashes"
 +for simulator in "mtdram" "nandsim"; do
 +	for encryption in "encrypted" "noencrypted"; do
 +		run_test "$simulator" "16" "16" "512" $encryption
-+		run_test "$simulator" "64" "16" "512" $encryption
-+		run_test "$simulator" "128" "64" "2048" $encryption
 +		run_test "$simulator" "256" "128" "2048" $encryption
-+		run_test "$simulator" "512" "128" "2048" $encryption
 +		run_test "$simulator" "1024" "512" "2048" $encryption
 +	done
 +done
@@ -278,6 +370,25 @@ index 00000000..ac7128bd
 +time_cost=$(( end_t - start_t ))
 +echo "Success, cost $time_cost seconds"
 +exit 0
+diff --git a/tests/ubifs_tools-tests/lib/common.sh.in b/tests/ubifs_tools-tests/lib/common.sh.in
+index 5a07ebcd..a27fe108 100755
+--- a/tests/ubifs_tools-tests/lib/common.sh.in
++++ b/tests/ubifs_tools-tests/lib/common.sh.in
+@@ -234,12 +234,13 @@ function encryption_gen_key()
+ function encryption_set_key()
+ {
+ 	mnt=$1
++	ignore_err=$2
+ 	# https://github.com/google/fscryptctl
+ 	key=$(fscryptctl add_key $mnt < $KEY_FILE)
+ 	fscryptctl set_policy $key $mnt
+ 	#fscryptctl get_policy $mnt
+ 	ret=$?
+-	if [[ $ret != 0 ]]; then
++	if [[ $ret != 0 && $ignore_err != 1 ]]; then
+ 		fatal "set encryption policy failed"
+ 	fi
+ }
 -- 
 2.13.6
 
