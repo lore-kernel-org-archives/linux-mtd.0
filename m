@@ -4,61 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C26D8D12D7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:08:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96413D12D7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=c7qcTeBGMJtlD000o4nOtUYvyYUxrq02naUWfoLklDg=; b=BzXxzF3gTsk/FU
-	4Wz9B2EQE1inF4uKtY+Nu5QNH1B0aBxEsv13nVMuHqLsvV+MUSm44D/w6nPhs9uiOOS23m/veB+ag
-	rY8C2halUHwT6uryDJcuOiLHZMERr7mkQdbTGTje27p+1BQsN2Yx4syyCs+5iZBRYWfnuZeLy5cSr
-	9vPutzZVoYcAs+GN+9MN8rXwBN7dMl+U7B+t1wI8oWq8x3kM0aysAXvQ/fxbrLgdj4nAZmGyOq1f6
-	s0XGM5Nkk5TqypQ0i1fVdCyIp5/c14NcrTtEIZo4snXFsG2Tc/5ULocJsM/C1JStul66sRp9C8geV
-	Sykc7jQRDiMl+kzN8xJg==;
+	List-Owner; bh=vjVfA4Ak71YWa0vWLZJFyHqITW6e8GQ6UrBMQTbi+2c=; b=Mpd0+WiHpwBPLK
+	/Aq+7goxi1DTb4rdvdo/T1u+rorEF3k+LTQhE/2yo0D1GriznRYPe3E33gKlXJ+XEm7OVzvTaUhfA
+	ZPq1dbtJVhBBRiTLLMF+EO0ZqjMWJdIWd4dCMDLbgrt3rV3b4BWrWmygoe+Ikms1Dx3S42ECSbhhH
+	wgfxdLi+TyJj0eDSlbC7dtTCuxzEXZc6+fYHuicfOTtF5Wxtfztm7Ja4EGTJ/G7iftzCTsu0QVdGW
+	hfKsoq3F/PhnOIszXu74JCr3IDyuxwGjUm6WA4rdPZ46fHwkowrt+nVzo+yA9RlYOobo1XRwFFO+H
+	ujOlCkWRIxUBen1Uh7Wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPTQ-0000000GkEO-1Wmb;
-	Mon, 11 Nov 2024 08:08:36 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSm-0000000Gjjp-1AYL
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 08:07:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=dapqdDS8S7qGTfQnnjxnWtEAHt5DlobYCqXhDsmVMdg=; b=VjbOlx3JNY6vM6iBAo8bPiEEyi
-	cMX58wA6NRuBXtB7YpXWizWeJ5juvejbF3COunEDxMcAGFOUjgIeOiamBD4HpbawpQ8o4Y3rZ6MTX
-	wAqgbVwgm38JzgiodD/Yj6BDoly7JilsuVCjrgQSN77DS1O2XXkRzmA8wkxdADWBe6dDwI2lJS6D/
-	Umx10l1nuDJjL0R4v1UFbgm3cFy7SASlPyye38heU3ssxJnHVr0pyX3VG19GH3vDSJODnj96p5COt
-	TR0wpsTqQ5Q0Joj5EpT2/cEqshoaRitjKgJ1dRVLNTYAmRSjtGEYDPxEbI6G0PW5Jc4m5Cq54hk4l
-	Solp5I8w==;
+	id 1tAPTV-0000000GkHz-2VS2;
+	Mon, 11 Nov 2024 08:08:41 +0000
 Received: from szxga05-in.huawei.com ([45.249.212.191])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSg-0000000CnCd-0T2l
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAPSb-0000000GjYB-2aNF
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:07:54 +0000
+	Mon, 11 Nov 2024 08:07:56 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn29227DDz28fSN;
-	Mon, 11 Nov 2024 16:03:02 +0800 (CST)
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn2DM4KFtz1jy14;
+	Mon, 11 Nov 2024 16:05:55 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id A92EB140391;
-	Mon, 11 Nov 2024 16:07:43 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id AAF00140391;
+	Mon, 11 Nov 2024 16:07:42 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:07:42 +0800
+ 2024 16:07:37 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 037/102] ubifs-utils: Adapt commit.c in libubifs
-Date: Mon, 11 Nov 2024 16:06:01 +0800
-Message-ID: <20241111080621.1394382-22-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 020/102] ubifs-utils: Add implementations for linux kernel printing functions
+Date: Mon, 11 Nov 2024 16:05:51 +0800
+Message-ID: <20241111080621.1394382-12-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_080752_623089_A8B666BE 
-X-CRM114-Status: GOOD (  30.75  )
+X-CRM114-CacheID: sfid-20241111_000746_349977_7F19803E 
+X-CRM114-Status: GOOD (  19.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,441 +70,467 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt commit.c in libubifs, compared with linux kernel implementations:
- 1. Remove debug related implementations(eg. dbg_check_old_index), debug
-    functions are not needed by fsck, because fsck will check fs in
-    another way.
- 2. Remove ubifs background committing related implementations, there
-    will be no background ubifs threads in fsck.
+Add implementations for linux kernel printing functions, because these
+functions(eg. pr_debug, pr_err, etc.) are widely used in UBIFS linux
+kernel libs. No need to define multiple levels in dbg_msg for debuging,
+just replace dbg_msg with pr_debug. Now, there are five levels of
+printing messages:
+ 0 - none
+ 1 - error message
+ 2 - warning message [default]
+ 3 - notice message
+ 4 - debug message
+
+This is a preparation for replacing implementation of UBIFS utils with
+linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/commit.c | 370 ++----------------------------------------
- 1 file changed, 10 insertions(+), 360 deletions(-)
+ configure.ac                        |  2 ++
+ ubifs-utils/Makemodule.am           |  3 +-
+ ubifs-utils/common/defs.h           | 48 ++++++++++++++++++++++++++--
+ ubifs-utils/common/devtable.c       | 26 +++++++--------
+ ubifs-utils/common/lpt.c            | 40 +++++++++++------------
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 64 ++++++++++++++++++-------------------
+ 6 files changed, 115 insertions(+), 68 deletions(-)
 
-diff --git a/ubifs-utils/libubifs/commit.c b/ubifs-utils/libubifs/commit.c
-index 5b3a8400..f3b61136 100644
---- a/ubifs-utils/libubifs/commit.c
-+++ b/ubifs-utils/libubifs/commit.c
-@@ -31,10 +31,13 @@
-  * cache.
-  */
+diff --git a/configure.ac b/configure.ac
+index 9cd63553..93d09db8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -132,9 +132,11 @@ AS_IF([test "x$enable_ubihealthd" = "xyes"], [
+ 	need_getrandom="yes"
+ ])
  
--#include <linux/freezer.h>
--#include <linux/kthread.h>
--#include <linux/slab.h>
-+#include "linux_err.h"
-+#include "bitops.h"
-+#include "kmem.h"
++AC_ARG_VAR([DUMP_STACK_LD], [linker flags for rdynamic])
+ AS_IF([test "x$with_ubifs" = "xyes"], [
+ 	need_uuid="yes"
+ 	need_getrandom="yes"
++	DUMP_STACK_LD="-rdynamic"
+ ])
+ 
+ AS_IF([test "x$with_zlib" != "xno"], [
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index 3329b6f9..77f54695 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -44,7 +44,8 @@ mkfs_ubifs_SOURCES = \
+ 	$(common_SOURCES) \
+ 	ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+ 
+-mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm -lpthread
++mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) \
++		   $(DUMP_STACK_LD) -lm -lpthread
+ mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
+ 	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common
+ 
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index 485c50c0..6d99a2fd 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -8,8 +8,10 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <unistd.h>
+ #include <limits.h>
+ #include <errno.h>
++#include <execinfo.h>
+ 
  #include "ubifs.h"
-+#include "debug.h"
-+#include "defs.h"
-+#include "misc.h"
  
- /*
-  * nothing_to_commit - check if there is nothing to commit.
-@@ -216,7 +219,6 @@ static int do_commit(struct ubifs_info *c)
- out_cancel:
- 	spin_lock(&c->cs_lock);
- 	c->cmt_state = COMMIT_RESTING;
--	wake_up(&c->cmt_wq);
- 	dbg_cmt("commit end");
- 	spin_unlock(&c->cs_lock);
- 	return 0;
-@@ -227,107 +229,12 @@ out:
- 	ubifs_err(c, "commit failed, error %d", err);
- 	spin_lock(&c->cs_lock);
- 	c->cmt_state = COMMIT_BROKEN;
--	wake_up(&c->cmt_wq);
- 	spin_unlock(&c->cs_lock);
- 	ubifs_ro_mode(c, err);
- 	return err;
- }
+@@ -22,10 +24,52 @@ extern struct ubifs_info info_;
  
- /**
-- * run_bg_commit - run background commit if it is needed.
-- * @c: UBIFS file-system description object
-- *
-- * This function runs background commit if it is needed. Returns zero in case
-- * of success and a negative error code in case of failure.
-- */
--static int run_bg_commit(struct ubifs_info *c)
--{
--	spin_lock(&c->cs_lock);
--	/*
--	 * Run background commit only if background commit was requested or if
--	 * commit is required.
--	 */
--	if (c->cmt_state != COMMIT_BACKGROUND &&
--	    c->cmt_state != COMMIT_REQUIRED)
--		goto out;
--	spin_unlock(&c->cs_lock);
--
--	down_write(&c->commit_sem);
--	spin_lock(&c->cs_lock);
--	if (c->cmt_state == COMMIT_REQUIRED)
--		c->cmt_state = COMMIT_RUNNING_REQUIRED;
--	else if (c->cmt_state == COMMIT_BACKGROUND)
--		c->cmt_state = COMMIT_RUNNING_BACKGROUND;
--	else
--		goto out_cmt_unlock;
--	spin_unlock(&c->cs_lock);
--
--	return do_commit(c);
--
--out_cmt_unlock:
--	up_write(&c->commit_sem);
--out:
--	spin_unlock(&c->cs_lock);
--	return 0;
--}
--
--/**
-- * ubifs_bg_thread - UBIFS background thread function.
-- * @info: points to the file-system description object
-- *
-- * This function implements various file-system background activities:
-- * o when a write-buffer timer expires it synchronizes the appropriate
-- *   write-buffer;
-- * o when the journal is about to be full, it starts in-advance commit.
-- *
-- * Note, other stuff like background garbage collection may be added here in
-- * future.
-- */
--int ubifs_bg_thread(void *info)
--{
--	int err;
--	struct ubifs_info *c = info;
--
--	ubifs_msg(c, "background thread \"%s\" started, PID %d",
--		  c->bgt_name, current->pid);
--	set_freezable();
--
--	while (1) {
--		if (kthread_should_stop())
--			break;
--
--		if (try_to_freeze())
--			continue;
--
--		set_current_state(TASK_INTERRUPTIBLE);
--		/* Check if there is something to do */
--		if (!c->need_bgt) {
--			/*
--			 * Nothing prevents us from going sleep now and
--			 * be never woken up and block the task which
--			 * could wait in 'kthread_stop()' forever.
--			 */
--			if (kthread_should_stop())
--				break;
--			schedule();
--			continue;
--		} else
--			__set_current_state(TASK_RUNNING);
--
--		c->need_bgt = 0;
--		err = ubifs_bg_wbufs_sync(c);
--		if (err)
--			ubifs_ro_mode(c, err);
--
--		run_bg_commit(c);
--		cond_resched();
--	}
--
--	ubifs_msg(c, "background thread \"%s\" stops", c->bgt_name);
--	return 0;
--}
--
--/**
-  * ubifs_commit_required - set commit state to "required".
-  * @c: UBIFS file-system description object
-  *
-@@ -364,17 +271,8 @@ void ubifs_commit_required(struct ubifs_info *c)
-  * This function is called if the journal is full enough to make a commit
-  * worthwhile, so background thread is kicked to start it.
-  */
--void ubifs_request_bg_commit(struct ubifs_info *c)
-+void ubifs_request_bg_commit(__unused struct ubifs_info *c)
- {
--	spin_lock(&c->cs_lock);
--	if (c->cmt_state == COMMIT_RESTING) {
--		dbg_cmt("old: %s, new: %s", dbg_cstate(c->cmt_state),
--			dbg_cstate(COMMIT_BACKGROUND));
--		c->cmt_state = COMMIT_BACKGROUND;
--		spin_unlock(&c->cs_lock);
--		ubifs_wake_up_bgt(c);
--	} else
--		spin_unlock(&c->cs_lock);
- }
+ enum { MKFS_PROGRAM_TYPE = 0 };
  
- /**
-@@ -385,18 +283,11 @@ void ubifs_request_bg_commit(struct ubifs_info *c)
-  */
- static int wait_for_commit(struct ubifs_info *c)
- {
--	dbg_cmt("pid %d goes sleep", current->pid);
--
- 	/*
--	 * The following sleeps if the condition is false, and will be woken
--	 * when the commit ends. It is possible, although very unlikely, that we
--	 * will wake up and see the subsequent commit running, rather than the
--	 * one we were waiting for, and go back to sleep.  However, we will be
--	 * woken again, so there is no danger of sleeping forever.
-+	 * All commit operations are executed in synchronization context,
-+	 * so it is impossible that more than one threads doing commit.
+-#define dbg_msg(lvl, fmt, ...) do {if (info_.debug_level >= lvl)	\
+-	printf("%s: %s: " fmt "\n", PROGRAM_NAME, __FUNCTION__, ##__VA_ARGS__); \
++enum { ERR_LEVEL = 1, WARN_LEVEL, INFO_LEVEL, DEBUG_LEVEL };
++
++#define pr_debug(fmt, ...) do { if (info_.debug_level >= DEBUG_LEVEL)	\
++	printf("<DEBUG> %s[%d] (%s): %s: " fmt, PROGRAM_NAME, getpid(),	\
++	       info_.dev_name, __FUNCTION__, ##__VA_ARGS__);		\
++} while(0)
++
++#define pr_notice(fmt, ...) do { if (info_.debug_level >= INFO_LEVEL)	\
++	printf("<INFO> %s[%d] (%s): %s: " fmt, PROGRAM_NAME, getpid(),	\
++	       info_.dev_name, __FUNCTION__, ##__VA_ARGS__);		\
++} while(0)
++
++#define pr_warn(fmt, ...) do { if (info_.debug_level >= WARN_LEVEL)	\
++	printf("<WARN> %s[%d] (%s): %s: " fmt, PROGRAM_NAME, getpid(),	\
++	       info_.dev_name, __FUNCTION__, ##__VA_ARGS__);		\
++} while(0)
++
++#define pr_err(fmt, ...) do { if (info_.debug_level >= ERR_LEVEL)	\
++	printf("<ERROR> %s[%d] (%s): %s: " fmt, PROGRAM_NAME, getpid(),	\
++	       info_.dev_name, __FUNCTION__, ##__VA_ARGS__);		\
+ } while(0)
+ 
++#define pr_cont(fmt, ...) do { if (info_.debug_level >= ERR_LEVEL)	\
++	printf(fmt, ##__VA_ARGS__);					\
++} while(0)
++
++static inline void dump_stack(void)
++{
++#define STACK_SIZE 512
++	int j, nptrs;
++	void *buffer[STACK_SIZE];
++	char **strings;
++
++	if (info_.debug_level < ERR_LEVEL)
++		return;
++
++	nptrs = backtrace(buffer, STACK_SIZE);
++	strings = backtrace_symbols(buffer, nptrs);
++
++	printf("dump_stack:\n");
++	for (j = 0; j < nptrs; j++)
++		printf("%s\n", strings[j]);
++
++	free(strings);
++}
++
+ #define unlikely(x) (x)
+ 
+ #define do_div(n,base) ({ \
+diff --git a/ubifs-utils/common/devtable.c b/ubifs-utils/common/devtable.c
+index 39032646..7347f092 100644
+--- a/ubifs-utils/common/devtable.c
++++ b/ubifs-utils/common/devtable.c
+@@ -148,10 +148,10 @@ static int interpret_table_entry(const char *line)
+ 		   &start, &increment, &count) < 0)
+ 		return sys_errmsg("sscanf failed");
+ 
+-	dbg_msg(3, "name %s, type %c, mode %o, uid %u, gid %u, major %u, "
+-		"minor %u, start %u, inc %u, cnt %u",
+-		buf, type, mode, uid, gid, major, minor, start,
+-		increment, count);
++	pr_debug("name %s, type %c, mode %o, uid %u, gid %u, major %u, "
++		 "minor %u, start %u, inc %u, cnt %u\n",
++		 buf, type, mode, uid, gid, major, minor, start,
++		 increment, count);
+ 
+ 	len = strnlen(buf, 1024);
+ 	if (len == 0)
+@@ -204,7 +204,7 @@ static int interpret_table_entry(const char *line)
  	 */
--	wait_event(c->cmt_wq, c->cmt_state != COMMIT_RUNNING_BACKGROUND &&
--			      c->cmt_state != COMMIT_RUNNING_REQUIRED);
--	dbg_cmt("commit finished, pid %d woke up", current->pid);
-+	ubifs_assert(c, 0);
- 	return 0;
- }
+ 	ph_elt = hashtable_search(path_htbl, path);
+ 	if (!ph_elt) {
+-		dbg_msg(3, "inserting '%s' into path hash table", path);
++		pr_debug("inserting '%s' into path hash table\n", path);
+ 		ph_elt = malloc(sizeof(struct path_htbl_element));
+ 		if (!ph_elt) {
+ 			errmsg("cannot allocate %zd bytes of memory",
+@@ -252,8 +252,8 @@ static int interpret_table_entry(const char *line)
+ 		nh_elt->gid = gid;
+ 		nh_elt->dev = makedev(major, minor);
  
-@@ -490,244 +381,3 @@ int ubifs_gc_should_commit(struct ubifs_info *c)
- 	spin_unlock(&c->cs_lock);
+-		dbg_msg(3, "inserting '%s' into name hash table (major %d, minor %d)",
+-			name, major(nh_elt->dev), minor(nh_elt->dev));
++		pr_debug("inserting '%s' into name hash table (major %d, minor %d)\n",
++			 name, major(nh_elt->dev), minor(nh_elt->dev));
+ 
+ 		if (hashtable_search(ph_elt->name_htbl, name)) {
+ 			errmsg("'%s' is referred twice", buf);
+@@ -291,8 +291,8 @@ static int interpret_table_entry(const char *line)
+ 			sprintf(nm, "%s%d", name, i);
+ 			nh_elt->name = nm;
+ 
+-			dbg_msg(3, "inserting '%s' into name hash table (major %d, minor %d)",
+-			        nm, major(nh_elt->dev), minor(nh_elt->dev));
++			pr_debug("inserting '%s' into name hash table (major %d, minor %d)\n",
++				 nm, major(nh_elt->dev), minor(nh_elt->dev));
+ 
+ 			if (hashtable_search(ph_elt->name_htbl, nm)) {
+ 				errmsg("'%s' is referred twice", buf);
+@@ -336,7 +336,7 @@ int parse_devtable(const char *tbl_file)
+ 	struct stat st;
+ 	size_t len;
+ 
+-	dbg_msg(1, "parsing device table file '%s'", tbl_file);
++	pr_debug("parsing device table file '%s'\n", tbl_file);
+ 
+ 	path_htbl = create_hashtable(128, &r5_hash, &is_equivalent);
+ 	if (!path_htbl)
+@@ -386,7 +386,7 @@ int parse_devtable(const char *tbl_file)
+ 		line = NULL;
+ 	}
+ 
+-	dbg_msg(1, "finished parsing");
++	pr_debug("finished parsing\n");
+ 	fclose(f);
+ 	return 0;
+ 
+@@ -460,8 +460,8 @@ int override_attributes(struct stat *st, struct path_htbl_element *ph_elt,
+ 			       "different", strcmp(ph_elt->path, "/") ? ph_elt->path : "",
+ 			       nh_elt->name);
+ 
+-	dbg_msg(3, "set UID %d, GID %d, mode %o for %s/%s as device table says",
+-		nh_elt->uid, nh_elt->gid, nh_elt->mode, ph_elt->path, nh_elt->name);
++	pr_debug("set UID %d, GID %d, mode %o for %s/%s as device table says\n",
++		 nh_elt->uid, nh_elt->gid, nh_elt->mode, ph_elt->path, nh_elt->name);
+ 
+ 	st->st_uid = nh_elt->uid;
+ 	st->st_gid = nh_elt->gid;
+diff --git a/ubifs-utils/common/lpt.c b/ubifs-utils/common/lpt.c
+index 3c55f91b..0723698d 100644
+--- a/ubifs-utils/common/lpt.c
++++ b/ubifs-utils/common/lpt.c
+@@ -337,7 +337,7 @@ static void pack_lsave(struct ubifs_info *c, void *buf, int *lsave)
+  */
+ static void set_ltab(struct ubifs_info *c, int lnum, int free, int dirty)
+ {
+-	dbg_msg(3, "LEB %d free %d dirty %d to %d %d",
++	pr_debug("LEB %d free %d dirty %d to %d %d\n",
+ 		lnum, c->ltab[lnum - c->lpt_first].free,
+ 		c->ltab[lnum - c->lpt_first].dirty, free, dirty);
+ 	c->ltab[lnum - c->lpt_first].free = free;
+@@ -566,26 +566,26 @@ int create_lpt(struct ubifs_info *c)
+ 	c->nhead_lnum = lnum;
+ 	c->nhead_offs = ALIGN(len, c->min_io_size);
+ 
+-	dbg_msg(1, "lpt_sz:         %lld", c->lpt_sz);
+-	dbg_msg(1, "space_bits:     %d", c->space_bits);
+-	dbg_msg(1, "lpt_lnum_bits:  %d", c->lpt_lnum_bits);
+-	dbg_msg(1, "lpt_offs_bits:  %d", c->lpt_offs_bits);
+-	dbg_msg(1, "lpt_spc_bits:   %d", c->lpt_spc_bits);
+-	dbg_msg(1, "pcnt_bits:      %d", c->pcnt_bits);
+-	dbg_msg(1, "lnum_bits:      %d", c->lnum_bits);
+-	dbg_msg(1, "pnode_sz:       %d", c->pnode_sz);
+-	dbg_msg(1, "nnode_sz:       %d", c->nnode_sz);
+-	dbg_msg(1, "ltab_sz:        %d", c->ltab_sz);
+-	dbg_msg(1, "lsave_sz:       %d", c->lsave_sz);
+-	dbg_msg(1, "lsave_cnt:      %d", c->lsave_cnt);
+-	dbg_msg(1, "lpt_hght:       %d", c->lpt_hght);
+-	dbg_msg(1, "big_lpt:        %d", c->big_lpt);
+-	dbg_msg(1, "LPT root is at  %d:%d", c->lpt_lnum, c->lpt_offs);
+-	dbg_msg(1, "LPT head is at  %d:%d", c->nhead_lnum, c->nhead_offs);
+-	dbg_msg(1, "LPT ltab is at  %d:%d", c->ltab_lnum, c->ltab_offs);
++	pr_debug("lpt_sz:         %lld\n", c->lpt_sz);
++	pr_debug("space_bits:     %d\n", c->space_bits);
++	pr_debug("lpt_lnum_bits:  %d\n", c->lpt_lnum_bits);
++	pr_debug("lpt_offs_bits:  %d\n", c->lpt_offs_bits);
++	pr_debug("lpt_spc_bits:   %d\n", c->lpt_spc_bits);
++	pr_debug("pcnt_bits:      %d\n", c->pcnt_bits);
++	pr_debug("lnum_bits:      %d\n", c->lnum_bits);
++	pr_debug("pnode_sz:       %d\n", c->pnode_sz);
++	pr_debug("nnode_sz:       %d\n", c->nnode_sz);
++	pr_debug("ltab_sz:        %d\n", c->ltab_sz);
++	pr_debug("lsave_sz:       %d\n", c->lsave_sz);
++	pr_debug("lsave_cnt:      %d\n", c->lsave_cnt);
++	pr_debug("lpt_hght:       %d\n", c->lpt_hght);
++	pr_debug("big_lpt:        %d\n", c->big_lpt);
++	pr_debug("LPT root is at  %d:%d\n", c->lpt_lnum, c->lpt_offs);
++	pr_debug("LPT head is at  %d:%d\n", c->nhead_lnum, c->nhead_offs);
++	pr_debug("LPT ltab is at  %d:%d\n", c->ltab_lnum, c->ltab_offs);
+ 	if (c->big_lpt)
+-		dbg_msg(1, "LPT lsave is at %d:%d",
+-		        c->lsave_lnum, c->lsave_offs);
++		pr_debug("LPT lsave is at %d:%d\n",
++			 c->lsave_lnum, c->lsave_offs);
+ out:
+ 	free(lsave);
+ 	free(buf);
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index c2f5a29d..fb99222a 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -249,8 +249,8 @@ static const char *helptext =
+ "-y, --yes                assume the answer is \"yes\" for all questions\n"
+ "-v, --verbose            verbose operation\n"
+ "-V, --version            display version information\n"
+-"-g, --debug=LEVEL        display debug information (0 - none, 1 - statistics,\n"
+-"                         2 - files, 3 - more details)\n"
++"-g, --debug=LEVEL        display printing information (0 - none, 1 - error message, \n"
++"                         2 - warning message[default], 3 - notice message, 4 - debug message)\n"
+ "-a, --set-inum-attr      create user.image-inode-number extended attribute on files\n"
+ "                         added to the image. The attribute will contain the inode\n"
+ "                         number the file has in the generated image.\n"
+@@ -632,7 +632,7 @@ static int get_options(int argc, char**argv)
+ 		case 'g':
+ 			c->debug_level = strtol(optarg, &endp, 0);
+ 			if (*endp != '\0' || endp == optarg ||
+-			    c->debug_level < 0 || c->debug_level > 3)
++			    c->debug_level < 0 || c->debug_level > DEBUG_LEVEL)
+ 				return errmsg("bad debugging level '%s'",
+ 					       optarg);
+ 			break;
+@@ -943,7 +943,7 @@ int write_leb(struct ubifs_info *c, int lnum, int len, void *buf)
+ {
+ 	off_t pos = (off_t)lnum * c->leb_size;
+ 
+-	dbg_msg(3, "LEB %d len %d", lnum, len);
++	pr_debug("LEB %d len %d\n", lnum, len);
+ 	memset(buf + len, 0xff, c->leb_size - len);
+ 	if (c->libubi)
+ 		if (ubi_leb_change_start(c->libubi, c->dev_fd, lnum, c->leb_size))
+@@ -980,7 +980,7 @@ static int do_pad(void *buf, int len)
+ 
+ 	memset(buf + len, 0xff, alen - len);
+ 	pad_len = wlen - alen;
+-	dbg_msg(3, "len %d pad_len %d", len, pad_len);
++	pr_debug("len %d pad_len %d\n", len, pad_len);
+ 	buf += alen;
+ 	if (pad_len >= (int)UBIFS_PAD_NODE_SZ) {
+ 		struct ubifs_ch *ch = buf;
+@@ -1068,8 +1068,7 @@ static void set_lprops(int lnum, int offs, int flags)
+ 
+ 	free = c->leb_size - ALIGN(offs, a);
+ 	dirty = c->leb_size - free - ALIGN(offs, 8);
+-	dbg_msg(3, "LEB %d free %d dirty %d flags %d", lnum, free, dirty,
+-		flags);
++	pr_debug("LEB %d free %d dirty %d flags %d\n", lnum, free, dirty, flags);
+ 	if (i < c->main_lebs) {
+ 		c->lpt[i].free = free;
+ 		c->lpt[i].dirty = dirty;
+@@ -1104,7 +1103,7 @@ static int add_to_index(union ubifs_key *key, char *name, int name_len,
+ {
+ 	struct idx_entry *e;
+ 
+-	dbg_msg(3, "LEB %d offs %d len %d", lnum, offs, len);
++	pr_debug("LEB %d offs %d len %d\n", lnum, offs, len);
+ 	e = xmalloc(sizeof(struct idx_entry));
+ 	e->next = NULL;
+ 	e->prev = idx_list_last;
+@@ -1434,19 +1433,19 @@ static int inode_add_selinux_xattr(struct ubifs_ino_node *host_ino,
+ 	if (selabel_lookup(sehnd, &secontext, sepath, st->st_mode) < 0) {
+ 		/* Failed to lookup context, assume unlabeled */
+ 		secontext = strdup("system_u:object_r:unlabeled_t:s0");
+-		dbg_msg(2, "missing context: %s\t%s\t%d\n", secontext, sepath,
+-				st->st_mode);
++		pr_debug("missing context: %s\t%s\t%d\n", secontext, sepath,
++			 st->st_mode);
+ 	}
+ 
+-	dbg_msg(2, "appling selinux context on sepath=%s, secontext=%s\n",
+-			sepath, secontext);
++	pr_debug("appling selinux context on sepath=%s, secontext=%s\n",
++		 sepath, secontext);
+ 	free(sepath);
+ 	con_size = strlen(secontext) + 1;
+ 	name = strdup(XATTR_NAME_SELINUX);
+ 
+ 	ret = add_xattr(host_ino, st, inum, name, secontext, con_size);
+ 	if (ret < 0)
+-		dbg_msg(2, "add_xattr failed %d\n", ret);
++		pr_debug("add_xattr failed %d\n", ret);
  	return ret;
  }
--
--/*
-- * Everything below is related to debugging.
-- */
--
--/**
-- * struct idx_node - hold index nodes during index tree traversal.
-- * @list: list
-- * @iip: index in parent (slot number of this indexing node in the parent
-- *       indexing node)
-- * @upper_key: all keys in this indexing node have to be less or equivalent to
-- *             this key
-- * @idx: index node (8-byte aligned because all node structures must be 8-byte
-- *       aligned)
-- */
--struct idx_node {
--	struct list_head list;
--	int iip;
--	union ubifs_key upper_key;
--	struct ubifs_idx_node idx __aligned(8);
--};
--
--/**
-- * dbg_old_index_check_init - get information for the next old index check.
-- * @c: UBIFS file-system description object
-- * @zroot: root of the index
-- *
-- * This function records information about the index that will be needed for the
-- * next old index check i.e. 'dbg_check_old_index()'.
-- *
-- * This function returns %0 on success and a negative error code on failure.
-- */
--int dbg_old_index_check_init(struct ubifs_info *c, struct ubifs_zbranch *zroot)
--{
--	struct ubifs_idx_node *idx;
--	int lnum, offs, len, err = 0;
--	struct ubifs_debug_info *d = c->dbg;
--
--	d->old_zroot = *zroot;
--	lnum = d->old_zroot.lnum;
--	offs = d->old_zroot.offs;
--	len = d->old_zroot.len;
--
--	idx = kmalloc(c->max_idx_node_sz, GFP_NOFS);
--	if (!idx)
--		return -ENOMEM;
--
--	err = ubifs_read_node(c, idx, UBIFS_IDX_NODE, len, lnum, offs);
--	if (err)
--		goto out;
--
--	d->old_zroot_level = le16_to_cpu(idx->level);
--	d->old_zroot_sqnum = le64_to_cpu(idx->ch.sqnum);
--out:
--	kfree(idx);
--	return err;
--}
--
--/**
-- * dbg_check_old_index - check the old copy of the index.
-- * @c: UBIFS file-system description object
-- * @zroot: root of the new index
-- *
-- * In order to be able to recover from an unclean unmount, a complete copy of
-- * the index must exist on flash. This is the "old" index. The commit process
-- * must write the "new" index to flash without overwriting or destroying any
-- * part of the old index. This function is run at commit end in order to check
-- * that the old index does indeed exist completely intact.
-- *
-- * This function returns %0 on success and a negative error code on failure.
-- */
--int dbg_check_old_index(struct ubifs_info *c, struct ubifs_zbranch *zroot)
--{
--	int lnum, offs, len, err = 0, last_level, child_cnt;
--	int first = 1, iip;
--	struct ubifs_debug_info *d = c->dbg;
--	union ubifs_key lower_key, upper_key, l_key, u_key;
--	unsigned long long last_sqnum;
--	struct ubifs_idx_node *idx;
--	struct list_head list;
--	struct idx_node *i;
--	size_t sz;
--
--	if (!dbg_is_chk_index(c))
--		return 0;
--
--	INIT_LIST_HEAD(&list);
--
--	sz = sizeof(struct idx_node) + ubifs_idx_node_sz(c, c->fanout) -
--	     UBIFS_IDX_NODE_SZ;
--
--	/* Start at the old zroot */
--	lnum = d->old_zroot.lnum;
--	offs = d->old_zroot.offs;
--	len = d->old_zroot.len;
--	iip = 0;
--
--	/*
--	 * Traverse the index tree preorder depth-first i.e. do a node and then
--	 * its subtrees from left to right.
--	 */
--	while (1) {
--		struct ubifs_branch *br;
--
--		/* Get the next index node */
--		i = kmalloc(sz, GFP_NOFS);
--		if (!i) {
--			err = -ENOMEM;
--			goto out_free;
--		}
--		i->iip = iip;
--		/* Keep the index nodes on our path in a linked list */
--		list_add_tail(&i->list, &list);
--		/* Read the index node */
--		idx = &i->idx;
--		err = ubifs_read_node(c, idx, UBIFS_IDX_NODE, len, lnum, offs);
--		if (err)
--			goto out_free;
--		/* Validate index node */
--		child_cnt = le16_to_cpu(idx->child_cnt);
--		if (child_cnt < 1 || child_cnt > c->fanout) {
--			err = 1;
--			goto out_dump;
--		}
--		if (first) {
--			first = 0;
--			/* Check root level and sqnum */
--			if (le16_to_cpu(idx->level) != d->old_zroot_level) {
--				err = 2;
--				goto out_dump;
--			}
--			if (le64_to_cpu(idx->ch.sqnum) != d->old_zroot_sqnum) {
--				err = 3;
--				goto out_dump;
--			}
--			/* Set last values as though root had a parent */
--			last_level = le16_to_cpu(idx->level) + 1;
--			last_sqnum = le64_to_cpu(idx->ch.sqnum) + 1;
--			key_read(c, ubifs_idx_key(c, idx), &lower_key);
--			highest_ino_key(c, &upper_key, INUM_WATERMARK);
--		}
--		key_copy(c, &upper_key, &i->upper_key);
--		if (le16_to_cpu(idx->level) != last_level - 1) {
--			err = 3;
--			goto out_dump;
--		}
--		/*
--		 * The index is always written bottom up hence a child's sqnum
--		 * is always less than the parents.
--		 */
--		if (le64_to_cpu(idx->ch.sqnum) >= last_sqnum) {
--			err = 4;
--			goto out_dump;
--		}
--		/* Check key range */
--		key_read(c, ubifs_idx_key(c, idx), &l_key);
--		br = ubifs_idx_branch(c, idx, child_cnt - 1);
--		key_read(c, &br->key, &u_key);
--		if (keys_cmp(c, &lower_key, &l_key) > 0) {
--			err = 5;
--			goto out_dump;
--		}
--		if (keys_cmp(c, &upper_key, &u_key) < 0) {
--			err = 6;
--			goto out_dump;
--		}
--		if (keys_cmp(c, &upper_key, &u_key) == 0)
--			if (!is_hash_key(c, &u_key)) {
--				err = 7;
--				goto out_dump;
--			}
--		/* Go to next index node */
--		if (le16_to_cpu(idx->level) == 0) {
--			/* At the bottom, so go up until can go right */
--			while (1) {
--				/* Drop the bottom of the list */
--				list_del(&i->list);
--				kfree(i);
--				/* No more list means we are done */
--				if (list_empty(&list))
--					goto out;
--				/* Look at the new bottom */
--				i = list_entry(list.prev, struct idx_node,
--					       list);
--				idx = &i->idx;
--				/* Can we go right */
--				if (iip + 1 < le16_to_cpu(idx->child_cnt)) {
--					iip = iip + 1;
--					break;
--				} else
--					/* Nope, so go up again */
--					iip = i->iip;
--			}
--		} else
--			/* Go down left */
--			iip = 0;
--		/*
--		 * We have the parent in 'idx' and now we set up for reading the
--		 * child pointed to by slot 'iip'.
--		 */
--		last_level = le16_to_cpu(idx->level);
--		last_sqnum = le64_to_cpu(idx->ch.sqnum);
--		br = ubifs_idx_branch(c, idx, iip);
--		lnum = le32_to_cpu(br->lnum);
--		offs = le32_to_cpu(br->offs);
--		len = le32_to_cpu(br->len);
--		key_read(c, &br->key, &lower_key);
--		if (iip + 1 < le16_to_cpu(idx->child_cnt)) {
--			br = ubifs_idx_branch(c, idx, iip + 1);
--			key_read(c, &br->key, &upper_key);
--		} else
--			key_copy(c, &i->upper_key, &upper_key);
--	}
--out:
--	err = dbg_old_index_check_init(c, zroot);
--	if (err)
--		goto out_free;
--
--	return 0;
--
--out_dump:
--	ubifs_err(c, "dumping index node (iip=%d)", i->iip);
--	ubifs_dump_node(c, idx, ubifs_idx_node_sz(c, c->fanout));
--	list_del(&i->list);
--	kfree(i);
--	if (!list_empty(&list)) {
--		i = list_entry(list.prev, struct idx_node, list);
--		ubifs_err(c, "dumping parent index node");
--		ubifs_dump_node(c, &i->idx, ubifs_idx_node_sz(c, c->fanout));
--	}
--out_free:
--	while (!list_empty(&list)) {
--		i = list_entry(list.next, struct idx_node, list);
--		list_del(&i->list);
--		kfree(i);
--	}
--	ubifs_err(c, "failed, error %d", err);
--	if (err > 0)
--		err = -EINVAL;
--	return err;
--}
+ 
+@@ -1714,8 +1713,8 @@ static int add_dent_node(ino_t dir_inum, const char *name, ino_t inum,
+ 	char *kname;
+ 	int len;
+ 
+-	dbg_msg(3, "%s ino %lu type %u dir ino %lu", name, (unsigned long)inum,
+-		(unsigned int)type, (unsigned long)dir_inum);
++	pr_debug("%s ino %lu type %u dir ino %lu\n", name, (unsigned long)inum,
++		 (unsigned int)type, (unsigned long)dir_inum);
+ 	memset(dent, 0, UBIFS_DENT_NODE_SZ);
+ 
+ 	dname.name = (void *)name;
+@@ -1916,7 +1915,7 @@ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int nlink,
+ {
+ 	int fd, flags = 0;
+ 
+-	dbg_msg(2, "%s", path_name);
++	pr_debug("%s\n", path_name);
+ 
+ 	if (S_ISREG(st->st_mode)) {
+ 		fd = open(path_name, O_RDONLY);
+@@ -2017,7 +2016,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
+ 	unsigned char type;
+ 	unsigned long long dir_creat_sqnum = ++c->max_sqnum;
+ 
+-	dbg_msg(2, "%s", dir_name);
++	pr_debug("%s\n", dir_name);
+ 	if (existing) {
+ 		dir = opendir(dir_name);
+ 		if (dir == NULL)
+@@ -2237,7 +2236,7 @@ static int add_multi_linked_files(void)
+ 		unsigned char type = 0;
+ 
+ 		for (im = hash_table[i]; im; im = im->next) {
+-			dbg_msg(2, "%s", im->path_name);
++			pr_debug("%s\n", im->path_name);
+ 			err = add_non_dir(im->path_name, &im->use_inum,
+ 					  im->use_nlink, &type, &im->st, NULL);
+ 			if (err)
+@@ -2342,8 +2341,8 @@ static int add_idx_node(void *node, int child_cnt)
+ 
+ 	c->old_idx_sz += ALIGN(len, 8);
+ 
+-	dbg_msg(3, "at %d:%d len %d index size %llu", lnum, offs, len,
+-		c->old_idx_sz);
++	pr_debug("at %d:%d len %d index size %llu\n", lnum, offs, len,
++		 c->old_idx_sz);
+ 
+ 	/* The last index node written will be the root */
+ 	c->zroot.lnum = lnum;
+@@ -2365,7 +2364,7 @@ static int write_index(void)
+ 	int child_cnt = 0, j, level, blnum, boffs, blen, blast_len, err;
+ 	uint8_t *hashes;
+ 
+-	dbg_msg(1, "leaf node count: %zd", idx_cnt);
++	pr_debug("leaf node count: %zd\n", idx_cnt);
+ 
+ 	/* Reset the head for the index */
+ 	head_flags = LPROPS_INDEX;
+@@ -2515,13 +2514,13 @@ static int write_index(void)
+ 	free(idx_ptr);
+ 	free(idx);
+ 
+-	dbg_msg(1, "zroot is at %d:%d len %d", c->zroot.lnum, c->zroot.offs,
+-		c->zroot.len);
++	pr_debug("zroot is at %d:%d len %d\n", c->zroot.lnum, c->zroot.offs,
++		 c->zroot.len);
+ 
+ 	/* Set the index head */
+ 	c->ihead_lnum = head_lnum;
+ 	c->ihead_offs = ALIGN(head_offs, c->min_io_size);
+-	dbg_msg(1, "ihead is at %d:%d", c->ihead_lnum, c->ihead_offs);
++	pr_debug("ihead is at %d:%d\n", c->ihead_lnum, c->ihead_offs);
+ 
+ 	/* Flush the last index LEB */
+ 	err = flush_nodes();
+@@ -2567,13 +2566,13 @@ static int finalize_leb_cnt(void)
+ 		printf("\tindex lebs:   %d\n", c->lst.idx_lebs);
+ 		printf("\tleb_cnt:      %d\n", c->leb_cnt);
+ 	}
+-	dbg_msg(1, "total_free:  %llu", c->lst.total_free);
+-	dbg_msg(1, "total_dirty: %llu", c->lst.total_dirty);
+-	dbg_msg(1, "total_used:  %llu", c->lst.total_used);
+-	dbg_msg(1, "total_dead:  %llu", c->lst.total_dead);
+-	dbg_msg(1, "total_dark:  %llu", c->lst.total_dark);
+-	dbg_msg(1, "index size:  %llu", c->old_idx_sz);
+-	dbg_msg(1, "empty_lebs:  %d", c->lst.empty_lebs);
++	pr_debug("total_free:  %llu\n", c->lst.total_free);
++	pr_debug("total_dirty: %llu\n", c->lst.total_dirty);
++	pr_debug("total_used:  %llu\n", c->lst.total_used);
++	pr_debug("total_dead:  %llu\n", c->lst.total_dead);
++	pr_debug("total_dark:  %llu\n", c->lst.total_dark);
++	pr_debug("index size:  %llu\n", c->old_idx_sz);
++	pr_debug("empty_lebs:  %d\n", c->lst.empty_lebs);
+ 	return 0;
+ }
+ 
+@@ -2822,7 +2821,7 @@ static int init(void)
+ 
+ 	c->dead_wm = ALIGN(MIN_WRITE_SZ, c->min_io_size);
+ 	c->dark_wm = ALIGN(UBIFS_MAX_NODE_SZ, c->min_io_size);
+-	dbg_msg(1, "dead_wm %d  dark_wm %d", c->dead_wm, c->dark_wm);
++	pr_debug("dead_wm %d  dark_wm %d\n", c->dead_wm, c->dark_wm);
+ 
+ 	leb_buf = xmalloc(c->leb_size);
+ 	node_buf = xmalloc(NODE_BUFFER_SIZE);
+@@ -2954,6 +2953,7 @@ int main(int argc, char *argv[])
+ 
+ 	info_.program_name = MKFS_PROGRAM_NAME;
+ 	info_.program_type = MKFS_PROGRAM_TYPE;
++	info_.debug_level = WARN_LEVEL;
+ 
+ 	if (crypto_init())
+ 		return -1;
 -- 
 2.13.6
 
