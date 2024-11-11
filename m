@@ -4,71 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8461DD2E9C4
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E170D2E9C4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fEXvauS+QvCHJUd8z5hCaJ2fNvgLC0G22xFGtWByzVg=; b=K/wZKGaWDqgF7y
-	USsjAabtab1FkuhGfb7s0HdEEZVEYyLLPRg30Zn6T9qj5MgBgYPN/A+xvdGT87hjQ0tqFWyA8Ngal
-	ZyFIh6O6ue8wRMzBXin0eCQjNbJOj9dxqUSnwcMjs5nnIISWQZTHgzlpnwIResS8YlWAJC2SWCLJv
-	uibuPtjxA7XboDH89JfPWZs6ojsWI3WYyg+E3vOkcbw9b5dZ4Bc2ct/otJLaD67vgzCe0e8KgUgVv
-	NJHsJIbsQmniwKpRh8trhCn2XmlR+x1VaWl5bERkRaG9UpEI64jUmagQQ2eTGr+CbGe5ETGugSG1a
-	8f5EdbloWgeGEZsEDNsQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	CC:To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ayjrI7Vlf7iSW2ba4fbvv66qi8eABSR6ezkt+v2cehA=; b=bp1Ytpglyln0gKwSB2J/333XTY
+	tfczWFj5ZRzyUouVaI63H+zIkEqdPDVgCjjYhBC90A18AEOjnHX4/xmmHxRYaYFjsscElrnC1aWVZ
+	nm31Uw27mPZyRuM5vC0e8RseA+AyO6IM42GYRgHIOJAbMh7KPFqEKwsA5sd/7HcoKV+l7Cfkly9xY
+	jf1zZU+GWzcrhbrAhmX0k6ZqT9t5A8YfbHc1MGm58kEcEui118Lx2Eea+FCUHv7BOnE8YBBRYGC9p
+	VfMn6OFS+CM9j+oVy/ew0l4TYyt10FCkoX9/QdgYIzCoktty/8pRt3asW6cVc0gaHeYLWKdUTRWmM
+	neVZFXew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQM5-0000000GzTq-2HyB;
-	Mon, 11 Nov 2024 09:05:05 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tAQN8-0000000Gzry-3Gor;
+	Mon, 11 Nov 2024 09:06:10 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQK7-0000000Gy0G-2bMy
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 09:03:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=Ke5PlkidvWVBZ08CRj24Xa0sIXx0V2Ulg9Fg7tOhQQg=; b=Uvs+AFKf47oN8Pm/LPn3+8gQuO
-	2Kjkl7MUEtBRjCyl5P90qOV3KGB+FD3xqf62ms5+1difxFWgj7ZmhtwKATaLgNu/DqZzHacIrNwto
-	pHx3RKLrElOME3xl9xh6VlGPaX0eglcEfwR1nennhtXAZE0fwpNPIAvur9H0mODHazLty0z53m+WX
-	N3ziO2bv7lVQp3NfmniZcCsE+vFc3MFpC9TEjrUnk8dy1cfj+KDnQ8XAortV1ZUs2FNd0fYiy80Ht
-	dAm0BFVRlkeWIn27yq/KWdxYR21XxcXNbWOULxrQUiWjq2ado8R0jhyZWWcFXjlRd30+xeTzoNQaf
-	JdADmhLw==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQK1-0000000CoQo-45f9
+	id 1tAQN5-0000000GzrU-3XRn
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 09:03:02 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn3RB54jlz1TB3n;
-	Mon, 11 Nov 2024 17:00:22 +0800 (CST)
+	Mon, 11 Nov 2024 09:06:09 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Vj54t9z10R00;
+	Mon, 11 Nov 2024 17:03:25 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1D3EF1800D0;
-	Mon, 11 Nov 2024 17:02:49 +0800 (CST)
-Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
- (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:02:48 +0800
+	by mail.maildlp.com (Postfix) with ESMTPS id 61C62180AEB;
+	Mon, 11 Nov 2024 17:05:52 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 11 Nov 2024 17:05:51 +0800
+Subject: Re: [PATCH mtd-utils v2 RESEND 040/102] ubifs-utils: Adapt master.c
+ in libubifs
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 066/102] fsck.ubifs: rebuild_fs: Write master node
-Date: Mon, 11 Nov 2024 17:01:20 +0800
-Message-ID: <20241111090124.2070455-27-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
-References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
+References: <20241111085741.2066378-1-chengzhihao1@huawei.com>
+Message-ID: <e6b04cec-5c4b-c57d-81a5-131f078b23d5@huawei.com>
+Date: Mon, 11 Nov 2024 17:05:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.175.112.188]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+In-Reply-To: <20241111085741.2066378-1-chengzhihao1@huawei.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_090300_687419_5074352B 
-X-CRM114-Status: GOOD (  10.47  )
+X-CRM114-CacheID: sfid-20241111_010608_082851_F1CAAADB 
+X-CRM114-Status: GOOD (  16.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,128 +67,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 12/12 step of rebuilding. Since all meta areas are ready,
-master node can be updated. After this step, a consistent UBIFS image
-can be mounted, and it should pass all tests from chk_fs, chk_general,
-chk_index, chk_lprops and chk_orphans.
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- ubifs-utils/fsck.ubifs/rebuild_fs.c | 78 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
-
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 9ea4c224..382687b3 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -1126,6 +1126,7 @@ static int record_file_used_lebs(struct ubifs_info *c,
- 		 file->ino.is_xattr ? "xattr" :
- 		 ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
- 		 c->dev_name);
-+	c->highest_inum = max_t(ino_t, c->highest_inum, file->inum);
- 
- 	err = parse_node_info(c, &file->ino.header, &file->ino.key,
- 			      NULL, 0, idx_list, idx_cnt);
-@@ -1345,6 +1346,75 @@ static int clean_log(struct ubifs_info *c)
- }
- 
- /**
-+ * write_master - write master nodes.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function updates meta information into master node and writes master
-+ * node into master area.
-+ */
-+static int write_master(struct ubifs_info *c)
-+{
-+	int err, lnum;
-+	struct ubifs_mst_node *mst;
-+
-+	mst = kzalloc(c->mst_node_alsz, GFP_KERNEL);
-+	if (!mst)
-+		return -ENOMEM;
-+
-+	mst->ch.node_type = UBIFS_MST_NODE;
-+	mst->log_lnum     = cpu_to_le32(UBIFS_LOG_LNUM);
-+	mst->highest_inum = cpu_to_le64(c->highest_inum);
-+	mst->cmt_no       = 0;
-+	mst->root_lnum    = cpu_to_le32(c->zroot.lnum);
-+	mst->root_offs    = cpu_to_le32(c->zroot.offs);
-+	mst->root_len     = cpu_to_le32(c->zroot.len);
-+	mst->gc_lnum      = cpu_to_le32(c->gc_lnum);
-+	mst->ihead_lnum   = cpu_to_le32(c->ihead_lnum);
-+	mst->ihead_offs   = cpu_to_le32(c->ihead_offs);
-+	mst->index_size   = cpu_to_le64(c->calc_idx_sz);
-+	mst->lpt_lnum     = cpu_to_le32(c->lpt_lnum);
-+	mst->lpt_offs     = cpu_to_le32(c->lpt_offs);
-+	mst->nhead_lnum   = cpu_to_le32(c->nhead_lnum);
-+	mst->nhead_offs   = cpu_to_le32(c->nhead_offs);
-+	mst->ltab_lnum    = cpu_to_le32(c->ltab_lnum);
-+	mst->ltab_offs    = cpu_to_le32(c->ltab_offs);
-+	mst->lsave_lnum   = cpu_to_le32(c->lsave_lnum);
-+	mst->lsave_offs   = cpu_to_le32(c->lsave_offs);
-+	mst->lscan_lnum   = cpu_to_le32(c->main_first);
-+	mst->empty_lebs   = cpu_to_le32(c->lst.empty_lebs);
-+	mst->idx_lebs     = cpu_to_le32(c->lst.idx_lebs);
-+	mst->leb_cnt      = cpu_to_le32(c->leb_cnt);
-+	mst->total_free   = cpu_to_le64(c->lst.total_free);
-+	mst->total_dirty  = cpu_to_le64(c->lst.total_dirty);
-+	mst->total_used   = cpu_to_le64(c->lst.total_used);
-+	mst->total_dead   = cpu_to_le64(c->lst.total_dead);
-+	mst->total_dark   = cpu_to_le64(c->lst.total_dark);
-+	mst->flags	  |= cpu_to_le32(UBIFS_MST_NO_ORPHS);
-+
-+	lnum = UBIFS_MST_LNUM;
-+	err = ubifs_leb_unmap(c, lnum);
-+	if (err)
-+		goto out;
-+	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, lnum, 0,
-+				    offsetof(struct ubifs_mst_node, hmac));
-+	if (err)
-+		goto out;
-+	lnum++;
-+	err = ubifs_leb_unmap(c, lnum);
-+	if (err)
-+		goto out;
-+	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, lnum, 0,
-+				    offsetof(struct ubifs_mst_node, hmac));
-+	if (err)
-+		goto out;
-+
-+out:
-+	kfree(mst);
-+
-+	return err;
-+}
-+
-+/**
-  * ubifs_rebuild_filesystem - Rebuild filesystem.
-  * @c: UBIFS file-system description object
-  *
-@@ -1429,6 +1499,14 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 		goto out;
- 	}
- 	err = ubifs_clear_orphans(c);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto out;
-+	}
-+
-+	/* Step 12. Write master node. */
-+	log_out(c, "Write master");
-+	err = write_master(c);
- 	if (err)
- 		exit_code |= FSCK_ERROR;
- 
--- 
-2.13.6
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xMS8xMSAxNjo1NywgWmhpaGFvIENoZW5nINC0tcA6CgpTb3JyeSBmb3IgdGhlIG5v
+aXN5LCBwbGVhc2UgaWdub3JlIHRoaXMgc2VyaWVzLgo+IEFkYXB0IG1hc3Rlci5jIGluIGxpYnVi
+aWZzLCBjb21wYXJlZCB3aXRoIGxpbnV4IGtlcm5lbCBpbXBsZW1lbnRhdGlvbnM6Cj4gICAxLiBS
+ZW1vdmUgYXV0aGVudGljYXRpb24gcmVsYXRlZCBpbXBsZW1lbnRhdGlvbnMKPiAgICAgIChlZy4g
+bXN0X25vZGVfY2hlY2tfaGFzaCksIGF1dGhlbnRpY2F0aW9uIGlzIG5vdCBzdXBwb3J0ZWQgaW4g
+ZnNjawo+ICAgICAgZm9yIG5vdy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBaaGloYW8gQ2hlbmcgPGNo
+ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IC0tLQo+ICAgdWJpZnMtdXRpbHMvbGlidWJpZnMvbWFz
+dGVyLmMgfCAyMyArKysrKysrKystLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDkg
+aW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3ViaWZzLXV0
+aWxzL2xpYnViaWZzL21hc3Rlci5jIGIvdWJpZnMtdXRpbHMvbGlidWJpZnMvbWFzdGVyLmMKPiBp
+bmRleCA3YWRjMzdjMS4uY2NlMWE0MTUgMTAwNjQ0Cj4gLS0tIGEvdWJpZnMtdXRpbHMvbGlidWJp
+ZnMvbWFzdGVyLmMKPiArKysgYi91Ymlmcy11dGlscy9saWJ1Ymlmcy9tYXN0ZXIuYwo+IEBAIC0x
+MCw3ICsxMCwxMSBAQAo+ICAgCj4gICAvKiBUaGlzIGZpbGUgaW1wbGVtZW50cyByZWFkaW5nIGFu
+ZCB3cml0aW5nIHRoZSBtYXN0ZXIgbm9kZSAqLwo+ICAgCj4gKyNpbmNsdWRlICJsaW51eF9lcnIu
+aCIKPiArI2luY2x1ZGUgImttZW0uaCIKPiAgICNpbmNsdWRlICJ1Ymlmcy5oIgo+ICsjaW5jbHVk
+ZSAiZGVmcy5oIgo+ICsjaW5jbHVkZSAiZGVidWcuaCIKPiAgIAo+ICAgLyoqCj4gICAgKiB1Ymlm
+c19jb21wYXJlX21hc3Rlcl9ub2RlIC0gY29tcGFyZSB0d28gVUJJRlMgbWFzdGVyIG5vZGVzCj4g
+QEAgLTIxLDcgKzI1LDcgQEAKPiAgICAqIFRoaXMgZnVuY3Rpb24gY29tcGFyZXMgdHdvIFVCSUZT
+IG1hc3RlciBub2Rlcy4gUmV0dXJucyAwIGlmIHRoZXkgYXJlIGVxdWFsCj4gICAgKiBhbmQgbm9u
+emVybyBpZiBub3QuCj4gICAgKi8KPiAtaW50IHViaWZzX2NvbXBhcmVfbWFzdGVyX25vZGUoc3Ry
+dWN0IHViaWZzX2luZm8gKmMsIHZvaWQgKm0xLCB2b2lkICptMikKPiAraW50IHViaWZzX2NvbXBh
+cmVfbWFzdGVyX25vZGUoX191bnVzZWQgc3RydWN0IHViaWZzX2luZm8gKmMsIHZvaWQgKm0xLCB2
+b2lkICptMikKPiAgIHsKPiAgIAlpbnQgcmV0Owo+ICAgCWludCBiZWhpbmQ7Cj4gQEAgLTYxLDIw
+ICs2NSwxMSBAQCBpbnQgdWJpZnNfY29tcGFyZV9tYXN0ZXJfbm9kZShzdHJ1Y3QgdWJpZnNfaW5m
+byAqYywgdm9pZCAqbTEsIHZvaWQgKm0yKQo+ICAgICoKPiAgICAqIFJldHVybnMgMCBpZiB0aGUg
+aGFzaGVzIGFyZSBlcXVhbCwgYSBuZWdhdGl2ZSBlcnJvciBjb2RlIG90aGVyd2lzZS4KPiAgICAq
+Lwo+IC1zdGF0aWMgaW50IG1zdF9ub2RlX2NoZWNrX2hhc2goY29uc3Qgc3RydWN0IHViaWZzX2lu
+Zm8gKmMsCj4gLQkJCSAgICAgICBjb25zdCBzdHJ1Y3QgdWJpZnNfbXN0X25vZGUgKm1zdCwKPiAt
+CQkJICAgICAgIGNvbnN0IHU4ICpleHBlY3RlZCkKPiArc3RhdGljIGludCBtc3Rfbm9kZV9jaGVj
+a19oYXNoKF9fdW51c2VkIGNvbnN0IHN0cnVjdCB1Ymlmc19pbmZvICpjLAo+ICsJCQkgICAgICAg
+X191bnVzZWQgY29uc3Qgc3RydWN0IHViaWZzX21zdF9ub2RlICptc3QsCj4gKwkJCSAgICAgICBf
+X3VudXNlZCBjb25zdCB1OCAqZXhwZWN0ZWQpCj4gICB7Cj4gLQl1OCBjYWxjW1VCSUZTX01BWF9I
+QVNIX0xFTl07Cj4gLQljb25zdCB2b2lkICpub2RlID0gbXN0Owo+IC0KPiAtCWNyeXB0b19zaGFz
+aF90Zm1fZGlnZXN0KGMtPmhhc2hfdGZtLCBub2RlICsgc2l6ZW9mKHN0cnVjdCB1Ymlmc19jaCks
+Cj4gLQkJCQlVQklGU19NU1RfTk9ERV9TWiAtIHNpemVvZihzdHJ1Y3QgdWJpZnNfY2gpLAo+IC0J
+CQkJY2FsYyk7Cj4gLQo+IC0JaWYgKHViaWZzX2NoZWNrX2hhc2goYywgZXhwZWN0ZWQsIGNhbGMp
+KQo+IC0JCXJldHVybiAtRVBFUk07Cj4gLQo+ICsJLy8gVG8gYmUgaW1wbGVtZW50ZWQKPiAgIAly
+ZXR1cm4gMDsKPiAgIH0KPiAgIAo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
