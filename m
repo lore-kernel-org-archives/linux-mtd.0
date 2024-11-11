@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AF1BD2E9C5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AAE6D2E9C6
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,38 +12,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Eaz3HaJwa+tOzhI6CzlsM3o/wUMZF7BWamrcFyEf96Y=; b=XFtI/6wcwewdRT
-	IbEfjUUBBwRZkTucjyxsAlekyLor7skGsGUF6u1TUZoT2/ocZuls0qVy7aV0NOpHBTefQjM3CpzCw
-	1nTPUMgSzgsS6XM1oSWD2b7UTiKKBcoDDHxbwCSa1IUfKnh1sOvqOuqzfKl6wdNCUB50/IGYL3Z1z
-	BGptx5drZ3A8zYRU2/nYG+aJRaaKVA449FTnFmKmosPUtE3YsbLOUcVggU4ZOxTdH6zZhaNuQVBDL
-	CIsD6g6BMo2sIPrbaoLpTaZmJesZdh/9w2CYkbva1IKcK2WwDuSRaGulc9meEuTWklu38noTvyiec
-	FbiiuT6sxJOINro9b3Xg==;
+	List-Owner; bh=UcKycJA9+6wpimdd63OVU7pCL50FKlOoeoG8lexVDE8=; b=k+k7hJtGrXRube
+	jtGLDFw3xuDr1IgeVN9Zj8d4w7PXcCPjBjP6btV5k2mdwsRL0fvG8k/Ih5cwZUcBqsFD0gMn/rkgY
+	OQOi/d6f3WTvURRJ+nSgDxdgQcZBb9H6czHVpN/SCxwa7NHZ7Snx8KMj6bUi1fuF356xnsnh6KF4N
+	Vk6jWSf3HujQmBGXNcrnUJ7SRT17BLnOI/MsiSUBipVAHLhlZlI6yDZat5fsM5K3cUVEW51YmRRaf
+	z7ixA/n19npqaBWmE51QPsS8c3aPtnlvvJKxFvAHI5YGK/pVJNY8Jf5MJ2FiCEbgM+IwMzlNEK0ae
+	vY8KKvhbOs4u9BeCnsZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQ6Z-0000000GrnG-3oJA;
+	id 1tAQ6Z-0000000Grmt-1I0l;
 	Mon, 11 Nov 2024 08:49:03 +0000
 Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPwM-0000000Gpdj-1jtu
+	id 1tAPwL-0000000GpdY-22kw
 	for linux-mtd@lists.infradead.org;
 	Mon, 11 Nov 2024 08:38:35 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn2vs4Sy4z1jy0r;
-	Mon, 11 Nov 2024 16:36:41 +0800 (CST)
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn2vp49TCz1jy1N;
+	Mon, 11 Nov 2024 16:36:38 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id BFBB4180043;
-	Mon, 11 Nov 2024 16:38:28 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id B3CB8180043;
+	Mon, 11 Nov 2024 16:38:25 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:38:28 +0800
+ 2024 16:38:25 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 012/102] ubifs-utils: Add linux kernel error conversion definitions
-Date: Mon, 11 Nov 2024 16:36:43 +0800
-Message-ID: <20241111083711.1916125-13-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 007/102] ubifs-utils: Add 'dev_fd' and 'libubi' into 'ubifs_info' structure
+Date: Mon, 11 Nov 2024 16:36:38 +0800
+Message-ID: <20241111083711.1916125-8-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_003830_690121_61C5407C 
-X-CRM114-Status: GOOD (  17.85  )
+X-CRM114-CacheID: sfid-20241111_003830_119709_D6002851 
+X-CRM114-Status: GOOD (  25.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,100 +70,392 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add linux kernel error conversion definitions, because there are
-many error type conversions(eg. PTR_ERR, ERR_PTR) used in UBIFS
-linux kernel libs.
-
-This is a preparation for replacing implementation of UBIFS utils with
-linux kernel libs.
+Embed new members 'dev_fd' and 'libubi' into ubifs_info structure, so
+that global variable 'ubi', 'out_fd' and 'out_ubi' could be removed
+from mkfs.ubifs.c. Besides, add parameter in check_volume_empty().
+Next patch will extract UBI opening/closing/check_volume_empty functions
+into a new source file, these functions will be used in fsck.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am      |  1 +
- ubifs-utils/common/linux_err.h | 62 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
- create mode 100644 ubifs-utils/common/linux_err.h
+ ubifs-utils/common/lpt.c            |  10 ++--
+ ubifs-utils/common/ubifs.h          |  13 ++++-
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 112 +++++++++++++++++++-----------------
+ 3 files changed, 75 insertions(+), 60 deletions(-)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 0f9c0fa6..69192ffd 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -1,6 +1,7 @@
- common_SOURCES = \
- 	ubifs-utils/common/compiler_attributes.h \
- 	ubifs-utils/common/linux_types.h \
-+	ubifs-utils/common/linux_err.h \
- 	ubifs-utils/common/defs.h \
- 	ubifs-utils/common/crc16.h \
- 	ubifs-utils/common/crc16.c \
-diff --git a/ubifs-utils/common/linux_err.h b/ubifs-utils/common/linux_err.h
-new file mode 100644
-index 00000000..5c6ddc3f
---- /dev/null
-+++ b/ubifs-utils/common/linux_err.h
-@@ -0,0 +1,62 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_ERR_H
-+#define _LINUX_ERR_H
+diff --git a/ubifs-utils/common/lpt.c b/ubifs-utils/common/lpt.c
+index 9c1143f6..d07f569f 100644
+--- a/ubifs-utils/common/lpt.c
++++ b/ubifs-utils/common/lpt.c
+@@ -421,7 +421,7 @@ int create_lpt(struct ubifs_info *c)
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+-			err = write_leb(lnum++, alen, buf);
++			err = write_leb(c, lnum++, alen, buf);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -468,7 +468,7 @@ int create_lpt(struct ubifs_info *c)
+ 				set_ltab(c, lnum, c->leb_size - alen,
+ 					    alen - len);
+ 				memset(p, 0xff, alen - len);
+-				err = write_leb(lnum++, alen, buf);
++				err = write_leb(c, lnum++, alen, buf);
+ 				if (err)
+ 					goto out;
+ 				p = buf;
+@@ -515,7 +515,7 @@ int create_lpt(struct ubifs_info *c)
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+-			err = write_leb(lnum++, alen, buf);
++			err = write_leb(c, lnum++, alen, buf);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -538,7 +538,7 @@ int create_lpt(struct ubifs_info *c)
+ 		alen = ALIGN(len, c->min_io_size);
+ 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 		memset(p, 0xff, alen - len);
+-		err = write_leb(lnum++, alen, buf);
++		err = write_leb(c, lnum++, alen, buf);
+ 		if (err)
+ 			goto out;
+ 		p = buf;
+@@ -558,7 +558,7 @@ int create_lpt(struct ubifs_info *c)
+ 
+ 	/* Write remaining buffer */
+ 	memset(p, 0xff, alen - len);
+-	err = write_leb(lnum, alen, buf);
++	err = write_leb(c, lnum, alen, buf);
+ 	if (err)
+ 		goto out;
+ 
+diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
+index 502a39ae..5a909f63 100644
+--- a/ubifs-utils/common/ubifs.h
++++ b/ubifs-utils/common/ubifs.h
+@@ -278,6 +278,8 @@ struct ubifs_znode
+  * @program_type: used to identify the type of current program
+  * @program_name: program name
+  * @dev_name: device name
++ * @dev_fd: opening handler for an UBI volume or an image file
++ * @libubi: opening handler for libubi
+  *
+  * @jhead_cnt: count of journal heads
+  * @max_bud_bytes: maximum number of bytes allowed in buds
+@@ -370,6 +372,8 @@ struct ubifs_info
+ 	int program_type;
+ 	const char *program_name;
+ 	char *dev_name;
++	int dev_fd;
++	libubi_t libubi;
+ 
+ 	int jhead_cnt;
+ 	long long max_bud_bytes;
+@@ -482,6 +486,13 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
+ 				       (UBIFS_BRANCH_SZ + c->key_len + c->hash_len) * bnum);
+ }
+ 
+-int write_leb(int lnum, int len, void *buf);
++int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
 +
-+/* Adapted from include/linux/err.h */
++/* super.c */
++int open_ubi(struct ubifs_info *c, const char *node);
++void close_ubi(struct ubifs_info *c);
++int open_target(struct ubifs_info *c);
++int close_target(struct ubifs_info *c);
++int check_volume_empty(struct ubifs_info *c);
+ 
+ #endif /* __UBIFS_H__ */
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 1cafbf3e..8bff44b2 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -136,7 +136,6 @@ struct inum_mapping {
+  */
+ struct ubifs_info info_;
+ static struct ubifs_info *c = &info_;
+-static libubi_t ubi;
+ 
+ int verbose;
+ int yes;
+@@ -145,8 +144,6 @@ static char *root;
+ static int root_len;
+ static struct fscrypt_context *root_fctx;
+ static struct stat root_st;
+-static int out_fd;
+-static int out_ubi;
+ static int squash_owner;
+ static int do_create_inum_attr;
+ static char *context;
+@@ -521,40 +518,42 @@ static long long get_bytes(const char *str)
+ 	return bytes;
+ }
+ 
+-static void close_ubi(void)
++void close_ubi(struct ubifs_info *c)
+ {
+-	if (ubi) {
+-		libubi_close(ubi);
+-		ubi = NULL;
++	if (c->libubi) {
++		libubi_close(c->libubi);
++		c->libubi = NULL;
+ 	}
+ }
+ 
+ /**
+  * open_ubi - open the libubi.
++ * @c: the UBIFS file-system description object
+  * @node: name of the UBI volume character device to fetch information about
+  *
+  * This function opens libubi, and initialize device & volume information
+  * according to @node. Returns %0 in case of success and %-1 in case of failure.
+  */
+-static int open_ubi(const char *node)
++int open_ubi(struct ubifs_info *c, const char *node)
+ {
+ 	struct stat st;
+ 
+ 	if (stat(node, &st) || !S_ISCHR(st.st_mode))
+ 		return -1;
+ 
+-	ubi = libubi_open();
+-	if (!ubi)
+-		return -1;
+-	if (ubi_get_vol_info(ubi, node, &c->vi)) {
+-		close_ubi();
++	c->libubi = libubi_open();
++	if (!c->libubi)
+ 		return -1;
+-	}
+-	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di)) {
+-		close_ubi();
+-		return -1;
+-	}
++	if (ubi_get_vol_info(c->libubi, node, &c->vi))
++		goto out_err;
++	if (ubi_get_dev_info1(c->libubi, c->vi.dev_num, &c->di))
++		goto out_err;
 +
-+#include <stdbool.h>
+ 	return 0;
 +
-+/*
-+ * Kernel pointers have redundant information, so we can use a
-+ * scheme where we can return either an error code or a normal
-+ * pointer with the same return value.
-+ *
-+ * This should be a per-architecture thing, to allow different
-+ * error and pointer decisions.
-+ */
-+#define MAX_ERRNO	4095
++out_err:
++	close_ubi(c);
++	return -1;
+ }
+ 
+ static void select_default_compr(void)
+@@ -840,9 +839,9 @@ static int get_options(int argc, char**argv)
+ 	if (!c->dev_name)
+ 		return errmsg("not output device or file specified");
+ 
+-	out_ubi = !open_ubi(c->dev_name);
++	open_ubi(c, c->dev_name);
+ 
+-	if (out_ubi) {
++	if (c->libubi) {
+ 		c->min_io_size = c->di.min_io_size;
+ 		c->leb_size = c->vi.leb_size;
+ 		if (c->max_leb_cnt == -1)
+@@ -972,24 +971,25 @@ static void prepare_node(void *node, int len)
+ 
+ /**
+  * write_leb - copy the image of a LEB to the output target.
++ * @c: the UBIFS file-system description object
+  * @lnum: LEB number
+  * @len: length of data in the buffer
+  * @buf: buffer (must be at least c->leb_size bytes)
+  */
+-int write_leb(int lnum, int len, void *buf)
++int write_leb(struct ubifs_info *c, int lnum, int len, void *buf)
+ {
+ 	off_t pos = (off_t)lnum * c->leb_size;
+ 
+ 	dbg_msg(3, "LEB %d len %d", lnum, len);
+ 	memset(buf + len, 0xff, c->leb_size - len);
+-	if (out_ubi)
+-		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
++	if (c->libubi)
++		if (ubi_leb_change_start(c->libubi, c->dev_fd, lnum, c->leb_size))
+ 			return sys_errmsg("ubi_leb_change_start failed");
+ 
+-	if (lseek(out_fd, pos, SEEK_SET) != pos)
++	if (lseek(c->dev_fd, pos, SEEK_SET) != pos)
+ 		return sys_errmsg("lseek failed seeking %lld", (long long)pos);
+ 
+-	if (write(out_fd, buf, c->leb_size) != c->leb_size)
++	if (write(c->dev_fd, buf, c->leb_size) != c->leb_size)
+ 		return sys_errmsg("write failed writing %d bytes at pos %lld",
+ 				   c->leb_size, (long long)pos);
+ 
+@@ -1002,7 +1002,7 @@ int write_leb(int lnum, int len, void *buf)
+  */
+ static int write_empty_leb(int lnum)
+ {
+-	return write_leb(lnum, 0, leb_buf);
++	return write_leb(c, lnum, 0, leb_buf);
+ }
+ 
+ /**
+@@ -1058,7 +1058,7 @@ static int write_node(void *node, int len, int lnum)
+ 
+ 	len = do_pad(leb_buf, len);
+ 
+-	return write_leb(lnum, len, leb_buf);
++	return write_leb(c, lnum, len, leb_buf);
+ }
+ 
+ /**
+@@ -1172,7 +1172,7 @@ static int flush_nodes(void)
+ 	if (!head_offs)
+ 		return 0;
+ 	len = do_pad(leb_buf, head_offs);
+-	err = write_leb(head_lnum, len, leb_buf);
++	err = write_leb(c, head_lnum, len, leb_buf);
+ 	if (err)
+ 		return err;
+ 	set_lprops(head_lnum, head_offs, head_flags);
+@@ -2686,7 +2686,7 @@ static int write_super(void)
+ 
+ 	len = do_pad(sig, UBIFS_SIG_NODE_SZ + le32_to_cpu(sig->len));
+ 
+-	err = write_leb(UBIFS_SB_LNUM, UBIFS_SB_NODE_SZ + len, sup);
++	err = write_leb(c, UBIFS_SB_LNUM, UBIFS_SB_NODE_SZ + len, sup);
+ 	if (err)
+ 		goto out;
+ 
+@@ -2822,6 +2822,7 @@ static int write_orphan_area(void)
+ 
+ /**
+  * check_volume_empty - check if the UBI volume is empty.
++ * @c: the UBIFS file-system description object
+  *
+  * This function checks if the UBI volume is empty by looking if its LEBs are
+  * mapped or not.
+@@ -2829,12 +2830,12 @@ static int write_orphan_area(void)
+  * Returns %0 in case of success, %1 is the volume is not empty,
+  * and a negative error code in case of failure.
+  */
+-static int check_volume_empty(void)
++int check_volume_empty(struct ubifs_info *c)
+ {
+ 	int lnum, err;
+ 
+ 	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
+-		err = ubi_is_mapped(out_fd, lnum);
++		err = ubi_is_mapped(c->dev_fd, lnum);
+ 		if (err < 0)
+ 			return err;
+ 		if (err == 1)
+@@ -2845,35 +2846,29 @@ static int check_volume_empty(void)
+ 
+ /**
+  * open_target - open the output target.
++ * @c: the UBIFS file-system description object
+  *
+  * Open the output target. The target can be an UBI volume
+  * or a file.
+  *
+  * Returns %0 in case of success and %-1 in case of failure.
+  */
+-static int open_target(void)
++int open_target(struct ubifs_info *c)
+ {
+-	if (out_ubi) {
+-		out_fd = open(c->dev_name, O_RDWR | O_EXCL);
++	if (c->libubi) {
++		c->dev_fd = open(c->dev_name, O_RDWR | O_EXCL);
+ 
+-		if (out_fd == -1)
++		if (c->dev_fd == -1)
+ 			return sys_errmsg("cannot open the UBI volume '%s'",
+ 					   c->dev_name);
+-		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
+-			close(out_fd);
++		if (ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
++			close(c->dev_fd);
+ 			return sys_errmsg("ubi_set_property(set direct_write) failed");
+ 		}
+-
+-		if (!yes && check_volume_empty()) {
+-			if (!prompt("UBI volume is not empty.  Format anyways?", false)) {
+-				close(out_fd);
+-				return errmsg("UBI volume is not empty");
+-			}
+-		}
+ 	} else {
+-		out_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
++		c->dev_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
+ 			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-		if (out_fd == -1)
++		if (c->dev_fd == -1)
+ 			return sys_errmsg("cannot create output file '%s'",
+ 					   c->dev_name);
+ 	}
+@@ -2883,18 +2878,19 @@ static int open_target(void)
+ 
+ /**
+  * close_target - close the output target.
++ * @c: the UBIFS file-system description object
+  *
+  * Close the output target. If the target was an UBI
+  * volume, also close libubi.
+  *
+  * Returns %0 in case of success and %-1 in case of failure.
+  */
+-static int close_target(void)
++int close_target(struct ubifs_info *c)
+ {
+-	if (out_fd >= 0) {
+-		if (ubi && ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
++	if (c->dev_fd >= 0) {
++		if (c->libubi && ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
+ 			return sys_errmsg("ubi_set_property(clear direct_write) failed");
+-		if (close(out_fd) == -1)
++		if (close(c->dev_fd) == -1)
+ 			return sys_errmsg("cannot close the target '%s'", c->dev_name);
+ 	}
+ 	return 0;
+@@ -3077,24 +3073,32 @@ int main(int argc, char *argv[])
+ 	if (err)
+ 		goto out;
+ 
+-	err = open_target();
++	err = open_target(c);
+ 	if (err)
+ 		goto out;
+ 
++	if (!yes && check_volume_empty(c)) {
++		if (!prompt("UBI volume is not empty.  Format anyways?", false)) {
++			close_target(c);
++			err = errmsg("UBI volume is not empty");
++			goto out;
++		}
++	}
 +
-+#define IS_ERR_VALUE(x) ((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
-+
-+static inline void * ERR_PTR(long error)
-+{
-+	return (void *) error;
-+}
-+
-+static inline long PTR_ERR(const void *ptr)
-+{
-+	return (long) ptr;
-+}
-+
-+static inline bool IS_ERR(const void *ptr)
-+{
-+	return IS_ERR_VALUE((unsigned long)ptr);
-+}
-+
-+static inline bool IS_ERR_OR_NULL(const void *ptr)
-+{
-+	return !ptr || IS_ERR_VALUE((unsigned long)ptr);
-+}
-+
-+/**
-+ * ERR_CAST - Explicitly cast an error-valued pointer to another pointer type
-+ * @ptr: The pointer to cast.
-+ *
-+ * Explicitly cast an error-valued pointer to another pointer type in such a
-+ * way as to make it clear that's what's going on.
-+ */
-+static inline void * ERR_CAST(const void *ptr)
-+{
-+	/* cast away the const */
-+	return (void *) ptr;
-+}
-+
-+static inline int PTR_ERR_OR_ZERO(const void *ptr)
-+{
-+	if (IS_ERR(ptr))
-+		return PTR_ERR(ptr);
-+	else
-+		return 0;
-+}
-+
-+#endif /* _LINUX_ERR_H */
+ 	err = mkfs();
+ 	if (err) {
+-		close_target();
++		close_target(c);
+ 		goto out;
+ 	}
+ 
+-	err = close_target();
++	err = close_target(c);
+ 
+ 	if (verbose && !err)
+ 		printf("Success!\n");
+ 
+ out:
+ 	free(c->dev_name);
+-	close_ubi();
++	close_ubi(c);
+ 	crypto_cleanup();
+ 	return err;
+ }
 -- 
 2.13.6
 
