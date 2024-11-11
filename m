@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B706D12D7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B349D12D7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AHIUWtEK3DtLO2VhkV8W7pEbC27IlGA4+DneaHoP/A0=; b=F9ok7Rtroh2CP+
-	MgG707Tk3OAAj5Fr111wRws0T8RGbOehbKY17lyW3wxEsxfn/KiCzKDKNnbY9kOfl6ORsmeZrwWM9
-	I6M5CBv5axZR71lEVg6eGs5T5hswr39ZSaw/IK/GiYwPqYYUpe2JnuVifjGTYU8IF22P4p4qtQzwQ
-	KX8QzwMUGceqzUHuL0aKy9vVaJfwhxg8QnKeg00CLo2ZMQGCoPOE0ln69i6tyCM/J/vKAkR/I1e/H
-	cdVUiPAzinfgtlDzFA28j5eUwS5HSYFNCb4JL8AHJP1SlKWsUu7GpizGQAkGRf4utJe0UoPpc7FXu
-	sFFhmM4oqq3R2toRAoIw==;
+	List-Owner; bh=6e3FSJuiUsXVBG/i/0UMvYdAf6m/L/Di5k0DD9ic0LE=; b=zpBxcLR0vlwiNd
+	qQv91NNiU2Xsfcdvpdv82ytPKE7r3T7WUnEB0QoPQXzYkuSZTNa5yZl4M4h5eMT/7lrVcyGAHl9l8
+	+/hA6DN62GTTEGAOuBdRVHqf6ExBdoa/VseRmTvTC1WCS0gP4rK4ts8y73eY3r5t6CfD2+sbY2yo8
+	Uj4eT2k62CFUGYn74XxhV6Mzd8mZdy/quK6EgBdIBcoeyjRXAmf1j4040+sGOlTyqQRswVW15s5O+
+	rqHeuIHToo2SAscMtYo+mRubgkDDDoLr267576ggM7c/B5apFZF0x0411z20OPlJ6WFF1R8P8pl14
+	WHrGta1vGF7cAk+glWzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOYJ-0000000GcRk-03fc;
-	Mon, 11 Nov 2024 07:09:35 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tAOYM-0000000GcUB-2AsD;
+	Mon, 11 Nov 2024 07:09:38 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVP-0000000Ga8x-3pYp
+	id 1tAOVS-0000000GaAW-1Ry1
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:36 +0000
+	Mon, 11 Nov 2024 07:06:38 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=6lr8hNLMRybyB5YT93rjAkdWAd+Eqicnj0E/UhBjekA=; b=YH5/dIxy3lsfwa7633/zK8dtJZ
-	nEzwaTx4354A/PmnmEPFNSosBIyOadPm3F+CWv1ixWqiIho2syetbDgyiT22OK9SdlzI/xYsjh7d4
-	Cz4sz5CDIiwRU6O3zAqhiE8ON2RDVJ9zTBcKZEIQiFpPfMSrGVFWZSUF/tooWPpCR00F9cHzxyYnh
-	/SSmAuoY3rg3AAaiOKrpTFnVZ/dGp3HJjIEK6/GdrGB+l56BJMuAmW1EouExwPMduwxDHx48m9Dcv
-	m6gm52mm6ruqS76XIaARs5Z3us7beqJw/fOoV0DoHjBS1eXoD3KxeUkM6eW9T+tdXrAt4V/huCslV
-	cg3bAafA==;
-Received: from szxga04-in.huawei.com ([45.249.212.190])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV8-0000000CmQK-2itI
+	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=s7eIVP75FrYtxtMjaUMD+6yybI09+fjcFEAfhxC/8Pg=; b=UbmrUc0TTEG/GGgsU8UsknU3oq
+	Mh+Zq25r4xV3yEsPpkqntL2X6BXHEkBg6Tu1Iz2zlK6Lfr4jUnh+aARXp/OXSM7MFJh4h0hHOO6DL
+	B2GPz3gBc4mg0GFNrC9xawa3TQqDKQ8NaxHslz4Lblh8e5M1fb6o1KrrnKdvI5VOFh3GB5PX/8E6N
+	EVTQYJtElI6nWeLUMF0x0Gcfam7lKqyim0D6QgsVx+Y2Puj8lqZTwaGlFuvQN7urn71oaXy8hJsKD
+	RO50XJySEcR2odHYMD1HZiCIiP8Ij3kO/8ZX3HpIc9HPjs0jLPpmg0RFq/WfPA/UdvGDscWzh6gfi
+	Y9BpTl8A==;
+Received: from szxga06-in.huawei.com ([45.249.212.32])
+	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOVO-0000000CR9B-0jYE
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:26 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn0sY0270z20t5l;
-	Mon, 11 Nov 2024 15:04:33 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:37 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn0vB5KGRz1ypVD;
+	Mon, 11 Nov 2024 15:05:58 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2C0111401F4;
-	Mon, 11 Nov 2024 15:05:45 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 9F0091A0188;
+	Mon, 11 Nov 2024 15:05:47 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:44 +0800
+ 2024 15:05:46 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 087/102] fsck.ubifs: Handle disconnected files
-Date: Mon, 11 Nov 2024 15:03:30 +0800
-Message-ID: <20241111070346.1314122-88-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 092/102] tests: ubifs_tools: fsck_tests: Add cycle mount+fsck test
+Date: Mon, 11 Nov 2024 15:03:35 +0800
+Message-ID: <20241111070346.1314122-93-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070621_330556_572B0CB7 
-X-CRM114-Status: GOOD (  20.61  )
+X-CRM114-CacheID: sfid-20241111_070635_159111_48283A32 
+X-CRM114-Status: GOOD (  13.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,222 +85,215 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 17/18 step of fsck. Recover disconnected files into
-lost+found. If there is no free space left to recover the disconnected
-files, fsck may delete the files to make filesystem be consistent.
+Do fsstress and fsck, check whether there are any files(and their data)
+are lost after fsck. This testcase mainly checks whether fsck.ubifs could
+corrupt the filesystem content in common case.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/fsck.ubifs.c          |   8 ++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h          |   3 +-
- ubifs-utils/fsck.ubifs/handle_disconnected.c | 108 +++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/problem.c             |  10 +++
- 4 files changed, 128 insertions(+), 1 deletion(-)
+ .gitignore                                         |   1 +
+ configure.ac                                       |   3 +-
+ tests/ubifs_tools-tests/Makemodule.am              |   3 +-
+ .../fsck_tests/cycle_mount_fsck_check.sh.in        | 154 +++++++++++++++++++++
+ 4 files changed, 159 insertions(+), 2 deletions(-)
+ create mode 100755 tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in
 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 550d3f98..423a753f 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -541,6 +541,13 @@ static int do_fsck(void)
- 		goto free_disconnected_files_2;
- 	}
+diff --git a/.gitignore b/.gitignore
+index 799290a4..7de38e86 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -115,6 +115,7 @@ tests/ubi-tests/runubitests.sh
+ tests/ubi-tests/ubi-stress-test.sh
+ tests/ubifs_tools-tests/lib/common.sh
+ tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
++tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
  
-+	log_out(c, "Handle disconnected files");
-+	err = handle_disonnected_files(c);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto free_disconnected_files_2;
-+	}
+ #
+ # Files generated by autotools
+diff --git a/configure.ac b/configure.ac
+index 45f51abb..bcd9b63a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -294,7 +294,8 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+ 	tests/ubi-tests/runubitests.sh
+ 	tests/ubi-tests/ubi-stress-test.sh
+ 	tests/ubifs_tools-tests/lib/common.sh
+-	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh])
++	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
++	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh])
+ 
+ AC_OUTPUT([Makefile])
+ 
+diff --git a/tests/ubifs_tools-tests/Makemodule.am b/tests/ubifs_tools-tests/Makemodule.am
+index 6b533982..68c77a62 100644
+--- a/tests/ubifs_tools-tests/Makemodule.am
++++ b/tests/ubifs_tools-tests/Makemodule.am
+@@ -1,3 +1,4 @@
+ test_SCRIPTS += \
+ 	tests/ubifs_tools-tests/lib/common.sh \
+-	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
++	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh \
++	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
+diff --git a/tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in b/tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in
+new file mode 100755
+index 00000000..c9972e27
+--- /dev/null
++++ b/tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in
+@@ -0,0 +1,154 @@
++#!/bin/sh
++# Copyright (c), 2024, Huawei Technologies Co, Ltd.
++# Author: Zhihao Cheng <chengzhihao1@huawei.com>
++#
++# Test Description:
++# Do many cycles of mount/fsstress/umount/fsck/mount, check whether the
++# filesystem content before fsck and after fsck are consistent.
++# Running time: 10h
 +
- free_disconnected_files_2:
- 	destroy_file_list(c, &FSCK(c)->disconnected_files);
- 	return err;
-@@ -596,6 +603,7 @@ int main(int argc, char *argv[])
- 	 * Step 14: Check and correct the index size
- 	 * Step 15: Check and create root dir
- 	 * Step 16: Check and create lost+found
-+	 * Step 17: Handle disconnected files
- 	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index 0e2a0811..65299326 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -46,7 +46,7 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
-        FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE, FILE_IS_INCONSISTENT,
-        EMPTY_TNC, LPT_CORRUPTED, NNODE_INCORRECT, PNODE_INCORRECT,
-        LP_INCORRECT, SPACE_STAT_INCORRECT, LTAB_INCORRECT, INCORRECT_IDX_SZ,
--       ROOT_DIR_NOT_FOUND };
-+       ROOT_DIR_NOT_FOUND, DISCONNECTED_FILE_CANNOT_BE_RECOVERED };
- 
- enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
- 
-@@ -387,5 +387,6 @@ int check_and_correct_index_size(struct ubifs_info *c);
- 
- /* handle_disconnected.c */
- int check_and_create_lost_found(struct ubifs_info *c);
-+int handle_disonnected_files(struct ubifs_info *c);
- 
- #endif
-diff --git a/ubifs-utils/fsck.ubifs/handle_disconnected.c b/ubifs-utils/fsck.ubifs/handle_disconnected.c
-index b9a380f9..be62522a 100644
---- a/ubifs-utils/fsck.ubifs/handle_disconnected.c
-+++ b/ubifs-utils/fsck.ubifs/handle_disconnected.c
-@@ -19,6 +19,7 @@
- #include "fsck.ubifs.h"
- 
- #define LOST_FOUND_DIR_NAME "lost+found"
-+#define MAX_REPEAT_NAME_RETRY_TIMES 10000000
- 
- /**
-  * check_and_create_lost_found - Check and create the lost+found directory.
-@@ -87,3 +88,110 @@ free_root:
- 	kfree(root_ui);
- 	return err;
- }
++TESTBINDIR=@TESTBINDIR@
++source $TESTBINDIR/common.sh
 +
-+static int handle_disonnected_file(struct ubifs_info *c,
-+				   struct scanned_file *file)
++ID="0xec,0xa1,0x00,0x15" # 128M 128KB 2KB 512-sub-page
++
++function run_test()
 +{
-+	int err = 0;
++	encryption=$1
++	modprobe nandsim id_bytes=$ID
++	mtdnum="$(find_mtd_device "$nandsim_patt")"
++	flash_eraseall /dev/mtd$mtdnum
 +
-+	if (FSCK(c)->lost_and_found) {
-+		unsigned int index = 0;
-+		char file_name[UBIFS_MAX_NLEN + 1];
-+		struct fscrypt_name nm;
-+		struct ubifs_inode *ui = NULL, *lost_found_ui = NULL;
++	dmesg -c > /dev/null
 +
-+		lost_found_ui = ubifs_lookup_by_inum(c, FSCK(c)->lost_and_found);
-+		if (IS_ERR(lost_found_ui)) {
-+			err = PTR_ERR(lost_found_ui);
-+			ubifs_assert(c, err != -ENOENT);
-+			return err;
-+		}
-+		ui = ubifs_lookup_by_inum(c, file->inum);
-+		if (IS_ERR(ui)) {
-+			err = PTR_ERR(ui);
-+			ubifs_assert(c, err != -ENOENT);
-+			goto free_lost_found_ui;
-+		}
++	modprobe ubi mtd="$mtdnum,2048" || fatal "modprobe ubi fail"
++	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
++	modprobe ubifs || fatal "modprobe ubifs fail"
 +
-+		while (index < MAX_REPEAT_NAME_RETRY_TIMES) {
-+			struct ubifs_inode *target_ui;
++	echo "Do cycle mount+umount+fsck+check_fs_content test ($encryption)"
 +
-+			err = snprintf(file_name, sizeof(file_name),
-+				       "INO_%lu_%u", file->inum, index);
-+			if (err < 0)
-+				goto free_ui;
-+			fname_name(&nm) = file_name;
-+			fname_len(&nm) = strlen(file_name);
-+			target_ui = ubifs_lookup(c, lost_found_ui, &nm);
-+			if (IS_ERR(target_ui)) {
-+				err = PTR_ERR(target_ui);
-+				if (err == -ENOENT)
-+					break;
-+				goto free_ui;
-+			}
-+			kfree(target_ui);
-+			index++;
-+		}
++	if [[ "$encryption" == "encrypted" ]]; then
++		encryption_gen_key
++	fi
 +
-+		if (err != -ENOENT) {
-+			err = 0;
-+			kfree(ui);
-+			kfree(lost_found_ui);
-+			log_out(c, "Too many duplicated names(%u) in lost+found for inum %lu",
-+				index, file->inum);
-+			goto delete_file;
-+		}
++	round=0
++	while [[ $round -lt 20 ]]
++	do
++		echo "---------------------- ROUND $round ----------------------"
++		let round=$round+1
 +
-+		/* Try to recover disconnected file into lost+found. */
-+		err = ubifs_link_recovery(c, lost_found_ui, ui, &nm);
-+		if (err && err == -ENOSPC) {
-+			err = 0;
-+			log_out(c, "No free space to recover disconnected file");
-+			goto delete_file;
-+		}
-+		dbg_fsck("recover disconnected file %lu, in %s",
-+			 file->inum, c->dev_name);
++		mount_ubifs $DEV $MNT "noauthentication" "noatime" || fatal "mount ubifs fail"
++		if [[ "$encryption" == "encrypted" ]]; then
++			encryption_set_key $MNT
++		fi
 +
-+free_ui:
-+		kfree(ui);
-+free_lost_found_ui:
-+		kfree(lost_found_ui);
-+		return err;
-+	}
++		per=`df -Th | grep ubifs | awk '{print $6}'`;
++		if [[ ${per%?} -gt 95 ]]; then
++			# Used > 95%
++			echo "Clean files"
++			rm -rf $MNT/*
++			check_err_msg
++		fi
 +
-+	log_out(c, "No valid lost+found");
++		fsstress -d $MNT -l0 -p4 -n10000 &
 +
-+delete_file:
-+	if (fix_problem(c, DISCONNECTED_FILE_CANNOT_BE_RECOVERED, file))
-+		err = delete_file(c, file);
-+	return err;
++		sleep $((RANDOM % 30))
++
++		ps -e | grep -w fsstress > /dev/null 2>&1
++		while [ $? -eq 0 ]
++		do
++			killall -9 fsstress > /dev/null 2>&1
++			sleep 1
++			ps -e | grep -w fsstress > /dev/null 2>&1
++		done
++
++		per=`df -Th | grep ubifs | awk '{print $6}'`;
++		if [[ ${per%?} -gt 95 ]]; then
++			dmesg -c > /dev/null # The ENOSPC error messages may exist
++		else
++			check_err_msg # Make sure new operations are okay after fsck
++		fi
++		sync
++
++		# Record filesystem information
++		rm -f $TMP_FILE 2>/dev/null
++		read_dir $MNT "md5sum"
++
++		while true
++		do
++			res=`mount | grep "$MNT"`
++			if [[ "$res" == "" ]]
++			then
++				break;
++			fi
++			umount $MNT
++			sleep 0.1
++		done
++
++		fsck.ubifs -a $DEV 2>&1 > $LOG_FILE
++		res=$?
++		cat $LOG_FILE
++		if [[ $res != $FSCK_OK ]]
++		then
++			# The lpt nodes could be parsed incorrectly because the lpt disk
++			# layout is too simple. See details in
++			# https://lore.kernel.org/linux-mtd/97ca7fe4-4ad4-edd1-e97a-1d540aeabe2d@huawei.com/
++			log=`cat $LOG_FILE | grep "dbg_check_ltab_lnum: invalid empty space in LEB"`
++			if [[ "$log" == "" ]]; then
++				fatal "fsck fail $res"
++			fi
++			if [[ $res != $FSCK_NONDESTRUCT ]]; then
++				fatal "fsck fail $res"
++			fi
++		fi
++
++		enable_chkfs
++
++		mount_ubifs $DEV $MNT "noauthentication" "noatime"
++		res=$?
++		if [[ $res != 0 ]]
++		then
++			fatal "mount fail $res"
++		fi
++
++		if [[ "$encryption" == "encrypted" ]]; then
++			encryption_set_key $MNT
++		fi
++
++		du -sh $MNT > /dev/null  # Ensure that all files are accessible
++		ret=$?
++		if [[ $ret != 0 ]]; then
++			fatal "Cannot access all files"
++		fi
++		check_err_msg
++
++		# Check filesystem information
++		parse_dir "md5sum"
++		rm -f $TMP_FILE 2>/dev/null
++
++		umount $MNT
++		res=$?
++		if [[ $res != 0 ]]
++		then
++			fatal "unmount fail $res"
++		fi
++
++		check_err_msg
++
++		disable_chkfs
++	done
++
++	modprobe -r ubifs
++	modprobe -r ubi
++	modprobe -r nandsim
 +}
 +
-+/**
-+ * handle_disonnected_files - Handle disconnected files.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function tries to recover disonnected files into lost+found directory.
-+ * If there is no free space left to recover the disconnected files, fsck may
-+ * delete the files to make filesystem be consistent. Returns zero in case of
-+ * success, a negative error code in case of failure.
-+ */
-+int handle_disonnected_files(struct ubifs_info *c)
-+{
-+	int err, ret = 0;
-+	struct scanned_file *file;
-+
-+	while (!list_empty(&FSCK(c)->disconnected_files)) {
-+		file = list_entry(FSCK(c)->disconnected_files.next,
-+				  struct scanned_file, list);
-+
-+		list_del(&file->list);
-+		err = handle_disonnected_file(c, file);
-+		if (err)
-+			ret = ret ? ret : err;
-+		destroy_file_content(c, file);
-+		kfree(file);
-+	}
-+
-+	return ret;
-+}
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 8e7e1e15..916c9762 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -69,6 +69,7 @@ static const struct fsck_problem problem_table[] = {
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Inconsistent properties for lprops table"},	// LTAB_INCORRECT
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Incorrect index size"},	// INCORRECT_IDX_SZ
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Root dir is lost"},	// ROOT_DIR_NOT_FOUND
-+	{PROBLEM_FIXABLE | PROBLEM_DROP_DATA, "Disconnected file cannot be recovered"},	// DISCONNECTED_FILE_CANNOT_BE_RECOVERED
- };
- 
- static const char *get_question(const struct fsck_problem *problem,
-@@ -96,6 +97,7 @@ static const char *get_question(const struct fsck_problem *problem,
- 	case FILE_HAS_NO_ENCRYPT:
- 	case FILE_ROOT_HAS_DENT:
- 	case DENTRY_IS_UNREACHABLE:
-+	case DISCONNECTED_FILE_CANNOT_BE_RECOVERED:
- 		return "Delete it?";
- 	case FILE_HAS_INCONSIST_TYPE:
- 	case FILE_HAS_TOO_MANY_DENT:
-@@ -292,6 +294,14 @@ static void print_problem(const struct ubifs_info *c,
- 			problem->desc, c->calc_idx_sz, *calc_sz);
- 		break;
- 	}
-+	case DISCONNECTED_FILE_CANNOT_BE_RECOVERED:
-+	{
-+		const struct scanned_file *file = (const struct scanned_file *)priv;
-+
-+		log_out(c, "problem: %s, ino %lu, size %llu", problem->desc,
-+			file->inum, file->ino.size);
-+		break;
-+	}
- 	default:
- 		log_out(c, "problem: %s", problem->desc);
- 		break;
++check_fsstress
++start_t=$(date +%s)
++for encryption in "encrypted" "noencrypted"; do
++	run_test $encryption
++done
++end_t=$(date +%s)
++time_cost=$(( end_t - start_t ))
++echo "Success, cost $time_cost seconds"
++exit 0
 -- 
 2.13.6
 
