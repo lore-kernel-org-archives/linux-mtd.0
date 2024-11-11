@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2020D12D7E
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:10:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA0E4D12D7E
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WeORufqdFLD7T59eiBVkJejhODlC8FUIFiZa/KxHzxM=; b=WU27nvtUBw7+r6
-	dQtRTleusKdrgEeW3lbi/NQrPTEBjcaYYsnsLk4L17/+vXVADjQYmgWdRLFCRaMVWxo+U3mUjP+Cg
-	vQTNsfo1cd9EgvQw1mRm1o3P0U8eYqar714HN59i42OhR4Pql65XUzXcqsGscoBEIvmInLQBtagbk
-	YM1vwBb7bh1CESeog3Tu/i9vaab3+EVWEzmB6hup8PygROHU7TK4UxIznxFVhkPyglRRs+TBBXMXS
-	XWZt17tAy2nbHEIqql4HSOAVoOriqUBbITXWksJ65N0VsIEFDED++uX4CtVpz9mxJ+5ofZLYYKWYu
-	jBdd5MzpL+aVtGbcKzOA==;
+	List-Owner; bh=yVetcM6h2HCUsV5HhSZD0CX+BHV1JeSGrC+/1Cv8sVM=; b=BiOloXitETNlBc
+	6K9NxlU9WkM+2EdrHmMOaGBlCnFhPwqrBiPZFdiQMgB0A5j3Z/ET9CNogWdGIIb2AryQ1iPNuclon
+	wLYSxXHG6PvEXGdh9jVtOHNn08Y6Tvjcr9MS6UNrDLXlYbF4q2fAe5xGaY0ZF/WbVrCS7YyCOoEMx
+	5HE/kdneaLZWHLw/uQbsyQFp5GTkehDlRO1aXozV/sGsDMzvpSK/2SogG7r1075CFiH+edvbGeT9X
+	sbTJF4dx8t1OFEpayy0Xr997TYmThRp2tuykJpmlutxdLD+1opgbfC1aW0R/Ol/6kcXWqhUr/8Fk1
+	UmSGkbDkQGYAaWhLgJhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOYj-0000000Gckc-2LKC;
-	Mon, 11 Nov 2024 07:10:01 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tAOYn-0000000Gcnf-3SUu;
+	Mon, 11 Nov 2024 07:10:05 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVE-0000000Ga1X-0ihu
+	id 1tAOVE-0000000Ga1t-2UTd
 	for linux-mtd@bombadil.infradead.org;
 	Mon, 11 Nov 2024 07:06:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=fQNiP83CdzGCHk/hWytSV5fs0kL3za7Lf8dYG1SOnn4=; b=cMCjZrvOcgZhFVP5HS2j3wIxMK
-	nG9pXzriPhAYNc6QWRwQgjELh0iRQr2t+EpJN9a8XKqyiD55Lyd21S/iuaUk+p3Olm+kG/p1YWh6K
-	uYKDUW6rieimLawvrG65I8D9sTteEkECJLBd3IzZgM2pBC7fjvNPVApuJKEh/AOAo707OhzjZkyki
-	DhwMF0u3ageafvWQ9qaDOLrJIAP9iQNaKMgXEltBJ2tfMDFznUhItYz1sRnSqg/J8F3Mr5/Gn680G
-	p5l7zsck1YIHl7koqVtOEvOi+LKLdJKW/8QiU0IVsSydUDV16PzzHLpVvVwtdcnisjz5UXlDrd2Wn
-	KWgVExCA==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
-	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV5-0000000CR45-1A7x
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=dclWF+Zq26PhrLaMKEoHqDxM/+aXf+nHyyppQcF2Ie0=; b=FgrDAAkP4eNpyPAM6Z5ja+lS11
+	qV5wMCb4ljVCa3eFnkDiv7i3y1QFGFhPPJneLPwR60hhayP92APd4K4gVqMljyNA1U+hbfK7iw+DK
+	D8jg/mBHjrf/dlszFUs6PVkCn2FnqeMpyImoObTBuYGC0y8+y+s3rk6Isbc/+eE5rUvy318t5JZ+r
+	vCVLOr1Sm0mNer5NrNJBUxqj+X7ZeBWq4ge+uAeadGk96W5Wl+Ms2WNVwwRkSrttcMfdJnRi0xT3c
+	zIDz5xidPvP0zmJOGqAIxEcEIdCR2LBGEWydujNAbAiEAUzP/wbtLkBKpAOvQlrHRkkhRMO3AmWz1
+	DbJmehTg==;
+Received: from szxga04-in.huawei.com ([45.249.212.190])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOV7-0000000CmPX-2XhW
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:22 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qx5F07z1TB5W;
-	Mon, 11 Nov 2024 15:03:09 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:21 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn0sR6Gftz20t5W;
+	Mon, 11 Nov 2024 15:04:27 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 09A791401F1;
-	Mon, 11 Nov 2024 15:05:36 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 115C81A016C;
+	Mon, 11 Nov 2024 15:05:40 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:35 +0800
+ 2024 15:05:39 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 069/102] fsck.ubifs: Handle orphan nodes
-Date: Mon, 11 Nov 2024 15:03:12 +0800
-Message-ID: <20241111070346.1314122-70-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 077/102] fsck.ubifs: Check and handle unreachable files
+Date: Mon, 11 Nov 2024 15:03:20 +0800
+Message-ID: <20241111070346.1314122-78-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070616_293999_79C2CE71 
-X-CRM114-Status: GOOD (  19.01  )
+X-CRM114-CacheID: sfid-20241111_070620_125972_DAA2E8A5 
+X-CRM114-Status: GOOD (  19.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,262 +85,212 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 3/18 step of fsck. Handle orphan nodes, update TNC & LPT.
-There could be following steps and possible errors:
- Step 1. scan orphan LEB, get all orphan nodes
-  a. corrupted scanning data in orphan area: danger mode and normal mode
-     with 'yes' answer will drop orphan LEB, other modes will exit.
- Step 2. parse orphan node, find the original inode for each inum
-  a. corrupted node searched from TNC: skip node for danger mode and
-     normal mode with 'yes' answer, other modes will exit.
-  b. corrupted index node read from TNC: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
- Step 4. remove inode for each inum, update TNC & LPT
-  a. corrupted index node read from TNC: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
-  b. corrupted lpt: Set %FR_LPT_CORRUPTED for lpt status. Ignore the
-     error.
-  c. incorrect lpt: Set %FR_LPT_INCORRECT for lpt status. Ignore the
-     error.
-  d. If lpt status is not empty, skip updating lpt.
+This is the 9/18 step of fsck. Check and handle unreachable files, the
+checking rule is same as rebuild mode which has been implemented in
+file_is_reachable, but the methods of handling are different:
+1. Move unreachable regular file into disconnected list, let subsequent
+   steps to handle them with lost+found.
+2. Delete unreachable non-regular file.
+3. Delete unreachable directory entries.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/fsck.ubifs.c |  2 ++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h |  2 +-
- ubifs-utils/fsck.ubifs/load_fs.c    | 19 +++++++++++++++++
- ubifs-utils/fsck.ubifs/problem.c    | 20 ++++++++++++++++--
- ubifs-utils/libubifs/orphan.c       | 42 ++++++++++++++++++++++++++++++++++---
- ubifs-utils/libubifs/ubifs.h        |  1 +
- 6 files changed, 80 insertions(+), 6 deletions(-)
+ ubifs-utils/fsck.ubifs/check_files.c   | 57 ++++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/extract_files.c | 13 ++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c    |  9 ++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h    |  3 +-
+ ubifs-utils/fsck.ubifs/problem.c       | 14 +++++++++
+ 5 files changed, 95 insertions(+), 1 deletion(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 85175cf8..31c2aa6a 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -328,6 +328,7 @@ static bool fsck_can_ignore_failure(const struct ubifs_info *c,
- static const unsigned int reason_mapping_table[] = {
- 	BUD_CORRUPTED,		/* FR_H_BUD_CORRUPTED */
- 	TNC_DATA_CORRUPTED,	/* FR_H_TNC_DATA_CORRUPTED */
-+	ORPHAN_CORRUPTED,	/* FR_H_ORPHAN_CORRUPTED */
- };
+diff --git a/ubifs-utils/fsck.ubifs/check_files.c b/ubifs-utils/fsck.ubifs/check_files.c
+index c5c606e1..2be96193 100644
+--- a/ubifs-utils/fsck.ubifs/check_files.c
++++ b/ubifs-utils/fsck.ubifs/check_files.c
+@@ -7,6 +7,7 @@
  
- static bool fsck_handle_failure(const struct ubifs_info *c, unsigned int reason,
-@@ -431,6 +432,7 @@ int main(int argc, char *argv[])
- 	 * Init: Read superblock
- 	 * Step 1: Read master & init lpt
- 	 * Step 2: Replay journal
-+	 * Step 3: Handle orphan nodes
- 	 */
- 	err = ubifs_load_filesystem(c);
- 	if (err) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index f1da974b..a1c64e3a 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -38,7 +38,7 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <sys/stat.h>
  
- /* Types of inconsistent problems */
- enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
--       TNC_CORRUPTED, TNC_DATA_CORRUPTED };
-+       TNC_CORRUPTED, TNC_DATA_CORRUPTED, ORPHAN_CORRUPTED };
- 
- struct scanned_file;
- 
-diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
-index f45c4117..f376383c 100644
---- a/ubifs-utils/fsck.ubifs/load_fs.c
-+++ b/ubifs-utils/fsck.ubifs/load_fs.c
-@@ -183,10 +183,28 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 	/* Calculate 'min_idx_lebs' after journal replay */
- 	c->bi.min_idx_lebs = ubifs_calc_min_idx_lebs(c);
- 
-+	log_out(c, "Handle orphan nodes");
-+	err = ubifs_mount_orphans(c, c->need_recovery, c->ro_mount);
-+	if (err) {
-+		unsigned int reason = get_failure_reason_callback(c);
-+
-+		clear_failure_reason_callback(c);
-+		if (reason & FR_TNC_CORRUPTED) {
-+			if (fix_problem(c, TNC_CORRUPTED, NULL))
-+				FSCK(c)->try_rebuild = true;
-+		} else {
-+			ubifs_assert(c, reason == 0);
-+			exit_code |= FSCK_ERROR;
-+		}
-+		goto out_orphans;
-+	}
-+
- 	c->mounting = 0;
+ #include "linux_err.h"
+ #include "bitops.h"
+@@ -442,3 +443,59 @@ int handle_invalid_files(struct ubifs_info *c)
  
  	return 0;
+ }
++
++/**
++ * handle_dentry_tree - Handle unreachable dentries and files.
++ * @c: UBIFS file-system description object
++ *
++ * This function iterates all directory entries and remove those unreachable
++ * ones. If file has no directory entries, it becomes unreachable:
++ * 1. If the unreachable file has non-regular type, delete it;
++ * 2. If the unreachable file has regular type, move it into the
++ *    @FSCK(c)->disconnected_files.
++ * 'Unreachable' means that a directory entry can not be searched from '/'.
++ *
++ * Returns zero in case of success, a negative error code in case of failure.
++ */
++int handle_dentry_tree(struct ubifs_info *c)
++{
++	struct rb_node *node;
++	struct scanned_file *file;
++	struct rb_root *tree = &FSCK(c)->scanned_files;
++	LIST_HEAD(unreachable);
++
++	for (node = rb_first(tree); node; node = rb_next(node)) {
++		file = rb_entry(node, struct scanned_file, rb);
++
++		/*
++		 * Since all xattr files are already attached to corresponding
++		 * host file, there are only non-xattr files in the file tree.
++		 */
++		ubifs_assert(c, !file->ino.is_xattr);
++		if (!file_is_reachable(c, file, tree))
++			list_add(&file->list, &unreachable);
++	}
++
++	while (!list_empty(&unreachable)) {
++		file = list_entry(unreachable.next, struct scanned_file, list);
++
++		list_del(&file->list);
++		if (S_ISREG(file->ino.mode)) {
++			/*
++			 * Move regular type unreachable file into the
++			 * @FSCK(c)->disconnected_files.
++			 */
++			list_add(&file->list, &FSCK(c)->disconnected_files);
++			rb_erase(&file->rb, tree);
++		} else {
++			/* Delete non-regular type unreachable file. */
++			int err = delete_file(c, file);
++			if (err)
++				return err;
++			rb_erase(&file->rb, tree);
++			kfree(file);
++		}
++	}
++
++	return 0;
++}
+diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
+index 51b83b82..b24445be 100644
+--- a/ubifs-utils/fsck.ubifs/extract_files.c
++++ b/ubifs-utils/fsck.ubifs/extract_files.c
+@@ -1247,6 +1247,15 @@ retry:
+ 			dent_node = list_entry(path_list.next,
+ 					       struct scanned_dent_node, list);
  
-+out_orphans:
-+	free_orphans(c);
- out_journal:
- 	destroy_journal(c);
- out_lpt:
-@@ -214,6 +232,7 @@ void ubifs_destroy_filesystem(struct ubifs_info *c)
- {
- 	destroy_journal(c);
- 	free_wbufs(c);
-+	free_orphans(c);
- 	ubifs_lpt_free(c, 0);
++			handle_invalid_file(c, DENTRY_IS_UNREACHABLE,
++					    dent_node->file, dent_node);
++			if (FSCK(c)->mode != REBUILD_MODE) {
++				int err = delete_node(c, &dent_node->key,
++						      dent_node->header.lnum,
++						      dent_node->header.offs);
++				if (err)
++					return err;
++			}
+ 			dbg_fsck("remove unreachable dentry %s, in %s",
+ 				 c->encrypted && !file->ino.is_xattr ?
+ 				 "<encrypted>" : dent_node->name, c->dev_name);
+@@ -1260,6 +1269,10 @@ retry:
+ 	}
  
- 	c->max_sqnum = 0;
+ 	if (!rb_first(&file->dent_nodes)) {
++		if (S_ISREG(file->ino.mode))
++			handle_invalid_file(c, FILE_IS_DISCONNECTED, file, NULL);
++		else
++			handle_invalid_file(c, FILE_HAS_NO_DENT, file, NULL);
+ 		dbg_fsck("file %lu is unreachable, in %s", file->inum, c->dev_name);
+ 		return false;
+ 	}
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+index ac94ba4f..6a718fd8 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+@@ -453,6 +453,14 @@ static int do_fsck(void)
+ 		goto free_used_lebs;
+ 	}
+ 
++	log_out(c, "Check and handle unreachable files");
++	err = handle_dentry_tree(c);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		goto free_disconnected_files;
++	}
++
++free_disconnected_files:
+ 	destroy_file_list(c, &FSCK(c)->disconnected_files);
+ free_used_lebs:
+ 	kfree(FSCK(c)->used_lebs);
+@@ -495,6 +503,7 @@ int main(int argc, char *argv[])
+ 	 * Step 6: Traverse tnc and construct files
+ 	 * Step 7: Update files' size
+ 	 * Step 8: Check and handle invalid files
++	 * Step 9: Check and handle unreachable files
+ 	 */
+ 	err = do_fsck();
+ 	if (err && FSCK(c)->try_rebuild) {
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index 7ac512c1..521723d7 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -43,7 +43,7 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
+        FILE_HAS_0_NLINK_INODE, FILE_HAS_INCONSIST_TYPE, FILE_HAS_TOO_MANY_DENT,
+        FILE_SHOULDNT_HAVE_DATA, FILE_HAS_NO_DENT, XATTR_HAS_NO_HOST,
+        XATTR_HAS_WRONG_HOST, FILE_HAS_NO_ENCRYPT, FILE_IS_DISCONNECTED,
+-       FILE_ROOT_HAS_DENT };
++       FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE };
+ 
+ enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
+ 
+@@ -317,5 +317,6 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c);
+ int traverse_tnc_and_construct_files(struct ubifs_info *c);
+ void update_files_size(struct ubifs_info *c);
+ int handle_invalid_files(struct ubifs_info *c);
++int handle_dentry_tree(struct ubifs_info *c);
+ 
+ #endif
 diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 9df2c2ae..9c8730a5 100644
+index 9222cba4..0395a34f 100644
 --- a/ubifs-utils/fsck.ubifs/problem.c
 +++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -41,6 +41,7 @@ static const struct fsck_problem problem_table[] = {
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted bud LEB"},	// BUD_CORRUPTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted index node"},	// TNC_CORRUPTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted data searched from TNC"},	// TNC_DATA_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted orphan LEB"},	// ORPHAN_CORRUPTED
+@@ -58,6 +58,7 @@ static const struct fsck_problem problem_table[] = {
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Encrypted file has no encryption information"},	// FILE_HAS_NO_ENCRYPT
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "File is disconnected(regular file without dentries)"},	// FILE_IS_DISCONNECTED
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Root dir should not have a dentry"},	// FILE_ROOT_HAS_DENT
++	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Dentry is unreachable"},	// DENTRY_IS_UNREACHABLE
  };
  
  static const char *get_question(const struct fsck_problem *problem,
-@@ -54,6 +55,8 @@ static const char *get_question(const struct fsck_problem *problem,
- 		return "Drop bud?";
- 	case TNC_DATA_CORRUPTED:
- 		return "Drop it?";
-+	case ORPHAN_CORRUPTED:
-+		return "Drop orphans on the LEB?";
+@@ -84,6 +85,7 @@ static const char *get_question(const struct fsck_problem *problem,
+ 	case XATTR_HAS_WRONG_HOST:
+ 	case FILE_HAS_NO_ENCRYPT:
+ 	case FILE_ROOT_HAS_DENT:
++	case DENTRY_IS_UNREACHABLE:
+ 		return "Delete it?";
+ 	case FILE_HAS_INCONSIST_TYPE:
+ 	case FILE_HAS_TOO_MANY_DENT:
+@@ -198,6 +200,18 @@ static void print_problem(const struct ubifs_info *c,
+ 			host->ino.is_xattr ? "(xattr)" : "");
+ 		break;
  	}
- 
- 	return "Fix it?";
-@@ -63,13 +66,26 @@ static void print_problem(const struct ubifs_info *c,
- 			  const struct fsck_problem *problem, int problem_type,
- 			  const void *priv)
- {
--	if (problem_type == BUD_CORRUPTED) {
-+	switch (problem_type) {
-+	case BUD_CORRUPTED:
++	case DENTRY_IS_UNREACHABLE:
 +	{
- 		const struct ubifs_bud *bud = (const struct ubifs_bud *)priv;
- 
- 		log_out(c, "problem: %s %d:%d %s", problem->desc, bud->lnum,
- 			bud->start, dbg_jhead(bud->jhead));
--	} else
-+		break;
-+	}
-+	case ORPHAN_CORRUPTED:
-+	{
-+		const int *lnum = (const int *)priv;
++		const struct invalid_file_problem *ifp = (const struct invalid_file_problem *)priv;
++		const struct scanned_dent_node *dent_node = (const struct scanned_dent_node *)ifp->priv;
 +
-+		log_out(c, "problem: %s %d", problem->desc, *lnum);
++		log_out(c, "problem: %s, ino %lu, unreachable dentry %s, type %s%s",
++			problem->desc, ifp->file->inum,
++			c->encrypted && !ifp->file->ino.is_xattr ? "<encrypted>" : dent_node->name,
++			ubifs_get_type_name(dent_node->type),
++			key_type(c, &dent_node->key) == UBIFS_XENT_KEY ? "(xattr)" : "");
 +		break;
 +	}
-+	default:
+ 	default:
  		log_out(c, "problem: %s", problem->desc);
-+		break;
-+	}
- }
- 
- static void fatal_error(const struct ubifs_info *c,
-diff --git a/ubifs-utils/libubifs/orphan.c b/ubifs-utils/libubifs/orphan.c
-index 26668cbd..baa4db78 100644
---- a/ubifs-utils/libubifs/orphan.c
-+++ b/ubifs-utils/libubifs/orphan.c
-@@ -423,6 +423,7 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 			ubifs_dump_node(c, snod->node,
- 					c->leb_size - snod->offs);
- 			err = -EINVAL;
-+			set_failure_reason_callback(c, FR_DATA_CORRUPTED);
- 			goto out_free;
- 		}
- 
-@@ -452,6 +453,7 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 				ubifs_dump_node(c, snod->node,
- 						c->leb_size - snod->offs);
- 				err = -EINVAL;
-+				set_failure_reason_callback(c, FR_DATA_CORRUPTED);
- 				goto out_free;
- 			}
- 			dbg_rcvry("out of date LEB %d", sleb->lnum);
-@@ -471,8 +473,19 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 
- 			ino_key_init(c, &key, inum);
- 			err = ubifs_tnc_lookup(c, &key, ino);
--			if (err && err != -ENOENT)
-+			if (err && err != -ENOENT) {
-+				unsigned int reason;
-+
-+				reason = get_failure_reason_callback(c);
-+				if (reason & FR_DATA_CORRUPTED) {
-+					test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED);
-+					if (handle_failure_callback(c, FR_H_TNC_DATA_CORRUPTED, NULL)) {
-+						/* Leave the inode to be deleted by subsequent steps */
-+						continue;
-+					}
-+				}
- 				goto out_free;
-+			}
- 
- 			/*
- 			 * Check whether an inode can really get deleted.
-@@ -483,8 +496,11 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 					  (unsigned long)inum);
- 
- 				err = ubifs_tnc_remove_ino(c, inum);
--				if (err)
-+				if (err) {
-+					if (c->program_type == FSCK_PROGRAM_TYPE)
-+						goto out_free;
- 					goto out_ro;
-+				}
- 			}
- 		}
- 
-@@ -553,13 +569,33 @@ static int kill_orphans(struct ubifs_info *c)
- 							 c->sbuf, -1);
- 			}
- 			if (IS_ERR(sleb)) {
-+				if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED) &&
-+				    handle_failure_callback(c, FR_H_ORPHAN_CORRUPTED, &lnum)) {
-+					/* Skip the orphan LEB. */
-+					continue;
-+				}
- 				err = PTR_ERR(sleb);
- 				break;
- 			}
- 		}
- 		err = do_kill_orphans(c, sleb, &last_cmt_no, &outofdate,
- 				      &last_flagged);
--		if (err || outofdate) {
-+		if (err) {
-+			unsigned int reason = get_failure_reason_callback(c);
-+
-+			if (reason & FR_DATA_CORRUPTED) {
-+				test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED);
-+				if (handle_failure_callback(c, FR_H_ORPHAN_CORRUPTED, &lnum)) {
-+					err = 0;
-+					/* Skip the orphan LEB. */
-+					ubifs_scan_destroy(sleb);
-+					continue;
-+				}
-+			}
-+			ubifs_scan_destroy(sleb);
-+			break;
-+		}
-+		if (outofdate) {
- 			ubifs_scan_destroy(sleb);
- 			break;
- 		}
-diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index ae812ff8..8a506a8b 100644
---- a/ubifs-utils/libubifs/ubifs.h
-+++ b/ubifs-utils/libubifs/ubifs.h
-@@ -1546,6 +1546,7 @@ enum {
- enum {
- 	FR_H_BUD_CORRUPTED = 0,		/* Bud LEB is corrupted */
- 	FR_H_TNC_DATA_CORRUPTED,	/* Data searched from TNC is corrupted */
-+	FR_H_ORPHAN_CORRUPTED,		/* Orphan LEB is corrupted */
- };
- /* Callback functions for failure(which can be handled by fsck) happens. */
- static inline void set_failure_reason_callback(const struct ubifs_info *c,
+ 		break;
 -- 
 2.13.6
 
