@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B96B8D12D7E
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:07:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE41D12D7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GnkJm0HF0tb75yX/aZeUEB65jjU4BXEOYvxlkDvxrgs=; b=5FFsnV8EzP+UMG
-	nO0fpQ9WfIPmXD8UvHwhH2Bw+5uMJbE4U/9mUXu4eMPcKJYz+0LkDB3t/Vq/aDnwqu0fcbCnb5QbJ
-	EXDAvGwhRXNUAXX5Pe/dEddJcHUwhFUmv19pXHcAJ4NaHTq2CSnJuyduRw9+kksfszJTjBHt9PWyt
-	ozKWNB66DIsgEShqAkJyJDEjGtLl7/OUiyptQJkJOrIxJaj9Nk2Jv8n5dCs7DSz7+Tt2avfT2q6DC
-	yc8DE8GIkYjVFGKvJGqjruzRxdYMevMl9vKnfXMseB0KKfZafv7o8OswzGDbCKS8MsoY6W+HP+Ccs
-	wopWkh0KKfu6ktQ3nzgg==;
+	List-Owner; bh=OhFBAKESTxsTiEFVFdeV+7iZQFLGLalvgciMl39w92o=; b=aswKSruC3oebYy
+	AXMXor9DtkR39w/r3J+mwUj7dPunOC/aIZwvzjXVkjeFb5l3t2J+OFOVnq0WQkm7HFzChNLNV1s9z
+	Gr///cHrhul35vENPcHmZdhsdZ4l9KghlkrefapZnp4KIDdHDqZGkQfSnk+PFJhIqnynaaAVMnYCE
+	KUonTY6s+F85yQCnOktAEN2DFON53SD1i3Fd1Qur+ATZiVIlA1AqGWO5RpRjxk3TFLjC2sJwXrjnQ
+	ICTwVZqrlGj7HaMy3mtW5N+RIvZC8oUuvnW4f0Ig3Vercj+OCvk6JIK6cEXgJ7e6Hv2mQEP8AHQmc
+	p1tHETRNUVpROymZpQ+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOWE-0000000Gao6-28l3;
-	Mon, 11 Nov 2024 07:07:26 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tAOWH-0000000Gar9-1vON;
+	Mon, 11 Nov 2024 07:07:29 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV4-0000000GZsN-16n3
+	id 1tAOV4-0000000GZsL-33br
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:14 +0000
+	Mon, 11 Nov 2024 07:06:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=TyWQWpThFVJQjrFfVeiWCYOIB9JUWSzmDU/iwOR49cU=; b=O5OZb4vcndd0K7i43rH7VNiRjL
-	eYXeIvAOABBqHiSzQzLwpfrdH4XDE3k23rg562yB/wJgB7jXDVh52ftP+E72w2ct1lXqo7Ov7FJgX
-	HwoE4v+ZhhWtzzV4pNcCfu7qaxQyz90xrUBKKBaQQpOVYOxmtIuUZzJ1x4Z6chMKT5R7cfVfXKKJw
-	Zvq6vfPaUddk3dAHkdOqEcMB/mwlfK7GiZakJGSt6U8MO5SyGVtVM+oHfTikWVtVfrsWgDSCsQcHe
-	Wea+sohjXwRGXF1I9BWrgI9H39eLYLgWhqs/M/CBqkrNTboctxJTu9reBNPP3ZwuJAIKQ9LPle1jt
-	2sndNGtg==;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=zDmbgNxG76YwexBP0wUe9NuoEhJSukcbfQGyBLoDRnQ=; b=jj94Fz+Ko6VE8S3crOf7L789fO
+	kOSKQGE/kFw7pDx8rQMWVitw9UVf31TpQQyfbtoMuFxsslCosxkNTfA1JVgH0RXoPgP+A0RhDMEHn
+	fmx9UXUvjkCRkIqjrLNsa1HKGcDFNCEypTUIPXFLDYDp2RBZ78y3ieR98C2jvAxYSVHr7/tTZOfUd
+	u2qoQP200vXmUxP0hKSNKMW2rm2Hqt13QTX/Q6PKQXTaEl7SkFqnxUVrVx+OSbBztkroO5mHGPdH8
+	YhaBzFpgJWHoS7v0P5xwssepG0ffzw3MP55eMTaCu47zY0gXw6gGS5I9cfBT8cqTQl0xufCQTGU7e
+	+Qp0Wdrg==;
 Received: from szxga07-in.huawei.com ([45.249.212.35])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUf-0000000CmJn-2sFK
+	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOUz-0000000CR2Q-3EiC
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:56 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rp2QSwz1hwTP;
-	Mon, 11 Nov 2024 15:03:54 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:12 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rz1tSSz1hwTd;
+	Mon, 11 Nov 2024 15:04:03 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 240281402CE;
-	Mon, 11 Nov 2024 15:05:42 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 1A2681A0190;
+	Mon, 11 Nov 2024 15:05:51 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:41 +0800
+ 2024 15:05:50 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 081/102] fsck.ubifs: check and correct the space statistics
-Date: Mon, 11 Nov 2024 15:03:24 +0800
-Message-ID: <20241111070346.1314122-82-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 098/102] tests: ubifs_tools: fsck_tests: Add bad images fixing test
+Date: Mon, 11 Nov 2024 15:03:41 +0800
+Message-ID: <20241111070346.1314122-99-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070551_790072_C753431A 
-X-CRM114-Status: GOOD (  27.59  )
+X-CRM114-CacheID: sfid-20241111_070610_691066_AF120DB6 
+X-CRM114-Status: GOOD (  11.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,1044 +80,313 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 12/18 step of fsck. Check and correct the space statistics.
-There could be following steps and possible errors:
- Step 1. Exit for check mode, if %FR_LPT_CORRUPTED or %FR_LPT_INCORRECT
- is set in lpt status, the exit code should have %FSCK_UNCORRECTED.
- Step 2. Check lpt status, if %FR_LPT_CORRUPTED is set in lpt status,
- normal mode with 'no' answer will exit, other modes will rebuild lpt.
- Step 3. Traverse LPT nodes, check the correctness of nnode and pnode,
- compare LEB scanning result with LEB properties.
-  a. LPT node is corrupted, normal mode with 'no' answer will exit,
-     rebuild lpt for other modes.
-  b. Incorrect nnode/pnode, normal mode with 'no' answer will exit,
-     other other modes will correct the nnode/pnode.
-  c. Inconsistent comparing result, normal mode with 'no' answer
-     will exit, other modes will correct the space statistics.
- Step 4. Check and correct the lprops table information.
- Step 5. Set gc lnum(ubifs_rcvry_gc_commit / take_gc_lnum).
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- ubifs-utils/fsck.ubifs/check_space.c | 576 ++++++++++++++++++++++++++++++++++-
- ubifs-utils/fsck.ubifs/fsck.ubifs.c  |  13 +
- ubifs-utils/fsck.ubifs/fsck.ubifs.h  |  58 +++-
- ubifs-utils/fsck.ubifs/problem.c     |  51 ++++
- ubifs-utils/fsck.ubifs/rebuild_fs.c  |   5 +-
- ubifs-utils/libubifs/lpt.c           |   9 +-
- ubifs-utils/libubifs/lpt_commit.c    |  18 +-
- ubifs-utils/libubifs/replay.c        |   2 +-
- ubifs-utils/libubifs/ubifs.h         |   5 +-
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c  |   2 +-
- 10 files changed, 720 insertions(+), 19 deletions(-)
-
-diff --git a/ubifs-utils/fsck.ubifs/check_space.c b/ubifs-utils/fsck.ubifs/check_space.c
-index f758bf1a..afe6ba0b 100644
---- a/ubifs-utils/fsck.ubifs/check_space.c
-+++ b/ubifs-utils/fsck.ubifs/check_space.c
-@@ -44,18 +44,20 @@ int get_free_leb(struct ubifs_info *c)
-  * build_lpt - construct LPT and write it into flash.
-  * @c: UBIFS file-system description object
-  * @calculate_lp_cb: callback function to calculate the properties for given LEB
-+ * @free_ltab: %true means to release c->ltab after creating lpt
-  *
-  * This function builds LPT according to the calculated results by
-  * @calculate_lp_cb and writes LPT into flash. Returns zero in case of success,
-  * a negative error code in case of failure.
-  */
--int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb)
-+int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb,
-+	      bool free_ltab)
- {
- 	int i, err, lnum, free, dirty;
- 	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
- 
- 	memset(&c->lst, 0, sizeof(struct ubifs_lp_stats));
--	/* Set gc lnum. */
-+	/* Set gc lnum, equivalent to ubifs_rcvry_gc_commit/take_gc_lnum. */
- 	lnum = get_free_leb(c);
- 	if (lnum < 0)
- 		return lnum;
-@@ -63,7 +65,7 @@ int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb)
- 
- 	/* Update LPT. */
- 	for (i = 0; i < c->main_lebs; i++) {
--		err = calculate_lp_cb(c, i, &free, &dirty);
-+		err = calculate_lp_cb(c, i, &free, &dirty, NULL);
- 		if (err)
- 			return err;
- 
-@@ -87,8 +89,574 @@ int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb)
- 				c->lst.total_dark += ubifs_calc_dark(c, spc);
- 			c->lst.total_used += c->leb_size - spc;
- 		}
-+
-+		dbg_fsck("build properties for LEB %d, free %d dirty %d is_idx %d, in %s",
-+			 i + c->main_first, free, dirty,
-+			 FSCK(c)->lpts[i].flags & LPROPS_INDEX ? 1 : 0,
-+			 c->dev_name);
- 	}
- 
- 	/* Write LPT. */
--	return ubifs_create_lpt(c, FSCK(c)->lpts, c->main_lebs, hash_lpt);
-+	return ubifs_create_lpt(c, FSCK(c)->lpts, c->main_lebs, hash_lpt, free_ltab);
-+}
-+
-+static int scan_get_lp(struct ubifs_info *c, int index, int *free, int *dirty,
-+		       int *is_idx)
-+{
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	int used, idx_leb, lnum = index + c->main_first, err = 0;
-+	bool is_build_lpt = FSCK(c)->lpt_status & FR_LPT_CORRUPTED;
-+
-+	if (is_build_lpt) {
-+		if (!test_bit(index, FSCK(c)->used_lebs) || c->gc_lnum == lnum) {
-+			*free = c->leb_size;
-+			*dirty = 0;
-+			return 0;
-+		}
-+	} else {
-+		if (!test_bit(index, FSCK(c)->used_lebs)) {
-+			*free = c->leb_size;
-+			*dirty = 0;
-+			return 0;
-+		}
-+	}
-+
-+	sleb = ubifs_scan(c, lnum, 0, c->sbuf, 0);
-+	if (IS_ERR(sleb)) {
-+		/* All TNC LEBs have passed ubifs_scan in previous steps. */
-+		ubifs_assert(c, !get_failure_reason_callback(c));
-+		return PTR_ERR(sleb);
-+	}
-+
-+	idx_leb = -1;
-+	used = 0;
-+	list_for_each_entry(snod, &sleb->nodes, list) {
-+		int found, level = 0;
-+
-+		if (idx_leb == -1)
-+			idx_leb = (snod->type == UBIFS_IDX_NODE) ? 1 : 0;
-+
-+		if (idx_leb)
-+			/*
-+			 * Previous steps have ensured that every TNC LEB
-+			 * contains only index nodes or non-index nodes.
-+			 */
-+			ubifs_assert(c, snod->type == UBIFS_IDX_NODE);
-+
-+		if (snod->type == UBIFS_IDX_NODE) {
-+			struct ubifs_idx_node *idx = snod->node;
-+
-+			key_read(c, ubifs_idx_key(c, idx), &snod->key);
-+			level = le16_to_cpu(idx->level);
-+		}
-+
-+		found = ubifs_tnc_has_node(c, &snod->key, level, lnum,
-+					   snod->offs, idx_leb);
-+		if (found) {
-+			if (found < 0) {
-+				err = found;
-+				/*
-+				 * TNC traversing is finished in previous steps,
-+				 * any TNC path is accessible.
-+				 */
-+				ubifs_assert(c, !get_failure_reason_callback(c));
-+				goto out;
-+			}
-+			used += ALIGN(snod->len, 8);
-+		}
-+	}
-+
-+	if (is_build_lpt && !used) {
-+		*free = c->leb_size;
-+		*dirty = 0;
-+	} else {
-+		*free = c->leb_size - sleb->endpt;
-+		*dirty = sleb->endpt - used;
-+		if (idx_leb == 1) {
-+			if (is_build_lpt)
-+				FSCK(c)->lpts[index].flags = LPROPS_INDEX;
-+			else
-+				*is_idx = 1;
-+		}
-+	}
-+
-+out:
-+	ubifs_scan_destroy(sleb);
-+	return err;
-+}
-+
-+static void clear_buds(struct ubifs_info *c)
-+{
-+	int i;
-+
-+	/*
-+	 * Since lpt is invalid, space statistics cannot be trusted, the buds
-+	 * were used to trace taken LEBs(LPT related), and fsck makes sure that
-+	 * there will be no new journal writings(no space allocations) before
-+	 * committing, so we should clear buds to prevent wrong lpt updating in
-+	 * committing stage(eg. ubifs_return_leb operation for @c->old_buds).
-+	 */
-+	free_buds(c, true);
-+	for (i = 0; i < c->jhead_cnt; i++) {
-+		c->jheads[i].wbuf.lnum = -1;
-+		c->jheads[i].wbuf.offs = -1;
-+	}
-+}
-+
-+static void clear_lp_lists_and_heaps(struct ubifs_info *c)
-+{
-+	int i;
-+
-+	/*
-+	 * Since lpt is invalid, clear in-memory fast accessing paths (lp
-+	 * lists & heaps).
-+	 */
-+	c->freeable_cnt = 0;
-+	c->in_a_category_cnt = 0;
-+	for (i = 0; i < LPROPS_HEAP_CNT; i++) {
-+		memset(c->lpt_heap[i].arr, 0, LPT_HEAP_SZ * sizeof(void *));
-+		c->lpt_heap[i].cnt = 0;
-+		c->lpt_heap[i].max_cnt = LPT_HEAP_SZ;
-+	}
-+	memset(c->dirty_idx.arr, 0, LPT_HEAP_SZ * sizeof(void *));
-+	c->dirty_idx.cnt = 0;
-+	c->dirty_idx.max_cnt = LPT_HEAP_SZ;
-+	INIT_LIST_HEAD(&c->uncat_list);
-+	INIT_LIST_HEAD(&c->empty_list);
-+	INIT_LIST_HEAD(&c->freeable_list);
-+	INIT_LIST_HEAD(&c->frdi_idx_list);
-+}
-+
-+static int retake_ihead(struct ubifs_info *c)
-+{
-+	int err = take_ihead(c);
-+
-+	if (err < 0) {
-+		/* All LPT nodes must be accessible. */
-+		ubifs_assert(c, !get_failure_reason_callback(c));
-+		ubifs_assert(c, FSCK(c)->lpt_status == 0);
-+	} else
-+		err = 0;
-+
-+	return err;
-+}
-+
-+static int rebuild_lpt(struct ubifs_info *c)
-+{
-+	int err;
-+
-+	/* Clear buds. */
-+	clear_buds(c);
-+	/* Clear stale in-memory lpt data. */
-+	c->lpt_drty_flgs = 0;
-+	c->dirty_nn_cnt = 0;
-+	c->dirty_pn_cnt = 0;
-+	clear_lp_lists_and_heaps(c);
-+	ubifs_free_lpt_nodes(c);
-+	kfree(c->ltab);
-+	c->ltab = NULL;
-+
-+	FSCK(c)->lpts = kzalloc(sizeof(struct ubifs_lprops) * c->main_lebs,
-+				GFP_KERNEL);
-+	if (!FSCK(c)->lpts) {
-+		log_err(c, errno, "can not allocate lpts");
-+		return -ENOMEM;
-+	}
-+
-+	err = build_lpt(c, scan_get_lp, false);
-+	if (err)
-+		goto out;
-+
-+	err = retake_ihead(c);
-+	if (err)
-+		goto out;
-+
-+	FSCK(c)->lpt_status = 0;
-+
-+out:
-+	kfree(FSCK(c)->lpts);
-+	return err;
-+}
-+
-+static void check_and_correct_nnode(struct ubifs_info *c,
-+				    struct ubifs_nnode *nnode,
-+				    struct ubifs_nnode *parent_nnode,
-+				    int row, int col, int *corrected)
-+{
-+	int num = ubifs_calc_nnode_num(row, col);
-+
-+	if (nnode->num != num) {
-+		struct nnode_problem nnp = {
-+			.nnode = nnode,
-+			.parent_nnode = parent_nnode,
-+			.num = num,
-+		};
-+
-+		/*
-+		 * The nnode number is read from disk in big lpt mode, which
-+		 * could lead to the wrong nnode number, otherwise, ther nnode
-+		 * number cannot be wrong.
-+		 */
-+		ubifs_assert(c, c->big_lpt);
-+		FSCK(c)->lpt_status |= FR_LPT_INCORRECT;
-+		if (fix_problem(c, NNODE_INCORRECT, &nnp)) {
-+			nnode->num = num;
-+			*corrected = 1;
-+		}
-+	}
-+}
-+
-+static int check_and_correct_pnode(struct ubifs_info *c,
-+				   struct ubifs_pnode *pnode, int col,
-+				   struct ubifs_lp_stats *lst,
-+				   int *freeable_cnt, int *corrected)
-+{
-+	int i, index, lnum;
-+	const int lp_cnt = UBIFS_LPT_FANOUT;
-+
-+	if (pnode->num != col) {
-+		struct pnode_problem pnp = {
-+			.pnode = pnode,
-+			.num = col,
-+		};
-+
-+		/*
-+		 * The pnode number is read from disk in big lpt mode, which
-+		 * could lead to the wrong pnode number, otherwise, ther pnode
-+		 * number cannot be wrong.
-+		 */
-+		ubifs_assert(c, c->big_lpt);
-+		FSCK(c)->lpt_status |= FR_LPT_INCORRECT;
-+		if (fix_problem(c, PNODE_INCORRECT, &pnp)) {
-+			pnode->num = col;
-+			*corrected = 1;
-+		}
-+	}
-+
-+	index = pnode->num << UBIFS_LPT_FANOUT_SHIFT;
-+	lnum = index + c->main_first;
-+	for (i = 0; i < lp_cnt && lnum < c->leb_cnt; i++, index++, lnum++) {
-+		int err, cat, free, dirty, is_idx = 0;
-+		struct ubifs_lprops *lp = &pnode->lprops[i];
-+
-+		err = scan_get_lp(c, index, &free, &dirty, &is_idx);
-+		if (err)
-+			return err;
-+
-+		dbg_fsck("calculate properties for LEB %d, free %d dirty %d is_idx %d, in %s",
-+			 lnum, free, dirty, is_idx, c->dev_name);
-+
-+		if (!FSCK(c)->lpt_status && lp->free + lp->dirty == c->leb_size
-+		    && !test_bit(index, FSCK(c)->used_lebs)) {
-+			/*
-+			 * Some LEBs may become freeable in the following cases:
-+			 *  a. LEBs become freeable after replaying the journal.
-+			 *  b. Unclean reboot while doing gc for a freeable
-+			 *     non-index LEB
-+			 *  c. Freeable index LEBs in an uncompleted commit due
-+			 *     to an unclean unmount.
-+			 * , which makes that these LEBs won't be accounted into
-+			 * the FSCK(c)->used_lebs, but they actually have
-+			 * free/dirty space statistics. So we should skip
-+			 * checking space for these LEBs.
-+			 */
-+			free = lp->free;
-+			dirty = lp->dirty;
-+			is_idx = (lp->flags & LPROPS_INDEX) ? 1 : 0;
-+		}
-+		if (lnum != lp->lnum ||
-+		    free != lp->free || dirty != lp->dirty ||
-+		    (is_idx && !(lp->flags & LPROPS_INDEX)) ||
-+		    (!is_idx && (lp->flags & LPROPS_INDEX))) {
-+			struct lp_problem lpp = {
-+				.lnum = lnum,
-+				.lp = lp,
-+				.free = free,
-+				.dirty = dirty,
-+				.is_idx = is_idx,
-+			};
-+
-+			FSCK(c)->lpt_status |= FR_LPT_INCORRECT;
-+			if (fix_problem(c, LP_INCORRECT, &lpp)) {
-+				lp->lnum = lnum;
-+				lp->free = free;
-+				lp->dirty = dirty;
-+				lp->flags = is_idx ? LPROPS_INDEX : 0;
-+				*corrected = 1;
-+			}
-+		}
-+
-+		cat = ubifs_categorize_lprops(c, lp);
-+		if (cat != (lp->flags & LPROPS_CAT_MASK)) {
-+			if (FSCK(c)->lpt_status & FR_LPT_INCORRECT) {
-+				lp->flags &= ~LPROPS_CAT_MASK;
-+				lp->flags |= cat;
-+			} else {
-+				/* lp could be in the heap or un-categorized(add heap failed). */
-+				ubifs_assert(c, (lp->flags & LPROPS_CAT_MASK) == LPROPS_UNCAT);
-+			}
-+		}
-+		if (cat == LPROPS_FREEABLE)
-+			*freeable_cnt = *freeable_cnt + 1;
-+		if ((lp->flags & LPROPS_TAKEN) && free == c->leb_size)
-+			lst->taken_empty_lebs += 1;
-+
-+		lst->total_free += free;
-+		lst->total_dirty += dirty;
-+
-+		if (free == c->leb_size)
-+			lst->empty_lebs++;
-+
-+		if (is_idx) {
-+			lst->idx_lebs += 1;
-+		} else {
-+			int spc;
-+
-+			spc = free + dirty;
-+			if (spc < c->dead_wm)
-+				lst->total_dead += spc;
-+			else
-+				lst->total_dark += ubifs_calc_dark(c, spc);
-+			lst->total_used += c->leb_size - spc;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int check_and_correct_lpt(struct ubifs_info *c, int *lpt_corrected)
-+{
-+	int err, i, cnt, iip, row, col, corrected, lnum, max_num, freeable_cnt;
-+	struct ubifs_cnode *cn, *cnode;
-+	struct ubifs_nnode *nnode, *nn;
-+	struct ubifs_pnode *pnode;
-+	struct ubifs_lp_stats lst;
-+
-+	max_num = 0;
-+	freeable_cnt = 0;
-+	memset(&lst, 0, sizeof(struct ubifs_lp_stats));
-+
-+	/* Load the entire LPT tree, check whether there are corrupted nodes. */
-+	cnt = DIV_ROUND_UP(c->main_lebs, UBIFS_LPT_FANOUT);
-+	for (i = 0; i < cnt; i++) {
-+		pnode = ubifs_pnode_lookup(c, i);
-+		if (IS_ERR(pnode))
-+			return PTR_ERR(pnode);
-+		if (pnode->num > max_num)
-+			max_num = pnode->num;
-+	}
-+
-+	/* Check whether there are pnodes exceeding the 'c->main_lebs'. */
-+	pnode = ubifs_pnode_lookup(c, 0);
-+	if (IS_ERR(pnode))
-+		return PTR_ERR(pnode);
-+	while (pnode) {
-+		if (pnode->num > max_num) {
-+			ubifs_err(c, "pnode(%d) exceeds max number(%d)",
-+				  pnode->num, max_num);
-+			set_failure_reason_callback(c, FR_LPT_CORRUPTED);
-+			return -EINVAL;
-+		}
-+		pnode = ubifs_find_next_pnode(c, pnode);
-+		if (IS_ERR(pnode))
-+			return PTR_ERR(pnode);
-+	}
-+
-+	/* Check & correct nnodes and pnodes(including LEB properties). */
-+	row = col = iip = 0;
-+	cnode = (struct ubifs_cnode *)c->nroot;
-+	while (cnode) {
-+		ubifs_assert(c, row >= 0);
-+		nnode = cnode->parent;
-+		if (cnode->level) {
-+			corrected = 0;
-+			/* cnode is a nnode */
-+			nn = (struct ubifs_nnode *)cnode;
-+			check_and_correct_nnode(c, nn, nnode, row, col,
-+						&corrected);
-+			if (corrected)
-+				ubifs_make_nnode_dirty(c, nn);
-+			while (iip < UBIFS_LPT_FANOUT) {
-+				cn = nn->nbranch[iip].cnode;
-+				if (cn) {
-+					/* Go down */
-+					row += 1;
-+					col <<= UBIFS_LPT_FANOUT_SHIFT;
-+					col += iip;
-+					iip = 0;
-+					cnode = cn;
-+					break;
-+				}
-+				/* Go right */
-+				iip += 1;
-+			}
-+			if (iip < UBIFS_LPT_FANOUT)
-+				continue;
-+		} else {
-+			corrected = 0;
-+			/* cnode is a pnode */
-+			pnode = (struct ubifs_pnode *)cnode;
-+			err = check_and_correct_pnode(c, pnode, col, &lst,
-+						      &freeable_cnt, &corrected);
-+			if (err)
-+				return err;
-+			if (corrected)
-+				ubifs_make_pnode_dirty(c, pnode);
-+		}
-+		/* Go up and to the right */
-+		row -= 1;
-+		col >>= UBIFS_LPT_FANOUT_SHIFT;
-+		iip = cnode->iip + 1;
-+		cnode = (struct ubifs_cnode *)nnode;
-+	}
-+
-+	dbg_fsck("empty_lebs %d, idx_lebs %d, total_free %lld, total_dirty %lld,"
-+		 " total_used %lld, total_dead %lld, total_dark %lld,"
-+		 " taken_empty_lebs %d, freeable_cnt %d, in %s",
-+		 lst.empty_lebs, lst.idx_lebs, lst.total_free, lst.total_dirty,
-+		 lst.total_used, lst.total_dead, lst.total_dark,
-+		 lst.taken_empty_lebs, freeable_cnt, c->dev_name);
-+
-+	/* Check & correct the global space statistics. */
-+	if (lst.empty_lebs != c->lst.empty_lebs ||
-+	    lst.idx_lebs != c->lst.idx_lebs ||
-+	    lst.total_free != c->lst.total_free ||
-+	    lst.total_dirty != c->lst.total_dirty ||
-+	    lst.total_used != c->lst.total_used ||
-+	    lst.total_dead != c->lst.total_dead ||
-+	    lst.total_dark != c->lst.total_dark) {
-+		struct space_stat_problem ssp = {
-+			.lst = &c->lst,
-+			.calc_lst = &lst,
-+		};
-+
-+		FSCK(c)->lpt_status |= FR_LPT_INCORRECT;
-+		if (fix_problem(c, SPACE_STAT_INCORRECT, &ssp)) {
-+			c->lst.empty_lebs = lst.empty_lebs;
-+			c->lst.idx_lebs = lst.idx_lebs;
-+			c->lst.total_free = lst.total_free;
-+			c->lst.total_dirty = lst.total_dirty;
-+			c->lst.total_used = lst.total_used;
-+			c->lst.total_dead = lst.total_dead;
-+			c->lst.total_dark = lst.total_dark;
-+		}
-+	}
-+
-+	/* Check & correct the lprops table information. */
-+	for (lnum = c->lpt_first; lnum <= c->lpt_last; lnum++) {
-+		err = dbg_check_ltab_lnum(c, lnum);
-+		if (err)
-+			return err;
-+	}
-+
-+	if (FSCK(c)->lpt_status & FR_LPT_INCORRECT) {
-+		/* Reset the taken_empty_lebs. */
-+		c->lst.taken_empty_lebs = 0;
-+		/* Clear buds. */
-+		clear_buds(c);
-+		/* Clear lp lists & heaps. */
-+		clear_lp_lists_and_heaps(c);
-+		/*
-+		 * Build lp lists & heaps, subsequent steps could recover
-+		 * disconnected files by allocating free space.
-+		 */
-+		for (lnum = c->main_first; lnum < c->leb_cnt; lnum++) {
-+			int cat;
-+			struct ubifs_lprops *lp = ubifs_lpt_lookup(c, lnum);
-+			if (IS_ERR(lp))
-+				return PTR_ERR(lp);
-+
-+			/* Clear %LPROPS_TAKEN flag for all LEBs. */
-+			lp->flags &= ~LPROPS_TAKEN;
-+			cat = lp->flags & LPROPS_CAT_MASK;
-+			ubifs_add_to_cat(c, lp, cat);
-+		}
-+		/*
-+		 * The %LPROPS_TAKEN flag is cleared in LEB properties, just
-+		 * remark it for c->ihead_lnum LEB.
-+		 */
-+		err = retake_ihead(c);
-+		if (err)
-+			return err;
-+
-+		*lpt_corrected = 1;
-+		FSCK(c)->lpt_status &= ~FR_LPT_INCORRECT;
-+	} else {
-+		ubifs_assert(c, c->freeable_cnt == freeable_cnt);
-+		ubifs_assert(c, c->lst.taken_empty_lebs == lst.taken_empty_lebs);
-+		ubifs_assert(c, c->in_a_category_cnt == c->main_lebs);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * check_and_correct_space - check & correct the space statistics.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function does following things:
-+ * 1. Check fsck mode, exit program if current mode is check mode.
-+ * 2. Check space statistics by comparing lpt records with scanning results
-+ *    for all main LEBs. There could be following problems:
-+ *    a) comparison result is inconsistent: correct the lpt records by LEB
-+ *       scanning results.
-+ *    b) lpt is corrupted: rebuild lpt.
-+ * 3. Set the gc lnum.
-+ * Returns zero in case of success, a negative error code in case of failure.
-+ */
-+int check_and_correct_space(struct ubifs_info *c)
-+{
-+	int err, lpt_corrected = 0;
-+
-+	if (FSCK(c)->mode == CHECK_MODE) {
-+		/*
-+		 * The check mode will exit, because unclean LEBs are not
-+		 * rewritten for readonly mode in previous steps.
-+		 */
-+		if (FSCK(c)->lpt_status)
-+			exit_code |= FSCK_UNCORRECTED;
-+		dbg_fsck("skip checking & correcting space%s, in %s",
-+			 mode_name(c), c->dev_name);
-+		exit(exit_code);
-+	}
-+
-+	log_out(c, "Check and correct the space statistics");
-+
-+	if (FSCK(c)->lpt_status & FR_LPT_CORRUPTED) {
-+rebuild:
-+		if (fix_problem(c, LPT_CORRUPTED, NULL))
-+			return rebuild_lpt(c);
-+	}
-+
-+	err = check_and_correct_lpt(c, &lpt_corrected);
-+	if (err) {
-+		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED))
-+			goto rebuild;
-+		return err;
-+	}
-+
-+	/* Set gc lnum. */
-+	if (c->need_recovery || lpt_corrected) {
-+		err = ubifs_rcvry_gc_commit(c);
-+		if (err) {
-+			/* All LPT nodes must be accessible. */
-+			ubifs_assert(c, !get_failure_reason_callback(c));
-+			ubifs_assert(c, FSCK(c)->lpt_status == 0);
-+			return err;
-+		}
-+	} else {
-+		err = take_gc_lnum(c);
-+		if (err) {
-+			/* All LPT nodes must be accessible. */
-+			ubifs_assert(c, !get_failure_reason_callback(c));
-+			ubifs_assert(c, FSCK(c)->lpt_status == 0);
-+			return err;
-+		}
-+		err = ubifs_leb_unmap(c, c->gc_lnum);
-+		if (err)
-+			return err;
-+	}
-+
-+	return err;
- }
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index cd498f55..ba1b5002 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -58,6 +58,7 @@ static const char *helptext =
- "-b, --rebuild            Forcedly repair the filesystem even by rebuilding filesystem.\n"
- "                         Depends on -y option\n"
- "-n, --nochange           Make no changes to the filesystem, only check filesystem.\n"
-+"                         This mode don't check space, because unclean LEBs are not rewritten in readonly mode.\n"
- "                         Can not be specified at the same time as the -a or -y options\n"
- "Examples:\n"
- "\t1. Check and repair filesystem from UBI volume /dev/ubi0_0\n"
-@@ -329,6 +330,7 @@ static const unsigned int reason_mapping_table[] = {
- 	BUD_CORRUPTED,		/* FR_H_BUD_CORRUPTED */
- 	TNC_DATA_CORRUPTED,	/* FR_H_TNC_DATA_CORRUPTED */
- 	ORPHAN_CORRUPTED,	/* FR_H_ORPHAN_CORRUPTED */
-+	LTAB_INCORRECT,		/* FR_H_LTAB_INCORRECT */
- };
- 
- static bool fsck_handle_failure(const struct ubifs_info *c, unsigned int reason,
-@@ -471,8 +473,18 @@ static int do_fsck(void)
- 	if (tnc_is_empty(c) && fix_problem(c, EMPTY_TNC, NULL)) {
- 		err = -EINVAL;
- 		FSCK(c)->try_rebuild = true;
-+		goto free_disconnected_files;
- 	}
- 
-+	err = check_and_correct_space(c);
-+	kfree(FSCK(c)->used_lebs);
-+	destroy_file_tree(c, &FSCK(c)->scanned_files);
-+	if (err)
-+		exit_code |= FSCK_ERROR;
-+
-+	destroy_file_list(c, &FSCK(c)->disconnected_files);
-+	return err;
-+
- free_disconnected_files:
- 	destroy_file_list(c, &FSCK(c)->disconnected_files);
- free_used_lebs:
-@@ -519,6 +531,7 @@ int main(int argc, char *argv[])
- 	 * Step 9: Check and handle unreachable files
- 	 * Step 10: Check and correct files
- 	 * Step 11: Check whether the TNC is empty
-+	 * Step 12: Check and correct the space statistics
- 	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index ade27fe3..00c157a4 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -44,12 +44,14 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
-        FILE_SHOULDNT_HAVE_DATA, FILE_HAS_NO_DENT, XATTR_HAS_NO_HOST,
-        XATTR_HAS_WRONG_HOST, FILE_HAS_NO_ENCRYPT, FILE_IS_DISCONNECTED,
-        FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE, FILE_IS_INCONSISTENT,
--       EMPTY_TNC };
-+       EMPTY_TNC, LPT_CORRUPTED, NNODE_INCORRECT, PNODE_INCORRECT,
-+       LP_INCORRECT, SPACE_STAT_INCORRECT, LTAB_INCORRECT };
- 
- enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
- 
- typedef int (*calculate_lp_callback)(struct ubifs_info *c,
--				     int index, int *free, int *dirty);
-+				     int index, int *free, int *dirty,
-+				     int *is_idx);
- 
- struct scanned_file;
- 
-@@ -201,6 +203,54 @@ struct invalid_file_problem {
- };
- 
- /**
-+ * nnode_problem - problem instance for incorrect nnode
-+ * @nnode: incorrect nnode
-+ * @parent_nnode: the parent nnode of @nnode, could be NULL if @nnode is root
-+ * @num: calculated num
-+ */
-+struct nnode_problem {
-+	struct ubifs_nnode *nnode;
-+	struct ubifs_nnode *parent_nnode;
-+	int num;
-+};
-+
-+/**
-+ * pnode_problem - problem instance for incorrect pnode
-+ * @pnode: incorrect pnode
-+ * @num: calculated num
-+ */
-+struct pnode_problem {
-+	struct ubifs_pnode *pnode;
-+	int num;
-+};
-+
-+/**
-+ * lp_problem - problem instance for incorrect LEB proerties
-+ * @lp: incorrect LEB properties
-+ * @lnum: LEB number
-+ * @free: calculated free space in LEB
-+ * @dirty: calculated dirty bytes in LEB
-+ * @is_idx: %true means that the LEB is an index LEB
-+ */
-+struct lp_problem {
-+	struct ubifs_lprops *lp;
-+	int lnum;
-+	int free;
-+	int dirty;
-+	int is_idx;
-+};
-+
-+/**
-+ * space_stat_problem - problem instance for incorrect space statistics
-+ * @lst: current space statistics
-+ * @calc_lst: calculated space statistics
-+ */
-+struct space_stat_problem {
-+	struct ubifs_lp_stats *lst;
-+	struct ubifs_lp_stats *calc_lst;
-+};
-+
-+/**
-  * ubifs_rebuild_info - UBIFS rebuilding information.
-  * @write_buf: write buffer for LEB @head_lnum
-  * @head_lnum: current writing LEB number
-@@ -326,6 +376,8 @@ bool tnc_is_empty(struct ubifs_info *c);
- 
- /* check_space.c */
- int get_free_leb(struct ubifs_info *c);
--int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb);
-+int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb,
-+	      bool free_ltab);
-+int check_and_correct_space(struct ubifs_info *c);
- 
- #endif
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 795f05fa..f987e480 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -61,6 +61,12 @@ static const struct fsck_problem problem_table[] = {
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Dentry is unreachable"},	// DENTRY_IS_UNREACHABLE
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "File is inconsistent"},	// FILE_IS_INCONSISTENT
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "TNC is empty"},	// EMPTY_TNC
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Corrupted pnode/nnode"},	// LPT_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Inconsistent properties for nnode"},	// NNODE_INCORRECT
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Inconsistent properties for pnode"},	// PNODE_INCORRECT
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Inconsistent properties for LEB"},	// LP_INCORRECT
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Incorrect space statistics"},	// SPACE_STAT_INCORRECT
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Inconsistent properties for lprops table"},	// LTAB_INCORRECT
- };
- 
- static const char *get_question(const struct fsck_problem *problem,
-@@ -96,6 +102,8 @@ static const char *get_question(const struct fsck_problem *problem,
- 		return "Remove data block?";
- 	case FILE_IS_DISCONNECTED:
- 		return "Put it into disconnected list?";
-+	case LPT_CORRUPTED:
-+		return "Rebuild LPT?";
- 	}
- 
- 	return "Fix it?";
-@@ -229,6 +237,49 @@ static void print_problem(const struct ubifs_info *c,
- 			file->calc_xnms, file->calc_size);
- 		break;
- 	}
-+	case NNODE_INCORRECT:
-+	{
-+		const struct nnode_problem *nnp = (const struct nnode_problem *)priv;
-+
-+		log_out(c, "problem: %s, nnode num %d expected %d parent num %d iip %d",
-+			problem->desc, nnp->nnode->num, nnp->num,
-+			nnp->parent_nnode ? nnp->parent_nnode->num : 0,
-+			nnp->nnode->iip);
-+		break;
-+	}
-+	case PNODE_INCORRECT:
-+	{
-+		const struct pnode_problem *pnp = (const struct pnode_problem *)priv;
-+
-+		log_out(c, "problem: %s, pnode num %d expected %d parent num %d iip %d",
-+			problem->desc, pnp->pnode->num, pnp->num,
-+			pnp->pnode->parent->num, pnp->pnode->iip);
-+		break;
-+	}
-+	case LP_INCORRECT:
-+	{
-+		const struct lp_problem *lpp = (const struct lp_problem *)priv;
-+
-+		log_out(c, "problem: %s %d, free %d dirty %d is_idx %d, should be lnum %d free %d dirty %d is_idx %d",
-+			problem->desc, lpp->lp->lnum, lpp->lp->free,
-+			lpp->lp->dirty, lpp->lp->flags & LPROPS_INDEX ? 1 : 0,
-+			lpp->lnum, lpp->free, lpp->dirty, lpp->is_idx);
-+		break;
-+	}
-+	case SPACE_STAT_INCORRECT:
-+	{
-+		const struct space_stat_problem *ssp = (const struct space_stat_problem *)priv;
-+
-+		log_out(c, "problem: %s, empty_lebs %d idx_lebs %d total_free %lld total_dirty %lld total_used %lld total_dead %lld total_dark %lld, should be empty_lebs %d idx_lebs %d total_free %lld total_dirty %lld total_used %lld total_dead %lld total_dark %lld",
-+			problem->desc, ssp->lst->empty_lebs, ssp->lst->idx_lebs,
-+			ssp->lst->total_free, ssp->lst->total_dirty,
-+			ssp->lst->total_used, ssp->lst->total_dead,
-+			ssp->lst->total_dark, ssp->calc_lst->empty_lebs,
-+			ssp->calc_lst->idx_lebs, ssp->calc_lst->total_free,
-+			ssp->calc_lst->total_dirty, ssp->calc_lst->total_used,
-+			ssp->calc_lst->total_dead, ssp->calc_lst->total_dark);
-+		break;
-+	}
- 	default:
- 		log_out(c, "problem: %s", problem->desc);
- 		break;
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 1161f5af..e65d655d 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -1224,7 +1224,8 @@ out_idx_list:
- 	return err;
- }
- 
--static int calculate_lp(struct ubifs_info *c, int index, int *free, int *dirty)
-+static int calculate_lp(struct ubifs_info *c, int index, int *free, int *dirty,
-+			__unused int *is_idx)
- {
- 	if (!test_bit(index, FSCK(c)->used_lebs) ||
- 	    c->gc_lnum == index + c->main_first) {
-@@ -1421,7 +1422,7 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 
- 	/* Step 10. Build LPT. */
- 	log_out(c, "Build LPT");
--	err = build_lpt(c, calculate_lp);
-+	err = build_lpt(c, calculate_lp, true);
- 	if (err) {
- 		exit_code |= FSCK_ERROR;
- 		goto out;
-diff --git a/ubifs-utils/libubifs/lpt.c b/ubifs-utils/libubifs/lpt.c
-index fc70cad5..8e20a173 100644
---- a/ubifs-utils/libubifs/lpt.c
-+++ b/ubifs-utils/libubifs/lpt.c
-@@ -605,6 +605,7 @@ static int calc_pnode_num_from_parent(const struct ubifs_info *c,
-  * @lps: array of logical eraseblock properties
-  * @lp_cnt: the length of @lps
-  * @hash: hash of the LPT is returned here
-+ * @free_ltab: %true means to release c->ltab after creating lpt
-  *
-  * This function creates lpt, the pnode will be initialized based on
-  * corresponding elements in @lps. If there are no corresponding lprops
-@@ -612,7 +613,7 @@ static int calc_pnode_num_from_parent(const struct ubifs_info *c,
-  * as free state.
-  */
- int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
--		     u8 *hash)
-+		     u8 *hash, bool free_ltab)
- {
- 	int lnum, err = 0, i, j, cnt, len, alen, row;
- 	int blnum, boffs, bsz, bcnt;
-@@ -910,10 +911,12 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
- 	if (c->big_lpt)
- 		dbg_lp("LPT lsave is at %d:%d", c->lsave_lnum, c->lsave_offs);
- out:
--	c->ltab = NULL;
-+	if (free_ltab || err) {
-+		c->ltab = NULL;
-+		vfree(ltab);
-+	}
- 	kfree(desc);
- 	kfree(lsave);
--	vfree(ltab);
- 	vfree(buf);
- 	kfree(nnode);
- 	kfree(pnode);
-diff --git a/ubifs-utils/libubifs/lpt_commit.c b/ubifs-utils/libubifs/lpt_commit.c
-index 8a44546d..ee84f801 100644
---- a/ubifs-utils/libubifs/lpt_commit.c
-+++ b/ubifs-utils/libubifs/lpt_commit.c
-@@ -1599,7 +1599,7 @@ static int dbg_is_node_dirty(struct ubifs_info *c, int node_type, int lnum,
-  *
-  * This function returns %0 on success and a negative error code on failure.
-  */
--static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
-+int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
- {
- 	int err, len = c->leb_size, dirty = 0, node_type, node_num, node_len;
- 	int ret;
-@@ -1608,7 +1608,7 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
- 	buf = p = __vmalloc(c->leb_size, GFP_NOFS);
- 	if (!buf) {
- 		ubifs_err(c, "cannot allocate memory for ltab checking");
--		return 0;
-+		return -ENOMEM;
- 	}
- 
- 	dbg_lp("LEB %d", lnum);
-@@ -1632,20 +1632,30 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
- 				continue;
- 			}
- 			if (!dbg_is_all_ff(p, len)) {
-+				set_failure_reason_callback(c, FR_LPT_CORRUPTED);
- 				ubifs_err(c, "invalid empty space in LEB %d at %d",
- 					  lnum, c->leb_size - len);
- 				err = -EINVAL;
-+				goto out;
- 			}
- 			i = lnum - c->lpt_first;
- 			if (len != c->ltab[i].free) {
- 				ubifs_err(c, "invalid free space in LEB %d (free %d, expected %d)",
--					  lnum, len, c->ltab[i].free);
-+					  lnum, c->ltab[i].free, len);
- 				err = -EINVAL;
-+				if (handle_failure_callback(c, FR_H_LTAB_INCORRECT, NULL)) {
-+					c->ltab[i].free = len;
-+					err = 0;
-+				}
- 			}
- 			if (dirty != c->ltab[i].dirty) {
- 				ubifs_err(c, "invalid dirty space in LEB %d (dirty %d, expected %d)",
--					  lnum, dirty, c->ltab[i].dirty);
-+					  lnum, c->ltab[i].dirty, dirty);
- 				err = -EINVAL;
-+				if (handle_failure_callback(c, FR_H_LTAB_INCORRECT, NULL)) {
-+					c->ltab[i].dirty = dirty;
-+					err = 0;
-+				}
- 			}
- 			goto out;
- 		}
-diff --git a/ubifs-utils/libubifs/replay.c b/ubifs-utils/libubifs/replay.c
-index 2741742b..3943b32d 100644
---- a/ubifs-utils/libubifs/replay.c
-+++ b/ubifs-utils/libubifs/replay.c
-@@ -1099,7 +1099,7 @@ out_dump:
-  * This function returns the amount of free space in the index head LEB or a
-  * negative error code.
-  */
--static int take_ihead(struct ubifs_info *c)
-+int take_ihead(struct ubifs_info *c)
- {
- 	const struct ubifs_lprops *lp;
- 	int err, free;
-diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index 45c4105c..a4b05a66 100644
---- a/ubifs-utils/libubifs/ubifs.h
-+++ b/ubifs-utils/libubifs/ubifs.h
-@@ -1563,6 +1563,7 @@ enum {
- 	FR_H_BUD_CORRUPTED = 0,		/* Bud LEB is corrupted */
- 	FR_H_TNC_DATA_CORRUPTED,	/* Data searched from TNC is corrupted */
- 	FR_H_ORPHAN_CORRUPTED,		/* Orphan LEB is corrupted */
-+	FR_H_LTAB_INCORRECT,		/* Lprops table is incorrect */
- };
- /* Callback functions for failure(which can be handled by fsck) happens. */
- static inline void set_failure_reason_callback(const struct ubifs_info *c,
-@@ -1734,6 +1735,7 @@ int ubifs_fixup_free_space(struct ubifs_info *c);
- /* replay.c */
- int ubifs_validate_entry(struct ubifs_info *c,
- 			 const struct ubifs_dent_node *dent);
-+int take_ihead(struct ubifs_info *c);
- int ubifs_replay_journal(struct ubifs_info *c);
- 
- /* gc.c */
-@@ -1754,7 +1756,7 @@ int ubifs_clear_orphans(struct ubifs_info *c);
- int ubifs_calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs, int *big_lpt);
- int ubifs_calc_lpt_geom(struct ubifs_info *c);
- int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
--		     u8 *hash);
-+		     u8 *hash, bool free_ltab);
- int ubifs_lpt_init(struct ubifs_info *c, int rd, int wr);
- struct ubifs_lprops *ubifs_lpt_lookup(struct ubifs_info *c, int lnum);
- struct ubifs_lprops *ubifs_lpt_lookup_dirty(struct ubifs_info *c, int lnum);
-@@ -1795,6 +1797,7 @@ int ubifs_lpt_end_commit(struct ubifs_info *c);
- int ubifs_lpt_post_commit(struct ubifs_info *c);
- void ubifs_free_lpt_nodes(struct ubifs_info *c);
- void ubifs_lpt_free(struct ubifs_info *c, int wr_only);
-+int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum);
- 
- /* lprops.c */
- const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 2817b6ce..b5f38929 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -2675,7 +2675,7 @@ static int write_lpt(void)
- 	int err, lnum;
- 
- 	c->lscan_lnum = c->main_first;
--	err = ubifs_create_lpt(c, c->lpt, c->main_lebs, c->lpt_hash);
-+	err = ubifs_create_lpt(c, c->lpt, c->main_lebs, c->lpt_hash, true);
- 	if (err)
- 		return err;
- 
--- 
-2.13.6
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Rm9yIGtpbmRzIG9mIGluY29uc2lzdGVudCBVQklGUyBpbWFnZXMod2hpY2ggY2FuIHNpbXVsYXRl
+IGNvcnJ1cHRpb25zCmNhdXNlZCBieSBzb21lIHBvdGVudGlvbmFsIFVCSUZTIGJ1ZyksIGNoZWNr
+IHRoZSByZXN1bHQgb2YgZnNjay4KVGhpcyB0ZXN0Y2FzZSBtYWlubHkgY2hlY2tzIHdoZXRoZXIg
+dGhlIGJlaGF2aW9yIGlzIGluIGV4cGVjdGVkIGFmdGVyCnJlcGFpcmluZyBzcGVjaWZpYyBpbmNv
+bnNpc3RlbnQgVUJJRlMgaW1hZ2UuCgpTaWduZWQtb2ZmLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5n
+emhpaGFvMUBodWF3ZWkuY29tPgotLS0KIC5naXRpZ25vcmUgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgICAxICsKIGNvbmZpZ3VyZS5hYyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgICAzICstCiB0ZXN0cy91Ymlmc190b29scy10ZXN0cy9N
+YWtlbW9kdWxlLmFtICAgICAgICAgICAgICB8ICAgMyArLQogLi4uL2ZzY2tfdGVzdHMvZnNja19i
+YWRfaW1hZ2Uuc2guaW4gICAgICAgICAgICAgICAgfCAzNTUgKysrKysrKysrKysrKysrKysrKysr
+CiA0IGZpbGVzIGNoYW5nZWQsIDM2MCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQogY3Jl
+YXRlIG1vZGUgMTAwNzU1IHRlc3RzL3ViaWZzX3Rvb2xzLXRlc3RzL2ZzY2tfdGVzdHMvZnNja19i
+YWRfaW1hZ2Uuc2guaW4KCmRpZmYgLS1naXQgYS8uZ2l0aWdub3JlIGIvLmdpdGlnbm9yZQppbmRl
+eCAyMDNmMDFmMC4uNjhmZmYzNjUgMTAwNjQ0Ci0tLSBhLy5naXRpZ25vcmUKKysrIGIvLmdpdGln
+bm9yZQpAQCAtMTIwLDYgKzEyMCw3IEBAIHRlc3RzL3ViaWZzX3Rvb2xzLXRlc3RzL2ZzY2tfdGVz
+dHMvcG93ZXJjdXRfZnNja19tb3VudC5zaAogdGVzdHMvdWJpZnNfdG9vbHMtdGVzdHMvZnNja190
+ZXN0cy9jeWNsZV9jb3JydXB0ZWRfZnNja19mYXVsdF9pbmplY3Quc2gKIHRlc3RzL3ViaWZzX3Rv
+b2xzLXRlc3RzL2ZzY2tfdGVzdHMvY3ljbGVfcG93ZXJjdXRfbW91bnRfZnNjay5zaAogdGVzdHMv
+dWJpZnNfdG9vbHMtdGVzdHMvZnNja190ZXN0cy9yYW5kb21fY29ycnVwdGVkX2ZzY2suc2gKK3Rl
+c3RzL3ViaWZzX3Rvb2xzLXRlc3RzL2ZzY2tfdGVzdHMvZnNja19iYWRfaW1hZ2Uuc2gKIAogIwog
+IyBGaWxlcyBnZW5lcmF0ZWQgYnkgYXV0b3Rvb2xzCmRpZmYgLS1naXQgYS9jb25maWd1cmUuYWMg
+Yi9jb25maWd1cmUuYWMKaW5kZXggMWIyNTkxYmEuLjFmMDc4NDFjIDEwMDY0NAotLS0gYS9jb25m
+aWd1cmUuYWMKKysrIGIvY29uZmlndXJlLmFjCkBAIC0yOTksNyArMjk5LDggQEAgQUNfQ09ORklH
+X0ZJTEVTKFt0ZXN0cy9mcy10ZXN0cy9mc19oZWxwX2FsbC5zaAogCXRlc3RzL3ViaWZzX3Rvb2xz
+LXRlc3RzL2ZzY2tfdGVzdHMvcG93ZXJjdXRfZnNja19tb3VudC5zaAogCXRlc3RzL3ViaWZzX3Rv
+b2xzLXRlc3RzL2ZzY2tfdGVzdHMvY3ljbGVfY29ycnVwdGVkX2ZzY2tfZmF1bHRfaW5qZWN0LnNo
+CiAJdGVzdHMvdWJpZnNfdG9vbHMtdGVzdHMvZnNja190ZXN0cy9jeWNsZV9wb3dlcmN1dF9tb3Vu
+dF9mc2NrLnNoCi0JdGVzdHMvdWJpZnNfdG9vbHMtdGVzdHMvZnNja190ZXN0cy9yYW5kb21fY29y
+cnVwdGVkX2ZzY2suc2hdKQorCXRlc3RzL3ViaWZzX3Rvb2xzLXRlc3RzL2ZzY2tfdGVzdHMvcmFu
+ZG9tX2NvcnJ1cHRlZF9mc2NrLnNoCisJdGVzdHMvdWJpZnNfdG9vbHMtdGVzdHMvZnNja190ZXN0
+cy9mc2NrX2JhZF9pbWFnZS5zaF0pCiAKIEFDX09VVFBVVChbTWFrZWZpbGVdKQogCmRpZmYgLS1n
+aXQgYS90ZXN0cy91Ymlmc190b29scy10ZXN0cy9NYWtlbW9kdWxlLmFtIGIvdGVzdHMvdWJpZnNf
+dG9vbHMtdGVzdHMvTWFrZW1vZHVsZS5hbQppbmRleCA3ZWY4NzNjZS4uMWQzZDBmMjkgMTAwNjQ0
+Ci0tLSBhL3Rlc3RzL3ViaWZzX3Rvb2xzLXRlc3RzL01ha2Vtb2R1bGUuYW0KKysrIGIvdGVzdHMv
+dWJpZnNfdG9vbHMtdGVzdHMvTWFrZW1vZHVsZS5hbQpAQCAtNSw3ICs1LDggQEAgdGVzdF9TQ1JJ
+UFRTICs9IFwKIAl0ZXN0cy91Ymlmc190b29scy10ZXN0cy9mc2NrX3Rlc3RzL3Bvd2VyY3V0X2Zz
+Y2tfbW91bnQuc2ggXAogCXRlc3RzL3ViaWZzX3Rvb2xzLXRlc3RzL2ZzY2tfdGVzdHMvY3ljbGVf
+Y29ycnVwdGVkX2ZzY2tfZmF1bHRfaW5qZWN0LnNoIFwKIAl0ZXN0cy91Ymlmc190b29scy10ZXN0
+cy9mc2NrX3Rlc3RzL2N5Y2xlX3Bvd2VyY3V0X21vdW50X2ZzY2suc2ggXAotCXRlc3RzL3ViaWZz
+X3Rvb2xzLXRlc3RzL2ZzY2tfdGVzdHMvcmFuZG9tX2NvcnJ1cHRlZF9mc2NrLnNoCisJdGVzdHMv
+dWJpZnNfdG9vbHMtdGVzdHMvZnNja190ZXN0cy9yYW5kb21fY29ycnVwdGVkX2ZzY2suc2ggXAor
+CXRlc3RzL3ViaWZzX3Rvb2xzLXRlc3RzL2ZzY2tfdGVzdHMvZnNja19iYWRfaW1hZ2Uuc2gKIAog
+dGVzdF9EQVRBICs9IFwKIAl0ZXN0cy91Ymlmc190b29scy10ZXN0cy9pbWFnZXMvZ29vZC5neiBc
+CmRpZmYgLS1naXQgYS90ZXN0cy91Ymlmc190b29scy10ZXN0cy9mc2NrX3Rlc3RzL2ZzY2tfYmFk
+X2ltYWdlLnNoLmluIGIvdGVzdHMvdWJpZnNfdG9vbHMtdGVzdHMvZnNja190ZXN0cy9mc2NrX2Jh
+ZF9pbWFnZS5zaC5pbgpuZXcgZmlsZSBtb2RlIDEwMDc1NQppbmRleCAwMDAwMDAwMC4uMmJhOWY3
+ODkKLS0tIC9kZXYvbnVsbAorKysgYi90ZXN0cy91Ymlmc190b29scy10ZXN0cy9mc2NrX3Rlc3Rz
+L2ZzY2tfYmFkX2ltYWdlLnNoLmluCkBAIC0wLDAgKzEsMzU1IEBACisjIS9iaW4vc2gKKyMgQ29w
+eXJpZ2h0IChjKSwgMjAyNCwgSHVhd2VpIFRlY2hub2xvZ2llcyBDbywgTHRkLgorIyBBdXRob3I6
+IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+CisjCisjIFRlc3QgRGVzY3Jp
+cHRpb246IFRlc3RzIHdoZXRoZXIgYWxsIGluY29uc2lzdGVudCBVQklGUyBpbWFnZXMgY2FuIGJl
+IGZpeGVkCisjIGFzIGV4cGVjdGVkLgorIyBPcmlnaW4gVUJJRlMgaW1hZ2UgY29udGVudDoKKyMg
+LworIyDilJzilIDilIAgY29ycnVwdF9maWxlICh4YXR0ciAtIHVzZXIuY29ycnVwdDoxMjMsIDJL
+IGRhdGEpCisjIOKUnOKUgOKUgCBkaXIKKyMg4pSCwqDCoCDilJzilIDilIAgYmxvY2tfZGV2Cisj
+IOKUgsKgwqAg4pSc4pSA4pSAIGNoYXJfZGV2CisjIOKUgsKgwqAg4pSc4pSA4pSAIGRpcgorIyDi
+lILCoMKgIOKUlOKUgOKUgCBmaWxlIChjb250ZW50OiAnMTIzJykKKyMg4pSc4pSA4pSAIGhhcmRs
+X2NvcnJ1cHRfZmlsZSA9PiBjb3JydXB0X2ZpbGUKKyMg4pSU4pSA4pSAIHNvZnRsX2NvcnJ1cHRf
+ZmlsZSAtPiBjb3JydXB0X2ZpbGUKKyMKKyMgUnVubmluZyB0aW1lOiAybWluCisKK1RFU1RCSU5E
+SVI9QFRFU1RCSU5ESVJACitzb3VyY2UgJFRFU1RCSU5ESVIvY29tbW9uLnNoCisKK0NPUlJVUFRf
+RklMRT1jb3JydXB0X2ZpbGUKK0NPUlJVUFRfRklMRV9JTlVNPUlOT182NQorWEFUVFJfTkFNRT0i
+dXNlci5jb3JydXB0IgorWEFUVFJfVkFMPTEyMworQ09SUlVQVF9GSUxFX01ENT03ZDJmOTUzZTkx
+MDMzYzc0M2FiNmE4MDFkNWVlNmUxNQorU09GVF9MSU5LX0ZJTEU9c29mdGxfY29ycnVwdF9maWxl
+CitIQVJEX0xJTktfRklMRT1oYXJkbF9jb3JydXB0X2ZpbGUKK0RJUj1kaXIKK0JMT0NLX0RFVj1i
+bG9ja19kZXYKK0NIQVJfREVWPWNoYXJfZGV2CitGSUxFPWZpbGUKK0ZJTEVfSU5VTT1JTk9fNzIK
+K0ZJTEVfTUQ1PWJhMWYyNTExZmMzMDQyM2JkYmIxODNmZTMzZjNkZDBmCitMT1NUX0ZPVU5EPSJs
+b3N0K2ZvdW5kIgorCitmdW5jdGlvbiBmc2NrX2ltYWdlKCkKK3sKKwlsb2NhbCBpbWdfdHlwZT0k
+MTsKKwlsb2NhbCBpbWc9JDI7CisJbG9jYWwgZnNja19tb2RlPSQzOworCWxvY2FsIGZpbGVfZXhp
+c3Q9JDQ7CisJbG9jYWwgZmlsZV9ub2NoYW5nZT0kNQorCWxvY2FsIGZpbGVfeGF0dHJfZXhpc3Q9
+JDY7CisJbG9jYWwgaGFyZF9saW5rX2V4aXN0PSQ3OworCWxvY2FsIGhhcmRfbGlua19ub19jaGFu
+Z2U9JDg7CisJbG9jYWwgaGFyZF9saW5rX3hhdHRyX2V4aXN0PSQ5OworCWxvY2FsIHNvZnRfbGlu
+a19leGlzdD0kezEwfTsKKwlsb2NhbCBkaXJfZXhpc3Q9JHsxMX07CisJbG9jYWwgZGlyX2ZpbGVf
+bm9fY2hhbmdlPSR7MTJ9OworCWxvY2FsIGxvc3RfZm91bmQ9JHsxM307CisKKwllY2hvICI9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09IgorCWVjaG8gImZzY2sgJGltZ190eXBlLCBzdWNjZXNzX2ZzY2tfbW9kZTokZnNj
+a19tb2RlIGZpbGVfZXhpc3Q6JGZpbGVfZXhpc3QgZmlsZV9ub2NoYW5nZTokZmlsZV9ub2NoYW5n
+ZSBmaWxlX3hhdHRyX2V4aXN0OiRmaWxlX3hhdHRyX2V4aXN0IGhhcmRfbGlua19leGlzdDokaGFy
+ZF9saW5rX2V4aXN0IGhhcmRfbGlua19ub19jaGFuZ2U6JGhhcmRfbGlua19ub19jaGFuZ2U6aGFy
+ZF9saW5rX3hhdHRyX2V4aXN0ICRoYXJkX2xpbmtfeGF0dHJfZXhpc3Q6c29mdF9saW5rX2V4aXN0
+OiRzb2Z0X2xpbmtfZXhpc3QgZGlyX2V4aXN0OiRkaXJfZXhpc3QgJGxvc3RfZm91bmQiCisKKwls
+b2FkX210ZHJhbSAxIDE2IHx8IGVjaG8gImNhbm5vdCBsb2FkIG10ZHJhbSIKKwltdGRudW09IiQo
+ZmluZF9tdGRfZGV2aWNlICIkbXRkcmFtX3BhdHQiKSIKKworCWRtZXNnIC1jID4gL2Rldi9udWxs
+CisJZ3ppcCAtZiAtayAtZCAkVEVTVEJJTkRJUi8ke2ltZ30uZ3ogfHwgZmF0YWwgImd6aXAgZmFp
+bGVkIgorCWZsYXNoX2VyYXNlYWxsIC9kZXYvbXRkJG10ZG51bQorCWRkIGlmPSRURVNUQklORElS
+LyRpbWcgb2Y9L2Rldi9tdGQkbXRkbnVtIGJzPTFNCisJcm0gLWYgJFRFU1RCSU5ESVIvJGltZwor
+CW1vZHByb2JlIHViaSBtdGQ9IiRtdGRudW0sMCIgfHwgZmF0YWwgIm1vZHByb2JlIHViaSBmYWls
+IgorCW1vZHByb2JlIHViaWZzIHx8IGZhdGFsICJtb2Rwcm9iZSB1YmlmcyBmYWlsIgorCisJZnNj
+ay51YmlmcyAtYSAkREVWCisJbGV0ICJyZXQ9JD8mfiRGU0NLX05PTkRFU1RSVUNUIgorCWlmIFtb
+ICRyZXQgIT0gJEZTQ0tfT0sgXV07IHRoZW4KKwkJaWYgW1sgIiRmc2NrX21vZGUiID09ICJzYWZl
+IiBdXTsgdGhlbgorCQkJZmF0YWwgIlRoZSBpbWFnZSBzaG91bGQgYmUgZml4ZWQgaW4gJGZzY2tf
+bW9kZSBtb2RlLCBidXQgaXQgZmFpbHMiCisJCWZpCisKKwkJZnNjay51YmlmcyAteSAkREVWCisJ
+CWxldCAicmV0PSQ/Jn4kRlNDS19OT05ERVNUUlVDVCIKKwkJaWYgW1sgJHJldCAhPSAkRlNDS19P
+SyBdXTsgdGhlbgorCQkJaWYgW1sgIiRmc2NrX21vZGUiID09ICJkYW5nZXJfZGVmYXVsdCIgXV07
+IHRoZW4KKwkJCQlmYXRhbCAiVGhlIGltYWdlIHNob3VsZCBiZSBmaXhlZCBpbiAkZnNja19tb2Rl
+IG1vZGUsIGJ1dCBpdCBmYWlscyIKKwkJCWZpCisKKwkJCWZzY2sudWJpZnMgLXliICRERVYKKwkJ
+CWxldCAicmV0PSQ/Jn4kRlNDS19OT05ERVNUUlVDVCIKKwkJCWlmIFtbICRyZXQgIT0gJEZTQ0tf
+T0sgXV07IHRoZW4KKwkJCQlpZiBbWyAiJGZzY2tfbW9kZSIgPT0gImRhbmdlcl9yZWJ1aWxkIiBd
+XTsgdGhlbgorCQkJCQlmYXRhbCAiVGhlIGltYWdlIHNob3VsZCBiZSBmaXhlZCBpbiAkZnNja19t
+b2RlIG1vZGUsIGJ1dCBpdCBmYWlscyIKKwkJCQlmaQorCisJCQkJZWNobyAiZnNjayBmYWlsZWQg
+aXMgZXhwZWN0ZWQsIHNraXAiCisKKwkJCQltb2Rwcm9iZSAtciB1YmlmcworCQkJCW1vZHByb2Jl
+IC1yIHViaQorCQkJCW1vZHByb2JlIC1yIG10ZHJhbQorCQkJCWVjaG8gIi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0i
+CisKKwkJCQlyZXR1cm47CisJCQllbGlmIFtbICIkZnNja19tb2RlIiAhPSAiZGFuZ2VyX3JlYnVp
+bGQiIF1dOyB0aGVuCisJCQkJZmF0YWwgIlRoZSBpbWFnZSBzaG91bGQgbm90IGJlIGZpeGVkIGlu
+ICRmc2NrX21vZGUgbW9kZSwgYnV0IGl0IHN1Y2NlZWRzIgorCQkJZmkKKwkJZWxpZiBbWyAiJGZz
+Y2tfbW9kZSIgIT0gImRhbmdlcl9kZWZhdWx0IiBdXTsgdGhlbgorCQkJZmF0YWwgIlRoZSBpbWFn
+ZSBzaG91bGQgbm90IGJlIGZpeGVkIGluICRmc2NrX21vZGUgbW9kZSwgYnV0IGl0IHN1Y2NlZWRz
+IgorCQlmaQorCWVsaWYgW1sgIiRmc2NrX21vZGUiICE9ICJzYWZlIiBdXTsgdGhlbgorCQlmYXRh
+bCAiVGhlIGltYWdlIHNob3VsZCBub3QgYmUgZml4ZWQgaW4gJGZzY2tfbW9kZSBtb2RlLCBidXQg
+aXQgc3VjY2VlZHMiCisJZmkKKworCWVuYWJsZV9jaGtmcworCisJbW91bnRfdWJpZnMgJERFViAk
+TU5UCisJcmV0PSQ/CisJaWYgW1sgJHJldCAhPSAwIF1dOyB0aGVuCisJCWZhdGFsICJtb3VudCBm
+YWlsZWQgJHJldCIKKwlmaQorCisJZHUgLXNoICRNTlQgPiAvZGV2L251bGwgICMgTWFrZSBzdXJl
+IGFsbCBmaWxlcyBhcmUgYWNjZXNzaWJsZQorCXJldD0kPworCWlmIFtbICRyZXQgIT0gMCBdXTsg
+dGhlbgorCQlmYXRhbCAiY2Fubm90IGFjY2VzcyBhbGwgZmlsZXMgJHJldCIKKwlmaQorCisJaWYg
+W1sgJGZpbGVfZXhpc3QgPT0gMSBdXTsgdGhlbgorCQlpZiAhIFsgLWYgJE1OVC8kQ09SUlVQVF9G
+SUxFIF07IHRoZW4KKwkJCWZhdGFsICIkTU5ULyRDT1JSVVBUX0ZJTEUgaXMgbG9zdCIKKwkJZmkK
+KwllbHNlCisJCWlmIFsgLWYgJE1OVC8kQ09SUlVQVF9GSUxFIF07IHRoZW4KKwkJCWZhdGFsICIk
+TU5ULyRDT1JSVVBUX0ZJTEUgc2hvdWxkIG5vdCBleGlzdCIKKwkJZmkKKwlmaQorCisJbWQ1X2Fm
+dGVyPWBtZDVzdW0gJE1OVC8kQ09SUlVQVF9GSUxFIDI+L2Rldi9udWxsIHwgYXdrICd7cHJpbnQg
+JDF9J2AKKwlpZiBbWyAkZmlsZV9ub2NoYW5nZSA9PSAxIF1dOyB0aGVuCisJCWlmIFtbICRDT1JS
+VVBUX0ZJTEVfTUQ1ICE9ICRtZDVfYWZ0ZXIgXV07IHRoZW4KKwkJCWZhdGFsICJjb250ZW50IGNo
+YW5nZWQgZm9yICRNTlQvJENPUlJVUFRfRklMRSIKKwkJZmkKKwllbHNlCisJCWlmIFtbICRDT1JS
+VVBUX0ZJTEVfTUQ1ID09ICRtZDVfYWZ0ZXIgXV07IHRoZW4KKwkJCWZhdGFsICJjb250ZW50IG5v
+dCBjaGFuZ2VkIGZvciAkTU5ULyRDT1JSVVBUX0ZJTEUiCisJCWZpCisJZmkKKworCXhhdHRyPWBn
+ZXRmYXR0ciAtbiAkWEFUVFJfTkFNRSAkTU5ULyRDT1JSVVBUX0ZJTEUgMj4vZGV2L251bGwgfCBn
+cmVwICRYQVRUUl9OQU1FIHwgYXdrIC1GICc9JyAneyBwcmludCAkMiB9J2AKKwlpZiBbWyAkZmls
+ZV94YXR0cl9leGlzdCA9PSAxIF1dOyB0aGVuCisJCWlmICEgW1sgIiR4YXR0ciIgPX4gIiRYQVRU
+Ul9WQUwiIF1dOyB0aGVuCisJCQlmYXRhbCAid3JvbmcgeGF0dHIgJHhhdHRyIGZvciAkTU5ULyRD
+T1JSVVBUX0RFTlRfTkFNRSIKKwkJZmkKKwllbHNlCisJCWlmIFtbICIkeGF0dHIiID1+ICIkWEFU
+VFJfVkFMIiBdXTsgdGhlbgorCQkJZmF0YWwgInhhdHRyICR4YXR0ciBmb3IgJE1OVC8kQ09SUlVQ
+VF9ERU5UX05BTUUgc2hvdWxkIG5vdCBleGlzdCIKKwkJZmkKKwlmaQorCisJaWYgW1sgJGhhcmRf
+bGlua19leGlzdCA9PSAxIF1dOyB0aGVuCisJCWlmICEgWyAtZiAkTU5ULyRIQVJEX0xJTktfRklM
+RSBdOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kSEFSRF9MSU5LX0ZJTEUgc2hvdWxkIGlzIGxvc3Qi
+CisJCWZpCisJZWxzZQorCQlpZiBbIC1mICRNTlQvJEhBUkRfTElOS19GSUxFIF07IHRoZW4KKwkJ
+CWZhdGFsICIkTU5ULyRIQVJEX0xJTktfRklMRSBzaG91bGQgbm90IGV4aXN0IgorCQlmaQorCWZp
+CisKKwltZDVfYWZ0ZXI9YG1kNXN1bSAkTU5ULyRIQVJEX0xJTktfRklMRSAyPi9kZXYvbnVsbCB8
+IGF3ayAne3ByaW50ICQxfSdgCisJaWYgW1sgJGhhcmRfbGlua19ub19jaGFuZ2UgPT0gMSBdXTsg
+dGhlbgorCQlpZiBbWyAkQ09SUlVQVF9GSUxFX01ENSAhPSAkbWQ1X2FmdGVyIF1dOyB0aGVuCisJ
+CQlmYXRhbCAiY29udGVudCBjaGFuZ2VkIGZvciAkTU5ULyRIQVJEX0xJTktfRklMRSIKKwkJZmkK
+KwllbHNlCisJCWlmIFtbICRDT1JSVVBUX0ZJTEVfTUQ1ID09ICRtZDVfYWZ0ZXIgXV07IHRoZW4K
+KwkJCWZhdGFsICJjb250ZW50IG5vdCBjaGFuZ2VkIGZvciAkTU5ULyRIQVJEX0xJTktfRklMRSIK
+KwkJZmkKKwlmaQorCisJeGF0dHI9YGdldGZhdHRyIC1uICRYQVRUUl9OQU1FICRNTlQvJEhBUkRf
+TElOS19GSUxFIDI+L2Rldi9udWxsIHwgZ3JlcCAkWEFUVFJfTkFNRSB8IGF3ayAtRiAnPScgJ3sg
+cHJpbnQgJDIgfSdgCisJaWYgW1sgJGhhcmRfbGlua194YXR0cl9leGlzdCA9PSAxIF1dOyB0aGVu
+CisJCWlmICEgW1sgIiR4YXR0ciIgPX4gIiRYQVRUUl9WQUwiIF1dOyB0aGVuCisJCQlmYXRhbCAi
+d3JvbmcgeGF0dHIgJHhhdHRyIGZvciAkTU5ULyRIQVJEX0xJTktfRklMRSIKKwkJZmkKKwllbHNl
+CisJCWlmIFtbICIkeGF0dHIiID1+ICIkWEFUVFJfVkFMIiBdXTsgdGhlbgorCQkJZmF0YWwgInhh
+dHRyICR4YXR0ciBmb3IgJE1OVC8kSEFSRF9MSU5LX0ZJTEUgc2hvdWxkIG5vdCBleGlzdCIKKwkJ
+ZmkKKwlmaQorCisJbGluaz1gc3RhdCAtYyAlTiAkTU5ULyRTT0ZUX0xJTktfRklMRSAyPi9kZXYv
+bnVsbCB8IGdyZXAgJFNPRlRfTElOS19GSUxFIHwgZ3JlcCAkQ09SUlVQVF9GSUxFYAorCWlmIFtb
+ICRzb2Z0X2xpbmtfZXhpc3QgPT0gMSBdXTsgdGhlbgorCQlpZiBbWyAiJGxpbmsiID09ICIiIF1d
+OyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kU09GVF9MSU5LX0ZJTEUgaXMgbG9zdCIKKwkJZmkKKwll
+bHNlCisJCWlmIFtbICIkbGluayIgIT0gIiIgXV07IHRoZW4KKwkJCWZhdGFsICIkTU5ULyRTT0ZU
+X0xJTktfRklMRSBzaG91bGQgbm90IGV4aXN0IgorCQlmaQorCWZpCisKKwlpZiBbWyAkZGlyX2V4
+aXN0ID09IDEgXV07IHRoZW4KKwkJaWYgISBbIC1kICRNTlQvJERJUiBdOyB0aGVuCisJCQlmYXRh
+bCAiJE1OVC8kRElSIGlzIGxvc3QiCisJCWZpCisJCWlmICEgWyAtZCAkTU5ULyRESVIvJERJUiBd
+OyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kRElSLyRESVIgaXMgbG9zdCIKKwkJZmkKKwkJaWYgISBb
+IC1mICRNTlQvJERJUi8kRklMRSBdOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kRElSLyRGSUxFIGlz
+IGxvc3QiCisJCWZpCisJCWZfbWQ1PWBtZDVzdW0gJE1OVC8kRElSLyRGSUxFIDI+L2Rldi9udWxs
+IHwgYXdrICd7cHJpbnQgJDF9J2AKKwkJaWYgW1sgJGRpcl9maWxlX25vX2NoYW5nZSA9PSAxIF1d
+OyB0aGVuCisJCQlpZiBbWyAkRklMRV9NRDUgIT0gJGZfbWQ1IF1dOyB0aGVuCisJCQkJZmF0YWwg
+ImNvbnRlbnQgY2hhbmdlZCBmb3IgJE1OVC8kRElSLyRGSUxFIgorCQkJZmkKKwkJZWxzZQorCQkJ
+aWYgW1sgJEZJTEVfTUQ1ID09ICRmX21kNSBdXTsgdGhlbgorCQkJCWZhdGFsICJjb250ZW50IG5v
+dCBjaGFuZ2VkIGZvciAkTU5ULyRESVIvJEZJTEUiCisJCQlmaQorCQlmaQorCQlpZiAhIFsgLWIg
+JE1OVC8kRElSLyRCTE9DS19ERVYgXTsgdGhlbgorCQkJZmF0YWwgIiRNTlQvJERJUi8kQkxPQ0tf
+REVWIGlzIGxvc3QiCisJCWZpCisJCW1ham9yPWBzdGF0IC1jICV0ICRNTlQvJERJUi8kQkxPQ0tf
+REVWYAorCQltaW5vcj1gc3RhdCAtYyAlVCAkTU5ULyRESVIvJEJMT0NLX0RFVmAKKwkJaWYgW1sg
+JG1ham9yICE9IDEgXV0gfHwgW1sgJG1pbm9yICE9IDIgXV07IHRoZW4KKwkJCWVjaG8gIm1ham9y
+L21pbm9yIGNoYW5nZWQgZm9yICRNTlQvJERJUi8kQkxPQ0tfREVWIgorCQlmaQorCQlpZiAhIFsg
+LWMgJE1OVC8kRElSLyRDSEFSX0RFViBdOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kRElSLyRDSEFS
+X0RFViBpcyBsb3N0IgorCQlmaQorCQltYWpvcj1gc3RhdCAtYyAldCAkTU5ULyRESVIvJENIQVJf
+REVWYAorCQltaW5vcj1gc3RhdCAtYyAlVCAkTU5ULyRESVIvJENIQVJfREVWYAorCQlpZiBbWyAk
+bWFqb3IgIT0gMCBdXSB8fCBbWyAkbWlub3IgIT0gMSBdXTsgdGhlbgorCQkJZWNobyAibWFqb3Iv
+bWlub3IgY2hhbmdlZCBmb3IgJE1OVC8kRElSLyRDSEFSX0RFViIKKwkJZmkKKwllbHNlCisJCWlm
+IFsgLWQgJE1OVC8kRElSIF07IHRoZW4KKwkJCWZhdGFsICIkTU5ULyRESVIgc2hvdWxkIG5vdCBl
+eGlzdCIKKwkJZmkKKwlmaQorCisJaWYgW1sgIiRsb3N0X2ZvdW5kIiA9PSAibm8gbG9zdCtmb3Vu
+ZCIgXV07IHRoZW4KKwkJaWYgWyAtZCAkTU5ULyRMT1NUX0ZPVU5EIF07IHRoZW4KKwkJCWZhdGFs
+ICIkTU5ULyRMT1NUX0ZPVU5EIHNob3VsZCBub3QgZXhpc3QiCisJCWZpCisJZWxpZiBbWyAiJGxv
+c3RfZm91bmQiID09ICJsb3N0K2ZvdW5kIGlzIHJlZ3VsYXIiIF1dOyB0aGVuCisJCWlmICEgWyAt
+ZiAkTU5ULyRMT1NUX0ZPVU5EIF07IHRoZW4KKwkJCWZhdGFsICIkTU5ULyRMT1NUX0ZPVU5EIGlz
+IG5vdCByZWd1bGFyIGZpbGUiCisJCWZpCisJZWxzZQorCQlpZiAhIFsgLWQgJE1OVC8kTE9TVF9G
+T1VORCBdOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kTE9TVF9GT1VORCBpcyBsb3N0IgorCQlmaQor
+CisJCWlmICEgWyAtZiAkTU5ULyRMT1NUX0ZPVU5ELyR7RklMRV9JTlVNfV8wIF07IHRoZW4KKwkJ
+CWZhdGFsICIkTU5ULyRMT1NUX0ZPVU5ELyR7RklMRV9JTlVNfV8wIGlzIGxvc3QiCisJCWZpCisJ
+CWlmIFtbICIkbG9zdF9mb3VuZCIgPT0gImxvc3QrZm91bmQgaGFzIG9uZSIgXV07IHRoZW4KKwkJ
+CWZfbWQ1PWBtZDVzdW0gJE1OVC8kTE9TVF9GT1VORC8ke0ZJTEVfSU5VTX1fMCAyPi9kZXYvbnVs
+bCB8IGF3ayAne3ByaW50ICQxfSdgCisJCQlpZiBbWyAkRklMRV9NRDUgIT0gJGZfbWQ1IF1dOyB0
+aGVuCisJCQkJZmF0YWwgImNvbnRlbnQgY2hhbmdlZCBmb3IgJE1OVC8kTE9TVF9GT1VORC8ke0ZJ
+TEVfSU5VTX1fMCIKKwkJCWZpCisJCWVsaWYgW1sgIiRsb3N0X2ZvdW5kIiA9PSAibG9zdCtmb3Vu
+ZCBoYXMgdHdvIiBdXTsgdGhlbgorCQkJZl9tZDU9YG1kNXN1bSAkTU5ULyRMT1NUX0ZPVU5ELyR7
+Q09SUlVQVF9GSUxFX0lOVU19XzAgMj4vZGV2L251bGwgfCBhd2sgJ3twcmludCAkMX0nYAorCQkJ
+aWYgW1sgJENPUlJVUFRfRklMRV9NRDUgIT0gJGZfbWQ1IF1dOyB0aGVuCisJCQkJZmF0YWwgImNv
+bnRlbnQgY2hhbmdlZCBmb3IgJE1OVC8kTE9TVF9GT1VORC8ke0NPUlJVUFRfRklMRV9JTlVNfV8w
+IgorCQkJZmkKKwkJCWZfbWQ1PWBtZDVzdW0gJE1OVC8kTE9TVF9GT1VORC8ke0ZJTEVfSU5VTX1f
+MCAyPi9kZXYvbnVsbCB8IGF3ayAne3ByaW50ICQxfSdgCisJCQlpZiBbWyAkRklMRV9NRDUgIT0g
+JGZfbWQ1IF1dOyB0aGVuCisJCQkJZmF0YWwgImNvbnRlbnQgY2hhbmdlZCBmb3IgJE1OVC8kTE9T
+VF9GT1VORC8ke0ZJTEVfSU5VTX1fMCIKKwkJCWZpCisJCWVsc2UKKwkJCWlmICEgWyAtZiAkTU5U
+LyRMT1NUX0ZPVU5ELyR7RklMRV9JTlVNfV8xIF07IHRoZW4KKwkJCQlmYXRhbCAiJE1OVC8kTE9T
+VF9GT1VORC8ke0ZJTEVfSU5VTX1fMSBpcyBsb3N0IgorCQkJZmkKKwkJCWZfbWQ1PWBtZDVzdW0g
+JE1OVC8kTE9TVF9GT1VORC8ke0ZJTEVfSU5VTX1fMSAyPi9kZXYvbnVsbCB8IGF3ayAne3ByaW50
+ICQxfSdgCisJCQlpZiBbWyAkRklMRV9NRDUgIT0gJGZfbWQ1IF1dOyB0aGVuCisJCQkJZmF0YWwg
+ImNvbnRlbnQgY2hhbmdlZCBmb3IgJE1OVC8kTE9TVF9GT1VORC8ke0ZJTEVfSU5VTX1fMSIKKwkJ
+CWZpCisJCWZpCisJZmkKKworCXVtb3VudCAkTU5UCisJcmVzPSQ/CisJaWYgW1sgJHJlcyAhPSAw
+IF1dCisJdGhlbgorCQlmYXRhbCAidW5tb3VudCBmYWlsICRyZXMiCisJZmkKKworCWRpc2FibGVf
+Y2hrZnMKKworCWNoZWNrX2Vycl9tc2cKKworCW1vZHByb2JlIC1yIHViaWZzCisJbW9kcHJvYmUg
+LXIgdWJpCisJbW9kcHJvYmUgLXIgbXRkcmFtCisKKwllY2hvICItLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIgorfQor
+CitzdGFydF90PSQoZGF0ZSArJXMpCitlY2hvICJEbyBpbmNvbnNpc3RlbnQgVUJJRlMgaW1hZ2Vz
+IGZzY2tpbmcgdGVzdCIKK2ZzY2tfaW1hZ2UgImdvb2QgaW1hZ2UiIGdvb2QgInNhZmUiIDEgMSAx
+IDEgMSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIHNiIGZhbm91dCBp
+bWFnZSIgc2JfZmFub3V0ICJub25lIiAxIDEgMSAxIDEgMSAxIDEgMSAibm8gbG9zdCtmb3VuZCIK
+K2ZzY2tfaW1hZ2UgImJhZCBzYiBmbXRfdmVyc2lvbiBpbWFnZSIgc2JfZm10X3ZlcnNpb24gIm5v
+bmUiIDEgMSAxIDEgMSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIHNi
+IGxlYl9zaXplIGltYWdlIiBzYl9sZWJfc2l6ZSAibm9uZSIgMSAxIDEgMSAxIDEgMSAxIDEgIm5v
+IGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgc2IgbG9nX2xlYnMgaW1hZ2UiIHNiX2xvZ19s
+ZWJzICJub25lIiAxIDEgMSAxIDEgMSAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2Ug
+ImJhZCBzYiBtaW5faW9fc2l6ZSBpbWFnZSIgc2JfbWluX2lvX3NpemUgIm5vbmUiIDEgMSAxIDEg
+MSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIG1hc3RlciBoaWdoZXN0
+X2ludW0gaW1hZ2UiIG1hc3Rlcl9oaWdoZXN0X2ludW0gImRhbmdlcl9yZWJ1aWxkIiAxIDEgMSAx
+IDEgMSAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCBtYXN0ZXIgbHB0IGlt
+YWdlIiBtYXN0ZXJfbHB0ICJkYW5nZXJfcmVidWlsZCIgMSAxIDEgMSAxIDEgMSAxIDEgIm5vIGxv
+c3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgbWFzdGVyIHRuYyBpbWFnZSIgbWFzdGVyX3RuYyAi
+ZGFuZ2VyX3JlYnVpbGQiIDEgMSAxIDEgMSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19p
+bWFnZSAiYmFkIG1hc3RlciB0b3RhbF9kZWFkIGltYWdlIiBtYXN0ZXJfdG90YWxfZGVhZCAic2Fm
+ZSIgMSAxIDEgMSAxIDEgMSAxIDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgbWFz
+dGVyIHRvdGFsX2RpcnR5IGltYWdlIiBtYXN0ZXJfdG90YWxfZGlydHkgInNhZmUiIDEgMSAxIDEg
+MSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIG1hc3RlciB0b3RhbF9m
+cmVlIGltYWdlIiBtYXN0ZXJfdG90YWxfZnJlZSAic2FmZSIgMSAxIDEgMSAxIDEgMSAxIDEgIm5v
+IGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJjb3JydXB0ZWQgam91cm5hbCBsb2cgYXJlYSBpbWFn
+ZSIgam91cm5hbF9sb2cgImRhbmdlcl9yZWJ1aWxkIiAxIDEgMSAxIDEgMSAxIDEgMSAibm8gbG9z
+dCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImNvcnJ1cHRlZCBqb3VybmFsIGJ1ZCBhcmVhIGltYWdlIiBq
+b3VybmFsX2J1ZCAiZGFuZ2VyX2RlZmF1bHQiIDEgMCAxIDEgMCAxIDEgMSAwICJubyBsb3N0K2Zv
+dW5kIgorZnNja19pbWFnZSAiYmFkIG9ycGhhbiBub2RlIGltYWdlIiBvcnBoYW5fbm9kZSAiZGFu
+Z2VyX2RlZmF1bHQiIDAgMCAwIDAgMCAwIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFn
+ZSAiYmFkIGxwdCBkaXJ0eSBpbWFnZSIgbHB0X2RpcnR5ICJzYWZlIiAxIDEgMSAxIDEgMSAxIDEg
+MSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCBscHQgbHB0X2ZsYWdzIGltYWdlIiBs
+cHRfZmxhZ3MgInNhZmUiIDEgMSAxIDEgMSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19p
+bWFnZSAiYmFkIGxwdCBmcmVlIGltYWdlIiBscHRfZnJlZSAic2FmZSIgMSAxIDEgMSAxIDEgMSAx
+IDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgbHB0IHBvcyBpbWFnZSIgbHB0X3Bv
+cyAic2FmZSIgMSAxIDEgMSAxIDEgMSAxIDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJi
+YWQgbHByb3BzIHRhYmxlIGRpcnR5IGltYWdlIiBsdGFiX2RpcnR5ICJzYWZlIiAxIDEgMSAxIDEg
+MSAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCBscHJvcHMgdGFibGUgZnJl
+ZSBpbWFnZSIgbHRhYl9mcmVlICJzYWZlIiAxIDEgMSAxIDEgMSAxIDEgMSAibm8gbG9zdCtmb3Vu
+ZCIKK2ZzY2tfaW1hZ2UgImJhZCBpbmRleCBzaXplIGltYWdlIiBpbmRleF9zaXplICJzYWZlIiAx
+IDEgMSAxIDEgMSAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCB0bmMgbHYw
+IGtleSBpbWFnZSIgdG5jX2x2MF9rZXkgImRhbmdlcl9yZWJ1aWxkIiAxIDEgMSAxIDEgMSAxIDEg
+MSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCB0bmMgbHYwIGxlbiBpbWFnZSIgdG5j
+X2x2MF9sZW4gImRhbmdlcl9yZWJ1aWxkIiAxIDEgMSAxIDEgMSAxIDEgMSAibm8gbG9zdCtmb3Vu
+ZCIKK2ZzY2tfaW1hZ2UgImJhZCB0bmMgbHYwIHBvcyBpbWFnZSIgdG5jX2x2MF9wb3MgImRhbmdl
+cl9yZWJ1aWxkIiAxIDEgMSAxIDEgMSAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2Ug
+ImJhZCB0bmMgbm9uLWxlYWYga2V5IGltYWdlIiB0bmNfbm9sZWFmX2tleSAiZGFuZ2VyX3JlYnVp
+bGQiIDEgMSAxIDEgMSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIHRu
+YyBub24tbGVhZiBsZW4gaW1hZ2UiIHRuY19ub2xlYWZfbGVuICJkYW5nZXJfcmVidWlsZCIgMSAx
+IDEgMSAxIDEgMSAxIDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgdG5jIG5vbi1s
+ZWFmIHBvcyBpbWFnZSIgdG5jX25vbGVhZl9wb3MgImRhbmdlcl9yZWJ1aWxkIiAxIDEgMSAxIDEg
+MSAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImNvcnJ1cHRlZCBsZWIgZm9yIGZp
+bGUgZGF0YSBpbWFnZSIgY29ycnVwdGVkX2RhdGFfbGViICJkYW5nZXJfZGVmYXVsdCIgMSAwIDEg
+MSAwIDEgMSAxIDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJjb3JydXB0ZWQgbGViIGZv
+ciBUTkMgaW1hZ2UiIGNvcnJ1cHRlZF9pZHhfbGViICJkYW5nZXJfcmVidWlsZCIgMSAxIDEgMSAx
+IDEgMSAxIDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgaW5vZGUgZGF0YSBpbWFn
+ZSIgaW5vZGVfZGF0YSAiZGFuZ2VyX2RlZmF1bHQiIDEgMCAxIDEgMCAxIDEgMSAxICJubyBsb3N0
+K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIGlub2RlIG1vZGUgaW1hZ2UiIGlub2RlX21vZGUgImRh
+bmdlcl9kZWZhdWx0IiAwIDAgMCAwIDAgMCAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1h
+Z2UgImJhZCBpbm9kZSBubGluayBpbWFnZSIgaW5vZGVfbmxpbmsgInNhZmUiIDEgMSAxIDEgMSAx
+IDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIGlub2RlIHNpemUgaW1hZ2Ui
+IGlub2RlX3NpemUgInNhZmUiIDEgMSAxIDEgMSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNj
+a19pbWFnZSAiYmFkIGlub2RlIHhhdHRyX2NudCBpbWFnZSIgaW5vZGVfeGNudCAic2FmZSIgMSAx
+IDEgMSAxIDEgMSAxIDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgc29mdGxpbmsg
+aW5vZGUgbW9kZSBpbWFnZSIgc29mdF9saW5rX2lub2RlX21vZGUgImRhbmdlcl9kZWZhdWx0IiAx
+IDEgMSAxIDEgMSAwIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCBzb2Z0bGlu
+ayBpbm9kZSBkYXRhX2xlbiBpbWFnZSIgc29mdF9saW5rX2RhdGFfbGVuICJkYW5nZXJfZGVmYXVs
+dCIgMSAxIDEgMSAxIDEgMCAxIDEgIm5vIGxvc3QrZm91bmQiCitmc2NrX2ltYWdlICJiYWQgZGVu
+dHJ5IGtleSBpbWFnZSIgZGVudHJ5X2tleSAiZGFuZ2VyX2RlZmF1bHQiIDAgMCAwIDEgMSAxIDEg
+MSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIGRlbnRyeSBubGVuIGltYWdlIiBk
+ZW50cnlfbmxlbiAiZGFuZ2VyX2RlZmF1bHQiIDAgMCAwIDEgMSAxIDEgMSAxICJubyBsb3N0K2Zv
+dW5kIgorZnNja19pbWFnZSAiYmFkIGRlbnRyeSB0eXBlIGltYWdlIiBkZW50cnlfdHlwZSAiZGFu
+Z2VyX2RlZmF1bHQiIDAgMCAwIDEgMSAxIDEgMSAxICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFn
+ZSAiYmFkIHhhdHRyIGlub2RlIGZsYWdzIGltYWdlIiB4aW5vZGVfZmxhZ3MgImRhbmdlcl9kZWZh
+dWx0IiAxIDEgMCAxIDEgMCAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCB4
+YXR0ciBpbm9kZSBrZXkgaW1hZ2UiIHhpbm9kZV9rZXkgImRhbmdlcl9kZWZhdWx0IiAxIDEgMCAx
+IDEgMCAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCB4YXR0ciBpbm9kZSBt
+b2RlIGltYWdlIiB4aW5vZGVfbW9kZSAiZGFuZ2VyX2RlZmF1bHQiIDEgMSAwIDEgMSAwIDEgMSAx
+ICJubyBsb3N0K2ZvdW5kIgorZnNja19pbWFnZSAiYmFkIHhhdHRyIGRlbnRyeSBrZXkgaW1hZ2Ui
+IHhlbnRyeV9rZXkgImRhbmdlcl9kZWZhdWx0IiAxIDEgMCAxIDEgMCAxIDEgMSAibm8gbG9zdCtm
+b3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCB4YXR0ciBkZW50cnkgbmxlbiBpbWFnZSIgeGVudHJ5X25s
+ZW4gImRhbmdlcl9kZWZhdWx0IiAxIDEgMCAxIDEgMCAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2Zz
+Y2tfaW1hZ2UgImJhZCB4YXR0ciBkZW50cnkgdHlwZSBpbWFnZSIgeGVudHJ5X3R5cGUgImRhbmdl
+cl9kZWZhdWx0IiAxIDEgMCAxIDEgMCAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2Ug
+ImJhZCB4YXR0ciBob3N0IGltYWdlIiB4ZW50X2hvc3QgImRhbmdlcl9kZWZhdWx0IiAwIDAgMCAw
+IDAgMCAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImRpciBoYXMgdG9vIG1hbnkg
+ZGVudHJ5IGltYWdlIiBkaXJfbWFueV9kZW50cnkgImRhbmdlcl9kZWZhdWx0IiAxIDEgMSAwIDAg
+MCAxIDEgMSAibm8gbG9zdCtmb3VuZCIKK2ZzY2tfaW1hZ2UgImJhZCBkaXIgaW1hZ2UiIGRpcl9s
+b3N0ICJkYW5nZXJfZGVmYXVsdCIgMSAxIDEgMSAxIDEgMSAwIDEgImxvc3QrZm91bmQgaGFzIG9u
+ZSIKK2ZzY2tfaW1hZ2UgImJhZCBkaXIgYW5kIGR1cGxpY2F0ZWQgZmlsZSBuYW1lIGluIGxvc3Qr
+Zm91bmQgaW1hZ2UiIGRpcl9sb3N0X2R1cGxpY2F0ZWQgImRhbmdlcl9kZWZhdWx0IiAxIDEgMSAx
+IDEgMSAxIDAgMSAibG9zdCtmb3VuZCBoYXMgZHVwbGljYXRlZCBmaWxlcyIKK2ZzY2tfaW1hZ2Ug
+ImJhZCBkaXIgYW5kIGxvc3QrZm91bmQgaW1hZ2UiIGRpcl9sb3N0X25vdF9yZWNvdmVyICJkYW5n
+ZXJfZGVmYXVsdCIgMSAxIDEgMSAxIDEgMSAwIDEgImxvc3QrZm91bmQgaXMgcmVndWxhciIKK2Zz
+Y2tfaW1hZ2UgImJhZCByb290IGRpciBpbWFnZSIgcm9vdF9kaXIgImRhbmdlcl9kZWZhdWx0IiAw
+IDAgMCAwIDAgMCAwIDAgMSAibG9zdCtmb3VuZCBoYXMgdHdvIgorZnNja19pbWFnZSAiZW1wdHkg
+VE5DIGltYWdlIiBlbXB0eV90bmMgImRhbmdlcl9yZWJ1aWxkIiAwIDAgMCAwIDAgMCAwIDAgMSAi
+bm8gbG9zdCtmb3VuZCIKK2VuZF90PSQoZGF0ZSArJXMpCit0aW1lX2Nvc3Q9JCgoIGVuZF90IC0g
+c3RhcnRfdCApKQorZWNobyAiU3VjY2VzcywgY29zdCAkdGltZV9jb3N0IHNlY29uZHMiCitleGl0
+IDAKLS0gCjIuMTMuNgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
