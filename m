@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE785D2E9C4
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:02:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B682D2E9C3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pLdGqsyupqKIpW0xfMwGg8dtRiY2aDE9TCNcL+oUEeo=; b=ya9LBFngveExyJ
-	RkeKS1wejXfC3c02Y17QiizemeOocmP+2gvo9AAOwRUWYtL5ZXxbVjRBbWiOAeQe4bQcfL5/KAu/N
-	h5ue0ZXnzCHlr0yfSO46CF3vWtJzJcpWwSyo9g3c6aDZUNFXIkRjNZya0Sb5SPD82HelnTRQgdYCK
-	gjRI1YX85u7jdYNAB/n+DfmAnXoyvezuJqtPWNp6DKe3fTe/01zsjhBFnBIPVhAVZ+CkIW82cLLLR
-	bFzWNNLedU+hfEgh3UVPLtc8Hf3fuRxWZoordPCj91jRCgXZjvVbfM4MglC/AG9om5dt0Yshf2qin
-	dm8RYWk8sV+pR+1ucqhA==;
+	List-Owner; bh=H5vPrPpiHkOxi4jozjvPGiadamCSylX4y+DgJoOxhDY=; b=Ig4uyy3zLz1EN1
+	mQCx1ewODwJlf0ptZsfzSMm6DU/Aq0S6eZUTFpPXvqgWmMukZ2F2FmkfJrh/LkqjO7qcY77pAkfac
+	+LE3IH+VQaiw9imOXi2xcx+mOPe8mC3WNC9aGGKs0X5eRSFpyKSg6zIPWT94w8+rND/s8d8WdL3wW
+	RDr+fKwA0QRMYlcG3x4uRRz/Hnqihsx78HHS9S6FT2zmTYXdn7ovIsMPmi1HUtCARQNdk1gTJCKOz
+	w1jL77grRft2WsiOPw6wwFeUIYF2eivHFRPfSdhTQFkJIGgzazZ2klAdoURPtSlYH6tJWWNfXwq01
+	FA1rt8VrAcrkhLrmElrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQJp-0000000Gxml-3TTA;
-	Mon, 11 Nov 2024 09:02:45 +0000
+	id 1tAQJr-0000000Gxo2-1DZP;
+	Mon, 11 Nov 2024 09:02:47 +0000
 Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQJj-0000000Gxi5-3RWj
+	id 1tAQJj-0000000Gxi4-3Olu
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 09:02:41 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn3NN5CV0z28fSh;
-	Mon, 11 Nov 2024 16:57:56 +0800 (CST)
+	Mon, 11 Nov 2024 09:02:42 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn3NL4grRz28fSc;
+	Mon, 11 Nov 2024 16:57:54 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2FD6C1A016C;
-	Mon, 11 Nov 2024 17:02:38 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 1D559180043;
+	Mon, 11 Nov 2024 17:02:36 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:02:37 +0800
+ 2024 17:02:35 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 045/102] ubifs-utils: Add descriptions for new lib files in libubifs/README
-Date: Mon, 11 Nov 2024 17:00:59 +0800
-Message-ID: <20241111090124.2070455-6-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 041/102] ubifs-utils: Adapt misc.h in libubifs
+Date: Mon, 11 Nov 2024 17:00:55 +0800
+Message-ID: <20241111090124.2070455-2-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_010240_411903_D508CDA3 
-X-CRM114-Status: GOOD (  12.11  )
+X-CRM114-CacheID: sfid-20241111_010240_412587_D58B0A30 
+X-CRM114-Status: GOOD (  11.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,65 +70,127 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are many linux kernel source files have been adapted into
-ubifs-utils, add descriptions for these source files in README.
+Adapt misc.h in libubifs, compared with linux kernel implementations:
+ 1. Remove some functions(eg. ubifs_compr_name, ubifs_wake_up_bgt) which
+    won't be used in fsck/mkfs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am   |  2 +-
- ubifs-utils/libubifs/README | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+), 1 deletion(-)
- create mode 100644 ubifs-utils/libubifs/README
+ ubifs-utils/libubifs/misc.h | 75 +--------------------------------------------
+ 1 file changed, 1 insertion(+), 74 deletions(-)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 92b3dde8..14015751 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -50,7 +50,7 @@ mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUI
- mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
- 	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common -I $(top_srcdir)/ubifs-utils/libubifs
+diff --git a/ubifs-utils/libubifs/misc.h b/ubifs-utils/libubifs/misc.h
+index 615878e8..4b718068 100644
+--- a/ubifs-utils/libubifs/misc.h
++++ b/ubifs-utils/libubifs/misc.h
+@@ -50,18 +50,6 @@ static inline int ubifs_zn_cow(const struct ubifs_znode *znode)
+ }
  
--EXTRA_DIST += ubifs-utils/common/README
-+EXTRA_DIST += ubifs-utils/common/README ubifs-utils/libubifs/README
+ /**
+- * ubifs_wake_up_bgt - wake up background thread.
+- * @c: UBIFS file-system description object
+- */
+-static inline void ubifs_wake_up_bgt(struct ubifs_info *c)
+-{
+-	if (c->bgt && !c->need_bgt) {
+-		c->need_bgt = 1;
+-		wake_up_process(c->bgt);
+-	}
+-}
+-
+-/**
+  * ubifs_tnc_find_child - find next child in znode.
+  * @znode: znode to search at
+  * @start: the zbranch index to start at
+@@ -82,42 +70,6 @@ ubifs_tnc_find_child(struct ubifs_znode *znode, int start)
+ }
  
- dist_sbin_SCRIPTS = ubifs-utils/mount.ubifs
+ /**
+- * ubifs_inode - get UBIFS inode information by VFS 'struct inode' object.
+- * @inode: the VFS 'struct inode' pointer
+- */
+-static inline struct ubifs_inode *ubifs_inode(const struct inode *inode)
+-{
+-	return container_of(inode, struct ubifs_inode, vfs_inode);
+-}
+-
+-/**
+- * ubifs_compr_present - check if compressor was compiled in.
+- * @compr_type: compressor type to check
+- * @c: the UBIFS file-system description object
+- *
+- * This function returns %1 of compressor of type @compr_type is present, and
+- * %0 if not.
+- */
+-static inline int ubifs_compr_present(struct ubifs_info *c, int compr_type)
+-{
+-	ubifs_assert(c, compr_type >= 0 && compr_type < UBIFS_COMPR_TYPES_CNT);
+-	return !!ubifs_compressors[compr_type]->capi_name;
+-}
+-
+-/**
+- * ubifs_compr_name - get compressor name string by its type.
+- * @compr_type: compressor type
+- * @c: the UBIFS file-system description object
+- *
+- * This function returns compressor type string.
+- */
+-static inline const char *ubifs_compr_name(struct ubifs_info *c, int compr_type)
+-{
+-	ubifs_assert(c, compr_type >= 0 && compr_type < UBIFS_COMPR_TYPES_CNT);
+-	return ubifs_compressors[compr_type]->name;
+-}
+-
+-/**
+  * ubifs_wbuf_sync - synchronize write-buffer.
+  * @wbuf: write-buffer to synchronize
+  *
+@@ -135,21 +87,6 @@ static inline int ubifs_wbuf_sync(struct ubifs_wbuf *wbuf)
+ }
  
-diff --git a/ubifs-utils/libubifs/README b/ubifs-utils/libubifs/README
-new file mode 100644
-index 00000000..551ed8e6
---- /dev/null
-+++ b/ubifs-utils/libubifs/README
-@@ -0,0 +1,30 @@
-+UBIFS Library (Imported from linux kernel 6.8-rc2 41bccc98fb7931d63)
-+
-+* ubifs.h is a selection of definitions from fs/ubifs/ubifs.h from the linux kernel.
-+* key.h is copied from fs/ubifs/key.h from the linux kernel.
-+* ubifs-media.h is copied from fs/ubifs/ubifs-media.h from the linux kernel.
-+* find.c is copied from fs/ubifs/find.c from the linux kernel.
-+* scan.c is copied from fs/ubifs/scan.c from the linux kernel.
-+* gc.c is copied from fs/ubifs/gc.c from the linux kernel.
-+* log.c is copied from fs/ubifs/log.c from the linux kernel, and amended.
-+* tnc_commit.c is copied from fs/ubifs/tnc_commit.c from the linux kernel, and amended.
-+* master.c is copied from fs/ubifs/master.c from the linux kernel, and amended.
-+* recovery.c is copied from fs/ubifs/recovery.c from the linux kernel, and amended.
-+* lpt.c is a selection of functions copied from fs/ubifs/lpt.c from the linux kernel, and amended.
-+* auth.c is a selection of functions copied from fs/ubifs/auth.c from the linux kernel, and amended.
-+* budget.c is a selection of functions copied from fs/ubifs/budget.c from the linux kernel, and amended.
-+* commit.c is a selection of functions copied from fs/ubifs/commit.c from the linux kernel, and amended.
-+* debug.c is a selection of functions copied from fs/ubifs/debug.c from the linux kernel, and amended.
-+* debug.h is a selection of functions copied from fs/ubifs/debug.h from the linux kernel, and amended.
-+* io.c is a selection of functions copied from fs/ubifs/io.c from the linux kernel, and amended.
-+* lprops.c is a selection of functions copied from fs/ubifs/lprops.c from the linux kernel, and amended.
-+* lpt_commit.c is a selection of functions copied from fs/ubifs/lpt_commit.c from the linux kernel, and amended.
-+* misc.h is a selection of functions copied from fs/ubifs/misc.h from the linux kernel, and amended.
-+* orphan.c is a selection of functions copied from fs/ubifs/orphan.c from the linux kernel, and amended.
-+* replay.c is a selection of functions copied from fs/ubifs/replay.c from the linux kernel, and amended.
-+* sb.c is a selection of functions copied from fs/ubifs/sb.c from the linux kernel, and amended.
-+* super.c is a selection of functions copied from fs/ubifs/super.c from the linux kernel, and amended.
-+* tnc.c is a selection of functions copied from fs/ubifs/tnc.c from the linux kernel, and amended.
-+* tnc_misc.c is a selection of functions copied from fs/ubifs/tnc_misc.c from the linux kernel, and amended.
-+* journal.c is a selection of functions copied from fs/ubifs/journal.c from the linux kernel, and amended.
-+* dir.c is a selection of functions copied from fs/ubifs/dir.c from the linux kernel, and amended.
+ /**
+- * ubifs_encode_dev - encode device node IDs.
+- * @dev: UBIFS device node information
+- * @rdev: device IDs to encode
+- *
+- * This is a helper function which encodes major/minor numbers of a device node
+- * into UBIFS device node description. We use standard Linux "new" and "huge"
+- * encodings.
+- */
+-static inline int ubifs_encode_dev(union ubifs_dev_desc *dev, dev_t rdev)
+-{
+-	dev->new = cpu_to_le32(new_encode_dev(rdev));
+-	return sizeof(dev->new);
+-}
+-
+-/**
+  * ubifs_add_dirt - add dirty space to LEB properties.
+  * @c: the UBIFS file-system description object
+  * @lnum: LEB to add dirty space for
+@@ -209,7 +146,7 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
+  * @c: the UBIFS file-system description object
+  * @idx: index node
+  */
+-static inline void *ubifs_idx_key(const struct ubifs_info *c,
++static inline void *ubifs_idx_key(__unused const struct ubifs_info *c,
+ 				  const struct ubifs_idx_node *idx)
+ {
+ 	return (void *)((struct ubifs_branch *)idx->branches)->key;
+@@ -276,14 +213,4 @@ static inline int ubifs_next_log_lnum(const struct ubifs_info *c, int lnum)
+ 	return lnum;
+ }
+ 
+-static inline int ubifs_xattr_max_cnt(struct ubifs_info *c)
+-{
+-	int max_xattrs = (c->leb_size / 2) / UBIFS_INO_NODE_SZ;
+-
+-	ubifs_assert(c, max_xattrs < c->max_orphans);
+-	return max_xattrs;
+-}
+-
+-const char *ubifs_assert_action_name(struct ubifs_info *c);
+-
+ #endif /* __UBIFS_MISC_H__ */
 -- 
 2.13.6
 
