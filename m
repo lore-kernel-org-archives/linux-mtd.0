@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 275ACD2E9C4
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC360D2E9C4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:02:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fEXvauS+QvCHJUd8z5hCaJ2fNvgLC0G22xFGtWByzVg=; b=sK2zKE9pzmDrqd
-	x5VkyKVo6wZyyjdizoMNbQMcC0ucO2X/MzQ2kY0mVCS2+vaZ0PlQOaBd7cOzvydM+V8FnVLL4/Adq
-	bwApexPk9g9EFy166HvBhXUpD13ScrHE/U2iJCyLd++uLfFj0KvgflVYGi83wYYwCzBO/FxdhBSDz
-	N2QKd/MwxosGMT2rfp30yhRprHIuzF9q/lskFnfFHkO1mjKsZl67YZXjulWyHrF9x9YAWan2LtuTU
-	Klkoyq+8qLpgZajnL6tFNQCy0Cwd8v2Z61/csQTVWGfx2CN0fIvYu25yjHuA76Czf5iYKcmJudX5g
-	S1bPHvZWADdqyGdqxCHA==;
+	List-Owner; bh=wf/vsDh2r8e7rx81C601VQpmX/xIZjA/ILY+F6CiXEY=; b=hyRQb6J5vO05tB
+	iK0WtIN664mN2gQvaXivKiSWmftJ/SvklrLMhd/c0ASMPr+ocUSnA7V9C2dyFRhFZJ9qo/BabK8Jl
+	JIStp67s0ryUaOlD9/wj9jaRTjT70m5zn37DcGhHjqLnCivgcqBw40dTjyXTEXaYa7ishiVnPl8xd
+	AkvE67NisrZAQM0s5Yfh45f/O7+SxgpTepgGZrPAjkmonsmjIXffKSny/VUY8LJx2SmQ4eQy1VIg6
+	eWuoMGKnkc3g/urSWe6Dy7AecpA+HxGWM7uh1cXlmWcLz+J4HPrMQopetq0DGkl03iD+xOj9OULtj
+	BexGXMxwes+EEWTpBw+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQI3-0000000Gx2A-2EYm;
-	Mon, 11 Nov 2024 09:00:55 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1tAQJm-0000000Gxko-3akZ;
+	Mon, 11 Nov 2024 09:02:42 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQGI-0000000Gvca-3bEh
+	id 1tAQJj-0000000Gxi2-2SYN
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:59:17 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn3NJ2ymJzQsr6;
-	Mon, 11 Nov 2024 16:57:52 +0800 (CST)
+	Mon, 11 Nov 2024 09:02:41 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Qx1b4fz1TB5P;
+	Mon, 11 Nov 2024 17:00:09 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id DDDEF140257;
-	Mon, 11 Nov 2024 16:59:04 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 99B3A180064;
+	Mon, 11 Nov 2024 17:02:35 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:59:04 +0800
+ 2024 17:02:34 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 066/102] fsck.ubifs: rebuild_fs: Write master node
-Date: Mon, 11 Nov 2024 16:57:37 +0800
-Message-ID: <20241111085741.2066378-27-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 040/102] ubifs-utils: Adapt master.c in libubifs
+Date: Mon, 11 Nov 2024 17:00:54 +0800
+Message-ID: <20241111090124.2070455-1-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20241111085741.2066378-1-chengzhihao1@huawei.com>
-References: <20241111085741.2066378-1-chengzhihao1@huawei.com>
+In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
+References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.112.188]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_005907_520582_6123E2EB 
-X-CRM114-Status: GOOD (  10.52  )
+X-CRM114-CacheID: sfid-20241111_010239_801919_2B8BEC2F 
+X-CRM114-Status: UNSURE (   9.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,118 +71,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 12/12 step of rebuilding. Since all meta areas are ready,
-master node can be updated. After this step, a consistent UBIFS image
-can be mounted, and it should pass all tests from chk_fs, chk_general,
-chk_index, chk_lprops and chk_orphans.
+Adapt master.c in libubifs, compared with linux kernel implementations:
+ 1. Remove authentication related implementations
+    (eg. mst_node_check_hash), authentication is not supported in fsck
+    for now.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/rebuild_fs.c | 78 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+ ubifs-utils/libubifs/master.c | 23 +++++++++--------------
+ 1 file changed, 9 insertions(+), 14 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 9ea4c224..382687b3 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -1126,6 +1126,7 @@ static int record_file_used_lebs(struct ubifs_info *c,
- 		 file->ino.is_xattr ? "xattr" :
- 		 ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
- 		 c->dev_name);
-+	c->highest_inum = max_t(ino_t, c->highest_inum, file->inum);
+diff --git a/ubifs-utils/libubifs/master.c b/ubifs-utils/libubifs/master.c
+index 7adc37c1..cce1a415 100644
+--- a/ubifs-utils/libubifs/master.c
++++ b/ubifs-utils/libubifs/master.c
+@@ -10,7 +10,11 @@
  
- 	err = parse_node_info(c, &file->ino.header, &file->ino.key,
- 			      NULL, 0, idx_list, idx_cnt);
-@@ -1345,6 +1346,75 @@ static int clean_log(struct ubifs_info *c)
- }
+ /* This file implements reading and writing the master node */
+ 
++#include "linux_err.h"
++#include "kmem.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
  
  /**
-+ * write_master - write master nodes.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function updates meta information into master node and writes master
-+ * node into master area.
-+ */
-+static int write_master(struct ubifs_info *c)
-+{
-+	int err, lnum;
-+	struct ubifs_mst_node *mst;
-+
-+	mst = kzalloc(c->mst_node_alsz, GFP_KERNEL);
-+	if (!mst)
-+		return -ENOMEM;
-+
-+	mst->ch.node_type = UBIFS_MST_NODE;
-+	mst->log_lnum     = cpu_to_le32(UBIFS_LOG_LNUM);
-+	mst->highest_inum = cpu_to_le64(c->highest_inum);
-+	mst->cmt_no       = 0;
-+	mst->root_lnum    = cpu_to_le32(c->zroot.lnum);
-+	mst->root_offs    = cpu_to_le32(c->zroot.offs);
-+	mst->root_len     = cpu_to_le32(c->zroot.len);
-+	mst->gc_lnum      = cpu_to_le32(c->gc_lnum);
-+	mst->ihead_lnum   = cpu_to_le32(c->ihead_lnum);
-+	mst->ihead_offs   = cpu_to_le32(c->ihead_offs);
-+	mst->index_size   = cpu_to_le64(c->calc_idx_sz);
-+	mst->lpt_lnum     = cpu_to_le32(c->lpt_lnum);
-+	mst->lpt_offs     = cpu_to_le32(c->lpt_offs);
-+	mst->nhead_lnum   = cpu_to_le32(c->nhead_lnum);
-+	mst->nhead_offs   = cpu_to_le32(c->nhead_offs);
-+	mst->ltab_lnum    = cpu_to_le32(c->ltab_lnum);
-+	mst->ltab_offs    = cpu_to_le32(c->ltab_offs);
-+	mst->lsave_lnum   = cpu_to_le32(c->lsave_lnum);
-+	mst->lsave_offs   = cpu_to_le32(c->lsave_offs);
-+	mst->lscan_lnum   = cpu_to_le32(c->main_first);
-+	mst->empty_lebs   = cpu_to_le32(c->lst.empty_lebs);
-+	mst->idx_lebs     = cpu_to_le32(c->lst.idx_lebs);
-+	mst->leb_cnt      = cpu_to_le32(c->leb_cnt);
-+	mst->total_free   = cpu_to_le64(c->lst.total_free);
-+	mst->total_dirty  = cpu_to_le64(c->lst.total_dirty);
-+	mst->total_used   = cpu_to_le64(c->lst.total_used);
-+	mst->total_dead   = cpu_to_le64(c->lst.total_dead);
-+	mst->total_dark   = cpu_to_le64(c->lst.total_dark);
-+	mst->flags	  |= cpu_to_le32(UBIFS_MST_NO_ORPHS);
-+
-+	lnum = UBIFS_MST_LNUM;
-+	err = ubifs_leb_unmap(c, lnum);
-+	if (err)
-+		goto out;
-+	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, lnum, 0,
-+				    offsetof(struct ubifs_mst_node, hmac));
-+	if (err)
-+		goto out;
-+	lnum++;
-+	err = ubifs_leb_unmap(c, lnum);
-+	if (err)
-+		goto out;
-+	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, lnum, 0,
-+				    offsetof(struct ubifs_mst_node, hmac));
-+	if (err)
-+		goto out;
-+
-+out:
-+	kfree(mst);
-+
-+	return err;
-+}
-+
-+/**
-  * ubifs_rebuild_filesystem - Rebuild filesystem.
-  * @c: UBIFS file-system description object
+  * ubifs_compare_master_node - compare two UBIFS master nodes
+@@ -21,7 +25,7 @@
+  * This function compares two UBIFS master nodes. Returns 0 if they are equal
+  * and nonzero if not.
+  */
+-int ubifs_compare_master_node(struct ubifs_info *c, void *m1, void *m2)
++int ubifs_compare_master_node(__unused struct ubifs_info *c, void *m1, void *m2)
+ {
+ 	int ret;
+ 	int behind;
+@@ -61,20 +65,11 @@ int ubifs_compare_master_node(struct ubifs_info *c, void *m1, void *m2)
   *
-@@ -1429,6 +1499,14 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 		goto out;
- 	}
- 	err = ubifs_clear_orphans(c);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto out;
-+	}
-+
-+	/* Step 12. Write master node. */
-+	log_out(c, "Write master");
-+	err = write_master(c);
- 	if (err)
- 		exit_code |= FSCK_ERROR;
+  * Returns 0 if the hashes are equal, a negative error code otherwise.
+  */
+-static int mst_node_check_hash(const struct ubifs_info *c,
+-			       const struct ubifs_mst_node *mst,
+-			       const u8 *expected)
++static int mst_node_check_hash(__unused const struct ubifs_info *c,
++			       __unused const struct ubifs_mst_node *mst,
++			       __unused const u8 *expected)
+ {
+-	u8 calc[UBIFS_MAX_HASH_LEN];
+-	const void *node = mst;
+-
+-	crypto_shash_tfm_digest(c->hash_tfm, node + sizeof(struct ubifs_ch),
+-				UBIFS_MST_NODE_SZ - sizeof(struct ubifs_ch),
+-				calc);
+-
+-	if (ubifs_check_hash(c, expected, calc))
+-		return -EPERM;
+-
++	// To be implemented
+ 	return 0;
+ }
  
 -- 
 2.13.6
