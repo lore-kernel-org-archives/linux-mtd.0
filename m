@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B61CDD2E9C7
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 193A1D2E9C9
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,26 +12,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gb1djqrY8cDi9djS2sNU5qt5W305UxOOTq+CEGUOdeo=; b=dnS/Xir9/eKLSn
-	1VqSBgMOKtk3vam3v1onAkcCdlTL8/8ROC2GULCcXv9GzuYf+xtV1pjgFwE4WVDLgMgtULUY99Rdo
-	r0btYgpMYTD9dnkxe2IilWMwxJX1WaA0c/3j2gIGeMHbv/oZIgbFHnfJwZaICzVHW7LTrYDlVq+Gm
-	WrLhMEXgqm2S+BSsh7e73dWPhRfem8AVzOs5+VkYJysI+7gv7C0lJUVoV47+z97GwWq2Nygh5GGfC
-	GqMG0bV2TPLNSJ23wTZWU8ch92Q29rFucZSh8ZfVyWN8KU5oxzuwpXrFAs7DPGliOBNqq5KswnlR3
-	U/1EhwpcewiAvJHXNiGg==;
+	List-Owner; bh=WhHZiQ8lk95sJu9KPwt41SfdRTVp4Pvihk7prK/2TNk=; b=l6YfSSQlfWtiTa
+	L0PPTLughcRv4MRZ7dX57cDC25oZIOdvuM3N1vNl5pjlg6JvOZh6l/GcAloXNUL8IQMReSuQHE+34
+	D9Nav+3KXAeNhY8wDz19TEV4riSvYBhEjC39/KHqABIv1M2Q9R9mqk1EAhtTUi95ZxqZjoGc8S1xC
+	MhyZhunfS8Vx8L43hp8F3HP1VqRUqlbPGXXIpSeXmMtcDiMS7kBp7tp9y/lKkaw2pU9eRhlzoT8HW
+	XjHC8BEIAEuuqaWQmRulk5p66HvaAPprSNbR2UWAXkGGX0ZAqJBep7tzmGyWAWs5L4kJnG+EQI8i7
+	w75NG5gwFmMJbHL6wp9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQ6a-0000000Grnf-2cHU;
-	Mon, 11 Nov 2024 08:49:04 +0000
+	id 1tAQ6b-0000000Grnt-1QGI;
+	Mon, 11 Nov 2024 08:49:05 +0000
 Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPwM-0000000Gpdi-3yf0
+	id 1tAPwM-0000000Gpdh-3sVx
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:38:36 +0000
+	Mon, 11 Nov 2024 08:38:37 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn2vs2JB0z2DgmR;
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn2vs2hyHz2Dgx2;
 	Mon, 11 Nov 2024 16:36:41 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id A0133180044;
+	by mail.maildlp.com (Postfix) with ESMTPS id AF66B180045;
 	Mon, 11 Nov 2024 16:38:28 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
@@ -41,9 +41,9 @@ From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 010/102] ubifs-utils: Add compiler attributes implementations
-Date: Mon, 11 Nov 2024 16:36:41 +0800
-Message-ID: <20241111083711.1916125-11-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 011/102] ubifs-utils: Add linux type definitions
+Date: Mon, 11 Nov 2024 16:36:42 +0800
+Message-ID: <20241111083711.1916125-12-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_003831_337980_CD590B47 
-X-CRM114-Status: GOOD (  20.39  )
+X-CRM114-CacheID: sfid-20241111_003831_273001_74561C1F 
+X-CRM114-Status: GOOD (  17.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,169 +70,291 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add compiler attributes implementations, such as __packed, __unused,
-__const, etc., which could be used in linux kernel libs. Besides, change
-some existing attributes into linux kernel style.
+Add linux type definitions, because there are many types
+(eg. u8/u16/u64) used in UBIFS linux kernel libs. Besides
+move type conversions (eg. cpu_to_le16, cpu_to_le32, etc.)
+into type definitions header file.
 
 This is a preparation for replacing implementation of UBIFS utils with
 linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am                |  1 +
- ubifs-utils/common/compiler_attributes.h | 79 ++++++++++++++++++++++++++++++++
- ubifs-utils/common/fscrypt.h             |  6 ++-
- ubifs-utils/common/sign.c                |  4 +-
- 4 files changed, 86 insertions(+), 4 deletions(-)
- create mode 100644 ubifs-utils/common/compiler_attributes.h
+ ubifs-utils/Makemodule.am           |  1 +
+ ubifs-utils/common/crypto.c         |  1 +
+ ubifs-utils/common/defs.h           | 30 -------------
+ ubifs-utils/common/fscrypt.c        |  3 +-
+ ubifs-utils/common/fscrypt.h        |  7 +--
+ ubifs-utils/common/linux_types.h    | 89 +++++++++++++++++++++++++++++++++++++
+ ubifs-utils/common/sign.c           |  2 +-
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  9 ++--
+ 8 files changed, 104 insertions(+), 38 deletions(-)
+ create mode 100644 ubifs-utils/common/linux_types.h
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 90cc7005..d58570fe 100644
+index d58570fe..0f9c0fa6 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -1,4 +1,5 @@
+@@ -1,5 +1,6 @@
  common_SOURCES = \
-+	ubifs-utils/common/compiler_attributes.h \
+ 	ubifs-utils/common/compiler_attributes.h \
++	ubifs-utils/common/linux_types.h \
  	ubifs-utils/common/defs.h \
  	ubifs-utils/common/crc16.h \
  	ubifs-utils/common/crc16.c \
-diff --git a/ubifs-utils/common/compiler_attributes.h b/ubifs-utils/common/compiler_attributes.h
-new file mode 100644
-index 00000000..bb65d3a9
---- /dev/null
-+++ b/ubifs-utils/common/compiler_attributes.h
-@@ -0,0 +1,79 @@
-+#ifndef __COMPILER_ATTRIBUTES_H__
-+#define __COMPILER_ATTRIBUTES_H__
-+
-+#if __has_attribute(__fallthrough__)
-+#define fallthrough	__attribute__((__fallthrough__))
-+#else
-+#define fallthrough     do {} while (0)
-+#endif
-+
-+#define __packed	__attribute__((__packed__))
-+#define __unused	__attribute__((__unused__))
-+#define __const		__attribute__((__const__))
-+#define __must_check    __attribute__((__warn_unused_result__))
-+#ifndef __force
-+#define __force
-+#endif
-+
-+/*
-+ * Optional: only supported since clang >= 14.0
-+ *
-+ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-error-function-attribute
-+ */
-+#if __has_attribute(__error__)
-+# define __compiletime_error(msg)       __attribute__((__error__(msg)))
-+#else
-+# define __compiletime_error(msg)
-+#endif
-+
-+#ifndef __compiletime_error
-+# define __compiletime_error(message)
-+#endif
-+
-+#ifdef __OPTIMIZE__
-+# define __compiletime_assert(condition, msg, prefix, suffix)		\
-+	do {								\
-+		extern void prefix ## suffix(void) __compiletime_error(msg); \
-+		if (!(condition))					\
-+			prefix ## suffix();				\
-+	} while (0)
-+#else
-+# define __compiletime_assert(condition, msg, prefix, suffix) do { } while (0)
-+#endif
-+
-+#define _compiletime_assert(condition, msg, prefix, suffix) \
-+	__compiletime_assert(condition, msg, prefix, suffix)
-+
-+/**
-+ * compiletime_assert - break build and emit msg if condition is false
-+ * @condition: a compile-time constant condition to check
-+ * @msg:       a message to emit if condition is false
-+ *
-+ * In tradition of POSIX assert, this macro will break the build if the
-+ * supplied condition is *false*, emitting the supplied error message if the
-+ * compiler has support to do so.
-+ */
-+#define compiletime_assert(condition, msg) \
-+	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-+
-+/**
-+ * BUILD_BUG_ON_MSG - break compile if a condition is true & emit supplied
-+ *		      error message.
-+ * @condition: the condition which the compiler should know is false.
-+ *
-+ * See BUILD_BUG_ON for description.
-+ */
-+#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-+
-+/**
-+ * BUILD_BUG_ON - break compile if a condition is true.
-+ * @condition: the condition which the compiler should know is false.
-+ *
-+ * If you have some code which relies on certain constants being equal, or
-+ * some other compile-time-evaluated condition, you should use BUILD_BUG_ON to
-+ * detect if someone changes it.
-+ */
-+#define BUILD_BUG_ON(condition) \
-+	BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-+
-+#endif
+diff --git a/ubifs-utils/common/crypto.c b/ubifs-utils/common/crypto.c
+index 2ecd8da1..e4ef3491 100644
+--- a/ubifs-utils/common/crypto.c
++++ b/ubifs-utils/common/crypto.c
+@@ -23,6 +23,7 @@
+ #include <string.h>
+ #include <assert.h>
+ 
++#include "linux_types.h"
+ #include "fscrypt.h"
+ #include "defs.h"
+ #include "ubifs.h"
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index cafc94af..dd3b806e 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -9,7 +9,6 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <limits.h>
+-#include <byteswap.h>
+ #include <errno.h>
+ 
+ #include "ubifs.h"
+@@ -27,37 +26,8 @@ enum { MKFS_PROGRAM_TYPE = 0 };
+ 	printf("%s: %s: " fmt "\n", PROGRAM_NAME, __FUNCTION__, ##__VA_ARGS__); \
+ } while(0)
+ 
+-#define t16(x) ({ \
+-	uint16_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
+-})
+-
+-#define t32(x) ({ \
+-	uint32_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_32(__b); \
+-})
+-
+-#define t64(x) ({ \
+-	uint64_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_64(__b); \
+-})
+-
+-#define cpu_to_le16(x) ((__le16){t16(x)})
+-#define cpu_to_le32(x) ((__le32){t32(x)})
+-#define cpu_to_le64(x) ((__le64){t64(x)})
+-
+-#define le16_to_cpu(x) (t16((x)))
+-#define le32_to_cpu(x) (t32((x)))
+-#define le64_to_cpu(x) (t64((x)))
+-
+ #define unlikely(x) (x)
+ 
+-struct qstr
+-{
+-	char *name;
+-	size_t len;
+-};
+-
+ /**
+  * fls - find last (most-significant) bit set
+  * @x: the word to search
+diff --git a/ubifs-utils/common/fscrypt.c b/ubifs-utils/common/fscrypt.c
+index 895d5c72..f39faa76 100644
+--- a/ubifs-utils/common/fscrypt.c
++++ b/ubifs-utils/common/fscrypt.c
+@@ -20,6 +20,7 @@
+ 
+ #include <endian.h>
+ 
++#include "linux_types.h"
+ #include "fscrypt.h"
+ #include "defs.h"
+ #include "ubifs.h"
+@@ -88,7 +89,7 @@ unsigned int fscrypt_fname_encrypted_size(struct fscrypt_context *fctx,
+ 	return round_up(ilen, padding);
+ }
+ 
+-int encrypt_path(void **outbuf, void *data, unsigned int data_len,
++int encrypt_path(void **outbuf, const void *data, unsigned int data_len,
+ 		unsigned int max_namelen, struct fscrypt_context *fctx)
+ {
+ 	void *inbuf, *crypt_key;
 diff --git a/ubifs-utils/common/fscrypt.h b/ubifs-utils/common/fscrypt.h
-index 908a5041..b8a599de 100644
+index b8a599de..4a073e97 100644
 --- a/ubifs-utils/common/fscrypt.h
 +++ b/ubifs-utils/common/fscrypt.h
-@@ -25,6 +25,8 @@
- #include <openssl/rand.h>
- #endif
- #include <assert.h>
+@@ -107,7 +107,7 @@ struct fscrypt_context *inherit_fscrypt_context(struct fscrypt_context *fctx);
+ void free_fscrypt_context(struct fscrypt_context *fctx);
+ unsigned int fscrypt_fname_encrypted_size(struct fscrypt_context *fctx,
+ 					  unsigned int ilen);
+-int encrypt_path(void **outbuf, void *data, unsigned int data_len,
++int encrypt_path(void **outbuf, const void *data, unsigned int data_len,
+ 		 unsigned int max_namelen, struct fscrypt_context *fctx);
+ int encrypt_data_node(struct fscrypt_context *fctx, unsigned int block_no,
+ 		      struct ubifs_data_node *dn, size_t length);
+@@ -138,8 +138,9 @@ static inline void free_fscrypt_context(struct fscrypt_context *fctx)
+ 	assert(!fctx);
+ }
+ 
+-static inline int encrypt_path(void **outbuf, void *data, unsigned int data_len,
+-		 unsigned int max_namelen, struct fscrypt_context *fctx)
++static inline int encrypt_path(void **outbuf, const void *data,
++			unsigned int data_len, unsigned int max_namelen,
++			struct fscrypt_context *fctx)
+ {
+ 	(void)outbuf;
+ 	(void)data;
+diff --git a/ubifs-utils/common/linux_types.h b/ubifs-utils/common/linux_types.h
+new file mode 100644
+index 00000000..556b2e25
+--- /dev/null
++++ b/ubifs-utils/common/linux_types.h
+@@ -0,0 +1,89 @@
++#ifndef __LINUX_TYPES_H__
++#define __LINUX_TYPES_H__
++
++#include <linux/types.h>
++#include <sys/types.h>
++#include <byteswap.h>
++#include <stdint.h>
++#include <unistd.h>
 +
 +#include "compiler_attributes.h"
- #include "ubifs.h"
- #include "crypto.h"
- 
-@@ -79,7 +81,7 @@ struct fscrypt_context {
- 	__u8 flags;
- 	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
- 	__u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
--} __attribute__((packed));
-+} __packed;
- 
- /**
-  * For encrypted symlinks, the ciphertext length is stored at the beginning
-@@ -88,7 +90,7 @@ struct fscrypt_context {
- struct fscrypt_symlink_data {
- 	__le16 len;
- 	char encrypted_path[1];
--} __attribute__((packed));
-+} __packed;
- 
- 
- #ifndef FS_MAX_KEY_SIZE
++
++typedef __u8		u8;
++typedef __u16		u16;
++typedef __u32		u32;
++typedef __u64		u64;
++
++typedef __s64		time64_t;
++
++struct qstr {
++	const char *name;
++	size_t len;
++};
++
++struct fscrypt_name {
++	struct qstr disk_name;
++};
++
++#define fname_name(p)	((p)->disk_name.name)
++#define fname_len(p)	((p)->disk_name.len)
++
++#define t16(x) ({ \
++	uint16_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
++})
++
++#define t32(x) ({ \
++	uint32_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_32(__b); \
++})
++
++#define t64(x) ({ \
++	uint64_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_64(__b); \
++})
++
++#define cpu_to_le16(x) ((__le16){t16(x)})
++#define cpu_to_le32(x) ((__le32){t32(x)})
++#define cpu_to_le64(x) ((__le64){t64(x)})
++
++#define le16_to_cpu(x) (t16((x)))
++#define le32_to_cpu(x) (t32((x)))
++#define le64_to_cpu(x) (t64((x)))
++
++#define check_mul_overflow(a, b, d) ({		\
++	typeof(a) __a = (a);			\
++	typeof(b) __b = (b);			\
++	typeof(d) __d = (d);			\
++	(void) (&__a == &__b);			\
++	(void) (&__a == __d);			\
++	__builtin_mul_overflow(__a, __b, __d);	\
++})
++
++static inline __must_check size_t array_size(size_t a, size_t b)
++{
++	size_t bytes;
++	if (check_mul_overflow(a, b, &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
++static inline int int_log2(unsigned int arg)
++{
++	int  l = 0;
++
++	arg >>= 1;
++	while (arg) {
++		l++;
++		arg >>= 1;
++	}
++	return l;
++}
++
++#undef PAGE_SIZE
++#define PAGE_SIZE (getpagesize())
++#undef PAGE_SHIFT
++#define PAGE_SHIFT (int_log2(PAGE_SIZE))
++
++#endif
 diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
-index 9c53e671..7530503a 100644
+index 7530503a..dfbc96bf 100644
 --- a/ubifs-utils/common/sign.c
 +++ b/ubifs-utils/common/sign.c
-@@ -28,6 +28,7 @@
+@@ -28,7 +28,7 @@
  #include <openssl/conf.h>
  #include <err.h>
  
-+#include "compiler_attributes.h"
+-#include "compiler_attributes.h"
++#include "linux_types.h"
  #include "sign.h"
  #include "defs.h"
  #include "ubifs.h"
-@@ -116,8 +117,7 @@ static void drain_openssl_errors(void)
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 2181595e..c2f5a29d 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -46,6 +46,7 @@
+ #include <zstd.h>
+ #endif
  
- static const char *key_pass;
++#include "linux_types.h"
+ #include "defs.h"
+ #include "crypto.h"
+ #include "fscrypt.h"
+@@ -1207,12 +1208,14 @@ static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st,
+ 	struct ubifs_ino_node *ino;
+ 	struct ubifs_dent_node *xent;
+ 	struct qstr nm;
++	char *tmp_name;
+ 	union ubifs_key xkey, nkey;
+ 	int len, ret;
  
--static int pem_pw_cb(char *buf, int len, __attribute__((unused)) int w,
--		     __attribute__((unused)) void *v)
-+static int pem_pw_cb(char *buf, int len, __unused int w, __unused void *v)
- {
- 	int pwlen;
+ 	nm.len = strlen(name);
+-	nm.name = xmalloc(nm.len + 1);
+-	memcpy(nm.name, name, nm.len + 1);
++	tmp_name = xmalloc(nm.len + 1);
++	memcpy(tmp_name, name, nm.len + 1);
++	nm.name = tmp_name;
+ 
+ 	host_ino->xattr_cnt++;
+ 	host_ino->xattr_size += CALC_DENT_SIZE(nm.len);
+@@ -1240,7 +1243,7 @@ static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st,
+ 
+ 	xent->inum = cpu_to_le64(inum);
+ 
+-	ret = add_node(&xkey, nm.name, nm.len, xent, len);
++	ret = add_node(&xkey, tmp_name, nm.len, xent, len);
+ 	if (ret)
+ 		goto out;
  
 -- 
 2.13.6
