@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD963D2E9C7
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:11:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53102D2E9C7
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=th59zOvACQgbTaG3g+QYmHJGRlzAQMR0zpCYqSGjS+U=; b=dPy9jpQw6mGb9x
-	qQUW6zgZLyL+Fc9vnSSeyYhUzr8atODmOpJKXbwKIZCnXl0LxHzM6jijoZslAO/SA06blItoX8SrW
-	DPrBGPH1+MIcs7+yGhrtRF8jrISt3utgPsBZ6jerL06dB8KJHLNqGtBN+9jAb3Yqqy46rBIzlVNm/
-	hugliY7z4nVf1mZD2qH96axQgsntWWZslx5Jik3/s2SoQI4hTzJwsPWof/f3nCh/jq200Yc251p5u
-	U+Fpr5bsbne748C5ICR35oRfv5SP95AMGQhgYoeHZCS05hqErE3LW0ZshytvIl/T+UWuZgrFIH4TC
-	XLbJ8rb50CV+RyL/yX4w==;
+	List-Owner; bh=6e3FSJuiUsXVBG/i/0UMvYdAf6m/L/Di5k0DD9ic0LE=; b=YXHSfMrGmEt35K
+	PPqtt7mp09W7lPYV4KZtNPpjgQIBXz6TpJhSFOElmXfLqtvSPXEwTzSi1oIxCnDxeE5jNq9y57UiA
+	pDiwM1IyUKdfbb6V0vOnAhAR7E6RAuWeNT9q21KabLDOlAlYh89pGJ//mRmRI6uqpubnt1MaWOX6z
+	VrM/78uY6wAaXuorh7DlvDAux7XR39mQL9MTXJaW+l5bcp7M+u/nJD2egQ4B94HNZDWelLQmp3I4D
+	Lw55sqforTKT8K9nBNE11RqijHd1Tmvr00n2L9a8/VpYkysGCYxJq/uJpjktQ1RpVvbLWdkzDSBVc
+	L0hSgfM/jEbteou6TVWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQS0-0000000H1Sw-087a;
-	Mon, 11 Nov 2024 09:11:12 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1tAQSA-0000000H1bb-2mG9;
+	Mon, 11 Nov 2024 09:11:22 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQQk-0000000H0NY-1UnA
+	id 1tAQQl-0000000H0OZ-2MgV
 	for linux-mtd@lists.infradead.org;
 	Mon, 11 Nov 2024 09:10:03 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn3c53ngmz2Dgw3;
-	Mon, 11 Nov 2024 17:08:05 +0800 (CST)
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Xm2xRgz28fSc;
+	Mon, 11 Nov 2024 17:05:12 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id DBC43180043;
-	Mon, 11 Nov 2024 17:09:52 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id D6606180043;
+	Mon, 11 Nov 2024 17:09:53 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:09:52 +0800
+ 2024 17:09:53 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 090/102] tests: Add common libs for testing fsck.ubifs/mkfs.ubifs
-Date: Mon, 11 Nov 2024 17:08:18 +0800
-Message-ID: <20241111090832.2093596-21-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 092/102] tests: ubifs_tools: fsck_tests: Add cycle mount+fsck test
+Date: Mon, 11 Nov 2024 17:08:20 +0800
+Message-ID: <20241111090832.2093596-23-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_010954_764530_53719A15 
-X-CRM114-Status: GOOD (  19.15  )
+X-CRM114-CacheID: sfid-20241111_010956_108333_A15F31D2 
+X-CRM114-Status: GOOD (  16.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,423 +70,215 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a preparation for adding testcases for fsck.ubifs and
-mkfs.ubifs. Add some common functions, for example: powercut,
-load_mtdram, mount_ubifs, encryption operations, etc.
+Do fsstress and fsck, check whether there are any files(and their data)
+are lost after fsck. This testcase mainly checks whether fsck.ubifs could
+corrupt the filesystem content in common case.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- .gitignore                               |   1 +
- Makefile.am                              |   1 +
- configure.ac                             |   3 +-
- tests/ubifs_tools-tests/Makemodule.am    |   2 +
- tests/ubifs_tools-tests/lib/common.sh.in | 350 +++++++++++++++++++++++++++++++
- 5 files changed, 356 insertions(+), 1 deletion(-)
- create mode 100644 tests/ubifs_tools-tests/Makemodule.am
- create mode 100755 tests/ubifs_tools-tests/lib/common.sh.in
+ .gitignore                                         |   1 +
+ configure.ac                                       |   3 +-
+ tests/ubifs_tools-tests/Makemodule.am              |   3 +-
+ .../fsck_tests/cycle_mount_fsck_check.sh.in        | 154 +++++++++++++++++++++
+ 4 files changed, 159 insertions(+), 2 deletions(-)
+ create mode 100755 tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in
 
 diff --git a/.gitignore b/.gitignore
-index 3eb66c14..de0fce1f 100644
+index 799290a4..7de38e86 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -113,6 +113,7 @@ tests/fs-tests/stress/fs_stress00.sh
- tests/fs-tests/stress/fs_stress01.sh
- tests/ubi-tests/runubitests.sh
+@@ -115,6 +115,7 @@ tests/ubi-tests/runubitests.sh
  tests/ubi-tests/ubi-stress-test.sh
-+tests/ubifs_tools-tests/lib/common.sh
+ tests/ubifs_tools-tests/lib/common.sh
+ tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
++tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
  
  #
  # Files generated by autotools
-diff --git a/Makefile.am b/Makefile.am
-index 887ce938..0ebd45bb 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -63,6 +63,7 @@ include tests/jittertest/Makemodule.am
- include tests/checkfs/Makemodule.am
- include tests/fs-tests/Makemodule.am
- include tests/mtd-tests/Makemodule.am
-+include tests/ubifs_tools-tests/Makemodule.am
- endif
- 
- if UNIT_TESTS
 diff --git a/configure.ac b/configure.ac
-index 93d09db8..7fd4b764 100644
+index 45f51abb..bcd9b63a 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -292,7 +292,8 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
- 	tests/fs-tests/stress/fs_stress00.sh
- 	tests/fs-tests/stress/fs_stress01.sh
+@@ -294,7 +294,8 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
  	tests/ubi-tests/runubitests.sh
--	tests/ubi-tests/ubi-stress-test.sh])
-+	tests/ubi-tests/ubi-stress-test.sh
-+	tests/ubifs_tools-tests/lib/common.sh])
+ 	tests/ubi-tests/ubi-stress-test.sh
+ 	tests/ubifs_tools-tests/lib/common.sh
+-	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh])
++	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
++	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh])
  
  AC_OUTPUT([Makefile])
  
 diff --git a/tests/ubifs_tools-tests/Makemodule.am b/tests/ubifs_tools-tests/Makemodule.am
-new file mode 100644
-index 00000000..265c9cc7
---- /dev/null
+index 6b533982..68c77a62 100644
+--- a/tests/ubifs_tools-tests/Makemodule.am
 +++ b/tests/ubifs_tools-tests/Makemodule.am
-@@ -0,0 +1,2 @@
-+test_SCRIPTS += \
-+	tests/ubifs_tools-tests/lib/common.sh
-diff --git a/tests/ubifs_tools-tests/lib/common.sh.in b/tests/ubifs_tools-tests/lib/common.sh.in
+@@ -1,3 +1,4 @@
+ test_SCRIPTS += \
+ 	tests/ubifs_tools-tests/lib/common.sh \
+-	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
++	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh \
++	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
+diff --git a/tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in b/tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in
 new file mode 100755
-index 00000000..5a07ebcd
+index 00000000..c9972e27
 --- /dev/null
-+++ b/tests/ubifs_tools-tests/lib/common.sh.in
-@@ -0,0 +1,350 @@
++++ b/tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in
+@@ -0,0 +1,154 @@
 +#!/bin/sh
 +# Copyright (c), 2024, Huawei Technologies Co, Ltd.
 +# Author: Zhihao Cheng <chengzhihao1@huawei.com>
 +#
-+# Provide basic functions.
++# Test Description:
++# Do many cycles of mount/fsstress/umount/fsck/mount, check whether the
++# filesystem content before fsck and after fsck are consistent.
++# Running time: 10h
 +
-+UBI_NUM=0
-+DEV=/dev/ubi0_0
-+MNT=/mnt/test_file_system
-+TMP_FILE=/tmp/ubifs_test_file
-+LOG_FILE=/tmp/ubifs_log
-+KEY_FILE=/tmp/key
-+nandsim_patt="NAND simulator"
-+mtdram_patt="mtdram test device"
++TESTBINDIR=@TESTBINDIR@
++source $TESTBINDIR/common.sh
 +
-+# fsck returning code
-+FSCK_OK=0		# No errors
-+FSCK_NONDESTRUCT=1	# File system errors corrected
-+FSCK_REBOOT=2		# System should be rebooted
-+FSCK_UNCORRECTED=4	# File system errors left uncorrected
-+FSCK_ERROR=8		# Operational error
-+FSCK_USAGE=16		# Usage or syntax error
-+FSCK_CANCELED=32	# Aborted with a signal or ^
-+FSCK_LIBRARY=128	# Shared library error
++ID="0xec,0xa1,0x00,0x15" # 128M 128KB 2KB 512-sub-page
 +
-+function fatal()
++function run_test()
 +{
-+	echo "Error: $1" 1>&2
-+	exit 1
-+}
++	encryption=$1
++	modprobe nandsim id_bytes=$ID
++	mtdnum="$(find_mtd_device "$nandsim_patt")"
++	flash_eraseall /dev/mtd$mtdnum
 +
-+# All loaded modules(mtdram/nandsim/ubi/ubifs) won't be removed if errors
-+# happen, it is useful to debug based on the UBIFS image.
-+function cleanup_handler()
-+{
-+	local ret="$1"
-+
-+	if [ "$ret" == "0" ]; then
-+		umount $MNT >/dev/null 2>&1 ||:
-+		modprobe -r ubifs >/dev/null 2>&1 ||:
-+		modprobe -r ubi >/dev/null 2>&1 ||:
-+		modprobe -r nandsim >/dev/null 2>&1 ||:
-+		modprobe -r mtdram >/dev/null 2>&1  ||:
-+		rm -rf $MNT >/dev/null 2>&1 ||:
-+		rm -f $TMP_FILE >/dev/null 2>&1 ||:
-+		rm -f $KEY_FILE >/dev/null 2>&1 ||:
-+		rm -f $LOG_FILE >/dev/null 2>&1 ||:
-+		exit 0
-+	else
-+		exit 1
-+	fi
-+}
-+trap 'cleanup_handler $?' EXIT
-+trap 'cleanup_handler 1' HUP PIPE INT QUIT TERM
-+
-+function find_mtd_device()
-+{
-+	printf "%s" "$(grep "$1" /proc/mtd | sed -e "s/^mtd\([0-9]\+\):.*$/\1/")"
-+}
-+
-+function powercut()
-+{
 +	dmesg -c > /dev/null
-+	echo 1 > /sys/kernel/debug/ubifs/tst_recovery;
-+	while true;
-+	do
-+		msg=`dmesg -c | grep "Power cut emulated"`;
-+		if [[ "$msg" != "" ]];
-+		then
-+			break;
-+		fi
-+		ro_error=`cat /sys/kernel/debug/ubifs/ubi${UBI_NUM}_0/ro_error`
-+		if [[ $ro_error != 0 ]]; then
-+			break;
-+		fi
-+	done
-+	echo 0 > /sys/kernel/debug/ubifs/tst_recovery
-+}
 +
-+# Load mtdram with specified size and PEB size
-+# Usage: load_mtdram <flash size> <PEB size>
-+# 1. Flash size is specified in MiB
-+# 2. PEB size is specified in KiB
-+function load_mtdram()
-+{
-+	local size="$1";     shift
-+	local peb_size="$1"; shift
++	modprobe ubi mtd="$mtdnum,2048" || fatal "modprobe ubi fail"
++	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
++	modprobe ubifs || fatal "modprobe ubifs fail"
 +
-+	size="$(($size * 1024))"
-+	modprobe mtdram total_size="$size" erase_size="$peb_size"
-+}
++	echo "Do cycle mount+umount+fsck+check_fs_content test ($encryption)"
 +
-+function check_fsstress()
-+{
-+	cmd=`fsstress | grep "op_name"`
-+	if ! [[ "$cmd" =~ "op_name" ]]; then
-+		fatal "fsstress is not found"
++	if [[ "$encryption" == "encrypted" ]]; then
++		encryption_gen_key
 +	fi
-+}
 +
-+# Check error messages
-+function check_err_msg()
-+{
-+	msg=`dmesg | grep -E "dump_stack|UBIFS error|switched to read-only mode"`;
-+	if [[ "$msg" != "" ]]
-+	then
-+		dmesg
-+		fatal "error message detected!"
-+	fi
-+	dmesg -c > /dev/null
-+}
-+
-+# Iterate all files under certain dir
-+# $1: dir
-+# $2: "md5sum" means that need record md5 for regular file, otherwise don't record md5 for regular file
-+function read_dir() {
-+	for file in `ls -a $1`
++	round=0
++	while [[ $round -lt 20 ]]
 +	do
-+		cur_f=$1"/"$file
-+		if [ -b $cur_f ]
-+		then
-+			major=`stat -c %t $cur_f`
-+			minor=`stat -c %T $cur_f`
-+			echo "block $cur_f $major $minor" >> $TMP_FILE
-+		elif [ -c $cur_f ]
-+		then
-+			major=`stat -c %t $cur_f`
-+			minor=`stat -c %T $cur_f`
-+			echo "char $cur_f $major $minor" >> $TMP_FILE
-+		elif [ -L $cur_f ]
-+		then
-+			link=`stat -c %N $cur_f`
-+			echo "symlink $cur_f $link" >> $TMP_FILE
-+		elif [ -S $cur_f ]
-+		then
-+			echo "sock $cur_f" >> $TMP_FILE
-+		elif [ -p $cur_f ]
-+		then
-+			echo "fifo $cur_f" >> $TMP_FILE
-+		elif [ -f $cur_f ]
-+		then
-+			sz=`stat -c %s $cur_f`
-+			if [[ "$2" != "md5sum" ]]; then
-+				echo "reg $cur_f $sz" >> $TMP_FILE
-+			else
-+				md5=`md5sum $cur_f | awk '{print $1}'`
-+				echo "reg $cur_f $md5 $sz" >> $TMP_FILE
-+			fi
-+		elif [ -d $cur_f ]
-+		then
-+			if [[ $file != '.' && $file != '..' ]]
++		echo "---------------------- ROUND $round ----------------------"
++		let round=$round+1
++
++		mount_ubifs $DEV $MNT "noauthentication" "noatime" || fatal "mount ubifs fail"
++		if [[ "$encryption" == "encrypted" ]]; then
++			encryption_set_key $MNT
++		fi
++
++		per=`df -Th | grep ubifs | awk '{print $6}'`;
++		if [[ ${per%?} -gt 95 ]]; then
++			# Used > 95%
++			echo "Clean files"
++			rm -rf $MNT/*
++			check_err_msg
++		fi
++
++		fsstress -d $MNT -l0 -p4 -n10000 &
++
++		sleep $((RANDOM % 30))
++
++		ps -e | grep -w fsstress > /dev/null 2>&1
++		while [ $? -eq 0 ]
++		do
++			killall -9 fsstress > /dev/null 2>&1
++			sleep 1
++			ps -e | grep -w fsstress > /dev/null 2>&1
++		done
++
++		per=`df -Th | grep ubifs | awk '{print $6}'`;
++		if [[ ${per%?} -gt 95 ]]; then
++			dmesg -c > /dev/null # The ENOSPC error messages may exist
++		else
++			check_err_msg # Make sure new operations are okay after fsck
++		fi
++		sync
++
++		# Record filesystem information
++		rm -f $TMP_FILE 2>/dev/null
++		read_dir $MNT "md5sum"
++
++		while true
++		do
++			res=`mount | grep "$MNT"`
++			if [[ "$res" == "" ]]
 +			then
-+				echo "dir $cur_f" >> $TMP_FILE
-+				read_dir $1"/"$file $2
++				break;
 +			fi
-+		else
-+			fatal "record unknown file type $cur_f"
++			umount $MNT
++			sleep 0.1
++		done
++
++		fsck.ubifs -a $DEV 2>&1 > $LOG_FILE
++		res=$?
++		cat $LOG_FILE
++		if [[ $res != $FSCK_OK ]]
++		then
++			# The lpt nodes could be parsed incorrectly because the lpt disk
++			# layout is too simple. See details in
++			# https://lore.kernel.org/linux-mtd/97ca7fe4-4ad4-edd1-e97a-1d540aeabe2d@huawei.com/
++			log=`cat $LOG_FILE | grep "dbg_check_ltab_lnum: invalid empty space in LEB"`
++			if [[ "$log" == "" ]]; then
++				fatal "fsck fail $res"
++			fi
++			if [[ $res != $FSCK_NONDESTRUCT ]]; then
++				fatal "fsck fail $res"
++			fi
 +		fi
++
++		enable_chkfs
++
++		mount_ubifs $DEV $MNT "noauthentication" "noatime"
++		res=$?
++		if [[ $res != 0 ]]
++		then
++			fatal "mount fail $res"
++		fi
++
++		if [[ "$encryption" == "encrypted" ]]; then
++			encryption_set_key $MNT
++		fi
++
++		du -sh $MNT > /dev/null  # Ensure that all files are accessible
++		ret=$?
++		if [[ $ret != 0 ]]; then
++			fatal "Cannot access all files"
++		fi
++		check_err_msg
++
++		# Check filesystem information
++		parse_dir "md5sum"
++		rm -f $TMP_FILE 2>/dev/null
++
++		umount $MNT
++		res=$?
++		if [[ $res != 0 ]]
++		then
++			fatal "unmount fail $res"
++		fi
++
++		check_err_msg
++
++		disable_chkfs
 +	done
++
++	modprobe -r ubifs
++	modprobe -r ubi
++	modprobe -r nandsim
 +}
 +
-+# Check whether there are files lost after fsck/mkfs
-+# $1: "md5sum" means need record md5 for regular file, otherwise don't check md5 for regular file
-+function parse_dir()
-+{
-+	while read line
-+	do
-+		array=(${line//\ / });
-+		f_type=${array[0]};
-+		cur_f=${array[1]};
-+		cur_info=""
-+		if [[ "$f_type" =~ "block" ]]
-+		then
-+			major=`stat -c %t $cur_f`
-+			minor=`stat -c %T $cur_f`
-+			cur_info="block $cur_f $major $minor"
-+		elif [[ "$f_type" =~ "char" ]]
-+		then
-+			major=`stat -c %t $cur_f`
-+			minor=`stat -c %T $cur_f`
-+			cur_info="char $cur_f $major $minor"
-+		elif [[ "$f_type" =~ "symlink" ]]
-+		then
-+			link=`stat -c %N $cur_f`
-+			cur_info="symlink $cur_f $link"
-+		elif [[ "$f_type" =~ "sock" ]]
-+		then
-+			cur_info="sock $cur_f"
-+		elif [[ "$f_type" =~ "fifo" ]]
-+		then
-+			cur_info="fifo $cur_f"
-+		elif [[ "$f_type" =~ "reg" ]]
-+		then
-+			sz=`stat -c %s $cur_f`
-+			if [[ "$1" != "md5sum" ]]; then
-+				cur_info="reg $cur_f $sz"
-+			else
-+				md5=`md5sum $cur_f | awk '{print $1}'`
-+				cur_info="reg $cur_f $md5 $sz"
-+			fi
-+		elif [[ "$f_type" =~ "dir" ]]
-+		then
-+			cur_info="dir $cur_f"
-+		else
-+			fatal "parse unknown file type $cur_f"
-+		fi
-+		if [[ "$cur_info" != "$line" ]]
-+		then
-+			fatal "current info $cur_info, but expect $line"
-+		fi
-+	done < $TMP_FILE
-+}
-+
-+function authentication()
-+{
-+	keyctl clear @s
-+	res=$?
-+	if [[ $res != 0 ]]; then
-+		fatal "keyctl is not found"
-+	fi
-+	keyctl add logon ubifs:foo 12345678901234567890123456789012 @s
-+}
-+
-+function encryption_gen_key()
-+{
-+	# CONFIG_FS_ENCRYPTION=y
-+	head -c 64 /dev/urandom > $KEY_FILE
-+	cmd=`fscryptctl -h | grep "set_policy"`
-+	if ! [[ "$cmd" =~ "set_policy" ]]; then
-+		fatal "fscryptctl is not found"
-+	fi
-+}
-+
-+function encryption_set_key()
-+{
-+	mnt=$1
-+	# https://github.com/google/fscryptctl
-+	key=$(fscryptctl add_key $mnt < $KEY_FILE)
-+	fscryptctl set_policy $key $mnt
-+	#fscryptctl get_policy $mnt
-+	ret=$?
-+	if [[ $ret != 0 ]]; then
-+		fatal "set encryption policy failed"
-+	fi
-+}
-+
-+function mount_ubifs()
-+{
-+	local dev=$1;
-+	local mnt=$2;
-+	local auth=$3;
-+	local noatime=$4;
-+	local option="";
-+	if [[ "$noatime" == "noatime" ]]; then
-+		option="-o noatime"
-+	fi
-+	if [[ "$auth" == "authentication" ]]; then
-+		authentication
-+		if [[ "$option" == "" ]]; then
-+			option="-o auth_key=ubifs:foo,auth_hash_name=sha256"
-+		else
-+			option="$option,auth_key=ubifs:foo,auth_hash_name=sha256"
-+		fi
-+	fi
-+	mount -t ubifs $option $dev $mnt
-+}
-+
-+function enable_chkfs()
-+{
-+	echo 1 > /sys/kernel/debug/ubifs/chk_fs
-+	echo 1 > /sys/kernel/debug/ubifs/chk_general
-+	echo 1 > /sys/kernel/debug/ubifs/chk_index
-+	echo 1 > /sys/kernel/debug/ubifs/chk_lprops
-+	echo 1 > /sys/kernel/debug/ubifs/chk_orphans
-+}
-+
-+function disable_chkfs()
-+{
-+	echo 0 > /sys/kernel/debug/ubifs/chk_fs
-+	echo 0 > /sys/kernel/debug/ubifs/chk_general
-+	echo 0 > /sys/kernel/debug/ubifs/chk_index
-+	echo 0 > /sys/kernel/debug/ubifs/chk_lprops
-+	echo 0 > /sys/kernel/debug/ubifs/chk_orphans
-+}
-+
-+function inject_mem_err()
-+{
-+	# CONFIG_FAILSLAB=y
-+	# CONFIG_FAIL_PAGE_ALLOC=y
-+	local pid=$1;
-+
-+	if ! [ -f /sys/kernel/debug/failslab/probability ]; then
-+		fatal "failslab is not enabled, injection failed"
-+	fi
-+	if ! [ -f /sys/kernel/debug/fail_page_alloc/probability ]; then
-+		fatal "fail_page_alloc is not enabled, injection failed"
-+	fi
-+
-+	echo 1 > /proc/$pid/make-it-fail
-+
-+	echo Y > /sys/kernel/debug/failslab/task-filter
-+	echo 1 > /sys/kernel/debug/failslab/probability # 1% failure
-+	echo 10000 > /sys/kernel/debug/failslab/times
-+	echo 1 > /sys/kernel/debug/failslab/verbose
-+	echo N > /sys/kernel/debug/failslab/ignore-gfp-wait
-+
-+	echo Y > /sys/kernel/debug/fail_page_alloc/task-filter
-+	echo 1 > /sys/kernel/debug/fail_page_alloc/probability
-+	echo 10000 > /sys/kernel/debug/fail_page_alloc/times
-+	echo 0 > /sys/kernel/debug/fail_page_alloc/verbose
-+	echo N > /sys/kernel/debug/fail_page_alloc/ignore-gfp-wait
-+}
-+
-+function cancel_mem_err()
-+{
-+	echo 0 > /sys/kernel/debug/failslab/probability
-+	echo 0 > /sys/kernel/debug/failslab/times
-+	echo 0 > /sys/kernel/debug/failslab/verbose
-+	echo N > /sys/kernel/debug/failslab/task-filter
-+	echo Y > /sys/kernel/debug/failslab/ignore-gfp-wait
-+
-+	echo 0 > /sys/kernel/debug/fail_page_alloc/probability
-+	echo 0 > /sys/kernel/debug/fail_page_alloc/times
-+	echo 1 > /sys/kernel/debug/fail_page_alloc/verbose
-+	echo N > /sys/kernel/debug/fail_page_alloc/task-filter
-+	echo Y > /sys/kernel/debug/fail_page_alloc/ignore-gfp-wait
-+}
-+
-+function inject_io_err()
-+{
-+	if ! [ -f /sys/kernel/debug/ubi/ubi$UBI_NUM/tst_emulate_io_failures ]; then
-+		fatal "tst_emulate_io_failures is not enabled, skip injection"
-+	fi
-+
-+	echo 1 > /sys/kernel/debug/ubi/ubi$UBI_NUM/tst_emulate_io_failures
-+}
-+
-+function cancel_io_err()
-+{
-+	echo 0 > /sys/kernel/debug/ubi/ubi$UBI_NUM/tst_emulate_io_failures
-+}
-+
-+if ! [ -d $MNT ]; then
-+	mkdir -p $MNT
-+fi
-+
-+modprobe ubi || fatal "common.sh: cannot load ubi"
-+modprobe ubifs || fatal "common.sh: cannot load ubifs"
-+modprobe -r ubifs
-+modprobe -r ubi
++check_fsstress
++start_t=$(date +%s)
++for encryption in "encrypted" "noencrypted"; do
++	run_test $encryption
++done
++end_t=$(date +%s)
++time_cost=$(( end_t - start_t ))
++echo "Success, cost $time_cost seconds"
++exit 0
 -- 
 2.13.6
 
