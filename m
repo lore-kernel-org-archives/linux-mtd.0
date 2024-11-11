@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B8B5D2E9D8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C355ED2E9DC
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 11:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,90 +12,76 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aYg6BZlCxq+tm0fXfbDqIRWP0O08voR1wI93RZXLZ3U=; b=pc27Wn3YE3f1g6
-	fRthIZ4kC5pC9xEWR1m73D9Me6Tw5NV2FQKQ/GMaIHskZXLPvSnD2tQLnAh4foFe0Fd1vRWjeryjG
-	MIX4m0iYlN+gQHfQdrYz+54dNiM06cPq9NQwT1/OL45ml1Zp2zaUsbXQ/n/4RIlL50qdZdXsl4Pyt
-	POiB0wlsuafJP1eb1rFaUSlFtBSNWgpaizdYBuWPsewuZ5Oe5i84X9MWYkmDYdrEE/Js46LYnhY15
-	bJ9vnAw6cZS8BMbL72UsN+pVpoc18Hzc+3yqv9z7LaYnco3aRkLM701sigyEGzt71+5IZ/ND2ulQ0
-	f7Zup7cuEeZG4b7butwg==;
+	List-Owner; bh=KB49pZ8kK4Z2EDZAM+fczzDmaCnVrv1BGgBJlZMao1k=; b=o3YYWGNzNPJlxm
+	CfSaTMcrhVPZuxd1lGqE8LgVoF+Pk0AyzuNRHVhQW9W4ZI3BUBolojRVwW8wKyDlV1BvqjXxK0AMo
+	ZwsnXDlnnwG/VaYagnk9PZ7F60ZaV0KTVl4AoAPqfIhct4BU8tDfuloYj1NSYHGgsz4od+8k15WKs
+	/u73AGcV9voVWX5l+6zwVC4TguzTjNAoGxdtvQBq33LHNK/CTCu8olRH4oQlTrJyTGcfRouOowdkK
+	e3JavKCVx6NcXrEAulmuwj0MF1PmH/chFuwUm89yqi4wLg1Hr7qFDzWW1J1P4uYkElTQc6lJGq4tD
+	o4PvPQ6rgXb2V4E1nSZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tASY0-0000000HRmX-0LFE;
+	id 1tASY0-0000000HRmo-2bzJ;
 	Mon, 11 Nov 2024 11:25:32 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tASSb-0000000HQFF-3DDC
+	id 1tASTt-0000000HQah-0MV6
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 11:20:01 +0000
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a93c1cc74fdso746603966b.3
-        for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2024 03:19:57 -0800 (PST)
+	Mon, 11 Nov 2024 11:21:18 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a9a0c7abaa6so574651566b.2
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2024 03:21:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1731323996; x=1731928796; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1731324075; x=1731928875; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Fu/BrO8IXX6alWkTb0GYjGoZx8cl1iROqgITASLHOag=;
-        b=em5OAZlpo1CbxNuxijs50Jmc3TpGKQTMFzOtTsGZ4j2XTNZNJ897iDC9WPfi/Oy2TJ
-         qjwPbrh3Wb6ERzK5ETtbOPVykYLYkqbgmYngtQTw0nMAk0kfVmeqMu0u9qkMUGCtkCAr
-         C0ewrldnSFEXZdmtxP/vX9YJCsCk/5ZggTZeR4l5dIoP/Y+3qmFc9QFalZKrV9spQd2k
-         OfCJox+YA15GMn1HIvYSjmux58Uiw+aHruH5y106McNwlr7YWNzMeIFEPpzOonLWJ1FZ
-         fpJF/c8ZwwMTw72JqqJUZYpgIKjnRT4GFwGSJePLhSYsIBn7PUONHwAef+ltGNPoLS+3
-         WFyA==
+        bh=xadGs5mwD1qsGTtzkxs+MHJf7d9pXe1KKCe8zYpsmpo=;
+        b=NL9Hli6xtn79UoXRXQ53jGIMciuFN2/viUpHHDhYLawdcVRwG7OlKfpDiKhXp/twkQ
+         kZWT4D8hKgauMRwUBI5b2fhUpx5vdnatjsLU0lBkx6kz5v5rDc/dp07s7vexm8OaBS4m
+         u7QvzvuxsX0cA3Qq/jFMjKs/uqOzW6bO+WGUV2GfnPYit8kmuN4tTXmpu7Ws1rQvrAXk
+         4BJHTSV+ZGjPprNsIrDhztbf+dyqIgovHMHCyGIQfqPw+g96dBF+18IHSY45i03AxqVr
+         LzSWpK0unjchTmTUII1BI1w0KzeF5jNccatX+/M4P+9eZR4MCiTzfALf2XY56tGg1InE
+         g1lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731323996; x=1731928796;
+        d=1e100.net; s=20230601; t=1731324075; x=1731928875;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Fu/BrO8IXX6alWkTb0GYjGoZx8cl1iROqgITASLHOag=;
-        b=NipUExo8r7Nh7UvmU9QJuibQlsFIgJPoVTyf75AOHiA1ykLEhuJdzDr2cBT483DLsx
-         LQa0sT39d2Aasz/C6dab2J//1JPUi0zWKtRrWgq65beCxFQfhVY8O1jMCoMQxInpkBLN
-         8Ny+mnaDygi8BUnYPZWChG6XGVaFyzaj+/KmnuA3UfqU4SnBRCobdFwXU/XN6a7JNjB8
-         TwYr5zgMWnUTIhAnP2hLq1h8FVWxXeeG45tdtw0x2pHYCUWBx5UPZy8AYexi3aAZhghX
-         dJZ5er9B/yARI42KLcqJ7EpcKzdbOXpx1ZDi5Mvy7oZ5El/XG0LJ0yBdg3W91cXHYRD/
-         z5gg==
-X-Forwarded-Encrypted: i=1; AJvYcCXlmoNtBYikUQB0kp+tL4e+sh4jXjEGyfjQgDkYrLV/D6jbP96CognhnRSr2a8qCeWYLKobWtZwTuI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwrCc1qRGfdiGcnR8Xu+/unAhqMs8m1AliJ/3sV12J/BYsFZ2IM
-	93BqeMF8UcpAN0h7ehkpyH4HVqNlAxxkRnO6fpI3jLWUsEVh1mH2A2VZagvF0Ms=
-X-Google-Smtp-Source: AGHT+IETD0TTRXcK0fhtRcdkx1FK3e/NgS7iCgkGzVtCtOmSV30aF2EybWWflcXrw2+dh5CJKbTS3Q==
-X-Received: by 2002:a17:907:1c0f:b0:a8a:8d81:97ac with SMTP id a640c23a62f3a-a9eefeaf352mr1148302166b.4.1731323995661;
-        Mon, 11 Nov 2024 03:19:55 -0800 (PST)
+        bh=xadGs5mwD1qsGTtzkxs+MHJf7d9pXe1KKCe8zYpsmpo=;
+        b=XH/ENQ6dQkbvxH+MJX7tYsRfRpt4XTrWUskLILrHKt08N19uSqOWel9UivmqH/fRSW
+         hWrq6xSht2tEqDxUWZsHuqMDVTRkiA5baey/g4Cv3Qd4ekAAP5m5RB+Tzb9oPna6b8HW
+         2vkyjL1aHzf0Dfr+kRyGZY6w3gIzI/hlm3Em0ozG5fPapPTdNhxsH6hKDv3SGPnA0BxY
+         rWywtt8Lu94wwTMtOEKUbPagTeXDTok1ZSFipocw4KnuPmHl4W3gvu2kFMlZ+hNKPqsD
+         z6YZyD3bi1vX+pyADFZSN4Is8Ouvhfsc/FEy3jJ3tu8+DwXHFUzPcRs0JQWvK9W8thoM
+         OvKA==
+X-Forwarded-Encrypted: i=1; AJvYcCXXn/xsMkuRk+8cSVGJgBRZz9NDjrkkXgeuoKgdwEsYt2O5sc7dpYtcl3SK4ZISA4BLQ+kptH3aFuM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxXlBuDqgvHO+GUsO4vONr82HgYjDKnry2yYit/mop7aR4/JymT
+	b2O1q1KYTFqryAGl2Yp16vckoZqcSe4P2gzxWsz0UCA5kXjVsE3YMb4CYiMqy/U=
+X-Google-Smtp-Source: AGHT+IEwy2N2c63rj8E+OlMUwXaIcbDUR7Sk7oDxP0sPZ3aSNMocv7LL9KE0Izc+N6rNT+6VMc/psA==
+X-Received: by 2002:a17:907:7e8e:b0:a99:37f5:de59 with SMTP id a640c23a62f3a-a9ef001919bmr1200287766b.53.1731324074792;
+        Mon, 11 Nov 2024 03:21:14 -0800 (PST)
 Received: from 1.. ([79.115.63.225])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0e2e922sm582530866b.193.2024.11.11.03.19.53
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0a48585sm580264166b.45.2024.11.11.03.21.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 03:19:55 -0800 (PST)
+        Mon, 11 Nov 2024 03:21:14 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: peng.fan@oss.nxp.com,
-	m.felsch@pengutronix.de
-Cc: pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	Peng Fan <peng.fan@nxp.com>,
+To: pratyush@kernel.org,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v5 3/3] mtd: spi-nor: support vcc-supply regulator
-Date: Mon, 11 Nov 2024 13:19:46 +0200
-Message-Id: <20241111111946.9048-3-tudor.ambarus@linaro.org>
+Cc: mwalle@kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: winbond: add "w/ and w/o SFDP" comment
+Date: Mon, 11 Nov 2024 13:21:11 +0200
+Message-Id: <173132406532.9203.16605766715028942192.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241111111946.9048-1-tudor.ambarus@linaro.org>
-References: <20241111111946.9048-1-tudor.ambarus@linaro.org>
+In-Reply-To: <20241029080049.96679-1-tudor.ambarus@linaro.org>
+References: <20241029080049.96679-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1447; i=tudor.ambarus@linaro.org; h=from:subject; bh=/f04QIpiuRXQZGFnfAnaIXlKFecFw5Gb/Nj7YVsESQI=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBnMehSiUznsRKk7icK+iHmW5tJsygFpLEVcVVqy gWwSLj6VbSJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZzHoUgAKCRBLVU9HpY0U 6ZCHB/9VoXfZlG0zTmKUX6uOfKEiomBJ3tfQ08Fz7JZbY9HNkY8ASnC7D3i/ne0kDCkVXmDdN/t truMWEiWIE1aEqbqieiySwIsqcizG8Ng8aLiNPni4zPgm6lAMLGq9pGPkvgQ+cFq+o3sEqK6ju1 teBSW2iQF+1ZFN/yIjDe8egf9CAcfouomGbsT3ezLCWmfzGyknfgU+SZm2MuI020jVlawX/8u3/ SdG44Hz6HjnrJkYXQyvKOVYGgxNXcow+G5b/UAbgcUNo9rVXbPNFG6etyN+bN2C9AgYC5BJaPb8 ApAAcl8bVmIqGIMm7hll4kkRejUfWBnUCOp+r6Vxabk66hCF
+X-Developer-Signature: v=1; a=openpgp-sha256; l=730; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=gVRNVXU+XsTveFPESwuAaoUa9rADH15YraU1uwLLr5I=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBnMeil94i1AddMV1iOqINU7/gzjAdNXiYIo44l5 x07nJhNGjaJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZzHopQAKCRBLVU9HpY0U 6VGgB/4k5MVyWCGYYf01ruTnRsPkUVYYgauJWhy0qDI4NPnSs64C4HMLTFjMmWZjHXUONCIVOLK juKPOhBh91AO67d0FxAKeFPBfhIiEQK2rFKPdqhJ5QGgLp8JQutlGfn5vuy5TVX7retT+51y+Cg k6FlLEmQAUbKQI8KcDdvTIVEsaKWUmySe2h/yTcJ2yYdKZUxOPXgbDBy1xJsriHXRpSeTLF1PQT 6PWEwdsLaQTmsub0/tpBo9KWZQJvj+Cqo/Afpwp9g40QoqM/+xeBthgvw5mFopw3UthIHHfb2hi az78nFCgPRmeZkGQu9xj8q0S86bE1B63lY01WQu39kM9FVKn
 X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_031957_879652_851E463E 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20241111_032117_177689_B5D90971 
+X-CRM114-Status: UNSURE (   9.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,52 +98,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Tue, 29 Oct 2024 08:00:49 +0000, Tudor Ambarus wrote:
+> Commit d35df77707bf ("mtd: spi-nor: winbond: fix w25q128 regression")
+> upstream fixed a regression for flavors of 0xef4018 flash that don't
+> define SFDP tables. Add a comment on the flash definition highlighting
+> that there are flavors of flashes with and without SFDP support.
+> It spares developers searching the entire git log for when we'll better
+> handle these cases.
+> 
+> [...]
 
-SPI NOR flashes needs power supply to work properly. The power supply
-maybe software controllable per board design. So add the support
-for an vcc-supply regulator.
+Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
+spi-nor/next branch. Thanks!
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
-Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
-[ta: move devm_regulator_get_enable() to spi_nor_probe().]
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
-v5: introduce the local dev variable to its own patch
-v4: move the devm_regulator_get_enable() call from spi_nor_scan to
-spi_nor_probe(). We no longer add support for the drivers under
-drivers/mtd/spi-nor/controllers/. Those drivers shall be moved under
-drivers/spi.
+[1/1] mtd: spi-nor: winbond: add "w/ and w/o SFDP" comment
+      https://git.kernel.org/mtd/c/f8f6224948d8
 
- drivers/mtd/spi-nor/core.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2a329084505c..19eb98bd6821 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -17,6 +17,7 @@
- #include <linux/mtd/spi-nor.h>
- #include <linux/mutex.h>
- #include <linux/of_platform.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/sched/task_stack.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
-@@ -3587,6 +3588,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 	char *flash_name;
- 	int ret;
- 
-+	ret = devm_regulator_get_enable(dev, "vcc");
-+	if (ret)
-+		return ret;
-+
- 	nor = devm_kzalloc(dev, sizeof(*nor), GFP_KERNEL);
- 	if (!nor)
- 		return -ENOMEM;
+Cheers,
 -- 
-2.34.1
-
+Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
