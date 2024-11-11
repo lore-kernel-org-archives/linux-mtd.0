@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5CB1D5E140
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:07:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41194D5E37B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Eaz3HaJwa+tOzhI6CzlsM3o/wUMZF7BWamrcFyEf96Y=; b=wz6GkRcu1xmzTf
-	MMOXE5DzliE9otOwhJa8frPw1OMmI6EJF+dGMPe/P74HmGgyHpGOJStK7kmRwFDBCCu/w2AWMcA0R
-	WHmoZixN/Nh0FsCgPVRUCzpqf1NdxjCgrOmwFoM6z6mC5R599JhERJy0EZ8ao8usDgQze0Mo5D+DE
-	nLydRowdhWW0q5gyZ4tJl9w7z7PBhpO/Fs0rGMXKpB7EBHOZyKQ3xFO7kPqSaCrD4E0nEkh9dp1lW
-	ed3w8rcsEyZ5wZcpWVjHl+jzqkeGppopDWqWMjJ55qaEmdaINKv+Qjy5NLMjkkXUjDrx43E5xC8nS
-	caVFvC15RlgcRaze31Fw==;
+	List-Owner; bh=gb1djqrY8cDi9djS2sNU5qt5W305UxOOTq+CEGUOdeo=; b=RvY1worZIKav7T
+	NAh64hQo4zz/aSNRFD8UfIK8RaRxzflluwJsO+IID39zOfKVEFl0w7540qjliGqFO68vqNyZ/CHXx
+	8DBRuZRdWLtLgmldpq5Atv53n2KggheLjz6VhwZJqXipHEtwqBsUYVXyhNNF5MJH49vOmLds+ZM1w
+	aPxGxQyTDirIhnPvAJkmZk2GlriLeCcKXzXksdWYTu4AjoFRgy/GhLEwXhYneg+c1QPV64C8h0u6U
+	yiPX1DMufcJaXrSjSiXxc4Wdvd1Oyp1Snjy0IPJFappnT/gQQHCcIUxX+zCYam+k+XaNJjLdppOhx
+	dlXMa15gTF5jNBNx9Etg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSg-0000000Gjf0-3Q51;
-	Mon, 11 Nov 2024 08:07:50 +0000
+	id 1tAPSi-0000000Gjgp-0aut;
+	Mon, 11 Nov 2024 08:07:52 +0000
 Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSZ-0000000GjY8-3g61
+	id 1tAPSZ-0000000GjY6-3Lrt
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:07:45 +0000
+	Mon, 11 Nov 2024 08:07:47 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn2F21vDPz20t2W;
-	Mon, 11 Nov 2024 16:06:30 +0800 (CST)
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn2DM0M4lz2DfDm;
+	Mon, 11 Nov 2024 16:05:55 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 781301401F4;
+	by mail.maildlp.com (Postfix) with ESMTPS id 54F07140391;
 	Mon, 11 Nov 2024 16:07:42 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:07:36 +0800
+ 2024 16:07:35 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 012/102] ubifs-utils: Add linux kernel error conversion definitions
-Date: Mon, 11 Nov 2024 16:05:48 +0800
-Message-ID: <20241111080621.1394382-9-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 010/102] ubifs-utils: Add compiler attributes implementations
+Date: Mon, 11 Nov 2024 16:05:46 +0800
+Message-ID: <20241111080621.1394382-7-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_000744_079550_6504E7F7 
-X-CRM114-Status: GOOD (  17.76  )
+X-CRM114-CacheID: sfid-20241111_000744_155707_54886BA7 
+X-CRM114-Status: GOOD (  20.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,100 +70,170 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add linux kernel error conversion definitions, because there are
-many error type conversions(eg. PTR_ERR, ERR_PTR) used in UBIFS
-linux kernel libs.
+Add compiler attributes implementations, such as __packed, __unused,
+__const, etc., which could be used in linux kernel libs. Besides, change
+some existing attributes into linux kernel style.
 
 This is a preparation for replacing implementation of UBIFS utils with
 linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am      |  1 +
- ubifs-utils/common/linux_err.h | 62 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
- create mode 100644 ubifs-utils/common/linux_err.h
+ ubifs-utils/Makemodule.am                |  1 +
+ ubifs-utils/common/compiler_attributes.h | 79 ++++++++++++++++++++++++++++++++
+ ubifs-utils/common/fscrypt.h             |  6 ++-
+ ubifs-utils/common/sign.c                |  4 +-
+ 4 files changed, 86 insertions(+), 4 deletions(-)
+ create mode 100644 ubifs-utils/common/compiler_attributes.h
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 0f9c0fa6..69192ffd 100644
+index 90cc7005..d58570fe 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -1,6 +1,7 @@
+@@ -1,4 +1,5 @@
  common_SOURCES = \
- 	ubifs-utils/common/compiler_attributes.h \
- 	ubifs-utils/common/linux_types.h \
-+	ubifs-utils/common/linux_err.h \
++	ubifs-utils/common/compiler_attributes.h \
  	ubifs-utils/common/defs.h \
  	ubifs-utils/common/crc16.h \
  	ubifs-utils/common/crc16.c \
-diff --git a/ubifs-utils/common/linux_err.h b/ubifs-utils/common/linux_err.h
+diff --git a/ubifs-utils/common/compiler_attributes.h b/ubifs-utils/common/compiler_attributes.h
 new file mode 100644
-index 00000000..5c6ddc3f
+index 00000000..bb65d3a9
 --- /dev/null
-+++ b/ubifs-utils/common/linux_err.h
-@@ -0,0 +1,62 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_ERR_H
-+#define _LINUX_ERR_H
++++ b/ubifs-utils/common/compiler_attributes.h
+@@ -0,0 +1,79 @@
++#ifndef __COMPILER_ATTRIBUTES_H__
++#define __COMPILER_ATTRIBUTES_H__
 +
-+/* Adapted from include/linux/err.h */
++#if __has_attribute(__fallthrough__)
++#define fallthrough	__attribute__((__fallthrough__))
++#else
++#define fallthrough     do {} while (0)
++#endif
 +
-+#include <stdbool.h>
++#define __packed	__attribute__((__packed__))
++#define __unused	__attribute__((__unused__))
++#define __const		__attribute__((__const__))
++#define __must_check    __attribute__((__warn_unused_result__))
++#ifndef __force
++#define __force
++#endif
 +
 +/*
-+ * Kernel pointers have redundant information, so we can use a
-+ * scheme where we can return either an error code or a normal
-+ * pointer with the same return value.
++ * Optional: only supported since clang >= 14.0
 + *
-+ * This should be a per-architecture thing, to allow different
-+ * error and pointer decisions.
++ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-error-function-attribute
 + */
-+#define MAX_ERRNO	4095
++#if __has_attribute(__error__)
++# define __compiletime_error(msg)       __attribute__((__error__(msg)))
++#else
++# define __compiletime_error(msg)
++#endif
 +
-+#define IS_ERR_VALUE(x) ((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
++#ifndef __compiletime_error
++# define __compiletime_error(message)
++#endif
 +
-+static inline void * ERR_PTR(long error)
-+{
-+	return (void *) error;
-+}
++#ifdef __OPTIMIZE__
++# define __compiletime_assert(condition, msg, prefix, suffix)		\
++	do {								\
++		extern void prefix ## suffix(void) __compiletime_error(msg); \
++		if (!(condition))					\
++			prefix ## suffix();				\
++	} while (0)
++#else
++# define __compiletime_assert(condition, msg, prefix, suffix) do { } while (0)
++#endif
 +
-+static inline long PTR_ERR(const void *ptr)
-+{
-+	return (long) ptr;
-+}
-+
-+static inline bool IS_ERR(const void *ptr)
-+{
-+	return IS_ERR_VALUE((unsigned long)ptr);
-+}
-+
-+static inline bool IS_ERR_OR_NULL(const void *ptr)
-+{
-+	return !ptr || IS_ERR_VALUE((unsigned long)ptr);
-+}
++#define _compiletime_assert(condition, msg, prefix, suffix) \
++	__compiletime_assert(condition, msg, prefix, suffix)
 +
 +/**
-+ * ERR_CAST - Explicitly cast an error-valued pointer to another pointer type
-+ * @ptr: The pointer to cast.
++ * compiletime_assert - break build and emit msg if condition is false
++ * @condition: a compile-time constant condition to check
++ * @msg:       a message to emit if condition is false
 + *
-+ * Explicitly cast an error-valued pointer to another pointer type in such a
-+ * way as to make it clear that's what's going on.
++ * In tradition of POSIX assert, this macro will break the build if the
++ * supplied condition is *false*, emitting the supplied error message if the
++ * compiler has support to do so.
 + */
-+static inline void * ERR_CAST(const void *ptr)
-+{
-+	/* cast away the const */
-+	return (void *) ptr;
-+}
++#define compiletime_assert(condition, msg) \
++	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
 +
-+static inline int PTR_ERR_OR_ZERO(const void *ptr)
-+{
-+	if (IS_ERR(ptr))
-+		return PTR_ERR(ptr);
-+	else
-+		return 0;
-+}
++/**
++ * BUILD_BUG_ON_MSG - break compile if a condition is true & emit supplied
++ *		      error message.
++ * @condition: the condition which the compiler should know is false.
++ *
++ * See BUILD_BUG_ON for description.
++ */
++#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
 +
-+#endif /* _LINUX_ERR_H */
++/**
++ * BUILD_BUG_ON - break compile if a condition is true.
++ * @condition: the condition which the compiler should know is false.
++ *
++ * If you have some code which relies on certain constants being equal, or
++ * some other compile-time-evaluated condition, you should use BUILD_BUG_ON to
++ * detect if someone changes it.
++ */
++#define BUILD_BUG_ON(condition) \
++	BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
++
++#endif
+diff --git a/ubifs-utils/common/fscrypt.h b/ubifs-utils/common/fscrypt.h
+index 908a5041..b8a599de 100644
+--- a/ubifs-utils/common/fscrypt.h
++++ b/ubifs-utils/common/fscrypt.h
+@@ -25,6 +25,8 @@
+ #include <openssl/rand.h>
+ #endif
+ #include <assert.h>
++
++#include "compiler_attributes.h"
+ #include "ubifs.h"
+ #include "crypto.h"
+ 
+@@ -79,7 +81,7 @@ struct fscrypt_context {
+ 	__u8 flags;
+ 	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+ 	__u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
+-} __attribute__((packed));
++} __packed;
+ 
+ /**
+  * For encrypted symlinks, the ciphertext length is stored at the beginning
+@@ -88,7 +90,7 @@ struct fscrypt_context {
+ struct fscrypt_symlink_data {
+ 	__le16 len;
+ 	char encrypted_path[1];
+-} __attribute__((packed));
++} __packed;
+ 
+ 
+ #ifndef FS_MAX_KEY_SIZE
+diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
+index 9c53e671..7530503a 100644
+--- a/ubifs-utils/common/sign.c
++++ b/ubifs-utils/common/sign.c
+@@ -28,6 +28,7 @@
+ #include <openssl/conf.h>
+ #include <err.h>
+ 
++#include "compiler_attributes.h"
+ #include "sign.h"
+ #include "defs.h"
+ #include "ubifs.h"
+@@ -116,8 +117,7 @@ static void drain_openssl_errors(void)
+ 
+ static const char *key_pass;
+ 
+-static int pem_pw_cb(char *buf, int len, __attribute__((unused)) int w,
+-		     __attribute__((unused)) void *v)
++static int pem_pw_cb(char *buf, int len, __unused int w, __unused void *v)
+ {
+ 	int pwlen;
+ 
 -- 
 2.13.6
 
