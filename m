@@ -4,46 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4033D5E39D
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:15:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35CC2D5E392
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ApUZ8+wW6kMDznEpcal+LaTBgsPa0v5pfFINJyPgU1Y=; b=1OgsedC428VXHm
-	u/+pHFolE6izDvlNJNkevbrcF7PAc8bJ+akE7S5WN1l5A8tbm/D5nTa2icOCLvSqe6E+hAswavzuX
-	tRkL1pLUFSLmGdendHymKf6u9vFaIewzXniKzgCT1RJ/7FySmHMRWizFEYkvDsvT0MGUftbbgesMh
-	k88H3E8AoK1Tzp/UutgAbU81v5v1bEZSqGU/SRHL8qR4orfIg7oUXe6AY8qYYmdGXzX6F5hYM3g+5
-	HfJDmNGw7YJakJZTNcdbLwxH3a2MHqZGlsitbpydM+AiYPDG4D9LFWdKisiMZ/9kVaHsRBDq5/1jQ
-	Qt5W1PnUbeO7D3cE5cPA==;
+	List-Owner; bh=VOWfYSs/4GHx15Kxr3HElU1X2lqk0L8O0wucoq2w25E=; b=yKCHuaKO5LgKuX
+	yG1coImkvb+3Qe+w+6MOdn500Sp72HsFdOe5AoLkJcISJwu2jiASAet7qaKHrvkA2mqPrf1UQ0dv0
+	0sbaLt5yCZjF38LT/Exi3saI4pz7o7d3LRZFNaR9sBVSmAeQB5PNXpp9XofsEJ9yMMQ+cqhB4JUwr
+	iQkd1zaOZC+PLqQV0OhvcQ3FClVzC+Cj3/CHr2NNGfTzBmwwm3qkIrFc32l3XZzeR5io4o0NoQFXc
+	i6lOxLP1NufdFBzjP1gHOBjsuxKsqbqx4SrmFNvsT3df+cbHCBKgvUmtOWryzh/k8+wWpdsxDrM0a
+	4+ZdvUplf1TWCOjXZV5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPaQ-0000000GmLB-0z1k;
-	Mon, 11 Nov 2024 08:15:50 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1tAPaX-0000000GmTC-2OCg;
+	Mon, 11 Nov 2024 08:15:57 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUB-0000000GZ8l-0cbm
+	id 1tAOUQ-0000000GZHH-0mao
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 11 Nov 2024 07:05:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=NabOx94/xG/XT/X0O6/dEo7CgDWrOtOTXxRCGKebpUE=; b=CociXSW9XVlMZMrzEmk92TqXUT
+	oPNPRN2QAO57Z1YhSEJ6jhrgTzJCYoPHaNGI0RLauO4GaZNvyGHXctRexjh8aqalbxijXbivodiMD
+	y3Zctu4IattWIxDcA+Y2tJi27mn4Lotghbv5IeYqwlZDmyxzcOupjPKh0ipD/0wvQfoDb5zbO6kM3
+	WaLGOh1T1boV4z8vJ/GrdJhtT4n/rDfU+j7/q9hNlImd9Gj4q4NP1mB05Rd5j2lGqUTz2c8sUF/f5
+	U21VcAo+ZvqaIKEyk7e5+6B+B67QV3vxTQXRRByuy+8eb7J0M3qVGKVuqtmVyzeX3PoN9z4J4hbrz
+	OGhKNBkg==;
+Received: from szxga05-in.huawei.com ([45.249.212.191])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOUK-0000000CmCq-3feu
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:24 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qZ58cNz10Qxb;
-	Mon, 11 Nov 2024 15:02:50 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:32 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rH511bz1jy0s;
+	Mon, 11 Nov 2024 15:03:27 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4B5E71401F1;
-	Mon, 11 Nov 2024 15:05:17 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id BAFD514011F;
+	Mon, 11 Nov 2024 15:05:14 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:16 +0800
+ 2024 15:05:14 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 032/102] ubifs-utils: Adapt sb.c in libubifs
-Date: Mon, 11 Nov 2024 15:02:35 +0800
-Message-ID: <20241111070346.1314122-33-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 027/102] ubifs-utils: Adapt io.c in libubifs
+Date: Mon, 11 Nov 2024 15:02:30 +0800
+Message-ID: <20241111070346.1314122-28-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241110_230519_879567_A76B78B2 
-X-CRM114-Status: GOOD (  28.75  )
+X-CRM114-CacheID: sfid-20241111_070530_218149_F6C626B0 
+X-CRM114-Status: GOOD (  27.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,587 +85,585 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt sb.c in libubifs, compared with linux kernel implementations:
- 1. Remove authentication related implementations
-    (eg. authenticate_sb_node), authentication is not supported in fsck
-    for now.
- 2. Remove some functions(eg. create_default_filesystem) which won't be
-    used in fsck/mkfs.
- 3. Modify ubifs_read_superblock(), remove some assignments which won't
-    be used in mkfs/fsck.
- 4. Apapt fixup_leb to ignore %-EBADMSG, subsequent steps will check
-    all areas carefully.
+Adapt io.c in libubifs, compared with linux kernel implementations:
+ 1. Modify io related functions(eg. ubifs_leb_read/ubifs_leb_write,
+    etc.), adapt them with userspace io functions lseek/read/write.
+ 2. Remove some functions(eg. record_magic_error, ubifs_bg_wbufs_sync)
+    which won't be used in fsck/mkfs.
+ 3. Replce ubifs_errc with ubifs_err, because there will be no SB_SILENT
+    options in mkfs/fsck.
+ 4. Initiate wbuf->size as c->max_write_size.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/sb.c | 482 ++--------------------------------------------
- 1 file changed, 18 insertions(+), 464 deletions(-)
+ include/crc32.h           |   5 +
+ ubifs-utils/libubifs/io.c | 364 ++++++++++++----------------------------------
+ 2 files changed, 95 insertions(+), 274 deletions(-)
 
-diff --git a/ubifs-utils/libubifs/sb.c b/ubifs-utils/libubifs/sb.c
-index e7693b94..312661d6 100644
---- a/ubifs-utils/libubifs/sb.c
-+++ b/ubifs-utils/libubifs/sb.c
-@@ -14,358 +14,18 @@
-  * change it. The superblock node mostly contains geometry information.
+diff --git a/include/crc32.h b/include/crc32.h
+index 9c1f742c..f5271f37 100644
+--- a/include/crc32.h
++++ b/include/crc32.h
+@@ -10,4 +10,9 @@
+ /* Return a 32-bit CRC of the contents of the buffer */
+ extern uint32_t mtd_crc32(uint32_t val, const void *ss, int len);
+ 
++static inline uint32_t crc32(uint32_t val, const void *ss, int len)
++{
++	return mtd_crc32(val, ss, len);
++}
++
+ #endif /* __CRC32_H__ */
+diff --git a/ubifs-utils/libubifs/io.c b/ubifs-utils/libubifs/io.c
+index 01d8eb17..6f170172 100644
+--- a/ubifs-utils/libubifs/io.c
++++ b/ubifs-utils/libubifs/io.c
+@@ -58,9 +58,11 @@
+  * they are read from the flash media.
   */
  
-+#include "linux_err.h"
-+#include "bitops.h"
-+#include "kmem.h"
- #include "ubifs.h"
+-#include <linux/crc32.h>
 -#include <linux/slab.h>
--#include <linux/math64.h>
--#include <linux/uuid.h>
--
--/*
-- * Default journal size in logical eraseblocks as a percent of total
-- * flash size.
-- */
--#define DEFAULT_JNL_PERCENT 5
--
--/* Default maximum journal size in bytes */
--#define DEFAULT_MAX_JNL (32*1024*1024)
--
--/* Default indexing tree fanout */
--#define DEFAULT_FANOUT 8
--
--/* Default number of data journal heads */
--#define DEFAULT_JHEADS_CNT 1
--
--/* Default positions of different LEBs in the main area */
--#define DEFAULT_IDX_LEB  0
--#define DEFAULT_DATA_LEB 1
--#define DEFAULT_GC_LEB   2
++#include "kmem.h"
++#include "crc32.h"
+ #include "ubifs.h"
 +#include "defs.h"
 +#include "debug.h"
-+#include "key.h"
-+#include "misc.h"
  
- /* Default number of LEB numbers in LPT's save table */
- #define DEFAULT_LSAVE_CNT 256
- 
--/* Default reserved pool size as a percent of maximum free space */
--#define DEFAULT_RP_PERCENT 5
--
--/* The default maximum size of reserved pool in bytes */
--#define DEFAULT_MAX_RP_SIZE (5*1024*1024)
--
--/* Default time granularity in nanoseconds */
--#define DEFAULT_TIME_GRAN 1000000000
--
--static int get_default_compressor(struct ubifs_info *c)
--{
--	if (ubifs_compr_present(c, UBIFS_COMPR_ZSTD))
--		return UBIFS_COMPR_ZSTD;
--
--	if (ubifs_compr_present(c, UBIFS_COMPR_LZO))
--		return UBIFS_COMPR_LZO;
--
--	if (ubifs_compr_present(c, UBIFS_COMPR_ZLIB))
--		return UBIFS_COMPR_ZLIB;
--
--	return UBIFS_COMPR_NONE;
--}
--
--/**
-- * create_default_filesystem - format empty UBI volume.
-- * @c: UBIFS file-system description object
-- *
-- * This function creates default empty file-system. Returns zero in case of
-- * success and a negative error code in case of failure.
-- */
--static int create_default_filesystem(struct ubifs_info *c)
--{
--	struct ubifs_sb_node *sup;
--	struct ubifs_mst_node *mst;
--	struct ubifs_idx_node *idx;
--	struct ubifs_branch *br;
--	struct ubifs_ino_node *ino;
--	struct ubifs_cs_node *cs;
--	union ubifs_key key;
--	int err, tmp, jnl_lebs, log_lebs, max_buds, main_lebs, main_first;
--	int lpt_lebs, lpt_first, orph_lebs, big_lpt, ino_waste, sup_flags = 0;
--	int min_leb_cnt = UBIFS_MIN_LEB_CNT;
--	int idx_node_size;
--	long long tmp64, main_bytes;
--	__le64 tmp_le64;
--	struct timespec64 ts;
--	u8 hash[UBIFS_HASH_ARR_SZ];
--	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
--
--	/* Some functions called from here depend on the @c->key_len filed */
--	c->key_len = UBIFS_SK_LEN;
--
--	/*
--	 * First of all, we have to calculate default file-system geometry -
--	 * log size, journal size, etc.
--	 */
--	if (c->leb_cnt < 0x7FFFFFFF / DEFAULT_JNL_PERCENT)
--		/* We can first multiply then divide and have no overflow */
--		jnl_lebs = c->leb_cnt * DEFAULT_JNL_PERCENT / 100;
--	else
--		jnl_lebs = (c->leb_cnt / 100) * DEFAULT_JNL_PERCENT;
--
--	if (jnl_lebs < UBIFS_MIN_JNL_LEBS)
--		jnl_lebs = UBIFS_MIN_JNL_LEBS;
--	if (jnl_lebs * c->leb_size > DEFAULT_MAX_JNL)
--		jnl_lebs = DEFAULT_MAX_JNL / c->leb_size;
--
--	/*
--	 * The log should be large enough to fit reference nodes for all bud
--	 * LEBs. Because buds do not have to start from the beginning of LEBs
--	 * (half of the LEB may contain committed data), the log should
--	 * generally be larger, make it twice as large.
--	 */
--	tmp = 2 * (c->ref_node_alsz * jnl_lebs) + c->leb_size - 1;
--	log_lebs = tmp / c->leb_size;
--	/* Plus one LEB reserved for commit */
--	log_lebs += 1;
--	if (c->leb_cnt - min_leb_cnt > 8) {
--		/* And some extra space to allow writes while committing */
--		log_lebs += 1;
--		min_leb_cnt += 1;
--	}
--
--	max_buds = jnl_lebs - log_lebs;
--	if (max_buds < UBIFS_MIN_BUD_LEBS)
--		max_buds = UBIFS_MIN_BUD_LEBS;
--
--	/*
--	 * Orphan nodes are stored in a separate area. One node can store a lot
--	 * of orphan inode numbers, but when new orphan comes we just add a new
--	 * orphan node. At some point the nodes are consolidated into one
--	 * orphan node.
--	 */
--	orph_lebs = UBIFS_MIN_ORPH_LEBS;
--	if (c->leb_cnt - min_leb_cnt > 1)
--		/*
--		 * For debugging purposes it is better to have at least 2
--		 * orphan LEBs, because the orphan subsystem would need to do
--		 * consolidations and would be stressed more.
--		 */
--		orph_lebs += 1;
--
--	main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS - log_lebs;
--	main_lebs -= orph_lebs;
--
--	lpt_first = UBIFS_LOG_LNUM + log_lebs;
--	c->lsave_cnt = DEFAULT_LSAVE_CNT;
--	c->max_leb_cnt = c->leb_cnt;
--	err = ubifs_create_dflt_lpt(c, &main_lebs, lpt_first, &lpt_lebs,
--				    &big_lpt, hash_lpt);
--	if (err)
--		return err;
--
--	dbg_gen("LEB Properties Tree created (LEBs %d-%d)", lpt_first,
--		lpt_first + lpt_lebs - 1);
--
--	main_first = c->leb_cnt - main_lebs;
--
--	sup = kzalloc(ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size), GFP_KERNEL);
--	mst = kzalloc(c->mst_node_alsz, GFP_KERNEL);
--	idx_node_size = ubifs_idx_node_sz(c, 1);
--	idx = kzalloc(ALIGN(idx_node_size, c->min_io_size), GFP_KERNEL);
--	ino = kzalloc(ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size), GFP_KERNEL);
--	cs = kzalloc(ALIGN(UBIFS_CS_NODE_SZ, c->min_io_size), GFP_KERNEL);
--
--	if (!sup || !mst || !idx || !ino || !cs) {
--		err = -ENOMEM;
--		goto out;
--	}
--
--	/* Create default superblock */
--
--	tmp64 = (long long)max_buds * c->leb_size;
--	if (big_lpt)
--		sup_flags |= UBIFS_FLG_BIGLPT;
--	if (ubifs_default_version > 4)
--		sup_flags |= UBIFS_FLG_DOUBLE_HASH;
--
--	if (ubifs_authenticated(c)) {
--		sup_flags |= UBIFS_FLG_AUTHENTICATION;
--		sup->hash_algo = cpu_to_le16(c->auth_hash_algo);
--		err = ubifs_hmac_wkm(c, sup->hmac_wkm);
--		if (err)
--			goto out;
--	} else {
--		sup->hash_algo = cpu_to_le16(0xffff);
--	}
--
--	sup->ch.node_type  = UBIFS_SB_NODE;
--	sup->key_hash      = UBIFS_KEY_HASH_R5;
--	sup->flags         = cpu_to_le32(sup_flags);
--	sup->min_io_size   = cpu_to_le32(c->min_io_size);
--	sup->leb_size      = cpu_to_le32(c->leb_size);
--	sup->leb_cnt       = cpu_to_le32(c->leb_cnt);
--	sup->max_leb_cnt   = cpu_to_le32(c->max_leb_cnt);
--	sup->max_bud_bytes = cpu_to_le64(tmp64);
--	sup->log_lebs      = cpu_to_le32(log_lebs);
--	sup->lpt_lebs      = cpu_to_le32(lpt_lebs);
--	sup->orph_lebs     = cpu_to_le32(orph_lebs);
--	sup->jhead_cnt     = cpu_to_le32(DEFAULT_JHEADS_CNT);
--	sup->fanout        = cpu_to_le32(DEFAULT_FANOUT);
--	sup->lsave_cnt     = cpu_to_le32(c->lsave_cnt);
--	sup->fmt_version   = cpu_to_le32(ubifs_default_version);
--	sup->time_gran     = cpu_to_le32(DEFAULT_TIME_GRAN);
--	if (c->mount_opts.override_compr)
--		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
--	else
--		sup->default_compr = cpu_to_le16(get_default_compressor(c));
--
--	generate_random_uuid(sup->uuid);
--
--	main_bytes = (long long)main_lebs * c->leb_size;
--	tmp64 = div_u64(main_bytes * DEFAULT_RP_PERCENT, 100);
--	if (tmp64 > DEFAULT_MAX_RP_SIZE)
--		tmp64 = DEFAULT_MAX_RP_SIZE;
--	sup->rp_size = cpu_to_le64(tmp64);
--	sup->ro_compat_version = cpu_to_le32(UBIFS_RO_COMPAT_VERSION);
--
--	dbg_gen("default superblock created at LEB 0:0");
--
--	/* Create default master node */
--
--	mst->ch.node_type = UBIFS_MST_NODE;
--	mst->log_lnum     = cpu_to_le32(UBIFS_LOG_LNUM);
--	mst->highest_inum = cpu_to_le64(UBIFS_FIRST_INO);
--	mst->cmt_no       = 0;
--	mst->root_lnum    = cpu_to_le32(main_first + DEFAULT_IDX_LEB);
--	mst->root_offs    = 0;
--	tmp = ubifs_idx_node_sz(c, 1);
--	mst->root_len     = cpu_to_le32(tmp);
--	mst->gc_lnum      = cpu_to_le32(main_first + DEFAULT_GC_LEB);
--	mst->ihead_lnum   = cpu_to_le32(main_first + DEFAULT_IDX_LEB);
--	mst->ihead_offs   = cpu_to_le32(ALIGN(tmp, c->min_io_size));
--	mst->index_size   = cpu_to_le64(ALIGN(tmp, 8));
--	mst->lpt_lnum     = cpu_to_le32(c->lpt_lnum);
--	mst->lpt_offs     = cpu_to_le32(c->lpt_offs);
--	mst->nhead_lnum   = cpu_to_le32(c->nhead_lnum);
--	mst->nhead_offs   = cpu_to_le32(c->nhead_offs);
--	mst->ltab_lnum    = cpu_to_le32(c->ltab_lnum);
--	mst->ltab_offs    = cpu_to_le32(c->ltab_offs);
--	mst->lsave_lnum   = cpu_to_le32(c->lsave_lnum);
--	mst->lsave_offs   = cpu_to_le32(c->lsave_offs);
--	mst->lscan_lnum   = cpu_to_le32(main_first);
--	mst->empty_lebs   = cpu_to_le32(main_lebs - 2);
--	mst->idx_lebs     = cpu_to_le32(1);
--	mst->leb_cnt      = cpu_to_le32(c->leb_cnt);
--	ubifs_copy_hash(c, hash_lpt, mst->hash_lpt);
--
--	/* Calculate lprops statistics */
--	tmp64 = main_bytes;
--	tmp64 -= ALIGN(ubifs_idx_node_sz(c, 1), c->min_io_size);
--	tmp64 -= ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size);
--	mst->total_free = cpu_to_le64(tmp64);
--
--	tmp64 = ALIGN(ubifs_idx_node_sz(c, 1), c->min_io_size);
--	ino_waste = ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size) -
--			  UBIFS_INO_NODE_SZ;
--	tmp64 += ino_waste;
--	tmp64 -= ALIGN(ubifs_idx_node_sz(c, 1), 8);
--	mst->total_dirty = cpu_to_le64(tmp64);
--
--	/*  The indexing LEB does not contribute to dark space */
--	tmp64 = ((long long)(c->main_lebs - 1) * c->dark_wm);
--	mst->total_dark = cpu_to_le64(tmp64);
--
--	mst->total_used = cpu_to_le64(UBIFS_INO_NODE_SZ);
--
--	dbg_gen("default master node created at LEB %d:0", UBIFS_MST_LNUM);
--
--	/* Create the root indexing node */
--
--	c->key_fmt = UBIFS_SIMPLE_KEY_FMT;
--	c->key_hash = key_r5_hash;
--
--	idx->ch.node_type = UBIFS_IDX_NODE;
--	idx->child_cnt = cpu_to_le16(1);
--	ino_key_init(c, &key, UBIFS_ROOT_INO);
--	br = ubifs_idx_branch(c, idx, 0);
--	key_write_idx(c, &key, &br->key);
--	br->lnum = cpu_to_le32(main_first + DEFAULT_DATA_LEB);
--	br->len  = cpu_to_le32(UBIFS_INO_NODE_SZ);
--
--	dbg_gen("default root indexing node created LEB %d:0",
--		main_first + DEFAULT_IDX_LEB);
--
--	/* Create default root inode */
--
--	ino_key_init_flash(c, &ino->key, UBIFS_ROOT_INO);
--	ino->ch.node_type = UBIFS_INO_NODE;
--	ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
--	ino->nlink = cpu_to_le32(2);
--
--	ktime_get_coarse_real_ts64(&ts);
--	tmp_le64 = cpu_to_le64(ts.tv_sec);
--	ino->atime_sec   = tmp_le64;
--	ino->ctime_sec   = tmp_le64;
--	ino->mtime_sec   = tmp_le64;
--	ino->atime_nsec  = 0;
--	ino->ctime_nsec  = 0;
--	ino->mtime_nsec  = 0;
--	ino->mode = cpu_to_le32(S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO);
--	ino->size = cpu_to_le64(UBIFS_INO_NODE_SZ);
--
--	/* Set compression enabled by default */
--	ino->flags = cpu_to_le32(UBIFS_COMPR_FL);
--
--	dbg_gen("root inode created at LEB %d:0",
--		main_first + DEFAULT_DATA_LEB);
--
--	/*
--	 * The first node in the log has to be the commit start node. This is
--	 * always the case during normal file-system operation. Write a fake
--	 * commit start node to the log.
--	 */
--
--	cs->ch.node_type = UBIFS_CS_NODE;
--
--	err = ubifs_write_node_hmac(c, sup, UBIFS_SB_NODE_SZ, 0, 0,
--				    offsetof(struct ubifs_sb_node, hmac));
--	if (err)
--		goto out;
--
--	err = ubifs_write_node(c, ino, UBIFS_INO_NODE_SZ,
--			       main_first + DEFAULT_DATA_LEB, 0);
--	if (err)
--		goto out;
--
--	ubifs_node_calc_hash(c, ino, hash);
--	ubifs_copy_hash(c, hash, ubifs_branch_hash(c, br));
--
--	err = ubifs_write_node(c, idx, idx_node_size, main_first + DEFAULT_IDX_LEB, 0);
--	if (err)
--		goto out;
--
--	ubifs_node_calc_hash(c, idx, hash);
--	ubifs_copy_hash(c, hash, mst->hash_root_idx);
--
--	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM, 0,
--		offsetof(struct ubifs_mst_node, hmac));
--	if (err)
--		goto out;
--
--	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM + 1,
--			       0, offsetof(struct ubifs_mst_node, hmac));
--	if (err)
--		goto out;
--
--	err = ubifs_write_node(c, cs, UBIFS_CS_NODE_SZ, UBIFS_LOG_LNUM, 0);
--	if (err)
--		goto out;
--
--	ubifs_msg(c, "default file-system created");
--
--	err = 0;
--out:
--	kfree(sup);
--	kfree(mst);
--	kfree(idx);
--	kfree(ino);
--	kfree(cs);
--
--	return err;
--}
--
  /**
-  * validate_sb - validate superblock node.
-  * @c: UBIFS file-system description object
-@@ -419,9 +79,9 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
- 	min_leb_cnt = UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs;
- 	min_leb_cnt += c->lpt_lebs + c->orph_lebs + c->jhead_cnt + 6;
- 
--	if (c->leb_cnt < min_leb_cnt || c->leb_cnt > c->vi.size) {
-+	if (c->leb_cnt < min_leb_cnt || c->leb_cnt > c->vi.rsvd_lebs) {
- 		ubifs_err(c, "bad LEB count: %d in superblock, %d on UBI volume, %d minimum required",
--			  c->leb_cnt, c->vi.size, min_leb_cnt);
-+			  c->leb_cnt, c->vi.rsvd_lebs, min_leb_cnt);
- 		goto failed;
+  * ubifs_ro_mode - switch UBIFS to read read-only mode.
+@@ -72,7 +74,6 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
+ 	if (!c->ro_error) {
+ 		c->ro_error = 1;
+ 		c->no_chk_data_crc = 0;
+-		c->vfs_sb->s_flags |= SB_RDONLY;
+ 		ubifs_warn(c, "switched to read-only mode, error %d", err);
+ 		dump_stack();
  	}
- 
-@@ -537,72 +197,19 @@ static struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
- 	return sup;
- }
- 
--static int authenticate_sb_node(struct ubifs_info *c,
-+static int authenticate_sb_node(__unused struct ubifs_info *c,
- 				const struct ubifs_sb_node *sup)
+@@ -87,9 +88,26 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
+ int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
+ 		   int len, int even_ebadmsg)
  {
- 	unsigned int sup_flags = le32_to_cpu(sup->flags);
--	u8 hmac_wkm[UBIFS_HMAC_ARR_SZ];
- 	int authenticated = !!(sup_flags & UBIFS_FLG_AUTHENTICATION);
--	int hash_algo;
 -	int err;
--
--	if (c->authenticated && !authenticated) {
--		ubifs_err(c, "authenticated FS forced, but found FS without authentication");
--		return -EINVAL;
--	}
--
--	if (!c->authenticated && authenticated) {
--		ubifs_err(c, "authenticated FS found, but no key given");
--		return -EINVAL;
--	}
--
--	ubifs_msg(c, "Mounting in %sauthenticated mode",
--		  c->authenticated ? "" : "un");
--
--	if (!c->authenticated)
--		return 0;
++	int err = 0;
++	off_t pos = (off_t)lnum * c->leb_size + offs;
++
++	if (!len)
++		return 0;
  
--	if (!IS_ENABLED(CONFIG_UBIFS_FS_AUTHENTICATION))
-+	if (authenticated) {
-+		// To be implemented
-+		ubifs_err(c, "not support authentication");
- 		return -EOPNOTSUPP;
--
--	hash_algo = le16_to_cpu(sup->hash_algo);
--	if (hash_algo >= HASH_ALGO__LAST) {
--		ubifs_err(c, "superblock uses unknown hash algo %d",
--			  hash_algo);
--		return -EINVAL;
--	}
--
--	if (strcmp(hash_algo_name[hash_algo], c->auth_hash_name)) {
--		ubifs_err(c, "This filesystem uses %s for hashing,"
--			     " but %s is specified", hash_algo_name[hash_algo],
--			     c->auth_hash_name);
--		return -EINVAL;
- 	}
+-	err = ubi_read(c->ubi, lnum, buf, offs, len);
++	/*
++	 * The %-EBADMSG may be ignored in some case, the buf may not be filled
++	 * with data in some buggy mtd drivers. So we'd better to reset the buf
++	 * content before reading.
++	 */
++	memset(buf, 0, len);
++	if (lseek(c->dev_fd, pos, SEEK_SET) != pos) {
++		err = -errno;
++		goto out;
++	}
++
++	if (read(c->dev_fd, buf, len) != len)
++		err = -errno;
++out:
+ 	/*
+ 	 * In case of %-EBADMSG print the error message only if the
+ 	 * @even_ebadmsg is true.
+@@ -105,15 +123,27 @@ int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
+ int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+ 		    int len)
+ {
+-	int err;
++	int err = 0;
++	off_t pos = (off_t)lnum * c->leb_size + offs;
  
--	/*
--	 * The super block node can either be authenticated by a HMAC or
--	 * by a signature in a ubifs_sig_node directly following the
--	 * super block node to support offline image creation.
--	 */
--	if (ubifs_hmac_zero(c, sup->hmac)) {
--		err = ubifs_sb_verify_signature(c, sup);
--	} else {
--		err = ubifs_hmac_wkm(c, hmac_wkm);
--		if (err)
--			return err;
--		if (ubifs_check_hmac(c, hmac_wkm, sup->hmac_wkm)) {
--			ubifs_err(c, "provided key does not fit");
--			return -ENOKEY;
--		}
--		err = ubifs_node_verify_hmac(c, sup, sizeof(*sup),
--					     offsetof(struct ubifs_sb_node,
--						      hmac));
--	}
--
--	if (err)
--		ubifs_err(c, "Failed to authenticate superblock: %d", err);
--
--	return err;
-+	return 0;
+ 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
+ 	if (c->ro_error)
+ 		return -EROFS;
+-	if (!dbg_is_tst_rcvry(c))
+-		err = ubi_leb_write(c->ubi, lnum, buf, offs, len);
+-	else
+-		err = dbg_leb_write(c, lnum, buf, offs, len);
++	if (!c->libubi) {
++		err = -ENODEV;
++		goto out;
++	}
++
++	if (!len)
++		return 0;
++
++	if (lseek(c->dev_fd, pos, SEEK_SET) != pos) {
++		err = -errno;
++		goto out;
++	}
++	if (write(c->dev_fd, buf, len) != len)
++		err = -errno;
++out:
+ 	if (err) {
+ 		ubifs_err(c, "writing %d bytes to LEB %d:%d failed, error %d",
+ 			  len, lnum, offs, err);
+@@ -125,15 +155,31 @@ int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+ 
+ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len)
+ {
+-	int err;
++	int err = 0;
++	off_t pos = (off_t)lnum * c->leb_size;
+ 
+ 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
+ 	if (c->ro_error)
+ 		return -EROFS;
+-	if (!dbg_is_tst_rcvry(c))
+-		err = ubi_leb_change(c->ubi, lnum, buf, len);
+-	else
+-		err = dbg_leb_change(c, lnum, buf, len);
++	if (c->libubi) {
++		err = ubi_leb_change_start(c->libubi, c->dev_fd, lnum, len);
++		if (err) {
++			ubifs_err(c, "ubi_leb_change_start failed");
++			err = -errno;
++			goto out;
++		}
++	}
++
++	if (!len)
++		return 0;
++
++	if (lseek(c->dev_fd, pos, SEEK_SET) != pos) {
++		err = -errno;
++		goto out;
++	}
++	if (write(c->dev_fd, buf, len) != len)
++		err = -errno;
++out:
+ 	if (err) {
+ 		ubifs_err(c, "changing %d bytes in LEB %d failed, error %d",
+ 			  len, lnum, err);
+@@ -145,15 +191,15 @@ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len)
+ 
+ int ubifs_leb_unmap(struct ubifs_info *c, int lnum)
+ {
+-	int err;
++	int err = 0;
+ 
+ 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
+ 	if (c->ro_error)
+ 		return -EROFS;
+-	if (!dbg_is_tst_rcvry(c))
+-		err = ubi_leb_unmap(c->ubi, lnum);
+-	else
+-		err = dbg_leb_unmap(c, lnum);
++	if (!c->libubi)
++		return -ENODEV;
++	if (ubi_leb_unmap(c->dev_fd, lnum))
++		err = -errno;
+ 	if (err) {
+ 		ubifs_err(c, "unmap LEB %d failed, error %d", lnum, err);
+ 		ubifs_ro_mode(c, err);
+@@ -164,15 +210,15 @@ int ubifs_leb_unmap(struct ubifs_info *c, int lnum)
+ 
+ int ubifs_leb_map(struct ubifs_info *c, int lnum)
+ {
+-	int err;
++	int err = 0;
+ 
+ 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
+ 	if (c->ro_error)
+ 		return -EROFS;
+-	if (!dbg_is_tst_rcvry(c))
+-		err = ubi_leb_map(c->ubi, lnum);
+-	else
+-		err = dbg_leb_map(c, lnum);
++	if (!c->libubi)
++		return -ENODEV;
++	if (ubi_leb_map(c->dev_fd, lnum))
++		err = -errno;
+ 	if (err) {
+ 		ubifs_err(c, "mapping LEB %d failed, error %d", lnum, err);
+ 		ubifs_ro_mode(c, err);
+@@ -183,9 +229,12 @@ int ubifs_leb_map(struct ubifs_info *c, int lnum)
+ 
+ int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
+ {
+-	int err;
++	int err = 0;
+ 
+-	err = ubi_is_mapped(c->ubi, lnum);
++	if (!c->libubi)
++		return -ENODEV;
++	if (ubi_is_mapped(c->dev_fd, lnum))
++		err = -errno;
+ 	if (err < 0) {
+ 		ubifs_err(c, "ubi_is_mapped failed for LEB %d, error %d",
+ 			  lnum, err);
+@@ -194,24 +243,6 @@ int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
+ 	return err;
  }
  
+-static void record_magic_error(struct ubifs_stats_info *stats)
+-{
+-	if (stats)
+-		stats->magic_errors++;
+-}
+-
+-static void record_node_error(struct ubifs_stats_info *stats)
+-{
+-	if (stats)
+-		stats->node_errors++;
+-}
+-
+-static void record_crc_error(struct ubifs_stats_info *stats)
+-{
+-	if (stats)
+-		stats->crc_errors++;
+-}
+-
  /**
-@@ -638,12 +245,6 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	int err, sup_flags;
- 	struct ubifs_sb_node *sup;
- 
--	if (c->empty) {
--		err = create_default_filesystem(c);
--		if (err)
--			return err;
--	}
--
- 	sup = ubifs_read_sb_node(c);
- 	if (IS_ERR(sup))
- 		return PTR_ERR(sup);
-@@ -672,13 +273,6 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 				err = -EINVAL;
- 			goto out;
- 		}
--
--		/*
--		 * The FS is mounted R/O, and the media format is
--		 * R/O-compatible with the UBIFS implementation, so we can
--		 * mount.
--		 */
--		c->rw_incompat = 1;
+  * ubifs_check_node - check node.
+  * @c: UBIFS file-system description object
+@@ -256,7 +287,6 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int len,
+ 		if (!quiet)
+ 			ubifs_err(c, "bad magic %#08x, expected %#08x",
+ 				  magic, UBIFS_NODE_MAGIC);
+-		record_magic_error(c->stats);
+ 		err = -EUCLEAN;
+ 		goto out;
  	}
- 
- 	if (c->fmt_version < 3) {
-@@ -722,14 +316,9 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	c->fanout        = le32_to_cpu(sup->fanout);
- 	c->lsave_cnt     = le32_to_cpu(sup->lsave_cnt);
- 	c->rp_size       = le64_to_cpu(sup->rp_size);
--	c->rp_uid        = make_kuid(&init_user_ns, le32_to_cpu(sup->rp_uid));
--	c->rp_gid        = make_kgid(&init_user_ns, le32_to_cpu(sup->rp_gid));
- 	sup_flags        = le32_to_cpu(sup->flags);
--	if (!c->mount_opts.override_compr)
--		c->default_compr = le16_to_cpu(sup->default_compr);
-+	c->default_compr = le16_to_cpu(sup->default_compr);
- 
--	c->vfs_sb->s_time_gran = le32_to_cpu(sup->time_gran);
--	memcpy(&c->uuid, &sup->uuid, 16);
- 	c->big_lpt = !!(sup_flags & UBIFS_FLG_BIGLPT);
- 	c->space_fixup = !!(sup_flags & UBIFS_FLG_SPACE_FIXUP);
- 	c->double_hash = !!(sup_flags & UBIFS_FLG_DOUBLE_HASH);
-@@ -746,18 +335,11 @@ int ubifs_read_superblock(struct ubifs_info *c)
+@@ -265,7 +295,6 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int len,
+ 	if (type < 0 || type >= UBIFS_NODE_TYPES_CNT) {
+ 		if (!quiet)
+ 			ubifs_err(c, "bad node type %d", type);
+-		record_node_error(c->stats);
  		goto out;
  	}
  
--	if (!IS_ENABLED(CONFIG_FS_ENCRYPTION) && c->encrypted) {
--		ubifs_err(c, "file system contains encrypted files but UBIFS"
--			     " was built without crypto support.");
--		err = -EINVAL;
--		goto out;
--	}
--
- 	/* Automatically increase file system size to the maximum size */
--	if (c->leb_cnt < c->vi.size && c->leb_cnt < c->max_leb_cnt) {
-+	if (c->leb_cnt < c->vi.rsvd_lebs && c->leb_cnt < c->max_leb_cnt) {
- 		int old_leb_cnt = c->leb_cnt;
- 
--		c->leb_cnt = min_t(int, c->max_leb_cnt, c->vi.size);
-+		c->leb_cnt = min_t(int, c->max_leb_cnt, c->vi.rsvd_lebs);
- 		sup->leb_cnt = cpu_to_le32(c->leb_cnt);
- 
- 		c->superblock_need_write = 1;
-@@ -807,7 +389,7 @@ static int fixup_leb(struct ubifs_info *c, int lnum, int len)
- 
- 	dbg_mnt("fixup LEB %d, data len %d", lnum, len);
- 	err = ubifs_leb_read(c, lnum, c->sbuf, 0, len, 1);
--	if (err)
-+	if (err && err != -EBADMSG)
- 		return err;
- 
- 	return ubifs_leb_change(c, lnum, c->sbuf, len);
-@@ -926,31 +508,3 @@ int ubifs_fixup_free_space(struct ubifs_info *c)
- 	ubifs_msg(c, "free space fixup complete");
- 	return err;
+@@ -290,7 +319,6 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int len,
+ 		if (!quiet)
+ 			ubifs_err(c, "bad CRC: calculated %#08x, read %#08x",
+ 				  crc, node_crc);
+-		record_crc_error(c->stats);
+ 		err = -EUCLEAN;
+ 		goto out;
+ 	}
+@@ -395,7 +423,7 @@ void ubifs_init_node(struct ubifs_info *c, void *node, int len, int pad)
+ 	}
  }
--
--int ubifs_enable_encryption(struct ubifs_info *c)
+ 
+-void ubifs_crc_node(struct ubifs_info *c, void *node, int len)
++void ubifs_crc_node(__unused struct ubifs_info *c, void *node, int len)
+ {
+ 	struct ubifs_ch *ch = node;
+ 	uint32_t crc;
+@@ -488,61 +516,6 @@ void ubifs_prep_grp_node(struct ubifs_info *c, void *node, int len, int last)
+ }
+ 
+ /**
+- * wbuf_timer_callback_nolock - write-buffer timer callback function.
+- * @timer: timer data (write-buffer descriptor)
+- *
+- * This function is called when the write-buffer timer expires.
+- */
+-static enum hrtimer_restart wbuf_timer_callback_nolock(struct hrtimer *timer)
 -{
--	int err;
--	struct ubifs_sb_node *sup = c->sup_node;
+-	struct ubifs_wbuf *wbuf = container_of(timer, struct ubifs_wbuf, timer);
 -
--	if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
--		return -EOPNOTSUPP;
+-	dbg_io("jhead %s", dbg_jhead(wbuf->jhead));
+-	wbuf->need_sync = 1;
+-	wbuf->c->need_wbuf_sync = 1;
+-	ubifs_wake_up_bgt(wbuf->c);
+-	return HRTIMER_NORESTART;
+-}
 -
--	if (c->encrypted)
+-/**
+- * new_wbuf_timer_nolock - start new write-buffer timer.
+- * @c: UBIFS file-system description object
+- * @wbuf: write-buffer descriptor
+- */
+-static void new_wbuf_timer_nolock(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
+-{
+-	ktime_t softlimit = ms_to_ktime(dirty_writeback_interval * 10);
+-	unsigned long long delta = dirty_writeback_interval;
+-
+-	/* centi to milli, milli to nano, then 10% */
+-	delta *= 10ULL * NSEC_PER_MSEC / 10ULL;
+-
+-	ubifs_assert(c, !hrtimer_active(&wbuf->timer));
+-	ubifs_assert(c, delta <= ULONG_MAX);
+-
+-	if (wbuf->no_timer)
+-		return;
+-	dbg_io("set timer for jhead %s, %llu-%llu millisecs",
+-	       dbg_jhead(wbuf->jhead),
+-	       div_u64(ktime_to_ns(softlimit), USEC_PER_SEC),
+-	       div_u64(ktime_to_ns(softlimit) + delta, USEC_PER_SEC));
+-	hrtimer_start_range_ns(&wbuf->timer, softlimit, delta,
+-			       HRTIMER_MODE_REL);
+-}
+-
+-/**
+- * cancel_wbuf_timer_nolock - cancel write-buffer timer.
+- * @wbuf: write-buffer descriptor
+- */
+-static void cancel_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
+-{
+-	if (wbuf->no_timer)
+-		return;
+-	wbuf->need_sync = 0;
+-	hrtimer_cancel(&wbuf->timer);
+-}
+-
+-/**
+  * ubifs_wbuf_sync_nolock - synchronize write-buffer.
+  * @wbuf: write-buffer to synchronize
+  *
+@@ -560,7 +533,6 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
+ 	struct ubifs_info *c = wbuf->c;
+ 	int err, dirt, sync_len;
+ 
+-	cancel_wbuf_timer_nolock(wbuf);
+ 	if (!wbuf->used || wbuf->lnum == -1)
+ 		/* Write-buffer is empty or not seeked */
+ 		return 0;
+@@ -658,70 +630,6 @@ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs)
+ }
+ 
+ /**
+- * ubifs_bg_wbufs_sync - synchronize write-buffers.
+- * @c: UBIFS file-system description object
+- *
+- * This function is called by background thread to synchronize write-buffers.
+- * Returns zero in case of success and a negative error code in case of
+- * failure.
+- */
+-int ubifs_bg_wbufs_sync(struct ubifs_info *c)
+-{
+-	int err, i;
+-
+-	ubifs_assert(c, !c->ro_media && !c->ro_mount);
+-	if (!c->need_wbuf_sync)
 -		return 0;
+-	c->need_wbuf_sync = 0;
 -
--	if (c->ro_mount || c->ro_media)
--		return -EROFS;
--
--	if (c->fmt_version < 5) {
--		ubifs_err(c, "on-flash format version 5 is needed for encryption");
--		return -EINVAL;
+-	if (c->ro_error) {
+-		err = -EROFS;
+-		goto out_timers;
 -	}
 -
--	sup->flags |= cpu_to_le32(UBIFS_FLG_ENCRYPTION);
+-	dbg_io("synchronize");
+-	for (i = 0; i < c->jhead_cnt; i++) {
+-		struct ubifs_wbuf *wbuf = &c->jheads[i].wbuf;
 -
--	err = ubifs_write_sb_node(c, sup);
--	if (!err)
--		c->encrypted = 1;
+-		cond_resched();
 -
+-		/*
+-		 * If the mutex is locked then wbuf is being changed, so
+-		 * synchronization is not necessary.
+-		 */
+-		if (mutex_is_locked(&wbuf->io_mutex))
+-			continue;
+-
+-		mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
+-		if (!wbuf->need_sync) {
+-			mutex_unlock(&wbuf->io_mutex);
+-			continue;
+-		}
+-
+-		err = ubifs_wbuf_sync_nolock(wbuf);
+-		mutex_unlock(&wbuf->io_mutex);
+-		if (err) {
+-			ubifs_err(c, "cannot sync write-buffer, error %d", err);
+-			ubifs_ro_mode(c, err);
+-			goto out_timers;
+-		}
+-	}
+-
+-	return 0;
+-
+-out_timers:
+-	/* Cancel all timers to prevent repeated errors */
+-	for (i = 0; i < c->jhead_cnt; i++) {
+-		struct ubifs_wbuf *wbuf = &c->jheads[i].wbuf;
+-
+-		mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
+-		cancel_wbuf_timer_nolock(wbuf);
+-		mutex_unlock(&wbuf->io_mutex);
+-	}
 -	return err;
 -}
+-
+-/**
+  * ubifs_wbuf_write_nolock - write data to flash via write-buffer.
+  * @wbuf: write-buffer
+  * @buf: node to write
+@@ -763,8 +671,6 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 		goto out;
+ 	}
+ 
+-	cancel_wbuf_timer_nolock(wbuf);
+-
+ 	if (c->ro_error)
+ 		return -EROFS;
+ 
+@@ -925,9 +831,6 @@ exit:
+ 			goto out;
+ 	}
+ 
+-	if (wbuf->used)
+-		new_wbuf_timer_nolock(c, wbuf);
+-
+ 	return 0;
+ 
+ out:
+@@ -1110,32 +1013,30 @@ int ubifs_read_node(const struct ubifs_info *c, void *buf, int type, int len,
+ 		return err;
+ 
+ 	if (type != ch->node_type) {
+-		ubifs_errc(c, "bad node type (%d but expected %d)",
+-			   ch->node_type, type);
++		ubifs_err(c, "bad node type (%d but expected %d)",
++			  ch->node_type, type);
+ 		goto out;
+ 	}
+ 
+ 	err = ubifs_check_node(c, buf, len, lnum, offs, 0, 0);
+ 	if (err) {
+-		ubifs_errc(c, "expected node type %d", type);
++		ubifs_err(c, "expected node type %d", type);
+ 		return err;
+ 	}
+ 
+ 	l = le32_to_cpu(ch->len);
+ 	if (l != len) {
+-		ubifs_errc(c, "bad node length %d, expected %d", l, len);
++		ubifs_err(c, "bad node length %d, expected %d", l, len);
+ 		goto out;
+ 	}
+ 
+ 	return 0;
+ 
+ out:
+-	ubifs_errc(c, "bad node at LEB %d:%d, LEB mapping status %d", lnum,
+-		   offs, ubi_is_mapped(c->ubi, lnum));
+-	if (!c->probing) {
+-		ubifs_dump_node(c, buf, len);
+-		dump_stack();
+-	}
++	ubifs_err(c, "bad node at LEB %d:%d, LEB mapping status %d", lnum,
++		  offs, ubi_is_mapped(c->dev_fd, lnum));
++	ubifs_dump_node(c, buf, len);
++	dump_stack();
+ 	return -EINVAL;
+ }
+ 
+@@ -1166,12 +1067,12 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
+ 	wbuf->used = 0;
+ 	wbuf->lnum = wbuf->offs = -1;
+ 	/*
+-	 * If the LEB starts at the max. write size aligned address, then
+-	 * write-buffer size has to be set to @c->max_write_size. Otherwise,
+-	 * set it to something smaller so that it ends at the closest max.
+-	 * write size boundary.
++	 * Different from linux kernel, there is no way to get leb_start in
++	 * userspace, set write-buffer size as @c->max_write_size directly.
++	 * Since wbuf->lnum is initialized as -1, wbuf->size will always be
++	 * reset in ubifs_wbuf_seek_nolock, it won't be any problems.
+ 	 */
+-	size = c->max_write_size - (c->leb_start % c->max_write_size);
++	size = c->max_write_size;
+ 	wbuf->avail = wbuf->size = size;
+ 	wbuf->sync_callback = NULL;
+ 	mutex_init(&wbuf->io_mutex);
+@@ -1179,90 +1080,5 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
+ 	wbuf->c = c;
+ 	wbuf->next_ino = 0;
+ 
+-	hrtimer_init(&wbuf->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-	wbuf->timer.function = wbuf_timer_callback_nolock;
+-	return 0;
+-}
+-
+-/**
+- * ubifs_wbuf_add_ino_nolock - add an inode number into the wbuf inode array.
+- * @wbuf: the write-buffer where to add
+- * @inum: the inode number
+- *
+- * This function adds an inode number to the inode array of the write-buffer.
+- */
+-void ubifs_wbuf_add_ino_nolock(struct ubifs_wbuf *wbuf, ino_t inum)
+-{
+-	if (!wbuf->buf)
+-		/* NOR flash or something similar */
+-		return;
+-
+-	spin_lock(&wbuf->lock);
+-	if (wbuf->used)
+-		wbuf->inodes[wbuf->next_ino++] = inum;
+-	spin_unlock(&wbuf->lock);
+-}
+-
+-/**
+- * wbuf_has_ino - returns if the wbuf contains data from the inode.
+- * @wbuf: the write-buffer
+- * @inum: the inode number
+- *
+- * This function returns with %1 if the write-buffer contains some data from the
+- * given inode otherwise it returns with %0.
+- */
+-static int wbuf_has_ino(struct ubifs_wbuf *wbuf, ino_t inum)
+-{
+-	int i, ret = 0;
+-
+-	spin_lock(&wbuf->lock);
+-	for (i = 0; i < wbuf->next_ino; i++)
+-		if (inum == wbuf->inodes[i]) {
+-			ret = 1;
+-			break;
+-		}
+-	spin_unlock(&wbuf->lock);
+-
+-	return ret;
+-}
+-
+-/**
+- * ubifs_sync_wbufs_by_inode - synchronize write-buffers for an inode.
+- * @c: UBIFS file-system description object
+- * @inode: inode to synchronize
+- *
+- * This function synchronizes write-buffers which contain nodes belonging to
+- * @inode. Returns zero in case of success and a negative error code in case of
+- * failure.
+- */
+-int ubifs_sync_wbufs_by_inode(struct ubifs_info *c, struct inode *inode)
+-{
+-	int i, err = 0;
+-
+-	for (i = 0; i < c->jhead_cnt; i++) {
+-		struct ubifs_wbuf *wbuf = &c->jheads[i].wbuf;
+-
+-		if (i == GCHD)
+-			/*
+-			 * GC head is special, do not look at it. Even if the
+-			 * head contains something related to this inode, it is
+-			 * a _copy_ of corresponding on-flash node which sits
+-			 * somewhere else.
+-			 */
+-			continue;
+-
+-		if (!wbuf_has_ino(wbuf, inode->i_ino))
+-			continue;
+-
+-		mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
+-		if (wbuf_has_ino(wbuf, inode->i_ino))
+-			err = ubifs_wbuf_sync_nolock(wbuf);
+-		mutex_unlock(&wbuf->io_mutex);
+-
+-		if (err) {
+-			ubifs_ro_mode(c, err);
+-			return err;
+-		}
+-	}
+ 	return 0;
+ }
 -- 
 2.13.6
 
