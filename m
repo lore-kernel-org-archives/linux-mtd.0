@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2BA8D2E9C3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:05:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8461DD2E9C4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WeORufqdFLD7T59eiBVkJejhODlC8FUIFiZa/KxHzxM=; b=lw7gQxwkpV0tgW
-	Ono/OGgN7aCh975q+nxw9kHNlc2aA7CRSDOHQIz3ls+6yHgDUctvF6ugVzEa9gon8rvxh+ObEvlbs
-	CQb40IbSW/3nA88zLRwj1io6JEPZjzgVTKjGHLveJwlmaLPwbupatgTXeraEwSS8HAioupysj105O
-	kkj2Eaams37hL67pNc0W1h/Po81MlV7jFm0RcwouIOPDmEzFbsXkKxyIXthjhasGd1xhqmSvg0+Zc
-	I6qrUv/h+jiav3EQj87UTCZKlDyykgjttK94ib9BcxJKyztKgV9mqkfjrnJE06jTFT43FHMj1NLC2
-	yeX8ZZ0jmRU1fo/Ln53A==;
+	List-Owner; bh=fEXvauS+QvCHJUd8z5hCaJ2fNvgLC0G22xFGtWByzVg=; b=K/wZKGaWDqgF7y
+	USsjAabtab1FkuhGfb7s0HdEEZVEYyLLPRg30Zn6T9qj5MgBgYPN/A+xvdGT87hjQ0tqFWyA8Ngal
+	ZyFIh6O6ue8wRMzBXin0eCQjNbJOj9dxqUSnwcMjs5nnIISWQZTHgzlpnwIResS8YlWAJC2SWCLJv
+	uibuPtjxA7XboDH89JfPWZs6ojsWI3WYyg+E3vOkcbw9b5dZ4Bc2ct/otJLaD67vgzCe0e8KgUgVv
+	NJHsJIbsQmniwKpRh8trhCn2XmlR+x1VaWl5bERkRaG9UpEI64jUmagQQ2eTGr+CbGe5ETGugSG1a
+	8f5EdbloWgeGEZsEDNsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQM1-0000000GzR3-3mqA;
-	Mon, 11 Nov 2024 09:05:02 +0000
+	id 1tAQM5-0000000GzTq-2HyB;
+	Mon, 11 Nov 2024 09:05:05 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQK7-0000000Gy0F-2NmU
+	id 1tAQK7-0000000Gy0G-2bMy
 	for linux-mtd@bombadil.infradead.org;
 	Mon, 11 Nov 2024 09:03:03 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=fQNiP83CdzGCHk/hWytSV5fs0kL3za7Lf8dYG1SOnn4=; b=Gg9+NeIPpZH7ZhZqnHx6gGesnK
-	B+3r/I28gYC7FnqF9BGfxWGmE3tdrixHy4GKp/Ei/M5LZxojNfXGiJnN9yUvsaD+4w2hvmyIr3Amh
-	Dj6LcJO0g/kM5pEP/gX72RQj2gx7G+o/shIzkAlQ+ei/4ClpZ9/sCE4+edRl0aNiqwH8ACkD3rtuN
-	ICle4suT2bnBwIyQID6Blr4n8iOAIIRjTJaE0KMh3mXVSUeGeqd+Y8v7he6nfz6GPlkYM9sAQ+EIh
-	5+yDFckcFwZ5Oyt++w7Vti0vFh1UTRUJBUPAhpIKrmsjMSAbUG2CNfEkWZGAZ9wa0UzDkIrbpt3Bd
-	H64nnFNA==;
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	bh=Ke5PlkidvWVBZ08CRj24Xa0sIXx0V2Ulg9Fg7tOhQQg=; b=Uvs+AFKf47oN8Pm/LPn3+8gQuO
+	2Kjkl7MUEtBRjCyl5P90qOV3KGB+FD3xqf62ms5+1difxFWgj7ZmhtwKATaLgNu/DqZzHacIrNwto
+	pHx3RKLrElOME3xl9xh6VlGPaX0eglcEfwR1nennhtXAZE0fwpNPIAvur9H0mODHazLty0z53m+WX
+	N3ziO2bv7lVQp3NfmniZcCsE+vFc3MFpC9TEjrUnk8dy1cfj+KDnQ8XAortV1ZUs2FNd0fYiy80Ht
+	dAm0BFVRlkeWIn27yq/KWdxYR21XxcXNbWOULxrQUiWjq2ado8R0jhyZWWcFXjlRd30+xeTzoNQaf
+	JdADmhLw==;
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQK1-0000000CoQq-0D7V
+	id 1tAQK1-0000000CoQo-45f9
 	for linux-mtd@lists.infradead.org;
 	Mon, 11 Nov 2024 09:03:02 +0000
 Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Sf0yTNzQsrx;
-	Mon, 11 Nov 2024 17:01:38 +0800 (CST)
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn3RB54jlz1TB3n;
+	Mon, 11 Nov 2024 17:00:22 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 992591800D0;
-	Mon, 11 Nov 2024 17:02:50 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 1D3EF1800D0;
+	Mon, 11 Nov 2024 17:02:49 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:02:49 +0800
+ 2024 17:02:48 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 069/102] fsck.ubifs: Handle orphan nodes
-Date: Mon, 11 Nov 2024 17:01:23 +0800
-Message-ID: <20241111090124.2070455-30-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 066/102] fsck.ubifs: rebuild_fs: Write master node
+Date: Mon, 11 Nov 2024 17:01:20 +0800
+Message-ID: <20241111090124.2070455-27-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_090300_543715_8C8FB7E9 
-X-CRM114-Status: GOOD (  22.23  )
+X-CRM114-CacheID: sfid-20241111_090300_687419_5074352B 
+X-CRM114-Status: GOOD (  10.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,262 +85,119 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 3/18 step of fsck. Handle orphan nodes, update TNC & LPT.
-There could be following steps and possible errors:
- Step 1. scan orphan LEB, get all orphan nodes
-  a. corrupted scanning data in orphan area: danger mode and normal mode
-     with 'yes' answer will drop orphan LEB, other modes will exit.
- Step 2. parse orphan node, find the original inode for each inum
-  a. corrupted node searched from TNC: skip node for danger mode and
-     normal mode with 'yes' answer, other modes will exit.
-  b. corrupted index node read from TNC: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
- Step 4. remove inode for each inum, update TNC & LPT
-  a. corrupted index node read from TNC: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
-  b. corrupted lpt: Set %FR_LPT_CORRUPTED for lpt status. Ignore the
-     error.
-  c. incorrect lpt: Set %FR_LPT_INCORRECT for lpt status. Ignore the
-     error.
-  d. If lpt status is not empty, skip updating lpt.
+This is the 12/12 step of rebuilding. Since all meta areas are ready,
+master node can be updated. After this step, a consistent UBIFS image
+can be mounted, and it should pass all tests from chk_fs, chk_general,
+chk_index, chk_lprops and chk_orphans.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/fsck.ubifs.c |  2 ++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h |  2 +-
- ubifs-utils/fsck.ubifs/load_fs.c    | 19 +++++++++++++++++
- ubifs-utils/fsck.ubifs/problem.c    | 20 ++++++++++++++++--
- ubifs-utils/libubifs/orphan.c       | 42 ++++++++++++++++++++++++++++++++++---
- ubifs-utils/libubifs/ubifs.h        |  1 +
- 6 files changed, 80 insertions(+), 6 deletions(-)
+ ubifs-utils/fsck.ubifs/rebuild_fs.c | 78 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 85175cf8..31c2aa6a 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -328,6 +328,7 @@ static bool fsck_can_ignore_failure(const struct ubifs_info *c,
- static const unsigned int reason_mapping_table[] = {
- 	BUD_CORRUPTED,		/* FR_H_BUD_CORRUPTED */
- 	TNC_DATA_CORRUPTED,	/* FR_H_TNC_DATA_CORRUPTED */
-+	ORPHAN_CORRUPTED,	/* FR_H_ORPHAN_CORRUPTED */
- };
+diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+index 9ea4c224..382687b3 100644
+--- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
++++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+@@ -1126,6 +1126,7 @@ static int record_file_used_lebs(struct ubifs_info *c,
+ 		 file->ino.is_xattr ? "xattr" :
+ 		 ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
+ 		 c->dev_name);
++	c->highest_inum = max_t(ino_t, c->highest_inum, file->inum);
  
- static bool fsck_handle_failure(const struct ubifs_info *c, unsigned int reason,
-@@ -431,6 +432,7 @@ int main(int argc, char *argv[])
- 	 * Init: Read superblock
- 	 * Step 1: Read master & init lpt
- 	 * Step 2: Replay journal
-+	 * Step 3: Handle orphan nodes
- 	 */
- 	err = ubifs_load_filesystem(c);
- 	if (err) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index f1da974b..a1c64e3a 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -38,7 +38,7 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
- 
- /* Types of inconsistent problems */
- enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
--       TNC_CORRUPTED, TNC_DATA_CORRUPTED };
-+       TNC_CORRUPTED, TNC_DATA_CORRUPTED, ORPHAN_CORRUPTED };
- 
- struct scanned_file;
- 
-diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
-index f45c4117..f376383c 100644
---- a/ubifs-utils/fsck.ubifs/load_fs.c
-+++ b/ubifs-utils/fsck.ubifs/load_fs.c
-@@ -183,10 +183,28 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 	/* Calculate 'min_idx_lebs' after journal replay */
- 	c->bi.min_idx_lebs = ubifs_calc_min_idx_lebs(c);
- 
-+	log_out(c, "Handle orphan nodes");
-+	err = ubifs_mount_orphans(c, c->need_recovery, c->ro_mount);
-+	if (err) {
-+		unsigned int reason = get_failure_reason_callback(c);
-+
-+		clear_failure_reason_callback(c);
-+		if (reason & FR_TNC_CORRUPTED) {
-+			if (fix_problem(c, TNC_CORRUPTED, NULL))
-+				FSCK(c)->try_rebuild = true;
-+		} else {
-+			ubifs_assert(c, reason == 0);
-+			exit_code |= FSCK_ERROR;
-+		}
-+		goto out_orphans;
-+	}
-+
- 	c->mounting = 0;
- 
- 	return 0;
- 
-+out_orphans:
-+	free_orphans(c);
- out_journal:
- 	destroy_journal(c);
- out_lpt:
-@@ -214,6 +232,7 @@ void ubifs_destroy_filesystem(struct ubifs_info *c)
- {
- 	destroy_journal(c);
- 	free_wbufs(c);
-+	free_orphans(c);
- 	ubifs_lpt_free(c, 0);
- 
- 	c->max_sqnum = 0;
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 9df2c2ae..9c8730a5 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -41,6 +41,7 @@ static const struct fsck_problem problem_table[] = {
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted bud LEB"},	// BUD_CORRUPTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted index node"},	// TNC_CORRUPTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted data searched from TNC"},	// TNC_DATA_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted orphan LEB"},	// ORPHAN_CORRUPTED
- };
- 
- static const char *get_question(const struct fsck_problem *problem,
-@@ -54,6 +55,8 @@ static const char *get_question(const struct fsck_problem *problem,
- 		return "Drop bud?";
- 	case TNC_DATA_CORRUPTED:
- 		return "Drop it?";
-+	case ORPHAN_CORRUPTED:
-+		return "Drop orphans on the LEB?";
- 	}
- 
- 	return "Fix it?";
-@@ -63,13 +66,26 @@ static void print_problem(const struct ubifs_info *c,
- 			  const struct fsck_problem *problem, int problem_type,
- 			  const void *priv)
- {
--	if (problem_type == BUD_CORRUPTED) {
-+	switch (problem_type) {
-+	case BUD_CORRUPTED:
-+	{
- 		const struct ubifs_bud *bud = (const struct ubifs_bud *)priv;
- 
- 		log_out(c, "problem: %s %d:%d %s", problem->desc, bud->lnum,
- 			bud->start, dbg_jhead(bud->jhead));
--	} else
-+		break;
-+	}
-+	case ORPHAN_CORRUPTED:
-+	{
-+		const int *lnum = (const int *)priv;
-+
-+		log_out(c, "problem: %s %d", problem->desc, *lnum);
-+		break;
-+	}
-+	default:
- 		log_out(c, "problem: %s", problem->desc);
-+		break;
-+	}
+ 	err = parse_node_info(c, &file->ino.header, &file->ino.key,
+ 			      NULL, 0, idx_list, idx_cnt);
+@@ -1345,6 +1346,75 @@ static int clean_log(struct ubifs_info *c)
  }
  
- static void fatal_error(const struct ubifs_info *c,
-diff --git a/ubifs-utils/libubifs/orphan.c b/ubifs-utils/libubifs/orphan.c
-index 26668cbd..baa4db78 100644
---- a/ubifs-utils/libubifs/orphan.c
-+++ b/ubifs-utils/libubifs/orphan.c
-@@ -423,6 +423,7 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 			ubifs_dump_node(c, snod->node,
- 					c->leb_size - snod->offs);
- 			err = -EINVAL;
-+			set_failure_reason_callback(c, FR_DATA_CORRUPTED);
- 			goto out_free;
- 		}
- 
-@@ -452,6 +453,7 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 				ubifs_dump_node(c, snod->node,
- 						c->leb_size - snod->offs);
- 				err = -EINVAL;
-+				set_failure_reason_callback(c, FR_DATA_CORRUPTED);
- 				goto out_free;
- 			}
- 			dbg_rcvry("out of date LEB %d", sleb->lnum);
-@@ -471,8 +473,19 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 
- 			ino_key_init(c, &key, inum);
- 			err = ubifs_tnc_lookup(c, &key, ino);
--			if (err && err != -ENOENT)
-+			if (err && err != -ENOENT) {
-+				unsigned int reason;
+ /**
++ * write_master - write master nodes.
++ * @c: UBIFS file-system description object
++ *
++ * This function updates meta information into master node and writes master
++ * node into master area.
++ */
++static int write_master(struct ubifs_info *c)
++{
++	int err, lnum;
++	struct ubifs_mst_node *mst;
 +
-+				reason = get_failure_reason_callback(c);
-+				if (reason & FR_DATA_CORRUPTED) {
-+					test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED);
-+					if (handle_failure_callback(c, FR_H_TNC_DATA_CORRUPTED, NULL)) {
-+						/* Leave the inode to be deleted by subsequent steps */
-+						continue;
-+					}
-+				}
- 				goto out_free;
-+			}
- 
- 			/*
- 			 * Check whether an inode can really get deleted.
-@@ -483,8 +496,11 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 					  (unsigned long)inum);
- 
- 				err = ubifs_tnc_remove_ino(c, inum);
--				if (err)
-+				if (err) {
-+					if (c->program_type == FSCK_PROGRAM_TYPE)
-+						goto out_free;
- 					goto out_ro;
-+				}
- 			}
- 		}
- 
-@@ -553,13 +569,33 @@ static int kill_orphans(struct ubifs_info *c)
- 							 c->sbuf, -1);
- 			}
- 			if (IS_ERR(sleb)) {
-+				if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED) &&
-+				    handle_failure_callback(c, FR_H_ORPHAN_CORRUPTED, &lnum)) {
-+					/* Skip the orphan LEB. */
-+					continue;
-+				}
- 				err = PTR_ERR(sleb);
- 				break;
- 			}
- 		}
- 		err = do_kill_orphans(c, sleb, &last_cmt_no, &outofdate,
- 				      &last_flagged);
--		if (err || outofdate) {
-+		if (err) {
-+			unsigned int reason = get_failure_reason_callback(c);
++	mst = kzalloc(c->mst_node_alsz, GFP_KERNEL);
++	if (!mst)
++		return -ENOMEM;
 +
-+			if (reason & FR_DATA_CORRUPTED) {
-+				test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED);
-+				if (handle_failure_callback(c, FR_H_ORPHAN_CORRUPTED, &lnum)) {
-+					err = 0;
-+					/* Skip the orphan LEB. */
-+					ubifs_scan_destroy(sleb);
-+					continue;
-+				}
-+			}
-+			ubifs_scan_destroy(sleb);
-+			break;
-+		}
-+		if (outofdate) {
- 			ubifs_scan_destroy(sleb);
- 			break;
- 		}
-diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index ae812ff8..8a506a8b 100644
---- a/ubifs-utils/libubifs/ubifs.h
-+++ b/ubifs-utils/libubifs/ubifs.h
-@@ -1546,6 +1546,7 @@ enum {
- enum {
- 	FR_H_BUD_CORRUPTED = 0,		/* Bud LEB is corrupted */
- 	FR_H_TNC_DATA_CORRUPTED,	/* Data searched from TNC is corrupted */
-+	FR_H_ORPHAN_CORRUPTED,		/* Orphan LEB is corrupted */
- };
- /* Callback functions for failure(which can be handled by fsck) happens. */
- static inline void set_failure_reason_callback(const struct ubifs_info *c,
++	mst->ch.node_type = UBIFS_MST_NODE;
++	mst->log_lnum     = cpu_to_le32(UBIFS_LOG_LNUM);
++	mst->highest_inum = cpu_to_le64(c->highest_inum);
++	mst->cmt_no       = 0;
++	mst->root_lnum    = cpu_to_le32(c->zroot.lnum);
++	mst->root_offs    = cpu_to_le32(c->zroot.offs);
++	mst->root_len     = cpu_to_le32(c->zroot.len);
++	mst->gc_lnum      = cpu_to_le32(c->gc_lnum);
++	mst->ihead_lnum   = cpu_to_le32(c->ihead_lnum);
++	mst->ihead_offs   = cpu_to_le32(c->ihead_offs);
++	mst->index_size   = cpu_to_le64(c->calc_idx_sz);
++	mst->lpt_lnum     = cpu_to_le32(c->lpt_lnum);
++	mst->lpt_offs     = cpu_to_le32(c->lpt_offs);
++	mst->nhead_lnum   = cpu_to_le32(c->nhead_lnum);
++	mst->nhead_offs   = cpu_to_le32(c->nhead_offs);
++	mst->ltab_lnum    = cpu_to_le32(c->ltab_lnum);
++	mst->ltab_offs    = cpu_to_le32(c->ltab_offs);
++	mst->lsave_lnum   = cpu_to_le32(c->lsave_lnum);
++	mst->lsave_offs   = cpu_to_le32(c->lsave_offs);
++	mst->lscan_lnum   = cpu_to_le32(c->main_first);
++	mst->empty_lebs   = cpu_to_le32(c->lst.empty_lebs);
++	mst->idx_lebs     = cpu_to_le32(c->lst.idx_lebs);
++	mst->leb_cnt      = cpu_to_le32(c->leb_cnt);
++	mst->total_free   = cpu_to_le64(c->lst.total_free);
++	mst->total_dirty  = cpu_to_le64(c->lst.total_dirty);
++	mst->total_used   = cpu_to_le64(c->lst.total_used);
++	mst->total_dead   = cpu_to_le64(c->lst.total_dead);
++	mst->total_dark   = cpu_to_le64(c->lst.total_dark);
++	mst->flags	  |= cpu_to_le32(UBIFS_MST_NO_ORPHS);
++
++	lnum = UBIFS_MST_LNUM;
++	err = ubifs_leb_unmap(c, lnum);
++	if (err)
++		goto out;
++	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, lnum, 0,
++				    offsetof(struct ubifs_mst_node, hmac));
++	if (err)
++		goto out;
++	lnum++;
++	err = ubifs_leb_unmap(c, lnum);
++	if (err)
++		goto out;
++	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, lnum, 0,
++				    offsetof(struct ubifs_mst_node, hmac));
++	if (err)
++		goto out;
++
++out:
++	kfree(mst);
++
++	return err;
++}
++
++/**
+  * ubifs_rebuild_filesystem - Rebuild filesystem.
+  * @c: UBIFS file-system description object
+  *
+@@ -1429,6 +1499,14 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
+ 		goto out;
+ 	}
+ 	err = ubifs_clear_orphans(c);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		goto out;
++	}
++
++	/* Step 12. Write master node. */
++	log_out(c, "Write master");
++	err = write_master(c);
+ 	if (err)
+ 		exit_code |= FSCK_ERROR;
+ 
 -- 
 2.13.6
 
