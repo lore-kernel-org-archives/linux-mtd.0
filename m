@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ABB4D2E9C2
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C023D2E9C3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vFktHUuRf0rPRQGHJ4za+PyimwKLACiVDp3junKQgdY=; b=ouj7DHxF27+6A2
-	jgZOQ3JXpxNpVSwjix+pMsXyN/3582NfTOhiD/vxRVfjIrQhIlIICOj/WqBQ/XmtdVfvmuZ5TduIz
-	/8BdIM7wNhPO+OwDr9Tytr+FsV7v7ZmZPMgi/M32bFjwEQWuCdosFANdt4TqHKLz9ykBC8ZFj6ZKM
-	+Ub9TjIQKyLQVckWBEe3b3Km+NQkFbehu9MMkM/znSMvluvHPNTomHXOsHKRXvCxIculH0ZIH+xJM
-	5WhX4qhWGobaeRKfIsECkhQYB394kY3Io341PjhN3nXuOMfNDmNYT9XWjbdPXeob/YljXHi2WgR8f
-	fra3WikDjg/ZMSzC8aSA==;
+	List-Owner; bh=y+ReBg26CxgakjcoOWDaRNltXpendPqd2kxDPbubIak=; b=S0c0v2z1lWnOLN
+	8caIHa0FDWyI+u1FoED7euL44lB5do/giiNS+/7j6CSOaJDUpJ6k+vHKg2uGvisUDXq0yMyxxTS0D
+	hmVCF9WrnX29Kle2WwCtmhC8dpYkG01b3zM5Cb5JqkiLSKKjZMq+yqfODG62qZzimvKdYFyfva/wa
+	gNm6ymM6tEhTrnT/cJfgNFSnGS4aOXyYjDW2PxCRSuF4coSDBKTn7W7ZeLBU4B4soJWgXIcPBQ6cl
+	gfiOvSVKNf/iJNCYbDy46feukFWZVnUG+1O1M7ui+cLZQyyv4+9/ek79lkt5XedvT8FEgSF5Me5vD
+	HHE0LQE5OlaBt5am5k9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQ6c-0000000Grp1-40yO;
-	Mon, 11 Nov 2024 08:49:06 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1tAQ6V-0000000GrlA-2W22;
+	Mon, 11 Nov 2024 08:48:59 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPwM-0000000Gpe3-3poO
+	id 1tAPwL-0000000GpdT-1FBd
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:38:39 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn2rW5pDPz28fSP;
-	Mon, 11 Nov 2024 16:33:47 +0800 (CST)
+	Mon, 11 Nov 2024 08:38:32 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xn2tq0csqzsRWn;
+	Mon, 11 Nov 2024 16:35:47 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3F94914022D;
-	Mon, 11 Nov 2024 16:38:29 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 393F81800F2;
+	Mon, 11 Nov 2024 16:38:26 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:38:28 +0800
+ 2024 16:38:25 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 013/102] ubifs-utils: Add linux kernel memory allocation implementations
-Date: Mon, 11 Nov 2024 16:36:44 +0800
-Message-ID: <20241111083711.1916125-14-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 008/102] ubifs-utils: Extract UBI opening/closing/volume_check_empty functions into a new source file
+Date: Mon, 11 Nov 2024 16:36:39 +0800
+Message-ID: <20241111083711.1916125-9-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_003831_405813_1D577433 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20241111_003829_666612_68F05AB0 
+X-CRM114-Status: GOOD (  24.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,166 +70,290 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add linux kernel memory allocation implementations, because there are many
-memory allocations(eg. kmalloc, kzalloc) used in UBIFS linux kernel libs.
-
-This is a preparation for replacing implementation of UBIFS utils with
-linux kernel libs.
+Move UBI opening/closing/volume_check_empty functions into common/super.c.
+These functions will be used in fsck.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am |  2 ++
- ubifs-utils/common/kmem.c | 64 +++++++++++++++++++++++++++++++++++++++++++++++
- ubifs-utils/common/kmem.h | 56 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 122 insertions(+)
- create mode 100644 ubifs-utils/common/kmem.c
- create mode 100644 ubifs-utils/common/kmem.h
+ ubifs-utils/Makemodule.am           |   1 +
+ ubifs-utils/common/super.c          | 123 ++++++++++++++++++++++++++++++++++++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 114 ---------------------------------
+ 3 files changed, 124 insertions(+), 114 deletions(-)
+ create mode 100644 ubifs-utils/common/super.c
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 69192ffd..13171b74 100644
+index 8af65be7..90cc7005 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -2,6 +2,8 @@ common_SOURCES = \
- 	ubifs-utils/common/compiler_attributes.h \
- 	ubifs-utils/common/linux_types.h \
- 	ubifs-utils/common/linux_err.h \
-+	ubifs-utils/common/kmem.h \
-+	ubifs-utils/common/kmem.c \
- 	ubifs-utils/common/defs.h \
- 	ubifs-utils/common/crc16.h \
- 	ubifs-utils/common/crc16.c \
-diff --git a/ubifs-utils/common/kmem.c b/ubifs-utils/common/kmem.c
+@@ -15,6 +15,7 @@ common_SOURCES = \
+ 	ubifs-utils/common/key.h \
+ 	ubifs-utils/common/lpt.h \
+ 	ubifs-utils/common/lpt.c \
++	ubifs-utils/common/super.c \
+ 	ubifs-utils/common/sign.h \
+ 	include/mtd/ubifs-media.h
+ 
+diff --git a/ubifs-utils/common/super.c b/ubifs-utils/common/super.c
 new file mode 100644
-index 00000000..e926a137
+index 00000000..eee0197d
 --- /dev/null
-+++ b/ubifs-utils/common/kmem.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Simple memory interface
-+ */
++++ b/ubifs-utils/common/super.c
+@@ -0,0 +1,123 @@
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/stat.h>
 +
-+#include "compiler_attributes.h"
-+#include "linux_types.h"
-+#include "kmem.h"
 +#include "defs.h"
 +
-+static void *kmem_alloc(size_t size)
-+{
-+	void *ptr = malloc(size);
-+
-+	if (ptr == NULL)
-+		sys_errmsg("malloc failed (%d bytes)", (int)size);
-+	return ptr;
-+}
-+
-+static void *kmem_zalloc(size_t size)
-+{
-+	void *ptr = kmem_alloc(size);
-+
-+	if (!ptr)
-+		return ptr;
-+
-+	memset(ptr, 0, size);
-+	return ptr;
-+}
-+
-+void *kmalloc(size_t size, gfp_t flags)
-+{
-+	if (flags & __GFP_ZERO)
-+		return kmem_zalloc(size);
-+	return kmem_alloc(size);
-+}
-+
-+void *krealloc(void *ptr, size_t new_size, __unused gfp_t flags)
-+{
-+	ptr = realloc(ptr, new_size);
-+	if (ptr == NULL)
-+		sys_errmsg("realloc failed (%d bytes)", (int)new_size);
-+	return ptr;
-+}
-+
-+void *kmalloc_array(size_t n, size_t size, gfp_t flags)
-+{
-+	size_t bytes;
-+
-+	if (unlikely(check_mul_overflow(n, size, &bytes)))
-+		return NULL;
-+	return kmalloc(bytes, flags);
-+}
-+
-+void *kmemdup(const void *src, size_t len, gfp_t gfp)
-+{
-+	void *p;
-+
-+	p = kmalloc(len, gfp);
-+	if (p)
-+		memcpy(p, src, len);
-+
-+	return p;
-+}
-diff --git a/ubifs-utils/common/kmem.h b/ubifs-utils/common/kmem.h
-new file mode 100644
-index 00000000..9fe2a364
---- /dev/null
-+++ b/ubifs-utils/common/kmem.h
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2008 Silicon Graphics, Inc.
-+ * All Rights Reserved.
++/**
++ * open_ubi - open the libubi.
++ * @c: the UBIFS file-system description object
++ * @node: name of the UBI volume character device to fetch information about
++ *
++ * This function opens libubi, and initialize device & volume information
++ * according to @node. Returns %0 in case of success and %-1 in case of failure.
 + */
-+#ifndef __KMEM_H__
-+#define __KMEM_H__
-+
-+#include <stdlib.h>
-+
-+typedef unsigned int gfp_t;
-+
-+#define GFP_KERNEL	0
-+#define GFP_NOFS	0
-+#define __GFP_NOWARN	0
-+#define __GFP_ZERO	1
-+
-+#define vmalloc(size)	malloc(size)
-+#define vfree(ptr)	free(ptr)
-+
-+extern void	*kmalloc(size_t, gfp_t);
-+extern void	*krealloc(void *, size_t, __attribute__((unused)) gfp_t);
-+extern void	*kmalloc_array(size_t, size_t, gfp_t);
-+extern void	*kmemdup(const void *src, size_t len, gfp_t gfp);
-+
-+static inline void kfree(const void *ptr)
++int open_ubi(struct ubifs_info *c, const char *node)
 +{
-+	free((void *)ptr);
++	struct stat st;
++
++	if (stat(node, &st) || !S_ISCHR(st.st_mode))
++		return -1;
++
++	c->libubi = libubi_open();
++	if (!c->libubi)
++		return -1;
++	if (ubi_get_vol_info(c->libubi, node, &c->vi))
++		goto out_err;
++	if (ubi_get_dev_info1(c->libubi, c->vi.dev_num, &c->di))
++		goto out_err;
++
++	return 0;
++
++out_err:
++	close_ubi(c);
++	return -1;
 +}
 +
-+static inline void kvfree(const void *ptr)
++void close_ubi(struct ubifs_info *c)
 +{
-+	kfree(ptr);
++	if (c->libubi) {
++		libubi_close(c->libubi);
++		c->libubi = NULL;
++	}
 +}
 +
-+static inline void *kvmalloc(size_t size, gfp_t flags)
++/**
++ * open_target - open the output target.
++ * @c: the UBIFS file-system description object
++ *
++ * Open the output target. The target can be an UBI volume
++ * or a file.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int open_target(struct ubifs_info *c)
 +{
-+	return kmalloc(size, flags);
++	if (c->libubi) {
++		c->dev_fd = open(c->dev_name, O_RDWR | O_EXCL);
++
++		if (c->dev_fd == -1)
++			return sys_errmsg("cannot open the UBI volume '%s'",
++					   c->dev_name);
++		if (ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
++			close(c->dev_fd);
++			return sys_errmsg("ubi_set_property(set direct_write) failed");
++		}
++	} else {
++		c->dev_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
++			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
++		if (c->dev_fd == -1)
++			return sys_errmsg("cannot create output file '%s'",
++					   c->dev_name);
++	}
++	return 0;
 +}
 +
-+static inline void *kzalloc(size_t size, gfp_t flags)
++
++/**
++ * close_target - close the output target.
++ * @c: the UBIFS file-system description object
++ *
++ * Close the output target. If the target was an UBI
++ * volume, also close libubi.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int close_target(struct ubifs_info *c)
 +{
-+	return kmalloc(size, flags | __GFP_ZERO);
++	if (c->dev_fd >= 0) {
++		if (c->libubi && ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
++			return sys_errmsg("ubi_set_property(clear direct_write) failed");
++		if (close(c->dev_fd) == -1)
++			return sys_errmsg("cannot close the target '%s'", c->dev_name);
++	}
++	return 0;
 +}
 +
-+static inline void *__vmalloc(unsigned long size, gfp_t gfp_mask)
++/**
++ * check_volume_empty - check if the UBI volume is empty.
++ * @c: the UBIFS file-system description object
++ *
++ * This function checks if the UBI volume is empty by looking if its LEBs are
++ * mapped or not.
++ *
++ * Returns %0 in case of success, %1 is the volume is not empty,
++ * and a negative error code in case of failure.
++ */
++int check_volume_empty(struct ubifs_info *c)
 +{
-+	return kmalloc(size, gfp_mask);
-+}
++	int lnum, err;
 +
-+static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
-+{
-+	return kmalloc_array(n, size, flags | __GFP_ZERO);
++	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
++		err = ubi_is_mapped(c->dev_fd, lnum);
++		if (err < 0)
++			return err;
++		if (err == 1)
++			return 1;
++	}
++	return 0;
 +}
-+
-+#endif
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 8bff44b2..2181595e 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -518,44 +518,6 @@ static long long get_bytes(const char *str)
+ 	return bytes;
+ }
+ 
+-void close_ubi(struct ubifs_info *c)
+-{
+-	if (c->libubi) {
+-		libubi_close(c->libubi);
+-		c->libubi = NULL;
+-	}
+-}
+-
+-/**
+- * open_ubi - open the libubi.
+- * @c: the UBIFS file-system description object
+- * @node: name of the UBI volume character device to fetch information about
+- *
+- * This function opens libubi, and initialize device & volume information
+- * according to @node. Returns %0 in case of success and %-1 in case of failure.
+- */
+-int open_ubi(struct ubifs_info *c, const char *node)
+-{
+-	struct stat st;
+-
+-	if (stat(node, &st) || !S_ISCHR(st.st_mode))
+-		return -1;
+-
+-	c->libubi = libubi_open();
+-	if (!c->libubi)
+-		return -1;
+-	if (ubi_get_vol_info(c->libubi, node, &c->vi))
+-		goto out_err;
+-	if (ubi_get_dev_info1(c->libubi, c->vi.dev_num, &c->di))
+-		goto out_err;
+-
+-	return 0;
+-
+-out_err:
+-	close_ubi(c);
+-	return -1;
+-}
+-
+ static void select_default_compr(void)
+ {
+ 	if (c->encrypted) {
+@@ -2821,82 +2783,6 @@ static int write_orphan_area(void)
+ }
+ 
+ /**
+- * check_volume_empty - check if the UBI volume is empty.
+- * @c: the UBIFS file-system description object
+- *
+- * This function checks if the UBI volume is empty by looking if its LEBs are
+- * mapped or not.
+- *
+- * Returns %0 in case of success, %1 is the volume is not empty,
+- * and a negative error code in case of failure.
+- */
+-int check_volume_empty(struct ubifs_info *c)
+-{
+-	int lnum, err;
+-
+-	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
+-		err = ubi_is_mapped(c->dev_fd, lnum);
+-		if (err < 0)
+-			return err;
+-		if (err == 1)
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-/**
+- * open_target - open the output target.
+- * @c: the UBIFS file-system description object
+- *
+- * Open the output target. The target can be an UBI volume
+- * or a file.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-int open_target(struct ubifs_info *c)
+-{
+-	if (c->libubi) {
+-		c->dev_fd = open(c->dev_name, O_RDWR | O_EXCL);
+-
+-		if (c->dev_fd == -1)
+-			return sys_errmsg("cannot open the UBI volume '%s'",
+-					   c->dev_name);
+-		if (ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
+-			close(c->dev_fd);
+-			return sys_errmsg("ubi_set_property(set direct_write) failed");
+-		}
+-	} else {
+-		c->dev_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
+-			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-		if (c->dev_fd == -1)
+-			return sys_errmsg("cannot create output file '%s'",
+-					   c->dev_name);
+-	}
+-	return 0;
+-}
+-
+-
+-/**
+- * close_target - close the output target.
+- * @c: the UBIFS file-system description object
+- *
+- * Close the output target. If the target was an UBI
+- * volume, also close libubi.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-int close_target(struct ubifs_info *c)
+-{
+-	if (c->dev_fd >= 0) {
+-		if (c->libubi && ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
+-			return sys_errmsg("ubi_set_property(clear direct_write) failed");
+-		if (close(c->dev_fd) == -1)
+-			return sys_errmsg("cannot close the target '%s'", c->dev_name);
+-	}
+-	return 0;
+-}
+-
+-/**
+  * init - initialize things.
+  */
+ static int init(void)
 -- 
 2.13.6
 
