@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2E4BD2E9C3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBCCBD2E9C7
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uldaow3gihxm+6jU+GaByV5JbGbNIH9TQyFhx9xP0o4=; b=CKK88oa/fXTWx8
-	T3A33NDBsh5le+ft0Fx0OevCH0TP6MRQfm+nYl0IDxW9ttz6pYT8hgzb8+Y6XczzJcQF0py8XRL41
-	owUtzWh8aTtUnVY9iZgjcLaXwDzyIxkKpa0jknmwEpVoyPIEdqQ8aeohsmPswgTtHWMSIyOx6Nb7/
-	bYNBnuphOCydj0PQoUkjpL7ZrA1BZUaMhRIaEnTT0vBbGr8XblFbSPgsEe7c61+ZGqUyccbKdVxfL
-	2Q990XuCQHTpL/oYmFsn6JXR4sy1Ovz3qpmiTfoYo//EeF4JVzzvG58rl+cxjVE+vHCyZRHCefPeT
-	7rwdCeP534tzToH/KRNg==;
+	List-Owner; bh=3YzPNCT4Q76UxbyyLB0APx2ziwLJXq2DGwmPJPBnHJQ=; b=zVzJZT8L4Fazzz
+	klF/EWs8aUywZG49uv/9EddJmZtBzNyJRQw97nIoMwzv0V02dMGY4yPRhCgSBusUEvSP4jEo7z+AV
+	22AUYNGabHXhr9NtnsCQdwEObef8c35vM8NakS7rINXP88/JYIj2l0NIT4U+vFQjC3/Kzb5JwL9rv
+	9g7AXw5pJLkPeSgi/13PJDannFinUyHWaOXJdrwbNE+1LjCmyxC00JRhwumvGycpvGA7TFuNLuVG2
+	QnDCvlauROufzK+YqF2OvaILruifiAUedveNczSdhigv0l5j22R1lJFl/E2LyenahOfgOhThEzr6C
+	6iwGvOEkpphjn91xuhGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQLv-0000000GzMn-0R6Q;
-	Mon, 11 Nov 2024 09:04:55 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1tAQLx-0000000GzO0-1har;
+	Mon, 11 Nov 2024 09:04:57 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQJt-0000000Gxp6-236G
+	id 1tAQJv-0000000Gxr0-0dyg
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 09:03:00 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn3R85zSXz10Qyg;
-	Mon, 11 Nov 2024 17:00:20 +0800 (CST)
+	Mon, 11 Nov 2024 09:03:01 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Ry1krhz2DgyW;
+	Mon, 11 Nov 2024 17:01:02 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 81D9D1800D0;
-	Mon, 11 Nov 2024 17:02:47 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 8FF531401F4;
+	Mon, 11 Nov 2024 17:02:49 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:02:46 +0800
+ 2024 17:02:48 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 063/102] fsck.ubifs: rebuild_fs: Build TNC
-Date: Mon, 11 Nov 2024 17:01:17 +0800
-Message-ID: <20241111090124.2070455-24-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 067/102] fsck.ubifs: Read master node & init lpt
+Date: Mon, 11 Nov 2024 17:01:21 +0800
+Message-ID: <20241111090124.2070455-28-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_010250_186631_FAFAA4D6 
-X-CRM114-Status: GOOD (  24.71  )
+X-CRM114-CacheID: sfid-20241111_010251_600342_83F18250 
+X-CRM114-Status: GOOD (  17.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,429 +70,222 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 9/12 step of repairing. Construct TNC according to scanned
-files, and write TNC on flash, just like mkfs does.
-Building TNC can effectively solve many failed mounting problems caused
-by bad TNC (eg. bad node pointed by TNC, bad key order in znode, etc.).
+This is the 1/18 step of fsck. Read and check master node, init lpt.
+There could be following errors:
+ 1. corrupted scanning data in master area or invalid master node:
+    danger mode with rebuild_fs and normal mode with 'yes' answer will
+    turn to rebuild filesystem, other modes will exit.
+ 2. incorrect space statistics in master node: Set %FR_LPT_INCORRECT for
+    for lpt status. Ignore the error.
+ 3. corrupted lpt: Set %FR_LPT_CORRUPTED for lpt status. Ignore the error.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/rebuild_fs.c | 283 +++++++++++++++++++++++++++++++++---
- 1 file changed, 262 insertions(+), 21 deletions(-)
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c |  5 ++-
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h |  2 +-
+ ubifs-utils/fsck.ubifs/load_fs.c    | 78 +++++++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/problem.c    |  1 +
+ ubifs-utils/libubifs/lpt.c          | 18 +++++++--
+ ubifs-utils/libubifs/master.c       |  7 +++-
+ 6 files changed, 104 insertions(+), 7 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 62bd4128..e1d1957f 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -34,6 +34,29 @@ struct scanned_info {
- 	struct rb_root del_dents;
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+index e6744516..2fd68df5 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+@@ -423,7 +423,10 @@ int main(int argc, char *argv[])
+ 		goto out_destroy_fsck;
+ 	}
+ 
+-	/* Init: Read superblock */
++	/*
++	 * Init: Read superblock
++	 * Step 1: Read master & init lpt
++	 */
+ 	err = ubifs_load_filesystem(c);
+ 	if (err) {
+ 		if (FSCK(c)->try_rebuild)
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index d25ecc2d..7f826156 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -37,7 +37,7 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
+        DANGER_MODE1, REBUILD_MODE, CHECK_MODE };
+ 
+ /* Types of inconsistent problems */
+-enum { SB_CORRUPTED = 0 };
++enum { SB_CORRUPTED = 0, MST_CORRUPTED };
+ 
+ struct scanned_file;
+ 
+diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
+index 4a06b4c2..036e307c 100644
+--- a/ubifs-utils/fsck.ubifs/load_fs.c
++++ b/ubifs-utils/fsck.ubifs/load_fs.c
+@@ -99,10 +99,81 @@ int ubifs_load_filesystem(struct ubifs_info *c)
+ 		goto out_mounting;
+ 	}
+ 
++	log_out(c, "Read master & init lpt");
++	err = ubifs_read_master(c);
++	if (err) {
++		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED)) {
++			if (fix_problem(c, MST_CORRUPTED))
++				FSCK(c)->try_rebuild = true;
++		} else
++			exit_code |= FSCK_ERROR;
++		goto out_master;
++	}
++
++	init_constants_master(c);
++
++	if ((c->mst_node->flags & cpu_to_le32(UBIFS_MST_DIRTY)) != 0) {
++		ubifs_msg(c, "recovery needed");
++		c->need_recovery = 1;
++	}
++
++	if (c->need_recovery && !c->ro_mount) {
++		err = ubifs_recover_inl_heads(c, c->sbuf);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_master;
++		}
++	}
++
++	err = ubifs_lpt_init(c, 1, !c->ro_mount);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		goto out_master;
++	}
++
++	if (!c->ro_mount && c->space_fixup) {
++		err = ubifs_fixup_free_space(c);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_lpt;
++		}
++	}
++
++	if (!c->ro_mount && !c->need_recovery) {
++		/*
++		 * Set the "dirty" flag so that if we reboot uncleanly we
++		 * will notice this immediately on the next mount.
++		 */
++		c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
++		err = ubifs_write_master(c);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_lpt;
++		}
++	}
++
++	if (!c->ro_mount && c->superblock_need_write) {
++		err = ubifs_write_sb_node(c, c->sup_node);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_lpt;
++		}
++		c->superblock_need_write = 0;
++	}
++
+ 	c->mounting = 0;
+ 
+ 	return 0;
+ 
++out_lpt:
++	ubifs_lpt_free(c, 0);
++out_master:
++	c->max_sqnum = 0;
++	c->highest_inum = 0;
++	c->calc_idx_sz = 0;
++	kfree(c->mst_node);
++	kfree(c->rcvrd_mst_node);
++	free_wbufs(c);
+ out_mounting:
+ 	c->mounting = 0;
+ out_free:
+@@ -118,8 +189,15 @@ out_free:
+ void ubifs_destroy_filesystem(struct ubifs_info *c)
+ {
+ 	free_wbufs(c);
++	ubifs_lpt_free(c, 0);
++
++	c->max_sqnum = 0;
++	c->highest_inum = 0;
++	c->calc_idx_sz = 0;
+ 
+ 	kfree(c->cbuf);
++	kfree(c->rcvrd_mst_node);
++	kfree(c->mst_node);
+ 	kfree(c->ileb_buf);
+ 	kfree(c->sbuf);
+ 	kfree(c->bottom_up_buf);
+diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
+index acb9e45e..1af66632 100644
+--- a/ubifs-utils/fsck.ubifs/problem.c
++++ b/ubifs-utils/fsck.ubifs/problem.c
+@@ -36,6 +36,7 @@ struct fsck_problem {
+ 
+ static const struct fsck_problem problem_table[] = {
+ 	{0, "Corrupted superblock"},	// SB_CORRUPTED
++	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted master node"},	// MST_CORRUPTED
  };
  
-+/**
-+ * struct idx_entry - index entry.
-+ * @list: link in the list index entries for building index tree
-+ * @key: key
-+ * @name: directory entry name used for sorting colliding keys by name
-+ * @lnum: LEB number
-+ * @offs: offset
-+ * @len: length
-+ *
-+ * The index is recorded as a linked list which is sorted and used to create
-+ * the bottom level of the on-flash index tree. The remaining levels of the
-+ * index tree are each built from the level below.
-+ */
-+struct idx_entry {
-+	struct list_head list;
-+	union ubifs_key key;
-+	char *name;
-+	int name_len;
-+	int lnum;
-+	int offs;
-+	int len;
-+};
-+
- static int init_rebuild_info(struct ubifs_info *c)
- {
- 	int err;
-@@ -146,6 +169,17 @@ static int insert_or_update_ino_node(struct ubifs_info *c,
- 	return 0;
- }
+ static void print_problem(const struct ubifs_info *c,
+diff --git a/ubifs-utils/libubifs/lpt.c b/ubifs-utils/libubifs/lpt.c
+index c0df7c7d..b07f1f77 100644
+--- a/ubifs-utils/libubifs/lpt.c
++++ b/ubifs-utils/libubifs/lpt.c
+@@ -1883,8 +1883,13 @@ static int lpt_init_rd(struct ubifs_info *c)
+ 	c->dirty_idx.max_cnt = LPT_HEAP_SZ;
  
-+static int namecmp(const char *a, int la, const char *b, int lb)
-+{
-+	int cmp, len = min(la, lb);
-+
-+	cmp = memcmp(a, b, len);
-+	if (cmp)
-+		return cmp;
-+
-+	return la - lb;
-+}
-+
- /**
-  * insert_or_update_dent_node - insert or update dentry node.
-  * @c: UBIFS file-system description object
-@@ -160,7 +194,7 @@ static int insert_or_update_dent_node(struct ubifs_info *c,
- 				      struct scanned_dent_node *new_dent,
- 				      struct rb_root *tree)
- {
--	int cmp, nlen;
-+	int cmp;
- 	struct scanned_dent_node *dent_node, *old_dent_node = NULL;
- 	struct rb_node **p, *parent = NULL;
- 
-@@ -174,9 +208,8 @@ static int insert_or_update_dent_node(struct ubifs_info *c,
- 		} else if (cmp > 0) {
- 			p = &(*p)->rb_right;
- 		} else {
--			nlen = min(new_dent->nlen, dent_node->nlen);
--			cmp = strncmp(new_dent->name, dent_node->name, nlen) ? :
--				      new_dent->nlen - dent_node->nlen;
-+			cmp = namecmp(new_dent->name, new_dent->nlen,
-+				      dent_node->name, dent_node->nlen);
- 			if (cmp < 0) {
- 				p = &(*p)->rb_left;
- 			} else if (cmp > 0) {
-@@ -424,7 +457,7 @@ static struct scanned_dent_node *
- lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
- 		       struct scanned_dent_node *target)
- {
--	int cmp, nlen;
-+	int cmp;
- 	struct scanned_dent_node *dent_node;
- 	struct rb_node *p;
- 
-@@ -437,9 +470,8 @@ lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
- 		} else if (cmp > 0) {
- 			p = p->rb_right;
- 		} else {
--			nlen = min(target->nlen, dent_node->nlen);
--			cmp = strncmp(target->name, dent_node->name, nlen) ? :
--				      target->nlen - dent_node->nlen;
-+			cmp = namecmp(target->name, target->nlen,
-+				      dent_node->name, dent_node->nlen);
- 			if (cmp < 0) {
- 				p = p->rb_left;
- 			} else if (cmp > 0) {
-@@ -885,9 +917,12 @@ static const char *get_file_name(struct ubifs_info *c, struct scanned_file *file
- 	return name;
- }
- 
--static void parse_node_location(struct ubifs_info *c, struct scanned_node *sn)
-+static int parse_node_info(struct ubifs_info *c, struct scanned_node *sn,
-+			   union ubifs_key *key, char *name, int name_len,
-+			   struct list_head *idx_list, int *idx_cnt)
- {
- 	int lnum, pos;
-+	struct idx_entry *e;
- 
- 	lnum = sn->lnum - c->main_first;
- 	pos = sn->offs + ALIGN(sn->len, 8);
-@@ -895,11 +930,184 @@ static void parse_node_location(struct ubifs_info *c, struct scanned_node *sn)
- 	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
- 	FSCK(c)->rebuild->lpts[lnum].end = max_t(int,
- 					FSCK(c)->rebuild->lpts[lnum].end, pos);
-+
-+	if (idx_cnt == NULL)
-+		/* Skip truncation node. */
-+		return 0;
-+
-+	e = kmalloc(sizeof(struct idx_entry), GFP_KERNEL);
-+	if (!e)
-+		return -ENOMEM;
-+
-+	key_copy(c, key, &e->key);
-+	e->name = name;
-+	e->name_len = name_len;
-+	e->lnum = sn->lnum;
-+	e->offs = sn->offs;
-+	e->len = sn->len;
-+	list_add_tail(&e->list, idx_list);
-+	*idx_cnt = *idx_cnt + 1;
-+
-+	return 0;
-+}
-+
-+static int add_idx_node(struct ubifs_info *c, struct ubifs_idx_node *idx,
-+			union ubifs_key *key, int child_cnt,
-+			struct idx_entry *e)
-+{
-+	int err, lnum, offs, len;
-+
-+	len = ubifs_idx_node_sz(c, child_cnt);
-+	ubifs_prepare_node(c, idx, len, 0);
-+
-+	err = reserve_space(c, len, &lnum, &offs);
-+	if (err)
-+		return err;
-+
-+	copy_node_data(c, idx, offs, len);
-+
-+	c->calc_idx_sz += ALIGN(len, 8);
-+
-+	/* The last index node written will be the root */
-+	c->zroot.lnum = lnum;
-+	c->zroot.offs = offs;
-+	c->zroot.len = len;
-+
-+	key_copy(c, key, &e->key);
-+	e->lnum = lnum;
-+	e->offs = offs;
-+	e->len = len;
-+
-+	return err;
-+}
-+
-+static int cmp_idx(void *priv, const struct list_head *a,
-+		   const struct list_head *b)
-+{
-+	int cmp;
-+	struct ubifs_info *c = priv;
-+	struct idx_entry *ia, *ib;
-+
-+	if (a == b)
-+		return 0;
-+
-+	ia = list_entry(a, struct idx_entry, list);
-+	ib = list_entry(b, struct idx_entry, list);
-+
-+	cmp = keys_cmp(c, &ia->key, &ib->key);
-+	if (cmp)
-+		return cmp;
-+
-+	return namecmp(ia->name, ia->name_len, ib->name, ib->name_len);
-+}
-+
-+/**
-+ * build_tnc - construct TNC and write it into flash.
-+ * @c: UBIFS file-system description object
-+ * @lower_idxs: leaf entries of TNC
-+ * @lower_cnt: the count of @lower_idxs
-+ *
-+ * This function builds TNC according to @lower_idxs and writes all index
-+ * nodes into flash.
-+ */
-+static int build_tnc(struct ubifs_info *c, struct list_head *lower_idxs,
-+		     int lower_cnt)
-+{
-+	int i, j, err, upper_cnt, child_cnt, idx_sz, level = 0;
-+	struct idx_entry *pe, *tmp_e, *e = NULL;
-+	struct ubifs_idx_node *idx;
-+	struct ubifs_branch *br;
-+	union ubifs_key key;
-+	LIST_HEAD(upper_idxs);
-+
-+	idx_sz = ubifs_idx_node_sz(c, c->fanout);
-+	idx = kmalloc(idx_sz, GFP_KERNEL);
-+	if (!idx)
-+		return -ENOMEM;
-+
-+	list_sort(c, lower_idxs, cmp_idx);
-+
-+	ubifs_assert(c, lower_cnt != 0);
-+
-+	do {
-+		upper_cnt = lower_cnt / c->fanout;
-+		if (lower_cnt % c->fanout)
-+			upper_cnt += 1;
-+		e = list_first_entry(lower_idxs, struct idx_entry, list);
-+
-+		for (i = 0; i < upper_cnt; i++) {
-+			if (i == upper_cnt - 1) {
-+				child_cnt = lower_cnt % c->fanout;
-+				if (child_cnt == 0)
-+					child_cnt = c->fanout;
-+			} else
-+				child_cnt = c->fanout;
-+
-+			key_copy(c, &e->key, &key);
-+			memset(idx, 0, idx_sz);
-+			idx->ch.node_type = UBIFS_IDX_NODE;
-+			idx->child_cnt = cpu_to_le16(child_cnt);
-+			idx->level = cpu_to_le16(level);
-+			for (j = 0; j < child_cnt; j++) {
-+				ubifs_assert(c,
-+				    !list_entry_is_head(e, lower_idxs, list));
-+				br = ubifs_idx_branch(c, idx, j);
-+				key_write_idx(c, &e->key, &br->key);
-+				br->lnum = cpu_to_le32(e->lnum);
-+				br->offs = cpu_to_le32(e->offs);
-+				br->len = cpu_to_le32(e->len);
-+				e = list_next_entry(e, list);
-+			}
-+
-+			pe = kmalloc(sizeof(struct idx_entry), GFP_KERNEL);
-+			if (!pe) {
-+				err = -ENOMEM;
-+				goto out;
-+			}
-+
-+			err = add_idx_node(c, idx, &key, child_cnt, pe);
-+			if (err) {
-+				kfree(pe);
-+				goto out;
-+			}
-+
-+			list_add_tail(&pe->list, &upper_idxs);
-+		}
-+
-+		level++;
-+		list_for_each_entry_safe(e, tmp_e, lower_idxs, list) {
-+			list_del(&e->list);
-+			kfree(e);
-+		}
-+		list_splice_init(&upper_idxs, lower_idxs);
-+		lower_cnt = upper_cnt;
-+	} while (lower_cnt > 1);
-+
-+	/* Set the index head */
-+	c->ihead_lnum = FSCK(c)->rebuild->head_lnum;
-+	c->ihead_offs = ALIGN(FSCK(c)->rebuild->head_offs, c->min_io_size);
-+
-+	/* Flush the last index LEB */
-+	err = flush_write_buf(c);
-+
-+out:
-+	list_for_each_entry_safe(e, tmp_e, lower_idxs, list) {
-+		list_del(&e->list);
-+		kfree(e);
-+	}
-+	list_for_each_entry_safe(e, tmp_e, &upper_idxs, list) {
-+		list_del(&e->list);
-+		kfree(e);
-+	}
-+	kfree(idx);
-+	return err;
- }
- 
--static void record_file_used_lebs(struct ubifs_info *c,
--				  struct scanned_file *file)
-+static int record_file_used_lebs(struct ubifs_info *c,
-+				 struct scanned_file *file,
-+				 struct list_head *idx_list, int *idx_cnt)
- {
-+	int err;
- 	struct rb_node *node;
- 	struct scanned_file *xattr_file;
- 	struct scanned_dent_node *dent_node;
-@@ -911,28 +1119,46 @@ static void record_file_used_lebs(struct ubifs_info *c,
- 		 ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
- 		 c->dev_name);
- 
--	parse_node_location(c, &file->ino.header);
-+	err = parse_node_info(c, &file->ino.header, &file->ino.key,
-+			      NULL, 0, idx_list, idx_cnt);
-+	if (err)
-+		return err;
- 
--	if (file->trun.header.exist)
--		parse_node_location(c, &file->trun.header);
-+	if (file->trun.header.exist) {
-+		err = parse_node_info(c, &file->trun.header, NULL, NULL,
-+				      0, idx_list, NULL);
-+		if (err)
+ 	err = read_ltab(c);
+-	if (err)
+-		return err;
++	if (err) {
++		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
++		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
++			err = 0;
++		else
 +			return err;
 +	}
  
- 	for (node = rb_first(&file->data_nodes); node; node = rb_next(node)) {
- 		data_node = rb_entry(node, struct scanned_data_node, rb);
- 
--		parse_node_location(c, &data_node->header);
-+		err = parse_node_info(c, &data_node->header, &data_node->key,
-+				      NULL, 0, idx_list, idx_cnt);
-+		if (err)
-+			return err;
- 	}
- 
- 	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
- 		dent_node = rb_entry(node, struct scanned_dent_node, rb);
- 
--		parse_node_location(c, &dent_node->header);
-+		err = parse_node_info(c, &dent_node->header, &dent_node->key,
-+				      dent_node->name, dent_node->nlen,
-+				      idx_list, idx_cnt);
-+		if (err)
-+			return err;
- 	}
- 
- 	for (node = rb_first(&file->xattr_files); node; node = rb_next(node)) {
- 		xattr_file = rb_entry(node, struct scanned_file, rb);
- 
--		record_file_used_lebs(c, xattr_file);
-+		err = record_file_used_lebs(c, xattr_file, idx_list, idx_cnt);
-+		if (err)
-+			return err;
- 	}
-+
-+	return err;
- }
- 
- /**
-@@ -946,13 +1172,16 @@ static void record_file_used_lebs(struct ubifs_info *c,
-  *    LEBs could be taken for storing new index tree.
-  * 3. Re-write data to prevent failed gc scanning in the subsequent mounting
-  *    process caused by corrupted data.
-+ * 4. Build TNC.
-  */
- static int traverse_files_and_nodes(struct ubifs_info *c)
- {
--	int i, err = 0;
-+	int i, err = 0, idx_cnt = 0;
- 	struct rb_node *node;
- 	struct scanned_file *file;
- 	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
-+	struct idx_entry *ie, *tmp_ie;
-+	LIST_HEAD(idx_list);
- 
- 	if (rb_first(tree) == NULL) {
- 		/* No scanned files. Create root dir. */
-@@ -966,7 +1195,9 @@ static int traverse_files_and_nodes(struct ubifs_info *c)
- 	for (node = rb_first(tree); node; node = rb_next(node)) {
- 		file = rb_entry(node, struct scanned_file, rb);
- 
--		record_file_used_lebs(c, file);
-+		err = record_file_used_lebs(c, file, &idx_list, &idx_cnt);
-+		if (err)
-+			goto out_idx_list;
- 	}
- 
- 	/* Re-write data. */
-@@ -985,16 +1216,25 @@ static int traverse_files_and_nodes(struct ubifs_info *c)
- 
- 		err = ubifs_leb_read(c, lnum, c->sbuf, 0, len, 0);
- 		if (err && err != -EBADMSG)
--			return err;
-+			goto out_idx_list;
- 
- 		if (len > end)
- 			ubifs_pad(c, c->sbuf + end, len - end);
- 
- 		err = ubifs_leb_change(c, lnum, c->sbuf, len);
- 		if (err)
--			return err;
-+			goto out_idx_list;
- 	}
- 
-+	/* Build TNC. */
-+	log_out(c, "Build TNC");
-+	err = build_tnc(c, &idx_list, idx_cnt);
-+
-+out_idx_list:
-+	list_for_each_entry_safe(ie, tmp_ie, &idx_list, list) {
-+		list_del(&ie->list);
-+		kfree(ie);
-+	}
- 	return err;
- }
- 
-@@ -1059,6 +1299,7 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 	/*
- 	 * Step 7: Record used LEBs.
- 	 * Step 8: Re-write data to clean corrupted data.
-+	 * Step 9: Build TNC.
- 	 */
- 	err = traverse_files_and_nodes(c);
+ 	err = lpt_check_hash(c);
  	if (err)
+@@ -1938,8 +1943,13 @@ static int lpt_init_wr(struct ubifs_info *c)
+ 		if (!c->lsave)
+ 			return -ENOMEM;
+ 		err = read_lsave(c);
+-		if (err)
+-			return err;
++		if (err) {
++			if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
++			    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
++				err = 0;
++			else
++				return err;
++		}
+ 	}
+ 
+ 	for (i = 0; i < c->lpt_lebs; i++)
+diff --git a/ubifs-utils/libubifs/master.c b/ubifs-utils/libubifs/master.c
+index 61ff4cec..54d2a789 100644
+--- a/ubifs-utils/libubifs/master.c
++++ b/ubifs-utils/libubifs/master.c
+@@ -323,7 +323,12 @@ out:
+ 	set_failure_reason_callback(c, reason);
+ 	ubifs_err(c, "bad master node at offset %d error %d", c->mst_offs, err);
+ 	ubifs_dump_node(c, c->mst_node, c->mst_node_alsz);
+-	return -EINVAL;
++	err = -EINVAL;
++	if (can_ignore_failure_callback(c, reason)) {
++		clear_failure_reason_callback(c);
++		err = 0;
++	}
++	return err;
+ }
+ 
+ /**
 -- 
 2.13.6
 
