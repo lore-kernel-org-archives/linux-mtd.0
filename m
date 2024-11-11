@@ -4,56 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95281D2E9D3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 10:16:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC904D2E9D3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 10:18:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3YzPNCT4Q76UxbyyLB0APx2ziwLJXq2DGwmPJPBnHJQ=; b=C2iRrjj2A9DwNn
-	nGIpx/V3uRxfOiT5twJ3vzLh8s1w3rt0tGJ4XuW+Ng+J4KckNc+O3WQxypKZYl47UCAxKF+yarwTK
-	pEeGm5obM69H4obPfSDI5hqcaWCIR4p13y27HbQy2ntIZX6OYlIsdpKe5nwY6gGd6j3I4inhLNrTw
-	EKGmFkI3R2w2uilAix6qY37gLHyvfX9gDdK51iHHtIAj5GqlNuzl3VjmM6bGMcQVRnge4uxadMMS6
-	Z4nDc4G1Eb4NsqlaGfb0efIeoCQu5a1v+0AKpn+igx2BOkWjiCBt7KEZ7eeiNsjBmLZOCUC7UNFwQ
-	XAIG/e5d72cAA2rXrzlw==;
+	List-Owner; bh=PWenb3QKfXEGZSpv2c1iPUt1C2syExQy4jjzj5MG6Z4=; b=Bia9WSQU1xaaW5
+	B8FD1vero82j7Q3mWqx1m6/DoOGhMp3qmFmDfN8JzZaLqPy9ZIis6B37JXsbKDQkWkTjCSmeRSYZn
+	4gUeXwTTce8IN8eJrwpM9JB+whXB66c/AkCgbpBR+yKUfXHtPQJJf0JpHkXLJKNuDQMKmuqonWY+j
+	doWmrTuCTTr+w4Sn8EnA7DmAurB4Pd3ukc7aaiJMZo+4mbwt7/q7QVDJ75UgEuZvAqvmJZxTn0jZO
+	KXGgbtOfBuX6SXvMEWNTyxAMOEENFbFyEHcBaNByuKhMegjHCaxTyYMcsHsWMqmirtPZhOHjPfN9q
+	U+3DKy/xBA7b4BIcd8jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tARSV-0000000HF8S-1via;
-	Mon, 11 Nov 2024 10:15:47 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1tARUz-0000000HFrK-0c1k;
+	Mon, 11 Nov 2024 10:18:21 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQGJ-0000000Gvd2-1V5o
+	id 1tARUv-0000000HFql-3kck
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:59:19 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Mf1b1Zz1jxyQ;
-	Mon, 11 Nov 2024 16:57:18 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6380E14022D;
-	Mon, 11 Nov 2024 16:59:05 +0800 (CST)
-Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
- (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:59:04 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
-	<yi.zhang@huawei.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 067/102] fsck.ubifs: Read master node & init lpt
-Date: Mon, 11 Nov 2024 16:57:38 +0800
-Message-ID: <20241111085741.2066378-28-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20241111085741.2066378-1-chengzhihao1@huawei.com>
-References: <20241111085741.2066378-1-chengzhihao1@huawei.com>
+	Mon, 11 Nov 2024 10:18:19 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-53b34ed38easo4290633e87.0
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2024 02:18:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1731320296; x=1731925096; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zhyKJC+ZlhIvd2RI2qZdoBI7BLL1Xj6/nlNpmII5adA=;
+        b=sG/JeFnt8gz8JGCHQI1fChCgizGyPPLIfo7zkhy5qh+vNOMzvZJEV/4ZV1/uOX9SPD
+         tIOgcWkIsRky10TdHrJfCopVfRzKlEl6XqLPe1KEMBXX3tARoUOfRlVINsaaOTjfROSZ
+         bGh0oxl6MrGEGHuIPZPyq8navtn3kP0Sn2qoZczqr1COIe9nsvLxVI6+qeUlE0Yb+tGA
+         GcdDuiOc7b+J1Ncqmp8+dBSjhEO7zizn9EJekldC5G5N0GwCzpDJcWLGXchg/SBNj0Re
+         MwWkZywc3eUrhjw3DbRsZptuAdniNVwPhKjPQh+vpmIUkjMIuYEh/Xg+XTaQO7rP/Ejy
+         HYAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731320296; x=1731925096;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zhyKJC+ZlhIvd2RI2qZdoBI7BLL1Xj6/nlNpmII5adA=;
+        b=sHiaeYHhDsm9uJekyCslmFQVx9rVWDS/kXwudgWUezhjoETwl6XqHp9e5yGiKDyv1y
+         20dOscYchfKuJWgAZ43aR99sypWOVrONCj2Uxg7j/qn7Ju8QK+l9assTmKkYkCP1RmpY
+         pE3MSKnUfIEWobz783SEx9iLRqGejjXClv7SgUZy1AwCqWPDQmzFggbepT+ZtuSAFqr4
+         gFSjOLdS+KtSw4Z6wBPGIUKNx5LsDIsjaiwQCGUnxNWFJ+abIAQxJRz9W0h49SbDfifi
+         Ugeg9V4HVRyqB6wrJW3ep7App7xQVdg1SWwChAW51oOCfOUc7MNycR8bcC9WXz1gddJE
+         O9Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCVSkKsuZ9jS6t3ZU/PibexFhP0hGsIV9WLA2agENfk1FIEnnNvqBRhpXIQfHfyKxYe+8IR0Fibb6ho=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxp+RKTnP9ZJiOsHG8wH3WiKuub8kbek3i5yyNa/4c7dbY7rPPc
+	f+K8K5NHhBm7vBVqcBdp2pB1ilfI5zzrM/20023f6Awp6bFnRY5RAZikMthH/2g=
+X-Google-Smtp-Source: AGHT+IEfUlCd+ogGcecrle4DmhwPBvBsn78CHE0X/HnxFrBFSrVBduh4K745TFt0HlnQBVGN0Q4Geg==
+X-Received: by 2002:a05:6512:3408:b0:539:8980:2009 with SMTP id 2adb3069b0e04-53d862e4d8dmr5193051e87.36.1731320295752;
+        Mon, 11 Nov 2024 02:18:15 -0800 (PST)
+Received: from [192.168.0.157] ([79.115.63.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432aa6b2c32sm204503145e9.10.2024.11.11.02.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Nov 2024 02:18:14 -0800 (PST)
+Message-ID: <437e9c87-fbae-4402-858c-ce6de0a992c7@linaro.org>
+Date: Mon, 11 Nov 2024 10:18:11 +0000
 MIME-Version: 1.0
-X-Originating-IP: [10.175.112.188]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: core: replace dummy buswidth from addr to
+ data
+To: Cheng Ming Lin <linchengming884@gmail.com>, pratyush@kernel.org,
+ mwalle@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: alvinzhou@mxic.com.tw, leoyu@mxic.com.tw,
+ Cheng Ming Lin <chengminglin@mxic.com.tw>
+References: <20241107093016.151448-1-linchengming884@gmail.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20241107093016.151448-1-linchengming884@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_005907_994620_421AF8ED 
-X-CRM114-Status: GOOD (  17.98  )
+X-CRM114-CacheID: sfid-20241111_021817_983998_A823A442 
+X-CRM114-Status: GOOD (  20.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,225 +97,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 1/18 step of fsck. Read and check master node, init lpt.
-There could be following errors:
- 1. corrupted scanning data in master area or invalid master node:
-    danger mode with rebuild_fs and normal mode with 'yes' answer will
-    turn to rebuild filesystem, other modes will exit.
- 2. incorrect space statistics in master node: Set %FR_LPT_INCORRECT for
-    for lpt status. Ignore the error.
- 3. corrupted lpt: Set %FR_LPT_CORRUPTED for lpt status. Ignore the error.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- ubifs-utils/fsck.ubifs/fsck.ubifs.c |  5 ++-
- ubifs-utils/fsck.ubifs/fsck.ubifs.h |  2 +-
- ubifs-utils/fsck.ubifs/load_fs.c    | 78 +++++++++++++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/problem.c    |  1 +
- ubifs-utils/libubifs/lpt.c          | 18 +++++++--
- ubifs-utils/libubifs/master.c       |  7 +++-
- 6 files changed, 104 insertions(+), 7 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index e6744516..2fd68df5 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -423,7 +423,10 @@ int main(int argc, char *argv[])
- 		goto out_destroy_fsck;
- 	}
- 
--	/* Init: Read superblock */
-+	/*
-+	 * Init: Read superblock
-+	 * Step 1: Read master & init lpt
-+	 */
- 	err = ubifs_load_filesystem(c);
- 	if (err) {
- 		if (FSCK(c)->try_rebuild)
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index d25ecc2d..7f826156 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -37,7 +37,7 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
-        DANGER_MODE1, REBUILD_MODE, CHECK_MODE };
- 
- /* Types of inconsistent problems */
--enum { SB_CORRUPTED = 0 };
-+enum { SB_CORRUPTED = 0, MST_CORRUPTED };
- 
- struct scanned_file;
- 
-diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
-index 4a06b4c2..036e307c 100644
---- a/ubifs-utils/fsck.ubifs/load_fs.c
-+++ b/ubifs-utils/fsck.ubifs/load_fs.c
-@@ -99,10 +99,81 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 		goto out_mounting;
- 	}
- 
-+	log_out(c, "Read master & init lpt");
-+	err = ubifs_read_master(c);
-+	if (err) {
-+		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED)) {
-+			if (fix_problem(c, MST_CORRUPTED))
-+				FSCK(c)->try_rebuild = true;
-+		} else
-+			exit_code |= FSCK_ERROR;
-+		goto out_master;
-+	}
-+
-+	init_constants_master(c);
-+
-+	if ((c->mst_node->flags & cpu_to_le32(UBIFS_MST_DIRTY)) != 0) {
-+		ubifs_msg(c, "recovery needed");
-+		c->need_recovery = 1;
-+	}
-+
-+	if (c->need_recovery && !c->ro_mount) {
-+		err = ubifs_recover_inl_heads(c, c->sbuf);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_master;
-+		}
-+	}
-+
-+	err = ubifs_lpt_init(c, 1, !c->ro_mount);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto out_master;
-+	}
-+
-+	if (!c->ro_mount && c->space_fixup) {
-+		err = ubifs_fixup_free_space(c);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_lpt;
-+		}
-+	}
-+
-+	if (!c->ro_mount && !c->need_recovery) {
-+		/*
-+		 * Set the "dirty" flag so that if we reboot uncleanly we
-+		 * will notice this immediately on the next mount.
-+		 */
-+		c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
-+		err = ubifs_write_master(c);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_lpt;
-+		}
-+	}
-+
-+	if (!c->ro_mount && c->superblock_need_write) {
-+		err = ubifs_write_sb_node(c, c->sup_node);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_lpt;
-+		}
-+		c->superblock_need_write = 0;
-+	}
-+
- 	c->mounting = 0;
- 
- 	return 0;
- 
-+out_lpt:
-+	ubifs_lpt_free(c, 0);
-+out_master:
-+	c->max_sqnum = 0;
-+	c->highest_inum = 0;
-+	c->calc_idx_sz = 0;
-+	kfree(c->mst_node);
-+	kfree(c->rcvrd_mst_node);
-+	free_wbufs(c);
- out_mounting:
- 	c->mounting = 0;
- out_free:
-@@ -118,8 +189,15 @@ out_free:
- void ubifs_destroy_filesystem(struct ubifs_info *c)
- {
- 	free_wbufs(c);
-+	ubifs_lpt_free(c, 0);
-+
-+	c->max_sqnum = 0;
-+	c->highest_inum = 0;
-+	c->calc_idx_sz = 0;
- 
- 	kfree(c->cbuf);
-+	kfree(c->rcvrd_mst_node);
-+	kfree(c->mst_node);
- 	kfree(c->ileb_buf);
- 	kfree(c->sbuf);
- 	kfree(c->bottom_up_buf);
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index acb9e45e..1af66632 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -36,6 +36,7 @@ struct fsck_problem {
- 
- static const struct fsck_problem problem_table[] = {
- 	{0, "Corrupted superblock"},	// SB_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted master node"},	// MST_CORRUPTED
- };
- 
- static void print_problem(const struct ubifs_info *c,
-diff --git a/ubifs-utils/libubifs/lpt.c b/ubifs-utils/libubifs/lpt.c
-index c0df7c7d..b07f1f77 100644
---- a/ubifs-utils/libubifs/lpt.c
-+++ b/ubifs-utils/libubifs/lpt.c
-@@ -1883,8 +1883,13 @@ static int lpt_init_rd(struct ubifs_info *c)
- 	c->dirty_idx.max_cnt = LPT_HEAP_SZ;
- 
- 	err = read_ltab(c);
--	if (err)
--		return err;
-+	if (err) {
-+		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+			err = 0;
-+		else
-+			return err;
-+	}
- 
- 	err = lpt_check_hash(c);
- 	if (err)
-@@ -1938,8 +1943,13 @@ static int lpt_init_wr(struct ubifs_info *c)
- 		if (!c->lsave)
- 			return -ENOMEM;
- 		err = read_lsave(c);
--		if (err)
--			return err;
-+		if (err) {
-+			if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+			    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+				err = 0;
-+			else
-+				return err;
-+		}
- 	}
- 
- 	for (i = 0; i < c->lpt_lebs; i++)
-diff --git a/ubifs-utils/libubifs/master.c b/ubifs-utils/libubifs/master.c
-index 61ff4cec..54d2a789 100644
---- a/ubifs-utils/libubifs/master.c
-+++ b/ubifs-utils/libubifs/master.c
-@@ -323,7 +323,12 @@ out:
- 	set_failure_reason_callback(c, reason);
- 	ubifs_err(c, "bad master node at offset %d error %d", c->mst_offs, err);
- 	ubifs_dump_node(c, c->mst_node, c->mst_node_alsz);
--	return -EINVAL;
-+	err = -EINVAL;
-+	if (can_ignore_failure_callback(c, reason)) {
-+		clear_failure_reason_callback(c);
-+		err = 0;
-+	}
-+	return err;
- }
- 
- /**
--- 
-2.13.6
+On 11/7/24 9:30 AM, Cheng Ming Lin wrote:
+> From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+> 
+> The default dummy cycle for Macronix SPI NOR flash in Octal Output
+> Read Mode(1-1-8) is 20.
+> 
+> Currently, the dummy buswidth is set according to the address bus width.
+> In the 1-1-8 mode, this means the dummy buswidth is 1. When converting
+> dummy cycles to bytes, this results in 20 x 1 / 8 = 2 bytes, causing the
+> host to read data 4 cycles too early.
+> 
+> Since the protocol data buswidth is always greater than or equal to the
+> address buswidth. Setting the dummy buswidth to match the data buswidth
+> increases the likelihood that the dummy cycle-to-byte conversion will be
+> divisible, preventing the host from reading data prematurely.
 
+This is still very wrong and the `fix` is working just by chance.
+Consider what happens when one requires 10 dummy cycles. BTW, does this
+fix a real problem, or it's just a theoretical fix?
+
+I don't like that we're chasing our tails here. The fix is to pass
+directly cycles instead of bytes and update MTD and SPI to use cycles. I
+had an attempt to fix this in the past, but I can't allocate time to
+respin. Are you interested in taking over and fixing MTD and SPI?
+
+> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+> ---
+>  drivers/mtd/spi-nor/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index f9c189ed7353..c7aceaa8a43f 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -89,7 +89,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>  		op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+>  
+>  	if (op->dummy.nbytes)
+> -		op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+> +		op->dummy.buswidth = spi_nor_get_protocol_data_nbits(proto);
+>  
+>  	if (op->data.nbytes)
+>  		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
 
 ______________________________________________________
 Linux MTD discussion mailing list
