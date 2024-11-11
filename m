@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B709D12D7E
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA0CDD12D7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ANW+mxGrxDz7Waw89VVImrPMeDuPjSsj/3eTasKvxvI=; b=G+4n8CsOcW1b0y
-	DPFXYZAuK9t2r6md/ARji37QDbiImhgCiRmWwAL1mG37JXIw8ILf8YtDEHXldMlVd3wabCwqGjwba
-	lR++KVBO/2XBYHTMofs5tjs5dVVT5jnBzKO8xrVfpgxRrpwsh3denl23KNLiL1Mn6UJSbGDgYwocb
-	QVaPzb3nREY8mgy7qWVTMg0LxEltLNybXFhcLSEoaUGja3siAD+bIoVctNz1FGTSsddfG3BtdKhrF
-	37/wHkp1knPlTvbuNtHM/D2jXLn5/evOy71I30qEruZgJd31dOeuXEMsREYg3BaFQe4vYT2+W7TVQ
-	EiEBaWIb113iDD4fmLBA==;
+	List-Owner; bh=2PD9QU2g/7VwJu0UYJn0C2CPFDQjVxmZYBqYAKshIFw=; b=sh33SLfy1q/FEw
+	Jofv++NhNvH5rgAVYRJYEliT5SLZSt9tCvz26sfZFuKBOBTUsjdnkD1uhNAjQtwqHH5htHFB0CSPv
+	sJQDNQwjcF792SIQ4fbTITUvip37OFWHdMZDZ4y+nu7gpsAc0aJ/ZcmJL3ThfyroRasAWm+hN4n9L
+	5u7ogfActJm6ro9nZp4ZIEqUgcvVma+rhOTH6hLKosJ7+yyFTNTL4/DRWNp7febh9d1Btug2U5Ggl
+	9L0xtSc2Q6lI95CjP39Pjt5zCI6m9zi/12toU01+8cqTGPQhx4uYEpmtGRInDp7XsZFMOxAn7ihjB
+	Xk9ntksRtw8tfSmIGg6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOXU-0000000Gboo-03SJ;
-	Mon, 11 Nov 2024 07:08:44 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tAOXX-0000000Gbrl-3SCu;
+	Mon, 11 Nov 2024 07:08:47 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVD-0000000Ga0t-2zzd
+	id 1tAOVE-0000000Ga22-3IzS
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:23 +0000
+	Mon, 11 Nov 2024 07:06:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=7W3BGeYcTBd+d2MPMeb2m/Iw7dpAjn+zi01PcukylNE=; b=gMYfqaz1XUvbENcu3w0gimr1tf
-	JKZDH86+ga4zLDMkosKSQ1dIS5nz1LFGX4HgSDQ2lUSl2YKUtyh08UEHOWsxwIb/WYPGH2EkEoMDV
-	2PJAB3NXOWuSkyCFOkihIj2xkW4jrrty/si9uCXeGq1aYJeZiO5kJCkmEtxyDiLF5E6X116D/HjIo
-	VOXBqscq8q0F5jUb9VgDEF96/zGU8TksAFJSPk7kre5gihELRBAk84Jjx3B5sWUUSfVbkH1LvteeB
-	Amo1fBG3x3JbTv+RS/VP9Z2brzaQx4g3nDFdT/qnWeLZuDzvDiw/3wkDFeT2SqFfM67ou/553hNYM
-	8VmK1AqA==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
-	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV5-0000000CR4A-1Aej
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=PMU4iO1f3Ou+kJV0+5cairFa9UnUggHIy7IP1nXLKXM=; b=QdResdDNOg8pF8rsYu2X3ey7Md
+	rc3shr8DIgWLLDZUftSkBods11o7IgnvX0din12gJEBXAvVUP+Vq7j0l1JocvZ8qE3nDnwGgzIe5+
+	n8rgj8Ei8j0yQW0bvCv7lxNnn2/8H+34oxGtlAUYIoIkFf+K0p0pr6Wv99eyIdBnMyXK43Ee/JEBZ
+	M7+j2jLESKFKyexxr46j0vGZE/mEBiZuT95VVHBVSwdRzNnXd5bePvY7/5sqILWKVy2H1oPbD4/wv
+	MdAC5jgcB7f4qbAJT8jzLzSduceEPPd2CRAjH2TaTGElAzvcYTwdP5z5jZepFzOrF24ea757zXkgf
+	ikzKM1Xw==;
+Received: from szxga03-in.huawei.com ([45.249.212.189])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOV7-0000000CmQQ-3I2G
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:22 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qr4kYRz1TB3W;
-	Mon, 11 Nov 2024 15:03:04 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:21 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn0sF3vxZzQss2;
+	Mon, 11 Nov 2024 15:04:17 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id E9AC71800A2;
-	Mon, 11 Nov 2024 15:05:30 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id E748618007C;
+	Mon, 11 Nov 2024 15:05:29 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:30 +0800
+ 2024 15:05:29 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 059/102] fsck.ubifs: rebuild_fs: Check and correct files' information
-Date: Mon, 11 Nov 2024 15:03:02 +0800
-Message-ID: <20241111070346.1314122-60-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 057/102] fsck.ubifs: rebuild_fs: Filter invalid files
+Date: Mon, 11 Nov 2024 15:03:00 +0800
+Message-ID: <20241111070346.1314122-58-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070616_293388_36A073F3 
-X-CRM114-Status: GOOD (  24.10  )
+X-CRM114-CacheID: sfid-20241111_070620_163005_4680C9CF 
+X-CRM114-Status: GOOD (  24.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,360 +85,374 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 6/12 step of rebuilding. Correct the file information.
-Traverse all files and calculate information (nlink, size, xattr_cnt,
-etc.) for each file just like check_leaf() does, correct inode node
-based on the calculated information.
-Now, all files are consistent, and UBIFS will pass chk_fs after mounting.
+This is the 4/12 step of rebuilding. Filter out invalid files and drop
+them, for example:
+ 1. File has no inode node or inode nlink is zero
+ 2. Nonconsistent file type between inode node and dentry nodes
+ 3. File has no dentry nodes(excepts '/')
+ 4. Encrypted file has no xattr information
+ 5. Non regular file has data nodes
+ 6. Directory/xattr file has more than one dentries
+ 7. Xattr file has no host inode, or the host inode is a xattr
+ ...
+Valid xattr file will be inserted into corresponding host file's subtree.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/extract_files.c | 270 +++++++++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h    |   1 +
- ubifs-utils/fsck.ubifs/rebuild_fs.c    |   6 +
- ubifs-utils/libubifs/debug.c           |   2 +-
- ubifs-utils/libubifs/debug.h           |   1 +
- 5 files changed, 279 insertions(+), 1 deletion(-)
+ ubifs-utils/fsck.ubifs/extract_files.c | 210 +++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h    |   3 +
+ ubifs-utils/fsck.ubifs/rebuild_fs.c    |  65 +++++++++-
+ ubifs-utils/libubifs/journal.c         |   4 +-
+ ubifs-utils/libubifs/ubifs.h           |   3 +
+ 5 files changed, 282 insertions(+), 3 deletions(-)
 
 diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
-index dd5cb310..b8777f6c 100644
+index 58aa9db8..772e3003 100644
 --- a/ubifs-utils/fsck.ubifs/extract_files.c
 +++ b/ubifs-utils/fsck.ubifs/extract_files.c
-@@ -13,6 +13,7 @@
- #include "linux_err.h"
- #include "bitops.h"
- #include "kmem.h"
-+#include "crc32.h"
- #include "ubifs.h"
- #include "defs.h"
- #include "debug.h"
-@@ -982,3 +983,272 @@ reachable:
- 	dbg_fsck("file %lu is reachable, in %s", file->inum, c->dev_name);
- 	return true;
+@@ -678,3 +678,213 @@ void destroy_file_tree(struct ubifs_info *c, struct rb_root *file_tree)
+ 		kfree(file);
+ 	}
  }
 +
 +/**
-+ * calculate_file_info - calculate the information of file
++ * lookup_file - lookup file according to inode number.
++ * @file_tree: tree of all scanned files
++ * @inum: inode number
++ *
++ * This function lookups target file from @file_tree according to @inum.
++ */
++struct scanned_file *lookup_file(struct rb_root *file_tree, ino_t inum)
++{
++	struct scanned_file *file;
++	struct rb_node *p;
++
++	p = file_tree->rb_node;
++	while (p) {
++		file = rb_entry(p, struct scanned_file, rb);
++
++		if (inum < file->inum)
++			p = p->rb_left;
++		else if (inum > file->inum)
++			p = p->rb_right;
++		else
++			return file;
++	}
++
++	return NULL;
++}
++
++/**
++ * insert_xattr_file - insert xattr file into file's subtree.
++ * @c: UBIFS file-system description object
++ * @xattr_file: xattr file
++ * @host_file: host file
++ *
++ * This inserts xattr file into its' host file's subtree.
++ */
++static void insert_xattr_file(struct ubifs_info *c,
++			      struct scanned_file *xattr_file,
++			      struct scanned_file *host_file)
++{
++	struct scanned_file *tmp_xattr_file;
++	struct rb_node **p, *parent = NULL;
++
++	p = &host_file->xattr_files.rb_node;
++	while (*p) {
++		parent = *p;
++		tmp_xattr_file = rb_entry(parent, struct scanned_file, rb);
++		if (xattr_file->inum < tmp_xattr_file->inum) {
++			p = &(*p)->rb_left;
++		} else if (xattr_file->inum > tmp_xattr_file->inum) {
++			p = &(*p)->rb_right;
++		} else {
++			/* Impossible: Same xattr file is inserted twice. */
++			ubifs_assert(c, 0);
++		}
++	}
++
++	rb_link_node(&xattr_file->rb, parent, p);
++	rb_insert_color(&xattr_file->rb, &host_file->xattr_files);
++}
++
++/**
++ * file_is_valid - check whether the file is valid.
 + * @c: UBIFS file-system description object
 + * @file: file object
 + * @file_tree: tree of all scanned files
 + *
-+ * This function calculates file information according to dentry nodes,
-+ * data nodes and truncation node. The calculated informaion will be used
-+ * to correct inode node.
++ * This function checks whether given @file is valid, following checks will
++ * be performed:
++ * 1. All files have none-zero nlink inode, otherwise they are invalid.
++ * 2. The file type comes from inode and dentries should be consistent,
++ *    inconsistent dentries will be deleted.
++ * 3. Directory type or xattr type files only have one dentry. Superfluous
++ *    dentries with lower sequence number will be deleted.
++ * 4. Non-regular file doesn't have data nodes. Data nodes are deleted for
++ *    non-regular file.
++ * 5. All files must have at least one dentries, except '/', '/' doesn't
++ *    have dentries. Non '/' file is invalid if it doesn't have dentries.
++ * 6. Xattr files should have host inode, and host inode cannot be a xattr,
++ *    otherwise they are invalid.
++ * 7. Encrypted files should have corresponding xattrs, otherwise they are
++ *    invalid.
++ * Xattr file will be inserted into corresponding host file's subtree.
++ *
++ * Returns %true is @file is valid, otherwise %false is returned.
++ * Notice: All xattr files should be traversed before non-xattr files, because
++ *         checking item 7 depends on it.
 + */
-+static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
-+				struct rb_root *file_tree)
++bool file_is_valid(struct ubifs_info *c, struct scanned_file *file,
++		   struct rb_root *file_tree)
 +{
-+	int nlink = 0;
-+	bool corrupted_truncation = false;
-+	unsigned long long ino_sqnum, trun_size = 0, new_size = 0, trun_sqnum = 0;
++	int type;
 +	struct rb_node *node;
-+	struct scanned_file *parent_file, *xattr_file;
++	struct scanned_file *parent_file = NULL;
 +	struct scanned_dent_node *dent_node;
 +	struct scanned_data_node *data_node;
 +	LIST_HEAD(drop_list);
 +
-+	for (node = rb_first(&file->xattr_files); node; node = rb_next(node)) {
-+		xattr_file = rb_entry(node, struct scanned_file, rb);
++	if (!file->ino.header.exist || !file->ino.nlink)
++		return false;
 +
-+		ubifs_assert(c, !rb_first(&xattr_file->xattr_files));
-+		calculate_file_info(c, xattr_file, file_tree);
-+	}
++	type = ubifs_get_dent_type(file->ino.mode);
 +
-+	if (file->inum == UBIFS_ROOT_INO) {
-+		file->calc_nlink += 2;
-+		file->calc_size += UBIFS_INO_NODE_SZ;
-+		return;
-+	}
-+
-+	if (S_ISDIR(file->ino.mode)) {
-+		file->calc_nlink += 2;
-+		file->calc_size += UBIFS_INO_NODE_SZ;
-+
-+		dent_node = rb_entry(rb_first(&file->dent_nodes),
-+				     struct scanned_dent_node, rb);
-+		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
-+		if (!parent_file) {
-+			ubifs_assert(c, 0);
-+			return;
-+		}
-+		parent_file->calc_nlink += 1;
-+		parent_file->calc_size += CALC_DENT_SIZE(dent_node->nlen);
-+		return;
-+	}
-+
-+	if (file->ino.is_xattr) {
-+		file->calc_nlink = 1;
-+		file->calc_size = file->ino.size;
-+
-+		dent_node = rb_entry(rb_first(&file->dent_nodes),
-+				     struct scanned_dent_node, rb);
-+		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
-+		if (!parent_file) {
-+			ubifs_assert(c, 0);
-+			return;
-+		}
-+		parent_file->calc_xcnt += 1;
-+		parent_file->calc_xsz += CALC_DENT_SIZE(dent_node->nlen);
-+		parent_file->calc_xsz += CALC_XATTR_BYTES(file->ino.size);
-+		parent_file->calc_xnms += dent_node->nlen;
-+		return;
-+	}
-+
++	/* Drop dentry nodes with inconsistent type. */
 +	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
-+		nlink++;
++		int is_xattr = 0;
 +
 +		dent_node = rb_entry(node, struct scanned_dent_node, rb);
 +
-+		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
-+		if (!parent_file) {
-+			ubifs_assert(c, 0);
-+			return;
-+		}
-+		parent_file->calc_size += CALC_DENT_SIZE(dent_node->nlen);
-+	}
-+	file->calc_nlink = nlink;
-+
-+	if (!S_ISREG(file->ino.mode)) {
-+		/* No need to verify i_size for symlink/sock/block/char/fifo. */
-+		file->calc_size = file->ino.size;
-+		return;
++		if (key_type(c, &dent_node->key) == UBIFS_XENT_KEY)
++			is_xattr = 1;
++		if (is_xattr != file->ino.is_xattr || type != dent_node->type)
++			list_add(&dent_node->list, &drop_list);
 +	}
 +
-+	/*
-+	 * Process i_size and data content, following situations should
-+	 * be considered:
-+	 * 1. Sequential writing or overwriting, i_size should be
-+	 *    max(i_size, data node size), pick larger sqnum one from
-+	 *    data nodes with same block index.
-+	 * 2. Mixed truncation and writing, i_size depends on the latest
-+	 *    truncation node or inode node or last data node, pick data
-+	 *    nodes which are not truncated.
-+	 * 3. Setting bigger i_size attr, pick inode size or biggest
-+	 *    i_size calculated by data nodes.
-+	 */
-+	if (file->trun.header.exist) {
-+		trun_size = file->trun.new_size;
-+		trun_sqnum = file->trun.header.sqnum;
-+	}
-+	ino_sqnum = file->ino.header.sqnum;
-+	for (node = rb_first(&file->data_nodes); node; node = rb_next(node)) {
-+		unsigned long long d_sz, d_sqnum;
-+		unsigned int block_no;
-+
-+		data_node = rb_entry(node, struct scanned_data_node, rb);
-+
-+		d_sqnum = data_node->header.sqnum;
-+		block_no = key_block(c, &data_node->key);
-+		d_sz = data_node->size + block_no * UBIFS_BLOCK_SIZE;
-+		if ((trun_sqnum > d_sqnum && trun_size < d_sz) ||
-+		    (ino_sqnum > d_sqnum && file->ino.size < d_sz)) {
-+			/*
-+			 * The truncated data nodes are not gced after
-+			 * truncating, just remove them.
-+			 */
-+			list_add(&data_node->list, &drop_list);
-+		} else {
-+			new_size = max_t(unsigned long long, new_size, d_sz);
-+		}
-+	}
-+	/*
-+	 * Truncation node is written successful, but inode node is not. It
-+	 * won't happen because inode node is written before truncation node
-+	 * according to ubifs_jnl_truncate(), unless only inode is corrupted.
-+	 * In this case, data nodes could have been removed in history mounting
-+	 * recovery, so i_size needs to be updated.
-+	 */
-+	if (trun_sqnum > ino_sqnum && trun_size < file->ino.size) {
-+		if (trun_size < new_size) {
-+			corrupted_truncation = true;
-+			/*
-+			 * Appendant writing after truncation and newest inode
-+			 * is not fell on disk.
-+			 */
-+			goto update_isize;
-+		}
-+
-+		/*
-+		 * Overwriting happens after truncation and newest inode is
-+		 * not fell on disk.
-+		 */
-+		file->calc_size = trun_size;
-+		goto drop_data;
-+	}
-+update_isize:
-+	/*
-+	 * The file cannot use 'new_size' directly when the file may have ever
-+	 * been set i_size. For example:
-+	 *  1. echo 123 > file		# i_size = 4
-+	 *  2. truncate -s 100 file	# i_size = 100
-+	 * After scanning, new_size is 4. Apperantly the size of 'file' should
-+	 * be 100. So, the calculated new_size according to data nodes should
-+	 * only be used for extending i_size, like ubifs_recover_size() does.
-+	 */
-+	if (new_size > file->ino.size || corrupted_truncation)
-+		file->calc_size = new_size;
-+	else
-+		file->calc_size = file->ino.size;
-+
-+drop_data:
 +	while (!list_empty(&drop_list)) {
-+		data_node = list_entry(drop_list.next, struct scanned_data_node,
++		dent_node = list_entry(drop_list.next, struct scanned_dent_node,
 +				       list);
 +
-+		list_del(&data_node->list);
++		list_del(&dent_node->list);
++		rb_erase(&dent_node->rb, &file->dent_nodes);
++		kfree(dent_node);
++	}
++
++	if (type != UBIFS_ITYPE_DIR && !file->ino.is_xattr)
++		goto check_data_nodes;
++
++	/*
++	 * Make sure that directory/xattr type files only have one dentry.
++	 * This work should be done in step 3, but file type could be unknown
++	 * for lacking inode information at that time, so do it here.
++	 */
++	node = rb_first(&file->dent_nodes);
++	while (node) {
++		dent_node = rb_entry(node, struct scanned_dent_node, rb);
++		node = rb_next(node);
++		if (!node)
++			break;
++
++		rb_erase(&dent_node->rb, &file->dent_nodes);
++		kfree(dent_node);
++	}
++
++check_data_nodes:
++	if (type == UBIFS_ITYPE_REG && !file->ino.is_xattr)
++		goto check_dent_node;
++
++	/*
++	 * Make sure that non regular type files not have data/trun nodes.
++	 * This work should be done in step 3, but file type could be unknown
++	 * for lacking inode information at that time, so do it here.
++	 */
++	file->trun.header.exist = 0;
++	node = rb_first(&file->data_nodes);
++	while (node) {
++		data_node = rb_entry(node, struct scanned_data_node, rb);
++		node = rb_next(node);
++
 +		rb_erase(&data_node->rb, &file->data_nodes);
 +		kfree(data_node);
 +	}
-+}
 +
-+/**
-+ * correct_file_info - correct the information of file
-+ * @c: UBIFS file-system description object
-+ * @file: file object
-+ *
-+ * This function corrects file information according to calculated fields,
-+ * eg. 'calc_nlink', 'calc_xcnt', 'calc_xsz', 'calc_xnms' and 'calc_size'.
-+ * Corrected inode node will be re-written.
-+ */
-+static int correct_file_info(struct ubifs_info *c, struct scanned_file *file)
-+{
-+	uint32_t crc;
-+	int err, lnum, len;
-+	struct rb_node *node;
-+	struct ubifs_ino_node *ino;
-+	struct scanned_file *xattr_file;
++check_dent_node:
++	if (rb_first(&file->dent_nodes)) {
++		if (file->inum == UBIFS_ROOT_INO)
++			/* '/' has no dentries. */
++			return false;
 +
-+	for (node = rb_first(&file->xattr_files); node; node = rb_next(node)) {
-+		xattr_file = rb_entry(node, struct scanned_file, rb);
-+
-+		err = correct_file_info(c, xattr_file);
-+		if (err)
-+			return err;
++		node = rb_first(&file->dent_nodes);
++		dent_node = rb_entry(node, struct scanned_dent_node, rb);
++		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
++	} else {
++		/* Non-root files must have dentries. */
++		if (file->inum != UBIFS_ROOT_INO)
++			return false;
 +	}
 +
-+	if (file->calc_nlink == file->ino.nlink &&
-+	    file->calc_xcnt == file->ino.xcnt &&
-+	    file->calc_xsz == file->ino.xsz &&
-+	    file->calc_xnms == file->ino.xnms &&
-+	    file->calc_size == file->ino.size)
-+		return 0;
++	if (file->ino.is_xattr) {
++		if (!parent_file)
++			/* Host inode is not found. */
++			return false;
++		if (parent_file->ino.is_xattr)
++			/* Host cannot be a xattr file. */
++			return false;
 +
-+	lnum = file->ino.header.lnum;
-+	dbg_fsck("correct file(inum:%lu type:%s), nlink %u->%u, xattr cnt %u->%u, xattr size %u->%u, xattr names %u->%u, size %llu->%llu, at %d:%d, in %s",
-+		 file->inum, file->ino.is_xattr ? "xattr" :
-+		 ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
-+		 file->ino.nlink, file->calc_nlink,
-+		 file->ino.xcnt, file->calc_xcnt,
-+		 file->ino.xsz, file->calc_xsz,
-+		 file->ino.xnms, file->calc_xnms,
-+		 file->ino.size, file->calc_size,
-+		 lnum, file->ino.header.offs, c->dev_name);
++		insert_xattr_file(c, file, parent_file);
++		if (parent_file->ino.is_encrypted) {
++			int nlen = min(dent_node->nlen,
++				   strlen(UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT));
 +
-+	err = ubifs_leb_read(c, lnum, c->sbuf, 0, c->leb_size, 0);
-+	if (err && err != -EBADMSG)
-+		return err;
++			if (!strncmp(dent_node->name,
++				     UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT, nlen))
++				parent_file->has_encrypted_info = true;
++		}
++	} else {
++		if (parent_file && !S_ISDIR(parent_file->ino.mode))
++			/* Parent file should be directory. */
++			return false;
 +
-+	ino = c->sbuf + file->ino.header.offs;
-+	ino->nlink = cpu_to_le32(file->calc_nlink);
-+	ino->xattr_cnt = cpu_to_le32(file->calc_xcnt);
-+	ino->xattr_size = cpu_to_le32(file->calc_xsz);
-+	ino->xattr_names = cpu_to_le32(file->calc_xnms);
-+	ino->size = cpu_to_le64(file->calc_size);
-+	len = le32_to_cpu(ino->ch.len);
-+	crc = crc32(UBIFS_CRC32_INIT, (void *)ino + 8, len - 8);
-+	ino->ch.crc = cpu_to_le32(crc);
-+
-+	/* Atomically write the fixed LEB back again */
-+	return ubifs_leb_change(c, lnum, c->sbuf, c->leb_size);
-+}
-+
-+/**
-+ * check_and_correct_files - check and correct information of files.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function does similar things with dbg_check_filesystem(), besides,
-+ * it also corrects file information if the calculated information is not
-+ * consistent with information from flash.
-+ */
-+int check_and_correct_files(struct ubifs_info *c)
-+{
-+	int err;
-+	struct rb_node *node;
-+	struct scanned_file *file;
-+	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
-+
-+	for (node = rb_first(tree); node; node = rb_next(node)) {
-+		file = rb_entry(node, struct scanned_file, rb);
-+
-+		calculate_file_info(c, file, tree);
++		/*
++		 * Since xattr files are checked in first round, so all
++		 * non-xattr files's @has_encrypted_info fields have been
++		 * initialized.
++		 */
++		if (file->ino.is_encrypted && !file->has_encrypted_info)
++			return false;
 +	}
 +
-+	for (node = rb_first(tree); node; node = rb_next(node)) {
-+		file = rb_entry(node, struct scanned_file, rb);
-+
-+		err = correct_file_info(c, file);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
++	return true;
 +}
 diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index c0aeff3d..bb5d1c49 100644
+index df3325e6..81c37160 100644
 --- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
 +++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -271,6 +271,7 @@ bool file_is_valid(struct ubifs_info *c, struct scanned_file *file,
- 		   struct rb_root *file_tree);
- bool file_is_reachable(struct ubifs_info *c, struct scanned_file *file,
- 		       struct rb_root *file_tree);
-+int check_and_correct_files(struct ubifs_info *c);
+@@ -262,6 +262,9 @@ int insert_or_update_file(struct ubifs_info *c, struct rb_root *file_tree,
+ 			  struct scanned_node *sn, int key_type, ino_t inum);
+ void destroy_file_content(struct ubifs_info *c, struct scanned_file *file);
+ void destroy_file_tree(struct ubifs_info *c, struct rb_root *file_tree);
++struct scanned_file *lookup_file(struct rb_root *file_tree, ino_t inum);
++bool file_is_valid(struct ubifs_info *c, struct scanned_file *file,
++		   struct rb_root *file_tree);
  
  /* rebuild_fs.c */
  int ubifs_rebuild_filesystem(struct ubifs_info *c);
 diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 669b61d1..ecf6b0c6 100644
+index a86430d0..31f1b3ba 100644
 --- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
 +++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -677,6 +677,12 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 	log_out(c, "Extract reachable files");
- 	extract_dentry_tree(c);
- 
-+	/* Step 6: Check & correct files' information. */
-+	log_out(c, "Check & correct file information");
-+	err = check_and_correct_files(c);
-+	if (err)
-+		exit_code |= FSCK_ERROR;
-+
- out:
- 	destroy_scanned_info(c, &si);
- 	destroy_rebuild_info(c);
-diff --git a/ubifs-utils/libubifs/debug.c b/ubifs-utils/libubifs/debug.c
-index 94928da3..eaf403f9 100644
---- a/ubifs-utils/libubifs/debug.c
-+++ b/ubifs-utils/libubifs/debug.c
-@@ -69,7 +69,7 @@ static const char *get_key_type(int type)
- 	}
+@@ -531,6 +531,63 @@ static int add_valid_nodes_into_file(struct ubifs_info *c,
  }
  
--static const char *get_dent_type(int type)
-+const char *ubifs_get_type_name(int type)
- {
- 	switch (type) {
- 	case UBIFS_ITYPE_REG:
-diff --git a/ubifs-utils/libubifs/debug.h b/ubifs-utils/libubifs/debug.h
-index 2ac4302e..4b475a00 100644
---- a/ubifs-utils/libubifs/debug.h
-+++ b/ubifs-utils/libubifs/debug.h
-@@ -84,6 +84,7 @@ static inline int dbg_is_chk_index(__unused const struct ubifs_info *c)
- { return 0; }
+ /**
++ * filter_invalid_files - filter out invalid files.
++ * @c: UBIFS file-system description object
++ *
++ * This function filters out invalid files(eg. inconsistent types between
++ * inode and dentry node, or missing inode/dentry node, or encrypted inode
++ * has no encryption related xattrs, etc.).
++ */
++static void filter_invalid_files(struct ubifs_info *c)
++{
++	struct rb_node *node;
++	struct scanned_file *file;
++	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
++	LIST_HEAD(tmp_list);
++
++	/* Add all xattr files into a list. */
++	for (node = rb_first(tree); node; node = rb_next(node)) {
++		file = rb_entry(node, struct scanned_file, rb);
++
++		if (file->ino.is_xattr)
++			list_add(&file->list, &tmp_list);
++	}
++
++	/*
++	 * Round 1: Traverse xattr files, check whether the xattr file is
++	 * valid, move valid xattr file into corresponding host file's subtree.
++	 */
++	while (!list_empty(&tmp_list)) {
++		file = list_entry(tmp_list.next, struct scanned_file, list);
++
++		list_del(&file->list);
++		rb_erase(&file->rb, tree);
++		if (!file_is_valid(c, file, tree)) {
++			destroy_file_content(c, file);
++			kfree(file);
++		}
++	}
++
++	/* Round 2: Traverse non-xattr files. */
++	for (node = rb_first(tree); node; node = rb_next(node)) {
++		file = rb_entry(node, struct scanned_file, rb);
++
++		if (!file_is_valid(c, file, tree))
++			list_add(&file->list, &tmp_list);
++	}
++
++	/* Remove invalid files. */
++	while (!list_empty(&tmp_list)) {
++		file = list_entry(tmp_list.next, struct scanned_file, list);
++
++		list_del(&file->list);
++		destroy_file_content(c, file);
++		rb_erase(&file->rb, tree);
++		kfree(file);
++	}
++}
++
++/**
+  * ubifs_rebuild_filesystem - Rebuild filesystem.
+  * @c: UBIFS file-system description object
+  *
+@@ -567,8 +624,14 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
+ 	/* Step 3: Add valid nodes into file. */
+ 	log_out(c, "Add valid nodes into file");
+ 	err = add_valid_nodes_into_file(c, &si);
+-	if (err)
++	if (err) {
+ 		exit_code |= FSCK_ERROR;
++		goto out;
++	}
++
++	/* Step 4: Drop invalid files. */
++	log_out(c, "Filter invalid files");
++	filter_invalid_files(c);
  
- /* Dump functions */
-+const char *ubifs_get_type_name(int type);
- const char *dbg_ntype(int type);
- const char *dbg_cstate(int cmt_state);
- const char *dbg_jhead(int jhead);
+ out:
+ 	destroy_scanned_info(c, &si);
+diff --git a/ubifs-utils/libubifs/journal.c b/ubifs-utils/libubifs/journal.c
+index 37dc3f0e..d3fdb76a 100644
+--- a/ubifs-utils/libubifs/journal.c
++++ b/ubifs-utils/libubifs/journal.c
+@@ -404,10 +404,10 @@ static void finish_reservation(struct ubifs_info *c)
+ }
+ 
+ /**
+- * get_dent_type - translate VFS inode mode to UBIFS directory entry type.
++ * ubifs_get_dent_type - translate VFS inode mode to UBIFS directory entry type.
+  * @mode: inode mode
+  */
+-static int get_dent_type(int mode)
++int ubifs_get_dent_type(int mode)
+ {
+ 	switch (mode & S_IFMT) {
+ 	case S_IFREG:
+diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
+index 21b0ce0a..e6de7cea 100644
+--- a/ubifs-utils/libubifs/ubifs.h
++++ b/ubifs-utils/libubifs/ubifs.h
+@@ -1611,6 +1611,9 @@ int ubifs_log_end_commit(struct ubifs_info *c, int new_ltail_lnum);
+ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum);
+ int ubifs_consolidate_log(struct ubifs_info *c);
+ 
++/* journal.c */
++int ubifs_get_dent_type(int mode);
++
+ /* budget.c */
+ int ubifs_budget_space(struct ubifs_info *c, struct ubifs_budget_req *req);
+ void ubifs_release_budget(struct ubifs_info *c, struct ubifs_budget_req *req);
 -- 
 2.13.6
 
