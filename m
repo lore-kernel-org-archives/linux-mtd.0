@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AAE6D2E9C6
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5CEED2E9C4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UcKycJA9+6wpimdd63OVU7pCL50FKlOoeoG8lexVDE8=; b=k+k7hJtGrXRube
-	jtGLDFw3xuDr1IgeVN9Zj8d4w7PXcCPjBjP6btV5k2mdwsRL0fvG8k/Ih5cwZUcBqsFD0gMn/rkgY
-	OQOi/d6f3WTvURRJ+nSgDxdgQcZBb9H6czHVpN/SCxwa7NHZ7Snx8KMj6bUi1fuF356xnsnh6KF4N
-	Vk6jWSf3HujQmBGXNcrnUJ7SRT17BLnOI/MsiSUBipVAHLhlZlI6yDZat5fsM5K3cUVEW51YmRRaf
-	z7ixA/n19npqaBWmE51QPsS8c3aPtnlvvJKxFvAHI5YGK/pVJNY8Jf5MJ2FiCEbgM+IwMzlNEK0ae
-	vY8KKvhbOs4u9BeCnsZQ==;
+	List-Owner; bh=BFNjOPQIq/T44F0TufdVL0g6sfPL6tL27ZeNZRLHwVM=; b=aMbKvVYb7lcmSt
+	bzwqMhOrLRvn4KkfKcB2SymP0ZbGUxessFosRcYsSrBw29j/mHzKj8gKRa0Ft0o6lmCpN1YzuZMAY
+	MERN2quPGwIEjZI1smtCBrbCCZT+4USZpU/tmbvtJ7zaTcPQYGyn7+jSpHRtlpqzvQnv45Ft9DXKo
+	YJ5rVtYyTWIVxRqLrsrhalx3ya/TBuk6RPL1igN2zPXveJjvaeDNuMsCBIGNQjsbLk5HQxtT1iFHo
+	nxX2evV9x6QdFB+ErsgBbWbjWPqeqRztB26X3Ogdb3aqVSAa6g3L3cWxVYI//kKTXC+02gnjK/EB6
+	7MKixA6PZ51qkH0ZI1kw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQ6Z-0000000Grmt-1I0l;
-	Mon, 11 Nov 2024 08:49:03 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1tAQ6b-0000000GroD-48AP;
+	Mon, 11 Nov 2024 08:49:05 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPwL-0000000GpdY-22kw
+	id 1tAPwM-0000000Gpdf-3sH5
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:38:35 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn2vp49TCz1jy1N;
-	Mon, 11 Nov 2024 16:36:38 +0800 (CST)
+	Mon, 11 Nov 2024 08:38:38 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn2v03NZ0z10QyF;
+	Mon, 11 Nov 2024 16:35:56 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id B3CB8180043;
-	Mon, 11 Nov 2024 16:38:25 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 24479140257;
+	Mon, 11 Nov 2024 16:38:23 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:38:25 +0800
+ 2024 16:38:22 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 007/102] ubifs-utils: Add 'dev_fd' and 'libubi' into 'ubifs_info' structure
-Date: Mon, 11 Nov 2024 16:36:38 +0800
-Message-ID: <20241111083711.1916125-8-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 002/102] ubifs-utils: Decouple mkfs.ubifs.h out of other modules
+Date: Mon, 11 Nov 2024 16:36:33 +0800
+Message-ID: <20241111083711.1916125-3-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_003830_119709_D6002851 
-X-CRM114-Status: GOOD (  25.19  )
+X-CRM114-CacheID: sfid-20241111_003831_401267_16CBFA89 
+X-CRM114-Status: GOOD (  18.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,392 +70,510 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Embed new members 'dev_fd' and 'libubi' into ubifs_info structure, so
-that global variable 'ubi', 'out_fd' and 'out_ubi' could be removed
-from mkfs.ubifs.c. Besides, add parameter in check_volume_empty().
-Next patch will extract UBI opening/closing/check_volume_empty functions
-into a new source file, these functions will be used in fsck.
+Header file mkfs.ubifs.h is included in other modules(eg. compr.c, lpt.c,
+fscrypt.h, sign.c), decouple it out of other modules.
+
+There are two parts in mkfs.ubifs.h:
+1. common functions, for example dbg_msg, err_msg and write_leb, move
+   these functions into common/defs.h and common/ubifs.h.
+2. devtable related definations, move them into a new header file
+   common/devtable.h.
+
+Splitting common functions from mkfs.ubifs.h is also a preparation for
+importing libubifs(from linux kernel) to replace current UBIFS libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/common/lpt.c            |  10 ++--
- ubifs-utils/common/ubifs.h          |  13 ++++-
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 112 +++++++++++++++++++-----------------
- 3 files changed, 75 insertions(+), 60 deletions(-)
+ ubifs-utils/Makemodule.am                          |  4 +-
+ ubifs-utils/common/compr.c                         | 19 ++---
+ ubifs-utils/common/compr.h                         |  8 --
+ ubifs-utils/common/crypto.c                        |  6 +-
+ ubifs-utils/common/defs.h                          | 24 ++++++
+ ubifs-utils/common/devtable.c                      |  9 ++-
+ .../{mkfs.ubifs/mkfs.ubifs.h => common/devtable.h} | 85 +---------------------
+ ubifs-utils/common/fscrypt.c                       |  4 +
+ ubifs-utils/common/fscrypt.h                       |  8 +-
+ ubifs-utils/common/lpt.c                           | 10 ++-
+ ubifs-utils/common/lpt.h                           |  2 +
+ ubifs-utils/common/sign.c                          |  9 ++-
+ ubifs-utils/common/ubifs.h                         |  5 ++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c                | 21 +++++-
+ 14 files changed, 99 insertions(+), 115 deletions(-)
+ rename ubifs-utils/{mkfs.ubifs/mkfs.ubifs.h => common/devtable.h} (53%)
 
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index 4a617c19..8af65be7 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -9,6 +9,7 @@ common_SOURCES = \
+ 	ubifs-utils/common/hashtable/hashtable_private.h \
+ 	ubifs-utils/common/hashtable/hashtable.c \
+ 	ubifs-utils/common/hashtable/hashtable_itr.c \
++	ubifs-utils/common/devtable.h \
+ 	ubifs-utils/common/devtable.c \
+ 	ubifs-utils/common/ubifs.h \
+ 	ubifs-utils/common/key.h \
+@@ -27,12 +28,11 @@ endif
+ 
+ mkfs_ubifs_SOURCES = \
+ 	$(common_SOURCES) \
+-	ubifs-utils/mkfs.ubifs/mkfs.ubifs.h \
+ 	ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+ 
+ mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm
+ mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
+-	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/mkfs.ubifs/ -I$(top_srcdir)/ubifs-utils/common
++	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common
+ 
+ EXTRA_DIST += ubifs-utils/common/README
+ 
+diff --git a/ubifs-utils/common/compr.c b/ubifs-utils/common/compr.c
+index e4324f34..6f901511 100644
+--- a/ubifs-utils/common/compr.c
++++ b/ubifs-utils/common/compr.c
+@@ -39,11 +39,12 @@
+ #endif
+ 
+ #include "compr.h"
+-#include "mkfs.ubifs.h"
++#include "ubifs.h"
+ 
+ static void *lzo_mem;
+ static unsigned long long errcnt = 0;
+ #ifdef WITH_LZO
++extern struct ubifs_info info_;
+ static struct ubifs_info *c = &info_;
+ #endif
+ 
+@@ -181,12 +182,12 @@ static int favor_lzo_compress(void *in_buf, size_t in_len, void *out_buf,
+ 
+ select_lzo:
+ 	*out_len = lzo_len;
+-	*type = MKFS_UBIFS_COMPR_LZO;
++	*type = UBIFS_COMPR_LZO;
+ 	return 0;
+ 
+ select_zlib:
+ 	*out_len = zlib_len;
+-	*type = MKFS_UBIFS_COMPR_ZLIB;
++	*type = UBIFS_COMPR_ZLIB;
+ 	memcpy(out_buf, zlib_buf, zlib_len);
+ 	return 0;
+ }
+@@ -199,7 +200,7 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+ 
+ 	if (in_len < UBIFS_MIN_COMPR_LEN) {
+ 		no_compress(in_buf, in_len, out_buf, out_len);
+-		return MKFS_UBIFS_COMPR_NONE;
++		return UBIFS_COMPR_NONE;
+ 	}
+ 
+ #if defined(WITH_LZO) && defined(WITH_ZLIB)
+@@ -211,21 +212,21 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+ #endif
+ 		switch (type) {
+ #ifdef WITH_LZO
+-		case MKFS_UBIFS_COMPR_LZO:
++		case UBIFS_COMPR_LZO:
+ 			ret = lzo_compress(in_buf, in_len, out_buf, out_len);
+ 			break;
+ #endif
+ #ifdef WITH_ZLIB
+-		case MKFS_UBIFS_COMPR_ZLIB:
++		case UBIFS_COMPR_ZLIB:
+ 			ret = zlib_deflate(in_buf, in_len, out_buf, out_len);
+ 			break;
+ #endif
+ #ifdef WITH_ZSTD
+-		case MKFS_UBIFS_COMPR_ZSTD:
++		case UBIFS_COMPR_ZSTD:
+ 			ret = zstd_compress(in_buf, in_len, out_buf, out_len);
+ 			break;
+ #endif
+-		case MKFS_UBIFS_COMPR_NONE:
++		case UBIFS_COMPR_NONE:
+ 			ret = 1;
+ 			break;
+ 		default:
+@@ -236,7 +237,7 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+ 	}
+ 	if (ret || *out_len >= in_len) {
+ 		no_compress(in_buf, in_len, out_buf, out_len);
+-		return MKFS_UBIFS_COMPR_NONE;
++		return UBIFS_COMPR_NONE;
+ 	}
+ 	return type;
+ }
+diff --git a/ubifs-utils/common/compr.h b/ubifs-utils/common/compr.h
+index d58c7c7b..3e8e9b61 100644
+--- a/ubifs-utils/common/compr.h
++++ b/ubifs-utils/common/compr.h
+@@ -31,14 +31,6 @@
+  */
+ #define WORST_COMPR_FACTOR 4
+ 
+-enum compression_type
+-{
+-	MKFS_UBIFS_COMPR_NONE,
+-	MKFS_UBIFS_COMPR_LZO,
+-	MKFS_UBIFS_COMPR_ZLIB,
+-	MKFS_UBIFS_COMPR_ZSTD,
+-};
+-
+ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+ 		  int type);
+ int init_compression(void);
+diff --git a/ubifs-utils/common/crypto.c b/ubifs-utils/common/crypto.c
+index 19c445e8..60a67a4e 100644
+--- a/ubifs-utils/common/crypto.c
++++ b/ubifs-utils/common/crypto.c
+@@ -17,14 +17,16 @@
+  * Authors: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+  */
+ 
+-#define PROGRAM_NAME "mkfs.ubifs"
+ #include <openssl/evp.h>
+ #include <openssl/err.h>
++#include <openssl/rand.h>
+ #include <string.h>
+ #include <assert.h>
+ 
+-#include "fscrypt.h"
++#define PROGRAM_NAME "mkfs.ubifs"
+ #include "common.h"
++#include "defs.h"
++#include "fscrypt.h"
+ 
+ static int do_hash(const EVP_MD *md, const unsigned char *in, size_t len, unsigned char *out)
+ {
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index 8db52776..e1aded03 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -6,6 +6,30 @@
+ #ifndef __UBIFS_DEFS_H__
+ #define __UBIFS_DEFS_H__
+ 
++#include <stdlib.h>
++#include <stdio.h>
++#include <limits.h>
++#include <byteswap.h>
++#include <errno.h>
++
++extern int debug_level;
++
++#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
++	printf("mkfs.ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
++} while(0)
++
++#define err_msg(fmt, ...) ({                                \
++	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
++	-1;                                                 \
++})
++
++#define sys_err_msg(fmt, ...) ({                                         \
++	int err_ = errno;                                                \
++	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
++	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
++	-1;                                                              \
++})
++
+ #define t16(x) ({ \
+ 	uint16_t __b = (x); \
+ 	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
+diff --git a/ubifs-utils/common/devtable.c b/ubifs-utils/common/devtable.c
+index aa815fbb..2b9c6ef2 100644
+--- a/ubifs-utils/common/devtable.c
++++ b/ubifs-utils/common/devtable.c
+@@ -45,7 +45,14 @@
+  * for more information about what the device table is.
+  */
+ 
+-#include "mkfs.ubifs.h"
++#include <string.h>
++#include <ctype.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/sysmacros.h>
++
++#include "devtable.h"
++#include "defs.h"
+ #include "hashtable/hashtable.h"
+ #include "hashtable/hashtable_itr.h"
+ 
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/common/devtable.h
+similarity index 53%
+rename from ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
+rename to ubifs-utils/common/devtable.h
+index 56909842..97585f2b 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
++++ b/ubifs-utils/common/devtable.h
+@@ -20,86 +20,8 @@
+  *          Zoltan Sogor
+  */
+ 
+-#ifndef __MKFS_UBIFS_H__
+-#define __MKFS_UBIFS_H__
+-
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <limits.h>
+-#include <string.h>
+-#include <stdint.h>
+-#include <endian.h>
+-#include <byteswap.h>
+-#include <linux/types.h>
+-#include <linux/fs.h>
+-
+-#include <getopt.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/ioctl.h>
+-#include <fcntl.h>
+-#include <dirent.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <ctype.h>
+-#include <uuid.h>
+-#include <sys/file.h>
+-
+-#ifdef WITH_CRYPTO
+-#include <openssl/rand.h>
+-#endif
+-
+-#include <mtd/ubifs-media.h>
+-
+-/* common.h requires the PROGRAM_NAME macro */
+-#define PROGRAM_NAME "mkfs.ubifs"
+-#include "common.h"
+-
+-#include "libubi.h"
+-#include "defs.h"
+-#include "crc16.h"
+-#include "ubifs.h"
+-#include "key.h"
+-#include "lpt.h"
+-#include "compr.h"
+-#include "sign.h"
+-
+-/*
+- * Compression flags are duplicated so that compr.c can compile without ubifs.h.
+- * Here we make sure they are the same.
+- */
+-#if MKFS_UBIFS_COMPR_NONE != UBIFS_COMPR_NONE
+-#error MKFS_UBIFS_COMPR_NONE != UBIFS_COMPR_NONE
+-#endif
+-#if MKFS_UBIFS_COMPR_LZO != UBIFS_COMPR_LZO
+-#error MKFS_UBIFS_COMPR_LZO != UBIFS_COMPR_LZO
+-#endif
+-#if MKFS_UBIFS_COMPR_ZLIB != UBIFS_COMPR_ZLIB
+-#error MKFS_UBIFS_COMPR_ZLIB != UBIFS_COMPR_ZLIB
+-#endif
+-#if MKFS_UBIFS_COMPR_ZSTD != UBIFS_COMPR_ZSTD
+-#error MKFS_UBIFS_COMPR_ZSTD != UBIFS_COMPR_ZSTD
+-#endif
+-
+-extern int verbose;
+-extern int debug_level;
+-
+-#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
+-	printf("mkfs.ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
+-} while(0)
+-
+-#define err_msg(fmt, ...) ({                                \
+-	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
+-	-1;                                                 \
+-})
+-
+-#define sys_err_msg(fmt, ...) ({                                         \
+-	int err_ = errno;                                                \
+-	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
+-	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
+-	-1;                                                              \
+-})
++#ifndef __DEVTABLE_H__
++#define __DEVTABLE_H__
+ 
+ /**
+  * struct path_htbl_element - an element of the path hash table.
+@@ -136,11 +58,8 @@ struct name_htbl_element {
+ 	dev_t dev;
+ };
+ 
+-extern struct ubifs_info info_;
+-
+ struct hashtable_itr;
+ 
+-int write_leb(int lnum, int len, void *buf);
+ int parse_devtable(const char *tbl_file);
+ struct path_htbl_element *devtbl_find_path(const char *path);
+ struct name_htbl_element *devtbl_find_name(struct path_htbl_element *ph_elt,
+diff --git a/ubifs-utils/common/fscrypt.c b/ubifs-utils/common/fscrypt.c
+index b75bdf76..94c6c377 100644
+--- a/ubifs-utils/common/fscrypt.c
++++ b/ubifs-utils/common/fscrypt.c
+@@ -18,8 +18,12 @@
+  *          David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+  */
+ 
++#include <endian.h>
++
+ #define PROGRAM_NAME "mkfs.ubifs"
++#include "common.h"
+ #include "fscrypt.h"
++#include "defs.h"
+ 
+ 
+ static __u8 fscrypt_masterkey[FS_MAX_KEY_SIZE];
+diff --git a/ubifs-utils/common/fscrypt.h b/ubifs-utils/common/fscrypt.h
+index ff3d326b..908a5041 100644
+--- a/ubifs-utils/common/fscrypt.h
++++ b/ubifs-utils/common/fscrypt.h
+@@ -21,9 +21,11 @@
+ #ifndef FSCRYPT_H
+ #define FSCRYPT_H
+ 
+-
+-#include "mkfs.ubifs.h"
+-#include <sys/types.h>
++#ifdef WITH_CRYPTO
++#include <openssl/rand.h>
++#endif
++#include <assert.h>
++#include "ubifs.h"
+ #include "crypto.h"
+ 
+ #ifndef FS_KEY_DESCRIPTOR_SIZE
 diff --git a/ubifs-utils/common/lpt.c b/ubifs-utils/common/lpt.c
-index 9c1143f6..d07f569f 100644
+index 7ee739a9..23ffe7f7 100644
 --- a/ubifs-utils/common/lpt.c
 +++ b/ubifs-utils/common/lpt.c
-@@ -421,7 +421,7 @@ int create_lpt(struct ubifs_info *c)
- 			alen = ALIGN(len, c->min_io_size);
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
--			err = write_leb(lnum++, alen, buf);
-+			err = write_leb(c, lnum++, alen, buf);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -468,7 +468,7 @@ int create_lpt(struct ubifs_info *c)
- 				set_ltab(c, lnum, c->leb_size - alen,
- 					    alen - len);
- 				memset(p, 0xff, alen - len);
--				err = write_leb(lnum++, alen, buf);
-+				err = write_leb(c, lnum++, alen, buf);
- 				if (err)
- 					goto out;
- 				p = buf;
-@@ -515,7 +515,7 @@ int create_lpt(struct ubifs_info *c)
- 			alen = ALIGN(len, c->min_io_size);
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
--			err = write_leb(lnum++, alen, buf);
-+			err = write_leb(c, lnum++, alen, buf);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -538,7 +538,7 @@ int create_lpt(struct ubifs_info *c)
- 		alen = ALIGN(len, c->min_io_size);
- 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 		memset(p, 0xff, alen - len);
--		err = write_leb(lnum++, alen, buf);
-+		err = write_leb(c, lnum++, alen, buf);
- 		if (err)
- 			goto out;
- 		p = buf;
-@@ -558,7 +558,7 @@ int create_lpt(struct ubifs_info *c)
+@@ -20,12 +20,18 @@
+  *          Artem Bityutskiy
+  */
  
- 	/* Write remaining buffer */
- 	memset(p, 0xff, alen - len);
--	err = write_leb(lnum, alen, buf);
-+	err = write_leb(c, lnum, alen, buf);
- 	if (err)
- 		goto out;
+-#include "mkfs.ubifs.h"
+-
+ #ifdef WITH_CRYPTO
+ #include <openssl/evp.h>
+ #endif
  
++#define PROGRAM_NAME "mkfs.ubifs"
++#include "common.h"
++#include "lpt.h"
++#include "defs.h"
++#include "ubifs.h"
++#include "crc16.h"
++#include "sign.h"
++
+ /**
+  * do_calc_lpt_geom - calculate sizes for the LPT area.
+  * @c: the UBIFS file-system description object
+diff --git a/ubifs-utils/common/lpt.h b/ubifs-utils/common/lpt.h
+index 4cde59d9..86148a2a 100644
+--- a/ubifs-utils/common/lpt.h
++++ b/ubifs-utils/common/lpt.h
+@@ -22,6 +22,8 @@
+ #ifndef __UBIFS_LPT_H__
+ #define __UBIFS_LPT_H__
+ 
++#include "ubifs.h"
++
+ int calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs, int *big_lpt);
+ int create_lpt(struct ubifs_info *c);
+ 
+diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
+index 7f284f8e..93399ff7 100644
+--- a/ubifs-utils/common/sign.c
++++ b/ubifs-utils/common/sign.c
+@@ -17,9 +17,7 @@
+  * Author: Sascha Hauer
+  */
+ 
+-#include "mkfs.ubifs.h"
+-#include "common.h"
+-
++#include <string.h>
+ #include <openssl/evp.h>
+ #include <openssl/opensslv.h>
+ #include <openssl/bio.h>
+@@ -30,6 +28,11 @@
+ #include <openssl/conf.h>
+ #include <err.h>
+ 
++#include "sign.h"
++#include "defs.h"
++#include "ubifs.h"
++
++extern struct ubifs_info info_;
+ static struct ubifs_info *c = &info_;
+ 
+ EVP_MD_CTX *hash_md;
 diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
-index 502a39ae..5a909f63 100644
+index 55937cee..0eef31ac 100644
 --- a/ubifs-utils/common/ubifs.h
 +++ b/ubifs-utils/common/ubifs.h
-@@ -278,6 +278,8 @@ struct ubifs_znode
-  * @program_type: used to identify the type of current program
-  * @program_name: program name
-  * @dev_name: device name
-+ * @dev_fd: opening handler for an UBI volume or an image file
-+ * @libubi: opening handler for libubi
-  *
-  * @jhead_cnt: count of journal heads
-  * @max_bud_bytes: maximum number of bytes allowed in buds
-@@ -370,6 +372,8 @@ struct ubifs_info
- 	int program_type;
- 	const char *program_name;
- 	char *dev_name;
-+	int dev_fd;
-+	libubi_t libubi;
+@@ -25,6 +25,9 @@
+ #ifndef __UBIFS_H__
+ #define __UBIFS_H__
  
- 	int jhead_cnt;
- 	long long max_bud_bytes;
-@@ -482,6 +486,13 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
++#include <mtd/ubifs-media.h>
++#include "libubi.h"
++
+ /* Maximum logical eraseblock size in bytes */
+ #define UBIFS_MAX_LEB_SZ (2*1024*1024)
+ 
+@@ -468,4 +471,6 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
  				       (UBIFS_BRANCH_SZ + c->key_len + c->hash_len) * bnum);
  }
  
--int write_leb(int lnum, int len, void *buf);
-+int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
++int write_leb(int lnum, int len, void *buf);
 +
-+/* super.c */
-+int open_ubi(struct ubifs_info *c, const char *node);
-+void close_ubi(struct ubifs_info *c);
-+int open_target(struct ubifs_info *c);
-+int close_target(struct ubifs_info *c);
-+int check_volume_empty(struct ubifs_info *c);
- 
  #endif /* __UBIFS_H__ */
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 1cafbf3e..8bff44b2 100644
+index f4cb5125..0304ae70 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -136,7 +136,6 @@ struct inum_mapping {
-  */
- struct ubifs_info info_;
- static struct ubifs_info *c = &info_;
--static libubi_t ubi;
+@@ -22,10 +22,17 @@
  
- int verbose;
- int yes;
-@@ -145,8 +144,6 @@ static char *root;
- static int root_len;
- static struct fscrypt_context *root_fctx;
- static struct stat root_st;
--static int out_fd;
--static int out_ubi;
- static int squash_owner;
- static int do_create_inum_attr;
- static char *context;
-@@ -521,40 +518,42 @@ static long long get_bytes(const char *str)
- 	return bytes;
- }
+ #define _XOPEN_SOURCE 500 /* For realpath() */
  
--static void close_ubi(void)
-+void close_ubi(struct ubifs_info *c)
- {
--	if (ubi) {
--		libubi_close(ubi);
--		ubi = NULL;
-+	if (c->libubi) {
-+		libubi_close(c->libubi);
-+		c->libubi = NULL;
- 	}
- }
+-#include "mkfs.ubifs.h"
++#include <stdio.h>
++#include <stdlib.h>
++#include <libgen.h>
++#include <getopt.h>
++#include <dirent.h>
+ #include <crc32.h>
+-#include "common.h"
++#include <uuid.h>
++#include <linux/fs.h>
+ #include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/ioctl.h>
+ #ifdef WITH_XATTR
+ #include <sys/xattr.h>
+ #endif
+@@ -39,8 +46,18 @@
+ #include <zstd.h>
+ #endif
  
- /**
-  * open_ubi - open the libubi.
-+ * @c: the UBIFS file-system description object
-  * @node: name of the UBI volume character device to fetch information about
-  *
-  * This function opens libubi, and initialize device & volume information
-  * according to @node. Returns %0 in case of success and %-1 in case of failure.
-  */
--static int open_ubi(const char *node)
-+int open_ubi(struct ubifs_info *c, const char *node)
- {
- 	struct stat st;
++/* common.h requires the PROGRAM_NAME macro */
++#define PROGRAM_NAME "mkfs.ubifs"
++#include "common.h"
++#include "defs.h"
+ #include "crypto.h"
+ #include "fscrypt.h"
++#include "ubifs.h"
++#include "lpt.h"
++#include "compr.h"
++#include "key.h"
++#include "sign.h"
++#include "devtable.h"
  
- 	if (stat(node, &st) || !S_ISCHR(st.st_mode))
- 		return -1;
- 
--	ubi = libubi_open();
--	if (!ubi)
--		return -1;
--	if (ubi_get_vol_info(ubi, node, &c->vi)) {
--		close_ubi();
-+	c->libubi = libubi_open();
-+	if (!c->libubi)
- 		return -1;
--	}
--	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di)) {
--		close_ubi();
--		return -1;
--	}
-+	if (ubi_get_vol_info(c->libubi, node, &c->vi))
-+		goto out_err;
-+	if (ubi_get_dev_info1(c->libubi, c->vi.dev_num, &c->di))
-+		goto out_err;
-+
- 	return 0;
-+
-+out_err:
-+	close_ubi(c);
-+	return -1;
- }
- 
- static void select_default_compr(void)
-@@ -840,9 +839,9 @@ static int get_options(int argc, char**argv)
- 	if (!c->dev_name)
- 		return errmsg("not output device or file specified");
- 
--	out_ubi = !open_ubi(c->dev_name);
-+	open_ubi(c, c->dev_name);
- 
--	if (out_ubi) {
-+	if (c->libubi) {
- 		c->min_io_size = c->di.min_io_size;
- 		c->leb_size = c->vi.leb_size;
- 		if (c->max_leb_cnt == -1)
-@@ -972,24 +971,25 @@ static void prepare_node(void *node, int len)
- 
- /**
-  * write_leb - copy the image of a LEB to the output target.
-+ * @c: the UBIFS file-system description object
-  * @lnum: LEB number
-  * @len: length of data in the buffer
-  * @buf: buffer (must be at least c->leb_size bytes)
-  */
--int write_leb(int lnum, int len, void *buf)
-+int write_leb(struct ubifs_info *c, int lnum, int len, void *buf)
- {
- 	off_t pos = (off_t)lnum * c->leb_size;
- 
- 	dbg_msg(3, "LEB %d len %d", lnum, len);
- 	memset(buf + len, 0xff, c->leb_size - len);
--	if (out_ubi)
--		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
-+	if (c->libubi)
-+		if (ubi_leb_change_start(c->libubi, c->dev_fd, lnum, c->leb_size))
- 			return sys_errmsg("ubi_leb_change_start failed");
- 
--	if (lseek(out_fd, pos, SEEK_SET) != pos)
-+	if (lseek(c->dev_fd, pos, SEEK_SET) != pos)
- 		return sys_errmsg("lseek failed seeking %lld", (long long)pos);
- 
--	if (write(out_fd, buf, c->leb_size) != c->leb_size)
-+	if (write(c->dev_fd, buf, c->leb_size) != c->leb_size)
- 		return sys_errmsg("write failed writing %d bytes at pos %lld",
- 				   c->leb_size, (long long)pos);
- 
-@@ -1002,7 +1002,7 @@ int write_leb(int lnum, int len, void *buf)
-  */
- static int write_empty_leb(int lnum)
- {
--	return write_leb(lnum, 0, leb_buf);
-+	return write_leb(c, lnum, 0, leb_buf);
- }
- 
- /**
-@@ -1058,7 +1058,7 @@ static int write_node(void *node, int len, int lnum)
- 
- 	len = do_pad(leb_buf, len);
- 
--	return write_leb(lnum, len, leb_buf);
-+	return write_leb(c, lnum, len, leb_buf);
- }
- 
- /**
-@@ -1172,7 +1172,7 @@ static int flush_nodes(void)
- 	if (!head_offs)
- 		return 0;
- 	len = do_pad(leb_buf, head_offs);
--	err = write_leb(head_lnum, len, leb_buf);
-+	err = write_leb(c, head_lnum, len, leb_buf);
- 	if (err)
- 		return err;
- 	set_lprops(head_lnum, head_offs, head_flags);
-@@ -2686,7 +2686,7 @@ static int write_super(void)
- 
- 	len = do_pad(sig, UBIFS_SIG_NODE_SZ + le32_to_cpu(sig->len));
- 
--	err = write_leb(UBIFS_SB_LNUM, UBIFS_SB_NODE_SZ + len, sup);
-+	err = write_leb(c, UBIFS_SB_LNUM, UBIFS_SB_NODE_SZ + len, sup);
- 	if (err)
- 		goto out;
- 
-@@ -2822,6 +2822,7 @@ static int write_orphan_area(void)
- 
- /**
-  * check_volume_empty - check if the UBI volume is empty.
-+ * @c: the UBIFS file-system description object
-  *
-  * This function checks if the UBI volume is empty by looking if its LEBs are
-  * mapped or not.
-@@ -2829,12 +2830,12 @@ static int write_orphan_area(void)
-  * Returns %0 in case of success, %1 is the volume is not empty,
-  * and a negative error code in case of failure.
-  */
--static int check_volume_empty(void)
-+int check_volume_empty(struct ubifs_info *c)
- {
- 	int lnum, err;
- 
- 	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
--		err = ubi_is_mapped(out_fd, lnum);
-+		err = ubi_is_mapped(c->dev_fd, lnum);
- 		if (err < 0)
- 			return err;
- 		if (err == 1)
-@@ -2845,35 +2846,29 @@ static int check_volume_empty(void)
- 
- /**
-  * open_target - open the output target.
-+ * @c: the UBIFS file-system description object
-  *
-  * Open the output target. The target can be an UBI volume
-  * or a file.
-  *
-  * Returns %0 in case of success and %-1 in case of failure.
-  */
--static int open_target(void)
-+int open_target(struct ubifs_info *c)
- {
--	if (out_ubi) {
--		out_fd = open(c->dev_name, O_RDWR | O_EXCL);
-+	if (c->libubi) {
-+		c->dev_fd = open(c->dev_name, O_RDWR | O_EXCL);
- 
--		if (out_fd == -1)
-+		if (c->dev_fd == -1)
- 			return sys_errmsg("cannot open the UBI volume '%s'",
- 					   c->dev_name);
--		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
--			close(out_fd);
-+		if (ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
-+			close(c->dev_fd);
- 			return sys_errmsg("ubi_set_property(set direct_write) failed");
- 		}
--
--		if (!yes && check_volume_empty()) {
--			if (!prompt("UBI volume is not empty.  Format anyways?", false)) {
--				close(out_fd);
--				return errmsg("UBI volume is not empty");
--			}
--		}
- 	} else {
--		out_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
-+		c->dev_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
- 			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
--		if (out_fd == -1)
-+		if (c->dev_fd == -1)
- 			return sys_errmsg("cannot create output file '%s'",
- 					   c->dev_name);
- 	}
-@@ -2883,18 +2878,19 @@ static int open_target(void)
- 
- /**
-  * close_target - close the output target.
-+ * @c: the UBIFS file-system description object
-  *
-  * Close the output target. If the target was an UBI
-  * volume, also close libubi.
-  *
-  * Returns %0 in case of success and %-1 in case of failure.
-  */
--static int close_target(void)
-+int close_target(struct ubifs_info *c)
- {
--	if (out_fd >= 0) {
--		if (ubi && ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
-+	if (c->dev_fd >= 0) {
-+		if (c->libubi && ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
- 			return sys_errmsg("ubi_set_property(clear direct_write) failed");
--		if (close(out_fd) == -1)
-+		if (close(c->dev_fd) == -1)
- 			return sys_errmsg("cannot close the target '%s'", c->dev_name);
- 	}
- 	return 0;
-@@ -3077,24 +3073,32 @@ int main(int argc, char *argv[])
- 	if (err)
- 		goto out;
- 
--	err = open_target();
-+	err = open_target(c);
- 	if (err)
- 		goto out;
- 
-+	if (!yes && check_volume_empty(c)) {
-+		if (!prompt("UBI volume is not empty.  Format anyways?", false)) {
-+			close_target(c);
-+			err = errmsg("UBI volume is not empty");
-+			goto out;
-+		}
-+	}
-+
- 	err = mkfs();
- 	if (err) {
--		close_target();
-+		close_target(c);
- 		goto out;
- 	}
- 
--	err = close_target();
-+	err = close_target(c);
- 
- 	if (verbose && !err)
- 		printf("Success!\n");
- 
- out:
- 	free(c->dev_name);
--	close_ubi();
-+	close_ubi(c);
- 	crypto_cleanup();
- 	return err;
- }
+ /* Size (prime number) of hash table for link counting */
+ #define HASH_TABLE_SIZE 10099
 -- 
 2.13.6
 
