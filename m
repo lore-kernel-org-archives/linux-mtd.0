@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74DA8D2E9C3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45BADD2E9C7
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,38 +12,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ApUZ8+wW6kMDznEpcal+LaTBgsPa0v5pfFINJyPgU1Y=; b=prz9zaasXfKVQz
-	AAveHfbEF4xC7Cu9Yb1KCl6H4ojYWxevbTadFTkbqLaHMQ+NVm41cLPxJcuIgi0RtHTRDZ/ClsF+2
-	WtWPQNHmrEeKebsLmPzDJ3ZUtvHJ4XNFbdCtXCo90uY+Tomz3wCA0LxkuOWOd1Uud5ILpxigeKfBs
-	9RojbJrpTDrKlMYXuKK4ijiLdVdcl6pOmHqUyKp0eoRXMhdaWFDkR7RYy0Tt4T8l54DrXyA3HS6ZS
-	t55wu4fOGtJiVValRNSc2+iHQsYRobwyMIdcga7KH0PviwelqSCdnCj5v2RaClpfSJyi1mtoAq1U5
-	Znn5hxS+A7L6x/vf847Q==;
+	List-Owner; bh=1hyNex5ay21EVNQ/YWl7B9kqQnRmo16eFI/LTKLSz88=; b=AiiTQPmip3gY/p
+	/6Ossnr3XavNKX9FBB5cBqL7XV1vot6yxxalM0+/aN24zJ+0EHL1gRioK+X5/TiOgyOMCgRVF19kg
+	MrYKDsHrcFtxAHz8U3SDCD4LHiPpxi5o7/aQTnQ3nXLyqfAWftXjY8vcbCqE3HoXaQnr8WIonFdy3
+	tK4O6A7inXOXeiNqqsoqo/e/4SK82R94ATi5acWMbmr8NeA3pYqN4A74DduwnpdUQnZ2iRaI3PUOF
+	oWReL1pA7K2SITEnUl8IKK4ca/UatchJYlKmL+dPRaJ4ZX32zQoA/5InsSD5MhAkz6KdBt1l69Z/N
+	VfYuKbcoLn/icns1bSxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQWR-0000000H3LU-43AF;
-	Mon, 11 Nov 2024 09:15:47 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1tAQWS-0000000H3M9-2hRH;
+	Mon, 11 Nov 2024 09:15:48 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSa-0000000GjYZ-3FzK
+	id 1tAPSn-0000000GjlO-3XIF
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 11 Nov 2024 08:07:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=OysQ6tsiDHjEiqGeKTfdyynO/KZaAPHasze2WyC7OoI=; b=rbMtC2DtGdlOR+9z8X8ltNrJ4v
+	BUGjFIp07hN5PIGBApCEjay/vLnv4URV5DsugcX9k97uCi0zeBM2/D7cFDMxtF1hPUuxLqlX2Yb+V
+	MPg5iNZUPg3f8pTMdlnocopMWFoSDfPywBnpunuA+z+446rrVyUqPZNvot0Sb3DoO0NliI8n97RlH
+	n9YkU1kXQsMjrXrzqM2Y9EoKrN7ocgQaYNNU9J5SoXyXUQnkjH3dhs/gYIIavrBEEWdrUiLwRimP9
+	z9f9RCoKl2dCFi+dernxSpOWL2X7EKrItPv5Zm1/0a85YIMh0ezkhu8nQ6JdkmNu8dl1qFsO8CTvr
+	Fd1jpEGg==;
+Received: from szxga02-in.huawei.com ([45.249.212.188])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAPSi-0000000CnCk-2PtW
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:07:51 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn2F30YXDz20t2m;
-	Mon, 11 Nov 2024 16:06:31 +0800 (CST)
+	Mon, 11 Nov 2024 08:07:56 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xn2DK3hXJzpZPC;
+	Mon, 11 Nov 2024 16:05:53 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 43998140391;
-	Mon, 11 Nov 2024 16:07:43 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A2679140257;
+	Mon, 11 Nov 2024 16:07:46 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:07:40 +0800
+ 2024 16:07:46 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 032/102] ubifs-utils: Adapt sb.c in libubifs
-Date: Mon, 11 Nov 2024 16:05:57 +0800
-Message-ID: <20241111080621.1394382-18-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 053/102] fsck.ubifs: Add file organization realization
+Date: Mon, 11 Nov 2024 16:06:07 +0800
+Message-ID: <20241111080621.1394382-28-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_000745_254195_CDDD73EA 
-X-CRM114-Status: GOOD (  28.18  )
+X-CRM114-CacheID: sfid-20241111_080754_723724_950B3228 
+X-CRM114-Status: GOOD (  19.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,587 +85,380 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt sb.c in libubifs, compared with linux kernel implementations:
- 1. Remove authentication related implementations
-    (eg. authenticate_sb_node), authentication is not supported in fsck
-    for now.
- 2. Remove some functions(eg. create_default_filesystem) which won't be
-    used in fsck/mkfs.
- 3. Modify ubifs_read_superblock(), remove some assignments which won't
-    be used in mkfs/fsck.
- 4. Apapt fixup_leb to ignore %-EBADMSG, subsequent steps will check
-    all areas carefully.
+In order to check the consistency of each file and the reachability of
+the whole dentry tree, fsck orginizes all nodes into files. And the
+final recovered file(xattr is treated as a file) is organized as:
+   (rbtree, inum indexed)
+        /    \
+     file1   file2
+     /    \
+  file3  file4
+
+file {
+        inode node // each file has 1 inode node
+        dentry (sub rb_tree, sqnum indexed) // '/' has no dentries,
+                                            // otherwise at least 1
+                                            // dentry is required.
+        trun node // the newest one truncation node
+        data (sub rb_tree, block number indexed) // Each file may have 0
+                                                 // or many data nodes
+	xattrs (sub rb_tree, inum indexed) // Each file may have 0 or
+                                           // many xattr files
+}
+
+Each file from file rb_tree is constructed by scanning nodes(eg. inode,
+dentry, etc.) from the TNC or the UBI volume. File's xattrs will be
+initialized in subsequent steps.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/sb.c | 482 ++--------------------------------------------
- 1 file changed, 18 insertions(+), 464 deletions(-)
+ ubifs-utils/fsck.ubifs/extract_files.c | 275 +++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h    |  43 ++++++
+ 2 files changed, 318 insertions(+)
 
-diff --git a/ubifs-utils/libubifs/sb.c b/ubifs-utils/libubifs/sb.c
-index e7693b94..312661d6 100644
---- a/ubifs-utils/libubifs/sb.c
-+++ b/ubifs-utils/libubifs/sb.c
-@@ -14,358 +14,18 @@
-  * change it. The superblock node mostly contains geometry information.
-  */
- 
-+#include "linux_err.h"
-+#include "bitops.h"
-+#include "kmem.h"
- #include "ubifs.h"
--#include <linux/slab.h>
--#include <linux/math64.h>
--#include <linux/uuid.h>
--
--/*
-- * Default journal size in logical eraseblocks as a percent of total
-- * flash size.
-- */
--#define DEFAULT_JNL_PERCENT 5
--
--/* Default maximum journal size in bytes */
--#define DEFAULT_MAX_JNL (32*1024*1024)
--
--/* Default indexing tree fanout */
--#define DEFAULT_FANOUT 8
--
--/* Default number of data journal heads */
--#define DEFAULT_JHEADS_CNT 1
--
--/* Default positions of different LEBs in the main area */
--#define DEFAULT_IDX_LEB  0
--#define DEFAULT_DATA_LEB 1
--#define DEFAULT_GC_LEB   2
-+#include "defs.h"
-+#include "debug.h"
-+#include "key.h"
-+#include "misc.h"
- 
- /* Default number of LEB numbers in LPT's save table */
- #define DEFAULT_LSAVE_CNT 256
- 
--/* Default reserved pool size as a percent of maximum free space */
--#define DEFAULT_RP_PERCENT 5
--
--/* The default maximum size of reserved pool in bytes */
--#define DEFAULT_MAX_RP_SIZE (5*1024*1024)
--
--/* Default time granularity in nanoseconds */
--#define DEFAULT_TIME_GRAN 1000000000
--
--static int get_default_compressor(struct ubifs_info *c)
--{
--	if (ubifs_compr_present(c, UBIFS_COMPR_ZSTD))
--		return UBIFS_COMPR_ZSTD;
--
--	if (ubifs_compr_present(c, UBIFS_COMPR_LZO))
--		return UBIFS_COMPR_LZO;
--
--	if (ubifs_compr_present(c, UBIFS_COMPR_ZLIB))
--		return UBIFS_COMPR_ZLIB;
--
--	return UBIFS_COMPR_NONE;
--}
--
--/**
-- * create_default_filesystem - format empty UBI volume.
-- * @c: UBIFS file-system description object
-- *
-- * This function creates default empty file-system. Returns zero in case of
-- * success and a negative error code in case of failure.
-- */
--static int create_default_filesystem(struct ubifs_info *c)
--{
--	struct ubifs_sb_node *sup;
--	struct ubifs_mst_node *mst;
--	struct ubifs_idx_node *idx;
--	struct ubifs_branch *br;
--	struct ubifs_ino_node *ino;
--	struct ubifs_cs_node *cs;
--	union ubifs_key key;
--	int err, tmp, jnl_lebs, log_lebs, max_buds, main_lebs, main_first;
--	int lpt_lebs, lpt_first, orph_lebs, big_lpt, ino_waste, sup_flags = 0;
--	int min_leb_cnt = UBIFS_MIN_LEB_CNT;
--	int idx_node_size;
--	long long tmp64, main_bytes;
--	__le64 tmp_le64;
--	struct timespec64 ts;
--	u8 hash[UBIFS_HASH_ARR_SZ];
--	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
--
--	/* Some functions called from here depend on the @c->key_len filed */
--	c->key_len = UBIFS_SK_LEN;
--
--	/*
--	 * First of all, we have to calculate default file-system geometry -
--	 * log size, journal size, etc.
--	 */
--	if (c->leb_cnt < 0x7FFFFFFF / DEFAULT_JNL_PERCENT)
--		/* We can first multiply then divide and have no overflow */
--		jnl_lebs = c->leb_cnt * DEFAULT_JNL_PERCENT / 100;
--	else
--		jnl_lebs = (c->leb_cnt / 100) * DEFAULT_JNL_PERCENT;
--
--	if (jnl_lebs < UBIFS_MIN_JNL_LEBS)
--		jnl_lebs = UBIFS_MIN_JNL_LEBS;
--	if (jnl_lebs * c->leb_size > DEFAULT_MAX_JNL)
--		jnl_lebs = DEFAULT_MAX_JNL / c->leb_size;
--
--	/*
--	 * The log should be large enough to fit reference nodes for all bud
--	 * LEBs. Because buds do not have to start from the beginning of LEBs
--	 * (half of the LEB may contain committed data), the log should
--	 * generally be larger, make it twice as large.
--	 */
--	tmp = 2 * (c->ref_node_alsz * jnl_lebs) + c->leb_size - 1;
--	log_lebs = tmp / c->leb_size;
--	/* Plus one LEB reserved for commit */
--	log_lebs += 1;
--	if (c->leb_cnt - min_leb_cnt > 8) {
--		/* And some extra space to allow writes while committing */
--		log_lebs += 1;
--		min_leb_cnt += 1;
--	}
--
--	max_buds = jnl_lebs - log_lebs;
--	if (max_buds < UBIFS_MIN_BUD_LEBS)
--		max_buds = UBIFS_MIN_BUD_LEBS;
--
--	/*
--	 * Orphan nodes are stored in a separate area. One node can store a lot
--	 * of orphan inode numbers, but when new orphan comes we just add a new
--	 * orphan node. At some point the nodes are consolidated into one
--	 * orphan node.
--	 */
--	orph_lebs = UBIFS_MIN_ORPH_LEBS;
--	if (c->leb_cnt - min_leb_cnt > 1)
--		/*
--		 * For debugging purposes it is better to have at least 2
--		 * orphan LEBs, because the orphan subsystem would need to do
--		 * consolidations and would be stressed more.
--		 */
--		orph_lebs += 1;
--
--	main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS - log_lebs;
--	main_lebs -= orph_lebs;
--
--	lpt_first = UBIFS_LOG_LNUM + log_lebs;
--	c->lsave_cnt = DEFAULT_LSAVE_CNT;
--	c->max_leb_cnt = c->leb_cnt;
--	err = ubifs_create_dflt_lpt(c, &main_lebs, lpt_first, &lpt_lebs,
--				    &big_lpt, hash_lpt);
--	if (err)
--		return err;
--
--	dbg_gen("LEB Properties Tree created (LEBs %d-%d)", lpt_first,
--		lpt_first + lpt_lebs - 1);
--
--	main_first = c->leb_cnt - main_lebs;
--
--	sup = kzalloc(ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size), GFP_KERNEL);
--	mst = kzalloc(c->mst_node_alsz, GFP_KERNEL);
--	idx_node_size = ubifs_idx_node_sz(c, 1);
--	idx = kzalloc(ALIGN(idx_node_size, c->min_io_size), GFP_KERNEL);
--	ino = kzalloc(ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size), GFP_KERNEL);
--	cs = kzalloc(ALIGN(UBIFS_CS_NODE_SZ, c->min_io_size), GFP_KERNEL);
--
--	if (!sup || !mst || !idx || !ino || !cs) {
--		err = -ENOMEM;
--		goto out;
--	}
--
--	/* Create default superblock */
--
--	tmp64 = (long long)max_buds * c->leb_size;
--	if (big_lpt)
--		sup_flags |= UBIFS_FLG_BIGLPT;
--	if (ubifs_default_version > 4)
--		sup_flags |= UBIFS_FLG_DOUBLE_HASH;
--
--	if (ubifs_authenticated(c)) {
--		sup_flags |= UBIFS_FLG_AUTHENTICATION;
--		sup->hash_algo = cpu_to_le16(c->auth_hash_algo);
--		err = ubifs_hmac_wkm(c, sup->hmac_wkm);
--		if (err)
--			goto out;
--	} else {
--		sup->hash_algo = cpu_to_le16(0xffff);
--	}
--
--	sup->ch.node_type  = UBIFS_SB_NODE;
--	sup->key_hash      = UBIFS_KEY_HASH_R5;
--	sup->flags         = cpu_to_le32(sup_flags);
--	sup->min_io_size   = cpu_to_le32(c->min_io_size);
--	sup->leb_size      = cpu_to_le32(c->leb_size);
--	sup->leb_cnt       = cpu_to_le32(c->leb_cnt);
--	sup->max_leb_cnt   = cpu_to_le32(c->max_leb_cnt);
--	sup->max_bud_bytes = cpu_to_le64(tmp64);
--	sup->log_lebs      = cpu_to_le32(log_lebs);
--	sup->lpt_lebs      = cpu_to_le32(lpt_lebs);
--	sup->orph_lebs     = cpu_to_le32(orph_lebs);
--	sup->jhead_cnt     = cpu_to_le32(DEFAULT_JHEADS_CNT);
--	sup->fanout        = cpu_to_le32(DEFAULT_FANOUT);
--	sup->lsave_cnt     = cpu_to_le32(c->lsave_cnt);
--	sup->fmt_version   = cpu_to_le32(ubifs_default_version);
--	sup->time_gran     = cpu_to_le32(DEFAULT_TIME_GRAN);
--	if (c->mount_opts.override_compr)
--		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
--	else
--		sup->default_compr = cpu_to_le16(get_default_compressor(c));
--
--	generate_random_uuid(sup->uuid);
--
--	main_bytes = (long long)main_lebs * c->leb_size;
--	tmp64 = div_u64(main_bytes * DEFAULT_RP_PERCENT, 100);
--	if (tmp64 > DEFAULT_MAX_RP_SIZE)
--		tmp64 = DEFAULT_MAX_RP_SIZE;
--	sup->rp_size = cpu_to_le64(tmp64);
--	sup->ro_compat_version = cpu_to_le32(UBIFS_RO_COMPAT_VERSION);
--
--	dbg_gen("default superblock created at LEB 0:0");
--
--	/* Create default master node */
--
--	mst->ch.node_type = UBIFS_MST_NODE;
--	mst->log_lnum     = cpu_to_le32(UBIFS_LOG_LNUM);
--	mst->highest_inum = cpu_to_le64(UBIFS_FIRST_INO);
--	mst->cmt_no       = 0;
--	mst->root_lnum    = cpu_to_le32(main_first + DEFAULT_IDX_LEB);
--	mst->root_offs    = 0;
--	tmp = ubifs_idx_node_sz(c, 1);
--	mst->root_len     = cpu_to_le32(tmp);
--	mst->gc_lnum      = cpu_to_le32(main_first + DEFAULT_GC_LEB);
--	mst->ihead_lnum   = cpu_to_le32(main_first + DEFAULT_IDX_LEB);
--	mst->ihead_offs   = cpu_to_le32(ALIGN(tmp, c->min_io_size));
--	mst->index_size   = cpu_to_le64(ALIGN(tmp, 8));
--	mst->lpt_lnum     = cpu_to_le32(c->lpt_lnum);
--	mst->lpt_offs     = cpu_to_le32(c->lpt_offs);
--	mst->nhead_lnum   = cpu_to_le32(c->nhead_lnum);
--	mst->nhead_offs   = cpu_to_le32(c->nhead_offs);
--	mst->ltab_lnum    = cpu_to_le32(c->ltab_lnum);
--	mst->ltab_offs    = cpu_to_le32(c->ltab_offs);
--	mst->lsave_lnum   = cpu_to_le32(c->lsave_lnum);
--	mst->lsave_offs   = cpu_to_le32(c->lsave_offs);
--	mst->lscan_lnum   = cpu_to_le32(main_first);
--	mst->empty_lebs   = cpu_to_le32(main_lebs - 2);
--	mst->idx_lebs     = cpu_to_le32(1);
--	mst->leb_cnt      = cpu_to_le32(c->leb_cnt);
--	ubifs_copy_hash(c, hash_lpt, mst->hash_lpt);
--
--	/* Calculate lprops statistics */
--	tmp64 = main_bytes;
--	tmp64 -= ALIGN(ubifs_idx_node_sz(c, 1), c->min_io_size);
--	tmp64 -= ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size);
--	mst->total_free = cpu_to_le64(tmp64);
--
--	tmp64 = ALIGN(ubifs_idx_node_sz(c, 1), c->min_io_size);
--	ino_waste = ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size) -
--			  UBIFS_INO_NODE_SZ;
--	tmp64 += ino_waste;
--	tmp64 -= ALIGN(ubifs_idx_node_sz(c, 1), 8);
--	mst->total_dirty = cpu_to_le64(tmp64);
--
--	/*  The indexing LEB does not contribute to dark space */
--	tmp64 = ((long long)(c->main_lebs - 1) * c->dark_wm);
--	mst->total_dark = cpu_to_le64(tmp64);
--
--	mst->total_used = cpu_to_le64(UBIFS_INO_NODE_SZ);
--
--	dbg_gen("default master node created at LEB %d:0", UBIFS_MST_LNUM);
--
--	/* Create the root indexing node */
--
--	c->key_fmt = UBIFS_SIMPLE_KEY_FMT;
--	c->key_hash = key_r5_hash;
--
--	idx->ch.node_type = UBIFS_IDX_NODE;
--	idx->child_cnt = cpu_to_le16(1);
--	ino_key_init(c, &key, UBIFS_ROOT_INO);
--	br = ubifs_idx_branch(c, idx, 0);
--	key_write_idx(c, &key, &br->key);
--	br->lnum = cpu_to_le32(main_first + DEFAULT_DATA_LEB);
--	br->len  = cpu_to_le32(UBIFS_INO_NODE_SZ);
--
--	dbg_gen("default root indexing node created LEB %d:0",
--		main_first + DEFAULT_IDX_LEB);
--
--	/* Create default root inode */
--
--	ino_key_init_flash(c, &ino->key, UBIFS_ROOT_INO);
--	ino->ch.node_type = UBIFS_INO_NODE;
--	ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
--	ino->nlink = cpu_to_le32(2);
--
--	ktime_get_coarse_real_ts64(&ts);
--	tmp_le64 = cpu_to_le64(ts.tv_sec);
--	ino->atime_sec   = tmp_le64;
--	ino->ctime_sec   = tmp_le64;
--	ino->mtime_sec   = tmp_le64;
--	ino->atime_nsec  = 0;
--	ino->ctime_nsec  = 0;
--	ino->mtime_nsec  = 0;
--	ino->mode = cpu_to_le32(S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO);
--	ino->size = cpu_to_le64(UBIFS_INO_NODE_SZ);
--
--	/* Set compression enabled by default */
--	ino->flags = cpu_to_le32(UBIFS_COMPR_FL);
--
--	dbg_gen("root inode created at LEB %d:0",
--		main_first + DEFAULT_DATA_LEB);
--
--	/*
--	 * The first node in the log has to be the commit start node. This is
--	 * always the case during normal file-system operation. Write a fake
--	 * commit start node to the log.
--	 */
--
--	cs->ch.node_type = UBIFS_CS_NODE;
--
--	err = ubifs_write_node_hmac(c, sup, UBIFS_SB_NODE_SZ, 0, 0,
--				    offsetof(struct ubifs_sb_node, hmac));
--	if (err)
--		goto out;
--
--	err = ubifs_write_node(c, ino, UBIFS_INO_NODE_SZ,
--			       main_first + DEFAULT_DATA_LEB, 0);
--	if (err)
--		goto out;
--
--	ubifs_node_calc_hash(c, ino, hash);
--	ubifs_copy_hash(c, hash, ubifs_branch_hash(c, br));
--
--	err = ubifs_write_node(c, idx, idx_node_size, main_first + DEFAULT_IDX_LEB, 0);
--	if (err)
--		goto out;
--
--	ubifs_node_calc_hash(c, idx, hash);
--	ubifs_copy_hash(c, hash, mst->hash_root_idx);
--
--	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM, 0,
--		offsetof(struct ubifs_mst_node, hmac));
--	if (err)
--		goto out;
--
--	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM + 1,
--			       0, offsetof(struct ubifs_mst_node, hmac));
--	if (err)
--		goto out;
--
--	err = ubifs_write_node(c, cs, UBIFS_CS_NODE_SZ, UBIFS_LOG_LNUM, 0);
--	if (err)
--		goto out;
--
--	ubifs_msg(c, "default file-system created");
--
--	err = 0;
--out:
--	kfree(sup);
--	kfree(mst);
--	kfree(idx);
--	kfree(ino);
--	kfree(cs);
--
--	return err;
--}
--
- /**
-  * validate_sb - validate superblock node.
-  * @c: UBIFS file-system description object
-@@ -419,9 +79,9 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
- 	min_leb_cnt = UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs;
- 	min_leb_cnt += c->lpt_lebs + c->orph_lebs + c->jhead_cnt + 6;
- 
--	if (c->leb_cnt < min_leb_cnt || c->leb_cnt > c->vi.size) {
-+	if (c->leb_cnt < min_leb_cnt || c->leb_cnt > c->vi.rsvd_lebs) {
- 		ubifs_err(c, "bad LEB count: %d in superblock, %d on UBI volume, %d minimum required",
--			  c->leb_cnt, c->vi.size, min_leb_cnt);
-+			  c->leb_cnt, c->vi.rsvd_lebs, min_leb_cnt);
- 		goto failed;
- 	}
- 
-@@ -537,72 +197,19 @@ static struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
- 	return sup;
+diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
+index dd52ef84..58aa9db8 100644
+--- a/ubifs-utils/fsck.ubifs/extract_files.c
++++ b/ubifs-utils/fsck.ubifs/extract_files.c
+@@ -403,3 +403,278 @@ bool parse_trun_node(struct ubifs_info *c, int lnum, int offs, void *node,
+ out:
+ 	return valid;
  }
- 
--static int authenticate_sb_node(struct ubifs_info *c,
-+static int authenticate_sb_node(__unused struct ubifs_info *c,
- 				const struct ubifs_sb_node *sup)
- {
- 	unsigned int sup_flags = le32_to_cpu(sup->flags);
--	u8 hmac_wkm[UBIFS_HMAC_ARR_SZ];
- 	int authenticated = !!(sup_flags & UBIFS_FLG_AUTHENTICATION);
--	int hash_algo;
--	int err;
--
--	if (c->authenticated && !authenticated) {
--		ubifs_err(c, "authenticated FS forced, but found FS without authentication");
--		return -EINVAL;
--	}
--
--	if (!c->authenticated && authenticated) {
--		ubifs_err(c, "authenticated FS found, but no key given");
--		return -EINVAL;
--	}
--
--	ubifs_msg(c, "Mounting in %sauthenticated mode",
--		  c->authenticated ? "" : "un");
--
--	if (!c->authenticated)
--		return 0;
- 
--	if (!IS_ENABLED(CONFIG_UBIFS_FS_AUTHENTICATION))
-+	if (authenticated) {
-+		// To be implemented
-+		ubifs_err(c, "not support authentication");
- 		return -EOPNOTSUPP;
--
--	hash_algo = le16_to_cpu(sup->hash_algo);
--	if (hash_algo >= HASH_ALGO__LAST) {
--		ubifs_err(c, "superblock uses unknown hash algo %d",
--			  hash_algo);
--		return -EINVAL;
--	}
--
--	if (strcmp(hash_algo_name[hash_algo], c->auth_hash_name)) {
--		ubifs_err(c, "This filesystem uses %s for hashing,"
--			     " but %s is specified", hash_algo_name[hash_algo],
--			     c->auth_hash_name);
--		return -EINVAL;
- 	}
- 
--	/*
--	 * The super block node can either be authenticated by a HMAC or
--	 * by a signature in a ubifs_sig_node directly following the
--	 * super block node to support offline image creation.
--	 */
--	if (ubifs_hmac_zero(c, sup->hmac)) {
--		err = ubifs_sb_verify_signature(c, sup);
--	} else {
--		err = ubifs_hmac_wkm(c, hmac_wkm);
--		if (err)
--			return err;
--		if (ubifs_check_hmac(c, hmac_wkm, sup->hmac_wkm)) {
--			ubifs_err(c, "provided key does not fit");
--			return -ENOKEY;
--		}
--		err = ubifs_node_verify_hmac(c, sup, sizeof(*sup),
--					     offsetof(struct ubifs_sb_node,
--						      hmac));
--	}
--
--	if (err)
--		ubifs_err(c, "Failed to authenticate superblock: %d", err);
--
--	return err;
++
++/**
++ * insert_file_dentry - insert dentry according to scanned dent node.
++ * @file: file object
++ * @n_dent: scanned dent node
++ *
++ * Insert file dentry information. Returns zero in case of success, a
++ * negative error code in case of failure.
++ */
++static int insert_file_dentry(struct scanned_file *file,
++			      struct scanned_dent_node *n_dent)
++{
++	struct scanned_dent_node *dent;
++	struct rb_node **p, *parent = NULL;
++
++	p = &file->dent_nodes.rb_node;
++	while (*p) {
++		parent = *p;
++		dent = rb_entry(parent, struct scanned_dent_node, rb);
++		if (n_dent->header.sqnum < dent->header.sqnum)
++			p = &(*p)->rb_left;
++		else
++			p = &(*p)->rb_right;
++	}
++
++	dent = kmalloc(sizeof(struct scanned_dent_node), GFP_KERNEL);
++	if (!dent)
++		return -ENOMEM;
++
++	*dent = *n_dent;
++	rb_link_node(&dent->rb, parent, p);
++	rb_insert_color(&dent->rb, &file->dent_nodes);
++
 +	return 0;
- }
++}
++
++/**
++ * update_file_data - insert/update data according to scanned data node.
++ * @c: UBIFS file-system description object
++ * @file: file object
++ * @n_dn: scanned data node
++ *
++ * Insert or update file data information. Returns zero in case of success,
++ * a negative error code in case of failure.
++ */
++static int update_file_data(struct ubifs_info *c, struct scanned_file *file,
++			    struct scanned_data_node *n_dn)
++{
++	int cmp;
++	struct scanned_data_node *dn, *o_dn = NULL;
++	struct rb_node **p, *parent = NULL;
++
++	p = &file->data_nodes.rb_node;
++	while (*p) {
++		parent = *p;
++		dn = rb_entry(parent, struct scanned_data_node, rb);
++		cmp = keys_cmp(c, &n_dn->key, &dn->key);
++		if (cmp < 0) {
++			p = &(*p)->rb_left;
++		} else if (cmp > 0) {
++			p = &(*p)->rb_right;
++		} else {
++			o_dn = dn;
++			break;
++		}
++	}
++
++	if (o_dn) {
++		/* found data node with same block no. */
++		if (o_dn->header.sqnum < n_dn->header.sqnum) {
++			o_dn->header = n_dn->header;
++			o_dn->size = n_dn->size;
++		}
++
++		return 0;
++	}
++
++	dn = kmalloc(sizeof(struct scanned_data_node), GFP_KERNEL);
++	if (!dn)
++		return -ENOMEM;
++
++	*dn = *n_dn;
++	INIT_LIST_HEAD(&dn->list);
++	rb_link_node(&dn->rb, parent, p);
++	rb_insert_color(&dn->rb, &file->data_nodes);
++
++	return 0;
++}
++
++/**
++ * update_file - update file information.
++ * @c: UBIFS file-system description object
++ * @file: file object
++ * @sn: scanned node
++ * @key_type: type of @sn
++ *
++ * Update inode/dent/truncation/data node information of @file. Returns
++ * zero in case of success, a negative error code in case of failure.
++ */
++static int update_file(struct ubifs_info *c, struct scanned_file *file,
++		       struct scanned_node *sn, int key_type)
++{
++	int err = 0;
++
++	switch (key_type) {
++	case UBIFS_INO_KEY:
++	{
++		struct scanned_ino_node *o_ino, *n_ino;
++
++		o_ino = &file->ino;
++		n_ino = (struct scanned_ino_node *)sn;
++		if (o_ino->header.exist && o_ino->header.sqnum > sn->sqnum)
++			goto out;
++
++		*o_ino = *n_ino;
++		break;
++	}
++	case UBIFS_DENT_KEY:
++	case UBIFS_XENT_KEY:
++	{
++		struct scanned_dent_node *dent = (struct scanned_dent_node *)sn;
++
++		err = insert_file_dentry(file, dent);
++		break;
++	}
++	case UBIFS_DATA_KEY:
++	{
++		struct scanned_data_node *dn = (struct scanned_data_node *)sn;
++
++		err = update_file_data(c, file, dn);
++		break;
++	}
++	case UBIFS_TRUN_KEY:
++	{
++		struct scanned_trun_node *o_trun, *n_trun;
++
++		o_trun = &file->trun;
++		n_trun = (struct scanned_trun_node *)sn;
++		if (o_trun->header.exist && o_trun->header.sqnum > sn->sqnum)
++			goto out;
++
++		*o_trun = *n_trun;
++		break;
++	}
++	default:
++		err = -EINVAL;
++		log_err(c, 0, "unknown key type %d", key_type);
++	}
++
++out:
++	return err;
++}
++
++/**
++ * insert_or_update_file - insert or update file according to scanned node.
++ * @c: UBIFS file-system description object
++ * @file_tree: tree of all scanned files
++ * @sn: scanned node
++ * @key_type: key type of @sn
++ * @inum: inode number
++ *
++ * According to @sn, this function inserts file into the tree, or updates
++ * file information if it already exists in the tree. Returns zero in case
++ * of success, a negative error code in case of failure.
++ */
++int insert_or_update_file(struct ubifs_info *c, struct rb_root *file_tree,
++			  struct scanned_node *sn, int key_type, ino_t inum)
++{
++	int err;
++	struct scanned_file *file, *old_file = NULL;
++	struct rb_node **p, *parent = NULL;
++
++	p = &file_tree->rb_node;
++	while (*p) {
++		parent = *p;
++		file = rb_entry(parent, struct scanned_file, rb);
++		if (inum < file->inum) {
++			p = &(*p)->rb_left;
++		} else if (inum > file->inum) {
++			p = &(*p)->rb_right;
++		} else {
++			old_file = file;
++			break;
++		}
++	}
++	if (old_file)
++		return update_file(c, old_file, sn, key_type);
++
++	file = kzalloc(sizeof(struct scanned_file), GFP_KERNEL);
++	if (!file)
++		return -ENOMEM;
++
++	file->inum = inum;
++	file->dent_nodes = RB_ROOT;
++	file->data_nodes = RB_ROOT;
++	file->xattr_files = RB_ROOT;
++	INIT_LIST_HEAD(&file->list);
++	err = update_file(c, file, sn, key_type);
++	if (err) {
++		kfree(file);
++		return err;
++	}
++	rb_link_node(&file->rb, parent, p);
++	rb_insert_color(&file->rb, file_tree);
++
++	return 0;
++}
++
++/**
++ * destroy_file_content - destroy scanned data/dentry nodes in give file.
++ * @c: UBIFS file-system description object
++ * @file: file object
++ *
++ * Destroy all data/dentry nodes and xattrs attached to @file.
++ */
++void destroy_file_content(struct ubifs_info *c, struct scanned_file *file)
++{
++	struct scanned_data_node *data_node;
++	struct scanned_dent_node *dent_node;
++	struct scanned_file *xattr_file;
++	struct rb_node *this;
++
++	this = rb_first(&file->data_nodes);
++	while (this) {
++		data_node = rb_entry(this, struct scanned_data_node, rb);
++		this = rb_next(this);
++
++		rb_erase(&data_node->rb, &file->data_nodes);
++		kfree(data_node);
++	}
++
++	this = rb_first(&file->dent_nodes);
++	while (this) {
++		dent_node = rb_entry(this, struct scanned_dent_node, rb);
++		this = rb_next(this);
++
++		rb_erase(&dent_node->rb, &file->dent_nodes);
++		kfree(dent_node);
++	}
++
++	this = rb_first(&file->xattr_files);
++	while (this) {
++		xattr_file = rb_entry(this, struct scanned_file, rb);
++		this = rb_next(this);
++
++		ubifs_assert(c, !rb_first(&xattr_file->xattr_files));
++		destroy_file_content(c, xattr_file);
++		rb_erase(&xattr_file->rb, &file->xattr_files);
++		kfree(xattr_file);
++	}
++}
++
++/**
++ * destroy_file_tree - destroy files from a given tree.
++ * @c: UBIFS file-system description object
++ * @file_tree: tree of all scanned files
++ *
++ * Destroy scanned files from a given tree.
++ */
++void destroy_file_tree(struct ubifs_info *c, struct rb_root *file_tree)
++{
++	struct scanned_file *file;
++	struct rb_node *this;
++
++	this = rb_first(file_tree);
++	while (this) {
++		file = rb_entry(this, struct scanned_file, rb);
++		this = rb_next(this);
++
++		destroy_file_content(c, file);
++
++		rb_erase(&file->rb, file_tree);
++		kfree(file);
++	}
++}
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index d77ebc61..aad18d4c 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -136,6 +136,45 @@ struct scanned_trun_node {
+ };
  
  /**
-@@ -638,12 +245,6 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	int err, sup_flags;
- 	struct ubifs_sb_node *sup;
++ * scanned_file - file info scanned from UBIFS volume.
++ *
++ * @calc_nlink: calculated count of directory entries refer this inode
++ * @calc_xcnt: calculated count of extended attributes
++ * @calc_xsz: calculated summary size of all extended attributes
++ * @calc_xnms: calculated sum of lengths of all extended attribute names
++ * @calc_size: calculated file size
++ * @has_encrypted_info: whether the file has encryption related xattrs
++ *
++ * @inum: inode number
++ * @ino: inode node
++ * @trun: truncation node
++ *
++ * @rb: link in the tree of all scanned files
++ * @list: link in the list files for kinds of processing
++ * @dent_nodes: tree of all scanned dentry nodes
++ * @data_nodes: tree of all scanned data nodes
++ * @xattr_files: tree of all scanned xattr files
++ */
++struct scanned_file {
++	unsigned int calc_nlink;
++	unsigned int calc_xcnt;
++	unsigned int calc_xsz;
++	unsigned int calc_xnms;
++	unsigned long long calc_size;
++	bool has_encrypted_info;
++
++	ino_t inum;
++	struct scanned_ino_node ino;
++	struct scanned_trun_node trun;
++
++	struct rb_node rb;
++	struct list_head list;
++	struct rb_root dent_nodes;
++	struct rb_root data_nodes;
++	struct rb_root xattr_files;
++};
++
++/**
+  * struct ubifs_fsck_info - UBIFS fsck information.
+  * @mode: working mode
+  * @failure_reason: reasons for failed operations
+@@ -207,5 +246,9 @@ bool parse_data_node(struct ubifs_info *c, int lnum, int offs, void *node,
+ 		     union ubifs_key *key, struct scanned_data_node *data_node);
+ bool parse_trun_node(struct ubifs_info *c, int lnum, int offs, void *node,
+ 		     union ubifs_key *key, struct scanned_trun_node *trun_node);
++int insert_or_update_file(struct ubifs_info *c, struct rb_root *file_tree,
++			  struct scanned_node *sn, int key_type, ino_t inum);
++void destroy_file_content(struct ubifs_info *c, struct scanned_file *file);
++void destroy_file_tree(struct ubifs_info *c, struct rb_root *file_tree);
  
--	if (c->empty) {
--		err = create_default_filesystem(c);
--		if (err)
--			return err;
--	}
--
- 	sup = ubifs_read_sb_node(c);
- 	if (IS_ERR(sup))
- 		return PTR_ERR(sup);
-@@ -672,13 +273,6 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 				err = -EINVAL;
- 			goto out;
- 		}
--
--		/*
--		 * The FS is mounted R/O, and the media format is
--		 * R/O-compatible with the UBIFS implementation, so we can
--		 * mount.
--		 */
--		c->rw_incompat = 1;
- 	}
- 
- 	if (c->fmt_version < 3) {
-@@ -722,14 +316,9 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	c->fanout        = le32_to_cpu(sup->fanout);
- 	c->lsave_cnt     = le32_to_cpu(sup->lsave_cnt);
- 	c->rp_size       = le64_to_cpu(sup->rp_size);
--	c->rp_uid        = make_kuid(&init_user_ns, le32_to_cpu(sup->rp_uid));
--	c->rp_gid        = make_kgid(&init_user_ns, le32_to_cpu(sup->rp_gid));
- 	sup_flags        = le32_to_cpu(sup->flags);
--	if (!c->mount_opts.override_compr)
--		c->default_compr = le16_to_cpu(sup->default_compr);
-+	c->default_compr = le16_to_cpu(sup->default_compr);
- 
--	c->vfs_sb->s_time_gran = le32_to_cpu(sup->time_gran);
--	memcpy(&c->uuid, &sup->uuid, 16);
- 	c->big_lpt = !!(sup_flags & UBIFS_FLG_BIGLPT);
- 	c->space_fixup = !!(sup_flags & UBIFS_FLG_SPACE_FIXUP);
- 	c->double_hash = !!(sup_flags & UBIFS_FLG_DOUBLE_HASH);
-@@ -746,18 +335,11 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 		goto out;
- 	}
- 
--	if (!IS_ENABLED(CONFIG_FS_ENCRYPTION) && c->encrypted) {
--		ubifs_err(c, "file system contains encrypted files but UBIFS"
--			     " was built without crypto support.");
--		err = -EINVAL;
--		goto out;
--	}
--
- 	/* Automatically increase file system size to the maximum size */
--	if (c->leb_cnt < c->vi.size && c->leb_cnt < c->max_leb_cnt) {
-+	if (c->leb_cnt < c->vi.rsvd_lebs && c->leb_cnt < c->max_leb_cnt) {
- 		int old_leb_cnt = c->leb_cnt;
- 
--		c->leb_cnt = min_t(int, c->max_leb_cnt, c->vi.size);
-+		c->leb_cnt = min_t(int, c->max_leb_cnt, c->vi.rsvd_lebs);
- 		sup->leb_cnt = cpu_to_le32(c->leb_cnt);
- 
- 		c->superblock_need_write = 1;
-@@ -807,7 +389,7 @@ static int fixup_leb(struct ubifs_info *c, int lnum, int len)
- 
- 	dbg_mnt("fixup LEB %d, data len %d", lnum, len);
- 	err = ubifs_leb_read(c, lnum, c->sbuf, 0, len, 1);
--	if (err)
-+	if (err && err != -EBADMSG)
- 		return err;
- 
- 	return ubifs_leb_change(c, lnum, c->sbuf, len);
-@@ -926,31 +508,3 @@ int ubifs_fixup_free_space(struct ubifs_info *c)
- 	ubifs_msg(c, "free space fixup complete");
- 	return err;
- }
--
--int ubifs_enable_encryption(struct ubifs_info *c)
--{
--	int err;
--	struct ubifs_sb_node *sup = c->sup_node;
--
--	if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
--		return -EOPNOTSUPP;
--
--	if (c->encrypted)
--		return 0;
--
--	if (c->ro_mount || c->ro_media)
--		return -EROFS;
--
--	if (c->fmt_version < 5) {
--		ubifs_err(c, "on-flash format version 5 is needed for encryption");
--		return -EINVAL;
--	}
--
--	sup->flags |= cpu_to_le32(UBIFS_FLG_ENCRYPTION);
--
--	err = ubifs_write_sb_node(c, sup);
--	if (!err)
--		c->encrypted = 1;
--
--	return err;
--}
+ #endif
 -- 
 2.13.6
 
