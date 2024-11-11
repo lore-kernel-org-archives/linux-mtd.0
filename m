@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2980D5E140
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:15:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 396C4D5E39D
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:15:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RD7gCqq71EhJWQ+laOvgK5oT9M/JAyThzGMkxdg/Aj8=; b=WzsXWd7sNfMqsU
-	4/fWcwsAFj1nTUpWmR/XzBssrSgVcHqSEdweeNyVS0/d60i5ijDfOtQUOt/5Y37zcl4fPZgJpi/6e
-	377Hpzj29aigySa9qWZNsk8cg7636mY5gpo8SMj3ckEcsRnzIGJrj0xQlIm/LcKCPp0V1AI8RSNuW
-	nt9wR19/IpVmj+6OUu8IJJ34Y9+iEkCZlVEiF1fuOBfDxyX4hdi2N4OX08n9TO2ToQo1YBqu7Th4m
-	x/GwP+24ieWtfLriS8trnLX9GV/3KQrbuxpvUOf6vQoaLkyIvRvPrkfsL6BDjQGl9aUrxouMf318e
-	fqytdF6xzLoR0aK7BUIg==;
+	List-Owner; bh=GXtaIOYcy8mJtMj9JAFPPVmfgZYrx2y1iaQnbUm3LAc=; b=ai7E70whg0M/78
+	RfGE0tXHlJcJ5A6y0zhoDzZy4NSal+ndh/Z+bUS5/DE5/I5pmBM39f8/26HZ+6991dnhx0HTK07Kk
+	PqVJ6xSttQuxcT+1POpb3TL9iKP8zCEFGBCQIi4yWAXXZQwL6v0CW3oeeXcpKBJjaP7F14enu0nMG
+	T0RZbcsiOaHrx6tqublgRI0YlgqeoRhIt2L4L5WeSr13iMpxrs9ZgQmdQ70Y5JSpFT0VwjjaSmCGn
+	ZUckIXUE3j8souqViX0Ioacn7KMh7qJTmVBJNcqPlF+LnxpxPMlXWbrB/KO5/2VeTBdA3BFC4P/Bb
+	8EudMR0CJ8HGC4WxNE9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPaK-0000000GmFx-1ip5;
-	Mon, 11 Nov 2024 08:15:44 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1tAPaJ-0000000GmFo-3nHw;
+	Mon, 11 Nov 2024 08:15:43 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOTz-0000000GYyx-0WqI
+	id 1tAOTz-0000000GYyr-0Qld
 	for linux-mtd@lists.infradead.org;
 	Mon, 11 Nov 2024 07:05:11 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qK1CDZz10QwH;
-	Mon, 11 Nov 2024 15:02:37 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0r41Dkpz1jxkj;
+	Mon, 11 Nov 2024 15:03:16 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id B4D551401F1;
+	by mail.maildlp.com (Postfix) with ESMTPS id 3BA241A016C;
 	Mon, 11 Nov 2024 15:05:03 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:03 +0800
+ 2024 15:05:02 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 006/102] ubifs-utils: Add 'dev_name' into 'ubifs_info' structure
-Date: Mon, 11 Nov 2024 15:02:09 +0800
-Message-ID: <20241111070346.1314122-7-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 005/102] ubifs-utils: Move 'debug_level' into ubifs_info structure
+Date: Mon, 11 Nov 2024 15:02:08 +0800
+Message-ID: <20241111070346.1314122-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241110_230507_581340_399E257A 
-X-CRM114-Status: GOOD (  15.34  )
+X-CRM114-CacheID: sfid-20241110_230507_360287_F3C5C80B 
+X-CRM114-Status: GOOD (  10.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,145 +70,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Embed new member 'dev_name' into 'ubifs_info' structure, then global
-variable 'output' can be removed from mkfs.ubifs.c. Next patches will
-import UBIFS libs from linux kernel, which could print messages that
-contain device information, so this patch can distinguish different
-devices according to messages.
+Embed new member 'debug_level' into 'ubifs_info' structure, then global
+variable 'debug_level' can be removed from mkfs.ubifs.c. Next patches
+will import UBIFS libs from linux kernel, which could print messages
+with different levels, then 'debug_level' can be used to control which
+level messages should be printed.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/common/ubifs.h          |  2 ++
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 29 ++++++++++++++---------------
- 2 files changed, 16 insertions(+), 15 deletions(-)
+ ubifs-utils/common/defs.h           | 4 +---
+ ubifs-utils/common/ubifs.h          | 3 +++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 6 ++----
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index 3dafc6dd..cafc94af 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -23,9 +23,7 @@ extern struct ubifs_info info_;
+ 
+ enum { MKFS_PROGRAM_TYPE = 0 };
+ 
+-extern int debug_level;
+-
+-#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
++#define dbg_msg(lvl, fmt, ...) do {if (info_.debug_level >= lvl)	\
+ 	printf("%s: %s: " fmt "\n", PROGRAM_NAME, __FUNCTION__, ##__VA_ARGS__); \
+ } while(0)
+ 
 diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
-index 58aaba9b..502a39ae 100644
+index 2b0ffe56..58aaba9b 100644
 --- a/ubifs-utils/common/ubifs.h
 +++ b/ubifs-utils/common/ubifs.h
-@@ -277,6 +277,7 @@ struct ubifs_znode
-  *		 2 - files, 3 - more details
+@@ -273,6 +273,8 @@ struct ubifs_znode
+  * @highest_inum: highest used inode number
+  * @max_sqnum: current global sequence number
+  *
++ * @debug_level: level of debug messages, 0 - none, 1 - statistics,
++ *		 2 - files, 3 - more details
   * @program_type: used to identify the type of current program
   * @program_name: program name
-+ * @dev_name: device name
   *
-  * @jhead_cnt: count of journal heads
-  * @max_bud_bytes: maximum number of bytes allowed in buds
-@@ -368,6 +369,7 @@ struct ubifs_info
- 	int debug_level;
+@@ -363,6 +365,7 @@ struct ubifs_info
+ 	ino_t highest_inum;
+ 	unsigned long long max_sqnum;
+ 
++	int debug_level;
  	int program_type;
  	const char *program_name;
-+	char *dev_name;
  
- 	int jhead_cnt;
- 	long long max_bud_bytes;
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index f66c6a46..1cafbf3e 100644
+index 22969f93..f66c6a46 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -145,7 +145,6 @@ static char *root;
- static int root_len;
- static struct fscrypt_context *root_fctx;
- static struct stat root_st;
--static char *output;
- static int out_fd;
- static int out_ubi;
- static int squash_owner;
-@@ -407,10 +406,10 @@ static int validate_options(void)
- {
- 	int tmp;
+@@ -138,8 +138,6 @@ struct ubifs_info info_;
+ static struct ubifs_info *c = &info_;
+ static libubi_t ubi;
  
--	if (!output)
-+	if (!c->dev_name)
- 		return errmsg("no output file or UBI volume specified");
- 	if (root) {
--		tmp = is_contained(output, root);
-+		tmp = is_contained(c->dev_name, root);
- 		if (tmp < 0)
- 			return errmsg("failed to perform output file root check");
- 		else if (tmp)
-@@ -641,7 +640,7 @@ static int get_options(int argc, char**argv)
- 				return errmsg("bad maximum LEB count");
+-/* Debug levels are: 0 (none), 1 (statistics), 2 (files) ,3 (more details) */
+-int debug_level;
+ int verbose;
+ int yes;
+ 
+@@ -671,9 +669,9 @@ static int get_options(int argc, char**argv)
+ 			common_print_version();
+ 			exit(EXIT_SUCCESS);
+ 		case 'g':
+-			debug_level = strtol(optarg, &endp, 0);
++			c->debug_level = strtol(optarg, &endp, 0);
+ 			if (*endp != '\0' || endp == optarg ||
+-			    debug_level < 0 || debug_level > 3)
++			    c->debug_level < 0 || c->debug_level > 3)
+ 				return errmsg("bad debugging level '%s'",
+ 					       optarg);
  			break;
- 		case 'o':
--			output = xstrdup(optarg);
-+			c->dev_name = xstrdup(optarg);
- 			break;
- 		case 'D':
- 			tbl_file = optarg;
-@@ -835,13 +834,13 @@ static int get_options(int argc, char**argv)
- 		}
- 	}
- 
--	if (optind != argc && !output)
--		output = xstrdup(argv[optind]);
-+	if (optind != argc && !c->dev_name)
-+		c->dev_name = xstrdup(argv[optind]);
- 
--	if (!output)
-+	if (!c->dev_name)
- 		return errmsg("not output device or file specified");
- 
--	out_ubi = !open_ubi(output);
-+	out_ubi = !open_ubi(c->dev_name);
- 
- 	if (out_ubi) {
- 		c->min_io_size = c->di.min_io_size;
-@@ -921,7 +920,7 @@ static int get_options(int argc, char**argv)
- 		printf("\tmin_io_size:  %d\n", c->min_io_size);
- 		printf("\tleb_size:     %d\n", c->leb_size);
- 		printf("\tmax_leb_cnt:  %d\n", c->max_leb_cnt);
--		printf("\toutput:       %s\n", output);
-+		printf("\toutput:       %s\n", c->dev_name);
- 		printf("\tjrn_size:     %llu\n", c->max_bud_bytes);
- 		printf("\treserved:     %llu\n", c->rp_size);
- 		switch (c->default_compr) {
-@@ -2855,11 +2854,11 @@ static int check_volume_empty(void)
- static int open_target(void)
- {
- 	if (out_ubi) {
--		out_fd = open(output, O_RDWR | O_EXCL);
-+		out_fd = open(c->dev_name, O_RDWR | O_EXCL);
- 
- 		if (out_fd == -1)
- 			return sys_errmsg("cannot open the UBI volume '%s'",
--					   output);
-+					   c->dev_name);
- 		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
- 			close(out_fd);
- 			return sys_errmsg("ubi_set_property(set direct_write) failed");
-@@ -2872,11 +2871,11 @@ static int open_target(void)
- 			}
- 		}
- 	} else {
--		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
-+		out_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
- 			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
- 		if (out_fd == -1)
- 			return sys_errmsg("cannot create output file '%s'",
--					   output);
-+					   c->dev_name);
- 	}
- 	return 0;
- }
-@@ -2896,7 +2895,7 @@ static int close_target(void)
- 		if (ubi && ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
- 			return sys_errmsg("ubi_set_property(clear direct_write) failed");
- 		if (close(out_fd) == -1)
--			return sys_errmsg("cannot close the target '%s'", output);
-+			return sys_errmsg("cannot close the target '%s'", c->dev_name);
- 	}
- 	return 0;
- }
-@@ -3094,7 +3093,7 @@ int main(int argc, char *argv[])
- 		printf("Success!\n");
- 
- out:
--	free(output);
-+	free(c->dev_name);
- 	close_ubi();
- 	crypto_cleanup();
- 	return err;
 -- 
 2.13.6
 
