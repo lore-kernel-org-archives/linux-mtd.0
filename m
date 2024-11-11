@@ -4,71 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5C81D2E9D7
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 10:15:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95281D2E9D3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 10:16:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QUwLT+UxBqa1VgIk8Z9P6NcKcPAduOdSOYu3mlK16L0=; b=k2zUilb24f7Rqo
-	bbCC3H302Uf52zXTVpht8Y485VAz0hlrwWt2FoHT9MGaVw0Ijqib0TCAsJ4WVEaN6fG/+5UgnJTfM
-	lHU3mYqZIH9LszgulJGKJyIBBvSaVpVXCT0wRsHXxN2+NN7UeuKAo0cdkkCrFRUpj6guTH40NFo1v
-	jQQo62+5x/PVX9ROdGgfNol++69tyByXLJb1+FnKMEQVhMNXpbNQ1u1f64v+GPrv3F6NpBtvQTGqU
-	dZejKw/zFKeg6X616Z723SOQjPYJk8kk2z3mYSHrNx/lsZvqtKRaw+wVKPX7Z8UccWvsf75Fg/SYK
-	h9GMSH4FKABVIYURSI9w==;
+	List-Owner; bh=3YzPNCT4Q76UxbyyLB0APx2ziwLJXq2DGwmPJPBnHJQ=; b=C2iRrjj2A9DwNn
+	nGIpx/V3uRxfOiT5twJ3vzLh8s1w3rt0tGJ4XuW+Ng+J4KckNc+O3WQxypKZYl47UCAxKF+yarwTK
+	pEeGm5obM69H4obPfSDI5hqcaWCIR4p13y27HbQy2ntIZX6OYlIsdpKe5nwY6gGd6j3I4inhLNrTw
+	EKGmFkI3R2w2uilAix6qY37gLHyvfX9gDdK51iHHtIAj5GqlNuzl3VjmM6bGMcQVRnge4uxadMMS6
+	Z4nDc4G1Eb4NsqlaGfb0efIeoCQu5a1v+0AKpn+igx2BOkWjiCBt7KEZ7eeiNsjBmLZOCUC7UNFwQ
+	XAIG/e5d72cAA2rXrzlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tARSa-0000000HFB1-2AV0;
-	Mon, 11 Nov 2024 10:15:52 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQQs-0000000H0Td-3sEm
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 09:10:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=66uJ2SCoXJbJSM1eB421hiOJjzLhjTJFlXBr/VTFtEE=; b=GFopOUC3QOeX5Xih9eBwEGBfNB
-	SxeTpvIHxnSR1005dbPthUWHBSyH5FLu4enDLS7HF5xZMd3Xo7t3QXXXXMqARkfoVcptoXWIGz5Ho
-	NNZ0XZCiSlJDgVLCVq/kg25YxpkoUYivDPIIyZlUXX56KuL26DCa+Q+t8IzD5pZoKBuwv3dMWfjvz
-	pwEZCFe8K1uZA792DtxMgWwzYj1BnALIoDjySZd6tr62DIx8c2kP6PobJkEMNW8zuTPW3mS/HVwOg
-	/li0XLCeOpZnC3XdedSULc9DicLSPn5gGfcxsG+tRTfFbKJgpmKFBMmt0oET+vewwtZ2AET/WODS6
-	aOWTaImQ==;
+	id 1tARSV-0000000HF8S-1via;
+	Mon, 11 Nov 2024 10:15:47 +0000
 Received: from szxga05-in.huawei.com ([45.249.212.191])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQQn-0000000CoYx-3LRB
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAQGJ-0000000Gvd2-1V5o
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 09:10:00 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn3c352HDz1jy1h;
-	Mon, 11 Nov 2024 17:08:03 +0800 (CST)
+	Mon, 11 Nov 2024 08:59:19 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Mf1b1Zz1jxyQ;
+	Mon, 11 Nov 2024 16:57:18 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id D9F351402CE;
-	Mon, 11 Nov 2024 17:09:50 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 6380E14022D;
+	Mon, 11 Nov 2024 16:59:05 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:09:50 +0800
+ 2024 16:59:04 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 086/102] fsck.ubifs: Check and create the lost+found
-Date: Mon, 11 Nov 2024 17:08:14 +0800
-Message-ID: <20241111090832.2093596-17-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 067/102] fsck.ubifs: Read master node & init lpt
+Date: Mon, 11 Nov 2024 16:57:38 +0800
+Message-ID: <20241111085741.2066378-28-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
-References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
+In-Reply-To: <20241111085741.2066378-1-chengzhihao1@huawei.com>
+References: <20241111085741.2066378-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.112.188]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_090958_941650_A8D9C51F 
-X-CRM114-Status: GOOD (  24.52  )
+X-CRM114-CacheID: sfid-20241111_005907_994620_421AF8ED 
+X-CRM114-Status: GOOD (  17.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,193 +70,222 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Huang Xiaojia <huangxiaojia2@huawei.com>
+This is the 1/18 step of fsck. Read and check master node, init lpt.
+There could be following errors:
+ 1. corrupted scanning data in master area or invalid master node:
+    danger mode with rebuild_fs and normal mode with 'yes' answer will
+    turn to rebuild filesystem, other modes will exit.
+ 2. incorrect space statistics in master node: Set %FR_LPT_INCORRECT for
+    for lpt status. Ignore the error.
+ 3. corrupted lpt: Set %FR_LPT_CORRUPTED for lpt status. Ignore the error.
 
-This is the 16/18 step of fsck. Check whether the lost+found is existed,
-create a new one if it is not found. This step makes sure that disconnected
-file can be recovered under the lost+found.
-
-Signed-off-by: Huang Xiaojia <huangxiaojia2@huawei.com>
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am                    |  3 +-
- ubifs-utils/fsck.ubifs/fsck.ubifs.c          | 15 ++++-
- ubifs-utils/fsck.ubifs/fsck.ubifs.h          |  5 ++
- ubifs-utils/fsck.ubifs/handle_disconnected.c | 89 ++++++++++++++++++++++++++++
- 4 files changed, 110 insertions(+), 2 deletions(-)
- create mode 100644 ubifs-utils/fsck.ubifs/handle_disconnected.c
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c |  5 ++-
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h |  2 +-
+ ubifs-utils/fsck.ubifs/load_fs.c    | 78 +++++++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/problem.c    |  1 +
+ ubifs-utils/libubifs/lpt.c          | 18 +++++++--
+ ubifs-utils/libubifs/master.c       |  7 +++-
+ 6 files changed, 104 insertions(+), 7 deletions(-)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index b80196a3..a511c40d 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -86,7 +86,8 @@ fsck_ubifs_SOURCES = \
- 	ubifs-utils/fsck.ubifs/extract_files.c \
- 	ubifs-utils/fsck.ubifs/rebuild_fs.c \
- 	ubifs-utils/fsck.ubifs/check_files.c \
--	ubifs-utils/fsck.ubifs/check_space.c
-+	ubifs-utils/fsck.ubifs/check_space.c \
-+	ubifs-utils/fsck.ubifs/handle_disconnected.c
- 
- fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) \
- 		   $(DUMP_STACK_LD) -lm -lpthread
 diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index b97c8e3b..550d3f98 100644
+index e6744516..2fd68df5 100644
 --- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
 +++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -526,8 +526,20 @@ static int do_fsck(void)
+@@ -423,7 +423,10 @@ int main(int argc, char *argv[])
+ 		goto out_destroy_fsck;
+ 	}
  
- 	log_out(c, "Check and create root dir");
- 	err = check_and_create_root(c);
--	if (err)
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto free_disconnected_files_2;
-+	}
-+
-+	if (list_empty(&FSCK(c)->disconnected_files))
-+		return err;
-+
-+	log_out(c, "Check and create lost+found");
-+	err = check_and_create_lost_found(c);
-+	if (err) {
- 		exit_code |= FSCK_ERROR;
-+		goto free_disconnected_files_2;
-+	}
- 
- free_disconnected_files_2:
- 	destroy_file_list(c, &FSCK(c)->disconnected_files);
-@@ -583,6 +595,7 @@ int main(int argc, char *argv[])
- 	 * Step 13: Commit problem fixing modifications
- 	 * Step 14: Check and correct the index size
- 	 * Step 15: Check and create root dir
-+	 * Step 16: Check and create lost+found
- 	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
+-	/* Init: Read superblock */
++	/*
++	 * Init: Read superblock
++	 * Step 1: Read master & init lpt
++	 */
+ 	err = ubifs_load_filesystem(c);
+ 	if (err) {
+ 		if (FSCK(c)->try_rebuild)
 diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index fb7ccca0..0e2a0811 100644
+index d25ecc2d..7f826156 100644
 --- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
 +++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -277,6 +277,7 @@ struct ubifs_rebuild_info {
-  * @lpts: lprops table
-  * @try_rebuild: %true means that try to rebuild fs when fsck failed
-  * @rebuild: rebuilding-related information
-+ * @lost_and_found: inode number of the lost+found directory, %0 means invalid
-  */
- struct ubifs_fsck_info {
- 	int mode;
-@@ -288,6 +289,7 @@ struct ubifs_fsck_info {
- 	struct ubifs_lprops *lpts;
- 	bool try_rebuild;
- 	struct ubifs_rebuild_info *rebuild;
-+	ino_t lost_and_found;
+@@ -37,7 +37,7 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
+        DANGER_MODE1, REBUILD_MODE, CHECK_MODE };
+ 
+ /* Types of inconsistent problems */
+-enum { SB_CORRUPTED = 0 };
++enum { SB_CORRUPTED = 0, MST_CORRUPTED };
+ 
+ struct scanned_file;
+ 
+diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
+index 4a06b4c2..036e307c 100644
+--- a/ubifs-utils/fsck.ubifs/load_fs.c
++++ b/ubifs-utils/fsck.ubifs/load_fs.c
+@@ -99,10 +99,81 @@ int ubifs_load_filesystem(struct ubifs_info *c)
+ 		goto out_mounting;
+ 	}
+ 
++	log_out(c, "Read master & init lpt");
++	err = ubifs_read_master(c);
++	if (err) {
++		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED)) {
++			if (fix_problem(c, MST_CORRUPTED))
++				FSCK(c)->try_rebuild = true;
++		} else
++			exit_code |= FSCK_ERROR;
++		goto out_master;
++	}
++
++	init_constants_master(c);
++
++	if ((c->mst_node->flags & cpu_to_le32(UBIFS_MST_DIRTY)) != 0) {
++		ubifs_msg(c, "recovery needed");
++		c->need_recovery = 1;
++	}
++
++	if (c->need_recovery && !c->ro_mount) {
++		err = ubifs_recover_inl_heads(c, c->sbuf);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_master;
++		}
++	}
++
++	err = ubifs_lpt_init(c, 1, !c->ro_mount);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		goto out_master;
++	}
++
++	if (!c->ro_mount && c->space_fixup) {
++		err = ubifs_fixup_free_space(c);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_lpt;
++		}
++	}
++
++	if (!c->ro_mount && !c->need_recovery) {
++		/*
++		 * Set the "dirty" flag so that if we reboot uncleanly we
++		 * will notice this immediately on the next mount.
++		 */
++		c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
++		err = ubifs_write_master(c);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_lpt;
++		}
++	}
++
++	if (!c->ro_mount && c->superblock_need_write) {
++		err = ubifs_write_sb_node(c, c->sup_node);
++		if (err) {
++			exit_code |= FSCK_ERROR;
++			goto out_lpt;
++		}
++		c->superblock_need_write = 0;
++	}
++
+ 	c->mounting = 0;
+ 
+ 	return 0;
+ 
++out_lpt:
++	ubifs_lpt_free(c, 0);
++out_master:
++	c->max_sqnum = 0;
++	c->highest_inum = 0;
++	c->calc_idx_sz = 0;
++	kfree(c->mst_node);
++	kfree(c->rcvrd_mst_node);
++	free_wbufs(c);
+ out_mounting:
+ 	c->mounting = 0;
+ out_free:
+@@ -118,8 +189,15 @@ out_free:
+ void ubifs_destroy_filesystem(struct ubifs_info *c)
+ {
+ 	free_wbufs(c);
++	ubifs_lpt_free(c, 0);
++
++	c->max_sqnum = 0;
++	c->highest_inum = 0;
++	c->calc_idx_sz = 0;
+ 
+ 	kfree(c->cbuf);
++	kfree(c->rcvrd_mst_node);
++	kfree(c->mst_node);
+ 	kfree(c->ileb_buf);
+ 	kfree(c->sbuf);
+ 	kfree(c->bottom_up_buf);
+diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
+index acb9e45e..1af66632 100644
+--- a/ubifs-utils/fsck.ubifs/problem.c
++++ b/ubifs-utils/fsck.ubifs/problem.c
+@@ -36,6 +36,7 @@ struct fsck_problem {
+ 
+ static const struct fsck_problem problem_table[] = {
+ 	{0, "Corrupted superblock"},	// SB_CORRUPTED
++	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted master node"},	// MST_CORRUPTED
  };
  
- #define FSCK(c) ((struct ubifs_fsck_info*)c->private)
-@@ -383,4 +385,7 @@ int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb,
- int check_and_correct_space(struct ubifs_info *c);
- int check_and_correct_index_size(struct ubifs_info *c);
+ static void print_problem(const struct ubifs_info *c,
+diff --git a/ubifs-utils/libubifs/lpt.c b/ubifs-utils/libubifs/lpt.c
+index c0df7c7d..b07f1f77 100644
+--- a/ubifs-utils/libubifs/lpt.c
++++ b/ubifs-utils/libubifs/lpt.c
+@@ -1883,8 +1883,13 @@ static int lpt_init_rd(struct ubifs_info *c)
+ 	c->dirty_idx.max_cnt = LPT_HEAP_SZ;
  
-+/* handle_disconnected.c */
-+int check_and_create_lost_found(struct ubifs_info *c);
-+
- #endif
-diff --git a/ubifs-utils/fsck.ubifs/handle_disconnected.c b/ubifs-utils/fsck.ubifs/handle_disconnected.c
-new file mode 100644
-index 00000000..b9a380f9
---- /dev/null
-+++ b/ubifs-utils/fsck.ubifs/handle_disconnected.c
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
-+ *
-+ * Authors: Huang Xiaojia <huangxiaojia2@huawei.com>
-+ *          Zhihao Cheng <chengzhihao1@huawei.com>
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/stat.h>
-+
-+#include "linux_err.h"
-+#include "kmem.h"
-+#include "ubifs.h"
-+#include "defs.h"
-+#include "debug.h"
-+#include "key.h"
-+#include "fsck.ubifs.h"
-+
-+#define LOST_FOUND_DIR_NAME "lost+found"
-+
-+/**
-+ * check_and_create_lost_found - Check and create the lost+found directory.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function checks whether the lost+found directory exists and creates a
-+ * new one if no valid lost+found existing. If there is a valid lost+found
-+ * directory, inode number is stored in @FSCK(c)->lost_and_found. Returns zero
-+ * in case of success, a negative error code in case of failure.
-+ */
-+int check_and_create_lost_found(struct ubifs_info *c)
-+{
-+	struct ubifs_inode *root_ui, *lost_found_ui;
-+	struct fscrypt_name nm;
-+	int err = 0;
-+
-+	root_ui = ubifs_lookup_by_inum(c, UBIFS_ROOT_INO);
-+	if (IS_ERR(root_ui)) {
-+		err = PTR_ERR(root_ui);
-+		/* Previous step ensures that the root dir is valid. */
-+		ubifs_assert(c, err != -ENOENT);
-+		return err;
+ 	err = read_ltab(c);
+-	if (err)
+-		return err;
++	if (err) {
++		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
++		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
++			err = 0;
++		else
++			return err;
 +	}
-+
-+	if (root_ui->flags & UBIFS_CRYPT_FL) {
-+		ubifs_msg(c, "The root dir is encrypted, skip checking lost+found");
-+		goto free_root;
-+	}
-+
-+	fname_name(&nm) = LOST_FOUND_DIR_NAME;
-+	fname_len(&nm) = strlen(LOST_FOUND_DIR_NAME);
-+	lost_found_ui = ubifs_lookup(c, root_ui, &nm);
-+	if (IS_ERR(lost_found_ui)) {
-+		err = PTR_ERR(lost_found_ui);
-+		if (err != -ENOENT)
-+			goto free_root;
-+
-+		/* Not found. Create a new lost+found. */
-+		err = ubifs_mkdir(c, root_ui, &nm, S_IRUGO | S_IWUSR | S_IXUSR);
-+		if (err < 0) {
-+			if (err == -ENOSPC) {
-+				ubifs_msg(c, "No free space to create lost+found");
+ 
+ 	err = lpt_check_hash(c);
+ 	if (err)
+@@ -1938,8 +1943,13 @@ static int lpt_init_wr(struct ubifs_info *c)
+ 		if (!c->lsave)
+ 			return -ENOMEM;
+ 		err = read_lsave(c);
+-		if (err)
+-			return err;
++		if (err) {
++			if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
++			    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
 +				err = 0;
-+			}
-+			goto free_root;
++			else
++				return err;
 +		}
-+		lost_found_ui = ubifs_lookup(c, root_ui, &nm);
-+		if (IS_ERR(lost_found_ui)) {
-+			err = PTR_ERR(lost_found_ui);
-+			ubifs_assert(c, err != -ENOENT);
-+			goto free_root;
-+		}
-+		FSCK(c)->lost_and_found = lost_found_ui->vfs_inode.inum;
-+		ubifs_msg(c, "Create the lost+found");
-+	} else if (!(lost_found_ui->flags & UBIFS_CRYPT_FL) &&
-+		   S_ISDIR(lost_found_ui->vfs_inode.mode)) {
-+		FSCK(c)->lost_and_found = lost_found_ui->vfs_inode.inum;
-+	} else {
-+		ubifs_msg(c, "The type of lost+found is %s%s",
-+			  ubifs_get_type_name(ubifs_get_dent_type(lost_found_ui->vfs_inode.mode)),
-+			  lost_found_ui->flags & UBIFS_CRYPT_FL ? ", encrypted" : "");
+ 	}
+ 
+ 	for (i = 0; i < c->lpt_lebs; i++)
+diff --git a/ubifs-utils/libubifs/master.c b/ubifs-utils/libubifs/master.c
+index 61ff4cec..54d2a789 100644
+--- a/ubifs-utils/libubifs/master.c
++++ b/ubifs-utils/libubifs/master.c
+@@ -323,7 +323,12 @@ out:
+ 	set_failure_reason_callback(c, reason);
+ 	ubifs_err(c, "bad master node at offset %d error %d", c->mst_offs, err);
+ 	ubifs_dump_node(c, c->mst_node, c->mst_node_alsz);
+-	return -EINVAL;
++	err = -EINVAL;
++	if (can_ignore_failure_callback(c, reason)) {
++		clear_failure_reason_callback(c);
++		err = 0;
 +	}
-+
-+	kfree(lost_found_ui);
-+free_root:
-+	kfree(root_ui);
 +	return err;
-+}
+ }
+ 
+ /**
 -- 
 2.13.6
 
