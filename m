@@ -4,71 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9695AD5E140
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 440FCD2E9C4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3YzPNCT4Q76UxbyyLB0APx2ziwLJXq2DGwmPJPBnHJQ=; b=zwnyVuCGeSIXOx
-	1oUbcK3EM7AdMQwi5rQsnEjk4pabiLbyQSUSvdb4UJmwLs1MLgC4zf8r0wg++4XhKyUImCqxPvxTI
-	WxNIUKE3PWTClw+T+/7o9MlqKOu4d/OQJedAyvIt7lpHBu/oP5Fz5YkhifPw1cnuVZTGIEhZfgbgL
-	Z25zMbW0L8+fBmjtz0GR2geFDmCr6zHb+U6M/WXrruLnPBS9SDrCsUTpavdJQJDztbJzzvjZie8vf
-	H8+F16YNF5d+YXFZAGK7XBIiMGqMkCSwmaFkNh5uB8/3/GnrqzCPkpf9ZVqBW/SfWLMOVOYqFJ3Qw
-	n0Z6gYum6Oc7vCCTxi3Q==;
+	List-Owner; bh=GXtaIOYcy8mJtMj9JAFPPVmfgZYrx2y1iaQnbUm3LAc=; b=Am1x8WOubfsi8z
+	6+DIFa3DTfvsA3eLsoLckRjUb20jvdOZ6j2IdS4rj+i8l6Au6LQnzPrF3I0OHV5ia+IWTB45gHSpU
+	+J5LNM+za+LgbI5jELSiK61XCpR/todZviJD94jkRGpwWEsJrYYy/yaLsLxZOTUQdjww79IrkKoAr
+	mHO5cUpDO3cdSosKPwqBIdYSL6+u4Nn/hVjD2mEfsWznXXaVV2juNS6fxuMgQy2/22RmhbqUCChfn
+	tWAlXLR4mGO4mG94V32Rj2319KHMsvbOyBDuukJXZXBr8EhDVtpAjLf7QE2tiNWqDE5YJWNOBcn/J
+	7uwjGzJRF0KqmvaSX0PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPbe-0000000GnRN-44F5;
-	Mon, 11 Nov 2024 08:17:06 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV3-0000000GZry-3LJA
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=p1Z++r/5r8aUdFyAmcNrgxAyqCgFksBSaLVIOIOBF+E=; b=RM+qh1r7h6KqRx7Nc3xh8kOk3y
-	xYVZqglgcIAWddBkDRPMtPCknt7z8jtWv1WIKn/YkWz5jA7+Xf24+7StJtEtFUMbtFGW3rGM+5rwr
-	97uFCabKC+ap76Wq6n2+WG7nhGrQ4RBlbBJUq3DxtjAobn6FY5r3g8QMFPIvWHtnWQ/UojLSqgndN
-	HkMUmDSWk/1c18iv0momAjYIOyCH1cOquieZOTRhmw6QNyYS155HRyA1lC0qhgG2ZnCQXXbREKJH2
-	oaT8ufzDYNq47RMk+XdQP6RFJec0uHdPuPmuCE6fAud6CCK95dRLh2HD0eVLrw9dklHtZV0nvChRI
-	kLCCbVkg==;
+	id 1tAQ6U-0000000Grl4-3wn1;
+	Mon, 11 Nov 2024 08:48:58 +0000
 Received: from szxga07-in.huawei.com ([45.249.212.35])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUd-0000000CmJe-2iCh
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAPwL-0000000Gpda-23K3
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:53 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rg15PMz1hwTY;
-	Mon, 11 Nov 2024 15:03:47 +0800 (CST)
+	Mon, 11 Nov 2024 08:38:31 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn2vm5X3Pz1hwNC;
+	Mon, 11 Nov 2024 16:36:36 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 015C6140361;
-	Mon, 11 Nov 2024 15:05:35 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id AC05D1A016C;
+	Mon, 11 Nov 2024 16:38:24 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:34 +0800
+ 2024 16:38:24 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 067/102] fsck.ubifs: Read master node & init lpt
-Date: Mon, 11 Nov 2024 15:03:10 +0800
-Message-ID: <20241111070346.1314122-68-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 005/102] ubifs-utils: Move 'debug_level' into ubifs_info structure
+Date: Mon, 11 Nov 2024 16:36:36 +0800
+Message-ID: <20241111083711.1916125-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
-References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
+In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
+References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.112.188]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070550_782105_70F64A5A 
-X-CRM114-Status: GOOD (  17.83  )
+X-CRM114-CacheID: sfid-20241111_003829_723405_9ED53438 
+X-CRM114-Status: GOOD (  10.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,222 +70,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 1/18 step of fsck. Read and check master node, init lpt.
-There could be following errors:
- 1. corrupted scanning data in master area or invalid master node:
-    danger mode with rebuild_fs and normal mode with 'yes' answer will
-    turn to rebuild filesystem, other modes will exit.
- 2. incorrect space statistics in master node: Set %FR_LPT_INCORRECT for
-    for lpt status. Ignore the error.
- 3. corrupted lpt: Set %FR_LPT_CORRUPTED for lpt status. Ignore the error.
+Embed new member 'debug_level' into 'ubifs_info' structure, then global
+variable 'debug_level' can be removed from mkfs.ubifs.c. Next patches
+will import UBIFS libs from linux kernel, which could print messages
+with different levels, then 'debug_level' can be used to control which
+level messages should be printed.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/fsck.ubifs.c |  5 ++-
- ubifs-utils/fsck.ubifs/fsck.ubifs.h |  2 +-
- ubifs-utils/fsck.ubifs/load_fs.c    | 78 +++++++++++++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/problem.c    |  1 +
- ubifs-utils/libubifs/lpt.c          | 18 +++++++--
- ubifs-utils/libubifs/master.c       |  7 +++-
- 6 files changed, 104 insertions(+), 7 deletions(-)
+ ubifs-utils/common/defs.h           | 4 +---
+ ubifs-utils/common/ubifs.h          | 3 +++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 6 ++----
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index e6744516..2fd68df5 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -423,7 +423,10 @@ int main(int argc, char *argv[])
- 		goto out_destroy_fsck;
- 	}
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index 3dafc6dd..cafc94af 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -23,9 +23,7 @@ extern struct ubifs_info info_;
  
--	/* Init: Read superblock */
-+	/*
-+	 * Init: Read superblock
-+	 * Step 1: Read master & init lpt
-+	 */
- 	err = ubifs_load_filesystem(c);
- 	if (err) {
- 		if (FSCK(c)->try_rebuild)
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index d25ecc2d..7f826156 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -37,7 +37,7 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
-        DANGER_MODE1, REBUILD_MODE, CHECK_MODE };
+ enum { MKFS_PROGRAM_TYPE = 0 };
  
- /* Types of inconsistent problems */
--enum { SB_CORRUPTED = 0 };
-+enum { SB_CORRUPTED = 0, MST_CORRUPTED };
+-extern int debug_level;
+-
+-#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
++#define dbg_msg(lvl, fmt, ...) do {if (info_.debug_level >= lvl)	\
+ 	printf("%s: %s: " fmt "\n", PROGRAM_NAME, __FUNCTION__, ##__VA_ARGS__); \
+ } while(0)
  
- struct scanned_file;
+diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
+index 2b0ffe56..58aaba9b 100644
+--- a/ubifs-utils/common/ubifs.h
++++ b/ubifs-utils/common/ubifs.h
+@@ -273,6 +273,8 @@ struct ubifs_znode
+  * @highest_inum: highest used inode number
+  * @max_sqnum: current global sequence number
+  *
++ * @debug_level: level of debug messages, 0 - none, 1 - statistics,
++ *		 2 - files, 3 - more details
+  * @program_type: used to identify the type of current program
+  * @program_name: program name
+  *
+@@ -363,6 +365,7 @@ struct ubifs_info
+ 	ino_t highest_inum;
+ 	unsigned long long max_sqnum;
  
-diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
-index 4a06b4c2..036e307c 100644
---- a/ubifs-utils/fsck.ubifs/load_fs.c
-+++ b/ubifs-utils/fsck.ubifs/load_fs.c
-@@ -99,10 +99,81 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 		goto out_mounting;
- 	}
++	int debug_level;
+ 	int program_type;
+ 	const char *program_name;
  
-+	log_out(c, "Read master & init lpt");
-+	err = ubifs_read_master(c);
-+	if (err) {
-+		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED)) {
-+			if (fix_problem(c, MST_CORRUPTED))
-+				FSCK(c)->try_rebuild = true;
-+		} else
-+			exit_code |= FSCK_ERROR;
-+		goto out_master;
-+	}
-+
-+	init_constants_master(c);
-+
-+	if ((c->mst_node->flags & cpu_to_le32(UBIFS_MST_DIRTY)) != 0) {
-+		ubifs_msg(c, "recovery needed");
-+		c->need_recovery = 1;
-+	}
-+
-+	if (c->need_recovery && !c->ro_mount) {
-+		err = ubifs_recover_inl_heads(c, c->sbuf);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_master;
-+		}
-+	}
-+
-+	err = ubifs_lpt_init(c, 1, !c->ro_mount);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto out_master;
-+	}
-+
-+	if (!c->ro_mount && c->space_fixup) {
-+		err = ubifs_fixup_free_space(c);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_lpt;
-+		}
-+	}
-+
-+	if (!c->ro_mount && !c->need_recovery) {
-+		/*
-+		 * Set the "dirty" flag so that if we reboot uncleanly we
-+		 * will notice this immediately on the next mount.
-+		 */
-+		c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
-+		err = ubifs_write_master(c);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_lpt;
-+		}
-+	}
-+
-+	if (!c->ro_mount && c->superblock_need_write) {
-+		err = ubifs_write_sb_node(c, c->sup_node);
-+		if (err) {
-+			exit_code |= FSCK_ERROR;
-+			goto out_lpt;
-+		}
-+		c->superblock_need_write = 0;
-+	}
-+
- 	c->mounting = 0;
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 22969f93..f66c6a46 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -138,8 +138,6 @@ struct ubifs_info info_;
+ static struct ubifs_info *c = &info_;
+ static libubi_t ubi;
  
- 	return 0;
+-/* Debug levels are: 0 (none), 1 (statistics), 2 (files) ,3 (more details) */
+-int debug_level;
+ int verbose;
+ int yes;
  
-+out_lpt:
-+	ubifs_lpt_free(c, 0);
-+out_master:
-+	c->max_sqnum = 0;
-+	c->highest_inum = 0;
-+	c->calc_idx_sz = 0;
-+	kfree(c->mst_node);
-+	kfree(c->rcvrd_mst_node);
-+	free_wbufs(c);
- out_mounting:
- 	c->mounting = 0;
- out_free:
-@@ -118,8 +189,15 @@ out_free:
- void ubifs_destroy_filesystem(struct ubifs_info *c)
- {
- 	free_wbufs(c);
-+	ubifs_lpt_free(c, 0);
-+
-+	c->max_sqnum = 0;
-+	c->highest_inum = 0;
-+	c->calc_idx_sz = 0;
- 
- 	kfree(c->cbuf);
-+	kfree(c->rcvrd_mst_node);
-+	kfree(c->mst_node);
- 	kfree(c->ileb_buf);
- 	kfree(c->sbuf);
- 	kfree(c->bottom_up_buf);
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index acb9e45e..1af66632 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -36,6 +36,7 @@ struct fsck_problem {
- 
- static const struct fsck_problem problem_table[] = {
- 	{0, "Corrupted superblock"},	// SB_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted master node"},	// MST_CORRUPTED
- };
- 
- static void print_problem(const struct ubifs_info *c,
-diff --git a/ubifs-utils/libubifs/lpt.c b/ubifs-utils/libubifs/lpt.c
-index c0df7c7d..b07f1f77 100644
---- a/ubifs-utils/libubifs/lpt.c
-+++ b/ubifs-utils/libubifs/lpt.c
-@@ -1883,8 +1883,13 @@ static int lpt_init_rd(struct ubifs_info *c)
- 	c->dirty_idx.max_cnt = LPT_HEAP_SZ;
- 
- 	err = read_ltab(c);
--	if (err)
--		return err;
-+	if (err) {
-+		if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+		    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+			err = 0;
-+		else
-+			return err;
-+	}
- 
- 	err = lpt_check_hash(c);
- 	if (err)
-@@ -1938,8 +1943,13 @@ static int lpt_init_wr(struct ubifs_info *c)
- 		if (!c->lsave)
- 			return -ENOMEM;
- 		err = read_lsave(c);
--		if (err)
--			return err;
-+		if (err) {
-+			if (test_and_clear_failure_reason_callback(c, FR_LPT_CORRUPTED) &&
-+			    can_ignore_failure_callback(c, FR_LPT_CORRUPTED))
-+				err = 0;
-+			else
-+				return err;
-+		}
- 	}
- 
- 	for (i = 0; i < c->lpt_lebs; i++)
-diff --git a/ubifs-utils/libubifs/master.c b/ubifs-utils/libubifs/master.c
-index 61ff4cec..54d2a789 100644
---- a/ubifs-utils/libubifs/master.c
-+++ b/ubifs-utils/libubifs/master.c
-@@ -323,7 +323,12 @@ out:
- 	set_failure_reason_callback(c, reason);
- 	ubifs_err(c, "bad master node at offset %d error %d", c->mst_offs, err);
- 	ubifs_dump_node(c, c->mst_node, c->mst_node_alsz);
--	return -EINVAL;
-+	err = -EINVAL;
-+	if (can_ignore_failure_callback(c, reason)) {
-+		clear_failure_reason_callback(c);
-+		err = 0;
-+	}
-+	return err;
- }
- 
- /**
+@@ -671,9 +669,9 @@ static int get_options(int argc, char**argv)
+ 			common_print_version();
+ 			exit(EXIT_SUCCESS);
+ 		case 'g':
+-			debug_level = strtol(optarg, &endp, 0);
++			c->debug_level = strtol(optarg, &endp, 0);
+ 			if (*endp != '\0' || endp == optarg ||
+-			    debug_level < 0 || debug_level > 3)
++			    c->debug_level < 0 || c->debug_level > 3)
+ 				return errmsg("bad debugging level '%s'",
+ 					       optarg);
+ 			break;
 -- 
 2.13.6
 
