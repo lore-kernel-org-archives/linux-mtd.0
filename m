@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67402D12D7E
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:10:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3B26D12D7E
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QUwLT+UxBqa1VgIk8Z9P6NcKcPAduOdSOYu3mlK16L0=; b=bTSumQX814EUdE
-	41mVYx6JSOoLPMXiWyLUBW6SsxVYFLflNPMLmcM2VPo+GPGj2YL+W3HM98v6tXOAQSMT4U6NMDqyf
-	vBNCx2RRfwrgHcUjP0gXuIamJHk9d2i9BueTHUWIUeuFj5xKp6f+BCM3OfF532kXw1WNI7JfAHA40
-	avcZRmllfH+wWOXg4S1msNPSprfJtDDYxkiw15Fmw4QZa9OjH6f67Yz0KJ9ZR/7/s6/oYnhP4S6OU
-	6CFiShPYbpbR53yU8amSZQg61QWKDbssl4Y634hmMjRlpbaELnG3gm/lhzDP6qw5gvHE/ghrbsAPL
-	bztvtKtUE6fQcLe9HZCw==;
+	List-Owner; bh=cCm8m6HCozW/FSuTlonvwJqrDWAD5Qmgj4NWx5sgRtI=; b=dsvRue409pyBe/
+	Ne0cgygmCnv6IPKars4/UJQdxDm8OVR1I7audWZUBQ2ur5kj+mP6COpgoY09MfTCK2P/RkGLUSCcT
+	gt4IWclvXGxayKdososx33TwgyD32gv6sLfDce5zd5BmqEqjL6NgU54xiFtMlIlB+t7mFJRlPAXd7
+	uOJ/IFTUFqJeCdl+geWEKKl/oZfP2GfH1IIL0acmdGxbc83asURsnkN4MRXtKr5cJ6GUIfFqLXpPo
+	rzZsRhqYGyH8ZkswXy2jq1E8OxJ7BgqcG2pKvoHswzMLC0gC/M8yEqTEhAj4kP7yn5CMy1s6fbSKw
+	phBBlvMhgGnGV6dHQF2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOZ6-0000000Gd0n-2YW8;
-	Mon, 11 Nov 2024 07:10:24 +0000
+	id 1tAOZA-0000000Gd3Y-3IpZ;
+	Mon, 11 Nov 2024 07:10:28 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVU-0000000GaCV-2WtD
+	id 1tAOVV-0000000GaD4-0VCU
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:40 +0000
+	Mon, 11 Nov 2024 07:06:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=66uJ2SCoXJbJSM1eB421hiOJjzLhjTJFlXBr/VTFtEE=; b=TOE3wUzbNforhLS0eOaMaBXXod
-	Qs9kGcXdZRnuweZfAOdR2TVMfmAi63Bler03sw9wo8Clu5SsujxbomgJiluayMo/I/7Py8TI0X9NX
-	VBCBjJqDf8g+LyEkRHh4g4ypo0PymV+M24ywHJtuTCZSEMRbBjX6XINQOl4hAfi2oGKSIeS1ixWVw
-	t+fXljHLU6m6GxN8T5tIQ2lCSRCy1Y948pcSPa/tiDNfp5K9VNJEQVDjAHm0rsBvP0XZv+N9F798K
-	Lp2y2jpuOsvt4AFfG8XpLh5g7ufVAm4JHO3/iBEuTvc+8ZZ88EV6b8LJK//cwK73Sc48CxKO6Xuis
-	n+CgMxIA==;
-Received: from szxga06-in.huawei.com ([45.249.212.32])
+	bh=EU5hK9k/3juhPp3wnKSGTCDtKG90SdozR1yYMI9y/eM=; b=JyIRlJkwAzhD9oL9+ZrNwKq7U1
+	qeD4W9WBUiNJv29h6z2EWIA9US4j+pClONGYBfHnQ1xb1JTP8xtV4jXxmEw2HOI3q+SMzmf82c8Ip
+	qEwnJtQl4l5OP/6qNSC2bQLuMTgVtmhAqAzlqC+eE1DvnNJE5ANVTrLGIdf3MQZvSecbdxWv5m916
+	V4uOycLX4ROWWxz3XO8GmAfO+YpbcgFS4rt/tLLPDJMsIJsLO9HAH39c+ywfojZKfCwAto9QERoZ4
+	5cH8OUxGOWdOIc9SafXzBMlQGtKzblh/wVgAWJFNo2/vQwXeeHuMFmla6sb233yKO0A6kObCUHg0G
+	VaW/V7Fg==;
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVE-0000000CmRl-1ZTa
+	id 1tAOVG-0000000CmTL-0tJL
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:38 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn0v75Wlxz1ypWy;
-	Mon, 11 Nov 2024 15:05:55 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:39 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn0r861ppz1TB6R;
+	Mon, 11 Nov 2024 15:03:20 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id A0F701401F4;
-	Mon, 11 Nov 2024 15:05:44 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 24E2C180104;
+	Mon, 11 Nov 2024 15:05:47 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:44 +0800
+ 2024 15:05:46 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 086/102] fsck.ubifs: Check and create the lost+found
-Date: Mon, 11 Nov 2024 15:03:29 +0800
-Message-ID: <20241111070346.1314122-87-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 091/102] tests: ubifs_tools: fsck_tests: Add authentication refusing test
+Date: Mon, 11 Nov 2024 15:03:34 +0800
+Message-ID: <20241111070346.1314122-92-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070627_387813_1D3C7E17 
-X-CRM114-Status: GOOD (  24.50  )
+X-CRM114-CacheID: sfid-20241111_070629_350091_A3034FBB 
+X-CRM114-Status: GOOD (  13.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,193 +85,125 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Huang Xiaojia <huangxiaojia2@huawei.com>
+Authenticated UBIFS image is not supported in fsck, add testcase
+to check that.
 
-This is the 16/18 step of fsck. Check whether the lost+found is existed,
-create a new one if it is not found. This step makes sure that disconnected
-file can be recovered under the lost+found.
-
-Signed-off-by: Huang Xiaojia <huangxiaojia2@huawei.com>
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am                    |  3 +-
- ubifs-utils/fsck.ubifs/fsck.ubifs.c          | 15 ++++-
- ubifs-utils/fsck.ubifs/fsck.ubifs.h          |  5 ++
- ubifs-utils/fsck.ubifs/handle_disconnected.c | 89 ++++++++++++++++++++++++++++
- 4 files changed, 110 insertions(+), 2 deletions(-)
- create mode 100644 ubifs-utils/fsck.ubifs/handle_disconnected.c
+ .gitignore                                         |  1 +
+ configure.ac                                       |  3 +-
+ tests/ubifs_tools-tests/Makemodule.am              |  3 +-
+ .../fsck_tests/authentication_refuse.sh.in         | 66 ++++++++++++++++++++++
+ 4 files changed, 71 insertions(+), 2 deletions(-)
+ create mode 100755 tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh.in
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index b80196a3..a511c40d 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -86,7 +86,8 @@ fsck_ubifs_SOURCES = \
- 	ubifs-utils/fsck.ubifs/extract_files.c \
- 	ubifs-utils/fsck.ubifs/rebuild_fs.c \
- 	ubifs-utils/fsck.ubifs/check_files.c \
--	ubifs-utils/fsck.ubifs/check_space.c
-+	ubifs-utils/fsck.ubifs/check_space.c \
-+	ubifs-utils/fsck.ubifs/handle_disconnected.c
+diff --git a/.gitignore b/.gitignore
+index de0fce1f..799290a4 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -114,6 +114,7 @@ tests/fs-tests/stress/fs_stress01.sh
+ tests/ubi-tests/runubitests.sh
+ tests/ubi-tests/ubi-stress-test.sh
+ tests/ubifs_tools-tests/lib/common.sh
++tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
  
- fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) \
- 		   $(DUMP_STACK_LD) -lm -lpthread
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index b97c8e3b..550d3f98 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -526,8 +526,20 @@ static int do_fsck(void)
+ #
+ # Files generated by autotools
+diff --git a/configure.ac b/configure.ac
+index 7fd4b764..45f51abb 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -293,7 +293,8 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+ 	tests/fs-tests/stress/fs_stress01.sh
+ 	tests/ubi-tests/runubitests.sh
+ 	tests/ubi-tests/ubi-stress-test.sh
+-	tests/ubifs_tools-tests/lib/common.sh])
++	tests/ubifs_tools-tests/lib/common.sh
++	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh])
  
- 	log_out(c, "Check and create root dir");
- 	err = check_and_create_root(c);
--	if (err)
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto free_disconnected_files_2;
-+	}
-+
-+	if (list_empty(&FSCK(c)->disconnected_files))
-+		return err;
-+
-+	log_out(c, "Check and create lost+found");
-+	err = check_and_create_lost_found(c);
-+	if (err) {
- 		exit_code |= FSCK_ERROR;
-+		goto free_disconnected_files_2;
-+	}
+ AC_OUTPUT([Makefile])
  
- free_disconnected_files_2:
- 	destroy_file_list(c, &FSCK(c)->disconnected_files);
-@@ -583,6 +595,7 @@ int main(int argc, char *argv[])
- 	 * Step 13: Commit problem fixing modifications
- 	 * Step 14: Check and correct the index size
- 	 * Step 15: Check and create root dir
-+	 * Step 16: Check and create lost+found
- 	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index fb7ccca0..0e2a0811 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -277,6 +277,7 @@ struct ubifs_rebuild_info {
-  * @lpts: lprops table
-  * @try_rebuild: %true means that try to rebuild fs when fsck failed
-  * @rebuild: rebuilding-related information
-+ * @lost_and_found: inode number of the lost+found directory, %0 means invalid
-  */
- struct ubifs_fsck_info {
- 	int mode;
-@@ -288,6 +289,7 @@ struct ubifs_fsck_info {
- 	struct ubifs_lprops *lpts;
- 	bool try_rebuild;
- 	struct ubifs_rebuild_info *rebuild;
-+	ino_t lost_and_found;
- };
- 
- #define FSCK(c) ((struct ubifs_fsck_info*)c->private)
-@@ -383,4 +385,7 @@ int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb,
- int check_and_correct_space(struct ubifs_info *c);
- int check_and_correct_index_size(struct ubifs_info *c);
- 
-+/* handle_disconnected.c */
-+int check_and_create_lost_found(struct ubifs_info *c);
-+
- #endif
-diff --git a/ubifs-utils/fsck.ubifs/handle_disconnected.c b/ubifs-utils/fsck.ubifs/handle_disconnected.c
-new file mode 100644
-index 00000000..b9a380f9
+diff --git a/tests/ubifs_tools-tests/Makemodule.am b/tests/ubifs_tools-tests/Makemodule.am
+index 265c9cc7..6b533982 100644
+--- a/tests/ubifs_tools-tests/Makemodule.am
++++ b/tests/ubifs_tools-tests/Makemodule.am
+@@ -1,2 +1,3 @@
+ test_SCRIPTS += \
+-	tests/ubifs_tools-tests/lib/common.sh
++	tests/ubifs_tools-tests/lib/common.sh \
++	tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh
+diff --git a/tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh.in b/tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh.in
+new file mode 100755
+index 00000000..268a7de1
 --- /dev/null
-+++ b/ubifs-utils/fsck.ubifs/handle_disconnected.c
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
-+ *
-+ * Authors: Huang Xiaojia <huangxiaojia2@huawei.com>
-+ *          Zhihao Cheng <chengzhihao1@huawei.com>
-+ */
++++ b/tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh.in
+@@ -0,0 +1,66 @@
++#!/bin/sh
++# Copyright (c), 2024, Huawei Technologies Co, Ltd.
++# Author: Zhihao Cheng <chengzhihao1@huawei.com>
++#
++# Test Description:
++# Refuse checking authenticated UBIFS image
++# Running time: 10s
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/stat.h>
++TESTBINDIR=@TESTBINDIR@
++source $TESTBINDIR/common.sh
 +
-+#include "linux_err.h"
-+#include "kmem.h"
-+#include "ubifs.h"
-+#include "defs.h"
-+#include "debug.h"
-+#include "key.h"
-+#include "fsck.ubifs.h"
++ID="0xec,0xa1,0x00,0x15" # 128M 128KB 2KB 512-sub-page
 +
-+#define LOST_FOUND_DIR_NAME "lost+found"
-+
-+/**
-+ * check_and_create_lost_found - Check and create the lost+found directory.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function checks whether the lost+found directory exists and creates a
-+ * new one if no valid lost+found existing. If there is a valid lost+found
-+ * directory, inode number is stored in @FSCK(c)->lost_and_found. Returns zero
-+ * in case of success, a negative error code in case of failure.
-+ */
-+int check_and_create_lost_found(struct ubifs_info *c)
++function run_test()
 +{
-+	struct ubifs_inode *root_ui, *lost_found_ui;
-+	struct fscrypt_name nm;
-+	int err = 0;
++	echo "Do authentication_refused test"
 +
-+	root_ui = ubifs_lookup_by_inum(c, UBIFS_ROOT_INO);
-+	if (IS_ERR(root_ui)) {
-+		err = PTR_ERR(root_ui);
-+		/* Previous step ensures that the root dir is valid. */
-+		ubifs_assert(c, err != -ENOENT);
-+		return err;
-+	}
++	modprobe nandsim id_bytes=$ID
++	mtdnum="$(find_mtd_device "$nandsim_patt")"
++	flash_eraseall /dev/mtd$mtdnum
 +
-+	if (root_ui->flags & UBIFS_CRYPT_FL) {
-+		ubifs_msg(c, "The root dir is encrypted, skip checking lost+found");
-+		goto free_root;
-+	}
++	modprobe ubi mtd="$mtdnum,2048" || fatal "modprobe ubi fail"
++	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
++	modprobe ubifs || fatal "modprobe ubifs fail"
 +
-+	fname_name(&nm) = LOST_FOUND_DIR_NAME;
-+	fname_len(&nm) = strlen(LOST_FOUND_DIR_NAME);
-+	lost_found_ui = ubifs_lookup(c, root_ui, &nm);
-+	if (IS_ERR(lost_found_ui)) {
-+		err = PTR_ERR(lost_found_ui);
-+		if (err != -ENOENT)
-+			goto free_root;
++	mount_ubifs $DEV $MNT "authentication" || fatal "mount ubifs failed"
++	fsstress -d $MNT/fsstress -l0 -p4 -n10000 &
++	sleep $((RANDOM % 5))
 +
-+		/* Not found. Create a new lost+found. */
-+		err = ubifs_mkdir(c, root_ui, &nm, S_IRUGO | S_IWUSR | S_IXUSR);
-+		if (err < 0) {
-+			if (err == -ENOSPC) {
-+				ubifs_msg(c, "No free space to create lost+found");
-+				err = 0;
-+			}
-+			goto free_root;
-+		}
-+		lost_found_ui = ubifs_lookup(c, root_ui, &nm);
-+		if (IS_ERR(lost_found_ui)) {
-+			err = PTR_ERR(lost_found_ui);
-+			ubifs_assert(c, err != -ENOENT);
-+			goto free_root;
-+		}
-+		FSCK(c)->lost_and_found = lost_found_ui->vfs_inode.inum;
-+		ubifs_msg(c, "Create the lost+found");
-+	} else if (!(lost_found_ui->flags & UBIFS_CRYPT_FL) &&
-+		   S_ISDIR(lost_found_ui->vfs_inode.mode)) {
-+		FSCK(c)->lost_and_found = lost_found_ui->vfs_inode.inum;
-+	} else {
-+		ubifs_msg(c, "The type of lost+found is %s%s",
-+			  ubifs_get_type_name(ubifs_get_dent_type(lost_found_ui->vfs_inode.mode)),
-+			  lost_found_ui->flags & UBIFS_CRYPT_FL ? ", encrypted" : "");
-+	}
++	ps -e | grep -w fsstress > /dev/null 2>&1
++	while [ $? -eq 0 ]
++	do
++		killall -9 fsstress > /dev/null 2>&1
++		sleep 1
++		ps -e | grep -w fsstress > /dev/null 2>&1
++	done
 +
-+	kfree(lost_found_ui);
-+free_root:
-+	kfree(root_ui);
-+	return err;
++	while true
++	do
++		res=`mount | grep "$MNT"`
++		if [[ "$res" == "" ]]
++		then
++			break;
++		fi
++		umount $MNT
++		sleep 0.1
++	done
++
++	fsck.ubifs -a $DEV # 'fsck.ubifs $DEV' is fine too.
++	res=$?
++	if [[ $res == $FSCK_OK ]]
++	then
++		fatal "fsck should not be success!"
++	fi
++
++	modprobe -r ubifs
++	modprobe -r ubi
++	modprobe -r nandsim
 +}
++
++start_t=$(date +%s)
++run_test
++end_t=$(date +%s)
++time_cost=$(( end_t - start_t ))
++echo "Success, cost $time_cost seconds"
++exit 0
 -- 
 2.13.6
 
