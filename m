@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1902D2E9CB
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:30:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FCEFD2E9CF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:30:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nGu6gAchj/Cw0F2bwMdW+l0V/shDZyN2Msl0OPRNUxI=; b=2eg0Dm/FxtWaOA
-	RpJYgxaiVhN4l1Ouxs32q2a+qdZzepbL6IZ9+2BqZqc4AQXvvcIOkpEQRa8Dc3sN4fk5JX/qwpA3Q
-	5GJ0UePJhku8jr5rL+WlCV3mKf5GPj2hjJD/DtR7syiADH58Y7sPuZVYpf4EZ3n6jSy1QPTh2Rd50
-	72f8ekqjnkIfVWei2CgN3eSGiIsAeJ/4jUr9BDAOZAz6826+JPkDheWFx20jTAdOoraial1UQRDb5
-	aLb1rA6n7b765NwvpSzsnJWlxdBhkV35Jx9gDmudCfq3H0GKwwoBE4Kcp2V11MorYEgLWdTODKEIQ
-	07/jT7G54iTJqVSq0jnQ==;
+	List-Owner; bh=bHv16xiJoiklcVmFLs9SFkWTAynZNahfkjlwOHy2QTQ=; b=hhqOWYZzv/u4f/
+	MGLl1nxJFM6XPYXEdAhLqrrH+rJrN4O+ZV92azxVtq7y8CmDwTUmm1DqEHysioZaodmNwUTlbAZPd
+	RzkavUePtK+QS07cFHmL+yNQSOfY9L80ojG4rNJaEN5GOu1Ii29VfEQHyoMASF9nOeBkg2i+yQLM5
+	chDEZhI1D4TFrBqa3MtXS0OyGxES7b3tolWop+73aNhwB7fkyBC+EV+I645IYz/s9C0L79X7gcqP1
+	3rKR6LwaWUClaKwXIuyzWx1NE9hyw4agiaQDhI3N9Oi+5Aa7Fvk9zV5ZQO5v0F5B8gXWoi2P62OVz
+	+tQEsbJ6cX7piy7KCt0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQl1-0000000H6EC-0uy3;
+	id 1tAQl1-0000000H6Ef-3cEm;
 	Mon, 11 Nov 2024 09:30:51 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV6-0000000GZv9-3jHR
+	id 1tAOV8-0000000GZwQ-1W1I
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:17 +0000
+	Mon, 11 Nov 2024 07:06:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=vPh1BMzth0qju58pQfc56WN6HYd4RC/qwhQMvpwG4cg=; b=gPbdoP9+jmrj2VFraf2Gyp1uX2
-	mzpJsM9OADRkZ7pHgtTzTPUNfbB21qLgKfU0hbyP7g6NzI2wus7q7gooAuYMNpu4zkbClfgl0LuqA
-	/YWta6t/zu8VfxwjblSPthwpkUdh4dht85pchr78zkdUHr7vuq1ScLb9NJVRaw9VMbNi+qN2ppf1T
-	QIg24exL+ik79bYzQBbeTj3u+qjbkezdhLXW2wKJO1XVNbUnduHAZObw6M8jIIOu2dwAnxXARp3aV
-	EwKlRr6F4N/HGQKDn1nkHjDlu2LetPHGZhxq6n+QAyi/cVAYv/LNA5X/flulYl1gVX7X2jtTkOF3l
-	V6uOr3IQ==;
-Received: from szxga03-in.huawei.com ([45.249.212.189])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUo-0000000CmMJ-1hAO
+	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=4mTBKzdU85uqtNrzpl4JpaU51vUgjcxqMZ1KbBQDbHo=; b=jGXFgyu0psO6OldOF/FiB9vqUB
+	cjZs5FXSHd7rvU2MqbHcNTe5SpMEPB5eSiGBLqWeGB2LKvqE7neRuvASfQ3h5rf32591AiZgKrSWA
+	65fORbAl7pZhUoVsb5DgVrMRnBhd6Em+vtO1xMof7/K91sAWCw1JxFUTrR9obiAApKo81rx+GTuWw
+	vBzgi6Uzg6PJwRBf6Uiq5RngHS0AsZ/IEZyMEiUwfNPYBltfqT3h3caqw3SuhiMP9KDoB60qgTDbT
+	JWO2ECPjlrwVY9VAlaUanrMBwWcb73/PgqXHpSvEO8sKIB6ub3xtWje3bYAUvvcmjyTQSrAbnyj+K
+	I+iLPW5A==;
+Received: from szxga01-in.huawei.com ([45.249.212.187])
+	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOV1-0000000CR3p-3krN
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:10 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn0s26HglzQsrX;
-	Mon, 11 Nov 2024 15:04:06 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:16 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qs6QwJz10Qxr;
+	Mon, 11 Nov 2024 15:03:05 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 479DF18007C;
-	Mon, 11 Nov 2024 15:05:19 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 751C71400DC;
+	Mon, 11 Nov 2024 15:05:32 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:18 +0800
+ 2024 15:05:31 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 036/102] ubifs-utils: Adapt budget.c in libubifs
-Date: Mon, 11 Nov 2024 15:02:39 +0800
-Message-ID: <20241111070346.1314122-37-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 062/102] fsck.ubifs: rebuild_fs: Create new root dir if there are no scanned files
+Date: Mon, 11 Nov 2024 15:03:05 +0800
+Message-ID: <20241111070346.1314122-63-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070603_979421_8012C25A 
-X-CRM114-Status: GOOD (  18.82  )
+X-CRM114-CacheID: sfid-20241111_070612_977209_AF3687DF 
+X-CRM114-Status: GOOD (  18.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,202 +85,293 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt budget.c in libubifs, compared with linux kernel implementations:
- 1. Remove writeback related functions, there are no dirty pages/inodes
-    for UBIFS in userspace process.
+This is a preparation for building TNC, there must at least one file
+in filesystem, if not, just create new root dir.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/budget.c | 133 +++---------------------------------------
- 1 file changed, 7 insertions(+), 126 deletions(-)
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h |   6 +
+ ubifs-utils/fsck.ubifs/rebuild_fs.c | 213 +++++++++++++++++++++++++++++++++++-
+ 2 files changed, 217 insertions(+), 2 deletions(-)
 
-diff --git a/ubifs-utils/libubifs/budget.c b/ubifs-utils/libubifs/budget.c
-index d76eb7b3..54392a93 100644
---- a/ubifs-utils/libubifs/budget.c
-+++ b/ubifs-utils/libubifs/budget.c
-@@ -18,9 +18,11 @@
-  * approximations are used.
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index cb7b4002..fb72d8af 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -183,11 +183,17 @@ struct scanned_file {
+  * @used_lebs: a bitmap used for recording used lebs
+  * @lpts: lprops table
+  * @scanned_files: tree of all scanned files
++ * @write_buf: write buffer for LEB @head_lnum
++ * @head_lnum: current writing LEB number
++ * @head_offs: current writing position in LEB @head_lnum
   */
+ struct ubifs_rebuild_info {
+ 	unsigned long *used_lebs;
+ 	struct ubifs_lprops *lpts;
+ 	struct rb_root scanned_files;
++	void *write_buf;
++	int head_lnum;
++	int head_offs;
+ };
  
-+#include "bitops.h"
- #include "ubifs.h"
--#include <linux/writeback.h>
--#include <linux/math64.h>
-+#include "defs.h"
-+#include "debug.h"
-+#include "misc.h"
- 
- /*
-  * When pessimistic budget calculations say that there is no enough space,
-@@ -30,31 +32,6 @@
-  */
- #define MAX_MKSPC_RETRIES 3
- 
--/*
-- * The below constant defines amount of dirty pages which should be written
-- * back at when trying to shrink the liability.
-- */
--#define NR_TO_WRITE 16
--
--/**
-- * shrink_liability - write-back some dirty pages/inodes.
-- * @c: UBIFS file-system description object
-- * @nr_to_write: how many dirty pages to write-back
-- *
-- * This function shrinks UBIFS liability by means of writing back some amount
-- * of dirty inodes and their pages.
-- *
-- * Note, this function synchronizes even VFS inodes which are locked
-- * (@i_mutex) by the caller of the budgeting function, because write-back does
-- * not touch @i_mutex.
-- */
--static void shrink_liability(struct ubifs_info *c, int nr_to_write)
--{
--	down_read(&c->vfs_sb->s_umount);
--	writeback_inodes_sb_nr(c->vfs_sb, nr_to_write, WB_REASON_FS_FREE_SPACE);
--	up_read(&c->vfs_sb->s_umount);
--}
--
  /**
-  * run_gc - run garbage collector.
-  * @c: UBIFS file-system description object
-@@ -80,23 +57,6 @@ static int run_gc(struct ubifs_info *c)
+diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+index 1b03d6c0..62bd4128 100644
+--- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
++++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+@@ -65,9 +65,17 @@ static int init_rebuild_info(struct ubifs_info *c)
+ 		log_err(c, errno, "can not allocate lpts");
+ 		goto free_used_lebs;
+ 	}
++	FSCK(c)->rebuild->write_buf = vmalloc(c->leb_size);
++	if (!FSCK(c)->rebuild->write_buf) {
++		err = -ENOMEM;
++		goto free_lpts;
++	}
++	FSCK(c)->rebuild->head_lnum = -1;
+ 
+ 	return 0;
+ 
++free_lpts:
++	kfree(FSCK(c)->rebuild->lpts);
+ free_used_lebs:
+ 	kfree(FSCK(c)->rebuild->used_lebs);
+ free_rebuild:
+@@ -79,6 +87,7 @@ free_sbuf:
+ 
+ static void destroy_rebuild_info(struct ubifs_info *c)
+ {
++	vfree(FSCK(c)->rebuild->write_buf);
+ 	kfree(FSCK(c)->rebuild->lpts);
+ 	kfree(FSCK(c)->rebuild->used_lebs);
+ 	kfree(FSCK(c)->rebuild);
+@@ -661,6 +670,197 @@ static void extract_dentry_tree(struct ubifs_info *c)
+ 	}
  }
  
- /**
-- * get_liability - calculate current liability.
-- * @c: UBIFS file-system description object
-- *
-- * This function calculates and returns current UBIFS liability, i.e. the
-- * amount of bytes UBIFS has "promised" to write to the media.
-- */
--static long long get_liability(struct ubifs_info *c)
--{
--	long long liab;
--
--	spin_lock(&c->space_lock);
--	liab = c->bi.idx_growth + c->bi.data_growth + c->bi.dd_growth;
--	spin_unlock(&c->space_lock);
--	return liab;
--}
--
--/**
-  * make_free_space - make more free space on the file-system.
-  * @c: UBIFS file-system description object
++static void init_root_ino(struct ubifs_info *c, struct ubifs_ino_node *ino)
++{
++#define S_IRUGO		(S_IRUSR|S_IRGRP|S_IROTH)
++#define S_IXUGO		(S_IXUSR|S_IXGRP|S_IXOTH)
++	__le64 tmp_le64;
++
++	/* Create default root inode */
++	ino_key_init_flash(c, &ino->key, UBIFS_ROOT_INO);
++	ino->ch.node_type = UBIFS_INO_NODE;
++	ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
++	ino->nlink = cpu_to_le32(2);
++	tmp_le64 = cpu_to_le64(time(NULL));
++	ino->atime_sec   = tmp_le64;
++	ino->ctime_sec   = tmp_le64;
++	ino->mtime_sec   = tmp_le64;
++	ino->atime_nsec  = 0;
++	ino->ctime_nsec  = 0;
++	ino->mtime_nsec  = 0;
++	ino->mode = cpu_to_le32(S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO);
++	ino->size = cpu_to_le64(UBIFS_INO_NODE_SZ);
++	/* Set compression enabled by default */
++	ino->flags = cpu_to_le32(UBIFS_COMPR_FL);
++}
++
++/**
++ * get_free_leb - get a free LEB according to @FSCK(c)->rebuild->used_lebs.
++ * @c: UBIFS file-system description object
++ *
++ * This function tries to find a free LEB, %0 is returned if found, otherwise
++ * %ENOSPC is returned.
++ */
++static int get_free_leb(struct ubifs_info *c)
++{
++	int lnum, err;
++
++	lnum = find_next_zero_bit(FSCK(c)->rebuild->used_lebs, c->main_lebs, 0);
++	if (lnum >= c->main_lebs) {
++		ubifs_err(c, "No space left.");
++		return -ENOSPC;
++	}
++	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
++	lnum += c->main_first;
++
++	err = ubifs_leb_unmap(c, lnum);
++	if (err)
++		return err;
++
++	FSCK(c)->rebuild->head_lnum = lnum;
++	FSCK(c)->rebuild->head_offs = 0;
++
++	return 0;
++}
++
++/**
++ * flush_write_buf - flush write buffer.
++ * @c: UBIFS file-system description object
++ *
++ * This function flush write buffer to LEB @FSCK(c)->rebuild->head_lnum, then
++ * set @FSCK(c)->rebuild->head_lnum to '-1'.
++ */
++static int flush_write_buf(struct ubifs_info *c)
++{
++	int len, pad, err;
++
++	if (!FSCK(c)->rebuild->head_offs)
++		return 0;
++
++	len = ALIGN(FSCK(c)->rebuild->head_offs, c->min_io_size);
++	pad = len - FSCK(c)->rebuild->head_offs;
++	if (pad)
++		ubifs_pad(c, FSCK(c)->rebuild->write_buf +
++			  FSCK(c)->rebuild->head_offs, pad);
++
++	err = ubifs_leb_write(c, FSCK(c)->rebuild->head_lnum,
++			      FSCK(c)->rebuild->write_buf, 0, len);
++	if (err)
++		return err;
++
++	FSCK(c)->rebuild->head_lnum = -1;
++
++	return 0;
++}
++
++/**
++ * reserve_space - reserve enough space to write data.
++ * @c: UBIFS file-system description object
++ * @len: the length of written data
++ * @lnum: the write LEB number is returned here
++ * @offs: the write pos in LEB is returned here
++ *
++ * This function finds target position <@lnum, @offs> to write data with
++ * length of @len.
++ */
++static int reserve_space(struct ubifs_info *c, int len, int *lnum, int *offs)
++{
++	int err;
++
++	if (FSCK(c)->rebuild->head_lnum == -1) {
++get_new:
++		err = get_free_leb(c);
++		if (err)
++			return err;
++	}
++
++	if (len > c->leb_size - FSCK(c)->rebuild->head_offs) {
++		err = flush_write_buf(c);
++		if (err)
++			return err;
++
++		goto get_new;
++	}
++
++	*lnum = FSCK(c)->rebuild->head_lnum;
++	*offs = FSCK(c)->rebuild->head_offs;
++	FSCK(c)->rebuild->head_offs += ALIGN(len, 8);
++
++	return 0;
++}
++
++static void copy_node_data(struct ubifs_info *c, void *node, int offs, int len)
++{
++	memcpy(FSCK(c)->rebuild->write_buf + offs, node, len);
++	memset(FSCK(c)->rebuild->write_buf + offs + len, 0xff, ALIGN(len, 8) - len);
++}
++
++/**
++ * create_root - create root dir.
++ * @c: UBIFS file-system description object
++ *
++ * This function creates root dir.
++ */
++static int create_root(struct ubifs_info *c)
++{
++	int err, lnum, offs;
++	struct ubifs_ino_node *ino;
++	struct scanned_file *file;
++
++	ino = kzalloc(ALIGN(UBIFS_INO_NODE_SZ, c->min_io_size), GFP_KERNEL);
++	if (!ino)
++		return -ENOMEM;
++
++	c->max_sqnum = 0;
++	c->highest_inum = UBIFS_FIRST_INO;
++	init_root_ino(c, ino);
++	err = ubifs_prepare_node_hmac(c, ino, UBIFS_INO_NODE_SZ, -1, 1);
++	if (err)
++		goto out;
++
++	err = reserve_space(c, UBIFS_INO_NODE_SZ, &lnum, &offs);
++	if (err)
++		goto out;
++
++	copy_node_data(c, ino, offs, UBIFS_INO_NODE_SZ);
++
++	err = flush_write_buf(c);
++	if (err)
++		goto out;
++
++	file = kzalloc(sizeof(struct scanned_file), GFP_KERNEL);
++	if (!file) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	file->inum = UBIFS_ROOT_INO;
++	file->dent_nodes = RB_ROOT;
++	file->data_nodes = RB_ROOT;
++	INIT_LIST_HEAD(&file->list);
++
++	file->ino.header.exist = true;
++	file->ino.header.lnum = lnum;
++	file->ino.header.offs = offs;
++	file->ino.header.len = UBIFS_INO_NODE_SZ;
++	file->ino.header.sqnum = le64_to_cpu(ino->ch.sqnum);
++	ino_key_init(c, &file->ino.key, UBIFS_ROOT_INO);
++	file->ino.is_xattr = le32_to_cpu(ino->flags) & UBIFS_XATTR_FL;
++	file->ino.mode = le32_to_cpu(ino->mode);
++	file->calc_nlink = file->ino.nlink = le32_to_cpu(ino->nlink);
++	file->calc_xcnt = file->ino.xcnt = le32_to_cpu(ino->xattr_cnt);
++	file->calc_xsz = file->ino.xsz = le32_to_cpu(ino->xattr_size);
++	file->calc_xnms = file->ino.xnms = le32_to_cpu(ino->xattr_names);
++	file->calc_size = file->ino.size = le64_to_cpu(ino->size);
++
++	rb_link_node(&file->rb, NULL, &FSCK(c)->rebuild->scanned_files.rb_node);
++	rb_insert_color(&file->rb, &FSCK(c)->rebuild->scanned_files);
++
++out:
++	kfree(ino);
++	return err;
++}
++
+ static const char *get_file_name(struct ubifs_info *c, struct scanned_file *file)
+ {
+ 	static char name[UBIFS_MAX_NLEN + 1];
+@@ -741,9 +941,10 @@ static void record_file_used_lebs(struct ubifs_info *c,
   *
-@@ -117,24 +77,8 @@ static long long get_liability(struct ubifs_info *c)
- static int make_free_space(struct ubifs_info *c)
- {
- 	int err, retries = 0;
--	long long liab1, liab2;
- 
- 	do {
--		liab1 = get_liability(c);
--		/*
--		 * We probably have some dirty pages or inodes (liability), try
--		 * to write them back.
--		 */
--		dbg_budg("liability %lld, run write-back", liab1);
--		shrink_liability(c, NR_TO_WRITE);
--
--		liab2 = get_liability(c);
--		if (liab2 < liab1)
--			return -EAGAIN;
--
--		dbg_budg("new liability %lld (not shrunk)", liab2);
--
--		/* Liability did not shrink again, try GC */
- 		dbg_budg("Run GC");
- 		err = run_gc(c);
- 		if (!err)
-@@ -254,12 +198,10 @@ long long ubifs_calc_available(const struct ubifs_info *c, int min_idx_lebs)
-  * This function checks whether current user is allowed to use reserved pool.
-  * Returns %1  current user is allowed to use reserved pool and %0 otherwise.
+  * This function traverses all nodes from valid files and does following
+  * things:
+- * 1. Record all used LEBs which may hold useful nodes, then left unused
++ * 1. If there are no scanned files, create default empty filesystem.
++ * 2. Record all used LEBs which may hold useful nodes, then left unused
+  *    LEBs could be taken for storing new index tree.
+- * 2. Re-write data to prevent failed gc scanning in the subsequent mounting
++ * 3. Re-write data to prevent failed gc scanning in the subsequent mounting
+  *    process caused by corrupted data.
   */
--static int can_use_rp(struct ubifs_info *c)
-+static int can_use_rp(__unused struct ubifs_info *c)
- {
--	if (uid_eq(current_fsuid(), c->rp_uid) || capable(CAP_SYS_RESOURCE) ||
--	    (!gid_eq(c->rp_gid, GLOBAL_ROOT_GID) && in_group_p(c->rp_gid)))
--		return 1;
--	return 0;
-+	/* Fsck can always use reserved pool. */
-+	return c->program_type != MKFS_PROGRAM_TYPE;
- }
+ static int traverse_files_and_nodes(struct ubifs_info *c)
+@@ -753,6 +954,14 @@ static int traverse_files_and_nodes(struct ubifs_info *c)
+ 	struct scanned_file *file;
+ 	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
  
- /**
-@@ -556,49 +498,6 @@ void ubifs_release_budget(struct ubifs_info *c, struct ubifs_budget_req *req)
- }
- 
- /**
-- * ubifs_convert_page_budget - convert budget of a new page.
-- * @c: UBIFS file-system description object
-- *
-- * This function converts budget which was allocated for a new page of data to
-- * the budget of changing an existing page of data. The latter is smaller than
-- * the former, so this function only does simple re-calculation and does not
-- * involve any write-back.
-- */
--void ubifs_convert_page_budget(struct ubifs_info *c)
--{
--	spin_lock(&c->space_lock);
--	/* Release the index growth reservation */
--	c->bi.idx_growth -= c->max_idx_node_sz << UBIFS_BLOCKS_PER_PAGE_SHIFT;
--	/* Release the data growth reservation */
--	c->bi.data_growth -= c->bi.page_budget;
--	/* Increase the dirty data growth reservation instead */
--	c->bi.dd_growth += c->bi.page_budget;
--	/* And re-calculate the indexing space reservation */
--	c->bi.min_idx_lebs = ubifs_calc_min_idx_lebs(c);
--	spin_unlock(&c->space_lock);
--}
--
--/**
-- * ubifs_release_dirty_inode_budget - release dirty inode budget.
-- * @c: UBIFS file-system description object
-- * @ui: UBIFS inode to release the budget for
-- *
-- * This function releases budget corresponding to a dirty inode. It is usually
-- * called when after the inode has been written to the media and marked as
-- * clean. It also causes the "no space" flags to be cleared.
-- */
--void ubifs_release_dirty_inode_budget(struct ubifs_info *c,
--				      struct ubifs_inode *ui)
--{
--	struct ubifs_budget_req req;
--
--	memset(&req, 0, sizeof(struct ubifs_budget_req));
--	/* The "no space" flags will be cleared because dd_growth is > 0 */
--	req.dd_growth = c->bi.inode_budget + ALIGN(ui->data_len, 8);
--	ubifs_release_budget(c, &req);
--}
--
--/**
-  * ubifs_reported_space - calculate reported free space.
-  * @c: the UBIFS file-system description object
-  * @free: amount of free space
-@@ -694,21 +593,3 @@ long long ubifs_get_free_space_nolock(struct ubifs_info *c)
- 		free = 0;
- 	return free;
- }
--
--/**
-- * ubifs_get_free_space - return amount of free space.
-- * @c: UBIFS file-system description object
-- *
-- * This function calculates and returns amount of free space to report to
-- * user-space.
-- */
--long long ubifs_get_free_space(struct ubifs_info *c)
--{
--	long long free;
--
--	spin_lock(&c->space_lock);
--	free = ubifs_get_free_space_nolock(c);
--	spin_unlock(&c->space_lock);
--
--	return free;
--}
++	if (rb_first(tree) == NULL) {
++		/* No scanned files. Create root dir. */
++		log_out(c, "No files found, create empty filesystem");
++		err = create_root(c);
++		if (err)
++			return err;
++	}
++
+ 	log_out(c, "Record used LEBs");
+ 	for (node = rb_first(tree); node; node = rb_next(node)) {
+ 		file = rb_entry(node, struct scanned_file, rb);
 -- 
 2.13.6
 
