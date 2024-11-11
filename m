@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9A1BD2E9D4
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54A5D2E9D6
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 10:15:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,38 +12,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=viXpOWbcXE3Jpw3QxyvvyxTM4TTkg9rhBVO19/cuPDo=; b=aJomnrrDljuIUD
-	Jd/4b/fq8/C0jaT7mh+MZhkAKzK4UB8uYdQSWMeBqFJiJGlX+AOcmw/QXlEkgQmgxw43VPbOtqfXf
-	hr9Qycj9h3udcCV44gMZXmgyRf8xs4PDJHde5iJkrgW2kSCayRP2Y21y/OulVmq8rCfbBg2su0O/i
-	SdvCqH76oW+Qsd9acNAfenWnNtOuiiAbXEvQUGefCv+AmdTL6igFpyPvDPrPNb65/SIEGnoHgre5X
-	iXgCObn7U+znfN4XtELJGc4y8QD8IrcSLKefMZiO2z7HVMmEbWa2XOKkgI0MT7w+XxVnnFC/0HFTQ
-	Tiao/mEtpt4YLPRaN2Mg==;
+	List-Owner; bh=WIgdruG6bH93aeayHQPXdg8XwxZIBy9E8RvIow3noZM=; b=FX+BVFhrCGKZ/k
+	wYYiffdzIDRUW1tBzqRsGZt2upSWfuZNc8JqhLq6MN0fF+Hzjq+Bhx7Q5oTlkFJPa0tl2BJo7NF5n
+	oJSME77ExpWRQr+ixmJAzNHHu4XFuOreM62s10XMkLQRee0WtZMJDpKZu0GUO4gmye/pg2P+JW6ji
+	kqi/Xn3X/hrbxTiOUmRZFfKZ4W99Hi7qfoloK8sQYW4lhPW+/nCR5Ci5oDou+18wzPkDi4bZxWyoa
+	yoAmNYC9Txx/skDcmY7H3gCFQzKL3dCg1lUXdy510zlUj8jWk4e562enUhysfYR6hfzNH53a6yUDi
+	XBtVPvY7CXemCK6F0Ucg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tARSX-0000000HF93-2PY6;
-	Mon, 11 Nov 2024 10:15:49 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1tARSW-0000000HF8h-2VMN;
+	Mon, 11 Nov 2024 10:15:48 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQQe-0000000H0J3-3N0o
+	id 1tAQJk-0000000GxiC-2xCC
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 09:09:52 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn3cf40hxz20t2B;
-	Mon, 11 Nov 2024 17:08:34 +0800 (CST)
+	Mon, 11 Nov 2024 09:02:43 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn3Tz5nCCz1ypSj;
+	Mon, 11 Nov 2024 17:02:47 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id CDBDD1402CE;
-	Mon, 11 Nov 2024 17:09:46 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A266F1401F4;
+	Mon, 11 Nov 2024 17:02:36 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:09:46 +0800
+ 2024 17:02:35 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 078/102] fsck.ubifs: Check and correct files' information
-Date: Mon, 11 Nov 2024 17:08:06 +0800
-Message-ID: <20241111090832.2093596-9-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 042/102] ubifs-utils: Adapt orphan.c in libubifs
+Date: Mon, 11 Nov 2024 17:00:56 +0800
+Message-ID: <20241111090124.2070455-3-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_010949_159347_E40B632F 
-X-CRM114-Status: GOOD (  19.23  )
+X-CRM114-CacheID: sfid-20241111_010241_082095_BD62C78C 
+X-CRM114-Status: GOOD (  19.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,252 +70,400 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Xiang Yang <xiangyang3@huawei.com>
+Adapt orphan.c in libubifs, compared with linux kernel implementations:
+ 1. Keep the commit related implementations, because do_commit depends
+    on these functions which will be invoked in fsck.
+ 2. Keep the orphan replaying implementations, because fsck needs them.
+ 3. Other implementations are removed which won't be used in mkfs/fsck.
 
-This is the 10/18 step of fsck. Check and handle inconsistent files, the
-checking rule is same as rebuild mode which has been implemented in
-check_and_correct_files, but the methods of handling are different:
- 1. Correct the file information for safe mode, danger mode and normal
-    mode with 'yes' answer, other modes will exit.
-
-Signed-off-by: Xiang Yang <xiangyang3@huawei.com>
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/extract_files.c | 76 ++++++++++++++++++++++------------
- ubifs-utils/fsck.ubifs/fsck.ubifs.c    |  8 ++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h    |  2 +-
- ubifs-utils/fsck.ubifs/problem.c       | 16 +++++++
- 4 files changed, 74 insertions(+), 28 deletions(-)
+ ubifs-utils/libubifs/orphan.c | 357 +-----------------------------------------
+ 1 file changed, 8 insertions(+), 349 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
-index b24445be..c83d3774 100644
---- a/ubifs-utils/fsck.ubifs/extract_files.c
-+++ b/ubifs-utils/fsck.ubifs/extract_files.c
-@@ -1292,8 +1292,8 @@ reachable:
-  * data nodes and truncation node. The calculated informaion will be used
-  * to correct inode node.
+diff --git a/ubifs-utils/libubifs/orphan.c b/ubifs-utils/libubifs/orphan.c
+index fb957d96..2f318748 100644
+--- a/ubifs-utils/libubifs/orphan.c
++++ b/ubifs-utils/libubifs/orphan.c
+@@ -7,7 +7,14 @@
+  * Author: Adrian Hunter
   */
--static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
--				struct rb_root *file_tree)
-+static int calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
-+			       struct rb_root *file_tree)
- {
- 	int nlink = 0;
- 	bool corrupted_truncation = false;
-@@ -1306,15 +1306,24 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
  
- 	for (node = rb_first(&file->xattr_files); node; node = rb_next(node)) {
- 		xattr_file = rb_entry(node, struct scanned_file, rb);
-+		dent_node = rb_entry(rb_first(&xattr_file->dent_nodes),
-+				     struct scanned_dent_node, rb);
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
++#include "misc.h"
  
-+		ubifs_assert(c, xattr_file->ino.is_xattr);
- 		ubifs_assert(c, !rb_first(&xattr_file->xattr_files));
--		calculate_file_info(c, xattr_file, file_tree);
-+		xattr_file->calc_nlink = 1;
-+		xattr_file->calc_size = xattr_file->ino.size;
-+
-+		file->calc_xcnt += 1;
-+		file->calc_xsz += CALC_DENT_SIZE(dent_node->nlen);
-+		file->calc_xsz += CALC_XATTR_BYTES(xattr_file->ino.size);
-+		file->calc_xnms += dent_node->nlen;
- 	}
+ /*
+  * An orphan is an inode number whose inode node has been committed to the index
+@@ -43,137 +50,6 @@
+ static int dbg_check_orphans(struct ubifs_info *c);
  
- 	if (file->inum == UBIFS_ROOT_INO) {
- 		file->calc_nlink += 2;
- 		file->calc_size += UBIFS_INO_NODE_SZ;
--		return;
-+		return 0;
- 	}
- 
- 	if (S_ISDIR(file->ino.mode)) {
-@@ -1326,29 +1335,11 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
- 		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
- 		if (!parent_file) {
- 			ubifs_assert(c, 0);
--			return;
-+			return 0;
- 		}
- 		parent_file->calc_nlink += 1;
- 		parent_file->calc_size += CALC_DENT_SIZE(dent_node->nlen);
+ /**
+- * ubifs_add_orphan - add an orphan.
+- * @c: UBIFS file-system description object
+- * @inum: orphan inode number
+- *
+- * Add an orphan. This function is called when an inodes link count drops to
+- * zero.
+- */
+-int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
+-{
+-	struct ubifs_orphan *orphan, *o;
+-	struct rb_node **p, *parent = NULL;
+-
+-	orphan = kzalloc(sizeof(struct ubifs_orphan), GFP_NOFS);
+-	if (!orphan)
+-		return -ENOMEM;
+-	orphan->inum = inum;
+-	orphan->new = 1;
+-
+-	spin_lock(&c->orphan_lock);
+-	if (c->tot_orphans >= c->max_orphans) {
+-		spin_unlock(&c->orphan_lock);
+-		kfree(orphan);
+-		return -ENFILE;
+-	}
+-	p = &c->orph_tree.rb_node;
+-	while (*p) {
+-		parent = *p;
+-		o = rb_entry(parent, struct ubifs_orphan, rb);
+-		if (inum < o->inum)
+-			p = &(*p)->rb_left;
+-		else if (inum > o->inum)
+-			p = &(*p)->rb_right;
+-		else {
+-			ubifs_err(c, "orphaned twice");
+-			spin_unlock(&c->orphan_lock);
+-			kfree(orphan);
+-			return -EINVAL;
+-		}
+-	}
+-	c->tot_orphans += 1;
+-	c->new_orphans += 1;
+-	rb_link_node(&orphan->rb, parent, p);
+-	rb_insert_color(&orphan->rb, &c->orph_tree);
+-	list_add_tail(&orphan->list, &c->orph_list);
+-	list_add_tail(&orphan->new_list, &c->orph_new);
+-
+-	spin_unlock(&c->orphan_lock);
+-	dbg_gen("ino %lu", (unsigned long)inum);
+-	return 0;
+-}
+-
+-static struct ubifs_orphan *lookup_orphan(struct ubifs_info *c, ino_t inum)
+-{
+-	struct ubifs_orphan *o;
+-	struct rb_node *p;
+-
+-	p = c->orph_tree.rb_node;
+-	while (p) {
+-		o = rb_entry(p, struct ubifs_orphan, rb);
+-		if (inum < o->inum)
+-			p = p->rb_left;
+-		else if (inum > o->inum)
+-			p = p->rb_right;
+-		else {
+-			return o;
+-		}
+-	}
+-	return NULL;
+-}
+-
+-static void __orphan_drop(struct ubifs_info *c, struct ubifs_orphan *o)
+-{
+-	rb_erase(&o->rb, &c->orph_tree);
+-	list_del(&o->list);
+-	c->tot_orphans -= 1;
+-
+-	if (o->new) {
+-		list_del(&o->new_list);
+-		c->new_orphans -= 1;
+-	}
+-
+-	kfree(o);
+-}
+-
+-static void orphan_delete(struct ubifs_info *c, struct ubifs_orphan *orph)
+-{
+-	if (orph->del) {
+-		dbg_gen("deleted twice ino %lu", (unsigned long)orph->inum);
 -		return;
 -	}
 -
--	if (file->ino.is_xattr) {
--		file->calc_nlink = 1;
--		file->calc_size = file->ino.size;
+-	if (orph->cmt) {
+-		orph->del = 1;
+-		rb_erase(&orph->rb, &c->orph_tree);
+-		orph->dnext = c->orph_dnext;
+-		c->orph_dnext = orph;
+-		dbg_gen("delete later ino %lu", (unsigned long)orph->inum);
+-		return;
+-	}
 -
--		dent_node = rb_entry(rb_first(&file->dent_nodes),
--				     struct scanned_dent_node, rb);
--		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
--		if (!parent_file) {
--			ubifs_assert(c, 0);
--			return;
--		}
--		parent_file->calc_xcnt += 1;
--		parent_file->calc_xsz += CALC_DENT_SIZE(dent_node->nlen);
--		parent_file->calc_xsz += CALC_XATTR_BYTES(file->ino.size);
--		parent_file->calc_xnms += dent_node->nlen;
+-	__orphan_drop(c, orph);
+-}
+-
+-/**
+- * ubifs_delete_orphan - delete an orphan.
+- * @c: UBIFS file-system description object
+- * @inum: orphan inode number
+- *
+- * Delete an orphan. This function is called when an inode is deleted.
+- */
+-void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
+-{
+-	struct ubifs_orphan *orph;
+-
+-	spin_lock(&c->orphan_lock);
+-
+-	orph = lookup_orphan(c, inum);
+-	if (!orph) {
+-		spin_unlock(&c->orphan_lock);
+-		ubifs_err(c, "missing orphan ino %lu", (unsigned long)inum);
+-		dump_stack();
+-
 -		return;
-+		return 0;
- 	}
- 
- 	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
-@@ -1359,7 +1350,7 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
- 		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
- 		if (!parent_file) {
- 			ubifs_assert(c, 0);
--			return;
-+			return 0;
- 		}
- 		parent_file->calc_size += CALC_DENT_SIZE(dent_node->nlen);
- 	}
-@@ -1368,7 +1359,7 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
- 	if (!S_ISREG(file->ino.mode)) {
- 		/* No need to verify i_size for symlink/sock/block/char/fifo. */
- 		file->calc_size = file->ino.size;
--		return;
-+		return 0;
- 	}
- 
- 	/*
-@@ -1452,10 +1443,22 @@ drop_data:
- 		data_node = list_entry(drop_list.next, struct scanned_data_node,
- 				       list);
- 
-+		if (FSCK(c)->mode != REBUILD_MODE) {
-+			/*
-+			 * Don't ask, inconsistent file correcting will be
-+			 * asked in function correct_file_info().
-+			 */
-+			int err = delete_node(c, &data_node->key,
-+				data_node->header.lnum, data_node->header.offs);
-+			if (err)
-+				return err;
-+		}
- 		list_del(&data_node->list);
- 		rb_erase(&data_node->rb, &file->data_nodes);
- 		kfree(data_node);
- 	}
-+
-+	return 0;
+-	}
+-
+-	orphan_delete(c, orph);
+-
+-	spin_unlock(&c->orphan_lock);
+-}
+-
+-/**
+  * ubifs_orphan_start_commit - start commit of orphans.
+  * @c: UBIFS file-system description object
+  *
+@@ -724,224 +600,7 @@ int ubifs_mount_orphans(struct ubifs_info *c, int unclean, int read_only)
+ 	return err;
  }
  
- /**
-@@ -1490,6 +1493,7 @@ static int correct_file_info(struct ubifs_info *c, struct scanned_file *file)
- 	    file->calc_size == file->ino.size)
- 		return 0;
- 
-+	handle_invalid_file(c, FILE_IS_INCONSISTENT, file, NULL);
- 	lnum = file->ino.header.lnum;
- 	dbg_fsck("correct file(inum:%lu type:%s), nlink %u->%u, xattr cnt %u->%u, xattr size %u->%u, xattr names %u->%u, size %llu->%llu, at %d:%d, in %s",
- 		 file->inum, file->ino.is_xattr ? "xattr" :
-@@ -1537,7 +1541,9 @@ int check_and_correct_files(struct ubifs_info *c)
- 	for (node = rb_first(tree); node; node = rb_next(node)) {
- 		file = rb_entry(node, struct scanned_file, rb);
- 
--		calculate_file_info(c, file, tree);
-+		err = calculate_file_info(c, file, tree);
-+		if (err)
-+			return err;
- 	}
- 
- 	for (node = rb_first(tree); node; node = rb_next(node)) {
-@@ -1548,5 +1554,21 @@ int check_and_correct_files(struct ubifs_info *c)
- 			return err;
- 	}
- 
-+	if (list_empty(&FSCK(c)->disconnected_files))
-+		return 0;
-+
-+	ubifs_assert(c, FSCK(c)->mode != REBUILD_MODE);
-+	list_for_each_entry(file, &FSCK(c)->disconnected_files, list) {
-+		err = calculate_file_info(c, file, tree);
-+		if (err)
-+			return err;
-+
-+		/* Reset disconnected file's nlink as one. */
-+		file->calc_nlink = 1;
-+		err = correct_file_info(c, file);
-+		if (err)
-+			return err;
-+	}
-+
+-/*
+- * Everything below is related to debugging.
+- */
+-
+-struct check_orphan {
+-	struct rb_node rb;
+-	ino_t inum;
+-};
+-
+-struct check_info {
+-	unsigned long last_ino;
+-	unsigned long tot_inos;
+-	unsigned long missing;
+-	unsigned long long leaf_cnt;
+-	struct ubifs_ino_node *node;
+-	struct rb_root root;
+-};
+-
+-static bool dbg_find_orphan(struct ubifs_info *c, ino_t inum)
+-{
+-	bool found = false;
+-
+-	spin_lock(&c->orphan_lock);
+-	found = !!lookup_orphan(c, inum);
+-	spin_unlock(&c->orphan_lock);
+-
+-	return found;
+-}
+-
+-static int dbg_ins_check_orphan(struct rb_root *root, ino_t inum)
+-{
+-	struct check_orphan *orphan, *o;
+-	struct rb_node **p, *parent = NULL;
+-
+-	orphan = kzalloc(sizeof(struct check_orphan), GFP_NOFS);
+-	if (!orphan)
+-		return -ENOMEM;
+-	orphan->inum = inum;
+-
+-	p = &root->rb_node;
+-	while (*p) {
+-		parent = *p;
+-		o = rb_entry(parent, struct check_orphan, rb);
+-		if (inum < o->inum)
+-			p = &(*p)->rb_left;
+-		else if (inum > o->inum)
+-			p = &(*p)->rb_right;
+-		else {
+-			kfree(orphan);
+-			return 0;
+-		}
+-	}
+-	rb_link_node(&orphan->rb, parent, p);
+-	rb_insert_color(&orphan->rb, root);
+-	return 0;
+-}
+-
+-static int dbg_find_check_orphan(struct rb_root *root, ino_t inum)
+-{
+-	struct check_orphan *o;
+-	struct rb_node *p;
+-
+-	p = root->rb_node;
+-	while (p) {
+-		o = rb_entry(p, struct check_orphan, rb);
+-		if (inum < o->inum)
+-			p = p->rb_left;
+-		else if (inum > o->inum)
+-			p = p->rb_right;
+-		else
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-static void dbg_free_check_tree(struct rb_root *root)
+-{
+-	struct check_orphan *o, *n;
+-
+-	rbtree_postorder_for_each_entry_safe(o, n, root, rb)
+-		kfree(o);
+-}
+-
+-static int dbg_orphan_check(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+-			    void *priv)
++static int dbg_check_orphans(__unused struct ubifs_info *c)
+ {
+-	struct check_info *ci = priv;
+-	ino_t inum;
+-	int err;
+-
+-	inum = key_inum(c, &zbr->key);
+-	if (inum != ci->last_ino) {
+-		/*
+-		 * Lowest node type is the inode node or xattr entry(when
+-		 * selinux/encryption is enabled), so it comes first
+-		 */
+-		if (key_type(c, &zbr->key) != UBIFS_INO_KEY &&
+-		    key_type(c, &zbr->key) != UBIFS_XENT_KEY)
+-			ubifs_err(c, "found orphan node ino %lu, type %d",
+-				  (unsigned long)inum, key_type(c, &zbr->key));
+-		ci->last_ino = inum;
+-		ci->tot_inos += 1;
+-		err = ubifs_tnc_read_node(c, zbr, ci->node);
+-		if (err) {
+-			ubifs_err(c, "node read failed, error %d", err);
+-			return err;
+-		}
+-		if (ci->node->nlink == 0)
+-			/* Must be recorded as an orphan */
+-			if (!dbg_find_check_orphan(&ci->root, inum) &&
+-			    !dbg_find_orphan(c, inum)) {
+-				ubifs_err(c, "missing orphan, ino %lu",
+-					  (unsigned long)inum);
+-				ci->missing += 1;
+-			}
+-	}
+-	ci->leaf_cnt += 1;
  	return 0;
  }
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 6a718fd8..3f61668e 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -460,6 +460,13 @@ static int do_fsck(void)
- 		goto free_disconnected_files;
- 	}
- 
-+	log_out(c, "Check and correct files");
-+	err = check_and_correct_files(c);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto free_disconnected_files;
-+	}
-+
- free_disconnected_files:
- 	destroy_file_list(c, &FSCK(c)->disconnected_files);
- free_used_lebs:
-@@ -504,6 +511,7 @@ int main(int argc, char *argv[])
- 	 * Step 7: Update files' size
- 	 * Step 8: Check and handle invalid files
- 	 * Step 9: Check and handle unreachable files
-+	 * Step 10: Check and correct files
- 	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index 521723d7..32a991dd 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -43,7 +43,7 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
-        FILE_HAS_0_NLINK_INODE, FILE_HAS_INCONSIST_TYPE, FILE_HAS_TOO_MANY_DENT,
-        FILE_SHOULDNT_HAVE_DATA, FILE_HAS_NO_DENT, XATTR_HAS_NO_HOST,
-        XATTR_HAS_WRONG_HOST, FILE_HAS_NO_ENCRYPT, FILE_IS_DISCONNECTED,
--       FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE };
-+       FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE, FILE_IS_INCONSISTENT };
- 
- enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
- 
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 0395a34f..e8f08606 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -59,6 +59,7 @@ static const struct fsck_problem problem_table[] = {
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "File is disconnected(regular file without dentries)"},	// FILE_IS_DISCONNECTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Root dir should not have a dentry"},	// FILE_ROOT_HAS_DENT
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Dentry is unreachable"},	// DENTRY_IS_UNREACHABLE
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "File is inconsistent"},	// FILE_IS_INCONSISTENT
- };
- 
- static const char *get_question(const struct fsck_problem *problem,
-@@ -212,6 +213,21 @@ static void print_problem(const struct ubifs_info *c,
- 			key_type(c, &dent_node->key) == UBIFS_XENT_KEY ? "(xattr)" : "");
- 		break;
- 	}
-+	case FILE_IS_INCONSISTENT:
-+	{
-+		const struct invalid_file_problem *ifp = (const struct invalid_file_problem *)priv;
-+		const struct scanned_file *file = ifp->file;
-+
-+		log_out(c, "problem: %s, ino %lu type %s, nlink %u xcnt %u xsz %u xnms %u size %llu, "
-+			"should be nlink %u xcnt %u xsz %u xnms %u size %llu",
-+			problem->desc, file->inum,
-+			file->ino.is_xattr ? "xattr" : ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
-+			file->ino.nlink, file->ino.xcnt, file->ino.xsz,
-+			file->ino.xnms, file->ino.size,
-+			file->calc_nlink, file->calc_xcnt, file->calc_xsz,
-+			file->calc_xnms, file->calc_size);
-+		break;
-+	}
- 	default:
- 		log_out(c, "problem: %s", problem->desc);
- 		break;
+-
+-static int dbg_read_orphans(struct check_info *ci, struct ubifs_scan_leb *sleb)
+-{
+-	struct ubifs_scan_node *snod;
+-	struct ubifs_orph_node *orph;
+-	ino_t inum;
+-	int i, n, err;
+-
+-	list_for_each_entry(snod, &sleb->nodes, list) {
+-		cond_resched();
+-		if (snod->type != UBIFS_ORPH_NODE)
+-			continue;
+-		orph = snod->node;
+-		n = (le32_to_cpu(orph->ch.len) - UBIFS_ORPH_NODE_SZ) >> 3;
+-		for (i = 0; i < n; i++) {
+-			inum = le64_to_cpu(orph->inos[i]);
+-			err = dbg_ins_check_orphan(&ci->root, inum);
+-			if (err)
+-				return err;
+-		}
+-	}
+-	return 0;
+-}
+-
+-static int dbg_scan_orphans(struct ubifs_info *c, struct check_info *ci)
+-{
+-	int lnum, err = 0;
+-	void *buf;
+-
+-	/* Check no-orphans flag and skip this if no orphans */
+-	if (c->no_orphs)
+-		return 0;
+-
+-	buf = __vmalloc(c->leb_size, GFP_NOFS);
+-	if (!buf) {
+-		ubifs_err(c, "cannot allocate memory to check orphans");
+-		return 0;
+-	}
+-
+-	for (lnum = c->orph_first; lnum <= c->orph_last; lnum++) {
+-		struct ubifs_scan_leb *sleb;
+-
+-		sleb = ubifs_scan(c, lnum, 0, buf, 0);
+-		if (IS_ERR(sleb)) {
+-			err = PTR_ERR(sleb);
+-			break;
+-		}
+-
+-		err = dbg_read_orphans(ci, sleb);
+-		ubifs_scan_destroy(sleb);
+-		if (err)
+-			break;
+-	}
+-
+-	vfree(buf);
+-	return err;
+-}
+-
+-static int dbg_check_orphans(struct ubifs_info *c)
+-{
+-	struct check_info ci;
+-	int err;
+-
+-	if (!dbg_is_chk_orph(c))
+-		return 0;
+-
+-	ci.last_ino = 0;
+-	ci.tot_inos = 0;
+-	ci.missing  = 0;
+-	ci.leaf_cnt = 0;
+-	ci.root = RB_ROOT;
+-	ci.node = kmalloc(UBIFS_MAX_INO_NODE_SZ, GFP_NOFS);
+-	if (!ci.node) {
+-		ubifs_err(c, "out of memory");
+-		return -ENOMEM;
+-	}
+-
+-	err = dbg_scan_orphans(c, &ci);
+-	if (err)
+-		goto out;
+-
+-	err = dbg_walk_index(c, &dbg_orphan_check, NULL, &ci);
+-	if (err) {
+-		ubifs_err(c, "cannot scan TNC, error %d", err);
+-		goto out;
+-	}
+-
+-	if (ci.missing) {
+-		ubifs_err(c, "%lu missing orphan(s)", ci.missing);
+-		err = -EINVAL;
+-		goto out;
+-	}
+-
+-	dbg_cmt("last inode number is %lu", ci.last_ino);
+-	dbg_cmt("total number of inodes is %lu", ci.tot_inos);
+-	dbg_cmt("total number of leaf nodes is %llu", ci.leaf_cnt);
+-
+-out:
+-	dbg_free_check_tree(&ci.root);
+-	kfree(ci.node);
+-	return err;
+-}
 -- 
 2.13.6
 
