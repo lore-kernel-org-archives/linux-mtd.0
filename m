@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BA40D12D7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:07:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5CB1D5E140
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RD7gCqq71EhJWQ+laOvgK5oT9M/JAyThzGMkxdg/Aj8=; b=ssG1otmy7GU2P6
-	n51+KTrlh91diiM0yXNMwLwi09CK3yDepZE2hs7CzeryINBvo54lBITMwW2aUyjnFwvXIei3LnG/V
-	z7OcOyGNHH9UySYKfU+KEyf2Qo/zIELUqa14nPQeBtQVvPD+DpXA9bmLzLnrhorLEJ+fKxeVa7ZnD
-	+lbIMlL9oIbU3ujg8VC16aalqa+AuvaScYrNBMWu72tHzBhu2o8bn9Rb96CmiTG4Vtwo/i4YwaLMV
-	OpIP+qHmKUmp2Ecc8TWLAaguYMH2clDL+tKLGw0W7ewK373Xf7FZzrP1kDD4UZR2z6iIdom2CFf6t
-	MGOfhsd+KhV/+xwspjRA==;
+	List-Owner; bh=Eaz3HaJwa+tOzhI6CzlsM3o/wUMZF7BWamrcFyEf96Y=; b=wz6GkRcu1xmzTf
+	MMOXE5DzliE9otOwhJa8frPw1OMmI6EJF+dGMPe/P74HmGgyHpGOJStK7kmRwFDBCCu/w2AWMcA0R
+	WHmoZixN/Nh0FsCgPVRUCzpqf1NdxjCgrOmwFoM6z6mC5R599JhERJy0EZ8ao8usDgQze0Mo5D+DE
+	nLydRowdhWW0q5gyZ4tJl9w7z7PBhpO/Fs0rGMXKpB7EBHOZyKQ3xFO7kPqSaCrD4E0nEkh9dp1lW
+	ed3w8rcsEyZ5wZcpWVjHl+jzqkeGppopDWqWMjJ55qaEmdaINKv+Qjy5NLMjkkXUjDrx43E5xC8nS
+	caVFvC15RlgcRaze31Fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSa-0000000GjZT-446g;
-	Mon, 11 Nov 2024 08:07:44 +0000
+	id 1tAPSg-0000000Gjf0-3Q51;
+	Mon, 11 Nov 2024 08:07:50 +0000
 Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSU-0000000GjW2-0cNs
+	id 1tAPSZ-0000000GjY8-3g61
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:07:41 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn2DB5RgQz2Dglv;
-	Mon, 11 Nov 2024 16:05:46 +0800 (CST)
+	Mon, 11 Nov 2024 08:07:45 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn2F21vDPz20t2W;
+	Mon, 11 Nov 2024 16:06:30 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 13A5C1A0171;
-	Mon, 11 Nov 2024 16:07:34 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 781301401F4;
+	Mon, 11 Nov 2024 16:07:42 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:07:33 +0800
+ 2024 16:07:36 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 006/102] ubifs-utils: Add 'dev_name' into 'ubifs_info' structure
-Date: Mon, 11 Nov 2024 16:05:43 +0800
-Message-ID: <20241111080621.1394382-4-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 012/102] ubifs-utils: Add linux kernel error conversion definitions
+Date: Mon, 11 Nov 2024 16:05:48 +0800
+Message-ID: <20241111080621.1394382-9-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_000738_980675_77546382 
-X-CRM114-Status: GOOD (  14.68  )
+X-CRM114-CacheID: sfid-20241111_000744_079550_6504E7F7 
+X-CRM114-Status: GOOD (  17.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,145 +70,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Embed new member 'dev_name' into 'ubifs_info' structure, then global
-variable 'output' can be removed from mkfs.ubifs.c. Next patches will
-import UBIFS libs from linux kernel, which could print messages that
-contain device information, so this patch can distinguish different
-devices according to messages.
+Add linux kernel error conversion definitions, because there are
+many error type conversions(eg. PTR_ERR, ERR_PTR) used in UBIFS
+linux kernel libs.
+
+This is a preparation for replacing implementation of UBIFS utils with
+linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/common/ubifs.h          |  2 ++
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 29 ++++++++++++++---------------
- 2 files changed, 16 insertions(+), 15 deletions(-)
+ ubifs-utils/Makemodule.am      |  1 +
+ ubifs-utils/common/linux_err.h | 62 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+)
+ create mode 100644 ubifs-utils/common/linux_err.h
 
-diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
-index 58aaba9b..502a39ae 100644
---- a/ubifs-utils/common/ubifs.h
-+++ b/ubifs-utils/common/ubifs.h
-@@ -277,6 +277,7 @@ struct ubifs_znode
-  *		 2 - files, 3 - more details
-  * @program_type: used to identify the type of current program
-  * @program_name: program name
-+ * @dev_name: device name
-  *
-  * @jhead_cnt: count of journal heads
-  * @max_bud_bytes: maximum number of bytes allowed in buds
-@@ -368,6 +369,7 @@ struct ubifs_info
- 	int debug_level;
- 	int program_type;
- 	const char *program_name;
-+	char *dev_name;
- 
- 	int jhead_cnt;
- 	long long max_bud_bytes;
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index f66c6a46..1cafbf3e 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -145,7 +145,6 @@ static char *root;
- static int root_len;
- static struct fscrypt_context *root_fctx;
- static struct stat root_st;
--static char *output;
- static int out_fd;
- static int out_ubi;
- static int squash_owner;
-@@ -407,10 +406,10 @@ static int validate_options(void)
- {
- 	int tmp;
- 
--	if (!output)
-+	if (!c->dev_name)
- 		return errmsg("no output file or UBI volume specified");
- 	if (root) {
--		tmp = is_contained(output, root);
-+		tmp = is_contained(c->dev_name, root);
- 		if (tmp < 0)
- 			return errmsg("failed to perform output file root check");
- 		else if (tmp)
-@@ -641,7 +640,7 @@ static int get_options(int argc, char**argv)
- 				return errmsg("bad maximum LEB count");
- 			break;
- 		case 'o':
--			output = xstrdup(optarg);
-+			c->dev_name = xstrdup(optarg);
- 			break;
- 		case 'D':
- 			tbl_file = optarg;
-@@ -835,13 +834,13 @@ static int get_options(int argc, char**argv)
- 		}
- 	}
- 
--	if (optind != argc && !output)
--		output = xstrdup(argv[optind]);
-+	if (optind != argc && !c->dev_name)
-+		c->dev_name = xstrdup(argv[optind]);
- 
--	if (!output)
-+	if (!c->dev_name)
- 		return errmsg("not output device or file specified");
- 
--	out_ubi = !open_ubi(output);
-+	out_ubi = !open_ubi(c->dev_name);
- 
- 	if (out_ubi) {
- 		c->min_io_size = c->di.min_io_size;
-@@ -921,7 +920,7 @@ static int get_options(int argc, char**argv)
- 		printf("\tmin_io_size:  %d\n", c->min_io_size);
- 		printf("\tleb_size:     %d\n", c->leb_size);
- 		printf("\tmax_leb_cnt:  %d\n", c->max_leb_cnt);
--		printf("\toutput:       %s\n", output);
-+		printf("\toutput:       %s\n", c->dev_name);
- 		printf("\tjrn_size:     %llu\n", c->max_bud_bytes);
- 		printf("\treserved:     %llu\n", c->rp_size);
- 		switch (c->default_compr) {
-@@ -2855,11 +2854,11 @@ static int check_volume_empty(void)
- static int open_target(void)
- {
- 	if (out_ubi) {
--		out_fd = open(output, O_RDWR | O_EXCL);
-+		out_fd = open(c->dev_name, O_RDWR | O_EXCL);
- 
- 		if (out_fd == -1)
- 			return sys_errmsg("cannot open the UBI volume '%s'",
--					   output);
-+					   c->dev_name);
- 		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
- 			close(out_fd);
- 			return sys_errmsg("ubi_set_property(set direct_write) failed");
-@@ -2872,11 +2871,11 @@ static int open_target(void)
- 			}
- 		}
- 	} else {
--		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
-+		out_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
- 			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
- 		if (out_fd == -1)
- 			return sys_errmsg("cannot create output file '%s'",
--					   output);
-+					   c->dev_name);
- 	}
- 	return 0;
- }
-@@ -2896,7 +2895,7 @@ static int close_target(void)
- 		if (ubi && ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
- 			return sys_errmsg("ubi_set_property(clear direct_write) failed");
- 		if (close(out_fd) == -1)
--			return sys_errmsg("cannot close the target '%s'", output);
-+			return sys_errmsg("cannot close the target '%s'", c->dev_name);
- 	}
- 	return 0;
- }
-@@ -3094,7 +3093,7 @@ int main(int argc, char *argv[])
- 		printf("Success!\n");
- 
- out:
--	free(output);
-+	free(c->dev_name);
- 	close_ubi();
- 	crypto_cleanup();
- 	return err;
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index 0f9c0fa6..69192ffd 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -1,6 +1,7 @@
+ common_SOURCES = \
+ 	ubifs-utils/common/compiler_attributes.h \
+ 	ubifs-utils/common/linux_types.h \
++	ubifs-utils/common/linux_err.h \
+ 	ubifs-utils/common/defs.h \
+ 	ubifs-utils/common/crc16.h \
+ 	ubifs-utils/common/crc16.c \
+diff --git a/ubifs-utils/common/linux_err.h b/ubifs-utils/common/linux_err.h
+new file mode 100644
+index 00000000..5c6ddc3f
+--- /dev/null
++++ b/ubifs-utils/common/linux_err.h
+@@ -0,0 +1,62 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_ERR_H
++#define _LINUX_ERR_H
++
++/* Adapted from include/linux/err.h */
++
++#include <stdbool.h>
++
++/*
++ * Kernel pointers have redundant information, so we can use a
++ * scheme where we can return either an error code or a normal
++ * pointer with the same return value.
++ *
++ * This should be a per-architecture thing, to allow different
++ * error and pointer decisions.
++ */
++#define MAX_ERRNO	4095
++
++#define IS_ERR_VALUE(x) ((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
++
++static inline void * ERR_PTR(long error)
++{
++	return (void *) error;
++}
++
++static inline long PTR_ERR(const void *ptr)
++{
++	return (long) ptr;
++}
++
++static inline bool IS_ERR(const void *ptr)
++{
++	return IS_ERR_VALUE((unsigned long)ptr);
++}
++
++static inline bool IS_ERR_OR_NULL(const void *ptr)
++{
++	return !ptr || IS_ERR_VALUE((unsigned long)ptr);
++}
++
++/**
++ * ERR_CAST - Explicitly cast an error-valued pointer to another pointer type
++ * @ptr: The pointer to cast.
++ *
++ * Explicitly cast an error-valued pointer to another pointer type in such a
++ * way as to make it clear that's what's going on.
++ */
++static inline void * ERR_CAST(const void *ptr)
++{
++	/* cast away the const */
++	return (void *) ptr;
++}
++
++static inline int PTR_ERR_OR_ZERO(const void *ptr)
++{
++	if (IS_ERR(ptr))
++		return PTR_ERR(ptr);
++	else
++		return 0;
++}
++
++#endif /* _LINUX_ERR_H */
 -- 
 2.13.6
 
