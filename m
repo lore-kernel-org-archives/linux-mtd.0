@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE03D2E9CA
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 793B2D2E9CE
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:30:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZIsKasaHbFERU/ryTMp+HhpJNhGqciG2XZEkD0bxzoY=; b=MVHOUDmKj22Z/J
-	ot/kTuFU9Wq/L6Lg6Az7ooqAYhK6IqtJd5HWmTeYRTgxDMJpRo2RseznFtx3NgYApmrvwoXk2jeee
-	TLvLbUpjh417v1aYNgX7PWDiApXogHwnjFz7n5/bHATpfREn6MXLJHgPzEg/CJayVfsjENluuqBnA
-	PMWcUg5o8rHxJPjiEeCEf78maBxYWmisG+hz8o5wY0++lZY5TlktxoxiP1lfE0HRRlmBE0mFoqO7G
-	bzhQ5CwlOcQOwNDsquA7FbNfU0s41DkQj9voewTi2+ZJ5Zhvxwi5ocNrWQNGa63yy/Pu6sUvruPr2
-	Ajlofgv2OwyviQQFFb6g==;
+	List-Owner; bh=Bth+1z/IojiAd2lcwtt1Sd9HTNG4bBlGO20UXTLAGYA=; b=foe2ZaOwqMMrRh
+	kfmTjM8mHbze1n+sgGbpPpkN7A6mPNE6n7rcDuzaWNdMXC0xTtzmWXq6bEhYYRS1My1pD2WIKDMlJ
+	S/3MQOB8Ai8f2sn9OCVCk/T9KruyulFP4/aS6xf5SoA8uZ48Q6iVGVLdwRT5K9QeR+yI5Y2lT51uq
+	ebTm+3Y9vVe8UHaXwThlGNLAhNZmRT08P5ZneR5Jh1D03uf1TVWuQ2eI8sJbLmZ07lIa6JDNdEowt
+	pIztJk4qlsk/bjG6XqhrP4ciMXzkrvJrrwt6YNPOdYhwwq9xSs0NMN5STZ0ssPG7H1Q9HSvBX4Hti
+	zuuV8lb3wtBQlMguYHQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQkw-0000000H6BB-1DZW;
-	Mon, 11 Nov 2024 09:30:46 +0000
+	id 1tAQkz-0000000H6CU-0Bqx;
+	Mon, 11 Nov 2024 09:30:49 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUb-0000000GZSL-2QTN
+	id 1tAOV6-0000000GZuL-1aTm
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:05:45 +0000
+	Mon, 11 Nov 2024 07:06:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=zwltdKH7EsKYxjV5KVV6TvUkw9qcS9U9XTN++Z0CHIk=; b=Bv0BkyYNaacxIK/t44kb+bT0tY
-	B0KCEOtxobRvXZm1GVyNxrJQUAqlr2h3yHkuMjXzBgDjgPbbA985OGipIn6p+++wmCz84s4Eaidlj
-	AXh2QV6hbXrBpUo5n5/MZgdUSlDADoY7x9TbUYni+aCYKCwjjHJAlXdDIbestduaX1wvWzB93VxUN
-	Vmc3VQtBVnHQH9M43KpFV/aA70m6O0IhoWuX7qP1FyY3E8o3KVeiHWXDg7cmxDctVjMTqROJ2h1ju
-	sXnIXJMRoQRwYkoCvBoUMUYERpO7HyV5R9c0T2Wrk9OvLh0hViUtWImkdfFKFdYcbQdyj1pG1maGM
-	z/A/3D2A==;
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	bh=4ecek1ybpr1EXffs2Ej6s5JjUzTPJXOnISngtYcCsZA=; b=folY9R9njKjYH4By7TAICYYMh1
+	CyyE12DhsM5Z3QyqURCWjBq37r3ZSU26hriv1xkChCkK1F65i5CLJrJaavaNxqcePIPOu1vCspczD
+	BYnl8+dh2RKsNHEDx57bcNbC+rZcZdjM/9FvydcX9ED8NoIWkEEokb7BjEGZjjxfl1VKmTJrMvvL4
+	xd041q+xyG75E0VPOpLoFwfdyaAwrk03VHHqwe5xrPBjQMDfAzwapUktDTaRFAuC+cRINgjdQd9rB
+	usYnxEi5UBxvpfBWEAcBiQULE/pgotQdFJkwaQ7VqxgTCuiF3rLKMwob2WZ/VQVkfsNqnK7CLZVkB
+	eWKxcixQ==;
+Received: from szxga07-in.huawei.com ([45.249.212.35])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUW-0000000CmG1-1Ohi
+	id 1tAOUd-0000000CmIV-0p0d
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:43 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn0r41wYpz10V9p;
-	Mon, 11 Nov 2024 15:03:16 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:55 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rZ4Z02z1hwVQ;
+	Mon, 11 Nov 2024 15:03:42 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 360071401F1;
-	Mon, 11 Nov 2024 15:05:08 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 6E4B51401F4;
+	Mon, 11 Nov 2024 15:05:30 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:07 +0800
+ 2024 15:05:29 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 014/102] ubifs-utils: Add atomic implementations
-Date: Mon, 11 Nov 2024 15:02:17 +0800
-Message-ID: <20241111070346.1314122-15-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 058/102] fsck.ubifs: rebuild_fs: Extract reachable directory entries tree
+Date: Mon, 11 Nov 2024 15:03:01 +0800
+Message-ID: <20241111070346.1314122-59-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070542_212634_557EF448 
-X-CRM114-Status: GOOD (  17.41  )
+X-CRM114-CacheID: sfid-20241111_070550_814894_E0377A4A 
+X-CRM114-Status: GOOD (  17.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,170 +85,227 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add atomic implementations, because there are some atomic operations
-(eg. atomic_long_xxx) used in UBIFS linux kernel libs.
-
-This is a preparation for replacing implementation of UBIFS utils with
-linux kernel libs.
+This is the 5/12 step of rebuilding. Extract reachable directory entries
+tree. Make sure that all files can be searched from '/', unreachable
+file is deleted. So, all files can be accessible in userspace after
+reparing.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am   |   1 +
- ubifs-utils/common/atomic.h | 133 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 134 insertions(+)
- create mode 100644 ubifs-utils/common/atomic.h
+ ubifs-utils/fsck.ubifs/extract_files.c | 94 ++++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h    |  6 +++
+ ubifs-utils/fsck.ubifs/rebuild_fs.c    | 44 ++++++++++++++++
+ 3 files changed, 144 insertions(+)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 13171b74..58162579 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -2,6 +2,7 @@ common_SOURCES = \
- 	ubifs-utils/common/compiler_attributes.h \
- 	ubifs-utils/common/linux_types.h \
- 	ubifs-utils/common/linux_err.h \
-+	ubifs-utils/common/atomic.h \
- 	ubifs-utils/common/kmem.h \
- 	ubifs-utils/common/kmem.c \
- 	ubifs-utils/common/defs.h \
-diff --git a/ubifs-utils/common/atomic.h b/ubifs-utils/common/atomic.h
-new file mode 100644
-index 00000000..f287d435
---- /dev/null
-+++ b/ubifs-utils/common/atomic.h
-@@ -0,0 +1,133 @@
-+//Source: http://golubenco.org/atomic-operations.html
-+#ifndef __ATOMIC_H__
-+#define __ATOMIC_H__
+diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
+index 772e3003..dd5cb310 100644
+--- a/ubifs-utils/fsck.ubifs/extract_files.c
++++ b/ubifs-utils/fsck.ubifs/extract_files.c
+@@ -525,6 +525,7 @@ static int update_file(struct ubifs_info *c, struct scanned_file *file,
+ 	{
+ 		struct scanned_dent_node *dent = (struct scanned_dent_node *)sn;
+ 
++		dent->file = file;
+ 		err = insert_file_dentry(file, dent);
+ 		break;
+ 	}
+@@ -888,3 +889,96 @@ check_dent_node:
+ 
+ 	return true;
+ }
 +
-+/* Check GCC version, just to be safe */
-+#if !defined(__GNUC__) || (__GNUC__ < 4) || (__GNUC_MINOR__ < 1)
-+# error atomic.h works only with GCC newer than version 4.1
-+#endif /* GNUC >= 4.1 */
-+
-+/**
-+ * Atomic type.
-+ */
-+typedef struct {
-+	volatile long counter;
-+} atomic_long_t;
-+
-+#define ATOMIC_INIT(i)  { (i) }
-+
-+/**
-+ * Read atomic variable
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically reads the value of @v.
-+ */
-+#define atomic_long_read(v) ((v)->counter)
-+
-+/**
-+ * Set atomic variable
-+ * @param v pointer of type atomic_long_t
-+ * @param i required value
-+ */
-+#define atomic_long_set(v,i) (((v)->counter) = (i))
-+
-+/**
-+ * Add to the atomic variable
-+ * @param i integer value to add
-+ * @param v pointer of type atomic_long_t
-+ */
-+static inline void atomic_long_add( int i, atomic_long_t *v )
++static bool dentry_is_reachable(struct ubifs_info *c,
++				struct scanned_dent_node *dent_node,
++				struct list_head *path_list,
++				struct rb_root *file_tree)
 +{
-+	(void)__sync_add_and_fetch(&v->counter, i);
++	struct scanned_file *parent_file = NULL;
++	struct scanned_dent_node *dn, *parent_dent;
++	struct rb_node *p;
++
++	/* Check whether the path is cyclical. */
++	list_for_each_entry(dn, path_list, list) {
++		if (dn == dent_node)
++			return false;
++	}
++
++	/* Quick path, dentry has already been checked as reachable. */
++	if (dent_node->can_be_found)
++		return true;
++
++	dent_node->can_be_found = true;
++	list_add(&dent_node->list, path_list);
++
++	parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
++	/* Parent dentry is not found, unreachable. */
++	if (!parent_file)
++		return false;
++
++	/* Parent dentry is '/', reachable. */
++	if (parent_file->inum == UBIFS_ROOT_INO)
++		return true;
++
++	p = rb_first(&parent_file->dent_nodes);
++	if (!p)
++		return false;
++	parent_dent = rb_entry(p, struct scanned_dent_node, rb);
++
++	return dentry_is_reachable(c, parent_dent, path_list, file_tree);
 +}
 +
 +/**
-+ * Subtract the atomic variable
-+ * @param i integer value to subtract
-+ * @param v pointer of type atomic_long_t
++ * file_is_reachable - whether the file can be found from '/'.
++ * @c: UBIFS file-system description object
++ * @file: file object
++ * @file_tree: tree of all scanned files
 + *
-+ * Atomically subtracts @i from @v.
++ * This function iterates all directory entries in given @file and checks
++ * whether each dentry is reachable. All unreachable directory entries will
++ * be removed.
 + */
-+static inline void atomic_long_sub( int i, atomic_long_t *v )
++bool file_is_reachable(struct ubifs_info *c, struct scanned_file *file,
++		       struct rb_root *file_tree)
 +{
-+	(void)__sync_sub_and_fetch(&v->counter, i);
++	struct rb_node *node;
++	struct scanned_dent_node *dent_node;
++
++	if (file->inum == UBIFS_ROOT_INO)
++		goto reachable;
++
++retry:
++	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
++		LIST_HEAD(path_list);
++
++		dent_node = rb_entry(node, struct scanned_dent_node, rb);
++
++		if (dentry_is_reachable(c, dent_node, &path_list, file_tree))
++			continue;
++
++		while (!list_empty(&path_list)) {
++			dent_node = list_entry(path_list.next,
++					       struct scanned_dent_node, list);
++
++			dbg_fsck("remove unreachable dentry %s, in %s",
++				 c->encrypted && !file->ino.is_xattr ?
++				 "<encrypted>" : dent_node->name, c->dev_name);
++			list_del(&dent_node->list);
++			rb_erase(&dent_node->rb, &dent_node->file->dent_nodes);
++			kfree(dent_node);
++		}
++
++		/* Since dentry node is removed from rb-tree, rescan rb-tree. */
++		goto retry;
++	}
++
++	if (!rb_first(&file->dent_nodes)) {
++		dbg_fsck("file %lu is unreachable, in %s", file->inum, c->dev_name);
++		return false;
++	}
++
++reachable:
++	dbg_fsck("file %lu is reachable, in %s", file->inum, c->dev_name);
++	return true;
++}
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index 81c37160..c0aeff3d 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -39,6 +39,8 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
+ /* Types of inconsistent problems */
+ enum { SB_CORRUPTED = 0 };
+ 
++struct scanned_file;
++
+ /**
+  * scanned_node - common header node.
+  * @exist: whether the node is found by scanning
+@@ -92,6 +94,7 @@ struct scanned_ino_node {
+  * @nlen: name length
+  * @name: dentry name
+  * @inum: target inode number
++ * @file: corresponding file
+  * @rb: link in the trees of:
+  *  1) valid dentry nodes or deleted dentry node
+  *  2) all scanned dentry nodes from same file
+@@ -105,6 +108,7 @@ struct scanned_dent_node {
+ 	unsigned int nlen;
+ 	char name[UBIFS_MAX_NLEN + 1];
+ 	ino_t inum;
++	struct scanned_file *file;
+ 	struct rb_node rb;
+ 	struct list_head list;
+ };
+@@ -265,6 +269,8 @@ void destroy_file_tree(struct ubifs_info *c, struct rb_root *file_tree);
+ struct scanned_file *lookup_file(struct rb_root *file_tree, ino_t inum);
+ bool file_is_valid(struct ubifs_info *c, struct scanned_file *file,
+ 		   struct rb_root *file_tree);
++bool file_is_reachable(struct ubifs_info *c, struct scanned_file *file,
++		       struct rb_root *file_tree);
+ 
+ /* rebuild_fs.c */
+ int ubifs_rebuild_filesystem(struct ubifs_info *c);
+diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+index 31f1b3ba..669b61d1 100644
+--- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
++++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+@@ -588,6 +588,46 @@ static void filter_invalid_files(struct ubifs_info *c)
+ }
+ 
+ /**
++ * extract_dentry_tree - extract reachable directory entries.
++ * @c: UBIFS file-system description object
++ *
++ * This function iterates all directory entries and remove those
++ * unreachable ones. 'Unreachable' means that a directory entry can
++ * not be searched from '/'.
++ */
++static void extract_dentry_tree(struct ubifs_info *c)
++{
++	struct rb_node *node;
++	struct scanned_file *file;
++	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
++	LIST_HEAD(unreachable);
++
++	for (node = rb_first(tree); node; node = rb_next(node)) {
++		file = rb_entry(node, struct scanned_file, rb);
++
++		/*
++		 * Since all xattr files are already attached to corresponding
++		 * host file, there are only non-xattr files in the file tree.
++		 */
++		ubifs_assert(c, !file->ino.is_xattr);
++		if (!file_is_reachable(c, file, tree))
++			list_add(&file->list, &unreachable);
++	}
++
++	/* Remove unreachable files. */
++	while (!list_empty(&unreachable)) {
++		file = list_entry(unreachable.next, struct scanned_file, list);
++
++		dbg_fsck("remove unreachable file %lu, in %s",
++			 file->inum, c->dev_name);
++		list_del(&file->list);
++		destroy_file_content(c, file);
++		rb_erase(&file->rb, tree);
++		kfree(file);
++	}
 +}
 +
 +/**
-+ * Subtract value from variable and test result
-+ * @param i integer value to subtract
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically subtracts @i from @v and returns
-+ * true if the result is zero, or false for all
-+ * other cases.
-+ */
-+static inline int atomic_long_sub_and_test( int i, atomic_long_t *v )
-+{
-+	return !(__sync_sub_and_fetch(&v->counter, i));
-+}
+  * ubifs_rebuild_filesystem - Rebuild filesystem.
+  * @c: UBIFS file-system description object
+  *
+@@ -633,6 +673,10 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
+ 	log_out(c, "Filter invalid files");
+ 	filter_invalid_files(c);
+ 
++	/* Step 5: Extract reachable directory entries. */
++	log_out(c, "Extract reachable files");
++	extract_dentry_tree(c);
 +
-+/**
-+ * Increment atomic variable
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically increments @v by 1.
-+ */
-+static inline void atomic_long_inc( atomic_long_t *v )
-+{
-+	(void)__sync_fetch_and_add(&v->counter, 1);
-+}
-+
-+/**
-+ * @brief decrement atomic variable
-+ * @param v: pointer of type atomic_long_t
-+ *
-+ * Atomically decrements @v by 1.  Note that the guaranteed
-+ * useful range of an atomic_long_t is only 24 bits.
-+ */
-+static inline void atomic_long_dec( atomic_long_t *v )
-+{
-+	(void)__sync_fetch_and_sub(&v->counter, 1);
-+}
-+
-+/**
-+ * @brief Decrement and test
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically decrements @v by 1 and
-+ * returns true if the result is 0, or false for all other
-+ * cases.
-+ */
-+static inline int atomic_long_dec_and_test( atomic_long_t *v )
-+{
-+	return !(__sync_sub_and_fetch(&v->counter, 1));
-+}
-+
-+/**
-+ * @brief Increment and test
-+ * @param v pointer of type atomic_long_t
-+ *
-+ * Atomically increments @v by 1
-+ * and returns true if the result is zero, or false for all
-+ * other cases.
-+ */
-+static inline int atomic_long_inc_and_test( atomic_long_t *v )
-+{
-+	return !(__sync_add_and_fetch(&v->counter, 1));
-+}
-+
-+/**
-+ * @brief add and test if negative
-+ * @param v pointer of type atomic_long_t
-+ * @param i integer value to add
-+ *
-+ * Atomically adds @i to @v and returns true
-+ * if the result is negative, or false when
-+ * result is greater than or equal to zero.
-+ */
-+static inline int atomic_long_add_negative( int i, atomic_long_t *v )
-+{
-+	return (__sync_add_and_fetch(&v->counter, i) < 0);
-+}
-+
-+#endif
+ out:
+ 	destroy_scanned_info(c, &si);
+ 	destroy_rebuild_info(c);
 -- 
 2.13.6
 
