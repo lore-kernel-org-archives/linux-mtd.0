@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51680D2E9C8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83AB7D2E9CA
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 09:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,38 +12,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j2H0LQB2N+WX+30honeD1Ng/jwLarI0D5Op7kPXfaQo=; b=A4bvVaejFBOlj6
-	KZID33uY1oHes2QQI0WNbXW9/b5syoPDm4fSt0HMhhT4Q6HX+0DTkNtoIhx/WEiQugMMJLcr+Xolv
-	Tr4qCwDD0rMppnbOT60JU8X5yQ9KlrNebehfgbQdfcTW8C11N6Zm1a8xqt8Vgo8xl5AD9WD+tPpTk
-	xsRSm5dqa9GvtwTgMwUYa6aPnOg/ZxbpCu5U9G3y364LuQgELH3YTJmBixTkoKj/jiLF1JAVFn7m+
-	/h2Hte5+PhEat5pnYb0FS+/92KmBGvRxoI5hImREj2fp+w0UucePV89eU2FCBQJDjVRnlD111n6dO
-	praP18/3cvWeBsBPhSDA==;
+	List-Owner; bh=54wKo8p/jcKWPRWc4pnwhyvW8ZJBrngSKXACLa9v++c=; b=M9ZpbbFtJk9cNH
+	iLdTC0HrhE7C03FTsheIwCOTLHHrICwWuTZ7Uv/l9kCAhy5Y57GTX0+02orYJ6Z1SRQ59re9Ii+Oh
+	3e9JmNGUZmb5NM4+5mMt9bkSQgGMJFWmNm4VBNnGkb3JbcZc2K7jb1V4CJ/Mn1ydOrIWGmiaNXeja
+	SUaM+X6Dtni2IeLRRpKswHy0JjAFiJ4Ywm5vYsumZbDq7QxdJQ7qLLqZuMSDdzZSvjiu8G3tiMT5r
+	ERUiyYUYF2vslhQHLbVSuyquojAFjR4fJjU/Bjjo4nHPlgiMU8Zd8CuBbeQeVMIRQ91Y/G6Qt+0uT
+	ZpNR6neBLOH9AeVGXdWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQQk-0000000H0Ob-2Hw7;
-	Mon, 11 Nov 2024 09:09:54 +0000
+	id 1tAQQj-0000000H0NK-004S;
+	Mon, 11 Nov 2024 09:09:53 +0000
 Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAQQe-0000000H0Iu-3MhF
+	id 1tAQQe-0000000H0Iw-3Maj
 	for linux-mtd@lists.infradead.org;
 	Mon, 11 Nov 2024 09:09:51 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn3cZ5m9HzQsrj;
-	Mon, 11 Nov 2024 17:08:30 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn3cc662gzQsrb;
+	Mon, 11 Nov 2024 17:08:32 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4A6C0180104;
-	Mon, 11 Nov 2024 17:09:43 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 522A71400DC;
+	Mon, 11 Nov 2024 17:09:45 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 17:09:42 +0800
+ 2024 17:09:44 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 RESEND 071/102] fsck.ubifs: Recover isize
-Date: Mon, 11 Nov 2024 17:07:59 +0800
-Message-ID: <20241111090832.2093596-2-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 075/102] fsck.ubifs: Update files' size for check mode
+Date: Mon, 11 Nov 2024 17:08:03 +0800
+Message-ID: <20241111090832.2093596-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_010949_222361_73DAE876 
-X-CRM114-Status: GOOD (  19.86  )
+X-CRM114-CacheID: sfid-20241111_010949_185583_BE375168 
+X-CRM114-Status: GOOD (  14.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,218 +70,157 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 5/18 step of fsck. Recover isize. There could be following
-steps and possible errors:
- Step 1. Traverse size tree, lookup corresponding inode from TNC
-  a. corrupted node searched from TNC: skip node for danger mode and
-     normal mode with 'yes' answer, other modes will exit.
-  b. corrupted index node read from TNC: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
- Step 2. update isize for inode. Keep <inum, isize> in size tree for check
- mode, update inode node in place for other modes.
+This is the 7/18 step of fsck. Update files' size according to size
+tree for check mode, now all files are updated after replaying journal.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/fsck.ubifs.c |  1 +
- ubifs-utils/fsck.ubifs/load_fs.c    | 79 +++++++++++++++++++++----------------
- ubifs-utils/libubifs/recovery.c     | 34 +++++++++++++---
- 3 files changed, 75 insertions(+), 39 deletions(-)
+ ubifs-utils/fsck.ubifs/check_files.c | 45 ++++++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c  |  3 +++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h  |  1 +
+ ubifs-utils/libubifs/recovery.c      | 16 -------------
+ ubifs-utils/libubifs/ubifs.h         | 16 +++++++++++++
+ 5 files changed, 65 insertions(+), 16 deletions(-)
 
+diff --git a/ubifs-utils/fsck.ubifs/check_files.c b/ubifs-utils/fsck.ubifs/check_files.c
+index 29848c4e..0fd6b32a 100644
+--- a/ubifs-utils/fsck.ubifs/check_files.c
++++ b/ubifs-utils/fsck.ubifs/check_files.c
+@@ -309,3 +309,48 @@ out:
+ 	}
+ 	return err;
+ }
++
++/**
++ * update_files_size - Update files' size.
++ * @c: UBIFS file-system description object
++ *
++ * This function updates files' size according to @c->size_tree for check mode.
++ */
++void update_files_size(struct ubifs_info *c)
++{
++	struct rb_node *this;
++
++	if (FSCK(c)->mode != CHECK_MODE) {
++		/* Other modes(rw) have updated inode size in place. */
++		dbg_fsck("skip updating files' size%s, in %s",
++			 mode_name(c), c->dev_name);
++		return;
++	}
++
++	log_out(c, "Update files' size");
++
++	this = rb_first(&c->size_tree);
++	while (this) {
++		struct size_entry *e;
++
++		e = rb_entry(this, struct size_entry, rb);
++		this = rb_next(this);
++
++		if (e->exists && e->i_size < e->d_size) {
++			struct scanned_file *file;
++
++			file = lookup_file(&FSCK(c)->scanned_files, e->inum);
++			if (file && file->ino.header.exist &&
++			    file->ino.size < e->d_size) {
++				dbg_fsck("update file(%lu) size %llu->%llu, in %s",
++					 e->inum, file->ino.size,
++					 (unsigned long long)e->d_size,
++					 c->dev_name);
++				file->ino.size = e->d_size;
++			}
++		}
++
++		rb_erase(&e->rb, &c->size_tree);
++		kfree(e);
++	}
++}
 diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 83c8a2c5..616ed81a 100644
+index c0b1bf69..ec42fa73 100644
 --- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
 +++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -434,6 +434,7 @@ int main(int argc, char *argv[])
- 	 * Step 2: Replay journal
- 	 * Step 3: Handle orphan nodes
- 	 * Step 4: Consolidate log
-+	 * Step 5: Recover isize
+@@ -443,6 +443,8 @@ static int do_fsck(void)
+ 		return err;
+ 	}
+ 
++	update_files_size(c);
++
+ 	kfree(FSCK(c)->used_lebs);
+ 	destroy_file_tree(c, &FSCK(c)->scanned_files);
+ 	return err;
+@@ -481,6 +483,7 @@ int main(int argc, char *argv[])
+ 
+ 	/*
+ 	 * Step 6: Traverse tnc and construct files
++	 * Step 7: Update files' size
  	 */
- 	err = ubifs_load_filesystem(c);
- 	if (err) {
-diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
-index 42b1afaa..58540543 100644
---- a/ubifs-utils/fsck.ubifs/load_fs.c
-+++ b/ubifs-utils/fsck.ubifs/load_fs.c
-@@ -17,6 +17,33 @@
- #include "misc.h"
- #include "fsck.ubifs.h"
+ 	err = do_fsck();
+ 	if (err && FSCK(c)->try_rebuild) {
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index c917a0e3..4be38b45 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -297,5 +297,6 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c);
  
-+enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
-+
-+static void handle_error(const struct ubifs_info *c, int reason_set)
-+{
-+	bool handled = false;
-+	unsigned int reason = get_failure_reason_callback(c);
-+
-+	clear_failure_reason_callback(c);
-+	if ((reason_set & HAS_DATA_CORRUPTED) && (reason & FR_DATA_CORRUPTED)) {
-+		handled = true;
-+		reason &= ~FR_DATA_CORRUPTED;
-+		if (fix_problem(c, LOG_CORRUPTED, NULL))
-+			FSCK(c)->try_rebuild = true;
-+	}
-+	if ((reason_set & HAS_TNC_CORRUPTED) && (reason & FR_TNC_CORRUPTED)) {
-+		ubifs_assert(c, !handled);
-+		handled = true;
-+		reason &= ~FR_TNC_CORRUPTED;
-+		if (fix_problem(c, TNC_CORRUPTED, NULL))
-+			FSCK(c)->try_rebuild = true;
-+	}
-+
-+	ubifs_assert(c, reason == 0);
-+	if (!handled)
-+		exit_code |= FSCK_ERROR;
-+}
-+
- int ubifs_load_filesystem(struct ubifs_info *c)
- {
- 	int err;
-@@ -164,19 +191,7 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 	log_out(c, "Replay journal");
- 	err = ubifs_replay_journal(c);
- 	if (err) {
--		unsigned int reason = get_failure_reason_callback(c);
--
--		clear_failure_reason_callback(c);
--		if (reason & FR_DATA_CORRUPTED) {
--			if (fix_problem(c, LOG_CORRUPTED, NULL))
--				FSCK(c)->try_rebuild = true;
--		} else if (reason & FR_TNC_CORRUPTED) {
--			if (fix_problem(c, TNC_CORRUPTED, NULL))
--				FSCK(c)->try_rebuild = true;
--		} else {
--			ubifs_assert(c, reason == 0);
--			exit_code |= FSCK_ERROR;
--		}
-+		handle_error(c, HAS_DATA_CORRUPTED | HAS_TNC_CORRUPTED);
- 		goto out_journal;
- 	}
+ /* check_files.c */
+ int traverse_tnc_and_construct_files(struct ubifs_info *c);
++void update_files_size(struct ubifs_info *c);
  
-@@ -186,16 +201,7 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 	log_out(c, "Handle orphan nodes");
- 	err = ubifs_mount_orphans(c, c->need_recovery, c->ro_mount);
- 	if (err) {
--		unsigned int reason = get_failure_reason_callback(c);
--
--		clear_failure_reason_callback(c);
--		if (reason & FR_TNC_CORRUPTED) {
--			if (fix_problem(c, TNC_CORRUPTED, NULL))
--				FSCK(c)->try_rebuild = true;
--		} else {
--			ubifs_assert(c, reason == 0);
--			exit_code |= FSCK_ERROR;
--		}
-+		handle_error(c, HAS_TNC_CORRUPTED);
- 		goto out_orphans;
- 	}
- 
-@@ -210,19 +216,26 @@ int ubifs_load_filesystem(struct ubifs_info *c)
- 			log_out(c, "Consolidate log");
- 			err = ubifs_consolidate_log(c);
- 			if (err) {
--				unsigned int reason = get_failure_reason_callback(c);
--
--				clear_failure_reason_callback(c);
--				if (reason & FR_DATA_CORRUPTED) {
--					if (fix_problem(c, LOG_CORRUPTED, NULL))
--						FSCK(c)->try_rebuild = true;
--				} else {
--					ubifs_assert(c, reason == 0);
--					exit_code |= FSCK_ERROR;
--				}
-+				handle_error(c, HAS_DATA_CORRUPTED);
-+				goto out_orphans;
-+			}
-+		}
-+
-+		if (c->need_recovery) {
-+			log_out(c, "Recover isize");
-+			err = ubifs_recover_size(c, true);
-+			if (err) {
-+				handle_error(c, HAS_TNC_CORRUPTED);
- 				goto out_orphans;
- 			}
- 		}
-+	} else if (c->need_recovery) {
-+		log_out(c, "Recover isize");
-+		err = ubifs_recover_size(c, false);
-+		if (err) {
-+			handle_error(c, HAS_TNC_CORRUPTED);
-+			goto out_orphans;
-+		}
- 	}
- 
- 	c->mounting = 0;
+ #endif
 diff --git a/ubifs-utils/libubifs/recovery.c b/ubifs-utils/libubifs/recovery.c
-index 9115b17a..a5133a0f 100644
+index a5133a0f..905e1645 100644
 --- a/ubifs-utils/libubifs/recovery.c
 +++ b/ubifs-utils/libubifs/recovery.c
-@@ -1272,8 +1272,18 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
- 	/* Locate the inode node LEB number and offset */
- 	ino_key_init(c, &key, e->inum);
- 	err = ubifs_tnc_locate(c, &key, ino, &lnum, &offs);
--	if (err)
-+	if (err) {
-+		unsigned int reason = get_failure_reason_callback(c);
-+
-+		if (reason & FR_DATA_CORRUPTED) {
-+			test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED);
-+			if (handle_failure_callback(c, FR_H_TNC_DATA_CORRUPTED, NULL)) {
-+				/* Leave the inode to be deleted by subsequent steps */
-+				return 0;
-+			}
-+		}
- 		goto out;
-+	}
- 	/*
- 	 * If the size recorded on the inode node is greater than the size that
- 	 * was calculated from nodes in the journal then don't change the inode.
-@@ -1320,10 +1330,10 @@ out:
-  */
- static int inode_fix_size(struct ubifs_info *c, __unused struct size_entry *e)
- {
--	ubifs_assert(c, 0);
--
--	// To be implemented
--	return -EINVAL;
-+	/* Don't remove entry, keep it in the size tree. */
-+	/* Remove this assertion after supporting authentication. */
-+	ubifs_assert(c, c->ro_mount);
-+	return 0;
+@@ -1082,22 +1082,6 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
  }
  
  /**
-@@ -1353,8 +1363,19 @@ int ubifs_recover_size(struct ubifs_info *c, bool in_place)
+- * struct size_entry - inode size information for recovery.
+- * @rb: link in the RB-tree of sizes
+- * @inum: inode number
+- * @i_size: size on inode
+- * @d_size: maximum size based on data nodes
+- * @exists: indicates whether the inode exists
+- */
+-struct size_entry {
+-	struct rb_node rb;
+-	ino_t inum;
+-	loff_t i_size;
+-	loff_t d_size;
+-	int exists;
+-};
+-
+-/**
+  * add_ino - add an entry to the size tree.
+  * @c: UBIFS file-system description object
+  * @inum: inode number
+diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
+index 03150cdb..72497cd9 100644
+--- a/ubifs-utils/libubifs/ubifs.h
++++ b/ubifs-utils/libubifs/ubifs.h
+@@ -1297,6 +1297,22 @@ static inline int ubifs_authenticated(const struct ubifs_info *c)
+ 	return c->authenticated;
+ }
  
- 			ino_key_init(c, &key, e->inum);
- 			err = ubifs_tnc_lookup(c, &key, c->sbuf);
--			if (err && err != -ENOENT)
-+			if (err && err != -ENOENT) {
-+				unsigned int reason;
++/**
++ * struct size_entry - inode size information for recovery.
++ * @rb: link in the RB-tree of sizes
++ * @inum: inode number
++ * @i_size: size on inode
++ * @d_size: maximum size based on data nodes
++ * @exists: indicates whether the inode exists
++ */
++struct size_entry {
++	struct rb_node rb;
++	ino_t inum;
++	loff_t i_size;
++	loff_t d_size;
++	int exists;
++};
 +
-+				reason = get_failure_reason_callback(c);
-+				if (reason & FR_DATA_CORRUPTED) {
-+					test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED);
-+					if (handle_failure_callback(c, FR_H_TNC_DATA_CORRUPTED, NULL)) {
-+						/* Leave the inode to be deleted by subsequent steps */
-+						goto delete_entry;
-+					}
-+				}
- 				return err;
-+			}
- 			if (err == -ENOENT) {
- 				/* Remove data nodes that have no inode */
- 				dbg_rcvry("removing ino %lu",
-@@ -1390,6 +1411,7 @@ int ubifs_recover_size(struct ubifs_info *c, bool in_place)
- 			}
- 		}
- 
-+delete_entry:
- 		rb_erase(&e->rb, &c->size_tree);
- 		kfree(e);
- 	}
+ #ifdef WITH_CRYPTO
+ int ubifs_init_authentication(struct ubifs_info *c);
+ int ubifs_shash_init(const struct ubifs_info *c, struct shash_desc *desc);
 -- 
 2.13.6
 
