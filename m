@@ -4,83 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4A12D2E9DE
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 11:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 616D3D2E9E6
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 13:15:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=pyeqlbgu2dZaGAjUJAcjOVDTnt6saPYPUAgoQtZPdg4=; b=1v+appRZjtm4li
-	v2xTWKZR6rBNkdbbtrSsouIBy3lFzxRzEdvMNVh8ahjcKMAr9+00ihUXq05FgSmpOCXfxvnekoq6l
-	ekLYZe02dIdLLu5kk1xgr/GpRrBx49cGELdtVvPtm9v+1EzLFFk0BOI5fuk9z832tPIZV039KvMaF
-	Jkm+NJrja9RFwwYS+sO+96B4dQNDYN2z1BgsLROnzUSS4vITdbHCzV3Cv9zJwsyGIOXs72y4x6Td/
-	6ypB9SpskPx9gzrO96SrkxPZYb3ROh+VoMHmLLuNNt3XYRhGJcgVQMbIryoRlDm3+jSbSyL6/FRpX
-	+p8lozBqJRyYVPUFJvmg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Uc7e9qyE1lr3MRiqwlsB80ShfZMEwr6G69eGk3ERUOY=; b=oKqF98nt+IdlDs
+	b66+wiDoMF72Sq9MlOEPCRdrnRM7oj0qBFNdKVgW9OcJKkY8bbH4D5Uam0Br2rpNKLRLHbGjXorZs
+	YGBlMcIy7GxFOyj1vAJyoULDFzsI89DzmK+2iJTi73QGSlT+wr1BGxn98b/lHvgpayUoJCmkT6xGz
+	lsZ/ovxFME3A6FGOWlpDAtXAP/txyfzj9RAoS+lAgdlh2/RWE2oc5/KFlPIoS2F68B/WV9L8Fs3NR
+	dIFhwFFHzqWJrEJqzG5V4vzNttRvpF2YUvpnDuZ12zIYPQqMrczJrRlZNQ1uFT8AebY2beLDHVgrr
+	9NhWSzEMIPq/UzZkWm4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tASjf-0000000HUEh-2lDH;
-	Mon, 11 Nov 2024 11:37:35 +0000
-Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
+	id 1tAUFr-000000009q2-2UKR;
+	Mon, 11 Nov 2024 13:14:55 +0000
+Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tASiN-0000000HTzs-2RyE
+	id 1tAU8Q-000000008PG-3JRa
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 11:36:17 +0000
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3807dd08cfcso4219117f8f.1
-        for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2024 03:36:14 -0800 (PST)
+	Mon, 11 Nov 2024 13:07:16 +0000
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a9a0ef5179dso773428066b.1
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2024 05:07:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1731324974; x=1731929774; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7wY9o5kHC59ldDXNBq3Gky4O4TZiiwUsXswCh79e4DM=;
-        b=txx3iM/+ghhrQZ5Efh7dJHTTwhsvXxuDyvheCIxxGaJx+H09C+1UusTimceq+pkknn
-         huSqNgFBocUoA+ZEEbEycCTEfHjulp/SEbCprKDvLlLtAjn0Ci5UUN0NGnkhtWwBmA9N
-         D/zrY0/XPTJ5yhC8Aq46H1WBJdVrZWz3Bpsdpwleh9qQot9Ig+vfOrkaYkrgPIi6N5Wh
-         NXyWno0m0NnkA0HLCZmoRwUKHs4uDRjyIa1xCAfoo/3H5lyOXVYNzVwsZiPLg8EYnofr
-         JS775YHdDIcWN5O55TQlTVpzOnhN4a1dr2+JLnyYgObhcBGwQkFRcjAynK5mLTF0z7mx
-         T6RQ==
+        d=linaro.org; s=google; t=1731330433; x=1731935233; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NuqbWEUKeRUyLa/FoT+dFXMmWuM2evJHexwWQ7irf3o=;
+        b=wUOZl0Igg4IFp/ep8sV7PNQrAPKgHtMFHa420hpk1HL60xw926LajvrZmmGVCdzZs0
+         l+9P2O3wcoem+E4upN6fsJolqmeX7+FT0ZlNW2PKJ0ERIH7Yu4UTaESXDw64CKPXDAKf
+         LYLH8/2JRZlOhFRbYFlTaC8291s3nSAY2lIOe+SNZuPRG1eCSbPEBQcBzYeC9tla4AQI
+         h+k4zduC0BHB3KzrdZYD1c+vZmPdU2c8N35tV1Jz5WhInUpMOLAK3FD76wXIIRF7Gj+D
+         tzL51gbsJMQNCv/FL9H/fz3S8xDi49sYF/kuvtcDs1Rm15rlOhkwBdAF/nZMx46ws3Hx
+         uzxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731324974; x=1731929774;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7wY9o5kHC59ldDXNBq3Gky4O4TZiiwUsXswCh79e4DM=;
-        b=npQt5pIFQ6cXxAZ8RtqFG4dc38NiJY/edIWO/HvvEdqrCs29gfVwDaYSLGZhWaov3T
-         jKwKaiLVfryRKQu+HBT2JxqVdzUWk9JL1mQS+OtrcXlTWIflb11X/6hWbAwmfGQZOx2F
-         8oIAiV7vdHpQees4TTOi5brgFkVqMR4Fc8Er6k92ZHoxnh586dHjqYYsvGtSjiSq3JTy
-         ZoBktqMxRveNrVzcyWvOJoBjjo08FQFNR4A6oi2ebSDl5JT3Wv+FPPWsXKohfk1ej13e
-         Hd/lp9wvHovVGwSErY/jX/FMRXW69yb8L/qBTI8y91FE4Xh7zNsV3H0ybrmfeYch5HML
-         vXVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUgZAxrxGjkqDJLOlXdhPyQGefwBrP/ainYL09K/qsnLZH2+QUNtUXNTbe+TFfWiLkcTbGGIIiBtRI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwcVMA4rP8IOEaAiGNB3aDP1WMwk5IUdgBkgp5UxA2SfHXanBYJ
-	rQgf00qeEnjY2KywFFJ/38UsGldSgYnwymE6g6+eqV6Wa6arVrEdWZJInzqZFvY=
-X-Google-Smtp-Source: AGHT+IE6tAy74N9OIqvP/VA3FCkS1J3pomW4FVro8EP9Ga3hGZTeODklr9RFOwmWgEQtDqjmYHSElw==
-X-Received: by 2002:a05:6000:1fa1:b0:37d:3e6d:6a00 with SMTP id ffacd0b85a97d-381f1884805mr12220915f8f.47.1731324973682;
-        Mon, 11 Nov 2024 03:36:13 -0800 (PST)
-Received: from 1.. ([79.115.63.225])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432b05e5d1bsm176266785e9.40.2024.11.11.03.36.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 03:36:13 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: alvinzhou.tw@gmail.com
-Cc: mwalle@kernel.org,
-	pratyush@kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	chengminglin@mxic.com.tw,
-	leoyu@mxic.com.tw,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH] mtd: spi-nor: macronix: use nor->addr_nbytes
-Date: Mon, 11 Nov 2024 13:36:09 +0200
-Message-Id: <20241111113609.12093-1-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1731330433; x=1731935233;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NuqbWEUKeRUyLa/FoT+dFXMmWuM2evJHexwWQ7irf3o=;
+        b=Qat2wVZIehX0goTIX+DROfxfbZ3ufzXIanw8rwhtChfTbRl0A+ZfTDvgnuUn0kLXVV
+         tNMNq7f9HyC1n/BOJUZbMcHBjKVgUqwmVeYkML+6rXHkhELNW5L3a9COLyIm2p2Ab9YK
+         Y1hETdX0oGZz8IcKyU/bx4sYmEF/fxgx52dODKExUyKji6fagHWRGIuWWR5zMao/dDtQ
+         GO8hwwx6+hjZRVXK3PdsClOnMPVOBtjEsNcBFqnRvKQj54wozdeBV9FK4NvWJzaOGzfd
+         nBGLWGJPw2TZXFzWrCLSIyrD01ySncVQ9jKw0X9y74nr0dg92g703ts5zs2KZ/osFrqv
+         s9wQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVWMhcGPdLpF+sLGUpOQV23RnoJOVADT46Dhy1XkFZus7odrVeGhiyhM+EhaqnouYOXmGz1r2D+RQ0=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyIMFXXlmrvAHEIPTKNJmGfqQhFuieBUz6WhC0EPuNM26L5No3J
+	MZJUmbvj4aB2J6+Q2sIQpU9ioWxQmQlrpPmcDPZjclrPs1g5/CpO1BoB2yzEjpw=
+X-Google-Smtp-Source: AGHT+IEnb9jV9y5YcXAyyhZyx653iOkhdQJRgdvB95DAl/f1lUVteBRKumj4+CzwSQbTSU2R/No6gQ==
+X-Received: by 2002:a17:907:3f14:b0:a9e:380b:8ce with SMTP id a640c23a62f3a-a9eeff44e9amr1235984466b.35.1731330432898;
+        Mon, 11 Nov 2024 05:07:12 -0800 (PST)
+Received: from [192.168.0.157] ([79.115.63.225])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0e2e92esm597386666b.182.2024.11.11.05.07.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Nov 2024 05:07:12 -0800 (PST)
+Message-ID: <e76ff30b-342e-4e4c-aa84-40312c3ffc72@linaro.org>
+Date: Mon, 11 Nov 2024 13:07:09 +0000
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1108; i=tudor.ambarus@linaro.org; h=from:subject; bh=WaefXHlt4BBEBmkcWMW9vgf9mUVaS1KSQwwwmgHZFzI=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBnMewpec4heVFALHnX0lAGLh/i7niDqwQauXdeh CJ12ZKIEamJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZzHsKQAKCRBLVU9HpY0U 6XlqCADDgS4/IL3FP1bzV3Ut85jXx8BzXL9Nj8YBiY5W2a2WK8tomymJKTO6alevUzYUeaCMwre GnOgMjtYS1abMKIZpmohDeNy1GRikfpYWB4LVOzd9DMhYjj2w6afL4q7fFJeLV3J0Y6lZ+GAyKR X3c4XNxwYidZZ6+Q+stI6vN+WDiZzNsJktU3xI4r8VE4yPLmfEGiTqiBcwib6qc45ErwkY+ljwF /JjrH1pyWf6x8hGlTSZrHVB/R0R7joxkm1f0sJjmyD0ws1Tc4r1z3ktelH3e0nMlmxjVxHtd9d2 vFp3yufLxF8F35H7C3gxgst6aE107VVuKWu3Lw/eJ+nCJOUi
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/24] spi: spi-mem: Extend spi-mem operations with a
+ per-operation maximum frequency
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ Steam Lin <stlin2@winbond.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Sanjay R Mehta <sanju.mehta@amd.com>, Han Xu <han.xu@nxp.com>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Daire McNamara <daire.mcnamara@microchip.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Haibo Chen <haibo.chen@nxp.com>, Yogesh Gaur <yogeshgaur.83@gmail.com>,
+ Heiko Stuebner <heiko@sntech.de>, Michal Simek <michal.simek@amd.com>
+References: <20241025161501.485684-1-miquel.raynal@bootlin.com>
+ <20241025161501.485684-2-miquel.raynal@bootlin.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20241025161501.485684-2-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_033615_662260_866B2312 
-X-CRM114-Status: GOOD (  10.30  )
+X-CRM114-CacheID: sfid-20241111_050714_869661_E7AC70F5 
+X-CRM114-Status: GOOD (  15.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,34 +107,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the nor->addr_nbytes set by the core, we shouldn't use
-magic numbers or states that are not tracked by the core.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
-Alvin claimed he tested this patch at:
-https://lore.kernel.org/linux-mtd/CAPhrvRQrugRQgQcdHBdwid3_sUkCm0mZL9zhz1=TYzXg4qUTfw@mail.gmail.com/
-Though a Tested-by tag would be nice. Thanks!
 
- drivers/mtd/spi-nor/macronix.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 10/25/24 5:14 PM, Miquel Raynal wrote:
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 830da21eea08..57a40fa70c6a 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -230,7 +230,8 @@ static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
- 		return ret;
- 
- 	/* Read flash ID to make sure the switch was successful. */
--	ret = spi_nor_read_id(nor, 4, 4, buf, SNOR_PROTO_8_8_8_DTR);
-+	ret = spi_nor_read_id(nor, nor->addr_nbytes, 4, buf,
-+			      SNOR_PROTO_8_8_8_DTR);
- 	if (ret) {
- 		dev_dbg(nor->dev, "error %d reading JEDEC ID after enabling 8D-8D-8D mode\n", ret);
- 		return ret;
--- 
-2.34.1
+cut
+
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 17b8baf749e6..ab650ae953bb 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -356,6 +356,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+>  {
+>  	unsigned int tmpbufsize, xferpos = 0, totalxferlen = 0;
+>  	struct spi_controller *ctlr = mem->spi->controller;
+> +	unsigned int xfer_speed = op->max_freq;
+
+be aware that for controllers that don't support SPIMEM ops, you pass
+the frequency from the upper layers, without adjusting it with
+spi->max_speed_hz. Was this intentional?
+
+
+>  	struct spi_transfer xfers[4] = { };
+>  	struct spi_message msg;
+>  	u8 *tmpbuf;
+> @@ -368,6 +369,9 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+>  	if (!spi_mem_internal_supports_op(mem, op))
+>  		return -EOPNOTSUPP;
+>  
+> +	if (!op->max_freq || op->max_freq > mem->spi->max_speed_hz)
+> +		((struct spi_mem_op *)op)->max_freq = mem->spi->max_speed_hz;
+
+not a big fan of casting the const out. How about introducing a
+spi_mem_adjust_op_freq()? The upper layers will use that were needed,
+and you'll still be able to pass a const op to spi_mem_exec_op()
+
+cut
+
+> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> index f866d5c8ed32..8963f236911b 100644
+> --- a/include/linux/spi/spi-mem.h
+> +++ b/include/linux/spi/spi-mem.h
+> @@ -68,6 +68,9 @@ enum spi_mem_data_dir {
+>  	SPI_MEM_DATA_OUT,
+>  };
+>  
+> +#define SPI_MEM_OP_MAX_FREQ(__freq)				\
+> +	.max_freq = __freq
+> +
+>  /**
+>   * struct spi_mem_op - describes a SPI memory operation
+>   * @cmd.nbytes: number of opcode bytes (only 1 or 2 are valid). The opcode is
+> @@ -95,6 +98,9 @@ enum spi_mem_data_dir {
+>   *		 operation does not involve transferring data
+>   * @data.buf.in: input buffer (must be DMA-able)
+>   * @data.buf.out: output buffer (must be DMA-able)
+> + * @max_freq: frequency limitation wrt this operation. 0 means there is no
+> + *	      specific constraint and the highest achievable frequency can be
+> + *	      attempted).
+
+nit: you close a parenthesis without opening one
+
+Looking good,
+ta
 
 
 ______________________________________________________
