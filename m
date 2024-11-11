@@ -4,46 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5B2BD12D7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:05:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84DF0D12D7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:06:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rdSvz+crifS+pP3Gunupxenp0iEJOlDQQhVd7eDI3J4=; b=xTvRO+dEY4jEOU
-	D1a7UNpZekibgJ/7r8fMU0i8nakzcbdzBTBCNDIygF4vutWk0GcnUK9ygLMKG+waCD2u91Oi5qCYI
-	afppkXQQG0I/y6TO3FwZs8B9bHQnVMLLrL1Q4IvgmKtr+J9XrAxXouXj8wSndh6aRt+0EqXZ1/yLS
-	rU8sxPrIPuXmVpCvk1eKB6gFXnWX3H3m8hNT6SdhL3lmIgKiH7hg/NAtmFkoG8j/qGvn3VxKfUt2v
-	Ii97IFrE0Nb7mzs8c4Kr6hGWnElH6n1Gu1GzXtYnTwYE/v/QvY7uPqCOyKtDIGCU22ARopXDJ+RkX
-	w2sH4qkSTsvXWPGxAD1Q==;
+	List-Owner; bh=jDXQ+uci4CLFCb3vqhh6fOfG5i0+YQQU8GLOFpRRNMw=; b=GVoE0+BnbyQTkc
+	/tv7gqwmef+u3iqtw8f9IUI1CKW16nMlOjwAf0vbKC/LyiYwwr/VKt0+X0U1FuKc5MEzeUZ/jLD8g
+	alpziqX2CDdBPTPsZ4u0jARuwOleJBU2dxY/6mJKpDnikylilBMtBBLmkiZBBC2+pe+GtkEf3T86u
+	Bgm7gF4q2JKAXTNOy/pZQwllNvyyZ1F1IJkfMpWT/9VDFEb54bPaEy4cfARPKnlzTLIfH4aiLh52v
+	1nG2tmVHLotTsoP1J5PyNZafmZ98kE2dqy0pOSdVTYdDQwQ7fSytWGrpoiCs6Vfq+ArAxcSRHSJnR
+	mFKqVGfQz0h53jH10xjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUk-0000000GZb3-3kO4;
-	Mon, 11 Nov 2024 07:05:54 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1tAOUo-0000000GZdt-0kqE;
+	Mon, 11 Nov 2024 07:05:58 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUN-0000000GZEe-0WI0
-	for linux-mtd@lists.infradead.org;
+	id 1tAOUP-0000000GZGx-3MdU
+	for linux-mtd@bombadil.infradead.org;
 	Mon, 11 Nov 2024 07:05:33 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0nD0T7qz28fRg;
-	Mon, 11 Nov 2024 15:00:48 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=ADNoQID0HJkBqX2fP05JGLpSccGfOGQpeiHyEBERR0s=; b=Iqvif8Vsqxg8yBfSOZhZznm0WF
+	q1fzCvZpB3fF8jRdGa6OlAAw3TwfshNiFSp8pAn8K4gIb+E5+J++ARoskkMdaitL6ooscMDSMGSpQ
+	RBKdOIey0cNrX0l0GvQV4v8VcWYBoewQmp04YoA//WQ0vSVRJG9oBI/+IcFAwHIGUZFWlmajjuCmy
+	UA1nmOdqkJAe1IYkwUxkxGgly29oxmLrO0fJGt4auOw/T/POgDzHDjWEZtobNridk98PSyF0AHOy/
+	gn54fbPHKe9CLfuAFor6L7aS1RzW9mtQr2NvB3Hry6M4uXWM8vHsXjGxtjvjKJT9xhSihadlAJKzn
+	f3aivFEg==;
+Received: from szxga06-in.huawei.com ([45.249.212.32])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOUK-0000000CmCb-3mi9
+	for linux-mtd@lists.infradead.org;
+	Mon, 11 Nov 2024 07:05:31 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn0tT2DlVz1ynKg;
+	Mon, 11 Nov 2024 15:05:21 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6EE0914011F;
-	Mon, 11 Nov 2024 15:05:29 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 3580F1A0188;
+	Mon, 11 Nov 2024 15:05:10 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:28 +0800
+ 2024 15:05:09 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 056/102] fsck.ubifs: rebuild_fs: Add valid nodes into file
-Date: Mon, 11 Nov 2024 15:02:59 +0800
-Message-ID: <20241111070346.1314122-57-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 018/102] ubifs-utils: Add rwsem implementations
+Date: Mon, 11 Nov 2024 15:02:21 +0800
+Message-ID: <20241111070346.1314122-19-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241110_230531_681159_8F8A17B6 
-X-CRM114-Status: GOOD (  13.14  )
+X-CRM114-CacheID: sfid-20241111_070529_886635_DF51E0BD 
+X-CRM114-Status: GOOD (  11.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,106 +85,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 3/12 step of rebuilding. Generate file according to left valid
-inode nodes and dentry nodes. Based on the results from step 2, it is easy
-to understand:
+Add rwsem implementations, because there are some rwsems
+(eg. c->commit_sem) used in UBIFS linux kernel libs.
+The rwsem is implemented based on pthread mutex.
 
-Step 2 has done:
- valid_inos - del_inos = left_inos
- valid_dents - del_dents = left_dents
-Step 3 should do:
- Traverse left_inos and left_dents, insert inode/dentry nodes into
- corresponding file.
-
-After that, all files are generated by scanning, the next thing to do is
-dropping invalid files(eg. nonconsistent file type between inode node and
-dentry nodes, file has no dentry nodes(excepts '/'), encrypted file has
-no xattr information, etc.), which will be done in next step.
+This is a preparation for replacing implementation of UBIFS utils with
+linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/rebuild_fs.c | 61 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ ubifs-utils/Makemodule.am  |  1 +
+ ubifs-utils/common/rwsem.h | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
+ create mode 100644 ubifs-utils/common/rwsem.h
 
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index dbb0f3bc..a86430d0 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -476,6 +476,61 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
- }
- 
- /**
-+ * add_valid_nodes_into_file - add valid nodes into file.
-+ * @c: UBIFS file-system description object
-+ * @si: records nodes and files information during scanning
-+ *
-+ * This function adds valid nodes into corresponding file, all valid ino/dent
-+ * nodes will be removed from @si->valid_inos/@si->valid_dents if the function
-+ * is executed successfully.
-+ */
-+static int add_valid_nodes_into_file(struct ubifs_info *c,
-+				     struct scanned_info *si)
-+{
-+	int err, type;
-+	ino_t inum;
-+	struct scanned_node *sn;
-+	struct scanned_ino_node *ino_node;
-+	struct scanned_dent_node *dent_node;
-+	struct rb_node *this;
-+	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index 9f33f0db..ece8a6e9 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -7,6 +7,7 @@ common_SOURCES = \
+ 	ubifs-utils/common/bitops.c \
+ 	ubifs-utils/common/spinlock.h \
+ 	ubifs-utils/common/mutex.h \
++	ubifs-utils/common/rwsem.h \
+ 	ubifs-utils/common/kmem.h \
+ 	ubifs-utils/common/kmem.c \
+ 	ubifs-utils/common/defs.h \
+diff --git a/ubifs-utils/common/rwsem.h b/ubifs-utils/common/rwsem.h
+new file mode 100644
+index 00000000..3761724b
+--- /dev/null
++++ b/ubifs-utils/common/rwsem.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __LINUX_RWSEM_H_
++#define __LINUX_RWSEM_H_
 +
-+	this = rb_first(&si->valid_inos);
-+	while (this) {
-+		ino_node = rb_entry(this, struct scanned_ino_node, rb);
-+		this = rb_next(this);
++#include <pthread.h>
 +
-+		sn = (struct scanned_node *)ino_node;
-+		type = key_type(c, &ino_node->key);
-+		inum = key_inum(c, &ino_node->key);
-+		err = insert_or_update_file(c, tree, sn, type, inum);
-+		if (err)
-+			return err;
++struct rw_semaphore {
++	pthread_mutex_t lock;
++};
 +
-+		rb_erase(&ino_node->rb, &si->valid_inos);
-+		kfree(ino_node);
-+	}
++#define init_rwsem(x)			pthread_mutex_init(&(x)->lock, NULL)
 +
-+	this = rb_first(&si->valid_dents);
-+	while (this) {
-+		dent_node = rb_entry(this, struct scanned_dent_node, rb);
-+		this = rb_next(this);
++#define down_read(x)			pthread_mutex_lock(&(x)->lock)
++#define down_write(x)			pthread_mutex_lock(&(x)->lock)
++#define up_read(x)			pthread_mutex_unlock(&(x)->lock)
++#define up_write(x)			pthread_mutex_unlock(&(x)->lock)
++#define down_write_trylock(x)		(pthread_mutex_trylock(&(x)->lock) == 0)
 +
-+		sn = (struct scanned_node *)dent_node;
-+		inum = dent_node->inum;
-+		type = key_type(c, &dent_node->key);
-+		err = insert_or_update_file(c, tree, sn, type, inum);
-+		if (err)
-+			return err;
-+
-+		rb_erase(&dent_node->rb, &si->valid_dents);
-+		kfree(dent_node);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-  * ubifs_rebuild_filesystem - Rebuild filesystem.
-  * @c: UBIFS file-system description object
-  *
-@@ -509,6 +564,12 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 	log_out(c, "Remove deleted nodes");
- 	remove_del_nodes(c, &si);
- 
-+	/* Step 3: Add valid nodes into file. */
-+	log_out(c, "Add valid nodes into file");
-+	err = add_valid_nodes_into_file(c, &si);
-+	if (err)
-+		exit_code |= FSCK_ERROR;
-+
- out:
- 	destroy_scanned_info(c, &si);
- 	destroy_rebuild_info(c);
++#endif
 -- 
 2.13.6
 
