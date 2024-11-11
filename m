@@ -2,55 +2,55 @@ Return-Path: <linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.or
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94BBCD12D7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 811FDD2E9CB
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JQOAahywzUEnBf8Bhz1D/oB9xM4hDW2EWY/fNodRGPs=; b=lAJ70hiQ5rgAM8
-	xzGVPgg+IvwoSwjwCpX+DdYmciB+HYqUl2sSdfOZeYdlLsLNRDf+AkPwtCi+bTFD9Ix8fs7RCbgqB
-	nzjxkU2cdGljjt7hhpKivzJnei990eVdV1eQjLRgB2CuqhvgqAaH8B822lPpf1sWnh98NQGxuYDJM
-	OCBSWgRRCep8a2VW1IH14Tc87OEBzPv6LSE7r4E2OwoWtAj34PLilEelUvjFJKBGf17fSh6cnft0+
-	hC8oTaLMii4x3IOG+uqye6JncufYlsHP9RIIKumgb/j0nkXJhjE2qQWyQmUdSJYVxrl5ZAIn6yvzd
-	WehEzNGJmSwnPgMV/oww==;
+	List-Owner; bh=JQOAahywzUEnBf8Bhz1D/oB9xM4hDW2EWY/fNodRGPs=; b=vabGl4FhORb41I
+	4WdfqQBpPLeSc4JuKbADrIG9ITxk+arlDSEzOyAiM16hDEu36dwjIcYs5Ekv4vTTG9p9LfJtg2gVE
+	OFDmrk7LpAIwDIRGizcZa8XZfLpQgBTsZ86ANzXSuWgel9lis1mwyfEa0kQaANXvXUVQ8e3fXtvGJ
+	s0fdARYaK4mXOMCHn7OlpHPBR48ylPmhHqCF5rhDvdBYkQ+fpLIKLAchZtIxopqAYqJO+NjL1uTUc
+	JJ13xR8Lm1wS4Q8YGyLmWLqIxGnX3Ug4n8bkGxn5gOvCw6FUM13V0EdUNZrJCIGZLXkdmN+cWi7fS
+	YMyLYBQH3OpnhuFPJuXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPT1-0000000GjvJ-2yq1;
-	Mon, 11 Nov 2024 08:08:12 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35])
+	id 1tAQ6X-0000000Grm1-0DKM;
+	Mon, 11 Nov 2024 08:49:01 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPSb-0000000GjYE-2ayX
+	id 1tAPwM-0000000GpeR-3RPf
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 08:07:49 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn2DL2nCZz1hwMc;
-	Mon, 11 Nov 2024 16:05:54 +0800 (CST)
+	Mon, 11 Nov 2024 08:38:33 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn2y750s7z1ypRk;
+	Mon, 11 Nov 2024 16:38:39 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2A45F1401F4;
-	Mon, 11 Nov 2024 16:07:36 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id CBBF5180043;
+	Mon, 11 Nov 2024 16:38:27 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 16:07:34 +0800
+ 2024 16:38:26 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 009/102] ubifs-utils: Import UBIFS libs from linux kernel
-Date: Mon, 11 Nov 2024 16:05:45 +0800
-Message-ID: <20241111080621.1394382-6-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 RESEND 009/102] ubifs-utils: Import UBIFS libs from linux kernel
+Date: Mon, 11 Nov 2024 16:36:40 +0800
+Message-ID: <20241111083711.1916125-10-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
-References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
+In-Reply-To: <20241111083711.1916125-1-chengzhihao1@huawei.com>
+References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.112.188]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemk500005.china.huawei.com (7.202.194.90)
-X-Spam-Note: CRM114 run bypassed due to message size (1019500 bytes)
-X-Spam-Note: SpamAssassin run bypassed due to message size (1019500 bytes)
+X-Spam-Note: CRM114 run bypassed due to message size (1019508 bytes)
+X-Spam-Note: SpamAssassin run bypassed due to message size (1019508 bytes)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
