@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFABDD12D7B
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDAF7D12D7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=54wKo8p/jcKWPRWc4pnwhyvW8ZJBrngSKXACLa9v++c=; b=CnHEkrquX47wL2
-	YAqmJWxuO0hZC+FUnIaS6qHJLKvqGgp3XJTuRP3bNdMDs3pXaLf/nnYLo0hR+0DxFxaHbmx2+N5Nc
-	LZ6r2DpniX70eMcnIC8O3iJGsmHaccg+Mwd+D65dCBAbO0QNi26UK9cyXN0uv4Ob92JWulDqGA9zm
-	ynKAQW+pC6rNfvQ49Dl5qj61dlGZk0aIxPl9QrSWiqha+w0Q6MVNK2iyJ6VlFZWmxoRqwrRTOgJJ4
-	LOnh3PYPKnEwNDaCzulA+GuOd/u/hPQcmbYW6p1O+5Co7Cco8plM3DVMA4mYUJNVb1/UrLFH8PIYQ
-	7xtbonbQq2CEtfmjvuJA==;
+	List-Owner; bh=l2SVAg8DPzdrElofHscgQe6K25Z2fwgB8Hd/p9pRhsw=; b=iu/rNOoxsxgwlH
+	5ZgTTwoCUKpVE5lY5JdSDU9Cj+E2TmrMmsGRkXs1kXo8aRqYbmYJXQjg0gqKkz/5fjpoCi0GLe3zI
+	6m0pUcLOqvNje7/tnWoBnftQkiW9oPzj4jqMSnsey6/Ww/eVfHwtkSpsemXNxsq0XNaP538UYd1bC
+	EyPvdvMYZQ4+FwEuotr/x+ZlfmKX/iregoR11PbyXhE38R5Fy9NTVulymvuAtLWWaMTaUbHsh0CNB
+	kMr0PRmx0ay0FrZ8yY7lCn5cZx9YEBpAMVbNHlDapPe+6CvSNKm5rcOIahzcMhO16YvrS9svyLKVD
+	gko7Pfk95cf7aeLUaJ9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOWL-0000000GauK-1f33;
-	Mon, 11 Nov 2024 07:07:33 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tAOWS-0000000Gb0w-0kLo;
+	Mon, 11 Nov 2024 07:07:40 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOV4-0000000GZt1-43h3
+	id 1tAOV4-0000000GZsw-42Es
 	for linux-mtd@bombadil.infradead.org;
 	Mon, 11 Nov 2024 07:06:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=Nua0ENue+lePNGrjohXVCJjYsSD6IAAyKvmmpaeeBd8=; b=SaybDB/71QPHFK17bOi4agGfcq
-	xOGQjf/daLnFZKje6iv9DYJ3dZ+wrWzzdj2t8i/bm2bPmZy6aDHmHfGvB0J7IF9DRXR43nC96IAum
-	GtAQtSgbNKY1PXrGy5NjTc/L7A22Iftt5ik0v/lz4yICgKWfqYTqGA9EPqz5dTjVOAaAgpCOlYMfp
-	OFcjRn460uzqr8HKJ0fLnk9xh6l1yfx7OVL0534sS2bIGIKqtUn9Wg4AtwDeuthSHGrlgRhKcc8UT
-	xNFPJYlac5GoSQceYt9nAVGnBGeCA+x5eHlevVqeFp5W990TNBTQTDyA0FuzluZKTUNJ+tyeqSA9N
-	5YH44Wag==;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=G+4UMs5DP+KOtFBYqxcHSH6VjsvpRVdiEtSwau75eMA=; b=cCB20CYHetZ20YZL1YnpIWLzo6
+	60h6hsHUBb4rsioyidmeh4k1q/jhJ4iCMdYn3ZAw6Ie1voBrbIYyxpFWdOEIKjE5BwXwoTH32wLyl
+	XLjbB8CCvFM7eyj2ZhNZkVzVXznk5iGitZ3IioQIAnvlXrnTiAWbdFmPZ0RnR1uDrRCXHYQqMlxkr
+	60n2j2NZy/U975FwmJesaIp6UOePl/H/z5bIhhX06jHK05ivbYm4WxzBgPsBkw8z/WxmN1FuJ1qUW
+	ANjkhjyJZ01Z7481yD5R6k4BFMCs4IJ3DeryoSVqqlKTzeZCij0FaRom2Hjf30xhzPRM/J768QrzF
+	xWFNKgDQ==;
 Received: from szxga04-in.huawei.com ([45.249.212.190])
-	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUz-0000000CR2S-0rvP
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOUn-0000000CmMQ-3jeI
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:13 +0000
+	Mon, 11 Nov 2024 07:06:09 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn0sQ6JDyz20t5Q;
-	Mon, 11 Nov 2024 15:04:26 +0800 (CST)
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rw3ymWz20t4m;
+	Mon, 11 Nov 2024 15:04:00 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 123891A0188;
-	Mon, 11 Nov 2024 15:05:39 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id B60C71A0188;
+	Mon, 11 Nov 2024 15:05:12 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:38 +0800
+ 2024 15:05:12 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 075/102] fsck.ubifs: Update files' size for check mode
-Date: Mon, 11 Nov 2024 15:03:18 +0800
-Message-ID: <20241111070346.1314122-76-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 023/102] ubifs-utils: Add common definitions in linux kernel
+Date: Mon, 11 Nov 2024 15:02:26 +0800
+Message-ID: <20241111070346.1314122-24-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,9 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070611_105034_E856CBB0 
-X-CRM114-Status: GOOD (  13.65  )
+X-CRM114-CacheID: sfid-20241111_070604_030831_105447B8 
+X-CRM114-Status: UNSURE (   8.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,157 +86,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 7/18 step of fsck. Update files' size according to size
-tree for check mode, now all files are updated after replaying journal.
+Add common definitions in linux kernel, which are used in UBIFS linux
+kernel libs.
+
+This is a preparation for replacing implementation of UBIFS utils with
+linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/check_files.c | 45 ++++++++++++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.c  |  3 +++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h  |  1 +
- ubifs-utils/libubifs/recovery.c      | 16 -------------
- ubifs-utils/libubifs/ubifs.h         | 16 +++++++++++++
- 5 files changed, 65 insertions(+), 16 deletions(-)
+ ubifs-utils/common/defs.h | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/ubifs-utils/fsck.ubifs/check_files.c b/ubifs-utils/fsck.ubifs/check_files.c
-index 29848c4e..0fd6b32a 100644
---- a/ubifs-utils/fsck.ubifs/check_files.c
-+++ b/ubifs-utils/fsck.ubifs/check_files.c
-@@ -309,3 +309,48 @@ out:
- 	}
- 	return err;
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index 548d9dfb..ac46d839 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -11,8 +11,11 @@
+ #include <unistd.h>
+ #include <limits.h>
+ #include <errno.h>
++#include <time.h>
++#include <assert.h>
+ #include <execinfo.h>
+ 
++#include "linux_types.h"
+ #include "ubifs.h"
+ 
+ /* common.h requires the PROGRAM_NAME macro */
+@@ -76,8 +79,41 @@ static inline void dump_stack(void)
+ 	free(strings);
  }
-+
-+/**
-+ * update_files_size - Update files' size.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function updates files' size according to @c->size_tree for check mode.
-+ */
-+void update_files_size(struct ubifs_info *c)
+ 
++static inline u32 get_random_u32(void)
 +{
-+	struct rb_node *this;
-+
-+	if (FSCK(c)->mode != CHECK_MODE) {
-+		/* Other modes(rw) have updated inode size in place. */
-+		dbg_fsck("skip updating files' size%s, in %s",
-+			 mode_name(c), c->dev_name);
-+		return;
-+	}
-+
-+	log_out(c, "Update files' size");
-+
-+	this = rb_first(&c->size_tree);
-+	while (this) {
-+		struct size_entry *e;
-+
-+		e = rb_entry(this, struct size_entry, rb);
-+		this = rb_next(this);
-+
-+		if (e->exists && e->i_size < e->d_size) {
-+			struct scanned_file *file;
-+
-+			file = lookup_file(&FSCK(c)->scanned_files, e->inum);
-+			if (file && file->ino.header.exist &&
-+			    file->ino.size < e->d_size) {
-+				dbg_fsck("update file(%lu) size %llu->%llu, in %s",
-+					 e->inum, file->ino.size,
-+					 (unsigned long long)e->d_size,
-+					 c->dev_name);
-+				file->ino.size = e->d_size;
-+			}
-+		}
-+
-+		rb_erase(&e->rb, &c->size_tree);
-+		kfree(e);
-+	}
++	srand(time(NULL));
++	return rand();
 +}
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index c0b1bf69..ec42fa73 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -443,6 +443,8 @@ static int do_fsck(void)
- 		return err;
- 	}
- 
-+	update_files_size(c);
 +
- 	kfree(FSCK(c)->used_lebs);
- 	destroy_file_tree(c, &FSCK(c)->scanned_files);
- 	return err;
-@@ -481,6 +483,7 @@ int main(int argc, char *argv[])
- 
- 	/*
- 	 * Step 6: Traverse tnc and construct files
-+	 * Step 7: Update files' size
- 	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index c917a0e3..4be38b45 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -297,5 +297,6 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c);
- 
- /* check_files.c */
- int traverse_tnc_and_construct_files(struct ubifs_info *c);
-+void update_files_size(struct ubifs_info *c);
- 
- #endif
-diff --git a/ubifs-utils/libubifs/recovery.c b/ubifs-utils/libubifs/recovery.c
-index a5133a0f..905e1645 100644
---- a/ubifs-utils/libubifs/recovery.c
-+++ b/ubifs-utils/libubifs/recovery.c
-@@ -1082,22 +1082,6 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
- }
- 
- /**
-- * struct size_entry - inode size information for recovery.
-- * @rb: link in the RB-tree of sizes
-- * @inum: inode number
-- * @i_size: size on inode
-- * @d_size: maximum size based on data nodes
-- * @exists: indicates whether the inode exists
-- */
--struct size_entry {
--	struct rb_node rb;
--	ino_t inum;
--	loff_t i_size;
--	loff_t d_size;
--	int exists;
--};
--
--/**
-  * add_ino - add an entry to the size tree.
-  * @c: UBIFS file-system description object
-  * @inum: inode number
-diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index 03150cdb..72497cd9 100644
---- a/ubifs-utils/libubifs/ubifs.h
-+++ b/ubifs-utils/libubifs/ubifs.h
-@@ -1297,6 +1297,22 @@ static inline int ubifs_authenticated(const struct ubifs_info *c)
- 	return c->authenticated;
- }
- 
-+/**
-+ * struct size_entry - inode size information for recovery.
-+ * @rb: link in the RB-tree of sizes
-+ * @inum: inode number
-+ * @i_size: size on inode
-+ * @d_size: maximum size based on data nodes
-+ * @exists: indicates whether the inode exists
-+ */
-+struct size_entry {
-+	struct rb_node rb;
-+	ino_t inum;
-+	loff_t i_size;
-+	loff_t d_size;
-+	int exists;
-+};
++static inline time_t ktime_get_seconds(void)
++{
++	return time(NULL);
++}
 +
- #ifdef WITH_CRYPTO
- int ubifs_init_authentication(struct ubifs_info *c);
- int ubifs_shash_init(const struct ubifs_info *c, struct shash_desc *desc);
++#define likely(x) (x)
+ #define unlikely(x) (x)
+ 
++#define cond_resched() do {} while(0)
++
++#define BUG() do {				\
++	assert(0);				\
++} while(0)
++#define BUG_ON(cond) do {			\
++	assert(!cond);				\
++} while(0)
++
++#define smp_wmb()		do {} while(0)
++#define smp_rmb()		do {} while(0)
++#define smp_mb__before_atomic()	do {} while(0)
++#define smp_mb__after_atomic()	do {} while(0)
++
++#define min3(x, y, z) min((typeof(x))min(x, y), z)
++
++static inline u64 div_u64(u64 dividend, u32 divisor)
++{
++	return dividend / divisor;
++}
++
+ #define do_div(n,base) ({ \
+ int __res; \
+ __res = ((unsigned long) n) % (unsigned) base; \
 -- 
 2.13.6
 
