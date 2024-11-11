@@ -4,46 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AFC1D12D7E
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49B96D12D7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:07:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BFNjOPQIq/T44F0TufdVL0g6sfPL6tL27ZeNZRLHwVM=; b=zVE3ladIsawnMN
-	2Reg2VmlAXdxWtDX4lRqpk1yUgBtHL+XAPGqZMPuKn44lCYeBGb3AEW7+7en5Wpkn1hd6LizldUhP
-	4zQm2bBtUWhILFTBfqLpVwAa6YO0FH09Pn3ZMT4uTYetSeHW5Fv27lZrQ/seSVTXwt2CLSpDJwkcC
-	VCVrG1sno1sayULqG9cHZOvz2gpRtHkX7nwsBHVRWsaqpmYKyufJ+msw4FpCy4IkCqGzS3OafWukO
-	rLXyqS3icL90iY5Mjc2+ABKr09q1ousBFR+Uf7fXcalRCCLJRxfynR1bnCtoZjc83hc3arebiLZ+T
-	uT4MsKacXA7DPx7eBnGQ==;
+	List-Owner; bh=7j2opw48YrJNhSnXYa+3EdAHJsxoK1X9f5+CcMaFL1Y=; b=dfRYNzSHy8dqhp
+	oM3QqZW2Aoisa1wIBGOoatZ8iRc7RiCU1O9VUCH4hUSGtjeoYT4BZs2YMEQ+3kWP6sPfgJcQLB096
+	2fjGc26Fap9UrWetasVHsXLKu8DAZxc6YnY/uyUtaXyZdDDZxnUmlaWoDb3lL8W7Feu4Nav1EznTw
+	hwoLP+IYZ9ul8onl9pZQjRLbZMbjvf1Pmepaa0GTMXXmajFlgai+F8uDBjBgeZYsl1EDgLvs1SqvM
+	fRqk593+6xitDy+sNgOYBK2eV9HbUlfWY+ZgwGmRFTQRaEh2eriXuu3XS/PMI32+gqChvIR1aNzVF
+	EtXrEqZvgHp1exDwO4Ig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVk-0000000GaPe-3DsD;
-	Mon, 11 Nov 2024 07:06:56 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35])
+	id 1tAOVv-0000000GaXw-0wM3;
+	Mon, 11 Nov 2024 07:07:07 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUR-0000000GZHJ-45A1
+	id 1tAOUj-0000000GZZr-2nGT
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 11 Nov 2024 07:05:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=NdbjOiaGf1UGzYjCtSR+O4CWo5obXnlAFlh85Y6YMgQ=; b=HytFYQumaL+GrKP0QeRcCx8RX6
+	b7rbtfYozbgGcV1a7z8Ddt3kIngcMX/eF2kCIRNsLq9CIMDC6Z1x35SmiOBdv0Nc39bHluhFRctls
+	Weqc4WlBHNhBnAkEJysskEYlgopKhybQF50+NoScsCHsA2Vjuy0j6PipGDoNY9ZrawseOjBrgIXz7
+	/E89rDf+yX2TrKkfSeJRAuiJsJvuCpFEzvOAUn5tGwbGFgfupU3GMwvuUnNm7mAEV9Ok6Qdj/dpR1
+	OQ4CzY/qqv/Kv9PK09RRhhsPSIpDhgHSSi9340WA8bUMv2i+pQBGyiUDj7yKXtjeMR7ckn3u97OQM
+	qhDGViSw==;
+Received: from szxga05-in.huawei.com ([45.249.212.191])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tAOUd-0000000CmIr-0Xoa
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:42 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn0r15Xkcz1hwTf;
-	Mon, 11 Nov 2024 15:03:13 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:52 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rr0Y2nz1jy0n;
+	Mon, 11 Nov 2024 15:03:56 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 96E601A016C;
-	Mon, 11 Nov 2024 15:05:01 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 2511F180019;
+	Mon, 11 Nov 2024 15:05:43 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:00 +0800
+ 2024 15:05:42 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 002/102] ubifs-utils: Decouple mkfs.ubifs.h out of other modules
-Date: Mon, 11 Nov 2024 15:02:05 +0800
-Message-ID: <20241111070346.1314122-3-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 083/102] fsck.ubifs: Check and correct the index size
+Date: Mon, 11 Nov 2024 15:03:26 +0800
+Message-ID: <20241111070346.1314122-84-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241110_230536_540183_98F9453C 
-X-CRM114-Status: GOOD (  18.00  )
+X-CRM114-CacheID: sfid-20241111_070550_611435_3D0023AC 
+X-CRM114-Status: GOOD (  16.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,510 +85,129 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Header file mkfs.ubifs.h is included in other modules(eg. compr.c, lpt.c,
-fscrypt.h, sign.c), decouple it out of other modules.
-
-There are two parts in mkfs.ubifs.h:
-1. common functions, for example dbg_msg, err_msg and write_leb, move
-   these functions into common/defs.h and common/ubifs.h.
-2. devtable related definations, move them into a new header file
-   common/devtable.h.
-
-Splitting common functions from mkfs.ubifs.h is also a preparation for
-importing libubifs(from linux kernel) to replace current UBIFS libs.
+This is the 14/18 step of fsck. Check and correct the index size by
+traversing TNC just like dbg_check_idx_size does. This step should
+be executed after first committing, because 'c->calc_idx_sz' can be
+changed in 'ubifs_tnc_start_commit' and the initial value of
+'c->calc_idx_sz' read from disk is untrusted.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am                          |  4 +-
- ubifs-utils/common/compr.c                         | 19 ++---
- ubifs-utils/common/compr.h                         |  8 --
- ubifs-utils/common/crypto.c                        |  6 +-
- ubifs-utils/common/defs.h                          | 24 ++++++
- ubifs-utils/common/devtable.c                      |  9 ++-
- .../{mkfs.ubifs/mkfs.ubifs.h => common/devtable.h} | 85 +---------------------
- ubifs-utils/common/fscrypt.c                       |  4 +
- ubifs-utils/common/fscrypt.h                       |  8 +-
- ubifs-utils/common/lpt.c                           | 10 ++-
- ubifs-utils/common/lpt.h                           |  2 +
- ubifs-utils/common/sign.c                          |  9 ++-
- ubifs-utils/common/ubifs.h                         |  5 ++
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c                | 21 +++++-
- 14 files changed, 99 insertions(+), 115 deletions(-)
- rename ubifs-utils/{mkfs.ubifs/mkfs.ubifs.h => common/devtable.h} (53%)
+ ubifs-utils/fsck.ubifs/check_space.c | 28 ++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c  |  8 ++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h  |  3 ++-
+ ubifs-utils/fsck.ubifs/problem.c     |  9 +++++++++
+ 4 files changed, 47 insertions(+), 1 deletion(-)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 4a617c19..8af65be7 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -9,6 +9,7 @@ common_SOURCES = \
- 	ubifs-utils/common/hashtable/hashtable_private.h \
- 	ubifs-utils/common/hashtable/hashtable.c \
- 	ubifs-utils/common/hashtable/hashtable_itr.c \
-+	ubifs-utils/common/devtable.h \
- 	ubifs-utils/common/devtable.c \
- 	ubifs-utils/common/ubifs.h \
- 	ubifs-utils/common/key.h \
-@@ -27,12 +28,11 @@ endif
+diff --git a/ubifs-utils/fsck.ubifs/check_space.c b/ubifs-utils/fsck.ubifs/check_space.c
+index afe6ba0b..cff8a7c2 100644
+--- a/ubifs-utils/fsck.ubifs/check_space.c
++++ b/ubifs-utils/fsck.ubifs/check_space.c
+@@ -660,3 +660,31 @@ rebuild:
  
- mkfs_ubifs_SOURCES = \
- 	$(common_SOURCES) \
--	ubifs-utils/mkfs.ubifs/mkfs.ubifs.h \
- 	ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
- 
- mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm
- mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
--	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/mkfs.ubifs/ -I$(top_srcdir)/ubifs-utils/common
-+	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common
- 
- EXTRA_DIST += ubifs-utils/common/README
- 
-diff --git a/ubifs-utils/common/compr.c b/ubifs-utils/common/compr.c
-index e4324f34..6f901511 100644
---- a/ubifs-utils/common/compr.c
-+++ b/ubifs-utils/common/compr.c
-@@ -39,11 +39,12 @@
- #endif
- 
- #include "compr.h"
--#include "mkfs.ubifs.h"
-+#include "ubifs.h"
- 
- static void *lzo_mem;
- static unsigned long long errcnt = 0;
- #ifdef WITH_LZO
-+extern struct ubifs_info info_;
- static struct ubifs_info *c = &info_;
- #endif
- 
-@@ -181,12 +182,12 @@ static int favor_lzo_compress(void *in_buf, size_t in_len, void *out_buf,
- 
- select_lzo:
- 	*out_len = lzo_len;
--	*type = MKFS_UBIFS_COMPR_LZO;
-+	*type = UBIFS_COMPR_LZO;
- 	return 0;
- 
- select_zlib:
- 	*out_len = zlib_len;
--	*type = MKFS_UBIFS_COMPR_ZLIB;
-+	*type = UBIFS_COMPR_ZLIB;
- 	memcpy(out_buf, zlib_buf, zlib_len);
- 	return 0;
+ 	return err;
  }
-@@ -199,7 +200,7 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
- 
- 	if (in_len < UBIFS_MIN_COMPR_LEN) {
- 		no_compress(in_buf, in_len, out_buf, out_len);
--		return MKFS_UBIFS_COMPR_NONE;
-+		return UBIFS_COMPR_NONE;
++
++/**
++ * check_and_correct_index_size - check & correct the index size.
++ * @c: UBIFS file-system description object
++ *
++ * This function checks and corrects the index size by traversing TNC: Returns
++ * zero in case of success, a negative error code in case of failure.
++ */
++int check_and_correct_index_size(struct ubifs_info *c)
++{
++	int err;
++	unsigned long long index_size = 0;
++
++	ubifs_assert(c, c->bi.old_idx_sz == c->calc_idx_sz);
++	err = dbg_walk_index(c, NULL, add_size, &index_size);
++	if (err) {
++		/* All TNC nodes must be accessible. */
++		ubifs_assert(c, !get_failure_reason_callback(c));
++		return err;
++	}
++
++	dbg_fsck("total index size %llu, in %s", index_size, c->dev_name);
++	if (index_size != c->calc_idx_sz &&
++	    fix_problem(c, INCORRECT_IDX_SZ, &index_size))
++		c->bi.old_idx_sz = c->calc_idx_sz = index_size;
++
++	return 0;
++}
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+index 07ed8171..80205aac 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+@@ -512,6 +512,13 @@ static int do_fsck(void)
  	}
  
- #if defined(WITH_LZO) && defined(WITH_ZLIB)
-@@ -211,21 +212,21 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+ 	err = commit_fix_modifications(c);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		goto free_disconnected_files_2;
++	}
++
++	log_out(c, "Check and correct the index size");
++	err = check_and_correct_index_size(c);
+ 	if (err)
+ 		exit_code |= FSCK_ERROR;
+ 
+@@ -567,6 +574,7 @@ int main(int argc, char *argv[])
+ 	 * Step 11: Check whether the TNC is empty
+ 	 * Step 12: Check and correct the space statistics
+ 	 * Step 13: Commit problem fixing modifications
++	 * Step 14: Check and correct the index size
+ 	 */
+ 	err = do_fsck();
+ 	if (err && FSCK(c)->try_rebuild) {
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index 00c157a4..ab498ad1 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -45,7 +45,7 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
+        XATTR_HAS_WRONG_HOST, FILE_HAS_NO_ENCRYPT, FILE_IS_DISCONNECTED,
+        FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE, FILE_IS_INCONSISTENT,
+        EMPTY_TNC, LPT_CORRUPTED, NNODE_INCORRECT, PNODE_INCORRECT,
+-       LP_INCORRECT, SPACE_STAT_INCORRECT, LTAB_INCORRECT };
++       LP_INCORRECT, SPACE_STAT_INCORRECT, LTAB_INCORRECT, INCORRECT_IDX_SZ };
+ 
+ enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
+ 
+@@ -379,5 +379,6 @@ int get_free_leb(struct ubifs_info *c);
+ int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb,
+ 	      bool free_ltab);
+ int check_and_correct_space(struct ubifs_info *c);
++int check_and_correct_index_size(struct ubifs_info *c);
+ 
  #endif
- 		switch (type) {
- #ifdef WITH_LZO
--		case MKFS_UBIFS_COMPR_LZO:
-+		case UBIFS_COMPR_LZO:
- 			ret = lzo_compress(in_buf, in_len, out_buf, out_len);
- 			break;
- #endif
- #ifdef WITH_ZLIB
--		case MKFS_UBIFS_COMPR_ZLIB:
-+		case UBIFS_COMPR_ZLIB:
- 			ret = zlib_deflate(in_buf, in_len, out_buf, out_len);
- 			break;
- #endif
- #ifdef WITH_ZSTD
--		case MKFS_UBIFS_COMPR_ZSTD:
-+		case UBIFS_COMPR_ZSTD:
- 			ret = zstd_compress(in_buf, in_len, out_buf, out_len);
- 			break;
- #endif
--		case MKFS_UBIFS_COMPR_NONE:
-+		case UBIFS_COMPR_NONE:
- 			ret = 1;
- 			break;
- 		default:
-@@ -236,7 +237,7 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
- 	}
- 	if (ret || *out_len >= in_len) {
- 		no_compress(in_buf, in_len, out_buf, out_len);
--		return MKFS_UBIFS_COMPR_NONE;
-+		return UBIFS_COMPR_NONE;
- 	}
- 	return type;
- }
-diff --git a/ubifs-utils/common/compr.h b/ubifs-utils/common/compr.h
-index d58c7c7b..3e8e9b61 100644
---- a/ubifs-utils/common/compr.h
-+++ b/ubifs-utils/common/compr.h
-@@ -31,14 +31,6 @@
-  */
- #define WORST_COMPR_FACTOR 4
- 
--enum compression_type
--{
--	MKFS_UBIFS_COMPR_NONE,
--	MKFS_UBIFS_COMPR_LZO,
--	MKFS_UBIFS_COMPR_ZLIB,
--	MKFS_UBIFS_COMPR_ZSTD,
--};
--
- int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
- 		  int type);
- int init_compression(void);
-diff --git a/ubifs-utils/common/crypto.c b/ubifs-utils/common/crypto.c
-index 19c445e8..60a67a4e 100644
---- a/ubifs-utils/common/crypto.c
-+++ b/ubifs-utils/common/crypto.c
-@@ -17,14 +17,16 @@
-  * Authors: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-  */
- 
--#define PROGRAM_NAME "mkfs.ubifs"
- #include <openssl/evp.h>
- #include <openssl/err.h>
-+#include <openssl/rand.h>
- #include <string.h>
- #include <assert.h>
- 
--#include "fscrypt.h"
-+#define PROGRAM_NAME "mkfs.ubifs"
- #include "common.h"
-+#include "defs.h"
-+#include "fscrypt.h"
- 
- static int do_hash(const EVP_MD *md, const unsigned char *in, size_t len, unsigned char *out)
- {
-diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
-index 8db52776..e1aded03 100644
---- a/ubifs-utils/common/defs.h
-+++ b/ubifs-utils/common/defs.h
-@@ -6,6 +6,30 @@
- #ifndef __UBIFS_DEFS_H__
- #define __UBIFS_DEFS_H__
- 
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <limits.h>
-+#include <byteswap.h>
-+#include <errno.h>
-+
-+extern int debug_level;
-+
-+#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
-+	printf("mkfs.ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
-+} while(0)
-+
-+#define err_msg(fmt, ...) ({                                \
-+	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
-+	-1;                                                 \
-+})
-+
-+#define sys_err_msg(fmt, ...) ({                                         \
-+	int err_ = errno;                                                \
-+	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
-+	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
-+	-1;                                                              \
-+})
-+
- #define t16(x) ({ \
- 	uint16_t __b = (x); \
- 	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
-diff --git a/ubifs-utils/common/devtable.c b/ubifs-utils/common/devtable.c
-index aa815fbb..2b9c6ef2 100644
---- a/ubifs-utils/common/devtable.c
-+++ b/ubifs-utils/common/devtable.c
-@@ -45,7 +45,14 @@
-  * for more information about what the device table is.
-  */
- 
--#include "mkfs.ubifs.h"
-+#include <string.h>
-+#include <ctype.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <sys/sysmacros.h>
-+
-+#include "devtable.h"
-+#include "defs.h"
- #include "hashtable/hashtable.h"
- #include "hashtable/hashtable_itr.h"
- 
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/common/devtable.h
-similarity index 53%
-rename from ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-rename to ubifs-utils/common/devtable.h
-index 56909842..97585f2b 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-+++ b/ubifs-utils/common/devtable.h
-@@ -20,86 +20,8 @@
-  *          Zoltan Sogor
-  */
- 
--#ifndef __MKFS_UBIFS_H__
--#define __MKFS_UBIFS_H__
--
--#include <unistd.h>
--#include <stdlib.h>
--#include <stdio.h>
--#include <limits.h>
--#include <string.h>
--#include <stdint.h>
--#include <endian.h>
--#include <byteswap.h>
--#include <linux/types.h>
--#include <linux/fs.h>
--
--#include <getopt.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/ioctl.h>
--#include <fcntl.h>
--#include <dirent.h>
--#include <errno.h>
--#include <libgen.h>
--#include <ctype.h>
--#include <uuid.h>
--#include <sys/file.h>
--
--#ifdef WITH_CRYPTO
--#include <openssl/rand.h>
--#endif
--
--#include <mtd/ubifs-media.h>
--
--/* common.h requires the PROGRAM_NAME macro */
--#define PROGRAM_NAME "mkfs.ubifs"
--#include "common.h"
--
--#include "libubi.h"
--#include "defs.h"
--#include "crc16.h"
--#include "ubifs.h"
--#include "key.h"
--#include "lpt.h"
--#include "compr.h"
--#include "sign.h"
--
--/*
-- * Compression flags are duplicated so that compr.c can compile without ubifs.h.
-- * Here we make sure they are the same.
-- */
--#if MKFS_UBIFS_COMPR_NONE != UBIFS_COMPR_NONE
--#error MKFS_UBIFS_COMPR_NONE != UBIFS_COMPR_NONE
--#endif
--#if MKFS_UBIFS_COMPR_LZO != UBIFS_COMPR_LZO
--#error MKFS_UBIFS_COMPR_LZO != UBIFS_COMPR_LZO
--#endif
--#if MKFS_UBIFS_COMPR_ZLIB != UBIFS_COMPR_ZLIB
--#error MKFS_UBIFS_COMPR_ZLIB != UBIFS_COMPR_ZLIB
--#endif
--#if MKFS_UBIFS_COMPR_ZSTD != UBIFS_COMPR_ZSTD
--#error MKFS_UBIFS_COMPR_ZSTD != UBIFS_COMPR_ZSTD
--#endif
--
--extern int verbose;
--extern int debug_level;
--
--#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
--	printf("mkfs.ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
--} while(0)
--
--#define err_msg(fmt, ...) ({                                \
--	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
--	-1;                                                 \
--})
--
--#define sys_err_msg(fmt, ...) ({                                         \
--	int err_ = errno;                                                \
--	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
--	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
--	-1;                                                              \
--})
-+#ifndef __DEVTABLE_H__
-+#define __DEVTABLE_H__
- 
- /**
-  * struct path_htbl_element - an element of the path hash table.
-@@ -136,11 +58,8 @@ struct name_htbl_element {
- 	dev_t dev;
+diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
+index f987e480..32182c91 100644
+--- a/ubifs-utils/fsck.ubifs/problem.c
++++ b/ubifs-utils/fsck.ubifs/problem.c
+@@ -67,6 +67,7 @@ static const struct fsck_problem problem_table[] = {
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Inconsistent properties for LEB"},	// LP_INCORRECT
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Incorrect space statistics"},	// SPACE_STAT_INCORRECT
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Inconsistent properties for lprops table"},	// LTAB_INCORRECT
++	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "Incorrect index size"},	// INCORRECT_IDX_SZ
  };
  
--extern struct ubifs_info info_;
--
- struct hashtable_itr;
- 
--int write_leb(int lnum, int len, void *buf);
- int parse_devtable(const char *tbl_file);
- struct path_htbl_element *devtbl_find_path(const char *path);
- struct name_htbl_element *devtbl_find_name(struct path_htbl_element *ph_elt,
-diff --git a/ubifs-utils/common/fscrypt.c b/ubifs-utils/common/fscrypt.c
-index b75bdf76..94c6c377 100644
---- a/ubifs-utils/common/fscrypt.c
-+++ b/ubifs-utils/common/fscrypt.c
-@@ -18,8 +18,12 @@
-  *          David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-  */
- 
-+#include <endian.h>
+ static const char *get_question(const struct fsck_problem *problem,
+@@ -280,6 +281,14 @@ static void print_problem(const struct ubifs_info *c,
+ 			ssp->calc_lst->total_dead, ssp->calc_lst->total_dark);
+ 		break;
+ 	}
++	case INCORRECT_IDX_SZ:
++	{
++		const unsigned long long *calc_sz = (const unsigned long long *)priv;
 +
- #define PROGRAM_NAME "mkfs.ubifs"
-+#include "common.h"
- #include "fscrypt.h"
-+#include "defs.h"
- 
- 
- static __u8 fscrypt_masterkey[FS_MAX_KEY_SIZE];
-diff --git a/ubifs-utils/common/fscrypt.h b/ubifs-utils/common/fscrypt.h
-index ff3d326b..908a5041 100644
---- a/ubifs-utils/common/fscrypt.h
-+++ b/ubifs-utils/common/fscrypt.h
-@@ -21,9 +21,11 @@
- #ifndef FSCRYPT_H
- #define FSCRYPT_H
- 
--
--#include "mkfs.ubifs.h"
--#include <sys/types.h>
-+#ifdef WITH_CRYPTO
-+#include <openssl/rand.h>
-+#endif
-+#include <assert.h>
-+#include "ubifs.h"
- #include "crypto.h"
- 
- #ifndef FS_KEY_DESCRIPTOR_SIZE
-diff --git a/ubifs-utils/common/lpt.c b/ubifs-utils/common/lpt.c
-index 7ee739a9..23ffe7f7 100644
---- a/ubifs-utils/common/lpt.c
-+++ b/ubifs-utils/common/lpt.c
-@@ -20,12 +20,18 @@
-  *          Artem Bityutskiy
-  */
- 
--#include "mkfs.ubifs.h"
--
- #ifdef WITH_CRYPTO
- #include <openssl/evp.h>
- #endif
- 
-+#define PROGRAM_NAME "mkfs.ubifs"
-+#include "common.h"
-+#include "lpt.h"
-+#include "defs.h"
-+#include "ubifs.h"
-+#include "crc16.h"
-+#include "sign.h"
-+
- /**
-  * do_calc_lpt_geom - calculate sizes for the LPT area.
-  * @c: the UBIFS file-system description object
-diff --git a/ubifs-utils/common/lpt.h b/ubifs-utils/common/lpt.h
-index 4cde59d9..86148a2a 100644
---- a/ubifs-utils/common/lpt.h
-+++ b/ubifs-utils/common/lpt.h
-@@ -22,6 +22,8 @@
- #ifndef __UBIFS_LPT_H__
- #define __UBIFS_LPT_H__
- 
-+#include "ubifs.h"
-+
- int calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs, int *big_lpt);
- int create_lpt(struct ubifs_info *c);
- 
-diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
-index 7f284f8e..93399ff7 100644
---- a/ubifs-utils/common/sign.c
-+++ b/ubifs-utils/common/sign.c
-@@ -17,9 +17,7 @@
-  * Author: Sascha Hauer
-  */
- 
--#include "mkfs.ubifs.h"
--#include "common.h"
--
-+#include <string.h>
- #include <openssl/evp.h>
- #include <openssl/opensslv.h>
- #include <openssl/bio.h>
-@@ -30,6 +28,11 @@
- #include <openssl/conf.h>
- #include <err.h>
- 
-+#include "sign.h"
-+#include "defs.h"
-+#include "ubifs.h"
-+
-+extern struct ubifs_info info_;
- static struct ubifs_info *c = &info_;
- 
- EVP_MD_CTX *hash_md;
-diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
-index 55937cee..0eef31ac 100644
---- a/ubifs-utils/common/ubifs.h
-+++ b/ubifs-utils/common/ubifs.h
-@@ -25,6 +25,9 @@
- #ifndef __UBIFS_H__
- #define __UBIFS_H__
- 
-+#include <mtd/ubifs-media.h>
-+#include "libubi.h"
-+
- /* Maximum logical eraseblock size in bytes */
- #define UBIFS_MAX_LEB_SZ (2*1024*1024)
- 
-@@ -468,4 +471,6 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
- 				       (UBIFS_BRANCH_SZ + c->key_len + c->hash_len) * bnum);
- }
- 
-+int write_leb(int lnum, int len, void *buf);
-+
- #endif /* __UBIFS_H__ */
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index f4cb5125..0304ae70 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -22,10 +22,17 @@
- 
- #define _XOPEN_SOURCE 500 /* For realpath() */
- 
--#include "mkfs.ubifs.h"
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <libgen.h>
-+#include <getopt.h>
-+#include <dirent.h>
- #include <crc32.h>
--#include "common.h"
-+#include <uuid.h>
-+#include <linux/fs.h>
- #include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/ioctl.h>
- #ifdef WITH_XATTR
- #include <sys/xattr.h>
- #endif
-@@ -39,8 +46,18 @@
- #include <zstd.h>
- #endif
- 
-+/* common.h requires the PROGRAM_NAME macro */
-+#define PROGRAM_NAME "mkfs.ubifs"
-+#include "common.h"
-+#include "defs.h"
- #include "crypto.h"
- #include "fscrypt.h"
-+#include "ubifs.h"
-+#include "lpt.h"
-+#include "compr.h"
-+#include "key.h"
-+#include "sign.h"
-+#include "devtable.h"
- 
- /* Size (prime number) of hash table for link counting */
- #define HASH_TABLE_SIZE 10099
++		log_out(c, "problem: %s, index size is %llu, should be %llu",
++			problem->desc, c->calc_idx_sz, *calc_sz);
++		break;
++	}
+ 	default:
+ 		log_out(c, "problem: %s", problem->desc);
+ 		break;
 -- 
 2.13.6
 
