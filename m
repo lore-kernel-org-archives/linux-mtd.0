@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D43AD12D7E
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:10:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67402D12D7E
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EPqz5vuBDFFTnu05EYPH0glaI8CJ+lLMlMrQIAfWR4c=; b=qbBqkNA45OnsZ+
-	VA+INzlpjqXjKPI4aw8X+ljBBmYfsr48flsZI4BPtI9OqfY5Nmr7sinMqMSWdrCSYuSrDZysgazX8
-	WR9IzeBVR06e60S5KhZglkrhDETy5CufqOMbLzr6m0OHtCv91todLDZ47MMgpesBBoiC+7DtvZdWJ
-	X/sF/4XwqgndLJI1pQH00BFHSCkP7K6idJdmfkYytaCOI3lEdlDl2UWu6cQRWzGK/Kk2tIzPWidG8
-	KR1vG0FKnCFScMsEqHXnCG9SuRzGK1rFGJRElCJJ6qzrk3r4IpRY+IlO/ifPZqRbaMa2HI9LoLEAa
-	CLEJKlHsGBkKzyxlD1Ng==;
+	List-Owner; bh=QUwLT+UxBqa1VgIk8Z9P6NcKcPAduOdSOYu3mlK16L0=; b=bTSumQX814EUdE
+	41mVYx6JSOoLPMXiWyLUBW6SsxVYFLflNPMLmcM2VPo+GPGj2YL+W3HM98v6tXOAQSMT4U6NMDqyf
+	vBNCx2RRfwrgHcUjP0gXuIamJHk9d2i9BueTHUWIUeuFj5xKp6f+BCM3OfF532kXw1WNI7JfAHA40
+	avcZRmllfH+wWOXg4S1msNPSprfJtDDYxkiw15Fmw4QZa9OjH6f67Yz0KJ9ZR/7/s6/oYnhP4S6OU
+	6CFiShPYbpbR53yU8amSZQg61QWKDbssl4Y634hmMjRlpbaELnG3gm/lhzDP6qw5gvHE/ghrbsAPL
+	bztvtKtUE6fQcLe9HZCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOZ3-0000000Gcz4-1yTD;
-	Mon, 11 Nov 2024 07:10:21 +0000
+	id 1tAOZ6-0000000Gd0n-2YW8;
+	Mon, 11 Nov 2024 07:10:24 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVT-0000000GaBj-24qF
+	id 1tAOVU-0000000GaCV-2WtD
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:06:39 +0000
+	Mon, 11 Nov 2024 07:06:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=FzXC2acUAwDXByjg07LacRqNuUYE4Rvdp9go0iaThFM=; b=CnQwxmqUrpc3AhwxTDnSK/2LQd
-	/3B+M1UTE56HYsFIVwVSKQYfFdcYwPrDFdg6YHrF6oRqMix27BVGvbxtqo2f8SKyjwj4o9VDWzxDH
-	rCj/nOVSgaTsG47sX8el/Ki3iWPRV8F9CNlCvjZt6FgE+Swy87PNXYGme1/STkalAPtYGZPR3VhR3
-	Yb7p98XgibQWsab4j1O1kqO9Sx/PObozbRMELnE4Vsm2ypg0/NaXkK45opkgovMxu8pogsJCpsq9m
-	Yc+m+SwTmaICGhsrW78qrmKem62EtaODBSdPvPPLaQDrJEh8rzkemH5JNBP4Zx0RuG4W7u1IAGj7i
-	1fqepung==;
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	bh=66uJ2SCoXJbJSM1eB421hiOJjzLhjTJFlXBr/VTFtEE=; b=TOE3wUzbNforhLS0eOaMaBXXod
+	Qs9kGcXdZRnuweZfAOdR2TVMfmAi63Bler03sw9wo8Clu5SsujxbomgJiluayMo/I/7Py8TI0X9NX
+	VBCBjJqDf8g+LyEkRHh4g4ypo0PymV+M24ywHJtuTCZSEMRbBjX6XINQOl4hAfi2oGKSIeS1ixWVw
+	t+fXljHLU6m6GxN8T5tIQ2lCSRCy1Y948pcSPa/tiDNfp5K9VNJEQVDjAHm0rsBvP0XZv+N9F798K
+	Lp2y2jpuOsvt4AFfG8XpLh5g7ufVAm4JHO3/iBEuTvc+8ZZ88EV6b8LJK//cwK73Sc48CxKO6Xuis
+	n+CgMxIA==;
+Received: from szxga06-in.huawei.com ([45.249.212.32])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOVC-0000000CmQs-0fd7
+	id 1tAOVE-0000000CmRl-1ZTa
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:06:32 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rC0YF7z10QyX;
-	Mon, 11 Nov 2024 15:03:23 +0800 (CST)
+	Mon, 11 Nov 2024 07:06:38 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Xn0v75Wlxz1ypWy;
+	Mon, 11 Nov 2024 15:05:55 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id A1C0E1400D8;
-	Mon, 11 Nov 2024 15:05:49 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A0F701401F4;
+	Mon, 11 Nov 2024 15:05:44 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:49 +0800
+ 2024 15:05:44 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 096/102] tests: ubifs_tools: fsck_tests: Add random_corrupt+fsck test
-Date: Mon, 11 Nov 2024 15:03:39 +0800
-Message-ID: <20241111070346.1314122-97-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 086/102] fsck.ubifs: Check and create the lost+found
+Date: Mon, 11 Nov 2024 15:03:29 +0800
+Message-ID: <20241111070346.1314122-87-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070626_897495_5F3B7ED7 
-X-CRM114-Status: GOOD (  17.14  )
+X-CRM114-CacheID: sfid-20241111_070627_387813_1D3C7E17 
+X-CRM114-Status: GOOD (  24.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,272 +85,193 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Inject random corruption on UBIFS image by writting random data on
-kinds of mtd devices (eg. nand, nor), check the consistency of UBIFS
-after fsck.
-This testcase simulates random bad UBIFS image caused by hardware
-exceptions(eg. ecc uncorrectable, unwritten), and makes sure that
-fsck.ubifs could make UBIFS be consistent after repairing UBIFS
-image.
+From: Huang Xiaojia <huangxiaojia2@huawei.com>
 
+This is the 16/18 step of fsck. Check whether the lost+found is existed,
+create a new one if it is not found. This step makes sure that disconnected
+file can be recovered under the lost+found.
+
+Signed-off-by: Huang Xiaojia <huangxiaojia2@huawei.com>
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- .gitignore                                         |   1 +
- configure.ac                                       |   3 +-
- tests/ubifs_tools-tests/Makemodule.am              |   3 +-
- .../fsck_tests/random_corrupted_fsck.sh.in         | 206 +++++++++++++++++++++
- 4 files changed, 211 insertions(+), 2 deletions(-)
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh.in
+ ubifs-utils/Makemodule.am                    |  3 +-
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c          | 15 ++++-
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h          |  5 ++
+ ubifs-utils/fsck.ubifs/handle_disconnected.c | 89 ++++++++++++++++++++++++++++
+ 4 files changed, 110 insertions(+), 2 deletions(-)
+ create mode 100644 ubifs-utils/fsck.ubifs/handle_disconnected.c
 
-diff --git a/.gitignore b/.gitignore
-index 1d150f7a..203f01f0 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -119,6 +119,7 @@ tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
- tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh
- tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh
- tests/ubifs_tools-tests/fsck_tests/cycle_powercut_mount_fsck.sh
-+tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index b80196a3..a511c40d 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -86,7 +86,8 @@ fsck_ubifs_SOURCES = \
+ 	ubifs-utils/fsck.ubifs/extract_files.c \
+ 	ubifs-utils/fsck.ubifs/rebuild_fs.c \
+ 	ubifs-utils/fsck.ubifs/check_files.c \
+-	ubifs-utils/fsck.ubifs/check_space.c
++	ubifs-utils/fsck.ubifs/check_space.c \
++	ubifs-utils/fsck.ubifs/handle_disconnected.c
  
- #
- # Files generated by autotools
-diff --git a/configure.ac b/configure.ac
-index 7b929459..1b2591ba 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -298,7 +298,8 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
- 	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh
- 	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh
- 	tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh
--	tests/ubifs_tools-tests/fsck_tests/cycle_powercut_mount_fsck.sh])
-+	tests/ubifs_tools-tests/fsck_tests/cycle_powercut_mount_fsck.sh
-+	tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh])
+ fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) \
+ 		   $(DUMP_STACK_LD) -lm -lpthread
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+index b97c8e3b..550d3f98 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+@@ -526,8 +526,20 @@ static int do_fsck(void)
  
- AC_OUTPUT([Makefile])
+ 	log_out(c, "Check and create root dir");
+ 	err = check_and_create_root(c);
+-	if (err)
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		goto free_disconnected_files_2;
++	}
++
++	if (list_empty(&FSCK(c)->disconnected_files))
++		return err;
++
++	log_out(c, "Check and create lost+found");
++	err = check_and_create_lost_found(c);
++	if (err) {
+ 		exit_code |= FSCK_ERROR;
++		goto free_disconnected_files_2;
++	}
  
-diff --git a/tests/ubifs_tools-tests/Makemodule.am b/tests/ubifs_tools-tests/Makemodule.am
-index 2c190e2b..9881ebbe 100644
---- a/tests/ubifs_tools-tests/Makemodule.am
-+++ b/tests/ubifs_tools-tests/Makemodule.am
-@@ -4,4 +4,5 @@ test_SCRIPTS += \
- 	tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh \
- 	tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh \
- 	tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh \
--	tests/ubifs_tools-tests/fsck_tests/cycle_powercut_mount_fsck.sh
-+	tests/ubifs_tools-tests/fsck_tests/cycle_powercut_mount_fsck.sh \
-+	tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh
-diff --git a/tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh.in b/tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh.in
-new file mode 100755
-index 00000000..64760c94
+ free_disconnected_files_2:
+ 	destroy_file_list(c, &FSCK(c)->disconnected_files);
+@@ -583,6 +595,7 @@ int main(int argc, char *argv[])
+ 	 * Step 13: Commit problem fixing modifications
+ 	 * Step 14: Check and correct the index size
+ 	 * Step 15: Check and create root dir
++	 * Step 16: Check and create lost+found
+ 	 */
+ 	err = do_fsck();
+ 	if (err && FSCK(c)->try_rebuild) {
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index fb7ccca0..0e2a0811 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -277,6 +277,7 @@ struct ubifs_rebuild_info {
+  * @lpts: lprops table
+  * @try_rebuild: %true means that try to rebuild fs when fsck failed
+  * @rebuild: rebuilding-related information
++ * @lost_and_found: inode number of the lost+found directory, %0 means invalid
+  */
+ struct ubifs_fsck_info {
+ 	int mode;
+@@ -288,6 +289,7 @@ struct ubifs_fsck_info {
+ 	struct ubifs_lprops *lpts;
+ 	bool try_rebuild;
+ 	struct ubifs_rebuild_info *rebuild;
++	ino_t lost_and_found;
+ };
+ 
+ #define FSCK(c) ((struct ubifs_fsck_info*)c->private)
+@@ -383,4 +385,7 @@ int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb,
+ int check_and_correct_space(struct ubifs_info *c);
+ int check_and_correct_index_size(struct ubifs_info *c);
+ 
++/* handle_disconnected.c */
++int check_and_create_lost_found(struct ubifs_info *c);
++
+ #endif
+diff --git a/ubifs-utils/fsck.ubifs/handle_disconnected.c b/ubifs-utils/fsck.ubifs/handle_disconnected.c
+new file mode 100644
+index 00000000..b9a380f9
 --- /dev/null
-+++ b/tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh.in
-@@ -0,0 +1,206 @@
-+#!/bin/sh
-+# Copyright (c), 2024, Huawei Technologies Co, Ltd.
-+# Author: Zhihao Cheng <chengzhihao1@huawei.com>
-+#
-+# Test Description:
-+# For many kinds of flash, do following things
-+#  1. mount UBIFS
-+#  2. fsstress && unmount
-+#  3. inject corruption into UBIFS image randomly
-+#  3. fsck UBIFS
-+#  4. check UBIFS mounting result
-+# Running time: 1h
++++ b/ubifs-utils/fsck.ubifs/handle_disconnected.c
+@@ -0,0 +1,89 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
++ *
++ * Authors: Huang Xiaojia <huangxiaojia2@huawei.com>
++ *          Zhihao Cheng <chengzhihao1@huawei.com>
++ */
 +
-+TESTBINDIR=@TESTBINDIR@
-+source $TESTBINDIR/common.sh
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/stat.h>
 +
-+function run_test()
++#include "linux_err.h"
++#include "kmem.h"
++#include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
++#include "fsck.ubifs.h"
++
++#define LOST_FOUND_DIR_NAME "lost+found"
++
++/**
++ * check_and_create_lost_found - Check and create the lost+found directory.
++ * @c: UBIFS file-system description object
++ *
++ * This function checks whether the lost+found directory exists and creates a
++ * new one if no valid lost+found existing. If there is a valid lost+found
++ * directory, inode number is stored in @FSCK(c)->lost_and_found. Returns zero
++ * in case of success, a negative error code in case of failure.
++ */
++int check_and_create_lost_found(struct ubifs_info *c)
 +{
-+	local simulator="$1";
-+	local size="$2";
-+	local peb_size="$3";
-+	local page_size="$4";
-+	local encryption=$5;
++	struct ubifs_inode *root_ui, *lost_found_ui;
++	struct fscrypt_name nm;
++	int err = 0;
 +
-+	echo "======================================================================"
-+	printf "%s" "$simulator: ${size}MiB PEB size ${peb_size}KiB"
-+	if [ "$simulator" = "nandsim" ]; then
-+		printf " %s" "page size ${page_size}Bytes"
-+	fi
-+	printf " $encryption\n"
++	root_ui = ubifs_lookup_by_inum(c, UBIFS_ROOT_INO);
++	if (IS_ERR(root_ui)) {
++		err = PTR_ERR(root_ui);
++		/* Previous step ensures that the root dir is valid. */
++		ubifs_assert(c, err != -ENOENT);
++		return err;
++	}
 +
-+	if [ "$simulator" = "nandsim" ]; then
-+		$TESTBINDIR/load_nandsim.sh "$size" "$peb_size" "$page_size" || echo "cannot load nandsim";
-+		mtdnum="$(find_mtd_device "$nandsim_patt")"
-+	elif [ "$simulator" = "mtdram" ]; then
-+		load_mtdram "$size" "$peb_size" || echo "cannot load mtdram"
-+		mtdnum="$(find_mtd_device "$mtdram_patt")"
-+	else
-+		fatal "$simulator is not supported"
-+	fi
++	if (root_ui->flags & UBIFS_CRYPT_FL) {
++		ubifs_msg(c, "The root dir is encrypted, skip checking lost+found");
++		goto free_root;
++	}
 +
-+	flash_eraseall /dev/mtd$mtdnum
-+	modprobe ubi mtd="$mtdnum,$page_size" || fatal "modprobe ubi fail"
-+	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
-+	modprobe ubifs || fatal "modprobe ubifs fail"
-+	mount_ubifs $DEV $MNT || fatal "mount ubifs fail"
-+	if [[ "$encryption" == "encrypted" ]]; then
-+		encryption_gen_key
-+		encryption_set_key $MNT
-+	fi
++	fname_name(&nm) = LOST_FOUND_DIR_NAME;
++	fname_len(&nm) = strlen(LOST_FOUND_DIR_NAME);
++	lost_found_ui = ubifs_lookup(c, root_ui, &nm);
++	if (IS_ERR(lost_found_ui)) {
++		err = PTR_ERR(lost_found_ui);
++		if (err != -ENOENT)
++			goto free_root;
 +
-+	fsstress -d $MNT -l0 -p4 -n10000 &
++		/* Not found. Create a new lost+found. */
++		err = ubifs_mkdir(c, root_ui, &nm, S_IRUGO | S_IWUSR | S_IXUSR);
++		if (err < 0) {
++			if (err == -ENOSPC) {
++				ubifs_msg(c, "No free space to create lost+found");
++				err = 0;
++			}
++			goto free_root;
++		}
++		lost_found_ui = ubifs_lookup(c, root_ui, &nm);
++		if (IS_ERR(lost_found_ui)) {
++			err = PTR_ERR(lost_found_ui);
++			ubifs_assert(c, err != -ENOENT);
++			goto free_root;
++		}
++		FSCK(c)->lost_and_found = lost_found_ui->vfs_inode.inum;
++		ubifs_msg(c, "Create the lost+found");
++	} else if (!(lost_found_ui->flags & UBIFS_CRYPT_FL) &&
++		   S_ISDIR(lost_found_ui->vfs_inode.mode)) {
++		FSCK(c)->lost_and_found = lost_found_ui->vfs_inode.inum;
++	} else {
++		ubifs_msg(c, "The type of lost+found is %s%s",
++			  ubifs_get_type_name(ubifs_get_dent_type(lost_found_ui->vfs_inode.mode)),
++			  lost_found_ui->flags & UBIFS_CRYPT_FL ? ", encrypted" : "");
++	}
 +
-+	while true;
-+	do
-+		per=`df -Th | grep ubifs | awk '{print $6}'`;
-+		if [[ ${per%?} -gt 95 ]]; then
-+			# Used > 95%
-+			break;
-+		fi
-+	done
-+
-+	ps -e | grep -w fsstress > /dev/null 2>&1
-+	while [ $? -eq 0 ]
-+	do
-+		killall -9 fsstress > /dev/null 2>&1
-+		sleep 1
-+		ps -e | grep -w fsstress > /dev/null 2>&1
-+	done
-+
-+	while true
-+	do
-+		res=`mount | grep "$MNT"`
-+		if [[ "$res" == "" ]]
-+		then
-+			break;
-+		fi
-+		umount $MNT
-+		sleep 0.1
-+	done
-+
-+	# injection
-+	times=$((RANDOM % 10))
-+	let times=$times+10
-+	i=0
-+	tot_peb=`cat /sys/class/ubi/ubi$UBI_NUM/total_eraseblocks`;
-+
-+	modprobe -r ubifs
-+	modprobe -r ubi # Stop wear-leveling & erasing worker
-+	while [[ $i -lt $times ]]
-+	do
-+		let i=$i+1;
-+		peb=$((RANDOM % $tot_peb));
-+		pg=`expr $peb_size \* 1024`;
-+		peb_off=`expr $pg \* $peb`
-+		pages=`expr $pg / $page_size`;
-+		pg=`expr $pages - 2`;
-+		pg=$((RANDOM % $pg));
-+		pg_off=`expr $pg + 2`;
-+		pg_start=`expr $pages \* $peb`;
-+		pg=`expr $pg_start + $pg_off`;
-+		vid_pg=`expr $pg_start + 1`;
-+		dd if=/dev/mtd$mtdnum of=$TMP_FILE bs=$page_size skip=$vid_pg count=1 2>/dev/null;
-+		content=`cat $TMP_FILE | grep UBI!`; # vid header magic
-+		if [[ "$content" == "" ]]; then
-+			# Skip free PEB, otherwise data could be overwritten in UBIFS
-+			continue;
-+		fi
-+		if [[ $((RANDOM % 2)) == 0 ]]; then
-+			# Corrupts 1 page
-+			dd if=/dev/urandom of=/dev/mtd$mtdnum bs=$page_size seek=$pg count=1;
-+		else
-+			# Erase 1 LEB, TNC points to an unmapped area
-+			flash_erase /dev/mtd$mtdnum $peb_off 1
-+		fi
-+	done
-+	rm -f $TMP_FILE 2>/dev/null
-+	sync
-+
-+	skip=0
-+	modprobe ubi mtd="$mtdnum,$page_size"
-+	ret=$?
-+	if [[ $ret != 0 ]]
-+	then
-+		skip=1
-+		echo "UBI layout volume is corrupted, skip"
-+	fi
-+
-+	if [[ $skip == 0 ]]; then
-+		modprobe ubifs || fatal "modprobe ubifs2 fail"
-+		dmesg -c > /dev/null
-+		fsck.ubifs -yb $DEV 2>&1 > $LOG_FILE
-+		res=$?
-+		cat $LOG_FILE
-+		let "ret=$res&~$FSCK_NONDESTRUCT"
-+		if [[ $ret != $FSCK_OK ]]
-+		then
-+			# Skip superblock error
-+			log=`cat $LOG_FILE | grep "bad node at LEB 0:"`
-+			if [[ "$log" != "" ]]
-+			then
-+				skip=1
-+				echo "SB is corrupted, skip fsck & mounting"
-+			else
-+				fatal "fsck fail $res"
-+			fi
-+		fi
-+
-+		if [[ $skip == 0 ]]; then
-+			enable_chkfs
-+
-+			mount_ubifs $DEV $MNT "noauthentication" "noatime"
-+			res=$?
-+			if [[ $res != 0 ]]
-+			then
-+				fatal "mount fail $res"
-+			fi
-+
-+			if [[ "$encryption" == "encrypted" ]]; then
-+				# Ignore the encrypting error, root dir could be
-+			        # corrupted, the new root dir cannot be
-+			        # encrypted because it is not empty.
-+				encryption_set_key $MNT 1
-+			fi
-+
-+			du -sh $MNT > /dev/null  # Make sure all files are accessible
-+			ret=$?
-+			if [[ $ret != 0 ]]; then
-+				fatal "Cannot access all files"
-+			fi
-+			# check_err_msg is not suggested in this testcase, because
-+			# ubi_io_read(triggered by wear_leveling_worker -> ubi_eba_copy_leb)
-+			# could print stack if ecc uncorrectable errors are detected.
-+
-+			umount $MNT
-+			res=$?
-+			if [[ $res != 0 ]]
-+			then
-+				fatal "unmount fail $res"
-+			fi
-+		fi
-+		modprobe -r ubifs
-+		modprobe -r ubi
-+	fi
-+	modprobe -r $simulator
-+
-+	echo "----------------------------------------------------------------------"
++	kfree(lost_found_ui);
++free_root:
++	kfree(root_ui);
++	return err;
 +}
-+
-+check_fsstress
-+start_t=$(date +%s)
-+echo "Do random_corrruption+fsck+mount test in kinds of flashes"
-+for simulator in "mtdram" "nandsim"; do
-+	for encryption in "encrypted" "noencrypted"; do
-+		run_test "$simulator" "16" "16" "512" $encryption
-+		run_test "$simulator" "64" "16" "512" $encryption
-+		run_test "$simulator" "128" "64" "2048" $encryption
-+		run_test "$simulator" "256" "128" "2048" $encryption
-+		run_test "$simulator" "512" "128" "2048" $encryption
-+		run_test "$simulator" "1024" "512" "2048" $encryption
-+	done
-+done
-+end_t=$(date +%s)
-+time_cost=$(( end_t - start_t ))
-+echo "Success, cost $time_cost seconds"
-+exit 0
 -- 
 2.13.6
 
