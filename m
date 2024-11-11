@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35CC2D5E392
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00FC6D5E39A
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:16:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VOWfYSs/4GHx15Kxr3HElU1X2lqk0L8O0wucoq2w25E=; b=yKCHuaKO5LgKuX
-	yG1coImkvb+3Qe+w+6MOdn500Sp72HsFdOe5AoLkJcISJwu2jiASAet7qaKHrvkA2mqPrf1UQ0dv0
-	0sbaLt5yCZjF38LT/Exi3saI4pz7o7d3LRZFNaR9sBVSmAeQB5PNXpp9XofsEJ9yMMQ+cqhB4JUwr
-	iQkd1zaOZC+PLqQV0OhvcQ3FClVzC+Cj3/CHr2NNGfTzBmwwm3qkIrFc32l3XZzeR5io4o0NoQFXc
-	i6lOxLP1NufdFBzjP1gHOBjsuxKsqbqx4SrmFNvsT3df+cbHCBKgvUmtOWryzh/k8+wWpdsxDrM0a
-	4+ZdvUplf1TWCOjXZV5w==;
+	List-Owner; bh=r3+Ld6m/30H4IzpZwdUxndfT2WZtSwmnTkx9qcrpdTA=; b=ntAFPhTa+LdEzH
+	pcuN+BUV4jhdXEnCvf3EoKFtDsHv/zHF03/I8kmrsJyHSJ/I7ludqOM1VcGxpelTZdTqspE1mjGbn
+	DMMEKymwYCJdhVnr/HlmU6Zbffi4dseppExOxXJ0HOCvluC0hCJ/dcBAJRSvqK4R20uq1kz+/07it
+	b2JOypcOWpS/Cb8Rx3ZzwcJ0VUpGDenycbYrW+TGRxSkRpNxcnaTk3u+YDjBW9To1k3zk40ATPBJj
+	M5C6EBoZJy2KoofCYS54JBG4bA9Y3N725eGYvc+ypdW7rXpfVqvrRkcbuglMgaGE9IAuMmo/0Q4f3
+	kychnvObdT8C66uvJz2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPaX-0000000GmTC-2OCg;
-	Mon, 11 Nov 2024 08:15:57 +0000
+	id 1tAPaa-0000000GmVq-2J1C;
+	Mon, 11 Nov 2024 08:16:00 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUQ-0000000GZHH-0mao
+	id 1tAOUR-0000000GZIq-3TEv
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:05:34 +0000
+	Mon, 11 Nov 2024 07:05:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=NabOx94/xG/XT/X0O6/dEo7CgDWrOtOTXxRCGKebpUE=; b=CociXSW9XVlMZMrzEmk92TqXUT
-	oPNPRN2QAO57Z1YhSEJ6jhrgTzJCYoPHaNGI0RLauO4GaZNvyGHXctRexjh8aqalbxijXbivodiMD
-	y3Zctu4IattWIxDcA+Y2tJi27mn4Lotghbv5IeYqwlZDmyxzcOupjPKh0ipD/0wvQfoDb5zbO6kM3
-	WaLGOh1T1boV4z8vJ/GrdJhtT4n/rDfU+j7/q9hNlImd9Gj4q4NP1mB05Rd5j2lGqUTz2c8sUF/f5
-	U21VcAo+ZvqaIKEyk7e5+6B+B67QV3vxTQXRRByuy+8eb7J0M3qVGKVuqtmVyzeX3PoN9z4J4hbrz
-	OGhKNBkg==;
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	bh=XM+r6a3iFRPMMwI84sUryFoVMqN2rE44i1yJTtSFyRY=; b=MJ/BoCypQyWvRIyavTpFICM7ZA
+	ntT+eLglKRYKBehAbc+ZLzeVIDEJVQOR9DBx2NAbCwDnfWsjRqrrxIIJpZYiKztR5/VxODO5NiHmd
+	8OjdjsU+VDxxAMr29GehtIJzKg4bFI1PeS3cRqgRo5GMNrSrBgwe4VEB7T+EFQ8xHXPE/MjeGAL8w
+	xCIwHI422ash9PrBKRQfc8v4WpGqkK51saeJ9nurFcpYPuL5YeUzivBbX/Rf3MAFa94CsD+WalJP5
+	vXNIn5MV/fqNYOQDHV1CmFv/0T/wER4nXaH1zA7RXyyyk6ZDPLNn00MKVJ6wvkDxKDRqTCwtzz9cW
+	f8/4Fx/w==;
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUK-0000000CmCq-3feu
+	id 1tAOUM-0000000CmCr-2Lcy
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:32 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rH511bz1jy0s;
-	Mon, 11 Nov 2024 15:03:27 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:34 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qJ4sgMzsRW1;
+	Mon, 11 Nov 2024 15:02:36 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id BAFD514011F;
-	Mon, 11 Nov 2024 15:05:14 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id BD1BB1400D8;
+	Mon, 11 Nov 2024 15:05:15 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:14 +0800
+ 2024 15:05:15 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 027/102] ubifs-utils: Adapt io.c in libubifs
-Date: Mon, 11 Nov 2024 15:02:30 +0800
-Message-ID: <20241111070346.1314122-28-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 029/102] ubifs-utils: Adapt tnc subsystem in libubifs
+Date: Mon, 11 Nov 2024 15:02:32 +0800
+Message-ID: <20241111070346.1314122-30-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070530_218149_F6C626B0 
-X-CRM114-Status: GOOD (  27.57  )
+X-CRM114-CacheID: sfid-20241111_070532_645924_E646B9A5 
+X-CRM114-Status: GOOD (  31.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,585 +85,875 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt io.c in libubifs, compared with linux kernel implementations:
- 1. Modify io related functions(eg. ubifs_leb_read/ubifs_leb_write,
-    etc.), adapt them with userspace io functions lseek/read/write.
- 2. Remove some functions(eg. record_magic_error, ubifs_bg_wbufs_sync)
-    which won't be used in fsck/mkfs.
- 3. Replce ubifs_errc with ubifs_err, because there will be no SB_SILENT
-    options in mkfs/fsck.
- 4. Initiate wbuf->size as c->max_write_size.
+Adapt tnc subsystem(tnc.c,tnc_misc.c,tnc_commit.c) in libubifs, compared
+with linux kernel implementations:
+ 1. Remove debug related functions(eg. dbg_check_inode_size), debug
+    functions are not needed by fsck, because fsck will check fs in
+    another way.
+ 2. Remove some functions(eg. ubifs_tnc_bulk_read) which won't be used
+    in fsck/mkfs.
+ 3. Adapt tnc_delete and ubifs_search_zbranch to handle empty TNC case,
+    which could happen in fsck.
+ 4. Don't skip checking the length of non-leaf index node's branch in
+    read_znode.
+ 5. Adapt try_read_node to ignore %-EBADMSG, subsequent steps will check
+    nodes carefully.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- include/crc32.h           |   5 +
- ubifs-utils/libubifs/io.c | 364 ++++++++++++----------------------------------
- 2 files changed, 95 insertions(+), 274 deletions(-)
+ ubifs-utils/libubifs/tnc.c        | 590 +-------------------------------------
+ ubifs-utils/libubifs/tnc_commit.c |  18 +-
+ ubifs-utils/libubifs/tnc_misc.c   | 108 ++-----
+ 3 files changed, 43 insertions(+), 673 deletions(-)
 
-diff --git a/include/crc32.h b/include/crc32.h
-index 9c1f742c..f5271f37 100644
---- a/include/crc32.h
-+++ b/include/crc32.h
-@@ -10,4 +10,9 @@
- /* Return a 32-bit CRC of the contents of the buffer */
- extern uint32_t mtd_crc32(uint32_t val, const void *ss, int len);
- 
-+static inline uint32_t crc32(uint32_t val, const void *ss, int len)
-+{
-+	return mtd_crc32(val, ss, len);
-+}
-+
- #endif /* __CRC32_H__ */
-diff --git a/ubifs-utils/libubifs/io.c b/ubifs-utils/libubifs/io.c
-index 01d8eb17..6f170172 100644
---- a/ubifs-utils/libubifs/io.c
-+++ b/ubifs-utils/libubifs/io.c
-@@ -58,9 +58,11 @@
-  * they are read from the flash media.
+diff --git a/ubifs-utils/libubifs/tnc.c b/ubifs-utils/libubifs/tnc.c
+index 0fabecd9..12c56e0a 100644
+--- a/ubifs-utils/libubifs/tnc.c
++++ b/ubifs-utils/libubifs/tnc.c
+@@ -18,9 +18,15 @@
+  * the mutex locked.
   */
  
 -#include <linux/crc32.h>
 -#include <linux/slab.h>
++#include "linux_err.h"
++#include "bitops.h"
 +#include "kmem.h"
 +#include "crc32.h"
  #include "ubifs.h"
 +#include "defs.h"
 +#include "debug.h"
++#include "key.h"
++#include "misc.h"
  
- /**
-  * ubifs_ro_mode - switch UBIFS to read read-only mode.
-@@ -72,7 +74,6 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
- 	if (!c->ro_error) {
- 		c->ro_error = 1;
- 		c->no_chk_data_crc = 0;
--		c->vfs_sb->s_flags |= SB_RDONLY;
- 		ubifs_warn(c, "switched to read-only mode, error %d", err);
- 		dump_stack();
- 	}
-@@ -87,9 +88,26 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
- int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
- 		   int len, int even_ebadmsg)
+ static int try_read_node(const struct ubifs_info *c, void *buf, int type,
+ 			 struct ubifs_zbranch *zbr);
+@@ -488,7 +494,7 @@ static int try_read_node(const struct ubifs_info *c, void *buf, int type,
+ 	dbg_io("LEB %d:%d, %s, length %d", lnum, offs, dbg_ntype(type), len);
+ 
+ 	err = ubifs_leb_read(c, lnum, buf, offs, len, 1);
+-	if (err) {
++	if (err && err != -EBADMSG) {
+ 		ubifs_err(c, "cannot read node type %d from LEB %d:%d, error %d",
+ 			  type, lnum, offs, err);
+ 		return err;
+@@ -929,7 +935,7 @@ static int fallible_resolve_collision(struct ubifs_info *c,
+ 				      int adding)
  {
--	int err;
-+	int err = 0;
-+	off_t pos = (off_t)lnum * c->leb_size + offs;
-+
-+	if (!len)
-+		return 0;
+ 	struct ubifs_znode *o_znode = NULL, *znode = *zn;
+-	int o_n, err, cmp, unsure = 0, nn = *n;
++	int err, cmp, o_n = 0, unsure = 0, nn = *n;
  
--	err = ubi_read(c->ubi, lnum, buf, offs, len);
-+	/*
-+	 * The %-EBADMSG may be ignored in some case, the buf may not be filled
-+	 * with data in some buggy mtd drivers. So we'd better to reset the buf
-+	 * content before reading.
-+	 */
-+	memset(buf, 0, len);
-+	if (lseek(c->dev_fd, pos, SEEK_SET) != pos) {
-+		err = -errno;
-+		goto out;
-+	}
-+
-+	if (read(c->dev_fd, buf, len) != len)
-+		err = -errno;
-+out:
- 	/*
- 	 * In case of %-EBADMSG print the error message only if the
- 	 * @even_ebadmsg is true.
-@@ -105,15 +123,27 @@ int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
- int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
- 		    int len)
- {
--	int err;
-+	int err = 0;
-+	off_t pos = (off_t)lnum * c->leb_size + offs;
- 
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
- 	if (c->ro_error)
- 		return -EROFS;
--	if (!dbg_is_tst_rcvry(c))
--		err = ubi_leb_write(c->ubi, lnum, buf, offs, len);
--	else
--		err = dbg_leb_write(c, lnum, buf, offs, len);
-+	if (!c->libubi) {
-+		err = -ENODEV;
-+		goto out;
-+	}
-+
-+	if (!len)
-+		return 0;
-+
-+	if (lseek(c->dev_fd, pos, SEEK_SET) != pos) {
-+		err = -errno;
-+		goto out;
-+	}
-+	if (write(c->dev_fd, buf, len) != len)
-+		err = -errno;
-+out:
- 	if (err) {
- 		ubifs_err(c, "writing %d bytes to LEB %d:%d failed, error %d",
- 			  len, lnum, offs, err);
-@@ -125,15 +155,31 @@ int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
- 
- int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len)
- {
--	int err;
-+	int err = 0;
-+	off_t pos = (off_t)lnum * c->leb_size;
- 
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
- 	if (c->ro_error)
- 		return -EROFS;
--	if (!dbg_is_tst_rcvry(c))
--		err = ubi_leb_change(c->ubi, lnum, buf, len);
--	else
--		err = dbg_leb_change(c, lnum, buf, len);
-+	if (c->libubi) {
-+		err = ubi_leb_change_start(c->libubi, c->dev_fd, lnum, len);
-+		if (err) {
-+			ubifs_err(c, "ubi_leb_change_start failed");
-+			err = -errno;
-+			goto out;
-+		}
-+	}
-+
-+	if (!len)
-+		return 0;
-+
-+	if (lseek(c->dev_fd, pos, SEEK_SET) != pos) {
-+		err = -errno;
-+		goto out;
-+	}
-+	if (write(c->dev_fd, buf, len) != len)
-+		err = -errno;
-+out:
- 	if (err) {
- 		ubifs_err(c, "changing %d bytes in LEB %d failed, error %d",
- 			  len, lnum, err);
-@@ -145,15 +191,15 @@ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len)
- 
- int ubifs_leb_unmap(struct ubifs_info *c, int lnum)
- {
--	int err;
-+	int err = 0;
- 
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
- 	if (c->ro_error)
- 		return -EROFS;
--	if (!dbg_is_tst_rcvry(c))
--		err = ubi_leb_unmap(c->ubi, lnum);
--	else
--		err = dbg_leb_unmap(c, lnum);
-+	if (!c->libubi)
-+		return -ENODEV;
-+	if (ubi_leb_unmap(c->dev_fd, lnum))
-+		err = -errno;
- 	if (err) {
- 		ubifs_err(c, "unmap LEB %d failed, error %d", lnum, err);
- 		ubifs_ro_mode(c, err);
-@@ -164,15 +210,15 @@ int ubifs_leb_unmap(struct ubifs_info *c, int lnum)
- 
- int ubifs_leb_map(struct ubifs_info *c, int lnum)
- {
--	int err;
-+	int err = 0;
- 
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
- 	if (c->ro_error)
- 		return -EROFS;
--	if (!dbg_is_tst_rcvry(c))
--		err = ubi_leb_map(c->ubi, lnum);
--	else
--		err = dbg_leb_map(c, lnum);
-+	if (!c->libubi)
-+		return -ENODEV;
-+	if (ubi_leb_map(c->dev_fd, lnum))
-+		err = -errno;
- 	if (err) {
- 		ubifs_err(c, "mapping LEB %d failed, error %d", lnum, err);
- 		ubifs_ro_mode(c, err);
-@@ -183,9 +229,12 @@ int ubifs_leb_map(struct ubifs_info *c, int lnum)
- 
- int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
- {
--	int err;
-+	int err = 0;
- 
--	err = ubi_is_mapped(c->ubi, lnum);
-+	if (!c->libubi)
-+		return -ENODEV;
-+	if (ubi_is_mapped(c->dev_fd, lnum))
-+		err = -errno;
- 	if (err < 0) {
- 		ubifs_err(c, "ubi_is_mapped failed for LEB %d, error %d",
- 			  lnum, err);
-@@ -194,24 +243,6 @@ int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
- 	return err;
- }
- 
--static void record_magic_error(struct ubifs_stats_info *stats)
--{
--	if (stats)
--		stats->magic_errors++;
--}
--
--static void record_node_error(struct ubifs_stats_info *stats)
--{
--	if (stats)
--		stats->node_errors++;
--}
--
--static void record_crc_error(struct ubifs_stats_info *stats)
--{
--	if (stats)
--		stats->crc_errors++;
--}
--
- /**
-  * ubifs_check_node - check node.
-  * @c: UBIFS file-system description object
-@@ -256,7 +287,6 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int len,
- 		if (!quiet)
- 			ubifs_err(c, "bad magic %#08x, expected %#08x",
- 				  magic, UBIFS_NODE_MAGIC);
--		record_magic_error(c->stats);
- 		err = -EUCLEAN;
- 		goto out;
- 	}
-@@ -265,7 +295,6 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int len,
- 	if (type < 0 || type >= UBIFS_NODE_TYPES_CNT) {
- 		if (!quiet)
- 			ubifs_err(c, "bad node type %d", type);
--		record_node_error(c->stats);
- 		goto out;
- 	}
- 
-@@ -290,7 +319,6 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int len,
- 		if (!quiet)
- 			ubifs_err(c, "bad CRC: calculated %#08x, read %#08x",
- 				  crc, node_crc);
--		record_crc_error(c->stats);
- 		err = -EUCLEAN;
- 		goto out;
- 	}
-@@ -395,7 +423,7 @@ void ubifs_init_node(struct ubifs_info *c, void *node, int len, int pad)
- 	}
- }
- 
--void ubifs_crc_node(struct ubifs_info *c, void *node, int len)
-+void ubifs_crc_node(__unused struct ubifs_info *c, void *node, int len)
- {
- 	struct ubifs_ch *ch = node;
- 	uint32_t crc;
-@@ -488,61 +516,6 @@ void ubifs_prep_grp_node(struct ubifs_info *c, void *node, int len, int last)
+ 	cmp = fallible_matches_name(c, &znode->zbranch[nn], nm);
+ 	if (unlikely(cmp < 0))
+@@ -1427,42 +1433,6 @@ static int lookup_level0_dirty(struct ubifs_info *c, const union ubifs_key *key,
  }
  
  /**
-- * wbuf_timer_callback_nolock - write-buffer timer callback function.
-- * @timer: timer data (write-buffer descriptor)
-- *
-- * This function is called when the write-buffer timer expires.
-- */
--static enum hrtimer_restart wbuf_timer_callback_nolock(struct hrtimer *timer)
--{
--	struct ubifs_wbuf *wbuf = container_of(timer, struct ubifs_wbuf, timer);
--
--	dbg_io("jhead %s", dbg_jhead(wbuf->jhead));
--	wbuf->need_sync = 1;
--	wbuf->c->need_wbuf_sync = 1;
--	ubifs_wake_up_bgt(wbuf->c);
--	return HRTIMER_NORESTART;
--}
--
--/**
-- * new_wbuf_timer_nolock - start new write-buffer timer.
+- * maybe_leb_gced - determine if a LEB may have been garbage collected.
 - * @c: UBIFS file-system description object
-- * @wbuf: write-buffer descriptor
-- */
--static void new_wbuf_timer_nolock(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
--{
--	ktime_t softlimit = ms_to_ktime(dirty_writeback_interval * 10);
--	unsigned long long delta = dirty_writeback_interval;
--
--	/* centi to milli, milli to nano, then 10% */
--	delta *= 10ULL * NSEC_PER_MSEC / 10ULL;
--
--	ubifs_assert(c, !hrtimer_active(&wbuf->timer));
--	ubifs_assert(c, delta <= ULONG_MAX);
--
--	if (wbuf->no_timer)
--		return;
--	dbg_io("set timer for jhead %s, %llu-%llu millisecs",
--	       dbg_jhead(wbuf->jhead),
--	       div_u64(ktime_to_ns(softlimit), USEC_PER_SEC),
--	       div_u64(ktime_to_ns(softlimit) + delta, USEC_PER_SEC));
--	hrtimer_start_range_ns(&wbuf->timer, softlimit, delta,
--			       HRTIMER_MODE_REL);
--}
--
--/**
-- * cancel_wbuf_timer_nolock - cancel write-buffer timer.
-- * @wbuf: write-buffer descriptor
-- */
--static void cancel_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
--{
--	if (wbuf->no_timer)
--		return;
--	wbuf->need_sync = 0;
--	hrtimer_cancel(&wbuf->timer);
--}
--
--/**
-  * ubifs_wbuf_sync_nolock - synchronize write-buffer.
-  * @wbuf: write-buffer to synchronize
-  *
-@@ -560,7 +533,6 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
- 	struct ubifs_info *c = wbuf->c;
- 	int err, dirt, sync_len;
- 
--	cancel_wbuf_timer_nolock(wbuf);
- 	if (!wbuf->used || wbuf->lnum == -1)
- 		/* Write-buffer is empty or not seeked */
- 		return 0;
-@@ -658,70 +630,6 @@ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs)
- }
- 
- /**
-- * ubifs_bg_wbufs_sync - synchronize write-buffers.
-- * @c: UBIFS file-system description object
+- * @lnum: LEB number
+- * @gc_seq1: garbage collection sequence number
 - *
-- * This function is called by background thread to synchronize write-buffers.
-- * Returns zero in case of success and a negative error code in case of
-- * failure.
+- * This function determines if @lnum may have been garbage collected since
+- * sequence number @gc_seq1. If it may have been then %1 is returned, otherwise
+- * %0 is returned.
 - */
--int ubifs_bg_wbufs_sync(struct ubifs_info *c)
+-static int maybe_leb_gced(struct ubifs_info *c, int lnum, int gc_seq1)
 -{
--	int err, i;
+-	int gc_seq2, gced_lnum;
 -
--	ubifs_assert(c, !c->ro_media && !c->ro_mount);
--	if (!c->need_wbuf_sync)
+-	gced_lnum = c->gced_lnum;
+-	smp_rmb();
+-	gc_seq2 = c->gc_seq;
+-	/* Same seq means no GC */
+-	if (gc_seq1 == gc_seq2)
 -		return 0;
--	c->need_wbuf_sync = 0;
+-	/* Different by more than 1 means we don't know */
+-	if (gc_seq1 + 1 != gc_seq2)
+-		return 1;
+-	/*
+-	 * We have seen the sequence number has increased by 1. Now we need to
+-	 * be sure we read the right LEB number, so read it again.
+-	 */
+-	smp_rmb();
+-	if (gced_lnum != c->gced_lnum)
+-		return 1;
+-	/* Finally we can check lnum */
+-	if (gced_lnum == lnum)
+-		return 1;
+-	return 0;
+-}
 -
--	if (c->ro_error) {
--		err = -EROFS;
--		goto out_timers;
+-/**
+  * ubifs_tnc_locate - look up a file-system node and return it and its location.
+  * @c: UBIFS file-system description object
+  * @key: node key to lookup
+@@ -1512,300 +1482,6 @@ out:
+ }
+ 
+ /**
+- * ubifs_tnc_get_bu_keys - lookup keys for bulk-read.
+- * @c: UBIFS file-system description object
+- * @bu: bulk-read parameters and results
+- *
+- * Lookup consecutive data node keys for the same inode that reside
+- * consecutively in the same LEB. This function returns zero in case of success
+- * and a negative error code in case of failure.
+- *
+- * Note, if the bulk-read buffer length (@bu->buf_len) is known, this function
+- * makes sure bulk-read nodes fit the buffer. Otherwise, this function prepares
+- * maximum possible amount of nodes for bulk-read.
+- */
+-int ubifs_tnc_get_bu_keys(struct ubifs_info *c, struct bu_info *bu)
+-{
+-	int n, err = 0, lnum = -1, offs;
+-	int len;
+-	unsigned int block = key_block(c, &bu->key);
+-	struct ubifs_znode *znode;
+-
+-	bu->cnt = 0;
+-	bu->blk_cnt = 0;
+-	bu->eof = 0;
+-
+-	mutex_lock(&c->tnc_mutex);
+-	/* Find first key */
+-	err = ubifs_lookup_level0(c, &bu->key, &znode, &n);
+-	if (err < 0)
+-		goto out;
+-	if (err) {
+-		/* Key found */
+-		len = znode->zbranch[n].len;
+-		/* The buffer must be big enough for at least 1 node */
+-		if (len > bu->buf_len) {
+-			err = -EINVAL;
+-			goto out;
+-		}
+-		/* Add this key */
+-		bu->zbranch[bu->cnt++] = znode->zbranch[n];
+-		bu->blk_cnt += 1;
+-		lnum = znode->zbranch[n].lnum;
+-		offs = ALIGN(znode->zbranch[n].offs + len, 8);
+-	}
+-	while (1) {
+-		struct ubifs_zbranch *zbr;
+-		union ubifs_key *key;
+-		unsigned int next_block;
+-
+-		/* Find next key */
+-		err = tnc_next(c, &znode, &n);
+-		if (err)
+-			goto out;
+-		zbr = &znode->zbranch[n];
+-		key = &zbr->key;
+-		/* See if there is another data key for this file */
+-		if (key_inum(c, key) != key_inum(c, &bu->key) ||
+-		    key_type(c, key) != UBIFS_DATA_KEY) {
+-			err = -ENOENT;
+-			goto out;
+-		}
+-		if (lnum < 0) {
+-			/* First key found */
+-			lnum = zbr->lnum;
+-			offs = ALIGN(zbr->offs + zbr->len, 8);
+-			len = zbr->len;
+-			if (len > bu->buf_len) {
+-				err = -EINVAL;
+-				goto out;
+-			}
+-		} else {
+-			/*
+-			 * The data nodes must be in consecutive positions in
+-			 * the same LEB.
+-			 */
+-			if (zbr->lnum != lnum || zbr->offs != offs)
+-				goto out;
+-			offs += ALIGN(zbr->len, 8);
+-			len = ALIGN(len, 8) + zbr->len;
+-			/* Must not exceed buffer length */
+-			if (len > bu->buf_len)
+-				goto out;
+-		}
+-		/* Allow for holes */
+-		next_block = key_block(c, key);
+-		bu->blk_cnt += (next_block - block - 1);
+-		if (bu->blk_cnt >= UBIFS_MAX_BULK_READ)
+-			goto out;
+-		block = next_block;
+-		/* Add this key */
+-		bu->zbranch[bu->cnt++] = *zbr;
+-		bu->blk_cnt += 1;
+-		/* See if we have room for more */
+-		if (bu->cnt >= UBIFS_MAX_BULK_READ)
+-			goto out;
+-		if (bu->blk_cnt >= UBIFS_MAX_BULK_READ)
+-			goto out;
+-	}
+-out:
+-	if (err == -ENOENT) {
+-		bu->eof = 1;
+-		err = 0;
+-	}
+-	bu->gc_seq = c->gc_seq;
+-	mutex_unlock(&c->tnc_mutex);
+-	if (err)
+-		return err;
+-	/*
+-	 * An enormous hole could cause bulk-read to encompass too many
+-	 * page cache pages, so limit the number here.
+-	 */
+-	if (bu->blk_cnt > UBIFS_MAX_BULK_READ)
+-		bu->blk_cnt = UBIFS_MAX_BULK_READ;
+-	/*
+-	 * Ensure that bulk-read covers a whole number of page cache
+-	 * pages.
+-	 */
+-	if (UBIFS_BLOCKS_PER_PAGE == 1 ||
+-	    !(bu->blk_cnt & (UBIFS_BLOCKS_PER_PAGE - 1)))
+-		return 0;
+-	if (bu->eof) {
+-		/* At the end of file we can round up */
+-		bu->blk_cnt += UBIFS_BLOCKS_PER_PAGE - 1;
+-		return 0;
+-	}
+-	/* Exclude data nodes that do not make up a whole page cache page */
+-	block = key_block(c, &bu->key) + bu->blk_cnt;
+-	block &= ~(UBIFS_BLOCKS_PER_PAGE - 1);
+-	while (bu->cnt) {
+-		if (key_block(c, &bu->zbranch[bu->cnt - 1].key) < block)
+-			break;
+-		bu->cnt -= 1;
+-	}
+-	return 0;
+-}
+-
+-/**
+- * read_wbuf - bulk-read from a LEB with a wbuf.
+- * @wbuf: wbuf that may overlap the read
+- * @buf: buffer into which to read
+- * @len: read length
+- * @lnum: LEB number from which to read
+- * @offs: offset from which to read
+- *
+- * This functions returns %0 on success or a negative error code on failure.
+- */
+-static int read_wbuf(struct ubifs_wbuf *wbuf, void *buf, int len, int lnum,
+-		     int offs)
+-{
+-	const struct ubifs_info *c = wbuf->c;
+-	int rlen, overlap;
+-
+-	dbg_io("LEB %d:%d, length %d", lnum, offs, len);
+-	ubifs_assert(c, wbuf && lnum >= 0 && lnum < c->leb_cnt && offs >= 0);
+-	ubifs_assert(c, !(offs & 7) && offs < c->leb_size);
+-	ubifs_assert(c, offs + len <= c->leb_size);
+-
+-	spin_lock(&wbuf->lock);
+-	overlap = (lnum == wbuf->lnum && offs + len > wbuf->offs);
+-	if (!overlap) {
+-		/* We may safely unlock the write-buffer and read the data */
+-		spin_unlock(&wbuf->lock);
+-		return ubifs_leb_read(c, lnum, buf, offs, len, 0);
 -	}
 -
--	dbg_io("synchronize");
--	for (i = 0; i < c->jhead_cnt; i++) {
--		struct ubifs_wbuf *wbuf = &c->jheads[i].wbuf;
+-	/* Don't read under wbuf */
+-	rlen = wbuf->offs - offs;
+-	if (rlen < 0)
+-		rlen = 0;
 -
--		cond_resched();
+-	/* Copy the rest from the write-buffer */
+-	memcpy(buf + rlen, wbuf->buf + offs + rlen - wbuf->offs, len - rlen);
+-	spin_unlock(&wbuf->lock);
 -
--		/*
--		 * If the mutex is locked then wbuf is being changed, so
--		 * synchronization is not necessary.
--		 */
--		if (mutex_is_locked(&wbuf->io_mutex))
--			continue;
+-	if (rlen > 0)
+-		/* Read everything that goes before write-buffer */
+-		return ubifs_leb_read(c, lnum, buf, offs, rlen, 0);
 -
--		mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
--		if (!wbuf->need_sync) {
--			mutex_unlock(&wbuf->io_mutex);
--			continue;
--		}
+-	return 0;
+-}
 -
--		err = ubifs_wbuf_sync_nolock(wbuf);
--		mutex_unlock(&wbuf->io_mutex);
--		if (err) {
--			ubifs_err(c, "cannot sync write-buffer, error %d", err);
--			ubifs_ro_mode(c, err);
--			goto out_timers;
--		}
+-/**
+- * validate_data_node - validate data nodes for bulk-read.
+- * @c: UBIFS file-system description object
+- * @buf: buffer containing data node to validate
+- * @zbr: zbranch of data node to validate
+- *
+- * This functions returns %0 on success or a negative error code on failure.
+- */
+-static int validate_data_node(struct ubifs_info *c, void *buf,
+-			      struct ubifs_zbranch *zbr)
+-{
+-	union ubifs_key key1;
+-	struct ubifs_ch *ch = buf;
+-	int err, len;
+-
+-	if (ch->node_type != UBIFS_DATA_NODE) {
+-		ubifs_err(c, "bad node type (%d but expected %d)",
+-			  ch->node_type, UBIFS_DATA_NODE);
+-		goto out_err;
+-	}
+-
+-	err = ubifs_check_node(c, buf, zbr->len, zbr->lnum, zbr->offs, 0, 0);
+-	if (err) {
+-		ubifs_err(c, "expected node type %d", UBIFS_DATA_NODE);
+-		goto out;
+-	}
+-
+-	err = ubifs_node_check_hash(c, buf, zbr->hash);
+-	if (err) {
+-		ubifs_bad_hash(c, buf, zbr->hash, zbr->lnum, zbr->offs);
+-		return err;
+-	}
+-
+-	len = le32_to_cpu(ch->len);
+-	if (len != zbr->len) {
+-		ubifs_err(c, "bad node length %d, expected %d", len, zbr->len);
+-		goto out_err;
+-	}
+-
+-	/* Make sure the key of the read node is correct */
+-	key_read(c, buf + UBIFS_KEY_OFFSET, &key1);
+-	if (!keys_eq(c, &zbr->key, &key1)) {
+-		ubifs_err(c, "bad key in node at LEB %d:%d",
+-			  zbr->lnum, zbr->offs);
+-		dbg_tnck(&zbr->key, "looked for key ");
+-		dbg_tnck(&key1, "found node's key ");
+-		goto out_err;
 -	}
 -
 -	return 0;
 -
--out_timers:
--	/* Cancel all timers to prevent repeated errors */
--	for (i = 0; i < c->jhead_cnt; i++) {
--		struct ubifs_wbuf *wbuf = &c->jheads[i].wbuf;
--
--		mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
--		cancel_wbuf_timer_nolock(wbuf);
--		mutex_unlock(&wbuf->io_mutex);
--	}
+-out_err:
+-	err = -EINVAL;
+-out:
+-	ubifs_err(c, "bad node at LEB %d:%d", zbr->lnum, zbr->offs);
+-	ubifs_dump_node(c, buf, zbr->len);
+-	dump_stack();
 -	return err;
 -}
 -
 -/**
-  * ubifs_wbuf_write_nolock - write data to flash via write-buffer.
-  * @wbuf: write-buffer
-  * @buf: node to write
-@@ -763,8 +671,6 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 		goto out;
- 	}
- 
--	cancel_wbuf_timer_nolock(wbuf);
+- * ubifs_tnc_bulk_read - read a number of data nodes in one go.
+- * @c: UBIFS file-system description object
+- * @bu: bulk-read parameters and results
+- *
+- * This functions reads and validates the data nodes that were identified by the
+- * 'ubifs_tnc_get_bu_keys()' function. This functions returns %0 on success,
+- * -EAGAIN to indicate a race with GC, or another negative error code on
+- * failure.
+- */
+-int ubifs_tnc_bulk_read(struct ubifs_info *c, struct bu_info *bu)
+-{
+-	int lnum = bu->zbranch[0].lnum, offs = bu->zbranch[0].offs, len, err, i;
+-	struct ubifs_wbuf *wbuf;
+-	void *buf;
 -
- 	if (c->ro_error)
- 		return -EROFS;
- 
-@@ -925,9 +831,6 @@ exit:
- 			goto out;
- 	}
- 
--	if (wbuf->used)
--		new_wbuf_timer_nolock(c, wbuf);
--
- 	return 0;
- 
- out:
-@@ -1110,32 +1013,30 @@ int ubifs_read_node(const struct ubifs_info *c, void *buf, int type, int len,
- 		return err;
- 
- 	if (type != ch->node_type) {
--		ubifs_errc(c, "bad node type (%d but expected %d)",
--			   ch->node_type, type);
-+		ubifs_err(c, "bad node type (%d but expected %d)",
-+			  ch->node_type, type);
- 		goto out;
- 	}
- 
- 	err = ubifs_check_node(c, buf, len, lnum, offs, 0, 0);
- 	if (err) {
--		ubifs_errc(c, "expected node type %d", type);
-+		ubifs_err(c, "expected node type %d", type);
- 		return err;
- 	}
- 
- 	l = le32_to_cpu(ch->len);
- 	if (l != len) {
--		ubifs_errc(c, "bad node length %d, expected %d", l, len);
-+		ubifs_err(c, "bad node length %d, expected %d", l, len);
- 		goto out;
- 	}
- 
- 	return 0;
- 
- out:
--	ubifs_errc(c, "bad node at LEB %d:%d, LEB mapping status %d", lnum,
--		   offs, ubi_is_mapped(c->ubi, lnum));
--	if (!c->probing) {
--		ubifs_dump_node(c, buf, len);
--		dump_stack();
+-	len = bu->zbranch[bu->cnt - 1].offs;
+-	len += bu->zbranch[bu->cnt - 1].len - offs;
+-	if (len > bu->buf_len) {
+-		ubifs_err(c, "buffer too small %d vs %d", bu->buf_len, len);
+-		return -EINVAL;
 -	}
-+	ubifs_err(c, "bad node at LEB %d:%d, LEB mapping status %d", lnum,
-+		  offs, ubi_is_mapped(c->dev_fd, lnum));
-+	ubifs_dump_node(c, buf, len);
-+	dump_stack();
- 	return -EINVAL;
- }
- 
-@@ -1166,12 +1067,12 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
- 	wbuf->used = 0;
- 	wbuf->lnum = wbuf->offs = -1;
- 	/*
--	 * If the LEB starts at the max. write size aligned address, then
--	 * write-buffer size has to be set to @c->max_write_size. Otherwise,
--	 * set it to something smaller so that it ends at the closest max.
--	 * write size boundary.
-+	 * Different from linux kernel, there is no way to get leb_start in
-+	 * userspace, set write-buffer size as @c->max_write_size directly.
-+	 * Since wbuf->lnum is initialized as -1, wbuf->size will always be
-+	 * reset in ubifs_wbuf_seek_nolock, it won't be any problems.
- 	 */
--	size = c->max_write_size - (c->leb_start % c->max_write_size);
-+	size = c->max_write_size;
- 	wbuf->avail = wbuf->size = size;
- 	wbuf->sync_callback = NULL;
- 	mutex_init(&wbuf->io_mutex);
-@@ -1179,90 +1080,5 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
- 	wbuf->c = c;
- 	wbuf->next_ino = 0;
- 
--	hrtimer_init(&wbuf->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
--	wbuf->timer.function = wbuf_timer_callback_nolock;
+-
+-	/* Do the read */
+-	wbuf = ubifs_get_wbuf(c, lnum);
+-	if (wbuf)
+-		err = read_wbuf(wbuf, bu->buf, len, lnum, offs);
+-	else
+-		err = ubifs_leb_read(c, lnum, bu->buf, offs, len, 0);
+-
+-	/* Check for a race with GC */
+-	if (maybe_leb_gced(c, lnum, bu->gc_seq))
+-		return -EAGAIN;
+-
+-	if (err && err != -EBADMSG) {
+-		ubifs_err(c, "failed to read from LEB %d:%d, error %d",
+-			  lnum, offs, err);
+-		dump_stack();
+-		dbg_tnck(&bu->key, "key ");
+-		return err;
+-	}
+-
+-	/* Validate the nodes read */
+-	buf = bu->buf;
+-	for (i = 0; i < bu->cnt; i++) {
+-		err = validate_data_node(c, buf, &bu->zbranch[i]);
+-		if (err)
+-			return err;
+-		buf = buf + ALIGN(bu->zbranch[i].len, 8);
+-	}
+-
 -	return 0;
 -}
 -
 -/**
-- * ubifs_wbuf_add_ino_nolock - add an inode number into the wbuf inode array.
-- * @wbuf: the write-buffer where to add
-- * @inum: the inode number
-- *
-- * This function adds an inode number to the inode array of the write-buffer.
-- */
--void ubifs_wbuf_add_ino_nolock(struct ubifs_wbuf *wbuf, ino_t inum)
+  * do_lookup_nm- look up a "hashed" node.
+  * @c: UBIFS file-system description object
+  * @key: node key to lookup
+@@ -1892,110 +1568,6 @@ int ubifs_tnc_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
+ 	return do_lookup_nm(c, key, node, nm);
+ }
+ 
+-static int search_dh_cookie(struct ubifs_info *c, const union ubifs_key *key,
+-			    struct ubifs_dent_node *dent, uint32_t cookie,
+-			    struct ubifs_znode **zn, int *n, int exact)
 -{
--	if (!wbuf->buf)
--		/* NOR flash or something similar */
--		return;
+-	int err;
+-	struct ubifs_znode *znode = *zn;
+-	struct ubifs_zbranch *zbr;
+-	union ubifs_key *dkey;
 -
--	spin_lock(&wbuf->lock);
--	if (wbuf->used)
--		wbuf->inodes[wbuf->next_ino++] = inum;
--	spin_unlock(&wbuf->lock);
--}
--
--/**
-- * wbuf_has_ino - returns if the wbuf contains data from the inode.
-- * @wbuf: the write-buffer
-- * @inum: the inode number
-- *
-- * This function returns with %1 if the write-buffer contains some data from the
-- * given inode otherwise it returns with %0.
-- */
--static int wbuf_has_ino(struct ubifs_wbuf *wbuf, ino_t inum)
--{
--	int i, ret = 0;
--
--	spin_lock(&wbuf->lock);
--	for (i = 0; i < wbuf->next_ino; i++)
--		if (inum == wbuf->inodes[i]) {
--			ret = 1;
--			break;
--		}
--	spin_unlock(&wbuf->lock);
--
--	return ret;
--}
--
--/**
-- * ubifs_sync_wbufs_by_inode - synchronize write-buffers for an inode.
-- * @c: UBIFS file-system description object
-- * @inode: inode to synchronize
-- *
-- * This function synchronizes write-buffers which contain nodes belonging to
-- * @inode. Returns zero in case of success and a negative error code in case of
-- * failure.
-- */
--int ubifs_sync_wbufs_by_inode(struct ubifs_info *c, struct inode *inode)
--{
--	int i, err = 0;
--
--	for (i = 0; i < c->jhead_cnt; i++) {
--		struct ubifs_wbuf *wbuf = &c->jheads[i].wbuf;
--
--		if (i == GCHD)
--			/*
--			 * GC head is special, do not look at it. Even if the
--			 * head contains something related to this inode, it is
--			 * a _copy_ of corresponding on-flash node which sits
--			 * somewhere else.
--			 */
--			continue;
--
--		if (!wbuf_has_ino(wbuf, inode->i_ino))
--			continue;
--
--		mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
--		if (wbuf_has_ino(wbuf, inode->i_ino))
--			err = ubifs_wbuf_sync_nolock(wbuf);
--		mutex_unlock(&wbuf->io_mutex);
--
--		if (err) {
--			ubifs_ro_mode(c, err);
+-	if (!exact) {
+-		err = tnc_next(c, &znode, n);
+-		if (err)
 -			return err;
+-	}
+-
+-	for (;;) {
+-		zbr = &znode->zbranch[*n];
+-		dkey = &zbr->key;
+-
+-		if (key_inum(c, dkey) != key_inum(c, key) ||
+-		    key_type(c, dkey) != key_type(c, key)) {
+-			return -ENOENT;
+-		}
+-
+-		err = tnc_read_hashed_node(c, zbr, dent);
+-		if (err)
+-			return err;
+-
+-		if (key_hash(c, key) == key_hash(c, dkey) &&
+-		    le32_to_cpu(dent->cookie) == cookie) {
+-			*zn = znode;
+-			return 0;
+-		}
+-
+-		err = tnc_next(c, &znode, n);
+-		if (err)
+-			return err;
+-	}
+-}
+-
+-static int do_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
+-			struct ubifs_dent_node *dent, uint32_t cookie)
+-{
+-	int n, err;
+-	struct ubifs_znode *znode;
+-	union ubifs_key start_key;
+-
+-	ubifs_assert(c, is_hash_key(c, key));
+-
+-	lowest_dent_key(c, &start_key, key_inum(c, key));
+-
+-	mutex_lock(&c->tnc_mutex);
+-	err = ubifs_lookup_level0(c, &start_key, &znode, &n);
+-	if (unlikely(err < 0))
+-		goto out_unlock;
+-
+-	err = search_dh_cookie(c, key, dent, cookie, &znode, &n, err);
+-
+-out_unlock:
+-	mutex_unlock(&c->tnc_mutex);
+-	return err;
+-}
+-
+-/**
+- * ubifs_tnc_lookup_dh - look up a "double hashed" node.
+- * @c: UBIFS file-system description object
+- * @key: node key to lookup
+- * @node: the node is returned here
+- * @cookie: node cookie for collision resolution
+- *
+- * This function looks up and reads a node which contains name hash in the key.
+- * Since the hash may have collisions, there may be many nodes with the same
+- * key, so we have to sequentially look to all of them until the needed one
+- * with the same cookie value is found.
+- * This function returns zero in case of success, %-ENOENT if the node
+- * was not found, and a negative error code in case of failure.
+- */
+-int ubifs_tnc_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
+-			void *node, uint32_t cookie)
+-{
+-	int err;
+-	const struct ubifs_dent_node *dent = node;
+-
+-	if (!c->double_hash)
+-		return -EOPNOTSUPP;
+-
+-	/*
+-	 * We assume that in most of the cases there are no name collisions and
+-	 * 'ubifs_tnc_lookup()' returns us the right direntry.
+-	 */
+-	err = ubifs_tnc_lookup(c, key, node);
+-	if (err)
+-		return err;
+-
+-	if (le32_to_cpu(dent->cookie) == cookie)
+-		return 0;
+-
+-	/*
+-	 * Unluckily, there are hash collisions and we have to iterate over
+-	 * them look at each direntry with colliding name hash sequentially.
+-	 */
+-	return do_lookup_dh(c, key, node, cookie);
+-}
+-
+ /**
+  * correct_parent_keys - correct parent znodes' keys.
+  * @c: UBIFS file-system description object
+@@ -2540,6 +2112,10 @@ static int tnc_delete(struct ubifs_info *c, struct ubifs_znode *znode, int n)
+ 	if (znode->child_cnt > 0)
+ 		return 0;
+ 
++	/* Different with linux kernel, TNC could become empty. */
++	if (!znode->parent)
++		return 0;
++
+ 	/*
+ 	 * This was the last zbranch, we have to delete this znode from the
+ 	 * parent.
+@@ -2697,74 +2273,6 @@ out_unlock:
+ }
+ 
+ /**
+- * ubifs_tnc_remove_dh - remove an index entry for a "double hashed" node.
+- * @c: UBIFS file-system description object
+- * @key: key of node
+- * @cookie: node cookie for collision resolution
+- *
+- * Returns %0 on success or negative error code on failure.
+- */
+-int ubifs_tnc_remove_dh(struct ubifs_info *c, const union ubifs_key *key,
+-			uint32_t cookie)
+-{
+-	int n, err;
+-	struct ubifs_znode *znode;
+-	struct ubifs_dent_node *dent;
+-	struct ubifs_zbranch *zbr;
+-
+-	if (!c->double_hash)
+-		return -EOPNOTSUPP;
+-
+-	mutex_lock(&c->tnc_mutex);
+-	err = lookup_level0_dirty(c, key, &znode, &n);
+-	if (err <= 0)
+-		goto out_unlock;
+-
+-	zbr = &znode->zbranch[n];
+-	dent = kmalloc(UBIFS_MAX_DENT_NODE_SZ, GFP_NOFS);
+-	if (!dent) {
+-		err = -ENOMEM;
+-		goto out_unlock;
+-	}
+-
+-	err = tnc_read_hashed_node(c, zbr, dent);
+-	if (err)
+-		goto out_free;
+-
+-	/* If the cookie does not match, we're facing a hash collision. */
+-	if (le32_to_cpu(dent->cookie) != cookie) {
+-		union ubifs_key start_key;
+-
+-		lowest_dent_key(c, &start_key, key_inum(c, key));
+-
+-		err = ubifs_lookup_level0(c, &start_key, &znode, &n);
+-		if (unlikely(err < 0))
+-			goto out_free;
+-
+-		err = search_dh_cookie(c, key, dent, cookie, &znode, &n, err);
+-		if (err)
+-			goto out_free;
+-	}
+-
+-	if (znode->cnext || !ubifs_zn_dirty(znode)) {
+-		znode = dirty_cow_bottom_up(c, znode);
+-		if (IS_ERR(znode)) {
+-			err = PTR_ERR(znode);
+-			goto out_free;
 -		}
 -	}
+-	err = tnc_delete(c, znode, n);
+-
+-out_free:
+-	kfree(dent);
+-out_unlock:
+-	if (!err)
+-		err = dbg_check_tnc(c, 0);
+-	mutex_unlock(&c->tnc_mutex);
+-	return err;
+-}
+-
+-/**
+  * key_in_range - determine if a key falls within a range of keys.
+  * @c: UBIFS file-system description object
+  * @key: key to check
+@@ -2905,9 +2413,7 @@ int ubifs_tnc_remove_ino(struct ubifs_info *c, ino_t inum)
+ 		dbg_tnc("xent '%s', ino %lu", xent->name,
+ 			(unsigned long)xattr_inum);
+ 
+-		ubifs_evict_xattr_inode(c, xattr_inum);
+-
+-		fname_name(&nm) = xent->name;
++		fname_name(&nm) = (const char *)xent->name;
+ 		fname_len(&nm) = le16_to_cpu(xent->nlen);
+ 		err = ubifs_tnc_remove_nm(c, &key1, &nm);
+ 		if (err) {
+@@ -3485,69 +2991,3 @@ out_unlock:
+ 	mutex_unlock(&c->tnc_mutex);
+ 	return err;
+ }
+-
+-/**
+- * dbg_check_inode_size - check if inode size is correct.
+- * @c: UBIFS file-system description object
+- * @inode: inode to check
+- * @size: inode size
+- *
+- * This function makes sure that the inode size (@size) is correct and it does
+- * not have any pages beyond @size. Returns zero if the inode is OK, %-EINVAL
+- * if it has a data page beyond @size, and other negative error code in case of
+- * other errors.
+- */
+-int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
+-			 loff_t size)
+-{
+-	int err, n;
+-	union ubifs_key from_key, to_key, *key;
+-	struct ubifs_znode *znode;
+-	unsigned int block;
+-
+-	if (!S_ISREG(inode->i_mode))
+-		return 0;
+-	if (!dbg_is_chk_gen(c))
+-		return 0;
+-
+-	block = (size + UBIFS_BLOCK_SIZE - 1) >> UBIFS_BLOCK_SHIFT;
+-	data_key_init(c, &from_key, inode->i_ino, block);
+-	highest_data_key(c, &to_key, inode->i_ino);
+-
+-	mutex_lock(&c->tnc_mutex);
+-	err = ubifs_lookup_level0(c, &from_key, &znode, &n);
+-	if (err < 0)
+-		goto out_unlock;
+-
+-	if (err) {
+-		key = &from_key;
+-		goto out_dump;
+-	}
+-
+-	err = tnc_next(c, &znode, &n);
+-	if (err == -ENOENT) {
+-		err = 0;
+-		goto out_unlock;
+-	}
+-	if (err < 0)
+-		goto out_unlock;
+-
+-	ubifs_assert(c, err == 0);
+-	key = &znode->zbranch[n].key;
+-	if (!key_in_range(c, key, &from_key, &to_key))
+-		goto out_unlock;
+-
+-out_dump:
+-	block = key_block(c, key);
+-	ubifs_err(c, "inode %lu has size %lld, but there are data at offset %lld",
+-		  (unsigned long)inode->i_ino, size,
+-		  ((loff_t)block) << UBIFS_BLOCK_SHIFT);
+-	mutex_unlock(&c->tnc_mutex);
+-	ubifs_dump_inode(c, inode);
+-	dump_stack();
+-	return -EINVAL;
+-
+-out_unlock:
+-	mutex_unlock(&c->tnc_mutex);
+-	return err;
+-}
+diff --git a/ubifs-utils/libubifs/tnc_commit.c b/ubifs-utils/libubifs/tnc_commit.c
+index a55e0482..d797006e 100644
+--- a/ubifs-utils/libubifs/tnc_commit.c
++++ b/ubifs-utils/libubifs/tnc_commit.c
+@@ -10,8 +10,14 @@
+ 
+ /* This file implements TNC functions for committing */
+ 
+-#include <linux/random.h>
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
++#include "misc.h"
+ 
+ /**
+  * make_idx_node - make an index node for fill-the-gaps method of TNC commit.
+@@ -546,8 +552,8 @@ static int layout_in_empty_space(struct ubifs_info *c)
+ 		break;
+ 	}
+ 
+-	c->dbg->new_ihead_lnum = lnum;
+-	c->dbg->new_ihead_offs = buf_offs;
++	c->new_ihead_lnum = lnum;
++	c->new_ihead_offs = buf_offs;
+ 
  	return 0;
  }
+@@ -700,7 +706,7 @@ static int alloc_idx_lebs(struct ubifs_info *c, int cnt)
+ 		c->ilebs[c->ileb_cnt++] = lnum;
+ 		dbg_cmt("LEB %d", lnum);
+ 	}
+-	if (dbg_is_chk_index(c) && !get_random_u32_below(8))
++	if (dbg_is_chk_index(c))
+ 		return -ENOSPC;
+ 	return 0;
+ }
+@@ -1011,8 +1017,8 @@ static int write_index(struct ubifs_info *c)
+ 		break;
+ 	}
+ 
+-	if (lnum != c->dbg->new_ihead_lnum ||
+-	    buf_offs != c->dbg->new_ihead_offs) {
++	if (lnum != c->new_ihead_lnum ||
++	    buf_offs != c->new_ihead_offs) {
+ 		ubifs_err(c, "inconsistent ihead");
+ 		return -EINVAL;
+ 	}
+diff --git a/ubifs-utils/libubifs/tnc_misc.c b/ubifs-utils/libubifs/tnc_misc.c
+index d3f8a6aa..8c38f153 100644
+--- a/ubifs-utils/libubifs/tnc_misc.c
++++ b/ubifs-utils/libubifs/tnc_misc.c
+@@ -15,97 +15,14 @@
+  * putting it all in one file would make that file too big and unreadable.
+  */
+ 
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
+ #include "ubifs.h"
+-
+-/**
+- * ubifs_tnc_levelorder_next - next TNC tree element in levelorder traversal.
+- * @c: UBIFS file-system description object
+- * @zr: root of the subtree to traverse
+- * @znode: previous znode
+- *
+- * This function implements levelorder TNC traversal. The LNC is ignored.
+- * Returns the next element or %NULL if @znode is already the last one.
+- */
+-struct ubifs_znode *ubifs_tnc_levelorder_next(const struct ubifs_info *c,
+-					      struct ubifs_znode *zr,
+-					      struct ubifs_znode *znode)
+-{
+-	int level, iip, level_search = 0;
+-	struct ubifs_znode *zn;
+-
+-	ubifs_assert(c, zr);
+-
+-	if (unlikely(!znode))
+-		return zr;
+-
+-	if (unlikely(znode == zr)) {
+-		if (znode->level == 0)
+-			return NULL;
+-		return ubifs_tnc_find_child(zr, 0);
+-	}
+-
+-	level = znode->level;
+-
+-	iip = znode->iip;
+-	while (1) {
+-		ubifs_assert(c, znode->level <= zr->level);
+-
+-		/*
+-		 * First walk up until there is a znode with next branch to
+-		 * look at.
+-		 */
+-		while (znode->parent != zr && iip >= znode->parent->child_cnt) {
+-			znode = znode->parent;
+-			iip = znode->iip;
+-		}
+-
+-		if (unlikely(znode->parent == zr &&
+-			     iip >= znode->parent->child_cnt)) {
+-			/* This level is done, switch to the lower one */
+-			level -= 1;
+-			if (level_search || level < 0)
+-				/*
+-				 * We were already looking for znode at lower
+-				 * level ('level_search'). As we are here
+-				 * again, it just does not exist. Or all levels
+-				 * were finished ('level < 0').
+-				 */
+-				return NULL;
+-
+-			level_search = 1;
+-			iip = -1;
+-			znode = ubifs_tnc_find_child(zr, 0);
+-			ubifs_assert(c, znode);
+-		}
+-
+-		/* Switch to the next index */
+-		zn = ubifs_tnc_find_child(znode->parent, iip + 1);
+-		if (!zn) {
+-			/* No more children to look at, we have walk up */
+-			iip = znode->parent->child_cnt;
+-			continue;
+-		}
+-
+-		/* Walk back down to the level we came from ('level') */
+-		while (zn->level != level) {
+-			znode = zn;
+-			zn = ubifs_tnc_find_child(zn, 0);
+-			if (!zn) {
+-				/*
+-				 * This path is not too deep so it does not
+-				 * reach 'level'. Try next path.
+-				 */
+-				iip = znode->iip;
+-				break;
+-			}
+-		}
+-
+-		if (zn) {
+-			ubifs_assert(c, zn->level >= 0);
+-			return zn;
+-		}
+-	}
+-}
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
++#include "misc.h"
+ 
+ /**
+  * ubifs_search_zbranch - search znode branch.
+@@ -130,6 +47,12 @@ int ubifs_search_zbranch(const struct ubifs_info *c,
+ 	int cmp;
+ 	const struct ubifs_zbranch *zbr = &znode->zbranch[0];
+ 
++	if (!end) {
++		/* Different with linux kernel, TNC could become empty. */
++		*n = -1;
++		return 0;
++	}
++
+ 	ubifs_assert(c, end > beg);
+ 
+ 	while (end > beg) {
+@@ -360,9 +283,10 @@ static int read_znode(struct ubifs_info *c, struct ubifs_zbranch *zzbr,
+ 		}
+ 
+ 		if (znode->level)
+-			continue;
++			type = UBIFS_IDX_NODE;
++		else
++			type = key_type(c, &zbr->key);
+ 
+-		type = key_type(c, &zbr->key);
+ 		if (c->ranges[type].max_len == 0) {
+ 			if (zbr->len != c->ranges[type].len) {
+ 				ubifs_err(c, "bad target node (type %d) length (%d)",
 -- 
 2.13.6
 
