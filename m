@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B8D2D5E392
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C1DAE6781D
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UcKycJA9+6wpimdd63OVU7pCL50FKlOoeoG8lexVDE8=; b=oQZW/oWo8Zn+8q
-	C/PJe29NWfhsrY+SNj1708xjBCruIDRu40I+q6Sype8OnTu6H4RUb4mpm7yoekPHKgKUJH5lEvjtj
-	KVsWP8MP3djSSR5YD9Y3KkFMOAJuPFGXYwGEFRgBMS7/eUADKrITX1yGdcHSdqjTvf1RPqNHbl5h6
-	e97zN6Hn42M3o4jT4phnpTjfhgfT2ZQ0x8mSpF+ORSuoQjqSyZ/o2zaMutvwQp29wATAszAU6FxGm
-	7X74VEUW3DcVmvEVNYCSCGGae9crWkVdeZgsc8/bJuvllwjBZPSesH0DxTWvbhpjXuebNXcpCymRP
-	Esa287nUR+2ejVVh83Kw==;
+	List-Owner; bh=WhHZiQ8lk95sJu9KPwt41SfdRTVp4Pvihk7prK/2TNk=; b=O0eDFRCyw0LcFh
+	e0Ljv6KrsU9gFovTgXxuHRfUqQ+8D2ln/UrXDUnj526VTTV76A+tNCBkUMzV6uOGRz1FqBQOlvtJD
+	ShwZ7lEYoOBJZ4+9Ll/ZcZuaib3XxI1HtAMcUMt5JqIajdlVcZkFbzvEd2ZtZ9nblH9jbbpwdu0hp
+	Q3pKSvBq4/i8D4ZrKsNXBEntP0RXg6qQKMTGUNcs4zYuBkysRc1m1s88czyK57Nh4+oFBqAsNaDwr
+	/CQUs+X4y67p9h2Ihos8kCtj6ZWfl2dtkOPtMa5LHuSRxrQ2jL/j18sYRyLGN1EnRGKgKNYkx2q1B
+	xoYJZYh8WzsysHGZhJ4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPaK-0000000GmGQ-49ji;
-	Mon, 11 Nov 2024 08:15:44 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1tAPaM-0000000GmHo-36om;
+	Mon, 11 Nov 2024 08:15:46 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOTx-0000000GYyz-3Wop
+	id 1tAOU0-0000000GZ0r-1YdO
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:12 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rl68vQzQsrJ;
-	Mon, 11 Nov 2024 15:03:51 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:14 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0mn1pwBz28fPh;
+	Mon, 11 Nov 2024 15:00:25 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 40838180104;
-	Mon, 11 Nov 2024 15:05:04 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 9A6F014037B;
+	Mon, 11 Nov 2024 15:05:06 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:03 +0800
+ 2024 15:05:06 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 007/102] ubifs-utils: Add 'dev_fd' and 'libubi' into 'ubifs_info' structure
-Date: Mon, 11 Nov 2024 15:02:10 +0800
-Message-ID: <20241111070346.1314122-8-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 011/102] ubifs-utils: Add linux type definitions
+Date: Mon, 11 Nov 2024 15:02:14 +0800
+Message-ID: <20241111070346.1314122-12-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241110_230506_314442_FA5FD1D7 
-X-CRM114-Status: GOOD (  25.00  )
+X-CRM114-CacheID: sfid-20241110_230508_993123_B493ECAC 
+X-CRM114-Status: GOOD (  17.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,392 +70,292 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Embed new members 'dev_fd' and 'libubi' into ubifs_info structure, so
-that global variable 'ubi', 'out_fd' and 'out_ubi' could be removed
-from mkfs.ubifs.c. Besides, add parameter in check_volume_empty().
-Next patch will extract UBI opening/closing/check_volume_empty functions
-into a new source file, these functions will be used in fsck.
+Add linux type definitions, because there are many types
+(eg. u8/u16/u64) used in UBIFS linux kernel libs. Besides
+move type conversions (eg. cpu_to_le16, cpu_to_le32, etc.)
+into type definitions header file.
+
+This is a preparation for replacing implementation of UBIFS utils with
+linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/common/lpt.c            |  10 ++--
- ubifs-utils/common/ubifs.h          |  13 ++++-
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 112 +++++++++++++++++++-----------------
- 3 files changed, 75 insertions(+), 60 deletions(-)
+ ubifs-utils/Makemodule.am           |  1 +
+ ubifs-utils/common/crypto.c         |  1 +
+ ubifs-utils/common/defs.h           | 30 -------------
+ ubifs-utils/common/fscrypt.c        |  3 +-
+ ubifs-utils/common/fscrypt.h        |  7 +--
+ ubifs-utils/common/linux_types.h    | 89 +++++++++++++++++++++++++++++++++++++
+ ubifs-utils/common/sign.c           |  2 +-
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  9 ++--
+ 8 files changed, 104 insertions(+), 38 deletions(-)
+ create mode 100644 ubifs-utils/common/linux_types.h
 
-diff --git a/ubifs-utils/common/lpt.c b/ubifs-utils/common/lpt.c
-index 9c1143f6..d07f569f 100644
---- a/ubifs-utils/common/lpt.c
-+++ b/ubifs-utils/common/lpt.c
-@@ -421,7 +421,7 @@ int create_lpt(struct ubifs_info *c)
- 			alen = ALIGN(len, c->min_io_size);
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
--			err = write_leb(lnum++, alen, buf);
-+			err = write_leb(c, lnum++, alen, buf);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -468,7 +468,7 @@ int create_lpt(struct ubifs_info *c)
- 				set_ltab(c, lnum, c->leb_size - alen,
- 					    alen - len);
- 				memset(p, 0xff, alen - len);
--				err = write_leb(lnum++, alen, buf);
-+				err = write_leb(c, lnum++, alen, buf);
- 				if (err)
- 					goto out;
- 				p = buf;
-@@ -515,7 +515,7 @@ int create_lpt(struct ubifs_info *c)
- 			alen = ALIGN(len, c->min_io_size);
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
--			err = write_leb(lnum++, alen, buf);
-+			err = write_leb(c, lnum++, alen, buf);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -538,7 +538,7 @@ int create_lpt(struct ubifs_info *c)
- 		alen = ALIGN(len, c->min_io_size);
- 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 		memset(p, 0xff, alen - len);
--		err = write_leb(lnum++, alen, buf);
-+		err = write_leb(c, lnum++, alen, buf);
- 		if (err)
- 			goto out;
- 		p = buf;
-@@ -558,7 +558,7 @@ int create_lpt(struct ubifs_info *c)
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index d58570fe..0f9c0fa6 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -1,5 +1,6 @@
+ common_SOURCES = \
+ 	ubifs-utils/common/compiler_attributes.h \
++	ubifs-utils/common/linux_types.h \
+ 	ubifs-utils/common/defs.h \
+ 	ubifs-utils/common/crc16.h \
+ 	ubifs-utils/common/crc16.c \
+diff --git a/ubifs-utils/common/crypto.c b/ubifs-utils/common/crypto.c
+index 2ecd8da1..e4ef3491 100644
+--- a/ubifs-utils/common/crypto.c
++++ b/ubifs-utils/common/crypto.c
+@@ -23,6 +23,7 @@
+ #include <string.h>
+ #include <assert.h>
  
- 	/* Write remaining buffer */
- 	memset(p, 0xff, alen - len);
--	err = write_leb(lnum, alen, buf);
-+	err = write_leb(c, lnum, alen, buf);
- 	if (err)
- 		goto out;
++#include "linux_types.h"
+ #include "fscrypt.h"
+ #include "defs.h"
+ #include "ubifs.h"
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index cafc94af..dd3b806e 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -9,7 +9,6 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <limits.h>
+-#include <byteswap.h>
+ #include <errno.h>
  
-diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
-index 502a39ae..5a909f63 100644
---- a/ubifs-utils/common/ubifs.h
-+++ b/ubifs-utils/common/ubifs.h
-@@ -278,6 +278,8 @@ struct ubifs_znode
-  * @program_type: used to identify the type of current program
-  * @program_name: program name
-  * @dev_name: device name
-+ * @dev_fd: opening handler for an UBI volume or an image file
-+ * @libubi: opening handler for libubi
-  *
-  * @jhead_cnt: count of journal heads
-  * @max_bud_bytes: maximum number of bytes allowed in buds
-@@ -370,6 +372,8 @@ struct ubifs_info
- 	int program_type;
- 	const char *program_name;
- 	char *dev_name;
-+	int dev_fd;
-+	libubi_t libubi;
+ #include "ubifs.h"
+@@ -27,37 +26,8 @@ enum { MKFS_PROGRAM_TYPE = 0 };
+ 	printf("%s: %s: " fmt "\n", PROGRAM_NAME, __FUNCTION__, ##__VA_ARGS__); \
+ } while(0)
  
- 	int jhead_cnt;
- 	long long max_bud_bytes;
-@@ -482,6 +486,13 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
- 				       (UBIFS_BRANCH_SZ + c->key_len + c->hash_len) * bnum);
+-#define t16(x) ({ \
+-	uint16_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
+-})
+-
+-#define t32(x) ({ \
+-	uint32_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_32(__b); \
+-})
+-
+-#define t64(x) ({ \
+-	uint64_t __b = (x); \
+-	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_64(__b); \
+-})
+-
+-#define cpu_to_le16(x) ((__le16){t16(x)})
+-#define cpu_to_le32(x) ((__le32){t32(x)})
+-#define cpu_to_le64(x) ((__le64){t64(x)})
+-
+-#define le16_to_cpu(x) (t16((x)))
+-#define le32_to_cpu(x) (t32((x)))
+-#define le64_to_cpu(x) (t64((x)))
+-
+ #define unlikely(x) (x)
+ 
+-struct qstr
+-{
+-	char *name;
+-	size_t len;
+-};
+-
+ /**
+  * fls - find last (most-significant) bit set
+  * @x: the word to search
+diff --git a/ubifs-utils/common/fscrypt.c b/ubifs-utils/common/fscrypt.c
+index 895d5c72..f39faa76 100644
+--- a/ubifs-utils/common/fscrypt.c
++++ b/ubifs-utils/common/fscrypt.c
+@@ -20,6 +20,7 @@
+ 
+ #include <endian.h>
+ 
++#include "linux_types.h"
+ #include "fscrypt.h"
+ #include "defs.h"
+ #include "ubifs.h"
+@@ -88,7 +89,7 @@ unsigned int fscrypt_fname_encrypted_size(struct fscrypt_context *fctx,
+ 	return round_up(ilen, padding);
  }
  
--int write_leb(int lnum, int len, void *buf);
-+int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
-+
-+/* super.c */
-+int open_ubi(struct ubifs_info *c, const char *node);
-+void close_ubi(struct ubifs_info *c);
-+int open_target(struct ubifs_info *c);
-+int close_target(struct ubifs_info *c);
-+int check_volume_empty(struct ubifs_info *c);
+-int encrypt_path(void **outbuf, void *data, unsigned int data_len,
++int encrypt_path(void **outbuf, const void *data, unsigned int data_len,
+ 		unsigned int max_namelen, struct fscrypt_context *fctx)
+ {
+ 	void *inbuf, *crypt_key;
+diff --git a/ubifs-utils/common/fscrypt.h b/ubifs-utils/common/fscrypt.h
+index b8a599de..4a073e97 100644
+--- a/ubifs-utils/common/fscrypt.h
++++ b/ubifs-utils/common/fscrypt.h
+@@ -107,7 +107,7 @@ struct fscrypt_context *inherit_fscrypt_context(struct fscrypt_context *fctx);
+ void free_fscrypt_context(struct fscrypt_context *fctx);
+ unsigned int fscrypt_fname_encrypted_size(struct fscrypt_context *fctx,
+ 					  unsigned int ilen);
+-int encrypt_path(void **outbuf, void *data, unsigned int data_len,
++int encrypt_path(void **outbuf, const void *data, unsigned int data_len,
+ 		 unsigned int max_namelen, struct fscrypt_context *fctx);
+ int encrypt_data_node(struct fscrypt_context *fctx, unsigned int block_no,
+ 		      struct ubifs_data_node *dn, size_t length);
+@@ -138,8 +138,9 @@ static inline void free_fscrypt_context(struct fscrypt_context *fctx)
+ 	assert(!fctx);
+ }
  
- #endif /* __UBIFS_H__ */
+-static inline int encrypt_path(void **outbuf, void *data, unsigned int data_len,
+-		 unsigned int max_namelen, struct fscrypt_context *fctx)
++static inline int encrypt_path(void **outbuf, const void *data,
++			unsigned int data_len, unsigned int max_namelen,
++			struct fscrypt_context *fctx)
+ {
+ 	(void)outbuf;
+ 	(void)data;
+diff --git a/ubifs-utils/common/linux_types.h b/ubifs-utils/common/linux_types.h
+new file mode 100644
+index 00000000..556b2e25
+--- /dev/null
++++ b/ubifs-utils/common/linux_types.h
+@@ -0,0 +1,89 @@
++#ifndef __LINUX_TYPES_H__
++#define __LINUX_TYPES_H__
++
++#include <linux/types.h>
++#include <sys/types.h>
++#include <byteswap.h>
++#include <stdint.h>
++#include <unistd.h>
++
++#include "compiler_attributes.h"
++
++typedef __u8		u8;
++typedef __u16		u16;
++typedef __u32		u32;
++typedef __u64		u64;
++
++typedef __s64		time64_t;
++
++struct qstr {
++	const char *name;
++	size_t len;
++};
++
++struct fscrypt_name {
++	struct qstr disk_name;
++};
++
++#define fname_name(p)	((p)->disk_name.name)
++#define fname_len(p)	((p)->disk_name.len)
++
++#define t16(x) ({ \
++	uint16_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_16(__b); \
++})
++
++#define t32(x) ({ \
++	uint32_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_32(__b); \
++})
++
++#define t64(x) ({ \
++	uint64_t __b = (x); \
++	(__LITTLE_ENDIAN==__BYTE_ORDER) ? __b : bswap_64(__b); \
++})
++
++#define cpu_to_le16(x) ((__le16){t16(x)})
++#define cpu_to_le32(x) ((__le32){t32(x)})
++#define cpu_to_le64(x) ((__le64){t64(x)})
++
++#define le16_to_cpu(x) (t16((x)))
++#define le32_to_cpu(x) (t32((x)))
++#define le64_to_cpu(x) (t64((x)))
++
++#define check_mul_overflow(a, b, d) ({		\
++	typeof(a) __a = (a);			\
++	typeof(b) __b = (b);			\
++	typeof(d) __d = (d);			\
++	(void) (&__a == &__b);			\
++	(void) (&__a == __d);			\
++	__builtin_mul_overflow(__a, __b, __d);	\
++})
++
++static inline __must_check size_t array_size(size_t a, size_t b)
++{
++	size_t bytes;
++	if (check_mul_overflow(a, b, &bytes))
++		return SIZE_MAX;
++
++	return bytes;
++}
++
++static inline int int_log2(unsigned int arg)
++{
++	int  l = 0;
++
++	arg >>= 1;
++	while (arg) {
++		l++;
++		arg >>= 1;
++	}
++	return l;
++}
++
++#undef PAGE_SIZE
++#define PAGE_SIZE (getpagesize())
++#undef PAGE_SHIFT
++#define PAGE_SHIFT (int_log2(PAGE_SIZE))
++
++#endif
+diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
+index 7530503a..dfbc96bf 100644
+--- a/ubifs-utils/common/sign.c
++++ b/ubifs-utils/common/sign.c
+@@ -28,7 +28,7 @@
+ #include <openssl/conf.h>
+ #include <err.h>
+ 
+-#include "compiler_attributes.h"
++#include "linux_types.h"
+ #include "sign.h"
+ #include "defs.h"
+ #include "ubifs.h"
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 1cafbf3e..8bff44b2 100644
+index 2181595e..c2f5a29d 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -136,7 +136,6 @@ struct inum_mapping {
-  */
- struct ubifs_info info_;
- static struct ubifs_info *c = &info_;
--static libubi_t ubi;
+@@ -46,6 +46,7 @@
+ #include <zstd.h>
+ #endif
  
- int verbose;
- int yes;
-@@ -145,8 +144,6 @@ static char *root;
- static int root_len;
- static struct fscrypt_context *root_fctx;
- static struct stat root_st;
--static int out_fd;
--static int out_ubi;
- static int squash_owner;
- static int do_create_inum_attr;
- static char *context;
-@@ -521,40 +518,42 @@ static long long get_bytes(const char *str)
- 	return bytes;
- }
++#include "linux_types.h"
+ #include "defs.h"
+ #include "crypto.h"
+ #include "fscrypt.h"
+@@ -1207,12 +1208,14 @@ static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st,
+ 	struct ubifs_ino_node *ino;
+ 	struct ubifs_dent_node *xent;
+ 	struct qstr nm;
++	char *tmp_name;
+ 	union ubifs_key xkey, nkey;
+ 	int len, ret;
  
--static void close_ubi(void)
-+void close_ubi(struct ubifs_info *c)
- {
--	if (ubi) {
--		libubi_close(ubi);
--		ubi = NULL;
-+	if (c->libubi) {
-+		libubi_close(c->libubi);
-+		c->libubi = NULL;
- 	}
- }
+ 	nm.len = strlen(name);
+-	nm.name = xmalloc(nm.len + 1);
+-	memcpy(nm.name, name, nm.len + 1);
++	tmp_name = xmalloc(nm.len + 1);
++	memcpy(tmp_name, name, nm.len + 1);
++	nm.name = tmp_name;
  
- /**
-  * open_ubi - open the libubi.
-+ * @c: the UBIFS file-system description object
-  * @node: name of the UBI volume character device to fetch information about
-  *
-  * This function opens libubi, and initialize device & volume information
-  * according to @node. Returns %0 in case of success and %-1 in case of failure.
-  */
--static int open_ubi(const char *node)
-+int open_ubi(struct ubifs_info *c, const char *node)
- {
- 	struct stat st;
+ 	host_ino->xattr_cnt++;
+ 	host_ino->xattr_size += CALC_DENT_SIZE(nm.len);
+@@ -1240,7 +1243,7 @@ static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st,
  
- 	if (stat(node, &st) || !S_ISCHR(st.st_mode))
- 		return -1;
+ 	xent->inum = cpu_to_le64(inum);
  
--	ubi = libubi_open();
--	if (!ubi)
--		return -1;
--	if (ubi_get_vol_info(ubi, node, &c->vi)) {
--		close_ubi();
-+	c->libubi = libubi_open();
-+	if (!c->libubi)
- 		return -1;
--	}
--	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di)) {
--		close_ubi();
--		return -1;
--	}
-+	if (ubi_get_vol_info(c->libubi, node, &c->vi))
-+		goto out_err;
-+	if (ubi_get_dev_info1(c->libubi, c->vi.dev_num, &c->di))
-+		goto out_err;
-+
- 	return 0;
-+
-+out_err:
-+	close_ubi(c);
-+	return -1;
- }
- 
- static void select_default_compr(void)
-@@ -840,9 +839,9 @@ static int get_options(int argc, char**argv)
- 	if (!c->dev_name)
- 		return errmsg("not output device or file specified");
- 
--	out_ubi = !open_ubi(c->dev_name);
-+	open_ubi(c, c->dev_name);
- 
--	if (out_ubi) {
-+	if (c->libubi) {
- 		c->min_io_size = c->di.min_io_size;
- 		c->leb_size = c->vi.leb_size;
- 		if (c->max_leb_cnt == -1)
-@@ -972,24 +971,25 @@ static void prepare_node(void *node, int len)
- 
- /**
-  * write_leb - copy the image of a LEB to the output target.
-+ * @c: the UBIFS file-system description object
-  * @lnum: LEB number
-  * @len: length of data in the buffer
-  * @buf: buffer (must be at least c->leb_size bytes)
-  */
--int write_leb(int lnum, int len, void *buf)
-+int write_leb(struct ubifs_info *c, int lnum, int len, void *buf)
- {
- 	off_t pos = (off_t)lnum * c->leb_size;
- 
- 	dbg_msg(3, "LEB %d len %d", lnum, len);
- 	memset(buf + len, 0xff, c->leb_size - len);
--	if (out_ubi)
--		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
-+	if (c->libubi)
-+		if (ubi_leb_change_start(c->libubi, c->dev_fd, lnum, c->leb_size))
- 			return sys_errmsg("ubi_leb_change_start failed");
- 
--	if (lseek(out_fd, pos, SEEK_SET) != pos)
-+	if (lseek(c->dev_fd, pos, SEEK_SET) != pos)
- 		return sys_errmsg("lseek failed seeking %lld", (long long)pos);
- 
--	if (write(out_fd, buf, c->leb_size) != c->leb_size)
-+	if (write(c->dev_fd, buf, c->leb_size) != c->leb_size)
- 		return sys_errmsg("write failed writing %d bytes at pos %lld",
- 				   c->leb_size, (long long)pos);
- 
-@@ -1002,7 +1002,7 @@ int write_leb(int lnum, int len, void *buf)
-  */
- static int write_empty_leb(int lnum)
- {
--	return write_leb(lnum, 0, leb_buf);
-+	return write_leb(c, lnum, 0, leb_buf);
- }
- 
- /**
-@@ -1058,7 +1058,7 @@ static int write_node(void *node, int len, int lnum)
- 
- 	len = do_pad(leb_buf, len);
- 
--	return write_leb(lnum, len, leb_buf);
-+	return write_leb(c, lnum, len, leb_buf);
- }
- 
- /**
-@@ -1172,7 +1172,7 @@ static int flush_nodes(void)
- 	if (!head_offs)
- 		return 0;
- 	len = do_pad(leb_buf, head_offs);
--	err = write_leb(head_lnum, len, leb_buf);
-+	err = write_leb(c, head_lnum, len, leb_buf);
- 	if (err)
- 		return err;
- 	set_lprops(head_lnum, head_offs, head_flags);
-@@ -2686,7 +2686,7 @@ static int write_super(void)
- 
- 	len = do_pad(sig, UBIFS_SIG_NODE_SZ + le32_to_cpu(sig->len));
- 
--	err = write_leb(UBIFS_SB_LNUM, UBIFS_SB_NODE_SZ + len, sup);
-+	err = write_leb(c, UBIFS_SB_LNUM, UBIFS_SB_NODE_SZ + len, sup);
- 	if (err)
+-	ret = add_node(&xkey, nm.name, nm.len, xent, len);
++	ret = add_node(&xkey, tmp_name, nm.len, xent, len);
+ 	if (ret)
  		goto out;
  
-@@ -2822,6 +2822,7 @@ static int write_orphan_area(void)
- 
- /**
-  * check_volume_empty - check if the UBI volume is empty.
-+ * @c: the UBIFS file-system description object
-  *
-  * This function checks if the UBI volume is empty by looking if its LEBs are
-  * mapped or not.
-@@ -2829,12 +2830,12 @@ static int write_orphan_area(void)
-  * Returns %0 in case of success, %1 is the volume is not empty,
-  * and a negative error code in case of failure.
-  */
--static int check_volume_empty(void)
-+int check_volume_empty(struct ubifs_info *c)
- {
- 	int lnum, err;
- 
- 	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
--		err = ubi_is_mapped(out_fd, lnum);
-+		err = ubi_is_mapped(c->dev_fd, lnum);
- 		if (err < 0)
- 			return err;
- 		if (err == 1)
-@@ -2845,35 +2846,29 @@ static int check_volume_empty(void)
- 
- /**
-  * open_target - open the output target.
-+ * @c: the UBIFS file-system description object
-  *
-  * Open the output target. The target can be an UBI volume
-  * or a file.
-  *
-  * Returns %0 in case of success and %-1 in case of failure.
-  */
--static int open_target(void)
-+int open_target(struct ubifs_info *c)
- {
--	if (out_ubi) {
--		out_fd = open(c->dev_name, O_RDWR | O_EXCL);
-+	if (c->libubi) {
-+		c->dev_fd = open(c->dev_name, O_RDWR | O_EXCL);
- 
--		if (out_fd == -1)
-+		if (c->dev_fd == -1)
- 			return sys_errmsg("cannot open the UBI volume '%s'",
- 					   c->dev_name);
--		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
--			close(out_fd);
-+		if (ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
-+			close(c->dev_fd);
- 			return sys_errmsg("ubi_set_property(set direct_write) failed");
- 		}
--
--		if (!yes && check_volume_empty()) {
--			if (!prompt("UBI volume is not empty.  Format anyways?", false)) {
--				close(out_fd);
--				return errmsg("UBI volume is not empty");
--			}
--		}
- 	} else {
--		out_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
-+		c->dev_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
- 			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
--		if (out_fd == -1)
-+		if (c->dev_fd == -1)
- 			return sys_errmsg("cannot create output file '%s'",
- 					   c->dev_name);
- 	}
-@@ -2883,18 +2878,19 @@ static int open_target(void)
- 
- /**
-  * close_target - close the output target.
-+ * @c: the UBIFS file-system description object
-  *
-  * Close the output target. If the target was an UBI
-  * volume, also close libubi.
-  *
-  * Returns %0 in case of success and %-1 in case of failure.
-  */
--static int close_target(void)
-+int close_target(struct ubifs_info *c)
- {
--	if (out_fd >= 0) {
--		if (ubi && ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
-+	if (c->dev_fd >= 0) {
-+		if (c->libubi && ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
- 			return sys_errmsg("ubi_set_property(clear direct_write) failed");
--		if (close(out_fd) == -1)
-+		if (close(c->dev_fd) == -1)
- 			return sys_errmsg("cannot close the target '%s'", c->dev_name);
- 	}
- 	return 0;
-@@ -3077,24 +3073,32 @@ int main(int argc, char *argv[])
- 	if (err)
- 		goto out;
- 
--	err = open_target();
-+	err = open_target(c);
- 	if (err)
- 		goto out;
- 
-+	if (!yes && check_volume_empty(c)) {
-+		if (!prompt("UBI volume is not empty.  Format anyways?", false)) {
-+			close_target(c);
-+			err = errmsg("UBI volume is not empty");
-+			goto out;
-+		}
-+	}
-+
- 	err = mkfs();
- 	if (err) {
--		close_target();
-+		close_target(c);
- 		goto out;
- 	}
- 
--	err = close_target();
-+	err = close_target(c);
- 
- 	if (verbose && !err)
- 		printf("Success!\n");
- 
- out:
- 	free(c->dev_name);
--	close_ubi();
-+	close_ubi(c);
- 	crypto_cleanup();
- 	return err;
- }
 -- 
 2.13.6
 
