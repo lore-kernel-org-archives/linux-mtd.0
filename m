@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2209D5E392
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 244FCD5E39A
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 08:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=viXpOWbcXE3Jpw3QxyvvyxTM4TTkg9rhBVO19/cuPDo=; b=U6QmUcEhHIRqcX
-	tDJ0N7jHEOJ4l49O8WOOYNOVD71FsnHUf1pFy0H96HrLtFG91H8wxc6FaxNFxJzDbnmKOsJK20ZDT
-	1nnQPrHrenD/dRlhzguRMVoix3NMyYvNpCYeLKUAJ0kX6SDaX7zhMnt424M6kRgPdhZJBy3KMMuMn
-	4bikoa9dDPf3wCCOS3tl0DhMxEuuJ2pXgNxP6m9h/JgxIAr8ajT8lm8Qi8FpZ9lAw2guabOlpiI3u
-	QYJvyDzh+M19+fKbxgiWNQpT5kAzYQ1rBgO06dz2NA5Nx91tLrxRCq2S0xjR6B39W1fDAmqCMDoCs
-	gSPyDYpcn/eDsjqAJ7MQ==;
+	List-Owner; bh=VurEJCx7EMGjjfji0YRh/UML6m2Wgiycgtr11h5xysA=; b=Wgk2a6QuoPLOMr
+	XD9qHn7lTHztUKPqyvBv6WfMBFKwFPQ4Q3Ywsjc/imYrq6D/i88tJvtLDAFJNlBrSZfu+oxaPt3HA
+	wiuaZRxEXTlGnxXahOHzGtj40qMnXBnG/hzRwSdAAgfz0X/XilF8M9BfobiVW/9S3m8Xt358UUCWK
+	DNxYtzsfwq9FKdGvkt4lavHNuHDDLXz+ryLTVhaHjWjAZw4UTPQ483kcalvyWGPD4wI8+aV3bif3M
+	p51KcPL2mYf9ReC6uxbAUj6Iq1KiDUBLLF3x4WfyyoMEXZbJxGotFK/mk/mjqEcbdEGtKXnjTHRUA
+	sSqUGgI0vT3hMLNg6RSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAPba-0000000GnNC-0BJb;
-	Mon, 11 Nov 2024 08:17:02 +0000
+	id 1tAPbc-0000000GnP2-49YO;
+	Mon, 11 Nov 2024 08:17:05 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUh-0000000GZY5-48cE
+	id 1tAOUj-0000000GZZi-2CoX
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Nov 2024 07:05:52 +0000
+	Mon, 11 Nov 2024 07:05:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=GG5uJ0jmhU8ILLenUIqRz2V4ox43Utfh4thYUrRWzYk=; b=czv+V1ua0qFK5cKcmvGjAq3l7M
-	O5M5gKv3NHo0K3XsbYZkI2rYP5l54U2T6zAUdr3EDWKosPTO3ClOrukjVf0XjiRIT4peKYaDaTVOm
-	6C25qLZSIsgOyfSUeFFmZ+NGwypp62a0Xv8xwlTFHDD30n6pm6slu0PBEmVu2Gat4pUbyCItqdx15
-	FuhCrfAnMFLrMJ/e0VJzFUmj5g6t7r4NGf72YuoPnWDckrohzuWCdvFNiRUOqToZ1oUgxYXu/NK5g
-	f/sRxwwhljH31T3IiYdaBwOL6Mlvh2Gbklv0Yx6UcZjXdVI6UoHVi1TAnrkJWypWD6SPpDjpyrafq
-	zKANeEDg==;
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	bh=tS78W4Ai+pfBM47eqtWUZDDungLCxi2KrtWhrJjFii8=; b=jmb3ogfNOeNJaMjf1yIVJkCNkN
+	hDyXz3fcXT08gWjAQ2uM7ipDG6cEIEBu1P4+WOiuOrHrhMThOlx94bIrDBJxSOtXbWW/eLuTfm1z1
+	7t6hFAlvLoxrUUfOm20sxi9RthN44w82z3/ZWwB2KJ/Sj8/BMC/wHalIeKuiBnNb/du2peBNG5g4X
+	XeGE2FdCcpSxOwlCFgqdodPe84ly0IKgPnKiNFXkKZ/UnMKDCl5rEjjwTGwPgZqUGoyPA1oxzDdCS
+	TpuhR0UC+N4B3ZRvTx4CyuFtJJ8mrAaiCd62fjKSV5RY0AqQ+AZCef4LKqIZLywk9CdqMvmyhzZLm
+	ZMoGPQKg==;
+Received: from szxga07-in.huawei.com ([45.249.212.35])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUb-0000000CmHs-2wMj
+	id 1tAOUd-0000000CmIb-1gZg
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:48 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rn3gjQz1jxkj;
-	Mon, 11 Nov 2024 15:03:53 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:52 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rc0vqVz1hwVR;
+	Mon, 11 Nov 2024 15:03:44 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9087E1A0188;
-	Mon, 11 Nov 2024 15:05:40 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id ECAA91A0171;
+	Mon, 11 Nov 2024 15:05:31 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:05:39 +0800
+ 2024 15:05:31 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 078/102] fsck.ubifs: Check and correct files' information
-Date: Mon, 11 Nov 2024 15:03:21 +0800
-Message-ID: <20241111070346.1314122-79-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 061/102] fsck.ubifs: rebuild_fs: Re-write data
+Date: Mon, 11 Nov 2024 15:03:04 +0800
+Message-ID: <20241111070346.1314122-62-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
@@ -67,8 +67,8 @@ X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_070546_771900_7CB93667 
-X-CRM114-Status: GOOD (  19.16  )
+X-CRM114-CacheID: sfid-20241111_070550_562985_5C85FB3D 
+X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,252 +85,251 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Xiang Yang <xiangyang3@huawei.com>
+This is the 8/12 step of rebuilding. Re-write data. Read data from
+LEB and write back data, make sure that all LEB is ended with empty
+data(0xFF). It will prevent failed gc scanning in next mounting.
 
-This is the 10/18 step of fsck. Check and handle inconsistent files, the
-checking rule is same as rebuild mode which has been implemented in
-check_and_correct_files, but the methods of handling are different:
- 1. Correct the file information for safe mode, danger mode and normal
-    mode with 'yes' answer, other modes will exit.
-
-Signed-off-by: Xiang Yang <xiangyang3@huawei.com>
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/extract_files.c | 76 ++++++++++++++++++++++------------
- ubifs-utils/fsck.ubifs/fsck.ubifs.c    |  8 ++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h    |  2 +-
- ubifs-utils/fsck.ubifs/problem.c       | 16 +++++++
- 4 files changed, 74 insertions(+), 28 deletions(-)
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h |   2 +
+ ubifs-utils/fsck.ubifs/rebuild_fs.c | 106 ++++++++++++++++++++++++++++--------
+ ubifs-utils/libubifs/ubifs.h        |   2 +
+ 3 files changed, 88 insertions(+), 22 deletions(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
-index b24445be..c83d3774 100644
---- a/ubifs-utils/fsck.ubifs/extract_files.c
-+++ b/ubifs-utils/fsck.ubifs/extract_files.c
-@@ -1292,8 +1292,8 @@ reachable:
-  * data nodes and truncation node. The calculated informaion will be used
-  * to correct inode node.
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index a3b755bf..cb7b4002 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -181,10 +181,12 @@ struct scanned_file {
+ /**
+  * ubifs_rebuild_info - UBIFS rebuilding information.
+  * @used_lebs: a bitmap used for recording used lebs
++ * @lpts: lprops table
+  * @scanned_files: tree of all scanned files
   */
--static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
--				struct rb_root *file_tree)
-+static int calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
-+			       struct rb_root *file_tree)
+ struct ubifs_rebuild_info {
+ 	unsigned long *used_lebs;
++	struct ubifs_lprops *lpts;
+ 	struct rb_root scanned_files;
+ };
+ 
+diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+index 3be08446..1b03d6c0 100644
+--- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
++++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
+@@ -58,9 +58,18 @@ static int init_rebuild_info(struct ubifs_info *c)
+ 		log_err(c, errno, "can not allocate bitmap of used lebs");
+ 		goto free_rebuild;
+ 	}
++	FSCK(c)->rebuild->lpts = kzalloc(sizeof(struct ubifs_lprops) * c->main_lebs,
++					 GFP_KERNEL);
++	if (!FSCK(c)->rebuild->lpts) {
++		err = -ENOMEM;
++		log_err(c, errno, "can not allocate lpts");
++		goto free_used_lebs;
++	}
+ 
+ 	return 0;
+ 
++free_used_lebs:
++	kfree(FSCK(c)->rebuild->used_lebs);
+ free_rebuild:
+ 	kfree(FSCK(c)->rebuild);
+ free_sbuf:
+@@ -70,6 +79,7 @@ free_sbuf:
+ 
+ static void destroy_rebuild_info(struct ubifs_info *c)
  {
- 	int nlink = 0;
- 	bool corrupted_truncation = false;
-@@ -1306,15 +1306,24 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
++	kfree(FSCK(c)->rebuild->lpts);
+ 	kfree(FSCK(c)->rebuild->used_lebs);
+ 	kfree(FSCK(c)->rebuild);
+ 	vfree(c->sbuf);
+@@ -461,9 +471,13 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
  
- 	for (node = rb_first(&file->xattr_files); node; node = rb_next(node)) {
- 		xattr_file = rb_entry(node, struct scanned_file, rb);
-+		dent_node = rb_entry(rb_first(&xattr_file->dent_nodes),
-+				     struct scanned_dent_node, rb);
+ 		valid_ino_node = lookup_valid_ino_node(c, si, del_ino_node);
+ 		if (valid_ino_node) {
+-			int lnum = del_ino_node->header.lnum;
++			int lnum = del_ino_node->header.lnum - c->main_first;
++			int pos = del_ino_node->header.offs +
++				  ALIGN(del_ino_node->header.len, 8);
  
-+		ubifs_assert(c, xattr_file->ino.is_xattr);
- 		ubifs_assert(c, !rb_first(&xattr_file->xattr_files));
--		calculate_file_info(c, xattr_file, file_tree);
-+		xattr_file->calc_nlink = 1;
-+		xattr_file->calc_size = xattr_file->ino.size;
-+
-+		file->calc_xcnt += 1;
-+		file->calc_xsz += CALC_DENT_SIZE(dent_node->nlen);
-+		file->calc_xsz += CALC_XATTR_BYTES(xattr_file->ino.size);
-+		file->calc_xnms += dent_node->nlen;
- 	}
- 
- 	if (file->inum == UBIFS_ROOT_INO) {
- 		file->calc_nlink += 2;
- 		file->calc_size += UBIFS_INO_NODE_SZ;
--		return;
-+		return 0;
- 	}
- 
- 	if (S_ISDIR(file->ino.mode)) {
-@@ -1326,29 +1335,11 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
- 		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
- 		if (!parent_file) {
- 			ubifs_assert(c, 0);
--			return;
-+			return 0;
+-			set_bit(lnum - c->main_first, FSCK(c)->rebuild->used_lebs);
++			set_bit(lnum, FSCK(c)->rebuild->used_lebs);
++			FSCK(c)->rebuild->lpts[lnum].end =
++				max_t(int, FSCK(c)->rebuild->lpts[lnum].end, pos);
+ 			rb_erase(&valid_ino_node->rb, &si->valid_inos);
+ 			kfree(valid_ino_node);
  		}
- 		parent_file->calc_nlink += 1;
- 		parent_file->calc_size += CALC_DENT_SIZE(dent_node->nlen);
--		return;
+@@ -479,9 +493,13 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
+ 
+ 		valid_dent_node = lookup_valid_dent_node(c, si, del_dent_node);
+ 		if (valid_dent_node) {
+-			int lnum = del_dent_node->header.lnum;
++			int lnum = del_dent_node->header.lnum - c->main_first;
++			int pos = del_dent_node->header.offs +
++				  ALIGN(del_dent_node->header.len, 8);
+ 
+-			set_bit(lnum - c->main_first, FSCK(c)->rebuild->used_lebs);
++			set_bit(lnum, FSCK(c)->rebuild->used_lebs);
++			FSCK(c)->rebuild->lpts[lnum].end =
++				max_t(int, FSCK(c)->rebuild->lpts[lnum].end, pos);
+ 			rb_erase(&valid_dent_node->rb, &si->valid_dents);
+ 			kfree(valid_dent_node);
+ 		}
+@@ -667,10 +685,21 @@ static const char *get_file_name(struct ubifs_info *c, struct scanned_file *file
+ 	return name;
+ }
+ 
++static void parse_node_location(struct ubifs_info *c, struct scanned_node *sn)
++{
++	int lnum, pos;
++
++	lnum = sn->lnum - c->main_first;
++	pos = sn->offs + ALIGN(sn->len, 8);
++
++	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
++	FSCK(c)->rebuild->lpts[lnum].end = max_t(int,
++					FSCK(c)->rebuild->lpts[lnum].end, pos);
++}
++
+ static void record_file_used_lebs(struct ubifs_info *c,
+ 				  struct scanned_file *file)
+ {
+-	int lnum;
+ 	struct rb_node *node;
+ 	struct scanned_file *xattr_file;
+ 	struct scanned_dent_node *dent_node;
+@@ -682,26 +711,21 @@ static void record_file_used_lebs(struct ubifs_info *c,
+ 		 ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
+ 		 c->dev_name);
+ 
+-	lnum = file->ino.header.lnum;
+-	set_bit(lnum - c->main_first, FSCK(c)->rebuild->used_lebs);
++	parse_node_location(c, &file->ino.header);
+ 
+-	if (file->trun.header.exist) {
+-		lnum = file->trun.header.lnum;
+-		set_bit(lnum - c->main_first, FSCK(c)->rebuild->used_lebs);
 -	}
--
--	if (file->ino.is_xattr) {
--		file->calc_nlink = 1;
--		file->calc_size = file->ino.size;
--
--		dent_node = rb_entry(rb_first(&file->dent_nodes),
--				     struct scanned_dent_node, rb);
--		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
--		if (!parent_file) {
--			ubifs_assert(c, 0);
--			return;
--		}
--		parent_file->calc_xcnt += 1;
--		parent_file->calc_xsz += CALC_DENT_SIZE(dent_node->nlen);
--		parent_file->calc_xsz += CALC_XATTR_BYTES(file->ino.size);
--		parent_file->calc_xnms += dent_node->nlen;
--		return;
-+		return 0;
++	if (file->trun.header.exist)
++		parse_node_location(c, &file->trun.header);
+ 
+ 	for (node = rb_first(&file->data_nodes); node; node = rb_next(node)) {
+ 		data_node = rb_entry(node, struct scanned_data_node, rb);
+ 
+-		lnum = data_node->header.lnum;
+-		set_bit(lnum - c->main_first, FSCK(c)->rebuild->used_lebs);
++		parse_node_location(c, &data_node->header);
  	}
  
  	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
-@@ -1359,7 +1350,7 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
- 		parent_file = lookup_file(file_tree, key_inum(c, &dent_node->key));
- 		if (!parent_file) {
- 			ubifs_assert(c, 0);
--			return;
-+			return 0;
- 		}
- 		parent_file->calc_size += CALC_DENT_SIZE(dent_node->nlen);
- 	}
-@@ -1368,7 +1359,7 @@ static void calculate_file_info(struct ubifs_info *c, struct scanned_file *file,
- 	if (!S_ISREG(file->ino.mode)) {
- 		/* No need to verify i_size for symlink/sock/block/char/fifo. */
- 		file->calc_size = file->ino.size;
--		return;
-+		return 0;
+ 		dent_node = rb_entry(node, struct scanned_dent_node, rb);
+ 
+-		lnum = dent_node->header.lnum;
+-		set_bit(lnum - c->main_first, FSCK(c)->rebuild->used_lebs);
++		parse_node_location(c, &dent_node->header);
  	}
  
- 	/*
-@@ -1452,10 +1443,22 @@ drop_data:
- 		data_node = list_entry(drop_list.next, struct scanned_data_node,
- 				       list);
- 
-+		if (FSCK(c)->mode != REBUILD_MODE) {
-+			/*
-+			 * Don't ask, inconsistent file correcting will be
-+			 * asked in function correct_file_info().
-+			 */
-+			int err = delete_node(c, &data_node->key,
-+				data_node->header.lnum, data_node->header.offs);
-+			if (err)
-+				return err;
-+		}
- 		list_del(&data_node->list);
- 		rb_erase(&data_node->rb, &file->data_nodes);
- 		kfree(data_node);
- 	}
-+
-+	return 0;
+ 	for (node = rb_first(&file->xattr_files); node; node = rb_next(node)) {
+@@ -712,23 +736,57 @@ static void record_file_used_lebs(struct ubifs_info *c,
  }
  
  /**
-@@ -1490,6 +1493,7 @@ static int correct_file_info(struct ubifs_info *c, struct scanned_file *file)
- 	    file->calc_size == file->ino.size)
- 		return 0;
+- * record_used_lebs - record used LEBs.
++ * traverse_files_and_nodes - traverse all nodes from valid files.
+  * @c: UBIFS file-system description object
+  *
+- * This function records all used LEBs which may hold useful nodes, then left
+- * unused LEBs could be taken for storing new index tree.
++ * This function traverses all nodes from valid files and does following
++ * things:
++ * 1. Record all used LEBs which may hold useful nodes, then left unused
++ *    LEBs could be taken for storing new index tree.
++ * 2. Re-write data to prevent failed gc scanning in the subsequent mounting
++ *    process caused by corrupted data.
+  */
+-static void record_used_lebs(struct ubifs_info *c)
++static int traverse_files_and_nodes(struct ubifs_info *c)
+ {
++	int i, err = 0;
+ 	struct rb_node *node;
+ 	struct scanned_file *file;
+ 	struct rb_root *tree = &FSCK(c)->rebuild->scanned_files;
  
-+	handle_invalid_file(c, FILE_IS_INCONSISTENT, file, NULL);
- 	lnum = file->ino.header.lnum;
- 	dbg_fsck("correct file(inum:%lu type:%s), nlink %u->%u, xattr cnt %u->%u, xattr size %u->%u, xattr names %u->%u, size %llu->%llu, at %d:%d, in %s",
- 		 file->inum, file->ino.is_xattr ? "xattr" :
-@@ -1537,7 +1541,9 @@ int check_and_correct_files(struct ubifs_info *c)
++	log_out(c, "Record used LEBs");
  	for (node = rb_first(tree); node; node = rb_next(node)) {
  		file = rb_entry(node, struct scanned_file, rb);
  
--		calculate_file_info(c, file, tree);
-+		err = calculate_file_info(c, file, tree);
-+		if (err)
-+			return err;
+ 		record_file_used_lebs(c, file);
  	}
- 
- 	for (node = rb_first(tree); node; node = rb_next(node)) {
-@@ -1548,5 +1554,21 @@ int check_and_correct_files(struct ubifs_info *c)
- 			return err;
- 	}
- 
-+	if (list_empty(&FSCK(c)->disconnected_files))
-+		return 0;
 +
-+	ubifs_assert(c, FSCK(c)->mode != REBUILD_MODE);
-+	list_for_each_entry(file, &FSCK(c)->disconnected_files, list) {
-+		err = calculate_file_info(c, file, tree);
-+		if (err)
++	/* Re-write data. */
++	log_out(c, "Re-write data");
++	for (i = 0; i < c->main_lebs; ++i) {
++		int lnum, len, end;
++
++		if (!test_bit(i, FSCK(c)->rebuild->used_lebs))
++			continue;
++
++		lnum = i + c->main_first;
++		dbg_fsck("re-write LEB %d, in %s", lnum, c->dev_name);
++
++		end = FSCK(c)->rebuild->lpts[i].end;
++		len = ALIGN(end, c->min_io_size);
++
++		err = ubifs_leb_read(c, lnum, c->sbuf, 0, len, 0);
++		if (err && err != -EBADMSG)
 +			return err;
 +
-+		/* Reset disconnected file's nlink as one. */
-+		file->calc_nlink = 1;
-+		err = correct_file_info(c, file);
++		if (len > end)
++			ubifs_pad(c, c->sbuf + end, len - end);
++
++		err = ubifs_leb_change(c, lnum, c->sbuf, len);
 +		if (err)
 +			return err;
 +	}
 +
- 	return 0;
++	return err;
  }
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 6a718fd8..3f61668e 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -460,6 +460,13 @@ static int do_fsck(void)
- 		goto free_disconnected_files;
+ 
+ /**
+@@ -789,9 +847,13 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
+ 		goto out;
  	}
  
-+	log_out(c, "Check and correct files");
-+	err = check_and_correct_files(c);
-+	if (err) {
+-	/* Step 7: Record used LEBs. */
+-	log_out(c, "Record used LEBs");
+-	record_used_lebs(c);
++	/*
++	 * Step 7: Record used LEBs.
++	 * Step 8: Re-write data to clean corrupted data.
++	 */
++	err = traverse_files_and_nodes(c);
++	if (err)
 +		exit_code |= FSCK_ERROR;
-+		goto free_disconnected_files;
-+	}
-+
- free_disconnected_files:
- 	destroy_file_list(c, &FSCK(c)->disconnected_files);
- free_used_lebs:
-@@ -504,6 +511,7 @@ int main(int argc, char *argv[])
- 	 * Step 7: Update files' size
- 	 * Step 8: Check and handle invalid files
- 	 * Step 9: Check and handle unreachable files
-+	 * Step 10: Check and correct files
- 	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index 521723d7..32a991dd 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -43,7 +43,7 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
-        FILE_HAS_0_NLINK_INODE, FILE_HAS_INCONSIST_TYPE, FILE_HAS_TOO_MANY_DENT,
-        FILE_SHOULDNT_HAVE_DATA, FILE_HAS_NO_DENT, XATTR_HAS_NO_HOST,
-        XATTR_HAS_WRONG_HOST, FILE_HAS_NO_ENCRYPT, FILE_IS_DISCONNECTED,
--       FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE };
-+       FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE, FILE_IS_INCONSISTENT };
  
- enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
- 
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 0395a34f..e8f08606 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -59,6 +59,7 @@ static const struct fsck_problem problem_table[] = {
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "File is disconnected(regular file without dentries)"},	// FILE_IS_DISCONNECTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Root dir should not have a dentry"},	// FILE_ROOT_HAS_DENT
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Dentry is unreachable"},	// DENTRY_IS_UNREACHABLE
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "File is inconsistent"},	// FILE_IS_INCONSISTENT
- };
- 
- static const char *get_question(const struct fsck_problem *problem,
-@@ -212,6 +213,21 @@ static void print_problem(const struct ubifs_info *c,
- 			key_type(c, &dent_node->key) == UBIFS_XENT_KEY ? "(xattr)" : "");
- 		break;
- 	}
-+	case FILE_IS_INCONSISTENT:
-+	{
-+		const struct invalid_file_problem *ifp = (const struct invalid_file_problem *)priv;
-+		const struct scanned_file *file = ifp->file;
-+
-+		log_out(c, "problem: %s, ino %lu type %s, nlink %u xcnt %u xsz %u xnms %u size %llu, "
-+			"should be nlink %u xcnt %u xsz %u xnms %u size %llu",
-+			problem->desc, file->inum,
-+			file->ino.is_xattr ? "xattr" : ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
-+			file->ino.nlink, file->ino.xcnt, file->ino.xsz,
-+			file->ino.xnms, file->ino.size,
-+			file->calc_nlink, file->calc_xcnt, file->calc_xsz,
-+			file->calc_xnms, file->calc_size);
-+		break;
-+	}
- 	default:
- 		log_out(c, "problem: %s", problem->desc);
- 		break;
+ out:
+ 	destroy_scanned_info(c, &si);
+diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
+index e6de7cea..c9d582da 100644
+--- a/ubifs-utils/libubifs/ubifs.h
++++ b/ubifs-utils/libubifs/ubifs.h
+@@ -337,6 +337,7 @@ enum {
+  * @dirty: amount of dirty space in bytes
+  * @flags: LEB properties flags (see above)
+  * @lnum: LEB number
++ * @end: the end postition of LEB calculated by the last node
+  * @list: list of same-category lprops (for LPROPS_EMPTY and LPROPS_FREEABLE)
+  * @hpos: heap position in heap of same-category lprops (other categories)
+  */
+@@ -345,6 +346,7 @@ struct ubifs_lprops {
+ 	int dirty;
+ 	int flags;
+ 	int lnum;
++	int end;
+ 	union {
+ 		struct list_head list;
+ 		int hpos;
 -- 
 2.13.6
 
