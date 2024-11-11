@@ -4,54 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD240D5E37B
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09FBED12D7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Nov 2024 07:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sP8YIX9c4fXjBiUEtU+mLcKXDnWT+tSvkEmjUzSd+Bk=; b=JMDYVORfFKYpbP
-	2yRcIDhLev0eHBljjTxmCzOubu+ysxr6t6iAmx34WfAm/yhKxs9XFvxd88MvhzQJhCe6cNjhtZBb3
-	Paw/8kMBPVov2riHO7mxNMjIJ+8zTPpFAZ3QUramRAjyaCwYo5vszenaFTJpc3sPRgv0At0SvFnqO
-	7JL8ocac9Fwn/ZD0fdP6p0ZEST0nQa8rwz7oztYyXxma0RLWVhsuLOg3I8e8X3NjYWQxuMscv70cH
-	QW3rDD6DzsSuypBsgMnNSAazc2rjPnZ9xQm5n3fZ3hJKTUgWILhIAjbmXdAbP74j3/BaM5lPCFzlQ
-	NuQnxCCPKeZf+LEmVbww==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=IA0/50cjNnS1mbuQKGtpHl7RO6br6cGQ2DxSZjAEhvQ=; b=2+AnGkbDjXl+az
+	R2X8EqP9iWG+ICh0z2Ex23nPoABmHBp3GCRqTIkRkexzxnz7sbhRuT/YTz8aCrXgHEIwhE++lzWNr
+	CrDI05WL84duoIs5RZVHDaagToFkPVH8R0J4vr3KQwAl2sDTd3sTkyu42w9t2czFfO1tY5UjxliUM
+	yq4kFcF8ZlV3YRmOVaXs3T+PHHKIrhQk3AyNB4pXCP95eGoT/9l00+e4C27uPSCy7AZDlupypenUD
+	4qmCAP4w0LFvw+HxzwZ01S2pCC9882ihToZ/OMyCecrnoldtyW8nzy9JN4Dh/Bfs17KqEA9UpQOnp
+	lxP9EjyFUim90O7AC31A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOUO-0000000GZGW-2P6P;
-	Mon, 11 Nov 2024 07:05:32 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1tAOUY-0000000GZPb-1DE6;
+	Mon, 11 Nov 2024 07:05:42 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAOTx-0000000GYy8-0tc6
+	id 1tAOU8-0000000GZ7B-3a3N
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Nov 2024 07:05:20 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xn0qG2hjZz1TB5W;
-	Mon, 11 Nov 2024 15:02:34 +0800 (CST)
+	Mon, 11 Nov 2024 07:05:26 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn0rJ0VWgz2Dgsb;
+	Mon, 11 Nov 2024 15:03:28 +0800 (CST)
 Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9C0AF180104;
-	Mon, 11 Nov 2024 15:05:00 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4D85D14011F;
+	Mon, 11 Nov 2024 15:05:15 +0800 (CST)
 Received: from huawei.com (10.175.112.188) by kwepemk500005.china.huawei.com
  (7.202.194.90) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 11 Nov
- 2024 15:04:59 +0800
+ 2024 15:05:14 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<yi.zhang@huawei.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils v2 000/102] Add fsck.ubifs support
-Date: Mon, 11 Nov 2024 15:02:03 +0800
-Message-ID: <20241111070346.1314122-1-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils v2 028/102] ubifs-utils: Adapt lpt subsystem in libubifs
+Date: Mon, 11 Nov 2024 15:02:31 +0800
+Message-ID: <20241111070346.1314122-29-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.46.1
+In-Reply-To: <20241111070346.1314122-1-chengzhihao1@huawei.com>
+References: <20241111070346.1314122-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.112.188]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241110_230506_046972_C2D8AE19 
-X-CRM114-Status: GOOD (  27.17  )
+X-CRM114-CacheID: sfid-20241110_230517_578360_12780572 
+X-CRM114-Status: GOOD (  31.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,956 +70,1362 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Changes
-=======
+Adapt lpt subsystem(lpt.c,lprops.c,lpt_commit.c) in libubifs, compared
+with linux kernel implementations:
+ 1. Remove debug related functions(eg. dbg_chk_lpt_sz, dbg_chk_pnode),
+    some of debug functions are not needed by fsck, because fsck will
+    check fs in another way.
+ 2. Remove some functions(eg. ubifs_create_dflt_lpt) which won't be used
+    in fsck/mkfs.
+ 3. Adapt do_calc_lpt_geom() to mkfs/fsck situations.
+ 4. Adapt calc_dflt_lpt_geom to support the mkfs tool, and export it.
+ 5. Adapt ubifs_create_lpt() according to create_lpt(mkfs), make sure that
+    the height of created lpt is right.
 
-v1->v2:
- 1. fsck tests(powercut test, cycle powercut test, cycle mount test):
-    Ignore 'fsck -a' failure if ltab has corrupted empty space, which
-    could be caused by [15].
- 2. check space step(Patch 81 "fsck.ubifs: check and correct the space
-    statistics"): Function rename, claer_lp_lists_and_heaps ->
-    clear_lp_lists_and_heaps; Clear %LPROPS_TAKEN flag for all LEBs if
-    space statistices is ever corrected.
- 3. Display symbols(function name + addr) in dump_stack(), store
-    '-rdynamic' into variable 'DUMP_STACK_LD' in configure.ac.
- 4. Support Address-Sanitizier debugging for fsck.ubifs/mkfs.ubifs, so
-    we can detect invalid memory accessing problems without external
-    tools(for example, valgrind).
- 5. Fix some spelling mistakes in README.txt and commit message.
- 6. Rebase v1 to solve conflicts based on v2.2.1.
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ ubifs-utils/libubifs/lprops.c     | 484 +-------------------------------------
+ ubifs-utils/libubifs/lpt.c        | 381 +++++++++---------------------
+ ubifs-utils/libubifs/lpt_commit.c | 235 ++----------------
+ 3 files changed, 136 insertions(+), 964 deletions(-)
 
-Introduction
-============
-
-The fsck.ubifs provides a way to fix inconsistent UBIFS image(which is
-corrupted by hardware exceptions or UBIFS realization bugs) and makes
-filesystem become consistent, just like fsck tools(eg. fsck.ext4,
-fsck.f2fs, fsck.fat, etc.) do.
-
-Why do we need fsck.ubifs?
---------------------------
-
-The inconsistent UBIFS image is produced by mainly two aspects:
- - *Hardware exceptions*: Some of them are ecc uncorrectable errors(eg.
-   [1][2]), some of them are caused by intermittent writing protection
-   (unstable voltage).
- - *UBIFS realization bugs*: Some of them are known bugs which are
-   fixable (eg. [3][4][5][6][7][8][9][10][11][12][13], etc.), some of
-   them are unknown bugs(eg. [14]), some of them are hard to fix(eg. [15]).
-Once the UBIFS image becomes inconsistent, userspace applications won't
-work properly, as we all know, UBIFS is mainly applied in embedded
-system, which could affect many domains(eg. communications, IoT, family
-network, etc.). The only way to rescue device is formating UBI device
-and mkfs, which will lost all userdata, and it could be intolerable for
-some important situations.
-So, the fsck.ubifs is urgent for UBIFS, even it has been born for 15
-years, and it's not too late to do it for there will be more embedded
-devices in the future IOT world.
-
-Manuals
-=======
-
-There are four modes for fsck.ubifs:
- 1. normal mode(no options): Check the filesystem, ask user whether to
-    fix the problem as long as inconsistent data is found during fs
-    checking.
- 2. safe mode(-a option): Check and automatic safely repair the
-    filesystem, if there are any data dropping operations needed by
-    fixing, fsck will fail.
- 3. danger mode(-y option): Answer 'yes' to all questions. There are two
-    sub modes:
-    a) Default submode(no options): Check and automatic repair the
-       filesystem according to TNC, data dropping will be reported. If
-       TNC/master/log is corrupted, fsck will fail.
-    b) rebuild submode(-b option): Check and automatic forcibly repair
-       the filesystem, turns to rebuild filesystem if TNC/master/log is
-       corrupted. Always make fsck successful.
- 4. check mode(-n option): Make no changes to the filesystem, only check
-    the filesystem. This mode doesn't check space, because unclean LEBs
-    cannot be rewritten in read-only mode.
-
-The exit code returned by fsck.ubifs is compatible with FSCK(8), which
-is the sum of the following conditions:
- 0      - No errors
- 1      - File system errors corrected
- 2      - System should be rebooted
- 4      - File system errors left uncorrected
- 8      - Operational error
- 16     - Usage or syntax error
- 32     - Fsck canceled by user request
- 128    - Shared library error
-
-Designment
-==========
-
-There are 2 working modes for fsck: rebuild mode and non-rebuild mode.
-The main idea is that construct all files by scanning the entire
-filesystem, then check the consistency of metadata(file meta information,
-space statistics, etc.) according to the files. The file(xattr is treated
-as a file) is organized as:
-   file tree(rbtree, inum indexed)
-            /      \
-         file1   file2
-	 /   \
-      file3 file4
- file {
-     inode node // each file has 1 inode node
-     dentry (sub rb_tree, sqnum indexed)
-     // '/' has no dentries, otherwise at least 1 dentry is required.
-     trun node // the newest one truncation node
-     data (sub rb_tree, block number indexed)
-     // Each file may have 0 or many data nodes
-     xattrs (sub rb_tree, inum indexed)
-     // Each file may have 0 or many xattr files
+diff --git a/ubifs-utils/libubifs/lprops.c b/ubifs-utils/libubifs/lprops.c
+index 6d6cd85c..84cdb353 100644
+--- a/ubifs-utils/libubifs/lprops.c
++++ b/ubifs-utils/libubifs/lprops.c
+@@ -16,7 +16,13 @@
+  * an empty LEB for the journal, or a very dirty LEB for garbage collection.
+  */
+ 
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "misc.h"
+ 
+ /**
+  * get_heap_comp_val - get the LEB properties value for heap comparisons.
+@@ -47,7 +53,8 @@ static int get_heap_comp_val(struct ubifs_lprops *lprops, int cat)
+  * is either the amount of free space or the amount of dirty space, depending
+  * on the category.
+  */
+-static void move_up_lpt_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap,
++static void move_up_lpt_heap(__unused struct ubifs_info *c,
++			     struct ubifs_lpt_heap *heap,
+ 			     struct ubifs_lprops *lprops, int cat)
+ {
+ 	int val1, val2, hpos;
+@@ -84,7 +91,8 @@ static void move_up_lpt_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap,
+  * greater.  In the case of LPT's category heaps, the value is either the amount
+  * of free space or the amount of dirty space, depending on the category.
+  */
+-static void adjust_lpt_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap,
++static void adjust_lpt_heap(__unused struct ubifs_info *c,
++			    struct ubifs_lpt_heap *heap,
+ 			    struct ubifs_lprops *lprops, int hpos, int cat)
+ {
+ 	int val1, val2, val3, cpos;
+@@ -191,16 +199,13 @@ static int add_to_lpt_heap(struct ubifs_info *c, struct ubifs_lprops *lprops,
+ 			lprops->hpos = cpos;
+ 			heap->arr[cpos] = lprops;
+ 			move_up_lpt_heap(c, heap, lprops, cat);
+-			dbg_check_heap(c, heap, cat, lprops->hpos);
+ 			return 1; /* Added to heap */
+ 		}
+-		dbg_check_heap(c, heap, cat, -1);
+ 		return 0; /* Not added to heap */
+ 	} else {
+ 		lprops->hpos = heap->cnt++;
+ 		heap->arr[lprops->hpos] = lprops;
+ 		move_up_lpt_heap(c, heap, lprops, cat);
+-		dbg_check_heap(c, heap, cat, lprops->hpos);
+ 		return 1; /* Added to heap */
+ 	}
  }
-
- Step 0. Both two modes need to read the superblock firstly, fsck fails if
-         superblock is corrupted, because fsck has no idea about the location
-	 of each area(master, log, main, etc.) when the layout is lost.
-
- A. Rebuild mode(Similar to [16]):
- Step 1. Scan nodes(inode node/dentry node/data node/truncation node) from all
-         LEBs.
-	 a) Corrupted LEBs(eg. garbage data, corrupted empty space) are dropped
-	    during scanning.
-	 b) Corrupted nodes(eg. incorrect crc, bad inode size, bad dentry name
-	    length, etc.) are dropped during scanning.
-         c) Valid inode nodes(nlink > 0) and dentry nodes(inum != 0) are put
-	    into two valid trees(valid_inos & valid_dents) separately.
-	 d) Deleted inode nodes (nlink is 0) and deleted dentry nodes(inum is 0)
-	    are put into two deleted trees(del_inos & del_dents) separately.
-	 e) Other nodes(data nodes/truncation node) are put into corresponding
-	    file, if the file doesn't exist, insert a new file into the file
-	    tree.
- Step 2. Traverse nodes from deleted trees, remove inode nodes and dentry nodes
-         with smaller sqnum from valid trees. valid_inos - del_inos = left_inos,
-	 valid_dents - del_dents = left_dents.
-	 This step handles the deleting case, for example, file A is deleted,
-	 deleted inode node and deleted dentry node are written, if we ignore
-	 the deleted nodes, file A can be recovered after rebuilding because
-	 undeleted inode node and undeleted dentry node can be scanned. There's
-	 an exception, if deleted inode node and deleted dentry node are
-	 reclaimed(by gc) after deletion, file A is recovered. So deleted data
-	 or files could be recovered by rebuild mode.
- Step 3. Traverse left_inos and left_dents, insert inode node and dentry nodes
-         into the corresponding file.
- Step 4. Traverse all files, drop invalid files, move xattr files into the
-         corresponding host file's subtree. Invalid files such as:
-	 a) File has no inode node or inode nlink is zero
-	 b) Non-consistent file types between inode node and dentry nodes
-	 c) File has no dentry nodes(excepts '/')
-	 d) Encrypted file has no xattr information
-	 e) Non regular file has data nodes
-	 f) Directory/xattr file has more than one dentries
-	 g) Xattr file has no host inode, or the host inode is a xattr
-	 h) Non-xattr file's parent is not a directory
-	 i) etc.
- Step 5. Extract reachable directory entries tree. Make sure that all files can
-         be searched from '/', unreachable file is deleted. Since all xattr
-	 files are attached to the corresponding host file, only non-xattr
-	 files should be checked. Luckily, directory file only has one dentry,
-	 the reachable checking of a dentry becomes easy. Traverse all
-	 dentries for each file, check whether the dentry is reachable, if not,
-	 remove dentry from the file. If the file has no dentries, the file is
-	 unreachable.
- Step 6. Correct the file information. Traverse all files and calculate
-         information(nlink, size, xattr_cnt, etc.) for each file just like
-	 check_leaf(in linux kernel) does, correct the inode node based on the
-	 calculated information.
- Step 7. Record used LEBs. Traverse all files'(including effective nodes from
-	 deletion trees in step 2) position, after this step fsck knows which
-         LEB is empty.
- Step 8. Re-write data. Read data from LEB and write back data, make sure that
-         all LEB is ended with empty data(0xFF). It will prevent failed gc
-	 scanning in the next mounting.
- Step 9. Build TNC. Construct TNC according to all files' nodes, just like mkfs
-         does(refer to add_to_index in mkfs), then write TNC(refer to
-	 write_index in mkfs) on flash. (If there are no files, create a new
-	 root dir file.)
- Step 10.Build LPT. Construct LPT according to all nodes' position and length,
-         just like mkfs does, then write LPT(refer to write_lpt) on flash.
- Step 11.Clean up log area and orphan area. Log area and orphan area can be
-         erased.
- Step 12.Write master node. Since all meta areas are ready, master node can be
-         updated.
-
- B. Non-rebuild mode:
- Step 1. Read master & init lpt.
-         a) Scan master nodes failed or master node is invalid (which is not
-            caused by invalid space statistics), danger mode with rebuild_fs and
-	    normal mode with 'yes' answer will turn to rebuild mode, other modes
-	    will exit. Fsck cannot find the right TNC/LPT if the master node is
-	    invalid, which affects subsequent steps, so this problem must be
-	    fixed.
-	 b) Invalid space statistics in master node, set %FR_LPT_INCORRECT for
-	    for lpt status and ignore the error.
-	 c) LPT node is corrupted, set %FR_LPT_CORRUPTED for lpt status and
-	    ignore the error.
- Step 2. Replay journal.
-         I. Scan log LEBs to get all buds.
-	    a) Nodes in log LEBs are invalid/corrupted, danger mode with
-               rebuild_fs and normal mode with 'yes' answer will turn to rebuild
-               mode, other modes will exit. Corrupted log LEB could fail
-               ubifs_consolidate_log, which may lead to commit failure by out of
-	       space in the log area, so this problem must be fixed.
-	 II. Scan bud LEBs to get all nodes.
-	     a) Nodes in bud LEBs are invalid/corrupted, danger mode and normal
-	        mode with 'yes' answer will drop bud LEB and set
-		%FR_LPT_INCORRECT for lpt status, other modes will exit.
-		Corrupted LEB will make gc failed, so this problem must be
-		fixed.
-	 III. Record isize into size tree according to data/truncation/inode
-	      nodes.
-	 IV. Apply nodes to TNC & LPT, update property for bud LEBs.
-	     a) Corrupted/Invalid node searched from TNC, skip node and set
-	        %FR_LPT_INCORRECT in lpt status for danger mode and normal mode
-		with 'yes' answer, other modes will exit. The space statistics
-		depend on a valid TNC, so this problem must be fixed.
-	     b) Corrupted/Invalid index node read from TNC, danger mode with
-	        rebuild_fs and normal mode with 'yes' answer will turn to
-		rebuild filesystem, other modes will exit. The space statistics
-		depend on a valid TNC, so this problem must be fixed.
-	     c) Corrupted/Invalid lpt node, Set %FR_LPT_CORRUPTED for lpt status
-	        and ignore the error.
-	     d) Incorrect LEB property: Set %FR_LPT_INCORRECT for lpt status and
-	        ignore the error.
-	     e) If lpt status is not empty, skip updating lpt, because incorrect
-	        LEB property could trigger assertion failure in ubifs_change_lp.
- Step 3. Handle orphan nodes.
-	 I. Scan orphan LEB to get all orphan nodes.
-	    a) Corrupted/Invalid orphan node: danger mode and normal mode with
-	       'yes' answer will drop orphan LEB, other modes will exit.
-	        Corrupted orphan area could lead to mounting/committing failure,
-		so this problem must be fixed.
-	 II. Parse orphan node, find the original inode for each inum.
-	     a) Corrupted/Invalid node searched from TNC, skip node for danger
-	        mode and normal mode with 'yes' answer, other modes will exit.
-	     b) Corrupted/Invalid index node read from TNC, danger mode with
-	        rebuild_fs and normal mode with 'yes' answer will turn to
-		rebuild filesystem, other modes will exit. The space statistics
-		depend on a valid TNC, so this problem must be fixed.
-	 III. Remove inode for each inum, update TNC & LPT.
-	      a) Corrupted/Invalid node searched from TNC, skip node for danger
-	         mode and normal mode with 'yes' answer, other modes will exit.
-	      b) Corrupted/Invalid index node read from TNC, danger mode with
-	         rebuild_fs and normal mode with 'yes' answer will turn to
-		 rebuild filesystem, other modes will exit. The space statistics
-		 depend on a valid TNC, so this problem must be fixed.
-	      c) Corrupted/Invalid lpt node, Set %FR_LPT_CORRUPTED for lpt
-	         status and ignore the error.
-	      d) Incorrect LEB property: Set %FR_LPT_INCORRECT for lpt status
-	         and ignore the error.
-	      e) If lpt status is not empty, skip updating lpt, because
-	         incorrect LEB property could trigger assertion failure in
-		 ubifs_change_lp.
- Step 4. Consolidate log area.
-	 a) Corrupted data in log LEBs, danger mode with rebuild_fs and normal
-	    mode with 'yes' answer will turn to rebuild filesystem, other modes
-	    will exit. It could make commit failed by out of space in log area,
-	    so this problem must be fixed.
- Step 5. Recover isize.
-	 I. Traverse size tree, lookup corresponding inode from TNC.
-	    a) Corrupted/Invalid node searched from TNC, skip node for danger
-	       mode and normal mode with 'yes' answer, other modes will exit.
-	    b) Corrupted/Invalid index node read from TNC, danger mode with
-	       rebuild_fs and normal mode with 'yes' answer will turn to
-	       rebuild filesystem, other modes will exit. The space statistics
-	       depend on a valid TNC, so this problem must be fixed.
-	 II. Update isize for inode. Keep <inum, isize> in size tree for check
-	     mode, remove <inum, isize> from the size tree and update inode
-	     node in place for other modes.
- Step 6. Traverse TNC and construct files.
-	 I. Traverse TNC, check whether the leaf node is valid, remove invalid
-	    nodes, construct file for valid node and insert the file into the
-	    file tree.
-	    a) Corrupted/Invalid node searched from TNC, remove corresponding
-	       TNC branch for danger mode and normal mode with 'yes' answer,
-	       other modes will exit. The space statistics depend on a valid
-	       TNC, so this problem must be fixed.
-	    b) Corrupted/Invalid index node read from TNC, danger mode with
-	       rebuild_fs and normal mode with 'yes' answer will turn to
-	       rebuild filesystem, other modes will exit. The space statistics
-	       depend on a valid TNC, so this problem must be fixed.
-	 II. Scan all LEBs(contain TNC) for non check mode(unclean LEBs cannot
-	     be fixed in read-only mode, so scanning may fail in check mode,
-	     then space statistics won't be checked in check mode), remove TNC
-	     branch which points to corrupted LEB.
-	     a) Corrupted data is found by scanning. If the current node is
-	        index node, danger mode with rebuild_fs and normal mode with
-		'yes' answer will turn to rebuild filesystem, other modes will
-		exit; If the current node is non-index node, danger mode and
-		normal mode with 'yes' answer will remove all TNC branches which
-		point to the corrupted LEB, other modes will exit. The space
-		statistics depend on valid LEB scanning, so this problem must
-		be fixed.
-	     b) LEB contains both index and non-index nodes, danger mode with
-	        rebuild_fs and normal mode with 'yes' answer will turn to
-		rebuild filesystem, other modes will exit. Invalid LEB will make
-		gc failed, so this problem must be fixed.
- Step 7. Update files' size for check mode. Update files' size according to the
-	 size tree for check mode.
- Step 8. Check and handle invalid files. Similar to rebuild mode, but the
-	 methods of handling are different:
-	 a) Move unattached(file has no dentries) regular file into disconnected
-	    list for safe mode, danger mode and normal mode with 'yes' answer,
-	    let subsequent steps to handle them with lost+found. Other modes
-	    will exit. Disconnected file affects the result of calculated
-	    information(which will be used in subsequent steps) for its' parent
-	    file(eg. nlink, size), so this problem must be fixed.
-	 b) Make file type be consistent between inode, detries and data nodes
-	    by deleting dentries or data nodes, for danger mode and normal mode
-	    with 'yes' answer, other modes will exit.
-	 c) Delete file for other invalid cases(eg. file has no inode) in
-	    danger mode and normal mode with 'yes' answer, other modes will
-	    exit.
- Step 9. Extract reachable directory entries tree. Similar to rebuild mode, but
-	 the methods of handling are different:
-	 a) Remove unreachable dentry for danger mode and normal mode with 'yes'
-	    answer, other modes will exit. Unreachable dentry affects the
-	    calculated information(which will be used in subsequent steps) for
-	    its' file(eg. nlink), so this problem must be fixed.
-	 b) Delete unreachable non-regular file for danger mode and normal mode
-	    with 'yes' answer, other modes will exit. Unreachable file affects
-	    the calculated information(which will be used in subsequent steps)
-	    for its' parent file(eg. nlink, size), so this problem must be
-	    fixed.
-	 c) Move unreachable regular file into disconnected list for safe mode,
-	    danger mode and normal mode with 'yes' answer, let subsequent steps
-	    to handle them with lost+found. Other modes will exit. Disconnected
-	    file affects the calculated information(which will be used in
-	    subsequent steps) for its' parent file(eg. nlink, size), so this
-	    problem must be fixed.
- Step 10.Correct the file information. Similar to rebuild mode, but the methods
-	 of handling are different:
-	 a) Correct the file information for safe mode, danger mode and normal
-	    mode with 'yes' answer, other modes will exit. Incorrect file
-	    information affects the new creations(which will be used in handling
-	    lost+found), so this problem must be fixed.
- Step 11.Check whether the TNC is empty. Empty TNC is equal to corrupted TNC,
-	 which means that zero child count for root znode. If TNC is empty(All
-	 nodes are invalid and are deleted from TNC), turn to rebuild mode for
-	 danger mode with rebuild_fs and normal mode with 'yes' answer, other
-	 modes will exit.
- Step 12.Check and correct the space statistics.
-	 I. Exit for check mode, if %FR_LPT_CORRUPTED or %FR_LPT_INCORRECT is
-	    set in lpt status, the exit code should have %FSCK_UNCORRECTED.
-	 II. Check lpt status, if %FR_LPT_CORRUPTED is set in lpt status, normal
-	     mode with 'no' answer will exit, other modes will rebuild lpt. New
-	     creations could be done in subsequent steps, which depends on
-	     correct space statistics, so this problem must be fixed.
-	 III. Traverse LPT nodes, check the correctness of nnode and pnode,
-	      compare LEB scanning result with LEB properties.
-	      a) LPT node is corrupted, normal mode with 'no' answer will exit,
-		 rebuild lpt for other modes. New creations could be done in
-		 subsequent steps, which depends on the correct space
-		 statistics, so this problem must be fixed.
-	      b) Incorrect nnode/pnode, normal mode with 'no' answer will exit,
-	         other modes will correct the nnode/pnode. New creations could
-		 be done in subsequent steps, which depends on correct space
-		 statistics, so this problem must be fixed.
-	      c) Inconsistent comparing result, normal mode with 'no' answer
-	         will exit, other modes will correct the space statistics. New
-		 creations could be done in subsequent steps, which depends on
-		 correct space statistics, so this problem must be fixed.
-	 IV. Compare LPT area scanning result with lprops table information.
-	     a) LPT area is corrupted, normal mode with 'no' answer will exit,
-	        rebuild lpt for other modes. Commit could fail in doing LPT gc
-		caused by scanning corrupted data, so this problem must be
-		fixed.
-	     b) Inconsistent comparing result, normal mode with 'no' answer
-	        will exit, other modes will correct the lprops table
-		information. Commit could fail in writing LPT with %ENOSPC
-		return code caused by incorrect space statistics in the LPT
-		area, so this problem must be fixed.
- Step 13.Do commit, commit problem fixing modifications to disk. The index size
-         checking depends on this step.
- Step 14.Check and correct the index size. Check and correct the index size by
-	 traversing TNC just like dbg_check_idx_size does. This step should be
-	 executed after first committing, because 'c->calc_idx_sz' can be
-	 changed in 'ubifs_tnc_start_commit' and the initial value of
-	 'c->calc_idx_sz' read from the disk is untrusted. Correct the index
-	 size for safe mode, danger mode and normal mode with 'yes' answer,
-	 other modes will exit. New creations could be done in subsequent steps,
-	 which depends on the correct index size, so this problem must be fixed.
- Step 15.Check and create the root dir. Check whether the root dir exists,
-	 create a new one if it is not found, for safe mode, danger mode and
-	 normal mode with 'yes' answer, other modes will exit. Mounting depends
-	 on the root dir, so this problem must be fixed.
- Step 16.Check and create the lost+found.
-	 I. If the root dir is encrypted, set lost+found as invalid. Because it
-	    is impossible to check whether the lost+found exists in an encrypted
-	    directory.
-	 II. Search the lost+found under root dir.
-	     a) Found a lost+found, lost+found is a non-encrypted directory, set
-		lost+found as valid, otherwise set lost+found as invalid.
-	     b) Not found the lost+found, create a new one. If creation is
-	        failed by %ENOSPC, set lost+found as invalid.
- Step 17.Handle each file from the disconnected list.
-	 I. If lost+found is invalid, delete file for danger mode and normal
-	    mode with 'yes' answer, other modes will skip and set the exit code
-	    with %FSCK_UNCORRECTED.
-	 II. If lost+found is valid, link disconnected file under lost+found
-	     directory with the name of the corresponding inode number
-	     (INO_<inum>_<index>, index(starts from 0) is used to handle the
-	      conflicted names).
-	     a) Fails in handling conflicted file names, delete file for danger
-		mode and normal mode with 'yes' answer, other modes will skip
-		and set the exit code with %FSCK_UNCORRECTED.
-	     b) Fails in linking caused by %ENOSPC, delete file for danger mode
-	        and normal mode with 'yes' answer, other modes will skip and set
-		the exit code with %FSCK_UNCORRECTED.
- Step 18.Do final commit, commit problem fixing modifications to disk and clear
-         %UBIFS_MST_DIRTY flag for master node.
-
-
-Advantages
-==========
- 1. Can be used for any UBIFS image, fsck has nothing to do with kernel version.
- 2. Fsck is tolerant with power-cut, fsck will always succeed in a certain mode
-    without changing mode even power-cut happens in checking and repairing. In
-    other words, fsck won't let UBIFS image become worse in abnormal situations.
- 3. It is compatible with FSCK(8), the exit code returned by fsck.ubifs is same
-    as FSCK, the command options used by fsck are supported in fsck.ubifs too.
- 4. The UBIFS image can be fixed as long as the super block is not corrupted.
- 5. Encrypted UBIFS image is supported, because dentry name and data content of
-    file are not necessary for fsck.
-
-
-Limitations
-===========
- 1. UBIFS image file is not supported(Not like ext4). The UBIFS image file is
-    not equal to UBI volume, empty LEBs are not included in image file, so UBIFS
-    cannot allocate empty space when file recovering is needed. Another reason
-    is that atomic LEB changing is not supported by image file.
- 2. Authenticated UBIFS image is not supported, UBIFS metadata(TNC/LPT) parsing
-    depends on the authentication key which is not supported in fsck options.
-
-
-Testing
-=======
-
-We have seven testcases for fsck.ubifs on encryption/non-encryption
-situations(See details in tests/ubifs_tools-tests/README.txt):
- 1) authentication_refuse: Currently authenticated UBIFS image is not
-    supported for fsck.ubifs.
- 2) random_corrupted_fsck: Inject random corruption on UBIFS image
-    by writing random data on kinds of mtd devices (eg. nand, nor),
-    check the consistency of UBIFS after fsck.
-    This testcase simulate random bad UBIFS image caused by hardware
-    exceptions(eg. ecc uncorrectable, unwritten), and makes sure that
-    fsck.ubifs could make UBIFS be consistent after repairing UBIFS
-    image.
- 3) cycle_corrupted_fsck_fault_inject: Inject memory/io fault while
-    doing fsck for corrupted UBIFS images.
-    This testcase mainly checks whether fsck.ubifs has problems (eg.
-    UAF, null-ptr-def, etc.) in random error paths. Besides, it
-    provides a similar way to simulate powercut during fsck, and
-    checks whether the fsck.ubifs can fix an UBIFS image after many
-    rounds interrupted by kinds of errors.
-    I have run this case with valgrind[17] in my local machine to
-    check kinds of memory errors(eg. rw OOB, null-ptr-def).
- 4) cycle_powercut_mount_fsck: Inject powercut while doing fsstress
-    on mounted UBIFS, check the consistency of UBIFS after fsck.
-    This testscase mainly makes sure that fsck.ubifs can make UBIFS
-    image be consistent in common stress cases and powercut cases.
- 5) powercut_fsck_mount: Inject powercut while doing fsstress on
-    mounted UBIFS for kinds of flashes (eg. nand, nor).
-    This testcase mainly makes sure that fsck.ubifs can make UBIFS
-    image be consistent on different flashes (eg. nand, nor). Because
-    the min_io_size of nor flash is 1, the UBIFS image on nor flash
-    will be different from nand flash after doing powercut, so we need
-    make sure fsck.ubifs can handle these two types of flash.
- 6) cycle_mount_fsck_check: Do fsstress and fsck ubifs image, make
-    sure all files(and their data) are not lost after fsck.
-    This testcase mainly checks whether fsck.ubifs could corrupt the
-    filesystem content in common case.
- 7) fsck_bad_image: For kinds of inconsistent UBIFS images(which
-    can simulate corruptions caused by some potentional UBIFS bug),
-    check the result of fsck.
-    This testcase mainly checks whether the behavior is in expected
-    after repairing specific inconsistent UBIFS image.
-
-There is one testcase for mkfs.ubifs on encryption/non-encryption
-situations:
- 1) build_fs_from_dir: Initialize UBIFS image from a given directory,
-    then check whether the fs content in mounted UBIFS is consistent
-    with the original directory. Both UBI volume and file are chosen as
-    storage mediums to test. This testcase mainly ensures that
-    mkfs.ubifs can format an UBIFS image as user expected.
-
-Besides, I fix all corrupted UBIFS images(history problems in our
-product line) by fsck.ubifs.
-
-Environment: qemu, -smp 4, -m 16384/32768, nandsim/mtdram
-Code coverage[18]:
- fsck - Line 87.4%, functions 98.0%
- libubifs - Line 78.4%, functions 89.1%
- mkfs - Line 71.6%, functions 97.8%
-
-Notice
-------
-
-Before running testcases, please make sure that your linux kernel is
-updated to the latest version(v6.12-rc6).
-
-Patches
-=======
-1~8:   Some cleanups for mkfs.ubifs, split common libs into 'common'
-       directory.
-9:     Import linux kernel implementations into ubifs-utils/libubifs.
-       Prepare to replace implementations of UBIFS with linux kernel.
-10~23: Add some basic libs(bitops, mutex, rwsem, etc.) which will be used
-       by libubifs.
-24:    Add README for common directory to describe where these basic
-       libs come from.
-25~47: Adapt libubifs to userspace, delete codes which won't be used by
-       fsck/mkfs.
-48~53: Add basic framework fsck.
-54~66: Implement rebuild mode for fsck.
-67~88: Implement other modes(normal, danger, check) for fsck.
-89:    Add docs for fsck.
-90~100:Add testcases for fsck/mkfs.
-101   :Add docs for testcases.
-102   :Address-Sanitizier debug support for ubifs-utils.
-
-
-Links
-=====
-
-[1] https://lore.kernel.org/linux-mtd/1582293853-136727-1-git-send-email-chengzhihao1@huawei.com/
-[2] https://lore.kernel.org/linux-mtd/CAMxq0fNSWrUFMmmTs8Ri9gFOvS+KQJvZN3-_KuiqXi9bbmCB0Q@mail.gmail.com/
-[3] https://lore.kernel.org/linux-mtd/20211227032246.2886878-6-chengzhihao1@huawei.com/
-[4] https://lore.kernel.org/linux-mtd/1638777819.2925845.1695222544742.JavaMail.zimbra@robart.cc/T/#u
-[5] https://lore.kernel.org/linux-mtd/20190515203113.19398-1-richard@nod.at/
-[6] https://lore.kernel.org/linux-mtd/20190404223438.29408-1-richard@nod.at/
-[7] https://lore.kernel.org/linux-mtd/20210316085214.25024-1-guochun.mao@mediatek.com/
-[8] https://lore.kernel.org/linux-mtd/20180611225228.28931-1-richard@nod.at/
-[9] https://lore.kernel.org/linux-mtd/20180611214109.14424-1-richard@nod.at/
-[10] https://lore.kernel.org/linux-mtd/1476823591-6137-1-git-send-email-richard@nod.at/
-[11] https://lore.kernel.org/linux-mtd/1474495050-13529-1-git-send-email-pascal.eberhard@gmail.com/
-[12] https://lore.kernel.org/linux-mtd/1342340237-29656-1-git-send-email-dedekind1@gmail.com/
-[13] https://lore.kernel.org/linux-mtd/20240410073751.2522830-1-chengzhihao1@huawei.com/
-[14] https://linux-mtd.infradead.narkive.com/bfcHzD0j/ubi-ubifs-corruptions-during-random-power-cuts
-[15] https://lore.kernel.org/linux-mtd/97ca7fe4-4ad4-edd1-e97a-1d540aeabe2d@huawei.com/T/#u
-[16] https://lore.kernel.org/linux-mtd/20231228014112.2836317-1-chengzhihao1@huawei.com/
-[17] https://valgrind.org/
-[18] https://bugzilla.kernel.org/show_bug.cgi?id=218924
-
-
-Huang Xiaojia (1):
-  fsck.ubifs: Check and create the lost+found
-
-Xiang Yang (1):
-  fsck.ubifs: Check and correct files' information
-
-Zhihao Cheng (100):
-  ubifs-utils: Split common source files from mkfs.ubifs
-  ubifs-utils: Decouple mkfs.ubifs.h out of other modules
-  ubifs-utils: Define PROGRAM_NAME as variable
-  ubifs-utils: Clean up error message printing functions
-  ubifs-utils: Move 'debug_level' into ubifs_info structure
-  ubifs-utils: Add 'dev_name' into 'ubifs_info' structure
-  ubifs-utils: Add 'dev_fd' and 'libubi' into 'ubifs_info' structure
-  ubifs-utils: Extract UBI opening/closing/volume_check_empty functions
-    into a new source file
-  ubifs-utils: Import UBIFS libs from linux kernel
-  ubifs-utils: Add compiler attributes implementations
-  ubifs-utils: Add linux type definitions
-  ubifs-utils: Add linux kernel error conversion definitions
-  ubifs-utils: Add linux kernel memory allocation implementations
-  ubifs-utils: Add atomic implementations
-  ubifs-utils: Add bit operations implementations
-  ubifs-utils: Add spinlock implementations
-  ubifs-utils: Add mutexlock implementations
-  ubifs-utils: Add rwsem implementations
-  ubifs-utils: Add sorting implementations
-  ubifs-utils: Add implementations for linux kernel printing functions
-  ubifs-utils: Add linux hexdump implementations lib
-  libubi: Add new interface ubi_leb_map()
-  ubifs-utils: Add common definitions in linux kernel
-  ubifs-utils: Add descriptions for new lib files in common/README
-  ubifs-utils: Adapt ubifs header file in libubifs
-  ubifs-utils: Adapt super.c in libubifs
-  ubifs-utils: Adapt io.c in libubifs
-  ubifs-utils: Adapt lpt subsystem in libubifs
-  ubifs-utils: Adapt tnc subsystem in libubifs
-  ubifs-utils: Adapt log.c in libubifs
-  ubifs-utils: Adapt recovery subsystem in libubifs
-  ubifs-utils: Adapt sb.c in libubifs
-  ubifs-utils: Adapt auth.c in libubifs
-  ubifs-utils: Adapt dir.c in libubifs
-  ubifs-utils: Adapt journal.c in libubifs
-  ubifs-utils: Adapt budget.c in libubifs
-  ubifs-utils: Adapt commit.c in libubifs
-  ubifs-utils: Adapt debug subsystem in libubifs
-  ubifs-utils: Adapt key.h in libubifs
-  ubifs-utils: Adapt master.c in libubifs
-  ubifs-utils: Adapt misc.h in libubifs
-  ubifs-utils: Adapt orphan.c in libubifs
-  ubifs-utils: Adapt gc subsystem in libubifs
-  ubifs-utils: Move ubifs-media.h in libubifs
-  ubifs-utils: Add descriptions for new lib files in libubifs/README
-  ubifs-utils: Replace ubifs related source code with linux kernel
-    implementation
-  ubifs-utils: open_ubi: Set errno if the target is not char device
-  fsck.ubifs: Add fsck support
-  fsck.ubifs: Add inconsistent problem handling asking function
-  fsck.ubifs: Distinguish reasons when certain failures happen
-  fsck.ubifs: Load filesystem information from UBI volume
-  fsck.ubifs: Add node parsing functions
-  fsck.ubifs: Add file organization realization
-  fsck.ubifs: Add rebuilding filesystem support
-  fsck.ubifs: rebuild_fs: Remove deleted nodes from valid node tree
-  fsck.ubifs: rebuild_fs: Add valid nodes into file
-  fsck.ubifs: rebuild_fs: Filter invalid files
-  fsck.ubifs: rebuild_fs: Extract reachable directory entries tree
-  fsck.ubifs: rebuild_fs: Check and correct files' information
-  fsck.ubifs: rebuild_fs: Record used LEBs
-  fsck.ubifs: rebuild_fs: Re-write data
-  fsck.ubifs: rebuild_fs: Create new root dir if there are no scanned
-    files
-  fsck.ubifs: rebuild_fs: Build TNC
-  fsck.ubifs: rebuild_fs: Build LPT
-  fsck.ubifs: rebuild_fs: Clean up log and orphan area
-  fsck.ubifs: rebuild_fs: Write master node
-  fsck.ubifs: Read master node & init lpt
-  fsck.ubifs: Replay journal
-  fsck.ubifs: Handle orphan nodes
-  fsck.ubifs: Consolidate log
-  fsck.ubifs: Recover isize
-  fsck.ubifs: Move common functions and data structures into
-    fsck.ubifs.c
-  fsck.ubifs: Traverse TNC and construct files
-  fsck.ubifs: Ensure that TNC LEB can be scanned successful
-  fsck.ubifs: Update files' size for check mode
-  fsck.ubifs: Check and handle invalid files
-  fsck.ubifs: Check and handle unreachable files
-  fsck.ubifs: Check whether the TNC is empty
-  fsck.ubifs: Move common functions and data structures into
-    check_space.c
-  fsck.ubifs: check and correct the space statistics
-  fsck.ubifs: Commit problem fixing modifications to disk
-  fsck.ubifs: Check and correct the index size
-  ubifs-utils: libubifs: Support some file operations
-  fsck.ubifs: Check and create the root dir
-  fsck.ubifs: Handle disconnected files
-  fsck.ubifs: Do final committing
-  fsck.ubifs: Add README to describe fsck
-  tests: Add common libs for testing fsck.ubifs/mkfs.ubifs
-  tests: ubifs_tools: fsck_tests: Add authentication refusing test
-  tests: ubifs_tools: fsck_tests: Add cycle mount+fsck test
-  tests: ubifs_tools: fsck_tests: Add powercut+fsck+mount test
-  tests: ubifs_tools: fsck_tests: Add corrupt+fsck+fault_inject test
-  tests: ubifs_tools: fsck_tests: Add cycle_powercut+fsck test
-  tests: ubifs_tools: fsck_tests: Add random_corrupt+fsck test
-  tests: ubifs_tools: fsck_tests: Add corrupted images
-  tests: ubifs_tools: fsck_tests: Add bad images fixing test
-  tests: ubifs_tools: mkfs_tests: Add fs content check test
-  tests: ubifs_tools: Add run_all script
-  tests: ubifs_tools: Add README
-  ubifs-utils: Support Address-Sanitizier debug
-
- .gitignore                                         |   11 +
- Makefile.am                                        |    2 +
- configure.ac                                       |   28 +-
- include/crc32.h                                    |    5 +
- include/libubi.h                                   |   15 +
- lib/libubi.c                                       |   10 +
- tests/ubifs_tools-tests/Makemodule.am              |   66 +
- tests/ubifs_tools-tests/README.txt                 |  303 ++
- .../fsck_tests/authentication_refuse.sh.in         |   66 +
- .../cycle_corrupted_fsck_fault_inject.sh.in        |  225 ++
- .../fsck_tests/cycle_mount_fsck_check.sh.in        |  154 +
- .../fsck_tests/cycle_powercut_mount_fsck.sh.in     |  148 +
- .../fsck_tests/fsck_bad_image.sh.in                |  355 +++
- .../fsck_tests/powercut_fsck_mount.sh.in           |  148 +
- .../fsck_tests/random_corrupted_fsck.sh.in         |  206 ++
- .../ubifs_tools-tests/images/corrupted_data_leb.gz |  Bin 0 -> 9536 bytes
- .../ubifs_tools-tests/images/corrupted_idx_leb.gz  |  Bin 0 -> 5082 bytes
- tests/ubifs_tools-tests/images/dentry_key.gz       |  Bin 0 -> 5088 bytes
- tests/ubifs_tools-tests/images/dentry_nlen.gz      |  Bin 0 -> 5113 bytes
- tests/ubifs_tools-tests/images/dentry_type.gz      |  Bin 0 -> 5115 bytes
- tests/ubifs_tools-tests/images/dir_lost.gz         |  Bin 0 -> 5088 bytes
- .../images/dir_lost_duplicated.gz                  |  Bin 0 -> 5347 bytes
- .../images/dir_lost_not_recover.gz                 |  Bin 0 -> 5396 bytes
- tests/ubifs_tools-tests/images/dir_many_dentry.gz  |  Bin 0 -> 5114 bytes
- tests/ubifs_tools-tests/images/empty_tnc.gz        |  Bin 0 -> 4954 bytes
- tests/ubifs_tools-tests/images/good.gz             |  Bin 0 -> 4960 bytes
- tests/ubifs_tools-tests/images/index_size.gz       |  Bin 0 -> 5070 bytes
- tests/ubifs_tools-tests/images/inode_data.gz       |  Bin 0 -> 5015 bytes
- tests/ubifs_tools-tests/images/inode_mode.gz       |  Bin 0 -> 5109 bytes
- tests/ubifs_tools-tests/images/inode_nlink.gz      |  Bin 0 -> 5110 bytes
- tests/ubifs_tools-tests/images/inode_size.gz       |  Bin 0 -> 5113 bytes
- tests/ubifs_tools-tests/images/inode_xcnt.gz       |  Bin 0 -> 5115 bytes
- tests/ubifs_tools-tests/images/journal_bud.gz      |  Bin 0 -> 5015 bytes
- tests/ubifs_tools-tests/images/journal_log.gz      |  Bin 0 -> 4927 bytes
- tests/ubifs_tools-tests/images/lpt_dirty.gz        |  Bin 0 -> 5056 bytes
- tests/ubifs_tools-tests/images/lpt_flags.gz        |  Bin 0 -> 5060 bytes
- tests/ubifs_tools-tests/images/lpt_free.gz         |  Bin 0 -> 5046 bytes
- tests/ubifs_tools-tests/images/lpt_pos.gz          |  Bin 0 -> 5070 bytes
- tests/ubifs_tools-tests/images/ltab_dirty.gz       |  Bin 0 -> 5104 bytes
- tests/ubifs_tools-tests/images/ltab_free.gz        |  Bin 0 -> 5072 bytes
- .../images/master_highest_inum.gz                  |  Bin 0 -> 4813 bytes
- tests/ubifs_tools-tests/images/master_lpt.gz       |  Bin 0 -> 4808 bytes
- tests/ubifs_tools-tests/images/master_tnc.gz       |  Bin 0 -> 4805 bytes
- .../ubifs_tools-tests/images/master_total_dead.gz  |  Bin 0 -> 4817 bytes
- .../ubifs_tools-tests/images/master_total_dirty.gz |  Bin 0 -> 4814 bytes
- .../ubifs_tools-tests/images/master_total_free.gz  |  Bin 0 -> 4813 bytes
- tests/ubifs_tools-tests/images/orphan_node.gz      |  Bin 0 -> 5379 bytes
- tests/ubifs_tools-tests/images/root_dir.gz         |  Bin 0 -> 5058 bytes
- tests/ubifs_tools-tests/images/sb_fanout.gz        |  Bin 0 -> 5031 bytes
- tests/ubifs_tools-tests/images/sb_fmt_version.gz   |  Bin 0 -> 5032 bytes
- tests/ubifs_tools-tests/images/sb_leb_size.gz      |  Bin 0 -> 5033 bytes
- tests/ubifs_tools-tests/images/sb_log_lebs.gz      |  Bin 0 -> 5031 bytes
- tests/ubifs_tools-tests/images/sb_min_io_size.gz   |  Bin 0 -> 5035 bytes
- .../ubifs_tools-tests/images/soft_link_data_len.gz |  Bin 0 -> 5112 bytes
- .../images/soft_link_inode_mode.gz                 |  Bin 0 -> 5121 bytes
- tests/ubifs_tools-tests/images/tnc_lv0_key.gz      |  Bin 0 -> 5118 bytes
- tests/ubifs_tools-tests/images/tnc_lv0_len.gz      |  Bin 0 -> 5130 bytes
- tests/ubifs_tools-tests/images/tnc_lv0_pos.gz      |  Bin 0 -> 5118 bytes
- tests/ubifs_tools-tests/images/tnc_noleaf_key.gz   |  Bin 0 -> 5140 bytes
- tests/ubifs_tools-tests/images/tnc_noleaf_len.gz   |  Bin 0 -> 5145 bytes
- tests/ubifs_tools-tests/images/tnc_noleaf_pos.gz   |  Bin 0 -> 5125 bytes
- tests/ubifs_tools-tests/images/xent_host.gz        |  Bin 0 -> 5108 bytes
- tests/ubifs_tools-tests/images/xentry_key.gz       |  Bin 0 -> 5085 bytes
- tests/ubifs_tools-tests/images/xentry_nlen.gz      |  Bin 0 -> 5115 bytes
- tests/ubifs_tools-tests/images/xentry_type.gz      |  Bin 0 -> 5113 bytes
- tests/ubifs_tools-tests/images/xinode_flags.gz     |  Bin 0 -> 5112 bytes
- tests/ubifs_tools-tests/images/xinode_key.gz       |  Bin 0 -> 5110 bytes
- tests/ubifs_tools-tests/images/xinode_mode.gz      |  Bin 0 -> 5112 bytes
- tests/ubifs_tools-tests/lib/common.sh.in           |  359 +++
- .../mkfs_tests/build_fs_from_dir.sh.in             |  174 ++
- tests/ubifs_tools-tests/ubifs_tools_run_all.sh.in  |   65 +
- ubifs-utils/Makemodule.am                          |  123 +-
- ubifs-utils/common/README                          |   14 +
- ubifs-utils/common/atomic.h                        |  133 +
- ubifs-utils/common/bitops.c                        |   37 +
- ubifs-utils/common/bitops.h                        |  152 +
- ubifs-utils/common/compiler_attributes.h           |   79 +
- ubifs-utils/{mkfs.ubifs => common}/compr.c         |   19 +-
- ubifs-utils/{mkfs.ubifs => common}/compr.h         |    8 -
- ubifs-utils/{mkfs.ubifs => common}/crc16.c         |    0
- ubifs-utils/{mkfs.ubifs => common}/crc16.h         |    0
- ubifs-utils/{mkfs.ubifs => common}/crypto.c        |    6 +-
- ubifs-utils/{mkfs.ubifs => common}/crypto.h        |    0
- ubifs-utils/common/defs.h                          |  123 +
- ubifs-utils/{mkfs.ubifs => common}/devtable.c      |   94 +-
- .../{mkfs.ubifs/mkfs.ubifs.h => common/devtable.h} |   85 +-
- ubifs-utils/{mkfs.ubifs => common}/fscrypt.c       |   29 +-
- ubifs-utils/{mkfs.ubifs => common}/fscrypt.h       |   19 +-
- .../{mkfs.ubifs => common}/hashtable/hashtable.c   |   10 +-
- .../{mkfs.ubifs => common}/hashtable/hashtable.h   |    0
- .../hashtable/hashtable_itr.c                      |    0
- .../hashtable/hashtable_itr.h                      |    0
- .../hashtable/hashtable_private.h                  |    0
- ubifs-utils/common/hexdump.c                       |  218 ++
- ubifs-utils/common/kmem.c                          |   64 +
- ubifs-utils/common/kmem.h                          |   56 +
- ubifs-utils/common/linux_err.h                     |   62 +
- ubifs-utils/common/linux_types.h                   |   92 +
- ubifs-utils/common/mutex.h                         |   18 +
- ubifs-utils/common/rwsem.h                         |   19 +
- ubifs-utils/{mkfs.ubifs => common}/sign.c          |  177 +-
- ubifs-utils/common/sign.h                          |   39 +
- ubifs-utils/common/sort.c                          |  274 ++
- ubifs-utils/common/sort.h                          |   20 +
- ubifs-utils/common/spinlock.h                      |   14 +
- ubifs-utils/fsck.ubifs/.gitignore                  |    1 +
- ubifs-utils/fsck.ubifs/README.txt                  |  388 +++
- ubifs-utils/fsck.ubifs/check_files.c               |  555 ++++
- ubifs-utils/fsck.ubifs/check_space.c               |  690 +++++
- ubifs-utils/fsck.ubifs/extract_files.c             | 1574 ++++++++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.c                |  636 ++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h                |  392 +++
- ubifs-utils/fsck.ubifs/handle_disconnected.c       |  197 ++
- ubifs-utils/fsck.ubifs/load_fs.c                   |  261 ++
- ubifs-utils/fsck.ubifs/problem.c                   |  377 +++
- ubifs-utils/fsck.ubifs/rebuild_fs.c                | 1453 +++++++++
- ubifs-utils/libubifs/README                        |   30 +
- ubifs-utils/libubifs/auth.c                        |  175 ++
- ubifs-utils/libubifs/budget.c                      |  595 ++++
- ubifs-utils/libubifs/commit.c                      |  383 +++
- ubifs-utils/libubifs/debug.c                       | 1033 +++++++
- ubifs-utils/libubifs/debug.h                       |  172 ++
- ubifs-utils/libubifs/dir.c                         |  390 +++
- ubifs-utils/libubifs/find.c                        |  970 +++++++
- ubifs-utils/libubifs/gc.c                          | 1021 +++++++
- ubifs-utils/libubifs/io.c                          | 1088 +++++++
- ubifs-utils/libubifs/journal.c                     |  633 ++++
- ubifs-utils/libubifs/key.h                         |  492 ++++
- ubifs-utils/libubifs/log.c                         |  750 +++++
- ubifs-utils/libubifs/lprops.c                      |  864 ++++++
- ubifs-utils/libubifs/lpt.c                         | 2337 +++++++++++++++
- ubifs-utils/libubifs/lpt_commit.c                  | 1812 ++++++++++++
- ubifs-utils/libubifs/master.c                      |  489 ++++
- ubifs-utils/libubifs/misc.h                        |  225 ++
- ubifs-utils/libubifs/orphan.c                      |  644 ++++
- ubifs-utils/libubifs/recovery.c                    | 1404 +++++++++
- ubifs-utils/libubifs/replay.c                      | 1229 ++++++++
- ubifs-utils/libubifs/sb.c                          |  512 ++++
- ubifs-utils/libubifs/scan.c                        |  372 +++
- ubifs-utils/libubifs/super.c                       |  702 +++++
- ubifs-utils/libubifs/tnc.c                         | 3070 ++++++++++++++++++++
- ubifs-utils/libubifs/tnc_commit.c                  | 1117 +++++++
- ubifs-utils/libubifs/tnc_misc.c                    |  452 +++
- .../mtd => ubifs-utils/libubifs}/ubifs-media.h     |    0
- ubifs-utils/libubifs/ubifs.h                       | 1924 ++++++++++++
- ubifs-utils/mkfs.ubifs/README                      |    9 -
- ubifs-utils/mkfs.ubifs/defs.h                      |   90 -
- ubifs-utils/mkfs.ubifs/key.h                       |  222 --
- ubifs-utils/mkfs.ubifs/lpt.c                       |  590 ----
- ubifs-utils/mkfs.ubifs/lpt.h                       |   28 -
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c                |  613 ++--
- ubifs-utils/mkfs.ubifs/sign.h                      |   80 -
- ubifs-utils/mkfs.ubifs/ubifs.h                     |  471 ---
- 153 files changed, 35653 insertions(+), 2183 deletions(-)
- create mode 100644 tests/ubifs_tools-tests/Makemodule.am
- create mode 100644 tests/ubifs_tools-tests/README.txt
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/authentication_refuse.sh.in
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/cycle_corrupted_fsck_fault_inject.sh.in
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/cycle_mount_fsck_check.sh.in
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/cycle_powercut_mount_fsck.sh.in
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/fsck_bad_image.sh.in
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/powercut_fsck_mount.sh.in
- create mode 100755 tests/ubifs_tools-tests/fsck_tests/random_corrupted_fsck.sh.in
- create mode 100644 tests/ubifs_tools-tests/images/corrupted_data_leb.gz
- create mode 100644 tests/ubifs_tools-tests/images/corrupted_idx_leb.gz
- create mode 100644 tests/ubifs_tools-tests/images/dentry_key.gz
- create mode 100644 tests/ubifs_tools-tests/images/dentry_nlen.gz
- create mode 100644 tests/ubifs_tools-tests/images/dentry_type.gz
- create mode 100644 tests/ubifs_tools-tests/images/dir_lost.gz
- create mode 100644 tests/ubifs_tools-tests/images/dir_lost_duplicated.gz
- create mode 100644 tests/ubifs_tools-tests/images/dir_lost_not_recover.gz
- create mode 100644 tests/ubifs_tools-tests/images/dir_many_dentry.gz
- create mode 100644 tests/ubifs_tools-tests/images/empty_tnc.gz
- create mode 100644 tests/ubifs_tools-tests/images/good.gz
- create mode 100644 tests/ubifs_tools-tests/images/index_size.gz
- create mode 100644 tests/ubifs_tools-tests/images/inode_data.gz
- create mode 100644 tests/ubifs_tools-tests/images/inode_mode.gz
- create mode 100644 tests/ubifs_tools-tests/images/inode_nlink.gz
- create mode 100644 tests/ubifs_tools-tests/images/inode_size.gz
- create mode 100644 tests/ubifs_tools-tests/images/inode_xcnt.gz
- create mode 100644 tests/ubifs_tools-tests/images/journal_bud.gz
- create mode 100644 tests/ubifs_tools-tests/images/journal_log.gz
- create mode 100644 tests/ubifs_tools-tests/images/lpt_dirty.gz
- create mode 100644 tests/ubifs_tools-tests/images/lpt_flags.gz
- create mode 100644 tests/ubifs_tools-tests/images/lpt_free.gz
- create mode 100644 tests/ubifs_tools-tests/images/lpt_pos.gz
- create mode 100644 tests/ubifs_tools-tests/images/ltab_dirty.gz
- create mode 100644 tests/ubifs_tools-tests/images/ltab_free.gz
- create mode 100644 tests/ubifs_tools-tests/images/master_highest_inum.gz
- create mode 100644 tests/ubifs_tools-tests/images/master_lpt.gz
- create mode 100644 tests/ubifs_tools-tests/images/master_tnc.gz
- create mode 100644 tests/ubifs_tools-tests/images/master_total_dead.gz
- create mode 100644 tests/ubifs_tools-tests/images/master_total_dirty.gz
- create mode 100644 tests/ubifs_tools-tests/images/master_total_free.gz
- create mode 100644 tests/ubifs_tools-tests/images/orphan_node.gz
- create mode 100644 tests/ubifs_tools-tests/images/root_dir.gz
- create mode 100644 tests/ubifs_tools-tests/images/sb_fanout.gz
- create mode 100644 tests/ubifs_tools-tests/images/sb_fmt_version.gz
- create mode 100644 tests/ubifs_tools-tests/images/sb_leb_size.gz
- create mode 100644 tests/ubifs_tools-tests/images/sb_log_lebs.gz
- create mode 100644 tests/ubifs_tools-tests/images/sb_min_io_size.gz
- create mode 100644 tests/ubifs_tools-tests/images/soft_link_data_len.gz
- create mode 100644 tests/ubifs_tools-tests/images/soft_link_inode_mode.gz
- create mode 100644 tests/ubifs_tools-tests/images/tnc_lv0_key.gz
- create mode 100644 tests/ubifs_tools-tests/images/tnc_lv0_len.gz
- create mode 100644 tests/ubifs_tools-tests/images/tnc_lv0_pos.gz
- create mode 100644 tests/ubifs_tools-tests/images/tnc_noleaf_key.gz
- create mode 100644 tests/ubifs_tools-tests/images/tnc_noleaf_len.gz
- create mode 100644 tests/ubifs_tools-tests/images/tnc_noleaf_pos.gz
- create mode 100644 tests/ubifs_tools-tests/images/xent_host.gz
- create mode 100644 tests/ubifs_tools-tests/images/xentry_key.gz
- create mode 100644 tests/ubifs_tools-tests/images/xentry_nlen.gz
- create mode 100644 tests/ubifs_tools-tests/images/xentry_type.gz
- create mode 100644 tests/ubifs_tools-tests/images/xinode_flags.gz
- create mode 100644 tests/ubifs_tools-tests/images/xinode_key.gz
- create mode 100644 tests/ubifs_tools-tests/images/xinode_mode.gz
- create mode 100755 tests/ubifs_tools-tests/lib/common.sh.in
- create mode 100755 tests/ubifs_tools-tests/mkfs_tests/build_fs_from_dir.sh.in
- create mode 100755 tests/ubifs_tools-tests/ubifs_tools_run_all.sh.in
- create mode 100644 ubifs-utils/common/README
- create mode 100644 ubifs-utils/common/atomic.h
- create mode 100644 ubifs-utils/common/bitops.c
- create mode 100644 ubifs-utils/common/bitops.h
- create mode 100644 ubifs-utils/common/compiler_attributes.h
- rename ubifs-utils/{mkfs.ubifs => common}/compr.c (95%)
- rename ubifs-utils/{mkfs.ubifs => common}/compr.h (91%)
- rename ubifs-utils/{mkfs.ubifs => common}/crc16.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/crc16.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/crypto.c (98%)
- rename ubifs-utils/{mkfs.ubifs => common}/crypto.h (100%)
- create mode 100644 ubifs-utils/common/defs.h
- rename ubifs-utils/{mkfs.ubifs => common}/devtable.c (84%)
- rename ubifs-utils/{mkfs.ubifs/mkfs.ubifs.h => common/devtable.h} (53%)
- rename ubifs-utils/{mkfs.ubifs => common}/fscrypt.c (90%)
- rename ubifs-utils/{mkfs.ubifs => common}/fscrypt.h (91%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable.c (99%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable_itr.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable_itr.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable_private.h (100%)
- create mode 100644 ubifs-utils/common/hexdump.c
- create mode 100644 ubifs-utils/common/kmem.c
- create mode 100644 ubifs-utils/common/kmem.h
- create mode 100644 ubifs-utils/common/linux_err.h
- create mode 100644 ubifs-utils/common/linux_types.h
- create mode 100644 ubifs-utils/common/mutex.h
- create mode 100644 ubifs-utils/common/rwsem.h
- rename ubifs-utils/{mkfs.ubifs => common}/sign.c (66%)
- create mode 100644 ubifs-utils/common/sign.h
- create mode 100644 ubifs-utils/common/sort.c
- create mode 100644 ubifs-utils/common/sort.h
- create mode 100644 ubifs-utils/common/spinlock.h
- create mode 100644 ubifs-utils/fsck.ubifs/.gitignore
- create mode 100644 ubifs-utils/fsck.ubifs/README.txt
- create mode 100644 ubifs-utils/fsck.ubifs/check_files.c
- create mode 100644 ubifs-utils/fsck.ubifs/check_space.c
- create mode 100644 ubifs-utils/fsck.ubifs/extract_files.c
- create mode 100644 ubifs-utils/fsck.ubifs/fsck.ubifs.c
- create mode 100644 ubifs-utils/fsck.ubifs/fsck.ubifs.h
- create mode 100644 ubifs-utils/fsck.ubifs/handle_disconnected.c
- create mode 100644 ubifs-utils/fsck.ubifs/load_fs.c
- create mode 100644 ubifs-utils/fsck.ubifs/problem.c
- create mode 100644 ubifs-utils/fsck.ubifs/rebuild_fs.c
- create mode 100644 ubifs-utils/libubifs/README
- create mode 100644 ubifs-utils/libubifs/auth.c
- create mode 100644 ubifs-utils/libubifs/budget.c
- create mode 100644 ubifs-utils/libubifs/commit.c
- create mode 100644 ubifs-utils/libubifs/debug.c
- create mode 100644 ubifs-utils/libubifs/debug.h
- create mode 100644 ubifs-utils/libubifs/dir.c
- create mode 100644 ubifs-utils/libubifs/find.c
- create mode 100644 ubifs-utils/libubifs/gc.c
- create mode 100644 ubifs-utils/libubifs/io.c
- create mode 100644 ubifs-utils/libubifs/journal.c
- create mode 100644 ubifs-utils/libubifs/key.h
- create mode 100644 ubifs-utils/libubifs/log.c
- create mode 100644 ubifs-utils/libubifs/lprops.c
- create mode 100644 ubifs-utils/libubifs/lpt.c
- create mode 100644 ubifs-utils/libubifs/lpt_commit.c
- create mode 100644 ubifs-utils/libubifs/master.c
- create mode 100644 ubifs-utils/libubifs/misc.h
- create mode 100644 ubifs-utils/libubifs/orphan.c
- create mode 100644 ubifs-utils/libubifs/recovery.c
- create mode 100644 ubifs-utils/libubifs/replay.c
- create mode 100644 ubifs-utils/libubifs/sb.c
- create mode 100644 ubifs-utils/libubifs/scan.c
- create mode 100644 ubifs-utils/libubifs/super.c
- create mode 100644 ubifs-utils/libubifs/tnc.c
- create mode 100644 ubifs-utils/libubifs/tnc_commit.c
- create mode 100644 ubifs-utils/libubifs/tnc_misc.c
- rename {include/mtd => ubifs-utils/libubifs}/ubifs-media.h (100%)
- create mode 100644 ubifs-utils/libubifs/ubifs.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/README
- delete mode 100644 ubifs-utils/mkfs.ubifs/defs.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/key.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/lpt.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/lpt.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/sign.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/ubifs.h
-
+@@ -226,7 +231,6 @@ static void remove_from_lpt_heap(struct ubifs_info *c,
+ 		heap->arr[hpos]->hpos = hpos;
+ 		adjust_lpt_heap(c, heap, heap->arr[hpos], hpos, cat);
+ 	}
+-	dbg_check_heap(c, heap, cat, -1);
+ }
+ 
+ /**
+@@ -837,471 +841,3 @@ const struct ubifs_lprops *ubifs_fast_find_frdi_idx(struct ubifs_info *c)
+ 	ubifs_assert(c, lprops->free + lprops->dirty == c->leb_size);
+ 	return lprops;
+ }
+-
+-/*
+- * Everything below is related to debugging.
+- */
+-
+-/**
+- * dbg_check_cats - check category heaps and lists.
+- * @c: UBIFS file-system description object
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-int dbg_check_cats(struct ubifs_info *c)
+-{
+-	struct ubifs_lprops *lprops;
+-	struct list_head *pos;
+-	int i, cat;
+-
+-	if (!dbg_is_chk_gen(c) && !dbg_is_chk_lprops(c))
+-		return 0;
+-
+-	list_for_each_entry(lprops, &c->empty_list, list) {
+-		if (lprops->free != c->leb_size) {
+-			ubifs_err(c, "non-empty LEB %d on empty list (free %d dirty %d flags %d)",
+-				  lprops->lnum, lprops->free, lprops->dirty,
+-				  lprops->flags);
+-			return -EINVAL;
+-		}
+-		if (lprops->flags & LPROPS_TAKEN) {
+-			ubifs_err(c, "taken LEB %d on empty list (free %d dirty %d flags %d)",
+-				  lprops->lnum, lprops->free, lprops->dirty,
+-				  lprops->flags);
+-			return -EINVAL;
+-		}
+-	}
+-
+-	i = 0;
+-	list_for_each_entry(lprops, &c->freeable_list, list) {
+-		if (lprops->free + lprops->dirty != c->leb_size) {
+-			ubifs_err(c, "non-freeable LEB %d on freeable list (free %d dirty %d flags %d)",
+-				  lprops->lnum, lprops->free, lprops->dirty,
+-				  lprops->flags);
+-			return -EINVAL;
+-		}
+-		if (lprops->flags & LPROPS_TAKEN) {
+-			ubifs_err(c, "taken LEB %d on freeable list (free %d dirty %d flags %d)",
+-				  lprops->lnum, lprops->free, lprops->dirty,
+-				  lprops->flags);
+-			return -EINVAL;
+-		}
+-		i += 1;
+-	}
+-	if (i != c->freeable_cnt) {
+-		ubifs_err(c, "freeable list count %d expected %d", i,
+-			  c->freeable_cnt);
+-		return -EINVAL;
+-	}
+-
+-	i = 0;
+-	list_for_each(pos, &c->idx_gc)
+-		i += 1;
+-	if (i != c->idx_gc_cnt) {
+-		ubifs_err(c, "idx_gc list count %d expected %d", i,
+-			  c->idx_gc_cnt);
+-		return -EINVAL;
+-	}
+-
+-	list_for_each_entry(lprops, &c->frdi_idx_list, list) {
+-		if (lprops->free + lprops->dirty != c->leb_size) {
+-			ubifs_err(c, "non-freeable LEB %d on frdi_idx list (free %d dirty %d flags %d)",
+-				  lprops->lnum, lprops->free, lprops->dirty,
+-				  lprops->flags);
+-			return -EINVAL;
+-		}
+-		if (lprops->flags & LPROPS_TAKEN) {
+-			ubifs_err(c, "taken LEB %d on frdi_idx list (free %d dirty %d flags %d)",
+-				  lprops->lnum, lprops->free, lprops->dirty,
+-				  lprops->flags);
+-			return -EINVAL;
+-		}
+-		if (!(lprops->flags & LPROPS_INDEX)) {
+-			ubifs_err(c, "non-index LEB %d on frdi_idx list (free %d dirty %d flags %d)",
+-				  lprops->lnum, lprops->free, lprops->dirty,
+-				  lprops->flags);
+-			return -EINVAL;
+-		}
+-	}
+-
+-	for (cat = 1; cat <= LPROPS_HEAP_CNT; cat++) {
+-		struct ubifs_lpt_heap *heap = &c->lpt_heap[cat - 1];
+-
+-		for (i = 0; i < heap->cnt; i++) {
+-			lprops = heap->arr[i];
+-			if (!lprops) {
+-				ubifs_err(c, "null ptr in LPT heap cat %d", cat);
+-				return -EINVAL;
+-			}
+-			if (lprops->hpos != i) {
+-				ubifs_err(c, "bad ptr in LPT heap cat %d", cat);
+-				return -EINVAL;
+-			}
+-			if (lprops->flags & LPROPS_TAKEN) {
+-				ubifs_err(c, "taken LEB in LPT heap cat %d", cat);
+-				return -EINVAL;
+-			}
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-void dbg_check_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap, int cat,
+-		    int add_pos)
+-{
+-	int i = 0, j, err = 0;
+-
+-	if (!dbg_is_chk_gen(c) && !dbg_is_chk_lprops(c))
+-		return;
+-
+-	for (i = 0; i < heap->cnt; i++) {
+-		struct ubifs_lprops *lprops = heap->arr[i];
+-		struct ubifs_lprops *lp;
+-
+-		if (i != add_pos)
+-			if ((lprops->flags & LPROPS_CAT_MASK) != cat) {
+-				err = 1;
+-				goto out;
+-			}
+-		if (lprops->hpos != i) {
+-			err = 2;
+-			goto out;
+-		}
+-		lp = ubifs_lpt_lookup(c, lprops->lnum);
+-		if (IS_ERR(lp)) {
+-			err = 3;
+-			goto out;
+-		}
+-		if (lprops != lp) {
+-			ubifs_err(c, "lprops %zx lp %zx lprops->lnum %d lp->lnum %d",
+-				  (size_t)lprops, (size_t)lp, lprops->lnum,
+-				  lp->lnum);
+-			err = 4;
+-			goto out;
+-		}
+-		for (j = 0; j < i; j++) {
+-			lp = heap->arr[j];
+-			if (lp == lprops) {
+-				err = 5;
+-				goto out;
+-			}
+-			if (lp->lnum == lprops->lnum) {
+-				err = 6;
+-				goto out;
+-			}
+-		}
+-	}
+-out:
+-	if (err) {
+-		ubifs_err(c, "failed cat %d hpos %d err %d", cat, i, err);
+-		dump_stack();
+-		ubifs_dump_heap(c, heap, cat);
+-	}
+-}
+-
+-/**
+- * scan_check_cb - scan callback.
+- * @c: the UBIFS file-system description object
+- * @lp: LEB properties to scan
+- * @in_tree: whether the LEB properties are in main memory
+- * @lst: lprops statistics to update
+- *
+- * This function returns a code that indicates whether the scan should continue
+- * (%LPT_SCAN_CONTINUE), whether the LEB properties should be added to the tree
+- * in main memory (%LPT_SCAN_ADD), or whether the scan should stop
+- * (%LPT_SCAN_STOP).
+- */
+-static int scan_check_cb(struct ubifs_info *c,
+-			 const struct ubifs_lprops *lp, int in_tree,
+-			 struct ubifs_lp_stats *lst)
+-{
+-	struct ubifs_scan_leb *sleb;
+-	struct ubifs_scan_node *snod;
+-	int cat, lnum = lp->lnum, is_idx = 0, used = 0, free, dirty, ret;
+-	void *buf = NULL;
+-
+-	cat = lp->flags & LPROPS_CAT_MASK;
+-	if (cat != LPROPS_UNCAT) {
+-		cat = ubifs_categorize_lprops(c, lp);
+-		if (cat != (lp->flags & LPROPS_CAT_MASK)) {
+-			ubifs_err(c, "bad LEB category %d expected %d",
+-				  (lp->flags & LPROPS_CAT_MASK), cat);
+-			return -EINVAL;
+-		}
+-	}
+-
+-	/* Check lp is on its category list (if it has one) */
+-	if (in_tree) {
+-		struct list_head *list = NULL;
+-
+-		switch (cat) {
+-		case LPROPS_EMPTY:
+-			list = &c->empty_list;
+-			break;
+-		case LPROPS_FREEABLE:
+-			list = &c->freeable_list;
+-			break;
+-		case LPROPS_FRDI_IDX:
+-			list = &c->frdi_idx_list;
+-			break;
+-		case LPROPS_UNCAT:
+-			list = &c->uncat_list;
+-			break;
+-		}
+-		if (list) {
+-			struct ubifs_lprops *lprops;
+-			int found = 0;
+-
+-			list_for_each_entry(lprops, list, list) {
+-				if (lprops == lp) {
+-					found = 1;
+-					break;
+-				}
+-			}
+-			if (!found) {
+-				ubifs_err(c, "bad LPT list (category %d)", cat);
+-				return -EINVAL;
+-			}
+-		}
+-	}
+-
+-	/* Check lp is on its category heap (if it has one) */
+-	if (in_tree && cat > 0 && cat <= LPROPS_HEAP_CNT) {
+-		struct ubifs_lpt_heap *heap = &c->lpt_heap[cat - 1];
+-
+-		if ((lp->hpos != -1 && heap->arr[lp->hpos]->lnum != lnum) ||
+-		    lp != heap->arr[lp->hpos]) {
+-			ubifs_err(c, "bad LPT heap (category %d)", cat);
+-			return -EINVAL;
+-		}
+-	}
+-
+-	/*
+-	 * After an unclean unmount, empty and freeable LEBs
+-	 * may contain garbage - do not scan them.
+-	 */
+-	if (lp->free == c->leb_size) {
+-		lst->empty_lebs += 1;
+-		lst->total_free += c->leb_size;
+-		lst->total_dark += ubifs_calc_dark(c, c->leb_size);
+-		return LPT_SCAN_CONTINUE;
+-	}
+-	if (lp->free + lp->dirty == c->leb_size &&
+-	    !(lp->flags & LPROPS_INDEX)) {
+-		lst->total_free  += lp->free;
+-		lst->total_dirty += lp->dirty;
+-		lst->total_dark  +=  ubifs_calc_dark(c, c->leb_size);
+-		return LPT_SCAN_CONTINUE;
+-	}
+-
+-	buf = __vmalloc(c->leb_size, GFP_NOFS);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	sleb = ubifs_scan(c, lnum, 0, buf, 0);
+-	if (IS_ERR(sleb)) {
+-		ret = PTR_ERR(sleb);
+-		if (ret == -EUCLEAN) {
+-			ubifs_dump_lprops(c);
+-			ubifs_dump_budg(c, &c->bi);
+-		}
+-		goto out;
+-	}
+-
+-	is_idx = -1;
+-	list_for_each_entry(snod, &sleb->nodes, list) {
+-		int found, level = 0;
+-
+-		cond_resched();
+-
+-		if (is_idx == -1)
+-			is_idx = (snod->type == UBIFS_IDX_NODE) ? 1 : 0;
+-
+-		if (is_idx && snod->type != UBIFS_IDX_NODE) {
+-			ubifs_err(c, "indexing node in data LEB %d:%d",
+-				  lnum, snod->offs);
+-			goto out_destroy;
+-		}
+-
+-		if (snod->type == UBIFS_IDX_NODE) {
+-			struct ubifs_idx_node *idx = snod->node;
+-
+-			key_read(c, ubifs_idx_key(c, idx), &snod->key);
+-			level = le16_to_cpu(idx->level);
+-		}
+-
+-		found = ubifs_tnc_has_node(c, &snod->key, level, lnum,
+-					   snod->offs, is_idx);
+-		if (found) {
+-			if (found < 0)
+-				goto out_destroy;
+-			used += ALIGN(snod->len, 8);
+-		}
+-	}
+-
+-	free = c->leb_size - sleb->endpt;
+-	dirty = sleb->endpt - used;
+-
+-	if (free > c->leb_size || free < 0 || dirty > c->leb_size ||
+-	    dirty < 0) {
+-		ubifs_err(c, "bad calculated accounting for LEB %d: free %d, dirty %d",
+-			  lnum, free, dirty);
+-		goto out_destroy;
+-	}
+-
+-	if (lp->free + lp->dirty == c->leb_size &&
+-	    free + dirty == c->leb_size)
+-		if ((is_idx && !(lp->flags & LPROPS_INDEX)) ||
+-		    (!is_idx && free == c->leb_size) ||
+-		    lp->free == c->leb_size) {
+-			/*
+-			 * Empty or freeable LEBs could contain index
+-			 * nodes from an uncompleted commit due to an
+-			 * unclean unmount. Or they could be empty for
+-			 * the same reason. Or it may simply not have been
+-			 * unmapped.
+-			 */
+-			free = lp->free;
+-			dirty = lp->dirty;
+-			is_idx = 0;
+-		    }
+-
+-	if (is_idx && lp->free + lp->dirty == free + dirty &&
+-	    lnum != c->ihead_lnum) {
+-		/*
+-		 * After an unclean unmount, an index LEB could have a different
+-		 * amount of free space than the value recorded by lprops. That
+-		 * is because the in-the-gaps method may use free space or
+-		 * create free space (as a side-effect of using ubi_leb_change
+-		 * and not writing the whole LEB). The incorrect free space
+-		 * value is not a problem because the index is only ever
+-		 * allocated empty LEBs, so there will never be an attempt to
+-		 * write to the free space at the end of an index LEB - except
+-		 * by the in-the-gaps method for which it is not a problem.
+-		 */
+-		free = lp->free;
+-		dirty = lp->dirty;
+-	}
+-
+-	if (lp->free != free || lp->dirty != dirty)
+-		goto out_print;
+-
+-	if (is_idx && !(lp->flags & LPROPS_INDEX)) {
+-		if (free == c->leb_size)
+-			/* Free but not unmapped LEB, it's fine */
+-			is_idx = 0;
+-		else {
+-			ubifs_err(c, "indexing node without indexing flag");
+-			goto out_print;
+-		}
+-	}
+-
+-	if (!is_idx && (lp->flags & LPROPS_INDEX)) {
+-		ubifs_err(c, "data node with indexing flag");
+-		goto out_print;
+-	}
+-
+-	if (free == c->leb_size)
+-		lst->empty_lebs += 1;
+-
+-	if (is_idx)
+-		lst->idx_lebs += 1;
+-
+-	if (!(lp->flags & LPROPS_INDEX))
+-		lst->total_used += c->leb_size - free - dirty;
+-	lst->total_free += free;
+-	lst->total_dirty += dirty;
+-
+-	if (!(lp->flags & LPROPS_INDEX)) {
+-		int spc = free + dirty;
+-
+-		if (spc < c->dead_wm)
+-			lst->total_dead += spc;
+-		else
+-			lst->total_dark += ubifs_calc_dark(c, spc);
+-	}
+-
+-	ubifs_scan_destroy(sleb);
+-	vfree(buf);
+-	return LPT_SCAN_CONTINUE;
+-
+-out_print:
+-	ubifs_err(c, "bad accounting of LEB %d: free %d, dirty %d flags %#x, should be free %d, dirty %d",
+-		  lnum, lp->free, lp->dirty, lp->flags, free, dirty);
+-	ubifs_dump_leb(c, lnum);
+-out_destroy:
+-	ubifs_scan_destroy(sleb);
+-	ret = -EINVAL;
+-out:
+-	vfree(buf);
+-	return ret;
+-}
+-
+-/**
+- * dbg_check_lprops - check all LEB properties.
+- * @c: UBIFS file-system description object
+- *
+- * This function checks all LEB properties and makes sure they are all correct.
+- * It returns zero if everything is fine, %-EINVAL if there is an inconsistency
+- * and other negative error codes in case of other errors. This function is
+- * called while the file system is locked (because of commit start), so no
+- * additional locking is required. Note that locking the LPT mutex would cause
+- * a circular lock dependency with the TNC mutex.
+- */
+-int dbg_check_lprops(struct ubifs_info *c)
+-{
+-	int i, err;
+-	struct ubifs_lp_stats lst;
+-
+-	if (!dbg_is_chk_lprops(c))
+-		return 0;
+-
+-	/*
+-	 * As we are going to scan the media, the write buffers have to be
+-	 * synchronized.
+-	 */
+-	for (i = 0; i < c->jhead_cnt; i++) {
+-		err = ubifs_wbuf_sync(&c->jheads[i].wbuf);
+-		if (err)
+-			return err;
+-	}
+-
+-	memset(&lst, 0, sizeof(struct ubifs_lp_stats));
+-	err = ubifs_lpt_scan_nolock(c, c->main_first, c->leb_cnt - 1,
+-				    (ubifs_lpt_scan_callback)scan_check_cb,
+-				    &lst);
+-	if (err && err != -ENOSPC)
+-		goto out;
+-
+-	if (lst.empty_lebs != c->lst.empty_lebs ||
+-	    lst.idx_lebs != c->lst.idx_lebs ||
+-	    lst.total_free != c->lst.total_free ||
+-	    lst.total_dirty != c->lst.total_dirty ||
+-	    lst.total_used != c->lst.total_used) {
+-		ubifs_err(c, "bad overall accounting");
+-		ubifs_err(c, "calculated: empty_lebs %d, idx_lebs %d, total_free %lld, total_dirty %lld, total_used %lld",
+-			  lst.empty_lebs, lst.idx_lebs, lst.total_free,
+-			  lst.total_dirty, lst.total_used);
+-		ubifs_err(c, "read from lprops: empty_lebs %d, idx_lebs %d, total_free %lld, total_dirty %lld, total_used %lld",
+-			  c->lst.empty_lebs, c->lst.idx_lebs, c->lst.total_free,
+-			  c->lst.total_dirty, c->lst.total_used);
+-		err = -EINVAL;
+-		goto out;
+-	}
+-
+-	if (lst.total_dead != c->lst.total_dead ||
+-	    lst.total_dark != c->lst.total_dark) {
+-		ubifs_err(c, "bad dead/dark space accounting");
+-		ubifs_err(c, "calculated: total_dead %lld, total_dark %lld",
+-			  lst.total_dead, lst.total_dark);
+-		ubifs_err(c, "read from lprops: total_dead %lld, total_dark %lld",
+-			  c->lst.total_dead, c->lst.total_dark);
+-		err = -EINVAL;
+-		goto out;
+-	}
+-
+-	err = dbg_check_cats(c);
+-out:
+-	return err;
+-}
+diff --git a/ubifs-utils/libubifs/lpt.c b/ubifs-utils/libubifs/lpt.c
+index 1889170b..92b3fec8 100644
+--- a/ubifs-utils/libubifs/lpt.c
++++ b/ubifs-utils/libubifs/lpt.c
+@@ -31,10 +31,13 @@
+  * mounted.
+  */
+ 
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
++#include "crc16.h"
+ #include "ubifs.h"
+-#include <linux/crc16.h>
+-#include <linux/math64.h>
+-#include <linux/slab.h>
++#include "defs.h"
++#include "debug.h"
+ 
+ /**
+  * do_calc_lpt_geom - calculate sizes for the LPT area.
+@@ -48,8 +51,20 @@ static void do_calc_lpt_geom(struct ubifs_info *c)
+ 	int i, n, bits, per_leb_wastage, max_pnode_cnt;
+ 	long long sz, tot_wastage;
+ 
+-	n = c->main_lebs + c->max_leb_cnt - c->leb_cnt;
+-	max_pnode_cnt = DIV_ROUND_UP(n, UBIFS_LPT_FANOUT);
++	if (c->program_type != MKFS_PROGRAM_TYPE) {
++		n = c->main_lebs + c->max_leb_cnt - c->leb_cnt;
++		max_pnode_cnt = DIV_ROUND_UP(n, UBIFS_LPT_FANOUT);
++	} else {
++		/*
++		 * Different from linux kernel.
++		 *
++		 * We change it, because 'c->leb_cnt' is not initialized in
++		 * mkfs.ubifs when do_calc_lpt_geom() is invoked, 'c->main_lebs'
++		 * is calculated by 'c->max_leb_cnt', so the 'c->lpt_hght'
++		 * should be calculated by 'c->main_lebs'.
++		 */
++		max_pnode_cnt = DIV_ROUND_UP(c->main_lebs, UBIFS_LPT_FANOUT);
++	}
+ 
+ 	c->lpt_hght = 1;
+ 	n = UBIFS_LPT_FANOUT;
+@@ -148,7 +163,7 @@ int ubifs_calc_lpt_geom(struct ubifs_info *c)
+ }
+ 
+ /**
+- * calc_dflt_lpt_geom - calculate default LPT geometry.
++ * ubifs_calc_dflt_lpt_geom - calculate default LPT geometry.
+  * @c: the UBIFS file-system description object
+  * @main_lebs: number of main area LEBs is passed and returned here
+  * @big_lpt: whether the LPT area is "big" is returned here
+@@ -159,8 +174,7 @@ int ubifs_calc_lpt_geom(struct ubifs_info *c)
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+-static int calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs,
+-			      int *big_lpt)
++int ubifs_calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs, int *big_lpt)
+ {
+ 	int i, lebs_needed;
+ 	long long sz;
+@@ -275,7 +289,7 @@ uint32_t ubifs_unpack_bits(const struct ubifs_info *c, uint8_t **addr, int *pos,
+ 	const int k = 32 - nrbits;
+ 	uint8_t *p = *addr;
+ 	int b = *pos;
+-	uint32_t val;
++	uint32_t val = 0;
+ 	const int bytes = (nrbits + b + 7) >> 3;
+ 
+ 	ubifs_assert(c, nrbits > 0);
+@@ -638,8 +652,13 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 	lnum = c->lpt_first;
+ 	p = buf;
+ 	len = 0;
+-	/* Number of leaf nodes (pnodes) */
+-	cnt = c->pnode_cnt;
++	/*
++	 * Different from linux kernel. The number of leaf nodes (pnodes) should
++	 * be calculated by the number of current main LEBs. The 'c->pnode_cnt'
++	 * may not be equal to 'DIV_ROUND_UP(c->main_lebs, UBIFS_LPT_FANOUT)' in
++	 * mkfs when 'c->leb_cnt != c->max_leb_cnt' is true.
++	 */
++	cnt = DIV_ROUND_UP(c->main_lebs, UBIFS_LPT_FANOUT);
+ 
+ 	/*
+ 	 * To calculate the internal node branches, we keep information about
+@@ -655,8 +674,19 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 		if (len + c->pnode_sz > c->leb_size) {
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+-			memset(p, 0xff, alen - len);
+-			err = ubifs_leb_change(c, lnum++, buf, alen);
++			/*
++			 * Different from linux kernel.
++			 * The mkfs may partially write data into a certain LEB
++			 * of file image, the left unwritten area in the LEB
++			 * should be filled with '0xFF'.
++			 */
++			if (c->libubi) {
++				memset(p, 0xff, alen - len);
++				err = ubifs_leb_change(c, lnum++, buf, alen);
++			} else {
++				memset(p, 0xff, c->leb_size - len);
++				err = ubifs_leb_change(c, lnum++, buf, c->leb_size);
++			}
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -691,27 +721,45 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 		pnode->num += 1;
+ 	}
+ 
+-	row = 0;
+-	for (i = UBIFS_LPT_FANOUT; cnt > i; i <<= UBIFS_LPT_FANOUT_SHIFT)
+-		row += 1;
++	/*
++	 * Different from linux kernel. The 'c->lpt_hght' is calculated by the
++	 * 'c->max_leb_cnt', according to the implementation of function
++	 * ubifs_pnode_lookup(), there are at least 'c->lpt_hght' cnodes should
++	 * be created, otherwise the LPT looking up could be failed after
++	 * mouting.
++	 */
++	row = c->lpt_hght - 1;
+ 	/* Add all nnodes, one level at a time */
+ 	while (1) {
+ 		/* Number of internal nodes (nnodes) at next level */
+ 		cnt = DIV_ROUND_UP(cnt, UBIFS_LPT_FANOUT);
++		if (cnt == 0)
++			cnt = 1;
+ 		for (i = 0; i < cnt; i++) {
+ 			if (len + c->nnode_sz > c->leb_size) {
+ 				alen = ALIGN(len, c->min_io_size);
+ 				set_ltab(c, lnum, c->leb_size - alen,
+ 					    alen - len);
+-				memset(p, 0xff, alen - len);
+-				err = ubifs_leb_change(c, lnum++, buf, alen);
++				/*
++				 * Different from linux kernel.
++				 * The mkfs may partially write data into a certain LEB
++				 * of file image, the left unwritten area in the LEB
++				 * should be filled with '0xFF'.
++				 */
++				if (c->libubi) {
++					memset(p, 0xff, alen - len);
++					err = ubifs_leb_change(c, lnum++, buf, alen);
++				} else {
++					memset(p, 0xff, c->leb_size - len);
++					err = ubifs_leb_change(c, lnum++, buf, c->leb_size);
++				}
+ 				if (err)
+ 					goto out;
+ 				p = buf;
+ 				len = 0;
+ 			}
+ 			/* Only 1 nnode at this level, so it is the root */
+-			if (cnt == 1) {
++			if (row == 0) {
+ 				c->lpt_lnum = lnum;
+ 				c->lpt_offs = len;
+ 			}
+@@ -736,8 +784,8 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 			p += c->nnode_sz;
+ 			len += c->nnode_sz;
+ 		}
+-		/* Only 1 nnode at this level, so it is the root */
+-		if (cnt == 1)
++		/* Row zero  is the top row */
++		if (row == 0)
+ 			break;
+ 		/* Update the information about the level below */
+ 		bcnt = cnt;
+@@ -750,8 +798,19 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 		if (len + c->lsave_sz > c->leb_size) {
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+-			memset(p, 0xff, alen - len);
+-			err = ubifs_leb_change(c, lnum++, buf, alen);
++			/*
++			 * Different from linux kernel.
++			 * The mkfs may partially write data into a certain LEB
++			 * of file image, the left unwritten area in the LEB
++			 * should be filled with '0xFF'.
++			 */
++			if (c->libubi) {
++				memset(p, 0xff, alen - len);
++				err = ubifs_leb_change(c, lnum++, buf, alen);
++			} else {
++				memset(p, 0xff, c->leb_size - len);
++				err = ubifs_leb_change(c, lnum++, buf, c->leb_size);
++			}
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -775,8 +834,19 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 	if (len + c->ltab_sz > c->leb_size) {
+ 		alen = ALIGN(len, c->min_io_size);
+ 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
+-		memset(p, 0xff, alen - len);
+-		err = ubifs_leb_change(c, lnum++, buf, alen);
++		/*
++		 * Different from linux kernel.
++		 * The mkfs may partially write data into a certain LEB
++		 * of file image, the left unwritten area in the LEB
++		 * should be filled with '0xFF'.
++		 */
++		if (c->libubi) {
++			memset(p, 0xff, alen - len);
++			err = ubifs_leb_change(c, lnum++, buf, alen);
++		} else {
++			memset(p, 0xff, c->leb_size - len);
++			err = ubifs_leb_change(c, lnum++, buf, c->leb_size);
++		}
+ 		if (err)
+ 			goto out;
+ 		p = buf;
+@@ -795,11 +865,25 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 	p += c->ltab_sz;
+ 
+ 	/* Write remaining buffer */
+-	memset(p, 0xff, alen - len);
+-	err = ubifs_leb_change(c, lnum, buf, alen);
++	/*
++	 * Different from linux kernel.
++	 * The mkfs may partially write data into a certain LEB
++	 * of file image, the left unwritten area in the LEB
++	 * should be filled with '0xFF'.
++	 */
++	if (c->libubi) {
++		memset(p, 0xff, alen - len);
++		err = ubifs_leb_change(c, lnum, buf, alen);
++	} else {
++		memset(p, 0xff, c->leb_size - len);
++		err = ubifs_leb_change(c, lnum, buf, c->leb_size);
++	}
+ 	if (err)
+ 		goto out;
+ 
++	if (c->big_lpt && c->lsave)
++		memcpy(c->lsave, lsave, c->lsave_cnt * sizeof(int));
++
+ 	err = ubifs_shash_final(c, desc, hash);
+ 	if (err)
+ 		goto out;
+@@ -837,54 +921,6 @@ out:
+ }
+ 
+ /**
+- * ubifs_create_dflt_lpt - create default LPT.
+- * @c: UBIFS file-system description object
+- * @main_lebs: number of main area LEBs is passed and returned here
+- * @lpt_first: LEB number of first LPT LEB
+- * @lpt_lebs: number of LEBs for LPT is passed and returned here
+- * @big_lpt: use big LPT model is passed and returned here
+- * @hash: hash of the LPT is returned here
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+-			  int *lpt_lebs, int *big_lpt, u8 *hash)
+-{
+-	int node_sz, iopos, err = 0;
+-	struct ubifs_lprops lps[2];
+-
+-	err = calc_dflt_lpt_geom(c, main_lebs, big_lpt);
+-	if (err)
+-		return err;
+-	*lpt_lebs = c->lpt_lebs;
+-
+-	/* Needed by 'ubifs_pack_nnode()' and 'set_ltab()' */
+-	c->lpt_first = lpt_first;
+-	/* Needed by 'set_ltab()' */
+-	c->lpt_last = lpt_first + c->lpt_lebs - 1;
+-	/* Needed by 'ubifs_pack_lsave()' */
+-	c->main_first = c->leb_cnt - *main_lebs;
+-
+-	/*
+-	 * The first pnode contains the LEB properties for the LEBs that contain
+-	 * the root inode node and the root index node of the index tree.
+-	 */
+-	node_sz = ALIGN(ubifs_idx_node_sz(c, 1), 8);
+-	iopos = ALIGN(node_sz, c->min_io_size);
+-	lps[0].free = c->leb_size - iopos;
+-	lps[0].dirty = iopos - node_sz;
+-	lps[0].flags = LPROPS_INDEX;
+-
+-	node_sz = UBIFS_INO_NODE_SZ;
+-	iopos = ALIGN(node_sz, c->min_io_size);
+-	lps[1].free = c->leb_size - iopos;
+-	lps[1].dirty = iopos - node_sz;
+-	lps[1].flags = 0;
+-
+-	return ubifs_create_lpt(c, lps, 2, hash);
+-}
+-
+-/**
+  * update_cats - add LEB properties of a pnode to LEB category lists and heaps.
+  * @c: UBIFS file-system description object
+  * @pnode: pnode
+@@ -2254,198 +2290,3 @@ out:
+ 	kfree(path);
+ 	return err;
+ }
+-
+-/**
+- * dbg_chk_pnode - check a pnode.
+- * @c: the UBIFS file-system description object
+- * @pnode: pnode to check
+- * @col: pnode column
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-static int dbg_chk_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
+-			 int col)
+-{
+-	int i;
+-
+-	if (pnode->num != col) {
+-		ubifs_err(c, "pnode num %d expected %d parent num %d iip %d",
+-			  pnode->num, col, pnode->parent->num, pnode->iip);
+-		return -EINVAL;
+-	}
+-	for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
+-		struct ubifs_lprops *lp, *lprops = &pnode->lprops[i];
+-		int lnum = (pnode->num << UBIFS_LPT_FANOUT_SHIFT) + i +
+-			   c->main_first;
+-		int found, cat = lprops->flags & LPROPS_CAT_MASK;
+-		struct ubifs_lpt_heap *heap;
+-		struct list_head *list = NULL;
+-
+-		if (lnum >= c->leb_cnt)
+-			continue;
+-		if (lprops->lnum != lnum) {
+-			ubifs_err(c, "bad LEB number %d expected %d",
+-				  lprops->lnum, lnum);
+-			return -EINVAL;
+-		}
+-		if (lprops->flags & LPROPS_TAKEN) {
+-			if (cat != LPROPS_UNCAT) {
+-				ubifs_err(c, "LEB %d taken but not uncat %d",
+-					  lprops->lnum, cat);
+-				return -EINVAL;
+-			}
+-			continue;
+-		}
+-		if (lprops->flags & LPROPS_INDEX) {
+-			switch (cat) {
+-			case LPROPS_UNCAT:
+-			case LPROPS_DIRTY_IDX:
+-			case LPROPS_FRDI_IDX:
+-				break;
+-			default:
+-				ubifs_err(c, "LEB %d index but cat %d",
+-					  lprops->lnum, cat);
+-				return -EINVAL;
+-			}
+-		} else {
+-			switch (cat) {
+-			case LPROPS_UNCAT:
+-			case LPROPS_DIRTY:
+-			case LPROPS_FREE:
+-			case LPROPS_EMPTY:
+-			case LPROPS_FREEABLE:
+-				break;
+-			default:
+-				ubifs_err(c, "LEB %d not index but cat %d",
+-					  lprops->lnum, cat);
+-				return -EINVAL;
+-			}
+-		}
+-		switch (cat) {
+-		case LPROPS_UNCAT:
+-			list = &c->uncat_list;
+-			break;
+-		case LPROPS_EMPTY:
+-			list = &c->empty_list;
+-			break;
+-		case LPROPS_FREEABLE:
+-			list = &c->freeable_list;
+-			break;
+-		case LPROPS_FRDI_IDX:
+-			list = &c->frdi_idx_list;
+-			break;
+-		}
+-		found = 0;
+-		switch (cat) {
+-		case LPROPS_DIRTY:
+-		case LPROPS_DIRTY_IDX:
+-		case LPROPS_FREE:
+-			heap = &c->lpt_heap[cat - 1];
+-			if (lprops->hpos < heap->cnt &&
+-			    heap->arr[lprops->hpos] == lprops)
+-				found = 1;
+-			break;
+-		case LPROPS_UNCAT:
+-		case LPROPS_EMPTY:
+-		case LPROPS_FREEABLE:
+-		case LPROPS_FRDI_IDX:
+-			list_for_each_entry(lp, list, list)
+-				if (lprops == lp) {
+-					found = 1;
+-					break;
+-				}
+-			break;
+-		}
+-		if (!found) {
+-			ubifs_err(c, "LEB %d cat %d not found in cat heap/list",
+-				  lprops->lnum, cat);
+-			return -EINVAL;
+-		}
+-		switch (cat) {
+-		case LPROPS_EMPTY:
+-			if (lprops->free != c->leb_size) {
+-				ubifs_err(c, "LEB %d cat %d free %d dirty %d",
+-					  lprops->lnum, cat, lprops->free,
+-					  lprops->dirty);
+-				return -EINVAL;
+-			}
+-			break;
+-		case LPROPS_FREEABLE:
+-		case LPROPS_FRDI_IDX:
+-			if (lprops->free + lprops->dirty != c->leb_size) {
+-				ubifs_err(c, "LEB %d cat %d free %d dirty %d",
+-					  lprops->lnum, cat, lprops->free,
+-					  lprops->dirty);
+-				return -EINVAL;
+-			}
+-			break;
+-		}
+-	}
+-	return 0;
+-}
+-
+-/**
+- * dbg_check_lpt_nodes - check nnodes and pnodes.
+- * @c: the UBIFS file-system description object
+- * @cnode: next cnode (nnode or pnode) to check
+- * @row: row of cnode (root is zero)
+- * @col: column of cnode (leftmost is zero)
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-int dbg_check_lpt_nodes(struct ubifs_info *c, struct ubifs_cnode *cnode,
+-			int row, int col)
+-{
+-	struct ubifs_nnode *nnode, *nn;
+-	struct ubifs_cnode *cn;
+-	int num, iip = 0, err;
+-
+-	if (!dbg_is_chk_lprops(c))
+-		return 0;
+-
+-	while (cnode) {
+-		ubifs_assert(c, row >= 0);
+-		nnode = cnode->parent;
+-		if (cnode->level) {
+-			/* cnode is a nnode */
+-			num = calc_nnode_num(row, col);
+-			if (cnode->num != num) {
+-				ubifs_err(c, "nnode num %d expected %d parent num %d iip %d",
+-					  cnode->num, num,
+-					  (nnode ? nnode->num : 0), cnode->iip);
+-				return -EINVAL;
+-			}
+-			nn = (struct ubifs_nnode *)cnode;
+-			while (iip < UBIFS_LPT_FANOUT) {
+-				cn = nn->nbranch[iip].cnode;
+-				if (cn) {
+-					/* Go down */
+-					row += 1;
+-					col <<= UBIFS_LPT_FANOUT_SHIFT;
+-					col += iip;
+-					iip = 0;
+-					cnode = cn;
+-					break;
+-				}
+-				/* Go right */
+-				iip += 1;
+-			}
+-			if (iip < UBIFS_LPT_FANOUT)
+-				continue;
+-		} else {
+-			struct ubifs_pnode *pnode;
+-
+-			/* cnode is a pnode */
+-			pnode = (struct ubifs_pnode *)cnode;
+-			err = dbg_chk_pnode(c, pnode, col);
+-			if (err)
+-				return err;
+-		}
+-		/* Go up and to the right */
+-		row -= 1;
+-		col >>= UBIFS_LPT_FANOUT_SHIFT;
+-		iip = cnode->iip + 1;
+-		cnode = (struct ubifs_cnode *)nnode;
+-	}
+-	return 0;
+-}
+diff --git a/ubifs-utils/libubifs/lpt_commit.c b/ubifs-utils/libubifs/lpt_commit.c
+index c4d07932..b00f75f0 100644
+--- a/ubifs-utils/libubifs/lpt_commit.c
++++ b/ubifs-utils/libubifs/lpt_commit.c
+@@ -13,10 +13,14 @@
+  * subsystem.
+  */
+ 
+-#include <linux/crc16.h>
+-#include <linux/slab.h>
+-#include <linux/random.h>
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
++#include "crc16.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "misc.h"
+ 
+ static int dbg_populate_lsave(struct ubifs_info *c);
+ 
+@@ -1030,7 +1034,8 @@ static int get_lpt_node_len(const struct ubifs_info *c, int node_type)
+  * @buf: buffer
+  * @len: length of buffer
+  */
+-static int get_pad_len(const struct ubifs_info *c, uint8_t *buf, int len)
++static int get_pad_len(const struct ubifs_info *c, __unused uint8_t *buf,
++		       int len)
+ {
+ 	int offs, pad_len;
+ 
+@@ -1593,9 +1598,6 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
+ 	int ret;
+ 	void *buf, *p;
+ 
+-	if (!dbg_is_chk_lprops(c))
+-		return 0;
+-
+ 	buf = p = __vmalloc(c->leb_size, GFP_NOFS);
+ 	if (!buf) {
+ 		ubifs_err(c, "cannot allocate memory for ltab checking");
+@@ -1646,190 +1648,12 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
+ 		len -= node_len;
+ 	}
+ 
+-	err = 0;
+ out:
+ 	vfree(buf);
+ 	return err;
+ }
+ 
+ /**
+- * dbg_check_ltab - check the free and dirty space in the ltab.
+- * @c: the UBIFS file-system description object
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-int dbg_check_ltab(struct ubifs_info *c)
+-{
+-	int lnum, err, i, cnt;
+-
+-	if (!dbg_is_chk_lprops(c))
+-		return 0;
+-
+-	/* Bring the entire tree into memory */
+-	cnt = DIV_ROUND_UP(c->main_lebs, UBIFS_LPT_FANOUT);
+-	for (i = 0; i < cnt; i++) {
+-		struct ubifs_pnode *pnode;
+-
+-		pnode = ubifs_pnode_lookup(c, i);
+-		if (IS_ERR(pnode))
+-			return PTR_ERR(pnode);
+-		cond_resched();
+-	}
+-
+-	/* Check nodes */
+-	err = dbg_check_lpt_nodes(c, (struct ubifs_cnode *)c->nroot, 0, 0);
+-	if (err)
+-		return err;
+-
+-	/* Check each LEB */
+-	for (lnum = c->lpt_first; lnum <= c->lpt_last; lnum++) {
+-		err = dbg_check_ltab_lnum(c, lnum);
+-		if (err) {
+-			ubifs_err(c, "failed at LEB %d", lnum);
+-			return err;
+-		}
+-	}
+-
+-	dbg_lp("succeeded");
+-	return 0;
+-}
+-
+-/**
+- * dbg_chk_lpt_free_spc - check LPT free space is enough to write entire LPT.
+- * @c: the UBIFS file-system description object
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-int dbg_chk_lpt_free_spc(struct ubifs_info *c)
+-{
+-	long long free = 0;
+-	int i;
+-
+-	if (!dbg_is_chk_lprops(c))
+-		return 0;
+-
+-	for (i = 0; i < c->lpt_lebs; i++) {
+-		if (c->ltab[i].tgc || c->ltab[i].cmt)
+-			continue;
+-		if (i + c->lpt_first == c->nhead_lnum)
+-			free += c->leb_size - c->nhead_offs;
+-		else if (c->ltab[i].free == c->leb_size)
+-			free += c->leb_size;
+-	}
+-	if (free < c->lpt_sz) {
+-		ubifs_err(c, "LPT space error: free %lld lpt_sz %lld",
+-			  free, c->lpt_sz);
+-		ubifs_dump_lpt_info(c);
+-		ubifs_dump_lpt_lebs(c);
+-		dump_stack();
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+-
+-/**
+- * dbg_chk_lpt_sz - check LPT does not write more than LPT size.
+- * @c: the UBIFS file-system description object
+- * @action: what to do
+- * @len: length written
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- * The @action argument may be one of:
+- *   o %0 - LPT debugging checking starts, initialize debugging variables;
+- *   o %1 - wrote an LPT node, increase LPT size by @len bytes;
+- *   o %2 - switched to a different LEB and wasted @len bytes;
+- *   o %3 - check that we've written the right number of bytes.
+- *   o %4 - wasted @len bytes;
+- */
+-int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len)
+-{
+-	struct ubifs_debug_info *d = c->dbg;
+-	long long chk_lpt_sz, lpt_sz;
+-	int err = 0;
+-
+-	if (!dbg_is_chk_lprops(c))
+-		return 0;
+-
+-	switch (action) {
+-	case 0:
+-		d->chk_lpt_sz = 0;
+-		d->chk_lpt_sz2 = 0;
+-		d->chk_lpt_lebs = 0;
+-		d->chk_lpt_wastage = 0;
+-		if (c->dirty_pn_cnt > c->pnode_cnt) {
+-			ubifs_err(c, "dirty pnodes %d exceed max %d",
+-				  c->dirty_pn_cnt, c->pnode_cnt);
+-			err = -EINVAL;
+-		}
+-		if (c->dirty_nn_cnt > c->nnode_cnt) {
+-			ubifs_err(c, "dirty nnodes %d exceed max %d",
+-				  c->dirty_nn_cnt, c->nnode_cnt);
+-			err = -EINVAL;
+-		}
+-		return err;
+-	case 1:
+-		d->chk_lpt_sz += len;
+-		return 0;
+-	case 2:
+-		d->chk_lpt_sz += len;
+-		d->chk_lpt_wastage += len;
+-		d->chk_lpt_lebs += 1;
+-		return 0;
+-	case 3:
+-		chk_lpt_sz = c->leb_size;
+-		chk_lpt_sz *= d->chk_lpt_lebs;
+-		chk_lpt_sz += len - c->nhead_offs;
+-		if (d->chk_lpt_sz != chk_lpt_sz) {
+-			ubifs_err(c, "LPT wrote %lld but space used was %lld",
+-				  d->chk_lpt_sz, chk_lpt_sz);
+-			err = -EINVAL;
+-		}
+-		if (d->chk_lpt_sz > c->lpt_sz) {
+-			ubifs_err(c, "LPT wrote %lld but lpt_sz is %lld",
+-				  d->chk_lpt_sz, c->lpt_sz);
+-			err = -EINVAL;
+-		}
+-		if (d->chk_lpt_sz2 && d->chk_lpt_sz != d->chk_lpt_sz2) {
+-			ubifs_err(c, "LPT layout size %lld but wrote %lld",
+-				  d->chk_lpt_sz, d->chk_lpt_sz2);
+-			err = -EINVAL;
+-		}
+-		if (d->chk_lpt_sz2 && d->new_nhead_offs != len) {
+-			ubifs_err(c, "LPT new nhead offs: expected %d was %d",
+-				  d->new_nhead_offs, len);
+-			err = -EINVAL;
+-		}
+-		lpt_sz = (long long)c->pnode_cnt * c->pnode_sz;
+-		lpt_sz += (long long)c->nnode_cnt * c->nnode_sz;
+-		lpt_sz += c->ltab_sz;
+-		if (c->big_lpt)
+-			lpt_sz += c->lsave_sz;
+-		if (d->chk_lpt_sz - d->chk_lpt_wastage > lpt_sz) {
+-			ubifs_err(c, "LPT chk_lpt_sz %lld + waste %lld exceeds %lld",
+-				  d->chk_lpt_sz, d->chk_lpt_wastage, lpt_sz);
+-			err = -EINVAL;
+-		}
+-		if (err) {
+-			ubifs_dump_lpt_info(c);
+-			ubifs_dump_lpt_lebs(c);
+-			dump_stack();
+-		}
+-		d->chk_lpt_sz2 = d->chk_lpt_sz;
+-		d->chk_lpt_sz = 0;
+-		d->chk_lpt_wastage = 0;
+-		d->chk_lpt_lebs = 0;
+-		d->new_nhead_offs = len;
+-		return err;
+-	case 4:
+-		d->chk_lpt_sz += len;
+-		d->chk_lpt_wastage += len;
+-		return 0;
+-	default:
+-		return -EINVAL;
+-	}
+-}
+-
+-/**
+  * dump_lpt_leb - dump an LPT LEB.
+  * @c: UBIFS file-system description object
+  * @lnum: LEB number to dump
+@@ -1844,7 +1668,7 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
+ 	int err, len = c->leb_size, node_type, node_num, node_len, offs;
+ 	void *buf, *p;
+ 
+-	pr_err("(pid %d) start dumping LEB %d\n", current->pid, lnum);
++	pr_err("(pid %d) start dumping LEB %d\n", getpid(), lnum);
+ 	buf = p = __vmalloc(c->leb_size, GFP_NOFS);
+ 	if (!buf) {
+ 		ubifs_err(c, "cannot allocate memory to dump LPT");
+@@ -1930,7 +1754,7 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
+ 		len -= node_len;
+ 	}
+ 
+-	pr_err("(pid %d) finish dumping LEB %d\n", current->pid, lnum);
++	pr_err("(pid %d) finish dumping LEB %d\n", getpid(), lnum);
+ out:
+ 	vfree(buf);
+ 	return;
+@@ -1947,10 +1771,10 @@ void ubifs_dump_lpt_lebs(const struct ubifs_info *c)
+ {
+ 	int i;
+ 
+-	pr_err("(pid %d) start dumping all LPT LEBs\n", current->pid);
++	pr_err("(pid %d) start dumping all LPT LEBs\n", getpid());
+ 	for (i = 0; i < c->lpt_lebs; i++)
+ 		dump_lpt_leb(c, i + c->lpt_first);
+-	pr_err("(pid %d) finish dumping all LPT LEBs\n", current->pid);
++	pr_err("(pid %d) finish dumping all LPT LEBs\n", getpid());
+ }
+ 
+ /**
+@@ -1962,36 +1786,7 @@ void ubifs_dump_lpt_lebs(const struct ubifs_info *c)
+  * Returns zero if lsave has not been populated (this debugging feature is
+  * disabled) an non-zero if lsave has been populated.
+  */
+-static int dbg_populate_lsave(struct ubifs_info *c)
++static int dbg_populate_lsave(__unused struct ubifs_info *c)
+ {
+-	struct ubifs_lprops *lprops;
+-	struct ubifs_lpt_heap *heap;
+-	int i;
+-
+-	if (!dbg_is_chk_gen(c))
+-		return 0;
+-	if (get_random_u32_below(4))
+-		return 0;
+-
+-	for (i = 0; i < c->lsave_cnt; i++)
+-		c->lsave[i] = c->main_first;
+-
+-	list_for_each_entry(lprops, &c->empty_list, list)
+-		c->lsave[get_random_u32_below(c->lsave_cnt)] = lprops->lnum;
+-	list_for_each_entry(lprops, &c->freeable_list, list)
+-		c->lsave[get_random_u32_below(c->lsave_cnt)] = lprops->lnum;
+-	list_for_each_entry(lprops, &c->frdi_idx_list, list)
+-		c->lsave[get_random_u32_below(c->lsave_cnt)] = lprops->lnum;
+-
+-	heap = &c->lpt_heap[LPROPS_DIRTY_IDX - 1];
+-	for (i = 0; i < heap->cnt; i++)
+-		c->lsave[get_random_u32_below(c->lsave_cnt)] = heap->arr[i]->lnum;
+-	heap = &c->lpt_heap[LPROPS_DIRTY - 1];
+-	for (i = 0; i < heap->cnt; i++)
+-		c->lsave[get_random_u32_below(c->lsave_cnt)] = heap->arr[i]->lnum;
+-	heap = &c->lpt_heap[LPROPS_FREE - 1];
+-	for (i = 0; i < heap->cnt; i++)
+-		c->lsave[get_random_u32_below(c->lsave_cnt)] = heap->arr[i]->lnum;
+-
+-	return 1;
++	return 0;
+ }
 -- 
 2.13.6
 
