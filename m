@@ -4,64 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74228D41D61
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Nov 2024 07:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FCAED41D5F
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Nov 2024 07:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=8xtcMfEob2SRkdWOD3DQyedHHp2sZ+Iopp0grw9NKxM=; b=0R0mFJ8ANQaK/HDTYeQL01DBNz
-	iAzOpp/dJHRNoYIOK/8x6n3vRFvJ540CMTbSNFhBMXv5zZ60CJTEwNFaLJR72F3xlyGWRBtK6vhKB
-	4FDXcdlOKDCVIKaPgKBc/42PWfCw1gfMI8hns01QVOrHFEAM/RPj2PNyazKgs4t58WFu/K0rA/ioK
-	HFf91dPP0Cz9/vFoVpMm6NniOQXN/o19uSLeX7w+68kBoUGkfDHrYVOw+u2CJCQeKuyLwS2ZMsAlL
-	qwYxmd3Z5XeBx5SiXXWnBJHH0xu2P2Iweho1TEIK5wIJZFOesMtTkQs+pC4pr7s9pJDParBq8byYX
-	Q/rvuQIQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=HU4qOn3Adww9JiiPXXNlj/MzeTUcBcubAvwiXVIdWgw=; b=xxHq2jlxLi/jKb
+	bmEzbTeLamRMtOZzK3mp+mYlWkK3cBMhf6fiXOBlZBlcCa+bb4I82DSgmBLt4/2MVPeikRnVA1i95
+	TNa+jmh/8aJuBboqq6yRNRmkEANSN33RptXBaDQ6R4ECHjOQ4WqrKNZDJZbUKY1GKr0wJMHSo0tvW
+	MvwxEJWHLCxrBTazAqDX9WVY6QnwZxU5hnH1K7kTgJWRX4GjBuJ9zBAERi+uGxk3ci9KjAeQhmpwW
+	KwRrMUTPWasn6GDpWs+WNqhh0XJpF0AizdSccNSCb1U0dEfIf950Ff6vskTtnaZb+obl/sqkVYqyS
+	ExzfM6nuTawYusf7lDMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAkvp-00000002OzI-0Qsc;
-	Tue, 12 Nov 2024 07:03:21 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
+	id 1tAkzQ-00000002PkH-3VCs;
+	Tue, 12 Nov 2024 07:07:04 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAksd-00000002OQX-2VQY
+	id 1tAktw-00000002Ojq-2Poz
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Nov 2024 07:00:05 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id E5A952D99A9;
-	Tue, 12 Nov 2024 07:59:57 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id f6vqLzvJ4nKy; Tue, 12 Nov 2024 07:59:57 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 4114C2D99AF;
-	Tue, 12 Nov 2024 07:59:57 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id YI0IDGEQYUYm; Tue, 12 Nov 2024 07:59:57 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 192102D99A9;
-	Tue, 12 Nov 2024 07:59:57 +0100 (CET)
-Date: Tue, 12 Nov 2024 07:59:57 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Qingfang Deng <dqfext@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, 
-	Qingfang Deng <qingfang.deng@siflower.com.cn>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1778934917.10475824.1731394797043.JavaMail.zimbra@nod.at>
-In-Reply-To: <CALW65jbOJ+8MnjnA9+WJwy1-SERgizEiZmcSE=EnevF26X=sbQ@mail.gmail.com>
-References: <20240701045206.162103-1-dqfext@gmail.com> <CALW65jbOJ+8MnjnA9+WJwy1-SERgizEiZmcSE=EnevF26X=sbQ@mail.gmail.com>
-Subject: Re: [PATCH] jffs2: fix use of uninitialized variable
+	Tue, 12 Nov 2024 07:01:26 +0000
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-37ed7eb07a4so3489735f8f.2
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2024 23:01:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1731394882; x=1731999682; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e90Eas/uN+CMCjttr3SXpKE5ydwUVfeG05npd83rlog=;
+        b=S3qp/WfNxeAo14FDjVX2mdMT/1cCFf7/C+dvC7pPhcq7BDKrBGVdJn+v3UvrMdcOxt
+         E+pbyZtcsfPy6igJwAlYHycySpeRryV89JMEtx5EuKdJnd2yV+3dA8aenhnsVGgv7UwV
+         dS0vdXSiz7SiadqCrWJnRo3OyTfb+Vt3z22EWD9VlfzkaseybuPt0UaBY7MwswEcZkQJ
+         C+FvT/CczxvuZzA6ujNowcxZXkoVYa4vtieqr6znZUSS5rDP7WOeLX2AxbiinAVpT6Vi
+         9xGa24a9mENVBFsWmpK7zG6EGCuVRRNKB92YMFLJEdmXnDpB8Olx9IDHAynCuKgcSkPC
+         WO9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731394882; x=1731999682;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e90Eas/uN+CMCjttr3SXpKE5ydwUVfeG05npd83rlog=;
+        b=i32D4xsTasy0zvQAyXJQikyhJQTboRzqPtPKTBTg6JjY+CXOSShJzivlC2I4Ag4WY9
+         ClP0aHTRdVh1a+87NDF8V9E9RCbDGLQ7wR1ypC+kh6UzzFzWJ8zYZKn9essQiRVW/ny0
+         GIaeSEB8PbErged736tkBY4r/QtzB6RrKZoi+AFfamhaaoRHzg2U0GtvKFenfo5Uz1FT
+         4zthoSb9M3DuXSOaYknC4eVXqB+1wfp2I015r2VhrZMiJQe5cpPNL8xaId92o9i+1Nx/
+         XjnRn26h7KzhXnqWV5mosbF/rVEVGuSpcbJFI5zZfeujTOf2Ld7u/Bg3HtXRkNU3sg7F
+         h4hg==
+X-Forwarded-Encrypted: i=1; AJvYcCXbpidFfV+1R10vJRd7uZ9ZPBYzJvYKgDq7Pug4oKKL8yGoXtb2MTBvKT3TPY3J/3renZE9O3EbAT4=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw5kjVt3QWGBvAlNRb1sE4olTF+HBX0nMMmx/ruF09SlD14BqXo
+	gkMUqqg1PxljHS4KF8IpA4BAxGLheFg1Bn81/jkHApI07L+qZ9vWi3/eUdHrkw4=
+X-Google-Smtp-Source: AGHT+IGzjqCewg7v6LJsuluGeAw1t5n9E9T4ICaCzkpdT98/eoBBrmLzKDxDD8P1qsH+agtyBhgBiQ==
+X-Received: by 2002:a05:6000:1ace:b0:37c:d11f:c591 with SMTP id ffacd0b85a97d-381f172a8d1mr13824302f8f.17.1731394882338;
+        Mon, 11 Nov 2024 23:01:22 -0800 (PST)
+Received: from [192.168.0.157] ([79.115.63.225])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381ed9f8dfbsm14807593f8f.73.2024.11.11.23.01.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Nov 2024 23:01:21 -0800 (PST)
+Message-ID: <7d5dcd4e-967c-4627-92d5-86232492c7e3@linaro.org>
+Date: Tue, 12 Nov 2024 07:01:19 +0000
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF132 (Linux)/8.8.12_GA_3809)
-Thread-Topic: jffs2: fix use of uninitialized variable
-Thread-Index: +EGKDqfcmLrh8P5hI0v+WiCJFZQdAQ==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v4 2/2] mtd: spi-nor: support vcc-supply regulator
+To: Pratyush Yadav <pratyush@kernel.org>
+Cc: peng.fan@oss.nxp.com, m.felsch@pengutronix.de, mwalle@kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>
+References: <20241029102238.44673-1-tudor.ambarus@linaro.org>
+ <20241029102238.44673-2-tudor.ambarus@linaro.org>
+ <mafs0zfm57tsy.fsf@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <mafs0zfm57tsy.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241111_230003_826126_42BF77E8 
-X-CRM114-Status: UNSURE (   4.53  )
+X-CRM114-CacheID: sfid-20241111_230124_660202_0CF13197 
+X-CRM114-Status: UNSURE (   9.90  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,20 +97,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlFpbmdmYW5nIERlbmciIDxk
-cWZleHRAZ21haWwuY29tPgo+IEFuOiAiRGF2aWQgV29vZGhvdXNlIiA8ZHdtdzJAaW5mcmFkZWFk
-Lm9yZz4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiUWluZ2ZhbmcgRGVuZyIKPiA8cWlu
-Z2ZhbmcuZGVuZ0BzaWZsb3dlci5jb20uY24+LCAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3Rz
-LmluZnJhZGVhZC5vcmc+LCAibGludXgta2VybmVsIgo+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnPgo+IEdlc2VuZGV0OiBEaWVuc3RhZywgMTIuIE5vdmVtYmVyIDIwMjQgMDY6NDY6NTEK
-PiBCZXRyZWZmOiBSZTogW1BBVENIXSBqZmZzMjogZml4IHVzZSBvZiB1bmluaXRpYWxpemVkIHZh
-cmlhYmxlCgo+IEFueSB1cGRhdGUgb24gdGhpcz8KCkl0J3MgcGxhbm5lZCBmb3IgdGhlIHVwY29t
-bWluZyBtZXJnZSB3aW5kb3cuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+
+
+On 11/11/24 2:02 PM, Pratyush Yadav wrote:
+> On Tue, Oct 29 2024, Tudor Ambarus wrote:
+> 
+>> From: Peng Fan <peng.fan@nxp.com>
+>>
+>> SPI NOR flashes needs power supply to work properly. The power supply
+>> maybe software controllable per board design. So add the support
+>> for an vcc-supply regulator.
+>>
+>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+>> Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
+>> [ta: move devm_regulator_get_enable() to spi_nor_probe(). Add local dev
+>> variable to avoid dereferences.]
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> 
+> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+> 
+
+thanks, Pratyush. I sent a v5 here, where I introduce the temporary
+variable to struct device in its dedicated patch. Would you mind adding
+the R-b tag there?
+https://lore.kernel.org/linux-mtd/20241111111946.9048-1-tudor.ambarus@linaro.org/
+
+btw, I try to keep patchwork in sync, so you can see the status of
+patches there as well:
+
+https://patchwork.ozlabs.org/project/linux-mtd/list/?series=&submitter=&state=&q=spi-nor&archive=&delegate=
+
+Thanks!
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
