@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6A20D637D6
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Nov 2024 02:36:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2801CD637D7
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Nov 2024 02:36:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cno0mgjt7kabHDOUzucueFYIoJm275LlUyNxamTZrq4=; b=ONA1z7uCl4170H
-	whe9TJir9ZEuCA9HAFhfWfm/4tSoc8qEkJ+D6tZDMce9Z4JiKyq717oawjyhzSg95hBmpXhK1dvvI
-	ddrcOPRPsYlFnK2whsjw4hk/GuBXwjIzTclzhAJBhZc5AtGAzjHJAjTE6N3GzSsEyHyftXjXyfNgQ
-	T6/DlfHctUPx/IHBqVGHDAe84O9ROx5cq8BKn7PgVpt+njHVyhNjrc0jcDYWVN8KuCaQ4GMwcr0Hg
-	j9N4gN7RRYbWwPkHgpi/uoFYQSeKXnW60v3bGHNoAyoOsfoAjJInOFwEyddS0bhj+V1emQQEatNpC
-	oOoLMk3TY+uA04MPdTvA==;
+	List-Owner; bh=YGXJLbMbHdzRQVCc/39DoRn8bzFMceh1FMiU9tWSdBc=; b=CfBUiwUiBTR/xd
+	7wd73yKoVvhn5lE1XIGNRJwPkZMXeufNR7vZVfibsakYuMliqNtZRGTZ57u3hZVT19u2ErnJtxOx4
+	HSuamRb0woNHEjmSgTuV7sLv0nZ2BBXrPS5/VWQSXZeSNsiFh80TP9YDImyzSmrYNJtS9QYFqn4YX
+	i3GkkEqtUA7O6ucn2HGkt81wjYUghL1UpiqtTYV9W1nQJbFKda3S4L3JVVDkhFpqAwGEr8l7cQUiQ
+	fcD67VU4uvbvm1RFHMktaA6InSGrUqlumZU0rwwi1qRQhGBdElyYhuNekcroidHjRjF5ssVBxSsRP
+	4Xo2qEBY8wx8wWB7M5jA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBPih-00000008ZNk-28nR;
-	Thu, 14 Nov 2024 02:36:31 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1tBPig-00000008ZNa-49D4;
+	Thu, 14 Nov 2024 02:36:30 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBPic-00000008ZMg-1TIA
+	id 1tBPib-00000008ZMR-3htC
 	for linux-mtd@lists.infradead.org;
-	Thu, 14 Nov 2024 02:36:28 +0000
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-71e4e481692so44429b3a.1
-        for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2024 18:36:26 -0800 (PST)
+	Thu, 14 Nov 2024 02:36:27 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2e2ad9825a7so135770a91.0
+        for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2024 18:36:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1731551785; x=1732156585; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Jcs6rzC2mxL1y1c4MtvLOxy5NzIRqyAyQVXMf+UasRc=;
-        b=GqwjYmrHidRu9ExQJ9PbhXN3s7HiiKeAJPfnVCMaXNo8/sz0gOnMV7kR2vxjDfVHbg
-         KhFaleNl/YKe1y4LH1v8DmPd2IK2YQr8nEEdbplMHmuB2ml17FCSegYdWElpO4JNwLPG
-         qAZUndv9FifFK4kmHq62aZ+o1fJt/CzAOTLwkO0BBiioa5YY8FhlW1EqTuu212f69I6W
-         4gKCSdagZMrRDyebYnSeShHXtg4+b9BVBm/sg7zb8+PQubHcjTL82nSvRi55o7xsOKB4
-         XQH370yW5REyIEOd/uTpJ3CabKTXHgnj/Jg/Lw7MwLKAyzEjJNsalCTMuFGgsBKMTvzx
-         Udkw==
+        bh=DZUHHT1NQG5Uvqfb4hSdJ+6FPn6N2m9pG+Uu3VTVYDw=;
+        b=MRRhtDI1e/aVRetFU/kZN/gLFXjg48hrt9LdFuoK87Sj6f67qUKnsN2RYCmUPtt0CD
+         uBkGvtfPX/IhilKIoM2B7VDv/893Cpxo54If9tQmfJ4QTEegz5hVhL7XWBHDDriyGGsn
+         rZ2TaScYK4+cbl+1oT//s4Pv761CBXEFQss8L0JuY8dX2EbfLgQopURBV2kjG3MKbJn8
+         djhfHOPO40DWIJWF4TDpZuVbg2k42PA3BiQGmUjtWWtBKjRMPAYHdb+Cff1fGdoGEIq9
+         nswe8nMUGu+agBkW6QoLxi46Yy/HLXxj/YvmmxANzonpPM0SJ3LdDcuq+TsMBWyu+QGF
+         jadw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1731551785; x=1732156585;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jcs6rzC2mxL1y1c4MtvLOxy5NzIRqyAyQVXMf+UasRc=;
-        b=IX00z6j2apZSdguIxWUXpHTfK49VxPMxj4trmTu3i0Xg3SUv96rwlQtQOHVkl7L1ii
-         p2Blmg6beKZ4rz3TXholVDjb/1nox8Nr44bV7Odj8iSMzzyCq/U4hggiUjtbAk1m6hxL
-         uW1yjKSanStrOHqhhFBwhHoJvGjgGkatattd+qTRS5LqzUOymMn1f+8j4YgQbxcOhLEp
-         J4b2oZkLi5z1gEO6RJYn+3q7j4w2J9ofGTwGixn4Y15YzskzfCeuqWsziXwuo6RXU5eE
-         /8NA4TXe9b7hbgDhoplfMFkjsRfI5zAtx+367Whln0H0ZhBoX0rJn0kptWYVDAZmRAB6
-         Ls1w==
-X-Forwarded-Encrypted: i=1; AJvYcCUaXl0KRRlkHai0kbhfi0/Jh0ZIn3NM4xEkEobbDh+THnNTolUYzdEhO3UsAsBsHWAL6Mt3KJeU3ek=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx7b1w96WbXcuhV2GPncHanKJB7A57dPwZ96zZa7LUxFQBg4F0R
-	IwFhR/s+Hz7eK3i6qjTjj5evFu3Uk5cvdI375w+Y46A8oFz2qTJf
-X-Google-Smtp-Source: AGHT+IF2/7Jm6c2A5GBt1njckTBUCXCP/8OxJGtx/E524qUnSGdxvJOAVI6kShVeviiRVREXwiCyCg==
-X-Received: by 2002:a05:6a21:918b:b0:1dc:43:f87a with SMTP id adf61e73a8af0-1dc8348d367mr861149637.37.1731551785192;
-        Wed, 13 Nov 2024 18:36:25 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea02495974sm250670a91.20.2024.11.13.18.36.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=DZUHHT1NQG5Uvqfb4hSdJ+6FPn6N2m9pG+Uu3VTVYDw=;
+        b=kkd9mU8UVFasJeng+ebrXkfFFoVQ0/fYSnBzEwN8WXjBbIWFpEZaWimjlanp70iRtf
+         i1CiHJvy9LknPBsKohOGUtfdMN+cvdogBtypts4fejBKqnhnHRP58eT3VpwA107bLCuv
+         0pGt2hhpJB/h3d+vzLJAhDPxrEc3jJ6z4qD3N47iaBbkDmNECtLj/oemK61iOH0Mdmdi
+         8a3n+OyRlNA8VOh0saSDl7SOh3S98lxOM1MYoEWrCoHLoMJXCB1qP6aqPU1h/U+bx5ay
+         Qw44GeGsZGHhtlQiY1W/2yONqlP6Vyofl9MsKdHk3VLH+LdO9WqkPUzxnKzAoMJrmr3m
+         ZL1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUsemjb6Zdi0qwdvpIMC8EgaTk6sX79MtURDXqrNzwteCV8ByNiA+qZcmZtbsxgC2dX5+H+AmN6+DA=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxaRLkeGELysXk8A7xAcKH39wvJlMy1K7bcBzwuL4K7++B7JCNS
+	9vPI3c+NTRf27L7dtWUXE6twlMaTbzwVGu7e89K202rP3Cl/JSVOKXl3lQ==
+X-Google-Smtp-Source: AGHT+IFmomoWIK1E10LxkjPxLyAB+RT+I8tMD2yDFYg8SKFZADuzQIR0Sozc6K79hkkKRWRlU74dUg==
+X-Received: by 2002:a17:90b:3146:b0:2e2:ad29:11a4 with SMTP id 98e67ed59e1d1-2e9b177fd40mr30185844a91.25.1731551784397;
         Wed, 13 Nov 2024 18:36:24 -0800 (PST)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211c7c565ccsm532985ad.90.2024.11.13.18.36.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Nov 2024 18:36:23 -0800 (PST)
 Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id C42958085A;
+	by twhmp6px (Postfix) with ESMTPS id 83E428083B;
 	Thu, 14 Nov 2024 10:42:49 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: miquel.raynal@bootlin.com,
@@ -75,16 +75,16 @@ Cc: richard@nod.at,
 	alvinzhou@mxic.com.tw,
 	leoyu@mxic.com.tw,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v2 2/2] mtd: spi-nand: macronix: Add support for read retry
-Date: Thu, 14 Nov 2024 10:35:28 +0800
-Message-Id: <20241114023528.181583-3-linchengming884@gmail.com>
+Subject: [PATCH v2 1/2] mtd: spi-nand: Add read retry support
+Date: Thu, 14 Nov 2024 10:35:27 +0800
+Message-Id: <20241114023528.181583-2-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20241114023528.181583-1-linchengming884@gmail.com>
 References: <20241114023528.181583-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241113_183626_422304_0FBCB17D 
-X-CRM114-Status: GOOD (  11.80  )
+X-CRM114-CacheID: sfid-20241113_183625_953148_D013E4E9 
+X-CRM114-Status: GOOD (  21.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,221 +103,144 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-Add function for supporting read retry:
-- Set feature on Special Read for Data Recovery register.
-
-The Special Read for Data Recovery operation is enabled by
-Set Feature function.
-
-There are 6 modes for the user to recover the lost data.
+When the host ECC fails to correct the data error of NAND device,
+there's a special read for data recovery method which host setups
+for the next read retry mode and may recover the lost data by host
+ECC again.
 
 Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 ---
- drivers/mtd/nand/spi/macronix.c | 79 ++++++++++++++++++++++++++-------
- 1 file changed, 64 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/spi/core.c | 35 +++++++++++++++++++++++++++++++++--
+ include/linux/mtd/spinand.h | 14 ++++++++++++++
+ 2 files changed, 47 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
-index d277c3220fdc..d7087bac8da7 100644
---- a/drivers/mtd/nand/spi/macronix.c
-+++ b/drivers/mtd/nand/spi/macronix.c
-@@ -14,6 +14,8 @@
- #define MACRONIX_ECCSR_BF_LAST_PAGE(eccsr) FIELD_GET(GENMASK(3, 0), eccsr)
- #define MACRONIX_ECCSR_BF_ACCUMULATED_PAGES(eccsr) FIELD_GET(GENMASK(7, 4), eccsr)
- #define MACRONIX_CFG_CONT_READ         BIT(2)
-+#define MACRONIX_FEATURE_ADDR_READ_RETRY 0x70
-+#define MACRONIX_NUM_READ_RETRY_MODES 6
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 4d76f9f71a0e..bd5339a308aa 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -672,10 +672,14 @@ static int spinand_mtd_regular_page_read(struct mtd_info *mtd, loff_t from,
+ 	struct spinand_device *spinand = mtd_to_spinand(mtd);
+ 	struct nand_device *nand = mtd_to_nanddev(mtd);
+ 	struct nand_io_iter iter;
++	struct mtd_ecc_stats old_stats;
+ 	bool disable_ecc = false;
+ 	bool ecc_failed = false;
++	unsigned int retry_mode = 0;
+ 	int ret;
  
- #define STATUS_ECC_HAS_BITFLIPS_THRESHOLD (3 << 4)
- 
-@@ -136,6 +138,23 @@ static int macronix_set_cont_read(struct spinand_device *spinand, bool enable)
- 	return 0;
- }
- 
-+/**
-+ * macronix_set_read_retry - Set the retry mode
-+ * @spinand: SPI NAND device
-+ * @retry_mode: Specify which retry mode to set
-+ *
-+ * Return: 0 on success, a negative error code otherwise.
-+ */
-+static int macronix_set_read_retry(struct spinand_device *spinand,
-+					     unsigned int retry_mode)
-+{
-+	struct spi_mem_op op = SPINAND_SET_FEATURE_OP(MACRONIX_FEATURE_ADDR_READ_RETRY,
-+						      spinand->scratchbuf);
++	old_stats = mtd->ecc_stats;
 +
-+	*spinand->scratchbuf = retry_mode;
-+	return spi_mem_exec_op(spinand->spimem, &op);
-+}
+ 	if (ops->mode == MTD_OPS_RAW || !mtd->ooblayout)
+ 		disable_ecc = true;
+ 
+@@ -687,18 +691,43 @@ static int spinand_mtd_regular_page_read(struct mtd_info *mtd, loff_t from,
+ 		if (ret)
+ 			break;
+ 
++read_retry:
+ 		ret = spinand_read_page(spinand, &iter.req);
+ 		if (ret < 0 && ret != -EBADMSG)
+ 			break;
+ 
+-		if (ret == -EBADMSG)
++		if (ret == -EBADMSG && spinand->set_read_retry) {
++			if (spinand->read_retries && (++retry_mode < spinand->read_retries)) {
++				ret = spinand->set_read_retry(spinand, retry_mode);
++				if (ret < 0) {
++					ecc_failed = true;
++					break;
++				}
 +
- static const struct spinand_info macronix_spinand_table[] = {
- 	SPINAND_INFO("MX35LF1GE4AB",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x12),
-@@ -168,7 +187,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
- 				     macronix_ecc_get_status),
--		     SPINAND_CONT_READ(macronix_set_cont_read)),
-+		     SPINAND_CONT_READ(macronix_set_cont_read)
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35LF4GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x37, 0x03),
- 		     NAND_MEMORG(1, 4096, 128, 64, 2048, 40, 1, 1, 1),
-@@ -179,7 +200,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
- 				     macronix_ecc_get_status),
--		     SPINAND_CONT_READ(macronix_set_cont_read)),
-+		     SPINAND_CONT_READ(macronix_set_cont_read)
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35LF1G24AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-@@ -188,7 +211,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
--		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35LF2G24AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-@@ -198,7 +223,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT |
- 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
--		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35LF2G24AD-Z4I8",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x64, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-@@ -207,7 +234,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
--		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35LF4G24AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35, 0x03),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 2, 1, 1),
-@@ -217,7 +246,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT |
- 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
--		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35LF4G24AD-Z4I8",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x75, 0x03),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-@@ -226,7 +257,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
--		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX31LF1GE4BC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x1e),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-@@ -270,7 +303,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT |
- 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     macronix_ecc_get_status)),
-+				     macronix_ecc_get_status),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF4G24AD-Z4I8",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xf5, 0x03),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-@@ -280,7 +315,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     macronix_ecc_get_status)),
-+				     macronix_ecc_get_status),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF4GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb7, 0x03),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-@@ -291,7 +328,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
- 				     macronix_ecc_get_status),
--		     SPINAND_CONT_READ(macronix_set_cont_read)),
-+		     SPINAND_CONT_READ(macronix_set_cont_read)
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF2G14AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa0),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
-@@ -314,7 +353,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT |
- 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     macronix_ecc_get_status)),
-+				     macronix_ecc_get_status),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF2G24AD-Z4I8",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xe4, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-@@ -324,7 +365,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     macronix_ecc_get_status)),
-+				     macronix_ecc_get_status),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF2GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa6, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-@@ -335,7 +378,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
- 				     macronix_ecc_get_status),
--		     SPINAND_CONT_READ(macronix_set_cont_read)),
-+		     SPINAND_CONT_READ(macronix_set_cont_read)
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF2GE4AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa2, 0x01),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-@@ -366,7 +411,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     macronix_ecc_get_status)),
-+				     macronix_ecc_get_status),
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF1GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x96, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-@@ -377,7 +424,9 @@ static const struct spinand_info macronix_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
- 				     macronix_ecc_get_status),
--		     SPINAND_CONT_READ(macronix_set_cont_read)),
-+		     SPINAND_CONT_READ(macronix_set_cont_read)
-+		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
-+					macronix_set_read_retry)),
- 	SPINAND_INFO("MX35UF1GE4AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x92, 0x01),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++				/* Reset ecc_stats; retry */
++				mtd->ecc_stats = old_stats;
++				goto read_retry;
++			} else {
++				/* No more retry modes; real failure */
++				ecc_failed = true;
++			}
++		} else if (ret == -EBADMSG) {
+ 			ecc_failed = true;
+-		else
++		} else {
+ 			*max_bitflips = max_t(unsigned int, *max_bitflips, ret);
++		}
+ 
+ 		ret = 0;
+ 		ops->retlen += iter.req.datalen;
+ 		ops->oobretlen += iter.req.ooblen;
++
++		/* Reset to retry mode 0 */
++		if (retry_mode) {
++			retry_mode = 0;
++			ret = spinand->set_read_retry(spinand, retry_mode);
++			if (ret < 0)
++				break;
++		}
+ 	}
+ 
+ 	if (ecc_failed && !ret)
+@@ -1268,6 +1297,8 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ 		spinand->id.len = 1 + table[i].devid.len;
+ 		spinand->select_target = table[i].select_target;
+ 		spinand->set_cont_read = table[i].set_cont_read;
++		spinand->read_retries = table[i].read_retries;
++		spinand->set_read_retry = table[i].set_read_retry;
+ 
+ 		op = spinand_select_op_variant(spinand,
+ 					       info->op_variants.read_cache);
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 702e5fb13dae..bbfef90135f5 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -339,6 +339,8 @@ struct spinand_ondie_ecc_conf {
+  * @select_target: function used to select a target/die. Required only for
+  *		   multi-die chips
+  * @set_cont_read: enable/disable continuous cached reads
++ * @read_retries: the number of read retry modes supported
++ * @set_read_retry: enable/disable read retry for data recovery
+  *
+  * Each SPI NAND manufacturer driver should have a spinand_info table
+  * describing all the chips supported by the driver.
+@@ -359,6 +361,9 @@ struct spinand_info {
+ 			     unsigned int target);
+ 	int (*set_cont_read)(struct spinand_device *spinand,
+ 			     bool enable);
++	unsigned int read_retries;
++	int (*set_read_retry)(struct spinand_device *spinand,
++			     unsigned int read_retry);
+ };
+ 
+ #define SPINAND_ID(__method, ...)					\
+@@ -387,6 +392,10 @@ struct spinand_info {
+ #define SPINAND_CONT_READ(__set_cont_read)				\
+ 	.set_cont_read = __set_cont_read,
+ 
++#define SPINAND_READ_RETRY(__read_retries, __set_read_retry)		\
++	.read_retries = __read_retries,				\
++	.set_read_retry = __set_read_retry,
++
+ #define SPINAND_INFO(__model, __id, __memorg, __eccreq, __op_variants,	\
+ 		     __flags, ...)					\
+ 	{								\
+@@ -436,6 +445,8 @@ struct spinand_dirmap {
+  *		A per-transfer check must of course be done to ensure it is
+  *		actually relevant to enable this feature.
+  * @set_cont_read: Enable/disable the continuous read feature
++ * @read_retries: the number of read retry modes supported
++ * @set_read_retry: Enable/disable the read retry feature
+  * @priv: manufacturer private data
+  */
+ struct spinand_device {
+@@ -469,6 +480,9 @@ struct spinand_device {
+ 	bool cont_read_possible;
+ 	int (*set_cont_read)(struct spinand_device *spinand,
+ 			     bool enable);
++	unsigned int read_retries;
++	int (*set_read_retry)(struct spinand_device *spinand,
++			     unsigned int retry_mode);
+ };
+ 
+ /**
 -- 
 2.25.1
 
