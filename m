@@ -4,43 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4BCED637DD
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 936B6D637DB
 	for <linux-mtd@archiver.kernel.org>; Fri, 15 Nov 2024 13:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7jDNmuhNkhbD7uKFC3kW6qTcIW7s+6DuVDL2E/vdqb4=; b=GuMTCicJKw0zGA
-	2+LO+dR90SvjY2P2S7SIXenAtVEfPwfK58AVYgSBUSOjZSdjY6RlomrtJlzg8hOzXzDrmKhGWFimq
-	oEKPDy9obAlYPjK3nnaL9+tZJrD9xSnuu7eQ/6osvQVoFRfn/BEo0nYD8/JtdWCvcu6Q5pNvbZvDK
-	IHdXp8Nejea2YiuY+Lfso8tfy2Ynf7Hgej1QqrD0WiJxGy0Wl4tnzIYte4z7d61C9J1x896XX+lGz
-	yXuq7aOsEDXGHfWFEnoCd0zdgIAl1ua6r20VsDA+Z/A22Ev4a0Ayu9c/Q2rM2887aiKuBLKcvsKvV
-	rBVxWtHPQmGF3tj5hwpw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0TJrv3/bTCr5PZJRId2UvVpp1U60p+IgcOBM40AafLU=; b=UEEAeSm9lBHpNu
+	w/p4dtpLjq4305UqjEfmrR3+6ocdC7c2VugVzjQcz8/iXJ1cZsQZ+EdGM9Ws06Woi1dpyLzRjR5tW
+	pYYqV2W6ayNrCHhgthfGXglIQY2kCFeKhhU55qO8jLTIcYUZXOuUd9n+VcZfuxonUi2fkDqajVYGm
+	FsPf6PAhAwBvKGbSNkcW9Q+KPtF8/DKFsTWPzMYtHHJmG0P8GTxxF5TLXeofYef8A09ewJFvLN5MU
+	+/kyzHBG/HW525ceA01WsAxKxXN/wgFsTI286fQyOylGWUZCUaExfQ1Lwh0L74IVO1qiI2lnXrBHN
+	6eyRrJTVLNNhlCbCydRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBwLW-00000002na3-32Fl;
-	Fri, 15 Nov 2024 13:26:46 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1tBwLV-00000002nZT-2vQH;
+	Fri, 15 Nov 2024 13:26:45 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBwLQ-00000002nSt-33BJ
+	id 1tBwLP-00000002nRz-1Q42
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Nov 2024 13:26:43 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id 208AB2000D;
-	Fri, 15 Nov 2024 13:26:36 +0000 (UTC)
+	Fri, 15 Nov 2024 13:26:42 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPA id 20F1120005;
+	Fri, 15 Nov 2024 13:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1731677196;
+	t=1731677194;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BQvszEaafaOGtmCwU5uw9CwjZ8MoXUS0hbG2Xve76Qg=;
-	b=FCtTBDlGQ2miJsQholvB/jA87euFnNj4WPdoQVt3wrc9rmDPmIZZ9/h3ZvsY0RSVGa4Bso
-	PNlvZ1m7hgZqIv+xXqnZNuZkxhM7Rx/RCSDMwmVwBCZevL6i3HyQZnXXUNkQkabGGPE+FY
-	TxHU/pz1NjwfQgjuBJWBFKKzxJq1fhhQE2zsYAUekZostNxl65z5DTjeKTU71vzxDnO6rh
-	SBpJgQfho3WPfBGoCxnomb5B85KBjHPpby4h8CGTOzzey+D8v7r3yC6GVEKDhVne9iXri1
-	QHgfnhfxEAXUPwl6kgPqyExxeA9Xaf9cESjji/peP5BugtYBL7e8w6h2brE7dg==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Vya+/aulsxN6jrI3L2J+A9p7VNvahxNnPqnUJh8M+QA=;
+	b=JgousXi0G4U3C5TFxZ+KYuxpxNpzFcSiZnC7fLoVmxhH0yTC/1my3Tf3GNvO9IlRU0sf5L
+	Tq/6FMFlAteqYnbKg2xsdkEt1ntByjsPJicOHYqvUPLqaJyGDsHcsHpmtd+max8rzmpib0
+	hLRFUjYP25bhJFk14hlehY9k9kWaciJiTJpIpEpn+RQhSgfHhP5oh/pX0qxHiving3FXvO
+	6L0Tx/2fEGcHwF1O05UjgcuVwBVy4hq4w5zQsYvYitxNRUN+vy4mFnPcDD/w6H1zqNq7V7
+	CRNxfN8+/PAE0vGmUuTZQs1aXfdcXBpFesX0PeRCJkQFDNA6IQaerBm5j/DmhQ==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -53,17 +52,15 @@ Cc: linux-kernel@vger.kernel.org,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH v4 04/10] memory: ti-aemif: Create aemif_check_cs_timings()
-Date: Fri, 15 Nov 2024 14:26:25 +0100
-Message-ID: <20241115132631.264609-5-bastien.curutchet@bootlin.com>
+Subject: [PATCH v4 00/10] Implement setup_interface() in the DaVinci NAND controller
+Date: Fri, 15 Nov 2024 14:26:21 +0100
+Message-ID: <20241115132631.264609-1-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241115132631.264609-1-bastien.curutchet@bootlin.com>
-References: <20241115132631.264609-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241115_052641_074359_DDF01122 
-X-CRM114-Status: GOOD (  17.21  )
+X-CRM114-CacheID: sfid-20241115_052639_716037_05B8CA35 
+X-CRM114-Status: GOOD (  14.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,188 +72,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-aemif_calc_rate() check the validity of a new computed timing against a
-'max' value given as input. This isn't convenient if we want to check
-the CS timing configuration somewhere else in the code.
-
-Wrap the verification of all the chip select's timing configuration into a
-single function to ease its exportation in upcoming patches.
-Remove the 'max' input from aemif_calc_rate() as it's no longer used.
-
-Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
----
- drivers/memory/ti-aemif.c | 107 +++++++++++++++++---------------------
- 1 file changed, 49 insertions(+), 58 deletions(-)
-
-diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-index aec6d6464efa..5c1c6f95185f 100644
---- a/drivers/memory/ti-aemif.c
-+++ b/drivers/memory/ti-aemif.c
-@@ -132,18 +132,48 @@ struct aemif_device {
- 	struct aemif_cs_data cs_data[NUM_CS];
- };
- 
-+/**
-+ * aemif_check_cs_timings - Check the validity of a CS timing configuration.
-+ * @timings: timings configuration
-+ *
-+ * @return: 0 if the timing configuration is valid, negative error number otherwise.
-+ */
-+static int aemif_check_cs_timings(struct aemif_cs_timings *timings)
-+{
-+	if (timings->ta > TA_MAX)
-+		return -EINVAL;
-+
-+	if (timings->rhold > RHOLD_MAX)
-+		return -EINVAL;
-+
-+	if (timings->rstrobe > RSTROBE_MAX)
-+		return -EINVAL;
-+
-+	if (timings->rsetup > RSETUP_MAX)
-+		return -EINVAL;
-+
-+	if (timings->whold > WHOLD_MAX)
-+		return -EINVAL;
-+
-+	if (timings->wstrobe > WSTROBE_MAX)
-+		return -EINVAL;
-+
-+	if (timings->wsetup > WSETUP_MAX)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- /**
-  * aemif_calc_rate - calculate timing data.
-  * @pdev: platform device to calculate for
-  * @wanted: The cycle time needed in nanoseconds.
-  * @clk: The input clock rate in kHz.
-- * @max: The maximum divider value that can be programmed.
-  *
-  * On success, returns the calculated timing value minus 1 for easy
-  * programming into AEMIF timing registers, else negative errno.
-  */
--static int aemif_calc_rate(struct platform_device *pdev, int wanted,
--			   unsigned long clk, int max)
-+static int aemif_calc_rate(struct platform_device *pdev, int wanted, unsigned long clk)
- {
- 	int result;
- 
-@@ -156,10 +186,6 @@ static int aemif_calc_rate(struct platform_device *pdev, int wanted,
- 	if (result < 0)
- 		result = 0;
- 
--	/* ... But configuring tighter timings is not an option. */
--	else if (result > max)
--		result = -EINVAL;
--
- 	return result;
- }
- 
-@@ -249,7 +275,6 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 	struct aemif_device *aemif = platform_get_drvdata(pdev);
- 	unsigned long clk_rate = aemif->clk_rate;
- 	struct aemif_cs_data *data;
--	int ret;
- 	u32 cs;
- 	u32 val;
- 
-@@ -275,68 +300,34 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 	aemif_get_hw_params(pdev, aemif->num_cs++);
- 
- 	/* override the values from device node */
--	if (!of_property_read_u32(np, "ti,cs-min-turnaround-ns", &val)) {
--		ret = aemif_calc_rate(pdev, val, clk_rate, TA_MAX);
--		if (ret < 0)
--			return ret;
--
--		data->timings.ta = ret;
--	}
-+	if (!of_property_read_u32(np, "ti,cs-min-turnaround-ns", &val))
-+		data->timings.ta = aemif_calc_rate(pdev, val, clk_rate);
- 
--	if (!of_property_read_u32(np, "ti,cs-read-hold-ns", &val)) {
--		ret = aemif_calc_rate(pdev, val, clk_rate, RHOLD_MAX);
--		if (ret < 0)
--			return ret;
--
--		data->timings.rhold = ret;
--	}
-+	if (!of_property_read_u32(np, "ti,cs-read-hold-ns", &val))
-+		data->timings.rhold = aemif_calc_rate(pdev, val, clk_rate);
- 
--	if (!of_property_read_u32(np, "ti,cs-read-strobe-ns", &val)) {
--		ret = aemif_calc_rate(pdev, val, clk_rate, RSTROBE_MAX);
--		if (ret < 0)
--			return ret;
-+	if (!of_property_read_u32(np, "ti,cs-read-strobe-ns", &val))
-+		data->timings.rstrobe = aemif_calc_rate(pdev, val, clk_rate);
- 
--		data->timings.rstrobe = ret;
--	}
-+	if (!of_property_read_u32(np, "ti,cs-read-setup-ns", &val))
-+		data->timings.rsetup = aemif_calc_rate(pdev, val, clk_rate);
- 
--	if (!of_property_read_u32(np, "ti,cs-read-setup-ns", &val)) {
--		ret = aemif_calc_rate(pdev, val, clk_rate, RSETUP_MAX);
--		if (ret < 0)
--			return ret;
-+	if (!of_property_read_u32(np, "ti,cs-write-hold-ns", &val))
-+		data->timings.whold = aemif_calc_rate(pdev, val, clk_rate);
- 
--		data->timings.rsetup = ret;
--	}
-+	if (!of_property_read_u32(np, "ti,cs-write-strobe-ns", &val))
-+		data->timings.wstrobe = aemif_calc_rate(pdev, val, clk_rate);
- 
--	if (!of_property_read_u32(np, "ti,cs-write-hold-ns", &val)) {
--		ret = aemif_calc_rate(pdev, val, clk_rate, WHOLD_MAX);
--		if (ret < 0)
--			return ret;
--
--		data->timings.whold = ret;
--	}
--
--	if (!of_property_read_u32(np, "ti,cs-write-strobe-ns", &val)) {
--		ret = aemif_calc_rate(pdev, val, clk_rate, WSTROBE_MAX);
--		if (ret < 0)
--			return ret;
--
--		data->timings.wstrobe = ret;
--	}
--
--	if (!of_property_read_u32(np, "ti,cs-write-setup-ns", &val)) {
--		ret = aemif_calc_rate(pdev, val, clk_rate, WSETUP_MAX);
--		if (ret < 0)
--			return ret;
--
--		data->timings.wsetup = ret;
--	}
-+	if (!of_property_read_u32(np, "ti,cs-write-setup-ns", &val))
-+		data->timings.wsetup = aemif_calc_rate(pdev, val, clk_rate);
- 
- 	if (!of_property_read_u32(np, "ti,cs-bus-width", &val))
- 		if (val == 16)
- 			data->asize = 1;
- 	data->enable_ew = of_property_read_bool(np, "ti,cs-extended-wait-mode");
- 	data->enable_ss = of_property_read_bool(np, "ti,cs-select-strobe-mode");
--	return 0;
-+
-+	return aemif_check_cs_timings(&data->timings);
- }
- 
- static const struct of_device_id aemif_of_match[] = {
--- 
-2.47.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgYWxsLAoKVGhpcyBwYXRjaCBzZXJpZXMgYWltcyB0byBpbXBsZW1lbnQgdGhlIHNldHVwX2lu
+dGVyZmFjZSgpIG9wZXJhdGlvbiBpbgp0aGUgRGFWaW5jaSBOQU5EIGNvbnRyb2xsZXIgdG8gZW5h
+YmxlIHRoZSB1c2Ugb2YgYWxsIE9ORkkgbW9kZXMgYW5kCmltcHJvdmUgdGhlIE5BTkQgYWNjZXNz
+IHNwZWVkLgoKUEFUQ0ggNiBkZXBlbmRzIG9uIFBBVENIIDEtMi0zLTQtNQpQQVRDSCAxMCBkZXBl
+bmRzIG9uIFBBVENIIDYtOC05CgpUaGlzIE5BTkQgY29udHJvbGxlciBpcyBwcmVzZW50IGluIHRo
+ZSBEYVZpbmNpIChPTUFQIEwxMzgpIGFuZCBLZXlzdG9uZTIKU29DcyBhbmQgZnVuY3Rpb25zIGFz
+IGEgJ2NoaWxkJyBvZiB0aGUgQUVNSUYgY29udHJvbGxlci4gU28gaXRzIHRpbWluZ3MKYXJlIHNl
+dCBieSB0aGUgQUVNSUYgY29udHJvbGxlciBpdHNlbGYgZnJvbSBkZXZpY2UtdHJlZSBwcm9wZXJ0
+aWVzLgpJbXBsZW1lbnRpbmcgdGhlIHNldHVwX2ludGVyZmFjZSgpIGNhbGxiYWNrIGltcGxpZXMg
+YmVpbmcgYWJsZSB0byB1cGRhdGUKZHluYW1pY2FsbHkgdGhlc2UgdGltaW5ncywgc28gdGhlIGZp
+cnN0IHRocmVlIHBhdGNoZXMgb2YgdGhlIHNlcmllcyBtb2RpZnkKdGhlIEFFTUlGIGRyaXZlciB0
+byBwcm92aWRlIGl0cyAnY2hpbGRyZW4nIGEgd2F5IHRvIG1vZGlmeSB0aGVpciBjaGlwCnNlbGVj
+dCB0aW1pbmcgY29uZmlndXJhdGlvbi4KClRoZSByZW1haW5pbmcgcGF0Y2hlcyBpbXBsZW1lbnQg
+dGhlIHNldHVwX2ludGVyZmFjZSgpIG9wZXJhdGlvbi4KVGhlIGNvbXB1dGF0aW9uIG9mIHRoZSBy
+ZWdpc3RlcidzIGNvbnRlbnRzIGlzIGRpcmVjdGx5IGJhc2VkIG9uCsKnMjAuMy4yLjMgb2YgdGhl
+IE9NQVAtTDEzOCBUUk0gWzFdCgpUaGlzIGhhcyBiZWVuIHRlc3RlZCBvbiB0d28gcGxhdGZvcm1z
+IGJhc2VkIHVwb24gdGhlIERhVmluY2kgU29DLiBPbmUgaXMKaW50ZXJmYWNlZCB3aXRoIGEgTWFj
+cm9uaXggTVgzMFVGNEcxOEFDIE5BTkQsIHRoZSBvdGhlciB3aXRoIGEgVG9zaGliYQpOQU5ELgoK
+WzFdIDogaHR0cHM6Ly93d3cudGkuY29tL2xpdC91Zy9zcHJ1aDc3Yy9zcHJ1aDc3Yy5wZGYKCkNo
+YW5nZSBsb2c6CiAqIHY0CiAgIFBBVENIIDEsMiwzIFtuZXddOgogICAgIC0gQ3JlYXRlIHRoZSBz
+dHJ1Y3QgYWVtaWZfY3NfdGltaW5ncyBpbnNpZGUgdGhlIGFscmVhZHkgZXhpc3RpbmcKICAgICAg
+IHN0cnVjdCBhZW1pZl9jc19kYXRhCiAqIHYzCiAgIFBBVENIIDEgW25ld106CiAgICAgLSBXcmFw
+IHRoZSB2ZXJpZmljYXRpb24gb2YgQ1MgdGltaW5nIGNvbmZpZ3VyYXRpb24gaW50byBhIGZ1bmN0
+aW9uCiAgIFBBVENIIDI6CiAgICAgLSBGaXggY29tbWVudHMKICAgUEFUQ0ggMzoKICAgICAtIFJl
+cGxhY2UgdGhlIHNwaW4tbG9jayB3aXRoIGEgbXV0ZXgKICAgUEFUQ0ggNzoKICAgICAtIEFkZCBo
+YW5kbGluZyBvZiB0aGUgTkFORF9EQVRBX0lGQUNFX0NIRUNLX09OTFkgY2FzZQogICAgIC0gc2V0
+dXBfaW50ZXJmYWNlKCkgcmV0dXJucyBlcnJubyBvbiBmYWlsdXJlcwoKICogdjIKICAgQ292ZXIg
+bGV0dGVyIDoKICAgICAtIEFkZCBkZXBlbmRlbmN5IGRldGFpbHMKICAgICAtIFJlbW92ZSB0aGUg
+cXVlc3Rpb24gYWJvdXQgdGktYWVtaWYuaCBsb2NhdGlvbgogICBQQVRDSCAxIDoKICAgICAtIEZp
+eCBhZW1pZl9jc190aW1pbmdzJ3MgZGVzY3JpcHRpb24gaW4gdGhlIGNvbW1lbnRzCiAgIFBBVENI
+IDIgOgogICAgIC0gRml4IHR5cG8gaW4gdGhlIGNvbmZpZ19jc19sb2NrJ3MgZGVzY3JpcHRpb24g
+aW4gdGhlIGNvbW1lbnRzCiAgICAgLSBNb3ZlIGluY2x1ZGUvbWVtb3J5L3RpLWFlbWlmLmggdG8g
+aW5jbHVkZS9saW51eC9tZW1vcnkvdGktYWVtaWYuaAogICBQQVRDSCAzIFtORVddIDoKICAgICAt
+IEZpeCBkZXBlbmRlbmN5IGlzc3VlIHdpdGggYWVtaWYgY29udHJvbGxlciBpbiBLY29uZmlnCiAg
+IFBBVENIIDUgOgogICAgIC0gQWRkIGRldGFpbHMgYWJvdXQgdGhlIGNsb2NrIGJpbmRpbmdzIGlu
+IHRoZSBjb21taXQgbG9nCiAgICAgLSBSZXBsYWNlIGRldm1fY2xrX2dldCgpIHdpdGggZGV2bV9j
+bGtfZ2V0X2VuYWJsZWQoKQogICAgIC0gVXNlIGRldl9lcnJfcHJvYmUoKSB0byByZXR1cm4gdGhl
+IGRldm1fY2xrX2dldF9lbmFibGVkKCkgZXJyb3IKClt2MV0gOiBodHRwczovL2xvcmUua2VybmVs
+Lm9yZy9hbGwvMjAyNDEwMzAxMDQ3MTcuODg2ODgtMS1iYXN0aWVuLmN1cnV0Y2hldEBib290bGlu
+LmNvbS8KW3YyXSA6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDI0MTEwNjA4NTUwNy43
+NjQyNS0xLWJhc3RpZW4uY3VydXRjaGV0QGJvb3RsaW4uY29tLwpbdjNdIDogaHR0cHM6Ly9sb3Jl
+Lmtlcm5lbC5vcmcvYWxsLzIwMjQxMTEzMDk0OTM4LjQ0ODE3LTEtYmFzdGllbi5jdXJ1dGNoZXRA
+Ym9vdGxpbi5jb20vCgpCYXN0aWVuIEN1cnV0Y2hldCAoMTApOgogIG1lbW9yeTogdGktYWVtaWY6
+IFN0b3JlIHRpbWluZ3MgcGFyYW1ldGVyIGluIG51bWJlciBvZiBjeWNsZXMgLSAxCiAgbWVtb3J5
+OiB0aS1hZW1pZjogUmVtb3ZlIHVubmVjZXNzYXJ5IGxvY2FsIHZhcmlhYmxlcwogIG1lbW9yeTog
+dGktYWVtaWY6IFdyYXAgQ1MgdGltaW5ncyBpbnRvIGEgc3RydWN0CiAgbWVtb3J5OiB0aS1hZW1p
+ZjogQ3JlYXRlIGFlbWlmX2NoZWNrX2NzX3RpbWluZ3MoKQogIG1lbW9yeTogdGktYWVtaWY6IENy
+ZWF0ZSBhZW1pZl9zZXRfY3NfdGltaW5ncygpCiAgbWVtb3J5OiB0aS1hZW1pZjogRXhwb3J0IGFl
+bWlmXypfY3NfdGltaW5ncygpCiAgbXRkOiByYXduYW5kOiBkYXZpbmNpOiBBbHdheXMgZGVwZW5k
+cyBvbiBUSV9BRU1JRgogIG10ZDogcmF3bmFuZDogZGF2aW5jaTogT3JkZXIgaGVhZGVycyBhbHBo
+YWJldGljYWxseQogIG10ZDogcmF3bmFuZDogZGF2aW5jaTogQWRkIGNsb2NrIHJlc291cmNlCiAg
+bXRkOiByYXduYW5kOiBkYXZpbmNpOiBJbXBsZW1lbnQgc2V0dXBfaW50ZXJmYWNlKCkgb3BlcmF0
+aW9uCgogZHJpdmVycy9tZW1vcnkvdGktYWVtaWYuYyAgICAgICAgICAgfCAxODcgKysrKysrKysr
+KysrKysrKystLS0tLS0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZyAgICAgICAg
+fCAgIDQgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2RhdmluY2lfbmFuZC5jIHwgIDk0ICsrKysr
+KysrKysrKystCiBpbmNsdWRlL2xpbnV4L21lbW9yeS90aS1hZW1pZi5oICAgICB8ICAzMiArKysr
+KwogNCBmaWxlcyBjaGFuZ2VkLCAyMzcgaW5zZXJ0aW9ucygrKSwgODAgZGVsZXRpb25zKC0pCiBj
+cmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9tZW1vcnkvdGktYWVtaWYuaAoKLS0gCjIu
+NDcuMAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
