@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59F3ED6DDFF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Nov 2024 13:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9365AD637DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Nov 2024 13:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=53V7qMU49mb7yFhUSU8ulr4bOLLtofG15nVo1R2HtX4=; b=t9KePPlGYbuZAF
-	ftvVo2gGYaSoYcHJPBhG6ortTwxmIU/v3sqW1FXbC1lK/cS/eeYR9BG06+A1o2KH0y+nwjXNd+z2t
-	KVATeNfGwWY4uWW65cMry/rwbr2n8EzOOjdNv0eKvGak9f2zCa/DDrFKuJLccaAnOA2NEuwBfG9Nf
-	lkW7GBBl+knbGBT6cHNZhcAoa+9GW9yA5Uz6NlWEhYiwkSWxJVs/UXWraXb6DYUSZx0XBhA2PJUTD
-	JjLA3PmPBgyeoKq5TQHRollZORTDSAFhCMTKYahWq34S5FcKfIFD44biOdlXX3F1MQpoKS6cGdUde
-	PnYi40MpA4BYnUED7t1Q==;
+	List-Owner; bh=MErNFD5B7YNeHrPEZhqLGM4adQyeROtOLTZbnU1PLUk=; b=XHuZ2z49eJAR6M
+	Qvh0dLF9vMz7R0Eiia8PPTxsJ/Wu5PUHNmP6e8KQb8RbPRn3rS+PKOcqLMhYL8yhnILUdtidorPm1
+	lsTqNhY0OPRWXZy+130ZGvhfeE9IS7BT1Q5LRI6zkRXnQDUeMXC4uBi6wsXY2oif/tlZPKXUFOZB0
+	8R9IABPJpCDdQ8PToeBxmkLcUTQv+d1bJ3uY1NEYWn47A0n2zYPOhiqOkbC7eza84gcHVNvATK5Ip
+	2/Hq+NAF0OWaUSGu/HGmMJFTRJ9mRCf6Kd5IbgD6wMlTQlILgZPEuOYtky9jHKmqSX7J6JSfbehOW
+	UZvEKu0faHLIHjgi3hCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBwLU-00000002nYq-2mUt;
-	Fri, 15 Nov 2024 13:26:44 +0000
+	id 1tBwLZ-00000002ncr-3mnB;
+	Fri, 15 Nov 2024 13:26:49 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBwLP-00000002nSo-1fZz
+	id 1tBwLR-00000002nUt-1Ni5
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Nov 2024 13:26:42 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id 6CA5C20004;
-	Fri, 15 Nov 2024 13:26:35 +0000 (UTC)
+	Fri, 15 Nov 2024 13:26:43 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPA id 789FE2000E;
+	Fri, 15 Nov 2024 13:26:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1731677196;
+	t=1731677200;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QiHpJejC3EVTa3EJGMvQU1Fk7sjFr5HV3ka8xV/Pe8U=;
-	b=E33wVMI7vgDcjtpRwTiShitYVZzawMxT1FDsAcCVrCKWWsp0gD6StvhLC7UreK25V7H9iU
-	pFY1NSHIDXGOO7LA8pohy2WjE9FzwmQ1wId6pYGf4r3b/uTkQa7jO/5ixDWtLTAtjjonhK
-	Q4I7MqXNR+wSA5LkfgAHJ98Rr2VDAXD+oQyA/YLJBsZjbk3951DeYyrIU6ILDuDYSO6w98
-	4lgNskqn5GTECGzDVeFbl414f2MLPppeEAeieqNxR+2dou+UpOgYFeZTiy/6FhdqDub37w
-	xMNqQmZcJ8fQWoksDb6YJO/D2pfvu2iD4rgH+qb6UaVC5vw9LQcDCjIWMulz4w==
+	bh=ONE5RIDa+M5HrCVn5iTpaeEU6VZHpy9NTdUHLDL3hak=;
+	b=LOPrsKU7gTXIZaZmRF+IRCmbUd0+NVzRXSjTADyKtUipBc5z0VFcVRXW2mi6eH9LaS9c3m
+	fhv18d1YRJkJzHB3zP8u/eWuDRmcqZgIFLbzqy9oMWYZSv2cIGHsxt6OocGKby587vOLxb
+	lhPVmJgnM3zKSG60ll3ZtflV4IaxFVW5/bAKqz+wxi8Yqu+2oLkXE1AkOj1m2RzMtflQBT
+	8AxqObCZ4l12kFmMeuqczwS1H+JE1y7VxJBAM/iD7Ew2HWRYg6BpAAChQAsyXFZZl0HHw6
+	5cVrhegjUJZNAoo5hApMUp5kbThVKkzk80FcH1/VzINYUFrV1NFjiQn2tLWHDw==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -53,17 +53,17 @@ Cc: linux-kernel@vger.kernel.org,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH v4 03/10] memory: ti-aemif: Wrap CS timings into a struct
-Date: Fri, 15 Nov 2024 14:26:24 +0100
-Message-ID: <20241115132631.264609-4-bastien.curutchet@bootlin.com>
+Subject: [PATCH v4 09/10] mtd: rawnand: davinci: Add clock resource
+Date: Fri, 15 Nov 2024 14:26:30 +0100
+Message-ID: <20241115132631.264609-10-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241115132631.264609-1-bastien.curutchet@bootlin.com>
 References: <20241115132631.264609-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241115_052639_717848_9CC1D2A6 
-X-CRM114-Status: GOOD (  13.14  )
+X-CRM114-CacheID: sfid-20241115_052641_505992_9CD2665A 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,166 +80,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CS timings are store in the struct aemif_cs_data along with other CS
-parameters. It isn't convenient for exposing CS timings to other drivers
-without also exposing the other parameters.
+NAND controller has a reference clock inherited from the AEMIF
+(cf. Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt)
+This clock isn't used yet by the driver.
 
-Wrap the CS timings in a new the struct aemif_cs_timings to simplify
-their export in upcoming patches.
+Add a struct clock in the struct davinci_nand_info so it can be used
+to compute timings.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- drivers/memory/ti-aemif.c | 58 ++++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 25 deletions(-)
+ drivers/mtd/nand/raw/davinci_nand.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-index 6a751a23d41a..aec6d6464efa 100644
---- a/drivers/memory/ti-aemif.c
-+++ b/drivers/memory/ti-aemif.c
-@@ -78,10 +78,8 @@
- 				WSETUP(WSETUP_MAX) | \
- 				EW(EW_MAX) | SSTROBE(SSTROBE_MAX) | \
- 				ASIZE_MAX)
--
- /**
-- * struct aemif_cs_data: structure to hold CS parameters
-- * @cs: chip-select number
-+ * struct aemif_cs_timings: structure to hold CS timings
-  * @wstrobe: write strobe width, number of cycles - 1
-  * @rstrobe: read strobe width, number of cycles - 1
-  * @wsetup: write setup width, number of cycles - 1
-@@ -89,12 +87,8 @@
-  * @rsetup: read setup width, number of cycles - 1
-  * @rhold: read hold width, number of cycles - 1
-  * @ta: minimum turn around time, number of cycles - 1
-- * @enable_ss: enable/disable select strobe mode
-- * @enable_ew: enable/disable extended wait mode
-- * @asize: width of the asynchronous device's data bus
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 3c0efbdd789e..563045c7ce08 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -10,6 +10,7 @@
+  *   Dirk Behme <Dirk.Behme@gmail.com>
   */
--struct aemif_cs_data {
--	u8	cs;
-+struct aemif_cs_timings {
- 	u32	wstrobe;
- 	u32	rstrobe;
- 	u32	wsetup;
-@@ -102,6 +96,19 @@ struct aemif_cs_data {
- 	u32	rsetup;
- 	u32	rhold;
- 	u32	ta;
-+};
+ 
++#include <linux/clk.h>
+ #include <linux/err.h>
+ #include <linux/iopoll.h>
+ #include <linux/kernel.h>
+@@ -117,6 +118,8 @@ struct davinci_nand_info {
+ 	uint32_t		mask_cle;
+ 
+ 	uint32_t		core_chipsel;
 +
-+/**
-+ * struct aemif_cs_data: structure to hold CS parameters
-+ * @timings: timings configuration
-+ * @cs: chip-select number
-+ * @enable_ss: enable/disable select strobe mode
-+ * @enable_ew: enable/disable extended wait mode
-+ * @asize: width of the asynchronous device's data bus
-+ */
-+struct aemif_cs_data {
-+	struct aemif_cs_timings timings;
-+	u8	cs;
- 	u8	enable_ss;
- 	u8	enable_ew;
- 	u8	asize;
-@@ -179,9 +186,10 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
++	struct clk		*clk;
+ };
  
- 	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
- 
--	set = TA(data->ta) |
--		RHOLD(data->rhold) | RSTROBE(data->rstrobe) | RSETUP(data->rsetup) |
--		WHOLD(data->whold) | WSTROBE(data->wstrobe) | WSETUP(data->wsetup);
-+	set = TA(data->timings.ta) |
-+		RHOLD(data->timings.rhold) | RSTROBE(data->timings.rstrobe) |
-+		RSETUP(data->timings.rsetup) | WHOLD(data->timings.whold) |
-+		WSTROBE(data->timings.wstrobe) | WSETUP(data->timings.wsetup);
- 
- 	set |= (data->asize & ACR_ASIZE_MASK);
- 	if (data->enable_ew)
-@@ -215,13 +223,13 @@ static void aemif_get_hw_params(struct platform_device *pdev, int csnum)
- 	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
- 	val = readl(aemif->base + offset);
- 
--	data->ta = TA_VAL(val);
--	data->rhold = RHOLD_VAL(val);
--	data->rstrobe = RSTROBE_VAL(val);
--	data->rsetup = RSETUP_VAL(val);
--	data->whold = WHOLD_VAL(val);
--	data->wstrobe = WSTROBE_VAL(val);
--	data->wsetup = WSETUP_VAL(val);
-+	data->timings.ta = TA_VAL(val);
-+	data->timings.rhold = RHOLD_VAL(val);
-+	data->timings.rstrobe = RSTROBE_VAL(val);
-+	data->timings.rsetup = RSETUP_VAL(val);
-+	data->timings.whold = WHOLD_VAL(val);
-+	data->timings.wstrobe = WSTROBE_VAL(val);
-+	data->timings.wsetup = WSETUP_VAL(val);
- 	data->enable_ew = EW_VAL(val);
- 	data->enable_ss = SSTROBE_VAL(val);
- 	data->asize = val & ASIZE_MAX;
-@@ -272,7 +280,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->ta = ret;
-+		data->timings.ta = ret;
+ static DEFINE_SPINLOCK(davinci_nand_lock);
+@@ -822,6 +825,10 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 		return -EADDRNOTAVAIL;
  	}
  
- 	if (!of_property_read_u32(np, "ti,cs-read-hold-ns", &val)) {
-@@ -280,7 +288,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->rhold = ret;
-+		data->timings.rhold = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-read-strobe-ns", &val)) {
-@@ -288,7 +296,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->rstrobe = ret;
-+		data->timings.rstrobe = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-read-setup-ns", &val)) {
-@@ -296,7 +304,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->rsetup = ret;
-+		data->timings.rsetup = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-write-hold-ns", &val)) {
-@@ -304,7 +312,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->whold = ret;
-+		data->timings.whold = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-write-strobe-ns", &val)) {
-@@ -312,7 +320,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->wstrobe = ret;
-+		data->timings.wstrobe = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-write-setup-ns", &val)) {
-@@ -320,7 +328,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->wsetup = ret;
-+		data->timings.wsetup = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-bus-width", &val))
++	info->clk = devm_clk_get_enabled(&pdev->dev, "aemif");
++	if (IS_ERR(info->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(info->clk), "failed to get clock");
++
+ 	info->pdev		= pdev;
+ 	info->base		= base;
+ 	info->vaddr		= vaddr;
 -- 
 2.47.0
 
