@@ -4,65 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 952A2D6A22C
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Nov 2024 19:59:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89A5AD6DDD5
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Nov 2024 06:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=huxEINXANQwikO2lBmganUNhxlRE1uv94gC7/kFD9J4=; b=zbv3HyWZJua3uf8ct+OSLRITnr
-	ObnJ0VvVTBgBsjtRbNVssOzmE2pxVzjdt1XVCsd2YQbUOquGCgI3eglYXEl+l6a3yM0b94q9bJDnp
-	OunkIbrNmhtfqvPw2BoMMW7T4Wd5ae8un5eJ4EI7+KADC+fHKfkyB9JQHCJN7bXYCI/UPZYl3ziip
-	6iqW/Q5rzFmKUmaeurRZgaaHbw1S8q0NqpbWj/uT6m1U8kRMYzO138QnzdS4vADKZW2i4T6f5Wknf
-	avnMkP80s+6zgTIriTBG7PK6OKOWA1mxON76iyeamJdwdspmyoWcP3uDorCOwm0NHLdiIbQZbUlM1
-	+502SNfg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LzHqnryFSoHIevzt743dImasu5H1dxoyBsib/ACqCow=; b=TFTr8uNC8Qamei
+	2nll+8qSYg4ZhySwlNa7AxtkBUPpdp9bq39IxPahaLMxs5j0A9ERkqKLSkp5hrpx+joeVEXxcR2id
+	hQj16+3RF+8WZDj16SY/hA/lsXalyrwcqTq5lTpAvdKJ0Jga7TBZY+olTTCYXe0IZBleaomlnOpPz
+	H8Z5tngMuRUgun0K09JPDPouxe8ODAV2/lN+cHylnikOSiJiU4Dm/d+AnhpixZHHYyjnEZN0yEO/T
+	g7S0wX3QgZ7yC+cQ/B99LCXZ8bVUlSv8HlJE5IqcDdgTXDxwJjtz20lytfx2v3p8sce3hUxRL/Tkn
+	Xpy5tjFire7xi33sQL/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBfze-00000000fww-324J;
-	Thu, 14 Nov 2024 19:59:06 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1tBpxM-00000001nxp-2Xkr;
+	Fri, 15 Nov 2024 06:37:24 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBfzd-00000000fw9-0vv5
-	for linux-mtd@lists.infradead.org;
-	Thu, 14 Nov 2024 19:59:06 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 48E495C5BDB;
-	Thu, 14 Nov 2024 19:58:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C55C4CECD;
-	Thu, 14 Nov 2024 19:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731614344;
-	bh=SQSJuA5ZJjGxcHd3x3HQbygt6rb02hRsoGOjMLmtHig=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uLozVyedExT8zIs+JijAW90zDcwsSRsuqDYGJdkdrTD0yK5jqDTVrU1zGPN8/HEnm
-	 Gotj68MrXcARYpXsf59YUZfZKMNMTPrkEtNWkxZBb1b30rcpXqRjxeP9W0pZvei7kx
-	 WkXADi0wR2m1gW3cXV0m6C0iRSGww6p+P1Dkg9IC7tEHtV6KI/oXf9K9SHBBkFB9yf
-	 kM5x5OeJo9/53uhuUfMggsB/9rjU/xnW6hb83uczrXfDWVrZqofWlOzmtG8m/REQjB
-	 3YMtl0qGfBj6aFL7M00i4W6NrzPxoNhjLLqqLg38XNEBGzz+zUYFOkl5aS8isRxU11
-	 2YGCsPo36Y4SA==
-Date: Thu, 14 Nov 2024 19:59:00 +0000
-From: Conor Dooley <conor@kernel.org>
-To: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: fixed-partitions: Fix "compression"
- typo
-Message-ID: <20241114-deniable-conical-a57b36ae6dc3@spud>
-References: <20241113225632.1783241-1-robh@kernel.org>
+	id 1tBpxK-00000001nxf-0Xft
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 15 Nov 2024 06:37:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=zM9fKz5MJ1t7OEbVMi3Fdh2y0NYfPlc0oZSSZJHBOts=; b=ZaGRlatADh59XBHPFmWuexX7+e
+	seQ6WV1KYP3Y9JobuYrq/Z3ko62uRfqxpsWXnSdLneti12ZKJsfH+eJ3/Yn7uFzb20ySgcT4c76aZ
+	tWo0gKlee3JqHoLi4TLsTkmUxXKlDh6O934KCWhHl2XJeTgbFQXewT0sL6E8SH6BSZNV0zUw7f7yY
+	0kYoJw4D+p8AlRB5flUeb1/LHn3HaeCJ6N4O/LPwOagoYE512tpU9FSbI9EruTPLMfPgimpZ7+grX
+	Qz6tYjaEppNNHFl9fYpfUCiEsDjy3T8zsTdS9Hn53gTrsBHNU2KkADnXLUMFeWzOgg9VZiO0dY07k
+	KMHjFAzQ==;
+Received: from [50.53.2.24] (helo=[192.168.254.17])
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tBpxG-00000000yjp-0ceI;
+	Fri, 15 Nov 2024 06:37:17 +0000
+Message-ID: <ea59021e-2c52-435c-8de4-34e00edb40c7@infradead.org>
+Date: Thu, 14 Nov 2024 22:37:13 -0800
 MIME-Version: 1.0
-In-Reply-To: <20241113225632.1783241-1-robh@kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241114_115905_300182_63F6DEF2 
-X-CRM114-Status: UNSURE (   8.13  )
-X-CRM114-Notice: Please train this message.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH] jffs2: Use str_yes_no() helper function
+To: Thorsten Blum <thorsten.blum@linux.dev>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Zhihao Cheng <chengzhihao1@huawei.com>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20241112183113.173127-2-thorsten.blum@linux.dev>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20241112183113.173127-2-thorsten.blum@linux.dev>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,53 +66,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3933419585271242558=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============3933419585271242558==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="P8FMnCtoSWhax0MH"
-Content-Disposition: inline
+
+On 11/12/24 10:31 AM, Thorsten Blum wrote:
+> Remove hard-coded strings by using the str_yes_no() helper function.
+> 
+> Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> ---
+>  fs/jffs2/nodemgmt.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 
 
---P8FMnCtoSWhax0MH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-On Wed, Nov 13, 2024 at 04:56:31PM -0600, Rob Herring (Arm) wrote:
-> The example erroneously has "compress" property rather than the
-> documented "compression" property.
->=20
-> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+Thanks.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
---P8FMnCtoSWhax0MH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZzZWgwAKCRB4tDGHoIJi
-0iEjAP44UzO5FUVwEujbOdAmPlMfUvh+QrvwrlPQbzT8f7/UqgEAuJsfYUidXWg6
-dLl/3ZvUusQEqoD33r/hyZV/Hq6mcg0=
-=+bY1
------END PGP SIGNATURE-----
-
---P8FMnCtoSWhax0MH--
-
-
---===============3933419585271242558==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+~Randy
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3933419585271242558==--
-
