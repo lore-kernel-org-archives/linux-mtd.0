@@ -4,78 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC6C0D68BDA
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Nov 2024 22:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E79EFD68BD0
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Nov 2024 01:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=oED1MnUot1nK8rsCd9LNN6fRz3CmPVDskUPMqxpNVgI=; b=rjyMNPNSPDAbBb
-	EbNTUEzf0W1Ut4wJI6YgjaBnrUN8/JXRy4bdVViaZTzracvWN8GWg9BvsgzxBaKEnIZ2WayMIonSb
-	e8k6E2Aeb/jkmP2mm+j3p0x+dD6HckDycxln75718v2HhQssgsTpLUp9ZYL++bidgsdoS+IYn0SCW
-	IHcUuoFAa255DtyppiNlB8KO7Bhk1uiWLSyJ6Z4SLisn75faMj10Ko2HwnPQoicJbO/fr+/vztUo2
-	QGd/fcUJYQEy+6/dEgJBlisegJurX1eIIh0lxPzKM5rFZUKufpMTl1n7x/1ZgtkAiGqe6urL2YPkX
-	1TThLT3JFPu5dt+kvOlw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=X0+TC/4TUAxpCOwkjwy5OWkak56gZ/gA6xs714JDVUA=; b=xebwsClNz8cjNogivUwP+lp38l
+	HVWYiE4mk5V1k219z8V5inYqpG/bpRFNtqqbMwy5Z67YxwcYaekqosAOi+zq+x/xN93S/4IwqXEZa
+	u5DYDxDFKKWIRBQxCy2Qhj3qqc48m+gk/Q9mcqwaCvdB2sFOgr/s4wYR+rjHKYEXGuYpMyi/6BRNu
+	1YWsd/tPR1428ciAR5Yvxz9nFPCVFUwCvC7gdFsYVxJjf7W2Pu7mAuIFyG+BKSW1vhCgjbyEiJYY5
+	d+lfJjpfb75DQjR4boQayHuKazW+7PoTnH3P9yVQ0iS+/SkSohvBjr0j73TnSoruEBqoFxeXAPpO7
+	p4FY+PzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tC4lj-00000004PST-41Bn;
-	Fri, 15 Nov 2024 22:26:23 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1tC84h-00000004krC-0Oal;
+	Sat, 16 Nov 2024 01:58:11 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tC4lh-00000004PRZ-22Ob
+	id 1tC84d-00000004kq1-3gwI
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Nov 2024 22:26:22 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-43158625112so1145655e9.3
-        for <linux-mtd@lists.infradead.org>; Fri, 15 Nov 2024 14:26:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mandelbit.com; s=google; t=1731709579; x=1732314379; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C8Xp5DchzBLMx2DW4umYiCSRYu9AVer3xBbdskCBDnE=;
-        b=IlxsLyvenlkIAH+1AGVDb0QWX6HqKS2gzjit3FdUgO65ZJuz1MfOfmLMGZmGs1L1Pf
-         5fa4qEpyTIgIroH4UN4ZEEDwfNGs2wtPK0jxYrwY1AOEJvt+wl7XTSnFJRvCjHFjP7gU
-         6YSvTJQkEi8tkk6kCIIx5ekr70pd1nLy5I2A7ebmxx16+g6ax5vyo355EKfSEC+Hypum
-         Dmku6YKdgNlxASLNSXsyFkX4IJbr8MMVW4pIqg94rWSgpJS2SmOSrktYEaaqM3xlFXLm
-         l6VADukJPGnkFsjGbjZC1gpA/4fSyb38lEFpzx++51d+XuN9d8YPcIbre/uJG4aRmsyZ
-         wTkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731709579; x=1732314379;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C8Xp5DchzBLMx2DW4umYiCSRYu9AVer3xBbdskCBDnE=;
-        b=oLPBV1LicrSjtnTAume7z3tmi/AlDX1gU8CGylufplC5Ra7ZeKkTjIyBO8CNhaHPhz
-         qG8HmRfRmTzw9RCK+VynqnBxrPnEAm8Y/d8jl/XPJjMcAwfBGcH53eZ2wgnZ9UVAV1IU
-         yJ7Le55E8WSZFNYtLr3e7vCgOstATzKLlaRHJxYjqkiPHl5aw+CHQDO5zK+suGy4P2GX
-         kn3zVFlCXpiT6z1+vetiRkhRGMgbcwQbJA7c0eLVF1YjgcZAE/74pjm+YDfdRdi9P2AM
-         LmR4jFl5gqv41jM2s/aBLCKYd70uKyU0Z3n7FAOPLbQ0bPDmqoH2grb0d4ldTcsawHtR
-         eEnQ==
-X-Gm-Message-State: AOJu0Yw+ZVt508xHNsSAjAoR6t2fwEtQ+mz+m8Ds37E/PUY/kn3QhA8L
-	WOSE+aKk2A0VfGD75rYJZ3JdG7gMqqQifM8aUbvsB1TddT+rV3oItZ8OPnP4I8KFAEKAdxJ9RqW
-	7
-X-Google-Smtp-Source: AGHT+IHeJP49UiLk1+A21zLZ9ga84quFsvsfDwLTyueK66j1t98EbwAOHupzp6aQwxL0DRmf+jG8zw==
-X-Received: by 2002:a05:600c:1ca2:b0:42b:a7c7:5667 with SMTP id 5b1f17b1804b1-432df7876d4mr35648385e9.25.1731709579711;
-        Fri, 15 Nov 2024 14:26:19 -0800 (PST)
-Received: from serenity.mandelbit.com ([2001:67c:2fbc:1:1b94:c354:f504:96f9])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3821d0ea3e2sm5115774f8f.109.2024.11.15.14.26.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 14:26:19 -0800 (PST)
-From: Antonio Quartulli <antonio@mandelbit.com>
-To: linux-mtd@lists.infradead.org
-Cc: Antonio Quartulli <antonio@mandelbit.com>,
-	Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ubifs: fix uninitialized variable usage
-Date: Fri, 15 Nov 2024 23:26:34 +0100
-Message-ID: <20241115222634.32259-1-antonio@mandelbit.com>
-X-Mailer: git-send-email 2.45.2
+	Sat, 16 Nov 2024 01:58:09 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XqxnH3lfqzpb1X;
+	Sat, 16 Nov 2024 09:56:03 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id B14BD180106;
+	Sat, 16 Nov 2024 09:57:55 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 16 Nov 2024 09:57:54 +0800
+Subject: Re: [PATCH] ubifs: Fix uninitialized use of err in
+ ubifs_jnl_write_inode()
+To: Nathan Chancellor <nathan@kernel.org>, Richard Weinberger <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <llvm@lists.linux.dev>,
+	<patches@lists.linux.dev>
+References: <20241115-ubifs-fix-uninitialized-err-v1-1-446849982e27@kernel.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <b560f413-70f1-8ebb-7403-34591658ca86@huawei.com>
+Date: Sat, 16 Nov 2024 09:57:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20241115-ubifs-fix-uninitialized-err-v1-1-446849982e27@kernel.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241115_142621_526391_AAE8B58B 
-X-CRM114-Status: GOOD (  12.64  )
+X-CRM114-CacheID: sfid-20241115_175808_076693_15A53C51 
+X-CRM114-Status: GOOD (  12.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,46 +67,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In ubifs_jnl_write_inode(), when an inode cannot be deleted
-due to too many xattrs, err is passed to ubifs_ro_mode()
-uninitialized, thus leading to bogus error reporting.
-
-Fix this case by passing -EPERM, which is the same value that
-ubifs_jnl_write_inode() is going to return to the caller.
-
-This fixes 1 UNINIT issue reported by Coverity
-Report: CID 1601860: Uninitialized scalar variable (UNINIT)
-
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: linux-kernel@vger.kernel.org (open list)
-Signed-off-by: Antonio Quartulli <antonio@mandelbit.com>
----
- fs/ubifs/journal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 8e98be642371..5eedf511880c 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -983,7 +983,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 
- 	if (kill_xattrs && ui->xattr_cnt > ubifs_xattr_max_cnt(c)) {
- 		ubifs_err(c, "Cannot delete inode, it has too much xattrs!");
--		ubifs_ro_mode(c, err);
-+		ubifs_ro_mode(c, -EPERM);
- 		return -EPERM;
- 	}
- 
--- 
-2.45.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xMS8xNiAwOjEwLCBOYXRoYW4gQ2hhbmNlbGxvciDQtLXAOgo+IENsYW5nIHdhcm5z
+IChvciBlcnJvcnMgd2l0aCBDT05GSUdfV0VSUk9SPXkpOgo+IAo+ICAgIGZzL3ViaWZzL2pvdXJu
+YWwuYzo5ODY6MjA6IGVycm9yOiB2YXJpYWJsZSAnZXJyJyBpcyB1bmluaXRpYWxpemVkIHdoZW4g
+dXNlZCBoZXJlIFstV2Vycm9yLC1XdW5pbml0aWFsaXplZF0KPiAgICAgIDk4NiB8ICAgICAgICAg
+ICAgICAgICB1Ymlmc19yb19tb2RlKGMsIGVycik7Cj4gICAgICAgICAgfCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBefn4KPiAKPiBTZXQgZXJyIHRvIC1FUEVSTSBiZWZvcmUgdGhl
+IGNhbGwgdG8gdWJpZnNfcm9fbW9kZSgpIGFuZCByZXVzZSBpdCBpbiB0aGUKPiByZXR1cm4gc3Rh
+dGVtZW50IHRvIHJlc29sdmUgdGhlIHdhcm5pbmcuCj4gCj4gRml4ZXM6IDk1N2UxYzRlMTc3OSAo
+InViaWZzOiB1Ymlmc19qbmxfd3JpdGVfaW5vZGU6IE9ubHkgY2hlY2sgb25jZSBmb3IgdGhlIGxp
+bWl0YXRpb24gb2YgeGF0dHIgY291bnQiKQo+IFNpZ25lZC1vZmYtYnk6IE5hdGhhbiBDaGFuY2Vs
+bG9yIDxuYXRoYW5Aa2VybmVsLm9yZz4KPiAtLS0KPiAgIGZzL3ViaWZzL2pvdXJuYWwuYyB8IDMg
+KystCj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpN
+eSBtaXN0YWtlLCB0aGFua3MgZm9yIGZpeGluZyBpdC4KClJldmlld2VkLWJ5OiBaaGloYW8gQ2hl
+bmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IAo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy9q
+b3VybmFsLmMgYi9mcy91Ymlmcy9qb3VybmFsLmMKPiBpbmRleCA4ZTk4YmU2NDIzNzE1NDEwNWNk
+NmY3Y2I2MmNmMDMzOGFjMjZkM2U5Li4zNmJhNzlmYmQyZmY4MGZmM2Q1YzFmMGJmOTY1ZTQzOWQ4
+YzU1YWIyIDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL2pvdXJuYWwuYwo+ICsrKyBiL2ZzL3ViaWZz
+L2pvdXJuYWwuYwo+IEBAIC05ODMsOCArOTgzLDkgQEAgaW50IHViaWZzX2pubF93cml0ZV9pbm9k
+ZShzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgY29uc3Qgc3RydWN0IGlub2RlICppbm9kZSkKPiAgIAo+
+ICAgCWlmIChraWxsX3hhdHRycyAmJiB1aS0+eGF0dHJfY250ID4gdWJpZnNfeGF0dHJfbWF4X2Nu
+dChjKSkgewo+ICAgCQl1Ymlmc19lcnIoYywgIkNhbm5vdCBkZWxldGUgaW5vZGUsIGl0IGhhcyB0
+b28gbXVjaCB4YXR0cnMhIik7Cj4gKwkJZXJyID0gLUVQRVJNOwo+ICAgCQl1Ymlmc19yb19tb2Rl
+KGMsIGVycik7Cj4gLQkJcmV0dXJuIC1FUEVSTTsKPiArCQlyZXR1cm4gZXJyOwo+ICAgCX0KPiAg
+IAo+ICAgCS8qCj4gCj4gLS0tCj4gYmFzZS1jb21taXQ6IGZlMDUxNTUyZjUwNzhmYTAyZDU5Mzg0
+NzUyOWEzODg0MzA1YTZmZmUKPiBjaGFuZ2UtaWQ6IDIwMjQxMTE1LXViaWZzLWZpeC11bmluaXRp
+YWxpemVkLWVyci05NmJhNmExZTc1NmMKPiAKPiBCZXN0IHJlZ2FyZHMsCj4gCgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
