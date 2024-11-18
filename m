@@ -4,63 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4078D10F28
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Nov 2024 18:44:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DD80D10F38
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Nov 2024 00:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GjQEuu6uOHpcK/IjrCeORmp/vF+3QL7a7H+hc85+mxw=; b=RBxQUe0eENk6UR
-	r2pkor1420yeS4eLg7HnSvO3hp4VnLJe6cONirU/haYcT37w5BFTWzUIdC/DugW9ZHSZTAFGp2xLk
-	vXTqzGi7pG7FPfCNzplEd2/lSiHaE3W6aLo2fLqv0YosBgnfkCHkIAs2IrSVwAY22VaKYHj6joD/B
-	Qph5yg1/Tf6fF98fOgcab/3Dc4c4TH7RaZr83/ZRqdZLEJSFko4uN4dozdj+BxqaYKaGs6ZpDPNtQ
-	Ov4itj1FHmMmXWO+GQcqUS/PXbiPUeaZG6dg1CEzSgQW2JEVH3GJcOb3pE9qmM+di3hLw5opWW1fX
-	0s2h5ZP6CN8zbT9KuzIA==;
+	List-Owner; bh=a7TotGtfq6o7oB3Jgw6fII3Z+5HuXRidm5SyTH95BPw=; b=dtZQm2aRyg7vRF
+	KJ0jd5QfkpsUNZF4neNP762Rs49sBYOMQo6sUTK4/19Jsl3rIuvz+Guj+Z5drRmbd/JUv2uL68m9x
+	SjoMEZSBTjq7F0Pea8TAVgH1hMynB1GCgIiYPtcmSByNNvfNtYMs+4PRffCMI8hxLVaq01itsfucg
+	ZxjKRd5a9OFpIbJ+zmnwMNgzYvlG8llh03ufAhVHoqOuNtQRsDp3F8Cs8Ss0+xpP2MUfvLd2cpdSe
+	5s9X6tWJNm6y0svHqV+lPAqDpYJkVosjWm8ZWxlTBnw9Ufw9GJ8JB11Ee35iFbEAAnC8E15BgVA3e
+	9kjVgHFk9Vunx4Gv/Cqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tCkGG-00000007ggQ-0Jcz;
-	Sun, 17 Nov 2024 18:44:40 +0000
-Received: from mail.ispras.ru ([83.149.199.84])
+	id 1tCpW9-000000081QM-3YhF;
+	Mon, 18 Nov 2024 00:21:25 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tCkGB-00000007gdb-09AM
+	id 1tCpW6-000000081Q1-3mkv
 	for linux-mtd@lists.infradead.org;
-	Sun, 17 Nov 2024 18:44:37 +0000
-Received: from fpc.intra.ispras.ru (unknown [10.10.165.6])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 574F6518E77B;
-	Sun, 17 Nov 2024 18:44:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 574F6518E77B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1731869069;
-	bh=z83vOsND3dmU2lQdMai5FHCaNYTMGUxXC+d3JRYKOAM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ifWoM0aZW9jsM3hf2l0UNIgHM7DMOleLcyN4dOwzuyjuCzoFHRjMqXvAnVy7G/Q2S
-	 IoMbsXVH1VCcctIrAMdgjHVWJwSp8ggJq2XeTpvTxa2Wz25ePntE0gOLPrZ6JjeFPo
-	 G5z22+bEsjoKLwZv1tVQ+O6OnpLAT83KqBiSlf5I=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Wang Yong <wang.yong12@zte.com.cn>,
-	Lu Zhongjun <lu.zhongjun@zte.com.cn>,
-	Yang Tao <yang.tao172@zte.com.cn>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	stable@vger.kernel.org
-Subject: [PATCH 2/2] jffs2: initialize inocache earlier
-Date: Sun, 17 Nov 2024 21:44:12 +0300
-Message-Id: <20241117184412.366672-3-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241117184412.366672-1-pchelkin@ispras.ru>
-References: <20241117184412.366672-1-pchelkin@ispras.ru>
+	Mon, 18 Nov 2024 00:21:24 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-aa2099efdc3so685550766b.1
+        for <linux-mtd@lists.infradead.org>; Sun, 17 Nov 2024 16:21:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1731889280; x=1732494080; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VRqSQtz0hQe18bbve6SjCZASi2AqJ6XcRuIJpLqFZqE=;
+        b=cHJGKv2Qnlv37450U+v6+L9vk/xwbTHhOWXohdYs/Xt/6opVn5IpRalg91YXTWlDvX
+         mSLk1f9UE0LjtT4FpthunxbDMONU+1Ss2orY/8kxiSQ0i42C3MXjmLGclq0H9GpoENfg
+         tFqAtn4KVBPBFNNWDUX/aYwtnLPFXDjECmTjrbYWNFN0OX0VfGgX5FJRA9IhGNn36GA4
+         keoOAsc/CPulTAF69FJ+OIdznrB26W4dQhC5L+fdKjqkIs3TU0Gq8orSQE9Caxsh/O4G
+         VzY4+qZxsiSa9qjd0j6mnmeU5Xv1AuKfNrKyZzecvNlFTzJZWvxwshIXo4mpgyOfACDA
+         VaIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731889280; x=1732494080;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VRqSQtz0hQe18bbve6SjCZASi2AqJ6XcRuIJpLqFZqE=;
+        b=LBGO3dJkC9VTyOEeFOcakUb+998TeL+fDTTILiidYv71/k2dbmtJRbktPCumN8ZJIG
+         JS7UzrQw/ZuS8w+gqkjoK+W+QBoxUx6FC+loBvXcpbezNJphshsao1un1TGPyT/J/4Oc
+         9iXoGJtcpfGJ9lqjorqPR+Jo5+PbiWuAfiGHINnwSAJy7Nc2rTCQwUQJOJoGj8SPihHT
+         Dr+Qmp68MNciL4yk8L9VQcXfCfVlK9pUJZ7wLwjTdtA2QStW8wLCBjrGLgUKv4n2L29F
+         /qjfT8HUjRBYEEx5+5juB1b9pfRaEE6FrdSU4dXcf0xHG2aw6RdtYrzEd9UUIvlLL07h
+         gqpA==
+X-Gm-Message-State: AOJu0YyY60EN/XUxtKYyHSEFMqOWIPRsd3FsCZaBuVLRJiNczctO7J9P
+	4b8IVe08Fdyjxs29u7tOomZ2jrH+2ZJPb9CyNch14752fzmtJsdqSpeBh2VO5LY=
+X-Google-Smtp-Source: AGHT+IG1nRDlq+ZxWA83kmi6l2w4CA8wtitsklk8ah5efzvf/hKlMGkXnq5vOW08QBWpen24lAKMrg==
+X-Received: by 2002:a17:907:94c3:b0:a99:facf:cfc with SMTP id a640c23a62f3a-aa481903571mr1147825266b.17.1731889280314;
+        Sun, 17 Nov 2024 16:21:20 -0800 (PST)
+Received: from [192.168.178.160] (clnet-p04-043.ikbnet.co.at. [83.175.81.43])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20df1b5eesm479010066b.26.2024.11.17.16.21.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Nov 2024 16:21:19 -0800 (PST)
+Message-ID: <148e14a6-caba-4a3b-8271-cfb25859305d@sigma-star.at>
+Date: Mon, 18 Nov 2024 01:21:19 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mtd-utils v2 RESEND 000/102] Add fsck.ubifs support
+To: Zhihao Cheng <chengzhihao1@huawei.com>, richard@nod.at,
+ yi.zhang@huawei.com
+Cc: linux-mtd@lists.infradead.org
+References: <20241111083711.1916125-1-chengzhihao1@huawei.com>
+ <7905b16f-1e7a-44b7-b16b-3f2a84e23390@sigma-star.at>
+ <5b7d6bf1-c067-a7e9-5715-8b4f8af19241@huawei.com>
+Content-Language: en-US
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+In-Reply-To: <5b7d6bf1-c067-a7e9-5715-8b4f8af19241@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241117_104435_583846_767BDE10 
-X-CRM114-Status: UNSURE (   9.51  )
+X-CRM114-CacheID: sfid-20241117_162123_255215_3CD42B97 
+X-CRM114-Status: UNSURE (   3.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,66 +91,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Inside jffs2_new_inode() there is a small gap when jffs2_init_acl_pre() or
-jffs2_do_new_inode() may fail e.g. due to a memory allocation error while
-uninit inocache field is touched upon subsequent inode eviction.
+Pushed to mtd-utils.git master.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
-CPU: 0 PID: 10592 Comm: syz-executor.1 Not tainted 5.10.209-syzkaller #0
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-RIP: 0010:jffs2_xattr_delete_inode+0x35/0x130 fs/jffs2/xattr.c:602
-Call Trace:
- jffs2_do_clear_inode+0x4c/0x570 fs/jffs2/readinode.c:1418
- evict+0x281/0x6b0 fs/inode.c:577
- iput_final fs/inode.c:1697 [inline]
- iput.part.0+0x4df/0x6d0 fs/inode.c:1723
- iput+0x58/0x80 fs/inode.c:1713
- jffs2_new_inode+0xb12/0xdb0 fs/jffs2/fs.c:469
- jffs2_create+0x90/0x400 fs/jffs2/dir.c:177
- lookup_open.isra.0+0xead/0x1260 fs/namei.c:3169
- open_last_lookups fs/namei.c:3239 [inline]
- path_openat+0x96c/0x2670 fs/namei.c:3428
- do_filp_open+0x1a4/0x3f0 fs/namei.c:3458
- do_sys_openat2+0x171/0x420 fs/open.c:1186
- do_sys_open fs/open.c:1202 [inline]
- __do_sys_openat fs/open.c:1218 [inline]
- __se_sys_openat fs/open.c:1213 [inline]
- __x64_sys_openat+0x13c/0x1f0 fs/open.c:1213
- do_syscall_64+0x30/0x40 arch/x86/entry/common.c:46
+Thanks,
 
-Initialize the inocache pointer to a NULL value while preparing an inode
-in jffs2_init_inode_info(). jffs2_xattr_delete_inode() will handle it
-later just fine.
-
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- fs/jffs2/os-linux.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index 86ab014a349c..39b6565f10c9 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -55,6 +55,7 @@ static inline void jffs2_init_inode_info(struct jffs2_inode_info *f)
- 	f->metadata = NULL;
- 	f->dents = NULL;
- 	f->target = NULL;
-+	f->inocache = NULL;
- 	f->flags = 0;
- 	f->usercompr = 0;
- }
--- 
-2.39.5
+David
 
 
 ______________________________________________________
