@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F929D49205
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Nov 2024 10:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E23EFD49209
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Nov 2024 10:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=arADhc9RO38Jpa8mTG/3Y491QTkCAonYwphs5biqWU8=; b=afrBtebksRs8px
-	PGY9vP73GfHqrPWIxwn9DtCOLUnq6jBMLcqhdPzQiPFE0HxUwtc9XqwkS9ltBUzTWWjfLpEr3pHiQ
-	CkSesDCJt2OAmwILj0BK1ibYnCSJXsPJoDYBF7u2g6GJJ7gVX+pR7GSWXELHughyaTqmRVtNXyAQM
-	6eTTA3ZqHwTfEIj8VNpSMcYg18z1wt0Etb5cu0aJ9z5VjJVBieNmO+m7BYKsCAUI3Svj+JaJWqlgf
-	Za1C4/VZMjQjFbh3LX9u9BU3JRCm+vJZUrHWeTvtD6jRu1MY902c18PyPpIACb5Li4soBWwV+iVuY
-	REoOYU72V4I++kL9rZeA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=8jtvkxk9hbnGpuxWa/mGGf2NYTaPUQOcOmld63XWQf8=; b=kZ5/3kWrV6bgxCVVbw33yx8NXE
+	8Ch0fmHmlI8meThp2wzPWqpOOEebAIPS0naJL9qBnjrp2PwoEMWY+KByLmcMyYnQlmxOtknU85oJx
+	s/0ukrjKVGBpE9A3QYMxuSbrIrRgNRzOTPlH1jQxsrzYgrPGhHQG/nz5cXBoE+xd4B5asR/aoY0qC
+	lU1VROvWfFIX04T45ebTBNzcb8KaxA86FvIBA0tFQRttdmPIryPD2C4Zfts6jPnCwW0q8+BVTbKj3
+	84e+dzJWvjVlsIHtbAs6arBezrZ8kTZYYe/XIrq8ginIL/U1H8qEtY+4lpomMYRfhHOryPtUxol7O
+	9htgzVDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tCynQ-000000092oT-0uDE;
-	Mon, 18 Nov 2024 10:15:52 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1tCysH-000000093vv-2qfv;
+	Mon, 18 Nov 2024 10:20:53 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tCymg-000000092gA-41Ec
+	id 1tCysF-000000093uX-0jdr
 	for linux-mtd@lists.infradead.org;
-	Mon, 18 Nov 2024 10:15:09 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 525706000D;
-	Mon, 18 Nov 2024 10:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1731924903;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fj2uUiFmkbeg5lVUVotw2IvijW0/06lt3zzXM5D2Ujw=;
-	b=W/gS2zREqtrfpNSW72krlOAfn9iQRConqSvn+kdOfPrTcQB8GJzFhSg2+P0NscuMYeXgzV
-	S/FpK1uNsYgCprZjbE883iThzxF5F3yIU7xGz5Xvc5mbj4BPsM9KliPc3kX5nN8ksSycaw
-	mBXuPAMXuMjbnjKIZIv6KQQlFCygbphfp0VCxORF/2cNNkXkDruMBgvGwoGo6Gc1FwUe7m
-	hePPjRcHA8UBPIxuqYTcK/4uEP3dhd1P1MvNlf/eyDv8ABbuJpxvqvyb1uhjNcgc4Wdmm8
-	qvrufwDD6ScN1oZGZhG4tuuXFFVaXteHCmSy0y3a+LjhvC/hExlStSTE9Dj+3Q==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andreas Oetken <ennoerlangen@gmail.com>
-Cc: Andreas Oetken <andreas.oetken@siemens-energy.com>,  Richard Weinberger
- <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: core/part: trying to delete partition with
- usecount > 0 corrupt partition
-In-Reply-To: <20241115085516.1852668-1-andreas.oetken@siemens-energy.com>
-	(Andreas Oetken's message of "Fri, 15 Nov 2024 09:55:13 +0100")
-References: <20241115085516.1852668-1-andreas.oetken@siemens-energy.com>
-User-Agent: mu4e 1.12.1; emacs 29.4
-Date: Mon, 18 Nov 2024 11:15:00 +0100
-Message-ID: <87ldxg26hn.fsf@bootlin.com>
+	Mon, 18 Nov 2024 10:20:52 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id CA4382A87E1;
+	Mon, 18 Nov 2024 11:20:49 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id R3mCjP5e1-hG; Mon, 18 Nov 2024 11:20:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 714432A881A;
+	Mon, 18 Nov 2024 11:20:49 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id jN5xBbYgBdsR; Mon, 18 Nov 2024 11:20:49 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 4C32D2A87E1;
+	Mon, 18 Nov 2024 11:20:49 +0100 (CET)
+Date: Mon, 18 Nov 2024 11:20:49 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Cc: chengzhihao1 <chengzhihao1@huawei.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <1747841136.38159796.1731925249043.JavaMail.zimbra@nod.at>
+In-Reply-To: <CAOf5uwnXmiB+ij=WzWuSytXh-VA60ZHVL7WiSBpA8iKi7SvjNA@mail.gmail.com>
+References: <CAOf5uw=e1wZh2ifvSXYMe4H28R5DNuos7uPziFMGs8T6nVeYWA@mail.gmail.com> <b03b6625-3971-76c4-d045-6e35ec220caf@huawei.com> <CAOf5uwm=nLLcyvtc7EGK=rdu6N+j6t6_hYyCWcB3QMACOAEx2A@mail.gmail.com> <8df70e11-3278-06ed-5952-c808035bb679@huawei.com> <CAOf5uwkhgDxUprK+fp09dWh1aXMNPJC7YPjFNChT2Qj86do4hQ@mail.gmail.com> <302574690.38068166.1731924136160.JavaMail.zimbra@nod.at> <CAOf5uwnXmiB+ij=WzWuSytXh-VA60ZHVL7WiSBpA8iKi7SvjNA@mail.gmail.com>
+Subject: Re: Some information about direct-io support on ubifs
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF132 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Some information about direct-io support on ubifs
+Thread-Index: mid3ncvrMfXKspuGcQGn4R7AppiyjA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241118_021507_139130_8D863FFF 
-X-CRM114-Status: UNSURE (   7.36  )
+X-CRM114-CacheID: sfid-20241118_022051_351957_39787545 
+X-CRM114-Status: UNSURE (   7.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,13 +77,15 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQW5kcmVhcywKCk9uIDE1LzExLzIwMjQgYXQgMDk6NTU6MTMgKzAxLCBBbmRyZWFzIE9ldGtl
-biA8ZW5ub2VybGFuZ2VuQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IENoZWNrIGZvciB1c2Vjb3VudCBi
-ZWZvcmUgZGVsZXRpbmcgZGVidWdmcyBhbmQgc3lzZnMgZW50cmllcy4KPiBPdGhlcndpc2UgZGVs
-ZXRpbmcgdGhlIHBhcnRpdGlvbiBhIHNlY29uZCB0aW1lIGxlYWRzIHRvIGEga2VybmVsCj4gcGFu
-aWMuCgpXaGF0IGtlcm5lbCB2ZXJzaW9uIGFyZSB5b3UgdXNpbmc/IEkgYmVsaWV2ZSB0aGlzIGJ1
-ZyBubyBsb25nZXIgZXhpc3RzCmluIG1haW5saW5lLiBMZXQgbWUga25vdyBpZiBJIGRpc3JlZ2Fy
-ZGVkIHNvbWV0aGluZyB0aG91Z2guCgpUaGFua3MgZm9yIHRoZSBwYXRjaCBhbnl3YXksIGl0IHdh
-cyBjbGVhbi4KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk1pY2hhZWwgTmF6emFyZW5v
+IFRyaW1hcmNoaSIgPG1pY2hhZWxAYW1hcnVsYXNvbHV0aW9ucy5jb20+Cj4+IFdoeSBhcmUgeW91
+IHVzaW5nIFVCSUZTIGFueXdheSBmb3IgdGhpcz8gSnVzdCBwbGFjZSB0aGUgc3F1YXNoZnMgaW5z
+aWRlCj4+IGFuIFVCSSB2b2x1bWUuCj4gCj4gWWVzIHRoaXMgaXMgb25lIG9mIHRoZSBzb2x1dGlv
+bnMgSSBoYXZlIHByb3Bvc2VkLCBidXQgdGhlIGlkZWEgaXMgdG8KPiB1cGRhdGUgYSBzaW5nbGUg
+c3F1YXNoZnMKPiBjb250YWluZXIgYW5kIG5vdCBib3VuZCB0aGUgbGltaXQgaW4gdGhlIGJlZ2lu
+bmluZyBvZiB0aGUgZGV2aWNlIGxpZmUuCj4gRG9lcyBpdCBtYWtlIHNlbnNlIHRvIHlvdT8KCk5v
+dCByZWFsbHkgYmVjYXVzZSB5b3UgY2FuIGFkZC9yZXNpemUgVUJJIHZvbHVtZXMgYXQgcnVudGlt
+ZS4KU28sIGxldCBVQkkgYmUgdGhlIGNvbnRhaW5lci4KCllvdSBjYW4gZWJlbiBnaXZlIHRoZW0g
+bmFtZXMuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
 X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
 dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
