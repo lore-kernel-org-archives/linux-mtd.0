@@ -4,44 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1F01D711BD
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Nov 2024 15:51:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBEDED711C8
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Nov 2024 16:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rknUvzVr3wBoA+WgUqKyw7oNVZBC7ihRu92Wg7mhKy8=; b=vgohIGGIvxQOGz
-	gcYDgZCU7790bBZ99FGX7QPT9uRdkUvi7n6+B9Xs7QJpyJlz/HvR1P3MQAz/hEP30/9Ijfb9wKNK2
-	1qAbTg3o2bu8lM0rKYggDcPyIsmeguLjMyA/nVczmIxa6zTtHncYl1WBbFuQeV5/p1CPsFYmlb+ax
-	EFZlfVWDuxDp+WSWvktmE8AwBMggAg5jFE86pJs61Cjjis3f2QEX4uN9booy81nKQi7ZoeLdyOKyr
-	U07yeHyVRuKiLrX2LXwfD300Jc+THQofBy9M8WjPO/JwJmnewx6FDLgUIarUPG+fknMFXOmbHSS05
-	M9DVq5x0C84d5yqYCaeg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aiyAP2JsgRdeLI08IOZDEBstLSZWE8DzDCsAymBcWFo=; b=lnxNJ3rZZNHSNl
+	vfdDZAX7i95XTTR08QbnPpwaI2FxEyDCUtkCgKaLktDC2VFsn46GHxPt1koL9V1TYPdfo7Tks3Pye
+	Sg+MjfD6Gq9SuMZ2mxDWxARBcvTIe9rwa2H0Jvo5r8xXql1JkrbfmTMxQYNHkz3QKGme2pPC5E+PC
+	jUG5RUCXi335QWONSVpyPE26opoz8CwTJO3F4o6StEnuJ5/6Pj3F00S5AhFXqVxx55vVHHodK9KCn
+	0ZaJNDO56EaNaMg3tH4bVY5FEksBcCJD25hXiaw5ubjbAbmstUwunTo6WfdWnJ56NUV97vvij3dcZ
+	n4RhsB4BlMwkowQAIxFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDmzY-0000000FjDo-1Stt;
-	Wed, 20 Nov 2024 15:51:44 +0000
-Received: from lisa.dawes.za.net ([178.63.77.189])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDmzU-0000000FjD4-1sN9
+	id 1tDnnd-0000000FqBS-1ebx;
+	Wed, 20 Nov 2024 16:43:29 +0000
+Received: from mail-mw2nam10on2060c.outbound.protection.outlook.com ([2a01:111:f403:2412::60c] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tDnnb-0000000FqA9-0kif
 	for linux-mtd@lists.infradead.org;
-	Wed, 20 Nov 2024 15:51:42 +0000
-Received: by lisa.dawes.za.net (Postfix, from userid 1000)
-	id C652A1401AB; Wed, 20 Nov 2024 17:51:35 +0200 (SAST)
-Date: Wed, 20 Nov 2024 17:51:35 +0200
-From: Rogan Dawes <rogan@dawes.za.net>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Parsing extracted i.MX NAND flash
-Message-ID: <20241120155135.GA27335@lisa.dawes.za.net>
-References: <20241118173939.GA11581@lisa.dawes.za.net>
+	Wed, 20 Nov 2024 16:43:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lLG1vIt+QORtti3zgah0WBgeTvPm/Yw+yUjEY+I3OuL0N0P+buKAt37jcfPwbdRraWnZNz4j4vy1MPj9PkYVWgnBOytoqTTLb9vsQh9nnsu7p8gUxh3mWjHkS8PvrERib0QUqIJ4moO8tJLrgjbVo5t80WWpVS9P5RMB9S19eVZdmEtYNE4oVqGxP5MVAk/adMTrQdsQSeAeVJ26WCsNqPCrsdovkAdmqCmB2+xVVdg0cXagYgZg4CAwHYOmuQ2Y+5qvk/4gJRGlB7qMbZwgaIeIGc5K0QyRfEKVlS1HC9fbVM76OjgtLP9auRjtxzTuSiJCxFPJM50l59bRyNsvhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jVGkJGwggnxCrMqOZPWd4+AtT0DrC1GiPgqeeteLb7w=;
+ b=i7o0adecjdMXD/ZdmTd/PTjuu8nU2ynkqqRHWMCHc0zH3dgl/Vr3jGzQMW4UG2k/QW/cxjULV41t5aKc+xKh6eRhjE19wNFvscffhzXC0lhpMMd4HFGf1tcfA3KArxmwuONXv6kolizbbPSZErr7W/vfDymoIN5pQOpwmpfCHQueDkkw/qxbuY+4C8rieOVEQfSwMXUZ7M8j4HDW2e5q2K73HFoZLsR56clHD6GLbMVYP+HsvFs2uStrC9cz6k5cBBlGRo7/pdKFPojwPzDtlxw/GVW7aoXYn2VtGNyLM6fc/OVxXk+CHoBqmCmpOl26mJCfYfO1q6ivBCVRmpntzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jVGkJGwggnxCrMqOZPWd4+AtT0DrC1GiPgqeeteLb7w=;
+ b=NLLRfxl6/Bp2j8CnV/QWzJhM987syZTkIjAsQAjWgh9yNaVPbRZLf+BMmQbknR3UM+4BTlG9NJfnbxtpWvQqfE7fPe32jz3/7S3qv9FtzBiGOyJN/tLELAZRSTbcf9K4L+QUNREJongCN8SguVh3d8v5ZxrjiFzDPODAHhjKtpa9gfespdaEsy4YevdsVQfp/fVMY+YmYTctfNkn1AOmEUVO78bQl8PbyjpP364zSpggP4YyhjQMHJAhcLcMX2bo8qcedw9IGXDtH/mMtdjQcaY7JW+n9a8z6gVK+ywevMhu4A4BUUf5X1uthErUClrCLfmnqh7WRC5XRYilEMfrzQ==
+Received: from BN0PR08MB6951.namprd08.prod.outlook.com (2603:10b6:408:128::14)
+ by BN0PR08MB7279.namprd08.prod.outlook.com (2603:10b6:408:14a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8182.14; Wed, 20 Nov
+ 2024 16:43:17 +0000
+Received: from BN0PR08MB6951.namprd08.prod.outlook.com
+ ([fe80::9ea8:ab2e:4ce1:2d36]) by BN0PR08MB6951.namprd08.prod.outlook.com
+ ([fe80::9ea8:ab2e:4ce1:2d36%3]) with mapi id 15.20.8158.023; Wed, 20 Nov 2024
+ 16:43:17 +0000
+From: "Anthony Pighin (Nokia)" <anthony.pighin@nokia.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: fsl_ifc_read_byte16: beyond end of buffer on ONFI redundant parameter
+Thread-Topic: fsl_ifc_read_byte16: beyond end of buffer on ONFI redundant
+ parameter
+Thread-Index: Ads7afueNCrVhsT1SwGJkpfGvdmLmA==
+Date: Wed, 20 Nov 2024 16:43:17 +0000
+Message-ID: <BN0PR08MB69519A7EA893AC56D83A496D83212@BN0PR08MB6951.namprd08.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN0PR08MB6951:EE_|BN0PR08MB7279:EE_
+x-ms-office365-filtering-correlation-id: 8d8fe4cb-c18b-42b8-55e9-08dd09826f67
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|376014|1800799024|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?fQ9GUHt5nyiQMDJ6mhjez2VTUmIYO/Xljl39liO5W6yuHXQJ8U5E0jTUOssj?=
+ =?us-ascii?Q?lHTKY1JU3b2wvA66JtplxV6fsBFVqLPj2UpGZbwp0sS8rrARLwX69AVMH4Yx?=
+ =?us-ascii?Q?udurNYwwAI09avDRkCXTSPV6wFvVtPZjuTRopW6c8yJvJahxa8nQjmCsJkdv?=
+ =?us-ascii?Q?TLqtWna7Dpvg1iQqyJslbDcU8oPgyKWKhsbQHWZIboQPS0zhuhPYriztItMX?=
+ =?us-ascii?Q?mbVYbdix/gZoeZ6VgfS0DMH3dz1Ymy7T/tpqzVeif+I5kE+tI4LKMBMrCFJ1?=
+ =?us-ascii?Q?p2nTr1BHE2p+XspgJ0VA4RLTDVXHUVp+VA5N63nqg9mHEDB4K5oQZv9vEBVS?=
+ =?us-ascii?Q?4u6/3XvN0n5JO+IAyZbKjsGlEBKcTDm7cMWiWLqbGvbMIMwM48QF/W6xreOQ?=
+ =?us-ascii?Q?c0WNZqv6geALI/HQT7y95NSxxUUgqAejocCKV759ubnRlEJuKjG7LpI1AVfj?=
+ =?us-ascii?Q?rJBRX9oe9RxCs2ftbgSo9jSebX0Ai2z2qL2Q1/SQ1Xbp80gx/lhimeYU1rLv?=
+ =?us-ascii?Q?nu17WP4eNySdZM7e4m45BpitR8vi3r1c9ZgmwvQOcA7k+fqNQKKcYeUfUc5D?=
+ =?us-ascii?Q?E16y4XiKSCYSPxpnYwESR+7105sKi62K8XSF5TiRbrrR54/Z1Ti7DYC6yfaL?=
+ =?us-ascii?Q?t0RnUBoyuVtkGuhCg4fyvctAFgqUSRPsysoGCn1SjagVc6j0P+yis59v1XSn?=
+ =?us-ascii?Q?kW6acY6LxNhcGicDT3Lagpo7JY27Iq69mRLhHKVTbm8k3t8ziVdohNOso2Rp?=
+ =?us-ascii?Q?jxegwmjzvE4raYoJQmgJbX8JbrJOXldxphnvPYFFXjqHg17SbKqibDdBv3Wl?=
+ =?us-ascii?Q?aLSstc840qfRN/cjM34JEtPFYa63vrnpMPFy8IrQXwIZRGq/R0m0Clc76sDr?=
+ =?us-ascii?Q?bFXrL1nxhnvTqTxk0ATFdicqKFcBlkooriJI4TIblldGeTOJkgHE6r7Keqy7?=
+ =?us-ascii?Q?mhaKkp4z/HuwsPEoVQOw+ySimq/aAdm/XMfFfTYQFgiFP7CJ7UUI4VslezEu?=
+ =?us-ascii?Q?25W6bIMPWlLvFRam4h3UvHrb872cBFiFQmx0PUQvRdIU52vZJtQhmVT40quW?=
+ =?us-ascii?Q?8eAmWZmPUGNCwLRMASJ+LP7n3uIX/BWjMz/Z1afaAOARL7Q694kdr/XXrmoA?=
+ =?us-ascii?Q?gI0TOBbAxTHZ17i1G46OxVQZ1ZvD/u44T2QGSpNAYOcpq9fz7CtIzzdleV1G?=
+ =?us-ascii?Q?k18VVbMowc8B2lXA/U5CnQFqJs7T9iMKRhx45ysMYsUnppdJxGV3cv0I8QiW?=
+ =?us-ascii?Q?bsq3KQjB1gi+/MEOLCVMruEnkOOvr+YoQLD2KMC+t1x2k9+IGbS+vwHulzVm?=
+ =?us-ascii?Q?ornZggNtJCdkC5jPcpYi+kwEAruCnl/+19MYhWrfqczAdSrN+1NONYfLirLw?=
+ =?us-ascii?Q?Opgfxuc=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR08MB6951.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?s3WohX03voXyhTm5l7fkW8lRhJQJEoLHkCALy0pHyCO5fpXkee9qy4r/Npoc?=
+ =?us-ascii?Q?RjNuVow3GgFXc4h/ON/vbPlz06hKM+RYM1ufneC63SZVh/DC+A1tQLpz1sIS?=
+ =?us-ascii?Q?v6xybrixzA6/dJoL0VDJfMlfn78Ci3DsXwDvMpfdxujOZilzzBqz53lOsHXm?=
+ =?us-ascii?Q?39bS3i6FMZ16SD2V/BUTOOqBtzM5jX2jurFgRxvaR9eDVj+VNCYLFNQi9R57?=
+ =?us-ascii?Q?qjv4mN97pTMdeNz1yRBcrHq1GRmCQsW8SZRaVV/NBvo2ED06kSBZZQRPPD4B?=
+ =?us-ascii?Q?R45Gjcm+JDT/rY57wyhaTYvFccocxiILv/rcPBk/j6KQisoGEnh2XF+lFZ2H?=
+ =?us-ascii?Q?XRdKv7aNOSyxBnwuWfkGOYCtzjTEon3DXP7RIyI3CY1De/RT6LPYkO1NoQfO?=
+ =?us-ascii?Q?cBrFv1dYVR8zhaX9FzgmPqsFaLzgIAs14HhT5KmZ8SaQFl0G/UErlii64+Ml?=
+ =?us-ascii?Q?2Ct7PAUA3cciGMRGnEBjA7h316Vki0YYqQiwSRBvd3UWVQSkpuvIiCIyD0j5?=
+ =?us-ascii?Q?YBrgWAGagrbFBRaYblwmmnIi/m6c7D/Gll60qv7ihYFFu6YwcfvHhbwwrM1C?=
+ =?us-ascii?Q?H5/ES7YIuAvm0xZdTWkFmG0pB3H/JdATcN2mwywAQo1Riiuu/R5xW651rnZD?=
+ =?us-ascii?Q?TfbVzmxjAJN2Igwo4aIl5Y3MJLY4UzWv/pY4iGZinH8xD5fe180yBJrAtdhd?=
+ =?us-ascii?Q?fhteltZEZvB51UD2pwca8SJbV1LMwm4lOCcAFb/Jmytg0JW2tgiroAUJ9iZP?=
+ =?us-ascii?Q?AaZk3BhzHArugccY08+VmyvFE8JRIC7LTZ4onVdDwWWynwzAgsaUKbuIIGwk?=
+ =?us-ascii?Q?zjrS8RA+sPr/hysMs4wuH8w1/AYP4fK+fMo+MDAit8vJmuQMLnIgadz0hFCC?=
+ =?us-ascii?Q?cdzn1EcJyJAjXGy7AOhE6o0i5Mn1iFQvpDqhLV6LrtAYMkAZ7+KPArTrk5DX?=
+ =?us-ascii?Q?Ct6nP3O3AqFQUd+AWDDz1I8bbiz9U4wdynYoqcLpbTDApfZVbF1JfLuHuKN5?=
+ =?us-ascii?Q?ApaJPD7X6WtR7HJyIz4irkjNe8I2R/8CzhABXtVOfRKfaZB2QzqsUn5UFNz0?=
+ =?us-ascii?Q?QKv4+JDTZ9QuQJMDPFu61owV9MRkH14R6i+NYvs1cFL4ZRizDBKUBvBdsO/F?=
+ =?us-ascii?Q?MgTGM+iII6wBKok+2YzV3jmqSDkFmRRVVWioRB/fniAPOJ2AcVlXEWVsLTyl?=
+ =?us-ascii?Q?3729wEXdZV4+VDhDokZX8O7/FVCTaae3rPFSI7rDWjZW8lm3QVbwf0KtXON3?=
+ =?us-ascii?Q?qyRSdRgE+runWTVtj0Q8DYw3u/bhnc9FlwpzKymXGjYrzu/1/ju0z1RZ694Z?=
+ =?us-ascii?Q?59mcImlrGjhcYRAekhatmqPglbUSGNH8df9AoYVZ3EoJ0v+3npMOlO8DBYD8?=
+ =?us-ascii?Q?O7tBrJwl6gPmd/MK99ohQojbfWDMLYLZctvPEkkHY6wl0K4/celXe47Tw+pB?=
+ =?us-ascii?Q?BNk/USZ1fV75bgcW96X+5YOWliUAv7uYco21CvqCNtEWAQAw7l3AZAXn1Bx2?=
+ =?us-ascii?Q?MhIAMK/SEiknZxFEBJNI1Bh4jJbbLchagEOuBGsaPHjhuWTpSCBio+WpQRms?=
+ =?us-ascii?Q?+qtcy8RCphO8B9eLBPuKfF2WKSIXVWOLcXRzhpL5?=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20241118173939.GA11581@lisa.dawes.za.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR08MB6951.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d8fe4cb-c18b-42b8-55e9-08dd09826f67
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2024 16:43:17.5356
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Li9sPqGdQWzNSX33KN+W314i7Z0jYJMrpg0oqdfZVEjLfr7Q/IzIuiPB/kgNFr9tdSP86IdMD4/NrGelwMUQKfTu0CA1mBI00e4Kw3WIXug=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR08MB7279
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241120_075140_771738_DFB30BF5 
-X-CRM114-Status: GOOD (  23.20  )
+X-CRM114-CacheID: sfid-20241120_084327_214993_6959DAD6 
+X-CRM114-Status: UNSURE (   7.58  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -58,100 +156,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 18, 2024 at 07:39:39PM +0200, Rogan Dawes wrote:
-> Hi folks,
-> 
-> I have an i.MX6 target I am trying to get a shell on. It is using High
-> Assurance Boot and various other configurations to prevent this. My
-> current approach is to remove the flash, extract the filesystems, modify
-> one that is not subject to HAB, then put it all back, in order to enable
-> a shell.
-> 
-> I have removed the flash, and extracted its contents using an Xgecu
-> flash reader. Now I need to parse the FCB and extract the actual data
-> from the dump. I have found imx-nand-tools, but this doesn't work due to
-> bitrot (the bchlib dependency has moved on while imx-nand-tools has not
-> been updated).
+commit a75bbe71a278 corrected the reading of all ONFI redundant parameter page copies:
+    mtd: rawnand: fsl_ifc: fix FSL NAND driver to read all ONFI parameter pages
 
-I was able to get imx-nand-tools working by pinning the version of the
-bchlib dependency to v0.14.0, and have been able to obtain a "clean"
-flash image. Still trying to mount the various UBI filesystems, as I get
-the following errors:
+However, it does not appear to handle 16-bit NAND parts correctly
+(i.e. Micron MT29F4G16ABBDAH4).
 
-[360972.710050] ubi0: default fastmap pool size: 8
-[360972.710055] ubi0: default fastmap WL pool size: 4
-[360972.710056] ubi0: attaching mtd5
-[360972.710099] ubi0 error: validate_ec_hdr [ubi]: bad VID header offset 2048, expected 512
-[360972.710116] ubi0 error: validate_ec_hdr [ubi]: bad EC header
-[360972.710127] Erase counter header dump:
-[360972.710128]         magic          0x55424923
-[360972.710129]         version        1
-[360972.710130]         ec             4502
-[360972.710132]         vid_hdr_offset 2048
-[360972.710133]         data_offset    4096
-[360972.710134]         image_seq      907378069
-[360972.710135]         hdr_crc        0xa56c51f1
-[360972.710136] erase counter header hexdump:
-[360972.710138] 00000000: 55 42 49 23 01 00 00 00 00 00 00 00 00 00 11 96 00 00 08 00 00 00 10 00 36 15 7d 95 00 00 00 00  UBI#....................6.}.....
-[360972.710140] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 a5 6c 51 f1  .............................lQ.
-[360972.710142] CPU: 3 PID: 25109 Comm: ubiattach Not tainted 6.8.0-48-generic #48~22.04.1-Ubuntu
-[360972.710145] Hardware name: LENOVO Enter the machine type an/3136, BIOS M1UKT77A 04/10/2024
-[360972.710146] Call Trace:
-[360972.710148]  <TASK>
-[360972.710150]  dump_stack_lvl+0x76/0xa0
-[360972.710154]  dump_stack+0x10/0x20
-[360972.710156]  validate_ec_hdr+0x86/0xd0 [ubi]
-[360972.710166]  ubi_io_read_ec_hdr+0x246/0x2d0 [ubi]
-[360972.710177]  scan_peb+0xa9/0x680 [ubi]
-[360972.710189]  scan_fast+0x9a/0x1c0 [ubi]
-[360972.710199]  ? kmem_cache_create+0x16/0x30
-[360972.710204]  ubi_attach+0x231/0x2b0 [ubi]
-[360972.710215]  ubi_attach_mtd_dev+0x3ad/0x7b0 [ubi]
-[360972.710226]  ctrl_cdev_ioctl+0x121/0x200 [ubi]
-[360972.710236]  __x64_sys_ioctl+0xa0/0xf0
-[360972.710240]  x64_sys_call+0xa68/0x24b0
-[360972.710243]  do_syscall_64+0x81/0x170
-[360972.710246]  ? syscall_exit_to_user_mode+0x83/0x260
-[360972.710249]  ? do_syscall_64+0x8d/0x170
-[360972.710252]  ? do_user_addr_fault+0x337/0x670
-[360972.710254]  ? irqentry_exit_to_user_mode+0x78/0x260
-[360972.710257]  ? irqentry_exit+0x43/0x50
-[360972.710258]  ? exc_page_fault+0x94/0x1b0
-[360972.710260]  entry_SYSCALL_64_after_hwframe+0x78/0x80
-[360972.710263] RIP: 0033:0x78da6251a94f
-[360972.710277] Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <41> 89 c0 3d 00
-f0 ff ff 77 1f 48 8b 44 24 18 64 48 2b 04 25 28 00
-[360972.710279] RSP: 002b:00007ffeb0640dc0 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[360972.710282] RAX: ffffffffffffffda RBX: 00007ffeb0642810 RCX: 000078da6251a94f[360972.710284] RDX: 00007ffeb0640f00 RSI: 0000000040186f40 RDI: 0000000000000003
-[360972.710285] RBP: 0000000000000003 R08: 0000000000000000 R09: 00007ffeb0642810
-[360972.710287] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffeb0640f00
-[360972.710288] R13: 00007ffeb0640f00 R14: 000060790e11c2a0 R15: 0000000000000000
-[360972.710292]  </TASK>
-[360972.710293] ubi0 error: ubi_io_read_ec_hdr [ubi]: validation failed for PEB 0
-[360972.710305] ubi0 error: ubi_attach_mtd_dev [ubi]: failed to attach mtd5, error -22
+If the primary parameters page is incorrect, there is the following:
+ [    5.196463] fsl,ifc-nand 60000000.nand: fsl_ifc_read_byte16: beyond end of buffer
+ [    5.203966] fsl,ifc-nand 60000000.nand: fsl_ifc_read_byte16: beyond end of buffer
+ [    5.211468] fsl,ifc-nand 60000000.nand: fsl_ifc_read_byte16: beyond end of buffer
+    ...
+ [    6.133237] Could not find a valid ONFI parameter page, trying bit-wise majority to recover it
+ [    6.141916] ONFI parameter recovery failed, aborting
 
-For clarity, this flash was written by a very old kernel, 3.14.52, so
-there is probably no surprise that a more modern kernel is having
-difficulty with it, presuming file formats to have changed significantly
-since then?
+I have made the following change, which appears to remedy the issue:
 
-> I was wondering whether there was a way to layer the existing linux
-> drivers on top of nandsim, in order to actually interpret the dump
-> correctly? This would seem to be the most future-proof way of solving
-> this problem, since the Linux drivers would be kept up to date.
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -349,6 +349,9 @@ static void fsl_ifc_cmdfunc(struct nand_chip *chip, unsigned int command,
+                         &ifc->ifc_nand.nand_fcr0);
+               ifc_out32(column, &ifc->ifc_nand.row3);
 
-Is this at all possible? It would solve the problem of creating a
-writable image that could be flashed back onto the chip, I'd think!
++              if (ifc_in32(&ctrl->gregs->cspr_cs[priv->bank].cspr)
++                  & CSPR_PORT_SIZE_16)
++                      len *= 2;
+               ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
+               ifc_nand_ctrl->read_bytes = len;
 
-> Any suggestions?
-> 
-> Thanks and regards,
-> 
-> Rogan
+However, that only addresses the NAND_CMD_PARAM and NAND_CMD_READID commands.
+I believe there is a more general issue with 16-bit NAND support in fsl_ifc_nand.
 
-Thanks for your time.
-
-Rogan
+Anthony
 
 
 ______________________________________________________
