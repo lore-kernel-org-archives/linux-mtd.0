@@ -4,88 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77BEAD75BA2
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 02:09:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78F97D75BB8
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 04:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=INgtrapIw6Zo/g72QvH3yFDrGPVUxvCPY9Ws1Q7rQnQ=; b=Ak+u2RV5xT4Njw
-	nqI/EhTWnJLp5kAY0VBMiFGJGwlvOKBLzWX4RgELnH6+BD+G/whi2FTJI+OcPguaE5msJpBnp4fIp
-	1JF3ySkHG6bT+wlNJmngeVKdAiW9lytqfEyJ+JfenbD+Na45fuyEQKWqLju6IDLH1MDdQbkTfshrk
-	RTU0kY1YOTC+JJkxg6wLt75voh3IgZ3P1oZjcL0cAYdEj7AYn5L0dykeOjEH9+KjxTMap0rl7hQBp
-	3WdMN1PcGC1VTASzzZYNzMHP7uKh+Px4eRrh9IHbUKg1ycP7joRovvu99E/r2neeRQ26Z5/ftYqAE
-	SPOKpNfzl/DT1SSVO+fw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=wqqdBwJjUH0+SWQ9AKmnBXLjr3jMTDCZXlrxCGZ+NBs=; b=Krzg+Jye3B1IjuyiXbnpW5ai6d
+	eZEF5apYMUWXTwiNiyTxEU0RddWZuOuPVfmRZA6AS0zNX3EOvJ1Qh1YqIBIGu02uhcrgNsuqGMTw4
+	ZrGNLi8bJKpgXvGmDSb6BCTIuW2zDin+fThw2W/2Z2k1yYGwPdqGv56IUEN26pGCluJ4cRLHVV5fr
+	2wxj3y6yFQcyO9fRMDMA1JwZwmOzxGchu1RefMpDvTUHWikTYkNdKW0DLkmSf9sowRpDLmvUP4gvl
+	COVrZv221251m0bKa+H1ZtOXmJaMAQ/M7u8WDB48QFEi9Q9y/i6n8tH147BddV5qYzsEs7D8n3YKb
+	FhICec7A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDwd9-0000000GZxP-0pEn;
-	Thu, 21 Nov 2024 02:09:15 +0000
-Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+	id 1tDz1W-0000000Gon1-2fC6;
+	Thu, 21 Nov 2024 04:42:34 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDwd7-0000000GZwV-10Oi
+	id 1tDz1T-0000000GomJ-2JBG
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Nov 2024 02:09:14 +0000
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-7245a9d0e92so482498b3a.0
-        for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2024 18:09:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732154952; x=1732759752; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RmuF46E7QZ73q+MnD9LRef4FBtBZcOQ1mSbJPyIeM2c=;
-        b=NOtENre+44iDqP9yoR4yoE9QbjKAuKnKo8jsuFDipFoOGfKf87I/bn4CY7g8cDm8cj
-         duLrLNnXDcNTJI4wyIx+FjIbOrK2c5r6tNzoe7Ey0/K/d10SB1aOhVW2gtvutHEDNEhI
-         pCS5Gd60jFkSWKmf22IUt3J0yVOT/VegSTXglWmHZAXk/mjteIyspolUU/gEGmD63JQR
-         uBRWpGFyXlqFvbjLKHAqxupWp5nGjD+nYQURZbf7QSGnxlrRhZa3TDpjR5YNZztDwlqP
-         xNDJRbO0MzH8NEwCeqybmxn6Onupkj0UWTAfg2wfGHF8ApFnJWbaby6HZjTLyUGC1AYN
-         OecA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732154952; x=1732759752;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RmuF46E7QZ73q+MnD9LRef4FBtBZcOQ1mSbJPyIeM2c=;
-        b=w/HWStRWxIxbzbecyn4MoAHx7i78BLoKTwNfDMw8r33MyOq6N0Pw3AX+IA2MBIvw/f
-         o90oI7kHlGdVzHOLPUZDWn/RhL4bYcuu2OIf38XG/nm7sEzEphqKEbMixIrNrnUkBy3D
-         GzW96hSB7yGjAVhEbcTEVuxsbvxc8LSe9rhWu3I5EY293wu/guBl4AR0/MWNJmXxI7RA
-         V17SHY8fyWCl7WrqWaVk72EEx18Rv9f3Cb1GZjO51jAYEczQJi01ax/UxQO0RXuTE1i8
-         rO66fpdqZ76shvNTMxjyii/tsvjEpd9UUUwcqjrod/KPZsEeky1P4St6gpLPGstOQQXN
-         d90g==
-X-Gm-Message-State: AOJu0YwEaWuKgIzcFiL8StgnHKFhH47mWmIloH+CREd47C66f6Tcg9E7
-	Y4g3qLZlG9az76B1JRppDS+VtlI+9CdDEBehACUlLzd3UqhoH12caTkf5Vxc
-X-Google-Smtp-Source: AGHT+IGObvc9yxX4L92fiIy2fRVW6sjP5Icb04l9WtEKDhuYVuQFg3FHTsyvTnfaRjrm/8wYwZZuGw==
-X-Received: by 2002:a17:902:e80c:b0:20c:a44b:3221 with SMTP id d9443c01a7336-2126b06938amr59400645ad.15.1732154952182;
-        Wed, 20 Nov 2024 18:09:12 -0800 (PST)
-Received: from ISCN5CG2520RPD.infineon.com (sp49-98-40-130.msd.spmode.ne.jp. [49.98.40.130])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-212878a5d2dsm2388615ad.77.2024.11.20.18.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2024 18:09:11 -0800 (PST)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	kr.kim@skyhighmemory.com,
-	zhi.feng@skyhighmemory.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v2 3/3] mtd: spinand: Add support for SkyHigh S35ML-3 family
-Date: Thu, 21 Nov 2024 11:08:43 +0900
-Message-Id: <90268cf05a6cb5a2b452d9e6813db24f53c0623f.1732152768.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1732152768.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1732152768.git.Takahiro.Kuwano@infineon.com>
+	Thu, 21 Nov 2024 04:42:33 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xv59d3pb1z66tS;
+	Thu, 21 Nov 2024 12:39:33 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 425801800A2;
+	Thu, 21 Nov 2024 12:42:17 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 21 Nov 2024 12:42:16 +0800
+Subject: Re: Parsing extracted i.MX NAND flash
+To: Rogan Dawes <rogan@dawes.za.net>, <linux-mtd@lists.infradead.org>
+References: <20241118173939.GA11581@lisa.dawes.za.net>
+ <20241120155135.GA27335@lisa.dawes.za.net>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <1ce8654c-27b8-5f07-f3ca-d8d17c779f73@huawei.com>
+Date: Thu, 21 Nov 2024 12:42:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20241120155135.GA27335@lisa.dawes.za.net>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241120_180913_282695_4C5582E1 
-X-CRM114-Status: GOOD (  20.21  )
+X-CRM114-CacheID: sfid-20241120_204231_885326_F562017D 
+X-CRM114-Status: GOOD (  17.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,221 +65,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-
-SkyHigh S35ML01G300, S35ML01G301, S35ML02G300, and S35ML04G300 are 1Gb,
-2Gb, and 4Gb SLC SPI NAND flash family. This family of devices has
-on-die ECC which parity bits are stored to hidden area. In this family
-the on-die ECC cannot be disabled so raw access needs to be prevented.
-
-Link: https://www.skyhighmemory.com/download/SPI_S35ML01_04G3_002_19205.pdf?v=P
-Co-developed-by: KR Kim <kr.kim@skyhighmemory.com>
-Signed-off-by: KR Kim <kr.kim@skyhighmemory.com>
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |   1 +
- drivers/mtd/nand/spi/skyhigh.c | 147 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   1 +
- 4 files changed, 150 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/skyhigh.c
-
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 19cc77288ebb..1e61ab21893a 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
--spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
-+spinand-objs += micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 2ff3c32d46d3..77aa77ea4564 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1131,6 +1131,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&paragon_spinand_manufacturer,
-+	&skyhigh_spinand_manufacturer,
- 	&toshiba_spinand_manufacturer,
- 	&winbond_spinand_manufacturer,
- 	&xtx_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
-new file mode 100644
-index 000000000000..8b32b74ff34b
---- /dev/null
-+++ b/drivers/mtd/nand/spi/skyhigh.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2024 SkyHigh Memory Limited
-+ *
-+ * Author: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-+ * Co-Author: KR Kim <kr.kim@skyhighmemory.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_SKYHIGH			0x01
-+#define SKYHIGH_STATUS_ECC_1TO2_BITFLIPS	(1 << 4)
-+#define SKYHIGH_STATUS_ECC_3TO6_BITFLIPS	(2 << 4)
-+#define SKYHIGH_STATUS_ECC_UNCOR_ERROR		(3 << 4)
-+#define SKYHIGH_CONFIG_PROTECT_EN		BIT(1)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 4, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int skyhigh_spinand_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
-+{
-+	/* ECC bytes are stored in hidden area. */
-+	return -ERANGE;
-+}
-+
-+static int skyhigh_spinand_ooblayout_free(struct mtd_info *mtd, int section,
-+					  struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* ECC bytes are stored in hidden area. Reserve 2 bytes for the BBM. */
-+	region->offset = 2;
-+	region->length = mtd->oobsize - 2;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops skyhigh_spinand_ooblayout = {
-+	.ecc = skyhigh_spinand_ooblayout_ecc,
-+	.free = skyhigh_spinand_ooblayout_free,
-+};
-+
-+static int skyhigh_spinand_ecc_get_status(struct spinand_device *spinand,
-+					  u8 status)
-+{
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case SKYHIGH_STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case SKYHIGH_STATUS_ECC_1TO2_BITFLIPS:
-+		return 2;
-+
-+	case SKYHIGH_STATUS_ECC_3TO6_BITFLIPS:
-+		return 6;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info skyhigh_spinand_table[] = {
-+	SPINAND_INFO("S35ML01G301",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+				     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML01G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+				     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML02G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+				     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML04G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
-+		     NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 2, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+				     skyhigh_spinand_ecc_get_status)),
-+};
-+
-+static int skyhigh_spinand_init(struct spinand_device *spinand)
-+{
-+	/*
-+	 * Config_Protect_En (bit 1 in Block Lock register) must be set to 1
-+	 * before writing other bits. Do it here before core unlocks all blocks
-+	 * by writing block protection bits.
-+	 */
-+	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK,
-+				    SKYHIGH_CONFIG_PROTECT_EN);
-+}
-+
-+static const struct spinand_manufacturer_ops skyhigh_spinand_manuf_ops = {
-+	.init = skyhigh_spinand_init,
-+};
-+
-+const struct spinand_manufacturer skyhigh_spinand_manufacturer = {
-+	.id = SPINAND_MFR_SKYHIGH,
-+	.name = "SkyHigh",
-+	.chips = skyhigh_spinand_table,
-+	.nchips = ARRAY_SIZE(skyhigh_spinand_table),
-+	.ops = &skyhigh_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 5cf11005b41a..cbbcd44ac225 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -268,6 +268,7 @@ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer paragon_spinand_manufacturer;
-+extern const struct spinand_manufacturer skyhigh_spinand_manufacturer;
- extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
- extern const struct spinand_manufacturer winbond_spinand_manufacturer;
- extern const struct spinand_manufacturer xtx_spinand_manufacturer;
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xMS8yMCAyMzo1MSwgUm9nYW4gRGF3ZXMg0LS1wDoKPiBPbiBNb24sIE5vdiAxOCwg
+MjAyNCBhdCAwNzozOTozOVBNICswMjAwLCBSb2dhbiBEYXdlcyB3cm90ZToKPj4gSGkgZm9sa3Ms
+Cj4+Cj4+IEkgaGF2ZSBhbiBpLk1YNiB0YXJnZXQgSSBhbSB0cnlpbmcgdG8gZ2V0IGEgc2hlbGwg
+b24uIEl0IGlzIHVzaW5nIEhpZ2gKPj4gQXNzdXJhbmNlIEJvb3QgYW5kIHZhcmlvdXMgb3RoZXIg
+Y29uZmlndXJhdGlvbnMgdG8gcHJldmVudCB0aGlzLiBNeQo+PiBjdXJyZW50IGFwcHJvYWNoIGlz
+IHRvIHJlbW92ZSB0aGUgZmxhc2gsIGV4dHJhY3QgdGhlIGZpbGVzeXN0ZW1zLCBtb2RpZnkKPj4g
+b25lIHRoYXQgaXMgbm90IHN1YmplY3QgdG8gSEFCLCB0aGVuIHB1dCBpdCBhbGwgYmFjaywgaW4g
+b3JkZXIgdG8gZW5hYmxlCj4+IGEgc2hlbGwuCj4+Cj4+IEkgaGF2ZSByZW1vdmVkIHRoZSBmbGFz
+aCwgYW5kIGV4dHJhY3RlZCBpdHMgY29udGVudHMgdXNpbmcgYW4gWGdlY3UKPj4gZmxhc2ggcmVh
+ZGVyLiBOb3cgSSBuZWVkIHRvIHBhcnNlIHRoZSBGQ0IgYW5kIGV4dHJhY3QgdGhlIGFjdHVhbCBk
+YXRhCj4+IGZyb20gdGhlIGR1bXAuIEkgaGF2ZSBmb3VuZCBpbXgtbmFuZC10b29scywgYnV0IHRo
+aXMgZG9lc24ndCB3b3JrIGR1ZSB0bwo+PiBiaXRyb3QgKHRoZSBiY2hsaWIgZGVwZW5kZW5jeSBo
+YXMgbW92ZWQgb24gd2hpbGUgaW14LW5hbmQtdG9vbHMgaGFzIG5vdAo+PiBiZWVuIHVwZGF0ZWQp
+Lgo+IAo+IEkgd2FzIGFibGUgdG8gZ2V0IGlteC1uYW5kLXRvb2xzIHdvcmtpbmcgYnkgcGlubmlu
+ZyB0aGUgdmVyc2lvbiBvZiB0aGUKPiBiY2hsaWIgZGVwZW5kZW5jeSB0byB2MC4xNC4wLCBhbmQg
+aGF2ZSBiZWVuIGFibGUgdG8gb2J0YWluIGEgImNsZWFuIgo+IGZsYXNoIGltYWdlLiBTdGlsbCB0
+cnlpbmcgdG8gbW91bnQgdGhlIHZhcmlvdXMgVUJJIGZpbGVzeXN0ZW1zLCBhcyBJIGdldAo+IHRo
+ZSBmb2xsb3dpbmcgZXJyb3JzOgo+IAo+IFszNjA5NzIuNzEwMDUwXSB1YmkwOiBkZWZhdWx0IGZh
+c3RtYXAgcG9vbCBzaXplOiA4Cj4gWzM2MDk3Mi43MTAwNTVdIHViaTA6IGRlZmF1bHQgZmFzdG1h
+cCBXTCBwb29sIHNpemU6IDQKPiBbMzYwOTcyLjcxMDA1Nl0gdWJpMDogYXR0YWNoaW5nIG10ZDUK
+PiBbMzYwOTcyLjcxMDA5OV0gdWJpMCBlcnJvcjogdmFsaWRhdGVfZWNfaGRyIFt1YmldOiBiYWQg
+VklEIGhlYWRlciBvZmZzZXQgMjA0OCwgZXhwZWN0ZWQgNTEyCgpIaSBSb2dhbiwKSG93IGRpZCB5
+b3UgdXNlIHViaWF0dGFjaD8gdWJpYXR0YWNoIC1PIDUxMj8gIFRyeSAndWJpYXR0YWNoIC1PMjA0
+OCcuCj4gWzM2MDk3Mi43MTAxMTZdIHViaTAgZXJyb3I6IHZhbGlkYXRlX2VjX2hkciBbdWJpXTog
+YmFkIEVDIGhlYWRlcgo+IFszNjA5NzIuNzEwMTI3XSBFcmFzZSBjb3VudGVyIGhlYWRlciBkdW1w
+Ogo+IFszNjA5NzIuNzEwMTI4XSAgICAgICAgIG1hZ2ljICAgICAgICAgIDB4NTU0MjQ5MjMKPiBb
+MzYwOTcyLjcxMDEyOV0gICAgICAgICB2ZXJzaW9uICAgICAgICAxCj4gWzM2MDk3Mi43MTAxMzBd
+ICAgICAgICAgZWMgICAgICAgICAgICAgNDUwMgo+IFszNjA5NzIuNzEwMTMyXSAgICAgICAgIHZp
+ZF9oZHJfb2Zmc2V0IDIwNDgKPiBbMzYwOTcyLjcxMDEzM10gICAgICAgICBkYXRhX29mZnNldCAg
+ICA0MDk2Cj4gWzM2MDk3Mi43MTAxMzRdICAgICAgICAgaW1hZ2Vfc2VxICAgICAgOTA3Mzc4MDY5
+Cj4gWzM2MDk3Mi43MTAxMzVdICAgICAgICAgaGRyX2NyYyAgICAgICAgMHhhNTZjNTFmMQo+IFsz
+NjA5NzIuNzEwMTM2XSBlcmFzZSBjb3VudGVyIGhlYWRlciBoZXhkdW1wOgo+IFszNjA5NzIuNzEw
+MTM4XSAwMDAwMDAwMDogNTUgNDIgNDkgMjMgMDEgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MTEgOTYgMDAgMDAgMDggMDAgMDAgMDAgMTAgMDAgMzYgMTUgN2QgOTUgMDAgMDAgMDAgMDAgIFVC
+SSMuLi4uLi4uLi4uLi4uLi4uLi4uLjYufS4uLi4uCj4gWzM2MDk3Mi43MTAxNDBdIDAwMDAwMDIw
+OiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBhNSA2YyA1MSBmMSAgLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi5sUS4KPiBbMzYwOTcyLjcxMDE0Ml0gQ1BVOiAzIFBJRDogMjUxMDkgQ29t
+bTogdWJpYXR0YWNoIE5vdCB0YWludGVkIDYuOC4wLTQ4LWdlbmVyaWMgIzQ4fjIyLjA0LjEtVWJ1
+bnR1Cj4gWzM2MDk3Mi43MTAxNDVdIEhhcmR3YXJlIG5hbWU6IExFTk9WTyBFbnRlciB0aGUgbWFj
+aGluZSB0eXBlIGFuLzMxMzYsIEJJT1MgTTFVS1Q3N0EgMDQvMTAvMjAyNAo+IFszNjA5NzIuNzEw
+MTQ2XSBDYWxsIFRyYWNlOgo+IFszNjA5NzIuNzEwMTQ4XSAgPFRBU0s+Cj4gWzM2MDk3Mi43MTAx
+NTBdICBkdW1wX3N0YWNrX2x2bCsweDc2LzB4YTAKPiBbMzYwOTcyLjcxMDE1NF0gIGR1bXBfc3Rh
+Y2srMHgxMC8weDIwCj4gWzM2MDk3Mi43MTAxNTZdICB2YWxpZGF0ZV9lY19oZHIrMHg4Ni8weGQw
+IFt1YmldCj4gWzM2MDk3Mi43MTAxNjZdICB1YmlfaW9fcmVhZF9lY19oZHIrMHgyNDYvMHgyZDAg
+W3ViaV0KPiBbMzYwOTcyLjcxMDE3N10gIHNjYW5fcGViKzB4YTkvMHg2ODAgW3ViaV0KPiBbMzYw
+OTcyLjcxMDE4OV0gIHNjYW5fZmFzdCsweDlhLzB4MWMwIFt1YmldCj4gWzM2MDk3Mi43MTAxOTld
+ICA/IGttZW1fY2FjaGVfY3JlYXRlKzB4MTYvMHgzMAo+IFszNjA5NzIuNzEwMjA0XSAgdWJpX2F0
+dGFjaCsweDIzMS8weDJiMCBbdWJpXQo+IFszNjA5NzIuNzEwMjE1XSAgdWJpX2F0dGFjaF9tdGRf
+ZGV2KzB4M2FkLzB4N2IwIFt1YmldCj4gWzM2MDk3Mi43MTAyMjZdICBjdHJsX2NkZXZfaW9jdGwr
+MHgxMjEvMHgyMDAgW3ViaV0KPiBbMzYwOTcyLjcxMDIzNl0gIF9feDY0X3N5c19pb2N0bCsweGEw
+LzB4ZjAKPiBbMzYwOTcyLjcxMDI0MF0gIHg2NF9zeXNfY2FsbCsweGE2OC8weDI0YjAKPiBbMzYw
+OTcyLjcxMDI0M10gIGRvX3N5c2NhbGxfNjQrMHg4MS8weDE3MAo+IFszNjA5NzIuNzEwMjQ2XSAg
+PyBzeXNjYWxsX2V4aXRfdG9fdXNlcl9tb2RlKzB4ODMvMHgyNjAKPiBbMzYwOTcyLjcxMDI0OV0g
+ID8gZG9fc3lzY2FsbF82NCsweDhkLzB4MTcwCj4gWzM2MDk3Mi43MTAyNTJdICA/IGRvX3VzZXJf
+YWRkcl9mYXVsdCsweDMzNy8weDY3MAo+IFszNjA5NzIuNzEwMjU0XSAgPyBpcnFlbnRyeV9leGl0
+X3RvX3VzZXJfbW9kZSsweDc4LzB4MjYwCj4gWzM2MDk3Mi43MTAyNTddICA/IGlycWVudHJ5X2V4
+aXQrMHg0My8weDUwCj4gWzM2MDk3Mi43MTAyNThdICA/IGV4Y19wYWdlX2ZhdWx0KzB4OTQvMHgx
+YjAKPiBbMzYwOTcyLjcxMDI2MF0gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDc4
+LzB4ODAKPiBbMzYwOTcyLjcxMDI2M10gUklQOiAwMDMzOjB4NzhkYTYyNTFhOTRmCj4gWzM2MDk3
+Mi43MTAyNzddIENvZGU6IDAwIDQ4IDg5IDQ0IDI0IDE4IDMxIGMwIDQ4IDhkIDQ0IDI0IDYwIGM3
+IDA0IDI0IDEwIDAwIDAwIDAwIDQ4IDg5IDQ0IDI0IDA4IDQ4IDhkIDQ0IDI0IDIwIDQ4IDg5IDQ0
+IDI0IDEwIGI4IDEwIDAwIDAwIDAwIDBmIDA1IDw0MT4gODkgYzAgM2QgMDAKPiBmMCBmZiBmZiA3
+NyAxZiA0OCA4YiA0NCAyNCAxOCA2NCA0OCAyYiAwNCAyNSAyOCAwMAo+IFszNjA5NzIuNzEwMjc5
+XSBSU1A6IDAwMmI6MDAwMDdmZmViMDY0MGRjMCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAw
+MDAwMDAwMDAwMDAwMDEwCj4gWzM2MDk3Mi43MTAyODJdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBS
+Qlg6IDAwMDA3ZmZlYjA2NDI4MTAgUkNYOiAwMDAwNzhkYTYyNTFhOTRmWzM2MDk3Mi43MTAyODRd
+IFJEWDogMDAwMDdmZmViMDY0MGYwMCBSU0k6IDAwMDAwMDAwNDAxODZmNDAgUkRJOiAwMDAwMDAw
+MDAwMDAwMDAzCj4gWzM2MDk3Mi43MTAyODVdIFJCUDogMDAwMDAwMDAwMDAwMDAwMyBSMDg6IDAw
+MDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwN2ZmZWIwNjQyODEwCj4gWzM2MDk3Mi43MTAyODddIFIx
+MDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwN2ZmZWIw
+NjQwZjAwCj4gWzM2MDk3Mi43MTAyODhdIFIxMzogMDAwMDdmZmViMDY0MGYwMCBSMTQ6IDAwMDA2
+MDc5MGUxMWMyYTAgUjE1OiAwMDAwMDAwMDAwMDAwMDAwCj4gWzM2MDk3Mi43MTAyOTJdICA8L1RB
+U0s+Cj4gWzM2MDk3Mi43MTAyOTNdIHViaTAgZXJyb3I6IHViaV9pb19yZWFkX2VjX2hkciBbdWJp
+XTogdmFsaWRhdGlvbiBmYWlsZWQgZm9yIFBFQiAwCj4gWzM2MDk3Mi43MTAzMDVdIHViaTAgZXJy
+b3I6IHViaV9hdHRhY2hfbXRkX2RldiBbdWJpXTogZmFpbGVkIHRvIGF0dGFjaCBtdGQ1LCBlcnJv
+ciAtMjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
