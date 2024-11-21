@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E151D711CA
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 10:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35720D6E2A4
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 10:26:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rC9CvbYmWufZqp2sJgY6ZcBjmPpcz/emBG0IGmJAISw=; b=QwaMD9Rl5znuGq
-	68UpP7TmlV63ABVTXpBE0+VMoZpAlr9Dei4NC8M3jc7fWKrP3ld7P2aYldw9dznU5ElYjmpARBKEW
-	eRSBDolDVO8AJBSdLph5VUFWdLJqtO5P7gOzEB+Sjd1K4HQ/7VXN5Ux9X5MJ1P5d+GBQsclVfhDRx
-	BQY6cMuz3hm9vxmZo/cdGfOogTA5kubo35xar/+2W/M0bp6IPxsEPz7muQS9FQMirNCIyRoamGOrT
-	cojLKKFFBN8SHKHPSK2e7gNWvsj5Y5gaCO1grk1QOmV7ic1gdPX1cuNYuOcyKEgoUyEYE+2bWZG4S
-	aohhS4t1ehvitjOUxtHg==;
+	List-Owner; bh=4HAB0Md0kD+q8ECkvXe0kn9+Ckw/aVwdH0Q2MR7a4VU=; b=a13bm0mTabjfGz
+	NrPbUdRkXUcdhUE4PG5QWs0fnF3c1ONym4Z7w7iXDL7UCyo3JagMUr5cUtBE5LdInrI7EyRbJu06l
+	RIQIYzaTYnhX630WYT8MDndNJ1RphFq+UrLTB3k4owzN+fdcEGpVi2WVyikrSWXeZZGjt4NitYZtR
+	o2WbHG566Le9HuVQOP81E9BSg1BXfM8ApXsVYKscawVpvmzBIQW95c0YQye/yMxb4azM2dTqAGh8g
+	ioRqBlwOiZSHLy1qKzLSMWb7lkxd7iWGnR/xe1TRJu6sShnhJHlIh1qh6hv5xz7CuwrKtcc6OZJYc
+	kdlc0AfrWw0zJ7i2DdSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tE4N4-0000000HMEG-0da2;
-	Thu, 21 Nov 2024 10:25:10 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tE4OB-0000000HMV9-35UG;
+	Thu, 21 Nov 2024 10:26:19 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tE4N0-0000000HMDM-2Qrz
+	id 1tE4O9-0000000HMUb-1lEP
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Nov 2024 10:25:07 +0000
+	Thu, 21 Nov 2024 10:26:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 6C9A4A4016A;
-	Thu, 21 Nov 2024 10:23:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7500AC4CECC;
-	Thu, 21 Nov 2024 10:25:02 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 11DE35C53F3;
+	Thu, 21 Nov 2024 10:25:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98085C4CECC;
+	Thu, 21 Nov 2024 10:26:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732184705;
-	bh=uTUGn2iQmB7yPEXNTqyE13jq3MolpgNw7N7yDtmNDjU=;
+	s=k20201202; t=1732184776;
+	bh=akoykGtAcNwr5JOB3J5O/Unuk7WysQAlSwDQxOvJC/U=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jzLmgXIHeJjNAlQzUwYbM/2HpugkItmTXES1aGt3QlzROXHTPiAwOt7c37PM+bGdp
-	 9L3hdk3ZJRlfldueTP2Ely9U0px0XibPiyVaJmF09jfNLN4VZWLgoOtUrZXQZ7nf4Z
-	 PDKBB3T5kPsCNi1X76gosubGeIDJqyrYYWtG2OIgKF1VLQ3Gd8+bZyZgsQ8Hkm8g8T
-	 ho/946b6RyLxfUSeQ4fPdd5u8J1DaM+BvM+M6h97NVqx1p1AmRKJhTMfkNmzl3MJWp
-	 Dz/owWv6cZnCnbj/hrUEB2bbIQssB3qZhwW7sd3ik8K4IJm4ZQ2RB+KP36Z4Xl+Ide
-	 ILkd/KJffNB4g==
-Message-ID: <4bff3f3e-9e32-45b1-91b1-6c9faf36d416@kernel.org>
-Date: Thu, 21 Nov 2024 11:25:00 +0100
+	b=HK0wqAncf6gqx52eVOrxn6j/FermG1HcnYozLVNT+kxxEuGqffvQmroX7SpBcZqWf
+	 0+Sv2yKH0qrDXXfyF2XpyfbOndqHPEOfQYy48DUpZULfkIfxdyAynk+Yia5CbHgY2D
+	 exK7V4/h1ghSOghdWhih0sr6//vYdy6HeGUSsORu5ATsc7aPbHjwH+vG7UtNyB8EWf
+	 0Ufv7JEskTeafOklUIh7hF6AObdp4yKfT64yUJrzHsQJ399RC0cc0MS/vlFaSxtbfI
+	 qW9s0ojj5Oiso5B/+VNBy54o6mnTbiQkLgAkdaihnyEqadmG8OIqhcaEG7xFLwC1P5
+	 enWZ2bThoSR7A==
+Message-ID: <999de9d7-055e-4659-b1b2-b50b2b6dfe7a@kernel.org>
+Date: Thu, 21 Nov 2024 11:26:11 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 03/10] memory: ti-aemif: Wrap CS timings into a struct
+Subject: Re: [PATCH v4 01/10] memory: ti-aemif: Store timings parameter in
+ number of cycles - 1
 To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
  Santosh Shilimkar <ssantosh@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -56,7 +57,7 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Herve Codina <herve.codina@bootlin.com>,
  Christopher Cordahi <christophercordahi@nanometrics.ca>
 References: <20241115132631.264609-1-bastien.curutchet@bootlin.com>
- <20241115132631.264609-4-bastien.curutchet@bootlin.com>
+ <20241115132631.264609-2-bastien.curutchet@bootlin.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -102,10 +103,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20241115132631.264609-4-bastien.curutchet@bootlin.com>
+In-Reply-To: <20241115132631.264609-2-bastien.curutchet@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241121_022506_748924_E89DA8E8 
-X-CRM114-Status: GOOD (  14.53  )
+X-CRM114-CacheID: sfid-20241121_022617_550076_86FA3A07 
+X-CRM114-Status: GOOD (  15.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,45 +124,35 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 15/11/2024 14:26, Bastien Curutchet wrote:
-> CS timings are store in the struct aemif_cs_data along with other CS
-> parameters. It isn't convenient for exposing CS timings to other drivers
-> without also exposing the other parameters.
+> The CS configuration register expects timings to be expressed in
+> 'number of cycles - 1' but they are stored in ns in the struct
+> aemif_cs_data. So at init, the timings currently set are converted to ns
+> by aemif_get_hw_params(), updated with values from the device-tree
+> properties, and then converted back to 'number of cycles - 1' before
+> being applied.
 > 
-> Wrap the CS timings in a new the struct aemif_cs_timings to simplify
-> their export in upcoming patches.
+> Store the timings directly in 'number of cycles - 1' instead of
+> nanoseconds.
+> Perform the conversion from nanosecond during the device-tree parsing.
+> Remove aemif_cycles_to_nsec() as it isn't used anymore.
 > 
 > Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 > ---
->  drivers/memory/ti-aemif.c | 58 ++++++++++++++++++++++-----------------
->  1 file changed, 33 insertions(+), 25 deletions(-)
+>  drivers/memory/ti-aemif.c | 137 ++++++++++++++++++++++----------------
+>  1 file changed, 80 insertions(+), 57 deletions(-)
 > 
 > diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-> index 6a751a23d41a..aec6d6464efa 100644
+> index d54dc3cfff73..bd0c49ba1939 100644
 > --- a/drivers/memory/ti-aemif.c
 > +++ b/drivers/memory/ti-aemif.c
-> @@ -78,10 +78,8 @@
->  				WSETUP(WSETUP_MAX) | \
->  				EW(EW_MAX) | SSTROBE(SSTROBE_MAX) | \
+> @@ -80,28 +80,28 @@
 >  				ASIZE_MAX)
-> -
-
-This does not look related change.
-
+>  
 >  /**
-> - * struct aemif_cs_data: structure to hold CS parameters
-> - * @cs: chip-select number
-> + * struct aemif_cs_timings: structure to hold CS timings
->   * @wstrobe: write strobe width, number of cycles - 1
->   * @rstrobe: read strobe width, number of cycles - 1
->   * @wsetup: write setup width, number of cycles - 1
-> @@ -89,12 +87,8 @@
->   * @rsetup: read setup width, number of cycles - 1
->   * @rhold: read hold width, number of cycles - 1
->   * @ta: minimum turn around time, number of cycles - 1
-> - * @enable_ss: enable/disable select strobe mode
-> - * @enable_ew: enable/disable extended wait mode
-> - * @asize: width of the asynchronous device's data
+> - * struct aemif_cs_data: structure to hold cs parameters
+> + * struct aemif_cs_data: structure to hold CS parameters
 
+You are changing this line in next patch, so just do it there.
 
 Best regards,
 Krzysztof
