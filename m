@@ -4,56 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78F97D75BB8
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 04:42:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A896CD75BBB
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 06:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wqqdBwJjUH0+SWQ9AKmnBXLjr3jMTDCZXlrxCGZ+NBs=; b=Krzg+Jye3B1IjuyiXbnpW5ai6d
-	eZEF5apYMUWXTwiNiyTxEU0RddWZuOuPVfmRZA6AS0zNX3EOvJ1Qh1YqIBIGu02uhcrgNsuqGMTw4
-	ZrGNLi8bJKpgXvGmDSb6BCTIuW2zDin+fThw2W/2Z2k1yYGwPdqGv56IUEN26pGCluJ4cRLHVV5fr
-	2wxj3y6yFQcyO9fRMDMA1JwZwmOzxGchu1RefMpDvTUHWikTYkNdKW0DLkmSf9sowRpDLmvUP4gvl
-	COVrZv221251m0bKa+H1ZtOXmJaMAQ/M7u8WDB48QFEi9Q9y/i6n8tH147BddV5qYzsEs7D8n3YKb
-	FhICec7A==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=b+tf5Pl0SmqJ2aZXiyoOhIDDeSMGhFLKZ+/VghRilS4=; b=ev4ZdHatQNmcBd
+	T0eHTSbuMcpds5lv4oDeVBZ1Iw9t7tukwMxzbAUgJQayBft3PJ994L+iL43bEYlrbmfX9GUMdNl1K
+	erTdNa0q1axpJpwA7ancTD4mYZ3SUJyr8VFYVWHmbZH0A/SpX0bx3MIa7yItsgsUZnNyIALEsOxN4
+	RDowWf5dzZTm1iJ4NxkJe/ig3KumzcqVPOewkiquZJ7SgtJ5u7SBTYZ5Hl4vwmJSvtd4dbY9ryJd9
+	O/KqmSgYOT2dn1M5MugqCPJ5B779pvActJhQv6n9XBEGZm0DLDGSFdlTq7UvWL54ogVdFH5Bvfonh
+	91UC8nY5P7HZPK6ePcbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDz1W-0000000Gon1-2fC6;
-	Thu, 21 Nov 2024 04:42:34 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1tE0Hw-0000000GtfS-3Auu;
+	Thu, 21 Nov 2024 06:03:36 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDz1T-0000000GomJ-2JBG
+	id 1tE0Hu-0000000Gtes-1Y0u
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Nov 2024 04:42:33 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xv59d3pb1z66tS;
-	Thu, 21 Nov 2024 12:39:33 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 425801800A2;
-	Thu, 21 Nov 2024 12:42:17 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 21 Nov 2024 12:42:16 +0800
-Subject: Re: Parsing extracted i.MX NAND flash
-To: Rogan Dawes <rogan@dawes.za.net>, <linux-mtd@lists.infradead.org>
-References: <20241118173939.GA11581@lisa.dawes.za.net>
- <20241120155135.GA27335@lisa.dawes.za.net>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <1ce8654c-27b8-5f07-f3ca-d8d17c779f73@huawei.com>
-Date: Thu, 21 Nov 2024 12:42:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Thu, 21 Nov 2024 06:03:35 +0000
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AKLFT1e003960;
+	Thu, 21 Nov 2024 06:03:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	s6Jl2tzSXGi/sUdh51WPs4tzerONVjaBeh4Spf+zr+g=; b=YWx9R5lZr0CKKtxN
+	i6AA+2TwvelAPt5CigzhdAH8yOw0SDneFVgMBV+7F76wNima9uwatG2IlrbEBNwc
+	dhvlFMlcL2ZqNEywRowXEHcWyyBTTEb/gU8diuiipBbv7iH/KZD+TK9gnwhoTwFy
+	KMygmhoXlu37HvAnVhauwjI9JvmGcz6PkVoWe/6i5pgPMXTFm2HNszSvSTvWNv3n
+	v2TK9/zqjFwhOBDQO52vttxwRK8WBLqk5mrKy++J5wlSip4ESl/Bv3aHyJ91UxvM
+	5iur4eBFn31uncC7q5Uyad8eg5E8vVSVG4Q35fTATM2ScA025Cue97UXf66QTaHi
+	1r0G9g==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 431ce3avsy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Nov 2024 06:03:28 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4AL63S2X007801
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Nov 2024 06:03:28 GMT
+Received: from [10.151.37.94] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 20 Nov
+ 2024 22:03:24 -0800
+Message-ID: <e76e9562-f7d0-88c9-dcb6-dfcf41cdf205@quicinc.com>
+Date: Thu, 21 Nov 2024 11:33:13 +0530
 MIME-Version: 1.0
-In-Reply-To: <20241120155135.GA27335@lisa.dawes.za.net>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 1/2] mtd: rawnand: qcom: Pass 18 bit offset from QPIC base
+ address to BAM
+Content-Language: en-US
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>,
+        <quic_nainmeht@quicinc.com>, <quic_laksd@quicinc.com>,
+        <quic_varada@quicinc.com>
+References: <20241119092058.480363-1-quic_mdalam@quicinc.com>
+ <20241119092058.480363-2-quic_mdalam@quicinc.com>
+ <20241120070115.qox54zr3yhnkqgmd@thinkpad>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <20241120070115.qox54zr3yhnkqgmd@thinkpad>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: RU4Nn85hEjtemehtf8aOgozaQkVC8fjO
+X-Proofpoint-ORIG-GUID: RU4Nn85hEjtemehtf8aOgozaQkVC8fjO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 impostorscore=0
+ bulkscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2409260000 definitions=main-2411210045
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241120_204231_885326_F562017D 
-X-CRM114-Status: GOOD (  17.43  )
+X-CRM114-CacheID: sfid-20241120_220334_425325_154B59FB 
+X-CRM114-Status: GOOD (  26.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,87 +100,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8xMS8yMCAyMzo1MSwgUm9nYW4gRGF3ZXMg0LS1wDoKPiBPbiBNb24sIE5vdiAxOCwg
-MjAyNCBhdCAwNzozOTozOVBNICswMjAwLCBSb2dhbiBEYXdlcyB3cm90ZToKPj4gSGkgZm9sa3Ms
-Cj4+Cj4+IEkgaGF2ZSBhbiBpLk1YNiB0YXJnZXQgSSBhbSB0cnlpbmcgdG8gZ2V0IGEgc2hlbGwg
-b24uIEl0IGlzIHVzaW5nIEhpZ2gKPj4gQXNzdXJhbmNlIEJvb3QgYW5kIHZhcmlvdXMgb3RoZXIg
-Y29uZmlndXJhdGlvbnMgdG8gcHJldmVudCB0aGlzLiBNeQo+PiBjdXJyZW50IGFwcHJvYWNoIGlz
-IHRvIHJlbW92ZSB0aGUgZmxhc2gsIGV4dHJhY3QgdGhlIGZpbGVzeXN0ZW1zLCBtb2RpZnkKPj4g
-b25lIHRoYXQgaXMgbm90IHN1YmplY3QgdG8gSEFCLCB0aGVuIHB1dCBpdCBhbGwgYmFjaywgaW4g
-b3JkZXIgdG8gZW5hYmxlCj4+IGEgc2hlbGwuCj4+Cj4+IEkgaGF2ZSByZW1vdmVkIHRoZSBmbGFz
-aCwgYW5kIGV4dHJhY3RlZCBpdHMgY29udGVudHMgdXNpbmcgYW4gWGdlY3UKPj4gZmxhc2ggcmVh
-ZGVyLiBOb3cgSSBuZWVkIHRvIHBhcnNlIHRoZSBGQ0IgYW5kIGV4dHJhY3QgdGhlIGFjdHVhbCBk
-YXRhCj4+IGZyb20gdGhlIGR1bXAuIEkgaGF2ZSBmb3VuZCBpbXgtbmFuZC10b29scywgYnV0IHRo
-aXMgZG9lc24ndCB3b3JrIGR1ZSB0bwo+PiBiaXRyb3QgKHRoZSBiY2hsaWIgZGVwZW5kZW5jeSBo
-YXMgbW92ZWQgb24gd2hpbGUgaW14LW5hbmQtdG9vbHMgaGFzIG5vdAo+PiBiZWVuIHVwZGF0ZWQp
-Lgo+IAo+IEkgd2FzIGFibGUgdG8gZ2V0IGlteC1uYW5kLXRvb2xzIHdvcmtpbmcgYnkgcGlubmlu
-ZyB0aGUgdmVyc2lvbiBvZiB0aGUKPiBiY2hsaWIgZGVwZW5kZW5jeSB0byB2MC4xNC4wLCBhbmQg
-aGF2ZSBiZWVuIGFibGUgdG8gb2J0YWluIGEgImNsZWFuIgo+IGZsYXNoIGltYWdlLiBTdGlsbCB0
-cnlpbmcgdG8gbW91bnQgdGhlIHZhcmlvdXMgVUJJIGZpbGVzeXN0ZW1zLCBhcyBJIGdldAo+IHRo
-ZSBmb2xsb3dpbmcgZXJyb3JzOgo+IAo+IFszNjA5NzIuNzEwMDUwXSB1YmkwOiBkZWZhdWx0IGZh
-c3RtYXAgcG9vbCBzaXplOiA4Cj4gWzM2MDk3Mi43MTAwNTVdIHViaTA6IGRlZmF1bHQgZmFzdG1h
-cCBXTCBwb29sIHNpemU6IDQKPiBbMzYwOTcyLjcxMDA1Nl0gdWJpMDogYXR0YWNoaW5nIG10ZDUK
-PiBbMzYwOTcyLjcxMDA5OV0gdWJpMCBlcnJvcjogdmFsaWRhdGVfZWNfaGRyIFt1YmldOiBiYWQg
-VklEIGhlYWRlciBvZmZzZXQgMjA0OCwgZXhwZWN0ZWQgNTEyCgpIaSBSb2dhbiwKSG93IGRpZCB5
-b3UgdXNlIHViaWF0dGFjaD8gdWJpYXR0YWNoIC1PIDUxMj8gIFRyeSAndWJpYXR0YWNoIC1PMjA0
-OCcuCj4gWzM2MDk3Mi43MTAxMTZdIHViaTAgZXJyb3I6IHZhbGlkYXRlX2VjX2hkciBbdWJpXTog
-YmFkIEVDIGhlYWRlcgo+IFszNjA5NzIuNzEwMTI3XSBFcmFzZSBjb3VudGVyIGhlYWRlciBkdW1w
-Ogo+IFszNjA5NzIuNzEwMTI4XSAgICAgICAgIG1hZ2ljICAgICAgICAgIDB4NTU0MjQ5MjMKPiBb
-MzYwOTcyLjcxMDEyOV0gICAgICAgICB2ZXJzaW9uICAgICAgICAxCj4gWzM2MDk3Mi43MTAxMzBd
-ICAgICAgICAgZWMgICAgICAgICAgICAgNDUwMgo+IFszNjA5NzIuNzEwMTMyXSAgICAgICAgIHZp
-ZF9oZHJfb2Zmc2V0IDIwNDgKPiBbMzYwOTcyLjcxMDEzM10gICAgICAgICBkYXRhX29mZnNldCAg
-ICA0MDk2Cj4gWzM2MDk3Mi43MTAxMzRdICAgICAgICAgaW1hZ2Vfc2VxICAgICAgOTA3Mzc4MDY5
-Cj4gWzM2MDk3Mi43MTAxMzVdICAgICAgICAgaGRyX2NyYyAgICAgICAgMHhhNTZjNTFmMQo+IFsz
-NjA5NzIuNzEwMTM2XSBlcmFzZSBjb3VudGVyIGhlYWRlciBoZXhkdW1wOgo+IFszNjA5NzIuNzEw
-MTM4XSAwMDAwMDAwMDogNTUgNDIgNDkgMjMgMDEgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MTEgOTYgMDAgMDAgMDggMDAgMDAgMDAgMTAgMDAgMzYgMTUgN2QgOTUgMDAgMDAgMDAgMDAgIFVC
-SSMuLi4uLi4uLi4uLi4uLi4uLi4uLjYufS4uLi4uCj4gWzM2MDk3Mi43MTAxNDBdIDAwMDAwMDIw
-OiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBhNSA2YyA1MSBmMSAgLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi5sUS4KPiBbMzYwOTcyLjcxMDE0Ml0gQ1BVOiAzIFBJRDogMjUxMDkgQ29t
-bTogdWJpYXR0YWNoIE5vdCB0YWludGVkIDYuOC4wLTQ4LWdlbmVyaWMgIzQ4fjIyLjA0LjEtVWJ1
-bnR1Cj4gWzM2MDk3Mi43MTAxNDVdIEhhcmR3YXJlIG5hbWU6IExFTk9WTyBFbnRlciB0aGUgbWFj
-aGluZSB0eXBlIGFuLzMxMzYsIEJJT1MgTTFVS1Q3N0EgMDQvMTAvMjAyNAo+IFszNjA5NzIuNzEw
-MTQ2XSBDYWxsIFRyYWNlOgo+IFszNjA5NzIuNzEwMTQ4XSAgPFRBU0s+Cj4gWzM2MDk3Mi43MTAx
-NTBdICBkdW1wX3N0YWNrX2x2bCsweDc2LzB4YTAKPiBbMzYwOTcyLjcxMDE1NF0gIGR1bXBfc3Rh
-Y2srMHgxMC8weDIwCj4gWzM2MDk3Mi43MTAxNTZdICB2YWxpZGF0ZV9lY19oZHIrMHg4Ni8weGQw
-IFt1YmldCj4gWzM2MDk3Mi43MTAxNjZdICB1YmlfaW9fcmVhZF9lY19oZHIrMHgyNDYvMHgyZDAg
-W3ViaV0KPiBbMzYwOTcyLjcxMDE3N10gIHNjYW5fcGViKzB4YTkvMHg2ODAgW3ViaV0KPiBbMzYw
-OTcyLjcxMDE4OV0gIHNjYW5fZmFzdCsweDlhLzB4MWMwIFt1YmldCj4gWzM2MDk3Mi43MTAxOTld
-ICA/IGttZW1fY2FjaGVfY3JlYXRlKzB4MTYvMHgzMAo+IFszNjA5NzIuNzEwMjA0XSAgdWJpX2F0
-dGFjaCsweDIzMS8weDJiMCBbdWJpXQo+IFszNjA5NzIuNzEwMjE1XSAgdWJpX2F0dGFjaF9tdGRf
-ZGV2KzB4M2FkLzB4N2IwIFt1YmldCj4gWzM2MDk3Mi43MTAyMjZdICBjdHJsX2NkZXZfaW9jdGwr
-MHgxMjEvMHgyMDAgW3ViaV0KPiBbMzYwOTcyLjcxMDIzNl0gIF9feDY0X3N5c19pb2N0bCsweGEw
-LzB4ZjAKPiBbMzYwOTcyLjcxMDI0MF0gIHg2NF9zeXNfY2FsbCsweGE2OC8weDI0YjAKPiBbMzYw
-OTcyLjcxMDI0M10gIGRvX3N5c2NhbGxfNjQrMHg4MS8weDE3MAo+IFszNjA5NzIuNzEwMjQ2XSAg
-PyBzeXNjYWxsX2V4aXRfdG9fdXNlcl9tb2RlKzB4ODMvMHgyNjAKPiBbMzYwOTcyLjcxMDI0OV0g
-ID8gZG9fc3lzY2FsbF82NCsweDhkLzB4MTcwCj4gWzM2MDk3Mi43MTAyNTJdICA/IGRvX3VzZXJf
-YWRkcl9mYXVsdCsweDMzNy8weDY3MAo+IFszNjA5NzIuNzEwMjU0XSAgPyBpcnFlbnRyeV9leGl0
-X3RvX3VzZXJfbW9kZSsweDc4LzB4MjYwCj4gWzM2MDk3Mi43MTAyNTddICA/IGlycWVudHJ5X2V4
-aXQrMHg0My8weDUwCj4gWzM2MDk3Mi43MTAyNThdICA/IGV4Y19wYWdlX2ZhdWx0KzB4OTQvMHgx
-YjAKPiBbMzYwOTcyLjcxMDI2MF0gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDc4
-LzB4ODAKPiBbMzYwOTcyLjcxMDI2M10gUklQOiAwMDMzOjB4NzhkYTYyNTFhOTRmCj4gWzM2MDk3
-Mi43MTAyNzddIENvZGU6IDAwIDQ4IDg5IDQ0IDI0IDE4IDMxIGMwIDQ4IDhkIDQ0IDI0IDYwIGM3
-IDA0IDI0IDEwIDAwIDAwIDAwIDQ4IDg5IDQ0IDI0IDA4IDQ4IDhkIDQ0IDI0IDIwIDQ4IDg5IDQ0
-IDI0IDEwIGI4IDEwIDAwIDAwIDAwIDBmIDA1IDw0MT4gODkgYzAgM2QgMDAKPiBmMCBmZiBmZiA3
-NyAxZiA0OCA4YiA0NCAyNCAxOCA2NCA0OCAyYiAwNCAyNSAyOCAwMAo+IFszNjA5NzIuNzEwMjc5
-XSBSU1A6IDAwMmI6MDAwMDdmZmViMDY0MGRjMCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAw
-MDAwMDAwMDAwMDAwMDEwCj4gWzM2MDk3Mi43MTAyODJdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBS
-Qlg6IDAwMDA3ZmZlYjA2NDI4MTAgUkNYOiAwMDAwNzhkYTYyNTFhOTRmWzM2MDk3Mi43MTAyODRd
-IFJEWDogMDAwMDdmZmViMDY0MGYwMCBSU0k6IDAwMDAwMDAwNDAxODZmNDAgUkRJOiAwMDAwMDAw
-MDAwMDAwMDAzCj4gWzM2MDk3Mi43MTAyODVdIFJCUDogMDAwMDAwMDAwMDAwMDAwMyBSMDg6IDAw
-MDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwN2ZmZWIwNjQyODEwCj4gWzM2MDk3Mi43MTAyODddIFIx
-MDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwN2ZmZWIw
-NjQwZjAwCj4gWzM2MDk3Mi43MTAyODhdIFIxMzogMDAwMDdmZmViMDY0MGYwMCBSMTQ6IDAwMDA2
-MDc5MGUxMWMyYTAgUjE1OiAwMDAwMDAwMDAwMDAwMDAwCj4gWzM2MDk3Mi43MTAyOTJdICA8L1RB
-U0s+Cj4gWzM2MDk3Mi43MTAyOTNdIHViaTAgZXJyb3I6IHViaV9pb19yZWFkX2VjX2hkciBbdWJp
-XTogdmFsaWRhdGlvbiBmYWlsZWQgZm9yIFBFQiAwCj4gWzM2MDk3Mi43MTAzMDVdIHViaTAgZXJy
-b3I6IHViaV9hdHRhY2hfbXRkX2RldiBbdWJpXTogZmFpbGVkIHRvIGF0dGFjaCBtdGQ1LCBlcnJv
-ciAtMjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+
+On 11/20/2024 12:31 PM, Manivannan Sadhasivam wrote:
+> On Tue, Nov 19, 2024 at 02:50:57PM +0530, Md Sadre Alam wrote:
+>> Currently we are configuring lower 24 bits of address in descriptor
+>> whereas QPIC design expects 18 bit register offset from QPIC base
+> 
+> You mean 'QPIC IP' here? But is it QPIC or NANDc? I guess the later.
+It's QPIC IP only.
+> 
+>> address to be configured in cmd descriptors. This is leading to a
+>> different address actually being used in HW, leading to wrong value
+>> read.
+>>
+> 
+> This doesn't clearly say what the actual issue is. IIUC, the issue is that the
+> NANDc base address is different from the QPIC base address. But the driver
+> doesn't take it into account and just used the QPIC base as the NANDc base. This
+> used to work as the NANDc IP only considers the lower 18 bits of the address
+> passed by the driver to derive the register offset. Since the base address of
+> QPIC used to contain all 0 for lower 18 bits (like 0x07980000), the driver ended
+> up passing the actual register offset in it and NANDc worked properly. But on
+> newer SoCs like SDX75, the QPIC base address doesn't contain all 0 for lower 18
+> bits (like 0x01C98000). So NANDc sees wrong offset as per the current logic.
+Yes correct. If QPIC address = 0x07980000 and QPIC_EBI2NAND address = 0x079b0000
+the the diff is 0x30000, this is the actual offset expected by QPIC RTL code.
+and RTL needs only 18-bit offset.
+> 
+>> Older targets also used same configuration (lower 24 bits) like sdxpinn,
+> 
+> Please use actual product names and not internal names. I believe you are
+> referring to SDX55/SDX65 here.
+Ok , will change in next revision.
+> 
+>> ipq etc. but issue is masked in older targets due to lower 18 bits of QPIC
+>> base address being zero leading to expected address generation.
+>>
+>> Sdxpinn     : QPIC_QPIC | 0x01C98000 (Lower 18 bits are non zero)
+>> Sdxnightjar : QPIC_QPIC | 0x07980000 (Lower 18 bits are zero) Same for
+>> older targets.
+> 
+> Same here.
+Ok
+> 
+>>
+>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> 
+> Please add relevant Fixes tag.
+Ok
+> 
+>> ---
+>>   drivers/mtd/nand/raw/qcom_nandc.c | 9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+>> index b8cff9240b28..34ee8555fb8a 100644
+>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> @@ -207,7 +207,7 @@ nandc_set_reg(chip, reg,			\
+>>   #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
+>>   
+>>   /* Returns the NAND register physical address */
+>> -#define nandc_reg_phys(chip, offset) ((chip)->base_phys + (offset))
+>> +#define nandc_reg_phys(chip, offset)  ((nandc)->props->offset_from_qpic + (offset))
+>>   
+>>   /* Returns the dma address for reg read buffer */
+>>   #define reg_buf_dma_addr(chip, vaddr) \
+>> @@ -561,6 +561,7 @@ struct qcom_nandc_props {
+>>   	bool is_qpic;
+>>   	bool qpic_v2;
+>>   	bool use_codeword_fixup;
+>> +	u32 offset_from_qpic;
+> 
+> nandc_offset?
+Ok
+> 
+>>   };
+>>   
+>>   /* Frees the BAM transaction memory */
+>> @@ -3477,6 +3478,7 @@ static const struct qcom_nandc_props ipq806x_nandc_props = {
+>>   	.is_bam = false,
+>>   	.use_codeword_fixup = true,
+>>   	.dev_cmd_reg_start = 0x0,
+>> +	.offset_from_qpic = 0x30000,
+> 
+> How 0x30000 is supposed to work? You said the NANDc ignores lower 18 bits, but
+> this has 17th and 18th bits set.
+Not this address 0x30000, this the diff b/w QPIC base and EBI2NAND base. The 18-bits we have see
+on this address 0x07980000 and this address 0x01C98000.
+> 
+> - Mani
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
