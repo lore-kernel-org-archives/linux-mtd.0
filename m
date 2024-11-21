@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B026D711CA
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 10:28:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6DD1D711CA
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Nov 2024 10:34:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=abJ6bGZmfzL4QmyUTU7Xli1g3x9mZ2CXqB0QjUSXC6Y=; b=OP+gZ6k9El8qTG
-	BUpUTzty+pihpTOKbVf/2hYiOtmnsEy4N4FWekP6+rrW3O5jCSYumZzip7xEzlqrtjWsVsd+7l51F
-	7wvQM4LeyoQtJX7yDnvfL/YJ2+cqzNvfDBDB7fOdsmj4TGx5M2mzbA1btGdLUKsbII4JrBp1NC5kt
-	+F7L/EMZAAuFasOI2NrS9llo1OwOvzVvXz+gVMiZJdmCjqA0C6PInt//9lI2c4V4+2pxigZqTyt+/
-	MRQRlKQNfSN2bDjoxBnSXi7IrEw68jFJ3ZobWRrRQyRVAwrhcryZ6S7kZ98nUYmlJSdSbG8b1vY9k
-	Jny4fHMfCAf+mawv9AHw==;
+	List-Owner; bh=IhP1gq6hHHVz1MAwdxUgyIlJV/N/s5oNerZaL7l7Kkw=; b=btCbV/YSj9oPfT
+	vrMGlg8NjRayOAKlQ/FXpyG4TjONL5WGEuvW1EC9Qj1LkGd8/KZSacnehq0xE6CE2qwCP8R031wob
+	oqm420NaOZiOYdq88BdvfdhsdtgjOyHsysyIVOB7Gwv0HHkq4Wxa61PFhbyrbi0jyFJjJCcyZOPS9
+	IQHrr67c1Aqx23bQI/yvRJ1W02H8H7bIMDXAzd2IVLlNK3EwT4uf3KE/tmYVgaGPEiQzPObGGHRcm
+	Yinii5jUBoPddLPUDu2CVEjg1WaqVv/Z4D9owwk64LS5t/DwWuc16O6H10i/ZyuIlBG8TvpuRVaS5
+	X17QH8nw9rLt2rjx7NiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tE4Pw-0000000HMku-1ySN;
-	Thu, 21 Nov 2024 10:28:08 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1tE4Va-0000000HNIM-2cPf;
+	Thu, 21 Nov 2024 10:33:58 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tE4Pu-0000000HMkS-0BvZ
+	id 1tE4VX-0000000HNHu-3FYJ
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Nov 2024 10:28:07 +0000
+	Thu, 21 Nov 2024 10:33:57 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 9B7D35C4C5C;
-	Thu, 21 Nov 2024 10:27:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF167C4CECC;
-	Thu, 21 Nov 2024 10:28:02 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 8C15BA403A6;
+	Thu, 21 Nov 2024 10:32:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89D30C4CECC;
+	Thu, 21 Nov 2024 10:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732184885;
-	bh=sQyHjoPV6h9sOqmsyfmf7/IL7whikxmmoPsVmcB/N60=;
+	s=k20201202; t=1732185234;
+	bh=sJGGSmvAilmDQmy9p7wUGIrBHdDuzJ4K8Tyz3YhDAew=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZsuEJyP9kAwvE66L7VrUbX+2DfxflCnkfKESz2/y8fu0M2wXPLGAucDyBHxxcVDzP
-	 bro3MIzWsr2UvOzBIlKOeog/Wj08VSoJwwCJy9MFb3+XkdKuBu/LlGAon4DeTRJGEG
-	 A2vGxjYmWyjHG7GCvmrBt5VMqkhrYsHVPLilkGeV5W511AtX8p3Fc+pKpXzD2mIa0z
-	 rZ/STFsVhfbytfCHMO3MKlk+Wu1utazVRjRpC/eph8h8T5zApZVi/aHm9EXgSpY5Yq
-	 9mGZb7kJaO2zjcD5yksGKlRzQjer1rMdoQRzBtIugVi8321CKQIH1WW8koVAk4tM7I
-	 HSQxSEjJozhFQ==
-Message-ID: <e3b8366d-b365-43a3-8f40-c2374ff9e8bf@kernel.org>
-Date: Thu, 21 Nov 2024 11:28:01 +0100
+	b=hCZZ5iTOhoDys0bnaEXTzWzFUjTiU7V4hbUHgvsFGMm7G+eWtqpysfTh7E3Q9zjg8
+	 a8yXZk8yZocJr1cLm50Alddanr3u5wotuQircK8lo8xr5GWPH6PZ/wzcVr3iFobb7D
+	 pEse1nfa8UAeZ5lt4mpMatI/b6o56z8aBvY7v/yWg3dqu8tYH3Kpn02Kpgnj949z5Z
+	 Ze7TATeb3RGBYum+GzV3gnWupo7FCl7IQrGi/RnSIJfm+L1EUxqdyO8b3DNZKoksnQ
+	 SqlWMrIdEBVRLMcnaAVoCTNRBQtFTecL9vvRZjf5HfsHKdLGZ1rYU1cQy2+z5YaRQO
+	 v5RSU2fzJu9WQ==
+Message-ID: <3a74b938-072e-443c-bf48-d97aff969a17@kernel.org>
+Date: Thu, 21 Nov 2024 11:33:49 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 04/10] memory: ti-aemif: Create
- aemif_check_cs_timings()
+Subject: Re: [PATCH v4 06/10] memory: ti-aemif: Export aemif_*_cs_timings()
 To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
  Santosh Shilimkar <ssantosh@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -57,9 +56,9 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Herve Codina <herve.codina@bootlin.com>,
  Christopher Cordahi <christophercordahi@nanometrics.ca>
 References: <20241115132631.264609-1-bastien.curutchet@bootlin.com>
- <20241115132631.264609-5-bastien.curutchet@bootlin.com>
-Content-Language: en-US
+ <20241115132631.264609-7-bastien.curutchet@bootlin.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -103,10 +102,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20241115132631.264609-5-bastien.curutchet@bootlin.com>
+In-Reply-To: <20241115132631.264609-7-bastien.curutchet@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241121_022806_179387_1DE181BC 
-X-CRM114-Status: GOOD (  26.20  )
+X-CRM114-CacheID: sfid-20241121_023355_962852_AB1C184A 
+X-CRM114-Status: GOOD (  16.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,111 +123,86 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 15/11/2024 14:26, Bastien Curutchet wrote:
-> aemif_calc_rate() check the validity of a new computed timing against a
-> 'max' value given as input. This isn't convenient if we want to check
-> the CS timing configuration somewhere else in the code.
-> 
-> Wrap the verification of all the chip select's timing configuration into a
-> single function to ease its exportation in upcoming patches.
-> Remove the 'max' input from aemif_calc_rate() as it's no longer used.
-> 
-> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
-> ---
->  drivers/memory/ti-aemif.c | 107 +++++++++++++++++---------------------
->  1 file changed, 49 insertions(+), 58 deletions(-)
-> 
-> diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-> index aec6d6464efa..5c1c6f95185f 100644
-> --- a/drivers/memory/ti-aemif.c
-> +++ b/drivers/memory/ti-aemif.c
-> @@ -132,18 +132,48 @@ struct aemif_device {
->  	struct aemif_cs_data cs_data[NUM_CS];
->  };
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(aemif_check_cs_timings);
 >  
-> +/**
-> + * aemif_check_cs_timings - Check the validity of a CS timing configuration.
-> + * @timings: timings configuration
-> + *
-> + * @return: 0 if the timing configuration is valid, negative error number otherwise.
-> + */
-> +static int aemif_check_cs_timings(struct aemif_cs_timings *timings)
-> +{
-> +	if (timings->ta > TA_MAX)
-> +		return -EINVAL;
-> +
-> +	if (timings->rhold > RHOLD_MAX)
-> +		return -EINVAL;
-> +
-> +	if (timings->rstrobe > RSTROBE_MAX)
-> +		return -EINVAL;
-> +
-> +	if (timings->rsetup > RSETUP_MAX)
-> +		return -EINVAL;
-> +
-> +	if (timings->whold > WHOLD_MAX)
-> +		return -EINVAL;
-> +
-> +	if (timings->wstrobe > WSTROBE_MAX)
-> +		return -EINVAL;
-> +
-> +	if (timings->wsetup > WSETUP_MAX)
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
+>  /**
+>   * aemif_set_cs_timings - Set the timing configuration of a given chip select.
+> @@ -173,7 +158,7 @@ static int aemif_check_cs_timings(struct aemif_cs_timings *timings)
+>   *
+>   * @return: 0 on success, else negative errno.
+>   */
+> -static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
+> +int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
+>  {
+>  	unsigned int offset;
+>  	u32 val, set;
+> @@ -195,13 +180,16 @@ static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_
+>  
+>  	offset = A1CR_OFFSET + cs * 4;
+>  
+> +	mutex_lock(&aemif->config_cs_lock);
+>  	val = readl(aemif->base + offset);
+>  	val &= ~TIMINGS_MASK;
+>  	val |= set;
+>  	writel(val, aemif->base + offset);
+> +	mutex_unlock(&aemif->config_cs_lock);
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(aemif_set_cs_timings);
+
+
+EXPORT_SYMBOL_GPL everywhere, these are quite specific to driver's
+internals, so internal implementation.
+
+Also, all of exported functions need to have correct kerneldoc but I
+think they don't. At least missing(), so maybe rest also did not conform
+to kernel doc style.
+
+>  
 >  /**
 >   * aemif_calc_rate - calculate timing data.
->   * @pdev: platform device to calculate for
->   * @wanted: The cycle time needed in nanoseconds.
->   * @clk: The input clock rate in kHz.
-> - * @max: The maximum divider value that can be programmed.
->   *
->   * On success, returns the calculated timing value minus 1 for easy
->   * programming into AEMIF timing registers, else negative errno.
->   */
-> -static int aemif_calc_rate(struct platform_device *pdev, int wanted,
-> -			   unsigned long clk, int max)
-> +static int aemif_calc_rate(struct platform_device *pdev, int wanted, unsigned long clk)
->  {
->  	int result;
+> @@ -257,10 +245,12 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+>  	if (data->enable_ss)
+>  		set |= ACR_SSTROBE_MASK;
 >  
-> @@ -156,10 +186,6 @@ static int aemif_calc_rate(struct platform_device *pdev, int wanted,
->  	if (result < 0)
->  		result = 0;
+> +	mutex_lock(&aemif->config_cs_lock);
+>  	val = readl(aemif->base + offset);
+>  	val &= ~CONFIG_MASK;
+>  	val |= set;
+>  	writel(val, aemif->base + offset);
+> +	mutex_unlock(&aemif->config_cs_lock);
 >  
-> -	/* ... But configuring tighter timings is not an option. */
-> -	else if (result > max)
-> -		result = -EINVAL;
-> -
->  	return result;
+>  	return aemif_set_cs_timings(aemif, data->cs - aemif->cs_offset, &data->timings);
 >  }
+> @@ -399,6 +389,7 @@ static int aemif_probe(struct platform_device *pdev)
+>  	if (IS_ERR(aemif->base))
+>  		return PTR_ERR(aemif->base);
 >  
-> @@ -249,7 +275,6 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
->  	struct aemif_device *aemif = platform_get_drvdata(pdev);
->  	unsigned long clk_rate = aemif->clk_rate;
->  	struct aemif_cs_data *data;
-> -	int ret;
->  	u32 cs;
->  	u32 val;
->  
-> @@ -275,68 +300,34 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
->  	aemif_get_hw_params(pdev, aemif->num_cs++);
->  
->  	/* override the values from device node */
-> -	if (!of_property_read_u32(np, "ti,cs-min-turnaround-ns", &val)) {
-> -		ret = aemif_calc_rate(pdev, val, clk_rate, TA_MAX);
-> -		if (ret < 0)
-> -			return ret;
-> -
-> -		data->timings.ta = ret;
-> -	}
-> +	if (!of_property_read_u32(np, "ti,cs-min-turnaround-ns", &val))
-> +		data->timings.ta = aemif_calc_rate(pdev, val, clk_rate);
->  
+> +	mutex_init(&aemif->config_cs_lock);
+>  	if (np) {
+>  		/*
+>  		 * For every controller device node, there is a cs device node
+> diff --git a/include/linux/memory/ti-aemif.h b/include/linux/memory/ti-aemif.h
+> new file mode 100644
+> index 000000000000..0640d30f6321
+> --- /dev/null
+> +++ b/include/linux/memory/ti-aemif.h
+> @@ -0,0 +1,32 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __TI_AEMIF_H
+> +#define __TI_AEMIF_H
 
-You just changed these lines in patch #1. Basically this is partial
-revert of #1.
+
+Use some longer header guard, e.g. __MEMORY_TI_AEMIF_H
+
+> +
+> +/**
+
+
 
 Best regards,
 Krzysztof
