@@ -4,87 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3370EE65D17
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2024 09:00:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69288E65D3E
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Nov 2024 09:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d2WO4u8BM81DlJQRwZUkDhi0IBo8Ho6OpuyetMdNZFE=; b=PTClFEKI0Adt1B
-	ZXkyHTUBbGPfBp2LwPX2tiu7Q5pLDNC/Zc245e/kUM9/xSp1jVOWM05ftzKTAXFN56DTAiWz91/ma
-	07quou7k77TTDcIW4SzhpTpUp1Fy69xkRmJix1HhhYWW+DVq9cPo0WfX58TAi+O+EqAFRVH8qrc3U
-	L7406RvleVl5XbYRopbB8wFyTYQOsOxXg8oI8ND12p9v8y0TJ/SaVxTPmkmv4aifbpEvGEsahjZ6e
-	gszPaBvLZXXerj1LchEJvq/zgLxVoIAjk2RGFUY+BbOoHvH14Ek7PNbX9/EhFqvqtoaHpdbmy7HVO
-	0jkQqNuTW8AVCFHgMA+w==;
+	List-Owner; bh=urZO4x9AX3WLqb1KHsn5ZllMNSE01vZ5Jfnw47YJ3vM=; b=C0y56/DJMDup9Y
+	R4lP9j6v2phXnRevXMNr+5/+sn05gH1fOKXflfnd/dwfV5U6aex931op6NNB3vuvKlOIbFLD297EO
+	SO7ICBHPKQVsXr794ISFeij7GueAi+VlJx5GJUaa7Hu2/Wo4synDc7X+I/C71/+xxCpn0Aq9nfPfU
+	RKvwt4OE2yMaABLxv+/JT3CfCicH0zTAyOwIRZxGwjghIm6GgCo4ko3ImbZvhVzwG0pcW6myDRzvV
+	a0SwyOnbmOtstL8ga3rttAu0LohnWAvdJdFcWShTcPix7AZWYZbnuu9vLwsOZXHkXmmLhYW8MDbwr
+	Cjnn8KFVGG03CEQeJRJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tEPWS-000000020CN-3GtS;
-	Fri, 22 Nov 2024 09:00:16 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1tEQ6q-000000027EJ-0ffB;
+	Fri, 22 Nov 2024 09:37:52 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tEPWQ-000000020B5-0tCd
+	id 1tEQ6n-000000027Du-48Fh
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 Nov 2024 09:00:15 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AM2NM1c029328;
-	Fri, 22 Nov 2024 09:00:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	LkHS7Yzau84UEPEUeytcDhNp5BBXrcXJE2ofwaLbCrQ=; b=W4YTXN404PFFtj3T
-	6oYEURHK1yoVcgb+7JwGb2AtWgV30WzRPg965M9SEzmmcd5Znxk6qL+3pEaR/9zf
-	wHcEqP9LU7k2bZNmsMH3LjvKirZOHCKJPKJwhspsLuUuMi1YYENimLRhT1at5OhH
-	+gKIAEnLNTauZde4bXKxygvogVyV7HCZ8OXy0e3KjMi6jm1mso04CMKmBtkajn8N
-	GKDVMn304ewO9gGw7rSKlRax9DrfxBwRbdF6fd8T+A++6B7Hw6kGMSg6AbEZMfkm
-	DfKens6FQ3ghFmZ3j6xS48+X7KXtngBPDgcwVklPPGilVwCADIJOF99JT96APmWe
-	VwP6Ag==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 432h4drvc6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Nov 2024 09:00:09 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4AM908Pl008109
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Nov 2024 09:00:08 GMT
-Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 22 Nov 2024 01:00:03 -0800
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-To: <manivannan.sadhasivam@linaro.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>,
-        <quic_mdalam@quicinc.com>, <quic_nainmeht@quicinc.com>,
-        <quic_laksd@quicinc.com>
-Subject: [PATCH v2 3/3] mtd: rawnand: qcom: Fix read len for onfi param page
-Date: Fri, 22 Nov 2024 14:29:33 +0530
-Message-ID: <20241122085933.2663927-4-quic_mdalam@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241122085933.2663927-1-quic_mdalam@quicinc.com>
-References: <20241122085933.2663927-1-quic_mdalam@quicinc.com>
+	Fri, 22 Nov 2024 09:37:51 +0000
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-53da5a27771so2189612e87.2
+        for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2024 01:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1732268268; x=1732873068; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m/fvS2pZvBCS2EcXKm3vL4SHGirRH/E+Y71cic6lH1E=;
+        b=AcorGz5isPopNElbCFZnD+JHXGNb0WnGPcfvv1sI5Yps9oFCh4Xw0fDNhJJKCsVsyQ
+         ICqCT+dwjE1qA550UMEXcSGbQAta015tpE1RQ3yaIAHJdDz6PNpX8pRcPD+KgOGgDWW5
+         dyInT+NtvcOex53B1Y7v3TPHLjg7eOEh1v45mZwjm2/yno9nhdirkYYeGCB+MiWc0nqV
+         HbMZpsfd5pP5+1MMpEsWG5owUIYGQlVjGWTKUiHuLiiinloR8HiL7tuKjvMnHmDKQ64q
+         7yRpS+OFSZoFOTmE55yrc2gu7px2lQNrqHtEEYtqpI4sVP5cNGlrhBdcEhkbUXhFZBb/
+         SHeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732268268; x=1732873068;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m/fvS2pZvBCS2EcXKm3vL4SHGirRH/E+Y71cic6lH1E=;
+        b=TIBH4x2ip54ipWbedzQ4VMOlrG10oL55Pjzp9Uu78Ilns911H+AUeJ67jkRsxLU3AW
+         NpTSPq/EBanUaxKjpveJUQKAc6n+LHLQcaDHf9PYuOmI6yKinB3teMLrXvD61KYZeMsL
+         KUCLpGLFJI50GHCdZk5zXPz5juQi/lyxgCeectx9MymUqzhhBZoF6CTeo6uDFJ++o33Z
+         IX3tySl3vdwPA90cR3HvS2YQ/P1TE0MmG5ZSPwwrakf336CRmftj9z/mmY/B4w3MXjKl
+         /dSqyUxHMNgr15tJyTTRgVGiLEqveGK92Q9dF+78uLd8cvMcvDHtnO7IrJ3P/rf8rPZ5
+         QJvg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBWWzhW/4H5kbU4aw3Da/3aQQvKKjRS47KtKChJNnIrttEZKoXOkiIlkvzMMp2ptkqBlMiF87fneo=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwrXWgIqv01ETgCm4rpQQdLe4JGsiKScWMNFof0e4wQSRiPph48
+	W4M9ioeSmVS6Pn8m+y9KpMHOm8WgUjIU0Xs4pc9OOfMIGC5qS7RK1vmWVS+c7OA=
+X-Gm-Gg: ASbGncvnULEIh0BqSO4tH5Z9bm5nZmsOfKdWnSW25F3jKLuPAGfyIyJxc2iphigW5nC
+	j1nvhTYaXKCQean7cM5rnuQc3MVvl9xQrHf9rWq34lSydNXKh2kGz2YFuWZd5nsJOX5ESSmyauX
+	FyK8wjz/h8ui76C3No91rAtIlNlv022ufaLRShs0OmSI20+1tnIlI/3UBrtygMgLh/ZrrSrU09a
+	iQEIG21TzsIlTmDmPV+DSjawUM+076/9XKk//Nv4Obry6TV64Wo+ZYVFg==
+X-Google-Smtp-Source: AGHT+IFYgbeEZP/OUJD4UhVHR3Ln6ffbctB1JTApHzD/7gqkT31l8U2sYFuzW/gIiwsHzQWcfZIZaQ==
+X-Received: by 2002:a05:6512:138e:b0:53d:d57f:929e with SMTP id 2adb3069b0e04-53dd57f92b6mr672299e87.44.1732268267957;
+        Fri, 22 Nov 2024 01:37:47 -0800 (PST)
+Received: from [192.168.0.14] ([79.115.63.27])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3825faf9a5asm1899445f8f.23.2024.11.22.01.37.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Nov 2024 01:37:47 -0800 (PST)
+Message-ID: <a5c09a0a-7d63-4029-abb2-597ade1da74a@linaro.org>
+Date: Fri, 22 Nov 2024 09:37:45 +0000
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: EdIk7u9Ary1X47T5c_-drj4TLUmdqQDR
-X-Proofpoint-GUID: EdIk7u9Ary1X47T5c_-drj4TLUmdqQDR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- clxscore=1015 phishscore=0 malwarescore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 adultscore=0 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2411220075
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] mtd: spinand: Remove write_enable_op() in
+ markbad()
+To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ pratyush@kernel.org, mwalle@kernel.org, kr.kim@skyhighmemory.com,
+ zhi.feng@skyhighmemory.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1732152768.git.Takahiro.Kuwano@infineon.com>
+ <8be5cb694a763d3a74d9c3c7e76dd98b7b1333f6.1732152768.git.Takahiro.Kuwano@infineon.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <8be5cb694a763d3a74d9c3c7e76dd98b7b1333f6.1732152768.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241122_010014_423134_0BF48B2C 
-X-CRM114-Status: GOOD (  13.79  )
+X-CRM114-CacheID: sfid-20241122_013750_206406_13D51AA2 
+X-CRM114-Status: GOOD (  13.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,43 +102,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The minimum size to fetch the data from device to QPIC buffer
-is 512-bytes. If size is less than 512-bytes the data will not be
-protected by ECC as per QPIC standard. So while reading onfi parameter
-page from NAND device setting nandc->buf_count = 512.
 
-Cc: stable@vger.kernel.org
-Fixes: 89550beb098e ("mtd: rawnand: qcom: Implement exec_op()")
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
 
-Change in [v2]
+On 11/21/24 2:08 AM, tkuw584924@gmail.com wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> We don't have to call spinand_write_enable_op() in spinand_markbad() as
+> it is called in spinand_write_page().
 
-* Set buf_count to 512 in the parameter page read
+Indeed. The patch is a follow up for:
+Fixes: b645ad39d568 ("mtd: spinand: Do not erase the block before
+writing a bad block marker")
 
-Change in [v1]
+That commit removed spinand_erase_op(), but failed to remove
+spinand_write_enable_op() with it.
 
-* This patch was not included in v1
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
- drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Miquel, shall the spinand_write_enable_op() call be moved into
+spinand_erase_op()?
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 31ec3db1246d..e1dca4857754 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2926,7 +2926,7 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
- 		write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
- 	}
- 
--	nandc->buf_count = len;
-+	nandc->buf_count = 512;
- 	memset(nandc->data_buffer, 0xff, nandc->buf_count);
- 
- 	config_nand_single_cw_page_read(chip, false, 0);
--- 
-2.34.1
-
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+>  drivers/mtd/nand/spi/core.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 4d76f9f71a0e..47c369f2925d 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -942,10 +942,6 @@ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spinand_write_enable_op(spinand);
+> -	if (ret)
+> -		return ret;
+> -
+>  	return spinand_write_page(spinand, &req);
+>  }
+>  
 
 ______________________________________________________
 Linux MTD discussion mailing list
