@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8E32E6688D
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Nov 2024 11:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 506B6D10C10
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Nov 2024 16:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d4bn/IquN2y08t+Umxinz6PMqxAWM5ozBr4wOYKrZrM=; b=LtPIi/k+GYsggy
-	Hb9xQbeN999vksgjFbGiXBzU3TblbsioPbO9pOukuahTY1qFHsguFd/7mdMtv+XFKb8WBsAHbGLqE
-	o4TJHhh5iRTiKMySqet4wH0ZovHvTHzGCw4CEIWmcsTwCpCvwBOzmxWI6a88yogIAaux2L9rEL43C
-	F/Zwa7OlULpWOg8QYCAyZflqfPsgGjwcfupdiMN1dGr1Uo8OsUq9JZ0N21q5LlULViwJZkZ83us1K
-	t9/eiUXFGixTtHTmwJJeRniEMwafxlVze89M7Qd8Ar4I1Ozfhrb8qDMje3EWeYTdkSqHwsAPGAMJL
-	vUcOR5l8CfE5OLl5if1A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3caucCYECKOsGkIWSokyLNvDSx04X+ly5RWmsscM4CY=; b=iOiAy1iuB5Oc1y
+	hfxtYDZYChb6p1TA9QmKkCZjR6XJ1IuSS5ZbH8+bcpiLO2xb5fEi/btAOk6BLwucFBHJKO89Ltxm6
+	fM8CrhHPxwZCqIg68/CswGigkx1ZWKDH4P+dpnSZLMd6/v48F/KyIrYK1LapOMNzvGRW680qhtCOE
+	uva661WU4y2RjH1dT6vY1FHhKKtN8So+pI7177p6EnGPXsx3zUsnSsBK5l+JzXRmYlb6Ygjtj+mEV
+	0qXqppMgJH+U5wKlTUGRaXwCFVQ/T9p5KiALj5+w2P9V8rE7ZQmyREqAb5vaVCbOX93eJwfwsKGHn
+	puuFU5nNWyJct4qIkqmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tFBCQ-00000005hfe-3j1F;
-	Sun, 24 Nov 2024 11:54:46 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1tFFXa-00000006Lde-3l1o;
+	Sun, 24 Nov 2024 16:32:54 +0000
+Received: from 8.mo560.mail-out.ovh.net ([188.165.52.147])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tFBCN-00000005hf9-0oiI
+	id 1tFFXW-00000006Lci-30Oc
 	for linux-mtd@lists.infradead.org;
-	Sun, 24 Nov 2024 11:54:44 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BE7DE1BF207;
-	Sun, 24 Nov 2024 11:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1732449278;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xBZm4+sAGZjKcmTO3qVBfqyohXzmaieWRyYtQ1Du1yw=;
-	b=JGPaVDaYrg2o1qKRAgDr60lqd8mow1PxaIPJtvFbdH6FhtvYud8Ifwn6x5NSawaU4ZcxcC
-	1uwkvNsZU2oyOSNzWp7GeFZUFJK9dkJGDbu18+K7Vk/EcWwA7qgykg0pCe5TOxgcIWPiOi
-	QnzblUPAm3LxahDeGPhLY89V5/noyUNHELRcmJuHVwMhg0tUjJlY6pFtvJfbx2AZZFa/nz
-	UuZ4uZIazVLTXd9vuiwe0ZLi5gD5n7zgstFEw7khH3jWmY5bL4nRV4j7UZIUbgszW0/gWT
-	+MhNN09eZYi8qOyb015ZxMwL+cSqLZ1Fla4TpRDC9f/RuvA9zglfAadi3Y++WA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Maciej Andrzejewski <maciej.andrzejewski@m-works.net>
-Cc: Michal Simek <michal.simek@amd.com>,  Jinjie Ruan
- <ruanjinjie@huawei.com>,  Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
-  Naga Sureshkumar Relli <nagasure@xilinx.com>,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: arasan: Fix double assertion of chip-select
-In-Reply-To: <Z0Iq9ex25MkwC_Cm@UBUNTU-PF54DSY0> (Maciej Andrzejewski's message
-	of "Sat, 23 Nov 2024 20:20:21 +0100")
-References: <Z0Iq9ex25MkwC_Cm@UBUNTU-PF54DSY0>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Sun, 24 Nov 2024 12:54:36 +0100
-Message-ID: <87wmgsdeyr.fsf@bootlin.com>
+	Sun, 24 Nov 2024 16:32:52 +0000
+Received: from director10.ghost.mail-out.ovh.net (unknown [10.109.140.34])
+	by mo560.mail-out.ovh.net (Postfix) with ESMTP id 4XxDs92dsBz1ZPZ
+	for <linux-mtd@lists.infradead.org>; Sun, 24 Nov 2024 16:32:45 +0000 (UTC)
+Received: from ghost-submission-5b5ff79f4f-cht2b (unknown [10.110.101.126])
+	by director10.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 7BB311FD18;
+	Sun, 24 Nov 2024 16:32:43 +0000 (UTC)
+Received: from m-works.net ([37.59.142.101])
+	by ghost-submission-5b5ff79f4f-cht2b with ESMTPSA
+	id 8GsGFStVQ2d2oA4AnuQdBQ
+	(envelope-from <maciej.andrzejewski@m-works.net>); Sun, 24 Nov 2024 16:32:43 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-101G004e94d0192-5974-4304-8854-6da1a4da1094,
+                    C3ECB3D69BE23CE701DAF36A9768F3E3FFC1B624) smtp.auth=maciej.andrzejewski@m-works.net
+X-OVh-ClientIp: 213.134.183.231
+Date: Sun, 24 Nov 2024 17:32:40 +0100
+From: Maciej Andrzejewski <maciej.andrzejewski@m-works.net>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
+	Naga Sureshkumar Relli <nagasure@xilinx.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: rawnand: arasan: Fix double assertion of chip-select
+Message-ID: <Z0NVKDHUItOHZitv@UBUNTU-PF54DSY0>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+X-Ovh-Tracer-Id: 6137561871157140333
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeefuddrgeefgdekkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkgggtugesthdtredttddtvdenucfhrhhomhepofgrtghivghjucetnhgurhiivghjvgifshhkihcuoehmrggtihgvjhdrrghnughriigvjhgvfihskhhisehmqdifohhrkhhsrdhnvghtqeenucggtffrrghtthgvrhhnpeegkefhudeikedtgeeuveetjefhueekgedvvdetheejlefgffdufeehjedtudeuteenucfkphepuddvjedrtddrtddruddpvddufedrudefgedrudekfedrvdefuddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepmhgrtghivghjrdgrnhgurhiivghjvgifshhkihesmhdqfihorhhkshdrnhgvthdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdfovfetjfhoshhtpehmohehiedtmgdpmhhouggvpehsmhhtphhouhht
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241124_035443_365337_6FC7A6E7 
-X-CRM114-Status: GOOD (  10.49  )
+X-CRM114-CacheID: sfid-20241124_083251_050949_57CA80F2 
+X-CRM114-Status: GOOD (  14.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,30 +70,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFjaWVqLAoKT24gMjMvMTEvMjAyNCBhdCAyMDoyMDoyMSArMDEsIE1hY2llaiBBbmRyemVq
-ZXdza2kgPG1hY2llai5hbmRyemVqZXdza2lAbS13b3Jrcy5uZXQ+IHdyb3RlOgoKPiBXaGVuIHR3
-byBjaGlwLXNlbGVjdHMgYXJlIGNvbmZpZ3VyZWQgaW4gdGhlIGRldmljZSB0cmVlLCBhbmQgdGhl
-IHNlY29uZCBpcwo+IGEgbm9uLW5hdGl2ZSBHUElPLCBib3RoIHRoZSBHUElPLWJhc2VkIGNoaXAt
-c2VsZWN0IGFuZCB0aGUgZmlyc3QgbmF0aXZlCj4gY2hpcC1zZWxlY3QgbWF5IGJlIGFzc2VydGVk
-IHNpbXVsdGFuZW91c2x5LiBUaGlzIGRvdWJsZSBhc3NlcnRpb24gY2F1c2VzCj4gaW5jb3JyZWN0
-IHJlYWQgYW5kIHdyaXRlIG9wZXJhdGlvbnMuCj4KPiBUaGUgaXNzdWUgb2NjdXJzIGJlY2F1c2Ug
-d2hlbiBuZmMtPm5jcyA8PSAyLCBuZmMtPnNwYXJlX2NzIGlzIGFsd2F5cwo+IGluaXRpYWxpemVk
-IHRvIDAgZHVlIHRvIHN0YXRpYyBpbml0aWFsaXphdGlvbi4gQ29uc2VxdWVudGx5LCB3aGVuIHRo
-ZQo+IHNlY29uZCBjaGlwLXNlbGVjdCAoR1BJTy1iYXNlZCkgaXMgc2VsZWN0ZWQgaW4gYW5mY19h
-c3NlcnRfY3MoKSwgaXQgaXMKPiBkZXRlY3RlZCBieSBhbmZjX2lzX2dwaW9fY3MoKSwgYW5kIG5m
-Yy0+bmF0aXZlX2NzIGlzIGFzc2lnbmVkIHRoZSB2YWx1ZSAwLgo+IFRoaXMgcmVzdWx0cyBpbiBi
-b3RoIHRoZSBHUElPLWJhc2VkIGNoaXAtc2VsZWN0IGJlaW5nIGFzc2VydGVkIGFuZCB0aGUKPiBO
-QU5EIGNvbnRyb2xsZXIgcmVnaXN0ZXIgcmVjZWl2aW5nIDAsIGVycm9uZW91c2x5IHNlbGVjdGlu
-ZyB0aGUgbmF0aXZlCj4gY2hpcC1zZWxlY3QuCj4KPiBUaGlzIHBhdGNoIHJlc29sdmVzIHRoZSBp
-c3N1ZSwgYXMgY29uZmlybWVkIGJ5IG9zY2lsbG9zY29wZSB0ZXN0aW5nIHdpdGgKPiBjb25maWd1
-cmF0aW9ucyBpbnZvbHZpbmcgdHdvIG9yIG1vcmUgY2hpcC1zZWxlY3RzIGluIHRoZSBkZXZpY2Ug
-dHJlZS4KPgoKT2sgdG8gbWUsIGNhbiB5b3UgcGxlYXNlIHNlbmQgYSB2MiB3aXRoIGNvcnJlY3Qg
-Rml4ZXMgYW5kIENjOiBzdGFibGUKdGFncywgcGxlYXNlPwoKVGhhbmtzLApNaXF1w6hsCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+When two chip-selects are configured in the device tree, and the second is
+a non-native GPIO, both the GPIO-based chip-select and the first native
+chip-select may be asserted simultaneously. This double assertion causes
+incorrect read and write operations.
+
+The issue occurs because when nfc->ncs <= 2, nfc->spare_cs is always
+initialized to 0 due to static initialization. Consequently, when the
+second chip-select (GPIO-based) is selected in anfc_assert_cs(), it is
+detected by anfc_is_gpio_cs(), and nfc->native_cs is assigned the value 0.
+This results in both the GPIO-based chip-select being asserted and the
+NAND controller register receiving 0, erroneously selecting the native
+chip-select.
+
+This patch resolves the issue, as confirmed by oscilloscope testing with
+configurations involving two or more chip-selects in the device tree.
+
+Fixes: acbd3d0945f9 ("mtd: rawnand: arasan: Leverage additional GPIO CS")
+
+Cc: stable@vger.kernel.org
+
+Signed-off-by: Maciej Andrzejewski <maciej.andrzejewski@m-works.net>
+---
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+index 5436ec4a8fde..7c97f421e382 100644
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -1409,8 +1409,8 @@ static int anfc_parse_cs(struct arasan_nfc *nfc)
+ 	 * case, the "not" chosen CS is assigned to nfc->spare_cs and selected
+ 	 * whenever a GPIO CS must be asserted.
+ 	 */
+-	if (nfc->cs_array && nfc->ncs > 2) {
+-		if (!nfc->cs_array[0] && !nfc->cs_array[1]) {
++	if (nfc->cs_array) {
++		if (nfc->ncs > 2 && !nfc->cs_array[0] && !nfc->cs_array[1]) {
+ 			dev_err(nfc->dev,
+ 				"Assign a single native CS when using GPIOs\n");
+ 			return -EINVAL;
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
