@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B99AD6554E
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Nov 2024 18:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67A22D6554E
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Nov 2024 18:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iurDmNB1JmFAqvnjY/DZqCyvPnXe5F+JWt016NAGv4U=; b=rqwFuGLoGyH7WN
-	HVzQQwPOH9ULPhyZW+orzztYWjBSDIkf8eY97XHJcYNPdg/2UZDrPxLSI+v+vYwjzWZSiW5IWZ5W8
-	Jg6yazcSSJZ8GAg12OlqDPYtR2kSSB3b8Mv+rcXslteHe2J7F4VJeK/Mfx5wpsV6UM4XPEKeoJgFH
-	gsJeTDU8R6a/KUZ+BqlkO+smir4vJ1XvQ9RlJDSQPavXy1tQ3mxdvc2HEYx4T8RAiYT/mLWLMFGId
-	iYt0vwDsPShgSahvimR7+dxDpq8aUETuYAuq+d/q4soS5lTqnJiHnMlqms5lnXVp517A7zA6sABh9
-	Nex02KgX4dJpgWEnBAFg==;
+	List-Owner; bh=xhULkx/Y2blTrOfs/XtM5K7RvqHZOKV7PFmyK5uaJCc=; b=blUMdg9MKD5eR6
+	ZmMWPpNQjZCAkwe/GoHHZWmiv66D4MmxDNO8KOtCF10tLlAsQIWOSXDOoBhRAS2MJKZmO+4BHwgOe
+	1fbkxRVIouWNQDZJ6frvzFcUR0jwi/SMDyRPGVpaJZiTf6CmSRhCc4gG/076jDSeS2oXJJMljcSp3
+	tHH3tANq9X8EefPzcYIo5iV/VM0xfBZsM1ls+M4/Fz6BXcthsf9+0SHt6AcT3hxZ7WJWhV0zS+aWK
+	1NWg2rrowchQ2ZGFhCZkVKj8Owvo/jvAwg8kagZYtVjQSURcI6qk4P2OUV10wVcFgNPiFP1h2iNvw
+	bdQSD3IUDJy+3bDSGaOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tG0mN-0000000BURZ-0GOm;
-	Tue, 26 Nov 2024 18:59:19 +0000
-Received: from mail-bn8nam04on20628.outbound.protection.outlook.com ([2a01:111:f403:2408::628] helo=NAM04-BN8-obe.outbound.protection.outlook.com)
+	id 1tG0mV-0000000BUUt-0jUY;
+	Tue, 26 Nov 2024 18:59:27 +0000
+Received: from mail-dm6nam11on20611.outbound.protection.outlook.com ([2a01:111:f403:2415::611] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tG0mK-0000000BUQo-1s4A
+	id 1tG0mS-0000000BUTB-3g6O
 	for linux-mtd@lists.infradead.org;
-	Tue, 26 Nov 2024 18:59:17 +0000
+	Tue, 26 Nov 2024 18:59:26 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pVBIqj9CRe3aTnOeag/aTrfvrIeFzuKMHSKvNWf9rsyu9sLm/Qc1MMk2U96PB+yX8+kPCUIbl+Cm6ppxIQNO6ifEn4f12PeNUiirUopJ5mJSFqzkplpa4dFnQS2zRitn92PgMMeUWL0qiLWBvyDCA7GrbsySe8hpMr3DIDVwccoTQD7QqbQn5zV0GGMmI64KJE9NM+XDOh+AEcu2LutsRuTo4o5Ocx5vGvTLJxJYcrXwiW0Gz3EVFhsjM3PQcmHt9CWkZWhchxmxiAMKyGPl6K75nyvoXzNYdlgPAGFBT8e7Buak7eUMaZcsQL08OhHekAByoWhXsYUy/Im+jPy+hA==
+ b=IFqn62cigoKJ+r/1SdYtwy26OtaXEfXJQxPPz8syJlyb4iE/GJd4y47rxbcXq93FX8TxS2SvKsqG8ixTeuR8eeRWWYlNNzzIixQrkorq3XORloIoXDtlKvYUyzP7A3B/1gT7Rsj79YOrH41iaigu3Pj3OTyfTqH8hExa8OYF1eMxQ0O5OPyaLSQh6tQjWk5RWB3QZi66pfx8pxCWxCyvypxtZLY8t20yKq2gquhHwFBI4pdTERhGEhrRY+DePE5c2/mWP67PzE97IDACCGBfRUvOF6P6at9Icm0SUZOhkL/I0sOjO+ss4sF3YtQ9Ex+YYPrbxP+Y8V1pksBIC7KH1A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8KP2HNXkoQo0jtWwicQocmpJT/EVP2hCC5tzJCRgx8w=;
- b=h7eXXS/vCj/PWAW972V/7uk0wYJYtKampFwaEtfKG5jXkm2onNxNxIxpua80Z5INjEjlMuWTpPiN+sSKztLmTV0POPDiIPZkjj3WibywglI1jbJoNoE6T0rdxVk9IFbV0IMe1kJUmvigeFwTFOfn0gnC41kJfNJBkgA8eOUcg/6MBF18yjUQXK0QX3p4RTQxrytcaXICKoP2ScdqvkzSpcLJXD5AjUisTwZ8raQd9TINzTkkyOASu6PBztuIDDwFOdVbRY7TVG6gadeegK3cobEs6hv4IVY7snx3u4JrUYB9Fkzbvq9SBOjH2oAFPyOuPrJCJrk5V9u4h90UCP1I4w==
+ bh=Z2LWUPSAleIcu364l2pFTWrxiTu1hfE9UMGYMboV1Mg=;
+ b=dBZr3KkiMTEJoBtJbRPaXbormG5X4ugMRVgyXWXwLyyDuxGKIUj0UmebZyzhPZFA0bBDpvYP8hrbmjVcPyw+Vx0sBEBI+N7PYo8ePZMzxAx8CUdofuABFvrqZn7nbDeorOOMeIP/uXIJaWQ41PExguDRxX9DvZ2Vze13UhBDILGqOemazN5zHJIGiSR/Y2Ijlip7OS0X2AWVLiamqKUuL+b0v3PNVVM5l89p3E57N2MqfVA3NQyMhIoiJ38XBxpnxEHywr3rcUzf8t6aCEHggD8/q0DqaU7VJ1UKnzLelQhXhMR3JHFxJzgcprqDlCaIMj+a/+f+vyeJMmrdKBX9VA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -41,18 +41,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8KP2HNXkoQo0jtWwicQocmpJT/EVP2hCC5tzJCRgx8w=;
- b=lIDpLA4NywGDYswXujIhPZPIguXLd2YNBIwZ2fh7I9vUVh2uB8YkRxuTT18PLGNV1aGa+5YkP8UvZldAi6dj1374UOtPvJu1rGoejKlRqCwSMQVzzihGI9bKcvtZ+XA0NqeEKEfD5j3aZ9H6TGEA6HlZbChuPqbqSgLUbnUOvrtJKYlrJ32VngKcdhRwf1youJryM3Ca79MF8YJaFJD/Tz7BpXNb+nBa6pYGez/It8SyIiH/m+mt+H9h178V38nNUcZf9B5W5JgWwaWNGiS5WP+LxKcmEOhxcD1OULNsTTO5tLkn5R2aayBndORKVUtujpp5l53M0j/DYvgE7REDIw==
-Received: from BL1P223CA0008.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::13)
- by CYYPR12MB8963.namprd12.prod.outlook.com (2603:10b6:930:c3::22) with
+ bh=Z2LWUPSAleIcu364l2pFTWrxiTu1hfE9UMGYMboV1Mg=;
+ b=q3Inl/9AHklpJua8tnRHUcJHXfvXqcRTm9osGfFboPYckMsBoMMky4f1fqX13ALy+QfVYEjU7Tyuhqv2VQovcfvK4ovLxPXBWz9g1dYGkw4CDiYs4Jm3fSe/V33hwuv5y8rg7L22Pgrl8szi5uXKzpNu8vsvQaNrkmfAK5MexNmlXL7zuAO58ja23WMKY18YhTW9daDKbmlpH8M3DQma88bv5olVW7zmA2akcLToT9pUiI690Cr+TVJz3Cs65/ZpjXVGt9/Vl0gy1LncunThWCzCUbK43w1sylvcsRsL5fz/d1w0OinVhJIa3WFAIrXLQ53Q1yK95+a2dltLJTkdRQ==
+Received: from BN0PR04CA0030.namprd04.prod.outlook.com (2603:10b6:408:ee::35)
+ by CYXPR12MB9444.namprd12.prod.outlook.com (2603:10b6:930:d6::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.27; Tue, 26 Nov
- 2024 18:59:09 +0000
-Received: from BN1PEPF00004683.namprd03.prod.outlook.com
- (2603:10b6:208:2c4:cafe::d5) by BL1P223CA0008.outlook.office365.com
- (2603:10b6:208:2c4::13) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8182.19 via Frontend Transport; Tue,
- 26 Nov 2024 18:59:08 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8182.21; Tue, 26 Nov
+ 2024 18:59:20 +0000
+Received: from BN1PEPF00004684.namprd03.prod.outlook.com
+ (2603:10b6:408:ee:cafe::1) by BN0PR04CA0030.outlook.office365.com
+ (2603:10b6:408:ee::35) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8207.12 via Frontend Transport; Tue,
+ 26 Nov 2024 18:59:19 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -60,20 +60,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- BN1PEPF00004683.mail.protection.outlook.com (10.167.243.89) with Microsoft
+ BN1PEPF00004684.mail.protection.outlook.com (10.167.243.90) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8207.12 via Frontend Transport; Tue, 26 Nov 2024 18:59:08 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ 15.20.8207.12 via Frontend Transport; Tue, 26 Nov 2024 18:59:19 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 26 Nov
- 2024 10:58:48 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 10:59:03 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 26 Nov
- 2024 10:58:48 -0800
+ 2024 10:59:03 -0800
 Received: from build-va-bionic-20241022.nvidia.com (10.127.8.12) by
  mail.nvidia.com (10.129.68.9) with Microsoft SMTP Server id 15.2.1544.4 via
- Frontend Transport; Tue, 26 Nov 2024 10:58:44 -0800
+ Frontend Transport; Tue, 26 Nov 2024 10:58:59 -0800
 From: Vishwaroop A <va@nvidia.com>
 To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <mwalle@kernel.org>,
 	<cmiquel.raynal@bootlin.com>, <thierry.reding@gmail.com>, <richard@nod.at>,
@@ -81,9 +81,9 @@ To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <mwalle@kernel.org>,
 	<linux-kernel@vger.kernel.org>, <jonathanh@nvidia.com>,
 	<kyarlagadda@nvidia.com>, <smangipudi@nvidia.com>
 CC: Vishwaroop A <va@nvidia.com>
-Subject: [PATCH 1/3] mtd: spi-nor: Add post-get-map-id fixup for S25FS512S/S1
-Date: Tue, 26 Nov 2024 18:58:32 +0000
-Message-ID: <20241126185834.1130949-2-va@nvidia.com>
+Subject: [PATCH 3/3] mtd: spi-nor: Add support for mx25u51279g
+Date: Tue, 26 Nov 2024 18:58:34 +0000
+Message-ID: <20241126185834.1130949-4-va@nvidia.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20241126185834.1130949-1-va@nvidia.com>
 References: <20241126185834.1130949-1-va@nvidia.com>
@@ -91,50 +91,50 @@ MIME-Version: 1.0
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00004683:EE_|CYYPR12MB8963:EE_
-X-MS-Office365-Filtering-Correlation-Id: 277c496d-0ee8-4695-11a2-08dd0e4c6846
+X-MS-TrafficTypeDiagnostic: BN1PEPF00004684:EE_|CYXPR12MB9444:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f51e4ca-584d-44ba-812c-08dd0e4c6ee4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|82310400026|36860700013|921020;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?McsfNMhr//XjluxzW03tq1NRl58qkqM0xhQ1mSAz50oxzv2aDjcMkrYMhHMT?=
- =?us-ascii?Q?C2NOJKKMpvJ9L0qizUGIZlsC6nr2OoyAuBx/NwN2ZPxhSDvKArR9NqgSpWoI?=
- =?us-ascii?Q?jhoCY4nsPCi3CIjsHwuC9DFlePhTam4pP8cEO5HU8bvdqauPr/uVdb/yIZn5?=
- =?us-ascii?Q?w1DC4jdeR5qljBnL3CmMn9zyXp33pl4aZhlrCOJzPwv7hm01b/+QliTfDyQr?=
- =?us-ascii?Q?gZa93r/LYVCn/novD0gOJokeQNBfoxZkqrxLD/eWX/qHU5fmycCefkLEonSB?=
- =?us-ascii?Q?Meycp7Acdl0L8b1+hijZLmrMziZxb63rp0OVa40CA4UFTDiAn8ahDHzWp00D?=
- =?us-ascii?Q?eu22eHbxNorhfurHK7j74sR17zTKeyk+zvTRJfXNzLWooI+oAa1L9s+0hmS4?=
- =?us-ascii?Q?2AfzGo9VbZmm56gOD1K7pnqIN/ga4oByVuldlNJNtggUfOubB5n7HcwQLOv5?=
- =?us-ascii?Q?94PvOfxvOziI9X8NrKDIhnDJGGSMsqbBpLeGq21cmpA7Vqj5fHceVhgcC/fk?=
- =?us-ascii?Q?KPKhgqYRYky5W71l2uL/RWtPAjmvGfr4MIY+5Iy9mHIJCllDtrCrT68gkn0e?=
- =?us-ascii?Q?jgDfmiHR4PYPkACvfE28BI9wuq4UWAqE/rvyWMvJfzZQ3zHdAQMmIs4HDs5l?=
- =?us-ascii?Q?hVltMvkuDo8twCKCl0APZVi97sXkZfkgIkTS5QPMPxOxS/54nyc44PezJjBn?=
- =?us-ascii?Q?nFUzmY2xSmJ03eVrmJ6a8DibyOWLMXV4+/+EsLlhHM4+8EPwmvsQfgoBEHQr?=
- =?us-ascii?Q?pI1OxgUj+xkget4Fk2V18yXIrLc4n1IM9mHmyUAcqCKLcQ4RRj8MsQMChlCc?=
- =?us-ascii?Q?2aHrz7XeoxK8Yf0lR2ueFGA9mI3NJb8xg6UPwqYB2Vu0S0XpyqI8sC1tb7zw?=
- =?us-ascii?Q?5EEDrty77pxjzYKot1T1r2peRI07FyN6kcm+wlEelRuRoDV7EG7oHzPFunM3?=
- =?us-ascii?Q?7T3y1R9G2kq+8QjPqX7dogcC1UFqCc5MyoYDoXpZsWXdpXWbdZbS80EVIlPt?=
- =?us-ascii?Q?YzmMWG3VPo+04nf3nbINdMS2aAWQWU9lV48GenHzQaERykibHRhfQUFni2Z+?=
- =?us-ascii?Q?aHeahBCOa+zt6RPXjtxqWI0fRAsxOyJN4lFy7J8Msj1ayareAets3uJw4mr5?=
- =?us-ascii?Q?adhzkbHqjT8f7XJ64lg6K3ZCof6RmwDEEVRTVUJ2NfAa368oY3EJp1TbjUGc?=
- =?us-ascii?Q?vyzAKM6Snds5BKJAzLRcJ5bFKU2ffW6ICchpko/Ia3VeHE/rHbXYaTqQ9RBq?=
- =?us-ascii?Q?CBEwcMdF6wCXSJjt7kk27CiatWdlijjSCKgabM5NAWxb9CbTPplmg9j4y+wD?=
- =?us-ascii?Q?83n4NfXBN3GWEBrSoULkpSbdjxMQRevK1LHLkwDqJ8144ybrebLWgJiiZfef?=
- =?us-ascii?Q?hBYF7ZRskbeCD8n1EgvUj6y6opjWj6VypezOr/NPSnfEwRRxXy75IGvco9ri?=
- =?us-ascii?Q?kbGtsPY4rBdRPxC5iUK33Z73xmUqDWbu1rxjbFuF2zH5NpkVGAJ0CA=3D=3D?=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(36860700013)(921020);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|82310400026|1800799024|36860700013|921020;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?qC9t7lyOSuRuJ/msRPar0lDAl7IWyFi0EQMnPnDXnCU6YXr/3ypGrCiasxvX?=
+ =?us-ascii?Q?guUrofunp8UxfseL4HV7UkRdBq9/7JtlMvm7nrcoy7kV3iDFNZlTNYf9o4A2?=
+ =?us-ascii?Q?+FvJcXqmyx1lIaZF01kcUgloobuavXDuMEPEp83xynu03DCtcJfDGVfp1TSx?=
+ =?us-ascii?Q?ROMHpbhb7YkJctvC5tHdGGPInZwyZ+Ydk+VpIJMD1AN5a7zAjRCq/FxQRUTr?=
+ =?us-ascii?Q?4SnwJFAV+yy4JjM2XNC9WJEuwl7tiRZHhkCsT5f2cUlFx4zx0GSy8FWuSyAj?=
+ =?us-ascii?Q?OQN18lMEW8NqJbh5INx5F7ksL/TWHkDLSvVm4V3tzLRybKhPNqyyM/rnjvgp?=
+ =?us-ascii?Q?6RP3BB/Xgtk9kXTBjJc/GWsFr5dPGNWhyHE10Nn2GM0Ihtwee7zD2Ihb57hp?=
+ =?us-ascii?Q?7eSdScDAN3zLhswVB4+gVy/+OQkgexmh8/YBbg4Vg1gGtlRseFvZzN4GqgeH?=
+ =?us-ascii?Q?/Rh9RV/imH841REffDxkO35q/03TxG2UqnwPBwUNcUDNZHFeDW3evoYaEEpY?=
+ =?us-ascii?Q?g9BRn+rBk5E28vubkTsnmU7LA/jdYtB9/OZdzdTx/ypyr03xW3MYhUndw0dF?=
+ =?us-ascii?Q?GOL+sYNlEVtQMhjuvsILI2f33FdvdoXnnnu3T9hZcWLD47RqKo4kOy/GKdZh?=
+ =?us-ascii?Q?nfunCl0McNz/fDnBQeOZTZB5Q2EM+9myiT9Sqw8rD/mK4LCSdES3KEeQDHgx?=
+ =?us-ascii?Q?/QvJgLOOxz4sFY+ZzDE3lWgMLpqG4ag5Nxk9kn/iVVcem/NEO7OoFcvlxTS8?=
+ =?us-ascii?Q?eu18l7Ch9Wf3NDoDMAmtAv+e860DuFJydoalKGkW7ex5dr0Uz13R3qYgqd0e?=
+ =?us-ascii?Q?7mEqIzLM9y9kdl928lNwQXW9egl+nZ1klSEDLaMl1niZ+N5V0M5z+kGcPNRU?=
+ =?us-ascii?Q?gSEttFYmK0vOBDX1IQouaziVnZJRbsp5EOk7muJ/30Di60PHyEy9TPP+nGNF?=
+ =?us-ascii?Q?1aj8t8zKfGD9X5gQhgHtdnPTp1lykXyaHt7/Pf1I4FAz7aNJxjvP38meDyNN?=
+ =?us-ascii?Q?o+YqNz2jVAfd2BRgP+hDVyjiC3e7q4Mf2ASStK/PnaW75uv/3A4cdvR/ygd7?=
+ =?us-ascii?Q?wZHL3avNC8hH7Naw+fKMmB6y/LTy78CcrccPsUdqV6Y8ISpe85cYB3czpGZn?=
+ =?us-ascii?Q?51L96GZdZ/TtXMRHwPq74afVaQ9IJ/4RLR+UavBrmFAXi1TJJPlQYeO/EL3q?=
+ =?us-ascii?Q?KXzPZMzKyh0jlHFB+T4frIJyZxs/InRzn150/2o8q7P5svX4skELlXKPNf3+?=
+ =?us-ascii?Q?ue5YbzokZSZrW7tz95DPsnFdDw195G1yPCdnUsPluJJuPNsGZ5BrIEvArj6y?=
+ =?us-ascii?Q?6xyyAvTpWPTwaRwSkstkYraBKsERm63lf73uXiokSwIGiRGH0RuUx4OOVRLJ?=
+ =?us-ascii?Q?fQgQPxsrotpuHq23cfKi09HmWzs2iMGGeqcTSenMvR96oFYrjWsYZYXC62/6?=
+ =?us-ascii?Q?SvGK2u6J3B7UFGbhaiAC8PVcE5ocInfuCNVJ39F5vMTbj4W/ixaGNg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(1800799024)(36860700013)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2024 18:59:08.4173
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2024 18:59:19.5219
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 277c496d-0ee8-4695-11a2-08dd0e4c6846
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f51e4ca-584d-44ba-812c-08dd0e4c6ee4
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1PEPF00004683.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN1PEPF00004684.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8963
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9444
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241126_105916_487872_F60DC7E6 
-X-CRM114-Status: GOOD (  20.67  )
+X-CRM114-CacheID: sfid-20241126_105924_912409_93FD1AB3 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,169 +151,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The SFDP Address Map for S25FS512S / S25FS512S1 devices incorrectly
-reports that the map ID is 0 when it should be 1. This issue can
-cause problems when trying to erase sectors on the flash device.
+Add support for the Macronix mx25u51279g SPI NOR flash. This device has
+a 64MB size with 4K sector erase, dual/quad read capabilities and
+support 4-bytes opcodes.
 
-Add a post-get-map-id fixup for S25FS512S / S1 flash devices. The fixup
-reads the values of the CR3V and CR1V registers and determines the
-map ID based on those values. The fixup also checks for invalid
-combinations of CR3V and CR1V values.This fixup is necessary to
-workaround an issue with the SFDP Address Map for S25FS512S flash.
+Erasing, reading and writing this flash device has been validated on
+the Jetson AGX Orin platform using mtd_debug and dd utilities.
 
-Change-Id: Ide18bb4ee076cd36c57b0b52b5d49b63c3caf322
+Change-Id: I740269c781d42781431935e593f651573e078372
 Signed-off-by: Vishwaroop A <va@nvidia.com>
 ---
- drivers/mtd/spi-nor/core.c     | 25 +++++++++++++++++++++
- drivers/mtd/spi-nor/core.h     |  4 ++++
- drivers/mtd/spi-nor/sfdp.c     |  7 ++++++
- drivers/mtd/spi-nor/spansion.c | 41 ++++++++++++++++++++++++++++++++++
- 4 files changed, 77 insertions(+)
+ drivers/mtd/spi-nor/macronix.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 66949d9f0cc5..a76202c6d252 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2408,6 +2408,31 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
- 	return 0;
- }
- 
-+/**
-+ * spi_nor_post_get_map_id_fixups - Apply post-processing fixups for map ID
-+ * @nor: Pointer to the spi_nor structure
-+ * @smpt: Pointer to the sector map parameter table
-+ * @smpt_len: Length of the sector map parameter table
-+ * @map_id: Pointer to store the updated map ID
-+ *
-+ * Return: 0 on success (including when no fixup is applied),
-+ *         positive value if a new map_id is set,
-+ *         negative value on error
-+ */
-+int spi_nor_post_get_map_id_fixups(struct spi_nor *nor, const u32 *smpt,
-+				   u8 smpt_len, u8 *map_id)
-+{
-+	int ret;
-+
-+	if (nor->info->fixups && nor->info->fixups->post_get_map_id) {
-+		ret = nor->info->fixups->post_get_map_id(nor, smpt, smpt_len);
-+		if (ret < 0)
-+			return ret;
-+		*map_id = ret;
-+	}
-+	return 0;
-+}
-+
- static int spi_nor_select_read(struct spi_nor *nor,
- 			       u32 shared_hwcaps)
- {
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 5c33740ed7f5..37a9f43e1bf9 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -428,6 +428,7 @@ struct spi_nor_fixups {
- 			 const struct sfdp_bfpt *bfpt);
- 	int (*post_sfdp)(struct spi_nor *nor);
- 	int (*late_init)(struct spi_nor *nor);
-+	int (*post_get_map_id)(struct spi_nor *nor, const u32 *smpt, u8 smpt_len);
- };
- 
- /**
-@@ -661,6 +662,9 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
- 			     const struct sfdp_parameter_header *bfpt_header,
- 			     const struct sfdp_bfpt *bfpt);
- 
-+int spi_nor_post_get_map_id_fixups(struct spi_nor *nor, const u32 *smpt,
-+				   u8 smpt_len, u8 *map_id);
-+
- void spi_nor_init_default_locking_ops(struct spi_nor *nor);
- void spi_nor_try_unlock_all(struct spi_nor *nor);
- void spi_nor_set_mtd_locking_ops(struct spi_nor *nor);
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 21727f9a4ac6..87af29d2c28b 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -769,6 +769,13 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 		map_id = map_id << 1 | !!(*buf & read_data_mask);
- 	}
- 
-+	err = spi_nor_post_get_map_id_fixups(nor, smpt, smpt_len, &map_id);
-+
-+	if (err < 0) {
-+		dev_err(nor->dev, "Error in post_get_map_id fixup: %d\n", err);
-+		return ERR_PTR(err);
-+	}
-+
- 	/*
- 	 * If command descriptors are provided, they always precede map
- 	 * descriptors in the table. There is no need to start the iteration
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 5a88a6096ca8..2e1dd023a1aa 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -25,6 +25,7 @@
- #define SPINOR_REG_CYPRESS_STR1V					\
- 	(SPINOR_REG_CYPRESS_VREG + SPINOR_REG_CYPRESS_STR1)
- #define SPINOR_REG_CYPRESS_CFR1			0x2
-+#define SPINOR_REG_CYPRESS_CFR1V		0x00800002
- #define SPINOR_REG_CYPRESS_CFR1_QUAD_EN		BIT(1)	/* Quad Enable */
- #define SPINOR_REG_CYPRESS_CFR2			0x3
- #define SPINOR_REG_CYPRESS_CFR2V					\
-@@ -33,6 +34,7 @@
- #define SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24	0xb
- #define SPINOR_REG_CYPRESS_CFR2_ADRBYT		BIT(7)
- #define SPINOR_REG_CYPRESS_CFR3			0x4
-+#define SPINOR_REG_CYPRESS_CFR3V		0x00800004
- #define SPINOR_REG_CYPRESS_CFR3_PGSZ		BIT(4) /* Page size. */
- #define SPINOR_REG_CYPRESS_CFR5			0x6
- #define SPINOR_REG_CYPRESS_CFR5_BIT6		BIT(6)
-@@ -754,8 +756,47 @@ s25fs_s_nor_post_bfpt_fixups(struct spi_nor *nor,
- 	return 0;
- }
- 
-+static int s25fs_s_nor_post_get_map_id(struct spi_nor *nor, const u32 *smpt, u8 smpt_len)
-+{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(3, 0, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
-+
-+	u8 reg_cr3v_val, reg_cr1v_val;
-+	int ret;
-+
-+	/* Read CR3V value from Configuration Register 3 Volatile */
-+	op.addr.val = SPINOR_REG_CYPRESS_CFR3V;
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+	reg_cr3v_val = nor->bouncebuf[0];
-+
-+	/* Read CR1V value from Configuration Register 1 Volatile */
-+	op.addr.val = SPINOR_REG_CYPRESS_CFR1V;
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+	reg_cr1v_val = nor->bouncebuf[0];
-+
-+	/* Determine the map ID based on CR3V[3] and CR1V[2] values */
-+	if (!(reg_cr3v_val & BIT(3)) && !(reg_cr1v_val & BIT(2)))
-+		return 1; /* CR3V[3] = 0, CR1V[2] = 0, map id = 1 */
-+
-+	if (!(reg_cr3v_val & BIT(3)) && (reg_cr1v_val & BIT(2)))
-+		return 3; /* CR3V[3] = 0, CR1V[2] = 1, map id = 3 */
-+
-+	if ((reg_cr3v_val & BIT(3)) && !(reg_cr1v_val & BIT(2)))
-+		return 5; /* CR3V[3] = 1, CR1V[2] = 0, map id = 5 */
-+
-+	return 0;
-+}
-+
- static const struct spi_nor_fixups s25fs_s_nor_fixups = {
- 	.post_bfpt = s25fs_s_nor_post_bfpt_fixups,
-+	.post_get_map_id = s25fs_s_nor_post_get_map_id,
- };
- 
- static const struct flash_info spansion_nor_parts[] = {
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 830da21eea08..4a15984f63a8 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -154,6 +154,12 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.size = SZ_64M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.id = SNOR_ID(0xc2, 0x95, 0x3a),
++		.name = "mx25u51279g",
++		.size = SZ_64M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x3a),
+ 		.name = "mx66u51235f",
 -- 
 2.17.1
 
