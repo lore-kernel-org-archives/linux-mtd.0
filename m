@@ -4,91 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D3F9D609B9
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Nov 2024 09:06:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0C9AD609B0
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Nov 2024 09:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nx7ox3SHM2Ko6aArAC0rop5wHhrYd8wZ5SxFmMJjvk4=; b=BPYatZ5GjftOni
-	iqsqwCxCyIvbK1Afn39I4dWbD+Qls3imwy0WwmOBx//iCG8H8On+7iNXrCj3Sf4sKwkfhVDNA/+hx
-	aeA1UipMcyzuRPz2SfXr98VHzcni71tS9Gxv9sGP9AUzZgUU4+QMLvOkaPaiMUc/oN22r+X/vk8uH
-	7Tu0OzQShGDwntVGXXIwVFWuF3IcaZw3tMSB02XFZzWcygAFzxk8sjZZGpB5yG9A0jSQVOBJGU4QD
-	MibnsdSSiTZgapv3OI9PdZ4HzHNSJrkUeSkY9RTEe6CGY6xEjhq2QxZsGjKPTtu75PdG8W4TSRNgP
-	aMDzaGGesdl6ZVDL8qQA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PR0ramdU8Jcx0J/ANQREr4DE6zjUVk3hLmG3IXEY/cg=; b=PaY779IzFJNG9o
+	JqoJWsa6HGog1l3g4W3q/gRQxhADDE0WPRgqtkOI9t0m8pJ0aH3O0xHGnsL7evlOf4OBgxBAR9NIY
+	9XxZenQ+yw4KvBks0A1R1om1DOcIJ1VUPYNLLDcy7/ufL9n2ek9w5gqTGasDDq2IX15UuYy+WtAb4
+	eaT6MIcppmLS+B6oMgr/pWlZFDp4UF7JtKm2G/yTsU63nGn97uC3LZTlWYH9GwMv7RjThC3DCGsoQ
+	O0sAYaNwx77iXTUpBKWyGvq+bGuhqpwwpO/SZ+R+BYuzY0wUznvYd7Mh/40v3Lq9kLO7Fx8k+AiIj
+	OaSN2FV7+E1uPGxAt5Ng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tGDzd-0000000Ceuu-1Vbg;
-	Wed, 27 Nov 2024 09:05:53 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1tGE4y-0000000Cffq-2sbg;
+	Wed, 27 Nov 2024 09:11:24 +0000
+Received: from mail-dbaeur03on20602.outbound.protection.outlook.com ([2a01:111:f403:260d::602] helo=EUR03-DBA-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tGDzB-0000000Cerf-3VKx
+	id 1tGE4u-0000000CfdA-3d9Z
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Nov 2024 09:05:27 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AQKLJ7V022746;
-	Wed, 27 Nov 2024 09:05:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	CKdg1a8UXEDnzqGonEr7So4ElPrNguVTFyRMl84Fin0=; b=cE5TRT6L1gNXBGNF
-	q66671gjswCoOiVoBtTayHYMcVjMI0mHqeo/HC3q5oBOJUVbewC6BAN1Z9ofoNnU
-	Zvfj2/qNlhHbICSMBpW5SpxQJd+WRceP1/FV4BdmxabVTDVjzwtH1MTQel6Fr9eW
-	zmalJBYwQRHsIFaLa/1HyZv4H6Gaov8eoyNxbWmnfgzsCuLurr3ZC2ypiyMm3Nek
-	ONPQdk0KM72bBYLIj7ssJWDFKmR+9q1E0S+otK+F8XATKVyW5thCIZkG/KXcKB/K
-	+zUiso3Ei8M36r3dZzHlWQYXHBIlFGAsP5/+bAxTgy8N6PuWxO5+fhmhkS67s6Ck
-	tfvQNQ==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 434mx7794s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 09:05:19 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4AR95IQZ028294
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 09:05:18 GMT
-Received: from [10.151.37.94] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 27 Nov
- 2024 01:05:14 -0800
-Message-ID: <09a03767-1bd5-c398-7894-5fd1392d1fb8@quicinc.com>
-Date: Wed, 27 Nov 2024 14:35:11 +0530
+	Wed, 27 Nov 2024 09:11:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lyeijxXiT1klctrQ3VbA8udYRDvXaB1pjpmYpfXy+OU4pIIEqdD5r8W7nsPSHT8QguIusrpmHXIzILWotuyhs02UAsUVPLqhi8Ph4oDTaDPsHsL8Sxh75qXFxfYflJh+0cPfgemrzcr/y/QJ9MeP/Iw+CnBjQ6V3sz0uYwifBlQZAZD+cQH0/osehrr56+bsedqzollPyML+ZZgqIkAipvb9e+BY3P1E0zYfaQ2i2kUuVYjmsA75zTNyYTEw0DlIZIUIbfrIdDfIIo+pD6gkiXisIk7H96BHsPbdbT0usb9kTah2eymPfaSpPVyeYaONkIS2aQokPWHW/Nz9klnrEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ruyvq/Jckd5pzZOEyjyiErRhWURfGDvGKkRDOFDLCUs=;
+ b=GEte8WnfC2NPoRhi7rwoav0MttAiULREqgYb9CFuQQR3cCiZx/w3/jDEStWXmjmqGHHx6ceXzo0TNc9s7/DozB/rnqAZVx9HLOmXZWA36uKLS1+vZdp93UPU2NaYKXv+23KGAjfPHBXbmgSv347RpRB/emcVtc++9t/LeIcyNfEhhv8CjsP2kRs2xiMDKK7F2FrqBQhzSmhXAuBkaXlP+KwXQ+u0I4eLjQsx9AJDtNYgdNt5DPbY2eMWPzqmOL4C5wmxMvES6tzKC9tLPhkLfIhhUTRHGV785i3ReGqyJ/rznF1Z6/tjnii/ZoeTWSSHzqfkJWvHRULkfHVO1saQlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=nod.at smtp.mailfrom=axis.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=axis.com; dkim=none (message
+ not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ruyvq/Jckd5pzZOEyjyiErRhWURfGDvGKkRDOFDLCUs=;
+ b=BwwVdNweuzSv9gdYaB9g7W/kEO5VNYs5Wi8C0Rt+US5VbAyGxORjAFunYwpnhmGiBOdFJxBD9sfdachRy/5vHCLBAKnBLsnlzBDLQS6dAzLRms0ZX+STxcTPbM2i8bD0bwNwYgTt7840CnZ5j+N+vBAt2yYfotZckB6jllKy+E4=
+Received: from DB8P191CA0008.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:130::18)
+ by AS1PR02MB7870.eurprd02.prod.outlook.com (2603:10a6:20b:4a8::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8182.19; Wed, 27 Nov
+ 2024 09:11:12 +0000
+Received: from DB1PEPF000509F0.eurprd03.prod.outlook.com
+ (2603:10a6:10:130:cafe::ff) by DB8P191CA0008.outlook.office365.com
+ (2603:10a6:10:130::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8207.13 via Frontend Transport; Wed,
+ 27 Nov 2024 09:11:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=axis.com;
+Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
+ 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com; pr=C
+Received: from mail.axis.com (195.60.68.100) by
+ DB1PEPF000509F0.mail.protection.outlook.com (10.167.242.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.8207.12 via Frontend Transport; Wed, 27 Nov 2024 09:11:11 +0000
+Received: from pc50632-2232.se.axis.com (10.4.0.13) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 27 Nov
+ 2024 10:11:09 +0100
+From: Rickard Andersson <rickard.andersson@axis.com>
+To: <richard@nod.at>, <chengzhihao1@huawei.com>,
+	<linux-mtd@lists.infradead.org>, <rickard314.andersson@gmail.com>
+CC: <rickard.andersson@axis.com>, <kernel@axis.com>
+Subject: [PATCH v2 1/2] ubi: Expose interface for detailed erase counters
+Date: Wed, 27 Nov 2024 10:10:49 +0100
+Message-ID: <20241127091050.1254359-1-rickard.andersson@axis.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v2 1/3] mtd: rawnand: qcom: Pass 18 bit offset from QPIC
- base address to BAM
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <bbrezillon@kernel.org>, <linux-mtd@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>,
-        <quic_nainmeht@quicinc.com>, <quic_laksd@quicinc.com>
-References: <20241122085933.2663927-1-quic_mdalam@quicinc.com>
- <20241122085933.2663927-2-quic_mdalam@quicinc.com>
- <20241126053019.ujdb7nkkj3f25jyn@thinkpad>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20241126053019.ujdb7nkkj3f25jyn@thinkpad>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: MkfATXQB6BIws0kTm7OdZD9qGKcZDd_s
-X-Proofpoint-ORIG-GUID: MkfATXQB6BIws0kTm7OdZD9qGKcZDd_s
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxlogscore=999 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- bulkscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2411270074
+X-Originating-IP: [10.4.0.13]
+X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail01w.axis.com
+ (10.20.40.7)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB1PEPF000509F0:EE_|AS1PR02MB7870:EE_
+X-MS-Office365-Filtering-Correlation-Id: a7f6591f-d35f-471d-d9cb-08dd0ec36fe7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?YIqqXejpiGG0DVyleuXnBBKl2hKrh2bhZkPJTPr8he1xP/qosx9rwUa8blY5?=
+ =?us-ascii?Q?4jbxaSyuIz2gga+MZbEdAyHmjQne5yLcYofV4EOCHMvWZ9At8SOhJahtC/EK?=
+ =?us-ascii?Q?cwsyy3gkU1PktlsOBvx95pDVDEOE8tiiE6EaUxZmL+14G8bmlPrAm1hxcXtq?=
+ =?us-ascii?Q?dVFUKwm6XiC9A53yxdc6f22n2ziakO42DSjGZGN6BNdWyOv7x+utnJe6UiJu?=
+ =?us-ascii?Q?/7wYeIRWTcYf/BvIrjIHuETAmz5gcwE3HKy1hc5n9KX8lr9vpVCuPb90/9DJ?=
+ =?us-ascii?Q?E203IzXNSIsu2PpB/j6Vf2tRR1qVDzCSir7aXDuaGVx/He7Tb8p7KG8S90Zb?=
+ =?us-ascii?Q?FUbLgSAGwPNZKgDV8eBCod2Lrf26QtwLUuAW8vDTe6fpncCAB1U/Xp6cJVgw?=
+ =?us-ascii?Q?MYforCeqxV+ypeO9iLD6tlqptheI6RUVfmtFENhrkBh2eTE1wK9PoM6DzzSa?=
+ =?us-ascii?Q?9UCisd1iE4Zjh/6q6+vBsDG0PlwGPimzhX0bFfQg4VUDV2wHiAZOTtYlIT1F?=
+ =?us-ascii?Q?nsVXq2sLSNcdavvqLdmbys4vq20dfHKFqMORxR6/a5HAOASjE9WMYWGJZqZI?=
+ =?us-ascii?Q?yDM+fIcolx/jIlRMnToBrHIUmnYlshgufpm9zZo9pzbcEDs6Q1fLdHK2h46a?=
+ =?us-ascii?Q?MFJbQFcf9Mk/1DUDRF3FaV53kE1RS0OC3CBaDHTl9v3XumGBE0mIsSOveFUA?=
+ =?us-ascii?Q?dihxaILKJ3bguVLQRgXB2XTRUILJnosXLuZUiUZ0Ckvj+RawWhmBt5agVOFQ?=
+ =?us-ascii?Q?hXLGHeJX29MzetbcgvZukZ2W8ZfEFZ23rhjvV4ur6su3cvqfotZm8xh3ENhY?=
+ =?us-ascii?Q?9vvCj1Cv6tdXfaviGq4YiKbP3SN1yp1+7ochOcrNMBFD2v1pUbUeAyh9+tu+?=
+ =?us-ascii?Q?8C7YD0BgfQ/Z7WRMU63YaC/e33brd3ia6i5onrYZ7hZUHHJ1iEKi2SpEgZzz?=
+ =?us-ascii?Q?AlbemPjZo/QX4KlZBnB6rsFh4CRz3FvNTeNdSTgheD6f7C0HN+UO5B5T2nx8?=
+ =?us-ascii?Q?DqHCaFQrAXQiUnypPt0GTlM7SOrmzixfs5ZRwnQY55XJngx1Xj1LY+tbvEvT?=
+ =?us-ascii?Q?ZtXlPLY54tvl5BBoQgxyExd+S+xKvJeKO55Io0hIWTwVUEcHuZLdr1w1AVt2?=
+ =?us-ascii?Q?JoVU1SmZLTtyaXqmylYW606nmey73/4z5UMpzcq6Pog9yVUTBm2snQuQLA2B?=
+ =?us-ascii?Q?EAOoE8nRkeJPOHq0ENWtC42hOhqowg79nWF3XsaMqP9tZYz8eoKYKFz+YUMG?=
+ =?us-ascii?Q?iFZoc0lZJKxVi53Vl5adwAglXrhyp1PL2FYcKe9G6x4axS3oKb0oa+7r2aBS?=
+ =?us-ascii?Q?RAekoxIW5uMIdmKL7Me6kOZcuJ4m4nI8pOKOXxycgS0V0LmzcOS3rBadbgbu?=
+ =?us-ascii?Q?SLcYOdtsOt/Ha4juin19IPIgRRI2iFDSKBS60jMaJUrauf3fZrPgBQoNlKV1?=
+ =?us-ascii?Q?/dogoVKa7p6P3VkCbsZ3/aVTx3vzBvS7?=
+X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2024 09:11:11.4730
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7f6591f-d35f-471d-d9cb-08dd0ec36fe7
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource: DB1PEPF000509F0.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR02MB7870
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241127_010525_994535_7E32EE6A 
-X-CRM114-Status: GOOD (  27.83  )
+X-CRM114-CacheID: sfid-20241127_011121_184853_A79E3A4A 
+X-CRM114-Status: GOOD (  15.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,149 +135,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Using the ioctl command 'UBI_IOCECNFO' user space can obtain
+detailed erase counter information of all blocks of a device.
 
+Signed-off-by: Rickard Andersson <rickard.andersson@axis.com>
+---
+ include/uapi/mtd/ubi-user.h | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-On 11/26/2024 11:00 AM, Manivannan Sadhasivam wrote:
-> On Fri, Nov 22, 2024 at 02:29:31PM +0530, Md Sadre Alam wrote:
->> Currently we are configuring lower 24 bits of address in descriptor
->> whereas QPIC design expects 18 bit register offset from QPIC base
->> address to be configured in cmd descriptors. This is leading to a
->> different address actually being used in HW, leading to wrong value
->> read.
->>
->> the actual issue is that the NANDc base address is different from the
->> QPIC base address. But the driver doesn't take it into account and just
->> used the QPIC base as the NANDc base. This used to work as the NANDc IP
->> only considers the lower 18 bits of the address passed by the driver to
->> derive the register offset. Since the base address of QPIC used to contain
->> all 0 for lower 18 bits (like 0x07980000), the driver ended up passing the
-> 
-> SDX55's NANDc base is 0x01b30000 and it has bits 17 and 18 set corresponding to
-> 0x30000. So it is correct that the IP only considers lower 18 bits and it used
-> to work as the driver ended up passing 0x3000 + register offset.
-This address 0x30000 is the address from QPIC_BASE to QPIC_EBI2NAND
-e.g for SDX55 and SDX65 the QPIC_BASE is 0x01B00000. So here lower 18-bits
-are zero only.
-> 
-> Your wording is not correct.
-Ok, will fix in next revision.
-> 
->> actual register offset in it and NANDc worked properly. But on newer SoCs
->> like SDX75, the QPIC base address doesn't contain all 0 for lower 18 bits
->> (like 0x01C98000). So NANDc sees wrong offset as per the current logic
->>
-> 
-> 'all 0 for lower 18 bits' is not true.
-The lower 18 bits zero we have to see in QPIC_BASE not in EBI2NAND_BASE.
-e.g SDX55 & SDX65 the QPIC_BASE = 0x01B00000, all lower 18 bits are zero
-but in SDX75 the QPIC_BASE = 0x01C98000, all lower 18 bits are non-zero.
-> 
->> Older targets also used same configuration (lower 24 bits) like SDX55,
->> SDX65, IPQ8074, IPQ6018  etc. but issue is masked in older targets due
->> to lower 18 bits of QPIC base address being zero leading to expected
->> address generation.
->>
-> 
-> This paragraph is redundant now.
-Ok, will remove in next revision.
-> 
->> The address should be passed to BAM 0x30000 + offset. In older targets
->> the lower 18-bits are zero so that correct address being paased. But
->> in newer targets the lower 18-bits are non-zero in QPIC base so that
->> 0x300000 + offset giving the wrong value.
->>
->> SDX75 : QPIC_QPIC | 0x01C98000 (Lower 18 bits are non zero)
->> SDX55 : QPIC_QPIC | 0x07980000 (Lower 18 bits are zero) Same for
-> 
-> This address is wrong as I mentioned above.
-Ok, will fix in next revision.
-> 
->> older targets.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 8d6b6d7e135e ("mtd: nand: qcom: support for command descriptor formation")
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> ---
->>
->> Change in [v2]
->>
->> * Updated commit message
->>
->> * Added Fixes tag
->>
->> * Added stable kernel tag
->>
->> * Renamed the variable from offset_from_qpic to nandc_offset
->>
->> Change in [v1]
->>
->> * Preliminary correction for the register address forwarded to BAM
->>   
->>   drivers/mtd/nand/raw/qcom_nandc.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
->> index b8cff9240b28..cc59461df72e 100644
->> --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> @@ -207,7 +207,7 @@ nandc_set_reg(chip, reg,			\
->>   #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
->>   
->>   /* Returns the NAND register physical address */
->> -#define nandc_reg_phys(chip, offset) ((chip)->base_phys + (offset))
->> +#define nandc_reg_phys(chip, offset)  ((nandc)->props->nandc_offset + (offset))
->>   
->>   /* Returns the dma address for reg read buffer */
->>   #define reg_buf_dma_addr(chip, vaddr) \
->> @@ -561,6 +561,7 @@ struct qcom_nandc_props {
->>   	bool is_qpic;
->>   	bool qpic_v2;
->>   	bool use_codeword_fixup;
->> +	u32 nandc_offset;
->>   };
->>   
->>   /* Frees the BAM transaction memory */
->> @@ -3477,6 +3478,7 @@ static const struct qcom_nandc_props ipq806x_nandc_props = {
->>   	.is_bam = false,
->>   	.use_codeword_fixup = true,
->>   	.dev_cmd_reg_start = 0x0,
->> +	.nandc_offset = 0x30000,
->>   };
->>   
->>   static const struct qcom_nandc_props ipq4019_nandc_props = {
->> @@ -3484,6 +3486,7 @@ static const struct qcom_nandc_props ipq4019_nandc_props = {
->>   	.is_bam = true,
->>   	.is_qpic = true,
->>   	.dev_cmd_reg_start = 0x0,
->> +	.nandc_offset = 0x30000,
->>   };
->>   
->>   static const struct qcom_nandc_props ipq8074_nandc_props = {
->> @@ -3491,6 +3494,7 @@ static const struct qcom_nandc_props ipq8074_nandc_props = {
->>   	.is_bam = true,
->>   	.is_qpic = true,
->>   	.dev_cmd_reg_start = 0x7000,
->> +	.nandc_offset = 0x30000,
->>   };
->>   
->>   static const struct qcom_nandc_props sdx55_nandc_props = {
->> @@ -3498,7 +3502,8 @@ static const struct qcom_nandc_props sdx55_nandc_props = {
->>   	.is_bam = true,
->>   	.is_qpic = true,
->>   	.qpic_v2 = true,
->> -	.dev_cmd_reg_start = 0x7000,
->> +	.dev_cmd_reg_start = 0x0,
-> 
-> What is this change?
-Sorry, by mistake this get modified. Will fix in next revision.
-> 
-> - Mani
-> 
+diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
+index e1571603175e..aa872a41ffb9 100644
+--- a/include/uapi/mtd/ubi-user.h
++++ b/include/uapi/mtd/ubi-user.h
+@@ -175,6 +175,8 @@
+ #define UBI_IOCRPEB _IOW(UBI_IOC_MAGIC, 4, __s32)
+ /* Force scrubbing on the specified PEB */
+ #define UBI_IOCSPEB _IOW(UBI_IOC_MAGIC, 5, __s32)
++/* Read detailed device erase counter information */
++#define UBI_IOCECNFO _IOWR(UBI_IOC_MAGIC, 6, struct ubi_ecinfo_req)
+ 
+ /* ioctl commands of the UBI control character device */
+ 
+@@ -412,6 +414,37 @@ struct ubi_rnvol_req {
+ 	} ents[UBI_MAX_RNVOL];
+ } __packed;
+ 
++/**
++ * struct ubi_ecinfo_req - a data structure used for requesting and receiving
++ * erase block counter information from a UBI device.
++ *
++ * @start: index of first physical erase block to read (in)
++ * @length: number of erase counters to read (in)
++ * @read_length: number of erase counters that was actually read (out)
++ * @padding: reserved for future, not used, has to be zeroed
++ * @erase_counters: array of erase counter values (out)
++ *
++ * This structure is used to retrieve erase counter information for a specified
++ * range of PEBs on a UBI device.
++ * Erase counters are read from @start and attempts to read @length number of
++ * erase counters.
++ * The retrieved values are stored in the @erase_counters array. It is the
++ * responsibility of the caller to allocate enough memory for storing @length
++ * elements in the @erase_counters array.
++ * If a block is bad or if the erase counter is unknown the corresponding value
++ * in the array will be set to -1.
++ * The @read_length field will indicate the number of erase counters actually
++ * read. Typically @read_length will be limited due to memory or the number of
++ * PEBs on the UBI device.
++ */
++struct ubi_ecinfo_req {
++	__s32 start;
++	__s32 length;
++	__s32 read_length;
++	__s8  padding[16];
++	__s32 erase_counters[];
++}  __packed;
++
+ /**
+  * struct ubi_leb_change_req - a data structure used in atomic LEB change
+  *                             requests.
+-- 
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
