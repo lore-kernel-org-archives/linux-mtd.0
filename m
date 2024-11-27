@@ -4,137 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF1CBD6554C
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Nov 2024 18:59:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D3F9D609B9
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Nov 2024 09:06:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4ZqsoyqzhcLtoMzs39e/pQSdliypa/nnoVh/olqTccY=; b=WVW94Cu053wf0b
-	d51na3PzxdnbctqmoHba0kcvj4RZUADR3BCJgz2ei8KYq4XrJa1MBRiyihB5A3ADu12D/3vBx3tNq
-	18RM8IbBwDKPqbltjcaysoB+HuHd9xC4PJWpLxcMnwASmdb7LVTdTuUK3e0E/i7nySXYkZMFYrgd/
-	Ak5bgPmvzokGWA0s34e5dpfl5c6Dw4M07+CAipJEbM2F2Qa/9GYMYNuXJB3BHpY0ghtaFn+P9LcdS
-	1L6994h8jtu33fGrOlOx9fBCaunLQmJUa1aHhwmUncOB4F3s+qrftMpdG3LWTZctxnz1l94816UsZ
-	jKT7y8VdJqXPthF4XSYw==;
+	List-Owner; bh=nx7ox3SHM2Ko6aArAC0rop5wHhrYd8wZ5SxFmMJjvk4=; b=BPYatZ5GjftOni
+	iqsqwCxCyIvbK1Afn39I4dWbD+Qls3imwy0WwmOBx//iCG8H8On+7iNXrCj3Sf4sKwkfhVDNA/+hx
+	aeA1UipMcyzuRPz2SfXr98VHzcni71tS9Gxv9sGP9AUzZgUU4+QMLvOkaPaiMUc/oN22r+X/vk8uH
+	7Tu0OzQShGDwntVGXXIwVFWuF3IcaZw3tMSB02XFZzWcygAFzxk8sjZZGpB5yG9A0jSQVOBJGU4QD
+	MibnsdSSiTZgapv3OI9PdZ4HzHNSJrkUeSkY9RTEe6CGY6xEjhq2QxZsGjKPTtu75PdG8W4TSRNgP
+	aMDzaGGesdl6ZVDL8qQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tG0mV-0000000BUVH-2pm8;
-	Tue, 26 Nov 2024 18:59:27 +0000
-Received: from mail-dm6nam10on20607.outbound.protection.outlook.com ([2a01:111:f403:2413::607] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
+	id 1tGDzd-0000000Ceuu-1Vbg;
+	Wed, 27 Nov 2024 09:05:53 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tG0mT-0000000BUTD-3k75
+	id 1tGDzB-0000000Cerf-3VKx
 	for linux-mtd@lists.infradead.org;
-	Tue, 26 Nov 2024 18:59:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HxKeMOL5idTdUdG6pOGB+72VqSlkzBNsRoQanEmxTvOtd2i8ybTixQDLiR89NZLUmdXjmHB2jdpktboZZkR1KEXTQoasUoYSDM61NkWOUy/c1kmFI30nJWesBPS0ijCftRK8EFU3vfNqSAAKIhbGN2PRISPz2VnHCq4xxXB4EzLsp2nnsxVvqiv0Nzjx1wdkdljH7iunIy86BHqI/HC8DUHC9QW8E/DlEfWuhqRXPHIk9SwpycSiQJbo0ufEzroqc8KEAet3co+jrgMCeiegdr5pddN1txKNMffWJKxEUYJukZYUMAPKbYwVsKeW8BhsXsyO+LaCswlpPUko+TEpXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cLCHKYFeNGeoigYSiA7BARrdJSM5jF0eBS/e1C6moy4=;
- b=CQRqb3uusQBtifXgXVdbixJPMhY4YhbetEsQojHxSjgaKqQfMnP4lcj4uVjb6bWefyvgp0KeI6t1zw5JfRK/lCSO4yNR+vmhG9kI26qM9IWuAT8DD12QMUZY6wpiWJuJaWEHbryLcESGAalW/zQ92o2W/pQqvBYEy78DWnW+3sz73ca9KUQckcrKQr9k1v2KmgXA3A43SBrCvngdT1ioNHWKJAebY61tt+RLcEl4Lz5uzpr7CQWbr1S9rR+mek/50sNMHZLTu06Hd68keQGKXm4x56uYLjhSjbHI3whKyAoVJfDjJHv7Bcqu1MxOuWO6RtrGYh8BtvlT7p7bYW1j8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cLCHKYFeNGeoigYSiA7BARrdJSM5jF0eBS/e1C6moy4=;
- b=HSQEA+IvQj+E1ishgQIz2HsRLcpYD04qcYIzzAUjmUxTGou0yIBJnWqFTlZ8hlcnESWtg8NlrakwJKPqB+1x//8TgZVN8LVI+LHGwr525KOqSfM+/fU352bneLWV0J8gthw9ayYfwKyTJ1Jw9rtLNVpSDII9U+zibudUCigvtbwUnY7yIeAOdpsbuSZt5fNUAI6as92CEBBWLc2lp71StI/ek6NYXm67t/6QGWUfZG4Ys6G83m9PoOXFGQDTyJY0s9Pu8X/bAsTa8ALPW7J3GMhPTKuJXpcX2l0xuIKvWdIUQHZQLuQv3QGoKViPnSmdEyPbu9EoBM6ZR0Pe6GCsWg==
-Received: from MN2PR15CA0054.namprd15.prod.outlook.com (2603:10b6:208:237::23)
- by IA1PR12MB8408.namprd12.prod.outlook.com (2603:10b6:208:3db::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8182.19; Tue, 26 Nov
- 2024 18:59:11 +0000
-Received: from BN1PEPF0000467F.namprd03.prod.outlook.com
- (2603:10b6:208:237:cafe::fa) by MN2PR15CA0054.outlook.office365.com
- (2603:10b6:208:237::23) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8207.12 via Frontend Transport; Tue,
- 26 Nov 2024 18:59:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN1PEPF0000467F.mail.protection.outlook.com (10.167.243.84) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8207.12 via Frontend Transport; Tue, 26 Nov 2024 18:59:10 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 26 Nov
- 2024 10:58:55 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 26 Nov
- 2024 10:58:54 -0800
-Received: from build-va-bionic-20241022.nvidia.com (10.127.8.12) by
- mail.nvidia.com (10.129.68.9) with Microsoft SMTP Server id 15.2.1544.4 via
- Frontend Transport; Tue, 26 Nov 2024 10:58:50 -0800
-From: Vishwaroop A <va@nvidia.com>
-To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<cmiquel.raynal@bootlin.com>, <thierry.reding@gmail.com>, <richard@nod.at>,
-	<vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <jonathanh@nvidia.com>,
-	<kyarlagadda@nvidia.com>, <smangipudi@nvidia.com>
-CC: Vishwaroop A <va@nvidia.com>
-Subject: [PATCH 2/3] mtd: spi-nor: Add support for spansion s25fs512s1
-Date: Tue, 26 Nov 2024 18:58:33 +0000
-Message-ID: <20241126185834.1130949-3-va@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20241126185834.1130949-1-va@nvidia.com>
-References: <20241126185834.1130949-1-va@nvidia.com>
+	Wed, 27 Nov 2024 09:05:27 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AQKLJ7V022746;
+	Wed, 27 Nov 2024 09:05:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	CKdg1a8UXEDnzqGonEr7So4ElPrNguVTFyRMl84Fin0=; b=cE5TRT6L1gNXBGNF
+	q66671gjswCoOiVoBtTayHYMcVjMI0mHqeo/HC3q5oBOJUVbewC6BAN1Z9ofoNnU
+	Zvfj2/qNlhHbICSMBpW5SpxQJd+WRceP1/FV4BdmxabVTDVjzwtH1MTQel6Fr9eW
+	zmalJBYwQRHsIFaLa/1HyZv4H6Gaov8eoyNxbWmnfgzsCuLurr3ZC2ypiyMm3Nek
+	ONPQdk0KM72bBYLIj7ssJWDFKmR+9q1E0S+otK+F8XATKVyW5thCIZkG/KXcKB/K
+	+zUiso3Ei8M36r3dZzHlWQYXHBIlFGAsP5/+bAxTgy8N6PuWxO5+fhmhkS67s6Ck
+	tfvQNQ==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 434mx7794s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Nov 2024 09:05:19 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4AR95IQZ028294
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Nov 2024 09:05:18 GMT
+Received: from [10.151.37.94] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 27 Nov
+ 2024 01:05:14 -0800
+Message-ID: <09a03767-1bd5-c398-7894-5fd1392d1fb8@quicinc.com>
+Date: Wed, 27 Nov 2024 14:35:11 +0530
 MIME-Version: 1.0
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000467F:EE_|IA1PR12MB8408:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a950234-2602-43b7-4752-08dd0e4c69ca
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|36860700013|376014|82310400026|921020;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?W+Kb7hR2WmrvcGqXCHSiDPdKNtH1hX9J0N1pOD3OIpewiQALmlo9Ud0Fd/YC?=
- =?us-ascii?Q?lQCc8rTdqGFJVz0cY0cm1nLKpdZNrcSNQa1BVzcDQJQY9zPXv6ZRe1VdjcTG?=
- =?us-ascii?Q?aUfAmFBXWJLhAjLJMLa/p2qzE7f5s8/7WV6S9fEdMmcEud1dnlxBypmSpwl3?=
- =?us-ascii?Q?iupyFn8PDaHp/RDlpNOlkQcb/I3iBa63dzB1EFKxF25G0peS5XfkztWjERr+?=
- =?us-ascii?Q?1qf652VBN0LOlx83RkWJkclCQYw/OmL89FCJpFnxm9NgHIO9fQzS6xTQR9/Y?=
- =?us-ascii?Q?dTJ1t4hlKmIT3BVJf2Edhi7L57Xo+efYMesjzBv2dD2S/s74SBrh1KmtEas/?=
- =?us-ascii?Q?4eljPeHoLQw3uwTJfXccHVH2NuQFfjPHBXnqE/Lj5ZPQ4jhT/xhAiFWBc8wF?=
- =?us-ascii?Q?GVD0qBaZymHY5jzwMuYF5a74F3YHtfAqmdYM9wxarqUOiJvIcYwPvSv0/Umw?=
- =?us-ascii?Q?8Vz2z5Ja0EMvy/JPcdMZYC9GD61ZxjPYGPJwh45TQHYz+q058w0pMEeZr/aW?=
- =?us-ascii?Q?9Y7m35UicQZfFuZpJdO14moavMJZMTSv4Qjs7t85zLrS130DgDPd/ZvCP0y6?=
- =?us-ascii?Q?oDoDmDzzrk8kyyeR9QQtRBV8kPSPr5w5ocEDpVwdkKC8+xi0fTPx1BbKvha6?=
- =?us-ascii?Q?yscaRN98JIe6ZK9RFPZWguMQ7qVmfI1inrL4UtRT3zy/emj1gtgwwpXOSYfO?=
- =?us-ascii?Q?O6GdErRgzjv91BmUauhxxZggwjZin3lgV/6dXy/1h8c+nRj+bnk7Rv6Iy3iz?=
- =?us-ascii?Q?VWEOsy62yJ9mEEOEpCzkjrq6DVgX9+sW2Dw9MrFK/yAcFTkSmF0dXSY36ECS?=
- =?us-ascii?Q?II680jCtpzpgTO+7LiwfOFygLe99F3RtmvkoTjC8FD2TbuWL2QncWK/hk+t1?=
- =?us-ascii?Q?kmetKk2F+Ix+kzCSmi8IVY4hXl7yLTxRuEmSnWDCpl6Ne+LQsPQTcyMX1Wgi?=
- =?us-ascii?Q?iKMX5SetusWZBKiz2kC8qHVcrbQVNc90sQFjq9GuJemPgYzxFoBvkAifyrsP?=
- =?us-ascii?Q?Kspd2V4VqpHqjzXd7HYiZ3m6nQLTp4SD0uEt4uF0q0WUJQlK+tV5DtNTcg6x?=
- =?us-ascii?Q?F8oRFveVrnHyBYeVzT22leQHbqypHQvJRa5Iv7woIGH1qMqECdpF0fCtjQDc?=
- =?us-ascii?Q?bTelyvIH1+JuQQcE/zQheKzIOGFNm/+yUIDnzhkSGN0EbVsMF1f8HfdY6TAV?=
- =?us-ascii?Q?lAiNXTAuOaBs04Sd+ctnnLfID5lTBdW1NblXycqHoYH2/bckKnN0CzLnEU1M?=
- =?us-ascii?Q?D+Z2tMCTgaN+bWjBeYQJp6IM8UZXobgI9Eu+mLPD0JGHKDgnSdB9mxl9PV8Y?=
- =?us-ascii?Q?L5btgaX6Lilc7894E1gtfq9b0v+AHU/Z/XcFzvmImu7NEIAWDe00aeneNGKs?=
- =?us-ascii?Q?TpTyOTqc8zkAILk5zu1L/wMLjj5/p/xSPpxhTjS+2vB1gyUv3ZYHVEx2M0fs?=
- =?us-ascii?Q?o2FmD46+4MsHKDtAcQTDJl+r9k67xpXJTdmVOslh6gKhR5DXGjFZBg=3D=3D?=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(82310400026)(921020);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2024 18:59:10.9771
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a950234-2602-43b7-4752-08dd0e4c69ca
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1PEPF0000467F.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8408
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v2 1/3] mtd: rawnand: qcom: Pass 18 bit offset from QPIC
+ base address to BAM
+Content-Language: en-US
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <bbrezillon@kernel.org>, <linux-mtd@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>,
+        <quic_nainmeht@quicinc.com>, <quic_laksd@quicinc.com>
+References: <20241122085933.2663927-1-quic_mdalam@quicinc.com>
+ <20241122085933.2663927-2-quic_mdalam@quicinc.com>
+ <20241126053019.ujdb7nkkj3f25jyn@thinkpad>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <20241126053019.ujdb7nkkj3f25jyn@thinkpad>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: MkfATXQB6BIws0kTm7OdZD9qGKcZDd_s
+X-Proofpoint-ORIG-GUID: MkfATXQB6BIws0kTm7OdZD9qGKcZDd_s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ mlxlogscore=999 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411270074
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241126_105925_930346_A22AE8E4 
-X-CRM114-Status: GOOD (  10.37  )
+X-CRM114-CacheID: sfid-20241127_010525_994535_7E32EE6A 
+X-CRM114-Status: GOOD (  27.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -146,45 +100,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for the spansion s25fs512s1 SPI NOR flash. This device has
-a 64MB size (SZ_64M), dual/quad read capabilities and apply
-s25fs_s_nor_fixups to handle specific chip behavior.
 
-Erasing, reading and writing this flash device has been validated on
-the Jetson AGX Orin platform using mtd_debug and dd utilities.
 
-Change-Id: I47ee39b33262c77a5f3601cd9f284e8291da27d5
-Signed-off-by: Vishwaroop A <va@nvidia.com>
----
- drivers/mtd/spi-nor/spansion.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 2e1dd023a1aa..472773891dad 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -901,6 +901,13 @@ static const struct flash_info spansion_nor_parts[] = {
- 		.size = SZ_16M,
- 		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.mfr_flags = USE_CLSR,
-+	}, {
-+		.id = SNOR_ID(0x01, 0x02, 0x20, 0x4d, 0x01, 0x81),
-+		.name = "s25fs512s1",
-+		.size = SZ_64M,
-+		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+		.mfr_flags = USE_CLSR,
-+		.fixups = &s25fs_s_nor_fixups,
- 	}, {
- 		.id = SNOR_ID(0x01, 0x20, 0x18, 0x4d, 0x01, 0x81),
- 		.name = "s25fs128s1",
--- 
-2.17.1
-
+On 11/26/2024 11:00 AM, Manivannan Sadhasivam wrote:
+> On Fri, Nov 22, 2024 at 02:29:31PM +0530, Md Sadre Alam wrote:
+>> Currently we are configuring lower 24 bits of address in descriptor
+>> whereas QPIC design expects 18 bit register offset from QPIC base
+>> address to be configured in cmd descriptors. This is leading to a
+>> different address actually being used in HW, leading to wrong value
+>> read.
+>>
+>> the actual issue is that the NANDc base address is different from the
+>> QPIC base address. But the driver doesn't take it into account and just
+>> used the QPIC base as the NANDc base. This used to work as the NANDc IP
+>> only considers the lower 18 bits of the address passed by the driver to
+>> derive the register offset. Since the base address of QPIC used to contain
+>> all 0 for lower 18 bits (like 0x07980000), the driver ended up passing the
+> 
+> SDX55's NANDc base is 0x01b30000 and it has bits 17 and 18 set corresponding to
+> 0x30000. So it is correct that the IP only considers lower 18 bits and it used
+> to work as the driver ended up passing 0x3000 + register offset.
+This address 0x30000 is the address from QPIC_BASE to QPIC_EBI2NAND
+e.g for SDX55 and SDX65 the QPIC_BASE is 0x01B00000. So here lower 18-bits
+are zero only.
+> 
+> Your wording is not correct.
+Ok, will fix in next revision.
+> 
+>> actual register offset in it and NANDc worked properly. But on newer SoCs
+>> like SDX75, the QPIC base address doesn't contain all 0 for lower 18 bits
+>> (like 0x01C98000). So NANDc sees wrong offset as per the current logic
+>>
+> 
+> 'all 0 for lower 18 bits' is not true.
+The lower 18 bits zero we have to see in QPIC_BASE not in EBI2NAND_BASE.
+e.g SDX55 & SDX65 the QPIC_BASE = 0x01B00000, all lower 18 bits are zero
+but in SDX75 the QPIC_BASE = 0x01C98000, all lower 18 bits are non-zero.
+> 
+>> Older targets also used same configuration (lower 24 bits) like SDX55,
+>> SDX65, IPQ8074, IPQ6018  etc. but issue is masked in older targets due
+>> to lower 18 bits of QPIC base address being zero leading to expected
+>> address generation.
+>>
+> 
+> This paragraph is redundant now.
+Ok, will remove in next revision.
+> 
+>> The address should be passed to BAM 0x30000 + offset. In older targets
+>> the lower 18-bits are zero so that correct address being paased. But
+>> in newer targets the lower 18-bits are non-zero in QPIC base so that
+>> 0x300000 + offset giving the wrong value.
+>>
+>> SDX75 : QPIC_QPIC | 0x01C98000 (Lower 18 bits are non zero)
+>> SDX55 : QPIC_QPIC | 0x07980000 (Lower 18 bits are zero) Same for
+> 
+> This address is wrong as I mentioned above.
+Ok, will fix in next revision.
+> 
+>> older targets.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 8d6b6d7e135e ("mtd: nand: qcom: support for command descriptor formation")
+>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+>> ---
+>>
+>> Change in [v2]
+>>
+>> * Updated commit message
+>>
+>> * Added Fixes tag
+>>
+>> * Added stable kernel tag
+>>
+>> * Renamed the variable from offset_from_qpic to nandc_offset
+>>
+>> Change in [v1]
+>>
+>> * Preliminary correction for the register address forwarded to BAM
+>>   
+>>   drivers/mtd/nand/raw/qcom_nandc.c | 9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+>> index b8cff9240b28..cc59461df72e 100644
+>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> @@ -207,7 +207,7 @@ nandc_set_reg(chip, reg,			\
+>>   #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
+>>   
+>>   /* Returns the NAND register physical address */
+>> -#define nandc_reg_phys(chip, offset) ((chip)->base_phys + (offset))
+>> +#define nandc_reg_phys(chip, offset)  ((nandc)->props->nandc_offset + (offset))
+>>   
+>>   /* Returns the dma address for reg read buffer */
+>>   #define reg_buf_dma_addr(chip, vaddr) \
+>> @@ -561,6 +561,7 @@ struct qcom_nandc_props {
+>>   	bool is_qpic;
+>>   	bool qpic_v2;
+>>   	bool use_codeword_fixup;
+>> +	u32 nandc_offset;
+>>   };
+>>   
+>>   /* Frees the BAM transaction memory */
+>> @@ -3477,6 +3478,7 @@ static const struct qcom_nandc_props ipq806x_nandc_props = {
+>>   	.is_bam = false,
+>>   	.use_codeword_fixup = true,
+>>   	.dev_cmd_reg_start = 0x0,
+>> +	.nandc_offset = 0x30000,
+>>   };
+>>   
+>>   static const struct qcom_nandc_props ipq4019_nandc_props = {
+>> @@ -3484,6 +3486,7 @@ static const struct qcom_nandc_props ipq4019_nandc_props = {
+>>   	.is_bam = true,
+>>   	.is_qpic = true,
+>>   	.dev_cmd_reg_start = 0x0,
+>> +	.nandc_offset = 0x30000,
+>>   };
+>>   
+>>   static const struct qcom_nandc_props ipq8074_nandc_props = {
+>> @@ -3491,6 +3494,7 @@ static const struct qcom_nandc_props ipq8074_nandc_props = {
+>>   	.is_bam = true,
+>>   	.is_qpic = true,
+>>   	.dev_cmd_reg_start = 0x7000,
+>> +	.nandc_offset = 0x30000,
+>>   };
+>>   
+>>   static const struct qcom_nandc_props sdx55_nandc_props = {
+>> @@ -3498,7 +3502,8 @@ static const struct qcom_nandc_props sdx55_nandc_props = {
+>>   	.is_bam = true,
+>>   	.is_qpic = true,
+>>   	.qpic_v2 = true,
+>> -	.dev_cmd_reg_start = 0x7000,
+>> +	.dev_cmd_reg_start = 0x0,
+> 
+> What is this change?
+Sorry, by mistake this get modified. Will fix in next revision.
+> 
+> - Mani
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
