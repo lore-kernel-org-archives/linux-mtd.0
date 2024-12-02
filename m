@@ -4,60 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C01C0E69E81
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Dec 2024 18:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C9BCE69E93
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Dec 2024 20:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=bhjntR4U8ofO+GRtU0rlehoVcCFrSsdQC/q0Nb1s6y8=; b=2ntSkFVkpgzBR+
-	Xt2yVep4mG05y7Fjf9A42uJPntsQ1c4++YutOLK5zAsjjLQvlFhwosHyOtBfBB2Ds+filavOyYMn1
-	KHnT64yEWiCsoU9fy9xqbYUjLiKp+JI251iDjjLMuT19P3Z/XFa/6fD6j7GWfJd/mDw2ANlnkYg83
-	tjXdcnS/xFbptOHOBtmGKHn/X8OEj3bXb75Nz3Ddf/8ReO6zklc/rkU8qCGa3FPUk0QIqCvshihm8
-	KjkQmxZIAXmO9AiRo0aEktFpN34vr+0nrUxNvENovj7QO0PtL4W5A6XOBIpVTaBxoDrfqBgugLoGf
-	cbJQciznyXrM5IKkDb2A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mzz2SL2TEPel0xyexMbuLcOEw4P2S9KSmZ14dWoRn0o=; b=2H3GoKRVO3qca8
+	7cBG3ZI2SP2jMNNHmEQPq3VaxM39LQPkIkC6TfAEGP2v7kAkNxU0ItMNqXv32CGnNbNryuk8rEBCe
+	TuFSVJNGauj6EO35pYJynPITKMnDkklRM5vlf5eUWEF/A1pawHrk0eiFlCJS7gdnNAzdKk1zqE/5M
+	BJEG3xMbfg8e0dTN6WXFoEjItqW4QcgW6QP8tLBWV0ty4XeIvFiviSu7JzERgDqdQyjTcH42KspEc
+	CBT3onyZMrKKe41+W8uoZ1cceJpMtpFPkUr3lloslOi+cgNEH7W2bP7UmQbDHLwjGUF8E1dQQA9HB
+	ehBmTId1gOZ2d++4Xo+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIBdO-00000007DoO-12gp;
-	Mon, 02 Dec 2024 18:59:02 +0000
-Received: from 6.mo581.mail-out.ovh.net ([188.165.39.218])
+	id 1tIDVb-00000007TDd-0dxW;
+	Mon, 02 Dec 2024 20:59:07 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIBdK-00000007DlQ-1qYo
+	id 1tIDVY-00000007TD6-3hqK
 	for linux-mtd@lists.infradead.org;
-	Mon, 02 Dec 2024 18:59:01 +0000
-Received: from director1.ghost.mail-out.ovh.net (unknown [10.109.140.140])
-	by mo581.mail-out.ovh.net (Postfix) with ESMTP id 4Y2Ck503PFz161n
-	for <linux-mtd@lists.infradead.org>; Mon,  2 Dec 2024 18:58:52 +0000 (UTC)
-Received: from ghost-submission-5b5ff79f4f-ln8kv (unknown [10.110.118.225])
-	by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id EEB901FE81;
-	Mon,  2 Dec 2024 18:58:45 +0000 (UTC)
-Received: from m-works.net ([37.59.142.96])
-	by ghost-submission-5b5ff79f4f-ln8kv with ESMTPSA
-	id mdOGGGQDTmdm+gQAV4R+eg
-	(envelope-from <maciej.andrzejewski@m-works.net>); Mon, 02 Dec 2024 18:58:45 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-96R001ebaaddfa-eb1b-4ccb-8d56-a0458c20088b,
-                    DE6D832DDBDA3FA72CB6D216D7E0250F806B8FD2) smtp.auth=maciej.andrzejewski@m-works.net
-X-OVh-ClientIp: 213.134.183.231
-Date: Mon, 2 Dec 2024 19:58:36 +0100
-From: Maciej Andrzejewski <maciej.andrzejewski@m-works.net>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: rawnand: arasan: Fix missing de-registration of NAND
-Message-ID: <Z04DXNytjhFWuGFv@UBUNTU-PF54DSY0>
+	Mon, 02 Dec 2024 20:59:06 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id AD8B7A4104B;
+	Mon,  2 Dec 2024 20:57:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47996C4CED1;
+	Mon,  2 Dec 2024 20:59:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733173143;
+	bh=BqWecxSXgQIa8giUNeZ2BAp4YD5tR1OQ3mAJHBxTKik=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VTcGLgssR0iDsOKrcFy5f2jhrehoim0WjgkUIfZ8MC74zgng7L60W7kqT3Qa4Zxv1
+	 SxUUslZkPERVEJVmZ1tHp7hbkwHZE13h04GK4ZJrhYnMM/TD8I+zMnNT9Q6s9LNHyt
+	 ROEQYFd/AsyM8wSwJ4Hxqc5XmvlvnTQi5wGiPkRMMkHbA5FTr6kHBgHiFf4zrhXzyU
+	 RdzB1k1PYdJmOvS/MmU9PLcH4kjgHyxOLwlzjbNS1cSpIHH0xxlAo5A0D1TenYClkA
+	 xccj0DKwHmuiLL6WRFi33hjhnuSyPqjnKiXBo+MMn6ujpGvigZJ4LbDNXVqodidtkv
+	 AHxuqZtLeT8hg==
+Date: Mon, 2 Dec 2024 14:59:00 -0600
+From: Rob Herring <robh@kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Jonas Rebmann <jre@pengutronix.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Heiko Schocher <hs@denx.de>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+	David Jander <david@protonic.nl>
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: mchp48l640 add mb85rs128ty
+ compatible
+Message-ID: <20241202205900.GA3155769-robh@kernel.org>
+References: <20241202-mb85rs128ty-v1-0-a660b6490dc8@pengutronix.de>
+ <20241202-mb85rs128ty-v1-2-a660b6490dc8@pengutronix.de>
+ <20241202-stereotyped-otter-of-agility-44b71b-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-X-Ovh-Tracer-Id: 246572080552450925
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeefuddrheelgdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfggtggusehttdertddttddvnecuhfhrohhmpeforggtihgvjhcutehnughriigvjhgvfihskhhiuceomhgrtghivghjrdgrnhgurhiivghjvgifshhkihesmhdqfihorhhkshdrnhgvtheqnecuggftrfgrthhtvghrnhepgeekhfduieektdegueevteejhfeukeegvddvteehjeelgfffudefheejtdduueetnecukfhppeduvdejrddtrddtrddupddvudefrddufeegrddukeefrddvfedupdefjedrheelrddugedvrdelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepmhgrtghivghjrdgrnhgurhiivghjvgifshhkihesmhdqfihorhhkshdrnhgvthdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdfovfetjfhoshhtpehmohehkedumgdpmhhouggvpehsmhhtphhouhht
+In-Reply-To: <20241202-stereotyped-otter-of-agility-44b71b-mkl@pengutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241202_105858_625606_173FDDE5 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20241202_125905_031418_41E97FCD 
+X-CRM114-Status: GOOD (  16.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,42 +77,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The NAND chip-selects are registered for the Arasan driver during
-initialization but are not de-registered when the driver is unloaded. As a
-result, if the driver is loaded again, the chip-selects remain registered
-and busy, making them unavailable for use.
+On Mon, Dec 02, 2024 at 05:53:18PM +0100, Marc Kleine-Budde wrote:
+> On 02.12.2024 17:35:21, Jonas Rebmann wrote:
+> > Add a compatible string to support Fujitsu MB85RS128TY.
+> > =
 
-Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
-Cc: stable@vger.kernel.org
-Signed-off-by: Maciej Andrzejewski ICEYE <maciej.andrzejewski@m-works.net>
----
- drivers/mtd/nand/raw/arasan-nand-controller.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> > Signed-off-by: Jonas Rebmann <jre@pengutronix.de>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> > =
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 5436ec4a8fde..36c23fa186f2 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -1478,8 +1478,15 @@ static int anfc_probe(struct platform_device *pdev)
- 
- static void anfc_remove(struct platform_device *pdev)
- {
-+	int i;
- 	struct arasan_nfc *nfc = platform_get_drvdata(pdev);
- 
-+	for (i = 0; i < nfc->ncs; i++) {
-+		if (nfc->cs_array[i]) {
-+			gpiod_put(nfc->cs_array[i]);
-+		}
-+	}
-+
- 	anfc_chips_cleanup(nfc);
- }
+> > diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640=
+.yaml b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
+> > index 0ff32bd00bf6aee279fa78c624d8d47c6162f7f1..973f06b665dbbcb9ea10904=
+18eb18fbe2285acef 100644
+> > --- a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
+> > @@ -18,6 +18,7 @@ properties:
+> >    compatible:
+> >      items:
+>        ^^^^^
+> I think you need to change to "oneOf"
+
+"enum" rather than oneOf plus const entries.
+
+> =
+
+> >        - const: microchip,48l640
+> > +      - const: fujitsu,mb85rs128ty
+> >  =
+
+> >    reg:
+> >      maxItems: 1
+> =
+
+> regards,
+> Marc
+> =
+
+> -- =
+
+> Pengutronix e.K.                 | Marc Kleine-Budde          |
+> Embedded Linux                   | https://www.pengutronix.de |
+> Vertretung N=FCrnberg              | Phone: +49-5121-206917-129 |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
