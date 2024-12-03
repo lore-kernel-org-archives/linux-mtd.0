@@ -4,67 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3655E74AC6
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 17:14:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D348AE74AC3
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 17:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JjBDtl7YgwUjpztfSq0144ugFIZkqfDaiuG1CQty8Es=; b=fjFbMisnyX/ard
-	yxWKA3pdVnwH4gr0TCpP/lL7dYZbNX7oobdi27Wuqj+53I9IlikEu2+Clwho5EnxRTuMM9zolNeSU
-	QRUN7hqonrvu/6srSujq7UXdz1PoKUVDsuI213wGoBLBt25nTzNKAVgGMhB2e1wUjt5pSOLCXefLu
-	b5n19WABjIAwPzy8JxnA6NTebZDY4EEfujluLwpIA+DZBCSGr3y/O3nUbFNyQlQjTzW65RsnLNkDU
-	wUOiMZFEHiQTg8pwXoQWAtG92DqP3FGZAFEt9iD734BPOwaVRmGA7ijX56i0omR1IpIvU8KKOnjtQ
-	NlhmyPvhG0sreec+dr/g==;
+	List-Owner; bh=DdqvDkOIl5ycQxCSRRTFLExZXeYNEDc39199jTRNLuk=; b=wuNa7EWuyrvpLq
+	4AHKLH/snSwivJfWkFyfqr+huBUPv4FrRkpJ2p345XhN3xQGghsVWuHQnWObBsCT6Ih/C57glF+Pr
+	Ls7zgFCuYvuT3QdHIEfCDwgtYFKjiMYJSCv+ZpierFVJZiSrJ3Pnugvq/9Nc/wOShJcOVKQkP1yLg
+	nuj9TxuCmk/LSya4qXtxuNKTq6QS6YNhwKFgD1Aa9J2tPzVZ/a9iWjEqMt/Lk2x1sffgbILJWkd8A
+	euoVGPyZWMyJJO0kgI+UM0O394l/xH2R2kAowgst5x60DkaJkjFmBFFk8JGZWRldxrkcEjJjA9fmt
+	PskFuBMCA4Ee20i4PStg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIWTC-0000000ADel-1zi9;
-	Tue, 03 Dec 2024 17:13:54 +0000
-Received: from todd.t-8ch.de ([159.69.126.157])
+	id 1tIWTk-0000000ADo8-0cjb;
+	Tue, 03 Dec 2024 17:14:28 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIVUd-0000000A3Se-0Sfn
+	id 1tIWTh-0000000ADmp-0DMO
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Dec 2024 16:11:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1733242270;
-	bh=277NQChdWnV4HacrcegFUWzVRwOH48nxQcs2AvUWU/M=;
+	Tue, 03 Dec 2024 17:14:26 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id F0C98A40946;
+	Tue,  3 Dec 2024 17:12:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A95C4CECF;
+	Tue,  3 Dec 2024 17:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733246063;
+	bh=X54gmApuOV9z0KSTh0iuDvmqMg+NUxdjzp9aJq8n3Tc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sizE5QoIfdIYrqxRdwX94ZC/agXw0pa0PTSsY+EhiaHK9ZyNdezGC3st3dTpS0o5y
-	 8J4Rum3nNJJc9R7oV79zFn2aPNNgOgAo2+kTKS3uiDI40pDCkYOi6LivymYIQUOLVi
-	 Vh/4iUKA2LVrdrQMyxIcCg+a3+hHswgOA9DOmlgg=
-Date: Tue, 3 Dec 2024 17:11:10 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Xinhui.Pan@amd.com, airlied@gmail.com, ajd@linux.ibm.com, 
-	alexander.deucher@amd.com, alison.schofield@intel.com, amd-gfx@lists.freedesktop.org, 
-	arnd@arndb.de, bhelgaas@google.com, carlos.bilbao.osdev@gmail.com, 
-	christian.koenig@amd.com, dan.j.williams@intel.com, dave.jiang@intel.com, 
-	dave@stgolabs.net, david.e.box@linux.intel.com, decui@microsoft.com, 
-	dennis.dalessandro@cornelisnetworks.com, dri-devel@lists.freedesktop.org, fbarrat@linux.ibm.com, 
-	gregkh@linuxfoundation.org, haiyangz@microsoft.com, hdegoede@redhat.com, 
-	ilpo.jarvinen@linux.intel.com, ira.weiny@intel.com, jgg@ziepe.ca, jonathan.cameron@huawei.com, 
-	kys@microsoft.com, leon@kernel.org, linux-alpha@vger.kernel.org, 
-	linux-cxl@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	logang@deltatee.com, martin.petersen@oracle.com, mattst88@gmail.com, 
-	miquel.raynal@bootlin.com, mwalle@kernel.org, naveenkrishna.chatradhi@amd.com, 
-	platform-driver-x86@vger.kernel.org, pratyush@kernel.org, rafael@kernel.org, 
-	richard.henderson@linaro.org, richard@nod.at, simona@ffwll.ch, srinivas.kandagatla@linaro.org, 
-	tudor.ambarus@linaro.org, vigneshr@ti.com, vishal.l.verma@intel.com, wei.liu@kernel.org
-Subject: Re: [PATCH v2 09/10] sysfs: bin_attribute: add const read/write
- callback variants
-Message-ID: <5b589ddb-e3c9-40e1-987f-30ba81dc8ace@t-8ch.de>
-References: <20241103-sysfs-const-bin_attr-v2-9-71110628844c@weissschuh.net>
- <7ed3b713f8901398f52d7485d59613c19ea0e752.camel@HansenPartnership.com>
+	b=Anz86Efdp1IdwoVfnZUmqU6tLuIveq13pYFx+gRkVpxGkcZyyBw7LYzHq23uQ9Z7+
+	 VessNp0ggXiyPwcknvWYy3BXbkf6gXEZxXI0n0P9Wy3K1dupw5Qk94qU2KaOktLALE
+	 tINYb/0lEME2FiKeaw3asJXO0r6dG/UEIDPJz8zPCpaRbtEnFRh96jjb3uQSUP6mTj
+	 Ho8h8IR3hyUUwPFtwzF/To5wrz+Z3jEdpF9shBwUXM1JOqaqw4a7/J2xrODd+JJ7fg
+	 E1nJFKu5T7GURcYUTLCSETGRUsoNFYiM6bRbENRsz4I0U6wFWv0ZMHlkdZN5QUYfnm
+	 y5+/cVZe4wmEw==
+Date: Tue, 3 Dec 2024 11:14:21 -0600
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Richard Weinberger <richard@nod.at>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] dt-bindings: mtd: fixed-partitions: Fix "compression"
+ typo
+Message-ID: <173324605959.1986625.7343237766910696825.robh@kernel.org>
+References: <20241113225632.1783241-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <7ed3b713f8901398f52d7485d59613c19ea0e752.camel@HansenPartnership.com>
+In-Reply-To: <20241113225632.1783241-1-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241203_081119_287398_D417310C 
-X-CRM114-Status: GOOD (  16.30  )
+X-CRM114-CacheID: sfid-20241203_091425_149324_CA740E13 
+X-CRM114-Status: UNSURE (   8.74  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,104 +79,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2024-12-03 11:06:16-0500, James Bottomley wrote:
-> > diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
-> > index
-> > d17c473c1ef292875475bf3bdf62d07241c13882..d713a6445a6267145a7014f308d
-> > f3bb25b8c3287 100644
-> > --- a/include/linux/sysfs.h
-> > +++ b/include/linux/sysfs.h
-> > @@ -305,8 +305,12 @@ struct bin_attribute {
-> >  	struct address_space *(*f_mapping)(void);
-> >  	ssize_t (*read)(struct file *, struct kobject *, struct
-> > bin_attribute *,
-> >  			char *, loff_t, size_t);
-> > +	ssize_t (*read_new)(struct file *, struct kobject *, const
-> > struct bin_attribute *,
-> > +			    char *, loff_t, size_t);
-> >  	ssize_t (*write)(struct file *, struct kobject *, struct
-> > bin_attribute *,
-> >  			 char *, loff_t, size_t);
-> > +	ssize_t (*write_new)(struct file *, struct kobject *,
-> > +			     const struct bin_attribute *, char *,
-> > loff_t, size_t);
-> >  	loff_t (*llseek)(struct file *, struct kobject *, const
-> > struct bin_attribute *,
-> >  			 loff_t, int);
-> >  	int (*mmap)(struct file *, struct kobject *, const struct
-> > bin_attribute *attr,
-> > @@ -325,11 +329,28 @@ struct bin_attribute {
-> >   */
-> >  #define sysfs_bin_attr_init(bin_attr) sysfs_attr_init(&(bin_attr)-
-> > >attr)
-> >  
-> > +typedef ssize_t __sysfs_bin_rw_handler_new(struct file *, struct
-> > kobject *,
-> > +					   const struct
-> > bin_attribute *, char *, loff_t, size_t);
-> > +
-> >  /* macros to create static binary attributes easier */
-> >  #define __BIN_ATTR(_name, _mode, _read, _write, _size)
-> > {		\
-> >  	.attr = { .name = __stringify(_name), .mode = _mode
-> > },		\
-> > -	.read	=
-> > _read,						\
-> > -	.write	=
-> > _write,						\
-> > +	.read =
-> > _Generic(_read,						\
-> > +		__sysfs_bin_rw_handler_new * :
-> > NULL,			\
-> > +		default :
-> > _read						\
-> > +	),							
-> > 	\
-> > +	.read_new =
-> > _Generic(_read,					\
-> > +		__sysfs_bin_rw_handler_new * :
-> > _read,			\
-> > +		default :
-> > NULL						\
-> > +	),							
-> > 	\
-> > +	.write =
-> > _Generic(_write,					\
-> > +		__sysfs_bin_rw_handler_new * :
-> > NULL,			\
-> > +		default :
-> > _write					\
-> > +	),							
-> > 	\
-> > +	.write_new =
-> > _Generic(_write,					\
-> > +		__sysfs_bin_rw_handler_new * :
-> > _write,			\
-> > +		default :
-> > NULL						\
-> > +	),							
-> > 	\
-> >  	.size	=
-> > _size,						\
-> >  }
+
+On Wed, 13 Nov 2024 16:56:31 -0600, Rob Herring (Arm) wrote:
+> The example erroneously has "compress" property rather than the
+> documented "compression" property.
 > 
-> It's probably a bit late now, but you've done this the wrong way
-> around.  What you should have done is added the const to .read/.write
-> then added a .read_old/.write_old with the original function prototype
-> and used _Generic() to switch between them.  Then when there are no
-> more non const left, you can simply remove .read_old and .write_old
-> without getting Linus annoyed by having to do something like this:
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/mtd/partitions/fixed-partitions.yaml    | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e70140ba0d2b1a30467d4af6bcfe761327b9ec95
 
-Not all users are using the macros to define their attributes.
-(Nor do they want to)
+Applied, thanks!
 
-These users would break with your suggestion.
-Otherwise I agree.
-
-
-Thomas
 
 ______________________________________________________
 Linux MTD discussion mailing list
