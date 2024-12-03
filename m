@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90F1BE64A93
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 13:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19971E64A8F
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 13:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=dCVeurPRROAkHDPbka7dKTjF6ctcx/u1Z/J+CdWy74E=; b=TmqkbvKSHk8jws
-	vKiTwLNx2lF09W0joEj2iEgtDEkVsElOXU80v8y80Do5nxexqXZLGw3JD+zxLDfMrHz9X5enTLTWX
-	d+4lH1rY1HiEb4+EfWypz3W6V2T+ioDXIcCSSSlSK8uv0M4BdfeIPtIuVtnfwrbVhNP7FXLw2shAX
-	zdJn+zXtVLdGpRGSB03E+GpbEmjOokoTyAfy8oyVReqgMfvHj/uAI3035t7+UUAmRyvynHDtCwUXL
-	r+r72AXuIhMUIIcDweqWwDblv9RclXUDFl/SvWZnFF5Se3R/dUfu6mla0B4B0UILmZ7yLGioeOGKI
-	nwNyHrN1suepqEagbkeQ==;
+	List-Owner; bh=07eIGm2ghtSBE0ZfW0CYcZt9YSG5+P6/WFMkTfxATmU=; b=bOCNbYxRL4VOcE
+	tdBtXs5HdzUY03O1/XXGIhFNyl2l56L4cngyEYKjkVU1nvLns4Dsslwf9nDd0muD9Td2Oxnxd/41Y
+	KtSc5Vm//JnD+vP/w+vWOoYxfV1AHu6DA2sNAm6AP1jk9MyWM5CjZ6L8xMHM+K9Pp4T//j/HmVc2q
+	MH/PhzZKiLz5tT75xeMt0/LDg1b9UczHdsfnXq0kuSH8GESeXrRMl/I7CniFFTjHpHuwuZreIDoin
+	8mYYOORm1gjo+kdcWeLQ1mnNT0fodqMl1jR0YacIgum9VtlVH4wC0h6p+tE8c/52khTByYhw3lgWL
+	itZ2o2ibXNV4rZe62l6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tISxG-00000009c4z-0BC2;
-	Tue, 03 Dec 2024 13:28:42 +0000
-Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
+	id 1tIT1r-00000009cic-038H;
+	Tue, 03 Dec 2024 13:33:27 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tISxD-00000009c4T-3DM7
+	id 1tIT1o-00000009ciF-0lh1
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Dec 2024 13:28:40 +0000
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-53dde5262fdso6393245e87.2
-        for <linux-mtd@lists.infradead.org>; Tue, 03 Dec 2024 05:28:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733232517; x=1733837317; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WEhJeGrR4zH+VqsNipiZOV/XXGYun9ptomJ7fYfs7sY=;
-        b=AGZ9wPc7CykRX7MXBUtrKHxat7jgqdFBBTckIPLCVvEh8kU5GilbWwnucObNuM3s+M
-         8jKrn0jCwWTVxGZ9IqOvevfY1g+8IhpecNwDt+it8suBdWkPtZBwlZvJrTtJuAGa1ub2
-         owp1tmi9pK2OrwBRJxhUCMMcfZ81AHbAYFUJoNxc0LyK5SxoIfxuLjhlQA1DDlP+7LwM
-         8bjIogVLBApS2CpK2FgV6dHm1b5lTDl2CDr/t1y/4r/8JMv9bVmwfbW/vc5kiDayiOYo
-         fnbWA7Hj+xr998zHEYh4SoCnJ7EuBODceMnPFw1Qf496iFPNrYtYt7/F5uY4jpSzZPkZ
-         YlwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733232517; x=1733837317;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WEhJeGrR4zH+VqsNipiZOV/XXGYun9ptomJ7fYfs7sY=;
-        b=FnHMwnTjwAereQ0UCthPRMt4T0GhrQeXsyikx4xbPmSmX8TzolSUWIy3x/ZRXECWJY
-         ryReaN09CNlgPr8uPlAk4gp0YAtmU4bZ6qPdovbVXzvwxe2qK6tSJkYXpQ/dgjajRMuY
-         OXm8r1AEEslT7xorgVEuGgZt+07latm5Hfh8CkOCtPPTTwTnMuB/x2rVWhCRrpkvoKnN
-         6XjgJybnzpEJjwwPRJsjmF4Pi1rAWSmbdQOb9mHXQijEyYMu7Ck9G9QSVmgHenRO/fDf
-         F0S4ViI/YVvZUHR8w/6sI9dgCyVDmPUB35m3Z/XbDADYsOvVDXjQR2o5qUoMfFpF5LkC
-         fkJA==
-X-Gm-Message-State: AOJu0YxN6Nqw9/rkslDaYmcujpDPs4dnp36m5gBQy/+PgvSpL6esMuF7
-	Fji4u13D3HtPX5gOfCna5jyFVUP/iK4PSGHM82DoAlUvvUIvT0uWAgz+zg==
-X-Gm-Gg: ASbGncvsll7s0mxuDL6Z+WlWhSoI2kNozl0R0/LUGcL02OVte4SkxSx3ZxsBa++08+E
-	ZyWuqmgr6DqFdx/M4RQI2x7T3++bqbvRzaJo76HlRb3G58WpUhws0aJmTb0c42Pl8VvKcQcO3Tj
-	bYGiWratk+ZXXdK//2E/i4iyMUtun2emCXas5H/b3zbSnWrwvQjKw5qdVwS/D5w1at48qQYlvpW
-	Ep+esDZIaPcjnaa80UgIFbqFaiIuqJLRvR3CiqhO8/X0TLw7EZAMYfQSWXgQaKP4yQW/2+RUhxL
-	O5qFrEeiVn/2/WVU/RZHUZiKxTlCJJxa
-X-Google-Smtp-Source: AGHT+IEhfwnx6AE2Axb6/4G/G6lyWkom+yQTy2ljTaYHcvUFJ9xMvARS9fCJI/dYM8kdUYuXtH6pSQ==
-X-Received: by 2002:a05:6512:33cd:b0:53d:d236:6f7f with SMTP id 2adb3069b0e04-53e129cddd9mr1703570e87.12.1733232516662;
-        Tue, 03 Dec 2024 05:28:36 -0800 (PST)
-Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53df64a07d8sm1852277e87.275.2024.12.03.05.28.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 05:28:36 -0800 (PST)
-From: Anton Moryakov <ant.v.moryakov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH] FIX: NO_CAST.INTEGER_OVERFLOW in nandflipbits.c
-Date: Tue,  3 Dec 2024 16:28:32 +0300
-Message-Id: <20241203132832.123512-1-ant.v.moryakov@gmail.com>
-X-Mailer: git-send-email 2.30.2
+	Tue, 03 Dec 2024 13:33:25 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 954CF5C6D1F;
+	Tue,  3 Dec 2024 13:32:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D542C4CED6;
+	Tue,  3 Dec 2024 13:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733232803;
+	bh=rMaSDNSAJrbcxHZSVbXsKcHrwaahyhZiCTadCvujcTM=;
+	h=From:Date:Subject:To:Cc:From;
+	b=pgtpWOG+zcKRKdVjqh9iU3+hyGm0TqFnqArKydS09r2e6nQw4nV32sg15c9J5ZWcW
+	 weNz0O44yMGyHeBQZ24lUrtmxv4Vtgd/vNIj8lujOd4FssrD2lXMTmwMAZrIh/w9Hy
+	 xRU1ZGJHZCptYzBhvTsuEttLWozs5fkoaMczl3uoethL50oq8vN7Sv8dtxSJNJ/sNW
+	 iaK61o2Wy/CKqjr9PA7jcxKZ3vMK73p/nawAkKOTaOBOzZeTSb+JlD6yZSR4CcmklY
+	 jj7rp+J35XKn/AjpVtC62WnVgLTOJcJtQBq+ByWwidLmrrmoSJdcan0r2MSR2x/I5k
+	 ehlW7UPixHG2Q==
+From: Roger Quadros <rogerq@kernel.org>
+Date: Tue, 03 Dec 2024 15:33:17 +0200
+Subject: [PATCH] mtd: rawnand: omap2: Fix build warnings with W=1
 MIME-Version: 1.0
+Message-Id: <20241203-omap2-doc-fix-v1-1-f46cd2a5c055@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAJwIT2cC/x2MQQqAMAzAviI9W9haRfAr4kFn1R50YwMRxL9bP
+ CaQPFAkqxToqweyXFo0nga+riDs07kJ6mIM5Kjx5BjjMSXCJQZc9UbhWcQ1XcsrgzUpi+n/N4z
+ v+wGJlMBYXwAAAA==
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ kernel test robot <lkp@intel.com>, Roger Quadros <rogerq@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4570; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=rMaSDNSAJrbcxHZSVbXsKcHrwaahyhZiCTadCvujcTM=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnTwih1vcygEgDaCB6oM4tIWffmiDB/Dsp2OrTy
+ 8ZGkkapbGKJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZ08IoQAKCRDSWmvTvnYw
+ kyVkD/4p+IhXsNs7coGVFFZDAcqAcc6xwYQahANbTwCI+x3DaH+6Sv9RsR6JocmOjveVkxzdLF5
+ yuJVp+ht1pKFtomZd38xrETk9SVGzrutoZB1yH5o4TWukF9+WuZC4Y6myHRD1h9XttLVkLe2Gwe
+ Ya8AIhhZ/6xmchoVmt0ijrZro51Ifo9lzw/TwaG7FWxQrqMRLDZvqsXT1NY4ChRK10+kmiqkiuP
+ GREWFZ16OAyTSiTDOae4cIbIjd8SZNBS445tYR3oC47HJtT27Iptc39nrW37ewhgdx1d3lzfzCG
+ oIhVe4DwqSvWcHZ0bfzRZN6DSOLQ9Y+719MoHUO/n2maCJ8zxwxtSfmSfMp4/vjsFcyNrYOf6gm
+ 2X/Meaf5KHix3HXZCPwLjIhRTZhdRMKyI4iUZMiPxq82FJP5ay20nsNwbec7j4Gd6IuwFVtR7mW
+ /Z6JmavkOuOvPMwhvgIxvCjyyWltKqGNrEJvfZ/soG04ZaEPE4RBP4T26fVcGywIXIof9wBnp8l
+ RCv6IcsCRXmAtKhIrD+yRmYxoKdZ6O75sb3dEzY9tU9zTNdJgWQaG95U8Ls7jVuwrKdNjA3aBAH
+ UdRs8HKxSSvtHHVGzvNXUFZWqRHaelNGi30QUKK93z50J6f8s8ULdEnuuUxO4q/Mz9dhRNhsXrs
+ MxeTBS/DKbbezRQ==
+X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
+ fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241203_052839_803842_81A9A1CD 
-X-CRM114-Status: GOOD (  11.01  )
+X-CRM114-CacheID: sfid-20241203_053324_311396_979C6797 
+X-CRM114-Status: UNSURE (   9.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,36 +91,89 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Report of the static analyzer:
-The value of an arithmetic expression 'bit_to_flip->block * mtd.eb_size + blkoffs' is a subject to overflow because its operands are not cast to a larger data type before performing arith$
+Add kernel-doc for functions to get rid of below warnings
+when built with W=1.
 
-Corrections explained:
-Prevent arithmetic overflow in OOB read operation
-Resolved an issue where the calculation of the offset in the OOB read operation could overflow due to operands not being cast to a larger data type. Specifically, the multiplication of bi$
+drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_in_pref'
+drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_in_pref'
+drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_in_pref'
+drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_in_pref'
+drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_out_pref'
+drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_out_pref'
+drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_out_pref'
+drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_out_pref'
+drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_in_dma_pref'
+drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_in_dma_pref'
+drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_in_dma_pref'
+drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_in_dma_pref'
+drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_out_dma_pref'
+drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_out_dma_pref'
+drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_out_dma_pref'
+drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_out_dma_pref'
 
-Triggers found by static analyzer Svace.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202412031716.JfNIh1Uu-lkp@intel.com/
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+ drivers/mtd/nand/raw/omap2.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index d9141f3c0dd1..b8af3a3533fc 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -254,6 +254,10 @@ static int omap_prefetch_reset(int cs, struct omap_nand_info *info)
+ 
+ /**
+  * omap_nand_data_in_pref - NAND data in using prefetch engine
++ * @chip: NAND chip
++ * @buf: output buffer where NAND data is placed into
++ * @len: length of transfer
++ * @force_8bit: force 8-bit transfers
+  */
+ static void omap_nand_data_in_pref(struct nand_chip *chip, void *buf,
+ 				   unsigned int len, bool force_8bit)
+@@ -297,6 +301,10 @@ static void omap_nand_data_in_pref(struct nand_chip *chip, void *buf,
+ 
+ /**
+  * omap_nand_data_out_pref - NAND data out using Write Posting engine
++ * @chip: NAND chip
++ * @buf: input buffer that is sent to NAND
++ * @len: length of transfer
++ * @force_8bit: force 8-bit transfers
+  */
+ static void omap_nand_data_out_pref(struct nand_chip *chip,
+ 				    const void *buf, unsigned int len,
+@@ -440,6 +448,10 @@ static inline int omap_nand_dma_transfer(struct nand_chip *chip,
+ 
+ /**
+  * omap_nand_data_in_dma_pref - NAND data in using DMA and Prefetch
++ * @chip: NAND chip
++ * @buf: output buffer where NAND data is placed into
++ * @len: length of transfer
++ * @force_8bit: force 8-bit transfers
+  */
+ static void omap_nand_data_in_dma_pref(struct nand_chip *chip, void *buf,
+ 				       unsigned int len, bool force_8bit)
+@@ -460,6 +472,10 @@ static void omap_nand_data_in_dma_pref(struct nand_chip *chip, void *buf,
+ 
+ /**
+  * omap_nand_data_out_dma_pref - NAND data out using DMA and write posting
++ * @chip: NAND chip
++ * @buf: input buffer that is sent to NAND
++ * @len: length of transfer
++ * @force_8bit: force 8-bit transfers
+  */
+ static void omap_nand_data_out_dma_pref(struct nand_chip *chip,
+ 					const void *buf, unsigned int len,
 
 ---
- nand-utils/nandflipbits.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+base-commit: cdd30ebb1b9f36159d66f088b61aee264e649d7a
+change-id: 20241203-omap2-doc-fix-e3bee04753f3
 
-diff --git a/nand-utils/nandflipbits.c b/nand-utils/nandflipbits.c
-index 7066408..ef663c6 100644
---- a/nand-utils/nandflipbits.c
-+++ b/nand-utils/nandflipbits.c
-@@ -251,7 +251,7 @@ int main(int argc, char **argv)
- 			bufoffs += mtd.min_io_size;
- 
- 			ret = mtd_read_oob(mtd_desc, &mtd, fd,
--					   bit_to_flip->block * mtd.eb_size +
-+					   (uint64_t)bit_to_flip->block * (uint64_t)mtd.eb_size +
- 					   blkoffs,
- 					   mtd.oob_size, buffer + bufoffs);
- 			if (ret) {
+Best regards,
 -- 
-2.30.2
+Roger Quadros <rogerq@kernel.org>
 
 
 ______________________________________________________
