@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E00F0E6C5F0
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 02:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 454B7E6C5EE
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 02:48:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=227VQdH3rFs4eIxoMqUR/qW09ZPF35s4mUX/KoDuLRo=; b=2FqaT1FCS7DYVs
-	DBSqU5eL9EKwAmMe44CMYhV9NvWnjwNTyfvTUguXpX1/A+AOv0bW0N6KZ8rpKJ7GutZhp1rmnSy0J
-	E6MFZxvnrgJxne06LgLCJzfeOnexqMxonG24SwWkGNk6F9msEZVPk3exbBclMMcbgF83kbxE7JyG7
-	/thOuwezXLFgPGMUmrTGWZg1mhNQq6W7LP+5o/t0ZWKqBdcvN4sHSm3d6qU4ZPYbaCB/XoFF7MIcv
-	emqmqh29267UetyyyIgjDQ8Yl4IrtLYCi8pgt5aMztmre+mz9Y8GQI5/dHkpMMH9Mr8nzkPpA49Tk
-	0qTCR0pxnV1HYQmtMYPg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=d8wlQERhuVtWPyXI+63BCgoh2GK9JMUIIUbK789ZO8o=; b=2MUYTYO5UXU2wU
+	tC5jrg0PZq9zxXA/Jj4EGVFbjchypDujiYadakvUIbKLJGrorm7RPAGlyoKwrqxv3tKOtxTBu7nTW
+	bIaK77c7q+oZs7BGk58IZcCS6KePAZmcd1RpMcuB22KSTsBXxf2qC+uD1z6rpkCRjGfq2iuYDaR1l
+	4cEWy3pW4lBaNt4d9uTzRvX/bQx+/Ws24ACxpJ9CXlb3D6nAZjBrKJQn2+n9RJgwr2mIO19uo7yTG
+	zi/ETAAWSUlireEToTuyrgiwRQT91Btr9r2pDeXRVm+sApctY591aK4vZk8QGvPCfj0iUcnPSLhGU
+	hKZiKQwJ4wHFHU3sQBZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIIwh-000000083YW-2xm5;
-	Tue, 03 Dec 2024 02:47:27 +0000
-Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
+	id 1tIIxg-000000083lV-3QLG;
+	Tue, 03 Dec 2024 02:48:28 +0000
+Received: from mail-pg1-x52f.google.com ([2607:f8b0:4864:20::52f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIIwJ-000000083Sc-1xIS
+	id 1tIIwO-000000083Ui-3Er4
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Dec 2024 02:47:04 +0000
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-7251d20e7f2so4992851b3a.0
-        for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2024 18:47:02 -0800 (PST)
+	Tue, 03 Dec 2024 02:47:09 +0000
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-7fbc29b3145so4289756a12.0
+        for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2024 18:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733194022; x=1733798822; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hPyqhzIMSxJWnuOUuQpU0reG3RAKJpi+Lz1WmPNFCtg=;
-        b=hKMx53X9o9HzUMVMJFcRf1Ox+EnIWHpO+sTUOWj95+wrAIu1oIOJGDcy0RJ9Aus9Dq
-         V1JTSmrLCy2NNfrF1bIT9uEk0MT2GTEt18noS2+hOXYgr6S04n/hqIiF2r8JLqpI6nRE
-         eiRa0pjx59o/S1lmKxt5oCZ4T5NcXiCpK6IOGeqiIgNFgAZnWbdXt7ktxiBEYyOMyEBp
-         sIa9oeq6TX6SnYSaBFU4V3lBKms30xzhi3PgJ+RRSvqToex29qTOb4GWf7gJq1lwXexw
-         j1DxvfRGSU9w1nRCD+my74C7PoJnBSOMPv1/enPyRErhVEbcIPc/Qv1AkB2DKrYS5WVg
-         BatQ==
+        d=gmail.com; s=20230601; t=1733194028; x=1733798828; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X/fMjCuPubYsH0DXCXMNg++mVJWPpXEZP60/VYOzJ3A=;
+        b=KwlMB/nqfjgC/zOdemfkyCPQp4AiiO73d7vHHy/pCzHbSNK1qsLVPkIKIbwoWLZKLQ
+         qSN7SrkanO0HK/VZG6Ks60EoF7awCjGlWDUwpAXSVYwKN7XgF2Yg4RvJY6kLPTxhMH+r
+         zob0S/ISb7XMhcyLSSoQZrHf6NXCOKpcWUBRstU76bVwEowuJLhuka45vcLDyHDl2pAX
+         44rw1IhrlFKZOQ0AisG6qsvCXqAUvLpwIc63FOaZOXk0v1sMkS23HoI1rCEc76ksExwt
+         8/ng+wYS2ego32c73TvHx9vwzws3KS1B60BxrJt5LGjfFBf3sff//u8STwHa/jTRHQws
+         j71w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733194022; x=1733798822;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hPyqhzIMSxJWnuOUuQpU0reG3RAKJpi+Lz1WmPNFCtg=;
-        b=glAD9exKYeVomqerDNDwzstbXn0vT/SifskS0kiADxDztbqVsOdvg/ptboKIyDCxbR
-         50eZX0PAAs0qZlostoNTKbz0ZprEbjwR7D0+XAoFcHDW290DBot+pfpmRJScy9sfQXty
-         4qnxgFEs8NhsJNfDsoo/lJ7E4CR24kbaCIACzPzii0L+DrQ9S8DGLqnpveg/LUoRVk6H
-         CUnFh9FBEFLILsIBZnF1eEEAjvXYpR5OsEC3Ha1c2IpJTz0t2WnTD2GjblLUxryMDU5l
-         6JizVqkLjekdaT0NK/lqH1cukCOz2ZWFOdGdDdbFyDDXeGcWQc8tZ1NzMWyWrIKaOGxj
-         riLQ==
-X-Gm-Message-State: AOJu0Yztn1SkOauF2xkkDYvhn3vpOxhnIX6y/U4ERZryOnzn+JKvUMm6
-	g15NiMrMi3vrtDyyvPhrPuUrHj9LreMgZX+WQ9XZaZEpfJKHYadoXZdjug==
-X-Gm-Gg: ASbGncuC7l0GGjnXGROOF6v3Sk/yyb1HetKDewJ38dZEH4pzX8NnY8cBluLXYrUjsnD
-	VZ5Zrww1jtOK5lNogcHqv3BzhBzDL3DMdLVscFh+pjo7Glr63xd2u4uYv8AIOVoNmDR1xWZN8DB
-	OTPYOwArBn9VE2bJMt/aL4JHgFELgU4V8Pcu6pwxwKTXo3q2tKK7ginUEBDlIMTV55ECO5u0Uee
-	JmoTuC1NheJFCc482e2ER1KuTPS+cc02dGB9KzbFgisdIG26AEU2EVGmkrig5ItAv3aEc//KIiP
-	yju6Et/3hh+aCyO1H3wzJOD9LK9PkMbCIoYeAw==
-X-Google-Smtp-Source: AGHT+IHXZ8srMItyQNaxrrIC9I0rILAhOCGAiMi/Ir9PAIv/TyR5TgFqgW5zvnXUz8/AV5PHIYfrMw==
-X-Received: by 2002:a05:6a00:2d2a:b0:71e:6c67:2ebf with SMTP id d2e1a72fcca58-7257fa67cf3mr1019665b3a.11.1733194022151;
-        Mon, 02 Dec 2024 18:47:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733194028; x=1733798828;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X/fMjCuPubYsH0DXCXMNg++mVJWPpXEZP60/VYOzJ3A=;
+        b=eO2t4vDcK8DHGFKkhAVFPmr3QsTlVAO39Efkvm+kySGHLcb30XE2GpQnR+zNLSzppm
+         O5z8WUz8+oio9qmhQmJGyP6jCnlTSW6QEBO5i5SgMsDs6ChtOv+x+ABXjeEiAYxMQStw
+         j65gulw2C0Hw9o7UQMWouF3Czgpw53GpUWmIFeOB/pPCfV4bKuav8oa7bSr1wb2BJLoe
+         k+PxR3lF1OgvIXUeBKJRuVL7oOBUGlQatqhP0PS9wqBbg/SEl+W9NbV2xvPVGT95GG5s
+         5wayVm32bWwyIJfUKKza9LBTNSwbHemqFaK3tcRc+524hllDbFxdqGLblzBKtZ0M1k3w
+         pIsQ==
+X-Gm-Message-State: AOJu0YyqRMt1tNTu2Cw96RApksYY79WCQ+vFcSBhVueZuSNYJII4SaIo
+	dFq/5Mlz74niYU6uyMCvs8AMHE5P5EhnimgDrCKWqqo4yO8wnEBsVM6VHQ==
+X-Gm-Gg: ASbGncsu6hZvr5zvN6omCBzCzP1yPEm/PId1Gz9+3p258o/n55pKxKasEV4OgU3FJ3z
+	bvPkiC2WKaznkkmf9WG4IfQTH9ONi2zeJ/huMqONLWN2EWJMpX1xhuoOruBLpEoLOC21jvYHsOK
+	ywac6Guf8B9yalp8bTbwe9tHJMfRYj+Tg+2lZiUG1l21fs9a1j1cYHF236fBpi30uQkl1Hp+8mr
+	PIANvja84/BppnC2lq9DyjTU5gjSZvtMgHl0UrZSoFlh0sPLMnr2smljDKCdnSEnHIGuZt4OUag
+	2dHE6dZ2c3hEvgCs1CtuHj2evIMd2NiaP91B/A==
+X-Google-Smtp-Source: AGHT+IHODLbfRzFCa5UdoY3a2QSL0mqI5htFnV3n7XCPqVUtza19f5wrvgsYooxFT5Xj71CAbBGprw==
+X-Received: by 2002:a05:6a21:32aa:b0:1e0:ceb4:b7e5 with SMTP id adf61e73a8af0-1e165aabd49mr1219999637.18.1733194027725;
+        Mon, 02 Dec 2024 18:47:07 -0800 (PST)
 Received: from ISCN5CG2520RPD.infineon.com (sp49-98-220-81.msd.spmode.ne.jp. [49.98.220.81])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fc9c2d634asm8605693a12.8.2024.12.02.18.46.56
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fc9c2d634asm8605693a12.8.2024.12.02.18.47.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2024 18:47:01 -0800 (PST)
+        Mon, 02 Dec 2024 18:47:07 -0800 (PST)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -80,14 +81,16 @@ Cc: miquel.raynal@bootlin.com,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v3 0/3] mtd: spinand: Add support for SkyHigh S35ML-3 family
-Date: Tue,  3 Dec 2024 11:46:47 +0900
-Message-Id: <cover.1733193264.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v3 1/3] mtd: spinand: Remove write_enable_op() in markbad()
+Date: Tue,  3 Dec 2024 11:46:48 +0900
+Message-Id: <cfc1c1d58719e5ec55186f2458e84642b55feb4a.1733193264.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1733193264.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1733193264.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241202_184703_503629_6AA9A840 
-X-CRM114-Status: GOOD (  11.16  )
+X-CRM114-CacheID: sfid-20241202_184708_817359_48FF4B14 
+X-CRM114-Status: GOOD (  10.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,30 +109,31 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-This series is successor of the patch submitted by KR Kim:
-https://patchwork.ozlabs.org/project/linux-mtd/patch/20240820064547.5035-1-kr.kim@skyhighmemory.com/
+We don't have to call spinand_write_enable_op() in spinand_markbad() as
+it is called in spinand_write_page().
 
-Changes in v3:
-  - Add Fixes tag to the patch 1/3
+Fixes: b645ad39d568 ("mtd: spinand: Do not erase the block before writing a bad block marker")
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/mtd/nand/spi/core.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Changes in v2:
-  - Add new patch that removes redundant write enable in markbad()
-  - Make ondie ECC engine ops return error in raw access case and add
-    fallback mechanism in isbad() and markbad()
-  - Add detailed comment about block lock register in Skyhigh driver 
-
-Takahiro Kuwano (3):
-  mtd: spinand: Remove write_enable_op() in markbad()
-  mtd: spinand: Introduce a way to avoid raw access
-  mtd: spinand: Add support for SkyHigh S35ML-3 family
-
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |  25 ++++--
- drivers/mtd/nand/spi/skyhigh.c | 147 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   2 +
- 4 files changed, 170 insertions(+), 6 deletions(-)
- create mode 100644 drivers/mtd/nand/spi/skyhigh.c
-
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 4d76f9f71a0e..47c369f2925d 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -942,10 +942,6 @@ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = spinand_write_enable_op(spinand);
+-	if (ret)
+-		return ret;
+-
+ 	return spinand_write_page(spinand, &req);
+ }
+ 
 -- 
 2.34.1
 
