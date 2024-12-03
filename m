@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19971E64A8F
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 13:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5274AE64AB3
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Dec 2024 14:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=07eIGm2ghtSBE0ZfW0CYcZt9YSG5+P6/WFMkTfxATmU=; b=bOCNbYxRL4VOcE
-	tdBtXs5HdzUY03O1/XXGIhFNyl2l56L4cngyEYKjkVU1nvLns4Dsslwf9nDd0muD9Td2Oxnxd/41Y
-	KtSc5Vm//JnD+vP/w+vWOoYxfV1AHu6DA2sNAm6AP1jk9MyWM5CjZ6L8xMHM+K9Pp4T//j/HmVc2q
-	MH/PhzZKiLz5tT75xeMt0/LDg1b9UczHdsfnXq0kuSH8GESeXrRMl/I7CniFFTjHpHuwuZreIDoin
-	8mYYOORm1gjo+kdcWeLQ1mnNT0fodqMl1jR0YacIgum9VtlVH4wC0h6p+tE8c/52khTByYhw3lgWL
-	itZ2o2ibXNV4rZe62l6w==;
+	List-Owner; bh=jISUiqE6p3GMGuC0xtZzR6wOSWuU2Y9NGrvWTarZBck=; b=egMgOzDbTTd9uU
+	KgMGrKWCH29niHk3m5VX/V4BgQpoM1/Dkh+/W3BCzHC0Zf7O8TYPOB6ER8auWrJgvXGFV1Os4VbP3
+	CTREpWQUcqbPlpzI7TX30Ztr+of63qo5dv+8Maz+FW7VJQEuEMlv2Ehbwy0FwjvNh0wf9Uy3vNBeh
+	7ihIVf9DLiYWX9bJ62OfWKibBb0TkR4IHXTpdxKgFQuR7YuEcPijQx3mMrog+78YniBEekwFQ3qe6
+	m6YyFtDZw32QkmXaNNiEEZzxvoN5Dn4yX7ggSGXOkA2/OFRwx9+z2v//LK+knSDMPc5EtbHFUlFvO
+	l3RcQRlvgaT6pQlG+1pA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIT1r-00000009cic-038H;
-	Tue, 03 Dec 2024 13:33:27 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1tIU4V-00000009oDn-1WqM;
+	Tue, 03 Dec 2024 14:40:15 +0000
+Received: from mail-lf1-x131.google.com ([2a00:1450:4864:20::131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIT1o-00000009ciF-0lh1
+	id 1tIU4S-00000009oCb-20cK
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Dec 2024 13:33:25 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 954CF5C6D1F;
-	Tue,  3 Dec 2024 13:32:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D542C4CED6;
-	Tue,  3 Dec 2024 13:33:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733232803;
-	bh=rMaSDNSAJrbcxHZSVbXsKcHrwaahyhZiCTadCvujcTM=;
-	h=From:Date:Subject:To:Cc:From;
-	b=pgtpWOG+zcKRKdVjqh9iU3+hyGm0TqFnqArKydS09r2e6nQw4nV32sg15c9J5ZWcW
-	 weNz0O44yMGyHeBQZ24lUrtmxv4Vtgd/vNIj8lujOd4FssrD2lXMTmwMAZrIh/w9Hy
-	 xRU1ZGJHZCptYzBhvTsuEttLWozs5fkoaMczl3uoethL50oq8vN7Sv8dtxSJNJ/sNW
-	 iaK61o2Wy/CKqjr9PA7jcxKZ3vMK73p/nawAkKOTaOBOzZeTSb+JlD6yZSR4CcmklY
-	 jj7rp+J35XKn/AjpVtC62WnVgLTOJcJtQBq+ByWwidLmrrmoSJdcan0r2MSR2x/I5k
-	 ehlW7UPixHG2Q==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 03 Dec 2024 15:33:17 +0200
-Subject: [PATCH] mtd: rawnand: omap2: Fix build warnings with W=1
+	Tue, 03 Dec 2024 14:40:13 +0000
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-53df119675dso6845643e87.0
+        for <linux-mtd@lists.infradead.org>; Tue, 03 Dec 2024 06:40:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733236810; x=1733841610; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N3Nr4XeB1CbtFa9bFEvuvgsDgOngGNQm3FTGU0CVoU4=;
+        b=BOUNLFuHGGKFe3lBGHk0EcxHOkjytmJwpriqIQwS0u88wbjVer1NW7uftGsOXxqhW6
+         AjRWC7yDX4+FbUc0zM8OMz5Iu61+2bRVwsCN9xn2GG762KUpbiEUfHvNfhXTNUniA4VK
+         34Y/dwsaLJEm+oHsneVu+eFdcvd7H1N9em8BDgAyqoTrDXFicmtKZbkrnD7XBf+FkpX1
+         fUx0TQJeNY8hC1OkohvCiaiseMTceNgyrlIULmBrrxvF7GpY6gmzWXl538QDRA1BMjki
+         OnlRLZMBExDUJcNLqK2bGoOmnXLsqTPcmJK/fDJh9Po9paZnqg6vq8bsl2SX8Mcw5orw
+         T+Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733236810; x=1733841610;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N3Nr4XeB1CbtFa9bFEvuvgsDgOngGNQm3FTGU0CVoU4=;
+        b=pEeDaLTcNGmEk6Es3wk9BLs/i3kEzTnvY3ZIoi+mfqMfaIGQTdZTigw+77AQ9wSGzP
+         7Tft+jLJtjzXd+EeW2XPsTzbSkA46g7cKYS6tKhh5ZMiDEZ6o9bNTXPrLEqupz9uhcq3
+         wK+bGPyc6ncoNx5t33anxTEfNx84ftHiwfAf8sAyZaCqibopJOWS0jg0XBqds3qwaZDB
+         ultBa4H7akE57iGcJFSDh35SiLOOsd2TLf0IRGCETKAQXJNHaU/+5WI01gX/T6uO3n30
+         T7S25+SphKzSLu8cP5LGfmhoF1FaU3+PUak6cBdpj+Hg/6cgdwZFlenlFvItvRRDMfUo
+         WbOg==
+X-Gm-Message-State: AOJu0YwR2IHDyZ7ofen+8zWhSzOwon1ZY+D5YnKaKevU7Rf3QqiaLLgy
+	O17BLaf+Z89WQd8FibVCBkggHQT/dkzZS3zV0n8WgqIerUFCM7Rg2SoNYA==
+X-Gm-Gg: ASbGncsmj4tbANV6S+/ndM6Kyxlp9ARVx+2w2DCEPrV5nzQBkeWzz8HzaPL4CjMUMXZ
+	0xBBQS2jsyBC3eZdpkpUji7GpMo27fODoheKJFfC/+0/sJQ1vK2ba6THtajwPQwqHueH2efpX5m
+	aa9gFq1Q0THPY77z9vIB7cUTAuG34zE1W5PZO0yvYL4SE+fWB7fldBVY/Ld08mELi6kOBknOlsd
+	dk00pLNQMgPLLI1GWdmDYRyfBWQEqbrdtg+oziX9OyyjW1KVjDv9iUw1Vrp6dLnmAnKEFaXlhir
+	J7Mq0kmrXmbOkbLs6DRP7rBNFOq8fI2R
+X-Google-Smtp-Source: AGHT+IHRkUTW7rbf49dU52UsPPQtnYedl4yMaDH2QalzrbvS6UmlDYd2E1N4HhXairQZubX6q/bJzQ==
+X-Received: by 2002:ac2:4e09:0:b0:53d:ed15:5ab6 with SMTP id 2adb3069b0e04-53e129ef4f5mr1844574e87.11.1733236809997;
+        Tue, 03 Dec 2024 06:40:09 -0800 (PST)
+Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53df6496ce9sm1853246e87.220.2024.12.03.06.40.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2024 06:40:08 -0800 (PST)
+From: Anton Moryakov <ant.v.moryakov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
+Subject: [PATCH] FIX: NO_CAST.INTEGER_OVERFLOW in flash_erase.c
+Date: Tue,  3 Dec 2024 17:40:15 +0300
+Message-Id: <20241203144015.144533-1-ant.v.moryakov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-Id: <20241203-omap2-doc-fix-v1-1-f46cd2a5c055@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAJwIT2cC/x2MQQqAMAzAviI9W9haRfAr4kFn1R50YwMRxL9bP
- CaQPFAkqxToqweyXFo0nga+riDs07kJ6mIM5Kjx5BjjMSXCJQZc9UbhWcQ1XcsrgzUpi+n/N4z
- v+wGJlMBYXwAAAA==
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- kernel test robot <lkp@intel.com>, Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4570; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=rMaSDNSAJrbcxHZSVbXsKcHrwaahyhZiCTadCvujcTM=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnTwih1vcygEgDaCB6oM4tIWffmiDB/Dsp2OrTy
- 8ZGkkapbGKJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZ08IoQAKCRDSWmvTvnYw
- kyVkD/4p+IhXsNs7coGVFFZDAcqAcc6xwYQahANbTwCI+x3DaH+6Sv9RsR6JocmOjveVkxzdLF5
- yuJVp+ht1pKFtomZd38xrETk9SVGzrutoZB1yH5o4TWukF9+WuZC4Y6myHRD1h9XttLVkLe2Gwe
- Ya8AIhhZ/6xmchoVmt0ijrZro51Ifo9lzw/TwaG7FWxQrqMRLDZvqsXT1NY4ChRK10+kmiqkiuP
- GREWFZ16OAyTSiTDOae4cIbIjd8SZNBS445tYR3oC47HJtT27Iptc39nrW37ewhgdx1d3lzfzCG
- oIhVe4DwqSvWcHZ0bfzRZN6DSOLQ9Y+719MoHUO/n2maCJ8zxwxtSfmSfMp4/vjsFcyNrYOf6gm
- 2X/Meaf5KHix3HXZCPwLjIhRTZhdRMKyI4iUZMiPxq82FJP5ay20nsNwbec7j4Gd6IuwFVtR7mW
- /Z6JmavkOuOvPMwhvgIxvCjyyWltKqGNrEJvfZ/soG04ZaEPE4RBP4T26fVcGywIXIof9wBnp8l
- RCv6IcsCRXmAtKhIrD+yRmYxoKdZ6O75sb3dEzY9tU9zTNdJgWQaG95U8Ls7jVuwrKdNjA3aBAH
- UdRs8HKxSSvtHHVGzvNXUFZWqRHaelNGi30QUKK93z50J6f8s8ULdEnuuUxO4q/Mz9dhRNhsXrs
- MxeTBS/DKbbezRQ==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241203_053324_311396_979C6797 
-X-CRM114-Status: UNSURE (   9.23  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241203_064012_518583_0D735EC9 
+X-CRM114-Status: GOOD (  12.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,89 +93,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add kernel-doc for functions to get rid of below warnings
-when built with W=1.
+Report of the static analyzer:
+The value of an arithmetic expression 'eb_cnt * mtd.eb_size' is a subject to overflow because its operands are not cast to a larger data type before performing arithmetic
 
-drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_in_pref'
-drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_in_pref'
-drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_in_pref'
-drivers/mtd/nand/raw/omap2.c:260: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_in_pref'
-drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_out_pref'
-drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_out_pref'
-drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_out_pref'
-drivers/mtd/nand/raw/omap2.c:304: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_out_pref'
-drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_in_dma_pref'
-drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_in_dma_pref'
-drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_in_dma_pref'
-drivers/mtd/nand/raw/omap2.c:446: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_in_dma_pref'
-drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'chip' not described in 'omap_nand_data_out_dma_pref'
-drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'buf' not described in 'omap_nand_data_out_dma_pref'
-drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'len' not described in 'omap_nand_data_out_dma_pref'
-drivers/mtd/nand/raw/omap2.c:467: warning: Function parameter or struct member 'force_8bit' not described in 'omap_nand_data_out_dma_pref'
+Corrections explained:
+Added explicit casting of eb_cnt to uint64_t in the condition 
+if (eb_start == 0 && mtd.size == eb_cnt * mtd.eb_size) 
+to ensure the multiplication is performed in a 64-bit context, 
+preventing potential overflow for large values of eb_cnt and mtd.eb_size.
+This ensures correct handling of devices with large block counts or block sizes.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202412031716.JfNIh1Uu-lkp@intel.com/
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- drivers/mtd/nand/raw/omap2.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Triggers found by static analyzer Svace.
 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index d9141f3c0dd1..b8af3a3533fc 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -254,6 +254,10 @@ static int omap_prefetch_reset(int cs, struct omap_nand_info *info)
- 
- /**
-  * omap_nand_data_in_pref - NAND data in using prefetch engine
-+ * @chip: NAND chip
-+ * @buf: output buffer where NAND data is placed into
-+ * @len: length of transfer
-+ * @force_8bit: force 8-bit transfers
-  */
- static void omap_nand_data_in_pref(struct nand_chip *chip, void *buf,
- 				   unsigned int len, bool force_8bit)
-@@ -297,6 +301,10 @@ static void omap_nand_data_in_pref(struct nand_chip *chip, void *buf,
- 
- /**
-  * omap_nand_data_out_pref - NAND data out using Write Posting engine
-+ * @chip: NAND chip
-+ * @buf: input buffer that is sent to NAND
-+ * @len: length of transfer
-+ * @force_8bit: force 8-bit transfers
-  */
- static void omap_nand_data_out_pref(struct nand_chip *chip,
- 				    const void *buf, unsigned int len,
-@@ -440,6 +448,10 @@ static inline int omap_nand_dma_transfer(struct nand_chip *chip,
- 
- /**
-  * omap_nand_data_in_dma_pref - NAND data in using DMA and Prefetch
-+ * @chip: NAND chip
-+ * @buf: output buffer where NAND data is placed into
-+ * @len: length of transfer
-+ * @force_8bit: force 8-bit transfers
-  */
- static void omap_nand_data_in_dma_pref(struct nand_chip *chip, void *buf,
- 				       unsigned int len, bool force_8bit)
-@@ -460,6 +472,10 @@ static void omap_nand_data_in_dma_pref(struct nand_chip *chip, void *buf,
- 
- /**
-  * omap_nand_data_out_dma_pref - NAND data out using DMA and write posting
-+ * @chip: NAND chip
-+ * @buf: input buffer that is sent to NAND
-+ * @len: length of transfer
-+ * @force_8bit: force 8-bit transfers
-  */
- static void omap_nand_data_out_dma_pref(struct nand_chip *chip,
- 					const void *buf, unsigned int len,
+Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
 
 ---
-base-commit: cdd30ebb1b9f36159d66f088b61aee264e649d7a
-change-id: 20241203-omap2-doc-fix-e3bee04753f3
+ misc-utils/flash_erase.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
+diff --git a/misc-utils/flash_erase.c b/misc-utils/flash_erase.c
+index c6f6f66..36f8d57 100644
+--- a/misc-utils/flash_erase.c
++++ b/misc-utils/flash_erase.c
+@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
+ 	if (eb_cnt == 0)
+ 		eb_cnt = (mtd.size / mtd.eb_size) - eb_start;
+ 
+-	if (eb_start == 0 && mtd.size == eb_cnt * mtd.eb_size)
++	if (eb_start == 0 && mtd.size == (long long)eb_cnt * mtd.eb_size)
+ 		erase_chip = true;
+ 
+ 	/* If MTD device may have bad eraseblocks,
 -- 
-Roger Quadros <rogerq@kernel.org>
+2.30.2
 
 
 ______________________________________________________
