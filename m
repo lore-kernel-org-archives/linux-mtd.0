@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF89E77171
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF55E7716B
 	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2024 09:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,35 +12,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dnCBsBbf4jJ8n++mYUS5749QKESqTZoNieSrZE4Y0Xs=; b=zhrzk4gY2YfkxU
-	H+3tBMxLjZfh1IBq+9lpvNdP6NJ35nkVk088+GxJhVyHddBHT/AfE2AT9uhKNYmKDgvC/BRUO4IHP
-	y8Z3zaxWhEenKPGcw/OgGom1h00oNfIzaA3Yezh+sTP7gSaZMeGDdFwJzCiWgw21HH1GfickK8L7X
-	aSnE5NxtZx+uxUdLtARDpoden98+R3LcBY2j6hYJVXZUo8jgpaqX4ufxp2HOVhEKgwayywYrzEkVG
-	K3UuuClvz99gKsVsb35wITCofKYKPl/wjIydNFBASjKSRim7sBDxjd+o5FkmnEvbU5ArOq3Gd7dEX
-	8uALBjeDSn84LCACElTg==;
+	List-Owner; bh=lh9bvRHmrJXjl+noiPRmcZPgm3uL6I6ArL4eybE/TdQ=; b=efkT6ka11r0gBx
+	uDzg8YBWumcC54AMTulVfT6yfGY0mJXia2xPU1GVvA2uQt7NW2ERAF6uO0cPF82tEuq6S2CTo0bZk
+	0cRZ0RCpMEUU4hcHTPEN6e9az6s9GstBH+jizU/1A6D7N1A7VkCwku48J3CjfWy2D+Jsm9F7TdLJn
+	cyvPBbVHX4b0paWlBoSt2eTPivTRbTKIC/E6wnecjouftDhm2IF+50bNhkavUZPy0CNHxAQGDpGOL
+	El3V7nwFrvl55BQ1B/NIdnps1GpUDrTntMN2rq3WoruwVvHOZ0OedlB+GHOxNbHKYBHDsi9X3jUMK
+	poZE/axMlM4XcB6C67LA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIlxl-0000000C6ID-0GKS;
-	Wed, 04 Dec 2024 09:46:29 +0000
+	id 1tIlxi-0000000C6GR-1ZEO;
+	Wed, 04 Dec 2024 09:46:26 +0000
 Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIlus-0000000C5ap-0BpJ
+	id 1tIlup-0000000C5ac-0RSk
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Dec 2024 09:43:31 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 55C016000E;
-	Wed,  4 Dec 2024 09:43:24 +0000 (UTC)
+	Wed, 04 Dec 2024 09:43:29 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0C32960006;
+	Wed,  4 Dec 2024 09:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1733305404;
+	t=1733305403;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=L1dSLJh1SAr2vIT0aQ/N/d5yFBNgqA0SN9iaVBxJ+xc=;
-	b=OgJ0OEh8TT0ynPArYFjdi8h19A0loT1wSX8taMnOcspK+yhepP4Tvx3hQP/enaBZPEy5+k
-	D72w9HUkzUesJPkkry7zH147mZw+smiGbv+0rWfXhOyUPtn7DXS3p+5Ng4kB46QLk8Duh3
-	6KsSlDZU3qfLi7IoNSLXBPpFw79RaolKfc6wLwcgc2ItV+Z7/+ZTxGo7fq470m4wGJrEbM
-	U4jqDYarhXXWQasGwC935PGTaqAD4S6j68YPqTPPf3aON85Mdx59zuVkMP0YheGq7YlAk1
-	FW5/+KCaji7nPFETh9KP7OKkKz6VwrMvP1BmzgK660ixyuXalLM/yILqbrBzuQ==
+	bh=9cG2pXBBYPaIu412ONqK9p/NnPgxaT89+ifg4qGZl7k=;
+	b=hTlu/ZXIJqSB50d6jE/LErzqwyvOBI+zqGwCFx+VITaUHY0PxU/2HMEGawJPqU3Q2p4JTr
+	A3Hh0ggsavNOxBmi7mlnHDrsqHlIv/5ekKrbpvtc42plHiJtc2yMGlWazyLEXY0Y2o4eJM
+	ic/qJoGaa++V5T+TGAhWELwo2FFmubbVEdhULxKqqLkpAATRh00CPa2CgfD8uuIdoOPknY
+	XeSVea/tt/rgk6qZ+JxD0c4/Uu8/6LfyBGTZtYqOiEv9Co1+YOHh1WI8tDeU6zShwbmGFW
+	l+LCbaPQXqoo7j4XK6+gwSuEaDWBa+cWySFXkUcxqFXe2Gd8wbRSpRsykZ+rlg==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -53,17 +53,17 @@ Cc: linux-kernel@vger.kernel.org,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH v5 3/9] memory: ti-aemif: Wrap CS timings into a struct
-Date: Wed,  4 Dec 2024 10:43:13 +0100
-Message-ID: <20241204094319.1050826-4-bastien.curutchet@bootlin.com>
+Subject: [PATCH v5 1/9] memory: ti-aemif: Store timings parameter in number of cycles - 1
+Date: Wed,  4 Dec 2024 10:43:11 +0100
+Message-ID: <20241204094319.1050826-2-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
 References: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241204_014330_400512_E6541422 
-X-CRM114-Status: GOOD (  13.25  )
+X-CRM114-CacheID: sfid-20241204_014327_548718_D78F4A07 
+X-CRM114-Status: GOOD (  15.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,165 +80,228 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CS timings are store in the struct aemif_cs_data along with other CS
-parameters. It isn't convenient for exposing CS timings to other drivers
-without also exposing the other parameters.
+The CS configuration register expects timings to be expressed in
+'number of cycles - 1' but they are stored in ns in the struct
+aemif_cs_data. So at init, the timings currently set are converted to ns
+by aemif_get_hw_params(), updated with values from the device-tree
+properties, and then converted back to 'number of cycles - 1' before
+being applied.
 
-Wrap the CS timings in a new struct aemif_cs_timings to simplify their
-export in upcoming patches.
+Store the timings directly in 'number of cycles - 1' instead of
+nanoseconds.
+Perform the conversion from nanosecond during the device-tree parsing.
+Remove aemif_cycles_to_nsec() as it isn't used anymore.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/memory/ti-aemif.c | 57 ++++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 24 deletions(-)
+ drivers/memory/ti-aemif.c | 135 ++++++++++++++++++++++----------------
+ 1 file changed, 79 insertions(+), 56 deletions(-)
 
 diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-index a0e1a6b53256..1d1b30112af5 100644
+index d54dc3cfff73..f23a549b219b 100644
 --- a/drivers/memory/ti-aemif.c
 +++ b/drivers/memory/ti-aemif.c
-@@ -80,8 +80,7 @@
- 				ASIZE_MAX)
- 
+@@ -82,26 +82,26 @@
  /**
-- * struct aemif_cs_data: structure to hold cs parameters
-- * @cs: chip-select number
-+ * struct aemif_cs_timings: structure to hold CS timings
-  * @wstrobe: write strobe width, number of cycles - 1
-  * @rstrobe: read strobe width, number of cycles - 1
-  * @wsetup: write setup width, number of cycles - 1
-@@ -89,12 +88,8 @@
-  * @rsetup: read setup width, number of cycles - 1
-  * @rhold: read hold width, number of cycles - 1
-  * @ta: minimum turn around time, number of cycles - 1
-- * @enable_ss: enable/disable select strobe mode
-- * @enable_ew: enable/disable extended wait mode
-- * @asize: width of the asynchronous device's data bus
+  * struct aemif_cs_data: structure to hold cs parameters
+  * @cs: chip-select number
+- * @wstrobe: write strobe width, ns
+- * @rstrobe: read strobe width, ns
+- * @wsetup: write setup width, ns
+- * @whold: write hold width, ns
+- * @rsetup: read setup width, ns
+- * @rhold: read hold width, ns
+- * @ta: minimum turn around time, ns
++ * @wstrobe: write strobe width, number of cycles - 1
++ * @rstrobe: read strobe width, number of cycles - 1
++ * @wsetup: write setup width, number of cycles - 1
++ * @whold: write hold width, number of cycles - 1
++ * @rsetup: read setup width, number of cycles - 1
++ * @rhold: read hold width, number of cycles - 1
++ * @ta: minimum turn around time, number of cycles - 1
+  * @enable_ss: enable/disable select strobe mode
+  * @enable_ew: enable/disable extended wait mode
+  * @asize: width of the asynchronous device's data bus
   */
--struct aemif_cs_data {
--	u8	cs;
-+struct aemif_cs_timings {
- 	u32	wstrobe;
- 	u32	rstrobe;
- 	u32	wsetup;
-@@ -102,6 +97,19 @@ struct aemif_cs_data {
- 	u32	rsetup;
- 	u32	rhold;
- 	u32	ta;
-+};
-+
-+/**
-+ * struct aemif_cs_data: structure to hold CS parameters
-+ * @timings: timings configuration
-+ * @cs: chip-select number
-+ * @enable_ss: enable/disable select strobe mode
-+ * @enable_ew: enable/disable extended wait mode
-+ * @asize: width of the asynchronous device's data bus
-+ */
-+struct aemif_cs_data {
-+	struct aemif_cs_timings timings;
-+	u8	cs;
+ struct aemif_cs_data {
+ 	u8	cs;
+-	u16	wstrobe;
+-	u16	rstrobe;
+-	u8	wsetup;
+-	u8	whold;
+-	u8	rsetup;
+-	u8	rhold;
+-	u8	ta;
++	u32	wstrobe;
++	u32	rstrobe;
++	u32	wsetup;
++	u32	whold;
++	u32	rsetup;
++	u32	rhold;
++	u32	ta;
  	u8	enable_ss;
  	u8	enable_ew;
  	u8	asize;
-@@ -179,9 +187,10 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+@@ -175,26 +175,18 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+ 	struct aemif_device *aemif = platform_get_drvdata(pdev);
+ 	struct aemif_cs_data *data = &aemif->cs_data[csnum];
+ 	int ta, rhold, rstrobe, rsetup, whold, wstrobe, wsetup;
+-	unsigned long clk_rate = aemif->clk_rate;
+ 	unsigned offset;
+ 	u32 set, val;
  
  	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
  
--	set = TA(data->ta) |
--		RHOLD(data->rhold) | RSTROBE(data->rstrobe) | RSETUP(data->rsetup) |
--		WHOLD(data->whold) | WSTROBE(data->wstrobe) | WSETUP(data->wsetup);
-+	set = TA(data->timings.ta) |
-+		RHOLD(data->timings.rhold) | RSTROBE(data->timings.rstrobe) |
-+		RSETUP(data->timings.rsetup) | WHOLD(data->timings.whold) |
-+		WSTROBE(data->timings.wstrobe) | WSETUP(data->timings.wsetup);
+-	ta	= aemif_calc_rate(pdev, data->ta, clk_rate, TA_MAX);
+-	rhold	= aemif_calc_rate(pdev, data->rhold, clk_rate, RHOLD_MAX);
+-	rstrobe	= aemif_calc_rate(pdev, data->rstrobe, clk_rate, RSTROBE_MAX);
+-	rsetup	= aemif_calc_rate(pdev, data->rsetup, clk_rate, RSETUP_MAX);
+-	whold	= aemif_calc_rate(pdev, data->whold, clk_rate, WHOLD_MAX);
+-	wstrobe	= aemif_calc_rate(pdev, data->wstrobe, clk_rate, WSTROBE_MAX);
+-	wsetup	= aemif_calc_rate(pdev, data->wsetup, clk_rate, WSETUP_MAX);
+-
+-	if (ta < 0 || rhold < 0 || rstrobe < 0 || rsetup < 0 ||
+-	    whold < 0 || wstrobe < 0 || wsetup < 0) {
+-		dev_err(&pdev->dev, "%s: cannot get suitable timings\n",
+-			__func__);
+-		return -EINVAL;
+-	}
++	ta	=  data->ta;
++	rhold	=  data->rhold;
++	rstrobe	=  data->rstrobe;
++	rsetup	=  data->rsetup;
++	whold	=  data->whold;
++	wstrobe	=  data->wstrobe;
++	wsetup	=  data->wsetup;
  
- 	set |= (data->asize & ACR_ASIZE_MASK);
- 	if (data->enable_ew)
-@@ -215,13 +224,13 @@ static void aemif_get_hw_params(struct platform_device *pdev, int csnum)
+ 	set = TA(ta) | RHOLD(rhold) | RSTROBE(rstrobe) | RSETUP(rsetup) |
+ 		WHOLD(whold) | WSTROBE(wstrobe) | WSETUP(wsetup);
+@@ -213,11 +205,6 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+ 	return 0;
+ }
+ 
+-static inline int aemif_cycles_to_nsec(int val, unsigned long clk_rate)
+-{
+-	return ((val + 1) * NSEC_PER_MSEC) / clk_rate;
+-}
+-
+ /**
+  * aemif_get_hw_params - function to read hw register values
+  * @pdev: platform device to read for
+@@ -231,19 +218,18 @@ static void aemif_get_hw_params(struct platform_device *pdev, int csnum)
+ {
+ 	struct aemif_device *aemif = platform_get_drvdata(pdev);
+ 	struct aemif_cs_data *data = &aemif->cs_data[csnum];
+-	unsigned long clk_rate = aemif->clk_rate;
+ 	u32 val, offset;
+ 
  	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
  	val = readl(aemif->base + offset);
  
--	data->ta = TA_VAL(val);
--	data->rhold = RHOLD_VAL(val);
--	data->rstrobe = RSTROBE_VAL(val);
--	data->rsetup = RSETUP_VAL(val);
--	data->whold = WHOLD_VAL(val);
--	data->wstrobe = WSTROBE_VAL(val);
--	data->wsetup = WSETUP_VAL(val);
-+	data->timings.ta = TA_VAL(val);
-+	data->timings.rhold = RHOLD_VAL(val);
-+	data->timings.rstrobe = RSTROBE_VAL(val);
-+	data->timings.rsetup = RSETUP_VAL(val);
-+	data->timings.whold = WHOLD_VAL(val);
-+	data->timings.wstrobe = WSTROBE_VAL(val);
-+	data->timings.wsetup = WSETUP_VAL(val);
+-	data->ta = aemif_cycles_to_nsec(TA_VAL(val), clk_rate);
+-	data->rhold = aemif_cycles_to_nsec(RHOLD_VAL(val), clk_rate);
+-	data->rstrobe = aemif_cycles_to_nsec(RSTROBE_VAL(val), clk_rate);
+-	data->rsetup = aemif_cycles_to_nsec(RSETUP_VAL(val), clk_rate);
+-	data->whold = aemif_cycles_to_nsec(WHOLD_VAL(val), clk_rate);
+-	data->wstrobe = aemif_cycles_to_nsec(WSTROBE_VAL(val), clk_rate);
+-	data->wsetup = aemif_cycles_to_nsec(WSETUP_VAL(val), clk_rate);
++	data->ta = TA_VAL(val);
++	data->rhold = RHOLD_VAL(val);
++	data->rstrobe = RSTROBE_VAL(val);
++	data->rsetup = RSETUP_VAL(val);
++	data->whold = WHOLD_VAL(val);
++	data->wstrobe = WSTROBE_VAL(val);
++	data->wsetup = WSETUP_VAL(val);
  	data->enable_ew = EW_VAL(val);
  	data->enable_ss = SSTROBE_VAL(val);
  	data->asize = val & ASIZE_MAX;
-@@ -272,7 +281,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
+@@ -261,7 +247,9 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
+ 				      struct device_node *np)
+ {
+ 	struct aemif_device *aemif = platform_get_drvdata(pdev);
++	unsigned long clk_rate = aemif->clk_rate;
+ 	struct aemif_cs_data *data;
++	int ret;
+ 	u32 cs;
+ 	u32 val;
  
--		data->ta = ret;
-+		data->timings.ta = ret;
- 	}
+@@ -287,26 +275,61 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
+ 	aemif_get_hw_params(pdev, aemif->num_cs++);
  
- 	if (!of_property_read_u32(np, "ti,cs-read-hold-ns", &val)) {
-@@ -280,7 +289,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
+ 	/* override the values from device node */
+-	if (!of_property_read_u32(np, "ti,cs-min-turnaround-ns", &val))
+-		data->ta = val;
++	if (!of_property_read_u32(np, "ti,cs-min-turnaround-ns", &val)) {
++		ret = aemif_calc_rate(pdev, val, clk_rate, TA_MAX);
++		if (ret < 0)
++			return ret;
  
--		data->rhold = ret;
-+		data->timings.rhold = ret;
- 	}
+-	if (!of_property_read_u32(np, "ti,cs-read-hold-ns", &val))
+-		data->rhold = val;
++		data->ta = ret;
++	}
  
- 	if (!of_property_read_u32(np, "ti,cs-read-strobe-ns", &val)) {
-@@ -288,7 +297,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
+-	if (!of_property_read_u32(np, "ti,cs-read-strobe-ns", &val))
+-		data->rstrobe = val;
++	if (!of_property_read_u32(np, "ti,cs-read-hold-ns", &val)) {
++		ret = aemif_calc_rate(pdev, val, clk_rate, RHOLD_MAX);
++		if (ret < 0)
++			return ret;
  
--		data->rstrobe = ret;
-+		data->timings.rstrobe = ret;
- 	}
+-	if (!of_property_read_u32(np, "ti,cs-read-setup-ns", &val))
+-		data->rsetup = val;
++		data->rhold = ret;
++	}
  
- 	if (!of_property_read_u32(np, "ti,cs-read-setup-ns", &val)) {
-@@ -296,7 +305,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
+-	if (!of_property_read_u32(np, "ti,cs-write-hold-ns", &val))
+-		data->whold = val;
++	if (!of_property_read_u32(np, "ti,cs-read-strobe-ns", &val)) {
++		ret = aemif_calc_rate(pdev, val, clk_rate, RSTROBE_MAX);
++		if (ret < 0)
++			return ret;
  
--		data->rsetup = ret;
-+		data->timings.rsetup = ret;
- 	}
+-	if (!of_property_read_u32(np, "ti,cs-write-strobe-ns", &val))
+-		data->wstrobe = val;
++		data->rstrobe = ret;
++	}
  
- 	if (!of_property_read_u32(np, "ti,cs-write-hold-ns", &val)) {
-@@ -304,7 +313,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->whold = ret;
-+		data->timings.whold = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-write-strobe-ns", &val)) {
-@@ -312,7 +321,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->wstrobe = ret;
-+		data->timings.wstrobe = ret;
- 	}
- 
- 	if (!of_property_read_u32(np, "ti,cs-write-setup-ns", &val)) {
-@@ -320,7 +329,7 @@ static int of_aemif_parse_abus_config(struct platform_device *pdev,
- 		if (ret < 0)
- 			return ret;
- 
--		data->wsetup = ret;
-+		data->timings.wsetup = ret;
- 	}
+-	if (!of_property_read_u32(np, "ti,cs-write-setup-ns", &val))
+-		data->wsetup = val;
++	if (!of_property_read_u32(np, "ti,cs-read-setup-ns", &val)) {
++		ret = aemif_calc_rate(pdev, val, clk_rate, RSETUP_MAX);
++		if (ret < 0)
++			return ret;
++
++		data->rsetup = ret;
++	}
++
++	if (!of_property_read_u32(np, "ti,cs-write-hold-ns", &val)) {
++		ret = aemif_calc_rate(pdev, val, clk_rate, WHOLD_MAX);
++		if (ret < 0)
++			return ret;
++
++		data->whold = ret;
++	}
++
++	if (!of_property_read_u32(np, "ti,cs-write-strobe-ns", &val)) {
++		ret = aemif_calc_rate(pdev, val, clk_rate, WSTROBE_MAX);
++		if (ret < 0)
++			return ret;
++
++		data->wstrobe = ret;
++	}
++
++	if (!of_property_read_u32(np, "ti,cs-write-setup-ns", &val)) {
++		ret = aemif_calc_rate(pdev, val, clk_rate, WSETUP_MAX);
++		if (ret < 0)
++			return ret;
++
++		data->wsetup = ret;
++	}
  
  	if (!of_property_read_u32(np, "ti,cs-bus-width", &val))
+ 		if (val == 16)
 -- 
 2.47.0
 
