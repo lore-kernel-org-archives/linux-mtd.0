@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC366E77176
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3138E77178
 	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2024 09:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=e5QYnCo8dncy+yzDJqj69CIzQk5USXY9h/Mlk/8mCIM=; b=GTMmIEqejxDfNh
-	hNDsHuuDuof3jwGqhN6nXEmOJlaraAhitOXkWfbVFf4jqvwiwGj4uY/YshA+W6Y2g7tlArL4Uf8qp
-	wVYo2YsczcmNBAFaqc7JrnQ6VCGFbRpiFHpTIsBapClyzVlO59fTS5PywhEKmoIrWvcFhyp07fP0g
-	G+EXWebd1T4fN2iojsBhkB0R5NQxL2uRTV8FOqePzI9nYD9itW3NuNxy/QcEd7pN+I6jDDUQ+QHtG
-	Dp0lx/YHD6hafr2HyYYS8CKPUhIYGl30kUkmrvYM/1WK0xLg7JyDjG4OClOdjPXVJP1XnOfVxbGyP
-	UPfeFfg4bHTVWQoUKnaA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NFD9ARzQM54n0sA23lICK4brVczHSusBwNJ/EOAfn5s=; b=tj6tyyjKfBO/d0
+	D4/aizysicXrqa0erQNqo++1eCW8Qp6CMPmvTY6piOj3gp9FdSAfY+jgk75rCfqKXK+V8IQxULixZ
+	1bTs/SsTH+l9Ih9YZSlyhF3XWd9A5VmR8HI4jb1cwe/e9iG6xxwf8QBYUw9ef09W/pO8bX1LH9geg
+	yAqPeKq/wAyqgNmPp2EC9wfeQpscIvXYIlPFv+NkSYsPmO1h2brFe+koC3jjzjs4uHR6TzQoXrXY0
+	vZO/tQ/QE8n+Govl+2BZ80LX/HcNrwa0gW22EEjVe/BstsJkOuSi1iLcz46OjgBaVqHcACnnJbF2z
+	Ooe4q6VKTM/xXWhhlJ8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIlxh-0000000C6G9-3Wre;
+	id 1tIlxh-0000000C6FQ-0wJt;
 	Wed, 04 Dec 2024 09:46:25 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIlup-0000000C5aZ-0eaV
+	id 1tIlup-0000000C5ah-0wsQ
 	for linux-mtd@lists.infradead.org;
 	Wed, 04 Dec 2024 09:43:28 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2C38760004;
-	Wed,  4 Dec 2024 09:43:22 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id AAFF36000B;
+	Wed,  4 Dec 2024 09:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1733305402;
+	t=1733305404;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=hKcYOHyEFAVPL+bloJMlVp02+e+jLT8JX4gSHEoctCI=;
-	b=R2MvzP+4c9Q1ERLZ/n9kpLGZk6iwZhdeKeT5TOJKxynBc8UMGicgj0r5pEgyqC7j1AOIDb
-	Mk4aPH5Xzo33sLKERjJ4EV+5BLvF0WxFx1E8Us1i+guYDQJTa6uNI47IDR1Vbp2yAW3USZ
-	l/pvyZ/X7+qZiIISUlGUlloc2PIGBwl+7Siuq8PM6+fD8Rmqek6PrRBH8x/YVfEBAqs+cD
-	1fT2rK8YQz/GITIG3vgEbuJWx0ytoLeSGjNmJiAbIc0xJ0iM/iKSw/cC7H9sEgcE5viAo5
-	rSfI3d3GPogEL9Ce7hyrnIaaLu6TO6UDcDjPkMcGCmJwUP3VaB+Ep9W3wv4FeA==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NVdYJysLi5n1RUC9YCAebU4m2JnvzkI3+7eLaZOZoto=;
+	b=YfC0a/iqtP4VitNKQCBacFOdIXuFnZvGCOcyKRHCZ8PBNoPmiQuSpaqchX3zQ6QFc0L1sj
+	mmx4fN1QTv3INfgHsjtikiE5eplc9NOfV6BLLKLyITrDlB08LuGCouHMb+LTlxnDN7xMkE
+	D3rb3S6Mb4cqIRMIoZV3yHEkktoDfVajTtUgo7+ub25uLBFuxo4ExutgyQfZJmCIOvpNnb
+	4siKZwd1gNOmeJq1Z5niaDN0VB47KDRx9aIa5QdFjfRn9S+BZGOuoy4h92nRb4sDS6ePL9
+	Za7oglhBuQyUr1E9BrhjxG04qyJ1K1FLtrPe2bVKoerkpSVVsZVI8R5pawVrtQ==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -52,15 +53,17 @@ Cc: linux-kernel@vger.kernel.org,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH v5 0/9] Implement setup_interface() in the DaVinci NAND controller
-Date: Wed,  4 Dec 2024 10:43:10 +0100
-Message-ID: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
+Subject: [PATCH v5 2/9] memory: ti-aemif: Remove unnecessary local variables
+Date: Wed,  4 Dec 2024 10:43:12 +0100
+Message-ID: <20241204094319.1050826-3-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
+References: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241204_014327_547722_3EEFA566 
-X-CRM114-Status: GOOD (  15.74  )
+X-CRM114-CacheID: sfid-20241204_014327_547627_CEE87604 
+X-CRM114-Status: GOOD (  10.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,79 +75,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgYWxsLAoKVGhpcyBwYXRjaCBzZXJpZXMgYWltcyB0byBpbXBsZW1lbnQgdGhlIHNldHVwX2lu
-dGVyZmFjZSgpIG9wZXJhdGlvbiBpbgp0aGUgRGFWaW5jaSBOQU5EIGNvbnRyb2xsZXIgdG8gZW5h
-YmxlIHRoZSB1c2Ugb2YgYWxsIE9ORkkgbW9kZXMgYW5kCmltcHJvdmUgdGhlIE5BTkQgYWNjZXNz
-IHNwZWVkLgoKUEFUQ0ggNiBkZXBlbmRzIG9uIFBBVENIIDEtMi0zLTQtNQpQQVRDSCA5IGRlcGVu
-ZHMgb24gUEFUQ0ggNi04CgpUaGlzIE5BTkQgY29udHJvbGxlciBpcyBwcmVzZW50IGluIHRoZSBE
-YVZpbmNpIChPTUFQIEwxMzgpIGFuZCBLZXlzdG9uZTIKU29DcyBhbmQgZnVuY3Rpb25zIGFzIGEg
-J2NoaWxkJyBvZiB0aGUgQUVNSUYgY29udHJvbGxlci4gU28gaXRzIHRpbWluZ3MKYXJlIHNldCBi
-eSB0aGUgQUVNSUYgY29udHJvbGxlciBpdHNlbGYgZnJvbSBkZXZpY2UtdHJlZSBwcm9wZXJ0aWVz
-LgpJbXBsZW1lbnRpbmcgdGhlIHNldHVwX2ludGVyZmFjZSgpIGNhbGxiYWNrIGltcGxpZXMgYmVp
-bmcgYWJsZSB0byB1cGRhdGUKZHluYW1pY2FsbHkgdGhlc2UgdGltaW5ncywgc28gdGhlIGZpcnN0
-IHNpeCBwYXRjaGVzIG9mIHRoZSBzZXJpZXMgbW9kaWZ5CnRoZSBBRU1JRiBkcml2ZXIgdG8gcHJv
-dmlkZSBpdHMgJ2NoaWxkcmVuJyBhIHdheSB0byBtb2RpZnkgdGhlaXIgY2hpcApzZWxlY3QgdGlt
-aW5nIGNvbmZpZ3VyYXRpb24uCgpUaGUgcmVtYWluaW5nIHBhdGNoZXMgaW1wbGVtZW50IHRoZSBz
-ZXR1cF9pbnRlcmZhY2UoKSBvcGVyYXRpb24uClRoZSBjb21wdXRhdGlvbiBvZiB0aGUgcmVnaXN0
-ZXIncyBjb250ZW50cyBpcyBkaXJlY3RseSBiYXNlZCBvbgrCpzIwLjMuMi4zIG9mIHRoZSBPTUFQ
-LUwxMzggVFJNIFsxXQoKVGhpcyBoYXMgYmVlbiB0ZXN0ZWQgb24gdHdvIHBsYXRmb3JtcyBiYXNl
-ZCB1cG9uIHRoZSBEYVZpbmNpIFNvQy4gT25lIGlzCmludGVyZmFjZWQgd2l0aCBhIE1hY3Jvbml4
-IE1YMzBVRjRHMThBQyBOQU5ELCB0aGUgb3RoZXIgd2l0aCBhIFRvc2hpYmEKTkFORC4KClsxXSA6
-IGh0dHBzOi8vd3d3LnRpLmNvbS9saXQvdWcvc3BydWg3N2Mvc3BydWg3N2MucGRmCgpDaGFuZ2Ug
-bG9nOgogKiB2NToKICAgUmViYXNlIG9uIHY2LjEzLXJjMQogICBQQVRDSCAxOgogICAgIC0gTW92
-ZSB0aGUgc3RydWN0IGFlbWlmX2NzX2RhdGEncyBjb21tZW50IG1vZGlmaWNhdGlvbiB0byBQQVRD
-SCAzCiAgIFBBVENIIDM6CiAgICAgLSBGaXggY29tbWl0IGxvZydzIHR5cG8KICAgUEFUQ0ggNDoK
-ICAgICAtIEFkZCAnKCknIGluIGNvbW1lbnQgdG8gZml0IGtlcm5lbCBkb2MgZm9ybWF0CiAgICAg
-LSBDaGFuZ2UgYWVtaWZfY2FsY19yYXRlKCkgcmV0dXJuIHR5cGUgdG8gdTMyCiAgICAgLSBBZGQg
-ZGV0YWlscyBpbiBjb21taXQgbG9nIGFuZCBmaXggdHlwbwogICBQQVRDSCA1OgogICAgIC0gQWRk
-ICcoKScgaW4gY29tbWVudCB0byBmaXQga2VybmVsIGRvYyBmb3JtYXQKICAgUEFUQ0ggNjoKICAg
-ICAtIFVzZSBFWFBPUlRfU1lNQk9MX0dQTCBpbnN0ZWFkIG9mIEVYUE9SVF9TWU1CT0wKICAgICAt
-IFVzZSBsb25nZXIgaGVhZGVyIGd1YXJkCiAgIFBBVENIIDggcmVtb3ZlZCAoYWxyZWFkeSBkb25l
-IG9uIHY2LjEzLXJjMSkKICogdjQKICAgUEFUQ0ggMSwyLDMgW25ld106CiAgICAgLSBDcmVhdGUg
-dGhlIHN0cnVjdCBhZW1pZl9jc190aW1pbmdzIGluc2lkZSB0aGUgYWxyZWFkeSBleGlzdGluZwog
-ICAgICAgc3RydWN0IGFlbWlmX2NzX2RhdGEKICogdjMKICAgUEFUQ0ggMSBbbmV3XToKICAgICAt
-IFdyYXAgdGhlIHZlcmlmaWNhdGlvbiBvZiBDUyB0aW1pbmcgY29uZmlndXJhdGlvbiBpbnRvIGEg
-ZnVuY3Rpb24KICAgUEFUQ0ggMjoKICAgICAtIEZpeCBjb21tZW50cwogICBQQVRDSCAzOgogICAg
-IC0gUmVwbGFjZSB0aGUgc3Bpbi1sb2NrIHdpdGggYSBtdXRleAogICBQQVRDSCA3OgogICAgIC0g
-QWRkIGhhbmRsaW5nIG9mIHRoZSBOQU5EX0RBVEFfSUZBQ0VfQ0hFQ0tfT05MWSBjYXNlCiAgICAg
-LSBzZXR1cF9pbnRlcmZhY2UoKSByZXR1cm5zIGVycm5vIG9uIGZhaWx1cmVzCgogKiB2MgogICBD
-b3ZlciBsZXR0ZXIgOgogICAgIC0gQWRkIGRlcGVuZGVuY3kgZGV0YWlscwogICAgIC0gUmVtb3Zl
-IHRoZSBxdWVzdGlvbiBhYm91dCB0aS1hZW1pZi5oIGxvY2F0aW9uCiAgIFBBVENIIDEgOgogICAg
-IC0gRml4IGFlbWlmX2NzX3RpbWluZ3MncyBkZXNjcmlwdGlvbiBpbiB0aGUgY29tbWVudHMKICAg
-UEFUQ0ggMiA6CiAgICAgLSBGaXggdHlwbyBpbiB0aGUgY29uZmlnX2NzX2xvY2sncyBkZXNjcmlw
-dGlvbiBpbiB0aGUgY29tbWVudHMKICAgICAtIE1vdmUgaW5jbHVkZS9tZW1vcnkvdGktYWVtaWYu
-aCB0byBpbmNsdWRlL2xpbnV4L21lbW9yeS90aS1hZW1pZi5oCiAgIFBBVENIIDMgW05FV10gOgog
-ICAgIC0gRml4IGRlcGVuZGVuY3kgaXNzdWUgd2l0aCBhZW1pZiBjb250cm9sbGVyIGluIEtjb25m
-aWcKICAgUEFUQ0ggNSA6CiAgICAgLSBBZGQgZGV0YWlscyBhYm91dCB0aGUgY2xvY2sgYmluZGlu
-Z3MgaW4gdGhlIGNvbW1pdCBsb2cKICAgICAtIFJlcGxhY2UgZGV2bV9jbGtfZ2V0KCkgd2l0aCBk
-ZXZtX2Nsa19nZXRfZW5hYmxlZCgpCiAgICAgLSBVc2UgZGV2X2Vycl9wcm9iZSgpIHRvIHJldHVy
-biB0aGUgZGV2bV9jbGtfZ2V0X2VuYWJsZWQoKSBlcnJvcgoKW3YxXSA6IGh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL2FsbC8yMDI0MTAzMDEwNDcxNy44ODY4OC0xLWJhc3RpZW4uY3VydXRjaGV0QGJv
-b3RsaW4uY29tLwpbdjJdIDogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjQxMTA2MDg1
-NTA3Ljc2NDI1LTEtYmFzdGllbi5jdXJ1dGNoZXRAYm9vdGxpbi5jb20vClt2M10gOiBodHRwczov
-L2xvcmUua2VybmVsLm9yZy9hbGwvMjAyNDExMTMwOTQ5MzguNDQ4MTctMS1iYXN0aWVuLmN1cnV0
-Y2hldEBib290bGluLmNvbS8KW3Y0XSA6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDI0
-MTExNTEzMjYzMS4yNjQ2MDktMS1iYXN0aWVuLmN1cnV0Y2hldEBib290bGluLmNvbS8KCkJhc3Rp
-ZW4gQ3VydXRjaGV0ICg5KToKICBtZW1vcnk6IHRpLWFlbWlmOiBTdG9yZSB0aW1pbmdzIHBhcmFt
-ZXRlciBpbiBudW1iZXIgb2YgY3ljbGVzIC0gMQogIG1lbW9yeTogdGktYWVtaWY6IFJlbW92ZSB1
-bm5lY2Vzc2FyeSBsb2NhbCB2YXJpYWJsZXMKICBtZW1vcnk6IHRpLWFlbWlmOiBXcmFwIENTIHRp
-bWluZ3MgaW50byBhIHN0cnVjdAogIG1lbW9yeTogdGktYWVtaWY6IENyZWF0ZSBhZW1pZl9jaGVj
-a19jc190aW1pbmdzKCkKICBtZW1vcnk6IHRpLWFlbWlmOiBDcmVhdGUgYWVtaWZfc2V0X2NzX3Rp
-bWluZ3MoKQogIG1lbW9yeTogdGktYWVtaWY6IEV4cG9ydCBhZW1pZl8qX2NzX3RpbWluZ3MoKQog
-IG10ZDogcmF3bmFuZDogZGF2aW5jaTogQWx3YXlzIGRlcGVuZHMgb24gVElfQUVNSUYKICBtdGQ6
-IHJhd25hbmQ6IGRhdmluY2k6IEFkZCBjbG9jayByZXNvdXJjZQogIG10ZDogcmF3bmFuZDogZGF2
-aW5jaTogSW1wbGVtZW50IHNldHVwX2ludGVyZmFjZSgpIG9wZXJhdGlvbgoKIGRyaXZlcnMvbWVt
-b3J5L3RpLWFlbWlmLmMgICAgICAgICAgIHwgMTkxICsrKysrKysrKysrKysrKysrLS0tLS0tLS0t
-LS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcgICAgICAgIHwgICA0ICstCiBkcml2ZXJz
-L210ZC9uYW5kL3Jhdy9kYXZpbmNpX25hbmQuYyB8ICA4NiArKysrKysrKysrKysrCiBpbmNsdWRl
-L2xpbnV4L21lbW9yeS90aS1hZW1pZi5oICAgICB8ICAzMiArKysrKwogNCBmaWxlcyBjaGFuZ2Vk
-LCAyMzUgaW5zZXJ0aW9ucygrKSwgNzggZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQg
-aW5jbHVkZS9saW51eC9tZW1vcnkvdGktYWVtaWYuaAoKLS0gCjIuNDcuMAoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+CS timings are copied to local variables that are then used as is,
+without any modifications.
+
+Remove these unneeded local variables and deal directly with the timings
+stored in the struct aemif_cs_data.
+
+Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/memory/ti-aemif.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
+index f23a549b219b..a0e1a6b53256 100644
+--- a/drivers/memory/ti-aemif.c
++++ b/drivers/memory/ti-aemif.c
+@@ -174,22 +174,14 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+ {
+ 	struct aemif_device *aemif = platform_get_drvdata(pdev);
+ 	struct aemif_cs_data *data = &aemif->cs_data[csnum];
+-	int ta, rhold, rstrobe, rsetup, whold, wstrobe, wsetup;
+ 	unsigned offset;
+ 	u32 set, val;
+ 
+ 	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
+ 
+-	ta	=  data->ta;
+-	rhold	=  data->rhold;
+-	rstrobe	=  data->rstrobe;
+-	rsetup	=  data->rsetup;
+-	whold	=  data->whold;
+-	wstrobe	=  data->wstrobe;
+-	wsetup	=  data->wsetup;
+-
+-	set = TA(ta) | RHOLD(rhold) | RSTROBE(rstrobe) | RSETUP(rsetup) |
+-		WHOLD(whold) | WSTROBE(wstrobe) | WSETUP(wsetup);
++	set = TA(data->ta) |
++		RHOLD(data->rhold) | RSTROBE(data->rstrobe) | RSETUP(data->rsetup) |
++		WHOLD(data->whold) | WSTROBE(data->wstrobe) | WSETUP(data->wsetup);
+ 
+ 	set |= (data->asize & ACR_ASIZE_MASK);
+ 	if (data->enable_ew)
+-- 
+2.47.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
