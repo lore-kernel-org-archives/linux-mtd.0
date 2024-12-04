@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41E4BE77174
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20FBDE77172
 	for <linux-mtd@archiver.kernel.org>; Wed,  4 Dec 2024 09:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,35 +12,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G3fe/39Y3BgwzNSv3fwhSQRNvXhML1qanylkPu3sxtk=; b=OXNrL1JYwBvRm8
-	PBNNyYDbGcqKY2oe98ogfLzcEzMlCfnf2qHW6omyZdemK9iGHlzYz7JfjcvI0ZtFfje6AISp86k9Y
-	wnqk6L0UhbxfFNcSpI78B7V/mdCIXMeE1tafJa5IzqYfjNkYhegMh14bOMbpTETVciIeHgHR704Ir
-	6+qg3zjHoGaJy24jF+5quOVkaKvb+fN/OLqQ6FDrJHPUoInEN72X+tUH0ZdN4d6d8DYBDtAn/KijC
-	zyE0CgkiuLh2llico4MoMyOAkFsA8SXGXh71N2eded5vATHbs5wjqRYr92sHix4K/AHw+k5I+pHfa
-	SMInN+7gwJrR8Lcb5biA==;
+	List-Owner; bh=6XuqO3+MLK2b7gW98PdBUZurzfE4pvS6XCOXv/mLNbI=; b=m4PZdSrKHK7XAv
+	Sg/KG6ARCE+pF8xfJL54+r3QLogphPRvqjifEusXGaHZEZGSvwrg9w0rKTVqIkE8it7p9HzDFukfx
+	ewgr69KgNcZNhP321SBuNy2uGfw6FP7Yu0/pH8JO7G9WAOgmlr5JCFu2cUNGYX5rlt+WOarjUtpMY
+	HmppyhcyS0vXCSFY+I2zcUn2Isaw6ZzGqlky/xSMeMd/3lTh4m0XyJkKHJBoRns4dGiRMBWpNysx6
+	Eg/cf7XdOY0HD8u3FyH5sv/Q9g1SN7WdMuoiZdBdeJQNYw3x/JMB4jXEUEnkOz4ZHeKZtAwOTI+SL
+	VbPSrlNT3WbI2uOSFBGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIlxl-0000000C6Ia-2NMz;
-	Wed, 04 Dec 2024 09:46:29 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1tIlxi-0000000C6Gz-49Or;
+	Wed, 04 Dec 2024 09:46:26 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIlus-0000000C5cs-1i94
+	id 1tIluq-0000000C5b0-0mPt
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Dec 2024 09:43:31 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 64FF560015;
-	Wed,  4 Dec 2024 09:43:28 +0000 (UTC)
+	Wed, 04 Dec 2024 09:43:29 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4E6B160013;
+	Wed,  4 Dec 2024 09:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1733305409;
+	t=1733305406;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MxgwQZm4INWNx3/RR7QESwiQmqttZVbjI7EwJ1ZjPKA=;
-	b=DzYtog0bueaVgZZ0doooO5zlK8cTc+Lsf0GBQ+Hx4VC24h9s0DGz1DFtDT8VFYqMHLLsMt
-	5aDhV0pMVYZ537JsFzaHeqizlffjXt6w76WEySENLV+Wf1LADuvxI2zig2ty9qFH0zomhV
-	q4DWBY5dqRqQmek2grrmcd19D01qLXFcymKB85hN/KbN+BgtVN8+wgAlMTziOPsmXtwVGs
-	PhC4FxN01/f1EYNUGolMjEBXVJydGRgmPt8jt18uR2AJpH+nDZON35pHCuMp1ny9xSqEbI
-	5xvMMuT2WNYR8qniJ07e24zuLAHyzGwegjbA4NTV2rPcqfSCj53eeaCIrX7QMw==
+	bh=HAob4BihDKEkDbqXMvJGubwY19e9hIjluMk6MjRGQNE=;
+	b=hVPTKd6uqa9BTyCJRqa5ZyFK6E3Bh4QPizPq4qUtRo+gD6qj6/tyOsL8UyzdLn6QhjyHww
+	Jt2ZOwQZ8fcgcPy7/At36TdilqQVe1q0gshNle7R2mDDdaMIwCrRFjM5enlI2R5NaFHnsW
+	LSbuMHbk1QOul11KzpZ+htqpKQEYfDv0vA2hEw1Jz6O0xAoz7fnD6/IbTVEB2W66RxCqkx
+	tS9P7qy7q+MDFKjhwpeq/JDz5PbEDv740+NIipzH705CWDK+7MBSF0yB2FxjzJWImzHgQC
+	sN0dk0dLPOiB5Inc4ja4om9pjGdYQezuw60wXqqvf1I9BIub3Z0iuR7HZfrmrA==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Santosh Shilimkar <ssantosh@kernel.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
@@ -53,17 +53,17 @@ Cc: linux-kernel@vger.kernel.org,
 	Herve Codina <herve.codina@bootlin.com>,
 	Christopher Cordahi <christophercordahi@nanometrics.ca>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH v5 9/9] mtd: rawnand: davinci: Implement setup_interface() operation
-Date: Wed,  4 Dec 2024 10:43:19 +0100
-Message-ID: <20241204094319.1050826-10-bastien.curutchet@bootlin.com>
+Subject: [PATCH v5 6/9] memory: ti-aemif: Export aemif_*_cs_timings()
+Date: Wed,  4 Dec 2024 10:43:16 +0100
+Message-ID: <20241204094319.1050826-7-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
 References: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: bastien.curutchet@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241204_014330_734654_1EDAE89A 
-X-CRM114-Status: GOOD (  14.91  )
+X-CRM114-CacheID: sfid-20241204_014328_483168_05EA624F 
+X-CRM114-Status: GOOD (  19.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,95 +75,188 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlIHNldHVwX2ludGVyZmFjZSgpIG9wZXJhdGlvbiBpc24ndCBpbXBsZW1lbnRlZC4gSXQgZm9y
-Y2VzIHRoZSBkcml2ZXIKdG8gdXNlIHRoZSBPTkZJIG1vZGUgMCwgdGhvdWdoIGl0IGNvdWxkIHVz
-ZSBtb3JlIG9wdGltYWwgbW9kZXMuCgpJbXBsZW1lbnQgdGhlIHNldHVwX2ludGVyZmFjZSgpIG9w
-ZXJhdGlvbi4gSXQgdXNlcyB0aGUKYWVtaWZfc2V0X2NzX3RpbWluZ3MoKSBmdW5jdGlvbiBmcm9t
-IHRoZSBBRU1JRiBkcml2ZXIgdG8gdXBkYXRlIHRoZQpjaGlwIHNlbGVjdCB0aW1pbmdzLiBUaGUg
-Y2FsY3VsYXRpb24gb2YgdGhlIHJlZ2lzdGVyJ3MgY29udGVudHMgaXMKZGlyZWN0bHkgZXh0cmFj
-dGVkIGZyb20gwqcyMC4zLjIuMyBvZiB0aGUgRGFWaW5jaSBUUk0gWzFdCgpNQVhfVEhfUFMgYW5k
-IE1BWF9UU1VfUFMgYXJlIHRoZSB3b3JzdCBjYXNlIHRpbWluZ3MgYmFzZWQgb24gdGhlCktleXN0
-b25lMiBhbmQgRGFWaW5jaSBkYXRhc2hlZXRzLgoKWzFdIDogaHR0cHM6Ly93d3cudGkuY29tL2xp
-dC91Zy9zcHJ1aDc3Yy9zcHJ1aDc3Yy5wZGYKClNpZ25lZC1vZmYtYnk6IEJhc3RpZW4gQ3VydXRj
-aGV0IDxiYXN0aWVuLmN1cnV0Y2hldEBib290bGluLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9kYXZpbmNpX25hbmQuYyB8IDc5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiAx
-IGZpbGUgY2hhbmdlZCwgNzkgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2RhdmluY2lfbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZGF2aW5jaV9u
-YW5kLmMKaW5kZXggNGZiNWMyNjIzZjVhLi4yYTFiM2NkNDk0MTUgMTAwNjQ0Ci0tLSBhL2RyaXZl
-cnMvbXRkL25hbmQvcmF3L2RhdmluY2lfbmFuZC5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3
-L2RhdmluY2lfbmFuZC5jCkBAIC0xNCw2ICsxNCw3IEBACiAjaW5jbHVkZSA8bGludXgvZXJyLmg+
-CiAjaW5jbHVkZSA8bGludXgvaW9wb2xsLmg+CiAjaW5jbHVkZSA8bGludXgva2VybmVsLmg+Cisj
-aW5jbHVkZSA8bGludXgvbWVtb3J5L3RpLWFlbWlmLmg+CiAjaW5jbHVkZSA8bGludXgvbW9kdWxl
-Lmg+CiAjaW5jbHVkZSA8bGludXgvbXRkL3BhcnRpdGlvbnMuaD4KICNpbmNsdWRlIDxsaW51eC9t
-dGQvcmF3bmFuZC5oPgpAQCAtNDQsNiArNDUsOSBAQAogI2RlZmluZQlNQVNLX0FMRQkJMHgwOAog
-I2RlZmluZQlNQVNLX0NMRQkJMHgxMAogCisjZGVmaW5lIE1BWF9UU1VfUFMJCTMwMDAJLyogSW5w
-dXQgc2V0dXAgdGltZSBpbiBwcyAqLworI2RlZmluZSBNQVhfVEhfUFMJCTE2MDAJLyogSW5wdXQg
-aG9sZCB0aW1lIGluIHBzICovCisKIHN0cnVjdCBkYXZpbmNpX25hbmRfcGRhdGEgewogCXVpbnQz
-Ml90CQltYXNrX2FsZTsKIAl1aW50MzJfdAkJbWFza19jbGU7CkBAIC0xMjAsNiArMTI0LDcgQEAg
-c3RydWN0IGRhdmluY2lfbmFuZF9pbmZvIHsKIAl1aW50MzJfdAkJY29yZV9jaGlwc2VsOwogCiAJ
-c3RydWN0IGNsawkJKmNsazsKKwlzdHJ1Y3QgYWVtaWZfZGV2aWNlCSphZW1pZjsKIH07CiAKIHN0
-YXRpYyBERUZJTkVfU1BJTkxPQ0soZGF2aW5jaV9uYW5kX2xvY2spOwpAQCAtNzY3LDkgKzc3Miw4
-MiBAQCBzdGF0aWMgaW50IGRhdmluY2lfbmFuZF9leGVjX29wKHN0cnVjdCBuYW5kX2NoaXAgKmNo
-aXAsCiAJcmV0dXJuIDA7CiB9CiAKKyNkZWZpbmUgVE9fQ1lDTEVTKHBzLCBwZXJpb2RfbnMpIChE
-SVZfUk9VTkRfVVAoKHBzKSAvIDEwMDAsIChwZXJpb2RfbnMpKSkKKworc3RhdGljIGludCBkYXZp
-bmNpX25hbmRfc2V0dXBfaW50ZXJmYWNlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGludCBjaGlw
-bnIsCisJCQkJCWNvbnN0IHN0cnVjdCBuYW5kX2ludGVyZmFjZV9jb25maWcgKmNvbmYpCit7CisJ
-c3RydWN0IGRhdmluY2lfbmFuZF9pbmZvICppbmZvID0gdG9fZGF2aW5jaV9uYW5kKG5hbmRfdG9f
-bXRkKGNoaXApKTsKKwljb25zdCBzdHJ1Y3QgbmFuZF9zZHJfdGltaW5ncyAqc2RyOworCXN0cnVj
-dCBhZW1pZl9jc190aW1pbmdzIHRpbWluZ3M7CisJczMyIGNmZywgbWluLCBjeWNfbnM7CisJaW50
-IHJldDsKKworCWN5Y19ucyA9IDEwMDAwMDAwMDAgLyBjbGtfZ2V0X3JhdGUoaW5mby0+Y2xrKTsK
-KworCXNkciA9IG5hbmRfZ2V0X3Nkcl90aW1pbmdzKGNvbmYpOworCWlmIChJU19FUlIoc2RyKSkK
-KwkJcmV0dXJuIFBUUl9FUlIoc2RyKTsKKworCWNmZyA9IFRPX0NZQ0xFUyhzZHItPnRDTFJfbWlu
-LCBjeWNfbnMpIC0gMTsKKwl0aW1pbmdzLnJzZXR1cCA9IGNmZyA+IDAgPyBjZmcgOiAwOworCisJ
-Y2ZnID0gbWF4X3QoczMyLCBUT19DWUNMRVMoc2RyLT50UkVBX21heCArIE1BWF9UU1VfUFMsIGN5
-Y19ucyksCisJCSAgICBUT19DWUNMRVMoc2RyLT50UlBfbWluLCBjeWNfbnMpKSAtIDE7CisJdGlt
-aW5ncy5yc3Ryb2JlID0gY2ZnID4gMCA/IGNmZyA6IDA7CisKKwltaW4gPSBUT19DWUNMRVMoc2Ry
-LT50Q0VBX21heCArIE1BWF9UU1VfUFMsIGN5Y19ucykgLSAyOworCXdoaWxlICgoczMyKSh0aW1p
-bmdzLnJzZXR1cCArIHRpbWluZ3MucnN0cm9iZSkgPCBtaW4pCisJCXRpbWluZ3MucnN0cm9iZSsr
-OworCisJY2ZnID0gVE9fQ1lDTEVTKChzMzIpKE1BWF9USF9QUyAtIHNkci0+dENIWl9tYXgpLCBj
-eWNfbnMpIC0gMTsKKwl0aW1pbmdzLnJob2xkID0gY2ZnID4gMCA/IGNmZyA6IDA7CisKKwltaW4g
-PSBUT19DWUNMRVMoc2RyLT50UkNfbWluLCBjeWNfbnMpIC0gMzsKKwl3aGlsZSAoKHMzMikodGlt
-aW5ncy5yc2V0dXAgKyB0aW1pbmdzLnJzdHJvYmUgKyB0aW1pbmdzLnJob2xkKSA8IG1pbikKKwkJ
-dGltaW5ncy5yaG9sZCsrOworCisJY2ZnID0gVE9fQ1lDTEVTKChzMzIpKHNkci0+dFJIWl9tYXgg
-LSAodGltaW5ncy5yaG9sZCArIDEpICogY3ljX25zICogMTAwMCksIGN5Y19ucyk7CisJY2ZnID0g
-bWF4X3QoczMyLCBjZmcsIFRPX0NZQ0xFUyhzZHItPnRDSFpfbWF4LCBjeWNfbnMpKSAtIDE7CisJ
-dGltaW5ncy50YSA9IGNmZyA+IDAgPyBjZmcgOiAwOworCisJY2ZnID0gVE9fQ1lDTEVTKHNkci0+
-dFdQX21pbiwgY3ljX25zKSAtIDE7CisJdGltaW5ncy53c3Ryb2JlID0gY2ZnID4gMCA/IGNmZyA6
-IDA7CisKKwljZmcgPSBtYXhfdChzMzIsIFRPX0NZQ0xFUyhzZHItPnRDTFNfbWluLCBjeWNfbnMp
-LCBUT19DWUNMRVMoc2RyLT50QUxTX21pbiwgY3ljX25zKSk7CisJY2ZnID0gbWF4X3QoczMyLCBj
-ZmcsIFRPX0NZQ0xFUyhzZHItPnRDU19taW4sIGN5Y19ucykpIC0gMTsKKwl0aW1pbmdzLndzZXR1
-cCA9IGNmZyA+IDAgPyBjZmcgOiAwOworCisJbWluID0gVE9fQ1lDTEVTKHNkci0+dERTX21pbiwg
-Y3ljX25zKSAtIDI7CisJd2hpbGUgKChzMzIpKHRpbWluZ3Mud3NldHVwICsgdGltaW5ncy53c3Ry
-b2JlKSA8IG1pbikKKwkJdGltaW5ncy53c3Ryb2JlKys7CisKKwljZmcgPSBtYXhfdChzMzIsIFRP
-X0NZQ0xFUyhzZHItPnRDTEhfbWluLCBjeWNfbnMpLCBUT19DWUNMRVMoc2RyLT50QUxIX21pbiwg
-Y3ljX25zKSk7CisJY2ZnID0gbWF4X3QoczMyLCBjZmcsIFRPX0NZQ0xFUyhzZHItPnRDSF9taW4s
-IGN5Y19ucykpOworCWNmZyA9IG1heF90KHMzMiwgY2ZnLCBUT19DWUNMRVMoc2RyLT50REhfbWlu
-LCBjeWNfbnMpKSAtIDE7CisJdGltaW5ncy53aG9sZCA9IGNmZyA+IDAgPyBjZmcgOiAwOworCisJ
-bWluID0gVE9fQ1lDTEVTKHNkci0+dFdDX21pbiwgY3ljX25zKSAtIDI7CisJd2hpbGUgKChzMzIp
-KHRpbWluZ3Mud3NldHVwICsgdGltaW5ncy53c3Ryb2JlICsgdGltaW5ncy53aG9sZCkgPCBtaW4p
-CisJCXRpbWluZ3Mud2hvbGQrKzsKKworCWRldl9kYmcoJmluZm8tPnBkZXYtPmRldiwgIlJTRVRV
-UCAleCBSU1RST0JFICV4IFJIT0xEICV4XG4iLAorCQl0aW1pbmdzLnJzZXR1cCwgdGltaW5ncy5y
-c3Ryb2JlLCB0aW1pbmdzLnJob2xkKTsKKwlkZXZfZGJnKCZpbmZvLT5wZGV2LT5kZXYsICJUQSAl
-eFxuIiwgdGltaW5ncy50YSk7CisJZGV2X2RiZygmaW5mby0+cGRldi0+ZGV2LCAiV1NFVFVQICV4
-IFdTVFJPQkUgJXggV0hPTEQgJXhcbiIsCisJCXRpbWluZ3Mud3NldHVwLCB0aW1pbmdzLndzdHJv
-YmUsIHRpbWluZ3Mud2hvbGQpOworCisJcmV0ID0gYWVtaWZfY2hlY2tfY3NfdGltaW5ncygmdGlt
-aW5ncyk7CisJaWYgKHJldCB8fCBjaGlwbnIgPT0gTkFORF9EQVRBX0lGQUNFX0NIRUNLX09OTFkp
-CisJCXJldHVybiByZXQ7CisKKwlyZXR1cm4gYWVtaWZfc2V0X2NzX3RpbWluZ3MoaW5mby0+YWVt
-aWYsIGluZm8tPmNvcmVfY2hpcHNlbCwgJnRpbWluZ3MpOworfQorCiBzdGF0aWMgY29uc3Qgc3Ry
-dWN0IG5hbmRfY29udHJvbGxlcl9vcHMgZGF2aW5jaV9uYW5kX2NvbnRyb2xsZXJfb3BzID0gewog
-CS5hdHRhY2hfY2hpcCA9IGRhdmluY2lfbmFuZF9hdHRhY2hfY2hpcCwKIAkuZXhlY19vcCA9IGRh
-dmluY2lfbmFuZF9leGVjX29wLAorCS5zZXR1cF9pbnRlcmZhY2UgPSBkYXZpbmNpX25hbmRfc2V0
-dXBfaW50ZXJmYWNlLAogfTsKIAogc3RhdGljIGludCBuYW5kX2RhdmluY2lfcHJvYmUoc3RydWN0
-IHBsYXRmb3JtX2RldmljZSAqcGRldikKQEAgLTgzMiw2ICs5MTAsNyBAQCBzdGF0aWMgaW50IG5h
-bmRfZGF2aW5jaV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCWluZm8tPnBk
-ZXYJCT0gcGRldjsKIAlpbmZvLT5iYXNlCQk9IGJhc2U7CiAJaW5mby0+dmFkZHIJCT0gdmFkZHI7
-CisJaW5mby0+YWVtaWYJCT0gZGV2X2dldF9kcnZkYXRhKHBkZXYtPmRldi5wYXJlbnQpOwogCiAJ
-bXRkCQkJPSBuYW5kX3RvX210ZCgmaW5mby0+Y2hpcCk7CiAJbXRkLT5kZXYucGFyZW50CQk9ICZw
-ZGV2LT5kZXY7Ci0tIAoyLjQ3LjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Export the aemif_set_cs_timing() and aemif_check_cs_timing() symbols so
+they can be used by other drivers
+
+Add a mutex to protect the CS configuration register from concurrent
+accesses between the AEMIF and its 'children'.
+
+Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/memory/ti-aemif.c       | 35 ++++++++++++---------------------
+ include/linux/memory/ti-aemif.h | 32 ++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+), 22 deletions(-)
+ create mode 100644 include/linux/memory/ti-aemif.h
+
+diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
+index 83fb308a831b..541fc8b8b640 100644
+--- a/drivers/memory/ti-aemif.c
++++ b/drivers/memory/ti-aemif.c
+@@ -13,7 +13,9 @@
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/memory/ti-aemif.h>
+ #include <linux/module.h>
++#include <linux/mutex.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+@@ -79,26 +81,6 @@
+ 
+ #define CONFIG_MASK	(EW(EW_MAX) | SSTROBE(SSTROBE_MAX) | ASIZE_MAX)
+ 
+-/**
+- * struct aemif_cs_timings: structure to hold CS timings
+- * @wstrobe: write strobe width, number of cycles - 1
+- * @rstrobe: read strobe width, number of cycles - 1
+- * @wsetup: write setup width, number of cycles - 1
+- * @whold: write hold width, number of cycles - 1
+- * @rsetup: read setup width, number of cycles - 1
+- * @rhold: read hold width, number of cycles - 1
+- * @ta: minimum turn around time, number of cycles - 1
+- */
+-struct aemif_cs_timings {
+-	u32	wstrobe;
+-	u32	rstrobe;
+-	u32	wsetup;
+-	u32	whold;
+-	u32	rsetup;
+-	u32	rhold;
+-	u32	ta;
+-};
+-
+ /**
+  * struct aemif_cs_data: structure to hold CS parameters
+  * @timings: timings configuration
+@@ -123,6 +105,7 @@ struct aemif_cs_data {
+  * @num_cs: number of assigned chip-selects
+  * @cs_offset: start number of cs nodes
+  * @cs_data: array of chip-select settings
++ * @config_cs_lock: lock used to access CS configuration
+  */
+ struct aemif_device {
+ 	void __iomem *base;
+@@ -131,6 +114,7 @@ struct aemif_device {
+ 	u8 num_cs;
+ 	int cs_offset;
+ 	struct aemif_cs_data cs_data[NUM_CS];
++	struct mutex config_cs_lock;
+ };
+ 
+ /**
+@@ -139,7 +123,7 @@ struct aemif_device {
+  *
+  * @return: 0 if the timing configuration is valid, negative error number otherwise.
+  */
+-static int aemif_check_cs_timings(struct aemif_cs_timings *timings)
++int aemif_check_cs_timings(struct aemif_cs_timings *timings)
+ {
+ 	if (timings->ta > TA_MAX)
+ 		return -EINVAL;
+@@ -164,6 +148,7 @@ static int aemif_check_cs_timings(struct aemif_cs_timings *timings)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(aemif_check_cs_timings);
+ 
+ /**
+  * aemif_set_cs_timings() - Set the timing configuration of a given chip select.
+@@ -173,7 +158,7 @@ static int aemif_check_cs_timings(struct aemif_cs_timings *timings)
+  *
+  * @return: 0 on success, else negative errno.
+  */
+-static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
++int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
+ {
+ 	unsigned int offset;
+ 	u32 val, set;
+@@ -195,13 +180,16 @@ static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_
+ 
+ 	offset = A1CR_OFFSET + cs * 4;
+ 
++	mutex_lock(&aemif->config_cs_lock);
+ 	val = readl(aemif->base + offset);
+ 	val &= ~TIMINGS_MASK;
+ 	val |= set;
+ 	writel(val, aemif->base + offset);
++	mutex_unlock(&aemif->config_cs_lock);
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(aemif_set_cs_timings);
+ 
+ /**
+  * aemif_calc_rate - calculate timing data.
+@@ -257,10 +245,12 @@ static int aemif_config_abus(struct platform_device *pdev, int csnum)
+ 	if (data->enable_ss)
+ 		set |= ACR_SSTROBE_MASK;
+ 
++	mutex_lock(&aemif->config_cs_lock);
+ 	val = readl(aemif->base + offset);
+ 	val &= ~CONFIG_MASK;
+ 	val |= set;
+ 	writel(val, aemif->base + offset);
++	mutex_unlock(&aemif->config_cs_lock);
+ 
+ 	return aemif_set_cs_timings(aemif, data->cs - aemif->cs_offset, &data->timings);
+ }
+@@ -399,6 +389,7 @@ static int aemif_probe(struct platform_device *pdev)
+ 	if (IS_ERR(aemif->base))
+ 		return PTR_ERR(aemif->base);
+ 
++	mutex_init(&aemif->config_cs_lock);
+ 	if (np) {
+ 		/*
+ 		 * For every controller device node, there is a cs device node
+diff --git a/include/linux/memory/ti-aemif.h b/include/linux/memory/ti-aemif.h
+new file mode 100644
+index 000000000000..da94a9d985e7
+--- /dev/null
++++ b/include/linux/memory/ti-aemif.h
+@@ -0,0 +1,32 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __MEMORY_TI_AEMIF_H
++#define __MEMORY_TI_AEMIF_H
++
++/**
++ * struct aemif_cs_timings: structure to hold CS timing configuration
++ * values are expressed in number of clock cycles - 1
++ * @ta: minimum turn around time
++ * @rhold: read hold width
++ * @rstrobe: read strobe width
++ * @rsetup: read setup width
++ * @whold: write hold width
++ * @wstrobe: write strobe width
++ * @wsetup: write setup width
++ */
++struct aemif_cs_timings {
++	u32	ta;
++	u32	rhold;
++	u32	rstrobe;
++	u32	rsetup;
++	u32	whold;
++	u32	wstrobe;
++	u32	wsetup;
++};
++
++struct aemif_device;
++
++int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings);
++int aemif_check_cs_timings(struct aemif_cs_timings *timings);
++
++#endif // __MEMORY_TI_AEMIF_H
+-- 
+2.47.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
