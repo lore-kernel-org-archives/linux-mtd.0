@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75153E77179
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2B4BE77178
 	for <linux-mtd@archiver.kernel.org>; Thu,  5 Dec 2024 11:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,57 +12,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2M7IU0gdGdcAdAj49zatlwDXMYMOEj581BPDWfeOeJ0=; b=PPW9cDvEpM5e5c
-	LHeFaaKikoPgLW4VlN8pBfecsXWjrCiqIz1CE4mUIFvurYyIuTG0+SHXIzXIGZmNGz634kaDkRjlw
-	Z4swAnyI6AwewwliKJBWuJm0tldoPz654vNcftHkQZATpgin0Yo1Q6dnjTW8jy3ljR1tKwiOup0gt
-	gj7CkUq1jyjH10Z7Pt7urHHOybrat+TPNOsjhsBcndkTgbruQmjaJDTO9GgyA0KNbXq3bExhmoMXi
-	r9UvNwICYiYLDImer/E95CwbiOeVKyeB/MTt+vW6TpnKbRTuHdzwKHJqbzhOw+kwfRjlg4jY1XC/N
-	/uNNycINrmzAo5J7Bceg==;
+	List-Owner; bh=paf+Od8xwPOk3Pf6ru54emFwMfd5lmcVrGTTMsNxZXg=; b=cupCHw6+ldfOvj
+	4UDEKjGlAvY0l8IPumk7cb1nyxOGxhYfdBZmPbd1iDM+5uOu4xBgILgQ8b5yDMnDf7eYzw+n39XLK
+	p1DLmJlZcgXrm7yTF3BGlz86zb/XouyJNTAec/Oqw1jETtrDN5GqEtZNYZOvCA/R0HqlZbpTQ8H9G
+	AsI+6EQgnp9s4zZF0OpGaa+r/Mhv9SHulBfpG22Y4mc4pn2p3gkDk4gpsqDK4XwD/AtlFOnkdjxy3
+	c1YIyzMTj5WGSQW6HVY6KL2GQX/fEx31cnVY3fZheBRnfMsCRInbmJpQT9i2UcOfD/Q5eW2hVdpFV
+	euJVE54ZRYDq9hsv0WjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJAVl-0000000FpjB-40gS;
-	Thu, 05 Dec 2024 11:59:13 +0000
+	id 1tJAVn-0000000Fpkm-1CyG;
+	Thu, 05 Dec 2024 11:59:15 +0000
 Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJ9Ka-0000000FZwJ-1oFX;
-	Thu, 05 Dec 2024 10:43:37 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 92C6EFF80C;
-	Thu,  5 Dec 2024 10:43:33 +0000 (UTC)
+	id 1tJ9Ka-0000000FZwg-2HP2
+	for linux-mtd@lists.infradead.org;
+	Thu, 05 Dec 2024 10:43:38 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E1801FF80A;
+	Thu,  5 Dec 2024 10:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1733395414;
+	t=1733395415;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tVOU/hBtES9NqNMn3b9b53d5oMMBwDCM8MS0sfrPHxw=;
-	b=NJnHShKWQUPjsX2QhlM5RDC+Jzxsy8E7DP7gbzzy10uiSf8zLJzRgetftuIys0UKY5J3/z
-	dZWX9tr5Ds/Wu8zUUSUTAIIGSpdwLF2mrHkqpInaACBaJCF7/pDxTfR00uHY4a+epFiWKI
-	n18wVl8zCnBtflYJW/vJvYMwUOP/OmzQcVnqMAPbvI5iCIXz75fjvBb8GdFzARHOVBj86m
-	zpfcoA5iQUn6ElWHAr4IjGQf2rl8GrRvtUbNYBeDcb+1j1dR37ufXae52mw3NwvlW/oOwh
-	ma/3ujT1hBMvn7nnVZiscRbdLoXa4pYSkWvzaAvSSBNJFlydFY1B0v9aihF+Ow==
+	bh=hb69N5/gNXCj5657rpj7cw2JqJmkhjwP5sOdYlqCXeQ=;
+	b=Q9gpTidqEfFP5QYeRpiJHZQy0IkLVVEiKngqoP/1xKLUxRGbHbz2pUMmP8Ni9ucrYm2C44
+	jpRiK8zafkDRsiMX7Oyg9tJ65CensrW1la2Va6z5yAihd8FKfYRWd4FvNQ/ruTrNKNRV2W
+	Zo0Ue+yCS8FF/KLw37iZGNOY3f1NFDYr333TZ7NdICtVPWuEiITVVbJbT954vtaOSfrHAh
+	ZRVCHgDjzAyv9gMOCu3LFc5KaIMNeGwBVpicqQb9V48Wj+6kaoOBJUXEpEVbHH3Xpd35Ke
+	Mv93LUdLeh9Lg5amEsyKjSPgsdlzcLAbFffC9BKoWow9ESLZJEwe8QciUmA3Iw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+To: Michal Simek <michal.simek@amd.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
 	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH next] mtd: rawnand: fix double free in atmel_pmecc_create_user()
-Date: Thu,  5 Dec 2024 11:43:25 +0100
-Message-ID: <173339519112.766262.17129619892556491178.b4-ty@bootlin.com>
+	Maciej Andrzejewski <maciej.andrzejewski@m-works.net>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3] mtd: rawnand: arasan: Fix double assertion of chip-select
+Date: Thu,  5 Dec 2024 11:43:27 +0100
+Message-ID: <173339519118.766262.18442148583345975205.b4-ty@bootlin.com>
 X-Mailer: git-send-email 2.47.0
-In-Reply-To: <7d809e5f-32e1-4438-9cc6-3167f27dd239@stanley.mountain>
-References: <7d809e5f-32e1-4438-9cc6-3167f27dd239@stanley.mountain>
+In-Reply-To: <Z02tOwEHfDsH1Sil@UBUNTU-PF54DSY0>
+References: <Z02tOwEHfDsH1Sil@UBUNTU-PF54DSY0>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241205_024336_617940_0FDA66F3 
-X-CRM114-Status: UNSURE (   5.97  )
+X-CRM114-CacheID: sfid-20241205_024336_715542_DF296092 
+X-CRM114-Status: UNSURE (   9.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,12 +76,22 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCAyMyBPY3QgMjAyNCAxMTo0MDo1NiArMDMwMCwgRGFuIENhcnBlbnRlciB3cm90ZToK
-PiBUaGUgInVzZXIiIHBvaW50ZXIgd2FzIGNvbnZlcnRlZCBmcm9tIGJlaW5nIGFsbG9jYXRlZCB3
-aXRoIGt6YWxsb2MoKSB0bwo+IGJlaW5nIGFsbG9jYXRlZCBieSBkZXZtX2t6YWxsb2MoKS4gIENh
-bGxpbmcga2ZyZWUodXNlcikgd2lsbCBsZWFkIHRvIGEKPiBkb3VibGUgZnJlZS4KPiAKPiAKCkFw
-cGxpZWQgdG8gbXRkL2ZpeGVzLCB0aGFua3MhCgpbMS8xXSBtdGQ6IHJhd25hbmQ6IGZpeCBkb3Vi
-bGUgZnJlZSBpbiBhdG1lbF9wbWVjY19jcmVhdGVfdXNlcigpCgpQYXRjaGUocykgd2lsbCBiZSBh
+T24gTW9uLCAwMiBEZWMgMjAyNCAxMzo1MTowNyArMDEwMCwgTWFjaWVqIEFuZHJ6ZWpld3NraSB3
+cm90ZToKPiBXaGVuIHR3byBjaGlwLXNlbGVjdHMgYXJlIGNvbmZpZ3VyZWQgaW4gdGhlIGRldmlj
+ZSB0cmVlLCBhbmQgdGhlIHNlY29uZCBpcwo+IGEgbm9uLW5hdGl2ZSBHUElPLCBib3RoIHRoZSBH
+UElPLWJhc2VkIGNoaXAtc2VsZWN0IGFuZCB0aGUgZmlyc3QgbmF0aXZlCj4gY2hpcC1zZWxlY3Qg
+bWF5IGJlIGFzc2VydGVkIHNpbXVsdGFuZW91c2x5LiBUaGlzIGRvdWJsZSBhc3NlcnRpb24gY2F1
+c2VzCj4gaW5jb3JyZWN0IHJlYWQgYW5kIHdyaXRlIG9wZXJhdGlvbnMuCj4gCj4gVGhlIGlzc3Vl
+IG9jY3VycyBiZWNhdXNlIHdoZW4gbmZjLT5uY3MgPD0gMiwgbmZjLT5zcGFyZV9jcyBpcyBhbHdh
+eXMKPiBpbml0aWFsaXplZCB0byAwIGR1ZSB0byBzdGF0aWMgaW5pdGlhbGl6YXRpb24uIENvbnNl
+cXVlbnRseSwgd2hlbiB0aGUKPiBzZWNvbmQgY2hpcC1zZWxlY3QgKEdQSU8tYmFzZWQpIGlzIHNl
+bGVjdGVkIGluIGFuZmNfYXNzZXJ0X2NzKCksIGl0IGlzCj4gZGV0ZWN0ZWQgYnkgYW5mY19pc19n
+cGlvX2NzKCksIGFuZCBuZmMtPm5hdGl2ZV9jcyBpcyBhc3NpZ25lZCB0aGUgdmFsdWUgMC4KPiBU
+aGlzIHJlc3VsdHMgaW4gYm90aCB0aGUgR1BJTy1iYXNlZCBjaGlwLXNlbGVjdCBiZWluZyBhc3Nl
+cnRlZCBhbmQgdGhlCj4gTkFORCBjb250cm9sbGVyIHJlZ2lzdGVyIHJlY2VpdmluZyAwLCBlcnJv
+bmVvdXNseSBzZWxlY3RpbmcgdGhlIG5hdGl2ZQo+IGNoaXAtc2VsZWN0Lgo+IAo+IFsuLi5dCgpB
+cHBsaWVkIHRvIG10ZC9maXhlcywgdGhhbmtzIQoKWzEvMV0gbXRkOiByYXduYW5kOiBhcmFzYW46
+IEZpeCBkb3VibGUgYXNzZXJ0aW9uIG9mIGNoaXAtc2VsZWN0CgpQYXRjaGUocykgd2lsbCBiZSBh
 dmFpbGFibGUgd2l0aGluIGhvdXJzIG9uOgptdGQvbGludXguZ2l0CgpLaW5kIHJlZ2FyZHMsCk1p
 cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
 X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
