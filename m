@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F56AE7716E
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Dec 2024 01:45:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DC18E7716E
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Dec 2024 03:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2TIAjKwgcTW2Zgt6by0o+l32MDTnpIt8VqeFNNPUrPI=; b=UO9Sx1hQ0zKAO4
-	uPxnalO+PyXPLRwH+SUuidj3gI2U6iJlUqtsfKUFMAfE51Df/YwhH7oVzXHtEsB4xXHv3VdQXXTdT
-	HIyeA8ZnnqGPNNFUuL4dyXOS+Qo14Qk1c8iBiRxPoLLCzar9zDMZaUR/TNdlGVOvWktAD4IVlVJUx
-	RR+2GGCs8ektouIRS5K80hLXs9ackuIhDusmRTcBZcaK2u/Yqu6VofootEROqQVScEV+LfFH/Jhw6
-	t+tN9pfJ+DPoPVfGYWcXU/SOLP1IgK5h2iNjwO4ZSzgJ/8D4tXyqCU8/3/PQAdDdPW7Tzplkf+w87
-	1JzWB9G/VoFCq51dLbhA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rK6qj0UD8CyYIRcYGuyajVBYmTYq2Xd5Hce/NvhQF/c=; b=dp/pM35suu+Gpi
+	EsyPcASxhjQGH6DsimVXk+lF3OCYBQGy+/819m6v/qJuUgug5IBkwsRT0QUJhI7ZA0J0r9KtkGUhr
+	tlh8bIIwExMkmKH7MD2awGM3lDzgB9CVSvvnWkyPI43DfrVvz6Ap5OAyi1BQOxA+HX6N2TLhbxs1x
+	C60d3aHKrVi+vkSSpEUV5bhHLmgG5x1TYt8GHWLx72/pwo1bjKdYwH00SYyjIDKI5eDGLDAvnQbbI
+	lvmwXpdeP3qGW55IehXZNB9ICj9IoPBalSOPB5Uo9jXrMJbj+Ji16A4Ap6MVzXreK5eR7WiP2wOk1
+	LqYunXX40W/UTGI/qjuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJNOp-00000000Dpx-3Pv1;
-	Fri, 06 Dec 2024 01:44:55 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1tJOnU-00000000Ozv-4BFw;
+	Fri, 06 Dec 2024 03:14:28 +0000
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJNNm-00000000Djf-3vUE;
-	Fri, 06 Dec 2024 01:43:52 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-215ac560292so15648065ad.2;
-        Thu, 05 Dec 2024 17:43:50 -0800 (PST)
+	id 1tJOmT-00000000Omp-0YqH;
+	Fri, 06 Dec 2024 03:13:26 +0000
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-725c049fbd7so31763b3a.3;
+        Thu, 05 Dec 2024 19:13:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733449429; x=1734054229; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dvMuO2LzOEcK6bZJDOQK5xJYTAbXjx0HM3xx7EXHDhI=;
-        b=Or1o7xMGZp87FV9pDcDZlmOAXeHdeB5KMwaByyM0bXtHmTiaS3M8cQ6EitNZXgR/po
-         E8L0D+hqhppC6lJ1f9vpMx/gjioR+UF99cBn7kXq5NUqa+RSBeyW9Ar6m3g585LWm+V4
-         x5edPHieOow30XMmfOOVCkVcyGPPUgX/txXAng+0BGwwPjz95T141RdZ3SDPVrSNqlwy
-         WwekDD7ganW0NqmrAEPnoSX9u6jhhPZtWNKbtGlATP8tqBgpgpqyygkQFbWU2excOVM2
-         nOI/UepRsdI2ATnDWKTpeQ7JXfDjoW54mA3Z2SDQZpxmGFW0IzV0SjiqcHCbj9XGdI4x
-         hMPQ==
+        d=gmail.com; s=20230601; t=1733454804; x=1734059604; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xt0SCTkvn+YR9UJenhf6zDr8e0FUj6bUNlIsy8Vy6XY=;
+        b=aak1vfiQfNZl+yk4M4z8t4xnU6YyAvCerZ4qRX0hsqlU9p6oowRXEZ2j6h/LZs5ubh
+         HT/JYpSGXiHX6wdlslKe8w3EoBsupYcoBK0AicjyV0yKqi105bLQV/YlXOxBMzp695Lw
+         dfX+Ne/Xk+xGjt5Jod351oHXLXFgkNKnxqz244DYMxpjAuUgnHfVNcn9Tzztfa8zTKr0
+         Az5fj61IDCwHrpAlOfyU+yrSAEKWqDC54ymh97HdQUYz5K/RXjrtA3eJP8IeQtKpeIE0
+         bd6HYtxga8Om98Blo8/hrTfOHMrNfdoJhJSDs10N26qPnXon6TP8xrGcAOwmQgMK7ZUH
+         L0sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733449429; x=1734054229;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dvMuO2LzOEcK6bZJDOQK5xJYTAbXjx0HM3xx7EXHDhI=;
-        b=cNvkVTgCT+WNUDG6RejrNrZZw5sh+KjWJxC1cReSkduedGamuGobxPh2jKeUVTbRq1
-         wgiiZ1x0Go+Ehykdfk5qT/wmwshHAK4snrsR0W/77keTltO0d1ImclrDDhNwKEWV3Ymq
-         Qa+iWibqWTIyfgrNw5NeNm6gBXjbT81CcGY42PF95FGexVo66y3jZweYHQYUQ5VmTlVJ
-         CaWu8GNEt2k7n8COGyBsJEDiZRWofa+ArZZ2BWkB3gKZsQY3/2hiEkY4PKY+qQUKpoAR
-         VIR3cFS3MpkIvhG29cKkemOjZGXPFTX2ljqZqmR4X3cyICPQLKXDDYzcztEX/+bi0gdc
-         ANVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW2lhM0nxgTomg/+hXM9X1tGnri66y5GRITUSVx8c3c559lt6DvFRH7wD2M9DuqUztfmx9rEanUych1bGoOnn9J@lists.infradead.org, AJvYcCXOz6hRjasaamvPLrqU50Zw7l7aV2va3lEqAQCr30xcwtlkAckP49IN/V8wCZtTqTxGF16dpjgR5FyK@lists.infradead.org
-X-Gm-Message-State: AOJu0YyoZWV0n0TQ+ZnapNVEH73vrGf9/shy4iCfk/6HmkkMLW5UiDl1
-	Z6fr6zKAQ5A06z5vMSB3FuFmJQoiMWdI372MqubT/HInMoHWxAFy2G0IkA==
-X-Gm-Gg: ASbGncupCjV4WiOUi13XoELunodWpVgcYJuXWTwzkEqmbwe3jA1JOtDmCLc5Vmtjj+4
-	TXF3bHpFzWtAwNkZKfPkJJ/UPDpCUsKMes/Bk7aHMOfpWYOuOWzeX9stK6KJ7a31X3ofkA/BOcN
-	Wy0nNSWVyi8DK97zaoZ9yHF8kLOUGB3sR8x479WLeoLbzD0UZP5kvbhgRhDkoG7J2GY6WmhoDl5
-	Z/tN8/FF1TqC03qp0aN/ulI+ewATCnlpKbNjn26XJlku/F4M4bkljfzGYdM6PMSzNJV/2Gxr6ki
-	2rsajMHB4xFHT8LI5ZCLlSJN
-X-Google-Smtp-Source: AGHT+IFYW2PobbERX0J/R0MGurhl+mv/yjucHbwp3t0d/Vn3DANq7WcMduBahQARhzIKRTXGHQSXBQ==
-X-Received: by 2002:a17:903:188:b0:215:5935:7eef with SMTP id d9443c01a7336-21614d68778mr17893035ad.22.1733449429330;
-        Thu, 05 Dec 2024 17:43:49 -0800 (PST)
-Received: from [172.19.1.53] (60-250-196-139.hinet-ip.hinet.net. [60.250.196.139])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215f8e5f30fsm18793305ad.74.2024.12.05.17.43.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Dec 2024 17:43:49 -0800 (PST)
-Message-ID: <d41c9484-6192-462d-92e8-c200192d37f8@gmail.com>
-Date: Fri, 6 Dec 2024 09:43:45 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 0/2] Add support for nuvoton ma35 nand controller
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: richard@nod.at, vigneshr@ti.com, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, nikita.shubin@maquefel.me, arnd@arndb.de,
- vkoul@kernel.org, esben@geanix.com, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20241204025129.150525-1-hpchen0nvt@gmail.com>
- <878qsuwhm1.fsf@bootlin.com>
-Content-Language: en-US
+        d=1e100.net; s=20230601; t=1733454804; x=1734059604;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xt0SCTkvn+YR9UJenhf6zDr8e0FUj6bUNlIsy8Vy6XY=;
+        b=RYpup983aGzz2rADLNbcrkHwVcCIZf72mIv943hdqwanumfL4QHAIUg+lSZODBCv1x
+         9536D7UbVNadx2vIzPC46Eh9BKsviQX4f5HcVdbNjq/m0didikg+9JvsMfc0ZMvBQCjp
+         1cQ/qbBIYKtsNBSGqQBIuxs0cvs+yeQ/ybGlS3FA6cSHUEGMS7WQ89QXTe1bpsb1R/qi
+         4To04vl4bE2W8mKq+BRfUjYVTz6ZMyGQ9Nn7xHuRCyhxLykvJb8RysjENHbWspe+Q/R8
+         xdWo6S9NQUGfcGKUYxWZ337ASdy2kZG6rWtOy+pAq/iF6g2lvDwaMQgY896z3QeFPPS2
+         bNOA==
+X-Forwarded-Encrypted: i=1; AJvYcCXS/AELVUAlRUANZNy9GvC9al2AIIVdh4o0lRqhAYA2c8HCehDyuwVFe4VdXbg7lK+973+YG3EwdeQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyycqMiLFWRhzwTkn7nnfOHPvzbAT2GPLJyR1qyNc3xbyNmYJgf
+	obUAvAPKMh8p8Lkt9Ru2D6LY0Rra+0RfpCjaBW3D6e76hqaOXDxt
+X-Gm-Gg: ASbGncuYxqNbs3B2YYmLQThtpDiSSaFNZeFFMbmqybMqCnKv/IEqseJEqnhmM/FqAGR
+	fMgnCc23AEDZEIjmbFgfIa8VVIBw3ZSPqJwosKDrzj6bf/dDr4xoxF35YxyHvLO3YA5d0LmH3wc
+	c12qJ5TU1D5/ktk5C4brAUEcr7VibIzNYtGHBxOkb7+S1yQlwACJSdfPtSG2s2CFCmWvhAPWWDh
+	z5cD+YFLy3UuA/njIEdyyAGdxEOHCPhWHs+CdrSd9EbQ3fEK0gX9mKnsx60uHpQUMXbo739AG5l
+	tnOIdoDM6dc+CShNlHAnmSv8nAzRM/40/Tw=
+X-Google-Smtp-Source: AGHT+IF7SIhnyAIa2s6klAC+ixAZnJb7XNMJ0xYjIoh2x56kOXx7Y1GiufB+JlFrmxcvjwEpoM/fmg==
+X-Received: by 2002:a05:6a00:14d2:b0:71e:a3:935b with SMTP id d2e1a72fcca58-725b820eac5mr2862137b3a.25.1733454804100;
+        Thu, 05 Dec 2024 19:13:24 -0800 (PST)
+Received: from localhost.localdomain (60-250-196-139.hinet-ip.hinet.net. [60.250.196.139])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725a29e9003sm1966791b3a.44.2024.12.05.19.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Dec 2024 19:13:23 -0800 (PST)
 From: Hui-Ping Chen <hpchen0nvt@gmail.com>
-In-Reply-To: <878qsuwhm1.fsf@bootlin.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	nikita.shubin@maquefel.me,
+	arnd@arndb.de,
+	vkoul@kernel.org,
+	esben@geanix.com
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hui-Ping Chen <hpchen0nvt@gmail.com>
+Subject: [PATCH v11 0/2] Add support for nuvoton ma35 nand controller
+Date: Fri,  6 Dec 2024 03:13:16 +0000
+Message-Id: <20241206031318.156152-1-hpchen0nvt@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241205_174350_980582_E7D233EC 
-X-CRM114-Status: GOOD (  11.67  )
+X-CRM114-CacheID: sfid-20241205_191325_202717_576EBAC5 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,79 +101,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RGVhciBNaXF1ZWwsCgpUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuCgoKT24gMjAyNC8xMi81IOS4
-i+WNiCAwNjoyNiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSwKPgo+IE9uIDA0LzEyLzIwMjQg
-YXQgMDI6NTE6MjcgR01ULCBIdWktUGluZyBDaGVuIDxocGNoZW4wbnZ0QGdtYWlsLmNvbT4gd3Jv
-dGU6Cj4KPj4gVGhpcyBwYXRjaCBzZXJpZXMgYWRkcyB0aGUgbXRkIG5hbmQgZHJpdmVyIGZvciB0
-aGUgbnV2b3RvbiBtYTM1IEFSTXY4IFNvQy4KPj4gSXQgaW5jbHVkZXMgRFQgYmluZGluZyBkb2N1
-bWVudGF0aW9uIGFuZCB0aGUgbWEzNSBtdGQgbmFuZCBkcml2ZXIuCj4+Cj4+IHYxMDoKPj4gICAg
-LSBVcGRhdGUgbWEzNWQxIG10ZCBuYW5kIGRyaXZlcgo+PiAgICAgIC0gQWRkIHVuc3VwcG9ydGVk
-IHdyaXRlIHBhZ2UgaGFuZGxpbmcuCj4gSSB3YXMgYWJvdXQgdG8gYXBwbHkgaXQgYnV0Li4uCj4K
-PiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5wbDogMTE3OiBXQVJOSU5HOiBwbGVhc2Ugd3Jp
-dGUgYSBoZWxwIHBhcmFncmFwaCB0aGF0IGZ1bGx5IGRlc2NyaWJlcyB0aGUgY29uZmlnIHN5bWJv
-bAo+ICAgICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiAxNDE6IFdBUk5JTkc6IGFkZGVkLCBt
-b3ZlZCBvciBkZWxldGVkIGZpbGUocyksIGRvZXMgTUFJTlRBSU5FUlMgbmVlZCB1cGRhdGluZz8K
-PiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5wbDogMzQ4OiBDSEVDSzogc3BhY2VzIHByZWZl
-cnJlZCBhcm91bmQgdGhhdCAnKycgKGN0eDpWeFYpCj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0
-Y2gucGw6IDM1MjogQ0hFQ0s6IHNwYWNlcyBwcmVmZXJyZWQgYXJvdW5kIHRoYXQgJysnIChjdHg6
-VnhWKQo+ICAgICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiAzNTI6IENIRUNLOiBzcGFjZXMg
-cHJlZmVycmVkIGFyb3VuZCB0aGF0ICcrJyAoY3R4OlZ4VikKPiAgICAgIFszMW3il49bMG0gY2hl
-Y2twYXRjaC5wbDogNDI5OiBDSEVDSzogQWxpZ25tZW50IHNob3VsZCBtYXRjaCBvcGVuIHBhcmVu
-dGhlc2lzCj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0Y2gucGw6IDQ2NTogQ0hFQ0s6IHNwYWNl
-cyBwcmVmZXJyZWQgYXJvdW5kIHRoYXQgJyonIChjdHg6VnhWKQo+ICAgICAgWzMxbeKXj1swbSBj
-aGVja3BhdGNoLnBsOiA0NjU6IENIRUNLOiBzcGFjZXMgcHJlZmVycmVkIGFyb3VuZCB0aGF0ICcr
-JyAoY3R4OlZ4VikKPiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5wbDogNDY2OiBDSEVDSzog
-c3BhY2VzIHByZWZlcnJlZCBhcm91bmQgdGhhdCAnKicgKGN0eDpWeFYpCj4gICAgICBbMzFt4peP
-WzBtIGNoZWNrcGF0Y2gucGw6IDQ2NjogQ0hFQ0s6IHNwYWNlcyBwcmVmZXJyZWQgYXJvdW5kIHRo
-YXQgJysnIChjdHg6VnhWKQo+ICAgICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiA0Njc6IENI
-RUNLOiBzcGFjZXMgcHJlZmVycmVkIGFyb3VuZCB0aGF0ICcqJyAoY3R4OlZ4VikKPiAgICAgIFsz
-MW3il49bMG0gY2hlY2twYXRjaC5wbDogNDY3OiBDSEVDSzogc3BhY2VzIHByZWZlcnJlZCBhcm91
-bmQgdGhhdCAnKycgKGN0eDpWeFYpCj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0Y2gucGw6IDQ2
-ODogQ0hFQ0s6IHNwYWNlcyBwcmVmZXJyZWQgYXJvdW5kIHRoYXQgJyonIChjdHg6VnhWKQo+ICAg
-ICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiA0Njg6IENIRUNLOiBzcGFjZXMgcHJlZmVycmVk
-IGFyb3VuZCB0aGF0ICcrJyAoY3R4OlZ4VikKPiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5w
-bDogNDc5OiBDSEVDSzogc3BhY2VzIHByZWZlcnJlZCBhcm91bmQgdGhhdCAnKicgKGN0eDpWeFYp
-Cj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0Y2gucGw6IDQ3OTogQ0hFQ0s6IHNwYWNlcyBwcmVm
-ZXJyZWQgYXJvdW5kIHRoYXQgJysnIChjdHg6VnhWKQo+ICAgICAgWzMxbeKXj1swbSBjaGVja3Bh
-dGNoLnBsOiA0ODE6IENIRUNLOiBzcGFjZXMgcHJlZmVycmVkIGFyb3VuZCB0aGF0ICcqJyAoY3R4
-OlZ4VikKPiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5wbDogNDgxOiBDSEVDSzogc3BhY2Vz
-IHByZWZlcnJlZCBhcm91bmQgdGhhdCAnKycgKGN0eDpWeFYpCj4gICAgICBbMzFt4pePWzBtIGNo
-ZWNrcGF0Y2gucGw6IDUxNDogQ0hFQ0s6IFVuYmFsYW5jZWQgYnJhY2VzIGFyb3VuZCBlbHNlIHN0
-YXRlbWVudAo+ICAgICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiA2MTE6IENIRUNLOiBBbGln
-bm1lbnQgc2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50aGVzaXMKPiAgICAgIFszMW3il49bMG0gY2hl
-Y2twYXRjaC5wbDogNjUwOiBDSEVDSzogQWxpZ25tZW50IHNob3VsZCBtYXRjaCBvcGVuIHBhcmVu
-dGhlc2lzCj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0Y2gucGw6IDY2NTogQ0hFQ0s6IEFsaWdu
-bWVudCBzaG91bGQgbWF0Y2ggb3BlbiBwYXJlbnRoZXNpcwo+ICAgICAgWzMxbeKXj1swbSBjaGVj
-a3BhdGNoLnBsOiA2NzU6IENIRUNLOiBBbGlnbm1lbnQgc2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50
-aGVzaXMKPiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5wbDogNjg5OiBDSEVDSzogQWxpZ25t
-ZW50IHNob3VsZCBtYXRjaCBvcGVuIHBhcmVudGhlc2lzCj4gICAgICBbMzFt4pePWzBtIGNoZWNr
-cGF0Y2gucGw6IDY5OTogQ0hFQ0s6IEFsaWdubWVudCBzaG91bGQgbWF0Y2ggb3BlbiBwYXJlbnRo
-ZXNpcwo+ICAgICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiA3MTU6IENIRUNLOiBBbGlnbm1l
-bnQgc2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50aGVzaXMKPiAgICAgIFszMW3il49bMG0gY2hlY2tw
-YXRjaC5wbDogNzU2OiBDSEVDSzogQWxpZ25tZW50IHNob3VsZCBtYXRjaCBvcGVuIHBhcmVudGhl
-c2lzCj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0Y2gucGw6IDgwNTogQ0hFQ0s6IEFsaWdubWVu
-dCBzaG91bGQgbWF0Y2ggb3BlbiBwYXJlbnRoZXNpcwo+ICAgICAgWzMxbeKXj1swbSBjaGVja3Bh
-dGNoLnBsOiA5MzU6IENIRUNLOiBBbGlnbm1lbnQgc2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50aGVz
-aXMKPiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5wbDogOTUwOiBDSEVDSzogQWxpZ25tZW50
-IHNob3VsZCBtYXRjaCBvcGVuIHBhcmVudGhlc2lzCj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0
-Y2gucGw6IDk1MzogQ0hFQ0s6IEFsaWdubWVudCBzaG91bGQgbWF0Y2ggb3BlbiBwYXJlbnRoZXNp
-cwo+ICAgICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiA5NzU6IENIRUNLOiBBbGlnbm1lbnQg
-c2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50aGVzaXMKPiAgICAgIFszMW3il49bMG0gY2hlY2twYXRj
-aC5wbDogMTAwMTogQ0hFQ0s6IEFsaWdubWVudCBzaG91bGQgbWF0Y2ggb3BlbiBwYXJlbnRoZXNp
-cwo+ICAgICAgWzMxbeKXj1swbSBjaGVja3BhdGNoLnBsOiAxMDE4OiBDSEVDSzogQWxpZ25tZW50
-IHNob3VsZCBtYXRjaCBvcGVuIHBhcmVudGhlc2lzCj4gICAgICBbMzFt4pePWzBtIGNoZWNrcGF0
-Y2gucGw6IDExMzE6IENIRUNLOiBBbGlnbm1lbnQgc2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50aGVz
-aXMKPiAgICAgIFszMW3il49bMG0gY2hlY2twYXRjaC5wbDogMTE1OTogV0FSTklORzogRFQgY29t
-cGF0aWJsZSBzdHJpbmcgIm51dm90b24sbWEzNWQxLW5hbmQiIGFwcGVhcnMgdW4tZG9jdW1lbnRl
-ZCAtLSBjaGVjayAuL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy8KPgo+IFBsZWFz
-ZSBmaXggdGhlc2Ugd2FybmluZ3MgYW5kIGNoZWNrcy4KPgo+IFlvdSBtaWdodCB3YW50IHRvIHVz
-ZSAtLXN0cmljdCBieSBkZWZhdWx0LgoKSSB3aWxsIGZpeCBpdC4KCgo+Cj4gVGhhbmtzLAo+IE1p
-cXXDqGwKCgpCZXN0IHJlZ2FyZHMsCgpIdWktUGluZyBDaGVuCgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+This patch series adds the mtd nand driver for the nuvoton ma35 ARMv8 SoC.
+It includes DT binding documentation and the ma35 mtd nand driver.
+
+v11:
+  - Update ma35d1 mtd nand driver
+    - Fix warnings and checks use --strict.
+
+v10:
+  - Update ma35d1 mtd nand driver
+    - Add unsupported write page handling.
+
+v9:
+  - Update ma35d1 mtd nand driver
+    - Remove NAND_NO_SUBPAGE_WRITE flag.
+    - Remove of_get_property().
+    - Add ecc.write_subpage and ecc.read_subpage.
+
+v8:
+  - Update ma35d1 mtd nand driver
+    - Rename to nuvoton-ma35d1-nand-controller.c.
+    - Use switch case instead of if else.
+    - Move some parameters to be set during initialization.
+    - Fix the ecc.read_page return value issue.
+    - Add enable/disable ECC engine before and after reading/writing the page.
+    - Return IRQ_NONE if (isr & INT_DMA) == 0.
+    - Move the HW ECC related settings to ON_HOST.
+    - Move hw_init() to probe.
+
+v7:
+  - Update nuvoton,ma35d1-nand.yaml
+    - Remove required 'nand-ecc-step-size' and 'nand-ecc-strength'.
+    - Add 'reg' for chip select.
+  - Update ma35d1 mtd nand driver
+    - Update space and comments style.
+    - Add chip select setting from DT.
+    - Add switch case which supports various ECC configurations.
+    - Set reset before NAND controller enable.
+
+v6:
+  - Update ma35d1 mtd nand driver
+    - Remove extra blank lines and add comments.
+
+v5:
+  - Update ma35d1 mtd nand driver
+    - Remove unnecessary definitions and comments.
+    - Modified DMA API call sequence.
+    - Move the ECC check out of the interrupt handler.
+      Check it after reading a page.
+
+v4:
+  - Update nuvoton,ma35d1-nand.yaml
+    - rename 'nuvoton,ma35d1-nand' to 'nuvoton,ma35d1-nand-controller'.
+  - Update ma35d1 mtd nand driver
+    - Rewrite the NAND driver using the exec_op API.
+
+v3:
+  - Update ma35d1 mtd nand driver
+    - Release IRQ handler.
+    - Remove unused functions.
+    - Remove '.owner'.
+
+v2:
+  - Update nuvoton,ma35d1-nand.yaml
+    - Adjust the order and remove any unnecessary items.
+    - Add 'nand-ecc-step-size' and 'nand-ecc-strength' to the required list.
+  - Update ma35d1 mtd nand driver
+    - Fix coding style.
+    - Use 'devm_clk_get' instead of 'of_clk_get'.
+    - Use 'dev_err_probe' instead of 'dev_err'.
+    - Remove 'pr_info' and 'of_match_ptr'.
+    - Remove 'module_init' and 'module_exit'.
+
+
+Hui-Ping Chen (2):
+  dt-bindings: mtd: nuvoton,ma35d1-nand: add new bindings
+  mtd: rawnand: nuvoton: add new driver for the Nuvoton MA35 SoC
+
+ .../bindings/mtd/nuvoton,ma35d1-nand.yaml     |   95 ++
+ drivers/mtd/nand/raw/Kconfig                  |    8 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../nand/raw/nuvoton-ma35d1-nand-controller.c | 1029 +++++++++++++++++
+ 4 files changed, 1133 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nuvoton,ma35d1-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/nuvoton-ma35d1-nand-controller.c
+
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
