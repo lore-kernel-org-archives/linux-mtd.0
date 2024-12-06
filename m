@@ -4,83 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B162FE77173
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Dec 2024 13:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90836E77173
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Dec 2024 13:29:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=unLBcT0Yfvqg7K8lSiWUxrT2N0tAf4YaDdP8pUrGpNQ=; b=EIu3UtKIlGtYtl
-	i8S64WjbTkqty+FyX9FN0fQmfWBzdeLypUP0yTKVIL9JctUXW1FsEm2H89KDClpcR2ueDWIg7RNwm
-	v1azyQ6S7HptzgzOjtdKsQKwjXnHdw7OoqaDbTe4ahsCATCJ14YugATwGOvMcYflbP2PxPcmtpslV
-	n1SbRnLOxay3Gk/MTfIsmjPJ4Sm2fzQEuCN1mOjZ9jMtlNHBrPag8/o1ZtCjkVzNJyFXgr9R2iufT
-	3Qc5XQhaD/7yBKxdY+2q47jkaq2KBLeA3KCvagxLzog21czKTDtHOoH1pbSe4UQzSRqe6S7Hhrlc+
-	7Tp28gxl7J9QhOT0ZTfQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Q/S+tUuD86smA3HVDUTM1RiBLYvnUaUvaWlSWDAYY4I=; b=YrDoCQm1lvl9rn
+	k4GhqnR79RqQ4niHWEXFcURaA/o3/vsJYxfuBNJ+ifEPNt2eAYPvrgfYHuXegvl/YJS9cTCrBOmkC
+	E2APFdf9sggnKhpeW0sTvon7W29QKK8Pym1zcaVyN4bdaXKPOb98YsHI/IAKYnsbOgxNYg6A95w0v
+	4NwHukRJ0GT58dmpf3K0Ds7VTKGyW3sl6bMyEg0iN6/bCPgY3UE2FNRLc3tobqwcgUd3ekvjf+rfm
+	YP5Wljn9v3E3tApJlca8bvuFJkdqzjUvRUcTxv7bZNp7QC00Ib4GJD9AAvxY5dMqcjycG4MiPLW5b
+	mp9jGn2Fwk439qkiCAZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJY1n-00000001gFm-0vZ8;
-	Fri, 06 Dec 2024 13:05:51 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1tJYOw-00000001j4w-1Wna;
+	Fri, 06 Dec 2024 13:29:46 +0000
+Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJY1l-00000001gF1-0PQT
+	id 1tJYOt-00000001j45-1Uiu
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Dec 2024 13:05:50 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B6775Jn031009;
-	Fri, 6 Dec 2024 13:05:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-type:date:from:message-id:mime-version:subject:to; s=
-	qcppdkim1; bh=+THftZcvlIieAl5jw5OcObXVsaJk7nXwFhsvTAjoNxY=; b=SC
-	UgMWionfKk6rY9XQH6kCLURggq78dunhiL9Ix6qb15F1XGTksSQYiZau8aKNdbYD
-	CtoWHP4kgN+0rjH0TTxyINAAdeqv5xYS2wol/VUMsbhunaDWetBGXsj2HV+03Qmq
-	jp331i57V+kwQKiXncFxXogJBgGG5cPdfE7+f8f6cbQ0BDsUCtH/RQL6gz0B6QTx
-	okyTdUOKCchcz+Fm9Poi7BWMQEP6ssSNfwWqSh1Jk5BeUAzLFmEtqCghInatKXQ2
-	WpweqNADH/NejFATuWtHJnDBpEcuATbXf/rKkJdtd9beDDD7krR3FXD8kOMlTD8W
-	dkT/zkI/Hs9kW6o3mpkA==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 43be17380g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Dec 2024 13:05:40 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4B6D5dfj020365
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 6 Dec 2024 13:05:39 GMT
-Received: from hu-pintu-blr.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 6 Dec 2024 05:05:36 -0800
-From: Pintu Kumar <quic_pintu@quicinc.com>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <skhan@linuxfoundation.org>, <pintu.ping@gmail.com>,
-        Pintu Kumar
-	<quic_pintu@quicinc.com>
-Subject: [PATCH] ubifs/lpt_commit: remove return at end of void function
-Date: Fri, 6 Dec 2024 18:35:11 +0530
-Message-ID: <20241206130511.32592-1-quic_pintu@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	Fri, 06 Dec 2024 13:29:45 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BFBCF24000A;
+	Fri,  6 Dec 2024 13:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1733491779;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=40Vs0ULjEkgXkx7L8maRSYFXLsDHUPdUjSKwNaSqOms=;
+	b=Rlgh4eeZOJRffjbkFpMZNBFtRlStnK7ESv4OdjtwkWsGDWJZ8XPuhOCV4OCKWebwN4GJ1D
+	YKWkD/7aPe75tOlvoZ8zddcCgT6aY2dd9SBMyLdv7Q81PoeWYO1mo/Zs56Rm68jYCy/9vs
+	HaS0EsozCVGsHykWHx9Xss0z2gXU/zmLm3Fh2cdKB4nH5JU6IXNC+t9BCIMRD3BL6+d/pp
+	7TyK7LweHRPF6ZzStkBBGCveCe/pmIzuaagLcm9L2F+8MDMol0FozpVp8y2OIC8961kwD1
+	hMT2Yhaia8nLFOuWuEBPtbcVCgRBsP4jfb0VaMS7Z/PLeTIR2cUOcC7xA8sK8w==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp>
+Cc: vigneshr@ti.com,  tudor.ambarus@linaro.org,  richard@nod.at,
+  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: hyperbus: hbmc-am654: fix an OF node reference leak
+In-Reply-To: <20241206114740.781053-1-joe@pf.is.s.u-tokyo.ac.jp> (Joe
+	Hattori's message of "Fri, 6 Dec 2024 20:47:40 +0900")
+References: <20241206114740.781053-1-joe@pf.is.s.u-tokyo.ac.jp>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Fri, 06 Dec 2024 14:29:36 +0100
+Message-ID: <87cyi5q6rj.fsf@bootlin.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: PSheeY--Q8p1hdWVRx6BhI7ezy8wuMcB
-X-Proofpoint-ORIG-GUID: PSheeY--Q8p1hdWVRx6BhI7ezy8wuMcB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- impostorscore=0 suspectscore=0 adultscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412060098
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241206_050549_246708_AAC86659 
-X-CRM114-Status: UNSURE (   9.98  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241206_052943_674957_D57E995F 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,29 +72,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Noticed that there is a useless return statement at the end of void
-function dump_lpt_leb().
-Just removing it.
+Hi Joe,
 
-Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
----
- fs/ubifs/lpt_commit.c | 1 -
- 1 file changed, 1 deletion(-)
+On 06/12/2024 at 20:47:40 +09, Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp> wrote:
 
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index aa8837e6247c..f2cb214581fd 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -1932,7 +1932,6 @@ static void dump_lpt_leb(const struct ubifs_info *c, int lnum)
- 	pr_err("(pid %d) finish dumping LEB %d\n", current->pid, lnum);
- out:
- 	vfree(buf);
--	return;
- }
- 
- /**
--- 
-2.17.1
+> In am654_hbmc_platform_driver, .remove() and the error path of .probe()
+> do not decrement the refcount of an OF node obtained by
+>   of_get_next_child(). Fix this by adding of_node_put() calls.
+>
+> Fixes: aca31ce96814 ("mtd: hyperbus: hbmc-am654: Fix direct mapping setup flash access")
+> Signed-off-by: Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp>
+> ---
+>  drivers/mtd/hyperbus/hbmc-am654.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
+> index 217f4e69233f..3e206bb34287 100644
+> --- a/drivers/mtd/hyperbus/hbmc-am654.c
+> +++ b/drivers/mtd/hyperbus/hbmc-am654.c
+> @@ -174,18 +174,18 @@ static int am654_hbmc_probe(struct platform_device *pdev)
+>  	priv->hbdev.np = of_get_next_child(np, NULL);
+>  	ret = of_address_to_resource(priv->hbdev.np, 0, &res);
+>  	if (ret)
+> -		return ret;
+> +		goto put_node;
+>  
+>  	if (of_property_read_bool(dev->of_node, "mux-controls")) {
+>  		struct mux_control *control = devm_mux_control_get(dev, NULL);
+>  
+>  		if (IS_ERR(control))
+> -			return PTR_ERR(control);
+> +			goto put_node;
+>  
+>  		ret = mux_control_select(control, 1);
+>  		if (ret) {
+>  			dev_err(dev, "Failed to select HBMC mux\n");
+> -			return ret;
+> +			goto put_node;
+>  		}
+>  		priv->mux_ctrl = control;
+>  	}
+> @@ -193,7 +193,7 @@ static int am654_hbmc_probe(struct platform_device *pdev)
+>  	priv->hbdev.map.size = resource_size(&res);
+>  	priv->hbdev.map.virt = devm_ioremap_resource(dev, &res);
+>  	if (IS_ERR(priv->hbdev.map.virt))
+> -		return PTR_ERR(priv->hbdev.map.virt);
+> +		goto disable_mux;
+
+This error path will return ret, whereas it should return
+PTR_ERR(priv->hbdev.map.virt).
 
 
 ______________________________________________________
