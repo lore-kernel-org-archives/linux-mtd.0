@@ -4,58 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90836E77173
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Dec 2024 13:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27BE2E7717B
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Dec 2024 13:38:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q/S+tUuD86smA3HVDUTM1RiBLYvnUaUvaWlSWDAYY4I=; b=YrDoCQm1lvl9rn
-	k4GhqnR79RqQ4niHWEXFcURaA/o3/vsJYxfuBNJ+ifEPNt2eAYPvrgfYHuXegvl/YJS9cTCrBOmkC
-	E2APFdf9sggnKhpeW0sTvon7W29QKK8Pym1zcaVyN4bdaXKPOb98YsHI/IAKYnsbOgxNYg6A95w0v
-	4NwHukRJ0GT58dmpf3K0Ds7VTKGyW3sl6bMyEg0iN6/bCPgY3UE2FNRLc3tobqwcgUd3ekvjf+rfm
-	YP5Wljn9v3E3tApJlca8bvuFJkdqzjUvRUcTxv7bZNp7QC00Ib4GJD9AAvxY5dMqcjycG4MiPLW5b
-	mp9jGn2Fwk439qkiCAZw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=SjTIWR7S3bxqP+rJp07C5Kg3mN2qPK1KSjw/+46bdPo=; b=Pj/UmMz32EEs9b
+	5pKSB4vHXCi1s9Nes9V19V+G19l0Wca4qtTZ1U4l7nCJaLpQRhT8DhsFMDxF3/lJuWsB0tCchv7vc
+	CeaMvLbL9dmIv+PoG2KkpFwANkpnZBHRLJNL3i9GBX4zqu3cBk8jsIb8yPr8a3oE70+kTGv78UsgL
+	OSHuDQ1ie86YY7G2ldvRUpc9DR1LMePubQtqbfh7SG2lxI9GLh2yhtBeF4FTJfmyJS/Ck8GnjBRiK
+	HF+GjaVrK4MqAeqgddiVUop1rX8U0mZMBEGDoK6kWVoyKtZUcIq0omcmw0tSdvI+2rqHmklQiefV1
+	CG920i34Ftf2MH+D4zkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJYOw-00000001j4w-1Wna;
-	Fri, 06 Dec 2024 13:29:46 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1tJYXE-00000001jw7-229h;
+	Fri, 06 Dec 2024 13:38:20 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJYOt-00000001j45-1Uiu
+	id 1tJYXA-00000001jvg-4BfX
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Dec 2024 13:29:45 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BFBCF24000A;
-	Fri,  6 Dec 2024 13:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1733491779;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=40Vs0ULjEkgXkx7L8maRSYFXLsDHUPdUjSKwNaSqOms=;
-	b=Rlgh4eeZOJRffjbkFpMZNBFtRlStnK7ESv4OdjtwkWsGDWJZ8XPuhOCV4OCKWebwN4GJ1D
-	YKWkD/7aPe75tOlvoZ8zddcCgT6aY2dd9SBMyLdv7Q81PoeWYO1mo/Zs56Rm68jYCy/9vs
-	HaS0EsozCVGsHykWHx9Xss0z2gXU/zmLm3Fh2cdKB4nH5JU6IXNC+t9BCIMRD3BL6+d/pp
-	7TyK7LweHRPF6ZzStkBBGCveCe/pmIzuaagLcm9L2F+8MDMol0FozpVp8y2OIC8961kwD1
-	hMT2Yhaia8nLFOuWuEBPtbcVCgRBsP4jfb0VaMS7Z/PLeTIR2cUOcC7xA8sK8w==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp>
-Cc: vigneshr@ti.com,  tudor.ambarus@linaro.org,  richard@nod.at,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: hyperbus: hbmc-am654: fix an OF node reference leak
-In-Reply-To: <20241206114740.781053-1-joe@pf.is.s.u-tokyo.ac.jp> (Joe
-	Hattori's message of "Fri, 6 Dec 2024 20:47:40 +0900")
-References: <20241206114740.781053-1-joe@pf.is.s.u-tokyo.ac.jp>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Fri, 06 Dec 2024 14:29:36 +0100
-Message-ID: <87cyi5q6rj.fsf@bootlin.com>
+	Fri, 06 Dec 2024 13:38:18 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-7252fba4de1so2331282b3a.0
+        for <linux-mtd@lists.infradead.org>; Fri, 06 Dec 2024 05:38:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pf-is-s-u-tokyo-ac-jp.20230601.gappssmtp.com; s=20230601; t=1733492296; x=1734097096; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tenRm6uUzjaB/af8Lhu48JVMWtn9Odqd+hHSIJQuGAM=;
+        b=KuyK+GlItCOFliwKSwGNjTpzC1VdnpUAVaqrwTwbg0OGSmqAYXWodAvYgs71aMDCzF
+         kTQ/0nvz5RROEJfbpcuW1oMg9tW8F/JeOI1DJpU2iNjc7Y/AHUwTeGteWpnXmAbsSt//
+         wQds9xR3sFj/JqhwFLcHzrxwNdlEN2phJzUYrQaLhqxUlVCVrSMstsEG7WCdkCAwRQ5j
+         nSU832wlI5VlXOHce53A20WzFXN07XrueMFKjpe8G0fs2cqAtMPiseJVwNPZZGQKx5Wk
+         yUu3l2uQcaWd3iefzZDKl8ZaQhbh9C/6Zd7ZYa85a2s/Tu/tKMMLkthu1B2g4bfVKaAR
+         YkEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733492296; x=1734097096;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tenRm6uUzjaB/af8Lhu48JVMWtn9Odqd+hHSIJQuGAM=;
+        b=T4kw8orjtSX7jZ6TKNOzy8B9bw+6IZEib/V8623eeIMf3dU6b+ZDAqmVMoZbilR5g/
+         +DqqriU2Ouv+ofPwXPiKqIoa2SDQec/YuKgdQd8HYRQEGtDygCa8vflCLvdbJLyPUjSV
+         O7T7djNVrLsiuJ6oR7NEsll2Bz6Kq8cmQVBCmnV3gLV+UkvxFPR70g0CTnjKsRPsbwwt
+         FQDvI4I3LW5d8skigw+uCEOanQfsRpvSNv0harYxNmhdjffWNsK8zy+C1dG5CGXmADuC
+         0TNfr68Q7AwwKxs6Ku+1X0c2rsI74zm2rZgoDkzQZk1ODh16/rzqlnPvHkV2oxnKdOdB
+         qPyQ==
+X-Gm-Message-State: AOJu0YxckEnyDcN4qA6yL8Rb3cvBQlJ2hIRJMkKsorcsUmpel3V1LWyX
+	a/SGtzlXrWu5ccVB8WsO0C9gsVPrqqqLWwlQ2KTWbFafvALZSjjbA9BIgyR5vss=
+X-Gm-Gg: ASbGnctaslalMaFkuUgHp/YvT8SmFrQ8OQapXYsVUdLcnrv6PLoIEEYSCqEQCHnpBIZ
+	T4A/uLuwu/vRAfyTLAyUQ1Z9C/bvhUBPVR/UNiq5JFgLfxEn1C3u1VDt7+N/vxFWMgj7H/JTU7T
+	nZy29t59B86FUVZx14DJnHA6SA4hcXYd9V8akB06li7RrGdFOMSiWbIWXpP34PEZ+0CNQxhtnx+
+	8MXDob2mIgxnJch5Q++u/X5BI2fhmJhNc5LgKXITzYTuX7bMAr4zwh6JumMAUYFKZqlE7g0hQ==
+X-Google-Smtp-Source: AGHT+IGV6oCg4Sr8Xt94txvw3NtAGh57CU+uFcsJV4AMQB/JPa/GooP38if5l7A7uDgPP5yxwCerFA==
+X-Received: by 2002:a17:90b:1d02:b0:2ee:8430:b847 with SMTP id 98e67ed59e1d1-2ef6955d4bemr5008815a91.6.1733492295884;
+        Fri, 06 Dec 2024 05:38:15 -0800 (PST)
+Received: from localhost.localdomain ([2001:f70:39c0:3a00:75b0:95e4:30f9:a33f])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef67d6ea84sm1711381a91.47.2024.12.06.05.38.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Dec 2024 05:38:15 -0800 (PST)
+From: Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp>
+To: vigneshr@ti.com,
+	tudor.ambarus@linaro.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at
+Cc: linux-mtd@lists.infradead.org,
+	Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp>
+Subject: [PATCH v2] mtd: hyperbus: hbmc-am654: fix an OF node reference leak
+Date: Fri,  6 Dec 2024 22:38:09 +0900
+Message-Id: <20241206133809.1074606-1-joe@pf.is.s.u-tokyo.ac.jp>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241206_052943_674957_D57E995F 
-X-CRM114-Status: GOOD (  12.95  )
+X-CRM114-CacheID: sfid-20241206_053817_247997_C3F00D28 
+X-CRM114-Status: GOOD (  12.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,55 +96,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Joe,
+In am654_hbmc_platform_driver, .remove() and the error path of .probe()
+do not decrement the refcount of an OF node obtained by
+  of_get_next_child(). Fix this by adding of_node_put() calls.
 
-On 06/12/2024 at 20:47:40 +09, Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp> wrote:
+Fixes: aca31ce96814 ("mtd: hyperbus: hbmc-am654: Fix direct mapping setup flash access")
+Signed-off-by: Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp>
+---
+Changes in V2:
+- Properly set the return values.
+---
+ drivers/mtd/hyperbus/hbmc-am654.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-> In am654_hbmc_platform_driver, .remove() and the error path of .probe()
-> do not decrement the refcount of an OF node obtained by
->   of_get_next_child(). Fix this by adding of_node_put() calls.
->
-> Fixes: aca31ce96814 ("mtd: hyperbus: hbmc-am654: Fix direct mapping setup flash access")
-> Signed-off-by: Joe Hattori <joe@pf.is.s.u-tokyo.ac.jp>
-> ---
->  drivers/mtd/hyperbus/hbmc-am654.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
-> index 217f4e69233f..3e206bb34287 100644
-> --- a/drivers/mtd/hyperbus/hbmc-am654.c
-> +++ b/drivers/mtd/hyperbus/hbmc-am654.c
-> @@ -174,18 +174,18 @@ static int am654_hbmc_probe(struct platform_device *pdev)
->  	priv->hbdev.np = of_get_next_child(np, NULL);
->  	ret = of_address_to_resource(priv->hbdev.np, 0, &res);
->  	if (ret)
-> -		return ret;
-> +		goto put_node;
->  
->  	if (of_property_read_bool(dev->of_node, "mux-controls")) {
->  		struct mux_control *control = devm_mux_control_get(dev, NULL);
->  
->  		if (IS_ERR(control))
-> -			return PTR_ERR(control);
-> +			goto put_node;
->  
->  		ret = mux_control_select(control, 1);
->  		if (ret) {
->  			dev_err(dev, "Failed to select HBMC mux\n");
-> -			return ret;
-> +			goto put_node;
->  		}
->  		priv->mux_ctrl = control;
->  	}
-> @@ -193,7 +193,7 @@ static int am654_hbmc_probe(struct platform_device *pdev)
->  	priv->hbdev.map.size = resource_size(&res);
->  	priv->hbdev.map.virt = devm_ioremap_resource(dev, &res);
->  	if (IS_ERR(priv->hbdev.map.virt))
-> -		return PTR_ERR(priv->hbdev.map.virt);
-> +		goto disable_mux;
-
-This error path will return ret, whereas it should return
-PTR_ERR(priv->hbdev.map.virt).
+diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
+index 217f4e69233f..edad2ab0f2fa 100644
+--- a/drivers/mtd/hyperbus/hbmc-am654.c
++++ b/drivers/mtd/hyperbus/hbmc-am654.c
+@@ -174,26 +174,30 @@ static int am654_hbmc_probe(struct platform_device *pdev)
+ 	priv->hbdev.np = of_get_next_child(np, NULL);
+ 	ret = of_address_to_resource(priv->hbdev.np, 0, &res);
+ 	if (ret)
+-		return ret;
++		goto put_node;
+ 
+ 	if (of_property_read_bool(dev->of_node, "mux-controls")) {
+ 		struct mux_control *control = devm_mux_control_get(dev, NULL);
+ 
+-		if (IS_ERR(control))
+-			return PTR_ERR(control);
++		if (IS_ERR(control)) {
++			ret = PTR_ERR(control);
++			goto put_node;
++		}
+ 
+ 		ret = mux_control_select(control, 1);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to select HBMC mux\n");
+-			return ret;
++			goto put_node;
+ 		}
+ 		priv->mux_ctrl = control;
+ 	}
+ 
+ 	priv->hbdev.map.size = resource_size(&res);
+ 	priv->hbdev.map.virt = devm_ioremap_resource(dev, &res);
+-	if (IS_ERR(priv->hbdev.map.virt))
+-		return PTR_ERR(priv->hbdev.map.virt);
++	if (IS_ERR(priv->hbdev.map.virt)) {
++		ret = PTR_ERR(priv->hbdev.map.virt);
++		goto disable_mux;
++	}
+ 
+ 	priv->ctlr.dev = dev;
+ 	priv->ctlr.ops = &am654_hbmc_ops;
+@@ -226,6 +230,8 @@ static int am654_hbmc_probe(struct platform_device *pdev)
+ disable_mux:
+ 	if (priv->mux_ctrl)
+ 		mux_control_deselect(priv->mux_ctrl);
++put_node:
++	of_node_put(priv->hbdev.np);
+ 	return ret;
+ }
+ 
+@@ -241,6 +247,7 @@ static void am654_hbmc_remove(struct platform_device *pdev)
+ 
+ 	if (dev_priv->rx_chan)
+ 		dma_release_channel(dev_priv->rx_chan);
++	of_node_put(priv->hbdev.np);
+ }
+ 
+ static const struct of_device_id am654_hbmc_dt_ids[] = {
+-- 
+2.34.1
 
 
 ______________________________________________________
