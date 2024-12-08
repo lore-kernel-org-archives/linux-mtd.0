@@ -4,82 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1F1CE77173
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Dec 2024 17:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FAA5E77173
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Dec 2024 17:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NuW6e2yaXhcotqPl77ljewIzuuq+H24iSf5YJG3VU8g=; b=hbHGzbB94HgZwQ
-	4863n8f4Yqv0UCguhKFbHMpbhosYy4xX3kkj7uq4GDcUHGdq75k4g8fTUGQoN7bxlsX/XpCKe5EcY
-	2o7s+hRNGbR2dpkmcKWNPkUGosniBBAPhnf/XBx8EhKjPX5OHUYAKeElXuk7DI1r6IiSPFNhMqA0E
-	gpx4unyTPfpsLZ11rb7n5FezQI5i/9+x1FW1a2sZgHVP7eZMVZ+U8SOwwsoxaueVAi55it6JwOU+W
-	VWjFri9OGUzAS8i7by9jRjAiP0ZqaNOiaN6Es3k9NBGmM9g6oFsSzBt2CZRfqV88qQ2Ox/Ifbjo1j
-	wCwWSFNKuNzji6/it9Yw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wNe4mgGZTbtBqjbSzm+IdfUI+esils3B4NkjANVagiw=; b=3kHBPAIOclEh0P
+	LMEtpr9nJlZuLRjA6vJfdOKoFHoZj5E+0N7WryDOaMNMxBm0hOWpTu0Wpf84xGs/n7X9K0tslLVCf
+	buSJWcmRqOxKeWkG/alr5pZtLfdnUqTMvVBcUtuTTw/O84sjCTx4MrpGE47an/mo0cazjE9J5MIuA
+	3BHeUq3qkz0JfQ4fr2HdNMYdYyKBfZzACZy7dVIYf7VkIRLqc3h5yAnHBRCmUv4fwwzCUeXd+rGHc
+	/nuV2HvLG8ouQXZzeycxVC378quDq04onZt9GqA/ZR7BHZXd44gmHfJA+3Lml1PdBvfF74N8VmMX2
+	AQ5UhOLwDJojZqGuSlww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKKy6-00000005dVi-3nQv;
-	Sun, 08 Dec 2024 17:21:18 +0000
-Received: from mail-ua1-x92b.google.com ([2607:f8b0:4864:20::92b])
+	id 1tKLTL-00000005eub-2X8g;
+	Sun, 08 Dec 2024 17:53:35 +0000
+Received: from mail-qv1-xf2c.google.com ([2607:f8b0:4864:20::f2c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKKy4-00000005dVM-19D6
+	id 1tKLTI-00000005euG-0wdd
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Dec 2024 17:21:17 +0000
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-85c4e74e2baso560714241.0
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Dec 2024 09:21:15 -0800 (PST)
+	Sun, 08 Dec 2024 17:53:33 +0000
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-6d902aea641so4872916d6.2
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Dec 2024 09:53:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733678475; x=1734283275; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V1KyqoBFomxOl77+ZU6CgcKwfPXNaWogS1j6njglFyc=;
-        b=j7CuzFt2L9xWEUmd9twGcFxe3MhNQqRVEZk0fv992tFVvuqVLwASebfdpt+rznAS6G
-         +kFulvsv4I7e2oeGVNs14sPOPeG9guAjKpurwexgUa7zPtJXFXhKUWxrKqRw2q2Sj5U+
-         hTGt1hwsyvExy7Doraok0xLgJ/NdgmY2i7cZ71Kg83aWPcdiJ/Ie2pPXrrCGCM8JUg2x
-         +3UbFnqfdJDF49ubxz5O9vq68/shClTjMFn/igjWjkwIylNidPv/am40/9iEapLjz7bp
-         6Lhnl24Ix6pmaA6RB7Sum9Kj1t53XxoDBnJFb1u07wv/wnJqeguGAw70r8T+IwVlT0jG
-         hRfA==
+        d=gmail.com; s=20230601; t=1733680410; x=1734285210; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mogfde4HD2tesO+IHIV06pNlbHgCI2p0y0QxJlMrRW4=;
+        b=TLfEoIJYSSdgAVdJ8j+4DcKx0BXGlq2u3jT9kuPGTqCmF1zmwrXiqwsZPmIZKY63Ez
+         wv3drtFnSHG6a5RBH8Sxs0nO5JTZn+dsyVTuBDCu8uH10On+3iL1IZlsDUgTGScbysqY
+         +E0zKjJBUJCFFGgFBdYDAzRex2Ny5VzJwkdZPg4sQ1Sby8gDbT8O/+zfr6JZaXqURMQC
+         BfRAg4025NV+78Q+s6y/MX2TI3BqLCV7hdjGrValmi66mKnn2ub5Za722AHN90RmPdU2
+         rVm59u6twK7zSuBDoOx2JdIFKkA5/5ZU4cCrTobEbHJEplD+ztN8rVd3U4SR+wGaOH4N
+         drWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733678475; x=1734283275;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V1KyqoBFomxOl77+ZU6CgcKwfPXNaWogS1j6njglFyc=;
-        b=mUTFaPQ1L9TVgAIIdS1JvV3qAlx4xnyvf7Mh9Wo0FAkaxM4G3YPll5Fy9QDP+nlawe
-         iE+IWH40ZcpkScUwmry6eh2mhLQ5rlRKAjZKmYPtjbkRRVdrUFNhHoj9596HKYvRQ4x1
-         5MZY1PwIi0HeoamTH7oR99T1YO1d3wpSdW+/XqOq2lnL2q6Rrwm91a95pJOdX7HHdZIt
-         8rPrraVU11BRy3CtqhshxXZQsAJUODLXW+sOkPRYL660T6uKBXq/iPCl4GcIeIuF+E5B
-         Ejb7C0dODvvKoYzVC9MZaj0Usq4oo3HYvBtifeZENSGhr48VUtR+RKQQHQGhhjiIpjlR
-         Ftqw==
-X-Forwarded-Encrypted: i=1; AJvYcCW9bQ7ruKZYjKApHGPCSCx9QLuQc+k87lP5x7wnl0/DVXbeuz7DOlAxEPJbDuCqGZR4RoGlOyQYQ34=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwQAgpFPFOW5hk/yIt1NQKv0DKv1T77/9fmTvNQRhQvktoLXDN8
-	x+4pkVSqSBPafv4HklbGYca7mUMR3aW+lAqJgSJjaI3kmWlAWSb7R5WIAetyL79vXKLLYexQjTK
-	7FXKRZdq083/QhLgno2oxvsAlZA0=
-X-Gm-Gg: ASbGnctXaD8nkV3Ogun/8+E+ZMu83bOzOEfJj2n/YXHbguC6O2p2PNXgB2YDo88UeDc
-	UdOjjKgNtmVHdqdBQqxByXSagVN8RG8M=
-X-Google-Smtp-Source: AGHT+IENR3UDThiIkJ+SdvhzuoTwx351q+c6wziFhMmU0b7Us4aOGgMoAOxhZzKj+op8m8ZuFO7bymg3EaHJn4nQtH0=
-X-Received: by 2002:a05:6122:4690:b0:518:773b:39f with SMTP id
- 71dfb90a1353d-518773b0536mr874128e0c.4.1733678474919; Sun, 08 Dec 2024
- 09:21:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20241208085121.53415-1-dennis.lamerice@gmail.com>
-In-Reply-To: <20241208085121.53415-1-dennis.lamerice@gmail.com>
+        d=1e100.net; s=20230601; t=1733680410; x=1734285210;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Mogfde4HD2tesO+IHIV06pNlbHgCI2p0y0QxJlMrRW4=;
+        b=QXCjWEUTQ67/VFMCkPPvMr+g22u0d2tMjrh0fYw7wBNdX/6er3h9HgyLu+yg8jXttr
+         vAJGOZfCRoyV7NbBENWZoPxccvrs6ZfyqvxUgdEy3gnXp7WkB3jPc6CqogafBmfOZFeG
+         +HR//s311CYBFlhOggpbyo7q1GhOF2J8ZdY+7D4Z4IVhNPE8HFUim5ldcQA55uXwf9rm
+         bmycMbuVK/BktrEK4TyI+uNVrkXiEY768dmdWHeipq7SQjUFny3GwLQJRoAZh7pPC0M+
+         JSSA0JnysFf9QwztgVLL8B3hWbeMQiJTPXktB9RBUfSRK72po6YtA6FVXCMDcLh1JCes
+         L3hA==
+X-Forwarded-Encrypted: i=1; AJvYcCWAPp2LAI9LaP48ry98a2cEbnhaxdyXM8jDqyuubOkuSCy1oU/qwHJM8gA/Qlb2dCDDexu3AQFjDT8=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yyd0AYKwnLGhQBYC3ddZSLLj2puvOYBafZwoa9x73/qSxrxpjOr
+	aNd1VKqq4R8Azc2+VuFyxMUvQ6mwgiF9e0/Sk86YAV9ttU+6h750
+X-Gm-Gg: ASbGncs8JP5c8zabEQqSYhFpwOXkuQ/rSCr7PehMnGIA1uhuzcoieDD8IJ+uAK4b5WB
+	KPbXjx2/42+wLlv/kQlHPJx12NSVtNGifl2JKim1V3k7r6p6uJ8qczmNIT5JsZgLWAbeLOT5rFb
+	dI2y4LAP0jILFt05RLmT56bcEkrI0IUF2eRip/PbxH+6+t66hiQX5U3yd+ZtC962nVvyW8zG3tg
+	Bd33n2IwdzMlzJPu3QIU8OhRUj81oiw9LsV7vpHoQhrdTNinAluV16sNXlTzW5yftYANZyVrlHz
+	tAJejBiYCHCGljgb/WgVJv5pYFmM
+X-Google-Smtp-Source: AGHT+IEuV++ppUuVlAS1PRse28GLtcZHBJtSvyEBx9LecOF2uDS0wPVg7p19uYzVfSC0hVh2qfS/oA==
+X-Received: by 2002:a05:6214:20a8:b0:6d8:a188:369f with SMTP id 6a1803df08f44-6d8e7114890mr158277376d6.14.1733680410600;
+        Sun, 08 Dec 2024 09:53:30 -0800 (PST)
+Received: from localhost.localdomain (d24-150-189-55.home.cgocable.net. [24.150.189.55])
+        by smtp.googlemail.com with ESMTPSA id 6a1803df08f44-6d8dabfb438sm40539386d6.106.2024.12.08.09.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Dec 2024 09:53:28 -0800 (PST)
 From: Dennis Lam <dennis.lamerice@gmail.com>
-Date: Sun, 8 Dec 2024 12:21:04 -0500
-Message-ID: <CAGZfcdneGPsAwUZmC6Wv7BWSaQw2rkjDby9nhZFweYOgXvNDbw@mail.gmail.com>
-Subject: Re: [[PATCH] MTD: fix slab-use-after-free due to dangling pointer in
- notifier chain] MTD: fix slab-use-after-free due to dangling pointer in
- notifier chain
-To: richard@nod.at, chengzhihao1@huawei.com, miquel.raynal@bootlin.com, 
+To: richard@nod.at,
+	chengzhihao1@huawei.com,
+	miquel.raynal@bootlin.com,
 	vigneshr@ti.com
-Cc: syzkaller-bugs@googlegroups.com, 
-	syzbot+0988a383ae7c57b99dd9@syzkaller.appspotmail.com, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	syzbot+0988a383ae7c57b99dd9@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com,
+	Dennis Lam <dennis.lamerice@gmail.com>
+Subject: [PATCH] MTD: fix slab-use-after-free due to dangling pointer in notifier chain
+Date: Sun,  8 Dec 2024 12:52:12 -0500
+Message-ID: <20241208175211.9406-2-dennis.lamerice@gmail.com>
+X-Mailer: git-send-email 2.47.0
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241208_092116_337146_177AAFE8 
-X-CRM114-Status: GOOD (  18.18  )
+X-CRM114-CacheID: sfid-20241208_095332_284622_0E303413 
+X-CRM114-Status: UNSURE (   9.85  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,40 +97,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU3VuLCBEZWMgOCwgMjAyNCBhdCAzOjUx4oCvQU0gRGVubmlzIExhbSA8ZGVubmlzLmxhbWVy
-aWNlQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPiBXaGVuIGF0dGFjaGluZyBNVERzLCBhIHJlYm9vdCBu
-b3RpZmllciBpcyBhZGRlZCB0byB0aGUgYmxvY2tpbmcKPiBub3RpZmljYXRpb24gY2hhaW4uIEhv
-d2V2ZXIsIHdoZW4gZGV0YWNoaW5nIGEgTVREIGFuZCBmcmVlaW5nIGl0cwo+IHJlbGF0ZWQgb2Jq
-ZWN0cywgdGhlIG5vdGlmaWVyIGlzIG5ldmVyIHVucmVnaXN0ZXJlZCBmcm9tIHRoZQo+IG5vdGlm
-aWNhdGlvbiBjaGFpbi4gVGh1cywgd2hlbiB0aGUgY2hhaW4gaXMgaXRlcmF0ZWQgdGhlcmUgaXMg
-YQo+IHBvc3NpYmlsaXR5IG9mIGZpbmRpbmcgdGhlIGFkZHJlc3Mgb2YgdGhlIHJlYm9vdCBub3Rp
-ZmllciB3aGljaCBoYXMKPiBhbHJlYWR5IGJlZW4gZnJlZWQsIHJlc3VsdGluZyBpbiBhIHNsYWIt
-dXNlLWFmdGVyLWZyZWUgZXJyb3IuCj4KPiBUbyBmaXggdGhpcywgSSBhZGRlZCBhbiB1bnJlZ2lz
-dGVyIG5vdGlmaWVyIGZ1bmN0aW9uIGluIHRoZSB1Ymlfd2xfY2xvc2UKPiBmdW5jdGlvbiB0byBl
-bnN1cmUgdGhhdCB0aGUgbm90aWZpZXIgaXMgcmVtb3ZlZCBmcm9tIHRoZSBjaGFpbiBhZnRlciB0
-aGUKPiBkZXZpY2UgaGFzIGJlZW4gZGV0YWNoZWQuCj4KPiBSZXBvcnRlZC1ieTogc3l6Ym90KzA5
-ODhhMzgzYWU3YzU3Yjk5ZGQ5QHN5emthbGxlci5hcHBzcG90bWFpbC5jb20KPiBDbG9zZXM6IGh0
-dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC82NzQwOTA5MS4wNTBhMDIyMC4zNjNhMWIuMDEzZC5H
-QUVAZ29vZ2xlLmNvbS9ULwo+IFNpZ25lZC1vZmYtYnk6IERlbm5pcyBMYW0gPGRlbm5pcy5sYW1l
-cmljZUBnbWFpbC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbXRkL3ViaS93bC5jIHwgMSArCj4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L3ViaS93bC5jIGIvZHJpdmVycy9tdGQvdWJpL3dsLmMKPiBpbmRleCA0ZjZmMzM5ZDhmYjguLjMx
-YTFlNTUxNWQ5OCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC91Ymkvd2wuYwo+ICsrKyBiL2Ry
-aXZlcnMvbXRkL3ViaS93bC5jCj4gQEAgLTE5OTUsNiArMTk5NSw3IEBAIHN0YXRpYyB2b2lkIHBy
-b3RlY3Rpb25fcXVldWVfZGVzdHJveShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpKQo+ICB2b2lkIHVi
-aV93bF9jbG9zZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpKQo+ICB7Cj4gICAgICAgICBkYmdfd2wo
-ImNsb3NlIHRoZSBXTCBzdWItc3lzdGVtIik7Cj4gKyAgICAgICB1bnJlZ2lzdGVyX3JlYm9vdF9u
-b3RpZmllcigmdWJpLT53bF9yZWJvb3Rfbm90aWZpZXIpOwo+ICAgICAgICAgdWJpX2Zhc3RtYXBf
-Y2xvc2UodWJpKTsKPiAgICAgICAgIHNodXRkb3duX3dvcmsodWJpKTsKPiAgICAgICAgIHByb3Rl
-Y3Rpb25fcXVldWVfZGVzdHJveSh1YmkpOwo+IC0tCj4gMi40Ny4wCj4KCk15IGFwb2xvZ2llcyBl
-dmVyeW9uZSwgcGxlYXNlIGlnbm9yZSB0aGlzIGVtYWlsLiBNeSBtYWlsaW5nIHNjcmlwdApzZWVt
-cyB0byBoYXZlIGNoYW5nZWQgbXkgZW1haWwgaGVhZGVyIGFuZCBjb21taXQgbWVzc2FnZS4gSSB3
-aWxsIHNlbmQKYW5vdGhlciBiZXR0ZXIgZm9ybWF0dGVkIGVtYWlsIGxhdGVyLgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+When attaching MTDs, a reboot notifier is added to the blocking
+notification chain. However, when detaching a MTD and freeing its
+related objects, the notifier is never unregistered from the
+notification chain and is freed during the detaching process. This
+results in the slab-use-after-free.
+
+To fix this, I added an unregister notifier function in the ubi_wl_close
+function to ensure that the notifier is removed from the chain after the
+device has been detached.
+
+Signed-off-by: Dennis Lam <dennis.lamerice@gmail.com>
+Reported-by: syzbot+0988a383ae7c57b99dd9@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/67409091.050a0220.363a1b.013d.GAE@google.com/T/
+---
+ drivers/mtd/ubi/wl.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 4f6f339d8fb8..31a1e5515d98 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1995,6 +1995,7 @@ static void protection_queue_destroy(struct ubi_device *ubi)
+ void ubi_wl_close(struct ubi_device *ubi)
+ {
+ 	dbg_wl("close the WL sub-system");
++	unregister_reboot_notifier(&ubi->wl_reboot_notifier);
+ 	ubi_fastmap_close(ubi);
+ 	shutdown_work(ubi);
+ 	protection_queue_destroy(ubi);
+-- 
+2.47.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
