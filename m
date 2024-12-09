@@ -4,76 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92F9BE77173
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 08:23:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0DEAE77173
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 09:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Cedbvic2SE9sN0eStIMzTiQ/fnxpnf9HMS8gB+PfSjY=; b=tBQ9NZZLVJy2dZ
-	K+T46erq+SOYxpu1Aph5N5jgKkekwS9rdTGQpdSqXtK9EaWYvJGBWbPua/gzatHdl4SYK2tDOAN/8
-	RPAc0kxOMX/A78RtG4UnEYBsY2uCmKGxIombod8KMJ32FeYICsT5GhQKyhYJ7f7uu3eFz+RNK1dEf
-	XJjiwFWsZ5PsA7awyZrb5IXYbzeGSO1Geo1iabNtLFEIV9FHF71A2DI1dMiVnN9nJWvgGIMunTefK
-	PkRbmVuQSSy2xoi7jUWMbv6X+AaMNbpI5QNfV90UCYW9Y5JaxTxQQ0mz41cQZf3wsTXy/uc5sfgQ+
-	+UhVZlOAfF65xWYJz/uQ==;
+	List-Owner; bh=WMYalnrnXKG+JQs/RltUp57OUEpYXOGxuOSn0LUWizM=; b=LnNto/88pvGwKR
+	GI94FlCZovpSbvUXUkLn5oT2TuahFu4d0MzpvaKN+Z9NYVyf3eM9oK/YQ/G2L9kEbzodpcrsNKdbc
+	c3ZYxlO8/S1V0AlBPYoQs/db7DUOglAumioNStbSexyTIqfKTolJUdCdNiK0rNrn85nwHagFpiT0s
+	2SSjgXcISwqvnmp5aVJmu56+w6KYbSLSrc6PkBbC91wfk+XKVJXkWcqXWSyeIX3DyoK26YRPblgkl
+	WBXm7/80YhMI0KZu7cjPSU+wUs7B/cXZhNhzLatREKFvkHpSRdwoIz8HaY14pY8ax1XQuHnp7SUkR
+	BMnDKiJ2prjs9OYiARaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKZ2w-00000006tSU-1ap7;
-	Mon, 09 Dec 2024 08:23:14 +0000
-Received: from mgamail.intel.com ([192.198.163.14])
+	id 1tKZeT-000000071my-2rZS;
+	Mon, 09 Dec 2024 09:02:01 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKZ1L-00000006t49-2Cvn
+	id 1tKZdr-000000071d1-1Cl7
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Dec 2024 08:21:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733732495; x=1765268495;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Um7JMO3CYMOMtg9MkzluQOsT7g1qLmgYaKW8k1A2Eq4=;
-  b=CKr2e7R6lRa8yZh+ROFLwNlWjaf0MZ7rVDDWx0/XcEIdG8wu2MRYM8nO
-   LFiMA2V+1BMjrRtHfW6NU7OmiItRQJepSn/b6nBVJp1n50B8b+lKN0XEn
-   kx4mnTVqn8uOMl3VO6+pY3jIH0RNIIkvLVMF78y1zg+eu3XJZKgUjKiO1
-   o8w1rDlS3przEb/qfV7bnOUIRxOpu9jThLnhxo18VidQ0r7HkQEQH5+QD
-   +9ovELO1dRG7PzFXSk/HrS9eGAo5e1XVm8y2oANFwR1GDUEiM2XAoC7bv
-   74nV/dNesxo4v21yGmhYgevsX9DkVxJ8gxnK69cgUO5AM19lRjtW+E706
-   Q==;
-X-CSE-ConnectionGUID: H7NsUfPGR3yitOg5jHYPVg==
-X-CSE-MsgGUID: pExjsmccQYm9ENFmhufcDA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11280"; a="34252469"
-X-IronPort-AV: E=Sophos;i="6.12,218,1728975600"; 
-   d="scan'208";a="34252469"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2024 00:21:33 -0800
-X-CSE-ConnectionGUID: B/NeFFu8QAmlGISAw3VL7Q==
-X-CSE-MsgGUID: 5TZQxXd4Rz+mCZ6xhe9UCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,218,1728975600"; 
-   d="scan'208";a="95339983"
-Received: from pg15swiplab1181.png.altera.com ([10.244.232.167])
-  by fmviesa010.fm.intel.com with ESMTP; 09 Dec 2024 00:21:27 -0800
-From: niravkumar.l.rabara@intel.com
-To: devicetree@vger.kernel.org
+	Mon, 09 Dec 2024 09:01:26 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-434f4ccddbdso11152775e9.1
+        for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2024 01:01:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1733734881; x=1734339681; darn=lists.infradead.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zfmkzNoJxgWiG5Z0g0jcQ4NV+0tXwsBrqoBTR0SIamg=;
+        b=uBdLFI/0Zeht+AC47u9Ww7NGQQjr/G7oBbsQ0JSzxUj3Ytjm6UdGKOT27in4TCY1an
+         IAUvEFHFqBJfA0qubbZwJcZe6EuPHCyXmq8ULnBOZF1ikXIIZjTHiliDVt/V0FsBKBaZ
+         HOpNUeMn/ydrPegSUZVZbLEWVN+lJ/qqCakG0g68ETL2eyPEWhSAnGlAWlO04NcWiodz
+         7E3SHq6hW6mcuJhVNHGXLzlbJHA4yaUNzmRKUWkzNKc+eBuf0QcCH0JUISC6F+v3k5Mb
+         jPfolwpJGTssNTri9Ng7ow+b/cBHK75jEGkcKwBU2FY+MNKjG1+Q9Axxe6EENnMUvpeI
+         1uPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733734881; x=1734339681;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zfmkzNoJxgWiG5Z0g0jcQ4NV+0tXwsBrqoBTR0SIamg=;
+        b=imV1UOpzJ0Par1LhRsL5E2g6S3lnLjKHhF3gNWyQ3RppIMULnk9tNJRJwEJ0j3auuP
+         XB8Zq45WO4MturokEWs0QAPS4Natx5xwapwqogxj39/ejdvutnDHtdJn3V9XLVmWn9gs
+         GwQHNwZP2u4RhFwHUqArmGymuLtV+V8bBzzIdsKlZ2WHib+tezAHTMwi5cADNykuEFyu
+         o9BhnPVGHgJbONettYOkroMySpQxu9F/VufKbgvEHTtPu7xWhamwGCOgU3zvphAp4Ihi
+         tBcKM1JLXIrPwR5SMsnsq+aLDHjmV/YbGr8SKNd+GMMUhmS2atvRa2nkkkyutAGjd0jp
+         5KGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX+T3cEmu9xMv5TPrK9mY4AitVRr3t39d5aUsn/L9rwNVCvZJer1kgLHY8TQGiTszXwU6cBaP8lSfo=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw/ufi5LLvq6l14T7iF0vdBxAZ8C9GpwUIBFn5ppRkVzqd7bJW4
+	xJslXVomQF8VGhADWjxHIKQEcc0jJ9OnsTeVi/on8Cq8If/Zeb2Lu8tpQZroJHE=
+X-Gm-Gg: ASbGnctMebROCuFtsIIXMrqVoC/+sjElqfblh8E7YitaQc+04sVawOHrITu8sK7l+v0
+	iSTDO5ZyN/wpKvatvabDfnou8jvYHVAQ1BoLpvBt7Yt1kDMBur2kq7+/H2XACNsgIKnbCV9l3x6
+	n/GG6VfODOIUto+CEOAGFS+JM3CfyF+aEWWAsqv77naY8GmcXRNe4vyGSwWwAM5AqczHrBX1AxW
+	7yvrC7O5eb8aSUgdCa/mFQ4KPpZjn7OumoEOFj1Xwakn8Rsdgl7KkA=
+X-Google-Smtp-Source: AGHT+IFmp+9Cbk91wy/S26/TnevCyDFcz+T27bFU4Ss//r84rMuo+tniIyTuEqKycjEZM1O5HWZh/A==
+X-Received: by 2002:a05:600c:3144:b0:434:a202:7a0d with SMTP id 5b1f17b1804b1-434dded67cdmr83625685e9.22.1733734880111;
+        Mon, 09 Dec 2024 01:01:20 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434da119abbsm151793365e9.43.2024.12.09.01.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2024 01:01:19 -0800 (PST)
+Date: Mon, 9 Dec 2024 12:01:16 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH RESEND v4] dt-bindings: mtd: cadence: convert cadence-nand-controller.txt to yaml
-Date: Mon,  9 Dec 2024 16:18:26 +0800
-Message-Id: <20241209081826.1242214-1-niravkumar.l.rabara@intel.com>
-X-Mailer: git-send-email 2.25.1
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] mtdchar: fix integer overflow in read/write ioctls
+Message-ID: <Z1ax3K3-zSJExPNV@stanley.mountain>
 MIME-Version: 1.0
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241209_002135_580246_DC645947 
-X-CRM114-Status: GOOD (  19.65  )
+X-CRM114-CacheID: sfid-20241209_010123_352259_58B74220 
+X-CRM114-Status: GOOD (  12.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,192 +96,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+The "req.start" and "req.len" variables are u64 values that come from the
+user at the start of the function.  We mask away the high 32 bits of
+"req.len" so that's capped at U32_MAX but the "req.start" variable can go
+up to U64_MAX.
 
-Convert cadence-nand-controller.txt to yaml format.
-Update cadence-nand-controller.txt to cdns,hp-nfc.yaml in MAINTAINER file.
+Use check_add_overflow() to fix this bug.
 
-Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Fixes: 095bb6e44eb1 ("mtdchar: add MEMREAD ioctl")
+Fixes: 6420ac0af95d ("mtdchar: prevent unbounded allocation in MEMWRITE ioctl")
+Cc: stable@vger.kernel.org
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
+v2: fix the tags.
 
-Changes in v4 resend:
-- Include missing Reviewed-by tag.
+ drivers/mtd/mtdchar.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Changes in v4:
-- Fixed the identation for examples as per review comment in v3.
-
-Changes in v3:
-- Changed file name to cdns,hp-nfc.yaml to match with compatible.
-- Update description, fixed alignment, and used defines for interrupt
-  flag as per review comments in v2.
-
-Changes in v2:
-- Update name cadence-nand-controller.txt to cadence,nand.yaml in MAINTAINER
-  file to resolve the warning.
-
- .../bindings/mtd/cadence-nand-controller.txt  | 53 -------------
- .../devicetree/bindings/mtd/cdns,hp-nfc.yaml  | 75 +++++++++++++++++++
- MAINTAINERS                                   |  2 +-
- 3 files changed, 76 insertions(+), 54 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
-
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-deleted file mode 100644
-index d2eada5044b2..000000000000
---- a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-+++ /dev/null
-@@ -1,53 +0,0 @@
--* Cadence NAND controller
--
--Required properties:
--  - compatible : "cdns,hp-nfc"
--  - reg : Contains two entries, each of which is a tuple consisting of a
--	  physical address and length. The first entry is the address and
--	  length of the controller register set. The second entry is the
--	  address and length of the Slave DMA data port.
--  - reg-names: should contain "reg" and "sdma"
--  - #address-cells: should be 1. The cell encodes the chip select connection.
--  - #size-cells : should be 0.
--  - interrupts : The interrupt number.
--  - clocks: phandle of the controller core clock (nf_clk).
--
--Optional properties:
--  - dmas: shall reference DMA channel associated to the NAND controller
--  - cdns,board-delay-ps : Estimated Board delay. The value includes the total
--    round trip delay for the signals and is used for deciding on values
--    associated with data read capture. The example formula for SDR mode is
--    the following:
--    board delay = RE#PAD delay + PCB trace to device + PCB trace from device
--    + DQ PAD delay
--
--Child nodes represent the available NAND chips.
--
--Required properties of NAND chips:
--  - reg: shall contain the native Chip Select ids from 0 to max supported by
--    the cadence nand flash controller
--
--See Documentation/devicetree/bindings/mtd/nand-controller.yaml for more details on
--generic bindings.
--
--Example:
--
--nand_controller: nand-controller@60000000 {
--	  compatible = "cdns,hp-nfc";
--	  #address-cells = <1>;
--	  #size-cells = <0>;
--	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
--	  reg-names = "reg", "sdma";
--	  clocks = <&nf_clk>;
--	  cdns,board-delay-ps = <4830>;
--	  interrupts = <2 0>;
--	  nand@0 {
--	      reg = <0>;
--	      label = "nand-1";
--	  };
--	  nand@1 {
--	      reg = <1>;
--	      label = "nand-2";
--	  };
--
--};
-diff --git a/Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml b/Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
-new file mode 100644
-index 000000000000..0bed37a994c3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/cdns,hp-nfc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Cadence NAND controller
-+
-+maintainers:
-+  - Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-+
-+allOf:
-+  - $ref: nand-controller.yaml
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: cdns,hp-nfc
-+
-+  reg:
-+    items:
-+      - description: Controller register set
-+      - description: Slave DMA data port register set
-+
-+  reg-names:
-+    items:
-+      - const: reg
-+      - const: sdma
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 1
-+
-+  cdns,board-delay-ps:
-+    description: |
-+      Estimated Board delay. The value includes the total round trip
-+      delay for the signals and is used for deciding on values associated
-+      with data read capture. The example formula for SDR mode is the
-+      following.
-+      board delay = RE#PAD delay + PCB trace to device + PCB trace from device
-+      + DQ PAD delay
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    nand-controller@10b80000 {
-+        compatible = "cdns,hp-nfc";
-+        reg = <0x10b80000 0x10000>,
-+              <0x10840000 0x10000>;
-+        reg-names = "reg", "sdma";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&nf_clk>;
-+        cdns,board-delay-ps = <4830>;
-+
-+        nand@0 {
-+            reg = <0>;
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1e930c7a58b1..9fab4b4a75a1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5009,7 +5009,7 @@ F:	drivers/media/platform/cadence/cdns-csi2*
- CADENCE NAND DRIVER
- L:	linux-mtd@lists.infradead.org
- S:	Orphan
--F:	Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-+F:	Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
- F:	drivers/mtd/nand/raw/cadence-nand-controller.c
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 8dc4f5c493fc..335c702633ff 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -599,6 +599,7 @@ mtdchar_write_ioctl(struct mtd_info *mtd, struct mtd_write_req __user *argp)
+ 	uint8_t *datbuf = NULL, *oobbuf = NULL;
+ 	size_t datbuf_len, oobbuf_len;
+ 	int ret = 0;
++	u64 end;
  
- CADENCE USB3 DRD IP DRIVER
+ 	if (copy_from_user(&req, argp, sizeof(req)))
+ 		return -EFAULT;
+@@ -618,7 +619,7 @@ mtdchar_write_ioctl(struct mtd_info *mtd, struct mtd_write_req __user *argp)
+ 	req.len &= 0xffffffff;
+ 	req.ooblen &= 0xffffffff;
+ 
+-	if (req.start + req.len > mtd->size)
++	if (check_add_overflow(req.start, req.len, &end) || end > mtd->size)
+ 		return -EINVAL;
+ 
+ 	datbuf_len = min_t(size_t, req.len, mtd->erasesize);
+@@ -698,6 +699,7 @@ mtdchar_read_ioctl(struct mtd_info *mtd, struct mtd_read_req __user *argp)
+ 	size_t datbuf_len, oobbuf_len;
+ 	size_t orig_len, orig_ooblen;
+ 	int ret = 0;
++	u64 end;
+ 
+ 	if (copy_from_user(&req, argp, sizeof(req)))
+ 		return -EFAULT;
+@@ -724,7 +726,7 @@ mtdchar_read_ioctl(struct mtd_info *mtd, struct mtd_read_req __user *argp)
+ 	req.len &= 0xffffffff;
+ 	req.ooblen &= 0xffffffff;
+ 
+-	if (req.start + req.len > mtd->size) {
++	if (check_add_overflow(req.start, req.len, &end) || end > mtd->size) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
 -- 
-2.25.1
+2.45.2
 
 
 ______________________________________________________
