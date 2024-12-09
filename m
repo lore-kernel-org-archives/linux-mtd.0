@@ -4,82 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98D67E77181
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 16:21:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7159DE7717D
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 19:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=EGyjWYgQ19adjU1J+BKd/yL9E15vzA8uFOQ4XfISv+8=; b=2h9qGP36ZdrYK5
-	yjRXEAUi6bMB6cmmygRhA0NSPO9vM8t4KpU0ycQY4DXfqPEG399+ILXO9vL6jHSF+Vu+ejIudB7wn
-	Ym7ptJKXlOxyLM5s4bImXYW8eWGFGOpe7M4mgzMi07WtR4SVBaFMc6CrrvmY/BYsr8favl49U5Xy9
-	zvx56FnUaSoz5BC6OCBrlNoiGghjKZQvFm+ZHLtovsiEy5EwYVmVgRaSfKD6NHzEaNtOZAFUBi31U
-	2KB5vstdNhlZj/LaOOUmdBXjkDUXMc8Ec3xhb/tuLNwije1Qzmv73Ju6GndZVzXPceEt+IJ36wkfG
-	vaCKJYf9CCGGreEETDFg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rNJqIqzXU1lBYRR7vGT41CaznObbrF+ULk+uHfWl2HU=; b=I6CmHS7EPl3yQW
+	3GE/bvHDY+8NeUCPLZfSSCkUA/n7Qn+/KKAXlAO1Ix6ktbyCEqX1NMyVv11DDX4r3dd59R3rs+SgG
+	jrUsOx0ltLDWA1QRWeDSVFGJHWJ8hQnTBvg+KIZ722zxU8Ma7ZGzePQ221fBh0hjmuN103e34E68T
+	L0pxG5ITr+H3f9FB5aDgkYc3MupZMsWSZX9z5mXyXKQIshNaihBu0Wy2yIgZcOk8wjrtp7S0TGvpA
+	g8U3mJ59rAHU9L8X4S6Jjtx3OzrgHVfcUl+fhkIYnC/ObY1jV+ligimAWHwNAI3ykCjCvBwykM0EB
+	YsnI8aXPT4QvKuKbwX1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKgW5-00000008XG6-0NPI;
-	Mon, 09 Dec 2024 16:21:49 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1tKjcv-000000094z9-2WtQ;
+	Mon, 09 Dec 2024 19:41:05 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKgVu-00000008XDx-0Vwb
+	id 1tKjct-000000094yi-1qMt
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Dec 2024 16:21:39 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B9FaNQl014046;
-	Mon, 9 Dec 2024 16:21:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-type:date:from:message-id:mime-version:subject:to; s=
-	qcppdkim1; bh=jeX8jBQrA4Y/1/e2bofe8t72kt/HJ+dQVyIr2KvR5Tg=; b=i4
-	6ik0RDPtgMRze8JDiu4HPhCdlKGqpr9rw9qquxNU/V75xR+Kuehp0vW1WwlHeJ6O
-	kAIiA/nQF0xg9+vqdm62Iu5h9onNXgNBzj2EJ8bKJG5qSfw5zRHzO/yOggtH5XGA
-	XXiizC7ivsMc9wtXGznfBbUHlqyvWEYA5XqwK/flzFXtfwGkTnD3HLn6p0eUFRjx
-	3cU1lYiAIMIVqIdWGYJDRMaax7jcUop0U5huO2WDXIMtRY1Xf8hsPjZ2CR2bW3xe
-	INinuMKeQftePE5/NAZRs6aSHMhkhCZF9v/SZMP8sNWI3E+mNByi782/8WlF1Uxb
-	6LqVKg8Y/5bLH2u1L+5A==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 43dvyahmrn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 09 Dec 2024 16:21:30 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4B9GLTjd015708
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 9 Dec 2024 16:21:29 GMT
-Received: from hu-pintu-blr.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 9 Dec 2024 08:21:26 -0800
-From: Pintu Kumar <quic_pintu@quicinc.com>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <skhan@linuxfoundation.org>, <pintu.ping@gmail.com>,
-        Pintu Kumar
-	<quic_pintu@quicinc.com>
-Subject: [PATCH v2] ubifs: ubifs_dump_leb: remove return from end of void function
-Date: Mon, 9 Dec 2024 21:51:04 +0530
-Message-ID: <20241209162104.15331-1-quic_pintu@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	Mon, 09 Dec 2024 19:41:04 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-434e9e22a99so1490975e9.1
+        for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2024 11:41:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1733773261; x=1734378061; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TeUV7ATPGzq8ARMGli9TBeGlG7WubOrXx2cbt2C9Y74=;
+        b=Mp+rsy3/lpNun93n6yE7go5Nedjj5cPY7UbfoNOYK7dgJsJinNHMJTqkStNjsCeqVm
+         OqiR+M9NFc3xoi5YAuYak6MkZLd9c3YNBKo7s3zmPJbxEGTXFh6V1uir4U3qm4GfhGth
+         dhmKrx5osG+e4m2GbKal1j/II7jgArtzunlh81eS7OlhRk9ui0OlGsCc7wJvCqlqGXUG
+         igx7VQ/IPpel3nXO2a/cX12lP0ADRTN0TTiiN47oaoIK78QqjOY9zO3kLHeoPiio3xaR
+         xz0MUqoC3s1Gq4enyzpHcAr/PH75g9pEP00b7Z6sWvV7Ew+Wy6vR1lHRQOmdNUCwhRuq
+         A1Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733773261; x=1734378061;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TeUV7ATPGzq8ARMGli9TBeGlG7WubOrXx2cbt2C9Y74=;
+        b=EFmi6Epvwm5FCNR2KE1/OfL3g/EbJY/yuO9mwT84KO7Qm4zLKAUnaz1MYYujVN6hu8
+         3Xh0TqKCQVLfXjA8GDB447Zm2qcKn3MUKjVb84AL0EOounb6mnu9n/xMzV+nmjzXhzCe
+         uQ1Nre1RXGRB0owaT2oWh2Q30VzG8kD8q6YFJLMV5zbqV6bUpw2Nn7Og0T6AxA4ko0I1
+         NCykndO+QBLQdJByVeEumpzCUgdYLlB8cR34nQ8acJR+mhi+3fmIzoRC7JxAZnO9ZW3r
+         YZOQ7r73h0500nhYsdTmN4dRemKV1umbgnMx4bDFQW74nsg7usG70g6MtJ1QPDQ4TKLo
+         oLvg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtzl7KHXaVetUR9xuQ7z1xEJlAFefSRKxRwR4JA3tybX9SnGsvMbVs46FAraj4+onwP8JhpXphlUw=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwD+tNhl9//rUotyUq4TskmUjAhwGIcMkdTdSPSxShmJ+U0lCbR
+	dIC0s2C3jAicD8Lt+yrh0OhbZhsD6DUjhqSVuBXQ9a47DgD2e9eFGEwBT/Sh8r4=
+X-Gm-Gg: ASbGncshzWPKgugSLoCAHbkr2a3vE2DsDbQFhRpC7jbRTxr8HTQ21iFd/yLrsLumJKp
+	O5jz7e+ThhzOeFQsqtyhQiJ+E8KO4xekyPIn/BM1SKWh927wfpeZuzCX/vk9JAsQyr5l2lL4/DU
+	b+ttDYTHZ10xBBP4EwUTgdk0BbzQM2rLjOvYNRoe//UiW+5bGKwc3kzNfgWB4NGWkh5uMcfGDss
+	1mc3nJTG7Rur2H+VRtO7rOWTddnl8NtG9VUxkY/puvWpMHRuPquRbCHBxsNu9mM
+X-Google-Smtp-Source: AGHT+IH3wYRFE09ZMScev5P6t8HEEvM5cQ4HvJNjFYxwWecu/5OqRvvW9SX6tcv2+5NXUE7IyZwIiQ==
+X-Received: by 2002:a05:6000:1565:b0:382:4e5c:5c96 with SMTP id ffacd0b85a97d-3862b3aa8bemr3627505f8f.8.1733773261434;
+        Mon, 09 Dec 2024 11:41:01 -0800 (PST)
+Received: from krzk-bin.. ([178.197.223.165])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-386367f7c71sm8273964f8f.41.2024.12.09.11.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2024 11:41:00 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Santosh Shilimkar <ssantosh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Christopher Cordahi <christophercordahi@nanometrics.ca>
+Subject: Re: (subset) [PATCH v5 0/9] Implement setup_interface() in the DaVinci NAND controller
+Date: Mon,  9 Dec 2024 20:40:56 +0100
+Message-ID: <173377318397.159219.10800117213949308208.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
+References: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rRIns4iJhf67h--F4ZCl6Xyt5b0A4NzM
-X-Proofpoint-ORIG-GUID: rRIns4iJhf67h--F4ZCl6Xyt5b0A4NzM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- mlxlogscore=821 mlxscore=0 priorityscore=1501 suspectscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
- definitions=main-2412090127
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241209_082138_286869_352ED2A0 
-X-CRM114-Status: GOOD (  10.48  )
+X-CRM114-CacheID: sfid-20241209_114103_490036_7A3C3D16 
+X-CRM114-Status: UNSURE (   8.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,35 +107,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Noticed that there is a useless return statement at the end of void
-function ubifs_dump_leb().
-Just removed it.
 
-Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
+On Wed, 04 Dec 2024 10:43:10 +0100, Bastien Curutchet wrote:
+> This patch series aims to implement the setup_interface() operation in
+> the DaVinci NAND controller to enable the use of all ONFI modes and
+> improve the NAND access speed.
+> 
+> PATCH 6 depends on PATCH 1-2-3-4-5
+> PATCH 9 depends on PATCH 6-8
+> 
+> [...]
 
----
-Changes in V2:
-Change commit title as suggested by Zhihao Cheng.
-V1: https://lore.kernel.org/all/e43da923-0184-d41e-a273-a02848f3b671@huawei.com/
----
- fs/ubifs/debug.c | 1 -
- 1 file changed, 1 deletion(-)
+Applied, thanks!
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 5cc69beaa62e..987eb5b6782a 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -863,7 +863,6 @@ void ubifs_dump_leb(const struct ubifs_info *c, int lnum)
- 
- out:
- 	vfree(buf);
--	return;
- }
- 
- void ubifs_dump_znode(const struct ubifs_info *c,
+[1/9] memory: ti-aemif: Store timings parameter in number of cycles - 1
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/1ec0fa90070c9468d22b3c3ea5f4bd6c27810907
+[2/9] memory: ti-aemif: Remove unnecessary local variables
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/b3d57e179607106d5b08a635c49b338c409357d4
+[3/9] memory: ti-aemif: Wrap CS timings into a struct
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/30b4da67655469bf8d4b8ba7c001096a1e10c7bf
+[4/9] memory: ti-aemif: Create aemif_check_cs_timings()
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/2c7b585d19cc1a7185a3a0b58cb643d28fd19cc1
+[5/9] memory: ti-aemif: Create aemif_set_cs_timings()
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/a6d60e3376065752137ec23d103f7d039c363e41
+[6/9] memory: ti-aemif: Export aemif_*_cs_timings()
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/df8e78607d4795806b59564ba7a3e2e125d119fc
+
+
+I'll wait till it hit next and got build reports and provide these as stable
+tag/branch.
+
+
+Best regards,
 -- 
-2.17.1
-
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
