@@ -4,58 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9699AE7717D
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 14:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98D67E77181
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 16:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6r1jkkQSYntlz4z7Gv7Z+5DxF/x6bEeiFvtD44KUXeM=; b=1EXOZRi4IH0U1tADPq3gpHj9Yv
-	YsUu8/dN096EMy/l8SkIeZgnlqHXx9w1GiFutl9+qepnM3euuee4GyLCP+jo1MGG+TP9Ek6nLsUGW
-	M5neJr8qCaj2V2L7AvaDsyyAp6xzu/2gQ1qd1Ih8iUiCKCivK17uQRiOnqDbRmObIYuCeli42vaH0
-	qeLfQ6rG+u1JZoVyQdHjlYoDuuVvyZnHEgcovxrol6BzWqv7esemEPtsLTlDNC3Th1eQW6yLkqqhR
-	PXXli/PIW7LTK4ZGaB4Gnzcuj/BtwPQrTWL5mz4Iqq2bqvwwftD4xNopklZ/G4ReB8QNu1Plkotqu
-	gXgXZkzg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=EGyjWYgQ19adjU1J+BKd/yL9E15vzA8uFOQ4XfISv+8=; b=2h9qGP36ZdrYK5
+	yjRXEAUi6bMB6cmmygRhA0NSPO9vM8t4KpU0ycQY4DXfqPEG399+ILXO9vL6jHSF+Vu+ejIudB7wn
+	Ym7ptJKXlOxyLM5s4bImXYW8eWGFGOpe7M4mgzMi07WtR4SVBaFMc6CrrvmY/BYsr8favl49U5Xy9
+	zvx56FnUaSoz5BC6OCBrlNoiGghjKZQvFm+ZHLtovsiEy5EwYVmVgRaSfKD6NHzEaNtOZAFUBi31U
+	2KB5vstdNhlZj/LaOOUmdBXjkDUXMc8Ec3xhb/tuLNwije1Qzmv73Ju6GndZVzXPceEt+IJ36wkfG
+	vaCKJYf9CCGGreEETDFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKeZO-00000008Anp-2cAA;
-	Mon, 09 Dec 2024 14:17:06 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1tKgW5-00000008XG6-0NPI;
+	Mon, 09 Dec 2024 16:21:49 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKeZL-00000008An7-0Ojc
+	id 1tKgVu-00000008XDx-0Vwb
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Dec 2024 14:17:06 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Y6P4m0YyKz2Dh7m;
-	Mon,  9 Dec 2024 22:14:32 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7CE4D1A016C;
-	Mon,  9 Dec 2024 22:16:55 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+	Mon, 09 Dec 2024 16:21:39 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B9FaNQl014046;
+	Mon, 9 Dec 2024 16:21:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-type:date:from:message-id:mime-version:subject:to; s=
+	qcppdkim1; bh=jeX8jBQrA4Y/1/e2bofe8t72kt/HJ+dQVyIr2KvR5Tg=; b=i4
+	6ik0RDPtgMRze8JDiu4HPhCdlKGqpr9rw9qquxNU/V75xR+Kuehp0vW1WwlHeJ6O
+	kAIiA/nQF0xg9+vqdm62Iu5h9onNXgNBzj2EJ8bKJG5qSfw5zRHzO/yOggtH5XGA
+	XXiizC7ivsMc9wtXGznfBbUHlqyvWEYA5XqwK/flzFXtfwGkTnD3HLn6p0eUFRjx
+	3cU1lYiAIMIVqIdWGYJDRMaax7jcUop0U5huO2WDXIMtRY1Xf8hsPjZ2CR2bW3xe
+	INinuMKeQftePE5/NAZRs6aSHMhkhCZF9v/SZMP8sNWI3E+mNByi782/8WlF1Uxb
+	6LqVKg8Y/5bLH2u1L+5A==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 43dvyahmrn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 09 Dec 2024 16:21:30 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4B9GLTjd015708
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 9 Dec 2024 16:21:29 GMT
+Received: from hu-pintu-blr.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 9 Dec 2024 22:16:54 +0800
-Subject: Re: [PATCH v2] ubifs: dump_lpt_leb: remove return at end of void
- function
-To: Pintu Kumar <quic_pintu@quicinc.com>, <richard@nod.at>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <skhan@linuxfoundation.org>, <pintu.ping@gmail.com>
-References: <20241209135936.13229-1-quic_pintu@quicinc.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <c5f85328-04d4-0653-4202-c3b3d7f92bfe@huawei.com>
-Date: Mon, 9 Dec 2024 22:16:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ 15.2.1544.9; Mon, 9 Dec 2024 08:21:26 -0800
+From: Pintu Kumar <quic_pintu@quicinc.com>
+To: <richard@nod.at>, <chengzhihao1@huawei.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: <skhan@linuxfoundation.org>, <pintu.ping@gmail.com>,
+        Pintu Kumar
+	<quic_pintu@quicinc.com>
+Subject: [PATCH v2] ubifs: ubifs_dump_leb: remove return from end of void function
+Date: Mon, 9 Dec 2024 21:51:04 +0530
+Message-ID: <20241209162104.15331-1-quic_pintu@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20241209135936.13229-1-quic_pintu@quicinc.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rRIns4iJhf67h--F4ZCl6Xyt5b0A4NzM
+X-Proofpoint-ORIG-GUID: rRIns4iJhf67h--F4ZCl6Xyt5b0A4NzM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ mlxlogscore=821 mlxscore=0 priorityscore=1501 suspectscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
+ definitions=main-2412090127
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241209_061703_293200_025243F7 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20241209_082138_286869_352ED2A0 
+X-CRM114-Status: GOOD (  10.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,26 +91,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8xMi85IDIxOjU5LCBQaW50dSBLdW1hciDQtLXAOgo+IE5vdGljZWQgdGhhdCB0aGVy
-ZSBpcyBhIHVzZWxlc3MgcmV0dXJuIHN0YXRlbWVudCBhdCB0aGUgZW5kIG9mIHZvaWQKPiBmdW5j
-dGlvbiBkdW1wX2xwdF9sZWIoKS4KPiBKdXN0IHJlbW92aW5nIGl0Lgo+IAo+IFNpZ25lZC1vZmYt
-Ynk6IFBpbnR1IEt1bWFyIDxxdWljX3BpbnR1QHF1aWNpbmMuY29tPgo+IAoKUmV2aWV3ZWQtYnk6
-IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+Cj4gLS0tCj4gQ2hhbmdlcyBp
-biBWMjoKPiBDaGFuZ2UgY29tbWl0IHRpdGxlIGFzIHN1Z2dlc3RlZCBieSBaaGloYW8gQ2hlbmcu
-Cj4gVjE6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9hYmU3OWUwYS1hMzVmLTBiNTMtYmJl
-Yy03ZDY0MmY1OTJmYWVAaHVhd2VpLmNvbS8KPiAtLS0KPiAgIGZzL3ViaWZzL2xwdF9jb21taXQu
-YyB8IDEgLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0
-IGEvZnMvdWJpZnMvbHB0X2NvbW1pdC5jIGIvZnMvdWJpZnMvbHB0X2NvbW1pdC5jCj4gaW5kZXgg
-YWE4ODM3ZTYyNDdjLi5mMmNiMjE0NTgxZmQgMTAwNjQ0Cj4gLS0tIGEvZnMvdWJpZnMvbHB0X2Nv
-bW1pdC5jCj4gKysrIGIvZnMvdWJpZnMvbHB0X2NvbW1pdC5jCj4gQEAgLTE5MzIsNyArMTkzMiw2
-IEBAIHN0YXRpYyB2b2lkIGR1bXBfbHB0X2xlYihjb25zdCBzdHJ1Y3QgdWJpZnNfaW5mbyAqYywg
-aW50IGxudW0pCj4gICAJcHJfZXJyKCIocGlkICVkKSBmaW5pc2ggZHVtcGluZyBMRUIgJWRcbiIs
-IGN1cnJlbnQtPnBpZCwgbG51bSk7Cj4gICBvdXQ6Cj4gICAJdmZyZWUoYnVmKTsKPiAtCXJldHVy
-bjsKPiAgIH0KPiAgIAo+ICAgLyoqCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Noticed that there is a useless return statement at the end of void
+function ubifs_dump_leb().
+Just removed it.
+
+Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
+
+---
+Changes in V2:
+Change commit title as suggested by Zhihao Cheng.
+V1: https://lore.kernel.org/all/e43da923-0184-d41e-a273-a02848f3b671@huawei.com/
+---
+ fs/ubifs/debug.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 5cc69beaa62e..987eb5b6782a 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -863,7 +863,6 @@ void ubifs_dump_leb(const struct ubifs_info *c, int lnum)
+ 
+ out:
+ 	vfree(buf);
+-	return;
+ }
+ 
+ void ubifs_dump_znode(const struct ubifs_info *c,
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
