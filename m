@@ -4,93 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7159DE7717D
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 19:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEFD6E7717D
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Dec 2024 19:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rNJqIqzXU1lBYRR7vGT41CaznObbrF+ULk+uHfWl2HU=; b=I6CmHS7EPl3yQW
-	3GE/bvHDY+8NeUCPLZfSSCkUA/n7Qn+/KKAXlAO1Ix6ktbyCEqX1NMyVv11DDX4r3dd59R3rs+SgG
-	jrUsOx0ltLDWA1QRWeDSVFGJHWJ8hQnTBvg+KIZ722zxU8Ma7ZGzePQ221fBh0hjmuN103e34E68T
-	L0pxG5ITr+H3f9FB5aDgkYc3MupZMsWSZX9z5mXyXKQIshNaihBu0Wy2yIgZcOk8wjrtp7S0TGvpA
-	g8U3mJ59rAHU9L8X4S6Jjtx3OzrgHVfcUl+fhkIYnC/ObY1jV+ligimAWHwNAI3ykCjCvBwykM0EB
-	YsnI8aXPT4QvKuKbwX1w==;
+	List-Owner; bh=l+mRXd3zfdrZxJvVhW0p68Smpgwb/D7+u8QgjJdtMDE=; b=GNARKP0QSCPYY3
+	+z6H8bsAFGeiD1R1vAyi9jGRm5p62KXdWkr+IxFSwjjYjFiNxpuNPr+FVd2ak3r1OfJq3uFPPSi/R
+	MGKQqKbqCz0H3TbUR216QW9XsdDgw8QtfrGVHc0vzxaqHkmjyRT5w7Lh8lFR4CRKrHUvrGyAycLYn
+	31IO4KEwzTKCh/W83U2PzBL8j4MQcyj9686D3L0Ak1jG5K448QR+v9+6+gsH47raIIeoZMrfwYXor
+	BCbKBZeGcJPihcZQ5HTIQBF2eAdWO1nkNxdr+CQt4uaP/4ItNmm+UKCjrwMncl4J23iKJrcXG8MHw
+	r0527REqmI6qNDrsF0ng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKjcv-000000094z9-2WtQ;
-	Mon, 09 Dec 2024 19:41:05 +0000
-Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
+	id 1tKjdA-0000000952g-0JiV;
+	Mon, 09 Dec 2024 19:41:20 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKjct-000000094yi-1qMt
+	id 1tKjd8-00000009520-1uWI
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Dec 2024 19:41:04 +0000
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-434e9e22a99so1490975e9.1
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2024 11:41:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1733773261; x=1734378061; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TeUV7ATPGzq8ARMGli9TBeGlG7WubOrXx2cbt2C9Y74=;
-        b=Mp+rsy3/lpNun93n6yE7go5Nedjj5cPY7UbfoNOYK7dgJsJinNHMJTqkStNjsCeqVm
-         OqiR+M9NFc3xoi5YAuYak6MkZLd9c3YNBKo7s3zmPJbxEGTXFh6V1uir4U3qm4GfhGth
-         dhmKrx5osG+e4m2GbKal1j/II7jgArtzunlh81eS7OlhRk9ui0OlGsCc7wJvCqlqGXUG
-         igx7VQ/IPpel3nXO2a/cX12lP0ADRTN0TTiiN47oaoIK78QqjOY9zO3kLHeoPiio3xaR
-         xz0MUqoC3s1Gq4enyzpHcAr/PH75g9pEP00b7Z6sWvV7Ew+Wy6vR1lHRQOmdNUCwhRuq
-         A1Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733773261; x=1734378061;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TeUV7ATPGzq8ARMGli9TBeGlG7WubOrXx2cbt2C9Y74=;
-        b=EFmi6Epvwm5FCNR2KE1/OfL3g/EbJY/yuO9mwT84KO7Qm4zLKAUnaz1MYYujVN6hu8
-         3Xh0TqKCQVLfXjA8GDB447Zm2qcKn3MUKjVb84AL0EOounb6mnu9n/xMzV+nmjzXhzCe
-         uQ1Nre1RXGRB0owaT2oWh2Q30VzG8kD8q6YFJLMV5zbqV6bUpw2Nn7Og0T6AxA4ko0I1
-         NCykndO+QBLQdJByVeEumpzCUgdYLlB8cR34nQ8acJR+mhi+3fmIzoRC7JxAZnO9ZW3r
-         YZOQ7r73h0500nhYsdTmN4dRemKV1umbgnMx4bDFQW74nsg7usG70g6MtJ1QPDQ4TKLo
-         oLvg==
-X-Forwarded-Encrypted: i=1; AJvYcCWtzl7KHXaVetUR9xuQ7z1xEJlAFefSRKxRwR4JA3tybX9SnGsvMbVs46FAraj4+onwP8JhpXphlUw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwD+tNhl9//rUotyUq4TskmUjAhwGIcMkdTdSPSxShmJ+U0lCbR
-	dIC0s2C3jAicD8Lt+yrh0OhbZhsD6DUjhqSVuBXQ9a47DgD2e9eFGEwBT/Sh8r4=
-X-Gm-Gg: ASbGncshzWPKgugSLoCAHbkr2a3vE2DsDbQFhRpC7jbRTxr8HTQ21iFd/yLrsLumJKp
-	O5jz7e+ThhzOeFQsqtyhQiJ+E8KO4xekyPIn/BM1SKWh927wfpeZuzCX/vk9JAsQyr5l2lL4/DU
-	b+ttDYTHZ10xBBP4EwUTgdk0BbzQM2rLjOvYNRoe//UiW+5bGKwc3kzNfgWB4NGWkh5uMcfGDss
-	1mc3nJTG7Rur2H+VRtO7rOWTddnl8NtG9VUxkY/puvWpMHRuPquRbCHBxsNu9mM
-X-Google-Smtp-Source: AGHT+IH3wYRFE09ZMScev5P6t8HEEvM5cQ4HvJNjFYxwWecu/5OqRvvW9SX6tcv2+5NXUE7IyZwIiQ==
-X-Received: by 2002:a05:6000:1565:b0:382:4e5c:5c96 with SMTP id ffacd0b85a97d-3862b3aa8bemr3627505f8f.8.1733773261434;
-        Mon, 09 Dec 2024 11:41:01 -0800 (PST)
-Received: from krzk-bin.. ([178.197.223.165])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-386367f7c71sm8273964f8f.41.2024.12.09.11.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 11:41:00 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Santosh Shilimkar <ssantosh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Christopher Cordahi <christophercordahi@nanometrics.ca>
-Subject: Re: (subset) [PATCH v5 0/9] Implement setup_interface() in the DaVinci NAND controller
-Date: Mon,  9 Dec 2024 20:40:56 +0100
-Message-ID: <173377318397.159219.10800117213949308208.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
-References: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
+	Mon, 09 Dec 2024 19:41:19 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 085C8A4190D;
+	Mon,  9 Dec 2024 19:39:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB75FC4CED1;
+	Mon,  9 Dec 2024 19:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733773277;
+	bh=hmR+mlkt61digHQFp4eXW67CNTu7M8yTuvEkJu0EWG0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dalAKqOTHRkOadT2RY/jENdcTgkX1qdGkL1TA1fOogIo4u+eJ5BNlgih1wOyVRVtW
+	 yDEQWLXLbztKM+v2niAZyVLTIXi6qmtDkPMf4u2EUYYnk6d7HUfOiywI3H8cYnjAw9
+	 wFRbQl3MsP3qNkoLAjqOgGgfWWDYeS6Rq/KmMrkX++vS9lths2s6QK1kg9jxPx2jT9
+	 x6PtTuLYaqDeSqXqEipAxjOt4ccDO1PlqLVVsdvyGcstxrg9J4KfQBkQpWxjM0zw5+
+	 v6LlYwN55cZPDIILgYOa5aWpqHRALSx3h3VrwLVL+/RUoLTgjcnBml28DNZJVcHxgH
+	 XV+qDXa4UfEwA==
+Message-ID: <82276301-970e-427b-9fb2-8866881fb487@kernel.org>
+Date: Mon, 9 Dec 2024 20:41:11 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/9] memory: ti-aemif: Create aemif_set_cs_timings()
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
+ Santosh Shilimkar <ssantosh@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Herve Codina <herve.codina@bootlin.com>,
+ Christopher Cordahi <christophercordahi@nanometrics.ca>
+References: <20241204094319.1050826-1-bastien.curutchet@bootlin.com>
+ <20241204094319.1050826-6-bastien.curutchet@bootlin.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20241204094319.1050826-6-bastien.curutchet@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241209_114103_490036_7A3C3D16 
-X-CRM114-Status: UNSURE (   8.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241209_114118_628883_9BC8D474 
+X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,40 +122,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Wed, 04 Dec 2024 10:43:10 +0100, Bastien Curutchet wrote:
-> This patch series aims to implement the setup_interface() operation in
-> the DaVinci NAND controller to enable the use of all ONFI modes and
-> improve the NAND access speed.
+On 04/12/2024 10:43, Bastien Curutchet wrote:
+> Create an aemif_set_cs_timings() function to isolate the setting of a
+> chip select timing configuration and ease its exportation.
 > 
-> PATCH 6 depends on PATCH 1-2-3-4-5
-> PATCH 9 depends on PATCH 6-8
-> 
-> [...]
+> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/memory/ti-aemif.c | 65 +++++++++++++++++++++++++++++----------
+>  1 file changed, 49 insertions(+), 16 deletions(-)
 
-Applied, thanks!
+...
 
-[1/9] memory: ti-aemif: Store timings parameter in number of cycles - 1
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/1ec0fa90070c9468d22b3c3ea5f4bd6c27810907
-[2/9] memory: ti-aemif: Remove unnecessary local variables
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/b3d57e179607106d5b08a635c49b338c409357d4
-[3/9] memory: ti-aemif: Wrap CS timings into a struct
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/30b4da67655469bf8d4b8ba7c001096a1e10c7bf
-[4/9] memory: ti-aemif: Create aemif_check_cs_timings()
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/2c7b585d19cc1a7185a3a0b58cb643d28fd19cc1
-[5/9] memory: ti-aemif: Create aemif_set_cs_timings()
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/a6d60e3376065752137ec23d103f7d039c363e41
-[6/9] memory: ti-aemif: Export aemif_*_cs_timings()
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/df8e78607d4795806b59564ba7a3e2e125d119fc
+>  
+>  /**
+>   * struct aemif_cs_timings: structure to hold CS timings
+> @@ -165,6 +165,44 @@ static int aemif_check_cs_timings(struct aemif_cs_timings *timings)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * aemif_set_cs_timings() - Set the timing configuration of a given chip select.
+> + * @aemif: aemif device to configure
+> + * @cs: index of the chip select to configure
+> + * @timings: timings configuration to set
+> + *
+> + * @return: 0 on success, else negative errno.
+> + */
+> +static int aemif_set_cs_timings(struct aemif_device *aemif, u8 cs, struct aemif_cs_timings *timings)
 
-
-I'll wait till it hit next and got build reports and provide these as stable
-tag/branch.
-
+In the future, please stick to 80-char wrapping unless exceeding makes
+code more readable (see Coding style). I fixed it up while applying.
 
 Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
