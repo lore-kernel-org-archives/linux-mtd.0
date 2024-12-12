@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B845E7717F
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Dec 2024 19:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F7D2E77182
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Dec 2024 19:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eHTtJOJ+tqOmcQhXS6bJQwgaR9I1zh+HqN6IUK1fmgg=; b=GTeni1n0uZNos+
-	mP2Y13TQXNtObfN4tsEf5yjvCoe+qsC3q1oOXHIANYUi3JhFTyRzoN4UHi8Uo3UML//1lbc6Py6aS
-	1RQr/C6y3gbrpi5b+GPM/ZH8YYBxZ444z4S68iamB1812I87yT6b3y2gWsz0jY61CXOXQ7nK3wVyR
-	2MYFoHeH+l1bX9vcMsRWpP9CnMQYFZ1UI9O8p4E4hiBHQNINe3wX/PQMP0L+8X5e1s21hoPPpCcV3
-	ti9aVHq23vdSAy+k6yHzmq56UiBzcktXtRObcT+gALY6iBwhVaQT//k9spUFUSpi6/mCgKgywFpBc
-	ypC/c7eDZ4fHiopjMofQ==;
+	List-Owner; bh=mePvZdg1UHqbr6ZrjCGBmoPE2F4tDa3gY/1TmXtCB8o=; b=Vs6adZq0kTMsGw
+	ZU/aJDzDW87pjhoVBjiwDnm74KSkg6QVd+cXXbxkp08uVSRA0nHq9iVX/PJSonI8jYqQ/WV1uX85Q
+	d2cHF6/11ct2hJSpxYkDrGTNtsWLZQok/3yt2sZkKZrORvwTD7vU9dtDEPLC/PaeG0EWXcMbvNSZG
+	KOphqtnkXcWFo0775AOixw5nj665byhwMEcQ8berJ3SAWvcZmAcDK4A9H35gmzWvTdvtsv7u81OBg
+	3dvaJoMbJ+LvjHiJYXWgjTGSPkMj2CrnVMTBO9e4EHU9+mb6RCmIigw3iHPu3xO7ZSVBisqpLzeCk
+	sdVqU3dfvw7IRfhE/tsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLoin-00000001bkC-1ZO9;
-	Thu, 12 Dec 2024 19:19:37 +0000
-Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+	id 1tLovR-00000001eiX-2c45;
+	Thu, 12 Dec 2024 19:32:41 +0000
+Received: from mail-lf1-x131.google.com ([2a00:1450:4864:20::131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLo5m-00000001Si3-2dfH
+	id 1tLobk-00000001Zah-01mo
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Dec 2024 18:39:19 +0000
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-540215984f0so1024339e87.1
-        for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2024 10:39:17 -0800 (PST)
+	Thu, 12 Dec 2024 19:12:21 +0000
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-53df80eeeedso902575e87.2
+        for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2024 11:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734028756; x=1734633556; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1734030738; x=1734635538; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rc7SKuFCmbe5vhW6+bkyOtDoOBUCqhadja26WCpHm7E=;
-        b=My8EkbRi0b5ytmIMM9gbEafdPseGHAJKIG80PTIgK/zrc4Oi0pkes/IQXWY1fOK6Ph
-         udgCQGXGBpN3cmR4mn36Np3vRCsZsKO52J905Fau6vbTsRbwES3tMpmRnVlqgdPO3FCs
-         FSikcAlvPQH3KMu/AFjaRny/QgtQkNJFiZy5Ns66FEBaI3mKiEdiEbVNHQe+0vMr6gck
-         oz9bKUtqU6aA8lBUK6f43x9OwiGM/7WlW9Xt8pZM3iU9JWXQJLdYz9AinPCKd2Ao4BH0
-         5QBWdq4z0diiGHZIyKAmxfx31701GY6xL62wecUoSgXRT/zjSlrtrChLS+FkbGJgxN80
-         LEVA==
+        bh=I6B+c0OEiJBsR71et5gE3N1WWD8b53x8dg0s0iZZti4=;
+        b=jlPglS/pQiYIzv+yJXPwXp65BOtz+0vxxs+HmL4lAWbX9+KNFOu6MSfRF911/NChUf
+         AQdikcnI6sJNa5Y9ZE4HLFMd7hBQ2URAaEevYP77nGeh2Ak2FWdART7fyU8SkPjvNYWd
+         hbO0vN3xcXBE6ClpVumdMOScYxqEZndAbWFX7jLjGuO9P0qNA0Snyc/84AyiB/y3DKF+
+         hZB4yslEMRQ5Me8N3DIxs9WiT4UttpdsnFKg+GadmdsgCnXrr//TfVythgdANr55x+zm
+         7fS2MINdxf/HJPQl+qbmr0ktihL+zfp7j3Wk5swPwCO8Vq23bpxXRGNmKtwkE2rQaRlx
+         3f6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734028756; x=1734633556;
+        d=1e100.net; s=20230601; t=1734030738; x=1734635538;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Rc7SKuFCmbe5vhW6+bkyOtDoOBUCqhadja26WCpHm7E=;
-        b=Wfr6bOSRDcVYCpyvx/wJU5YZToEE6kzIjlDdAXDNZhNrrhHJ+m5cx7w6En1KgaK5yU
-         FNqwfz6yJStp+rfMLI4ohhWxF3OGL2oobaeRE/U9Zc9Brom2ISqWw7UTmyIBWz2g9bhJ
-         icQWNH+rql7ojU8KxcM6K2fj2l9jrrxAIp+euyYI4lK9rxIla7Bwhgj/e6QBtqvX3mTE
-         yLdtF3tSfH1/XR47tKRj45qBxgnVaQu7//aa6JTWratO0yuX322X1EhKvDHSQTKZ7OUh
-         BRrkRm72Gz84Hi3RtDLXHnzpulPta2CSVsPyATTwhO7AJGKjf70uaj0NLGtCS5wh594n
-         nThg==
-X-Forwarded-Encrypted: i=1; AJvYcCWqBEpLyqAQJpJjm0WoA9B4M5YgtSp3u46ScE1t0t3jjXhEEpCEzB7SEUI+pehtjJXWZwhzu7Mpa34=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxuyzpHIe2KlnnFpwmnSTYSOnFqB+Du2tI1Z+rDLSwW/lTejc3O
-	n5WJR8q/2gAJs1+HwaRyPr8uM/ngAzowyjq69fKsTTltayWq9ndv
-X-Gm-Gg: ASbGncu+1IVtaQ+ltS2Jc3LIUTFSkAKQite9dr59O/yIlBqwL314nRj/A8MxEXhLw5D
-	812muNXTk0RzKB1Gned6TzIfApBoahp9fTazjg4KqY6uuS0CgrwYmGIYyHFleAiqoVMJ4p0mrLj
-	lgOWHEaouXzmgbdqyimRTULejrHSw9yuPE0tPhgCEWrOPTpFceQ4IJxZ3J5xC/5gCZx1lGes/X1
-	YmvnXnsvbX7/rpqGk43tJI+1NvRGOL9ZdPNNd8O9vLCYUWXaTgY62Dl4z92tfa9ivKCqemEelzh
-	5OF/VYzILl4c8hvN+/T7FO2Zv0z+tVnfumygQbA=
-X-Google-Smtp-Source: AGHT+IE/fK15SvK7chrAJ4h34jCC9hfhKw/1O8b5R8QZRdqc7fZXsculhi3XJexR11uN9Q5oKSB64w==
-X-Received: by 2002:a05:6512:2393:b0:53d:a3a7:fe84 with SMTP id 2adb3069b0e04-54034100277mr685739e87.8.1734028756132;
-        Thu, 12 Dec 2024 10:39:16 -0800 (PST)
+        bh=I6B+c0OEiJBsR71et5gE3N1WWD8b53x8dg0s0iZZti4=;
+        b=BjhduJc0yI9vwCe5HXB/BJDIUiXlMwqcbKvtF2D+edqZorWFDV2huCouDnRwlENsAm
+         uD19wRI4RteZb1D8145YxxSNSLmxr5xEnf8wjMmpjEpxdUrK5abG2ppB0kzq6bJSK7KH
+         /BYro8/J7yNngWiaffNxJrWKRI0Y8DMT2gMp1GwsHffs7lPdFOeUkjOWmwQcWfJIK7UE
+         7j8aUItOA5EvmPxsYfVMhUiwKIYCgQZA9JtzJZQNBz1iMs0qDB44XuGeABNeRwPjPmcq
+         hF7kKmNnoOFiKxdQCdEkP8nZ0RekjhqvXrSkhmHS1ZxEh5fWquDdOvDqiKCOrazLok9b
+         o5qg==
+X-Forwarded-Encrypted: i=1; AJvYcCXBL4BSY+rV+6ByH3U/IZ3hoybmuWksD70rM1iF0uNhezOjuoI5QIsYVfIxORMc5iye2BEGUtGlYcI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzevV4AThpzwBvJZftQTTHuyz3Adu0KonA+CqircbV10nqxbeRM
+	ZAXqb4G1jTkdELYSak7FCH3N1ukcGzdit9VQpX4N4yKiwSOusHj6
+X-Gm-Gg: ASbGncuze0JdxMYFr0Q/GOGBR6rcb5RF2dft20P6rkMxNxJBCcXcQCCZk9cm/Xgm/g+
+	ebSGPN1aLMNhy+wPpdqP6m17BHx8bPKJJYzPoWQRwhf2tWNBK7vnI0tAq+bDsyDQ1jEVwU1bYLU
+	t9mEJ2d3zpTnh9T4VDvwwHfIaD/GAS2rHfmhDyPoC0Acy2YanMdARUnXAkNd2SVkXSWaJwrV25B
+	aFtt2UMaMXkmvlAEMVR/sxOwJUQo012DlcSO1YrO1JQaZLNPR9eMLhQj+2PSqZik+JCwNOOXUt6
+	63rnGPNkd3afnDvcNBFP3A25Ug4CFtptVH1QYUU=
+X-Google-Smtp-Source: AGHT+IFSpMDRMO3NmZsz7gnz4H1MlRoUFP6i/fJMbOxImUR0ojijg+h1QIMLj8FZIlY1QUWOLJJNNg==
+X-Received: by 2002:a05:6512:3e0a:b0:53e:3a01:cf4f with SMTP id 2adb3069b0e04-54034107bc6mr674598e87.14.1734030737446;
+        Thu, 12 Dec 2024 11:12:17 -0800 (PST)
 Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5401d13aefasm1465728e87.140.2024.12.12.10.39.14
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53ee46ee969sm1795251e87.181.2024.12.12.11.12.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 10:39:15 -0800 (PST)
+        Thu, 12 Dec 2024 11:12:16 -0800 (PST)
 From: Anton Moryakov <ant.v.moryakov@gmail.com>
 To: chengzhihao1@huawei.com,
 	linux-mtd@lists.infradead.org
 Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH mtd-utils] nand-utils:  Fix integer overflow in nandflipbits.c
-Date: Thu, 12 Dec 2024 21:39:28 +0300
-Message-Id: <20241212183928.75259-1-ant.v.moryakov@gmail.com>
+Subject: [PATCH mtd-utils] lib: Fix integer overflow in libiniparser.c
+Date: Thu, 12 Dec 2024 22:12:28 +0300
+Message-Id: <20241212191228.84504-1-ant.v.moryakov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241212_103918_666503_BA334FA3 
-X-CRM114-Status: GOOD (  10.07  )
+X-CRM114-CacheID: sfid-20241212_111220_062509_5993DCE9 
+X-CRM114-Status: GOOD (  11.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,33 +96,54 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Report of the static analyzer:
-The value of an arithmetic expression 'bit_to_flip->block * mtd.eb_size + blkoffs' is a subject to overflow because its operands are not cast to a larger data type before performing arith$
+Possible integer underflow: left operand is tainted. 
+An integer underflow may occur due to arithmetic operation (subtraction) between values
+{ [-2147483648, 2147483647] } and '1', where the first value comes from the expression '(int)strlen(line)'
 
 Corrections explained:
-Prevent arithmetic overflow in OOB read operation
-Resolved an issue where the calculation of the offset in the OOB read operation could overflow due to operands not being cast to a larger data type. Specifically, the multiplication of bi$
+1. Added a check to handle empty strings before decrementing the length of the line (`len = strlen(line) - 1`) to prevent integer underflow.
+2. Modified logic toskip empty lines immediately, reducing unnecessary processing.- Ensured safety by validating len >= 0 before accessing line[len] to avoid out-of-bounds access.
+3. Improved robustness when handling multiline values by ensuring valid indices for len.- Added relevant comments to clarify changes and their purpose.
 
 Triggers found by static analyzer Svace.
 
 Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
 
 ---
- nand-utils/nandflipbits.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/libiniparser.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/nand-utils/nandflipbits.c b/nand-utils/nandflipbits.c
-index 7066408..ef663c6 100644
---- a/nand-utils/nandflipbits.c
-+++ b/nand-utils/nandflipbits.c
-@@ -251,7 +251,7 @@ int main(int argc, char **argv)
- 			bufoffs += mtd.min_io_size;
+diff --git a/lib/libiniparser.c b/lib/libiniparser.c
+index a6ddcc7..da980c0 100644
+--- a/lib/libiniparser.c
++++ b/lib/libiniparser.c
+@@ -522,9 +522,15 @@ dictionary * iniparser_load(const char * ininame)
  
- 			ret = mtd_read_oob(mtd_desc, &mtd, fd,
--					   bit_to_flip->block * mtd.eb_size +
-+					   (long long)bit_to_flip->block * (long long)mtd.eb_size +
- 					   blkoffs,
- 					   mtd.oob_size, buffer + bufoffs);
- 			if (ret) {
+     while (fgets(line+last, ASCIILINESZ-last, in)!=NULL) {
+         lineno++ ;
+-        len = (int)strlen(line)-1;
++        len = (int)strlen(line);
++        if(len == 0){
++            memset(line, 0, ASCIILINESZ);
++            last = 0;
++            continue;
++        }
++        len--;
+         /* Safety check against buffer overflows */
+-        if (line[len]!='\n') {
++        if (len < 0 || line[len]!='\n') {
+             fprintf(stderr,
+                     "iniparser: input line too long in %s (%d)\n",
+                     ininame,
+@@ -540,7 +546,7 @@ dictionary * iniparser_load(const char * ininame)
+             len-- ;
+         }
+         /* Detect multi-line */
+-        if (line[len]=='\\') {
++        if (len >= 0 && line[len]=='\\') {
+             /* Multi-line value */
+             last=len ;
+             continue ;
 -- 
 2.30.2
 
