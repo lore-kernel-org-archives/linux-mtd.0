@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E868BE7717D
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Dec 2024 12:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C220E7717D
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Dec 2024 12:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qTbNQBPEQXOTcPR/NGXFj9U6WyVSmNA4Hf7Geo3ma1M=; b=NiDxYBSDEJe7TP
-	cZEFkzmdJAubSd/xS7MPEigFVfCEIWUpaHaeA4xJgU7pHN7xc1esOKpd4tZcCjTIk+ws+drpoijqu
-	YPaXPxlaqntysaKINmk2ZjQtPL/Xd46QWHsTjoakoJdWq4J9KfrwWDh0lQOzSIM7xiup2hosteqj3
-	Rvrz5IyPJJsrv1eQI7XQuzDYG9+UzZtKFWcm1boUFmAtIz4OtQOwYMDBQl7o5iGlUQh3ZKD99ZFmB
-	VxNxW+dpZHia9Esbx292nVUWklkam3S184btirmX9qSDvx+xuQDYi22jJ4THUd+ykWBmjcz6V2wLH
-	hHVgRA6YZvqOFqvYNU0Q==;
+	List-Owner; bh=hYyw2VOQcOH0kSYuqzIMP+mcJ9Q/lS4e0FaPPa9CQ3s=; b=jQlE/E0MUTHCtM
+	nqbkdmK5Jrdhz682C362wdlO/gdGkeQpGc1uqxR0g+TrM9nHVkKcBH4q/y82bgb7jUWT+bUWcmG5W
+	QD1cTUNeDFUcJGzpstDeXeeaOgss7dShsHzttpnwfP2FRlOYOn98ma2WmVVW6Vy1nVSf7Vf52cp82
+	zmcFUH6G/AHh33J9hYX4o1GtOVXl6IgtUy/U97LVTFa+TFlzcPfGHqy4Nk8ICGgf3nOZNRa6xRyX4
+	bUWLNHhgo8XHmICG2PJLfOTqPe/vUGNa8YoPGrsPWG/vTzjuJncLqG4ZuM4Qz3KAFvX7gGpdNlcKC
+	PVSAqLnVq5nNW9/nFHMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tM4Qn-00000003f0M-2RYx;
-	Fri, 13 Dec 2024 12:06:05 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1tM4TZ-00000003fKu-1G0Q;
+	Fri, 13 Dec 2024 12:08:57 +0000
+Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tM4Qi-00000003eyr-30Yy
+	id 1tM4TW-00000003fKa-3nX8
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Dec 2024 12:06:04 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 761CAC0002;
-	Fri, 13 Dec 2024 12:05:56 +0000 (UTC)
+	Fri, 13 Dec 2024 12:08:56 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8BE4A1C0004;
+	Fri, 13 Dec 2024 12:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1734091557;
+	t=1734091731;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q07hAkDq3YBTICoUg/PyYGARG9zUOS05b+cgj9MMFrA=;
-	b=otai4DWajRI4i/NYyp88WU/zXYTboiWvXXNaQIogvMyWjQYCGTURwGlxUFjkRSKqpe4poH
-	YEWihwdelPzf4RpF4JbbMuqPTacQDQqVRT2EgXLXm6blKvbY4A2C9FmppM1IALhu3DcX2J
-	1TSigIT5RnmZz0oAvQ+rLpgrgrXsiCQzh5/WGVwFQe+xE1/i+aIqp2cTs5mI4gx7t0/8aJ
-	CDN1Hy8Wq01UScsFOJVbzO73dfFtPGsYgXPWWfqA+3TsDjLuDXKzPU0ZSZmJKij9KQep9b
-	mXQvbwOqvmLjClMEyOSz2J4Xtey+HBLdlvOJj6EMcCKF3dBWIXvddPr0BYDVkQ==
+	bh=f3DmOhWIZupjc0mHh2kodPTDmUfjFFMcREGA7ikxOQg=;
+	b=LB2Xu4fQfh9n8geRQtrbPBUOUVSTAX20D8bJTZhpdWUdOab3Xg74TJh01gw7Se8q1XOcug
+	RfssqM8weQNHB65gr19QtBkqfGLHFfpY+jw5gEDCz/dh9nXlllLVEr7FoWkQS9nTR3n4Aa
+	ynwr6N0mHgWsE7IZARwQnXtJZSxaqJvSu0FFVupnU5kB8XRmVFU/EIH8nEhvtK/QK/W0tF
+	QTxJME31iOOIG0uiQeonFznF1wyL+BY0urNJevXxaMx2zl4oMGA9wD+RFd+U4DSGFlwTAf
+	xq9DnLO5fC7o3Od8sZbpdMu+g+RsNpFUozeoXEwl068tItopKusDTgJaRzWLyQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>
 Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
@@ -54,20 +54,20 @@ Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
  <angelogioacchino.delregno@collabora.com>,  Haibo Chen
  <haibo.chen@nxp.com>,  Yogesh Gaur <yogeshgaur.83@gmail.com>,  Heiko
  Stuebner <heiko@sntech.de>,  Michal Simek <michal.simek@amd.com>
-Subject: Re: [PATCH 20/24] spi: spi-mem: Reorder SPI_MEM_OP_CMD internals
-In-Reply-To: <7871b283-7623-4a21-ab75-42359a7c29ae@linaro.org> (Tudor
-	Ambarus's message of "Mon, 11 Nov 2024 14:32:27 +0000")
+Subject: Re: [PATCH 22/24] mtd: spinand: Add support for read DTR operations
+In-Reply-To: <589d95d3-9153-475b-86f7-886ec41cd4f4@linaro.org> (Tudor
+	Ambarus's message of "Mon, 11 Nov 2024 14:35:23 +0000")
 References: <20241025161501.485684-1-miquel.raynal@bootlin.com>
-	<20241025161501.485684-21-miquel.raynal@bootlin.com>
-	<7871b283-7623-4a21-ab75-42359a7c29ae@linaro.org>
+	<20241025161501.485684-23-miquel.raynal@bootlin.com>
+	<589d95d3-9153-475b-86f7-886ec41cd4f4@linaro.org>
 User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Fri, 13 Dec 2024 13:05:55 +0100
-Message-ID: <87y10jlrdo.fsf@bootlin.com>
+Date: Fri, 13 Dec 2024 13:08:45 +0100
+Message-ID: <87ed2blr8y.fsf@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241213_040600_922493_6E5776C2 
-X-CRM114-Status: UNSURE (   7.86  )
+X-CRM114-CacheID: sfid-20241213_040855_096880_736DE1F6 
+X-CRM114-Status: UNSURE (   7.62  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -85,28 +85,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
->>  #define SPI_MEM_OP_CMD(__opcode, __buswidth)			\
->>  	{							\
->> -		.buswidth = __buswidth,				\
->> -		.opcode = __opcode,				\
->>  		.nbytes = 1,					\
->> +		.opcode = __opcode,				\
->> +		.buswidth = __buswidth,				\
->>  	}
->>  
->
-> I don't mind, but shouldn't we follow the order used at struct declaration?
->
-> struct spi_mem_op {
-> 	struct {
-> 		u8 nbytes;
-> 		u8 buswidth;
-> 		u8 dtr : 1;
-> 		u8 __pad : 7;
-> 		u16 opcode;
-> 	} cmd;
+Hi Tudor,
 
-Sure, let's do that. I also corrected the other macros at the same time (v2).
+On 11/11/2024 at 14:35:23 GMT, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+
+> On 10/25/24 5:14 PM, Miquel Raynal wrote:
+>> +	SPI_MEM_OP(SPI_MEM_OP_CMD(0x0d, 1),	
+>
+> do we want some names to these hex values?
+
+I honestly don't think we do because it would be totally redundant with
+the macro name, ie.
+
++#define SPINAND_PAGE_READ_FROM_CACHE_DTR_OP(addr, ndummy, buf, len, freq) \
++       SPI_MEM_OP(SPI_MEM_OP_CMD(0x0d, 1),                             \
++                  SPI_MEM_DTR_OP_ADDR(2, addr, 1),                     \
++                  SPI_MEM_DTR_OP_DUMMY(ndummy, 1),                     \
++                  SPI_MEM_DTR_OP_DATA_IN(len, buf, 1),                 \
++                  SPI_MEM_OP_MAX_FREQ(freq))
+
+is IMHO better than
+
++#define SPINAND_PAGE_READ_FROM_CACHE_DTR_OPCODE 0x0d
++#define SPINAND_PAGE_READ_FROM_CACHE_DTR_OP(addr, ndummy, buf, len, freq) \
++       SPI_MEM_OP(SPI_MEM_OP_CMD(SPINAND_PAGE_READ_FROM_CACHE_DTR_OPCODE, 1), \
++                  SPI_MEM_DTR_OP_ADDR(2, addr, 1),                     \
++                  SPI_MEM_DTR_OP_DUMMY(ndummy, 1),                     \
++                  SPI_MEM_DTR_OP_DATA_IN(len, buf, 1),                 \
++                  SPI_MEM_OP_MAX_FREQ(freq))
 
 ______________________________________________________
 Linux MTD discussion mailing list
