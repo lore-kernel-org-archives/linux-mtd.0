@@ -4,71 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90CEAE77180
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Dec 2024 12:25:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B97A2E7717D
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Dec 2024 13:15:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zzd+yFq/7KFRnulUwAAaL4iL4NK5cs3e1Y/gaxaSHzA=; b=2SpR4nGhQGw9QO
-	7Pjl6fS4emtbme/CE6eF1TWWWzJE00moxC8wG0R9/b8cDRYKu2Ws8UYBJRPIeTI2JRIwHJkZVfp0u
-	8yuz7MATA1YmZOLG68r0qIxeRnxQg1IlsHZNgjq/AKL5VeLFR8Kc4V8GkHeRfP+aSw864gp1ERQOy
-	EkJ+/xsMxruyduKjVdUJjcV3U8/8aKBBDZyx/3zMIregUeG2fKdpxN9FB9kGa9E61UfucQ7L0pA+9
-	s0c/rQH8EAcVAM5EMMLBu4Jdz6OTzwD2eFTbpn4fahjlPvGB/fgXu15ScKBmZ22rI8UgDCPC0kIrs
-	KebsZ/dIUxzfwSAmRjAA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZGqsemsiWgoorQys6wLHzqQhIsy4VipO8boevhzQ6Ho=; b=poyAiinR0PdRp+
+	Z5HZp3LVF6W/cdeAfpai3Pyfamyt7UWFQy5O/PY6DBMNh+GjA0LJ8HLUTISMXN2W70UPhHDfVW3b9
+	+lb3XSU/psS4sYf8VUhe/054oCsVXiOsm70Ovj/HPL2pa10PpUSW6ho7pWjGWqYSPUo5mydKOb+s/
+	68+Ei978zHycPBZLnPUl0qJFzjoZNsNB+ELDUQNW4RfmDEfMQow8fqQo20Nw8wGCpsXAzmkRsSI3d
+	K2xE3/K4hkF5clPw2ySzgauv6Zs4n4RGldm43cLv0zrpPWjj/LDYWvXWwZf4xajZzasvluPQln5Hv
+	/gDLMYNHu2ZA2moVRWZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tM4jJ-00000003hRi-0ZvK;
-	Fri, 13 Dec 2024 12:25:13 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1tM5VV-00000003nuu-3BUc;
+	Fri, 13 Dec 2024 13:15:01 +0000
+Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tM4jG-00000003hQD-17N5
+	id 1tM5VT-00000003nu6-0fez
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Dec 2024 12:25:11 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8D15D1C0007;
-	Fri, 13 Dec 2024 12:25:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1734092708;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gNkaMwOFTWL7O+KUqEytGfx0AzC6/gMcfU1OW6erpzY=;
-	b=DrirYdF4kTOc3fSbEvnJNIPlHYrhjdTXkNZKYFS4B0TJXaU000F+K1qNviss930aApyh2R
-	a1ra3bGm2m2UDBNfCvM8QkuQw+ogONPyjaVuGeLo19oUkbziI4+uKzKqHEVd45Iw0rBfQ0
-	CnN2o/d57+rqgZXXh7ldlxYd8M7Z/KZUuxpJtEgG4omgn2gDFECKcvFNxo2kxJd3JbegDi
-	Iw+eyv0p406urMh6fX3tthzzOp3YhpbkC/VZ8F5BedWxLcAOHi3gYVrw/01MpgS5BjnQVx
-	RgPL6wq4V7LjD+ls26Ze3yeN/nRXZ9f3N4wmqICwb2dMEw1jNmz+pT9X/PCLYw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
- <michael@walle.cc>,  linux-mtd@lists.infradead.org,  Mark Brown
- <broonie@kernel.org>,  linux-spi@vger.kernel.org,  Steam Lin
- <stlin2@winbond.com>,  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-  Sanjay R Mehta <sanju.mehta@amd.com>,  Han Xu <han.xu@nxp.com>,  Conor
- Dooley <conor.dooley@microchip.com>,  Daire McNamara
- <daire.mcnamara@microchip.com>,  Matthias Brugger
- <matthias.bgg@gmail.com>,  AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>,  Haibo Chen
- <haibo.chen@nxp.com>,  Yogesh Gaur <yogeshgaur.83@gmail.com>,  Heiko
- Stuebner <heiko@sntech.de>,  Michal Simek <michal.simek@amd.com>
-Subject: Re: [PATCH 23/24] mtd: spinand: winbond: Add comment about naming
-In-Reply-To: <71d0cf83-6866-46be-b76f-291a8a6a1346@linaro.org> (Tudor
-	Ambarus's message of "Mon, 11 Nov 2024 14:38:53 +0000")
-References: <20241025161501.485684-1-miquel.raynal@bootlin.com>
-	<20241025161501.485684-24-miquel.raynal@bootlin.com>
-	<71d0cf83-6866-46be-b76f-291a8a6a1346@linaro.org>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Fri, 13 Dec 2024 13:25:05 +0100
-Message-ID: <87wmg3kbxa.fsf@bootlin.com>
+	Fri, 13 Dec 2024 13:15:00 +0000
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-54026562221so1813346e87.1
+        for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2024 05:14:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734095697; x=1734700497; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iFDMQn2va6F0xGCg0E7PA391AhJCA9ez7uIuROizbkQ=;
+        b=Nx7jwIu70k8VtlAsFmZ/yAw8soi+Nf50cvuMo3ZozxP56uqHAq4cCb/61u/Ugpcfcu
+         kZARCkkdpSwgCtvLje1aoRv660YixLWqVin8TrvxWT5eKRDUHZw554cyuoisyUkqKAfj
+         ePW7jm0BK78dzug2RJnfUle2q4ARSOEnRpyLCZAbWc58hVeC8Tb2TB1Aq/CXIMOiaTXz
+         QsN45p6O4kKR0tyRbZD4FdMwjjyuFfeyUPk6+HpsnZK1GUzlcJ0Rfq2jnJcJwqSvSkS/
+         zBNykYMdg1BZPcwu1NpMxhe6GFZaqrGrC/yVZHWS3Q1QyHGmfj0v+AOPFv+cx8yt5rWh
+         FcIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734095697; x=1734700497;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iFDMQn2va6F0xGCg0E7PA391AhJCA9ez7uIuROizbkQ=;
+        b=UeMD6INGbOb9r5HJGeKCqcVmEK+P8zQtKSIFNFI65Gae5llCkm3ZImpNG6DJazns8Y
+         0VLZy1G7ChVS9mfG4idrSCAhL+k2faxsEwsJYKvbOXaQQSomCgiko1gRjrQSjFhceMZ1
+         LJ3u/DDYiuhnQfQBQIB/AgkI19XeMcFQxF/2qte8qjiLIDalAppqrlLPUSQNZxspcElu
+         LaOFzW7naUEYq1Dx+hcfvGodOIdWIiSb7YoaBsfy9CL2jlRKCPtc4q6pCYR9nT5lZMgZ
+         xw9et5arFaZQFIA5C6j/0MhMzxVwka0gceIYm9HoW2VnyHu2aWP5REyvPpto43+vb7TC
+         L0/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVkjzJ3kYPc/rmPdC3mVDoV3007l9kkeKtHQ5SAVMmbdAqTsDzI6V8pUBGW01yNzQlHpIiRMpmo7A4=@lists.infradead.org
+X-Gm-Message-State: AOJu0YymwkNomLEotuGYl/4zEE2XKWxXHdGb1ccbMnDikyH7cn/hP/Yp
+	It6+mj0qWvkPmZfTca9KqwRqhGlhTSdzV3uqwSyKrbX00AVRVZiJ
+X-Gm-Gg: ASbGncutB3UxpIXSe0xLT7hTYIw/W976zh6nWYQ5SmCbbfxL4n90JqFirK2djFiE6vd
+	NQmmn5tMqNtl+zMgGl1EL0OVg+Wd5/0STVBAuxXNIlkuAXdp/nn9lLlHLmQbyzKNbaqN2n+lQVQ
+	95waHYxnG3G0YVkp33um7JaqfDZf1cpf4oLkG/XfHrxixLZk1kchop15EnEU/p3QSIUaziMlQXi
+	LXqcCQXJA1TIagbGScimwuP4OL8bhLR3+5yDgPX6TQzHqpKAuW4IveM7KenpaKBGwInM2e2PF+D
+	l5ti8CEQVrIBagQ5KIY2j4D6nGQo73R+yBuEdg4=
+X-Google-Smtp-Source: AGHT+IFDD4CYqrcFL5V4Nkubo04MgwoRzrLMcKgkanjg2bxNfD/SaVEEoD4IxZoO527rcYWNpXAe2w==
+X-Received: by 2002:a05:6512:3d8a:b0:540:5253:9673 with SMTP id 2adb3069b0e04-54090555489mr735609e87.22.1734095696911;
+        Fri, 13 Dec 2024 05:14:56 -0800 (PST)
+Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53e2f013b4csm2302325e87.42.2024.12.13.05.14.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Dec 2024 05:14:54 -0800 (PST)
+From: Anton Moryakov <ant.v.moryakov@gmail.com>
+To: chengzhihao1@huawei.com,
+	linux-mtd@lists.infradead.org
+Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
+Subject: [PATCH mtd-utils] ubi-utils: Fix integer overflow in mtdinfo.c
+Date: Fri, 13 Dec 2024 16:15:00 +0300
+Message-Id: <20241213131500.99807-1-ant.v.moryakov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241213_042510_608972_DE7EE2CB 
-X-CRM114-Status: GOOD (  14.10  )
+X-CRM114-CacheID: sfid-20241213_051459_200769_04E388A5 
+X-CRM114-Status: GOOD (  11.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,42 +90,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTEvMTEvMjAyNCBhdCAxNDozODo1MyBHTVQsIFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFy
-dXNAbGluYXJvLm9yZz4gd3JvdGU6Cgo+IE9uIDEwLzI1LzI0IDU6MTUgUE0sIE1pcXVlbCBSYXlu
-YWwgd3JvdGU6Cj4+IE1ha2UgdGhlIGxpbmsgYmV0d2VlbiB0aGUgY29yZSBtYWNyb3MgYW5kIHRo
-ZSBkYXRhc2hlZXQuCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwu
-cmF5bmFsQGJvb3RsaW4uY29tPgo+PiAtLS0KPj4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL3dpbmJv
-bmQuYyB8IDUgKysrKysKPj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKykKPj4gCj4+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS93aW5ib25kLmMgYi9kcml2ZXJzL210
-ZC9uYW5kL3NwaS93aW5ib25kLmMKPj4gaW5kZXggNjg2ZTg3MmZlMGZmLi45ZTI1NjI4MDVkMjMg
-MTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL3dpbmJvbmQuYwo+PiArKysgYi9k
-cml2ZXJzL210ZC9uYW5kL3NwaS93aW5ib25kLmMKPj4gQEAgLTE4LDYgKzE4LDExIEBACj4+ICAK
-Pj4gICNkZWZpbmUgVzI1TjA0S1ZfU1RBVFVTX0VDQ181XzhfQklURkxJUFMJKDMgPDwgNCkKPj4g
-IAo+PiArLyoKPj4gKyAqICJYMiIgaW4gdGhlIGNvcmUgaXMgZXF1aXZhbGVudCB0byAiZHVhbCBv
-dXRwdXQiIGluIHRoZSBkYXRhc2hlZXRzLAo+PiArICogIlg0IiBpbiB0aGUgY29yZSBpcyBlcXVp
-dmFsZW50IHRvICJxdWFkIG91dHB1dCIgaW4gdGhlIGRhdGFzaGVldHMuCj4+ICsgKi8KPgo+IGRv
-ZXNuJ3QgaGVscCBncmVhdCBmb3IgYW4gb3V0c2lkZXIgbGlrZSBtZS4gSXMgcXVhZCByZWZlcnJp
-bmcgdG8gY21kLAo+IGFkZHIgb3IgZGF0YT8gT3IgbWF5YmUgb2YgYWxsPyBJIG5lZWQgdG8gcmVh
-ZCB0aGUgY29kZSBhbnl3YXkuCgpJIGFsc28gZG9uJ3QgbGlrZSB0aGVzZSB0ZXJtcy4gSUlSQyAi
-b3V0cHV0IiBpcyByZWZlcnJpbmcgdG8gdGhlIGRhdGEgY3ljbGVzLApvdGhlcndpc2UgaXQgbWVh
-bnMgYWRkcmVzcyAoZHVtbXkpIGFuZCBkYXRhIGN5Y2xlcy4KCkluIHNpbmdsZSwgZHVhbCBvciBx
-dWFkIG1vZGUgdGhlIG5hbWluZyBpcyB1bmNsZWFyIGJ1dCAib2theSIuIEJ1dCBvY3RhbApERFIg
-bW9kZXMgY2FuIHJlcXVpcmUgdGhlIG9wY29kZSB0byBiZSBzZW50IGluIG9jdGFsIG1vZGUgYXMg
-d2VsbCwgd2hpY2gKaXMgbmV3LiBJZiB3ZSBzdXBwb3J0IHRoYXQsIEknbGwgdGFrZSBjYXJlIG9m
-IHVzaW5nIGEgbW9yZQp1bmRlcnN0YW5kYWJsZSBuYW1pbmcgZm9yIGFsbCBtYWNyb3MgbGlrZSBY
-eS1YeS1YeSwgWCBiZWluZyB0aGUKYnVzd2lkdGgsIHkgYmVpbmcgUyAoc2RyKSBvciBEIChkZHIp
-IGFuZCB0aGUgdGhyZWUgbWVtYmVycyBiZWluZwpDb21tYW5kLUFkZHJlc3MtRGF0YS4gSSBtaWdo
-dCBldmVuIGJlIHRlbXB0ZWQgdG8gaW5jbHVkZSBkdW1teSBjeWNsZXMgYXMKd2VsbCwgYmVjYXVz
-ZSBpdCBpcyBpbXBvcnRhbnQgdG8gYmUgY2xlYXIgaWYgZWcuIGluIG9jdGFsIG1vZGUgIjEiIG1l
-YW5zCiIxIGN5Y2xlIiBvciAiOCBjeWNsZXMiLgoKPj4gKwo+PiAgc3RhdGljIFNQSU5BTkRfT1Bf
-VkFSSUFOVFMocmVhZF9jYWNoZV9kdHJfdmFyaWFudHMsCj4+ICAJCVNQSU5BTkRfUEFHRV9SRUFE
-X0ZST01fQ0FDSEVfUVVBRElPX09QKDAsIDIsIE5VTEwsIDApLAo+PiAgCQlTUElOQU5EX1BBR0Vf
-UkVBRF9GUk9NX0NBQ0hFX1g0X09QKDAsIDEsIE5VTEwsIDApLAoKVGhhbmtzLApNaXF1w6hsCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Report of the static analyzer:
+The value of an arithmetic expression 'reginfo->offset + i * reginfo->erasesize' is a subject to overflow 
+because its operands are not cast to a larger data type before performing arithmetic
+
+Corrections explained:
+Added casting reginfo->offset to long long
+
+Triggers found by static analyzer Svace.
+
+Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
+
+---
+ ubi-utils/mtdinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+index 7dff0de..850297b 100644
+--- a/ubi-utils/mtdinfo.c
++++ b/ubi-utils/mtdinfo.c
+@@ -203,7 +203,7 @@ static void print_region_map(const struct mtd_dev_info *mtd, int fd,
+ 		ret_locked = ret_bad = errno_locked = errno_bad = 0;
+ 
+ 	for (i = 0; i < reginfo->numblocks; ++i) {
+-		start = reginfo->offset + i * reginfo->erasesize;
++		start = reginfo->offset + (unsigned long long)i * reginfo->erasesize;
+ 		printf(" %*i: %08lx ", width, i, start);
+ 
+ 		if (ret_locked != -1) {
+-- 
+2.30.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
