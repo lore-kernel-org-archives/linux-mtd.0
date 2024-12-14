@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 972B3E7716A
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 Dec 2024 12:31:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23EE7E7716A
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 Dec 2024 13:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hfHzvK+Psa4aoI/PKzvanM5wNEPkchAkQjd/pDv/w7Q=; b=EebWQ/hSdO0E3W
-	z5Cs03mh3Mh0xr0oJWr/0AbxrfHMPths6ZxhgRAJecvXpjQCfImTBxtiyCcRm1y6ZWOoMptygNpqD
-	4upPC53t+JkFrFWpkoHDjQKhcdSOnpVq9Pu+DVP2uz/OFEVFdOSUJchpQXlb5lIzstz9pe/+iJrXR
-	33tDvjC/5vnSsbqQmrgkzFUfJ9lvaHjMVKUHQV6ugvxxWgr15T03XhMQtCPMp4Ok+QCU4vxdtlI+e
-	ddbXmjsTeWsLhhvxjC05B9Fts1tx0yBnp4HvP4JP602R9N32tGx37u4oHsN67JpNackxCN8fHQCKN
-	cKMNrmnLjWJu+bjK8x+Q==;
+	List-Owner; bh=6klkb0iVm9Wu1pKNgkimLWROdi/SDOH5jiVyFwQgN4g=; b=s+UY2K+6wEpMO8
+	6ICYQ2PZUbACfULyMCjdrRHzAnwoRnux9XRofjvPdVYjLdLaBNxyF4Lyz9WFGCEwoaYp938NdYT0M
+	G9ZOxlgfK65jwioDoJYghDP1Vp+t+IBydz31Sj21PZj0P3VTPgvA4ufW5eZe6ARL9fBerHUzJOXrQ
+	XsAw/RPDQwS1GGvTkBA+CliQ31iq6m+1VWnC3HISFx/o84jCN+qO4JFrTQWV/NrOrRY+A343YJ+XU
+	p6Dg1F6RagYzReM3eX/xUZP2v3HIGyF4bJv09yBSO0xl+KbGb7Cw3J3HjW14Fs9653texWpeIlrGY
+	sM6Jfy2yoJv1tKDRpSbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tMRIP-00000006KJ1-3Yl8;
-	Sat, 14 Dec 2024 12:30:57 +0000
-Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
+	id 1tMSIA-00000006Ovx-2RW1;
+	Sat, 14 Dec 2024 13:34:46 +0000
+Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tMRIM-00000006KIU-19cr
+	id 1tMSI6-00000006Ouj-1puC
 	for linux-mtd@lists.infradead.org;
-	Sat, 14 Dec 2024 12:30:55 +0000
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-53e3a90336eso2853793e87.3
-        for <linux-mtd@lists.infradead.org>; Sat, 14 Dec 2024 04:30:53 -0800 (PST)
+	Sat, 14 Dec 2024 13:34:44 +0000
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-53e3c47434eso2644493e87.3
+        for <linux-mtd@lists.infradead.org>; Sat, 14 Dec 2024 05:34:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734179452; x=1734784252; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1734183280; x=1734788080; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dz80CjF1SWtWBOlu1LnYvVTZDNl171GSFFc467ZmsI0=;
-        b=cAp6YzaSx/Apwvc6L4E5LaA7BeJvbKpO3umw/uEEk/uuuens0TEs8ZqmoVBOTwnM7e
-         iLLu1fhweg4ZaqTAxMYf3J5XGmBeEejOkKHak5lhduBc6fQuQuPhZrASuxuXc43n/V1T
-         05EXE1puSUTgj4WBPIQBIhj8nsVulnldUYFLRhgR2TRMLokn1N8D98W+J5eTAUlyAvD2
-         Wv7AkZsJwROFrnSplFGzChr6gwEmHKqv/jJpbOaptoVS9h51pSPhldYfAZvhtxpBIxNY
-         ZrM0qkdqf3qBP/VRNmBy9opMZfBQdmMQ44kRc+ocGdbOs4F79n9Xx9VerXClBP5Y97fb
-         XNDw==
+        bh=XyVLk3q2sonALF+MqTAOvJbPXZyYdr+nfKYD4flnZbs=;
+        b=H+Dhx1d7bCdyEdAm+Ajn0u+tTaDBvbdHD96lum8B3PotSi3bdNANPBn0ES/36du0Cz
+         caSBGZAowZgdSkKk/Dh+tWuu2RlfDdri0wPMw8Xxr9k3eFmeDdc1bcq6GfSJoC5sogkB
+         nqOxrSfdhqRZLRdVHTyJJlPdYpHfZXT76JVY+a9+3TDtVRgsGRfDY9pU0mzXHAbUZOlD
+         luPxhGfHoGlLvQ5U/yHk4w5voXlZDfDZBChgljYcU18n2+0yHtPtRRa+klZRdMJya4ym
+         fSeWL3CYImGrE0kQ1GD5R3r10TXr9w4PXjhCxPfEGKYuU/CG7E1qXZLNe1dnEboAqUXJ
+         g8Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734179452; x=1734784252;
+        d=1e100.net; s=20230601; t=1734183280; x=1734788080;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dz80CjF1SWtWBOlu1LnYvVTZDNl171GSFFc467ZmsI0=;
-        b=Jv7MaaQy/ZpbxiGup15R5Ibp/pWEkZQXWD3Ttsvb0TwUZ0winO14hnzfgyBC5X8B3S
-         QOmrUZFUfymOzj6c/RtEAnAciJT4vjTDtM9Yqo53Pvvy61s/JYUXHWRJhYRIpMZzv6Zt
-         KZPK5tXB22SPcKpmq4pI1ybEeF1XOVKB48a56nYBLSZEl/G3XFXfTF4GnMljcU/oK4+k
-         xaWusk8vjtARV76V8dXm3XFHHKWT2VnISmwjPBuwNHLQVTZEyjKXB2rTVvfiSPLSauhf
-         gyKLjXuG2WRhXnfl79SSN00sBlheTfH31NXy8yr9FGcMeF66tWQbGNkHyteEe+BfF5H4
-         J1Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCWi+tTMfyA6z2YV/Fda+NYJsANL0ZJ/03apvb/07HSDSfqQz2QmqXfgMXBpyb8h++JCMFp6yqEWUe8=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw9l68AY9BPbKwbmefA8CaPsJNmWZislkwowjVbzMoCq1qdyKyx
-	6zNthxtCM1VNBo3rP74Wdt3CW7GUVshY22mlciT5gHqDQP5JWXQq
-X-Gm-Gg: ASbGncsjMvwDdrEoRVwPuXikipx0hDA75VoycDPTApEZeu4SI4uH0g5FqElfXScU0Ac
-	qMhWFPZCkMjuFR3w5DD5rTxgwroIn5qg2oPzVLTImj9RkxUNxYK5mJbQmHKCLiZpgUgaApZ0S78
-	JdE0HKspzEdlAND5WIFRi1A0GoMOXMRvVquaIVtyNMvGR4hSqDxs0djCHp560jITsdX34FxQgDT
-	0VTDYrOmRiIcdKxcM8E+lFJruvthLqrQ1KbZS8lFj6DTXPPq7P/Z3OGhdJJ6ZKCOb5W2oQDVjN6
-	UU598z57FcZcN+ImwworizWqXE/AOTcpdQgACHk=
-X-Google-Smtp-Source: AGHT+IHld0mdgcHWXnc4I05m8eCrZW3Ilyo4lHZfXjMvfsbtwl7LUNFd0kY8minmHVYXnwGs7gfatw==
-X-Received: by 2002:a05:6512:3d8a:b0:540:2ef4:9cf0 with SMTP id 2adb3069b0e04-54090553e1cmr2135433e87.18.1734179452196;
-        Sat, 14 Dec 2024 04:30:52 -0800 (PST)
+        bh=XyVLk3q2sonALF+MqTAOvJbPXZyYdr+nfKYD4flnZbs=;
+        b=X0DQMgrx2jRsxTtZi41GjlsC9YVFbz5bu9euTf5PZMunrPykXjJ3VEo7oL4aXTuwk+
+         Gal3wcn+VyBduBQDpgHOIFTgWf5+MK+eQZy7y+tKOnbRF1ELbne/Ryq3YI0Z+NsXbQ9t
+         94goRD8BW+NPdqNfLCD8naUrs9cdhie/q/BgB+idmwqYSYw8iiadXKRwMV/miM4qT10/
+         2hu2d6GRwFJ6TkB9mf+zEWtcblOucUq0Yu+WbR7PFYrXAurK+LSpGrLUsV9l2I9H6bak
+         j77iw+G78uH5PmygFU1bZNNmpxL6wrnQe6G/xjmyHF5ypkMwAwUv9pI5/7Zj/GofCH6O
+         AYCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXxtpgnuMH35aoSjU1VWKw4pHm71+weH76yxBAXT2p/v81Vgjhcx060mqj90uWnjcTbgrsdn9H4POY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwbBuMlZ6AQE286DNB/GqKuZsxDNIShPkbS1k4CwoFPB7/6dIvq
+	FMVfCXYdriUhsdnxue78DPx1tt4Sa29UbYF0eIstWwdhGX6JnXLJ
+X-Gm-Gg: ASbGncspsQTIe17US/0rVnhlhSZjA3tLpPfIpk44wfjrcyI7n9p27Qn3xhL/CqbJVbB
+	Zytauf+cut3WvPkV20hJkGpDjnKRoCIEXM1QY4Be16nP/0eMxqwZv4I/8dwWw3d6Cn9/ny8fbpy
+	5tC0aphDgPn2tBxedV7eZPiRnlRhywzT73yboDZUhSIASU9zny4iLEvT1yRfupTQ0JCiHL8v5rK
+	Alwk9i2xCrwDUml6bNQVh8K7Aun32UE8bEAOR4siB5g/Tr3L3NW1rlydrljJFLBUd9uVNUYv9Lz
+	4kDgOhxfgyB1jHkfSGvd1dgfuMujzjhsqQtKYFs=
+X-Google-Smtp-Source: AGHT+IFcB43eQbOd55geZy0v8dCVFO3Pa1P9Q14CUe7FzNR44RIyTMUupt/vSUqma757csuGwdBAOw==
+X-Received: by 2002:a05:6512:2356:b0:540:15b2:fd27 with SMTP id 2adb3069b0e04-5408cee91f9mr2176166e87.7.1734183280346;
+        Sat, 14 Dec 2024 05:34:40 -0800 (PST)
 Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54120bffd10sm201814e87.161.2024.12.14.04.30.50
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54120b9f3basm218913e87.15.2024.12.14.05.34.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Dec 2024 04:30:50 -0800 (PST)
+        Sat, 14 Dec 2024 05:34:38 -0800 (PST)
 From: Anton Moryakov <ant.v.moryakov@gmail.com>
 To: chengzhihao1@huawei.com,
 	linux-mtd@lists.infradead.org
 Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH mtd-utils] ubi-utils: Fix integer overflow in mtdinfo.c
-Date: Sat, 14 Dec 2024 15:31:05 +0300
-Message-Id: <20241214123105.75618-1-ant.v.moryakov@gmail.com>
+Subject: [PATCH mtd-utils] ffsX-utils: Fix integer overflow in jffs2dump.c
+Date: Sat, 14 Dec 2024 16:34:53 +0300
+Message-Id: <20241214133453.102014-1-ant.v.moryakov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241214_043054_355061_7F9DB5E0 
-X-CRM114-Status: GOOD (  11.74  )
+X-CRM114-CacheID: sfid-20241214_053442_557853_73A1410E 
+X-CRM114-Status: UNSURE (   9.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,42 +97,35 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Report of the static analyzer:
-The value of an arithmetic expression 'reginfo->offset + i * reginfo->erasesize' is a subject to overflow
-because its operands are not cast to a larger data type before performing arithmetic
+Pointer 'path', returned from function 'xstrdup' at jffs2reader.c:690, may be NULL and is dereferenced at jffs2reader.c:692.
 
 Corrections explained:
-Added casting i and start to unsigned long long
+After calling xstrdup(p), a path == NULL check has been added. This prevents a possible NULL pointer dereference in the event of a memory allocation error.
 
 Triggers found by static analyzer Svace.
 
 Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
 
 ---
- ubi-utils/mtdinfo.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ jffsX-utils/jffs2reader.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
-index 7dff0de..12d35eb 100644
---- a/ubi-utils/mtdinfo.c
-+++ b/ubi-utils/mtdinfo.c
-@@ -185,7 +185,7 @@ static void print_ubi_info(const struct mtd_info *mtd_info,
- static void print_region_map(const struct mtd_dev_info *mtd, int fd,
- 			     const region_info_t *reginfo)
- {
--	unsigned long start;
-+	unsigned long long start;
- 	int i, width;
- 	int ret_locked, errno_locked, ret_bad, errno_bad;
+diff --git a/jffsX-utils/jffs2reader.c b/jffsX-utils/jffs2reader.c
+index 87a2167..f776466 100644
+--- a/jffsX-utils/jffs2reader.c
++++ b/jffsX-utils/jffs2reader.c
+@@ -694,6 +694,11 @@ static struct jffs2_raw_dirent *resolvepath0(char *o, size_t size, uint32_t ino,
  
-@@ -203,7 +203,7 @@ static void print_region_map(const struct mtd_dev_info *mtd, int fd,
- 		ret_locked = ret_bad = errno_locked = errno_bad = 0;
+ 	pp = path = xstrdup(p);
  
- 	for (i = 0; i < reginfo->numblocks; ++i) {
--		start = reginfo->offset + i * reginfo->erasesize;
-+		start = reginfo->offset + (unsigned long long)i * reginfo->erasesize;
- 		printf(" %*i: %08lx ", width, i, start);
- 
- 		if (ret_locked != -1) {
++	if(path == NULL){
++		*inos = 0;
++		return NULL;
++	}
++
+ 	if (*path == '/') {
+ 		path++;
+ 		ino = 1;
 -- 
 2.30.2
 
