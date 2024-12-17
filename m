@@ -4,81 +4,188 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DB72E7717F
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Dec 2024 20:43:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C029CE77184
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Dec 2024 22:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=6klkb0iVm9Wu1pKNgkimLWROdi/SDOH5jiVyFwQgN4g=; b=Xs+Tv2YcLceG02
-	AjroXqOmTRFhZoG8R4a3XZGZjGd8N85FMPq829/JwoFE7xx/65R0rpSffxQGT1IrbcJ6u8xNwHaO2
-	sOprU6gjNkrDnUi2CxGK78T+FR9b7DKOaJz8/Svg/jqDjA4w0jL2Cd/XylP5p5n9eu3mA7lpDGqs+
-	hNK7uvOJFqDWddOCkG5TOZ1FcwVIqbp5T3vCbF5Gw0gYpGOdKXz1ICtVJJQ7Tqgj3kFG3yOCvneqc
-	zSPk2JKQ/ou6IltBQoD/H169XREEuSSnFpLRDT5+ch/2VUXjKwfweSAldx9ZtyqehIbXVRxAPDjkM
-	+mAlbjpsvDRj/7olXp+Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=iqbq+TY4Eg0LYtzUA4wOeBg34FmepXd4GZSzCmfOPvE=; b=axyFixm6hWN7kU
+	tzSfmSCAUmCcZxdF7YAcFki7V7OSyahIeo5wvZy+ZhKloBoNYsootF1Xk6g/6N3AxtYyAeiv4RIrF
+	LoB+ENiSb0XfYLD/0w8pyx7r02EvXhjl9vZXCkwn//0qN4fB2xLwFCZnTpg0FPd9jLhTf1MOAUPCj
+	+1WsboUzMjgDPGv7D7m8pyaclLLKfVza9VDy2biSNFcde/rxzJlcr82QUIo6e2cbL0ZTy2oOLu5ZZ
+	zuSdV8i1udlfSCg451HtkZlOcSN9oKpCdC2hCdK6KI7n6DaLBEUPr8rYnbGvOxBm8zdTAsxSWJ96X
+	BrS/LP36FwhRxzRdVFUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tNePN-0000000Em55-00Lm;
-	Tue, 17 Dec 2024 20:43:09 +0000
-Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
+	id 1tNgMc-0000000F11M-3kA7;
+	Tue, 17 Dec 2024 22:48:26 +0000
+Received: from mgamail.intel.com ([198.175.65.21])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tNePJ-0000000Em4O-2kDa
+	id 1tNgMZ-0000000F10z-2emV
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Dec 2024 20:43:06 +0000
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-30229d5b1caso58258571fa.2
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Dec 2024 12:43:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734468183; x=1735072983; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XyVLk3q2sonALF+MqTAOvJbPXZyYdr+nfKYD4flnZbs=;
-        b=QwxIMynK5Ao1SkjRbo1//BcVo+YmSKWNC+rZc+FY3Ueh22VYP8ll4OdUfTJoFFiiB+
-         nxASbEpLDYpfz4S24sklQNoDWB4ghOiGHJKJ6fAw0XtnvPNm5ZdXstaxUbK+BdF3RHZL
-         LKpBxT/7EZqBYUsP7r58j/+m/rdtxQDWjrCc/39TA6g/YEAdO5Gc5/yrM4AhCY/qdfV3
-         aqt0BlaX6GhUd+5wqOcmq73fgYRZCndM61BNOVF+mnIggAd/RAm7cw2Q9nG2qmH24T6o
-         8z/cXrWVEGFTXVgSukQGfLW5TuMHEHZpAQsPrtmYrWUaq9sVurFmDqJyxmWPQ0rESUC2
-         DReg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734468183; x=1735072983;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XyVLk3q2sonALF+MqTAOvJbPXZyYdr+nfKYD4flnZbs=;
-        b=MrDBWK4lwGMOBwVIQZw7coq9eGXGeQfK5sieukYKaGmCwBe4MD7UD8O5FQGBjQX3PZ
-         Ql+NIbzWCh2pSsdZcw03JK2biaxh8ezzny1D+HlqkNfArbaF9E9OhhagWHfkA0WOm03I
-         A9rrFscSnwqWYD5fAY/aF85ATycCnsaQiS+ZlE4nbq5dYDx3+mMfqnYOCWkogddlWAp6
-         LEVmhbi6Tqe2HHANJGgDoj/76b1ykPRaweq/k8WZesjYWfaeV5t916YvbtP6l3/IBQTb
-         WePK0vUj8zdM08um9ck3az1prqLtdD5CLuMG29SXf2ntTNWbiU9I+Wig0RoQGpM4Y/a/
-         umAA==
-X-Forwarded-Encrypted: i=1; AJvYcCULpyUsI3QmtQDSAkfR7affKw5mNJH2ikqIuH9HvsHN4LpPQPwP2MxooV32H7blrSs/QEi81F1Brsg=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyrcbK594bO+Ug3cuIzxZhV7YnloOHSVSEVY++sHuyzaVAlyjPt
-	jKV0EyWsTuAs/EwSCReah/7t5NjiQbyzxkQCST1l+RytRPFwo2VrTyl1pdTVgIZ+AA==
-X-Gm-Gg: ASbGncvwogJ+T/7lG7D0ysA/zPQfEhT1dOTseCLzWToANRKDH9UVCyZib8qepk60udx
-	OKf63flhPp8J4HmTjsFehxhUlZbS2ZGfJUPebGVkhyh2VKXNBvCXFS45creHmz1/1R0JIKwmD6L
-	dMJRHnc8RvFdUaCSXCDCTrClzYyqgLNqje+GXj/R4/zpMj+0vPdaJEimaR/YQXhPqfuZndsjcz7
-	bOAU2qTcX000i8VN+bTJRO8+Jc+EBP99lnzt2A9pRPmE0wP3fg/CKbRxgWWjXZid7tGTjidTran
-	UT/bEhejQlo36uxebFgEpapieYkAVowuxqYIgg==
-X-Google-Smtp-Source: AGHT+IHh3sAxmT7kF3bXrW/JZXaRcLranQrxBOsqx3OMsMyCYRLxHq3rf4alWY9OVc0zY5vyrAGGfg==
-X-Received: by 2002:a05:6512:2807:b0:540:20b8:7341 with SMTP id 2adb3069b0e04-541e674453dmr153088e87.8.1734468183146;
-        Tue, 17 Dec 2024 12:43:03 -0800 (PST)
-Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54120c00328sm1243943e87.151.2024.12.17.12.43.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2024 12:43:01 -0800 (PST)
-From: Anton Moryakov <ant.v.moryakov@gmail.com>
-To: chengzhihao1@huawei.com,
-	linux-mtd@lists.infradead.org
-Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH mtd-utils] ffsX-utils: Fix integer overflow in jffs2reader.c
-Date: Tue, 17 Dec 2024 23:43:17 +0300
-Message-Id: <20241217204317.383644-1-ant.v.moryakov@gmail.com>
-X-Mailer: git-send-email 2.30.2
+	Tue, 17 Dec 2024 22:48:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1734475704; x=1766011704;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=Z0TqHu9eVePznA6HTPwd1lV8CM7hXOkzrMlUdNp5pQo=;
+  b=fLvjV1EuvlUfbEDBqrJj2nXsQ5JGbb460H93FP1/AOmDIn3iIPnw1dPI
+   JFEheDq5JVHJ2pgfuN5ThlHTEPvLcSMfeJSIqaR1jTdRk1QDsI8eqB/ri
+   yNpgsVXK5cK8riTyhDkLuVjNW8ZxAReRsQjXPVXvOpWwCFy0e04Fgxha7
+   wspFzCygJgt5gwAAvVQoS7QpzlwVWdoUzUYAmxhm2k1XyEwUO2unyzZgO
+   3BmprU4JgTAOFX4/u6U3Q4AIiEVOY1PDIXKb9egBncClKPGA8EJnqUWW1
+   2o2z62VQC+mY9MoiplSVcMbdAaJYAOsBphV55a+mc1SHHoON9GvuPAy5D
+   Q==;
+X-CSE-ConnectionGUID: EtfqDxHZReqiP8jPuyB4uA==
+X-CSE-MsgGUID: gXoXij9fR3KjQXUt8BTCdg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11289"; a="34828460"
+X-IronPort-AV: E=Sophos;i="6.12,243,1728975600"; 
+   d="scan'208";a="34828460"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2024 14:48:23 -0800
+X-CSE-ConnectionGUID: wAtlnLInTd+Pr0iwkd93Uw==
+X-CSE-MsgGUID: VqCpAxeORROCWJ490TQvrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="102658668"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Dec 2024 14:48:22 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Tue, 17 Dec 2024 14:48:22 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Tue, 17 Dec 2024 14:48:22 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 17 Dec 2024 14:48:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=BE3VbEpqzi3y/0JXPRM1O++ZwFSSWJv34mAOcpC3AJ1+YHKk15ME664EDKI7R5lq18newOsGLqQOFjukZaZiLl/MPRxYiEecRBSRaeLzNiPfu5Mq5S3QQSMU4mz0JeBnhJegp30haMJ6gHXdiWIgdR8DQH04+SPuBWsZQyTfTUx+tCxmdG0hBbpa+XcooQwkrLeskGcsxsUkUknmP85QotHr0OGe/jDftv2kJXbHpO6t7FdPYHkG8zB0pB/I1EJI2zJxf5fgEosrfBU/J4rSSBsAg6VrNkIfzGojWmS1dqej/CF/zfY87RjD/unhqyhYhnrs8m4srE6REVO/PtA3Uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=D4yFrZ/cG7ci1HprtBiAKAbVFpZ76aiHzFgrzxl2yMU=;
+ b=kJxPFHSCEsBKFcUxgo5s2nor+O/5+Zo0fhcxBNGouJUhwNRbMNRCBhqfqkLh0BcFdzvnvsvsxJ9ao53jt68CWGKri54rC0AcfTzCjD2WrhEphFcABaUjxfYZ2Tj8YKAK0ERkmkryqW40+UWzz/J+LlvEhjITXeCFEz6NwfdAi1MKu76fsuv1btO20gho/mlZsvaFyp1PxygBB7aUeR+hXolrkHVBi4303ZnFJ6jEPH9TlIgBiQNVBOuaiIbHf7B4KNeamFt612EUyH1NTTvSFjGPA/K/GE8Km+AKcQOr3QN3QYAnAGXjBJkSykDwasyD/0DOTL5WIoEBCLkSyCY82A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7SPRMB0046.namprd11.prod.outlook.com (2603:10b6:510:1f6::20)
+ by DS7PR11MB7740.namprd11.prod.outlook.com (2603:10b6:8:e0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.21; Tue, 17 Dec
+ 2024 22:48:19 +0000
+Received: from PH7SPRMB0046.namprd11.prod.outlook.com
+ ([fe80::5088:3f5b:9a15:61dc]) by PH7SPRMB0046.namprd11.prod.outlook.com
+ ([fe80::5088:3f5b:9a15:61dc%4]) with mapi id 15.20.8251.015; Tue, 17 Dec 2024
+ 22:48:19 +0000
+Date: Tue, 17 Dec 2024 17:48:13 -0500
+From: Rodrigo Vivi <rodrigo.vivi@intel.com>
+To: Alexander Usyskin <alexander.usyskin@intel.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Lucas De Marchi
+	<lucas.demarchi@intel.com>, Thomas =?iso-8859-1?Q?Hellstr=F6m?=
+	<thomas.hellstrom@linux.intel.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
+	<tursulin@ursulin.net>, Oren Weil <oren.jer.weil@intel.com>,
+	<linux-mtd@lists.infradead.org>, <dri-devel@lists.freedesktop.org>,
+	<intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>, "Tomas
+ Winkler" <tomasw@gmail.com>, Vitaly Lubart <lubvital@gmail.com>
+Subject: Re: [PATCH v3 03/10] mtd: intel-dg: implement access functions
+Message-ID: <Z2H_rX23gLJmJ_Nf@intel.com>
+References: <20241119140112.790720-1-alexander.usyskin@intel.com>
+ <20241119140112.790720-4-alexander.usyskin@intel.com>
+Content-Disposition: inline
+In-Reply-To: <20241119140112.790720-4-alexander.usyskin@intel.com>
+X-ClientProxiedBy: MW4P222CA0019.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::24) To PH7SPRMB0046.namprd11.prod.outlook.com
+ (2603:10b6:510:1f6::20)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7SPRMB0046:EE_|DS7PR11MB7740:EE_
+X-MS-Office365-Filtering-Correlation-Id: bcf40f5b-d455-47cc-eee4-08dd1eece6e2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?0noqR0buvuuGLzbBnayWrxGdid7pBm0/gb+lJu5nuYFMeG46/1VV2s6WjimK?=
+ =?us-ascii?Q?q4w3nRCo/lDOmDH/16ElutzMh+phqaM2ehTaJaVX67PEp/1Y/W9JAoVV5HFA?=
+ =?us-ascii?Q?qzewp7uKt0NGrs2qnLUHxXNBTSuv0p2Lisj2O6B8bjLZGl47VXcQ2sD9oWbo?=
+ =?us-ascii?Q?THAXQshOl6/v3bUDFNMOKYb3NuLvuqAkYWYp8eZz1+tYX1WEVuKS9fXpai/9?=
+ =?us-ascii?Q?YM4s039BHzRE11wY35Sq+0qL0vlCV2o8ST7TZbJd953tPiKW6gGGnjH/ZIXp?=
+ =?us-ascii?Q?WlBHuXvrv6frIJsAp9c3GGhFIgCN0b+KBsyKbg0oGkS4FyUUqSJTT//20oN1?=
+ =?us-ascii?Q?yBEFLjGm3dkFsjA73As6iDvZAOvwesUj5TtfAjTJsIdJehBFeUrNBl2fWXf9?=
+ =?us-ascii?Q?yZqn6FkX7GqWWUr0p7GoV7TGt9tcdc9vYSkLuQqyWimzaw3/AVi9aweEBGmA?=
+ =?us-ascii?Q?88+Q/LkTLbA24EwsllpVNNAKASEWn9dGY8LDYyqGWJOoVScRkwspLmDu2Otl?=
+ =?us-ascii?Q?UAHk2MHZpxwksR59mjRAwb656HCHZPcPmNU5cETdmAz117SBm5aRNjpXhkxg?=
+ =?us-ascii?Q?1FqAWMRbPlqO+u4Hy/2uab2BrX97wSZ/TVMay75tNEKKE74PVY+0sA/PTcfE?=
+ =?us-ascii?Q?Zs9oXJD/9ijbBqZ57X3b/pAmqF2zqMnuBFu4TPwJ0Af+3GNTjTPuu5fjSggJ?=
+ =?us-ascii?Q?GldETkRM8M/OMgDiegwxBf9yB91x3bh8DXqH2dppM4Nrr7mQ6yT4jKddxryO?=
+ =?us-ascii?Q?PNpwlFOA+qYHLQoN/8pwolB7cDJSGTQhnAKobTjPfZqHREQ7O9Nr0IdKVx54?=
+ =?us-ascii?Q?nu8uVnARmnkiCEb4/c2bb7vUQZsSqSwTM6TrPpT+yZ1GQ9KP4TSfjJJNXrDP?=
+ =?us-ascii?Q?Ibau0KlNjXQ3OHtdV+RxDA0Z+c5KZ4pAwFT60ErZBJ1/iRQMOqJYSM8bsSKn?=
+ =?us-ascii?Q?EmIG6odmt5lRExd8dhNz4df1entKNdzSeeEeFGOkmvMJYLL0uNH7rNceJ3Oo?=
+ =?us-ascii?Q?ui1YkHz69wO/x0EN/kGd2LZkCfE19nKSg4YqXrQonGha9HJYhQaiksmr2XqP?=
+ =?us-ascii?Q?bxG1lKguC3IqdYrd34IXcs3gDfpuMIhAL/bGaPym7FOxucr06H0aM4BgPpnH?=
+ =?us-ascii?Q?K8UW72l96vfPrcpZxLal/EcztWPywj2D/MiNXM3zxgZHeItlcEaiaZkXyz8O?=
+ =?us-ascii?Q?v+b48ToqxDt2RyHVyvlseebLp/gKhTuFs+yOry4O0WzZLLqwxQBk/yqf3Rcl?=
+ =?us-ascii?Q?WAKIO0SwRZj8z6c8qRPerPpHKyzPTusKp0kIs9AKX/t6331XWpeOtFxsBtEu?=
+ =?us-ascii?Q?dQVE5oxhLM20pk4rKfj14nzqDBHbG4t3mkz3/+yY6dg5hPBlIK+c6RxWyVPr?=
+ =?us-ascii?Q?U3Hkva+1RftKHNVMcIXvfMwbzC7Z?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7SPRMB0046.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XWWx1fFLuUdepv779/OVH6zIwwsBzbx+lUxFj2Cn0t1x/pgJKRGnZOzetZ+H?=
+ =?us-ascii?Q?oM44sg8sLQJYmEtMsr01Kz6x05XdsopnF4tJ9wFpZOComoZxDu2LHsri3c+L?=
+ =?us-ascii?Q?oqU7OT8ArgTvwsIriXE7AUJLkOMFRbDhAZT9meXiwa4DFdQrFysCTnYdUt3e?=
+ =?us-ascii?Q?/o4bKPv33EO4fYJ2hNCcWO6JIbRgcG8wM5gQ7DZYYzouao9ozONCnzT1Waf6?=
+ =?us-ascii?Q?fJtSreSEuWwdogC5kHmr5Tlp6OpuzHrOdaUF7E6s08z6Gb8R1lmIrxoZ/PfY?=
+ =?us-ascii?Q?iBtLD3+G4SWy2lnCs3IbaTtBLsjqdiVQRYmN9OdhflNRH9vigbMIkRyxqbh3?=
+ =?us-ascii?Q?ozOhRe2GcgFd6yq2FPfOCaUWufcL5NCeU7yumg1VCpFGVIwBPu5QuY2mFQax?=
+ =?us-ascii?Q?fJsiRIJdSdmo7VMqAelTJGvY6mVjqvm5wn8EVqIQI9G1VGFjB/y3EcJvFkfQ?=
+ =?us-ascii?Q?7U2fS4HTfjQ+JaLqKkhhksBqbS8LrCRLxsarok31LFHpMLG8q9P+y59e+koZ?=
+ =?us-ascii?Q?hYzsR8yK6aRXVrKIRMYS6bpSI37o3PvfL+ff63suXwaNw1StAY3kik9AED8/?=
+ =?us-ascii?Q?Q9C+3MWrGN7Te8crhJMOgkgEUy09E1uEo+JCF+uj87KvuftICLYKkSmc2hRb?=
+ =?us-ascii?Q?sw/VBYTjMDymT0JV8tXsR+Q75DncIlj4o8sIXvu1JiMEKST4biLYabEgNIzM?=
+ =?us-ascii?Q?BNr/6bpsEzSmblHYkIDCRc+JjODUXPbKbJSwIx3hA2KEmjCMFxO04Vu+SpBi?=
+ =?us-ascii?Q?DgEf3OX3EH96k2PteThmhBMo+dBg/CZQboB6RasDyjeVteTB0lNn1w/qgvGH?=
+ =?us-ascii?Q?fbcLaMVReh3pG+RT43T+2MxsXBtKDpRAT1kYVs0amHE4CQYYr+tTKRhIpVlv?=
+ =?us-ascii?Q?gvC2ml32FaVIOgpoFb6LQandr7EMz/SmzWmRyLZ4nnUGI4KkpuOeHih9EcV5?=
+ =?us-ascii?Q?w4Ya/NbxZFrDGUXfkdhq3mwyIyXaCUl5Rm4Ig8TOkbZ9IfW2Ze/9I5/zlLwr?=
+ =?us-ascii?Q?jwY8KUFQ1+r0ZQkVx91dR53RTYOm0PEEE60u7nc5s+TbzTvddPPdnECEsKKI?=
+ =?us-ascii?Q?fmarZdxAEG3NFg7+phg6nvRx8lEXf8fUpw/2d+uib1Q3NkeY3NpWzijViqo8?=
+ =?us-ascii?Q?T+JDpp1ZMRPmkf94kLsLR1MnSlFTkcRSqC1BrqWsJJrf6A4qyAPfYXJWb7Fu?=
+ =?us-ascii?Q?zK0rf3yF/iWsbcRQY31isdiyS2PZ0qUfTkL7V7vzR3423Q63Gt5FaDSsVqzy?=
+ =?us-ascii?Q?a+koY1y5waTuRDTZZPuiSqq22wmJZjUGBEf21pF5yU7kNYb62G8D3IWPcwZz?=
+ =?us-ascii?Q?63IPsTlDhFsPf2Eljoewo30i3F/De9o8J3UjY0rmYkHexbhzfuYWAeHKIqz2?=
+ =?us-ascii?Q?svmmuJLWL4A3vLflyoPKYbBvcHRmH+oKs8PsRG26JuwKdCOYHLCdaiHw0iNi?=
+ =?us-ascii?Q?slzepzFiXOpIGWY6yAdN1IJveFCGSA63A+oZPB4Qfg1e7GxohWctzUDqE1nO?=
+ =?us-ascii?Q?IMPVDa8tHLX09iG8MqWALVLV2Ksw6/t9xIr4NGWc7eeALyUoWAXtcn3kIhLU?=
+ =?us-ascii?Q?cZAABrwj/vBKeoeuFnph3MTNv6IeCW9nfQTGmiFPU6lpfGSJISY+98H4Kya4?=
+ =?us-ascii?Q?7A=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcf40f5b-d455-47cc-eee4-08dd1eece6e2
+X-MS-Exchange-CrossTenant-AuthSource: PH7SPRMB0046.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2024 22:48:19.3419
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rqbtlulfVXo4BSj3uamAVG1xmMBpoXF4gIE8xitYvrGyyS9mWiDNVnQP+ZEbRn3t+kPhMmCOQ9kuGDoqZfpHxw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7740
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241217_124305_713338_570DF694 
-X-CRM114-Status: GOOD (  10.65  )
+X-CRM114-CacheID: sfid-20241217_144823_842230_9021FAC1 
+X-CRM114-Status: GOOD (  24.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,39 +202,264 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Report of the static analyzer:
-Pointer 'path', returned from function 'xstrdup' at jffs2reader.c:690, may be NULL and is dereferenced at jffs2reader.c:692.
+On Tue, Nov 19, 2024 at 04:01:05PM +0200, Alexander Usyskin wrote:
+> Implement read(), erase() and write() functions.
+> 
+> CC: Lucas De Marchi <lucas.demarchi@intel.com>
+> CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Co-developed-by: Tomas Winkler <tomasw@gmail.com>
+> Signed-off-by: Tomas Winkler <tomasw@gmail.com>
+> Co-developed-by: Vitaly Lubart <lubvital@gmail.com>
+> Signed-off-by: Vitaly Lubart <lubvital@gmail.com>
+> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> ---
+>  drivers/mtd/devices/mtd-intel-dg.c | 197 +++++++++++++++++++++++++++++
+>  1 file changed, 197 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/mtd-intel-dg.c b/drivers/mtd/devices/mtd-intel-dg.c
+> index 05e333771be0..915b9750ca62 100644
+> --- a/drivers/mtd/devices/mtd-intel-dg.c
+> +++ b/drivers/mtd/devices/mtd-intel-dg.c
+> @@ -5,13 +5,16 @@
+>  
+>  #include <linux/bitfield.h>
+>  #include <linux/bits.h>
+> +#include <linux/delay.h>
+>  #include <linux/device.h>
+>  #include <linux/intel_dg_nvm_aux.h>
+>  #include <linux/io.h>
+> +#include <linux/io-64-nonatomic-lo-hi.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/string.h>
+>  #include <linux/slab.h>
+> +#include <linux/sizes.h>
+>  #include <linux/types.h>
+>  
+>  struct intel_dg_nvm {
+> @@ -91,6 +94,33 @@ static inline u32 idg_nvm_read32(struct intel_dg_nvm *nvm, u32 address)
+>  	return ioread32(base + NVM_TRIGGER_REG);
+>  }
+>  
+> +static inline u64 idg_nvm_read64(struct intel_dg_nvm *nvm, u32 address)
+> +{
+> +	void __iomem *base = nvm->base;
+> +
+> +	iowrite32(address, base + NVM_ADDRESS_REG);
+> +
+> +	return readq(base + NVM_TRIGGER_REG);
+> +}
+> +
+> +static void idg_nvm_write32(struct intel_dg_nvm *nvm, u32 address, u32 data)
+> +{
+> +	void __iomem *base = nvm->base;
+> +
+> +	iowrite32(address, base + NVM_ADDRESS_REG);
+> +
+> +	iowrite32(data, base + NVM_TRIGGER_REG);
+> +}
+> +
+> +static void idg_nvm_write64(struct intel_dg_nvm *nvm, u32 address, u64 data)
+> +{
+> +	void __iomem *base = nvm->base;
+> +
+> +	iowrite32(address, base + NVM_ADDRESS_REG);
+> +
+> +	writeq(data, base + NVM_TRIGGER_REG);
+> +}
+> +
+>  static int idg_nvm_get_access_map(struct intel_dg_nvm *nvm, u32 *access_map)
+>  {
+>  	u32 flmap1;
+> @@ -147,6 +177,173 @@ static int idg_nvm_is_valid(struct intel_dg_nvm *nvm)
+>  	return 0;
+>  }
+>  
+> +__maybe_unused
+> +static unsigned int idg_nvm_get_region(const struct intel_dg_nvm *nvm, loff_t from)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nvm->nregions; i++) {
+> +		if ((nvm->regions[i].offset + nvm->regions[i].size - 1) > from &&
+> +		    nvm->regions[i].offset <= from &&
+> +		    nvm->regions[i].size != 0)
+> +			break;
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static ssize_t idg_nvm_rewrite_partial(struct intel_dg_nvm *nvm, loff_t to,
+> +				       loff_t offset, size_t len, const u32 *newdata)
+> +{
+> +	u32 data = idg_nvm_read32(nvm, to);
+> +
+> +	if (idg_nvm_error(nvm))
+> +		return -EIO;
+> +
+> +	memcpy((u8 *)&data + offset, newdata, len);
 
-Corrections explained:
-After calling xstrdup(p), a path == NULL check has been added. This prevents a possible NULL pointer dereference in the event of a memory allocation error.
+I'm a bit concerned with the usage of len here without any check...
 
-Triggers found by static analyzer Svace.
+> +
+> +	idg_nvm_write32(nvm, to, data);
+> +	if (idg_nvm_error(nvm))
+> +		return -EIO;
+> +
+> +	return len;
+> +}
+> +
+> +__maybe_unused
+> +static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
+> +			 loff_t to, size_t len, const unsigned char *buf)
+> +{
+> +	size_t i;
+> +	size_t len8;
+> +	size_t len4;
+> +	size_t to4;
+> +	size_t to_shift;
+> +	size_t len_s = len;
+> +	ssize_t ret;
+> +
+> +	idg_nvm_set_region_id(nvm, region);
+> +
+> +	to4 = ALIGN_DOWN(to, sizeof(u32));
+> +	to_shift = min(sizeof(u32) - ((size_t)to - to4), len);
+> +	if (to - to4) {
 
-Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
+As well the 'to'...
 
----
- jffsX-utils/jffs2reader.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I was even trying to review all 3 patches together, 3, 4, and 5,
+but there's too much indirection on those values and no checks
+in any place...
 
-diff --git a/jffsX-utils/jffs2reader.c b/jffsX-utils/jffs2reader.c
-index 87a2167..f776466 100644
---- a/jffsX-utils/jffs2reader.c
-+++ b/jffsX-utils/jffs2reader.c
-@@ -694,6 +694,11 @@ static struct jffs2_raw_dirent *resolvepath0(char *o, size_t size, uint32_t ino,
- 
- 	pp = path = xstrdup(p);
- 
-+	if(path == NULL){
-+		*inos = 0;
-+		return NULL;
-+	}
-+
- 	if (*path == '/') {
- 		path++;
- 		ino = 1;
--- 
-2.30.2
 
+> +		ret = idg_nvm_rewrite_partial(nvm, to4, to - to4, to_shift, (uint32_t *)&buf[0]);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		buf += to_shift;
+> +		to += to_shift;
+> +		len_s -= to_shift;
+> +	}
+> +
+> +	len8 = ALIGN_DOWN(len_s, sizeof(u64));
+> +	for (i = 0; i < len8; i += sizeof(u64)) {
+> +		u64 data;
+> +
+> +		memcpy(&data, &buf[i], sizeof(u64));
+> +		idg_nvm_write64(nvm, to + i, data);
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +	}
+> +
+> +	len4 = len_s - len8;
+> +	if (len4 >= sizeof(u32)) {
+> +		u32 data;
+> +
+> +		memcpy(&data, &buf[i], sizeof(u32));
+> +		idg_nvm_write32(nvm, to + i, data);
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +		i += sizeof(u32);
+> +		len4 -= sizeof(u32);
+> +	}
+> +
+> +	if (len4 > 0) {
+> +		ret = idg_nvm_rewrite_partial(nvm, to + i, 0, len4, (uint32_t *)&buf[i]);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return len;
+> +}
+> +
+> +__maybe_unused
+> +static ssize_t idg_read(struct intel_dg_nvm *nvm, u8 region,
+> +			loff_t from, size_t len, unsigned char *buf)
+> +{
+> +	size_t i;
+> +	size_t len8;
+> +	size_t len4;
+> +	size_t from4;
+> +	size_t from_shift;
+> +	size_t len_s = len;
+> +
+> +	idg_nvm_set_region_id(nvm, region);
+> +
+> +	from4 = ALIGN_DOWN(from, sizeof(u32));
+> +	from_shift = min(sizeof(u32) - ((size_t)from - from4), len);
+> +
+> +	if (from - from4) {
+> +		u32 data = idg_nvm_read32(nvm, from4);
+> +
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +		memcpy(&buf[0], (u8 *)&data + (from - from4), from_shift);
+> +		len_s -= from_shift;
+> +		buf += from_shift;
+> +		from += from_shift;
+> +	}
+> +
+> +	len8 = ALIGN_DOWN(len_s, sizeof(u64));
+> +	for (i = 0; i < len8; i += sizeof(u64)) {
+> +		u64 data = idg_nvm_read64(nvm, from + i);
+> +
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +
+> +		memcpy(&buf[i], &data, sizeof(data));
+> +	}
+> +
+> +	len4 = len_s - len8;
+> +	if (len4 >= sizeof(u32)) {
+> +		u32 data = idg_nvm_read32(nvm, from + i);
+> +
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +		memcpy(&buf[i], &data, sizeof(data));
+> +		i += sizeof(u32);
+> +		len4 -= sizeof(u32);
+> +	}
+> +
+> +	if (len4 > 0) {
+> +		u32 data = idg_nvm_read32(nvm, from + i);
+> +
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +		memcpy(&buf[i], &data, len4);
+> +	}
+> +
+> +	return len;
+> +}
+> +
+> +__maybe_unused
+> +static ssize_t
+> +idg_erase(struct intel_dg_nvm *nvm, u8 region, loff_t from, u64 len, u64 *fail_addr)
+> +{
+> +	u64 i;
+> +	const u32 block = 0x10;
+> +	void __iomem *base = nvm->base;
+> +
+> +	for (i = 0; i < len; i += SZ_4K) {
+> +		iowrite32(from + i, base + NVM_ADDRESS_REG);
+> +		iowrite32(region << 24 | block, base + NVM_ERASE_REG);
+> +		/* Since the writes are via sguint
+> +		 * we cannot do back to back erases.
+> +		 */
+> +		msleep(50);
+> +	}
+> +	return len;
+> +}
+> +
+>  static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device)
+>  {
+>  	int ret;
+> -- 
+> 2.43.0
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
