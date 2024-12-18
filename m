@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C258E77183
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Dec 2024 08:08:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37949E77187
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Dec 2024 08:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/02uC0jwLTO1V16anzNPj9QdlCZYvq30V2cY3ZVqzNM=; b=U0LbiYvD7vnDs4
-	QXni883pE4DljkPQHmaWisYirN0UY2jXjeev+oG+PnQPDaO0scTvNFKKUS7P2Rna+3XXXpsJcZ4UL
-	uhj9owbVEF1lnQragyIc1I1UbJmJPT+J0YIRG21BHwGwMCcRqxgD2YJevQkk1ie2lFgWRc0P0rKve
-	bygbecP+Xb6lmJkb5CqenrZ+0DAyEsEapmDRy6x5c13KylNnOXMkmC7PochonE2iRcp7dsH0Yab3t
-	oZ8HdKUcRFajFZqRTF6Iyt5Q98bU451riJ9PZ32hWzedk/a/0VzedSaqY5OFtSB2n9HxED0OyXBjj
-	aGfO8O62NggjGb+UM6Cg==;
+	List-Owner; bh=Zg7KmwWwiyecng5vDujBAUwluh2q96fDBl50BAZ5ZHg=; b=uKEwHsUvTTHAO5
+	G9A3O/G8MgYlINHoWpxDxF0Al7dKkhokx33z9LA7xMvqimiGMjEPbTFOOyPqsRy6+niog0nVzQpM5
+	D98mFEf0GuoAoDw0YEAdxnAK2mv3n2oMAtUn68icNGNAq/rB8Y4wggqhKNEYc3fJB6A3GDiZAfN39
+	I39Y8Pivwa64BeDts623qFtaQ+WUe69c/eFbewNcWDEB0e610Y0HkuR/IJS7dytQYJz26Y3aLD0Z+
+	z61W9Iqkomi03GEXWXSHfo3kbP0Mc5QPFeciraJwI8CQMzkw7zCsOzzseR5O5lTKuaZsygewLk7MD
+	UdQW16MgcwT2OKYcRTkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tNp6U-0000000FtRU-1gRc;
-	Wed, 18 Dec 2024 08:08:22 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1tNp7b-0000000Ftm2-0Nar;
+	Wed, 18 Dec 2024 08:09:31 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tNp5d-0000000FtFs-3jWr
+	id 1tNp7Q-0000000Ftje-05jP
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Dec 2024 08:07:31 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4362f61757fso48499115e9.2
-        for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2024 00:07:29 -0800 (PST)
+	Wed, 18 Dec 2024 08:09:21 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4361dc6322fso40963665e9.3
+        for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2024 00:09:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1734509248; x=1735114048; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1734509358; x=1735114158; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vUO13Va1s/28T6qIaWM110YfN47cZBFUYRB3INwDCck=;
-        b=C38Uv1V7CTK77cvL2Um1PC+0Amh8QoAWXCGDhNrx0+kKLiEywu/4YFqOvSp0V6zuj9
-         HqF0mNSId+TgErZ1w20n6y8V/7sE4uVZIJPYJQcSEOMTz0T3hb186OjERJIotumOvY0t
-         aJ13wzCf1o98r6p31ib+65kTlBHsypheMGfI8h1w0aX8VyC/AkgbhFDszE+ERDOYgKX7
-         TX/fM7SrmVU0EZyLGMjB6jFDbl4bAERxVIkjDnFL1Cv55oWVL6L3o8wecFPSSh1OXKMD
-         0WjES+XiK055tBKSpAAhJAbrIQx/2FhJi9GwLvnV0wlgkdulMI1u7Lyef1KWA6qn22iw
-         NHYA==
+        bh=ZRjVLU79fxtlCs8q/RqJY5LZOSIYLIuscUTeIz5cyfQ=;
+        b=ckmmZ0NBUXVXSd8wYKfEQoZFR7gzOCxJmP5aHc7e8YvH64pgIVRHgGVjIZdgM7DY5u
+         ItT+qBqrjGF9AKQly/Yamz0aVqT4l38W/0LJ6ii58dpMK4njR8Ov42XbIQRLCGdP0SEv
+         UVInMr3Vp51rsV349NIcadv7KuYsqrZ4uq3EQ5bgdmfXNaveaz6IrS/TyzSFG3Djm1+f
+         K/vpqgFYXh3Pa6jyODfAS1V1O8SI8rYOE5tw/sJfSk44SQL2t7TGFIC5ubY7JuVEyznw
+         /tGAXD9O9oS5Lge+gsyhDqX4UeOeU5abj9SLdocvdrHjVEfceDJaY6rODXCM2Z8GobtL
+         o30A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734509248; x=1735114048;
+        d=1e100.net; s=20230601; t=1734509358; x=1735114158;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vUO13Va1s/28T6qIaWM110YfN47cZBFUYRB3INwDCck=;
-        b=wn+99sGL13eAXP7KhytLyjwHFtu0tXzWIJL3W6Y+rE2xWnwshgNQpaWwDkzlhiu2UN
-         P2WHaMCkp7lyzfvCR446CmhttYh4TuG2y1B1B2cI0ObzvLjtq8wPZU2vAEJQcCfpHHbY
-         b5utMqQZGKWaWHI7THyhrPfRebLfROsPPWYHQG0Ai4ibHjFnmTGunFi1YdFL4XXhYZh/
-         j0Ba8ZmR4CezaotEiKd5hmOW0IJVZlRKg9D6oRQl+fcUX7zfnGp9QVPU2I1JbvH3py3/
-         dTKSxIOLgfOnrKPPDtBNgW4sKSGGRba29ItKlS8JT8b/B13pjsWTzL6ayQ2aHFYM6ED5
-         u1pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJwrIiAhue9MbGGtI8TX/33gerBbsmj96RR0eats7JWF3KGfrVJ8UY67O+/p/WuoyrpNW4SsBH0XQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yziz8YnnNdXMNB3KKvaVr+qCDC+DYozzgKxhVyQjKaCV9awDWVq
-	qEAJYhZOFymciHcmuLl70ZUhR3CsnLB3ucHphYsmxV6RILlBANS1zo7WlBBw4kk=
-X-Gm-Gg: ASbGncu3Xc5xsC29exi6PUz/+PfKEKuElDkhfw3kQlwRxQKCTZYFSecdtEx5FKkXntR
-	bXyEzjrGK9PHE2SdN2aIsxhNnkp5o/70toJ/9d0U7EHyYsjfTpp+fk10BHCZsN7stP0xG35v2yK
-	+dh9DiICxV6/mInNExO4nKCNx76NrdQ1fQFtVlTzncNbtE7dJ19KYxVkdtIMavw9Xa/FECx8w+e
-	BzNf2o526S03tJ+aMDHpCe9C3t8bs/H3dXhnj5dm5hIW8J2dVWlBowGJi4scr1O
-X-Google-Smtp-Source: AGHT+IE/VOpr6ya6Vanrk543BWmCOmJzLMi4pEYNjPk21m8gtDLfkvb6JJfIygcCELDi7lmkG+sr+w==
-X-Received: by 2002:a05:600c:154c:b0:42c:c28c:e477 with SMTP id 5b1f17b1804b1-436553e9de5mr10906735e9.23.1734509247721;
-        Wed, 18 Dec 2024 00:07:27 -0800 (PST)
+        bh=ZRjVLU79fxtlCs8q/RqJY5LZOSIYLIuscUTeIz5cyfQ=;
+        b=d5ZophFpOQNpMHXcPx4o6KKLBXkIgghXE31cUWff6EMBN9zO9DmBr+PZB0nnsTMGPx
+         uTSHLrVnADIcsRP5zg+hBqYBiF5yruHmikVr9f0saUCmK3jFpVZ/WbnG86bMA/uvvYyM
+         m/0hqnH4XD4buuxxTqPU4irLj+4k2PgRXS+Kz0GhlI6atTDaWzMuaAdqjAr3iczUxPIG
+         4EdxlF5z747E1tEUgxAeWdVHwuUzFIkXTtzfkH8CygsK2U5U7QKqhqStxWODWA9mDSAf
+         tmNEADCpaNVbYOpAybhkcuf9sasncKPPw6dpIDsUgUeDbyGFGQy/r5XQfaIMlvyGGqei
+         sp0A==
+X-Forwarded-Encrypted: i=1; AJvYcCVysE+Lc1+PgyCVZIqBwj2qienGGUYySvdxCtUVLj7oEgOpQ/BiIZ5VbbDhXuapk+m//uasEWGaogc=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw0RyHq6GOty/GmIYBeCE3EgbH3mqjXwZSjjWh8CdsZPtidCvo4
+	t0ZY+o9jBJZ/+ocQDSdZ5IXbcx+N0vMNnERl1ceyzYJG4LG4U0Rkc8zLV2PIUyw=
+X-Gm-Gg: ASbGncs3uF6gq/CYb9xmkWN3F+4/pC16t91HNiOjiWjtoYkqnx4sk8EFfUSeO9xJ44y
+	M9CdEzqdMrlTH3EbemCkb7MNFQZpHiler4QmvaTf7bND3APIW3HL3BVpkuMFW7SrPp1P2HV92q+
+	jMiuCHP2i6gMpnqzgsC15McOESa3oNkxZfHd0mjL2qy++SmYIMJTLl3wZlxdaUvXnhINQ+mZhcY
+	ZwzJC0VcQxtCe5g90LQHjnho7fpYeO/nQb5kwOe4QXiFyodj14lnL1nSBCAIRO/
+X-Google-Smtp-Source: AGHT+IGOAC3FvXgS5bR4S3TJX40I3g683RjVqEAtFMj/u/nm8PyH1S1tnMwfp3FxLzNoeKSWEmEo+w==
+X-Received: by 2002:a05:600c:138d:b0:436:1be4:c9b4 with SMTP id 5b1f17b1804b1-4365540c42dmr12112905e9.27.1734509358224;
+        Wed, 18 Dec 2024 00:09:18 -0800 (PST)
 Received: from [192.168.0.14] ([188.26.61.92])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43656b12399sm12277485e9.20.2024.12.18.00.07.25
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43656b12399sm12326065e9.20.2024.12.18.00.09.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Dec 2024 00:07:26 -0800 (PST)
-Message-ID: <01f1bddd-7aee-4c90-9fa0-3b94c87eb469@linaro.org>
-Date: Wed, 18 Dec 2024 08:07:24 +0000
+        Wed, 18 Dec 2024 00:09:17 -0800 (PST)
+Message-ID: <8feb356c-58b6-434a-99a0-d707b68aabf6@linaro.org>
+Date: Wed, 18 Dec 2024 08:09:15 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/24] spi: spi-mem: Extend spi-mem operations with a
- per-operation maximum frequency
+Subject: Re: [PATCH 04/24] spi: amlogic-spifc-a1: Support per spi-mem
+ operation frequency switches
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
@@ -88,15 +88,15 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  Haibo Chen <haibo.chen@nxp.com>, Yogesh Gaur <yogeshgaur.83@gmail.com>,
  Heiko Stuebner <heiko@sntech.de>, Michal Simek <michal.simek@amd.com>
 References: <20241025161501.485684-1-miquel.raynal@bootlin.com>
- <20241025161501.485684-2-miquel.raynal@bootlin.com>
- <e76ff30b-342e-4e4c-aa84-40312c3ffc72@linaro.org>
- <87jzc3oo6g.fsf@bootlin.com>
+ <20241025161501.485684-5-miquel.raynal@bootlin.com>
+ <9e942bdd-6ade-40a7-ae4a-104ed288a09f@linaro.org>
+ <87o71fn6yl.fsf@bootlin.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <87jzc3oo6g.fsf@bootlin.com>
+In-Reply-To: <87o71fn6yl.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241218_000729_955217_B41FD11E 
-X-CRM114-Status: GOOD (  21.81  )
+X-CRM114-CacheID: sfid-20241218_000920_074138_0846AB81 
+X-CRM114-Status: GOOD (  15.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,59 +115,36 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 12/13/24 10:46 AM, Miquel Raynal wrote:
-> Hello Tudor,
+On 12/13/24 11:44 AM, Miquel Raynal wrote:
+> Hi Tudor,
 > 
-
-Hi!
-
-> On 11/11/2024 at 13:07:09 GMT, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+> On 11/11/2024 at 13:42:31 GMT, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
 > 
 >> On 10/25/24 5:14 PM, Miquel Raynal wrote:
->>
->> cut
->>
+>>> Every ->exec_op() call correctly configures the spi bus speed to the
+>>> maximum allowed frequency for the memory using the constant spi default
+>>> parameter. Since we can now have per-operation constraints, let's use
+>>> the value that comes from the spi-mem operation structure instead. In
+>>> case there is no specific limitation for this operation, the default spi
+>>> device value will be given anyway.
 >>>
->>> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
->>> index 17b8baf749e6..ab650ae953bb 100644
->>> --- a/drivers/spi/spi-mem.c
->>> +++ b/drivers/spi/spi-mem.c
-
-cut
-
->>> +	if (!op->max_freq || op->max_freq > mem->spi->max_speed_hz)
->>> +		((struct spi_mem_op *)op)->max_freq = mem->spi->max_speed_hz;
+>>> The per-operation frequency capability is thus advertised to the spi-mem
+>>> core.
 >>
->> not a big fan of casting the const out. How about introducing a
->> spi_mem_adjust_op_freq()? The upper layers will use that were needed,
->> and you'll still be able to pass a const op to spi_mem_exec_op()
+>> I see the driver sets ctrl->min_speed_hz = SPIFC_A1_MIN_HZ;
+>>
+>> Do you want to introduce a struct spi_controller_mem_ops.supports_op and
+>> check that the spimem op freq is not below the controller's minimum freq?
 > 
-> I know it is not ideal so to follow your idea I drafted the use of
-> spi_mem_adjust_op_freq(). In order to avoid the cast, we actually need
-> to call this function everywhere in the core and the drivers to make
-> sure we never get out of bounds, but here is the problem:
+> I was about to do that but I think we can do better. I am already tuning
+> the max frequency depending on the op. I can just check in the default
+> supports_op hook that the operation max frequency is not below the
+> controller's minimum. So all drivers with this kind of limitation will
+> be covered.
 > 
->     $ git grep -w spi_mem_exec_op -- drivers/ | wc -l
->     42
-> 
-> This approach requires to add a call to spi_mem_adjust_op_freq() before
-> *every* spi_mem_exec_op(). Yes I can do that but that means to be very
-> attentive to the fact that these two functions are always called
-> together. I am not sure it is a good idea.
-> 
-> What about doing the following once in spi_mem_exec_op() instead?
-> 
->     spi_mem_adjust_op_freq(desc->mem, (struct spi_mem_op *)op);
-> 
-> I know we still have a cast, but it feels more acceptable than the one I
-> initially proposed and covers all cases. I would not accept that in a
-> driver, but here we are in the core, so that sounds acceptable.
-> 
-> Another possibility otherwise would be to drop the const from the
-> spi_mem_op structure entirely. But I prefer the above function call.
 
-How about introducing a spi_nand_spimem_exec_op() where you call
-spi_mem_adjust_op_freq() and spi_mem_exec_op()?
+Sounds good!
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
