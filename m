@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CE02E7718A
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Dec 2024 13:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3AF2E77184
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Dec 2024 13:50:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AyONMzMSx6x2tYbZT/9kjREz49wrXY9TSh3tzj1PR+0=; b=vFvIsE+OqA4jLI
-	8dgAOZnkQCKHDNo5VrwCl5B+0ra/yTbMx3uWYvnwH3UaSWV7HxFlKZvdnvqYQTK2iQXX2VH6sxRXn
-	Zzr5/gW2ppSYL/uaQjIFc8cOtRtX7sG2VnUXEeB17+OkU3Vq23GLcKOZDeYVxsykd0Ia/v2lVDkR4
-	RfOjPvOfWgGrp5IOJ+MPdQ2DtmsXo+s1hm0q+1spVMBKlaSthFWencDkGLdsayXnt7PwV8nwXyTBk
-	B+7xHejdj/m2cxZRpYqojS1CLx0IH516kBfr7EMylCfuTyglB+dAPUYJOLobwwoISHtTamNPj35Y3
-	ww9dTF+BBZ6nOfd/S1Ng==;
+	List-Owner; bh=o/7hcc08H7WhtiaDMaBhsMj2rwGjwE/7U6jZeRXxGBk=; b=t5qaUYiYQTSrSp
+	u429l09XUXHFC30DTBCFaCYV3lbi9bSkCuSwJaTa/B9BktZhvLeKC9Fa2W4ZCe6XNf/DMVMxCiKQY
+	GnsWreX/v3j1BVDjrxe6rQ7BpHCtVbWBN/jLQ+B85FNoSxcfYcFshqfz54ReJmhXCBZuWxZ0icjtb
+	E5sGQxBjSf7vjcpd2BZhCeliX0JH/TKrmgASYf6RJhPfEfQfrv9eGa+500rffNnifRRYs8OLmBo5z
+	ggU34NfuB/9jbTTP2kllgTCZBkfKjjt/jfWlAi0TNgC4EueO7uaKrOTHS5N6SguEM8h2oQ2/jCKPL
+	XAai6YTb8FPpjKjaYFKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOGqo-00000001zA6-3ERE;
-	Thu, 19 Dec 2024 13:46:02 +0000
-Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
+	id 1tOGvS-00000001zgb-2MQx;
+	Thu, 19 Dec 2024 13:50:50 +0000
+Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOGqm-00000001z9f-0XPu
+	id 1tOGvQ-00000001zg9-44Az
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Dec 2024 13:46:01 +0000
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-3035210e2d1so7317101fa.2
-        for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2024 05:45:59 -0800 (PST)
+	Thu, 19 Dec 2024 13:50:50 +0000
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-3022598e213so8927621fa.0
+        for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2024 05:50:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734615958; x=1735220758; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1734616247; x=1735221047; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a8gZxHuIK+wQHK/yGo+a2WNfecIdn10k4LCF0ZQP6BY=;
-        b=TpX1FfXE0/E4u5n81KxkyaU0OxGOdpEqR+j71Q0UvvVXD5E0QI2fxG8JzfQFFSvL9f
-         UpUZaDIGcZn8nUyt0qQBqNBm7MSR99++QErs0bJlOBlcz7b4qW6Sz1jrj5TNGq5ovt1/
-         lTZE/9D9lCYT5mVf4EMC4LWFKmSrDv5SMPXziIKOV6nB/SOZZF3Pz933+elVLqg3SF+9
-         LK3bfok8t/b6dGjrRzF/U9mUW8HA3ameVNv3M7IwpjLUziL3d3j0kqEbyz/m1DaSiJ8l
-         d8VQvT/nFbwPiEc7ME6zbeZtTVw2jK740nG7GFBPBsCWsx+St28faCOzXCE7+X3Mrv1c
-         lNHg==
+        bh=Cceao9boJ8KHq53KkU9dHrscV2Tyyc9k4zFaGkhImbo=;
+        b=YPy5aDNQN3nMMQpMgviLac2ygjpPQarS8w30gILvHiULOqWp7gGXDrIrAc4JSciYEU
+         70mYn6/fZPy8IhL/QrU6yBdLdjAVNK/suVkHSDPqcV7O9CSEGP5yijxahe3a2ldInfpO
+         312iRp3VyuA8KEcnq14qAm/WFSYow7Z6brhHtphI9qnfiVieZ/rntv+zaoWIlzhkimuI
+         7OdU/DeDwiibFN1SkSms/cmJtOorC0MAgyg8PtZp+vY+75eIXzCIoSLN84CRAf8RaR5L
+         fNdcuorhTHDzLcyu2tqompvbB0xpT1v7lfstGebCFlUWnuInM6CYLzC8iXH/+h8vfQqB
+         vVvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734615958; x=1735220758;
+        d=1e100.net; s=20230601; t=1734616247; x=1735221047;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=a8gZxHuIK+wQHK/yGo+a2WNfecIdn10k4LCF0ZQP6BY=;
-        b=rT7jY0iqsXqzgQ63AZaw3UkDObONjIy3eTw63bLgnlwtv2yATlvdiu8k++b5zpvOue
-         hXGQqJXdHbHnT+UqdI12+iCpv92EolqT9DPYhuSJZWlaXiyVob+YXLW/DQqofLLvWNGk
-         4qIN/SCMIU0gneO+/3QCpIH1N0j72Rq2AINez7VC/PGjmT9DN51CXNUU7O20YfB637vo
-         P68KtDnamQLqiHvKtHxSFmdVluMgRniPlvcINc+/Sju4OWrd8Bxj/cLEB3ZiHpgc11H5
-         zLnFJ7yxbvi1PvHoHBVvC3jDllBb4Zwzm+FsQs8IuXrZH6l10XpN9Y/zkMRVwwNVAbtK
-         wt+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXO6IfC7JPnjVThs9qf3SkOFeOkTVfGeMrN+BKTv6OKOseaFNn6l1a0lWMOME5QiR9Bhq28FVHH2qU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyqtuP6tY2Lh61dPEAUrk8RUgEz6l7BkAH+XxYemyAKD/3O4UiF
-	I2c76OhFMWy+or66g3sEOn0TX2CXKt3gyDtmg5HLiafKaErEWuzpPcIRq2JysKlPYA==
-X-Gm-Gg: ASbGncuPucqT+s8+IT+R16GQlwV2vay6mic+Got7qn2U+eNu0yST5Syk7H5yd0S8H2I
-	022Ll/pY6/yUtRCetlOpY5bo59tVHjQM9LxgXrzNaP7iMO+W7XGgBFd0/w61Cvv2lU016LLQxJS
-	XMjO1iF7rrc3O1z/DJSOqpditgsxHJ4dY574FKUr6OfVhiQuNYjl+lUjXw/DbL8DHo8R8w3BYl2
-	LJ64T8mr95iLyRnYwazFI7f7CpoCNL8eKtI5FKK/qbyF/2G29HInzFStDspqrMJ4knAe4OwNoVz
-	KN1F034ZDRIuJ9Dk399rFJKjRKBKV0mRwmtxTcg=
-X-Google-Smtp-Source: AGHT+IGjV3Owj/psFcjzVPvM9VFKJNnWfEZm8uEKBxHHXqiAiPFsIm4YGOxVQ6kzP8l1RuuuIZsONQ==
-X-Received: by 2002:a05:6512:32c9:b0:542:2137:3a2c with SMTP id 2adb3069b0e04-54221373bbemr1113880e87.24.1734615957673;
-        Thu, 19 Dec 2024 05:45:57 -0800 (PST)
+        bh=Cceao9boJ8KHq53KkU9dHrscV2Tyyc9k4zFaGkhImbo=;
+        b=Xi3jAwlH2lbWmd3VvdOMJP3meWTP+L2G/bpzC3n+/x99J9zAHD9M/mUJFbwavF41Hf
+         /KlrFtLwOQhMg48yQ2ARGUOT/rhYPKIQxhw644GtEjHJCRRa5YTyznMOVuz/Jqlu7eK2
+         Do0zw3SaJz8hleq96PBS8HdOOMnV1qPbtIieE1OH7gLgEqJeaHHwbrIrCPNRattdPKcd
+         5mWKooF1kE1Dnv6uBFGVTo5eCtQBHDeqgKKifkCJ7gHUKyirFHErHbBvR4bLniEHXvgh
+         f4DOPHmE+BY2kQapLi8agBCMnfgQWJUEaxNlgP1ZO0it2G4m9q++TB4QMvkvcRXxdV/v
+         bvWw==
+X-Forwarded-Encrypted: i=1; AJvYcCW29F7Nx37xCsxMb+X6gTNO/J98E0WLxTTX+JmiubUG9H4meuxOFPrTCq8g0Kq9yWLMXUxgTo4JxZ0=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwUzYdOcV8u5WLAUH51KNSeEwFxMpYPsZjW4qqqgHhTsC4C+cL+
+	pXBaEnkHdTh6WLNEIepVjdU9Vi0Po+6ijB2lcCs9+taKqjFC/GlKeq2imK0oKjfOGA==
+X-Gm-Gg: ASbGncsFRGN/xGB5AGYYHnPNtKI+SRR2w19WMxxc+Gx+mVdTDh3r42SceU6/soXAMKb
+	7AgWl/EAJkkh7DectGPAL2R5hJdimMfyzxj7M9aZgXsrJZDKHbbS3/2AE2xl8DiJFCGH0Erq/DI
+	7y6V4zKVFsiH+JzAUNSZs4bMZufjj7L++cN1DnR1nh221ESyfU2FgNNdLnlomYnBgSD9mJ4KMxv
+	EihZl5DxVHA1xzE4Jp5OVgReg5hrIL8zQOhXD8UyILfrF/0MlG/uHr5VnDcUKooW/WKmXru7q6U
+	s4d2txQdscQbgDeXAPa8H88u5sidJZQWXjhZeQ==
+X-Google-Smtp-Source: AGHT+IHyp4KmSvJ/d0MbHOgcWpwDhAzin4rpj8IoWtDyvO8izQ4a2mOPbMFk78822L0gcn0Qxid4NA==
+X-Received: by 2002:a2e:8e86:0:b0:300:27fd:a7cd with SMTP id 38308e7fff4ca-304577ac234mr10842551fa.19.1734616246683;
+        Thu, 19 Dec 2024 05:50:46 -0800 (PST)
 Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54223b28722sm164069e87.243.2024.12.19.05.45.55
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3045ad9bdbfsm2249521fa.45.2024.12.19.05.50.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2024 05:45:56 -0800 (PST)
+        Thu, 19 Dec 2024 05:50:46 -0800 (PST)
 From: Anton Moryakov <ant.v.moryakov@gmail.com>
 To: chengzhihao1@huawei.com,
 	linux-mtd@lists.infradead.org
 Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH mtd-utils] jffsX-utils: fix integer overflow in jffs2dump.c
-Date: Thu, 19 Dec 2024 16:46:12 +0300
-Message-Id: <20241219134612.711532-1-ant.v.moryakov@gmail.com>
+Subject: [PATCH mtd-utils] misc-utils: add missing error handling for 'bam' allocation in ftl_check.c
+Date: Thu, 19 Dec 2024 16:51:03 +0300
+Message-Id: <20241219135103.712032-1-ant.v.moryakov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241219_054600_167755_1AC9DD32 
-X-CRM114-Status: GOOD (  11.65  )
+X-CRM114-CacheID: sfid-20241219_055049_011595_4D09B272 
+X-CRM114-Status: GOOD (  10.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,47 +95,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Report of the static analyzer:
-The value of an arithmetic expression 'datsize + oobsize' is a subject to overflow because its operands are not cast to a larger data type before performing arithmetic.
-
 Corrections explained:
-- Added a check to validate datsize and oobsize to ensure they are non-negative and within a safe range.
-- Cast datsize and oobsize to long before performing arithmetic to prevent potential integer overflow.
+Added robust handling for malloc() failure by checking the returnvalueand providing a clear error message.
 
-This change ensures safe computation of offsets and prevents undefined behavior caused by overflow.
+Triggers found by static analyzer Svace.
 
 Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
----
- jffsX-utils/jffs2dump.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/jffsX-utils/jffs2dump.c b/jffsX-utils/jffs2dump.c
-index 30455ea..5b0e144 100644
---- a/jffsX-utils/jffs2dump.c
-+++ b/jffsX-utils/jffs2dump.c
-@@ -772,6 +772,13 @@ int main(int argc, char **argv)
- 		exit(EXIT_FAILURE);
- 	}
+---
+ misc-utils/ftl_check.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/misc-utils/ftl_check.c b/misc-utils/ftl_check.c
+index 5b2dae5..fe43a24 100644
+--- a/misc-utils/ftl_check.c
++++ b/misc-utils/ftl_check.c
+@@ -120,8 +120,17 @@ static void check_partition(int fd)
  
-+	if (datsize < 0  oobsize < 0  datsize > imglen || (long)datsize + oobsize < 0) {
-+		fprintf(stderr, "Error: invalid datsize/oobsize.\n");
-+		free(data);
-+		close (fd);
-+		exit(EXIT_FAILURE);
+ 	/* Create basic block allocation table for control blocks */
+ 	nbam = (mtd.erasesize >> hdr.BlockSize);
+ 	bam = malloc(nbam * sizeof(u_int));
++	if (!bam) {
++		perror("malloc failed");
++		return;
 +	}
-+
- 	if (datsize && oobsize) {
- 		int  idx = 0;
- 		long len = imglen;
-@@ -783,7 +790,7 @@ int main(int argc, char **argv)
- 			read_nocheck (fd, oob, oobsize);
- 			idx += datsize;
- 			imglen -= oobsize;
--			len -= datsize + oobsize;
-+			len -= (long)datsize + oobsize;
- 		}
- 
- 	} else {
+
+ 	for (i = 0; i < le16_to_cpu(hdr.NumEraseUnits); i++) {
+ 		if (lseek(fd, (i << hdr.EraseUnitSize), SEEK_SET) == -1) {
+ 			perror("seek failed");
 -- 
 2.30.2
 
