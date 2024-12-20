@@ -4,63 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03605E7718A
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Dec 2024 16:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 074E5E7718A
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2024 01:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aAm3j5lIqphzY1QDtVqUQOYyrY8l28aU775jBJoGPuc=; b=DEughNfNQwo+i9
-	LhDRZgVUm3Cj13pbouRk2Z2re8RQKHPjV92KTOlAt6xrMOcIqQ2wFVjVeKAMl7uH2szBvv0IWB6cI
-	ti28TQ56rxOyMgDy1lujc4XP+NSjeFBhZDHRDSQ2GbHTH7GH8i9vXUudUytpixdE15lB6mLd3Ldlf
-	MaHT4TrKFLvxgJ1cgbMomfMdr0XoGkBui6JVsR/IklcfGoPhKTM0e/maSWITRCc5JMdTBHLAVJ5BX
-	hVAmGuLZkWuEJUrihkYKWBbdOjWsSBCr49hHZD8pb4Nqtoo2htLP486mqOQODeWE9QguD+eu1nFAW
-	6Ktcck1ofVebYVp25TVA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=K6V6P5DtGQrBkP59OCtXH06+Iq2ReKdPDKI8EXEYGac=; b=xuM5v8J2y0wHxjquzjYULpIEjW
+	VVslyrdv5vdcvxWDvpudYKAUFLOcImkoUcbJIBJeKyksb6DJzULMBPAC5Wxc8Wklpj5R58VQl5G4a
+	dF6pZBayJ6bhFAeyFBJ75cLzOd+bXaVB/mWSSyBxTwx6S2HMVFJnQdDUYcaJ/+GvSw/jkA5g7kuWi
+	FCkmkYUSQpXWNwwKQ07jSYlr+akLHznm/a6Wv9idqcVGiZX3BYHhRpp50mfL8uUuOhgRYsZQhZybN
+	RW0ystGxL2xcCtPFy+Ki6K8nW4rlZqyCmLk+Rnvx/4LteySxq6BV5YoFzVtOZvaZtT29C4rAW2A03
+	Ky7JeP5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOJBv-00000002JQc-2dj4;
-	Thu, 19 Dec 2024 16:15:59 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1tORY4-00000003YTN-3xHd;
+	Fri, 20 Dec 2024 01:11:24 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOJBt-00000002JOt-2W4n
+	id 1tORXz-00000003YSJ-43TU
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Dec 2024 16:15:58 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E33B6240004;
-	Thu, 19 Dec 2024 16:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1734624953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lRtyNx40vCtDNtySsV71nviUX/3p9WlXOjeSIjpqfOQ=;
-	b=II4qOlaALc7yMtiJWyPXktlkEPN55zLiQ9LLiOx4x8vGaAR3gA/ev7JuZMEoEesP7UaxYU
-	0OQ1HYOKpun/sRIJ+RgCHwRtMUOV13hMjkqwirqV8PrGd9SvVA3hDHPC82ICPRDrDllKSJ
-	NjFMDscIgxuVJoJUTmxT2c7gXAyPO6a+9upZbGWQ6g7R+jVyx+vGArMFK9fNmbikGkpRli
-	RHpeOW64uzK6u78Kzf8Bbp4SICQV1Dk1qgHpyW0nq7fj7kjRbqCNXyWnQLIQGuVFs0f+Hj
-	qHdY5HzBR2XjFobAAfWqrQb5RJxGsni+J17RXMYhxAX/+K5pvJTPximOR2a0Fg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Renjun Wang <renjunw0@foxmail.com>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Richard
- Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: extend description of size member of
- struct flash_info
-In-Reply-To: <4660f0ea-b1d1-46c3-b5ea-efe549c9adf6@linaro.org> (Tudor
-	Ambarus's message of "Thu, 19 Dec 2024 10:01:41 +0000")
-References: <20241219-spi-nor-flash-info-size-desc-v1-1-6b53cf011027@linaro.org>
-	<87r064c8r3.fsf@bootlin.com>
-	<4660f0ea-b1d1-46c3-b5ea-efe549c9adf6@linaro.org>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Thu, 19 Dec 2024 17:15:52 +0100
-Message-ID: <871py3abt3.fsf@bootlin.com>
+	Fri, 20 Dec 2024 01:11:21 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YDq5w3rrzz1V6j3
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2024 09:07:48 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 475CA180A9E
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2024 09:11:05 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 20 Dec 2024 09:11:04 +0800
+Subject: Re: [PATCH mtd-utils] misc-utils: add missing error handling for
+ 'bam' allocation in ftl_check.c
+To: Anton Moryakov <ant.v.moryakov@gmail.com>, <linux-mtd@lists.infradead.org>
+References: <20241219135103.712032-1-ant.v.moryakov@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <938073ca-f4b2-c17f-2d30-5699b1293749@huawei.com>
+Date: Fri, 20 Dec 2024 09:11:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+In-Reply-To: <20241219135103.712032-1-ant.v.moryakov@gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241219_081557_768112_5874D8E4 
-X-CRM114-Status: GOOD (  11.93  )
+X-CRM114-CacheID: sfid-20241219_171120_193211_D1BEEFB1 
+X-CRM114-Status: GOOD (  12.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,49 +65,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 19/12/2024 at 10:01:41 GMT, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
-
-> On 12/19/24 9:38 AM, Miquel Raynal wrote:
->> On 19/12/2024 at 09:20:04 GMT, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->> 
->>> We use the size as an indicator whether to parse SFDP or not. We don't
->>> introduce a dedicated member for SFDP parsing because we'd like to keep
->>> the struct size at a minimum, as it's used for every flash declaration.
->>> Ideally we won't have flash entries at all, but there are still flash
->>> parameters that aren't defined by SFDP, thus we need to statically
->>> specify them.
->> 
->> TBH I'd be perfectly fine (and prefer) a dedicated member, because
->> code clarity is IMO more important than memory footprint today.
->> 
->> However for now I am totally agreeing with changes clarifying what we
->> currently do, so:
->> 
->> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
->> 
->> One minor nit below though:
->> 
->>> + * @size:           the size of the flash in bytes. The flash size is one
->>> + *                  property parsed by the SFDP. We use it as an indicator
->>> + *                  whether we need SFDP parsing for a particular flash.
->>> + *                  I.e. non-legacy flash entries in flash_info will have
->>> + *                  a size of zero iff SFDP should be used.
->> 
->> typo, 'if'                            ^^^
->> 
->
-> iff is a conjunction: if and only if.
->
-> I think Michael used it to emphasize that we don't allow size > 0 when
-> we want SFDP parsing. Using if allows it.
-
-Ah, ok, I didn't know the abbreviation.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xMi8xOSAyMTo1MSwgQW50b24gTW9yeWFrb3Yg0LS1wDoKPiBDb3JyZWN0aW9ucyBl
+eHBsYWluZWQ6Cj4gQWRkZWQgcm9idXN0IGhhbmRsaW5nIGZvciBtYWxsb2MoKSBmYWlsdXJlIGJ5
+IGNoZWNraW5nIHRoZSByZXR1cm52YWx1ZWFuZCBwcm92aWRpbmcgYSBjbGVhciBlcnJvciBtZXNz
+YWdlLgo+IAo+IFRyaWdnZXJzIGZvdW5kIGJ5IHN0YXRpYyBhbmFseXplciBTdmFjZS4KPiAKPiBT
+aWduZWQtb2ZmLWJ5OiBBbnRvbiBNb3J5YWtvdiA8YW50LnYubW9yeWFrb3ZAZ21haWwuY29tPgo+
+IAo+IC0tLQo+ICAgbWlzYy11dGlscy9mdGxfY2hlY2suYyB8IDkgKysrKysrKysrCj4gICAxIGZp
+bGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspCgpSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxj
+aGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiAKPiBkaWZmIC0tZ2l0IGEvbWlzYy11dGlscy9mdGxf
+Y2hlY2suYyBiL21pc2MtdXRpbHMvZnRsX2NoZWNrLmMKPiBpbmRleCA1YjJkYWU1Li5mZTQzYTI0
+IDEwMDY0NAo+IC0tLSBhL21pc2MtdXRpbHMvZnRsX2NoZWNrLmMKPiArKysgYi9taXNjLXV0aWxz
+L2Z0bF9jaGVjay5jCj4gQEAgLTEyMCw4ICsxMjAsMTcgQEAgc3RhdGljIHZvaWQgY2hlY2tfcGFy
+dGl0aW9uKGludCBmZCkKPiAgIAo+ICAgCS8qIENyZWF0ZSBiYXNpYyBibG9jayBhbGxvY2F0aW9u
+IHRhYmxlIGZvciBjb250cm9sIGJsb2NrcyAqLwo+ICAgCW5iYW0gPSAobXRkLmVyYXNlc2l6ZSA+
+PiBoZHIuQmxvY2tTaXplKTsKPiAgIAliYW0gPSBtYWxsb2MobmJhbSAqIHNpemVvZih1X2ludCkp
+Owo+ICsJaWYgKCFiYW0pIHsKPiArCQlwZXJyb3IoIm1hbGxvYyBmYWlsZWQiKTsKPiArCQlyZXR1
+cm47Cj4gKwl9Cj4gCj4gICAJZm9yIChpID0gMDsgaSA8IGxlMTZfdG9fY3B1KGhkci5OdW1FcmFz
+ZVVuaXRzKTsgaSsrKSB7Cj4gICAJCWlmIChsc2VlayhmZCwgKGkgPDwgaGRyLkVyYXNlVW5pdFNp
+emUpLCBTRUVLX1NFVCkgPT0gLTEpIHsKPiAgIAkJCXBlcnJvcigic2VlayBmYWlsZWQiKTsKPiAK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
