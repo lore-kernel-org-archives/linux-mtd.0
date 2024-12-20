@@ -4,56 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84B8BE77184
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2024 01:14:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73174E77188
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2024 08:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MHYflWIYti3KebAheQcoSkj6o+YwRHzIPNgQaOwEgv4=; b=eaQgL9m/3W1s7I9jrTDBYgzlxG
-	CJtA0Sxf0+4TG9xH2lyrDxU4X1DWfJFQrZw2qijrjnLwbjP+o4XIQCkCiJ4fw+PytXBLZSlaAK89P
-	HzVZePKR7gM7kmiMyg7TjXiHhEYrNr9/kae+4uBVpAyNWfWc6Jll24x3ZtJCQN5dLXy6PwKu3/tuQ
-	lrA5nsMXac2hHH2Xfbq9Maug6fn8dyLf6e3ml/JkHcArRdLUkZ4petJ3YhmQoNl3A69X5KORNtuIm
-	bBPx+KdgbTM1ioSFxzShHHke5j+7JUsFmOCA4O7Sko8TiYND4txjM8/6BUo8MSSOye8uigXC5hm/4
-	W5m6wi5w==;
+	bh=CPxgvOna+xc3ynK/DYJpa6feFmykCL2Cylp2AamithI=; b=lm31m9bsXr9hYCzVs22BhYr+4S
+	hqaepLpMhWxvhqj3tUchcIenmFkRZ2z0CxrB3BE0OXQ02qgOn5kzfFV/6RNwNz92R1WJuzG2MLxVZ
+	KMGH0JJjAhRKPnKbDS+oltzpnMUsNvlmW+aaMC/9BlTDCkOKdQWDhyps9CPa9CGcBrV8AyLT4vBCH
+	uK8/uiDxTJ0BO7R5Gvc33yDq2gB9halxvNMknslRw0l4ZhAI7vR4wQeC+kIrbfNENzZS97w3wdTKH
+	nZfMkoWD/jLL4YWBzA7MEGMgF0qBkq1zvRY1jQkZZdJJ/7cLfuZTJHaXIXM5DtKl6SKmOY5CcLQZY
+	V/jRU5KA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tORbC-00000003Yq1-2jqq;
-	Fri, 20 Dec 2024 01:14:38 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1tOYVN-00000004IbO-3E2h;
+	Fri, 20 Dec 2024 08:37:05 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tORbA-00000003YpB-09Uj
+	id 1tOYVL-00000004Iaz-2fVT
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Dec 2024 01:14:37 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4YDqFC4hhYz1JFfF
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2024 09:14:07 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 135F51400D3
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2024 09:14:32 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 20 Dec 2024 09:14:31 +0800
-Subject: Re: [PATCH mtd-utils] jffsX-utils: fix integer overflow in
- jffs2dump.c
-To: Anton Moryakov <ant.v.moryakov@gmail.com>, <linux-mtd@lists.infradead.org>
-References: <20241219134612.711532-1-ant.v.moryakov@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <395627be-0d5c-469e-262a-1a7454be7fd8@huawei.com>
-Date: Fri, 20 Dec 2024 09:14:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20241219134612.711532-1-ant.v.moryakov@gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+	Fri, 20 Dec 2024 08:37:04 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6EAA75C6290;
+	Fri, 20 Dec 2024 08:36:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95713C4CECD;
+	Fri, 20 Dec 2024 08:37:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734683822;
+	bh=BkX95TYDCyyX7sv338gZ7D8c9yqGQLujsjZfJ3LfLhU=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=Rec4aioG1lrjE1V03jcufHkmWsp/1cjwqHyxu7DM4FyzNWsp0xMaLdQ6hcUE68GtD
+	 Y4D4MLywq65d78JuzCKDrEnM+LF2MuBYtgjZJQayqf+jJJTT5KbYujQ9lxomn4f+63
+	 c7MpVm1+NYtUjkdHkU/f8IAkOBaYZxh2Va08xD5v23We60UV95HItZtzKCFi0N7OtS
+	 kvtkzWAEsX/C3auALWlzvjLJyfmgvzV9w0Bh8mRvcGtaEsywFYvSJlT3OFsGJWx9QW
+	 Ekq4yYbJwMVS7IIKLdqRHstD5Mt8LallUIs3657/uNJyqbjSTAAMYa+sgbuExey1Gl
+	 SIFcfLKwgB5QA==
+Date: Fri, 20 Dec 2024 09:36:57 +0100
+Message-Id: <D6GE3CD5XK5F.35VL454SBGOID@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: extend description of size member of
+ struct flash_info
+Cc: "Renjun Wang" <renjunw0@foxmail.com>, "Pratyush Yadav"
+ <pratyush@kernel.org>, "Richard Weinberger" <richard@nod.at>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>
+X-Mailer: aerc 0.16.0
+References: <20241219-spi-nor-flash-info-size-desc-v1-1-6b53cf011027@linaro.org> <87r064c8r3.fsf@bootlin.com> <4660f0ea-b1d1-46c3-b5ea-efe549c9adf6@linaro.org> <871py3abt3.fsf@bootlin.com>
+In-Reply-To: <871py3abt3.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241219_171436_246224_57196BA3 
-X-CRM114-Status: GOOD (  15.38  )
+X-CRM114-CacheID: sfid-20241220_003703_765908_F650466D 
+X-CRM114-Status: GOOD (  16.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,40 +70,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0899632852567295307=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8xMi8xOSAyMTo0NiwgQW50b24gTW9yeWFrb3Yg0LS1wDoKPiBSZXBvcnQgb2YgdGhl
-IHN0YXRpYyBhbmFseXplcjoKPiBUaGUgdmFsdWUgb2YgYW4gYXJpdGhtZXRpYyBleHByZXNzaW9u
-ICdkYXRzaXplICsgb29ic2l6ZScgaXMgYSBzdWJqZWN0IHRvIG92ZXJmbG93IGJlY2F1c2UgaXRz
-IG9wZXJhbmRzIGFyZSBub3QgY2FzdCB0byBhIGxhcmdlciBkYXRhIHR5cGUgYmVmb3JlIHBlcmZv
-cm1pbmcgYXJpdGhtZXRpYy4KPiAKPiBDb3JyZWN0aW9ucyBleHBsYWluZWQ6Cj4gLSBBZGRlZCBh
-IGNoZWNrIHRvIHZhbGlkYXRlIGRhdHNpemUgYW5kIG9vYnNpemUgdG8gZW5zdXJlIHRoZXkgYXJl
-IG5vbi1uZWdhdGl2ZSBhbmQgd2l0aGluIGEgc2FmZSByYW5nZS4KPiAtIENhc3QgZGF0c2l6ZSBh
-bmQgb29ic2l6ZSB0byBsb25nIGJlZm9yZSBwZXJmb3JtaW5nIGFyaXRobWV0aWMgdG8gcHJldmVu
-dCBwb3RlbnRpYWwgaW50ZWdlciBvdmVyZmxvdy4KPiAKPiBUaGlzIGNoYW5nZSBlbnN1cmVzIHNh
-ZmUgY29tcHV0YXRpb24gb2Ygb2Zmc2V0cyBhbmQgcHJldmVudHMgdW5kZWZpbmVkIGJlaGF2aW9y
-IGNhdXNlZCBieSBvdmVyZmxvdy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBBbnRvbiBNb3J5YWtvdiA8
-YW50LnYubW9yeWFrb3ZAZ21haWwuY29tPgo+IC0tLQo+ICAgamZmc1gtdXRpbHMvamZmczJkdW1w
-LmMgfCA5ICsrKysrKysrLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbigtKQo+IAo+IGRpZmYgLS1naXQgYS9qZmZzWC11dGlscy9qZmZzMmR1bXAuYyBiL2pm
-ZnNYLXV0aWxzL2pmZnMyZHVtcC5jCj4gaW5kZXggMzA0NTVlYS4uNWIwZTE0NCAxMDA2NDQKPiAt
-LS0gYS9qZmZzWC11dGlscy9qZmZzMmR1bXAuYwo+ICsrKyBiL2pmZnNYLXV0aWxzL2pmZnMyZHVt
-cC5jCj4gQEAgLTc3Miw2ICs3NzIsMTMgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiphcmd2
-KQo+ICAgCQlleGl0KEVYSVRfRkFJTFVSRSk7Cj4gICAJfQo+ICAgCj4gKwlpZiAoZGF0c2l6ZSA8
-IDAgIG9vYnNpemUgPCAwICBkYXRzaXplID4gaW1nbGVuIHx8IChsb25nKWRhdHNpemUgKyBvb2Jz
-aXplIDwgMCkgewoKSXQgbWFrZXMgY29tcGlsaW5nIGZhaWxlZCwgcGxlYXNlIGRvIHRoZSBiYXNp
-YyB0ZXN0cyBiZWZvcmUgc2VuZGluZyAKcGF0Y2hlcyBvdXQuCj4gKwkJZnByaW50ZihzdGRlcnIs
-ICJFcnJvcjogaW52YWxpZCBkYXRzaXplL29vYnNpemUuXG4iKTsKPiArCQlmcmVlKGRhdGEpOwo+
-ICsJCWNsb3NlIChmZCk7Cj4gKwkJZXhpdChFWElUX0ZBSUxVUkUpOwo+ICsJfQo+ICsKPiAgIAlp
-ZiAoZGF0c2l6ZSAmJiBvb2JzaXplKSB7Cj4gICAJCWludCAgaWR4ID0gMDsKPiAgIAkJbG9uZyBs
-ZW4gPSBpbWdsZW47Cj4gQEAgLTc4Myw3ICs3OTAsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hh
-ciAqKmFyZ3YpCj4gICAJCQlyZWFkX25vY2hlY2sgKGZkLCBvb2IsIG9vYnNpemUpOwo+ICAgCQkJ
-aWR4ICs9IGRhdHNpemU7Cj4gICAJCQlpbWdsZW4gLT0gb29ic2l6ZTsKPiAtCQkJbGVuIC09IGRh
-dHNpemUgKyBvb2JzaXplOwo+ICsJCQlsZW4gLT0gKGxvbmcpZGF0c2l6ZSArIG9vYnNpemU7Cj4g
-ICAJCX0KPiAgIAo+ICAgCX0gZWxzZSB7Cj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+--===============0899632852567295307==
+Content-Type: multipart/signed;
+ boundary=da44abc2be6c1d6e7d8f71c66994cb41bf94892202f579c1ba3c7c7fa137;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--da44abc2be6c1d6e7d8f71c66994cb41bf94892202f579c1ba3c7c7fa137
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+On Thu Dec 19, 2024 at 5:15 PM CET, Miquel Raynal wrote:
+> On 19/12/2024 at 10:01:41 GMT, Tudor Ambarus <tudor.ambarus@linaro.org> w=
+rote:
+>
+> > On 12/19/24 9:38 AM, Miquel Raynal wrote:
+> >> On 19/12/2024 at 09:20:04 GMT, Tudor Ambarus <tudor.ambarus@linaro.org=
+> wrote:
+> >>=20
+> >>> We use the size as an indicator whether to parse SFDP or not. We don'=
+t
+> >>> introduce a dedicated member for SFDP parsing because we'd like to ke=
+ep
+> >>> the struct size at a minimum, as it's used for every flash declaratio=
+n.
+> >>> Ideally we won't have flash entries at all, but there are still flash
+> >>> parameters that aren't defined by SFDP, thus we need to statically
+> >>> specify them.
+
+Thanks!
+
+Reviewed-by: Michael Walle <mwalle@kernel.org>
+
+> >>=20
+> >> TBH I'd be perfectly fine (and prefer) a dedicated member, because
+> >> code clarity is IMO more important than memory footprint today.
+
+But that would have meant more code churn, because the default
+should be the new method. Thus we'd have to change all the old
+entries.
+
+> >> However for now I am totally agreeing with changes clarifying what we
+> >> currently do, so:
+> >>=20
+> >> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >>=20
+> >> One minor nit below though:
+> >>=20
+> >>> + * @size:           the size of the flash in bytes. The flash size i=
+s one
+> >>> + *                  property parsed by the SFDP. We use it as an ind=
+icator
+> >>> + *                  whether we need SFDP parsing for a particular fl=
+ash.
+> >>> + *                  I.e. non-legacy flash entries in flash_info will=
+ have
+> >>> + *                  a size of zero iff SFDP should be used.
+> >>=20
+> >> typo, 'if'                            ^^^
+> >>=20
+> >
+> > iff is a conjunction: if and only if.
+> >
+> > I think Michael used it to emphasize that we don't allow size > 0 when
+> > we want SFDP parsing. Using if allows it.
+
+Yep :)
+
+> Ah, ok, I didn't know the abbreviation.
+
+-michael
+
+--da44abc2be6c1d6e7d8f71c66994cb41bf94892202f579c1ba3c7c7fa137
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZ2UsqRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/jsNgF/fNF094kMFQNJF/dJLiIArmtC158mXfOz
+2aaeOhwlNLoT+OMqcVN7VBlGmZpETreKAX0Wc83W3EtoJWQMGKDfCvzXfhMEUwFS
+DI8QgEyd+sgSu/xoCv0VVRFExdPMQQ6K7gw=
+=nx6t
+-----END PGP SIGNATURE-----
+
+--da44abc2be6c1d6e7d8f71c66994cb41bf94892202f579c1ba3c7c7fa137--
+
+
+--===============0899632852567295307==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0899632852567295307==--
+
