@@ -4,105 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27DA0E7718D
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Dec 2024 17:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F0F7E7718D
+	for <linux-mtd@archiver.kernel.org>; Sun, 22 Dec 2024 20:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vJEOA/Yh/gFltnyGD3COOb5SBIwIKyOM967sGL29Kuc=; b=dFZz0c/09xENuL
-	nOm7I59rUNrf/Ok4fTopUst6xHFV5wKYd7wA/yXz3qrS5e3DoXKKv8A5mM/mfWZdQ71idvOwGPGBy
-	XfG61PmmUEnEj+ofHTw4vnDXeAHyykq9BwT84YX/O21mAeLqXQ6HLW8VwcA1SE2ZiECZM3H99Wvhn
-	jR1lBmDjJmu+U96Naimi53Ir68eCwugWPttmqq+a8zjRfzaJoe+TJ5EJbU2GlCsjq87JN0TTbsnVc
-	bKc17NSGhTI/xuONuAqd3SMoWIfthZhxaZCRUEck6mMv0mwsZ5d2HRTT5WzMQIBkFP8f6GUkn4E8h
-	cXVY5hDIvV4WOw5xdg4w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=hhaAVIibb9y+bP7zPg5Y2BUHhgK5YkwPkq5eF/ukNZ0=; b=g3xjMmg91dOdOt
+	3fBsSGeN/66yKeZTM6Y93iEpSHWLu6ryKNPHb/sDc4AYWQ1yERWRv+TO2Ykjbdu9ZEsyFbe0Oo130
+	WPZS3u1T/Moh6gla7/jm6l8zxQWZ5pvvcjZXJaSz2OhUCJemTUM0z7o5J2kumia7pHutjTS6j6OfK
+	C70oLS+ncu/JWYVOeQsdllNmT3lWlYEUHkHwaIzhobhGO7+Sumufu+xTiiCKWlpLKaE0LxAHJAt6n
+	xXsxeQ1+OcE/p8tO3XnLEY9/0zVji9skoBJpZyTqte9p9nyBn7pJmT/BI5ugtiB5l/zinqgyqf9VP
+	E8uMt1aSAFm1dmzUoWwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOhCS-00000005hyd-2VQj;
-	Fri, 20 Dec 2024 17:54:08 +0000
-Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
+	id 1tPSMy-00000008nXt-3Fnv;
+	Sun, 22 Dec 2024 20:16:08 +0000
+Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOgmq-00000005dfS-0TNU
+	id 1tPSMt-00000008nWc-3PRJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Dec 2024 17:27:41 +0000
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3862d16b4f5so1519565f8f.0
-        for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2024 09:27:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1734715658; x=1735320458; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rl2GUGW1SKIB73yuGvAyVPoBfBy5XbBiVj4hV5yN+VI=;
-        b=YaRuT7os9DhiF+kHJ4rEsgIpuNRe8MGzXB7t2AM3Xjv/omXh6nwbdbvRMW1no4mz8f
-         DSLFlEHL0DTgOnS4K43JB1uivBHNuUqP8QyXsRtPBZZdW+GrC31KrfyA/y9+LQi7mtoM
-         nbOlbvIu2crQFseOFjZJioSH4RnOx1wFbyUR5lKoyrVHST660PbKHZgycQAaJ5bWazqm
-         +UEa7q0zqG8LTrBAqn3noNrVlF2hGPTAjGrW3bGQ3MXTR+HnApxJyplAleN7595/YwXE
-         uCoeiHe/SPAeFZ2QYYy0STFZDW650hr6B+XHYVkT4KrzkA5FijIaJLW0wnEKuoRXyvFP
-         WDTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734715658; x=1735320458;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rl2GUGW1SKIB73yuGvAyVPoBfBy5XbBiVj4hV5yN+VI=;
-        b=tH/strR20hYeIkS4KjMNOPhTC2aPNAkqDLj70Mu67a5/14Ln+Y+p/TTe4pPOlTlxM+
-         G/xyIM3x+NJ78v2UfCdtiMfIvsxLQ1TPUCoZ0c7zl30x7QSAPaLxgLa1Zj5MNLm9Ty3s
-         qTGyg/+Uc6CE6sv+kwo+VYsyU2FnGlQWe8/sSdPOnk5ho3QClA30pLTQutFXCt9WfDbs
-         cHQer/qq8dTXQHNir6jT/Rw9fOlhNeSGIMD3wttbOOTc0btRbfKfajWHfW32cG+NMd32
-         jsmzN3YlLrD0m3nsvhc3yAsAK8xmb+DIo2i/ZEisOAArmHjujxCX9U6FFQ03LUwuE6WB
-         rJiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZq9DyVB2QPkcf3LOyhh9gvvyCT7wx9TMigMEb++UN7ij47OxR4USfIIMxgbXcccRbOleEWpa0KBs=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxRAgPE5FR148PLmoUGEFdjR+OvKDZR1rZomyUgC+ogIymU4A3m
-	xvd5aCLa9V0DtL9B/Rimj+5QykxEGMfxJKOfutQc6+sXww7aTP92SBabXotTDdQ=
-X-Gm-Gg: ASbGncsj6ebsaUNq8tYoUppchpnqFk/CitosZp+7NH6eQ77TsHinRyfQ+noVE/hcLmf
-	UCvI/1EJVq1WDgj8K+V2OVvPlnzqPyo1ng4HLQ88/hQXvxZdlQ/TqLycKwmDnlFPcat9pBaXoNr
-	8oMAh1VS6Kf2e3tj1n76XLJasZa3NlU5BVQlCWja1qSPoe+JZbJvBNVlFjj6UDxyqYH0qG7/ldv
-	btXOlxdhhiKxHJDmEDsENR9+ZmKcMyxJb+e/4nbpUaBMIr+lGulU6bR7f0oUdrDULDN7E8Nn2M=
-X-Google-Smtp-Source: AGHT+IHQofl14bIpVpiQqz6qAEwAjKsEmWVjRCOjis6wH9jKfvKMjWLHCbYlsDgmYPDOjR7ci+Y7xw==
-X-Received: by 2002:a5d:47c3:0:b0:388:cacf:24b0 with SMTP id ffacd0b85a97d-38a1a1f7253mr6745803f8f.2.1734715658179;
-        Fri, 20 Dec 2024 09:27:38 -0800 (PST)
-Received: from [192.168.68.114] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c89e357sm4642915f8f.72.2024.12.20.09.27.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2024 09:27:37 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: linux-gpio@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>
-Cc: kernel-janitors@vger.kernel.org, audit@vger.kernel.org, 
- linux-mtd@lists.infradead.org, Zhihao Cheng <chengzhihao1@huawei.com>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, linux-arm-msm@vger.kernel.org, 
- linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- linux-usb@vger.kernel.org, linux-mm@kvack.org, 
- maple-tree@lists.infradead.org, alsa-devel@alsa-project.org, 
- Sanyog Kale <sanyog.r.kale@intel.com>, 
- Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>, dccp@vger.kernel.org, 
- linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>, 
- drbd-dev@lists.linbit.com, linux-sound@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, 
- nvdimm@lists.linux.dev, linux-leds@vger.kernel.org, 
- Nicholas Piggin <npiggin@gmail.com>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- Naveen N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- linuxppc-dev@lists.ozlabs.org, tipc-discussion@lists.sourceforge.net, 
- Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- linux-trace-kernel@vger.kernel.org, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>, linux-nfs@vger.kernel.org, 
- amd-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org, 
- intel-wired-lan@lists.osuosl.org
-In-Reply-To: <20240930112121.95324-1-Julia.Lawall@inria.fr>
-References: <20240930112121.95324-1-Julia.Lawall@inria.fr>
-Subject: Re: (subset) [PATCH 00/35] Reorganize kerneldoc parameter names
-Message-Id: <173471565665.227782.7244101246430956449.b4-ty@linaro.org>
-Date: Fri, 20 Dec 2024 17:27:36 +0000
+	Sun, 22 Dec 2024 20:16:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1734898557;
+	bh=sV2dAgXG1UmFsR97Dpvx/evkTywnSxm2+4SY45GAZD4=;
+	h=From:Date:Subject:To:Cc:From;
+	b=ZND1VkQm8UEGnD3BcUtYyGBt7FZoi8U5H/XbI57noh97GayMNl4W32fJNSUdTIq38
+	 RFoPrreoRbmnEkOYGX4yL5zQSNYCzXnlBetVT+5paUI/MLs+i+Hm33ez6E1udBkzTo
+	 sd0S0Z3W5u0ksPvYj5T/NsbEk7KH9PMa9xOPQcEI=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Sun, 22 Dec 2024 21:15:55 +0100
+Subject: [PATCH] mtd: spi-nor: sysfs: constify 'struct bin_attribute'
 MIME-Version: 1.0
-X-Mailer: b4 0.12.2
+Message-Id: <20241222-sysfs-const-bin_attr-mtd-v1-1-ee13140a4e9b@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAHpzaGcC/x3MQQqEMAxA0atI1gba6EavMohUm2oW1qEpooh3t
+ 7h8i/9vUE7CCn11Q+JDVPZYYOsK5tXFhVF8MZCh1hIR6qVBcd6jZpwkji7nhFv2GBpjO+MpUOu
+ g5P/EQc5v/Rue5wWN0bliagAAAA==
+X-Change-ID: 20241222-sysfs-const-bin_attr-mtd-f30190d2f24a
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1734898556; l=1907;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=sV2dAgXG1UmFsR97Dpvx/evkTywnSxm2+4SY45GAZD4=;
+ b=NeBYVYMxdhp/PGM3CVSoOGt4KFfQ7d8zsAJRXmS2FSRFhaAZQhpkHbRfTvX/lVEso8p7SfjGO
+ p5bA387wgfFBU7c/jm3jfvYb6LF7PRamtqnrVd26/b8vh0/Nj1yvLWw
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241220_092740_206854_477890BE 
-X-CRM114-Status: UNSURE (   7.11  )
+X-CRM114-CacheID: sfid-20241222_121604_032190_A46EEF86 
+X-CRM114-Status: UNSURE (   8.70  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -115,35 +72,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Mon, 30 Sep 2024 13:20:46 +0200, Julia Lawall wrote:
-> Reorganize kerneldoc parameter names to match the parameter
-> order in the function header.
-> 
-> The misordered cases were identified using the following
-> Coccinelle semantic patch:
-> 
-> // <smpl>
-> @initialize:ocaml@
-> @@
-> 
-> [...]
-
-Applied, thanks!
-
-[31/35] slimbus: messaging: Reorganize kerneldoc parameter names
-        commit: 52d3d7f7a77ee9afc6a846b415790e13e1434847
-
-Best regards,
--- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhlIHN5c2ZzIGNvcmUgbm93IGFsbG93cyBpbnN0YW5jZXMgb2YgJ3N0cnVjdCBiaW5fYXR0cmli
+dXRlJyB0byBiZQptb3ZlZCBpbnRvIHJlYWQtb25seSBtZW1vcnkuIE1ha2UgdXNlIG9mIHRoYXQg
+dG8gcHJvdGVjdCB0aGVtIGFnYWluc3QKYWNjaWRlbnRhbCBvciBtYWxpY2lvdXMgbW9kaWZpY2F0
+aW9ucy4KClNpZ25lZC1vZmYtYnk6IFRob21hcyBXZWnDn3NjaHVoIDxsaW51eEB3ZWlzc3NjaHVo
+Lm5ldD4KLS0tCiBkcml2ZXJzL210ZC9zcGktbm9yL3N5c2ZzLmMgfCA4ICsrKystLS0tCiAxIGZp
+bGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3lzZnMuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3lzZnMu
+YwppbmRleCA1ZTllYjI2ODA3M2QxOGUwYTQ2MDg5MDAwZjE4YTMyMDBiNGJmMTNkLi40ZjEyZmY3
+NTVkZjA2Y2VlMDQxMjVlZmQ1MDM2MjQ1YzUxYjQ5YWY0IDEwMDY0NAotLS0gYS9kcml2ZXJzL210
+ZC9zcGktbm9yL3N5c2ZzLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zeXNmcy5jCkBAIC01
+MCw3ICs1MCw3IEBAIHN0YXRpYyBzdHJ1Y3QgYXR0cmlidXRlICpzcGlfbm9yX3N5c2ZzX2VudHJp
+ZXNbXSA9IHsKIH07CiAKIHN0YXRpYyBzc2l6ZV90IHNmZHBfcmVhZChzdHJ1Y3QgZmlsZSAqZmls
+cCwgc3RydWN0IGtvYmplY3QgKmtvYmosCi0JCQkgc3RydWN0IGJpbl9hdHRyaWJ1dGUgKmJpbl9h
+dHRyLCBjaGFyICpidWYsCisJCQkgY29uc3Qgc3RydWN0IGJpbl9hdHRyaWJ1dGUgKmJpbl9hdHRy
+LCBjaGFyICpidWYsCiAJCQkgbG9mZl90IG9mZiwgc2l6ZV90IGNvdW50KQogewogCXN0cnVjdCBz
+cGlfZGV2aWNlICpzcGkgPSB0b19zcGlfZGV2aWNlKGtvYmpfdG9fZGV2KGtvYmopKTsKQEAgLTYy
+LDkgKzYyLDkgQEAgc3RhdGljIHNzaXplX3Qgc2ZkcF9yZWFkKHN0cnVjdCBmaWxlICpmaWxwLCBz
+dHJ1Y3Qga29iamVjdCAqa29iaiwKIAlyZXR1cm4gbWVtb3J5X3JlYWRfZnJvbV9idWZmZXIoYnVm
+LCBjb3VudCwgJm9mZiwgbm9yLT5zZmRwLT5kd29yZHMsCiAJCQkJICAgICAgIHNmZHBfc2l6ZSk7
+CiB9Ci1zdGF0aWMgQklOX0FUVFJfUk8oc2ZkcCwgMCk7CitzdGF0aWMgY29uc3QgQklOX0FUVFJf
+Uk8oc2ZkcCwgMCk7CiAKLXN0YXRpYyBzdHJ1Y3QgYmluX2F0dHJpYnV0ZSAqc3BpX25vcl9zeXNm
+c19iaW5fZW50cmllc1tdID0geworc3RhdGljIGNvbnN0IHN0cnVjdCBiaW5fYXR0cmlidXRlICpj
+b25zdCBzcGlfbm9yX3N5c2ZzX2Jpbl9lbnRyaWVzW10gPSB7CiAJJmJpbl9hdHRyX3NmZHAsCiAJ
+TlVMTAogfTsKQEAgLTEwNCw3ICsxMDQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0dHJpYnV0
+ZV9ncm91cCBzcGlfbm9yX3N5c2ZzX2dyb3VwID0gewogCS5pc192aXNpYmxlCT0gc3BpX25vcl9z
+eXNmc19pc192aXNpYmxlLAogCS5pc19iaW5fdmlzaWJsZQk9IHNwaV9ub3Jfc3lzZnNfaXNfYmlu
+X3Zpc2libGUsCiAJLmF0dHJzCQk9IHNwaV9ub3Jfc3lzZnNfZW50cmllcywKLQkuYmluX2F0dHJz
+CT0gc3BpX25vcl9zeXNmc19iaW5fZW50cmllcywKKwkuYmluX2F0dHJzX25ldwk9IHNwaV9ub3Jf
+c3lzZnNfYmluX2VudHJpZXMsCiB9OwogCiBjb25zdCBzdHJ1Y3QgYXR0cmlidXRlX2dyb3VwICpz
+cGlfbm9yX3N5c2ZzX2dyb3Vwc1tdID0gewoKLS0tCmJhc2UtY29tbWl0OiBiY2RlOTVjZTMyYjY2
+NjQ3OGQ2NzM3MjE5Y2FhNGY4MDA1YThmMjAxCmNoYW5nZS1pZDogMjAyNDEyMjItc3lzZnMtY29u
+c3QtYmluX2F0dHItbXRkLWYzMDE5MGQyZjI0YQoKQmVzdCByZWdhcmRzLAotLSAKVGhvbWFzIFdl
+acOfc2NodWggPGxpbnV4QHdlaXNzc2NodWgubmV0PgoKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
