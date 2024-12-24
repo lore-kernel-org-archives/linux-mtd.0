@@ -4,92 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54A53E77188
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Dec 2024 11:53:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 292FDE77188
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Dec 2024 12:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8fedWIPgQWSD/NrItD2NyYSsoXbBzceTLOMuD3HS8Ps=; b=Lej0wSPkYs+uQQ
-	VfBkRhAb1qDEU9VMVy0rdhKdN+uafp1AYTXX9QUUwfyCIvJUJBG3yzx6wdTTbQNpzLt3F88HcKm7T
-	8SJnGWtkjn2FMnlxbdXfp8Az0PbX8T2SMhAkEgiPdMnBXZwUMFJx/ISlaYzJBb7AKbVc8ZiXZLtrp
-	WMADG6d4sq81lHrLOEmtcLsgsnf0eMd+0xWFi8yRsfl03WDjnctRIa+ZXo9z/72cthJ3TPJeLw2VK
-	EA5dO4fM2b62XT2ahuE2o9QeCsUiZy0oSvOV+xusZc2KU3hV5qUygGeb3fQMrfjOqBQQKJAsW8S8T
-	4wN84ZiTbdIxVkEaFHGg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=f+6nEaIOHH5ZhkUf27bQbnqMnVsoA8OzmABOROHAKno=; b=XYfbZH1HErO0vY
+	rI98q2lQPo9L0SFf9UtJOTfikKKTnqfCjUmfq3c0nDPhN2F36zeYp9j14j2WKZn10md/0Fy4HF3bz
+	u2D3J87jNqjMp33huf/UhjoLN9uHi1me3UNEiwYLEkuljMgS4EgZwWCmYUus3+V3Aj6gnkii1zEPQ
+	S3Nf1xiFVqqzHJXEXe1H/3QedzFNKsizgy5CPmlDjJJ5fCt+PEzD6OYRL2BLBWgjxrPkTvpWYXm0K
+	FbEaxar6B9nW4ldRxLya/nT7ava21K34EFJtPZ0YDlECa3pqzhptfvzJU/4QKHiTgF5+OtYsepC0s
+	OuUFW0/bv3kxwVoX4qqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQ3Ty-0000000Btxm-1l7B;
-	Tue, 24 Dec 2024 11:53:50 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1tQ3zz-0000000BwTx-2Rv6;
+	Tue, 24 Dec 2024 12:26:55 +0000
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQ3Tw-0000000Btwd-1tJv
+	id 1tQ3zx-0000000BwTM-0XMv
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Dec 2024 11:53:49 +0000
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BO9ZaUt007862;
-	Tue, 24 Dec 2024 11:53:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	uDg6oN1OyIP9bHy27NdtIJIUQEneZnd+hcIOiawXXNY=; b=TQW8oe/1A3AZJJ0d
-	3BIMNw2tn3kQ3oobMhcO6AlR8mkZPyu/tStlws24gw7hioJTgxUA6cvQv9mjnqLf
-	MlfvzZbBAk8VajbDaJ0SvJh6WFnHatcBshaqKx+/E0QgGHuKdehFhNdPBobRTEDx
-	z67GYU0RifjwLo2GGMUvXZ5YfY0nHufns2pzr6q3/bjVlyYMnXsKLLk06xakOoXN
-	d30yPflxBrR6DTZVZvYg3Y3tkhjKWsNv7kXZcNhK3xE8Sfkn8t0xCOGVfZXB+ihC
-	NFEZKdHOj7O6pESK8BKlitYP7UWYuDdsXSdizwxPdNL2t7DZEpFp8mseOUMiBXqf
-	EM9ZCA==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 43qtf88qrp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 24 Dec 2024 11:53:42 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4BOBrf22012651
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 24 Dec 2024 11:53:41 GMT
-Received: from [10.151.36.43] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 24 Dec
- 2024 03:53:34 -0800
-Message-ID: <ff9ed09b-61ca-52c5-a0a1-4102f35b0849@quicinc.com>
-Date: Tue, 24 Dec 2024 17:23:31 +0530
+	Tue, 24 Dec 2024 12:26:54 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-5401d3ea5a1so5271199e87.3
+        for <linux-mtd@lists.infradead.org>; Tue, 24 Dec 2024 04:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735043210; x=1735648010; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nzbjmq3vzSNrFS01hdXsBhJh+8X9kQ+6kCKkB2II2rQ=;
+        b=RwjoHIG+nYkgcXdqxKTYYhj2iFhVsp533RyI2XTP9YJBQo6/tkIMnc6yw21rFEe/H9
+         Am9S3pPrnoOCJV3z8pzPW/TpD8tkKy9xZ5Eo1icnaqhPpkPyIFLdR5sAyMB62wabqEVG
+         +rLnszexHkThrMNn2Wqi+2hmxN6eQEQz2R21Zn93Uc25FwaPXkt48e6obHy12A4ePLGz
+         qmtyafvC8w/Kqtt/BZNiNy7QUE3dDNbxlVaB4oTF+slMaPAO1PIKKlcfT7E0C2bZeO+P
+         6esIIpoAYgjjcLlvHpValGini6LcQePBx0iINQyDY3vEznh4S2xGIifBuXtv1UavPDG3
+         bogw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735043210; x=1735648010;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nzbjmq3vzSNrFS01hdXsBhJh+8X9kQ+6kCKkB2II2rQ=;
+        b=RMIqtXQjNAA9JGAi8HCBvp4ycZR2hokqRLSQ3cbOciVpFm2Tkaaf9n8+JOgDhpxPnK
+         5tIT+qeYXRpsZH/hgN8cgwrkXsq+a2tQPRLYt2uoOCdHjkh37trE4b2/w3fmggS5veat
+         jPzXJUJqeKUy6mm1L+NPLdv8+Jc7R7r/MbXMysLEHX2Uq7CGifOLZGHQ0gWX3AVmww1H
+         esSQ6nEKpmczU0yAmP6MNVXokrdILPc8PGaoP54wXFZvrbkc9m288CzC49lBimPI7Wkl
+         C0ei2Gqi5phSJ9KiSFDU5UwTq7U896UqoAd/Agy8dkRTg98Ny8XkaoanKMu8RQ/RMOHj
+         icGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVbiaHFeQoz0G/gQ9zn20uuAoQU7nIbQIFxkpxvBaCtQ54T3m5V4kcBdgS9FUCd07AbckOQ3PJ5ccQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yyg47BlZhf8sVGsN0OQWw6oTHpVxmWlMpJVtIyRQ6mi3quR51II
+	RdStkCMHrLa2bsJ32DHcpqIYFDL+AzsfTNovnZGwUzTLnSwwrtNM1zv2yfAK
+X-Gm-Gg: ASbGncvnpYlybtF6sUB/ZScFIFJRIunqgGxz2tMZsbhiDPJU8w3aaG7Y2XnQFK0573a
+	di2j5AlPARCyYMTYs8UVX3CBNTtkPXIXtikP/KSuhoVrRdwJ98jB7xyU6PZUtizo+VecKM3Ol9O
+	hGE2aBa/mCkWZpVY84KQJLlgWxbNs9SjJxXsuvuprPgXezvV45dfgvLvAppx5ythGZFh7aUYHaz
+	cKgaSE9noYA9Sb13p/hjXCssPVJXUDBLWzpd20B+9uB24jKzZ8a3dbdAulp3mDz7uPfTeb2Et2o
+	8XhmIRHLvVlk0sUZOmrxi64xQKMH3ErpP338GXM=
+X-Google-Smtp-Source: AGHT+IFz9gc+CnTg2Kk1MFIivZxidZF5iRnp+aTCfEWvZNB2hZNMH1xvboH90NqaPYE5SJlep/talA==
+X-Received: by 2002:a05:6512:438c:b0:542:2990:84ab with SMTP id 2adb3069b0e04-54229908932mr5314305e87.20.1735043210233;
+        Tue, 24 Dec 2024 04:26:50 -0800 (PST)
+Received: from astra-student.rasu.local (109-252-122-202.nat.spd-mgts.ru. [109.252.122.202])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-542235f6509sm1562583e87.25.2024.12.24.04.26.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Dec 2024 04:26:48 -0800 (PST)
+From: Anton Moryakov <ant.v.moryakov@gmail.com>
+To: chengzhihao1@huawei.com,
+	linux-mtd@lists.infradead.org
+Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
+Subject: [PATCH mtd-utils] jffsX-utils: fix integer overflow in jffs2dump.c
+Date: Tue, 24 Dec 2024 15:27:09 +0300
+Message-Id: <20241224122709.39295-1-ant.v.moryakov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v2 0/3] QPIC v2 fixes for SDX75
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, <richard@nod.at>,
-        <vigneshr@ti.com>, <bbrezillon@kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>, <quic_nainmeht@quicinc.com>,
-        <quic_laksd@quicinc.com>
-References: <20241122085933.2663927-1-quic_mdalam@quicinc.com>
- <20241220093029.z4zsr3owdnqll2vg@thinkpad>
- <18af7a68-42a3-6a82-c1b1-38ba8b06ed78@quicinc.com>
- <87seqdpknc.fsf@bootlin.com>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <87seqdpknc.fsf@bootlin.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KAAU4yjnbnd7btV7HVK5Lf6Ssspd1fq8
-X-Proofpoint-ORIG-GUID: KAAU4yjnbnd7btV7HVK5Lf6Ssspd1fq8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- phishscore=0 mlxscore=0 suspectscore=0 mlxlogscore=653 adultscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412240101
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241224_035348_613921_4C12B544 
-X-CRM114-Status: GOOD (  12.99  )
+X-CRM114-CacheID: sfid-20241224_042653_174730_434C7F66 
+X-CRM114-Status: GOOD (  11.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,25 +90,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAxMi8yNC8yMDI0IDE6MzkgUE0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+PiBEbyB5b3Ug
-cGxhbiB0byByZXNwaW4gdGhpcyBzZXJpZXM/IEZZSSwgdGhlc2UgYXJlIHJlZ3Jlc3Npb25zLCBz
-bwo+Pj4gc2hvdWxkIGdvIGluCj4+PiBlYXJseSBhcyBwb3NzaWJsZS4KPj4gV2FpdGluZyBmb3Ig
-U1BJIE5BTkQgc2VyaWVzIHBhdGNoZXMgWzFdIHRvIGJlIG1lcmdlZCAocmF3IG5hbmQgY2hhbmdl
-Cj4+IHBhdGNoIDItNSkuIE9uIHRvcCBvZiB0aGF0IHdpbGwgcmVwb3N0IHRoZXNlIHBhdGNoZXMu
-Cj4gCj4gV2hlbiB0aGVyZSBhcmUgY29tbWVudHMgb24gYSBzZXJpZXMsIHRoZSBlbnRpcmUgc2Vy
-aWVzIHVzdWFsbHkgZ2V0cwo+IGRpc2NhcmRlZCwgc28gaXQgaXMgbm93IG91dCBvZiBteSBzaWdo
-dC4gSWYgeW91IHdhbnQgdGhlIHNwaSBiaXRzIHRvIGJlCj4gYXBwbGllZCwgaXQgbXVzdCBtYWtl
-IHNlbnNlIHRvIGhhdmUgdGhlbSBhbG9uZSwgYnV0IHlvdSBjYW4gc2VuZCBhIG5ldwo+IHZlcnNp
-b24gb2YgdGhlIHNwaSBiaXRzIGFsb25lIGlmIHlvdSBmZWVsIGxpa2UgdGhlIHJhdyBuYW5kIHBh
-dGNoZXMKPiBhcmVuJ3QgcmVhZHkuIEJ1dCBvdGhlcndpc2UgcGxlYXNlIGZpeCB0aGUgc2VyaWVz
-IGFuZCBzZW5kIGEgbmV3Cj4gdmVyc2lvbi4KU3VyZSBXaWxsIGNyZWF0ZSAyIGRpZmZlcmVudCBz
-ZXJpZXMgb25lIGZvciByYXcgbmFuZCBhbG9uZyB3aXRoIFNEWDc1IApidWcgZml4ZXMgYWRkZWQg
-YW5kIGFub3RoZXIgc2VyaWVzIGZvciBTUEkgTkFORCBzdXBwb3J0IGFuZCByZXBvc3QuCj4gCj4g
-VGhhbmtzLAo+IE1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Report of the static analyzer:
+The value of an arithmetic expression 'datsize + oobsize' is a subject to overflow because its operands are not cast to a larger data type before performing arithmetic.
+
+Corrections explained:
+- Added a check to validate datsize and oobsize to ensure they are non-negative and within a safe range.
+- Cast datsize and oobsize to long before performing arithmetic to prevent potential integer overflow.
+
+This change ensures safe computation of offsets and prevents undefined behavior caused by overflow.
+
+Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
+---
+ jffsX-utils/jffs2dump.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/jffsX-utils/jffs2dump.c b/jffsX-utils/jffs2dump.c
+index 30455ea..5b0e144 100644
+--- a/jffsX-utils/jffs2dump.c
++++ b/jffsX-utils/jffs2dump.c
+@@ -772,6 +772,13 @@ int main(int argc, char **argv)
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	if (datsize < 0 || oobsize < 0 || datsize > imglen || (long)datsize + oobsize < 0) {
++		fprintf(stderr, "Error: invalid datsize/oobsize.\n");
++		free(data);
++		close (fd);
++		exit(EXIT_FAILURE);
++	}
++
+ 	if (datsize && oobsize) {
+ 		int  idx = 0;
+ 		long len = imglen;
+@@ -783,7 +790,7 @@ int main(int argc, char **argv)
+ 			read_nocheck (fd, oob, oobsize);
+ 			idx += datsize;
+ 			imglen -= oobsize;
+-			len -= datsize + oobsize;
++			len -= (long)datsize + oobsize;
+ 		}
+ 
+ 	} else {
+-- 
+2.30.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
