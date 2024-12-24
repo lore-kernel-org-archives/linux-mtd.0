@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8B0DE77188
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Dec 2024 17:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8E3BE7718E
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Dec 2024 17:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SN5QfbJwbvXHPgCJ6kX0Peo0QRmGxzL09h4cKtRBTtU=; b=TZCG3HeglHd7Vf
-	IKcn6o5t2QMYniSrsnBxMmDaG/5TrFWa3I7MZ8IpFbnnlRYaYhtEAxfEUI4XopjsHoEOBalUhVr5z
-	CvCgafmIPid5WXS1e/sibPCMCIIo74baVOcz8kSYHG9fQvJ5dHVX7e8VuPogaVXpNJPO4Zp6QW4xk
-	eK1l265fqglFbpuNs4NMn27zdTKlS/mJzj7tf9fjfoJgPstukWaRH3fxbIASBmUCW/Y9kkmInCgZ6
-	c38hxnR8F6rRG5AN+HSTTjUHtyxX2+CYz+g3w2UBnTTUeSnG4uhg8EIIh7csYr11384jwFUww5emL
-	WsrOtUkYG+EhdhcaXOrQ==;
+	List-Owner; bh=Fb3MoSFH+wOj3SDT88ixE7lvRW9M+k45I1PSlsAngFo=; b=gIQ0dhE1+eG4Gy
+	3HwG0fSBVdENph17e6+6HdGI67WOUAnuxtDXtmi7yLdqVZ32VE1RrHGnh7KCEc3lJUx6jZ6cG9CAi
+	QzeZLQu1z34WwOSzWb8rAvovH+8bIXTjahezVXZG3+rgW4mmcVs6cgyPwW7WRUGi76MWBfruPXBYD
+	0TiDdYn+n4D2+K681uJdmS3GtvZ2h5LB3QpZLIAfV/23Q/t1GDaf0H4k5TslI6pkILF9kPxI8NaX7
+	J38zrsnOefOkFod0+UPiC1sa+8pYSgCsvVObkwTm7mPAfsPHARJXZClfyCm7ggHE8RB5fucs/GKkP
+	ofqSAywK395ftn3nieUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQ8ex-0000000CTEr-47bV;
-	Tue, 24 Dec 2024 17:25:31 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1tQ8g7-0000000CTaU-3Wn3;
+	Tue, 24 Dec 2024 17:26:43 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQ8Ng-0000000CMs6-2yRw;
-	Tue, 24 Dec 2024 17:07:42 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4653940002;
-	Tue, 24 Dec 2024 17:07:34 +0000 (UTC)
+	id 1tQ8Nk-0000000CMsk-2ytM;
+	Tue, 24 Dec 2024 17:07:46 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B449B40006;
+	Tue, 24 Dec 2024 17:07:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1735060058;
+	t=1735060062;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nrGU5YmafXBcwzax7Dz7/fkc5aKf/Lo+6Qt8hqq78ww=;
-	b=o9cmLlei4SVjACmnx8b9OR17EDa9MM8UqcY95EsA75X6fF5V55vjDRjx6S/m4N5rv61PMV
-	Qg9pjzjzdnmwCj+bdQwuOGNte7wETrmUz1JOty5bUgGke0N/UaoI5+vkTHK8LVw1T1IVuz
-	PQ1Zkmxrnc+Bmwr1g9lLsFzQ8jojwMNwizGoU1g/UAmb4oCUUwbk8++N6d5oGjFLJWrcEn
-	3HnOM41v0tL1h/opiKnYgNKlhdAHzmF8LniGkL7z0LekHLcYNF6+PTROTXb8l2HMCujaZC
-	EnuGOoTh4fSBqmWqCn4QNi5iGH2SEtsVBQfOy0yAAO0hOu7vW8682g/tQCB+ig==
+	bh=kUGghYrB4WitsSHuF0lDrbtdh7hpjjhPPG7Q2vRUm6U=;
+	b=l8heW3vpz17NJJaTdrg1EDbE4Fx9uRU4YDW+cFVA3+nEycf8ad1NxWaDMDCO+zqu8pCbA/
+	AaRRLkz8dzMrd7GgW6tjGCC8MUNYVSIXeob8lPUyhgRC2cI2el27UayvJLMkbFX5ZZHBEC
+	JPW654PQCErBwNHe8WTBBQwBZAKaSM4ecc0CUGQy0Zd7XEK2cBk5tUiIXiIQ2tC0lLSe5v
+	2iIvQw6GPYrDPMHsQH4mNI1K7loTXOYzXjbBQ1rNuimNjxBKjLrNesl21qU4EfOSLvpbG9
+	jVEZnB3HgGA8uZoYYgMaGRo+At6+6d4HqMaMgCP396AEtgR0Kj3j8btNwhkT8Q==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 24 Dec 2024 18:06:01 +0100
-Subject: [PATCH v2 16/27] spi: zynq-qspi: Support per spi-mem operation
+Date: Tue, 24 Dec 2024 18:06:02 +0100
+Subject: [PATCH v2 17/27] spi: zynqmp-gqspi: Support per spi-mem operation
  frequency switches
 MIME-Version: 1.0
-Message-Id: <20241224-winbond-6-11-rc1-quad-support-v2-16-ad218dbc406f@bootlin.com>
+Message-Id: <20241224-winbond-6-11-rc1-quad-support-v2-17-ad218dbc406f@bootlin.com>
 References: <20241224-winbond-6-11-rc1-quad-support-v2-0-ad218dbc406f@bootlin.com>
 In-Reply-To: <20241224-winbond-6-11-rc1-quad-support-v2-0-ad218dbc406f@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Sanjay R Mehta <sanju.mehta@amd.com>, 
@@ -78,8 +78,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.15-dev
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241224_090741_063548_5C7FD6BC 
-X-CRM114-Status: GOOD (  15.66  )
+X-CRM114-CacheID: sfid-20241224_090745_016670_A00C1A99 
+X-CRM114-Status: GOOD (  14.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,70 +106,67 @@ device value will be given anyway.
 The per-operation frequency capability is thus advertised to the spi-mem
 core.
 
-Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: Michal Simek <michal.simek@amd.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-zynq-qspi.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/spi/spi-zynqmp-gqspi.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
-index dee9c339a35e74c86fe1c768990a3f870b0a1b9d..f3cacb01e25b97892f9fbefc6e5cf43b9722ae4d 100644
---- a/drivers/spi/spi-zynq-qspi.c
-+++ b/drivers/spi/spi-zynq-qspi.c
-@@ -318,6 +318,7 @@ static void zynq_qspi_chipselect(struct spi_device *spi, bool assert)
-  * zynq_qspi_config_op - Configure QSPI controller for specified transfer
-  * @xqspi:	Pointer to the zynq_qspi structure
-  * @spi:	Pointer to the spi_device structure
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
+index 549a6e0c96546211223dd45e8e70620fa5fd18ab..d800d79f62a70c74551e1ad6f628685ec6c18b0d 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
+@@ -535,7 +535,7 @@ static inline u32 zynqmp_qspi_selectspimode(struct zynqmp_qspi *xqspi,
+  * zynqmp_qspi_config_op - Configure QSPI controller for specified
+  *				transfer
+  * @xqspi:	Pointer to the zynqmp_qspi structure
+- * @qspi:	Pointer to the spi_device structure
 + * @op:		The memory operation to execute
   *
   * Sets the operational mode of QSPI controller for the next QSPI transfer and
   * sets the requested clock frequency.
-@@ -331,7 +332,8 @@ static void zynq_qspi_chipselect(struct spi_device *spi, bool assert)
-  * controller the driver will set the highest or lowest frequency supported by
-  * controller.
+@@ -553,12 +553,12 @@ static inline u32 zynqmp_qspi_selectspimode(struct zynqmp_qspi *xqspi,
+  *	frequency supported by controller.
   */
--static int zynq_qspi_config_op(struct zynq_qspi *xqspi, struct spi_device *spi)
-+static int zynq_qspi_config_op(struct zynq_qspi *xqspi, struct spi_device *spi,
-+			       const struct spi_mem_op *op)
+ static int zynqmp_qspi_config_op(struct zynqmp_qspi *xqspi,
+-				 struct spi_device *qspi)
++				 const struct spi_mem_op *op)
  {
- 	u32 config_reg, baud_rate_val = 0;
+ 	ulong clk_rate;
+ 	u32 config_reg, req_speed_hz, baud_rate_val = 0;
  
-@@ -346,7 +348,7 @@ static int zynq_qspi_config_op(struct zynq_qspi *xqspi, struct spi_device *spi)
- 	 */
- 	while ((baud_rate_val < ZYNQ_QSPI_CONFIG_BAUD_DIV_MAX)  &&
- 	       (clk_get_rate(xqspi->refclk) / (2 << baud_rate_val)) >
--		spi->max_speed_hz)
-+		op->max_freq)
- 		baud_rate_val++;
+-	req_speed_hz = qspi->max_speed_hz;
++	req_speed_hz = op->max_freq;
  
- 	config_reg = zynq_qspi_read(xqspi, ZYNQ_QSPI_CONFIG_OFFSET);
-@@ -534,7 +536,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
+ 	if (xqspi->speed_hz != req_speed_hz) {
+ 		xqspi->speed_hz = req_speed_hz;
+@@ -1072,7 +1072,7 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
  		op->dummy.buswidth, op->data.buswidth);
  
- 	zynq_qspi_chipselect(mem->spi, true);
--	zynq_qspi_config_op(xqspi, mem->spi);
-+	zynq_qspi_config_op(xqspi, mem->spi, op);
- 
- 	if (op->cmd.opcode) {
- 		reinit_completion(&xqspi->data_completion);
-@@ -620,6 +622,10 @@ static const struct spi_controller_mem_ops zynq_qspi_mem_ops = {
- 	.exec_op = zynq_qspi_exec_mem_op,
+ 	mutex_lock(&xqspi->op_lock);
+-	zynqmp_qspi_config_op(xqspi, mem->spi);
++	zynqmp_qspi_config_op(xqspi, op);
+ 	zynqmp_qspi_chipselect(mem->spi, false);
+ 	genfifoentry |= xqspi->genfifocs;
+ 	genfifoentry |= xqspi->genfifobus;
+@@ -1224,6 +1224,10 @@ static const struct spi_controller_mem_ops zynqmp_qspi_mem_ops = {
+ 	.exec_op = zynqmp_qspi_exec_op,
  };
  
-+static const struct spi_controller_mem_caps zynq_qspi_mem_caps = {
++static const struct spi_controller_mem_caps zynqmp_qspi_mem_caps = {
 +	.per_op_freq = true,
 +};
 +
  /**
-  * zynq_qspi_probe - Probe method for the QSPI driver
+  * zynqmp_qspi_probe - Probe method for the QSPI driver
   * @pdev:	Pointer to the platform_device structure
-@@ -706,6 +712,7 @@ static int zynq_qspi_probe(struct platform_device *pdev)
- 	ctlr->mode_bits =  SPI_RX_DUAL | SPI_RX_QUAD |
- 			    SPI_TX_DUAL | SPI_TX_QUAD;
- 	ctlr->mem_ops = &zynq_qspi_mem_ops;
-+	ctlr->mem_caps = &zynq_qspi_mem_caps;
- 	ctlr->setup = zynq_qspi_setup_op;
- 	ctlr->max_speed_hz = clk_get_rate(xqspi->refclk) / 2;
+@@ -1333,6 +1337,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 
+ 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
+ 	ctlr->mem_ops = &zynqmp_qspi_mem_ops;
++	ctlr->mem_caps = &zynqmp_qspi_mem_caps;
+ 	ctlr->setup = zynqmp_qspi_setup_op;
+ 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
  	ctlr->dev.of_node = np;
 
 -- 
