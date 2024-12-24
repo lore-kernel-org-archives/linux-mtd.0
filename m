@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98B18E7718D
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Dec 2024 17:18:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6688E7718E
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Dec 2024 17:19:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RpMNu/7mcgbWh2W+KHQlhwHDMJKxZxdCzaaxVlUSU6Y=; b=T7vVxvYFL9tjUM
-	1dwJuAXJZLNDfQPQXlVpVKBh+YoM18KsDmufE1mP9WcyiZtcZ9XlNW9SR1IhS/liV6u8g0PG12vmK
-	jQXUxkMJ63opT/uUsygxUVsgPJMkWb4Q5b6mbPFPDdHUhbrcXWaJiV/XsUC0q+Wn+QUjVbg4prs2g
-	kfCNDTZSRkHsxgC1FWvy6S0P7QRz/Xa+PCgc6YIgliOvRIZTfLxJcGUKx8hmShGZGI5QyIiXHJyXn
-	/MdinI4hgXFZF9EtAr8H3t3T6GCZHp/AO9N2QLiEbfLYM98uZUillw0Ad7d6daEdyleb50y/vOSuB
-	k5nUFm7Ci5VNvxslgniQ==;
+	List-Owner; bh=V3B3xLMWcOqN8sKPZBXK7NlUpN2PkrpjpDquGAvXrXc=; b=jBrQ4u3J+ttsz5
+	yY8P13b9xR2gZcjHZ6JMLgMMsri2g5pBXeCbApuADQpvKhQErqmZ9Ms/pDxDP9qJBjfHWVTxhTuw2
+	e1AQ1qc5VY3yW64eXY7UDl4LXw/8NHTQfdjNFYNtS+nbZQ0evFMdUGxwTmUFXQGTpKg4P3CxdG2IY
+	G35kFU1rmhgVsvLnJC7eB0ebfSKAkz277LxXIMVl1JYnz2TyT2KztIOXMyx6eLdzPPmPADjQHyNkc
+	y784H7iXUXfDB3Q4/aHLOefC/qmfT2ScDRvZwI+9/NXtD4lzE4MoYo4384e7r4uAKesB0R+4B9mOR
+	nUKsplOb1sEL/mpF1R6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQ8Xw-0000000CR0M-2MIL;
-	Tue, 24 Dec 2024 17:18:16 +0000
+	id 1tQ8Z7-0000000CRO7-2YFL;
+	Tue, 24 Dec 2024 17:19:29 +0000
 Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQ8ND-0000000CMkE-0iBE;
-	Tue, 24 Dec 2024 17:07:12 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EF6EA40005;
-	Tue, 24 Dec 2024 17:07:04 +0000 (UTC)
+	id 1tQ8NH-0000000CMkz-3w3Z;
+	Tue, 24 Dec 2024 17:07:17 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7674940004;
+	Tue, 24 Dec 2024 17:07:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1735060029;
+	t=1735060034;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NPTwujdULqDMAWJvUaFFPZ6Ty000e2Bmk5z+jRzLZ3I=;
-	b=ZWKmgERFc9lmwxxx6UvyJo+HxANoWAKFnt/84JjZx6t4upVdrlwsfWjPeuUq0FzAgyEy2V
-	shJMU0k3uOASbarNefu0/toxF9Ps41PKa8/7p2T8WOuvxGopWz3GPQFWE8P85t2tlE94+J
-	KtOa58aSvfYrt2wSk3EV3aLtdFGKCWiJqyBkUJnFoVjd9Q7u+p3UO7Jz45ZylJT3sLWl1w
-	nzWNmOxyeogdCFXripvD68o2ySV+xFEEEqPwnUWpBL1Qw15mT7yDGUH9GMNQgd5QZDkQby
-	2X9/D8BdT4Xodu2qrCeJUPqRR/kgmoVlDw9kPD+uIFaxUrHmS9ndMaoaPEvjAg==
+	bh=BuQ/lBXfZRP3KmcoAIIIjIvvj0TWlpOZ+bgtTbc13Ew=;
+	b=IduTNU+hjx2JMI+ZczcllkxQWFarUPJTBt2CY3eplw1bLQGPUSCLhdxigrtoBaEf0j29ee
+	NSV6ajFbvImwJ4n5GAe5fhNF9tXKIgjZstrS6LTjbbhJjtdosAP7FT7QB+VjwG5Vsn/jie
+	drrYlHpayDrPTyjlZnKKNENS+tZHw9pbPZ9E7D/CkG2pjwhNhZ8WzLrLjTTIuENJyxcCBa
+	6SgtQs4HumZQzwS3Ot+iav5Y/prVRwt9s3NS45jdKP+O8KPy9Ww3blfnC6PlMcnIP3Jj34
+	n45NZj1atT90QvBKdZ74edmPq1vOn1F9guwAaUikxpXH+iJK9kDG+TiqJ8BktQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 24 Dec 2024 18:05:55 +0100
-Subject: [PATCH v2 10/27] spi: mt65xx: Support per spi-mem operation
+Date: Tue, 24 Dec 2024 18:05:56 +0100
+Subject: [PATCH v2 11/27] spi: mxic: Support per spi-mem operation
  frequency switches
 MIME-Version: 1.0
-Message-Id: <20241224-winbond-6-11-rc1-quad-support-v2-10-ad218dbc406f@bootlin.com>
+Message-Id: <20241224-winbond-6-11-rc1-quad-support-v2-11-ad218dbc406f@bootlin.com>
 References: <20241224-winbond-6-11-rc1-quad-support-v2-0-ad218dbc406f@bootlin.com>
 In-Reply-To: <20241224-winbond-6-11-rc1-quad-support-v2-0-ad218dbc406f@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Sanjay R Mehta <sanju.mehta@amd.com>, 
@@ -78,8 +78,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.15-dev
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241224_090711_478275_29C2724E 
-X-CRM114-Status: GOOD (  12.94  )
+X-CRM114-CacheID: sfid-20241224_090716_248323_28110E21 
+X-CRM114-Status: GOOD (  11.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,44 +106,32 @@ device value will be given anyway.
 The per-operation frequency capability is thus advertised to the spi-mem
 core.
 
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mt65xx.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/spi/spi-mxic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 85f3bafc975dbc3fd95f77b8dcfc0ca9aac32f5d..197bf2dbe5de7e853ccddf2c90d8bff40202f025 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -961,7 +961,7 @@ static int mtk_spi_mem_exec_op(struct spi_mem *mem,
+diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+index 809767d3145c17291525ab7c246085597e0ff5e6..eeaea6a5e3103952e71a474e0de84099bc476a79 100644
+--- a/drivers/spi/spi-mxic.c
++++ b/drivers/spi/spi-mxic.c
+@@ -522,7 +522,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 	int i, ret;
+ 	u8 addr[8], cmd[2];
  
- 	mtk_spi_reset(mdata);
- 	mtk_spi_hw_init(mem->spi->controller, mem->spi);
--	mtk_spi_prepare_transfer(mem->spi->controller, mem->spi->max_speed_hz);
-+	mtk_spi_prepare_transfer(mem->spi->controller, op->max_freq);
+-	ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
++	ret = mxic_spi_set_freq(mxic, op->max_freq);
+ 	if (ret)
+ 		return ret;
  
- 	reg_val = readl(mdata->base + SPI_CFG3_IPM_REG);
- 	/* opcode byte len */
-@@ -1122,6 +1122,10 @@ static const struct spi_controller_mem_ops mtk_spi_mem_ops = {
- 	.exec_op = mtk_spi_mem_exec_op,
+@@ -582,6 +582,7 @@ static const struct spi_controller_mem_caps mxic_spi_mem_caps = {
+ 	.dtr = true,
+ 	.ecc = true,
+ 	.swap16 = true,
++	.per_op_freq = true,
  };
  
-+static const struct spi_controller_mem_caps mtk_spi_mem_caps = {
-+	.per_op_freq = true,
-+};
-+
- static int mtk_spi_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1160,6 +1164,7 @@ static int mtk_spi_probe(struct platform_device *pdev)
- 	if (mdata->dev_comp->ipm_design) {
- 		mdata->dev = dev;
- 		host->mem_ops = &mtk_spi_mem_ops;
-+		host->mem_caps = &mtk_spi_mem_caps;
- 		init_completion(&mdata->spimem_done);
- 	}
- 
+ static void mxic_spi_set_cs(struct spi_device *spi, bool lvl)
 
 -- 
 2.47.0
