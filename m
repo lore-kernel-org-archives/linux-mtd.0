@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E2E6E77192
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 064CDE77194
 	for <linux-mtd@archiver.kernel.org>; Thu, 26 Dec 2024 13:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,40 +12,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dgmn4byD8I6KHPg0+YEcqzcxz79ap1M/YAD4Mu5S9Ak=; b=Sc6J+NbEoe6/3J
-	NpQX19yYz7lgmK60/EEoL8tZU+pix164iyP336E4WahN8NWQmYhxI+jwGOd3cu/s72e0NuCEdfDiN
-	CconKQdbKDetcy0JtvVvOx57xuW/tPjyCQDcixGySrkgzPMyQZG+Ma3LlLMOrJCHnROWoPIg72798
-	lllUA6H2sVH56qPL6xO/sZZlGbHfNj3cZkMsHzb79ImqdrPR99Ni32pDXk6t1CJCNaqxwP4uOAUFX
-	emfqgzDVPnB8f0U5TeDlqmOt7limaErhsOCwxbWu/v9DXG/wfUsPY7YZ5BggZc2hs/jKE7I3WwWpw
-	f6Brbzgb3Gf3p8oxpdqg==;
+	List-Owner; bh=lP44pBztrgWulMd94Yh4vF9CgSclh2qTQ6EILxXKcx4=; b=Ep7HlghD9SmLRC
+	yad1RebumYjnOozQqrNSlgKoJU5pBcZX0ZzJ2RuVsL1imieJiF+TyJvTHPFV+IdZml5zy1wt4j7HD
+	lKUUcpMjgD5XkRc1oLCC7qx3zpAP+34rGgxU7rR6/MnUjvl2soFbzIikWTvsVjujzp5gK5lr4AnDF
+	77ahnuO2gVqSdSekLrc0LV8+DPPKP0wnrtWcurzImdYukhS8CKH9emNTjMLmRHZQ/Qefr7Nt/S8H0
+	vYJ1IOG8gMMAArfmwq6VOEAUa/CIpKc0UvFCRsE6zmkNQFp7Xc7Dy4dBCLy12xnPmMZpLsBjiE4hi
+	KI3U0vteWcFNjHCSX0SA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQoN4-0000000Frd6-0B61;
-	Thu, 26 Dec 2024 13:57:50 +0000
+	id 1tQoN3-0000000Frci-1ozx;
+	Thu, 26 Dec 2024 13:57:49 +0000
 Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tQoM2-0000000FrMn-3ZYz
+	id 1tQoM2-0000000FrNI-3Zz0
 	for linux-mtd@lists.infradead.org;
 	Thu, 26 Dec 2024 13:56:50 +0000
 Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 4BD1A120006;
-	Thu, 26 Dec 2024 16:56:36 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4BD1A120006
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 70A0612001E;
+	Thu, 26 Dec 2024 16:56:37 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 70A0612001E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1735221396;
-	bh=tGrh4z/YYA5o4qVgoCNj8+PFLw1yEb7QctfkwdM0E+I=;
+	s=mail; t=1735221397;
+	bh=XnP9caPq4vXDueT/dnDu27xM9UZnwpPDLHw6palnojI=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=XkBz0dy0+5aFrOSSRLjGiIcc0o7KT+zl9ZoJ2fjjTdLfcyaaiSyUk2LaQWE5QaZIR
-	 X2tkScvS+YuIjyx7flyxcwxdJQSEwinx6L+TuMD9sn5KencyjnO3C0cEB9oCXwODOD
-	 fWhgmHApVnQpxLHBOZWPrmFYaUF42itx17GWwmVbfRTdrNiwkOVX8w4rcVThnTRPYm
-	 QohEuP/FCynUHzchQQJarN/L1vA358gZ+W+Cuia7ZewrSFMkwdMcvy3OdxbfQdnaUw
-	 S9p/dv4HtHExH/80O6Z4dtxPlzNDNgL0vW1fwobar922PIPc+hbcrm/+o1dWtDxWnW
-	 G/Q6OB0OKZobQ==
+	b=cjToTACrl35T6k8k0n3zPCJioUQlQR7V9UDFAzzV53+APR0y9oNLK/jmCWKheLeai
+	 +yCKdFskWL8YtTlbyqWctKjAN0n30sh9HEZ14tw5MAznByCjSFY+yguiDInkqC2Y+F
+	 xr1Msd4OViPmw/U8oTtUxnoUgqFYSD8Q4+BYYGZCgwb+b73Ngzr6Yj3FitYPzSOz8X
+	 xTP8MexNul/hu/6Yq6vuSvff95q4Wh8MGJ854irCPfacBiHby0zKbziiM+DhNvUCt6
+	 nn7uD4Q9YeNxzZOSXe9CMOT3RosP6WxkW3+aT4I+FMeSlKvmgu+nc52Agx00mdcBXp
+	 oafnaU7Q6XPZA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 26 Dec 2024 16:56:36 +0300 (MSK)
+	Thu, 26 Dec 2024 16:56:37 +0300 (MSK)
 From: Martin Kurbanov <mmkurbanov@salutedevices.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Ezra Buehler
@@ -53,9 +53,9 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<avromanov@salutedevices.com>, Frieder Schrempf <frieder.schrempf@kontron.de>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
 	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
-Subject: [PATCH v3 1/7] mtd: spinand: make spinand_{read,write}_page global
-Date: Thu, 26 Dec 2024 16:55:46 +0300
-Message-ID: <20241226135623.43098-2-mmkurbanov@salutedevices.com>
+Subject: [PATCH v3 5/7] mtd: spinand: otp: add helpers functions
+Date: Thu, 26 Dec 2024 16:55:50 +0300
+Message-ID: <20241226135623.43098-6-mmkurbanov@salutedevices.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241226135623.43098-1-mmkurbanov@salutedevices.com>
 References: <20241226135623.43098-1-mmkurbanov@salutedevices.com>
@@ -80,8 +80,8 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/12/26 12:50:00 #26919000
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241226_055647_697236_B887776F 
-X-CRM114-Status: GOOD (  13.15  )
+X-CRM114-CacheID: sfid-20241226_055647_683949_4DFCAE93 
+X-CRM114-Status: GOOD (  17.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,72 +98,131 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Change these functions from static to global so that to use them later
-in OTP operations. Since reading OTP pages is no different from reading
-pages from the main area.
+The global functions spinand_otp_read() and spinand_otp_write() have
+been introduced. Since most SPI-NAND flashes read/write OTP in the same
+way, let's define global functions to avoid code duplication.
 
 Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 ---
- drivers/mtd/nand/spi/core.c | 24 ++++++++++++++++++++----
- include/linux/mtd/spinand.h |  6 ++++++
- 2 files changed, 26 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/spi/otp.c  | 89 +++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h |  5 +++
+ 2 files changed, 94 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index e0b6715e5dfed..4b394eace2d09 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -566,8 +566,16 @@ static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
- 	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK, lock);
+diff --git a/drivers/mtd/nand/spi/otp.c b/drivers/mtd/nand/spi/otp.c
+index a50d6af818613..b8204bb6d848e 100644
+--- a/drivers/mtd/nand/spi/otp.c
++++ b/drivers/mtd/nand/spi/otp.c
+@@ -41,6 +41,95 @@ static int spinand_otp_check_bounds(struct spinand_device *spinand, loff_t ofs,
+ 	return 0;
  }
  
--static int spinand_read_page(struct spinand_device *spinand,
--			     const struct nand_page_io_req *req)
++static int spinand_otp_rw(struct spinand_device *spinand, loff_t ofs,
++			  size_t len, size_t *retlen, u8 *buf, bool is_write)
++{
++	struct nand_page_io_req req = {};
++	unsigned long long page;
++	size_t copied = 0;
++	size_t otp_pagesize = spinand_otp_page_size(spinand);
++	int ret;
++
++	if (!len)
++		return 0;
++
++	ret = spinand_otp_check_bounds(spinand, ofs, len);
++	if (ret)
++		return ret;
++
++	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, CFG_OTP_ENABLE);
++	if (ret)
++		return ret;
++
++	page = ofs;
++	req.dataoffs = do_div(page, otp_pagesize);
++	req.pos.page = page + spinand->otp->layout.start_page;
++	req.type = is_write ? NAND_PAGE_WRITE : NAND_PAGE_READ;
++	req.mode = MTD_OPS_RAW;
++	req.databuf.in = buf;
++
++	while (copied < len) {
++		req.datalen = min_t(unsigned int,
++				    otp_pagesize - req.dataoffs,
++				    len - copied);
++
++		if (is_write)
++			ret = spinand_write_page(spinand, &req);
++		else
++			ret = spinand_read_page(spinand, &req);
++
++		if (ret < 0)
++			break;
++
++		req.databuf.in += req.datalen;
++		req.pos.page++;
++		req.dataoffs = 0;
++		copied += req.datalen;
++	}
++
++	*retlen = copied;
++
++	if (spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0)) {
++		dev_warn(&spinand_to_mtd(spinand)->dev,
++			 "Can not disable OTP mode\n");
++		ret = -EIO;
++	}
++
++	return ret;
++}
++
 +/**
-+ * spinand_read_page() - Read a page
++ * spinand_otp_read() - Read from OTP area
 + * @spinand: the spinand device
-+ * @req: the I/O request
++ * @ofs: the offset to read
++ * @len: the number of data bytes to read
++ * @retlen: the pointer to variable to store the number of read bytes
++ * @buf: the buffer to store the read data
 + *
-+ * Return: 0 or a positive number of bitflips corrected on success.
-+ * A negative error code otherwise.
++ * Return: 0 on success, an error code otherwise.
 + */
-+int spinand_read_page(struct spinand_device *spinand,
-+		      const struct nand_page_io_req *req)
- {
- 	struct nand_device *nand = spinand_to_nand(spinand);
- 	u8 status;
-@@ -597,8 +605,16 @@ static int spinand_read_page(struct spinand_device *spinand,
- 	return nand_ecc_finish_io_req(nand, (struct nand_page_io_req *)req);
- }
- 
--static int spinand_write_page(struct spinand_device *spinand,
--			      const struct nand_page_io_req *req)
++int spinand_otp_read(struct spinand_device *spinand, loff_t ofs, size_t len,
++		     size_t *retlen, u8 *buf)
++{
++	return spinand_otp_rw(spinand, ofs, len, retlen, buf, false);
++}
++
 +/**
-+ * spinand_write_page() - Write a page
-+ * @spinand: the spinand device
-+ * @req: the I/O request
++ * spinand_otp_write() - Write to OTP area
++ * @spinand:  the spinand device
++ * @ofs: the offset to write to
++ * @len: the number of bytes to write
++ * @retlen: the pointer to variable to store the number of written bytes
++ * @buf: the buffer with data to write
 + *
-+ * Return: 0 or a positive number of bitflips corrected on success.
-+ * A negative error code otherwise.
++ * Return: 0 on success, an error code otherwise.
 + */
-+int spinand_write_page(struct spinand_device *spinand,
-+		       const struct nand_page_io_req *req)
++int spinand_otp_write(struct spinand_device *spinand, loff_t ofs, size_t len,
++		      size_t *retlen, const u8 *buf)
++{
++	return spinand_otp_rw(spinand, ofs, len, retlen, (u8 *)buf, true);
++}
++
+ static int spinand_mtd_otp_info(struct mtd_info *mtd, size_t len,
+ 				size_t *retlen, struct otp_info *buf)
  {
- 	struct nand_device *nand = spinand_to_nand(spinand);
- 	u8 status;
 diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 5c19ead604996..555846517faf6 100644
+index d6dbb85094283..dcb1811e55d25 100644
 --- a/include/linux/mtd/spinand.h
 +++ b/include/linux/mtd/spinand.h
-@@ -519,4 +519,10 @@ int spinand_match_and_init(struct spinand_device *spinand,
- int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
- int spinand_select_target(struct spinand_device *spinand, unsigned int target);
+@@ -582,6 +582,11 @@ int spinand_write_page(struct spinand_device *spinand,
+ size_t spinand_otp_page_size(struct spinand_device *spinand);
+ size_t spinand_otp_size(struct spinand_device *spinand);
  
-+int spinand_read_page(struct spinand_device *spinand,
-+		      const struct nand_page_io_req *req);
++int spinand_otp_read(struct spinand_device *spinand, loff_t ofs, size_t len,
++		     size_t *retlen, u8 *buf);
++int spinand_otp_write(struct spinand_device *spinand, loff_t ofs, size_t len,
++		      size_t *retlen, const u8 *buf);
 +
-+int spinand_write_page(struct spinand_device *spinand,
-+		       const struct nand_page_io_req *req);
-+
+ int spinand_set_mtd_otp_ops(struct spinand_device *spinand);
+ 
  #endif /* __LINUX_MTD_SPINAND_H */
 -- 
 2.43.0
