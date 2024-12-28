@@ -4,48 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 052F8E7718F
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Dec 2024 07:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AA5BE77188
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Dec 2024 15:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
-	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=M6FbnKkivRxD23Xk5Oh4U8+ERNMLxmingwijrDvTTnA=; b=BcC7ruvVAuLPaV
-	dgeLrvIbIoh2oH+c0sU5I41O68gp7H5+p5IO8eS2onO3AQVAiigq4X7lTTNfSKOqiHxUSEdJHzJbX
-	tVTn5Kq1ysL2sm7LPkNZsSGnZrvigtPVRXRNDF1qVZZS8cSzwU6DNIpX16lRQ+x1U+zM8FH+DzzXn
-	rvhlkVs4rBWMRR2P0q+UErMHGgYGUIDpJCf4wBgFXbkzSWikATJ39tCDa5ncc9J9i9exIvSlBN7zu
-	fDKxYOYi9jbexd86vHIJgxeY1gHcKCxMQethAODa00F5Q8IYyqNu2i4Xr1kusHLPCnYGODBt+l5Jl
-	psIYQ5Os4s4x13A1vsBA==;
+	List-Owner; bh=jaufQA5yKsigIsDLR2Y0SMIyu4KvCk/hu0EAyeYs/Ok=; b=WFFHeyn3NTOBh7
+	rcP5NfxDRhau0nXgOhw8t1W1K6aCe3M9ITdOaHxPgdcqhPK8tSYJwAugYlu0T0roJkXUnJKougj9X
+	qDrKvOAu+mcOyTbkQZvYyCJmeICn6twYiWAx5Y7RvL+tbaSWmjoAtq/5DoJFZXRyF6JEOwd3btV8L
+	S/b09IRHbAA1kA7Sj0Bysjx2iSMwQV6+SXREsRCVbUuSPVawUj7nlDlXUMqyWUyplHLVXO6f0WetV
+	khu63dNchCG7L15gKuImYuK+JAhGDOUat3alRSr/uM+fofesArrxOK4lI77+Hk5pJY36VbFFmEZdT
+	dkKzt0c2xwKAY7doQZLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tR4h7-0000000HEs2-3Srv;
-	Fri, 27 Dec 2024 07:23:37 +0000
-Received: from 217-110-162-10.ptr.prolan.de ([217.110.162.10] helo=smarthost-3.prolan-cloud.de)
+	id 1tRYwH-000000025QG-2ahG;
+	Sat, 28 Dec 2024 15:41:17 +0000
+Received: from smtprelay01.ispgateway.de ([80.67.31.28])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tR4h5-0000000HErZ-27DG
+	id 1tRYwD-000000025Pk-01iQ
 	for linux-mtd@lists.infradead.org;
-	Fri, 27 Dec 2024 07:23:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tautiimagheraus.ro;
-	s=default; t=1735243276;
-	bh=lwV7aSIhmL1J4zqGd6QcK0kku1jHwWFZZp7wr11vEIE=;
-	h=Reply-To:From:To:Subject:Date:From;
-	b=Ypuxx4vDesR82vgATrX53pM3OB+cKKuFWvKypPLRs1lWz6horgteN3vLoKaCX3ccB
-	 E3n1hc0TR4ZDZy0StuCQOtCTLiadtfMTLWreJsVLjd3iFrL1Xq8gGOkBAjtZccGGvC
-	 MPV3VXnjyXJDuL2zPchzOLarSN9h4yOaFJabuTd0V8b1NEsb7KaW6iDNMfVHnHlPhl
-	 6vOgUEhruuORG9uJe9pYReOCA3gemRRHMEAMUABQN9eSnrvGCjYt/iH9Z9ATE2k0cY
-	 yc7BqceWFFTZkjiGuZ8sIW5mR5dp78sEiYvYCnYc91aJHlFBD7kVtwSKFSrBEde3gE
-	 uQGkS7UKdq1vA==
-From: Kazi <proiecte@tautiimagheraus.ro>
+	Sat, 28 Dec 2024 15:41:14 +0000
+Received: from [87.147.151.102] (helo=localhost.localdomain)
+	by smtprelay01.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98)
+	(envelope-from <git@ober-mail.de>)
+	id 1tRYw7-000000007qW-1CJZ;
+	Sat, 28 Dec 2024 16:41:07 +0100
+From: Micha Ober <git@ober-mail.de>
 To: linux-mtd@lists.infradead.org
-Subject: Business request
-Date: 26 Dec 2024 21:01:16 +0100
-Message-ID: <20241226210116.6A175ABD43C72591@tautiimagheraus.ro>
+Cc: miquel.raynal@bootlin.com,
+	richard@nod.a,
+	vigneshr@ti.com
+Subject: [PATCH] mtd: spinand: micron: fix division by zero
+Date: Sat, 28 Dec 2024 16:41:06 +0100
+Message-Id: <20241228154106.26995-1-git@ober-mail.de>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 MIME-Version: 1.0
+X-Df-Sender: bWljaGFAb2Jlci1tYWlsLmRl
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241226_232335_695554_DDA16E19 
-X-CRM114-Status: UNSURE (   0.90  )
+X-CRM114-CacheID: sfid-20241228_074113_052826_75D26F2A 
+X-CRM114-Status: UNSURE (   9.44  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -58,22 +59,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: admin@bceao-tg.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Compliment of the Seasons
+The `ecc_step_size` field ist not set at this point
+in the call tree, leading to a division by zero.
 
-It is with great sincerity and concerns that I address this email to you. 
-I have contacted you in the past regarding this project partnership but you didn't reply the email. 
-Did you get the chance to see the email?
+Read the step size from the mtd device ecc config instead.
 
-Looking forward to your positive response.  
+Signed-off-by: Micha Ober <git@ober-mail.de>
+---
+ drivers/mtd/nand/spi/micron.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Best Regards, 
-Kazi
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 12601bc4227a..7973996519d3 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -106,9 +106,10 @@ static int micron_4_ooblayout_free(struct mtd_info *mtd, int section,
+ 				   struct mtd_oob_region *region)
+ {
+ 	struct spinand_device *spinand = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nanddev(mtd);
+ 
+ 	if (section >= spinand->base.memorg.pagesize /
+-			mtd->ecc_step_size)
++			nanddev_get_ecc_conf(nand)->step_size)
+ 		return -ERANGE;
+ 
+ 	if (section) {
+-- 
+2.39.5 (Apple Git-154)
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
