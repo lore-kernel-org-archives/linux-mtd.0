@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B91CBE77188
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Dec 2024 23:33:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3913BE77188
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Dec 2024 23:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qX0ds8KsPteokoo21+rMU3M3VUrd9HKxDYkhB1cWhyI=; b=pX72NRoGfjSu4w
-	zgjA+g0csfSInfpb1C2UF0UdOtLuOQzwWDvQ2CrxQXRGT2VZHWKx6V/Qp/pJbpQBBkenPdh7epOox
-	bZqToqNuYEqiJ0fDyMreVDzTzNue8TIgBnwSMYtyQhx2TgsLAZ895W+ULK8s3q0R4T7k+62zYy+r1
-	xT4auy6G3C4huCfUjiUJlX/2G+2s65+oGLSCOD0EqdAmWPsUXTvGGV7y/tLXO/JbBILejZTEHDZVy
-	I7rQYuIy72GZemCzTU+R7mYR4V3d0mwaPqEHwl7Lg95wy3KQtQAXrQPtQaWe3gRs9Y1RrV66MdNdW
-	ynSKEwvVfsCunLCczGpw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7DN85TlDAFv+pPylkFxZQWK4QUKWFzRb/SdLJpoth3M=; b=OqlUBMmTYN7M5w
+	PRte8bmos9B3HijhTe89TRlbMI/6TbCklLEIDbNyo1loxTxWsKo773vgCkahAt6Gpe9aWWoC9wJan
+	+XR5zNa36MpJNoPL52k8R+9MRGsW5C4+r0KlBwu2+fSayCQV/JsAaFQ7fXNwcr06KPidNPGKngs4q
+	ppG58jsKskPWAwygvhz4eHaNITaNLVGD3EaTpFdCsPo5u/6dSOl+s2XQL2AY+shW2ZMQOLX7sAmGM
+	TO7F3/Ml3xpRWGVBS4tCYAsRFxfURZGtORh/1aaMJoaBpBkX9D1jfxgXWARDR+cwysIeE63MvXxj6
+	EF3NN2lMehEv5RrotjMQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tRgIk-00000002Zr7-49Ma;
-	Sat, 28 Dec 2024 23:32:59 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1tRgJw-00000002aDC-0YEk;
+	Sat, 28 Dec 2024 23:34:12 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tRgIi-00000002Zq2-0NcD;
-	Sat, 28 Dec 2024 23:32:57 +0000
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3862b40a6e0so4525448f8f.0;
-        Sat, 28 Dec 2024 15:32:55 -0800 (PST)
+	id 1tRgIj-00000002Zq7-001n;
+	Sat, 28 Dec 2024 23:32:58 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-43675b1155bso65612375e9.2;
+        Sat, 28 Dec 2024 15:32:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735428774; x=1736033574; darn=lists.infradead.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yp6YLaS3wbdHHh56yyPBMz3HOcQbYn0L1NBzbosE89U=;
-        b=QTgPD9vo+c8ymez35iQlMGJNlqGe5VFexNN4ioxk+PuUgCARPeMAA/LS9Rt+C85LGC
-         jobBPhpyfXX7UnerMQmsJ3HwxZTdrgutzjcwh8iegoypAj5DXho18CtKDFlgR8ryF3gI
-         zQiQj+c8a+fRWbNSP4LQ9+uyNjXNXlt6z1oG9vx/5eb/8NE15lGqxK9JD9daOI1C+bs3
-         F5w3mrPGHgxOjNcw/hiDcVUm4Qk5FUOO8n7VW2UBo6PvoAx31E5Oio9+sb8s6a9A++qF
-         eYXza83/88xL6RqtyNUZDTKpFDw6R+CuBdhn38PRjlE/YAdNzG4wt+B/uKGnh//2W5F8
-         bVSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735428774; x=1736033574;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1735428775; x=1736033575; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yp6YLaS3wbdHHh56yyPBMz3HOcQbYn0L1NBzbosE89U=;
-        b=a9pW4PugCb5P4aB9O2qmo1UDEIUQ7BSTMzsphECMfA1R4gMXQA1R6dzDcPqn/ZzV5E
-         0tly+sROEYqzk0FVZ9BOouKjBVMhFLiKijz35lZklQa5r0fFq0yMzefDSr/rQUKAhlKH
-         Ieb8a9AFSb96JPTr3A7/b89aDofxwdrTVpDwyXCnlrDGgZiH5KhZCTD00YpUkB8ezVLO
-         RITLgWCS6MAGApkMTqlXAAONGKunRKd7vnX3AzoL327Qz+PTCWy7GD6oKDVTEmAMN3Mm
-         gcKxGXC4poV5m4pi2lzJv94xlvrJgXjGYcY0zyXAufM/pGo93grqMkX9vvxEg0CZ79A3
-         E54Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV2b82wDf+aHtE2pYBavnojNKMnPVJeY9RJrq8OKj/D7XwWC7YH5ALcL6HdQUiAXfp3q0/qVxy/PsA=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx4OwaIRgUZiFxnV/Jeb5PeVBAKDo/QFdBYbxgEDztSaLvPBzMD
-	HTfq+5OVJrk4C5yRBETrpCsFcm36amrQYlEBDekNm9zMSy/HonkA
-X-Gm-Gg: ASbGncsZxFoGfE92s/aRPJ1GfG2ZZjKZKb0WynbdRQBlm13xfhM1Ka0LHsltikeI0r0
-	TuAv/CfAhD8ivlxbjJEBdtWAjzGYQ2FZsOh/kSq0X9uuhlUy2tQz7bGbXgvy5GTqfAypaxn3i2W
-	ln7otmwLIc+XhH3/WJRv240p0RMr2vQKBzF3Wt8ATpf6I1noIyRmcTdnyBYMQ4gMjkdhP8AuFyM
-	diJdKET0ZdRxpYlJR3yfC/eC9641jWLPkvCVli04KdVQP5t2a3BSFG1jA==
-X-Google-Smtp-Source: AGHT+IH9Pxly1KkOAngXtmnCTp49btuhnhudeYM8IucjVtpMMTrprdVjqVAvd4Ltow0b92P3+UAzuA==
-X-Received: by 2002:adf:ab0a:0:b0:38a:50fa:d582 with SMTP id ffacd0b85a97d-38a50faf3cemr1893012f8f.59.1735428774217;
-        Sat, 28 Dec 2024 15:32:54 -0800 (PST)
+        bh=wOndzP+gvkrgZs0qc02qdGu1OBtOTqc7KPMQjqAeOC0=;
+        b=ZxZ3NcB9A/djata+UMCgHc67Q66v99Htbzr4z33CayeaRaf/ilqQPSuwuRe6KJ58s8
+         Q6IqqMX0dCe4kJ1gSeukXfI+KidC2ZNlps4a2b8gRmdaP6wHs+A45YrexxOdVCiiLqjg
+         IcnsntZAHXWAXcYh0JzERo1z7TKOKJyxuvsheWdu0m+vPf828wQvUNuWeUzLuuK5bkNS
+         ya4sOaBbBNZHGJhc14H1mm/jNKrdmkg1uon+Db+8iS+Q/XimOJIEQ9YPT3YoZKErO0/w
+         O19vB/7aFWKKlakLkrEWNLrn0u7hTkZ4O8eQZn13KRLgh3+ZhOjtKoK/82ddwEScw6tt
+         KtyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735428775; x=1736033575;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wOndzP+gvkrgZs0qc02qdGu1OBtOTqc7KPMQjqAeOC0=;
+        b=QEoioi34uGv7mFeG8K2JnyGy+bSctiriXFvmuHjxPAQjYAu/TDee2/ucf6LJzD+P26
+         o5elVp/xuHplkLZ/YMADpJmLtVEJEmVZHZ/3RJbm18nhi9WfNelARzkciPiq8uiGS7jR
+         kmbfagLUROGiUl5Lqt89T+HB0JGmyE4jovyzdzasdk5geTxfo7bbg//hT96TBUN/yAc9
+         rzTyGTekjtc2snRwZ5EViVGQMdyuDfShhrrJjA41uzMryyK68pXxqSSlsW/h885k90jq
+         t3mfjFR6pcr7IOJt2ZAtVpaJFZDXUnvhaGWmPEoZRDXHlP+YJswZEJcc8HuwjNouZZS8
+         dJPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV/y2/jt6/R+A1V4KE4Ezm+RUNAlbIFTAgwnsmUR9BwbIwBfmoXrFf8lRi83cLCM2Ykk1z304Whmvk=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw5DltjmHG9eqPEwfEqcwTlQMzO/kvg2vsLwM9EcuUFv18xEwDe
+	Pc0vdgkcqdmd5hWqg/B2wpmnIxFV7rjpXpzf+qpDa7DVDW32v1nT
+X-Gm-Gg: ASbGncvhEd3Cd8oYMKBX4ne2VjUvvl8JPm5P1KMrXfoQWotI1rND87ixAgPqPiSjRp7
+	aumtTaU39pngXpBqb7d0WsMkjQ4CsdVcD9K3TDcL1EJYD6IpKEKVdU1AInSWrp++Zh9M4CM5mpU
+	H3uS5Ovdf+5CjsRxnymeC/LPYP0GDKE+LoeVXyXAVO4Pd/VIqUbnsTQ5/YCAkduh9ahC+pfD0KE
+	Gmrt2hbyfvd35XCJcCiCy1DsWpPor/4XCtESIBPD646av9VtR943xd7oQ==
+X-Google-Smtp-Source: AGHT+IGe8Rwcmuo9VN1Lkb94sZXMSVEBxRAkdBXNxIt/1C+WWqsmcYg0Za15vXGe3lPDFNIsmfP2GQ==
+X-Received: by 2002:a5d:64c8:0:b0:385:ec8d:8ca9 with SMTP id ffacd0b85a97d-38a223f5c0dmr23948509f8f.42.1735428775256;
+        Sat, 28 Dec 2024 15:32:55 -0800 (PST)
 Received: from localhost ([2a01:e0a:d9a:4c20:d6da:7147:f20e:31de])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c8474c2sm25616331f8f.55.2024.12.28.15.32.53
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c8475cesm25785410f8f.57.2024.12.28.15.32.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Dec 2024 15:32:53 -0800 (PST)
+        Sat, 28 Dec 2024 15:32:55 -0800 (PST)
 From: Raphael Gallais-Pou <rgallaispou@gmail.com>
-Subject: [PATCH 0/6] Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
-Date: Sun, 29 Dec 2024 00:32:39 +0100
-Message-Id: <20241229-update_pm_macro-v1-0-c7d4c4856336@gmail.com>
+Date: Sun, 29 Dec 2024 00:32:40 +0100
+Subject: [PATCH 1/6] usb: dwc3: st: Switch from CONFIG_PM_SLEEP guards to
+ pm_sleep_ptr()
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJeKcGcC/x3MQQqAIBBA0avIrBPKFKSrRIjpVLPQRCuC6O5Jy
- 7f4/4GCmbDAwB7IeFGhPVZ0DQO32bgiJ18NohWyE0LzM3l7oEnBBOvyzlEqrWa0i+97qFXKuND
- 9H8fpfT9Zpv3sYQAAAA==
-X-Change-ID: 20241228-update_pm_macro-e4585beafd33
+Message-Id: <20241229-update_pm_macro-v1-1-c7d4c4856336@gmail.com>
+References: <20241229-update_pm_macro-v1-0-c7d4c4856336@gmail.com>
+In-Reply-To: <20241229-update_pm_macro-v1-0-c7d4c4856336@gmail.com>
 To: Patrice Chotard <patrice.chotard@foss.st.com>, 
  Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
@@ -94,26 +94,25 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
  netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
  linux-spi@vger.kernel.org
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1358; i=rgallaispou@gmail.com;
- h=from:subject:message-id; bh=giHUQnI8ap63UVqjMPzoWtpyquzmfVZTDzUG6P1RK5Q=;
- b=owEBbQKS/ZANAwAIAechimjUEsK1AcsmYgBncIqaIFUIX99U52dYXyKTHv3kUYpiB1NgWDXmQ
- fbeWDg8/+6JAjMEAAEIAB0WIQQgmXv2E+fvbV/9ui/nIYpo1BLCtQUCZ3CKmgAKCRDnIYpo1BLC
- tcMtEACBJ0gPdEh3A9kQDku4xnQ3prDDj0BroWFCemcZ3uDele37akkQ207mrAPUnUAf9Zjo6nc
- lFC566Wdx1jXko5eOVPaPJ/edqebt3W2r4sk2Y3mZcT6m2+MeO43BR2XfjjNXzSxDSYp6zSh0QM
- R0urFraGthT4o2d/WeZBebYnfPMfCemp8aA5KA3NDlRTDs0AdY8BNKiLKl2eaRuZno4DUuK2ibI
- zw8rWXkJHld/dOAL+sm+Z4L5PnkRFnUCDk/IXDiJuHWiYlKzwX7G2FP1s1r/fAIFg4rtm2x8wCo
- guwnv5TNvItP1xk1dOqmdxOqboQdx7O6Zxg6aE0iz/LFB0oU/cV0tTZJQaI1mg9LSJQqjF9tFiD
- ws0ugN8G4DLBVUJotARGmqBcWIyIzHZpP1u0UBpnM58l87bG1qK+9CLt2EnCUELhVgdz+QOqtfm
- mU6LioIYAoEFxMPlYDjFTK++GHJ28PO9vOfanD8WFpAIHbUrJJyWXXyI28hKfcBLOXPuxN5kmny
- YUc+xSr1t+hM1ger7KHjGW4dpzEpAOtWwYvYzk+WgMOn1vYeBqWC6x8LaEeN/qOGS+4ajhwrqj1
- c3PTO7zspLoPoHi7uMoGHkGtePff2MI9uzzYdWnKAQW3+iftKa3RtY8hFgxDar0iu0ldblZHZnB
- sISlnpXRGIpbxKw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1573; i=rgallaispou@gmail.com;
+ h=from:subject:message-id; bh=pITQ3SISHmNURCP92MPtMIDVu2hGeerDTBhUOZa4ipk=;
+ b=owEBbQKS/ZANAwAIAechimjUEsK1AcsmYgBncIqk5Qr8I8UCU+eXHkVfaa5GP81eSw5Fhp3mZ
+ d3XzeEUBu2JAjMEAAEIAB0WIQQgmXv2E+fvbV/9ui/nIYpo1BLCtQUCZ3CKpAAKCRDnIYpo1BLC
+ tSpaD/92t81iuqxEUHcsYt5/Wd4eQOM5eEy6ZSir1T7uL3om6KgK6F9iIjSVBlFj6kEbB25IJ/h
+ Bt1oVYolifnCrjPORvWAOSIw3MWCn1Osds32OjHMKm3W8nWcwB8bDoCMZBFhtpioriPGVKTjdZW
+ PlEXPCH2XKcSdDdqB0Tw55BruLDg+f56q2fHv88gAjRqPgt7HS/IpOc/cdp04Z2k8rv0DL7Jg2M
+ kUB00pqUBL0ghgILZkXQ/ylZJZSSQhyN7CeVrK7R6YBmUDf14wnLHEFOqj8Wj6hKR2cILhfftu2
+ 8x1MvvwQrupvZZoPTGCvPnt/E9Pe4N6LTXHY9fq+1a3Y5jJeFgnaYmgk6vAHEVT54lTshPXJ6iK
+ oFdHkO6bjUb/71rNJrug6/BCIr+7VAkCnaMeK8NB8EmKeUNmo6pgBgzpLexiQrardLh+J7kq/pL
+ kpaJR6FSoq/KZWSzWtpyHQ9r838IHznXZ/gd3O3j4h56wIsNKj1xC6N3fRBGoqGr1GAiwTAb1qb
+ dOzLYzkIRXA4IlPIDj1CbJ0Lvf1y1Fis6k1vwl1Cz77RCpC4wa7/1uoB9S198DgNdoXvy+a/5QI
+ oMezUW+nv2ob40fcPfwzr9abnCP5iFLv/OINnqBukVW8iUUCjreXiHUuLpBflRfZD2ia/9uLqpa
+ bHzvuymCdM0rkJg==
 X-Developer-Key: i=rgallaispou@gmail.com; a=openpgp;
  fpr=20997BF613E7EF6D5FFDBA2FE7218A68D412C2B5
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241228_153256_187675_68B449D5 
-X-CRM114-Status: UNSURE (   6.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241228_153257_063967_2BAC5831 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,36 +129,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prevent the use of macros, and rely instead on kernel configuration for
-power management.
+Letting the compiler remove these functions when the kernel is built
+without CONFIG_PM_SLEEP support is simpler and less error prone than the
+use of #ifdef based kernel configuration guards.
 
-This series makes the same change over six different drivers:
-usb-st-dwc3, sdhci-st, st-spi-fsm, ahci_st, sti-dwmac, spi-st.
-
+Link: https://lore.kernel.org/all/20240716180010.126987-1-rgallaispou@gmail.com
 Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
 ---
-Raphael Gallais-Pou (6):
-      usb: dwc3: st: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
-      mmc: sdhci-st: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
-      mtd: st_spi_fsm: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
-      ahci: st: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
-      net: stmmac: sti: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
-      spi: st: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
+ drivers/usb/dwc3/dwc3-st.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
- drivers/ata/ahci_st.c                           | 6 ++----
- drivers/mmc/host/sdhci-st.c                     | 6 ++----
- drivers/mtd/devices/st_spi_fsm.c                | 6 ++----
- drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c | 8 +++-----
- drivers/spi/spi-st-ssc4.c                       | 6 +-----
- drivers/usb/dwc3/dwc3-st.c                      | 6 ++----
- 6 files changed, 12 insertions(+), 26 deletions(-)
----
-base-commit: 8155b4ef3466f0e289e8fcc9e6e62f3f4dceeac2
-change-id: 20241228-update_pm_macro-e4585beafd33
+diff --git a/drivers/usb/dwc3/dwc3-st.c b/drivers/usb/dwc3/dwc3-st.c
+index e16c3237180e970c184dfdb147c8abd46ff429a3..ef7c43008946e15b72d88aba4941dc52bf0788d7 100644
+--- a/drivers/usb/dwc3/dwc3-st.c
++++ b/drivers/usb/dwc3/dwc3-st.c
+@@ -309,7 +309,6 @@ static void st_dwc3_remove(struct platform_device *pdev)
+ 	reset_control_assert(dwc3_data->rstc_rst);
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+ static int st_dwc3_suspend(struct device *dev)
+ {
+ 	struct st_dwc3 *dwc3_data = dev_get_drvdata(dev);
+@@ -343,9 +342,8 @@ static int st_dwc3_resume(struct device *dev)
+ 
+ 	return 0;
+ }
+-#endif /* CONFIG_PM_SLEEP */
+ 
+-static SIMPLE_DEV_PM_OPS(st_dwc3_dev_pm_ops, st_dwc3_suspend, st_dwc3_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(st_dwc3_dev_pm_ops, st_dwc3_suspend, st_dwc3_resume);
+ 
+ static const struct of_device_id st_dwc3_match[] = {
+ 	{ .compatible = "st,stih407-dwc3" },
+@@ -360,7 +358,7 @@ static struct platform_driver st_dwc3_driver = {
+ 	.driver = {
+ 		.name = "usb-st-dwc3",
+ 		.of_match_table = st_dwc3_match,
+-		.pm = &st_dwc3_dev_pm_ops,
++		.pm = pm_sleep_ptr(&st_dwc3_dev_pm_ops),
+ 	},
+ };
+ 
 
-Best regards,
 -- 
-Raphael Gallais-Pou <rgallaispou@gmail.com>
+2.47.1
 
 
 ______________________________________________________
