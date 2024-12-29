@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5637E77188
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Dec 2024 01:30:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC324E77188
+	for <linux-mtd@archiver.kernel.org>; Sun, 29 Dec 2024 01:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yDx3+RQ1FmbkpXM6swMWkRkQ6rXLsBniSWw88A1JKdY=; b=m8TT9BMGG313OO
-	B1iOlXIhWZxaqvfy5i3E+6IOokLlsMIopvr6prrO1DVNsj2JeBbJoxoxN1epikU+1fs4vp6x65LJs
-	X7+YLQKao/ogtGRg7lnwzxTvOLXUxPc+LpE2vR9XevqLVbAsQVmYzPw1e64f2NrAtIbxbyf9oYqcQ
-	SxxdpOSLVR9nfv9FXLK5rH1qP7tuojvgI52ZpNZSwpUUOzk0TpbsSQ4SZeqAOaxvHUIqbPgb0vWZZ
-	nSRRzsA9gNP7S6lAVTcLxlwVgmkR+nl7j/XKveu/DTr7MXCZP/K51P+9nEDs5CJCDU33RcAJo6E9D
-	cPJVCBtCXiVpTEXApPeQ==;
+	List-Owner; bh=CyEwrlcHWApS/ZFr53z9UbxlzSsWKe1d5kRVQq8RKys=; b=f/icaJqbyapYrD
+	RPEsD1YfTAZfXA5cjah81FwuHpjFLumFLCSYVIaMIcLja4iRwCsiF3G5iicbIVrTmclRCFozxUNrI
+	koUnsBxoxdGE0WLZXE76yBNu8Flq1HYU+mukjUz4prSOiTP7PNR5IEwJdiQ8NdoRfy/AdWT3NjKy8
+	sCBGo+TR72N1rtRC4hosFwaJiiAQAI1Qg4NzVzilLKiWWhRGSY+3tZNmk3iynPIHs+XSUbgvBQuWB
+	JJ+8BQ3Seq2mccvUfYUGZqw0LYvpvCTHUc8oumHP47B+CunKIDwJuLBL25TjrV0Yy7S8yjx4dQl5w
+	WgzJMMRi4r3thib0Gk8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tRi7x-00000002gSt-0npv;
-	Sun, 29 Dec 2024 01:29:57 +0000
-Received: from mgamail.intel.com ([198.175.65.9])
+	id 1tRiIW-00000002h6Q-3YOa;
+	Sun, 29 Dec 2024 01:40:52 +0000
+Received: from mgamail.intel.com ([198.175.65.17])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tRi6k-00000002gLC-0Ibc;
-	Sun, 29 Dec 2024 01:28:43 +0000
+	id 1tRiHJ-00000002gyB-3niS;
+	Sun, 29 Dec 2024 01:39:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1735435722; x=1766971722;
+  t=1735436378; x=1766972378;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=I7rXsmUoa6ixHAofeE9KHj410C9nn2O2m/lr/aX7Ty4=;
-  b=nQDmietHSNdt3mDa69nKp/PTpwPG6IzM+bRxX9TCstH1XtdY5t6H5YiO
-   ILM1z08L9sPSqC1L1sJ2OImwB49v1WBufCc5D3H7srqe6dz5iO+I9ebc5
-   mIoR1vmbjePD58dV6rwwjA0M0Ea3i+LrTng3z5aAXOx0/erv166nVlfta
-   kxmHaSCTNLNXcnSpQVG+R73gThMN6oBeOidotZrOHf/vUfXszElgCnJuv
-   t1nRpJqq2f3sEFsILuDFRBV5mB9kG8x3zEXiHO7Oq+/eiC0XZnXvwtxpc
-   1mhnv9tU6J9oBETDEOFWnD3Jn818AKvf6qJwwbVmel+z2yH+6uaA5KaT+
-   g==;
-X-CSE-ConnectionGUID: U7nDPC3+StSrzajHzVOvmw==
-X-CSE-MsgGUID: LPdB5rDiTDGaOaRjd7aqMw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11299"; a="58237971"
+  bh=rFQfnH8g9qnvAm/orX7H7+JRj5OpvCxqGxR6Qhq2ETY=;
+  b=YrHqigENiRZFKFNdf/eyVKM6sZLYSgeadY5sfAlQL2fs9T9/XmOpLaKd
+   ywgM/fVAo8a3bGNGuGdDZLjG6OSJRe9wQ8bdnvskoIh7id9Gd2e+Pu/Jh
+   mOdhNYOfiv3iaBnb9uVVCtP3DG9B78oLa0Gm/RGRSL5TjImxTnONG5JjB
+   VVlsinm/4ed/XkRy7qm5Qnh23nI0Ovq+XI/L8yfzHb+2QAZY0eMrGXDX/
+   x4J/WykliuqVrIbB8q6l6dsWCT7eLL9qAsuR3tobDcCEfxt84AT/xweKu
+   9Bx/M2Y/7502cShz4K4QGYKqVMBVK+MNIQ2wFsK6wj9a9zScdBuyHY708
+   Q==;
+X-CSE-ConnectionGUID: 9vl8e+jwQ6OfsONcjM40Ag==
+X-CSE-MsgGUID: /0OQ8fUWQqSKky7PXTqafw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11299"; a="35802059"
 X-IronPort-AV: E=Sophos;i="6.12,273,1728975600"; 
-   d="scan'208";a="58237971"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2024 17:28:35 -0800
-X-CSE-ConnectionGUID: UtSp2+6xTi6Ye3XqQpKEYQ==
-X-CSE-MsgGUID: VJly6oYLR4iFsqiALXM9fA==
+   d="scan'208";a="35802059"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2024 17:39:37 -0800
+X-CSE-ConnectionGUID: Oy4svG45T4qIdA2Vlwx06g==
+X-CSE-MsgGUID: xNOqO8z6T+WhcD2uqXjGIg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,273,1728975600"; 
-   d="scan'208";a="100840450"
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="100302592"
 Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 28 Dec 2024 17:28:29 -0800
+  by orviesa010.jf.intel.com with ESMTP; 28 Dec 2024 17:39:31 -0800
 Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1tRi6V-0004Pw-0a;
-	Sun, 29 Dec 2024 01:28:27 +0000
-Date: Sun, 29 Dec 2024 09:28:17 +0800
+	id 1tRiHA-0004QO-0J;
+	Sun, 29 Dec 2024 01:39:28 +0000
+Date: Sun, 29 Dec 2024 09:39:05 +0800
 From: kernel test robot <lkp@intel.com>
 To: Raphael Gallais-Pou <rgallaispou@gmail.com>,
 	Patrice Chotard <patrice.chotard@foss.st.com>,
@@ -78,21 +78,22 @@ To: Raphael Gallais-Pou <rgallaispou@gmail.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 6/6] spi: st: Switch from CONFIG_PM_SLEEP guards to
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-ide@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	linux-spi@vger.kernel.org
+Subject: Re: [PATCH 2/6] mmc: sdhci-st: Switch from CONFIG_PM_SLEEP guards to
  pm_sleep_ptr()
-Message-ID: <202412290921.tY3nJMjm-lkp@intel.com>
-References: <20241229-update_pm_macro-v1-6-c7d4c4856336@gmail.com>
+Message-ID: <202412290939.43oNt9t6-lkp@intel.com>
+References: <20241229-update_pm_macro-v1-2-c7d4c4856336@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20241229-update_pm_macro-v1-6-c7d4c4856336@gmail.com>
+In-Reply-To: <20241229-update_pm_macro-v1-2-c7d4c4856336@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241228_172842_197580_FD09263A 
-X-CRM114-Status: GOOD (  10.36  )
+X-CRM114-CacheID: sfid-20241228_173938_006222_94194738 
+X-CRM114-Status: GOOD (  10.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,60 +112,88 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Raphael,
 
-kernel test robot noticed the following build warnings:
+kernel test robot noticed the following build errors:
 
-[auto build test WARNING on 8155b4ef3466f0e289e8fcc9e6e62f3f4dceeac2]
+[auto build test ERROR on 8155b4ef3466f0e289e8fcc9e6e62f3f4dceeac2]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Raphael-Gallais-Pou/usb-dwc3-st-Switch-from-CONFIG_PM_SLEEP-guards-to-pm_sleep_ptr/20241229-073700
 base:   8155b4ef3466f0e289e8fcc9e6e62f3f4dceeac2
-patch link:    https://lore.kernel.org/r/20241229-update_pm_macro-v1-6-c7d4c4856336%40gmail.com
-patch subject: [PATCH 6/6] spi: st: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
-config: arm-randconfig-002-20241229 (https://download.01.org/0day-ci/archive/20241229/202412290921.tY3nJMjm-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241229/202412290921.tY3nJMjm-lkp@intel.com/reproduce)
+patch link:    https://lore.kernel.org/r/20241229-update_pm_macro-v1-2-c7d4c4856336%40gmail.com
+patch subject: [PATCH 2/6] mmc: sdhci-st: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
+config: hexagon-randconfig-001-20241229 (https://download.01.org/0day-ci/archive/20241229/202412290939.43oNt9t6-lkp@intel.com/config)
+compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project 319b89197348b7cad1215e235bdc7b5ec8f9b72c)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241229/202412290939.43oNt9t6-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202412290921.tY3nJMjm-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202412290939.43oNt9t6-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
->> drivers/spi/spi-st-ssc4.c:418:12: warning: 'spi_st_resume' defined but not used [-Wunused-function]
-     418 | static int spi_st_resume(struct device *dev)
-         |            ^~~~~~~~~~~~~
->> drivers/spi/spi-st-ssc4.c:406:12: warning: 'spi_st_suspend' defined but not used [-Wunused-function]
-     406 | static int spi_st_suspend(struct device *dev)
-         |            ^~~~~~~~~~~~~~
+>> drivers/mmc/host/sdhci-st.c:460:8: error: call to undeclared function 'sdhci_suspend_host'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     460 |         ret = sdhci_suspend_host(host);
+         |               ^
+>> drivers/mmc/host/sdhci-st.c:494:9: error: call to undeclared function 'sdhci_resume_host'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     494 |         return sdhci_resume_host(host);
+         |                ^
+   drivers/mmc/host/sdhci-st.c:494:9: note: did you mean 'sdhci_remove_host'?
+   drivers/mmc/host/sdhci.h:827:6: note: 'sdhci_remove_host' declared here
+     827 | void sdhci_remove_host(struct sdhci_host *host, int dead);
+         |      ^
+   2 errors generated.
 
 
-vim +/spi_st_resume +418 drivers/spi/spi-st-ssc4.c
+vim +/sdhci_suspend_host +460 drivers/mmc/host/sdhci-st.c
 
-9e862375c5420a Lee Jones      2014-12-09  405  
-9e862375c5420a Lee Jones      2014-12-09 @406  static int spi_st_suspend(struct device *dev)
-9e862375c5420a Lee Jones      2014-12-09  407  {
-e6b7e64cb11966 Yang Yingliang 2023-11-28  408  	struct spi_controller *host = dev_get_drvdata(dev);
-9e862375c5420a Lee Jones      2014-12-09  409  	int ret;
-9e862375c5420a Lee Jones      2014-12-09  410  
-e6b7e64cb11966 Yang Yingliang 2023-11-28  411  	ret = spi_controller_suspend(host);
-9e862375c5420a Lee Jones      2014-12-09  412  	if (ret)
-9e862375c5420a Lee Jones      2014-12-09  413  		return ret;
-9e862375c5420a Lee Jones      2014-12-09  414  
-9e862375c5420a Lee Jones      2014-12-09  415  	return pm_runtime_force_suspend(dev);
-9e862375c5420a Lee Jones      2014-12-09  416  }
-9e862375c5420a Lee Jones      2014-12-09  417  
-9e862375c5420a Lee Jones      2014-12-09 @418  static int spi_st_resume(struct device *dev)
-9e862375c5420a Lee Jones      2014-12-09  419  {
-e6b7e64cb11966 Yang Yingliang 2023-11-28  420  	struct spi_controller *host = dev_get_drvdata(dev);
-9e862375c5420a Lee Jones      2014-12-09  421  	int ret;
-9e862375c5420a Lee Jones      2014-12-09  422  
-e6b7e64cb11966 Yang Yingliang 2023-11-28  423  	ret = spi_controller_resume(host);
-9e862375c5420a Lee Jones      2014-12-09  424  	if (ret)
-9e862375c5420a Lee Jones      2014-12-09  425  		return ret;
-9e862375c5420a Lee Jones      2014-12-09  426  
-9e862375c5420a Lee Jones      2014-12-09  427  	return pm_runtime_force_resume(dev);
-9e862375c5420a Lee Jones      2014-12-09  428  }
-9e862375c5420a Lee Jones      2014-12-09  429  
+f52d9c4f459bda Peter Griffin 2014-07-09  449  
+f52d9c4f459bda Peter Griffin 2014-07-09  450  static int sdhci_st_suspend(struct device *dev)
+f52d9c4f459bda Peter Griffin 2014-07-09  451  {
+f52d9c4f459bda Peter Griffin 2014-07-09  452  	struct sdhci_host *host = dev_get_drvdata(dev);
+f52d9c4f459bda Peter Griffin 2014-07-09  453  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+1531675269c833 Jisheng Zhang 2016-02-16  454  	struct st_mmc_platform_data *pdata = sdhci_pltfm_priv(pltfm_host);
+d38dcad4e7b48f Adrian Hunter 2017-03-20  455  	int ret;
+d38dcad4e7b48f Adrian Hunter 2017-03-20  456  
+d38dcad4e7b48f Adrian Hunter 2017-03-20  457  	if (host->tuning_mode != SDHCI_TUNING_MODE_3)
+d38dcad4e7b48f Adrian Hunter 2017-03-20  458  		mmc_retune_needed(host->mmc);
+f52d9c4f459bda Peter Griffin 2014-07-09  459  
+d38dcad4e7b48f Adrian Hunter 2017-03-20 @460  	ret = sdhci_suspend_host(host);
+f52d9c4f459bda Peter Griffin 2014-07-09  461  	if (ret)
+f52d9c4f459bda Peter Griffin 2014-07-09  462  		goto out;
+f52d9c4f459bda Peter Griffin 2014-07-09  463  
+406c24310a7bd7 Peter Griffin 2015-04-10  464  	reset_control_assert(pdata->rstc);
+406c24310a7bd7 Peter Griffin 2015-04-10  465  
+3ae50f4512ce83 Lee Jones     2016-09-08  466  	clk_disable_unprepare(pdata->icnclk);
+f52d9c4f459bda Peter Griffin 2014-07-09  467  	clk_disable_unprepare(pltfm_host->clk);
+f52d9c4f459bda Peter Griffin 2014-07-09  468  out:
+f52d9c4f459bda Peter Griffin 2014-07-09  469  	return ret;
+f52d9c4f459bda Peter Griffin 2014-07-09  470  }
+f52d9c4f459bda Peter Griffin 2014-07-09  471  
+f52d9c4f459bda Peter Griffin 2014-07-09  472  static int sdhci_st_resume(struct device *dev)
+f52d9c4f459bda Peter Griffin 2014-07-09  473  {
+f52d9c4f459bda Peter Griffin 2014-07-09  474  	struct sdhci_host *host = dev_get_drvdata(dev);
+f52d9c4f459bda Peter Griffin 2014-07-09  475  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+1531675269c833 Jisheng Zhang 2016-02-16  476  	struct st_mmc_platform_data *pdata = sdhci_pltfm_priv(pltfm_host);
+2053812f6e1af0 Peter Griffin 2015-04-10  477  	struct device_node *np = dev->of_node;
+7f55eb101d4a75 Arvind Yadav  2017-06-20  478  	int ret;
+f52d9c4f459bda Peter Griffin 2014-07-09  479  
+7f55eb101d4a75 Arvind Yadav  2017-06-20  480  	ret = clk_prepare_enable(pltfm_host->clk);
+7f55eb101d4a75 Arvind Yadav  2017-06-20  481  	if (ret)
+7f55eb101d4a75 Arvind Yadav  2017-06-20  482  		return ret;
+7f55eb101d4a75 Arvind Yadav  2017-06-20  483  
+7f55eb101d4a75 Arvind Yadav  2017-06-20  484  	ret = clk_prepare_enable(pdata->icnclk);
+7f55eb101d4a75 Arvind Yadav  2017-06-20  485  	if (ret) {
+7f55eb101d4a75 Arvind Yadav  2017-06-20  486  		clk_disable_unprepare(pltfm_host->clk);
+7f55eb101d4a75 Arvind Yadav  2017-06-20  487  		return ret;
+7f55eb101d4a75 Arvind Yadav  2017-06-20  488  	}
+f52d9c4f459bda Peter Griffin 2014-07-09  489  
+406c24310a7bd7 Peter Griffin 2015-04-10  490  	reset_control_deassert(pdata->rstc);
+406c24310a7bd7 Peter Griffin 2015-04-10  491  
+2053812f6e1af0 Peter Griffin 2015-04-10  492  	st_mmcss_cconfig(np, host);
+2053812f6e1af0 Peter Griffin 2015-04-10  493  
+f52d9c4f459bda Peter Griffin 2014-07-09 @494  	return sdhci_resume_host(host);
+f52d9c4f459bda Peter Griffin 2014-07-09  495  }
+f52d9c4f459bda Peter Griffin 2014-07-09  496  
 
 -- 
 0-DAY CI Kernel Test Service
