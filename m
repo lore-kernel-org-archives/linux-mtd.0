@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1274AE7718F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F14CFE77197
 	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jan 2025 15:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,48 +12,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lXw6F8rURPNqX0P6USEyoud5ACJoQkvEEaVL6tgmYNA=; b=WNI5EWjwqGTOXm
-	3r17LX28kV2llnu/OanqCwE/UcSahgpdKK3H3CiF3SX+adNB3J2P89K9qGx5SLOkp7Smqy7TceNr8
-	dZsXVa4/YtJM8l1j9TPkQYXRETxy3dKHS0+PeEclqv6+TVNQswQ9iNmwwSNz046eRNO/zB3AyEcgg
-	3QEDhkaoNnJDBz8nbQZA/Eyd3wwAQm2a0lLyvq0ohYnJy/O4rWWftmygZvtJ9Gd6niFeTNYO9brdT
-	crOXgYPOBZ7vEiDEH6BIsPaPf6P+8EL15ae8r3apTAZFy6dpw48AWqL6Gp+ABoGbCfAdIx/dVImEC
-	1UaJw0lam4QVvcFusiCg==;
+	List-Owner; bh=QpmwMpNMfeIqbpJLv7V/Gjb1yMRCiXXYPljndtNTbX8=; b=b8/xe747WBj9iF
+	HSM36Wcqou9UbbMFmV781WSiXF3p6LkA8u4Nd4UFOxAEGA4IZfaH9Tzz8NqRZnRqhuwjEF+gkLrLf
+	wZ5rGOCI0OMK3M3sBkVxt6nE470SMxAUa5YUmMnfo2wcexw7MtztsSyXnmp7SIjAqa5sIeZpOqRQl
+	di2sIQhNaLigQJg+cqjsd0oKW2q+aiNYfsrBc/+I3Bx9G5hiBdDSyiYihgOiPYXBohdkr+jUJ78zf
+	yYkRVAE74zNdmq7mMdN+eLu/NDcZ48OEfYpMO0OD9CTE91sByI0oSTRuvrbMQzyzZzZfC/MujC6oI
+	/luL9jCzi+NfLwJI+fOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tT0zc-0000000980u-1Tlp;
-	Wed, 01 Jan 2025 15:50:44 +0000
+	id 1tT0zl-0000000986Z-1Plp;
+	Wed, 01 Jan 2025 15:50:53 +0000
 Received: from mgamail.intel.com ([198.175.65.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tT0zX-000000097yI-3rgy
+	id 1tT0zi-0000000981h-2FOU
 	for linux-mtd@lists.infradead.org;
-	Wed, 01 Jan 2025 15:50:41 +0000
+	Wed, 01 Jan 2025 15:50:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1735746640; x=1767282640;
+  t=1735746650; x=1767282650;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NSkYDIr+t/AV04AKsrvBwo0MXWMMgwJl7QqvpeHpJ0M=;
-  b=NnnAXD5hF2kmMFmvEnq9h0lgjkazCq/BnihlYn/lDKa1Dm7ZSCm5CmPl
-   +WaIOGha+nWgNEk1ZbvQgJO9Qk5xFO58jmA92H/YJ9V3mYnQryYjh0vps
-   v6baGlf7wsBBfptguqc3iclLqN7ib7/SMVoxYcVOobi/X13/ZqOZ+7zj3
-   H7jOTA8rMOMstoeDmkgOZ96GLi5I0Bni5D2OfwQjzTjUM7Zsuu8KCVs60
-   84LdTyOsqgEiM/GtGWuv/c5ks5Jah4nQW9PWGEESfZnYu1Ug72TYccX0E
-   UNtC8FECjlSekh9eCNGLF9da5ERzXQAXxrRCPvHmdJNJrnC67fIWoqoCz
-   Q==;
-X-CSE-ConnectionGUID: +IeWruc6QueT3pJ9GBCm5A==
-X-CSE-MsgGUID: fnbQ0kA3SzSDSWHghMpVzQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11302"; a="46485531"
+  bh=PfGW4qkCHLfFJtlf/H1GMum1sePIrVFOurcLl9WNmOs=;
+  b=SCvkmkeidQet8UQ7xOBFPFrFeTO9AA8EEF6zWh+D5OM2rM/UlQfqMQaF
+   icroTfZkEE7YBLOuCeYthxNAyVDQ68wmGzkGGwDd+iTP8/vCOf7ed5Qdl
+   yTVAivfHVek9lZp9Y2AdXwv4PfGVCikSow/NcTzbkiuLfRPpvvi0uUDBA
+   SiNtQk7+eeMTJXnTEj10Zhl+2beBVrHYblIjFIo6/c5pE7++5KQF+iIVy
+   +Q63MasqH3AyZK4CsDf8Ri6nB5EAeK4oSIzjK/fPKcv4dCvMaVzeTRr6i
+   KMnTGWQFoHWSQ2pES345/3cZJN5JaK0QhLNSIJqTHvSxOZs4ELOPmaDlN
+   g==;
+X-CSE-ConnectionGUID: +z3bBtkcRTiIs6j+kw1pMg==
+X-CSE-MsgGUID: N0UVO72DQnecYp0J9X3bqA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11302"; a="46485571"
 X-IronPort-AV: E=Sophos;i="6.12,282,1728975600"; 
-   d="scan'208";a="46485531"
+   d="scan'208";a="46485571"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2025 07:50:39 -0800
-X-CSE-ConnectionGUID: l3vGDItzTkGBKPWdsWWv9A==
-X-CSE-MsgGUID: gOIFcbg6RrmQOixzKCobhg==
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2025 07:50:50 -0800
+X-CSE-ConnectionGUID: 1500fAb/QmS4W/hKvMh2vQ==
+X-CSE-MsgGUID: WznZcb01Rr22RzEByofszQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,282,1728975600"; 
-   d="scan'208";a="132138907"
+   d="scan'208";a="132138927"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2025 07:50:34 -0800
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2025 07:50:45 -0800
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -76,17 +76,18 @@ Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	intel-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Alexander Usyskin <alexander.usyskin@intel.com>
-Subject: [PATCH v4 01/11] mtd: core: always create master device
-Date: Wed,  1 Jan 2025 17:39:15 +0200
-Message-ID: <20250101153925.865703-2-alexander.usyskin@intel.com>
+	Alexander Usyskin <alexander.usyskin@intel.com>,
+	Tomas Winkler <tomasw@gmail.com>
+Subject: [PATCH v4 03/11] mtd: intel-dg: implement region enumeration
+Date: Wed,  1 Jan 2025 17:39:17 +0200
+Message-ID: <20250101153925.865703-4-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250101153925.865703-1-alexander.usyskin@intel.com>
 References: <20250101153925.865703-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250101_075040_015919_14C590CD 
-X-CRM114-Status: GOOD (  25.37  )
+X-CRM114-CacheID: sfid-20250101_075050_626162_E43037BE 
+X-CRM114-Status: GOOD (  22.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,303 +104,246 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Create master device without partition when
-CONFIG_MTD_PARTITIONED_MASTER flag is unset.
+In intel-dg, there is no access to the spi controller,
+the information is extracted from the descriptor region.
 
-This streamlines device tree and allows to anchor
-runtime power management on master device in all cases.
-
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Co-developed-by: Tomas Winkler <tomasw@gmail.com>
+Signed-off-by: Tomas Winkler <tomasw@gmail.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/mtd/mtdcore.c | 123 ++++++++++++++++++++++++++++++++----------
- drivers/mtd/mtdpart.c |   6 +--
- 2 files changed, 95 insertions(+), 34 deletions(-)
+ drivers/mtd/devices/mtd-intel-dg.c | 199 +++++++++++++++++++++++++++++
+ 1 file changed, 199 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 724f917f91ba..bbc502ef75de 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -68,7 +68,13 @@ static struct class mtd_class = {
- 	.pm = MTD_CLS_PM_OPS,
+diff --git a/drivers/mtd/devices/mtd-intel-dg.c b/drivers/mtd/devices/mtd-intel-dg.c
+index 746c963ea540..05e333771be0 100644
+--- a/drivers/mtd/devices/mtd-intel-dg.c
++++ b/drivers/mtd/devices/mtd-intel-dg.c
+@@ -3,6 +3,8 @@
+  * Copyright(c) 2019-2024, Intel Corporation. All rights reserved.
+  */
+ 
++#include <linux/bitfield.h>
++#include <linux/bits.h>
+ #include <linux/device.h>
+ #include <linux/intel_dg_nvm_aux.h>
+ #include <linux/io.h>
+@@ -22,9 +24,199 @@ struct intel_dg_nvm {
+ 		u8 id;
+ 		u64 offset;
+ 		u64 size;
++		unsigned int is_readable:1;
++		unsigned int is_writable:1;
+ 	} regions[];
  };
  
-+static struct class mtd_master_class = {
-+	.name = "mtd_master",
-+	.pm = MTD_CLS_PM_OPS,
-+};
++#define NVM_TRIGGER_REG       0x00000000
++#define NVM_VALSIG_REG        0x00000010
++#define NVM_ADDRESS_REG       0x00000040
++#define NVM_REGION_ID_REG     0x00000044
++/*
++ * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
++ * [23:16]-Reserved
++ * [31:24]-Erase MEM RegionID
++ */
++#define NVM_ERASE_REG         0x00000048
++#define NVM_ACCESS_ERROR_REG  0x00000070
++#define NVM_ADDRESS_ERROR_REG 0x00000074
 +
- static DEFINE_IDR(mtd_idr);
-+static DEFINE_IDR(mtd_master_idr);
- 
- /* These are exported solely for the purpose of mtd_blkdevs.c. You
-    should not use them for _anything_ else */
-@@ -83,8 +89,9 @@ EXPORT_SYMBOL_GPL(__mtd_next_device);
- 
- static LIST_HEAD(mtd_notifiers);
- 
--
-+#define MTD_MASTER_DEVS 255
- #define MTD_DEVT(index) MKDEV(MTD_CHAR_MAJOR, (index)*2)
-+static dev_t mtd_master_devt;
- 
- /* REVISIT once MTD uses the driver model better, whoever allocates
-  * the mtd_info will probably want to use the release() hook...
-@@ -104,6 +111,17 @@ static void mtd_release(struct device *dev)
- 	device_destroy(&mtd_class, index + 1);
- }
- 
-+static void mtd_master_release(struct device *dev)
++/* Flash Valid Signature */
++#define NVM_FLVALSIG          0x0FF0A55A
++
++#define NVM_MAP_ADDR_MASK     GENMASK(7, 0)
++#define NVM_MAP_ADDR_SHIFT    0x00000004
++
++#define NVM_REGION_ID_DESCRIPTOR  0
++/* Flash Region Base Address */
++#define NVM_FRBA      0x40
++/* Flash Region __n - Flash Descriptor Record */
++#define NVM_FLREG(__n) (NVM_FRBA + ((__n) * 4))
++/*  Flash Map 1 Register */
++#define NVM_FLMAP1_REG  0x18
++#define NVM_FLMSTR4_OFFSET 0x00C
++
++#define NVM_ACCESS_ERROR_PCIE_MASK 0x7
++
++#define NVM_FREG_BASE_MASK GENMASK(15, 0)
++#define NVM_FREG_ADDR_MASK GENMASK(31, 16)
++#define NVM_FREG_ADDR_SHIFT 12
++#define NVM_FREG_MIN_REGION_SIZE 0xFFF
++
++static inline void idg_nvm_set_region_id(struct intel_dg_nvm *nvm, u8 region)
 +{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+
-+	idr_remove(&mtd_master_idr, mtd->index);
-+	of_node_put(mtd_get_of_node(mtd));
-+
-+	if (mtd_is_partition(mtd))
-+		release_mtd_partition(mtd);
++	iowrite32((u32)region, nvm->base + NVM_REGION_ID_REG);
 +}
 +
- static void mtd_device_release(struct kref *kref)
- {
- 	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
-@@ -367,6 +385,11 @@ static const struct device_type mtd_devtype = {
- 	.release	= mtd_release,
- };
- 
-+static const struct device_type mtd_master_devtype = {
-+	.name		= "mtd_master",
-+	.release	= mtd_master_release,
-+};
++static inline u32 idg_nvm_error(struct intel_dg_nvm *nvm)
++{
++	void __iomem *base = nvm->base;
 +
- static bool mtd_expert_analysis_mode;
- 
- #ifdef CONFIG_DEBUG_FS
-@@ -639,12 +662,12 @@ static void mtd_check_of_node(struct mtd_info *mtd)
-  *	notify each currently active MTD 'user' of its arrival. Returns
-  *	zero on success or non-zero on failure.
-  */
--
- int add_mtd_device(struct mtd_info *mtd)
- {
- 	struct device_node *np = mtd_get_of_node(mtd);
- 	struct mtd_info *master = mtd_get_master(mtd);
- 	struct mtd_notifier *not;
-+	bool partitioned = true;
- 	int i, error, ofidx;
- 
- 	/*
-@@ -655,6 +678,11 @@ int add_mtd_device(struct mtd_info *mtd)
- 	if (WARN_ONCE(mtd->dev.type, "MTD already registered\n"))
- 		return -EEXIST;
- 
-+	if ((master == mtd) && !IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
-+		partitioned = false;
-+		pr_debug("mtd: unpartitioned master %s\n", mtd->name);
-+	}
++	u32 reg = ioread32(base + NVM_ACCESS_ERROR_REG) & NVM_ACCESS_ERROR_PCIE_MASK;
 +
- 	BUG_ON(mtd->writesize == 0);
- 
- 	/*
-@@ -687,10 +715,17 @@ int add_mtd_device(struct mtd_info *mtd)
- 	ofidx = -1;
- 	if (np)
- 		ofidx = of_alias_get_id(np, "mtd");
--	if (ofidx >= 0)
--		i = idr_alloc(&mtd_idr, mtd, ofidx, ofidx + 1, GFP_KERNEL);
--	else
--		i = idr_alloc(&mtd_idr, mtd, 0, 0, GFP_KERNEL);
-+	if (partitioned) {
-+		if (ofidx >= 0)
-+			i = idr_alloc(&mtd_idr, mtd, ofidx, ofidx + 1, GFP_KERNEL);
-+		else
-+			i = idr_alloc(&mtd_idr, mtd, 0, 0, GFP_KERNEL);
-+	} else {
-+		if (ofidx >= 0)
-+			i = idr_alloc(&mtd_master_idr, mtd, ofidx, ofidx + 1, GFP_KERNEL);
-+		else
-+			i = idr_alloc(&mtd_master_idr, mtd, 0, 0, GFP_KERNEL);
-+	}
- 	if (i < 0) {
- 		error = i;
- 		goto fail_locked;
-@@ -738,15 +773,23 @@ int add_mtd_device(struct mtd_info *mtd)
- 	/* Caller should have set dev.parent to match the
- 	 * physical device, if appropriate.
- 	 */
--	mtd->dev.type = &mtd_devtype;
--	mtd->dev.class = &mtd_class;
--	mtd->dev.devt = MTD_DEVT(i);
--	dev_set_name(&mtd->dev, "mtd%d", i);
-+	if (partitioned) {
-+		mtd->dev.type = &mtd_devtype;
-+		mtd->dev.class = &mtd_class;
-+		mtd->dev.devt = MTD_DEVT(i);
-+		dev_set_name(&mtd->dev, "mtd%d", i);
-+	} else {
-+		mtd->dev.type = &mtd_master_devtype;
-+		mtd->dev.class = &mtd_master_class;
-+		mtd->dev.devt = MKDEV(MAJOR(mtd_master_devt), i);
-+		dev_set_name(&mtd->dev, "mtd_master%d", i);
-+	}
- 	dev_set_drvdata(&mtd->dev, mtd);
- 	mtd_check_of_node(mtd);
- 	of_node_get(mtd_get_of_node(mtd));
- 	error = device_register(&mtd->dev);
- 	if (error) {
-+		pr_err("mtd: %s device_register fail %d\n", mtd->name, error);
- 		put_device(&mtd->dev);
- 		goto fail_added;
- 	}
-@@ -758,8 +801,10 @@ int add_mtd_device(struct mtd_info *mtd)
- 
- 	mtd_debugfs_populate(mtd);
- 
--	device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
--		      "mtd%dro", i);
-+	if (partitioned) {
-+		device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
-+			      "mtd%dro", i);
-+	}
- 
- 	pr_debug("mtd: Giving out device %d to %s\n", i, mtd->name);
- 	/* No need to get a refcount on the module containing
-@@ -769,13 +814,16 @@ int add_mtd_device(struct mtd_info *mtd)
- 
- 	mutex_unlock(&mtd_table_mutex);
- 
--	if (of_property_read_bool(mtd_get_of_node(mtd), "linux,rootfs")) {
--		if (IS_BUILTIN(CONFIG_MTD)) {
--			pr_info("mtd: setting mtd%d (%s) as root device\n", mtd->index, mtd->name);
--			ROOT_DEV = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
--		} else {
--			pr_warn("mtd: can't set mtd%d (%s) as root device - mtd must be builtin\n",
--				mtd->index, mtd->name);
-+	if (partitioned) {
-+		if (of_property_read_bool(mtd_get_of_node(mtd), "linux,rootfs")) {
-+			if (IS_BUILTIN(CONFIG_MTD)) {
-+				pr_info("mtd: setting mtd%d (%s) as root device\n",
-+					mtd->index, mtd->name);
-+				ROOT_DEV = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
-+			} else {
-+				pr_warn("mtd: can't set mtd%d (%s) as root device - mtd must be builtin\n",
-+					mtd->index, mtd->name);
-+			}
- 		}
- 	}
- 
-@@ -790,7 +838,10 @@ int add_mtd_device(struct mtd_info *mtd)
- 	device_unregister(&mtd->dev);
- fail_added:
- 	of_node_put(mtd_get_of_node(mtd));
--	idr_remove(&mtd_idr, i);
-+	if (partitioned)
-+		idr_remove(&mtd_idr, i);
++	/* reset error bits */
++	if (reg)
++		iowrite32(reg, base + NVM_ACCESS_ERROR_REG);
++
++	return reg;
++}
++
++static inline u32 idg_nvm_read32(struct intel_dg_nvm *nvm, u32 address)
++{
++	void __iomem *base = nvm->base;
++
++	iowrite32(address, base + NVM_ADDRESS_REG);
++
++	return ioread32(base + NVM_TRIGGER_REG);
++}
++
++static int idg_nvm_get_access_map(struct intel_dg_nvm *nvm, u32 *access_map)
++{
++	u32 flmap1;
++	u32 fmba;
++	u32 fmstr4;
++	u32 fmstr4_addr;
++
++	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
++
++	flmap1 = idg_nvm_read32(nvm, NVM_FLMAP1_REG);
++	if (idg_nvm_error(nvm))
++		return -EIO;
++	/* Get Flash Master Baser Address (FMBA) */
++	fmba = (FIELD_GET(NVM_MAP_ADDR_MASK, flmap1) << NVM_MAP_ADDR_SHIFT);
++	fmstr4_addr = fmba + NVM_FLMSTR4_OFFSET;
++
++	fmstr4 = idg_nvm_read32(nvm, fmstr4_addr);
++	if (idg_nvm_error(nvm))
++		return -EIO;
++
++	*access_map = fmstr4;
++	return 0;
++}
++
++static bool idg_nvm_region_readable(u32 access_map, u8 region)
++{
++	if (region < 12)
++		return access_map & BIT(region + 8); /* [19:8] */
 +	else
-+		idr_remove(&mtd_master_idr, i);
- fail_locked:
- 	mutex_unlock(&mtd_table_mutex);
- 	return error;
-@@ -1061,11 +1112,10 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 	if (ret)
- 		goto out;
- 
--	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
--		ret = add_mtd_device(mtd);
--		if (ret)
--			goto out;
--	}
-+	/* Master device */
-+	ret = add_mtd_device(mtd);
-+	if (ret)
-+		goto out;
- 
- 	/* Prefer parsed partitions over driver-provided fallback */
- 	ret = parse_mtd_partitions(mtd, types, parser_data);
-@@ -1261,8 +1311,7 @@ int __get_mtd_device(struct mtd_info *mtd)
- 		mtd = mtd->parent;
++		return access_map & BIT(region - 12); /* [3:0] */
++}
++
++static bool idg_nvm_region_writeable(u32 access_map, u8 region)
++{
++	if (region < 12)
++		return access_map & BIT(region + 20); /* [31:20] */
++	else
++		return access_map & BIT(region - 8); /* [7:4] */
++}
++
++static int idg_nvm_is_valid(struct intel_dg_nvm *nvm)
++{
++	u32 is_valid;
++
++	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
++
++	is_valid = idg_nvm_read32(nvm, NVM_VALSIG_REG);
++	if (idg_nvm_error(nvm))
++		return -EIO;
++
++	if (is_valid != NVM_FLVALSIG)
++		return -ENODEV;
++
++	return 0;
++}
++
++static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device)
++{
++	int ret;
++	unsigned int i, n;
++	u32 access_map = 0;
++
++	/* clean error register, previous errors are ignored */
++	idg_nvm_error(nvm);
++
++	ret = idg_nvm_is_valid(nvm);
++	if (ret) {
++		dev_err(device, "The MEM is not valid %d\n", ret);
++		return ret;
++	}
++
++	if (idg_nvm_get_access_map(nvm, &access_map))
++		return -EIO;
++
++	for (i = 0, n = 0; i < nvm->nregions; i++) {
++		u32 address, base, limit, region;
++		u8 id = nvm->regions[i].id;
++
++		address = NVM_FLREG(id);
++		region = idg_nvm_read32(nvm, address);
++
++		base = FIELD_GET(NVM_FREG_BASE_MASK, region) << NVM_FREG_ADDR_SHIFT;
++		limit = (FIELD_GET(NVM_FREG_ADDR_MASK, region) << NVM_FREG_ADDR_SHIFT) |
++			NVM_FREG_MIN_REGION_SIZE;
++
++		dev_dbg(device, "[%d] %s: region: 0x%08X base: 0x%08x limit: 0x%08x\n",
++			id, nvm->regions[i].name, region, base, limit);
++
++		if (base >= limit || (i > 0 && limit == 0)) {
++			dev_dbg(device, "[%d] %s: disabled\n",
++				id, nvm->regions[i].name);
++			nvm->regions[i].is_readable = 0;
++			continue;
++		}
++
++		if (nvm->size < limit)
++			nvm->size = limit;
++
++		nvm->regions[i].offset = base;
++		nvm->regions[i].size = limit - base + 1;
++		/* No write access to descriptor; mask it out*/
++		nvm->regions[i].is_writable = idg_nvm_region_writeable(access_map, id);
++
++		nvm->regions[i].is_readable = idg_nvm_region_readable(access_map, id);
++		dev_dbg(device, "Registered, %s id=%d offset=%lld size=%lld rd=%d wr=%d\n",
++			nvm->regions[i].name,
++			nvm->regions[i].id,
++			nvm->regions[i].offset,
++			nvm->regions[i].size,
++			nvm->regions[i].is_readable,
++			nvm->regions[i].is_writable);
++
++		if (nvm->regions[i].is_readable)
++			n++;
++	}
++
++	dev_dbg(device, "Registered %d regions\n", n);
++
++	/* Need to add 1 to the amount of memory
++	 * so it is reported as an even block
++	 */
++	nvm->size += 1;
++
++	return n;
++}
++
+ static void intel_dg_nvm_release(struct kref *kref)
+ {
+ 	struct intel_dg_nvm *nvm = container_of(kref, struct intel_dg_nvm, refcnt);
+@@ -89,6 +281,13 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+ 		goto err;
  	}
  
--	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
--		kref_get(&master->refcnt);
-+	kref_get(&master->refcnt);
++	ret = intel_dg_nvm_init(nvm, device);
++	if (ret < 0) {
++		dev_err(device, "cannot initialize nvm\n");
++		ret = -ENODEV;
++		goto err;
++	}
++
+ 	dev_set_drvdata(&aux_dev->dev, nvm);
  
  	return 0;
- }
-@@ -1356,8 +1405,7 @@ void __put_mtd_device(struct mtd_info *mtd)
- 		mtd = parent;
- 	}
- 
--	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
--		kref_put(&master->refcnt, mtd_device_release);
-+	kref_put(&master->refcnt, mtd_device_release);
- 
- 	module_put(master->owner);
- 
-@@ -2524,6 +2572,16 @@ static int __init init_mtd(void)
- 	if (ret)
- 		goto err_reg;
- 
-+	ret = class_register(&mtd_master_class);
-+	if (ret)
-+		goto err_reg2;
-+
-+	ret = alloc_chrdev_region(&mtd_master_devt, 0, MTD_MASTER_DEVS, "mtd_master");
-+	if (ret < 0) {
-+		pr_err("unable to allocate char dev region\n");
-+		goto err_chrdev;
-+	}
-+
- 	mtd_bdi = mtd_bdi_init("mtd");
- 	if (IS_ERR(mtd_bdi)) {
- 		ret = PTR_ERR(mtd_bdi);
-@@ -2548,6 +2606,10 @@ static int __init init_mtd(void)
- 	bdi_unregister(mtd_bdi);
- 	bdi_put(mtd_bdi);
- err_bdi:
-+	unregister_chrdev_region(mtd_master_devt, MTD_MASTER_DEVS);
-+err_chrdev:
-+	class_unregister(&mtd_master_class);
-+err_reg2:
- 	class_unregister(&mtd_class);
- err_reg:
- 	pr_err("Error registering mtd class or bdi: %d\n", ret);
-@@ -2561,9 +2623,12 @@ static void __exit cleanup_mtd(void)
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
- 	class_unregister(&mtd_class);
-+	class_unregister(&mtd_master_class);
-+	unregister_chrdev_region(mtd_master_devt, MTD_MASTER_DEVS);
- 	bdi_unregister(mtd_bdi);
- 	bdi_put(mtd_bdi);
- 	idr_destroy(&mtd_idr);
-+	idr_destroy(&mtd_master_idr);
- }
- 
- module_init(init_mtd);
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 6811a714349d..268c3d5ccdea 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -86,8 +86,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 	 * parent conditional on that option. Note, this is a way to
- 	 * distinguish between the parent and its partitions in sysfs.
- 	 */
--	child->dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd_is_partition(parent) ?
--			    &parent->dev : parent->dev.parent;
-+	child->dev.parent = &parent->dev;
- 	child->dev.of_node = part->of_node;
- 	child->parent = parent;
- 	child->part.offset = part->offset;
-@@ -590,9 +589,6 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 	int ret, err = 0;
- 
- 	dev = &master->dev;
--	/* Use parent device (controller) if the top level MTD is not registered */
--	if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) && !mtd_is_partition(master))
--		dev = master->dev.parent;
- 
- 	np = mtd_get_of_node(master);
- 	if (mtd_is_partition(master))
 -- 
 2.43.0
 
