@@ -4,64 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7229E77188
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Dec 2024 10:41:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B5F6E77199
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jan 2025 15:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SwdeG4M5LtKdMmVndqNFc8QLyquyxQ9P79POebXhFyQ=; b=26ujeIJIE4rVOg
-	OaTRYQwZ3Ff7gaEa+5CdfUPsB7D05m6abDfq0ChJdsrMTkQqQF0p3ReZXOG3a/d2MR1CfaQGV+sqV
-	zUysq8dqERar29ize2cxbl2M7Kcll5w4/v4dc9YVWfLDrznasUnlhckUjTh6d78vJ1HwqMcztK4Wc
-	hQ6MZRQzEAcFCz27SjsC+OX1zBIpRJd20gfNNJwdR70z3QlNMZXprr1Bhz2eAkYQU4FGMMG6OUXUs
-	pMbn03mRakBdNFZ0mdfCIcDsRj2KLXwM2fMM8Q1I4pUNyM63ELwI5yFjqn5zoYheB/ipuqgUwz6Uq
-	DizL66FiWIxik3ab0uug==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wW/stLgod6ZYDpEbEcBzrVdl+SUCQnbvy+XxvcJo6ug=; b=Viwq20Gr/epeAJ
+	KOpteof/PH4zLmfxVIAQtsLrT1s3knDpuTNlTa1gbeg/SVzeLT8ChSBwdDQy0YegCAXnK0zQZ5W6c
+	8SC2pRHc/zHEIgIi9IRr2UOJKZeA+6wh+0Nrzmg1A/AycIJGLlLz8zrUau7KFTmEW0GG2UebWvlF7
+	EHVQICs212LHk8FGSo45OgbxW3hS8sNdtyU/++yK1/gaZF5oiDycB5dTdsswHGs6k5wRYS1jkQNLa
+	wRh061qsXIcx/OKeQlppo/K7xyGL15PxUDnyPFgr43SINqlm+t56nQdNJpeOAi3CA0sC3TRfh4rZf
+	kj09wBENhMqRlDZ/V1ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tSDCo-000000053fi-1x1g;
-	Mon, 30 Dec 2024 10:41:02 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1tT0zb-000000097ye-2hX1;
+	Wed, 01 Jan 2025 15:50:43 +0000
+Received: from mgamail.intel.com ([198.175.65.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tSBsw-00000004uT8-22WT
+	id 1tT0zW-000000097xm-3lAV
 	for linux-mtd@lists.infradead.org;
-	Mon, 30 Dec 2024 09:16:27 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 31BF5E000A;
-	Mon, 30 Dec 2024 09:16:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1735550183;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=30qJniL6f2CSMnlAsj4d7FMH8lqsrWJ+fg4klQCq7mY=;
-	b=fvDS+YTKlc6ZG0pfDggZ2mz+oxoyLWl/aSXxvTaifEk6/kYJ/C/ez0HzOKzHrchgsYe7oY
-	JXmjBXK/vGgByfUUsifd8HBYFYzgPIMPOVmg2cU+hmoW3IjR8pvcrfquixd2mSEV5NMEmY
-	be1JCKx9pIH797Bp2OJS3yOtfOOrEZhX7SuehMxt+w4eJNab9OnQ1k72qTHrqFtb2bNJ7g
-	Iwhwz+JA8wX82MXLXpfFi3mHzre3KaK7nmxekYcxm6iayF9u0GE7oT+PuJJjAdUGDn+csB
-	Bl5ep75dqvI+OP5p7ppfZGdj8NaLbwW3mgSpbKM8vR63wxuivHMxYx64hWov0g==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Martin Kurbanov <mmkurbanov@salutedevices.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Ezra Buehler <ezra.buehler@husqvarnagroup.com>,
-  Alexey Romanov <avromanov@salutedevices.com>,  Frieder Schrempf
- <frieder.schrempf@kontron.de>,  <linux-kernel@vger.kernel.org>,
-  <linux-mtd@lists.infradead.org>,  <kernel@salutedevices.com>
-Subject: Re: [PATCH v3 4/7] mtd: spinand: add start_page to otp layout
-In-Reply-To: <20241226135623.43098-5-mmkurbanov@salutedevices.com> (Martin
-	Kurbanov's message of "Thu, 26 Dec 2024 16:55:49 +0300")
-References: <20241226135623.43098-1-mmkurbanov@salutedevices.com>
-	<20241226135623.43098-5-mmkurbanov@salutedevices.com>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Mon, 30 Dec 2024 10:16:22 +0100
-Message-ID: <87o70t7cpl.fsf@bootlin.com>
+	Wed, 01 Jan 2025 15:50:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1735746639; x=1767282639;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yaU+DdgVTQBtfo9/bPrN68AdyWg8b/vb+BkHxJGrl7g=;
+  b=RQw7ilUbCO5DDyWbiOz4MyR9tadfsIGeLgc/9YrOM5cRhtZTsgwQYycm
+   /+2uiR2qudbZflPMVygeQUjlAOlTcptYrsv6KSn9/3FrUVwzRLQfEb86U
+   6w/9RR8C3zFCTM9O8fjsvyKGjIBZS5f90Tmxln6vVXuKisUBFMxYWEQ8P
+   Ff0OaPIRMOkAfCjT/GtCwIQW4E24Tey0g2TQHWHrb9jLgZdtYrwPnR6C9
+   qAUt6I/jjCyvIGnKi0qUW2OCx2VfNWcy4jWHKm1nlFQZqDGyZKKb785cG
+   CdS8ItYIp/sVR64DFN34awIeWl+4d9sLew4Md3X87RVOuoFpRUVFndYbE
+   g==;
+X-CSE-ConnectionGUID: n1bhzGfER5eRsDITA+fLRQ==
+X-CSE-MsgGUID: VmCEJaKjSTSa5PJJ+4Vdwg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11302"; a="46485512"
+X-IronPort-AV: E=Sophos;i="6.12,282,1728975600"; 
+   d="scan'208";a="46485512"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2025 07:50:34 -0800
+X-CSE-ConnectionGUID: Ds2L6PrlQSaZ3OYAk6GxDA==
+X-CSE-MsgGUID: /tgKOXVjRvWQEAe0wHOV3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,282,1728975600"; 
+   d="scan'208";a="132138899"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2025 07:50:29 -0800
+From: Alexander Usyskin <alexander.usyskin@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Karthik Poosa <karthik.poosa@intel.com>
+Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
+	Oren Weil <oren.jer.weil@intel.com>,
+	linux-mtd@lists.infradead.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Subject: [PATCH v4 00/11] mtd: add driver for Intel discrete graphics
+Date: Wed,  1 Jan 2025 17:39:14 +0200
+Message-ID: <20250101153925.865703-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241230_011626_670632_115D9B98 
-X-CRM114-Status: UNSURE (   9.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250101_075039_018424_729E9465 
+X-CRM114-Status: GOOD (  14.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,28 +96,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjYvMTIvMjAyNCBhdCAxNjo1NTo0OSArMDMsIE1hcnRpbiBLdXJiYW5vdiA8bW1rdXJiYW5v
-dkBzYWx1dGVkZXZpY2VzLmNvbT4gd3JvdGU6Cgo+IFRoZSBPVFAgYXJlYSBpcyBkaXZpZGVkIGlu
-dG8gdHdvIHBhcnRzOiB0aGUgZmFjdG9yeSBhbmQgdGhlIHVzZXIuCj4gSW4gU1BJLU5BTkQsIGl0
-IGlzIHVzdWFsbHkgdGhpcyBvbmUgT1RQIHJlZ2lvbjogdGhlIGZpcnN0IGZldyBwYWdlcwo+IGFy
-ZQoKKHRoaXMgc2VudGVuY2UgbWlnaHQgYmUgcmV3b3JkZWQsIGl0IGlzIG5vdCB2ZXJ5IGNsZWFy
-KQoKPiBhbGxvY2F0ZWQgdG8gdGhlIGZhY3RvcnkgYXJlYS4gVGhlcmVmb3JlLCBlbnRlciB0aGUg
-c3RhcnRfcGFnZSBmaWVsZCwKPiB3aGljaCBpbmRpY2F0ZXMgZnJvbSB3aGljaCBwYWdlIHRoZSBj
-dXN0b20gT1RQIHJlZ2lvbiBzdGFydHMuCgpUQkggSSBkb24ndCBsaWtlIHRoaXMgc2hvcnRjdXQg
-YW5kIEkgd291bGQgcHJlZmVyIGhhdmluZzoKLSB0d28gb3RwIHN0cnVjdHVyZXMgZGVmaW5pbmcg
-ZWFjaCBwYXJ0cyAodXNlci9mYWN0b3J5KQotIGJvdGggdGhlIHVzZXIgYW5kIGZhY3Rvcnkgb3Rw
-IGhvb2tzIHByb3ZpZGVkCi0gcGVyaGFwcyBhIHRvcCBsZXZlbCBtYWNybyB3aGljaCBkb2VzIGJv
-dGggaW5pdGlhbGl6YXRpb25zIGJhc2VkIG9uCnRoZSAodXNlcl9vdHBfKXN0YXJ0X3BhZ2UgcGFy
-YW1ldGVyLgoKQnV0IEkgZG9uJ3QgbGlrZSBtdWNoIGhpZGluZyB0aGUgbGF5b3V0IHN1YnRsZXR5
-IGJlaGluZCBhCiJzdGFydF9wYWdlIiBtZW1iZXIgKGFsdGhvdWdoIGl0IHNob3VsZCBwcm9iYWJs
-eSBiZSBuYW1lZAoidXNlcl9hcmVhX3N0YXJ0X3BhZ2UiIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQs
-IG90aGVyd2lzZSBpdCdzCm1pc2xlYWRpbmcpLgoKVGhpcyB3b3VsZCBhbHNvIGJlIG1vcmUgZnV0
-dXJlIHByb29mLCBtYW51ZmFjdHVyZXJzIGFyZSBjcmVhdGl2ZS4KClRoYW5rcywKTWlxdcOobAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
-bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Add driver for access to Intel discrete graphics card
+internal NVM device.
+Expose device on auxiliary bus by i915 and Xe drivers and
+provide mtd driver to register this device with MTD framework.
+
+This is a rewrite of "drm/i915/spi: spi access for discrete graphics"
+and "spi: add driver for Intel discrete graphics"
+series with connection to the Xe driver and splitting
+the spi driver part to separate module in mtd subsystem.
+
+This series intended to be pushed through drm-xe-next.
+
+V2: Replace dev_* prints with drm_* prints in drm (xe and i915) patches.
+    Enable NVM device on Battlemage HW (xe driver patch)
+    Fix overwrite register address (xe driver patch)
+    Add Rodrigo's r-b
+
+V3: Use devm_pm_runtime_enable to simplify flow.
+    Drop print in i915 unload that was accidentally set as error.
+    Drop HAS_GSC_NVM macro in line with latest Xe changes.
+    Add more Rodrigo's r-b and Miquel's ack.
+
+V4: Add patch that always creates mtd master device
+    and adjust mtd-intel-dg power management to use this device.
+
+Alexander Usyskin (11):
+  mtd: core: always create master device
+  mtd: add driver for intel graphics non-volatile memory device
+  mtd: intel-dg: implement region enumeration
+  mtd: intel-dg: implement access functions
+  mtd: intel-dg: register with mtd
+  mtd: intel-dg: align 64bit read and write
+  mtd: intel-dg: wake card on operations
+  drm/i915/nvm: add nvm device for discrete graphics
+  drm/i915/nvm: add support for access mode
+  drm/xe/nvm: add on-die non-volatile memory device
+  drm/xe/nvm: add support for access mode
+
+ MAINTAINERS                           |   7 +
+ drivers/gpu/drm/i915/Makefile         |   4 +
+ drivers/gpu/drm/i915/i915_driver.c    |   6 +
+ drivers/gpu/drm/i915/i915_drv.h       |   3 +
+ drivers/gpu/drm/i915/i915_reg.h       |   1 +
+ drivers/gpu/drm/i915/intel_nvm.c      | 115 ++++
+ drivers/gpu/drm/i915/intel_nvm.h      |  15 +
+ drivers/gpu/drm/xe/Makefile           |   1 +
+ drivers/gpu/drm/xe/regs/xe_gsc_regs.h |   4 +
+ drivers/gpu/drm/xe/xe_device.c        |   3 +
+ drivers/gpu/drm/xe/xe_device_types.h  |   7 +
+ drivers/gpu/drm/xe/xe_heci_gsc.c      |   5 +-
+ drivers/gpu/drm/xe/xe_nvm.c           | 130 ++++
+ drivers/gpu/drm/xe/xe_nvm.h           |  15 +
+ drivers/gpu/drm/xe/xe_pci.c           |   6 +
+ drivers/mtd/devices/Kconfig           |  11 +
+ drivers/mtd/devices/Makefile          |   1 +
+ drivers/mtd/devices/mtd-intel-dg.c    | 847 ++++++++++++++++++++++++++
+ drivers/mtd/mtdcore.c                 | 123 +++-
+ drivers/mtd/mtdpart.c                 |   6 +-
+ include/linux/intel_dg_nvm_aux.h      |  27 +
+ 21 files changed, 1299 insertions(+), 38 deletions(-)
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.c
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.h
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
+ create mode 100644 drivers/mtd/devices/mtd-intel-dg.c
+ create mode 100644 include/linux/intel_dg_nvm_aux.h
+
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
