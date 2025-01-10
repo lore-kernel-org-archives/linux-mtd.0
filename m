@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CA38E7719C
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2025 14:56:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3FEEE7719D
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2025 14:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Unh8QyVJaQSlck3TTH7b9tY4YDRGhXg+3r8mRyJAVjs=; b=IhkW+QpH4WIbax
-	KGMsHxCX4XNTzq9eQALKkmE+t8yj7cpCpzxfwak5x8rhhRnQFVwQ2Ns/wcvhW+WgvX/C6rRjhkUX5
-	VlVd6D+ztaZww1FuZrLr7Pbu43Wwgxkv3f8Stq3jPRjQeNYT7Q4yBV6YhDwEPIJYZahY7naSOdHoh
-	wiw91qwiDhuAsAQ/Yi6qs931FEhekSqw6c9oooxH30i0uuQhpU6HsAK4Qxs8KQ3MqmXMw7jZgT3GH
-	DwIOmU+X7YUKtF0TlERrlPEx2tN3JvVulHoFhBmHTrG062EVIhjt21cyemvg1cPCY3PDDgU02D7RJ
-	kFvbMzGaz0OA9D1IhciQ==;
+	List-Owner; bh=Njfk1w88ghs+GnMQIidIfOKqKXIr9F0VWg8kdY/MTH4=; b=t9mr5xa/wK9UZK
+	lit6+tUjcXV0sYfCHZxJQKlL/a8BptU1OaMKikw6Fw5Out1fILhN2cO9paBkmikbJj3J3d2ssoJrD
+	FC2dG3ZrAfWyovwAqqJRB8V8MJn3LLKqOtxbo6JOZM36FzO63S2jvo0TUn9fXLGgNst2J96vmuHH1
+	IHDWEapCNaP+7hNV4J9j1ymG3Z/1KZFdby5YL1c0bzWvDBVeENgnUoo9eCU5IaAAiFtDDKnCsBnVB
+	UgwGWHv4lSC0PJbIlFu/L3QZgJv97ALqM7gbfZpk49gU+S3F9F9AonVF+Ojhtz2qGvBoYxENp2uKL
+	wRDPHgHWQSjDNtXUuyJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWGRG-0000000FkNE-0GtK;
-	Fri, 10 Jan 2025 14:56:42 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1tWGSR-0000000FknE-1fRG;
+	Fri, 10 Jan 2025 14:57:55 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWGGV-0000000FgBa-3UMH;
-	Fri, 10 Jan 2025 14:45:37 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DF20FFF817;
-	Fri, 10 Jan 2025 14:45:31 +0000 (UTC)
+	id 1tWGGX-0000000FgCj-1yiP;
+	Fri, 10 Jan 2025 14:45:38 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B0B53FF80E;
+	Fri, 10 Jan 2025 14:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1736520333;
+	t=1736520335;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JrcFdkL7v8hevVCz++URbVmucpyX6fBOW8nqTnbI9/s=;
-	b=gQIfRcfGmYYAoyUyZ0m3FuxYEZ2Vhp0yGExEna36qZIVu0OMGDf3EYZj0i1/xdhyZUUBMS
-	VGzcm/2MGkihSOmL+wjLfusd6OmVosbXg7TDvLO/D9+1XtbRlvunCI/OZtiAIsQegjQClm
-	fR+2U8uPTsx7DZykr/2TkVTTt5jx0gM2zt3h73KX0TIP7GfigvYGWczUp9QQw/cooYoXit
-	k+0rbpdIhC53zQLF78O68haof3hDkEE9O29a+Ox7cOCzRRmEObX4dNH3SpTWt+rLQWd9QA
-	7W1kK52WnoQalg1NZh0Npkq4yuQWlphw9tpc/D51Qkb6ndqHS2QKZ4zPZIeOLA==
+	bh=y8cSrYQE/5lZoSPtcr0B2aeBjkjg2ZNQ2fjZw3v1pDQ=;
+	b=QUn2HxYYpXHzBUUQGFzw5CGFjm1mZXXTWJ41aFPg8sbXlUkse+ZsntwleUTKfbNS5EyysD
+	juZhCK5l5FeDs7HRV23fT3CvZGeuXcdEKB7UgbLidckGhKI74rDX83gVklykbh3ArOXfUl
+	saItcUGf5z3LqB4JRAwu5Cr0zWk0evBhDTKp/jtNDzx2ZEEzv//c+htDYI1x/ZX2eA5PNC
+	RGsXz8QgcMZM2YLZ9Sm4pe9p1LsrniCqSGS/99f8j/CtQqRMVe+WDwgoF833kEMKnE06/c
+	GkgTU07BB+ytJ1XpuckVJH59o34lIM6wWOP4bjBeGn1MpYHrc4StKbTkbZbLbg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 10 Jan 2025 15:45:10 +0100
-Subject: [PATCH v3 08/27] spi: fsl-qspi: Support per spi-mem operation
- frequency switches
+Date: Fri, 10 Jan 2025 15:45:11 +0100
+Subject: [PATCH v3 09/27] spi: microchip-core-qspi: Support per spi-mem
+ operation frequency switches
 MIME-Version: 1.0
-Message-Id: <20250110-winbond-6-11-rc1-quad-support-v3-8-7ab4bd56cf6e@bootlin.com>
+Message-Id: <20250110-winbond-6-11-rc1-quad-support-v3-9-7ab4bd56cf6e@bootlin.com>
 References: <20250110-winbond-6-11-rc1-quad-support-v3-0-7ab4bd56cf6e@bootlin.com>
 In-Reply-To: <20250110-winbond-6-11-rc1-quad-support-v3-0-7ab4bd56cf6e@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Sanjay R Mehta <sanju.mehta@amd.com>, 
@@ -78,8 +78,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.15-dev
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_064536_183307_29AFA572 
-X-CRM114-Status: GOOD (  14.30  )
+X-CRM114-CacheID: sfid-20250110_064537_777418_468694AD 
+X-CRM114-Status: GOOD (  17.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,60 +103,101 @@ the value that comes from the spi-mem operation structure instead. In
 case there is no specific limitation for this operation, the default spi
 device value will be given anyway.
 
+This controller however performed a frequency check, which is also
+observed during the ->check_op() phase.
+
 The per-operation frequency capability is thus advertised to the spi-mem
 core.
 
-Cc: Han Xu <han.xu@nxp.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>
+Cc: Daire McNamara <daire.mcnamara@microchip.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-fsl-qspi.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/spi/spi-microchip-core-qspi.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
-index 9ec53bf0dda8ead27bc7a11a9bb09a08efe2ea05..355e6a39fb41896f460e2474a90b8f0b42068ff3 100644
---- a/drivers/spi/spi-fsl-qspi.c
-+++ b/drivers/spi/spi-fsl-qspi.c
-@@ -522,9 +522,10 @@ static void fsl_qspi_invalidate(struct fsl_qspi *q)
- 	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
+diff --git a/drivers/spi/spi-microchip-core-qspi.c b/drivers/spi/spi-microchip-core-qspi.c
+index ad2b5ffa6153433490f09bdd4c362273a0218432..fa828fcaaef2d4b44c21e08c09e6afbb7ba3de3d 100644
+--- a/drivers/spi/spi-microchip-core-qspi.c
++++ b/drivers/spi/spi-microchip-core-qspi.c
+@@ -265,7 +265,8 @@ static irqreturn_t mchp_coreqspi_isr(int irq, void *dev_id)
+ 	return ret;
  }
  
--static void fsl_qspi_select_mem(struct fsl_qspi *q, struct spi_device *spi)
-+static void fsl_qspi_select_mem(struct fsl_qspi *q, struct spi_device *spi,
-+				const struct spi_mem_op *op)
+-static int mchp_coreqspi_setup_clock(struct mchp_coreqspi *qspi, struct spi_device *spi)
++static int mchp_coreqspi_setup_clock(struct mchp_coreqspi *qspi, struct spi_device *spi,
++				     const struct spi_mem_op *op)
  {
--	unsigned long rate = spi->max_speed_hz;
-+	unsigned long rate = op->max_freq;
- 	int ret;
+ 	unsigned long clk_hz;
+ 	u32 control, baud_rate_val = 0;
+@@ -274,11 +275,11 @@ static int mchp_coreqspi_setup_clock(struct mchp_coreqspi *qspi, struct spi_devi
+ 	if (!clk_hz)
+ 		return -EINVAL;
  
- 	if (q->selected == spi_get_chipselect(spi, 0))
-@@ -652,7 +653,7 @@ static int fsl_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	fsl_qspi_readl_poll_tout(q, base + QUADSPI_SR, (QUADSPI_SR_IP_ACC_MASK |
- 				 QUADSPI_SR_AHB_ACC_MASK), 10, 1000);
+-	baud_rate_val = DIV_ROUND_UP(clk_hz, 2 * spi->max_speed_hz);
++	baud_rate_val = DIV_ROUND_UP(clk_hz, 2 * op->max_freq);
+ 	if (baud_rate_val > MAX_DIVIDER || baud_rate_val < MIN_DIVIDER) {
+ 		dev_err(&spi->dev,
+ 			"could not configure the clock for spi clock %d Hz & system clock %ld Hz\n",
+-			spi->max_speed_hz, clk_hz);
++			op->max_freq, clk_hz);
+ 		return -EINVAL;
+ 	}
  
--	fsl_qspi_select_mem(q, mem->spi);
-+	fsl_qspi_select_mem(q, mem->spi, op);
+@@ -399,7 +400,7 @@ static int mchp_coreqspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *o
+ 	if (err)
+ 		goto error;
  
- 	if (needs_amba_base_offset(q))
- 		addr_offset = q->memmap_phy;
-@@ -839,6 +840,10 @@ static const struct spi_controller_mem_ops fsl_qspi_mem_ops = {
- 	.get_name = fsl_qspi_get_name,
+-	err = mchp_coreqspi_setup_clock(qspi, mem->spi);
++	err = mchp_coreqspi_setup_clock(qspi, mem->spi, op);
+ 	if (err)
+ 		goto error;
+ 
+@@ -457,6 +458,10 @@ static int mchp_coreqspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *o
+ 
+ static bool mchp_coreqspi_supports_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ {
++	struct mchp_coreqspi *qspi = spi_controller_get_devdata(mem->spi->controller);
++	unsigned long clk_hz;
++	u32 baud_rate_val;
++
+ 	if (!spi_mem_default_supports_op(mem, op))
+ 		return false;
+ 
+@@ -479,6 +484,14 @@ static bool mchp_coreqspi_supports_op(struct spi_mem *mem, const struct spi_mem_
+ 			return false;
+ 	}
+ 
++	clk_hz = clk_get_rate(qspi->clk);
++	if (!clk_hz)
++		return false;
++
++	baud_rate_val = DIV_ROUND_UP(clk_hz, 2 * op->max_freq);
++	if (baud_rate_val > MAX_DIVIDER || baud_rate_val < MIN_DIVIDER)
++		return false;
++
+ 	return true;
+ }
+ 
+@@ -498,6 +511,10 @@ static const struct spi_controller_mem_ops mchp_coreqspi_mem_ops = {
+ 	.exec_op = mchp_coreqspi_exec_op,
  };
  
-+static const struct spi_controller_mem_caps fsl_qspi_mem_caps = {
++static const struct spi_controller_mem_caps mchp_coreqspi_mem_caps = {
 +	.per_op_freq = true,
 +};
 +
- static int fsl_qspi_probe(struct platform_device *pdev)
+ static int mchp_coreqspi_probe(struct platform_device *pdev)
  {
  	struct spi_controller *ctlr;
-@@ -923,6 +928,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	ctlr->bus_num = -1;
- 	ctlr->num_chipselect = 4;
- 	ctlr->mem_ops = &fsl_qspi_mem_ops;
-+	ctlr->mem_caps = &fsl_qspi_mem_caps;
+@@ -540,6 +557,7 @@ static int mchp_coreqspi_probe(struct platform_device *pdev)
  
- 	fsl_qspi_default_setup(q);
- 
+ 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
+ 	ctlr->mem_ops = &mchp_coreqspi_mem_ops;
++	ctlr->mem_caps = &mchp_coreqspi_mem_caps;
+ 	ctlr->setup = mchp_coreqspi_setup_op;
+ 	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD |
+ 			  SPI_TX_DUAL | SPI_TX_QUAD;
 
 -- 
 2.47.0
