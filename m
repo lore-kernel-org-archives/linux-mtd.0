@@ -4,48 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37C11E77188
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2025 15:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E61D1E7719C
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jan 2025 15:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NF+9ayeHwLAyvzCWXUCeG6ZDnRhfXyywq80u6rKjc9g=; b=FD3eaSwaMh2w/u
-	ot6m41lAnss0ZAtRPbHty20uGB4KnZmXsUhIoXD8mq14hRl3y02njGHz/Z0Qix2v3GHNTphe+Nxc8
-	GITqHufp8/1AjP+ctxQ6zVXIE/LumWXW9AeDaRFxPHewjhwoKNGBU7Q0RbBux+kmGFRXgSVwUW0KU
-	n4AWaH+NBzeptRP+QWm3Uf2oGzuLYQjU/bG9tw2JYCh7SPIZ/nbS8KMPjTlfwLFPBZmRu3kNRHFrl
-	UJMgavOzvMMmCninCislGtJ+nuBpLJE2SxkmuGb3OjMzc4SF/V1kZ9y5o7OhQD2urSfAIQYk5U4f2
-	c6LXghgP1UWgHgXlRS6g==;
+	List-Owner; bh=5ZnIrxPu1Ft7UwU/J1FphHrcTfyEAQEnauka4FnyS6s=; b=yzUo6oLYqEAoo7
+	uw4cuGk1d7fS2RB2Dnv3Hy4ab/oI/0iauz0FYo584X7eseutuq7o4JihRLiTvCOC2P4kjMHVcfve5
+	NHmMQqBqG/ZJym+1plxw3Bz07D/Nv+hqH/H0XqzspnopbjeZQe0nzWQBDj2N568xMGmo+kqWmatnB
+	6Fu6GFrgkEI9G4DgP0RVE32ktYkBvA/SuE56dq7zBrm2Hua/AuHwKx3j0CI3DfpQI3z4/l5igcdyD
+	Z23zkJwbWWW9tV+tUYITqslz5BC2pyKPCSt5KdGFn1tyBByxGSx3aE7TOwfAGzGkcgZqFQoRJhzY3
+	mRxo+IGt7jUEI3gE+2iA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWGle-0000000FrHF-0Ygq;
-	Fri, 10 Jan 2025 15:17:46 +0000
+	id 1tWGmv-0000000Frq8-0azF;
+	Fri, 10 Jan 2025 15:19:05 +0000
 Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWGH1-0000000FgQF-1QQY;
-	Fri, 10 Jan 2025 14:46:08 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 707ACFF804;
-	Fri, 10 Jan 2025 14:46:03 +0000 (UTC)
+	id 1tWGH3-0000000FgRW-0xQ6;
+	Fri, 10 Jan 2025 14:46:10 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 51F62FF806;
+	Fri, 10 Jan 2025 14:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1736520365;
+	t=1736520367;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NBTD2mRgBbZjy9x9uQ4Dp69bdEkIazUsIudyacF/NfI=;
-	b=HjRSKbPSt4+YrQhrBJAC1kOo0yRE9hWVrvhtPiHdAyN9H6sXVyDLk0K+ef/DMFrmgXIu4A
-	prB0Pbh5GXhoR6MfZX78IaypOl0SZXaxWF+wJsbqLAqRbwqUJuN9z5rJImOdH9hpSAt/wD
-	xtit7/p2BY7R0a5stLwgD04slbaJqBy5/z5b2jmCogCoL/0jqNP8XJNEL0iuQb5xBlNLuS
-	9sjeQFTZoJRy0QE0eiku27OJdI1ZudQHti1VVUI8fjORP5kpYEIfSgXuc2vOsiM9P0Hv9J
-	mPwuhsCDlHzTg40zLHWLf7osa/tCf4uNLpx7zeP5Ce1dViLejXML5cRAQy7jVw==
+	bh=+afwOEQnbaba+LXNGTuAYGtAsSXdRwU1zxfezGFUpKo=;
+	b=O+oWpv7VqHwgKB2LRMBSm6P1zlxFX5oOrJteeRuK1hqSG9EL9cuejOzdVatbBZreNaoZC8
+	abx6NG8HQ4oVqNwz07W3IobsGlRwgow2L+oziF5t4bw+7CNkGjN6GYchh0sy799nSUZ1MX
+	6Xaip51R+rqx8ASpUP2Aellz6S87/vLRev5yCYUA0+Nt5VokvRtyhxS2dN0RtL7cgHnLfo
+	zYliXxMBJ57aoScl31HF9wnet221DnBdWw0Va9718c5O89YeUW6WJm0Pc3X0Ln5XuIlFoQ
+	897QFVDPviRnwPKQryqvo0JQnFGX437WTqmu9fJN2VQbzZkx9olZOY6DFL23cA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 10 Jan 2025 15:45:27 +0100
-Subject: [PATCH v3 25/27] mtd: spinand: winbond: Update the *JW chip
- definitions
+Date: Fri, 10 Jan 2025 15:45:28 +0100
+Subject: [PATCH v3 26/27] mtd: spinand: winbond: Add comment about naming
 MIME-Version: 1.0
-Message-Id: <20250110-winbond-6-11-rc1-quad-support-v3-25-7ab4bd56cf6e@bootlin.com>
+Message-Id: <20250110-winbond-6-11-rc1-quad-support-v3-26-7ab4bd56cf6e@bootlin.com>
 References: <20250110-winbond-6-11-rc1-quad-support-v3-0-7ab4bd56cf6e@bootlin.com>
 In-Reply-To: <20250110-winbond-6-11-rc1-quad-support-v3-0-7ab4bd56cf6e@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Sanjay R Mehta <sanju.mehta@amd.com>, 
@@ -74,13 +73,13 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
  linux-mediatek@lists.infradead.org, linux-rockchip@lists.infradead.org, 
  linux-mtd@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
- openbmc@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com, 
- stable+noautosel@kernel.org
+ openbmc@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com
 X-Mailer: b4 0.15-dev
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_064607_683157_F598E1BD 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20250110_064609_419762_2025D823 
+X-CRM114-Status: UNSURE (   9.74  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,66 +96,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-W25N01JW and W25N02JW use a different technology with higher frequencies
-supported (up to 166MHz). There is one drawback though, the slowest
-READ_FROM_CACHE command cannot run above 54MHz. Because of that, we need
-to set a limit for these chips on the basic READ_FROM_CACHE variant.
+Make the link between the core macros and the datasheet.
 
-Duplicating this list is not a problem because these chips have DTR
-support, and the list of supported variants will diverge from all the
-other chips when adding support for it.
-
-Cc: <stable+noautosel@kernel.org> # New feature being added
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/winbond.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/spi/winbond.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index fb6fee71bcb6d00c5ae7a5578b57c8c3725c7391..97517d495e57a6e9e616ed7e66b4a8e9fc1fe62a 100644
+index 97517d495e57a6e9e616ed7e66b4a8e9fc1fe62a..51972ba0f193c7b27ece0296c1590ddfed0ac813 100644
 --- a/drivers/mtd/nand/spi/winbond.c
 +++ b/drivers/mtd/nand/spi/winbond.c
-@@ -10,6 +10,7 @@
- #include <linux/device.h>
- #include <linux/kernel.h>
- #include <linux/mtd/spinand.h>
-+#include <linux/units.h>
- 
- #define SPINAND_MFR_WINBOND		0xEF
- 
-@@ -17,6 +18,14 @@
+@@ -18,6 +18,11 @@
  
  #define W25N04KV_STATUS_ECC_5_8_BITFLIPS	(3 << 4)
  
-+static SPINAND_OP_VARIANTS(read_cache_dtr_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_FAST_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(0, 1, NULL, 0, 54 * HZ_PER_MHZ));
++/*
++ * "X2" in the core is equivalent to "dual output" in the datasheets,
++ * "X4" in the core is equivalent to "quad output" in the datasheets.
++ */
 +
- static SPINAND_OP_VARIANTS(read_cache_variants,
+ static SPINAND_OP_VARIANTS(read_cache_dtr_variants,
  		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-@@ -194,7 +203,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbc, 0x21),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(1, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_dtr_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
-@@ -223,7 +232,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbf, 0x22),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 2, 1),
- 		     NAND_ECCREQ(1, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_dtr_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
 
 -- 
 2.47.0
