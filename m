@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AE7CE77188
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2025 16:29:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92AE4C02185
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2025 17:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=R+GaFxnjTK/00wLvxb20EQzpSLoaqCj2AaBUeyJGv04=; b=BexG/LcDkj1Twt
-	9IJFiYjgRJnbD1H1V5tTWmmFsvwiFbNxU5TCqy9Uz5qwWT8Ew2M77R5lXp3vNxXpI8YTE7LpnIQkE
-	anUrC2SNWl0PBF9z5UXSO116Jbmbveax4sgWbFlWeE1RkwEGtmFIWGTj6RNDJFgVmrukqhi5evnhX
-	Ip5UvgdWhlY85+LlSsVnpL7ZbYazT9GsJnzAmosj4yCuj2N1YjvidRutp6omvlUAve0hkiqroLvqv
-	Hm43UXUcUuap276fN2WBVXGEOT8eQHOOvhl0WASpIt7WhXsRJAbO3YFPQuU+Rm4eoiFti708OKrp8
-	4Ob4P3vDimKDAl3akzug==;
+	List-Owner; bh=azOSg0Vj4nsDjvZt82I988e1CzTK68pv+tnb7SUzh0I=; b=nDwf7yqKtoUU1K
+	D4VjZ6OlZ7qvfJ9nZ46ahk+uofJkMsD9LxrJzUiE38vL77REzNfHTJ5OMn7zvgYz6AgtuSMs4eaEW
+	YFB5ptCFqQqCU05PluJ4CunNrgEQ4seGhS5c5ByENgXYAzzrhrPT61ELy19J0ISnGi577oJOVuMol
+	9awB+f7by/hzBu1UFN2HCsTWWPx4JmBC1vx2/dZGN6RdFVn0XP2PHr4cu2GpbAIcQwStgGuPRTtqZ
+	ImaFvH9JL2Yjb627VR3LxrvG1rpCrtkOyGGN9WILVUlTpYaDc+/XYhME81uFTi8tAX5/ZrRgyQv9Z
+	pyA0sWipw6NGnWWraEdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXjnL-0000000920d-1Qyl;
-	Tue, 14 Jan 2025 16:29:35 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tXl4s-00000009FTx-45cu;
+	Tue, 14 Jan 2025 17:51:46 +0000
+Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXjnI-000000091zl-3L2V
+	id 1tXl4o-00000009FSY-3Yni
 	for linux-mtd@lists.infradead.org;
-	Tue, 14 Jan 2025 16:29:34 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id A7650A41879;
-	Tue, 14 Jan 2025 16:27:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89640C4CEDF;
-	Tue, 14 Jan 2025 16:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736872171;
-	bh=h62z4y1wv+NTpFNoOfOMwrg0bd6GXzx/E3jJZhWJ5kA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=g0l/akWkNUdWlMejGlteYuENKMox7ADPISatLnC1vgs3xaT9h3yXrP9qcQ86M+rgp
-	 I9gugjLyITShbUpOm42Pm+dFS4uufFlvxvRXKw5hvXFMeeTa2MaLXmqEmi9+OeVzWC
-	 YojSbtSfhCLqc1nzNR/Ws53hobpg13q2aUpLuO3mjsm7zUCIp4FKJoVnPSxRa0u5ME
-	 n9kPlebdSsH70RBCP6g5zaoWMKxRo9kXI4ffyKrTHHNstHpCMrdWb37uUq+DA2Qa9C
-	 FsrjD12EBac5fjZRHmYWKSiw7JqpH6R62kbe8bm85qSY8o3WXniakTNmRlnBrYkV6x
-	 tcW3zcsOdYm9w==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: pratyush@kernel.org,  mwalle@kernel.org,  miquel.raynal@bootlin.com,
-  richard@nod.at,  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  Tudor Ambarus <tudor.ambarus@linaro.org>,
-  alvinzhou@mxic.com.tw,  leoyu@mxic.com.tw,  Cheng Ming Lin
- <chengminglin@mxic.com.tw>,  stable@vger.kernel.org,  Cheng Ming Lin
- <linchengming884@gmail.com>
+	Tue, 14 Jan 2025 17:51:44 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0794C1C0007;
+	Tue, 14 Jan 2025 17:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1736877100;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vXrbWWwouiOx3yRkqgUv0mzdSo2ohjgt018nIlxC86g=;
+	b=JJo/2yeBbPQkrJ9gqV9ju4t/cLDYVYnOg9ZE3ot05ZGuDn93A6XG6+PpnqtnP5lcSobEeW
+	YWtguohSqHUIvWyaT4MHj2gSFw1Cn9zAQ21HwVleOoc+u2FP21fPMWh0v9mnBLs6sa0Mz8
+	Q/Bc4YSEQOqXk9ngZgbe3eTNwwmje//SyZWpBp90KBCfof4s49Q7mypzaxA1OGv99j/qL9
+	iS63HUOrmV5aFNT63wZBVfQYymuikqIRiIG4OeW+/C+F/a8Bbqb87B+7w4W35f62W7tRBj
+	aW0Yv7ICpBmfrb4djndmcO1zgx8+qzZN53d9+LXtGBDbzxdSQBPvsEfE+ZaB5w==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Pratyush Yadav <pratyush@kernel.org>
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+  tudor.ambarus@linaro.org,  mwalle@kernel.org,  richard@nod.at,
+  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  alvinzhou@mxic.com.tw,  leoyu@mxic.com.tw,
+  Cheng Ming Lin <chengminglin@mxic.com.tw>,  stable@vger.kernel.org,
+  Cheng Ming Lin <linchengming884@gmail.com>
 Subject: Re: [PATCH v2 1/1] mtd: spi-nor: core: replace dummy buswidth from
  addr to data
-In-Reply-To: <7762352.EvYhyI6sBW@steina-w> (Alexander Stein's message of "Tue,
-	14 Jan 2025 17:24:32 +0100")
+In-Reply-To: <mafs0zfjt5q3n.fsf@kernel.org> (Pratyush Yadav's message of "Tue,
+	14 Jan 2025 16:15:24 +0000")
 References: <20241112075242.174010-1-linchengming884@gmail.com>
-	<3342163.44csPzL39Z@steina-w>
-	<a6a9dfce-6cac-4831-9c96-45471f5ee13a@linaro.org>
-	<7762352.EvYhyI6sBW@steina-w>
-Date: Tue, 14 Jan 2025 16:29:28 +0000
-Message-ID: <mafs0sepl5pg7.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	<20241112075242.174010-2-linchengming884@gmail.com>
+	<3342163.44csPzL39Z@steina-w> <mafs0zfjt5q3n.fsf@kernel.org>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Tue, 14 Jan 2025 18:51:38 +0100
+Message-ID: <87wmexp9lh.fsf@bootlin.com>
 MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250114_082932_973353_060EED37 
-X-CRM114-Status: GOOD (  27.77  )
+X-CRM114-CacheID: sfid-20250114_095143_342316_CED031E2 
+X-CRM114-Status: GOOD (  21.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,185 +75,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 14 2025, Alexander Stein wrote:
-
-> Hi Tudor,
->
-> Am Dienstag, 14. Januar 2025, 14:26:47 CET schrieb Tudor Ambarus:
->> On 1/14/25 12:57 PM, Alexander Stein wrote:
->> > Hello everyone,
->> 
->> Hi,
->> 
->> > 
->> > Am Dienstag, 12. November 2024, 08:52:42 CET schrieb Cheng Ming Lin:
->> >> From: Cheng Ming Lin <chengminglin@mxic.com.tw>
->> >>
->> >> The default dummy cycle for Macronix SPI NOR flash in Octal Output
->> >> Read Mode(1-1-8) is 20.
->> >>
->> >> Currently, the dummy buswidth is set according to the address bus width.
->> >> In the 1-1-8 mode, this means the dummy buswidth is 1. When converting
->> >> dummy cycles to bytes, this results in 20 x 1 / 8 = 2 bytes, causing the
->> >> host to read data 4 cycles too early.
->> >>
->> >> Since the protocol data buswidth is always greater than or equal to the
->> >> address buswidth. Setting the dummy buswidth to match the data buswidth
->> >> increases the likelihood that the dummy cycle-to-byte conversion will be
->> >> divisible, preventing the host from reading data prematurely.
->> >>
->> >> Fixes: 0e30f47232ab5 ("mtd: spi-nor: add support for DTR protocol")
->> >> Cc: stable@vger.kernel.org
->> >> Reviewd-by: Pratyush Yadav <pratyush@kernel.org>
->> >> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
->> >> ---
->> >>  drivers/mtd/spi-nor/core.c | 2 +-
->> >>  1 file changed, 1 insertion(+), 1 deletion(-)
->> >>
->> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> >> index f9c189ed7353..c7aceaa8a43f 100644
->> >> --- a/drivers/mtd/spi-nor/core.c
->> >> +++ b/drivers/mtd/spi-nor/core.c
->> >> @@ -89,7 +89,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
->> >>  		op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
->> >>  
->> >>  	if (op->dummy.nbytes)
->> >> -		op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
->> >> +		op->dummy.buswidth = spi_nor_get_protocol_data_nbits(proto);
->> >>  
->> >>  	if (op->data.nbytes)
->> >>  		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
->> >>
->> > 
->> > I just noticed this commit caused a regression on my i.MX8M Plus based board,
->> > detected using git bisect.
->> > DT: arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql-mba8mpxl.dts
->> > Starting with this patch read is only 1S-1S-1S, before it was
->> > 1S-1S-4S.
->> > 
->> > before:
->> >> cat /sys/kernel/debug/spi-nor/spi0.0/params
->> >> name            mt25qu512a
->> >> id              20 bb 20 10 44 00
->> >> size            64.0 MiB
->> >> write size      1
->> >> page size       256
->> >> address nbytes  4
->> >> flags           HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_4BIT_BP
->> >> | HAS_SR_BP3_BIT6 | SOFT_RESET
->> >>
->> >> opcodes
->> >>
->> >>  read           0x6c
->> >>  
->> >>   dummy cycles  8
->> >>  
->> >>  erase          0xdc
->> >>  program        0x12
->> >>  8D extension   none
->> >>
->> >> protocols
->> >>
->> >>  read           1S-1S-4S
->> >>  write          1S-1S-1S
->> >>  register       1S-1S-1S
->> >>
->> >> erase commands
->> >>
->> >>  21 (4.00 KiB) [1]
->> >>  dc (64.0 KiB) [3]
->> >>  c7 (64.0 MiB)
->> >>
->> >> sector map
->> >>
->> >>  region (in hex)   | erase mask | overlaid
->> >>  ------------------+------------+----------
->> >>  00000000-03ffffff |     [   3] | no
->> > 
->> > after:
->> >> cat /sys/kernel/debug/spi-nor/spi0.0/params
->> >> name            mt25qu512a
->> >> id              20 bb 20 10 44 00
->> >> size            64.0 MiB
->> >> write size      1
->> >> page size       256
->> >> address nbytes  4
->> >> flags           HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_4BIT_BP
->> >> | HAS_SR_BP3_BIT6 | SOFT_RESET
->> >>
->> >> opcodes
->> >>
->> >>  read           0x13
->> >>  
->> >>   dummy cycles  0
->> >>  
->> >>  erase          0xdc
->> >>  program        0x12
->> >>  8D extension   none
->> >>
->> >> protocols
->> >>
->> >>  read           1S-1S-1S
->> >>  write          1S-1S-1S
->> >>  register       1S-1S-1S
->> >>
->> >> erase commands
->> >>
->> >>  21 (4.00 KiB) [1]
->> >>  dc (64.0 KiB) [3]
->> >>  c7 (64.0 MiB)
->> >>
->> >> sector map
->> >>
->> >>  region (in hex)   | erase mask | overlaid
->> >>  ------------------+------------+----------
->> >>  00000000-03ffffff |     [   3] | no
->> > 
->> > AFAICT the patch seems sane, so it probably just uncovered another
->> > problem already lurking somewhere deeper.
->> > Given the HW similarity I expect imx8mn and imx8mm based platforms to be
->> > affected as well.
->> > Reverting this commit make the read to be 1S-1S-4S again.
->> > Any ideas ow to tackling down this problem?
->> > 
->> 
->> My guess is that 1S-1S-4S is stripped out in
->> spi_nor_spimem_adjust_hwcaps(). Maybe the controller has some limitation
->> in nxp_fspi_supports_op(). Would you add some prints, and check these
->> chunks of code?
->
-> Thanks for the fast response. I was able to track it down.
-> Eventually the buswidth check in spi_check_buswidth_req fails.
-> For command 0x3c:
-> Before revert:
->> mode: 0x800, buswidth: 2
-> After revert
->> mode: 0x800, buswidth: 1
->
-> The mode is set to SPI_RX_QUAD. Thus the check for dummy buswidth fails
-> now that data_nbits are used now.
->
-> For command 0x6c it's similar but op->dummy.buswidth is 4 now.
->
-> It boils down that there are SPI controllers which have
->> spi-tx-bus-width = <1>;
->> spi-rx-bus-width = <4>;
-> set in their DT nodes.
->
-> So it seems this combination is not supported.
-
-No, this check is wrong. See
-https://lore.kernel.org/linux-mtd/20241112075242.174010-1-linchengming884@gmail.com/T/#m7cc1a5055702f5a42a8f3949c968842d845914d7
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gUHJhdHl1c2gsCgpPbiAxNC8wMS8yMDI1IGF0IDE2OjE1OjI0IEdNVCwgUHJhdHl1c2gg
+WWFkYXYgPHByYXR5dXNoQGtlcm5lbC5vcmc+IHdyb3RlOgoKPj4+IC0tLSBhL2RyaXZlcnMvbXRk
+L3NwaS1ub3IvY29yZS5jCj4+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwo+Pj4g
+QEAgLTg5LDcgKzg5LDcgQEAgdm9pZCBzcGlfbm9yX3NwaW1lbV9zZXR1cF9vcChjb25zdCBzdHJ1
+Y3Qgc3BpX25vciAqbm9yLAo+Pj4gIAkJb3AtPmFkZHIuYnVzd2lkdGggPSBzcGlfbm9yX2dldF9w
+cm90b2NvbF9hZGRyX25iaXRzKHByb3RvKTsKPj4+ICAKPj4+ICAJaWYgKG9wLT5kdW1teS5uYnl0
+ZXMpCj4+PiAtCQlvcC0+ZHVtbXkuYnVzd2lkdGggPSBzcGlfbm9yX2dldF9wcm90b2NvbF9hZGRy
+X25iaXRzKHByb3RvKTsKPj4+ICsJCW9wLT5kdW1teS5idXN3aWR0aCA9IHNwaV9ub3JfZ2V0X3By
+b3RvY29sX2RhdGFfbmJpdHMocHJvdG8pOwoKRmFjaW5nIHJlY2VudGx5IGEgc2ltaWxhciBpc3N1
+ZSBteXNlbGYgaW4gdGhlIFNQSSBOQU5EIHdvcmxkLCBJIGJlbGlldmUKd2Ugc2hvdWxkIGdldCBy
+aWQgb2YgdGhlIG5vdGlvbiBvZiBiaXRzIHdoZW4gaXQgY29tZXMgdG8gdGhlIGR1bW15CnBoYXNl
+LiBJIHdvdWxkIGFwcHJlY2lhdGUgYSBjbGFyaWZpY2F0aW9uIGxpa2UgImR1bW15LmN5Y2xlcyIg
+d2hpY2gKd291bGQgdHlwaWNhbGx5IG5vdCByZXF1aXJlIGFueSBidXMgd2lkdGggaW1wbGljYXRp
+b25zLgoKLi4uCgo+IE1vc3QgY29udHJvbGxlcidzIHN1cHBvcnRzX29wIGhvb2sgY2FsbCBzcGlf
+bWVtX2RlZmF1bHRfc3VwcG9ydHNfb3AoKSwKPiBpbmNsdWRpbmcgbnhwX2ZzcGlfc3VwcG9ydHNf
+b3AoKS4gSW4gc3BpX21lbV9kZWZhdWx0X3N1cHBvcnRzX29wKCksCj4gc3BpX21lbV9jaGVja19i
+dXN3aWR0aCgpIGlzIGNhbGxlZCB0byBjaGVjayBpZiB0aGUgYnVzd2lkdGhzIGZvciB0aGUgb3AK
+PiBjYW4gYWN0dWFsbHkgYmUgc3VwcG9ydGVkIGJ5IHRoZSBib2FyZCdzIHdpcmluZy4gVGhpcyB3
+aXJpbmcgaW5mb3JtYXRpb24KPiBjb21lcyBmcm9tIChhbW9uZyBvdGhlciB0aGluZ3MpIHRoZSBz
+cGkte3R4LHJ4fS1idXMtd2lkdGggRFQgcHJvcGVydGllcy4KPiBCYXNlZCBvbiB0aGVzZSBwcm9w
+ZXJ0aWVzLCBTUElfVFhfKiBvciBTUElfUlhfKiBmbGFncyBhcmUgc2V0IGJ5Cj4gb2Zfc3BpX3Bh
+cnNlX2R0KCkuIHNwaV9tZW1fY2hlY2tfYnVzd2lkdGgoKSB0aGVuIHVzZXMgdGhlc2UgZmxhZ3Mg
+dG8KPiBtYWtlIHRoZSBkZWNpc2lvbiB3aGV0aGVyIGFuIG9wIGNhbiBiZSBzdXBwb3J0ZWQgYnkg
+dGhlIGJvYXJkJ3Mgd2lyaW5nCj4gKGluIGEgd2F5LCBpbmRpcmVjdGx5IGNoZWNraW5nIGFnYWlu
+c3Qgc3BpLXtyeCx0eH0tYnVzLXdpZHRoKS4KClRoYW5rcyBmb3IgdGhlIHdob2xlIGV4cGxhbmF0
+aW9uLCBpdCdzIHByZXR0eSBjbGVhci4KCj4gSW4gYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2Nh
+bGUvaW14OG1wLXRxbWE4bXBxbC5kdHNpIHdlIGhhdmU6Cj4KPiAJZmxhc2gwOiBmbGFzaEAwIHsK
+PiAJCXJlZyA9IDwwPjsKPiAJCWNvbXBhdGlibGUgPSAiamVkZWMsc3BpLW5vciI7Cj4gCQlzcGkt
+bWF4LWZyZXF1ZW5jeSA9IDw4MDAwMDAwMD47Cj4gCQlzcGktdHgtYnVzLXdpZHRoID0gPDE+Owo+
+IAkJc3BpLXJ4LWJ1cy13aWR0aCA9IDw0PjsKPgo+IE5vdyB0aGUgdHJpY2t5IGJpdCBoZXJlIGlz
+IHdlIGRvIHRoZSBiZWxvdyBpbiBzcGlfbWVtX2NoZWNrX2J1c3dpZHRoKCk6Cj4KPiAJaWYgKG9w
+LT5kdW1teS5uYnl0ZXMgJiYKPiAJICAgIHNwaV9jaGVja19idXN3aWR0aF9yZXEobWVtLCBvcC0+
+ZHVtbXkuYnVzd2lkdGgsIHRydWUpKQo+IAkJcmV0dXJuIGZhbHNlOwoKTWF5IEkgY2hhbGxlbmdl
+IHRoaXMgZW50aXJlIHNlY3Rpb24/IElzIHRoZXJlICphbnkqIHJlYXNvbiB0byBjaGVjawphbnl0
+aGluZyBhZ2FpbnN0IGR1bW15IGN5Y2xlcyB3cnQgdGhlIHdpZHRoPyBNYXliZSBhICJjYW4gaGFu
+ZGxlIHgKY3ljbGVzIiBjaGVjayB3b3VsZCBiZSBpbnRlcmVzdGluZyB0aG91Z2gsIGJ1dCBJJ2Qg
+Z28gZm9yIGEgZGlmZmVyZW50CmhlbHBlciwgdGhhdCBpcyBzcGVjaWZpYyB0byB0aGUgZHVtbXkg
+Y3ljbGVzLgoKPiBUaGUgInRydWUiIHBhcmFtZXRlciBoZXJlIG1lYW5zIHRvICJ0cmVhdCB0aGUg
+b3AgYXMgVFgiLiBTaW5jZSB0aGUKPiBib2FyZCBvbmx5IHN1cHBvcnRzIDEtYml0IFRYLCB0aGUg
+NC1iaXQgZHVtbXkgVFggaXMgY29uc2lkZXJlZCBhcwo+IHVuc3VwcG9ydGVkLCBhbmQgdGhlIG9w
+IGdldHMgcmVqZWN0ZWQuIEluIHJlYWxpdHksIGEgZHVtbXkgcGhhc2UgaXMKPiBuZWl0aGVyIGEg
+Ulggbm9yIGEgVFguIFdlIHNob3VsZCBpZGVhbGx5IHRyZWF0IGl0IGRpZmZlcmVudGx5LCBhbmQK
+PiBvbmx5IGNoZWNrIGlmIGl0IGlzIG9uZSBvZiAxLCAyLCA0LCBvciA4LCBhbmQgbm90IHRlc3Qg
+aXQgYWdhaW5zdCB0aGUKPiBib2FyZCBjYXBhYmlsaXRpZXMgYXQgYWxsLgoKLi4uCgo+IFNpbmNl
+IHdlIGFyZSBxdWl0ZSBsYXRlIGluIHRoZSBjeWNsZSwgYW5kIHRoYXQgY2hhbmdpbmcKPiBzcGlf
+bWVtX2NoZWNrX2J1c3dpZHRoKCkgbWlnaHQgY2F1c2UgYWxsIHNvcnRzIG9mIGJyZWFrYWdlcywg
+SSB0aGluayB0aGUKPiBiZXN0IGlkZWEgY3VycmVudGx5IHdvdWxkIGJlIHRvIHJldmVydCB0aGlz
+IHBhdGNoLCBhbmQgcmVzZW5kIGl0IHdpdGgKPiB0aGUgb3RoZXIgY2hhbmdlcyBsYXRlci4KPgo+
+IFR1ZG9yLCBNaWNoYWVsLCBNaXF1ZWwsIHdoYXQgZG8geW91IHRoaW5rIGFib3V0IHRoaXM/IFdl
+IGFyZSBhdCByYzcgYnV0Cj4gSSB0aGluayB3ZSBzaG91bGQgc2VuZCBvdXQgYSBmaXhlcyBQUiB3
+aXRoIGEgcmV2ZXJ0LiBJZiB5b3UgYWdyZWUsIEkKPiB3aWxsIHNlbmQgb3V0IGEgcGF0Y2ggYW5k
+IGEgUFIuCgpFaXRoZXIgd2F5IEkgYW0gZmluZS4gdGhlIC1yYyBjeWNsZXMgYXJlIGFsc28gYXZh
+aWxhYmxlIGZvciB1cyB0bwpzZXR0bGUuIEJ1dCBpdCdzIHRydWUgd2UgY2FuIGJpa2VzaGVkIGEg
+bGl0dGxlIGJpdCwgc28gZmVlbCBmcmVlIHRvCnJldmVydCB0aGlzIHBhdGNoIGJlZm9yZSBzZW5k
+aW5nIHRoZSBNUi4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
