@@ -4,213 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D02D9C02185
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2025 14:16:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35F52E77188
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2025 16:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZxOF5r5DpUz8RxTFPjcsPLZi8Dr1ODQT3/YiXBWoRfc=; b=O286V5jkW4GwNP
-	zS+UtOkKvV4ztVeRsXVQbZjlkHfxkb/ExXDNHcdMJHAdL9rgX6QpWs9kEgV7m/27tjD+UFl2NOVBy
-	sK8w8rSQoKl4JY5cyroGOivB3+GZJ2Vua2f6u941sH4uojffp+0X3BO+uAVe+WF9PVFEC3jsVQXWs
-	fpsEGjecBreQ2CE5Q46td17B55JXOm7+rk31QhMjU+WcJF8Ccs6TLxR3V7q/GaGfDIJHgbxd7PEs4
-	cml/xATY1HSK6fvrKlRTXqRt79e6HQrCg66lQPgJkIoELOxhc4c/PqRhW808ay8MgnN+DwmDuTtbf
-	HKN+LDBv4HTZmsoJrpTw==;
+	List-Owner; bh=2CGT9iv/d3qf576GmUpROHwqW1jXoZ2jpxy/xsqOyGc=; b=TnIkk5JLQ5yoQb
+	GO1UeF//aFB5h0ms/iJSjAjWcfaAhdGYIHs3BMWpShuHsLx9aC7C5A73LqAvInyh/j2uU1ZJAyQUi
+	Ow9fBnz1XVNH3sFIa5DJ62Tr27kxy2paq7IZixLP7A6wpTtCJe6XcrEawqo8ubMJjvMyAZ/o/xgDN
+	+6nWNQEh2kysV+29ZdLtQkmxZxY8mhwaj7ZpXk450B3G7gI9QHv7ZtdILgYrI9GBAR5IQcL2uTar5
+	GflK74k/TobEa55Vzuv1BSxl+wAx+ijnye46y1eX/VgXmoiwSI/MjgO4Ym+LwwLBrRMDsUgfdoB7L
+	IJOtap4Fe8Eb9VkgOzIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXhiQ-00000008df3-0Yvd;
-	Tue, 14 Jan 2025 14:16:22 +0000
-Received: from mgamail.intel.com ([198.175.65.15])
+	id 1tXjZk-00000008zpw-0Dlm;
+	Tue, 14 Jan 2025 16:15:32 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXhYU-00000008bFM-3Sd3
+	id 1tXjZg-00000008zpE-4ANH
 	for linux-mtd@lists.infradead.org;
-	Tue, 14 Jan 2025 14:06:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736863566; x=1768399566;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=6RBvcUWB3ET5ExFMbakvyQnSaAeWASskkl720u1Y9mk=;
-  b=E56a84FtNchk5riTf1ZuB+aRLEU5Ako75YzQzqd5PAjY2E5IURoMvrvG
-   nOCF4BDUQI6gsllKjM83VCyrbfBKU1M7QPg/jI/gRKmQnDN6O375ZWi9k
-   ORQTPN+Ui/8WUGRKc4dFQNMDPAjg3VKrB90PbeZpRwYRxhS2VoqPoZar3
-   c6w9S7CTxWKE3qrKxLv2ksN58utZKQ0lJQ4jk5h+ay6aqViIAE8lIF6Yt
-   0pR4Y5J521Anh/pGbupdMVNShP6EspWPgx4BmUKOcGf4VF9kdA+EsBUmM
-   KZVZI/yPiRU4lljji6Pn/UNBbtovZIytOMzL/NecUkWAUBAUS6hR3R/tQ
-   w==;
-X-CSE-ConnectionGUID: ZbZ7GSjJRWWR/beE9Aog6g==
-X-CSE-MsgGUID: TC0NeF9nSrKwTo9H00XrMw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11315"; a="40838729"
-X-IronPort-AV: E=Sophos;i="6.12,314,1728975600"; 
-   d="scan'208";a="40838729"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2025 06:05:50 -0800
-X-CSE-ConnectionGUID: aQKYFt+TTeaRgAeBL/yPow==
-X-CSE-MsgGUID: i5z6CsM7ROmIpL9WmjsaoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="108876662"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Jan 2025 06:05:47 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Tue, 14 Jan 2025 06:05:43 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Tue, 14 Jan 2025 06:05:43 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Tue, 14 Jan 2025 06:05:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=P3HdUSQbcX8Iw4nd2VmK7YWMkrUL1/gETaFu01XYAyRep29S/19qhkJAPB8OdCByQOIgXblO9rpjc6SCAe6Ee1Urc4IQZrlr35SxWGUA6ipaKMM9imXZGEtkSeVwrOPNbHqUEQpVOE8spAYDERAZYKOwhpkazTzAHxIofg/Bnje9YR9gst2RUj6eF7l1RO7LJ/IJyIukjFvJ5iTb+NVF92BiC62oS87HpVY79kym8nGLUFTEwEMwCZ0XF88YI3SvpzTIBdZkH1DDjlCBo6QZSPhHViy5eyIeYAs+kDCFASKkUInfRL87iikfQ5TthrvYU5ffv3F8kHjAPCYspm8dbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6RBvcUWB3ET5ExFMbakvyQnSaAeWASskkl720u1Y9mk=;
- b=H6+MmOgWckH4UBzdwjlpqvQOZcc38+f4Mn+iVuWSqavYfZyF/tfiu+Vf2Elsc3C56EqKQrrsmyFirqSSCpnp6miRiH/qh88nhZpHGoZUbcXubuQ0A05YzyOvV+BsRARSLEQ9WzMOmkah20u9E33MbG+SD5n4UKCt8rc5TGtsscK/eqtBeQSycTtLPxmp4v5ySrXNt682QqKCMqur3YJ9Jm66IE8pi5iaLW6X9iRoXIRwv3HQhsfjw3XRipkv8NbD/1G9uiA+HZxO/rAmq4db5aCvLwmWQwIA2/vP7r3lWDnkMLjwyFlLAwXog909zfSBMsuICgbBtX7Hy2SuHB81cQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
- by MW5PR11MB5763.namprd11.prod.outlook.com (2603:10b6:303:19a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8356.13; Tue, 14 Jan
- 2025 14:05:40 +0000
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778]) by CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778%3]) with mapi id 15.20.8356.010; Tue, 14 Jan 2025
- 14:05:40 +0000
-From: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, "De Marchi, Lucas" <lucas.demarchi@intel.com>,
-	=?utf-8?B?VGhvbWFzIEhlbGxzdHLDtm0=?= <thomas.hellstrom@linux.intel.com>,
-	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
-	<tursulin@ursulin.net>, "Poosa, Karthik" <karthik.poosa@intel.com>, "Abliyev,
- Reuven" <reuven.abliyev@intel.com>, "Weil, Oren jer"
-	<oren.jer.weil@intel.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "intel-gfx@lists.freedesktop.org"
-	<intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 01/11] mtd: core: always create master device
-Thread-Topic: [PATCH v4 01/11] mtd: core: always create master device
-Thread-Index: AQHbXGTq3Ynz/rfH2UqisY27+I2b+LMJl8JDgAADOlCADMamsA==
-Date: Tue, 14 Jan 2025 14:05:40 +0000
-Message-ID: <CY5PR11MB63663795A6C4DC83CB89602AED182@CY5PR11MB6366.namprd11.prod.outlook.com>
-References: <20250101153925.865703-1-alexander.usyskin@intel.com>
-	<20250101153925.865703-2-alexander.usyskin@intel.com>
- <87sepwp6d9.fsf@bootlin.com>
- <IA1PR11MB6370A551FC8AEF0F9F404B42ED102@IA1PR11MB6370.namprd11.prod.outlook.com>
-In-Reply-To: <IA1PR11MB6370A551FC8AEF0F9F404B42ED102@IA1PR11MB6370.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY5PR11MB6366:EE_|MW5PR11MB5763:EE_
-x-ms-office365-filtering-correlation-id: 1c984d28-7ea1-4b11-270b-08dd34a4877b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016|38070700018;
-x-microsoft-antispam-message-info: =?utf-8?B?QUNHcU1LWThWaTJBVzByZ2E2eGVUVys5REYvU0Q0R3BScEhmUUVkWDRqNTcw?=
- =?utf-8?B?SXpxcWFFajNsU1cxcXdGY0pzMXYrR2hXczNGRyt3bEVwbFovN0RtcVdjU1d0?=
- =?utf-8?B?cjVjRkFMNEE2VFdpZDVTTm1jYVgwb3JFNnFZYzZtRUFLd0QvSEljOTd3SzV5?=
- =?utf-8?B?YUtpNzJCcGtNMHF3NmNZV21HdDNQYU43YWdwVWZSaUJ0VENmeUd3ZzY0Yjk2?=
- =?utf-8?B?RnFqVEkvWHNtcDRnVjRSRkc5Y0Z3dGxCay9aTjAvRTBnZE53NDg2QzZXM21w?=
- =?utf-8?B?TGt0bzQ4azR0cDRCWW4xR0lpZitCQ1d2cHJYR1AwTGJ2YlQ2WG5NNG9TN0pE?=
- =?utf-8?B?dDJMck1Qem93QXc3bHV6aUt5TndsOXdrbGE4aEl6Zm80NkR5ODE0dVZzZ09z?=
- =?utf-8?B?YUxxOFR2ZSt2SzZKcUg2ckxuM0dsT1g5a29vajhCWFdIZXZpWW0yZHdhQ2NW?=
- =?utf-8?B?NmtKNWRGWTJrWmx4cWtpT1AvbGJLQ250Y01lZElFcGZtMkM3QjkrYWVCR2Zz?=
- =?utf-8?B?QjN1N2hGSEtlREVQN3hhUElmNk81ZXZibnpaZUQwU3FKTEpxdFpBdldPTUZC?=
- =?utf-8?B?eWtIOUlaTEJtM1NYS3VCNTNvMXFXZzhKV0NWTml2Wkx5NDB5cSt3c1FLS01i?=
- =?utf-8?B?ZHpvYjhrcGhDSVpWODRpY0xhbUlxWXcwcndNalpsbmNSQ0VOVlpBbmFNSDVu?=
- =?utf-8?B?TFluSXBqZitGUVprV29WdjcxZjNhRENtcWJlYjI5NVBZK2kwUE83ZTZQQjUy?=
- =?utf-8?B?eE5IRVVJeXB4L1VXMmM0ZUprZ0djSUpiVjYyeThyeU5OeXJWSDRRekVvUFhi?=
- =?utf-8?B?amZjVDRkV1dOY1ZYeWFzUmZPckkxR2RqZG5YNHhxbno0aHI3OFdvRCtIdStV?=
- =?utf-8?B?UVFMa2h2N3k2aEszOUIwZ1BYbG1kOTl6cVllWFhYMjBRandkcXh5eUErbXoz?=
- =?utf-8?B?QUN6RExuNHRzSy92aWdBY3d0K0xQc1p1Ym5WWTVwQkRVZXRXQmkzS0VNS2FO?=
- =?utf-8?B?dzVWNDNjMERMK25oZE1SNXlJQ3ZWYkl2SjU4akZ4ZjNyUHpBK1NjVlUzNUdr?=
- =?utf-8?B?cVRKeEEwM2ZPOHBsamNHY0hyRHB6R1dCWHVNdjVsZDV0ejRSQlhNYlNrNlpt?=
- =?utf-8?B?VEZRTXBacWZjZ2dnZFQxUmdLeGxMSjN4ZUg3WkY5SDBuRmV2Z3VkdzRUK2hC?=
- =?utf-8?B?aTltVEpIcCtMZ2VmMitzN2I0b0tuMnp4ajdUaEpyQ0dkdXgxK0N3MytJeVd3?=
- =?utf-8?B?bjNMdVJJREJYQjc2Yzhrb0UrUHpkNnE4VGdFeFJ4WElVUzVMSFF1dG1nVjVF?=
- =?utf-8?B?Q0NyaXQwMlZkbGdDZmNNZ3dEMzkvY240WkRPamg1ZHYxd3RMTmMvREFSSm81?=
- =?utf-8?B?MGhtUC9jQVU1QW9acUJ1bkNYSSt2SHdQcEd2Z3V4T3k2NXI3TFpLRWhSZksr?=
- =?utf-8?B?Z2FGTUR0VTc3RlN1T3pUbDZCeFBYczBpM29xTnkxS1RSY2crVDJWTHFseGYw?=
- =?utf-8?B?K1BhMFpnM1lma0pjcytGNXBReXdsdXN3QUlhQzB6MTgycDYvUG9oK013SGlw?=
- =?utf-8?B?ZmltQWM2UXJ4emZVL1QyRWVnWnovU2lUZ3JjWUlCVVJ2MnpDeGdJUmhnMUxL?=
- =?utf-8?B?eDFDNlFRQUZETzVpTElMVTZXZlJTSHJiM2tOdXdGdTBTZXdoQmU4cGJkSGdL?=
- =?utf-8?B?UEVaWXdXVXp4ZG5IREg3NThIWGV4WUpuYUVaSHh6TjJjbUJCMTQwaWV5eDNw?=
- =?utf-8?B?MUpDNlNsUzhCNWovS0NDNW9QSHJIeEI5STM5QThHajdlWVQ2bDc0Y1ZvNHVm?=
- =?utf-8?B?d1RTSVRmWWVqOU4wOWRIVGg4dG5qVHZXdytYN3JBVGluUUk3WEZVVmtPemZN?=
- =?utf-8?B?blYwNEFKYTJqQ1ZoM0FMSkhDL3M4S3RjU3BQczNUdUMwS0xQTFFhRWUvVUE1?=
- =?utf-8?Q?WoRiTX4kdAE=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d1I4R1RWcmJ6dG5pODkwMXdjVmc4ZEZSS0QxSVhyVi83Ti93ODVHN05oYWd0?=
- =?utf-8?B?cU0xYnd1Yld2WGZ6Tzl0RVhZS3J6S1VGU0NsQ2pKdWJCZG54NHlKOWV0VVBT?=
- =?utf-8?B?Z3JKMldPeGtyRlprVmcwcTBpMFRUWTFLSjNHNU43VEhBdW9wVnNpV25tbEVK?=
- =?utf-8?B?K29ZclZDU2JRNHphMEQ5VW5NTHVwYU9RNURnVytxRUhuLzg3bHNjbUJTazBq?=
- =?utf-8?B?Y3h5OTMwY2tTNXg1VlplNGRyR3o3V0Q0UXRLSEordTNNRDl4TysyT2R1OE9i?=
- =?utf-8?B?TFpJeEIvd0N5aDdjTTZnMEtBb09POEwxV2oxT0w2bGl6RG1VUnhsMDN5S0d1?=
- =?utf-8?B?Rzl1cVZUYU1BMzJxNTBCWm1Tc3VseFFpeWZvSnZEOUEwQXZZL29IenFUZmI3?=
- =?utf-8?B?azlvTENIS2c4ZklnYVBjM2wvU2krVkhJRGJETCt6dThnbnBpalNPcmMxWVhv?=
- =?utf-8?B?L3ZsRWJ6alV4SmRSSm5NNnk0eUsxMldMRzBqc090dTZyK0pjNktCWS84cjBE?=
- =?utf-8?B?aC9rRFhzU3I4VzRCU1R4c1lxaGtBK1lWcncrazhQNGh0TFA2ZktiNjdnTnRR?=
- =?utf-8?B?OHBDNDJjMWtWRGtyRWZ6RitJemVDTVZTTkdyU0hrYmNtM0VTZS8ydVZJUW1L?=
- =?utf-8?B?akk2b1BIYkE0TTk0OWtZbnRxNjdYMmtnWmlzSlo4aUYrQzQ4cFZYUUFXVThv?=
- =?utf-8?B?OFplWERTK3k1aDFSNWp3aE9oRnhOeXNLc1kvNG5iejhtUHhQc0tHM2pvOUJH?=
- =?utf-8?B?OEZYY2RVbUVhaHY2S1U3NjcrajlEUEJVWkViS3FoTnVqSlptMEdDVHN0V2dD?=
- =?utf-8?B?Sm4rYnZnQ1VaV2lVVXRRejcrQXBtY2JPOUNHUGt3dlYvRFZEc2NSbVVVa3p3?=
- =?utf-8?B?QS9Dc2NSYmlaOC9qVHdicFFHSjFsUW5BaXF6c2NhNjA5a3hKSmIrcUVHQWM4?=
- =?utf-8?B?UTErTHN6UXFnTVJNT1h5OGNZbHV6dVB1b2hiV2Z1NmF2ajROdEh2WGVCSkRr?=
- =?utf-8?B?YThXanJXclNBaGdKUkxCL1g3V2M2a01KSmRxd2pmYlRsREdNWEdoMGphcDZI?=
- =?utf-8?B?MFhlNm0wckhWNUZ2VGNITE1LL01Ia1ZONmkvNEhtb0ZDMC8ydHlTNTJwL2ty?=
- =?utf-8?B?d2lSOWZqMnMybFVQVTIyek5vMjJ4UEVCOU5xbHJvOTJSZkVaNWFxVXFaVHBh?=
- =?utf-8?B?Y0RwR3c0dnI2a2FVOUUweCt5RzdNOXY3WVdUUmZUV1B0alJhcWpKd3BxL0dU?=
- =?utf-8?B?V3BWZ0htS0lQbU5hYWUwSjYvNGs0KzcwYkNaUlNJRTdZOFVydUNJRW5sdzVS?=
- =?utf-8?B?bHpNdW9sbjhVNVhpY1NSa29hRGgzZ3hLVGVGT1hCbTNaR3Z5aWkvcS9Tb3Jk?=
- =?utf-8?B?UC8ydW8rczB5TlpVYWN1ZVRMbzI1WUE0ay9tU0o2TnRVMVl1Tyt0UWJ4RVZt?=
- =?utf-8?B?aDM1MjB0YU5DQ1N5TkNoSmIxeHhGSnlBTFFmSmEyWlZQOUJudFdTTEk5SG1a?=
- =?utf-8?B?VlA5TVdwVVlQNDZlM0FweS9tVTNTLy9yT2p3ZVM0THp6c3NwVDRTcEhxYno1?=
- =?utf-8?B?clg2TVRGeVhvWDZaZkUzb3lzMmFLOWlmWnp4WXE2TUNRNUZhUUYyenRoRXpj?=
- =?utf-8?B?U3dvVzZpY1hhVzFJQ0I0Y3hhV2Urb010a3hUcmg1SGkvanpoQ24xTGNzYjI3?=
- =?utf-8?B?R3lPYnFWdjNqTWtSYjJsdTlTNTRMdEtOWW5FdlZsUVE2Sm5abjJZTEdyS0cx?=
- =?utf-8?B?aERzdmdyZUEwdFVkNWNMeDRaTGFkcHlvR0drRDBKdVJoVk5BYzhPRm56T0Nh?=
- =?utf-8?B?MDRVN09JV3RDY1E2WG5LM3lUcUxrbTcwVHVKYmRxT0tTNy9oSVdWYjB4OHU1?=
- =?utf-8?B?Rm00WGFtNllKSE03ZVo1VXFKS01DaTRoZGVoYTdkdWc1RGo4U2djMm4vY2Zk?=
- =?utf-8?B?WG9KREFrRjRjc2IwSW80MlppNzNKN2x0UU1XS0VxNWlmN0VhMmVHN04yVi94?=
- =?utf-8?B?L1JDMFlwdEV0WHRwSFdNMlNZQ21IMzQ5akVFTEx4KzdVTEkzQ29vaDlSdDZC?=
- =?utf-8?B?Q0k3c1lWblNQVVhONzZvMEVVN1duK2F4Qy9rRW1CYkFxYWZrKzRNYndrSTl6?=
- =?utf-8?B?YjBkL3hPZVdnK0VESEFlSHE3MnNwamtSUlVsUzB1by9ZQWl1MDVSL2diVWZ5?=
- =?utf-8?B?d1E9PQ==?=
+	Tue, 14 Jan 2025 16:15:30 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id B756AA41836;
+	Tue, 14 Jan 2025 16:13:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D4D2C4CEDD;
+	Tue, 14 Jan 2025 16:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736871327;
+	bh=F3j37I7eWux3kT/HLzcnR1v1ElCkcnxuIX95XEhfavs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=ILH9a2vskhMolQSuF7Ef38niRrZRsKp1vTPx4T9aqNvQKErCGlpyMOPS0oerUl97C
+	 E1aBpgxzsrz/ZPrvYcTi4EcIACwJBd5DO4VlIsnN4XKvdi/L5Fw2NzUbcddXFMBPz6
+	 2XGWCKRUBFb1wkbltURqQ7pnf1U6p2kgbEUB1eAVmeYIFti8IiTxICbKzJRZQ0HEXh
+	 4ogP7Zc2AfnmekN8nHfPstvaHtnhKS6+cYu25CKNV1xBBbCbRP7IBoR/81lelIHg2c
+	 0yC4XuBLf5enjERrsFzas4D0l70M1UmoMMcXR14Eto0rwWjLYyTPwmznxHfCD9hVx5
+	 W1UILPS0EoGtw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: tudor.ambarus@linaro.org,  pratyush@kernel.org,  mwalle@kernel.org,
+  miquel.raynal@bootlin.com,  richard@nod.at,  vigneshr@ti.com,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  alvinzhou@mxic.com.tw,  leoyu@mxic.com.tw,  Cheng Ming Lin
+ <chengminglin@mxic.com.tw>,  stable@vger.kernel.org,  Cheng Ming Lin
+ <linchengming884@gmail.com>
+Subject: Re: [PATCH v2 1/1] mtd: spi-nor: core: replace dummy buswidth from
+ addr to data
+In-Reply-To: <3342163.44csPzL39Z@steina-w> (Alexander Stein's message of "Tue,
+	14 Jan 2025 13:57:59 +0100")
+References: <20241112075242.174010-1-linchengming884@gmail.com>
+	<20241112075242.174010-2-linchengming884@gmail.com>
+	<3342163.44csPzL39Z@steina-w>
+Date: Tue, 14 Jan 2025 16:15:24 +0000
+Message-ID: <mafs0zfjt5q3n.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c984d28-7ea1-4b11-270b-08dd34a4877b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jan 2025 14:05:40.8127
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1JQPbqMnxWQdrflhUw0TfaNNXy6lsLtc+3wtWIcUx2WqsVrVH4n8IHw7h+Uleq5i7OsAkaqQdEdAvWdBMziHCoYn07f2bFatGAzlFltJRWw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR11MB5763
-X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250114_060606_922354_3FC8B4A6 
-X-CRM114-Status: GOOD (  18.77  )
+X-CRM114-CacheID: sfid-20250114_081529_171853_FFC18D72 
+X-CRM114-Status: GOOD (  30.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -222,28 +75,202 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-PiA+ID4gQ3JlYXRlIG1hc3RlciBkZXZpY2Ugd2l0aG91dCBwYXJ0aXRpb24gd2hlbg0KPiA+ID4g
-Q09ORklHX01URF9QQVJUSVRJT05FRF9NQVNURVIgZmxhZyBpcyB1bnNldC4NCj4gPg0KPiA+IEkg
-ZG9uJ3QgdGhpbmsgeW91IHRvb2sgaW50byBjb25zaWRlcmF0aW9uIG15IHJlbWFya3MgcmVnYXJk
-aW5nIHRoZSBmYWN0DQo+ID4gdGhhdCB5b3Ugd291bGQgYnJlYWsgdXNlcnNwYWNlLiBJZiB5b3Ug
-ZW5hYmxlIHRoZSBtYXN0ZXIsIHlvdSBubyBsb25nZXINCj4gPiBoYXZlIHRoZSBzYW1lIGRldmlj
-ZSBudW1iZXJpbmcgaW4gdXNlcnNwYWNlLiBJIGtub3cgcGVvcGxlIHNob3VsZCBub3QNCj4gPiBj
-YXJlIGFib3V0IHRoZXNlIG51bWJlcnMsIGJ1dCBpbiBwcmFjdGljZSB0aGV5IGRvLg0KPiA+DQo+
-ID4gSWYgSSdtIHdyb25nLCBwbGVhc2UgYmUgYSBsaXR0bGUgbW9yZSB2ZXJib3NlIGFib3V0IHdo
-eSA6KQ0KPiA+DQo+ID4gVGhhbmtzLA0KPiA+IE1pcXXDqGwNCj4gDQo+IEhpIE1pcXVlbA0KPiAN
-Cj4gSSd2ZSBjcmVhdGVkIHNlcGFyYXRlIGNsYXNzIChtdGRfbWFzdGVyKSBmb3Igc3VjaCBkZXZp
-Y2VzLg0KPiBVc2VzLXNwYWNlIGxvb2tpbmcgZm9yIG10ZCBkZXZpY2UgY29udGludWVzIHRvIHJl
-Y2VpdmUgc2FtZSBudW1iZXIgb2YNCj4gL2Rldi9tdGRYIGRldmljZXMuDQo+IFRoZXJlIHdpbGwg
-YmUgYWRkaXRpb25hbCAvZGV2L210ZF9tYXN0ZXJYIGRldmljZXMsIGJ1dCB0aGlzIGlzIHVuYXZv
-aWRhYmxlLCBJDQo+IHN1cHBvc2UuDQo+IE1heWJlIHdlIGNhbiByZW5hbWUgaXQgdG8gc29tZXRo
-aW5nIHRoYXQgbm90IGluIC9kZXYvbXRkKiBleHByZXNzaW9uIChlLmcuDQo+IG1hc3Rlcm10ZFgp
-LA0KPiBpZiBpdCBoZWxwcy4NCj4gDQoNCk1pcXVlbCwgaXMgdGhpcyBnb29kIGVub3VnaCBvciBy
-ZXF1aXJlcyByZXdyaXRlPw0KDQotIC0gDQpUaGFua3MsDQpTYXNoYQ0KDQoNCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+On Tue, Jan 14 2025, Alexander Stein wrote:
+
+> Hello everyone,
+>
+> Am Dienstag, 12. November 2024, 08:52:42 CET schrieb Cheng Ming Lin:
+>> From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+>> 
+>> The default dummy cycle for Macronix SPI NOR flash in Octal Output
+>> Read Mode(1-1-8) is 20.
+>> 
+>> Currently, the dummy buswidth is set according to the address bus width.
+>> In the 1-1-8 mode, this means the dummy buswidth is 1. When converting
+>> dummy cycles to bytes, this results in 20 x 1 / 8 = 2 bytes, causing the
+>> host to read data 4 cycles too early.
+>> 
+>> Since the protocol data buswidth is always greater than or equal to the
+>> address buswidth. Setting the dummy buswidth to match the data buswidth
+>> increases the likelihood that the dummy cycle-to-byte conversion will be
+>> divisible, preventing the host from reading data prematurely.
+>> 
+>> Fixes: 0e30f47232ab5 ("mtd: spi-nor: add support for DTR protocol")
+>> Cc: stable@vger.kernel.org
+>> Reviewd-by: Pratyush Yadav <pratyush@kernel.org>
+>> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+>> ---
+>>  drivers/mtd/spi-nor/core.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index f9c189ed7353..c7aceaa8a43f 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -89,7 +89,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>>  		op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+>>  
+>>  	if (op->dummy.nbytes)
+>> -		op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+>> +		op->dummy.buswidth = spi_nor_get_protocol_data_nbits(proto);
+>>  
+>>  	if (op->data.nbytes)
+>>  		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
+>> 
+>
+> I just noticed this commit caused a regression on my i.MX8M Plus based board,
+> detected using git bisect.
+> DT: arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql-mba8mpxl.dts
+> Starting with this patch read is only 1S-1S-1S, before it was
+> 1S-1S-4S.
+>
+> before:
+>> cat /sys/kernel/debug/spi-nor/spi0.0/params
+>> name            mt25qu512a
+>> id              20 bb 20 10 44 00
+>> size            64.0 MiB
+>> write size      1
+>> page size       256
+>> address nbytes  4
+>> flags           HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_4BIT_BP
+>> | HAS_SR_BP3_BIT6 | SOFT_RESET
+>> 
+>> opcodes
+>> 
+>>  read           0x6c
+>>  
+>>   dummy cycles  8
+>>  
+>>  erase          0xdc
+>>  program        0x12
+>>  8D extension   none
+>> 
+>> protocols
+>> 
+>>  read           1S-1S-4S
+>>  write          1S-1S-1S
+>>  register       1S-1S-1S
+>> 
+>> erase commands
+>> 
+>>  21 (4.00 KiB) [1]
+>>  dc (64.0 KiB) [3]
+>>  c7 (64.0 MiB)
+>> 
+>> sector map
+>> 
+>>  region (in hex)   | erase mask | overlaid
+>>  ------------------+------------+----------
+>>  00000000-03ffffff |     [   3] | no
+>
+> after:
+>> cat /sys/kernel/debug/spi-nor/spi0.0/params
+>> name            mt25qu512a
+>> id              20 bb 20 10 44 00
+>> size            64.0 MiB
+>> write size      1
+>> page size       256
+>> address nbytes  4
+>> flags           HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_4BIT_BP
+>> | HAS_SR_BP3_BIT6 | SOFT_RESET
+>> 
+>> opcodes
+>> 
+>>  read           0x13
+>>  
+>>   dummy cycles  0
+>>  
+>>  erase          0xdc
+>>  program        0x12
+>>  8D extension   none
+>> 
+>> protocols
+>> 
+>>  read           1S-1S-1S
+>>  write          1S-1S-1S
+>>  register       1S-1S-1S
+>> 
+>> erase commands
+>> 
+>>  21 (4.00 KiB) [1]
+>>  dc (64.0 KiB) [3]
+>>  c7 (64.0 MiB)
+>> 
+>> sector map
+>> 
+>>  region (in hex)   | erase mask | overlaid
+>>  ------------------+------------+----------
+>>  00000000-03ffffff |     [   3] | no
+>
+> AFAICT the patch seems sane, so it probably just uncovered another
+> problem already lurking somewhere deeper.
+> Given the HW similarity I expect imx8mn and imx8mm based platforms to be
+> affected as well.
+> Reverting this commit make the read to be 1S-1S-4S again.
+> Any ideas ow to tackling down this problem?
+
+Thanks for reporting this. I spent some time digging through this, and I
+think I know what is going on.
+
+Most controller's supports_op hook call spi_mem_default_supports_op(),
+including nxp_fspi_supports_op(). In spi_mem_default_supports_op(),
+spi_mem_check_buswidth() is called to check if the buswidths for the op
+can actually be supported by the board's wiring. This wiring information
+comes from (among other things) the spi-{tx,rx}-bus-width DT properties.
+Based on these properties, SPI_TX_* or SPI_RX_* flags are set by
+of_spi_parse_dt(). spi_mem_check_buswidth() then uses these flags to
+make the decision whether an op can be supported by the board's wiring
+(in a way, indirectly checking against spi-{rx,tx}-bus-width).
+
+In arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql.dtsi we have:
+
+	flash0: flash@0 {
+		reg = <0>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <80000000>;
+		spi-tx-bus-width = <1>;
+		spi-rx-bus-width = <4>;
+
+Now the tricky bit here is we do the below in spi_mem_check_buswidth():
+
+	if (op->dummy.nbytes &&
+	    spi_check_buswidth_req(mem, op->dummy.buswidth, true))
+		return false;
+
+The "true" parameter here means to "treat the op as TX". Since the board
+only supports 1-bit TX, the 4-bit dummy TX is considered as unsupported,
+and the op gets rejected. In reality, a dummy phase is neither a RX nor
+a TX. We should ideally treat it differently, and only check if it is
+one of 1, 2, 4, or 8, and not test it against the board capabilities at
+all.
+
+Alexander, can you test my theory by making sure it is indeed the dummy
+check in spi_mem_check_buswidth() that fails, and either removing it or
+passing "false" instead of "true" to spi_check_buswidth_req() fixes the
+bug for you?
+
+I took a quick look and the spi-tx-bus-width == 1 and spi-rx-bus-width >
+1 combination seems to be quite common so I think many other boards are
+affected by this bug as well.
+
+Since we are quite late in the cycle, and that changing
+spi_mem_check_buswidth() might cause all sorts of breakages, I think the
+best idea currently would be to revert this patch, and resend it with
+the other changes later.
+
+Tudor, Michael, Miquel, what do you think about this? We are at rc7 but
+I think we should send out a fixes PR with a revert. If you agree, I
+will send out a patch and a PR.
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
