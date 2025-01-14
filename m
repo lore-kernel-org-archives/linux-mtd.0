@@ -4,61 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A177C02180
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jan 2025 17:55:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AF3DC02183
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Jan 2025 08:46:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JX58MD5QvctxMvJEuCh9ytrG3L4/cf9P3DS5Pig9uis=; b=jX24T86ljWi+f9
-	BQ9q6SMzyVPC5Pu5JMzQGwiQeDQMDjWhY1o9v91Bxm13taPdiAXrJPdlHzl2lypU3iBeloEAvMPuV
-	7CEp0LSRnDJPFw546pgH3KnRN+6pfrcJ3B8hJLqW/DvQG8HGl53t0rEmUuPq1JJ2YV8D7qAmps+qw
-	3L+Pneq0SOnz8Gm81i7f2OdGC6ViDBbY3rNltGNHs1ejKPvpkowMsxy7ffUBFkfolj7HPhMRiStGL
-	f9Z02P/ZirN6lsYNs4//jQw7PdYmCIgQzY23hwizW/NCYCmkHM0AIkD+4fnVnkhatOSPlbLDT8XI8
-	WQ5LZ55FNT9jW1RyQ+kQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3i0H4vS0ThOJrF1IotJdJbJDGiGW1kAcSFJjGY+WoLA=; b=V2AjNJye2u8AKA
+	nky9Goql7yELIaXu/6JmeyTqxcqD8eRXsSDTqiq4BsztxskFZP2elAdjmAfg0hslnQMyWS2FvWgyE
+	uwVv17W6vFUzf9qwBxM4ah0njs5nRv2m/rre9pOEsRxs7sRIdbwWiiZF/KnVLSXdkOubVVOQ0mwns
+	E3DDQYhabHHmM2y/yvIL/2M6QU4lZ2AACtenIcAM37fv9yAmBqej0lzfEH7vaouVFVVWnEH1BZrXf
+	MPcQVZxGrtC9SGocqZklzCOWXK8280BfoJO3W4dV2PcZFI9UGS2dR8LI6m54HRB9bGiPOZadiXSIG
+	CjuMhZZs3A3QOEOq9KtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXOf4-000000067bQ-27gY;
-	Mon, 13 Jan 2025 17:55:38 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1tXcYh-00000007s7V-3zcu;
+	Tue, 14 Jan 2025 08:45:59 +0000
+Received: from mail.completesolutions.pl ([51.91.254.67])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXOdr-000000067Hf-0rh2
+	id 1tXcYf-00000007s76-1qEO
 	for linux-mtd@lists.infradead.org;
-	Mon, 13 Jan 2025 17:54:24 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id BD8695C5455;
-	Mon, 13 Jan 2025 17:53:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE488C4CEE3;
-	Mon, 13 Jan 2025 17:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736790862;
-	bh=MvQNbMEDp4c1MhS9MAoY9fptc0+AKg1NB6tPtemNoaQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=WMaTpQgxXA79N+0Au/ZQOFxrXtPWlB4jWZX/29J97FDcJvqCycpd6ZPTnRXLYMbmp
-	 Vk+aK0ddBjaed33nGPgqvVpfHD75u4g6dd13UkTL7P8Nb3UjU1Z2QVmD0Ed/LypS22
-	 LwEp8K0Iw9froktFM95tbYjXb2HCvOTWgQ52NRy4hWiilxAHEIYe6FGuZF6OO3+7sL
-	 OBen/UfPjZSgfaLMHfw6YyzGLaBJ/RBmp3aRNrX+A0CtklCM09mttt1JEghk+If6bB
-	 cmxlXhQxK3SZqsVXyTMP4/mOnQY6166KESJv0LXqUQrSmBryL9LOk4QCof9LIiMilX
-	 TYtgnbYepC0DA==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: tkuw584924@gmail.com
-Cc: linux-mtd@lists.infradead.org,  tudor.ambarus@linaro.org,
-  pratyush@kernel.org,  mwalle@kernel.org,  miquel.raynal@bootlin.com,
-  richard@nod.at,  vigneshr@ti.com,  Bacem.Daassi@infineon.com,  Takahiro
- Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: Re: [PATCH 0/2] Add support for Infineon S28HL256T and S28HL02GT
-In-Reply-To: <cover.1734588106.git.Takahiro.Kuwano@infineon.com> (tkuw's
-	message of "Thu, 19 Dec 2024 16:06:14 +0900")
-References: <cover.1734588106.git.Takahiro.Kuwano@infineon.com>
-Date: Mon, 13 Jan 2025 17:54:19 +0000
-Message-ID: <mafs08qre7g6s.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 14 Jan 2025 08:45:58 +0000
+Received: by mail.completesolutions.pl (Postfix, from userid 1002)
+	id 9C13424769; Tue, 14 Jan 2025 09:45:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=completesolutions.pl;
+	s=mail; t=1736844355;
+	bh=dqx6etWJTU7o7oR1uR2aRBCwaPXPl4dirwwzUCFBDcc=;
+	h=Date:From:To:Subject:From;
+	b=iFSfNskXbmGzWLCm5FnPxn2g7w4Fl2jf33rAUyPbAuyp+XR0ChwvpRF2w3kzRHAYB
+	 CIc6ZJ0W+aLmQrb64S5xNW6TKM75eMSz/BsueWZOqQpb1OypBRuD9lF/nM2uA5uvR1
+	 xnYuzpS2yzWskxSUuhezgyKDNSs56wRdcVuGHdI3ozaTNruW0VCp5+SHWKDhWo5mLx
+	 3w+fSYH0RORYjyDFlfzYHPqrr9wdWBdK4nFaXdLlbqkpWYwdTxdMK+2GSbMM9cIbn4
+	 C0ReEsIk1od3FgFE3kS4zzbdLk365GbQvtPGJyaL8NcipOVrgFp6Zs/hwoJTCvG/gv
+	 RItrmd5cBpoVA==
+Received: by mail.completesolutions.pl for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2025 08:45:13 GMT
+Message-ID: <20250114084500-0.1.fu.26kjz.0.mjn3ro8qzo@completesolutions.pl>
+Date: Tue, 14 Jan 2025 08:45:13 GMT
+From: "Marcin Gard" <marcin.grad@completesolutions.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
+X-Mailer: mail.completesolutions.pl
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250113_095423_302329_46A925B3 
-X-CRM114-Status: UNSURE (   6.82  )
+X-CRM114-CacheID: sfid-20250114_004557_612858_8D39EFF2 
+X-CRM114-Status: UNSURE (   2.13  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -71,24 +62,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 19 2024, tkuw584924@gmail.com wrote:
-
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->
-> Those are 3.0V, 256Mb/2Gb NOR Flash devices with Octal interface.
-> Same fanctionalities with 1.8V version that are already supported.
-
-Applied to spi-nor/next with the changes I mentioned. Thanks!
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
+cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
+xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
+Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
+ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbSBzZXJkZWN6bmllCk1hcmNpbiBHYXJkCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
