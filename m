@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BB37C02180
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2025 07:26:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C4A2C02183
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2025 10:17:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Sam8dU4KaQmGxxtmmFnc5Egc4IBvoyc6ZqOjvudKGq0=; b=I0fesjgqIvqxSGvLuUHMjf75y+
-	p3yXzfv5/n+KnHxd8jyiRBJ6GUZx8gxzL6qD7u3t4rlRguvElkTSbmY9Drh8Vhixx7gaqYwaWME9Y
-	qezSI2niHJUSTlup6c4xO8ipKERB31G+OWOoTnvwSVl+98PGt4OZfk8iE1Ny4VFaZFWXe7qs1P5oC
-	wPBBex9W+9Fqvjr1ZmJFT1YE1fpRe3B39yE9xRHaxxTDJqK2ewWL0zfI7p9REznYJ1xyivx7YT3di
-	tRSCDLKSxtEonPdr6jfrLAE/IelA9CcGSBiRRdyT1NekssICKufFUczScfvrAXF21iKUDfHI9n4x5
-	22KODdXg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=yraBlesSht/tuG65Sy6Y30gTzZrAbOsGYSBNH7ZOqgA=; b=jovZ9zJkWA+a4m
+	fbTMlRieShkvDI+oTJ4o/B8cUic4cZmbcPcTvS4arp+baT6hWhaygcBd6r7vlusa/viFuCvarGhlm
+	OQq7vNv21do4o512W8+WMD0C9j2Y/4uc0fqBWX2Q+WUjKbCcVV+ycKCYMKL6jxWMQqFO2PWXyZsfi
+	rtrtfACDICCViKqnwzur/rDr8/lUQLZIbgWJQsTps5J/RhWzRo3L0M96AwbEiQf8Cgu7faDRw8qUY
+	f2oA3u8GXTmVFOJGAdt/7THPfs1m9QnW8fcofivdKHCscO9Zz9hxPh3+mL+HOsJIZr/fUbAAzr8Wp
+	i4eNhpl3/aRUaUHi1Hrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXxnG-0000000AvoS-0K6c;
-	Wed, 15 Jan 2025 07:26:26 +0000
+	id 1tY0St-0000000BSPl-2ho6;
+	Wed, 15 Jan 2025 10:17:35 +0000
 Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXxnC-0000000Avo4-30FE
+	id 1tY0Sr-0000000BSOu-2Xkj
 	for linux-mtd@lists.infradead.org;
-	Wed, 15 Jan 2025 07:26:24 +0000
+	Wed, 15 Jan 2025 10:17:35 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 585E5A4175F;
-	Wed, 15 Jan 2025 07:24:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C07D1C4CEDF;
-	Wed, 15 Jan 2025 07:26:20 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id B5F31A41B18;
+	Wed, 15 Jan 2025 10:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA206C4CEDF;
+	Wed, 15 Jan 2025 10:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736925981;
-	bh=s7ksFoD/PqRd2O9wRPOKsmEaBFHXMs0QFuIKBQdmC7I=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To:From;
-	b=ti7jmkeK2s7uUVmgymsakoiQZssYQ7HivyLIgHp6+wpz7P4Atn5aL1KpAeFlp6YGq
-	 DtY3DQcvHrfSAGhyFYWNhxq2/wIo/NOUjltxsm8D8KNpo1n95dxAv0Kc5ygT4d6KiD
-	 SyEaNjtgKgN69HMViCOVl0Hf6oZI1Jn+LPOqKVzZB5AYrVX4Ckth4q7sd5ZF9E/qkc
-	 E8WsED9Alpfd48G0j/LfwLlKWVDRO7Eh7jCLkHwiJ8WP/sTn4d1Ld2czSXTxWGV3jR
-	 9+5BqszsQB9kC7bkB7xsnvoMHVdSUfcc8xFXLuq5+pXxgGF+K2qCZpcb5YDXRFb0Oc
-	 Xt85+GDnmRzNA==
-Date: Wed, 15 Jan 2025 08:26:11 +0100
-Message-Id: <D72GVBSZNP5J.1NMQYXQ4SZLNF@kernel.org>
-To: "Pratyush Yadav" <pratyush@kernel.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2 1/1] mtd: spi-nor: core: replace dummy buswidth from
- addr to data
-Cc: "Alexander Stein" <alexander.stein@ew.tq-group.com>,
- <tudor.ambarus@linaro.org>, <richard@nod.at>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <alvinzhou@mxic.com.tw>, <leoyu@mxic.com.tw>, "Cheng Ming Lin"
- <chengminglin@mxic.com.tw>, <stable@vger.kernel.org>, "Cheng Ming Lin"
- <linchengming884@gmail.com>
-From: "Michael Walle" <mwalle@kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20241112075242.174010-1-linchengming884@gmail.com>
- <20241112075242.174010-2-linchengming884@gmail.com>
- <3342163.44csPzL39Z@steina-w> <mafs0zfjt5q3n.fsf@kernel.org>
- <87wmexp9lh.fsf@bootlin.com> <mafs0ldvd5l2k.fsf@kernel.org>
-In-Reply-To: <mafs0ldvd5l2k.fsf@kernel.org>
+	s=k20201202; t=1736936252;
+	bh=S08ExAXa20SGQ/rudOb5j8oKW2KeqlRexrLWwGdLH1w=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lJ+tLSBtcpbIIhom1mBZ9KrtmZjRZYllZc8UPr26wEHc3rKviGLeuqk9DD3WpLDEd
+	 yimET+xWgCDf3jFs8hPZ6cN21RYB9NaVM9U5KESQ35x78j7lCn4dYY38ra6GQFjHsf
+	 K4qWM9fxN8toCP14MShR8yP/VU9vjgdeMiUrllb+/ja0dPx/gj1CrIzHm0jCsysNgt
+	 uJht+S9X8C0Dtk0teQoqU5zWYo8kwn6BfaL9SWACFTOJtsDaOlnG/WsgAIZADIBISG
+	 TuKhA5mgBQdDLByDjY6u8U5Wf7EuThkV5DSFkkpiphk5olUrDHqS/EsiJ55Ia1Epq2
+	 wk8UFoRAoIl8Q==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Cheng Ming Lin <linchengming884@gmail.com>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	alvinzhou@mxic.com.tw,
+	leoyu@mxic.com.tw,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: [PATCH] Revert "mtd: spi-nor: core: replace dummy buswidth from addr to data"
+Date: Wed, 15 Jan 2025 10:16:52 +0000
+Message-ID: <20250115101659.55882-1-pratyush@kernel.org>
+X-Mailer: git-send-email 2.48.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250114_232622_886726_72EEB38B 
-X-CRM114-Status: GOOD (  23.62  )
+X-CRM114-CacheID: sfid-20250115_021733_856685_0750A696 
+X-CRM114-Status: GOOD (  20.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,96 +75,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0349087539075897595=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============0349087539075897595==
-Content-Type: multipart/signed;
- boundary=8424e5f124607425b50bbb8b9c6837db20f9d6f50f7d8ea68da8b2a9e0fc;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+This reverts commit 98d1fb94ce75f39febd456d6d3cbbe58b6678795. The commit
+uses data nbits instead of addr nbits for dummy phase. This causes a
+regression for all boards where spi-tx-bus-width is smaller than
+spi-rx-bus-width. It is a common pattern for boards to have
+spi-tx-bus-width == 1 and spi-rx-bus-width > 1. The regression causes
+all reads with a dummy phase to become unavailable for such boards,
+leading to a usually slower 0-dummy-cycle read being selected.
 
---8424e5f124607425b50bbb8b9c6837db20f9d6f50f7d8ea68da8b2a9e0fc
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Most controllers' supports_op hooks call spi_mem_default_supports_op().
+In spi_mem_default_supports_op(), spi_mem_check_buswidth() is called to
+check if the buswidths for the op can actually be supported by the
+board's wiring. This wiring information comes from (among other things)
+the spi-{tx,rx}-bus-width DT properties. Based on these properties,
+SPI_TX_* or SPI_RX_* flags are set by of_spi_parse_dt().
+spi_mem_check_buswidth() then uses these flags to make the decision
+whether an op can be supported by the board's wiring (in a way,
+indirectly checking against spi-{rx,tx}-bus-width).
 
-Hi,
+Now the tricky bit here is that spi_mem_check_buswidth() does:
 
-> >>>> --- a/drivers/mtd/spi-nor/core.c
-> >>>> +++ b/drivers/mtd/spi-nor/core.c
-> >>>> @@ -89,7 +89,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor =
-*nor,
-> >>>>  		op->addr.buswidth =3D spi_nor_get_protocol_addr_nbits(proto);
-> >>>> =20
-> >>>>  	if (op->dummy.nbytes)
-> >>>> -		op->dummy.buswidth =3D spi_nor_get_protocol_addr_nbits(proto);
-> >>>> +		op->dummy.buswidth =3D spi_nor_get_protocol_data_nbits(proto);
-> >
-> > Facing recently a similar issue myself in the SPI NAND world, I believe
-> > we should get rid of the notion of bits when it comes to the dummy
-> > phase. I would appreciate a clarification like "dummy.cycles" which
-> > would typically not require any bus width implications.
->
-> I agree. All peripheral drivers convert cycles to bytes, and controller
-> drivers convert them back to cycles. This whole thing should be avoided,
-> especially since it contains some traps with division truncation.
+	if (op->dummy.nbytes &&
+	    spi_check_buswidth_req(mem, op->dummy.buswidth, true))
+		return false;
 
-Here is the relevant discussion:
-https://lore.kernel.org/linux-mtd/f647e713a65f5d3f0f2e3af95c4d0a89@walle.cc=
-/
+The true argument to spi_check_buswidth_req() means the op is treated as
+a TX op. For a board that has say 1-bit TX and 4-bit RX, a 4-bit dummy
+TX is considered as unsupported, and the op gets rejected.
 
-TLDR: yes, please use the notion of (clock) cycles. But there are
-some problems to solve first.
+The commit being reverted uses the data buswidth for dummy buswidth. So
+for reads, the RX buswidth gets used for the dummy phase, uncovering
+this issue. In reality, a dummy phase is neither RX nor TX. As the name
+suggests, these are just dummy cycles that send or receive no data, and
+thus don't really need to have any buswidth at all.
 
-> >> Since we are quite late in the cycle, and that changing
-> >> spi_mem_check_buswidth() might cause all sorts of breakages, I think t=
-he
-> >> best idea currently would be to revert this patch, and resend it with
-> >> the other changes later.
-> >>
-> >> Tudor, Michael, Miquel, what do you think about this? We are at rc7 bu=
-t
-> >> I think we should send out a fixes PR with a revert. If you agree, I
-> >> will send out a patch and a PR.
-> >
-> > Either way I am fine. the -rc cycles are also available for us to
-> > settle. But it's true we can bikeshed a little bit, so feel free to
-> > revert this patch before sending the MR.
->
-> To be clear, since the patch was added in v6.13-rc1 I want to revert it
-> via a fixes pull request to Linus before he releases v6.13 this week. I
-> want to fix it in v6.13, not in v6.14.
+Ideally, dummy phases should not be checked against the board's wiring
+capabilities at all, and should only be sanity-checked for having a sane
+buswidth value. Since we are now at rc7 and such a change might
+introduce many unexpected bugs, revert the commit for now. It can be
+sent out later along with the spi_mem_check_buswidth() fix.
 
-Since it's clearly a regression, I'd revert it.
+Reported-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Closes: https://lore.kernel.org/linux-mtd/3342163.44csPzL39Z@steina-w/
+Signed-off-by: Pratyush Yadav <pratyush@kernel.org>
+---
 
--michael
+I have only compile-tested this patch. Alexander, if you can send your Tested-by
+it would be great!
 
---8424e5f124607425b50bbb8b9c6837db20f9d6f50f7d8ea68da8b2a9e0fc
-Content-Type: application/pgp-signature; name="signature.asc"
+Miquel, since the bug was introduced in v6.13-rc1, I want to have this patch go
+in v6.13. So you would have to send Linus a pull request before he likely
+releases it this Sunday. How do you want to take the patch? Do you want to apply
+it directly to mtd/fixes or should I send out a pull request from a
+spi-nor/fixes branch?
 
------BEGIN PGP SIGNATURE-----
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZ4djFBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/g9WwF+KmWxaegQjOB76I7ox+ZlfZRBAxtBAqFI
-KLSqgdy6UK7HbU1T9OFWXZHZCdqs4N2hAYD8QyeubcUT7mTp+a4TGMyH0ca6wbKd
-yOHdmBPqoya1MS4yk1X8en3nMXSs8GIKp6k=
-=K/Pe
------END PGP SIGNATURE-----
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 66949d9f0cc5a..b6f374ded390a 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -89,7 +89,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 		op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+ 
+ 	if (op->dummy.nbytes)
+-		op->dummy.buswidth = spi_nor_get_protocol_data_nbits(proto);
++		op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+ 
+ 	if (op->data.nbytes)
+ 		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
+-- 
+2.40.1
 
---8424e5f124607425b50bbb8b9c6837db20f9d6f50f7d8ea68da8b2a9e0fc--
-
-
---===============0349087539075897595==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============0349087539075897595==--
-
