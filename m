@@ -4,67 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A2F7C02180
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2025 20:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2FFEC02180
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jan 2025 20:17:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ej2O6+OG4SdH2vrYQshgwFu08lb17PX0PEayeSPf4UY=; b=UPfNOUpE35uLd7
-	NiQQxGH6ZlZ6sBv5FtLVo72g23Y+Lyl0+8X1qoqpXlLQ3f9tdypzo2iNhnX118iT5CPSG6ELYYt8P
-	QPgGPv/GouSzf+zqLkxgsjXe2JHe+jx97pqEa7JtfAxDeTTgLCOjvwIOI7ny8OAmlvS5tno6oMRGK
-	ljixQMo5gvxYhdG/LsmC1Ml8iyE3zG2ZQcPowKJEZWifcEUvNTePf9DtWmajf8xrAw9/+ra9VnXnb
-	H1ARtNHQhlt31eGyRwBxLuCwBGiTMjYuID5dcI9PYVgpPcY9Hk3B0NexvS0TpWpFLa7EJFnwRNeGS
-	+/Z0qqXQx/LDC8ZxRrSA==;
+	List-Owner; bh=ZtTQu+YIYw7d2FVTEvDkm0ljlAkB+B+yVCae9lQt2nU=; b=BRyduc+nbWcXed
+	Mz8AXBcLxnLpkDaufJwU5NQh0/UtEw3MLBPx5OogPbUUrB8CGnT+CQt7M6ftvnTUN3yI5PSRV8Nr5
+	MM7mZ/0b9it6rsRBPV82pKEzyWVTpIMyujhcilzZgKVrwr8WQNdQXVLTRcIVaOc3KnDB3blw15lVk
+	k/c1QXwJTO31fzC9DWqzQe6lAzECFjkX26EsmI3xI0E6ll8LXn31+nwLCGOk4L5jsz99VSM4V6T9d
+	apMijMT2U4idSK4XMDuAZ19oMM2QjxUKuCOuYOxWafcjRVm2XW/SYU0h9Uov+b02XWs1rFsdQchpg
+	G8wZsIgFVBNQ8eIkqcDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tY9dm-0000000CxhD-2Nxo;
-	Wed, 15 Jan 2025 20:05:26 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tY9pY-0000000CyoQ-3Shu;
+	Wed, 15 Jan 2025 20:17:36 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tY9dj-0000000Cxgp-3fas
+	id 1tY8hj-0000000Cqxr-3rlZ
+	for linux-mtd@bombadil.infradead.org;
+	Wed, 15 Jan 2025 19:05:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=F2jtsM4iFmAwPDGJ48GZ7Yhx6Ks7S2FfUOnYP4ZtXK8=; b=HFVrRlT2j0gsPeCn98IUeY+kA3
+	0do07a+ypuUtl7R6hCWKU1RCYQoL/N+QAXc+H6KisaQOAHib/aFx1d0/K5n2NMThX1NGffIWT7XD1
+	4QEtfhHeAE5AYkDWr4xjueFbS1vKHi1eN6yVlz9GmDmHyLZJQmIc/d3AH2q19hVq6hlZXsml2YkKk
+	dz/77eZS+sAs/qOToxe/7MYBilWL32zbEdBPiAPYk3R8rl5giUJLpgyhKSWU7KZBowpUfd1FX1Jd+
+	okNX0/2Xe/7EQ5MEb/3O+UAuXf2NGeKQeNgmuPRdjS+JmD6vJK0RDE8hyb7V9jd/dG7Zs1LO+Tj6z
+	3bNq3AjQ==;
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tY8hg-0000000AvDK-1Dgz
 	for linux-mtd@lists.infradead.org;
-	Wed, 15 Jan 2025 20:05:25 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 8A53FA4215B;
-	Wed, 15 Jan 2025 20:03:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76A16C4CED1;
-	Wed, 15 Jan 2025 20:05:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736971521;
-	bh=qqfEuTjFBBI+9p04Q1SHZHZjZMbwfzV9BqTMfmjJkm4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ol/KOJENApeGimw/wu9z0hfoesCdH82/8+b2I4Bhw/CyUC/23Nn2huskbx2KwfAgi
-	 UoHXzXzxb87LhgK74Snf/xfGZqM1iWILT2R0lYs5q8ZRJVoGgU3zCQis23zqYZboSw
-	 hpcYOjkbYrSaQoW0JgowcrAHBlLnfMGNRrZEH8chxDe/b9ipm3GJrcA8pnRP4ZNdlC
-	 uN15OTYHwesL2V/GjCRtWlixN35XQisRGWdZWaY9Tui5oxmfzsBSabs+mFMLjYMt/P
-	 LsIXPEZYG+5AUFdpr1QkJkT/wbZKx6rWaKRa8d51Sb4aUzjN2iistloqCbbnWy16f0
-	 Zoi5oNfvNaglw==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Michael Walle <mwalle@kernel.org>,  Richard
- Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,  Steam Lin
- <STLin2@winbond.com>,  linux-mtd@lists.infradead.org,
+	Wed, 15 Jan 2025 19:05:26 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C3CD540006;
+	Wed, 15 Jan 2025 19:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1736967920;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F2jtsM4iFmAwPDGJ48GZ7Yhx6Ks7S2FfUOnYP4ZtXK8=;
+	b=QLwpLVmNjOAd3v02JXwQ3/QxmxI9/YWWU9EHO32d6Gx8beo7LU3Vci4Desx+p5itw/UAMJ
+	OK+0PkxAZBogYf7dMpMAmnPrvRPZ+AaPKl2QvdrvjkK7Zfe+x0hRsKXfaDNPg7+rXrW0PC
+	R60JkWj83jXQUIiIrezzjuVYTGRK0MTbH/uq+IHcqo0sS3eqweCWwi5xbAIsUH+fO4Qogh
+	SvbegI+OlVYT2A14ImIRYAcKgHB16NjHIl147CB32ERWOUtklt1/zs4983QcVT4xStAleA
+	DuKLPxzDeRjoTWt4RrnUrgdA7K+iSBKEEXEkP6ckBR0v6fJrkN2D9B7oR8hX4g==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: niravkumar.l.rabara@intel.com
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux@treblig.org,  Shen Lichuan
+ <shenlichuan@vivo.com>,  Jinjie Ruan <ruanjinjie@huawei.com>,
+  u.kleine-koenig@baylibre.com,  linux-mtd@lists.infradead.org,
   linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: winbond: Add support for w25q01jv
-In-Reply-To: <87zfjrlwpc.fsf@bootlin.com> (Miquel Raynal's message of "Wed, 15
-	Jan 2025 20:10:39 +0100")
-References: <20241224-winbond-6-12-rc1-nor-volatile-bit-v1-0-f7c4dff66182@bootlin.com>
-	<20241224-winbond-6-12-rc1-nor-volatile-bit-v1-1-f7c4dff66182@bootlin.com>
-	<mafs0zfkk7pfm.fsf@kernel.org> <871pxp798c.fsf@bootlin.com>
-	<mafs0ldve7qms.fsf@kernel.org> <87a5btslfl.fsf@bootlin.com>
-	<mafs08qrc5g44.fsf@kernel.org> <87zfjrlwpc.fsf@bootlin.com>
-Date: Wed, 15 Jan 2025 20:05:19 +0000
-Message-ID: <mafs04j1z6dxc.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+Subject: Re: [PATCH 0/3] mtd: rawnand: cadence: improvement and fixes
+In-Reply-To: <20250108135234.3107502-1-niravkumar.l.rabara@intel.com>
+	(niravkumar l. rabara's message of "Wed, 8 Jan 2025 21:52:31 +0800")
+References: <20250108135234.3107502-1-niravkumar.l.rabara@intel.com>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Wed, 15 Jan 2025 20:05:19 +0100
+Message-ID: <87jzavnbio.fsf@bootlin.com>
 MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250115_120523_978897_22482D78 
-X-CRM114-Status: GOOD (  16.38  )
+X-CRM114-CacheID: sfid-20250115_190524_498564_A1B935B3 
+X-CRM114-Status: UNSURE (   7.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,49 +87,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 15 2025, Miquel Raynal wrote:
-
-> Hello Pratyush,
->
->> Okay, I am confused because you said earlier that:
->>
->>> The bug that has been experienced followed this sequence:
->>> - send the write enable command (non-volatile)
->>> - wait for the ready/busy bit, ie. wait for the WEL bit to be set
->>>   because it is non-volatile write
->>> - active die is ready, (but idle die is not!)
->>> - enter 4-byte address mode, only the die that is ready processes the
->>>   command.
->>
->> Which says the WEL bit being set itself is racy. What I understand from
->> that is one die is ready to take writes and the other is not. Now when
->> you try to write the SR to enable 4B mode, it would only work on the die
->> that got the WEL set. The other one ignores it and stays in 3B mode. Do
->> I understand this correctly? To fix this you need to wait after the
->> write enable, before you initiate the write SR operation.
->
-> Actually I think you're right. The thing is, Winbond WEL bit are
-> non-volatile by default, whereas you were assuming it would be. Maybe
-> the proper fix is to do both?
-> - Using the volatile 'write enable'
-> and
-> - Making sure we wait after the (other) commands tampering with all dies.
-
-Yeah. You can do that or you can do the wait after sending the write
-enable. Either case would need you to implement a custom write enable
-function for the chip so from the code perspective, it should be about
-the same. Though I do think using the volatile write enable seems to be
-faster and easier to reason about.
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpPbiAwOC8wMS8yMDI1IGF0IDIxOjUyOjMxICswOCwgbmlyYXZrdW1hci5sLnJhYmFy
+YUBpbnRlbC5jb20gd3JvdGU6Cgo+IEZyb206IE5pcmF2a3VtYXIgTCBSYWJhcmEgPG5pcmF2a3Vt
+YXIubC5yYWJhcmFAaW50ZWwuY29tPgo+Cj4gVGhpcyBwYXRjaHNldCBpbnRyb2R1Y2VzIGltcHJv
+dmVtZW50cyBhbmQgZml4ZXMgZm9yIGNhZGVuY2UgbmFuZCBkcml2ZXIuCj4gVGhlIGNoYW5nZXMg
+aW5jbHVkZToKPgo+IDEuIFN1cHBvcnQgZGVmZXJyZWQgcHJvYiBtZWNoYW5pc20gd2hlbiBETUEg
+ZHJpdmVyIGlzIG5vdCBwcm9iZWQgeWV0Lgo+IDIuIE1hcCB0aGUgc2xhdmUgRE1BIGFkZHJlc3Mg
+dXNpbmcgZG1hX21hcF9yZXNvdXJjZS4gV2hlbiBBUk0gU01NVQo+ICAgIGlzIGVuYWJsZWQsIHVz
+aW5nIGEgZGlyZWN0IHBoeXNpY2FsIGFkZHJlc3Mgb2YgU0RNQSByZXN1bHRzIGluCj4gICAgRE1B
+IHRyYW5zYWN0aW9uIGZhaWx1cmUuCj4gMy4gRml4ZWQgdGhlIGluY29ycmVjdCBkZXZpY2UgY29u
+dGV4dCB1c2VkIGZvciBkbWFfdW5tYXBfc2luZ2xlLgoKVGhlIHBhdGNoZXMgbG9vayBnb29kIGJ1
+dCB0aGV5IGFsbCBtaXNzIHRoZSBGaXhlcyBhbmQgQ2M6IHN0YWJsZSB0YWdzLAphcyBJIGJlbGll
+dmUgdGhlc2UgZml4ZXMgc2hvdWxkIGJlIGJhY2twb3J0ZWQuCgpQbGVhc2Ugc2VuZCBhbiB1cGRh
+dGVkIHZlcnNpb24gd2l0aCB0aG9zZS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
