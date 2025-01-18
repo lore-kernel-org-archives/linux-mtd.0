@@ -4,86 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3436CC0219D
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2025 00:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB7B3C02187
+	for <linux-mtd@archiver.kernel.org>; Sat, 18 Jan 2025 04:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=InHKHHgLppOVnXrUbAaRhRf44LBXwOmHYahY192iehU=; b=FEIeT2XSEoi1YY
-	1RSQe3YF44H1gw2XKTRjctLo400lPBUyi+jveCXktFgYfeBDcVPau4lNhzuO9cG1WHbrZajhEyjyc
-	Jfaml3ZSiESOol/Wmwvg21StQaWz3R01I8TXoTTh+nN+y5zFO0Ffn4vymkDr97SqVmXC4qqkK0+Fv
-	0CAv0QI/2zMqV3eMhuXA2F7Twfpcct2pmxQK4EXtjd0uts7ga8ZuBVImMXO6NQyzcQJTPb1EJDrcD
-	JsMNBChbum5EXv6IvUkfWRebyE/oDUevpPMe2ZcUYnuiVS9/mGwwntgtExx+surF117pA4AzFUzow
-	ZMmUFVUh9di36jAGDH2A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:To:From:Date:
+	MIME-Version:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Vce/HMdwWBjAIUtlUoBi9gLP8+yscES9Nal0pHMMRbY=; b=vYblqqZZT/ditj
+	YvcEQQ/IR2j7mGLYIyni6vD1JY+29Hyy9QjYfCpIOLoT01MVRzVGjWvR1KDNPn5ZX7dOy3fR2ZXtK
+	PB3LzY3EQ3n0p0g/OWwcQoWEvDJcT1pShOfXRvciad5Hn9Wttr4D3DvE9xhzElJ/BIHFPiLGrf5Qt
+	EWN8TBftQVySJ1wpPvgKpLtL8ABJfj5QhtF3LgGX62OUjZNMohcVyq+zNJx4jmphEAnTO8nt0jqAh
+	+BS7VZLM2uPAJampwUJ4Gk0xunclQRnxlwDx0uADXCPowg77VWO/rPS0cc+BUY/d/3ryiZOeqkIhY
+	zxwdF5xZ1pZ99zacfpHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thdiz-00000001v27-3B2a;
-	Tue, 11 Feb 2025 00:02:01 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tZ0p0-00000001r9q-3hdD;
+	Sat, 18 Jan 2025 04:52:34 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thdix-00000001v1j-2iRZ
+	id 1tZ0oz-00000001r9k-3U5Y
+	for linux-mtd@bombadil.infradead.org;
+	Sat, 18 Jan 2025 04:52:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Message-ID:Reply-To:Subject:To:From:
+	Date:Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:Cc:Content-ID
+	:Content-Description:In-Reply-To:References;
+	bh=/llvRvmVYw+GHB0dsJXw6GKPNzxbahoooJ1Fer5gZuY=; b=AVGkii0uBm4/bHpMLtxRNTL8kS
+	0+GMUM35r4n1bPTUx1T+Pc6qbHX2yt68VvZ/pIteTMewFsHvz/mJyyWyBsaKIrTg657oGIXA82tx9
+	SXhjHQipPd+Arr8KQ2oJyPBkUX6prn6qFgdzQ0q4QVlepa6mBUEG6R1hh3qB/gMaLrbLcmxLVXyOD
+	ziTluOABat41E23iqpX8+DQK+PwFzykACmmsrWSxTI7/sur5ldJa7N79YMILxURpsv5tFn0RsoCaO
+	+QhR2Fj54PBtOrmc59OtE5j5unZnk8ChfI09RCc7EAL9nHNaQABK2Ysg7FCdP11ZGvvkaS0JFt1Lh
+	f6UF1UQQ==;
+Received: from mail.flcgil.strategy.it ([109.168.127.228])
+	by desiato.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1tZ0ov-0000000BZgX-27VD
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Feb 2025 00:02:01 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 4B48AA41D88;
-	Tue, 11 Feb 2025 00:00:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C868C4CEDF;
-	Tue, 11 Feb 2025 00:01:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739232118;
-	bh=rAzkLZM09qQrVfb6++qtL1NVW6ye9kBKxmsecVL8AX0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q1j87QGsjnUkqkcVlg2v4gnZWuuz2UEGFoQfFx8S5hm6OD3/mp8QI0dCwQT4YmTEr
-	 IB2Hu3/xsA738TjmL9hvDacqP3Cn1fn1l38WTUXKf4SHgxcaaqcmtfDjrQUDk9eoqE
-	 gB6wCJ5myKFPgBwelHmsgcxfai/gZhPdUPy8zVu8z/cx9kuD9+RM3Bb/ajecRTWHax
-	 fVRq4VYORDNdvHY/BD15McfYj6CkfxzLNVClI1u8/Pfa9FJn4JqDpQ7Nyn/Fr2156J
-	 CGUj1Kbf4bjxLul7s2ASKdEhbPJl+pwIxxn70nR5a5VyWkDiXJ4SybO3o/a5i5XUEL
-	 d5paRyJt5qYuQ==
-Date: Mon, 10 Feb 2025 18:01:57 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?J=2E_Neusch=E4fer?= <j.ne@posteo.net>
-Cc: devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	Krzysztof Kozlowski <krzk@kernel.org>, imx@lists.linux.dev,
-	Scott Wood <oss@buserror.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	=?iso-8859-1?Q?J=2E_Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 11/12] dt-bindings: nand: Add fsl,elbc-fcm-nand
-Message-ID: <20250211000157.GA240011-robh@kernel.org>
-References: <20250207-ppcyaml-v2-0-8137b0c42526@posteo.net>
- <20250207-ppcyaml-v2-11-8137b0c42526@posteo.net>
+	Sat, 18 Jan 2025 04:52:32 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.flcgil.strategy.it (Postfix) with ESMTP id C631918212DD;
+	Sat, 18 Jan 2025 05:30:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=flcgil.it; s=dkim;
+	t=1737174650; bh=c+e/5EKM1MNjt+4drdghFiBSmwVTdNtPQN2nqX+zggs=;
+	h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:
+	 Subject:Reply-To:Message-ID;
+	b=etjmKvopH+5G7gINSQT+Hu4wQnuWpT71uYuwbIspC5eTVn4RkZIPfoS9DmTgPYRx8
+	 iDLSXHY4Z/UbqkCXmGGjAjjWla4IerT8+Uz6df55dFgfBGaZUi4ZKicKYv8b3rxQL/
+	 YqDFY/7nVBPDa152fDNxP7Zpxh5lOUOyvPq4YDeI=
+X-Virus-Scanned: Debian amavisd-new at flcgil.it
+Received: from mail.flcgil.strategy.it ([127.0.0.1])
+	by localhost (flcmail.flcgil.it [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id byDx4fhItCyN; Sat, 18 Jan 2025 05:30:49 +0100 (CET)
+Received: from webmail.flcgil.strategy.it (unknown [10.1.10.232])
+	by mail.flcgil.strategy.it (Postfix) with ESMTP id AD68818212D1;
+	Sat, 18 Jan 2025 05:30:46 +0100 (CET)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250207-ppcyaml-v2-11-8137b0c42526@posteo.net>
+Date: Sat, 18 Jan 2025 05:30:46 +0100
+From: =?UTF-8?Q?=E3=83=91=E3=83=88=E3=83=AA=E3=83=83=E3=82=AF=EF=BC=86?= =?UTF-8?Q?=E3=83=95=E3=83=A9=E3=83=B3=E3=82=B7=E3=82=B9=E3=83=BB=E3=82=B3?= =?UTF-8?Q?=E3=83=8E=E3=83=AA=E3=83=BC?= <info@flcgil.it>
+To: undisclosed-recipients:;
+Subject: =?UTF-8?Q?=E4=BA=BA=E9=81=93=E7=9A=84=E6=94=AF=E6=8F=B4?=
+Mail-Reply-To: <patrickconnolly@elon2ev.com>
+Message-ID: <600dbe85eb1985148e24f436130d54f4@webmail.flcgil.it>
+X-Sender: info@webmail.flcgil.it
+User-Agent: FLCGIL Webmail
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250210_160159_814838_26623B7F 
-X-CRM114-Status: GOOD (  21.96  )
+X-CRM114-CacheID: sfid-20250118_045230_197236_88618608 
+X-CRM114-Status: UNSURE (   0.40  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,123 +83,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Reply-To: patrickconnolly@elon2ev.com
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 07, 2025 at 10:30:28PM +0100, J. Neusch=E4fer wrote:
-> Formalize the binding already supported by the fsl_elbc_nand.c driver
-> and used in several device trees in arch/powerpc/boot/dts/.
-> =
-
-> Signed-off-by: J. Neusch=E4fer <j.ne@posteo.net>
-> ---
-> =
-
-> V2:
-> - split out from fsl,elbc binding patch
-> - constrain #address-cells and #size-cells
-> - add a general description
-> - use unevaluatedProperties=3Dfalse instead of additionalProperties=3Dfal=
-se
-> - fix property order to comply with dts coding style
-> - include raw-nand-chip.yaml instead of nand-chip.yaml
-
-Why? Doesn't look like you use anything from it. I think the correct =
-
-thing to use here is just mtd.yaml to pick up partitions.
-
-> ---
->  .../devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml | 68 ++++++++++++++++=
-++++++
->  1 file changed, 68 insertions(+)
-> =
-
-> diff --git a/Documentation/devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml=
- b/Documentation/devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..1de97bb24fa4a83e2ea5d94ab=
-822dd0e37baa102
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml
-> @@ -0,0 +1,68 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/fsl,elbc-fcm-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NAND flash attached to Freescale eLBC
-> +
-> +description:
-> +  The Freescale Enhanced Local Bus controller (eLBC) contains logic to
-> +  interface with NAND flash, called the NAND Flash Control Machine (FCM).
-> +  This binding describes flash attached to an eLBC using the FCM.
-> +
-> +maintainers:
-> +  - J. Neusch=E4fer <j.ne@posteo.net>
-> +
-> +allOf:
-> +  - $ref: raw-nand-chip.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - fsl,mpc8313-fcm-nand
-> +              - fsl,mpc8315-fcm-nand
-> +              - fsl,mpc8377-fcm-nand
-> +              - fsl,mpc8378-fcm-nand
-> +              - fsl,mpc8379-fcm-nand
-> +              - fsl,mpc8536-fcm-nand
-> +              - fsl,mpc8569-fcm-nand
-> +              - fsl,mpc8572-fcm-nand
-> +              - fsl,p1020-fcm-nand
-> +              - fsl,p1021-fcm-nand
-> +              - fsl,p1025-fcm-nand
-> +              - fsl,p2020-fcm-nand
-> +          - const: fsl,elbc-fcm-nand
-> +      - const: fsl,elbc-fcm-nand
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    localbus {
-> +        #address-cells =3D <2>;
-> +        #size-cells =3D <1>;
-> +
-> +        nand@1,0 {
-> +            compatible =3D "fsl,mpc8315-fcm-nand",
-> +                         "fsl,elbc-fcm-nand";
-> +            reg =3D <0x1 0x0 0x2000>;
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <1>;
-> +        };
-> +    };
-> =
-
-> -- =
-
-> 2.48.0.rc1.219.gb6b6757d772
-> =
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgotLSAK44GT44KT44Gr44Gh44Gv44CB56eB44Gu5ZCN5YmN44Gv44OR44OI44Oq44OD44Kv44O7
+44Kz44OO44Oq44O844Gn44CB5aa744Gv44OV44Op44Oz44K344K544O744Kz44OO44Oq44O844Gn
+44GZ44CC56eB44Gf44Gh5aSr5amm44GL44KJ44CB44GC44Gq44Gf44GM56eB44Gf44Gh44Gu5a+E
+5LuY44Gu5Y+X5Y+W5Lq644Gr6YG444Gw44KM44Gf44GT44Go44KS44GK55+l44KJ44Gb44Gn44GN
+44KL44GT44Go44KS5ayJ44GX44GP5oCd44GE44G+44GZ44CCCgroqbPntLDjgavjgaTjgYTjgabj
+ga/jgIHjgZPjga7jg6Hjg4Pjgrvjg7zjgrjjgavov5Tkv6HjgZfjgabjgY/jgaDjgZXjgYTjgIIK
+CuOCiOOCjeOBl+OBj+OBiumhmOOBhOOBhOOBn+OBl+OBvuOBmeOAggrjg5Hjg4jjg6rjg4Pjgq/v
+vIbjg5Xjg6njg7Pjgrfjgrnjg7vjgrPjg47jg6rjg7wKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
