@@ -4,71 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4692C02185
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2025 12:54:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1422DC02182
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jan 2025 14:22:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DoWKgmxvKtHrXQssXiJjV+Zv01gTKGrouCJ6rRGDMpg=; b=yF8xJStQjBnXYJ
-	sMWCkcvDhVu43aEDZm+U8GFEvnIJseQCEdn0csv7Cl3Y3swAgTZG2BlfxWc7UTuQ4qSIOQ2tQKEZx
-	6rRXQNMnhUAQqtYwIvXi32fMt5UcIy6sCC7EE44jPOwkcSZTvdOcBI9aaBZ81a9VXzVLzuPX6jlji
-	JLb0EJ5ZMvgJo1m19k2zroGafQL5ci4wJl2J6FQ/Jz/OX9rseP1WBXRycMSo9UKgSDIMcHjVnqI6i
-	f0K7df7Qry9zjvboCbCAYvE9PBWjKXQwcL9JmzSHc60k418nsFzdTm6iCdAoyzJOR31ANXthw79uZ
-	3uMRXIH/g5aCjJWCqaFw==;
+	List-Owner; bh=oxTtGcSqfuF2Y4zQ0VMdRkknV78j8Q/jnPY36jFff3g=; b=GPz7JuddyUrNj/
+	8sILNS1cOIhqJCUcbY9e+OTm0CgrtX8yi7YCAWyw6PoWmJzFJ46IgQVX7koeCPo0QmL73sfbFlghK
+	xJf4luq3wHE3gAWaCKLAen1zBaaHbHwYwajGuJStVWRGDy7YdaR8KiHB+cdNfld1/z7WUVgkNN3kr
+	qbhBF3wMcEbmJIsBj57OcyiZCc4dMdoewpYaD9odKtE42iAsZjzmaxCoFQETJFIQ/rYhDG6otXTTj
+	BGfSVHPvwQ6iGfi3u20aEpGt2s7eDuHGI0n76PCBl2VZi1Jz80XeP+SBnqHeHS4++gT6mDabPenCP
+	NqMy3k0sbxuHww4UvjxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tZrIc-00000005aCH-3QL6;
-	Mon, 20 Jan 2025 12:54:38 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1tZsf3-00000005mNC-0iFL;
+	Mon, 20 Jan 2025 14:21:53 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tZrIK-00000005a7W-2JW6
+	id 1tZsf0-00000005mMi-2Bz8
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Jan 2025 12:54:21 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 453CF24000D;
-	Mon, 20 Jan 2025 12:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1737377658;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=niS8yhjGEG7kTaHhimkQuAQuleYT6pZ/DZpG8RfuVdU=;
-	b=jt6q+SaCOTvrT+n2U+bULG2DgFvhhLJUSnbw6D/ah24y3TJ40gyafJRRX/P7MvyubzNnxC
-	/8c8cGz6C5xuuv7fL89VAry/h6FP0t2D8kUrjULsOOfu+iW16JThT1njQJE4ohW5tWXNv8
-	AneSNuHJGUsFi9tdDw0iVzBwKMDdo0rLdNgPh32gmFCd5IKqkeR/49O57WqagYiMiO2a/S
-	Mtwoebd1PeQ4j3Cf8GcBVMttOXhMVKWSYa8if3k9RIuc0qyhqO8iyGxihh7rRO7a0ykD56
-	nwkusuGupXRw9RkKG2Oq0k3q1Ysf5DNxWldKC7apL6Sgrbtdu2BshIxPI8FZIg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Keguang Zhang <keguang.zhang@gmail.com>
-Cc: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Rob Herring <robh@kernel.org>,  Krzysztof Kozlowski
- <krzk+dt@kernel.org>,  Conor Dooley <conor+dt@kernel.org>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  devicetree@vger.kernel.org,  linux-media@vger.kernel.org
-Subject: Re: [PATCH v11 2/2] mtd: rawnand: Add Loongson-1 NAND Controller
- Driver
-In-Reply-To: <CAJhJPsU1eFJ_R1-emENs8T5rrKXUKjvk-cQx9RT2ztTvmOTZug@mail.gmail.com>
-	(Keguang Zhang's message of "Mon, 20 Jan 2025 19:08:55 +0800")
-References: <20241217-loongson1-nand-v11-0-b692c58988bb@gmail.com>
-	<20241217-loongson1-nand-v11-2-b692c58988bb@gmail.com>
-	<87v7ufnc0w.fsf@bootlin.com>
-	<CAJhJPsWe+maw+zK6uiwvObTd_Ew73yjH=KddkgxwY7Zp0Y7ZYw@mail.gmail.com>
-	<87plkli9fj.fsf@bootlin.com>
-	<CAJhJPsVhH=8dKmUgmTSHnG8H1_9G3zvovX9hDv_VM6fSUR5oQw@mail.gmail.com>
-	<874j1tykgz.fsf@bootlin.com>
-	<CAJhJPsU1eFJ_R1-emENs8T5rrKXUKjvk-cQx9RT2ztTvmOTZug@mail.gmail.com>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Mon, 20 Jan 2025 13:54:17 +0100
-Message-ID: <8734hdsl1i.fsf@bootlin.com>
+	Mon, 20 Jan 2025 14:21:51 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id A990E5C5B26;
+	Mon, 20 Jan 2025 14:21:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35605C4CEDD;
+	Mon, 20 Jan 2025 14:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737382908;
+	bh=Az6SynehWb3YHdMOWDBRx9rT4GMdrci9soACShJwNiY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=NXZkxySZjb3P+/EZFz6uK87vE5uYtFuosXx0Kphr/PvfCIAm0r/zJVgUb6GjV13U6
+	 m8LPF3cSeFen8krcDvzhzt9y63pgy1aMEIeRAZ9TX3YpWkE+NROCIhGe/v8hj9ThS7
+	 SXhpfAPoIl+yJ2Oxlie0LfR8kM2+hnXw1uiXgRHt1L3XoJ4yw6ZxQfF73tjUpQVCmV
+	 3A8FqfUoUrQyrozDHZ1F0/vgTWNVVqijoG0G84IkNfnyv2V1wSQ7cF3acLv9jmXRMj
+	 G+uB9nelFuIseLIr+3FX0mrBt6hRy8NmroJDlh0jdc49vU2Bs0dgfYzHEt0TV2G2/l
+	 Qn7pbyYJMmcvQ==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Michael Walle <mwalle@kernel.org>,  Richard
+ Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
+  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,  Steam Lin
+ <STLin2@winbond.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mtd: spi-nor: winbond: Add support for w25q01jv
+In-Reply-To: <87jzapsldj.fsf@bootlin.com> (Miquel Raynal's message of "Mon, 20
+	Jan 2025 13:47:04 +0100")
+References: <20241224-winbond-6-12-rc1-nor-volatile-bit-v1-0-f7c4dff66182@bootlin.com>
+	<20241224-winbond-6-12-rc1-nor-volatile-bit-v1-1-f7c4dff66182@bootlin.com>
+	<mafs0zfkk7pfm.fsf@kernel.org> <871pxp798c.fsf@bootlin.com>
+	<mafs0ldve7qms.fsf@kernel.org> <87a5btslfl.fsf@bootlin.com>
+	<mafs08qrc5g44.fsf@kernel.org> <87jzapsldj.fsf@bootlin.com>
+Date: Mon, 20 Jan 2025 14:21:46 +0000
+Message-ID: <mafs0o7014lc5.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250120_045420_731058_3FA50475 
-X-CRM114-Status: UNSURE (   9.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250120_062150_687165_A081E4B0 
+X-CRM114-Status: GOOD (  24.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,24 +81,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Mon, Jan 20 2025, Miquel Raynal wrote:
 
->> IIUC, yes and no. It is the remapped address of the physical address you
->> want to reach, not the physical address itself. The type is dma_addr_t
->> and not phys_addr_t and you can get a dma address out of a physical
->> address with a call to dma_map_resource(). The numerical value might be
->> the same if there is no IO-MMU involved, but the good practice is to
->> remap anyway.
+> Hi Pratyush,
 >
-> Got it. I will keep dma_map_resource() as it is, which is called in
-> ls1x_nand_probe().
+>> Okay, I am confused because you said earlier that:
+>>
+>>> The bug that has been experienced followed this sequence:
+>>> - send the write enable command (non-volatile)
+>>> - wait for the ready/busy bit, ie. wait for the WEL bit to be set
+>>>   because it is non-volatile write
+>>> - active die is ready, (but idle die is not!)
+>>> - enter 4-byte address mode, only the die that is ready processes the
+>>>   command.
+>>
+>> Which says the WEL bit being set itself is racy. What I understand from
+>> that is one die is ready to take writes and the other is not. Now when
+>> you try to write the SR to enable 4B mode, it would only work on the die
+>> that got the WEL set. The other one ignores it and stays in 3B mode. Do
+>> I understand this correctly? To fix this you need to wait after the
+>> write enable, before you initiate the write SR operation.
 >
-> +       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-dma");
-> +       host->dma_base = dma_map_resource(dev, res->start, resource_size(res),
-> +                                         DMA_BIDIRECTIONAL, 0);
-> +       if (dma_mapping_error(dev, host->dma_base))
-> +               return -ENXIO;
+> Sorry for the confusion, I got myself confused as well. I double checked
+> with Winbond and I think I have the correct explanation now:
+>
+> The WEL bit is volatile, there is no delay when setting it (well, about
+> 10ns, but no specific deviation).
+>
+> On most chips, WEL enables all write operations:
+>   * (single/dual/quad) page programs
+>   * (sector/block/chip) erases
+>   * status register write
+>   * erase/program of other internal registers (like security registers)
+>
+> On Winbond, the above applies, but with the usual "Write Enable command
+> (06h)", the status register bits are non-volatile, ie. they are stored
+> in non-volatile cells (which takes time to program and are subject
+> to deviations across dies). Hence, they added another command, called
+> "Write Enable for Volatile Status Register (50h)" which is an addition
+> to the usual "Write Enable command (06h)" which causes:
+> - enabling writes on the status register only (if the WEL bit is not yet
+>   set)
+> - using volatile writes for the status register bits (ie. they are using
+>   some kind of local cache which update almost immediately).
+>
+> So basically, if you do the following:
+> - status register write
+> - check the status bit with the standard helper
+> - (and quickly after) do anything else on the idle die
+> In this case you could experience a race, but that is not related to the
+> Write Enable command.
+>
+> In general I believe enabling volatile status register writes would not
+> be useful as long as we have the "read the status from all dies"
+> workaround.
+>
+> Let me know if something is still unclear.
 
-Looks correct.
+Ah, okay. That all makes sense now. With this explanation, your patches
+should be doing the right thing. I will do a round of review on the v3
+soon, but they looked mostly good when I last took a brief look.
+
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
