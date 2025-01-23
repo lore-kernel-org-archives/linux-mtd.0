@@ -4,89 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 133DEC0218D
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jan 2025 07:03:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E07CC02182
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jan 2025 08:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=nkFsbytYcXgcZCdUQX8bBLT7ThCmljnc5xCQIP/O0qU=; b=NzQpQm/2AGVrSb
-	/lUJJmSkxhFAlfGLSk768TZxtBVQS3pkzna/hmZck/qPoutbva0GmwsFXKILbLN0IUk1Qs1sB7Tz6
-	Fr1MJZLZPPvLlx5e/ZzazmoLVn3/vA0Wh7yH0ow6ORdMC/tMDNroBhWCxdmIG0dSs0Wfb3fE1sLdA
-	ymY0FMo8H5sM22zv5RCTbRKxVTF/NSTjbhJdjDqw1iz/JnBLAQ5+zuDZb611R5UNcue+bX/C4d+rx
-	4jMcALXKoH1QufF+rIoeVrMmDtkDmvQREAhzYY6nmZf7YR+Tmh4ou2EEbIGTQwGI5jAb0T+4d10eR
-	32XVewL85IztPEJSOJPg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kQmzDc6twPK3hSSeSaVj0Tn8QdoCwuy9YbEsiIzq/Ms=; b=L+4YcSVLOp4TMq
+	vqeQ5cYS+AtwqSJYVuTi6/+BXYGtNj5Gcm8dWfl3rlgxYdgYzyGFeRq+/FLPPFmKQsV+cnaW4epWM
+	HjsMGhp7L/by0hLUx1AZym1MOFRkIM0G1z2QtWe9XUBkl99Hh3cJpwsemqwzww7vdQQPKg1jqEYpG
+	2x9uLd6XPMyDx6ggbYruKd+LQSbgbSEbxkzSRLZkOpqUc+scLxH8w3IHg1fDiN1f+LxFGYyP6eLsb
+	h9FWmGYtoHQscx5IWbKh4/WN+sVeXteot693fsN9yCtVMbspTOxbCQbTnVuDEjy54YWboowa20OxA
+	H/ah0JZrPL8l1Nk97Otg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1taUlu-00000009ZHz-3MR7;
-	Wed, 22 Jan 2025 07:03:30 +0000
-Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
+	id 1tasvn-0000000C1xm-3ltG;
+	Thu, 23 Jan 2025 08:51:19 +0000
+Received: from mail.commetrax.com ([141.95.18.165])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1taUic-00000009YoF-288O
+	id 1tasvk-0000000C1xT-1esO
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Jan 2025 07:00:10 +0000
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2eed82ca5b4so11258299a91.2
-        for <linux-mtd@lists.infradead.org>; Tue, 21 Jan 2025 23:00:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737529205; x=1738134005; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1WkJFE/Sed7K/1w/cnr536dKRzwsHBM5/yCypYusGTA=;
-        b=Chp0Gmd1HwlAQxZEtPuaruA4K/TNDzJut6Rw9sTWbsAZniN9+SsWeGxSqEXJNTC4tQ
-         fd1ufbfzxD9dKnz1cnrCCHgTwqcxM+lhYzpF/w09UAxdCbC4OB4WjxiNavAyLJ1sqA/I
-         C0usCxk4+qc5NPPL4uxTn2YtwdY3DfmOTPIFhV/Y0M9R+cHQvAGP3fZAi5sJz4ct1LAY
-         hDpfBwO7PikR6ELg1Jy7vpdyc17rM6+UqhyFEZliQDtVyTmSs/u0QyIE2BRVhgzmSzPo
-         bEjJqv+/ZR5kWfHfJOQBjbynOMYfE30SVauAe1cc7jHrCYZ+B0dASA+/crnfFTO7sv/Y
-         dUmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737529205; x=1738134005;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1WkJFE/Sed7K/1w/cnr536dKRzwsHBM5/yCypYusGTA=;
-        b=BamzD2bNmpMag9WIl4sasMdq75lFt/tYZLQEb5oi3uJc5GKl9ro8kLffimLlrA0Tp7
-         zH7HWgvIoCbuSmtqWpahvG39cR3qERmZoXUbLA3+7UclKB/Fc+Yq5t899UFYgCNmuv9e
-         U1MhWFg5TtubvpgrPQtnQRc5mmvbg9sefAHflKAfqg1uOOV81RDjN39SLKN7zGHvAypp
-         9sZiMMao04N+bb43VcO5xCSGBYGrHWdykapMSoA7abvKwFTvMTl1VQSsDY0kOvPvGxhB
-         T02bQ20nmQWjxhYyW8yyPzVaMal4xveSW4igkhYR7rYgVoCpb/EyyIjEKVCSDnVZtNwh
-         fEKw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2niODHTwQZI7N3tcAkEU5hUggsGo6W1n4uzcrHtgpwW9oop+enDS2JFpci4SLO0rVerPHru0XyE8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyCE/mT50DKFQtJp0/uQno3zRzF0rR0pmZknSWZlMNf/aX0NjsB
-	geYG1PXMoNkXAQilyFFWTuZve3YxRFlSgtT93OT3hC6Cv4gteDxIb1EELA==
-X-Gm-Gg: ASbGncuCq3shwRffBpBnh21NOiQG69m3v8GqyUjN1XB73zDuco1RlviVvwhFzLobJYt
-	eyG1PUVsz9mOoTBquDzt/2odGE5pItxmTPbZwTmPZlA0PpEfYvZyI6XooG4foQtexJy/VVuilG4
-	0gGUKOgqFJcMfsHk3dOEPa6ty5JuIIIHFqMg9FNUPLN0nV2H7DuM3kJ0O6RUR90BE5OsOPUIvpz
-	8mwSzGrFv9U1SGRgbdazyWvY12CJ3Wh5LKYVSzxbi6ZIvODN/uO9qynbp6O+ce3T2UhEROnMCT2
-	RqjGRJjkBSADtlU5Kw==
-X-Google-Smtp-Source: AGHT+IHKcFyaGwkF21hGRmAmjs2DEoZKxhMm0F/ekZztkPH6Fc9QpKv/UbyVXttJL+RtMHMuBFhbAQ==
-X-Received: by 2002:a17:90b:264e:b0:2ee:5bc9:75c3 with SMTP id 98e67ed59e1d1-2f782c4c28bmr25783235a91.5.1737529205046;
-        Tue, 21 Jan 2025 23:00:05 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7e6b97e51sm766436a91.43.2025.01.21.23.00.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jan 2025 23:00:04 -0800 (PST)
-Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 4F4C98085A;
-	Wed, 22 Jan 2025 15:11:07 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: miquel.raynal@bootlin.com,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: richard@nod.at,
-	alvinzhou@mxic.com.tw,
-	leoyu@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v3 0/2] Add support for read retry
-Date: Wed, 22 Jan 2025 14:56:03 +0800
-Message-Id: <20250122065605.285145-1-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	Thu, 23 Jan 2025 08:51:18 +0000
+Received: by mail.commetrax.com (Postfix, from userid 1002)
+	id 34FDC23F24; Thu, 23 Jan 2025 09:50:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=commetrax.com;
+	s=mail; t=1737622270;
+	bh=GMqy00NHSUmcepJmik4okPLKgJmCam/QGlLCPiXszv4=;
+	h=Date:From:To:Subject:From;
+	b=KcOV5cHDvvKMzkMhDPld1RlANcWjsoZ7W6R2nu7h+28+hD69SDJzl4o1C1DqRIgvT
+	 XRpih3UP/SKIDE+9dvo9O7l+FxUy0tjIoWAQkmcH1KB+MGKQJfvEG/jFKXdefFY5fB
+	 Jp2uRoC+x/XQeMssRXWbdSxGv//rlxWNWSVs4jKpWLyU2kmm8jnpeDKiU3LfTbanzP
+	 DdAFDMJt1E3F4iK3kAOgfwNILHCASJKnbWIo3dmYuBUrF48ExR8WVhAsxCjWfQxeyI
+	 HtxPWzOfNHZ04AMI19sAmlD10altm5Ef1oyiynv3FfimFNqyllbtJ4zhuGoxqGJtAZ
+	 hC/Nu9VglreCw==
+Received: by mail.commetrax.com for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2025 08:50:52 GMT
+Message-ID: <20250123084500-0.1.7f.hdva.0.e4stioh6sr@commetrax.com>
+Date: Thu, 23 Jan 2025 08:50:52 GMT
+From: "Vincenc Turek" <vincenc.turek@commetrax.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Product protection
+X-Mailer: mail.commetrax.com
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250121_230006_549214_E2B58051 
-X-CRM114-Status: UNSURE (   9.93  )
+X-CRM114-CacheID: sfid-20250123_005117_124308_E177ABA7 
+X-CRM114-Status: UNSURE (   3.09  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,35 +67,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+Hi,
 
-When the host ECC fails to correct the data error of NAND device,
-there's a special read for data recovery method which can be setup
-by the host for the next read. There are several retry levels that
-can be attempted until the lost data is recovered or definitely
-assumed lost.
+If you're looking for a reliable supplier of plastic packaging, I think you might be interested in our solutions.
 
-For more detailed information, please refer to the link below:
-Link: https://www.macronix.com/Lists/Datasheet/Attachments/9034/MX35LF1G24AD,%203V,%201Gb,%20v1.4.pdf
+As a manufacturer of caps, bottles, and buckets made from HDPE and PP materials, we can provide comprehensive solutions that will meet your expectations.
 
-v3:
-* If set_read_retry fails, it should return an error
+Our products combine modern design, precise craftsmanship, and a commitment to ecology. We use the latest technologies to deliver packaging that not only protects products but also enhances your brand's image.
 
-v2:
-* Remove fixups
-* Remove the function of init_read_retry
-Cheng Ming Lin (2):
-  mtd: spi-nand: Add read retry support
-  mtd: spi-nand: macronix: Add support for read retry
+Would you like to see what we can offer?
 
- drivers/mtd/nand/spi/core.c     | 35 ++++++++++++++-
- drivers/mtd/nand/spi/macronix.c | 79 ++++++++++++++++++++++++++-------
- include/linux/mtd/spinand.h     | 14 ++++++
- 3 files changed, 111 insertions(+), 17 deletions(-)
 
--- 
-2.25.1
-
+Best regards
+Vincenc Turek
 
 ______________________________________________________
 Linux MTD discussion mailing list
