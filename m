@@ -4,74 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99591C0218A
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2025 15:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39470C0218A
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jan 2025 22:11:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yTncfTDyLX0GGreyqE4yUOgQj5uXC1+fBgd56hD5oaM=; b=LYm16p2wGDQ2a6
-	RxyyDoVQOEIQypmYw+R+sNeWWiQqlCyPsx5p/SoTJtbpBZLON2IxPmHALVnj75UcWI2i/XruZA2Af
-	ylLlCdyrfXwxLLTPo8S8mycWaj+eaX1DwOndoBZBQE5yvpPihHwxbydbOQhjxWD1MkEq6oYXF5T1/
-	eFLq6lRDR17l+ES0NddIS9ZgUI6e0vSeeUYDdIm+n4ee9np01LyQ1/3W8XiZu2fC7n64lKhu6msny
-	pdZezW/OR72zvCprOk1OU5N4e3mEWsylU9v3PNshB+eGi4wqxTe+4Y0GXgF+kXPUY/pP7h/vALJw9
-	Mi/by2cF9Bk/sbbpYmeg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=GRpDyFDsewaEhqQmpVjFkLKNladnncBESzZbfelZLRs=; b=k2pY16Ezy783eI
+	3YTehLgvgik155Z+TnwQqOT9T84UyvCFC9apRgAV1N54P5/DR5uWVDg1oMkL9vy+pNeCVKpEVSLDS
+	2xJoGeraysw6mJvtqO5GgOeAcQL4L78u3gFCL7ei/igxdlOOieTJ9WZVTvHrmYzddOBNRT9DDCtqA
+	Z+6ysZAkb9jc3bbxvxL1HoK5J/3jK71wSY1b+HASlxgXPpDA4/+8DgvuBWe/+y/HHiJUAxDwQyK7w
+	coRTODK0eiBa07D4a8i92DA6omaSLODv5lVfDXBBqnNSGPvX3hw+DqZGOFFF7b+SoDYRQ69b1Fw6z
+	OyqxsF+r6wUMcEe+7VnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tdWKp-000000093VS-47Gn;
-	Thu, 30 Jan 2025 15:20:03 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1tdclF-00000009hLu-0FF4;
+	Thu, 30 Jan 2025 22:11:45 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tdWKl-000000093Ue-3f4o
+	id 1tdclB-00000009hKr-2lG5
 	for linux-mtd@lists.infradead.org;
-	Thu, 30 Jan 2025 15:20:01 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 535D544280;
-	Thu, 30 Jan 2025 15:19:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1738250395;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mthSOymJzZU3NBmJRQSU6dHuOu/XGt2aFg8/OQCwRBI=;
-	b=hlX/R9OCvuRRz9TzdoX5x2NhDsPTeQ5LsAlA0ZE7l7BchG9XBhMUjmgWYMOP8J0Ifhwxh7
-	8Th0Hg2aH6+/RaAmzvGY6hY/vWhXV2lPSwbf5kEdzEO4gK4zbdywX+RwxhILhoRKy7jQM6
-	fNkqlkYEMNYV78vY1/vJ5p2iThdAi4sITHhKRjz/Zw7kZSDEIU9auSE+P43fmxl/pWTpKl
-	YknKucUQo5Yp/fGaN+jGImu45E4ZDlVgntE7qw32BP5fl2xwWKUHIq+laW92GXd0Y5W6O+
-	9f8VfIxoCb+/pqjoO1HMw5wdyVChvXnyMre7kDdvxOVtELsPxPJ9/deli5pDSw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Rabara, Niravkumar L" <niravkumar.l.rabara@intel.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  "linux@treblig.org" <linux@treblig.org>,  Shen Lichuan
- <shenlichuan@vivo.com>,  Jinjie Ruan <ruanjinjie@huawei.com>,
-  "u.kleine-koenig@baylibre.com" <u.kleine-koenig@baylibre.com>,
-  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-  "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] mtd: rawnand: cadence: support deferred prob
- when DMA is not ready
-In-Reply-To: <BL3PR11MB65321B556C59C995DC05C70AA2E92@BL3PR11MB6532.namprd11.prod.outlook.com>
-	(Niravkumar L. Rabara's message of "Thu, 30 Jan 2025 03:51:08 +0000")
-References: <20250116032154.3976447-1-niravkumar.l.rabara@intel.com>
-	<20250116032154.3976447-2-niravkumar.l.rabara@intel.com>
-	<87plkgpk8k.fsf@bootlin.com>
-	<BL3PR11MB653276DFD3339ADAADC70CCFA2EE2@BL3PR11MB6532.namprd11.prod.outlook.com>
-	<874j1i0wfq.fsf@bootlin.com>
-	<BL3PR11MB65321B556C59C995DC05C70AA2E92@BL3PR11MB6532.namprd11.prod.outlook.com>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Thu, 30 Jan 2025 16:19:53 +0100
-Message-ID: <87msf8z5uu.fsf@bootlin.com>
+	Thu, 30 Jan 2025 22:11:43 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 7B4D12D9984;
+	Thu, 30 Jan 2025 23:11:36 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id awUR3DSUSUg4; Thu, 30 Jan 2025 23:11:36 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 217512D99A1;
+	Thu, 30 Jan 2025 23:11:36 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id pWl294mpN631; Thu, 30 Jan 2025 23:11:36 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 0BEC02D9984;
+	Thu, 30 Jan 2025 23:11:36 +0100 (CET)
+Date: Thu, 30 Jan 2025 23:11:36 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <98948953.304331862.1738275096021.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UBI and UBIFS changes for v6.14
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeiudeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedutddprhgtphhtthhopehnihhrrghvkhhumhgrrhdrlhdrrhgrsggrrhgrsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehlihhnuhigsehtrhgvsghlihhgrdhorhhgpdhrtghpthhtohepshhhvghnlhhitghhuhgrnhesvhhivhhordgtohhmpdhrtghpthhtoheprhhurghnjhhinhhji
- hgvsehhuhgrfigvihdrtghomhdprhgtphhtthhopehurdhklhgvihhnvgdqkhhovghnihhgsegsrgihlhhisghrvgdrtghomhdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhg
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF133 (Linux)/8.8.12_GA_3809)
+Thread-Index: V3EMhxVU1TKFaFfcr9R/3kCFiwG74w==
+Thread-Topic: UBI and UBIFS changes for v6.14
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250130_072000_375644_9ADEF14B 
-X-CRM114-Status: GOOD (  21.65  )
+X-CRM114-CacheID: sfid-20250130_141141_846673_4CDD3958 
+X-CRM114-Status: UNSURE (   5.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,58 +69,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgo+PiA+IERyaXZlciB3b3JrcyB3aXRob3V0IGV4dGVybmFsIERNQSBpbnRlcmZhY2Ug
-aS5lLiBoYXNfZG1hPTAuCj4+ID4gSG93ZXZlciBjdXJyZW50IGRyaXZlciBkb2VzIG5vdCBoYXZl
-IGEgbWVjaGFuaXNtIHRvIGNvbmZpZ3VyZSBpdCBmcm9tCj4+ID4gZGV2aWNlIHRyZWUuCj4+IAo+
-PiBXaGF0PyBXaHkgYXJlIHlvdSByZXF1ZXN0aW5nIGEgRE1BIGNoYW5uZWwgZnJvbSBhIGRtYWVu
-Z2luZSBpbiB0aGlzIGNhc2U/Cj4+IAo+PiBQbGVhc2UgbWFrZSB0aGUgZGlzdGluY3Rpb24gYmV0
-d2VlbiB0aGUgT1MgaW1wbGVtZW50YXRpb24gKHRoZSBkcml2ZXIpIGFuZAo+PiB0aGUgRFQgYmlu
-ZGluZyB3aGljaCBkZXNjcmliZSB0aGUgSFcgYW5kIG9ubHkgdGhlIEhXLgo+PiAKPgo+IExldCBt
-ZSBjbGFyaWZ5IGZyb20gYmluZGluZ3MoaHcpIGFuZCBkcml2ZXIgcHJvc3BlY3RpdmUuIAo+Cj4g
-QmluZGluZ3MgOi0KPiBDYWRlbmNlIE5BTkQgY29udHJvbGxlciBIVyBoYXMgTU1JTyByZWdpc3Rl
-cnMsIHNvIGNhbGxlZCBzbGF2ZSBETUEgaW50ZXJmYWNlCj4gZm9yIHBhZ2UgcHJvZ3JhbW1pbmcg
-b3IgcGFnZSByZWFkLiAKPiAgICAgICAgIHJlZyA9IDwweDEwYjgwMDAwIDB4MTAwMDA+LAo+ICAg
-ICAgICAgICAgICAgPDB4MTA4NDAwMDAgMHgxMDAwMD47Cj4gICAgICAgICByZWctbmFtZXMgPSAi
-cmVnIiwgInNkbWEiOyAvLyBzZG1hID0gIFNsYXZlIERNQSBkYXRhIHBvcnQgcmVnaXN0ZXIgc2V0
-Cj4KPiBJdCBhcHBlYXJzIHRoYXQgZHQgYmluZGluZ3MgaGFzIGNhcHR1cmVkIHNkbWEgaW50ZXJm
-YWNlIGNvcnJlY3RseS4KClNsYXZlIERNQSBpcyB2ZXJ5IGNvbmZ1c2luZyBiZWNhdXNlIGluIExp
-bnV4IHdlIG1ha2UgdGhlIGRpc3RpbmN0aW9uCmJldHdlZW46CjEtIGV4dGVybmFsIERNQSAoZ2Vu
-ZXJpYyBETUEgY29udHJvbGxlcikgZHJpdmVuCiAgIHRocm91Z2ggdGhlIGRtYWVuZ2luZSBBUEks
-IHRocm91Z2ggd2hpY2ggd2UgaW50ZXJhY3QgdXNpbmcgdGhlIHNvCiAgIGNhbGxlZCBzbGF2ZSBB
-UEkKMi0gcGVyaXBoZXJhbCBETUEgKERNQSBjb250cm9sbGVyIGVtYmVkZGVkIGluIHRoZSBOQU5E
-IElQKSB3aGVuIHRoZXJlIGlzCiAgIG5vICJleHRlcm5hbC9nZW5lcmljIiBlbmdpbmUuIEluIHRo
-aXMgY2FzZSB3ZSBjb250cm9sIERNQSB0cmFuc2ZlcnMKICAgdXNpbmcgdGhlIHJlZ2lzdGVycyBv
-ZiB0aGUgTkFORCBjb250cm9sbGVyIChvciBhIG5lYXJieSByYW5nZSwgaW4KICAgdGhpcyBjYXNl
-KSwgdGhlIHNhbWUgZHJpdmVyIGhhbmRsZXMgYm90aCB0aGUgTkFORCBhbmQgdGhlIERNQSBwYXJ0
-LgoKWW91IHVzZWQgdGhlIHdvcmRpbmcgU2xhdmUgRE1BICgjMSksIGJ1dCBpdCBmZWVscyBsaWtl
-IHlvdSBhcmUgdGFsa2luZwphYm91dCB0aGUgb3RoZXIgKCMyKS4gQ2FuIHlvdSBwbGVhc2UgY29u
-ZmlybSBpbiB3aGljaCBjYXNlIHdlIGFyZT8KCj4gTGludXggRHJpdmVyOi0KPiBEcml2ZXIgY2Fu
-IHJlYWQgdGhlc2Ugc2RtYSByZWdpc3RlcnMgZGlyZWN0bHkgb3IgaXQgY2FuIHVzZSB0aGUgRE1B
-Lgo+IEV4aXN0aW5nIGRyaXZlciBjb2RlIGhhcyBoYXJkY29kZWQgaGFzX2RtYSB3aXRoIGFuIGFz
-c3VtcHRpb24gdGhhdAo+IGFuIGV4dGVybmFsIERNQSBpcyBhbHdheXMgdXNlZCBhbmQgcmVsaWVz
-IG9uIERNQSBBUEkgZm9yIGRhdGEKPiB0cmFuc2Zlci4KCkkgYW0gc29ycnkgYnV0IERNQSBBUEkg
-ZG9lcyBub3QgbWVhbiBtdWNoLiBUaGVyZSBhcmUgMyBBUElzOgotIGRtYS1tYXBwaW5nLCBmb3Ig
-dGhlIGJ1ZmZlcnMgYW5kIHRoZSBjb2hlcmVuY3kKLSBkbWFlbmdpbmUsIHVzZWQgaW4gY2FzZSAj
-MSBvbmx5LCB0byBkcml2ZSB0aGUgZXh0ZXJuYWwgRE1BIGNvbnRyb2xsZXJzCi0gZG1hLWJ1ZiB0
-byBzaGFyZSBidWZmZXJzIGJldHdlZW4gYXJlYXMgaW4gdGhlIGtlcm5lbCAob3V0IG9mIHNjb3Bl
-KQoKPiBUaGFudCBpcyB3aHkgaXQgcmVxdWlyZXMgdG8gdXNlIERNQSBjaGFubmVsIGZyb20gZG1h
-ZW5naW5lLgoKSWYgSSB1bmRlcnN0YW5kIGl0IHJpZ2h0LCBubyA6LSkKCkVpdGhlciB5b3UgaGF2
-ZSBhbiBleHRlcm5hbCBETUEgY29udHJvbGxlciAoIzIpIG9yIGFuIGludGVybmFsIG9uZSAoIzEp
-CmJ1dCBpbiB0aGlzIHNlY29uZCBjYXNlIHRoZXJlIGlzIG5vIERNQSBjaGFubmVsIHJlcXVlc3Qg
-bm9yIGFueQplbmdpbmUtcmVsYXRlZCBBUEkuIE9mIGNvdXJzZSB5b3UgbmVlZCB0byB1c2UgdGhl
-IGRtYS1tYXBwaW5nIEFQSSBmb3IKdGhlIGJ1ZmZlcnMuCgo+IEluIG15IHByZXZpb3VzIHJlcGx5
-LCBJIHRyaWVkIHRvIGRlc2NyaWJlIHRoaXMgZHJpdmVyIHNjZW5hcmlvIGJ1dCBtYXliZSBJIG1p
-eGVkIHVwLiAKPiBoYXNfZG1hPTAsIGkuZS4gYWNjZXNzaW5nIHNkbWEgcmVnaXN0ZXIgd2l0aG91
-dCB1c2luZyBkbWFlbmdpbmUgaXMKPiBhbHNvIHdvcmtpbmcuCgpCdXQgZG8geW91IGhhdmUgYW4g
-ZXh0ZXJuYWwgRE1BIGVuZ2luZSBpbiB0aGUgZW5kPyBPciBpcyBpdCBzcGVjaWZpYyB0bwp0aGUg
-TkFORCBjb250cm9sbGVyPwoKPiBIb3dldmVyLCBjdXJyZW50bHkgdGhlcmUgaXMgbm8gb3B0aW9u
-IGluIGRyaXZlciB0byBjaG9vc2UgYmV0d2VlbiB1c2luZyBkbWFlbmdpbmUgYW5kCj4gZGlyZWN0
-IHJlZ2lzdGVyIGFjY2Vzcy4KPgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+Linus,
+
+The following changes since commit 9d89551994a430b50c4fffcb1e617a057fa76e20:
+
+  Linux 6.13-rc6 (2025-01-05 14:13:40 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.14-rc1
+
+for you to fetch changes up to 69146a8c893f734cefaac0af6f917f894f29077e:
+
+  ubi: ubi_get_ec_info: Fix compiling error 'cast specifies array type' (2025-01-20 09:09:24 +0100)
+
+----------------------------------------------------------------
+This pull request contains updates for UBI and UBIFS:
+
+UBI:
+- New interface to dump detailed erase counters
+- Fixes around wear-leveling
+
+UBIFS:
+- Minor cleanups
+- Fix for TNC dumping code
+
+----------------------------------------------------------------
+Denis Arefev (1):
+      ubi: Add a check for ubi_num
+
+Pintu Kumar (2):
+      ubifs: dump_lpt_leb: remove return at end of void function
+      ubifs: ubifs_dump_leb: remove return from end of void function
+
+Rickard Andersson (2):
+      ubi: Expose interface for detailed erase counters
+      ubi: Implement ioctl for detailed erase counters
+
+Zhihao Cheng (2):
+      ubi: Revert "ubi: wl: Close down wear-leveling before nand is suspended"
+      ubi: ubi_get_ec_info: Fix compiling error 'cast specifies array type'
+
+pangliyuan (1):
+      ubifs: skip dumping tnc tree when zroot is null
+
+ drivers/mtd/ubi/build.c     |  2 +-
+ drivers/mtd/ubi/cdev.c      | 70 +++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/ubi.h       |  2 --
+ drivers/mtd/ubi/wl.c        | 21 --------------
+ fs/ubifs/debug.c            | 23 ++++++++-------
+ fs/ubifs/lpt_commit.c       |  1 -
+ include/uapi/mtd/ubi-user.h | 33 +++++++++++++++++++++
+ 7 files changed, 117 insertions(+), 35 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
