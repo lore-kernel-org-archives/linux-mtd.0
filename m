@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE9AEC0218F
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Feb 2025 06:32:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DCC3C0218F
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Feb 2025 06:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FirffLrC/TsjS1sVdoIQTlr2birGNmtNFKpSMIs1Eik=; b=zV8NM44dQzyImW
-	91qvdDbPkZ96ht0cl+vzkiTs6zBDmAQZAr7idYXYhHtvGb68P/uqNSAbWMw4W+zvcFLWUjNlOHLlH
-	WgsbEwYN5vMPMZuagbFyfsvQpUXyYDAMrbyazYtxR55JB8SdGbEXpZ/b5urC3ChXZYwXqGFRWy1Ho
-	nAuZsJoCyHuifZMGxGuXrrzoTpdaQ/x0HfN3zvHUHjHB2uRzE+BHnTm/2WxLoWBWNtKIB3SP+aZeo
-	yGeY1RE5bwXvBgDVuRVRpQG4nyETrcZhACP8425qK1/fnY5mbOx04KJmhIMgFlzqainKC2fZTJ+uH
-	H0l2NXWKNSkRSfyWbWOg==;
+	List-Owner; bh=ItIvxHqVpWl2PBPpwZawSB56qGQr7+MsrZVL0HJIIuk=; b=lCQvn0TlJdB58l
+	SymAjG3wZRSeEzC6Bfk/TxvK4RnZ0h3JuiKF0HOLFcti19mSGLW5UtDM6eo7JoC8J7HdyybrXzBmh
+	pueNxrDffbZ/8NlRIU9RFkWlXbKAjQVO+X1tazFZNNWzzMDP0cIFzLTBKSO/mH41tJ7C0JAz9CuS7
+	roqzsDMie7tSmxT8HZoawj/jWy3AthVL4q5kksoEvWyVktoKQefEaHMN01nWkZfISaOFGn3I2FmWP
+	tMLi8L522FVS/I+gKdzm6Zcz6CRvSPxyTu3o4K93u8LLSlAXe24HFTTNAI6NgLBPoDN/jr5kv7Rc8
+	M90dk8MyAxcc5w5vfuRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tfCTj-0000000HN0p-28uF;
-	Tue, 04 Feb 2025 06:32:11 +0000
+	id 1tfCYJ-0000000HNQo-2y32;
+	Tue, 04 Feb 2025 06:36:55 +0000
 Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tfCTh-0000000HMzp-02uK
+	id 1tfCXj-0000000HNMH-0sLC
 	for linux-mtd@lists.infradead.org;
-	Tue, 04 Feb 2025 06:32:10 +0000
+	Tue, 04 Feb 2025 06:36:20 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 00DC3A4171B;
-	Tue,  4 Feb 2025 06:30:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8344C4CEDF;
-	Tue,  4 Feb 2025 06:32:04 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 21B64A41927;
+	Tue,  4 Feb 2025 06:34:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2FC5C4CEDF;
+	Tue,  4 Feb 2025 06:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738650726;
-	bh=0tIXBDruVfmh73EZENZUCflgMLVdRl0gwnOofOd2CuE=;
+	s=k20201202; t=1738650978;
+	bh=AoPZffDxKXgAYnlcQCovRARbXMgktVy5zIEqbFmvgqE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=e6zskoaO9xYfDgISpyEpntGf1/iqH7gsOmqupnPzI8tKSO8JUJCTkjnpcgyLKgBJv
-	 2lXx1cEAQ5jA3jsLOQBAXWFS7jfyk0DNJ2QtKvjlBYjfn3W88EqssRLkjBm3T5fvmb
-	 cmtabgn0TegOuW2RPNZhSp3OinRuFl8R4N4ZFnjllVM+9oPbmDB45daktrVibKI0XH
-	 m6/g2e7ZhuJLfNh+K1xgcoUieEOaCyavxyplSVw7j83dDoj4cDst79DlK/dtv+K3JH
-	 Ig3WjBaMUZuPDuBbh+7Md1HpE/zeYs5SMlveUCrJjMFA4Yhuvw8PTgEb/VWt/XYvKS
-	 Vg17KVxQXwikA==
-Message-ID: <73a5e3f3-3a39-4ca5-87a0-5f67c25281f0@kernel.org>
-Date: Tue, 4 Feb 2025 07:32:02 +0100
+	b=FmesWUIztCVgHs01aJq5nV1qSuwJawTsW6KqDSdGxfhEfhrSDS+f32SAjxB4SA3pz
+	 EynFBJLOf6fT+9BHnEKjMmi/DNPNokAjM0EXvTDgDicLkZrSjyBF1YAwyS5ttJAsBP
+	 AKs59S9TuYQ8COtxg6DSTYrpKrtcrdaGKDiPDHO9LSuCRFn6nelAswD6mGzF3/mNSd
+	 a9CV/naIamDgeaVtS9AKe9a9F6sd1TnQSWVD2LMbKtSMfLfSFjEIdGtEwuk3GywutA
+	 HXD13HJ46aHitKCeEW/O4oQlKHYIjvP2f08qDmi5KNJGveTTF+JBenRHTHkQZqmEdZ
+	 eaCADCY1zKDlQ==
+Message-ID: <48ad8f05-a90b-499d-9e73-8e5ff032824a@kernel.org>
+Date: Tue, 4 Feb 2025 07:36:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2] mtd: Add check and kfree() for kcalloc()
-To: Jiasheng Jiang <jiashengjiangcool@gmail.com>,
- christophe.jaillet@wanadoo.fr
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Jiasheng Jiang <jiashengjiangcool@gmail.com>
 Cc: gmpy.liaowx@gmail.com, kees@kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, stable@vger.kernel.org
 References: <30ad77af-4a7b-4a15-9c0b-b0c70d9e1643@wanadoo.fr>
  <20250204023323.14213-1-jiashengjiangcool@gmail.com>
+ <e41d9378-e5e5-478d-bead-aa50a9f79d4d@wanadoo.fr>
 Content-Language: en-US
 From: Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
@@ -98,10 +99,10 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20250204023323.14213-1-jiashengjiangcool@gmail.com>
+In-Reply-To: <e41d9378-e5e5-478d-bead-aa50a9f79d4d@wanadoo.fr>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250203_223209_189599_C240B69D 
-X-CRM114-Status: GOOD (  16.58  )
+X-CRM114-CacheID: sfid-20250203_223619_390724_3FA7C569 
+X-CRM114-Status: GOOD (  18.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,84 +114,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 04. 02. 25, 3:33, Jiasheng Jiang wrote:
-> Add a check for kcalloc() to ensure successful allocation.
-> Moreover, add kfree() in the error-handling path to prevent memory leaks.
-> 
-> Fixes: 78c08247b9d3 ("mtd: Support kmsg dumper based on pstore/blk")
-> Cc: <stable@vger.kernel.org> # v5.10+
-> Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
-> ---
-> Changelog:
-> 
-> v1 -> v2:
-> 
-> 1. Remove redundant logging.
-> 2. Add kfree() in the error-handling path.
-> ---
->   drivers/mtd/mtdpstore.c | 19 ++++++++++++++++++-
->   1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdpstore.c b/drivers/mtd/mtdpstore.c
-> index 7ac8ac901306..2d8e330dd215 100644
-> --- a/drivers/mtd/mtdpstore.c
-> +++ b/drivers/mtd/mtdpstore.c
-> @@ -418,10 +418,17 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
->   
->   	longcnt = BITS_TO_LONGS(div_u64(mtd->size, info->kmsg_size));
->   	cxt->rmmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
-> +	if (!cxt->rmmap)
-> +		goto end;
-> +
->   	cxt->usedmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
-> +	if (!cxt->usedmap)
-> +		goto free_rmmap;
->   
->   	longcnt = BITS_TO_LONGS(div_u64(mtd->size, mtd->erasesize));
->   	cxt->badmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
-> +	if (!cxt->badmap)
-> +		goto free_usedmap;
-
-Could you add a single 'if' for all of them here instead? And goto 
-single free.
-
->   	/* just support dmesg right now */
->   	cxt->dev.flags = PSTORE_FLAGS_DMESG;
-> @@ -435,10 +442,20 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
->   	if (ret) {
->   		dev_err(&mtd->dev, "mtd%d register to psblk failed\n",
->   				mtd->index);
-> -		return;
-> +		goto free_badmap;
->   	}
->   	cxt->mtd = mtd;
->   	dev_info(&mtd->dev, "Attached to MTD device %d\n", mtd->index);
-> +	goto end;
-> +
-
-And:
-
-free:
-> +	kfree(cxt->badmap);
-> +	kfree(cxt->usedmap);
-> +	kfree(cxt->rmmap);
-
-And NULL them as Christophe suggests.
-
->   }
->   
->   static int mtdpstore_flush_removed_do(struct mtdpstore_context *cxt,
-
--- 
-js
-suse labs
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMDQuIDAyLiAyNSwgNzoxNywgQ2hyaXN0b3BoZSBKQUlMTEVUIHdyb3RlOgo+IExlIDA0LzAy
+LzIwMjUgw6AgMDM6MzMsIEppYXNoZW5nIEppYW5nIGEgw6ljcml0wqA6Cj4+IEFkZCBhIGNoZWNr
+IGZvciBrY2FsbG9jKCkgdG8gZW5zdXJlIHN1Y2Nlc3NmdWwgYWxsb2NhdGlvbi4KPj4gTW9yZW92
+ZXIsIGFkZCBrZnJlZSgpIGluIHRoZSBlcnJvci1oYW5kbGluZyBwYXRoIHRvIHByZXZlbnQgbWVt
+b3J5IGxlYWtzLgo+Pgo+PiBGaXhlczogNzhjMDgyNDdiOWQzICgibXRkOiBTdXBwb3J0IGttc2cg
+ZHVtcGVyIGJhc2VkIG9uIHBzdG9yZS9ibGsiKQo+PiBDYzogPHN0YWJsZUB2Z2VyLmtlcm5lbC5v
+cmc+ICMgdjUuMTArCj4+IFNpZ25lZC1vZmYtYnk6IEppYXNoZW5nIEppYW5nIDxqaWFzaGVuZ2pp
+YW5nY29vbEBnbWFpbC5jb20+Cj4+IC0tLQo+PiBDaGFuZ2Vsb2c6Cj4+Cj4+IHYxIC0+IHYyOgo+
+Pgo+PiAxLiBSZW1vdmUgcmVkdW5kYW50IGxvZ2dpbmcuCj4+IDIuIEFkZCBrZnJlZSgpIGluIHRo
+ZSBlcnJvci1oYW5kbGluZyBwYXRoLgo+PiAtLS0KPj4gwqAgZHJpdmVycy9tdGQvbXRkcHN0b3Jl
+LmMgfCAxOSArKysrKysrKysrKysrKysrKystCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxOCBpbnNl
+cnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9t
+dGRwc3RvcmUuYyBiL2RyaXZlcnMvbXRkL210ZHBzdG9yZS5jCj4+IGluZGV4IDdhYzhhYzkwMTMw
+Ni4uMmQ4ZTMzMGRkMjE1IDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL210ZC9tdGRwc3RvcmUuYwo+
+PiArKysgYi9kcml2ZXJzL210ZC9tdGRwc3RvcmUuYwo+PiBAQCAtNDE4LDEwICs0MTgsMTcgQEAg
+c3RhdGljIHZvaWQgbXRkcHN0b3JlX25vdGlmeV9hZGQoc3RydWN0IG10ZF9pbmZvIAo+PiAqbXRk
+KQo+PiDCoMKgwqDCoMKgIGxvbmdjbnQgPSBCSVRTX1RPX0xPTkdTKGRpdl91NjQobXRkLT5zaXpl
+LCBpbmZvLT5rbXNnX3NpemUpKTsKPj4gwqDCoMKgwqDCoCBjeHQtPnJtbWFwID0ga2NhbGxvYyhs
+b25nY250LCBzaXplb2YobG9uZyksIEdGUF9LRVJORUwpOwo+PiArwqDCoMKgIGlmICghY3h0LT5y
+bW1hcCkKPj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gZW5kOwo+IAo+IE5pdHBpY2s6IENvdWxkIGJl
+IGEgZGlyZWN0IHJldHVybi4KPiAKPj4gKwo+PiDCoMKgwqDCoMKgIGN4dC0+dXNlZG1hcCA9IGtj
+YWxsb2MobG9uZ2NudCwgc2l6ZW9mKGxvbmcpLCBHRlBfS0VSTkVMKTsKPj4gK8KgwqDCoCBpZiAo
+IWN4dC0+dXNlZG1hcCkKPj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gZnJlZV9ybW1hcDsKPj4gwqDC
+oMKgwqDCoCBsb25nY250ID0gQklUU19UT19MT05HUyhkaXZfdTY0KG10ZC0+c2l6ZSwgbXRkLT5l
+cmFzZXNpemUpKTsKPj4gwqDCoMKgwqDCoCBjeHQtPmJhZG1hcCA9IGtjYWxsb2MobG9uZ2NudCwg
+c2l6ZW9mKGxvbmcpLCBHRlBfS0VSTkVMKTsKPj4gK8KgwqDCoCBpZiAoIWN4dC0+YmFkbWFwKQo+
+PiArwqDCoMKgwqDCoMKgwqAgZ290byBmcmVlX3VzZWRtYXA7Cj4+IMKgwqDCoMKgwqAgLyoganVz
+dCBzdXBwb3J0IGRtZXNnIHJpZ2h0IG5vdyAqLwo+PiDCoMKgwqDCoMKgIGN4dC0+ZGV2LmZsYWdz
+ID0gUFNUT1JFX0ZMQUdTX0RNRVNHOwo+PiBAQCAtNDM1LDEwICs0NDIsMjAgQEAgc3RhdGljIHZv
+aWQgbXRkcHN0b3JlX25vdGlmeV9hZGQoc3RydWN0IG10ZF9pbmZvIAo+PiAqbXRkKQo+PiDCoMKg
+wqDCoMKgIGlmIChyZXQpIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGRldl9lcnIoJm10ZC0+ZGV2
+LCAibXRkJWQgcmVnaXN0ZXIgdG8gcHNibGsgZmFpbGVkXG4iLAo+PiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIG10ZC0+aW5kZXgpOwo+PiAtwqDCoMKgwqDCoMKgwqAgcmV0dXJu
+Owo+PiArwqDCoMKgwqDCoMKgwqAgZ290byBmcmVlX2JhZG1hcDsKPj4gwqDCoMKgwqDCoCB9Cj4+
+IMKgwqDCoMKgwqAgY3h0LT5tdGQgPSBtdGQ7Cj4+IMKgwqDCoMKgwqAgZGV2X2luZm8oJm10ZC0+
+ZGV2LCAiQXR0YWNoZWQgdG8gTVREIGRldmljZSAlZFxuIiwgbXRkLT5pbmRleCk7Cj4+ICvCoMKg
+wqAgZ290byBlbmQ7Cj4gCj4gTWF0ZXIgb2YgdGFzdGUsIGJ1dCBJIHRoaW5rIHRoYXQgaGF2aW5n
+IGFuIGV4cGxpY2l0IHJldHVybiBoZXJlIHdvdWxkIGJlIAo+IGNsZWFyZXIgdGhhdCBhIGdvdG8g
+ZW5kOwoKWWVzLCBkcm9wIHRoZSB3aG9sZSBlbmQuCgo+PiArZnJlZV9iYWRtYXA6Cj4+ICvCoMKg
+wqAga2ZyZWUoY3h0LT5iYWRtYXApOwo+PiArZnJlZV91c2VkbWFwOgo+PiArwqDCoMKgIGtmcmVl
+KGN4dC0+dXNlZG1hcCk7Cj4+ICtmcmVlX3JtbWFwOgo+PiArwqDCoMKgIGtmcmVlKGN4dC0+cm1t
+YXApOwo+IAo+IEkgdGhpbmsgdGhhdCBpbiBhbGwgdGhlc2UgcGF0aHMsIHlvdSBzaG91bGQgYWxz
+byBoYXZlCj4gIMKgwqDCoMKgY3h0LT5YWFhtYXAgPSBOVUxMOwo+IGFmdGVyIHRoZSBrZnJlZSgp
+Lgo+IAo+IG90aGVyd2lzZSB3aGVuIG10ZHBzdG9yZV9ub3RpZnlfcmVtb3ZlKCkgaXMgY2FsbGVk
+LCB5b3UgY291bGQgaGF2ZSBhIAo+IGRvdWJsZSBmcmVlLgoKUmlnaHQsIGFuZCB0aGlzIGlzIGFs
+cmVhZHkgYSBwcm9ibGVtIGZvciBmYWlsaW5nIApyZWdpc3Rlcl9wc3RvcmVfZGV2aWNlKCkgaW4g
+X2FkZCgpIC0tIHRoZXJlIGlzIHVuY29uZGl0aW9uYWwgCnVucmVnaXN0ZXJfcHN0b3JlX2Rldmlj
+ZSgpIGluIF9yZW1vdmUoKS4gU2hvdWxkIF9yZW1vdmUoKSBjaGVjayBjeHQtPm10ZCAKZmlyc3Q/
+Cgp0aGFua3MsCi0tIApqcwpzdXNlIGxhYnMKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
