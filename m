@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 062FFC02193
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Feb 2025 23:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83703C02193
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2025 02:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nhXhLj+DMpHeirsJfTUYZZuXrOvAoFaZfjtkSQYI9r0=; b=OP1iYUEIEL9X1x
-	/JTtqOERLCyuG9Px2xS66CFjY8GXuIwC8G96bVdoJeq/sv0HPLc+w3PV3lYiTTXFFP/0cPpkCXTE4
-	LsqruPAVJ5SA5slVcNF/jky8Hlu2Rzd7XCps4fubVEXNKOabSWKbcIn3VVd0mvyneddRhGz1+KU29
-	c/D5KlTak+1rkLiLbfPqMBGq50Fys5+cDS/AkG2py7l7zV6a8i3oZwAjA4AhLwtoVa4x3+Eni72L1
-	o27J2XTAaCO92r2Jub610ydYmW22TCbSmGQbw3LqxHC7rwqx8UpjPhx4SAFH2NZF+cQTlTHSzS0Py
-	CEMdpbIsr4kUrBxEkLzQ==;
+	List-Owner; bh=ReL8ym9MZstSLYJCiRdUicwTDxms2Zmvk/NobRzlGZg=; b=zaKZNcEhE8RuKS
+	SZwaZ20Y0iayy5bFL8B+huvJrPZv0OKiZPxlU9U2gXt6UGnwBqr1oKyz8+37bQ2oFCHjqBPVLOBz7
+	FR/fMWr9NvwvraCtZENOfa4uCerVHm7ZEZxcOmiIl96MLHKuwq2SeChRHezFtvzLNX+NGSgUz7uxq
+	KD+SeAI5m11QFdXWmF2xF0cbsw2g1yRTtDugeqbXZGim2ECCvRFvsgjUMeRb1bpLlJHUylu19lUj0
+	F6lxj4OEbyuPW6h9euhtArQbp6M5//aRwn/KTBrp/Hna+skaDLddEsMCs9UeQFTZBWJQPUPArXfkB
+	lf0mbvwnjlDRi3V3xXZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tfSR8-00000001pxz-3Rwt;
-	Tue, 04 Feb 2025 23:34:34 +0000
-Received: from mout01.posteo.de ([185.67.36.65])
+	id 1tfVCe-000000029AC-24Pk;
+	Wed, 05 Feb 2025 02:31:48 +0000
+Received: from mail-qv1-xf2f.google.com ([2607:f8b0:4864:20::f2f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tfSR7-00000001pxR-0Bwy
+	id 1tfVCb-00000002972-421h
 	for linux-mtd@lists.infradead.org;
-	Tue, 04 Feb 2025 23:34:34 +0000
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id 6410024002B
-	for <linux-mtd@lists.infradead.org>; Wed,  5 Feb 2025 00:34:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1738712071; bh=ZyVExCqzB2iyA3bGQRpDduhuvKS4WRQAEUDFtlqCUyc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:From;
-	b=DBuTUrKvwBPCFb3wwTF27nUmKACldPAcQK56BYzilnfVJPf906YaloXYiMrBH0c8c
-	 vIuQx+YGYTxutPEplefcxq8yPY37zyFAgpbLU6vWf/V/09gaXv9jpMdG1O9VTiAqZf
-	 y3RU6mPPwJm03hw0li/MOC9HLNHPTIthKkPNCuvplIYQqPzLkejWIoUDMNA6fb0GEz
-	 MXx7QT9XTpACA6ETCFVSYuQe4WroRMb+BIlsBRIPjO+EN0pliE531twvejZqcI+Nlt
-	 GgJWtXw4wqJWoCOpmvC72HFB+3ku/yRvl2HD/J/3mKxYeJYNYBMkjmgGhoKwtjXWMV
-	 Fi8SRj0C0Cjow==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4YnfpX3DL2z6tyt;
-	Wed,  5 Feb 2025 00:34:28 +0100 (CET)
-Date: Tue,  4 Feb 2025 23:34:28 +0000
-From: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
-To: Frank Li <Frank.li@nxp.com>
-Cc: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>,
-	devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	Scott Wood <oss@buserror.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	=?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 6/9] dt-bindings: pci: Add fsl,mpc83xx-pcie bindings
-Message-ID: <Z6KkBEaGTkSyWiE_@probook>
-References: <20250126-ppcyaml-v1-0-50649f51c3dd@posteo.net>
- <20250126-ppcyaml-v1-6-50649f51c3dd@posteo.net>
- <Z5qx3jAFE81Ni2cJ@lizhi-Precision-Tower-5810>
+	Wed, 05 Feb 2025 02:31:47 +0000
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-6df83fd01cbso27068846d6.2
+        for <linux-mtd@lists.infradead.org>; Tue, 04 Feb 2025 18:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738722704; x=1739327504; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fWJ3+/U5udNqpfJpR2/uzHJvQHNbsouaJRdWxi3SJj0=;
+        b=P3s5lULEkWwl7tmbte+jCc85eFJX/+TJo0xZCIIvW9c9AhvJSTJLJsy5P2vaYBzMYO
+         ptT4ihFHi5jJsE1QoIVEES5D8+i/7SrRWM7/G7AX6VRQnHeFwXTjjj50cIuquHdoxgW9
+         AqnKJnRR7jQzDbTTQadlz7XMf+SjFxs8mXIMibtJBZzWiVPCgW7O+RMgngkOB73Q2/hl
+         93rzqF+ikA6mCZQ5b/Tu0MnLwm8L5CShrvW4Y2OgHOti/cmwG5OqHl05kSBxsECxqSY8
+         8IYXtisJtRFSNtVj94w0XgKcHjrmo2povqNtcIdL1DHzjhhYVE+CosWh5N3jOxsTVq50
+         OUuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738722704; x=1739327504;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fWJ3+/U5udNqpfJpR2/uzHJvQHNbsouaJRdWxi3SJj0=;
+        b=n/Opc7bDCXkPo7RO7om5NcsNeMID7wHEgUSzamAtwBbXfEEMaoAQML7tHI8JHw/I2k
+         IqR52HrPq92LFgI1EXjKtavcC4jw7K9NSzuSDDdFPan2k6QC0b3A/PgM37RFU3cYr5fj
+         3DbqfI3m4m2mpNk1XFbQwwlnZH2Shdf9b0/n5ACLxonwBvV+sPoKAe2H69UcoBra02KW
+         qdzpfafwLay5IhoWwCi1atfgHMlt/iF/y18VdLFPKvBtXc9I5SV+RZyNRcdWTxIyFXCK
+         4EYVhi3EEJOdMvmCpa7XZxK4e6LuSvktC5F3elpF79XAeCrzskXYddZmZbnXkwe5dr99
+         +ZYw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqAeMttHctvV+VAyzNe9Ww3Cw24AuBrTrzO6eyAeGK115hXbdJ5jr+cwBzbt19uqfGG86zvRWcxLc=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwAKD+3q1yxnW9r9GCB552TRikOb0oOz77xhsQP80WBZcb4YLyd
+	quIYYDjm75u3lBYlVA7rUSQTU+nxk72isT4Q4zJFnkVVVHy3T7+v
+X-Gm-Gg: ASbGncuFU2VYeFNdYpVB3rXmwx/FkRmiU0KCPWcjyIqYb4g1Y2VUYgcpBs759FOP3G3
+	qeTOaXzKSvsw7kbAG82B1KhzDizs8QYAx9FMOBNP31BwurdU0gf8oyWLm5cIAM4S4xbwFkK9Ckg
+	ceJfNncoGFvHPoyhXZVrDSRCqSeIbJD6ZfcU8Gj0d5V3MNg/uCI+ITWUlOjtyPbYdZ38F7t36Zw
+	bPvDPE4KBPc3ivVyGBUnHRogmyTNbh/4zkCkT3HL6ASl9HN7CyFfDHvQSOP13M9oSRhJZsOaeIy
+	bApmAQdZ0rvKx5IhZYMZyN1A1EvH9ztLrdK6Cw==
+X-Google-Smtp-Source: AGHT+IF5cIIkftGw4WwRHKqTtt8+I6sIv48dAqRnLodKyaijhaIOt3OFLc/uyoQLFQAexUGZekPcbw==
+X-Received: by 2002:ad4:5ec6:0:b0:6d4:b1e:5418 with SMTP id 6a1803df08f44-6e42fc6e390mr18830106d6.33.1738722704642;
+        Tue, 04 Feb 2025 18:31:44 -0800 (PST)
+Received: from newman.cs.purdue.edu ([128.10.127.250])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e25492254esm68579306d6.90.2025.02.04.18.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Feb 2025 18:31:44 -0800 (PST)
+From: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+To: christophe.jaillet@wanadoo.fr
+Cc: gmpy.liaowx@gmail.com,
+	jiashengjiangcool@gmail.com,
+	jirislaby@kernel.org,
+	kees@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	stable@vger.kernel.org,
+	vigneshr@ti.com
+Subject: [PATCH v3 1/2] mtd: Replace kcalloc() with devm_kcalloc()
+Date: Wed,  5 Feb 2025 02:31:40 +0000
+Message-Id: <20250205023141.26195-1-jiashengjiangcool@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <f9a35a4f-b774-4480-910a-cdcf926df41b@wanadoo.fr>
+References: <f9a35a4f-b774-4480-910a-cdcf926df41b@wanadoo.fr>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Z5qx3jAFE81Ni2cJ@lizhi-Precision-Tower-5810>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250204_153433_229947_8BFE6DD0 
-X-CRM114-Status: GOOD (  12.48  )
+X-CRM114-CacheID: sfid-20250204_183146_006344_1399A007 
+X-CRM114-Status: GOOD (  10.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,22 +101,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBKYW4gMjksIDIwMjUgYXQgMDU6NTU6MjZQTSAtMDUwMCwgRnJhbmsgTGkgd3JvdGU6
-Cj4gT24gU3VuLCBKYW4gMjYsIDIwMjUgYXQgMDc6NTk6MDFQTSArMDEwMCwgSi4gTmV1c2Now6Rm
-ZXIgd3JvdGU6Cj4gPiBTdXBwbGVtZW50IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9wY2kvZnNsLHBjaS50eHQgd2l0aCBhIG1vcmUKPiA+IGZvcm1hbCBiaW5kaW5nIGluIFlBTUwg
-Zm9ybWF0Lgo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IEouIE5ldXNjaMOkZmVyIDxqLm5lQHBvc3Rl
-by5uZXQ+Cj4gPiAtLS0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvZnNsLG1wYzh4
-eHgtcGNpLnlhbWwgICB8IDgzICsrKysrKysrKysrKysrKysrKysrKysKPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgODMgaW5zZXJ0aW9ucygrKQpbLi4uXQo+ID4gK2V4YW1wbGVzOgo+ID4gKyAgLSB8Cj4g
-PiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9pcnEuaD4K
-PiA+ICsKPiA+ICsgICAgcGNpMTogcGNpZUBlMDAwOTAwMCB7Cj4gCj4gbmVlZG4ndCBsYWJlbCBo
-ZXJlCgpXaWxsIGNoYW5nZS4KCgpUaGFua3MsCkouIE5ldXNjaMOkZmVyCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+Replace kcalloc() with devm_kcalloc() to prevent memory leaks in case of
+errors.
+
+Fixes: 78c08247b9d3 ("mtd: Support kmsg dumper based on pstore/blk")
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+---
+Changelog:
+
+v2 -> v3:
+
+1. Replace kcalloc() with devm_kcalloc().
+2. Remove kfree().
+3. Remove checks.
+
+v1 -> v2:
+
+1. Remove redundant logging.
+2. Add kfree() in the error-handling path.
+---
+ drivers/mtd/mtdpstore.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/mtdpstore.c b/drivers/mtd/mtdpstore.c
+index 7ac8ac901306..2d004d41cf75 100644
+--- a/drivers/mtd/mtdpstore.c
++++ b/drivers/mtd/mtdpstore.c
+@@ -417,11 +417,11 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
+ 	}
+ 
+ 	longcnt = BITS_TO_LONGS(div_u64(mtd->size, info->kmsg_size));
+-	cxt->rmmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+-	cxt->usedmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
++	cxt->rmmap = devm_kcalloc(&mtd->dev, longcnt, sizeof(long), GFP_KERNEL);
++	cxt->usedmap = devm_kcalloc(&mtd->dev, longcnt, sizeof(long), GFP_KERNEL);
+ 
+ 	longcnt = BITS_TO_LONGS(div_u64(mtd->size, mtd->erasesize));
+-	cxt->badmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
++	cxt->badmap = devm_kcalloc(&mtd->dev, longcnt, sizeof(long), GFP_KERNEL);
+ 
+ 	/* just support dmesg right now */
+ 	cxt->dev.flags = PSTORE_FLAGS_DMESG;
+@@ -527,9 +527,6 @@ static void mtdpstore_notify_remove(struct mtd_info *mtd)
+ 	mtdpstore_flush_removed(cxt);
+ 
+ 	unregister_pstore_device(&cxt->dev);
+-	kfree(cxt->badmap);
+-	kfree(cxt->usedmap);
+-	kfree(cxt->rmmap);
+ 	cxt->mtd = NULL;
+ 	cxt->index = -1;
+ }
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
