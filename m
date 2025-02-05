@@ -4,83 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A8C6C02197
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2025 03:46:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D3E0C02194
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Feb 2025 14:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eylAoz0XNW5LY2M+LNrlQbqM97E6Q3qp3h0xMMU4BBQ=; b=lttXak5Vwg8E//
-	5yZAnbHIC79cCWbB0E+LB+gx3dOyDw3NZap1NPw+u2HSY/qdNEsr4dSRW6heo2AcyAYI2YEIuGsCE
-	3OKXU5xgm8R42He99iKXxo1ScM840RyRxapsmG9HX8K7yab4qnWPXj7Ofqn9eVxN0YAb2Hi+wpOnp
-	guWbTBfC5pQ7nMLU2e7YGhlJ+lBb//y/IiNjfgl4JUOMrixOD1VubNPndg0J+MTQobrYlvpf9n/Qj
-	+4Cx9AGqRHXu/nGMcp8lc9T3uK0+XUKbhEuPh7WSNPFZhWAjwC1hLKkXFf2fe82ergT5Kl85M8kQ0
-	xHLRvitWbkgmQZqLk3Mg==;
+	List-Owner; bh=GcAWN8ndLCQ4WY3WtDokXrXfJwCpQ9vEMQapPpUBaNY=; b=k73g1YumbyaGe1
+	cln4P/NLxqJSdbleiW4peyYm53EI3W15g0AaR8DB0Gx6zXLq+AqcAYag4DVHW6/5oaf1dplH31o4i
+	FZpX9eIwhA6qMxICYCPkDoLn03Zbj6zMk+6FWrocvQcywiXv7EINizNQi06Rw9BG14I2G5H8DLWH0
+	AtJ5Mr5uuyXyZufojQdNy1ZNyEPgdKyFRmuH0L+jaPV2tRE6Z+ixmRWvu5q0oM9m5pXw3yfo0ej2T
+	hk90XDhZrkUXQtirDDr+/nhkzBLp6nv2KQSMtW6QIts/7kFqi/4Db+65cJqtTxcATkXsEkdr5GeFS
+	cm/mpKPpXd4W4qVpYfvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tfWMY-00000002Eza-2ZJE;
-	Wed, 05 Feb 2025 03:46:06 +0000
-Received: from mail-qt1-f178.google.com ([209.85.160.178])
+	id 1tffxn-00000003ThE-0yvK;
+	Wed, 05 Feb 2025 14:01:11 +0000
+Received: from mail-dm6nam12on20606.outbound.protection.outlook.com ([2a01:111:f403:2417::606] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tfVGJ-000000029zW-27CE
+	id 1tffpU-00000003RxJ-1cA0
 	for linux-mtd@lists.infradead.org;
-	Wed, 05 Feb 2025 02:35:36 +0000
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4678cd314b6so58874271cf.3
-        for <linux-mtd@lists.infradead.org>; Tue, 04 Feb 2025 18:35:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738722932; x=1739327732; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1N+4rW3SsekYEUc8nzCVlrVQkaioSvtxJiN6kI5HrK0=;
-        b=FI0fzfS6nikqszz0A57nMw8irDXDepzATQRjfXEny9jfO15JGadlu+zigP1tbuec1k
-         S88gQKED+Woqse5IFzZNQTJCIRCsMksKl3+EApMNIuKUbjIEn3esDLP6kLDetwBLh20R
-         +kKyXx6BiAxm5Xf5tjGTkeWzOMMznyO5gtPPRFubEHEqGT3b3Y/F4T98Av2mBspjGnGr
-         DylC0iqddl4xhVmGdhAYuGXX2X67YNzXlkLS+Ehnljb2fq701OkmCaoThTMtVbbypsf9
-         Iec0Dt5THJtV4Jpc4IPrjmEPD7Tqfb5tenIyLnWf6gmEXND09r3FsCuQJ/GChn/dOiE0
-         z8AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738722932; x=1739327732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1N+4rW3SsekYEUc8nzCVlrVQkaioSvtxJiN6kI5HrK0=;
-        b=w1Jdywig44fl+vwr/LzBruumUJIsfL1qcyK9NYswKi1zlTtNpyUN1u+cIR1SBA6RDC
-         okGAVijZoN5rml63bZv1HCSU6ZbH3OcSXm/Vv799GlNmqR9l0cyHLt9XwdfdfAZrtr9j
-         OEVwY/HjNSriYeBL6sNfv9XxBdU9gZMsHTHjIo9EVPjP3F8GwsUtz1orL9tJl1Iu/3Oy
-         q+9oZ/xBduER3gPPRFH03aihgdEg8dDwC28kncsDlbo0dAEgVBdi5dqzPkdwrenDDsTO
-         qmtUqcBJfkcHgfjct3uCXZXFpFceRJfNT52u772o2WfVDRgO/xUC/eN+dhRB40H5Khrv
-         YbVw==
-X-Forwarded-Encrypted: i=1; AJvYcCV5LgSp9Kh0h50VeXSjKY3Yt9pY2il8uxR0BIiiFl4gAFBXzioEHyRUGEx1leoU9FaFd+7OED+TdBo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzSFMG5tsCk7nE2MbQL/iiKDUVDWZa4yWKH5YyS3CF8HBafyHsA
-	DfNXdXDU1LmdF2gPB7fzO/sBxqsDxNtyvsUgH79Os+GaM6YB3RG3nqb73fjySyEOL/Ohtnn1UWi
-	nZWC36j847DA0yo/Ebr1DEQUEdlw=
-X-Gm-Gg: ASbGncvxmAVO74/RlXRX+/VZ8YT0JwWvM1uWzpjUn7QY244/95rDWhWhRnn9kOOgnPS
-	SsnhJZu8sqreWO9QFwessNsumvC+iFopzEFVm/XKi+6BAL6Nl/ynqXf/BVpUfTNVcNJOT7VB6
-X-Google-Smtp-Source: AGHT+IE063EYM4tWEE7WYPrDhbceSvU1oIFvALHqQjqTvkhDse0m/DanubcApO0WLJidamuFwaSloVjnb4AUFeQhGIE=
-X-Received: by 2002:a05:622a:1a9a:b0:462:e827:c11a with SMTP id
- d75a77b69052e-470281ba564mr19695661cf.19.1738722932180; Tue, 04 Feb 2025
- 18:35:32 -0800 (PST)
+	Wed, 05 Feb 2025 13:52:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dPGesmiFQOuGY1MJJA9NAgI2l+bsUqiEleUfqTN05UIuw7XqdEkIGFiyeTbF5weHuRKU71mBesoFsOWy5oWwddW+LopKEaAjm5kMivyDey9Qset7W2kPk6CtkZWd6uzJbjR2JuIbZLZvb8Kawmw5mLLNds4El8sTF/DohlShWrzZ4XouozJ8Nk8inrgA3x8JY3/T6a6WGmpG4SY4ReNfnd9vnCSmD+bYD9AvdPZ5NoWrQA+gsRbvvF9bjDA5nTr8YZMmbpID85Pid6NPmHl/w7BuyqU/sdIAl2ugHggcoluCsa7bSnkyEJl10fJxWsj5vTkE4L50UwTsjckWxuBvjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sOaCrmzgt3ty3XF3orj5cCWII1wOJJTN56ty7LTSg0w=;
+ b=qTUmnkly+PF7hbryGB1IydL4FFcZ5gUR6fEOQ1rXIiqfun0tPv0oMzcEujrmeyROxuKaep0Wklo9OyRf/ipKzluFZQ+mvzVJrxQybbyRIuJPZPAEly1romPSBwB4A+cKvZZyObZNmc07o6dKdLMO5LwTrLYNNjBOQoBjQZbCQf34Sq/ppn35i2FZiksu9o+BzzaYxTxiam+2pYjv23/zcDRCj99MCPGq2lRN4Ng6hFZgJSaNgfmM7yRUmOqN07HXOynoXOAl7bWovwBeQ0B7UydXPTNRv6+P+e+FDeB7JmyueRZ15dn7+fgcJ1yWJbCNVO3Y3VfcZX9iaGlBzHoBkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=bootlin.com smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sOaCrmzgt3ty3XF3orj5cCWII1wOJJTN56ty7LTSg0w=;
+ b=xcMJAbwbBsiYzgd3l42KhqY2d+X+hBLKAlz9MmTDbBHMt3s7VofzNybjfpdMreycLL9hnx1FLlqZrWAjnhuOfJqCQE7hYuLBjIFoaY/ZbFFHizDTM5tS/NvnVnUGxRWywbg7TR6HIoOftWVraAPTccB97ogHzJwq5BpLWY+5uBI=
+Received: from MN2PR01CA0061.prod.exchangelabs.com (2603:10b6:208:23f::30) by
+ CH2PR12MB4072.namprd12.prod.outlook.com (2603:10b6:610:7e::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8398.25; Wed, 5 Feb 2025 13:37:46 +0000
+Received: from BN3PEPF0000B36D.namprd21.prod.outlook.com
+ (2603:10b6:208:23f:cafe::2d) by MN2PR01CA0061.outlook.office365.com
+ (2603:10b6:208:23f::30) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8398.28 via Frontend Transport; Wed,
+ 5 Feb 2025 13:37:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BN3PEPF0000B36D.mail.protection.outlook.com (10.167.243.164) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.8445.2 via Frontend Transport; Wed, 5 Feb 2025 13:37:46 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 5 Feb
+ 2025 07:37:45 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 5 Feb
+ 2025 07:37:43 -0600
+Received: from xhdakumarma40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.39 via Frontend
+ Transport; Wed, 5 Feb 2025 07:37:40 -0600
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>
+CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <git@amd.com>, <amitrkcian2002@gmail.com>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Subject: [PATCH v12 2/3] mtd: Move struct mtd_concat definition to header file
+Date: Wed, 5 Feb 2025 19:07:29 +0530
+Message-ID: <20250205133730.273985-3-amit.kumar-mahapatra@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250205133730.273985-1-amit.kumar-mahapatra@amd.com>
+References: <20250205133730.273985-1-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-References: <30ad77af-4a7b-4a15-9c0b-b0c70d9e1643@wanadoo.fr>
- <20250204023323.14213-1-jiashengjiangcool@gmail.com> <e41d9378-e5e5-478d-bead-aa50a9f79d4d@wanadoo.fr>
- <48ad8f05-a90b-499d-9e73-8e5ff032824a@kernel.org> <f9a35a4f-b774-4480-910a-cdcf926df41b@wanadoo.fr>
-In-Reply-To: <f9a35a4f-b774-4480-910a-cdcf926df41b@wanadoo.fr>
-From: Jiasheng Jiang <jiashengjiangcool@gmail.com>
-Date: Tue, 4 Feb 2025 21:35:21 -0500
-X-Gm-Features: AWEUYZkirK4j39ugQSeyxuqN18Ew0eSAiZ7kK5iwAMUijihh2awqnAb3jDJsyJM
-Message-ID: <CANeGvZUzHVnQdwTkam4HE9EVfEf8xY4L7Y20vj5v_N-vbD9kzQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: Add check and kfree() for kcalloc()
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Jiri Slaby <jirislaby@kernel.org>, gmpy.liaowx@gmail.com, kees@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
-	stable@vger.kernel.org
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B36D:EE_|CH2PR12MB4072:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8878d442-59a6-43fd-ca9b-08dd45ea46be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700013|376014|82310400026|1800799024|7416014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?4nY+QSwQU1AgYGp9m9e/x8sJzthyCJuUQ8CAbg8CNYVGEUFnLiOYpo5z1ukr?=
+ =?us-ascii?Q?ann1Pk6tT7nmRtyh6+7t0WkK4QpCKTCvTkRhQ+No48uPIDMsuoYwkpTKIpNH?=
+ =?us-ascii?Q?Qowda0gqKdS+K7BBvzHpSDoA6lhyV3is1z6N555Hn4uLzzZMtJF/ZFG6zB7t?=
+ =?us-ascii?Q?N1dkiR2fDvZ4KKhm0vBoMuBmtkMjcd7PSuz9jQLKA3pDNqoK2Uy1lL120y93?=
+ =?us-ascii?Q?saQZhQ3UalsuzqHG8SVO3VDoPySEPPYB/W7TmdyHIpZtlZsMREA3IoXKqdkF?=
+ =?us-ascii?Q?3+fs+62uGrQu6rzU0shCt/lAnKjrESA5Z0z1Llz6o31/WQJFyTNKUlZyD0UZ?=
+ =?us-ascii?Q?sdndGuG5b3tae2wxWNr3aM1s3zqtNWYcKjj4syB7G6hT36ys4U9ApAfE+kkX?=
+ =?us-ascii?Q?DDSKfLswC2vnLc2ZePLK81w1b4st6Zkf3YKX+G9jt50zQ3PhzZfG9j1vvqqf?=
+ =?us-ascii?Q?sqEvfQgkBIwa8ceuV7qWAUtIvoikpOV8495u3E0oEXfeb2s3FkWNwGI2p9u7?=
+ =?us-ascii?Q?WCO4Y8xh/TSvNP95Mt/AEQiivkRQrQ4PEMdFRCUsZZVMyYaZGcHUheuQ2oKW?=
+ =?us-ascii?Q?fLehFx4mFUmNft30HALeNilykeLzPJx+AYVza6TJPNQbY+1AcclnGMLnSSRE?=
+ =?us-ascii?Q?UY9V3Ru31PHdvosX18m0OZTFTEl/sie6mCfar39kcRqPbOC5o4W/4vy3nLjq?=
+ =?us-ascii?Q?qSHDG7xztb0+APheTyUk2yhlnuvVzHBKaFcaG/YhN+FJ+5Oih2FcGyvRLx0R?=
+ =?us-ascii?Q?fDOKdDbIFUe5iv72GWNU0jmz7Ez57H5S5yeWB058091l+FEvSQTtY31UXSCt?=
+ =?us-ascii?Q?YWDi3yp9im1S99cjT3TnMWiIDIs6tizyXIJ1wLkopBwgg96x+6g5SctQ2Vdq?=
+ =?us-ascii?Q?fFzorS83YW6u3Oi/2vVtcE8csFYrEgV7TnK0Zffu4JlAQeNpde09XuJE9MHK?=
+ =?us-ascii?Q?3KS7Nf/AQit91ov8HU/35Nmn6dsnXC88dmJ1dLr05S+iZ1YnD1QnD3oyc5HD?=
+ =?us-ascii?Q?hxQ32dYbOb/9Ha/P/IrbTjFOEGAV4C+5w4pl2sb4E2cHmyKb7DK2WInY6XQ1?=
+ =?us-ascii?Q?oqJ4WbItD9RmMDO3B9l/or7ltKsYXGJKRyqbgecV0t++1ZLtPkRlG4JDOCAi?=
+ =?us-ascii?Q?k+1C64akn6fokDDD0W+SVc4bBsHGi1EeBxQgcRHfTSyQqhQoz+QfG1G5YHMk?=
+ =?us-ascii?Q?wGvmYAtV3kPzO1d3S43xJXrLv1TL/S6yUa1ZeVVVGQJeZ63oWj/+UXJJN7db?=
+ =?us-ascii?Q?1rc5SkrnPcW3c1xWHX7pIXJvdTiLqF+5i0iNSNGEbB1OdiK5ib5j2x+affoe?=
+ =?us-ascii?Q?6ajO9pNNjAjzkNLopQPPbnXkFu2EqWBG8pFuXddQ/OyE0XJe8WgZ8eKOnoDQ?=
+ =?us-ascii?Q?HfRo7hWl5p4KX8Tjrk66sO4FIkbjesWdBCitP/7HHEyF0W5av7OQWuH6pBdl?=
+ =?us-ascii?Q?Od6Slkss1rvlNCdWJ7jEdzYm8D8vK1wLcs2C/cWgbJqhN61niJhKH+3b+Egd?=
+ =?us-ascii?Q?7yV/uPF5Zz4UFAk=3D?=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(1800799024)(7416014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2025 13:37:46.7426
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8878d442-59a6-43fd-ca9b-08dd45ea46be
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN3PEPF0000B36D.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4072
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250204_183535_540387_B2E700FB 
-X-CRM114-Status: GOOD (  25.38  )
+X-CRM114-CacheID: sfid-20250205_055236_466403_3BCD1F5B 
+X-CRM114-Status: GOOD (  14.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,73 +143,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0b3BoZSwKCk9uIFR1ZSwgRmViIDQsIDIwMjUgYXQgMzo1MOKAr1BNIENocmlzdG9w
-aGUgSkFJTExFVAo8Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI+IHdyb3RlOgo+Cj4gTGUg
-MDQvMDIvMjAyNSDDoCAwNzozNiwgSmlyaSBTbGFieSBhIMOpY3JpdCA6Cj4gPiBPbiAwNC4gMDIu
-IDI1LCA3OjE3LCBDaHJpc3RvcGhlIEpBSUxMRVQgd3JvdGU6Cj4gPj4gTGUgMDQvMDIvMjAyNSDD
-oCAwMzozMywgSmlhc2hlbmcgSmlhbmcgYSDDqWNyaXQgOgo+ID4+PiBBZGQgYSBjaGVjayBmb3Ig
-a2NhbGxvYygpIHRvIGVuc3VyZSBzdWNjZXNzZnVsIGFsbG9jYXRpb24uCj4gPj4+IE1vcmVvdmVy
-LCBhZGQga2ZyZWUoKSBpbiB0aGUgZXJyb3ItaGFuZGxpbmcgcGF0aCB0byBwcmV2ZW50IG1lbW9y
-eQo+ID4+PiBsZWFrcy4KPiA+Pj4KPiA+Pj4gRml4ZXM6IDc4YzA4MjQ3YjlkMyAoIm10ZDogU3Vw
-cG9ydCBrbXNnIGR1bXBlciBiYXNlZCBvbiBwc3RvcmUvYmxrIikKPiA+Pj4gQ2M6IDxzdGFibGVA
-dmdlci5rZXJuZWwub3JnPiAjIHY1LjEwKwo+ID4+PiBTaWduZWQtb2ZmLWJ5OiBKaWFzaGVuZyBK
-aWFuZyA8amlhc2hlbmdqaWFuZ2Nvb2xAZ21haWwuY29tPgo+ID4+PiAtLS0KPiA+Pj4gQ2hhbmdl
-bG9nOgo+ID4+Pgo+ID4+PiB2MSAtPiB2MjoKPiA+Pj4KPiA+Pj4gMS4gUmVtb3ZlIHJlZHVuZGFu
-dCBsb2dnaW5nLgo+ID4+PiAyLiBBZGQga2ZyZWUoKSBpbiB0aGUgZXJyb3ItaGFuZGxpbmcgcGF0
-aC4KPiA+Pj4gLS0tCj4gPj4+ICAgZHJpdmVycy9tdGQvbXRkcHN0b3JlLmMgfCAxOSArKysrKysr
-KysrKysrKysrKystCj4gPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkKPiA+Pj4KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZHBzdG9y
-ZS5jIGIvZHJpdmVycy9tdGQvbXRkcHN0b3JlLmMKPiA+Pj4gaW5kZXggN2FjOGFjOTAxMzA2Li4y
-ZDhlMzMwZGQyMTUgMTAwNjQ0Cj4gPj4+IC0tLSBhL2RyaXZlcnMvbXRkL210ZHBzdG9yZS5jCj4g
-Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL210ZHBzdG9yZS5jCj4gPj4+IEBAIC00MTgsMTAgKzQxOCwx
-NyBAQCBzdGF0aWMgdm9pZCBtdGRwc3RvcmVfbm90aWZ5X2FkZChzdHJ1Y3QKPiA+Pj4gbXRkX2lu
-Zm8gKm10ZCkKPiA+Pj4gICAgICAgbG9uZ2NudCA9IEJJVFNfVE9fTE9OR1MoZGl2X3U2NChtdGQt
-PnNpemUsIGluZm8tPmttc2dfc2l6ZSkpOwo+ID4+PiAgICAgICBjeHQtPnJtbWFwID0ga2NhbGxv
-Yyhsb25nY250LCBzaXplb2YobG9uZyksIEdGUF9LRVJORUwpOwo+ID4+PiArICAgIGlmICghY3h0
-LT5ybW1hcCkKPiA+Pj4gKyAgICAgICAgZ290byBlbmQ7Cj4gPj4KPiA+PiBOaXRwaWNrOiBDb3Vs
-ZCBiZSBhIGRpcmVjdCByZXR1cm4uCj4gPj4KPiA+Pj4gKwo+ID4+PiAgICAgICBjeHQtPnVzZWRt
-YXAgPSBrY2FsbG9jKGxvbmdjbnQsIHNpemVvZihsb25nKSwgR0ZQX0tFUk5FTCk7Cj4gPj4+ICsg
-ICAgaWYgKCFjeHQtPnVzZWRtYXApCj4gPj4+ICsgICAgICAgIGdvdG8gZnJlZV9ybW1hcDsKPiA+
-Pj4gICAgICAgbG9uZ2NudCA9IEJJVFNfVE9fTE9OR1MoZGl2X3U2NChtdGQtPnNpemUsIG10ZC0+
-ZXJhc2VzaXplKSk7Cj4gPj4+ICAgICAgIGN4dC0+YmFkbWFwID0ga2NhbGxvYyhsb25nY250LCBz
-aXplb2YobG9uZyksIEdGUF9LRVJORUwpOwo+ID4+PiArICAgIGlmICghY3h0LT5iYWRtYXApCj4g
-Pj4+ICsgICAgICAgIGdvdG8gZnJlZV91c2VkbWFwOwo+ID4+PiAgICAgICAvKiBqdXN0IHN1cHBv
-cnQgZG1lc2cgcmlnaHQgbm93ICovCj4gPj4+ICAgICAgIGN4dC0+ZGV2LmZsYWdzID0gUFNUT1JF
-X0ZMQUdTX0RNRVNHOwo+ID4+PiBAQCAtNDM1LDEwICs0NDIsMjAgQEAgc3RhdGljIHZvaWQgbXRk
-cHN0b3JlX25vdGlmeV9hZGQoc3RydWN0Cj4gPj4+IG10ZF9pbmZvICptdGQpCj4gPj4+ICAgICAg
-IGlmIChyZXQpIHsKPiA+Pj4gICAgICAgICAgIGRldl9lcnIoJm10ZC0+ZGV2LCAibXRkJWQgcmVn
-aXN0ZXIgdG8gcHNibGsgZmFpbGVkXG4iLAo+ID4+PiAgICAgICAgICAgICAgICAgICBtdGQtPmlu
-ZGV4KTsKPiA+Pj4gLSAgICAgICAgcmV0dXJuOwo+ID4+PiArICAgICAgICBnb3RvIGZyZWVfYmFk
-bWFwOwo+ID4+PiAgICAgICB9Cj4gPj4+ICAgICAgIGN4dC0+bXRkID0gbXRkOwo+ID4+PiAgICAg
-ICBkZXZfaW5mbygmbXRkLT5kZXYsICJBdHRhY2hlZCB0byBNVEQgZGV2aWNlICVkXG4iLCBtdGQt
-PmluZGV4KTsKPiA+Pj4gKyAgICBnb3RvIGVuZDsKPiA+Pgo+ID4+IE1hdGVyIG9mIHRhc3RlLCBi
-dXQgSSB0aGluayB0aGF0IGhhdmluZyBhbiBleHBsaWNpdCByZXR1cm4gaGVyZSB3b3VsZAo+ID4+
-IGJlIGNsZWFyZXIgdGhhdCBhIGdvdG8gZW5kOwo+ID4KPiA+IFllcywgZHJvcCB0aGUgd2hvbGUg
-ZW5kLgo+ID4KPiA+Pj4gK2ZyZWVfYmFkbWFwOgo+ID4+PiArICAgIGtmcmVlKGN4dC0+YmFkbWFw
-KTsKPiA+Pj4gK2ZyZWVfdXNlZG1hcDoKPiA+Pj4gKyAgICBrZnJlZShjeHQtPnVzZWRtYXApOwo+
-ID4+PiArZnJlZV9ybW1hcDoKPiA+Pj4gKyAgICBrZnJlZShjeHQtPnJtbWFwKTsKPiA+Pgo+ID4+
-IEkgdGhpbmsgdGhhdCBpbiBhbGwgdGhlc2UgcGF0aHMsIHlvdSBzaG91bGQgYWxzbyBoYXZlCj4g
-Pj4gICAgICBjeHQtPlhYWG1hcCA9IE5VTEw7Cj4gPj4gYWZ0ZXIgdGhlIGtmcmVlKCkuCj4gPj4K
-PiA+PiBvdGhlcndpc2Ugd2hlbiBtdGRwc3RvcmVfbm90aWZ5X3JlbW92ZSgpIGlzIGNhbGxlZCwg
-eW91IGNvdWxkIGhhdmUgYQo+ID4+IGRvdWJsZSBmcmVlLgo+ID4KPiA+IFJpZ2h0LCBhbmQgdGhp
-cyBpcyBhbHJlYWR5IGEgcHJvYmxlbSBmb3IgZmFpbGluZwo+ID4gcmVnaXN0ZXJfcHN0b3JlX2Rl
-dmljZSgpIGluIF9hZGQoKSAtLSB0aGVyZSBpcyB1bmNvbmRpdGlvbmFsCj4gPiB1bnJlZ2lzdGVy
-X3BzdG9yZV9kZXZpY2UoKSBpbiBfcmVtb3ZlKCkuIFNob3VsZCBfcmVtb3ZlKCkgY2hlY2sgY3h0
-LT5tdGQKPiA+IGZpcnN0Pwo+Cj4gTm90IHN1cmUgaXQgaXMgbmVlZGVkLgo+IElJVUMsIFsxXSB3
-b3VsZCBub3QgbWF0Y2ggaW4gdGhpcyBjYXNlLCBiZWNhdXNlIFsyXSB3b3VsZCBub3QgaGF2ZSBi
-ZWVuCj4gZXhlY3V0ZWQuIEFncmVlZD8KClRoYW5rcyBmb3IgeW91ciBhZHZpY2UuCkkgaGF2ZSBz
-dWJtaXR0ZWQgYSB2MyB0byByZXBsYWNlIGtjYWxsb2MoKSB3aXRoIGRldm1fa2NhbGxvYygpIHRv
-CnByZXZlbnQgbWVtb3J5IGxlYWtzLgpNb3Jlb3ZlciwgSSBtb3ZlZCB0aGUgcmV0dXJuIHZhbHVl
-IGNoZWNrIHRvIGFub3RoZXIgcGF0Y2gsIHNvIHRoYXQKZWFjaCBwYXRjaCBkb2VzIG9ubHkgb25l
-IHRoaW5nLgoKLUppYXNoZW5nCgo+Cj4gQ0oKPgo+Cj4gWzFdOiBodHRwczovL2VsaXhpci5ib290
-bGluLmNvbS9saW51eC92Ni4xMy9zb3VyY2UvZnMvcHN0b3JlL2Jsay5jI0wxNjkKPiBbMl06IGh0
-dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y2LjEzL3NvdXJjZS9mcy9wc3RvcmUvYmxr
-LmMjTDE0MQo+Cj4gPgo+ID4gdGhhbmtzLAo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+To enable a more generic approach for concatenating MTD devices,
+struct mtd_concat should be accessible beyond the mtdconcat driver.
+Therefore, the definition is being moved to a header file.
+
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+---
+ drivers/mtd/mtdconcat.c    | 12 ------------
+ include/linux/mtd/concat.h | 12 ++++++++++++
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index f56f44aa8625..6f2aaceac669 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -20,18 +20,6 @@
+ 
+ #include <asm/div64.h>
+ 
+-/*
+- * Our storage structure:
+- * Subdev points to an array of pointers to struct mtd_info objects
+- * which is allocated along with this structure
+- *
+- */
+-struct mtd_concat {
+-	struct mtd_info mtd;
+-	int num_subdev;
+-	struct mtd_info **subdev;
+-};
+-
+ /*
+  * how to calculate the size required for the above structure,
+  * including the pointer array subdev points to:
+diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
+index d6f653e07426..b42d9af87c4e 100644
+--- a/include/linux/mtd/concat.h
++++ b/include/linux/mtd/concat.h
+@@ -9,6 +9,18 @@
+ #define MTD_CONCAT_H
+ 
+ 
++/*
++ * Our storage structure:
++ * Subdev points to an array of pointers to struct mtd_info objects
++ * which is allocated along with this structure
++ *
++ */
++struct mtd_concat {
++	struct mtd_info mtd;
++	int num_subdev;
++	struct mtd_info **subdev;
++};
++
+ struct mtd_info *mtd_concat_create(
+     struct mtd_info *subdev[],  /* subdevices to concatenate */
+     int num_devs,               /* number of subdevices      */
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
