@@ -4,63 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41A7DC02192
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 08:36:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19C34C02192
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 08:43:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IJ4jtVrOBrv2IfJlOXfAKmspV/6CWf7HEUPB+uxPuy0=; b=JlJCWinmsGzJ+r1C2Vvx2ExijB
-	/W1t0jBeNuurIsk2iyyQ7ffeftrfix6viqSwGiLlMcJRr+XhYNM4hnUW4TH2aqsM2X7nDExnvDMNP
-	Zh9WtrpYlYp7z12ToZfbruahd6+R8268r108mVtEpSap68IrkCB5OZYa3fC/1x/NyeU1YB5Q1M4+P
-	16WhPUV1jxdCw8huHL0M75koDXAp1xrawoQz1A3bqJOboEVV4bduzyn898nZcfYj9m1tkE/ZlpBiq
-	ly0UYNhN1xr0zxyzNEM10K2HK6wysJwqud1/fi/oKg2hOTZT1aRIw27N15OINqFv1wdEHC2yLswbO
-	oHfLwX8A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sVlE/9PGv+Gpubv+2zdblaJnSGcWyr26hfbCZD/zOcA=; b=K5dYMGw75DKFaK
+	uH5x5wmIXHxdRiVZR5PCOgp06W9EqN4eh5ZlOONKqFODcknNRYU4OV3C4rAox0pLoUhKmwaGgrRpL
+	OpG53BvmrY3CgpgrXcW4YBcKYf99Q6jh9wnwOXKBgX8ee9sLskUL/CbTz+IatZ1T3vzKv2KrTTnje
+	BX7JAVoWhCJ0zJFSYkgrGDPwSLiWOWNmL9SLP+RJWej6P2TOef7F10eRN8/DEec2r53G4AWBhWswy
+	RzYXZgJqj9HlEn5ymfdpZjwxWWB/WQCD9HoWfBfQJnL+cb3bgP0/Q2zhKJikZogxbyhmAUfSssj9b
+	yOCspFudao8cQ/ZiuQYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgJqo-00000008qBo-1xeC;
-	Fri, 07 Feb 2025 08:36:38 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1tgJxr-00000008rgK-00gR;
+	Fri, 07 Feb 2025 08:43:55 +0000
+Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgJqm-00000008qBR-2HYd
+	id 1tgJrO-00000008qLv-2b3l
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Feb 2025 08:36:37 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id E9C435C6563;
-	Fri,  7 Feb 2025 08:35:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24C50C4CED1;
-	Fri,  7 Feb 2025 08:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738917395;
-	bh=95R7wtZe+y2DcnVkficYA9or/YfcSNgSUS2n9SAYGs4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LAUsS20JTtH6AV9OROJt/fNj30Nbuw3DWl80TVd7AaQnxmvSwanZ+MPddNBfbkQe8
-	 r3zbXLwCp6AV+4Qjp84/we4L3s1ITPWCp8F0MMLz7QTFZPbiCLhhDSgGFxcKWDc8sA
-	 CDbHzbZSnVTf8GGoSrcNgH6cvyPZjU6ML42tYTaGbhOIYhbfa0+TOVFc7CSulngMJ5
-	 WNJbPHVhH71hoRhyCFr8tB50cXAdw/fELGtL6PVQmg45Ajz6nbOzwZzv4hQ9vvma/S
-	 AN8PEZEpmTbLeoG3CJC52HgFfGjvlLTD+BMUKrAyjEsyHfI2IylNgO0heRShTbBEy2
-	 KVA8ZGw485vHQ==
+	Fri, 07 Feb 2025 08:37:15 +0000
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-38dc1dfd9f2so856481f8f.3
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2025 00:37:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1738917433; x=1739522233; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R0PMLhji9fjSmPvfPMOxgYvbpmy3XQd+J6yLU+3bdoQ=;
+        b=gQEHH5JtzxTUQSmPavwYFgW3DL7uigyDbHMfS3o47isK86gRqTM0d7kFm64IGCCRls
+         rJ87tEPAuldaIQWp2/TvWIsHDAlyCfU3G7xFTHIXLQiriKQaMi8K+72jTUFpR+jUd7f6
+         FtUkn04R2rXWsA3iEVVkPAL8CbFvuxEQcjMEJB2MnQE6TWhSF/QVOf6iLoYLUtmzOFYB
+         quHervOjY4nrBsili5Q8OBF+rOMCmGMrGPTr9wWFsqbTBAuhe0uYqC9Bqkuufd/oUqUD
+         +OkHr9ytFHuYELzGLQxMnxpdcrtxVDWDExZMVCXoOWZnZxposeht2a0R9d/rztnB28xX
+         eLrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738917433; x=1739522233;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R0PMLhji9fjSmPvfPMOxgYvbpmy3XQd+J6yLU+3bdoQ=;
+        b=lzCubkWJs/DTZ3xWvHn7xEQobAj3er9UyJWNkhCSOrgyQFC4WouC3XX4JunBdhq+D+
+         6UDx/7GXoPzJ4pRB4J1Rsj3XbRtLk+SMS4NzjXkbxJ2MlV5KeYOzefOJNjXjDqaNjAY0
+         wWMkVnyFIbW57Rh1cuGtJ6uvyRr9V2iRWk0yKZfw/d52vTFtHSYZH6lCykUX6Y2NFNxL
+         1DgPaLC70XRMQVOY0OIWHY/Z7DaCEypQa1j7wyuNaTSPpt8O6YZf3EzKleKcUGPmeFF/
+         JBAtoherw6TW9RnqiSAmAiAl/L7aOGoNhC4SKm/EVaRyKnk7LG12HXwkwg1Kno5xDBH6
+         7RYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUnPeeHnopVqDIMaygUuO7FZaZA0lgg1eddWwI7SX/rImgvTI0bhHG4T9GQEQe1h/nwoikhpraRebU=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwuW08cmucYhiZ9fG7r+nY73UyixtXi51nDINQUN9M9BthkBSf7
+	qNYNuRnidI57orjkvbJXNe+ruSdIkiEUcUKEyehUckqzNGINQ4QP8JjD5ZayBTXpnB74F8vbSP9
+	p
+X-Gm-Gg: ASbGncsoqEnL/1xBoCt6H/UjI6ffXoIGSMaBGvP6vCd/1JmmCtv3nrxsvqBGF6Py7bl
+	pLhnz7eZ+Oc5TAXyFXLn5VOjnqM9um2Hohpyf4HIp03l2EG2UyqspvP3bGe3N9veM6a1VxxJCDh
+	AO/e6a4uia00iZUTRH4qLkcYkIeXJEyvrGmqE+g9HVKoqKZI4n3ZdgGdj+Yx20vcrZblsyurXsy
+	uSWj5vOttZhPwGWLWJGmR3dl+tO7tQK6gRA8PCPAZD163mQhIoKOfNVLcvRXmVmiiLe/GpGuk3E
+	YJ7PsywGBcKt7dKblGYPTgXG
+X-Google-Smtp-Source: AGHT+IEk2mxWIfMDHVJOzZSEe/KJXR5/OMo7AWCGcI2mKjnjA/PXTh7IPzwqWMFGzSCaAXZ6+mptZg==
+X-Received: by 2002:a5d:648e:0:b0:38d:cf33:31cc with SMTP id ffacd0b85a97d-38dcf333729mr117058f8f.34.1738917432919;
+        Fri, 07 Feb 2025 00:37:12 -0800 (PST)
+Received: from [192.168.0.14] ([79.115.63.251])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dbde0fd23sm3807124f8f.71.2025.02.07.00.37.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Feb 2025 00:37:12 -0800 (PST)
+Message-ID: <1c1da131-a7b1-4c2e-9866-d7833a134033@linaro.org>
+Date: Fri, 7 Feb 2025 08:37:10 +0000
 MIME-Version: 1.0
-Date: Fri, 07 Feb 2025 09:36:31 +0100
-From: Michael Walle <mwalle@kernel.org>
-To: Cheng Ming Lin <linchengming884@gmail.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- alvinzhou@mxic.com.tw, leoyu@mxic.com.tw, Cheng Ming Lin
- <chengminglin@mxic.com.tw>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/2] mtd: spi-nor: macronix: Add post_sfdp fixups for Quad
  Input Page Program
-In-Reply-To: <20250207081846.362919-2-linchengming884@gmail.com>
+To: Cheng Ming Lin <linchengming884@gmail.com>, pratyush@kernel.org,
+ mwalle@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: alvinzhou@mxic.com.tw, leoyu@mxic.com.tw,
+ Cheng Ming Lin <chengminglin@mxic.com.tw>
 References: <20250207081846.362919-1-linchengming884@gmail.com>
  <20250207081846.362919-2-linchengming884@gmail.com>
-Message-ID: <8901dcd481a2185ad34fa7dd09997b38@kernel.org>
-X-Sender: mwalle@kernel.org
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20250207081846.362919-2-linchengming884@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250207_003636_672018_EE56CAC5 
-X-CRM114-Status: GOOD (  18.16  )
+X-CRM114-CacheID: sfid-20250207_003714_678357_DFD9F3B2 
+X-CRM114-Status: UNSURE (   9.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,102 +100,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Cheng,
+Hi, Cheng,
 
+On 2/7/25 8:18 AM, Cheng Ming Lin wrote:
 > Although certain Macronix NOR flash support the Quad Input Page Program
-> feature, the corresponding information in the 4-byte Address 
-> Instruction
+> feature, the corresponding information in the 4-byte Address Instruction
 > Table of these flash is not properly filled. As a result, this feature
 > cannot be enabled as expected.
-> 
-> To address this issue, a post_sfdp fixups implementation is required to
-> correct the missing information.
-> 
-> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
-> ---
->  drivers/mtd/spi-nor/macronix.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c 
-> b/drivers/mtd/spi-nor/macronix.c
-> index 830da21eea08..ada17999ccbb 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -45,8 +45,26 @@ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
->  	return 0;
->  }
-> 
-> +static int
-> +macronix_qpp4b_post_sfdp_fixups(struct spi_nor *nor)
-> +{
-> +	/* PP_1_1_4_4B is supported but missing in 4BAIT. */
-> +	struct spi_nor_flash_parameter *params = nor->params;
-> +
-> +	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
-> +	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_4],
-> +			SPINOR_OP_PP_1_1_4_4B, SNOR_PROTO_1_1_4);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct spi_nor_fixups mx25l25635_fixups = {
->  	.post_bfpt = mx25l25635_post_bfpt_fixups,
-> +	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
-> +};
-> +
-> +static const struct spi_nor_fixups macronix_qpp4b_fixups = {
-> +	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
->  };
-> 
->  static const struct flash_info macronix_nor_parts[] = {
-> @@ -102,11 +120,13 @@ static const struct flash_info 
-> macronix_nor_parts[] = {
->  		.size = SZ_64M,
->  		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->  		.fixup_flags = SPI_NOR_4B_OPCODES,
-> +		.fixups = &macronix_qpp4b_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x20, 0x1b),
->  		.name = "mx66l1g45g",
->  		.size = SZ_128M,
->  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-> +		.fixups = &macronix_qpp4b_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x23, 0x14),
->  		.name = "mx25v8035f",
-> @@ -154,18 +174,21 @@ static const struct flash_info 
-> macronix_nor_parts[] = {
->  		.size = SZ_64M,
->  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->  		.fixup_flags = SPI_NOR_4B_OPCODES,
-> +		.fixups = &macronix_qpp4b_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x25, 0x3a),
->  		.name = "mx66u51235f",
->  		.size = SZ_64M,
->  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->  		.fixup_flags = SPI_NOR_4B_OPCODES,
-> +		.fixups = &macronix_qpp4b_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x25, 0x3c),
->  		.name = "mx66u2g45g",
->  		.size = SZ_256M,
->  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->  		.fixup_flags = SPI_NOR_4B_OPCODES,
-> +		.fixups = &macronix_qpp4b_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x26, 0x18),
->  		.name = "mx25l12855e",
 
-Could you also please share the SFDP dumps of these flashes with us?
+You need to prove that all the flashes that you touch need this fixup,
+i.e. dump their SFDP and show where's the wrong bit in the SFDP table.
 
-Thanks,
--michael
+Identifying wrong bit in the SFDP tables would be easy to spot if we had
+a SFDP decoder. Something that we all agree that'd be a good thing to
+have, but nobody can allocate time to do it. Pratyush I remember has
+started a draft. Are you interested in introducing a SFDP decoder in
+mtd-utils?
+
+Also, if you touch all these flashes, will you please update them and
+get rid of the stray flash info fields? I'm thinking of name, size, and
+no_sfdp_flags.
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
