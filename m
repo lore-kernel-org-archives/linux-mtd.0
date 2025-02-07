@@ -4,90 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30D77C02194
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 13:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B376C02194
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 14:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t2wyuAYWAQgQErOf5mSD0HnAlIbmUs86+RVdYBLvyvM=; b=qb20OAk3Q1W5pc
-	7wwcoBnMU2y5ouTOGbrIfqlP8WlMBDViKq/JySANVULhQKGhLUUn3tJkXuaOSGFBDHuBOnmTZXmJf
-	zXGZiaECFhxJrpj4ssTFYClyZdpYScr7mdeyXx7KMDGX43kCFixuh89+EqzP+wRYlSfdHA1pODK5x
-	gAvlZgEjei06vnjXdgHCuJCzTdgZQwmxtQn5zqfE+5tAYTktiGOzCgW2zouoS327j3T3M8/KT201h
-	vd+QeW42wZnYl9MJ3LpV1Ky25SlUHgbHP3Nv9Ip/CS1esVHzZ1ZNATuYk3z1sHKFKEygDlf+vzhQC
-	NCMy/eCgyNsJZi+348Ww==;
+	List-Owner; bh=RLoR76rZnYG1PYNDeO32cTc6zjc8/5rP/OzNhwp3eGw=; b=N+ujrx855YyhNw
+	WUihCW/EITMacNrfN5t1/X6miutXKM+2yKnt/oSMQdqYCL1eZx/EkEX0i9xDt4pfjA7XAVgiJb5Xu
+	ghPwW/GK8Kejl9qFaBF375WOTmVZWxoBk+gLCNz3zgMwlgXtq40k/bRS+koD7lYBIUR7ZRVv25wqf
+	s4fdAi9GAIYCHxBAybpLIZBwUwPFTq+vYp5Ivyef9OjyM6mxO+j0XvK2qd0ItLH2jR7ZQ7W2R9Es5
+	+m6n8bCE7aekFSpCYgPljOoiRKUF7ORAPaJB5PAHZgDYAuQfsSFIkNGA8cXhmLA8logB9xjWi2RPD
+	84oGNSQWuLrCLVZjiJ8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgOXl-00000009gNt-3BVU;
-	Fri, 07 Feb 2025 13:37:17 +0000
-Received: from mout02.posteo.de ([185.67.36.66])
+	id 1tgPYn-00000009uMy-3Zei;
+	Fri, 07 Feb 2025 14:42:25 +0000
+Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgOXj-00000009gMg-08yV
+	id 1tgPYK-00000009uIM-3RKp
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Feb 2025 13:37:16 +0000
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 3A892240101
-	for <linux-mtd@lists.infradead.org>; Fri,  7 Feb 2025 14:37:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1738935432; bh=IdbOi6N0+bHgyQ08uTaIC9JomsdE+10WelxdSZmGp0A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:From;
-	b=DsxxJJuriK7OP/3VAdpJyhOhoqIowUPkuVAs6bIe7RSHnrSQTmrd8/a1Pz3A6wfGk
-	 wWBvQqRkfXbmrjUzJDJ7qee4Nx96J2fYuvMUgNF9+MRVjdPg0ygKTXHWT9QUgmaEiU
-	 f2ZMTrVA6WyCwliBTXfACOYXbu5IpQAOLzMHbdyDQsMGMte9ag2XeoYgPJ11DGHzzZ
-	 YI9B9h8pkDWmEnNuaW1rDdp+sLu0MCREo5AVPVKurrL3bOGq3FkN5/yoTx5fVxFB1W
-	 AmgPoDINAPQX7MwC4V3xUd+MxEDsh65nfvE2xVC5HDdaKnXih39UhBaEcb6MnJcx47
-	 qZeYjzYclbBpg==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4YqFPs4w9Pz9rxF;
-	Fri,  7 Feb 2025 14:37:05 +0100 (CET)
-Date: Fri,  7 Feb 2025 13:37:04 +0000
-From: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
-To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-Cc: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>,
-	Frank Li <Frank.li@nxp.com>, devicetree@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, Scott Wood <oss@buserror.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	=?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 6/9] dt-bindings: pci: Add fsl,mpc83xx-pcie bindings
-Message-ID: <Z6YMgETdCZGMJI4i@probook>
-References: <20250126-ppcyaml-v1-0-50649f51c3dd@posteo.net>
- <20250126-ppcyaml-v1-6-50649f51c3dd@posteo.net>
- <Z5qx3jAFE81Ni2cJ@lizhi-Precision-Tower-5810>
- <Z6KkBEaGTkSyWiE_@probook>
- <689302c6-8fba-4fd1-a4b7-557cb2f8fa4d@quicinc.com>
+	Fri, 07 Feb 2025 14:41:58 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F287B4432C;
+	Fri,  7 Feb 2025 14:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1738939313;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xw5LjzfhjaQii1Qy1nV7yusM+UcRAZ3+6y3iLh6xEkQ=;
+	b=l7Ah+102SX+DPU9iK6kWo9mBvTrHy9XlCzlq9tTyLw51+akOb82lPcKYnJ5SgC1xqBaje1
+	itxODv10n/X/cfCDi5OcShipqQAbQhBykOwFF1QrPcjk5DSMLfG1a+dfPnKd7Fglp9heZz
+	WRrhlm5zmmJAZHFVD+RGOdsuvGOZfhr51S3qB2DHJXlnI75yoInx+RG4av2Usc5CYd95kI
+	2JrmVO11J655bBRJuskQL2NNXwzun/cWqDCtlu///GHlcZX9pJ+wuq1VvEqaZhxxA+IOx2
+	Q5SJ6BZnStrq27db8wWIkyJyBttncchUwtRmcNmg4vFb1VMIm27/hxGylu7bXw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Martin Kurbanov <mmkurbanov@salutedevices.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Ezra Buehler <ezra.buehler@husqvarnagroup.com>,  Cheng
+ Ming Lin <chengminglin@mxic.com.tw>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Daniel Golle <daniel@makrotopia.org>,  Frieder
+ Schrempf <frieder.schrempf@kontron.de>,  Alexey Romanov
+ <avromanov@salutedevices.com>,  <linux-kernel@vger.kernel.org>,
+  <linux-mtd@lists.infradead.org>,  <kernel@salutedevices.com>
+Subject: Re: [PATCH v4 0/6] mtd: spinand: add OTP support
+In-Reply-To: <20250127153848.199526-1-mmkurbanov@salutedevices.com> (Martin
+	Kurbanov's message of "Mon, 27 Jan 2025 18:38:18 +0300")
+References: <20250127153848.199526-1-mmkurbanov@salutedevices.com>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Fri, 07 Feb 2025 15:41:51 +0100
+Message-ID: <87jza124wg.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <689302c6-8fba-4fd1-a4b7-557cb2f8fa4d@quicinc.com>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvleehgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddvpdhrtghpthhtohepmhhmkhhurhgsrghnohhvsehsrghluhhtvgguvghvihgtvghsrdgtohhmpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopegviihrrgdrsghuvghhlhgvrheshhhushhqvhgrrhhnrghgrhhouhhprdgtohhmpdhrtghpthhtoheptghhvghnghhmihhnghhlihhnsehmgihitgdrtghomhdrt
+ hifpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesmhgrkhhrohhtohhpihgrrdhorhhgpdhrtghpthhtohepfhhrihgvuggvrhdrshgthhhrvghmphhfsehkohhnthhrohhnrdguvg
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250207_053715_214911_5009789C 
-X-CRM114-Status: UNSURE (   6.72  )
+X-CRM114-CacheID: sfid-20250207_064157_312314_5561012F 
+X-CRM114-Status: UNSURE (   7.15  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -105,10 +83,15 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBGZWIgMDYsIDIwMjUgYXQgMDY6MTI6NDdQTSArMDUzMCwgTXVrZXNoIEt1bWFyIFNh
-dmFsaXlhIHdyb3RlOgo+IG5lYXQ6IHN1YmplY3Q6IHNpbmNlIGJpbmRpbmcgaXMgYWxyZWFkeSBt
-ZW50aW9uZWQgaW4gdGhlIHByZWZpeCBvZiB0aGUKPiBzdWJqZWN0LCBubyBuZWVkIHRvIGFkZCBi
-aW5kaW5ncyB3b3JkIGFnYWluLgoKU291bmRzIHJlYXNvbmFibGUsIHRoYW5rcwpKLiBOZXVzY2jD
-pGZlcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+SGVsbG8gTWFydGluLAoKT24gMjcvMDEvMjAyNSBhdCAxODozODoxOCArMDMsIE1hcnRpbiBLdXJi
+YW5vdiA8bW1rdXJiYW5vdkBzYWx1dGVkZXZpY2VzLmNvbT4gd3JvdGU6Cgo+IFRoaXMgcGF0Y2hz
+ZXQgaW1wbGVtZW50cyB0aGUgU1BJLU5BTkQgT1RQIGZ1bmN0aW9ucyB0byBhbGxvdyBhY2Nlc3Mg
+dG8KPiB0aGUgU1BJLU5BTkQgT1RQIGRhdGEuCj4gU3BlY2lmaWMgc3VwcG9ydCBpcyBhZGRlZCBm
+b3IgTWljcm9uIE1UMjlGMkcwMUFCQUdEIGFuZCBFU01UIEY1MEwxRzQxTEIvCj4gRjUwRDFHNDFM
+QiBmbGFzaCBjaGlwcy4KClRoZSBzZXJpZXMgaXMgcmVhZHkgZm9yIG1lLCBidXQgaXQgbG9va3Mg
+bGlrZSB5b3UgYXJlbid0IGJhc2VkIG9uIHRoZQpsYXRlc3QgLXJjMSB3aGljaCBwcm9kdWNlcyBj
+b25mbGljdHMgd2hpbGUgYXBwbHlpbmcuIENhbiB5b3UgcGxlYXNlIHNlbmQKYSByZWJhc2VkIHZl
+cnNpb24/IChjb25mbGljdHMgc2hvdWxkIGJlIGVhc3kgdG8gaGFuZGxlKS4KClRoYW5rcywKTWlx
+dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
 X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
 ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
