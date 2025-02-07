@@ -4,63 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4A43C02192
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 08:52:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F446C02192
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 08:53:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9YDxWUmZKuabilU9968ZJg2Cj/qWHLh0sb5ilB1rz5g=; b=UMXyyL7ORuFN4LL/VRN8wd2Za4
-	6FhmEFIs0+rjZjFAvD0ftBln4xggV8HxLbm7uJEYFg+pA75kt/hwcl6qDF6iQUcer4jv7H46JHs87
-	b6VCdGAhXykf4jOqnMJZcd8/GmkvkIjeQnfDFm0r3OC9JBG1vb7WIfAGbt8X0gwH0hOwxOAGh5Ph/
-	MFN8O2n3YGv0M8x3BbvUDnUHUOkTpn7Z72cOkUkjY++XavvjjHxgIhyofOpPMEBQJc2/yJin0MTWc
-	5ZuSaw18NI9dBTXy9yy4hKzhzFYLMlOA4P45V4m9j5UEuSSlz9i82ivhY00O90EETBceHMLAZhXBj
-	MojMLfBQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1iulSGfu1fh6+jskLTvXoiOHo6c22EV4/BFDTJ7BVCI=; b=dRNYohNQwobeTA
+	YzI00+84Sx5n2YjapVdG1jREXgWlTe666ZD+TkvuyCI8cew5eZhQCoSgUDbGmkwwUoSClIaRFJm+V
+	bcIMX7p6t9jNcBtySH7mq1xpZuHbIFsk0lkGH5Ox11dGj2irDkcLxOgiPPEMb8fhtv7U0TbgqB8BZ
+	peND1Ao/U/Mln/F46mr9gnngchUbhuI2oNYSvZB6bNxiUEXFCAyB4dzgpJ8jcR4LcKGTEULOZ+iRf
+	hdj82bornyyaoOoi1vYoQUpkg3R02oAvB4/Di6YgCv0y56ufuUrSIDhA1rn1brzeuc9NR0iNdvhly
+	Oul6JsPFJH0iFobdP1fA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgK5w-00000008t1v-2mOL;
-	Fri, 07 Feb 2025 08:52:16 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tgK7H-00000008tGr-3XWM;
+	Fri, 07 Feb 2025 08:53:39 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgJtk-00000008qwJ-1HYy
+	id 1tgJxc-00000008re1-2dZH
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Feb 2025 08:39:41 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 8BEB6A40361;
-	Fri,  7 Feb 2025 08:37:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E83B6C4CED1;
-	Fri,  7 Feb 2025 08:39:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738917579;
-	bh=JkXN5D2U7NLeqI0IP0jOonEhjbx2JXNOvVZXrZ10IqA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WdWtu5VmRtLR8H/yKw9Z6K9uRACmj63TkIPo+Ss3RAZy3MAhtKo1McpqNmM69zBFz
-	 TvFfu7Jq3Jl16wpHmTo78QxEo3HOyUl4rApgM4y9m6hQWWxX9B+jldP13I4Uyx30l2
-	 w7Jm2pdqNBKrfy+Lfcan+BjjqUfCuFxYQCwF505cgkdsmx54kJKMnOKiH+WqEqHWF3
-	 zQf0y3z6UvGcQ2iyDvqU16FG9bsv04R+UAv13PAZmRrwWCsHINmFvpxcn6QP3kEY/i
-	 gW+n0mTOJJsoZM/IHyJS3yKgFJeWZyUfpkLhB9fpwm5MB1TYp/q7WSckokvD04pjrg
-	 x+Aj0X0oUSIqQ==
+	Fri, 07 Feb 2025 08:43:41 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-ab78bcb4b19so85005766b.2
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2025 00:43:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1738917819; x=1739522619; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ipzi2jibs7foQeLu4B8qNjjz2VAtT5g93gnFmfdZ7qw=;
+        b=e7w3THRuHQ2Sr12ogom2kFOeusC/lCOTqT1O4OJlLxBP5vlpegl3gF93adc+J/HKn7
+         fkcXpvV2QwdbFMEDDwVrNfytYyqR+SjrY1Y6aC2viq3w/ytMnP85VyzJeYsemTQVq/H8
+         ugsBl3RduVQeT7uRN57MqPvbeOVSg801AphbwJK7H57HSYdttzA4Yp389DO+sjADVTG4
+         A8Aty1XXR3xY7WY6zDUY+B+Up5PjbFso3tt/sdG3YPEsua774I2RKLBvhvxk4OSRgF6V
+         y+tkG06BOqKeuJ09HAE7zpL/FoIesEomz4sb2I6gZpaeS1bgL+JYPjbSNy/hsVqhPzsE
+         wGuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738917819; x=1739522619;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ipzi2jibs7foQeLu4B8qNjjz2VAtT5g93gnFmfdZ7qw=;
+        b=P28y9xj98AB3pTkgaWxuTaO2OWkcsIaGU/aMrweYFcryT0IjQgTvs0L9gXEJiY7D3T
+         ZPCT47xAu+xk1FE92TijIuZWDVZcb2Nvctm4xBjkYw9l/6yQLG7cAcLFjhLsIhOMmh6z
+         OXdBBw6j2y+xp2oDXP8kpsUKotpm/Php41eroCxm/yYW2YQE47VlW4wkONeNYNubqpL3
+         4k5Pgy+pmgvSzjsiyQXw7o9FHRcpW5KL8X783gr/IupXmVo4TBGPLhneMImC9LOuo/cb
+         yIC6KbRKNJmxtD7Ia5+GGmjcLH1hiDeibsozF3DsCvKENXrVbVxAhuvevKaHHJYcKRFp
+         g3ng==
+X-Forwarded-Encrypted: i=1; AJvYcCVk7VjcIfOPPPQ4X1afGNCSnCsWFRc3GMlGvQpT5SjYXr5770tw34HZO8kqodbAjTcx3HojeESd8Ns=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxkcw/XP2wh0ABxvL8V35Eauyw6zGsMQsRCcGxeNeQaYADa0g/H
+	ZeBBs7SnU86wJHrjHT+KvC/iT30M9j1imC0B0hIaM6ESoIbEIlnTSLgs/P/iPM0=
+X-Gm-Gg: ASbGncvkSmSYfaSnQ5pYkr+HzdYkGGUvbAy/tPUu7h2J8aKo71yj6eVhcPTk6UK6+cn
+	mFS/fjgwwj4aN7htZ2+jmSiQAmfnY7iQMsCVBi0cGrFapGfLnSSHVwoSlXY6U33p3FXlbjThj8q
+	/0BPVGvQoWtaFUOuSCzycdX2QpPiK2xePE3bpZV21kcW8PFty3a1a5f+KllIatNPJUrXt2JFsbe
+	WWcaGBHWM5ctQrpRf3m6BdaM3hy2fsX7Y8dO/tFMenYkkbXSuTvf8voefISX/an1BZXK1+dv+nU
+	IDxUIHZnWubI0BIGokNWBrDA
+X-Google-Smtp-Source: AGHT+IHv3cra1E8iRWLEr2rfyznvTIzUFVPqQMOPw/+8Fybs+K5tsjgq8x8NGSqaDxiiGMRBPVYUGw==
+X-Received: by 2002:a17:907:96a9:b0:aa6:873b:ed8a with SMTP id a640c23a62f3a-ab789c739c4mr276480566b.47.1738917818657;
+        Fri, 07 Feb 2025 00:43:38 -0800 (PST)
+Received: from [192.168.0.14] ([79.115.63.251])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab772f842a5sm229093066b.43.2025.02.07.00.43.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Feb 2025 00:43:37 -0800 (PST)
+Message-ID: <41c4d4ac-5f71-40b1-86b9-ae8ee33db538@linaro.org>
+Date: Fri, 7 Feb 2025 08:43:36 +0000
 MIME-Version: 1.0
-Date: Fri, 07 Feb 2025 09:39:34 +0100
-From: Michael Walle <mwalle@kernel.org>
-To: Cheng Ming Lin <linchengming884@gmail.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- alvinzhou@mxic.com.tw, leoyu@mxic.com.tw, Cheng Ming Lin
- <chengminglin@mxic.com.tw>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 2/2] mtd: spi-nor: macronix: Add support for Macronix NOR
  Flash
-In-Reply-To: <20250207081846.362919-3-linchengming884@gmail.com>
+To: Cheng Ming Lin <linchengming884@gmail.com>, pratyush@kernel.org,
+ mwalle@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: alvinzhou@mxic.com.tw, leoyu@mxic.com.tw,
+ Cheng Ming Lin <chengminglin@mxic.com.tw>
 References: <20250207081846.362919-1-linchengming884@gmail.com>
  <20250207081846.362919-3-linchengming884@gmail.com>
-Message-ID: <811f5b9d7b2842a3e1293ac6a0bb3b70@kernel.org>
-X-Sender: mwalle@kernel.org
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20250207081846.362919-3-linchengming884@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250207_003940_415887_4678C12A 
-X-CRM114-Status: UNSURE (   9.27  )
+X-CRM114-CacheID: sfid-20250207_004340_673161_F4CA74D4 
+X-CRM114-Status: UNSURE (   6.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,57 +99,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Cheng,
 
+
+On 2/7/25 8:18 AM, Cheng Ming Lin wrote:
 > From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 > 
 > Due to incorrect values in the 4-BAIT table for these two flash IDs,
 > it is necessary to add these two flash IDs with fixups.
+> 
+> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-What's the part number of these flashes?
-
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -127,6 +127,9 @@ static const struct flash_info macronix_nor_parts[] 
-> = {
->  		.size = SZ_128M,
->  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->  		.fixups = &macronix_qpp4b_fixups,
-> +	}, {
-
-Although we don't have .name anymore, a comment like
-
-/* <partname> */
-
-is recommended.
-
-> +		.id = SNOR_ID(0xc2, 0x20, 0x1c),
-> +		.fixups = &macronix_qpp4b_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x23, 0x14),
->  		.name = "mx25v8035f",
-> @@ -182,6 +185,9 @@ static const struct flash_info macronix_nor_parts[] 
-> = {
->  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->  		.fixup_flags = SPI_NOR_4B_OPCODES,
->  		.fixups = &macronix_qpp4b_fixups,
-> +	}, {
-
-same same
-
-> +		.id = SNOR_ID(0xc2, 0x25, 0x3b),
-> +		.fixups = &macronix_qpp4b_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x25, 0x3c),
->  		.name = "mx66u2g45g",
-
-Thanks,
--michael
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
