@@ -4,72 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1CB8C02199
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 12:11:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 912CFC02194
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 13:23:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w34bra5jmB2gocIA9L4DFHdo80ihBcbxlAwmrQWEZMg=; b=0VnK+GVWaGKOOA
-	AQkwP7zwHT5r8s0gBXgbiEGJjusg46UPYs8mlKHlBysq2VNitLNn7W4a25DH9qccqJMEBxtcpfEeJ
-	E7qWnRmugeJI1nU+oeXGf3CTUi5fxRIYszrFS93dL3yQQ+QzM9RIQU9zCCZYZUnEFfSFYxQV43Gkp
-	Mp6cooJQh88FVYvhEI91k6owZ1eQrsfUXp6B+1ObWFC7X+/fcQPPYFpVn8O/2NKsnFhEXpE8V7av4
-	WjTNQVlGzdiGR2PoQLvY857YZRcEVgUPvnmX805Zx+cf2E/2sGClBVwXZHKT8gY1dfIPt6Ww/QyrQ
-	pd+9yqSp27ddz9xWQJGw==;
+	List-Owner; bh=c+ECabpb/VI2ZmJdTRzccfjJ+CDr3bed6xiLMlW3KFc=; b=bwpntMpIeA4402
+	luV1WHuVpHmQ1DjZpGWuVp5ai8ZkKNRB5ldDnI8AHIae609EGhTaT1ROK7xQCP5XAZkL/HAK2pTqB
+	WNn5LJSz40+ESumu9DXdrwSkP6vaBEArEkjdgkjNjAJEgMxtKBLdv1MsQ+5SnfEpb2RcmgguShcay
+	QISWRTcFBKGJxl4k3g1VpJjYUmR9GaLVXmkH7gNVCX7KBfMZllNHcT7r7V2N9IFa4pOJ+roosyA2O
+	FOf479DFo+sUlhLTCd1Eq2wbP37A5VJCZst9qITM9HBmj9DpukM3Sfrwkad/1Rx3ps2AJ/fVrlZxS
+	T+Lw9tLb+0zio1uI0d7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgNCN-00000009SLi-0PSd;
-	Fri, 07 Feb 2025 12:11:07 +0000
-Received: from out203-205-221-205.mail.qq.com ([203.205.221.205])
+	id 1tgOKI-00000009dWZ-0Gbu;
+	Fri, 07 Feb 2025 13:23:22 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgNCJ-00000009SJM-3XJr
+	id 1tgOJ4-00000009dJh-3usL
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Feb 2025 12:11:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1738930239; bh=/SuM0t3Yz3v//0L2DnNqQL9QSC/hyP6Sx1JioaDOAuU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=tNVdUkOFNgAB8Eqm5pEbucppsFzipDCqnmryaSCXWFxIDCKw8dqHbTXyzrt5SqSjI
-	 O60oiG5RlqxIp3dY96AEUPM45aKYqK43COjWS1z7yfXCgu/SeFod0rdAfJdE3Ap8Yh
-	 +7YinvA+9vl5pZPluBhE54bnML8GYGbgHFodDiIA=
-Received: from pek-lxu-l1.wrs.com ([114.244.57.157])
-	by newxmesmtplogicsvrszc13-0.qq.com (NewEsmtp) with SMTP
-	id 2A42D683; Fri, 07 Feb 2025 20:10:36 +0800
-X-QQ-mid: xmsmtpt1738930236tazn4ekvh
-Message-ID: <tencent_78F778176466C7F364036D096B03A8E44F05@qq.com>
-X-QQ-XMAILINFO: NG7xP+P+sy64Rxdf3hjZq+tdjfkQ6DqJoY/6brevMb9kcfAegM5CYXlETUePjd
-	 jI1RT+FnZxuX5+qRaShp9TjnxuE6C0ZZzvCKn1Ak2lIWYWAIwgLtmbKxaqzwCZIrlqIvvtjJA5kQ
-	 0zzZ0pDLJh6UcxqC2NfhhKJREPzO4o+vKEJOg+aYiH0tuvUAB4yVRt5wYXIeBvl5InL2WTT59uZA
-	 aP2YsAlPGeBdIZ36A8r8YpXW9Lb8IHx4ng6lZuKKR8AuvLzJF0pzqbNa/vA02303Z7XLbWo273zH
-	 CUb7Iq5Dw8LOMHutkEm3luotGojkwWgKWY7EjBnMo55FHiixrRWzshV42FuOjaPQOoEs1ikVVrbA
-	 u9pAKuYTEjQ+BmDRp0NTLUUFZAyIFWD0w9p9ygeW/tvyu2NOVTsvhFezS5Cfu6KWltwtmc016fDL
-	 H2wTDYLMILji3qVjYDfg5eflqMoBloRJbSH3QYZEv/NjN1LZTxSTs5gO8xR/YsUc+QL2KdFwD/e5
-	 mK9H+RZXCCCL2rizQsFhz0f4STNBhQKXgN3ihkSqj5wM6JcWPvHjKlvhdB8gsdm1Lz9KIquiJFGz
-	 ZTggmDLLKjNLVQxZrdohHPJ4E0jJ+FjOmQqc6Pp5nRqjk/7wwi+Fd54ak7jkfHmJzjG49L/OlPNT
-	 mmSNpdSaehqsVkJ3pXvaKaMHeFmbvyKez5Ros/zAHkSCrM4KSaJj49ossAIxfsKtOjGVmyVyvUR4
-	 UKmdZaA9LUTo52KS3VyPlhndj1U9vmBghMwPSJKFxy4F+x7J80ffNC/QMz45z049xMBqrD3gm7ST
-	 MX6cGXmm8ZKMmc9ZYvjxLYrtuR/BTRBZY105gipfz8/07txN78FTPEasNiPgT2x7eaNuomPWxttP
-	 8J8Jk6j+GdLNIy0jf9iGQgaZqpQQ/BBqEzoKciSg4eSApbdngkrEI=
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: miquel.raynal@bootlin.com
-Cc: eadavis@qq.com,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	richard@nod.at,
-	syzkaller-bugs@googlegroups.com,
-	vigneshr@ti.com
-Subject: [PATCH V2] mtd: capture device name setting failure when adding mtd
-Date: Fri,  7 Feb 2025 20:10:35 +0800
-X-OQ-MSGID: <20250207121034.538582-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <87ikpn57sy.fsf@bootlin.com>
-References: <87ikpn57sy.fsf@bootlin.com>
+	Fri, 07 Feb 2025 13:22:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 757C044408;
+	Fri,  7 Feb 2025 13:22:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1738934523;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cAoBxYtUrA+ImixRo4h70vs5ozOMbJ+LCR06GvVPFo4=;
+	b=afh4qDIV12OqDpxGG9POlW/Ful9p+5JGQ5qX3/lTlhDj5DUKDoL5jTNdjweBuT6KjAxufx
+	dddXk3qct2y18ieVIkccL3yPotdffCSZKl0bq0LnUu1rkTcsaQfZ2SOD1HawnHLhiG5UtV
+	satrL61jVdC+nRv3WQbrtpBvEhOXX+wefn5P1seGOUuud7vc8KnIc8e7jsKaqIB119V8fx
+	S5prJcTsbD4km1s6jbbThG14GmOpeYLZjqn4gc7aBroQapHT/Zq/boIRoz1gfLo4Afu5Kd
+	qY22F5tMCVb0Nbq+RJpPlmU3t5yGf2bCrHCdhFpfQqKGFbdEol+sJ4wU/QagUw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Rabara, Niravkumar L" <niravkumar.l.rabara@intel.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  "linux@treblig.org" <linux@treblig.org>,  Shen Lichuan
+ <shenlichuan@vivo.com>,  Jinjie Ruan <ruanjinjie@huawei.com>,
+  "u.kleine-koenig@baylibre.com" <u.kleine-koenig@baylibre.com>,
+  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] mtd: rawnand: cadence: support deferred prob
+ when DMA is not ready
+In-Reply-To: <BL3PR11MB65320CBE12D13EBD3940CE44A2F12@BL3PR11MB6532.namprd11.prod.outlook.com>
+	(Niravkumar L. Rabara's message of "Fri, 7 Feb 2025 09:12:44 +0000")
+References: <20250116032154.3976447-1-niravkumar.l.rabara@intel.com>
+	<20250116032154.3976447-2-niravkumar.l.rabara@intel.com>
+	<87plkgpk8k.fsf@bootlin.com>
+	<BL3PR11MB653276DFD3339ADAADC70CCFA2EE2@BL3PR11MB6532.namprd11.prod.outlook.com>
+	<874j1i0wfq.fsf@bootlin.com>
+	<BL3PR11MB65321B556C59C995DC05C70AA2E92@BL3PR11MB6532.namprd11.prod.outlook.com>
+	<87msf8z5uu.fsf@bootlin.com>
+	<BL3PR11MB6532451B44E7C5D82F5EC4AFA2F42@BL3PR11MB6532.namprd11.prod.outlook.com>
+	<87o6zi83se.fsf@bootlin.com>
+	<BL3PR11MB6532369D14375CC94AA2714BA2F42@BL3PR11MB6532.namprd11.prod.outlook.com>
+	<87frkt96nw.fsf@bootlin.com>
+	<BL3PR11MB653239DDBD9D8E7D413B60F4A2F42@BL3PR11MB6532.namprd11.prod.outlook.com>
+	<877c6357o5.fsf@bootlin.com>
+	<BL3PR11MB65320CBE12D13EBD3940CE44A2F12@BL3PR11MB6532.namprd11.prod.outlook.com>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Fri, 07 Feb 2025 14:22:01 +0100
+Message-ID: <87ikpl3n5y.fsf@bootlin.com>
 MIME-Version: 1.0
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvleeflecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepjeetueegtdekjeekueekfeeuudekkedutdejhfefgfevtdeutdetgfduvdfggfffnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmpdhgihhthhhusgdrtghomhenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedutddprhgtphhtthhopehnihhrrghvkhhumhgrrhdrlhdrrhgrsggrrhgrsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehlihhnuhigsehtrhgvsghlihhgrdhorhhgpdhrtghpthhtohepshhhvghnl
+ hhitghhuhgrnhesvhhivhhordgtohhmpdhrtghpthhtoheprhhurghnjhhinhhjihgvsehhuhgrfigvihdrtghomhdprhgtphhtthhopehurdhklhgvihhnvgdqkhhovghnihhgsegsrgihlhhisghrvgdrtghomhdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhg
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250207_041104_181509_CBD1A9EA 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20250207_052207_560671_48B4C422 
+X-CRM114-Status: GOOD (  22.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,95 +91,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-syzbot reported a WARNING in release_mtd_partition. [1]
-
-The reproducer uses "/proc/thread-self/fail-nth" to trigger the failure
-of memory allocation when executing dev_set_name() in add_mtd_device(),
-which eventually causes device_register() to fail because the device name
-is not set, and finally triggers a warning in put_device().
-
-[1]
-WARNING: CPU: 0 PID: 5826 at drivers/mtd/mtdpart.c:37 release_mtd_partition+0x71/0x90 drivers/mtd/mtdpart.c:37
-Modules linked in:
-CPU: 0 UID: 0 PID: 5826 Comm: syz-executor397 Not tainted 6.13.0-syzkaller-09734-g2a9f04bde07a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
-RIP: 0010:release_mtd_partition+0x71/0x90 drivers/mtd/mtdpart.c:37
-Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 1e 48 8b 7b 38 e8 ef 84 cd fb 48 89 df 5b 5d e9 e5 84 cd fb e8 70 4a 75 fb 90 <0f> 0b 90 eb c2 e8 a5 29 d8 fb eb db 48 89 ef e8 9b 29 d8 fb eb a5
-RSP: 0018:ffffc90003e1f828 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802c1d1000 RCX: ffffffff8b417995
-RDX: ffff8880310c3c00 RSI: ffffffff86439150 RDI: ffff88802c1d1000
-RBP: ffff88802c1d1648 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000004 R11: ffffffff81000130 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  000055558b9cd480(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000008 CR3: 0000000034aca000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- mtd_release+0xa0/0xd0 drivers/mtd/mtdcore.c:101
- device_release+0xa1/0x240 drivers/base/core.c:2567
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1e4/0x5a0 lib/kobject.c:737
- put_device+0x1f/0x30 drivers/base/core.c:3773
- add_mtd_device+0xbb3/0x1700 drivers/mtd/mtdcore.c:750
- mtd_add_partition+0x300/0x650 drivers/mtd/mtdpart.c:279
- mtdchar_blkpg_ioctl+0x20d/0x250 drivers/mtd/mtdchar.c:562
- mtdchar_ioctl+0xbbe/0x2050 drivers/mtd/mtdchar.c:1216
- mtdchar_unlocked_ioctl+0xb0/0xf0 drivers/mtd/mtdchar.c:1239
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:906 [inline]
- __se_sys_ioctl fs/ioctl.c:892 [inline]
- __x64_sys_ioctl+0x190/0x200 fs/ioctl.c:892
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Reported-by: syzbot+074732af3fc6c528f8a0@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=074732af3fc6c528f8a0
-Tested-by: syzbot+074732af3fc6c528f8a0@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
-V1 -> V2: adjust "common pattern for error checking"
-
- drivers/mtd/mtdcore.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 724f917f91ba..b80d5098d276 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -741,7 +741,9 @@ int add_mtd_device(struct mtd_info *mtd)
- 	mtd->dev.type = &mtd_devtype;
- 	mtd->dev.class = &mtd_class;
- 	mtd->dev.devt = MTD_DEVT(i);
--	dev_set_name(&mtd->dev, "mtd%d", i);
-+	error = dev_set_name(&mtd->dev, "mtd%d", i);
-+	if (error)
-+		goto fail_devname;
- 	dev_set_drvdata(&mtd->dev, mtd);
- 	mtd_check_of_node(mtd);
- 	of_node_get(mtd_get_of_node(mtd));
-@@ -790,6 +792,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 	device_unregister(&mtd->dev);
- fail_added:
- 	of_node_put(mtd_get_of_node(mtd));
-+fail_devname:
- 	idr_remove(&mtd_idr, i);
- fail_locked:
- 	mutex_unlock(&mtd_table_mutex);
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Cj4+ID4+ID4+ID4gTXkgYXBvbG9naWVzIGZvciB0aGUgY29uZnVzaW9uLgo+PiA+PiA+PiA+IFNs
+YXZlIERNQSB0ZXJtaW5vbG9neSB1c2VkIGluIGNhZGVuY2UgbmFuZCBjb250cm9sbGVyIGJpbmRp
+bmdzCj4+ID4+ID4+ID4gYW5kIGRyaXZlciBpcyBpbmRlZWQgY29uZnVzaW5nLgo+PiA+PiA+PiA+
+Cj4+ID4+ID4+ID4gVG8gYW5zd2VyIHlvdXIgcXVlc3Rpb24gaXQgaXMsCj4+ID4+ID4+ID4gMSAt
+IEV4dGVybmFsIERNQSAoR2VuZXJpYyBETUEgY29udHJvbGxlcikuCj4+ID4+ID4+ID4KPj4gPj4g
+Pj4gPiBOYW5kIGNvbnRyb2xsZXIgSVAgZG8gbm90IGhhdmUgZW1iZWRkZWQgRE1BIGNvbnRyb2xs
+ZXIgKDIgLQo+PiA+PiA+PiA+IHBlcmlwaGVyYWwKPj4gPj4gPj4gRE1BKS4KPj4gPj4gPj4gPgo+
+PiA+PiA+PiA+IEZZUiwgaG93IGV4dGVybmFsIERNQSBpcyB1c2VkLgo+PiA+PiA+PiA+IGh0dHBz
+Oi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y2LjEzLjEvc291cmNlL2RyaXZlcnMvbXRkL25h
+bmQKPj4gPj4gPj4gPiAvcmEKPj4gPj4gPj4gPiB3L2MKPj4gPj4gPj4gPiBhZGVuY2UtbmFuZC1j
+b250cm9sbGVyLmMjTDE5NjIKPj4gPj4gPj4KPj4gPj4gPj4gSW4gdGhpcyBjYXNlIHdlIHNob3Vs
+ZCBoYXZlIGEgZG1hcyBwcm9wZXJ0eSAoYW5kIHBlcmhhcHMgZG1hLW5hbWVzKSwKPj4gbm8/Cj4+
+ID4+ID4+Cj4+ID4+ID4gTm8sIEkgYmVsaWV2ZS4KPj4gPj4gPiBDYWRlbmNlIE5BTkQgY29udHJv
+bGxlciBJUCBkbyBub3QgaGF2ZSBkZWRpY2F0ZWQgaGFuZHNoYWtlCj4+ID4+ID4gaW50ZXJmYWNl
+IHRvIGNvbm5lY3Qgd2l0aCBETUEgY29udHJvbGxlci4KPj4gPj4gPiBNeSB1bmRlcnN0YW5kaW5n
+IGlzIGRtYXMgKGFuZCBkbWEtbmFtZXMpIGFyZSBvbmx5IHVzZWQgZm9yIHRoZQo+PiA+PiA+IGRl
+ZGljYXRlZCBoYW5kc2hha2UgaW50ZXJmYWNlIGJldHdlZW4gcGVyaXBoZXJhbCBhbmQgdGhlIERN
+QQo+PiBjb250cm9sbGVyLgo+PiA+Pgo+PiA+PiBJIGRvbid0IHNlZSB3ZWxsIGhvdyB5b3UgY2Fu
+IGRlZmVyIGlmIHRoZXJlIGlzIG5vIHJlc291cmNlIHRvIGdyYWIuCj4+ID4+IEFuZCBpZiB0aGVy
+ZSBpcyBhIHJlc291cmNlIHRvIGdyYWIsIHdoeSBpcyBpdCBub3QgZGVzY3JpYmVkIGFueXdoZXJl
+Pwo+PiA+Pgo+PiA+Cj4+ID4gU2luY2UgTkFORCBjb250cm9sbGVyIGRvIG5vdCBoYXZlIGhhbmRz
+aGFrZSBpbnRlcmZhY2Ugd2l0aCBETUEKPj4gY29udHJvbGxlci4KPj4gPiBEcml2ZXIgaXMgdXNp
+bmcgZXh0ZXJuYWwgRE1BIGZvciBtZW1vcnktdG8tbWVtb3J5IGNvcHkuCj4+IAo+PiBJJ20gc29y
+cnkgeW91IGxvc3QgbWUgYWdhaW4uIFdoYXQgZG8geW91IG1lYW4gaGFuZHNoYWtlPyBUaGVyZSBp
+cyBubwo+PiByZXF1ZXN0IGxpbmU/IFRoZXJlIGlzIG5vIHdheSB0aGUgTkFORCBjb250cm9sbGVy
+IGNhbiB0cmlnZ2VyIERNQSB0cmFuc2ZlcnM/Cj4+IAo+IFllcywgSSBtZWFuIHRoZXJlIGlzIG5v
+IHJlcXVlc3QgbGluZSwgc28gdGhlcmUgaXMgbm8gd2F5IHRoZSBOQU5EIGNvbnRyb2xsZXIgY2Fu
+Cj4gdHJpZ2dlciBETUEgdHJhbnNmZXIuCj4KPiBTb3JyeSBJIHVzZWQgdGhlIHRlcm1pbm9sb2d5
+IGJhc2VkIG9uIFN5bm9wc3lzIERlc2lnbldhcmUgQVhJIERNQSBDb250cm9sbGVyCj4gdGhhdCBp
+cyB1c2VkIHdpdGggQWdpbGV4NSBTb0NGUEdBIHBsYXRmb3JtLiAgCj4gaHR0cHM6Ly9naXRodWIu
+Y29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvdjYuMTQtcmMxL2RyaXZlcnMvZG1hL2R3LWF4aS1kbWFj
+L2R3LWF4aS1kbWFjLXBsYXRmb3JtLmMjTDEzNzIKPgo+PiBXaGF0IGRvIHlvdSBtZWFuIG1lbS10
+by1tZW0sIGhvdyBpcyB0aGlzIHVzZWZ1bCB0byB0aGUgY29udHJvbGxlcj8KPj4gCj4gSSBtZWFu
+IHN5c3RlbSBtZW1vcnkgdG8vZnJvbSBOQU5EIE1NSU8gcmVnaXN0ZXIgYWRkcmVzcyBmb3IgcGFn
+ZQo+ICByZWFkL3dyaXRlIGRhdGEgdHJhbnNmZXIuIAo+Cj4gCXJlZyA9IDwweDEwYjgwMDAwIDB4
+MTAwMDA+LCAKPiAJCTwweDEwODQwMDAwIDB4MTAwMD47IDwtLS0gVGhpcyBNTUlPIGFkZHJlc3Mg
+YmxvY2sKPiAJcmVnLW5hbWVzID0gInJlZyIsICJzZG1hIjsKPgo+PiA+IFlvdXIgcG9pbnQgaXMg
+c2luY2UgdGhlIGRyaXZlciBpcyB1c2luZyBleHRlcm5hbCBETUEgYW5kIGl0IHNob3VsZCBiZQo+
+PiA+IGRlc2NyaWJlZCBpbiBiaW5kaW5ncz8KPj4gCj4+IFllcy4gQnV0IG1heWJlIEkgc3RpbGwg
+ZG9uJ3QgZ2V0IGl0IGNvcnJlY3RseS4KPj4gCj4gZG1hcyBpcyBhbiBvcHRpb25hbCBwcm9wZXJ0
+eSBpbiBjYWRlbmNlIG5hbmQgY29udHJvbGxlciBiaW5kaW5ncy4gCj4gaHR0cHM6Ly9naXRodWIu
+Y29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvdjYuMTQtcmMxL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9tdGQvY2RucyUyQ2hwLW5mYy55YW1sI0wzNgo+IERvZXMgaXQgbmVlZCB0byBj
+aGFuZ2UgdG8gcmVxdWlyZWQgcHJvcGVydHkgaW4gYmluZGluZ3M/CgpPbiBvbmUgc2lkZSB5b3Ug
+aGF2ZSBhIGRlZGljYXRlZCBNTUlPIHJlZ2lvbiwgd2hpY2ggaW1wbHkgd2Ugc2hvdWxkIGhhdmUK
+YW4gZXh0ZXJuYWwgRE1BIGVuZ2luZSB0aGF0IGlzIHByb2JhYmx5IGdlbmVyaWMuIE9uIHRoZSBv
+dGhlciBzaWRlIGl0CmZlZWxzIGxpa2Ugb25seSB0aGUgTkFORCBjb250cm9sbGVyIHVzZXMgaXQg
+YW5kIGl0IHNob3VsZCBiZSBwaWN0dXJlZCBhcwphIHBlcmlwaGVyYWwgRE1BIGNvbnRyb2xsZXIg
+YW5kIGluIHRoaXMgY2FzZSB3ZSBzaG91bGQgbm90IHVzZSB0aGUgRE1BCmVuZ2luZSBBUEkgYXQg
+YWxsLiBZb3VyIGNhc2UgaXMgc29tZXRoaW5nIGluIGJldHdlZW4sIEkgZG9uJ3QgbGlrZSBpdApt
+dWNoLiBBbnl3YXksIHdlIGNhbm5vdCBicmVhayBiaW5kaW5ncywgc28gcGxlYXNlIHJlc3BpbiB0
+aGUgc2VyaWVzCmJlY2F1c2UgSSB0b3RhbGx5IGxvc3QgeW91ciBpbml0aWFsIHRhcmdldC4KCk1p
+cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
