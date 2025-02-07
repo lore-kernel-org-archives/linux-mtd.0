@@ -4,65 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1391FC02199
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 15:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A74D2C0219C
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Feb 2025 20:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jyuCpd+C6E89dlirTvvKZH39OsDMAIDERsNPXAywbZ4=; b=4q1gh/DZIRapgi
-	6BMkT4Y3fkSvhme7fu8lTII4c5WQuNPXWDlQO3sUrMHSGv/sTHuZcndzn4Qsw9ZdkRByUOcS1cHXp
-	oNdkBx9A2HXddK+mNCZTSxu9SxQ0wSOKWtqMYwx9ty9mDdVHt8IsM92vSCB4eCv172LvZImYACHRT
-	h4RRnvIY6/BGp65OMl4RMzG5Y18A8mjg4XZ00BldWBPycPj3nt8V7P5D81VE6nzTzMN+Br5VA4fZN
-	J4sQVWmRlg2hzt4Z7gLby1995Ij9ueLisnC46ZQYT47MRO6je33nI/qf+nRrOPwwVEVSCEx9B9pEw
-	hCPICtU371BBM92pRh8g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1PVvrOUM9dH0Jw1H1bU9CuRa2Xu+IkRtUAT9CTvGQXY=; b=fNgpbLybjQ7xo7
+	LqBl54TKgaVyIwwMkxCcLNaCtzom8BxHXrwRCZwqnjbftJx9+pztFUzOZwbX/Zip1H6AkYTKR4YFg
+	r/bz3u2MVc2RuvqwVv99Ni+sdPM7BELbx2kaIBXAEt/nUB0yO1RI+tOnIX15wgD4cvJJ/p3VQpUUW
+	Ij4xbK4h13Ja29wA8cRD49L8+0PRCVr/zhODGc2q/nSqUbVBDzVTfQZUewDYG89fOSslxX4Q5nj7s
+	aj6M51K5e72L8feAKkzsyD8HWp5cYrkfPkAXWX0exUOdMkT8qHuNGbZzCWDyoaYYFLhw3g2n5Finc
+	a1vMvFajjFRWSqXwPllQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgPsJ-00000009zUT-47gy;
-	Fri, 07 Feb 2025 15:02:35 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tgUz7-0000000B4Uv-2Xqv;
+	Fri, 07 Feb 2025 20:29:57 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgPr7-00000009zCm-2Vsg
+	id 1tgURm-0000000Aze2-3Xof
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Feb 2025 15:01:23 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id DFE28A433AC;
-	Fri,  7 Feb 2025 14:59:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B28EC4CED1;
-	Fri,  7 Feb 2025 15:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738940480;
-	bh=UUjJT8Cd4U0vXwF5ZKLm9pWcEj+2y7yQHIhrqNbnu14=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=TdQI5L2OzXTJ2+OyQuA9IgrVIbL2+SRWRQd8d4ByWNBYltfY+i4e8f1q476F3GAMY
-	 e6vmHlUUEMoa/pDs0y7TUnId4WGnQ5k/lJTv1NSfOkn1Uryfb2cNw2SkBqwR99dx2w
-	 oqyCWEa+HrCr5o/vAi7KHj++kJHqOVtbTQpv3rNMdhcUettY5cZhxpcBt/4wxFJCVO
-	 eh8TPZauoA0SNb/G3Ukw+C2x2Li4stnB69Azf+gHGTGtwICpty4Mya9yJsn/BpBJl1
-	 VB250DBvz8uRkgNzijnmrKlXICmzPa4VRFVLF+oyETue0KZXzdxa+4dLTMdm434Hx2
-	 XVfTIM6A10S8g==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Cheng Ming Lin <linchengming884@gmail.com>,  pratyush@kernel.org,
-  mwalle@kernel.org,  miquel.raynal@bootlin.com,  richard@nod.at,
-  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  alvinzhou@mxic.com.tw,  leoyu@mxic.com.tw,
-  Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: macronix: Add post_sfdp fixups for
- Quad Input Page Program
-In-Reply-To: <1c1da131-a7b1-4c2e-9866-d7833a134033@linaro.org> (Tudor
-	Ambarus's message of "Fri, 7 Feb 2025 08:37:10 +0000")
-References: <20250207081846.362919-1-linchengming884@gmail.com>
-	<20250207081846.362919-2-linchengming884@gmail.com>
-	<1c1da131-a7b1-4c2e-9866-d7833a134033@linaro.org>
-Date: Fri, 07 Feb 2025 15:01:17 +0000
-Message-ID: <mafs034gpztmq.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Fri, 07 Feb 2025 19:55:31 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-436202dd730so17041485e9.2
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Feb 2025 11:55:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738958129; x=1739562929; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5rGwJnk6onGTN6F+Q+8uNYESaMmK0c3tfH4f76Zn9gg=;
+        b=TYDmv3bXmHszGd6v4uO2UXMaf/ePOutF0ZLnsrMYDK3xAOa+28gmWNDsKGbdpotaKU
+         3ZTFASpeBb8TPKH+M3X5dyNm7SM7vbQaefTqY0NNfpQYq1CKEiSJ5Qs/smyDZ1c6Wcc2
+         9IyO3w840c8fphqlTi91Av9FgLgXa7/bCTPcXiLNtERccyZ0zgEUMRBLWE55DwMMLQKO
+         XyArDOgi3y1f4npaXhD3Weu/+Qvqs99A3Y45yCe5MFiyV25te8PoWVLuf0It5aj60j16
+         gliiKCNxFuVpZJNvKqqPsUocvglsMO053rZpRai38dPL3GRrC/iwZLiUIXCeeCDCkC2p
+         hdIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738958129; x=1739562929;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5rGwJnk6onGTN6F+Q+8uNYESaMmK0c3tfH4f76Zn9gg=;
+        b=mEU2tCuGhoPcRL2DFopFWlEskihCVWwmxzywLMYqAES8Fr2v4UXNn2/C/3jEmm27Hq
+         ygrQpmy02GU6WlLxAlTVVy97IJBnGWdjHu711pDxBLoWz7uuNG/Q4TMb8KKkh3RQG3vG
+         IeyP8WomIOeMXsJb7H2FFah8HNHSW5otx8LGhRRVS3XbRib8NtUuQ6jJgcs9g1OOo1VC
+         MTDEeIZhutc4PBelHJv1+XzyEMKEXSaXU//8363PSxI7KSwdnCDCfyRiOnvjJhlJpOym
+         DtD7tXRwyVCXuxpY0Lyhgy9a+ZaLJVcoAllpedl78W3lc18E2BgSuimjfZCjynjOjbcY
+         LY+g==
+X-Forwarded-Encrypted: i=1; AJvYcCUtwGkUwGPAwX7T/HHNxpfi0u9vpMc6P7KPrx7HBHi79NzIlC8fzTITUQehco4MH81oP0s2WSYgt9s=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyCuTcqRyhR+Fdya/kuQJ0ujtl3TtHJa9l09K+AcVUAXq8reYsg
+	bqzQg2CMtbulCGwn81IzHhbAyRqF1V3QWeEpuZoJDH4U6Q5ZtzrZ
+X-Gm-Gg: ASbGncvV9joEniLOs0ZtOyG5nHq9/9r9MhAmzOFzuF2T3BQxXqumnh3uU7twvnLWGpJ
+	qgE9fO6BE8sZb46/+bJm115D4zC1+Ip2QsmK2QPtK9XRrxRIewTDppRhaf5UonvRpMe8YcsDOwo
+	CMaII003cdXK/dxRQ0DXpfDaFjy3wJPzO2NDdtoFPCv6QN/CsUuoqsxUNJ8y/dxeagWFeApUZOw
+	HWl1xRRc3hVPIjabf75Cf9atNJMkFI1AJ36JNs3rs/xUIhSg8emk5nJSOqNZ642W1CCVEPoeicr
+	fDBv09ftox9VSeLZRyb60ZepBC3ghePoYZ1/pD6ZVI1re2gp0oJszvkZC7+B
+X-Google-Smtp-Source: AGHT+IFkCndvhHRme8MUTVSNUm2JXoXYopJcvTKMek4MPe31gk8TP668VFJiyH5pPNKNipL4QhYt0w==
+X-Received: by 2002:a05:600c:1c9f:b0:436:1c0c:bfb6 with SMTP id 5b1f17b1804b1-439249c0324mr35381965e9.27.1738958128528;
+        Fri, 07 Feb 2025 11:55:28 -0800 (PST)
+Received: from localhost.localdomain (93-34-91-161.ip49.fastwebnet.it. [93.34.91.161])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-4390d933523sm102280335e9.1.2025.02.07.11.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Feb 2025 11:55:27 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
+	Md Sadre Alam <quic_mdalam@quicinc.com>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Christian Marangi <ansuelsmth@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: qcom: fix broken config in qcom_param_page_type_exec
+Date: Fri,  7 Feb 2025 20:54:33 +0100
+Message-ID: <20250207195442.19157-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.47.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250207_070121_772915_A9C6E6A6 
-X-CRM114-Status: GOOD (  19.73  )
+X-CRM114-CacheID: sfid-20250207_115530_882798_6C5AF7E8 
+X-CRM114-Status: GOOD (  12.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,116 +98,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBGZWIgMDcgMjAyNSwgVHVkb3IgQW1iYXJ1cyB3cm90ZToKCj4gSGksIENoZW5nLAo+
-Cj4gT24gMi83LzI1IDg6MTggQU0sIENoZW5nIE1pbmcgTGluIHdyb3RlOgo+PiBBbHRob3VnaCBj
-ZXJ0YWluIE1hY3Jvbml4IE5PUiBmbGFzaCBzdXBwb3J0IHRoZSBRdWFkIElucHV0IFBhZ2UgUHJv
-Z3JhbQo+PiBmZWF0dXJlLCB0aGUgY29ycmVzcG9uZGluZyBpbmZvcm1hdGlvbiBpbiB0aGUgNC1i
-eXRlIEFkZHJlc3MgSW5zdHJ1Y3Rpb24KPj4gVGFibGUgb2YgdGhlc2UgZmxhc2ggaXMgbm90IHBy
-b3Blcmx5IGZpbGxlZC4gQXMgYSByZXN1bHQsIHRoaXMgZmVhdHVyZQo+PiBjYW5ub3QgYmUgZW5h
-YmxlZCBhcyBleHBlY3RlZC4KPgo+IFlvdSBuZWVkIHRvIHByb3ZlIHRoYXQgYWxsIHRoZSBmbGFz
-aGVzIHRoYXQgeW91IHRvdWNoIG5lZWQgdGhpcyBmaXh1cCwKPiBpLmUuIGR1bXAgdGhlaXIgU0ZE
-UCBhbmQgc2hvdyB3aGVyZSdzIHRoZSB3cm9uZyBiaXQgaW4gdGhlIFNGRFAgdGFibGUuCj4KPiBJ
-ZGVudGlmeWluZyB3cm9uZyBiaXQgaW4gdGhlIFNGRFAgdGFibGVzIHdvdWxkIGJlIGVhc3kgdG8g
-c3BvdCBpZiB3ZSBoYWQKPiBhIFNGRFAgZGVjb2Rlci4gU29tZXRoaW5nIHRoYXQgd2UgYWxsIGFn
-cmVlIHRoYXQnZCBiZSBhIGdvb2QgdGhpbmcgdG8KPiBoYXZlLCBidXQgbm9ib2R5IGNhbiBhbGxv
-Y2F0ZSB0aW1lIHRvIGRvIGl0LiBQcmF0eXVzaCBJIHJlbWVtYmVyIGhhcwo+IHN0YXJ0ZWQgYSBk
-cmFmdC4gQXJlIHlvdSBpbnRlcmVzdGVkIGluIGludHJvZHVjaW5nIGEgU0ZEUCBkZWNvZGVyIGlu
-Cj4gbXRkLXV0aWxzPwoKWWVzLCB3aWxsIGRvLiBGb3Igbm93LCB5b3UgY2FuIGZpbmQgaXQgaGVy
-ZSBbMF0uIEl0IGRvZXNuJ3QgeWV0IHN1cHBvcnQKYWxsIHRoZSB0YWJsZXMgYnV0IGRvZXMgaGF2
-ZSB0aGUgYmFzaWMgb25lcy4gRmVlbCBmcmVlIHRvIGdpdmUgaXQgYSBzcGluCmFuZCBsZXQgbWUg
-a25vdyBpZiB5b3UgZmluZCBhbnkgYnVncyBvciBpc3N1ZXMuCgpJIHJhbiBpdCBvbiB0aGUgU0ZE
-UCBmb3IgdGhlIGZpcnN0IGZsYXNoIGluIHRoZSBjb3ZlciBsZXR0ZXIgYW5kIHRoaXMgaXMKd2hh
-dCBpdCBzYXlzOgoKICAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICA0LWJ5
-dGUgQWRkcmVzcyBJbnN0cnVjdGlvbiBUYWJsZQogICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KICAgIElEOiAweGZmODQKICAgIE1ham9yIFZlcnNpb246IDB4MQogICAgTWlub3Ig
-VmVyc2lvbjogMHgwCiAgICBMZW5ndGggKGluIGJ5dGVzKTogMHgwOAogICAgKy0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKwogICAgfCAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIERXT1JEIDEgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfAogICAgKy0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tKy0tLS0tLS0tKwogICAgfCBCaXRzICB8IERlc2NyaXB0aW9uICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBWYWx1
-ZSAgfAogICAgKy0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tKwogICAg
-fCAwICAgICB8IFN1cHBvcnQgZm9yICgxUy0xUy0xUykgUkVBRCBDb21tYW5kLCBJbnN0cnVjdGlv
-bj0xM2ggICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAwYjEgICAgfAogICAgfCAxICAgICB8
-IFN1cHBvcnQgZm9yICgxUy0xUy0xUykgRkFTVF9SRUFEIENvbW1hbmQsIEluc3RydWN0aW9uPTBD
-aCAgICAgICAgICAgICAgICAgICAgICAgfCAwYjEgICAgfAogICAgfCAyICAgICB8IFN1cHBvcnQg
-Zm9yICgxUy0xUy0yUykgRkFTVF9SRUFEIENvbW1hbmQsIEluc3RydWN0aW9uPTNDaCAgICAgICAg
-ICAgICAgICAgICAgICAgfCAwYjEgICAgfAogICAgfCAzICAgICB8IFN1cHBvcnQgZm9yICgxUy0y
-Uy0yUykgRkFTVF9SRUFEIENvbW1hbmQsIEluc3RydWN0aW9uPUJDaCAgICAgICAgICAgICAgICAg
-ICAgICAgfCAwYjEgICAgfAogICAgfCA0ICAgICB8IFN1cHBvcnQgZm9yICgxUy0xUy00UykgRkFT
-VF9SRUFEIENvbW1hbmQsIEluc3RydWN0aW9uPTZDaCAgICAgICAgICAgICAgICAgICAgICAgfCAw
-YjEgICAgfAogICAgfCA1ICAgICB8IFN1cHBvcnQgZm9yICgxUy00Uy00UykgRkFTVF9SRUFEIENv
-bW1hbmQsIEluc3RydWN0aW9uPUVDaCAgICAgICAgICAgICAgICAgICAgICAgfCAwYjEgICAgfAog
-ICAgfCA2ICAgICB8IFN1cHBvcnQgZm9yICgxUy0xUy0xUykgUGFnZSBQcm9ncmFtIENvbW1hbmQs
-IEluc3RydWN0aW9uPTEyaCAgICAgICAgICAgICAgICAgICAgfCAwYjEgICAgfAogICAgfCA3ICAg
-ICB8IFN1cHBvcnQgZm9yICgxUy0xUy00UykgUGFnZSBQcm9ncmFtIENvbW1hbmQsIEluc3RydWN0
-aW9uPTM0aCAgICAgICAgICAgICAgICAgICAgfCAwYjAgICAgfAogICAgfCA4ICAgICB8IFN1cHBv
-cnQgZm9yICgxUy00Uy00UykgUGFnZSBQcm9ncmFtIENvbW1hbmQsIEluc3RydWN0aW9uPTNFaCAg
-ICAgICAgICAgICAgICAgICAgfCAwYjEgICAgfAogICAgfCA5ICAgICB8IFN1cHBvcnQgZm9yIEVy
-YXNlIENvbW1hbmQg4oCTIFR5cGUgMSBzaXplLCBJbnN0cnVjdGlvbiBsb29rdXAgaW4gbmV4dCBE
-d29yZCAgICAgICB8IDBiMSAgICB8CiAgICB8IDEwICAgIHwgU3VwcG9ydCBmb3IgRXJhc2UgQ29t
-bWFuZCDigJMgVHlwZSAyIHNpemUsIEluc3RydWN0aW9uIGxvb2t1cCBpbiBuZXh0IER3b3JkICAg
-ICAgIHwgMGIxICAgIHwKICAgIHwgMTEgICAgfCBTdXBwb3J0IGZvciBFcmFzZSBDb21tYW5kIOKA
-kyBUeXBlIDMgc2l6ZSwgSW5zdHJ1Y3Rpb24gbG9va3VwIGluIG5leHQgRHdvcmQgICAgICAgfCAw
-YjEgICAgfAogICAgfCAxMiAgICB8IFN1cHBvcnQgZm9yIEVyYXNlIENvbW1hbmQg4oCTIFR5cGUg
-NCBzaXplLCBJbnN0cnVjdGlvbiBsb29rdXAgaW4gbmV4dCBEd29yZCAgICAgICB8IDBiMCAgICB8
-CiAgICB8IDEzICAgIHwgU3VwcG9ydCBmb3IgKDFTLTFELTFEKSBEVFJfUmVhZCBDb21tYW5kLCBJ
-bnN0cnVjdGlvbj0wRWggICAgICAgICAgICAgICAgICAgICAgICB8IDBiMCAgICB8CiAgICB8IDE0
-ICAgIHwgU3VwcG9ydCBmb3IgKDFTLTJELTJEKSBEVFJfUmVhZCBDb21tYW5kLCBJbnN0cnVjdGlv
-bj1CRWggICAgICAgICAgICAgICAgICAgICAgICB8IDBiMCAgICB8CiAgICB8IDE1ICAgIHwgU3Vw
-cG9ydCBmb3IgKDFTLTRELTREKSBEVFJfUmVhZCBDb21tYW5kLCBJbnN0cnVjdGlvbj1FRWggICAg
-ICAgICAgICAgICAgICAgICAgICB8IDBiMSAgICB8CiAgICB8IDE2ICAgIHwgU3VwcG9ydCBmb3Ig
-dm9sYXRpbGUgaW5kaXZpZHVhbCBzZWN0b3IgbG9jayBSZWFkIGNvbW1hbmQsIEluc3RydWN0aW9u
-PUUwaCAgICAgICB8IDBiMSAgICB8CiAgICB8IDE3ICAgIHwgU3VwcG9ydCBmb3Igdm9sYXRpbGUg
-aW5kaXZpZHVhbCBzZWN0b3IgbG9jayBXcml0ZSBjb21tYW5kLCBJbnN0cnVjdGlvbj1FMWggICAg
-ICB8IDBiMSAgICB8CiAgICB8IDE4ICAgIHwgU3VwcG9ydCBmb3Igbm9uLXZvbGF0aWxlIGluZGl2
-aWR1YWwgc2VjdG9yIGxvY2sgcmVhZCBjb21tYW5kLCBJbnN0cnVjdGlvbj1FMmggICB8IDBiMSAg
-ICB8CiAgICB8IDE5ICAgIHwgU3VwcG9ydCBmb3Igbm9uLXZvbGF0aWxlIGluZGl2aWR1YWwgc2Vj
-dG9yIGxvY2sgd3JpdGUgY29tbWFuZCwgSW5zdHJ1Y3Rpb249RTNoICB8IDBiMSAgICB8CiAgICB8
-IDIwICAgIHwgU3VwcG9ydCBmb3IgKDFTLTFTLThTKSBGQVNUX1JFQUQgQ29tbWFuZCwgSW5zdHJ1
-Y3Rpb249N0NoICAgICAgICAgICAgICAgICAgICAgICB8IDBiMSAgICB8CiAgICB8IDIxICAgIHwg
-U3VwcG9ydCBmb3IgKDFTLThTLThTKSBGQVNUX1JFQUQgQ29tbWFuZCwgSW5zdHJ1Y3Rpb249Q0No
-ICAgICAgICAgICAgICAgICAgICAgICB8IDBiMSAgICB8CiAgICB8IDIyICAgIHwgU3VwcG9ydCBm
-b3IgKDFTLThELThEKSBEVFJfUkVBRCBDb21tYW5kLCBJbnN0cnVjdGlvbj1GRGggICAgICAgICAg
-ICAgICAgICAgICAgICB8IDBiMSAgICB8CiAgICB8IDIzICAgIHwgU3VwcG9ydCBmb3IgKDFTLTFT
-LThTKSBQYWdlIFByb2dyYW0gQ29tbWFuZCwgSW5zdHJ1Y3Rpb249ODRoICAgICAgICAgICAgICAg
-ICAgICB8IDBiMSAgICB8CiAgICB8IDI0ICAgIHwgU3VwcG9ydCBmb3IgKDFTLThTLThTKSBQYWdl
-IFByb2dyYW0gQ29tbWFuZCwgSW5zdHJ1Y3Rpb249OEVoICAgICAgICAgICAgICAgICAgICB8IDBi
-MSAgICB8CiAgICB8IDMxOjI1IHwgUmVzZXJ2ZWQgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDB4N2YgICB8CiAg
-ICArLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0rCiAgICArLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rCiAgICB8ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRFdPUkQgMiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICArLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LSstLS0tLS0tLS0tLS0tLS0rCiAgICB8IEJpdHMgICAgICAgIHwgRGVzY3JpcHRpb24gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgVmFsdWUg
-ICAgICAgICB8CiAgICArLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0r
-CiAgICB8IDc6MCAgICAgICAgIHwgSW5zdHJ1Y3Rpb24gZm9yIEVyYXNlIFR5cGUgMSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMHgyMSAgICAgICAgICB8CiAgICB8IDE1
-OjggICAgICAgIHwgSW5zdHJ1Y3Rpb24gZm9yIEVyYXNlIFR5cGUgMiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgMHg1YyAgICAgICAgICB8CiAgICB8IDIzOjE2ICAgICAg
-IHwgSW5zdHJ1Y3Rpb24gZm9yIEVyYXNlIFR5cGUgMyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgMHhkYyAgICAgICAgICB8CiAgICB8IDMxOjI0ICAgICAgIHwgSW5zdHJ1
-Y3Rpb24gZm9yIEVyYXNlIFR5cGUgNCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgMHhmZiAgICAgICAgICB8CiAgICArLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSstLS0t
-LS0tLS0tLS0tLS0rCgoKPgo+IEFsc28sIGlmIHlvdSB0b3VjaCBhbGwgdGhlc2UgZmxhc2hlcywg
-d2lsbCB5b3UgcGxlYXNlIHVwZGF0ZSB0aGVtIGFuZAo+IGdldCByaWQgb2YgdGhlIHN0cmF5IGZs
-YXNoIGluZm8gZmllbGRzPyBJJ20gdGhpbmtpbmcgb2YgbmFtZSwgc2l6ZSwgYW5kCj4gbm9fc2Zk
-cF9mbGFncy4KPgoKWzBdIGh0dHBzOi8vZ2l0aHViLmNvbS9wcmF0aTAxMDAvcGFyc2Utc2ZkcC5n
-aXQKCi0tIApSZWdhcmRzLApQcmF0eXVzaCBZYWRhdgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+Fix broken config in qcom_param_page_type_exec caused by copy-paste error
+from commit 0c08080fd71c ("mtd: rawnand: qcom: use FIELD_PREP and GENMASK")
+
+In qcom_param_page_type_exec the value needs to be set to
+nandc->regs->cfg0 instead of host->cfg0. This wrong configuration caused
+the Qcom NANDC driver to malfunction on any device that makes use of it
+(IPQ806x, IPQ40xx, IPQ807x, IPQ60xx) with the following error:
+
+[    0.885369] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xaa
+[    0.885909] nand: Micron NAND 256MiB 1,8V 8-bit
+[    0.892499] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+[    0.896823] nand: ECC (step, strength) = (512, 8) does not fit in OOB
+[    0.896836] qcom-nandc 79b0000.nand-controller: No valid ECC settings possible
+[    0.910996] bam-dma-engine 7984000.dma-controller: Cannot free busy channel
+[    0.918070] qcom-nandc: probe of 79b0000.nand-controller failed with error -28
+
+Restore original configuration fix the problem and makes the driver work
+again.
+
+Cc: stable@vger.kernel.org
+Fixes: 0c08080fd71c ("mtd: rawnand: qcom: use FIELD_PREP and GENMASK")
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index d2d2aeee42a7..4e3a3e049d9d 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1881,18 +1881,18 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
+ 	nandc->regs->addr0 = 0;
+ 	nandc->regs->addr1 = 0;
+ 
+-	host->cfg0 = FIELD_PREP(CW_PER_PAGE_MASK, 0) |
+-		     FIELD_PREP(UD_SIZE_BYTES_MASK, 512) |
+-		     FIELD_PREP(NUM_ADDR_CYCLES_MASK, 5) |
+-		     FIELD_PREP(SPARE_SIZE_BYTES_MASK, 0);
+-
+-	host->cfg1 = FIELD_PREP(NAND_RECOVERY_CYCLES_MASK, 7) |
+-		     FIELD_PREP(BAD_BLOCK_BYTE_NUM_MASK, 17) |
+-		     FIELD_PREP(CS_ACTIVE_BSY, 0) |
+-		     FIELD_PREP(BAD_BLOCK_IN_SPARE_AREA, 1) |
+-		     FIELD_PREP(WR_RD_BSY_GAP_MASK, 2) |
+-		     FIELD_PREP(WIDE_FLASH, 0) |
+-		     FIELD_PREP(DEV0_CFG1_ECC_DISABLE, 1);
++	nandc->regs->cfg0 = FIELD_PREP(CW_PER_PAGE_MASK, 0) |
++			    FIELD_PREP(UD_SIZE_BYTES_MASK, 512) |
++			    FIELD_PREP(NUM_ADDR_CYCLES_MASK, 5) |
++			    FIELD_PREP(SPARE_SIZE_BYTES_MASK, 0);
++
++	nandc->regs->cfg1 = FIELD_PREP(NAND_RECOVERY_CYCLES_MASK, 7) |
++			    FIELD_PREP(BAD_BLOCK_BYTE_NUM_MASK, 17) |
++			    FIELD_PREP(CS_ACTIVE_BSY, 0) |
++			    FIELD_PREP(BAD_BLOCK_IN_SPARE_AREA, 1) |
++			    FIELD_PREP(WR_RD_BSY_GAP_MASK, 2) |
++			    FIELD_PREP(WIDE_FLASH, 0) |
++			    FIELD_PREP(DEV0_CFG1_ECC_DISABLE, 1);
+ 
+ 	if (!nandc->props->qpic_version2)
+ 		nandc->regs->ecc_buf_cfg = cpu_to_le32(ECC_CFG_ECC_DISABLE);
+-- 
+2.47.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
