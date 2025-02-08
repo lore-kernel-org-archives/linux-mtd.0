@@ -4,88 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A8EFC02199
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2025 02:21:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D879EC02198
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2025 10:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SF6TMl4fWpTCb4ScrNKQGqc6rvyz/vNc5XtKpmExrdc=; b=g33a4ARrX5IiAb
-	kpuDJEj2kJC/tA1AawcFVhcIFHtenTf43SZQWMz3C1ay42Tr8nPz+dVXrPqY3aPYt5+Ia6Y9+O5QH
-	96son4es3639nEZ7wGvoW9dM3ypd2Dz4I/Ka8u02FSEpNxtqKU6FhhURTRUlVFHqq2kWRtxMdonSj
-	6OJwr6+M07B7BnJbX7H49U8zIczrAXJxar+YbYYeDh8oZSMSf6M1+EV0nHu5psnnGZ4TVRUSWfofk
-	QoCB6ulpyl45FuYRWjbGOBGO0KJhjBa2OPJ4lPdHAIkLHJuK3m1zzBghX/wo50boYD+EROrelhpD5
-	E8qmooGK1D8PfK27Gipw==;
+	List-Owner; bh=2S/vzIhW7Gcs4yW6pHkvr+99dNvzlhEs4AjxgdJrmE8=; b=M8r6kRlqgqSSaX
+	Rpn9iZxjNCo4s/6G4sci58qP44bvba/Bn1wXtwZ2SNv4heUQMYqfNqkAuC823fHvORY+UpaNEb7m2
+	LV6r9UwcGzaHSn8ighduLPZ7DWHMxCwPKuFCD2uBTAvTkBr0T5F/M18IE9KP+8T3rmXRNHYgxv+rA
+	w0FUqeS8mAzpXE6F/4DXQpNWiJcDFIT2QU62GEvpmuGph0kBPUIEOcRNxFEuPGxtapxyINTH9XJOJ
+	AIjAvCLvFA2imqUOtlR9+Ip1+3YRRqzmcZ9847jdztTMNDZ92V5glHNWx4LDc3KCQbq8nHWEZVxCg
+	Cxi4wqdsUL0KX1wrBt5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgaTO-0000000Bu6k-17sX;
-	Sat, 08 Feb 2025 02:21:34 +0000
-Received: from mout02.posteo.de ([185.67.36.66])
+	id 1tghk6-0000000ChoU-4AMO;
+	Sat, 08 Feb 2025 10:07:18 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgaSr-0000000Btz0-0IP7
+	id 1tghk4-0000000ChnH-2WwI
 	for linux-mtd@lists.infradead.org;
-	Sat, 08 Feb 2025 02:21:05 +0000
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 7F650240101
-	for <linux-mtd@lists.infradead.org>; Sat,  8 Feb 2025 03:20:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1738981254; bh=X/9UQWBS5m7Ib3mDDNhFlWLQ3zPrVaQFBwT1jLZLH3k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:From;
-	b=A78rJooZN8UtN3+vX1NHzW5GxE8tztAy6ovu2FBjQcSf1io3nYqEo2OUdgj0cSrZE
-	 VrdhXd4ZP4qXBfZrgzi6QaW6wT9eeBlkiqPhxEsQHOdzxlgkeh18AIiTNcI4i+f9Co
-	 l3XGq4UzkfR7QDLqgAyXpGsC7M8JbHFHYvYKm0Kq9HfspPykKeNCwGEMlS4UK6ZpmO
-	 bKKpcemYzXNkRt2e48In5cmQAdCxY2QWz1WyBAd0GdU9tfOJ64akKLXgWn3VPUN952
-	 LHTWH0F7L3NRiUHEGq79kL+wKRk1yX5rk7zQFg1pb14Y6jxf39/8Cle2JYNi/49wzq
-	 V6T7FV87eJSfw==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4YqZM431Sgz9rxL;
-	Sat,  8 Feb 2025 03:20:48 +0100 (CET)
-Date: Sat,  8 Feb 2025 02:20:47 +0000
-From: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
-To: Mark Brown <broonie@kernel.org>
-Cc: j.ne@posteo.net, devicetree@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Krzysztof Kozlowski <krzk@kernel.org>, imx@lists.linux.dev,
-	Scott Wood <oss@buserror.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 00/12] YAML conversion of several Freescale/PowerPC DT
- bindings
-Message-ID: <Z6a_f03Ct9aB7Bbn@probook>
-References: <20250207-ppcyaml-v2-0-8137b0c42526@posteo.net>
- <611e47da-ba87-4c21-a6b7-cf051dc88158@sirena.org.uk>
+	Sat, 08 Feb 2025 10:07:17 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-ab79de014b6so115439966b.0
+        for <linux-mtd@lists.infradead.org>; Sat, 08 Feb 2025 02:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739009234; x=1739614034; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9pyb3ufJSTQ8U3pKurPleGgl26RyZuM45GOpbWBuw9I=;
+        b=KFWeLO3ciDjH8JFwOEFw/4+SRHld3XawPicddvCDOk8fdrbz2vBDXmv6Yq3KIcyMr/
+         hOEeXxY+XY+uRXpbSJn1C2h+P1Pg5LnQrRrOY7DBljqCn1BWDqIhkq4TpaVOMaYvqh2D
+         8wER3+NS+p0kGUngClqSKoKuehhu77vrEy/48e5oE+va9a3af08MX6U3vew+7P2pF6bU
+         0kxgAI52C1qVbYoTv0TGsHwV+Ad0l55MIKajT1w3s/OHUv3wkGkJC1u5kGT13KZWOIFe
+         NGFmgYLuPgIKcuHKz1Hn390hcfIE5ARth/Cr8eEiiwJKeIPIv4SL7u3lBgZvrhJQ8Laj
+         c6rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739009234; x=1739614034;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9pyb3ufJSTQ8U3pKurPleGgl26RyZuM45GOpbWBuw9I=;
+        b=Nz/+KVG8ZSJGUm8DjL1A2MfpaPqTF8sd5bGK+FO4wa/lUSFhbe3ZbVlLRQy+r+/+eT
+         vboRzjxos6WIWOm4EylgxqV9rHlaZUroZU/7krDouRc2wQvaBXOhDcF5I27lr58B2+It
+         yLhUi1tAbgT+1NPrworxkRFO2tDjhODCTcZ+YOr9q920Y3BbwiqTMHvwOAPw03aFc9k1
+         S4yAKoMSpCnILxcZscLdrf7TtUTRynglHKdxdag7DFHyOKPsEP9thpSIXGcs2r07Ubfj
+         afNedVVhYkxrH9w0P9/MSee3bs+qIVHwGxM4hVKb/v2smOAEluTq4mimfyLRx9Sbvhdf
+         xc5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVhSyYJo714Jb1E4UpW7OTbnL47ZPef8Db3tWKF7rhcb/o6YpZyrIoiW9uSjUziPBK+9PFj9s2mtcY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzSTCmMTYLp1Ump1EJbzG/zdFAC7ACvoy6X5UTWxteaJ33+X382
+	dMorK/iC1bIhpBMJw3aSvjIBaoVmX4SaVGC53y0G73dVyXCT3Kzh
+X-Gm-Gg: ASbGncuCmzOqgcZ7JZHUI3jVosJq4dY3XyFowz3/ukFVNhYGfl88q51saX9RsYE0OkU
+	VZjeP9qALaRGwUr2YCVDeIg9J3WwTzCXJjYJuQ8zjJyEOtVExgNSrHXbmn6SeLE/be2t9WjTKF1
+	r8VElf4EXAVwuOaR+4H2GH+p83nW+/t7m81ehrc/OSWJmYw+xsh6qARTKkuVvf6p3O/C0W0IjWD
+	DHUf4ndpppb7k5bpF9A6Jkmo+Wgnj9NR3lf1KuEX6gUkSgc1xcRfoiZUIl5lFc/+RYKjPhuoRli
+	weSKXXRcugnql7ZCEZm07gzh0heUi2khELU89w7wuOQ2Xa7fzuq0AZN1
+X-Google-Smtp-Source: AGHT+IFothKq1c5gcI7clQBK7JiID9fpYLS2hgokmh6v32rCA6ZIVZGfs9O9ATM73c8F8fjW+P620Q==
+X-Received: by 2002:a17:907:7e97:b0:ab6:de35:730a with SMTP id a640c23a62f3a-ab789a9ebc9mr693900666b.8.1739009234265;
+        Sat, 08 Feb 2025 02:07:14 -0800 (PST)
+Received: from [192.168.3.32] (cpe-188-129-46-137.dynamic.amis.hr. [188.129.46.137])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab7a8a3aa3esm36318066b.88.2025.02.08.02.07.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 Feb 2025 02:07:13 -0800 (PST)
+Message-ID: <81563943-f5cc-4489-bfaa-d58ad3816516@gmail.com>
+Date: Sat, 8 Feb 2025 11:07:11 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <611e47da-ba87-4c21-a6b7-cf051dc88158@sirena.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: rawnand: qcom: fix broken config in
+ qcom_param_page_type_exec
+To: Christian Marangi <ansuelsmth@gmail.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
+ Md Sadre Alam <quic_mdalam@quicinc.com>, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+References: <20250207195442.19157-1-ansuelsmth@gmail.com>
+Content-Language: en-US
+From: Robert Marko <robimarko@gmail.com>
+In-Reply-To: <20250207195442.19157-1-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250207_182101_253257_4A6736CA 
-X-CRM114-Status: GOOD (  14.19  )
+X-CRM114-CacheID: sfid-20250208_020716_650021_3403099F 
+X-CRM114-Status: GOOD (  17.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,27 +100,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBGZWIgMDcsIDIwMjUgYXQgMDk6Mzg6MDVQTSArMDAwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBGcmksIEZlYiAwNywgMjAyNSBhdCAxMDozMDoxN1BNICswMTAwLCBKLiBOZXVzY2jD
-pGZlciB2aWEgQjQgUmVsYXkgd3JvdGU6Cj4gCj4gPiBUaGlzIGlzIGEgc3Bpbi1vZmYgb2YgdGhl
-IHNlcmllcyB0aXRsZWQKPiA+ICJwb3dlcnBjOiBNUEM4M3h4IGNsZWFudXAgYW5kIExBTkNPTSBO
-V0FQUDIgYm9hcmQiLgo+IAo+ID4gRHVyaW5nIHRoZSBkZXZlbG9wbWVudCBvZiB0aGF0IHNlcmll
-cywgaXQgYmVjYW1lIGNsZWFyIHRoYXQgbWFueQo+ID4gZGV2aWNldHJlZSBiaW5kaW5ncyBmb3Ig
-RnJlZXNjYWxlIE1QQzh4eHggcGxhdGZvcm1zIGFyZSBzdGlsbCBpbiB0aGUgb2xkCj4gPiBwbGFp
-bi10ZXh0IGZvcm1hdCwgb3IgZG9uJ3QgZXhpc3QgYXQgYWxsLCBhbmQgaW4gYW55IGNhc2UgZG9u
-J3QgbWVudGlvbgo+ID4gYWxsIHZhbGlkIGNvbXBhdGlibGUgc3RyaW5ncy4KPiAKPiBXaGF0J3Mg
-dGhlIHN0b3J5IHdpdGggZGVwZW5kZW5jaWVzIGhlcmUgLSB3aHkgaXMgYWxsIHRoaXMgc3R1ZmYg
-aW4gb25lCj4gc2VyaWVzPwoKVGhlIHBhdGNoZXMgYXJlIGluZGVwZW5kZW50IG9mIGVhY2ggb3Ro
-ZXIsIGV4Y2VwdCBmb3IgdGhlIGZvdXIgZWxiYy9uYW5kCnBhdGNoZXMuIFRoZXkgYXJlIGluIHRo
-ZSBzYW1lIHNlcmllcyBiZWNhdXNlIHRoZXkgY2FtZSB1cCBkdXJpbmcgdGhlCnNhbWUgcHJvamVj
-dCBhbmQgYWNoaWV2ZSBzaW1pbGFyIGdvYWxzLCBidXQgaXQgaXNuJ3QgbmVjZXNzYXJ5LgoKCj4g
-Tm9ybWFsbHkgSSdkIGV4cGVjdCBiaW5kaW5ncyBjb252ZXJzaW9ucyB0byBiZSBzdGFuZGFsb25l
-LgoKTm90ZWQuCgoKSi4gTmV1c2Now6RmZXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+
+On 07. 02. 2025. 20:54, Christian Marangi wrote:
+> Fix broken config in qcom_param_page_type_exec caused by copy-paste error
+> from commit 0c08080fd71c ("mtd: rawnand: qcom: use FIELD_PREP and GENMASK")
+>
+> In qcom_param_page_type_exec the value needs to be set to
+> nandc->regs->cfg0 instead of host->cfg0. This wrong configuration caused
+> the Qcom NANDC driver to malfunction on any device that makes use of it
+> (IPQ806x, IPQ40xx, IPQ807x, IPQ60xx) with the following error:
+>
+> [    0.885369] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xaa
+> [    0.885909] nand: Micron NAND 256MiB 1,8V 8-bit
+> [    0.892499] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> [    0.896823] nand: ECC (step, strength) = (512, 8) does not fit in OOB
+> [    0.896836] qcom-nandc 79b0000.nand-controller: No valid ECC settings possible
+> [    0.910996] bam-dma-engine 7984000.dma-controller: Cannot free busy channel
+> [    0.918070] qcom-nandc: probe of 79b0000.nand-controller failed with error -28
+>
+> Restore original configuration fix the problem and makes the driver work
+> again.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 0c08080fd71c ("mtd: rawnand: qcom: use FIELD_PREP and GENMASK")
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Tested-by: Robert Marko <robimarko@gmail.com> #IPQ8074 and IPQ6018
+> ---
+>   drivers/mtd/nand/raw/qcom_nandc.c | 24 ++++++++++++------------
+>   1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index d2d2aeee42a7..4e3a3e049d9d 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -1881,18 +1881,18 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
+>   	nandc->regs->addr0 = 0;
+>   	nandc->regs->addr1 = 0;
+>   
+> -	host->cfg0 = FIELD_PREP(CW_PER_PAGE_MASK, 0) |
+> -		     FIELD_PREP(UD_SIZE_BYTES_MASK, 512) |
+> -		     FIELD_PREP(NUM_ADDR_CYCLES_MASK, 5) |
+> -		     FIELD_PREP(SPARE_SIZE_BYTES_MASK, 0);
+> -
+> -	host->cfg1 = FIELD_PREP(NAND_RECOVERY_CYCLES_MASK, 7) |
+> -		     FIELD_PREP(BAD_BLOCK_BYTE_NUM_MASK, 17) |
+> -		     FIELD_PREP(CS_ACTIVE_BSY, 0) |
+> -		     FIELD_PREP(BAD_BLOCK_IN_SPARE_AREA, 1) |
+> -		     FIELD_PREP(WR_RD_BSY_GAP_MASK, 2) |
+> -		     FIELD_PREP(WIDE_FLASH, 0) |
+> -		     FIELD_PREP(DEV0_CFG1_ECC_DISABLE, 1);
+> +	nandc->regs->cfg0 = FIELD_PREP(CW_PER_PAGE_MASK, 0) |
+> +			    FIELD_PREP(UD_SIZE_BYTES_MASK, 512) |
+> +			    FIELD_PREP(NUM_ADDR_CYCLES_MASK, 5) |
+> +			    FIELD_PREP(SPARE_SIZE_BYTES_MASK, 0);
+> +
+> +	nandc->regs->cfg1 = FIELD_PREP(NAND_RECOVERY_CYCLES_MASK, 7) |
+> +			    FIELD_PREP(BAD_BLOCK_BYTE_NUM_MASK, 17) |
+> +			    FIELD_PREP(CS_ACTIVE_BSY, 0) |
+> +			    FIELD_PREP(BAD_BLOCK_IN_SPARE_AREA, 1) |
+> +			    FIELD_PREP(WR_RD_BSY_GAP_MASK, 2) |
+> +			    FIELD_PREP(WIDE_FLASH, 0) |
+> +			    FIELD_PREP(DEV0_CFG1_ECC_DISABLE, 1);
+>   
+>   	if (!nandc->props->qpic_version2)
+>   		nandc->regs->ecc_buf_cfg = cpu_to_le32(ECC_CFG_ECC_DISABLE);
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
