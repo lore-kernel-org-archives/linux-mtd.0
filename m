@@ -4,83 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B13B0C02198
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Feb 2025 18:58:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A70EFC0219E
+	for <linux-mtd@archiver.kernel.org>; Sun,  9 Feb 2025 00:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Pv5ny8S/C9cg2N723BKTnr+V88lYU2U2mKEZt+l+D30=; b=AVdwT2uYB2rcXT
-	TWwkUpPsQzdXrB3PBcyyxqh5gkbKg4l/4Jlg65OFlm7AE5qo0fBKFJFB+hb+RsEOd05ncLMgW8riC
-	6dN/8pf+41Y0+vtV7uk65oJsc8Pp2b5aILDZd0lHu2P+QTARseGvFg/LPKpXtMW5m9eFmd48A4tuO
-	v5Qo4OEzqC37TyN+5cz6sd3m4pxDj/Xb9KqH11Y3mHRx5ckBLAzPRKb3hzrHOSRf3gWyvYB2LpxRP
-	Sz4iV9i0MPABU7kvAfoegW/JX/DRnrZ4KNqO8mAn9NMwxvs/r8MwOo9tmFikUM/57rQfteaxHVfd6
-	p6i+VY7iT5+RYlPIO+jw==;
+	List-Owner; bh=1hmduf66xIIGt3yQpm5aP4iwSsBikm3jtZ+RgGQBwk4=; b=2TvLIle68QEQmI
+	032xpLqgI43dvNd5hD6zFmvclVASo6OsfwE0vnJpfgcbrqHgigqntgMYho4XLrFLYJlH3gQk22T3k
+	b7Axh+CM1+4wZUOh5wscyJXbLOpULEsv1Xs8nv1d82ZKoZSMG3sGwcGYZ0z1MfU+kaWB7rSscv0I1
+	f59QWTs/Ro3Bn+c96kYrU6mhyg73MXeytfnAaaaeIV6cKmoJBwis4c9D2B2UDe08xcMavQNdk47f4
+	V3myRG0XW7WhtQawaPYzHW+rIvR4o3tIYv2F0NgktUp9a8/M++oO5Jh59hFR5gBxUTWjb2FrRud68
+	XIF5aVk3eH5PXgmUpe0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgq2V-0000000DP4P-0DNc;
-	Sat, 08 Feb 2025 18:58:51 +0000
-Received: from mgamail.intel.com ([198.175.65.11])
+	id 1tgur0-0000000Dl8O-0xT1;
+	Sun, 09 Feb 2025 00:07:18 +0000
+Received: from mout01.posteo.de ([185.67.36.65])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgq2S-0000000DP43-2eOf
+	id 1tguqv-0000000Dl7V-1e7b
 	for linux-mtd@lists.infradead.org;
-	Sat, 08 Feb 2025 18:58:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739041129; x=1770577129;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WbZ0hbTVYx/mSIb3Za2bBc+5S6gAqWODblg6AScJPwA=;
-  b=IWdnkHCi8eiAo0wJfGgU1HHRC59tkMnuDJOK9IzIe5u8MwLRoBVpz7Id
-   j0wT4tFtpOcCQoBS3SZtXK1QUg60FxPxlGVDEXvN0Sg0+kaz1uDQ3z2Q/
-   BZqmwevTl1Bjo9gzJHXDQnOw/94aXqc7GIeRLgamzbEPxZVFEmmeu2tcH
-   3UGYtaiuS85C5hTq5zIUO3pkxRUP/HxMULVnQt6eBacWMFa0Zr/8V8Q1P
-   mOj6adq0ctqlzIUDXmmotjL38+WIUhO/QtPrpjg51A2XYIAekp72QLOrd
-   SFDG7bjLdte4xlc+D2hrENffSUrkv6VKzSoyOp6E4N6zpgIc3dgFXXAF5
-   g==;
-X-CSE-ConnectionGUID: 35je+z7bS0a08eSZmmL0fQ==
-X-CSE-MsgGUID: asF+uePMS9OH9LaC+EzSdQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11339"; a="49903143"
-X-IronPort-AV: E=Sophos;i="6.13,270,1732608000"; 
-   d="scan'208";a="49903143"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2025 10:58:48 -0800
-X-CSE-ConnectionGUID: HfjdxAuIT7CFiQv4RByAGg==
-X-CSE-MsgGUID: 9PZQPT0sS1Cz52H3vZKq4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,270,1732608000"; 
-   d="scan'208";a="116859948"
-Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 08 Feb 2025 10:58:44 -0800
-Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tgq2M-0010WF-1w;
-	Sat, 08 Feb 2025 18:58:42 +0000
-Date: Sun, 9 Feb 2025 02:58:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Christian Marangi <ansuelsmth@gmail.com>,
+	Sun, 09 Feb 2025 00:07:15 +0000
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id AD20A240027
+	for <linux-mtd@lists.infradead.org>; Sun,  9 Feb 2025 01:07:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1739059628; bh=Rnod+Cv9JGN27bc74JTeUwsZwKe+/eQ5wUgORPxiuzc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:From;
+	b=SR2TmtIo67z05s4kxF0Ofa2/igGTbKkcbZPByXWXy8i6zm9KWjhNMQ/3Vaqi5EU6A
+	 JkqODKQmGafdbjTgaw6zvXIjbwCea1icwXx7XJkKGwDvjrw6cOwzih3KjdBWDEkmeQ
+	 TAV2d8GBB+HcI8v0XRjQ89eked08X5Fnl4rHWmiAxvOraVLYfkyXf4raGqN9z9w9Gy
+	 VmloYIu+RyuefxPplg8tyDFctF4eRcBdw1kFlC36JnybCRp/IEQgKYg+M3g7QvpWUG
+	 ohkM9bj5pnzu735rDicaTmq0dj+A2G8d9R/pUbzadWaJ8mfgVociMnpq9oukqQgHOv
+	 /dTErrwHPl7Ag==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4Yr7LD23pfz6v0D;
+	Sun,  9 Feb 2025 01:06:59 +0100 (CET)
+Date: Sun,  9 Feb 2025 00:06:59 +0000
+From: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
+To: j.ne@posteo.net
+Cc: devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	Krzysztof Kozlowski <krzk@kernel.org>, imx@lists.linux.dev,
+	Scott Wood <oss@buserror.net>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
 	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	=?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Christian Marangi <ansuelsmth@gmail.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: fix broken config in
- qcom_param_page_type_exec
-Message-ID: <202502090258.EVrsPFF7-lkp@intel.com>
-References: <20250207195442.19157-1-ansuelsmth@gmail.com>
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 06/12] dt-bindings: pci: Convert fsl,mpc83xx-pcie to
+ YAML
+Message-ID: <Z6fxo4j5a6ro0f1w@probook>
+References: <20250207-ppcyaml-v2-0-8137b0c42526@posteo.net>
+ <20250207-ppcyaml-v2-6-8137b0c42526@posteo.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250207195442.19157-1-ansuelsmth@gmail.com>
+In-Reply-To: <20250207-ppcyaml-v2-6-8137b0c42526@posteo.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250208_105848_750618_72D0F434 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20250208_160713_887212_383B51FA 
+X-CRM114-Status: GOOD (  21.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,148 +97,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Christian,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on mani-mhi/mhi-next linus/master v6.14-rc1 next-20250207]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/mtd-rawnand-qcom-fix-broken-config-in-qcom_param_page_type_exec/20250208-035717
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20250207195442.19157-1-ansuelsmth%40gmail.com
-patch subject: [PATCH] mtd: rawnand: qcom: fix broken config in qcom_param_page_type_exec
-config: sh-randconfig-r133-20250208 (https://download.01.org/0day-ci/archive/20250209/202502090258.EVrsPFF7-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 14.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20250209/202502090258.EVrsPFF7-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202502090258.EVrsPFF7-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/mtd/nand/raw/qcom_nandc.c:1884:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg0 @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1884:27: sparse:     expected restricted __le32 [usertype] cfg0
-   drivers/mtd/nand/raw/qcom_nandc.c:1884:27: sparse:     got unsigned long
->> drivers/mtd/nand/raw/qcom_nandc.c:1889:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg1 @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1889:27: sparse:     expected restricted __le32 [usertype] cfg1
-   drivers/mtd/nand/raw/qcom_nandc.c:1889:27: sparse:     got unsigned long
-
-vim +1884 drivers/mtd/nand/raw/qcom_nandc.c
-
-  1857	
-  1858	static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_subop *subop)
-  1859	{
-  1860		struct qcom_nand_host *host = to_qcom_nand_host(chip);
-  1861		struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-  1862		struct qcom_op q_op = {};
-  1863		const struct nand_op_instr *instr = NULL;
-  1864		unsigned int op_id = 0;
-  1865		unsigned int len = 0;
-  1866		int ret;
-  1867	
-  1868		ret = qcom_parse_instructions(chip, subop, &q_op);
-  1869		if (ret)
-  1870			return ret;
-  1871	
-  1872		q_op.cmd_reg |= cpu_to_le32(PAGE_ACC | LAST_PAGE);
-  1873	
-  1874		nandc->buf_count = 0;
-  1875		nandc->buf_start = 0;
-  1876		host->use_ecc = false;
-  1877		qcom_clear_read_regs(nandc);
-  1878		qcom_clear_bam_transaction(nandc);
-  1879	
-  1880		nandc->regs->cmd = q_op.cmd_reg;
-  1881		nandc->regs->addr0 = 0;
-  1882		nandc->regs->addr1 = 0;
-  1883	
-> 1884		nandc->regs->cfg0 = FIELD_PREP(CW_PER_PAGE_MASK, 0) |
-  1885				    FIELD_PREP(UD_SIZE_BYTES_MASK, 512) |
-  1886				    FIELD_PREP(NUM_ADDR_CYCLES_MASK, 5) |
-  1887				    FIELD_PREP(SPARE_SIZE_BYTES_MASK, 0);
-  1888	
-> 1889		nandc->regs->cfg1 = FIELD_PREP(NAND_RECOVERY_CYCLES_MASK, 7) |
-  1890				    FIELD_PREP(BAD_BLOCK_BYTE_NUM_MASK, 17) |
-  1891				    FIELD_PREP(CS_ACTIVE_BSY, 0) |
-  1892				    FIELD_PREP(BAD_BLOCK_IN_SPARE_AREA, 1) |
-  1893				    FIELD_PREP(WR_RD_BSY_GAP_MASK, 2) |
-  1894				    FIELD_PREP(WIDE_FLASH, 0) |
-  1895				    FIELD_PREP(DEV0_CFG1_ECC_DISABLE, 1);
-  1896	
-  1897		if (!nandc->props->qpic_version2)
-  1898			nandc->regs->ecc_buf_cfg = cpu_to_le32(ECC_CFG_ECC_DISABLE);
-  1899	
-  1900		/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
-  1901		if (!nandc->props->qpic_version2) {
-  1902			nandc->regs->vld = cpu_to_le32((nandc->vld & ~READ_START_VLD));
-  1903			nandc->regs->cmd1 = cpu_to_le32((nandc->cmd1 & ~(0xFF << READ_ADDR))
-  1904					    | NAND_CMD_PARAM << READ_ADDR);
-  1905		}
-  1906	
-  1907		nandc->regs->exec = cpu_to_le32(1);
-  1908	
-  1909		if (!nandc->props->qpic_version2) {
-  1910			nandc->regs->orig_cmd1 = cpu_to_le32(nandc->cmd1);
-  1911			nandc->regs->orig_vld = cpu_to_le32(nandc->vld);
-  1912		}
-  1913	
-  1914		instr = q_op.data_instr;
-  1915		op_id = q_op.data_instr_idx;
-  1916		len = nand_subop_get_data_len(subop, op_id);
-  1917	
-  1918		nandc_set_read_loc(chip, 0, 0, 0, len, 1);
-  1919	
-  1920		if (!nandc->props->qpic_version2) {
-  1921			qcom_write_reg_dma(nandc, &nandc->regs->vld, NAND_DEV_CMD_VLD, 1, 0);
-  1922			qcom_write_reg_dma(nandc, &nandc->regs->cmd1, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
-  1923		}
-  1924	
-  1925		nandc->buf_count = len;
-  1926		memset(nandc->data_buffer, 0xff, nandc->buf_count);
-  1927	
-  1928		config_nand_single_cw_page_read(chip, false, 0);
-  1929	
-  1930		qcom_read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
-  1931				   nandc->buf_count, 0);
-  1932	
-  1933		/* restore CMD1 and VLD regs */
-  1934		if (!nandc->props->qpic_version2) {
-  1935			qcom_write_reg_dma(nandc, &nandc->regs->orig_cmd1, NAND_DEV_CMD1_RESTORE, 1, 0);
-  1936			qcom_write_reg_dma(nandc, &nandc->regs->orig_vld, NAND_DEV_CMD_VLD_RESTORE, 1,
-  1937					   NAND_BAM_NEXT_SGL);
-  1938		}
-  1939	
-  1940		ret = qcom_submit_descs(nandc);
-  1941		if (ret) {
-  1942			dev_err(nandc->dev, "failure in submitting param page descriptor\n");
-  1943			goto err_out;
-  1944		}
-  1945	
-  1946		ret = qcom_wait_rdy_poll(chip, q_op.rdy_timeout_ms);
-  1947		if (ret)
-  1948			goto err_out;
-  1949	
-  1950		memcpy(instr->ctx.data.buf.in, nandc->data_buffer, len);
-  1951	
-  1952	err_out:
-  1953		return ret;
-  1954	}
-  1955	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBGZWIgMDcsIDIwMjUgYXQgMTA6MzA6MjNQTSArMDEwMCwgSi4gTmV1c2Now6RmZXIg
+dmlhIEI0IFJlbGF5IHdyb3RlOgo+IEZyb206ICJKLiBOZXVzY2jDpGZlciIgPGoubmVAcG9zdGVv
+Lm5ldD4KPiAKPiBGb3JtYWxpc2UgdGhlIGJpbmRpbmcgZm9yIHRoZSBQQ0kgY29udHJvbGxlcnMg
+aW4gdGhlIEZyZWVzY2FsZSBNUEM4eHh4Cj4gY2hpcCBmYW1pbHkuIEluZm9ybWF0aW9uIGFib3V0
+IFBDSS1YLXNwZWNpZmljIHByb3BlcnRpZXMgd2FzIHRha2VuIGZyb20KPiBmc2wscGNpLnR4dC4g
+VGhlIGV4YW1wbGVzIHdlcmUgdGFrZW4gZnJvbSBtcGM4MzE1ZXJkYi5kdHMgYW5kCj4geHBlZGl0
+ZTUyMDBfeG1vbi5kdHMuCj4gCj4gU2lnbmVkLW9mZi1ieTogSi4gTmV1c2Now6RmZXIgPGoubmVA
+cG9zdGVvLm5ldD4KPiAtLS0KPiAKPiBWMjoKPiAtIG1lcmdlIGZzbCxwY2kudHh0IGludG8gZnNs
+LG1wYzh4eHgtcGNpLnlhbWwKPiAtIHJlZ3JvdXAgY29tcGF0aWJsZSBzdHJpbmdzLCBsaXN0IHNp
+bmdsZS1pdGVtIHZhbHVlcyBpbiBvbmUgZW51bQo+IC0gdHJpbSBzdWJqZWN0IGxpbmUgKHJlbW92
+ZSAiYmluZGluZyIpCj4gLSBmaXggcHJvcGVydHkgb3JkZXIgdG8gY29tcGx5IHdpdGggZHRzIGNv
+ZGluZyBzdHlsZQo+IC0tLQo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvZnNsLG1wYzh4
+eHgtcGNpLnlhbWwgICB8IDExNSArKysrKysrKysrKysrKysrKysrKysKPiAgRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9mc2wscGNpLnR4dCAgfCAgMjcgLS0tLS0KPiAgMiBm
+aWxlcyBjaGFuZ2VkLCAxMTUgaW5zZXJ0aW9ucygrKSwgMjcgZGVsZXRpb25zKC0pCj4gCj4gZGlm
+ZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvZnNsLG1wYzh4
+eHgtcGNpLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGNpL2ZzbCxt
+cGM4eHh4LXBjaS55YW1sCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwLi41N2M1NTAzY2VjNDdlNmU5MGVkMmIwOTgz
+NWJmYWQxMDMwOWRiOTI3Cj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9wY2kvZnNsLG1wYzh4eHgtcGNpLnlhbWwKPiBAQCAtMCwwICsxLDEx
+NSBAQAo+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0y
+LUNsYXVzZSkKPiArJVlBTUwgMS4yCj4gKy0tLQo+ICsKPiArJGlkOiBodHRwOi8vZGV2aWNldHJl
+ZS5vcmcvc2NoZW1hcy9wY2kvZnNsLG1wYzh4eHgtcGNpLnlhbWwjCj4gKyRzY2hlbWE6IGh0dHA6
+Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwo+ICsKPiArdGl0bGU6IEZy
+ZWVzY2FsZSBNUEM4M3h4IFBDSS9QQ0ktWC9QQ0llIGNvbnRyb2xsZXJzCj4gKwo+ICtkZXNjcmlw
+dGlvbjogfAo+ICsgIEJpbmRpbmcgZm9yIHRoZSBQQ0kvUENJLVgvUENJZSBob3N0IGJyaWRnZXMg
+b24gTVBDOHh4eCBTb0NzLgo+ICsgIFNlZSBhbHNvOiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvcGNpL2ZzbCxwY2kudHh0CgpUaGlzIGlzIG9idmlvdXNseSBhIGJpdCB3cm9uZzsg
+SSBlbmRlZCB1cCBwdXR0aW5nIHRoZSBpbmZvcm1hdGlvbiBmcm9tCmZzbCxwY2kudHh0IGVudGly
+ZWx5IHVuZGVyIHRoZSBmc2wscGNpLWFnZW50LWZvcmNlLWVudW0gcHJvcGVydHksIGJ1dApmb3Jn
+b3QgdG8gcmVtb3ZlIHRoZSByZWZlcmVuY2UgdG8gdGhlIG9sZCB0eHQgZmlsZS4KCj4gK3Byb3Bl
+cnRpZXM6ClsuLi5dCj4gKyAgZnNsLHBjaS1hZ2VudC1mb3JjZS1lbnVtOgo+ICsgICAgdHlwZTog
+Ym9vbGVhbgo+ICsgICAgZGVzY3JpcHRpb246Cj4gKyAgICAgIFR5cGljYWxseSBhbnkgRnJlZXNj
+YWxlIFBDSS1YIGJyaWRnZSBoYXJkd2FyZSBzdHJhcHBlZCBpbnRvIEFnZW50IG1vZGUgaXMKPiAr
+ICAgICAgcHJldmVudGVkIGZyb20gZW51bWVyYXRpbmcgdGhlIGJ1cy4gVGhlIFByUE1DIGZvcm0t
+ZmFjdG9yIHJlcXVpcmVzIGFsbAo+ICsgICAgICBtZXp6YW5pbmVzIHRvIGJlIFBDSS1YIEFnZW50
+cywgYnV0IG9uZSBwZXIgc3lzdGVtIG1heSBzdGlsbCBlbnVtZXJhdGUgdGhlCj4gKyAgICAgIGJ1
+cy4KPiArCj4gKyAgICAgIFRoaXMgcHJvcGVydHkgYWxsb3dzIGEgUENJLVggYnJpZGdlIHRvIGJl
+IHVzZWQgZm9yIGJ1cyBlbnVtZXJhdGlvbgo+ICsgICAgICBkZXNwaXRlIGJlaW5nIHN0cmFwcGVk
+IGludG8gQWdlbnQgbW9kZS4KPiArCj4gK3JlcXVpcmVkOgo+ICsgIC0gcmVnCj4gKyAgLSBjb21w
+YXRpYmxlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
