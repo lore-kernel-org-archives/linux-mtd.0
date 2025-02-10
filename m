@@ -4,79 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B7B0C02198
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2025 05:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F453C02198
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2025 06:19:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uocPlAnQSHQC88N3flec1eabDTAAhajfGvVbsHjl48Q=; b=r93187EBg7UIRu
-	xHCkiGWt7zyW3wiwH3GKGbEsRbuxxS4n5J43ldIm8W0HP2z6+IfWNfxf+LBau5SJMB7EhnJSHWTX3
-	jZQognCehsW8CEuI6tfQHc+V756ieyZQ1K4+cwUCdgWtNvV3N2hYhZqZQJHtkb1OuXi2qjYxijSOp
-	tqPEgWqIT9IHQPyfP0YHfIkUHh3GxfOV+ZmAbFnI+tLKbZUDu/VDD0PyuenpdCyrf+ImgjUPIvOlu
-	sAJf0rdTssGeOwTsj3Ssbv0dsV+IKsb8SYNDkP2OpvjcqEmpu29rYd3G+5Tq9+8fXNkdjhlInbLc/
-	s/e18Zz6cSzazYuuvZCA==;
+	List-Owner; bh=5hNh7sZ0UBuDH6e28FYeUZrKsAmTj0EQSfZ3/0HBhl0=; b=UvlBQ212WwTjwQ
+	JAoNn7CBd4xgwuNxDm3KdhZjh/M8LH2rKvj9QLndWKN1/HXrqfMHdITuoz9MOnq9vEmZZ4CA1aw9g
+	EOkVrUpDv33JreIuVKThgbtyQRz3y/3mEY0X8CBB38Zo5xnqL6Ll6Ev7SWCvcO8oW1HLdvPjsEgBY
+	sFuHwd/k+D/00QANjAUTF1mLEkAhOz+Q3DgitmI5lTnWSEMwIplBQ5l+zmhFlZTJybNjID7jPIa0r
+	oxct+/j+Zm+KTAPXyucGhG0StSwzKQhfaRLmFwH2iDYGTRdAlqhFF7Dx3ZI8cf8KdkmS9KUgXao03
+	Y+evi4H2s637OEDijyHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thMW9-0000000GICo-2Wef;
-	Mon, 10 Feb 2025 05:39:37 +0000
-Received: from mgamail.intel.com ([192.198.163.12])
+	id 1thN8g-0000000GLyg-0ZVt;
+	Mon, 10 Feb 2025 06:19:26 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thMW6-0000000GIAh-2ZMR
+	id 1thN8c-0000000GLyC-0sKY
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Feb 2025 05:39:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739165974; x=1770701974;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=E5Gx0mln1QzktxWO4z36jzZMXzJEeo8ZrweNjo//Bz8=;
-  b=B7cI4b1e+MO9mRnKH8y60ezOTjAu0eh5qwNvLq4rKL39vHT/6Ihf0QXo
-   HfLX5y02+3O+CpEFUHH9U65DGuOdKyDJsaKsO4dvG5dvEZfZklQVBWvd7
-   Aymc4rMmC1UfYN5U5NtsIJ7JFYBPjiun+OYEck4Tj9OFT7y1e8AzwJwKN
-   k0H+Y+rceBHfNadNnS8DGdzj8kLlvYG7TPJ9xXwTox38izWYz89RcMs8x
-   /DG/zVoJjjm0G+15PDIzix8d1p8OA7pMHySYxNzSQsH7ePA76TkAc0Jjn
-   858JSmy/p7EpJ19clrLIo+URJRYdNNTqSgo6RvqFHzdnVqLxjZs/VjFQE
-   A==;
-X-CSE-ConnectionGUID: JN+/VtlnTdGI5u1MQQYllg==
-X-CSE-MsgGUID: WFUwy2LWQ5uI/VhUZs2e6Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11340"; a="43657924"
-X-IronPort-AV: E=Sophos;i="6.13,273,1732608000"; 
-   d="scan'208";a="43657924"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2025 21:39:34 -0800
-X-CSE-ConnectionGUID: /OnQ3929R/ex36lOmtQeeQ==
-X-CSE-MsgGUID: PpKNo84rQ6WI/FRAXYPNLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,273,1732608000"; 
-   d="scan'208";a="112318414"
-Received: from pg15swiplab1181.png.altera.com ([10.244.232.167])
-  by fmviesa008.fm.intel.com with ESMTP; 09 Feb 2025 21:39:31 -0800
-From: niravkumar.l.rabara@intel.com
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>,
-	linux@treblig.org,
-	Shen Lichuan <shenlichuan@vivo.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	u.kleine-koenig@baylibre.com,
-	nirav.rabara@altera.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH v3 1/3] mtd: rawnand: cadence: fix error code in cadence_nand_init()
-Date: Mon, 10 Feb 2025 13:35:49 +0800
-Message-Id: <20250210053551.2399716-2-niravkumar.l.rabara@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250210053551.2399716-1-niravkumar.l.rabara@intel.com>
-References: <20250210053551.2399716-1-niravkumar.l.rabara@intel.com>
+	Mon, 10 Feb 2025 06:19:24 +0000
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-21f5a224544so26328735ad.0
+        for <linux-mtd@lists.infradead.org>; Sun, 09 Feb 2025 22:19:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739168360; x=1739773160; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/0qE5ztiMfOqU/NNNTmSKqQDaw+xnPVhX8L7HjFr4oA=;
+        b=DzNL0MdvRgAWlMWC8vz3qmWmHMAhkjp2z+aNzK/7abayfWYr2cWcx0UOdQ5EaS7+k6
+         Mv+j1EdP/ZlpGx3piDYOBBA8iwzFi1rpd1lsH3P/HYYgtTrR+z6eLT4WfN21EWY+iJKv
+         0pTW8nEVf58H5O5rksnK15/doZ/hkCbMlinlxK+oe4U3VJwJRGTU6ENAenDfnr/Qi9CM
+         BNPdPwfDAcTwRtl4rfAYXthc6QUBRkmovD6VeJvPDNrRR84Y0yFNbnNYUHPNiTbqP3wh
+         10fC5JpYgb2gbgJKWfa1xsQlDgdbT6MiU1LTon9VDgEJ3VmeWDxxNjQOiR9Iqmr0S2ia
+         W2Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739168360; x=1739773160;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/0qE5ztiMfOqU/NNNTmSKqQDaw+xnPVhX8L7HjFr4oA=;
+        b=ZdXIA63t59WyLl2/xX2sBsZCmpOqKtu7/wSISFsutSMKzzmCau3LYn7XkulCI1j0bJ
+         SHDNVOuFOW7x5wG2O8L5BqbDjXfQSEytOdD+dbnUi+BMyxt2i7uGLC0QFyMRrEcEWXlm
+         ypc29etk5ZIfEn6rgEUtux64s6pSWEwCDqDUt2JUFYaMmN2DVLor/ityOQsTrEgpYspJ
+         eoOLUQpsJZvobwJBNu/CdRC6E9kOeTUIOnrVZ5mfY4wTu59SiQg9FOxP8EOKw2FKRrH5
+         S5uicX+z7md74DUUlxKdtAZaFarFuX2MPYY7rwqmxNgtZzk81TYeunKbNrOkblmG1/DJ
+         YaMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVjskRpAChW+4xHyf5PySefrm/plQ86otkByKamET7W3qcytdNRDu7XRTaYPtcnruV/XnpAfhnV+nI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwCeU3PqoKzpvoCn9bG+C2tqJ9AAff08RR1qYTdjsKsYpgOIJ6E
+	HnABHnY8DsgudeFbjmTJ0Ngb0x8z5wpl0NDeFwIL0QvewyNz91eG4tLiEv2gWKYfM3twlHXPTQJ
+	bCn/oqIuC8Ztd6KC3jI0Gds8XtiU=
+X-Gm-Gg: ASbGncuZEaSn/7bKh69Uh78dh2PZDMCV/4DyZHKXXifPkqqkkpv/kzLD9Al43OgEJVB
+	3ZVD+ypCWZUw6RQr1XGMf/ENOylq9NpFmy9eemwkAC8n0ItZ1GoZuCxkzD0a0m7+nKmdt0ksQ
+X-Google-Smtp-Source: AGHT+IHEiyqiVUi2t1F1mNbx5wlvzLLnslQpCepJcKSarUrf6sjrv0hLv6E35ap/FJ/JwE1ea028muenoOeHERPobQQ=
+X-Received: by 2002:a17:902:ef4c:b0:216:7c33:8994 with SMTP id
+ d9443c01a7336-21f4e7aff63mr191970075ad.53.1739168360078; Sun, 09 Feb 2025
+ 22:19:20 -0800 (PST)
 MIME-Version: 1.0
+References: <20250207081846.362919-1-linchengming884@gmail.com>
+ <20250207081846.362919-3-linchengming884@gmail.com> <811f5b9d7b2842a3e1293ac6a0bb3b70@kernel.org>
+In-Reply-To: <811f5b9d7b2842a3e1293ac6a0bb3b70@kernel.org>
+From: Cheng Ming Lin <linchengming884@gmail.com>
+Date: Mon, 10 Feb 2025 14:15:11 +0800
+X-Gm-Features: AWEUYZnuectraYtl_EVRebn2CreWWpWoYznqXAdJHe52mJrzoXRk2t8dsoXwmPU
+Message-ID: <CAAyq3SYdGWANRTobbTahBZqU77xDnjS_WDJof6qkH-G2sVxzhA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: macronix: Add support for Macronix NOR Flash
+To: Michael Walle <mwalle@kernel.org>
+Cc: tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com, 
+	richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, alvinzhou@mxic.com.tw, leoyu@mxic.com.tw, 
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250209_213934_664705_1B2397F2 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20250209_221922_247214_7F6F8604 
+X-CRM114-Status: GOOD (  13.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,47 +91,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-
-Replace dma_request_channel() with dma_request_chan_by_mask() and use
-helper functions to return proper error code instead of fixed -EBUSY.
-
-Fixes: ec4ba01e894d ("mtd: rawnand: Add new Cadence NAND driver to MTD subsystem")
-Cc: stable@vger.kernel.org
-Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
----
- drivers/mtd/nand/raw/cadence-nand-controller.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
-index 8d1d710e439d..fb5f671bdb7b 100644
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -2904,11 +2904,10 @@ static int cadence_nand_init(struct cdns_nand_ctrl *cdns_ctrl)
- 	dma_cap_set(DMA_MEMCPY, mask);
- 
- 	if (cdns_ctrl->caps1->has_dma) {
--		cdns_ctrl->dmac = dma_request_channel(mask, NULL, NULL);
--		if (!cdns_ctrl->dmac) {
--			dev_err(cdns_ctrl->dev,
--				"Unable to get a DMA channel\n");
--			ret = -EBUSY;
-+		cdns_ctrl->dmac = dma_request_chan_by_mask(&mask);
-+		if (IS_ERR(cdns_ctrl->dmac)) {
-+			ret = dev_err_probe(cdns_ctrl->dev, PTR_ERR(cdns_ctrl->dmac),
-+					    "%d: Failed to get a DMA channel\n", ret);
- 			goto disable_irq;
- 		}
- 	}
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKCk1pY2hhZWwgV2FsbGUgPG13YWxsZUBrZXJuZWwub3JnPiDmlrwgMjAyNeW5
+tDLmnIg35pelIOmAseS6lCDkuIvljYg0OjM55a+r6YGT77yaCj4KPiBIaSBDaGVuZywKPgo+ID4g
+RnJvbTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWluZ2xpbkBteGljLmNvbS50dz4KPiA+Cj4gPiBE
+dWUgdG8gaW5jb3JyZWN0IHZhbHVlcyBpbiB0aGUgNC1CQUlUIHRhYmxlIGZvciB0aGVzZSB0d28g
+Zmxhc2ggSURzLAo+ID4gaXQgaXMgbmVjZXNzYXJ5IHRvIGFkZCB0aGVzZSB0d28gZmxhc2ggSURz
+IHdpdGggZml4dXBzLgo+Cj4gV2hhdCdzIHRoZSBwYXJ0IG51bWJlciBvZiB0aGVzZSBmbGFzaGVz
+Pwo+Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMKPiA+ICsrKyBiL2Ry
+aXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYwo+ID4gQEAgLTEyNyw2ICsxMjcsOSBAQCBzdGF0
+aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gbWFjcm9uaXhfbm9yX3BhcnRzW10KPiA+ID0gewo+
+ID4gICAgICAgICAgICAgICAuc2l6ZSA9IFNaXzEyOE0sCj4gPiAgICAgICAgICAgICAgIC5ub19z
+ZmRwX2ZsYWdzID0gU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JF
+QUQsCj4gPiAgICAgICAgICAgICAgIC5maXh1cHMgPSAmbWFjcm9uaXhfcXBwNGJfZml4dXBzLAo+
+ID4gKyAgICAgfSwgewo+Cj4gQWx0aG91Z2ggd2UgZG9uJ3QgaGF2ZSAubmFtZSBhbnltb3JlLCBh
+IGNvbW1lbnQgbGlrZQo+Cj4gLyogPHBhcnRuYW1lPiAqLwo+Cj4gaXMgcmVjb21tZW5kZWQuCgpH
+b3QgaXQuIEknbGwgYWRkIHRoZSBwYXJ0bmFtZSBjb21tZW50IGluIHYyIGFuZCB3aWxsIGZvbGxv
+dyB0aGlzIHJ1bGUKZ29pbmcgZm9yd2FyZC4KCj4KPiA+ICsgICAgICAgICAgICAgLmlkID0gU05P
+Ul9JRCgweGMyLCAweDIwLCAweDFjKSwKPiA+ICsgICAgICAgICAgICAgLmZpeHVwcyA9ICZtYWNy
+b25peF9xcHA0Yl9maXh1cHMsCj4gPiAgICAgICB9LCB7Cj4gPiAgICAgICAgICAgICAgIC5pZCA9
+IFNOT1JfSUQoMHhjMiwgMHgyMywgMHgxNCksCj4gPiAgICAgICAgICAgICAgIC5uYW1lID0gIm14
+MjV2ODAzNWYiLAo+ID4gQEAgLTE4Miw2ICsxODUsOSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZs
+YXNoX2luZm8gbWFjcm9uaXhfbm9yX3BhcnRzW10KPiA+ID0gewo+ID4gICAgICAgICAgICAgICAu
+bm9fc2ZkcF9mbGFncyA9IFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVB
+RF9SRUFELAo+ID4gICAgICAgICAgICAgICAuZml4dXBfZmxhZ3MgPSBTUElfTk9SXzRCX09QQ09E
+RVMsCj4gPiAgICAgICAgICAgICAgIC5maXh1cHMgPSAmbWFjcm9uaXhfcXBwNGJfZml4dXBzLAo+
+ID4gKyAgICAgfSwgewo+Cj4gc2FtZSBzYW1lCj4KPiA+ICsgICAgICAgICAgICAgLmlkID0gU05P
+Ul9JRCgweGMyLCAweDI1LCAweDNiKSwKPiA+ICsgICAgICAgICAgICAgLmZpeHVwcyA9ICZtYWNy
+b25peF9xcHA0Yl9maXh1cHMsCj4gPiAgICAgICB9LCB7Cj4gPiAgICAgICAgICAgICAgIC5pZCA9
+IFNOT1JfSUQoMHhjMiwgMHgyNSwgMHgzYyksCj4gPiAgICAgICAgICAgICAgIC5uYW1lID0gIm14
+NjZ1Mmc0NWciLAo+Cj4gVGhhbmtzLAo+IC1taWNoYWVsCgpUaGFua3MsCkNoZW5nIE1pbmcgTGlu
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
