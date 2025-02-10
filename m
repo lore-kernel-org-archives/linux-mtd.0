@@ -4,82 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F453C02198
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2025 06:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7139FC02198
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2025 06:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5hNh7sZ0UBuDH6e28FYeUZrKsAmTj0EQSfZ3/0HBhl0=; b=UvlBQ212WwTjwQ
-	JAoNn7CBd4xgwuNxDm3KdhZjh/M8LH2rKvj9QLndWKN1/HXrqfMHdITuoz9MOnq9vEmZZ4CA1aw9g
-	EOkVrUpDv33JreIuVKThgbtyQRz3y/3mEY0X8CBB38Zo5xnqL6Ll6Ev7SWCvcO8oW1HLdvPjsEgBY
-	sFuHwd/k+D/00QANjAUTF1mLEkAhOz+Q3DgitmI5lTnWSEMwIplBQ5l+zmhFlZTJybNjID7jPIa0r
-	oxct+/j+Zm+KTAPXyucGhG0StSwzKQhfaRLmFwH2iDYGTRdAlqhFF7Dx3ZI8cf8KdkmS9KUgXao03
-	Y+evi4H2s637OEDijyHQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JcccxIHGPMWOZLP9fvCC98Eh0PLqcvdkPTZcm6kF5LE=; b=FBQYnhMNIzyzQx
+	Q3WjQMogaWfolEgkC7dxeBeoV1TifRipPlDeDvPATwb5X0zuB5fVan/gR5DkDWJwMylZ9h530vMHq
+	Bqq4r1x6RNsMiL6CN5wR0qMJnhjDu2qsRnXCyWLkGU0Y4nAAHA88E3eDnt8m1GOvT9+cmUsuOKs5p
+	ua6Wcao/C3QeDaXY96AfOd7KmOZunXwZewe6wi8Ofsxw6gKfzyfp5D56wi5OpyIt3uV+W+WG7LLGe
+	Vinwur5iMuV1pwQH2YLc1UMepS+f2DfF1tEV6HpyIB0RCCU2v7PUy6HK9xqo57ymRyDc+5iS9IpMi
+	VDAi2M+zrVfKHCwidFIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thN8g-0000000GLyg-0ZVt;
-	Mon, 10 Feb 2025 06:19:26 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1thNTG-0000000GOqg-07MT;
+	Mon, 10 Feb 2025 06:40:42 +0000
+Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thN8c-0000000GLyC-0sKY
+	id 1thMW2-0000000GIAh-20mo
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Feb 2025 06:19:24 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-21f5a224544so26328735ad.0
-        for <linux-mtd@lists.infradead.org>; Sun, 09 Feb 2025 22:19:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739168360; x=1739773160; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/0qE5ztiMfOqU/NNNTmSKqQDaw+xnPVhX8L7HjFr4oA=;
-        b=DzNL0MdvRgAWlMWC8vz3qmWmHMAhkjp2z+aNzK/7abayfWYr2cWcx0UOdQ5EaS7+k6
-         Mv+j1EdP/ZlpGx3piDYOBBA8iwzFi1rpd1lsH3P/HYYgtTrR+z6eLT4WfN21EWY+iJKv
-         0pTW8nEVf58H5O5rksnK15/doZ/hkCbMlinlxK+oe4U3VJwJRGTU6ENAenDfnr/Qi9CM
-         BNPdPwfDAcTwRtl4rfAYXthc6QUBRkmovD6VeJvPDNrRR84Y0yFNbnNYUHPNiTbqP3wh
-         10fC5JpYgb2gbgJKWfa1xsQlDgdbT6MiU1LTon9VDgEJ3VmeWDxxNjQOiR9Iqmr0S2ia
-         W2Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739168360; x=1739773160;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/0qE5ztiMfOqU/NNNTmSKqQDaw+xnPVhX8L7HjFr4oA=;
-        b=ZdXIA63t59WyLl2/xX2sBsZCmpOqKtu7/wSISFsutSMKzzmCau3LYn7XkulCI1j0bJ
-         SHDNVOuFOW7x5wG2O8L5BqbDjXfQSEytOdD+dbnUi+BMyxt2i7uGLC0QFyMRrEcEWXlm
-         ypc29etk5ZIfEn6rgEUtux64s6pSWEwCDqDUt2JUFYaMmN2DVLor/ityOQsTrEgpYspJ
-         eoOLUQpsJZvobwJBNu/CdRC6E9kOeTUIOnrVZ5mfY4wTu59SiQg9FOxP8EOKw2FKRrH5
-         S5uicX+z7md74DUUlxKdtAZaFarFuX2MPYY7rwqmxNgtZzk81TYeunKbNrOkblmG1/DJ
-         YaMw==
-X-Forwarded-Encrypted: i=1; AJvYcCVjskRpAChW+4xHyf5PySefrm/plQ86otkByKamET7W3qcytdNRDu7XRTaYPtcnruV/XnpAfhnV+nI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwCeU3PqoKzpvoCn9bG+C2tqJ9AAff08RR1qYTdjsKsYpgOIJ6E
-	HnABHnY8DsgudeFbjmTJ0Ngb0x8z5wpl0NDeFwIL0QvewyNz91eG4tLiEv2gWKYfM3twlHXPTQJ
-	bCn/oqIuC8Ztd6KC3jI0Gds8XtiU=
-X-Gm-Gg: ASbGncuZEaSn/7bKh69Uh78dh2PZDMCV/4DyZHKXXifPkqqkkpv/kzLD9Al43OgEJVB
-	3ZVD+ypCWZUw6RQr1XGMf/ENOylq9NpFmy9eemwkAC8n0ItZ1GoZuCxkzD0a0m7+nKmdt0ksQ
-X-Google-Smtp-Source: AGHT+IHEiyqiVUi2t1F1mNbx5wlvzLLnslQpCepJcKSarUrf6sjrv0hLv6E35ap/FJ/JwE1ea028muenoOeHERPobQQ=
-X-Received: by 2002:a17:902:ef4c:b0:216:7c33:8994 with SMTP id
- d9443c01a7336-21f4e7aff63mr191970075ad.53.1739168360078; Sun, 09 Feb 2025
- 22:19:20 -0800 (PST)
+	Mon, 10 Feb 2025 05:39:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739165970; x=1770701970;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ksfd3sS+urRxMxMu37a3Dqzf3ivVB4yAYamRm8eK3LQ=;
+  b=b7nOkKV0xTlXG+Yfi+LoU5TmOAAcf26+RxCfMv68WEMO6cwes4ej2bMd
+   Wieuq/ieyaZav4zKWDPhOmYhDJBP5GjzGvX2rkW2mSBYbHp+ju+wTthXS
+   Nnmk7OZPeLArV473QSX0WBXppIjYbCActt9YesWNZ5o2TriMj2ubM/tQL
+   N2N/XuD9SuBoAuWNVp6t5r8yCx0PISKBTI1BNLdvcHbkvQpNpodtEE2L0
+   mFoFYG2ug/lK4eZweQO9GaawiJ5OIm6Iir5z6uYqpxOoCCsTbkpgbgl4P
+   54dgHcqQZ8k/2Q9eLZr94t2iAiD+BcyNL6J6bsbpg2hM7/UXG4kb3AsfE
+   w==;
+X-CSE-ConnectionGUID: Bgmvmtr9SnKO48c6JDMelw==
+X-CSE-MsgGUID: e85MIaL7RESJ4QPofT9PqQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11340"; a="43657913"
+X-IronPort-AV: E=Sophos;i="6.13,273,1732608000"; 
+   d="scan'208";a="43657913"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2025 21:39:29 -0800
+X-CSE-ConnectionGUID: nlFPBAaWS96PEwA9yPo2Aw==
+X-CSE-MsgGUID: z8VdSwINTHugCccQgtorJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,273,1732608000"; 
+   d="scan'208";a="112318407"
+Received: from pg15swiplab1181.png.altera.com ([10.244.232.167])
+  by fmviesa008.fm.intel.com with ESMTP; 09 Feb 2025 21:39:26 -0800
+From: niravkumar.l.rabara@intel.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>,
+	linux@treblig.org,
+	Shen Lichuan <shenlichuan@vivo.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	u.kleine-koenig@baylibre.com,
+	nirav.rabara@altera.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH v3 0/3] mtd: rawnand: cadence: improvement and fixes
+Date: Mon, 10 Feb 2025 13:35:48 +0800
+Message-Id: <20250210053551.2399716-1-niravkumar.l.rabara@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20250207081846.362919-1-linchengming884@gmail.com>
- <20250207081846.362919-3-linchengming884@gmail.com> <811f5b9d7b2842a3e1293ac6a0bb3b70@kernel.org>
-In-Reply-To: <811f5b9d7b2842a3e1293ac6a0bb3b70@kernel.org>
-From: Cheng Ming Lin <linchengming884@gmail.com>
-Date: Mon, 10 Feb 2025 14:15:11 +0800
-X-Gm-Features: AWEUYZnuectraYtl_EVRebn2CreWWpWoYznqXAdJHe52mJrzoXRk2t8dsoXwmPU
-Message-ID: <CAAyq3SYdGWANRTobbTahBZqU77xDnjS_WDJof6qkH-G2sVxzhA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: macronix: Add support for Macronix NOR Flash
-To: Michael Walle <mwalle@kernel.org>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com, 
-	richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, alvinzhou@mxic.com.tw, leoyu@mxic.com.tw, 
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250209_221922_247214_7F6F8604 
-X-CRM114-Status: GOOD (  13.39  )
+X-CRM114-CacheID: sfid-20250209_213930_531798_19C107E9 
+X-CRM114-Status: UNSURE (   7.54  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,40 +87,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGFlbCwKCk1pY2hhZWwgV2FsbGUgPG13YWxsZUBrZXJuZWwub3JnPiDmlrwgMjAyNeW5
-tDLmnIg35pelIOmAseS6lCDkuIvljYg0OjM55a+r6YGT77yaCj4KPiBIaSBDaGVuZywKPgo+ID4g
-RnJvbTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWluZ2xpbkBteGljLmNvbS50dz4KPiA+Cj4gPiBE
-dWUgdG8gaW5jb3JyZWN0IHZhbHVlcyBpbiB0aGUgNC1CQUlUIHRhYmxlIGZvciB0aGVzZSB0d28g
-Zmxhc2ggSURzLAo+ID4gaXQgaXMgbmVjZXNzYXJ5IHRvIGFkZCB0aGVzZSB0d28gZmxhc2ggSURz
-IHdpdGggZml4dXBzLgo+Cj4gV2hhdCdzIHRoZSBwYXJ0IG51bWJlciBvZiB0aGVzZSBmbGFzaGVz
-Pwo+Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMKPiA+ICsrKyBiL2Ry
-aXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYwo+ID4gQEAgLTEyNyw2ICsxMjcsOSBAQCBzdGF0
-aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gbWFjcm9uaXhfbm9yX3BhcnRzW10KPiA+ID0gewo+
-ID4gICAgICAgICAgICAgICAuc2l6ZSA9IFNaXzEyOE0sCj4gPiAgICAgICAgICAgICAgIC5ub19z
-ZmRwX2ZsYWdzID0gU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JF
-QUQsCj4gPiAgICAgICAgICAgICAgIC5maXh1cHMgPSAmbWFjcm9uaXhfcXBwNGJfZml4dXBzLAo+
-ID4gKyAgICAgfSwgewo+Cj4gQWx0aG91Z2ggd2UgZG9uJ3QgaGF2ZSAubmFtZSBhbnltb3JlLCBh
-IGNvbW1lbnQgbGlrZQo+Cj4gLyogPHBhcnRuYW1lPiAqLwo+Cj4gaXMgcmVjb21tZW5kZWQuCgpH
-b3QgaXQuIEknbGwgYWRkIHRoZSBwYXJ0bmFtZSBjb21tZW50IGluIHYyIGFuZCB3aWxsIGZvbGxv
-dyB0aGlzIHJ1bGUKZ29pbmcgZm9yd2FyZC4KCj4KPiA+ICsgICAgICAgICAgICAgLmlkID0gU05P
-Ul9JRCgweGMyLCAweDIwLCAweDFjKSwKPiA+ICsgICAgICAgICAgICAgLmZpeHVwcyA9ICZtYWNy
-b25peF9xcHA0Yl9maXh1cHMsCj4gPiAgICAgICB9LCB7Cj4gPiAgICAgICAgICAgICAgIC5pZCA9
-IFNOT1JfSUQoMHhjMiwgMHgyMywgMHgxNCksCj4gPiAgICAgICAgICAgICAgIC5uYW1lID0gIm14
-MjV2ODAzNWYiLAo+ID4gQEAgLTE4Miw2ICsxODUsOSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZs
-YXNoX2luZm8gbWFjcm9uaXhfbm9yX3BhcnRzW10KPiA+ID0gewo+ID4gICAgICAgICAgICAgICAu
-bm9fc2ZkcF9mbGFncyA9IFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVB
-RF9SRUFELAo+ID4gICAgICAgICAgICAgICAuZml4dXBfZmxhZ3MgPSBTUElfTk9SXzRCX09QQ09E
-RVMsCj4gPiAgICAgICAgICAgICAgIC5maXh1cHMgPSAmbWFjcm9uaXhfcXBwNGJfZml4dXBzLAo+
-ID4gKyAgICAgfSwgewo+Cj4gc2FtZSBzYW1lCj4KPiA+ICsgICAgICAgICAgICAgLmlkID0gU05P
-Ul9JRCgweGMyLCAweDI1LCAweDNiKSwKPiA+ICsgICAgICAgICAgICAgLmZpeHVwcyA9ICZtYWNy
-b25peF9xcHA0Yl9maXh1cHMsCj4gPiAgICAgICB9LCB7Cj4gPiAgICAgICAgICAgICAgIC5pZCA9
-IFNOT1JfSUQoMHhjMiwgMHgyNSwgMHgzYyksCj4gPiAgICAgICAgICAgICAgIC5uYW1lID0gIm14
-NjZ1Mmc0NWciLAo+Cj4gVGhhbmtzLAo+IC1taWNoYWVsCgpUaGFua3MsCkNoZW5nIE1pbmcgTGlu
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+
+This patchset introduces improvements and fixes for cadence nand driver.
+The changes include:
+
+1. Replace dma_request_channel() with dma_request_chan_by_mask() and use
+   helper functions to return proper error code instead of fixed -EBUSY.
+2. Remap the slave DMA I/O resources to enhance driver portability.
+3. Fixed dma_unmap_single to use correct physical/bus device.
+
+
+v3 changes:-
+  * Update commit message based on v2 review feedback for better clarity.
+  * Use dma_request_chan_by_mask() and helper functions to return proper
+    error code instead of fixed -EBUSY error code.
+
+link to v2:
+ - https://lore.kernel.org/all/20250116032154.3976447-1-niravkumar.l.rabara@intel.com/
+
+v2 changes:-
+  * Added the missing Fixes and Cc: stable tags to the patches.
+
+link to v1:
+ - https://lore.kernel.org/all/20250108135234.3107502-1-niravkumar.l.rabara@intel.com/
+
+Niravkumar L Rabara (3):
+  mtd: rawnand: cadence: fix error code in cadence_nand_init()
+  mtd: rawnand: cadence: use dma_map_resource for sdma address
+  mtd: rawnand: cadence: fix incorrect device in dma_unmap_single
+
+ .../mtd/nand/raw/cadence-nand-controller.c    | 42 ++++++++++++++-----
+ 1 file changed, 31 insertions(+), 11 deletions(-)
+
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
