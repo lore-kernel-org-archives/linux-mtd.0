@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD12BC02198
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2025 19:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C5F5C0219E
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2025 19:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1IIWSsggGyn4TDglaT7xldZzAyNJDuHKBKPA3SKbDIo=; b=Oy2fq6vw6tPz/N
-	RKC3AT8I9BYHPzs5V0ClgBi/LBCoH8JpZQbmspRsTHrZhm5axjKWElZ4zgeMDnEdnPInUrmqJqzJN
-	SWv7UnlVZnrvY6eUnqM9On0q/dEXi8HuGkaBFyf8QYSEWvKS5xFWfXGP/LxiYgUGwjymeiUtM5wuz
-	mwRESm/cItRXVGHtODbKlDrC71F5nn5prKtYy0pXxefLQcjq3jgVOjpx7QhlRuhkygseQMW6e8FAi
-	VsDVDOpx1eLcepel7XcSeeYzkSE3NlmR/OaJnwQth9AoVTY9/zy7mRj9lBrVtlnT4jHnIuy3c33Hr
-	fvdG5h62/Lz0/j1TfzQQ==;
+	List-Owner; bh=Dtf1ayAvh7Henb85kXyWJ2NK7f8LQdReD7Yu6ONCiJ8=; b=Tz9TtBymjq/egk
+	Jc+SZdvRCNovzKK9ch65ucK7LjqEDmZ1eG5qUVK0dLhSeuIzO5mFJMKFHXczBhTIP/qJdWH7gAOXs
+	mqKbj1KUZwJULA9deDp/J/7hcpfL8LeVlTvVF7vAKMCH0sv0w7LtGwhwo6zlpj1JHwmmrA99DU546
+	DfPnugLZ7Xfl3HPepT4QM7/CwVCXxBDJc90gkoehmOTiCJQHSvnLPhhOqvfOH5XPdWFERlLYCUc37
+	CfxAbnU7SVVB5UMNy1aumcGtqGC9cZXBr+9l9rEk0Jc4DrT6c16lN5niTQwNsOpkm+myQYA8zDdHe
+	WFxuaOHGe2LIY3L7h6jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thZm5-00000001DVf-3tPZ;
-	Mon, 10 Feb 2025 19:48:57 +0000
-Received: from mail-vi1eur05on20629.outbound.protection.outlook.com ([2a01:111:f403:2613::629] helo=EUR05-VI1-obe.outbound.protection.outlook.com)
+	id 1thZm7-00000001DWa-02JK;
+	Mon, 10 Feb 2025 19:48:59 +0000
+Received: from mail-vi1eur02on20606.outbound.protection.outlook.com ([2a01:111:f403:2607::606] helo=EUR02-VI1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thZfw-00000001BbU-1UwL
+	id 1thZl1-00000001DDQ-3MNV
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Feb 2025 19:42:37 +0000
+	Mon, 10 Feb 2025 19:47:53 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=B6iMQ4I80rh7uCF4tGO7brTR9YJUTelzMCM4SLxYrFj6sh0iO0z3qj+XeSxmhky78li21fhD5LumHUr45H8vBQPObjtiCvpRlt80O8tSl+85QK7qMAvSBOlRvY8K0gQYJYbK2B/GzAlNhjDCVdUA+bSxvTu3TFDaNMA4EhqJg4v9BDnlTYpO9t3+5VrTIpcKuSL5rMdwn3AnoLUECH38o2SkwtuHSGg5mkWDbgE+8McJ9BACBUtY4SltVhgraH//lFjYx3Msaq3shHpL2aFCBwWU4iaQi5hyTOteeAXmnmt1UMsrkdLZqKy6INRI6VMAFlwEKQTZLibuijHY9zbDjQ==
+ b=CUr2GXzoo4s+LljUNg/l045UnGCB8/Y+F8+uxn24Qfe0WbJD+aDYqRMXZawov7SSrLbJ+dh2KZtlCIERP5jl2mF/7/9DEndnSYQG25klVe1f1I2zqkGU9kMfQWalaeoTvYEmoReeuEKVjS55xDfV39wHwUlAFCosTbjqHfJ8Uo24bfvQDm1j7OjYWz8cG4LFxnpDG+dxYe/UwH++mVm8zj5uWpzlQKeSrQ+QsCcH/ZrVkzcoU6SdkeJevukJTOJZMnYhrjaTCH2TbAYk/H4T8zxaJN9SETBuJZTiJPPl5/SMM16zb3ZSdUTNYvXiw8wx4zPk6hxgpW6H2b5ndIdTHQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=udSb9xLINvOJhmnDoW1lxQUMbKH/f0qmzN5/l77ni3s=;
- b=ha9fyI82YGH909dbubsMyUH+f76K9QYLqjL/n7ag/5JQdCzjMUB7mLElRGBgl71LR0LXbElN6vF5mocLDaovUK5Eul+tXn2MDEf/Xk4gzKCtRQ8qP04akoXJXOK3sPGZBB3Kf0Pu/PZr4iqpWRql0MPclOs+G8lZQdEamEJ3ZyPhkfPpw0fioDq3nkhZLOZNOj3vZ341KOhWBQtZ3XhyJawzA8iPBnQKFdjM8ELiw28yk4ONqe87Fj9P1zEyUn867BBFSFmA0MeGSnxxSrFM7nVC/XR1Hedsw2QtWK6usICFvTyDsDJZRgjlW0bSFLxy3diiaAuQPjVRr17xp3RpvA==
+ bh=GGg+shqPUMvDVQzuMJEqgQzgk/VkJ8ceItn9Nb5O4UE=;
+ b=Ddl7K3qayIVhjPPWLXzy5EICgilnvIfMeFqpGu95Jl4SGHXHSIH6LLZ7byEQ9r77T8zsXhk9CZ2MOKEIFGwBK3k9qmIT1SLmEqQxGYQ6tO7h3raj0/F4Q1OrLYEUEb+6jQZpmCjvZZ2Hd2rIvoevovzUz760uwfhcjAL3s77dKx2F1XyyUG6aULsGiMNMLSDQh2J4B2OsMNaeiKhaLMbCvQZDGSbT7OySTAYnyXn3TEIYUCmFsjQ+7l+mqmNxRBc7XVG33ufOgAe61RqYAudPLpEL/v47e1Rqe90XxNvxHgttpHfx7MkhlhNDLf9dfRNcfdQTdKnEOnXAsef/Rs0jQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=udSb9xLINvOJhmnDoW1lxQUMbKH/f0qmzN5/l77ni3s=;
- b=HQ2/sQrm1wOEhOmui1nGtin5GgyC1Kaa+3Pr4QmTSvks1rLKRR016tND3aG2mtyRwQ8qoK7VmSPYmLIoigRhFA2VGs/L7Mm+x/mCANJZTYrxq2O0cBaPAwhftXmARFgrKSnDzyUBfLCQOcUaMRG7tFzoAuVNTQUDzKmkzCP84eXp7UHoCErgqWZLMCI0hhX7/t9pukLdVFNalAVTgglcimuB3P8dq+g2+xS0xmMxtInoNyw6E9G6zNDRZEu0V5pgWoqHR+nj0FPzR8ceu6JGSeHjSgd1bWZDtRMEsOQGv14o9IS5qJjZt7s/3a9yYv6F9qeGVOdhH9O4nM/ajcMdJA==
+ bh=GGg+shqPUMvDVQzuMJEqgQzgk/VkJ8ceItn9Nb5O4UE=;
+ b=V++nu0qXNFwfv9l523WCQPHgrwaTfCKdGnFaPw2Lep0y3WCM//HynpEKEW+IFZvbZd9wyT+g8oQk03oYUcP2//JCJssJB49081CudlIgDXeX+XDNrBi7Qv0mQ9Z+Py7vURUtW4pkebL5YEdWIKcbxi12up/Y8NYBKRhcDIyz50DcKGhv0XNxgloGFl1yHhS+frC+9oHqxOTU8hTk9EJoB8FK/cO0X5/6CyKspbX+Q0On5IRK/6ghh0ay2jD1eytVf6Qg7llttqcK5iS4JMwUNV4mw6JQyjVWQtlciKixUBlCzAYRiG0fZJvNFvYsi49/QmOjC5jLvR66C02GzcJmjQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DB9PR04MB8122.eurprd04.prod.outlook.com (2603:10a6:10:25d::17) with
+ by VE1PR04MB7488.eurprd04.prod.outlook.com (2603:10a6:800:1b0::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.19; Mon, 10 Feb
- 2025 19:42:31 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.18; Mon, 10 Feb
+ 2025 19:47:46 +0000
 Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
  ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
  ([fe80::9126:a61e:341d:4b06%6]) with mapi id 15.20.8422.012; Mon, 10 Feb 2025
- 19:42:30 +0000
-Date: Mon, 10 Feb 2025 14:42:17 -0500
+ 19:47:38 +0000
+Date: Mon, 10 Feb 2025 14:47:24 -0500
 From: Frank Li <Frank.li@nxp.com>
 To: j.ne@posteo.net
 Cc: devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
@@ -84,92 +84,91 @@ Cc: devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
 	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
 	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 08/12] dt-bindings: spi: Convert Freescale SPI
- bindings to YAML
-Message-ID: <Z6pWmSGmyv9+bG+m@lizhi-Precision-Tower-5810>
+Subject: Re: [PATCH v2 11/12] dt-bindings: nand: Add fsl,elbc-fcm-nandy
+Message-ID: <Z6pXzEG74yq2oy3Y@lizhi-Precision-Tower-5810>
 References: <20250207-ppcyaml-v2-0-8137b0c42526@posteo.net>
- <20250207-ppcyaml-v2-8-8137b0c42526@posteo.net>
+ <20250207-ppcyaml-v2-11-8137b0c42526@posteo.net>
 Content-Disposition: inline
-In-Reply-To: <20250207-ppcyaml-v2-8-8137b0c42526@posteo.net>
-X-ClientProxiedBy: SJ0PR03CA0145.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::30) To PAXPR04MB9642.eurprd04.prod.outlook.com
+In-Reply-To: <20250207-ppcyaml-v2-11-8137b0c42526@posteo.net>
+X-ClientProxiedBy: BY5PR16CA0022.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::35) To PAXPR04MB9642.eurprd04.prod.outlook.com
  (2603:10a6:102:240::14)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB9PR04MB8122:EE_
-X-MS-Office365-Filtering-Correlation-Id: 65a69546-eaa1-474c-f470-08dd4a0b0e9a
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VE1PR04MB7488:EE_
+X-MS-Office365-Filtering-Correlation-Id: dfb5ee90-c525-45cf-9d8e-08dd4a0bc62d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|52116014|1800799024|376014|13003099007|7053199007|38350700014;
-X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?9yA0vf4Qa0c3AOl48u2ihjiJfevwHEIByngKmCvxiQ1pzOKUKb0FyA5I/V?=
- =?iso-8859-1?Q?tpAm8FDokHvqKB/mekrRZyAIkoqVVo4Hic5Tz9Oqqf1kkx1UnjNj5Iz+B6?=
- =?iso-8859-1?Q?nDD+N511H59Y2M95+1wj2TeDUuGLXQv9r5S229MYIaYGFAV0CpNJfORL1b?=
- =?iso-8859-1?Q?9imm5mcOmUSK9buQnhJ4Pshn6URtbnxnuw0UMz3zGzEfJh0mpkp7ZdyoRK?=
- =?iso-8859-1?Q?EpxiDUS0hYUiPtK5bd6sg4S8GbV22bJi352g7S2REvibn7m15vKAAgOa61?=
- =?iso-8859-1?Q?Aju+zIc7OVviiWl1hENrznxBsN+H+7mxNccihI59KMxBatqMUhB6vDDP9F?=
- =?iso-8859-1?Q?fkBsdqCxF7LPlhGOYETGixrHhljtEjBndF91Ny4SPr3rAegTU9eA5cIDdi?=
- =?iso-8859-1?Q?WRcIEFhhafsma3r2vJz5PSYvGMztXsdyqszttPFJJkTvwYgHy34R5RyWOy?=
- =?iso-8859-1?Q?K6xEU9riYFXSgK3CWBU24pCq8c2OB/sgq/PQjcS7z6yNuiqvU3wnU+idwh?=
- =?iso-8859-1?Q?tzcNykir2MFGSl/v86ta/L8W05lwJf76NkrYnslj/zmeWIZW8UTMuoZpqo?=
- =?iso-8859-1?Q?R8XFM3zx7gsQAZe3jVjwn1evmIz9eq9Y5lOcAKjzRt1xZ/Nk/0+UcdNrGv?=
- =?iso-8859-1?Q?Qk2EifeNUMVHsiYYH+yKw+3awyuQrEUsc8bz44Xd2eCywyi0IFi01OEAns?=
- =?iso-8859-1?Q?AHBeVIAyEBiYv1X2+5uXMtEY+lxKqxGfN4ZOVctcfAIYfG/aRqEciBsyww?=
- =?iso-8859-1?Q?JYDISdEcP5Dw4BUNqEm4Rf6W/85HVlPr/LMvn+MmGBiUJFRdEYPB2TgxFx?=
- =?iso-8859-1?Q?afrce0etvO3+f88bfeZnCvY/qPnZ5EBH1yJM9TcR/cnxzFwMNxyoMHVUA1?=
- =?iso-8859-1?Q?Rg69JQGA1MnKhnAGwUUB17Yv/2iDDr9KxBK3JtmPsBHFtCTfjWdm9zW4M0?=
- =?iso-8859-1?Q?nMEvxRUMLR8YaWr11cvCmqm7EoQyJj7QehYp/0bH8jG1zq7WZRXGn0rZrU?=
- =?iso-8859-1?Q?gOCHScyM38X7liRj8AoNgFLPQe/IeTrRokxTB6Uughm6iMyCRU59ZbDrK+?=
- =?iso-8859-1?Q?Wi3ig0OIyxM/eYBYQmq7fcwhg+I94lyPq+M225AyxQ0sOz1PRukF7g+aFG?=
- =?iso-8859-1?Q?RND4vf6dT6bfuX76l291wOrlt+qjlzPl+QOpy16zW3orTKZ9SrTOudrifM?=
- =?iso-8859-1?Q?lazpGCQ3wIdppxCICoxZo+lt9PJIjKkk2piFcxd7G/XlMQZRI6j7EuRVjb?=
- =?iso-8859-1?Q?0p5IqKz5GO2YoElW7IAR6rpZ5WiO9TGM+iftEbV9JsAzsA6kZ2QUtpbzLU?=
- =?iso-8859-1?Q?An+K4fs0OJF2qdReT5b1xwiGnbe3UINQmEGW//iRDHZTPRlf9rhsx4vQKf?=
- =?iso-8859-1?Q?mrv3sgYRZ5+Hay7LMZvizDt5cs23R6mUQuuPbtfx7TTV5zyqPBCzcXdY/a?=
- =?iso-8859-1?Q?0sdosl+7y4t8ILTB?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(52116014)(1800799024)(376014)(13003099007)(7053199007)(38350700014);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|52116014|376014|366016|7053199007|38350700014;
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?CDI51zjioheQ8aN9Ag/MSehZKaQ8CQuAbRxHZpOSoBglyYD93+28AYNdwg?=
+ =?iso-8859-1?Q?LZuX75lP2FaURnGeVQa6HnUTGVmcDldDgyfisIvwdxcdjCe9yQAj7pDzpA?=
+ =?iso-8859-1?Q?HrMXJmguuyhLEQH40rgUoJ8GQ0r5G9mh0UWwpHTKQGN1Eyv6p//fZkD4HM?=
+ =?iso-8859-1?Q?PZLvaMS8TMyWzgYPQaDTD90Wfq+DpS0nld6zj0VXCTOc5sjv7kCFX9X1jf?=
+ =?iso-8859-1?Q?SKzoqvMPD16fVNOPa8tQAVcmYhKutJ5eIgb4vjIfqKtvpCw6mAkGZHuOms?=
+ =?iso-8859-1?Q?OD3SlxSFBPhHvrem2RP+5KKRyAa/WvX+yr+fOhizOn64SHU9SIxW+g9Hwr?=
+ =?iso-8859-1?Q?hcbuJQOc8j6Vox63TYSgqXyNzJSZHXvNQCqZUc/DkX910ZbJRpE+XRiAKA?=
+ =?iso-8859-1?Q?I2K2ePQ2UTSyVN91L7nUpMxAbM3RxmdOUTAc+ukVLHchc1Rpr7cBjXqmzN?=
+ =?iso-8859-1?Q?o8jQO8byy9H57QsrWbsjNhV5qsjHnI4dTX+gvCfcoFzlp4yWpSN7vqQGiO?=
+ =?iso-8859-1?Q?Qq5fJuaQJU5JNhWw0dTid658WqcTfnwrx64rCghLktP4WtHZ/JH6wIZiFG?=
+ =?iso-8859-1?Q?odUwK3jH2+vlzRJxWWJaGCYgxfnI74HlHBukU6fT23qQwHWdJ365YFtULH?=
+ =?iso-8859-1?Q?cZrbhcrFLPy4gc5Ey0Rh29ZpgzD83zu/XLawsorLzq3hp0FW7I/O1RExXw?=
+ =?iso-8859-1?Q?dtUxYBzt1tQn/gEYtTPyaLtvw/d1xEbMEZXPbQaC0c2XL/OV/D+POC9bqg?=
+ =?iso-8859-1?Q?kDZkz1yQdqv7X+AcytYcILSh0Cvv1ybu++A1erxV/RfZJHcpGTOCRFkqU0?=
+ =?iso-8859-1?Q?sa5EHYQ2fxo4pPBvQc7WJY2i4DDPG1TlQhiKSmMd1kHROqQzWCvCodjAaM?=
+ =?iso-8859-1?Q?KINt5qy+qTxiEYvuR55EOYJ6ybFeuOYKsmaB6Or6Rgi4jMTHj+J6rjlsRs?=
+ =?iso-8859-1?Q?6/Jx4w4KrLooMA7MZQO8y45aSDbA4AaHpOOxWE7CeRq5BW+d1HmQLC9JuC?=
+ =?iso-8859-1?Q?5AKKpDyPQy4tPjI6HBjXtv3A/YkXxatxueH1tmY8qXCuRXlgGP/UbQsDIp?=
+ =?iso-8859-1?Q?w8HYSafhr8//oe1E7HLHJzdWuAK4i7fyGm8NJR71Q++W/5tB6tIVkMDxdg?=
+ =?iso-8859-1?Q?iIQeUSN51vTWPmQSRKakIH2BcwFdEaas/T/cA6c2chzCBcbw4iu3cxb8a9?=
+ =?iso-8859-1?Q?kjWsTH6dooQsClS4u3OezEr3qbtS1hrbuJuLsQLa4xA9gPBHQC/xFf7aBk?=
+ =?iso-8859-1?Q?IhXDa/VN0Mts1vc6vvZH2XYau9ORizNJimZK1/ndEde8GQTRztUf2AJeos?=
+ =?iso-8859-1?Q?jJFGrdJROUJCIjqNXC0RJW3F10hHwgRo0yK3LWLDrn7UnR3g497uH1I6Vx?=
+ =?iso-8859-1?Q?sTMuIB1Amx8wFTIiqg9PGeD95hiqVzInOIXbE4jtffVmOSpR0T3atV9/+r?=
+ =?iso-8859-1?Q?sOi7OnFGR8SWruUA?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(52116014)(376014)(366016)(7053199007)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?KLJ98DmBZgXzoZK+Bh5Dp793Ualmc6JP7pmNoT5zTDeMmqqwBAhyUSPaf4?=
- =?iso-8859-1?Q?XeC7NfoCuaMjBc2x5F/DjRjC/eH2+fwSQ1iD8jyhzN0/+dGCk26LSwf6eC?=
- =?iso-8859-1?Q?po8n6vHyBtUzdvhLke1avxxaSAto7R3D7EanhgK3TmOZlsCxcH/VZItbup?=
- =?iso-8859-1?Q?eilUHyoYfTxqwUZssKSTCq7fNhFgV1xA7rzVEXepY3spjJKpgeFKdNDWVg?=
- =?iso-8859-1?Q?FBqq59TzHvWqSEPa7rBkfTeXVwzXkg4pgQm/g4mzcQ+fOt+rZB//HslPsa?=
- =?iso-8859-1?Q?mEri+fkicKi84th4zy8ZdWoDGMkJhlivmila5XlVmXxncsxA2NOzQgLd/a?=
- =?iso-8859-1?Q?7TCgVOl+BY4hHNub5BjpoBO67x8jaFtcpU/HhcsF3uRZu1o63xS7HIxHek?=
- =?iso-8859-1?Q?qYnlvnwuRlYzbI9NHTGYivztPbadO8+NJTsVoaOWkiFXPdswwZblr4GMpd?=
- =?iso-8859-1?Q?S3kabct7aF3k62HAQKLnmRIndhvMP4GvG1B4K/DuR4A7pdbmpTdsqnrTFp?=
- =?iso-8859-1?Q?eM4bkWm7OPq2wDYNFfEYRb/xuV/O7AIaZ+aQs/Ek4tw/x8adZtPGAlEUzM?=
- =?iso-8859-1?Q?cavI1p2i7Y98D7D+KmXYniEyBhVV973d0Vz04w2HVr5GlE+ueiZzEPolPW?=
- =?iso-8859-1?Q?CnOTcQwsl53bQGEJOYYXicwrqeoNWgExKFxQczMEJYolM/UKwJWcvWSfin?=
- =?iso-8859-1?Q?fRMb1wEsiCpS0tCcL3hSsrMUTQSQ8h702JoHGLsWr2idKObAauWp3Hog07?=
- =?iso-8859-1?Q?ISCu4r12R0M6/k2KByHtv6MgcklFKFghg+nkajrc0OOqiYLAUcUqnHJcym?=
- =?iso-8859-1?Q?5DcQsCa5twej3ymjYWKhQhqoc8OES/xnPHBbUefQYEn8euuj4jdB1ykVw1?=
- =?iso-8859-1?Q?sm7A75rVgWySpwixUzGbJZ0nQ9EJtWeuNb17DAIv13/NkZQO8C6MJDOUKa?=
- =?iso-8859-1?Q?BVibvx0Xb/ADeg/SBcntbF8bX9PB4hM4BS+l6GU8bhpOti8HQlMvQ+H0WS?=
- =?iso-8859-1?Q?f0kSqgtOscYEweHsrp+iGhxMbkPA0tBZ5yL+1sWBgvFiQqy/fD7zYebv9f?=
- =?iso-8859-1?Q?gy0qMs33ed6gWY6Afd46IbWCVkMgc9jqMqEyJ+q9o1alWRoFNb79x6iA/p?=
- =?iso-8859-1?Q?PDKwfIITfYNV4r+G+9uFY1rZc7IF9ZVh19upPElSIeTFf49u2rjQzELIB4?=
- =?iso-8859-1?Q?Ko9GEb3tDF1ebzvgb5qlknVK9okOHM898sNnZaMiuQEn6qDM1G5sCo8iuN?=
- =?iso-8859-1?Q?zCZzkFSOu8i7P3byms4l0qL4yc+pJHNhBBJ9gwRqOsnxhTa6D9f6CCoe9P?=
- =?iso-8859-1?Q?mCeqzBqSq5NTuYQv6970djrn4jzfhWOvIIgDDgNBIFCxJpt6/YbRT4NlUj?=
- =?iso-8859-1?Q?/gxbso3UWGT4K0Nd65zo81611MNe9uRJzKA6TB88xNU4emH+1ReK1bElEU?=
- =?iso-8859-1?Q?iBdBVhDOtC+PLv51rVhv90nYeNG26MY+esR1S4vstdUaagf4Y4QUPwyH5w?=
- =?iso-8859-1?Q?E882GKThg1uWRDyRCeR5anSrrRRS3cxBvvYDappEKlrbGSuFLnscbwO+M2?=
- =?iso-8859-1?Q?faOQGhSNm1ZxdFHyjWzfs5Tau+zyqg2tSqxr/VwJIOChtGZ3afuRX8drbz?=
- =?iso-8859-1?Q?1X3o94NdRsBDTomVj/VHKCfGWIsZnav3wj?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?aLatRDf7Jc4KO0JWTiFu7M26T2qew/P4guf6ueetqqDqd33YEzNawrEKub?=
+ =?iso-8859-1?Q?PlYfQOiyqnhnKNJdSJeErsW5qIDA5VX4UZiBGO9wsvw0PnbXpFii0Gr267?=
+ =?iso-8859-1?Q?WC9psseI61dumoLctLrpeFErRE/VHxQrelu24pc5trEaZAQzk+F8I3h61B?=
+ =?iso-8859-1?Q?1EFk0hjws1qeL4daJUt8EiZsaxmChVp60O6kIZiejD/JFQtyfp99Z3QCMz?=
+ =?iso-8859-1?Q?H81Vovfioa02Zm9Z8b5SYj8go7Qwp8wy6PprFxxLb5vN3oo3qaLqIbED1G?=
+ =?iso-8859-1?Q?2AZasWh62xFH/Jmw05SyQxmC149Yp3cKZNv9PpfSCHY0LPDt9HhjXt8u/Q?=
+ =?iso-8859-1?Q?wyMXzRpxiMASpi7jfZJKd6XHptJ/FpD4OFbZD55I59YoXWZXdNZzR+vPJ9?=
+ =?iso-8859-1?Q?XUVj/w2+/fMTU0TVljP8fOnen8aK0ZN5s1+Yw8cYGDorG91i15aSoqabUI?=
+ =?iso-8859-1?Q?nU6Yzc0tWMFc7xSM6nyC2YE8tVwNypLOHysID/gyJAbqn5w+JV6pr6yn7K?=
+ =?iso-8859-1?Q?5XzMwnFiU4cfiDnFgfkKyMCJYP7f3C16jTrf/gZcDa+nmfHikrwBZ5LLlz?=
+ =?iso-8859-1?Q?Om0bJc/8dawCNgPjFZYE9pPJpWTAQ8pDO2o9C57c2uycH22cvSlSTw1soT?=
+ =?iso-8859-1?Q?LV9iP3BoYBbSWuXCplyYHz+Z+2wLQXHAYc/tdC9K38AvGI4QA6AYnOl3S5?=
+ =?iso-8859-1?Q?5HOchhjflKh6yl1kf0CnQRCuNQQkuU4/jRT0ENadwfO3vJy5CfuzMy8vG5?=
+ =?iso-8859-1?Q?sgeQKRAokenlaTfsCOP3iDuflFKOOz8cUH6Vc5mZaCgg8bGNGN+svzESpV?=
+ =?iso-8859-1?Q?gr66GBaF/gqJrrHQ5nwlq78O3wnLikyopCpKbzi26VwthhTOr2SHoKIEOq?=
+ =?iso-8859-1?Q?FqkzS0mX3/Kz3a5mFVGH7hITXXW3rEOvLCRHBSdNTYNFhpE+Qg/gIAPi7A?=
+ =?iso-8859-1?Q?IBoPvz/d20yZiMdA1KD9+M2KyKsOH8vHLMRWYsi3Prl8tmcG2EuXezLfrK?=
+ =?iso-8859-1?Q?A5sdU50D63nMRZ7qhcOAK6rRAHQGZWOTjjbJ8k1zQrJp0l39S5+ACF/Rsx?=
+ =?iso-8859-1?Q?lVVhIz/2HE08KW1pA+v22x/YtTMvyi+asgbJHoQRYpcPKv5W4rW6i1+/ej?=
+ =?iso-8859-1?Q?6QidlTZ3L/kCFdCBaTUlmLNsScWGK7Tt+kKxD70gauG/sXc0i76Fopl+SS?=
+ =?iso-8859-1?Q?TuL667Jaocfr2ZWb9RBhZI48b0xB4W/PL6EI7fZZHekLgLMEuGEetaekvE?=
+ =?iso-8859-1?Q?PBK9x3gF8kPTuVht6u8JrZO8YnwaAg8ZhEs9TSXLMzpHX73/E+GObIoehH?=
+ =?iso-8859-1?Q?8EEOrm5A/A0Ly8d57ypGveoNTpTeLbvBYPL1mjDF2wou3jWSqEefOOVIsj?=
+ =?iso-8859-1?Q?11eoubqGCsxNcqUonj+LRfigwtq0NAgatvt4fcsBSCxZK4NvlR3yLv4eVy?=
+ =?iso-8859-1?Q?ZtGwInp5weMecDSXHIL2MDsq+nx13XoSKljp87q9w28bxvbqmcUkf71xvO?=
+ =?iso-8859-1?Q?RcWSHd42fzjWaaaajTeSx5Vh/FwFUDIaXHbQjIiBJ92EAYqxhKTAg24D8k?=
+ =?iso-8859-1?Q?lC9B+k4l+Yq0bUL6Y2tnflmgKhZWs6ahdYn0y2OmzWUh9Vp0SwEiwhRCiX?=
+ =?iso-8859-1?Q?oIYC/85q8KG+4=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65a69546-eaa1-474c-f470-08dd4a0b0e9a
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfb5ee90-c525-45cf-9d8e-08dd4a0bc62d
 X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2025 19:42:30.9048
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2025 19:47:38.7350
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qclN3jmrPcOO+vHarLyblmCzb7LhmIovYLe/KHkANJGyAbiSRjkZC0nf9f2poJCOpK1Euyj70COZBVVWWl4Hdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8122
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6azSGPEyivsQBpX40uffB6mjdDZ5jJdIo5Qx3EHyuMuc5VTeXwWyTvIfGchdQtRxPZ6T0wq8gjv0MiJNv4M+rw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7488
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250210_114236_563463_DB491E37 
-X-CRM114-Status: GOOD (  22.85  )
+X-CRM114-CacheID: sfid-20250210_114751_842149_0E76DA7D 
+X-CRM114-Status: GOOD (  21.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -186,268 +185,111 @@ Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 07, 2025 at 10:30:25PM +0100, J. Neusch=E4fer via B4 Relay wrot=
+On Fri, Feb 07, 2025 at 10:30:28PM +0100, J. Neusch=E4fer via B4 Relay wrot=
 e:
 > From: "J. Neusch=E4fer" <j.ne@posteo.net>
 >
-> fsl-spi.txt contains the bindings for the fsl,spi and fsl,espi
-> contollers. Convert them to YAML.
+> Formalize the binding already supported by the fsl_elbc_nand.c driver
+> and used in several device trees in arch/powerpc/boot/dts/.
 >
 > Signed-off-by: J. Neusch=E4fer <j.ne@posteo.net>
 > ---
 >
 > V2:
-> - add missing end-of-document ("...") markers
-> - add missing constraints to interrupts, fsl,espi-num-chipselects,
->   fsl,csbef and fsl,csaft properties
-> - remove unnecessary type from clock-frequency property
+> - split out from fsl,elbc binding patch
+> - constrain #address-cells and #size-cells
+> - add a general description
+> - use unevaluatedProperties=3Dfalse instead of additionalProperties=3Dfal=
+se
 > - fix property order to comply with dts coding style
+> - include raw-nand-chip.yaml instead of nand-chip.yaml
 > ---
->  .../devicetree/bindings/spi/fsl,espi.yaml          | 64 ++++++++++++++++=
-+++
->  Documentation/devicetree/bindings/spi/fsl,spi.yaml | 73 ++++++++++++++++=
+>  .../devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml | 68 ++++++++++++++++=
 ++++++
->  Documentation/devicetree/bindings/spi/fsl-spi.txt  | 62 ----------------=
---
->  3 files changed, 137 insertions(+), 62 deletions(-)
+>  1 file changed, 68 insertions(+)
 >
-> diff --git a/Documentation/devicetree/bindings/spi/fsl,espi.yaml b/Docume=
-ntation/devicetree/bindings/spi/fsl,espi.yaml
+> diff --git a/Documentation/devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml=
+ b/Documentation/devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml
 > new file mode 100644
-> index 0000000000000000000000000000000000000000..c504b7957dde39086ef7d7a75=
-50d6169cf5ec407
+> index 0000000000000000000000000000000000000000..1de97bb24fa4a83e2ea5d94ab=
+822dd0e37baa102
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/fsl,espi.yaml
-> @@ -0,0 +1,64 @@
+> +++ b/Documentation/devicetree/bindings/mtd/fsl,elbc-fcm-nand.yaml
+> @@ -0,0 +1,68 @@
 > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/spi/fsl,espi.yaml#
+> +$id: http://devicetree.org/schemas/mtd/fsl,elbc-fcm-nand.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Freescale eSPI (Enhanced Serial Peripheral Interface) controller
+> +title: NAND flash attached to Freescale eLBC
+> +
+> +description:
+> +  The Freescale Enhanced Local Bus controller (eLBC) contains logic to
+> +  interface with NAND flash, called the NAND Flash Control Machine (FCM).
+> +  This binding describes flash attached to an eLBC using the FCM.
 > +
 > +maintainers:
 > +  - J. Neusch=E4fer <j.ne@posteo.net>
 > +
+> +allOf:
+> +  - $ref: raw-nand-chip.yaml#
+> +
 > +properties:
 > +  compatible:
-> +    const: fsl,mpc8536-espi
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - fsl,mpc8313-fcm-nand
+> +              - fsl,mpc8315-fcm-nand
+> +              - fsl,mpc8377-fcm-nand
+> +              - fsl,mpc8378-fcm-nand
+> +              - fsl,mpc8379-fcm-nand
+> +              - fsl,mpc8536-fcm-nand
+> +              - fsl,mpc8569-fcm-nand
+> +              - fsl,mpc8572-fcm-nand
+> +              - fsl,p1020-fcm-nand
+> +              - fsl,p1021-fcm-nand
+> +              - fsl,p1025-fcm-nand
+> +              - fsl,p2020-fcm-nand
+> +          - const: fsl,elbc-fcm-nand
+> +      - const: fsl,elbc-fcm-nand
 > +
 > +  reg:
 > +    maxItems: 1
 > +
-> +  interrupts:
-> +    maxItems: 1
+> +  "#address-cells":
+> +    const: 1
 > +
-> +  fsl,espi-num-chipselects:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [ 1, 4 ]
-> +    description: The number of the chipselect signals.
-> +
-> +  fsl,csbef:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 15
-> +    description: Chip select assertion time in bits before frame starts
-> +
-> +  fsl,csaft:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 15
-> +    description: Chip select negation time in bits after frame ends
+> +  "#size-cells":
+> +    const: 1
 > +
 > +required:
 > +  - compatible
 > +  - reg
-> +  - interrupts
-> +  - fsl,espi-num-chipselects
-> +
-> +allOf:
-> +  - $ref: spi-controller.yaml#
 > +
 > +unevaluatedProperties: false
 > +
 > +examples:
 > +  - |
-> +    spi@110000 {
-> +        compatible =3D "fsl,mpc8536-espi";
-> +        reg =3D <0x110000 0x1000>;
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        interrupts =3D <53 0x2>;
+> +    localbus {
+> +        #address-cells =3D <2>;
+> +        #size-cells =3D <1>;
+> +
+> +        nand@1,0 {
+> +            compatible =3D "fsl,mpc8315-fcm-nand",
+> +                         "fsl,elbc-fcm-nand";
+> +            reg =3D <0x1 0x0 0x2000>;
+> +            #address-cells =3D <1>;
+> +            #size-cells =3D <1>;
 
-Use predefine's irq type macro.
+needn't  #address-cells and #size-cells because no children nodes.
 
-> +        interrupt-parent =3D <&mpic>;
-> +        fsl,espi-num-chipselects =3D <4>;
-> +        fsl,csbef =3D <1>;
-> +        fsl,csaft =3D <1>;
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/spi/fsl,spi.yaml b/Documen=
-tation/devicetree/bindings/spi/fsl,spi.yaml
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..db65c0560c32f32324a2aaaf5=
-3c0044a4b56f3d9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/fsl,spi.yaml
-> @@ -0,0 +1,73 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/fsl,spi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale SPI (Serial Peripheral Interface) controller
-> +
-> +maintainers:
-> +  - J. Neusch=E4fer <j.ne@posteo.net>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,spi
-> +      - aeroflexgaisler,spictrl
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  cell-index:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      QE SPI subblock index.
-> +      0: QE subblock SPI1
-> +      1: QE subblock SPI2
-> +
-> +  mode:
-> +    description: SPI operation mode
-> +    enum:
-> +      - cpu
-> +      - cpu-qe
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clock-frequency:
-> +    description: input clock frequency to non FSL_SOC cores
-> +
-> +  cs-gpios: true
-> +
-> +  fsl,spisel_boot:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      For the MPC8306 and MPC8309, specifies that the SPISEL_BOOT signal=
- is used
-> +      as chip select for a slave device. Use reg =3D <number of gpios> i=
-n the
-> +      corresponding child node, i.e. 0 if the cs-gpios property is not p=
-resent.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - mode
-> +  - interrupts
-> +
-> +allOf:
-> +  - $ref: spi-controller.yaml#
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi@4c0 {
-> +        compatible =3D "fsl,spi";
-> +        reg =3D <0x4c0 0x40>;
-> +        cell-index =3D <0>;
-> +        interrupts =3D <82 0>;
-> +        interrupt-parent =3D <&intc>;
-> +        mode =3D "cpu";
-> +        cs-gpios =3D <&gpio 18 1          // device reg=3D<0>
-> +                    &gpio 19 1>;        // device reg=3D<1>
-
-
-use predefine gpio level macro
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
 Frank
-
+> +        };
 > +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/spi/fsl-spi.txt b/Document=
-ation/devicetree/bindings/spi/fsl-spi.txt
-> deleted file mode 100644
-> index 0654380eb7515d8bda80eea1486e77b939ac38d8..0000000000000000000000000=
-000000000000000
-> --- a/Documentation/devicetree/bindings/spi/fsl-spi.txt
-> +++ /dev/null
-> @@ -1,62 +0,0 @@
-> -* SPI (Serial Peripheral Interface)
-> -
-> -Required properties:
-> -- cell-index : QE SPI subblock index.
-> -		0: QE subblock SPI1
-> -		1: QE subblock SPI2
-> -- compatible : should be "fsl,spi" or "aeroflexgaisler,spictrl".
-> -- mode : the SPI operation mode, it can be "cpu" or "cpu-qe".
-> -- reg : Offset and length of the register set for the device
-> -- interrupts : <a b> where a is the interrupt number and b is a
-> -  field that represents an encoding of the sense and level
-> -  information for the interrupt.  This should be encoded based on
-> -  the information in section 2) depending on the type of interrupt
-> -  controller you have.
-> -- clock-frequency : input clock frequency to non FSL_SOC cores
-> -
-> -Optional properties:
-> -- cs-gpios : specifies the gpio pins to be used for chipselects.
-> -  The gpios will be referred to as reg =3D <index> in the SPI child node=
-s.
-> -  If unspecified, a single SPI device without a chip select can be used.
-> -- fsl,spisel_boot : for the MPC8306 and MPC8309, specifies that the
-> -  SPISEL_BOOT signal is used as chip select for a slave device. Use
-> -  reg =3D <number of gpios> in the corresponding child node, i.e. 0 if
-> -  the cs-gpios property is not present.
-> -
-> -Example:
-> -	spi@4c0 {
-> -		cell-index =3D <0>;
-> -		compatible =3D "fsl,spi";
-> -		reg =3D <4c0 40>;
-> -		interrupts =3D <82 0>;
-> -		interrupt-parent =3D <700>;
-> -		mode =3D "cpu";
-> -		cs-gpios =3D <&gpio 18 1		// device reg=3D<0>
-> -			    &gpio 19 1>;	// device reg=3D<1>
-> -	};
-> -
-> -
-> -* eSPI (Enhanced Serial Peripheral Interface)
-> -
-> -Required properties:
-> -- compatible : should be "fsl,mpc8536-espi".
-> -- reg : Offset and length of the register set for the device.
-> -- interrupts : should contain eSPI interrupt, the device has one interru=
-pt.
-> -- fsl,espi-num-chipselects : the number of the chipselect signals.
-> -
-> -Optional properties:
-> -- fsl,csbef: chip select assertion time in bits before frame starts
-> -- fsl,csaft: chip select negation time in bits after frame ends
-> -
-> -Example:
-> -	spi@110000 {
-> -		#address-cells =3D <1>;
-> -		#size-cells =3D <0>;
-> -		compatible =3D "fsl,mpc8536-espi";
-> -		reg =3D <0x110000 0x1000>;
-> -		interrupts =3D <53 0x2>;
-> -		interrupt-parent =3D <&mpic>;
-> -		fsl,espi-num-chipselects =3D <4>;
-> -		fsl,csbef =3D <1>;
-> -		fsl,csaft =3D <1>;
-> -	};
 >
 > --
 > 2.48.0.rc1.219.gb6b6757d772
