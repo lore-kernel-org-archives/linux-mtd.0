@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7139FC02198
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9428C021A1
 	for <linux-mtd@archiver.kernel.org>; Mon, 10 Feb 2025 06:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JcccxIHGPMWOZLP9fvCC98Eh0PLqcvdkPTZcm6kF5LE=; b=FBQYnhMNIzyzQx
-	Q3WjQMogaWfolEgkC7dxeBeoV1TifRipPlDeDvPATwb5X0zuB5fVan/gR5DkDWJwMylZ9h530vMHq
-	Bqq4r1x6RNsMiL6CN5wR0qMJnhjDu2qsRnXCyWLkGU0Y4nAAHA88E3eDnt8m1GOvT9+cmUsuOKs5p
-	ua6Wcao/C3QeDaXY96AfOd7KmOZunXwZewe6wi8Ofsxw6gKfzyfp5D56wi5OpyIt3uV+W+WG7LLGe
-	Vinwur5iMuV1pwQH2YLc1UMepS+f2DfF1tEV6HpyIB0RCCU2v7PUy6HK9xqo57ymRyDc+5iS9IpMi
-	VDAi2M+zrVfKHCwidFIQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Yixxh9WytEZO6qU6X7+R/jzT4rfWLl2Ir9ZcrDa6avU=; b=BlfeH3aQ6EedQg
+	3y130Ut2Jmgwj8middv+AbIklUTLBL96aFsm4U01LZnrQ4198L09nO/6mSu6WvatOj2rMy/t/0Z0y
+	4PAIbHMPmckjXukv+KLD7kpxiOHIg0Vm9jdXQJipianp2XlbN5jSI/0UCpnLGtBT++9NYwj0R0Gj1
+	wbO3sJVtWsf6G+buoC/kK5+7w2MCkMjEKghnaol83JcTWW3gbT9BNUHxuBSgQrG5AZYSlIZjovl08
+	5gv3NVfJqA8yWS1KbHjWeJlU9WQjUHsIbkhDdfGIdV+KNOjBjGmrOhNDezpoUkSIJhSjQa49GeuLS
+	U3kAg5ttFPDORBh4bESw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thNTG-0000000GOqg-07MT;
+	id 1thNTG-0000000GOqu-40ru;
 	Mon, 10 Feb 2025 06:40:42 +0000
 Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thMW2-0000000GIAh-20mo
+	id 1thMWH-0000000GIAh-2472
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Feb 2025 05:39:31 +0000
+	Mon, 10 Feb 2025 05:39:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739165970; x=1770701970;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Ksfd3sS+urRxMxMu37a3Dqzf3ivVB4yAYamRm8eK3LQ=;
-  b=b7nOkKV0xTlXG+Yfi+LoU5TmOAAcf26+RxCfMv68WEMO6cwes4ej2bMd
-   Wieuq/ieyaZav4zKWDPhOmYhDJBP5GjzGvX2rkW2mSBYbHp+ju+wTthXS
-   Nnmk7OZPeLArV473QSX0WBXppIjYbCActt9YesWNZ5o2TriMj2ubM/tQL
-   N2N/XuD9SuBoAuWNVp6t5r8yCx0PISKBTI1BNLdvcHbkvQpNpodtEE2L0
-   mFoFYG2ug/lK4eZweQO9GaawiJ5OIm6Iir5z6uYqpxOoCCsTbkpgbgl4P
-   54dgHcqQZ8k/2Q9eLZr94t2iAiD+BcyNL6J6bsbpg2hM7/UXG4kb3AsfE
-   w==;
-X-CSE-ConnectionGUID: Bgmvmtr9SnKO48c6JDMelw==
-X-CSE-MsgGUID: e85MIaL7RESJ4QPofT9PqQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11340"; a="43657913"
+  t=1739165985; x=1770701985;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=buG6voVc5zfk4HiKSZp19+HKiFIsBIA6Ww+wD6EEDD0=;
+  b=Q0r3cLW+0VpqEdkEZmfacVDpZMYOryGQDrcVznLaIWWcsyQFPRH4tmZV
+   SHzBc0Fkgd3HQcf6tttSCTrzU+KZZZ2NE+/NBwrDJraprEHcP3mQ1D8ct
+   zRDI+0CFXLx+8Xj7lv+28LhLhzpP18hHMq4dVhSR5O1jMnR+4yBhdCh0U
+   DEcFzSesAXNlHmbEerPdWdbHQJOvSkVhie7qWyAJB4YRro7GN6jQc6ka6
+   zZShhj06GVcJULmL3w9ZVn6t4sCRap4aWtivQYYVZYFuaXevtp9w1XPXW
+   Rs0mLZd2rFFO3ghYP01cIR3chzEBjse7fAbgl/OKBtHxgMj1IuW4Axx/s
+   Q==;
+X-CSE-ConnectionGUID: uwbaFZjQTXiMxidMiZ5+Bw==
+X-CSE-MsgGUID: C31rUNYkRwqrHxJvGO46dQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11340"; a="43657955"
 X-IronPort-AV: E=Sophos;i="6.13,273,1732608000"; 
-   d="scan'208";a="43657913"
+   d="scan'208";a="43657955"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2025 21:39:29 -0800
-X-CSE-ConnectionGUID: nlFPBAaWS96PEwA9yPo2Aw==
-X-CSE-MsgGUID: z8VdSwINTHugCccQgtorJQ==
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2025 21:39:45 -0800
+X-CSE-ConnectionGUID: ApGwRRFvRWS+8W6N15XrDA==
+X-CSE-MsgGUID: gbY2Fzp2SgSxQBdk4A1XfA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,273,1732608000"; 
-   d="scan'208";a="112318407"
+   d="scan'208";a="112318428"
 Received: from pg15swiplab1181.png.altera.com ([10.244.232.167])
-  by fmviesa008.fm.intel.com with ESMTP; 09 Feb 2025 21:39:26 -0800
+  by fmviesa008.fm.intel.com with ESMTP; 09 Feb 2025 21:39:42 -0800
 From: niravkumar.l.rabara@intel.com
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -67,15 +67,16 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: stable@vger.kernel.org
-Subject: [PATCH v3 0/3] mtd: rawnand: cadence: improvement and fixes
-Date: Mon, 10 Feb 2025 13:35:48 +0800
-Message-Id: <20250210053551.2399716-1-niravkumar.l.rabara@intel.com>
+Subject: [PATCH v3 3/3] mtd: rawnand: cadence: fix incorrect device in dma_unmap_single
+Date: Mon, 10 Feb 2025 13:35:51 +0800
+Message-Id: <20250210053551.2399716-4-niravkumar.l.rabara@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20250210053551.2399716-1-niravkumar.l.rabara@intel.com>
+References: <20250210053551.2399716-1-niravkumar.l.rabara@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250209_213930_531798_19C107E9 
-X-CRM114-Status: UNSURE (   7.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250209_213945_547783_3D36E9B3 
+X-CRM114-Status: GOOD (  10.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,37 +95,36 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
 
-This patchset introduces improvements and fixes for cadence nand driver.
-The changes include:
+dma_map_single is using physical/bus device (DMA) but dma_unmap_single
+is using framework device(NAND controller), which is incorrect.
+Fixed dma_unmap_single to use correct physical/bus device.
 
-1. Replace dma_request_channel() with dma_request_chan_by_mask() and use
-   helper functions to return proper error code instead of fixed -EBUSY.
-2. Remap the slave DMA I/O resources to enhance driver portability.
-3. Fixed dma_unmap_single to use correct physical/bus device.
+Fixes: ec4ba01e894d ("mtd: rawnand: Add new Cadence NAND driver to MTD subsystem")
+Cc: stable@vger.kernel.org
+Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+---
+ drivers/mtd/nand/raw/cadence-nand-controller.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-v3 changes:-
-  * Update commit message based on v2 review feedback for better clarity.
-  * Use dma_request_chan_by_mask() and helper functions to return proper
-    error code instead of fixed -EBUSY error code.
-
-link to v2:
- - https://lore.kernel.org/all/20250116032154.3976447-1-niravkumar.l.rabara@intel.com/
-
-v2 changes:-
-  * Added the missing Fixes and Cc: stable tags to the patches.
-
-link to v1:
- - https://lore.kernel.org/all/20250108135234.3107502-1-niravkumar.l.rabara@intel.com/
-
-Niravkumar L Rabara (3):
-  mtd: rawnand: cadence: fix error code in cadence_nand_init()
-  mtd: rawnand: cadence: use dma_map_resource for sdma address
-  mtd: rawnand: cadence: fix incorrect device in dma_unmap_single
-
- .../mtd/nand/raw/cadence-nand-controller.c    | 42 ++++++++++++++-----
- 1 file changed, 31 insertions(+), 11 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
+index 47950a0ac6d2..0b2db4173e72 100644
+--- a/drivers/mtd/nand/raw/cadence-nand-controller.c
++++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
+@@ -1863,12 +1863,12 @@ static int cadence_nand_slave_dma_transfer(struct cdns_nand_ctrl *cdns_ctrl,
+ 	dma_async_issue_pending(cdns_ctrl->dmac);
+ 	wait_for_completion(&finished);
+ 
+-	dma_unmap_single(cdns_ctrl->dev, buf_dma, len, dir);
++	dma_unmap_single(dma_dev->dev, buf_dma, len, dir);
+ 
+ 	return 0;
+ 
+ err_unmap:
+-	dma_unmap_single(cdns_ctrl->dev, buf_dma, len, dir);
++	dma_unmap_single(dma_dev->dev, buf_dma, len, dir);
+ 
+ err:
+ 	dev_dbg(cdns_ctrl->dev, "Fall back to CPU I/O\n");
 -- 
 2.25.1
 
