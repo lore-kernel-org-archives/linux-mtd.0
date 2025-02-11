@@ -4,95 +4,221 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E017CC021A2
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2025 06:36:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E5A3C0219E
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2025 06:40:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=P0GQWdVAIcZWzzxF19Y3v/RjGeDkW9gYegj/5q9yb24=; b=oUefByMZKysRbR
-	oV/k3KsdY0WnEXiHeIeJDKEjQjPs+nFoUw1/idyfooEuhJ28XJ7vGKK5aPZaKASChdWikkPsjAw3j
-	oacQexKt1yDurmzVGvoT7DBVOz5ncQDYsWbmTkj/BVJYRkG+e1M5k/0vA6dbKHioljkQR5bwdrgb5
-	asgHQkou2mSpc8F7RrA7cfp3utfzI6ppQ8JfRytqmU2pttbhXpkmcqBbLPbbQaLaxG5Jf3AHFVB34
-	2gpgbSKUCnO1cCSMi89JeGN8pf+73pQNzpk4Ev3i7JXQhPdZy1awASiBFUNvorIqp5H1Uc/HG2SPl
-	5ulxyNqu9XsFo8XfJDVg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:CC:To:
+	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6XSO/FGjSrEUD3GtVK7CuqWEotg9RTWLwMO1k25f5Jo=; b=EyWAu1FR4uhDstR4lns4QTnR9S
+	Y1HCN5e0nXZnCFEeBfwmPu8ilUoLK0ToAOvMR07MVB44JfOF/PCdrFQbNef75hRvNozspSh7zBvIK
+	32bu4vkCRdbwMEnFGbO96ci+hRI43jHx1BReK4e5kkTO7k5lb2iT5OcFEbTsB+HiVx+aU2oHah/G9
+	1SnhJw9/f/Cv7gNylih1POxKUi7tJ/tdiYBgj53pRlN922k4jHGimBZL27YdM1qWLcYpwvvkSICjz
+	Y8xeD4/fC7RnaNLnwhU6hLUdOEGurWaN/dK+Jm9Dz+aHjUDxpG9s4z/MvC1XMOXlvc9LS8MqWuQk3
+	B5qfxZZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thjsE-00000002iZR-1Fwm;
-	Tue, 11 Feb 2025 06:35:58 +0000
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
+	id 1thjwz-00000002jNl-1ASf;
+	Tue, 11 Feb 2025 06:40:53 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thjr2-00000002iGc-0WkC
+	id 1thitM-00000002bVo-24Mr
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 11 Feb 2025 05:33:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
+	:Content-Type:In-Reply-To:From:References:CC:To:Subject:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=ZoSs3aYtLbI+8UHaFMCMCJKoliayzUivnWpEIlWoDg4=; b=bRWAPbe4Kju3i6FxqB0YRMtsR4
+	TsyRC41VGCPc2YqIXgij4oS43lX3oElACUoEQmQ7yoi3KXt/0UWer6hlLFj3y3fdRwn/8kWvdAtGi
+	wUsqNiyCI0U1BELmNdkt14MlHvjAwA9p2gX2uP5YnHRAm9Ct+k2XZO0dB9LXnqAlkvHdp9M6ylhSZ
+	9NcLphq2c5UFSBJgATo4oemgqgdsUTs+BL3xhG8XK1C35IhrGlhNGf5sw1AQ9lWnVaR2igQmhYlV8
+	RQIcM0aSZpUSM+2cNJJl9VP6S55xf79g65pHxy9CRcDeE3O0ARwza2QlYFvlaIhKNRx74mPqV91r3
+	CZh85uqQ==;
+Received: from mgamail.intel.com ([198.175.65.19])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1thitC-00000000UDx-47GM
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Feb 2025 06:34:45 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-21f44e7eae4so84443195ad.2
-        for <linux-mtd@lists.infradead.org>; Mon, 10 Feb 2025 22:34:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739255683; x=1739860483; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vKRSXduA6DFDHyuX/Ea2ObIMjg6KIzYqpO3UD99KkoE=;
-        b=WO1+HFlfkMQJrQRoyh6X2qi94Ggt4wOnnl5DXqIe5UN2ykNLGT9gNzks9D5lZJnLph
-         cLsjyt2fWpDEyfdp+3jZWqCwpzc9FtJ4dnjxkBxOxBrbLGgp85Q56HyOHpE5jxZteu38
-         MZDrLqP3k1vgD7PO0iTviInqkikvi8f6zR4VOdHmyIfHqV+HswMbZphIp1XXFXGbGmSg
-         ZxHq2fUxg4bBMBOr3n/ly1JctUEHSss5XazkG2t8q0e+cCBVEU12Wfa3WRitQUbyD0Df
-         bE7a2K+fYNxziaVDCOHLP6asivxHWMMmmYfbasRg8YLwmRhVbR3C1TVPb1K1JtuN2FwU
-         u5TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739255683; x=1739860483;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vKRSXduA6DFDHyuX/Ea2ObIMjg6KIzYqpO3UD99KkoE=;
-        b=Hpz/N2PHBYqZ2qSdb3pA0rD/lg7OYUKAnk/RWXAP7QaSMn/r98jNLukiYTm/w52Vrp
-         4UgqMDzvdfMxHwt80hA9hYX3mGB6Dzjs4nPhNpwcQYRjcBZJ+cVg4e5OwmQaSIkdz4an
-         QmR+c9LuKcQ1YuSbzBn3KVoqnJzJT06ztMT8Jh8mAt7gB8c3L0V4MxmVmZLlDLfVmTk2
-         q5YxK5ekd+8ii2GTU6MMNZxd7LZ4isa8+O/EwJP65cv578sFRamINVY3xIr/ex4kAsW8
-         v9/JD0sR5wUoasfpTRf8gukqpGG5zoquc+nNp6z0Ci5beiNaCpHym+Kr7uGfXGIQvOve
-         2v8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWmlEU0KhfZZhwWxUTf6JiJH4jUY0zoalS4Bx58loUq5Kq275b+fKPl8XmJnH2DqXfwtjbQbWceaCQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz3kRD5TcKbGkQRaTAeUlba+2ga+bRr4SIUhGbCXOShPyIa9yvC
-	Knzv+U4IcgGH17/FelF3nEiE4rAlAkthYK4GheGCYm4IxvybWtcv
-X-Gm-Gg: ASbGncuUEinnRV1VMcwE4CFmtcyQ+EAOEVG0oiPPc/O/gktIe9YE2IYC4McAUgdYxn/
-	cKpVf8nmLOrjvrQJoQ7pNDd0d+aPndsr2bzlif1njASkTuPkL337MpLWGmOjrN28BWyS0mDN88A
-	q1+cmEFf00s/TUTomLUnAGPUWVetCJeGNbCVBj2jzLhGpeuTZ/jWobB8hmqZedEBYPAMjXIo/pf
-	VA5q8TllmQrHfbemSoA4r9jOSPs6mdDWbZX8j7A6OCUltnnqWKV97awXmU5fzi5vkwp9YIT2Jqk
-	zWfKN51AuG5nv8qwJtpmw152SGcMKexhWQ51q3k=
-X-Google-Smtp-Source: AGHT+IHrklW+WYbJjVKmrqHKY87kx0859k3rLUinVvuIp2riMk8pcr/rqcEpuwnu0N3fZqwHz4Qfjg==
-X-Received: by 2002:a17:903:2311:b0:215:acb3:3786 with SMTP id d9443c01a7336-21f4e6e649dmr286416455ad.19.1739255683313;
-        Mon, 10 Feb 2025 22:34:43 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3653baa8sm89405455ad.73.2025.02.10.22.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 22:34:42 -0800 (PST)
-Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 1922380845;
-	Tue, 11 Feb 2025 14:45:12 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: alvinzhou@mxic.com.tw,
-	leoyu@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v2 2/2] mtd: spi-nor: macronix: Add support for Macronix NOR Flash
-Date: Tue, 11 Feb 2025 14:30:28 +0800
-Message-Id: <20250211063028.382169-3-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250211063028.382169-1-linchengming884@gmail.com>
-References: <20250211063028.382169-1-linchengming884@gmail.com>
+	Tue, 11 Feb 2025 05:32:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739251975; x=1770787975;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=QIxR7p4WAsG8OFVlTLvYXrHn972Hnj4YcyQv7XaGf0s=;
+  b=iW/qqlD0pGx9Y6vt8AbJv/4A0tKu8WlF3YzdmZV3Eaupx1ErLwAYVZ9I
+   ESiIV5GAcPe+g0f+aEmyuXNxl2PYl39PVTpWNdy5/aKDTp+10pN9tK4MC
+   jUK8daT8Qc+jBQi0uUnxZ/Yqs5qe0E5XohrqBj9av0u9YMIGh1OBhU25D
+   bojuZcIQrYUaO42IEtPrdnOVSCV7ZirUgARoPDgw5FNIF1/iBVIGxhg0v
+   734njuqZonRntrzBwW4KXdxsUvibuGnn8jj92ePRQhzVEQ+x0+upqPwKf
+   AIdW25ULuNlE9vQOcbUrxTG93lavwwhOFLFodcY/puomP/fqCbAnp6+2H
+   A==;
+X-CSE-ConnectionGUID: eYZToAUtRV6U/SMSqqkgjg==
+X-CSE-MsgGUID: XPVTOg8WT0a0i/ge7exHhA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11341"; a="39720566"
+X-IronPort-AV: E=Sophos;i="6.13,276,1732608000"; 
+   d="scan'208";a="39720566"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 21:32:45 -0800
+X-CSE-ConnectionGUID: 29PEf/MTS7+yNRHsgXF6bQ==
+X-CSE-MsgGUID: uW717T1aRa+wXK1p5Gt7sA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,276,1732608000"; 
+   d="scan'208";a="112377449"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Feb 2025 21:32:45 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Mon, 10 Feb 2025 21:32:44 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Mon, 10 Feb 2025 21:32:44 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Mon, 10 Feb 2025 21:32:43 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RLtIyVhNady0URLcxpbjMe8uVVWgLkKSQ7++GBOIJLYG/q7zPmgRqzHuqbPSawsmoDfwBIytofOWP8N4TAxZrWoEEBrPdflVJw1AeCNoIr7whwtBwkzEZFw6hLGkCxOI9/hi9p/m5UZDpmzXc4yTP68jqvGhboTfR2U0c/rcqb3MDycZIXXPd1phAUb3T6FpiKckbv65pGxnb+esC7GXhobvYFZufPX18W2Bm5aOEc7hlM3fGjwOkxetofKrR4NeCdLUOSOmhbVzb3yiOBpsz5RoIKAaBqHmI1Iw7O8pzYqek28ICLQhtmnXQAiJ7EjL6Np/bLLHDtgC8z/5iowsWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZoSs3aYtLbI+8UHaFMCMCJKoliayzUivnWpEIlWoDg4=;
+ b=ApYdL9a/kyopjZipozn/1EPxuLI31nEQ8klSvCxK9ymsyeWo+NPSngPyPgwokHbehtshtOiGUEg3Nbr7bK9vaiVhqQEYW3V3L6uIo7ewyZ13HV0elUfybiJVSE9YvwS2beST3HUnl658ar9EUEs+7Gk0nWAaxYNBJuXkE+sbFFtgfxTxosNeAc3oRaXUF6MaCk8fRW/Ys/lGQSwXDsakDNVW7aj+vcUXaDU5A72hS77y0pOgwBnU9S7fqJpEjkdq2xPvp1gKuMvzCqRT3aJbgvO78E0qPMs2UNDzf/MnFvwsVyxWbHPTJGy3KhVTATM6sfzzZRN91keDQWaMeBoA1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM8PR11MB5703.namprd11.prod.outlook.com (2603:10b6:8:22::5) by
+ CYYPR11MB8330.namprd11.prod.outlook.com (2603:10b6:930:b8::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8422.19; Tue, 11 Feb 2025 05:32:15 +0000
+Received: from DM8PR11MB5703.namprd11.prod.outlook.com
+ ([fe80::f734:e507:3083:e454]) by DM8PR11MB5703.namprd11.prod.outlook.com
+ ([fe80::f734:e507:3083:e454%6]) with mapi id 15.20.8445.008; Tue, 11 Feb 2025
+ 05:32:15 +0000
+Message-ID: <bc54d970-6ea6-4ed4-b39b-c75a49a9b705@intel.com>
+Date: Tue, 11 Feb 2025 11:02:03 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 07/11] mtd: intel-dg: wake card on operations
+To: Rodrigo Vivi <rodrigo.vivi@intel.com>, Alexander Usyskin
+	<alexander.usyskin@intel.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Lucas De Marchi
+	<lucas.demarchi@intel.com>, =?UTF-8?Q?Thomas_Hellstr=C3=B6m?=
+	<thomas.hellstrom@linux.intel.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
+	<tursulin@ursulin.net>, Reuven Abliyev <reuven.abliyev@intel.com>, Oren Weil
+	<oren.jer.weil@intel.com>, <linux-mtd@lists.infradead.org>,
+	<dri-devel@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20250101153925.865703-1-alexander.usyskin@intel.com>
+ <20250101153925.865703-8-alexander.usyskin@intel.com>
+ <Z5qiyRzkdgwQ9kTP@intel.com>
+Content-Language: en-GB
+From: "Poosa, Karthik" <karthik.poosa@intel.com>
+In-Reply-To: <Z5qiyRzkdgwQ9kTP@intel.com>
+X-ClientProxiedBy: MA0PR01CA0095.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:af::6) To DM8PR11MB5703.namprd11.prod.outlook.com
+ (2603:10b6:8:22::5)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM8PR11MB5703:EE_|CYYPR11MB8330:EE_
+X-MS-Office365-Filtering-Correlation-Id: b7858052-24c7-4cf1-c0f4-08dd4a5d7133
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?ak9TcWVROE80aFhXdWFPSnRwb3QvVTdLaVB4YnlJeWZhemkrS2krUU5SNFFh?=
+ =?utf-8?B?N21jbkE2em00UGdkVERlZGVZYUk0M2FENmwrWW9TQVluaWhsRGhWc3lMOFZy?=
+ =?utf-8?B?SUp0QjlJcmVxSUt6WjNWNEErcHZhaE1hMGRpdStHL3BpVG41cHU3cGN3aHJo?=
+ =?utf-8?B?blViWjdGNnlmTzFFRG5FL2tKYUVobU51NlREQStyMU9UdDVjUUl6NHdwYndn?=
+ =?utf-8?B?eFREUW5tNjNIUlNJQ1B5bFpMNGh2MzlrS09CQTl4U0VseVRtemRUL3ljOElr?=
+ =?utf-8?B?c1Fuck1XbkFwRkVDb0NrbUhnWEM3VWl1SUZPTGtmRkxocUVPWm5ZdkpRMjRF?=
+ =?utf-8?B?RnA4eC9XTUhhUTNpWXRRQ09oaTVMeFRqQ3ZkczZwajZTR0xCRmNZcm1kb1F1?=
+ =?utf-8?B?QzBtR3AxcHdxODB3WTByRkQxdXRHUjZUcEx6SWRlK0h1c1R3WE5sUjRrQUN0?=
+ =?utf-8?B?OGNJaXMxMHhiZVBQaUsxUFJwbm5SbFJWNXB1U25KSmNOQXpXYkM0L1dYTUhV?=
+ =?utf-8?B?RUZkd2FuYng2VkVSM3NBZ2VQbWdsT2lQbVdhQTlua2RzRTNuQ3k4dzhNUngz?=
+ =?utf-8?B?NHRiRVVNWURjd1EwVHhpQ09RK3d0dnRHSDh2SzFtL2gyOVQ5NDJ4bDBlM1Rt?=
+ =?utf-8?B?cHVWR1RuMEJjZjRHT3hLYWpKbTVzWnVSa2dIbGtVbWdrSmhoNU0rcm5seXFH?=
+ =?utf-8?B?TU1MM1pEeWw3QXR0dUJZV1l4aFdEMEZoMSt5Z2tGa2E3YVFSNkJmQ1hKSWpz?=
+ =?utf-8?B?bHc4aklzTk8vbE1veVh2QWRMOFJQNFVEWjFTU2Jmai95TllOc3JudzRqWGZy?=
+ =?utf-8?B?Mmx6TWNwT2VmUUZSVHlaQW9PUmdvRDdRU1BPQ0Z5T1c3cmVGMk9hWnVtdkN0?=
+ =?utf-8?B?MXB1K1BPczN3MWI2cW9ZRGludkI4Q1p5SDJHcWhVNHRNaUlEZmhQeFlPaTc1?=
+ =?utf-8?B?MXMvNXpXeDJiZ2IxV0U5dTZGSm1PWVJLMGNLQ3I1K2xHejBjUW9xdjZxNmF2?=
+ =?utf-8?B?OHRZZ3RJZ0VDMksrTWRnN3hYU3lBdlpEZlRtN0pTQTdmeHFueWZFS25ONXU4?=
+ =?utf-8?B?WUV6cmFTcDk5Yk5YcDBDbUxSeGQ1anQrMTdoSkE2b2RwZHFnWVlRTTZNakZT?=
+ =?utf-8?B?aTNyOW1IU0k1YWpJKzRuditCa3FmdzlheXZ3VEZkOGh2OVNNNDhueFRvSDRu?=
+ =?utf-8?B?UEdZbm1QVFYyTEhNa1FWOTIzaG5EUVc1dEQ5RzRjQ1MzUWQrNDhIUVA3eWdH?=
+ =?utf-8?B?clJQVEpEMjNnUGdqbnlhd0ZVZzcxTXovRGYxV1BrV1g3eWJQaldjZnE0Wk5E?=
+ =?utf-8?B?QjNOYitIbm9Ub3FCcHVwMzJEZW9YWWw1RW1FaGdZSmZSWWs3Z1pBZ2c0VlJR?=
+ =?utf-8?B?MWJDL1N5NDg4eGs4Q3IzcEtvbVhjckpwTDFoTEpLV1JLRjVoMWFmZlRtT01E?=
+ =?utf-8?B?dGVPWEVkZnJqenhaNCs3Z0FqaGt4cnNBOTlTS0k0MDBtMWM2MmRJaVdhV3dV?=
+ =?utf-8?B?UDNoOUlqOE5HclpUNmMyVE1QQkV5Nit3Z1RjWUw0djB4NlNIQlk5UytpeFNN?=
+ =?utf-8?B?eUNXb28wT3duZU9hMTdLZ1BzSXVYV3M5bHFzc1JXeFJNMWNXclVCYjJSTG02?=
+ =?utf-8?B?SjY4Tjl0bEYrR0RpL2NJWHdsSWRtTEprcXQ1UXJDdU1DRmIrM2JheG92Njlu?=
+ =?utf-8?B?bjA2U3RJZmt0eE0rN2xKMkpNcG9lai9xOW5WT1lOTWMydjZKaGdPT01CMzc2?=
+ =?utf-8?B?dHV6N0N3aElKSHE5c3RXZVhuREM5dm1naUZZM1F3YzZDR1poN2U5cGxjRlJs?=
+ =?utf-8?B?bFBTQzBDY0N3aEFyNWk1QnlYWVRicGxmU3hwbHF0bit6NEorUnVqZ2t5UkxK?=
+ =?utf-8?Q?x1IX9gdqHM0Xk?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5703.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b0Rja0FySFVrTjBpMnVTWnFCdGVnZ1U1SzdHeGxJckROc3RFSUdsY2FPZ0Vl?=
+ =?utf-8?B?L3JHMmxIMDgyQU4zQmxReDdEUHh0OW8ycXYwdXpkVFRsL3EycFRNL2NqNklu?=
+ =?utf-8?B?RlRhVTR4TCswUDJGb1RFYytzWUVmWmN2dzdHQkRFYldGZ2ZDVHZQb1BLQ0Rt?=
+ =?utf-8?B?REEzMkorVUoyR1ExNzg0K09ScFVwWG5zYW4yRVhYYmRlYURkUkRhdWVqVHJZ?=
+ =?utf-8?B?bEhIZksxWjk1VUJhUHlaaDQrcUloVXY4U1JGMzVHOGttQXhTM3ZHempTa2dE?=
+ =?utf-8?B?d1NxYm1lOVljeThjQUVod2xxSjhzbEdMbDIxWHJ5N0JmQUF3aWJ5bmZMV1pV?=
+ =?utf-8?B?STU5dCtrSmtQM2IzcHhCTWRyU1RKU3pLcWZ3OVN3TG4vcitRd2NKUVBDYlVD?=
+ =?utf-8?B?azN3RmRTOUdHeldMTk1QOVQvYWJ6L1ErVkJpREJ6bExZRnFxb2Mrblk0ZjdW?=
+ =?utf-8?B?TWYrUGNmd09ZRHdYTlpQSEl0TmRiQlNJMG5HaXd6bDVKNG1PUTJPcXRMcElq?=
+ =?utf-8?B?cjRCSGY1c3I3SVBGbzFMMzRoUmNvVkxVaCtKb1lhOExCK3BTMlRxQzJHTGVx?=
+ =?utf-8?B?Uk9vaXZzbXhwUnUyd1pZbzRlMlVqbUx2SXN4MXhnZ1NsQmhwYmJ5SFZiTWs0?=
+ =?utf-8?B?ZGY0UUNOOXhMRkkxd3pGVFlEVlhPRUt5Z3NHM29saFpOenozbXp0a21Fak5U?=
+ =?utf-8?B?dUxyekt5d2FHT1B4d08rYjFSckk4Q3hiTnVyaWR2b1gzTHFqbjNHWlZZeWla?=
+ =?utf-8?B?elZjR0hQcExBOTRlUHhybG1IdElBaHcwZHg4VnZSS1l6VVJZYmhaN2p6Tzlq?=
+ =?utf-8?B?S2prVWlDL3l2Q0NwbVk5ZERsZVBDSm12dHJ5QXh3amdYNHJ4dW9xUGRNWGdO?=
+ =?utf-8?B?NjV1VGhWbkxFTlFoTWdxZVpQTGN6c0lXcVJKMS9ibysyUzNSSGc0Z3E5VmFW?=
+ =?utf-8?B?KzQ4Z2czcFMrQWpVTFVPMU9SZm9pdFRWR0NMWlN4aUVnd3oxdllLQ1BnZFJM?=
+ =?utf-8?B?c21kZklKZXZydUI5MkZoOFU4dExteWNOa0tnT1lJM3BiWkV6MjNkenhwZEc0?=
+ =?utf-8?B?ODVubzU2MElPcFR0eWR3RW14QUU3bWNRZ3RCL0RjZ2thdVhHWWtHUmZYdHBy?=
+ =?utf-8?B?T3RCM0k5bklhbGFXVklyRkI5SGQ4VWc1U0tvdzdqZkp1ODNreGIzank3ZWd0?=
+ =?utf-8?B?dzN0YU0yMkRmUFlNZldmc0IzaVljRnBDU2dDSTlSa2c5VUJxQWlsR1d3UmJR?=
+ =?utf-8?B?ZmFidG4rbXJqQ3FEZHRLdzI1REhnMmxFN2N3SkpkS24zQ1lxSzh3YlU0SG5a?=
+ =?utf-8?B?cUx6QzcvVE03QXQ2aU43UFJYN1pNV2hJYTBUU1o1Rk9lektQcDFkZXpiQXFX?=
+ =?utf-8?B?N2JpbGpHc3RxTHovbWIrWTQxS1FXbzEzNDJkMk1kcklXVm1GWER4bnZzOENv?=
+ =?utf-8?B?cTBVeE5jM1BUaDNzQVN3RUY1QkFlSjc4ZWwrRFd5M1MrUVNMNzdHNXA2V0ZR?=
+ =?utf-8?B?NlQ1NGdDM1dNdVRQZVNwRmtBTTZidWdHSWI1NGFldUp2cUNqck4yVGdLc2dt?=
+ =?utf-8?B?UXMwdFBjOGYzWkhPU3dBRytnYWRrMGZGSjFUaStidDl6Nk5YRE9SQTBYWEN4?=
+ =?utf-8?B?Z1QzdkxMNFhFK0xra3RPZkVERWc0TUNkbUtyUUFaaHFZWXJ3dUY0L09kZDQx?=
+ =?utf-8?B?WVlJZ0x3M1RJdHdqTGJYV1JIZUZIUEMwZXRjaDkvc1lBdWY4Mjd0eWFOeldj?=
+ =?utf-8?B?QUtjTnZVVnBIRzcrRkY0NXVSdDl0SkhWaUptTVR1bVl2VDNlZk40L1ljZElY?=
+ =?utf-8?B?M2pEQ3Q5RlhzWGxtOEJ3QlNmWHI4YVZ0S3kwdjIvenVuNmJub3ZCY3hKS20z?=
+ =?utf-8?B?SGNFQTRXcHVjbjlXbEcrUFlFaVpiTGF5U21DWlkrSTdQeDdJMFVaU2IwZ1Ns?=
+ =?utf-8?B?bVUxSGN1WFZMZmFwRHZvNW8reEVNYmdpcGVLWmZwTmduMVlLZ21WVXU1RHVs?=
+ =?utf-8?B?Q3k5c3pvSW9qK2ZrWFR6RGNxazBMNFhVdmErUG91WEZSVjdZM0hXOWhleFFO?=
+ =?utf-8?B?eGpGSVJhaFJJYkplaDMrVlBSbnFvT09VMnVCcm4yWlpMbmZQbWRoTDExUE1i?=
+ =?utf-8?Q?U0UabgJmb6DZM3tzUqu5grKm/?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7858052-24c7-4cf1-c0f4-08dd4a5d7133
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5703.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2025 05:32:15.1941
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x3QvIsse9RXYB0NlI+prQKGjx6RO+A/3uQnMp9lxIuirc4XH0Isd1JGJsFex5rlAN0II3elqFWvs1Dwk8EfIfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR11MB8330
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250210_223444_166689_B2A2AA37 
-X-CRM114-Status: GOOD (  13.53  )
+X-CRM114-CacheID: sfid-20250211_053257_908835_123716D2 
+X-CRM114-Status: GOOD (  21.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,312 +230,221 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-Due to incorrect values in the 4-BAIT table for these two flash IDs,
-it is necessary to add these two flash IDs with fixups.
+On 30-01-2025 03:21, Rodrigo Vivi wrote:
+> On Wed, Jan 01, 2025 at 05:39:21PM +0200, Alexander Usyskin wrote:
+>> Enable runtime PM in mtd driver to notify graphics driver that
+>> whole card should be kept awake while nvm operations are
+>> performed through this driver.
+>>
+>> CC: Lucas De Marchi <lucas.demarchi@intel.com>
+>> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+>> ---
+>>   drivers/mtd/devices/mtd-intel-dg.c | 79 +++++++++++++++++++++++++-----
+>>   1 file changed, 67 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/mtd/devices/mtd-intel-dg.c b/drivers/mtd/devices/mtd-intel-dg.c
+>> index 230bf444b7fe..a84153812291 100644
+>> --- a/drivers/mtd/devices/mtd-intel-dg.c
+>> +++ b/drivers/mtd/devices/mtd-intel-dg.c
+>> @@ -15,11 +15,14 @@
+>>   #include <linux/module.h>
+>>   #include <linux/mtd/mtd.h>
+>>   #include <linux/mtd/partitions.h>
+>> +#include <linux/pm_runtime.h>
+>>   #include <linux/string.h>
+>>   #include <linux/slab.h>
+>>   #include <linux/sizes.h>
+>>   #include <linux/types.h>
+>>   
+>> +#define INTEL_DG_NVM_RPM_TIMEOUT 500
+>> +
+>>   struct intel_dg_nvm {
+>>   	struct kref refcnt;
+>>   	struct mtd_info mtd;
+>> @@ -460,6 +463,7 @@ static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_info *info)
+>>   	loff_t from;
+>>   	size_t len;
+>>   	size_t total_len;
+>> +	int ret = 0;
+>>   
+>>   	if (WARN_ON(!nvm))
+>>   		return -EINVAL;
+>> @@ -474,20 +478,28 @@ static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_info *info)
+>>   	total_len = info->len;
+>>   	addr = info->addr;
+>>   
+>> +	ret = pm_runtime_resume_and_get(&mtd->dev);
+> I'm glad we are not accessing the parent directly here anymore,
+> but to me it is still strange.
+> I feel that we should be using &aux_dev->dev; instead of mtd->dev.
+>
+> What am I missing?
+>
+>> +	if (ret < 0) {
+>> +		dev_err(&mtd->dev, "rpm: get failed %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>>   	guard(mutex)(&nvm->lock);
+>>   
+>>   	while (total_len > 0) {
+>>   		if (!IS_ALIGNED(addr, SZ_4K) || !IS_ALIGNED(total_len, SZ_4K)) {
+>>   			dev_err(&mtd->dev, "unaligned erase %llx %zx\n", addr, total_len);
+>>   			info->fail_addr = addr;
+>> -			return -ERANGE;
+>> +			ret = -ERANGE;
+>> +			goto out;
+>>   		}
+>>   
+>>   		idx = idg_nvm_get_region(nvm, addr);
+>>   		if (idx >= nvm->nregions) {
+>>   			dev_err(&mtd->dev, "out of range");
+>>   			info->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+>> -			return -ERANGE;
+>> +			ret = -ERANGE;
+>> +			goto out;
+>>   		}
+>>   
+>>   		from = addr - nvm->regions[idx].offset;
+>> @@ -503,14 +515,18 @@ static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_info *info)
+>>   		if (bytes < 0) {
+>>   			dev_dbg(&mtd->dev, "erase failed with %zd\n", bytes);
+>>   			info->fail_addr += nvm->regions[idx].offset;
+>> -			return bytes;
+>> +			ret = bytes;
+>> +			goto out;
+>>   		}
+>>   
+>>   		addr += len;
+>>   		total_len -= len;
+>>   	}
+>>   
+>> -	return 0;
+>> +out:
+>> +	pm_runtime_mark_last_busy(&mtd->dev);
+>> +	pm_runtime_put_autosuspend(&mtd->dev);
+>> +	return ret;
+>>   }
+>>   
+>>   static int intel_dg_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+>> @@ -539,17 +555,25 @@ static int intel_dg_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+>>   	if (len > nvm->regions[idx].size - from)
+>>   		len = nvm->regions[idx].size - from;
+>>   
+>> +	ret = pm_runtime_resume_and_get(&mtd->dev);
+>> +	if (ret < 0) {
+>> +		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>>   	guard(mutex)(&nvm->lock);
+>>   
+>>   	ret = idg_read(nvm, region, from, len, buf);
+>>   	if (ret < 0) {
+>>   		dev_dbg(&mtd->dev, "read failed with %zd\n", ret);
+>> -		return ret;
+>> +	} else {
+>> +		*retlen = ret;
+>> +		ret = 0;
+>>   	}
+>>   
+>> -	*retlen = ret;
+>> -
+>> -	return 0;
+>> +	pm_runtime_mark_last_busy(&mtd->dev);
+>> +	pm_runtime_put_autosuspend(&mtd->dev);
+>> +	return ret;
+>>   }
+>>   
+>>   static int intel_dg_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+>> @@ -578,17 +602,25 @@ static int intel_dg_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+>>   	if (len > nvm->regions[idx].size - to)
+>>   		len = nvm->regions[idx].size - to;
+>>   
+>> +	ret = pm_runtime_resume_and_get(&mtd->dev);
+>> +	if (ret < 0) {
+>> +		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>>   	guard(mutex)(&nvm->lock);
+>>   
+>>   	ret = idg_write(nvm, region, to, len, buf);
+>>   	if (ret < 0) {
+>>   		dev_dbg(&mtd->dev, "write failed with %zd\n", ret);
+>> -		return ret;
+>> +	} else {
+>> +		*retlen = ret;
+>> +		ret = 0;
+>>   	}
+>>   
+>> -	*retlen = ret;
+>> -
+>> -	return 0;
+>> +	pm_runtime_mark_last_busy(&mtd->dev);
+>> +	pm_runtime_put_autosuspend(&mtd->dev);
+>> +	return ret;
+>>   }
+>>   
+>>   static void intel_dg_nvm_release(struct kref *kref)
+>> @@ -670,6 +702,15 @@ static int intel_dg_nvm_init_mtd(struct intel_dg_nvm *nvm, struct device *device
+>>   
+>>   	kfree(parts);
+>>   
+>> +	if (ret)
+>> +		goto out;
+>> +
+>> +	devm_pm_runtime_enable(&nvm->mtd.dev);
+>> +
+>> +	pm_runtime_set_autosuspend_delay(&nvm->mtd.dev, INTEL_DG_NVM_RPM_TIMEOUT);
+>> +	pm_runtime_use_autosuspend(&nvm->mtd.dev);
+>> +
+>> +out:
+>>   	return ret;
+>>   }
+>>   
+>> @@ -720,6 +761,17 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+>>   		n++;
+>>   	}
+>>   
+>> +	devm_pm_runtime_enable(device);
+>> +
+>> +	pm_runtime_set_autosuspend_delay(device, INTEL_DG_NVM_RPM_TIMEOUT);
+>> +	pm_runtime_use_autosuspend(device);
+>> +
+>> +	ret = pm_runtime_resume_and_get(device);
+>> +	if (ret < 0) {
+>> +		dev_err(device, "rpm: get failed %d\n", ret);
+>> +		goto err_norpm;
+>> +	}
+>> +
+>>   	nvm->base = devm_ioremap_resource(device, &invm->bar);
+>>   	if (IS_ERR(nvm->base)) {
+>>   		dev_err(device, "mmio not mapped\n");
+>> @@ -742,9 +794,12 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+>>   
+>>   	dev_set_drvdata(&aux_dev->dev, nvm);
+>>   
+>> +	pm_runtime_put(device);
+>>   	return 0;
+>>   
+>>   err:
+>> +	pm_runtime_put(device);
+>> +err_norpm:
+>>   	kref_put(&nvm->refcnt, intel_dg_nvm_release);
+>>   	return ret;
+>>   }
+>> -- 
+>> 2.43.0
 
-Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c2201c
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-macronix
-zynq> hexdump -Cv /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-00000000  53 46 44 50 06 01 02 ff  00 06 01 10 30 00 00 ff  |SFDP........0...|
-00000010  c2 00 01 04 10 01 00 ff  84 00 01 02 c0 00 00 ff  |................|
-00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000030  e5 20 fb ff ff ff ff 7f  44 eb 08 6b 08 3b 04 bb  |. ......D..k.;..|
-00000040  fe ff ff ff ff ff 00 ff  ff ff 44 eb 0c 20 0f 52  |..........D.. .R|
-00000050  10 d8 00 ff 87 49 bd 00  84 d2 04 e2 44 03 67 38  |.....I......D.g8|
-00000060  30 b0 30 b0 f7 bd ff 5c  4a 9e 29 ff f0 50 f9 85  |0.0....\J.)..P..|
-00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000080  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000090  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000a0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000b0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000c0  7f 8f ff ff 21 5c dc ff  ff ff ff ff ff ff ff ff  |....!\..........|
-          (wrong bit here, 7f should be ff)
-000000d0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000e0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000f0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000100  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000110  00 36 00 27 9d f9 c0 64  85 cb ff ff ff ff ff ff  |.6.'...d........|
-00000120
-zynq> sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-9af233495e5cffd2f38e9e2b8334a0d51c01fa93e9a17a991f674c8d6a350358  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-zynq> cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode        0x13
-  mode cycles   0
-  dummy cycles  0
- 1S-1S-2S
-  opcode        0x3c
-  mode cycles   0
-  dummy cycles  8
- 1S-2S-2S
-  opcode        0xbc
-  mode cycles   0
-  dummy cycles  4
- 1S-1S-4S
-  opcode        0x6c
-  mode cycles   0
-  dummy cycles  8
- 1S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
- 4S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
-
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode        0x12
- 1S-1S-4S
-  opcode        0x34
- 1S-4S-4S
-  opcode        0x3e
-zynq> cat /sys/kernel/debug/spi-nor/spi0.0/params
-name            (null)
-id              c2 20 1c c2 20 1c
-size            256 MiB
-write size      1
-page size       256
-address nbytes  4
-flags           4B_OPCODES | HAS_4BAIT | SOFT_RESET
-
-opcodes
- read           0xec
-  dummy cycles  6
- erase          0xdc
- program        0x3e
- 8D extension   none
-
-protocols
- read           1S-4S-4S
- write          1S-4S-4S
- register       1S-1S-1S
-
-erase commands
- 21 (4.00 KiB) [1]
- 5c (32.0 KiB) [2]
- dc (64.0 KiB) [3]
- c7 (256 MiB)
-
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+----------
- 00000000-0fffffff |     [   3] | no
-zynq> dd if=/dev/urandom of=/tmp/spi_test bs=1M count=2
-2+0 records in
-2+0 records out
-2097152 bytes (2.0MB) copied, 0.082418 seconds, 24.3MB/s
-zynq> mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
-zynq> hexdump /tmp/spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-zynq> sha256sum /tmp/spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
-zynq> mtd_debug write /dev/mtd0 0 2097152 /tmp/spi_test
-Copied 2097152 bytes from /tmp/spi_test to address 0x00000000 in flash
-zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
-zynq> sha256sum /tmp/spi*
-affd6358abe2a75a7edd4d28a9c62bbb25d485c8958993d6e4fbc3de579b8dc0  /tmp/spi_read
-affd6358abe2a75a7edd4d28a9c62bbb25d485c8958993d6e4fbc3de579b8dc0  /tmp/spi_test
-zynq> mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
-zynq> sha256sum /tmp/spi*
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
-affd6358abe2a75a7edd4d28a9c62bbb25d485c8958993d6e4fbc3de579b8dc0  /tmp/spi_test
-
-zynq> mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 268435456 (256M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c2253b
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-macronix
-zynq> hexdump -Cv /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-00000000  53 46 44 50 06 01 02 ff  00 06 01 10 30 00 00 ff  |SFDP........0...|
-00000010  c2 00 01 04 10 01 00 ff  84 00 01 02 c0 00 00 ff  |................|
-00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000030  e5 20 fb ff ff ff ff 3f  44 eb 08 6b 08 3b 04 bb  |. .....?D..k.;..|
-00000040  fe ff ff ff ff ff 00 ff  ff ff 44 eb 0c 20 0f 52  |..........D.. .R|
-00000050  10 d8 00 ff 89 49 bd 00  8d 12 00 e2 44 03 67 44  |.....I......D.gD|
-00000060  30 b0 30 b0 f7 bd d5 5c  4a 9e 29 ff f0 50 f9 85  |0.0....\J.)..P..|
-00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000080  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000090  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000a0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000b0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000c0  7f 8f ff ff 21 5c dc ff  ff ff ff ff ff ff ff ff  |....!\..........|
-          (wrong bit here, 7f should be ff)
-000000d0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000e0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000f0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000100  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000110  00 20 00 17 9d f9 c0 64  85 cb ff ff ff ff ff ff  |. .....d........|
-00000120
-zynq> sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-ef47525560aa30ca7eb4634eb2eb15a0aa618d3b61f774933f9935d05fb475f6  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-zynq> cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode        0x13
-  mode cycles   0
-  dummy cycles  0
- 1S-1S-2S
-  opcode        0x3c
-  mode cycles   0
-  dummy cycles  8
- 1S-2S-2S
-  opcode        0xbc
-  mode cycles   0
-  dummy cycles  4
- 1S-1S-4S
-  opcode        0x6c
-  mode cycles   0
-  dummy cycles  8
- 1S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
- 4S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
-
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode        0x12
- 1S-1S-4S
-  opcode        0x34
- 1S-4S-4S
-  opcode        0x3e
-
-zynq> cat /sys/kernel/debug/spi-nor/spi0.0/params
-name            (null)
-id              c2 25 3b c2 25 3b
-size            128 MiB
-write size      1
-page size       256
-address nbytes  4
-flags           4B_OPCODES | HAS_4BAIT | SOFT_RESET
-
-opcodes
- read           0xec
-  dummy cycles  6
- erase          0xdc
- program        0x3e
- 8D extension   none
-
-protocols
- read           1S-4S-4S
- write          1S-4S-4S
- register       1S-1S-1S
-
-erase commands
- 21 (4.00 KiB) [1]
- 5c (32.0 KiB) [2]
- dc (64.0 KiB) [3]
- c7 (128 MiB)
-
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+----------
- 00000000-07ffffff |     [   3] | no
-
-zynq> dd if=/dev/urandom of=/tmp/spi_test bs=1M count=2
-2+0 records in
-2+0 records out
-2097152 bytes (2.0MB) copied, 0.082397 seconds, 24.3MB/s
-zynq> mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
-zynq> hexdump /tmp/spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-zynq> sha256sum /tmp/spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
-zynq> mtd_debug write /dev/mtd0 0 2097152 /tmp/spi_test
-Copied 2097152 bytes from /tmp/spi_test to address 0x00000000 in flash
-zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
-zynq> sha256sum /tmp/spi*
-8b57e38d293cf08cca7ef239ee70d20d70356ae798c2065576463414e490a759  /tmp/spi_read
-8b57e38d293cf08cca7ef239ee70d20d70356ae798c2065576463414e490a759  /tmp/spi_test
-zynq> mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
-zynq> sha256sum /tmp/spi*
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
-8b57e38d293cf08cca7ef239ee70d20d70356ae798c2065576463414e490a759  /tmp/spi_test
-
-zynq> mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 134217728 (128M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
- drivers/mtd/spi-nor/macronix.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index ada17999ccbb..39a2a88ad54b 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -127,6 +127,10 @@ static const struct flash_info macronix_nor_parts[] = {
- 		.size = SZ_128M,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.fixups = &macronix_qpp4b_fixups,
-+	}, {
-+		/* MX66L2G45G */
-+		.id = SNOR_ID(0xc2, 0x20, 0x1c),
-+		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		.id = SNOR_ID(0xc2, 0x23, 0x14),
- 		.name = "mx25v8035f",
-@@ -182,6 +186,10 @@ static const struct flash_info macronix_nor_parts[] = {
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.fixup_flags = SPI_NOR_4B_OPCODES,
- 		.fixups = &macronix_qpp4b_fixups,
-+	}, {
-+		/* MX66U1G45G */
-+		.id = SNOR_ID(0xc2, 0x25, 0x3b),
-+		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		.id = SNOR_ID(0xc2, 0x25, 0x3c),
- 		.name = "mx66u2g45g",
--- 
-2.25.1
+Acked-by: Karthik Poosa <karthik.poosa@intel.com>
 
 
 ______________________________________________________
