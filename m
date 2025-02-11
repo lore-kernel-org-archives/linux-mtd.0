@@ -4,82 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8387C0219D
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2025 08:17:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB7E9C021A1
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2025 09:35:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CWvo5/ioYPBf/r+qRRs9dotoxgS0t6nl7GDFwY84Kts=; b=vOkQ1s8bM7cUmb
-	TO5lFsVzl1RjP8wGtZ3DI4MAHWRIdTjI0mR4GJonLRwNU4ek35mVHMLH+mAXDWTbj3BtausP6187N
-	G4Wt1uQi7qigV91zYFOkqiH8TAsrLLMHWjxtmbgek+TPi8pLRh9ffALkuXC1ATYCg85JAmdguo0Bq
-	FEdXDgKcGxQmUGfKESbICWTzDF23hOeALyZLlV90yKwSd+hWj7iKbWPthkJdxKIxFmptG22prSxWj
-	o8tZa9IEKWVqgIlVDUGVYrMi1L8Gfi9/nh+DvhFrDzPUqwqL0dJP4Q/wW/j1hDC60QgjGsXg64pns
-	s4nqkCBge4zyepgigFMg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0kfZzMV0GT8pHDBnvmTFhB5DleeneYrMDgraokyo5O4=; b=DJ4NfQWFKFkfRu
+	O53UofxDGSrKIHMhca37R2lnEDZXgduLfvpIohuHxBpyaqKbptLtAV3Z06j6R3UBuhru72XmVbz58
+	Dh8NIMv+0a3ym0GDGFxeGAr6DiFsHoRU8Niah3sshYexcGPfFRiC48YaBQD1N1lNrfdYMaiI2BMox
+	MTU2YylzmYBfPZZJxl99FdKg/Tb05KDXN0Dk7vPwjrYKnCRFrDJoimxCiaO+kSRHaVMOzVs1+h/n+
+	PvNCF1kzoJUR50A5JpTDsnrSoCsSBdYCXCiLY7t6fYOE+4y2wn86V/w+JXOo0F//leq51iCEAruzl
+	yh2LK4wCZaAICUrcgu4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thlSj-00000002y7Q-2Vq6;
-	Tue, 11 Feb 2025 08:17:45 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
+	id 1thmgG-00000003C53-30Q6;
+	Tue, 11 Feb 2025 09:35:48 +0000
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thlSh-00000002y6D-0kv3
+	id 1thmbZ-00000003Az8-0nvD
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Feb 2025 08:17:44 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2fa19e1d027so6710374a91.0
-        for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2025 00:17:42 -0800 (PST)
+	Tue, 11 Feb 2025 09:30:58 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4361b0ec57aso53249035e9.0
+        for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2025 01:30:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739261862; x=1739866662; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HdSSN9QdNBs8eEdHrDTlxqtSDnLAK0QjbdfY2BqTAsQ=;
-        b=kF0Q3zMX5M4a+S/KzkxsD7js0zJlfHP2XYVGDKQlOKf44zJgnLfKM3c+TDRQxX/ibD
-         l/BtbFO8RQai4XoqURpSIHhLfYfRyVflPvXfWc4dFWuGeyYYxwU9/syWRBv9rqlvPSSQ
-         1sYK8dYHT110oxHgvUnqkk1/o9X8+IeC8oZw3kTYt/3H81edRllyhfNGy8NsgYXkf38J
-         nNcS9Ghmk5AQ6lsVUofZB+TqlmIFAql5GC3bc05wBG2RpF8Vcfg1Su0Af/y/0JXixHDC
-         qvuAUJ6HKRX0ft1XQrqlIZFXFNyS7odVbb2iXlEMs4fVTd9LZ4MECsOduzrWloBfXUiP
-         2xRQ==
+        d=linaro.org; s=google; t=1739266255; x=1739871055; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8DiHXPgT+3YQYkd4DdSOCTqE0SnmmwoYH/BXg8DEztU=;
+        b=NjWaQop308MlCXWnfleLTLBYolMIXvjpYqZvPBkgeahhymZKJZ4nKkSXE2YiXiyVQH
+         oR2P/ZqilvWKz6V2tUmF+irkgLPf7u6lqqhFFGJgLg7FEthUvBZtX/EXxMKtsyQcOYZy
+         Bh2affCXSE4IbBaeNmrFmTYxWpK449J8n9tKdbWcyEGviqWNWSE1qJ8sBIO6h5bIfAZr
+         wS5MewbXl/MvTfp1SA+H5t7WMc0R9jbJY5HB2PJ172Ha3bAZZgZx+Lvz5+QErrYQe21T
+         gmiKu65i8xPQCJBfv8vNgka/l1K7o+khOZDNNZJQiAX3qG3uEg4DVIT5XSjX4MbkL0WT
+         rimA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739261862; x=1739866662;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HdSSN9QdNBs8eEdHrDTlxqtSDnLAK0QjbdfY2BqTAsQ=;
-        b=NatZ5dqrL9cWg988nhjS63rvfwVKoCp+n+PZoa7Uv0wTkeVTDygSKVEBP9uHtFNU1M
-         B92Ph6DF9yM0dVTS3wgg8kUA178MCufl3uOE1Bp5FekbZ0W+15+FLCfgxJXAFmYzpH/j
-         QNFoRMnbtmU2ZEr6EZ9wAc/Dm9BmxBURYrerSm8mwmwJE7mET71m32uJQMf5unRvNjNn
-         xMRcbtRVJ8SBPYrcnESOPiR99l0Sbh9BjVYhDf6P9/0mnqN7zGEeJ5M9ltrMSuP30FcU
-         i08d4+0YO55rTqhXr2Ik8N4WDEKhnV7080cL9P/lQN368X/ZMtBzsWS8aChKMTH+inPg
-         qylQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX8uOcPVz787SD1q578liDrJ9m9ovc+0hMOAbe2aBlXMkhOAf1REq64B4xt4537/ZlxY6fD+YEpV7Y=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx8cUYb4MG86iJHrntQjWTu3u9l9gqHCDEheriH7uKMPNuMKmkn
-	WuWYYujhLMbiwJ/fc6xBcjUxDWA+UKrMtBX7/Z7h8tn6zvnYu24IdojOx8LHwgm7nqTg6k2NgW9
-	KL05GqpBIsWojd7GQyZBc3vBHAv8=
-X-Gm-Gg: ASbGncsINTLDqjNJV13K075dKov1mmoNs8rEYey9vCY57GaUQhC/gAyZFVGdN1khlza
-	MJ9po2Zd9IApDKzdMmWcImIibWkbamnjljjfN9ADpH3vCln0rJvTDM2g05VjLd0iHJU+xkCmd
-X-Google-Smtp-Source: AGHT+IHB7b6T1cEPsukDgawzfpT3y4WANIOfYvlFKXg8jqnneqHuIIRpHG6i6Ao4zutuAREPOypukRqUnjaQG9qIQsU=
-X-Received: by 2002:a17:90b:38d2:b0:2ee:48bf:7dc3 with SMTP id
- 98e67ed59e1d1-2fa241646afmr26941864a91.15.1739261862206; Tue, 11 Feb 2025
- 00:17:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739266255; x=1739871055;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8DiHXPgT+3YQYkd4DdSOCTqE0SnmmwoYH/BXg8DEztU=;
+        b=t8vBoAyrYE3yqXUjmpp2WaetcleSuW3RKC5oVykiOydm9qBEzeXlejM7211Ze/ZiJ/
+         FrNVrvN6CbMVQ0y2cDL2W3uy/asIKPITp9ze+4A25QRgDXeONTUx+xl8hd40R0fnrJoH
+         OsPSZJxSmFYFwzNutkkZsF/gbadlJ1w55r7LlwG+JsMUw/jn+zBW/6cc5fPG+4mRaFOJ
+         68hsNHej8kNrybrw4ufoi7mXDGTbJLBh6neE2ErRf+iMcbvI7KiKNwOoICHEczRPOdag
+         j8jVmtJC62FFkbsdIlcoA/sqv76z9Gjo1+Edfe8q9VZSwgV6fqODzfXuLFU4UhRmuHzg
+         EPUg==
+X-Gm-Message-State: AOJu0YwqjCZ9qUla9OUssBDUp9MgON9Q/Ud4llFquz+HPFXS8IJwz772
+	UGCfo4d39g3Yc9WNRxqY5P9riT2FqQ0zdZBDi5u+AC3l6AOh1qQ0WD7HAfkMiGo=
+X-Gm-Gg: ASbGnctZ6TReitLY2o/tgyFzLBeSBtBNIyOpDlk/GRrwKpAVRKWb3YRS/NVb4/vD8aN
+	oNjOcJe0EIrwDBr8utrSrEXDdRV7BUMA1gFfoFNkU/O9XPCqUUN27sL4OrA3bAUzPmy4iiwPgwX
+	wOfkC/VYPcIYRqABuBnHJNCrfxjq3FCXNDq/+C7aFyC6ldaZXZx60qL599VxCZCQIBXfwyO5Cq6
+	dj2gREKHP/HOupRgLnIOvw46813MHMd+87Iji6bM79NVfkFV4Hh3wjPTPjXEh2TojfTomDyVZLp
+	le+m+uSUop82mL5fo3CXL1ER1Wwqy1pLaJe2/XJJDc49yBhgxSRnMJKkpeilhNc7RS81R6g=
+X-Google-Smtp-Source: AGHT+IHvp+X+fSiYRW+1aXlB5+kLhOGzNT0eATn29S+MSUUf1w33k5xR/ZKqHe179dbj9iJ2W/rkEg==
+X-Received: by 2002:a5d:59a9:0:b0:38d:e02d:5f4b with SMTP id ffacd0b85a97d-38de02d5fc6mr5082245f8f.32.1739266255437;
+        Tue, 11 Feb 2025 01:30:55 -0800 (PST)
+Received: from ta2.c.googlers.com (169.178.77.34.bc.googleusercontent.com. [34.77.178.169])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dc672b55bsm12591296f8f.79.2025.02.11.01.30.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 01:30:54 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH 0/2] mtd: spi-nor: use scope-based mutex cleanup helpers
+Date: Tue, 11 Feb 2025 09:30:52 +0000
+Message-Id: <20250211-spi-nor-guard-mutex-v1-0-05ed77a484d9@linaro.org>
 MIME-Version: 1.0
-References: <20250122065605.285145-1-linchengming884@gmail.com>
- <20250122065605.285145-2-linchengming884@gmail.com> <878qqj3sju.fsf@bootlin.com>
- <CAAyq3SZF9eGKfLLcC3zFHq85-AEb9B=Grjqfap8QqCUKLdLSVw@mail.gmail.com> <87frkmt8nu.fsf@bootlin.com>
-In-Reply-To: <87frkmt8nu.fsf@bootlin.com>
-From: Cheng Ming Lin <linchengming884@gmail.com>
-Date: Tue, 11 Feb 2025 16:13:32 +0800
-X-Gm-Features: AWEUYZnQPGM-zFSvmWzAgGExzap-pa5ZcJ795qZ6jg4sRRk3MfEEdZQSlSWjS1E
-Message-ID: <CAAyq3Sa9+FZGiGnBV=KbwVnQhWX-vc21CK75OXSnDDsE89mx1Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nand: Add read retry support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: vigneshr@ti.com, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, richard@nod.at, alvinzhou@mxic.com.tw, 
-	leoyu@mxic.com.tw, Cheng Ming Lin <chengminglin@mxic.com.tw>
+X-B4-Tracking: v=1; b=H4sIAMwYq2cC/x3MMQqAMAxA0atIZgNtUYleRRyKRs1glVSlIN7d4
+ viG/x+IrMIRuuIB5Vui7CHDlgWMqw8Lo0zZ4IyrjbMW4yEYdsXl8jrhdp2c0FDbEpGvamogl4f
+ yLOm/9sP7fl18TA9lAAAA
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Tudor Ambarus <tudor.ambarus@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1739266254; l=570;
+ i=tudor.ambarus@linaro.org; s=20241212; h=from:subject:message-id;
+ bh=tB9kJkzix8UdmTuptFEyspPiHP1wy3L8TCC/7InfdzE=;
+ b=8OZFGRlWl0hO43G2J3e0yhgCef6e270zFNX+Z0P/s3h8aYFvv5kZR2ZbM5zl8ouz3XewXz7yJ
+ JQN6aS7xBWhDwm0dEYxzL+b385Lq+vUgRg+sJLDEgAlTaMd6iMCGdFd
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=ed25519;
+ pk=uQzE0NXo3dIjeowMTOPCpIiPHEz12IA/MbyzrZVh9WI=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250211_001743_215305_E8C0BC29 
-X-CRM114-Status: GOOD (  14.53  )
+X-CRM114-CacheID: sfid-20250211_013057_271989_8B1FEB44 
+X-CRM114-Status: UNSURE (   5.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,32 +102,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4g5pa8
-IDIwMjXlubQy5pyIMTDml6Ug6YCx5LiAIOS4i+WNiDY6MDflr6vpgZPvvJoKPgo+IEhlbGxvLAo+
-Cj4gPj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBzcGluYW5kLT5zZXRf
-cmVhZF9yZXRyeShzcGluYW5kLCByZXRyeV9tb2RlKTsKPiA+PiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIGlmIChyZXQgPCAwKSB7Cj4gPj4gPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIGVjY19mYWlsZWQgPSB0cnVlOwo+ID4+ID4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ID4+Cj4gPj4gU2hhbGwgd2UgdHJ5
-IHRvIHNldCB0aGUgcmVhZF9yZXRyeSBsZXZlbCB0byAwIHVwb246Cj4gPj4KPiA+PiAgICAgICBp
-ZiAocmV0IDwgMCAmJiByZXRyeV9tb2RlID4gMSkKPiA+Pgo+ID4+ID8KPiA+Cj4gPiBJZiB3ZSBz
-ZXQgdGhlIHJlYWRfcmV0cnkgbGV2ZWwgdG8gMCB1cG9uLCBhbmQgc2V0X3JlYWRfcmV0cnkgZmFp
-bHMKPiA+IHdoZW4gcmV0cnlfbW9kZSBlcXVhbHMgdG8gMSwgaXQgd29uJ3QgcmV0dXJuIGFuIGVy
-cm9yLiBUaGlzIGNvdWxkCj4gPiBwb3RlbnRpYWxseSBtYXNrIGFuIHVuZGVybHlpbmcgaXNzdWUu
-Cj4KPiBEb24ndCBzYXZlIHRoZSByZXR1cm4gdmFsdWUgaW4gdGhpcyBjYXNlPyBCdXQgb3RoZXJ3
-aXNlIHlvdSB3b3VsZCBsZWF2ZQo+IHRoZSBjaGlwIGluIGEgcmV0cnkgc3RhdGUsIG5vPwoKSG93
-ZXZlciwgaWYgd2Ugc2V0IHRoZSByZWFkX3JldHJ5IGxldmVsIHRvIDAgdXBvbiwgdGhlIGNoaXAg
-d291bGQgc3RpbGwKcmVtYWluIGluIHRoZSByZXRyeSBzdGF0ZSBpZiBzZXRfcmVhZF9yZXRyeSBm
-YWlscy4KCkkgY29tZSB1cCB3aXRoIGEgc29sdXRpb246IHNldHRpbmcgdGhlIHJlYWRfcmV0cnkg
-bGV2ZWwgdG8gMCByaWdodCBiZWZvcmUKdGhlIHJlYWRfcmV0cnkgbGFiZWwuIFRoaXMgZW5zdXJl
-cyB0aGF0IHN1YnNlcXVlbnQgcmVhZHMgYWx3YXlzIHN0YXJ0CmZyb20gbGV2ZWwgMCwgYW5kIGl0
-IGVsaW1pbmF0ZXMgdGhlIG5lZWQgdG8gcmVzZXQgdGhlIHJlYWRfcmV0cnkgbGV2ZWwgYXQKdGhl
-IGVuZC4KCj4KPiBUaGFua3MsCj4gTWlxdcOobAoKVGhhbmtzLApDaGVuZyBNaW5nIExpbgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Use scope-based mutex clenup helpers, it reduces the code size.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+Tudor Ambarus (2):
+      mtd: spi-nor: sort headers alphabetically
+      mtd: spi-nor: use scope-based mutex cleanup helpers
+
+ drivers/mtd/spi-nor/core.c | 75 +++++++++++++++-------------------------------
+ 1 file changed, 24 insertions(+), 51 deletions(-)
+---
+base-commit: a64dcfb451e254085a7daee5fe51bf22959d52d3
+change-id: 20250211-spi-nor-guard-mutex-0899888a4586
+
+Best regards,
+-- 
+Tudor Ambarus <tudor.ambarus@linaro.org>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
