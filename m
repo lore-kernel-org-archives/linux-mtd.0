@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E44C0219D
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2025 11:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 951D9C021A1
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Feb 2025 13:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tlc27Z5eT9E/2RQ7+SaeBnr92AXK/FMXp4BzImpXVZw=; b=cvZC7kUL0cIwws
-	8ekSaHvPUSlAphCUqVTVKkYADhZGeZSPNWlRKNmYkLhPRc0giE3FwdbAgfKDwkE6MtXGltUdxQBnV
-	sB6zslLIfrZWqhtZym+ynGLIwZB3CZCxcP05upF9f2QWb6wL0+AD/1RXgSxG5yI22f+S9V7bv/Tj+
-	CWIQFyjSNddPS8EKvVuwFjrrNSiI0DIW3wMkQZFFUaK8kpoUWwkuOdFAgxrqs9EuNw5lmj+flGjzg
-	nA41SjHfEWvp5yLczGBdtl4pGoSeHCL2SR/Fo5L/+qaGzJXNBmqJPuGtn62/k1GX/mB2Er3jmxcNE
-	n/i8gQBoyMralJy/3+rw==;
+	List-Owner; bh=Kwe9BG16xTZkw8tl/NQK27B2ANbPMwUdsxLSn6hf0zE=; b=rEPhyAW0jx1s7t
+	tr59JQWGLKRfHuuZxvNXVT4thFfLY6eVcpbheuqX+wFSatsxv3qZv6ylpI9kcrGWpFB7r2kMVl+ti
+	LTXGJT3dXBljozNfBKuPIweINyRqKFzAUSYdJTib66AZ4pDAU9ZUDiuNqmxoPazqP7mrJ9SnNR15b
+	jNNfD/kL/83cQrckTVNt6c4n5a4G16epnh1Sj7JwamGamvijv53yJmU0+eV2f/WnwM6g1+LEbbTJS
+	SkmC3It/kJfxxbh4itu1fa6baCJQETCPQ1FQJWfH7Z4kibF/oyqkOqaUXCJZaX8rm1jQ1Xb3mhTT6
+	Ml+CeUHnEeq4/VYT2VgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tho46-00000003T7E-26jS;
-	Tue, 11 Feb 2025 11:04:30 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1thq5Z-00000003uGY-0iRe;
+	Tue, 11 Feb 2025 13:14:09 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tho2n-00000003Sgv-0fzX
+	id 1thpnd-00000003qjh-1iBL
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Feb 2025 11:03:10 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 1B0845C10BB;
-	Tue, 11 Feb 2025 11:02:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 380F9C4CEDD;
-	Tue, 11 Feb 2025 11:03:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739271788;
-	bh=mm/P9dYMUsjdggE0Bz9a//PZdBSLXWdnB5J4maPmnT8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=n2XQPpVLM1Ade/kA0CapOTKcdl9LB4DQITywr+9RMYNLKFrmu8rJLelTnyV5T5tZz
-	 ab5rEH6zEQ247ANfeaSwrAalLaHe+YUtNvqajVFPbNsAp229+1K9JViYlgpWoT8m4A
-	 cmWjWUUY8OOgAVLXhgYFCaOnVSYNyRSXKRrnVw7fYoHdGQ7ZxvzaPX1bPYtmQqCUJc
-	 lpiK31TGPJkJckzy6GlmhnUoNRaFea6lOAO7UqGt2CPRZEwA1sZaftb5DtwrZjJxR8
-	 6oPcGU11q+McqiUDLD+38X+JnSzqBrIB8AU4ZuxFcPNi2Vp2qqFOkVS1svOC01grHL
-	 HEqFXKQnaYzNA==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
- <mwalle@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,  Richard
- Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: sort headers alphabetically
-In-Reply-To: <20250211-spi-nor-guard-mutex-v1-1-05ed77a484d9@linaro.org>
-	(Tudor Ambarus's message of "Tue, 11 Feb 2025 09:30:53 +0000")
-References: <20250211-spi-nor-guard-mutex-v1-0-05ed77a484d9@linaro.org>
-	<20250211-spi-nor-guard-mutex-v1-1-05ed77a484d9@linaro.org>
-Date: Tue, 11 Feb 2025 11:03:06 +0000
-Message-ID: <mafs0seokyc9h.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 11 Feb 2025 12:55:38 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B06C9433E5;
+	Tue, 11 Feb 2025 12:55:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1739278535;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3RXfSl7prs9dlKymYiyvEDBNrnmt/hzro4w6GBu5Hzg=;
+	b=mnHuo3D9rUdG8LDBamKSLPrQv49SKJu+feypUhxcxZ/jqERSGmbeDHUwKVZQT05amTK7hn
+	vHw/2DGWuC9lgjYJl9Vf17Z/z+EzoCl1Y1BUVJZRKcqL3d1iJ4/Ay0WASWcqbwB4CLKihp
+	EsGBRZp0C/qObtcUDR+enNJgZlNRve+TEZpk5qfOMRr1g7g55oBuzwx6sHKAQzmnvMI94s
+	6ZFJ6IbfY/Yl2sCytOmUN9jJikm3G7T8+uG8lk/lP7Z3ZMTe9bAm40qVX/XWzsbU4xJ1fK
+	SlihIFnc04p7sU6AZHxcEw5+LukAbdjruF07J9dyff2ZBcd0v54NKT19Dg9JGA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Christian Marangi <ansuelsmth@gmail.com>
+In-Reply-To: <20250209145439.19047-1-ansuelsmth@gmail.com>
+References: <20250209145439.19047-1-ansuelsmth@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: qcom: finish converting register to
+ FIELD_PREP
+Message-Id: <173927853450.127165.16898289318508765683.b4-ty@bootlin.com>
+Date: Tue, 11 Feb 2025 13:55:34 +0100
 MIME-Version: 1.0
+X-Mailer: b4 0.15-dev
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeguddthecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvjghfuffkffggtgfgofesthekredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffhfdufefgueeuheeuveduieeijefhjeduveduveeitedvteeftdffhfejieelfeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrdegvddrgeeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeejpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehlihhnuhigqdgrrhhmqdhmshhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnshhuvghlshhmthhhsehgmhgrihhlrdgtohhmp
+ dhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehmrghnihhvrghnnhgrnhdrshgrughhrghsihhvrghmsehlihhnrghrohdrohhrgh
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250211_030309_244535_4E0F61D5 
-X-CRM114-Status: UNSURE (   6.30  )
+X-CRM114-CacheID: sfid-20250211_045537_575100_CE6F8DD5 
+X-CRM114-Status: UNSURE (   8.05  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,24 +74,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 11 2025, Tudor Ambarus wrote:
-
-> Sorting headers alphabetically helps locating duplicates,
-> and makes it easier to figure out where to insert new headers.
->
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
-Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gU3VuLCAwOSBGZWIgMjAyNSAxNTo1NDozMiArMDEwMCwgQ2hyaXN0aWFuIE1hcmFuZ2kgd3Jv
+dGU6Cj4gV2l0aCBzb21lIHJlc2VhcmNoIGluIHNvbWUgb2JzY3VyZSBvbGQgUVNESywgaXQgd2Fz
+IHBvc3NpYmxlIHRvIGZpbmQgdGhlCj4gTUFTSyBvZiB0aGUgbGFzdCByZWdpc3RlciB0aGVyZSB3
+ZXJlIHN0aWxsIHNldCB3aXRoIHJhdyBzaGlmdCBhbmQKPiBjb252ZXJ0IHRoZW0gdG8gRklFTERf
+UFJFUCBBUEkuCj4gCj4gVGhpcyBpcyBvbmx5IGEgY2xlYW51cCBhbmQgbW9kZXJuaXplIHRoZSBj
+b2RlIGEgYml0IGFuZCBkb2Vzbid0IG1ha2UKPiBhbnkgYmVoYXZpb3VyIGNoYW5nZS4KPiAKPiBb
+Li4uXQoKQXBwbGllZCB0byBuYW5kL25leHQsIHRoYW5rcyEKClsxLzFdIG10ZDogcmF3bmFuZDog
+cWNvbTogZmluaXNoIGNvbnZlcnRpbmcgcmVnaXN0ZXIgdG8gRklFTERfUFJFUAogICAgICBjb21t
+aXQ6IDFkYjUwYjk2YjA1OWNhOGU1NTQ4Y2IzZTBlMzhhODg4YjMyNWY5NmIKClBhdGNoZShzKSBz
+aG91bGQgYmUgYXZhaWxhYmxlIG9uIG10ZC9saW51eC5naXQgYW5kIHdpbGwgYmUKcGFydCBvZiB0
+aGUgbmV4dCBQUiAocHJvdmlkZWQgdGhhdCBubyByb2JvdCBjb21wbGFpbnMgYnkgdGhlbikuCgpL
+aW5kIHJlZ2FyZHMsCk1pcXXDqGwKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
