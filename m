@@ -4,70 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EF10C02198
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2025 16:31:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD81C021A4
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2025 19:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YA8Wo4n/SXityj0Qkc52qitoCHAbxeHk5wXAGTKmlBk=; b=vSvO/M0dyPIrze
-	7ajnEu1oBpmic6RwGhFYQpeoe9288RJd+rzi9FZ28yvYtV5yr+0yHe8qqmC7/vYhzbDIBt/1Ui3ui
-	4DFaT4qrzDAacGwl7YQpRL68poHwKsRwBQ6cM6ujLkCsXqIWRF1RZUA5eqc6I+4n+DY2UvfoUuUcu
-	7i71Q+92T71LmI3JFsBzYk/fHO24P3xv+BmaRLY4kghvILSpkEy3d9UA7YK+XREBpCd/A1Ab4b3QJ
-	zvfAVpuiZSLr5fmKP2I9fjILXnuekgDrpoYKQu8imoq86HoVCW/B0jg9kkI3x64AV8AAIq8EZifQp
-	ye6NfBVt9pFeVmWeVWjg==;
+	List-Owner; bh=M6jceo7BOWtM52haUQpAP4qm37fZaDwhn14L087xn3s=; b=LB6FNqfsAl7rSu
+	igpqaiW4WUSuHVV1qymdeBqaAn0P/UBSwk2ua0GZthGmipDhKMSrK9K5D2V1XuYOuVVeA7y4OEUrm
+	mLGPr1UwFwfzMRWBhta1x/A+cpQcGsSXighsfV5dGTUscFRwW0q9tMg/slMtuMiZCnqOYcunh6zzA
+	gVxeNI8J0KWyrZpVxiTkA8/uv/aEFbk3QodovXCr6eISLO/hzhrvCKVYLhuGctAjmZSI3CoPEjm6+
+	9e3szk3aGBQ9sy+PUPCaqYgRfTRQ07oW7tv1PrcMpAb1qSqXzC1RrbAqpkKji/0HOL/laeVwq70QM
+	rqyYT575dRdw5tuosXPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tiFeP-000000085hz-2lG5;
-	Wed, 12 Feb 2025 16:31:49 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1tiIU4-00000008eNN-29I8;
+	Wed, 12 Feb 2025 19:33:20 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tiFRk-000000082bd-1wkf
+	id 1tiIU1-00000008eN3-2atv
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Feb 2025 16:18:45 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0A62C44419;
-	Wed, 12 Feb 2025 16:18:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1739377120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JSBE115N7U9CMQpZg6ZPZBsdfvFaB3/geDg7qbYTHHU=;
-	b=dAG8SAQlqiIZbfuzzhstCGWm+L9Dbfjcybrs1hu50NYmrj612zYGM9rM5S5H96pxSREXPg
-	aWhS4n4Na7gekB6QW63VfnQAnw20W+bGhF6YqRDN1jMnRJT/UkoJCLgPXf9uTYxu9k+Jai
-	n1rDqsCTv3cezCmSeWCZnmIpYmoKkjSWA/MSPrdKFkBAbdWkmIupX1Im/7yEbkiSdCmH+I
-	5U9tcUTaBUqiz66eFrreUccik+VM7a5gw+fWK3F3jvrg0+J9UoRsEn4bpSLqvT0aXdKLPW
-	dPjeh9XAwQtdUT9oRHVsVqmtJSsq4fj/tAWeN7wseNLGmTCwNv4dF9Y7X6c4ag==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,  richard@nod.at,
-  vigneshr@ti.com,  krzk+dt@kernel.org,  conor+dt@kernel.org,
-  linux-mtd@lists.infradead.org,  devicetree@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  git@amd.com,  amitrkcian2002@gmail.com
-Subject: Re: [PATCH v12 1/3] dt-bindings: mtd: Describe MTD partitions
- concatenation
-In-Reply-To: <20250212160659.GA3883406-robh@kernel.org> (Rob Herring's message
-	of "Wed, 12 Feb 2025 10:06:59 -0600")
-References: <20250205133730.273985-1-amit.kumar-mahapatra@amd.com>
-	<20250205133730.273985-2-amit.kumar-mahapatra@amd.com>
-	<20250211212928.GA1188800-robh@kernel.org>
-	<87r043r2lq.fsf@bootlin.com>
-	<20250212160659.GA3883406-robh@kernel.org>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Wed, 12 Feb 2025 17:18:39 +0100
-Message-ID: <874j0zqgps.fsf@bootlin.com>
+	Wed, 12 Feb 2025 19:33:18 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id C6CFFA4194B;
+	Wed, 12 Feb 2025 19:31:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3C5AC4CEDF;
+	Wed, 12 Feb 2025 19:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739388795;
+	bh=DA8aW6TC91af7qZ599ujgZGfby8bu3yyXCCl/yeb3Fg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o4BnvrUbuKt991EKanNsBOItVAGsM6PWGCh7sTdEonDfyh/BCF8oLxPYtgnnGAp4K
+	 B664GQwZwUzlCy0U3Igue+7lF0xzMIlbi2twjdxobGT5gDs5im3ir8lc5b5rAf1Ras
+	 IjJnEME07Et62oxLoX3sbhm6rgPQd6WPwoWwXSE0pryqmwJvOf+scUMY0sU4q7efnw
+	 eZ8OJDMTiGf8QTdZ7pVQAmXNtgQDT/NQqv1T6rFsLQQ+vV+TZIUtqswu6vJyUp40Uw
+	 ehxX5ZUz4uBREJmIvDdReeoT5QHtBo0HL5dqNz2mM2T8m7w/tQ+qycL2b+kJ1xaJCP
+	 lFZ9DHVjhcYJQ==
+Date: Wed, 12 Feb 2025 13:33:14 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?J=2E_Neusch=E4fer?= <j.ne@posteo.net>
+Cc: devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	Krzysztof Kozlowski <krzk@kernel.org>, imx@lists.linux.dev,
+	Scott Wood <oss@buserror.net>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	=?iso-8859-1?Q?J=2E_Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 03/12] dt-bindings: crypto: Convert fsl,sec-2.0 to YAML
+Message-ID: <20250212193314.GA4134845-robh@kernel.org>
+References: <20250207-ppcyaml-v2-0-8137b0c42526@posteo.net>
+ <20250207-ppcyaml-v2-3-8137b0c42526@posteo.net>
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeggeefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddupdhrtghpthhtoheprhhosghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrmhhithdrkhhumhgrrhdqmhgrhhgrphgrthhrrgesrghmugdrtghomhdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtohepkhhriihkodgutheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheptghonhhorhdoughtsehkvghrn
- hgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepuggvvhhitggvthhrvggvsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20250207-ppcyaml-v2-3-8137b0c42526@posteo.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250212_081844_798665_2DCE2FE1 
-X-CRM114-Status: GOOD (  14.63  )
+X-CRM114-CacheID: sfid-20250212_113317_790666_FECDF070 
+X-CRM114-Status: GOOD (  25.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,34 +95,284 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTIvMDIvMjAyNSBhdCAxMDowNjo1OSAtMDYsIFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5v
-cmc+IHdyb3RlOgoKPiBPbiBXZWQsIEZlYiAxMiwgMjAyNSBhdCAwOToyNTo1M0FNICswMTAwLCBN
-aXF1ZWwgUmF5bmFsIHdyb3RlOgo+PiBIaSwKPj4gCj4+ID4+IFRoZSBwYXJ0aXRpb25zIHRoYXQg
-Z2V0cyBjcmVhdGVkIGFyZQo+PiA+PiBwYXJ0MF8wCj4+ID4+IHBhcnQxXzEKPj4gPj4gcGFydDBf
-MS1wYXJ0MV8wLWNvbmNhdAo+PiA+Cj4+ID4gJ3BhcnQtY29uY2F0JyBkb2Vzbid0IHdvcmsgaWYg
-eW91IGhhdmUgbXVsdGlwbGUgc2V0cyBvZiBwYXJ0aXRpb25zIHlvdSAKPj4gPiB3YW50IHRvIGNv
-bmNhdGVuYXRlLgo+PiA+Cj4+ID4gSSB0aGluayB5b3UgbmVlZCBzb21ldGhpbmcgbGlrZSAncHJl
-di1wYXJ0aXRpb24nIG9yICduZXh0LXBhcnRpdGlvbicgaW4gCj4+ID4gdGhlIHBhcnRpdGlvbiBu
-b2RlcyB0byBjcmVhdGUgYSBsaW5rZWQgbGlzdCBvZiBwYXJ0aXRpb25zLiBIb3BlZnVsbHksIAo+
-PiA+IHlvdSBkb24ndCBuZWVkIGJvdGggcHJvcGVydGllcywgYnV0IHlvdSBkbyBoYXZlIHRvIHNj
-YW4gZXZlcnl0aGluZyB0byAKPj4gPiBmaWd1cmUgb3V0IHdoaWNoIG9uZXMgYXJlIGNvbmNhdGVu
-YXRlZCBvciBub3QuIEZvciBleGFtcGxlLCBubyBwcm9wZXJ0eSAKPj4gPiBjYW4gbWVhbiBub3Qg
-Y29uY2F0ZW5hdGVkIG9yIGxhc3QgcGFydGl0aW9uIGlmIHlvdSB1c2UgJ25leHQtcGFydGl0aW9u
-Jy4gCj4+IAo+PiBPdXQgb2YgY3VyaW9zaXR5LCB3b3VsZCB0aGUgY2hvc2VuIG5vZGUgYmUgZWxp
-Z2libGUgYXMgYSBjZW50cmFsIHBsYWNlCj4+IHdoZXJlIHRvIGxvb2sgYXQ/Cj4KPiBXaHkgd291
-bGQgeW91IG5lZWQgdGhhdD8KCkknbSB0YWxraW5nIGFib3V0IHN0b3JpbmcgaW4gYSBjZW50cmFs
-IHBsYWNlIGFsbCB0aGUgY29uY2F0ZW5hdGVkCnBhcnRpdGlvbnMuIFlvdXIgcHJvcG9zYWwgd2l0
-aCAibmV4dC1wYXJ0aXRpb24iIHdvcmtzIGZpbmUgaWYgd2UgbG9jYXRlCml0IGluc2lkZSB0aGUg
-J3BhcnRpdGlvbnMnIG5vZGUsIGJ1dCBJIGZlZWwgbGlrZSB0aGUgJ3BhcnQtY29uY2F0JwppbnN0
-ZWFkIHdhcyBub3QgZml0dGluZyB2ZXJ5IHdlbGwgdGhlcmUuIFNvIEkgd2FzIHdvbmRlcmluZyBp
-biB0aGlzIGNhc2UKaWYgbW92aW5nIHRoZSBjb25jYXRlbmF0aW9uIG9mIHRoZSBwYXJ0aXRpb25z
-IHdvdWxkIGJlIGVsaWdpYmxlIHRvIHRoZQpjaG9zZW4gbm9kZSwgb3IgaWYgdGhhdCdzIHJlc2Vy
-dmVkIHRvICp2ZXJ5KiBmZXcgcHJvcGVydGllcyAoYW5kIHNob3VsZApyZW1haW4gbGlrZSB0aGF0
-KS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Fri, Feb 07, 2025 at 10:30:20PM +0100, J. Neusch=E4fer wrote:
+> Convert the Freescale security engine (crypto accelerator) binding from
+> text form to YAML. The list of compatible strings reflects what was
+> previously described in prose; not all combinations occur in existing
+> devicetrees.
+> =
+
+> Signed-off-by: J. Neusch=E4fer <j.ne@posteo.net>
+> ---
+> =
+
+> V2:
+> - several improvements suggested by Rob Herring:
+>   - remove unnecessary multiline markers
+>   - constrain fsl,num-channels to enum: [1,4]
+>   - constrain fsl,channel-fifo-len to plausible limits
+>   - constrain fsl,exec-units-mask to maximum=3D0xfff
+> - trim subject line (remove "binding")
+> ---
+>  .../devicetree/bindings/crypto/fsl,sec2.0.yaml     | 142 +++++++++++++++=
+++++++
+>  .../devicetree/bindings/crypto/fsl-sec2.txt        |  65 ----------
+>  2 files changed, 142 insertions(+), 65 deletions(-)
+> =
+
+> diff --git a/Documentation/devicetree/bindings/crypto/fsl,sec2.0.yaml b/D=
+ocumentation/devicetree/bindings/crypto/fsl,sec2.0.yaml
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..0b82f3b68b5f82e7fb52d292a=
+623d452c1cdb059
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/fsl,sec2.0.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/fsl,sec2.0.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale SoC SEC Security Engines versions 1.x-2.x-3.x
+> +
+> +maintainers:
+> +  - J. Neusch=E4fer <j.ne@posteo.net.
+
+missing >
+
+> +
+> +properties:
+> +  compatible:
+> +    description:
+> +      Should contain entries for this and backward compatible SEC versio=
+ns,
+> +      high to low. Warning - SEC1 and SEC2 are mutually exclusive.
+> +    oneOf:
+> +      - items:
+> +          - const: fsl,sec3.3
+> +          - const: fsl,sec3.1
+> +          - const: fsl,sec3.0
+> +          - const: fsl,sec2.4
+> +          - const: fsl,sec2.2
+> +          - const: fsl,sec2.1
+> +          - const: fsl,sec2.0
+> +      - items:
+> +          - const: fsl,sec3.1
+> +          - const: fsl,sec3.0
+> +          - const: fsl,sec2.4
+> +          - const: fsl,sec2.2
+> +          - const: fsl,sec2.1
+> +          - const: fsl,sec2.0
+> +      - items:
+> +          - const: fsl,sec3.0
+> +          - const: fsl,sec2.4
+> +          - const: fsl,sec2.2
+> +          - const: fsl,sec2.1
+> +          - const: fsl,sec2.0
+> +      - items:
+> +          - const: fsl,sec2.4
+> +          - const: fsl,sec2.2
+> +          - const: fsl,sec2.1
+> +          - const: fsl,sec2.0
+> +      - items:
+> +          - const: fsl,sec2.2
+> +          - const: fsl,sec2.1
+> +          - const: fsl,sec2.0
+> +      - items:
+> +          - const: fsl,sec2.1
+> +          - const: fsl,sec2.0
+> +      - items:
+> +          - const: fsl,sec2.0
+> +      - items:
+> +          - const: fsl,sec1.2
+> +          - const: fsl,sec1.0
+> +      - items:
+> +          - const: fsl,sec1.0
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  fsl,num-channels:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 1, 4 ]
+> +    description: An integer representing the number of channels availabl=
+e.
+> +
+> +  fsl,channel-fifo-len:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 100
+> +    description:
+> +      An integer representing the number of descriptor pointers each cha=
+nnel
+> +      fetch fifo can hold.
+> +
+> +  fsl,exec-units-mask:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 0xfff
+> +    description: |
+> +      The bitmask representing what execution units (EUs) are available.
+> +      EU information should be encoded following the SEC's Descriptor He=
+ader
+> +      Dword EU_SEL0 field documentation, i.e. as follows:
+> +
+> +        bit 0  =3D reserved - should be 0
+> +        bit 1  =3D set if SEC has the ARC4 EU (AFEU)
+> +        bit 2  =3D set if SEC has the DES/3DES EU (DEU)
+> +        bit 3  =3D set if SEC has the message digest EU (MDEU/MDEU-A)
+> +        bit 4  =3D set if SEC has the random number generator EU (RNG)
+> +        bit 5  =3D set if SEC has the public key EU (PKEU)
+> +        bit 6  =3D set if SEC has the AES EU (AESU)
+> +        bit 7  =3D set if SEC has the Kasumi EU (KEU)
+> +        bit 8  =3D set if SEC has the CRC EU (CRCU)
+> +        bit 11 =3D set if SEC has the message digest EU extended alg set=
+ (MDEU-B)
+> +
+> +      remaining bits are reserved for future SEC EUs.
+> +
+> +  fsl,descriptor-types-mask:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      The bitmask representing what descriptors are available. Descripto=
+r type
+> +      information should be encoded following the SEC's Descriptor Heade=
+r Dword
+> +      DESC_TYPE field documentation, i.e. as follows:
+> +
+> +        bit 0  =3D set if SEC supports the aesu_ctr_nonsnoop desc. type
+> +        bit 1  =3D set if SEC supports the ipsec_esp descriptor type
+> +        bit 2  =3D set if SEC supports the common_nonsnoop desc. type
+> +        bit 3  =3D set if SEC supports the 802.11i AES ccmp desc. type
+> +        bit 4  =3D set if SEC supports the hmac_snoop_no_afeu desc. type
+> +        bit 5  =3D set if SEC supports the srtp descriptor type
+> +        bit 6  =3D set if SEC supports the non_hmac_snoop_no_afeu desc.t=
+ype
+> +        bit 7  =3D set if SEC supports the pkeu_assemble descriptor type
+> +        bit 8  =3D set if SEC supports the aesu_key_expand_output desc.t=
+ype
+> +        bit 9  =3D set if SEC supports the pkeu_ptmul descriptor type
+> +        bit 10 =3D set if SEC supports the common_nonsnoop_afeu desc. ty=
+pe
+> +        bit 11 =3D set if SEC supports the pkeu_ptadd_dbl descriptor type
+
+Why 3 variations of 'descriptor type'?
+
+> +
+> +      ..and so on and so forth.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - fsl,num-channels
+> +  - fsl,channel-fifo-len
+> +  - fsl,exec-units-mask
+> +  - fsl,descriptor-types-mask
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    /* MPC8548E */
+> +    crypto@30000 {
+> +        compatible =3D "fsl,sec2.1", "fsl,sec2.0";
+> +        reg =3D <0x30000 0x10000>;
+> +        interrupts =3D <29 2>;
+> +        interrupt-parent =3D <&mpic>;
+> +        fsl,num-channels =3D <4>;
+> +        fsl,channel-fifo-len =3D <24>;
+> +        fsl,exec-units-mask =3D <0xfe>;
+> +        fsl,descriptor-types-mask =3D <0x12b0ebf>;
+> +    };
+> diff --git a/Documentation/devicetree/bindings/crypto/fsl-sec2.txt b/Docu=
+mentation/devicetree/bindings/crypto/fsl-sec2.txt
+> deleted file mode 100644
+> index 125f155d00d052eec7d5093b5c5076cbe720417f..0000000000000000000000000=
+000000000000000
+> --- a/Documentation/devicetree/bindings/crypto/fsl-sec2.txt
+> +++ /dev/null
+> @@ -1,65 +0,0 @@
+> -Freescale SoC SEC Security Engines versions 1.x-2.x-3.x
+> -
+> -Required properties:
+> -
+> -- compatible : Should contain entries for this and backward compatible
+> -  SEC versions, high to low, e.g., "fsl,sec2.1", "fsl,sec2.0" (SEC2/3)
+> -                             e.g., "fsl,sec1.2", "fsl,sec1.0" (SEC1)
+> -    warning: SEC1 and SEC2 are mutually exclusive
+> -- reg : Offset and length of the register set for the device
+> -- interrupts : the SEC's interrupt number
+> -- fsl,num-channels : An integer representing the number of channels
+> -  available.
+> -- fsl,channel-fifo-len : An integer representing the number of
+> -  descriptor pointers each channel fetch fifo can hold.
+> -- fsl,exec-units-mask : The bitmask representing what execution units
+> -  (EUs) are available. It's a single 32-bit cell. EU information
+> -  should be encoded following the SEC's Descriptor Header Dword
+> -  EU_SEL0 field documentation, i.e. as follows:
+> -
+> -	bit 0  =3D reserved - should be 0
+> -	bit 1  =3D set if SEC has the ARC4 EU (AFEU)
+> -	bit 2  =3D set if SEC has the DES/3DES EU (DEU)
+> -	bit 3  =3D set if SEC has the message digest EU (MDEU/MDEU-A)
+> -	bit 4  =3D set if SEC has the random number generator EU (RNG)
+> -	bit 5  =3D set if SEC has the public key EU (PKEU)
+> -	bit 6  =3D set if SEC has the AES EU (AESU)
+> -	bit 7  =3D set if SEC has the Kasumi EU (KEU)
+> -	bit 8  =3D set if SEC has the CRC EU (CRCU)
+> -	bit 11 =3D set if SEC has the message digest EU extended alg set (MDEU-=
+B)
+> -
+> -remaining bits are reserved for future SEC EUs.
+> -
+> -- fsl,descriptor-types-mask : The bitmask representing what descriptors
+> -  are available. It's a single 32-bit cell. Descriptor type information
+> -  should be encoded following the SEC's Descriptor Header Dword DESC_TYPE
+> -  field documentation, i.e. as follows:
+> -
+> -	bit 0  =3D set if SEC supports the aesu_ctr_nonsnoop desc. type
+> -	bit 1  =3D set if SEC supports the ipsec_esp descriptor type
+> -	bit 2  =3D set if SEC supports the common_nonsnoop desc. type
+> -	bit 3  =3D set if SEC supports the 802.11i AES ccmp desc. type
+> -	bit 4  =3D set if SEC supports the hmac_snoop_no_afeu desc. type
+> -	bit 5  =3D set if SEC supports the srtp descriptor type
+> -	bit 6  =3D set if SEC supports the non_hmac_snoop_no_afeu desc.type
+> -	bit 7  =3D set if SEC supports the pkeu_assemble descriptor type
+> -	bit 8  =3D set if SEC supports the aesu_key_expand_output desc.type
+> -	bit 9  =3D set if SEC supports the pkeu_ptmul descriptor type
+> -	bit 10 =3D set if SEC supports the common_nonsnoop_afeu desc. type
+> -	bit 11 =3D set if SEC supports the pkeu_ptadd_dbl descriptor type
+> -
+> -  ..and so on and so forth.
+> -
+> -Example:
+> -
+> -	/* MPC8548E */
+> -	crypto@30000 {
+> -		compatible =3D "fsl,sec2.1", "fsl,sec2.0";
+> -		reg =3D <0x30000 0x10000>;
+> -		interrupts =3D <29 2>;
+> -		interrupt-parent =3D <&mpic>;
+> -		fsl,num-channels =3D <4>;
+> -		fsl,channel-fifo-len =3D <24>;
+> -		fsl,exec-units-mask =3D <0xfe>;
+> -		fsl,descriptor-types-mask =3D <0x12b0ebf>;
+> -	};
+> =
+
+> -- =
+
+> 2.48.0.rc1.219.gb6b6757d772
+> =
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
