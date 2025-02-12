@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 347F1C021A5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BFFDC021A0
 	for <linux-mtd@archiver.kernel.org>; Wed, 12 Feb 2025 10:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RL3shYgYgn08x4WR2LY+wVWPN0Rt4BSOx+mwfISUrUM=; b=rZqZMBXVlCtcjF
-	S8fDV/gipd4DFziQH8I+yG/pdHiK6UpIOPBIQt1gxKa4jgbVCHuK+QzvSJA9poL0z6VTz9smCq7J5
-	6Jm6AvIXJ33FP6abkD8WR9WcRav4MiVD9jZd6ncKxgdi/RzovgqXfF+ijRH9ZEdQ1XrT2XNx0DJxX
-	i/sUya8CqkALblBXvSkcBHodstWrBo2nePHVjCmjMsBWcX5wmF0zEI6+osFbjrXRcDAyQgRoHtM8C
-	nFfUaTU3AU8JfHuk+P3M/J0CJmfNgzcpKnp6VhtTSr62eWBsk84XW1LWKzO4eNB4SW2VIPzGBcFkQ
-	9ux64eR8vVcoPOPWVUQA==;
+	List-Owner; bh=DsrG+6kwGU1y3XZZiFvaRTbIzJKg/RCJzO0L/zjqS+c=; b=ZXZPRyCpIMwZyX
+	3kzjSdci4lVbo3S5un5W9620LuShzV52F2wyKZ9JYDaLO6LGTkcvjB0FrFzTpyt9OXBf04AwqVQDD
+	sKxblKoxZ9bSussa5frVv3OqQ/j6UNmaND1oBtYl//nXmRXdm8ZQzi0cK4S0fpjgrspyFRKd87dpQ
+	fd6zDZH/0f/uQCRUQK0gnyAZkCYrVC+0rkkPJ4ZuTYuQOPUoecHWohatmlQBPVWR67B8hvM0/BESZ
+	wF57WmxNOyYWplHA0ztnoCMMD0dud7BgjxLn0Yye3Q7iyBVTqzlzFjSw67JPg2aeZ5b3Mxe9froov
+	4/wofQ5PoRFVJNLo+jMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tiAQ2-000000074cM-0zjV;
-	Wed, 12 Feb 2025 10:56:38 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tiAQ3-000000074dE-2MWE;
+	Wed, 12 Feb 2025 10:56:39 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tiAMD-000000073jw-1ygM
+	id 1tiAMT-000000073pZ-40Ub
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Feb 2025 10:52:42 +0000
+	Wed, 12 Feb 2025 10:52:59 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 2AA33A41BCF;
-	Wed, 12 Feb 2025 10:50:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C581BC4CEDF;
-	Wed, 12 Feb 2025 10:52:36 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id E35C05C5E23;
+	Wed, 12 Feb 2025 10:52:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B154C4CEDF;
+	Wed, 12 Feb 2025 10:52:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739357560;
-	bh=IbfikkpS+p2O//leAns4lsN3IqnEVJNnh28OTL/5oCE=;
+	s=k20201202; t=1739357577;
+	bh=LwGxdLg8+twqu4asAaRUA1ljgh9WeZCX/IZ9fHF1aC4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=QKpin3d7mTJ9/8tDU5r5d/CXdkMY+sCm1+TWFdR2IsvYCQw+9uaZDVEA0tzoIlknN
-	 vxTpcbddOjCE8kRJNjpm9f6rLrcM5Fo4fE8FlrRLEmeApKbJwP9csBz3Ezvkv+DiW7
-	 3PH6XPpim9iDxnE7lzVQ9CwBw3JeyC4WRmVgOTLCBNiiTYpXuttwlLOg4+OcFPWPvo
-	 znfwBcpg6oem5pcHpmmo8tumZASH5UvHBIh304kCoXpOGtpa95SD9DwsmEnH5+kFsn
-	 YyjTVShSN3ZabTH5+soelVavixul7mP2u1tzzyPgtr70/7p1hhU2On0eIhar845QGT
-	 DNkQSgdX/YeJg==
-Message-ID: <9797d470-346f-4244-ae8d-2db68ef071a6@kernel.org>
-Date: Wed, 12 Feb 2025 11:52:33 +0100
+	b=WEmo6s20JHNClvCl+c0CK9xEzviz+xJSm/CsmX3TNCM3EYVa9Tz28IqPTvXiQxXO4
+	 6Adf0zphG83OJknmRLj2EZ3fB3kt7j3KE58gIk+lSxhJO9W1qTUhrrrsFhYsvnyfeA
+	 Ie9Ba3JrKiZvg5OhxegVxuIF5DrrToqFyg/bXuaX2fBRkITYYQUDSrerTmQiwnOOjJ
+	 UfL6Dh0ittBVpKWvjh7QhvqdZWTDenyoKuKapb6UpuXFjAa7kSQsnbDMxQJhR/eetL
+	 MUvmu+mWEtYilUJx/Wq8v3/OY+AmuIVoSNPaLuKQC1tNdPAtbvxJSoixBun83mtPSn
+	 vqf+TIuVX47XQ==
+Message-ID: <8915b5a4-9f6d-4415-b4b6-85de9becee58@kernel.org>
+Date: Wed, 12 Feb 2025 11:52:49 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: cadence: document required
- clock-names
+Subject: Re: [PATCH v2 2/2] arm64: dts: socfpga: agilex5: add clock-names
+ property to nand node
 To: niravkumar.l.rabara@intel.com, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -55,7 +55,7 @@ To: niravkumar.l.rabara@intel.com, Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: nirav.rabara@altera.com, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20250212095407.2667743-1-niravkumar.l.rabara@intel.com>
- <20250212095407.2667743-2-niravkumar.l.rabara@intel.com>
+ <20250212095407.2667743-3-niravkumar.l.rabara@intel.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -101,10 +101,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20250212095407.2667743-2-niravkumar.l.rabara@intel.com>
+In-Reply-To: <20250212095407.2667743-3-niravkumar.l.rabara@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250212_025241_656532_D7BD7A3A 
-X-CRM114-Status: GOOD (  10.07  )
+X-CRM114-CacheID: sfid-20250212_025258_080788_D51FE09E 
+X-CRM114-Status: UNSURE (   5.25  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,19 +125,11 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On 12/02/2025 10:54, niravkumar.l.rabara@intel.com wrote:
 > From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
 > 
-> The clock-names property is required because the driver requests
-> the clock by name and not the index.
-> Update the example to use &clk instead of &nf_clk for the clocks
-> property to avoid confusion with the clock-names property "nf_clk".
+> Add required clock-names property to the nand node.
 > 
 > Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-> ---
->  Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
 
-Please add fixes tag - probably the conversion, because original TXT
-binding mentioned "nf_clk" so it could be implied.
-
+Fixes tag please.
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
