@@ -4,92 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14072C0219E
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Feb 2025 10:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDACAC021A9
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Feb 2025 14:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xDm3OhHh9vS1jpBseGcTyNV4qnb5T1pYNFnOT6vy4FA=; b=bcoW7PZVDYoKy/
-	zPGuQHWfknR7rDs2AuBJgctRGGpASAn1bw/9UyMsdYSXK0pUuyvWjO0CF1WorLIXZcuQKe5jKzL26
-	aWn7AjH01AhQyvaO4BgPJNKEQNoh1b0PMq31QpmM8ftN/i1QrnNdSPt9iuXaghuonHdSdQKpimGnQ
-	/hLKIXoPWEtAG/ML2ZU2ONOK/6qj09AMCi6A3TqtA1w193jRmCiJizg9L/RK7D7UM7vRYLNtf8M3D
-	iYtYkayoWLcAbw6TxokWC3g2lckHe7DInpqqT11wbJ51hUzLhihLWVCvAzg4lUEBmapuexOPbHhzp
-	dFKJW3Yz/8bLOw98vqCQ==;
+	List-Owner; bh=JsxcoiyW5TZsj4aO/a1DLY2DNyKSRdJOtGWXD8vuQV4=; b=CDVusVLrciPaAi
+	0sdp7qhnUt0a3+hUcX2ixAA4GnwtbQnEXuPh6rKFViB4dlrmAVjX9umIk0nXJZmERXG6wSNFTz/pQ
+	yeNIkvTtJZstJaG7ZNimkTn6Og00QvwnFCJH44OEFylAUwTyjhE/MrhIeCKCTjgUHz6rcE4rxbWeC
+	2cnedLI4eE0tm5PgFMYJWkSSxlD4F9kxsEZ0qoG/0d+EDYUzYxv1Aqqy96/58fZo5eLhCVp7mKuC5
+	/bfRcFrlbh3X9DGnq15RiOk6oaGaZboOlPIn6wfUfPjS4CYA3mkI61JrpGI5zKWUutcG/lFbdzOIN
+	lrdAI6tty07oClHR2Rzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tjyl9-00000004BaY-0AeM;
-	Mon, 17 Feb 2025 10:53:55 +0000
-Received: from mout01.posteo.de ([185.67.36.65])
+	id 1tk2Gm-00000004tP7-42Hz;
+	Mon, 17 Feb 2025 14:38:48 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tjyGH-00000004648-3tA2
+	id 1tk1zl-00000004pSm-0LMp
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Feb 2025 10:22:03 +0000
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id ABA7C240027
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Feb 2025 11:21:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1739787718; bh=jMs/nQgZnmKABPkw9jqt7Jfzzk1OWmU8OV/13GG2QpU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:From;
-	b=VoOKg8ScbUMn0vwJXXeE+NHJZ0a9mDWjY3CeKpA7rXlmzvqNpeipXr22cUOZkwj5W
-	 hlHqEuxydHy2X+qdRqpAo/cZQ0lKjeeiHRkh9nxqXR5EWMuKhJuMZW1Fm26Xtg1VNw
-	 tbdXTKy0CrqIUEbhY0LakzhEglbdyyiFYaoYghcIt8r4EyXEM2uxT+QJ6RRDWpBWm4
-	 OAMMipY1+hxsNKuYe7M94yopTUKCsQDL/6zirsQuwS50oW7b0kPaaMuIW9tg7PQOzY
-	 ahZGwYFab344VQG/hqYTXsssLZrxpk4bz1wWrxm03KZGWNYvnFT67CaAZfNIy7ddYs
-	 JG3RfyGnXf56g==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4YxJc00sngz9rxD;
-	Mon, 17 Feb 2025 11:21:51 +0100 (CET)
-Date: Mon, 17 Feb 2025 10:21:51 +0000
-From: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>,
-	=?utf-8?Q?J=2E_Neusch=C3=A4fer?= via B4 Relay <devnull+j.ne.posteo.net@kernel.org>,
-	devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	Krzysztof Kozlowski <krzk@kernel.org>, imx@lists.linux.dev,
-	Scott Wood <oss@buserror.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>, Lee Jones <lee@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	=?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 12/12] dt-bindings: mtd: raw-nand-chip: Relax node
- name pattern
-Message-ID: <Z7MNv4NX8dSztdsP@probook>
-References: <20250207-ppcyaml-v2-0-8137b0c42526@posteo.net>
- <20250207-ppcyaml-v2-12-8137b0c42526@posteo.net>
- <87o6zaurv9.fsf@bootlin.com>
- <Z7Iqir-qaZDt6tsx@probook>
- <87tt8svrxf.fsf@bootlin.com>
+	Mon, 17 Feb 2025 14:21:14 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 21B81A4012D;
+	Mon, 17 Feb 2025 14:19:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ECD3C4CED1;
+	Mon, 17 Feb 2025 14:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739802071;
+	bh=7wbfycFd+Qe/RMftqN+td76/PHMtQPAcus/+K4xM1aI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=N7+FeV1vKXvWtuhOP3SYj/BSducmwrI9QhBB/14Qoz3yFjWHwFv/iQJcJm2I/FTOb
+	 jbuklG1VSi5VpgIPTCLfDE06In8qs8tuqIy+Ukw6/870plMSrHqq8JvK7jYpxKhy7T
+	 R/SCchTrxJSmNciAFFL5Uima2VmJkyEe3aeSUm8AxQnZv/27ECLhLSTCs39cBobJ5p
+	 8MyyyH55/ppqkIbMDLj4BIsESowVDp9LSW8l+kOOzrHg1M670KtKlMjOWwvaEW/IjI
+	 KkjaOPb2++27vJq7spDm5//f3C/2323XakQR2ZUxWOspM+J8wghBSdh7KWpNwaNLIF
+	 ZMVFs6I99On3g==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: <tudor.ambarus@linaro.org>,  <pratyush@kernel.org>,
+  <mwalle@kernel.org>,  <miquel.raynal@bootlin.com>,  <richard@nod.at>,
+  <vigneshr@ti.com>,  <csokas.bence@prolan.hu>,
+  <linux-mtd@lists.infradead.org>,  <git@amd.com>,
+  <amitrkcian2002@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: sst: Fix SST write failure
+In-Reply-To: <20250213054546.2078121-1-amit.kumar-mahapatra@amd.com> (Amit
+	Kumar Mahapatra's message of "Thu, 13 Feb 2025 11:15:46 +0530")
+References: <20250213054546.2078121-1-amit.kumar-mahapatra@amd.com>
+Date: Mon, 17 Feb 2025 14:21:09 +0000
+Message-ID: <mafs0cyfgmz3e.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87tt8svrxf.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250217_022202_265311_F2565C4C 
-X-CRM114-Status: GOOD (  19.61  )
+X-CRM114-CacheID: sfid-20250217_062113_245190_11911567 
+X-CRM114-Status: GOOD (  16.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,49 +71,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBGZWIgMTcsIDIwMjUgYXQgMTA6MzE6MDhBTSArMDEwMCwgTWlxdWVsIFJheW5hbCB3
-cm90ZToKPiBIZWxsbywKPiAKPiA+PiA+IEluIHNvbWUgc2NlbmFyaW9zLCBzdWNoIGFzIHVuZGVy
-IHRoZSBGcmVlc2NhbGUgZUxCQyBidXMsIHRoZXJlIGFyZSByYXcKPiA+PiA+IE5BTkQgY2hpcHMg
-d2l0aCBhIHVuaXQgYWRkcmVzcyB0aGF0IGhhcyBhIGNvbW1hIGluIGl0IChjcyxvZmZzZXQpLgo+
-ID4+ID4gUmVsYXggdGhlICRub2RlbmFtZSBwYXR0ZXJuIGluIHJhdy1uYW5kLWNoaXAueWFtbCB0
-byBhbGxvdyBzdWNoIHVuaXQKPiA+PiA+IGFkZHJlc3Nlcy4KPiA+PiAKPiA+PiBUaGlzIGlzIHN1
-cGVyIHNwZWNpZmljIHRvIHRoaXMgY29udHJvbGxlciwgSSdkIHJhdGhlciBhdm9pZCB0aGF0IGlu
-IHRoZQo+ID4+IG1haW4gKHNoYXJlZCkgZmlsZXMuIEkgYmVsaWV2ZSB5b3UgY2FuIGZvcmNlIGFu
-b3RoZXIgbm9kZSBuYW1lIGluIHRoZQo+ID4+IGNvbnRyb2xsZXIncyBiaW5kaW5nIGluc3RlYWQ/
-Cj4gPgo+ID4gSXQncyBhIGJpdCB0cmlja3kuIEFGQUlDUywgd2hlbiBJIGRlY2xhcmUgYSBub2Rl
-IG5hbWUgcGF0dGVybiBpbiBteQo+ID4gc3BlY2lmaWMgYmluZGluZyBpbiBhZGRpdGlvbiB0byB0
-aGUgZ2VuZXJpYyBiaW5kaW5nLCB0aGUgcmVzdWx0IGlzIHRoYXQKPiA+IGJvdGggb2YgdGhlbSBh
-cHBseSwgc28gSSBjYW4ndCByZWxheCBzdHJpY3RlciByZXF1aXJlbWVudHM6Cj4gPgo+ID4gIyBy
-YXctbmFuZC1jaGlwLnlhbWwKPiA+IHByb3BlcnRpZXM6Cj4gPiAgICRub2RlbmFtZToKPiA+ICAg
-ICBwYXR0ZXJuOiAiXm5hbmRAW2EtZjAtOV0kIgo+ID4KPiA+ICMgZnNsLGVsYmMtZmNtLW5hbmQu
-eWFtbAo+ID4gcHJvcGVydGllczoKPiA+ICAgJG5vZGVuYW1lOgo+ID4gICAgIHBhdHRlcm46ICJe
-bmFuZEBbYS1mMC05XSgsWzAtOWEtZl0qKT8kIgo+IAo+IFdlbGwsIEkgZ3Vlc3MgdGhpcyBpcyBj
-cmVhdGluZyBhIHNlY29uZCBwb3NzaWJsZSBub2RlIG5hbWUuCj4gCj4gPiAjIGR0Ywo+ID4gLy4u
-Li9mc2wsZWxiYy1mY20tbmFuZC5leGFtcGxlLmR0YjoKPiA+IG5hbmRAMSwwOiAkbm9kZW5hbWU6
-MDogJ25hbmRAMSwwJyBkb2VzIG5vdCBtYXRjaCAnXm5hbmRAW2EtZjAtOV0kJwo+ID4gICAgICAg
-ICBmcm9tIHNjaGVtYSAkaWQ6Cj4gPiAJaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbXRk
-L2ZzbCxlbGJjLWZjbS1uYW5kLnlhbWwjCj4gCj4gV2hhdCBhYm91dCBmaXhpbmcgdGhlIERUIGlu
-c3RlYWQ/CgpJbiB0aGlzIHBhcnRpY3VsYXIgY29udGV4dCB1bmRlciB0aGUgRnJlZXNjYWxlIGVM
-QkMgKCJlbmhhbmNlZCBMb2NhbCBCdXMKQ29udHJvbGxlciIpLCBuYW5kQDEsMCBtYWtlcyBjb21w
-bGV0ZSBzZW5zZSwgYmVjYXVzZSBpdCByZWZlcnMgdG8gY2hpcApzZWxlY3QgMSwgb2Zmc2V0IDAu
-IFRoZSBlTEJDIGJpbmRpbmcgKHdoaWNoIGhhcyBleGlzdGVkIHdpdGhvdXQgWUFNTApmb3JtYWxp
-emF0aW9uIGZvciBhIGxvbmcgdGltZSkgc3BlY2lmaWVzIHRoYXQgZWFjaCBkZXZpY2UgYWRkcmVz
-cwppbmNsdWRlcyBhIGNoaXAgc2VsZWN0IGFuZCBhIGJhc2UgYWRkcmVzcyB1bmRlciB0aGF0IENT
-LgoKVGhlIGFsdGVybmF0aXZlIG9mIHNwZWxsaW5nIGl0IGFzIG5hbmRAMTAwMDAwMDAwIG1ha2Vz
-IHJlYWRhYmlsaXR5CnN0cmljdGx5IHdvcnNlIChJTU8pLgoKRHVlIHRvIHRoZSBjb25mbGljdGlu
-ZyByZXF1aXJlbWVudHMgb2Yga2VlcGluZyBjb21wYXRpYmlsaXR5IHdpdGgKaGlzdG9yaWMgZGV2
-aWNlIHRyZWVzIGFuZCBjb21wbHlpbmcgd2l0aCBtb2Rlcm4gRFQgY29udmVudGlvbnMsCkknbSBh
-bHJlYWR5IGlnbm9yaW5nIGEgdmFsaWRhdGlvbiB3YXJuaW5nIGZyb20gZHRjLCB3aGljaCBzdWdn
-ZXN0cyB0bwp1c2UgbmFuZEAxMDAwMDAwMDAgaW5zdGVhZCBvZiBuYW5kQDEsMCBiZWNhdXNlIHRo
-ZSBlTEJDIGJ1cyBoYXMKaGlzdG9yaWNhbGx5IGJlZW4gc3BlY2lmaWVkIHdpdGggY29tcGF0aWJs
-ZSA9IC4uLiwgInNpbXBsZS1idXMiLApzbyBJIGd1ZXNzIHRoZSBmc2wsZWxiYy1mY20tbmFuZCBi
-aW5kaW5nIGNhbid0IGJlIHBlcmZlY3QgYW55d2F5LgoKSW4gYW55IGNhc2UsIEknbGwgZHJvcCB0
-aGlzIHBhdGNoIGR1cmluZyBmdXJ0aGVyIGRldmVsb3BtZW50LgoKClRoYW5rIHlvdSBmb3IgeW91
-ciBpbnB1dHMsCgpKLiBOZXVzY2jDpGZlcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu, Feb 13 2025, Amit Kumar Mahapatra wrote:
+
+> 'commit 18bcb4aa54ea ("mtd: spi-nor: sst: Factor out common write operation
+> to `sst_nor_write_data()`")' introduced a bug where only one byte of data
+> is written, regardless of the number of bytes passed to
+> sst_nor_write_data(), causing a kernel crash during the write operation.
+> Ensure the correct number of bytes are written as passed to
+> sst_nor_write_data().
+>
+> Call trace:
+> [   57.400180] ------------[ cut here ]------------
+> [   57.404842] While writing 2 byte written 1 bytes
+> [   57.409493] WARNING: CPU: 0 PID: 737 at drivers/mtd/spi-nor/sst.c:187 sst_nor_write_data+0x6c/0x74
+> [   57.418464] Modules linked in:
+> [   57.421517] CPU: 0 UID: 0 PID: 737 Comm: mtd_debug Not tainted 6.12.0-g5ad04afd91f9 #30
+> [   57.429517] Hardware name: Xilinx Versal A2197 Processor board revA - x-prc-02 revA (DT)
+> [   57.437600] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [   57.444557] pc : sst_nor_write_data+0x6c/0x74
+> [   57.448911] lr : sst_nor_write_data+0x6c/0x74
+> [   57.453264] sp : ffff80008232bb40
+> [   57.456570] x29: ffff80008232bb40 x28: 0000000000010000 x27: 0000000000000001
+> [   57.463708] x26: 000000000000ffff x25: 0000000000000000 x24: 0000000000000000
+> [   57.470843] x23: 0000000000010000 x22: ffff80008232bbf0 x21: ffff000816230000
+> [   57.477978] x20: ffff0008056c0080 x19: 0000000000000002 x18: 0000000000000006
+> [   57.485112] x17: 0000000000000000 x16: 0000000000000000 x15: ffff80008232b580
+> [   57.492246] x14: 0000000000000000 x13: ffff8000816d1530 x12: 00000000000004a4
+> [   57.499380] x11: 000000000000018c x10: ffff8000816fd530 x9 : ffff8000816d1530
+> [   57.506515] x8 : 00000000fffff7ff x7 : ffff8000816fd530 x6 : 0000000000000001
+> [   57.513649] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000000
+> [   57.520782] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0008049b0000
+> [   57.527916] Call trace:
+> [   57.530354]  sst_nor_write_data+0x6c/0x74
+> [   57.534361]  sst_nor_write+0xb4/0x18c
+> [   57.538019]  mtd_write_oob_std+0x7c/0x88
+> [   57.541941]  mtd_write_oob+0x70/0xbc
+> [   57.545511]  mtd_write+0x68/0xa8
+> [   57.548733]  mtdchar_write+0x10c/0x290
+> [   57.552477]  vfs_write+0xb4/0x3a8
+> [   57.555791]  ksys_write+0x74/0x10c
+> [   57.559189]  __arm64_sys_write+0x1c/0x28
+> [   57.563109]  invoke_syscall+0x54/0x11c
+> [   57.566856]  el0_svc_common.constprop.0+0xc0/0xe0
+> [   57.571557]  do_el0_svc+0x1c/0x28
+> [   57.574868]  el0_svc+0x30/0xcc
+> [   57.577921]  el0t_64_sync_handler+0x120/0x12c
+> [   57.582276]  el0t_64_sync+0x190/0x194
+> [   57.585933] ---[ end trace 0000000000000000 ]---
+>
+> Fixes: 18bcb4aa54ea ("mtd: spi-nor: sst: Factor out common write operation to `sst_nor_write_data()`")
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+
+Applied to spi-nor/fixes with Cc: stable@vger.kernel.org added.
+
+> ---
+> BRANCH: mtd/next
+> ---
+>  drivers/mtd/spi-nor/sst.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+> index b5ad7118c49a..175211fe6a5e 100644
+> --- a/drivers/mtd/spi-nor/sst.c
+> +++ b/drivers/mtd/spi-nor/sst.c
+> @@ -174,7 +174,7 @@ static int sst_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+>  	int ret;
+>  
+>  	nor->program_opcode = op;
+> -	ret = spi_nor_write_data(nor, to, 1, buf);
+> +	ret = spi_nor_write_data(nor, to, len, buf);
+>  	if (ret < 0)
+>  		return ret;
+>  	WARN(ret != len, "While writing %zu byte written %i bytes\n", len, ret);
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
