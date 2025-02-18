@@ -4,81 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B155C02198
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2025 11:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32FDFC02198
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2025 11:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZYLGJtYHRxq+6QTYvHyTXh2N2terg/QQUy3zVq1svUs=; b=NPuJ/URy2RXafh
-	K9Ed5n62mpUUMWJt8ujlI3SahZMHaDyirFQ2Ht+TevQctjhyPG+o168m9zj5wbY16L3wfvCDaOIBa
-	9i0RxMcjH2R84ish2lUDco/+Qvv0gVoD0pT8nJqYV/GrmJI62jN5+FzyxCLT68KVVvdaSJImT9tAA
-	8EOh+PDImtiTD+50Mpwb+ZVFBlLFhRKj/CfnR0AiE9plR7I3ocZ+qU7ne3wlw92wcbc1KEywKsfrE
-	Yy/QZca/caGb7gQW8qOEExz0Ystf02CEVS8w4CIAb/BMYf6Lcq5lhOuG/tI8K18TbeEn95pajpGu7
-	NrwSL9H0yYZk4jqUxrbA==;
+	List-Owner; bh=1g0JPKoUYPV1HDLRXG73PhBrGm//0/J6U8m/Eveyl+s=; b=fL+5NROSVySxtW
+	E8Fr5cFInfjfSrJc/CtxKNdd3W2/Xv21e2S7rjzAKyZfIphr3UoASM3fzjRhiObiNcTWBgUSq5U9W
+	uXfjKZMBaJU6Nk0jJ9ArI501jCSGeEXgtW8JjqHYBYX6BN7XN0KgJWqf5bQTiOQ+B0CAGrH4RJhif
+	cQSZ/vsE2SicX0MSBTFWlveDMiAjBxrcuKezfEeinnChhKk5cpRHjk6zrmPtx7SHlrR2QbKOqFDLn
+	7EVmEQErfB4E5ILVrsZ21iQzM0+p6i+4W6iBH9SNhpZyXNlQr52XrYxWacS11pR19WgImmVMTToJZ
+	pPyzg7YicX54fBcz8Epg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkLMc-00000007rcw-2F0s;
-	Tue, 18 Feb 2025 11:02:06 +0000
-Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
+	id 1tkMBx-000000082VN-36ho;
+	Tue, 18 Feb 2025 11:55:09 +0000
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkLMa-00000007rbO-1cdJ
+	id 1tkLpC-00000007yJw-3nZa
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Feb 2025 11:02:05 +0000
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-545316f80beso2639070e87.1
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 03:02:03 -0800 (PST)
+	Tue, 18 Feb 2025 11:31:39 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2fc4418c0e1so4015512a91.1
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 03:31:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739876522; x=1740481322; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739878298; x=1740483098; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i3c5mu6heXh+SexZYS5zkCb1lhHMAsj3OS7ZqFAAxSA=;
-        b=MpOmxjIVjr9zTYUwLCDc0SIVmBEhJzqRG610HB7ijOBsnWXE87E5x6oSzXGrMKnBd5
-         1gtvCdQbV4izdtvoQd8fFMBjbNbj2prxcSJaW/fD8eW8X0Dv0A0xnyfj2b6j7Wac9g2z
-         6+r5fG5+NOjO8eVBGHOaa4E9a7Prlo8Vk3SbRfDRuKa7tDC4L2T1BZShxdp0hi1egpZ0
-         G7KeOltpyjE2Ldtci2czBBboT0qaMw1pJcrw29TOQ0eF3FfVB8FiwVCzNZcTkjxsaQBC
-         tpX4qADU6K4Rr61Kp++3v50iHCjn08aVaiigTdGG+2fRL+zjqsKvRXJsAmFhjwP2MqNv
-         UB+w==
+        bh=izp3IHnW9epb2JwIeUosdnjtyTFepP51CV0pISfTHPQ=;
+        b=lVQ1kz3agKJWwDfRseI5sALkmk4WZCphEOodX75DlciSiVQ0Irc4pEG2VcL1yUXp0V
+         yDSugW/VkcdJhK+vrtVkxQvnG3cER4NL+eH86mfAB1M37Fi87AVkfsDxkgX0Z3nk9vmK
+         6NZHWFRuMhtvLZHfUZxuN96khSM3afa8PkNnYs8Pf1E9WCs9uXFjl71tU9HMA5el1v/h
+         ZQv9tcwdwSIbNlgBa59zWC0xnMbVOABVXMq+fLaD7SEX/gl0zrBjbeHk4/TWaN81hTp3
+         o1RVuThnSqmB3MMnPzUD15LDMEHNVrWNBMQzmwpIyU0xfHxRcbwO8rhd6xE56ws1m5Ir
+         uAIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739876522; x=1740481322;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1739878298; x=1740483098;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i3c5mu6heXh+SexZYS5zkCb1lhHMAsj3OS7ZqFAAxSA=;
-        b=mE1GkedD3jGGAmj0Bt7VTtO4/YK3EmG3ZzPE6MgKa8ef2t8QQKQt1VkSmk4P4m0oR8
-         IgDK7/wwROax5+CQ9Mn/nVtowa304DD97AUKYsiBXlUecb2rr4KgyHGTASmF4j8qw4HJ
-         1JLbhdObCZ0sXd9C3qccxZ/Vyxzx5s98Yk0sSRm1YcqoWN+N9O8yb12IEXZ6FMi0vMuV
-         sDSS2VBUyJaXLmSWO1YjMTWd0wqI2TujLm+CPewG59e9yrO4xKtgntw7epQ02UnN7k01
-         MJaMCGEa1lMOLZoOaiGULCtIm5tf2E/nSlD+tLsrS/dCOE6GHM0WtfISn8y5DTb3+FGy
-         WBdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUHZ1PfRnebHbTITxKhI4CMtJIGWhRmT9+Lht7URwZr/JG2qBtCgKrXfwi0owe8vH2sHxGPaqeyvPU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwkoIwses7vLLga42da2A3GzDAnghHDPjRBWoMfVuAV0odjSK5u
-	YYnbk6PWXk2qqwq7nuIWygtBB/TSJR5vji6DWmbD73jMcZYCHhpuEfehxUiyhqACEPs9em/DE+j
-	8wkMpdMTkMkGvK4PoGaVIhPUCJbpLfTeY
-X-Gm-Gg: ASbGncu5PXbjig7efw72nFzrhxaiILMj5m9XxKeQAEWeyQAK58Xt58HoM7NRC4iMzTQ
-	Gck8mkS8dZIprOaOknRJZTk6atCAcqOLX4iSip6OP7rCMgZelBfv5WdBSfvAVzDFt4lRLx3/+VU
-	1epnnJJ/NddEKGkbLHP3TanMSsTf0n
-X-Google-Smtp-Source: AGHT+IHpVT7Z4o4Z1UWD01k3hDYDWEj3itoENBUuR9LfUL+pJQcV1yG5l2oJ4uZHZ54AjqUFU7wMlv90cyqRVAf02xc=
-X-Received: by 2002:a05:6512:3ba9:b0:545:2271:3108 with SMTP id
- 2adb3069b0e04-5452fe6b190mr3757127e87.38.1739876522205; Tue, 18 Feb 2025
- 03:02:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20250218001512.1862030-1-festevam@gmail.com> <20250218001512.1862030-4-festevam@gmail.com>
- <2bdc04b3-05c8-42f4-682b-e46a1a1a10c1@huawei.com>
-In-Reply-To: <2bdc04b3-05c8-42f4-682b-e46a1a1a10c1@huawei.com>
+        bh=izp3IHnW9epb2JwIeUosdnjtyTFepP51CV0pISfTHPQ=;
+        b=ZqhAJCYvwi4DLB803etp/InhmqE/Z0mHyFLHOXe7klrOq7N/u6nCKDpyITeqgAwmTE
+         6NkZgkIioOm9TyZ/tG9xwLt4qp2DDbfGjqmQ2S4mvDaBx2FIhxulrtmwjRk1LMI4awD/
+         RLEmUez1VOajUJal4+lmCkYW4vayT4+g/YW/CJbR+xva6aO6JLGY7bF5joWhnrZfefd+
+         MNv4Fze+alINlvvxrz6FcODCKS20lI0SQ0bV/PH0Gfx36NrjCS5rYTvUzqaavXlk/wYJ
+         jQ3yUfXbSLub1sKZ4ha45rBI/c/mZx9dadu5AU8gAuK1gV5e7SVWAbAgPmHJ7smYpB3H
+         yXnw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbaITK+hT3goO+Z9mlC6mcQQmMiFn22A97Emjqe3o96QEhl+o93gEoBVvTKHy4YXe5+bCctTI6fOs=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxjzDyB1aH0pTvheyFjzaUDnqfrf3fGZqtI9QSudvWxM49/RsJS
+	8B+3jm7fDs5TPNYyjw/U1zPGtMf4AT4ehJVqpoQA5+WGVa/hieXt
+X-Gm-Gg: ASbGncse0Yezm/d0ZQNhOh8Q0cesX0R4BiQgbPGBDU1Me9+W0EPyPQiLr9JGw5KwJhy
+	JBNvCaIf52Nur28PimuoV7j8A4uO7dIANEmbYzYkZ5+r53n4VdRUfL9wGvgGCmwZW2u8r96ADBW
+	xDTySSIR+m/vB13ffmUqYcPa08vkP2GggLIWX3PtFwLBx138wL7NFw1/FbXqiZuWSpQaC86/ybu
+	CWodtfw1x1693S45IlxA0eGV2uoPw6aKs7Ap3PM5nxKzn+V8NLSYwTF7PEHbgdbYAikcA3y7hRj
+	d9fEZeGqHc0d21RSdRRQsKr95z7BFQ==
+X-Google-Smtp-Source: AGHT+IGJT8VKBxQHN+ClHaDosUxf9I65taRKhrexk7OAfQP27J148rw4wbQE6vHdBdFWSQDasmCKqQ==
+X-Received: by 2002:a05:6a00:3392:b0:730:9637:b2ff with SMTP id d2e1a72fcca58-73262200aaamr17190749b3a.7.1739878297952;
+        Tue, 18 Feb 2025 03:31:37 -0800 (PST)
+Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:e94a:c6e7:6507:f007])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73242546835sm9876661b3a.35.2025.02.18.03.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Feb 2025 03:31:37 -0800 (PST)
 From: Fabio Estevam <festevam@gmail.com>
-Date: Tue, 18 Feb 2025 08:01:50 -0300
-X-Gm-Features: AWEUYZm52zWBpB-I5NGTooGLXWCX7l2wz1rjcDOlgkHq1mbWwGzYtu4reC_fExw
-Message-ID: <CAOMZO5CnxXYpM0QeuZD4Dwd0RmCEXXD6XUaSSkeBfE9cooLZNQ@mail.gmail.com>
-Subject: Re: [PATCH mtd-utils 4/5] configure.ac: Add a check for execinfo and backtrace
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: david.oberhollenzer@sigma-star.at, raj.khem@gmail.com, 
-	linux-mtd@lists.infradead.org
+To: david.oberhollenzer@sigma-star.at
+Cc: chengzhihao1@huawei.com,
+	raj.khem@gmail.com,
+	linux-mtd@lists.infradead.org,
+	Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v2 mtd-utils 2/4] ubifs-utils: journal: Include <sys/stat.h>
+Date: Tue, 18 Feb 2025 08:31:21 -0300
+Message-Id: <20250218113123.1956575-2-festevam@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250218113123.1956575-1-festevam@gmail.com>
+References: <20250218113123.1956575-1-festevam@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_030204_426001_CE6AA970 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20250218_033138_949047_D97420F5 
+X-CRM114-Status: GOOD (  12.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,29 +95,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgWmhpaGFvLAoKVGhhbmtzIGZvciB5b3VyIHJldmlldy4KCk9uIFR1ZSwgRmViIDE4LCAyMDI1
-IGF0IDY6NDjigK9BTSBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPiB3cm90
-ZToKCj4gSGkgRmFiaW8sCj4gSSdtIG5vdCBzdXJlIHdoaWNoIGxpYiBpcyBkZXBlbmRlZCBmb3Ig
-ZXhlY2luZm8gYnkgbXVzbC4gV2UgZG9uJ3QgZGVwZW5kCj4gYW55IGxpYnMgZm9yIG90aGVyIGNv
-bW1vbiBjb21waWxlcnMsIG90aGVyd2lzZSB3ZSBjb3VsZCBnZXQgZm9sbG93aW5nCj4gbWVzc2dh
-Z3MgZm9yIGRvaW5nIGNvbmZpZ3VyZToKClRoZSBtdXNsIGxpYnJhcnkgZG9lIG5vdCBwcm92aWRl
-IGV4ZWNpbmZvLgpJdCByZWxpZXMgb24gYW4gZXh0ZXJuYWwgZXhlY2luZm8gbGlicmFyeSB0byBw
-cm92aWRlIGJhY2t0cmFjZSBzdXBwb3J0LgoKPiAgIGNoZWNraW5nIGZvciBzeXMvcmFuZG9tLmgu
-Li4geWVzCj4gY2hlY2tpbmcgZm9yIGJhY2t0cmFjZSBpbiAtbGV4ZWNpbmZvLi4uIG5vICAjIElu
-IGZhY3QgYmFja3RyYWNlIGlzCj4gc3VwcG9ydGVkLCBidXQgdGhlIG1lc3NhZ2UgdGVsbHMgdXMg
-bm90LgoKVGhhdCBtZXNzYWdlIGlzIE9LLiBJbiB0aGlzIGNhc2UsIHRoZSBiYWNrdHJhY2UgZG9l
-cyBub3QgY29tZSBmcm9tIHRoZQpleHRlcm5hbCBsaWJleGVjaW5mby4KSXQgY29tZXMgZnJvbSB0
-aGUgQyBsaWJyYXJ5LiBJdCBkb2VzIG5vdCBtZWFuIHRoYXQgYmFja3RyYWNlIGlzIG5vdApzdXBw
-b3J0ZWQuIEl0IG9ubHkgbWVhbnMgdGhhdApiYWNrdHJhY2UgZG9lcyBub3QgY29tZSBmcm9tIHRo
-ZSBleHRlcm5hbCBsaWJleGVjaW5mby4KCldpdGggbXVzbCwgdGhlIGZvbGxvd2luZyBpcyBzZWVu
-OgoKY2hlY2tpbmcgZm9yIGJhY2t0cmFjZSBpbiAtbGV4ZWNpbmZvLi4uIHllcwoKVGhpcyBtZWFu
-cyB0aGF0IGJhY2t0cmFjZSBjb21lcyBmcm9tIHRoZSBleHRlcm5hbCBsaWJleGVjaW5mby4KCkkg
-d2lsbCBhZGRyZXNzIHlvdXIgb3RoZXIgY29tbWVudHMgYW5kIHN1Ym1pdCBhIHYyIHNvb24uCgpU
-aGFua3MKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Include the <sys/stat.h> header file to fix the following error
+when building with musl:
+
+| ../git/ubifs-utils/libubifs/journal.c: In function 'ubifs_get_dent_type':
+| ../git/ubifs-utils/libubifs/journal.c:414:24: error: 'S_IFMT' undeclared (first use in this function)
+|   414 |         switch (mode & S_IFMT) {
+|       |                        ^~~~~~
+| ../git/ubifs-utils/libubifs/journal.c:414:24: note: each undeclared identifier is reported only once for each function it appears in
+| ../git/ubifs-utils/libubifs/journal.c:415:14: error: 'S_IFREG' undeclared (first use in this function)
+|   415 |         case S_IFREG:
+
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+Changes since v1:
+- None.
+
+ ubifs-utils/libubifs/journal.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/ubifs-utils/libubifs/journal.c b/ubifs-utils/libubifs/journal.c
+index e78ea14f3e69..45d82fd54bdb 100644
+--- a/ubifs-utils/libubifs/journal.c
++++ b/ubifs-utils/libubifs/journal.c
+@@ -46,6 +46,7 @@
+  * all the nodes.
+  */
+ 
++#include <sys/stat.h>
+ #include "bitops.h"
+ #include "kmem.h"
+ #include "ubifs.h"
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
