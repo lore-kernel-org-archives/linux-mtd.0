@@ -4,84 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 296B4C021AA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16EF1C021AE
 	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2025 11:55:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wN6TcPYz30VHG8KQgwAWSgUzX6P74b72c9CXgPY7hIs=; b=DIWDWkoBn2vgW+
-	Ib3Vsi4N5A6oxMjep5g0GlQW2HEDgdPsQsCPeiuv1R8uHhxOgJLveql4O5bRmYKbnq/CzvoX68+MC
-	apZ94vqKBN+o14qswWZgKSj949payYVYKUtAYT4rr3mozajx5es6ay3EUGEyDdFkAkJVi00KqFpRf
-	Z6AkJDjpFeXpmnElfIrfiyTbIdUULjQWiuW+N3W8yKSmQ4yjE8lqr04AON/JZMrg0Yt5iRrqtgj2L
-	R2baz1aKdD+kyRVWijPge6tg4JqS3R0troqLsD4iSUoVQclhJkDXtzuZOTqJA7ZatMbCpEeuz2trh
-	In8vKW8q2amQmseiCDxQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LKINWgh9WlBPWA10xkIXenbUbKOPfkPUjgl4/KzlW+E=; b=dj49JqRWj9zdvu
+	cruVj1cWjmBJ/wY4rV2YUOqm6g3ozfa/yLF2B0aHWgqY0X9kXjTHs9okx1qgtVg1peGxKOjknvdvo
+	PgbBbougeaTf3o0vl9L1BCUmSRw5Gm6wrN1ASZ38fwHNhtHFju6p5eFFufTejaSB7GO+fTABoOddI
+	zkr2iFWeS7ZyszwJ7WRVurNWzxl3sxTd+910P2UHX+fR8vaLScQAvIIzULB0Yl/5V2MBhloUFEr16
+	nuNhiAqo8GSqrDE8rT6xJJbzkL/sauSI16zDIpff1ZEdr/qbsSNJf+n58BlLHImi9r0fgPv/6Wfv0
+	A8G5Kq85aDkFzO+YVTBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkMBx-000000082V8-1A7o;
-	Tue, 18 Feb 2025 11:55:09 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1tkMBy-000000082Ve-12QL;
+	Tue, 18 Feb 2025 11:55:10 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkLpA-00000007yIf-2DnS
+	id 1tkLpF-00000007yKk-2jyt
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Feb 2025 11:31:37 +0000
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-220d132f16dso75973215ad.0
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 03:31:36 -0800 (PST)
+	Tue, 18 Feb 2025 11:31:42 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-22128b7d587so36721385ad.3
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 03:31:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739878295; x=1740483095; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m5PuqS19ZjTlpJ41jgFwB2Pyz70njykuYY649rQQozc=;
-        b=GubtnnCohB3007RyJY9TBD+hnqM7UxcrQL9oNSQ2YantTVOoNIcrNOGfezq4JHIazT
-         e5JR1Baobnx3cxEbG/sSHz108qLZNy5MM0uLqGYMWHG5A9bK0JwSL4FQFmRDH4RjK8/E
-         KUKhd32QlOLNeLKDJBu+oJUrbkpaRHjIcMCIm/fuxwMjhObtP8LMQ6goF0X/h6FAYNos
-         KYm5uuRzTmFT1q/WeQ6hUrzL/4Uj1SNucEbCUlwsMz3TiYjR75412Iql199jWDDUVEAD
-         ukPmtg2Qu4wbtg6h/LlL5LVBZNC3Bv9IKXXwqS0P15qTsIUx4l1AIHW8GbM88PdqxrXN
-         Ia8Q==
+        d=gmail.com; s=20230601; t=1739878301; x=1740483101; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qrXuYBkO1ks36gosboT7AvQDBBvKi8Im7E6XzgE1Jmk=;
+        b=OXapKbKaa19hxs/9qMOpeTyyWcqVnq+Ci3LA85ng4LzjOEvn66Jad3rP4pKECdugpX
+         v5o/vaVn7Fs+47QapAPw+iUc0C8K+fswZHQYpxFAuXzaxIIJT0XuAhipmObO8rYiNbL5
+         XdncpgtqLP/rqmVoqcnopkrSDRld4BhwtvW2RYTzCn24wTshZsm006CkgB5rVhv1rf0H
+         ZHn+dAw19/OY8fvwgUVFx/TDJCWvVoeKzxh11PK1Mu6OCMm7tVOrfwjmuU7kCQHXwyW7
+         RN7K6pLVe7vXZMUydMVHkBcjUWY0s7MPhHPqWKrQlCC+yFRS77XXy4YHMkQ4saFLRvlI
+         HIXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739878295; x=1740483095;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m5PuqS19ZjTlpJ41jgFwB2Pyz70njykuYY649rQQozc=;
-        b=Xlagdho4WolcGopcDjotw2jN/6C0GXKjUCYmY2hYexB9ld/ELS6xjv5SvcLqMxfF4s
-         z12PZ4bwCK2VOk/5fw+p/OevNP/jLP+30R+7M5qrodhba2UtWxUryhoy4JTKq2kKL00N
-         XZST4JkNxcZGd9EoAkePstVk+j62fmz677QiFxtKXS0r7atdda/sY5Z7sA5T0e9OT7Z5
-         3uLew83bBMhWwxB+kdK7mlnzTRbe/U2DVJSH0ekabY42Wc8i+WWkGjpsz0b1rfV1SqF0
-         n0/Z5dEKX4PSsDcGPJx18UgB9MwhfCq2yquhCrojL3i8j4RP8Mq+jY93peuqXy49FZWH
-         WGWg==
-X-Forwarded-Encrypted: i=1; AJvYcCVR992AFVfRNjdAaUIzZKnZ5uNEt+s9HTTb599luspros/Fy5GJkitkS0Fn1uDymKJcDNVuwgPvK6A=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxZ8OVtCVlie4uqUxFrcgwRfWBJeXjWK4SGHTTHpVqcvyH8Bwkr
-	dRQtylQQz/54DQXB/mlDodqg9Nd9CUpUfP0M4nfuDFqiB7xObrIu
-X-Gm-Gg: ASbGncsIxuXBRBt281j0NXgwbTgX6iml6W8dpJXgEq9nFrGtfi4M8Qn5ILKZtUcimY3
-	UJs+IPWYg6mX9fm7bwTu9Wm7Onr0RG8JLghs4wWAFvAfX+v+QWLzNIhFgaX9JUHqrm/2PyxroIm
-	6aVOnWKHD05kyfsvjWyY0aYO5g9g659LiSeTVseHsKGNUJu9p6ouFZGaaneeZVjWicM2Hcz/YIZ
-	DbBXEBIvWhIaZjh12CNGeWYWyTbtkzGKtH0v+2mII/z8Zh2cW4QJQLyvigv2xQQQ8UHC3gCldNa
-	x012ahyD+fUywhEtDUpkcqKard7U7g==
-X-Google-Smtp-Source: AGHT+IEVr95VMebYqK9mMk0uYTvQhsc9j5Xi1t8FAnBJJHzuyHDVVLxVqbB8VUjrZCTLD/amrcMwUw==
-X-Received: by 2002:a05:6a21:e8d:b0:1e1:aef4:9ce8 with SMTP id adf61e73a8af0-1ee8cba0fc4mr25539623637.28.1739878295433;
-        Tue, 18 Feb 2025 03:31:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739878301; x=1740483101;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qrXuYBkO1ks36gosboT7AvQDBBvKi8Im7E6XzgE1Jmk=;
+        b=uUUD+yCv8F0bJc+E/Wk1egSwHS/zO8o9nXwvHlfBYPdVVFBg9fY3Zizj0o0hk8oEYL
+         OeEJIp8zHhN6N+8GAodzj3nuMb7Wg1vQuC1BbkEkayW/l+/glJuGWOfTQEdP++bsM2i1
+         PpdBd7/Yqy7q4bZ83VYluWxiG9BwrNO8d6ZOKsO3U2kLCGTyJ/3ya78BboMMzC7GhmfH
+         k68iih3eHRz71QPFYUce17F8WVaEuchtSVh+I8SPNbxog5lSH1iAB5MERN2kXymzl5q5
+         zz6y3tF+epLhR+kF34DVBkiY0qR+42n3KATwu9ZhifUCKUOY5c2NDO6KUcCc7GEnaSOf
+         mTyg==
+X-Forwarded-Encrypted: i=1; AJvYcCWaagrI6Dwy1AQYvgj1hTlJxey7RICvzJRIRH1X7rityTv/QIfP1tqtctYMnGUBYrm8QUYnR7deBiM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwCRjZInGgi5v9dHPwBF0rAoyIIZWvmdhbUOs0lDrVMfR7L5Az0
+	FEHdvpQhcEM+0BdGw3xc/iNYyhAZaJV4LaOLa5X2V1gKcIRpPZiS
+X-Gm-Gg: ASbGncv1b2bZVZE7zo15uVS6vxTH3sA1gajZWdKhFenlfnlKMclhdIi4meMNr+MDsWc
+	tEFfNP8bHsRmHyxay37ANopr/24ZSMuYCLvJFWDYo6OBQLoM7z6lPN5Miaw3ISdWP9N4tmgq3Ff
+	GtoTa+JPs0kTcphyagKbn5CKR2Ast5Q1bOgH6MqjsHBAkO42oaSMGeEhS7lC4iH2z94hn13p5gE
+	TvcaPdPIhwjfC+ybtHDD5Ajus8TMVuKa5ZEUs4P8C+VKyvwUTTjE7ODEPsK58/nUbeCSgb6UWD8
+	ORvnJasgXaVgGcnrIMOPe0XbRwmGGQ==
+X-Google-Smtp-Source: AGHT+IGM+9n0ArQKcxFEA1Dd4J2EY6rNFGa0M97eh/KVd+HOw3nmCeyAgULbw5gkSgLDEtJtFT6Pmg==
+X-Received: by 2002:a05:6a00:14cc:b0:730:75b1:720c with SMTP id d2e1a72fcca58-732619019d6mr19188764b3a.23.1739878300400;
+        Tue, 18 Feb 2025 03:31:40 -0800 (PST)
 Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:e94a:c6e7:6507:f007])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73242546835sm9876661b3a.35.2025.02.18.03.31.33
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73242546835sm9876661b3a.35.2025.02.18.03.31.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2025 03:31:34 -0800 (PST)
+        Tue, 18 Feb 2025 03:31:39 -0800 (PST)
 From: Fabio Estevam <festevam@gmail.com>
 To: david.oberhollenzer@sigma-star.at
 Cc: chengzhihao1@huawei.com,
 	raj.khem@gmail.com,
 	linux-mtd@lists.infradead.org,
 	Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2 mtd-utils 1/4] ubifs-utils: ubifs.h: Include <fcntl.h>
-Date: Tue, 18 Feb 2025 08:31:20 -0300
-Message-Id: <20250218113123.1956575-1-festevam@gmail.com>
+Subject: [PATCH v2 mtd-utils 3/4] configure.ac: Add a check for execinfo and backtrace
+Date: Tue, 18 Feb 2025 08:31:22 -0300
+Message-Id: <20250218113123.1956575-3-festevam@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250218113123.1956575-1-festevam@gmail.com>
+References: <20250218113123.1956575-1-festevam@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_033136_565861_84FE8D83 
-X-CRM114-Status: UNSURE (   8.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250218_033141_690040_556363FB 
+X-CRM114-Status: GOOD (  11.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,48 +100,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Include the <fcntl.h> header file to fix the following error
-when building with musl:
+musl relies on an extenal execinfo library to provide backtrace
+functionality.
 
-| In file included from ../git/ubifs-utils/common/compr.c:42:
-| ../git/ubifs-utils/libubifs/ubifs.h:313:9: error: unknown type name 'loff_t'; did you mean 'off_t'?
-|   313 |         loff_t ui_size;
-|       |         ^~~~~~
-|       |         off_t
-| ../git/ubifs-utils/libubifs/ubifs.h:1341:9: error: unknown type name 'loff_t'; did you mean 'off_t'?
-|  1341 |         loff_t i_size;
-|       |         ^~~~~~
-|       |         off_t
-| ../git/ubifs-utils/libubifs/ubifs.h:1342:9: error: unknown type name 'loff_t'; did you mean 'off_t'?
-|  1342 |         loff_t d_size;
-|       |         ^~~~~~
-|       |         off_t
-| ../git/ubifs-utils/libubifs/ubifs.h:1899:44: error: unknown type name 'loff_t'; did you mean 'off_t'?
-|  1899 |                              int deletion, loff_t new_size);
-|       |                                            ^~~~~~
-|       |                                            off_t
-| make: *** [Makefile:4878: ubifs-utils/common/mkfs_ubifs-compr.o] Error 1
+Add support for it.
+
+| /work/festevam/oe/poky/build/tmp/work/core2-64-poky-linux-musl/mtd-utils/2.3.0/recipe-sysroot-native/usr/bin/x86_64-poky-linux-musl/../../libexec/x86_64-poky-linux-musl/gcc/x86_64-poky-linux-musl/14.2.0/ld: ubifs-utils/libubifs/mkfs_ubifs-io.o: in function `dump_stack':
+| /usr/src/debug/mtd-utils/2.3.0/ubifs-utils/common/defs.h:71:(.text+0x25): undefined reference to `backtrace'
+....
+| collect2: error: ld returned 1 exit status
+| make: *** [Makefile:2959: mkfs.ubifs] Error 1
 
 Signed-off-by: Fabio Estevam <festevam@gmail.com>
 ---
 Changes since v1:
 - None.
 
- ubifs-utils/libubifs/ubifs.h | 1 +
+ configure.ac | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index 0908a2289208..1c7bc7bd0c80 100644
---- a/ubifs-utils/libubifs/ubifs.h
-+++ b/ubifs-utils/libubifs/ubifs.h
-@@ -11,6 +11,7 @@
- #ifndef __UBIFS_H__
- #define __UBIFS_H__
+diff --git a/configure.ac b/configure.ac
+index 2a79ba820fc0..65afb245d89c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -238,6 +238,7 @@ if test "x$need_cmocka" = "xyes"; then
+ 	PKG_CHECK_MODULES(CMOCKA, [cmocka], [], [cmocka_missing="yes"])
+ fi
  
-+#include <fcntl.h>
- #include <string.h>
++AC_CHECK_LIB([execinfo], [backtrace])
+ AC_CHECK_HEADERS([execinfo.h])
  
- #include "linux_types.h"
+ ##### produce summary on dependencies #####
 -- 
 2.34.1
 
