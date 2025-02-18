@@ -4,58 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1766C02198
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2025 10:04:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B155C02198
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2025 11:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LBpGqUG2VL1D9DLqyJ0kgsFO46iKbZCH1Sj0+wxjIWs=; b=K1k+OT6r0Sbk4ivcIGFc8EFVpt
-	q0rvVY5S6ap5JP81XeinwP7WI7mYo9mq8WGkV4wy2UOiYZaCg7ZLsU1EPrCSlAgAhqVfpLaAsOuuF
-	1II70lWPK2PZ30/URPIuMd4LZMgdGSjh/JmaUxBcTvV1qLWTt8YGjqfgZlusv1WfKOnaw2oJaZ87l
-	wQ6P3hNFN30DBfYpkWKzT0st7SH4vd3+iFEx/euuNOzHVBrYofZASXZHRQbaqwwqv4DjyE0THdrkZ
-	xWTtC3bR16ZZvLafZSQo+z2Qy75CRV/kCeWGT1hpsvCm2vKRwNWgfa8j+vCTBlJ/B6TJ8tSDP2oQv
-	jJ0Xmlkw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZYLGJtYHRxq+6QTYvHyTXh2N2terg/QQUy3zVq1svUs=; b=NPuJ/URy2RXafh
+	K9Ed5n62mpUUMWJt8ujlI3SahZMHaDyirFQ2Ht+TevQctjhyPG+o168m9zj5wbY16L3wfvCDaOIBa
+	9i0RxMcjH2R84ish2lUDco/+Qvv0gVoD0pT8nJqYV/GrmJI62jN5+FzyxCLT68KVVvdaSJImT9tAA
+	8EOh+PDImtiTD+50Mpwb+ZVFBlLFhRKj/CfnR0AiE9plR7I3ocZ+qU7ne3wlw92wcbc1KEywKsfrE
+	Yy/QZca/caGb7gQW8qOEExz0Ystf02CEVS8w4CIAb/BMYf6Lcq5lhOuG/tI8K18TbeEn95pajpGu7
+	NrwSL9H0yYZk4jqUxrbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkKSU-00000007eqc-3BXt;
-	Tue, 18 Feb 2025 10:04:06 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1tkLMc-00000007rcw-2F0s;
+	Tue, 18 Feb 2025 11:02:06 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkKDg-00000007arf-3Fn4
+	id 1tkLMa-00000007rbO-1cdJ
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Feb 2025 09:48:50 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4YxvlK6BLtzhZsZ;
-	Tue, 18 Feb 2025 17:45:17 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 035CB180088;
-	Tue, 18 Feb 2025 17:48:41 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 18 Feb 2025 17:48:40 +0800
-Subject: Re: [PATCH mtd-utils 4/5] configure.ac: Add a check for execinfo and
- backtrace
-To: Fabio Estevam <festevam@gmail.com>, <david.oberhollenzer@sigma-star.at>
-CC: <raj.khem@gmail.com>, <linux-mtd@lists.infradead.org>
-References: <20250218001512.1862030-1-festevam@gmail.com>
- <20250218001512.1862030-4-festevam@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <2bdc04b3-05c8-42f4-682b-e46a1a1a10c1@huawei.com>
-Date: Tue, 18 Feb 2025 17:48:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Tue, 18 Feb 2025 11:02:05 +0000
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-545316f80beso2639070e87.1
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 03:02:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739876522; x=1740481322; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i3c5mu6heXh+SexZYS5zkCb1lhHMAsj3OS7ZqFAAxSA=;
+        b=MpOmxjIVjr9zTYUwLCDc0SIVmBEhJzqRG610HB7ijOBsnWXE87E5x6oSzXGrMKnBd5
+         1gtvCdQbV4izdtvoQd8fFMBjbNbj2prxcSJaW/fD8eW8X0Dv0A0xnyfj2b6j7Wac9g2z
+         6+r5fG5+NOjO8eVBGHOaa4E9a7Prlo8Vk3SbRfDRuKa7tDC4L2T1BZShxdp0hi1egpZ0
+         G7KeOltpyjE2Ldtci2czBBboT0qaMw1pJcrw29TOQ0eF3FfVB8FiwVCzNZcTkjxsaQBC
+         tpX4qADU6K4Rr61Kp++3v50iHCjn08aVaiigTdGG+2fRL+zjqsKvRXJsAmFhjwP2MqNv
+         UB+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739876522; x=1740481322;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i3c5mu6heXh+SexZYS5zkCb1lhHMAsj3OS7ZqFAAxSA=;
+        b=mE1GkedD3jGGAmj0Bt7VTtO4/YK3EmG3ZzPE6MgKa8ef2t8QQKQt1VkSmk4P4m0oR8
+         IgDK7/wwROax5+CQ9Mn/nVtowa304DD97AUKYsiBXlUecb2rr4KgyHGTASmF4j8qw4HJ
+         1JLbhdObCZ0sXd9C3qccxZ/Vyxzx5s98Yk0sSRm1YcqoWN+N9O8yb12IEXZ6FMi0vMuV
+         sDSS2VBUyJaXLmSWO1YjMTWd0wqI2TujLm+CPewG59e9yrO4xKtgntw7epQ02UnN7k01
+         MJaMCGEa1lMOLZoOaiGULCtIm5tf2E/nSlD+tLsrS/dCOE6GHM0WtfISn8y5DTb3+FGy
+         WBdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUHZ1PfRnebHbTITxKhI4CMtJIGWhRmT9+Lht7URwZr/JG2qBtCgKrXfwi0owe8vH2sHxGPaqeyvPU=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwkoIwses7vLLga42da2A3GzDAnghHDPjRBWoMfVuAV0odjSK5u
+	YYnbk6PWXk2qqwq7nuIWygtBB/TSJR5vji6DWmbD73jMcZYCHhpuEfehxUiyhqACEPs9em/DE+j
+	8wkMpdMTkMkGvK4PoGaVIhPUCJbpLfTeY
+X-Gm-Gg: ASbGncu5PXbjig7efw72nFzrhxaiILMj5m9XxKeQAEWeyQAK58Xt58HoM7NRC4iMzTQ
+	Gck8mkS8dZIprOaOknRJZTk6atCAcqOLX4iSip6OP7rCMgZelBfv5WdBSfvAVzDFt4lRLx3/+VU
+	1epnnJJ/NddEKGkbLHP3TanMSsTf0n
+X-Google-Smtp-Source: AGHT+IHpVT7Z4o4Z1UWD01k3hDYDWEj3itoENBUuR9LfUL+pJQcV1yG5l2oJ4uZHZ54AjqUFU7wMlv90cyqRVAf02xc=
+X-Received: by 2002:a05:6512:3ba9:b0:545:2271:3108 with SMTP id
+ 2adb3069b0e04-5452fe6b190mr3757127e87.38.1739876522205; Tue, 18 Feb 2025
+ 03:02:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20250218001512.1862030-4-festevam@gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+References: <20250218001512.1862030-1-festevam@gmail.com> <20250218001512.1862030-4-festevam@gmail.com>
+ <2bdc04b3-05c8-42f4-682b-e46a1a1a10c1@huawei.com>
+In-Reply-To: <2bdc04b3-05c8-42f4-682b-e46a1a1a10c1@huawei.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 18 Feb 2025 08:01:50 -0300
+X-Gm-Features: AWEUYZm52zWBpB-I5NGTooGLXWCX7l2wz1rjcDOlgkHq1mbWwGzYtu4reC_fExw
+Message-ID: <CAOMZO5CnxXYpM0QeuZD4Dwd0RmCEXXD6XUaSSkeBfE9cooLZNQ@mail.gmail.com>
+Subject: Re: [PATCH mtd-utils 4/5] configure.ac: Add a check for execinfo and backtrace
+To: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: david.oberhollenzer@sigma-star.at, raj.khem@gmail.com, 
+	linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_014848_988855_45712D06 
-X-CRM114-Status: GOOD (  17.09  )
+X-CRM114-CacheID: sfid-20250218_030204_426001_CE6AA970 
+X-CRM114-Status: GOOD (  11.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,39 +90,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNS8yLzE4IDg6MTUsIEZhYmlvIEVzdGV2YW0g0LS1wDoKPiBtdXNsIHJlbGllcyBvbiBh
-biBleHRlbmFsIGV4ZWNpbmZvIGxpYnJhcnkgdG8gcHJvdmlkZSBiYWNrdHJhY2UKPiBmdW5jdGlv
-bmFsaXR5Lgo+IAo+IEFkZCBzdXBwb3J0IGZvciBpdC4KPiAKPiB8IC93b3JrL2Zlc3RldmFtL29l
-L3Bva3kvYnVpbGQvdG1wL3dvcmsvY29yZTItNjQtcG9reS1saW51eC1tdXNsL210ZC11dGlscy8y
-LjMuMC9yZWNpcGUtc3lzcm9vdC1uYXRpdmUvdXNyL2Jpbi94ODZfNjQtcG9reS1saW51eC1tdXNs
-Ly4uLy4uL2xpYmV4ZWMveDg2XzY0LXBva3ktbGludXgtbXVzbC9nY2MveDg2XzY0LXBva3ktbGlu
-dXgtbXVzbC8xNC4yLjAvbGQ6IHViaWZzLXV0aWxzL2xpYnViaWZzL21rZnNfdWJpZnMtaW8ubzog
-aW4gZnVuY3Rpb24gYGR1bXBfc3RhY2snOgo+IHwgL3Vzci9zcmMvZGVidWcvbXRkLXV0aWxzLzIu
-My4wL3ViaWZzLXV0aWxzL2NvbW1vbi9kZWZzLmg6NzE6KC50ZXh0KzB4MjUpOiB1bmRlZmluZWQg
-cmVmZXJlbmNlIHRvIGBiYWNrdHJhY2UnCj4gLi4uLgo+IHwgY29sbGVjdDI6IGVycm9yOiBsZCBy
-ZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4gfCBtYWtlOiAqKiogW01ha2VmaWxlOjI5NTk6IG1rZnMu
-dWJpZnNdIEVycm9yIDEKPiAKPiBTaWduZWQtb2ZmLWJ5OiBGYWJpbyBFc3RldmFtIDxmZXN0ZXZh
-bUBnbWFpbC5jb20+Cj4gLS0tCj4gICBjb25maWd1cmUuYWMgfCAxICsKPiAgIDEgZmlsZSBjaGFu
-Z2VkLCAxIGluc2VydGlvbigrKQo+IAo+IGRpZmYgLS1naXQgYS9jb25maWd1cmUuYWMgYi9jb25m
-aWd1cmUuYWMKPiBpbmRleCAyYTc5YmE4MjBmYzAuLjY1YWZiMjQ1ZDg5YyAxMDA2NDQKPiAtLS0g
-YS9jb25maWd1cmUuYWMKPiArKysgYi9jb25maWd1cmUuYWMKPiBAQCAtMjM4LDYgKzIzOCw3IEBA
-IGlmIHRlc3QgIngkbmVlZF9jbW9ja2EiID0gInh5ZXMiOyB0aGVuCj4gICAJUEtHX0NIRUNLX01P
-RFVMRVMoQ01PQ0tBLCBbY21vY2thXSwgW10sIFtjbW9ja2FfbWlzc2luZz0ieWVzIl0pCj4gICBm
-aQo+ICAgCj4gK0FDX0NIRUNLX0xJQihbZXhlY2luZm9dLCBbYmFja3RyYWNlXSkKPiAgIEFDX0NI
-RUNLX0hFQURFUlMoW2V4ZWNpbmZvLmhdKQoKSGkgRmFiaW8sCkknbSBub3Qgc3VyZSB3aGljaCBs
-aWIgaXMgZGVwZW5kZWQgZm9yIGV4ZWNpbmZvIGJ5IG11c2wuIFdlIGRvbid0IGRlcGVuZCAKYW55
-IGxpYnMgZm9yIG90aGVyIGNvbW1vbiBjb21waWxlcnMsIG90aGVyd2lzZSB3ZSBjb3VsZCBnZXQg
-Zm9sbG93aW5nIAptZXNzZ2FncyBmb3IgZG9pbmcgY29uZmlndXJlOgogIGNoZWNraW5nIGZvciBz
-eXMvcmFuZG9tLmguLi4geWVzCmNoZWNraW5nIGZvciBiYWNrdHJhY2UgaW4gLWxleGVjaW5mby4u
-LiBubyAgIyBJbiBmYWN0IGJhY2t0cmFjZSBpcyAKc3VwcG9ydGVkLCBidXQgdGhlIG1lc3NhZ2Ug
-dGVsbHMgdXMgbm90LgpjaGVja2luZyBleGVjaW5mby5oIHVzYWJpbGl0eS4uLiB5ZXMKY2hlY2tp
-bmcgZXhlY2luZm8uaCBwcmVzZW5jZS4uLiB5ZXMKPiAgIAo+ICAgIyMjIyMgcHJvZHVjZSBzdW1t
-YXJ5IG9uIGRlcGVuZGVuY2llcyAjIyMjIwo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+SGkgWmhpaGFvLAoKVGhhbmtzIGZvciB5b3VyIHJldmlldy4KCk9uIFR1ZSwgRmViIDE4LCAyMDI1
+IGF0IDY6NDjigK9BTSBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPiB3cm90
+ZToKCj4gSGkgRmFiaW8sCj4gSSdtIG5vdCBzdXJlIHdoaWNoIGxpYiBpcyBkZXBlbmRlZCBmb3Ig
+ZXhlY2luZm8gYnkgbXVzbC4gV2UgZG9uJ3QgZGVwZW5kCj4gYW55IGxpYnMgZm9yIG90aGVyIGNv
+bW1vbiBjb21waWxlcnMsIG90aGVyd2lzZSB3ZSBjb3VsZCBnZXQgZm9sbG93aW5nCj4gbWVzc2dh
+Z3MgZm9yIGRvaW5nIGNvbmZpZ3VyZToKClRoZSBtdXNsIGxpYnJhcnkgZG9lIG5vdCBwcm92aWRl
+IGV4ZWNpbmZvLgpJdCByZWxpZXMgb24gYW4gZXh0ZXJuYWwgZXhlY2luZm8gbGlicmFyeSB0byBw
+cm92aWRlIGJhY2t0cmFjZSBzdXBwb3J0LgoKPiAgIGNoZWNraW5nIGZvciBzeXMvcmFuZG9tLmgu
+Li4geWVzCj4gY2hlY2tpbmcgZm9yIGJhY2t0cmFjZSBpbiAtbGV4ZWNpbmZvLi4uIG5vICAjIElu
+IGZhY3QgYmFja3RyYWNlIGlzCj4gc3VwcG9ydGVkLCBidXQgdGhlIG1lc3NhZ2UgdGVsbHMgdXMg
+bm90LgoKVGhhdCBtZXNzYWdlIGlzIE9LLiBJbiB0aGlzIGNhc2UsIHRoZSBiYWNrdHJhY2UgZG9l
+cyBub3QgY29tZSBmcm9tIHRoZQpleHRlcm5hbCBsaWJleGVjaW5mby4KSXQgY29tZXMgZnJvbSB0
+aGUgQyBsaWJyYXJ5LiBJdCBkb2VzIG5vdCBtZWFuIHRoYXQgYmFja3RyYWNlIGlzIG5vdApzdXBw
+b3J0ZWQuIEl0IG9ubHkgbWVhbnMgdGhhdApiYWNrdHJhY2UgZG9lcyBub3QgY29tZSBmcm9tIHRo
+ZSBleHRlcm5hbCBsaWJleGVjaW5mby4KCldpdGggbXVzbCwgdGhlIGZvbGxvd2luZyBpcyBzZWVu
+OgoKY2hlY2tpbmcgZm9yIGJhY2t0cmFjZSBpbiAtbGV4ZWNpbmZvLi4uIHllcwoKVGhpcyBtZWFu
+cyB0aGF0IGJhY2t0cmFjZSBjb21lcyBmcm9tIHRoZSBleHRlcm5hbCBsaWJleGVjaW5mby4KCkkg
+d2lsbCBhZGRyZXNzIHlvdXIgb3RoZXIgY29tbWVudHMgYW5kIHN1Ym1pdCBhIHYyIHNvb24uCgpU
+aGFua3MKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
