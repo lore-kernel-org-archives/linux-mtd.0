@@ -4,83 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF50AC021AA
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Feb 2025 22:01:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2143FC021AA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Feb 2025 00:34:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ojw4Ddx5+9GbRDKuYgfkJ68R0fc4qqxt0QwwD7vMGRw=; b=Jw/9LMsH8POEkr
-	pm1EPaYJTNswyDKBES/Nnbd+qi38HHy2lgwuFy1syb5WQ0xYl6anbUpMFeAZTpK1F5pbK0OIuFf3g
-	0k/dVgWWsF9rTqGN/sjakXH/8zgdbWc5FdWB48jf5uhsPw/GBqq6lOuhymtO3kpLQUInrpsSDgMba
-	OG65JTqP/MR7F51GC5fHt6O8JlIEEsqaB9phsSXl1cvyJMoc90Pl1zTnS3XKpv3xTrUVU2U3Xi2X6
-	NDc+uf6EcbarkqTV+Z3PGoOCGbBx9NVjClQla6kTzhFHTb/7Y5BFUj1ht2oGnfgL9lx3sUkIcaYsE
-	bBaIo4OPxYWKvcr6DlZQ==;
+	List-Owner; bh=1zWOI9lcqPVNA87vDRU7Unm96w0XBeWIPZa1gdB20ts=; b=VbB6cYvZ5c8wS6
+	UX8dTATojQtHwYt3TBXdmXQrSsJnYC9KQjC/w2/pC60TABpJ+pUs97K7gD3KQY9AMZENwaW0+usW8
+	URkXYThZWPYJhDsazD48kmB9xk5MTM9zIyvpBp7QmLEqBhedydqzgq61wyM8r7W0vGy6IIIXyKY/g
+	nmrVtdMSJm68op/POftGrexi60ifoIK4XZnNFtEIyhvRSncR6+MzC1oXEENNM2P3aKu0rfVVGKgdx
+	hpdXCcDvf43oF153jGcciNW3FcWXag4WGBuoI2Z7mqT2LNwg3czTOOfxcljfknC64pNenUOL/7opc
+	Loa/gre2FfWdJekbxcZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkVes-0000000A5WW-2Fm8;
-	Tue, 18 Feb 2025 22:01:38 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1tkY2O-0000000AMjc-246z;
+	Wed, 19 Feb 2025 00:34:04 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkVeI-0000000A5Rp-3aXT
+	id 1tkY2M-0000000AMi9-0dHJ
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Feb 2025 22:01:07 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-54626a71b40so1979715e87.3
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 14:01:01 -0800 (PST)
+	Wed, 19 Feb 2025 00:34:03 +0000
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-220f4dd756eso83305285ad.3
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 16:34:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739916060; x=1740520860; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739925241; x=1740530041; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MzLDOcX5UfZG9mHlbWI51BUQCiUENabdtuYdnLZAXzU=;
-        b=ICRp4QhDDtQ1x4+tMVGAh4peZO+CO7OzVT2iQSztd2MDgXBBfSyPlCvs9zXU30uy0E
-         mugSWuXnq3wX+lleS9KVc1Vhi9nohFjWIQwAIJsJ8dlCyMSrG5AtMTHTymSDccEKpVLc
-         XIlcYw1UKjYVEVdjgCP3nQyENM0DaDFhdEaZmfPrq4T/VVoZvzjwNRcAKITqqGbIJ/s9
-         1twArhqiY1SsODAvAabQ8QZWFP0yngUXzOvMz6ezRaVfTiaKNzRWxySBY1Okq3IvFy4h
-         e6slfocb7CO8iKE4iPBT3x8lA5ipn3k/7nI24+9mosLRKEj8B+wdl1/RHJJ9Dj6dFQW+
-         IrBg==
+        bh=utpeDguS6h54yIFe5iAtLr1SpWdCG6JmVTmFESUoO+w=;
+        b=EcjtmuJI42Rxs3iHU0XIW0FTMEpmBsQ2zKThpuPoRwLWbq98KfxACNI+1chuHQJyB7
+         Ykqg7YL4ndYUr9QHSqlss58tKFtq6L0okJ8l8GCN2Niidg1/JZ6KOxn8lMlK4Zq3QzE2
+         1bKKGXmZUbmQHNcZr9es74b+axt2oiSPR2Yb9XvCYiuctn1RMCiJJ1nYYHg1ZA/ieiz+
+         HqyBBM2x6WWFX5toZ2xVF0PZOxJA2e1Xe/kp36GHyI3M7/RQ/L1xC5HrwakF+7DT+aNV
+         3fAzn2tLEuN3MpiHyO15ynBAF+rHzH0lzpTgewN1k6rsex+9/RM7zg0BILDBrWyt1OyE
+         nPEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739916060; x=1740520860;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1739925241; x=1740530041;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MzLDOcX5UfZG9mHlbWI51BUQCiUENabdtuYdnLZAXzU=;
-        b=YvcVaU7on0whYD1fDnp9rvwDv2wQnVM0lDeTXI8J+L2K7sBXU1KDBYljTKoRLaOxk+
-         zFSKdq+BgYBjVAeqqjvzHnQ/79E+/joGL2HmHHDSWVN1UeOc1H+haIbFNJd42B7g68dr
-         9e2bzlTRYuNo2WuFsmY2uoFuItwXpF3irUmGYgVSXsgPDD2ke8LVRK1ngGYOS04KPQF2
-         M4XCFqgo/xTQ4CA29hyTcKPnqhFeobyPu2SUMawWFlBM3S4BQFbqo6wRg5S9aTcKCFfS
-         ErI14QDJaARwH3M1puSgvKkOgmCvNWFMsiH1yoEAQslVY0QT/a6474Az4rJUR08WKeTZ
-         PZNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUrUgP0B1cdreVSg+GRtkmYlGeg7OVj97JVEV/hg1RWbg+EAGGahvNN/PSmclSSefHsddYukLiMZbI=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy5EV552SOnmQ7ee9vOjL7vpKa5nP0WHfWCzmR6bxJ4lX6LYQKj
-	Z143GoBuwy2Wm+3D1t3ua53aO97XGpA84YueCb4reYleYdhe9+vYh0yD6t98SEr9JLhDRx/wXJW
-	ZR0AkENkDcMuMDlKP1ZI1lUmKxkqtNgVB
-X-Gm-Gg: ASbGncumCSE8LPvp9dTGbL6o64nFM4W0XVRknjSNQdOgYr4CaxUgayug47QUl7HvzPU
-	YVw1GFDMzTVZUJkHuejTdGSmydgjOBbmroaiEgfpwI2D0kBbrKA55UcrJFOqjUGHGHW+pvu3rsN
-	mHPB+0JCezjEpoqPlZPU09yliQ8jkV
-X-Google-Smtp-Source: AGHT+IFn1Mdn3fNSf5Cl/tN4AZyRuDpSVSOitg6yY9UPpQQ9NlUW1VAqOZGm0655DbUInaewRTsGRsQlo/NQ2kaH8dM=
-X-Received: by 2002:a05:6512:4001:b0:545:f70:8aa7 with SMTP id
- 2adb3069b0e04-5452fe80834mr5826087e87.32.1739916060191; Tue, 18 Feb 2025
- 14:01:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20250218001512.1862030-1-festevam@gmail.com> <20250218001512.1862030-4-festevam@gmail.com>
- <2bdc04b3-05c8-42f4-682b-e46a1a1a10c1@huawei.com> <CAOMZO5CnxXYpM0QeuZD4Dwd0RmCEXXD6XUaSSkeBfE9cooLZNQ@mail.gmail.com>
- <546dee0d-ce9c-48fb-bf79-72349760cb62@gmail.com>
-In-Reply-To: <546dee0d-ce9c-48fb-bf79-72349760cb62@gmail.com>
+        bh=utpeDguS6h54yIFe5iAtLr1SpWdCG6JmVTmFESUoO+w=;
+        b=iDYF09DNyVnyAsZ40tOG16OqEfLFo9plQ8jXQmI2zknGGzQwQT/BixTdGNPlNsu/8q
+         ryj7+6L2G0yqkh5U9Lqv6RWFVgPoGnJLjo64qnqo/6684zw/4OqVTVHxJ0oI0OlSf1mG
+         NzkplJx3nY0hYBwyqryAkmmVBoMLTgrt9hGw7NAdOFIgOU5rDX0QUXZFkLyNOu8BAohJ
+         e6p2C63vcActCDLoTejab7qHbxaPO6Ek9PPPKmqcp3G2Bzki1WyLfujlaxg0+zvMpEPI
+         s4m6F7CmJo9hpiyjPlT1rSaAZDa/ZH9ovrcv045VmuDLXpq08E2gAAeUuRN8t92zbpki
+         YfSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXQRSeRW/bRuKXhpaCo94Q/ml71cOo0+Dl/YJXBb+8A05qpGxi04d+9a8PjyFJf5Mp9c6K4ljHtrxY=@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywq46Pwm4h0Lk9Vl18wOERGOOxxOnJDK8CWfcfuEVokSrMsyLrB
+	z7tz5l/TA2FgrsJukem1J58Cdi4UDFC3831fuTF3swIBrKnq9PmoKz8/LA==
+X-Gm-Gg: ASbGncuQKKwW3L6kTydappS1ifCqXQZBCYA1C/t84ELiQEkjYUBnBIqefUOk8Oef+HJ
+	LjmdwprWBSPMv8+3fV5KMQzfrG0c91+FTxGYSvsRe6ObtN2gPoszjh0LDHlrfmD/7MmE2lqfRqu
+	9Lbzeh/ROIyLIJ7HC39HhlFBoKvws/M2ihbb9kJVovKmWc/Fk/qDsAx/j9cYOpRa/fWgHqrT34x
+	kan22lLNiqKETx1TCkiPLOwg77D1AKtow3kEPEY1KPi132AVS9rHitl97bR2YTbGtCouZPtslai
+	D/rYGkVOrihDQ7GgSRadaqwvJB0K7g==
+X-Google-Smtp-Source: AGHT+IEDa4fcaAQd4ust+l6v4RwGBxqhhKeptvJkYeKr+CPJ9zd2A1kA3Cdos6YwBrjaXCa3ICZDRQ==
+X-Received: by 2002:a05:6a20:7486:b0:1ee:bed7:f9c4 with SMTP id adf61e73a8af0-1eebed8002bmr13928017637.8.1739925241252;
+        Tue, 18 Feb 2025 16:34:01 -0800 (PST)
+Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:9d59:514f:431d:4a45])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7324273e34bsm10965017b3a.108.2025.02.18.16.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Feb 2025 16:34:00 -0800 (PST)
 From: Fabio Estevam <festevam@gmail.com>
-Date: Tue, 18 Feb 2025 19:00:48 -0300
-X-Gm-Features: AWEUYZlHfZFTaJvJu9je7yrwUEwe0BJdpzFDLQPcT0hk7PmU1mVtXZpuuGSEBAU
-Message-ID: <CAOMZO5CzRoajiW86j5-9edCh7a8fU16EBrJ7_x2SmtTb46=CuA@mail.gmail.com>
-Subject: Re: [PATCH mtd-utils 4/5] configure.ac: Add a check for execinfo and backtrace
-To: Khem Raj <raj.khem@gmail.com>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>, david.oberhollenzer@sigma-star.at, 
-	linux-mtd@lists.infradead.org
+To: david.oberhollenzer@sigma-star.at
+Cc: chengzhihao1@huawei.com,
+	raj.khem@gmail.com,
+	linux-mtd@lists.infradead.org,
+	Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v3 mtd-utils 4/4] ubifs-utils: extract_files: Include <linux/limits.h>
+Date: Tue, 18 Feb 2025 21:33:29 -0300
+Message-Id: <20250219003329.2078308-4-festevam@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250219003329.2078308-1-festevam@gmail.com>
+References: <20250219003329.2078308-1-festevam@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_140102_914784_D8FFAC46 
-X-CRM114-Status: UNSURE (   8.42  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250218_163402_193224_6F0E58FD 
+X-CRM114-Status: GOOD (  13.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,29 +95,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgS2hlbSwKCk9uIFR1ZSwgRmViIDE4LCAyMDI1IGF0IDE6MjHigK9QTSBLaGVtIFJhaiA8cmFq
-LmtoZW1AZ21haWwuY29tPiB3cm90ZToKCj4gbWF5YmUgY2hlY2sgZm9yIGJhY2t0cmFjZSBmdW5j
-dGlvbiBpbiBsaWJjIGZpcnN0IGFuZCBpZiBub3QgZm91bmQgdGhlbgo+IHRyeSBsaWJleGVjaW5m
-byBjaGVjay4KCkkgaW1wbGVtZW50ZWQgeW91ciBzdWdnZXN0aW9uIGxpa2UgdGhpczoKCi0tLSBh
-L2NvbmZpZ3VyZS5hYworKysgYi9jb25maWd1cmUuYWMKQEAgLTIzOCw2ICsyMzgsMTcgQEAgaWYg
-dGVzdCAieCRuZWVkX2Ntb2NrYSIgPSAieHllcyI7IHRoZW4KICBQS0dfQ0hFQ0tfTU9EVUxFUyhD
-TU9DS0EsIFtjbW9ja2FdLCBbXSwgW2Ntb2NrYV9taXNzaW5nPSJ5ZXMiXSkKIGZpCgorQUNfQ0hF
-Q0tfRlVOQyhbYmFja3RyYWNlXSwgW2hhdmVfYmFja3RyYWNlPXllc10sIFtoYXZlX2JhY2t0cmFj
-ZT1ub10pCisKK2lmIHRlc3QgIngkaGF2ZV9iYWNrdHJhY2UiID0gInhubyI7IHRoZW4KKyAgICBB
-Q19DSEVDS19MSUIoW2V4ZWNpbmZvXSwgW2JhY2t0cmFjZV0sCisgICAgICAgIFtMSUJTPSIkTElC
-UyAtbGV4ZWNpbmZvIgorICAgICAgICAgQUNfREVGSU5FKFtIQVZFX0JBQ0tUUkFDRV0sIFsxXSwg
-W2JhY2t0cmFjZSBpcyBhdmFpbGFibGUgdmlhCmxpYmV4ZWNpbmZvXSldLAorICAgICAgICBbQUNf
-TVNHX1dBUk4oW2JhY2t0cmFjZSBzdXBwb3J0IG5vdCBmb3VuZF0pXSkKK2Vsc2UKKyAgICBBQ19E
-RUZJTkUoW0hBVkVfQkFDS1RSQUNFXSwgWzFdLCBbYmFja3RyYWNlIGlzIGF2YWlsYWJsZSB2aWEg
-bGliY10pCitmaQorCiBBQ19DSEVDS19IRUFERVJTKFtleGVjaW5mby5oXSkKCkFuZCB0ZXN0ZWQg
-aW4gdHdvIGNhc2VzOgoKV2l0aCBnbGliYzoKY2hlY2tpbmcgZm9yIGJhY2t0cmFjZS4uLiB5ZXMK
-CldpdGggbXVzbDoKY2hlY2tpbmcgZm9yIGJhY2t0cmFjZS4uLiBubwpjaGVja2luZyBmb3IgYmFj
-a3RyYWNlIGluIC1sZXhlY2luZm8uLi4geWVzCgpEb2VzIHRoaXMgbG9vayBnb29kPwoKVGhhbmtz
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Include <linux/limits.h> to fix the following build error when building
+with musl:
+
+| ../git/ubifs-utils/fsck.ubifs/extract_files.c: In function 'parse_ino_node':
+| ../git/ubifs-utils/fsck.ubifs/extract_files.c:144:47: error: 'XATTR_LIST_MAX' undeclared (first use in this function)
+|   144 |         if (ino_node->xnms + ino_node->xcnt > XATTR_LIST_MAX) {
+|       |                                               ^~~~~~~~~~~~~~
+| ../git/ubifs-utils/fsck.ubifs/extract_files.c:144:47: note: each undeclared identifier is reported only once for each function it appears in
+| make: *** [Makefile:4374: ubifs-utils/fsck.ubifs/fsck_ubifs-extract_files.o] Error 1
+
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+Changes since v2:
+- None.
+
+ ubifs-utils/fsck.ubifs/extract_files.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
+index c83d37749bc0..000ef5d10565 100644
+--- a/ubifs-utils/fsck.ubifs/extract_files.c
++++ b/ubifs-utils/fsck.ubifs/extract_files.c
+@@ -10,6 +10,8 @@
+ #include <getopt.h>
+ #include <sys/stat.h>
+ 
++#include <linux/limits.h>
++
+ #include "linux_err.h"
+ #include "bitops.h"
+ #include "kmem.h"
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
