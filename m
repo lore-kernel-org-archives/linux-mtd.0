@@ -4,86 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 802D5C021B1
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Feb 2025 00:34:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF49AC021AF
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Feb 2025 01:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tXjNEMpL+osqNQVh9eK1PBXdRKOXAgwe2Vh1IcHJDOM=; b=4H1yWdryZYHQCL
-	k9FfBnueCR3C+/IEftqrFkjJWXQob/5eXAp0hmpxRDujUQyVpCwi294I6jEJANmP5QhAcQHPYmSt+
-	l86tYVW+qjUBYqeFPPPnftivsY6mK5oe9VE867AIVfHDmwllSQOm40m1NYvMmyKIzLrh9QacsP8gV
-	uPwmg5Wb2fpIBC5+NC+r4BFOWYQlNxu/CXbQIvaRWJNOTmTO/gCuRO8u+mjA1RTllWlVq0I9y9OLK
-	/zpydDwZ/Zacr11Xj7cPvnWGjLlCeT6tZu5RO7mU4cjTTNa/sOU38DLwjikDpsevJpTCrMIr9W3Ll
-	jbfKym13jUxFb7D/N4KA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lG7hW6n8bNp0so08rSOjj7acttah33qj/vlDIk9KCLA=; b=4/q41du1JKsdYgngQXllP3EmVu
+	WFXSAEOaXLmF46EqqvfMXAtS2IkuxAHkRdOEusS0qOTe5ywzQiXlLzVJ59hD3ik1S7xRRky/jrzEA
+	EvNXwhWN1ShbXXzbHhFezw5GHhnwsGjOna4s7fq7br790lJyZIuqsejiy+4kT7HNzMjo3AJRIm06H
+	LaYuhWIT/eXXMhoXAmnRWNcwWT1T5h3069TXzA5Ua1edzC1X7bp8/pOtTvCQ2tqg0T5KOAZzyyvyK
+	woTpe94LcbrlY2WQFvfKJLwyAED3OBIGbuRxRGvCUl0eHfxriwroqmdhHuZnTy+SfPbEZm41IMzA0
+	yLNXKPwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkY2M-0000000AMid-1giU;
-	Wed, 19 Feb 2025 00:34:02 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1tkYov-0000000AWak-0eUY;
+	Wed, 19 Feb 2025 01:24:13 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkY2J-0000000AMgr-3jZO
+	id 1tkYos-0000000AWaD-2RXR
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Feb 2025 00:34:00 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-220f4dd756eso83304985ad.3
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2025 16:33:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739925239; x=1740530039; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lXUOxLWwVS0aGA5KIQveEBzdA/JIANBBEmz0GZbP66Y=;
-        b=NFNQztgvnAyLvH/RQfs0HfNfOFAO3nAt1FDnlykvD73JyZPE+6YTLY5ENqI12RXTR8
-         tC71DWUW5z/NN/svjGRTCHJTk47DlbkMYxVzgO0XCeywnnKFT8wsVXryOkNYMTRMTG6k
-         dlPXdlTG2+3KUnjHQS6phKHwKie6O5mi58S6robXE3M8TI7XEdP2QpONJ9iLNsR7ikoC
-         zIUpRRYM+qjlAReKCZ2HvXvyHC9dTH3vMzNcH1Fa8gMWcbEpgHPUqzy6AMd6kzUVHhJ0
-         KZhf+U2X9XCsXkVz8o5BZveekWvpR+OEr8D7AHRn/h0br81ZDvcxILFxnyoRIlVz3KKC
-         Ra3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739925239; x=1740530039;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lXUOxLWwVS0aGA5KIQveEBzdA/JIANBBEmz0GZbP66Y=;
-        b=uxEOX4Cb+bnb8IZOn48YOBiXQUN+penl6xHyNZlw/dMbuor1i4Bam2mXZj0dvJT+Pt
-         oZ7pkql63hnX0i1LWVV9F5bYdSCCRKHNJmBWjfHze43+MNGH1FEk0hXMTWd9b5awZd1k
-         dFCmGxgshrOiM5vfL6jqDoGCg32ArJHJzjFk6PtjiESG1CheCZDMumB7Rxp9HpWEAdOq
-         LvEch0ovSZmlwUdG+RWDsGNNc8wUULQ1a+sse6JbVmdiIQuKIvKSwe5fwjwC/T/8wiK8
-         hBtW4F3IlA8utxGJdo/hMpOArGbu1bmS2cAHjsZ2PQtSaC5jGSrKNzkCCaeuGL/peHHI
-         nZ0w==
-X-Forwarded-Encrypted: i=1; AJvYcCU18fwmjds8HOSAlxFxTeDUTuYlMRAJFsMs001aOX114UV0kto0idsgEvxcN83JRa6VQjQVhjvsl2U=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxyX2o/Dtf9rWU4ejsNA5M6mX2FHNbGnZqq4mxqUEk08cnoKxG2
-	pO6Ce8NTe8tJCaMQVcG3F9Uq5jyGwl5klP8F1NumfbWQGxTFRY24xePnmw==
-X-Gm-Gg: ASbGncu7satU2o4366zuEo8sA1LEyySQ1I8Tt/qGubl7lSUB3vFGKFWfaihHdActhaO
-	9wc4rbg+P/ZevaNoN5MPgUwMYjJYS58IBTDEVL0AunNsx9Nbybp/dzlVHeUWfW2nTQ/GF6olnMW
-	oY9E7EbVTfPQ3yeMMzgA1/gIYW1M3y/8TJWXn2UG3KkR3vJ76qocvIkmyK4PRkFYlr/3QucK8ek
-	Rpi4TKm60lVOFJmkKRA2qUyyD2bKBiHbfVtZ8J+Qgrc6nK75s+yo8v+117Vxszwq8D0e3TAHQBq
-	9NHMJA8hpZIYeQXOXBv7UDkFZ+QgKg==
-X-Google-Smtp-Source: AGHT+IGpTw9h91a49rKbsIj+yuXPKUQ7u/nVuKPo6iD58HhtplRIRN0QWpRB7s0cbmI9f7p+bzZF1A==
-X-Received: by 2002:a05:6a00:13a6:b0:725:96f2:9e63 with SMTP id d2e1a72fcca58-73261900ec3mr24610931b3a.24.1739925238888;
-        Tue, 18 Feb 2025 16:33:58 -0800 (PST)
-Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:9d59:514f:431d:4a45])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7324273e34bsm10965017b3a.108.2025.02.18.16.33.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2025 16:33:58 -0800 (PST)
-From: Fabio Estevam <festevam@gmail.com>
-To: david.oberhollenzer@sigma-star.at
-Cc: chengzhihao1@huawei.com,
-	raj.khem@gmail.com,
-	linux-mtd@lists.infradead.org,
-	Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v3 mtd-utils 3/4] configure.ac: Add a check for execinfo and backtrace
-Date: Tue, 18 Feb 2025 21:33:28 -0300
-Message-Id: <20250219003329.2078308-3-festevam@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250219003329.2078308-1-festevam@gmail.com>
+	Wed, 19 Feb 2025 01:24:12 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4YyJW257V1zHr7d;
+	Wed, 19 Feb 2025 09:21:02 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id DBB1914022D;
+	Wed, 19 Feb 2025 09:24:02 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 19 Feb 2025 09:24:02 +0800
+Subject: Re: [PATCH v3 mtd-utils 3/4] configure.ac: Add a check for execinfo
+ and backtrace
+To: Fabio Estevam <festevam@gmail.com>, <david.oberhollenzer@sigma-star.at>
+CC: <raj.khem@gmail.com>, <linux-mtd@lists.infradead.org>
 References: <20250219003329.2078308-1-festevam@gmail.com>
+ <20250219003329.2078308-3-festevam@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <5ea2d31e-0de3-5a10-b14a-d1320fc52061@huawei.com>
+Date: Wed, 19 Feb 2025 09:24:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20250219003329.2078308-3-festevam@gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_163359_931264_EB288729 
-X-CRM114-Status: GOOD (  14.47  )
+X-CRM114-CacheID: sfid-20250218_172410_778926_D3A24656 
+X-CRM114-Status: GOOD (  18.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,60 +67,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-musl relies on an external execinfo library to provide backtrace
-functionality. If musl cannot link to libexecinfo, the following link
-error happens:
-
-| /work/festevam/oe/poky/build/tmp/work/core2-64-poky-linux-musl/mtd-utils/2.3.0/recipe-sysroot-native/usr/bin/x86_64-poky-linux-musl/../../libexec/x86_64-poky-linux-musl/gcc/x86_64-poky-linux-musl/14.2.0/ld: ubifs-utils/libubifs/mkfs_ubifs-io.o: in function `dump_stack':
-| /usr/src/debug/mtd-utils/2.3.0/ubifs-utils/common/defs.h:71:(.text+0x25): undefined reference to `backtrace'
-....
-| collect2: error: ld returned 1 exit status
-| make: *** [Makefile:2959: mkfs.ubifs] Error 1
-
-Fix the problem by checking for backtrace support in libc first and if not
-found, then check for backtrace support in the external libexecinfo.
-
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Suggested-by: Khem Raj <raj.khem@gmail.com>
----
-Change since v2:
-- Check for backtrace support in libc first and if not
-found, then check libexecinfo. (Khem)
-
- configure.ac | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/configure.ac b/configure.ac
-index 2a79ba820fc0..296901e61760 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -238,6 +238,17 @@ if test "x$need_cmocka" = "xyes"; then
- 	PKG_CHECK_MODULES(CMOCKA, [cmocka], [], [cmocka_missing="yes"])
- fi
- 
-+AC_CHECK_FUNC([backtrace], [have_backtrace=yes], [have_backtrace=no])
-+
-+if test "x$have_backtrace" = "xno"; then
-+    AC_CHECK_LIB([execinfo], [backtrace],
-+        [LIBS="$LIBS -lexecinfo"
-+         AC_DEFINE([HAVE_BACKTRACE], [1], [backtrace is available via libexecinfo])],
-+        [AC_MSG_WARN([backtrace support not found])])
-+else
-+    AC_DEFINE([HAVE_BACKTRACE], [1], [backtrace is available via libc])
-+fi
-+
- AC_CHECK_HEADERS([execinfo.h])
- 
- ##### produce summary on dependencies #####
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNS8yLzE5IDg6MzMsIEZhYmlvIEVzdGV2YW0g0LS1wDoKPiBtdXNsIHJlbGllcyBvbiBh
+biBleHRlcm5hbCBleGVjaW5mbyBsaWJyYXJ5IHRvIHByb3ZpZGUgYmFja3RyYWNlCj4gZnVuY3Rp
+b25hbGl0eS4gSWYgbXVzbCBjYW5ub3QgbGluayB0byBsaWJleGVjaW5mbywgdGhlIGZvbGxvd2lu
+ZyBsaW5rCj4gZXJyb3IgaGFwcGVuczoKPiAKPiB8IC93b3JrL2Zlc3RldmFtL29lL3Bva3kvYnVp
+bGQvdG1wL3dvcmsvY29yZTItNjQtcG9reS1saW51eC1tdXNsL210ZC11dGlscy8yLjMuMC9yZWNp
+cGUtc3lzcm9vdC1uYXRpdmUvdXNyL2Jpbi94ODZfNjQtcG9reS1saW51eC1tdXNsLy4uLy4uL2xp
+YmV4ZWMveDg2XzY0LXBva3ktbGludXgtbXVzbC9nY2MveDg2XzY0LXBva3ktbGludXgtbXVzbC8x
+NC4yLjAvbGQ6IHViaWZzLXV0aWxzL2xpYnViaWZzL21rZnNfdWJpZnMtaW8ubzogaW4gZnVuY3Rp
+b24gYGR1bXBfc3RhY2snOgo+IHwgL3Vzci9zcmMvZGVidWcvbXRkLXV0aWxzLzIuMy4wL3ViaWZz
+LXV0aWxzL2NvbW1vbi9kZWZzLmg6NzE6KC50ZXh0KzB4MjUpOiB1bmRlZmluZWQgcmVmZXJlbmNl
+IHRvIGBiYWNrdHJhY2UnCj4gLi4uLgo+IHwgY29sbGVjdDI6IGVycm9yOiBsZCByZXR1cm5lZCAx
+IGV4aXQgc3RhdHVzCj4gfCBtYWtlOiAqKiogW01ha2VmaWxlOjI5NTk6IG1rZnMudWJpZnNdIEVy
+cm9yIDEKPiAKPiBGaXggdGhlIHByb2JsZW0gYnkgY2hlY2tpbmcgZm9yIGJhY2t0cmFjZSBzdXBw
+b3J0IGluIGxpYmMgZmlyc3QgYW5kIGlmIG5vdAo+IGZvdW5kLCB0aGVuIGNoZWNrIGZvciBiYWNr
+dHJhY2Ugc3VwcG9ydCBpbiB0aGUgZXh0ZXJuYWwgbGliZXhlY2luZm8uCj4gCj4gU2lnbmVkLW9m
+Zi1ieTogRmFiaW8gRXN0ZXZhbSA8ZmVzdGV2YW1AZ21haWwuY29tPgo+IFN1Z2dlc3RlZC1ieTog
+S2hlbSBSYWogPHJhai5raGVtQGdtYWlsLmNvbT4KPiAtLS0KPiBDaGFuZ2Ugc2luY2UgdjI6Cj4g
+LSBDaGVjayBmb3IgYmFja3RyYWNlIHN1cHBvcnQgaW4gbGliYyBmaXJzdCBhbmQgaWYgbm90Cj4g
+Zm91bmQsIHRoZW4gY2hlY2sgbGliZXhlY2luZm8uIChLaGVtKQo+IAo+ICAgY29uZmlndXJlLmFj
+IHwgMTEgKysrKysrKysrKysKPiAgIDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspCj4g
+CgpSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBk
+aWZmIC0tZ2l0IGEvY29uZmlndXJlLmFjIGIvY29uZmlndXJlLmFjCj4gaW5kZXggMmE3OWJhODIw
+ZmMwLi4yOTY5MDFlNjE3NjAgMTAwNjQ0Cj4gLS0tIGEvY29uZmlndXJlLmFjCj4gKysrIGIvY29u
+ZmlndXJlLmFjCj4gQEAgLTIzOCw2ICsyMzgsMTcgQEAgaWYgdGVzdCAieCRuZWVkX2Ntb2NrYSIg
+PSAieHllcyI7IHRoZW4KPiAgIAlQS0dfQ0hFQ0tfTU9EVUxFUyhDTU9DS0EsIFtjbW9ja2FdLCBb
+XSwgW2Ntb2NrYV9taXNzaW5nPSJ5ZXMiXSkKPiAgIGZpCj4gICAKPiArQUNfQ0hFQ0tfRlVOQyhb
+YmFja3RyYWNlXSwgW2hhdmVfYmFja3RyYWNlPXllc10sIFtoYXZlX2JhY2t0cmFjZT1ub10pCj4g
+Kwo+ICtpZiB0ZXN0ICJ4JGhhdmVfYmFja3RyYWNlIiA9ICJ4bm8iOyB0aGVuCj4gKyAgICBBQ19D
+SEVDS19MSUIoW2V4ZWNpbmZvXSwgW2JhY2t0cmFjZV0sCj4gKyAgICAgICAgW0xJQlM9IiRMSUJT
+IC1sZXhlY2luZm8iCj4gKyAgICAgICAgIEFDX0RFRklORShbSEFWRV9CQUNLVFJBQ0VdLCBbMV0s
+IFtiYWNrdHJhY2UgaXMgYXZhaWxhYmxlIHZpYSBsaWJleGVjaW5mb10pXSwKPiArICAgICAgICBb
+QUNfTVNHX1dBUk4oW2JhY2t0cmFjZSBzdXBwb3J0IG5vdCBmb3VuZF0pXSkKPiArZWxzZQo+ICsg
+ICAgQUNfREVGSU5FKFtIQVZFX0JBQ0tUUkFDRV0sIFsxXSwgW2JhY2t0cmFjZSBpcyBhdmFpbGFi
+bGUgdmlhIGxpYmNdKQo+ICtmaQo+ICsKPiAgIEFDX0NIRUNLX0hFQURFUlMoW2V4ZWNpbmZvLmhd
+KQo+ICAgCj4gICAjIyMjIyBwcm9kdWNlIHN1bW1hcnkgb24gZGVwZW5kZW5jaWVzICMjIyMjCj4g
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
