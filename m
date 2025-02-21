@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B728C3DA4A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5700DC021B7
 	for <linux-mtd@archiver.kernel.org>; Fri, 21 Feb 2025 13:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:CC:To:In-Reply-To:References:Message-ID
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rT4jOokD3zkIifVrxoFKjV2HAr0ftTi8rpORVU9fiGs=; b=MEg8Fl2fbE/DRm
-	oURB23jbTJwaDTwHHBHJ8RsmKguLo/gRgerJ7bq3qHIE9UBd+s4VwS6wGhkKUCee/DEhKvKycy3bA
-	ZUCcWThs7x6VBblmsqd5VWn80QlhNKEnBUOxVdPzGgGAVd6K00yHdsduO+ZUDnclMGuz0MuAH0ZBN
-	18PmHFjVNSGXRYL0jtiLfBTxVV7hgHBfweAV6kJNHkWf2vs0/Cj8z5ldZKGShce/P4aLwuBj5tgJ7
-	49P6+9UIBPkbLPF2EE61y7pcWHeChFd/AgVEgbnRtsN/xzL+o8v8bCUZ7OYbyVKrXufAapG/idfEz
-	EHipG2BXYKdOVbsx8uZA==;
+	List-Owner; bh=arGOpZgYWbpmPtmDUZi4zd1VkmAKBp79lOzRW3aPezw=; b=bW1MTwfsNHcarC
+	uL5XDZvSIRgp4xnUc37fxp0ZnkxW3oDGOpofraIonr0ye6opeM2do65/kMeuIwNmKVJkurV+Bxiaw
+	3HHjudDuEPD8QI5EZD1Z9IKxPBzPDhAT0bC3dW5/wAThmvjCyafVS8+ReKDA50M85R90ahrRQGkZz
+	G9+ort8jSUtkWV7Jw9X4cICpExnvaMFkmEC2OU6rVJ70543iFX/yugjMucHIkxLM/c8gF1mQ+9vpD
+	5W39wzgaE/++ZCCPioqZweGgVDWzBmdlicrj93OpQ02CzUuiQAacMgdV4vadnUnKeFdvFjN5SudeQ
+	8xH8HW8daOS7kWr1ajWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlSgb-00000005Xhr-1hcJ;
-	Fri, 21 Feb 2025 13:03:21 +0000
+	id 1tlSga-00000005XhT-3n3n;
+	Fri, 21 Feb 2025 13:03:20 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlSgY-00000005Xek-2Xg0
+	id 1tlSgW-00000005Xd4-3wQy
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Feb 2025 13:03:19 +0000
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51LBulhk008309;
-	Fri, 21 Feb 2025 13:02:41 GMT
+	Fri, 21 Feb 2025 13:03:18 +0000
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51LAUNTq015154;
+	Fri, 21 Feb 2025 13:02:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	a3BtQIhlA8aAG89uR+C8DMvJdtYemVsNlnwoCtpLicg=; b=LPO9aBDDMsxB31dw
-	WyjEK3CLUErmibrT9lWzXMKIOlj9scR21l/EvLCqI1iE+F6d7ajSGM1Q7o7/UTva
-	d6BCo5GfnagS3ZlFBms2f+vn949oTKynvFtUIgGlvTucQIzBAPCpUtJJ7kyNxIls
-	gp2VHXA0pCLqa69VB1ozNks7kF5WZb0sVY3fIhvMfxrNG/9yv9mwvqsZokftd1GN
-	2nTbNp4amwmIW1yvtDpVUeXeW2HKIdUTXbDD+E/BaCPpa8tR4lGMcaskaUE7xURJ
-	tBul1zdDWMev8T8r9cAZcCIQWRVn7cSKVD/7UYWMHBDw1IOKOUSMC6HEBlauMjmc
-	aIzqRQ==
+	2oIbv7Mr1JJLwuqm+zLPquvOUGffIsbDY4gkPIr24vw=; b=GsTJM4Ts5MybFu4q
+	Wt2WPfdrHPkEW42XovxMyAL7UGWeOS/oIg1RemtDqXJNsE/rfnliZuMiNmEbM3Cf
+	nkuCNBwt6pLxLaal2yy7EHMtyRXMJKvd+zEUYo9C5KDDiWIlXYQSSZCgRTf4T9ib
+	Dx1LPk7HwpjAvSOMgnnunqqiwAfEMKiz5Ua4etrwP5CwhG7DqcToUxcSuwg+wk9M
+	ZHV6tLj04HNEGnUcN/TlL+x9HTY3LD6Uqolu3Zsw/CLbb4AstqZh4ONptI2c9yLk
+	/UjVx4voH+RwStNrrns9qQEY5cRMdmJ5hB8QXLbT2pxLpspnYrwiC6ADPlU/F+RK
+	+6ee1w==
 Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44vyy3j2mu-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44vyy4j2xq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Feb 2025 13:02:41 +0000 (GMT)
+	Fri, 21 Feb 2025 13:02:42 +0000 (GMT)
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 51LD2Whs027840
+	by NASANPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 51LD2bi9027924
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Feb 2025 13:02:32 GMT
+	Fri, 21 Feb 2025 13:02:37 GMT
 Received: from hu-zijuhu-lv.qualcomm.com (10.49.16.6) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 21 Feb 2025 05:02:31 -0800
+ 15.2.1544.9; Fri, 21 Feb 2025 05:02:36 -0800
 From: Zijun Hu <quic_zijuhu@quicinc.com>
-Date: Fri, 21 Feb 2025 05:02:09 -0800
-Subject: [PATCH *-next 04/18] crypto: scomp - Remove needless return in
- void API crypto_scomp_free_ctx()
+Date: Fri, 21 Feb 2025 05:02:15 -0800
+Subject: [PATCH *-next 10/18] IB/rdmavt: Remove needless return in void API
+ rvt_mod_retry_timer()
 MIME-Version: 1.0
-Message-ID: <20250221-rmv_return-v1-4-cc8dff275827@quicinc.com>
+Message-ID: <20250221-rmv_return-v1-10-cc8dff275827@quicinc.com>
 References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
 In-Reply-To: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -114,19 +114,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: oXrPtGt6iYym3jCKcWCq-N451L8zfZaz
-X-Proofpoint-GUID: oXrPtGt6iYym3jCKcWCq-N451L8zfZaz
+X-Proofpoint-GUID: a6Gp8hVCE9ISdL4io0m663YnpWaxWQsL
+X-Proofpoint-ORIG-GUID: a6Gp8hVCE9ISdL4io0m663YnpWaxWQsL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-02-21_04,2025-02-20_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- phishscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 mlxlogscore=812 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
- definitions=main-2502210096
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=850 spamscore=0 adultscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502210096
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250221_050318_757715_C01ABEBF 
-X-CRM114-Status: GOOD (  14.37  )
+X-CRM114-CacheID: sfid-20250221_050317_099489_3357BD0C 
+X-CRM114-Status: GOOD (  13.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,27 +143,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Remove needless 'return' in void API crypto_scomp_free_ctx() since both
-the API and crypto_scomp_alg(@tfm)->free_ctx() are void functions.
+Remove needless 'return' in void API rvt_mod_retry_timer() since
+both the API and rvt_mod_retry_timer_ext() are void functions.
 
 Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
 ---
- include/crypto/internal/scompress.h | 2 +-
+ include/rdma/rdmavt_qp.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/crypto/internal/scompress.h b/include/crypto/internal/scompress.h
-index 07a10fd2d321..44130680dc0a 100644
---- a/include/crypto/internal/scompress.h
-+++ b/include/crypto/internal/scompress.h
-@@ -79,7 +79,7 @@ static inline void *crypto_scomp_alloc_ctx(struct crypto_scomp *tfm)
- static inline void crypto_scomp_free_ctx(struct crypto_scomp *tfm,
- 					 void *ctx)
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index d67892944193..6b9ee610168c 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -735,7 +735,7 @@ static inline void rvt_mod_retry_timer_ext(struct rvt_qp *qp, u8 shift)
+ 
+ static inline void rvt_mod_retry_timer(struct rvt_qp *qp)
  {
--	return crypto_scomp_alg(tfm)->free_ctx(tfm, ctx);
-+	crypto_scomp_alg(tfm)->free_ctx(tfm, ctx);
+-	return rvt_mod_retry_timer_ext(qp, 0);
++	rvt_mod_retry_timer_ext(qp, 0);
  }
  
- static inline int crypto_scomp_compress(struct crypto_scomp *tfm,
+ /**
 
 -- 
 2.34.1
