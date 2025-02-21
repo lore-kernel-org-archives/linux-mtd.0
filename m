@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 135E7C021B3
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Feb 2025 17:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CBBAC021B3
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Feb 2025 18:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xGPQR7cc94B8ndb0NyQ6kkiK4zsI+NGaXub46kB5kuU=; b=zzZwOrEv/mpfmu6j2nHGRIWGZM
-	us0A/0kjw2iUjLVdTSQZMCgTCppFdAbRTOKRxd8+8ZRJ9PXWzDbcCKe54mDhqU4BOKQTlVdgZK+I9
-	UVcH6Nm7hPiIetgT4lbep1SwzBi7EGIeEwzm+E21zWxyuHNad4BnYlPJYyYK4aPRRPltBCZsVShT5
-	LP6NgfUGtd4cXFt7SKwIDN8UO2E6ES93TSJ+rtOVAbK5Oh8hdkQ/kroNsxdPpguyeDxtQZQq7wt+W
-	ae9bNo6kz2TRzIm03BawyN1DuEDWkxPcXqX2/qXD36AHBAeY+WNdGE/ccuR3P4v+hLRMRHSRV2/sX
-	UH3c4OGA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sKdSqFURBA6a3ZXjZwMvyQl/r74By2OXR01SP0ldMqs=; b=2iI6WNiF7x+nq6
+	rRjbFFcpq6tFZQHBc9/jEoUYOMO0JB3enj/ckyJV1vnnrOjTnTQL/RKj0eEB4rDtEcRQKecEi60y4
+	hOATOTHAj5TVdJNRqJeet6MNGMMHv8xm1LRdwlXJJ96E0vjI/p9EZTvzPbqknN7aYpn3Rbi2TWbR9
+	de7joB1l1PW+3mJN3uY9zn4XtHgbfkvbRiJ4dSMmJCLwhoR9+FkOVMzlLShlDJdG5s2GhjoJIp0Yu
+	PjwHuxti69Z4z84EbbvVJxMAoMjPrSWalb4gHn3VX3OG1jeadlGPRQ46+WEqtuToF29bPQP7hKA6F
+	yc9aETB7yMeqxk/gtj4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlXE4-00000006RLs-2Zk5;
-	Fri, 21 Feb 2025 17:54:12 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1tlXjL-00000006Wbh-3seA;
+	Fri, 21 Feb 2025 18:26:31 +0000
+Received: from tor.source.kernel.org ([2600:3c04::f03c:95ff:fe5e:7468])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlXE2-00000006RLT-1PFy
+	id 1tlWXZ-00000006K6X-2yi5
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Feb 2025 17:54:11 +0000
+	Fri, 21 Feb 2025 17:10:17 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 350F75C6C79;
-	Fri, 21 Feb 2025 17:53:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B1C9C4CEE7;
-	Fri, 21 Feb 2025 17:54:07 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A55DC614EB;
+	Fri, 21 Feb 2025 17:10:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C463FC4CEE2;
+	Fri, 21 Feb 2025 17:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740160449;
-	bh=iTjPEItd97Y8rmwDpLAK0xUiIP9tO+c3V61O1uEFrUA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SYtA0MrlTajR2Ta6Jh6TzgAQrqZzSvcyNbCmlHvL9MOm7OeSjiXKQOMrpmoLpMWbq
-	 ELruEw3iUfn1VCpYY7Edcu6dHsS0dqeLpPK2dcPxQ/8OCKGTRD3jK0QgbB5W5sX7oV
-	 ZLjnO3QQyv4xwuXg3NtF98z/XtnEm1T2VRS2gQe3reiqSW00KmGdZHgDV11KWfpXJ3
-	 hYhkY5hPjlcOZz+8ug8Y1bwYzk1rkgl/aPGBPEjeCdMnu2OAqSLRncGlQnExaEv6fN
-	 2+jMc1N1+KbS2IpW7svxgo4o+QSjZoEe2iIrWUmUTZFl/NU9as4QYVv7SKMpKZEoih
-	 0PZq2InIjBTiw==
-Date: Fri, 21 Feb 2025 17:54:05 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	Fabio Estevam <festevam@denx.de>
-Subject: Re: [PATCH] dt-bindings: mtd: mxc-nand: Document fsl,imx31-nand
-Message-ID: <20250221-unloader-fanatic-c7ad3eee4f38@spud>
-References: <20250220125812.2370056-1-festevam@gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <20250220125812.2370056-1-festevam@gmail.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250221_095410_413721_66A6E39D 
-X-CRM114-Status: UNSURE (   8.65  )
-X-CRM114-Notice: Please train this message.
+	s=k20201202; t=1740157816;
+	bh=TG0TAasOTuNmF0CkIXQVF0oc/npI6oZC9uhR109NIks=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=PGG4M+va+qP7GRz0xohfSFzyprVqK5c1XKhzSR78T6wWR5jhbadTe1tu+mMA1L2Ua
+	 lHd0CNsocQ+JxZuGzxa+rRv5LTj4oD9Ef2kew/S0WyLQljhAjtrw4yE0Az76icZ7yQ
+	 QQjazoDShH0iwAKRTYl4JfP7roKIzXW/MUmyzSy9m875wdWozm2XnU7QWe+o8hlVHE
+	 qhaxQ1onKEExfpHAD5OYd4yc67FgaUujKNY8R6NidGAe8JfbV6JE34onln+87EF8+W
+	 a38wgrojDtOWk2J5srXTQRB6ZubSSTZD3xUVmDAdNC8w6g05UVW75k+Lq3Riy4mhc6
+	 HHsTW0I+eftDA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB7EF380CEEE;
+	Fri, 21 Feb 2025 17:10:48 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Changes for 6.14-rc4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <87ikp3ffrn.fsf@bootlin.com>
+References: <87ikp3ffrn.fsf@bootlin.com>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <87ikp3ffrn.fsf@bootlin.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-6.14-rc4
+X-PR-Tracked-Commit-Id: 1dbf60277e9b6181d2366a94c974728106cdd551
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a3daad8215143340c0870c5489e599fd059037e9
+Message-Id: <174015784748.2120648.13804450615112893474.pr-tracker-bot@kernel.org>
+Date: Fri, 21 Feb 2025 17:10:47 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Richard Weinberger <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,60 +71,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7229849911028613383=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The pull request you sent on Fri, 21 Feb 2025 17:01:48 +0100:
 
---===============7229849911028613383==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ysC56cTDtLbmiSx7"
-Content-Disposition: inline
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-6.14-rc4
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a3daad8215143340c0870c5489e599fd059037e9
 
---ysC56cTDtLbmiSx7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you!
 
-On Thu, Feb 20, 2025 at 09:58:12AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <festevam@denx.de>
->=20
-> imx31.dtsi uses the following NAND compatible:
->    =20
-> compatible =3D "fsl,imx31-nand", "fsl,imx27-nand";
->    =20
-> Document 'fsl,imx31-nand' to fix the following dt-schema warning:
->    =20
-> compatible: ['fsl,imx31-nand', 'fsl,imx27-nand'] is too long
->=20
-> Signed-off-by: Fabio Estevam <festevam@denx.de>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
---ysC56cTDtLbmiSx7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZ7i9vQAKCRB4tDGHoIJi
-0qsEAQCzFewYbcKURnLdC1rP8RYwtaahu1pRa2W/G5QKSF3NygEAlBe5X08ObEk0
-q+g99jSHlsWd2NNtCZkRoGNdMbi+VAE=
-=LgvR
------END PGP SIGNATURE-----
-
---ysC56cTDtLbmiSx7--
-
-
---===============7229849911028613383==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7229849911028613383==--
-
