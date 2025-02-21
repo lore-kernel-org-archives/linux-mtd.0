@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A037C021B7
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 804EFC021B9
 	for <linux-mtd@archiver.kernel.org>; Fri, 21 Feb 2025 14:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:CC:To:In-Reply-To:References:Message-ID
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bzB1UR4/et9a+Z4QEuEDfXF4O6oXkb7sitkua/MxNEA=; b=0LHrvGdtyM/g55
-	zjLrXrVLiWEEAWbneP+uj1KQBDY+6+P5MagVJV5XokR9RfLuk/sVzVNmQdTmrQi7jbKMUJeCgHO/R
-	crqbD5JNgk2/0VGLI0c6gfILP8zD7rG6nxMubS3rEiw/I+KFza2eBts+zl7rwuXwo7Z+OjS6nzZS6
-	qBXc4/0iGAgzZddvOhn8PDlBw0KmiVdngsPqKVY5rM4zXTUxnZ1vzZfbPph8P5px4MONlNhNeivIY
-	Yvi/pZ36iz9MRj9qNwAFF0mvQytUD9v62PmXDXGiAQ4AjuZR8v6NEibb3DL5ZLGtUUAnTfIkhUpkO
-	vOaf2Lf6dgBSx2iWG0sw==;
+	List-Owner; bh=01GMm4ALpjYVNleLpRboe7zckwxp/Zt53Xgr+/EulBc=; b=MxJKzpqjvsVcuR
+	oToeJaBZUAc8N3rZ8LqFFgytGPgb6ExvIbAy56okAyOpUJc8a8u8S7dU5r5OmWUzlcxdgykIy4H2X
+	kj8b+ca6B1wn93X50elpbcRnTp+q2MGcxZpQvnY5YOAVB94ICM4g78jWfc4G9mC6YCBsFBRb61b0B
+	edhkKP1lyxmjMYTyylvgZpvZQ9p56Nk973q3GRZFtcYFHqzY7iMzamfovybH5Ji5Tac4W5Uzphw4+
+	2SPjHsU9GjqPVp76DBJ7uLSSraYsivDXx1rqOcltkhMSJrVLBHXgYOHW9VnslFP8x72gQXmmx2J6u
+	GpoOpMLJYU0AbTLQgCFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlTkZ-00000005lfh-3Yca;
-	Fri, 21 Feb 2025 14:11:31 +0000
+	id 1tlTkX-00000005ldp-1L6j;
+	Fri, 21 Feb 2025 14:11:29 +0000
 Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlSgb-00000005XhR-0ZJ6
+	id 1tlSgU-00000005XaC-2t4w
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Feb 2025 13:03:22 +0000
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51L5PsTV031809;
-	Fri, 21 Feb 2025 13:02:44 GMT
+	Fri, 21 Feb 2025 13:03:16 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51L60Fcc016303;
+	Fri, 21 Feb 2025 13:02:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	28/OZW/twRq1Jyr1mujPHaoXZGD/StG/YJBp5ydB8fs=; b=EqwzoOVW1K0HLCVt
-	xnGlIKBCdGHlAZN4wpS8MxSFwsWvkdz1TqqlU8YDz/0Wd3MLPWvCIMMj/cRMeSee
-	vlQ2YUv0jSCp6blRQ8fpbh2IH8dMI9Ma2hqrbWvocedXF51/DAh5sRgEDS39dG3z
-	tlHSMCQRG8q7EDcwuRgT3ecWYCv0EeRXn44jVBJSMJXFZiGj7DSRA7eR7H0qru9M
-	5s3sNf/k/4MrApryWN78lrXb2Yn+pvOvCNrmqOa610UMngSugsjhwmhNTLlxxBWn
-	yF3ZCXYQN+QqiHj0ZifFVEZvOXsKJFejoDlECKDBlD9UTNxNc1P1tLLzxR8YQFW4
-	kVUVgw==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44vyy5hyhj-1
+	aYJWksJhCP2gg/nuehuRkZ2u4aVszNfi4BQv6ColURc=; b=R14Aws2nqCbf6aIg
+	WzxYSkmWIlPdMHkn/HT/KCim5LfFEB+1ejUQfpIW23hb7Pyuh67/AhQW/Uv0zGfX
+	SBt+lwfGrovHuSqwbhtUo/YCX9+bfuUJED9+d3NwKgHcShOX8s1szwyViIszv96k
+	1rv/220SHA4figWo1YZo+DQfJkzySRSnJDYDsk0MlrPCVCVz3M6eE+1i4AeE1x+O
+	tVK6bX2s/2ggewzZZVkg9dcLzY4XnD6pCaX0tKW9po43olpXMlmKZo1LRJQ2qbvH
+	bcII9k1z+boWY0C0VH7hi3mZSafwe3wkPNDFFxeSOfxZ54lgez+s6g5A9NJwVT37
+	K6rakQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44xku6scbr-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Feb 2025 13:02:44 +0000 (GMT)
+	Fri, 21 Feb 2025 13:02:32 +0000 (GMT)
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 51LD2Uou014301
+	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 51LD2VHT016729
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Feb 2025 13:02:30 GMT
+	Fri, 21 Feb 2025 13:02:31 GMT
 Received: from hu-zijuhu-lv.qualcomm.com (10.49.16.6) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 21 Feb 2025 05:02:29 -0800
+ 15.2.1544.9; Fri, 21 Feb 2025 05:02:30 -0800
 From: Zijun Hu <quic_zijuhu@quicinc.com>
-Date: Fri, 21 Feb 2025 05:02:06 -0800
-Subject: [PATCH *-next 01/18] mm/mmu_gather: Remove needless return in void
- API tlb_remove_page()
+Date: Fri, 21 Feb 2025 05:02:07 -0800
+Subject: [PATCH *-next 02/18] cpu: Remove needless return in void API
+ suspend_enable_secondary_cpus()
 MIME-Version: 1.0
-Message-ID: <20250221-rmv_return-v1-1-cc8dff275827@quicinc.com>
+Message-ID: <20250221-rmv_return-v1-2-cc8dff275827@quicinc.com>
 References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
 In-Reply-To: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -114,19 +114,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: eJYrddquW1YfMnWMinGwBrgwDzG0fTZp
-X-Proofpoint-GUID: eJYrddquW1YfMnWMinGwBrgwDzG0fTZp
+X-Proofpoint-ORIG-GUID: tuNGTOD3cGVV9vtQL6zpF8ZKXkpwMoIo
+X-Proofpoint-GUID: tuNGTOD3cGVV9vtQL6zpF8ZKXkpwMoIo
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-02-21_04,2025-02-20_02,2024-11-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=851 spamscore=0 bulkscore=0 clxscore=1015 suspectscore=0
- adultscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502100000 definitions=main-2502210096
+ malwarescore=0 spamscore=0 impostorscore=0 suspectscore=0 clxscore=1011
+ mlxscore=0 bulkscore=0 phishscore=0 mlxlogscore=772 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502210095
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250221_050321_294486_9E4426D3 
-X-CRM114-Status: GOOD (  15.06  )
+X-CRM114-CacheID: sfid-20250221_050314_848195_DE5E4945 
+X-CRM114-Status: GOOD (  15.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,27 +143,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Remove needless 'return' in void API tlb_remove_page() since both the
-API and tlb_remove_page_size() are void functions.
+Remove needless 'return' in void API suspend_enable_secondary_cpus()
+since both the API and thaw_secondary_cpus() are void functions.
 
 Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
 ---
- include/asm-generic/tlb.h | 2 +-
+ include/linux/cpu.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index e402aef79c93..812110813b84 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -501,7 +501,7 @@ static __always_inline bool __tlb_remove_page(struct mmu_gather *tlb,
-  */
- static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 6a0a8f1c7c90..e3049543008b 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -148,7 +148,7 @@ static inline int suspend_disable_secondary_cpus(void)
+ }
+ static inline void suspend_enable_secondary_cpus(void)
  {
--	return tlb_remove_page_size(tlb, page, PAGE_SIZE);
-+	tlb_remove_page_size(tlb, page, PAGE_SIZE);
+-	return thaw_secondary_cpus();
++	thaw_secondary_cpus();
  }
  
- static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
+ #else /* !CONFIG_PM_SLEEP_SMP */
 
 -- 
 2.34.1
