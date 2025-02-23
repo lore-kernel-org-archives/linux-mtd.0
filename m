@@ -4,75 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F393C021B2
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Feb 2025 19:20:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E7E0C021B2
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Feb 2025 06:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iZ0v5USDuIaZrmkKgvX4S753nGz4nLTx+BhlZteu678=; b=Oaw1/B/wZPUTeF
-	WbVogOyzxFQkqta4miNo7c2Rvwhi0Fzmrcy3p3WTTvl6v70PGLndgMZJGX8WrMtR6uSw319DKDJ6S
-	gMukVyBn54P8iGPYFhc/MoIMnmmdx3zpgf9YKlkyAfwC5MmQfNiziNau+oZAO1MzIqueS06e7QGtO
-	1RHlRO+OFY73sR2KkAq8P/jIDe/i2WN3uza2pslzLwxmAOGl284eWa2eog/EcWjhniHumX7ke2Ztw
-	prcGg/vlsUyn69IGiL1s+CVNSoEg5uBzea6vqk/JLpbh/p2k/8Lnh0txPQyc3oVBbmIaiUeluNUFO
-	Q5MYlo7x2iZa+SAL0u2w==;
+	List-Owner; bh=//C0ov9fjAmt3m21hJ1m/em4v1MGRgrEm5gu1UxYWrg=; b=fdCLMOeyobYx1F
+	tYi6FGEOUBoTQssJsMbD5OhDqvkvMFuXRLa/YnNEUaYZT3tv+dOilfPHJWjyQg9rB9ub9/DgXs21f
+	11hGffICE7JtSBc/YQ6vBFhPft82MwjA1BGPIo3kUFqfiIOBz4Z/fXOn1hDz7BMA4J4+laiynoj8o
+	6UUO5J7zroYXglMvmfKzzqMnHqw0Z87OryQgoo2XJ0rhv2GxJEYNHU1zdQDoFxqqyS6cnrUWffJh9
+	+Z+cDjZ3oidSVEdtZ6WPfpCCYAJvu6fTBG7F9/PaNQVEhcCzdwNc1sxikiBniouS0EAXmpQxdyDUh
+	m6iMN0GQnt0lM55noy8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlv2c-00000008bMB-0h02;
-	Sat, 22 Feb 2025 19:19:58 +0000
-Received: from mout-p-101.mailbox.org ([80.241.56.151])
+	id 1tm5nr-0000000AXK3-3Z1q;
+	Sun, 23 Feb 2025 06:49:27 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlv2Z-00000008bLK-10cA
+	id 1tm5no-0000000AXJd-368h
 	for linux-mtd@lists.infradead.org;
-	Sat, 22 Feb 2025 19:19:56 +0000
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4Z0cJM2lr7z9snx;
-	Sat, 22 Feb 2025 20:19:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ethancedwards.com;
-	s=MBO0001; t=1740251987;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=5b6ehKCWNH72ToV9CKBN72vhsFPXWtjWbIceXxBIUQg=;
-	b=C8qqaaTNpnIbwIbem6hbEmowvFzu34PishhG4VM6bU1Q0Ku6S15gIiyKty38oofGAozrRs
-	YrXzjmDm12VvU9q8rOujPZfvAQe1H22HGWI4E4WHelfbUasdCVKAFkwaMP/0fzpqx0DNZ7
-	qxX7J9EgnXI2gP2mRnA0/XxiIgKvduVx+YbJW82TNoBz80BW2NPndLEBvwrrm6mm+v6EGt
-	TLE1udKEtDLHbLNmi4t+bkp5AXp1qKeS4LAh18nAAPofWp2LGJiEPpxYi3OrCzc1YR4bRs
-	9NPbAD8lEWbzlrc2cnVRv/N/jcWzOS9z51Djx1JkW5TWLkKfoi6odcRa5sldzQ==
-From: Ethan Carter Edwards <ethan@ethancedwards.com>
-Date: Sat, 22 Feb 2025 14:19:43 -0500
-Subject: [PATCH] mtd: rawnand: use kcalloc() instead of kzalloc()
+	Sun, 23 Feb 2025 06:49:25 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-388cae9eb9fso1713612f8f.3
+        for <linux-mtd@lists.infradead.org>; Sat, 22 Feb 2025 22:49:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1740293363; x=1740898163; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HHaUx5KktsdgA0Sl0DqP/e15F+R/KAQTbOxMnc+xT7Q=;
+        b=tW8IdhdgCIILR3gG6W0REG5yP3EFObQcEw4MS9mBEdp7AVGRWBj4G2+wvRWFctt6vE
+         5XuStFjMI2Tsv8l1nO+tK/Xq8H5+7TCna3pemiaWoAGXENmgP8CPEn4qn/htpDdYHK/g
+         CRP8hBlBKS2XHtzwVm7RR2yHE3FT12d9vP75tAm18KliDocSrqQ0bT6yLT9tDoyx7IRo
+         SuRLcTbAQBwPvFISda2kk/o1Or3LKs7axyEK3NLPJIHN6qd+Yo0w+9jkdx7IgtPAVQk4
+         GPwO/wTaToYQ19452HshXVThDtapcunALuI9NdaIiQWoTxywYj/68F8pmRmabUlKrIS4
+         PCuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740293363; x=1740898163;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HHaUx5KktsdgA0Sl0DqP/e15F+R/KAQTbOxMnc+xT7Q=;
+        b=nNxC/cpmTFGsQeSYKgpWJxWXYsrkddY+kKPZ2SsjcEghneLk/abgumtkEt31XczkYx
+         1rvSbxbPzqcresyrelNghKvIzirAE923Sb171MbNUHiuCSt9Lio1k9US46JXnpA704jH
+         cLZLakILreRraELbLiXY8xlqLdSyyhLOr18tvmvGFhRYnUzWdS8bNfk1BCBiPCdWkQM+
+         eaKRNndyYEkbXS/oKmhH2hT94i9YtdCrP3WZFvNecYBDsSEQcgJGW3rAqi0yUYgQovhW
+         0TWGyzf+ZdJXst/8VcZKv4veDX+PkLJ6HXcTXjwyXsu1T9WD6Q4y1TO8+VdhjINp/rpn
+         iuEw==
+X-Gm-Message-State: AOJu0Yy8ZM/uYnTnU/VN0UGXtPVwBrXfrZ1fBR2YsuPEtbyGD4ggoB5D
+	FEUZTfNBvyLeyW17tcHkAadclEZTxee4cQEZQfWsPymWJbD/q8FyHYdRaEb8E9c=
+X-Gm-Gg: ASbGncvQvY3fQ+0waaL4ek3JUOQ9jHrR0ydCP86i69PAQo01BhKFQxYdcvvB8FjrhFR
+	Ciz0oG4UfiKhUE1spIRjeavjOVzLA+JswWS2Hc0jM+r5qu11cHHpGzCi24AlUU/lNZmWAv0Lgik
+	6tGs5l/pDghaZYsqzT4gfDPk4B4UKkBqgjdCPBoOH+LLW2z4+4LVlWp+vIZzVYpNvRP3V5qxF5D
+	1qTRhjlDK5cD9zX8wg3ODjfeXoXKWK4nTPxp4UlSX7DjkZrtAgYt8QBVZk2YVOOvZvX+UNQ4nvD
+	e4qNU6n3UajDJhHI8YOTiOguU0ca2db36QhlR+Wwc+TRECCCfival8ex+UXJMvvTHehZbuLA+5X
+	EVBJIfQ==
+X-Google-Smtp-Source: AGHT+IGXGcm4VljijD4pXFk056tlsVgzjM+6og539uN649E+iow88gvaZwo/9ZveWnY2W90sEPVm2g==
+X-Received: by 2002:a5d:598c:0:b0:38f:48ee:ddb1 with SMTP id ffacd0b85a97d-38f6e95d5e2mr10084368f8f.18.1740293362786;
+        Sat, 22 Feb 2025 22:49:22 -0800 (PST)
+Received: from ta2.c.googlers.com (169.178.77.34.bc.googleusercontent.com. [34.77.178.169])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f64b0f565sm9517570f8f.51.2025.02.22.22.49.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Feb 2025 22:49:22 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Date: Sun, 23 Feb 2025 06:49:17 +0000
+Subject: [PATCH] mtd: spi-nor: explicitly include <linux/math64.h>
 MIME-Version: 1.0
-Message-Id: <20250222-mtd-nand-kzalloc-v1-1-fbb41db6fd8e@ethancedwards.com>
-X-B4-Tracking: v=1; b=H4sIAE4jumcC/x3MQQ5AMBBA0avIrE1SgwRXEYtqBxOUtCJC3F1j+
- Rb/PxDYCwdokgc8nxJkcxFZmoCZtBsZxUYDKSoVEeF6WHTaWZxvvSybQaqNUVWWVz0VELPd8yD
- Xv2y79/0Aw7Y8gGIAAAA=
-X-Change-ID: 20250222-mtd-nand-kzalloc-29cc08138b24
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+Message-Id: <20250223-snor-math64-v1-1-8c7653111356@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAOzEumcC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1MDIyNj3eK8/CLd3MSSDDMTXYsUixSzlCQj80QTIyWgjoKi1LTMCrBp0bG
+ 1tQB6XFgNXQAAAA==
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-hardening@vger.kernel.org, 
- Ethan Carter Edwards <ethan@ethancedwards.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1676;
- i=ethan@ethancedwards.com; h=from:subject:message-id;
- bh=yOvvdjiU0jdJ3UdjDOTfD6mRKuTsj9mR2aIGQknKyaM=;
- b=LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tCgpvd0o0bkp2QXk4ekFKWGJEOXFoNThlVGp6e
- GhQcXlVeHBPOVM5ai9XOTIzbnYvUHlpOTNtQmJML0NsMlZVUzNOClZleVhiY2VlMHJCN3J2OUZl
- ZDZPVWhZR01TNEdXVEZGbHY4NXlta1BOV2NvN1B6cjBnUXpoNVVKWkFnREY2Y0EKVENUZ0E4UC9
- 6S0NjL0djdGgyMGNMSyt6Q3kvMGxQdHlZNVBJeHlYQlA5dkVuWVhMUk96RkdQNTdtOTI5R1RIRg
- pvdittMHNFZGJXZkxObXl1WGNvZkdIRlBndDh6M2FScmtqOHpBS2tHU2RNPQo9dDFVRQotLS0tL
- UVORCBQR1AgTUVTU0FHRS0tLS0tCg==
-X-Developer-Key: i=ethan@ethancedwards.com; a=openpgp;
- fpr=2E51F61839D1FA947A7300C234C04305D581DBFE
-X-Rspamd-Queue-Id: 4Z0cJM2lr7z9snx
+ Tudor Ambarus <tudor.ambarus@linaro.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1740293361; l=1375;
+ i=tudor.ambarus@linaro.org; s=20241212; h=from:subject:message-id;
+ bh=IrXufjhrtURNRtePzuFrUi3VXTx9hYR1zzTLpU4TGdQ=;
+ b=crKQ/XDwuTSl008vBr29zYajmXhqcWOZjEjHLb7QU0d8jFL6mrUsGKME6beiK8SuBxYsPd9RI
+ U6zsF201b9UCH1O3HoG93JVWpC27CZ3Yrhf4dptkHXvGBsJXJGp1TBP
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=ed25519;
+ pk=uQzE0NXo3dIjeowMTOPCpIiPHEz12IA/MbyzrZVh9WI=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250222_111955_545912_00E94AB1 
-X-CRM114-Status: GOOD (  10.25  )
+X-CRM114-CacheID: sfid-20250222_224924_817367_0C0EDFCC 
+X-CRM114-Status: UNSURE (   8.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,49 +108,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We are trying to get rid of all multiplications from allocation
-functions to prevent integer overflows[1]. Here the multiplication is
-obviously safe, but using kcalloc() is more appropriate and improves
-readability. This patch has no effect on runtime behavior.
+swp and otp drivers use div_u64 and div64_u64 and rely on implicit
+inclusion if <linux/math64.h>.
 
-Link: https://github.com/KSPP/linux/issues/162 [1]
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+It is good practice to directly include all headers used, it avoids
+implicit dependencies and spurious breakage if someone rearranges
+headers and causes the implicit include to vanish.
 
-Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
+Include the missing header.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/nand/raw/nand_base.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/otp.c | 1 +
+ drivers/mtd/spi-nor/swp.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 53e16d39af4bf95c16505e0b528da1f3ba832010..13e4060bd1b6a1a360d430260b881edc8a3abeff 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1833,7 +1833,7 @@ int nand_readid_op(struct nand_chip *chip, u8 addr, void *buf,
+diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+index 9a729aa3452d..7d0b145d78d8 100644
+--- a/drivers/mtd/spi-nor/otp.c
++++ b/drivers/mtd/spi-nor/otp.c
+@@ -6,6 +6,7 @@
+  */
  
- 		/* READ_ID data bytes are received twice in NV-DDR mode */
- 		if (len && nand_interface_is_nvddr(conf)) {
--			ddrbuf = kzalloc(len * 2, GFP_KERNEL);
-+			ddrbuf = kcalloc(2, len, GFP_KERNEL);
- 			if (!ddrbuf)
- 				return -ENOMEM;
+ #include <linux/log2.h>
++#include <linux/math64.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/spi-nor.h>
  
-@@ -2203,7 +2203,7 @@ int nand_read_data_op(struct nand_chip *chip, void *buf, unsigned int len,
- 		 * twice.
- 		 */
- 		if (force_8bit && nand_interface_is_nvddr(conf)) {
--			ddrbuf = kzalloc(len * 2, GFP_KERNEL);
-+			ddrbuf = kcalloc(2, len, GFP_KERNEL);
- 			if (!ddrbuf)
- 				return -ENOMEM;
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index e48c3cff247a..9c9328478d8a 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2005, Intec Automation Inc.
+  * Copyright (C) 2014, Freescale Semiconductor, Inc.
+  */
++#include <linux/math64.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/spi-nor.h>
  
 
 ---
-base-commit: d4b0fd87ff0d4338b259dc79b2b3c6f7e70e8afa
-change-id: 20250222-mtd-nand-kzalloc-29cc08138b24
+base-commit: 03e7bb864d9a9efca02743d4a9fab8f3d0b00407
+change-id: 20250223-snor-math64-8d8d6db27a42
 
 Best regards,
 -- 
-Ethan Carter Edwards <ethan@ethancedwards.com>
+Tudor Ambarus <tudor.ambarus@linaro.org>
 
 
 ______________________________________________________
