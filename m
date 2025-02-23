@@ -4,140 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4E45C021B2
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Feb 2025 16:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC049C021B2
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Feb 2025 20:25:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nmVKNh8ggUMmB+pzw8HnMSkIqnKL/11sU3PQlU6tpG4=; b=hlvbdPXw1NJwaR
-	IRHHa8muI6IDwhQj7Ov9v3ilkq98ggsptvcyU3V9wxCoknFsE64z9j1oKTvmWLCCVZ0AyeGHiLBi5
-	xhxyZ88tdPLEmuUcjVp9opHOjbH8c/AIZVqhjE0x9f4CZeHtqAcgdIMUIaO3J5IbN7A9SfFgtj8x5
-	Q9rKJw6EKTFc6JmWk8yplqJX7pqq2N5UwO0PGH6XSkjmyIqOYlWMRIXk9QM1bM9jY+HGBWMh0FG8z
-	SX0EONMu9aHjP6O5ShpeX2OVem9LeI+69z1zC/wnEBMGjlkQ6qQyo7E13GlUL8hhhkEIR9fSUtd/q
-	z/7bQRiuDQlYUZbKRQDw==;
+	List-Owner; bh=KHMnjpMF2hVpz7Vzz7vp/lJAyY0O4M71fZ28zhX5A5Y=; b=SAZtrdCWWZhOEF
+	l88J0tOGjOamJluTBD3VSp7nxRTmPV9RF3RX5VuOm1GXCAn/EW2jGLHv8p5rbow3NpKBWklTXUeu8
+	Uqg/C0F0vt+tHkx3UwhjGVqAfbp1ek7pq7RNqTd4PtoCHv4fPo8ydAfXrGay05AOBZCE/HK4muHuP
+	u0WVG7C0I41pNPkpeBSC+zWQewxbbozP6s85BkIjSd82/YMOOratBEZpxTvWjrbu+wAgGLg42NjdC
+	o3cGk8PpyQ2+1as3ynCWh7dl67jlg3C0XBq0TyvXXE2rL/gFTP120p60hHGwef5Ou/stTPVY2utdr
+	JpPI/VChf0006/M9ZAqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmF7C-0000000BR4p-14dN;
-	Sun, 23 Feb 2025 16:46:02 +0000
-Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
+	id 1tmIXu-0000000Bjku-2fgG;
+	Sun, 23 Feb 2025 20:25:50 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmF78-0000000BR2N-42Wa
+	id 1tmIXs-0000000Bjk5-0nt3
 	for linux-mtd@lists.infradead.org;
-	Sun, 23 Feb 2025 16:46:00 +0000
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2fa48404207so7516118a91.1
-        for <linux-mtd@lists.infradead.org>; Sun, 23 Feb 2025 08:45:58 -0800 (PST)
+	Sun, 23 Feb 2025 20:25:49 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-ab7483b9bf7so612885966b.3
+        for <linux-mtd@lists.infradead.org>; Sun, 23 Feb 2025 12:25:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740329158; x=1740933958; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nzBrmzWckDIJwY51QBb0mQJ5Dqo6Ldx+jMH0V0Ck8/w=;
-        b=DQww0mSX+mItD27KR0KsgPCoMA+jZztVMfAkesRemcmiw2KDEiHAbfEHJqJM1gZKBa
-         LJlG3ykfNXCqqmSQTh3ZbcnuHARuBexEJ5LLrHCm8jFhRiDYtJ1x7AIQYaQk+Zwm+kTX
-         MSnRhNrX1AxB2bWW35xl1HKT+Nl5iwNOIRjRL2G9n+EZPNjOQZrzzds6pm9sF71GEAr3
-         9j8agC9u+ExvI1iy9qo0d9jQeFzp9PbPVOJMYqZffc9gwBfgGWyq8lZ7DZHWZgtDFdQE
-         gfWUDzWd/yn5087zhasAO4xZCF+VVhCP+1cEDKO42x7NxdkSOfr4Q8a7GevSyiiW0gQS
-         qDmg==
+        d=gmail.com; s=20230601; t=1740342346; x=1740947146; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KO/NRoKuG8XetnuWE85hFK1fCgTrWENxYrVqAq/LSbo=;
+        b=VAccDVHgEsCSTeACIgnVpnhLw0Fj5vP1SHCQKAKaVn2F/zZCa69+0H0CgZwvJAI4G4
+         OsODKGaL9px1ywXnnIeXMfS+6SJj1gd35/xYBdnpITRCb2wBCXz9LZIJAUzaAgxxNTyG
+         Br6lm9QDNBOmgHOUHaQz02PkwKhEhAyL3DBCiOaLqS93ghhjmBiXde8NXjAGmozxtVs2
+         RPmzw3qjcxlafRN39SDprgaY7XLzWowSTdUgAGXKkkQMCThKYEQXYi3h6vyLv0akOF6U
+         Wd1u9CxhGwnJYauSF42XuhKP4cFI2oNl5EYo61XxT98Ed4FBNYxKU+C9Qio7VfkYkA7i
+         nrDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740329158; x=1740933958;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nzBrmzWckDIJwY51QBb0mQJ5Dqo6Ldx+jMH0V0Ck8/w=;
-        b=LD4okooGHGT7Vhqpzhna4mi6/oiTWnVitHw694kFL6XEUtryJgTav5wGKAn/8nBrH7
-         ypHj3ABKNKvRbZXjwvDWtpbUUJ4qi94CalCivCqOlHpPo1i71VFoRmtZKCE99j9u4XFv
-         5XEPjcTOTpxLxgGpwdtDUxQZX9uXy+uYvrl/v9XraeVbRHtROOueUkKTnb4AMvSHISJI
-         t+b3Vs2A5XK/36LTXw+nzpbTKTN06FTzwohhW8U6PmbBMHB8rveKhLrdEmU2Wbk4927N
-         r2aVrZWkFXN4qd01HmIFkRsAvZCZcV6WvdAbt+woTaL7lzQM2+AR12mzbx9tv+0teSFN
-         4NaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWuLka/IYxEDh0LZDvw9qhgcm83V/OrKsXdtAD/CsE70U3vGISyX48N0Q0qUW/M1w2dlj+LF/KaagA=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw3cu9Fp3Ktg6FhDeo46VpdkuYxQmUGSGh4h4ypRtsYtxVl3uHM
-	UR8dROkBbUEKuJ/dpJCQFNh5TwQPFLDUOjPaJJV09NPcowKVevlB
-X-Gm-Gg: ASbGncts0EbzlCicy/7QfPfvFxGj9YOtzaDJhnWOC26K7Pffej8YEegwgVY0RC85Hrk
-	BdOx5kjam9+zcHPl6fgKfCWuMuPpkz1coEdCfPFqxWE0KUBSYKDPh4U5Sz7LhcrNybowI8o0zRv
-	Mgr1qt5SXz63b4iLAFXlG2W/lq+7KyoTYoQSCkmJJucjeFEr9rWNL2D7gudLgBoF+L6FLndtBrj
-	ESqn2KkYC5TM9NiAWAlVZ+pscZYdx0tRQdK7CPoH2vyEvsRuWLUvX5qu5qTneX42QSvx7/uKRlX
-	4JXuUO3qNjCHu+5dA/h2ZNc4cSgB/mYEouEuLeOPd4039tk/b3/KgV1P
-X-Google-Smtp-Source: AGHT+IF16AG7QV3yDJH/B6gDeFm18hoNJMWrJMQH/o1eQGkDQfNTajRN2mVaQtR8BSlGLJjsCZspog==
-X-Received: by 2002:a17:90b:2e44:b0:2f5:63a:44f9 with SMTP id 98e67ed59e1d1-2fce7b0acaamr15082851a91.23.1740329158110;
-        Sun, 23 Feb 2025 08:45:58 -0800 (PST)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb09f6e0sm4935080a91.44.2025.02.23.08.45.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Feb 2025 08:45:57 -0800 (PST)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	jk@ozlabs.org,
-	joel@jms.id.au,
-	eajames@linux.ibm.com,
-	andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org,
-	rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	simona@ffwll.ch,
-	dmitry.torokhov@gmail.com,
-	mchehab@kernel.org,
-	awalls@md.metrocast.net,
-	hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	louis.peens@corigine.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com,
-	arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net,
-	gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	yury.norov@gmail.com,
-	akpm@linux-foundation.org
-Cc: hpa@zytor.com,
-	alistair@popple.id.au,
-	linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se,
-	jernej.skrabec@gmail.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org,
-	linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com,
-	netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com,
-	linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org,
-	jserv@ccns.ncku.edu.tw,
-	Kuan-Wei Chiu <visitorckw@gmail.com>,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH 17/17] nfp: bpf: Replace open-coded parity calculation with parity64()
-Date: Mon, 24 Feb 2025 00:42:17 +0800
-Message-Id: <20250223164217.2139331-18-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250223164217.2139331-1-visitorckw@gmail.com>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
+        d=1e100.net; s=20230601; t=1740342346; x=1740947146;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KO/NRoKuG8XetnuWE85hFK1fCgTrWENxYrVqAq/LSbo=;
+        b=IWjljdlijDEO5AiUlSJZPwvyQ+THKkdwzvgqEm+z8rDYBml4XTLeFNtzjItwwjw3mw
+         M1lCkJ+xriw2agNP3Q8q+lzwcZc8y9xGoPGkHxVK5F8IKBtenYPJn89ARndwdC83nqTX
+         O0T9mcFL7uBKPYS/x6foyd2vShS/mPcXNjzbHrYrYaAZTuMh99mhzpWh0IVV67tydO9i
+         I3WrYfDv/Jq+yK86JEJl78WfSrRjjqaBLCOwHd8G5Dp3yMal5mTqU7PzKvmts206uJZh
+         HzQiN7xwlK7b11LpHtz1QskvYdI5WRHwgSdoNznDrE/nSd6p3yhMp+x9GQnsajDBjMVg
+         d8Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSP1vLv/IS+Emj1ppn1zZ8DmyjtVgaF3Fki65/qrfVzqJYFD2GdF3PXBLag5DDaDSFI3q+BTdm00Q=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwStut7pcWM+FsLPLDbSCJSgopbaTjY4djJz3fC472NBIoeFNig
+	yrtEutb3JBkGdxGH3nwfCjVm2Zadgh3Dznv368Y3mDJuG/bjdu1y
+X-Gm-Gg: ASbGncu+4f1LW/VuKZ8KwPy7tBMjqa8n8DUDSpv+i1Dvu8txdymQ83zR58xwRos6+0t
+	yS9qBjelYGBVj8l4x5VW4bVKVlK/lJqerQkL0SapzYwaRIN99NkTq8+W9n7eMEoQH871PFs9o5z
+	KQFSPTUcHzcGIaECb01X2u/YkgvEazquVjUeXfcoo3RiZ1qAOjCbbEP/gWQAbUyYxQn3o6Q1dnM
+	2+5o1Cxf01jmBqxIrI727I34FUjnT+FXEeU54a8eVPWPmnC77WBD53IMrsdH/X7Jyvm/xByNCq6
+	NZ4M45sLvX3/B5anUxjc5PPHL6s=
+X-Google-Smtp-Source: AGHT+IEASkBZDUs2HV66FfbppKxrXfiPEOQdWl35/1TkX9MbOUwdnZRhQOYUiSPPWnjZ/EnkcBUtNQ==
+X-Received: by 2002:a17:907:1b26:b0:ab7:be81:8944 with SMTP id a640c23a62f3a-abc099b88ccmr1174431166b.6.1740342346244;
+        Sun, 23 Feb 2025 12:25:46 -0800 (PST)
+Received: from [192.168.1.100] ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abbbe74100asm1142813766b.95.2025.02.23.12.25.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Feb 2025 12:25:45 -0800 (PST)
+Message-ID: <602e03fd-ce4b-feef-5053-e95834ab35d7@gmail.com>
+Date: Sun, 23 Feb 2025 21:25:42 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 00/17] Introduce and use generic parity32/64 helper
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+ jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+ andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
+ mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
+ arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
+ gregkh@linuxfoundation.org, jirislaby@kernel.org, yury.norov@gmail.com,
+ akpm@linux-foundation.org
+Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+ Yu-Chun Lin <eleanor15x@gmail.com>
+References: <20250223164217.2139331-1-visitorckw@gmail.com>
+Content-Language: en-US
+From: Uros Bizjak <ubizjak@gmail.com>
+In-Reply-To: <20250223164217.2139331-1-visitorckw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250223_084559_007360_A36475A1 
-X-CRM114-Status: UNSURE (   8.99  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250223_122548_250525_761A013F 
+X-CRM114-Status: GOOD (  10.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,50 +115,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Refactor parity calculations to use the standard parity64() helper.
-This change eliminates redundant implementations and improves code
-efficiency.
 
-Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- drivers/net/ethernet/netronome/nfp/nfp_asm.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_asm.c b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-index 154399c5453f..3646f84a6e8c 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-@@ -295,11 +295,6 @@ static const u64 nfp_ustore_ecc_polynomials[NFP_USTORE_ECC_POLY_WORDS] = {
- 	0x0daf69a46910ULL,
- };
- 
--static bool parity(u64 value)
--{
--	return hweight64(value) & 1;
--}
--
- int nfp_ustore_check_valid_no_ecc(u64 insn)
- {
- 	if (insn & ~GENMASK_ULL(NFP_USTORE_OP_BITS, 0))
-@@ -314,7 +309,7 @@ u64 nfp_ustore_calc_ecc_insn(u64 insn)
- 	int i;
- 
- 	for (i = 0; i < NFP_USTORE_ECC_POLY_WORDS; i++)
--		ecc |= parity(nfp_ustore_ecc_polynomials[i] & insn) << i;
-+		ecc |= parity64(nfp_ustore_ecc_polynomials[i] & insn) << i;
- 
- 	return insn | (u64)ecc << NFP_USTORE_OP_BITS;
- }
--- 
-2.34.1
+On 23. 02. 25 17:42, Kuan-Wei Chiu wrote:
+> Several parts of the kernel contain redundant implementations of parity
+> calculations for 32-bit and 64-bit values. Introduces generic
+> parity32() and parity64() helpers in bitops.h, providing a standardized
+> and optimized implementation.
+> 
+> Subsequent patches refactor various kernel components to replace
+> open-coded parity calculations with the new helpers, reducing code
+> duplication and improving maintainability.
 
+Please note that GCC (and clang) provide __builtin_parity{,l,ll}() 
+family of builtin functions. Recently, I have tried to use this builtin 
+in a couple of places [1], [2], but I had to retract the patches, 
+because __builtin functions aren't strictly required to be inlined and 
+can generate a library call [3].
+
+As explained in [2], the compilers are able to emit optimized 
+target-dependent code (also automatically using popcnt insn when 
+avaialble), so ideally the generic parity64() and parity32() would be 
+implemented using __builtin_parity(), where the generic library would 
+provide a fallback __paritydi2() and __paritysi2() functions, otherwise 
+provided by the compiler support library.
+
+For x86, we would like to exercise the hardware parity calculation or 
+optimized code sequences involving HW parity calculation, as shown in 
+[1] and [2].
+
+[1] https://lore.kernel.org/lkml/20250129205746.10963-1-ubizjak@gmail.com/
+
+[2] https://lore.kernel.org/lkml/20250129154920.6773-2-ubizjak@gmail.com/
+
+[3] 
+https://lore.kernel.org/linux-mm/CAKbZUD0N7bkuw_Le3Pr9o1V2BjjcY_YiLm8a8DPceubTdZ00GQ@mail.gmail.com/
+
+Thanks,
+Uros.
 
 ______________________________________________________
 Linux MTD discussion mailing list
