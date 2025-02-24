@@ -4,80 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE75DC021B3
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 07:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47B69C021BB
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 11:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gdDCNdNv3D86ZLZmbl8PBRuZDE0J8jxojZelzljGPVs=; b=wJ+98TYw3DiAB4
-	YEFLvFCumUquh1GoBSpSNVgnUAIy/VNkWpdg+hw66Sj++zBdJ7+T5iokz9SMJ0yFL3TV8zEAdyL2F
-	+zEYFkHtECwlS19/2hMPynqdCY3ga7TRTlfVbgnGWnpJzwzHxtF2QMElP5CUbY7zPwAJmRyhQVVOM
-	+TQXpM7o/er0bznz65JDrIYh5s2iX+lsswz8RuCtLkve0c53pDein2DELxqqxeioJFDHH/n18M60M
-	pW5lothr8wnvATsmM75jOMj8E3QMHDktEOep2nd0mPNyhV7FghuA2KVyVIevEd1sFzeU/QbEX8ypG
-	8cnFjhdEX45PZ3DA/brQ==;
+	List-Owner; bh=gE0V2HbyuuE8foyx6H/rZM7tYVpVZ4z72ZsTeQgBszc=; b=SzjZoZWJiAJvR0
+	LUwEdr3deLq9AxCIUxOfbqi1LGQq8clnpznXF8IIzkja2LKKsW3OzKSI6qfp5hcHVhT6Em1anmWzS
+	SuJImT1NBCXcPSQ6bfaVuanzAiNnw/TTBeCvtIRIyZnqj+74otOYJ4R4xVdeMAtywcIiZktstTRzI
+	6m/Di+g3zl8Q3FfcIxeCy3dmSk6qrsYZpvSFszTxNuy6fxWHvApRbzRQBWBj08dzwJ7fIkV/gDZLE
+	XAnC/8rXRLqFbLGgNqjWbOIk6UFCc5A2kAB7R9bN6S6wtv2ujcbEqYejtkLYGmjuAO4/uit2ZNcdT
+	u0sd5Fovf/v0zWiYO8aA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmTMy-0000000Cbz5-2FPo;
-	Mon, 24 Feb 2025 07:59:16 +0000
-Received: from gandalf.ozlabs.org ([150.107.74.76] helo=mail.ozlabs.org)
+	id 1tmWbq-0000000DN55-373K;
+	Mon, 24 Feb 2025 11:26:50 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmTMw-0000000Cbyd-0zli
+	id 1tmWQ5-0000000DISp-2Eak
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Feb 2025 07:59:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ozlabs.org;
-	s=201707; t=1740383950;
-	bh=KH7gHdSS1itQHQoP3z+uj401oB/rX1ncYfhBdSQWuUg=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=ims34gfQA1vb1TN04LB3UWi8oHvR4gxRnPiIctjK103CyZjimW58U3jEvwGUiodUv
-	 Za6iGn3q5AdLIxYyGTz781CdTkRRuzvuzvB+jqoRCFNgqP3roPHIeinGtWFwJEKkks
-	 APqv1lGjpK23uVFnzo7nVVS6b3xXCg06P8jTIx1RlPQEEsIl6RAASM53YXWxfxgCPT
-	 YuWYvczKQgqWnAIi87XjLoll+9D2dsL+De6hgIcZaT1OeN4O1e1mvYID5Q0/x192AI
-	 cIKrTswlatGOS2XEjLU/PxGrM3nDGtjSOtqs2L52iQ/z9EMvUaOHQjKU3ndigQC8xz
-	 42ZoJR/u2NoBg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits))
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Z1Y5l5GVTz4wby;
-	Mon, 24 Feb 2025 18:58:51 +1100 (AEDT)
-Message-ID: <1cebfebb9c205a1ebc5722ca7e3b87339ceb3c79.camel@ozlabs.org>
-Subject: Re: [PATCH 00/17] Introduce and use generic parity32/64 helper
-From: Jeremy Kerr <jk@ozlabs.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com,  bp@alien8.de, dave.hansen@linux.intel.com,
- x86@kernel.org, joel@jms.id.au,  eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org,  rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, 
- tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
- dmitry.torokhov@gmail.com,  mchehab@kernel.org, awalls@md.metrocast.net,
- hverkuil@xs4all.nl,  miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com,  louis.peens@corigine.com, andrew+netdev@lunn.ch,
- davem@davemloft.net,  edumazet@google.com, pabeni@redhat.com,
- parthiban.veerasooran@microchip.com,  arend.vanspriel@broadcom.com,
- johannes@sipsolutions.net,  gregkh@linuxfoundation.org,
- jirislaby@kernel.org, yury.norov@gmail.com,  akpm@linux-foundation.org
-Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk, 
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com,  kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org,  dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org,  linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org,  oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, 
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, 
- Yu-Chun Lin <eleanor15x@gmail.com>
-Date: Mon, 24 Feb 2025 15:58:49 +0800
-In-Reply-To: <20250223164217.2139331-1-visitorckw@gmail.com>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
-User-Agent: Evolution 3.46.4-2 
+	Mon, 24 Feb 2025 11:14:42 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51O9apFA024395;
+	Mon, 24 Feb 2025 11:14:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	EJJWTe/LmUYyAQ1wU7roDMTJd+9NhO0C0mcuPn51ljA=; b=GypX9+/34lAxMKXk
+	5jpwB5/H6AAUEE3OdDHpWZn+Pmbxu3lQIyOhfYLPVM+hNDY1CvrRzuZy9AzfFN+Y
+	RMs41ETvHBT4EQRJVuJmTXoMvVcNiZT8nx7S6U3k1++CiHbzF08jdUSFPHbPUYmB
+	S6ZyQDaM5F+5ucpEuDasPTPSrKalR8SE6okfYGqwTZqn+GF5vIOsNWDHDSmKUfh3
+	/GWw5/cpqqsEaJHF8k937BMsOm5ytykTTR7rUl74ZMsjzg3kcRPeKQ1xUuiSQEGh
+	G0ecjczlxDGgu5oTcHiRGxwcHhBuaFJrJMd0UY4U1YNyxbUb9XJ9JKFb5UecWbPQ
+	oe0akg==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44y6t2mssu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 24 Feb 2025 11:14:37 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 51OBEas2030763
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 24 Feb 2025 11:14:36 GMT
+Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Mon, 24 Feb 2025 03:14:32 -0800
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <quic_mdalam@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>
+Subject: [PATCH v15 1/2] spi: dt-bindings: Introduce qcom,spi-qpic-snand
+Date: Mon, 24 Feb 2025 16:44:13 +0530
+Message-ID: <20250224111414.2809669-2-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250224111414.2809669-1-quic_mdalam@quicinc.com>
+References: <20250224111414.2809669-1-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: RAl_EEcqxT8xhajp_wI6HFQgLq9vYOid
+X-Proofpoint-GUID: RAl_EEcqxT8xhajp_wI6HFQgLq9vYOid
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-24_04,2025-02-24_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 phishscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502240082
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250223_235914_502404_6FCD814A 
-X-CRM114-Status: UNSURE (   6.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250224_031441_576184_F9D0CC04 
+X-CRM114-Status: GOOD (  15.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,20 +95,200 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgS3Vhbi1XZWksCgo+IFNldmVyYWwgcGFydHMgb2YgdGhlIGtlcm5lbCBjb250YWluIHJlZHVu
-ZGFudCBpbXBsZW1lbnRhdGlvbnMgb2YgcGFyaXR5Cj4gY2FsY3VsYXRpb25zIGZvciAzMi1iaXQg
-YW5kIDY0LWJpdCB2YWx1ZXMuIEludHJvZHVjZXMgZ2VuZXJpYwo+IHBhcml0eTMyKCkgYW5kIHBh
-cml0eTY0KCkgaGVscGVycyBpbiBiaXRvcHMuaCwgcHJvdmlkaW5nIGEgc3RhbmRhcmRpemVkCj4g
-YW5kIG9wdGltaXplZCBpbXBsZW1lbnRhdGlvbi7CoCAKCk1vcmUgc28gdGhhbiBfX2J1aWx0aW5f
-cGFyaXR5KCkgPwoKSSdtIGFsbCBmb3IgcmVkdWNpbmcgdGhlIGR1cGxpY2F0aW9uLCBidXQgdGhl
-IGNvbXBpbGVyIG1heSB3ZWxsIGhhdmUgYQpiZXR0ZXIgcGFyaXR5IGFwcHJvYWNoIHRoYW4gdGhl
-IHhvci1mb2xkaW5nIGltcGxlbWVudGF0aW9uIGhlcmUuIExvb2tzCmxpa2Ugd2UgY2FuIGdldCB0
-aGlzIHRvIHR3byBpbnN0cnVjdGlvbnMgb24gcG93ZXJwYzY0LCBmb3IgZXhhbXBsZS4KCkNoZWVy
-cywKCgpKZXJlbXkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Document the QPIC-SPI-NAND flash controller present in the IPQ SoCs.
+It can work both in serial and parallel mode and supports typical
+SPI-NAND page cache operations.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+Change in [v15]
+
+* No change
+
+Change in [v14]
+
+* No change
+
+Change in [v13]
+
+* No change
+
+Change in [v12]
+
+* Added Reviewed-by tag
+
+Change in [v11]
+
+* Dropped Reviewed-by tag
+* Added Soc based compitable "qcom,ipq9574-snand"
+ 
+Change in [v10]
+
+* No change
+
+Change in [v9]
+
+* No change
+
+Change in [v8]
+
+* No change
+
+Change in [v7]
+
+* No change
+
+Change in [v6]
+
+* No change
+
+Change in [v5]
+
+* No change
+
+Change in [v4]
+
+* Fix spelling mistake in HW description
+
+* Added commit message
+
+* Removed '|' from description
+
+* Removed minItems in clock
+
+* Added blank line
+
+* Removed co-developed by
+
+Change in [v3]
+
+* Updated commit message, removed "dt-bindings" from commit
+  message
+
+* Updated compatible name as file name
+
+* Added hardware description
+
+* Documented clock-name
+
+* Moved dma-names property to top
+
+* Droped unused label "qpic_nand"
+
+* Fixed indentation in example dt node
+
+Change in [v2]
+
+* Added initial support for dt-bindings
+
+Change in [v1]
+
+* This patch was not included in [v1]
+
+ .../bindings/spi/qcom,spi-qpic-snand.yaml     | 83 +++++++++++++++++++
+ 1 file changed, 83 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+
+diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+new file mode 100644
+index 000000000000..aa3f93319203
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+@@ -0,0 +1,83 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/qcom,spi-qpic-snand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm QPIC NAND controller
++
++maintainers:
++  - Md sadre Alam <quic_mdalam@quicinc.com>
++
++description:
++  The QCOM QPIC-SPI-NAND flash controller is an extended version of
++  the QCOM QPIC NAND flash controller. It can work both in serial
++  and parallel mode. It supports typical SPI-NAND page cache
++  operations in single, dual or quad IO mode with pipelined ECC
++  encoding/decoding using the QPIC ECC HW engine.
++
++allOf:
++  - $ref: /schemas/spi/spi-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - qcom,ipq9574-snand
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 3
++
++  clock-names:
++    items:
++      - const: core
++      - const: aon
++      - const: iom
++
++  dmas:
++    items:
++      - description: tx DMA channel
++      - description: rx DMA channel
++      - description: cmd DMA channel
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++      - const: cmd
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
++    spi@79b0000 {
++        compatible = "qcom,ipq9574-snand";
++        reg = <0x1ac00000 0x800>;
++
++        clocks = <&gcc GCC_QPIC_CLK>,
++                 <&gcc GCC_QPIC_AHB_CLK>,
++                 <&gcc GCC_QPIC_IO_MACRO_CLK>;
++        clock-names = "core", "aon", "iom";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@0 {
++            compatible = "spi-nand";
++            reg = <0>;
++            #address-cells = <1>;
++            #size-cells = <1>;
++            nand-ecc-engine = <&qpic_nand>;
++            nand-ecc-strength = <4>;
++            nand-ecc-step-size = <512>;
++        };
++    };
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
