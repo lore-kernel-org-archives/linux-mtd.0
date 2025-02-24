@@ -4,102 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 697B6C021A4
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 22:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 943F5C021A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 22:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vc4Fy/YIJdTFkJCp0hVi58vWDG4Oqk/0Wpo/vL9LHC4=; b=WUHul7x0TdrvG1
-	J+1saeN26X1t3/3IVmde6lMb3gw/uSsknUkhQxL8vhDKdE9vkAE/5XkIrHIhxEx9hTKDAE3UaMltw
-	KaHnW8/9kzPs+pL4qDcMoBiz+dvey+t9dyAopiDVwp3RtFJmS0XDbJLm8lGD6kV9HRpl8adb8vaQ+
-	t9CfsuGiiHVSzt7wGew2KYb1n0an5y8eaHKH7eUdcZoFnKBQ3Qtbckl7NwZ9VI8vEw+FAGhRmnIss
-	1ifE2y74M42AbGghd3YEIMWZTG12lO4QLaWe6voNNvWf1hHLNyx5EOiVRd5P0ZAl/uLbF9BN+J3qC
-	JSJf9pjdOLXlfeiGqpYg==;
+	List-Owner; bh=8uwc86w22tTPg0TWKCUtkLQO7o4UMNLWIGchcEdnm8s=; b=rCkD25q3VtRGLr
+	Gxsb7aYffxDjcqFp6sA6BxudnbXgDygNTaPZtjS4zs6iXKFtkd68WMscTXWM4dCGbUsnZCoUx+fez
+	dtXcedVxOzDYpAxBKSExk/heu1iK38T9fkoTZYH31WBJPQ9zX3+PV+6pbCmVpmV4k99DElpZ1Yu06
+	tM2Ab1+prg9ZTSELvaAmGqJE4sZaCNeTtbrAGoBf7cziFEtUnzn4JxmgPL/lPweTLIyUkRaAHXy5j
+	usrNOjmeIqSpWEWh91wEiVWmrcOQVYBoOg1P1Q0Mgxv7uo1P9KPva3Va/5CgkdtoBZSZdskpU9Bcx
+	Vspo1JGxkeFj4gkQpmLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmgcg-0000000FK4o-1Zst;
-	Mon, 24 Feb 2025 22:08:22 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1tmglc-0000000FL6u-22tB;
+	Mon, 24 Feb 2025 22:17:36 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmgcd-0000000FK4H-2vmD
+	id 1tmgla-0000000FL65-0z5d
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Feb 2025 22:08:20 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-30613802a6bso51506631fa.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2025 14:08:19 -0800 (PST)
+	Mon, 24 Feb 2025 22:17:35 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-220bfdfb3f4so110041055ad.2
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2025 14:17:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740434898; x=1741039698; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4oaFYm3uznORB4542Rq36b3rymmLdKUYeu8YPMsf53M=;
-        b=hXilcbsOFdMdQY3po1cXGKF2NMjaDH9UpOPweciKHxB04qSmUnHkNIfyu5PC4GNHps
-         j1jzpFJ8mzDTZcE6UlrXhGHALur1syF4jm1ttAnMZdDyy9jADHiLz7j5s9cO9lV7RiMm
-         Kt/fzqyY9QpEN73VcS4+/JtqvbVyNNuzvdxwewj1nNm/EMhnopVswlKbJ9dRQwMj0ov3
-         gC7bJ4z9xWyr2bqgmfs2+WD/vC20sRa1oSBocHDD/I7NtYBGohoZeyMjAletfp8eEAvw
-         1jCo/GKxcglK98D9k5Qd+VOgBf9D3aRSbt4w9vtZZ2CHTS5YTRmvDsoJVj5tsNeyvh5H
-         YL3Q==
+        d=gmail.com; s=20230601; t=1740435453; x=1741040253; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MIAmGwREzfChZxhZrA3OzxmyUXhIuIWMIVivU3ALR/o=;
+        b=AwFZBC13azHXyrhSMiAQ+ldbchH3qCzZTalV6ny1x4TrSRwJjefuFiADx/ZJ/z1A/t
+         slYEXseEp1oIRdOAVR2uK6OQOJ1SBLjvsYE2m5AAFiDX/sp2hfuwyujPp2/n1xYjx7YA
+         tVkk09hDhhb2qLayNbQp8omTIeSmxto60CvbRXFzwVxSQAkxq3kYrLTQbVcJ+ZI8ZFXM
+         /WLFxuneEaakI+GJ+wjuqVN9q8vm83XLTtSyK9pT+1xwU5c91OV5+fUmWOME2PHzyMd2
+         JcSQbPRJIyJjZY7pU4Oq7+stGIGanBo5oFCjEvQugrLeA2OkXizxRCdlv9oW/C9AUk0s
+         lakQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740434898; x=1741039698;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4oaFYm3uznORB4542Rq36b3rymmLdKUYeu8YPMsf53M=;
-        b=STVb8hc7KhZG0YYAHBNMn59FqtheJBCWG37vNEnOi1VvOA88w3pOMdN8Ldv1qnVc34
-         Ax7s9WWfCs8ctxWUaIodgFRgG3JiQ98Qcs25XIChZtjM3F/WHB+PaWpSGDUkw6c1aT7V
-         kCfXvUGA9dOhvfoEc22/PPSj77EtgS2rcC/+vRY/ToSiubIuqXvcdMqIaEK13jrovwKK
-         LpWhu6cq/kpcwuHoIM5ey4dSzJaZwL3XXTRhU5LzYJx7H3bcHmw5YQf0uk8weH0NDFv9
-         wRcu7ejSEF950S0BHQ+U7TJuHTRcdLg/kcl3suug/rrDkJiITCUtqJv76Yeci7l8Dfvg
-         3bqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOaZ6HCNIfIrTEMdbCxWvSVLy3Ws1VODeVW/wg+cDZrx0I9GbNW5ETtv8Ye+M3u5epBhxWoyPbCIU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxkgKTPB10qXxOE0BEXU95TJVXF68HKMsYEC+o6dwuJAyjhRyP3
-	6w/mMnMKz/Bi6SW1zvcbUfrHtZxPNHUhqKNy050Pk+ehu+l1IbU/0n6We3ugBNhxOgBN+IsbDIu
-	ieWFMNNg+jQYXGXMfLR5cvGOZWU4=
-X-Gm-Gg: ASbGncv/PLwCrAhGJ8I79G9hHRVH8ggrV6egDsz5Lf9BMfDW0+eDMpDBEGH/RtJDCU0
-	kCcTtR5X1txseGKBQVGFOei/vB04HwNk9eV2yVYUsPk0U2Q1GrnltPomNsWT0flzJVToU73LYwz
-	+jN/c1scs=
-X-Google-Smtp-Source: AGHT+IHVkIuUFpCDrTU0uvA7Fgx58+MbAWd4iAmh/s9u5Z4OX/tBnfLt5fF/OB0IUp1t1TAS/xkQrlAynJ4vLhos6iA=
-X-Received: by 2002:a2e:8713:0:b0:300:1ea5:1655 with SMTP id
- 38308e7fff4ca-30a80c2525dmr3121091fa.15.1740434897401; Mon, 24 Feb 2025
- 14:08:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
- <20250223164217.2139331-4-visitorckw@gmail.com> <d080a2d6-9ec7-1c86-4cf4-536400221f68@gmail.com>
- <e0b1c299-7f19-4453-a1ce-676068601213@zytor.com>
-In-Reply-To: <e0b1c299-7f19-4453-a1ce-676068601213@zytor.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Mon, 24 Feb 2025 23:08:05 +0100
-X-Gm-Features: AWEUYZk0kdMcSa1NJ7f-FEs-56xLQUiW9T9ljXTGABrJPIypOLr5b30gUzs5pw0
-Message-ID: <CAFULd4a_AnP4iqgQs7a6xAsnUFL8oZXxFcAWLmZFMm6MPF_zDQ@mail.gmail.com>
-Subject: Re: [PATCH 03/17] x86: Replace open-coded parity calculation with parity8()
+        d=1e100.net; s=20230601; t=1740435453; x=1741040253;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MIAmGwREzfChZxhZrA3OzxmyUXhIuIWMIVivU3ALR/o=;
+        b=lC+qRjmsPugukIJKVIbvVNSVAnfdLY3xRG1aGh2bMdUD62u7GeORTXaKvukNADDnXF
+         jCIEvTg6nJVWQRRKsLWcMGV7Ykpr2VLsQwJVdQ9luq/ftGo0aW1KsA0LfwzrXJINTa4Q
+         Seltvnys6PE2KbwDYABHe6GoXmcIYwcrr/sImW7dQem8+uNMInI63XxajJcPV4k0qAx1
+         r2yNQfa59MfXSo23XPPDQM9etl8wk2MXSfOp/esJbuV1voz8ATtLkTmjtaFBMsuFnpQJ
+         1VZM3W+Dj6O1GHwFnyKp0iVAO7D/riMv/AYUTh3sCxMRPWSXgQ5pPPRaW/il4MQ0EEpb
+         G2oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVMZ3CgOHqN5X6ZFQMiYFXUt6G2s1AFA6Ix1EhZkvASwCr/CWGQe5yuHnS4JwxpmsO3SAovlDtayj4=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzRX0ouirB0Ntt1Px0M0bjwEhy8+Qodw3p7F4K2P9+QbI1AKm0S
+	674SXYpkV2/NPR3czo0PW487Ej73eHN/1Ti7ZL2bBpMW1BZqp53p
+X-Gm-Gg: ASbGncsAiqPR9GhFKkZ5N/P5NV0NQF0vd0ekzAvYelWIB7fbf9ko2K/AnaS07w3gXJP
+	r869noCiJnY3QGOUi/u5JbGOz4VgETIgxEKMww3He1YNSCY5FSfCxdgYqvSSbwaTc46Bb8krfEO
+	tXJ19jdOBIYANSzJ9Pu0DQ0cIT3WT/p/kggA1g47g27/EeveYRHO9MtC0dSJkqne1+tEVr2rb1f
+	ojigeyQlvcalpMWyVfgULbJtKGvHBDgYwr5Eii4jxFcXAfTUng+x4cHIdyu4yOpZHPFdjz1ZVXF
+	Z08daloIMhOeLWl2M3Y2Fa8ov0iJ/O0pMV/POFxc3zvZlib1HQ==
+X-Google-Smtp-Source: AGHT+IHUNZzOI1ZFK/Wig2ECxEjG2LCeoTVF/IwXlP7H5EbtmMAu2d6RHqgduSyhdb+wHec1lfRRUA==
+X-Received: by 2002:a17:903:2a8d:b0:21f:6584:2085 with SMTP id d9443c01a7336-2219ffc4928mr267486635ad.42.1740435452344;
+        Mon, 24 Feb 2025 14:17:32 -0800 (PST)
+Received: from localhost (maglev-oncall.nvidia.com. [216.228.125.128])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2230a01fe28sm1125415ad.100.2025.02.24.14.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2025 14:17:31 -0800 (PST)
+Date: Mon, 24 Feb 2025 17:17:29 -0500
+From: Yury Norov <yury.norov@gmail.com>
 To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de, 
-	Ingo Molnar <mingo@redhat.com>, bp@alien8.de, dave.hansen@linux.intel.com, 
-	x86@kernel.org, jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com, 
-	andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org, 
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
-	airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com, 
-	mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
-	louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net, 
-	edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com, 
-	arend.vanspriel@broadcom.com, johannes@sipsolutions.net, 
-	gregkh@linuxfoundation.org, jirislaby@kernel.org, yury.norov@gmail.com, 
-	akpm@linux-foundation.org, mingo@kernel.org, alistair@popple.id.au, 
-	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se, 
-	jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org, 
-	linux-input@vger.kernel.org, linux-media@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, oss-drivers@corigine.com, 
-	netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, 
-	linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, 
+Cc: Uros Bizjak <ubizjak@gmail.com>, Kuan-Wei Chiu <visitorckw@gmail.com>,
+	tglx@linutronix.de, Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org, rfoss@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+	dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, akpm@linux-foundation.org, mingo@kernel.org,
+	alistair@popple.id.au, linux@rasmusvillemoes.dk,
+	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+	jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
 	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH 03/17] x86: Replace open-coded parity calculation with
+ parity8()
+Message-ID: <Z7zv-c4A76jeMAKf@thinkpad>
+References: <20250223164217.2139331-1-visitorckw@gmail.com>
+ <20250223164217.2139331-4-visitorckw@gmail.com>
+ <d080a2d6-9ec7-1c86-4cf4-536400221f68@gmail.com>
+ <e0b1c299-7f19-4453-a1ce-676068601213@zytor.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <e0b1c299-7f19-4453-a1ce-676068601213@zytor.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250224_140819_739276_96712878 
-X-CRM114-Status: GOOD (  12.10  )
+X-CRM114-CacheID: sfid-20250224_141734_270235_87EEB5CE 
+X-CRM114-Status: GOOD (  13.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,46 +121,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBGZWIgMjQsIDIwMjUgYXQgMTA6NTbigK9QTSBILiBQZXRlciBBbnZpbiA8aHBhQHp5
-dG9yLmNvbT4gd3JvdGU6Cj4KPiBPbiAyLzI0LzI1IDA3OjI0LCBVcm9zIEJpemphayB3cm90ZToK
-PiA+Cj4gPgo+ID4gT24gMjMuIDAyLiAyNSAxNzo0MiwgS3Vhbi1XZWkgQ2hpdSB3cm90ZToKPiA+
-PiBSZWZhY3RvciBwYXJpdHkgY2FsY3VsYXRpb25zIHRvIHVzZSB0aGUgc3RhbmRhcmQgcGFyaXR5
-OCgpIGhlbHBlci4gVGhpcwo+ID4+IGNoYW5nZSBlbGltaW5hdGVzIHJlZHVuZGFudCBpbXBsZW1l
-bnRhdGlvbnMgYW5kIGltcHJvdmVzIGNvZGUKPiA+PiBlZmZpY2llbmN5Lgo+ID4KPiA+IFRoZSBw
-YXRjaCBpbXByb3ZlcyBwYXJpdHkgYXNzZW1ibHkgY29kZSBpbiBib290ZmxhZy5vIGZyb206Cj4g
-Pgo+ID4gICAgNTg6ICAgIDg5IGRlICAgICAgICAgICAgICAgICAgICBtb3YgICAgJWVieCwlZXNp
-Cj4gPiAgICA1YTogICAgYjkgMDggMDAgMDAgMDAgICAgICAgICAgIG1vdiAgICAkMHg4LCVlY3gK
-PiA+ICAgIDVmOiAgICAzMSBkMiAgICAgICAgICAgICAgICAgICAgeG9yICAgICVlZHgsJWVkeAo+
-ID4gICAgNjE6ICAgIDg5IGYwICAgICAgICAgICAgICAgICAgICBtb3YgICAgJWVzaSwlZWF4Cj4g
-PiAgICA2MzogICAgODkgZDcgICAgICAgICAgICAgICAgICAgIG1vdiAgICAlZWR4LCVlZGkKPiA+
-ICAgIDY1OiAgICA0MCBkMCBlZSAgICAgICAgICAgICAgICAgc2hyICAgICVzaWwKPiA+ICAgIDY4
-OiAgICA4MyBlMCAwMSAgICAgICAgICAgICAgICAgYW5kICAgICQweDEsJWVheAo+ID4gICAgNmI6
-ICAgIDMxIGMyICAgICAgICAgICAgICAgICAgICB4b3IgICAgJWVheCwlZWR4Cj4gPiAgICA2ZDog
-ICAgODMgZTkgMDEgICAgICAgICAgICAgICAgIHN1YiAgICAkMHgxLCVlY3gKPiA+ICAgIDcwOiAg
-ICA3NSBlZiAgICAgICAgICAgICAgICAgICAgam5lICAgIDYxIDxzYmZfaW5pdCsweDUxPgo+ID4g
-ICAgNzI6ICAgIDM5IGM3ICAgICAgICAgICAgICAgICAgICBjbXAgICAgJWVheCwlZWRpCj4gPiAg
-ICA3NDogICAgNzQgN2YgICAgICAgICAgICAgICAgICAgIGplICAgICBmNSA8c2JmX2luaXQrMHhl
-NT4KPiA+ICAgIDc2Ogo+ID4KPiA+IHRvOgo+ID4KPiA+ICAgIDU0OiAgICA4OSBkOCAgICAgICAg
-ICAgICAgICAgICAgbW92ICAgICVlYngsJWVheAo+ID4gICAgNTY6ICAgIGJhIDk2IDY5IDAwIDAw
-ICAgICAgICAgICBtb3YgICAgJDB4Njk5NiwlZWR4Cj4gPiAgICA1YjogICAgYzAgZTggMDQgICAg
-ICAgICAgICAgICAgIHNociAgICAkMHg0LCVhbAo+ID4gICAgNWU6ICAgIDMxIGQ4ICAgICAgICAg
-ICAgICAgICAgICB4b3IgICAgJWVieCwlZWF4Cj4gPiAgICA2MDogICAgODMgZTAgMGYgICAgICAg
-ICAgICAgICAgIGFuZCAgICAkMHhmLCVlYXgKPiA+ICAgIDYzOiAgICAwZiBhMyBjMiAgICAgICAg
-ICAgICAgICAgYnQgICAgICVlYXgsJWVkeAo+ID4gICAgNjY6ICAgIDczIDY0ICAgICAgICAgICAg
-ICAgICAgICBqYWUgICAgY2MgPHNiZl9pbml0KzB4YmM+Cj4gPiAgICA2ODoKPiA+Cj4gPiB3aGlj
-aCBpcyBmYXN0ZXIgYW5kIHNtYWxsZXIgKC0xMCBieXRlcykgY29kZS4KPiA+Cj4KPiBPZiBjb3Vy
-c2UsIG9uIHg4NiwgcGFyaXR5OCgpIGFuZCBwYXJpdHkxNigpIGNhbiBiZSBpbXBsZW1lbnRlZCB2
-ZXJ5IHNpbXBseToKPgo+IChBbHNvLCB0aGUgcGFyaXR5IGZ1bmN0aW9ucyByZWFsbHkgb3VnaHQg
-dG8gcmV0dXJuIGJvb2wsIGFuZCBiZSBmbGFnZ2VkCj4gX19hdHRyaWJ1dGVfY29uc3RfXy4pCj4K
-PiBzdGF0aWMgaW5saW5lIF9fYXR0cmlidXRlX2NvbnN0X18gYm9vbCBfYXJjaF9wYXJpdHk4KHU4
-IHZhbCkKPiB7Cj4gICAgICAgICBib29sIHBhcml0eTsKPiAgICAgICAgIGFzbSgiYW5kICUwLCUw
-IiA6ICI9QGNjbnAiIChwYXJpdHkpIDogInEiICh2YWwpKTsKCmFzbSgidGVzdCAlMCwlMCIgOiAi
-PUBjY25wIiAocGFyaXR5KSA6ICJxIiAodmFsKSk7CgpiZWNhdXNlIHdlIGFyZSBpbnRlcmVzdGVk
-IG9ubHkgaW4gZmxhZ3MuCgpVcm9zLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Mon, Feb 24, 2025 at 01:55:28PM -0800, H. Peter Anvin wrote:
+> On 2/24/25 07:24, Uros Bizjak wrote:
+> > =
+
+> > =
+
+> > On 23. 02. 25 17:42, Kuan-Wei Chiu wrote:
+> > > Refactor parity calculations to use the standard parity8() helper. Th=
+is
+> > > change eliminates redundant implementations and improves code
+> > > efficiency.
+> > =
+
+> > The patch improves parity assembly code in bootflag.o from:
+> > =
+
+> >  =A0 58:=A0=A0=A0 89 de=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 mov=A0=A0=A0 %ebx,%esi
+> >  =A0 5a:=A0=A0=A0 b9 08 00 00 00=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 mov=A0=
+=A0=A0 $0x8,%ecx
+> >  =A0 5f:=A0=A0=A0 31 d2=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 xor=A0=A0=A0 %edx,%edx
+> >  =A0 61:=A0=A0=A0 89 f0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 mov=A0=A0=A0 %esi,%eax
+> >  =A0 63:=A0=A0=A0 89 d7=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 mov=A0=A0=A0 %edx,%edi
+> >  =A0 65:=A0=A0=A0 40 d0 ee=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 shr=A0=A0=A0 %sil
+> >  =A0 68:=A0=A0=A0 83 e0 01=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 and=A0=A0=A0 $0x1,%eax
+> >  =A0 6b:=A0=A0=A0 31 c2=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 xor=A0=A0=A0 %eax,%edx
+> >  =A0 6d:=A0=A0=A0 83 e9 01=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 sub=A0=A0=A0 $0x1,%ecx
+> >  =A0 70:=A0=A0=A0 75 ef=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 jne=A0=A0=A0 61 <sbf_init+0x51>
+> >  =A0 72:=A0=A0=A0 39 c7=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 cmp=A0=A0=A0 %eax,%edi
+> >  =A0 74:=A0=A0=A0 74 7f=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 je=A0=A0=A0=A0 f5 <sbf_init+0xe5>
+> >  =A0 76:
+> > =
+
+> > to:
+> > =
+
+> >  =A0 54:=A0=A0=A0 89 d8=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 mov=A0=A0=A0 %ebx,%eax
+> >  =A0 56:=A0=A0=A0 ba 96 69 00 00=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 mov=A0=
+=A0=A0 $0x6996,%edx
+> >  =A0 5b:=A0=A0=A0 c0 e8 04=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 shr=A0=A0=A0 $0x4,%al
+> >  =A0 5e:=A0=A0=A0 31 d8=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 xor=A0=A0=A0 %ebx,%eax
+> >  =A0 60:=A0=A0=A0 83 e0 0f=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 and=A0=A0=A0 $0xf,%eax
+> >  =A0 63:=A0=A0=A0 0f a3 c2=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 bt=A0=A0=A0=A0 %eax,%edx
+> >  =A0 66:=A0=A0=A0 73 64=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 jae=A0=A0=A0 cc <sbf_init+0xbc>
+> >  =A0 68:
+> > =
+
+> > which is faster and smaller (-10 bytes) code.
+> > =
+
+> =
+
+> Of course, on x86, parity8() and parity16() can be implemented very simpl=
+y:
+> =
+
+> (Also, the parity functions really ought to return bool, and be flagged
+> __attribute_const__.)
+
+There was a discussion regarding return type when parity8() was added.
+The integer type was taken over bool with a sort of consideration that
+bool should be returned as an answer to some question, like parity_odd().
+
+To me it's not a big deal. We can switch to boolean and describe in
+comment what the 'true' means for the parity() function.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
