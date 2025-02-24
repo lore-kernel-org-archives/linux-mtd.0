@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD9EC021B3
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 07:10:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 783F7C021B3
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 07:26:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ETHgrSnxUGuy43DVN9oK72U+rLXhROfLKju06rgexKw=; b=EOtVVZ810E4tKs
-	YrMy5P8dq1vE3mJ/xKKvfxQptxG866MNTIba4SS2Q0lEwvixEyQ8q+7DqdtKaoPCET+oOpUyfOMKM
-	XB7qGpm7Kvy4D/3fdbaVHbCtRF9zmxwAJGrCGVI/dnjvBbQ5YXEi0wWetpwxsBnhVH37/2k+nWgix
-	NBKnCvOh6+/sY7uzABZOvUNoVwrj+Q8RB9eQN3fx2YI8XVE2NnUTNfvg8W4fE20uN3NosYCOSUuqD
-	MSV+MrXbC0vudVSukiptUD2MygFO0GlndCXLFiX5CiypgReNyIRkqEksQJtg5d/4g+L1HCaxCNcPb
-	TXelFwodlb2CofwbU0CQ==;
+	List-Owner; bh=LEQucu9Zj7lmgfBfEM6/b16iGDLAtjV+4gWx//XhFq8=; b=FaPkn86bXiImlH
+	LmEP0/QmIRfoIqt6lVSzU/B1lwmx67nxRmntCGmHuVeASH0fskTRna/WZmleSf/M3pYo0j8dwSCC0
+	WzTqRGtDAU0nqEwryt3JzvFf/ZSFdtkjpU+JzsnPNACMewma6yqxawu0NftlP3QYrnmeim2snF53y
+	/cYFTJYgdyOSwTZ7eFzrimeWOLSjiqOjoHhxRvnc/7ZldfGtupfxANZ+qkmTA6SjGujLZf4hG1Uul
+	r/dKxYf++2AHOYYIX7M8SOw894Tk07fBC+Zo15VdT2DdE49QI+GCNTNYlvxVPLBW9wYwo/rOnBbTM
+	O9VZjEy/tCniE9p9zOLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmSbH-0000000CWXk-0xBl;
-	Mon, 24 Feb 2025 07:09:59 +0000
+	id 1tmSqo-0000000CYlB-02eq;
+	Mon, 24 Feb 2025 07:26:02 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmSbG-0000000CWXB-0jfA
+	id 1tmSqm-0000000CYkX-3h1V
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Feb 2025 07:09:58 +0000
+	Mon, 24 Feb 2025 07:26:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8858161173;
-	Mon, 24 Feb 2025 07:09:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03944C4CED6;
-	Mon, 24 Feb 2025 07:09:45 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 56E7C6117A;
+	Mon, 24 Feb 2025 07:25:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBACFC4CED6;
+	Mon, 24 Feb 2025 07:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740380996;
-	bh=fkASXmTFBo3Vl/klcz2dL1xKweKD4YSi26z5tvTK/J4=;
+	s=k20201202; t=1740381959;
+	bh=Ev/dUy3GpjASONjJl6uKfOL4cNi4seeahuvGX+WNh+c=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FFicEGbSi56eSM0TXBdNGJZR6fyVj+36fd8Gmxf4LjhTEySCctA9GqzxpCjUDpfSL
-	 08Dx0KXfpmwPYGDHCDryGnRcCWDrE/aZF5kNI8zw1N4i9gU8E2AhbeTcQjT1TJqMNA
-	 7ykt4xwW+uATbSuqvLn2zrI+hZSeC+1/RAttYQTvRzkwbCUVR++Xv8GzLBF7nbG80w
-	 JZblYfa/c4q/ZdVDmLtzW/ix78wFgASzmTk9H/f+Z51ByZZhEvlKT9bGXwtBj1WjDq
-	 Pww4k4uxAbknRXPdJkgCEAFJpaVEcCST592dPPd9SJ3YLnKwsyg2B+yILZVl8zJg7A
-	 8hY8zjq85rorg==
-Message-ID: <bde62fee-4617-4db7-b92c-59fb958c4ca6@kernel.org>
-Date: Mon, 24 Feb 2025 08:09:43 +0100
+	b=W8qDbeq0SaM7BKTiZ/gS075LT0yk+Mti2FX5dIIerLdf3p6OVbgdW3GW77eSiZgUH
+	 J6TuRwDUYiQbwHAn9p5U30H+gkBx69n4+XISCuZVyRGLVeeYGFQ7t6l6pxEnSKQ8T9
+	 kYGAZvqMxC1dKHCuHxw4ApZ5LEXh/RlZkYiBalcONV3ZDR8OVNzUUPsdPZS3U6PGG7
+	 AdneVHdhlAiBMvrfkYhSXfNGz2OZsL4X63czA37h4erTxUciLMA6ANZdMJ9qOoxiHE
+	 MKsB3wjpy+5Agn/1wZkpFtxX5iHQgHZIYTe53uuTFp344U4J6IruCyzIBD4+hZwI0j
+	 hjA01/8vBsQ1g==
+Message-ID: <b09e2b91-fae6-467c-8bbb-cb14cf0da8b4@kernel.org>
+Date: Mon, 24 Feb 2025 08:25:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
+Subject: Re: [PATCH 07/17] serial: max3100: Replace open-coded parity
+ calculation with parity8()
 To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
  mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
  jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
@@ -70,7 +71,7 @@ Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
  linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
  Yu-Chun Lin <eleanor15x@gmail.com>
 References: <20250223164217.2139331-1-visitorckw@gmail.com>
- <20250223164217.2139331-3-visitorckw@gmail.com>
+ <20250223164217.2139331-8-visitorckw@gmail.com>
 Content-Language: en-US
 From: Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
@@ -115,7 +116,7 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20250223164217.2139331-3-visitorckw@gmail.com>
+In-Reply-To: <20250223164217.2139331-8-visitorckw@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,56 +134,31 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 23. 02. 25, 17:42, Kuan-Wei Chiu wrote:
-> Several parts of the kernel open-code parity calculations using
-> different methods. Add a generic parity64() helper implemented with the
-> same efficient approach as parity8().
-> 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->   include/linux/bitops.h | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
-> 
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index fb13dedad7aa..67677057f5e2 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -281,6 +281,28 @@ static inline int parity32(u32 val)
->   	return (0x6996 >> (val & 0xf)) & 1;
+> --- a/drivers/tty/serial/max3100.c
+> +++ b/drivers/tty/serial/max3100.c
+> @@ -16,6 +16,7 @@
+>   /* 4 MAX3100s should be enough for everyone */
+>   #define MAX_MAX3100 4
+>   
+> +#include <linux/bitops.h>
+>   #include <linux/container_of.h>
+>   #include <linux/delay.h>
+>   #include <linux/device.h>
+> @@ -133,7 +134,7 @@ static int max3100_do_parity(struct max3100_port *s, u16 c)
+>   	else
+>   		c &= 0xff;
+>   
+> -	parity = parity ^ (hweight8(c) & 1);
+> +	parity = parity ^ (parity8(c));
+>   	return parity;
+
+So all this should be simply:
+return parity ^ parity8(c);
+
 >   }
 >   
-> +/**
-> + * parity64 - get the parity of an u64 value
-> + * @value: the value to be examined
-> + *
-> + * Determine the parity of the u64 argument.
-> + *
-> + * Returns:
-> + * 0 for even parity, 1 for odd parity
-> + */
-> +static inline int parity64(u64 val)
-> +{
-> +	/*
-> +	 * One explanation of this algorithm:
-> +	 * https://funloop.org/codex/problem/parity/README.html
-> +	 */
-> +	val ^= val >> 32;
 
-Do we need all these implementations? Can't we simply use parity64() for 
-any 8, 16 and 32-bit values too? I.e. have one parity().
-
-> +	val ^= val >> 16;
-> +	val ^= val >> 8;
-> +	val ^= val >> 4;
-> +	return (0x6996 >> (val & 0xf)) & 1;
-> +}
-> +
->   /**
->    * __ffs64 - find first set bit in a 64 bit word
->    * @word: The 64 bit word
-
-
+thanks,
 -- 
 js
 suse labs
