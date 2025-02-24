@@ -4,70 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6015C021A6
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 13:30:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8717DC021A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Feb 2025 13:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=97v65jBauZbTcccoAF/PmmhEuGMer2BRO/j2P0KQK14=; b=W3vSZjquU2Rw9K
-	V+hyQDNhMx87KpN2/SymGQH+baWa4mY7PBOEXCpt+rwfy3vR1LIzWATZlTQ9d1lhcMA/do602gPSW
-	pGZIXgPZgNUeXoQIT3dGpvAZLkVybMnDKReYzXvK4scoLpAj1v9jkR55j1/kgiBJTCScbiW7nzjPM
-	ISAYeF1ZeMFjmXKblxfPKHUozbgRoOD5QjeqL3cxo8kIY1ihsXx+8TTpSnJDDJI4zmQx0L5UgThgP
-	tLDJf+8ioHAugzKBMb8fxlJkWTt1+8+ggGEOCTN8LRUlGIcgHqKpoenny0svnjguIAyVP+bN1p5mg
-	GIb5dtQl/cHEKIjpDg1w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WFjkrLjhWk82MQUHgMm8R1m2TAEXAj/Z1nTtZARVzUY=; b=ROi4oCByUf4a+x
+	gJKXL8K9khVTA/BwR0YPRerzLGtSPMCSczQfmyc7mWdr0XbtoPeSrPWklBM0ZTQub5ys4HoSuScgh
+	tK3QetTyu7FY3ng+NcKXzCKWB/vRkXPpUYtnyuWhKrbtndVs8oMJks+KL54i7nbcSE7/jJi+QVRmA
+	JErtpQWA7hHwUovjerNsdFKYxO9AivBH9FaahL/3TGBKW+rxNAA61N/8TnE6khgGevBqQnSZDfaeY
+	3/g1/W43msB+fikbCEgFELIb0R0mp7q0QuGuWXThrxnmlzskXHVL4JueWhix9CSURkMHIPTqJMYTu
+	cXMo2a/M3Zic9BCMwjlQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmYXX-0000000DtaX-2HVC;
-	Mon, 24 Feb 2025 13:30:31 +0000
-Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
+	id 1tmYcC-0000000DuPe-3z3O;
+	Mon, 24 Feb 2025 13:35:20 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmYXT-0000000DtYb-2CZl
+	id 1tmYbW-0000000DuHX-0RTU
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Feb 2025 13:30:30 +0000
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-	by APP-03 (Coremail) with SMTP id rQCowAAnLAxldLxnkjsEEA--.4476S2;
-	Mon, 24 Feb 2025 21:30:17 +0800 (CST)
-From: Ma Ke <make24@iscas.ac.cn>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	David.Woodhouse@intel.com,
-	jarkko.lavinen@nokia.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Ma Ke <make24@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: Fix potential UAF for mtdswap_dev pointers
-Date: Mon, 24 Feb 2025 21:30:07 +0800
-Message-Id: <20250224133007.3037357-1-make24@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	Mon, 24 Feb 2025 13:34:39 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-38a25d4b9d4so2540190f8f.0
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2025 05:34:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740404076; x=1741008876; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OAg+3nWpCX28gp0yop3cTi7eprtgpHgYieQoEXp/Zxw=;
+        b=f3lN7g/h+VvEphTDY1ku68IhBT11Hxk6EaTZQNolBVfBthMOHH9t2Q6Zr27NH1k+Dn
+         OtoTi94hfUEq9bD6FgUJ2BOR87thJFtQ/OmWUEeqWHljYtfsvqKiltzZaRn/pZt1xi0c
+         4iXJ/3rfzh6g7gJ5/dbf/g/KyEWKeUd8QqNksug6kpLzZD2qwoGWNfmjcyJLcEEpvj6o
+         rCCkApbCx/x9LBa+MmoIdNxQQE3o1BbyL8kZbB3MM40pxY+mQPtBPcmuVUayBWrTn+8O
+         zCk+SZ+Pltr2gSnPgZBXZAqPxqJ7ayA1yl1lczAseZV9LzaqeTlivJUbwB9nO1miVzCx
+         isew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740404076; x=1741008876;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OAg+3nWpCX28gp0yop3cTi7eprtgpHgYieQoEXp/Zxw=;
+        b=d/VnRUJlKj4HLkZXP0SkSYq1lpc836+8gN6+afXM6mBgDnPWonZfTk22ZiqYnqLY1m
+         zKbfZuSaYqIqWqEKTRK4TreuarbUydh6QM6cCRT2AmrM2YkejCvy3JLDD9BgmlSuYejN
+         pvSagjJ88gRTqLK8xQ56QB3QUKwcWTT+YFu5MLjKjMYh27uZhKlrpinRvWU1pQCoFg1w
+         R658hUq0eqbuya6h2Qwahz8jrqtQA77Y41+/5ZU/Wq1kYqElXeWMEQpcn1QdS7stCvVf
+         Aq5BBpBgowENociFrn4pR/9+NnZt3ZP1ErljvdQyeX/ph30zEF7ynKu0L6xjbPPwC4j6
+         4XOA==
+X-Forwarded-Encrypted: i=1; AJvYcCXGFFRxEOolTAA/BmO7JN4dXmIymjvrO0bhYdCMnSo9W/ubo4w2Vx/INBXrCTcpxUIUKUWF0PyX2ys=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzus511EdOSAbThkzgfXkgqWYzM0SOVye3Z2Nymbj/hTJnYtaxv
+	EVNoBqhTf0zxqMK2KrMcqhOYuIBdEuLcfOF8EWlmz+/2BTDjhDzB
+X-Gm-Gg: ASbGncuNgonbglk1BJHI0j1M4+UVzcMQAPW+1+opnNAZ4oH7lbT5Ipj/MT05qa94/z1
+	tDBsE1bbf2tJkVi5CpwnRQCj/PAXGucRjR9GxI2jkgH0wOMuzcmcqb8WkIQquDMZAMALjcSgORc
+	HH8L+StqmL1RE4KrmNbNY145BnlwUBAfoWuDZXUmF71YAbKwskSr5KwdHJpmalX8x+WD19s34GA
+	GVmf08bWPvUJbe4lW87BUVylCjrZwA6ksXvPgZsquQWjqWILfovZEgFHHoyLh1aoKEbSmRR69pG
+	g/7vqrx1dQbgL+UotEleKW0Akszu7HIzQqU/TPIeiLJCq5zO8W42j5+aO7+nSIzt
+X-Google-Smtp-Source: AGHT+IHAk3Wvwyk1vqkRenvO3RPC8nmIGBVFBN9gj/vKmwdIoVhq2/WUUPGNh8lDJR1/QVDS5j7zIQ==
+X-Received: by 2002:a05:6000:144a:b0:38f:4d40:358 with SMTP id ffacd0b85a97d-38f6e7587c5mr11099286f8f.9.1740404075459;
+        Mon, 24 Feb 2025 05:34:35 -0800 (PST)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f74817cbdsm9492882f8f.68.2025.02.24.05.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2025 05:34:35 -0800 (PST)
+Date: Mon, 24 Feb 2025 13:34:31 +0000
+From: David Laight <david.laight.linux@gmail.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+ x86@kernel.org, jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+ andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
+ mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com,
+ parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+ johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+ yury.norov@gmail.com, akpm@linux-foundation.org, hpa@zytor.com,
+ alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+ Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
+Message-ID: <20250224133431.2c38213f@pumpkin>
+In-Reply-To: <bde62fee-4617-4db7-b92c-59fb958c4ca6@kernel.org>
+References: <20250223164217.2139331-1-visitorckw@gmail.com>
+	<20250223164217.2139331-3-visitorckw@gmail.com>
+	<bde62fee-4617-4db7-b92c-59fb958c4ca6@kernel.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 MIME-Version: 1.0
-X-CM-TRANSID: rQCowAAnLAxldLxnkjsEEA--.4476S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFyrtr13trWrGF4ftry7Jrb_yoW8GF1UpF
-	Z8CrWay398Jw1fG3ZrAw4DAFyFkw15urW5Gr4rJ3y2vwn5A34fAr90vayY9Fy3KF4DKa4Y
-	qrsFqr98Wr1rGaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-	64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-	Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-	YxC7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-	b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-	vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
-	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-	nxnUUI43ZEXa7VUbQVy7UUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: ppdnvj2u6l2u1dvotugofq/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250224_053027_921511_A11E4B60 
-X-CRM114-Status: UNSURE (   7.34  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250224_053438_148825_D2C6580F 
+X-CRM114-Status: GOOD (  23.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,49 +121,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In the mtdswap_init(), if the allocations fail, the error handling
-path frees d->page_buf, d->eb_data, d->revmap and d->page_data without
-setting these pointers to NULL. This could lead to UAF if subsequent
-error handling or device reset operations attempt to release these
-pointers again.
+On Mon, 24 Feb 2025 08:09:43 +0100
+Jiri Slaby <jirislaby@kernel.org> wrote:
 
-Set d->page_buf, d->eb_data, d->revmap and d->page_data to NULL
-immediately after freeing them to prevent misuse. Release immediately
-and set to NULL, adhering to the 'release implies invalid' defensive
-programming principle.
+> On 23. 02. 25, 17:42, Kuan-Wei Chiu wrote:
+> > Several parts of the kernel open-code parity calculations using
+> > different methods. Add a generic parity64() helper implemented with the
+> > same efficient approach as parity8().
+> > 
+> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > ---
+> >   include/linux/bitops.h | 22 ++++++++++++++++++++++
+> >   1 file changed, 22 insertions(+)
+> > 
+> > diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+> > index fb13dedad7aa..67677057f5e2 100644
+> > --- a/include/linux/bitops.h
+> > +++ b/include/linux/bitops.h
+> > @@ -281,6 +281,28 @@ static inline int parity32(u32 val)
+> >   	return (0x6996 >> (val & 0xf)) & 1;
+> >   }
+> >   
+> > +/**
+> > + * parity64 - get the parity of an u64 value
+> > + * @value: the value to be examined
+> > + *
+> > + * Determine the parity of the u64 argument.
+> > + *
+> > + * Returns:
+> > + * 0 for even parity, 1 for odd parity
+> > + */
+> > +static inline int parity64(u64 val)
+> > +{
+> > +	/*
+> > +	 * One explanation of this algorithm:
+> > +	 * https://funloop.org/codex/problem/parity/README.html
+> > +	 */
+> > +	val ^= val >> 32;  
+> 
+> Do we need all these implementations? Can't we simply use parity64() for 
+> any 8, 16 and 32-bit values too? I.e. have one parity().
 
-Found by code review.
+I'm not sure you can guarantee that the compiler will optimise away
+the unnecessary operations.
 
-Cc: stable@vger.kernel.org
-Fixes: a32159024620 ("mtd: Add mtdswap block driver")
-Signed-off-by: Ma Ke <make24@iscas.ac.cn>
----
- drivers/mtd/mtdswap.c | 4 ++++
- 1 file changed, 4 insertions(+)
+But:
+static inline int parity64(u64 val)
+{
+	return parity32(val ^ (val >> 32))
+}
 
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index 680366616da2..b315dab2a914 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -1318,12 +1318,16 @@ static int mtdswap_init(struct mtdswap_dev *d, unsigned int eblocks,
- 
- oob_buf_fail:
- 	kfree(d->page_buf);
-+	d->page_buf = NULL;
- page_buf_fail:
- 	vfree(d->eb_data);
-+	d->eb_data = NULL;
- eb_data_fail:
- 	vfree(d->revmap);
-+	d->revmap = NULL;
- revmap_fail:
- 	vfree(d->page_data);
-+	d->page_data = NULL;
- page_data_fail:
- 	printk(KERN_ERR "%s: init failed (%d)\n", MTDSWAP_PREFIX, ret);
- 	return ret;
--- 
-2.25.1
+should be ok.
+It will also work on x86-32 where parity32() can just check the parity flag.
+Although you are unlikely to manage to use the the PF the xor sets.
+
+	David
+
+> 
+> > +	val ^= val >> 16;
+> > +	val ^= val >> 8;
+> > +	val ^= val >> 4;
+> > +	return (0x6996 >> (val & 0xf)) & 1;
+> > +}
+> > +
+> >   /**
+> >    * __ffs64 - find first set bit in a 64 bit word
+> >    * @word: The 64 bit word  
+> 
+> 
 
 
 ______________________________________________________
