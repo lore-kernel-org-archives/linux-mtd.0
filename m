@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEAE7C021B8
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Feb 2025 16:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2736DC021B2
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Feb 2025 16:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
 	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GiPk8RUb7s54G92zJ4inTuf0lXZb5OfztzEY2GtJGCM=; b=jriU4OAOfpxdYu
-	hpDES+lB4l/ymKQRRYFTSuPqh70b/M3jz6p4R+RFijFoMs7kYDW7vdVtdkB/Q5yVA+NQt4vxjGqel
-	tm7b1CHo0nv/aV5fD8X3fL33pUEtYmctPuqgLR934fyLPa3MV7wpznbS7VL4eKrDl5GARXVI1PtaN
-	Il7Z5ssuK2ffOs0q3cH+kpYMK/fkc9/4eudNdyrLIq9IU+ziH7SSiWcWxn6M6cow+QYc9P/pMtLjh
-	MjgldE/VdxysKJ0cOYmk7uai8j5g5p3TX6712q+3odpo7dkP7dmBbUT9T+3NvGa2vGGFqbm2nlQn/
-	DSPU7mvC5ZppC9EuxD6w==;
+	List-Owner; bh=YAUSgO/3maci8sPa6QlC9wAdGZL24gg5r8eJP6GGdwA=; b=HPzJ0FUh1Ynu8A
+	NNIqMZjq75QMOrgi6xWHMCcuNdjz4UOUmkrt2LdR5MY+pP3/BJU6XbFmhDuCkDzFekq3b4FkFQ7Cc
+	pDlMCz67Rz/Db21pyarDyzrc/ul1XEdhBwV1dY6FsMUb6G5Cep44k/ptN5aj45W8xoZ7uVe5WoLfK
+	YMimVaKwUFUYS24TTm53oPgA278/Shy9xOEmok1ztDYVXL+MxvDrf/qemdK/zRnK5KWMP59oLCcMx
+	WxV2ekosxJVRRqbLUSNUl8q7GvYzLdzGhxNB7vxldjQ7DGIQjhMBgifB7PI2uhoSnIs6R4DLy11j1
+	v5vOrMqM2/bmq9rFnQEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmy1P-00000000MBK-2C3F;
-	Tue, 25 Feb 2025 16:43:03 +0000
+	id 1tmy1T-00000000MGx-0Xqw;
+	Tue, 25 Feb 2025 16:43:07 +0000
 Received: from [2607:7c80:54:3::138] (helo=mail.zytor.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmwm0-000000003oP-0NkL
+	id 1tmwny-0000000041b-3mhz
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Feb 2025 15:23:05 +0000
+	Tue, 25 Feb 2025 15:25:08 +0000
 Received: from [127.0.0.1] ([76.133.66.138])
 	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 51PFLeJx1321966
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 51PFOHRf1324298
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Tue, 25 Feb 2025 07:21:41 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 51PFLeJx1321966
+	Tue, 25 Feb 2025 07:24:17 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 51PFOHRf1324298
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025021701; t=1740496908;
-	bh=IFxVykDS0g8xLLyPz9dDn1sgxptbnK+YyCXg+3CY3aM=;
+	s=2025021701; t=1740497060;
+	bh=WwBGNG5GOM5EDBRYNhpg1dowM06WZaFYwprnE0ohGQo=;
 	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=BUMWjRPIFaLk9eEljQvZOhLwrBHl5WiOz4myJbzxM1DiE4BYZIZywLpG+8lH6L2Ld
-	 bFtraaKU3/cK4+FeRWQF5FbFz83DA8Z/AQnawksvD4yyCe21dX2Z0rgdJKhBBHLj1z
-	 s4I9gcurp+Edn27zjQimLT1osW8ygdQmmUepB5mDrHI/BX4Xi6bUBzkmawhEaTO/H0
-	 x2/DVO+Y+FeNzDFJllD1SIrMR4JwTWu/5UrL2K1pJJDRRfeaeW4lVKsfyboLsLCJ0g
-	 GbLOzT769Ufnz8kospEBAiCZ1QDPJbYxD0w9NG/sbS9pBQyDxcESpuh28quuCen1V2
-	 4+wvwE+cqOncg==
-Date: Tue, 25 Feb 2025 07:21:38 -0800
+	b=gFS3Qbg9090zqrxMgWpV3QU2nlXkwzE0x821QukbyGIMgBkSQpuzxodk+NhODEkKN
+	 5h6k3fzgqnVQszi++Fm0zAWkcXoyd9Xkym/XQkMSrQQkzB32FJgavtpnoFmVqMt5+b
+	 Ut+jJOF2NsSesEP0cpHx79zg+1Hhp0iTas+P77VsgeosF4jA4YmppCVoZ6lUr/TsQ7
+	 y4TM2oB0LvUl/CGxwpwp0kGuvR8IUIGcaH+wHv+nRaIl2wg+GbRlNP1tQskp4yCPjq
+	 ++07dWpeKgWMhBWMggv61l0UzN3t+dVy4CTbKFqF+E15aNijxWhLEtzbDpNrb3YhKe
+	 U8ZjPhiVMLIiw==
+Date: Tue, 25 Feb 2025 07:24:16 -0800
 From: "H. Peter Anvin" <hpa@zytor.com>
 To: David Laight <david.laight.linux@gmail.com>,
         Jiri Slaby <jirislaby@kernel.org>
@@ -74,11 +74,11 @@ Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
 User-Agent: K-9 Mail for Android
 In-Reply-To: <20250224133431.2c38213f@pumpkin>
 References: <20250223164217.2139331-1-visitorckw@gmail.com> <20250223164217.2139331-3-visitorckw@gmail.com> <bde62fee-4617-4db7-b92c-59fb958c4ca6@kernel.org> <20250224133431.2c38213f@pumpkin>
-Message-ID: <949B0809-3BB9-4E18-8FA1-A12BD47F2843@zytor.com>
+Message-ID: <3BC57C78-1DFF-4B83-85AA-A908DBF2B958@zytor.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250225_072304_136757_4B272F4C 
-X-CRM114-Status: GOOD (  20.19  )
+X-CRM114-CacheID: sfid-20250225_072506_935325_8A2EC1D2 
+X-CRM114-Status: GOOD (  20.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -168,7 +168,7 @@ On February 24, 2025 5:34:31 AM PST, David Laight <david.laight.linux@gmail.com>
 >> 
 >
 
-Sure you can; you do need an 8- and a 16-bit arch implementation though (the 16 bit one being xor %rh,%rl)
+Incidentally, in all of this, didn't anyone notice __builtin_parity()?
 
 ______________________________________________________
 Linux MTD discussion mailing list
