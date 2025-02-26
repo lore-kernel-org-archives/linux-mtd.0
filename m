@@ -4,93 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4D14C021B8
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2025 13:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42CEAC18E7C
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2025 13:28:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hnp1l1727zOjhor1bqV4HDmRcA4lH9XTePIvU+gxT3A=; b=x/1356NXEZPb8E
-	HgcBeLv7un973PYSj16fJYVnSgxbR5ctyW4cYQdK+46dTP1zaBDK2b92JS+4y9EZhghPwbrvSUAD6
-	uCpWpyQH1z6sTpz6e10YMpuuheJdtniXlchINxFJOVHXVVdOGgxlIPmVYh6OCB5JsRg9y2EjgCXRD
-	VqKxVnjVr6cxKzvQZuZDGrJBDkQktJKCC3bKM0jVbKPR/Ka6vBm3IOg81v0LYDPuPbK59/pkDdBtV
-	1mYlrgp581WXKU7AuBmVk8RMlwIVWQRoE5UrS3xFhZ6Fc1skbBggMWNuon/GloynujnmgRzPC2NTE
-	qPcJeSO+Nsean0Ms0zOg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=higDdQRigyqdLNJEfkvguekjHSMdWB67IoEv35C0llg=; b=lH76jTBqa1OdXD
+	w+HTouzJ3Q51xKJB8Ajbtm682q4fMx/uMNssC/n3SfMeXz9c7M9P4c8l8JIPi/NTQ1ICSH2YnXlQu
+	UmmeX28kM7WJ9JOPHYd8PHUdaE+zUC+LbeV2tJV8iN2qudrFIsK80QmwEFFpHj2Ul1NC8H7PtZ2jn
+	ziKJHyBY+N8HhF37AW7SkHPbA+iWIYrU3Nf68mexETaiciDHUmj016XOvhFVZzqxm6RXqihkQ8dfx
+	5BMeqEqNQUBLvUzMugTP/Rqb+bXNyu4lwmkVWyePQSRJG8idlkWD03aYwCKFaJJ6Bf2VaXJoeGBmR
+	VJdsHlSGJe2580q/GlSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnHPk-00000003qWf-2nfr;
-	Wed, 26 Feb 2025 13:25:28 +0000
-Received: from pv50p00im-ztdg10011301.me.com ([17.58.6.40])
+	id 1tnHSU-00000003uYt-2XEC;
+	Wed, 26 Feb 2025 13:28:18 +0000
+Received: from mgamail.intel.com ([198.175.65.21])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnFrM-00000003Wj0-0maH
+	id 1tnH3w-00000003llI-01uE
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Feb 2025 11:45:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-	s=1a1hai; bh=UlmH7lnQ/SSIrKM5aMl2BHpkT+fwdodZZLv8W8GXIsc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:x-icloud-hme;
-	b=f8lZWyvSDPQwKr7SDXIE6VdW5kZrI22cRU+v86cMZBg8M63ib8K+MKQDsZPYVZ+Mz
-	 VIc01nNZYPIWEtaq9AznMiQTF7n48OFpxRM5YhSgpY2okVb9cwuvzP1KIikiB+2fRu
-	 d+7AduZcNoirLHLK7K4h8pgvS0d1L0tQbLrFrF/Od88tDX/EZXod457QB5bg4qbmFp
-	 DbogBPgs3Q7iQQ0mZfmhQRiw2/P900rSG5OeZM5GDf/tYeCwP0bcGCpZ97ZFFl8n8G
-	 biW93Aup+84jC3T2ck5W5lDGV0KXW+sjwetmqndyZG8OIOv24PsphQXGiGBlN7Elxi
-	 r4aI2TycTa3Rw==
-Received: from [192.168.1.26] (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-	by pv50p00im-ztdg10011301.me.com (Postfix) with ESMTPSA id 5CEAB180350;
-	Wed, 26 Feb 2025 11:45:37 +0000 (UTC)
-Message-ID: <a6dfff9c-ab0e-4308-81e7-62d8ea04d62b@icloud.com>
-Date: Wed, 26 Feb 2025 19:45:34 +0800
+	Wed, 26 Feb 2025 13:02:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740574976; x=1772110976;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ULpXsFAEFow3gkCLwgh86JGIiHc3fJj0geJeWnNoB8Y=;
+  b=Z634I4sbkcZw+Bw8Zf5S6euwbyeXnZwgH6DxN3gFhZh37QB6XxTXK9Lh
+   EKGdwR98EN7pQMgbZuq5O82SmLn8cY/7WiIjvE6bVLgub4F0yfpgq39O5
+   6J1H+gQTw3rSm9YnI1E5PROz/gbQj4cjWll/PGX2DozvX0D3fhOnSP2rY
+   EYvVu87O/afwGhsC0AdCvkjC9yVlccN9nvYekFZHoMLZ2LImyXGYSHO0V
+   QS04c12u5ycDXilJ3wnOe8JWWf6uwsnVntxzelW4IpbT56NyghuXrOy7y
+   POuoP2adE8W2y7JFLWx9JXiyJ7nnR6JhrRsyE1hf1h9ZJpk7uQ+zZ4xp1
+   w==;
+X-CSE-ConnectionGUID: KR/qz8uuTBWBb2G31Jz5/g==
+X-CSE-MsgGUID: bww7PsZISc6vswFr2mcNkQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11357"; a="41341469"
+X-IronPort-AV: E=Sophos;i="6.13,317,1732608000"; 
+   d="scan'208";a="41341469"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2025 05:02:55 -0800
+X-CSE-ConnectionGUID: PPR1TWlpSYq/DOi6pbwKHA==
+X-CSE-MsgGUID: /ubIuAZZQ6KN4fttNX62kQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,317,1732608000"; 
+   d="scan'208";a="121690402"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2025 05:02:49 -0800
+From: Alexander Usyskin <alexander.usyskin@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Karthik Poosa <karthik.poosa@intel.com>
+Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
+	Oren Weil <oren.jer.weil@intel.com>,
+	linux-mtd@lists.infradead.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Subject: [PATCH v5 00/11] mtd: add driver for Intel discrete graphics
+Date: Wed, 26 Feb 2025 14:51:32 +0200
+Message-ID: <20250226125143.3791515-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH *-next 01/18] mm/mmu_gather: Remove needless return in
- void API tlb_remove_page()
-To: David Howells <dhowells@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Danilo Krummrich <dakr@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Johannes Berg <johannes@sipsolutions.net>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
- Thomas Graf <tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-pm@vger.kernel.org, iommu@lists.linux.dev,
- linux-mtd@lists.infradead.org
-References: <8f36be7c-6052-4c5d-85ff-0eed27cf1456@icloud.com>
- <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
- <20250221-rmv_return-v1-1-cc8dff275827@quicinc.com>
- <20250221200137.GH7373@noisy.programming.kicks-ass.net>
- <2298251.1740496596@warthog.procyon.org.uk>
-Content-Language: en-US
-From: Zijun Hu <zijun_hu@icloud.com>
-In-Reply-To: <2298251.1740496596@warthog.procyon.org.uk>
-X-Proofpoint-GUID: iqw5w_RmeMXu0iJloMXtrzoP0X8vVIzf
-X-Proofpoint-ORIG-GUID: iqw5w_RmeMXu0iJloMXtrzoP0X8vVIzf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-26_02,2025-02-26_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=985
- malwarescore=0 clxscore=1011 phishscore=0 bulkscore=0 adultscore=0
- spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2502260094
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250226_034552_245558_2FE2175F 
-X-CRM114-Status: GOOD (  13.43  )
+X-CRM114-CacheID: sfid-20250226_050256_074295_8F43BB3C 
+X-CRM114-Status: GOOD (  13.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,39 +101,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2025/2/25 23:16, David Howells wrote:
-> Zijun Hu <zijun_hu@icloud.com> wrote:
-> 
->>>>  static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
->>>>  {
->>>> -	return tlb_remove_page_size(tlb, page, PAGE_SIZE);
->>>> +	tlb_remove_page_size(tlb, page, PAGE_SIZE);
->>>>  }
->>> So I don't mind removing it, but note that that return enforces
->>> tlb_remove_page_size() has void return type.
->>>
->>
->> tlb_remove_page_size() is void function already. (^^)
-> 
-> That may be true... for now.  But if that is changed in the future, then you
-> will get an error indicating something you need to go and look at... so in
-> that regard, it's *better* to do this ;-)
-> 
+Add driver for access to Intel discrete graphics card
+internal NVM device.
+Expose device on auxiliary bus by i915 and Xe drivers and
+provide mtd driver to register this device with MTD framework.
 
-i understand your point.
+This is a rewrite of "drm/i915/spi: spi access for discrete graphics"
+and "spi: add driver for Intel discrete graphics"
+series with connection to the Xe driver and splitting
+the spi driver part to separate module in mtd subsystem.
 
-if the callee tlb_remove_page_size() is in the same module with the
-caller tlb_remove_page. it is meaningless to watch the callee's return type.
+This series intended to be pushed through drm-xe-next.
 
-otherwise, provided the callee is a API which is provided by other
-module author. once the author changes the API's return type, he/she
-must take effort to cleanup this weird and lots of usages, that is not
-nice for API provider.
+V2: Replace dev_* prints with drm_* prints in drm (xe and i915) patches.
+    Enable NVM device on Battlemage HW (xe driver patch)
+    Fix overwrite register address (xe driver patch)
+    Add Rodrigo's r-b
 
-this is a common issue. i will list my reasons why this usage is not
-good in cover letter of this series
-> David
-> 
+V3: Use devm_pm_runtime_enable to simplify flow.
+    Drop print in i915 unload that was accidentally set as error.
+    Drop HAS_GSC_NVM macro in line with latest Xe changes.
+    Add more Rodrigo's r-b and Miquel's ack.
+
+V4: Add patch that always creates mtd master device
+    and adjust mtd-intel-dg power management to use this device.
+
+V5: Fix master device creation to accomodate for devices without
+    partitions (create partitoned master in this case)
+    Rebase over latest drm-xe-next
+    Add ack's
+
+Alexander Usyskin (11):
+  mtd: core: always create master device
+  mtd: add driver for intel graphics non-volatile memory device
+  mtd: intel-dg: implement region enumeration
+  mtd: intel-dg: implement access functions
+  mtd: intel-dg: register with mtd
+  mtd: intel-dg: align 64bit read and write
+  mtd: intel-dg: wake card on operations
+  drm/i915/nvm: add nvm device for discrete graphics
+  drm/i915/nvm: add support for access mode
+  drm/xe/nvm: add on-die non-volatile memory device
+  drm/xe/nvm: add support for access mode
+
+ MAINTAINERS                           |   7 +
+ drivers/gpu/drm/i915/Makefile         |   4 +
+ drivers/gpu/drm/i915/i915_driver.c    |   6 +
+ drivers/gpu/drm/i915/i915_drv.h       |   3 +
+ drivers/gpu/drm/i915/i915_reg.h       |   1 +
+ drivers/gpu/drm/i915/intel_nvm.c      | 115 ++++
+ drivers/gpu/drm/i915/intel_nvm.h      |  15 +
+ drivers/gpu/drm/xe/Makefile           |   1 +
+ drivers/gpu/drm/xe/regs/xe_gsc_regs.h |   4 +
+ drivers/gpu/drm/xe/xe_device.c        |   5 +
+ drivers/gpu/drm/xe/xe_device_types.h  |   6 +
+ drivers/gpu/drm/xe/xe_heci_gsc.c      |   5 +-
+ drivers/gpu/drm/xe/xe_nvm.c           | 131 ++++
+ drivers/gpu/drm/xe/xe_nvm.h           |  15 +
+ drivers/gpu/drm/xe/xe_pci.c           |   6 +
+ drivers/mtd/devices/Kconfig           |  11 +
+ drivers/mtd/devices/Makefile          |   1 +
+ drivers/mtd/devices/mtd-intel-dg.c    | 845 ++++++++++++++++++++++++++
+ drivers/mtd/mtdcore.c                 | 135 ++--
+ drivers/mtd/mtdcore.h                 |   2 +-
+ drivers/mtd/mtdpart.c                 |  17 +-
+ include/linux/intel_dg_nvm_aux.h      |  27 +
+ 22 files changed, 1310 insertions(+), 52 deletions(-)
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.c
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.h
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
+ create mode 100644 drivers/mtd/devices/mtd-intel-dg.c
+ create mode 100644 include/linux/intel_dg_nvm_aux.h
+
+-- 
+2.43.0
 
 
 ______________________________________________________
