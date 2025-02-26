@@ -4,110 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01C9DC021BC
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2025 18:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3A03C19F2E
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2025 18:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dGqclgqBOxTEg5jLExGeqmU1q4fmuvCRLvYU5hI2DV4=; b=uufIXzfV8kppug
-	5+dIF1ZXjF9pCiFmyS/pMYp0gDuP1mE6p9DtyIkjvyLt8mV+N104DEY1ahoVMwWSlM4yjk+Tx4Oy5
-	SDN484+Pkm0yhkWJGHGcTUxYBoN8C3eivrpqp0v+/w1lmumEIkrX99Eo7obBSrmkCIbE+8wq5cEit
-	tac635F1cgEHf/LhZOazH98i7xOYLYlSufMcXe1jEwevRMJn1pmv8XlSNT/trm13FCpr+AvitYKAU
-	Gnukrue2s5wqoohs93ikaGDkFuejEZH5vmPrRkvFWjjwNu1vIRsIBHQjDInum7KQgwjkbcQP2rBm+
-	yn7uL4kHpjLlW4VX0OuA==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
+	In-Reply-To:To:Cc:From:MIME-Version:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=r0XLmuffQEU5MyrskQ0xlZDOy/JkbnmIotvbkgVWb68=; b=nndtlXsyw520pA06SqzawXRMld
+	rAHnH1TENnPT0TVtokRBUAhYKZKxMWPU+CWT5KlEY+1pvhRs0kms4ijmqiaa5kpNRDjTh2F3P04pg
+	SrAFXHPFuzUG99TdPioDtHdNDMi1p1TAst7A15bIZhH4rx4lTxQ7Y/oPJs5x2X19CQbfvZfW5HOPF
+	7/Jx1EzwLE6ceZfzwEMc0NZV2RjWabUJiEc8pQrzlPg4ep+5E7uZNtQ65cr+Zax8AbMTd+IfLpE/b
+	+7qvPOTvBkyM4sVlEJZmHACj7lRUDTTbhkYO/PZuATEVd4hvLh7z0j705RVa798YcX+rnZXdiQ9mN
+	lnQThG2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnMDl-00000004yIH-2v1g;
-	Wed, 26 Feb 2025 18:33:25 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+	id 1tnMPM-00000004zpX-3e3C;
+	Wed, 26 Feb 2025 18:45:24 +0000
+Received: from tor.source.kernel.org ([2600:3c04::f03c:95ff:fe5e:7468])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnMDj-00000004yHr-0JyD
+	id 1tnMPK-00000004zoq-3lR8
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Feb 2025 18:33:24 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2fc20e0f0ceso253509a91.3
-        for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2025 10:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740594801; x=1741199601; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8NV8NW5Mq8hnlsfnK7VYLX7Lb9iIPf134td0bPOEzZY=;
-        b=PBumNaw63o8C3tNAFSTsZ7NQxbgQcx7HqIX/kg6KND1SGDJ3HFC0gCT+FWsjCZ3PLT
-         OgwgseSR6nOjgSqqnoSlFAZIHPbGKlqQDMdYUVhypeBM4eQbnOwp2COXFd9+5mWp7hkg
-         3bJ2CyyYv9RQGEndK7BiPGtRKuaPlH0227Ta/wbislj5K8KmZw3TWuqDum5nxjDnYaih
-         lcgA4ZQR1EUITXNOgrYESERAC+Lkr/+DnPocyEmVWdiR57N71OQY7hVpp+CFkPFhJL9T
-         2w6RD0h5aZQ/OBIPgBggVaCcUFMmtjQrTFvAfcurpOYigruJmXvioh9DIPwS4N/nUaXo
-         staw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740594801; x=1741199601;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8NV8NW5Mq8hnlsfnK7VYLX7Lb9iIPf134td0bPOEzZY=;
-        b=eaGc0hd2nqK3TYAK35HRnnQ2kR97pjoin3nigencBet8kz0OLcd09pwDROsU3SdyVS
-         FekrmBRS5Qbn4Z+ciVIc+R0+gGVHTRcLmnw3PjKHT8LHumZLPGfCIFe7GKq3+x7oQxkX
-         /kS33eomVX3YooUDABUl4ra203XQOuLEY8MuiaLh6D8NnXTX3Tx3S7881grJS6gE0S6V
-         RTZHPKNlWi54KdtrpFXe0iN/LVPn8hzRsJEECWBPbvZyJumwlvIJCGwqUhjES7CYQR9d
-         TjTP3qU+ciAGJ+0sPot/HvjhF4iFYDv9hcX6piiqELYPClQgxux15zGzwiGPzapESLUc
-         dorA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmNvjrZW7IAx/IiN+BX0k2yi7OZVXfIW+3iQPUFGfI/LGcEr1XYVDbPb0OrjsnaBwrOYEv1C1vsQs=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwcoNx2AXCahVCKs1+EIr1/YUo8VWQG645KJi564Et+TSb+IQwx
-	FWCxwdzVTBRCgJw2IE87AI3rGugo0Zjh84s441NavpES04RFvGjn
-X-Gm-Gg: ASbGncsasfRaOOwHJY9xHxOwizOxFsj05N3bJbDeMqgbC1kuoLGj7SaGySxMSxJZluf
-	cgROP1O87mX1MWWOcO3XSjOVM/zfnKC/Kg5HjXaLHlQXKmnpaxMs1E1bk0mCAhjHqCOMtlvqNWi
-	GPZT8PfsaO2ejoKxVrmKZ/k4ScRsso9OSvdxw3B1EX6TmBnBQXKgwrRO8/i74k0hJWXHNHhATBq
-	JTUSHDAxThprRqisF+ipZNUmwDhj+shPQpyDWWnJhEAgmF3c+Xcr4trhG551iiGR/8eMtNxj0v/
-	RkIqnK7fhhyzncqIXgK2V+j2QFkBSPMSts9gFblFMQpkOebPqw==
-X-Google-Smtp-Source: AGHT+IEhO/8zynHAj/XQ8CfYcqOsDet7/XXIGYhA3zqO2mHTqzuioBsUax6Pz3NWu+JgRkwDnM6ajg==
-X-Received: by 2002:a17:90b:2d88:b0:2ee:c918:cd60 with SMTP id 98e67ed59e1d1-2fe7e33d442mr6780868a91.20.1740594801403;
-        Wed, 26 Feb 2025 10:33:21 -0800 (PST)
-Received: from localhost (maglev-oncall.nvidia.com. [216.228.125.128])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fe825eb82fsm1917776a91.32.2025.02.26.10.33.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2025 10:33:20 -0800 (PST)
-Date: Wed, 26 Feb 2025 13:33:18 -0500
-From: Yury Norov <yury.norov@gmail.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, jk@ozlabs.org, joel@jms.id.au,
-	eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	akpm@linux-foundation.org, hpa@zytor.com, alistair@popple.id.au,
-	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
-Message-ID: <Z79ebv630yuNOJKV@thinkpad>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
- <20250223164217.2139331-3-visitorckw@gmail.com>
- <Z7zIBwH4aUA7G9MY@thinkpad>
- <Z73FxIv353lbXO3A@visitorckw-System-Product-Name>
- <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org>
+	Wed, 26 Feb 2025 18:45:23 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 335836152E;
+	Wed, 26 Feb 2025 18:45:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A44C4CED6;
+	Wed, 26 Feb 2025 18:45:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740595521;
+	bh=UQX5b9FThbfXC5EaNwBLuTStMWQtZPAMy+PEviHm4f0=;
+	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
+	b=d/DP6f2odU0xWuLlFFE6Zghy4hWE6i8gZAxfVWux4PC8ZmGdjMjZUyo5cXfbbrofP
+	 b7Fs29L3AM4mjfNhTIXqBtTUpfjtlgGg3Ctla5CcVJoRMmqUdIDYh/awr5+l9JRHP+
+	 oKBBKsyH1pu9oZdl1XcmaeRdnVKkfFWKh3C8/3S1GrRs6XvjBR1hiIcHi0xF8xWxgx
+	 a/4YLkYQJ8GT4MzblzTF7UiDVP0QmzKP8LW7rMQrQXepPrxc6gUkSzgCDakv1zjJll
+	 fV/ffE8WEeNXc7t7YQDVPrgPxtPITI3UofFyM+5ychJLfeLwcDWl2oGBipyQTtznQ2
+	 w50qawF7ElkMw==
+Date: Wed, 26 Feb 2025 12:45:19 -0600
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250226_103323_114485_0C8F54CF 
-X-CRM114-Status: GOOD (  18.83  )
+From: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ linuxppc-dev@lists.ozlabs.org, Krzysztof Kozlowski <krzk@kernel.org>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, devicetree@vger.kernel.org, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Crystal Wood <oss@buserror.net>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>, 
+ Nicholas Piggin <npiggin@gmail.com>, Naveen N Rao <naveen@kernel.org>
+To: =?utf-8?q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
+In-Reply-To: <20250226-ppcyaml-elbc-v3-3-a90ed71da838@posteo.net>
+References: <20250226-ppcyaml-elbc-v3-0-a90ed71da838@posteo.net>
+ <20250226-ppcyaml-elbc-v3-3-a90ed71da838@posteo.net>
+Message-Id: <174059551786.3319377.4330281854518280945.robh@kernel.org>
+Subject: Re: [PATCH v3 3/3] dt-bindings: memory-controllers: Convert
+ fsl,elbc to YAML
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,73 +74,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 26, 2025 at 08:14:14AM +0100, Jiri Slaby wrote:
-> On 25. 02. 25, 14:29, Kuan-Wei Chiu wrote:
-> > > +#define parity(val)					\
-> > > +({							\
-> > > +	u64 __v = (val);				\
-> > > +	int __ret;					\
-> > > +	switch (BITS_PER_TYPE(val)) {			\
-> > > +	case 64:					\
-> > > +		__v ^= __v >> 32;			\
-> > > +		fallthrough;				\
-> > > +	case 32:					\
-> > > +		__v ^= __v >> 16;			\
-> > > +		fallthrough;				\
-> > > +	case 16:					\
-> > > +		__v ^= __v >> 8;			\
-> > > +		fallthrough;				\
-> > > +	case 8:						\
-> > > +		__v ^= __v >> 4;			\
-> > > +		__ret =  (0x6996 >> (__v & 0xf)) & 1;	\
-> > > +		break;					\
-> > > +	default:					\
-> > > +		BUILD_BUG();				\
-> > > +	}						\
-> > > +	__ret;						\
-> > > +})
-> > > +
-> > > +#define parity8(val)	parity((u8)(val))
-> > > +#define parity32(val)	parity((u32)(val))
-> > > +#define parity64(val)	parity((u64)(val))
-> > What do you think about using these inline functions instead of macros?
-> > Except for parity8(), each function is a single line and follows the
-> > same logic. I find inline functions more readable, and coding-style.rst
-> > also recommends them over macros.
->
-> Not in cases where macros are inevitable. I mean, do we need parityXX() for
-> XX in (8, 16, 32, 64) at all? Isn't the parity() above enough for everybody?
-
-The existing codebase has something like:
-
-        int ret;
-
-        ret = i3c_master_get_free_addr(m, last_addr + 1);
-        ret |= parity8(ret) ? 0 : BIT(7)
-
-So if we'll switch it to a macro like one above, it will become a
-32-bit parity. It wouldn't be an error because i3c_master_get_free_addr()
-returns an u8 or -ENOMEM, and the error code is checked explicitly. 
-
-But if we decide to go with parity() only, some users will have to
-call it like parity((u8)val) explicitly. Which is not bad actually.
-
-> And if not, you can have all those parityXX() as inlines as you suggest, but
-> also provide a macro such as the above to call (optimized) parityXX() as per
-> datatype len.
-
-Yes, if we need fixed-type parity's, they should all be one-liners
-calling the same macro. Macros or inline functions - no preference for
-me.
-
-Thanks,
-Yury
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIFdlZCwgMjYgRmViIDIwMjUgMTg6MDE6NDIgKzAxMDAsIEouIE5ldXNjaMOkZmVyIHdyb3Rl
+Ogo+IENvbnZlcnQgdGhlIEZyZWVzY2FsZSBsb2NhbGJ1cyBjb250cm9sbGVyIGJpbmRpbmdzIGZy
+b20gdGV4dCBmb3JtIHRvCj4gWUFNTC4gQ29tcGFyZWQgdG8gdGhlIC50eHQgdmVyc2lvbiwgdGhl
+IFlBTUwgYmluZGluZyBjb250YWlucyBhIG5ldwo+IHVzYWdlIGV4YW1wbGUgd2l0aCBGQ00gTkFO
+RCBmbGFzaCwgYW5kIGEgZnVsbCBsaXN0IG9mIGNvbXBhdGlibGUgc3RyaW5ncwo+IGJhc2VkIG9u
+IGN1cnJlbnQgdXNhZ2UgaW4gYXJjaC9wb3dlcnBjL2Jvb3QvZHRzLy4KPiAKPiBOb3RlIHRoYXQg
+dGhlIGJvdGggdGhlIGNvbXBhdGlibGUgc3RyaW5ncyBhbmQgdGhlIHVuaXQgYWRkcmVzcyBmb3Jt
+YXQKPiBhcmUga2VwdCBhcy1pcywgZm9yIGNvbXBhdGliaWxpdHkgd2l0aCBleGlzdGluZyBrZXJu
+ZWxzIGFuZCBkZXZpY2UKPiB0cmVlcywgYXMgd2VsbCBhcyB1bml0IGFkZHJlc3MgcmVhZGFiaWxp
+dHkuIFRoaXMgcmVzdWx0cyBpbiBkdHMKPiB2YWxpZGF0aW9uIHdhcm5pbmdzOgo+IAo+ICAgV2Fy
+bmluZyAoc2ltcGxlX2J1c19yZWcpOiAvZXhhbXBsZS0wL2xvY2FsYnVzQGYwMDEwMTAwL2JvYXJk
+LWNvbnRyb2xAMSwwOgo+ICAgc2ltcGxlLWJ1cyB1bml0IGFkZHJlc3MgZm9ybWF0IGVycm9yLCBl
+eHBlY3RlZCAiMTAwMDAwMDAwIgo+IAo+IFNpZ25lZC1vZmYtYnk6IEouIE5ldXNjaMOkZmVyIDxq
+Lm5lQHBvc3Rlby5uZXQ+Cj4gLS0tCj4gCj4gVjM6Cj4gLSBtb3ZlIHRoaXMgcGF0Y2ggYWZ0ZXIg
+dGhlIEdQQ00vRkNNIHBhdGNoZXMgdG8gZHRzY2hlbWEvZHRjIHdhcm5pbmdzCj4gICBkdWUgdG8g
+bWlzc2luZyBiaW5kaW5ncyBmb3IgZnNsLGVsYmMtZ3BjbS11aW8gYW5kIGZzbCxlbGJjLWZjbS1u
+YW5kCj4gLSBhZGQgInNpbXBsZS1idXMiIGFnYWluLCBmb3IgY29tcGF0aWJpbGl0eSB3aXRoIGV4
+aXN0aW5nIERUcy9kcml2ZXJzCj4gICBiYXNlZCBvbiBkaXNjdXNzaW9uIHdpdGggQ3J5c3RhbCBX
+b29kIGFuZCBSb2IgSGVycmluZwo+IC0gZml4IGZzbCxwcTItbG9jYWxidXMgY29tcGF0aWJsZSBw
+cm9wZXJ0aWVzIGJhc2VkIG9uIG1nY29nZS5kdHMgLyBlcDgyNDhlLmR0cwo+ICAgKHdhcyBtaXNz
+aW5nICJzaW1wbGUtYnVzIikKPiAtIGFkZCBib2FyZC1jb250cm9sIChiY3NyKSBleGFtcGxlIGFn
+YWluLCBub3cgdXNpbmcgdGhlIGNvbXBhdGlibGUKPiAgIHN0cmluZyBsaXN0ZWQgaW4gRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2JvYXJkL2ZzbCxiY3NyLnlhbWwKPiAtIHJlbW92
+ZSBpbnRlcnJ1cHQtcGFyZW50IHByb3BlcnR5IGZyb20gZXhhbXBsZQo+IC0gcmV3b3JrIHRoZSBj
+b21taXQgbWVzc2FnZQo+IAo+IFYyOgo+IC0gZml4IG9yZGVyIG9mIHByb3BlcnRpZXMgaW4gZXhh
+bXBsZXMsIGFjY29yZGluZyB0byBkdHMgY29kaW5nIHN0eWxlCj4gLSBtb3ZlIHRvIERvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMKPiAtIGNsYXJpZnkg
+dGhlIGNvbW1pdCBtZXNzYWdlIGEgdGlueSBiaXQKPiAtIHJlbW92ZSB1bm5lY2Vzc2FyeSBtdWx0
+aWxpbmUgbWFya2VycyAofCkKPiAtIGRlZmluZSBhZGRyZXNzIGZvcm1hdCBpbiBwYXR0ZXJuUHJv
+cGVydGllcwo+IC0gdHJpbSBzdWJqZWN0IGxpbmUgKHJlbW92ZSAiYmluZGluZyIpCj4gLSByZW1v
+dmUgdXNlIG9mICJzaW1wbGUtYnVzIiwgYmVjYXVzZSBpdCdzIHRlY2huaWNhbGx5IGluY29ycmVj
+dAo+IC0tLQo+ICAuLi4vYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL2ZzbCxlbGJjLnlhbWwg
+ICAgICB8IDE1OCArKysrKysrKysrKysrKysrKysrKysKPiAgLi4uL2RldmljZXRyZWUvYmluZGlu
+Z3MvcG93ZXJwYy9mc2wvbGJjLnR4dCAgICAgICAgfCAgNDMgLS0tLS0tCj4gIDIgZmlsZXMgY2hh
+bmdlZCwgMTU4IGluc2VydGlvbnMoKyksIDQzIGRlbGV0aW9ucygtKQo+IAoKTXkgYm90IGZvdW5k
+IGVycm9ycyBydW5uaW5nICdtYWtlIGR0X2JpbmRpbmdfY2hlY2snIG9uIHlvdXIgcGF0Y2g6Cgp5
+YW1sbGludCB3YXJuaW5ncy9lcnJvcnM6CgpkdHNjaGVtYS9kdGMgd2FybmluZ3MvZXJyb3JzOgpE
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL2ZzbCxl
+bGJjLmV4YW1wbGUuZHRzOjI5LjIzLTM0LjE1OiBXYXJuaW5nIChzaW1wbGVfYnVzX3JlZyk6IC9l
+eGFtcGxlLTAvbG9jYWxidXNAZjAwMTAxMDAvZmxhc2hAMCwwOiBzaW1wbGUtYnVzIHVuaXQgYWRk
+cmVzcyBmb3JtYXQgZXJyb3IsIGV4cGVjdGVkICIwIgpEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL2ZzbCxlbGJjLmV4YW1wbGUuZHRzOjM2LjMxLTM5
+LjE1OiBXYXJuaW5nIChzaW1wbGVfYnVzX3JlZyk6IC9leGFtcGxlLTAvbG9jYWxidXNAZjAwMTAx
+MDAvYm9hcmQtY29udHJvbEAxLDA6IHNpbXBsZS1idXMgdW5pdCBhZGRyZXNzIGZvcm1hdCBlcnJv
+ciwgZXhwZWN0ZWQgIjEwMDAwMDAwMCIKRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L21lbW9yeS1jb250cm9sbGVycy9mc2wsZWxiYy5leGFtcGxlLmR0czo0MS4zMS00Ni4xNTogV2Fy
+bmluZyAoc2ltcGxlX2J1c19yZWcpOiAvZXhhbXBsZS0wL2xvY2FsYnVzQGYwMDEwMTAwL3NpbXBs
+ZS1wZXJpcGhAMiwwOiBzaW1wbGUtYnVzIHVuaXQgYWRkcmVzcyBmb3JtYXQgZXJyb3IsIGV4cGVj
+dGVkICIyMDAwMDAwMDAiCkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnkt
+Y29udHJvbGxlcnMvZnNsLGVsYmMuZXhhbXBsZS5kdHM6ODIuMjMtODkuMTU6IFdhcm5pbmcgKHNp
+bXBsZV9idXNfcmVnKTogL2V4YW1wbGUtMS9sb2NhbGJ1c0BlMDAwNTAwMC9mbGFzaEAwLDA6IHNp
+bXBsZS1idXMgdW5pdCBhZGRyZXNzIGZvcm1hdCBlcnJvciwgZXhwZWN0ZWQgIjAiCkRvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvZnNsLGVsYmMuZXhh
+bXBsZS5kdHM6OTEuMjItOTcuMTU6IFdhcm5pbmcgKHNpbXBsZV9idXNfcmVnKTogL2V4YW1wbGUt
+MS9sb2NhbGJ1c0BlMDAwNTAwMC9uYW5kQDEsMDogc2ltcGxlLWJ1cyB1bml0IGFkZHJlc3MgZm9y
+bWF0IGVycm9yLCBleHBlY3RlZCAiMTAwMDAwMDAwIgovYnVpbGRzL3JvYmhlcnJpbmcvZHQtcmV2
+aWV3LWNpL2xpbnV4L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29u
+dHJvbGxlcnMvZnNsLGVsYmMuZXhhbXBsZS5kdGI6IG5hbmRAMSwwOiAkbm9kZW5hbWU6MDogJ25h
+bmRAMSwwJyBkb2VzIG5vdCBtYXRjaCAnXm5hbmRAW2EtZjAtOV0kJwoJZnJvbSBzY2hlbWEgJGlk
+OiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvZnNsLGVsYmMtZmNtLW5hbmQueWFt
+bCMKCmRvYyByZWZlcmVuY2UgZXJyb3JzIChtYWtlIHJlZmNoZWNrZG9jcyk6Cldhcm5pbmc6IERv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L3NzZDEyODlmYi50eHQgcmVm
+ZXJlbmNlcyBhIGZpbGUgdGhhdCBkb2Vzbid0IGV4aXN0OiBEb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvcG93ZXJwYy9mc2wvbGJjLnR4dApEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvZGlzcGxheS9zc2QxMjg5ZmIudHh0OiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvcG93ZXJwYy9mc2wvbGJjLnR4dAoKU2VlIGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFi
+cy5vcmcvcHJvamVjdC9kZXZpY2V0cmVlLWJpbmRpbmdzL3BhdGNoLzIwMjUwMjI2LXBwY3lhbWwt
+ZWxiYy12My0zLWE5MGVkNzFkYTgzOEBwb3N0ZW8ubmV0CgpUaGUgYmFzZSBmb3IgdGhlIHNlcmll
+cyBpcyBnZW5lcmFsbHkgdGhlIGxhdGVzdCByYzEuIEEgZGlmZmVyZW50IGRlcGVuZGVuY3kKc2hv
+dWxkIGJlIG5vdGVkIGluICp0aGlzKiBwYXRjaC4KCklmIHlvdSBhbHJlYWR5IHJhbiAnbWFrZSBk
+dF9iaW5kaW5nX2NoZWNrJyBhbmQgZGlkbid0IHNlZSB0aGUgYWJvdmUKZXJyb3IocyksIHRoZW4g
+bWFrZSBzdXJlICd5YW1sbGludCcgaXMgaW5zdGFsbGVkIGFuZCBkdC1zY2hlbWEgaXMgdXAgdG8K
+ZGF0ZToKCnBpcDMgaW5zdGFsbCBkdHNjaGVtYSAtLXVwZ3JhZGUKClBsZWFzZSBjaGVjayBhbmQg
+cmUtc3VibWl0IGFmdGVyIHJ1bm5pbmcgdGhlIGFib3ZlIGNvbW1hbmQgeW91cnNlbGYuIE5vdGUK
+dGhhdCBEVF9TQ0hFTUFfRklMRVMgY2FuIGJlIHNldCB0byB5b3VyIHNjaGVtYSBmaWxlIHRvIHNw
+ZWVkIHVwIGNoZWNraW5nCnlvdXIgc2NoZW1hLiBIb3dldmVyLCBpdCBtdXN0IGJlIHVuc2V0IHRv
+IHRlc3QgYWxsIGV4YW1wbGVzIHdpdGggeW91ciBzY2hlbWEuCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
