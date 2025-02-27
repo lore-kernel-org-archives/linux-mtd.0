@@ -4,67 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15383C19F32
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB8E3C282C1
 	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2025 14:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pFVTbK4mRvt9b3UQvUIFz5KPCEuWUVdVEmb5RxmPMeI=; b=QOEMflieUa7F9+
-	yJu/Sqr4foZSBPM2rrF4FMx3pqBD+qPNpZ+X8PBlo7uszmCn6na1OmvEGGPhe9gf+nRkRzZcSA/iw
-	aMK+m1WKfjzGTsgLK0xssM4ZLQqjeEg9vY9rGls1VavZ5+WNyNVDZko9YuwdAGrxyYtR7yp2DC5U4
-	RWy/5i36oaEdvvQoFer+VsgHpTF3VDjYAdwxmy+sfJG+vmnKq9dImyy7EQcYJif4l7wGAMv0bn/Rc
-	uIV37t6GLeRHOKfy0KvSoSMuAPNZbcu7DyjHSyrsHdMh4ZNAi3RKFgyTeANE4FO/5LwFQ9kSr+IpL
-	6oEaSmA2S3f19F65CtAA==;
+	List-Owner; bh=sRk5Qh1DplmT8zgpx7zRBolRxKvlqdwsTqMpTxw77DM=; b=qIJ4w7lwgcyDFO
+	Bqd096bQzr+fv5Yg2Aw+wksSWJ9p5TvpxENAHe+UPn2DqC3mofAKbBKt1fJZcgV5EQhcktsy7ohJj
+	vHq/GdjlRI+rYvAFoQUMb43rosbyOQu/Ff3s+UYqZk/b4MuwYX0LV8D+ZcN/3c0mUxkRwt2iGyTma
+	IFkpBUVRGA53wR2ZT0s9kV3i1eZTw/dvLEUjmAwYlZKhKrRU0BYF49F1aLontG0nlyS8VOO6ij2Zf
+	E06TOPkQGU2a69b9Sl031A5aSmVCNCx28+gsPwOUldStE4tNmEDn2Z7jESMAsjNYmpGSCajZvssL8
+	WrjpjHpYoVFe5KblvnvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnf1l-00000007lXp-3l8E;
-	Thu, 27 Feb 2025 14:38:17 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1tnf1m-00000007lYB-1yKT;
+	Thu, 27 Feb 2025 14:38:18 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tndTc-00000007RoS-43jz
-	for linux-mtd@lists.infradead.org;
-	Thu, 27 Feb 2025 12:58:58 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E66641CFD;
-	Thu, 27 Feb 2025 12:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1740661132;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xTE06Wbb2OM49gD1uO4FAF7+EIpzsE2Tg148tPUePjg=;
-	b=TiGeMy2gnXL56gcnNnUa6+KDH4trUyUhrlGUFxpqCwRLZamVhG/3XjaPYG2wBQN1/I8juu
-	rswIjddQLWYeZqrnvkN31X/PeHOM7jaeMDYSrPdfyhX8DKkzkUMPaPDtqWx+ENAMUcBebL
-	1PTmrHPg0r3KzZJg3Dnm6byql9VtCpf05o/uiZjmAm/+8ZRghz3LePfAoGVdHU8aHnueTl
-	pT429UjuA2yuP3MmgpbhmLCeM0gKTV2cKprlo3b0jXEZtF8R05g0u1iFsp57zprLRuxZUR
-	yBOZzxXKZGrzGXdpiO8UrvjXLeXOZ3Qvw363iuni5bu/6balSCwNuUCyVOACNQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Kamal Dasu <kamal.dasu@broadcom.com>
-Cc: florian.fainelli@broadcom.com,  Brian Norris
- <computersforpeace@gmail.com>,  Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,  Richard Weinberger
- <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  Kamal Dasu
- <kdasu@broadcom.com>
-Subject: Re: [PATCH] mtd: rawnand: brcmnand: fix PM resume warning
-In-Reply-To: <20250226225356.16380-1-kamal.dasu@broadcom.com> (Kamal Dasu's
-	message of "Wed, 26 Feb 2025 17:53:09 -0500")
-References: <20250226225356.16380-1-kamal.dasu@broadcom.com>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Thu, 27 Feb 2025 13:58:49 +0100
-Message-ID: <874j0fczna.fsf@bootlin.com>
+	id 1tndYR-00000007SNq-3ORb
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 27 Feb 2025 13:03:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=C4NTJOJ3dCAJ9+vpvzEprQrWJrpsHSJFBRqUQ8todYw=; b=Dpw3udR3BJAFq9SyV4WrEEtnAj
+	4AK/f2BJmM2iCspBbFHcvyAYokish3HnL+MnOj7JlEsRpxTpwaGNuOZ0GjF1xl2kJOx4qt3J2ahuW
+	az6fb102wILROrGzFvXwJPaH58zNpMOOcrCBc343TieQO3/CDGnn7X1+s/6kO95pgHKXAnEejIoZr
+	eB7TVgWCB6dlZRGlAflwAymbuHq47SCX9B61CP43qWtZ2O6ijiX7nvvVtATjJJOXC5cOJJTTKtd0a
+	0oXIb31u03yt/F+rw+NDupYNgVgy0IBHz3v3ZGkJAqcax4tYjHYegxiTUmQ4/XbT5eUfHjXU340Lp
+	d0XLYfiw==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tndYL-0000000Hb1D-0gW6;
+	Thu, 27 Feb 2025 13:03:49 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 45472300472; Thu, 27 Feb 2025 14:03:47 +0100 (CET)
+Date: Thu, 27 Feb 2025 14:03:47 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Zijun Hu <zijun_hu@icloud.com>
+Cc: Zijun Hu <quic_zijuhu@quicinc.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Piggin <npiggin@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Danilo Krummrich <dakr@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
+	Thomas Graf <tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-arch@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+	iommu@lists.linux.dev, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH *-next 00/18] Remove weird and needless 'return' for void
+ APIs
+Message-ID: <20250227130347.GA5880@noisy.programming.kicks-ass.net>
+References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
+ <46d17d84-5298-4460-96b0-9c62672167a0@icloud.com>
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdekjeehvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppedvudejrdduuddvrddukeelrddukedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddujedrudduvddrudekledrudekuddphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepledprhgtphhtthhopehkrghmrghlrdgurghsuhessghrohgruggtohhmrdgtohhmpdhrtghpthhtohepfhhlohhrihgrnhdrfhgrihhnvghllhhisegsrhhorggutghomhdrtghomhdprhgtphhtthhopegtohhmphhuthgvrhhsfhhorhhpvggrtggvsehgmhgrihhlrdgtohhmpdhrtghpthhtohepsggtmhdqkhgvrhhnvghlqdhfvggvuggsrggtkhdqlhhishhtsegsrhhorggutghomhdrtghom
- hdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250227_045857_465454_9BF67333 
-X-CRM114-Status: GOOD (  10.74  )
+Content-Disposition: inline
+In-Reply-To: <46d17d84-5298-4460-96b0-9c62672167a0@icloud.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,94 +96,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gS2FtYWwsCgpPbiAyNi8wMi8yMDI1IGF0IDE3OjUzOjA5IC0wNSwgS2FtYWwgRGFzdSA8
-a2FtYWwuZGFzdUBicm9hZGNvbS5jb20+IHdyb3RlOgoKPiBGaXhlZCB3YXJuaW5nIGR1ZSB0byB1
-bmludGlhbGl6ZWQgc3RydWN0IG5hbmRfb3BlcmF0aW9uIG9wLT5jcwo+IFdBUk5fT04ob3AtPmNz
-ID49IG5hbmRkZXZfbnRhcmdldHMoJmNoaXAtPmJhc2UpCj4KPiBbICAgMTQuNTg4NTIyXSAtLS0t
-LS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KPiBbICAgMTQuNTg4NTI5XSBXQVJOSU5H
-OiBDUFU6IDAgUElEOiAxMzkyIGF0IGRyaXZlcnMvbXRkL25hbmQvcmF3L2ludGVybmFscy5oOjEz
-OSBuYW5kX3Jlc2V0X29wKzB4MWUwLzB4MWY4Cj4gWyAgIDE0LjU4ODU1M10gTW9kdWxlcyBsaW5r
-ZWQgaW46IGJkYyB1ZGNfY29yZQo+IFsgICAxNC41ODg1NzldIENQVTogMCBVSUQ6IDAgUElEOiAx
-MzkyIENvbW06IHJ0Y3dha2UgVGFpbnRlZDogRyAgICAgICAgVyAgICAgICAgICA2LjE0LjAtcmM0
-LWc1Mzk0ZWVhMTA2NTEgIzE2Cj4gWyAgIDE0LjU4ODU5MF0gVGFpbnRlZDogW1ddPVdBUk4KPiBb
-ICAgMTQuNTg4NTkzXSBIYXJkd2FyZSBuYW1lOiBCcm9hZGNvbSBTVEIgKEZsYXR0ZW5lZCBEZXZp
-Y2UgVHJlZSkKPiBbICAgMTQuNTg4NTk4XSBDYWxsIHRyYWNlOgo+IFsgICAxNC41ODg2MDRdICBk
-dW1wX2JhY2t0cmFjZSBmcm9tIHNob3dfc3RhY2srMHgxOC8weDFjCj4gWyAgIDE0LjU4ODYyMl0g
-IHI3OjAwMDAwMDA5IHI2OjAwMDAwMDhiIHI1OjYwMDAwMTUzIHI0OmMwZmE1NThjCj4gWyAgIDE0
-LjU4ODYyNV0gIHNob3dfc3RhY2sgZnJvbSBkdW1wX3N0YWNrX2x2bCsweDcwLzB4N2MKPiBbICAg
-MTQuNTg4NjM5XSAgZHVtcF9zdGFja19sdmwgZnJvbSBkdW1wX3N0YWNrKzB4MTgvMHgxYwo+IFsg
-ICAxNC41ODg2NTNdICByNTpjMDhkNDBiMCByNDpjMTAwM2NiMAo+IFsgICAxNC41ODg2NTZdICBk
-dW1wX3N0YWNrIGZyb20gX193YXJuKzB4ODQvMHhlNAo+IFsgICAxNC41ODg2NjhdICBfX3dhcm4g
-ZnJvbSB3YXJuX3Nsb3dwYXRoX2ZtdCsweDE4Yy8weDE5NAo+IFsgICAxNC41ODg2NzhdICByNzpj
-MDhkNDBiMCByNjpjMTAwM2NiMCByNTowMDAwMDAwMCByNDowMDAwMDAwMAo+IFsgICAxNC41ODg2
-ODFdICB3YXJuX3Nsb3dwYXRoX2ZtdCBmcm9tIG5hbmRfcmVzZXRfb3ArMHgxZTAvMHgxZjgKPiBb
-ICAgMTQuNTg4Njk1XSAgcjg6NzBjNDBkZmYgcjc6ODk3MDVmNDEgcjY6MzZiNGE1OTcgcjU6YzI2
-Yzk0NDQgcjQ6YzI2YjAwNDgKPiBbICAgMTQuNTg4Njk3XSAgbmFuZF9yZXNldF9vcCBmcm9tIGJy
-Y21uYW5kX3Jlc3VtZSsweDEzYy8weDE1MAo+IFsgICAxNC41ODg3MTRdICByOTowMDAwMDAwMCBy
-ODowMDAwMDAwMCByNzpjMjRmODAxMCByNjpjMjI4YTNmOCByNTpjMjZjOTRiYyByNDpjMjZiMDA0
-MAo+IFsgICAxNC41ODg3MTddICBicmNtbmFuZF9yZXN1bWUgZnJvbSBwbGF0Zm9ybV9wbV9yZXN1
-bWUrMHgzNC8weDU0Cj4gWyAgIDE0LjU4ODczNV0gIHI1OjAwMDAwMDEwIHI0OmMwODQwYTUwCj4g
-WyAgIDE0LjU4ODczOF0gIHBsYXRmb3JtX3BtX3Jlc3VtZSBmcm9tIGRwbV9ydW5fY2FsbGJhY2sr
-MHg1Yy8weDE0Ywo+IFsgICAxNC41ODg3NTddICBkcG1fcnVuX2NhbGxiYWNrIGZyb20gZGV2aWNl
-X3Jlc3VtZSsweGMwLzB4MzI0Cj4gWyAgIDE0LjU4ODc3Nl0gIHI5OmMyNGY4MDU0IHI4OmMyNGY4
-MGEwIHI3OjAwMDAwMDAwIHI2OjAwMDAwMDAwIHI1OjAwMDAwMDEwIHI0OmMyNGY4MDEwCj4gWyAg
-IDE0LjU4ODc3OV0gIGRldmljZV9yZXN1bWUgZnJvbSBkcG1fcmVzdW1lKzB4MTMwLzB4MTYwCj4g
-WyAgIDE0LjU4ODc5OV0gIHI5OmMyMjUzOWU0IHI4OjAwMDAwMDEwIHI3OmMyMmJlYmIwIHI2OmMy
-NGY4MDEwIHI1OmMyMjUzOWRjIHI0OmMyMjUzOWIwCj4gWyAgIDE0LjU4ODgwMl0gIGRwbV9yZXN1
-bWUgZnJvbSBkcG1fcmVzdW1lX2VuZCsweDE0LzB4MjAKPiBbICAgMTQuNTg4ODIyXSAgcjEwOmMy
-MjA0ZTQwIHI5OjAwMDAwMDAwIHI4OmMyMjhhM2ZjIHI3OjAwMDAwMDAwIHI2OjAwMDAwMDAzIHI1
-OmMyMjhhNDE0Cj4gWyAgIDE0LjU4ODgyNl0gIHI0OjAwMDAwMDEwCj4gWyAgIDE0LjU4ODgyOF0g
-IGRwbV9yZXN1bWVfZW5kIGZyb20gc3VzcGVuZF9kZXZpY2VzX2FuZF9lbnRlcisweDI3NC8weDZm
-OAo+IFsgICAxNC41ODg4NDhdICByNTpjMjI4YTQxNCByNDowMDAwMDAwMAo+IFsgICAxNC41ODg4
-NTFdICBzdXNwZW5kX2RldmljZXNfYW5kX2VudGVyIGZyb20gcG1fc3VzcGVuZCsweDIyOC8weDJi
-Ywo+IFsgICAxNC41ODg4NjhdICByMTA6YzM1MDI5MTAgcjk6YzM1MDFmNDAgcjg6MDAwMDAwMDQg
-cjc6YzIyOGE0MzggcjY6YzBmOTVlMTggcjU6MDAwMDAwMDAKPiBbICAgMTQuNTg4ODcxXSAgcjQ6
-MDAwMDAwMDMKPiBbICAgMTQuNTg4ODc0XSAgcG1fc3VzcGVuZCBmcm9tIHN0YXRlX3N0b3JlKzB4
-NzQvMHhkMAo+IFsgICAxNC41ODg4ODldICByNzpjMjI4YTQzOCByNjpjMGY5MzRjOCByNTowMDAw
-MDAwMyByNDowMDAwMDAwMwo+IFsgICAxNC41ODg4OTJdICBzdGF0ZV9zdG9yZSBmcm9tIGtvYmpf
-YXR0cl9zdG9yZSsweDFjLzB4MjgKPiBbICAgMTQuNTg4OTEzXSAgcjk6MDAwMDAwMDAgcjg6MDAw
-MDAwMDAgcjc6ZjA5ZjlmMDggcjY6MDAwMDAwMDQgcjU6YzM1MDI5MDAgcjQ6YzAyODMyNTAKPiBb
-ICAgMTQuNTg4OTE2XSAga29ial9hdHRyX3N0b3JlIGZyb20gc3lzZnNfa2Zfd3JpdGUrMHg0MC8w
-eDRjCj4gWyAgIDE0LjU4ODkzNl0gIHI1OmMzNTAyOTAwIHI0OmMwZDkyYTQ4Cj4gWyAgIDE0LjU4
-ODkzOV0gIHN5c2ZzX2tmX3dyaXRlIGZyb20ga2VybmZzX2ZvcF93cml0ZV9pdGVyKzB4MTA0LzB4
-MWYwCj4gWyAgIDE0LjU4ODk1Nl0gIHI1OmMzNTAyOTAwIHI0OmMzNTAxZjQwCj4gWyAgIDE0LjU4
-ODk2MF0gIGtlcm5mc19mb3Bfd3JpdGVfaXRlciBmcm9tIHZmc193cml0ZSsweDI1MC8weDQyMAo+
-IFsgICAxNC41ODg5ODBdICByMTA6YzBlMTRiNDggcjk6MDAwMDAwMDAgcjg6YzI1ZjU3ODAgcjc6
-MDA0NDMzOTggcjY6ZjA5ZjlmNjggcjU6YzM0ZjdmMDAKPiBbICAgMTQuNTg4OTgzXSAgcjQ6YzA0
-MmE4OGMKPiBbICAgMTQuNTg4OTg3XSAgdmZzX3dyaXRlIGZyb20ga3N5c193cml0ZSsweDc0LzB4
-ZTQKPiBbICAgMTQuNTg5MDA1XSAgcjEwOjAwMDAwMDA0IHI5OmMyNWY1NzgwIHI4OmMwMjAwMmYw
-IHI3OjAwMDAwMDAwIHI2OjAwMDAwMDAwIHI1OmMzNGY3ZjAwCj4gWyAgIDE0LjU4OTAwOF0gIHI0
-OmMzNGY3ZjAwCj4gWyAgIDE0LjU4OTAxMV0gIGtzeXNfd3JpdGUgZnJvbSBzeXNfd3JpdGUrMHgx
-MC8weDE0Cj4gWyAgIDE0LjU4OTAyOV0gIHI3OjAwMDAwMDA0IHI2OjAwNDQyMWMwIHI1OjAwNDQz
-Mzk4IHI0OjAwMDAwMDA0Cj4gWyAgIDE0LjU4OTAzMl0gIHN5c193cml0ZSBmcm9tIHJldF9mYXN0
-X3N5c2NhbGwrMHgwLzB4NWMKPiBbICAgMTQuNTg5MDQ0XSBFeGNlcHRpb24gc3RhY2soMHhmMDlm
-OWZhOCB0byAweGYwOWY5ZmYwKQo+IFsgICAxNC41ODkwNTBdIDlmYTA6ICAgICAgICAgICAgICAg
-ICAgIDAwMDAwMDA0IDAwNDQzMzk4IDAwMDAwMDA0IDAwNDQzMzk4IDAwMDAwMDA0IDAwMDAwMDAx
-Cj4gWyAgIDE0LjU4OTA1Nl0gOWZjMDogMDAwMDAwMDQgMDA0NDMzOTggMDA0NDIxYzAgMDAwMDAw
-MDQgYjZlY2JkNTggMDAwMDAwMDggYmViZmJjMzggMDA0M2ViNzgKPiBbICAgMTQuNTg5MDYyXSA5
-ZmUwOiAwMDQ0MGViMCBiZWJmYmFmOCBiNmRlMThhMCBiNmU1NzllOAo+IFsgICAxNC41ODkwNjVd
-IC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0tLQo+Cj4gVGhlIGZpeCB1c2VzIHRo
-ZSBoaWdoZXIgbGV2ZWwgbmFuZF9yZXNldChjaGlwLCBjaGlwbnIpOyB3aGVyZSBjaGlwbnIgPSAw
-LCB3aGVuCj4gZG9pbmcgUE0gcmVzdW1lIG9wZXJhdGlvbiBpbiBjb21wbGlhbmNlIHdpdGggdGhl
-IGNvbnRyb2xsZXIgc3VwcG9ydCBmb3Igc2luZ2xlIGRpZQo+IG5hbmQgY2hpcC4gVGhpcyBlbnN1
-cmVzIHRoYXQgdGhlIG9wLT5jcyBpcyBpbml0aWFsaXplZCBiZWZvcmUgY2FsbGluZyB0aGUKPiBu
-YW5kX3Jlc2V0X29wKCkuCgpXaGlsZSBJIGJlbGlldmUgdGhlIGZpeCBpcyBjb3JyZWN0LCB0aGUg
-ZXhwbGFuYXRpb24gaXMgcGFydGlhbGx5CnNhdGlzZnlpbmcgYmVjYXVzZSB5b3UgZm9jdXMgb24g
-dGhlIFdhcm5pbmcgcmVwb3J0ZWQgYWJvdmUgKHdoaWNoIGluZGVlZApuZWVkcyBmaXhpbmcpIHdo
-ZXJlYXMgdGhlIGJpZ2dlciBwcm9ibGVtIHlvdSBoYXZlIGlzIHRoZSBmYWN0IHRoYXQgeW91cgpO
-QU5EIGNoaXAgaXMgcHJvYmFibHkgbm8gbG9uZ2VyIGluIHN5bmMgdGltaW5nIHdpc2Ugd2l0aCB0
-aGUKaG9zdC4gU3dpdGNoaW5nIGZyb20gbmFuZF9yZXNldF9vcCgpIHRvIG5hbmRfcmVzZXQoKSBp
-bXBsaWVzIG1vcmUgdGhhbgpqdXN0IHNldHRpbmcgdGhlIGNzIGZpZWxkLCBpdCBhbHNvIHJlY29u
-ZmlndXJlcyB0aGUgZGF0YSBpbnRlcmZhY2UKKGllLiB0aGUgdGltaW5ncykuIEkgYmVsaWV2ZSB0
-aGlzIGlzIGltcG9ydGFudCBlbm91Z2ggdG8gYmUgbWVudGlvbmVkLgoKPiBGaXhlcyA6IDk3ZDkw
-ZGE4YTg4NiAoIm10ZDogbmFuZDogcHJvdmlkZSBzZXZlcmFsIGhlbHBlcnMgdG8gZG8gY29tbW9u
-IE5BTkQgb3BlcmF0aW9ucyIpCgpQbGVhc2UgYWRkIENjOiBzdGFibGVAIGhlcmUuCgo+IFNpZ25l
-ZC1vZmYtYnk6IEthbWFsIERhc3UgPGtkYXN1QGJyb2FkY29tLmNvbT4KClRoYW5rcywKTWlxdcOo
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu, Feb 27, 2025 at 08:48:19PM +0800, Zijun Hu wrote:
+> On 2025/2/21 21:02, Zijun Hu wrote:
+> > void api_func_a(...);
+> > 
+> > static inline void api_func_b(...)
+> > {
+> > 	return api_func_a(...);
+> > }
+> 
+> The Usage : Return void function in void function
+> 
+> IMO, perhaps, the usage is not good since:
+> 
+> A) STD C does not like the usage, and i find GCC has no description
+> about the usage.
+>    C11/C17: 6.8.6.4 The return statement
+>    "A return statement with an expression shall not appear in a
+> function whose return type is void"
+
+We really don't use STD C, the kernel is littered with extensions.
+
+> B) According to discussion, the usage have function that return type
+>    of the callee api_func_a() is monitored. but this function has below
+> shortcoming as well:
+> 
+> the monitor is not needed if the caller api_func_b() is in the same
+> module with the callee api_func_a(), otherwise, provided the callee is
+> a API and provided by author of other module. the author needs to clean
+> up lot of usages of the API if he/she changes the API's return type from
+> void to any other type, so it is not nice to API provider.
+> 
+> C) perhaps, most ordinary developers don't known the function mentioned
+>    by B), and also feel strange for the usage
+
+It is quite common to do kernel wide updates using scripts / cocinelle.
+
+If you have a specialization that wraps a function to fill out a default
+value, then you want the return types to keep matching.
+
+Ex.
+
+return_type foo(type1 a1, type2 a2);
+
+return_type my_foo(type1 a1)
+{
+	return foo(a1, value);
+}
+
+is a normal thing to do. The whole STD C cannot return void bollocks
+breaks that when return_type := void, so in that regards I would call
+this a STD C defect.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
