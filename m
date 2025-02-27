@@ -4,83 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93E65C19F2E
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Feb 2025 22:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 490B6C021BE
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2025 06:39:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cxaDw9iWGT2ESc34Wimr/58ga4rCb6KganyI80dUYG8=; b=Psgrsu+i34eKBL
-	yfDXZSgCUgoHYhRrxyZ2SYtrzEO//U/qMk37KZDzL/K3wA3OkLarrQ08rMrfO2SJPxQFoid/k9IQP
-	+0pu61A3cb6B9RlIxsHGOOv/pSdrSGoFux16GujtLsgs+J3EJVzMmP0JfEMdjjLrffsp/DuX2VMEe
-	ins0IRljFl6GBhW7glsksWl2olwqocvUXkUBcQ2D7YHGccol1hA0QO0WIasY1zILQwxVgilkAtV/r
-	caFxsxas9WgYM31YVRrwpFIcj3Ejsc3C/8lhpe9ji6qrETCAbKJuVm1VIXYzXpBHAGRMdNeI2cRej
-	AI57cC9+CK+JQJHPGT4Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Hj5PJ7VJYWT8FSj2/X91WaWYqK+H2YK1A/GgA32efcQ=; b=nYTS2HPAagol2U
+	tq1KhxFeIqD9I4l5M24cPSjI/XH9D9gwf3Ym6oepnucRkAgluY5kZkUn0DMu8cKdpvujDnCt4Jo3t
+	a1KA2z+oSudVS1+9oFaCXw5yFEsgVunt9Sr5b/toDIDiNx3npagrleJvG3QvbTKmMjXiCpTHaWizy
+	lVkebNdhCN8wQ1x/fq12ax6WWp0yLrF3gbZcXyDpo43SHVEOp8IvV4ERuKT0yEui8YRJq2QPYNO7z
+	iwFFSTRSWuNIGUppV9fV8/QAQxsBsrMoaBvK1WtWL+xwxNnk+7kaMJm9Rlq088XIu6y3l1ZZbEssD
+	f0Cdk2BUKUPTkzdvcKRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnQIo-00000005dsv-0kKP;
-	Wed, 26 Feb 2025 22:54:54 +0000
-Received: from mail-oo1-xc2d.google.com ([2607:f8b0:4864:20::c2d])
+	id 1tnXY9-00000006UFh-26HM;
+	Thu, 27 Feb 2025 06:39:13 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnQIl-00000005dsW-2WAf
+	id 1tnXY8-00000006UFJ-0Y1B
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Feb 2025 22:54:52 +0000
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5f6b65c89c4so116304eaf.2
-        for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2025 14:54:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1740610490; x=1741215290; darn=lists.infradead.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MPNaIL+tlppk9dTrhKd24jiwzkfnb9qsPkVFFQkEVaM=;
-        b=FEbDlO7b9vW/Aebzie1kTWvk7bS0nGT5agaJSYDBlSmoPX2z4/ERQMoqUYzFwNJH39
-         AB7OBYKvoXW37k07f6Fs9w+2EVEAdtFLiW00sk4pa2tatrQqjITuBVMzqLDg8aRUJNov
-         FUOUOcOUImU8qQ7HG2lvAngXBMuQqEepwP63E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740610490; x=1741215290;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MPNaIL+tlppk9dTrhKd24jiwzkfnb9qsPkVFFQkEVaM=;
-        b=KU5m0UUT98e5P3mhJ6z4q4e/HSPkJjDHzqS/NBe0NE+ph1c0Mwe6hC8PU07jSHrqGq
-         QHHK8u7Jg+Y4tSHfaZHCoGSdIPlnLWgmapvlc2/goF3KvbiPFf17LO9R7R3Cm7dVpcaX
-         kuexXca3FLOhvJx9Tdjg5pfAu+hV46wlgYLmQJpvbUJXXnG0UWAE46MoRl5G3bpUznHs
-         9WvAkabeytQk354o9wWOOL+M0alYkAGEjv3rQj27+czPg6FDhvMMxYudijUrp88Yu7gL
-         xhAIHV4fHkX10JDvM9+yz3bXUKOxSBun/wuSppf+KO9HkU++JJqC/w9GbuJRrd3f33eY
-         jlZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXmCax1obZXkhYkJSF3g0HCjV1Lpa+DnXkEx8FQIctL/aikiZx/MzolJiET8Gbxt25Xq78X0uFZA4I=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwUIGtYnusAZ1u3CdK+Ga2CcPfLwERMfQOZ02rdVqEBzQ4Jgr2G
-	7yZqFQYKzPRwPOjtfW84fye/FGgDyC+FRyEQQw7gsEEU6tUSPpNuR65eUy+SwA==
-X-Gm-Gg: ASbGncs8LR53bLjSe88wqoNykKarMfR/Tgr5uPlCsIHJt1JUP0tSdS0uqcSVv5K7XvN
-	IYnoZu0S/IUVzipHjsG3QBQnqgpjt10XQlr2ElXix0SoVAscF2OVSGFjEmyv38gBv7UfPvv/hWX
-	+S8GlwKSwcUvIxhKIAWInqzx3GdswUQzlXw9YE3+C7UPl3xPdXBh9k/e/7wpIAevlUHSH8ZNlzp
-	GS9/BFjnX/iCmgJFVt0d/PofSHeuDwzBq4hsEbQP6Zsaadin39AceSFKAt5VoZACn7eL7UkEujk
-	Rz/pcOq3vRXpcrjpmdTVcckbvfMQRLRUN+NQsyLs8Rg8fT853CDl33WNc7+UJA==
-X-Google-Smtp-Source: AGHT+IHUIW/ZU2Dggyf5u1+gjtFIIkhmGjLUrnOsGskPpBQmRzW6dpzyhd88y6Pq0rxrIi1uxGS7YA==
-X-Received: by 2002:a05:6870:9e0d:b0:27d:10f5:347 with SMTP id 586e51a60fabf-2c10f2795e7mr4704632fac.15.1740610489717;
-        Wed, 26 Feb 2025 14:54:49 -0800 (PST)
-Received: from mail.broadcom.net ([192.19.144.250])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-728afd764f7sm33150a34.47.2025.02.26.14.54.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2025 14:54:49 -0800 (PST)
-From: Kamal Dasu <kamal.dasu@broadcom.com>
-To: florian.fainelli@broadcom.com,
-	Brian Norris <computersforpeace@gmail.com>,
-	Kamal Dasu <kamal.dasu@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Kamal Dasu <kdasu@broadcom.com>
-Subject: [PATCH] mtd: rawnand: brcmnand: fix PM resume warning
-Date: Wed, 26 Feb 2025 17:53:09 -0500
-Message-Id: <20250226225356.16380-1-kamal.dasu@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250226_145451_677221_10B36BA6 
-X-CRM114-Status: GOOD (  12.62  )
+	Thu, 27 Feb 2025 06:39:12 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id C6D26612D0;
+	Thu, 27 Feb 2025 06:39:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 067D1C4CEDD;
+	Thu, 27 Feb 2025 06:38:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740638350;
+	bh=2VpGmHtpvddjKHb3CzB9R1qKMNlVQ7QPUa53zp9viUI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ttZ2TVNBJZYxZ+s5GNHb10pG79Z9pg35Hdd7j1MxYovJup4of3OlLXb5fn0ZRRwvO
+	 qkngDZV6QH0DB1oGCeC69PjXudGdVZPnxilq3VbBx8Ea46vpHwTVFLglnRGaLrWOI8
+	 Hv44ss5oa5uF9n7VdfssWKsjkgrsavMRbuG6Fextdtwzfsn9CxhZOpwigNBYTDJEz7
+	 jmlYqRLIPpkClEhVg16s6NWuvVyF+IV8txsvtpW/JbX4SiBtzeluBOvoOq00TnIuqi
+	 ef90a72XayOByLY3mBcKOB/yw/RFDiEo/WpWtPKtvQ6/iGpyGLrB90+ZiF2vev0TC8
+	 ODi1vvSIejB4A==
+Message-ID: <a8c29dec-6178-4f8f-80f5-aece636c410b@kernel.org>
+Date: Thu, 27 Feb 2025 07:38:58 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+ jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+ andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
+ mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
+ arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
+ gregkh@linuxfoundation.org, akpm@linux-foundation.org, hpa@zytor.com,
+ alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+ Yu-Chun Lin <eleanor15x@gmail.com>
+References: <20250223164217.2139331-1-visitorckw@gmail.com>
+ <20250223164217.2139331-3-visitorckw@gmail.com> <Z7zIBwH4aUA7G9MY@thinkpad>
+ <Z73FxIv353lbXO3A@visitorckw-System-Product-Name>
+ <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org> <Z79ebv630yuNOJKV@thinkpad>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <Z79ebv630yuNOJKV@thinkpad>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,99 +130,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fixed warning due to unintialized struct nand_operation op->cs
-WARN_ON(op->cs >= nanddev_ntargets(&chip->base)
+On 26. 02. 25, 19:33, Yury Norov wrote:
+>> Not in cases where macros are inevitable. I mean, do we need parityXX() for
+>> XX in (8, 16, 32, 64) at all? Isn't the parity() above enough for everybody?
+> 
+> The existing codebase has something like:
+> 
+>          int ret;
+> 
+>          ret = i3c_master_get_free_addr(m, last_addr + 1);
+>          ret |= parity8(ret) ? 0 : BIT(7)
+> 
+> So if we'll switch it to a macro like one above, it will become a
+> 32-bit parity. It wouldn't be an error because i3c_master_get_free_addr()
+> returns an u8 or -ENOMEM, and the error code is checked explicitly.
+> 
+> But if we decide to go with parity() only, some users will have to
+> call it like parity((u8)val) explicitly. Which is not bad actually.
 
-[   14.588522] ------------[ cut here ]------------
-[   14.588529] WARNING: CPU: 0 PID: 1392 at drivers/mtd/nand/raw/internals.h:139 nand_reset_op+0x1e0/0x1f8
-[   14.588553] Modules linked in: bdc udc_core
-[   14.588579] CPU: 0 UID: 0 PID: 1392 Comm: rtcwake Tainted: G        W          6.14.0-rc4-g5394eea10651 #16
-[   14.588590] Tainted: [W]=WARN
-[   14.588593] Hardware name: Broadcom STB (Flattened Device Tree)
-[   14.588598] Call trace:
-[   14.588604]  dump_backtrace from show_stack+0x18/0x1c
-[   14.588622]  r7:00000009 r6:0000008b r5:60000153 r4:c0fa558c
-[   14.588625]  show_stack from dump_stack_lvl+0x70/0x7c
-[   14.588639]  dump_stack_lvl from dump_stack+0x18/0x1c
-[   14.588653]  r5:c08d40b0 r4:c1003cb0
-[   14.588656]  dump_stack from __warn+0x84/0xe4
-[   14.588668]  __warn from warn_slowpath_fmt+0x18c/0x194
-[   14.588678]  r7:c08d40b0 r6:c1003cb0 r5:00000000 r4:00000000
-[   14.588681]  warn_slowpath_fmt from nand_reset_op+0x1e0/0x1f8
-[   14.588695]  r8:70c40dff r7:89705f41 r6:36b4a597 r5:c26c9444 r4:c26b0048
-[   14.588697]  nand_reset_op from brcmnand_resume+0x13c/0x150
-[   14.588714]  r9:00000000 r8:00000000 r7:c24f8010 r6:c228a3f8 r5:c26c94bc r4:c26b0040
-[   14.588717]  brcmnand_resume from platform_pm_resume+0x34/0x54
-[   14.588735]  r5:00000010 r4:c0840a50
-[   14.588738]  platform_pm_resume from dpm_run_callback+0x5c/0x14c
-[   14.588757]  dpm_run_callback from device_resume+0xc0/0x324
-[   14.588776]  r9:c24f8054 r8:c24f80a0 r7:00000000 r6:00000000 r5:00000010 r4:c24f8010
-[   14.588779]  device_resume from dpm_resume+0x130/0x160
-[   14.588799]  r9:c22539e4 r8:00000010 r7:c22bebb0 r6:c24f8010 r5:c22539dc r4:c22539b0
-[   14.588802]  dpm_resume from dpm_resume_end+0x14/0x20
-[   14.588822]  r10:c2204e40 r9:00000000 r8:c228a3fc r7:00000000 r6:00000003 r5:c228a414
-[   14.588826]  r4:00000010
-[   14.588828]  dpm_resume_end from suspend_devices_and_enter+0x274/0x6f8
-[   14.588848]  r5:c228a414 r4:00000000
-[   14.588851]  suspend_devices_and_enter from pm_suspend+0x228/0x2bc
-[   14.588868]  r10:c3502910 r9:c3501f40 r8:00000004 r7:c228a438 r6:c0f95e18 r5:00000000
-[   14.588871]  r4:00000003
-[   14.588874]  pm_suspend from state_store+0x74/0xd0
-[   14.588889]  r7:c228a438 r6:c0f934c8 r5:00000003 r4:00000003
-[   14.588892]  state_store from kobj_attr_store+0x1c/0x28
-[   14.588913]  r9:00000000 r8:00000000 r7:f09f9f08 r6:00000004 r5:c3502900 r4:c0283250
-[   14.588916]  kobj_attr_store from sysfs_kf_write+0x40/0x4c
-[   14.588936]  r5:c3502900 r4:c0d92a48
-[   14.588939]  sysfs_kf_write from kernfs_fop_write_iter+0x104/0x1f0
-[   14.588956]  r5:c3502900 r4:c3501f40
-[   14.588960]  kernfs_fop_write_iter from vfs_write+0x250/0x420
-[   14.588980]  r10:c0e14b48 r9:00000000 r8:c25f5780 r7:00443398 r6:f09f9f68 r5:c34f7f00
-[   14.588983]  r4:c042a88c
-[   14.588987]  vfs_write from ksys_write+0x74/0xe4
-[   14.589005]  r10:00000004 r9:c25f5780 r8:c02002f0 r7:00000000 r6:00000000 r5:c34f7f00
-[   14.589008]  r4:c34f7f00
-[   14.589011]  ksys_write from sys_write+0x10/0x14
-[   14.589029]  r7:00000004 r6:004421c0 r5:00443398 r4:00000004
-[   14.589032]  sys_write from ret_fast_syscall+0x0/0x5c
-[   14.589044] Exception stack(0xf09f9fa8 to 0xf09f9ff0)
-[   14.589050] 9fa0:                   00000004 00443398 00000004 00443398 00000004 00000001
-[   14.589056] 9fc0: 00000004 00443398 004421c0 00000004 b6ecbd58 00000008 bebfbc38 0043eb78
-[   14.589062] 9fe0: 00440eb0 bebfbaf8 b6de18a0 b6e579e8
-[   14.589065] ---[ end trace 0000000000000000 ]---
+That cast looks ugly -- we apparently need parityXX(). (In this 
+particular case we could do parity8(last_addr), but I assume there are 
+more cases like this.) Thanks for looking up the case for this.
 
-The fix uses the higher level nand_reset(chip, chipnr); where chipnr = 0, when
-doing PM resume operation in compliance with the controller support for single die
-nand chip. This ensures that the op->cs is initialized before calling the
-nand_reset_op().
+>> And if not, you can have all those parityXX() as inlines as you suggest, but
+>> also provide a macro such as the above to call (optimized) parityXX() as per
+>> datatype len.
+> 
+> Yes, if we need fixed-type parity's, they should all be one-liners
+> calling the same macro. Macros or inline functions - no preference for
+> me.
 
-Fixes : 97d90da8a886 ("mtd: nand: provide several helpers to do common NAND operations")
-Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index fea5b6119956..17f6d9723df9 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -3008,7 +3008,7 @@ static int brcmnand_resume(struct device *dev)
- 		brcmnand_save_restore_cs_config(host, 1);
- 
- 		/* Reset the chip, required by some chips after power-up */
--		nand_reset_op(chip);
-+		nand_reset(chip, 0);
- 	}
- 
- 	return 0;
 -- 
-2.17.1
-
+js
+suse labs
 
 ______________________________________________________
 Linux MTD discussion mailing list
