@@ -4,121 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 490B6C021BE
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2025 06:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B561AC021BE
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Feb 2025 06:58:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hj5PJ7VJYWT8FSj2/X91WaWYqK+H2YK1A/GgA32efcQ=; b=nYTS2HPAagol2U
-	tq1KhxFeIqD9I4l5M24cPSjI/XH9D9gwf3Ym6oepnucRkAgluY5kZkUn0DMu8cKdpvujDnCt4Jo3t
-	a1KA2z+oSudVS1+9oFaCXw5yFEsgVunt9Sr5b/toDIDiNx3npagrleJvG3QvbTKmMjXiCpTHaWizy
-	lVkebNdhCN8wQ1x/fq12ax6WWp0yLrF3gbZcXyDpo43SHVEOp8IvV4ERuKT0yEui8YRJq2QPYNO7z
-	iwFFSTRSWuNIGUppV9fV8/QAQxsBsrMoaBvK1WtWL+xwxNnk+7kaMJm9Rlq088XIu6y3l1ZZbEssD
-	f0Cdk2BUKUPTkzdvcKRA==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=j7UIL7hEvCAlvM4nq4QhGZIhyEnhXBIqeKa0xd7XvbA=; b=PksRBirNG+IMbRZQnkIEh9F/a7
+	DoYjNQuu09L04SBf97+3GFukM/bkEDdtaI4QCHD9jfOzsAjQfUj6s5QqrKu/dBCOLT8q9QgpOOs35
+	CZ8fZ4JWfP7D7qDPuVnRksxNFsGhZWPB8jpR0Gtyiswxncy9W4jCTfjgvggORcFW3uB4iadKfEaPy
+	rcYMtaJjSIpi7jaL4p/rXx0jJ4OFRU6TOv1L41OxdthxDpJlnXcA86FuaAbaqqhXKLKAvkU1koNUQ
+	rNrdmmSg1NLx1JbsniQkUdDABwS7u9G193nRnsiu7V5seN5WlC+caI3Ng8LTwhGJw+2gSeqFNqLQW
+	v0hsC6lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnXY9-00000006UFh-26HM;
-	Thu, 27 Feb 2025 06:39:13 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1tnXqm-00000006Vb2-0Q36;
+	Thu, 27 Feb 2025 06:58:28 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnXY8-00000006UFJ-0Y1B
+	id 1tnXqi-00000006Vad-3lns
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Feb 2025 06:39:12 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id C6D26612D0;
-	Thu, 27 Feb 2025 06:39:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 067D1C4CEDD;
-	Thu, 27 Feb 2025 06:38:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740638350;
-	bh=2VpGmHtpvddjKHb3CzB9R1qKMNlVQ7QPUa53zp9viUI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ttZ2TVNBJZYxZ+s5GNHb10pG79Z9pg35Hdd7j1MxYovJup4of3OlLXb5fn0ZRRwvO
-	 qkngDZV6QH0DB1oGCeC69PjXudGdVZPnxilq3VbBx8Ea46vpHwTVFLglnRGaLrWOI8
-	 Hv44ss5oa5uF9n7VdfssWKsjkgrsavMRbuG6Fextdtwzfsn9CxhZOpwigNBYTDJEz7
-	 jmlYqRLIPpkClEhVg16s6NWuvVyF+IV8txsvtpW/JbX4SiBtzeluBOvoOq00TnIuqi
-	 ef90a72XayOByLY3mBcKOB/yw/RFDiEo/WpWtPKtvQ6/iGpyGLrB90+ZiF2vev0TC8
-	 ODi1vvSIejB4A==
-Message-ID: <a8c29dec-6178-4f8f-80f5-aece636c410b@kernel.org>
-Date: Thu, 27 Feb 2025 07:38:58 +0100
+	Thu, 27 Feb 2025 06:58:26 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Z3MVx1xn3z1GBwM;
+	Thu, 27 Feb 2025 14:53:29 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6F2E6140132;
+	Thu, 27 Feb 2025 14:58:15 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 27 Feb 2025 14:58:14 +0800
+Subject: Re: [PATCH v4 mtd-utils 3/4] configure.ac: Add a check for execinfo
+ and backtrace
+To: Khem Raj <raj.khem@gmail.com>, Ross Burton <Ross.Burton@arm.com>
+CC: Fabio Estevam <festevam@gmail.com>, "david.oberhollenzer@sigma-star.at"
+	<david.oberhollenzer@sigma-star.at>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+References: <20250219130244.2119582-1-festevam@gmail.com>
+ <20250219130244.2119582-3-festevam@gmail.com>
+ <DF926CA1-3E9E-4823-A3BB-EFC15511B46F@arm.com>
+ <CAMKF1sqvWfsuvvTosGekvL50nfjauNFJLRBuqiFd_sp-08GxuQ@mail.gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <ee3c75c7-bf51-9fc2-4435-f904ae95037c@huawei.com>
+Date: Thu, 27 Feb 2025 14:58:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
- jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
- arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
- gregkh@linuxfoundation.org, akpm@linux-foundation.org, hpa@zytor.com,
- alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Yu-Chun Lin <eleanor15x@gmail.com>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
- <20250223164217.2139331-3-visitorckw@gmail.com> <Z7zIBwH4aUA7G9MY@thinkpad>
- <Z73FxIv353lbXO3A@visitorckw-System-Product-Name>
- <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org> <Z79ebv630yuNOJKV@thinkpad>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <Z79ebv630yuNOJKV@thinkpad>
+In-Reply-To: <CAMKF1sqvWfsuvvTosGekvL50nfjauNFJLRBuqiFd_sp-08GxuQ@mail.gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250226_225825_305174_DACC8417 
+X-CRM114-Status: GOOD (  19.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,45 +71,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 26. 02. 25, 19:33, Yury Norov wrote:
->> Not in cases where macros are inevitable. I mean, do we need parityXX() for
->> XX in (8, 16, 32, 64) at all? Isn't the parity() above enough for everybody?
-> 
-> The existing codebase has something like:
-> 
->          int ret;
-> 
->          ret = i3c_master_get_free_addr(m, last_addr + 1);
->          ret |= parity8(ret) ? 0 : BIT(7)
-> 
-> So if we'll switch it to a macro like one above, it will become a
-> 32-bit parity. It wouldn't be an error because i3c_master_get_free_addr()
-> returns an u8 or -ENOMEM, and the error code is checked explicitly.
-> 
-> But if we decide to go with parity() only, some users will have to
-> call it like parity((u8)val) explicitly. Which is not bad actually.
-
-That cast looks ugly -- we apparently need parityXX(). (In this 
-particular case we could do parity8(last_addr), but I assume there are 
-more cases like this.) Thanks for looking up the case for this.
-
->> And if not, you can have all those parityXX() as inlines as you suggest, but
->> also provide a macro such as the above to call (optimized) parityXX() as per
->> datatype len.
-> 
-> Yes, if we need fixed-type parity's, they should all be one-liners
-> calling the same macro. Macros or inline functions - no preference for
-> me.
-
--- 
-js
-suse labs
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjUvMi8yNyA0OjEzLCBLaGVtIFJhaiDlhpnpgZM6Cj4gT24gV2VkLCBGZWIgMjYsIDIw
+MjUgYXQgMTA6MjPigK9BTSBSb3NzIEJ1cnRvbiA8Um9zcy5CdXJ0b25AYXJtLmNvbT4gd3JvdGU6
+Cj4+Cj4+IE9uIDE5IEZlYiAyMDI1LCBhdCAxMzowMiwgRmFiaW8gRXN0ZXZhbSA8ZmVzdGV2YW1A
+Z21haWwuY29tPiB3cm90ZToKPj4+Cj4+PiBtdXNsIHJlbGllcyBvbiBhbiBleHRlcm5hbCBleGVj
+aW5mbyBsaWJyYXJ5IHRvIHByb3ZpZGUgYmFja3RyYWNlCj4+PiBmdW5jdGlvbmFsaXR5LiBJZiBt
+dXNsIGNhbm5vdCBsaW5rIHRvIGxpYmV4ZWNpbmZvLCB0aGUgZm9sbG93aW5nIGxpbmsKPj4+IGVy
+cm9yIGhhcHBlbnM6Cj4+Pgo+Pj4gRml4IHRoZSBwcm9ibGVtIGJ5IGNoZWNraW5nIGZvciBiYWNr
+dHJhY2Ugc3VwcG9ydCBpbiBsaWJjIGZpcnN0IGFuZCBpZiBub3QKPj4+IGZvdW5kLCB0aGVuIGNo
+ZWNrIGZvciBiYWNrdHJhY2Ugc3VwcG9ydCBpbiB0aGUgZXh0ZXJuYWwgbGliZXhlY2luZm8uCj4+
+Cj4+IElmIHRoaXMgaXMgdGhlIHJpZ2h0IHNvbHV0aW9uLCBpdOKAmXMgbm90IGNvbXBsZXRlLgo+
+Pgo+PiBtdGQtdXRpbHMgYWxyZWFkeSBjaGVja3MgZm9yIHRoZSBwcmVzZW5jZSBvZiBleGVjaW5m
+by5oIGFuZCB1c2VzIHRoYXQgd2hlbiBjcmVhdGluZyBsaWIvbGlibWlzc2luZy5hLCB3aGljaCBp
+ZiBleGVjaW5mby5oIGlzbuKAmXQgcHJlc2VudCB3aWxsIGNvbnRhaW4gYSBzdHViIGJhY2t0cmFj
+ZSgpIGltcGxlbWVudGF0aW9uIHRoYXQgc2ltcGx5IHJldHVybnMgMC4gIFRoZSB0ZXN0IHN1aXRl
+IGFscmVhZHkgdXNlcyB0aGlzIHNvIGl0IGNhbiBidWlsZCBvbiBzeXN0ZW1zIHdpdGhvdXQgbXVz
+bCwgYnV0IHByZXN1bWFibHkgbm9ib2R5IHRlc3RlZCBtdGQtdXRpbHMgb24gbXVzbCBhZnRlciAi
+dWJpZnMtdXRpbHM6IEFkZCBpbXBsZW1lbnRhdGlvbnMgZm9yIGxpbnV4IGtlcm5lbCBwcmludGlu
+ZyBmdW5jdGlvbnPigJ0gbGFuZGVkLCB3aGljaCBhZGRlZCBtb3JlIHVzZXJzIG9mIGJhY2t0cmFj
+ZSgpLgo+Pgo+PiBJIHRoaW5rIGVpdGhlciBtdGQtdXRpbHMgc2hvdWxkIGhhcmQtZGVwZW5kIG9u
+IF9zb21ldGhpbmdfIHByb3ZpZGluZyBiYWNrdHJhY2UoKSwgYmUgaXQgdGhlIGxpYmMgb3IgYSBk
+cm9wLWluIGxpYnJhcnksIG9yIGl0IHNob3VsZCB1c2UgYmFja3RyYWNlKCkgaWYgcHJlc2VudCBh
+bmQgZ3JhY2VmdWxseSBmYWxsYmFjayBvdGhlcndpc2UgKGFzIGl04oCZcyBhIGNvbnZlbmllbmNl
+IGZlYXR1cmUpLiAgTm90IGJvdGgsIHdoaWNoIGlzIHdoYXQgdGhpcyBwYXRjaCBhY2hpZXZlcy4K
+Pj4KClRoYXQgc291bmRzIHBsYXVzaWJsZSwgdGhhdCdzIHBvc3NpYmx5IHdoYXQgY29tbWl0IAoz
+NTE2YjhiNzU1OGE2OWRmZCgiQWRkIGxpYm1pc3NpbmciKSB3YW50ZWQgdG8gZG8uCj4+IEnigJls
+bCBzZW5kIGFuIGFsdGVybmF0aXZlIHBhdGNoIGluIGEgbW9tZW50IHdoaWNoIHVzZXMgbGlibWlz
+c2luZy5hIGluc3RlYWQgb2YgcmVseWluZyBvbiBhbiBleHRlcm5hbCBsaWJleGVjaW5mby4KPj4K
+PiAKPiBJIHRoaW5rIGxvb2tpbmcgZm9yIGxpYmV4ZWNpbmZvIGlzIHBlcmhhcHMgZmluZSwgaXRz
+IHRoYXQgd2hlbgo+IGJhY2t0cmFjZSBpcyBub3QgZm91bmQgaW4gbGliYyBhbmQgaW4gbGliZXhl
+Y2luZm8sIGl0IHNob3VsZCBzdGlsbAo+IHdvcmsgYnkgZmFsbGluZyBiYWNrIHRvIHN0dWIuCj4g
+CgpIaSwgS2hlbS4gSU1IT++8jG1heWJlIGNvcHlpbmcgJ2V4ZWNpbmZvLmgnIGludG8gbXVzbCBp
+cyBhIGhhY2sgd2F5LCB0aGVuIAp1c2VycyBjb3VsZCBtb2RpZnkgbXRkLXV0aWxzKGVnLiBsaW5r
+IGV4dGVybmFsIGxpYmV4ZWNpbmZvKSBhY2NvcmRpbmcgdG8gCnRoZSBzcGVjaWZpYyBjb21waWxl
+ciwgYnV0IHRoYXQncyBub3QgYSBjb21tb24gd2F5IGZvciBhbGwgY29tcGlsZXJzLiAKV2hhdCBp
+ZiB0aGUgbGlicmFyeSBjb250YWlucyAnYmFja3RyYWNlJyBmdW5jdGlvbiBpcyBub3QgbmFtZWQg
+YXMgCidsaWJleGVjaW5mbyc/Cj4+IE5vdGUgdGhhdCB0aGUgcmVzdCBvZiB0aGUgc2VyaWVzIGlz
+IGdvb2QsIHRoaXMgaXMgdGhlIG9ubHkgY2hhbmdlIEkgaGF2ZSBjb21tZW50cyBvbi4KPj4KPj4g
+Um9zcwo+PiBJTVBPUlRBTlQgTk9USUNFOiBUaGUgY29udGVudHMgb2YgdGhpcyBlbWFpbCBhbmQg
+YW55IGF0dGFjaG1lbnRzIGFyZSBjb25maWRlbnRpYWwgYW5kIG1heSBhbHNvIGJlIHByaXZpbGVn
+ZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBub3RpZnkg
+dGhlIHNlbmRlciBpbW1lZGlhdGVseSBhbmQgZG8gbm90IGRpc2Nsb3NlIHRoZSBjb250ZW50cyB0
+byBhbnkgb3RoZXIgcGVyc29uLCB1c2UgaXQgZm9yIGFueSBwdXJwb3NlLCBvciBzdG9yZSBvciBj
+b3B5IHRoZSBpbmZvcm1hdGlvbiBpbiBhbnkgbWVkaXVtLiBUaGFuayB5b3UuCj4gLgo+IAoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
