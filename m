@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33073C282C6
-	for <linux-mtd@archiver.kernel.org>; Sat,  1 Mar 2025 14:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68727C282C6
+	for <linux-mtd@archiver.kernel.org>; Sat,  1 Mar 2025 14:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wz2zTtgcrgxg3QfsGoEcyoE/ZTolJlj44PxK2KjwoJg=; b=lzBOfcGzXp1A90
-	NzLmRGNWLdirbGxeehJgFyfw8ak8lTSNfF+g1nBJcjqqpL54aWUanGaU+B79B7cTaWLA9NZx+cxrD
-	oEwFNo6GnCUQQgZCUlmqrYtYAWiMr4uF2ugl7FjW1hKB+In0m3FwDq5hwc8aEkK9sdIW5X7139ZxD
-	5bK7eqFkcp3SCVXlru8U9uVSDnwFc8G8YIhgO6Mv/QjmpNUJ9QC4JWoJyuFgwLYPNnjJHqpSE2lxi
-	/rfLISFD0vfLf68iXtSRDQDMdMK4I2h+cp6F9wbsSdr6AEErxCFNrpMv8pe2h1MYRaMjWkAE5VrdC
-	uHaNfHO1Ij17UuM5asDg==;
+	List-Owner; bh=/5oVwIjnB3/3ZYQXQqubghaWjr4L77i953kjb6TTDRM=; b=ef/sAvgxn8PRvT
+	HJ8//CT+i/gBwYsICGJ1Pq0j6J4wqK9ql/nhtfohtH5Lck2pRCB12Aq45IcKHb8M4HHjTkD1FNOOG
+	Krcc6MTGq/5iXWeApnHMLDgjD6hS5Z1wjaiEYLNit6tzu9pZgZ1hm1PQk7UmrTfMUjqNhIdBZ9H/o
+	Y5fzjkpWbdsbY7oQSUVbCv2GoeLP47ewe3wcpFiGqiMJPD969vFlIGPePPmRRREslJpYoq7AD/98G
+	4YffA/JCY38nL9+LlA7SIWXJlqiP3mlwDFP55ksvJB6vxEJwhybUtt2bkbJMOpxHf6gDdE9uPDZ0R
+	pXr2ftVD6N2VbE0YpNrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNnI-0000000ESGI-0xH8;
-	Sat, 01 Mar 2025 14:26:20 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1toNnS-0000000ESLe-3XTV;
+	Sat, 01 Mar 2025 14:26:30 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNnF-0000000ESDA-33pt
+	id 1toNnQ-0000000ESJx-0XqH
 	for linux-mtd@lists.infradead.org;
-	Sat, 01 Mar 2025 14:26:19 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-2235908a30aso28659215ad.3
-        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 06:26:17 -0800 (PST)
+	Sat, 01 Mar 2025 14:26:29 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2239aa5da08so1666405ad.3
+        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 06:26:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740839177; x=1741443977; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1740839187; x=1741443987; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TZw0QJRtM6IhR4KZmh2KNqroHre3ebnX5GDU+1y6qXk=;
-        b=btLDlbyTzQ3J9SiYRjuCMd6XPb4Tvlh8rAXsEzloZ4Nuq+zhY7lVFc0U94AeZd+vsg
-         0p75bcCUKfRtbSCGtbVdo8o/cq5LnPMztpUQLYZfp7i2KftPYWOYUObWgUj0gTacKydr
-         BbOnUcaFWwt82r5Z89DB18Tzo+vV31AoNgU6YmXFc1TTm30jj+Z120JVzoYwy+4xo92g
-         K6qTgJ5BBuDVCjyDA7DCTPFcD3CtcRGNkWg5sOKoyel4oWRK7ejP3ndVcWCUCpcoX6kz
-         WBkP8ROJysgyLxtp/2qwDO4AofyCWfBKPxpNrl11ae47mAMz1hNhZn3j76m518qKCDc1
-         u70A==
+        bh=hp3kGqc16FF01of4e/8WmkeqsdCblTk7qrBu9qHKlh8=;
+        b=BEcQU3FIKiUHwnCwTqtv4ku0QIFczmsXgMROFwcYIKT5XVkqWMkC0W/SFlbMaWbf1s
+         gKSRivBJhNtCA0UfHuOnJuxXbO+TyJHg6iLluVEB+Celj6oHPUcvLfH1GW3GlfU2iHAE
+         pTAosOhNcQNB51HazypguO0dfJicyMot3GqpewgM11axxUrbNQHjvmBcyqLUvt5/rTLj
+         BHVo2xLjQagDqalXIe2LtYMBFM/5cg9vbG4JuC/pmvRxCyOZ3t9vRo2n8JR4F0KCmA2Z
+         vcFzOMfLJu+EoAgPkewBbofD2MMSuslFxloNBDI8ZqZXeAEevNIcbcYO7BobdmDkxGsn
+         qm8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740839177; x=1741443977;
+        d=1e100.net; s=20230601; t=1740839187; x=1741443987;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TZw0QJRtM6IhR4KZmh2KNqroHre3ebnX5GDU+1y6qXk=;
-        b=wuV5Q0Au1262jOgIhjrDas7+F0v5jsYNyFZXKNZYK51L2kRixvIL3aSIq68jnDelbP
-         SeTIQ/5C28IsGvh2HKcVaUrGva0nAZe2l5jpExGmBfUPSmtoQOxsHm/5X46v4BulXpEl
-         HOJqg0FVtrc+SHcleEiAfPbxJ63b1iuYZtjtcPsAba3YNlTApxFFIIP0ZWoSq17gLtMV
-         y6/zIYnfzDzeAZjqxIrbTe9a5HxnKvFvVVUwcBvUrFU4ghDL7Ul+6r7XkpG1AWbGBkgV
-         N/1YwAsQ58FnW+eNKIqfz9qZe+pR6/s1kMwE7jG41zuzj68V42nfhEp3fYXd10PzNh7W
-         e7hw==
-X-Forwarded-Encrypted: i=1; AJvYcCVe2SkxKRbyVGwHp7/Vw1K+NJqBRnQzFJpqzXPan4tyUmNhW9X3RKaoNbDvPSLkMmrMk6227HtwFoQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxGZzRQV0sGZDRj8YXtGnSsyybaRVrS9F7jN1ix3b16ReBQ5Bsw
-	mNvbZMvP8dn6A+W4HsCCoBIHlyhcp6fuzNUgXkZ/uwQysgdXLap9
-X-Gm-Gg: ASbGncsT2ID8vD16BtEA3kl/FJ/hinodoSwe3+3KqhO4ZWcKFZqAvVyYfz8XKxSYY3e
-	cBnIOhGid5jDqs60tgoEdzkZuYKVySuSQySQgrn2MiPWF0pC65BOYpK/SzZ/5L+1a3kM4JJP9RU
-	T+1X4j4Z/i6oyQZhxejDrSzFg0g8PE2VQt4QLul3jGYh42W0676FqDK6Ajn0jPOqE+0CqlAInfp
-	NS9fzobL+k5grwXFWCBDMXbi2FzdPLeTZTPClFqejdMT8Z4lmjcCHJP8nYQpWBK5sPXIKs17Rcz
-	9VLLDGFoh2tCLc50nhRumLbOW6ZdTOS7oi/05LEn050PhvZG+tMGGWlyl1mg7mBRp3dC/0qj8n8
+        bh=hp3kGqc16FF01of4e/8WmkeqsdCblTk7qrBu9qHKlh8=;
+        b=kB+rLqBemYmd/tCEJG1HGF8B0r5lrZf/XNTDAnbckpSNIT/Rxe7dWdO9tp7ulR3ZMx
+         0qY7fVbkVnwLWG9rQLaZZOVwzCoDK4xnuLgGK90jHqU8MdC9xpzgfycx2qi+Wf+Qi2Mg
+         EK+OFSbVQppBuud3DiGs+PhcjhUSRlnNA2gUnDLgEGZOWX6ApAcKRteIWpHQfbmN25xN
+         tREBN85A8cdGiciGFH0FVcIvGEhc9mJe7Nw7M9bpWRvWwX2B5eb3GcTO64n0KJ/kN2+0
+         YG3kwAWgTW0+zobP3ke47HRVOtfBiJxZ861ON2FtwRmbcd8bfyxY9LlhIEnJTZciicha
+         JfJg==
+X-Forwarded-Encrypted: i=1; AJvYcCU//J+Gp4bFsTFlWNXCas9SKbK+e5+wQ/67SuIG8TxpqLZNCAVsz5QfKkJoDhem4DrDdfZ9QVokIZQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxz0bigBxq+PEDlSL9tfpOriG+XbfY24FQ1pVKqFn9WLR5Pr/wr
+	tmh6iNmg4/K1S3UgD22tg9uwW2wGOP/+DHlY0fd0qEBBemLKekU9
+X-Gm-Gg: ASbGncvWwNAJVJW9HmC2anx3+BerGFynCn9MYQCcfykXU+1XFenGjqJfo7kOrbQA9y6
+	Nhplv+gqgszTGE5bbK8fxJgYRtD0WhSGfupNUGIHxZX3lQ5APQotsNvLc6eaZviKbUm+uKZ7mEc
+	Z+c2N8qTVhQ8SAa5SSpf5XAimafyBEkTlB7iIbuvYzuf6xr+fdHVpOXs4vOYYAOh/Aod9PZGaYW
+	RjgGnYxaPgp7iNr9Y51ROyqESuxrqBaiLuqbdkQqaiQ7bdVhOA9HrukQzuqyCIuRdin2oeN9HIX
+	CwA9fM+o5poitwzk6WHe98oLseuZTa3KiL0m5uLHSv/HxeSn2COYse5M961qaRs9QGTNrIxMJKs
 	=
-X-Google-Smtp-Source: AGHT+IHr7/bNocCASgkhvMFxO0zdSkmZKMBxSgSw4TIYugdqe+gxkfqzHvRXHP0fkW72YV0RkO2YNg==
-X-Received: by 2002:a17:903:2ca:b0:223:4b88:780f with SMTP id d9443c01a7336-22368f7558dmr109533355ad.17.1740839177198;
-        Sat, 01 Mar 2025 06:26:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGHEYprq9u4C7FchZ9I6Y/Ibnse4qNPj1GVk/AdnINX25zgN7NgXyYUydYVyaa9stUlYFgdnA==
+X-Received: by 2002:a17:903:198c:b0:220:e1e6:4457 with SMTP id d9443c01a7336-22368fc987fmr121177295ad.26.1740839187181;
+        Sat, 01 Mar 2025 06:26:27 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.26.08
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.26.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 06:26:16 -0800 (PST)
+        Sat, 01 Mar 2025 06:26:26 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -130,16 +130,16 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v2 06/18] media: saa7115: Replace open-coded parity calculation with parity8()
-Date: Sat,  1 Mar 2025 22:23:57 +0800
-Message-Id: <20250301142409.2513835-7-visitorckw@gmail.com>
+Subject: [PATCH v2 07/18] serial: max3100: Replace open-coded parity calculation with parity8()
+Date: Sat,  1 Mar 2025 22:23:58 +0800
+Message-Id: <20250301142409.2513835-8-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250301142409.2513835-1-visitorckw@gmail.com>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250301_062617_765120_ED43BB86 
-X-CRM114-Status: GOOD (  10.49  )
+X-CRM114-CacheID: sfid-20250301_062628_169527_563A80A9 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,46 +164,30 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/media/i2c/saa7115.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/tty/serial/max3100.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/saa7115.c b/drivers/media/i2c/saa7115.c
-index a1c71187e773..b8b8f206ec3a 100644
---- a/drivers/media/i2c/saa7115.c
-+++ b/drivers/media/i2c/saa7115.c
-@@ -25,6 +25,7 @@
- 
- #include "saa711x_regs.h"
+diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
+index cde5f1c86353..3b05ed113a67 100644
+--- a/drivers/tty/serial/max3100.c
++++ b/drivers/tty/serial/max3100.c
+@@ -16,6 +16,7 @@
+ /* 4 MAX3100s should be enough for everyone */
+ #define MAX_MAX3100 4
  
 +#include <linux/bitops.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-@@ -664,15 +665,6 @@ static const unsigned char saa7115_init_misc[] = {
- 	0x00, 0x00
- };
+ #include <linux/container_of.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+@@ -133,7 +134,7 @@ static int max3100_do_parity(struct max3100_port *s, u16 c)
+ 	else
+ 		c &= 0xff;
  
--static int saa711x_odd_parity(u8 c)
--{
--	c ^= (c >> 4);
--	c ^= (c >> 2);
--	c ^= (c >> 1);
--
--	return c & 1;
--}
--
- static int saa711x_decode_vps(u8 *dst, u8 *p)
- {
- 	static const u8 biphase_tbl[] = {
-@@ -1227,7 +1219,7 @@ static int saa711x_decode_vbi_line(struct v4l2_subdev *sd, struct v4l2_decode_vb
- 		vbi->type = V4L2_SLICED_TELETEXT_B;
- 		break;
- 	case 4:
--		if (!saa711x_odd_parity(p[0]) || !saa711x_odd_parity(p[1]))
-+		if (!parity8(p[0]) || !parity8(p[1]))
- 			return 0;
- 		vbi->type = V4L2_SLICED_CAPTION_525;
- 		break;
+-	parity = parity ^ (hweight8(c) & 1);
++	parity = parity ^ parity8(c);
+ 	return parity;
+ }
+ 
 -- 
 2.34.1
 
