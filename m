@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1E0CC021B8
-	for <linux-mtd@archiver.kernel.org>; Sat,  1 Mar 2025 14:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40FEAC282C6
+	for <linux-mtd@archiver.kernel.org>; Sat,  1 Mar 2025 14:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BfKRCNVhYL758wvflawb2G11nwvouDw841/CF/lnzDM=; b=KgW4e6enfjRvtE
-	lYDqsgcrZYMI3qMc6CnZVhlrTKwK3ONXi+bl1IdXp/gve8QeRlzNJ4MoLMd8PlTf5YO4TZoxqbVhO
-	mucWihWT7KVyKS+L1hloeNifrqMDQGBzaKZwXx3uwEBcqKF/gHS2+gAEZn87z1x60Awz3APrlDxnr
-	mXnyS5I7NqTu5DGLOykamqLtXqWExwUASXTaquUUKpfMDJBD7AIqvBFul1Befn9XUmX55Y4y9x/5B
-	5YCG2m71R0RJ5wnxAieFr63nNtnI3t+/RyzkgQWf5kW/IJXGvUDUMrODHVHpzZcTCyWtZ/w1+FkF0
-	sijeRjtZGefEjPw20HMw==;
+	List-Owner; bh=yD8qMQNKGzOtztMQKpFnurvkDdIC2XIQYtsLGoGFgac=; b=f+IlwqFGrilXtq
+	sHLzIRYld9yjlygVc6llmB5TKjUvdPe7lti3ifQDYcEUB29vvfiEVoBmotIb1COeqSQ6Qm/wD56bV
+	EDR0oD+T8zeHJ4NnhYDwFBQIpbfo3AIwCDMHY8Jph7WqhSNK4ahWTYS68gtTHiRXJlN+tVRigepC1
+	K3oMshfyyvilxUs7VSVcaDJ7Iy+zn4Y4OlmQ7dSg/9HyM7Rzznep80J4wJOn5OvRLHWpqGr6jVSIG
+	xTb/x7GVD/784+aLjTlSaSJV2XurUNG12h2BlgUTL7363HgGDilRPL8imFC1ufgyu6fiOLysxmYAa
+	h5KhIR6UT9qbhr9TDYbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNmz-0000000ES2y-0buR;
-	Sat, 01 Mar 2025 14:26:01 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1toNn8-0000000ES8n-2sUZ;
+	Sat, 01 Mar 2025 14:26:10 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNmw-0000000ES15-1lMp
+	id 1toNn6-0000000ES73-1f7b
 	for linux-mtd@lists.infradead.org;
-	Sat, 01 Mar 2025 14:26:00 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-22337bc9ac3so59623785ad.1
-        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 06:25:58 -0800 (PST)
+	Sat, 01 Mar 2025 14:26:09 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-223378e2b0dso44908235ad.0
+        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 06:26:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740839157; x=1741443957; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1740839167; x=1741443967; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Nutb7MJ9eZ82YUrFszN8Vow0UKyoKuoqD2og5G/xi8M=;
-        b=Xhg04diKCJ+PO5R4suclPIfyNDKGHO9ul7sguwNGG+35Wak0yunfXYhvGNU2gZYEr+
-         thl+zimEzg5l1kCMZrcpvkYU8NMm0TbWkNQQELJBQtwhpcOEeaqWyz//ULOApEsoweDt
-         iJ3gfEsW+F8A0Rs24/ZSpJ0SHnMVp2JTVqkFc1zKh3OYuTNrWxVunAz/gMkq9WuL+mqP
-         tu1Mljy8ZUqSFkxycXe66CXv+LouaY7oyrz/r/WzwV0nl0kYAFDCKctynSyT5XLB75z3
-         S0SSQnL1aSfF822HbHSsgULV6dBHFzmERIh6M/qMNJgbbMxQz6BgDhQUbyqsI8x+Iwkq
-         wWLw==
+        bh=r0Ho2aCKNYfg5T/o22fFzxZ+UyjSx6Fm0wn6W8o8Gr8=;
+        b=KefGb4dcx7LzNyovZiLf0pyQmPAwXNcGlFLHhXdXUv8PuQyGTCy2+6ei4TmqnKWXzs
+         ua0QFrxmLd2WuEHBbrKUhY67yF2JULx8u9Y6eDlrQyTCVPaxGpDKtc1oCwOetGlvelBY
+         mVCavFm4ed6uarUyZvYN3lum8hVKwgWN3SuSgh9s4OTFJbhNosD6Np3YLvnul+GuuSbH
+         wOL/be0+dO6Jo+xRuEFkfsjTisaFOHgsQtErWO05r0dv11oioyTfOkTzNyLY5h06qQRU
+         SDWODYHdibVa6tallUzRj2af0KCoXJGdYGWJxtEZdSdiLN8fYr2CR1rHCU+3t153KrCB
+         T8QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740839157; x=1741443957;
+        d=1e100.net; s=20230601; t=1740839167; x=1741443967;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nutb7MJ9eZ82YUrFszN8Vow0UKyoKuoqD2og5G/xi8M=;
-        b=JMg3oCJSo/p3sWFDaAVXIsCcQvGmowszZdZeXPinfS1/nzgwmkx/dRCei4rgHUgm31
-         3ZzBOyQhzR7qCtirY7RWTP+e4XSf0hcByvZPVr5hSLZ93Ihfk3J4yt10gE/7m1ExjK+7
-         BaG0H02iCRf1+O8xHUX7w0kkm0ZN1JJ9VbQhI4WTcEHw0ZuGu3HwPCSaSNeu+2+IZ+fI
-         MhsOFH9dUuSTwEJ71UPvgvbkA6l1MkUKjvLxSBkpGfjdr3kUvi8VOkN1GQTqaieeTg2M
-         p0pepy5OKONHf0wW2GHI1vQwzfj8LCtENX8kacHonfT04UsUtU/mda7tfU7KdjddkeBp
-         j1NA==
-X-Forwarded-Encrypted: i=1; AJvYcCW8tVGHmqqwt8abbYCOED5EIExS0d/PgGCu7TjOD2O+pakfSdfKh1jY5K5LwsgheMfSgDrxdDO8kKo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxO02KfM6cbflf1WJgTYs3oqle8O9tw2w1dzXr0yVxeG3xaOuqk
-	PhN4xFpgRU8uwBIKpZDkzClEpGODMtDulQlCNnnxg1p59+pxfBCh
-X-Gm-Gg: ASbGncscfQVZNppztxIHmqXTpynP9/LBtxqTe9Jb0YkIK/BxdXWWLuvTqr+TF44Pd+L
-	pdQ5Zg8JovxIeCsC+0+w/eDpudjEniO/2mCWaJSk0Nzn970qNWZLmlS54X5X89F1umkhR0hcP68
-	Fj7gPjwF4DOCsoMNOGAkWmBS6CPYuE4i95Fcy9Xrwna/UvMinzrYyoaCs5tdtsMG9al/K6450KZ
-	Nua0Bw51Lu0yHs550Bk4xYKth1NaCeGwZadVhnucPdOKErQ1jtZRXEEMYYDTwTfKi147H8IIVzd
-	021TXigqs+N9F39ybSbvz2iy6JIpeI2uxhwFF2E9Y0WPto07z7DFibAuSln2gf3YNDqPxcCVsNE
+        bh=r0Ho2aCKNYfg5T/o22fFzxZ+UyjSx6Fm0wn6W8o8Gr8=;
+        b=X3kbdzkp6PGqccIkBOnhamqUzdLJre/HjW7pPK6Q+s3STGmVXe0S5jXivvDQOPIBFL
+         fl04iyYePHA2yIomPryODVdW2hXlMYS8dyGVm2IJhlfxuW6pAE1p+P1fTIl3XmvfPS4I
+         AC9L8UxDTyEzPqAXcLmLud8S/X7TPAJ2geqcPUiSAr35n0g8PtFeA15/LiRyEBBNZoHX
+         cGv4yW63U223W2QdjYtEHLsCvV4eXA9+RS4VSecKngnZusP4UxItlL05+9QeaG7imEaV
+         /5ps3WX8XJeSjBMNvzGI4ZWS2vxL2huYqbsR1ly4DR/Ml5jrTp5z/80c4sao0Fj+5tNF
+         pkCg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9N5dC9aDrwTyqFgYCPBo+gc7kSp7CHC6NHxcg+tFQfXxaP0awSnk0OO/eNFXLJ/8PJ60Xs4mzPs8=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzCcLRH3I2Mdjn5k2Pf1Xr/XXEhLuKjbxLTsh/2sgRDlQk+J5sp
+	L7Qz5veoHXHlHZ4di05Aa7fUnChEb0sAx3uMrjixf9Hq0SId7PbW
+X-Gm-Gg: ASbGncsq7gH3kpZw8ev3lLUzzNDdwO09F+b92vGkTzDOy7sjAsE5Wb1tEOYKt7p1TKc
+	2UQz3aWKjQ4FqyM9A4diQU2q2OIwLOLQ7wGB2ofCkF8wYCj3mRd/WeihFxe0zxQW1D/XS4bB+SJ
+	ZEL0D311a/MlyK5UJiOcQ5ZddU5EoXTL8fzwE+KXRT/U/dgvfXYclW3vpvWCI1wevWzfZUJk9OP
+	yh5t5dmkTu6CDKjiN0/+YlX3+5hsZykaw4YyBTunmJi/EGl5GIQY95Ge/yXmJqr/tJJ1WZZla2c
+	NoBpIf85irlMDL2NKbNrD+HR1gJBlkSLV1CHAVl+O8j7bjXtEFXWPXF+94YetmZqhiTs1NQOu4A
 	=
-X-Google-Smtp-Source: AGHT+IGPradnOrYoMR1IanWjYjFo3KQDnHNjL2IS+TgfZGmLy7jDODNM73AvbKhXyZC7rWPMMIa78g==
-X-Received: by 2002:a17:902:d507:b0:220:c4e8:3b9f with SMTP id d9443c01a7336-22368bc6ae3mr104323495ad.0.1740839157468;
-        Sat, 01 Mar 2025 06:25:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFTfohTxN61KiiUMR75yyegIVFtOgTpaXboBycWTn/wkpOLO86TKXx34bh6gLZ1DoKzx8tYbQ==
+X-Received: by 2002:a17:903:fb0:b0:220:e7ae:dbcf with SMTP id d9443c01a7336-22368fc9332mr106296855ad.23.1740839167480;
+        Sat, 01 Mar 2025 06:26:07 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.25.48
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.25.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 06:25:56 -0800 (PST)
+        Sat, 01 Mar 2025 06:26:06 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -130,16 +130,16 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v2 04/18] media: media/test_drivers: Replace open-coded parity calculation with parity8()
-Date: Sat,  1 Mar 2025 22:23:55 +0800
-Message-Id: <20250301142409.2513835-5-visitorckw@gmail.com>
+Subject: [PATCH v2 05/18] media: pci: cx18-av-vbi: Replace open-coded parity calculation with parity8()
+Date: Sat,  1 Mar 2025 22:23:56 +0800
+Message-Id: <20250301142409.2513835-6-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250301142409.2513835-1-visitorckw@gmail.com>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250301_062558_462052_43CF2D86 
-X-CRM114-Status: GOOD (  11.36  )
+X-CRM114-CacheID: sfid-20250301_062608_434275_D5306E0B 
+X-CRM114-Status: GOOD (  10.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,35 +164,46 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/media/test-drivers/vivid/vivid-vbi-gen.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/media/pci/cx18/cx18-av-vbi.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-index 70a4024d461e..e0f4151bda18 100644
---- a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-+++ b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-@@ -5,6 +5,7 @@
-  * Copyright 2014 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
+diff --git a/drivers/media/pci/cx18/cx18-av-vbi.c b/drivers/media/pci/cx18/cx18-av-vbi.c
+index 65281d40c681..1a113aad9cd4 100644
+--- a/drivers/media/pci/cx18/cx18-av-vbi.c
++++ b/drivers/media/pci/cx18/cx18-av-vbi.c
+@@ -8,6 +8,7 @@
   */
  
+ 
 +#include <linux/bitops.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
- #include <linux/ktime.h>
-@@ -165,12 +166,7 @@ static const u8 vivid_cc_sequence2[30] = {
+ #include "cx18-driver.h"
  
- static u8 calc_parity(u8 val)
- {
--	unsigned i;
--	unsigned tot = 0;
+ /*
+@@ -56,15 +57,6 @@ struct vbi_anc_data {
+ 	/* u8 fill[]; Variable number of fill bytes */
+ };
+ 
+-static int odd_parity(u8 c)
+-{
+-	c ^= (c >> 4);
+-	c ^= (c >> 2);
+-	c ^= (c >> 1);
 -
--	for (i = 0; i < 7; i++)
--		tot += (val & (1 << i)) ? 1 : 0;
--	return val | ((tot & 1) ? 0 : 0x80);
-+	return val | (parity8(val) ? 0 : 0x80);
- }
- 
- static void vivid_vbi_gen_set_time_of_day(u8 *packet)
+-	return c & 1;
+-}
+-
+ static int decode_vps(u8 *dst, u8 *p)
+ {
+ 	static const u8 biphase_tbl[] = {
+@@ -278,7 +270,7 @@ int cx18_av_decode_vbi_line(struct v4l2_subdev *sd,
+ 		break;
+ 	case 6:
+ 		sdid = V4L2_SLICED_CAPTION_525;
+-		err = !odd_parity(p[0]) || !odd_parity(p[1]);
++		err = !parity8(p[0]) || !parity8(p[1]);
+ 		break;
+ 	case 9:
+ 		sdid = V4L2_SLICED_VPS;
 -- 
 2.34.1
 
