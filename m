@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68727C282C6
-	for <linux-mtd@archiver.kernel.org>; Sat,  1 Mar 2025 14:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 938D8C282C6
+	for <linux-mtd@archiver.kernel.org>; Sat,  1 Mar 2025 14:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/5oVwIjnB3/3ZYQXQqubghaWjr4L77i953kjb6TTDRM=; b=ef/sAvgxn8PRvT
-	HJ8//CT+i/gBwYsICGJ1Pq0j6J4wqK9ql/nhtfohtH5Lck2pRCB12Aq45IcKHb8M4HHjTkD1FNOOG
-	Krcc6MTGq/5iXWeApnHMLDgjD6hS5Z1wjaiEYLNit6tzu9pZgZ1hm1PQk7UmrTfMUjqNhIdBZ9H/o
-	Y5fzjkpWbdsbY7oQSUVbCv2GoeLP47ewe3wcpFiGqiMJPD969vFlIGPePPmRRREslJpYoq7AD/98G
-	4YffA/JCY38nL9+LlA7SIWXJlqiP3mlwDFP55ksvJB6vxEJwhybUtt2bkbJMOpxHf6gDdE9uPDZ0R
-	pXr2ftVD6N2VbE0YpNrw==;
+	List-Owner; bh=3G1UTSbAtq4rhsOW+2LWp6D6KKNufiV9gT4dGHV4Kb0=; b=LzzFMQ2kt2iT/i
+	MB0mYT/WjekEFtsWnEInIr6wZpH3tZLo6W7R2RDcuTua69jgi147sswXfjltHDij2MXn5rDB+a6x7
+	13LQKbCOMrjqVw1XeQUmtp8jk4YuWf7P8cihaicN54MhvXKXj8RHQssueRcrnqm87E+O/5Fh7u8Ej
+	xXPzhAKjo/VSeoifoaBrFdcRh0PxYg8hsmMIYGH4cY1Bqkc0dvInWS3ApCO5CioEhtg8lu1F43Tnh
+	5BXozYFE+4qFE6LNoko4skbK3O7J84JtYNuvN8sbNJmqKPcNoUo/ZMMlU0lWax7tSbC7+0LH9QF4d
+	uQ4s22SDFusbUkKPKrZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNnS-0000000ESLe-3XTV;
-	Sat, 01 Mar 2025 14:26:30 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1toNng-0000000ESTc-08BC;
+	Sat, 01 Mar 2025 14:26:44 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNnQ-0000000ESJx-0XqH
+	id 1toNnc-0000000ESQw-0lD8
 	for linux-mtd@lists.infradead.org;
-	Sat, 01 Mar 2025 14:26:29 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2239aa5da08so1666405ad.3
-        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 06:26:27 -0800 (PST)
+	Sat, 01 Mar 2025 14:26:42 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-2238e884f72so4222045ad.3
+        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 06:26:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740839187; x=1741443987; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1740839199; x=1741443999; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hp3kGqc16FF01of4e/8WmkeqsdCblTk7qrBu9qHKlh8=;
-        b=BEcQU3FIKiUHwnCwTqtv4ku0QIFczmsXgMROFwcYIKT5XVkqWMkC0W/SFlbMaWbf1s
-         gKSRivBJhNtCA0UfHuOnJuxXbO+TyJHg6iLluVEB+Celj6oHPUcvLfH1GW3GlfU2iHAE
-         pTAosOhNcQNB51HazypguO0dfJicyMot3GqpewgM11axxUrbNQHjvmBcyqLUvt5/rTLj
-         BHVo2xLjQagDqalXIe2LtYMBFM/5cg9vbG4JuC/pmvRxCyOZ3t9vRo2n8JR4F0KCmA2Z
-         vcFzOMfLJu+EoAgPkewBbofD2MMSuslFxloNBDI8ZqZXeAEevNIcbcYO7BobdmDkxGsn
-         qm8g==
+        bh=EcXJ496C/2+0qa2GsfTbiscKGioWO59ZW48/kJd6oSs=;
+        b=bvc5hjS3Rgn7MYZdL8k890ekIMOCSwHOcebYzchUY7yOGoIIB4etkS/RvYOi9LjKVf
+         nUTGaGFEkzJ3MRrxSRo00Uvlz+hFCRCLweOUuznC0a0aHZO2uN1zICCZ53ftD6IQT7ob
+         f1v2bfPpJdmU7LIsZDiS8XbpBJcCoS3Mrk1uojSWEcnOj6gNBLsUwFae4PxkkIO+R+Jl
+         pJWycptPhg3EQe+6LfKuoeFE2zFoQzKUZOs72Q1AMnQ9kNwa8yodepmuoQ6OS20Y0P7P
+         H4Aeps5H/n697F6GDQXmwUpQ8f7G2lsFQ2RaCkgXve01kUpPhbyvuJM8YCjjKqCJ0aPs
+         FWbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740839187; x=1741443987;
+        d=1e100.net; s=20230601; t=1740839199; x=1741443999;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hp3kGqc16FF01of4e/8WmkeqsdCblTk7qrBu9qHKlh8=;
-        b=kB+rLqBemYmd/tCEJG1HGF8B0r5lrZf/XNTDAnbckpSNIT/Rxe7dWdO9tp7ulR3ZMx
-         0qY7fVbkVnwLWG9rQLaZZOVwzCoDK4xnuLgGK90jHqU8MdC9xpzgfycx2qi+Wf+Qi2Mg
-         EK+OFSbVQppBuud3DiGs+PhcjhUSRlnNA2gUnDLgEGZOWX6ApAcKRteIWpHQfbmN25xN
-         tREBN85A8cdGiciGFH0FVcIvGEhc9mJe7Nw7M9bpWRvWwX2B5eb3GcTO64n0KJ/kN2+0
-         YG3kwAWgTW0+zobP3ke47HRVOtfBiJxZ861ON2FtwRmbcd8bfyxY9LlhIEnJTZciicha
-         JfJg==
-X-Forwarded-Encrypted: i=1; AJvYcCU//J+Gp4bFsTFlWNXCas9SKbK+e5+wQ/67SuIG8TxpqLZNCAVsz5QfKkJoDhem4DrDdfZ9QVokIZQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxz0bigBxq+PEDlSL9tfpOriG+XbfY24FQ1pVKqFn9WLR5Pr/wr
-	tmh6iNmg4/K1S3UgD22tg9uwW2wGOP/+DHlY0fd0qEBBemLKekU9
-X-Gm-Gg: ASbGncvWwNAJVJW9HmC2anx3+BerGFynCn9MYQCcfykXU+1XFenGjqJfo7kOrbQA9y6
-	Nhplv+gqgszTGE5bbK8fxJgYRtD0WhSGfupNUGIHxZX3lQ5APQotsNvLc6eaZviKbUm+uKZ7mEc
-	Z+c2N8qTVhQ8SAa5SSpf5XAimafyBEkTlB7iIbuvYzuf6xr+fdHVpOXs4vOYYAOh/Aod9PZGaYW
-	RjgGnYxaPgp7iNr9Y51ROyqESuxrqBaiLuqbdkQqaiQ7bdVhOA9HrukQzuqyCIuRdin2oeN9HIX
-	CwA9fM+o5poitwzk6WHe98oLseuZTa3KiL0m5uLHSv/HxeSn2COYse5M961qaRs9QGTNrIxMJKs
+        bh=EcXJ496C/2+0qa2GsfTbiscKGioWO59ZW48/kJd6oSs=;
+        b=cdIRazsIGzj5jjXOfaxauO4ApQJmds/FDjNhL/slY8KXj0f8BUA0boE8m2ig5yuTMZ
+         xGkw4Olwfy0H2rLcR61rNgwenbo6Nj6LGR/Yp++BCqTc99Pge3phAHc/m4+36GufE4T+
+         ob4OhKpiyG3aIOt2ct7DGZFTeCg5Ivt03Ym3Yv5p+jQR8e3FbK5iq70k+DbxUOPi+t3h
+         Hr1S29W3ulj+2QsAMWf2CXT2kZTzfQf5bVwUdjzBcIzkx4kx2gU1JAnS6SHmWkcrSisN
+         1M0njiDZmh/i4RMz6EQ2/rJ/7xWM+g/S+x8nwdIF6m45hy1LKmjN6EVhTT4NHVS+thDX
+         gu7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV8/Y2JoFcpUl7i8QAq0hhaytM7cg1A7FlMwAVlXcCvOdiODzYIdzPRd/S4/vvMXhGJ1nSAnugP3ms=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxoE9dqpmQIneHZpZmiJuqXdOe26WotrR1MU6G8Lo8yGlE1J8jD
+	0zzvAOIQjWXnIy3S4R4QAYEmF0Ejm6OUzswOmLEvuNCcmsHhpYIC
+X-Gm-Gg: ASbGnctdgTt+Z9736EY6bLEIrb4APjHjbndqDrrofQU3OOhVS3OlZGeD0K596fbZ3WH
+	IGNdRVZfx8sZyeBE9bwaJVcOo48RSIwfzVwFzRUEFBf2fYsSn9rtQg6JJlKT/kAz2OczF2CtVmB
+	Hnzb9I3CsL0bd5f5Dq9ScTP2N0Sh+VkRyh6zET9CI2g8Hje9nKwek534titXkmUJOG+BTJmymZ5
+	usTj1zNikt+LcTtcasaDSt9gGTNtjVXGfhF756/TxssDza4ACOLG5MIALBVEBYPVIkR+aYul+Uu
+	gN8cOkWz4TG3bJ4nQRGFILQR54mEsyeWNGUslVoA3XBUR/PDHOJ3k2XSplVx6n0vtmH0HXJ1pko
 	=
-X-Google-Smtp-Source: AGHT+IGHEYprq9u4C7FchZ9I6Y/Ibnse4qNPj1GVk/AdnINX25zgN7NgXyYUydYVyaa9stUlYFgdnA==
-X-Received: by 2002:a17:903:198c:b0:220:e1e6:4457 with SMTP id d9443c01a7336-22368fc987fmr121177295ad.26.1740839187181;
-        Sat, 01 Mar 2025 06:26:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF0PsFOHNYq2JTljPhmrhYVkAKjdgh1XZeXstNsMDq6/4mtC72Fp39DdqLibOGQ7FEZk2iiHA==
+X-Received: by 2002:a17:902:da8d:b0:215:9bc2:42ec with SMTP id d9443c01a7336-22369260956mr94926455ad.47.1740839199131;
+        Sat, 01 Mar 2025 06:26:39 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.26.18
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.26.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 06:26:26 -0800 (PST)
+        Sat, 01 Mar 2025 06:26:38 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -130,16 +130,17 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v2 07/18] serial: max3100: Replace open-coded parity calculation with parity8()
-Date: Sat,  1 Mar 2025 22:23:58 +0800
-Message-Id: <20250301142409.2513835-8-visitorckw@gmail.com>
+Subject: [PATCH v2 08/18] lib/bch: Replace open-coded parity calculation with parity32()
+Date: Sat,  1 Mar 2025 22:23:59 +0800
+Message-Id: <20250301142409.2513835-9-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250301142409.2513835-1-visitorckw@gmail.com>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250301_062628_169527_563A80A9 
-X-CRM114-Status: GOOD (  10.30  )
+X-CRM114-CacheID: sfid-20250301_062640_222313_E1454C11 
+X-CRM114-Status: UNSURE (   9.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,38 +157,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Refactor parity calculations to use the standard parity8() helper. This
-change eliminates redundant implementations and improves code
+Refactor parity calculations to use the standard parity32() helper.
+This change eliminates redundant implementations and improves code
 efficiency.
 
 Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/tty/serial/max3100.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ lib/bch.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
-index cde5f1c86353..3b05ed113a67 100644
---- a/drivers/tty/serial/max3100.c
-+++ b/drivers/tty/serial/max3100.c
-@@ -16,6 +16,7 @@
- /* 4 MAX3100s should be enough for everyone */
- #define MAX_MAX3100 4
- 
-+#include <linux/bitops.h>
- #include <linux/container_of.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-@@ -133,7 +134,7 @@ static int max3100_do_parity(struct max3100_port *s, u16 c)
- 	else
- 		c &= 0xff;
- 
--	parity = parity ^ (hweight8(c) & 1);
-+	parity = parity ^ parity8(c);
- 	return parity;
+diff --git a/lib/bch.c b/lib/bch.c
+index 1c0cb07cdfeb..769459749982 100644
+--- a/lib/bch.c
++++ b/lib/bch.c
+@@ -311,18 +311,6 @@ static inline int deg(unsigned int poly)
+ 	return fls(poly)-1;
  }
  
+-static inline int parity(unsigned int x)
+-{
+-	/*
+-	 * public domain code snippet, lifted from
+-	 * http://www-graphics.stanford.edu/~seander/bithacks.html
+-	 */
+-	x ^= x >> 1;
+-	x ^= x >> 2;
+-	x = (x & 0x11111111U) * 0x11111111U;
+-	return (x >> 28) & 1;
+-}
+-
+ /* Galois field basic operations: multiply, divide, inverse, etc. */
+ 
+ static inline unsigned int gf_mul(struct bch_control *bch, unsigned int a,
+@@ -524,7 +512,7 @@ static int solve_linear_system(struct bch_control *bch, unsigned int *rows,
+ 		tmp = 0;
+ 		for (r = m-1; r >= 0; r--) {
+ 			mask = rows[r] & (tmp|1);
+-			tmp |= parity(mask) << (m-r);
++			tmp |= parity32(mask) << (m-r);
+ 		}
+ 		sol[p] = tmp >> 1;
+ 	}
 -- 
 2.34.1
 
