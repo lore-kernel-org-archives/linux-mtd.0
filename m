@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E528FC021B8
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Mar 2025 03:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B13F2C19F32
+	for <linux-mtd@archiver.kernel.org>; Sun,  2 Mar 2025 08:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S57sSSvgY7YP/m4W35EYcTwOkJWTw1H79Mt6S/HvIT4=; b=Zf07aZ/biqFTGI
-	TBlF8+oFW6MHVHLAFmMNElurVpagQmzj+Y88eDGu7nMgo+EJ1HNyVa92hecsueSpJVDxunIqLE4No
-	7AiCjUsXV3AYilD7Zt5Cz9ATaF4jJhrHM9QlolG9gfIrfyHRSo1ym3V9v/f4ta8pnc12gyyq3i9B7
-	7w9pk4WgBXPmnqMMxtqNnliNtBb++aIy65gZeb44Iwk04aCzRPN0i8Cnv01jzMfd6XjucLfmgJuG5
-	7ndoUeqQ0joOB3mgBPHl1/L+JNHMjnhJIrFx9Hvpe+v1ejuwEB9iXq7wHUENi7KSxlB55v293LQZY
-	R17xtYEcleJcT/IS0jvA==;
+	List-Owner; bh=JbjQAIJIxwpRbjsh7GuhipenGW3zk9AUL1iag+9e6s4=; b=u3Ugz9ZYeVO0sg
+	tRKAW0JOaOjkvd2e6w+SW7OWEkgwfll6WlsewMbFu9NECbMmqIfyAHpFNeygrsZFmGGd3k1B7IrGU
+	yp4K25lEaskfaxnDjlSt1VWIBq6zIOmPuF2ZU2LN4At0Ug2gwJqB1rJ3ZN50U8UfL7B2qFA6++7Da
+	42P95rIL5me6/qPuuC5sMAYBkUiA5dzpUi1PwYZrFUN+blr+SN1MJpg8DQIStnfJxI6tNuMeHCUTz
+	XM5nn4cP7sJB3D4Mhnt+p4a47RxxVeFtPWw7U14Xtr8ISvIsbvq8kfEzvP9PEUdoHEBAXyTKc+Jrg
+	ZYBJTnc1jmwQACK9TWZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1toZin-0000000FI1F-2FyT;
-	Sun, 02 Mar 2025 03:10:29 +0000
-Received: from mail-yw1-x112f.google.com ([2607:f8b0:4864:20::112f])
+	id 1toeYb-0000000Fe0H-3qGX;
+	Sun, 02 Mar 2025 08:20:17 +0000
+Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1toZij-0000000FI0i-3O7u
+	id 1toeYY-0000000Fdze-2Wvv
 	for linux-mtd@lists.infradead.org;
-	Sun, 02 Mar 2025 03:10:27 +0000
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-6fd5f8f3e8eso6513277b3.0
-        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 19:10:24 -0800 (PST)
+	Sun, 02 Mar 2025 08:20:15 +0000
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2fe848040b1so7273795a91.3
+        for <linux-mtd@lists.infradead.org>; Sun, 02 Mar 2025 00:20:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740885024; x=1741489824; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1740903613; x=1741508413; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4LbN5fYyUHQt3Ti89i5IrvWdlm9UYzm7rEomie5t+cc=;
-        b=iexyFIIh3tSru1xgrtrAyn0KVBJehiRbDgCvaXZug/RNTh4D5Faj7TdmhwqgMTE4bS
-         dHc46TMMlG8YHK0FdpvQA/D0jnpmwIy4gsmCIu+9HEW2EB/3KSLn6wqHZZ8KZA9n1TSB
-         JuGBc/Ra6x3GKCbo+y4sBvtRHo2zK3tTA00OSvzEQzacV4pdSuOho38dh43kCkB3hlxS
-         3TOg3ym4llSlsrlgFpe7mcKu+BkpI/oNQoLCA8IPr86TYHNCn3DYfbVn2AgAdv19A6Xt
-         NohcfXR9FrSrZ1nAbheOxfs25OUNmrIUeE0NPRpb/TEUZzNWm5SFP8DK+hmX4+HGD46S
-         iaTg==
+        bh=hvRvdsHloY5BTybtl092nj/Kn8Sd866ni5GmAJ3o96M=;
+        b=mIsZbzK5i3CcttsqltxMxLvQAK/qbpeqsJE8sQcY15o29DuVDJZO3SQFVoXeR6C/VN
+         4uXYJojJBMllNXGkCcVC//NVqIgdmNxTp/Tjd5Gzd//xheQc+BFrvOYXCVshy3mCyeHP
+         EH7tzdlqHJZpr18FIvPaxfir2wwGX62qxh5bGtoeX9wJ7NfaHWfLWhQHlo7MdZw3do6H
+         fbSmhqnxgNu+fZzsRvupLdw20Vsslt8YCjiXG9sQHLK9FjE/wL2DlL926xF9rEBc59Xj
+         QzayKBlCadN514z0Tjg/6JnUL5MxNGJ1lnKUvRuVlwj4BE7iv2BULW0sarNjRwf7IDXD
+         SqeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740885024; x=1741489824;
+        d=1e100.net; s=20230601; t=1740903613; x=1741508413;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4LbN5fYyUHQt3Ti89i5IrvWdlm9UYzm7rEomie5t+cc=;
-        b=GFY1RY1U/g1AAAYyvvLOLqiKL0oFynhfJ2TuwD1FtqL65m3i/p70BT2V3AAkyzrRvp
-         PlmVAABf/WiXMi50vuhgh6oqgacx+cwZXSrTx0U1XSEV2/gJrpqSfVF+2xXeGa/9G6U6
-         hQCa3dG977tcJSQsIUQsq9oQfBno7JFCMvFs1TbLv4nUjN1zrrp1Sxqx8vG+FLUYldRU
-         CZ+mB63hswpZuynwR19oxj9Uf7WwC+ymLRayG/6TWV5WS7pnCBGlUVCycooxvRxUNHeI
-         CviKKX/f3OA8HQnrnideR0tasHUmTbX7CyJaTyalg+Fl/RFCrwr8Ke6Y65uU03bm+LBu
-         QBIA==
-X-Forwarded-Encrypted: i=1; AJvYcCXnq7vGSjtMmExEZMPjDeEPTnOI2o5T2ryAXepk1r+R5V6v8UIOMXzi5Aq22WP3KPXnC5Zk3+j+si0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxPBRrbuOOO5O6usvAp7Bg2y4lX9WyRlrEPi1VStVAtQVtVFeXW
-	/iH+Dquk1GMkX9gLFqF3VCvo9NLaCO8Bu+COtwMMSs07KCyPtaC9
-X-Gm-Gg: ASbGncvkyD9cLK/RTuKv7ZEtdwUg5VsfB9zqM807wO1W48pNzucWVPypXqma1cb0jof
-	65TCcf/HwXMeciDwShOHWOKYF0PUEum2qoGX34W0anZHzWzWqD8YZPaFdgu5XcyNEZJo0S73i7U
-	YdMHthDfDceh7HCHk79LsP6jN2yISlINFnf9UeX/bJN10UR39PibOFxHtZhDAx815vDj3LR7RW4
-	5a+eUesk7SVZ2RiGVXf+N3byYGx8HiHvo27S56Cg90ITFGLA3ET04GNvVw2CQNJkiAJh/WojcQ1
-	mIN1R34IbY7ZQj4UQ4/n7cA6DixU8IvwF780VTN/qLSvclLOk8kkBvIfkaV7BPIAJCrUbPSGi7/
-	Jk+AO
-X-Google-Smtp-Source: AGHT+IEy03FjYEvkbsUi6/ttRTlOKe4T1PD9HCNrsgjQ3AH1f8i6gR4SnirQZ7DNyXo/QUPkw2L8/g==
-X-Received: by 2002:a05:690c:4b12:b0:6fb:9450:b0c3 with SMTP id 00721157ae682-6fd4a02b0d8mr124121857b3.19.1740885024067;
-        Sat, 01 Mar 2025 19:10:24 -0800 (PST)
-Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6fd3cb9dac4sm13986657b3.102.2025.03.01.19.10.21
+        bh=hvRvdsHloY5BTybtl092nj/Kn8Sd866ni5GmAJ3o96M=;
+        b=K3sf3F2szSfsDimRyKLLCIRCBCc5rEqbUe/tjucpY4DPTIU6gcUPeMDO4k1kWOvNop
+         1NXJJynLp/dqy8cjuE1O8984y9zqKfwqk4mAFxlWSPaYcySPgpdgvosj5OmlsEX0nyNv
+         EPATfBcMtWirwev9ZjAJ+x6w60PBIXX6kx0bzxas/PfwifdrAK+BnruTD3VXsGec1OUe
+         4l9VvvSULg6a3RG0wkPkf25Dbm/VPNiU4i9cZ6m/jaP4vXofmhgYynoxmc76ZLqCIIC5
+         pU81VCQa/yqAZPZk5VYYaocQAz6zn8gxOuw4QS/d/SNfN41oebPelWDeSIYcd8XUK975
+         0QSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWelzmxlcM3BqyEhZ05v+BfUg8wR0W4EdxElx2hSJmGY88/3EMkuoohBr26rc6+y75UObxHnm4aExY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzUHFul+wUMqyd20k1gWeBaQhF7k58OttUwIUJ5vhQhfPsdPOEA
+	dFUEg7ZJIlidi8gcdg1S7pBjcCRJsvW6ORM9guQRWGGK7N6ksH/9
+X-Gm-Gg: ASbGncs25K1LimiJQl/KgDLWeP7F71/CjqRdLBj8dYYm3VKvMCKb+sqO14+sk4VSYCX
+	2yW/YbCpDScf9K1asBlFgPNgTbCwHJI4bbfpDi+NI6pCpLOxyiKbmhZHSpmaqrAOJgHAwxF4Iwf
+	ts86LhClb7CpNMkYsBaGv5N8puoZETrHzPuDtVbAhKOk12Ha7T07BUlg7jM0ONE2wK505kj93WB
+	MhScCWvW+dGzpzJ062s+9Bvnl25DhscF+XJC8FqxMb+HpExrVc+l9ULp8s2sN8bGUTbIeIohygy
+	FBedejess3YmdFTDvGFYJ5wSVi6Xi3uKfc+efnv7meN43PTTzegz+z32u8fz8z+u7uTOIh3h
+X-Google-Smtp-Source: AGHT+IEhxHA+kpP3f6IyyP7qeoU3p0FUjq/2+GkVz3d5MRAoSIvjaHiRGY0TomgRz3SF6T/LAIMe2Q==
+X-Received: by 2002:a17:90b:17d2:b0:2ee:aef4:2c5d with SMTP id 98e67ed59e1d1-2febabdede3mr12777219a91.26.1740903613420;
+        Sun, 02 Mar 2025 00:20:13 -0800 (PST)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2235052a622sm58034965ad.231.2025.03.02.00.20.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 19:10:22 -0800 (PST)
-Date: Sat, 1 Mar 2025 22:10:20 -0500
-From: Yury Norov <yury.norov@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
+        Sun, 02 Mar 2025 00:20:12 -0800 (PST)
+Date: Sun, 2 Mar 2025 16:20:02 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Yury Norov <yury.norov@gmail.com>
 Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
 	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
 	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
@@ -99,15 +98,16 @@ Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
 	Yu-Chun Lin <eleanor15x@gmail.com>
 Subject: Re: [PATCH v2 01/18] lib/parity: Add __builtin_parity() fallback
  implementations
-Message-ID: <Z8PMHLYHOkCZJpOh@thinkpad>
+Message-ID: <Z8QUsgpCB0m2qKJR@visitorckw-System-Product-Name>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
  <20250301142409.2513835-2-visitorckw@gmail.com>
+ <Z8PMHLYHOkCZJpOh@thinkpad>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250301142409.2513835-2-visitorckw@gmail.com>
+In-Reply-To: <Z8PMHLYHOkCZJpOh@thinkpad>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250301_191025_872655_D609ED5E 
-X-CRM114-Status: GOOD (  27.51  )
+X-CRM114-CacheID: sfid-20250302_002014_649632_7F980E18 
+X-CRM114-Status: GOOD (  44.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,128 +124,215 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Mar 01, 2025 at 10:23:52PM +0800, Kuan-Wei Chiu wrote:
-> Add generic C implementations of __paritysi2(), __paritydi2(), and
-> __parityti2() as fallback functions in lib/parity.c. These functions
-> compute the parity of a given integer using a bitwise approach and are
-> marked with __weak, allowing architecture-specific implementations to
-> override them.
+Hi Yury,
+
+On Sat, Mar 01, 2025 at 10:10:20PM -0500, Yury Norov wrote:
+> On Sat, Mar 01, 2025 at 10:23:52PM +0800, Kuan-Wei Chiu wrote:
+> > Add generic C implementations of __paritysi2(), __paritydi2(), and
+> > __parityti2() as fallback functions in lib/parity.c. These functions
+> > compute the parity of a given integer using a bitwise approach and are
+> > marked with __weak, allowing architecture-specific implementations to
+> > override them.
+> > 
+> > This patch serves as preparation for using __builtin_parity() by
+> > ensuring a fallback mechanism is available when the compiler does not
+> > inline the __builtin_parity().
+> > 
+> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > ---
+> >  lib/Makefile |  2 +-
+> >  lib/parity.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 49 insertions(+), 1 deletion(-)
+> >  create mode 100644 lib/parity.c
+> > 
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index 7bab71e59019..45affad85ee4 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -51,7 +51,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
+> >  	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
+> >  	 percpu-refcount.o rhashtable.o base64.o \
+> >  	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
+> > -	 generic-radix-tree.o bitmap-str.o
+> > +	 generic-radix-tree.o bitmap-str.o parity.o
+> >  obj-y += string_helpers.o
+> >  obj-y += hexdump.o
+> >  obj-$(CONFIG_TEST_HEXDUMP) += test_hexdump.o
+> > diff --git a/lib/parity.c b/lib/parity.c
+> > new file mode 100644
+> > index 000000000000..a83ff8d96778
+> > --- /dev/null
+> > +++ b/lib/parity.c
+> > @@ -0,0 +1,48 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * lib/parity.c
+> > + *
+> > + * Copyright (C) 2025 Kuan-Wei Chiu <visitorckw@gmail.com>
+> > + * Copyright (C) 2025 Yu-Chun Lin <eleanor15x@gmail.com>
+> > + *
+> > + * __parity[sdt]i2 can be overridden by linking arch-specific versions.
+> > + */
+> > +
+> > +#include <linux/export.h>
+> > +#include <linux/kernel.h>
+> > +
+> > +/*
+> > + * One explanation of this algorithm:
+> > + * https://funloop.org/codex/problem/parity/README.html
 > 
-> This patch serves as preparation for using __builtin_parity() by
-> ensuring a fallback mechanism is available when the compiler does not
-> inline the __builtin_parity().
+> I already asked you not to spread this link. Is there any reason to
+> ignore it?
 > 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->  lib/Makefile |  2 +-
->  lib/parity.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 49 insertions(+), 1 deletion(-)
->  create mode 100644 lib/parity.c
+In v2, this algorithm was removed from bitops.h, so I moved the link
+here instead. I'm sorry if it seemed like I ignored your comment.
+
+> > + */
+> > +int __weak __paritysi2(u32 val);
+> > +int __weak __paritysi2(u32 val)
+> > +{
+> > +	val ^= val >> 16;
+> > +	val ^= val >> 8;
+> > +	val ^= val >> 4;
+> > +	return (0x6996 >> (val & 0xf)) & 1;
+> > +}
+> > +EXPORT_SYMBOL(__paritysi2);
+> > +
+> > +int __weak __paritydi2(u64 val);
+> > +int __weak __paritydi2(u64 val)
+> > +{
+> > +	val ^= val >> 32;
+> > +	val ^= val >> 16;
+> > +	val ^= val >> 8;
+> > +	val ^= val >> 4;
+> > +	return (0x6996 >> (val & 0xf)) & 1;
+> > +}
+> > +EXPORT_SYMBOL(__paritydi2);
+> > +
+> > +int __weak __parityti2(u64 val);
+> > +int __weak __parityti2(u64 val)
+> > +{
+> > +	val ^= val >> 32;
+> > +	val ^= val >> 16;
+> > +	val ^= val >> 8;
+> > +	val ^= val >> 4;
+> > +	return (0x6996 >> (val & 0xf)) & 1;
+> > +}
+> > +EXPORT_SYMBOL(__parityti2);
 > 
-> diff --git a/lib/Makefile b/lib/Makefile
-> index 7bab71e59019..45affad85ee4 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -51,7 +51,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
->  	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
->  	 percpu-refcount.o rhashtable.o base64.o \
->  	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
-> -	 generic-radix-tree.o bitmap-str.o
-> +	 generic-radix-tree.o bitmap-str.o parity.o
->  obj-y += string_helpers.o
->  obj-y += hexdump.o
->  obj-$(CONFIG_TEST_HEXDUMP) += test_hexdump.o
-> diff --git a/lib/parity.c b/lib/parity.c
-> new file mode 100644
-> index 000000000000..a83ff8d96778
-> --- /dev/null
-> +++ b/lib/parity.c
-> @@ -0,0 +1,48 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * lib/parity.c
-> + *
-> + * Copyright (C) 2025 Kuan-Wei Chiu <visitorckw@gmail.com>
-> + * Copyright (C) 2025 Yu-Chun Lin <eleanor15x@gmail.com>
-> + *
-> + * __parity[sdt]i2 can be overridden by linking arch-specific versions.
-> + */
-> +
-> +#include <linux/export.h>
-> +#include <linux/kernel.h>
-> +
-> +/*
-> + * One explanation of this algorithm:
-> + * https://funloop.org/codex/problem/parity/README.html
+> OK, it seems I wasn't clear enough on the previous round, so I'll try
+> to be very straightforward now.
+> 
+> To begin with, the difference between __parityti2 and __paritydi2 
+> doesn't exist. I'm seriously. I put them side by side, and there's
+> no difference at all.
+> 
+> Next, this all is clearly an overengineering. You bake all those weak,
+> const and (ironically, missing) high-efficient arch implementations.
+> But you show no evidence that:
+>  - it improves on code generation,
+>  - the drivers care about parity()'s performance, and
+>  - show no perf tests at all.
+> 
+> So you end up with +185/-155 LOCs.
+> 
+> Those +30 lines add no new functionality. You copy-paste the same
+> algorithm again and again in very core kernel files. This is a no-go
+> for a nice consolidation series.
+> 
+> In the previous round reviewers gave you quite a few nice suggestions.
+> H. Peter Anvin suggested to switch the function to return a boolean, I
+> suggested to make it a macro and even sent you a patch, Jiri and David
+> also spent their time trying to help you, and became ignored.
+> 
+> Nevertheless. NAK for the series. Whatever you end up, if it comes to
+> v3, please make it simple, avoid code duplication and run checkpatch.
+> 
+In v1, I used the same approach as parity8() because I couldn't justify
+the performance impact in a specific driver or subsystem. However,
+multiple people commented on using __builtin_parity or an x86 assembly
+implementation. I'm not ignoring their feedback-I want to address these
+comments. Before submitting, I sent an email explaining my current
+approach: using David's suggested method along with __builtin_parity,
+but no one responded. So, I decided to submit v2 for discussion
+instead.
 
-I already asked you not to spread this link. Is there any reason to
-ignore it?
+To avoid mistakes in v3, I want to confirm the following changes before
+sending it:
 
-> + */
-> +int __weak __paritysi2(u32 val);
-> +int __weak __paritysi2(u32 val)
-> +{
-> +	val ^= val >> 16;
-> +	val ^= val >> 8;
-> +	val ^= val >> 4;
-> +	return (0x6996 >> (val & 0xf)) & 1;
-> +}
-> +EXPORT_SYMBOL(__paritysi2);
-> +
-> +int __weak __paritydi2(u64 val);
-> +int __weak __paritydi2(u64 val)
-> +{
-> +	val ^= val >> 32;
-> +	val ^= val >> 16;
-> +	val ^= val >> 8;
-> +	val ^= val >> 4;
-> +	return (0x6996 >> (val & 0xf)) & 1;
-> +}
-> +EXPORT_SYMBOL(__paritydi2);
-> +
-> +int __weak __parityti2(u64 val);
-> +int __weak __parityti2(u64 val)
-> +{
-> +	val ^= val >> 32;
-> +	val ^= val >> 16;
-> +	val ^= val >> 8;
-> +	val ^= val >> 4;
-> +	return (0x6996 >> (val & 0xf)) & 1;
-> +}
-> +EXPORT_SYMBOL(__parityti2);
+(a) Change the return type from int to bool.
+(b) Avoid __builtin_parity and use the same approach as parity8().
+(c) Implement parity16/32/64() as single-line inline functions that
+    call the next smaller variant after xor.
+(d) Add a parity() macro that selects the appropriate parityXX() based
+    on type size.
+(e) Update users to use this parity() macro.
 
-OK, it seems I wasn't clear enough on the previous round, so I'll try
-to be very straightforward now.
+However, (d) may require a patch affecting multiple subsystems at once
+since some places that already include bitops.h have functions named
+parity(), causing conflicts. Unless we decide not to add this macro in
+the end.
 
-To begin with, the difference between __parityti2 and __paritydi2 
-doesn't exist. I'm seriously. I put them side by side, and there's
-no difference at all.
+As for checkpatch.pl warnings, they are mostly pre-existing coding
+style issues in this series. I've kept them as-is, but if preferred,
+I'm fine with fixing them.
 
-Next, this all is clearly an overengineering. You bake all those weak,
-const and (ironically, missing) high-efficient arch implementations.
-But you show no evidence that:
- - it improves on code generation,
- - the drivers care about parity()'s performance, and
- - show no perf tests at all.
+If anything is incorrect or if there are concerns, please let me know.
 
-So you end up with +185/-155 LOCs.
+Regards,
+Kuan-Wei
 
-Those +30 lines add no new functionality. You copy-paste the same
-algorithm again and again in very core kernel files. This is a no-go
-for a nice consolidation series.
+diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+index c1cb53cf2f0f..47b7eca8d3b7 100644
+--- a/include/linux/bitops.h
++++ b/include/linux/bitops.h
+@@ -260,6 +260,43 @@ static inline int parity8(u8 val)
+ 	return (0x6996 >> (val & 0xf)) & 1;
+ }
 
-In the previous round reviewers gave you quite a few nice suggestions.
-H. Peter Anvin suggested to switch the function to return a boolean, I
-suggested to make it a macro and even sent you a patch, Jiri and David
-also spent their time trying to help you, and became ignored.
++static inline bool parity16(u16 val)
++{
++	return parity8(val ^ (val >> 8));
++}
++
++static inline bool parity32(u32 val)
++{
++	return parity16(val ^ (val >> 16));
++}
++
++static inline bool parity64(u64 val)
++{
++	return parity32(val ^ (val >> 32));
++}
++
++#define parity(val)			\
++({					\
++	bool __ret;			\
++	switch (BITS_PER_TYPE(val)) {	\
++	case 64:			\
++		__ret = parity64(val);	\
++		break;			\
++	case 32:			\
++		__ret = parity32(val);	\
++		break;			\
++	case 16:			\
++		__ret = parity16(val);	\
++		break;			\
++	case 8:				\
++		__ret = parity8(val);	\
++		break;			\
++	default:			\
++		BUILD_BUG();		\
++	}				\
++	__ret;				\
++})
++
+ /**
+  * __ffs64 - find first set bit in a 64 bit word
+  * @word: The 64 bit word
 
-Nevertheless. NAK for the series. Whatever you end up, if it comes to
-v3, please make it simple, avoid code duplication and run checkpatch.
-
-Thanks,
-Yury
 
 ______________________________________________________
 Linux MTD discussion mailing list
