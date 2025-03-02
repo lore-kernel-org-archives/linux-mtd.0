@@ -4,110 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B13F2C19F32
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Mar 2025 08:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D376AC282C6
+	for <linux-mtd@archiver.kernel.org>; Sun,  2 Mar 2025 14:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JbjQAIJIxwpRbjsh7GuhipenGW3zk9AUL1iag+9e6s4=; b=u3Ugz9ZYeVO0sg
-	tRKAW0JOaOjkvd2e6w+SW7OWEkgwfll6WlsewMbFu9NECbMmqIfyAHpFNeygrsZFmGGd3k1B7IrGU
-	yp4K25lEaskfaxnDjlSt1VWIBq6zIOmPuF2ZU2LN4At0Ug2gwJqB1rJ3ZN50U8UfL7B2qFA6++7Da
-	42P95rIL5me6/qPuuC5sMAYBkUiA5dzpUi1PwYZrFUN+blr+SN1MJpg8DQIStnfJxI6tNuMeHCUTz
-	XM5nn4cP7sJB3D4Mhnt+p4a47RxxVeFtPWw7U14Xtr8ISvIsbvq8kfEzvP9PEUdoHEBAXyTKc+Jrg
-	ZYBJTnc1jmwQACK9TWZA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xkVbiqJSCA8xlQ6aUvxV1uFnQ5nlCmw2MGaTSAXnjXg=; b=jp+Z2fHTDWch62
+	elUqZRPsQukPYb2jDPjj/ju09VKKlCj5QxsvdTBf970CsRG7HYdfBv3oJE8fHRCx4vP1zflAgSD29
+	fYuJEtqHpG4RHnBQ62Ev51G/gXJRz/MsoXIz5IUvlq3ZCeI5xiCGDKzmfuyS2dNZ2gCF4IKtHaI+s
+	NDON5Qu4ndX4y6Rg0ZRPs+Vx/Wk2BGFIXg+jSGLPYgkk8gdKpw6QZx3z3LCAmYfra3zqRFkrCSkOE
+	DIQijLZC8Wa/0Se2HFk0DfhTK7udU70iFx1psCBNkC24VMIsJ/u9gwgwem1kRkXNVgNGnGiX0EPlS
+	yJpCc4B6rJmAXUGC3ROg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1toeYb-0000000Fe0H-3qGX;
-	Sun, 02 Mar 2025 08:20:17 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1tokBP-0000000G7IB-0Zlv;
+	Sun, 02 Mar 2025 14:20:43 +0000
+Received: from mgamail.intel.com ([192.198.163.7])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1toeYY-0000000Fdze-2Wvv
+	id 1tokBN-0000000G7Gj-0VJh
 	for linux-mtd@lists.infradead.org;
-	Sun, 02 Mar 2025 08:20:15 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2fe848040b1so7273795a91.3
-        for <linux-mtd@lists.infradead.org>; Sun, 02 Mar 2025 00:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740903613; x=1741508413; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hvRvdsHloY5BTybtl092nj/Kn8Sd866ni5GmAJ3o96M=;
-        b=mIsZbzK5i3CcttsqltxMxLvQAK/qbpeqsJE8sQcY15o29DuVDJZO3SQFVoXeR6C/VN
-         4uXYJojJBMllNXGkCcVC//NVqIgdmNxTp/Tjd5Gzd//xheQc+BFrvOYXCVshy3mCyeHP
-         EH7tzdlqHJZpr18FIvPaxfir2wwGX62qxh5bGtoeX9wJ7NfaHWfLWhQHlo7MdZw3do6H
-         fbSmhqnxgNu+fZzsRvupLdw20Vsslt8YCjiXG9sQHLK9FjE/wL2DlL926xF9rEBc59Xj
-         QzayKBlCadN514z0Tjg/6JnUL5MxNGJ1lnKUvRuVlwj4BE7iv2BULW0sarNjRwf7IDXD
-         SqeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740903613; x=1741508413;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hvRvdsHloY5BTybtl092nj/Kn8Sd866ni5GmAJ3o96M=;
-        b=K3sf3F2szSfsDimRyKLLCIRCBCc5rEqbUe/tjucpY4DPTIU6gcUPeMDO4k1kWOvNop
-         1NXJJynLp/dqy8cjuE1O8984y9zqKfwqk4mAFxlWSPaYcySPgpdgvosj5OmlsEX0nyNv
-         EPATfBcMtWirwev9ZjAJ+x6w60PBIXX6kx0bzxas/PfwifdrAK+BnruTD3VXsGec1OUe
-         4l9VvvSULg6a3RG0wkPkf25Dbm/VPNiU4i9cZ6m/jaP4vXofmhgYynoxmc76ZLqCIIC5
-         pU81VCQa/yqAZPZk5VYYaocQAz6zn8gxOuw4QS/d/SNfN41oebPelWDeSIYcd8XUK975
-         0QSg==
-X-Forwarded-Encrypted: i=1; AJvYcCWelzmxlcM3BqyEhZ05v+BfUg8wR0W4EdxElx2hSJmGY88/3EMkuoohBr26rc6+y75UObxHnm4aExY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzUHFul+wUMqyd20k1gWeBaQhF7k58OttUwIUJ5vhQhfPsdPOEA
-	dFUEg7ZJIlidi8gcdg1S7pBjcCRJsvW6ORM9guQRWGGK7N6ksH/9
-X-Gm-Gg: ASbGncs25K1LimiJQl/KgDLWeP7F71/CjqRdLBj8dYYm3VKvMCKb+sqO14+sk4VSYCX
-	2yW/YbCpDScf9K1asBlFgPNgTbCwHJI4bbfpDi+NI6pCpLOxyiKbmhZHSpmaqrAOJgHAwxF4Iwf
-	ts86LhClb7CpNMkYsBaGv5N8puoZETrHzPuDtVbAhKOk12Ha7T07BUlg7jM0ONE2wK505kj93WB
-	MhScCWvW+dGzpzJ062s+9Bvnl25DhscF+XJC8FqxMb+HpExrVc+l9ULp8s2sN8bGUTbIeIohygy
-	FBedejess3YmdFTDvGFYJ5wSVi6Xi3uKfc+efnv7meN43PTTzegz+z32u8fz8z+u7uTOIh3h
-X-Google-Smtp-Source: AGHT+IEhxHA+kpP3f6IyyP7qeoU3p0FUjq/2+GkVz3d5MRAoSIvjaHiRGY0TomgRz3SF6T/LAIMe2Q==
-X-Received: by 2002:a17:90b:17d2:b0:2ee:aef4:2c5d with SMTP id 98e67ed59e1d1-2febabdede3mr12777219a91.26.1740903613420;
-        Sun, 02 Mar 2025 00:20:13 -0800 (PST)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2235052a622sm58034965ad.231.2025.03.02.00.20.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Mar 2025 00:20:12 -0800 (PST)
-Date: Sun, 2 Mar 2025 16:20:02 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, akpm@linux-foundation.org, hpa@zytor.com,
-	alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v2 01/18] lib/parity: Add __builtin_parity() fallback
- implementations
-Message-ID: <Z8QUsgpCB0m2qKJR@visitorckw-System-Product-Name>
-References: <20250301142409.2513835-1-visitorckw@gmail.com>
- <20250301142409.2513835-2-visitorckw@gmail.com>
- <Z8PMHLYHOkCZJpOh@thinkpad>
+	Sun, 02 Mar 2025 14:20:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740925241; x=1772461241;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gZGTtbqq2qnhVu8l+PwzIYuXEaqfEuYxDLRJMmFSJNw=;
+  b=bEKVUe1h2cmPtcJP4kJpj9mSfnpVNc0D3aawipSLyUfx2VgLwI51tnbn
+   /NjVz4fjRQfjWffAYswi0dR6knh7XkhYEOWPALvTenD/bixswAQoP0wv2
+   vmE6UryttIls2ofQ3QkJ1HfR4XR2v87Yqi3V7ES6IdiRvEmZFStUHFH0j
+   xqZyj+PnsId6sxtN0P+3Cb7jy+NYtz7clia9x6WJH7gx5HwVt8ev8d7t+
+   kMW4u32PCWTDepWGQlNBU65roeQ7tE64iUJ5iFUI0x+DVtRM9nqgRR1E2
+   5nYDuP6hQX0mi5afltgQphB2RZor+/Hf9xwZbg2j+I5FYAj6TTceewi9B
+   w==;
+X-CSE-ConnectionGUID: dB58qxzlSdmQuwnE6Us6eA==
+X-CSE-MsgGUID: Jmfw9VWqTiWZtbobeg1rUQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11361"; a="67176360"
+X-IronPort-AV: E=Sophos;i="6.13,327,1732608000"; 
+   d="scan'208";a="67176360"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2025 06:20:34 -0800
+X-CSE-ConnectionGUID: VwqWPvMQRw+tt9aUceDjUg==
+X-CSE-MsgGUID: cGXPVdFVSH+PfmZ0qdiszQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,327,1732608000"; 
+   d="scan'208";a="122737265"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2025 06:20:28 -0800
+From: Alexander Usyskin <alexander.usyskin@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Karthik Poosa <karthik.poosa@intel.com>
+Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
+	Oren Weil <oren.jer.weil@intel.com>,
+	linux-mtd@lists.infradead.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Subject: [PATCH v6 00/11] mtd: add driver for Intel discrete graphics
+Date: Sun,  2 Mar 2025 16:09:10 +0200
+Message-ID: <20250302140921.504304-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Z8PMHLYHOkCZJpOh@thinkpad>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250302_002014_649632_7F980E18 
-X-CRM114-Status: GOOD (  44.04  )
+X-CRM114-CacheID: sfid-20250302_062041_162474_0077CA34 
+X-CRM114-Status: GOOD (  13.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,214 +101,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Yury,
+Add driver for access to Intel discrete graphics card
+internal NVM device.
+Expose device on auxiliary bus by i915 and Xe drivers and
+provide mtd driver to register this device with MTD framework.
 
-On Sat, Mar 01, 2025 at 10:10:20PM -0500, Yury Norov wrote:
-> On Sat, Mar 01, 2025 at 10:23:52PM +0800, Kuan-Wei Chiu wrote:
-> > Add generic C implementations of __paritysi2(), __paritydi2(), and
-> > __parityti2() as fallback functions in lib/parity.c. These functions
-> > compute the parity of a given integer using a bitwise approach and are
-> > marked with __weak, allowing architecture-specific implementations to
-> > override them.
-> > 
-> > This patch serves as preparation for using __builtin_parity() by
-> > ensuring a fallback mechanism is available when the compiler does not
-> > inline the __builtin_parity().
-> > 
-> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> >  lib/Makefile |  2 +-
-> >  lib/parity.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 49 insertions(+), 1 deletion(-)
-> >  create mode 100644 lib/parity.c
-> > 
-> > diff --git a/lib/Makefile b/lib/Makefile
-> > index 7bab71e59019..45affad85ee4 100644
-> > --- a/lib/Makefile
-> > +++ b/lib/Makefile
-> > @@ -51,7 +51,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
-> >  	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
-> >  	 percpu-refcount.o rhashtable.o base64.o \
-> >  	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
-> > -	 generic-radix-tree.o bitmap-str.o
-> > +	 generic-radix-tree.o bitmap-str.o parity.o
-> >  obj-y += string_helpers.o
-> >  obj-y += hexdump.o
-> >  obj-$(CONFIG_TEST_HEXDUMP) += test_hexdump.o
-> > diff --git a/lib/parity.c b/lib/parity.c
-> > new file mode 100644
-> > index 000000000000..a83ff8d96778
-> > --- /dev/null
-> > +++ b/lib/parity.c
-> > @@ -0,0 +1,48 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * lib/parity.c
-> > + *
-> > + * Copyright (C) 2025 Kuan-Wei Chiu <visitorckw@gmail.com>
-> > + * Copyright (C) 2025 Yu-Chun Lin <eleanor15x@gmail.com>
-> > + *
-> > + * __parity[sdt]i2 can be overridden by linking arch-specific versions.
-> > + */
-> > +
-> > +#include <linux/export.h>
-> > +#include <linux/kernel.h>
-> > +
-> > +/*
-> > + * One explanation of this algorithm:
-> > + * https://funloop.org/codex/problem/parity/README.html
-> 
-> I already asked you not to spread this link. Is there any reason to
-> ignore it?
-> 
-In v2, this algorithm was removed from bitops.h, so I moved the link
-here instead. I'm sorry if it seemed like I ignored your comment.
+This is a rewrite of "drm/i915/spi: spi access for discrete graphics"
+and "spi: add driver for Intel discrete graphics"
+series with connection to the Xe driver and splitting
+the spi driver part to separate module in mtd subsystem.
 
-> > + */
-> > +int __weak __paritysi2(u32 val);
-> > +int __weak __paritysi2(u32 val)
-> > +{
-> > +	val ^= val >> 16;
-> > +	val ^= val >> 8;
-> > +	val ^= val >> 4;
-> > +	return (0x6996 >> (val & 0xf)) & 1;
-> > +}
-> > +EXPORT_SYMBOL(__paritysi2);
-> > +
-> > +int __weak __paritydi2(u64 val);
-> > +int __weak __paritydi2(u64 val)
-> > +{
-> > +	val ^= val >> 32;
-> > +	val ^= val >> 16;
-> > +	val ^= val >> 8;
-> > +	val ^= val >> 4;
-> > +	return (0x6996 >> (val & 0xf)) & 1;
-> > +}
-> > +EXPORT_SYMBOL(__paritydi2);
-> > +
-> > +int __weak __parityti2(u64 val);
-> > +int __weak __parityti2(u64 val)
-> > +{
-> > +	val ^= val >> 32;
-> > +	val ^= val >> 16;
-> > +	val ^= val >> 8;
-> > +	val ^= val >> 4;
-> > +	return (0x6996 >> (val & 0xf)) & 1;
-> > +}
-> > +EXPORT_SYMBOL(__parityti2);
-> 
-> OK, it seems I wasn't clear enough on the previous round, so I'll try
-> to be very straightforward now.
-> 
-> To begin with, the difference between __parityti2 and __paritydi2 
-> doesn't exist. I'm seriously. I put them side by side, and there's
-> no difference at all.
-> 
-> Next, this all is clearly an overengineering. You bake all those weak,
-> const and (ironically, missing) high-efficient arch implementations.
-> But you show no evidence that:
->  - it improves on code generation,
->  - the drivers care about parity()'s performance, and
->  - show no perf tests at all.
-> 
-> So you end up with +185/-155 LOCs.
-> 
-> Those +30 lines add no new functionality. You copy-paste the same
-> algorithm again and again in very core kernel files. This is a no-go
-> for a nice consolidation series.
-> 
-> In the previous round reviewers gave you quite a few nice suggestions.
-> H. Peter Anvin suggested to switch the function to return a boolean, I
-> suggested to make it a macro and even sent you a patch, Jiri and David
-> also spent their time trying to help you, and became ignored.
-> 
-> Nevertheless. NAK for the series. Whatever you end up, if it comes to
-> v3, please make it simple, avoid code duplication and run checkpatch.
-> 
-In v1, I used the same approach as parity8() because I couldn't justify
-the performance impact in a specific driver or subsystem. However,
-multiple people commented on using __builtin_parity or an x86 assembly
-implementation. I'm not ignoring their feedback-I want to address these
-comments. Before submitting, I sent an email explaining my current
-approach: using David's suggested method along with __builtin_parity,
-but no one responded. So, I decided to submit v2 for discussion
-instead.
+This series intended to be pushed through drm-xe-next.
 
-To avoid mistakes in v3, I want to confirm the following changes before
-sending it:
+V2: Replace dev_* prints with drm_* prints in drm (xe and i915) patches.
+    Enable NVM device on Battlemage HW (xe driver patch)
+    Fix overwrite register address (xe driver patch)
+    Add Rodrigo's r-b
 
-(a) Change the return type from int to bool.
-(b) Avoid __builtin_parity and use the same approach as parity8().
-(c) Implement parity16/32/64() as single-line inline functions that
-    call the next smaller variant after xor.
-(d) Add a parity() macro that selects the appropriate parityXX() based
-    on type size.
-(e) Update users to use this parity() macro.
+V3: Use devm_pm_runtime_enable to simplify flow.
+    Drop print in i915 unload that was accidentally set as error.
+    Drop HAS_GSC_NVM macro in line with latest Xe changes.
+    Add more Rodrigo's r-b and Miquel's ack.
 
-However, (d) may require a patch affecting multiple subsystems at once
-since some places that already include bitops.h have functions named
-parity(), causing conflicts. Unless we decide not to add this macro in
-the end.
+V4: Add patch that always creates mtd master device
+    and adjust mtd-intel-dg power management to use this device.
 
-As for checkpatch.pl warnings, they are mostly pre-existing coding
-style issues in this series. I've kept them as-is, but if preferred,
-I'm fine with fixing them.
+V5: Fix master device creation to accomodate for devices without
+    partitions (create partitoned master in this case)
+    Rebase over latest drm-xe-next
+    Add ack's
+V6: Fix master device release (use rigth idr in release)
+    Rebase over latest drm-xe-next
+    Grammar and style fixes
 
-If anything is incorrect or if there are concerns, please let me know.
+Alexander Usyskin (11):
+  mtd: core: always create master device
+  mtd: add driver for intel graphics non-volatile memory device
+  mtd: intel-dg: implement region enumeration
+  mtd: intel-dg: implement access functions
+  mtd: intel-dg: register with mtd
+  mtd: intel-dg: align 64bit read and write
+  mtd: intel-dg: wake card on operations
+  drm/i915/nvm: add nvm device for discrete graphics
+  drm/i915/nvm: add support for access mode
+  drm/xe/nvm: add on-die non-volatile memory device
+  drm/xe/nvm: add support for access mode
 
-Regards,
-Kuan-Wei
+ MAINTAINERS                           |   7 +
+ drivers/gpu/drm/i915/Makefile         |   4 +
+ drivers/gpu/drm/i915/i915_driver.c    |   6 +
+ drivers/gpu/drm/i915/i915_drv.h       |   3 +
+ drivers/gpu/drm/i915/i915_reg.h       |   1 +
+ drivers/gpu/drm/i915/intel_nvm.c      | 115 ++++
+ drivers/gpu/drm/i915/intel_nvm.h      |  15 +
+ drivers/gpu/drm/xe/Makefile           |   1 +
+ drivers/gpu/drm/xe/regs/xe_gsc_regs.h |   4 +
+ drivers/gpu/drm/xe/xe_device.c        |   5 +
+ drivers/gpu/drm/xe/xe_device_types.h  |   6 +
+ drivers/gpu/drm/xe/xe_heci_gsc.c      |   5 +-
+ drivers/gpu/drm/xe/xe_nvm.c           | 136 +++++
+ drivers/gpu/drm/xe/xe_nvm.h           |  15 +
+ drivers/gpu/drm/xe/xe_pci.c           |   6 +
+ drivers/mtd/devices/Kconfig           |  11 +
+ drivers/mtd/devices/Makefile          |   1 +
+ drivers/mtd/devices/mtd_intel_dg.c    | 845 ++++++++++++++++++++++++++
+ drivers/mtd/mtdcore.c                 | 141 +++--
+ drivers/mtd/mtdcore.h                 |   2 +-
+ drivers/mtd/mtdpart.c                 |  17 +-
+ include/linux/intel_dg_nvm_aux.h      |  27 +
+ 22 files changed, 1319 insertions(+), 54 deletions(-)
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.c
+ create mode 100644 drivers/gpu/drm/i915/intel_nvm.h
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
+ create mode 100644 drivers/mtd/devices/mtd_intel_dg.c
+ create mode 100644 include/linux/intel_dg_nvm_aux.h
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index c1cb53cf2f0f..47b7eca8d3b7 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -260,6 +260,43 @@ static inline int parity8(u8 val)
- 	return (0x6996 >> (val & 0xf)) & 1;
- }
-
-+static inline bool parity16(u16 val)
-+{
-+	return parity8(val ^ (val >> 8));
-+}
-+
-+static inline bool parity32(u32 val)
-+{
-+	return parity16(val ^ (val >> 16));
-+}
-+
-+static inline bool parity64(u64 val)
-+{
-+	return parity32(val ^ (val >> 32));
-+}
-+
-+#define parity(val)			\
-+({					\
-+	bool __ret;			\
-+	switch (BITS_PER_TYPE(val)) {	\
-+	case 64:			\
-+		__ret = parity64(val);	\
-+		break;			\
-+	case 32:			\
-+		__ret = parity32(val);	\
-+		break;			\
-+	case 16:			\
-+		__ret = parity16(val);	\
-+		break;			\
-+	case 8:				\
-+		__ret = parity8(val);	\
-+		break;			\
-+	default:			\
-+		BUILD_BUG();		\
-+	}				\
-+	__ret;				\
-+})
-+
- /**
-  * __ffs64 - find first set bit in a 64 bit word
-  * @word: The 64 bit word
+-- 
+2.43.0
 
 
 ______________________________________________________
