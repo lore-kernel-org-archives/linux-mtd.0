@@ -4,142 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B821FC282D1
-	for <linux-mtd@archiver.kernel.org>; Sat,  1 Mar 2025 14:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E528FC021B8
+	for <linux-mtd@archiver.kernel.org>; Sun,  2 Mar 2025 03:10:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kee5tCvpcdOhM1xBp3abLk5I46OJxNBIiiQPRagqQCM=; b=fkKcNv0OU40zJu
-	nGB7/mPbLJr3vd9XsdFF4SBRAEp66eB4JddwezKHt00mHbHtib40Zqd46EadSIAWH3dzgL/EdGr9l
-	20NTi9z3tHEg/p1sH+1Zt3NSQdDkGE9jJEBWot41PTnUCXpcFyfRv2ipWQgX2kqWIY8YHd2u0lXrh
-	F822uxoWhiX+O1AOHc2AdInH8FUG4lngEfxG+7XuPcZbZ+fZwXThqXwewkaQcHbwE/DydCkTsU66K
-	A5N8Wh568TLf1XDsdNPha+E5cHzqWDvyMDyF5qN3aL6xRW3dzsHOCdU90oryyepOSC3utRmaibnNw
-	FJKa4UZxo4/dAd8zpLKQ==;
+	List-Owner; bh=S57sSSvgY7YP/m4W35EYcTwOkJWTw1H79Mt6S/HvIT4=; b=Zf07aZ/biqFTGI
+	TBlF8+oFW6MHVHLAFmMNElurVpagQmzj+Y88eDGu7nMgo+EJ1HNyVa92hecsueSpJVDxunIqLE4No
+	7AiCjUsXV3AYilD7Zt5Cz9ATaF4jJhrHM9QlolG9gfIrfyHRSo1ym3V9v/f4ta8pnc12gyyq3i9B7
+	7w9pk4WgBXPmnqMMxtqNnliNtBb++aIy65gZeb44Iwk04aCzRPN0i8Cnv01jzMfd6XjucLfmgJuG5
+	7ndoUeqQ0joOB3mgBPHl1/L+JNHMjnhJIrFx9Hvpe+v1ejuwEB9iXq7wHUENi7KSxlB55v293LQZY
+	R17xtYEcleJcT/IS0jvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNpJ-0000000ETXw-3pKN;
-	Sat, 01 Mar 2025 14:28:25 +0000
-Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
+	id 1toZin-0000000FI1F-2FyT;
+	Sun, 02 Mar 2025 03:10:29 +0000
+Received: from mail-yw1-x112f.google.com ([2607:f8b0:4864:20::112f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1toNpI-0000000ETWd-0YmZ
+	id 1toZij-0000000FI0i-3O7u
 	for linux-mtd@lists.infradead.org;
-	Sat, 01 Mar 2025 14:28:25 +0000
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-2234bec7192so28701575ad.2
-        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 06:28:23 -0800 (PST)
+	Sun, 02 Mar 2025 03:10:27 +0000
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-6fd5f8f3e8eso6513277b3.0
+        for <linux-mtd@lists.infradead.org>; Sat, 01 Mar 2025 19:10:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740839303; x=1741444103; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U+YDx3nsS23nFYRYOsOtDL2pw2M9KWSnqwRamUvuzKU=;
-        b=aE1wtreFnfm5pwJXtzdCmyGR9Dw8fjDzW2yL0qIz2MzgAB2NRl0ytJS8m22zPYeyxK
-         yquUJq9OToa998i9GikzmVeXwJozoz+CUJGd0PUETm0n3M9FxeQjAPOjX9MCabP2xM/d
-         tNul/7RkJjP83U0P8WKM98Izk9/USXFaVk5zvVT7KHOAs4OB4CtuRA5+vXN52Ts+3zED
-         PrwNUfIsb9A+UZUf6E9v5hIxs/Mx0zjuw1EkwJOOgfY4aYaqh/o8UqFr/sojtyO+ZtPZ
-         QruusIvcFcvulwGOMYNwTInfiJnxmDSXqDTJjzmBAUTYbU1k/9w7CHRoKUswAScdfxkC
-         SWDg==
+        d=gmail.com; s=20230601; t=1740885024; x=1741489824; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4LbN5fYyUHQt3Ti89i5IrvWdlm9UYzm7rEomie5t+cc=;
+        b=iexyFIIh3tSru1xgrtrAyn0KVBJehiRbDgCvaXZug/RNTh4D5Faj7TdmhwqgMTE4bS
+         dHc46TMMlG8YHK0FdpvQA/D0jnpmwIy4gsmCIu+9HEW2EB/3KSLn6wqHZZ8KZA9n1TSB
+         JuGBc/Ra6x3GKCbo+y4sBvtRHo2zK3tTA00OSvzEQzacV4pdSuOho38dh43kCkB3hlxS
+         3TOg3ym4llSlsrlgFpe7mcKu+BkpI/oNQoLCA8IPr86TYHNCn3DYfbVn2AgAdv19A6Xt
+         NohcfXR9FrSrZ1nAbheOxfs25OUNmrIUeE0NPRpb/TEUZzNWm5SFP8DK+hmX4+HGD46S
+         iaTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740839303; x=1741444103;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U+YDx3nsS23nFYRYOsOtDL2pw2M9KWSnqwRamUvuzKU=;
-        b=fbypF8Gf6KUs8hY6C+qgUt+WNbJg6K/ejT66u9wZLWvx0ABaNmgGSYel5dmu39D0WW
-         euhmK55HnATaz2IsLraEJDIwIfWAHjTwmoaEN24REHfCiQdw9OTj0bq1WpDFN1Y7xPXH
-         h85yCLJBC8vsxOmP6FS8k6V2+5kcGesEiQXgin8WV2aQFTBHRIs7kf8FTWJx0YNapXtb
-         2sOdN/B7Wa/84wuGPczmlQPhPexTsYzesyYCUVuuDTRy/GH3MfLlDVCuAqOLqB6RHfT8
-         dBbDwrY9cF3JP46SLD3d3Z+31wmHEszQb3CKHwko2UCBh68uIQl0MUg9VXsRboehnNXA
-         QAug==
-X-Forwarded-Encrypted: i=1; AJvYcCWkbWMjI7AdaJy6QULK6u8c+/2XXSqxxVIAchsynmNZ8wIcHnvxNALqnCt9qsPlyJkYhckaZD/h0D8=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzf6T342U4mhUfHZOzsc8F8SSPExIe+w1V9VU1obdj4Yy1x7bs9
-	kytSUELHi4Y4swHeiKzMEvORJVXcOK6FFmwXBFgbvHssknaQbr3w
-X-Gm-Gg: ASbGncu4e8zUOJ1v98l5pn4uYLSZxgY88SMNah5hhBqntGp+MwCn+kyEt2ijPkXBO+C
-	R/qyY5yBh2rZrRMx+YZlfrK6frRr22zVP4CrcqCxGLxf9MafFKy9t88wvg8u8EM+aKfDuAIuxk7
-	nbXSCF07WOED1hzwT7S1G5wi/AATU69GR9GJ9MLl9IZCLOvGTJ+Bn69l6ZGzh0jflHkVJuZs7fg
-	IzXEZMTyNY35rqoZj8VOibSSB45xyVCYSD+9YHcIE0ZkiDtpAydB85WyBz+aiVXikTY66dzeN/J
-	kJsdqeYoWFGMB6fy5QPpgoOici+1KZ5CuET08cxFCLmi/Qhs/xkcrajn0qZFr838mYsXaQE6yGU
-	=
-X-Google-Smtp-Source: AGHT+IGhHD61bMoj/kNCGfxuoRIMfZUbm2G8Vzi7r2Cl3xtga31v9ygF/WbFM3AD1XuJUCHC8w75/Q==
-X-Received: by 2002:a17:903:41cf:b0:21f:164d:93fe with SMTP id d9443c01a7336-2236922174bmr117354565ad.53.1740839303516;
-        Sat, 01 Mar 2025 06:28:23 -0800 (PST)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.28.15
+        d=1e100.net; s=20230601; t=1740885024; x=1741489824;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4LbN5fYyUHQt3Ti89i5IrvWdlm9UYzm7rEomie5t+cc=;
+        b=GFY1RY1U/g1AAAYyvvLOLqiKL0oFynhfJ2TuwD1FtqL65m3i/p70BT2V3AAkyzrRvp
+         PlmVAABf/WiXMi50vuhgh6oqgacx+cwZXSrTx0U1XSEV2/gJrpqSfVF+2xXeGa/9G6U6
+         hQCa3dG977tcJSQsIUQsq9oQfBno7JFCMvFs1TbLv4nUjN1zrrp1Sxqx8vG+FLUYldRU
+         CZ+mB63hswpZuynwR19oxj9Uf7WwC+ymLRayG/6TWV5WS7pnCBGlUVCycooxvRxUNHeI
+         CviKKX/f3OA8HQnrnideR0tasHUmTbX7CyJaTyalg+Fl/RFCrwr8Ke6Y65uU03bm+LBu
+         QBIA==
+X-Forwarded-Encrypted: i=1; AJvYcCXnq7vGSjtMmExEZMPjDeEPTnOI2o5T2ryAXepk1r+R5V6v8UIOMXzi5Aq22WP3KPXnC5Zk3+j+si0=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxPBRrbuOOO5O6usvAp7Bg2y4lX9WyRlrEPi1VStVAtQVtVFeXW
+	/iH+Dquk1GMkX9gLFqF3VCvo9NLaCO8Bu+COtwMMSs07KCyPtaC9
+X-Gm-Gg: ASbGncvkyD9cLK/RTuKv7ZEtdwUg5VsfB9zqM807wO1W48pNzucWVPypXqma1cb0jof
+	65TCcf/HwXMeciDwShOHWOKYF0PUEum2qoGX34W0anZHzWzWqD8YZPaFdgu5XcyNEZJo0S73i7U
+	YdMHthDfDceh7HCHk79LsP6jN2yISlINFnf9UeX/bJN10UR39PibOFxHtZhDAx815vDj3LR7RW4
+	5a+eUesk7SVZ2RiGVXf+N3byYGx8HiHvo27S56Cg90ITFGLA3ET04GNvVw2CQNJkiAJh/WojcQ1
+	mIN1R34IbY7ZQj4UQ4/n7cA6DixU8IvwF780VTN/qLSvclLOk8kkBvIfkaV7BPIAJCrUbPSGi7/
+	Jk+AO
+X-Google-Smtp-Source: AGHT+IEy03FjYEvkbsUi6/ttRTlOKe4T1PD9HCNrsgjQ3AH1f8i6gR4SnirQZ7DNyXo/QUPkw2L8/g==
+X-Received: by 2002:a05:690c:4b12:b0:6fb:9450:b0c3 with SMTP id 00721157ae682-6fd4a02b0d8mr124121857b3.19.1740885024067;
+        Sat, 01 Mar 2025 19:10:24 -0800 (PST)
+Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6fd3cb9dac4sm13986657b3.102.2025.03.01.19.10.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 06:28:22 -0800 (PST)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	jk@ozlabs.org,
-	joel@jms.id.au,
-	eajames@linux.ibm.com,
-	andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org,
-	rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	simona@ffwll.ch,
-	dmitry.torokhov@gmail.com,
-	mchehab@kernel.org,
-	awalls@md.metrocast.net,
-	hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	louis.peens@corigine.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com,
-	arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net,
-	gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	yury.norov@gmail.com,
-	akpm@linux-foundation.org
-Cc: hpa@zytor.com,
-	alistair@popple.id.au,
-	linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se,
-	jernej.skrabec@gmail.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org,
-	linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com,
-	netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com,
-	linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org,
-	jserv@ccns.ncku.edu.tw,
-	david.laight.linux@gmail.com,
-	andrew.cooper3@citrix.com,
-	Kuan-Wei Chiu <visitorckw@gmail.com>,
+        Sat, 01 Mar 2025 19:10:22 -0800 (PST)
+Date: Sat, 1 Mar 2025 22:10:20 -0500
+From: Yury Norov <yury.norov@gmail.com>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org, rfoss@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+	dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, akpm@linux-foundation.org, hpa@zytor.com,
+	alistair@popple.id.au, linux@rasmusvillemoes.dk,
+	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+	jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v2 18/18] bitops: Add parity() macro for automatic type-based selection
-Date: Sat,  1 Mar 2025 22:24:09 +0800
-Message-Id: <20250301142409.2513835-19-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250301142409.2513835-1-visitorckw@gmail.com>
+Subject: Re: [PATCH v2 01/18] lib/parity: Add __builtin_parity() fallback
+ implementations
+Message-ID: <Z8PMHLYHOkCZJpOh@thinkpad>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
+ <20250301142409.2513835-2-visitorckw@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20250301142409.2513835-2-visitorckw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250301_062824_171842_7ED38ECD 
-X-CRM114-Status: GOOD (  10.52  )
+X-CRM114-CacheID: sfid-20250301_191025_872655_D609ED5E 
+X-CRM114-Status: GOOD (  27.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,60 +124,128 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Introduce the parity() macro, which selects the appropriate parity
-function (parity8(), parity16(), parity32(), or parity64()) based on
-the size of the input type. This improves usability by allowing a
-generic parity calculation without requiring explicit function
-selection.
+On Sat, Mar 01, 2025 at 10:23:52PM +0800, Kuan-Wei Chiu wrote:
+> Add generic C implementations of __paritysi2(), __paritydi2(), and
+> __parityti2() as fallback functions in lib/parity.c. These functions
+> compute the parity of a given integer using a bitwise approach and are
+> marked with __weak, allowing architecture-specific implementations to
+> override them.
+> 
+> This patch serves as preparation for using __builtin_parity() by
+> ensuring a fallback mechanism is available when the compiler does not
+> inline the __builtin_parity().
+> 
+> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> ---
+>  lib/Makefile |  2 +-
+>  lib/parity.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 49 insertions(+), 1 deletion(-)
+>  create mode 100644 lib/parity.c
+> 
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 7bab71e59019..45affad85ee4 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -51,7 +51,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
+>  	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
+>  	 percpu-refcount.o rhashtable.o base64.o \
+>  	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
+> -	 generic-radix-tree.o bitmap-str.o
+> +	 generic-radix-tree.o bitmap-str.o parity.o
+>  obj-y += string_helpers.o
+>  obj-y += hexdump.o
+>  obj-$(CONFIG_TEST_HEXDUMP) += test_hexdump.o
+> diff --git a/lib/parity.c b/lib/parity.c
+> new file mode 100644
+> index 000000000000..a83ff8d96778
+> --- /dev/null
+> +++ b/lib/parity.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * lib/parity.c
+> + *
+> + * Copyright (C) 2025 Kuan-Wei Chiu <visitorckw@gmail.com>
+> + * Copyright (C) 2025 Yu-Chun Lin <eleanor15x@gmail.com>
+> + *
+> + * __parity[sdt]i2 can be overridden by linking arch-specific versions.
+> + */
+> +
+> +#include <linux/export.h>
+> +#include <linux/kernel.h>
+> +
+> +/*
+> + * One explanation of this algorithm:
+> + * https://funloop.org/codex/problem/parity/README.html
 
-If the input type does not match the supported sizes, BUILD_BUG() is
-triggered to catch invalid usage at compile time.
+I already asked you not to spread this link. Is there any reason to
+ignore it?
 
-Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
-Place this patch last in the series to avoid compilation errors.
+> + */
+> +int __weak __paritysi2(u32 val);
+> +int __weak __paritysi2(u32 val)
+> +{
+> +	val ^= val >> 16;
+> +	val ^= val >> 8;
+> +	val ^= val >> 4;
+> +	return (0x6996 >> (val & 0xf)) & 1;
+> +}
+> +EXPORT_SYMBOL(__paritysi2);
+> +
+> +int __weak __paritydi2(u64 val);
+> +int __weak __paritydi2(u64 val)
+> +{
+> +	val ^= val >> 32;
+> +	val ^= val >> 16;
+> +	val ^= val >> 8;
+> +	val ^= val >> 4;
+> +	return (0x6996 >> (val & 0xf)) & 1;
+> +}
+> +EXPORT_SYMBOL(__paritydi2);
+> +
+> +int __weak __parityti2(u64 val);
+> +int __weak __parityti2(u64 val)
+> +{
+> +	val ^= val >> 32;
+> +	val ^= val >> 16;
+> +	val ^= val >> 8;
+> +	val ^= val >> 4;
+> +	return (0x6996 >> (val & 0xf)) & 1;
+> +}
+> +EXPORT_SYMBOL(__parityti2);
 
- include/linux/bitops.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+OK, it seems I wasn't clear enough on the previous round, so I'll try
+to be very straightforward now.
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 41e9e7fb894b..fa4e45741dff 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -339,6 +339,28 @@ static inline __attribute_const__ int parity64(u64 val)
- 	return __builtin_constant_p(val) ? _parity_const(val) : _parity64(val);
- }
- 
-+#define parity(val)			\
-+({					\
-+	int __ret;			\
-+	switch (BITS_PER_TYPE(val)) {	\
-+	case 64:			\
-+		__ret = parity64(val);	\
-+		break;			\
-+	case 32:			\
-+		__ret = parity32(val);	\
-+		break;			\
-+	case 16:			\
-+		__ret = parity16(val);	\
-+		break;			\
-+	case 8:				\
-+		__ret = parity8(val);	\
-+		break;			\
-+	default:			\
-+		BUILD_BUG();		\
-+	}				\
-+	__ret;				\
-+})
-+
- /**
-  * __ffs64 - find first set bit in a 64 bit word
-  * @word: The 64 bit word
--- 
-2.34.1
+To begin with, the difference between __parityti2 and __paritydi2 
+doesn't exist. I'm seriously. I put them side by side, and there's
+no difference at all.
 
+Next, this all is clearly an overengineering. You bake all those weak,
+const and (ironically, missing) high-efficient arch implementations.
+But you show no evidence that:
+ - it improves on code generation,
+ - the drivers care about parity()'s performance, and
+ - show no perf tests at all.
+
+So you end up with +185/-155 LOCs.
+
+Those +30 lines add no new functionality. You copy-paste the same
+algorithm again and again in very core kernel files. This is a no-go
+for a nice consolidation series.
+
+In the previous round reviewers gave you quite a few nice suggestions.
+H. Peter Anvin suggested to switch the function to return a boolean, I
+suggested to make it a macro and even sent you a patch, Jiri and David
+also spent their time trying to help you, and became ignored.
+
+Nevertheless. NAK for the series. Whatever you end up, if it comes to
+v3, please make it simple, avoid code duplication and run checkpatch.
+
+Thanks,
+Yury
 
 ______________________________________________________
 Linux MTD discussion mailing list
