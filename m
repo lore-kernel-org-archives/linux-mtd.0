@@ -4,96 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 726E3C282C5
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Mar 2025 12:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7716EC282C5
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Mar 2025 12:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IwtmPoOdMpp0eeODhpcJGYyd30HmW4xKAHeNfOIZk7s=; b=rqoU/8cYM/8gzQ
-	ZlcO/ikfSRaddpoLzthSaUPwMtNpYlAu9ZyHGtl1PiM6gd/ks5XsyCiuaBLquclIlrnLtaAN5D5bW
-	85Oy0LmpKo/sAHFo8txLWxwq/ZMSOZeLsSWl4imZJ3H5uPO6976JHA4deXhReG/XuB0QdtjpJyZtM
-	qy1Z5I6G86e4uwLaKVL2Cyf1P1kfH8zcaYyOejET8bK2F73/AVhJcEnrhfbvGAExcsFdINcBtABSd
-	/PmULk8htDJV1frgmd3qkeaLTdroaQEqRGljMiKsg+D1p05V2dkEPLlmlT6Y1q4Y+CvlyfGKoAozH
-	MTxo9z8wsDVVMzLpZUiA==;
+	List-Owner; bh=9uHShDVFkU5liGYwN7ZvaZ00686JWOkTPJFNPElxQwY=; b=gOqEJzt42Gzfin
+	WB8hkUFmXcPgRwAs/PZQs/onB7SwFfJLZB5YWBH1zILxWOTswOIM28RN89qhZoPA1AMsPMPky66eD
+	Ddyt1flKr1AfOWptY6ZyqL2dZgF1AIRZ7NYIDB3CzIAj3q35q71uTr+PQ0BspJcA7MrvP+oqU+Ntd
+	JJUgAynOygZf9DQvS2rUov5s2UfIRmFiSVFFMQpfYLTrMzeVMD2WQDJcaZz9Wa3gm+a4TmiZymEcl
+	MkbMqlc5uv4Rc+SPxif9tJF/z9/lLjQkTFSvFYfgX3gN8SCF6uI1IYx+pmUHjYiZDICM8DSOrEEcB
+	hPFhU2preVINdnBx3srg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tp4aD-00000000gbz-18rI;
-	Mon, 03 Mar 2025 12:07:41 +0000
-Received: from mout.web.de ([212.227.15.3])
+	id 1tp4gN-00000000hvS-47iu;
+	Mon, 03 Mar 2025 12:14:03 +0000
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tp3lq-00000000VIP-2NMG
+	id 1tp3vU-00000000XpK-1VO8
 	for linux-mtd@lists.infradead.org;
-	Mon, 03 Mar 2025 11:15:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1741000527; x=1741605327; i=markus.elfring@web.de;
-	bh=My0FAg9ECNGTXiPTr8yp95tKw/PNZxWh3Wz2mbCwVSE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=jC3FiKE1zwz0jH5Cs5wJHKsMGoy0dqE9amlLs10O3SwZB/FWdFjB9tSe0wJo4tsf
-	 LJujFIQwUlJtAvjP5e4IhYpG46h9GTEeMKngt88WwHnPoxBilG8zm3+hkx53capMF
-	 FIC0uDjHF/1el6X2TFLPdPuIQ1DJs9Lym2QFRu+ZlbOr8mpDJdrWpl5o4zY9gAF2o
-	 YHqD69241/TPyrmkI+ZMEmfYykbYlvIPHRpcNJ2oblmaZYfbxcpSfHqDTKRzP0/SE
-	 +Q7NFKHFaU4R11+vL9f/oudJ9x0zmbVLS/PWZk5lwXk0BaZiYtd8yK+uZmqjGPvvL
-	 lyWRNaPLQ/0VZVQ1OA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.93.19]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mt8kX-1t06sA36Jl-00yCfC; Mon, 03
- Mar 2025 12:15:27 +0100
-Message-ID: <10afda2a-4c52-47a8-bdfd-4bfd7bd9cb34@web.de>
-Date: Mon, 3 Mar 2025 12:15:25 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Mon, 03 Mar 2025 11:25:38 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7F1F54341A;
+	Mon,  3 Mar 2025 11:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1741001134;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B40IpQiU2fM+pVK7wquDYMb2HsNMGEC55LxsvTQcN4s=;
+	b=BkjwN4/tsxmaO4+R7FAMmi485T6901iwWzyz1XQv40fA/bnC1/8MfN0e/DtKEnYmbV0ZQx
+	KTmsVFoZYp5BJfaliwDBG7BiQMIAQE5waOKMctsSOMnNTH2uVUlSbiw1yo/8ZKIGIAjLQx
+	zeIwltgkKYWLfJxx+9yo363ujP5Q8P86Ay3D01CuyCz7yBe19ek8111LbZHSc20hFTnXbO
+	VoyWopf8T38LsZw0kFjnFpnVUWgNeCdqFqigmaBt+qXT5gkWRhSIZ8Zo+AMheKoN4h6AZR
+	ZGxSBCQJkP7TX2uzMASAIOf5LCcrdPEzxhv3Iz2FOSZOd59fB2p/3zg9xNuMBA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-tegra@vger.kernel.org,  linux-mtd@lists.infradead.org,  Jonathan
+ Hunter <jonathanh@nvidia.com>,  Lucas Stach <dev@lynxeye.de>,  Richard
+ Weinberger <richard@nod.at>,  Stefan Agner <stefan@agner.ch>,  Thierry
+ Reding <thierry.reding@gmail.com>,  Vignesh Raghavendra <vigneshr@ti.com>,
+  LKML <linux-kernel@vger.kernel.org>,  kernel-janitors@vger.kernel.org,
+  Qasim Ijaz <qasdev00@gmail.com>,  Natalie Vock <natalie.vock@gmx.de>
 Subject: Re: mtd: rawnand: tegra: Simplify maximum determination in
  tegra_nand_setup_timing()
-To: Miquel Raynal <miquel.raynal@bootlin.com>, linux-tegra@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Cc: Jonathan Hunter <jonathanh@nvidia.com>, Lucas Stach <dev@lynxeye.de>,
- Richard Weinberger <richard@nod.at>, Stefan Agner <stefan@agner.ch>,
- Thierry Reding <thierry.reding@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, LKML <linux-kernel@vger.kernel.org>,
- kernel-janitors@vger.kernel.org, Qasim Ijaz <qasdev00@gmail.com>,
- Natalie Vock <natalie.vock@gmx.de>
+In-Reply-To: <10afda2a-4c52-47a8-bdfd-4bfd7bd9cb34@web.de> (Markus Elfring's
+	message of "Mon, 3 Mar 2025 12:15:25 +0100")
 References: <d564cafe-d45a-40b5-9a91-a2e2b97c80d6@web.de>
- <87pliy9yyv.fsf@bootlin.com> <0193ac44-e858-4aff-a50f-dd95dbf3de5b@web.de>
- <87h64a9y04.fsf@bootlin.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <87h64a9y04.fsf@bootlin.com>
-X-Provags-ID: V03:K1:R1exJjdCQwDCi4tP+5q2mVtAJq6NaltfMACf/dznh3c2rORKP8d
- EjjNDUoCoUYK/hlQ18JBQvxCEai4B4jLmJCvRepLp06rXRRscEQnIunGbqWjJxlGdOa55J4
- th/oQDxXsk4Ga0eZZt8pvMIhamehVGQ6jakpIypJoEFdJhNHSZM2IKB5F9y9xhW0XqNl+wr
- iANKn8LFoBVo8c9eXiw3g==
-UI-OutboundReport: notjunk:1;M01:P0:9aGubQHfLpA=;X2oznE8qxdpeeK7RDktpeZ6VenX
- SY4S66SxXgz1fvqAzrjZGKCbALvFIOTlSeOrGRCklYGiRfYzeQ0gFJlv4KHA7JQhzD5r0BI4v
- Wz6N9/dPehIzl9RYlP0N8MAHti+KYioj4EYAKcLFjqvYSHmRmDdHWW/ilhqS+HM0q2ZMAEZja
- Q4r17eTq9w+q67VRYXOI5wbP5y09e79a/YdTMzknp/kU2IWg0DWNvmEPdBFPBlX+6dOoQgZRI
- czD7BgbMdJUyY1LF/K/dP13Uic8xLBKBqFDGNfN7ThTfkCTcwPHJ+81yayjP0R9/4LO+3SUWl
- oFtwfI0QVhm5D3GQnvoTQuYINWIoT9mmnO+2Iv380OIjtRQMGObZhmzYJzlaCu8wIIvnmg9VA
- wm2MMcfvA9YsWICoDWwNGKy1ZRFJdWJl+7UW4YxcvRerXqTWI/oDx/GZWFnTmFMEZZYxnMf+5
- aFLhXL7mryGxBAsLlQxNZE5HdYY2G/tJtoTONlFmKqbicGhDysEN46ZZ9PlbLTxUDymiehJAZ
- 6COWzab92QXHQsK9/IaRAkx2MWcW+mSSzW1gjlr68lvY574+G2wBYyftLlWAUDax7TwmqEWbq
- uov7uz2SiPXSjLokY7R1NFhCUk2rXGslLd87ntSjMkG7gTYFAaXA06SnJ3JAlRZJFdDpNxdXA
- sk+0X9zBt0oB1InfFbS7l5wqq909vnZVNZcXiWYR4m3PtoqEQkqwwCdy9jXpncKy1hONv3gCI
- tKkTr2lmFwaGojxltZ90mfROkPwAIzC7n2g1hNuYSYCdkQUjub7wRX3maNqK8wSqg/hsFsZxY
- 9vizJ2c/rmF3H2UvvBdmp6iBtRy4ePbp5eDgBOqAXcDHBJK/sBMD8/haItmCxVC/4UGseVR1g
- 3jDeOBkQ5Hw8WA80Y+UAAlK/S4drhoDf9bnggFJBOH4agcS3jatZOwbkLPe5+vhQHBKTvofZ0
- YYTl8Ipnk8ivIuozDkaMieYQseJ5ypFE/jFyiGKAQnwYTg3LBgajq2eSypUY61kRi4yZERSBr
- Wek9Cfi/H1HmJ6l72jcFcFBxS366IexX/RaSv+mXdW6cT3dLRVTweKWXLe+k8pJlXGLaX9pSZ
- P2Jsafa7cDLgyGP+kUIF+QPNHjJDJx40aipZ/eEDa9EeiK9Sd7g1M3RedraDd4LDbQr2zd7LE
- 0oz/4AFwoz+8F8OWHslygz11JlBgY/X3MahIgO6cOQpoIvgvxGNS4aOgK5sRNyWAapydIe5Lb
- GPI2jSktmQ1dKANNF8yAMXiE1EO9IuEkM6IoLmLsRjdwVOo4+XYSdnhYDc5E2ahL8J/dhEWc2
- 157rZyW3tFYKyqTTK7HTusBHWxpU1D8YGBzexnzr8E7H7KfpRb812BUtX4A7GJKe89RRQDyFk
- jT+Oh6pfkm6PcunGZLMyDDXvCdI4Dbo4t2U5D1jfG66I53Q6/4VwEpemaEGbrXVMj97dl6yMx
- X22nRxA==
+	<87pliy9yyv.fsf@bootlin.com>
+	<0193ac44-e858-4aff-a50f-dd95dbf3de5b@web.de>
+	<87h64a9y04.fsf@bootlin.com>
+	<10afda2a-4c52-47a8-bdfd-4bfd7bd9cb34@web.de>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Mon, 03 Mar 2025 12:25:33 +0100
+Message-ID: <878qpm9x02.fsf@bootlin.com>
+MIME-Version: 1.0
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdelledtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepudefpdhrtghpthhtohepofgrrhhkuhhsrdfglhhfrhhinhhgseifvggsrdguvgdprhgtphhtthhopehlihhnuhigqdhtvghgrhgrsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehjohhnrghthhgrnhhhsehnvhhiughirgdrtghomhdprhgtphhtthhopeguvghvsehlhihngigvhigvrdguv
+ gdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehsthgvfhgrnhesrghgnhgvrhdrtghhpdhrtghpthhtohepthhhihgvrhhrhidrrhgvughinhhgsehgmhgrihhlrdgtohhm
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250303_031538_922240_49EF08B6 
-X-CRM114-Status: UNSURE (   5.33  )
+X-CRM114-CacheID: sfid-20250303_032536_860644_C60485EE 
+X-CRM114-Status: UNSURE (   5.53  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -106,21 +82,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
->> You would eventually like to express that a maximum should be determined
->> from three (or even four?) values.
->
-> If there was a max4(), why not, but in this case I don't see the point.
-Do you miss such a programming interface so far?
-Would you be looking for corresponding software adjustments?
-
-Regards,
-Markus
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMDMvMDMvMjAyNSBhdCAxMjoxNToyNSArMDEsIE1hcmt1cyBFbGZyaW5nIDxNYXJrdXMuRWxm
+cmluZ0B3ZWIuZGU+IHdyb3RlOgoKPj4+IFlvdSB3b3VsZCBldmVudHVhbGx5IGxpa2UgdG8gZXhw
+cmVzcyB0aGF0IGEgbWF4aW11bSBzaG91bGQgYmUgZGV0ZXJtaW5lZAo+Pj4gZnJvbSB0aHJlZSAo
+b3IgZXZlbiBmb3VyPykgdmFsdWVzLgo+Pgo+PiBJZiB0aGVyZSB3YXMgYSBtYXg0KCksIHdoeSBu
+b3QsIGJ1dCBpbiB0aGlzIGNhc2UgSSBkb24ndCBzZWUgdGhlIHBvaW50Lgo+IERvIHlvdSBtaXNz
+IHN1Y2ggYSBwcm9ncmFtbWluZyBpbnRlcmZhY2Ugc28gZmFyPwoKTm8gSSBkbyBub3QuCgo+IFdv
+dWxkIHlvdSBiZSBsb29raW5nIGZvciBjb3JyZXNwb25kaW5nIHNvZnR3YXJlIGFkanVzdG1lbnRz
+PwoKTm90IG5lY2Vzc2FyaWx5LCB1bmxlc3MgdGhlcmUgaXMgc29tZSBwZXJmb3JtYW5jZSBpbXBy
+b3ZlbWVudC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
