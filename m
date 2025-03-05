@@ -4,63 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31AA4C19F32
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Mar 2025 16:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0F07C19F32
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Mar 2025 16:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
-	In-Reply-To:To:Cc:From:MIME-Version:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=TFBAUn44eJKM0hIuXaA7OPhENDLJpKd/x+2s2TwBcaQ=; b=I6RXxMYvS1dF61rrZASCHOAsp4
-	ZQLZisZfLexmiPNcWXif7mV/4eKrtdZWJ8Q1onxz+TQnS2jAONGkDsjqcZgZ9rXoKE7b6uY+owUjU
-	nSiVHEAj8PttLR048md5W7x6p2UpaQlpizW74xh+kCXkLtCh4iuruGhCw1NkkoT2MwiJviT7FoEK+
-	2i3I7p2zlaQu+ZYzfW7/AtwV/5F/DwkOp8Nu/UP43uzuzlpm7JH6JJZk4EEQ2KOFuKM6YwJIjeeD5
-	A0tstwlmzPF8z4Hyg2/pRisjcuNUVOGAiYuv5VcIKGrchQr/MvmpvSYVQKFtqnNexSw1bOwVZwfsD
-	bKSZ29bw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=V4YTsIJQCTe2ll2IIUVLUmAGAUjkOOHIJ2oPYp5JUq4=; b=akXfxjc1Csyi71
+	Ai0jHBNLVotOi1y+Lud6FiN5HAoBMtcN3KeUeYhbO05lhELm5nkKRnDUBme4KUY5RusGB7fEwSuES
+	NyunKFlCSO4DHsJimSQAMqmFIMcAYDSbp8lB/I2d5cYIem+1PfDKcYWer0ZFzvRcn6C+Osqk1JYhb
+	5/4XloVMLnrUvgxhBLosPCQAOdbsub+q938Sg64V1h0ADElFWQBqzrmPnug5YFWrpyqcWPAGupW/5
+	Eu1PHlROVDUhnprxrzyLmaNlcu9eazGShgDOSCb+60JtaEWYXPDm1eUJPSfliCzQXWkJk/6ulpLV2
+	7Io79blxURw+sJpodFbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tprSF-00000008dUL-1eOU;
-	Wed, 05 Mar 2025 16:18:43 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tprUF-00000008dtd-2iPx;
+	Wed, 05 Mar 2025 16:20:47 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tpqNh-00000008UDj-0sSZ;
-	Wed, 05 Mar 2025 15:09:58 +0000
+	id 1tprUD-00000008dsR-0RBc
+	for linux-mtd@lists.infradead.org;
+	Wed, 05 Mar 2025 16:20:46 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 55E6CA458C6;
-	Wed,  5 Mar 2025 15:04:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 918C9C4CED1;
-	Wed,  5 Mar 2025 15:09:55 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 097F3A45AC8;
+	Wed,  5 Mar 2025 16:15:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B3DAC4CED1;
+	Wed,  5 Mar 2025 16:20:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741187395;
-	bh=KJ2n6qqivS8cfT5p3ck5BACWcFxyQHKwuyUCKJ1adwc=;
-	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
-	b=Foc64VcCsjkJX2XPNYKFjY/rY2tvFkBx0fPMjxxPmRCBlO0CPbiBAO2sQTT9/PPsp
-	 3q0uYHmklJDSBvLK+//XKlnRBks0W0Q2t9WQ7gwiTXdZxHNluVSRsaGCnf2FgXgsI7
-	 KmMy5XTgk+Xqqn1tplWiJW7P2JQ5Dvrv92EXS4XbP6Mh8JUXLP811GLMafGBWP2Kqw
-	 fbunbDryDW70o3KzLjVJFgQzmWIAv70+qjGluGgBh+eubjHQTttDA5P0PtVlF8ZCHq
-	 2KnArDxFlTKOjQhlUnjQBJ3R832yX+LEKuBZF1GYvifbdnnxLsNAY1GRLlCWg83uUP
-	 pzWEOXoz5oNjQ==
-Date: Wed, 05 Mar 2025 09:09:53 -0600
+	s=k20201202; t=1741191643;
+	bh=HWjA/54qT1T38UrU9K3wIAlo9/R2j+5fLIVn8dgqyXI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Mk4MLJl+uuKL2Nffx6CigEQOKXqD4rQShmjlajABN45BiRggskUECk5yxrAhgRVpj
+	 NLku0mu9r4Ml+HRtk6VvXyPE0BTWlsTGYPa0FSX6WLr0elpiX7VVIFiCJImpKoE9Pr
+	 muGYG6bMan4XsqT/uRRFfWYINWUYKibRmUJ+jrQ2Wv9IoEzkZcPP/R0XzweUyCPUwW
+	 56wHr3athTy9mo3UFevOvmznabo1v+K94IYcUPClc9e3WRPykNyZ8hcKh/16tE4TNW
+	 59zSeG4YlSZ77m/4+KZ1jCk0zx/r9hSFpJrW8Rdd82qeCwvVXCTpFXulUDSJCVx7Ey
+	 2gtltonjeWO/w==
+Date: Wed, 5 Mar 2025 16:20:31 +0000
+From: Simon Horman <horms@kernel.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org, rfoss@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+	dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, yury.norov@gmail.com,
+	akpm@linux-foundation.org, hpa@zytor.com, alistair@popple.id.au,
+	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
+	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
+	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH v2 03/18] bitops: Add parity16(), parity32(), and
+ parity64() helpers
+Message-ID: <20250305162031.GO3666230@kernel.org>
+References: <20250301142409.2513835-1-visitorckw@gmail.com>
+ <20250301142409.2513835-4-visitorckw@gmail.com>
 MIME-Version: 1.0
-From: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: nicolas.ferre@microchip.com, mwalle@kernel.org, richard@nod.at, 
- vigneshr@ti.com, tudor.ambarus@linaro.org, alexandre.belloni@bootlin.com, 
- conor+dt@kernel.org, devicetree@vger.kernel.org, krzk+dt@kernel.org, 
- linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com, 
- Varshini Rajendran <varshini.rajendran@microchip.com>, 
- claudiu.beznea@tuxon.dev, pratyush@kernel.org, 
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-To: Manikandan Muralidharan <manikandan.m@microchip.com>
-In-Reply-To: <20250305100134.1171124-1-manikandan.m@microchip.com>
-References: <20250305100134.1171124-1-manikandan.m@microchip.com>
-Message-Id: <174118733199.1974433.9410395684855092118.robh@kernel.org>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: sst: register SFDP region into NVMEM
- framework to read MAC Address
+Content-Disposition: inline
+In-Reply-To: <20250301142409.2513835-4-visitorckw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250305_070957_313052_41034BBE 
-X-CRM114-Status: GOOD (  13.56  )
+X-CRM114-CacheID: sfid-20250305_082045_271457_DB1742E3 
+X-CRM114-Status: GOOD (  16.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,55 +98,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Wed, 05 Mar 2025 15:31:33 +0530, Manikandan Muralidharan wrote:
-> From: Varshini Rajendran <varshini.rajendran@microchip.com>
+On Sat, Mar 01, 2025 at 10:23:54PM +0800, Kuan-Wei Chiu wrote:
+> Introduce parity16(), parity32(), and parity64() functions for
+> computing parity on 16-bit, 32-bit, and 64-bit integers, respectively.
+> These functions use __builtin_parity() or __builtin_parityll() when
+> available, ensuring efficient computation. If the input is a
+> compile-time constant, they expand using the _parity_const() macro to
+> allow constant folding.
 > 
-> EUI identifier and the MAC Address of the Ethernet Interface is stored
-> after the SFDP table of contents starting at address 0x260 in the
-> QSPI memory.
-> Register the entire SFDP region read by the spi-nor (nor->sfdp) into the
-> NVMEM framework and read the MAC Address when requested using the nvmem
-> properties in the DT by the net drivers.
+> These additions provide parity computation helpers for larger integer
+> types, ensuring consistency and performance across different
+> bit-widths.
 > 
-> In kernel the Ethernet MAC address relied on U-Boot env variables or
-> generated a random address, which posed challenges for boards without
-> on-board EEPROMs or with multiple Ethernet ports.
-> This change ensures consistent and reliable MAC address retrieval from QSPI,
-> benefiting boards like the sama5d29 curiosity and sam9x75 curiosity.
-> 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> [manikandan.m@microchip.com: Integrate the nvmem->read callback framework]
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 > ---
->  drivers/mtd/spi-nor/sst.c | 62 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 62 insertions(+)
+>  include/linux/bitops.h | 63 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 63 insertions(+)
 > 
+> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+> index 4c307d9c1545..41e9e7fb894b 100644
+> --- a/include/linux/bitops.h
+> +++ b/include/linux/bitops.h
+> @@ -276,6 +276,69 @@ static inline __attribute_const__ int parity8(u8 val)
+>  	return __builtin_constant_p(val) ? _parity_const(val) : _parity8(val);
+>  }
+>  
+> +#ifndef _parity16
+> +static inline __attribute_const__ int _parity16(u16 val)
+> +{
+> +	return __builtin_parity(val);
+> +}
+> +#endif
+> +
+> +/**
+> + * parity16 - get the parity of an u16 value
+> + * @value: the value to be examined
 
+nit: This really ought to be @val to match the function signature.
+     Likewise for parity8, parity32, and parity64.
 
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
+> + *
+> + * Determine the parity of the u16 argument.
+> + *
+> + * Returns:
+> + * 0 for even parity, 1 for odd parity
+> + */
+> +static inline __attribute_const__ int parity16(u16 val)
+> +{
+> +	return __builtin_constant_p(val) ? _parity_const(val) : _parity16(val);
+> +}
 
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
-
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
-
-  pip3 install dtschema --upgrade
-
-
-New warnings running 'make CHECK_DTBS=y for arch/arm/boot/dts/microchip/' for 20250305100134.1171124-1-manikandan.m@microchip.com:
-
-arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dtb: flash@0: Unevaluated properties are not allowed ('nvmem-layout' was unexpected)
-	from schema $id: http://devicetree.org/schemas/mtd/jedec,spi-nor.yaml#
-
-
-
-
-
+...
 
 ______________________________________________________
 Linux MTD discussion mailing list
