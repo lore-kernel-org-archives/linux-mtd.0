@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D894DC3DA4A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5B41C28B26
 	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 17:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,63 +12,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NqPSOjhXE3ktw9gcrLjTeCsZbTSnnlKuHqARwTdiuhM=; b=jYGcbPXdmxdpmS
-	aV0J5FQ1HN64efwP58SJAm5qvk+CjiWun8RVHNowZLVkwshCFl4fbTjx32AWbcH9j1v5OR7Z9xTw1
-	uMf8ncTQpO58d2guw9J0cmQU49mqffmBHAv1tdS5IAv09TpHF1qtwIKvsWfBojlvnXm0u99G/Koxl
-	wpQSUBbFp+WAm0HvC1mKpHBW3xa0ErUIG9eDPUbvrUaKxYef9tqN07w3WknAQTiOZCuDsc4OHV0GV
-	iMzwlwpc7jr+mlnRMmGnWwICtmtB2qBUP33+qH0B/MVQJABmKDmxYfm7TSco4Zz/IKfin+9GICwhe
-	Km/lsvKBRCSn4Ed3TD+w==;
+	List-Owner; bh=k5oxU9sPY0L0cTRhZo3Y9VJ9M/a3SnvW5P9+oIM2bwM=; b=TtU7+KamR+8rGr
+	ZRwB6SOJuaHFYx4DR/V6dq7l5d1nmK33n3AE7kxvFHNNmuL/NbPoohw/uL0AC8YWTIlbkqGfCByHL
+	DAeo3LGPNV6B41umIK9qBrtt0FhKRpRGp1ZFxj04kAUmCctFqdZ7wtF4YX/XXIRE8IAiv9k51VjMd
+	VdRe/aHisM8QEAmSGeCbsEJtDmIXK8xnmn5NDsBTr1Bl76ZiLCHV+JnAWxvaUz8VVxJwBqZgha2ii
+	HBpprj0B+43cLsOVQPzYbOKFxUbVv5EhJjg+hnd7gVFyY1iypVs4MyYNZlAxGJRd+Qetmao7RPrJE
+	HSpgLjPTfgsfSshQcLOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqF6g-0000000BhZt-0i4O;
-	Thu, 06 Mar 2025 17:34:02 +0000
-Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
+	id 1tqF6h-0000000Bhaw-13rJ;
+	Thu, 06 Mar 2025 17:34:03 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqE53-0000000BUKz-25N2
+	id 1tqE5N-0000000BUnE-2ABo
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Mar 2025 16:28:18 +0000
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2f9b9c0088fso1661272a91.0
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:28:17 -0800 (PST)
+	Thu, 06 Mar 2025 16:28:39 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2f44353649aso1509502a91.0
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:28:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741278496; x=1741883296; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1741278517; x=1741883317; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BS9Ngq0ErapA9ho16k90z8id/zApcMAPWGpuMTc0x9A=;
-        b=kqP+TR44nJM3h0N5a+s3nfEdfKMkSS3GsMD3bEhPEQ63+ZKhckreHCuBEy1/gTdec/
-         5rXDEgIJnC85t9eKan2CRq+C4BnYOVHS98QxULiXilYJnf955TnXd5OiK5fV4HMh59aJ
-         xcphl3svz9RYCRtFIDn53IKnRSi3t4tw73d/qRniV6vy1tP2MnWEewo6XmvSqEHyC0Dn
-         ZknE/IxJTMUl7df6S2f2Z4BJHqtzpomeSdM1+uS+4ufzv8xo16mst4ndZPsccGs9dwds
-         Vgr0hAffn3yAIOz00hCCuJ0XtjsDeMnDWCMhLjwU8H6JwH8xaMLXzWepLlMv+/krs8q3
-         cgYA==
+        bh=AlCo47pw1I/mq/I7vHIVVBFEFMdGZP7EQcov25MLW34=;
+        b=XMLIdWAKKNBzruW6V/jI0rlNcUx/lc/eHkYvxVyrWWmtC+nc8vCvhrB37gyISb5Lz2
+         yQxxcm5g+rYRrHdVczfncPrWN+231H+Be4489L2hCaoh54STcS7is1fgQuVJF6vNDK65
+         rZx9Ai8GD/0Hnss9iN6RAs9/h4yNO32VcuccfPJOFfCSAJ++Jcw4I8AKeVWBV0xqowaR
+         /Ez0sbEY0F7/pDf5doUIWziBHibSTY6zd92IdW2nLPVT0RASlLrQFypA/40jYN+UysaL
+         OKy1/+ETCo+mUtvsBdiiqO235SQbbV6r7ZCTA3BURec+IFclkpnKroXavqxqX9ILEvoP
+         bKUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741278496; x=1741883296;
+        d=1e100.net; s=20230601; t=1741278517; x=1741883317;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BS9Ngq0ErapA9ho16k90z8id/zApcMAPWGpuMTc0x9A=;
-        b=XQdYDZVdRkLqx+OwK7+/TrSoYcjFXOdUyDBhsNIEBLRLerZGfdcEv5j0ie1ck7V3Y4
-         2+0eQw0cO7YjdbV4HuskkxIcJuZsvALOH4g/x1w7G2At0VDeDAbmi5yQGKOgzm7XZqp6
-         M3TRfjQCEqlQ55+E5aNtrlb19NtvtjVolxmNf5e4CUVu/IekQ3RYAEl2CRV5t8t6oZ/m
-         YhuRifQpcghRP2NiRTt+KCvGqZ/dpfU097wHS6J1SkUhhMcSEhhwpqdY/XTxGPgzIVv0
-         Jy5qS6C249yxnFDN2aoO6Zr4f8UwymSopAeqTPbuEDdm67Yn6yt9PVw5PJi7MzMQJAq/
-         mEnA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/nSrfuqPgYAg//UGC//64be3E6Q58bejGkM6V2hL7Vl8TKHJ2Lf1Q7GB1FjQAYC8z6GdVcEB91nk=@lists.infradead.org
-X-Gm-Message-State: AOJu0YznpMl8LPbE5WHLRV+PEgCFffORPuAVFYX0lXLkrqZsfNhY+ItJ
-	MUQ9Lzolt+fZ1vaCCZUfY4eG6Livh9FfXAu7/Ej52tjtGszqK2s2
-X-Gm-Gg: ASbGncsEhVgCq84d43/ca6MfNRWC/AXAMXz6Jbft6jIKtIxRIWFELSQDrMgUAoCWkMA
-	WEuyURFtFZMHTNsH6UUAZWSSLoDUwixmh34tu/wnQ4wZdFkU2Hane2T6unjgopUb2h4lMY4Tp93
-	tz5uQfWbLq/bun2OCIXCU6zRvxYjNLgbXh9GaUhW4H5Wl/18IGm62QBuKznZ+r6lrhRPbBBztjX
-	2xpUxb+UNhUonlDIAzsWgJyIZ3W8Cw0MghHw/XSyUrejK+D1nYd0aLV7mMhQvvDoRFsD4lDTGS7
-	qRK5d23QXmHwzo5fGxWd2gF9PKamhjNahcwzDBumJmpPkQy0TrzIUyTJrPV0vOBLDmKSn216ycA
+        bh=AlCo47pw1I/mq/I7vHIVVBFEFMdGZP7EQcov25MLW34=;
+        b=b3iBYmk6OQB75kiut8KkydWa4e7EQbZKceV7Fz03kC/rcGOMYlVd8zKxYfrNMPdMgT
+         e7TgLlhfyGWxH1hcunmhXPCVt5sStP1qk07fRMHOVuzaCOQrWTkl+V+lUyTFO1N8wH5F
+         1jJtlmi9c9ju/Guh2Niap4OD+VaNb80zQeWmTbhni8mHKHmHBJy7845YCSdPTHKkeNag
+         X1lWt8M9Fc+l+JDutvtCNNGJj8AgLZJmcMHrL5PwmRxH1pBm1Kp6ijx1Aayb62tQOqfK
+         FAvRRpoZMHu9NKrmySru0pC9zkiTPkfnr85ZXI6pvmmOdLruzAPlTCYoQDUvNIZYmCEA
+         X9BA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZpDuqoRxh475f8qdYD3tb6N0RnyeaWRgXdeFnHQcvxd4BWh4we8CIhoKqS7sBWWN0duZU+vJXouc=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yyny4USUoZtRgYxWebDUL36tobNIFjcIKrHDyqmunrI7Yq2SiWh
+	lKuX/T1jC7oVggoD9BfierkL58Dz1FIL/564nIWyt8Hd6TU1G4EF
+X-Gm-Gg: ASbGncufBnvuFhyVK/NpjIEfOidtLOoe9tlBukDNcJz5qcWn8MHGPldQIPF3W+LbkAd
+	ilsm98InLSrAiGdg8XqhuWFPihrk881Qm4C3jgJGGTsPE73fQX3EJDsA82GluGKw7i+a7VQ4qbS
+	ho6vxa9hKab+y8WaYngoE8zOsx5RCHRrR32j6PLkSLQe2yM+3AqdkGseEtvTsmhOSJqzFBqupzT
+	EkNZadS/TveJbtVpjT5TzrkMNA7Txp/XNYH3+0pdWSOOdkBkaZfjC5PO5x+18VlDejCTMsICUkj
+	VOFjj5hJDlwcocBM/0pmJKjvUM0W4yfc7O5iU3XmUX1eMN9LZvKt8La4XPK7dzLgFGDXj9wqozc
 	=
-X-Google-Smtp-Source: AGHT+IFnMh654YdQkj0YFSRHf+ssdwCg9qa/rMgaUesbiD2om2YrQrVL25CKfgP6tloqN6SwFoBXOA==
-X-Received: by 2002:a17:90b:4c4f:b0:2fa:6793:e860 with SMTP id 98e67ed59e1d1-2ff6162ec0fmr6970693a91.0.1741278496344;
-        Thu, 06 Mar 2025 08:28:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEEoNncBZARV2kGM5Yy+T23A5PpEPT2NiyzW+biIXJ8M18fImFLR3KC2etUuhFwV9KdupSQZw==
+X-Received: by 2002:a17:90b:1f88:b0:2fe:68a5:d84b with SMTP id 98e67ed59e1d1-2ff49716658mr11420319a91.1.1741278516777;
+        Thu, 06 Mar 2025 08:28:36 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.28.08
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.28.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 08:28:15 -0800 (PST)
+        Thu, 06 Mar 2025 08:28:36 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -128,16 +128,16 @@ Cc: hpa@zytor.com,
 	jserv@ccns.ncku.edu.tw,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v3 14/16] fsi: i2cr: Replace open-coded parity calculation with parity64()
-Date: Fri,  7 Mar 2025 00:25:39 +0800
-Message-Id: <20250306162541.2633025-15-visitorckw@gmail.com>
+Subject: [PATCH v3 16/16] nfp: bpf: Replace open-coded parity calculation with parity64()
+Date: Fri,  7 Mar 2025 00:25:41 +0800
+Message-Id: <20250306162541.2633025-17-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250306162541.2633025-1-visitorckw@gmail.com>
 References: <20250306162541.2633025-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_082817_569422_CACCA4A0 
-X-CRM114-Status: GOOD (  10.09  )
+X-CRM114-CacheID: sfid-20250306_082837_598904_3FCBDC36 
+X-CRM114-Status: GOOD (  10.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,32 +163,36 @@ Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
 Changes in v3:
-- Change parity ^= parity64(v) to parity != parity64(v).
+- Change parity64() to !!parity64().
 
- drivers/fsi/fsi-master-i2cr.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/net/ethernet/netronome/nfp/nfp_asm.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
-index 46511236bbca..3356c478e395 100644
---- a/drivers/fsi/fsi-master-i2cr.c
-+++ b/drivers/fsi/fsi-master-i2cr.c
-@@ -44,15 +44,9 @@ static bool i2cr_check_parity32(u32 v, bool parity)
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_asm.c b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
+index 154399c5453f..14306f128497 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_asm.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
+@@ -295,11 +295,6 @@ static const u64 nfp_ustore_ecc_polynomials[NFP_USTORE_ECC_POLY_WORDS] = {
+ 	0x0daf69a46910ULL,
+ };
  
- static bool i2cr_check_parity64(u64 v)
- {
--	u32 i;
- 	bool parity = I2CR_INITIAL_PARITY;
- 
--	for (i = 0; i < 64; ++i) {
--		if (v & (1llu << i))
--			parity = !parity;
--	}
+-static bool parity(u64 value)
+-{
+-	return hweight64(value) & 1;
+-}
 -
--	return parity;
-+	return parity != parity64(v);
- }
+ int nfp_ustore_check_valid_no_ecc(u64 insn)
+ {
+ 	if (insn & ~GENMASK_ULL(NFP_USTORE_OP_BITS, 0))
+@@ -314,7 +309,7 @@ u64 nfp_ustore_calc_ecc_insn(u64 insn)
+ 	int i;
  
- static u32 i2cr_get_command(u32 address, bool parity)
+ 	for (i = 0; i < NFP_USTORE_ECC_POLY_WORDS; i++)
+-		ecc |= parity(nfp_ustore_ecc_polynomials[i] & insn) << i;
++		ecc |= !!parity64(nfp_ustore_ecc_polynomials[i] & insn) << i;
+ 
+ 	return insn | (u64)ecc << NFP_USTORE_OP_BITS;
+ }
 -- 
 2.34.1
 
