@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADBC5C282DE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D894DC3DA4A
 	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 17:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,63 +12,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZI5LsSx1WVI9w1GmaqHiRbhGeR1/CqX5s2i1GM4oIsk=; b=QF2fwp1ntNMJ0h
-	PT/WMSAR9kU1yAAgzwgkFzmF+r1N9a6Mu56fUEChvFAqozrx1BCXFficsNz6B98IgRp9rp0Rz0uC6
-	OG95DdFtTN/R/sPtg/T6NbC8tVVRJwr9dn/Z0SsogWu4Oh1ABtlSoYvyk1bygbDtLX7KPFhGZHq9h
-	QsqtdhE8BoYAYXd37KtS3xDch7BENL7SZcJNiEYlV1NStx0Ht/1OrNEkMLA0+tTnShS6dTv409UpJ
-	XT4kuWaUz5GT8u5J/wdzRG2AoejtQC6Ec2XSGySPXte3uCuj9XJfkslnHIrkb8orfjS9iR8GwtJ6G
-	K5jvv0K3iWiZipmu1isg==;
+	List-Owner; bh=NqPSOjhXE3ktw9gcrLjTeCsZbTSnnlKuHqARwTdiuhM=; b=jYGcbPXdmxdpmS
+	aV0J5FQ1HN64efwP58SJAm5qvk+CjiWun8RVHNowZLVkwshCFl4fbTjx32AWbcH9j1v5OR7Z9xTw1
+	uMf8ncTQpO58d2guw9J0cmQU49mqffmBHAv1tdS5IAv09TpHF1qtwIKvsWfBojlvnXm0u99G/Koxl
+	wpQSUBbFp+WAm0HvC1mKpHBW3xa0ErUIG9eDPUbvrUaKxYef9tqN07w3WknAQTiOZCuDsc4OHV0GV
+	iMzwlwpc7jr+mlnRMmGnWwICtmtB2qBUP33+qH0B/MVQJABmKDmxYfm7TSco4Zz/IKfin+9GICwhe
+	Km/lsvKBRCSn4Ed3TD+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqF6e-0000000BhZI-3hWH;
-	Thu, 06 Mar 2025 17:34:00 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1tqF6g-0000000BhZt-0i4O;
+	Thu, 06 Mar 2025 17:34:02 +0000
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqE4k-0000000BTxS-0o8E
+	id 1tqE53-0000000BUKz-25N2
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Mar 2025 16:27:59 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2f9b9c0088fso1660530a91.0
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:27:57 -0800 (PST)
+	Thu, 06 Mar 2025 16:28:18 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2f9b9c0088fso1661272a91.0
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:28:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741278477; x=1741883277; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1741278496; x=1741883296; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VAZ6yehSc4MEYrK/rteyLhLjWQGTSbLYrKbJr1roEME=;
-        b=N8HapZE+C2ZaWbLxvC/zXI1ftMiKp3m53w1CkdjdDZuHLfVQua3Ga4sktwoee+dwTc
-         BeCESoux8WIHerfJ3nNB8a5EzblAMNqwqVoVo9ZsOTWozcMfIU4/Rv5fYoiY/8mTf9FY
-         zLMn9aO2FhLYS04vogsFBO1Vo6P85lTNfY8ajsEWSGVAYbbwOb9OtlTYzM1wPxXoYrhs
-         0ko3NSTsY7GVZaaTm+FJx0O6hLSsgG6nIwT0nBGgHv6/DO4Ib7hmvTInfnScg2hUQfcX
-         MDx8YgAaLdPL7/DxZ0zfQqYZYg/6T75WDRAM/EZqXEQxpoyG9pJqcLOphsNm66KBiSpY
-         /kYw==
+        bh=BS9Ngq0ErapA9ho16k90z8id/zApcMAPWGpuMTc0x9A=;
+        b=kqP+TR44nJM3h0N5a+s3nfEdfKMkSS3GsMD3bEhPEQ63+ZKhckreHCuBEy1/gTdec/
+         5rXDEgIJnC85t9eKan2CRq+C4BnYOVHS98QxULiXilYJnf955TnXd5OiK5fV4HMh59aJ
+         xcphl3svz9RYCRtFIDn53IKnRSi3t4tw73d/qRniV6vy1tP2MnWEewo6XmvSqEHyC0Dn
+         ZknE/IxJTMUl7df6S2f2Z4BJHqtzpomeSdM1+uS+4ufzv8xo16mst4ndZPsccGs9dwds
+         Vgr0hAffn3yAIOz00hCCuJ0XtjsDeMnDWCMhLjwU8H6JwH8xaMLXzWepLlMv+/krs8q3
+         cgYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741278477; x=1741883277;
+        d=1e100.net; s=20230601; t=1741278496; x=1741883296;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VAZ6yehSc4MEYrK/rteyLhLjWQGTSbLYrKbJr1roEME=;
-        b=Hns947l/g3KE+S8ZQWiNPQpkc5kWKhWE0G9QVsKKUb85l1WtMgMZ1WbuvX0yHm4Cau
-         LbxKmfnDQ0r6qt4qFQ0NEgF4IFPgHEwL99RHzSdvVJG7MVjikW75Jv5RZn6GhdXKar18
-         H52yKU3Y+OmN45/wuD5tkjL1sPsmdFX6IDAlgfaQ5MMtGLNkTuDZjIVtds8Fc4CBtD5S
-         idZylWn8ePYdb1QzkiPaC+t+ShejSoEklC5ZCvzVQnCgcXfJ7m9e4YV9KKzY2YboTIzR
-         /OSztAE/eMyACG1U0pgKH+IiTxqeqc1/V5QsHTlSnT5L9ZZ++MX5+Lc/C4KyXeCFEMXm
-         8Jcw==
-X-Forwarded-Encrypted: i=1; AJvYcCVwaVjWmDhQ0Yw/+R+4eKBk0mDmEzA7FQRpiQGNHHz3X/MJugi6CJn85ZG/Xa9q8hh4oZqEKiGa0SU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzLJSzPDP/8vLytl7H4FiTeI5cwN1lT8t+FCm8eZTeHNW/ch8iY
-	gVcoP52MUI24iF32pX9BMKbunbYg8m0GeX9EeRv63QTtpzQt6yoG
-X-Gm-Gg: ASbGncsqxVwTl2k3ltRX5MojFAXFW37QpEEMrfrMjAUftCEaChAedEOK/IfNHXTCjXj
-	AC41GrrVsY0I8ZDkxnL7zot86ZfHADCGzu5vaPO2wIrLXOPopP9o9UoPJ+65Rl1eBdqLJ6LXAjg
-	u2wLtY17bac5ntC59jMMGzcDfkvORMJxV4XtimCFcamGO3Kw0MHY0AED8NU8EC0Gzq+qVPsiqa9
-	4Bh/RosqEnKWgI4auuM0O9LEsrTpFSbnnxrIk4rZgly6MrgOG2UfQZOamZ8J4zMchYCviw/wrNA
-	YY+JY5krIyUseVDxFh+BIjRLwR8XUArGZPkMjUhD4s/C2DHPHKAKqRfWVXD2ihHb1AIYuT3gx5A
+        bh=BS9Ngq0ErapA9ho16k90z8id/zApcMAPWGpuMTc0x9A=;
+        b=XQdYDZVdRkLqx+OwK7+/TrSoYcjFXOdUyDBhsNIEBLRLerZGfdcEv5j0ie1ck7V3Y4
+         2+0eQw0cO7YjdbV4HuskkxIcJuZsvALOH4g/x1w7G2At0VDeDAbmi5yQGKOgzm7XZqp6
+         M3TRfjQCEqlQ55+E5aNtrlb19NtvtjVolxmNf5e4CUVu/IekQ3RYAEl2CRV5t8t6oZ/m
+         YhuRifQpcghRP2NiRTt+KCvGqZ/dpfU097wHS6J1SkUhhMcSEhhwpqdY/XTxGPgzIVv0
+         Jy5qS6C249yxnFDN2aoO6Zr4f8UwymSopAeqTPbuEDdm67Yn6yt9PVw5PJi7MzMQJAq/
+         mEnA==
+X-Forwarded-Encrypted: i=1; AJvYcCX/nSrfuqPgYAg//UGC//64be3E6Q58bejGkM6V2hL7Vl8TKHJ2Lf1Q7GB1FjQAYC8z6GdVcEB91nk=@lists.infradead.org
+X-Gm-Message-State: AOJu0YznpMl8LPbE5WHLRV+PEgCFffORPuAVFYX0lXLkrqZsfNhY+ItJ
+	MUQ9Lzolt+fZ1vaCCZUfY4eG6Livh9FfXAu7/Ej52tjtGszqK2s2
+X-Gm-Gg: ASbGncsEhVgCq84d43/ca6MfNRWC/AXAMXz6Jbft6jIKtIxRIWFELSQDrMgUAoCWkMA
+	WEuyURFtFZMHTNsH6UUAZWSSLoDUwixmh34tu/wnQ4wZdFkU2Hane2T6unjgopUb2h4lMY4Tp93
+	tz5uQfWbLq/bun2OCIXCU6zRvxYjNLgbXh9GaUhW4H5Wl/18IGm62QBuKznZ+r6lrhRPbBBztjX
+	2xpUxb+UNhUonlDIAzsWgJyIZ3W8Cw0MghHw/XSyUrejK+D1nYd0aLV7mMhQvvDoRFsD4lDTGS7
+	qRK5d23QXmHwzo5fGxWd2gF9PKamhjNahcwzDBumJmpPkQy0TrzIUyTJrPV0vOBLDmKSn216ycA
 	=
-X-Google-Smtp-Source: AGHT+IGSTp6IoXEU2YpG6BXR34TKK6tsBmlfHVAOxv0eBhCn0t3RdyPBa0hZZRnTXXw4e83qNulrtA==
-X-Received: by 2002:a17:90a:e707:b0:2fa:1d9f:c80 with SMTP id 98e67ed59e1d1-2ff618003c5mr6206329a91.17.1741278477310;
-        Thu, 06 Mar 2025 08:27:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFnMh654YdQkj0YFSRHf+ssdwCg9qa/rMgaUesbiD2om2YrQrVL25CKfgP6tloqN6SwFoBXOA==
+X-Received: by 2002:a17:90b:4c4f:b0:2fa:6793:e860 with SMTP id 98e67ed59e1d1-2ff6162ec0fmr6970693a91.0.1741278496344;
+        Thu, 06 Mar 2025 08:28:16 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.27.49
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.28.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 08:27:56 -0800 (PST)
+        Thu, 06 Mar 2025 08:28:15 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -128,16 +128,16 @@ Cc: hpa@zytor.com,
 	jserv@ccns.ncku.edu.tw,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v3 12/16] mtd: ssfdc: Replace open-coded parity calculation with parity32()
-Date: Fri,  7 Mar 2025 00:25:37 +0800
-Message-Id: <20250306162541.2633025-13-visitorckw@gmail.com>
+Subject: [PATCH v3 14/16] fsi: i2cr: Replace open-coded parity calculation with parity64()
+Date: Fri,  7 Mar 2025 00:25:39 +0800
+Message-Id: <20250306162541.2633025-15-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250306162541.2633025-1-visitorckw@gmail.com>
 References: <20250306162541.2633025-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_082758_229553_7020D539 
-X-CRM114-Status: GOOD (  12.26  )
+X-CRM114-CacheID: sfid-20250306_082817_569422_CACCA4A0 
+X-CRM114-Status: GOOD (  10.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,7 +154,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Refactor parity calculations to use the standard parity32() helper.
+Refactor parity calculations to use the standard parity64() helper.
 This change eliminates redundant implementations and improves code
 efficiency.
 
@@ -163,59 +163,32 @@ Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
 Changes in v3:
-- Change variable 'parity' type from int to bool.
+- Change parity ^= parity64(v) to parity != parity64(v).
 
- drivers/mtd/ssfdc.c | 20 ++++----------------
- 1 file changed, 4 insertions(+), 16 deletions(-)
+ drivers/fsi/fsi-master-i2cr.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index 46c01fa2ec46..53a72576a646 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -7,6 +7,7 @@
-  * Based on NTFL and MTDBLOCK_RO drivers
-  */
+diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
+index 46511236bbca..3356c478e395 100644
+--- a/drivers/fsi/fsi-master-i2cr.c
++++ b/drivers/fsi/fsi-master-i2cr.c
+@@ -44,15 +44,9 @@ static bool i2cr_check_parity32(u32 v, bool parity)
  
-+#include <linux/bitops.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/init.h>
-@@ -178,24 +179,11 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
- 	return 0;
+ static bool i2cr_check_parity64(u64 v)
+ {
+-	u32 i;
+ 	bool parity = I2CR_INITIAL_PARITY;
+ 
+-	for (i = 0; i < 64; ++i) {
+-		if (v & (1llu << i))
+-			parity = !parity;
+-	}
+-
+-	return parity;
++	return parity != parity64(v);
  }
  
--/* Parity calculator on a word of n bit size */
--static int get_parity(int number, int size)
--{
-- 	int k;
--	int parity;
--
--	parity = 1;
--	for (k = 0; k < size; k++) {
--		parity += (number >> k);
--		parity &= 1;
--	}
--	return parity;
--}
--
- /* Read and validate the logical block address field stored in the OOB */
- static int get_logical_address(uint8_t *oob_buf)
- {
--	int block_address, parity;
-+	int block_address;
-+	bool parity;
- 	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
- 	int j;
- 	int ok = 0;
-@@ -215,7 +203,7 @@ static int get_logical_address(uint8_t *oob_buf)
- 			block_address &= 0x7FF;
- 			block_address >>= 1;
- 
--			if (get_parity(block_address, 10) != parity) {
-+			if (parity32(block_address & 0x3ff) == parity) {
- 				pr_debug("SSFDC_RO: logical address field%d"
- 					"parity error(0x%04X)\n", j+1,
- 					block_address);
+ static u32 i2cr_get_command(u32 address, bool parity)
 -- 
 2.34.1
 
