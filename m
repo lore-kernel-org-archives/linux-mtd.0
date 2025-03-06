@@ -4,81 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63990C282D1
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 04:27:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13011C282D1
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 07:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Subject:To:From:
+	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=muCH3oqBu0S7I9huVAyulzBCHNVv+l6ak40sNlLeEgY=; b=UVEEdNCYRqG9Xk
-	dOu3xv0dEia/Gg6c8niz/czV34E34o0ZNaADkOy5EIrr5g15OjlegWUb+FzFypsUa3I+I73iiMcUn
-	awYpvu3cd+/09huwjauS9uCsxtO4QYm1n8QBSFDYvUwIuAl0f64YeKaAjk/E3PCGDv36GIvJw9pfK
-	8l6QX65cNb81mhrXvgrqwePQpUQYiiQ+UK/izedXp1sihp8hgH9n75hsQ94t8d1x1mUNhlJywb7Ac
-	Z+1o4SxIo3DgxedbMDoVJcHDrJQufPZX1ou32LW6NKoXZxNEdPKiZS9qQLrUkm3BCi5zGEnzni8LV
-	zw+SwKN4MdfMnI6ufatA==;
+	List-Owner; bh=nfGW7Tk8aMTItkM8fsi41kT3BA4I5/X5Y+ZDnhHC5yY=; b=CngbXgwSIHML8C
+	aCSu/qxxJoTiI8AGT1fZdRRVMxKMOJj4/NCKgxiWTwWLkhxjnJ3Zi5aQMXXarpcuIp6+2WOjfqKFF
+	7fRxofHh8i2yjs5UZ9OhdpiA89mMXWcNc7nYNy2wK7xl2f5++LwXHTk6Pk+qMSXJSFBwufUYfEog8
+	3ZUfwI4DMj9LsmuBYYPRsluHu7JIs0fMciIdRR8VuY9zTOzByuiueELGWa+EzDY/ECAJTFs23rnVx
+	IQ2Cn/Jh1JBYxGLUpxeIdztxfDIb0FUy9sgqRKr8sxzL3pAgy1nNgqOpR9n/yRRQP88oGPmObJl7E
+	RJ1jdJ5ldxmKic72kDyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tq2pk-00000009zAt-3uTn;
-	Thu, 06 Mar 2025 04:27:44 +0000
-Received: from mgamail.intel.com ([198.175.65.14])
+	id 1tq5st-0000000AEme-2uJR;
+	Thu, 06 Mar 2025 07:43:11 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tq2o5-00000009z2f-28Rp;
-	Thu, 06 Mar 2025 04:26:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741235161; x=1772771161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NJCVt2+YUa5c5YJ95PV1i2GlvWFyPhsZJ0jvLUACEOY=;
-  b=Sr67g3dwGjC7npAIfDwmSLNd5SS0qeikz2HabGSols+FRvcwyxRdaMWG
-   nd/gbnJjlD5lqZltbwOTHA+Q0rYuH1Okki/nitHw6uAf7UxqA4E0IY/0I
-   +76NJf8lv5HIdrwVij7WcIf1c4dbNPhpghRZh6DI/ssn4SngTNVVQTuHP
-   Exkarop9dalnY+t6xQ0QYj7ilX1Uki148ZJmM0zHAFwQuo+/XftPehKLw
-   yEHjeIUUwGkrKIGHAuhjGCBiNTsW5LtJ+2ElpLC3NQfol6TI12K3uCEsM
-   FoBWQ4wg1OG40ci1cl+CAiotREC2daU2qWj93ysEctx115ekwBB8Z/ppH
-   A==;
-X-CSE-ConnectionGUID: eGEsYc1DSB6qfMAZzj4ncw==
-X-CSE-MsgGUID: 2dcgLPZZTFeA516DTixBCQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="46003571"
-X-IronPort-AV: E=Sophos;i="6.14,225,1736841600"; 
-   d="scan'208";a="46003571"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 20:25:56 -0800
-X-CSE-ConnectionGUID: Wox4vV5jSb64q56XBB+2rg==
-X-CSE-MsgGUID: BmO2x536SbCjV5jLKsr7Dg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,225,1736841600"; 
-   d="scan'208";a="119075926"
-Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 05 Mar 2025 20:25:51 -0800
-Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tq2ns-000MWc-2Z;
-	Thu, 06 Mar 2025 04:25:49 +0000
-Date: Thu, 6 Mar 2025 12:24:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Manikandan Muralidharan <manikandan.m@microchip.com>, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, tudor.ambarus@linaro.org,
-	pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
-	richard@nod.at, vigneshr@ti.com, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, manikandan.m@microchip.com,
-	Varshini Rajendran <varshini.rajendran@microchip.com>
+	id 1tq5rH-0000000AEbD-1Bhv;
+	Thu, 06 Mar 2025 07:41:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:References:Subject:To:From:
+	Cc:Message-Id:Date:Content-Type:Content-Transfer-Encoding:Mime-Version:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=tynbRCJNvJhi67ydy0W9gjWps9spqKy6/S2sdJUz3bA=; b=qKVUULZe36WBiiRdZ/SQbipIHr
+	WvDiWUadt51HMvTf+SARj9sL/pjD8LG/cB4C2DSNbyAx6JWZYK2DUCCgzLTZh/0s0xrd6AqBPge3y
+	rEoSSyFbcKNZ68+TkVx/WlAFWLS7Gx00j4Wcj9VXvmXi/I+ZqsYK32C1M8QbHHAMBjDLXtM74+ICh
+	zIrcrBVLrWpeD4WxTF7fk2uoqgL2i160Y1KjJqIKhrmSTQQU8a/rvikPTTU7mz8TyFYdeXpUNBcwO
+	dwCCYeYK1LVWXbir+wSnuYjmuea28IkApO89bYCbv8VxkX6WGwpPipoaB9ZToyq+W2/Udhlv7HhWX
+	hI41hrxw==;
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tq5rE-0000000717x-1n1z;
+	Thu, 06 Mar 2025 07:41:30 +0000
+Received: from localhost (unknown [IPv6:2a02:810b:4320:1000:4685:ff:fe12:5967])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id A0115287;
+	Thu,  6 Mar 2025 08:41:17 +0100 (CET)
+Mime-Version: 1.0
+Date: Thu, 06 Mar 2025 08:41:17 +0100
+Message-Id: <D890I4EPARNO.O0VS9VZUL6IR@kernel.org>
+Cc: <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+ <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+ <claudiu.beznea@tuxon.dev>, <tudor.ambarus@linaro.org>,
+ <pratyush@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <Varshini.Rajendran@microchip.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: <Manikandan.M@microchip.com>, <miquel.raynal@bootlin.com>
 Subject: Re: [PATCH 1/2] mtd: spi-nor: sst: register SFDP region into NVMEM
  framework to read MAC Address
-Message-ID: <202503061244.wH2sylN8-lkp@intel.com>
+X-Mailer: aerc 0.16.0
 References: <20250305100134.1171124-1-manikandan.m@microchip.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250305100134.1171124-1-manikandan.m@microchip.com>
+ <87ikonydym.fsf@bootlin.com>
+ <84b1def7-fba7-4f29-a49b-d117efe26d26@microchip.com>
+In-Reply-To: <84b1def7-fba7-4f29-a49b-d117efe26d26@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250305_202601_632115_138A97AD 
-X-CRM114-Status: GOOD (  13.59  )
+X-CRM114-CacheID: sfid-20250306_074128_505475_93102E4E 
+X-CRM114-Status: GOOD (  11.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,77 +84,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Manikandan,
+Hi,
 
-kernel test robot noticed the following build warnings:
+> >> From: Varshini Rajendran <varshini.rajendran@microchip.com>
+> >>
+> >> EUI identifier and the MAC Address of the Ethernet Interface is stored
+> >> after the SFDP table of contents starting at address 0x260 in the
+> >> QSPI memory.
+> >> Register the entire SFDP region read by the spi-nor (nor->sfdp) into the
+> >> NVMEM framework and read the MAC Address when requested using the nvmem
+> >> properties in the DT by the net drivers.
+> >>
+> >> In kernel the Ethernet MAC address relied on U-Boot env variables or
+> >> generated a random address, which posed challenges for boards without
+> >> on-board EEPROMs or with multiple Ethernet ports.
+> >> This change ensures consistent and reliable MAC address retrieval from QSPI,
+> >> benefiting boards like the sama5d29 curiosity and sam9x75 curiosity.
+> > 
+> > Do you mean spi-nor have a programmable area in their SFDP table? Isn't
+> > this supposed to be a read-only area written once in factory?
+> > 
+> The SST26VF064BEUI serial quad flash memory is programmed at the factory 
+> with a globally unique address stored in the SFDP vendor
+> parameter table and it is permanently write-protected.
 
-[auto build test WARNING on mtd/spi-nor/next]
-[also build test WARNING on robh/for-next abelloni/rtc-next linus/master v6.14-rc5 next-20250305]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Why didn't you mention that this is a vendor table in the commit
+message?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Manikandan-Muralidharan/ARM-dts-microchip-sama5d29_curiosity-Add-nvmem-layout-in-QSPI-to-describe-EUI48-MAC-address-region/20250305-180433
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
-patch link:    https://lore.kernel.org/r/20250305100134.1171124-1-manikandan.m%40microchip.com
-patch subject: [PATCH 1/2] mtd: spi-nor: sst: register SFDP region into NVMEM framework to read MAC Address
-config: m68k-stmark2_defconfig (https://download.01.org/0day-ci/archive/20250306/202503061244.wH2sylN8-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250306/202503061244.wH2sylN8-lkp@intel.com/reproduce)
+Anyway, please write proper support in the core for parsing vendor
+tables and exposing them as a nvmem device if needed (and asked to
+do so by the driver of course).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202503061244.wH2sylN8-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mtd/spi-nor/sst.c:75: warning: Function parameter or struct member 'off' not described in 'sst26vf_sfdp_mac_addr_read'
->> drivers/mtd/spi-nor/sst.c:75: warning: Excess function parameter 'offset' description in 'sst26vf_sfdp_mac_addr_read'
-
-
-vim +75 drivers/mtd/spi-nor/sst.c
-
-    61	
-    62	/**
-    63	 * sst26vf_sfdp_mac_addr_read() - check if the EUI-48 MAC Address is programmed
-    64	 * and read the data from the prestored SFDP data
-    65	 *
-    66	 * @priv: User context passed to read callbacks.
-    67	 * @offset: Offset within the NVMEM device.
-    68	 * @val: pointer where to fill the ethernet address
-    69	 * @bytes: Length of the NVMEM cell
-    70	 *
-    71	 * Return: 0 on success, -EINVAL  otherwise.
-    72	 */
-    73	static int sst26vf_sfdp_mac_addr_read(void *priv, unsigned int off,
-    74					      void *val, size_t bytes)
-  > 75	{
-    76		struct spi_nor *nor = priv;
-    77		struct sfdp *sfdp = nor->sfdp;
-    78		loff_t offset = off;
-    79		size_t sfdp_size;
-    80	
-    81		/*
-    82		 * Check if the EUI-48 MAC address is programmed in the next six address
-    83		 * locations.
-    84		 * @off is programmed in the DT and stores the start of MAC Address
-    85		 * byte, (off - 1) stores the bit length of the Extended Unique
-    86		 * Identifier
-    87		 */
-    88		if (SST26VF_SFDP_EUI48 != *((u8 *)sfdp->dwords + (offset - 1)))
-    89			return -EINVAL;
-    90	
-    91		sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-    92		memory_read_from_buffer(val, bytes, &offset, sfdp->dwords,
-    93					sfdp_size);
-    94		return 0;
-    95	}
-    96	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
