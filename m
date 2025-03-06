@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9941AC19F32
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Mar 2025 20:43:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63990C282D1
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 04:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=efd1hxlOU4ra1Vx/DucZoGYsoiyejM8co8dvijTpYgo=; b=GvnNvVrII/T1Oh
-	EQSIH02/fyb9XrV1X5q1j6GR0jv86GUBDZYZkJWU75pFwqf9PVDrIZ46lNugkSsei4eTtQ6zXlFcE
-	zRhFRIa4ArNtpW4KFHHFKek8qK/wk/Wk0QsHYLUd2TOt6q8o4g7nV4CjiaegoSaTyKMWPu3T/7PL6
-	nzT6pjJDUlOVQVElWwCsA5xstNpIU0biF1vzotvZ8ZdoiYcI8NILVWSz4Xon9lQPqXW3YxWGnYLYS
-	DGgAti2gRhRYWc2jCxgejpfXs2+/Hou52WVgHqoPqG3m8b/Ppnb4TDM/E0PFraSMNO7bdhRRf4jdl
-	HOPKzn9UIcio57+OBv5Q==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=muCH3oqBu0S7I9huVAyulzBCHNVv+l6ak40sNlLeEgY=; b=UVEEdNCYRqG9Xk
+	dOu3xv0dEia/Gg6c8niz/czV34E34o0ZNaADkOy5EIrr5g15OjlegWUb+FzFypsUa3I+I73iiMcUn
+	awYpvu3cd+/09huwjauS9uCsxtO4QYm1n8QBSFDYvUwIuAl0f64YeKaAjk/E3PCGDv36GIvJw9pfK
+	8l6QX65cNb81mhrXvgrqwePQpUQYiiQ+UK/izedXp1sihp8hgH9n75hsQ94t8d1x1mUNhlJywb7Ac
+	Z+1o4SxIo3DgxedbMDoVJcHDrJQufPZX1ou32LW6NKoXZxNEdPKiZS9qQLrUkm3BCi5zGEnzni8LV
+	zw+SwKN4MdfMnI6ufatA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tpvaJ-00000009Fgg-1czg;
-	Wed, 05 Mar 2025 20:43:19 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tq2pk-00000009zAt-3uTn;
+	Thu, 06 Mar 2025 04:27:44 +0000
+Received: from mgamail.intel.com ([198.175.65.14])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tpv60-00000009BA4-0Rpg
-	for linux-mtd@bombadil.infradead.org;
-	Wed, 05 Mar 2025 20:12:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=a2gIndlUno6UA/gHnCBKM+ii0UwEH+vzz5+GdMHZjbU=; b=UOw4zlREpFCpSplj4cO4EqFQGz
-	jd7er/wT1anCK18n1h9iiADooFp0gj+7o8B3+q0xyM0fXkY5AH/Tv4Nl41YfYlvu7RHdXKEwwZF3o
-	sngnffBrKxZlTZiDolv0m9wASUkqDdGAqJuRig1WCL0FbrssVeg1o7kqjaNSZpMPyiB0/XgqBuCmg
-	O5sZBuAT5CeVpqfhbYVgncTIpGO5WRoZ5H+ItxpNWcwIExiglYXXbObItbztUeU0v99A/KHAJnVKJ
-	2QqxOdOyrzdOXuPVwkc7s1rA1InWAzAi81OBcF0DBZD9PE/NaG25/q4Ieu+JFFRM0kJMp8CGlLQko
-	QlO74x0g==;
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
-	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tpv5x-000000069NS-0VS0
-	for linux-mtd@lists.infradead.org;
-	Wed, 05 Mar 2025 20:11:58 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 23FCD44546;
-	Wed,  5 Mar 2025 20:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1741205511;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=a2gIndlUno6UA/gHnCBKM+ii0UwEH+vzz5+GdMHZjbU=;
-	b=oK0ilH/RLWTCrbM4XlqExO00c6kM3ktvlPQx3UEIXFWslXfjL6ffGCRtIWWQKi79SMLEGz
-	EGAiP6JDzs4DGO2w9pammu6PJbuhPUiE4dMhEX8VJZa1CxBL09f9ICUFNmgw9VcGYkHEIW
-	GAmJKQ2d4DYy9QLa4kHQvdOr2kgg3fcA5HXXFLj1eq5oqSaR1NaEhueuoYs3vfC8/zm4nw
-	dPA77ogsPgQ8NF4PaFkkLzWC7BZFw+9IiGtljBDBfARTeyDAZ0Uoq41FKc0Wop4ElVYcDi
-	j6S7L0+VIjTOiI1U77kzhlx/xkDsqZu/PAW9nTOSuvLAAM6Irf7Hx0AYgD0PQg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>,
-	<linux-spi@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] spi: spi-mem: Introduce a default ->exec_op() debug log
-Date: Wed,  5 Mar 2025 21:11:40 +0100
-Message-ID: <20250305201140.2513431-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.48.1
+	id 1tq2o5-00000009z2f-28Rp;
+	Thu, 06 Mar 2025 04:26:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741235161; x=1772771161;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NJCVt2+YUa5c5YJ95PV1i2GlvWFyPhsZJ0jvLUACEOY=;
+  b=Sr67g3dwGjC7npAIfDwmSLNd5SS0qeikz2HabGSols+FRvcwyxRdaMWG
+   nd/gbnJjlD5lqZltbwOTHA+Q0rYuH1Okki/nitHw6uAf7UxqA4E0IY/0I
+   +76NJf8lv5HIdrwVij7WcIf1c4dbNPhpghRZh6DI/ssn4SngTNVVQTuHP
+   Exkarop9dalnY+t6xQ0QYj7ilX1Uki148ZJmM0zHAFwQuo+/XftPehKLw
+   yEHjeIUUwGkrKIGHAuhjGCBiNTsW5LtJ+2ElpLC3NQfol6TI12K3uCEsM
+   FoBWQ4wg1OG40ci1cl+CAiotREC2daU2qWj93ysEctx115ekwBB8Z/ppH
+   A==;
+X-CSE-ConnectionGUID: eGEsYc1DSB6qfMAZzj4ncw==
+X-CSE-MsgGUID: 2dcgLPZZTFeA516DTixBCQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="46003571"
+X-IronPort-AV: E=Sophos;i="6.14,225,1736841600"; 
+   d="scan'208";a="46003571"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 20:25:56 -0800
+X-CSE-ConnectionGUID: Wox4vV5jSb64q56XBB+2rg==
+X-CSE-MsgGUID: BmO2x536SbCjV5jLKsr7Dg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,225,1736841600"; 
+   d="scan'208";a="119075926"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by fmviesa008.fm.intel.com with ESMTP; 05 Mar 2025 20:25:51 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tq2ns-000MWc-2Z;
+	Thu, 06 Mar 2025 04:25:49 +0000
+Date: Thu, 6 Mar 2025 12:24:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Manikandan Muralidharan <manikandan.m@microchip.com>, robh@kernel.org,
+	krzk+dt@kernel.org, conor+dt@kernel.org,
+	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+	claudiu.beznea@tuxon.dev, tudor.ambarus@linaro.org,
+	pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
+	richard@nod.at, vigneshr@ti.com, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev, manikandan.m@microchip.com,
+	Varshini Rajendran <varshini.rajendran@microchip.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: sst: register SFDP region into NVMEM
+ framework to read MAC Address
+Message-ID: <202503061244.wH2sylN8-lkp@intel.com>
+References: <20250305100134.1171124-1-manikandan.m@microchip.com>
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdehjeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepgeetfeduleefjeffheevleeggfdtvdduhfdugeeuieejveejiedvhfdugfettdehnecukfhppeelvddrudekgedruddtkedrleeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledvrddukeegrddutdekrdeliedphhgvlhhopehlohgtrghlhhhoshhtrdhlohgtrghlughomhgrihhnpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddtpdhrtghpthhtohepsghrohhonhhivgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqshhpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtohepthhuughorhdrrghmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpt
- hhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihgthhgrvghlseifrghllhgvrdgttgdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhg
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20250305100134.1171124-1-manikandan.m@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250305_201157_182660_DF2CB884 
-X-CRM114-Status: GOOD (  10.17  )
+X-CRM114-CacheID: sfid-20250305_202601_632115_138A97AD 
+X-CRM114-Status: GOOD (  13.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,143 +95,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Many spi-mem controller drivers have a very similar debug log at the
-beginning of their ->exec_op() callback implementation. This debug log is
-effectively useful, so let's create one that is complete and concise
-enough, so developers no longer need to write their own.
+Hi Manikandan,
 
-Remove the debug log from individual drivers and propose a common one.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/spi/spi-aspeed-smc.c   |  7 -------
- drivers/spi/spi-mem.c          | 11 +++++++++++
- drivers/spi/spi-mtk-snfi.c     |  3 ---
- drivers/spi/spi-npcm-fiu.c     |  5 -----
- drivers/spi/spi-stm32-qspi.c   |  5 -----
- drivers/spi/spi-zynq-qspi.c    |  4 ----
- drivers/spi/spi-zynqmp-gqspi.c |  4 ----
- 7 files changed, 11 insertions(+), 28 deletions(-)
+[auto build test WARNING on mtd/spi-nor/next]
+[also build test WARNING on robh/for-next abelloni/rtc-next linus/master v6.14-rc5 next-20250305]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/spi/spi-aspeed-smc.c b/drivers/spi/spi-aspeed-smc.c
-index e9beae95dded..62a11142bd63 100644
---- a/drivers/spi/spi-aspeed-smc.c
-+++ b/drivers/spi/spi-aspeed-smc.c
-@@ -303,13 +303,6 @@ static int do_aspeed_spi_exec_op(struct spi_mem *mem, const struct spi_mem_op *o
- 	u32 ctl_val;
- 	int ret = 0;
- 
--	dev_dbg(aspi->dev,
--		"CE%d %s OP %#x mode:%d.%d.%d.%d naddr:%#x ndummies:%#x len:%#x",
--		chip->cs, op->data.dir == SPI_MEM_DATA_IN ? "read" : "write",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth,
--		op->addr.nbytes, op->dummy.nbytes, op->data.nbytes);
--
- 	addr_mode = readl(aspi->regs + CE_CTRL_REG);
- 	addr_mode_backup = addr_mode;
- 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index a9f0f47f4759..dc51fe23d2a6 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -377,6 +377,17 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	/* Make sure the operation frequency is correct before going futher */
- 	spi_mem_adjust_op_freq(mem, (struct spi_mem_op *)op);
- 
-+	dev_dbg(&mem->spi->dev, "[cmd: 0x%02x][%dB addr: %#8llx][%dB dummy][%4dB data %s] %d%c-%d%c-%d%c-%d%c @ %uHz\n",
-+		op->cmd.opcode,
-+		op->addr.nbytes, (op->addr.nbytes ? op->addr.val : 0),
-+		op->dummy.nbytes,
-+		op->data.nbytes, (op->data.nbytes ? (op->data.dir == SPI_MEM_DATA_IN ? " read" : "write") : "     "),
-+		op->cmd.buswidth, op->cmd.dtr ? 'D' : 'S',
-+		op->addr.buswidth, op->addr.dtr ? 'D' : 'S',
-+		op->dummy.buswidth, op->dummy.dtr ? 'D' : 'S',
-+		op->data.buswidth, op->data.dtr ? 'D' : 'S',
-+		op->max_freq ? op->max_freq : mem->spi->max_speed_hz);
-+
- 	ret = spi_mem_check_op(op);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/spi/spi-mtk-snfi.c b/drivers/spi/spi-mtk-snfi.c
-index fdbea9dffb62..e82ee6dcf498 100644
---- a/drivers/spi/spi-mtk-snfi.c
-+++ b/drivers/spi/spi-mtk-snfi.c
-@@ -1284,9 +1284,6 @@ static int mtk_snand_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- {
- 	struct mtk_snand *ms = spi_controller_get_devdata(mem->spi->controller);
- 
--	dev_dbg(ms->dev, "OP %02x ADDR %08llX@%d:%u DATA %d:%u", op->cmd.opcode,
--		op->addr.val, op->addr.buswidth, op->addr.nbytes,
--		op->data.buswidth, op->data.nbytes);
- 	if (mtk_snand_is_page_ops(op)) {
- 		if (op->data.dir == SPI_MEM_DATA_IN)
- 			return mtk_snand_read_page_cache(ms, op);
-diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
-index 958bab27a081..67cc1d86de42 100644
---- a/drivers/spi/spi-npcm-fiu.c
-+++ b/drivers/spi/spi-npcm-fiu.c
-@@ -550,11 +550,6 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	int ret = 0;
- 	u8 *buf;
- 
--	dev_dbg(fiu->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth, op->addr.val,
--		op->data.nbytes);
--
- 	if (fiu->spix_mode || op->addr.nbytes > 4)
- 		return -EOPNOTSUPP;
- 
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 540b6948b24d..9691197bbf5a 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -362,11 +362,6 @@ static int stm32_qspi_send(struct spi_device *spi, const struct spi_mem_op *op)
- 	u32 ccr, cr;
- 	int timeout, err = 0, err_poll_status = 0;
- 
--	dev_dbg(qspi->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth,
--		op->addr.val, op->data.nbytes);
--
- 	cr = readl_relaxed(qspi->io_base + QSPI_CR);
- 	cr &= ~CR_PRESC_MASK & ~CR_FSEL;
- 	cr |= FIELD_PREP(CR_PRESC_MASK, flash->presc);
-diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
-index 2bd25c75f881..5232483c4a3a 100644
---- a/drivers/spi/spi-zynq-qspi.c
-+++ b/drivers/spi/spi-zynq-qspi.c
-@@ -540,10 +540,6 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
- 	int err = 0, i;
- 	u8 *tmpbuf;
- 
--	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth);
--
- 	zynq_qspi_chipselect(mem->spi, true);
- 	zynq_qspi_config_op(xqspi, mem->spi, op);
- 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index d800d79f62a7..1c78713ad61a 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -1067,10 +1067,6 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
- 	u16 opcode = op->cmd.opcode;
- 	u64 opaddr;
- 
--	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth);
--
- 	mutex_lock(&xqspi->op_lock);
- 	zynqmp_qspi_config_op(xqspi, op);
- 	zynqmp_qspi_chipselect(mem->spi, false);
+url:    https://github.com/intel-lab-lkp/linux/commits/Manikandan-Muralidharan/ARM-dts-microchip-sama5d29_curiosity-Add-nvmem-layout-in-QSPI-to-describe-EUI48-MAC-address-region/20250305-180433
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
+patch link:    https://lore.kernel.org/r/20250305100134.1171124-1-manikandan.m%40microchip.com
+patch subject: [PATCH 1/2] mtd: spi-nor: sst: register SFDP region into NVMEM framework to read MAC Address
+config: m68k-stmark2_defconfig (https://download.01.org/0day-ci/archive/20250306/202503061244.wH2sylN8-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250306/202503061244.wH2sylN8-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503061244.wH2sylN8-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/mtd/spi-nor/sst.c:75: warning: Function parameter or struct member 'off' not described in 'sst26vf_sfdp_mac_addr_read'
+>> drivers/mtd/spi-nor/sst.c:75: warning: Excess function parameter 'offset' description in 'sst26vf_sfdp_mac_addr_read'
+
+
+vim +75 drivers/mtd/spi-nor/sst.c
+
+    61	
+    62	/**
+    63	 * sst26vf_sfdp_mac_addr_read() - check if the EUI-48 MAC Address is programmed
+    64	 * and read the data from the prestored SFDP data
+    65	 *
+    66	 * @priv: User context passed to read callbacks.
+    67	 * @offset: Offset within the NVMEM device.
+    68	 * @val: pointer where to fill the ethernet address
+    69	 * @bytes: Length of the NVMEM cell
+    70	 *
+    71	 * Return: 0 on success, -EINVAL  otherwise.
+    72	 */
+    73	static int sst26vf_sfdp_mac_addr_read(void *priv, unsigned int off,
+    74					      void *val, size_t bytes)
+  > 75	{
+    76		struct spi_nor *nor = priv;
+    77		struct sfdp *sfdp = nor->sfdp;
+    78		loff_t offset = off;
+    79		size_t sfdp_size;
+    80	
+    81		/*
+    82		 * Check if the EUI-48 MAC address is programmed in the next six address
+    83		 * locations.
+    84		 * @off is programmed in the DT and stores the start of MAC Address
+    85		 * byte, (off - 1) stores the bit length of the Extended Unique
+    86		 * Identifier
+    87		 */
+    88		if (SST26VF_SFDP_EUI48 != *((u8 *)sfdp->dwords + (offset - 1)))
+    89			return -EINVAL;
+    90	
+    91		sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
+    92		memory_read_from_buffer(val, bytes, &offset, sfdp->dwords,
+    93					sfdp_size);
+    94		return 0;
+    95	}
+    96	
+
 -- 
-2.48.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
