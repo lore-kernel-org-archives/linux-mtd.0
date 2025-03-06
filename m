@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CBCDC28B30
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19CA5C28B28
 	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 16:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=n9/WBB8ysU7q8Hyvu/PB8ej+wN4edrKbNEGcBTz0eyQ=; b=h+wyZRkxE3YXyv
-	8/ApChFRrS8gIeZAmUvTt4r8NespCrpTaOkyCU4lxu5xx+OOgFE7sRxu0CKEbcijDXLOSc9Pn/b9m
-	Y5w6ZvI+bQlHEsbpHnj26I4hb0tKU0wH3DFJUaQusj75JKhv366KXqIxooYNRPGKMU9nYG5Wl4z7Z
-	8mFxu9IqbUoZtOEHEQgRbx77sX7y+2emcDKSiu+dJw+lEQspMrrvR8CfuJafnLheBdpzDXZuivXCa
-	0yXkt87dZZP5sBhR99yC/A4ufCM81bGU6OXcfQDA74orywHyLl2kOUvl4KN0ceQxmjl3GDsyg+31F
-	M9ZiVn3IAU6qJE8EbLMA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UR3tQbccR6a1tmS7uTKrgUHvE+QdSjaqHbfSWWOKveU=; b=qPmg5YN9tukjOM
+	UoJgQwZ9e16lE6wDbGCKneiXbOWndiJKb12S+Qt0BrtvHtRovUe3wSIZg6DE/U3mOgj3TL1XnHoPK
+	oRnoFq3qdf791gjAcMXFbrjTJQORwVzEihwzdm9QzMmeBwReZylASlzGAeMcexmtf6fZ84WmvZfTn
+	PVlPmAglkXwrSmCpGUtDJ/0Qlf8Bh2Se670qB+GdvaFCpq9KtkCazloXkj7ltSzjBRt8hRCg1hyK5
+	bFUYU1d+jOBKU9gpR40i8UXjGVTheCdnlpOgr7hMJ+7+8joyCY1m2tTrLq543djV7ggGQnXzmL1QE
+	h0IRuwxabYwXy5yt5lwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqE4r-0000000BU2p-2X7D;
-	Thu, 06 Mar 2025 16:28:05 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1tqE4q-0000000BU24-2Fh7;
+	Thu, 06 Mar 2025 16:28:04 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqE38-0000000BTQG-04sh
+	id 1tqE2p-0000000BTK4-0oWM
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Mar 2025 16:26:19 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2feb867849fso1489708a91.3
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:26:17 -0800 (PST)
+	Thu, 06 Mar 2025 16:26:00 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2ff784dc055so569562a91.1
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:25:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741278377; x=1741883177; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g4VnYHrG4RwnHlGdrfRVkI5G3ZqKaX1Ck3mTCfWdoMQ=;
-        b=Z/jRA14BFDuMijvO3LOvqm8CpWgBqy/Ligtt/6gNxOnwK3vvl627IAHy09QKE/2oWg
-         6IaUIyaCbjOBEogku4kGn/JE4ilYqeXAAri49TTamX3128R9DbT8vLPlOcRQJpXkWh73
-         mVFMpI+qwq3K8rpdxBFdPtz7HVPHj1KX+J5MbKLa8yS+RXm0ms279sDEonQKtdOO3EIb
-         P6U6Vb8yQhqRKAEcyE1Kgrh5I8DXyIyUvzv4qO9nUsCJoCs3J9WCVsx2W37APDcrDfr4
-         WngUHX51OLD1n4r8B5hTNbpcGp8V6pGghk/unMryoNbmxSHEDD8mCy5CUH9+5AQgVLbY
-         bSCw==
+        d=gmail.com; s=20230601; t=1741278358; x=1741883158; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v1Sq6955SeW7fXdSe6bezpmzNTL9tmkfZyPLC9/YdtI=;
+        b=FGlH0SJEIQqVgaWzhHtOyoucg1sFdwyEi0bpzolkPfA1+NOmJxFmF7NWAOA3A+ipvk
+         0A5607icZoHBjkxTyE/1yLcESBrCH3pKOZ3B8IhMSHVHnKg3QvDRp7nT41YW5SJrSNc5
+         R3ycgR/26cgfdrYe1d6urGzazekRMXT6biDNOH+nemohMWrg+QMb98c1tdgg7W7kpYiH
+         21aj0nNtXTgTIyXYF5e9HfoJGqwFs6PlfiE603adw1p7KHjwxQ5B7vYI7mIc3f3nhsEq
+         Y+8Daj2Q7XlXlrVzKg6DwCNQAzeyq7dnTYyDv6lXzLPgC4Dt7URzJGUsANCmwBRfuWt2
+         ptrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741278377; x=1741883177;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g4VnYHrG4RwnHlGdrfRVkI5G3ZqKaX1Ck3mTCfWdoMQ=;
-        b=u3L0yap+YQkW0kvlF6nCNokVpkRFGWDMp0wUyXOeZ0vaIjHP068akulT2zTksmh1hK
-         cT9kyILF5ncKm19Y/hH/Kzg5Gi4QkEFlJfcXz2Stgbkymi3cklmZ4gqL7D0uMsUWy9DJ
-         9S2FlEk0V9A7Q8Sla/+1BpO0VnqhLFHorVdIHdaOCdIsRR82Fjk83vgkFekgz5CXieep
-         J85+Gx51eRFJY0yWYFrWDxaAeKyWMT4rEnFhziL/Vw84NJ4m/KXj/AkTqBTRx37U8l9u
-         zipZe6wjhuzwQBagYQWtJkgZ1cYgTBXUmM/HOaYV9O186U89erJ2OkwFUiTUXRj5RaZe
-         JInQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/JMclxxSy43E7hsXQsf5aRfjQThuewJ6JkLI77H3iz/5T6Mhm9dB2dOCljOPnjzL03X8CSJt5MFE=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzKIrUkWcyieLCHtEw6wDrApzhLuisPplEUTWufAgSG+OuWXysN
-	rw4MsFQmL2it89v442dZESD1+ad8g1uN4xjgYJEOlRiUF0cp4gp+
-X-Gm-Gg: ASbGncsAM6DzkBU/7sMCHAtGKd/Lgnv2z0u3tGxfEHYb/6B+BmsF9JtPU77HoHpE/8r
-	sFCVMRbDfCtPo/SrFb65vT3A6HKLziTMUVrbiTJV48wd7RRwl2zS+omrCeTRxXDuQIqzq3P0dK4
-	D9+AVae7x0agAwX9WLCkTLP7J3U9SULPHs9o27zBpGVVYWOzjksHMcsIgHJyS0zCKWBHX/j1Yeb
-	6EABvt8g7zgrjF80hXO9LzIEgr4qS7DSOwgJju0i4XdefhtXyvV3iw0CVkhsIjw6YqB8nv56XhH
-	MI+De9a1eMeQqTIlwcfNxYSwbb9rcVAW5wUPMsm5izaHpcBoWz+uBP0HzmkEBrb/0ceP0Gf5MVA
+        d=1e100.net; s=20230601; t=1741278358; x=1741883158;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v1Sq6955SeW7fXdSe6bezpmzNTL9tmkfZyPLC9/YdtI=;
+        b=LIqE4G28e/7ILt6dvKnXYXG/V9Qtc05xQxt00+YDHD8hIiThXmUtpCte8L3w8gooKn
+         fW6SNTmjCbzo5hzId+bs/lmq0OppEXUkS6htMoyiE6CF/2EsTjNGRlOwMu4kLJ/UFUwG
+         C/YoMzc/mDKBT7gipXA/3Bzndh0MXaLEsaQ46+MKyUY8gp3mGXWgQBWrm7gEK0HbpfZa
+         XvV9+d74LZIn6a4zbmB1l6lYL2ql0R0RAWbIFvFLHrZP0Siu/EEgk7pAyZYLQQIJ5Q1E
+         xnQIP5zZe3UzAGziW51Fj6s95dlfeodD/a6Wj2shkcFj2pGcal0tK83WjiEGNCrHTRqi
+         srJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWX/b4WYA6YJwomorqwWfcaescC9qup0lZMzdmTcFidrDPKUs4/BFybFU0+uj+Zk/gqucVP3fbGAMc=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyWAXdL4AZ+UjRTAJ908QDdwqJaCz0gEOoRu+8EWxPOr3f3RjqQ
+	JnXihpethtC2mk93Tt2ahCKFNcWKqk/+1QPIUIiVlRGzMokajvAp
+X-Gm-Gg: ASbGncudFop3vEPbxFuUVEaJhO/7SZR2K28PXLkVOKjIsS4GIxeiEz4OJ18bJkbsrgi
+	Gdy5Tmk9ycXjkVYpQri77hBpE+Nwitng50G+knkPxaNArBNV4qvmIJjqtc1Mou1wO282Xnp83wo
+	siBkFbwvqx0LX/raLoB/nt8thN7bH7WR0vzr4/GOS/uhHufQMduN1cMPne3U11FbPnveA8c9NLb
+	A/YsbHcjovmFQPqDXr6uwuWXG7cJpWSXX9ijH/gieUuEG0ImIcqDl7TCit/aY+FtFLkZbNN8s2u
+	Q9sPThZ9FY444H4XOwYpxQ0ZZNcrXE/2wvYX7zo3nz7joEdQYf0fW7caymslMTgDpm3WvaPkIVU
 	=
-X-Google-Smtp-Source: AGHT+IHz+gPXGVLABcu1Z5L/FQeF1foGDNMRW0PUwFQDBuhtYoYyf91GQ4fqN6r0d6c4jX9sVUpwVA==
-X-Received: by 2002:a17:90b:264c:b0:2ee:863e:9ffc with SMTP id 98e67ed59e1d1-2ff49753d20mr10753652a91.21.1741278377011;
-        Thu, 06 Mar 2025 08:26:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHx/FA9q9VeYWlT31tM+odxs15FTKCjv2n+9fQOLwshtfFtm1FM7EynPDhqEgIZlabXqJLing==
+X-Received: by 2002:a17:90b:2702:b0:2fe:99cf:f566 with SMTP id 98e67ed59e1d1-2ff49775b54mr11884816a91.13.1741278357585;
+        Thu, 06 Mar 2025 08:25:57 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.26.08
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.25.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 08:26:16 -0800 (PST)
+        Thu, 06 Mar 2025 08:25:56 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -128,17 +127,14 @@ Cc: hpa@zytor.com,
 	jserv@ccns.ncku.edu.tw,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v3 02/16] bitops: Add parity16(), parity32(), and parity64() helpers
-Date: Fri,  7 Mar 2025 00:25:27 +0800
-Message-Id: <20250306162541.2633025-3-visitorckw@gmail.com>
+Subject: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+Date: Fri,  7 Mar 2025 00:25:25 +0800
+Message-Id: <20250306162541.2633025-1-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250306162541.2633025-1-visitorckw@gmail.com>
-References: <20250306162541.2633025-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_082618_057979_F5D1B8DC 
-X-CRM114-Status: UNSURE (   8.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250306_082559_233581_B5E5FF01 
+X-CRM114-Status: GOOD (  12.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,71 +151,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add parity16(), parity32(), and parity64() to compute the parity of
-16-bit, 32-bit, and 64-bit values, respectively. Each function extends
-parity8() by XOR-ing upper and lower halves, reducing the input size
-progressively.
+Several parts of the kernel contain redundant implementations of parity
+calculations for 16/32/64-bit values. Introduces generic
+parity16/32/64() helpers in bitops.h, providing a standardized
+and optimized implementation. 
+
+Subsequent patches refactor various kernel components to replace
+open-coded parity calculations with the new helpers, reducing code
+duplication and improving maintainability.
 
 Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- include/linux/bitops.h | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+In v3, I use parityXX() instead of the parity() macro since the
+parity() macro may generate suboptimal code and requires special hacks
+to make GCC happy. If anyone still prefers a single parity() macro,
+please let me know.
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 44e5765b8bec..906757e1ddf8 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -260,6 +260,48 @@ static inline __attribute_const__ bool parity8(u8 val)
- 	return (0x6996 >> (val & 0xf)) & 1;
- }
- 
-+/**
-+ * parity16 - get the parity of an u16 value
-+ * @val: the value to be examined
-+ *
-+ * Determine the parity of the u16 argument.
-+ *
-+ * Returns:
-+ * false for even parity, true for odd parity
-+ */
-+static inline __attribute_const__ bool parity16(u16 val)
-+{
-+	return parity8(val ^ (val >> 8));
-+}
-+
-+/**
-+ * parity32 - get the parity of an u32 value
-+ * @val: the value to be examined
-+ *
-+ * Determine the parity of the u32 argument.
-+ *
-+ * Returns:
-+ * false for even parity, true for odd parity
-+ */
-+static inline __attribute_const__ bool parity32(u32 val)
-+{
-+	return parity16(val ^ (val >> 16));
-+}
-+
-+/**
-+ * parity64 - get the parity of an u64 value
-+ * @val: the value to be examined
-+ *
-+ * Determine the parity of the u64 argument.
-+ *
-+ * Returns:
-+ * false for even parity, true for odd parity
-+ */
-+static inline __attribute_const__ bool parity64(u64 val)
-+{
-+	return parity32(val ^ (val >> 32));
-+}
-+
- /**
-  * __ffs64 - find first set bit in a 64 bit word
-  * @word: The 64 bit word
+Additionally, I changed parityXX() << y users to !!parityXX() << y
+because, unlike C++, C does not guarantee that true casts to int as 1.
+
+Changes in v3:
+- Avoid using __builtin_parity.
+- Change return type to bool.
+- Drop parity() macro.
+- Change parityXX() << y to !!parityXX() << y.
+
+
+Changes in v2:
+- Provide fallback functions for __builtin_parity() when the compiler
+  decides not to inline it
+- Use __builtin_parity() when no architecture-specific implementation
+  is available
+- Optimize for constant folding when val is a compile-time constant
+- Add a generic parity() macro
+- Drop the x86 bootflag conversion patch since it has been merged into
+  the tip tree
+
+v1: https://lore.kernel.org/lkml/20250223164217.2139331-1-visitorckw@gmail.com/
+v2: https://lore.kernel.org/lkml/20250301142409.2513835-1-visitorckw@gmail.com/
+
+Kuan-Wei Chiu (16):
+  bitops: Change parity8() return type to bool
+  bitops: Add parity16(), parity32(), and parity64() helpers
+  media: media/test_drivers: Replace open-coded parity calculation with
+    parity8()
+  media: pci: cx18-av-vbi: Replace open-coded parity calculation with
+    parity8()
+  media: saa7115: Replace open-coded parity calculation with parity8()
+  serial: max3100: Replace open-coded parity calculation with parity8()
+  lib/bch: Replace open-coded parity calculation with parity32()
+  Input: joystick - Replace open-coded parity calculation with
+    parity32()
+  net: ethernet: oa_tc6: Replace open-coded parity calculation with
+    parity32()
+  wifi: brcm80211: Replace open-coded parity calculation with parity32()
+  drm/bridge: dw-hdmi: Replace open-coded parity calculation with
+    parity32()
+  mtd: ssfdc: Replace open-coded parity calculation with parity32()
+  fsi: i2cr: Replace open-coded parity calculation with parity32()
+  fsi: i2cr: Replace open-coded parity calculation with parity64()
+  Input: joystick - Replace open-coded parity calculation with
+    parity64()
+  nfp: bpf: Replace open-coded parity calculation with parity64()
+
+ drivers/fsi/fsi-master-i2cr.c                 | 18 ++-----
+ .../drm/bridge/synopsys/dw-hdmi-ahb-audio.c   |  8 +--
+ drivers/input/joystick/grip_mp.c              | 17 +-----
+ drivers/input/joystick/sidewinder.c           | 24 ++-------
+ drivers/media/i2c/saa7115.c                   | 12 +----
+ drivers/media/pci/cx18/cx18-av-vbi.c          | 12 +----
+ .../media/test-drivers/vivid/vivid-vbi-gen.c  |  8 +--
+ drivers/mtd/ssfdc.c                           | 20 ++-----
+ drivers/net/ethernet/netronome/nfp/nfp_asm.c  |  7 +--
+ drivers/net/ethernet/oa_tc6.c                 | 19 ++-----
+ .../broadcom/brcm80211/brcmsmac/dma.c         | 16 +-----
+ drivers/tty/serial/max3100.c                  |  3 +-
+ include/linux/bitops.h                        | 52 +++++++++++++++++--
+ lib/bch.c                                     | 14 +----
+ 14 files changed, 77 insertions(+), 153 deletions(-)
+
 -- 
 2.34.1
 
