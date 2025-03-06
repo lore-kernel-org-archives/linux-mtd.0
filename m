@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5748C2BA1B
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 16:28:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 126BCC282D1
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 16:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7rfhFCU1+cXXsE3ZaQSPF/zinljbzqEYpqikudUH1K4=; b=DdWqwIgPBEerfb
-	ED5zBeJKbb73AwwKSrL8/pvO6TKwwS/JpYJCQoQs4LlY6IVWnsF7UucI/PKHSUBLiBalOq+xeavDk
-	cko/R8ZaWIMNCCfC80SLadkcoeQkHK4M6X/HThxdiWkS6VVYOOT6wN1rPh+1jDtbMYLigEACAQv4B
-	FTQF4llm7fhZbDEMsfXHrq/+HBomIGFq5L2wnBU0Uz1hMSqcrf5X1VALQnBuFO7AE2GcLQTpyStmh
-	zQc5gTsEFbQy9x0Pa7ODuk/9Fiim6hlYAzHgx/5TwnwxjoDFB3o69cWtUWj5y9dCl/x+NMMfiOINh
-	ganUCnGHz/OQFBVJuZ6A==;
+	List-Owner; bh=uOvqWpdzMkanoTkS71LPVlxzVZyH1AU/O3V0z0S3Ows=; b=3//zX89f4qGLYU
+	DZU+BfNSD6fZ9l+9Qyx0w5ULWH8MsTFzMMoFkiqh37mg+hWunL0suKfQpGO1UaC34xVaC5gBaD2ct
+	kcxyoiNjD2bRkVYo7dQ4vNiPizD/mOoWWjN9IC5OcKibgBy9N0m5r+pSZH0xTXbbDZ9A43PI+YUFc
+	WAaXelY0OK92ljsIMrAQ/p6ywWUo/jX5k0iZ/4gc/RPRPMJVMTodWSF6uDufD7sOey7Al0dazTBYC
+	iqvvHrtmK+bWf4T2raGtFk/CK/xVJcwPB+ov9Rl458AZfZSf9pXcnrQN3eKsglpIOp/xW3h/+PhEe
+	ZHDR6N2ZhxECPgstNkeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqE4v-0000000BU7Q-2pn3;
-	Thu, 06 Mar 2025 16:28:09 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1tqE4w-0000000BU9r-46L0;
+	Thu, 06 Mar 2025 16:28:10 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqE47-0000000BTjR-0z26
+	id 1tqE4H-0000000BTmI-0ZGn
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Mar 2025 16:27:20 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-219f8263ae0so17491075ad.0
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:27:18 -0800 (PST)
+	Thu, 06 Mar 2025 16:27:30 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2fef5c978ccso1515128a91.1
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 08:27:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741278438; x=1741883238; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1741278448; x=1741883248; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XN5ImNH6dAdBfCykY87Jt3WvSMwHnviLIgPuEMqr3Q4=;
-        b=lNSphBGxDg3ptaEW7C1l4rw2+fcFOPHsMaUChALqHo5gZAvLHfMIW0LTPZREyD9Y+U
-         PwfjWkcGGJC8vZpqrUJiuHfKPhRM5vKMXHwzyh5cgJgIiDglslDTff6SUs+DR42fzFal
-         SPjyypRPiMrecawBqQwRDZv/Rm9p1O3HRVxu4DJFWVLRAsLxmV1V7jdNuoOP7+qO1cDW
-         hjzzd1oYHUw/9AhaDLP9ESQ/ho7QeRdwVhue7D44zgA6yoQAgatMhzfuPeK3KoGBkEUH
-         kJkytKmQpuaWgnUC0U+ddS0zObW/V5rUMCFneMZSUaGZsaqT9pIYrMvI8etykU7vaETa
-         RDAQ==
+        bh=OqxvpgZHoGiLr6YH8sD6RZa4e3r1mx+K51Pz7JFmQwA=;
+        b=Gq0JjlTxc92TsKcyQBKiZGxqw+a7f9OpEwTpPkMc43kiaOrMRYPKwdfIdKGAECgtXN
+         IUNitIsezFO+wRqS19zrqWNeIHLwB2V5UK+SqT6OB5qiVDze/MlWnRVRc01QXpucg7qY
+         fWRGelD8PG/TF91jfHd+KP5DZnX228IEKEzTqeNCIC3INiCd6nAuYKCKuxspTbZH2/Pz
+         nqBFATZjc5b4ohlNoQcwkk3PcDNR1fi+RyIWGgYxxctjReGdErtlDK5rKW+Xxyw9GnBh
+         wvoXvXhu4xpbW5pviGfwdZs+toWtrCWLYVWx+rBW9WS2tU1d3tRpOUnozZ8J+g5BptZx
+         jSxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741278438; x=1741883238;
+        d=1e100.net; s=20230601; t=1741278448; x=1741883248;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XN5ImNH6dAdBfCykY87Jt3WvSMwHnviLIgPuEMqr3Q4=;
-        b=s7lOz8UPFyb2Tf8xJVBHZPDm119aneHb91e8enK2/4rNV9myKRMJ8sqJVez1mD+VLY
-         KUxBZYMAQdtm7A47NzkeB2SRjsgDkcxckVRuzSOE3ds8CdRb3ZM+ga4xBRO1nhuJIRqy
-         k5dng8z3oNJqz4KunGDU+p2mBymdOVGU9WCVsCRDnnoo+wJzWJKdkXNL+pkAIEJiVTCX
-         MuCz8YTvoaR74SOgu5sl4zcTVwhZh8BiZU4w61P2d5FFNUbo1UahzH1Oc1WKmVrfCeVe
-         CxMpuwpMBQjPULFe4/AJHqhYqWEv95MMktUDesVkTsdCeY0IoOUUR2nth4+QvKlX3n2y
-         YCLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWFkocx6f63iYAFJHp+nyWcvkeGMOf/+bUzLTEvtQ1k2Wsm52LUVo5INzi6HKLBQQYKJOhOOojl2yw=@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywm4AZVRt9WPR/YZZmpHPeYUqxF+oFsPS54OuSePLsUPEuzqIYq
-	5r1UKdrRFw9wTC2ux6eQel9KCG4awiN30Yht55B5AUuJuRsw6AID
-X-Gm-Gg: ASbGncunIaApZYxEYqEpLl6cKW2GpqHL5FnVG5T5RS0dr9WbXmOvtAjFWU61/szl00O
-	N0DqNiRVU47+5N+7apIxcJMQcr8w9DkJBtMFNn1pAsQolL53TO2ROIUpXFuvUtL6XjhzIpRdKVt
-	a91db0oWuSxBrUvGvir1pAfAqS7TsFzthRyROhG+57rr1oFb4jSAQjnIs8XUt/oRH8kWf0Cggb6
-	UWjm16EBn4DYmkfE0+46tMR/MFRFjI6Q0WvPB5inNpyx35/a/BxGuj3SciqRwr0rqHnEZJVtjG1
-	v4ZycYgXP8qrhOZdb6YvHuEBKRYOQ/l2vuHk97p1cBY5oX2oTD2Au1H0N70CC413o7JsIO4Wz+c
+        bh=OqxvpgZHoGiLr6YH8sD6RZa4e3r1mx+K51Pz7JFmQwA=;
+        b=C3vMhglT/T9fP5Tn54TObpoGWuBOXdKCMeFq2+QJw38dZYKuouCZ4/1h+3Vk7+RQn7
+         sRoa9g7GQVOaL97KyyIT4zB58kuskYM9xYP8FZyvfsD4mRBRXzb78uf0DW2HUsWr4nGT
+         +UuL/LAxo2GtKobVPBcqDXiZo5oaMlhv56yXEFsy6CH3zeUqQOOtI84mDLjDzwStjHpV
+         i+ku/o6XpNUptmz/HY/EI2ff2ldRlMsBge6+7wKJdsmdm68L1bNPWB6ky6i6adMBsGyu
+         DRpPDShJncV8avk2ch3g4cOiojOzEKuy63Q0NesoP9fi0HZVhp1cK61ODr253bASSm/A
+         kl7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWvRXyQPNUotDtD0b9J1DS/qxKLPl+k+/JTdZOjdcETv03EyOKcVtJGbfobwPLdqw4jgagGK1/Kvc4=@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywu5FOjF5EVvcR/f+J5ycseILp4f+GULhTWpcmMNzUXXwF4R+k0
+	f54vaU3Xq6xptvno5Mw+3c82uYodpJdjlKYT9lb/Ii+KAVCHk/EQ
+X-Gm-Gg: ASbGnctJtQOnYV/BZW5PE0P/RF+sIpGoAPK62DFSChqoggpyJ/840PLzEE7ivN8W051
+	agDrA8H+E0NDbzIAAaUUvg6N39ksY8j+yuupIGxU8oHiG9q0h2LwC+kSSJl8wMyJNbE+s7NOluI
+	5qklUwlBLKsxsQxfDMAAzvO6aM0lGYvwTsiu6BkdjbClZixbrZbkmYtxS/DBT2COIQPNjl38hAj
+	EUjbr0R5CGgCrjgzlTJnpkPIYCl0OzR4mAL8iXXwxPlZ2RfwPmAvjF/dr+rCttb6UkLse/CDJuX
+	yfbzH//S+gWqzrfbRDx4zdAxVJ0cIHH+uVko7CrTtINliJb5vaEBJv4MR5ZEMkp+DG8JcQ51izI
 	=
-X-Google-Smtp-Source: AGHT+IF18uiSk+IKiG1ozkM3lMeST4qvi8jhpDhJUoUXK6z5h5Y70JgwenicEaPtYCl0NNS2nVYnUA==
-X-Received: by 2002:a17:902:e5cf:b0:224:1eaa:5de1 with SMTP id d9443c01a7336-2241eaa5f50mr17212195ad.18.1741278438234;
-        Thu, 06 Mar 2025 08:27:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHUo1VQ1LAiyQ9UXLap7uh1jhPtCUcmwdFlNac3xPKGa9S5gSb9W1skAcfvxZCU/ssK4wuDpg==
+X-Received: by 2002:a17:90b:17d1:b0:2ee:ed1c:e451 with SMTP id 98e67ed59e1d1-2ff497cd4b3mr11755081a91.15.1741278448219;
+        Thu, 06 Mar 2025 08:27:28 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.27.10
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e75bfsm1464298a91.33.2025.03.06.08.27.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 08:27:17 -0800 (PST)
+        Thu, 06 Mar 2025 08:27:27 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -128,16 +128,17 @@ Cc: hpa@zytor.com,
 	jserv@ccns.ncku.edu.tw,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v3 08/16] Input: joystick - Replace open-coded parity calculation with parity32()
-Date: Fri,  7 Mar 2025 00:25:33 +0800
-Message-Id: <20250306162541.2633025-9-visitorckw@gmail.com>
+Subject: [PATCH v3 09/16] net: ethernet: oa_tc6: Replace open-coded parity calculation with parity32()
+Date: Fri,  7 Mar 2025 00:25:34 +0800
+Message-Id: <20250306162541.2633025-10-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250306162541.2633025-1-visitorckw@gmail.com>
 References: <20250306162541.2633025-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_082719_273262_25BE26E0 
-X-CRM114-Status: GOOD (  11.34  )
+X-CRM114-CacheID: sfid-20250306_082729_172681_0B25DB08 
+X-CRM114-Status: UNSURE (   9.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -162,54 +163,60 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
-Changes in v3:
-- Change condition if(parity32(pkt) == 1) to if(parity32(pkt)).
+ drivers/net/ethernet/oa_tc6.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
- drivers/input/joystick/grip_mp.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/input/joystick/grip_mp.c b/drivers/input/joystick/grip_mp.c
-index 5eadb5a3ca37..26a7ae785942 100644
---- a/drivers/input/joystick/grip_mp.c
-+++ b/drivers/input/joystick/grip_mp.c
-@@ -18,6 +18,7 @@
- #include <linux/delay.h>
- #include <linux/proc_fs.h>
- #include <linux/jiffies.h>
+diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
+index db200e4ec284..f02dba7b89a1 100644
+--- a/drivers/net/ethernet/oa_tc6.c
++++ b/drivers/net/ethernet/oa_tc6.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/bitfield.h>
 +#include <linux/bitops.h>
+ #include <linux/iopoll.h>
+ #include <linux/mdio.h>
+ #include <linux/phy.h>
+@@ -177,19 +178,6 @@ static int oa_tc6_spi_transfer(struct oa_tc6 *tc6,
+ 	return spi_sync(tc6->spi, &msg);
+ }
  
- #define DRIVER_DESC	"Gravis Grip Multiport driver"
- 
-@@ -112,20 +113,6 @@ static const int axis_map[] = { 5, 9, 1, 5, 6, 10, 2, 6, 4, 8, 0, 4, 5, 9, 1, 5
- 
- static int register_slot(int i, struct grip_mp *grip);
- 
--/*
-- * Returns whether an odd or even number of bits are on in pkt.
-- */
--
--static int bit_parity(u32 pkt)
+-static int oa_tc6_get_parity(u32 p)
 -{
--	int x = pkt ^ (pkt >> 16);
--	x ^= x >> 8;
--	x ^= x >> 4;
--	x ^= x >> 2;
--	x ^= x >> 1;
--	return x & 1;
+-	/* Public domain code snippet, lifted from
+-	 * http://www-graphics.stanford.edu/~seander/bithacks.html
+-	 */
+-	p ^= p >> 1;
+-	p ^= p >> 2;
+-	p = (p & 0x11111111U) * 0x11111111U;
+-
+-	/* Odd parity is used here */
+-	return !((p >> 28) & 1);
 -}
 -
- /*
-  * Poll gameport; return true if all bits set in 'onbits' are on and
-  * all bits set in 'offbits' are off.
-@@ -236,7 +223,7 @@ static int mp_io(struct gameport* gameport, int sendflags, int sendcode, u32 *pa
- 		pkt = (pkt >> 2) | 0xf0000000;
- 	}
+ static __be32 oa_tc6_prepare_ctrl_header(u32 addr, u8 length,
+ 					 enum oa_tc6_register_op reg_op)
+ {
+@@ -202,7 +190,7 @@ static __be32 oa_tc6_prepare_ctrl_header(u32 addr, u8 length,
+ 		 FIELD_PREP(OA_TC6_CTRL_HEADER_ADDR, addr) |
+ 		 FIELD_PREP(OA_TC6_CTRL_HEADER_LENGTH, length - 1);
+ 	header |= FIELD_PREP(OA_TC6_CTRL_HEADER_PARITY,
+-			     oa_tc6_get_parity(header));
++			     !parity32(header));
  
--	if (bit_parity(pkt) == 1)
-+	if (parity32(pkt))
- 		return IO_RESET;
+ 	return cpu_to_be32(header);
+ }
+@@ -940,8 +928,7 @@ static __be32 oa_tc6_prepare_data_header(bool data_valid, bool start_valid,
+ 		     FIELD_PREP(OA_TC6_DATA_HEADER_END_BYTE_OFFSET,
+ 				end_byte_offset);
  
- 	/* Acknowledge packet receipt */
+-	header |= FIELD_PREP(OA_TC6_DATA_HEADER_PARITY,
+-			     oa_tc6_get_parity(header));
++	header |= FIELD_PREP(OA_TC6_DATA_HEADER_PARITY, !parity32(header));
+ 
+ 	return cpu_to_be32(header);
+ }
 -- 
 2.34.1
 
