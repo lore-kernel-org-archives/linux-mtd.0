@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77DDEC19F32
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 03:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8B64C19F32
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 03:15:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
 	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0x8fw0rWVXuswXclrEAyed8Fyz670F5bfgJOxpF5+PA=; b=kGhwyb+dzpe6yr
-	vOFZZpFecuYZwwB1ptXLpYzCtL0iOY1YVyC/uZyQr7AhEmvyFxQQvQHOc+xd1HDh7qSiHqiw9ca3H
-	sEJcB9h1rTesV8SpMiMhL02vXLhyKwA5n2Lnu9rffn0mZ5MBWMPTcoF9zm40TsPt3QimvrVeljkl0
-	lANjXWvWFbzk6MVqZ9nxVZ3yYz07UjgTf68eDcJ8P/jEPw2NA8k3yiMFfAzlMuPmVFtCcGXxwFfg6
-	wWV/VXv9fXiP+/YOeY7DwRSCQItAUEwlmydLm7lPmSV2MYJHWXnJ4ayCCecvdPs6MhWbwuEHvaho/
-	8na+2KrUU9V/1sTknxpQ==;
+	List-Owner; bh=3n63pAwWtETfA/e/ZIgKNWOzpXAlpul+2SkK7Pu1nsQ=; b=jAbKiiM1/61nwo
+	Iig8CfPVwUF8P7SRHyxebfGWs7pl7Fw/Ce6YrCVeif2x1ePBC3gugU/T5jkB76/xZKL0CeYxXcSoK
+	bFNJFbYwAoDhCLYnvYWHJFqFXbvuDfVLQ3hIy4Q6qyoli17iT5rHnHhg8JfxsMjrW44sz0kuissxJ
+	UkKcs3xIkuDz/s6oGF4kAamnuev+mtTTR8Svgt+GEVsg/jUAmpexXmokOGaVaOKiy/UNuxyEL7JG6
+	Y97aiBtwh6rXbD55RwvTth7xzmMMLgR2d5n3qlYjFsspTdrsYBESJpnbDCc8rLADJ12XGqlDnBSEE
+	Dt9/nUnDmTaLCxzXS86g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqO5P-0000000CxDj-2n60;
-	Fri, 07 Mar 2025 03:09:19 +0000
+	id 1tqOB1-0000000Cxji-0hyT;
+	Fri, 07 Mar 2025 03:15:07 +0000
 Received: from [2607:7c80:54:3::138] (helo=mail.zytor.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqO5M-0000000CxBf-45jl
+	id 1tqOAy-0000000CxjJ-25BP
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 03:09:18 +0000
+	Fri, 07 Mar 2025 03:15:05 +0000
 Received: from [127.0.0.1] ([76.133.66.138])
 	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 527388dS027163
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 5273EFGO029055
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 6 Mar 2025 19:08:09 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 527388dS027163
+	Thu, 6 Mar 2025 19:14:16 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 5273EFGO029055
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025021701; t=1741316897;
-	bh=SFgD9M+p5d4igshN6SMPc//iuzRVz2Eb/CCPvhQeQ4k=;
+	s=2025021701; t=1741317259;
+	bh=hyUZKDF5+ooUtYLzko1Czdm29ayQGeHv7M7tkZymGRA=;
 	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=sGqJJ5ZiwQOefUeCTR61k1c1/2TpGWbrT4NEZVyWsBZiOfJ2/maPRM1og0k0XCX0F
-	 Ld9+eSu4xqDd+X+2qrgg7JjXoRBSSgs0lHVrfqkS0e4U4hcPmsGy5xSjZrm2c7Bevm
-	 P+0eFqVIMHPc1WjLrMn1MEEByE/9797DZwHHF0UTXNq820Vzgy2pkrWelyCfG+lCsx
-	 nB/AlVPUMY5B1hNLKjeBElqWXXgIcmEcq9Gwt93UJnzVfHFNvMcV/dXcWdGN56w6Rm
-	 KhOBkFgfo1x8Y55sRT52V0jFp1STtD7Fc+xR7U3FcWfuLN1A4EAU7/MZBEz8Gsc1SK
-	 DnEX3ZKMPW6zA==
-Date: Thu, 06 Mar 2025 19:08:06 -0800
+	b=XeY620eULnP2/+TN4Y4Oy+L1kjV0g9g4gLF3bGbxoub6oXCjIocCsux0s9lsBThor
+	 D5MCM8jchD63LZA41Z+zQXpcfDD0kw68ZvT5gJFtkglJP52RigyVCCeTtLHz5T59Sf
+	 BdcfD+nIIh4OJ7E3YNolewxhV+KD9eYVj9gc77UPIV5o6BkuLWAjitNYqDwOVS12jl
+	 DqNQVt47yWF1ZUW8TzhPps1sdTJ6LcbKbxzoFjRF0/a0IBkoL6S6dVIt6/UEGX2S2i
+	 fnnZIzD2De4gOv+3QNiBzF/iHmcOV6iyiEfSH8J1h96iKhLsl8VHaAdju6VU38SRaP
+	 yKG9JyADkfy7g==
+Date: Thu, 06 Mar 2025 19:14:13 -0800
 From: "H. Peter Anvin" <hpa@zytor.com>
 To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
         bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
@@ -73,11 +73,11 @@ Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
 User-Agent: K-9 Mail for Android
 In-Reply-To: <20250306162541.2633025-1-visitorckw@gmail.com>
 References: <20250306162541.2633025-1-visitorckw@gmail.com>
-Message-ID: <4732F6F6-1D41-4E3F-BE24-E54489BC699C@zytor.com>
+Message-ID: <F134DC06-54DE-4B8E-8AE0-3740275835C1@zytor.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_190917_009561_95F82B6B 
-X-CRM114-Status: GOOD (  13.89  )
+X-CRM114-CacheID: sfid-20250306_191504_537024_F405771A 
+X-CRM114-Status: GOOD (  16.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -177,7 +177,15 @@ On March 6, 2025 8:25:25 AM PST, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
 > 14 files changed, 77 insertions(+), 153 deletions(-)
 >
 
-(int)true most definitely is guaranteed to be 1.
+!!x is used with a value that is not necessary booleanized already, and is exactly equivalent to (x ? true : false). It is totally redundant on a value known to be bool.
+
+If (int)true wasn't inherently 1, then !! wouldn't work either. 
+
+There was a time when some code would use as a temporary hack: 
+
+typedef enum { false, true } bool;
+
+... when compiling on pre-C99 compilers; in that case a (bool) case wouldn't necessarily work as expected, whereas !! would. Furthermore, unlike (bool), !! works in the preprocessor.
 
 ______________________________________________________
 Linux MTD discussion mailing list
