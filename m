@@ -4,106 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A364C282D1
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Mar 2025 20:54:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D69BC282D1
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 01:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qxcI65/M35NxJLczIQ7XSfqkiO/maRLJTC3OQy8nCfo=; b=HUTAvGeAN8xHy0
-	Du6aAQ2pHO5NucJvrOB6XKKefg6Y731htLQ+9239dcnpVMZavJn8YLRtmna056a152YWyl+EC46/1
-	V1cOkgglOErSZ/PSoMzvPA2X/OV3D32FoGdkdXJ6mJxH0by5U0qG0iDmSOAbpIXm69XF2T3CSE+qD
-	Ujsv2NXBYulwl2PuMbPSb42ZsjWzbBJFfYuMHgHzHYs7YAt9qneDqAmsZNzWUmMdwdCZQwuhF6Zqv
-	472aYd8gYGmrZvK4w5R3vUJK3ksBeo4dTSwzPU8Z5iW52edf070CcO/RA/w5Ot1NSgMQ/tNMac1HN
-	HgvplNlyaB6kGmmsPUmQ==;
+	List-Owner; bh=mSpLSVtASrAUSYhsuxic8Td9rmUbr4v9WbT4zLrIqRs=; b=M7kC2yA2lxGxxG
+	i2R/10lei/yfGEiElGLsE011qHycbkPLHdBA+nhQ9TvluH9XP8wi+UaWCM81baCq0p5BO6ixsna3A
+	/rj3i+nYOdswlflq2LqwadVibE46vXVWqfDPR93zJUusr2GFzJPtAhL9aqXVh2LCwl2zPBT7YsDaS
+	yO/Fn4/5mydHL6OWOGFDAjeXNqnZU9xgMagLXpKxTnDi/e0u05UxLxMesk+OZLN6wPv30Ka0lDfHr
+	FxeZDEWXU740oZ9gcprWV7LYyyICTCuEvZ/9wZ2k1Sp3kp3UqBSPOZcSm1NbwAMAwbXx9SJ3aZFXb
+	gMaRAQOtenhHC8hsaqWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqIEA-0000000CAuR-2P9m;
-	Thu, 06 Mar 2025 20:53:58 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1tqMvt-0000000CrEr-3bzP;
+	Fri, 07 Mar 2025 01:55:25 +0000
+Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqI6G-0000000C9ap-0nQd
+	id 1tqMe3-0000000Coax-1PdP
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Mar 2025 20:45:49 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-38f406e9f80so847499f8f.2
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 12:45:47 -0800 (PST)
+	Fri, 07 Mar 2025 01:37:00 +0000
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2fecba90cc3so2884117a91.2
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 17:36:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741293947; x=1741898747; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1741311418; x=1741916218; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U/2AW/XQ+C1Dkr/bifBKVXkd3UKdww00iQvvrQ69JSo=;
-        b=kj55ai2jkTToTsXLe8kchbx9lKxJpd6JsH6uadfJZEXLlNDKp3caxmXxXipllxUhEX
-         4ZUSDWqark32V/00qClsvCNKX/nz0fjLKon3D4I6vWMiQVH8h+1uOpe+olSzdMYn4K+f
-         AScKOYdb+sfHHqrXASTZj/k0OUxid38BimJiv9fQrDlyeuUhHxf6xL/xqSWRMg3ssJll
-         4RlX756sGYylXpxdnM5BO+5zsXVySyEzEVmf1xuMggH6PxWTv2X5jLSUFvCMaY4Qw68P
-         0dZA8PFZZBWRZHMIZaNO1HT99V/Shw6+kWJOAsjDBcRzksxAbuz9oBVdxnBvAMWVRJjy
-         COuA==
+        bh=wTriowciTheXks21K11k33c3PkgL7Rz/DhFB55dadmc=;
+        b=Bvkz8NZTEO3t2aPp4IcJB7xQKg+6rSlZweBc3c4f7aOUaWjt2G6md91D6THFfUzSKf
+         dK9c9LJyjb+STRTRR7ekSviaIZebojWo7XRd2wOwb8T44NPO2JrZvdFADxi4pmZnC3xw
+         wCmwzXhZFTUzRX8n1rIXEXHmHeu4B9UEsO3MvuPZDTHkyDvorjRFShFdZpofWrTtojqK
+         qyQ6PCpikwkOFouKIyry0QrHDIMcO4QH2ibFhpNtd4DsAr3RPNnn368yLdK5zZ60w0RB
+         EEYnX8snTdB5ThinVgqmIt3B8HFsGEoCZVw5CZdKMUItz2+seoD2zMd/+6hlRFrFhEAG
+         J3Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741293947; x=1741898747;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1741311418; x=1741916218;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U/2AW/XQ+C1Dkr/bifBKVXkd3UKdww00iQvvrQ69JSo=;
-        b=AE5VoE2TyxdAQkSWLGY7NUPczIZB4yP1PVEmnuLTDIbPvgw3cnZAmlAKLcRHjysw3j
-         Xc0P1EQWHHDxnjieBTn44wcCSEMLpyC6sUx8ue0W5ULgOy0otXYrxJplBJJ2mohIcBHG
-         QFgte6Z3vH1OfrgZRkW3l205iW9mz6yXhbrw6szK83MWU03VAfj9Po8KIJfcmUoFWtLf
-         FsatagjWExoPyvNYW5EwW4iCtdE+w4F13BFaYa5V4w9vEj9xGbNZIRT7jWTIWM6PKFqN
-         /VpC6UxX26D3tJbYgRNRJEs5EoOiKlgEdQQPLP2IYthH4Pzba3pvsew7qr7faBjrkUdz
-         0cvw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+6UxWtCQxFZPL9h+OvYmta72T2IfydZzvSRHG/tNhYuYFOzubBQ6YV7KCGh5dmypnFu627khvuj8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwZrtsntokSRnT9H1i/SSXLBR4vMaly8mk+NoQQb0qKuN8S2fKT
-	bG6Dia8FKAgInjFXRv2+FcIys6hizTnxo2U4VFWSwLdAj7+MJe58
-X-Gm-Gg: ASbGncvgoECd6GjiD7WGnd2+4/DszQFlhUxo3mp+6mWDPqvGlEvDTHlO1Gf9LRZqf1T
-	LlAbBRh+fbauHSPrbNSd20hJO60ullf1FTUKzQ23JOkhb4Z2Kt9+VFxN3mIIuCezLrSaKlX3vpY
-	MzD/EQo5Pe61LzbrOrlVrA76u3CgRjbleY49mbzssdRJwi5C9hbstssvup6my/qnS4mXMvRmMo5
-	AbSWnBEqLCXETHULA+qHIQRMQbtOsfwYNnj+mNoQ8NnjejGfwp2vQuRT9TotIOYmp05Ug6DIL/d
-	DAo/G2/qB5ffQPCCwv2Gbkynr1w+w2DV3kWsy7ZAJFKhJ5u763gd+lje4pIpgdPGN/LqTRTagTG
-	7ZlKLGYE=
-X-Google-Smtp-Source: AGHT+IGypB/6b6ARKmDBu94pyV9a8VQg2efcRX5KU7nOp2iuQaxkdpIq9rBXtaXWDKzDk6KRW6vJqA==
-X-Received: by 2002:a05:6000:4112:b0:391:b87:37ad with SMTP id ffacd0b85a97d-39132dad239mr349795f8f.42.1741293946634;
-        Thu, 06 Mar 2025 12:45:46 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912c01de21sm3140996f8f.59.2025.03.06.12.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 12:45:46 -0800 (PST)
-Date: Thu, 6 Mar 2025 20:45:44 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org, joel@jms.id.au,
- eajames@linux.ibm.com, andrzej.hajda@intel.com, neil.armstrong@linaro.org,
- rfoss@kernel.org, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
- dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
- hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
- johannes@sipsolutions.net, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, yury.norov@gmail.com, akpm@linux-foundation.org,
- hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v3 01/16] bitops: Change parity8() return type to bool
-Message-ID: <20250306204544.35086b52@pumpkin>
-In-Reply-To: <20250306162541.2633025-2-visitorckw@gmail.com>
-References: <20250306162541.2633025-1-visitorckw@gmail.com>
-	<20250306162541.2633025-2-visitorckw@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        bh=wTriowciTheXks21K11k33c3PkgL7Rz/DhFB55dadmc=;
+        b=tbcaJIpjw/xTRlCHAeVjkqxmReAWktIRXraZFiNNx8VI/m5en0ieYdpwSbePbyuWb7
+         Jnt/nEOnpfwPZspQhuOFCW0xk0sPCmA0Nv12n3WMZsP1jDeGfcsIfcO6p3vsNv+UjWEX
+         sORp4TtmCMBAocYTnUvjlpmNasZdjMlLadnas+JArc7tiMYnUU3T5JW826cxjLuf9mpH
+         8kaupjQOytMWqNP8Q/xXdX6yvwRLXtmZFBTJwUPvfPpePZcmIR1FiHL7X6w9Tl/8YAYc
+         wzYg1U+JLZda0Zu86t9ImOnZJzI+R3W3oWW5AETCX+26GCFiAGTTo3oMJ5qsr8XSoi2m
+         HGJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWtmsCwkQEM/Z8F9bwqqoGdEGusSsWxi/53c+e4HPrK6Ml8p5d8X33ujdEckI/ZcHTyo4nEN+QUfC0=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyqrcGMwaEyY+CarucOKFLyxGtFJeN7tgOxVzI+UKG9rZI1Zudc
+	kDPpLouxx6pk0HErsipVuhGFLEcFfocMg65j2Flnbc+PxNlaB4Gnrt5/u7jSwL5CpFjw1rlWHZe
+	cbheuLcovwpTTEeTi6/eavdscj+o=
+X-Gm-Gg: ASbGncs6efiwFaYeDKa5wkWW72C4aKC0hCmMlYFsVsmD213Ywvi0yEUUJRdIurODEIk
+	lFtuoVYKnwvWQ4gw+jIHtCQjrUGBhPlfdXuKrH+I2/c4lWmoF+ojLx1p6u1MH/eJcZ1CbRq+yzX
+	vEfZcIqpkhGSDkrRB0WT47Mr1Rlw==
+X-Google-Smtp-Source: AGHT+IFDfqoK0c45wa683mLaBwbf1LPe7kKFeArIjt249Z6gX5cNqXAvG0FCrWjvLJ9XhVoyZ28PVRZzl088uXIRi14=
+X-Received: by 2002:a17:90b:4c:b0:2ff:6a5f:9b39 with SMTP id
+ 98e67ed59e1d1-2ff7ce844b6mr2717613a91.18.1741311418271; Thu, 06 Mar 2025
+ 17:36:58 -0800 (PST)
 MIME-Version: 1.0
+References: <20250211063028.382169-1-linchengming884@gmail.com>
+ <20250211063028.382169-2-linchengming884@gmail.com> <e5458a0e-528f-44ec-a0f0-543472ad3b85@linaro.org>
+ <bb9f8a80-4662-4ab1-b9ad-6899977c3827@linaro.org> <CAAyq3SamyhtCkd47939dKWCZN3ejaDvM6EJzwizWVqhNW=27bA@mail.gmail.com>
+ <d674f1bc-b596-46d5-b56d-1e2fb509c684@linaro.org>
+In-Reply-To: <d674f1bc-b596-46d5-b56d-1e2fb509c684@linaro.org>
+From: Cheng Ming Lin <linchengming884@gmail.com>
+Date: Fri, 7 Mar 2025 09:32:10 +0800
+X-Gm-Features: AQ5f1Jrxq-TXvrmL_cFEaNENEQcXUM3LYse8-YyMWE0akxocxyXKUPEQwjwkMIQ
+Message-ID: <CAAyq3Sb3Qt-uhb+zvUpFWhv6gqq+umAYe3nhpiCDH=7=g8u78g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: macronix: Add post_sfdp fixups for
+ Quad Input Page Program
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com, 
+	richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, alvinzhou@mxic.com.tw, leoyu@mxic.com.tw, 
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_124548_234503_32B2BA9A 
-X-CRM114-Status: GOOD (  19.10  )
+X-CRM114-CacheID: sfid-20250306_173659_372359_758C0757 
+X-CRM114-Status: GOOD (  13.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,70 +95,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri,  7 Mar 2025 00:25:26 +0800
-Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-
-> Change return type to bool for better clarity. Update the kernel doc
-> comment accordingly, including fixing "@value" to "@val" and adjusting
-> examples. Also mark the function with __attribute_const__ to allow
-> potential compiler optimizations.
-
-If the result type is 'bool' you should just check it.
-Not compare against true/false.
-
-	David
-
-> 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->  include/linux/bitops.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index c1cb53cf2f0f..44e5765b8bec 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -231,26 +231,26 @@ static inline int get_count_order_long(unsigned long l)
->  
->  /**
->   * parity8 - get the parity of an u8 value
-> - * @value: the value to be examined
-> + * @val: the value to be examined
->   *
->   * Determine the parity of the u8 argument.
->   *
->   * Returns:
-> - * 0 for even parity, 1 for odd parity
-> + * false for even parity, true for odd parity
->   *
->   * Note: This function informs you about the current parity. Example to bail
->   * out when parity is odd:
->   *
-> - *	if (parity8(val) == 1)
-> + *	if (parity8(val) == true)
->   *		return -EBADMSG;
->   *
->   * If you need to calculate a parity bit, you need to draw the conclusion from
->   * this result yourself. Example to enforce odd parity, parity bit is bit 7:
->   *
-> - *	if (parity8(val) == 0)
-> + *	if (parity8(val) == false)
->   *		val ^= BIT(7);
->   */
-> -static inline int parity8(u8 val)
-> +static inline __attribute_const__ bool parity8(u8 val)
->  {
->  	/*
->  	 * One explanation of this algorithm:
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVHVkb3IsCgpUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+IOaWvCAy
+MDI15bm0M+aciDbml6Ug6YCx5ZubIOS4i+WNiDEwOjQy5a+r6YGT77yaCj4KPgo+Cj4gT24gMy82
+LzI1IDExOjM5IEFNLCBDaGVuZyBNaW5nIExpbiB3cm90ZToKPiA+IEhpIFR1ZG9yLAo+ID4KPiA+
+IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4g5pa8IDIwMjXlubQz5pyI
+NuaXpSDpgLHlm5sg5LiL5Y2INzowMeWvq+mBk++8mgo+ID4+Cj4gPj4KPiA+Pgo+ID4+IE9uIDIv
+MTEvMjUgNzoyMCBBTSwgVHVkb3IgQW1iYXJ1cyB3cm90ZToKPiA+Pj4gT24gMi8xMS8yNSA2OjMw
+IEFNLCBDaGVuZyBNaW5nIExpbiB3cm90ZToKPiA+Pj4+ICAgICAgICAgICAgICAuZml4dXBfZmxh
+Z3MgPSBTUElfTk9SXzRCX09QQ09ERVMsCj4gPj4+PiArICAgICAgICAgICAgLmZpeHVwcyA9ICZt
+YWNyb25peF9xcHA0Yl9maXh1cHMsCj4gPj4+IEZvciB5b3VyIG5leHQgcGF0Y2ggdGhhdCdsbCBk
+cm9wIHRoZSByZWR1bmRhbnQgZmxhc2ggaW5mbyBmaWVsZHMsIHlvdQo+ID4+PiBjYW4gZHJvcCBT
+UElfTk9SXzRCX09QQ09ERVMgYXMgd2VsbCBpZiB0aGVzZSBmbGFzaGVzIGRlZmluZSB0aGUgNGJh
+aXQKPiA+Pj4gc2ZkcCB0YWJsZS4KPiA+Pgo+ID4+IEFueSBwbGFuIGluIGRvaW5nIHRoaXMsIHBs
+ZWFzZT8KPiA+Cj4gPiBTb3JyeSBmb3IgdGhlIGxhdGUgcmVwbHkuCj4gPgo+ID4gVGhpcyBtYXR0
+ZXIgaXMgY3VycmVudGx5IGluIHByb2dyZXNzLiBTaW5jZSBjb2xsZWN0aW5nIGFsbCB0aGUgY2hp
+cHMKPiA+IHdpbGwgdGFrZSBzb21lIG1vcmUgdGltZSwgdGhlIHByb2plY3QgaGFzIGJlZW4gZGVs
+YXllZC4gT25jZSBJCj4gPiBoYXZlIGFsbCB0aGUgY2hpcHMsIEkgd2lsbCBzdGFydCB0aGUgdmVy
+aWZpY2F0aW9uIHByb2Nlc3MgaW1tZWRpYXRlbHkuCj4gPiBUaGFua3MgZm9yIHRoZSByZW1pbmRl
+ci4KPiA+Cj4KPiBUaGFua3MsIENoZW5nLiBTd2l0Y2hpbmcgdGhlbSBvbmUgYnkgb25lIGlzIGZp
+bmUgdG9vLgoKR290IGl0LCBubyBwcm9ibGVtLiBJIHdpbGwgc3RhcnQgdGhlIHZlcmlmaWNhdGlv
+biB3aXRoIHRoZQpjaGlwcyBJIGhhdmUgb24gaGFuZC4KClRoYW5rcywKQ2hlbmcgTWluZyBMaW4K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
