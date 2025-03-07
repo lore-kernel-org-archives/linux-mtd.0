@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5C8BC19F32
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 06:48:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EBA8C19F32
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 06:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EDqDqFwn0/7iMn5dIuslQeJBqmGOTXJttXVlH813zOI=; b=VPT+bACu+aUJxm
-	07Bkxen0UDjMG3DW3PbT5Q8fbQhIJtw3CWHpN5YQY1315NgVBD7bdUyvW5JrJ1mYe5r0VA2BZNVxc
-	QtJCjvMionSUkYRH71sXGiSjL8LtnNv7cmfVNcpRfmdhjgPKk/6t0+J/6gS/G+rVSFGinjXWHpopi
-	rRmIAJaFf0XfNW7yXNVOTeLhKSF5NvTFbc7HJnavtUFuuj7hkOZK3txv4Eqi+hRQ1JxgGl649lp9/
-	TTboEI6b3iIOe3YHe8CPFQwRbjVqi8FyFYVpSLHM5qHRfX1RW5LyJX9Lx3pADWRmYmcTp0eLAU5QW
-	ki3m474uYRHXj04bbEAw==;
+	List-Owner; bh=lGKSRFOEH/oBkQP4SMa2qbzwS1gQjJc2y7/knHYr0uY=; b=H/tbsn4i6K+10R
+	Dd8KhWtxmcNoP9CiWDmgl0zHhCYH2nSW/wHk2R2FJRb+vGGW6mSKTEQFNm/rqpj336Vdp5D69lT1t
+	2M1hT/6bYj24FHYbc4Lb9qav0ORbcqjtsy2/28hqKwVCPaF2ZUhz4NBrZUia4P6ugfcMhytKqVzjU
+	og8PQE6lDwjqSZf3AVNncZgII7TBBK/EAer+dfHAjJtlwMkkf0m7O+hKxa29Eloc5u49uFqlP3LOT
+	jPGCtv45V5ePpUJnfhyikxVrjt0aDtF4z7hfHM4rNjGhsn1acoFI8hUJcfJ4IVqX/+gGuxaHiDTWt
+	bEHHeceQ1wauJ7nNCiog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqRVi-0000000DM9p-31Kx;
-	Fri, 07 Mar 2025 06:48:42 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tqReo-0000000DNOG-2orC;
+	Fri, 07 Mar 2025 06:58:06 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqRVf-0000000DM8v-490D
+	id 1tqRel-0000000DNMw-3ng5
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 06:48:41 +0000
+	Fri, 07 Mar 2025 06:58:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 865F6A45377;
-	Fri,  7 Mar 2025 06:43:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2A4FC4CED1;
-	Fri,  7 Mar 2025 06:48:26 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 96195A454A4;
+	Fri,  7 Mar 2025 06:52:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A277EC4CED1;
+	Fri,  7 Mar 2025 06:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741330117;
-	bh=3Ib8MYJh6bNU4odaUUgpJSg3E2tCBLVn7f1PANBy1dg=;
+	s=k20201202; t=1741330681;
+	bh=QR/u4eYHPicVkHtr7uGU7SfSHBfSkVI2Jt7KePffl1A=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DRMa6NMDOr9VDIXDP/sMrYitH9dLI3U4sNzyvNtVdxc0KtVceuKqYh98oSiUGE/2V
-	 /2eafLS+5hJIFhnQB10Z8IfVX/KS2aCMQT4LXou+3YtmH2hnkUwOVn99J+vHBz6/Vy
-	 OI0IS8tgAQkepk9BlN3XhOsYjk6eqqXOx7ZWaQ5gPEmsTVZre4mqAZoF+RZnETwkoo
-	 BhC8ZvT2hPH7Se5Xhh3a18UfluVtKR/HK7UpTmROiL8mg+H7KtQYf9TXQergnEq/kz
-	 IFqdvMsR5Kw84BwRQz7wEJyl87JiMXQhTbz2nGo8Aj68ZgwkCLEqV1uKUIDyGElFK0
-	 qS65TRlyHJzJA==
-Message-ID: <9d4b77da-18c5-4551-ae94-a2b9fe78489a@kernel.org>
-Date: Fri, 7 Mar 2025 07:48:24 +0100
+	b=BO2PNjtTjds6fps74Zxs4WG8UEoBmTLK3JGqU+00jLosvv1RXhYz82UonINQv4lJ3
+	 semTG8Bs9gmIjj4LDTDMqqquN0xy03A54aiX+zTtPzIU/iAu9KN5DB6DgFuybJJua2
+	 hseHc3rV3e1nHZrHTU8W/O9vfuHXae754xep0D3VirLTlTtpWh226cqxYPp5obPQQ8
+	 ItI34NWTqQS57aYuudwEBNpH9hCBL5G2O9xaxEIf/BgLEVWmmH+ZxG1HB3uyuYVxjU
+	 f3sieA0B8gGnyJdDAyZtNiT2QggkIvrBvR9aZKArMmfiQZMZfqnIz1Z8lbsnbemq6V
+	 7K9HVv63TvfOw==
+Message-ID: <3dfc81eb-caa1-42fe-8fd6-61101de0ef13@kernel.org>
+Date: Fri, 7 Mar 2025 07:57:48 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 01/16] bitops: Change parity8() return type to bool
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
 To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
  mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
  jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
@@ -70,7 +70,6 @@ Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
  linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
  Yu-Chun Lin <eleanor15x@gmail.com>
 References: <20250306162541.2633025-1-visitorckw@gmail.com>
- <20250306162541.2633025-2-visitorckw@gmail.com>
 Content-Language: en-US
 From: Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
@@ -115,10 +114,11 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20250306162541.2633025-2-visitorckw@gmail.com>
+In-Reply-To: <20250306162541.2633025-1-visitorckw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_224840_210401_849A3340 
-X-CRM114-Status: GOOD (  13.51  )
+X-CRM114-CacheID: sfid-20250306_225804_114045_FCB6DFA2 
+X-CRM114-Status: UNSURE (   9.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -136,39 +136,35 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 06. 03. 25, 17:25, Kuan-Wei Chiu wrote:
-> Change return type to bool for better clarity. Update the kernel doc
-> comment accordingly, including fixing "@value" to "@val" and adjusting
-> examples. Also mark the function with __attribute_const__ to allow
-> potential compiler optimizations.
+> Several parts of the kernel contain redundant implementations of parity
+> calculations for 16/32/64-bit values. Introduces generic
+> parity16/32/64() helpers in bitops.h, providing a standardized
+> and optimized implementation.
+> 
+> Subsequent patches refactor various kernel components to replace
+> open-coded parity calculations with the new helpers, reducing code
+> duplication and improving maintainability.
 > 
 > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 > ---
->   include/linux/bitops.h | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index c1cb53cf2f0f..44e5765b8bec 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -231,26 +231,26 @@ static inline int get_count_order_long(unsigned long l)
->   
->   /**
->    * parity8 - get the parity of an u8 value
-> - * @value: the value to be examined
-> + * @val: the value to be examined
->    *
->    * Determine the parity of the u8 argument.
->    *
->    * Returns:
-> - * 0 for even parity, 1 for odd parity
-> + * false for even parity, true for odd parity
+> In v3, I use parityXX() instead of the parity() macro since the
+> parity() macro may generate suboptimal code and requires special hacks
+> to make GCC happy. If anyone still prefers a single parity() macro,
+> please let me know.
 
-This occurs somehow inverted to me. When something is in parity means 
-that it has equal number of 1s and 0s. I.e. return true for even 
-distribution. Dunno what others think? Or perhaps this should be dubbed 
-odd_parity() when bool is returned? Then you'd return true for odd.
+What is suboptimal and where exactly it matters? Have you actually 
+measured it?
+
+> Additionally, I changed parityXX() << y users to !!parityXX() << y
+> because, unlike C++, C does not guarantee that true casts to int as 1.
+
+How comes? ANSI C99 exactly states:
+===
+true
+which expands to the integer constant 1,
+===
 
 thanks,
 -- 
