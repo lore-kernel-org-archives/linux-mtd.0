@@ -4,67 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E50EEC19F32
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 08:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8943EC28B26
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 09:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=73MwkZTwEjVf6VR7RpUIIpRJ8E0x22LaGaaWHGhveLc=; b=VCdY5OzgzPkZ3v
-	dPe384FNZP361cxlhH33DM6gGUBd7ocLdOpnMGcl5Jt6nFOZ1F4LHWNNkuVZ0PE+b2c3gWb0ykq7B
-	UBv0ZkmDgGQVHTUmP4uQQd80bh5u3HUpwXrxhOFpPo90Yzgkv2rVO/7YYhgJxoDSOB+/K+ZZte3ub
-	yBXxpVrz/Mr0+EqXLf9FtAc+zEUdebGZwTQnVjYaOQPIAeWAOv5jOdjJARNQCCjqEIgAcKjpKD6JA
-	uBTKOuN8C1jKI2/0HnGNzf/dA0A8qjsGjTTgDUw+RsUddsNtguGSmqlGtm6iW2+Z+n9aojfbA1NLd
-	gBCa64E/XHJ5RpyijVAg==;
+	List-Owner; bh=suM2OGEg4dcvEG+B3wYH+dBqTFF4Vvuvf4P0BO3kGrs=; b=wiZZiEnFK1M7aQ
+	WiTTGjG4pJeVmmNn71AXQ29k9H3LU6zVBbTIIzWe4Jfas19lJAckmjT7navWq8XM3ohc9M9LjtNtd
+	8xPk3KhfY/xl025ajiP4cbiZaZnVV3vBXocBQaxybCJ2OHSnxAxg6zY443Nqq52g7IerJkub8YsOF
+	B4iw/k212cn2QOzOBp7uSZbvVXmLtAGIil0whbdZPBT1q4RX53fCWLS9w0wXRC9hGTwqbvLAs4BR3
+	WxyKTazWxadfMQwbyxv9E5qxIDeXugOoVVOsjhABXEi+DYUhVge0DDCMrGSiM+1HD6T1cCVJ7e7S7
+	tkVzsL/vBfxtbnyG+A5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqSz6-0000000DYT8-1Jl0;
-	Fri, 07 Mar 2025 08:23:08 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1tqTtZ-0000000DgrR-3Clr;
+	Fri, 07 Mar 2025 09:21:29 +0000
+Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqSz3-0000000DYRW-1XCd
+	id 1tqTs1-0000000DgQw-2vaR
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 08:23:06 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9397F4434F;
-	Fri,  7 Mar 2025 08:23:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1741335782;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VYXYH3Nursl7YH5mZTgIbp1tBPkKvkIol1KbKrK0QGA=;
-	b=a+JqrXkzg6T7EjzBwlU+bGU7X4W5BxVKF6hGKXyh38sfXQbEqL/LqemJgg3IFPD1A37i0G
-	aYPUtdGJfuKZGz54sUeAiO1shUmMHXX7am3ocUyjvd1jgSoFEpKitO1Lf95pPz4+NS6MBI
-	83DxVkWTVNai1phbOLrrFtrdyQ7kXDQx2d/arXlZaesj0z3w9WevNLCt1DmTPFKT6pGAR3
-	TEVOw6ZpxXZCoaZLHXMnOW/6wVidGcHWtisxcrwQe8XeaUcoqWsuBsTeU/xl/p42ORq4lf
-	Qvm4w6fy59ynVrgcGevgxNV+4MeCmZyGZaEJ5mmB7SdVM/yNyNkR09nhTEXMiw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
- <mwalle@kernel.org>,  Richard Weinberger <richard@nod.at>,  Vignesh
- Raghavendra <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mtd: spi-nor: drop unused <linux/of_platform.h>
-In-Reply-To: <20250307-spi-nor-headers-cleanup-v1-3-c186a9511c1e@linaro.org>
-	(Tudor Ambarus's message of "Fri, 07 Mar 2025 09:09:07 +0200")
-References: <20250307-spi-nor-headers-cleanup-v1-0-c186a9511c1e@linaro.org>
-	<20250307-spi-nor-headers-cleanup-v1-3-c186a9511c1e@linaro.org>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Fri, 07 Mar 2025 09:23:00 +0100
-Message-ID: <87wmd1s10b.fsf@bootlin.com>
+	Fri, 07 Mar 2025 09:19:55 +0000
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-22423adf751so19382905ad.2
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Mar 2025 01:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741339193; x=1741943993; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WtFm3fAnjeubhbuWCpwfNvD+r/QsDLeKl5ss4JFiMbs=;
+        b=JTMUc9AaArtspa23DXaiSv8PWmJQykYzyELgJn1CVMKQl1KMsU3iOxw7t6VrQu5eqb
+         n1b3p3RGb/dezN6OhEcC7YM8uxpf6Tm5EVRJkTSVhk43F6dG6YoKzGFq+cjb0Q9M2R1j
+         8kW0YSiPo8Rngkc4YJsUDbwOWEQRR2INqsXzk+qCaBDJ3RBB61B1tG2fGZdR63hD2qAR
+         k5sOuWZ5bl6+2vEZQvbottCKvF2cDFdS39tZc2Ahl5pufeqSUeI5hr+2jxeYOdgNvew8
+         oT2xQF3d0AOAJP0PyIsOvN7i+/oXDUcBKsQRlK54X6dBRPM6L9xxJjqb68vI2nRZl4ZF
+         1vRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741339193; x=1741943993;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WtFm3fAnjeubhbuWCpwfNvD+r/QsDLeKl5ss4JFiMbs=;
+        b=UZKMzMzd7IISVbwk960ZE22+XkTUSIVtuP8Pb1ZWMke7GjRPBBLMCFHCxMY1AY8fsu
+         bju5PPrEP7xfeUaTYSIcYIEmthg/SmeYMrQpV9I44TY7OH00aWe65TqeIQAZPunAP/E6
+         7rsR0b+scsVCTbYyM6NGVm9Hj8uXzwKqNNa08s1iNcLJI62EYE3XfkgpxARZWu/NgibC
+         UQbKZ/TztyDsWgbEOiXY+VVktdDEVRJ4Fipo0Xu5ckaKjtDbfwdVU08Bfiv565HA7q4U
+         ANrjUUsvhbA0bKcEJRnMfVHAlgXYCJZh9UZn6iq+v9EfBEembvjQeVYUiKjyYaOBhA4i
+         9Kag==
+X-Forwarded-Encrypted: i=1; AJvYcCV8HjfREjSh9VqnM62ftxP4C0g/GzdiD6bvT5K6L/Ho/a8CIUYzCLAnXKGnuD26Kx//vpEwLsMf96c=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxy5TOfHH7ab+wT6ygHdbQNfFmdS9SmYWqYzHMGGoB2Kaj92jlr
+	jEhxC5KMMdKB1w56pK3YtAuEW1jUbTlNjo2uDxzCq0Bmexy35aHq
+X-Gm-Gg: ASbGncvVDdAnrkb+PKvBoYmvNEuBbKaUPHtAVOxgk88OgURZylmRJ1+sC8FWnrUplBQ
+	Y0zhQWIpVmCAns0WnvrIWMSHdS562+sgNi7e2+iDQIoK8AKBGIk0x+uPAx+jAMPXmVSk+58IEwf
+	2b+e14X3VbnJl6NQVVceqnEYI9NLLTgIfEIjXop70b/eNAuVtJRN/p1yGIVVOl294a/5Csdm9sL
+	EvmQSBjW8uwGPcJBDjV8xegiTtIe1WtxAuI0i/Y/7Lf4CxRywgbLFU+3D/N7i9WDM87s/SjOwUk
+	cBhPel4HmMZKfiQyeSXliOOBRXw7sNFxAGQXc4IaHvzPHxD6VIkhHKrzK/9zO4+/nIACtqYF
+X-Google-Smtp-Source: AGHT+IE3b9zkIaLC0mzOF8WD1s1QYwmhsrk+TIJsgXANJenF5GXtHRIhAmThoWOF8+4okLgNhjrCPg==
+X-Received: by 2002:a05:6a20:9381:b0:1ee:cdda:b8f8 with SMTP id adf61e73a8af0-1f544acb430mr5633011637.7.1741339192556;
+        Fri, 07 Mar 2025 01:19:52 -0800 (PST)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73698243f21sm2854684b3a.52.2025.03.07.01.19.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Mar 2025 01:19:51 -0800 (PST)
+Date: Fri, 7 Mar 2025 17:19:42 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>, longman@redhat.com, llong@redhat.com
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org, rfoss@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+	dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, yury.norov@gmail.com,
+	akpm@linux-foundation.org, alistair@popple.id.au,
+	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
+	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+Message-ID: <Z8q6LlkQDG95Amgw@visitorckw-System-Product-Name>
+References: <20250306162541.2633025-1-visitorckw@gmail.com>
+ <F134DC06-54DE-4B8E-8AE0-3740275835C1@zytor.com>
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddtudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledvrddukeegrddutdekrddujeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledvrddukeegrddutdekrddujeeipdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeejpdhrtghpthhtohepthhuughorhdrrghmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmfigrlhhlvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehlihhnuhigqdhmthgusehli
- hhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <F134DC06-54DE-4B8E-8AE0-3740275835C1@zytor.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250307_002305_538201_2C04F007 
-X-CRM114-Status: UNSURE (   4.70  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250307_011953_743188_A4F3DC33 
+X-CRM114-Status: GOOD (  32.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,17 +116,151 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDcvMDMvMjAyNSBhdCAwOTowOTowNyArMDIsIFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFy
-dXNAbGluYXJvLm9yZz4gd3JvdGU6Cgo+IFRoZXJlJ3Mgbm90aGluZyB1c2VkIGluIHRoZSBTUEkg
-Tk9SIGNvcmUgZnJvbSA8bGludXgvb2ZfcGxhdGZvcm0uaD4sCj4gZHJvcCB0aGUgaGVhZGVyIGlu
-Y2x1c2lvbi4KPgo+IFNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNA
-bGluYXJvLm9yZz4KClJldmlld2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJv
-b3RsaW4uY29tPgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
++Cc Waiman Long for bool cast to int discussion
+
+Hi Peter,
+
+On Thu, Mar 06, 2025 at 07:14:13PM -0800, H. Peter Anvin wrote:
+> On March 6, 2025 8:25:25 AM PST, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> >Several parts of the kernel contain redundant implementations of parity
+> >calculations for 16/32/64-bit values. Introduces generic
+> >parity16/32/64() helpers in bitops.h, providing a standardized
+> >and optimized implementation. 
+> >
+> >Subsequent patches refactor various kernel components to replace
+> >open-coded parity calculations with the new helpers, reducing code
+> >duplication and improving maintainability.
+> >
+> >Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> >Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> >Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> >---
+> >In v3, I use parityXX() instead of the parity() macro since the
+> >parity() macro may generate suboptimal code and requires special hacks
+> >to make GCC happy. If anyone still prefers a single parity() macro,
+> >please let me know.
+> >
+> >Additionally, I changed parityXX() << y users to !!parityXX() << y
+> >because, unlike C++, C does not guarantee that true casts to int as 1.
+> >
+> >Changes in v3:
+> >- Avoid using __builtin_parity.
+> >- Change return type to bool.
+> >- Drop parity() macro.
+> >- Change parityXX() << y to !!parityXX() << y.
+> >
+> >
+> >Changes in v2:
+> >- Provide fallback functions for __builtin_parity() when the compiler
+> >  decides not to inline it
+> >- Use __builtin_parity() when no architecture-specific implementation
+> >  is available
+> >- Optimize for constant folding when val is a compile-time constant
+> >- Add a generic parity() macro
+> >- Drop the x86 bootflag conversion patch since it has been merged into
+> >  the tip tree
+> >
+> >v1: https://lore.kernel.org/lkml/20250223164217.2139331-1-visitorckw@gmail.com/
+> >v2: https://lore.kernel.org/lkml/20250301142409.2513835-1-visitorckw@gmail.com/
+> >
+> >Kuan-Wei Chiu (16):
+> >  bitops: Change parity8() return type to bool
+> >  bitops: Add parity16(), parity32(), and parity64() helpers
+> >  media: media/test_drivers: Replace open-coded parity calculation with
+> >    parity8()
+> >  media: pci: cx18-av-vbi: Replace open-coded parity calculation with
+> >    parity8()
+> >  media: saa7115: Replace open-coded parity calculation with parity8()
+> >  serial: max3100: Replace open-coded parity calculation with parity8()
+> >  lib/bch: Replace open-coded parity calculation with parity32()
+> >  Input: joystick - Replace open-coded parity calculation with
+> >    parity32()
+> >  net: ethernet: oa_tc6: Replace open-coded parity calculation with
+> >    parity32()
+> >  wifi: brcm80211: Replace open-coded parity calculation with parity32()
+> >  drm/bridge: dw-hdmi: Replace open-coded parity calculation with
+> >    parity32()
+> >  mtd: ssfdc: Replace open-coded parity calculation with parity32()
+> >  fsi: i2cr: Replace open-coded parity calculation with parity32()
+> >  fsi: i2cr: Replace open-coded parity calculation with parity64()
+> >  Input: joystick - Replace open-coded parity calculation with
+> >    parity64()
+> >  nfp: bpf: Replace open-coded parity calculation with parity64()
+> >
+> > drivers/fsi/fsi-master-i2cr.c                 | 18 ++-----
+> > .../drm/bridge/synopsys/dw-hdmi-ahb-audio.c   |  8 +--
+> > drivers/input/joystick/grip_mp.c              | 17 +-----
+> > drivers/input/joystick/sidewinder.c           | 24 ++-------
+> > drivers/media/i2c/saa7115.c                   | 12 +----
+> > drivers/media/pci/cx18/cx18-av-vbi.c          | 12 +----
+> > .../media/test-drivers/vivid/vivid-vbi-gen.c  |  8 +--
+> > drivers/mtd/ssfdc.c                           | 20 ++-----
+> > drivers/net/ethernet/netronome/nfp/nfp_asm.c  |  7 +--
+> > drivers/net/ethernet/oa_tc6.c                 | 19 ++-----
+> > .../broadcom/brcm80211/brcmsmac/dma.c         | 16 +-----
+> > drivers/tty/serial/max3100.c                  |  3 +-
+> > include/linux/bitops.h                        | 52 +++++++++++++++++--
+> > lib/bch.c                                     | 14 +----
+> > 14 files changed, 77 insertions(+), 153 deletions(-)
+> >
+> 
+> !!x is used with a value that is not necessary booleanized already, and is exactly equivalent to (x ? true : false). It is totally redundant on a value known to be bool.
+> 
+I used to believe that casting a boolean variable to int would always
+result in 0 or 1 until a few months ago when Waiman Long explicitly
+pointed out during a review that C does not guarantee this.
+
+So I revisited the C11 standard, which states that casting to _Bool
+always results in 0 or 1 [1]. Another section specifies that bool,
+true, and false are macros defined in <stdbool.h>, with true expanding
+to 1 and false to 0. However, these macros can be #undef and redefined
+to other values [2]. I'm not sure if this is sufficient to conclude
+that casting bool to int will always result in 0 or 1, but if the
+consensus is that it does, I'll remove the !! hack in the next version.
+
+> If (int)true wasn't inherently 1, then !! wouldn't work either. 
+> 
+The C standard guarantees that the ! operator returns an int, either 0
+or 1. So regardless of how true casts, using !! should work. Right?
+
+> There was a time when some code would use as a temporary hack: 
+> 
+> typedef enum { false, true } bool;
+> 
+> ... when compiling on pre-C99 compilers; in that case a (bool) case wouldn't necessarily work as expected, whereas !! would. Furthermore, unlike (bool), !! works in the preprocessor.
+
+I'm not entirely sure how !! works in the preprocessor. I always
+thought it was handled by the compiler. Could you elaborate on this?
+
+Regards,
+Kuan-Wei
+
+[1]: 6.3.1.2 Boolean type
+1 When any scalar value is converted to _Bool, the result is 0 if the value compares equal
+to 0; otherwise, the result is 1.59)
+
+[2]: 7.18 Boolean type and values <stdbool.h>
+1 The header <stdbool.h> defines four macros.
+2 The macro
+bool
+expands to _Bool.
+3 The remaining three macros are suitable for use in #if preprocessing directives. They
+are
+true
+which expands to the integer constant 1,
+false
+which expands to the integer constant 0, and
+_ _bool_true_false_are_defined
+which expands to the integer constant 1.
+4 Notwithstanding the provisions of 7.1.3, a program may undefine and perhaps then
+redefine the macros bool, true, and false.
+259)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
