@@ -4,80 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEB29C19F32
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 12:17:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C40F7C19F32
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 12:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V9W2BlXuy2jJD+f0cqqLG64x9P5Qq0LB8l1KQII/diE=; b=AXkPe+LOFd+eTl
-	ghEZ+Qc/z6A1CuNHgConNkGKICibg8YHXPKGdVbW1i+u/zjYXqgwU5AD818kkeqRBUrSmE6ze2AxG
-	7gnT259XMuvrDJPNwvcSFthqc/O989L8WzxwldSwg6FpA1MQEWq3WraRwAZSs3IyvYQP0/DPAr8dY
-	u6DJEANxyByq1GjLv75F1FHCpy5ev08AsgJXDUA5JE1OE77gnbtoRTi5lntOmC2j4xkNwURVNCf8u
-	s+eE8uuzVvkm+wxEwGvDUlz95vBJSHXoECyf2SLrxhr9eGCNJMfwZXVhqCyZUudT61AHTaeUYdOcY
-	8TDUuUsCyQ0Xiilocyew==;
+	List-Owner; bh=Hf8ykyL6H2jftbcOz27xZ1zGlz+SU2FRN7fuUzUfPYE=; b=PY4dOZ+EFHgZa4
+	p856bgUHXgO0aMJu195yVqDuLIgjG9UJf6fumzqNI1wVRpWAKAZ3Zn5JAf4j164KN27Mad0ciCJLV
+	R/uAaDHlBSq/3elyy47MFx4P3o7L+2kQWnxCmwmzEzeOtI4qTuPIdC3ZleMxvt9IL87kyqBD1LrTk
+	HuaBg3N2g2cZ1qAUQ0sTTXp4H+pFj3oFM/S44jJuOpyeixRJfSrN7Ax+ycwyYEYcY3MZz+Fmg+2vr
+	Q3aV1NaRjJ3Es2UJOGb5h0+UpSbHD5PPJZAH+qpsaww94DKQVlTxsqPxPdEz1XSvyGQtdOQeSmded
+	/o7pwHEV9TuYPUDjgaSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqWdO-0000000EA01-41XW;
-	Fri, 07 Mar 2025 12:16:58 +0000
-Received: from [2607:7c80:54:3::138] (helo=mail.zytor.com)
+	id 1tqWjl-0000000EApJ-3MzQ;
+	Fri, 07 Mar 2025 12:23:33 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqWc9-0000000E9gz-00sS
+	id 1tqWiG-0000000EAfc-1iqT
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 12:15:42 +0000
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 527CEaSZ216144
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Fri, 7 Mar 2025 04:14:36 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 527CEaSZ216144
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025021701; t=1741349679;
-	bh=jpHguGFzA2ESTQPvqJoIr0NmAS1zWgolyOTrgBL62N8=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Be5SaSGgmsWvlkd2HRqfzArk9nnQa/gbB2kCd/vi2QEK8XF7tn7E007LPGCySYBmv
-	 IBe4UFr66OEmtiNpObBgvlVSM3dsVFMAmcCg1qk0KnpRrF+aipL4y7W2YaKWxosfjg
-	 cWf5lVQ4b9ZseS/T4Ejdb1zr76nvhUjdua5R2Pch5YNHmdUnn4vc+zzlh64uFhK6vb
-	 WTkqjjxZYMKmKvVthPXAaIt6oPShwbOs2Gi2goJSFgvNUhGes6srmI4eDqrLD0uLkC
-	 /B3MuqYu4V3A5+3QHFJOLT2DdF/UOScSb+vcFfW82sFlWlX0qiCgDEt2HYcKJg4NnR
-	 6SqqnMn8wULdA==
-Date: Fri, 07 Mar 2025 04:14:34 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jirislaby@kernel.org>
-CC: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
-        andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-        dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
-        hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-        johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-        yury.norov@gmail.com, akpm@linux-foundation.org, alistair@popple.id.au,
-        linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-        oss-drivers@corigine.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-        brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-        Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v3 01/16] bitops: Change parity8() return type to bool
-User-Agent: K-9 Mail for Android
-In-Reply-To: <Z8ri5h-nvNXNp6NB@gmail.com>
-References: <20250306162541.2633025-1-visitorckw@gmail.com> <20250306162541.2633025-2-visitorckw@gmail.com> <9d4b77da-18c5-4551-ae94-a2b9fe78489a@kernel.org> <Z8ra0s9uRoS35brb@gmail.com> <a4040c78-8765-425e-a44e-c374dfc02a9c@kernel.org> <Z8ri5h-nvNXNp6NB@gmail.com>
-Message-ID: <04AA7852-2D68-4B3F-9AA7-51AA57E3D23D@zytor.com>
+	Fri, 07 Mar 2025 12:22:01 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-54957f0c657so2051167e87.0
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Mar 2025 04:21:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1741350118; x=1741954918; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3LSXN2s87KZIXIkPkPFgGyIKtJmmpgi3DyLUElVYvfM=;
+        b=s9jmo6jAuOCnImCt4uNkwS/lsfL46KQe7ZfdP18yguYXguYoK1YhyVDkDIZxJYA3+V
+         jLKvTEmNimCINQx2YzGLhgIrigJoU15vLjXMbCNrOcI6TS2riZ262VTo8+LI2zRDv5xM
+         7pRRoA26TD5q6kh83GBlaoVzRfoLj8GhLfMNk7FQm/ijPO0cGnjvRlcIiluaP/UZPDWf
+         Lm+PeN4fpVtjBksmfzqIorHniHRzq6YVRGIEhkagVfLmAFYr1Q+vWMg/WmF15Pb5vrpU
+         CCTQEue9Ax72DZW1XWZbRgelxzW/FcRJuomyNQ3rQLPJZo9Sj+W1g/kZAgR26nSu5qpC
+         eNjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741350118; x=1741954918;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3LSXN2s87KZIXIkPkPFgGyIKtJmmpgi3DyLUElVYvfM=;
+        b=oArgtaBhip0Zup0CtdLb1IDBmZYi1o1Z89XA79HczQRJybPwWKzAKj5HgqYHB/Jgaf
+         Wiezn95bI6kADEUDFl0AddXc7maXBo8A0epfZDr7pIPM4PHG7KNQwlaXjM/woRJAgB6J
+         8dYkPZNtiwG+gxqtaXdvVGp1GdrTjWblUKeVKLYfDkpuV64tt5K8Pcig6ULX1gf7EHsV
+         B/jjLoiuvGiMrYKzZBKvp7KJFODB58tzequRS1owkmELvILI5VlLjNVsKea8W1/Dy4h2
+         4EsOgWEHHO91jStbw1VhGzkfhvOrBAHShe6jlcIEY+HKgcQLtQpFaiL/GCyydoX0dSpo
+         QT7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUW8pW9M8R0yAL2zYS1cwt/OQjtS//FLhGEIBsAAlgfuTbCvxADHy4W/PpzZ+0j5onLVEYV7bgUfXI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwZYIK8LZ03sqALZnBFX/nngOayNu5/LzGaEpkWw4yDZMUOkRfM
+	qmLxvPFb4ZA3IvCJJB4MMw5+rj7V5m+jWbrKHnCcHJl7YDakKVT569vKscaa02mLMAzT82f2DEh
+	R
+X-Gm-Gg: ASbGncsbfLAR0LCtoEUedf4oQO46OPyhLp8SWq0/CBpGe/0dyT7r+7iKNBjPM9TD29x
+	vWJTK9VMpCbIgFTfOzrCpMyIo/AR296+5NcW8GKXCj2N7tJhqqgQ14w5O6LRlrmut3AnF+/5j/9
+	XcTLNkZPvFJ0mevQbFGZyPUCCu2f6JMxF6J/8L/qbHvjrEljg4LbVwxC0IBy3qfGYvgQOKpuJso
+	zLAzOeaEvWxZi7iDYzeRK9BRIwpbuxy1fuGKolTyXKSnlGHs0mXbeOI/pJA+yqH3lxLNR7w/Ut9
+	vAcBXyig7e9vftlS1gauTjLt5dt4f7bASixN/00ntLIfFglgwLHtTw==
+X-Google-Smtp-Source: AGHT+IEkE7ifgMpdMezpZQNCnHBP1lZ6rxE+o6lKPh6Da3+fmM6emG5u6CXIK1LjuK/UverWoewG9g==
+X-Received: by 2002:a05:6512:1242:b0:545:2a9a:aa02 with SMTP id 2adb3069b0e04-54990435209mr1307217e87.19.1741350118331;
+        Fri, 07 Mar 2025 04:21:58 -0800 (PST)
+Received: from [192.168.0.14] ([79.115.63.206])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5498ae58093sm473524e87.57.2025.03.07.04.21.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Mar 2025 04:21:57 -0800 (PST)
+Message-ID: <924c370e-2c42-4e29-b790-a1d16e7c1e24@linaro.org>
+Date: Fri, 7 Mar 2025 12:21:55 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] mtd: spi-nor: explicitly include
+ <linux/mod_devicetable.h>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20250307-spi-nor-headers-cleanup-v1-0-c186a9511c1e@linaro.org>
+ <20250307-spi-nor-headers-cleanup-v1-2-c186a9511c1e@linaro.org>
+ <875xkltfle.fsf@bootlin.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <875xkltfle.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250307_041541_044751_E94E6F79 
-X-CRM114-Status: GOOD (  21.72  )
+X-CRM114-CacheID: sfid-20250307_042200_455020_C631B0DD 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,65 +104,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On March 7, 2025 4:13:26 AM PST, Ingo Molnar <mingo@kernel.org> wrote:
->
->* Jiri Slaby <jirislaby@kernel.org> wrote:
->
->> On 07. 03. 25, 12:38, Ingo Molnar wrote:
->> > 
->> > * Jiri Slaby <jirislaby@kernel.org> wrote:
->> > 
->> > > On 06. 03. 25, 17:25, Kuan-Wei Chiu wrote:
->> > > > Change return type to bool for better clarity. Update the kernel doc
->> > > > comment accordingly, including fixing "@value" to "@val" and adjusting
->> > > > examples. Also mark the function with __attribute_const__ to allow
->> > > > potential compiler optimizations.
->> > > > 
->> > > > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
->> > > > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
->> > > > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
->> > > > ---
->> > > >    include/linux/bitops.h | 10 +++++-----
->> > > >    1 file changed, 5 insertions(+), 5 deletions(-)
->> > > > 
->> > > > diff --git a/include/linux/bitops.h b/include/linux/bitops.h
->> > > > index c1cb53cf2f0f..44e5765b8bec 100644
->> > > > --- a/include/linux/bitops.h
->> > > > +++ b/include/linux/bitops.h
->> > > > @@ -231,26 +231,26 @@ static inline int get_count_order_long(unsigned long l)
->> > > >    /**
->> > > >     * parity8 - get the parity of an u8 value
->> > > > - * @value: the value to be examined
->> > > > + * @val: the value to be examined
->> > > >     *
->> > > >     * Determine the parity of the u8 argument.
->> > > >     *
->> > > >     * Returns:
->> > > > - * 0 for even parity, 1 for odd parity
->> > > > + * false for even parity, true for odd parity
->> > > 
->> > > This occurs somehow inverted to me. When something is in parity means that
->> > > it has equal number of 1s and 0s. I.e. return true for even distribution.
->> > > Dunno what others think? Or perhaps this should be dubbed odd_parity() when
->> > > bool is returned? Then you'd return true for odd.
->> > 
->> > OTOH:
->> > 
->> >   - '0' is an even number and is returned for even parity,
->> >   - '1' is an odd  number and is returned for odd  parity.
->> 
->> Yes, that used to make sense for me. For bool/true/false, it no longer does.
->> But as I wrote, it might be only me...
->
->No strong opinion on this from me either, I'd guess existing practice 
->with other parity functions should probably control. (If a coherent 
->praxis exists.).
->
->Thanks,
->
->	Ingo
 
-Instead of "bool" think of it as "bit" and it makes more sense 
+
+On 3/7/25 8:22 AM, Miquel Raynal wrote:
+> Hello Tudor,
+
+Hi, Miquel!
+> 
+> On 07/03/2025 at 09:09:06 +02, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+> 
+>> The core driver is using 'struct of_device_id' and relies on implicit
+>> inclusion of <linux/mod_devicetable.h>, which comes from
+>> <linux/of_platform.h>.
+> 
+> It is actually included from of.h now (since patch 1) and I wonder
+> whether there is a need for it to be included explicitly. As a user it
+> feels like "of.h" should already include whatever is needed for us (and
+
+Seems so. I'll drop this patch. Thanks!
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
