@@ -4,120 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EBA8C19F32
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 06:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34549C19F32
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 07:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lGKSRFOEH/oBkQP4SMa2qbzwS1gQjJc2y7/knHYr0uY=; b=H/tbsn4i6K+10R
-	Dd8KhWtxmcNoP9CiWDmgl0zHhCYH2nSW/wHk2R2FJRb+vGGW6mSKTEQFNm/rqpj336Vdp5D69lT1t
-	2M1hT/6bYj24FHYbc4Lb9qav0ORbcqjtsy2/28hqKwVCPaF2ZUhz4NBrZUia4P6ugfcMhytKqVzjU
-	og8PQE6lDwjqSZf3AVNncZgII7TBBK/EAer+dfHAjJtlwMkkf0m7O+hKxa29Eloc5u49uFqlP3LOT
-	jPGCtv45V5ePpUJnfhyikxVrjt0aDtF4z7hfHM4rNjGhsn1acoFI8hUJcfJ4IVqX/+gGuxaHiDTWt
-	bEHHeceQ1wauJ7nNCiog==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VQRhj6oj161dvoyPgFFBKWZ6MF1C3kps8F8njm+2xrQ=; b=SdWfddCfqGwId0
+	IGvFRSWI0pMMatYCBM5AZnwrXZnPhFU6xdrAuX9cld/flfOohtZI69kHsZRuCL4hTQ44C+0+j3CoE
+	UWRf+rykGd5tnbxS17nYcUPMSMwzD+9hPhqXI65BsStt2zCi8IlaJKDm0qQ2fXTpcXuqf0H/dkn6f
+	WYVF0TSeiwheOvueHUmpgYIQ/7DXz3xjMvjV7oPtpjqUYvMRMl+ZH2+BFQkN9YCG1278ou5+st6aX
+	2XIyISwTkfHqJn5qR58Hxgz8VZ4zdAvEFeb4pQ+K35ZboUQ4LVO7w5JJwWY0SXw3rDdrNndiENR+Z
+	yBLYGcR0MR42TILC3EIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqReo-0000000DNOG-2orC;
-	Fri, 07 Mar 2025 06:58:06 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tqRpp-0000000DOx6-2ilV;
+	Fri, 07 Mar 2025 07:09:29 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqRel-0000000DNMw-3ng5
+	id 1tqRpn-0000000DOwN-3yM5
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 06:58:05 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 96195A454A4;
-	Fri,  7 Mar 2025 06:52:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A277EC4CED1;
-	Fri,  7 Mar 2025 06:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741330681;
-	bh=QR/u4eYHPicVkHtr7uGU7SfSHBfSkVI2Jt7KePffl1A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BO2PNjtTjds6fps74Zxs4WG8UEoBmTLK3JGqU+00jLosvv1RXhYz82UonINQv4lJ3
-	 semTG8Bs9gmIjj4LDTDMqqquN0xy03A54aiX+zTtPzIU/iAu9KN5DB6DgFuybJJua2
-	 hseHc3rV3e1nHZrHTU8W/O9vfuHXae754xep0D3VirLTlTtpWh226cqxYPp5obPQQ8
-	 ItI34NWTqQS57aYuudwEBNpH9hCBL5G2O9xaxEIf/BgLEVWmmH+ZxG1HB3uyuYVxjU
-	 f3sieA0B8gGnyJdDAyZtNiT2QggkIvrBvR9aZKArMmfiQZMZfqnIz1Z8lbsnbemq6V
-	 7K9HVv63TvfOw==
-Message-ID: <3dfc81eb-caa1-42fe-8fd6-61101de0ef13@kernel.org>
-Date: Fri, 7 Mar 2025 07:57:48 +0100
+	Fri, 07 Mar 2025 07:09:29 +0000
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-aaf900cc7fbso307548166b.3
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2025 23:09:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1741331366; x=1741936166; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fcBcclqOktLyLDuTPRZuapiSFs2PPDRarJuoClc9VI8=;
+        b=imHpcYSICCL1/C09Lw0dvwTlaAGjtKIiLOfw2PwRSLBIvDF58URSaChCjc+w+nMaZR
+         gPYDU2xVEj41U2euNA2vRprtV7fh5qXAyMfQl1qx8HhDCk4Jqa04nS2JY4UcIx+Cpk2l
+         Qc6MCKciD8Bx7Lsh+TBFRHBp3UnN7pDnvucpiYt77QLbu1GA5OXuxTza6oKtMKa+d2mg
+         /lUJzsZFqbyiXlJQZSIFT8PpgS0/UJ5QM5y4Cr1Tt8hsYuTmZdE/ajIHMHkyWT5XfkG1
+         wU4maMe9s6gi4nIJJn2kTdzsRgqeLl7DpqnIC+VPxdsEsRdqoqrvKqqwWcAFIWp8dGuX
+         wDOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741331366; x=1741936166;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fcBcclqOktLyLDuTPRZuapiSFs2PPDRarJuoClc9VI8=;
+        b=EeKjq1FQ1vLlXU1mK/esbfr0dmKv5xQamrCdF0yKbGz+34Id3xPgJ4S82ytpW1M5ev
+         XV9XXLITViBTVedYkQIB5PFXetQzZYxvS4PCvYJ00A877fesWyXvN6f8lTkuDqEnr52l
+         8RT5iOfJ5pIpsiQV1xtQ21yLymHFVNvNuGTP6E1bVfMz1IAh6pNmJN3Ydv5kai73JhAV
+         HQI+34arl9zLFX3EvOXVcNxCA9HgoJGdCGJptM7twzQvrAer8ildgVeWf9Pt4+baGRPW
+         /OUzur7vVydOI2Rn8S8IHhzeA8GhKlj9r5dA+//gzJvXaCf2FAJevVS7OBzk2htY0f0u
+         HkiA==
+X-Gm-Message-State: AOJu0YwulCwEe/WT1nCjv/DgxciS4/uCzScPlkhWrV1803S14GAxX+XG
+	OpyZoKYnYLkv0u36AWB7hIEDiJBx+Lft3cZP8O2VUQRjZNSOlmTHQU1EUMbrPm4=
+X-Gm-Gg: ASbGncsTXYtDXxJ45+5gOQd/MYqxoVT69dtqLNqDa8Lk50bWrIx6IjtZJWIcJP8wWFV
+	SjGYqXLN/VOVFnVMD+Ps/NeUYTlmmqXthKCYG6t2k2EMgvBpqmpxZKi2isTAOJrYiWUQK4U71IP
+	299UbCOlPk4tQSSLQCNfXIgYFYhXJXwaMKdU0Ty7EH6lMuZQ/e+jACOjbqT78mvu/0lpURorc0G
+	ei9lH92KapZxCw3d402FLaLsYFqPoePVsvfiMPcaY2oEslCFC2oEP/yVfSbqTZgmsnM/DxVSwwz
+	uP9O+44peeC8m/a/z1/SftjlL03dxSpLEkn02kbD0u/+nb4=
+X-Google-Smtp-Source: AGHT+IHCo6ZPdTrEbCYJtcGo9pfcJ7SsSYhpzKnGA3RQ+J45U/uHJyVBQkADwejp6EFhQ0vIQ5q7gw==
+X-Received: by 2002:a17:906:4958:b0:ac2:55f2:f939 with SMTP id a640c23a62f3a-ac255f2fd66mr146177766b.6.1741331366131;
+        Thu, 06 Mar 2025 23:09:26 -0800 (PST)
+Received: from [0.0.0.1] ([79.115.63.206])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac239735b58sm223243366b.117.2025.03.06.23.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Mar 2025 23:09:25 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH 0/3] mtd: spi-nor: headers cleanup
+Date: Fri, 07 Mar 2025 09:09:04 +0200
+Message-Id: <20250307-spi-nor-headers-cleanup-v1-0-c186a9511c1e@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
- jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
- arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
- gregkh@linuxfoundation.org, yury.norov@gmail.com, akpm@linux-foundation.org
-Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Yu-Chun Lin <eleanor15x@gmail.com>
-References: <20250306162541.2633025-1-visitorckw@gmail.com>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20250306162541.2633025-1-visitorckw@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAJCbymcC/x3MywqDQAxG4VeRrBtIvSDTV5EuRv2tgTIOCYogv
+ nuHLr/FORc5TOH0qi4yHOq6pYLno6JpjekD1rmYaqk7aaRnz8ppM14RZ5jz9EVMe2aEpm8lhA6
+ jUKmzYdHzfx7e9/0DENiCt2kAAAA=
+X-Change-ID: 20250307-spi-nor-headers-cleanup-e93740995eb0
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Tudor Ambarus <tudor.ambarus@linaro.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=574;
+ i=tudor.ambarus@linaro.org; h=from:subject:message-id;
+ bh=LTgmhF3yOudZaS4ugAkCxqqCzkuqv1Bqu3SiKsYRf4k=;
+ b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBnypuj4N1C585VWieVif6aB1d60xEr77nwfCkiU
+ hoEi4uTfu6JATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZ8qbowAKCRBLVU9HpY0U
+ 6d9WB/wLDyNAuBzjSrUuy8YbeSy3wPLoXZb87EntEFALxBUvLfVJu4/LdKjKiIr/OB5mnBJp2VM
+ fAv5eqq1ukfAjmBXm+HMBm3ZfIiOptaEEBf9HitWDQZ2ZrbAZ1qfldhsgwNzAv6mP0FoJ+dVs32
+ as+QwElg/2mNj3/YANxr2XEMRptIio5Dvz0y0948oP7SeFqx5SEAz06rzIR+suxABPafFG703fD
+ petzNSllnfVyPbiPzRFXRCn+yur6p+IkNInLtOA6SkyVi+duxYlmFl/CDEYvsw/AoDkMmIo1R5T
+ +niW5yqslADFAZqiBHRY1aGIXbmHI1m0PGZDZArpYbEGT4WM
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp;
+ fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_225804_114045_FCB6DFA2 
-X-CRM114-Status: UNSURE (   9.09  )
+X-CRM114-CacheID: sfid-20250306_230928_001211_0E583CEB 
+X-CRM114-Status: UNSURE (   5.94  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -130,46 +108,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 06. 03. 25, 17:25, Kuan-Wei Chiu wrote:
-> Several parts of the kernel contain redundant implementations of parity
-> calculations for 16/32/64-bit values. Introduces generic
-> parity16/32/64() helpers in bitops.h, providing a standardized
-> and optimized implementation.
-> 
-> Subsequent patches refactor various kernel components to replace
-> open-coded parity calculations with the new helpers, reducing code
-> duplication and improving maintainability.
-> 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
-> In v3, I use parityXX() instead of the parity() macro since the
-> parity() macro may generate suboptimal code and requires special hacks
-> to make GCC happy. If anyone still prefers a single parity() macro,
-> please let me know.
+A bunch of header cleanups, no dependencies.
 
-What is suboptimal and where exactly it matters? Have you actually 
-measured it?
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+Tudor Ambarus (3):
+      mtd: spi-nor: explicitly include <linux/of.h>
+      mtd: spi-nor: explicitly include <linux/mod_devicetable.h>
+      mtd: spi-nor: drop unused <linux/of_platform.h>
 
-> Additionally, I changed parityXX() << y users to !!parityXX() << y
-> because, unlike C++, C does not guarantee that true casts to int as 1.
+ drivers/mtd/spi-nor/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+---
+base-commit: 93020292fea71d62dc9749745d8ba1b44268a2fc
+change-id: 20250307-spi-nor-headers-cleanup-e93740995eb0
 
-How comes? ANSI C99 exactly states:
-===
-true
-which expands to the integer constant 1,
-===
-
-thanks,
+Best regards,
 -- 
-js
-suse labs
+Tudor Ambarus <tudor.ambarus@linaro.org>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
