@@ -4,107 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3FFDC19F32
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 09:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96F7AC19F32
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 10:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rVcF/VHLM/JYZudlRVSJaWTNVGdkcCWP/f2i8gzKMZU=; b=QWP/LPgEcKdtgt
-	R9FvXLBlYnjl28fXmGjLj92zalNpUnQmy/cDAKORenme6I7NCFUW5QBLrhmEyZocdMNgzjRdZLYin
-	/ChmWIJ8z8ds+F2DmZ66lcnwKQ1I2D35AsBgUfbzruG81EDFOylMi7MRanikVXVP5+MpTTxR2erTe
-	yxOIfRNsGWyJqsBbk4IRoYVl0/AZ7ZMZaVCQjarRZ+jfSu6NdTtj0qw6leZaHiuRUpZvvLG4CQYP6
-	+jbqczOlPT4l0+tli2Nz0W4jr2Qyh6eBHlfl3qs/+Cg+s3t9nBbeUTxAC7HHxV8TCYZtplh/9iml+
-	de2xh/9oBJEOkDEjT9Ig==;
+	List-Owner; bh=qlANh2D5wMPX36J42ZRCufjtNA4Sl4JTxodWfZbAdc4=; b=cLHu9CIWVM/a/8
+	ar2WlS6KeiYDpmCJhql7XvrB0JMrc+Iqs68UZCh8Wr9hUHPGQPhrQXiplMC4FUVMJc9kd/R2e6TQy
+	5WDpaLf1upvx6Hny4z9CAV72nQOc7FbKY9R68HgUbpIRqKPh8QGXUMYTJypOExnqaqIwPB3K3ZS9/
+	oMMYqS/Ttrv2meT3POR+YCrOfB2h85hufuuR2cEyYZoo/PjCmkpOsq/1R2YFAKx/i1paVLvv2OuN2
+	qYUsGiZrpB/qCMs5TQAa5yoP4bJ3vEBdPWbz58YGW8V+otjTAurkPlA4rOUg6SCjPYixdYl7Ut0pi
+	KKhObtu4VFdp1KNxp1tQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqTwq-0000000DhkP-0Cdi;
-	Fri, 07 Mar 2025 09:24:52 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1tqVQ0-0000000DxJC-4BB7;
+	Fri, 07 Mar 2025 10:59:04 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqTuO-0000000DhGp-0ZkK
+	id 1tqVKF-0000000DwPI-1jAQ
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 09:22:21 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2f42992f608so2956820a91.0
-        for <linux-mtd@lists.infradead.org>; Fri, 07 Mar 2025 01:22:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741339339; x=1741944139; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XztObitingC3692I+pBVpdt55S8NywKGMFDoLFkCI1M=;
-        b=VB4NuLBlHqJeiI605Yw/xVMopYXsWktZBOmq0I09dN0H+Wrw+TSdBobC+CRYAwV7NH
-         r2xSJF0kjPYkdlcZqzegQ8xUCinLCkJkBJ6hD0F7zvTn4oO4PJAKC/ZIr786usySJTjg
-         OvSfGRzM5XMS4jZMkOcqXCcGGiDr4VyVKjcKTiYt5qzFrixOuTReHWFWSaYKqg7dEjXB
-         vHxoBnAhmF8IbWu6JH+HJ6FDQtjqf7MoJa0zhfKv8p9171zY9VodMC5+rbYDV5pzH0xt
-         Kaj0Ppsm/MrhCmqLRnpSsvXom11u/D3h1GecHGffgaquHt2V90CV1HjkEmaRp92pcF/Z
-         qqwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741339339; x=1741944139;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XztObitingC3692I+pBVpdt55S8NywKGMFDoLFkCI1M=;
-        b=xRJ2qUxSV/1PebtjxV0CURXgzChg7rlPNv16YfaC8CCo7Qk5vk6b00w58IgF3qEsmk
-         Kf06kaBCgb3oUINXlQvJikJPgpCkGxrfoFaZHQVCd1YW/c5/Y8BDrgFlwzltC4qw4nCF
-         OTE2DCdQXvUSaf+wvctkCtToSN0oPWzCE7ITf8LKD68VN6a0T6fdmpqF/FlWjOxM9Omx
-         MdVTu4RPtPpZa70sIbdrxHvSxWpAtLYMNqcgFmQWR8ne+bAvOWJYJ+ZCGfRqj0CNc1i2
-         o5hQjEy07EUbI5rwdmMqz8S7l06bYlWHQ+SdabLZNus8bIHbw0tYLnWc7xmKjLaPJJm9
-         Pojg==
-X-Forwarded-Encrypted: i=1; AJvYcCU1fdy0Se4pHDjTS3iXBtM93CPz+wYsXHmgdwuR5metXBaQ84vJ63M1LNcdQ/iFAwaFpYj6A3gBkzk=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzIAcR6aWc1+DDwvtQIKa4rTtAOx7RArOTVci1oJhM15wdqx+wO
-	lSHi3xhkDnjBuNujDAFlcImvtv3/y2V8nEANTl0/h3HNkDUGBl94
-X-Gm-Gg: ASbGncvhlbUr9ArIieWGEXl+4ztMq2f/+DJaV8myXj9EzHuyvrXQem6jLQDelU6jrvq
-	jM0dgi6niP1rnyZz0QGvjOGZV2sbeaJ+XgAMub3UMke9WdHwtQZDdm8QBx4TXQht8PaDoSx/ii5
-	S8Y8aP6ydUvGRi+HhOUa+BtoQ0y9aCYo7PksQesBGMTl8IJz5YsbGveE+hUquI8QNlKiI2U4k+d
-	WGLHJNw74TEsR8Fs2ePA8JqWcKERV8rDnXnB/1YfcTxXER9JGoBLPgVTsA3Pc1c+GTlXTwEudir
-	kBOMpGJ8NVbf0yTP7ZAREThGTBPaMqd5B6ljDV5PzDHEJ4XB9bp/WvMMgxqef8dELt+Ev245
-X-Google-Smtp-Source: AGHT+IGO3Fg5mznURfAXFZCPAiOd6NJZ8MzxOEXeMR65d6OVc42NCiVYA5M/yoTVlsiOwEwCHpbcoQ==
-X-Received: by 2002:a17:90b:3911:b0:2fa:1a23:c01d with SMTP id 98e67ed59e1d1-2ff7ce8b5ffmr4029616a91.21.1741339339019;
-        Fri, 07 Mar 2025 01:22:19 -0800 (PST)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e7fb5sm2876725a91.37.2025.03.07.01.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Mar 2025 01:22:18 -0800 (PST)
-Date: Fri, 7 Mar 2025 17:22:08 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	yury.norov@gmail.com, akpm@linux-foundation.org, hpa@zytor.com,
-	alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
-Message-ID: <Z8q6wPWXImCeGI8P@visitorckw-System-Product-Name>
-References: <20250306162541.2633025-1-visitorckw@gmail.com>
- <3dfc81eb-caa1-42fe-8fd6-61101de0ef13@kernel.org>
+	Fri, 07 Mar 2025 10:53:08 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 806A1A456C9;
+	Fri,  7 Mar 2025 10:47:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BA5BC4CEE8;
+	Fri,  7 Mar 2025 10:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741344785;
+	bh=Urg129Bz2A1KqSkBMVGf/u0i0jwz2GvVKbmLB4w3EOk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Y9gg/Alpnnpx43uk0EoB2ChH/g2zmL9Ac0KFIKRqqetxhzNGH3AkMF1BoAkOQVBbL
+	 cowhZKUf3qVEKNRyETqjX5dis9Z3/ZW1g/Z9sI5fFtJN3QPXrzzpAElmNCeWYNP+Fn
+	 Vi75+mBOzeOeUA8c1w7JYfhmZ4pUE+PAJ8Y6UJngcPCPbdPt0qxkq85CIDDO8iMU4G
+	 60eoRM4cq1PKG13D2CB21c88OL+0Su8uRLCU21p6y0LskY6EYzvKLW6NZSUVsIinLF
+	 Ud0RMc8zi12I+GrAKGQIBrwPAjKGQts/q1YdSg7OUbXai3zMkynzUiMkoA8Wf855pF
+	 6MtRTSrPZN+3g==
+Message-ID: <7856ccb5-d848-416a-bb6c-e3bcdc03aebe@kernel.org>
+Date: Fri, 7 Mar 2025 11:52:52 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3dfc81eb-caa1-42fe-8fd6-61101de0ef13@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ longman@redhat.com, llong@redhat.com
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org, joel@jms.id.au,
+ eajames@linux.ibm.com, andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+ rfoss@kernel.org, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+ tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+ dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
+ hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+ johannes@sipsolutions.net, gregkh@linuxfoundation.org, yury.norov@gmail.com,
+ akpm@linux-foundation.org, alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+ Yu-Chun Lin <eleanor15x@gmail.com>
+References: <20250306162541.2633025-1-visitorckw@gmail.com>
+ <F134DC06-54DE-4B8E-8AE0-3740275835C1@zytor.com>
+ <Z8q6LlkQDG95Amgw@visitorckw-System-Product-Name>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <Z8q6LlkQDG95Amgw@visitorckw-System-Product-Name>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250307_012220_175089_780E35F8 
-X-CRM114-Status: GOOD (  21.16  )
+X-CRM114-CacheID: sfid-20250307_025307_629044_43537A71 
+X-CRM114-Status: UNSURE (   8.61  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,68 +133,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jiri,
-
-On Fri, Mar 07, 2025 at 07:57:48AM +0100, Jiri Slaby wrote:
-> On 06. 03. 25, 17:25, Kuan-Wei Chiu wrote:
-> > Several parts of the kernel contain redundant implementations of parity
-> > calculations for 16/32/64-bit values. Introduces generic
-> > parity16/32/64() helpers in bitops.h, providing a standardized
-> > and optimized implementation.
-> > 
-> > Subsequent patches refactor various kernel components to replace
-> > open-coded parity calculations with the new helpers, reducing code
-> > duplication and improving maintainability.
-> > 
-> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> > In v3, I use parityXX() instead of the parity() macro since the
-> > parity() macro may generate suboptimal code and requires special hacks
-> > to make GCC happy. If anyone still prefers a single parity() macro,
-> > please let me know.
+On 07. 03. 25, 10:19, Kuan-Wei Chiu wrote:
+> I used to believe that casting a boolean variable to int would always
+> result in 0 or 1 until a few months ago when Waiman Long explicitly
+> pointed out during a review that C does not guarantee this.
 > 
-> What is suboptimal and where exactly it matters? Have you actually measured
-> it?
-> 
-In the previous thread, David and Yury had different opinions regarding
-the implementation details of the parity() macro. I am trying to find a
-solution that satisfies most people while keeping it as simple as
-possible.
+> So I revisited the C11 standard, which states that casting to _Bool
+> always results in 0 or 1 [1]. Another section specifies that bool,
+> true, and false are macros defined in <stdbool.h>, with true expanding
+> to 1 and false to 0. However, these macros can be #undef and redefined
+> to other values [2].
 
-I cannot point to any specific users who are particularly concerned
-about efficiency, so personally, I am not really concerned about the
-generated code either. However, I am not a fan of the #if gcc #else
-approach, and Yury also mentioned that he does not like the >> 16 >> 16
-hack. At the same time, David pointed out that GCC might generate
-double-register math. Given these concerns, I leaned toward reverting
-to the parityXX() approach.
+Note that we do not have/use user's stdbool.h in kernel at all. Instead, 
+in linux/stddef.h, we define:
+enum {
+         false   = 0,
+         true    = 1
+};
 
-If you still prefer using the parity() macro, we can revisit and
-discuss its implementation details further.
+So all is blue.
 
-> > Additionally, I changed parityXX() << y users to !!parityXX() << y
-> > because, unlike C++, C does not guarantee that true casts to int as 1.
-> 
-> How comes? ANSI C99 exactly states:
-> ===
-> true
-> which expands to the integer constant 1,
-> ===
-> 
-I gave a more detailed response in my reply to Peter. If we can confirm
-that casting bool to int will only result in 1 or 0, I will remove the
-!! hack in the next version.
-
-Regards,
-Kuan-Wei
-
+thanks,
+-- 
+js
+suse labs
 
 ______________________________________________________
 Linux MTD discussion mailing list
