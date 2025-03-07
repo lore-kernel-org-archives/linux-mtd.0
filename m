@@ -4,81 +4,148 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B49CFC19F32
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 20:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CFDCC28B28
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 22:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0mTxbnIlma0IUPFUKTIfdLxK3SQmTalEG/bnoa4tYh0=; b=YfOcUAD9sm/RbP
-	9UgC/pXrIJvCTZy1nnQ0dXlxYvU4ljFZqRVV70GLMfsqWtT6Lg/+HhzYb00RAq2ldKHE9QLt6xlns
-	hgVmPpcXuOFjnGSW2d45A+q9qZwQoiWZMTP/QgVNI8BOny7Ki32d6oMXd2xjcJ6yuncN375vEmwOP
-	WRfMo78KNboXTCIhrJo8btQShF0FFXLKznZ9H6gfD1FTrGTiMiXzoE1huak4WTzYhvibrwHTXUu/O
-	rY0e+S8BRo9HFEmYxImrmVF1hT2uqPa4wVzG7GqDrFnXb9Biv7fYPcHEMrqR3NHnuw1zdIJsQ+0CW
-	qyIZgnTpSDjp9c//aIOg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VYXwzKVBXtECsDV5kMdgasJb0TBp1YYwU01jPLzsEEk=; b=MJdlNTlSvBs/0J
+	YmvrTJBn5oXYVTcjJ36IyT8UbHgPLIAJCo9NZyAShOLoo1ymRdZ3jd18x3EBfeNoWa0vTa1fJGIK+
+	vVA9t0taC6HjV+y5VvaX8l/6U3zWfXCOXMrprPDkREgyl0MORm+NxVagUJSUR/uKcudNycFKkRYe8
+	3YAKlEieJS+pqHK4AiIg+VpknNvLDFcuWKc0Pg9XVXPxSxL80v1RNADF6oaAK6L/tWOpKWfu3/tU1
+	DxNSvjHAFdxLebMtbjSt0/aBCFZyQ2Zg9Dv899wq9sYOUExi+oUuUi4KJ7QForvWpa3zd7mYjz3+h
+	FsAmGjutOposjXHWQg0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqeOY-0000000FUxY-2LMa;
-	Fri, 07 Mar 2025 20:34:10 +0000
-Received: from [2607:7c80:54:3::138] (helo=mail.zytor.com)
+	id 1tqg5q-0000000FhK9-1Cck;
+	Fri, 07 Mar 2025 22:22:58 +0000
+Received: from mail-northeuropeazlp170120003.outbound.protection.outlook.com ([2a01:111:f403:c200::3] helo=DU2PR03CU002.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqdQ9-0000000FM4X-1ETO
+	id 1tqfp1-0000000FejI-2KdW
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 19:31:46 +0000
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 527JUdCN395426
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Fri, 7 Mar 2025 11:30:39 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 527JUdCN395426
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025021701; t=1741375842;
-	bh=50NLhdDhI8V8GO7o5jfDm1HRHcKPZ5EFPUWRP6MJAIA=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=i8S6m7b8Y1bYbI/KAMAEMHyLmm3Y3FEbOP1TAp45PLhWp0+UZa3jzXqYD/PAma8k8
-	 b/Oan43NQx+G8Psx4knFdBaIeGVMBY9RXM4Ckdpi6bnHPizobhJTlwJ9C/oeCEh78k
-	 Stf+80k1tjWDPUZPs2+t5W4E7bcn5x1ArDfWYB9dAaAevi8RglcCPIr1tB2PeYVj29
-	 O7H/KNA8J4/SredKAKB+hHce7/GwWHh4ARCY3vBRtJzld1LsziwXJjEV7Ueot213Z/
-	 QRKE/cCgjphvTYe81eN7CwuSerqHAkatZ00EB031zjlPdsrSQAYtuWc+oXJ6lMl8EH
-	 7JnS1tGvALMKw==
-Date: Fri, 07 Mar 2025 11:30:35 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-CC: Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
-        akpm@linux-foundation.org, alistair@popple.id.au,
-        andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
-        arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
-        bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
-        davem@davemloft.net, dmitry.torokhov@gmail.com,
-        dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
-        edumazet@google.com, eleanor15x@gmail.com, gregkh@linuxfoundation.org,
-        hverkuil@xs4all.nl, jernej.skrabec@gmail.com, jirislaby@kernel.org,
-        jk@ozlabs.org, joel@jms.id.au, johannes@sipsolutions.net,
-        jonas@kwiboo.se, jserv@ccns.ncku.edu.tw, kuba@kernel.org,
-        linux-fsi@lists.ozlabs.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux@rasmusvillemoes.dk,
-        louis.peens@corigine.com, maarten.lankhorst@linux.intel.com,
-        mchehab@kernel.org, mingo@redhat.com, miquel.raynal@bootlin.com,
-        mripard@kernel.org, neil.armstrong@linaro.org, netdev@vger.kernel.org,
-        oss-drivers@corigine.com, pabeni@redhat.com,
-        parthiban.veerasooran@microchip.com, rfoss@kernel.org, richard@nod.at,
-        simona@ffwll.ch, tglx@linutronix.de, tzimmermann@suse.de,
-        vigneshr@ti.com, visitorckw@gmail.com, x86@kernel.org,
-        yury.norov@gmail.com
-Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
-User-Agent: K-9 Mail for Android
-In-Reply-To: <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
-References: <4732F6F6-1D41-4E3F-BE24-E54489BC699C@zytor.com> <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
-Message-ID: <5A790652-1B22-4D13-AAC5-5D9931E90903@zytor.com>
+	Fri, 07 Mar 2025 22:05:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=VOoDviyTzMVAg5/gNyApmsvws4TIyJZTUtJrUyYAQWDoakOVMIDbuiKasz4FzYmoyiEhCvCfOEls53lgQbIp5qnSgmVkxftWHuwSl8Oj5lsNgv0qBzTOLqgHddgYjOEgqZSajMfkyyLnWAWQl8zOYSu0clEMisjfNHK+DseQYy3t6Qg+Fx3m6f/Mf8HyBwaJeK7JI/1U9myU8w0iy3yEH+ivBfhnwRV14OYCX7qDxUHoUBTMZBXoJ+wtk4ZgDuqi4D4qauYhvqnBAqRuQNZasGHiac0ck5i/hkWvxfcPN2X//jxONuycozEMC16/BSh1TDD5k9Vg6CtzLM50D1KH7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EMvy/g0U9h6ZdSmXeaTPa0Ycyw7HCboGj7zJB41RsfM=;
+ b=h5QbXECcNry+NoMLIrUUrkTM/n6UlI1Ev8cbPb7isReXtIEfbS9zc1VxCJrZ7j9Y2+MxvH+VOWMAaoIMwwOMaIuTh2b8WsE/wxBaQUFL5r+PSpxmKlJ7hPfPwGUGWTyMU9u0chmfCFn/g2pKhFYHv6inFlEdd86XHnUJZDGbcmHn++EJIQssDvTvmzJ9+9R+Q1YlHKz1R9VAkuqXdZaAeL34tW4Z3AmgVkAqBTdLgt5h/VhiYroDc0LwMqpTMorkYj2ZfiUGu3w9sMeBmyGrLiZQ5NM+SePr/gwz84T95JUXDfFFo0VcqYLIqltKHeMcJXtR9SSkGAdPY5eHarmKLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EMvy/g0U9h6ZdSmXeaTPa0Ycyw7HCboGj7zJB41RsfM=;
+ b=VYGluy/sYuodHzlOVK7ghDdCmM5d+FN+xvVmPRfuQiC3xl0Tj1q21s+S1GDvg+C6DXH7ebbup4cJVibS1blXS+dj88Xs2PHwW/5LkczAAVuvflEgYQb3hJyufkRkIKWllSyVA6lFXa+M1INTfeL+sJ0d5cA4XpSgqKFOBbKkO8OeXjxIVn4jozR0nU7K7WoTCvgSpu9SH3QfX1aXm67Qm90Wv3bcsR9apoGEONT+uWxOy5wChAnqGXZd5LZShhpEzaOQGYKgWKSLw7v12mcSFvefJsuNhhRgklmkyxgAMdCvfWr5tyr9omvidfzfyIaYTZFySrpjNdRzfayFwj9Ixg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB7639.eurprd04.prod.outlook.com (2603:10a6:20b:23e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.22; Fri, 7 Mar
+ 2025 22:05:32 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06%6]) with mapi id 15.20.8511.017; Fri, 7 Mar 2025
+ 22:05:32 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Han Xu <han.xu@nxp.com>,
+	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-kernel@vger.kernel.org (open list)
+Cc: imx@lists.linux.dev
+Subject: [PATCH] dt-bindings: mtd: gpmi-nand: Add compatible string for i.MX8 chips
+Date: Fri,  7 Mar 2025 17:05:15 -0500
+Message-Id: <20250307220515.3282954-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+X-ClientProxiedBy: BYAPR05CA0099.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::40) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB7639:EE_
+X-MS-Office365-Filtering-Correlation-Id: dce5f8f8-c0cc-424f-17fb-08dd5dc42db4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|52116014|366016|1800799024|7416014|38350700014|921020;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?YgL4bNkU2cEqzbJTrYVQSiIB4xC2VStgAiS7fVNI5W+80fckhOSMmz+5vxh/?=
+ =?us-ascii?Q?uPdufcQ20JzihDN/q3XDjjRvFjpEvOHsWJjxQdhTzJpSfriTgi7VGmq8IG4p?=
+ =?us-ascii?Q?8JWdxxZ8PHdKAw/aBxhZ0JGfPdQ0glo9XXfAVbJbmZysJupvQB/jfoypVOMU?=
+ =?us-ascii?Q?VeFKguPUED+9tnWh8UgTN98FVzu9fE6KAdACeRbKOTymRPwsCC/9EbbtvWNz?=
+ =?us-ascii?Q?303DHPzD3EZBUkAlT9sND7jAZQZI1zvD/HNFnClqYHEichJNp2vjE8U7FmHr?=
+ =?us-ascii?Q?2MV6xdoYcYbIW3gwKoYPCUtPe1swoZ3ePiDpetKCdzHF5OVnmtRFKf2Lib9E?=
+ =?us-ascii?Q?ZCTnSrhCqmJNnyWpN68LjVmwl8zJF0J9Dhuz0DOOgldKveLu0BIn7bODrbUD?=
+ =?us-ascii?Q?SlQlHOL1wVQg/klkg/Zzkc453zSl4j76GrDd5gcuXJCvvkCXuU7FWE64O2L8?=
+ =?us-ascii?Q?MtDDvQRoPp8rqSKOgXd99x6ebAkDUyuiqcuoO7J5IXAaSR71nK7X358phFOl?=
+ =?us-ascii?Q?il4hzdZkrcBO8Ri8aZShTFGNOJtj+5zxpmlGC1sHicUIB3lhNjYX9xHOUq7P?=
+ =?us-ascii?Q?nl2Q5MwqgVP/GRw8AQtikw7Jg4vbqzmCPE+KEMvSZXfNtiUBLOI/BDqzRdZG?=
+ =?us-ascii?Q?l5cTxEtPlkJkTdYtr1BcrG/XNCM0r+FzRyFVq3S1//SuOLQ5m3cJPAxBWxnI?=
+ =?us-ascii?Q?RG3ia6rvtzM/rUWa079V7lKYxitWPBJtGy+wuHHoiakkCScOE89sMTOqpSr6?=
+ =?us-ascii?Q?z5nQx9kciTrde5j6QsnsR8OzLa5Z0/j0z4qMmC1PkOfSDexMN+Sax0JZgpw7?=
+ =?us-ascii?Q?CXfFdAVFi5eWDo7I6jw0kwUv2oMZZdfBfyO4OAWZmN/IK8ezCrQU5n8bnwZq?=
+ =?us-ascii?Q?0Rreae1CrS7JxDV9lQA0MrXphNwOzG8yOEap7MCFrRhRKsIa1b0Dpm4zCIuH?=
+ =?us-ascii?Q?q3r/y5719d8q+s96nCFSGgDKYVOJnyDo5HLD20aBDBf2BirpPHa1e+Z51pk/?=
+ =?us-ascii?Q?azxeyBWphp2G176Rj7JrvctDbnZO4B+vSyK7s6AKE0aj1P1PKgV8njcYcKSD?=
+ =?us-ascii?Q?I+/YKpPyHm0nUSgDwIRM4q01rKJv1D93QBYRgIXdsm4m4s6LYpl+j/b4nm+s?=
+ =?us-ascii?Q?GgjuAiu4KTBCAb/syrhm2KSI9lsyV19yg96uewJO1zCvoy4yizl32sulPweq?=
+ =?us-ascii?Q?5ylvESb4T3koYcrFoqj4eh4WSn6mHueuGnKr+85gM+eNBi3JHNa9F2L/Tygy?=
+ =?us-ascii?Q?aIb7JQme3S0GDIhjmLLQsHbNfgAZk7HkzOdDRrxLdE+qhKdhOfIJ1iJby325?=
+ =?us-ascii?Q?6bqNI8mNdHI/QFZBPM/wF6iV3CZXzECcMIVlZWIc3ATGljEsAUhUOlQAkB8j?=
+ =?us-ascii?Q?rU8ySlWi9G3qWiOXEZtedsoEkoy0F1eh9Cjb4Pdu0AEaZ6b0OjfoJ+VsJY7v?=
+ =?us-ascii?Q?KNeVsz/uCNAzyW+i+OykoN4wYaoCJ7Kex4XdUu3y4rV2A47mVEztmA=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(52116014)(366016)(1800799024)(7416014)(38350700014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?I8urlLx1p9m3xtWThWIDJ0sBJPlK1cWcZlcScv6JwMilo60QfhJJuRXXn9yF?=
+ =?us-ascii?Q?KjsFfyMmTIts4p/ESc7kJ79ig940qE5IoHD6/w0+++Ke1j7OM/KCEyheS1VQ?=
+ =?us-ascii?Q?wJzjJRR9noCsT1FEtu2V/zFhh2QHZpSfnnjRcivDwDKfBlfVDDy9ZwsJLHNP?=
+ =?us-ascii?Q?/B59hWhmACMMgW95Y8laZyemwj5XiFZq0TxSKKk2kKFx9cvgFFHUi2n2PT13?=
+ =?us-ascii?Q?PtbgpSdhpbUHFfTimiswK7/Vw+YZ9eb2ZUQybZIcY4cWZ52HFI4lPLfsfNBm?=
+ =?us-ascii?Q?OhSYkanaDRiXFJ1p9luSIXtPW5sS7zBF0ng+M1rmKFQiJWCVhppEdDltBFqH?=
+ =?us-ascii?Q?kDohGT+vAd13yZKtL5nxcjXh2cKnWVTym1f8pR1lqEHsxiv8bdCkdZGvaRcs?=
+ =?us-ascii?Q?2Nt02547FvALKjvnlvAgxwYJALw4GGLt+BfBUWaX9Gv46gvNnELXY+83IdPZ?=
+ =?us-ascii?Q?pGvX8iZLIiNTe2o9Mt4cLazsOTFgE2nGWp4dnpkauYsbzpGBKzeZB5ucDbmO?=
+ =?us-ascii?Q?lhSL1QKyqnX3tJgFjATgOfWJS4BOh0RFTH+fIEx3wS2t3Z3HB/Edgc0i5AHf?=
+ =?us-ascii?Q?rO/qEYbjf+0yt950DLdSMw2NHou71/8u3njLnL4QuAHS8ks3lgNUIOcsGdZP?=
+ =?us-ascii?Q?Rlc9JWhz0wbV7kEFs3aW1cs77c8a1647+00UM/XUPsYYHGt6GUCEIHKNYEZb?=
+ =?us-ascii?Q?gSxukXQf0Yo4Zs+rxtfW74MCPeBC8eMbI73AZda1a82elO2hMMoAhKEsfNpk?=
+ =?us-ascii?Q?Qk7rbghCT/T5i+nRtmmPTKam7EBw4wmZObdPRsrPhiy5pEhHKGAuUYuRnkKj?=
+ =?us-ascii?Q?f9HLuBMypPPjKKytMjKEyBUat3Nz7gTUY1M0O53si2OVM3v6Cg1yZa1utxdI?=
+ =?us-ascii?Q?MvlGeUphN4dL2XvUbbO7XFC5RDfON23q5feoMrrXDi+p539h5cP4DEVjGdOF?=
+ =?us-ascii?Q?IN1byXjRih30dIua7gBANhhsaJ1VHnedzIPpgSoRJtGMaVwUqqI+PsbKgr4Y?=
+ =?us-ascii?Q?SSuxCOixI3zHmFC4nAkVwuss7skaxXdmITQQfXK5eZ8m4hUipIoLK3rXYAKe?=
+ =?us-ascii?Q?6sIwC0kFKYUdwl1cDLZUvTFp+x6XFdMTbGqKlnm3a4pEaL8QjTnxJt+LnosB?=
+ =?us-ascii?Q?O/t8+0ERVajCE8B2RDNvi/ErzUYvzfR6z2PbI6AeoqymLriscQOvYISwPhod?=
+ =?us-ascii?Q?xtOzSZl+FTmBuKDvGFb02be0XP8pUK6q1sN+BDgZDNXNxji1C3LUsO/JvmCC?=
+ =?us-ascii?Q?wGmx8u1A18sD17QrhyoHxUZyykQrrIXze8Em+kUUjBVCQyetaZHTVyyHtChy?=
+ =?us-ascii?Q?FpWo7jBj9iTmA440fQNhQFbaebBxGI3+nrk1SxCoq38tsLofI3n0ZLYf21d+?=
+ =?us-ascii?Q?aeVl2dsiKEYDlWr+YyDP0k5oV7Y2z6YFFyFsQEE2HcJhCUhzo20Ji40PEF1w?=
+ =?us-ascii?Q?/iJ6lWJzBWoXYVdcwtE4DwTJqrK3H/aaBWRn4anb/x2T3cgwkNX3vpJoingu?=
+ =?us-ascii?Q?145P/gVX+uTfZ+j4qZpVL2kCX0o20DIaU0YetoE+8F9R96V4RIbHUP6oMWQu?=
+ =?us-ascii?Q?3301n+2XjX26FzUsIEtJGw4m2G30dtGFdcMEY1sV?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dce5f8f8-c0cc-424f-17fb-08dd5dc42db4
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2025 22:05:32.1564
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Xn294xnv8F343R8cnEJ1ur1w92yijR4teplZosq05nwIlRPuuOBhoVM2YM0Z3EHbdYhd4xup7uLGzK2fI6O1gg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7639
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250307_113145_329242_3B40C90D 
-X-CRM114-Status: UNSURE (   6.97  )
+X-CRM114-CacheID: sfid-20250307_140535_595282_3ED5318A 
+X-CRM114-Status: UNSURE (   7.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -96,19 +163,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On March 7, 2025 10:49:56 AM PST, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
->> (int)true most definitely is guaranteed to be 1.
->
->That's not technically correct any more.
->
->GCC has introduced hardened bools that intentionally have bit patterns
->other than 0 and 1.
->
->https://gcc.gnu.org/gcc-14/changes.html
->
->~Andrew
+Add compatible string "fsl,imx8mp-gpmi-nand" and "fsl,imx8mq-gpmi-nand",
+which back compatible with i.MX7D. So set these fall back to
+"fsl,imx7d-gpmi-nand".
 
-Bit patterns in memory maybe (not that I can see the Linux kernel using them) but for compiler-generated conversations that's still a given, or the manager isn't C or anything even remotely like it.
+Add compatible string "fsl,imx8qm-gpmi-nand" and "fsl,imx8dxl-gpmi-nand",
+which back compatible with i.MX8QXP. So set these fall back to
+"fsl,imx8qxp-gpmi-nand".
+
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+ Documentation/devicetree/bindings/mtd/gpmi-nand.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+index f9eb1868ca1f4..0badb2e978c74 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
+@@ -29,7 +29,14 @@ properties:
+           - enum:
+               - fsl,imx8mm-gpmi-nand
+               - fsl,imx8mn-gpmi-nand
++              - fsl,imx8mp-gpmi-nand
++              - fsl,imx8mq-gpmi-nand
+           - const: fsl,imx7d-gpmi-nand
++      - items:
++          - enum:
++              - fsl,imx8dxl-gpmi-nand
++              - fsl,imx8qm-gpmi-nand
++          - const: fsl,imx8qxp-gpmi-nand
+ 
+   reg:
+     items:
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
