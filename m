@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4B26C282DE
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 15:46:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA188C19F32
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Mar 2025 15:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TYEkzGGhdSYHema7sUK2jEwa0vJdHJVD/8MpLDfT8pg=; b=ggpODofnawbWNX
-	9auzaNUWk6EiNgdjElGuf2rNzryXzd8G9F4rxtA1qVhRa4Waam+3XMr/j2Fi0HGwI1cC8XtJxw4uY
-	ADEgmI1gnyLaU3GOiuC+8Z73pm5b7o35+EzuSw76E4RuC6Bggsp/wher+KiU7L2AWWPwISNdJERXx
-	5JNRdeZof2srkcFDdqX9P+6IfF9gHenQ/bK3iZzx0KgsTLZ3oYu4BviLnQhrsEfgeU90ucFqd+x4+
-	/xUcRRaMJUWy1x07NfSQw2Sin+2Nye+lLeTOXLcOllzUBN/q8XL4ufuRuLTf3drLKPiAKuv7nL0y/
-	VWJB6eDIKBtwtFBhCf3g==;
+	List-Owner; bh=C1n240yF6KPAzrV9em9dWvWZNuHyCUbXC9rLshWxbIg=; b=UYuovRRU9FHoFy
+	4Ldx3of2vuJy9RSLgHqPcujwv9hmI50f0WF/vpibSVdhpJC4s2TV/54LBi9AI2tFVfBXYZr08+SH4
+	IVd45bDIC9jY+qxDHbPQKQHJHq8zkIs6gvWXUNoVj9KbyFBqMLWlPW95pYEEXRhCe42emLm56CJK+
+	l1Y4V9z8J+md3cCaeefU3PymjFGiJ/kU2JHFEc1vutof5GQBposI1hd/U7sFS/qQNH8XeowYoBDpD
+	aHZ0/0DLP8fVPBOHVJtNDeWoXdUJWUMuSrkSZMS9UH61vL6HUDacB0FaboelSX+yGoRSPhbdq5LIx
+	qid/v1JxsYmRJ1P20hMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqZuE-0000000EkaM-1S2w;
-	Fri, 07 Mar 2025 15:46:34 +0000
-Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
+	id 1tqZyz-0000000ElaS-3bhR;
+	Fri, 07 Mar 2025 15:51:29 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqZqL-0000000EjcF-3Ima
+	id 1tqZsp-0000000EkKF-0C41
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Mar 2025 15:42:34 +0000
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5e4f88ea298so3486605a12.2
-        for <linux-mtd@lists.infradead.org>; Fri, 07 Mar 2025 07:42:33 -0800 (PST)
+	Fri, 07 Mar 2025 15:45:08 +0000
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5e5c9662131so3087902a12.3
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Mar 2025 07:45:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1741362152; x=1741966952; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1741362305; x=1741967105; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3YuW0oXrBdYtRMAGRMastKIQLtGGLBfW0tz3GbiXdp8=;
-        b=LZDnjV6ELj3L6Hk6AihF0O2HnoTrG560vFSzWo2OyPZ5CL3WiebPo2UIkDf090+DgA
-         i5KqOpUYdKkGEOuDUOCauEKv4vH4WrFMCGoyrLGrfmJV8aJ4SDF/esUVkdqD8Lwfg/cg
-         nTyfdV876tNI6mDSr8K8sNaTsAbjO1K0ISQO1d+P09STkLfELHpDEYg1SiqCwGrQ0gkI
-         geqz2b2rWUOWTS4PgeP5RIHvj+rvlRqeyjWGDT+7IFcX1q0dnZaXxeBTjW+t8/U5kN/X
-         K94mfUafB6kiUA5EtsWpJMW6xAvj6JPETo1i0h2vPdYDEzhMNGR3E1LG7PmAl/w9rwAJ
-         s1Eg==
+        bh=hp4/XGgKZswfxI/E1Yn63TPUSKhNdGFmWc8P6pHuvt0=;
+        b=IcKZHiuPgXfQPBaPy4UG0dLRxII5b/tI9lDGW8Y05tmCeYkbhANO8uDD0pe/Qr6uVs
+         RkhCQdgDkThynnLfPTWcDKUQBOFr2uQivb5LCGnlQfO4feZ6S9DjNr1ihBx69BkvOnWd
+         3xVblYgm3/3wrW6TJEzWzK+Jhe7ytDxF8OUrrwrJzGiuqxIe0ZkqpBWFCPm9FB3bB1a8
+         HtYdMY9uRaeybI6HxYx5CU7xrbuG7M+B8MpYe8/3pcpSB1iMCEuwGrDKsGCTAAB1OUbn
+         1H+2AItYyNQeanLCkHIYPNlPsilfYxS6XoAJASUf55irSwiH/eKOG8vARuyyum5+I8S6
+         U19g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741362152; x=1741966952;
+        d=1e100.net; s=20230601; t=1741362305; x=1741967105;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3YuW0oXrBdYtRMAGRMastKIQLtGGLBfW0tz3GbiXdp8=;
-        b=B+bcADQMvQMCOt3OA1LHFhnA5fpSie9NGPjIPk9eLY8gsueDgud9ZMvFcQ302VLNOt
-         cqiObg0V/nntT5xle7hgleQ6zLswSGI8R0mrli7kQ9Yze+R1GQctEKrd990A66MxtvUp
-         pkhygzkMikaY7iD4+R+LUxSmr0rqAcFz5QU8R65VxAik/3TIi4BGoDsuCMKLRSm7wrUf
-         FRIsY4X0VTW1oLEDZ7t1kPkvUtfP1vY62AFdUSTQPLA44ZvsstADWsPgM5inQEoFhO+u
-         IOeWIhLy84suWnxgguIPOSjQDye46UNJC1l0BJGaINT/e23e2NQ7TEV14RZFI4NxbRGO
-         YcTg==
-X-Forwarded-Encrypted: i=1; AJvYcCUlLe0R+BsUGPNz1F9EAFji01XR7zrAfbOxddnjOsZDxt/tWsEp0OJueNCUMxlaq+ydakV6+WO+evI=@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywi7IaGSHrUTukLXTGdaJqZ3c4kyq/xBSA7Iw4pzpzncQaDQrug
-	NavF4wWdoAqPdVzqCCetNKs0rB2fV/eQIimAXu13C46nK9QnD4qlp+DB1+wC+5EiCEnS/StVR+/
-	y
-X-Gm-Gg: ASbGncvmTo+hcNm1AvGmjLM36MRWOc01+OrPOLOPhyTJyrpC+2LgryIr7/ZYuye68vF
-	dpYFHvfPAuJD1XPiHZyYVXdQd8AlGcmGzjwf2gnT1GAVuzVHlbbRER2rRq8++bQX0heKF9ZuH7f
-	VCvUX1F6UCJovXbLNJwcZy0Q9Iq3SeRugicX1IvjxRfHo3gVdeexaXgbND+JxEUvHWPFznq5kuI
-	6Yk4IsGmNAY36zjzB5U5uVI+teK5mJ9+5FlS8VSGXSOVFtUuNZxMoaL5f8gEpZm+rJFjdlCstLb
-	Lm7Y0zj/RPwEdz7sQLN/oRDvFti92dXrYhTR9NQLXkgh1mFavk0N2A==
-X-Google-Smtp-Source: AGHT+IEyat9oHWfOYyiXKs8aTVrlJzL6X4S8kHWHMWCXsCBduRWhn6F9bDNlsKCZelNqCqQeEmR+QQ==
-X-Received: by 2002:a17:907:7e9c:b0:ac2:4d80:232a with SMTP id a640c23a62f3a-ac252b878demr402191066b.32.1741362152017;
-        Fri, 07 Mar 2025 07:42:32 -0800 (PST)
+        bh=hp4/XGgKZswfxI/E1Yn63TPUSKhNdGFmWc8P6pHuvt0=;
+        b=R6tKxBMhB7nzvIeRWjxSL1DvSTo5Jws88cFzemaRZ2x8z6O3STAcYpluhJ01Ekum8+
+         J/6FRlebJBBCJM1HKLxXKWdOCVz1QL0dtX4wzF1zq5/KRHBaobUVj4a/23Zdn9YkBFV9
+         smgzxwPZBEzdxFB4Oo7r9LfL4T3VMF3L4UXVtqFmvCAeRF4brFnVKz4GNc0juML54/h0
+         H+MYg9X2BReU3plyngVxTOd0Za/0X7PbZ2bZyyj9+rhhWlXJ+av9+k/aIPPAuHnQK1Rr
+         146Wu0u+y3ag1M8HQgsK40qVpX2MjGQ0kFgQqjEatRberIX9oJJgi5FTcsLYgUrddUET
+         8gIA==
+X-Forwarded-Encrypted: i=1; AJvYcCW43meG2w5WQEBMEM1GRqT2oHlPhWMXqvLWI+Fjdx/B3z+AZqv7lFS6L0F6RLCs6JM6oGEeNCLFGSg=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxYv9WEyCZXcazLbcDjJ5OXKTTZ2vWM4hTv5ev0uVyeYJ838bOQ
+	5uKxddX2fdroXqvPLj9Z7NGv+Vu9AzJaM3hI8mjlZ4pvJ5tbRHvFIaZhpiIfRXQ=
+X-Gm-Gg: ASbGncvrHZiYqTQU8lONdp9Yp79915C5xZprwYPV5rPzJpQzbbXTbrFiZUxiQLcvcpC
+	GbjlwYzphb44vijve9KyEJvToMYnyQ4IluPfdM6r0oV2ye9YbyK50Hqua/Ycu8tq/bdk4LY65Zh
+	tN9GlmcbwGQk8rkeRi2JvmmG1phYuwhkjQuguJPepPTOBqkHL8+6Wydhd0k/mh2JCW7KDG50SkZ
+	tS3zurup7k3PAeUbiuC2z5MaenX57VF0WYSWSYKkm5eHOMa7PotSSFZfkUESKcjZfctPj1Vvzbt
+	UBQjEBsGSo2s9NUYZXlRKrGbhE4TuxPPue5pUw0o3jMkkBCLAfKZ7Q==
+X-Google-Smtp-Source: AGHT+IFhcx40CPO1Woyn59Kqm0r2csraaIahBrV7s8VQeWauV/MiFRVCSNDB3Hhg8+uOA1i1mGPpqw==
+X-Received: by 2002:a17:906:e4a:b0:ac2:64e1:c75a with SMTP id a640c23a62f3a-ac264e1d275mr166691966b.45.1741362305221;
+        Fri, 07 Mar 2025 07:45:05 -0800 (PST)
 Received: from [192.168.0.14] ([79.115.63.206])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac239482f62sm287401066b.40.2025.03.07.07.42.30
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac239438955sm296532966b.19.2025.03.07.07.45.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Mar 2025 07:42:31 -0800 (PST)
-Message-ID: <6a384a1a-ec92-4688-a0d9-4118ebd667e2@linaro.org>
-Date: Fri, 7 Mar 2025 15:42:30 +0000
+        Fri, 07 Mar 2025 07:45:04 -0800 (PST)
+Message-ID: <48453010-560b-4985-a6e5-31401da24d62@linaro.org>
+Date: Fri, 7 Mar 2025 15:45:03 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/21] mtd: spinand: Use more specific naming for the
- get/set feature ops
+Subject: Re: [PATCH 05/21] mtd: spinand: Use more specific naming for the
+ erase op
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Santhosh Kumar K <s-k6@ti.com>
@@ -83,13 +82,13 @@ Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
  Steam Lin <stlin2@winbond.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 References: <20250307-winbond-6-14-rc1-octal-v1-0-45c1e074ad74@bootlin.com>
- <20250307-winbond-6-14-rc1-octal-v1-4-45c1e074ad74@bootlin.com>
+ <20250307-winbond-6-14-rc1-octal-v1-5-45c1e074ad74@bootlin.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20250307-winbond-6-14-rc1-octal-v1-4-45c1e074ad74@bootlin.com>
+In-Reply-To: <20250307-winbond-6-14-rc1-octal-v1-5-45c1e074ad74@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250307_074233_834395_7C3336F5 
-X-CRM114-Status: UNSURE (   8.23  )
+X-CRM114-CacheID: sfid-20250307_074507_106686_94D30AEB 
+X-CRM114-Status: UNSURE (   5.10  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -108,21 +107,8 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-
-On 3/7/25 3:08 PM, Miquel Raynal wrote:
-> SPI operations have been initially described through macros implicitly
-> implying the use of a single SPI SDR bus. Macros for supporting dual and
-> quad I/O transfers have been added on top, generally inspired by vendor
-> naming, followed by DTR operations. Soon we might see octal
-> and even octal DTR operations as well (including the opcode byte).
-> 
-> Let's clarify what the macro really mean by describing the expected bus
-> topology in the get/set feature macro names.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-this op is likely to extend, so:
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+If there's no chip erase for SPI NANDs, then keeping the name as it was
+makes more sense to me.
 
 ______________________________________________________
 Linux MTD discussion mailing list
