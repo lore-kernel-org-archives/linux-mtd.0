@@ -4,75 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47834C282EC
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Mar 2025 19:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C07EBC28B2F
+	for <linux-mtd@archiver.kernel.org>; Sun,  9 Mar 2025 15:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qjERdohOh4ya5rJq0pmGySw/zVGEhRUr93iR9A1govQ=; b=TzqoFlY4Hnyvk9
-	70ITvBIz/ti6pfZjM61ORC9bEZKctFWUluixsuYXOh1QYjEQqvg3FS0ee7wKEwtFGYmDAVSVZwmdc
-	HYg5Kf8ilb3q7UCcxhx+tHf/JtUD/8bzylHXG2eu3/BsiCWIHf5bjZRLrfpqi53ChuGc8lsGEvg1Z
-	QUdbQ8X0BeJmcaBjHA8W2Vv7slGGPQa6CMkmIQdScwUFHGbWw/QUoScUAR4JD/dAIkr8EKO4L7LlT
-	opyCdnTdMMcFssn+SrNu55fhv6+hQXi463kI7Ju0i7fDx1ufnXoiYOVNaB7ZB6O0S3V4Xi8d7MtvT
-	P9k4MZNj7lXd/+vCrlbQ==;
+	List-Owner; bh=qQjVoXWqudC6wsj/ynpE7fvk6zPpWfkcGajjUzgjrro=; b=ThmVGoQtn77L/e
+	Zuk3zEu9OiAReZCkYAjl7IuHa+sfjv0yld/kPg33hi6Gs5wHnf25MqAlqn1Y9yuqVAwkDerxVC1mZ
+	RRsvLUDlg4hc75bUmeGihZupSQS+qWeOLKpKd/5oslwlEiXmhoMu6gWi4AfrTCN2WA4akx8XxN+kE
+	Mv46mNsgJCuNBGi2sNnYodXeuDzruYNoRnYgVVlXqh/ZVLRMsVt55izmMEy6JdzpNx/Ovp5qttH7f
+	ZEI9aQNm9LJUWUONYWRaMRBNFrLtVz7IMGqJ6tDdCQP3eH6v6rJa6w/Gjlup6BYf4ktotL3K7iytl
+	D2kRbHZ7hCtpTMpmzUEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqzcj-0000000H5Wk-2dKW;
-	Sat, 08 Mar 2025 19:14:13 +0000
-Received: from mout01.posteo.de ([185.67.36.65])
+	id 1trItM-00000000l09-3dPE;
+	Sun, 09 Mar 2025 15:48:40 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqz6U-0000000H1ZN-39F4
+	id 1trItJ-00000000kzl-3Pfd
 	for linux-mtd@lists.infradead.org;
-	Sat, 08 Mar 2025 18:40:56 +0000
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id B0444240027
-	for <linux-mtd@lists.infradead.org>; Sat,  8 Mar 2025 19:40:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1741459248; bh=otfbaXRx0KCNwf5peLoJ1CCs5/Kof2zck2m5p70R2NE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:From;
-	b=mTBtVL1TWiC8G4clZSZq+BE6ABeCrUGM7K0jQBhRzIPo7NmAjPNhD0py6m7frpeLp
-	 PItpcLoQIg2hinHO/Z9QW3ARnQo/UIFRTVRWX/C3JZHSHrnskoLf1yJs7C1NsBwCbw
-	 KIABpO4Bgm7f/bVPvVjIDroJpUqd+3b4zHezCF6jBqKikmVHITZPVRwxdsBEkFl2gc
-	 wLX1gAz2/2B5ARv4uXa3Z30MEQ4dtIkh9cw7Va9JQcrBkoSzIzCgzdU61YitpynTM9
-	 grmeKFm6j45bnS4EMu5MPE0gDS4RAOHTxZS8x4ljAG9tlQuqEi3n393+TGJ+6flnsR
-	 eJ1XtRhmsfOtg==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4Z9Bmr3JbPz9rxB;
-	Sat,  8 Mar 2025 19:40:43 +0100 (CET)
-Date: Sat,  8 Mar 2025 18:40:43 +0000
-From: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
-To: Rob Herring <robh@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: =?utf-8?Q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>,
-	Richard Weinberger <richard@nod.at>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	Crystal Wood <oss@buserror.net>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	devicetree@vger.kernel.org, Frank Li <Frank.Li@nxp.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	linux-mtd@lists.infradead.org,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Naveen N Rao <naveen@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 2/3] dt-bindings: nand: Add fsl,elbc-fcm-nand
-Message-ID: <Z8yPKx1U-sT1OGeb@probook>
-References: <20250226-ppcyaml-elbc-v3-0-a90ed71da838@posteo.net>
- <20250226-ppcyaml-elbc-v3-2-a90ed71da838@posteo.net>
- <174059551678.3319332.12055848852503108874.robh@kernel.org>
- <20250303140021.GA1732495-robh@kernel.org>
+	Sun, 09 Mar 2025 15:48:39 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-2232aead377so70347705ad.0
+        for <linux-mtd@lists.infradead.org>; Sun, 09 Mar 2025 08:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741535316; x=1742140116; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DgWYE3yJh/lyMxOG1Kh3pm47EvZJ8tal8TpSNO72h98=;
+        b=P2v1a3rIdRIXjUBcInzPggLZhEyLUtnDJSqbGee/4/RTcOCNUmgQ51zph5skQrOcOi
+         cOdmIq3MJkD98q0QbI4j//SwAoMghLidNQC2MhEAx3hsLgpSFmKLetbb3qIqpck+LXSX
+         Xc1ULefE0UFftT/auj+VvWltnhYpvK4+KwmDSO07eN2XYLzDqnHtB+Gxp6CZTAS3ssWS
+         ltru75KcNEawN3ayPHLYuXhAFvISi+ZVlGXv8CAw/J5nSkU2aNojl0CYz9FIJRSQLmFt
+         5dQENHfcfdv8EXXfRnJ66Q8KfcuxAuG1prER5lVNs0FPsqrucA8SO186Qhbnw2yOvlkx
+         Jlig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741535316; x=1742140116;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DgWYE3yJh/lyMxOG1Kh3pm47EvZJ8tal8TpSNO72h98=;
+        b=aOKT0jkSI6T+6N/PnQL0UX5ivhFttmSmRxKmO8ZmPFmesVodKTkfcWyhDQejq2k89U
+         pzOh2r3G3AYtM93YLpjO8vbxmo2ppEhVLqRCcWw9veh79xX2gMC3CpzGevCpxvh6U4KS
+         4pEkMbrR/QKnKLegAKuNw+OCuThDhhx/yVF26hVAUNh8PwbVIAmT/O/EPlauIc7b6hZq
+         TA3EQBrbmYdExv6R/3KsOGz669nEU2TqBFjCKTdRoiZN81VIRFCE52PNaSFZwwXulPDj
+         dAE6jgH6y7ykf5SNAnwKvaKIT2kkm6RRlLYR9JNt6+sFaHiHbyyUPPxFze0XlgE+ATBG
+         RGWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX2z0y5Y7eA40zgGr4ptjUmxykUJLdFfkZoZ83vsmOfMduXNA7QF9+2Q+s82zcsrqKGrLoZ5AIgOaI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzIgELJuknz9eh6Y1reAaBljVMYwg4EXMKAhMckyuzV6osc/1Yd
+	8zqYG4sHbVH97lFfhiUPAIehfb/lNX7T/rASDlEmCTmQAvM+NaKi
+X-Gm-Gg: ASbGncvamVFWzR5U46D4fje4Y9ZyoVtj9hDdV1f39gQPKAsGqsFpzGR6+8xSxEYetrW
+	jZ9tZ1gBhnQ9LRhVOx0rirBQbtqWV5LvvvocM2skDpiIVKnLjMSqgwtbiubq2zo4OZUt6NiJf3t
+	s38UTmYCMjyqWZ9rizNbChanUduvnGyMt9hodJZ2AdE/8tSfbdqgzUZXzb5Pd4nxWgR4IAcC2YL
+	dDEgbkXiXFZE2NGgvvuFsI6oEn3BnCpa3p8wzEfSqo4W54dtoFXwReiklIKCzbDwfir/tURTGyJ
+	SKSfBRdcn6cpjfcSlYF6hoAtUMBp8ZlMPD02SqlLc+Vr+Lks/4aeh11lD35/Hq5j316K+A7S
+X-Google-Smtp-Source: AGHT+IEkPjdlZsP28acQWQx0Qye7i9usm3kNOW0i6DfYwW0Xas+u0oor8hXm2eg176ewgjMSRnRBqg==
+X-Received: by 2002:a05:6a20:4328:b0:1f3:4661:d19e with SMTP id adf61e73a8af0-1f544acd6ffmr16482561637.9.1741535316400;
+        Sun, 09 Mar 2025 08:48:36 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af2894e3cdasm5384249a12.24.2025.03.09.08.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Mar 2025 08:48:35 -0700 (PDT)
+Date: Sun, 9 Mar 2025 23:48:26 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: David Laight <david.laight.linux@gmail.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
+	akpm@linux-foundation.org, alistair@popple.id.au,
+	andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
+	arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
+	bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+	brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
+	davem@davemloft.net, dmitry.torokhov@gmail.com,
+	dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
+	edumazet@google.com, eleanor15x@gmail.com,
+	gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
+	jernej.skrabec@gmail.com, jirislaby@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se,
+	jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux@rasmusvillemoes.dk, louis.peens@corigine.com,
+	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
+	mingo@redhat.com, miquel.raynal@bootlin.com, mripard@kernel.org,
+	neil.armstrong@linaro.org, netdev@vger.kernel.org,
+	oss-drivers@corigine.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, rfoss@kernel.org,
+	richard@nod.at, simona@ffwll.ch, tglx@linutronix.de,
+	tzimmermann@suse.de, vigneshr@ti.com, x86@kernel.org,
+	yury.norov@gmail.com
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+Message-ID: <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name>
+References: <4732F6F6-1D41-4E3F-BE24-E54489BC699C@zytor.com>
+ <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
+ <5A790652-1B22-4D13-AAC5-5D9931E90903@zytor.com>
+ <20250307195310.58abff8c@pumpkin>
+ <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250303140021.GA1732495-robh@kernel.org>
+In-Reply-To: <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250308_104055_079326_6D72B3FA 
-X-CRM114-Status: GOOD (  21.92  )
+X-CRM114-CacheID: sfid-20250309_084837_855533_DE86C573 
+X-CRM114-Status: GOOD (  25.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,51 +121,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TWlxdWVsLCB3aGF0IGRvIHlvdSB0aGluayBhYm91dCBSb2IncyBzdWdnZXN0aW9uIGJlbG93PwoK
-T24gTW9uLCBNYXIgMDMsIDIwMjUgYXQgMDg6MDA6MjFBTSAtMDYwMCwgUm9iIEhlcnJpbmcgd3Jv
-dGU6Cj4gT24gV2VkLCBGZWIgMjYsIDIwMjUgYXQgMTI6NDU6MTdQTSAtMDYwMCwgUm9iIEhlcnJp
-bmcgKEFybSkgd3JvdGU6Cj4gPiAKPiA+IE9uIFdlZCwgMjYgRmViIDIwMjUgMTg6MDE6NDEgKzAx
-MDAsIEouIE5ldXNjaMOkZmVyIHdyb3RlOgo+ID4gPiBGb3JtYWxpemUgdGhlIGJpbmRpbmcgYWxy
-ZWFkeSBzdXBwb3J0ZWQgYnkgdGhlIGZzbF9lbGJjX25hbmQuYyBkcml2ZXIKPiA+ID4gYW5kIHVz
-ZWQgaW4gc2V2ZXJhbCBkZXZpY2UgdHJlZXMgaW4gYXJjaC9wb3dlcnBjL2Jvb3QvZHRzLy4KPiA+
-ID4gCj4gPiA+IHJhdy1uYW5kLWNoaXAueWFtbCBpcyByZWZlcmVuY2VkIGluIG9yZGVyIHRvIGFj
-Y29tbW9kYXRlIHNpdHVhdGlvbnMgaW4KPiA+ID4gd2hpY2ggdGhlIEVDQyBwYXJhbWV0ZXJzIHNl
-dHRpbmdzIGFyZSBzZXQgaW4gdGhlIGRldmljZSB0cmVlLiBPbmUgc3VjaAo+ID4gPiBleGFtcGxl
-IGlzIGluIGFyY2gvcG93ZXJwYy9ib290L2R0cy90dXJyaXMxeC5kdHM6Cj4gPiA+IAo+ID4gPiAJ
-LyogTVQyOUYyRzA4QUJBRUFXUDpFIE5BTkQgKi8KPiA+ID4gCW5hbmRAMSwwIHsKPiA+ID4gCQlj
-b21wYXRpYmxlID0gImZzbCxwMjAyMC1mY20tbmFuZCIsICJmc2wsZWxiYy1mY20tbmFuZCI7Cj4g
-PiA+IAkJcmVnID0gPDB4MSAweDAgMHgwMDA0MDAwMD47Cj4gPiA+IAkJbmFuZC1lY2MtbW9kZSA9
-ICJzb2Z0IjsKPiA+ID4gCQluYW5kLWVjYy1hbGdvID0gImJjaCI7Cj4gPiA+IAo+ID4gPiAJCXBh
-cnRpdGlvbnMgeyAuLi4gfTsKPiA+ID4gCX07Cj4gPiA+IAo+ID4gPiBSZXZpZXdlZC1ieTogRnJh
-bmsgTGkgPEZyYW5rLkxpQG54cC5jb20+Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IEouIE5ldXNjaMOk
-ZmVyIDxqLm5lQHBvc3Rlby5uZXQ+Cj4gPiA+IC0tLQo+ID4gPiAKPiA+ID4gVjM6Cj4gPiA+IC0g
-cmVtb3ZlIHVubmVjZXNzYXJ5ICNhZGRyZXNzL3NpemUtY2VsbHMgZnJvbSBuYW5kIG5vZGUgaW4g
-ZXhhbXBsZQo+ID4gPiAtIGFkZCBGcmFuayBMaSdzIHJldmlldyB0YWcKPiA+ID4gLSBhZGQgbWlz
-c2luZyBlbmQgb2YgZG9jdW1lbnQgbWFya2VyICguLi4pCj4gPiA+IC0gZXhwbGFpbiBjaG9pY2Ug
-dG8gcmVmZXJlbmNlIHJhdy1uYW5kLWNoaXAueWFtbAo+ID4gPiAKPiA+ID4gVjI6Cj4gPiA+IC0g
-c3BsaXQgb3V0IGZyb20gZnNsLGVsYmMgYmluZGluZyBwYXRjaAo+ID4gPiAtIGNvbnN0cmFpbiAj
-YWRkcmVzcy1jZWxscyBhbmQgI3NpemUtY2VsbHMKPiA+ID4gLSBhZGQgYSBnZW5lcmFsIGRlc2Ny
-aXB0aW9uCj4gPiA+IC0gdXNlIHVuZXZhbHVhdGVkUHJvcGVydGllcz1mYWxzZSBpbnN0ZWFkIG9m
-IGFkZGl0aW9uYWxQcm9wZXJ0aWVzPWZhbHNlCj4gPiA+IC0gZml4IHByb3BlcnR5IG9yZGVyIHRv
-IGNvbXBseSB3aXRoIGR0cyBjb2Rpbmcgc3R5bGUKPiA+ID4gLSBpbmNsdWRlIHJhdy1uYW5kLWNo
-aXAueWFtbCBpbnN0ZWFkIG9mIG5hbmQtY2hpcC55YW1sCj4gPiA+IC0tLQo+ID4gPiAgLi4uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbXRkL2ZzbCxlbGJjLWZjbS1uYW5kLnlhbWwgfCA2OCArKysrKysr
-KysrKysrKysrKysrKysrCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNjggaW5zZXJ0aW9ucygrKQo+
-ID4gPiAKPiA+IAo+ID4gTXkgYm90IGZvdW5kIGVycm9ycyBydW5uaW5nICdtYWtlIGR0X2JpbmRp
-bmdfY2hlY2snIG9uIHlvdXIgcGF0Y2g6Cj4gPiAKPiA+IHlhbWxsaW50IHdhcm5pbmdzL2Vycm9y
-czoKPiA+IAo+ID4gZHRzY2hlbWEvZHRjIHdhcm5pbmdzL2Vycm9yczoKPiA+IC9idWlsZHMvcm9i
-aGVycmluZy9kdC1yZXZpZXctY2kvbGludXgvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL210ZC9mc2wsZWxiYy1mY20tbmFuZC5leGFtcGxlLmR0YjogbmFuZEAxLDA6ICRub2RlbmFt
-ZTowOiAnbmFuZEAxLDAnIGRvZXMgbm90IG1hdGNoICdebmFuZEBbYS1mMC05XSQnCj4gPiAJZnJv
-bSBzY2hlbWEgJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvZnNsLGVsYmMt
-ZmNtLW5hbmQueWFtbCMKPiAKPiBEcm9wIHRoZSB1bml0IGFkZHJlc3MgaW4gcmF3LW5hbmQtY2hp
-cC55YW1sLiBTbzogCj4gCj4gcHJvcGVydGllczoKPiAgICRub2RlbmFtZToKPiAgICAgcGF0dGVy
-bjogIl5uYW5kQCIKPiAKCl5eXgoKCgpCZXN0IFJlZ2FyZHMsCkouIE5ldXNjaMOkZmVyCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, Mar 07, 2025 at 12:07:02PM -0800, H. Peter Anvin wrote:
+> On March 7, 2025 11:53:10 AM PST, David Laight <david.laight.linux@gmail.com> wrote:
+> >On Fri, 07 Mar 2025 11:30:35 -0800
+> >"H. Peter Anvin" <hpa@zytor.com> wrote:
+> >
+> >> On March 7, 2025 10:49:56 AM PST, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+> >> >> (int)true most definitely is guaranteed to be 1.  
+> >> >
+> >> >That's not technically correct any more.
+> >> >
+> >> >GCC has introduced hardened bools that intentionally have bit patterns
+> >> >other than 0 and 1.
+> >> >
+> >> >https://gcc.gnu.org/gcc-14/changes.html
+> >> >
+> >> >~Andrew  
+> >> 
+> >> Bit patterns in memory maybe (not that I can see the Linux kernel using them) but
+> >> for compiler-generated conversations that's still a given, or the manager isn't C
+> >> or anything even remotely like it.
+> >> 
+> >
+> >The whole idea of 'bool' is pretty much broken by design.
+> >The underlying problem is that values other than 'true' and 'false' can
+> >always get into 'bool' variables.
+> >
+> >Once that has happened it is all fubar.
+> >
+> >Trying to sanitise a value with (say):
+> >int f(bool v)
+> >{
+> >	return (int)v & 1;
+> >}    
+> >just doesn't work (see https://www.godbolt.org/z/MEndP3q9j)
+> >
+> >I really don't see how using (say) 0xaa and 0x55 helps.
+> >What happens if the value is wrong? a trap or exception?, good luck recovering
+> >from that.
+> >
+> >	David
+> 
+> Did you just discover GIGO?
+
+Thanks for all the suggestions.
+
+I don't have a strong opinion on the naming or return type. I'm still a
+bit confused about whether I can assume that casting bool to int always
+results in 0 or 1.
+
+If that's the case, since most people prefer bool over int as the
+return type and some are against introducing u1, my current plan is to
+use the following in the next version:
+
+bool parity_odd(u64 val);
+
+This keeps the bool return type, renames the function for better
+clarity, and avoids extra maintenance burden by having just one
+function.
+
+If I can't assume that casting bool to int always results in 0 or 1,
+would it be acceptable to keep the return type as int?
+
+Would this work for everyone?
+
+Regards,
+Kuan-Wei
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
