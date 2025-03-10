@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE92AC2BA1B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE978C35FF2
 	for <linux-mtd@archiver.kernel.org>; Mon, 10 Mar 2025 12:18:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,55 +12,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PfZw9qGBYBnveZD3Q/9V1XVJc8CwuoOMYU5hAu6WrDs=; b=Rtf6mfZSpK1e1U
-	x5mzBaW4dzhkT4QKFVZEHS076arKuuGiK9lsS66F3ZCPfvqqdlL4UouePYcCfIEFFHd73BODOmIXx
-	8ek/NMiHRiWxNOTCE/WolHuytram9VET4BIuS2SGyc3eMAsavT+FFN+rPUC/qi0qe/YwMdG+ELQu1
-	/wL/qpakehvSAdmP0zH1zrGQ9aDVSSRuX7uDc8NVxILxAIRAprjuhP2O8iN8RdJKjMokR23I+bAx8
-	pNFeUNBIrqon/QzIS/4dK/MX0nLHHRzDd505yb7qG9zUDnk5nurPPikc98rPiKLz8/OYxOvcbmqyR
-	8FdMTDnQHdESyfbvrMVg==;
+	List-Owner; bh=s1tUgDwQA1ghMNlgpLwCur2KA8ahTt6OxOifo6MvipA=; b=Uk0CLxYqpSdgaC
+	GwOwl5Yr9OeXaU9E0GHYO207VeuLtoQZrmA1mUhTonMWw+sL2yHi+bcSN6Cpk/D6w09I6MWWOWqiE
+	1zLRkXK8yrPrW7k+UuwVaMWQ7b02w5LcS8KfejXoCMwSh2UFaZtsep4jc7f8uF1/Sxlloi4W3C8ff
+	cYidxjecAB6hCtQrdxkMR5rlXylXhOEdlpduBF17xqoNtWpoowks0XajHnGvOCIX6zzLoTyT7q+Su
+	7b8B0L/+B/SFF/5FPByQNZfYqstpFI0ekPS1at7UxyaJKy/hBZOlfSr7HbreNyro36hd5BdrO3lk4
+	m41996vX++L/z+YWoeeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1trc5i-00000002Zs9-02y2;
-	Mon, 10 Mar 2025 12:18:42 +0000
+	id 1trc5g-00000002ZrW-1twF;
+	Mon, 10 Mar 2025 12:18:40 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1trbx1-00000002XpG-346i
+	id 1trbwr-00000002XmR-3bFc
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Mar 2025 12:09:44 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52A9ujwq024744;
-	Mon, 10 Mar 2025 12:09:37 GMT
+	Mon, 10 Mar 2025 12:09:35 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52A8m2Lu027354;
+	Mon, 10 Mar 2025 12:09:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	zrTnM0Fve5fUTlJHvpQwbTFY+eg/oU2A5W1AzhdIjpw=; b=Qi0f11iaA0UGtZkN
-	6N/bz2oZGnbvjvIYEm670iXYSM22zjRNUT6EcdY7xBaVVM9/8f6yIpUNcE3zR3sL
-	jULrzsPeN51ELMrCrK4sMb6t2jNQ8+q3BV9wor7YYz/DhaFx50jkUiPcWx9A8y8F
-	qPKwtFdS21s+jcElByTVmIlcxkd3bq/BED1W2gqsFn2UEi+TYGhuJ0+8zLS34CtT
-	tyBRnLQFgDVYX+NyKRykSDHe3NjpHjrXQIftEOXZVu0U0XwQ8zAciy47XrdQcY7I
-	iybkv5L5QZlKBfEgMOI+464TpZJu8sdbp5Gsw/fb9Wj1IgtT9yVrozQHwRuYcd4u
-	Ie88Tg==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 458f2mcqxf-1
+	adN+4ikcEN3NAUucAWLR4IlKG1TfU+4qY+hNlC2pQdc=; b=Ps4eWNJiUZGalMzc
+	W//N8eNrpQCMe3+Rdjg7/g+4l4Z8GtJ7WjT5SkSGW8Q2iz6RjlvGxJ1qcZiCC6wP
+	KqhQcArqxTFjoldQUhW7Zsx1o6tIRRyLEm7hQmD1Z2Mb50f8D4XmWsuPhzTvOiiD
+	nc9wWohMjc4OaRTFMKCxs13yAeBDhTUF406pX4YS1ueAGmrU5MIz0DOki5FQHFbl
+	w9Hp+fyqVjsOXHlCEUq7jh07ZNJfojb1FtnZcj5bKHyScZQo66P191lEqz+X10i2
+	SbIqodXq6+Yl3LiGdWo/TavNYDeqZJqQH8A2OHX4VhTUw4SMB4T4O+jVXr3xPmA5
+	V5/qow==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 458f6actcw-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 10 Mar 2025 12:09:37 +0000 (GMT)
+	Mon, 10 Mar 2025 12:09:27 +0000 (GMT)
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 52AC9b0B024931
+	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 52AC9RI4011451
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 10 Mar 2025 12:09:37 GMT
+	Mon, 10 Mar 2025 12:09:27 GMT
 Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 10 Mar 2025 05:09:34 -0700
+ 15.2.1544.9; Mon, 10 Mar 2025 05:09:24 -0700
 From: Md Sadre Alam <quic_mdalam@quicinc.com>
 To: <manivannan.sadhasivam@linaro.org>, <miquel.raynal@bootlin.com>,
         <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
         <bbrezillon@kernel.org>, <linux-mtd@lists.infradead.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-spi@vger.kernel.org>
-Subject: [PATCH v3 4/4] spi: spi-qpic-snand: set nandc_offset for ipq9574
-Date: Mon, 10 Mar 2025 17:39:06 +0530
-Message-ID: <20250310120906.1577292-5-quic_mdalam@quicinc.com>
+Subject: [PATCH v3 1/4] mtd: rawnand: qcom: Pass 18 bit offset from QPIC base address to BAM
+Date: Mon, 10 Mar 2025 17:39:03 +0530
+Message-ID: <20250310120906.1577292-2-quic_mdalam@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250310120906.1577292-1-quic_mdalam@quicinc.com>
 References: <20250310120906.1577292-1-quic_mdalam@quicinc.com>
@@ -70,21 +70,22 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gLsQJTIzA5iegtj2Gj6I81OeBN4tKBcR
-X-Proofpoint-ORIG-GUID: gLsQJTIzA5iegtj2Gj6I81OeBN4tKBcR
-X-Authority-Analysis: v=2.4 cv=ab+bnQot c=1 sm=1 tr=0 ts=67ced681 cx=c_pps a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17 a=GEpy-HfZoHoA:10 a=Vs1iUdzkB0EA:10 a=COk6AnOGAAAA:8 a=PIZUERMwkWLMlXSLb_cA:9 a=TjNXssC_j7lpFel5tvFf:22
+X-Authority-Analysis: v=2.4 cv=WsDRMcfv c=1 sm=1 tr=0 ts=67ced678 cx=c_pps a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17 a=GEpy-HfZoHoA:10 a=Vs1iUdzkB0EA:10 a=VwQbUJbxAAAA:8 a=COk6AnOGAAAA:8 a=ftwAy63A9X0dtpR3FuYA:9
+ a=TjNXssC_j7lpFel5tvFf:22
+X-Proofpoint-GUID: pBTgiuc2HvEDG6vqffZlw-CwldyI3vfk
+X-Proofpoint-ORIG-GUID: pBTgiuc2HvEDG6vqffZlw-CwldyI3vfk
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-03-10_05,2025-03-07_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- mlxscore=0 impostorscore=0 phishscore=0 clxscore=1015 spamscore=0
- adultscore=0 suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ impostorscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011
+ spamscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
  definitions=main-2503100096
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250310_050943_773272_95F1437F 
-X-CRM114-Status: GOOD (  11.61  )
+X-CRM114-CacheID: sfid-20250310_050933_901992_08927A0F 
+X-CRM114-Status: GOOD (  18.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,42 +102,118 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The BAM block expects NAND register addresses to be computed based on
-the NAND register offset from QPIC base. This value is 0x30000 for
-ipq9574. Update the 'nandc_offset' value in the qcom_nandc_props
-appropriately.
+Currently we are configuring lower 24 bits of address in descriptor
+whereas QPIC design expects 18 bit register offset from QPIC base
+address to be configured in cmd descriptors. This is leading to a
+different address actually being used in HW, leading to wrong value
+read.
 
+the actual issue is that the NANDc base address is different from the
+QPIC base address. But the driver doesn't take it into account and just
+used the QPIC base as the NANDc base. This used to work as the NANDc IP
+only considers the lower 18 bits of the address passed by the driver to
+derive the register offset. Since the base address of QPIC used to contain
+all 0 for lower 18 bits (like 0x07980000), the driver ended up passing the
+actual register offset in it and NANDc worked properly. But on newer SoCs
+like SDX75, the QPIC base address doesn't contain all 0 for lower 18 bits
+(like 0x01C98000). So NANDc sees wrong offset as per the current logic
+
+The address should be passed to BAM 0x30000 + offset. In older targets
+the lower 18-bits are zero so that correct address being paased. But
+in newer targets the lower 18-bits are non-zero in QPIC base so that
+0x300000 + offset giving the wrong value.
+
+SDX75 : QPIC_QPIC | 0x01C98000 (Lower 18 bits are non zero)
+SDX55 : QPIC_QPIC | 0x1B00000 (Lower 18 bits are zero) Same for
+older targets.
+
+Cc: stable@vger.kernel.org
+Fixes: 8d6b6d7e135e ("mtd: nand: qcom: support for command descriptor formation")
+Tested-by: Lakshmi Sowjanya D <quic_laksd@quicinc.com>
 Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 ---
 
 Change in [v3]
 
-* Added nand_offset for proper address calculation
-  for newer Socs
+* Updated commit message
+* Removed dev_cmd_reg_start = 0 , which
+  was wrongely got added
 
 Change in [v2]
 
-* This patch was not part of v2
+* Updated commit message
+
+* Added Fixes tag
+
+* Added stable kernel tag
+
+* Renamed the variable from offset_from_qpic to nandc_offset
 
 Change in [v1]
 
-* This patch was not part of v1
+* Preliminary correction for the register address forwarded to BAM
 
- drivers/spi/spi-qpic-snand.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/qcom_nandc.c    | 4 ++++
+ include/linux/mtd/nand-qpic-common.h | 3 ++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 8c413a6a5152..85a742e21cf9 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -1604,6 +1604,7 @@ static void qcom_spi_remove(struct platform_device *pdev)
- static const struct qcom_nandc_props ipq9574_snandc_props = {
- 	.dev_cmd_reg_start = 0x7000,
- 	.supports_bam = true,
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 5eaa0be367cd..5443cb918e0b 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2360,6 +2360,7 @@ static const struct qcom_nandc_props ipq806x_nandc_props = {
+ 	.supports_bam = false,
+ 	.use_codeword_fixup = true,
+ 	.dev_cmd_reg_start = 0x0,
 +	.nandc_offset = 0x30000,
  };
  
- static const struct of_device_id qcom_snandc_of_match[] = {
+ static const struct qcom_nandc_props ipq4019_nandc_props = {
+@@ -2367,6 +2368,7 @@ static const struct qcom_nandc_props ipq4019_nandc_props = {
+ 	.supports_bam = true,
+ 	.nandc_part_of_qpic = true,
+ 	.dev_cmd_reg_start = 0x0,
++	.nandc_offset = 0x30000,
+ };
+ 
+ static const struct qcom_nandc_props ipq8074_nandc_props = {
+@@ -2374,6 +2376,7 @@ static const struct qcom_nandc_props ipq8074_nandc_props = {
+ 	.supports_bam = true,
+ 	.nandc_part_of_qpic = true,
+ 	.dev_cmd_reg_start = 0x7000,
++	.nandc_offset = 0x30000,
+ };
+ 
+ static const struct qcom_nandc_props sdx55_nandc_props = {
+@@ -2382,6 +2385,7 @@ static const struct qcom_nandc_props sdx55_nandc_props = {
+ 	.nandc_part_of_qpic = true,
+ 	.qpic_version2 = true,
+ 	.dev_cmd_reg_start = 0x7000,
++	.nandc_offset = 0x30000,
+ };
+ 
+ /*
+diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nand-qpic-common.h
+index cd7172e6c1bb..6268f08b9d19 100644
+--- a/include/linux/mtd/nand-qpic-common.h
++++ b/include/linux/mtd/nand-qpic-common.h
+@@ -200,7 +200,7 @@
+ #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
+ 
+ /* Returns the NAND register physical address */
+-#define nandc_reg_phys(chip, offset) ((chip)->base_phys + (offset))
++#define nandc_reg_phys(chip, offset)  ((nandc)->props->nandc_offset + (offset))
+ 
+ /* Returns the dma address for reg read buffer */
+ #define reg_buf_dma_addr(chip, vaddr) \
+@@ -458,6 +458,7 @@ struct qcom_nandc_props {
+ 	bool nandc_part_of_qpic;
+ 	bool qpic_version2;
+ 	bool use_codeword_fixup;
++	u32 nandc_offset;
+ };
+ 
+ void qcom_free_bam_transaction(struct qcom_nand_controller *nandc);
 -- 
 2.34.1
 
