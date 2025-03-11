@@ -4,63 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05D24C282EC
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Mar 2025 15:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CBE9C282EC
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Mar 2025 22:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XZdgK6bylx/C83oov8eem1X/9xTbjp7wqzQzLF/Ohk8=; b=y+OaL7+hek7cr1
-	VEG5VG8CHm3OzOVj2yhvht1bzLSapCua6m8ihxEOH2PU4to6e8N6Yvi1mBeuiTflys5eOyk67yZ7d
-	dFDrqm+7QcsWNULTQBOdD0yCd1ibbhkb02SxSzL+/YN3ZpwZBPzJSmChsG5aEMjQmVewUKqif+/uS
-	9q5+kEmrtLaU3kJTAa3Knu2Yc1ydFOyXDZuJqQ51GYizrspN6Wzozgx+3FWO8d0ELFQKqsqcUsl7e
-	59Ebldb1kmaSXXegnWk3+1tEKM1IBt+pr/HjlnRkXYxHSKFzRr7ong6yw4TmWV9MzE2cW1CAOohSC
-	dzzvhCvCGGDfYBwfRjRQ==;
+	List-Owner; bh=Udl1S9mpuZD3wCftB2Zy8ApYlPSqnbWfz/O8Q+7bXhg=; b=GDhwgPti75mzag
+	VyL+uEBNVSmtNxmHt69hwOHDWYTfEb79pMyP5O/eaMhZ4ic5pUYFze9N6ciIVXVCIuzUg0f1cMUB4
+	hoaUmgAdFOheEd7ZWO0MwOXuXJpKcea538nVDVNEYZc4ybtnXcazvDyYdQKPVAJ4jSXGKhBza/hBl
+	xFKOk5ZFzNWVGICykj5V1yNr57vAzgnomlhO3Z5YCvO6e7LaJ7XVb27SHyfh4OP4/hM1Sulz/txtj
+	/BSL0m8MhrlTyPkQIzYlVgFzpFUmEpenLZVSLWrMCV3Bejuz7ys7CBrYnwo2e1hF7NFYRNs6B+QJY
+	C1Ok+Md8lVpLFEJAbxkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ts1nS-00000006C0p-3veR;
-	Tue, 11 Mar 2025 15:45:34 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1ts7ge-000000074FK-2MA1;
+	Tue, 11 Mar 2025 22:02:56 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ts1kf-00000006Bbv-3car;
-	Tue, 11 Mar 2025 15:42:43 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 66ED15C65BA;
-	Tue, 11 Mar 2025 15:40:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CA09C4CEE9;
-	Tue, 11 Mar 2025 15:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741707760;
-	bh=89x/1qxFEYxTYOSIdKWCTAJ1qovLRzV2USmp6ofGHfM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mL82uFWAHCdJRJBYb8f9ZwLNXMqPJpCpj6b7iIzW8FGvpC9GTgrOAVvdt6lsimhXq
-	 Pm7SHQxPJglKWFH2SWxlNakL6yg8TmAJRtKywXfGNvrd/Ur8LSaWk6E7wJf1qQH+Cn
-	 9XQuAg3+ggBfO45YbCP1ncGJwCh/d/NRSGa5zi0swfZs2pOmTiGNATf5bamuA5VBye
-	 0fB2rvEgNUisq8vBIqUrw6vjKg6noLgKMT5/JUmRepWirYThFoiFIctnTZ8iGWtedS
-	 fwhEXvJ9GLKC+Di7MnyrIsUg7/8TAQn3XxvK4AF1/XYwxq9jF8H4Jbf8RFHnn5lQph
-	 wHMNgF9iblMmA==
-Date: Tue, 11 Mar 2025 10:42:39 -0500
-From: Rob Herring <robh@kernel.org>
-To: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	krzk+dt@kernel.org, conor+dt@kernel.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, krzysztof.kozlowski+dt@linaro.org,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] dt-bindings: mtd: atmel-nand: add legacy nand
- controllers
-Message-ID: <20250311154239.GB3573545-robh@kernel.org>
-References: <20250311122847.90081-1-balamanikandan.gunasundar@microchip.com>
- <20250311122847.90081-4-balamanikandan.gunasundar@microchip.com>
+	id 1ts7fL-0000000744Z-3r43
+	for linux-mtd@lists.infradead.org;
+	Tue, 11 Mar 2025 22:01:37 +0000
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-223fd89d036so117866515ad.1
+        for <linux-mtd@lists.infradead.org>; Tue, 11 Mar 2025 15:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741730494; x=1742335294; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4nGdnQu24c+EnZ9jURP8a6eRlAbk5SN0M0qMNjAtkzg=;
+        b=do/sEy/fhIk/l6wxrXcYnsLasDdcjSYKs04MA9l3s3Q+IPqAyXtCD50vJq2ZoayoKm
+         7y8NxEmvXtaAM4bB9RF9PolohsYTSpw17VDU0dIa/974MQD5aGpFgnKKIUmdkgAb3JNZ
+         D6e3zR+f3hTBn/dltv56ze+lwDpwWhgpNOVIH1i64x5W/QaIzxtXEdkwdej8uL7su1L+
+         zzUX/IPro6rKyhzIYIVwdiX50WihIcXQ7oUNTmjjxLzQgEG+38q/mprAi5rxrz2MduKg
+         X/W7gBMlxpHxW/A4Fj3c5KSJzqQG9jV1p01EUoyvTc4yngwZtOXdfGNq9NoPyfPs5IWB
+         p+Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741730494; x=1742335294;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4nGdnQu24c+EnZ9jURP8a6eRlAbk5SN0M0qMNjAtkzg=;
+        b=eI6IiAPZJYnSYQIN2G8IM32jM6mgyDfEYgQgjQSy5fXGeBdX2jqHqFTAq7OttpFZ7j
+         rDN7rIMWy4goiPmH/baR55cWWTsjf0xczdGmRbHVAFxShlly4uoQeKgqpcP4dgl2Byt3
+         CIEaL9IhNS2jvbZK0c5OvOFrLfRLCNtCDNu/MN2o7qe+eSbQ+4m7C0VxajKlJwYACKCO
+         h0ynmFiVqEqVBawXOLSZHc3pV/WNpHl2G429JK10P9bV1EMGSg3zW4UD3tzemdTHhNdD
+         LkgQ41MzPco47ILGlFr4ZbJcWFQRvw9fWfhh0cWGSiOwDohIuZF02D77kHYb4J2Loof0
+         iKZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUH2zMHS/aBDGo3h+G8Qqj7XMaS3HfpV2heYpDac9nYQ9x0vpHaHc+75Ct0mnBwQgqa+JmgKXnhGAE=@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywps2PW2LLF2sDI2R1MMiW++CFz8ou+3d6K2J0z/S248IMYwyIf
+	2HmH2Khm1UoCRZPONWxJho62MWKsrNroaAMgpLvRw/pR1N3nGO1+
+X-Gm-Gg: ASbGncv1giTv71/KFci/R7R2QcyiNR/k9r5MvvABI3femXhNlFxAoYF8CI6Sh+MFHfa
+	gWVbQhaO0qXOgV2NFhyiOkCgTIGDKkd4jE+g0CyAzmkjSx3TzwcuoRiNqB/QvriIwICQiprMb7i
+	eiejW+ewXD/0a8mnF/vr6vYO6HEgVj/wvx0dkgr7j4frcXpFL/dd7uDmFZJORZBna4CmS0IwtJY
+	oDv8c5S2/AB2GsfaCwzyANVnaIWINuO5lIPZZFneUKWplc4CRQ9ZPA2qSUVROsji36TyF7QA7CP
+	j9l0stLSwwnMQvYL5yhm0UI6nEtdO8X20IIITqNp8mPoaz3Ra88na4s=
+X-Google-Smtp-Source: AGHT+IHfvnoVJgHMih9pvYSUsyOoOI7rh3JUtGAJjtASiqZVTFfrJXIMw23oGqwW4/w5VR3B4dwAMw==
+X-Received: by 2002:a17:903:32ce:b0:223:4b8d:32f1 with SMTP id d9443c01a7336-22428882233mr316949475ad.1.1741730493639;
+        Tue, 11 Mar 2025 15:01:33 -0700 (PDT)
+Received: from localhost ([216.228.125.130])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-736ded451c1sm4125755b3a.119.2025.03.11.15.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Mar 2025 15:01:32 -0700 (PDT)
+Date: Tue, 11 Mar 2025 18:01:30 -0400
+From: Yury Norov <yury.norov@gmail.com>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>,
+	David Laight <david.laight.linux@gmail.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
+	akpm@linux-foundation.org, alistair@popple.id.au,
+	andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
+	arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
+	bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+	brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
+	davem@davemloft.net, dmitry.torokhov@gmail.com,
+	dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
+	edumazet@google.com, eleanor15x@gmail.com,
+	gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
+	jernej.skrabec@gmail.com, jirislaby@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se,
+	jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux@rasmusvillemoes.dk, louis.peens@corigine.com,
+	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
+	mingo@redhat.com, miquel.raynal@bootlin.com, mripard@kernel.org,
+	neil.armstrong@linaro.org, netdev@vger.kernel.org,
+	oss-drivers@corigine.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, rfoss@kernel.org,
+	richard@nod.at, simona@ffwll.ch, tglx@linutronix.de,
+	tzimmermann@suse.de, vigneshr@ti.com, x86@kernel.org
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+Message-ID: <Z9CyuowYsZyez36c@thinkpad>
+References: <4732F6F6-1D41-4E3F-BE24-E54489BC699C@zytor.com>
+ <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
+ <5A790652-1B22-4D13-AAC5-5D9931E90903@zytor.com>
+ <20250307195310.58abff8c@pumpkin>
+ <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
+ <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250311122847.90081-4-balamanikandan.gunasundar@microchip.com>
+In-Reply-To: <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250311_084242_020702_625684DD 
-X-CRM114-Status: GOOD (  39.33  )
+X-CRM114-CacheID: sfid-20250311_150135_956683_C36975C9 
+X-CRM114-Status: GOOD (  33.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,359 +127,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Mar 11, 2025 at 05:58:47PM +0530, Balamanikandan Gunasundar wrote:
-> Add support for atmel legacy nand controllers. These bindings should not be
-> used with the new device trees.
+On Sun, Mar 09, 2025 at 11:48:26PM +0800, Kuan-Wei Chiu wrote:
+> On Fri, Mar 07, 2025 at 12:07:02PM -0800, H. Peter Anvin wrote:
+> > On March 7, 2025 11:53:10 AM PST, David Laight <david.laight.linux@gmail.com> wrote:
+> > >On Fri, 07 Mar 2025 11:30:35 -0800
+> > >"H. Peter Anvin" <hpa@zytor.com> wrote:
+> > >
+> > >> On March 7, 2025 10:49:56 AM PST, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+> > >> >> (int)true most definitely is guaranteed to be 1.  
+> > >> >
+> > >> >That's not technically correct any more.
+> > >> >
+> > >> >GCC has introduced hardened bools that intentionally have bit patterns
+> > >> >other than 0 and 1.
+> > >> >
+> > >> >https://gcc.gnu.org/gcc-14/changes.html
+> > >> >
+> > >> >~Andrew  
+> > >> 
+> > >> Bit patterns in memory maybe (not that I can see the Linux kernel using them) but
+> > >> for compiler-generated conversations that's still a given, or the manager isn't C
+> > >> or anything even remotely like it.
+> > >> 
+> > >
+> > >The whole idea of 'bool' is pretty much broken by design.
+> > >The underlying problem is that values other than 'true' and 'false' can
+> > >always get into 'bool' variables.
+> > >
+> > >Once that has happened it is all fubar.
+> > >
+> > >Trying to sanitise a value with (say):
+> > >int f(bool v)
+> > >{
+> > >	return (int)v & 1;
+> > >}    
+> > >just doesn't work (see https://www.godbolt.org/z/MEndP3q9j)
+> > >
+> > >I really don't see how using (say) 0xaa and 0x55 helps.
+> > >What happens if the value is wrong? a trap or exception?, good luck recovering
+> > >from that.
+> > >
+> > >	David
+> > 
+> > Did you just discover GIGO?
 > 
-> Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-> ---
+> Thanks for all the suggestions.
 > 
-> Changes in v2:
+> I don't have a strong opinion on the naming or return type. I'm still a
+> bit confused about whether I can assume that casting bool to int always
+> results in 0 or 1.
 > 
-> - Filename matching the compatibles
-> - Remove "bindings" from the subject
-> - Remove "deprecated" as these are the only bindings available for the devices
-> - Add missing constraints.
-> - Add default for nand-ecc-mode
-> - Add 32 in pmecc-cap for sama5d2
-> - Add default for sector-size, pmecc-lookup-table-offset, nand-bus-width
+> If that's the case, since most people prefer bool over int as the
+> return type and some are against introducing u1, my current plan is to
+> use the following in the next version:
 > 
->  .../devicetree/bindings/mtd/atmel-nand.txt    | 116 -------------
->  .../devicetree/bindings/mtd/atmel-nand.yaml   | 163 ++++++++++++++++++
->  2 files changed, 163 insertions(+), 116 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.yaml
+> bool parity_odd(u64 val);
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> deleted file mode 100644
-> index 1934614a9298..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +++ /dev/null
-> @@ -1,116 +0,0 @@
-> -Deprecated bindings (should not be used in new device trees):
-> -
-> -Required properties:
-> -- compatible: The possible values are:
-> -	"atmel,at91rm9200-nand"
-> -	"atmel,sama5d2-nand"
-> -	"atmel,sama5d4-nand"
-> -- reg : should specify localbus address and size used for the chip,
-> -	and hardware ECC controller if available.
-> -	If the hardware ECC is PMECC, it should contain address and size for
-> -	PMECC and PMECC Error Location controller.
-> -	The PMECC lookup table address and size in ROM is optional. If not
-> -	specified, driver will build it in runtime.
-> -- atmel,nand-addr-offset : offset for the address latch.
-> -- atmel,nand-cmd-offset : offset for the command latch.
-> -- #address-cells, #size-cells : Must be present if the device has sub-nodes
-> -  representing partitions.
-> -
-> -- gpios : specifies the gpio pins to control the NAND device. detect is an
-> -  optional gpio and may be set to 0 if not present.
-> -
-> -Optional properties:
-> -- atmel,nand-has-dma : boolean to support dma transfer for nand read/write.
-> -- nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
-> -  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-> -  "soft_bch".
-> -- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware,
-> -  capable of BCH encoding and decoding, on devices where it is present.
-> -- atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
-> -  Controller. Supported values are: 2, 4, 8, 12, 24. If the compatible string
-> -  is "atmel,sama5d2-nand", 32 is also valid.
-> -- atmel,pmecc-sector-size : sector size for ECC computation. Supported values
-> -  are: 512, 1024.
-> -- atmel,pmecc-lookup-table-offset : includes two offsets of lookup table in ROM
-> -  for different sector size. First one is for sector size 512, the next is for
-> -  sector size 1024. If not specified, driver will build the table in runtime.
-> -- nand-bus-width : 8 or 16 bus width if not present 8
-> -- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
-> -
-> -Nand Flash Controller(NFC) is an optional sub-node
-> -Required properties:
-> -- compatible : "atmel,sama5d3-nfc".
-> -- reg : should specify the address and size used for NFC command registers,
-> -        NFC registers and NFC SRAM. NFC SRAM address and size can be absent
-> -        if don't want to use it.
-> -- clocks: phandle to the peripheral clock
-> -Optional properties:
-> -- atmel,write-by-sram: boolean to enable NFC write by SRAM.
-> -
-> -Examples:
-> -nand0: nand@40000000,0 {
-> -	compatible = "atmel,at91rm9200-nand";
-> -	#address-cells = <1>;
-> -	#size-cells = <1>;
-> -	reg = <0x40000000 0x10000000
-> -	       0xffffe800 0x200
-> -	      >;
-> -	atmel,nand-addr-offset = <21>;	/* ale */
-> -	atmel,nand-cmd-offset = <22>;	/* cle */
-> -	nand-on-flash-bbt;
-> -	nand-ecc-mode = "soft";
-> -	gpios = <&pioC 13 0	/* rdy */
-> -		 &pioC 14 0 	/* nce */
-> -		 0		/* cd */
-> -		>;
-> -	partition@0 {
-> -		...
-> -	};
-> -};
-> -
-> -/* for PMECC supported chips */
-> -nand0: nand@40000000 {
-> -	compatible = "atmel,at91rm9200-nand";
-> -	#address-cells = <1>;
-> -	#size-cells = <1>;
-> -	reg = < 0x40000000 0x10000000	/* bus addr & size */
-> -		0xffffe000 0x00000600	/* PMECC addr & size */
-> -		0xffffe600 0x00000200	/* PMECC ERRLOC addr & size */
-> -		0x00100000 0x00100000	/* ROM addr & size */
-> -		>;
-> -	atmel,nand-addr-offset = <21>;	/* ale */
-> -	atmel,nand-cmd-offset = <22>;	/* cle */
-> -	nand-on-flash-bbt;
-> -	nand-ecc-mode = "hw";
-> -	atmel,has-pmecc;	/* enable PMECC */
-> -	atmel,pmecc-cap = <2>;
-> -	atmel,pmecc-sector-size = <512>;
-> -	atmel,pmecc-lookup-table-offset = <0x8000 0x10000>;
-> -	gpios = <&pioD 5 0	/* rdy */
-> -		 &pioD 4 0	/* nce */
-> -		 0		/* cd */
-> -		>;
-> -	partition@0 {
-> -		...
-> -	};
-> -};
-> -
-> -/* for NFC supported chips */
-> -nand0: nand@40000000 {
-> -	compatible = "atmel,at91rm9200-nand";
-> -	#address-cells = <1>;
-> -	#size-cells = <1>;
-> -	ranges;
-> -        ...
-> -        nfc@70000000 {
-> -		compatible = "atmel,sama5d3-nfc";
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		clocks = <&hsmc_clk>
-> -		reg = <
-> -			0x70000000 0x10000000	/* NFC Command Registers */
-> -			0xffffc000 0x00000070	/* NFC HSMC regs */
-> -			0x00200000 0x00100000	/* NFC SRAM banks */
-> -		>;
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.yaml b/Documentation/devicetree/bindings/mtd/atmel-nand.yaml
-> new file mode 100644
-> index 000000000000..8afc4a144caf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.yaml
-> @@ -0,0 +1,163 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/atmel-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel NAND flash controller
-> +
-> +maintainers:
-> +  - Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-> +
-> +description: |
-
-Don't need '|'.
-
-> +  Atmel nand flash controller. This should not be used for new device
-> +  trees. For the latest controllers refer microchip,nand-controller.yaml
-
-This reads more like the h/w changed in newer controllers. Make it clear 
-this is deprecated. You can also put at the top-level:
-
-deprecated: true
-
-But you should only put that if you plan to update all in tree .dts 
-files to the non-deprecated binding.
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - atmel,at91rm9200-nand
-> +      - atmel,sama5d2-nand
-> +      - atmel,sama5d4-nand
-> +
-> +  reg:
-> +    description:
-> +      The localbus address and size used for the chip, and hardware ECC
-> +      controller if available. If the hardware ECC is PMECC, it should
-> +      contain address and size for PMECC and PMECC Error Location
-> +      controller. The PMECC lookup table address and size in ROM is
-> +      optional. If not specified, driver will build it in runtime.
-> +
-> +  atmel,nand-addr-offset:
-> +    description:
-> +      offset for the address latch.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 31
-> +
-> +  atmel,nand-cmd-offset:
-> +    description:
-> +      offset for the command latch.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 31
-> +
-> +  '#address-cells': true
-
-0-3 is okay?
-
-> +
-> +  '#size-cells': true
-
-0-2 is okay?
-
-> +
-> +  gpios:
-> +    description:
-> +      specifies the gpio pins to control the NAND device. detect is an
-> +      optional gpio and may be set to 0 if not present.
-
-Which entry is detect? Need to define what each entry is.
-
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  atmel,nand-has-dma:
-> +    description:
-> +      support dma transfer for nand read/write.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  atmel,has-pmecc:
-> +    description:
-> +      enable Programmable Multibit ECC hardware, capable of BCH encoding
-> +      and decoding, on devices where it is present.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-
-All vendor specific properties go last.
-
-> +
-> +  nand-on-flash-bbt:
-> +    description:
-> +      enable on flash bbt option if not present false
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  nand-ecc-mode:
-> +    description:
-> +      operation mode of the NAND ecc
-> +    enum:
-> +      [none, soft, hw, hw_syndrome, hw_oob_first, soft_bch]
-> +    default: soft
-> +    $ref: /schemas/types.yaml#/definitions/string
-
-You should be referencing mtd/raw-nand-chip.yaml either directly or 
-indirectly. And then drop the type. Same on the others.
-
-> +
-> +
-> +  atmel,pmecc-cap:
-> +    description:
-> +      error correct capability for Programmable Multibit ECC Controller.
-> +    enum:
-> +      [2, 4, 8, 12, 24, 32]
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  atmel,pmecc-sector-size:
-> +    description:
-> +      sector size for ECC computation.
-> +    enum:
-> +      [512, 1024]
-> +    default: 512
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +
-> +  atmel,pmecc-lookup-table-offset:
-> +    description:
-> +      Two offsets of lookup table in ROM for different sector size. First
-> +      one is for sector size 512, the next is for sector size 1024. If not
-> +      specified, driver will build the table in runtime.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    default: 512
-> +
-> +  nand-bus-width:
-
-Before vendor specific properties.
-
-> +    description:
-> +      nand bus width
-> +    enum:
-> +      [8, 16]
-> +    default: 8
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - atmel,nand-addr-offset
-> +  - atmel,nand-cmd-offset
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    nand@40000000,0 {
-
-Not a correct unit-address.
-
-nand-controller is preferred node name.
-
-> +        compatible = "atmel,at91rm9200-nand";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        reg = <0x40000000 0x10000000
-> +               0xffffe800 0x200>;
-> +        atmel,nand-addr-offset = <21>;	/* ale */
-> +        atmel,nand-cmd-offset = <22>;	/* cle */
-> +        nand-on-flash-bbt;
-> +        nand-ecc-mode = "soft";
-> +        gpios = <&pioC 13 0	/* rdy */
-> +                 &pioC 14 0 /* nce */
-> +                 0		/* cd */
-> +                >;
-> +    };
-> +  - |
-> +    /* for PMECC supported chips */
-> +    nand1@40000000 {
-> +        compatible = "atmel,at91rm9200-nand";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        reg = <0x40000000 0x10000000	/* bus addr & size */
-> +               0xffffe000 0x00000600	/* PMECC addr & size */
-> +               0xffffe600 0x00000200	/* PMECC ERRLOC addr & size */
-> +               0x00100000 0x00100000>;	/* ROM addr & size */
-> +
-> +        atmel,nand-addr-offset = <21>;	/* ale */
-> +        atmel,nand-cmd-offset = <22>;	/* cle */
-> +        nand-on-flash-bbt;
-> +        nand-ecc-mode = "hw";
-> +        atmel,has-pmecc;	/* enable PMECC */
-> +        atmel,pmecc-cap = <2>;
-> +        atmel,pmecc-sector-size = <512>;
-> +        atmel,pmecc-lookup-table-offset = <0x8000 0x10000>;
-> +        gpios = <&pioD 5 0	/* rdy */
-> +                 &pioD 4 0	/* nce */
-> +                 0		/* cd */
-> +                >;
-> +    };
-> -- 
-> 2.34.1
+> This keeps the bool return type, renames the function for better
+> clarity, and avoids extra maintenance burden by having just one
+> function.
 > 
+> If I can't assume that casting bool to int always results in 0 or 1,
+> would it be acceptable to keep the return type as int?
+> 
+> Would this work for everyone?
+
+Alright, it's clearly a split opinion. So what I would do myself in
+such case is to look at existing code and see what people who really
+need parity invent in their drivers:
+
+                                     bool      parity_odd
+static inline int parity8(u8 val)       -               -
+static u8 calc_parity(u8 val)           -               -
+static int odd_parity(u8 c)             -               +
+static int saa711x_odd_parity           -               +
+static int max3100_do_parity            -               -
+static inline int parity(unsigned x)    -               -
+static int bit_parity(u32 pkt)          -               -
+static int oa_tc6_get_parity(u32 p)     -               -
+static u32 parity32(__le32 data)        -               -
+static u32 parity(u32 sample)           -               -
+static int get_parity(int number,       -               -
+                      int size)
+static bool i2cr_check_parity32(u32 v,  +               -
+                        bool parity)
+static bool i2cr_check_parity64(u64 v)  +               -
+static int sw_parity(__u64 t)           -               -
+static bool parity(u64 value)           +               -
+
+Now you can refer to that table say that int parity(uXX) is what
+people want to see in their drivers.
+
+Whichever interface you choose, please discuss it's pros and cons.
+What bloat-o-meter says for each option? What's maintenance burden?
+Perf test? Look at generated code?
+
+I personally for a macro returning boolean, something like I
+proposed at the very beginning.
+
+Thanks,
+Yury
 
 ______________________________________________________
 Linux MTD discussion mailing list
