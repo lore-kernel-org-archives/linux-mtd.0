@@ -4,81 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E497FC282EC
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Mar 2025 17:06:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6577BC28B30
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Mar 2025 12:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AZ6sJp3/alZGdmir13MXw7bmEhHReJv6fTmMgMUCoPQ=; b=EBT+899n6wC8ugc4t88pMcm35y
-	HeYThixLhRzV8lKw9i1qR9N1IcCF90U3PQGT7OMLjBWQ8QfHAj+R7l4Tii6tGl+Z2GQSJTp5g51xd
-	ew5gkPWZWTFpOD6N4NGrC1HXl3bTRbcIhVS2WBxF5eCTxeOM3hOyKxmiZhQecBf/Bt59czUhiO5xK
-	HqL8AcDvNmcN4kpWJXHS2q/5PQThN7IsVtoMbzsvbp5/AbdGAltRew1DPDaXPyDfmiAIABDlvJxqO
-	yjqxQjikj1sg9IU5NBcxalzwdvhqJ31kvsKFuOY0MES9WpiBxjXZqomScoZyP+o2+6XRqgF2CZ4Hh
-	tRqseq+w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=FTdmiFyW8wDqw8KpX+uxRIdqZHFZL45ZgMvUkQJn6OE=; b=UZc1gI69kiau6v
+	aVkkzJlesJB68Npq13uj+0eZRLh4CedFqdWLpn21VK4nV/E/0uL1e1ayPJOAFsrepp7IMvKFpOJM1
+	lJTpIfTpwWTQ12BbstFkHFnlHl3AlIJ5yndwFMkLUGTUn5jI2KpsXD/Jv/KApvCvgFKWB5GHjdSUp
+	s4wMB6acz93qjKvN3HTZQ4wOqvimARdnedIc3aup/uHllHQPUbTRAeSbC8UR6mrIPrldqhO4qFQmp
+	lviSVbwNGwgW0nDVLlJEnxf0rAC8tyoY7WSO+T28b4NmHvkZttKZmjGq3y76T5BDtQAsmWC6SDSX3
+	2m2ZGUu2fTAsGrjkgdFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1trgZz-00000003Reg-44pU;
-	Mon, 10 Mar 2025 17:06:15 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tryve-00000005h3h-2mm7;
+	Tue, 11 Mar 2025 12:41:50 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1trgJI-00000003OT8-0xUq
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 10 Mar 2025 16:49:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=He80anPiKvebL/FnJfyifOVYwrOMXD/S0ef0nCf5pUU=; b=KlN1KjdO17WqAlhbTCwkfJ8Q36
-	GKbOfMQDbY/byn/QycLZmtQkJ4pa0IyB3ScKajS6V2S5ldFk5Qeglgrrm8iTo6KdLaqZIlkvVKv/b
-	Ydygv77MRWMPVgmIusEls2EmwtbvEMPG4S1QvR9pW6pHfzsX0IVrwbvipnhgda8P5CkwAdCxOcE0j
-	niRYoDnqmQuY5QUMQC1gN3BVrSzo8S5aVNaxucWeySe8Q6eQ2iafmTRABoJ4Im8onVbLLKE0Rp05L
-	uRWT17arz9z2PUZBswdWuX5rvhHZusNw95tEvS3XOwMkm4hEbthEgYc5ZfJlrNzDsca5eBeaBF9pJ
-	k/Wo+SeQ==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1trgJF-00000001wku-19Fz
-	for linux-mtd@lists.infradead.org;
-	Mon, 10 Mar 2025 16:48:59 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D5BEC5C6819;
-	Mon, 10 Mar 2025 16:46:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EF3CC4CEE5;
-	Mon, 10 Mar 2025 16:48:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741625335;
-	bh=He80anPiKvebL/FnJfyifOVYwrOMXD/S0ef0nCf5pUU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CRXvFqV3/kRcrNhE+X3xH7Bqu+/Gg/vDC3Lchgwmym1TSXropU6yyTRnHEnC+8yR7
-	 u2zgWRECaknG8UTwE02i9pWYMLMUmYlSM20LfUrOTMVymV8JLz5uV0IBEkyNGXM7to
-	 VbYSwkM/EAnzvgwXFMomeK6p55nqmLhher4sc+tpy5smktHXXJShcXG6ewFU/tWWcR
-	 HcKeEDQO5tVUrU1WvD0YZ9F7UJqdgnfp081uVrJ9v3J0/wqjMU3OH+OUTCCmW6VaY9
-	 4YfFbXl4b9/rnhgp1X+4CNj9BW16qsT2H+sAgOTVkb9z9BQv6nIuv6qqanYukJJso4
-	 QSaR+rWPBW05A==
-Date: Mon, 10 Mar 2025 16:48:50 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Han Xu <han.xu@nxp.com>,
-	"open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH] dt-bindings: mtd: gpmi-nand: Add compatible string for
- i.MX8 chips
-Message-ID: <20250310-running-reluctant-5ca27a149351@spud>
-References: <20250307220515.3282954-1-Frank.Li@nxp.com>
+	id 1tryjR-00000005e5t-1Ilo;
+	Tue, 11 Mar 2025 12:29:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1741696153; x=1773232153;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=N5EXNlqtL69VGYYDyrDYpntJcNL/9MeXJc8QaKRw7gU=;
+  b=zm2va2+cZlJlPcf+6Upzzv97sX/51clkFX5JmcYElED6BDARJnjMPAmu
+   VePXu8yno4WGI1UAZt2AVMhEt+wosjqhcW4K0RFQe1lkHvwFDX3cZxG/8
+   Dk257Ssa8oK49QmPbaojCcpUk0sjK8NsDonTLL67/XySMOvCxnyc0Zmwb
+   1A/w1aJ5aBsPVCN7+ZnyDkjIttp4vKVCgboh8783jZPRIUi7oDa+g+Wzx
+   4aS90Lhm7nl1xaOL3uyaMNiuhp/7mwpEupVqfXz2kbQlyDr4+kablONf5
+   xHYcYzykc6pPXAWvtT9CRZAzbVBe13zJevTtS32wvun+UOhi3Yv2LMwe0
+   g==;
+X-CSE-ConnectionGUID: baDVeSDOToyF+0WNRKcbNA==
+X-CSE-MsgGUID: ka0iJvLtR023JNL7dOig9g==
+X-IronPort-AV: E=Sophos;i="6.14,239,1736838000"; 
+   d="scan'208";a="206334035"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Mar 2025 05:29:09 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Tue, 11 Mar 2025 05:29:01 -0700
+Received: from che-lt-i64410lx.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.44 via Frontend Transport; Tue, 11 Mar 2025 05:28:55 -0700
+From: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+	<claudiu.beznea@tuxon.dev>, <krzysztof.kozlowski+dt@linaro.org>
+CC: <balamanikandan.gunasundar@microchip.com>,
+	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] dt-bindings: mtd: microchip-nand: convert txt to yaml
+Date: Tue, 11 Mar 2025 17:58:44 +0530
+Message-ID: <20250311122847.90081-1-balamanikandan.gunasundar@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20250307220515.3282954-1-Frank.Li@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250310_164857_617283_51FE4F5B 
-X-CRM114-Status: UNSURE (   8.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250311_052913_529023_86AE7C5F 
+X-CRM114-Status: GOOD (  12.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,58 +80,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4466563016480596346=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Convert microchip nand controllers from text to yaml
 
---===============4466563016480596346==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xZOwJLFS9ODUFr6Y"
-Content-Disposition: inline
+This patch is a respin of
+https://lore.kernel.org/all/20240320-linux-next-nand-yaml-v1-0-2d2495363e88@microchip.com/
 
+Summary of changes:
 
---xZOwJLFS9ODUFr6Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[PATCH v2 1/3] dt-bindings: mtd: microchip-nand: convert txt to yaml
+- Change the filename to match the compatible string
+- Drop items and oneOf in the compatible property as it is just an enum
+- Remove the if in the #address-cells and #size-cells
+- Remove the unwanted comments that refers to .txt files
+- Fix reg property description
+- Define the properties in a list and add constraints
+- Fix DT coding style and droped unused labels
 
-On Fri, Mar 07, 2025 at 05:05:15PM -0500, Frank Li wrote:
-> Add compatible string "fsl,imx8mp-gpmi-nand" and "fsl,imx8mq-gpmi-nand",
-> which back compatible with i.MX7D. So set these fall back to
-> "fsl,imx7d-gpmi-nand".
->=20
-> Add compatible string "fsl,imx8qm-gpmi-nand" and "fsl,imx8dxl-gpmi-nand",
-> which back compatible with i.MX8QXP. So set these fall back to
-> "fsl,imx8qxp-gpmi-nand".
->=20
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+[PATCH v2 2/3] dt-bindings: mtd: microchip-nand: add atmel pmecc
+- Rename filename to match compatible string
+- Add constraints for sam9x7
+- Droped unused dt labels 
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+[PATCH v2 3/3] dt-bindings: mtd: atmel-nand: add legacy nand
+- Filename matching the compatibles
+- Remove "bindings" from the subject
+- Remove "deprecated" as these are the only bindings available for the devices
+- Add missing constraints.
+- Add default for nand-ecc-mode
+- Add 32 in pmecc-cap for sama5d2
+- Add default for sector-size, pmecc-lookup-table-offset, nand-bus-width
 
---xZOwJLFS9ODUFr6Y
-Content-Type: application/pgp-signature; name="signature.asc"
+Balamanikandan Gunasundar (3):
+  dt-bindings: mtd: microchip-nand: convert txt to yaml
+  dt-bindings: mtd: microchip-nand: add atmel pmecc
+  dt-bindings: mtd: atmel-nand: add legacy nand controllers
 
------BEGIN PGP SIGNATURE-----
+ .../devicetree/bindings/mtd/atmel-nand.txt    | 227 ------------------
+ .../devicetree/bindings/mtd/atmel-nand.yaml   | 163 +++++++++++++
+ .../mtd/microchip,nand-controller.yaml        | 175 ++++++++++++++
+ .../bindings/mtd/microchip,pmecc.yaml         |  67 ++++++
+ 4 files changed, 405 insertions(+), 227 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/microchip,nand-controller.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/microchip,pmecc.yaml
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZ88X8gAKCRB4tDGHoIJi
-0v4wAQDIr9sBDLKcJOxHMM6QCM3PGAzIaD1ERbGI2KtxDOrD4wEAg59dYzDWWGiS
-8zuUfx0wcYCwcNWlSlfP3gqnwcrzQQQ=
-=TFPp
------END PGP SIGNATURE-----
+-- 
+2.34.1
 
---xZOwJLFS9ODUFr6Y--
-
-
---===============4466563016480596346==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4466563016480596346==--
-
