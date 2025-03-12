@@ -4,117 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6D2AC28B28
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Mar 2025 16:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E15CC28B28
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Mar 2025 20:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tVVuCE2J2a1hvqBU3rrv1m50qrK4+An4UK/tPLJ+Cvs=; b=kyBhlxhtNM8X9x
-	1K25doBz2sPnEVaegvliLuZOxH+f2UhfzYCyKbQ2c5t4gMzqXDom05XFk1prRIx/SYZmjExgZJXxF
-	jTFLJu/Iv+Aa2PmS8Etx0CWyBIYebXv5kySC3nCqVT9Q9pHRJGefjwWAuO7R6OXppDeFZQX7EDU8k
-	otXJj4BtsXlNTAZiiebkWKBViH37wOQolJxSQHlmA5iF4wDyikVHHtGgb7mEYs5KvpI2CzTXNT2oN
-	tuMwXh3BB92smlRg9TsfSEX/dJAT81sX78SbMCilWiYvfgKmm1OopRbbJEIpj1LV8mjJXZ3tcVcvj
-	JHBooaqc4EnXYFc9KA2g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=B84qV8T0Qw6kP8m9L8AAvpmi6Sng5L2d0SsRI4xdJhs=; b=ZlwZkKBgNGnc2B
+	KsfwN0TAQgRV8RRUeT1HRK8VYGH22j4wUMYzAifiJeq9bToPrccYPgKbY+Zp+A8IK5/xJigqNLUyL
+	iQaKv6Vl8IY4JNs6o8lnBcSzRnp7XGaHpSe2djgqVu3Mhg4gJ1ESzqc7LKn57mpx7KYS8DLrn8067
+	FQ6WSPXTLVR57/ix0y2i580oRLIzqcxNH/TTK+MgBA81S9sRMdxRx+8B1T0qnz3qOHSyFjitJKVpR
+	0J+OEW9pPgr9ZCeXr7N0t0J4CfUE0I9tF1/3oJavnTm//lIN/4Sx++j6jW6vaA6/2uxGjW0Evgpmk
+	Z+hQu1q+T9x4ST1dBHyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsOxK-000000091oC-44zZ;
-	Wed, 12 Mar 2025 16:29:18 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1tsSVe-00000009PL5-0aqt;
+	Wed, 12 Mar 2025 20:16:58 +0000
+Received: from mgamail.intel.com ([192.198.163.8])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsOxI-000000091nE-2Oxs
+	id 1tsSVb-00000009PKi-3vQ7
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Mar 2025 16:29:17 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-223959039f4so744135ad.3
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Mar 2025 09:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741796955; x=1742401755; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uhcfe4HGkn1nyr43hd6XB44u2jS51t/HM3EqUkeXy9c=;
-        b=JAgIigxC6EPvdEw797GWaGRPT2WAw7Pd8dJob2/rmPiZgLsT3KR1aOrjkxP3alUHoh
-         jWufYn+LxnUCl7qIee50BoERfkAPY+qHJJvkjzvcCChgtT/UkDQRn4nn1SRbG1Ij4M3v
-         hJDwt3y1Wknt8/vY5A/qFye/RQvTMdL4GFJINsK1xrBBQffcWE59xcGu/5eREiaM6qp2
-         9wrSxSfqGBcpuyUqOFOVXOZXs1eXh9mGXXIXunqK88LVn3QeK9fZn1qYLmlF02Xe/kkx
-         SbK7t9EJS0T/VrSkxahDzv9ol9aws5qBaVUqYTVgi+hSyHaO1Cow6DhZDk8uGy9jYt6v
-         hB8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741796955; x=1742401755;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uhcfe4HGkn1nyr43hd6XB44u2jS51t/HM3EqUkeXy9c=;
-        b=j/wLWYjm5irZ45Npn8JMY77ULoB7P3rkhzEBffAuL73MedpIW3blSrnEz9qZCpV90D
-         SLhgzMBe3UAwf1CWCYNXMkzpCpB4mliz3/VaPC2PN/ZPCNFvxUYlVBSrJ0e+KMtPdQcP
-         uEj+qa9gxjSDMEi2Almr1dwRE+2CrZ9vciTkobv+FYnCjKg6Vg7h9PtiuSJ7PA5Y7Qxe
-         22oHMrlY4kAKs7WPfFvaApx3RIAw56ShJ6TfZ/HZ+BWduOoSVgOYJ5t1CK/TBggcZP6m
-         0bkpz32sePb0nqTFdjgPY2doNfAl462lPLfbADduOBDrJNWzqG6mNN9it5VRdAWnj5X+
-         l9zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUszb+UUq2WMP6SuqSO3DAOhFcf20/o63fICYitHKZBgM8rGnFOdF4OCqLrq7BOmrXHkJ8BZdc0yUY=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw4yOJQq79pZfMaSj35uj23onX4N/ryASR+WuLAV/CpBpeIWFZx
-	posGVecmpQQyC2n8tdz6kxe1WENYySBNnAiCZ7roZW1xg6cUql1G
-X-Gm-Gg: ASbGnct6lTUoyIhji2yUqUM0RYaXqoDMr5FklI+Q3JsFjgq31eOG3e/w15jm+jAdc+4
-	mP0SRXbkDkYq/Im7uVcHWxT7i5JpmdI8BUrpZvij8xM7pGb/6NTjIoKMdQrTxzmr2uhOu66+2V5
-	sLso158aF9YZbsMnkTyhZJakoImmSCguVrbnO67hS+1DrpRag5zQ4S4eLHz+ALTSIeKkTzP5/Tj
-	5lYtyYXpYWtrlFtAkrbvgAtSgezGQBb14hE7THgKoO04pBXmZJh4wSs7HB8bNZyz/BdAucmKx4w
-	hw9IeGrclNgIiVqfyTTE4RpHJWh93mJ8PX+77Gfq/ODiv/0qTpdOpV4W+4+QS92DWPNSOtm3J61
-	7nzsNEJI=
-X-Google-Smtp-Source: AGHT+IEiP0tHquLMN5Gvv18JZ85TV9p3x6ZPq/xCnQ6CX9V0mfYcQUP3ZT96MUKotDyAatA1bKDzpQ==
-X-Received: by 2002:a05:6a00:cc2:b0:736:6279:ca25 with SMTP id d2e1a72fcca58-736aaaed7admr38773850b3a.24.1741796953585;
-        Wed, 12 Mar 2025 09:29:13 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-736bb5fcd68sm9479412b3a.135.2025.03.12.09.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Mar 2025 09:29:12 -0700 (PDT)
-Date: Thu, 13 Mar 2025 00:29:03 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>,
-	David Laight <david.laight.linux@gmail.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
-	akpm@linux-foundation.org, alistair@popple.id.au,
-	andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
-	arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
-	bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
-	brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
-	davem@davemloft.net, dmitry.torokhov@gmail.com,
-	dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
-	edumazet@google.com, eleanor15x@gmail.com,
-	gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
-	jernej.skrabec@gmail.com, jirislaby@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se,
-	jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linux@rasmusvillemoes.dk, louis.peens@corigine.com,
-	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
-	mingo@redhat.com, miquel.raynal@bootlin.com, mripard@kernel.org,
-	neil.armstrong@linaro.org, netdev@vger.kernel.org,
-	oss-drivers@corigine.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, rfoss@kernel.org,
-	richard@nod.at, simona@ffwll.ch, tglx@linutronix.de,
-	tzimmermann@suse.de, vigneshr@ti.com, x86@kernel.org
-Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
-Message-ID: <Z9G2Tyypb3iLoBjn@visitorckw-System-Product-Name>
-References: <4732F6F6-1D41-4E3F-BE24-E54489BC699C@zytor.com>
- <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
- <5A790652-1B22-4D13-AAC5-5D9931E90903@zytor.com>
- <20250307195310.58abff8c@pumpkin>
- <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
- <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name>
- <Z9CyuowYsZyez36c@thinkpad>
- <80771542-476C-493E-858A-D2AF6A355CC1@zytor.com>
- <Z9GtcNJie8TRKywZ@thinkpad>
+	Wed, 12 Mar 2025 20:16:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741810616; x=1773346616;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LdXPczmAvLFOtdsRAuqJEfZQmT1DM6lFW14qyWC1FHo=;
+  b=icDHNfylFkOMWyhi45M+zDl/BvkaeCwSU9WKHuo7AvC36bfWJ9oB0mp9
+   dR2Ec7A9kEVxLTZTUbKvGc+RRPiVGwMy4PQfzQzzfmW/Y25371HXRcsxu
+   m+W5Xpi9Jfhif/FBuWIGu9RVOn23k+gtuKyDejijJiF3Eq1jb+klTMxa3
+   sAWVDRWeGbQEAmcBiaXS95LQznnepx7gI2+ip98pOBUrG4lRXf2M9NSlg
+   5IhHI/K5yfiK9kn+NC9cUn2PJZNA/rPfll9js0UpCqyc6uIt7nfRBGwku
+   jaxk/6CsuPSNJx5Z6MAY+mGXCkAoi4VXkWahZ8yjaBkRTPR09um3r8yTb
+   w==;
+X-CSE-ConnectionGUID: SDq2kGJRSWCQxXwC93xw0g==
+X-CSE-MsgGUID: gYgNkjHeRqaLZPzuCJBFVA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11371"; a="60451915"
+X-IronPort-AV: E=Sophos;i="6.14,242,1736841600"; 
+   d="scan'208";a="60451915"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2025 13:16:56 -0700
+X-CSE-ConnectionGUID: 2GApYVQCRt6Zs/NzK1RSlQ==
+X-CSE-MsgGUID: 1TuaK3NvT6evsUOJYk6neQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,242,1736841600"; 
+   d="scan'208";a="121242351"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa007.jf.intel.com with ESMTP; 12 Mar 2025 13:16:53 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 5A33D1F2; Wed, 12 Mar 2025 22:16:52 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v1 1/1] mtd: mtdpart: Do not supply NULL to printf()
+Date: Wed, 12 Mar 2025 22:16:49 +0200
+Message-ID: <20250312201649.217555-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.47.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Z9GtcNJie8TRKywZ@thinkpad>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250312_092916_612961_F9E51A3F 
-X-CRM114-Status: GOOD (  42.47  )
+X-CRM114-CacheID: sfid-20250312_131656_026511_B3701C32 
+X-CRM114-Status: UNSURE (   9.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,138 +83,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 12, 2025 at 11:51:12AM -0400, Yury Norov wrote:
-> On Tue, Mar 11, 2025 at 03:24:14PM -0700, H. Peter Anvin wrote:
-> > On March 11, 2025 3:01:30 PM PDT, Yury Norov <yury.norov@gmail.com> wrote:
-> > >On Sun, Mar 09, 2025 at 11:48:26PM +0800, Kuan-Wei Chiu wrote:
-> > >> On Fri, Mar 07, 2025 at 12:07:02PM -0800, H. Peter Anvin wrote:
-> > >> > On March 7, 2025 11:53:10 AM PST, David Laight <david.laight.linux@gmail.com> wrote:
-> > >> > >On Fri, 07 Mar 2025 11:30:35 -0800
-> > >> > >"H. Peter Anvin" <hpa@zytor.com> wrote:
-> > >> > >
-> > >> > >> On March 7, 2025 10:49:56 AM PST, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
-> > >> > >> >> (int)true most definitely is guaranteed to be 1.  
-> > >> > >> >
-> > >> > >> >That's not technically correct any more.
-> > >> > >> >
-> > >> > >> >GCC has introduced hardened bools that intentionally have bit patterns
-> > >> > >> >other than 0 and 1.
-> > >> > >> >
-> > >> > >> >https://gcc.gnu.org/gcc-14/changes.html
-> > >> > >> >
-> > >> > >> >~Andrew  
-> > >> > >> 
-> > >> > >> Bit patterns in memory maybe (not that I can see the Linux kernel using them) but
-> > >> > >> for compiler-generated conversations that's still a given, or the manager isn't C
-> > >> > >> or anything even remotely like it.
-> > >> > >> 
-> > >> > >
-> > >> > >The whole idea of 'bool' is pretty much broken by design.
-> > >> > >The underlying problem is that values other than 'true' and 'false' can
-> > >> > >always get into 'bool' variables.
-> > >> > >
-> > >> > >Once that has happened it is all fubar.
-> > >> > >
-> > >> > >Trying to sanitise a value with (say):
-> > >> > >int f(bool v)
-> > >> > >{
-> > >> > >	return (int)v & 1;
-> > >> > >}    
-> > >> > >just doesn't work (see https://www.godbolt.org/z/MEndP3q9j)
-> > >> > >
-> > >> > >I really don't see how using (say) 0xaa and 0x55 helps.
-> > >> > >What happens if the value is wrong? a trap or exception?, good luck recovering
-> > >> > >from that.
-> > >> > >
-> > >> > >	David
-> > >> > 
-> > >> > Did you just discover GIGO?
-> > >> 
-> > >> Thanks for all the suggestions.
-> > >> 
-> > >> I don't have a strong opinion on the naming or return type. I'm still a
-> > >> bit confused about whether I can assume that casting bool to int always
-> > >> results in 0 or 1.
-> > >> 
-> > >> If that's the case, since most people prefer bool over int as the
-> > >> return type and some are against introducing u1, my current plan is to
-> > >> use the following in the next version:
-> > >> 
-> > >> bool parity_odd(u64 val);
-> > >> 
-> > >> This keeps the bool return type, renames the function for better
-> > >> clarity, and avoids extra maintenance burden by having just one
-> > >> function.
-> > >> 
-> > >> If I can't assume that casting bool to int always results in 0 or 1,
-> > >> would it be acceptable to keep the return type as int?
-> > >> 
-> > >> Would this work for everyone?
-> > >
-> > >Alright, it's clearly a split opinion. So what I would do myself in
-> > >such case is to look at existing code and see what people who really
-> > >need parity invent in their drivers:
-> > >
-> > >                                     bool      parity_odd
-> > >static inline int parity8(u8 val)       -               -
-> > >static u8 calc_parity(u8 val)           -               -
-> > >static int odd_parity(u8 c)             -               +
-> > >static int saa711x_odd_parity           -               +
-> > >static int max3100_do_parity            -               -
-> > >static inline int parity(unsigned x)    -               -
-> > >static int bit_parity(u32 pkt)          -               -
-> > >static int oa_tc6_get_parity(u32 p)     -               -
-> > >static u32 parity32(__le32 data)        -               -
-> > >static u32 parity(u32 sample)           -               -
-> > >static int get_parity(int number,       -               -
-> > >                      int size)
-> > >static bool i2cr_check_parity32(u32 v,  +               -
-> > >                        bool parity)
-> > >static bool i2cr_check_parity64(u64 v)  +               -
-> > >static int sw_parity(__u64 t)           -               -
-> > >static bool parity(u64 value)           +               -
-> > >
-> > >Now you can refer to that table say that int parity(uXX) is what
-> > >people want to see in their drivers.
-> > >
-> > >Whichever interface you choose, please discuss it's pros and cons.
-> > >What bloat-o-meter says for each option? What's maintenance burden?
-> > >Perf test? Look at generated code?
-> > >
-> > >I personally for a macro returning boolean, something like I
-> > >proposed at the very beginning.
-> > >
-> > >Thanks,
-> > >Yury
-> > 
-> > Also, please at least provide a way for an arch to opt in to using the builtins, which seem to produce as good results or better at least on some architectures like x86 and probably with CPU options that imply fast popcnt is available.
-> 
-> Yeah. And because linux/bitops.h already includes asm/bitops.h
-> the simplest way would be wrapping generic implementation with
-> the #ifndef parity, similarly to how we handle find_next_bit case.
-> 
-> So:
-> 1. Kuan-Wei, please don't invent something like ARCH_HAS_PARITY;
-> 2. This may, and probably should, be a separate follow-up series,
->    likely created by corresponding arch experts.
-> 
-I saw discussions in the previous email thread about both
-__builtin_parity and x86-specific implementations. However, from the
-discussion, I learned that before considering any optimization, we
-should first ask: which driver or subsystem actually cares about parity
-efficiency? If someone does, I can help with a micro-benchmark to
-provide performance numbers, but I don't have enough domain knowledge
-to identify hot paths where parity efficiency matters.
-
-Regards,
-Kuan-Wei
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Q29tcGlsZXIgaXMgbm90IGhhcHB5IGFib3V0IE5VTEwgYmVpbmcgc3VwcGxpZWQgYXMgcHJpbnRm
+KCkgcGFyYW1ldGVyOgoKZHJpdmVycy9tdGQvbXRkcGFydC5jOjY5MzozNDogZXJyb3I6IOKAmCVz
+4oCZIGRpcmVjdGl2ZSBhcmd1bWVudCBpcyBudWxsIFstV2Vycm9yPWZvcm1hdC1vdmVyZmxvdz1d
+CgpSZXBsYWNlIHRoYXQgd2l0aCAiKG51bGwpIiB0byBmaXggY29tcGlsYXRpb24gZXJyb3IuCgpT
+aWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4Lmlu
+dGVsLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9tdGRwYXJ0LmMgfCAyICstCiAxIGZpbGUgY2hhbmdl
+ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210
+ZC9tdGRwYXJ0LmMgYi9kcml2ZXJzL210ZC9tdGRwYXJ0LmMKaW5kZXggNjgxMWE3MTQzNDlkLi42
+ZjdlMjUwZWY3MTAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL210ZHBhcnQuYworKysgYi9kcml2
+ZXJzL210ZC9tdGRwYXJ0LmMKQEAgLTY5MSw3ICs2OTEsNyBAQCBpbnQgcGFyc2VfbXRkX3BhcnRp
+dGlvbnMoc3RydWN0IG10ZF9pbmZvICptYXN0ZXIsIGNvbnN0IGNoYXIgKmNvbnN0ICp0eXBlcywK
+IAkJCWlmICghcGFyc2VyICYmICFyZXF1ZXN0X21vZHVsZSgiJXMiLCAqdHlwZXMpKQogCQkJCXBh
+cnNlciA9IG10ZF9wYXJ0X3BhcnNlcl9nZXQoKnR5cGVzKTsKIAkJCXByX2RlYnVnKCIlczogZ290
+IHBhcnNlciAlc1xuIiwgbWFzdGVyLT5uYW1lLAotCQkJCXBhcnNlciA/IHBhcnNlci0+bmFtZSA6
+IE5VTEwpOworCQkJCXBhcnNlciA/IHBhcnNlci0+bmFtZSA6ICIobnVsbCkiKTsKIAkJCWlmICgh
+cGFyc2VyKQogCQkJCWNvbnRpbnVlOwogCQkJcmV0ID0gbXRkX3BhcnRfZG9fcGFyc2UocGFyc2Vy
+LCBtYXN0ZXIsICZwcGFydHMsIGRhdGEpOwotLSAKMi40Ny4yCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
