@@ -4,62 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BA2CC282DE
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Mar 2025 13:51:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AD35C282DE
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Mar 2025 13:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ojGGEJWBoBGIa5JnHDILETawbjC2pWVnUxC+hKGYNu8=; b=4BVYzOiCBDT+Sh
-	GkSQDaWbuQ0pJ1bM5fT5yDEktKRbaQ9YJltBvj1fBIDYG13bvA6oXv9DSvQkEkP9/8Er0drfe0bGA
-	qFEQVUQdSu8VH+/zhDluQrJYdT6Pb4YzElb/TtDP1KhJKtA+sQiInx+CynFslGbmd1wJkHxasTL0a
-	3NW6jJOqRTgsdGHACPxBeqt8FHzPaF/aFyAP/3wefAsRvxx4mZfRBR35szVLtBkpJzQTPfl4Ac/Yv
-	dpHWB/DblkH8/yu8r7AvQpi3vRaVlggW3YVz/3HkAuKOObYaY7c8QdiPfACbocTiKlCQ+QFHDG375
-	oYfPgc9ruznrFwDjLYkw==;
+	List-Owner; bh=djJNDKtflabG2AzAjoelpNX5HLq8EkwDpIL8oJVwKOQ=; b=GKnoF/P8va3cQK
+	Sb/6eFKQrfoA2wghIV3GRBG14QhjTlAZD5wZ1BJSC3iOSM/ljkvvpcPsJGYxNZxPxMgmGiZJXw1OK
+	4hYxm3+Df3mEhiJK8BDT7S7SAK9DAXAHO4X8u68NmAYz3R5nmrim84TIhwZppUXuEx4Nnz1L7KG6s
+	FAzd/s658TH8dOzSkH3AZftwNYeaWs5wL4K/LEUgYGkEJGJnSP2s5ZeLXVmbeMcYo/DkjwXmhEb+i
+	yTVvMQs82ufAzGDxysgc/UAI0btyqeuezhf7ng9Gk5VeJGuJZf42l5FmjQZPHNCAZFXhPVJNUuxR8
+	AIFtWUP51Lf8I7rLlEDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsiy3-0000000BQy3-42DV;
-	Thu, 13 Mar 2025 13:51:23 +0000
-Received: from mx.denx.de ([2a03:4000:64:cc:545d:19ff:fe05:8172])
+	id 1tsj4N-0000000BTIV-30nv;
+	Thu, 13 Mar 2025 13:57:55 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsiwi-0000000BQeW-2KTS
+	id 1tsj3f-0000000BTDy-0Uq9
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 13 Mar 2025 13:57:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=CSYFjYhMdwhI/VzknzzTVfgN/YkVrdrLRVv9f9QzC58=; b=a2FoB6H0JWHyvgBtiaGtVHiVBG
+	GC26ff0XsenjL7SliRHV0mbhYAoRRPu+E+rddW5d3inv583IuSGOTsgOvziKtd37iyORxGVwLgcDx
+	QnaYlLdc3GO1DyeOFhDSUG/hPIsizazSFfIyH5ciV3WXHuwlD2EQB5muEouJmIXT3E8+uvUN11G5T
+	DxmoBlanTZ0LuCxxHAd/4zLiKUc/heKrUtWResIxArjsulFZm28+r9YHHlo9Pcpj4y/3AnZRbYPBz
+	7uKxhCmhHRBXVlzAueTJ3xYF649TI+BB5Z9qpXKkiCaBY3EYrYk/feeG23LA+WpprBKGKsGhQMZ35
+	HK0Z5L+A==;
+Received: from mgamail.intel.com ([192.198.163.10])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tsj3b-00000002f7r-3bN1
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Mar 2025 13:50:01 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 668E01020E4C2;
-	Thu, 13 Mar 2025 14:49:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de; s=mx-20241105;
-	t=1741873795;
-	h=from:reply-to:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=zwZpJol3r+NZfuPaketwR5AKh9kAknjnnobmvM92/Kg=;
-	b=JOW6V3vyrlwAYaE654BuUamBuLqqbSp4zV+zSf1rcfMd4KjpvOyOh+yJ50hOgGXe4NfRZi
-	LjfMJU2AKCodXW0KboUIPgH3P8YF9pJWjUdlD4F75gTXYB6Kp7+9R6FAi4QlgW8xJRJV3H
-	ZpRP9vMphJdYWJXz5+mdXs+8i1Hn1+hN3OpVIL5o2TB0HEldrD+R3JwCU7fT8iQKQCwAT9
-	NJAof/0sHfkhvRSlqGF8TnuPR+6E8qdROePI5szQ7e9jjezojfNek57Q2Ad2E6HZ+cFMfx
-	Y4BsYiKbLHU69e+SO6Xr9YE4+SyZV4h1ewLSx+LckqSy3VbXCvNK4OXVIBQ4tQ==
-Message-ID: <27e6e64b-9627-1307-3ca5-2bcfc471f157@denx.de>
-Date: Thu, 13 Mar 2025 14:50:23 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 2/2] mtd: mchp48l640: Use str_enable_disable() in
- mchp48l640_write_prepare()
-Content-Language: en-US
-To: Zhang Heng <zhangheng@kylinos.cn>, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, han.xu@nxp.com, david@protonic.nl,
- jre@pengutronix.de
+	Thu, 13 Mar 2025 13:57:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741874228; x=1773410228;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=LGMAZVxMLMP4zoINiImPzFOYs0NI6DAPitF/gHKG7v4=;
+  b=cvZlpfYcNnmVLHNbTBuPA3eqlmqR5VNUtchb7XMK8BPxp+hnUO3+QImp
+   2OYzmZTm/fJYXeRmVT4yET3MgwPsf03VHdhwMPbEiCWEb8QR4oueTSiYK
+   wa9nbx+VDp5djalqqhsPQNaycE00thMrOh8TcTQfTHou4y3E44fU9QLuK
+   162yKXdZTABtRsTHmwzNxNnFSqkeD9pAULIj6I8Sx8fYGkyRrzlp5OECJ
+   CopQVscnaPKhl0zPsGN4qWbafVs3v0BGpom3y9S9cfolFY8Y+h/l3U2KR
+   i+TVTAVYNZVumMbJIPPUrFopgc43gS7a0ixYusF8pQZZELFfXCRPOzt8Z
+   g==;
+X-CSE-ConnectionGUID: Zd8qze4BRPyGsYOP/c70ow==
+X-CSE-MsgGUID: 5K3NjZW/S8m7UnNfgQQnOg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11372"; a="54364734"
+X-IronPort-AV: E=Sophos;i="6.14,244,1736841600"; 
+   d="scan'208";a="54364734"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2025 06:57:01 -0700
+X-CSE-ConnectionGUID: /DiW6qIxT324umM7RI1qug==
+X-CSE-MsgGUID: jY5Rv8mzRpiuSYHqa61QlQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,244,1736841600"; 
+   d="scan'208";a="121016098"
+Received: from smile.fi.intel.com ([10.237.72.58])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2025 06:57:00 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1tsj3R-00000002BzV-10we;
+	Thu, 13 Mar 2025 15:56:57 +0200
+Date: Thu, 13 Mar 2025 15:56:56 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Zhihao Cheng <chengzhihao1@huawei.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- imx@lists.linux.dev
-References: <20250313095756.945890-1-zhangheng@kylinos.cn>
- <20250313095756.945890-2-zhangheng@kylinos.cn>
-From: Heiko Schocher <hs@denx.de>
-In-Reply-To: <20250313095756.945890-2-zhangheng@kylinos.cn>
-X-Last-TLS-Session-Version: TLSv1.3
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2 1/1] mtd: mtdpart: Do not supply NULL to printf()
+Message-ID: <Z9LkKLLl2Z5cANga@smile.fi.intel.com>
+References: <20250313091631.243346-1-andriy.shevchenko@linux.intel.com>
+ <f17a1851-7360-3f18-4e89-dbf6948eeaff@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <f17a1851-7360-3f18-4e89-dbf6948eeaff@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250313_065000_768155_BA442197 
-X-CRM114-Status: UNSURE (   9.97  )
+X-CRM114-CacheID: sfid-20250313_135708_410940_F274CB9D 
+X-CRM114-Status: UNSURE (   9.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,34 +103,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: hs@denx.de
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Zhang,
-
-On 13.03.25 10:57, Zhang Heng wrote:
-> Remove hard-coded strings by using the str_enable_disable() helper
-> function.
-> 
-> Signed-off-by: Zhang Heng <zhangheng@kylinos.cn>
-> ---
->   drivers/mtd/devices/mchp48l640.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
-
-Thanks!
-
-Reviewed-by: Heiko Schocher <hs@denx.de>
-
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCBNYXIgMTMsIDIwMjUgYXQgMDk6MDk6MDlQTSArMDgwMCwgWmhpaGFvIENoZW5nIHdy
+b3RlOgo+IOWcqCAyMDI1LzMvMTMgMTc6MTUsIEFuZHkgU2hldmNoZW5rbyDlhpnpgZM6Cj4gPiBH
+Q0MgY29tcGlsZXIgaXMgbm90IGhhcHB5IGFib3V0IE5VTEwgYmVpbmcgc3VwcGxpZWQgYXMgcHJp
+bnRmKCkgcGFyYW1ldGVyOgo+ID4gCj4gPiBkcml2ZXJzL210ZC9tdGRwYXJ0LmM6NjkzOjM0OiBl
+cnJvcjog4oCYJXPigJkgZGlyZWN0aXZlIGFyZ3VtZW50IGlzIG51bGwgWy1XZXJyb3I9Zm9ybWF0
+LW92ZXJmbG93PV0KPiA+IAo+ID4gTW92ZSB0aGUgY29kZSBhZnRlciB0aGUgcGFyc2VyIHRlc3Qg
+Zm9yIE5VTEwsIGFuZCBkcm9wIHRoZSB0ZXJuYXJ5IGNvbXBsZXRlbHkuCj4gPiBUaGUgdXNlciBj
+YW4gZGVkdWN0IHRoaXMgc2luY2Ugd2hlbiBpdCdzIG5vdCBOVUxMIHR3byBtZXNzYWdlcyB3aWxs
+IGJlIHByaW50ZWQuCgo+IFJldmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBo
+dWF3ZWkuY29tPgoKVGhhbmsgeW91IQoKLS0gCldpdGggQmVzdCBSZWdhcmRzLApBbmR5IFNoZXZj
+aGVua28KCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
