@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51F0EC28B28
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DEC9C282DE
 	for <linux-mtd@archiver.kernel.org>; Thu, 13 Mar 2025 09:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AY3fkrUWv7on3NQNrWFls9n30Da+9vBxrT0ro8GrjPY=; b=JsMFVvhQsNVqp7
-	YhkOR18j6HmkbuNFMtPxonHJVb8xLfNoAcUIJ8Et64UNX14LykUr/qkbhjb/4DFpD9S76PL94KmYS
-	fNMq/bhMVGsgR+FO4pVlyLW0aQGy+hbcZgObNjm4ZeLFl8p8GVGzC+uAzYzH65g+rJWl2Q1/sCdk3
-	hqeUvakGslzkZJSM7i+BkLHu4reflgYyKAQ4CktH72yImyzt0sM+PM1MyOLFqv9jRWED+0uOT0URr
-	/kxSrVa+D7PVDxKI3a4kaSyt0DfkfmFGFtRPBRH+E8ZdeiBGpBrvOe86kvJhSmcI05aTTzPB+HzbQ
-	LRHmsEhxF4MwJuTvkAjw==;
+	List-Owner; bh=jBuhWAP3N6S7DjcfDwueNPQHGMBmACzXek0LRfbz5ag=; b=RaGhj2r5m7d+cU
+	XzDEszxhH1txYwCzCI8U+hLkQXZW4IJOwiVoIeSBBEgSsaEEg8KO3c9cM4L6gloL2JHOjgxgOw0tw
+	iiHF826/Zj5/Cl6gic7Gjl0Jn/3jYwZugmOa/7vgHfxwFfZeUU00THnRglkMnKDsvoSMO84Aej5Mj
+	ZKjqNCG4Xhcz6soyNx5VpX9u0smQbY27ydcmi5ol8aB9Dd2m/xdOD3hRFvjkF/rCWAfb0Im33HxF6
+	5hoMFv8uNOKX8llpnSZeNkm+RQSdGZyHckL2XfIajftPbHKHryRk3muxUKspvccb5IqWr3bXDTUVS
+	hdllPvaibtLSnRUJRBaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tseiS-0000000AhyH-1r43;
-	Thu, 13 Mar 2025 09:19:00 +0000
-Received: from mgamail.intel.com ([198.175.65.17])
+	id 1tseiR-0000000AhyA-3cUA;
+	Thu, 13 Mar 2025 09:18:59 +0000
+Received: from smtp84.cstnet.cn ([159.226.251.84] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tseg8-0000000AhU7-1mGF
+	id 1tseg5-0000000AhTJ-24hc
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Mar 2025 09:16:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741857396; x=1773393396;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=OlHTnQoywCSCuoi3FTq6oim2FtxvRr3TSS7h7lgSzTY=;
-  b=W5xHGUJS9BiiPw0KdUuyZ8t3noMj7mJoAIFUtbCSBrHXqT8HJqMDyAR0
-   JXRjc8w+XLewOEwWz+qKVZ7dWndyLGLtDplJkO76G1GjTHmib1+WnVUe9
-   sHEpYPf1CZ14vmBldFNU1owAYGPZIDZslYTNCckYSyZ6AbkV2gkpruZeu
-   fwS8ZYXZ/WsnLZZ81Lw2V9KMyQUhlKmW2ML7vRuMdVRaApdlFKu2X+kzA
-   lFfHhIoEodrakUOJQ0e4tacM+cZmr5txKYF7nyJBaYLudAxQs3pBf8TnL
-   wCTy/X/GtxbL92VW9YAlEhd1ZkBnwa3IUnXH2bag0xzulzo20RYqlTon1
-   A==;
-X-CSE-ConnectionGUID: 1s9VqHPNRjeMjQab7sLXPw==
-X-CSE-MsgGUID: TLUiKlYXRdKQd6Jqfs1EHg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11371"; a="42994263"
-X-IronPort-AV: E=Sophos;i="6.14,244,1736841600"; 
-   d="scan'208";a="42994263"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2025 02:16:35 -0700
-X-CSE-ConnectionGUID: tgAyOsX5SHOFMeuHHdBVtQ==
-X-CSE-MsgGUID: J6KkLHM6TOuyz/PUdGSjRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,244,1736841600"; 
-   d="scan'208";a="151730926"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa002.jf.intel.com with ESMTP; 13 Mar 2025 02:16:34 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id D5EB31FC; Thu, 13 Mar 2025 11:16:32 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v2 1/1] mtd: mtdpart: Do not supply NULL to printf()
-Date: Thu, 13 Mar 2025 11:15:53 +0200
-Message-ID: <20250313091631.243346-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.47.2
+	Thu, 13 Mar 2025 09:16:35 +0000
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+	by APP-05 (Coremail) with SMTP id zQCowADn7aFaotJn6LGLFA--.36390S2;
+	Thu, 13 Mar 2025 17:16:17 +0800 (CST)
+From: Ma Ke <make24@iscas.ac.cn>
+To: richard@nod.at,
+	chengzhihao1@huawei.com,
+	miquel.raynal@bootlin.com,
+	vigneshr@ti.com,
+	logang@deltatee.com,
+	gregkh@linuxfoundation.org
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org,
+	Ma Ke <make24@iscas.ac.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: fix error handling in uif_init()
+Date: Thu, 13 Mar 2025 17:16:09 +0800
+Message-Id: <20250313091609.308724-1-make24@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-CM-TRANSID: zQCowADn7aFaotJn6LGLFA--.36390S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF13GrWUGF4kurWDCF4fAFb_yoWfWwcE9F
+	navwsxWr4rW3Z3Ka1Syw1F9FyI9F4qgFsa9F1Iqws5ta1UZFnrWrsrJrnIyFWUCw47AF1r
+	Aa4Ykw48Jr43WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbSxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWlnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+	648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOmhFUUUUU
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: ppdnvj2u6l2u1dvotugofq/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250313_021636_691733_B6E9CCA7 
-X-CRM114-Status: UNSURE (   9.49  )
+X-CRM114-CacheID: sfid-20250313_021633_917346_2A64A117 
+X-CRM114-Status: UNSURE (   5.91  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,33 +81,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-R0NDIGNvbXBpbGVyIGlzIG5vdCBoYXBweSBhYm91dCBOVUxMIGJlaW5nIHN1cHBsaWVkIGFzIHBy
-aW50ZigpIHBhcmFtZXRlcjoKCmRyaXZlcnMvbXRkL210ZHBhcnQuYzo2OTM6MzQ6IGVycm9yOiDi
-gJglc+KAmSBkaXJlY3RpdmUgYXJndW1lbnQgaXMgbnVsbCBbLVdlcnJvcj1mb3JtYXQtb3ZlcmZs
-b3c9XQoKTW92ZSB0aGUgY29kZSBhZnRlciB0aGUgcGFyc2VyIHRlc3QgZm9yIE5VTEwsIGFuZCBk
-cm9wIHRoZSB0ZXJuYXJ5IGNvbXBsZXRlbHkuClRoZSB1c2VyIGNhbiBkZWR1Y3QgdGhpcyBzaW5j
-ZSB3aGVuIGl0J3Mgbm90IE5VTEwgdHdvIG1lc3NhZ2VzIHdpbGwgYmUgcHJpbnRlZC4KClNpZ25l
-ZC1vZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwu
-Y29tPgotLS0KCnYyOiBjaGFuZ2VkIGFwcHJvYWNoIHRvIHJlbW92ZSB0aGF0IHRlcm5hcnkgY29t
-cGxldGVseSwgc2VlbXMgbGVzcyBoYWNraXNoCgogZHJpdmVycy9tdGQvbXRkcGFydC5jIHwgMyAr
-LS0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL210ZC9tdGRwYXJ0LmMgYi9kcml2ZXJzL210ZC9tdGRwYXJ0LmMKaW5k
-ZXggNjgxMWE3MTQzNDlkLi45OTRlOGM1MWU2NzQgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL210
-ZHBhcnQuYworKysgYi9kcml2ZXJzL210ZC9tdGRwYXJ0LmMKQEAgLTY5MCwxMCArNjkwLDkgQEAg
-aW50IHBhcnNlX210ZF9wYXJ0aXRpb25zKHN0cnVjdCBtdGRfaW5mbyAqbWFzdGVyLCBjb25zdCBj
-aGFyICpjb25zdCAqdHlwZXMsCiAJCQlwYXJzZXIgPSBtdGRfcGFydF9wYXJzZXJfZ2V0KCp0eXBl
-cyk7CiAJCQlpZiAoIXBhcnNlciAmJiAhcmVxdWVzdF9tb2R1bGUoIiVzIiwgKnR5cGVzKSkKIAkJ
-CQlwYXJzZXIgPSBtdGRfcGFydF9wYXJzZXJfZ2V0KCp0eXBlcyk7Ci0JCQlwcl9kZWJ1ZygiJXM6
-IGdvdCBwYXJzZXIgJXNcbiIsIG1hc3Rlci0+bmFtZSwKLQkJCQlwYXJzZXIgPyBwYXJzZXItPm5h
-bWUgOiBOVUxMKTsKIAkJCWlmICghcGFyc2VyKQogCQkJCWNvbnRpbnVlOworCQkJcHJfZGVidWco
-IiVzOiBnb3QgcGFyc2VyICVzXG4iLCBtYXN0ZXItPm5hbWUsIHBhcnNlci0+bmFtZSk7CiAJCQly
-ZXQgPSBtdGRfcGFydF9kb19wYXJzZShwYXJzZXIsIG1hc3RlciwgJnBwYXJ0cywgZGF0YSk7CiAJ
-CQlpZiAocmV0IDw9IDApCiAJCQkJbXRkX3BhcnRfcGFyc2VyX3B1dChwYXJzZXIpOwotLSAKMi40
-Ny4yCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Once cdev_device_add() failed, we should call put_device() to decrement
+reference count for cleanup. Or it could cause memory leak.
+
+Found by code review.
+
+Cc: stable@vger.kernel.org
+Fixes: 493cfaeaa0c9 ("mtd: utilize new cdev_device_add helper function")
+Signed-off-by: Ma Ke <make24@iscas.ac.cn>
+---
+ drivers/mtd/ubi/build.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index ef6a22f372f9..ca4c54cf9fd4 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -486,6 +486,7 @@ static int uif_init(struct ubi_device *ubi)
+ 	kill_volumes(ubi);
+ 	cdev_device_del(&ubi->cdev, &ubi->dev);
+ out_unreg:
++	put_device(&ubi->dev);
+ 	unregister_chrdev_region(ubi->cdev.dev, ubi->vtbl_slots + 1);
+ 	ubi_err(ubi, "cannot initialize UBI %s, error %d",
+ 		ubi->ubi_name, err);
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
