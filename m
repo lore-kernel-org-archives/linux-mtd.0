@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECD8FC282DE
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Mar 2025 14:48:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4321DC282DE
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Mar 2025 14:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DZmEVvrSUwJb0+l19rJFSjg/JKkYQaKz91GaF6QxIlw=; b=xwkEbRhU92dS5q
-	UiQdgOB4mz9VMVSK5ZwaJqElxS/nacS8UL5NA+zZHUBGYaJ0KHLwb393okl6r9YNkgFwbhpN0IIO8
-	qsm2aceL9l5dfurg+voYIU2xLHSiI3pmpvpS+Zo8QXUfDDy6lFpGSksG5BvB7dbfmZGbgcRPPaujq
-	40XHZC5mgpsybOCnX/ZG3Jtoh/DRxvf8ypDh1SKpewyg+rAVN4O1pUdDQQfjJ5gS6fXgxz+SkG9/0
-	1eTS+hWEcpioeop93oN4tAuP3v36mUgkMhMZdqNiylih7gpzbPm7/2+yd11iR+OjdpnBaxIMmH/RO
-	wN5lp274PZzhgTWnHI+g==;
+	List-Owner; bh=raYwXljxGk/tu09RNY0veYUp+akWCCveOaG9wlBJFjU=; b=n7UCh45pHn+ZA6
+	/Ipuvt068jjsstyr0ifVW78FaJ38vbtz09Bzbgiroi9k7eWTEB+a298snRYJUfisJIPlObojb+F+t
+	m+xflFHIItmIzgOWszq5NK1YG3uoJ2o46g6RKa4aMHnsphjdA16Ye16AuOYcv0FGnu0VCUbFk9Omu
+	erBvoFQTGRVAMY0ov4XUeg0GxMHNcwIpb5gFroS7bLNDDSI+OJaL9PqsaaYxpSV/Is0WBbk44ivgn
+	DbXzfQ7N4HxvucGEpoNzOmW4z3K/G4I9JSRloeOmfhHJ/A/No4l6ojQpBIotxZYIR56a95+oNJT4d
+	nSSBXTBxX4bYHOedetxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsjrc-0000000Ba2F-3EZ5;
-	Thu, 13 Mar 2025 14:48:48 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tsjt5-0000000BaBb-1MKy;
+	Thu, 13 Mar 2025 14:50:19 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsjrZ-0000000Ba1u-1nzT
+	id 1tsjt3-0000000BaBB-1kO0
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Mar 2025 14:48:46 +0000
+	Thu, 13 Mar 2025 14:50:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id BBB16A4758C;
-	Thu, 13 Mar 2025 14:43:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15016C4CEE9;
-	Thu, 13 Mar 2025 14:48:37 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 92312A47588;
+	Thu, 13 Mar 2025 14:44:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A780C4CEDD;
+	Thu, 13 Mar 2025 14:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741877324;
-	bh=70fZChV/GowMTQt/hRQCh960xmFRGxzZ32s/HpGY/4E=;
+	s=k20201202; t=1741877416;
+	bh=pCgpVuH4J4ja6TgQw7FfxCzs6hWYzkVqoxLdmCK1Sgw=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=J+iS14eqgZKvPlcOZES7mUL/wOxczUB/GyTzmVHxDM5MxK1yKRls4KWXEJzxyM+aN
-	 xw2NB74iq1bPmWr5UPrG2n6DD3QS8Sej1PDlWOu/uED4vw338kCvd9XwqJWiE+gOY4
-	 JMqEK98BdLLb+pifYJdjtozwHtbillK+zvMCJUGVpJmtZeMAP7xO6eQ0FyA+ne1ErH
-	 Vi6+2so4BNOvl/qQeUj0foSo0aYNII1KhRMqKjBT9hhAUjmMuoJm1GrWNJrHc8CchG
-	 dZxtxfGTxHW9j1QviaCOiLLxVGsGis2D/bBV5yMF3CS1D/r3ewC6gsUpGiGoAm7zpy
-	 E96H9EVsdDoTA==
-Message-ID: <779c824b-d44c-4613-aebf-05c3327df1ea@kernel.org>
-Date: Thu, 13 Mar 2025 15:48:34 +0100
+	b=bxNjGHsjFRkqkbYr2IZtX4U/RZtDxvG/OwtEhLHcbcuAQ9lV+LbqMg+sZREQx90OS
+	 KCnu0TK8ML+cyOg/JBbsokGYBqv23/0n7Dc1h7BcxkGwWRzPyFGcnOBkydfI4kMPgL
+	 tlSbc4c1kKETk9O4fgEz8nHr+27BDZwMHsVtLNgNZ/J3xSKXzLSv+gLCKo5x+O+2cE
+	 uajxiQkGtG4h1Z50/Ze/JFzaBld7htzlFkV9C56pxzDU34nxJQa9l0sZ1jjSU8qzgt
+	 dM7lSq+wL70VMN51QPiqEI8xImuhX+9Uj7P0AhwgRmCwOuA55YaU1E0KJS1inXHMsm
+	 r6LcKuvYGktlw==
+Message-ID: <572630ae-50bb-4575-8885-1d97b602ca8f@kernel.org>
+Date: Thu, 13 Mar 2025 15:50:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: mtd: qcom,nandc: Document the SDX75 NAND
+Subject: Re: [PATCH 2/6] dt-bindings: dma: qcom,bam: Document dma-coherent
+ property
 To: Kaushal Kumar <quic_kaushalk@quicinc.com>, vkoul@kernel.org,
  robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
  manivannan.sadhasivam@linaro.org, miquel.raynal@bootlin.com, richard@nod.at,
@@ -56,7 +57,7 @@ Cc: linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org
 References: <20250313130918.4238-1-quic_kaushalk@quicinc.com>
- <20250313130918.4238-2-quic_kaushalk@quicinc.com>
+ <20250313130918.4238-3-quic_kaushalk@quicinc.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -102,10 +103,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20250313130918.4238-2-quic_kaushalk@quicinc.com>
+In-Reply-To: <20250313130918.4238-3-quic_kaushalk@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250313_074845_616573_29D553DC 
-X-CRM114-Status: GOOD (  15.02  )
+X-CRM114-CacheID: sfid-20250313_075017_591078_5819DDF3 
+X-CRM114-Status: GOOD (  12.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,80 +124,36 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 13/03/2025 14:09, Kaushal Kumar wrote:
-> Document the QPIC NAND controller v2.1.1 being used in
-> SDX75 SoC and it uses BAM DMA.
+> SDX75 BAM DMA controller has DMA-coherent support so define
+> it in the properties section, without which 'dtbs_check'
+> reports the following error:
+> 
+>   controller@1c9c000: 'dma-coherent' does not match any of the
+>   regexes: 'pinctrl-[0-9]+'
 
-Please wrap commit message according to Linux coding style / submission
-process (neither too early nor over the limit):
-https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
+How can I reproduce it?
 
 > 
-> SDX75 NAND controller has DMA-coherent and iommu support
-> so define them in the properties section, without which
-> 'dtbs_check' reports the following error:
-> 
->   nand-controller@1cc8000: Unevaluated properties are not
->   allowed ('dma-coherent', 'iommus' were unexpected)
 
-That's a new compatible, so how can you have existing errors? Looks not
-related.
+Fixes tag?
 
-> 
 > Signed-off-by: Kaushal Kumar <quic_kaushalk@quicinc.com>
 > ---
->  .../devicetree/bindings/mtd/qcom,nandc.yaml   | 23 ++++++++++++++-----
->  1 file changed, 17 insertions(+), 6 deletions(-)
+>  Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> index 35b4206ea918..8b77e8837205 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> @@ -11,12 +11,17 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    enum:
-> -      - qcom,ipq806x-nand
-> -      - qcom,ipq4019-nand
-> -      - qcom,ipq6018-nand
-> -      - qcom,ipq8074-nand
-> -      - qcom,sdx55-nand
-> +    OneOf:
-
-Testing patches before sending is still on todo list for Qualcomm :/.
-
-> +      - items:
-> +          - enum:
-> +              - qcom,sdx75-nand
-> +          - const: qcom,sdx55-nand
-> +      - items:
-> +          - const: qcom,ipq806x-nand
-> +          - const: qcom,ipq4019-nand
-> +          - const: qcom,ipq6018-nand
-> +          - const: qcom,ipq8074-nand
-> +          - const: qcom,sdx55-nand
->  
->    reg:
->      maxItems: 1
-> @@ -31,6 +36,12 @@ properties:
->        - const: core
->        - const: aon
+> diff --git a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+> index 3ad0d9b1fbc5..c4dd6a503964 100644
+> --- a/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml
+> @@ -39,6 +39,8 @@ properties:
+>    "#dma-cells":
+>      const: 1
 >  
 > +  dma-coherent: true
-
-Which controllers are DMA coherent?
-
 > +
-> +  iommus:
-> +    minItems: 1
-> +    maxItems: 3
 
-You need to list the items. Why is this flexible?
-
-> +
->    qcom,cmd-crci:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description:
+Which devices are DMA coherent?
 
 
 Best regards,
