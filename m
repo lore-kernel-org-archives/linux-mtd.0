@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55434C35FF1
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Mar 2025 12:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8AEEC35FF6
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Mar 2025 12:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DJBII+GS1As2lWBbQBeJfnuKU1n4NeeniaLkjKkf++0=; b=ILU4tKbze0cnKu
-	sdncXcDMcWMgZ+uw/yZBnyZDLiOFxF43ftc8yrhSomPDuLOaNbW+B+rj8BnaWEdxehtVhpW7C/L+P
-	2mLqAgYhfhVash+a+93EPnc5SUbTLgZc8TZjmoaQJ7tm2JV8LTBUz8mYM+M2ZU3aEjbO7t8k/kn7P
-	eb7VZ4+NUP/zln4Ydn+JM+rTV/i+2XA8YJb7crHcEFiQ2OXi39QRUNXtH9ejVZ8mfUu+tSEJdE/dH
-	VzCwAf3VpA60/F8KGhmtiKqj6cyu2+laHk69Q11QIHSJDvzQPAlVXKj3yuIVFqN70H66fHCa/13LT
-	WtbXp0g82kgx1d/z9hnQ==;
+	List-Owner; bh=s2OKVZXtJIIVcVOWzt9v8WkbGrY+kl80rskwtnTuUS0=; b=KBhNJSbDNS+JgG
+	f+PKTvnwr/JlzIzgCEn0PlviDCCcXiSkYSiQycY84RXog9hPXNVUUnidNuPQs964qI4ZVfRIW1m36
+	woeDaLM95lXMDTqZalOE6PxibRg5UesyOGk+uewBotmXOc8+cLxbEIf/vcm8nMIQOJ79fumvX0w8o
+	1Ui3CGQvUbELvkYjIwgJ1b5CJSpWJgyxTtmlnAsrq4toEoM8hkvRUF/PjBhazv9D5aUA5e5Tgq2f5
+	Sb0zad/P90ZlGSeB3HJpPRAoAY/JFFXsWjDiI6CoGY+1PZnFquUrxkDcopL6PXoji5eX7VgmEPK6C
+	Xzf5S4h6wJmggibDLubg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt440-0000000E8Qg-0qj1;
-	Fri, 14 Mar 2025 12:22:56 +0000
+	id 1tt442-0000000E8UT-2BHm;
+	Fri, 14 Mar 2025 12:22:58 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt43y-0000000E8Ng-1vbc
+	id 1tt43z-0000000E8P4-2jC2
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 14 Mar 2025 12:22:54 +0000
+	Fri, 14 Mar 2025 12:22:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Cc:To:Subject:From:References:
 	In-Reply-To:Message-Id:Date:Sender:Reply-To:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=a3l+91BKzsddVZxNXDZKRTkrBuBQtx6ec/a2AoHM33E=; b=MFKzSgDBJQ+4j3F4Rl6D+R7DQ9
-	o37R0a1ILseqf9qp0UiWMmMOYQtaLn7az2b9PaP4wDYt+S2wGVFoTheooIPNo/trM9hm8oqhqlUAa
-	ERJukUXheUyU15g6z/FF5MFfYGOnxQ9bM6c8IM8kEcvNqE+HUIKaNI+WDF7tUSn4YZFKWucbfmSZ7
-	c/4xVmPYIaoj8/sZZlhCQ08zTFitORuSrBjXwdxl/KJdTpW02ygY2VHzy4w77YkDTUsFW6NbSW8jr
-	RkroP46hNZiBm4mq/c2eOJY0EPMliROjpEPdeOt1gQS1zUauDqAtaTrJF340VePsS3rbxA9ZZ9xme
-	paW0AyJA==;
+	bh=+rZ9b9aXKSscZH+WNcQx7ugyPjUJh5b5Cu9YKRr/YOw=; b=lQyOjX8c6/CVy4/IeoJtPHs/GE
+	9ZbLvHHZvqXqUzo8tmk7Bg9gY+LcMGiue5eSvbY5dWY7102segcwTtZun8jD3ygdc3F0eGP9LzHDe
+	M8tpW+mrZ19MUlb1yW66WVpX4UKdHUVMpjMJbW30G6ucubISKx4TXrer9oE2Ns01aYwHm5q2Stm91
+	PgC8Wvl2uO7Pcapjw4MIUOroOOyuXb1VvUYNsroeRplB1DVSwPPe996mH9dmKwCwrg59juEz65Exk
+	DEBFctMaQBo1j82b2p7+GPxR016EGv72OUpyTSkxdOGwpkHzsMpVBQ5+bPNH4zR1AXtWXeu+eUkaL
+	2khqXXTg==;
 Received: from abb.hmeau.com ([144.6.53.87])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt43t-00000002tQW-2ZMn
+	id 1tt43t-00000002tQV-1s8a
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Mar 2025 12:22:53 +0000
+	Fri, 14 Mar 2025 12:22:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=a3l+91BKzsddVZxNXDZKRTkrBuBQtx6ec/a2AoHM33E=; b=LxjrBmDSAXMe+8IS1JLRtghsGp
-	jZKHna+O2ddic/kb2ui4Rxa0/iaH4uvKACQVEZ9/qkqsD9U8Z8TW9XA30oLfPX5Ly+QUBTYJ7Ex5Z
-	HYj+PlZeQnAoPRSnvD31J1kUhyQXvXXWL+MJWU7kYCFkL8LY8VrIBUZl9v45BFdpZsN/AO9PQEuFc
-	UZFBVObwQgp++RmIRPtb+fR1FSz+tF8u7bHHx0JQxzYoAXMpUcNm74ov1psVFH+pE/d+EGJSO/N9t
-	BLt5q4jWmqt6aNvC9tUjvCIJ1ZpMkc6j+k3gPGOTfJAk++4NEtDiADmyBpcil47IkA3o/pG7UXxdO
-	20GhADSw==;
+	bh=+rZ9b9aXKSscZH+WNcQx7ugyPjUJh5b5Cu9YKRr/YOw=; b=jj12WFT0WAPJSC51sJABTT1NYm
+	x2G9omwIJItFYGs9TEFdVr+mw3i4YhpvCA5BCa2jkGndaX53Zf1a4jBMzxbSSK9RJhtKOF2LQ8IDg
+	TUROrS4cAbzBdP5xJo8Lwb0bZnqeZ7DBGrJ0oC8x9sSJt/8gms/8XXz2JgallwWm/Xpw94cyrXOZK
+	CUT0T3g8sShZiPTpq8ksNGIN/RpjtPQepQCfHXtut7i5OaJUv8sy3SLPotGkWY+nw1C24Oan6OyyH
+	7uz0r8Uuxn7RFcT1NFBB9gdiwdZaMOyxfSRvPm7PC/bMpMq4/4AYazaJFKa3xL39f/PMZbfyDDsfx
+	8r0YbUgA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tt43W-006Zlr-1D;
-	Fri, 14 Mar 2025 20:22:27 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Mar 2025 20:22:26 +0800
-Date: Fri, 14 Mar 2025 20:22:26 +0800
-Message-Id: <1e29b349410b0d9822c8c0b8f6e01386a3c44d66.1741954320.git.herbert@gondor.apana.org.au>
-In-Reply-To: <cover.1741954320.git.herbert@gondor.apana.org.au>
-References: <cover.1741954320.git.herbert@gondor.apana.org.au>
+	id 1tt43b-006ZmK-01;
+	Fri, 14 Mar 2025 20:22:32 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Mar 2025 20:22:31 +0800
+Date: Fri, 14 Mar 2025 20:22:31 +0800
+Message-Id: <9f944a416617eec51a550122bdc52d2e6645cc1d.1741954523.git.herbert@gondor.apana.org.au>
+In-Reply-To: <cover.1741954523.git.herbert@gondor.apana.org.au>
+References: <cover.1741954523.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v4 PATCH 02/13] crypto: qat - Remove dst_null support
+Subject: [v4 PATCH 03/13] crypto: scomp - Remove support for some non-trivial
+ SG lists
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250314_122250_049774_A8E28DFB 
-X-CRM114-Status: GOOD (  14.33  )
+X-CRM114-CacheID: sfid-20250314_122250_057848_19B8493C 
+X-CRM114-Status: GOOD (  23.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,142 +88,330 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Remove the unused dst_null support.
+As the only user of acomp/scomp uses a trivial single-page SG
+list, remove support for everything else in preprataion for the
+addition of virtual address support.
+
+However, keep support for non-trivial source SG lists as that
+user is currently jumping through hoops in order to linearise
+the source data.
+
+Limit the source SG linearisation buffer to a single page as
+that user never goes over that.  The only other potential user
+is also unlikely to exceed that (IPComp) and it can easily do
+its own linearisation if necessary.
+
+Also keep the destination SG linearisation for IPComp.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- .../intel/qat/qat_common/qat_comp_algs.c      | 83 -------------------
- 1 file changed, 83 deletions(-)
+ crypto/acompress.c                  |   1 -
+ crypto/scompress.c                  | 127 ++++++++++++++++------------
+ include/crypto/acompress.h          |  17 +---
+ include/crypto/internal/scompress.h |   2 -
+ 4 files changed, 76 insertions(+), 71 deletions(-)
 
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-index 2ba4aa22e092..9d5848e28ff8 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-+++ b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-@@ -29,11 +29,6 @@ struct qat_compression_ctx {
- 	int (*qat_comp_callback)(struct qat_compression_req *qat_req, void *resp);
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index 45444e99a9db..194a4b36f97f 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -73,7 +73,6 @@ static int crypto_acomp_init_tfm(struct crypto_tfm *tfm)
+ 
+ 	acomp->compress = alg->compress;
+ 	acomp->decompress = alg->decompress;
+-	acomp->dst_free = alg->dst_free;
+ 	acomp->reqsize = alg->reqsize;
+ 
+ 	if (alg->exit)
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index a2ce481a10bb..4441c40f541f 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -12,8 +12,10 @@
+ #include <crypto/scatterwalk.h>
+ #include <linux/cryptouser.h>
+ #include <linux/err.h>
++#include <linux/highmem.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/overflow.h>
+ #include <linux/scatterlist.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+@@ -23,9 +25,14 @@
+ 
+ #include "compress.h"
+ 
++#define SCOMP_SCRATCH_SIZE 65400
++
+ struct scomp_scratch {
+ 	spinlock_t	lock;
+-	void		*src;
++	union {
++		void	*src;
++		unsigned long saddr;
++	};
+ 	void		*dst;
  };
  
--struct qat_dst {
--	bool is_null;
--	int resubmitted;
--};
--
- struct qat_compression_req {
- 	u8 req[QAT_COMP_REQ_SIZE];
- 	struct qat_compression_ctx *qat_compression_ctx;
-@@ -42,8 +37,6 @@ struct qat_compression_req {
- 	enum direction dir;
- 	int actual_dlen;
- 	struct qat_alg_req alg_req;
--	struct work_struct resubmit;
--	struct qat_dst dst;
- };
+@@ -66,7 +73,7 @@ static void crypto_scomp_free_scratches(void)
+ 	for_each_possible_cpu(i) {
+ 		scratch = per_cpu_ptr(&scomp_scratch, i);
  
- static int qat_alg_send_dc_message(struct qat_compression_req *qat_req,
-@@ -60,46 +53,6 @@ static int qat_alg_send_dc_message(struct qat_compression_req *qat_req,
- 	return qat_alg_send_message(alg_req);
- }
+-		vfree(scratch->src);
++		free_page(scratch->saddr);
+ 		vfree(scratch->dst);
+ 		scratch->src = NULL;
+ 		scratch->dst = NULL;
+@@ -79,14 +86,15 @@ static int crypto_scomp_alloc_scratches(void)
+ 	int i;
  
--static void qat_comp_resubmit(struct work_struct *work)
--{
--	struct qat_compression_req *qat_req =
--		container_of(work, struct qat_compression_req, resubmit);
--	struct qat_compression_ctx *ctx = qat_req->qat_compression_ctx;
--	struct adf_accel_dev *accel_dev = ctx->inst->accel_dev;
--	struct qat_request_buffs *qat_bufs = &qat_req->buf;
--	struct qat_compression_instance *inst = ctx->inst;
--	struct acomp_req *areq = qat_req->acompress_req;
--	struct crypto_acomp *tfm = crypto_acomp_reqtfm(areq);
--	unsigned int dlen = CRYPTO_ACOMP_DST_MAX;
--	u8 *req = qat_req->req;
--	dma_addr_t dfbuf;
--	int ret;
--
--	areq->dlen = dlen;
--
--	dev_dbg(&GET_DEV(accel_dev), "[%s][%s] retry NULL dst request - dlen = %d\n",
--		crypto_tfm_alg_driver_name(crypto_acomp_tfm(tfm)),
--		qat_req->dir == COMPRESSION ? "comp" : "decomp", dlen);
--
--	ret = qat_bl_realloc_map_new_dst(accel_dev, &areq->dst, dlen, qat_bufs,
--					 qat_algs_alloc_flags(&areq->base));
--	if (ret)
--		goto err;
--
--	qat_req->dst.resubmitted = true;
--
--	dfbuf = qat_req->buf.bloutp;
--	qat_comp_override_dst(req, dfbuf, dlen);
--
--	ret = qat_alg_send_dc_message(qat_req, inst, &areq->base);
--	if (ret != -ENOSPC)
--		return;
--
--err:
--	qat_bl_free_bufl(accel_dev, qat_bufs);
--	acomp_request_complete(areq, ret);
--}
--
- static void qat_comp_generic_callback(struct qat_compression_req *qat_req,
- 				      void *resp)
+ 	for_each_possible_cpu(i) {
++		struct page *page;
+ 		void *mem;
+ 
+ 		scratch = per_cpu_ptr(&scomp_scratch, i);
+ 
+-		mem = vmalloc_node(SCOMP_SCRATCH_SIZE, cpu_to_node(i));
+-		if (!mem)
++		page = alloc_pages_node(cpu_to_node(i), GFP_KERNEL, 0);
++		if (!page)
+ 			goto error;
+-		scratch->src = mem;
++		scratch->src = page_address(page);
+ 		mem = vmalloc_node(SCOMP_SCRATCH_SIZE, cpu_to_node(i));
+ 		if (!mem)
+ 			goto error;
+@@ -161,76 +169,88 @@ static int crypto_scomp_init_tfm(struct crypto_tfm *tfm)
+ 
+ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
  {
-@@ -131,21 +84,6 @@ static void qat_comp_generic_callback(struct qat_compression_req *qat_req,
++	struct scomp_scratch *scratch = raw_cpu_ptr(&scomp_scratch);
+ 	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
+-	void **tfm_ctx = acomp_tfm_ctx(tfm);
++	struct crypto_scomp **tfm_ctx = acomp_tfm_ctx(tfm);
+ 	struct crypto_scomp *scomp = *tfm_ctx;
+ 	struct crypto_acomp_stream *stream;
+-	struct scomp_scratch *scratch;
++	unsigned int slen = req->slen;
++	unsigned int dlen = req->dlen;
++	struct page *spage, *dpage;
++	unsigned int soff, doff;
+ 	void *src, *dst;
+-	unsigned int dlen;
++	unsigned int n;
+ 	int ret;
  
- 	areq->dlen = 0;
- 
--	if (qat_req->dir == DECOMPRESSION && qat_req->dst.is_null) {
--		if (cmp_err == ERR_CODE_OVERFLOW_ERROR) {
--			if (qat_req->dst.resubmitted) {
--				dev_dbg(&GET_DEV(accel_dev),
--					"Output does not fit destination buffer\n");
--				res = -EOVERFLOW;
--				goto end;
--			}
--
--			INIT_WORK(&qat_req->resubmit, qat_comp_resubmit);
--			adf_misc_wq_queue_work(&qat_req->resubmit);
--			return;
--		}
--	}
--
- 	if (unlikely(status != ICP_QAT_FW_COMN_STATUS_FLAG_OK))
- 		goto end;
- 
-@@ -248,26 +186,6 @@ static int qat_comp_alg_compress_decompress(struct acomp_req *areq, enum directi
- 	if (areq->dst && !dlen)
+-	if (!req->src || !req->slen || req->slen > SCOMP_SCRATCH_SIZE)
++	if (!req->src || !slen)
  		return -EINVAL;
  
--	qat_req->dst.is_null = false;
--
--	/* Handle acomp requests that require the allocation of a destination
--	 * buffer. The size of the destination buffer is double the source
--	 * buffer (rounded up to the size of a page) to fit the decompressed
--	 * output or an expansion on the data for compression.
--	 */
--	if (!areq->dst) {
--		qat_req->dst.is_null = true;
--
--		dlen = round_up(2 * slen, PAGE_SIZE);
--		areq->dst = sgl_alloc(dlen, f, NULL);
--		if (!areq->dst)
--			return -ENOMEM;
--
--		dlen -= dhdr + dftr;
--		areq->dlen = dlen;
--		qat_req->dst.resubmitted = false;
--	}
--
- 	if (dir == COMPRESSION) {
- 		params.extra_dst_buff = inst->dc_data->ovf_buff_p;
- 		ovf_buff_sz = inst->dc_data->ovf_buff_sz;
-@@ -329,7 +247,6 @@ static struct acomp_alg qat_acomp[] = { {
- 	.exit = qat_comp_alg_exit_tfm,
- 	.compress = qat_comp_alg_compress,
- 	.decompress = qat_comp_alg_decompress,
--	.dst_free = sgl_free,
- 	.reqsize = sizeof(struct qat_compression_req),
- }};
+-	if (req->dst && !req->dlen)
++	if (!req->dst || !dlen)
+ 		return -EINVAL;
  
+-	if (!req->dlen || req->dlen > SCOMP_SCRATCH_SIZE)
+-		req->dlen = SCOMP_SCRATCH_SIZE;
++	soff = req->src->offset;
++	spage = nth_page(sg_page(req->src), soff / PAGE_SIZE);
++	soff = offset_in_page(soff);
+ 
+-	dlen = req->dlen;
+-
+-	scratch = raw_cpu_ptr(&scomp_scratch);
+-	spin_lock_bh(&scratch->lock);
+-
+-	if (sg_nents(req->src) == 1 && !PageHighMem(sg_page(req->src))) {
+-		src = page_to_virt(sg_page(req->src)) + req->src->offset;
+-	} else {
+-		scatterwalk_map_and_copy(scratch->src, req->src, 0,
+-					 req->slen, 0);
++	n = slen / PAGE_SIZE;
++	n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
++	if (slen <= req->src->length && (!PageHighMem(nth_page(spage, n)) ||
++					 size_add(soff, slen) <= PAGE_SIZE))
++		src = kmap_local_page(spage) + soff;
++	else
+ 		src = scratch->src;
++
++	doff = req->dst->offset;
++	dpage = nth_page(sg_page(req->dst), doff / PAGE_SIZE);
++	doff = offset_in_page(doff);
++
++	n = dlen / PAGE_SIZE;
++	n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
++	if (dlen <= req->dst->length && (!PageHighMem(nth_page(dpage, n)) ||
++					 size_add(doff, dlen) <= PAGE_SIZE))
++		dst = kmap_local_page(dpage) + doff;
++	else {
++		if (dlen > SCOMP_SCRATCH_SIZE)
++			dlen = SCOMP_SCRATCH_SIZE;
++		dst = scratch->dst;
+ 	}
+ 
+-	if (req->dst && sg_nents(req->dst) == 1 && !PageHighMem(sg_page(req->dst)))
+-		dst = page_to_virt(sg_page(req->dst)) + req->dst->offset;
+-	else
+-		dst = scratch->dst;
++	spin_lock_bh(&scratch->lock);
++
++	if (src == scratch->src)
++		memcpy_from_sglist(src, req->src, 0, slen);
+ 
+ 	stream = raw_cpu_ptr(crypto_scomp_alg(scomp)->stream);
+ 	spin_lock(&stream->lock);
+ 	if (dir)
+-		ret = crypto_scomp_compress(scomp, src, req->slen,
+-					    dst, &req->dlen, stream->ctx);
++		ret = crypto_scomp_compress(scomp, src, slen,
++					    dst, &dlen, stream->ctx);
+ 	else
+-		ret = crypto_scomp_decompress(scomp, src, req->slen,
+-					      dst, &req->dlen, stream->ctx);
+-	spin_unlock(&stream->lock);
+-	if (!ret) {
+-		if (!req->dst) {
+-			req->dst = sgl_alloc(req->dlen, GFP_ATOMIC, NULL);
+-			if (!req->dst) {
+-				ret = -ENOMEM;
+-				goto out;
+-			}
+-		} else if (req->dlen > dlen) {
+-			ret = -ENOSPC;
+-			goto out;
+-		}
+-		if (dst == scratch->dst) {
+-			scatterwalk_map_and_copy(scratch->dst, req->dst, 0,
+-						 req->dlen, 1);
+-		} else {
+-			int nr_pages = DIV_ROUND_UP(req->dst->offset + req->dlen, PAGE_SIZE);
+-			int i;
+-			struct page *dst_page = sg_page(req->dst);
++		ret = crypto_scomp_decompress(scomp, src, slen,
++					      dst, &dlen, stream->ctx);
+ 
+-			for (i = 0; i < nr_pages; i++)
+-				flush_dcache_page(dst_page + i);
++	if (dst == scratch->dst)
++		memcpy_to_sglist(req->dst, 0, dst, dlen);
++
++	spin_unlock(&stream->lock);
++	spin_unlock_bh(&scratch->lock);
++
++	req->dlen = dlen;
++
++	if (dst != scratch->dst) {
++		kunmap_local(dst);
++		dlen += doff;
++		for (;;) {
++			flush_dcache_page(dpage);
++			if (dlen <= PAGE_SIZE)
++				break;
++			dlen -= PAGE_SIZE;
++			dpage = nth_page(dpage, 1);
+ 		}
+ 	}
+-out:
+-	spin_unlock_bh(&scratch->lock);
++	if (src != scratch->src)
++		kunmap_local(src);
++
+ 	return ret;
+ }
+ 
+@@ -277,7 +297,6 @@ int crypto_init_scomp_ops_async(struct crypto_tfm *tfm)
+ 
+ 	crt->compress = scomp_acomp_compress;
+ 	crt->decompress = scomp_acomp_decompress;
+-	crt->dst_free = sgl_free;
+ 
+ 	return 0;
+ }
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index c4d8a29274c6..53c9e632862b 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -18,8 +18,6 @@
+ #include <linux/spinlock_types.h>
+ #include <linux/types.h>
+ 
+-#define CRYPTO_ACOMP_ALLOC_OUTPUT	0x00000001
+-
+ /* Set this bit if source is virtual address instead of SG list. */
+ #define CRYPTO_ACOMP_REQ_SRC_VIRT	0x00000002
+ 
+@@ -84,15 +82,12 @@ struct acomp_req {
+  *
+  * @compress:		Function performs a compress operation
+  * @decompress:		Function performs a de-compress operation
+- * @dst_free:		Frees destination buffer if allocated inside the
+- *			algorithm
+  * @reqsize:		Context size for (de)compression requests
+  * @base:		Common crypto API algorithm data structure
+  */
+ struct crypto_acomp {
+ 	int (*compress)(struct acomp_req *req);
+ 	int (*decompress)(struct acomp_req *req);
+-	void (*dst_free)(struct scatterlist *dst);
+ 	unsigned int reqsize;
+ 	struct crypto_tfm base;
+ };
+@@ -261,9 +256,8 @@ static inline void acomp_request_set_callback(struct acomp_req *req,
+ 					      crypto_completion_t cmpl,
+ 					      void *data)
+ {
+-	u32 keep = CRYPTO_ACOMP_ALLOC_OUTPUT | CRYPTO_ACOMP_REQ_SRC_VIRT |
+-		   CRYPTO_ACOMP_REQ_SRC_NONDMA | CRYPTO_ACOMP_REQ_DST_VIRT |
+-		   CRYPTO_ACOMP_REQ_DST_NONDMA;
++	u32 keep = CRYPTO_ACOMP_REQ_SRC_VIRT | CRYPTO_ACOMP_REQ_SRC_NONDMA |
++		   CRYPTO_ACOMP_REQ_DST_VIRT | CRYPTO_ACOMP_REQ_DST_NONDMA;
+ 
+ 	req->base.complete = cmpl;
+ 	req->base.data = data;
+@@ -297,13 +291,10 @@ static inline void acomp_request_set_params(struct acomp_req *req,
+ 	req->slen = slen;
+ 	req->dlen = dlen;
+ 
+-	req->base.flags &= ~(CRYPTO_ACOMP_ALLOC_OUTPUT |
+-			     CRYPTO_ACOMP_REQ_SRC_VIRT |
++	req->base.flags &= ~(CRYPTO_ACOMP_REQ_SRC_VIRT |
+ 			     CRYPTO_ACOMP_REQ_SRC_NONDMA |
+ 			     CRYPTO_ACOMP_REQ_DST_VIRT |
+ 			     CRYPTO_ACOMP_REQ_DST_NONDMA);
+-	if (!req->dst)
+-		req->base.flags |= CRYPTO_ACOMP_ALLOC_OUTPUT;
+ }
+ 
+ /**
+@@ -403,7 +394,6 @@ static inline void acomp_request_set_dst_dma(struct acomp_req *req,
+ 	req->dvirt = dst;
+ 	req->dlen = dlen;
+ 
+-	req->base.flags &= ~CRYPTO_ACOMP_ALLOC_OUTPUT;
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_NONDMA;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_DST_VIRT;
+ }
+@@ -424,7 +414,6 @@ static inline void acomp_request_set_dst_nondma(struct acomp_req *req,
+ 	req->dvirt = dst;
+ 	req->dlen = dlen;
+ 
+-	req->base.flags &= ~CRYPTO_ACOMP_ALLOC_OUTPUT;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_DST_NONDMA;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_DST_VIRT;
+ }
+diff --git a/include/crypto/internal/scompress.h b/include/crypto/internal/scompress.h
+index 88986ab8ce15..f25aa2ea3b48 100644
+--- a/include/crypto/internal/scompress.h
++++ b/include/crypto/internal/scompress.h
+@@ -12,8 +12,6 @@
+ #include <crypto/acompress.h>
+ #include <crypto/algapi.h>
+ 
+-#define SCOMP_SCRATCH_SIZE	131072
+-
+ struct acomp_req;
+ 
+ struct crypto_scomp {
 -- 
 2.39.5
 
