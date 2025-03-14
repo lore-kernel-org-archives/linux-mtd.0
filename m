@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05E60C35FF7
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Mar 2025 12:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0157C35FF6
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Mar 2025 12:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FZnwlVaAYg7P9NoMf6IbPMPHyXz+X7EEnZtvyB7KxPI=; b=YEoK75DGdCKLlp
-	kwrY47JbqzWyaJ2XB4jSazczGrrVJn9g5yZa8T6FR5wrlYkVN4/YXRKO4FacNs4SuA2/EA05rpaeq
-	FWub1YwUrX4l7RQSYNUkTO05wR+Vzszn2Vg5RB+XJR6sDo6eKrNTiB2EKhznCFzF47DQir8Ddfk9D
-	+WRrTqi6miOelc1HorxTxOzuQe1wwJIEU74AazECMcobj1U9jkHuzU1T2OfAIxldOxwBR86p6+Jie
-	vLE347F46X7MDwJtvBIRDb5cQ+HHBK/MYIblaU8ss3LtFR0nYRb9NMmViVNmT4KsWDM4I9TXebJwX
-	3mJE4IpY5vQE1AGsoAcg==;
+	List-Owner; bh=2OpKLHKFNoZwk7OgIGj7dRJ8hmJ1WxdzMrID4/mhldk=; b=G+959FUiRX5HAY
+	s4CwhW0lDP/tX7akIwNWv2sn1MRSD1VaKZwIyVEsdPJgf5u7v3qtjxS2YHgivEDeQShpmHLztNP5c
+	6SvHSVjgG8Fl6/cSYLF5Bh4YhaJdJZ6JX6hNCupxEOHOQSEBah8UuU6yHzwsGv/m3Z4vfILbVVV/0
+	z+Hbmhcn8bM0z8ZURy+CZrp4x61+U8Do0D5/QVVUnUitz4xQwGT+oEwFBxDkSiDyGCa5JkBRot30h
+	F07G9bYTvuKTMjzAL2BiXiEglTyew4slNQ/8Lz4tyQqHbRd4a7u4Nxe6W3K+yh1S8/bQvhmyjzMPH
+	eAmsqYcxqbF1C5VSeJvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt43p-0000000E8EL-1MDo;
-	Fri, 14 Mar 2025 12:22:45 +0000
+	id 1tt43q-0000000E8FK-1X0Q;
+	Fri, 14 Mar 2025 12:22:46 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt43n-0000000E8CN-0RJ8
+	id 1tt43n-0000000E8BQ-1dvK
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Mar 2025 12:22:44 +0000
+	Fri, 14 Mar 2025 12:22:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=TnJxSbbE+YJ2uAsOZ9Ozioiuc9CHKwZc8r1aAkL68hE=; b=ckUUMG/PN5PGEpKMpd4/Qt177w
-	js3qq3sPtB8rX9OeidhC8D6nzSPfiQqUjLPb9myb2O/LIByhfPHhp7gazo50XEmLEnKWY184uwly7
-	CaCa3gstGBs1vv6gkJJxaUVbZhDdjRxhoL5X7r+mAZQWQL+7nLf8DPCtJHYZdsA+s5teLw6uQ/5d+
-	b54wIAAzdDcmfRV6qHwaynhrNarbrTg4IJkXuk5sAVaGgf4GlfBL3PB0Fdd9Rb2rSd71rp2BkSgpo
-	ppg7BWoQYxAfPV+pVB80iPuk1tGeyfN/EBDXdJhuHY+CXC9mFqeFnN0iAEF660+BAgTu9XmYtfVJA
-	2prYAFyw==;
+	bh=c5J7R93VbWY8eXPMwB3c29c2QRrhSxoIY0/VZKY8uW4=; b=nbVSDLsNXS3k9izGeAltD7taRP
+	p+W5TwgAxmMMug3atin5rPRLU+oP/KJYIGab4C36TQaLtmGLCbXEeNoZOl2P/hSJWwpFAyJVankWd
+	VZ4F11hcl5MgKBZ4kPqOhJ4fVBcmqdsGjxiSv3ISZh/j61UzVY+aYaooMsWd6yynL06C5wttYPafI
+	L5baQZ3hMpVPSrQyn/bNThT6Lu1eka0ZH8yyndjgqXJuTKuwESLIBEi/SSWO0qzhfKaAQRh/636BX
+	N27nqvJaHYDmUNHab6OQbxxJXGHC8wbJLhdAoNKo4VXSQOPpd4Bu00ajtnCkgNi7tfcS59TnDZBfF
+	APCsup4g==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tt43f-006Zmo-1u;
-	Fri, 14 Mar 2025 20:22:36 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Mar 2025 20:22:35 +0800
-Date: Fri, 14 Mar 2025 20:22:35 +0800
-Message-Id: <c89cc6e2c4e5158e16a2d1b8b93a3d7cadd809e6.1741954523.git.herbert@gondor.apana.org.au>
-In-Reply-To: <cover.1741954523.git.herbert@gondor.apana.org.au>
-References: <cover.1741954523.git.herbert@gondor.apana.org.au>
+	id 1tt43Y-006Zm6-2D;
+	Fri, 14 Mar 2025 20:22:29 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Mar 2025 20:22:28 +0800
+Date: Fri, 14 Mar 2025 20:22:28 +0800
+Message-Id: <11128811057de7bb7e8d9ce9fe56bf9ee64ad143.1741954320.git.herbert@gondor.apana.org.au>
+In-Reply-To: <cover.1741954320.git.herbert@gondor.apana.org.au>
+References: <cover.1741954320.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v4 PATCH 05/13] crypto: scomp - Add chaining and virtual address
- support
+Subject: [v4 PATCH 03/13] crypto: iaa - Remove dst_null support
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250314_052243_145346_B79F0429 
-X-CRM114-Status: GOOD (  13.59  )
+X-CRM114-CacheID: sfid-20250314_052243_708099_3C8CD309 
+X-CRM114-Status: GOOD (  13.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,171 +72,239 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add chaining and virtual address support to all scomp algorithms.
+Remove the unused dst_null support.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/scompress.c | 96 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 65 insertions(+), 31 deletions(-)
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 136 +--------------------
+ 1 file changed, 6 insertions(+), 130 deletions(-)
 
-diff --git a/crypto/scompress.c b/crypto/scompress.c
-index 4441c40f541f..ba9b22ba53fe 100644
---- a/crypto/scompress.c
-+++ b/crypto/scompress.c
-@@ -178,8 +178,9 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	unsigned int dlen = req->dlen;
- 	struct page *spage, *dpage;
- 	unsigned int soff, doff;
--	void *src, *dst;
- 	unsigned int n;
-+	const u8 *src;
-+	u8 *dst;
- 	int ret;
+diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+index 990ea46955bb..50cb100bf1c8 100644
+--- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
++++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+@@ -1136,8 +1136,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
+ 			struct idxd_wq *wq,
+ 			dma_addr_t src_addr, unsigned int slen,
+ 			dma_addr_t dst_addr, unsigned int *dlen,
+-			u32 *compression_crc,
+-			bool disable_async)
++			u32 *compression_crc)
+ {
+ 	struct iaa_device_compression_mode *active_compression_mode;
+ 	struct iaa_compression_ctx *ctx = crypto_tfm_ctx(tfm);
+@@ -1180,7 +1179,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
+ 	desc->src2_size = sizeof(struct aecs_comp_table_record);
+ 	desc->completion_addr = idxd_desc->compl_dma;
  
- 	if (!req->src || !slen)
-@@ -188,37 +189,47 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	if (!req->dst || !dlen)
- 		return -EINVAL;
+-	if (ctx->use_irq && !disable_async) {
++	if (ctx->use_irq) {
+ 		desc->flags |= IDXD_OP_FLAG_RCI;
  
--	soff = req->src->offset;
--	spage = nth_page(sg_page(req->src), soff / PAGE_SIZE);
--	soff = offset_in_page(soff);
+ 		idxd_desc->crypto.req = req;
+@@ -1193,7 +1192,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
+ 			" src_addr %llx, dst_addr %llx\n", __func__,
+ 			active_compression_mode->name,
+ 			src_addr, dst_addr);
+-	} else if (ctx->async_mode && !disable_async)
++	} else if (ctx->async_mode)
+ 		req->base.data = idxd_desc;
+ 
+ 	dev_dbg(dev, "%s: compression mode %s,"
+@@ -1214,7 +1213,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
+ 	update_total_comp_calls();
+ 	update_wq_comp_calls(wq);
+ 
+-	if (ctx->async_mode && !disable_async) {
++	if (ctx->async_mode) {
+ 		ret = -EINPROGRESS;
+ 		dev_dbg(dev, "%s: returning -EINPROGRESS\n", __func__);
+ 		goto out;
+@@ -1234,7 +1233,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
+ 
+ 	*compression_crc = idxd_desc->iax_completion->crc;
+ 
+-	if (!ctx->async_mode || disable_async)
++	if (!ctx->async_mode)
+ 		idxd_free_desc(wq, idxd_desc);
+ out:
+ 	return ret;
+@@ -1500,13 +1499,11 @@ static int iaa_comp_acompress(struct acomp_req *req)
+ 	struct iaa_compression_ctx *compression_ctx;
+ 	struct crypto_tfm *tfm = req->base.tfm;
+ 	dma_addr_t src_addr, dst_addr;
+-	bool disable_async = false;
+ 	int nr_sgs, cpu, ret = 0;
+ 	struct iaa_wq *iaa_wq;
+ 	u32 compression_crc;
+ 	struct idxd_wq *wq;
+ 	struct device *dev;
+-	int order = -1;
+ 
+ 	compression_ctx = crypto_tfm_ctx(tfm);
+ 
+@@ -1536,21 +1533,6 @@ static int iaa_comp_acompress(struct acomp_req *req)
+ 
+ 	iaa_wq = idxd_wq_get_private(wq);
+ 
+-	if (!req->dst) {
+-		gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ? GFP_KERNEL : GFP_ATOMIC;
 -
--	n = slen / PAGE_SIZE;
--	n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
--	if (slen <= req->src->length && (!PageHighMem(nth_page(spage, n)) ||
--					 size_add(soff, slen) <= PAGE_SIZE))
--		src = kmap_local_page(spage) + soff;
--	else
--		src = scratch->src;
+-		/* incompressible data will always be < 2 * slen */
+-		req->dlen = 2 * req->slen;
+-		order = order_base_2(round_up(req->dlen, PAGE_SIZE) / PAGE_SIZE);
+-		req->dst = sgl_alloc_order(req->dlen, order, false, flags, NULL);
+-		if (!req->dst) {
+-			ret = -ENOMEM;
+-			order = -1;
+-			goto out;
+-		}
+-		disable_async = true;
+-	}
 -
--	doff = req->dst->offset;
--	dpage = nth_page(sg_page(req->dst), doff / PAGE_SIZE);
--	doff = offset_in_page(doff);
+ 	dev = &wq->idxd->pdev->dev;
+ 
+ 	nr_sgs = dma_map_sg(dev, req->src, sg_nents(req->src), DMA_TO_DEVICE);
+@@ -1580,7 +1562,7 @@ static int iaa_comp_acompress(struct acomp_req *req)
+ 		req->dst, req->dlen, sg_dma_len(req->dst));
+ 
+ 	ret = iaa_compress(tfm, req, wq, src_addr, req->slen, dst_addr,
+-			   &req->dlen, &compression_crc, disable_async);
++			   &req->dlen, &compression_crc);
+ 	if (ret == -EINPROGRESS)
+ 		return ret;
+ 
+@@ -1611,100 +1593,6 @@ static int iaa_comp_acompress(struct acomp_req *req)
+ out:
+ 	iaa_wq_put(wq);
+ 
+-	if (order >= 0)
+-		sgl_free_order(req->dst, order);
 -
--	n = dlen / PAGE_SIZE;
--	n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
--	if (dlen <= req->dst->length && (!PageHighMem(nth_page(dpage, n)) ||
--					 size_add(doff, dlen) <= PAGE_SIZE))
--		dst = kmap_local_page(dpage) + doff;
-+	if (acomp_request_src_isvirt(req))
-+		src = req->svirt;
- 	else {
--		if (dlen > SCOMP_SCRATCH_SIZE)
--			dlen = SCOMP_SCRATCH_SIZE;
--		dst = scratch->dst;
-+		soff = req->src->offset;
-+		spage = nth_page(sg_page(req->src), soff / PAGE_SIZE);
-+		soff = offset_in_page(soff);
-+
-+		n = slen / PAGE_SIZE;
-+		n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
-+		if (slen <= req->src->length &&
-+		    (!PageHighMem(nth_page(spage, n)) ||
-+		     size_add(soff, slen) <= PAGE_SIZE))
-+			src = kmap_local_page(spage) + soff;
-+		else
-+			src = scratch->src;
-+	}
-+
-+	if (acomp_request_dst_isvirt(req))
-+		dst = req->dvirt;
-+	else {
-+		doff = req->dst->offset;
-+		dpage = nth_page(sg_page(req->dst), doff / PAGE_SIZE);
-+		doff = offset_in_page(doff);
-+
-+		n = dlen / PAGE_SIZE;
-+		n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
-+		if (dlen <= req->dst->length &&
-+		    (!PageHighMem(nth_page(dpage, n)) ||
-+		     size_add(doff, dlen) <= PAGE_SIZE))
-+			dst = kmap_local_page(dpage) + doff;
-+		else {
-+			if (dlen > SCOMP_SCRATCH_SIZE)
-+				dlen = SCOMP_SCRATCH_SIZE;
-+			dst = scratch->dst;
-+		}
- 	}
- 
- 	spin_lock_bh(&scratch->lock);
- 
- 	if (src == scratch->src)
--		memcpy_from_sglist(src, req->src, 0, slen);
-+		memcpy_from_sglist(scratch->src, req->src, 0, slen);
- 
- 	stream = raw_cpu_ptr(crypto_scomp_alg(scomp)->stream);
- 	spin_lock(&stream->lock);
-@@ -237,7 +248,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 
- 	req->dlen = dlen;
- 
--	if (dst != scratch->dst) {
-+	if (!acomp_request_dst_isvirt(req) && dst != scratch->dst) {
- 		kunmap_local(dst);
- 		dlen += doff;
- 		for (;;) {
-@@ -248,20 +259,34 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 			dpage = nth_page(dpage, 1);
- 		}
- 	}
--	if (src != scratch->src)
-+	if (!acomp_request_src_isvirt(req) && src != scratch->src)
- 		kunmap_local(src);
- 
+-	return ret;
+-}
+-
+-static int iaa_comp_adecompress_alloc_dest(struct acomp_req *req)
+-{
+-	gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ?
+-		GFP_KERNEL : GFP_ATOMIC;
+-	struct crypto_tfm *tfm = req->base.tfm;
+-	dma_addr_t src_addr, dst_addr;
+-	int nr_sgs, cpu, ret = 0;
+-	struct iaa_wq *iaa_wq;
+-	struct device *dev;
+-	struct idxd_wq *wq;
+-	int order = -1;
+-
+-	cpu = get_cpu();
+-	wq = wq_table_next_wq(cpu);
+-	put_cpu();
+-	if (!wq) {
+-		pr_debug("no wq configured for cpu=%d\n", cpu);
+-		return -ENODEV;
+-	}
+-
+-	ret = iaa_wq_get(wq);
+-	if (ret) {
+-		pr_debug("no wq available for cpu=%d\n", cpu);
+-		return -ENODEV;
+-	}
+-
+-	iaa_wq = idxd_wq_get_private(wq);
+-
+-	dev = &wq->idxd->pdev->dev;
+-
+-	nr_sgs = dma_map_sg(dev, req->src, sg_nents(req->src), DMA_TO_DEVICE);
+-	if (nr_sgs <= 0 || nr_sgs > 1) {
+-		dev_dbg(dev, "couldn't map src sg for iaa device %d,"
+-			" wq %d: ret=%d\n", iaa_wq->iaa_device->idxd->id,
+-			iaa_wq->wq->id, ret);
+-		ret = -EIO;
+-		goto out;
+-	}
+-	src_addr = sg_dma_address(req->src);
+-	dev_dbg(dev, "dma_map_sg, src_addr %llx, nr_sgs %d, req->src %p,"
+-		" req->slen %d, sg_dma_len(sg) %d\n", src_addr, nr_sgs,
+-		req->src, req->slen, sg_dma_len(req->src));
+-
+-	req->dlen = 4 * req->slen; /* start with ~avg comp rato */
+-alloc_dest:
+-	order = order_base_2(round_up(req->dlen, PAGE_SIZE) / PAGE_SIZE);
+-	req->dst = sgl_alloc_order(req->dlen, order, false, flags, NULL);
+-	if (!req->dst) {
+-		ret = -ENOMEM;
+-		order = -1;
+-		goto out;
+-	}
+-
+-	nr_sgs = dma_map_sg(dev, req->dst, sg_nents(req->dst), DMA_FROM_DEVICE);
+-	if (nr_sgs <= 0 || nr_sgs > 1) {
+-		dev_dbg(dev, "couldn't map dst sg for iaa device %d,"
+-			" wq %d: ret=%d\n", iaa_wq->iaa_device->idxd->id,
+-			iaa_wq->wq->id, ret);
+-		ret = -EIO;
+-		goto err_map_dst;
+-	}
+-
+-	dst_addr = sg_dma_address(req->dst);
+-	dev_dbg(dev, "dma_map_sg, dst_addr %llx, nr_sgs %d, req->dst %p,"
+-		" req->dlen %d, sg_dma_len(sg) %d\n", dst_addr, nr_sgs,
+-		req->dst, req->dlen, sg_dma_len(req->dst));
+-	ret = iaa_decompress(tfm, req, wq, src_addr, req->slen,
+-			     dst_addr, &req->dlen, true);
+-	if (ret == -EOVERFLOW) {
+-		dma_unmap_sg(dev, req->dst, sg_nents(req->dst), DMA_FROM_DEVICE);
+-		req->dlen *= 2;
+-		if (req->dlen > CRYPTO_ACOMP_DST_MAX)
+-			goto err_map_dst;
+-		goto alloc_dest;
+-	}
+-
+-	if (ret != 0)
+-		dev_dbg(dev, "asynchronous decompress failed ret=%d\n", ret);
+-
+-	dma_unmap_sg(dev, req->dst, sg_nents(req->dst), DMA_FROM_DEVICE);
+-err_map_dst:
+-	dma_unmap_sg(dev, req->src, sg_nents(req->src), DMA_TO_DEVICE);
+-out:
+-	iaa_wq_put(wq);
+-
+-	if (order >= 0)
+-		sgl_free_order(req->dst, order);
+-
  	return ret;
  }
  
-+static int scomp_acomp_chain(struct acomp_req *req, int dir)
-+{
-+	struct acomp_req *r2;
-+	int err;
-+
-+	err = scomp_acomp_comp_decomp(req, dir);
-+	req->base.err = err;
-+
-+	list_for_each_entry(r2, &req->base.list, base.list)
-+		r2->base.err = scomp_acomp_comp_decomp(r2, dir);
-+
-+	return err;
-+}
-+
- static int scomp_acomp_compress(struct acomp_req *req)
- {
--	return scomp_acomp_comp_decomp(req, 1);
-+	return scomp_acomp_chain(req, 1);
+@@ -1727,9 +1615,6 @@ static int iaa_comp_adecompress(struct acomp_req *req)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!req->dst)
+-		return iaa_comp_adecompress_alloc_dest(req);
+-
+ 	cpu = get_cpu();
+ 	wq = wq_table_next_wq(cpu);
+ 	put_cpu();
+@@ -1810,19 +1695,10 @@ static int iaa_comp_init_fixed(struct crypto_acomp *acomp_tfm)
+ 	return 0;
  }
  
- static int scomp_acomp_decompress(struct acomp_req *req)
- {
--	return scomp_acomp_comp_decomp(req, 0);
-+	return scomp_acomp_chain(req, 0);
- }
- 
- static void crypto_exit_scomp_ops_async(struct crypto_tfm *tfm)
-@@ -322,12 +347,21 @@ static const struct crypto_type crypto_scomp_type = {
- 	.tfmsize = offsetof(struct crypto_scomp, base),
- };
- 
--int crypto_register_scomp(struct scomp_alg *alg)
-+static void scomp_prepare_alg(struct scomp_alg *alg)
- {
- 	struct crypto_alg *base = &alg->calg.base;
- 
- 	comp_prepare_alg(&alg->calg);
- 
-+	base->cra_flags |= CRYPTO_ALG_REQ_CHAIN;
-+}
-+
-+int crypto_register_scomp(struct scomp_alg *alg)
-+{
-+	struct crypto_alg *base = &alg->calg.base;
-+
-+	scomp_prepare_alg(alg);
-+
- 	base->cra_type = &crypto_scomp_type;
- 	base->cra_flags |= CRYPTO_ALG_TYPE_SCOMPRESS;
- 
+-static void dst_free(struct scatterlist *sgl)
+-{
+-	/*
+-	 * Called for req->dst = NULL cases but we free elsewhere
+-	 * using sgl_free_order().
+-	 */
+-}
+-
+ static struct acomp_alg iaa_acomp_fixed_deflate = {
+ 	.init			= iaa_comp_init_fixed,
+ 	.compress		= iaa_comp_acompress,
+ 	.decompress		= iaa_comp_adecompress,
+-	.dst_free               = dst_free,
+ 	.base			= {
+ 		.cra_name		= "deflate",
+ 		.cra_driver_name	= "deflate-iaa",
 -- 
 2.39.5
 
