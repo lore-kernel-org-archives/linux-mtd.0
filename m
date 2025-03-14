@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0157C35FF6
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7835C28B2F
 	for <linux-mtd@archiver.kernel.org>; Fri, 14 Mar 2025 12:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,49 +12,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2OpKLHKFNoZwk7OgIGj7dRJ8hmJ1WxdzMrID4/mhldk=; b=G+959FUiRX5HAY
-	s4CwhW0lDP/tX7akIwNWv2sn1MRSD1VaKZwIyVEsdPJgf5u7v3qtjxS2YHgivEDeQShpmHLztNP5c
-	6SvHSVjgG8Fl6/cSYLF5Bh4YhaJdJZ6JX6hNCupxEOHOQSEBah8UuU6yHzwsGv/m3Z4vfILbVVV/0
-	z+Hbmhcn8bM0z8ZURy+CZrp4x61+U8Do0D5/QVVUnUitz4xQwGT+oEwFBxDkSiDyGCa5JkBRot30h
-	F07G9bYTvuKTMjzAL2BiXiEglTyew4slNQ/8Lz4tyQqHbRd4a7u4Nxe6W3K+yh1S8/bQvhmyjzMPH
-	eAmsqYcxqbF1C5VSeJvA==;
+	List-Owner; bh=2OpKLHKFNoZwk7OgIGj7dRJ8hmJ1WxdzMrID4/mhldk=; b=068meHvoaaIvCO
+	/1IfTd7HqrTWm6i1nuKrpEqJC2tp6wzbU+4s2qSB/QcZRiBp7YaOkUvSc2NdLPOqPzevW3XayJiQX
+	BcBKwG5/jNenm5HKmCgUlGk9koFg22+1+U6oGmFxTYl1XP4aIu5mZJijc2Ujv9L2LqR428gVZ4Csn
+	9xXoy81UlpBT+JUVhvzYzca9lwv/soRvOBH07/+UCTDVd7bbjt7VEa0bJN5ORN8ivu96at2N2kZSQ
+	PGaOA7MX2bxgOFbJqeQ0e+jypeCBwNTFwIMeDTdKvlsrCO2Rtnmw6maGcc2YOug/mYMyZ4o470TqQ
+	ih0A9jV25GyZ2JEfMbkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt43q-0000000E8FK-1X0Q;
-	Fri, 14 Mar 2025 12:22:46 +0000
+	id 1tt43m-0000000E8CO-0HHo;
+	Fri, 14 Mar 2025 12:22:42 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt43n-0000000E8BQ-1dvK
+	id 1tt43i-0000000E8BS-2Sj1
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Mar 2025 12:22:45 +0000
+	Fri, 14 Mar 2025 12:22:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=c5J7R93VbWY8eXPMwB3c29c2QRrhSxoIY0/VZKY8uW4=; b=nbVSDLsNXS3k9izGeAltD7taRP
-	p+W5TwgAxmMMug3atin5rPRLU+oP/KJYIGab4C36TQaLtmGLCbXEeNoZOl2P/hSJWwpFAyJVankWd
-	VZ4F11hcl5MgKBZ4kPqOhJ4fVBcmqdsGjxiSv3ISZh/j61UzVY+aYaooMsWd6yynL06C5wttYPafI
-	L5baQZ3hMpVPSrQyn/bNThT6Lu1eka0ZH8yyndjgqXJuTKuwESLIBEi/SSWO0qzhfKaAQRh/636BX
-	N27nqvJaHYDmUNHab6OQbxxJXGHC8wbJLhdAoNKo4VXSQOPpd4Bu00ajtnCkgNi7tfcS59TnDZBfF
-	APCsup4g==;
+	bh=c5J7R93VbWY8eXPMwB3c29c2QRrhSxoIY0/VZKY8uW4=; b=Eadb0vr+XyYoIWZ2r3FnYPgX9E
+	C+eX67M5h+WDttdAs887y00tXxCpON8uK0RffY+8GZzFFAmWBzMJ2jU4hKtPpOZVWDddTn4oJyaKl
+	5EmliWy7nyBWp2Ylih3iRGmwanVhLsDUNZCz99h9qnaN5fuJiev13oy/dainbEKgY2OML4lD52s3J
+	rNl0AJQH/SaewrnFd9N0YlxmLLrbeo3ZrX/H9Bo7tYJZOr+KmnCNgJrsquwJTuQSI83pbBDoUa+fQ
+	ln17tewSqOYb8H31AZKmj0pavf+FSYYEwP4w5Ow0tg18qOpaBQcpz45XIjRrMcEHuGQEHPU1WbDdu
+	OYaqKXIA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tt43Y-006Zm6-2D;
-	Fri, 14 Mar 2025 20:22:29 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Mar 2025 20:22:28 +0800
-Date: Fri, 14 Mar 2025 20:22:28 +0800
-Message-Id: <11128811057de7bb7e8d9ce9fe56bf9ee64ad143.1741954320.git.herbert@gondor.apana.org.au>
-In-Reply-To: <cover.1741954320.git.herbert@gondor.apana.org.au>
-References: <cover.1741954320.git.herbert@gondor.apana.org.au>
+	id 1tt43U-006Zld-0D;
+	Fri, 14 Mar 2025 20:22:25 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Mar 2025 20:22:24 +0800
+Date: Fri, 14 Mar 2025 20:22:24 +0800
+Message-Id: <11cc12d83023ca382492fc2b2ebf45c84e37acf9.1741954523.git.herbert@gondor.apana.org.au>
+In-Reply-To: <cover.1741954523.git.herbert@gondor.apana.org.au>
+References: <cover.1741954523.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v4 PATCH 03/13] crypto: iaa - Remove dst_null support
+Subject: [v4 PATCH 02/13] crypto: iaa - Remove dst_null support
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250314_052243_708099_3C8CD309 
-X-CRM114-Status: GOOD (  13.87  )
+X-CRM114-CacheID: sfid-20250314_052238_910936_564AC9DD 
+X-CRM114-Status: GOOD (  13.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
