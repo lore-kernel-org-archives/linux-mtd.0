@@ -4,72 +4,183 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 685FDC28B2F
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Mar 2025 12:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D364AC282EC
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Mar 2025 13:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
-	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=paxYiljFdm/FYtBpv0it7mwW/wPzwLWL0T3TdeJuThE=; b=M6LG+6wBeJuYhw
-	o/Y4bNw7j6wHUJvfnyaAeBjJwV1pHkLYllJvy1OgwEd/6QLOkqPqZcF09ZpdkBjCGiDyMr87sQHYQ
-	kggtAJyHut47PDdIQlUSXFj2d5NWgvS/4orvFqOkMjFn/bJxt8A8U+ZuPW34hL8n4glGTEdhZCwUy
-	C2RHKzsaA27A0d1W6/7KP8sn21qw7QvR/TWicl97/xNhvp0ezu4C+Do/JPXC5v55EvYndMvsAJ73I
-	O24ZlcVHFJrusghXHOPzttAJNrfh8WCZCA0us24VcVABsD52b/TSzxNE8ZNhxgy59SOOTMyEhbvFh
-	Wur+JVX/p6nvz6Ms/aJw==;
+	List-Owner; bh=0nIRSgxOYXiYKSGvROmr4CQsgau0u0xZ1/iapZrrJkk=; b=kuCihY3n5k6Xm5
+	7ohPlhYmQbVQFPPOyqsco8FPSeq/brNPzVAX8SJD4L3AT4bX52lD0+tz2Gr17lgMcvPxL2r90lnHk
+	kVxR8PObK36CmBeJFeTAbvjTN2wx8gvyYHrCfOlKNonciFSTYfZLKW74b4R8ve2HIZiOWbhaNH6lU
+	O9jYd6mXe0ePk3AMQ+12X/btpjJpnBP7ECdUYB3diCE1uNMGuLjTydl8DB/RSV4vUFTiqpnBvQcgS
+	SCjIwWhPWPfq37heUqheV8WAWmrBbobcKvnqyHPc1NfgKLzrGMZg83POXs03nAQnm1V79ct2LdjXV
+	FoeE2pLP8Qvm2FLzcoKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt44B-0000000E8jS-05HM;
-	Fri, 14 Mar 2025 12:23:07 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tt5Io-0000000EJFr-29lK;
+	Fri, 14 Mar 2025 13:42:18 +0000
+Received: from mgamail.intel.com ([192.198.163.15])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt44A-0000000E8hF-1S5c
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 14 Mar 2025 12:23:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:Subject:From:References:
-	In-Reply-To:Message-Id:Date:Sender:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=2X3eDxot5tjnnXYocKH3npnxgHjqvCSOBPQWfrr1UJg=; b=Rt/D6jMZjt1Ifk/Srt6+gZCP/+
-	68YquIjjc25wDzpVHZIiYdhgI91WgIo7DwYSTPjc3NrO/Be6z6sA2m/QZFa6iOrBJNrPL6AkkSO06
-	Z6hGP35eRjG2sslBjKQmJHjXIMTY5FZbH7/O/pPqVne/Zhhqol+WHw2Gm08oUCztltL8yFxQbqQit
-	RlZ+jDSQdNGQ7HLL8VS3yGVt0RVDpwNBFgyjXklXeH+J7jiO6mNCoaxSU1GDCF78HvQv74guhupAF
-	Nqm2100qMZDheVAwXmAHryinNI6Gq03K4RTd0QCLRqE/aKV5U51y2FRo51k+BdhuJpUlBPGm3o0u+
-	dziCPzVQ==;
-Received: from abb.hmeau.com ([144.6.53.87])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tt446-00000002tRX-2PJ7
+	id 1tt5Cd-0000000EIUM-0zNK
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Mar 2025 12:23:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
-	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=2X3eDxot5tjnnXYocKH3npnxgHjqvCSOBPQWfrr1UJg=; b=e/jH/N3nuMDhQJZd196wpDE7Ai
-	l8gkrES2rUsPwT/o1wlszmk3wVEalPEF7gHeYwds9e+RsFI6m121+mhVQqu991yvJqsZ/vjQ1R8V+
-	K+j1nKA6G2F1Y9/Ix86mYYEvvdvP74Is5xWbtppdPPE3fQ79m8C5DGeem4F+ey4dpNu93VcBuhSs4
-	dsrvpwgL8+6WJHvRNcnOo0i1yNfmc79fLLFuKd/uhYHVVhpSGyppss4vqf71rppd+WVbAXHu+2yJv
-	UhnsEcvJtSkLbvsCZUXoMu6Sbsb/WhzA/SQn7VfUxLjju0ffN81Z5OlxzlyEa2kDByeAF9m23c9X9
-	xQIYDlcg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tt43y-006ZpD-04;
-	Fri, 14 Mar 2025 20:22:55 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Mar 2025 20:22:54 +0800
-Date: Fri, 14 Mar 2025 20:22:54 +0800
-Message-Id: <df10cdbb28cbd1e08229197e126f80dd67814b9f.1741954523.git.herbert@gondor.apana.org.au>
-In-Reply-To: <cover.1741954523.git.herbert@gondor.apana.org.au>
-References: <cover.1741954523.git.herbert@gondor.apana.org.au>
-From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v4 PATCH 13/13] xfrm: ipcomp: Use crypto_acomp interface
-To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
+	Fri, 14 Mar 2025 13:35:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741959355; x=1773495355;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=i66QHY+r5vfBO3tZylxeHgWZchQOnhznzTovBHnz3JU=;
+  b=Rh5OalXmvEknycxAddiGVLLTn9O0bhOv1tjaMdkgP4O85v8iechkrioH
+   6SNkRgTa9JV3GYd/Iph490xfwtkVoiVWI0vSVdwjJurJx+EMblAqnBseT
+   KswRPPlSGaNSbyu+ujntf2iHR6dGz/79j3qxwsWchwWLB8aNHT2nADFgm
+   59T4+djROltpuyATjOrMnj/dQ79pIb3alS3Z7DhIyc5qqLb7iHII+S29c
+   yBB41NSAtjmTX2lKInuglMKenMTmOMEjTwM4bu7kD2rpoGibdEntbHpu9
+   k+dvzdh5UaypURsjumKflZ2dnxjfLjzrRUvQtrh8+oXyXhpY++eZJCuL2
+   A==;
+X-CSE-ConnectionGUID: o+ZNOmxRSViJlFCF3dyH/Q==
+X-CSE-MsgGUID: qoCfugbbQC2E/4TT/34E3g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11373"; a="43239375"
+X-IronPort-AV: E=Sophos;i="6.14,246,1736841600"; 
+   d="scan'208";a="43239375"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2025 06:35:51 -0700
+X-CSE-ConnectionGUID: 0aIWUna4St2FWJAPquL6ug==
+X-CSE-MsgGUID: /x6pZqIQQ/CHhdzkwRLWXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,246,1736841600"; 
+   d="scan'208";a="158435717"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2025 06:35:51 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Fri, 14 Mar 2025 06:35:51 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Fri, 14 Mar 2025 06:35:51 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Fri, 14 Mar 2025 06:35:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=W/YDDUhzC8FwLhgS/5dydPxXPz6QTsFXDS6HPgDagDE3Id/Cmxo88y/nnGXA7u0GTHTvf4eftbbK98S0CudXwM3W3ygONql8Grb0E5wiOQ/DmWiaIeA+TK1D3A6upn6i6x1P72US7eUxq6ZqYyhjhd/D+INowNwYoSbgLLI+mvGTyDvXmS0a0CaqZwgO/mL5F65d1/Em9RJzoyAJ6MUTpGRBmEHQzY+HXlf8W5hQ8bcJ+2NNLcvVfWcZwWlStghLiPzQFBIsp42Qrf3q5H7UxsZx992tQOezcho36X/of4kDggwbHYFFn3jHnwLxzlu6q08eiupOFVMoYVXAqh7Xfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hUoNb12D3Kw/zeVSyWjix4HYnctaVtCFvlSgSNYsOLQ=;
+ b=D5EzL0tH2hjhB0PA/ZvegLW1nYgWMn7EbTk12Lr6Dn9Q8AU4uXe7DD6HGh+/RPUukf+sVYFizPFSR5io/HQks+wA+MujGWAcuSAW/gdmBbEpSBGxSCT1fDmpHaWbOGxpLlLBJRvQj8bDs2WU2JUNXB1+ssTa6Tc339zY/r6kY4wmoykK1Ws591cEMI6CxZIHpv+FwfgfxMe+fehjs5kWCRHE3WMChCD8+BGHBdYhkdMWrxcUP8elw7zC8gj/QIAayJE68VEGPBTTO7jTa9SPecyMqsdopiVAJJisdmz4CVOgDCVl7sUbprRFjV/8Divoz2M11B21KiYtMkym3Y+rxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
+ by SJ0PR11MB5037.namprd11.prod.outlook.com (2603:10b6:a03:2ac::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.27; Fri, 14 Mar
+ 2025 13:35:49 +0000
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::6826:6928:9e6:d778]) by CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::6826:6928:9e6:d778%5]) with mapi id 15.20.8511.026; Fri, 14 Mar 2025
+ 13:35:49 +0000
+Date: Fri, 14 Mar 2025 13:35:41 +0000
+From: "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+CC: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, "Richard
+ Weinberger" <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>,
+	<linux-mtd@lists.infradead.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>, <linux-pm@vger.kernel.org>, Steffen Klassert
+	<steffen.klassert@secunet.com>, <netdev@vger.kernel.org>
+Subject: Re: [v4 PATCH 03/13] crypto: iaa - Remove dst_null support
+Message-ID: <Z9QwrUqA0eaYxZaA@gcabiddu-mobl.ger.corp.intel.com>
+References: <cover.1741954320.git.herbert@gondor.apana.org.au>
+ <11128811057de7bb7e8d9ce9fe56bf9ee64ad143.1741954320.git.herbert@gondor.apana.org.au>
+Content-Disposition: inline
+In-Reply-To: <11128811057de7bb7e8d9ce9fe56bf9ee64ad143.1741954320.git.herbert@gondor.apana.org.au>
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
+ Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+X-ClientProxiedBy: DB3PR06CA0021.eurprd06.prod.outlook.com (2603:10a6:8:1::34)
+ To CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6366:EE_|SJ0PR11MB5037:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61924878-87cb-45e9-1242-08dd62fd21b9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?S45RTUJGhk0xpWyz750cBpAdjaeN1cOUTk4A+ddZ5jzkvGyJhzx/MMabucaZ?=
+ =?us-ascii?Q?hDaPRh7mYalnHiu2krxW6jEJyO7Uq1X0qfkV5i0+ms0tUNrY5Qxm/wACiRtE?=
+ =?us-ascii?Q?v2eLDTPF9Jhm2FUObnw2ErmG0mBD8bzBbI2m299ZjRKHkI1/C7OxDcmKeXOq?=
+ =?us-ascii?Q?5lZ7MhhHpficxkeJpqAL26EC03nXwAqgvXA5ROWYwPSn7ago0iDUtdVN9Wic?=
+ =?us-ascii?Q?L1w5HU1dE4IHrciGonyL/g4O9q25rxuWJaMPwGfxb08F1CLsxPfecOSCl2ss?=
+ =?us-ascii?Q?+OFiebD6nfzeGZR8vF8K5J3fhsZKNSGj4JZBitQAoxpIGUISIftRyAflcr8s?=
+ =?us-ascii?Q?ASRCo6cR0oBbktAJlk7cKNqzEqY8/rRekh8LR/5mNXynvqJoPDOp1SMf4S3n?=
+ =?us-ascii?Q?CZ9M1HBuSOUm/rO2i8p+T87ggqYoaQg8DwAas0tybN+hzzcoK32vpQAhxvp7?=
+ =?us-ascii?Q?+YRnT/BgAsxA1P2UbQHd9V/Ogtx7VrRysedmQmb6NSf7SaAyxlLyM6nT+yNp?=
+ =?us-ascii?Q?Zbxma+2CvQkwniuSPNKb4AJN4mwt3AgNF+0DpZwdtuG1eRw1FXVypymqLcRS?=
+ =?us-ascii?Q?wG75qdN78Uyhnr3ZkIh/apqe/XWJvWeyUC4uZi6LuiDoQtxDYAuLBDqzf6FC?=
+ =?us-ascii?Q?reKj/z9E1MCXetce8WVugookqhgLsqaUEVFAPw5l4pSizyMvSPk6Nia2B0cu?=
+ =?us-ascii?Q?bC+DejahPQ4TGCfBMhQ1nrleDpGHJ+6Jf9kq89uCCJkvtzUoVpcudlpxFOaA?=
+ =?us-ascii?Q?xrPKvzxPYlJh86LmrViCkKlPS3viz7X4p/xMDKQUxbl3S4Im+KEAhaE3YNFM?=
+ =?us-ascii?Q?puTrJsmw6MCIChd1K1Ucp3R1SgD1aJKsww0/81+rYvEeb1TPVzeUhJkscjYz?=
+ =?us-ascii?Q?GymTtsaFko1xhwz0upY7xWNToZgiMCxhMBSusfXA21lHC1DMi3aXXfQ6leV0?=
+ =?us-ascii?Q?TP9y45soj1bL72nr29KX3bVdf6Qw3pzct+wAc4IwiGh9wx2BrkDuFYRM2tvv?=
+ =?us-ascii?Q?EwbMrvpc8nkv6WaR3xcGCt1BYepr0ggxxHceHnwDlqkQBlFP66/ucHqZCvxF?=
+ =?us-ascii?Q?5lhAF44c8zvwCUReI14QWymOojN3SUWB3TQtTaiJGq2AIjoujyz1LLmtY+Yo?=
+ =?us-ascii?Q?qPUYzqXurmmTIFD7IavDOnJe7csQzX4WDDBfQAEsl3vN3cLZCSQHUOBOZpIA?=
+ =?us-ascii?Q?Z9O2Btbj0EfJ1iPLxLuV/PUUNWIujNs+iIcj9R65G+P/xrfj2c+5gRvCqbFg?=
+ =?us-ascii?Q?Ls4oWmtSaAFYQmtqml+TwPQ6SDM8rWmOpAT4ivF1lcLNPjVMrxVWlTfT3uOi?=
+ =?us-ascii?Q?265geLusxcz0mesrn+IBtCDGiBg90kpWAuGggzJipLF73FAlnUcrJcOkrOfL?=
+ =?us-ascii?Q?eKNsepeNyDFrQeGWqBgpSMpDuWdh?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3GqRWJwQIdcyeQptb8N8plpaQ8/ASJBFbXT4X1XnP5RE+Y2JE6pfLSpHZt1c?=
+ =?us-ascii?Q?3YHZy2GKA/Ah0NNUB1tkuVPIAeX+e7K0yCCt8XODyflgItNT4uhYUlNqsfmN?=
+ =?us-ascii?Q?iL31u/PS6rgkJ4KUmygFv78F3XE5czEJVSHj4wnLUOujxAlWeOabvOdE+hCF?=
+ =?us-ascii?Q?210SHOqH3AL0z8f2rSqJgGAxzE27SKrwYPugXla0AGHsNMbUqyuBp03s1zS+?=
+ =?us-ascii?Q?8+JcpZQr2LOc8DbjACXskCwUY6VY/2WyZY9IKFmmXFde1xzXw7Oa3EA8HHUw?=
+ =?us-ascii?Q?GHsALaDB/Motu2Q930T9EM+Jw51UL1SczpmMtVKoUKL0NRbEXQ6hHf9hHy7e?=
+ =?us-ascii?Q?0UtxXV6YVaW+O2p3Wlhi1Bh3muxwqmHtTf1OEr1tHyZMpwgP+leB62RkrozZ?=
+ =?us-ascii?Q?W9B4QavEU8vO9WuXm2stcoV9ItSYw6fs+RssmOcg95VsxLnXs67YfN5oDlou?=
+ =?us-ascii?Q?IM9qo3XNEjg3L7hWUMNGGif53RLtgioAeOsIucdi34UVNZsbIoOXJ3ndRPv8?=
+ =?us-ascii?Q?F4iEwswCaewvk6YrLHn5wQXbue+TYnTHglJszD3Q5NOQ6WpBRkXmjGSmn7QG?=
+ =?us-ascii?Q?y9clNBKsxBl2thIvW2eMe576yAEK2pXj86ndxeEdD3R0yGSbXpIMUeUrr35y?=
+ =?us-ascii?Q?UdrxRONrS9CHzNh3hb5eWNEVlPbIukJgocLq6PebemBk/xeLFHMNTBsgD6lT?=
+ =?us-ascii?Q?761GdPxW9itQAKq63Wrpv+sJnDTgpfvTK9IaWDVFREoLWSg0FtIxsIP6j0j9?=
+ =?us-ascii?Q?dTPR/Jcp1HDEhR72QU6/ucVUZwWg2DLvAEVR05xn9jJseJFuQ2YCl56bzkIc?=
+ =?us-ascii?Q?3cerVg2wa2zRjKcq7jlySuWYfUgaQioja1UYYkp+h0J11gXHVsjlb+yOYmoq?=
+ =?us-ascii?Q?bNzbtfAE8o2/FrTPre6oRsB0bdsGLImDEz4bDM22mORlC1wGYdK3S20Tif7L?=
+ =?us-ascii?Q?2XabWuZQQMHCpeHPBzVaeZ3vEjNAEffBELenlXMmQw9QcKyGNhltSw/SkGn2?=
+ =?us-ascii?Q?XlzQJIbglNoXVPAWIaxiSq7eJPgffZuRa8e5y5QsIopCkv+iABv0laSYygaQ?=
+ =?us-ascii?Q?2QrMUOijteXgXR7SCXULhZVTeNiwdmMneWIfqLBd0BN/1AjLVPeqekixU2Jc?=
+ =?us-ascii?Q?KGX4Fx9SW+F8uO3AVnQkvfk61d+k+hYDs7ed5Ccwxjs5AJx48eLaD0Zi6VWs?=
+ =?us-ascii?Q?bs1WJh7nqbsOSZ6w7NTRwyFytcPoGbArLWOsNNTt4ky9R/gKJlZHOsa5XPcP?=
+ =?us-ascii?Q?qAK0HxW9zxqMU3TJYkfZcoA6PzDLABMNKTQm3ooQyDJKcT9pen/ij+Pli2UG?=
+ =?us-ascii?Q?Sm13PeIAL/m5Plyw8meJZl7xoHu99IN6T21JRFWBv5XCrSr6za438JZRBz+E?=
+ =?us-ascii?Q?etFE1deW1R8eMIvBvIq+KSfRRdIZkhsqju+jMhvYJ9DUKbHMONNo8OmLRmC+?=
+ =?us-ascii?Q?5ZXpRI8pZww2dwiF1gfuyiBhjVImzA2vyEWlG7p1jTCSk7rVVNQOmPIF51QH?=
+ =?us-ascii?Q?ru1UtE/bBSDPd0YIzcVahG3C18vu0P3alR5t4MkCqthCPHTnkDRbUmwumL34?=
+ =?us-ascii?Q?OttRz0+z2bFjmwuQCzuy4hjgSTPpGUM1zWBk/21eJTt5CmxpEPt4Qgu4+o3q?=
+ =?us-ascii?Q?RQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61924878-87cb-45e9-1242-08dd62fd21b9
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2025 13:35:48.9534
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hgv628r8rGxirHEH/M1JLmb/3R3tqgN/tXqbCvYNJMN7UJeFDe27C/oWjQTZpyjQEbzBJokQfNSL7WmTaw6NGtef6hfZ4HSFFW083bHhBrY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5037
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250314_122303_579145_645200D8 
-X-CRM114-Status: GOOD (  24.06  )
+X-CRM114-CacheID: sfid-20250314_063555_288144_4A9534E3 
+X-CRM114-Status: UNSURE (   9.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,639 +192,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the legacy comperssion interface with the new acomp
-interface.  This is the first user to make full user of the
-asynchronous nature of acomp by plugging into the existing xfrm
-resume interface.
+Hi Herbert,
 
-As a result of SG support by acomp, the linear scratch buffer
-in ipcomp can be removed.
+On Fri, Mar 14, 2025 at 08:22:28PM +0800, Herbert Xu wrote:
+> Remove the unused dst_null support.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+This patch is replicated in the set and does not apply. See [v4, 02/13]
+https://patchwork.kernel.org/project/linux-crypto/patch/11cc12d83023ca382492fc2b2ebf45c84e37acf9.1741954523.git.herbert@gondor.apana.org.au/
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
----
- include/net/ipcomp.h   |  13 +-
- net/xfrm/xfrm_ipcomp.c | 477 ++++++++++++++++++++---------------------
- 2 files changed, 233 insertions(+), 257 deletions(-)
+It seems, instead, that the correct patch 3, crypto: scomp - Remove
+support for some non-trivial SG lists, is missing from the
+submission.
+Something weird happened when you submit the set :-).
 
-diff --git a/include/net/ipcomp.h b/include/net/ipcomp.h
-index 8660a2a6d1fc..51401f01e2a5 100644
---- a/include/net/ipcomp.h
-+++ b/include/net/ipcomp.h
-@@ -3,20 +3,9 @@
- #define _NET_IPCOMP_H
- 
- #include <linux/skbuff.h>
--#include <linux/types.h>
--
--#define IPCOMP_SCRATCH_SIZE     65400
--
--struct crypto_comp;
--struct ip_comp_hdr;
--
--struct ipcomp_data {
--	u16 threshold;
--	struct crypto_comp * __percpu *tfms;
--};
- 
- struct ip_comp_hdr;
--struct sk_buff;
-+struct netlink_ext_ack;
- struct xfrm_state;
- 
- int ipcomp_input(struct xfrm_state *x, struct sk_buff *skb);
-diff --git a/net/xfrm/xfrm_ipcomp.c b/net/xfrm/xfrm_ipcomp.c
-index 43eae94e4b0e..a5246227951f 100644
---- a/net/xfrm/xfrm_ipcomp.c
-+++ b/net/xfrm/xfrm_ipcomp.c
-@@ -3,7 +3,7 @@
-  * IP Payload Compression Protocol (IPComp) - RFC3173.
-  *
-  * Copyright (c) 2003 James Morris <jmorris@intercode.com.au>
-- * Copyright (c) 2003-2008 Herbert Xu <herbert@gondor.apana.org.au>
-+ * Copyright (c) 2003-2025 Herbert Xu <herbert@gondor.apana.org.au>
-  *
-  * Todo:
-  *   - Tunable compression parameters.
-@@ -11,169 +11,240 @@
-  *   - Adaptive compression.
-  */
- 
--#include <linux/crypto.h>
-+#include <crypto/acompress.h>
- #include <linux/err.h>
--#include <linux/list.h>
- #include <linux/module.h>
--#include <linux/mutex.h>
--#include <linux/percpu.h>
-+#include <linux/skbuff_ref.h>
- #include <linux/slab.h>
--#include <linux/smp.h>
--#include <linux/vmalloc.h>
--#include <net/ip.h>
- #include <net/ipcomp.h>
- #include <net/xfrm.h>
- 
--struct ipcomp_tfms {
--	struct list_head list;
--	struct crypto_comp * __percpu *tfms;
--	int users;
-+#define IPCOMP_SCRATCH_SIZE 65400
-+
-+struct ipcomp_skb_cb {
-+	struct xfrm_skb_cb xfrm;
-+	struct acomp_req *req;
- };
- 
--static DEFINE_MUTEX(ipcomp_resource_mutex);
--static void * __percpu *ipcomp_scratches;
--static int ipcomp_scratch_users;
--static LIST_HEAD(ipcomp_tfms_list);
-+struct ipcomp_data {
-+	u16 threshold;
-+	struct crypto_acomp *tfm;
-+};
- 
--static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
-+struct ipcomp_req_extra {
-+	struct xfrm_state *x;
-+	struct scatterlist sg[];
-+};
-+
-+static inline struct ipcomp_skb_cb *ipcomp_cb(struct sk_buff *skb)
- {
--	struct ipcomp_data *ipcd = x->data;
--	const int plen = skb->len;
--	int dlen = IPCOMP_SCRATCH_SIZE;
--	const u8 *start = skb->data;
--	u8 *scratch = *this_cpu_ptr(ipcomp_scratches);
--	struct crypto_comp *tfm = *this_cpu_ptr(ipcd->tfms);
--	int err = crypto_comp_decompress(tfm, start, plen, scratch, &dlen);
--	int len;
-+	struct ipcomp_skb_cb *cb = (void *)skb->cb;
- 
--	if (err)
--		return err;
-+	BUILD_BUG_ON(sizeof(*cb) > sizeof(skb->cb));
-+	return cb;
-+}
- 
--	if (dlen < (plen + sizeof(struct ip_comp_hdr)))
--		return -EINVAL;
-+static int ipcomp_post_acomp(struct sk_buff *skb, int err, int hlen)
-+{
-+	struct acomp_req *req = ipcomp_cb(skb)->req;
-+	struct ipcomp_req_extra *extra;
-+	const int plen = skb->data_len;
-+	struct scatterlist *dsg;
-+	int len, dlen;
- 
--	len = dlen - plen;
--	if (len > skb_tailroom(skb))
--		len = skb_tailroom(skb);
-+	if (unlikely(err))
-+		goto out_free_req;
- 
--	__skb_put(skb, len);
-+	extra = acomp_request_extra(req);
-+	dsg = extra->sg;
-+	dlen = req->dlen;
- 
--	len += plen;
--	skb_copy_to_linear_data(skb, scratch, len);
-+	pskb_trim_unique(skb, 0);
-+	__skb_put(skb, hlen);
- 
--	while ((scratch += len, dlen -= len) > 0) {
-+	/* Only update truesize on input. */
-+	if (!hlen)
-+		skb->truesize += dlen - plen;
-+	skb->data_len = dlen;
-+	skb->len += dlen;
-+
-+	do {
- 		skb_frag_t *frag;
- 		struct page *page;
- 
--		if (WARN_ON(skb_shinfo(skb)->nr_frags >= MAX_SKB_FRAGS))
--			return -EMSGSIZE;
--
- 		frag = skb_shinfo(skb)->frags + skb_shinfo(skb)->nr_frags;
--		page = alloc_page(GFP_ATOMIC);
--
--		if (!page)
--			return -ENOMEM;
-+		page = sg_page(dsg);
-+		dsg = sg_next(dsg);
- 
- 		len = PAGE_SIZE;
- 		if (dlen < len)
- 			len = dlen;
- 
- 		skb_frag_fill_page_desc(frag, page, 0, len);
--		memcpy(skb_frag_address(frag), scratch, len);
--
--		skb->truesize += len;
--		skb->data_len += len;
--		skb->len += len;
- 
- 		skb_shinfo(skb)->nr_frags++;
--	}
-+	} while ((dlen -= len));
- 
--	return 0;
-+	for (; dsg; dsg = sg_next(dsg))
-+		__free_page(sg_page(dsg));
-+
-+out_free_req:
-+	acomp_request_free(req);
-+	return err;
-+}
-+
-+static int ipcomp_input_done2(struct sk_buff *skb, int err)
-+{
-+	struct ip_comp_hdr *ipch = ip_comp_hdr(skb);
-+	const int plen = skb->len;
-+
-+	skb_reset_transport_header(skb);
-+
-+	return ipcomp_post_acomp(skb, err, 0) ?:
-+	       skb->len < (plen + sizeof(ip_comp_hdr)) ? -EINVAL :
-+	       ipch->nexthdr;
-+}
-+
-+static void ipcomp_input_done(void *data, int err)
-+{
-+	struct sk_buff *skb = data;
-+
-+	xfrm_input_resume(skb, ipcomp_input_done2(skb, err));
-+}
-+
-+static struct acomp_req *ipcomp_setup_req(struct xfrm_state *x,
-+					  struct sk_buff *skb, int minhead,
-+					  int dlen)
-+{
-+	const int dnfrags = min(MAX_SKB_FRAGS, 16);
-+	struct ipcomp_data *ipcd = x->data;
-+	struct ipcomp_req_extra *extra;
-+	struct scatterlist *sg, *dsg;
-+	const int plen = skb->len;
-+	struct crypto_acomp *tfm;
-+	struct acomp_req *req;
-+	int nfrags;
-+	int total;
-+	int err;
-+	int i;
-+
-+	ipcomp_cb(skb)->req = NULL;
-+
-+	do {
-+		struct sk_buff *trailer;
-+
-+		if (skb->len > PAGE_SIZE) {
-+			if (skb_linearize_cow(skb))
-+				return ERR_PTR(-ENOMEM);
-+			nfrags = 1;
-+			break;
-+		}
-+
-+		if (!skb_cloned(skb) && skb_headlen(skb) >= minhead) {
-+			if (!skb_is_nonlinear(skb)) {
-+				nfrags = 1;
-+				break;
-+			} else if (!skb_has_frag_list(skb)) {
-+				nfrags = skb_shinfo(skb)->nr_frags;
-+				nfrags++;
-+				break;
-+			}
-+		}
-+
-+		nfrags = skb_cow_data(skb, skb_headlen(skb) < minhead ?
-+					   minhead - skb_headlen(skb) : 0,
-+				      &trailer);
-+		if (nfrags < 0)
-+			return ERR_PTR(nfrags);
-+	} while (0);
-+
-+	tfm = ipcd->tfm;
-+	req = acomp_request_alloc_extra(
-+		tfm, sizeof(*extra) + sizeof(*sg) * (nfrags + dnfrags),
-+		GFP_ATOMIC);
-+	ipcomp_cb(skb)->req = req;
-+	if (!req)
-+		return ERR_PTR(-ENOMEM);
-+
-+	extra = acomp_request_extra(req);
-+	extra->x = x;
-+
-+	dsg = extra->sg;
-+	sg = dsg + dnfrags;
-+	sg_init_table(sg, nfrags);
-+	err = skb_to_sgvec(skb, sg, 0, plen);
-+	if (unlikely(err < 0))
-+		return ERR_PTR(err);
-+
-+	sg_init_table(dsg, dnfrags);
-+	total = 0;
-+	for (i = 0; i < dnfrags && total < dlen; i++) {
-+		struct page *page;
-+
-+		page = alloc_page(GFP_ATOMIC);
-+		if (!page)
-+			break;
-+		sg_set_page(dsg + i, page, PAGE_SIZE, 0);
-+		total += PAGE_SIZE;
-+	}
-+	if (!i)
-+		return ERR_PTR(-ENOMEM);
-+	sg_mark_end(dsg + i - 1);
-+
-+	acomp_request_set_params(req, sg, dsg, plen, dlen);
-+
-+	return req;
-+}
-+
-+static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
-+{
-+	struct acomp_req *req;
-+	int err;
-+
-+	req = ipcomp_setup_req(x, skb, 0, IPCOMP_SCRATCH_SIZE);
-+	err = PTR_ERR(req);
-+	if (IS_ERR(req))
-+		goto out;
-+
-+	acomp_request_set_callback(req, 0, ipcomp_input_done, skb);
-+	err = crypto_acomp_decompress(req);
-+	if (err == -EINPROGRESS)
-+		return err;
-+
-+out:
-+	return ipcomp_input_done2(skb, err);
- }
- 
- int ipcomp_input(struct xfrm_state *x, struct sk_buff *skb)
- {
--	int nexthdr;
--	int err = -ENOMEM;
--	struct ip_comp_hdr *ipch;
-+	struct ip_comp_hdr *ipch __maybe_unused;
- 
- 	if (!pskb_may_pull(skb, sizeof(*ipch)))
- 		return -EINVAL;
- 
--	if (skb_linearize_cow(skb))
--		goto out;
--
- 	skb->ip_summed = CHECKSUM_NONE;
- 
- 	/* Remove ipcomp header and decompress original payload */
--	ipch = (void *)skb->data;
--	nexthdr = ipch->nexthdr;
--
--	skb->transport_header = skb->network_header + sizeof(*ipch);
- 	__skb_pull(skb, sizeof(*ipch));
--	err = ipcomp_decompress(x, skb);
--	if (err)
--		goto out;
- 
--	err = nexthdr;
--
--out:
--	return err;
-+	return ipcomp_decompress(x, skb);
- }
- EXPORT_SYMBOL_GPL(ipcomp_input);
- 
--static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
-+static int ipcomp_output_push(struct sk_buff *skb)
- {
--	struct ipcomp_data *ipcd = x->data;
--	const int plen = skb->len;
--	int dlen = IPCOMP_SCRATCH_SIZE;
--	u8 *start = skb->data;
--	struct crypto_comp *tfm;
--	u8 *scratch;
--	int err;
--
--	local_bh_disable();
--	scratch = *this_cpu_ptr(ipcomp_scratches);
--	tfm = *this_cpu_ptr(ipcd->tfms);
--	err = crypto_comp_compress(tfm, start, plen, scratch, &dlen);
--	if (err)
--		goto out;
--
--	if ((dlen + sizeof(struct ip_comp_hdr)) >= plen) {
--		err = -EMSGSIZE;
--		goto out;
--	}
--
--	memcpy(start + sizeof(struct ip_comp_hdr), scratch, dlen);
--	local_bh_enable();
--
--	pskb_trim(skb, dlen + sizeof(struct ip_comp_hdr));
-+	skb_push(skb, -skb_network_offset(skb));
- 	return 0;
--
--out:
--	local_bh_enable();
--	return err;
- }
- 
--int ipcomp_output(struct xfrm_state *x, struct sk_buff *skb)
-+static int ipcomp_output_done2(struct xfrm_state *x, struct sk_buff *skb,
-+			       int err)
- {
--	int err;
- 	struct ip_comp_hdr *ipch;
--	struct ipcomp_data *ipcd = x->data;
- 
--	if (skb->len < ipcd->threshold) {
--		/* Don't bother compressing */
-+	err = ipcomp_post_acomp(skb, err, sizeof(*ipch));
-+	if (err)
- 		goto out_ok;
--	}
--
--	if (skb_linearize_cow(skb))
--		goto out_ok;
--
--	err = ipcomp_compress(x, skb);
--
--	if (err) {
--		goto out_ok;
--	}
- 
- 	/* Install ipcomp header, convert into ipcomp datagram. */
- 	ipch = ip_comp_hdr(skb);
-@@ -182,135 +253,59 @@ int ipcomp_output(struct xfrm_state *x, struct sk_buff *skb)
- 	ipch->cpi = htons((u16 )ntohl(x->id.spi));
- 	*skb_mac_header(skb) = IPPROTO_COMP;
- out_ok:
--	skb_push(skb, -skb_network_offset(skb));
--	return 0;
-+	return ipcomp_output_push(skb);
-+}
-+
-+static void ipcomp_output_done(void *data, int err)
-+{
-+	struct ipcomp_req_extra *extra;
-+	struct sk_buff *skb = data;
-+	struct acomp_req *req;
-+
-+	req = ipcomp_cb(skb)->req;
-+	extra = acomp_request_extra(req);
-+
-+	xfrm_output_resume(skb_to_full_sk(skb), skb,
-+			   ipcomp_output_done2(extra->x, skb, err));
-+}
-+
-+static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
-+{
-+	struct ip_comp_hdr *ipch __maybe_unused;
-+	struct acomp_req *req;
-+	int err;
-+
-+	req = ipcomp_setup_req(x, skb, sizeof(*ipch),
-+			       skb->len - sizeof(*ipch));
-+	err = PTR_ERR(req);
-+	if (IS_ERR(req))
-+		goto out;
-+
-+	acomp_request_set_callback(req, 0, ipcomp_output_done, skb);
-+	err = crypto_acomp_compress(req);
-+	if (err == -EINPROGRESS)
-+		return err;
-+
-+out:
-+	return ipcomp_output_done2(x, skb, err);
-+}
-+
-+int ipcomp_output(struct xfrm_state *x, struct sk_buff *skb)
-+{
-+	struct ipcomp_data *ipcd = x->data;
-+
-+	if (skb->len < ipcd->threshold) {
-+		/* Don't bother compressing */
-+		return ipcomp_output_push(skb);
-+	}
-+
-+	return ipcomp_compress(x, skb);
- }
- EXPORT_SYMBOL_GPL(ipcomp_output);
- 
--static void ipcomp_free_scratches(void)
--{
--	int i;
--	void * __percpu *scratches;
--
--	if (--ipcomp_scratch_users)
--		return;
--
--	scratches = ipcomp_scratches;
--	if (!scratches)
--		return;
--
--	for_each_possible_cpu(i)
--		vfree(*per_cpu_ptr(scratches, i));
--
--	free_percpu(scratches);
--	ipcomp_scratches = NULL;
--}
--
--static void * __percpu *ipcomp_alloc_scratches(void)
--{
--	void * __percpu *scratches;
--	int i;
--
--	if (ipcomp_scratch_users++)
--		return ipcomp_scratches;
--
--	scratches = alloc_percpu(void *);
--	if (!scratches)
--		return NULL;
--
--	ipcomp_scratches = scratches;
--
--	for_each_possible_cpu(i) {
--		void *scratch;
--
--		scratch = vmalloc_node(IPCOMP_SCRATCH_SIZE, cpu_to_node(i));
--		if (!scratch)
--			return NULL;
--		*per_cpu_ptr(scratches, i) = scratch;
--	}
--
--	return scratches;
--}
--
--static void ipcomp_free_tfms(struct crypto_comp * __percpu *tfms)
--{
--	struct ipcomp_tfms *pos;
--	int cpu;
--
--	list_for_each_entry(pos, &ipcomp_tfms_list, list) {
--		if (pos->tfms == tfms)
--			break;
--	}
--
--	WARN_ON(list_entry_is_head(pos, &ipcomp_tfms_list, list));
--
--	if (--pos->users)
--		return;
--
--	list_del(&pos->list);
--	kfree(pos);
--
--	if (!tfms)
--		return;
--
--	for_each_possible_cpu(cpu) {
--		struct crypto_comp *tfm = *per_cpu_ptr(tfms, cpu);
--		crypto_free_comp(tfm);
--	}
--	free_percpu(tfms);
--}
--
--static struct crypto_comp * __percpu *ipcomp_alloc_tfms(const char *alg_name)
--{
--	struct ipcomp_tfms *pos;
--	struct crypto_comp * __percpu *tfms;
--	int cpu;
--
--
--	list_for_each_entry(pos, &ipcomp_tfms_list, list) {
--		struct crypto_comp *tfm;
--
--		/* This can be any valid CPU ID so we don't need locking. */
--		tfm = this_cpu_read(*pos->tfms);
--
--		if (!strcmp(crypto_comp_name(tfm), alg_name)) {
--			pos->users++;
--			return pos->tfms;
--		}
--	}
--
--	pos = kmalloc(sizeof(*pos), GFP_KERNEL);
--	if (!pos)
--		return NULL;
--
--	pos->users = 1;
--	INIT_LIST_HEAD(&pos->list);
--	list_add(&pos->list, &ipcomp_tfms_list);
--
--	pos->tfms = tfms = alloc_percpu(struct crypto_comp *);
--	if (!tfms)
--		goto error;
--
--	for_each_possible_cpu(cpu) {
--		struct crypto_comp *tfm = crypto_alloc_comp(alg_name, 0,
--							    CRYPTO_ALG_ASYNC);
--		if (IS_ERR(tfm))
--			goto error;
--		*per_cpu_ptr(tfms, cpu) = tfm;
--	}
--
--	return tfms;
--
--error:
--	ipcomp_free_tfms(tfms);
--	return NULL;
--}
--
- static void ipcomp_free_data(struct ipcomp_data *ipcd)
- {
--	if (ipcd->tfms)
--		ipcomp_free_tfms(ipcd->tfms);
--	ipcomp_free_scratches();
-+	crypto_free_acomp(ipcd->tfm);
- }
- 
- void ipcomp_destroy(struct xfrm_state *x)
-@@ -319,9 +314,7 @@ void ipcomp_destroy(struct xfrm_state *x)
- 	if (!ipcd)
- 		return;
- 	xfrm_state_delete_tunnel(x);
--	mutex_lock(&ipcomp_resource_mutex);
- 	ipcomp_free_data(ipcd);
--	mutex_unlock(&ipcomp_resource_mutex);
- 	kfree(ipcd);
- }
- EXPORT_SYMBOL_GPL(ipcomp_destroy);
-@@ -348,15 +341,10 @@ int ipcomp_init_state(struct xfrm_state *x, struct netlink_ext_ack *extack)
- 	if (!ipcd)
- 		goto out;
- 
--	mutex_lock(&ipcomp_resource_mutex);
--	if (!ipcomp_alloc_scratches())
-+	ipcd->tfm = crypto_alloc_acomp(x->calg->alg_name, 0, 0);
-+	if (IS_ERR(ipcd->tfm))
- 		goto error;
- 
--	ipcd->tfms = ipcomp_alloc_tfms(x->calg->alg_name);
--	if (!ipcd->tfms)
--		goto error;
--	mutex_unlock(&ipcomp_resource_mutex);
--
- 	calg_desc = xfrm_calg_get_byname(x->calg->alg_name, 0);
- 	BUG_ON(!calg_desc);
- 	ipcd->threshold = calg_desc->uinfo.comp.threshold;
-@@ -367,7 +355,6 @@ int ipcomp_init_state(struct xfrm_state *x, struct netlink_ext_ack *extack)
- 
- error:
- 	ipcomp_free_data(ipcd);
--	mutex_unlock(&ipcomp_resource_mutex);
- 	kfree(ipcd);
- 	goto out;
- }
 -- 
-2.39.5
-
+Giovanni
 
 ______________________________________________________
 Linux MTD discussion mailing list
