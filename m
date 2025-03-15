@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C98EC282EC
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 00:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 162C5C28B28
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 03:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F84zs1r5GGM4cllUPQpTzeyqyvXtMZVTD6L6Y4J2KkA=; b=F+E5Fe5avuD/2F
-	jvxYXw6mxp3oiibdHFLkTl6TW/ksvVB3i97B7ZoZMsz3Tg4w7H+HNXVCC8Vkrr/GkhSTjdFUqGye2
-	ZC3nsMCx1LVLtnNLs02bemwWlGNjExiqmHo2ArhbpLnIQoCuxWy3p4p8ycQv2MyxdQstns8IEMlsK
-	QelZI+s5Z/XbhPVWcJAiniRGKKxiFEjgqcf5/bEimm3ndKWPGdAz2cf43B6Xfv9err6VOBYudKTbE
-	lroYpioqBdjcf97k3ZUaG8D6ETs4iyqPQ6LbfKBRLXwi8n7jsZDMUtbftJW+bHNRgDewFk1m9eWgJ
-	bU9EbHDkyU2ECUVuuzdg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+3wqurN4c614SCzyx11+rlC3Q1iD49A6WFDduUHyOg0=; b=f6fLGaSJG+IZh4doasLlvaviXO
+	siQMKiF188tBCX7e1JltJ36z9bawmsylZzdb0979a027Vm9ARUQPTG2wUznQBB7ybORF8aTt+Wvdl
+	5yTmG4S8O2nNRZkGwoU36v4vIYTmuQajSlC/2qcMOs7eA6vyITOFXF+sRxQ0y5OSTy6BoNWChXmkB
+	/Qb9OQkU1MzvrOVL3/RYeKwtktpTq7qO3GdV8dBUwcK5Tbcd3jU/CkCm668x0+AnejZ/6wx2QXoXM
+	xsp2F0alybb15XqhzVSBdmwy2qaV4CcoLtuLZYD8hBm0mxXASz1+eCbi0FFm3A4mB50BhGCo6+YV5
+	TT06JP/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttFaz-0000000FcGa-06On;
-	Sat, 15 Mar 2025 00:41:45 +0000
-Received: from abb.hmeau.com ([144.6.53.87])
+	id 1ttIc0-0000000FmTU-2lLL;
+	Sat, 15 Mar 2025 03:55:00 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttFRG-0000000FbHk-1vtP
+	id 1ttIbx-0000000FmSl-1QDb
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Mar 2025 00:31:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=t3ecUWY92S53odYjmM31lnI9pitPM2pM+xnXq3bFvsg=; b=VymMNzgTs1z8T84RIQQNiPfsqh
-	hJdYDA8EHMUIcWNmq8x1krK7oyDwo5BqKErXIYBgz2CSaGclFUAtXzw/SglY/AxHy1ZulvME7cTCl
-	bnPDFMSLw4q5kdezHuIRMQYwEiZaI6pIMQ4D5MWk6oJzNQkmuD3PHQ/Odx+A0VrZRGhhJlr3fZSRd
-	Zuj61q+lI3CiDYm8mticZaygOlDElUr/j8StYvpJ3DfKM8ECDYC+PocWHZIqsAWHGdXeG2KKQSBGs
-	wzjPHSuShtY3A5ZtW/NoQv7pAbA179WVdCuVBI/GDxS+5VOCenJqLZHc46HUsk4/aens9yLbLP7Tj
-	DoSdk3tA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1ttFR8-006kEb-0B;
-	Sat, 15 Mar 2025 08:31:35 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 08:31:34 +0800
-Date: Sat, 15 Mar 2025 08:31:34 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>
-Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	linux-mtd@lists.infradead.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	netdev@vger.kernel.org
-Subject: [PATCH] crypto: qat - Remove dead code related to null dst
-Message-ID: <Z9TKZgYaVAerVVkU@gondor.apana.org.au>
-References: <cover.1741954320.git.herbert@gondor.apana.org.au>
- <1e29b349410b0d9822c8c0b8f6e01386a3c44d66.1741954320.git.herbert@gondor.apana.org.au>
- <Z9Q1euXeBy7x8zZI@gcabiddu-mobl.ger.corp.intel.com>
+	Sat, 15 Mar 2025 03:54:59 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZF6hD1qVlz2RTJX;
+	Sat, 15 Mar 2025 11:50:20 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 499811402E1;
+	Sat, 15 Mar 2025 11:54:45 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 15 Mar 2025 11:54:44 +0800
+Subject: Re: [v4 PATCH 10/13] ubifs: Use crypto_acomp interface
+To: Herbert Xu <herbert@gondor.apana.org.au>, Linux Crypto Mailing List
+	<linux-crypto@vger.kernel.org>
+CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+	<linux-pm@vger.kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
+	<netdev@vger.kernel.org>
+References: <cover.1741954523.git.herbert@gondor.apana.org.au>
+ <349a78bc53d3620a29cc6105b55985db51aa0a11.1741954523.git.herbert@gondor.apana.org.au>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <023a23b0-d9fd-6d4d-d5a2-207e47419645@huawei.com>
+Date: Sat, 15 Mar 2025 11:54:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Z9Q1euXeBy7x8zZI@gcabiddu-mobl.ger.corp.intel.com>
+In-Reply-To: <349a78bc53d3620a29cc6105b55985db51aa0a11.1741954523.git.herbert@gondor.apana.org.au>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250314_173142_912913_27B08627 
-X-CRM114-Status: GOOD (  18.19  )
+X-CRM114-CacheID: sfid-20250314_205457_678151_14FB2002 
+X-CRM114-Status: GOOD (  17.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,256 +70,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 14, 2025 at 01:56:10PM +0000, Cabiddu, Giovanni wrote:
->
-> The implementation of this function in qat/qat_common/qat_bl.c
-> should be removed as well as. After this change, it is not getting
-> called.
-
-Thanks.  I'll fold this patch in if a rebase is needed.
-
----8<---
-Remove dead code left behind after the dropping of null dst support.
-
-Fix the areq->dst test so that a null dst is explicitly forbidden.
-
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
----
- drivers/crypto/intel/qat/qat_common/qat_bl.c  | 159 ------------------
- drivers/crypto/intel/qat/qat_common/qat_bl.h  |   6 -
- .../intel/qat/qat_common/qat_comp_algs.c      |   2 +-
- .../intel/qat/qat_common/qat_comp_req.h       |  10 --
- 4 files changed, 1 insertion(+), 176 deletions(-)
-
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_bl.c b/drivers/crypto/intel/qat/qat_common/qat_bl.c
-index 338acf29c487..5e4dad4693ca 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_bl.c
-+++ b/drivers/crypto/intel/qat/qat_common/qat_bl.c
-@@ -251,162 +251,3 @@ int qat_bl_sgl_to_bufl(struct adf_accel_dev *accel_dev,
- 				    extra_dst_buff, sz_extra_dst_buff,
- 				    sskip, dskip, flags);
- }
--
--static void qat_bl_sgl_unmap(struct adf_accel_dev *accel_dev,
--			     struct qat_alg_buf_list *bl)
--{
--	struct device *dev = &GET_DEV(accel_dev);
--	int n = bl->num_bufs;
--	int i;
--
--	for (i = 0; i < n; i++)
--		if (!dma_mapping_error(dev, bl->buffers[i].addr))
--			dma_unmap_single(dev, bl->buffers[i].addr,
--					 bl->buffers[i].len, DMA_FROM_DEVICE);
--}
--
--static int qat_bl_sgl_map(struct adf_accel_dev *accel_dev,
--			  struct scatterlist *sgl,
--			  struct qat_alg_buf_list **bl)
--{
--	struct device *dev = &GET_DEV(accel_dev);
--	struct qat_alg_buf_list *bufl;
--	int node = dev_to_node(dev);
--	struct scatterlist *sg;
--	int n, i, sg_nctr;
--	size_t sz;
--
--	n = sg_nents(sgl);
--	sz = struct_size(bufl, buffers, n);
--	bufl = kzalloc_node(sz, GFP_KERNEL, node);
--	if (unlikely(!bufl))
--		return -ENOMEM;
--
--	for (i = 0; i < n; i++)
--		bufl->buffers[i].addr = DMA_MAPPING_ERROR;
--
--	sg_nctr = 0;
--	for_each_sg(sgl, sg, n, i) {
--		int y = sg_nctr;
--
--		if (!sg->length)
--			continue;
--
--		bufl->buffers[y].addr = dma_map_single(dev, sg_virt(sg),
--						       sg->length,
--						       DMA_FROM_DEVICE);
--		bufl->buffers[y].len = sg->length;
--		if (unlikely(dma_mapping_error(dev, bufl->buffers[y].addr)))
--			goto err_map;
--		sg_nctr++;
--	}
--	bufl->num_bufs = sg_nctr;
--	bufl->num_mapped_bufs = sg_nctr;
--
--	*bl = bufl;
--
--	return 0;
--
--err_map:
--	for (i = 0; i < n; i++)
--		if (!dma_mapping_error(dev, bufl->buffers[i].addr))
--			dma_unmap_single(dev, bufl->buffers[i].addr,
--					 bufl->buffers[i].len,
--					 DMA_FROM_DEVICE);
--	kfree(bufl);
--	*bl = NULL;
--
--	return -ENOMEM;
--}
--
--static void qat_bl_sgl_free_unmap(struct adf_accel_dev *accel_dev,
--				  struct scatterlist *sgl,
--				  struct qat_alg_buf_list *bl,
--				  bool free_bl)
--{
--	if (bl) {
--		qat_bl_sgl_unmap(accel_dev, bl);
--
--		if (free_bl)
--			kfree(bl);
--	}
--	if (sgl)
--		sgl_free(sgl);
--}
--
--static int qat_bl_sgl_alloc_map(struct adf_accel_dev *accel_dev,
--				struct scatterlist **sgl,
--				struct qat_alg_buf_list **bl,
--				unsigned int dlen,
--				gfp_t gfp)
--{
--	struct scatterlist *dst;
--	int ret;
--
--	dst = sgl_alloc(dlen, gfp, NULL);
--	if (!dst) {
--		dev_err(&GET_DEV(accel_dev), "sg_alloc failed\n");
--		return -ENOMEM;
--	}
--
--	ret = qat_bl_sgl_map(accel_dev, dst, bl);
--	if (ret)
--		goto err;
--
--	*sgl = dst;
--
--	return 0;
--
--err:
--	sgl_free(dst);
--	*sgl = NULL;
--	return ret;
--}
--
--int qat_bl_realloc_map_new_dst(struct adf_accel_dev *accel_dev,
--			       struct scatterlist **sg,
--			       unsigned int dlen,
--			       struct qat_request_buffs *qat_bufs,
--			       gfp_t gfp)
--{
--	struct device *dev = &GET_DEV(accel_dev);
--	dma_addr_t new_blp = DMA_MAPPING_ERROR;
--	struct qat_alg_buf_list *new_bl;
--	struct scatterlist *new_sg;
--	size_t new_bl_size;
--	int ret;
--
--	ret = qat_bl_sgl_alloc_map(accel_dev, &new_sg, &new_bl, dlen, gfp);
--	if (ret)
--		return ret;
--
--	new_bl_size = struct_size(new_bl, buffers, new_bl->num_bufs);
--
--	/* Map new firmware SGL descriptor */
--	new_blp = dma_map_single(dev, new_bl, new_bl_size, DMA_TO_DEVICE);
--	if (unlikely(dma_mapping_error(dev, new_blp)))
--		goto err;
--
--	/* Unmap old firmware SGL descriptor */
--	dma_unmap_single(dev, qat_bufs->bloutp, qat_bufs->sz_out, DMA_TO_DEVICE);
--
--	/* Free and unmap old scatterlist */
--	qat_bl_sgl_free_unmap(accel_dev, *sg, qat_bufs->blout,
--			      !qat_bufs->sgl_dst_valid);
--
--	qat_bufs->sgl_dst_valid = false;
--	qat_bufs->blout = new_bl;
--	qat_bufs->bloutp = new_blp;
--	qat_bufs->sz_out = new_bl_size;
--
--	*sg = new_sg;
--
--	return 0;
--err:
--	qat_bl_sgl_free_unmap(accel_dev, new_sg, new_bl, true);
--
--	if (!dma_mapping_error(dev, new_blp))
--		dma_unmap_single(dev, new_blp, new_bl_size, DMA_TO_DEVICE);
--
--	return -ENOMEM;
--}
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_bl.h b/drivers/crypto/intel/qat/qat_common/qat_bl.h
-index 3f5b79015400..2827d5055d3c 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_bl.h
-+++ b/drivers/crypto/intel/qat/qat_common/qat_bl.h
-@@ -65,10 +65,4 @@ static inline gfp_t qat_algs_alloc_flags(struct crypto_async_request *req)
- 	return req->flags & CRYPTO_TFM_REQ_MAY_SLEEP ? GFP_KERNEL : GFP_ATOMIC;
- }
- 
--int qat_bl_realloc_map_new_dst(struct adf_accel_dev *accel_dev,
--			       struct scatterlist **newd,
--			       unsigned int dlen,
--			       struct qat_request_buffs *qat_bufs,
--			       gfp_t gfp);
--
- #endif
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-index 9d5848e28ff8..a6e02405d402 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-+++ b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-@@ -183,7 +183,7 @@ static int qat_comp_alg_compress_decompress(struct acomp_req *areq, enum directi
- 	if (!areq->src || !slen)
- 		return -EINVAL;
- 
--	if (areq->dst && !dlen)
-+	if (!areq->dst || !dlen)
- 		return -EINVAL;
- 
- 	if (dir == COMPRESSION) {
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_comp_req.h b/drivers/crypto/intel/qat/qat_common/qat_comp_req.h
-index 404e32c5e778..18a1f33a6db9 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_comp_req.h
-+++ b/drivers/crypto/intel/qat/qat_common/qat_comp_req.h
-@@ -25,16 +25,6 @@ static inline void qat_comp_create_req(void *ctx, void *req, u64 src, u32 slen,
- 	req_pars->out_buffer_sz = dlen;
- }
- 
--static inline void qat_comp_override_dst(void *req, u64 dst, u32 dlen)
--{
--	struct icp_qat_fw_comp_req *fw_req = req;
--	struct icp_qat_fw_comp_req_params *req_pars = &fw_req->comp_pars;
--
--	fw_req->comn_mid.dest_data_addr = dst;
--	fw_req->comn_mid.dst_length = dlen;
--	req_pars->out_buffer_sz = dlen;
--}
--
- static inline void qat_comp_create_compression_req(void *ctx, void *req,
- 						   u64 src, u32 slen,
- 						   u64 dst, u32 dlen,
--- 
-2.39.5
-
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNS8zLzE0IDIwOjIyLCBIZXJiZXJ0IFh1INC0tcA6Cj4gUmVwbGFjZSB0aGUgbGVnYWN5
+IGNyeXB0byBjb21wcmVzc2lvbiBpbnRlcmZhY2Ugd2l0aCB0aGUgbmV3IGFjb21wCj4gaW50ZXJm
+YWNlLgo+IAo+IFJlbW92ZSB0aGUgY29tcHJlc3Npb24gbXV0ZXhlcyBhbmQgdGhlIG92ZXJhbGxv
+Y2F0aW9uIGZvciBtZW1vcnkKPiAodGhlIG9mZmVuZGVyIExaTyBoYXMgYmVlbiBmaXhlZCkuCj4g
+Cj4gU2lnbmVkLW9mZi1ieTogSGVyYmVydCBYdSA8aGVyYmVydEBnb25kb3IuYXBhbmEub3JnLmF1
+Pgo+IC0tLQo+ICAgZnMvdWJpZnMvY29tcHJlc3MuYyB8IDExNiArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrLS0tLS0tLS0tLS0tLS0tLQo+ICAgZnMvdWJpZnMvam91cm5hbC5jICB8ICAgMiAr
+LQo+ICAgZnMvdWJpZnMvdWJpZnMuaCAgICB8ICAxNSArLS0tLS0KPiAgIDMgZmlsZXMgY2hhbmdl
+ZCwgNzcgaW5zZXJ0aW9ucygrKSwgNTYgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2Zz
+L3ViaWZzL2NvbXByZXNzLmMgYi9mcy91Ymlmcy9jb21wcmVzcy5jCj4gaW5kZXggMGI0OGNiYWI4
+YTNkLi45MDQ2ZTc5Njg3NmQgMTAwNjQ0Cj4gLS0tIGEvZnMvdWJpZnMvY29tcHJlc3MuYwo+ICsr
+KyBiL2ZzL3ViaWZzL2NvbXByZXNzLmMKPiBAQCAtMTUsNyArMTUsNyBAQAo+ICAgICogZGVjb21w
+cmVzc2lvbi4KPiAgICAqLwo+ICAgCj4gLSNpbmNsdWRlIDxsaW51eC9jcnlwdG8uaD4KPiArI2lu
+Y2x1ZGUgPGNyeXB0by9hY29tcHJlc3MuaD4KPiAgICNpbmNsdWRlICJ1Ymlmcy5oIgo+ICAgCj4g
+ICAvKiBGYWtlIGRlc2NyaXB0aW9uIG9iamVjdCBmb3IgdGhlICJub25lIiBjb21wcmVzc29yICov
+Cj4gQEAgLTI2LDExICsyNiw4IEBAIHN0YXRpYyBzdHJ1Y3QgdWJpZnNfY29tcHJlc3NvciBub25l
+X2NvbXByID0gewo+ICAgfTsKPiAgIAo+ICAgI2lmZGVmIENPTkZJR19VQklGU19GU19MWk8KPiAt
+c3RhdGljIERFRklORV9NVVRFWChsem9fbXV0ZXgpOwo+IC0KPiAgIHN0YXRpYyBzdHJ1Y3QgdWJp
+ZnNfY29tcHJlc3NvciBsem9fY29tcHIgPSB7Cj4gICAJLmNvbXByX3R5cGUgPSBVQklGU19DT01Q
+Ul9MWk8sCj4gLQkuY29tcF9tdXRleCA9ICZsem9fbXV0ZXgsCj4gICAJLm5hbWUgPSAibHpvIiwK
+PiAgIAkuY2FwaV9uYW1lID0gImx6byIsCj4gICB9Owo+IEBAIC00MiwxMyArMzksOCBAQCBzdGF0
+aWMgc3RydWN0IHViaWZzX2NvbXByZXNzb3IgbHpvX2NvbXByID0gewo+ICAgI2VuZGlmCj4gICAK
+PiAgICNpZmRlZiBDT05GSUdfVUJJRlNfRlNfWkxJQgo+IC1zdGF0aWMgREVGSU5FX01VVEVYKGRl
+ZmxhdGVfbXV0ZXgpOwo+IC1zdGF0aWMgREVGSU5FX01VVEVYKGluZmxhdGVfbXV0ZXgpOwo+IC0K
+PiAgIHN0YXRpYyBzdHJ1Y3QgdWJpZnNfY29tcHJlc3NvciB6bGliX2NvbXByID0gewo+ICAgCS5j
+b21wcl90eXBlID0gVUJJRlNfQ09NUFJfWkxJQiwKPiAtCS5jb21wX211dGV4ID0gJmRlZmxhdGVf
+bXV0ZXgsCj4gLQkuZGVjb21wX211dGV4ID0gJmluZmxhdGVfbXV0ZXgsCj4gICAJLm5hbWUgPSAi
+emxpYiIsCj4gICAJLmNhcGlfbmFtZSA9ICJkZWZsYXRlIiwKPiAgIH07Cj4gQEAgLTYwLDEzICs1
+Miw4IEBAIHN0YXRpYyBzdHJ1Y3QgdWJpZnNfY29tcHJlc3NvciB6bGliX2NvbXByID0gewo+ICAg
+I2VuZGlmCj4gICAKPiAgICNpZmRlZiBDT05GSUdfVUJJRlNfRlNfWlNURAo+IC1zdGF0aWMgREVG
+SU5FX01VVEVYKHpzdGRfZW5jX211dGV4KTsKPiAtc3RhdGljIERFRklORV9NVVRFWCh6c3RkX2Rl
+Y19tdXRleCk7Cj4gLQo+ICAgc3RhdGljIHN0cnVjdCB1Ymlmc19jb21wcmVzc29yIHpzdGRfY29t
+cHIgPSB7Cj4gICAJLmNvbXByX3R5cGUgPSBVQklGU19DT01QUl9aU1RELAo+IC0JLmNvbXBfbXV0
+ZXggPSAmenN0ZF9lbmNfbXV0ZXgsCj4gLQkuZGVjb21wX211dGV4ID0gJnpzdGRfZGVjX211dGV4
+LAo+ICAgCS5uYW1lID0gInpzdGQiLAo+ICAgCS5jYXBpX25hbWUgPSAienN0ZCIsCj4gICB9Owo+
+IEBAIC04MCw2ICs2Nyw0MCBAQCBzdGF0aWMgc3RydWN0IHViaWZzX2NvbXByZXNzb3IgenN0ZF9j
+b21wciA9IHsKPiAgIC8qIEFsbCBVQklGUyBjb21wcmVzc29ycyAqLwo+ICAgc3RydWN0IHViaWZz
+X2NvbXByZXNzb3IgKnViaWZzX2NvbXByZXNzb3JzW1VCSUZTX0NPTVBSX1RZUEVTX0NOVF07Cj4g
+ICAKPiArc3RhdGljIGludCB1Ymlmc19jb21wcmVzc19yZXEoY29uc3Qgc3RydWN0IHViaWZzX2lu
+Zm8gKmMsCj4gKwkJCSAgICAgIHN0cnVjdCBhY29tcF9yZXEgKnJlcSwKPiArCQkJICAgICAgdm9p
+ZCAqb3V0X2J1ZiwgaW50ICpvdXRfbGVuKQo+ICt7Cj4gKwlzdHJ1Y3QgY3J5cHRvX3dhaXQgd2Fp
+dDsKPiArCWludCBpbl9sZW4gPSByZXEtPnNsZW47Cj4gKwlpbnQgZXJyOwo+ICsKPiArCWNyeXB0
+b19pbml0X3dhaXQoJndhaXQpOwo+ICsJYWNvbXBfcmVxdWVzdF9zZXRfY2FsbGJhY2socmVxLCBD
+UllQVE9fVEZNX1JFUV9NQVlfQkFDS0xPRywKPiArCQkJCSAgIGNyeXB0b19yZXFfZG9uZSwgJndh
+aXQpOwo+ICsJYWNvbXBfcmVxdWVzdF9zZXRfZHN0X2RtYShyZXEsIG91dF9idWYsICpvdXRfbGVu
+KTsKPiArCWVyciA9IGNyeXB0b19hY29tcF9jb21wcmVzcyhyZXEpOwo+ICsJZXJyID0gY3J5cHRv
+X3dhaXRfcmVxKGVyciwgJndhaXQpOwo+ICsJKm91dF9sZW4gPSByZXEtPmRsZW47Cj4gKwo+ICsJ
+aWYgKHVubGlrZWx5KGVycikpIHsKPiArCQl1Ymlmc193YXJuKGMsICJjYW5ub3QgY29tcHJlc3Mg
+JWQgYnl0ZXMsIGNvbXByZXNzb3IgJXMsIGVycm9yICVkLCBsZWF2ZSBkYXRhIHVuY29tcHJlc3Nl
+ZCIsCj4gKwkJCSAgIGluX2xlbiwKPiArCQkJICAgY3J5cHRvX2Fjb21wX2FsZ19uYW1lKGNyeXB0
+b19hY29tcF9yZXF0Zm0ocmVxKSksCgpXZSBnZXQgY2FwaV9uYW1lIGJ5ICdjcnlwdG9fYWNvbXBf
+YWxnX25hbWUoY3J5cHRvX2Fjb21wX3JlcXRmbShyZXEpKScsIApub3QgY29tcHItPm5hbWUuCgpU
+aGVyZSBhcmUgY29uZmxpY3RzIGluIHBhdGNoIDIgb24gdGhlIGxhdGVzdCBtYWlubGluZSB2ZXJz
+aW9uLCBjYW4geW91IApyZWJhc2UgdGhpcyBzZXJpZXMgc28gSSBjYW4gZG8gc29tZSB0ZXN0cyBm
+b3IgVUJJRlMuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
