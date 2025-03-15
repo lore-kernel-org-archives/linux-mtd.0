@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9D52C35FFB
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A378C35FFA
 	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 10:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,49 +12,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2OpKLHKFNoZwk7OgIGj7dRJ8hmJ1WxdzMrID4/mhldk=; b=ga2Hs09XldePvh
-	eUQ/A0010sz/3RrTEPbR0gEyHEtCNA0Xrl3iTGkdxrzk5Vo0e6dLPYRABTbECJFTh4jqz/5nKcRSD
-	DHfOMrRDnmDpoNb+7VER6TbEkBeFj5j88G4LkcCaZAGWjcb2FKeCyk9YkTvM25iN1NgeUDGop/JL/
-	8BIBSZdMLqEX1Lq8avksLShkFpnwWGL0rTn01l5VW2bTIUnaFListmZ91zBFXAOMtuyqmkEfpydEh
-	oaZJQCT6WItLaW8xGr/1uIaokOYX9oAR8SIb7/q/U2eE3V6QRGsIyNHD3e60Av+ME3EYF10XJDcID
-	h3uvXZGN0nk5RO2a8V6Q==;
+	List-Owner; bh=ywMVO+oxgM0fYdh3RZaW3VVNykHOFHbCReAeF/pqMHg=; b=nAXbyDObNT+F22
+	oK6wq1v7d0ULtN8gq5aK4GGmT+AJh/uFTzi7PuU92qKIDoBLru5Zhqo2CRu0EkgTrAAWScCyUBQdM
+	JJh6jl7GWl7sSyJ55SSC4EgXGaAspmTbRS3CEEBYb1y5xvulGq2ZJQdfzO1CqwbjE/tR7pKxy7MlS
+	GDBlM+mN2X4M1+Pc29MtJjqf28nl8ZIJZT6gUxB0uwYxOvxOtaNDvNFPmVjg1AJrq8knryiyTw8mI
+	Zx1X6AdTYPT/ACRHSO164qK9sTF30z2wjHUvDA9++ENYfS1XXhVLc3rTEftqe5r//YtwunSejJDIV
+	qzlnkPieZhdQUJFrZC+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOnu-0000000GDDy-0yom;
+	id 1ttOnu-0000000GDEV-3b0L;
 	Sat, 15 Mar 2025 10:31:42 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOmm-0000000GCy8-2kw3
+	id 1ttOmp-0000000GD07-0UaO
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Mar 2025 10:30:34 +0000
+	Sat, 15 Mar 2025 10:30:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=c5J7R93VbWY8eXPMwB3c29c2QRrhSxoIY0/VZKY8uW4=; b=BDStfajNUIJzKku/yhP8eaEwvf
-	SKwIgAi/eq2ieZy7mMl+WSvSF5K+0TgwXRiId32ixaWn8KXQN7qkmr4+vdnOIJ60OCc3uh9InZIYX
-	n4cvVas+KIkIuFAGTA/0Vpl4/rTzgWPFEgCv6GXKc0Wj6GKPrLFf9QEJB/LetMwJDks/xNvAlJ5rL
-	zuruFmvoZXmk8vBB71mHnMeGkYKDYwuwe4kIdmX3jwUcPZAaB3K49PrfLindg6vwIHvV8Z7CbLxGG
-	PH8IV5OmeTUeFU05TL4nLFHrb6xo1QpBQLMurlMWu84TFf5dzSpWi4YnjtecfMckf7lwCy9+wieW7
-	lwd2LTsQ==;
+	bh=Z4xkzlMtK/6yjn5/EQXtBq0om0TwKNc46SpKkDh7GOM=; b=Sx/gaa19wPReME6iTnQ5xJzsi7
+	L2Rms6o4jKi4rVGXSUjqzzv3522o8T2CJ+Za9re362i7Zv9g/EXHHghw5d4WQGogUnzHmJqh73Hoz
+	1s3OCaStL9GkNMY/bTjQnFMw4IuvtDHaSiabtL+jKbwdz4iBkyDgmUr+xAnRoHBTsAnohGtYMpyeo
+	IPGNDhAEY47EUEAmGsyRlJsBBIlCj9V/kH2DSspxKbk9+Ako2RwyApfngMmzTS67SCee2Y3mOd3ab
+	zBKdWE8KWV4W+6hupIfiFBiPlvsouFdD1EtMW52xTw3PKCGnqAQFJI2Y0Ly9xauj8+45gvTcNlk+B
+	sE74U/VA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1ttOme-006p9o-2R;
-	Sat, 15 Mar 2025 18:30:25 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:24 +0800
-Date: Sat, 15 Mar 2025 18:30:24 +0800
-Message-Id: <d892c20a1f0f4ebf8cc2f44216f63e7223499bad.1742034499.git.herbert@gondor.apana.org.au>
+	id 1ttOmh-006pA2-0a;
+	Sat, 15 Mar 2025 18:30:28 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:27 +0800
+Date: Sat, 15 Mar 2025 18:30:27 +0800
+Message-Id: <bdca061fb5739a817889e0a2abfc1907ed7219f4.1742034499.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1742034499.git.herbert@gondor.apana.org.au>
 References: <cover.1742034499.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v5 PATCH 03/14] crypto: iaa - Remove dst_null support
+Subject: [v5 PATCH 04/14] crypto: qat - Remove dst_null support
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250315_033033_017377_BD62E605 
-X-CRM114-Status: GOOD (  14.05  )
+X-CRM114-CacheID: sfid-20250315_033035_460422_577F2D3A 
+X-CRM114-Status: GOOD (  18.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,235 +76,348 @@ Remove the unused dst_null support.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 136 +--------------------
- 1 file changed, 6 insertions(+), 130 deletions(-)
+ drivers/crypto/intel/qat/qat_common/qat_bl.c  | 159 ------------------
+ drivers/crypto/intel/qat/qat_common/qat_bl.h  |   6 -
+ .../intel/qat/qat_common/qat_comp_algs.c      |  85 +---------
+ .../intel/qat/qat_common/qat_comp_req.h       |  10 --
+ 4 files changed, 1 insertion(+), 259 deletions(-)
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index 990ea46955bb..50cb100bf1c8 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -1136,8 +1136,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 			struct idxd_wq *wq,
- 			dma_addr_t src_addr, unsigned int slen,
- 			dma_addr_t dst_addr, unsigned int *dlen,
--			u32 *compression_crc,
--			bool disable_async)
-+			u32 *compression_crc)
- {
- 	struct iaa_device_compression_mode *active_compression_mode;
- 	struct iaa_compression_ctx *ctx = crypto_tfm_ctx(tfm);
-@@ -1180,7 +1179,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 	desc->src2_size = sizeof(struct aecs_comp_table_record);
- 	desc->completion_addr = idxd_desc->compl_dma;
- 
--	if (ctx->use_irq && !disable_async) {
-+	if (ctx->use_irq) {
- 		desc->flags |= IDXD_OP_FLAG_RCI;
- 
- 		idxd_desc->crypto.req = req;
-@@ -1193,7 +1192,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 			" src_addr %llx, dst_addr %llx\n", __func__,
- 			active_compression_mode->name,
- 			src_addr, dst_addr);
--	} else if (ctx->async_mode && !disable_async)
-+	} else if (ctx->async_mode)
- 		req->base.data = idxd_desc;
- 
- 	dev_dbg(dev, "%s: compression mode %s,"
-@@ -1214,7 +1213,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 	update_total_comp_calls();
- 	update_wq_comp_calls(wq);
- 
--	if (ctx->async_mode && !disable_async) {
-+	if (ctx->async_mode) {
- 		ret = -EINPROGRESS;
- 		dev_dbg(dev, "%s: returning -EINPROGRESS\n", __func__);
- 		goto out;
-@@ -1234,7 +1233,7 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 
- 	*compression_crc = idxd_desc->iax_completion->crc;
- 
--	if (!ctx->async_mode || disable_async)
-+	if (!ctx->async_mode)
- 		idxd_free_desc(wq, idxd_desc);
- out:
- 	return ret;
-@@ -1500,13 +1499,11 @@ static int iaa_comp_acompress(struct acomp_req *req)
- 	struct iaa_compression_ctx *compression_ctx;
- 	struct crypto_tfm *tfm = req->base.tfm;
- 	dma_addr_t src_addr, dst_addr;
--	bool disable_async = false;
- 	int nr_sgs, cpu, ret = 0;
- 	struct iaa_wq *iaa_wq;
- 	u32 compression_crc;
- 	struct idxd_wq *wq;
- 	struct device *dev;
--	int order = -1;
- 
- 	compression_ctx = crypto_tfm_ctx(tfm);
- 
-@@ -1536,21 +1533,6 @@ static int iaa_comp_acompress(struct acomp_req *req)
- 
- 	iaa_wq = idxd_wq_get_private(wq);
- 
--	if (!req->dst) {
--		gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ? GFP_KERNEL : GFP_ATOMIC;
+diff --git a/drivers/crypto/intel/qat/qat_common/qat_bl.c b/drivers/crypto/intel/qat/qat_common/qat_bl.c
+index 338acf29c487..5e4dad4693ca 100644
+--- a/drivers/crypto/intel/qat/qat_common/qat_bl.c
++++ b/drivers/crypto/intel/qat/qat_common/qat_bl.c
+@@ -251,162 +251,3 @@ int qat_bl_sgl_to_bufl(struct adf_accel_dev *accel_dev,
+ 				    extra_dst_buff, sz_extra_dst_buff,
+ 				    sskip, dskip, flags);
+ }
 -
--		/* incompressible data will always be < 2 * slen */
--		req->dlen = 2 * req->slen;
--		order = order_base_2(round_up(req->dlen, PAGE_SIZE) / PAGE_SIZE);
--		req->dst = sgl_alloc_order(req->dlen, order, false, flags, NULL);
--		if (!req->dst) {
--			ret = -ENOMEM;
--			order = -1;
--			goto out;
--		}
--		disable_async = true;
+-static void qat_bl_sgl_unmap(struct adf_accel_dev *accel_dev,
+-			     struct qat_alg_buf_list *bl)
+-{
+-	struct device *dev = &GET_DEV(accel_dev);
+-	int n = bl->num_bufs;
+-	int i;
+-
+-	for (i = 0; i < n; i++)
+-		if (!dma_mapping_error(dev, bl->buffers[i].addr))
+-			dma_unmap_single(dev, bl->buffers[i].addr,
+-					 bl->buffers[i].len, DMA_FROM_DEVICE);
+-}
+-
+-static int qat_bl_sgl_map(struct adf_accel_dev *accel_dev,
+-			  struct scatterlist *sgl,
+-			  struct qat_alg_buf_list **bl)
+-{
+-	struct device *dev = &GET_DEV(accel_dev);
+-	struct qat_alg_buf_list *bufl;
+-	int node = dev_to_node(dev);
+-	struct scatterlist *sg;
+-	int n, i, sg_nctr;
+-	size_t sz;
+-
+-	n = sg_nents(sgl);
+-	sz = struct_size(bufl, buffers, n);
+-	bufl = kzalloc_node(sz, GFP_KERNEL, node);
+-	if (unlikely(!bufl))
+-		return -ENOMEM;
+-
+-	for (i = 0; i < n; i++)
+-		bufl->buffers[i].addr = DMA_MAPPING_ERROR;
+-
+-	sg_nctr = 0;
+-	for_each_sg(sgl, sg, n, i) {
+-		int y = sg_nctr;
+-
+-		if (!sg->length)
+-			continue;
+-
+-		bufl->buffers[y].addr = dma_map_single(dev, sg_virt(sg),
+-						       sg->length,
+-						       DMA_FROM_DEVICE);
+-		bufl->buffers[y].len = sg->length;
+-		if (unlikely(dma_mapping_error(dev, bufl->buffers[y].addr)))
+-			goto err_map;
+-		sg_nctr++;
+-	}
+-	bufl->num_bufs = sg_nctr;
+-	bufl->num_mapped_bufs = sg_nctr;
+-
+-	*bl = bufl;
+-
+-	return 0;
+-
+-err_map:
+-	for (i = 0; i < n; i++)
+-		if (!dma_mapping_error(dev, bufl->buffers[i].addr))
+-			dma_unmap_single(dev, bufl->buffers[i].addr,
+-					 bufl->buffers[i].len,
+-					 DMA_FROM_DEVICE);
+-	kfree(bufl);
+-	*bl = NULL;
+-
+-	return -ENOMEM;
+-}
+-
+-static void qat_bl_sgl_free_unmap(struct adf_accel_dev *accel_dev,
+-				  struct scatterlist *sgl,
+-				  struct qat_alg_buf_list *bl,
+-				  bool free_bl)
+-{
+-	if (bl) {
+-		qat_bl_sgl_unmap(accel_dev, bl);
+-
+-		if (free_bl)
+-			kfree(bl);
+-	}
+-	if (sgl)
+-		sgl_free(sgl);
+-}
+-
+-static int qat_bl_sgl_alloc_map(struct adf_accel_dev *accel_dev,
+-				struct scatterlist **sgl,
+-				struct qat_alg_buf_list **bl,
+-				unsigned int dlen,
+-				gfp_t gfp)
+-{
+-	struct scatterlist *dst;
+-	int ret;
+-
+-	dst = sgl_alloc(dlen, gfp, NULL);
+-	if (!dst) {
+-		dev_err(&GET_DEV(accel_dev), "sg_alloc failed\n");
+-		return -ENOMEM;
 -	}
 -
- 	dev = &wq->idxd->pdev->dev;
- 
- 	nr_sgs = dma_map_sg(dev, req->src, sg_nents(req->src), DMA_TO_DEVICE);
-@@ -1580,7 +1562,7 @@ static int iaa_comp_acompress(struct acomp_req *req)
- 		req->dst, req->dlen, sg_dma_len(req->dst));
- 
- 	ret = iaa_compress(tfm, req, wq, src_addr, req->slen, dst_addr,
--			   &req->dlen, &compression_crc, disable_async);
-+			   &req->dlen, &compression_crc);
- 	if (ret == -EINPROGRESS)
- 		return ret;
- 
-@@ -1611,100 +1593,6 @@ static int iaa_comp_acompress(struct acomp_req *req)
- out:
- 	iaa_wq_put(wq);
- 
--	if (order >= 0)
--		sgl_free_order(req->dst, order);
+-	ret = qat_bl_sgl_map(accel_dev, dst, bl);
+-	if (ret)
+-		goto err;
 -
+-	*sgl = dst;
+-
+-	return 0;
+-
+-err:
+-	sgl_free(dst);
+-	*sgl = NULL;
 -	return ret;
 -}
 -
--static int iaa_comp_adecompress_alloc_dest(struct acomp_req *req)
+-int qat_bl_realloc_map_new_dst(struct adf_accel_dev *accel_dev,
+-			       struct scatterlist **sg,
+-			       unsigned int dlen,
+-			       struct qat_request_buffs *qat_bufs,
+-			       gfp_t gfp)
 -{
--	gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ?
--		GFP_KERNEL : GFP_ATOMIC;
--	struct crypto_tfm *tfm = req->base.tfm;
--	dma_addr_t src_addr, dst_addr;
--	int nr_sgs, cpu, ret = 0;
--	struct iaa_wq *iaa_wq;
--	struct device *dev;
--	struct idxd_wq *wq;
--	int order = -1;
+-	struct device *dev = &GET_DEV(accel_dev);
+-	dma_addr_t new_blp = DMA_MAPPING_ERROR;
+-	struct qat_alg_buf_list *new_bl;
+-	struct scatterlist *new_sg;
+-	size_t new_bl_size;
+-	int ret;
 -
--	cpu = get_cpu();
--	wq = wq_table_next_wq(cpu);
--	put_cpu();
--	if (!wq) {
--		pr_debug("no wq configured for cpu=%d\n", cpu);
--		return -ENODEV;
--	}
+-	ret = qat_bl_sgl_alloc_map(accel_dev, &new_sg, &new_bl, dlen, gfp);
+-	if (ret)
+-		return ret;
 -
--	ret = iaa_wq_get(wq);
--	if (ret) {
--		pr_debug("no wq available for cpu=%d\n", cpu);
--		return -ENODEV;
--	}
+-	new_bl_size = struct_size(new_bl, buffers, new_bl->num_bufs);
 -
--	iaa_wq = idxd_wq_get_private(wq);
+-	/* Map new firmware SGL descriptor */
+-	new_blp = dma_map_single(dev, new_bl, new_bl_size, DMA_TO_DEVICE);
+-	if (unlikely(dma_mapping_error(dev, new_blp)))
+-		goto err;
 -
--	dev = &wq->idxd->pdev->dev;
+-	/* Unmap old firmware SGL descriptor */
+-	dma_unmap_single(dev, qat_bufs->bloutp, qat_bufs->sz_out, DMA_TO_DEVICE);
 -
--	nr_sgs = dma_map_sg(dev, req->src, sg_nents(req->src), DMA_TO_DEVICE);
--	if (nr_sgs <= 0 || nr_sgs > 1) {
--		dev_dbg(dev, "couldn't map src sg for iaa device %d,"
--			" wq %d: ret=%d\n", iaa_wq->iaa_device->idxd->id,
--			iaa_wq->wq->id, ret);
--		ret = -EIO;
--		goto out;
--	}
--	src_addr = sg_dma_address(req->src);
--	dev_dbg(dev, "dma_map_sg, src_addr %llx, nr_sgs %d, req->src %p,"
--		" req->slen %d, sg_dma_len(sg) %d\n", src_addr, nr_sgs,
--		req->src, req->slen, sg_dma_len(req->src));
+-	/* Free and unmap old scatterlist */
+-	qat_bl_sgl_free_unmap(accel_dev, *sg, qat_bufs->blout,
+-			      !qat_bufs->sgl_dst_valid);
 -
--	req->dlen = 4 * req->slen; /* start with ~avg comp rato */
--alloc_dest:
--	order = order_base_2(round_up(req->dlen, PAGE_SIZE) / PAGE_SIZE);
--	req->dst = sgl_alloc_order(req->dlen, order, false, flags, NULL);
--	if (!req->dst) {
--		ret = -ENOMEM;
--		order = -1;
--		goto out;
--	}
+-	qat_bufs->sgl_dst_valid = false;
+-	qat_bufs->blout = new_bl;
+-	qat_bufs->bloutp = new_blp;
+-	qat_bufs->sz_out = new_bl_size;
 -
--	nr_sgs = dma_map_sg(dev, req->dst, sg_nents(req->dst), DMA_FROM_DEVICE);
--	if (nr_sgs <= 0 || nr_sgs > 1) {
--		dev_dbg(dev, "couldn't map dst sg for iaa device %d,"
--			" wq %d: ret=%d\n", iaa_wq->iaa_device->idxd->id,
--			iaa_wq->wq->id, ret);
--		ret = -EIO;
--		goto err_map_dst;
--	}
+-	*sg = new_sg;
 -
--	dst_addr = sg_dma_address(req->dst);
--	dev_dbg(dev, "dma_map_sg, dst_addr %llx, nr_sgs %d, req->dst %p,"
--		" req->dlen %d, sg_dma_len(sg) %d\n", dst_addr, nr_sgs,
--		req->dst, req->dlen, sg_dma_len(req->dst));
--	ret = iaa_decompress(tfm, req, wq, src_addr, req->slen,
--			     dst_addr, &req->dlen, true);
--	if (ret == -EOVERFLOW) {
--		dma_unmap_sg(dev, req->dst, sg_nents(req->dst), DMA_FROM_DEVICE);
--		req->dlen *= 2;
--		if (req->dlen > CRYPTO_ACOMP_DST_MAX)
--			goto err_map_dst;
--		goto alloc_dest;
--	}
+-	return 0;
+-err:
+-	qat_bl_sgl_free_unmap(accel_dev, new_sg, new_bl, true);
 -
--	if (ret != 0)
--		dev_dbg(dev, "asynchronous decompress failed ret=%d\n", ret);
+-	if (!dma_mapping_error(dev, new_blp))
+-		dma_unmap_single(dev, new_blp, new_bl_size, DMA_TO_DEVICE);
 -
--	dma_unmap_sg(dev, req->dst, sg_nents(req->dst), DMA_FROM_DEVICE);
--err_map_dst:
--	dma_unmap_sg(dev, req->src, sg_nents(req->src), DMA_TO_DEVICE);
--out:
--	iaa_wq_put(wq);
--
--	if (order >= 0)
--		sgl_free_order(req->dst, order);
--
- 	return ret;
+-	return -ENOMEM;
+-}
+diff --git a/drivers/crypto/intel/qat/qat_common/qat_bl.h b/drivers/crypto/intel/qat/qat_common/qat_bl.h
+index 3f5b79015400..2827d5055d3c 100644
+--- a/drivers/crypto/intel/qat/qat_common/qat_bl.h
++++ b/drivers/crypto/intel/qat/qat_common/qat_bl.h
+@@ -65,10 +65,4 @@ static inline gfp_t qat_algs_alloc_flags(struct crypto_async_request *req)
+ 	return req->flags & CRYPTO_TFM_REQ_MAY_SLEEP ? GFP_KERNEL : GFP_ATOMIC;
  }
  
-@@ -1727,9 +1615,6 @@ static int iaa_comp_adecompress(struct acomp_req *req)
- 		return -EINVAL;
- 	}
- 
--	if (!req->dst)
--		return iaa_comp_adecompress_alloc_dest(req);
+-int qat_bl_realloc_map_new_dst(struct adf_accel_dev *accel_dev,
+-			       struct scatterlist **newd,
+-			       unsigned int dlen,
+-			       struct qat_request_buffs *qat_bufs,
+-			       gfp_t gfp);
 -
- 	cpu = get_cpu();
- 	wq = wq_table_next_wq(cpu);
- 	put_cpu();
-@@ -1810,19 +1695,10 @@ static int iaa_comp_init_fixed(struct crypto_acomp *acomp_tfm)
- 	return 0;
+ #endif
+diff --git a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
+index 2ba4aa22e092..a6e02405d402 100644
+--- a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
++++ b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
+@@ -29,11 +29,6 @@ struct qat_compression_ctx {
+ 	int (*qat_comp_callback)(struct qat_compression_req *qat_req, void *resp);
+ };
+ 
+-struct qat_dst {
+-	bool is_null;
+-	int resubmitted;
+-};
+-
+ struct qat_compression_req {
+ 	u8 req[QAT_COMP_REQ_SIZE];
+ 	struct qat_compression_ctx *qat_compression_ctx;
+@@ -42,8 +37,6 @@ struct qat_compression_req {
+ 	enum direction dir;
+ 	int actual_dlen;
+ 	struct qat_alg_req alg_req;
+-	struct work_struct resubmit;
+-	struct qat_dst dst;
+ };
+ 
+ static int qat_alg_send_dc_message(struct qat_compression_req *qat_req,
+@@ -60,46 +53,6 @@ static int qat_alg_send_dc_message(struct qat_compression_req *qat_req,
+ 	return qat_alg_send_message(alg_req);
  }
  
--static void dst_free(struct scatterlist *sgl)
+-static void qat_comp_resubmit(struct work_struct *work)
 -{
--	/*
--	 * Called for req->dst = NULL cases but we free elsewhere
--	 * using sgl_free_order().
--	 */
+-	struct qat_compression_req *qat_req =
+-		container_of(work, struct qat_compression_req, resubmit);
+-	struct qat_compression_ctx *ctx = qat_req->qat_compression_ctx;
+-	struct adf_accel_dev *accel_dev = ctx->inst->accel_dev;
+-	struct qat_request_buffs *qat_bufs = &qat_req->buf;
+-	struct qat_compression_instance *inst = ctx->inst;
+-	struct acomp_req *areq = qat_req->acompress_req;
+-	struct crypto_acomp *tfm = crypto_acomp_reqtfm(areq);
+-	unsigned int dlen = CRYPTO_ACOMP_DST_MAX;
+-	u8 *req = qat_req->req;
+-	dma_addr_t dfbuf;
+-	int ret;
+-
+-	areq->dlen = dlen;
+-
+-	dev_dbg(&GET_DEV(accel_dev), "[%s][%s] retry NULL dst request - dlen = %d\n",
+-		crypto_tfm_alg_driver_name(crypto_acomp_tfm(tfm)),
+-		qat_req->dir == COMPRESSION ? "comp" : "decomp", dlen);
+-
+-	ret = qat_bl_realloc_map_new_dst(accel_dev, &areq->dst, dlen, qat_bufs,
+-					 qat_algs_alloc_flags(&areq->base));
+-	if (ret)
+-		goto err;
+-
+-	qat_req->dst.resubmitted = true;
+-
+-	dfbuf = qat_req->buf.bloutp;
+-	qat_comp_override_dst(req, dfbuf, dlen);
+-
+-	ret = qat_alg_send_dc_message(qat_req, inst, &areq->base);
+-	if (ret != -ENOSPC)
+-		return;
+-
+-err:
+-	qat_bl_free_bufl(accel_dev, qat_bufs);
+-	acomp_request_complete(areq, ret);
 -}
 -
- static struct acomp_alg iaa_acomp_fixed_deflate = {
- 	.init			= iaa_comp_init_fixed,
- 	.compress		= iaa_comp_acompress,
- 	.decompress		= iaa_comp_adecompress,
--	.dst_free               = dst_free,
- 	.base			= {
- 		.cra_name		= "deflate",
- 		.cra_driver_name	= "deflate-iaa",
+ static void qat_comp_generic_callback(struct qat_compression_req *qat_req,
+ 				      void *resp)
+ {
+@@ -131,21 +84,6 @@ static void qat_comp_generic_callback(struct qat_compression_req *qat_req,
+ 
+ 	areq->dlen = 0;
+ 
+-	if (qat_req->dir == DECOMPRESSION && qat_req->dst.is_null) {
+-		if (cmp_err == ERR_CODE_OVERFLOW_ERROR) {
+-			if (qat_req->dst.resubmitted) {
+-				dev_dbg(&GET_DEV(accel_dev),
+-					"Output does not fit destination buffer\n");
+-				res = -EOVERFLOW;
+-				goto end;
+-			}
+-
+-			INIT_WORK(&qat_req->resubmit, qat_comp_resubmit);
+-			adf_misc_wq_queue_work(&qat_req->resubmit);
+-			return;
+-		}
+-	}
+-
+ 	if (unlikely(status != ICP_QAT_FW_COMN_STATUS_FLAG_OK))
+ 		goto end;
+ 
+@@ -245,29 +183,9 @@ static int qat_comp_alg_compress_decompress(struct acomp_req *areq, enum directi
+ 	if (!areq->src || !slen)
+ 		return -EINVAL;
+ 
+-	if (areq->dst && !dlen)
++	if (!areq->dst || !dlen)
+ 		return -EINVAL;
+ 
+-	qat_req->dst.is_null = false;
+-
+-	/* Handle acomp requests that require the allocation of a destination
+-	 * buffer. The size of the destination buffer is double the source
+-	 * buffer (rounded up to the size of a page) to fit the decompressed
+-	 * output or an expansion on the data for compression.
+-	 */
+-	if (!areq->dst) {
+-		qat_req->dst.is_null = true;
+-
+-		dlen = round_up(2 * slen, PAGE_SIZE);
+-		areq->dst = sgl_alloc(dlen, f, NULL);
+-		if (!areq->dst)
+-			return -ENOMEM;
+-
+-		dlen -= dhdr + dftr;
+-		areq->dlen = dlen;
+-		qat_req->dst.resubmitted = false;
+-	}
+-
+ 	if (dir == COMPRESSION) {
+ 		params.extra_dst_buff = inst->dc_data->ovf_buff_p;
+ 		ovf_buff_sz = inst->dc_data->ovf_buff_sz;
+@@ -329,7 +247,6 @@ static struct acomp_alg qat_acomp[] = { {
+ 	.exit = qat_comp_alg_exit_tfm,
+ 	.compress = qat_comp_alg_compress,
+ 	.decompress = qat_comp_alg_decompress,
+-	.dst_free = sgl_free,
+ 	.reqsize = sizeof(struct qat_compression_req),
+ }};
+ 
+diff --git a/drivers/crypto/intel/qat/qat_common/qat_comp_req.h b/drivers/crypto/intel/qat/qat_common/qat_comp_req.h
+index 404e32c5e778..18a1f33a6db9 100644
+--- a/drivers/crypto/intel/qat/qat_common/qat_comp_req.h
++++ b/drivers/crypto/intel/qat/qat_common/qat_comp_req.h
+@@ -25,16 +25,6 @@ static inline void qat_comp_create_req(void *ctx, void *req, u64 src, u32 slen,
+ 	req_pars->out_buffer_sz = dlen;
+ }
+ 
+-static inline void qat_comp_override_dst(void *req, u64 dst, u32 dlen)
+-{
+-	struct icp_qat_fw_comp_req *fw_req = req;
+-	struct icp_qat_fw_comp_req_params *req_pars = &fw_req->comp_pars;
+-
+-	fw_req->comn_mid.dest_data_addr = dst;
+-	fw_req->comn_mid.dst_length = dlen;
+-	req_pars->out_buffer_sz = dlen;
+-}
+-
+ static inline void qat_comp_create_compression_req(void *ctx, void *req,
+ 						   u64 src, u32 slen,
+ 						   u64 dst, u32 dlen,
 -- 
 2.39.5
 
