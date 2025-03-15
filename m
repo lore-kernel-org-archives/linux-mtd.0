@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFCF4C35FF7
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDAB3C35FF3
 	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 10:31:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,49 +12,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3/S20KTBFJIBIcQdTZPdw3SZKD6C2PBdLtRJxWIAqds=; b=rNkSpG1BfUm60H
-	K5LhqdMaSlXlLfHfUU0UMSD9E/u8ziMT5T9Ut7eG6FNe52PiX5f1G5Hugln1x6wb+xyhtE7YY/QnV
-	YGqB4aKrkuAfF6uUOZ0rGwdvlNVMza7+SVxhB+v+6/ZuWiup/HG6IAEM1aLw8JyQQxpBf2taTE7bk
-	Xl2XjdYqmwuHtepFr3YYOGWGafWIVbfvm8UhCC3+VHHIcTlHYue6SON9grrWdUREjizTZJx3o7P6m
-	DS667dLWy4ttctmbgvYnNWH9jIs2FRi2rLHrnaUO1V1apYmVM7HsifEs7gQmT3CTauDGWIB1+EtyW
-	RzMqM9w9PXcQQONsLjqA==;
+	List-Owner; bh=sw1prKKupThoup7wiHybd3WGCMGfDp688kbLfPT01So=; b=0Q4cgm5pL9fZWL
+	7jyp9dcwoU//mUosWeGNuvH13K6AqYf274EI8PfpQutkb2eLAqQToxSf/NxjyR8cVpRVdMLnUNMO0
+	G92ZoGbZ4Ah3mqJW0h+Hhy7YociDflYy6ciVk9zqVugiZOSYeY7/14ZkbVzX8pnDYmgUtf6Pp4i7W
+	PgJgHNF8jeW9WoiNox2+evQdn0VKxC9xsgT4kPA1oNX5JIuiPozHNbky/xw1mPaxcq0sDbSbx3Wvd
+	l7MHZuZViHyO0y3B9h47xs6Y8HaAJhYsHiV+995Yf1KdBtt5S2wcIVcY10Cgl9rGvDZhVgvaMLhQw
+	ZQ44dqBkBQRX5dyxl+Lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOo0-0000000GDJR-39ph;
+	id 1ttOo0-0000000GDIp-0siT;
 	Sat, 15 Mar 2025 10:31:48 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOn9-0000000GD4A-0mex
+	id 1ttOn6-0000000GD3Z-3tyG
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Mar 2025 10:30:56 +0000
+	Sat, 15 Mar 2025 10:30:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=hBTo5GBDN+0PxC8Vd/uhm5QjbYhkQA1Havr2Id6DpTo=; b=kigllFsyJ4vVo2JcGvNlgNIUhq
-	ZwpxhB5BQpHtubMKdglEwbOeNhtGK6aL5iccdvyjCSKpYUPGwUfTMTQfiw6rOlqvepBzHfZBlxy2U
-	YujNpmdQgvozAcv0gNepmgE3df78E1AyCdfmBRKHn/vFWOzgz5P0utojpMDw5EdAaD1BVyMQnqPJM
-	irBpVcpDBam0JCwDjGBak28NCO/l0Z8oveyijpt6cO4PqCXUApuso9FHTKrPkG2QU2CqrnVwdSHKi
-	rslKaxSpxE/ycgQG0W4gh0WwngShnMJYXh+ghxUIKH/Gwuh8f4VJ9KFYFAzAaRf+QPD15131lHU3k
-	LJLQDmEg==;
+	bh=xKQt4Hlnj5e/HvykRuz+6r4zNwDvKhLAIlJI8TesC9s=; b=mard5RaiB53sgxHWGigmRyNu/z
+	QVMxyNh0mBvl3eiSqd6xkjcGFuz9jYzWpqi1lE33QGmwKcUqNlDR6GZyjuz9SOoSlYWnHEnN19SDH
+	4Hhm0HWXclbrIUk5L5kRTLmmXyu+4o7RKpUxOGQRLomxTvv0vehoJhET+vlFKWzgQfz9NzazMTx3k
+	jfvW+i+fpJvWpcNP/nfYpXed93EBj2JVclEtW1HqR1zJSLyou3hqqS/eMrYxh4sknCTJsHEacaoQ1
+	qm+Q48exqJFv3qThVhs4IgQAgHvk9t75jYofrhP4mDAZ9y9u7o3+SvlUy+Md6422xkzGBVtXq2PCl
+	wqMAzkiA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1ttOn1-006pCy-2X;
-	Sat, 15 Mar 2025 18:30:48 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:47 +0800
-Date: Sat, 15 Mar 2025 18:30:47 +0800
-Message-Id: <434ca0f270b1e76f2abb222ddb0d68d7f1e0831a.1742034499.git.herbert@gondor.apana.org.au>
+	id 1ttOmz-006pCh-1f;
+	Sat, 15 Mar 2025 18:30:46 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:45 +0800
+Date: Sat, 15 Mar 2025 18:30:45 +0800
+Message-Id: <339411183892ccee27409f00e975ae09f88e01af.1742034499.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1742034499.git.herbert@gondor.apana.org.au>
 References: <cover.1742034499.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v5 PATCH 13/14] ubifs: Use crypto_acomp interface
+Subject: [v5 PATCH 12/14] PM: hibernate: Use crypto_acomp interface
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250315_033055_528294_9F7AA1BD 
-X-CRM114-Status: GOOD (  22.10  )
+X-CRM114-CacheID: sfid-20250315_033053_256000_1CE2C0A8 
+X-CRM114-Status: GOOD (  14.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,273 +75,194 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Replace the legacy crypto compression interface with the new acomp
 interface.
 
-Remove the compression mutexes and the overallocation for memory
-(the offender LZO has been fixed).
-
-Cap the output buffer length for compression to eliminate the
-post-compression check for UBIFS_MIN_COMPRESS_DIFF.
-
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 ---
- fs/ubifs/compress.c | 106 ++++++++++++++++++++++++++------------------
- fs/ubifs/journal.c  |   2 +-
- fs/ubifs/ubifs.h    |  15 +------
- 3 files changed, 67 insertions(+), 56 deletions(-)
+ kernel/power/hibernate.c |  5 ++--
+ kernel/power/swap.c      | 58 +++++++++++++++++++++++++++-------------
+ 2 files changed, 42 insertions(+), 21 deletions(-)
 
-diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-index 0b48cbab8a3d..a241ba01c9a8 100644
---- a/fs/ubifs/compress.c
-+++ b/fs/ubifs/compress.c
-@@ -15,7 +15,7 @@
-  * decompression.
-  */
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 10a01af63a80..12051ff00839 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -11,6 +11,7 @@
  
--#include <linux/crypto.h>
+ #define pr_fmt(fmt) "PM: hibernation: " fmt
+ 
 +#include <crypto/acompress.h>
- #include "ubifs.h"
+ #include <linux/blkdev.h>
+ #include <linux/export.h>
+ #include <linux/suspend.h>
+@@ -757,7 +758,7 @@ int hibernate(void)
+ 	 */
+ 	if (!nocompress) {
+ 		strscpy(hib_comp_algo, hibernate_compressor, sizeof(hib_comp_algo));
+-		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
++		if (!crypto_has_acomp(hib_comp_algo, 0, CRYPTO_ALG_ASYNC)) {
+ 			pr_err("%s compression is not available\n", hib_comp_algo);
+ 			return -EOPNOTSUPP;
+ 		}
+@@ -1008,7 +1009,7 @@ static int software_resume(void)
+ 			strscpy(hib_comp_algo, COMPRESSION_ALGO_LZ4, sizeof(hib_comp_algo));
+ 		else
+ 			strscpy(hib_comp_algo, COMPRESSION_ALGO_LZO, sizeof(hib_comp_algo));
+-		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
++		if (!crypto_has_acomp(hib_comp_algo, 0, CRYPTO_ALG_ASYNC)) {
+ 			pr_err("%s compression is not available\n", hib_comp_algo);
+ 			error = -EOPNOTSUPP;
+ 			goto Unlock;
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index 82b884b67152..80ff5f933a62 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -12,6 +12,7 @@
  
- /* Fake description object for the "none" compressor */
-@@ -26,11 +26,8 @@ static struct ubifs_compressor none_compr = {
- };
+ #define pr_fmt(fmt) "PM: " fmt
  
- #ifdef CONFIG_UBIFS_FS_LZO
--static DEFINE_MUTEX(lzo_mutex);
--
- static struct ubifs_compressor lzo_compr = {
- 	.compr_type = UBIFS_COMPR_LZO,
--	.comp_mutex = &lzo_mutex,
- 	.name = "lzo",
- 	.capi_name = "lzo",
- };
-@@ -42,13 +39,8 @@ static struct ubifs_compressor lzo_compr = {
- #endif
- 
- #ifdef CONFIG_UBIFS_FS_ZLIB
--static DEFINE_MUTEX(deflate_mutex);
--static DEFINE_MUTEX(inflate_mutex);
--
- static struct ubifs_compressor zlib_compr = {
- 	.compr_type = UBIFS_COMPR_ZLIB,
--	.comp_mutex = &deflate_mutex,
--	.decomp_mutex = &inflate_mutex,
- 	.name = "zlib",
- 	.capi_name = "deflate",
- };
-@@ -60,13 +52,8 @@ static struct ubifs_compressor zlib_compr = {
- #endif
- 
- #ifdef CONFIG_UBIFS_FS_ZSTD
--static DEFINE_MUTEX(zstd_enc_mutex);
--static DEFINE_MUTEX(zstd_dec_mutex);
--
- static struct ubifs_compressor zstd_compr = {
- 	.compr_type = UBIFS_COMPR_ZSTD,
--	.comp_mutex = &zstd_enc_mutex,
--	.decomp_mutex = &zstd_dec_mutex,
- 	.name = "zstd",
- 	.capi_name = "zstd",
- };
-@@ -80,6 +67,30 @@ static struct ubifs_compressor zstd_compr = {
- /* All UBIFS compressors */
- struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
- 
-+static int ubifs_compress_req(const struct ubifs_info *c,
-+			      struct acomp_req *req,
-+			      void *out_buf, int *out_len,
-+			      const char *compr_name)
-+{
-+	struct crypto_wait wait;
-+	int in_len = req->slen;
-+	int dlen = *out_len;
-+	int err;
-+
-+	dlen = min(dlen, in_len - UBIFS_MIN_COMPRESS_DIFF);
-+
-+	crypto_init_wait(&wait);
-+	acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
-+				   crypto_req_done, &wait);
-+	acomp_request_set_dst_dma(req, out_buf, dlen);
-+	err = crypto_acomp_compress(req);
-+	err = crypto_wait_req(err, &wait);
-+	*out_len = req->dlen;
-+	acomp_request_free(req);
-+
-+	return err;
-+}
-+
- /**
-  * ubifs_compress - compress data.
-  * @c: UBIFS file-system description object
-@@ -112,23 +123,14 @@ void ubifs_compress(const struct ubifs_info *c, const void *in_buf,
- 	if (in_len < UBIFS_MIN_COMPR_LEN)
- 		goto no_compr;
- 
--	if (compr->comp_mutex)
--		mutex_lock(compr->comp_mutex);
--	err = crypto_comp_compress(compr->cc, in_buf, in_len, out_buf,
--				   (unsigned int *)out_len);
--	if (compr->comp_mutex)
--		mutex_unlock(compr->comp_mutex);
--	if (unlikely(err)) {
--		ubifs_warn(c, "cannot compress %d bytes, compressor %s, error %d, leave data uncompressed",
--			   in_len, compr->name, err);
--		goto no_compr;
-+	{
-+		ACOMP_REQUEST_ALLOC(req, compr->cc, GFP_NOFS | __GFP_NOWARN);
-+
-+		acomp_request_set_src_nondma(req, in_buf, in_len);
-+		err = ubifs_compress_req(c, req, out_buf, out_len, compr->name);
- 	}
- 
--	/*
--	 * If the data compressed only slightly, it is better to leave it
--	 * uncompressed to improve read speed.
--	 */
--	if (in_len - *out_len < UBIFS_MIN_COMPRESS_DIFF)
-+	if (err)
- 		goto no_compr;
- 
- 	return;
-@@ -139,6 +141,31 @@ void ubifs_compress(const struct ubifs_info *c, const void *in_buf,
- 	*compr_type = UBIFS_COMPR_NONE;
- }
- 
-+static int ubifs_decompress_req(const struct ubifs_info *c,
-+				struct acomp_req *req,
-+				const void *in_buf, int in_len, int *out_len,
-+				const char *compr_name)
-+{
-+	struct crypto_wait wait;
-+	int err;
-+
-+	crypto_init_wait(&wait);
-+	acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
-+				   crypto_req_done, &wait);
-+	acomp_request_set_src_dma(req, in_buf, in_len);
-+	err = crypto_acomp_decompress(req);
-+	err = crypto_wait_req(err, &wait);
-+	*out_len = req->dlen;
-+
-+	if (err)
-+		ubifs_err(c, "cannot decompress %d bytes, compressor %s, error %d",
-+			  in_len, compr_name, err);
-+
-+	acomp_request_free(req);
-+
-+	return err;
-+}
-+
- /**
-  * ubifs_decompress - decompress data.
-  * @c: UBIFS file-system description object
-@@ -155,7 +182,6 @@ void ubifs_compress(const struct ubifs_info *c, const void *in_buf,
- int ubifs_decompress(const struct ubifs_info *c, const void *in_buf,
- 		     int in_len, void *out_buf, int *out_len, int compr_type)
- {
--	int err;
- 	struct ubifs_compressor *compr;
- 
- 	if (unlikely(compr_type < 0 || compr_type >= UBIFS_COMPR_TYPES_CNT)) {
-@@ -176,17 +202,13 @@ int ubifs_decompress(const struct ubifs_info *c, const void *in_buf,
- 		return 0;
- 	}
- 
--	if (compr->decomp_mutex)
--		mutex_lock(compr->decomp_mutex);
--	err = crypto_comp_decompress(compr->cc, in_buf, in_len, out_buf,
--				     (unsigned int *)out_len);
--	if (compr->decomp_mutex)
--		mutex_unlock(compr->decomp_mutex);
--	if (err)
--		ubifs_err(c, "cannot decompress %d bytes, compressor %s, error %d",
--			  in_len, compr->name, err);
-+	{
-+		ACOMP_REQUEST_ALLOC(req, compr->cc, GFP_NOFS | __GFP_NOWARN);
- 
--	return err;
-+		acomp_request_set_dst_nondma(req, out_buf, *out_len);
-+		return ubifs_decompress_req(c, req, in_buf, in_len, out_len,
-+					    compr->name);
-+	}
- }
- 
- /**
-@@ -199,7 +221,7 @@ int ubifs_decompress(const struct ubifs_info *c, const void *in_buf,
- static int __init compr_init(struct ubifs_compressor *compr)
- {
- 	if (compr->capi_name) {
--		compr->cc = crypto_alloc_comp(compr->capi_name, 0, 0);
-+		compr->cc = crypto_alloc_acomp(compr->capi_name, 0, 0);
- 		if (IS_ERR(compr->cc)) {
- 			pr_err("UBIFS error (pid %d): cannot initialize compressor %s, error %ld",
- 			       current->pid, compr->name, PTR_ERR(compr->cc));
-@@ -218,7 +240,7 @@ static int __init compr_init(struct ubifs_compressor *compr)
- static void compr_exit(struct ubifs_compressor *compr)
- {
- 	if (compr->capi_name)
--		crypto_free_comp(compr->cc);
-+		crypto_free_acomp(compr->cc);
- }
- 
- /**
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 36ba79fbd2ff..7629ca9ecfe8 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1625,7 +1625,7 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
- 	int err, dlen, compr_type, out_len, data_size;
- 
- 	out_len = le32_to_cpu(dn->size);
--	buf = kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
-+	buf = kmalloc(out_len, GFP_NOFS);
- 	if (!buf)
- 		return -ENOMEM;
- 
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 3375bbe0508c..7d0aaf5d2e23 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -124,13 +124,6 @@
- #define OLD_ZNODE_AGE 20
- #define YOUNG_ZNODE_AGE 5
- 
--/*
-- * Some compressors, like LZO, may end up with more data then the input buffer.
-- * So UBIFS always allocates larger output buffer, to be sure the compressor
-- * will not corrupt memory in case of worst case compression.
-- */
--#define WORST_COMPR_FACTOR 2
--
- #ifdef CONFIG_FS_ENCRYPTION
- #define UBIFS_CIPHER_BLOCK_SIZE FSCRYPT_CONTENTS_ALIGNMENT
- #else
-@@ -141,7 +134,7 @@
-  * How much memory is needed for a buffer where we compress a data node.
++#include <crypto/acompress.h>
+ #include <linux/module.h>
+ #include <linux/file.h>
+ #include <linux/delay.h>
+@@ -635,7 +636,8 @@ static int crc32_threadfn(void *data)
   */
- #define COMPRESSED_DATA_NODE_BUF_SZ \
--	(UBIFS_DATA_NODE_SZ + UBIFS_BLOCK_SIZE * WORST_COMPR_FACTOR)
-+	(UBIFS_DATA_NODE_SZ + UBIFS_BLOCK_SIZE)
+ struct cmp_data {
+ 	struct task_struct *thr;                  /* thread */
+-	struct crypto_comp *cc;                   /* crypto compressor stream */
++	struct crypto_acomp *cc;		  /* crypto compressor */
++	struct acomp_req *cr;			  /* crypto request */
+ 	atomic_t ready;                           /* ready to start flag */
+ 	atomic_t stop;                            /* ready to stop flag */
+ 	int ret;                                  /* return code */
+@@ -656,7 +658,6 @@ static atomic_t compressed_size = ATOMIC_INIT(0);
+ static int compress_threadfn(void *data)
+ {
+ 	struct cmp_data *d = data;
+-	unsigned int cmp_len = 0;
  
- /* Maximum expected tree height for use by bottom_up_buf */
- #define BOTTOM_UP_HEIGHT 64
-@@ -835,16 +828,12 @@ struct ubifs_node_range {
-  * struct ubifs_compressor - UBIFS compressor description structure.
-  * @compr_type: compressor type (%UBIFS_COMPR_LZO, etc)
-  * @cc: cryptoapi compressor handle
-- * @comp_mutex: mutex used during compression
-- * @decomp_mutex: mutex used during decompression
-  * @name: compressor name
-  * @capi_name: cryptoapi compressor name
+ 	while (1) {
+ 		wait_event(d->go, atomic_read_acquire(&d->ready) ||
+@@ -670,11 +671,13 @@ static int compress_threadfn(void *data)
+ 		}
+ 		atomic_set(&d->ready, 0);
+ 
+-		cmp_len = CMP_SIZE - CMP_HEADER;
+-		d->ret = crypto_comp_compress(d->cc, d->unc, d->unc_len,
+-					      d->cmp + CMP_HEADER,
+-					      &cmp_len);
+-		d->cmp_len = cmp_len;
++		acomp_request_set_callback(d->cr, CRYPTO_TFM_REQ_MAY_SLEEP,
++					   NULL, NULL);
++		acomp_request_set_src_nondma(d->cr, d->unc, d->unc_len);
++		acomp_request_set_dst_nondma(d->cr, d->cmp + CMP_HEADER,
++					     CMP_SIZE - CMP_HEADER);
++		d->ret = crypto_acomp_compress(d->cr);
++		d->cmp_len = d->cr->dlen;
+ 
+ 		atomic_set(&compressed_size, atomic_read(&compressed_size) + d->cmp_len);
+ 		atomic_set_release(&d->stop, 1);
+@@ -745,13 +748,20 @@ static int save_compressed_image(struct swap_map_handle *handle,
+ 		init_waitqueue_head(&data[thr].go);
+ 		init_waitqueue_head(&data[thr].done);
+ 
+-		data[thr].cc = crypto_alloc_comp(hib_comp_algo, 0, 0);
++		data[thr].cc = crypto_alloc_acomp(hib_comp_algo, 0, CRYPTO_ALG_ASYNC);
+ 		if (IS_ERR_OR_NULL(data[thr].cc)) {
+ 			pr_err("Could not allocate comp stream %ld\n", PTR_ERR(data[thr].cc));
+ 			ret = -EFAULT;
+ 			goto out_clean;
+ 		}
+ 
++		data[thr].cr = acomp_request_alloc(data[thr].cc);
++		if (!data[thr].cr) {
++			pr_err("Could not allocate comp request\n");
++			ret = -ENOMEM;
++			goto out_clean;
++		}
++
+ 		data[thr].thr = kthread_run(compress_threadfn,
+ 		                            &data[thr],
+ 		                            "image_compress/%u", thr);
+@@ -899,8 +909,8 @@ static int save_compressed_image(struct swap_map_handle *handle,
+ 		for (thr = 0; thr < nr_threads; thr++) {
+ 			if (data[thr].thr)
+ 				kthread_stop(data[thr].thr);
+-			if (data[thr].cc)
+-				crypto_free_comp(data[thr].cc);
++			acomp_request_free(data[thr].cr);
++			crypto_free_acomp(data[thr].cc);
+ 		}
+ 		vfree(data);
+ 	}
+@@ -1142,7 +1152,8 @@ static int load_image(struct swap_map_handle *handle,
   */
- struct ubifs_compressor {
- 	int compr_type;
--	struct crypto_comp *cc;
--	struct mutex *comp_mutex;
--	struct mutex *decomp_mutex;
-+	struct crypto_acomp *cc;
- 	const char *name;
- 	const char *capi_name;
- };
+ struct dec_data {
+ 	struct task_struct *thr;                  /* thread */
+-	struct crypto_comp *cc;                   /* crypto compressor stream */
++	struct crypto_acomp *cc;		  /* crypto compressor */
++	struct acomp_req *cr;			  /* crypto request */
+ 	atomic_t ready;                           /* ready to start flag */
+ 	atomic_t stop;                            /* ready to stop flag */
+ 	int ret;                                  /* return code */
+@@ -1160,7 +1171,6 @@ struct dec_data {
+ static int decompress_threadfn(void *data)
+ {
+ 	struct dec_data *d = data;
+-	unsigned int unc_len = 0;
+ 
+ 	while (1) {
+ 		wait_event(d->go, atomic_read_acquire(&d->ready) ||
+@@ -1174,10 +1184,13 @@ static int decompress_threadfn(void *data)
+ 		}
+ 		atomic_set(&d->ready, 0);
+ 
+-		unc_len = UNC_SIZE;
+-		d->ret = crypto_comp_decompress(d->cc, d->cmp + CMP_HEADER, d->cmp_len,
+-						d->unc, &unc_len);
+-		d->unc_len = unc_len;
++		acomp_request_set_callback(d->cr, CRYPTO_TFM_REQ_MAY_SLEEP,
++					   NULL, NULL);
++		acomp_request_set_src_nondma(d->cr, d->cmp + CMP_HEADER,
++					     d->cmp_len);
++		acomp_request_set_dst_nondma(d->cr, d->unc, UNC_SIZE);
++		d->ret = crypto_acomp_decompress(d->cr);
++		d->unc_len = d->cr->dlen;
+ 
+ 		if (clean_pages_on_decompress)
+ 			flush_icache_range((unsigned long)d->unc,
+@@ -1254,13 +1267,20 @@ static int load_compressed_image(struct swap_map_handle *handle,
+ 		init_waitqueue_head(&data[thr].go);
+ 		init_waitqueue_head(&data[thr].done);
+ 
+-		data[thr].cc = crypto_alloc_comp(hib_comp_algo, 0, 0);
++		data[thr].cc = crypto_alloc_acomp(hib_comp_algo, 0, CRYPTO_ALG_ASYNC);
+ 		if (IS_ERR_OR_NULL(data[thr].cc)) {
+ 			pr_err("Could not allocate comp stream %ld\n", PTR_ERR(data[thr].cc));
+ 			ret = -EFAULT;
+ 			goto out_clean;
+ 		}
+ 
++		data[thr].cr = acomp_request_alloc(data[thr].cc);
++		if (!data[thr].cr) {
++			pr_err("Could not allocate comp request\n");
++			ret = -ENOMEM;
++			goto out_clean;
++		}
++
+ 		data[thr].thr = kthread_run(decompress_threadfn,
+ 		                            &data[thr],
+ 		                            "image_decompress/%u", thr);
+@@ -1507,8 +1527,8 @@ static int load_compressed_image(struct swap_map_handle *handle,
+ 		for (thr = 0; thr < nr_threads; thr++) {
+ 			if (data[thr].thr)
+ 				kthread_stop(data[thr].thr);
+-			if (data[thr].cc)
+-				crypto_free_comp(data[thr].cc);
++			acomp_request_free(data[thr].cr);
++			crypto_free_acomp(data[thr].cc);
+ 		}
+ 		vfree(data);
+ 	}
 -- 
 2.39.5
 
