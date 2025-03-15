@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 214B0C35FF8
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 10:31:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77CCFC35FFC
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 10:31:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4P0Kzo1X+zho3F8zBYqEDmwniV8yKi7HHnDb5uOmbU0=; b=jXJEZf1eLtDoUf
-	gfgaguho9dGi6PR0vyZOLKLdhRQ1PamPa3xGmEraggzrttEUEUTTr6QrYb7j7lb8oiknzIhdkgDbA
-	9ABHWnvkU9+nl7uHt0mhgwB6IH+tRkMvCB+53904mYkMexoJLQCe81rzw1q74pNUcudXT2tO6G9QG
-	fkOFDZLCbCD+2LsdeydDos1RDzIsb5JyeAXOP2ehGqPJB01//p1vdfRPUeVdKzQfKz1aOuTymAsQz
-	r9qLr2MCCNaa07M/KNW6bwcOg+U4cK30GzROreybSKgxBwadE34CWx643bcnXxh338U1AhyJ+zbOl
-	E/9O2zC94Q4d58hG6Pxg==;
+	List-Owner; bh=PUc/kCJ23OGR5mA7CayBCcOspba1N3LqTMQhoW1QfIE=; b=E21SPxfJc4Ybhl
+	LcMJK8BMADX+hdn1DKP69sNSjg7KWFD6CQLNXL7aNrc9ETC68SA1Ja8HHQ7hSG6oUITtNZKS1roOz
+	28uXJtC8RYEAnJo3+ziPz0iibzLcFhDe7HLXlc5dOP9LC0BFBMXs94DsCF6Fel4q1nvO7Aph+ng/H
+	qCEZJzPUkyPdX3usAB140XLr+OAJDg0Drp/AnvkSJKvnriK5pXRacQrfra7147z6au70Z926Pw+LK
+	/gEIFMk8vYjUZExE9Mw8Gmu7ojnvoeD0B5x++fkarGaAixnk4pCItVhBRTdWzkfiKqfudomYbtyBw
+	ZzkiIkvqcw0egs1cBRNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOnx-0000000GDGQ-1jQ3;
-	Sat, 15 Mar 2025 10:31:45 +0000
+	id 1ttOny-0000000GDHm-3peq;
+	Sat, 15 Mar 2025 10:31:46 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOmx-0000000GD2I-3Sk2
+	id 1ttOn2-0000000GD39-3GAE
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Mar 2025 10:30:44 +0000
+	Sat, 15 Mar 2025 10:30:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zIb0wSG71Ygj2H3jMgCe2Okz2AI9eV57QCfyyCpN7fc=; b=bBfNFnbdLam7nmoca+ecXvvJWz
-	kFs7I+fqscDqE709/VBm+UoZZ7rBCCOtOqGsY2L8yj73d1lJwq8gtzB42t3rX126uwSmfpvcaNkvS
-	bePOUsLtdNGyRfQGoqYFO+JQLsIhEOA5onxY5WIFXaH+C5biqyYr9sD8/j5PWiV5hV9/a6OTLsUUd
-	ujZRZExw9qLff/BvrZWQDUr6llgpVCgMdybZukyI8OwV/5+YBDWKBH+tgyl42uzG0Ie9Zyvgj3vEo
-	jy1PMk+X/Z+mrwdvwJZeAqYujxUZAEtQZKs/PBpPmu2T/GIcgt/pZUVSEUtaPNs6dJZNrtMub2dpV
-	rhE1arbA==;
+	bh=0Jo7R6apMb4O1fxPw9F7Z1rogwbXAzuvQtabTiWE71s=; b=nVJezoZiWDm2MI4WoO6MmMtkuC
+	F+I5KdVWG75JedFUdCZKtKPEs99yz6Ctvk5XLlgl8MuCrPIw8jQ7f2+dw+g81sqius2ajEn1D+ToG
+	a+RMiHJizelB1AAwyic4kcPC1bBuujuxUoa9iE3PVSJNcTLvRunrQigBDvwGYPiZYfMRE0llVjlfY
+	3N2vs20YGeEkAyN7rj58uA4MfMCiU88G/TfrkwqPaps2ygsoFg7UDIaXhswn8cZMd1mKVGnSQnC+4
+	YQl+mhRezCbVO7Izz7a5hTqlNv4Vae5AY6ZumAqNO5IE207XEECCuQzLfrwc5sypFJKDO9V5x/QaU
+	jgPYd6xw==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1ttOmq-006pBS-17;
-	Sat, 15 Mar 2025 18:30:37 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:36 +0800
-Date: Sat, 15 Mar 2025 18:30:36 +0800
-Message-Id: <573c0f1ad67e7572153fef62e45ef61a7c030699.1742034499.git.herbert@gondor.apana.org.au>
+	id 1ttOmu-006pC7-31;
+	Sat, 15 Mar 2025 18:30:41 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:40 +0800
+Date: Sat, 15 Mar 2025 18:30:40 +0800
+Message-Id: <aa5ce234573d4916ca7a2accf4297cea6f750437.1742034499.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1742034499.git.herbert@gondor.apana.org.au>
 References: <cover.1742034499.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v5 PATCH 08/14] crypto: iaa - Use acomp stack fallback
+Subject: [v5 PATCH 10/14] crypto: acomp - Add support for folios
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250315_033043_855465_B9C513B0 
-X-CRM114-Status: GOOD (  11.29  )
+X-CRM114-CacheID: sfid-20250315_033049_381527_E8135985 
+X-CRM114-Status: GOOD (  21.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,83 +72,434 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use ACOMP_REQUEST_ON_STACK instead of allocating legacy fallback
-compression transform.
+For many users, it's easier to supply a folio rather than an SG
+list since they already have them.  Add support for folios to the
+acomp interface.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 28 +++++-----------------
- 1 file changed, 6 insertions(+), 22 deletions(-)
+ crypto/acompress.c                  | 40 +++++++++++--
+ crypto/scompress.c                  | 68 ++++++++++++++--------
+ include/crypto/acompress.h          | 89 +++++++++++++++++++++++++++--
+ include/crypto/internal/acompress.h | 18 ++++++
+ 4 files changed, 182 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index 50cb100bf1c8..09d9589f2d68 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -33,8 +33,6 @@ static unsigned int nr_cpus_per_node;
- /* Number of physical cpus sharing each iaa instance */
- static unsigned int cpus_per_iaa;
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index d54abc27330f..6ef335f5bf27 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -12,6 +12,7 @@
+ #include <linux/errno.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/page-flags.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+@@ -189,18 +190,25 @@ static void acomp_reqchain_virt(struct acomp_req_chain *state, int err)
+ 	req->base.err = err;
+ 	state = &req->chain;
  
--static struct crypto_comp *deflate_generic_tfm;
--
- /* Per-cpu lookup table for balanced wqs */
- static struct wq_table_entry __percpu *wq_table;
+-	if (state->src)
++	if (state->flags & CRYPTO_ACOMP_REQ_SRC_VIRT)
+ 		acomp_request_set_src_dma(req, state->src, slen);
+-	if (state->dst)
++	else if (state->flags & CRYPTO_ACOMP_REQ_SRC_FOLIO)
++		acomp_request_set_src_folio(req, state->sfolio, state->soff, slen);
++	if (state->flags & CRYPTO_ACOMP_REQ_DST_VIRT)
+ 		acomp_request_set_dst_dma(req, state->dst, dlen);
+-	state->src = NULL;
+-	state->dst = NULL;
++	else if (state->flags & CRYPTO_ACOMP_REQ_DST_FOLIO)
++		acomp_request_set_dst_folio(req, state->dfolio, state->doff, dlen);
+ }
  
-@@ -1001,17 +999,14 @@ static inline int check_completion(struct device *dev,
- 
- static int deflate_generic_decompress(struct acomp_req *req)
+ static void acomp_virt_to_sg(struct acomp_req *req)
  {
--	void *src, *dst;
-+	ACOMP_REQUEST_ON_STACK(fbreq, crypto_acomp_reqtfm(req));
+ 	struct acomp_req_chain *state = &req->chain;
+ 
++	state->flags = req->base.flags & (CRYPTO_ACOMP_REQ_SRC_VIRT |
++					  CRYPTO_ACOMP_REQ_DST_VIRT |
++					  CRYPTO_ACOMP_REQ_SRC_FOLIO |
++					  CRYPTO_ACOMP_REQ_DST_FOLIO);
++
+ 	if (acomp_request_src_isvirt(req)) {
+ 		unsigned int slen = req->slen;
+ 		const u8 *svirt = req->svirt;
+@@ -208,6 +216,17 @@ static void acomp_virt_to_sg(struct acomp_req *req)
+ 		state->src = svirt;
+ 		sg_init_one(&state->ssg, svirt, slen);
+ 		acomp_request_set_src_sg(req, &state->ssg, slen);
++	} else if (acomp_request_src_isfolio(req)) {
++		struct folio *folio = req->sfolio;
++		unsigned int slen = req->slen;
++		size_t off = req->soff;
++
++		state->sfolio = folio;
++		state->soff = off;
++		sg_init_table(&state->ssg, 1);
++		sg_set_page(&state->ssg, folio_page(folio, off / PAGE_SIZE),
++			    slen, off % PAGE_SIZE);
++		acomp_request_set_src_sg(req, &state->ssg, slen);
+ 	}
+ 
+ 	if (acomp_request_dst_isvirt(req)) {
+@@ -217,6 +236,17 @@ static void acomp_virt_to_sg(struct acomp_req *req)
+ 		state->dst = dvirt;
+ 		sg_init_one(&state->dsg, dvirt, dlen);
+ 		acomp_request_set_dst_sg(req, &state->dsg, dlen);
++	} else if (acomp_request_dst_isfolio(req)) {
++		struct folio *folio = req->dfolio;
++		unsigned int dlen = req->dlen;
++		size_t off = req->doff;
++
++		state->dfolio = folio;
++		state->doff = off;
++		sg_init_table(&state->dsg, 1);
++		sg_set_page(&state->dsg, folio_page(folio, off / PAGE_SIZE),
++			    dlen, off % PAGE_SIZE);
++		acomp_request_set_src_sg(req, &state->dsg, dlen);
+ 	}
+ }
+ 
+@@ -328,7 +358,7 @@ static int acomp_do_req_chain(struct acomp_req *req,
+ 	int err;
+ 
+ 	if (crypto_acomp_req_chain(tfm) ||
+-	    (!acomp_request_chained(req) && !acomp_request_isvirt(req)))
++	    (!acomp_request_chained(req) && acomp_request_issg(req)))
+ 		return op(req);
+ 
+ 	if (acomp_is_async(tfm)) {
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index ba9b22ba53fe..dc239ea8a46c 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -177,9 +177,10 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 	unsigned int slen = req->slen;
+ 	unsigned int dlen = req->dlen;
+ 	struct page *spage, *dpage;
+-	unsigned int soff, doff;
+ 	unsigned int n;
+ 	const u8 *src;
++	size_t soff;
++	size_t doff;
+ 	u8 *dst;
  	int ret;
  
--	src = kmap_local_page(sg_page(req->src)) + req->src->offset;
--	dst = kmap_local_page(sg_page(req->dst)) + req->dst->offset;
--
--	ret = crypto_comp_decompress(deflate_generic_tfm,
--				     src, req->slen, dst, &req->dlen);
--
--	kunmap_local(src);
--	kunmap_local(dst);
-+	acomp_request_set_callback(fbreq, 0, NULL, NULL);
-+	acomp_request_set_params(fbreq, req->src, req->dst, req->slen,
-+				 req->dlen);
-+	ret = crypto_acomp_decompress(fbreq);
-+	req->dlen = fbreq->dlen;
+@@ -192,38 +193,57 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 	if (acomp_request_src_isvirt(req))
+ 		src = req->svirt;
+ 	else {
+-		soff = req->src->offset;
+-		spage = nth_page(sg_page(req->src), soff / PAGE_SIZE);
+-		soff = offset_in_page(soff);
++		src = scratch->src;
++		do {
++			if (acomp_request_src_isfolio(req)) {
++				spage = folio_page(req->sfolio, 0);
++				soff = req->soff;
++			} else if (slen <= req->src->length) {
++				spage = sg_page(req->src);
++				soff = req->src->offset;
++			} else
++				break;
  
- 	update_total_sw_decomp_calls();
- 
-@@ -1898,15 +1893,6 @@ static int __init iaa_crypto_init_module(void)
+-		n = slen / PAGE_SIZE;
+-		n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
+-		if (slen <= req->src->length &&
+-		    (!PageHighMem(nth_page(spage, n)) ||
+-		     size_add(soff, slen) <= PAGE_SIZE))
++			spage = nth_page(spage, soff / PAGE_SIZE);
++			soff = offset_in_page(soff);
++
++			n = slen / PAGE_SIZE;
++			n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
++			if (PageHighMem(nth_page(spage, n)) &&
++			    size_add(soff, slen) <= PAGE_SIZE)
++				break;
+ 			src = kmap_local_page(spage) + soff;
+-		else
+-			src = scratch->src;
++		} while (0);
  	}
- 	nr_cpus_per_node = nr_cpus / nr_nodes;
  
--	if (crypto_has_comp("deflate-generic", 0, 0))
--		deflate_generic_tfm = crypto_alloc_comp("deflate-generic", 0, 0);
--
--	if (IS_ERR_OR_NULL(deflate_generic_tfm)) {
--		pr_err("IAA could not alloc %s tfm: errcode = %ld\n",
--		       "deflate-generic", PTR_ERR(deflate_generic_tfm));
--		return -ENOMEM;
--	}
--
- 	ret = iaa_aecs_init_fixed();
- 	if (ret < 0) {
- 		pr_debug("IAA fixed compression mode init failed\n");
-@@ -1948,7 +1934,6 @@ static int __init iaa_crypto_init_module(void)
- err_driver_reg:
- 	iaa_aecs_cleanup_fixed();
- err_aecs_init:
--	crypto_free_comp(deflate_generic_tfm);
+ 	if (acomp_request_dst_isvirt(req))
+ 		dst = req->dvirt;
+ 	else {
+-		doff = req->dst->offset;
+-		dpage = nth_page(sg_page(req->dst), doff / PAGE_SIZE);
+-		doff = offset_in_page(doff);
++		unsigned int max = SCOMP_SCRATCH_SIZE;
  
- 	goto out;
+-		n = dlen / PAGE_SIZE;
+-		n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
+-		if (dlen <= req->dst->length &&
+-		    (!PageHighMem(nth_page(dpage, n)) ||
+-		     size_add(doff, dlen) <= PAGE_SIZE))
++		dst = scratch->dst;
++		do {
++			if (acomp_request_dst_isfolio(req)) {
++				dpage = folio_page(req->dfolio, 0);
++				doff = req->doff;
++			} else if (dlen <= req->dst->length) {
++				dpage = sg_page(req->dst);
++				doff = req->dst->offset;
++			} else
++				break;
++
++			dpage = nth_page(dpage, doff / PAGE_SIZE);
++			doff = offset_in_page(doff);
++
++			n = dlen / PAGE_SIZE;
++			n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
++			if (PageHighMem(dpage + n) &&
++			    size_add(doff, dlen) <= PAGE_SIZE)
++				break;
+ 			dst = kmap_local_page(dpage) + doff;
+-		else {
+-			if (dlen > SCOMP_SCRATCH_SIZE)
+-				dlen = SCOMP_SCRATCH_SIZE;
+-			dst = scratch->dst;
+-		}
++			max = dlen;
++		} while (0);
++		dlen = min(dlen, max);
+ 	}
+ 
+ 	spin_lock_bh(&scratch->lock);
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index 03cb381c2c54..c497c73baf13 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -32,6 +32,12 @@
+ /* Set this bit for if virtual address destination cannot be used for DMA. */
+ #define CRYPTO_ACOMP_REQ_DST_NONDMA	0x00000010
+ 
++/* Set this bit if source is a folio. */
++#define CRYPTO_ACOMP_REQ_SRC_FOLIO	0x00000020
++
++/* Set this bit if destination is a folio. */
++#define CRYPTO_ACOMP_REQ_DST_FOLIO	0x00000040
++
+ #define CRYPTO_ACOMP_DST_MAX		131072
+ 
+ #define	MAX_SYNC_COMP_REQSIZE		0
+@@ -43,6 +49,7 @@
+                 __##name##_req, (tfm), (gfp), false)
+ 
+ struct acomp_req;
++struct folio;
+ 
+ struct acomp_req_chain {
+ 	struct list_head head;
+@@ -53,16 +60,31 @@ struct acomp_req_chain {
+ 	void *data;
+ 	struct scatterlist ssg;
+ 	struct scatterlist dsg;
+-	const u8 *src;
+-	u8 *dst;
++	union {
++		const u8 *src;
++		struct folio *sfolio;
++	};
++	union {
++		u8 *dst;
++		struct folio *dfolio;
++	};
++	size_t soff;
++	size_t doff;
++	u32 flags;
+ };
+ 
+ /**
+  * struct acomp_req - asynchronous (de)compression request
+  *
+  * @base:	Common attributes for asynchronous crypto requests
+- * @src:	Source Data
+- * @dst:	Destination data
++ * @src:	Source scatterlist
++ * @dst:	Destination scatterlist
++ * @svirt:	Source virtual address
++ * @dvirt:	Destination virtual address
++ * @sfolio:	Source folio
++ * @soff:	Source folio offset
++ * @dfolio:	Destination folio
++ * @doff:	Destination folio offset
+  * @slen:	Size of the input buffer
+  * @dlen:	Size of the output buffer and number of bytes produced
+  * @chain:	Private API code data, do not use
+@@ -73,11 +95,15 @@ struct acomp_req {
+ 	union {
+ 		struct scatterlist *src;
+ 		const u8 *svirt;
++		struct folio *sfolio;
+ 	};
+ 	union {
+ 		struct scatterlist *dst;
+ 		u8 *dvirt;
++		struct folio *dfolio;
+ 	};
++	size_t soff;
++	size_t doff;
+ 	unsigned int slen;
+ 	unsigned int dlen;
+ 
+@@ -316,6 +342,7 @@ static inline void acomp_request_set_callback(struct acomp_req *req,
+ {
+ 	u32 keep = CRYPTO_ACOMP_REQ_SRC_VIRT | CRYPTO_ACOMP_REQ_SRC_NONDMA |
+ 		   CRYPTO_ACOMP_REQ_DST_VIRT | CRYPTO_ACOMP_REQ_DST_NONDMA |
++		   CRYPTO_ACOMP_REQ_SRC_FOLIO | CRYPTO_ACOMP_REQ_DST_FOLIO |
+ 		   CRYPTO_TFM_REQ_ON_STACK;
+ 
+ 	req->base.complete = cmpl;
+@@ -352,6 +379,8 @@ static inline void acomp_request_set_params(struct acomp_req *req,
+ 
+ 	req->base.flags &= ~(CRYPTO_ACOMP_REQ_SRC_VIRT |
+ 			     CRYPTO_ACOMP_REQ_SRC_NONDMA |
++			     CRYPTO_ACOMP_REQ_SRC_FOLIO |
++			     CRYPTO_ACOMP_REQ_DST_FOLIO |
+ 			     CRYPTO_ACOMP_REQ_DST_VIRT |
+ 			     CRYPTO_ACOMP_REQ_DST_NONDMA);
  }
-@@ -1965,7 +1950,6 @@ static void __exit iaa_crypto_cleanup_module(void)
- 			   &driver_attr_verify_compress);
- 	idxd_driver_unregister(&iaa_crypto_driver);
- 	iaa_aecs_cleanup_fixed();
--	crypto_free_comp(deflate_generic_tfm);
+@@ -374,6 +403,7 @@ static inline void acomp_request_set_src_sg(struct acomp_req *req,
  
- 	pr_debug("cleaned up\n");
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_NONDMA;
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_VIRT;
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_FOLIO;
  }
+ 
+ /**
+@@ -393,6 +423,7 @@ static inline void acomp_request_set_src_dma(struct acomp_req *req,
+ 	req->slen = slen;
+ 
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_NONDMA;
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_FOLIO;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_SRC_VIRT;
+ }
+ 
+@@ -413,10 +444,34 @@ static inline void acomp_request_set_src_nondma(struct acomp_req *req,
+ 	req->svirt = src;
+ 	req->slen = slen;
+ 
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_FOLIO;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_SRC_NONDMA;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_SRC_VIRT;
+ }
+ 
++/**
++ * acomp_request_set_src_folio() -- Sets source folio
++ *
++ * Sets source folio required by an acomp operation.
++ *
++ * @req:	asynchronous compress request
++ * @folio:	pointer to input folio
++ * @off:	input folio offset
++ * @len:	size of the input buffer
++ */
++static inline void acomp_request_set_src_folio(struct acomp_req *req,
++					       struct folio *folio, size_t off,
++					       unsigned int len)
++{
++	req->sfolio = folio;
++	req->soff = off;
++	req->slen = len;
++
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_NONDMA;
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_SRC_VIRT;
++	req->base.flags |= CRYPTO_ACOMP_REQ_SRC_FOLIO;
++}
++
+ /**
+  * acomp_request_set_dst_sg() -- Sets destination scatterlist
+  *
+@@ -435,6 +490,7 @@ static inline void acomp_request_set_dst_sg(struct acomp_req *req,
+ 
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_NONDMA;
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_VIRT;
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_FOLIO;
+ }
+ 
+ /**
+@@ -454,6 +510,7 @@ static inline void acomp_request_set_dst_dma(struct acomp_req *req,
+ 	req->dlen = dlen;
+ 
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_NONDMA;
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_FOLIO;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_DST_VIRT;
+ }
+ 
+@@ -473,10 +530,34 @@ static inline void acomp_request_set_dst_nondma(struct acomp_req *req,
+ 	req->dvirt = dst;
+ 	req->dlen = dlen;
+ 
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_FOLIO;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_DST_NONDMA;
+ 	req->base.flags |= CRYPTO_ACOMP_REQ_DST_VIRT;
+ }
+ 
++/**
++ * acomp_request_set_dst_folio() -- Sets destination folio
++ *
++ * Sets destination folio required by an acomp operation.
++ *
++ * @req:	asynchronous compress request
++ * @folio:	pointer to input folio
++ * @off:	input folio offset
++ * @len:	size of the input buffer
++ */
++static inline void acomp_request_set_dst_folio(struct acomp_req *req,
++					       struct folio *folio, size_t off,
++					       unsigned int len)
++{
++	req->dfolio = folio;
++	req->doff = off;
++	req->dlen = len;
++
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_NONDMA;
++	req->base.flags &= ~CRYPTO_ACOMP_REQ_DST_VIRT;
++	req->base.flags |= CRYPTO_ACOMP_REQ_DST_FOLIO;
++}
++
+ static inline void acomp_request_chain(struct acomp_req *req,
+ 				       struct acomp_req *head)
+ {
+diff --git a/include/crypto/internal/acompress.h b/include/crypto/internal/acompress.h
+index c1ed55a0e3bf..aaf59f3236fa 100644
+--- a/include/crypto/internal/acompress.h
++++ b/include/crypto/internal/acompress.h
+@@ -103,6 +103,14 @@ static inline bool acomp_request_chained(struct acomp_req *req)
+ 	return crypto_request_chained(&req->base);
+ }
+ 
++static inline bool acomp_request_issg(struct acomp_req *req)
++{
++	return !(req->base.flags & (CRYPTO_ACOMP_REQ_SRC_VIRT |
++				    CRYPTO_ACOMP_REQ_DST_VIRT |
++				    CRYPTO_ACOMP_REQ_SRC_FOLIO |
++				    CRYPTO_ACOMP_REQ_DST_FOLIO));
++}
++
+ static inline bool acomp_request_src_isvirt(struct acomp_req *req)
+ {
+ 	return req->base.flags & CRYPTO_ACOMP_REQ_SRC_VIRT;
+@@ -135,6 +143,16 @@ static inline bool acomp_request_isnondma(struct acomp_req *req)
+ 				  CRYPTO_ACOMP_REQ_DST_NONDMA);
+ }
+ 
++static inline bool acomp_request_src_isfolio(struct acomp_req *req)
++{
++	return req->base.flags & CRYPTO_ACOMP_REQ_SRC_FOLIO;
++}
++
++static inline bool acomp_request_dst_isfolio(struct acomp_req *req)
++{
++	return req->base.flags & CRYPTO_ACOMP_REQ_DST_FOLIO;
++}
++
+ static inline bool crypto_acomp_req_chain(struct crypto_acomp *tfm)
+ {
+ 	return crypto_tfm_req_chain(&tfm->base);
 -- 
 2.39.5
 
