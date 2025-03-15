@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B083EC35FF3
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 10:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAF06C28B28
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 10:31:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FZnwlVaAYg7P9NoMf6IbPMPHyXz+X7EEnZtvyB7KxPI=; b=2Pz7wKiFEwfdvJ
-	Z5Ug6Gte4Ay5Xjl+1Qtzx7jzbGfKoUbCfXVSnCCix67f28KiT2KmZo/Liu2uh9FI9aY1Ez44pC+95
-	ubu+iP5yfZelWVxSyZn85CzLvCAT5dheDtP0NHUaTYY0pbaQRnCgGLQpZVtSfjKAWZDk8UYYoqTP5
-	po7XNRRlei7FTICbdi94XSict9/3u1BazzLNk/oJTV+JMdYv8nhReE4c8rlBbhj1ea5Y8w4PC3ztt
-	uUiJh7f9NSqTaOkEorQ5s1eHyyDwzOoPNRcqfR8vtBVeQ3fa++HDem8bLLmJRe0Cz6aQp6s1xgLY2
-	ZBmFOAdnshhPxDeuTsJw==;
+	List-Owner; bh=R1dMNL+WqHf101IZ7NFqO+4jWwfZ7wEGmc9VAWQbFI8=; b=szQ4K7HxYBJjnt
+	fJrNShBPMq9O/Fbwf/FTQxuxzb3NZkaYuZqLUZA+WwYZ8djA7Z5t0ljmYk4SyAhlKVlCH09ywQ9nL
+	xlsUE6kh5tV4hCFbQX4paSyrLm8zychrAEKW+wcy2Mttuz3KdNStG4hiIVhplelw1FCHRzYA5TKYp
+	9dVM+PhCycn/Y3m+yvyefFKpegh73wYIdGKEru32knKoDY1XKasggwEtcCO+ZeVllCORLTtATog9B
+	5j5vR0Y16JhOx89YdRKsnoyYCIwcwYhF+xB9l3RskXZUbLAc2m005XgYnLaEX8asbte7jHYIKOrYs
+	z40aCqx58xQauDqGCR2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOnw-0000000GDFN-0nFC;
-	Sat, 15 Mar 2025 10:31:44 +0000
+	id 1ttOnv-0000000GDF1-1xdH;
+	Sat, 15 Mar 2025 10:31:43 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOmt-0000000GD1K-0fwq
+	id 1ttOms-0000000GD1I-20Cq
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Mar 2025 10:30:40 +0000
+	Sat, 15 Mar 2025 10:30:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=TnJxSbbE+YJ2uAsOZ9Ozioiuc9CHKwZc8r1aAkL68hE=; b=Lz26nHkYWSsjtZ/Jdmxyq32JvL
-	iDPP4x39Ch8Vdg3RebaJ+YFQxMNEtQurBq2qLb89VA+8MC1VYFpVla82UKj9OUk4kOF5vQxo5PTiJ
-	RPiSgySohNCzLruTAVijd4CjjKxLLVtg90DaICMIBM+GaP4Plwh1wby2bSsednu+B2l+/NxkkEntV
-	IJNSaTbPTGZ4ttku06pwqIRkdeKQ1S9qJ3iFmajfGbexPcfPr/rlhmkBM/I2v3TS/3SQI82AB5FU2
-	FlK/9Mts9SThDUVW8oweLozBTGh8uEfEyQXvzK/tboZqJCWyeHKMjxhAOvC3AHlrZ3X856ZD/1FbI
-	3VmO3eJw==;
+	bh=KzUqiKmDfyVjOhBcGp1Btr2sYsGEx9by+Pr5sL1lV+M=; b=VXobMZ3Y8vATPC3L9UcX5S4rPg
+	ZVam8+21N+E1rPwi2RSbsRdy5f5O/NF82tH02+tYuudbvUtnWr8ZrFuUE1XfHYbWwFkr7uyLiJvut
+	ZDjpF4ZT4g1QOJZNKDPpqhzU6zntdUYnJ6vgYQRDunjPZePch15H1UrawNQycJoCFcRqZEYmcUYh0
+	IurN51Y82e4eRN57k8j0fcEvqV3Kpk7KhH93jo5KBAYYkb3jV+G+M8iVJ9j/FmRKdvl8SvfmesY+F
+	S13/JnvPAXS60aCGf48ZT4yih8cWXuq48sq5pzoavPUIeeFwp3clg8YouALoCppA4FefO3myBQvHP
+	tOVbKL5Q==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1ttOml-006pAX-2N;
-	Sat, 15 Mar 2025 18:30:32 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:31 +0800
-Date: Sat, 15 Mar 2025 18:30:31 +0800
-Message-Id: <859e561460411d2203d1f9da341472f9bc2f5686.1742034499.git.herbert@gondor.apana.org.au>
+	id 1ttOmj-006pAI-1U;
+	Sat, 15 Mar 2025 18:30:30 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:29 +0800
+Date: Sat, 15 Mar 2025 18:30:29 +0800
+Message-Id: <aabd036f637f60a9fa455b254eebe031da3a0ee0.1742034499.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1742034499.git.herbert@gondor.apana.org.au>
 References: <cover.1742034499.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v5 PATCH 06/14] crypto: scomp - Add chaining and virtual address
- support
+Subject: [v5 PATCH 05/14] crypto: acomp - Remove dst_free
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250315_033039_195032_16B6E561 
-X-CRM114-Status: GOOD (  13.61  )
+X-CRM114-CacheID: sfid-20250315_033038_534337_929A803F 
+X-CRM114-Status: UNSURE (   8.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,170 +73,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add chaining and virtual address support to all scomp algorithms.
+Remove the unused dst_free hook.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/scompress.c | 96 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 65 insertions(+), 31 deletions(-)
+ include/crypto/internal/acompress.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/crypto/scompress.c b/crypto/scompress.c
-index 4441c40f541f..ba9b22ba53fe 100644
---- a/crypto/scompress.c
-+++ b/crypto/scompress.c
-@@ -178,8 +178,9 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	unsigned int dlen = req->dlen;
- 	struct page *spage, *dpage;
- 	unsigned int soff, doff;
--	void *src, *dst;
- 	unsigned int n;
-+	const u8 *src;
-+	u8 *dst;
- 	int ret;
- 
- 	if (!req->src || !slen)
-@@ -188,37 +189,47 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	if (!req->dst || !dlen)
- 		return -EINVAL;
- 
--	soff = req->src->offset;
--	spage = nth_page(sg_page(req->src), soff / PAGE_SIZE);
--	soff = offset_in_page(soff);
--
--	n = slen / PAGE_SIZE;
--	n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
--	if (slen <= req->src->length && (!PageHighMem(nth_page(spage, n)) ||
--					 size_add(soff, slen) <= PAGE_SIZE))
--		src = kmap_local_page(spage) + soff;
--	else
--		src = scratch->src;
--
--	doff = req->dst->offset;
--	dpage = nth_page(sg_page(req->dst), doff / PAGE_SIZE);
--	doff = offset_in_page(doff);
--
--	n = dlen / PAGE_SIZE;
--	n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
--	if (dlen <= req->dst->length && (!PageHighMem(nth_page(dpage, n)) ||
--					 size_add(doff, dlen) <= PAGE_SIZE))
--		dst = kmap_local_page(dpage) + doff;
-+	if (acomp_request_src_isvirt(req))
-+		src = req->svirt;
- 	else {
--		if (dlen > SCOMP_SCRATCH_SIZE)
--			dlen = SCOMP_SCRATCH_SIZE;
--		dst = scratch->dst;
-+		soff = req->src->offset;
-+		spage = nth_page(sg_page(req->src), soff / PAGE_SIZE);
-+		soff = offset_in_page(soff);
-+
-+		n = slen / PAGE_SIZE;
-+		n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
-+		if (slen <= req->src->length &&
-+		    (!PageHighMem(nth_page(spage, n)) ||
-+		     size_add(soff, slen) <= PAGE_SIZE))
-+			src = kmap_local_page(spage) + soff;
-+		else
-+			src = scratch->src;
-+	}
-+
-+	if (acomp_request_dst_isvirt(req))
-+		dst = req->dvirt;
-+	else {
-+		doff = req->dst->offset;
-+		dpage = nth_page(sg_page(req->dst), doff / PAGE_SIZE);
-+		doff = offset_in_page(doff);
-+
-+		n = dlen / PAGE_SIZE;
-+		n += (offset_in_page(dlen) + doff - 1) / PAGE_SIZE;
-+		if (dlen <= req->dst->length &&
-+		    (!PageHighMem(nth_page(dpage, n)) ||
-+		     size_add(doff, dlen) <= PAGE_SIZE))
-+			dst = kmap_local_page(dpage) + doff;
-+		else {
-+			if (dlen > SCOMP_SCRATCH_SIZE)
-+				dlen = SCOMP_SCRATCH_SIZE;
-+			dst = scratch->dst;
-+		}
- 	}
- 
- 	spin_lock_bh(&scratch->lock);
- 
- 	if (src == scratch->src)
--		memcpy_from_sglist(src, req->src, 0, slen);
-+		memcpy_from_sglist(scratch->src, req->src, 0, slen);
- 
- 	stream = raw_cpu_ptr(crypto_scomp_alg(scomp)->stream);
- 	spin_lock(&stream->lock);
-@@ -237,7 +248,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 
- 	req->dlen = dlen;
- 
--	if (dst != scratch->dst) {
-+	if (!acomp_request_dst_isvirt(req) && dst != scratch->dst) {
- 		kunmap_local(dst);
- 		dlen += doff;
- 		for (;;) {
-@@ -248,20 +259,34 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 			dpage = nth_page(dpage, 1);
- 		}
- 	}
--	if (src != scratch->src)
-+	if (!acomp_request_src_isvirt(req) && src != scratch->src)
- 		kunmap_local(src);
- 
- 	return ret;
- }
- 
-+static int scomp_acomp_chain(struct acomp_req *req, int dir)
-+{
-+	struct acomp_req *r2;
-+	int err;
-+
-+	err = scomp_acomp_comp_decomp(req, dir);
-+	req->base.err = err;
-+
-+	list_for_each_entry(r2, &req->base.list, base.list)
-+		r2->base.err = scomp_acomp_comp_decomp(r2, dir);
-+
-+	return err;
-+}
-+
- static int scomp_acomp_compress(struct acomp_req *req)
- {
--	return scomp_acomp_comp_decomp(req, 1);
-+	return scomp_acomp_chain(req, 1);
- }
- 
- static int scomp_acomp_decompress(struct acomp_req *req)
- {
--	return scomp_acomp_comp_decomp(req, 0);
-+	return scomp_acomp_chain(req, 0);
- }
- 
- static void crypto_exit_scomp_ops_async(struct crypto_tfm *tfm)
-@@ -322,12 +347,21 @@ static const struct crypto_type crypto_scomp_type = {
- 	.tfmsize = offsetof(struct crypto_scomp, base),
- };
- 
--int crypto_register_scomp(struct scomp_alg *alg)
-+static void scomp_prepare_alg(struct scomp_alg *alg)
- {
- 	struct crypto_alg *base = &alg->calg.base;
- 
- 	comp_prepare_alg(&alg->calg);
- 
-+	base->cra_flags |= CRYPTO_ALG_REQ_CHAIN;
-+}
-+
-+int crypto_register_scomp(struct scomp_alg *alg)
-+{
-+	struct crypto_alg *base = &alg->calg.base;
-+
-+	scomp_prepare_alg(alg);
-+
- 	base->cra_type = &crypto_scomp_type;
- 	base->cra_flags |= CRYPTO_ALG_TYPE_SCOMPRESS;
+diff --git a/include/crypto/internal/acompress.h b/include/crypto/internal/acompress.h
+index 957a5ed7c7f1..575dbcbc0df4 100644
+--- a/include/crypto/internal/acompress.h
++++ b/include/crypto/internal/acompress.h
+@@ -17,7 +17,6 @@
+  *
+  * @compress:	Function performs a compress operation
+  * @decompress:	Function performs a de-compress operation
+- * @dst_free:	Frees destination buffer if allocated inside the algorithm
+  * @init:	Initialize the cryptographic transformation object.
+  *		This function is used to initialize the cryptographic
+  *		transformation object. This function is called only once at
+@@ -38,7 +37,6 @@
+ struct acomp_alg {
+ 	int (*compress)(struct acomp_req *req);
+ 	int (*decompress)(struct acomp_req *req);
+-	void (*dst_free)(struct scatterlist *dst);
+ 	int (*init)(struct crypto_acomp *tfm);
+ 	void (*exit)(struct crypto_acomp *tfm);
  
 -- 
 2.39.5
