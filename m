@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0B64C35FF1
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 214B0C35FF8
 	for <linux-mtd@archiver.kernel.org>; Sat, 15 Mar 2025 10:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,49 +12,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rjVzIim+9rOeY38h3abeMBxeybGAS9geNcz+I7mY9Nw=; b=HFG7B8AZzlrUOT
-	clko80JcvT7pOsho5JTE0hhgkiTKkrH3/vMqysxywXRQLCXrKlPcVwCY1v/Ow2pwC16MxRyCLGKul
-	UKq5VgpQgQYd6BKoqUaq7IjSTvzOPjnop/b2bY8HNnQ2vnDbz3O7fmxiI6AbTgtn+8J5sfCaZfqFs
-	gLXPGL2Fbyw9S9YxiREFcdH+JhBruqVEjnkw5IDiZrKpzVtRA19nEUcMPCAal0zGENxvA4XO2Q3ue
-	S/BiCeKkpZazii5Mo/Ma7OimOUnJsOQswXADxM/YRtkZrgQ2rEV+gTO1mhBtDPF5OKfe+26oi0+iS
-	45gZVXjASFg1kuYLBIrQ==;
+	List-Owner; bh=4P0Kzo1X+zho3F8zBYqEDmwniV8yKi7HHnDb5uOmbU0=; b=jXJEZf1eLtDoUf
+	gfgaguho9dGi6PR0vyZOLKLdhRQ1PamPa3xGmEraggzrttEUEUTTr6QrYb7j7lb8oiknzIhdkgDbA
+	9ABHWnvkU9+nl7uHt0mhgwB6IH+tRkMvCB+53904mYkMexoJLQCe81rzw1q74pNUcudXT2tO6G9QG
+	fkOFDZLCbCD+2LsdeydDos1RDzIsb5JyeAXOP2ehGqPJB01//p1vdfRPUeVdKzQfKz1aOuTymAsQz
+	r9qLr2MCCNaa07M/KNW6bwcOg+U4cK30GzROreybSKgxBwadE34CWx643bcnXxh338U1AhyJ+zbOl
+	E/9O2zC94Q4d58hG6Pxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOny-0000000GDH1-1EoU;
-	Sat, 15 Mar 2025 10:31:46 +0000
+	id 1ttOnx-0000000GDGQ-1jQ3;
+	Sat, 15 Mar 2025 10:31:45 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttOn0-0000000GD2h-0KN8
+	id 1ttOmx-0000000GD2I-3Sk2
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Mar 2025 10:30:47 +0000
+	Sat, 15 Mar 2025 10:30:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=l+ZShRAgEc0yiVA0reyVkATRhc0SDpPkUxK/Z/PM0O0=; b=MGO6vtHahHBxkmrH8DwyZEKAI9
-	pKzyjPmuAHwe6QiTiP0mW61T5ZzyT7rCjMPS97gc0QA3Mp0cf8+44r45YdqvZtrOmFCyjy5tO1z2j
-	Rf0gEGIy1zJ2DtjIgWQCsYtRLALhHkLSa8f6AE5kYSRDDSdtfkzX3TT+R9tyTN6v6OfbN+okX0ynF
-	Mlfl28w2wL7PI/N3s//x8YI6h5ugngO06ZO50jVeJ/Lt1HS12CsreiJtwAZLMOluusxui3aVWzGzV
-	pfAz4NWIQsT2OsGjCE48ohTVlCaZlvZ70Ra9V4+nrVs95QSaD4x5aPJHuaVK3fy6BC7LI+kalBmD4
-	vxnKuDyA==;
+	bh=zIb0wSG71Ygj2H3jMgCe2Okz2AI9eV57QCfyyCpN7fc=; b=bBfNFnbdLam7nmoca+ecXvvJWz
+	kFs7I+fqscDqE709/VBm+UoZZ7rBCCOtOqGsY2L8yj73d1lJwq8gtzB42t3rX126uwSmfpvcaNkvS
+	bePOUsLtdNGyRfQGoqYFO+JQLsIhEOA5onxY5WIFXaH+C5biqyYr9sD8/j5PWiV5hV9/a6OTLsUUd
+	ujZRZExw9qLff/BvrZWQDUr6llgpVCgMdybZukyI8OwV/5+YBDWKBH+tgyl42uzG0Ie9Zyvgj3vEo
+	jy1PMk+X/Z+mrwdvwJZeAqYujxUZAEtQZKs/PBpPmu2T/GIcgt/pZUVSEUtaPNs6dJZNrtMub2dpV
+	rhE1arbA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1ttOms-006pBk-27;
-	Sat, 15 Mar 2025 18:30:39 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:38 +0800
-Date: Sat, 15 Mar 2025 18:30:38 +0800
-Message-Id: <690f24976ed3938d3a8cb29d38e264ce3121caad.1742034499.git.herbert@gondor.apana.org.au>
+	id 1ttOmq-006pBS-17;
+	Sat, 15 Mar 2025 18:30:37 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 15 Mar 2025 18:30:36 +0800
+Date: Sat, 15 Mar 2025 18:30:36 +0800
+Message-Id: <573c0f1ad67e7572153fef62e45ef61a7c030699.1742034499.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1742034499.git.herbert@gondor.apana.org.au>
 References: <cover.1742034499.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [v5 PATCH 09/14] crypto: acomp - Add async nondma fallback
+Subject: [v5 PATCH 08/14] crypto: iaa - Use acomp stack fallback
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, netdev@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250315_033046_109989_67B1EF43 
-X-CRM114-Status: GOOD (  12.29  )
+X-CRM114-CacheID: sfid-20250315_033043_855465_B9C513B0 
+X-CRM114-Status: GOOD (  11.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,126 +72,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for passing non-DMA virtual addresses to async drivers
-by passing them along to the fallback software algorithm.
+Use ACOMP_REQUEST_ON_STACK instead of allocating legacy fallback
+compression transform.
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- crypto/acompress.c | 69 +++++++++++++++++++++++++++-------------------
- 1 file changed, 41 insertions(+), 28 deletions(-)
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 28 +++++-----------------
+ 1 file changed, 6 insertions(+), 22 deletions(-)
 
-diff --git a/crypto/acompress.c b/crypto/acompress.c
-index 9da033ded193..d54abc27330f 100644
---- a/crypto/acompress.c
-+++ b/crypto/acompress.c
-@@ -152,20 +152,6 @@ struct crypto_acomp *crypto_alloc_acomp_node(const char *alg_name, u32 type,
- }
- EXPORT_SYMBOL_GPL(crypto_alloc_acomp_node);
+diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+index 50cb100bf1c8..09d9589f2d68 100644
+--- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
++++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+@@ -33,8 +33,6 @@ static unsigned int nr_cpus_per_node;
+ /* Number of physical cpus sharing each iaa instance */
+ static unsigned int cpus_per_iaa;
  
--static bool acomp_request_has_nondma(struct acomp_req *req)
--{
--	struct acomp_req *r2;
+-static struct crypto_comp *deflate_generic_tfm;
 -
--	if (acomp_request_isnondma(req))
--		return true;
--
--	list_for_each_entry(r2, &req->base.list, base.list)
--		if (acomp_request_isnondma(r2))
--			return true;
--
--	return false;
--}
--
- static void acomp_save_req(struct acomp_req *req, crypto_completion_t cplt)
+ /* Per-cpu lookup table for balanced wqs */
+ static struct wq_table_entry __percpu *wq_table;
+ 
+@@ -1001,17 +999,14 @@ static inline int check_completion(struct device *dev,
+ 
+ static int deflate_generic_decompress(struct acomp_req *req)
  {
- 	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
-@@ -234,6 +220,45 @@ static void acomp_virt_to_sg(struct acomp_req *req)
- 	}
- }
- 
-+static int acomp_do_nondma(struct acomp_req_chain *state,
-+			   struct acomp_req *req)
-+{
-+	u32 keep = CRYPTO_ACOMP_REQ_SRC_VIRT |
-+		   CRYPTO_ACOMP_REQ_SRC_NONDMA |
-+		   CRYPTO_ACOMP_REQ_DST_VIRT |
-+		   CRYPTO_ACOMP_REQ_DST_NONDMA;
+-	void *src, *dst;
 +	ACOMP_REQUEST_ON_STACK(fbreq, crypto_acomp_reqtfm(req));
-+	int err;
-+
-+	acomp_request_set_callback(fbreq, req->base.flags, NULL, NULL);
-+	fbreq->base.flags &= ~keep;
-+	fbreq->base.flags |= req->base.flags & keep;
-+	fbreq->src = req->src;
-+	fbreq->dst = req->dst;
-+	fbreq->slen = req->slen;
-+	fbreq->dlen = req->dlen;
-+
-+	if (state->op == crypto_acomp_reqtfm(req)->compress)
-+		err = crypto_acomp_compress(fbreq);
-+	else
-+		err = crypto_acomp_decompress(fbreq);
-+
-+	req->dlen = fbreq->dlen;
-+	return err;
-+}
-+
-+static int acomp_do_one_req(struct acomp_req_chain *state,
-+			    struct acomp_req *req)
-+{
-+	state->cur = req;
-+
-+	if (acomp_request_isnondma(req))
-+		return acomp_do_nondma(state, req);
-+
-+	acomp_virt_to_sg(req);
-+	return state->op(req);
-+}
-+
- static int acomp_reqchain_finish(struct acomp_req_chain *state,
- 				 int err, u32 mask)
- {
-@@ -252,10 +277,8 @@ static int acomp_reqchain_finish(struct acomp_req_chain *state,
- 		req->base.flags &= mask;
- 		req->base.complete = acomp_reqchain_done;
- 		req->base.data = state;
--		state->cur = req;
+ 	int ret;
  
--		acomp_virt_to_sg(req);
--		err = state->op(req);
-+		err = acomp_do_one_req(state, req);
- 
- 		if (err == -EINPROGRESS) {
- 			if (!list_empty(&state->head))
-@@ -308,27 +331,17 @@ static int acomp_do_req_chain(struct acomp_req *req,
- 	    (!acomp_request_chained(req) && !acomp_request_isvirt(req)))
- 		return op(req);
- 
--	/*
--	 * There are no in-kernel users that do this.  If and ever
--	 * such users come into being then we could add a fall-back
--	 * path.
--	 */
--	if (acomp_request_has_nondma(req))
--		return -EINVAL;
+-	src = kmap_local_page(sg_page(req->src)) + req->src->offset;
+-	dst = kmap_local_page(sg_page(req->dst)) + req->dst->offset;
 -
- 	if (acomp_is_async(tfm)) {
- 		acomp_save_req(req, acomp_reqchain_done);
- 		state = req->base.data;
+-	ret = crypto_comp_decompress(deflate_generic_tfm,
+-				     src, req->slen, dst, &req->dlen);
+-
+-	kunmap_local(src);
+-	kunmap_local(dst);
++	acomp_request_set_callback(fbreq, 0, NULL, NULL);
++	acomp_request_set_params(fbreq, req->src, req->dst, req->slen,
++				 req->dlen);
++	ret = crypto_acomp_decompress(fbreq);
++	req->dlen = fbreq->dlen;
+ 
+ 	update_total_sw_decomp_calls();
+ 
+@@ -1898,15 +1893,6 @@ static int __init iaa_crypto_init_module(void)
  	}
+ 	nr_cpus_per_node = nr_cpus / nr_nodes;
  
- 	state->op = op;
--	state->cur = req;
- 	state->src = NULL;
- 	INIT_LIST_HEAD(&state->head);
- 	list_splice_init(&req->base.list, &state->head);
+-	if (crypto_has_comp("deflate-generic", 0, 0))
+-		deflate_generic_tfm = crypto_alloc_comp("deflate-generic", 0, 0);
+-
+-	if (IS_ERR_OR_NULL(deflate_generic_tfm)) {
+-		pr_err("IAA could not alloc %s tfm: errcode = %ld\n",
+-		       "deflate-generic", PTR_ERR(deflate_generic_tfm));
+-		return -ENOMEM;
+-	}
+-
+ 	ret = iaa_aecs_init_fixed();
+ 	if (ret < 0) {
+ 		pr_debug("IAA fixed compression mode init failed\n");
+@@ -1948,7 +1934,6 @@ static int __init iaa_crypto_init_module(void)
+ err_driver_reg:
+ 	iaa_aecs_cleanup_fixed();
+ err_aecs_init:
+-	crypto_free_comp(deflate_generic_tfm);
  
--	acomp_virt_to_sg(req);
--	err = op(req);
-+	err = acomp_do_one_req(state, req);
- 	if (err == -EBUSY || err == -EINPROGRESS)
- 		return -EBUSY;
+ 	goto out;
+ }
+@@ -1965,7 +1950,6 @@ static void __exit iaa_crypto_cleanup_module(void)
+ 			   &driver_attr_verify_compress);
+ 	idxd_driver_unregister(&iaa_crypto_driver);
+ 	iaa_aecs_cleanup_fixed();
+-	crypto_free_comp(deflate_generic_tfm);
  
+ 	pr_debug("cleaned up\n");
+ }
 -- 
 2.39.5
 
