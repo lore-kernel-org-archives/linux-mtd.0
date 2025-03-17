@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86105C282EC
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Mar 2025 18:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35908C282EC
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Mar 2025 18:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:From:Subject:Message-ID:Mime-Version
 	:Date:Reply-To:To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=7WYcSDEccX1LUOX9Wv85Rd2+6YR+rHD/TKMlIxvcLNE=; b=GO0KEzUVPJlHQ/
-	WiaCG4lzGoi4UcRR5Sqaon+cO9TO6vtiAgIMyBMq7HnekUq2dMS/VXDU1UTifVt/040AYoJY+rQRX
-	v9Oz8FxNGmadJ/UAmioxZtCKy5QsjcBCjnlBqXkbdSImeNrg+Q3iF/k6Zdg9NNG+edLNwFHQGrBcK
-	jXpTfqyjWMmUcHHty4+7MZvYFjn/ae+YO5MCt+azg1W3ODKUsAFnvW4o+C6ZBzqwXn/kByASod0zk
-	cIEA6v2AJbB9U8u1gcz4amhqc9tlCUk9c06JfyfpliCvaJUoCeZ7jkRoba14Vbb6brQhMDYLOqpqe
-	WVa1jZD/s55TbWBSNEvw==;
+	List-Owner; bh=gutYQuq3ydAYZP6O14+avl4bxwZHjxBPduhdzCQtZXI=; b=xNSMcB5crZs07u
+	xhLBjlPl73FVDhc1h1lrmcgL6J8xZFq62YjmW9AbsfdW6o/Z6MXjcajKeCi7wTmJ4Ph+0sVY/WV3W
+	26UVnB0Tb8Up5QtdS4vHirHy+ut1GaCtZMix3R5DlFN+LkVo525feJJpz/yXjrqB0nvqqRf0RJUG8
+	hKE1Yl23PTfBrzzAdt5j9jOMoVo0i6GR9keOom/GAQjpEsAqCkj2Lgs1trw0ZtwMGldaumV0UcyKu
+	hE20bWMqMjA+kfPLy92A8aZhLl8vS3BMjx4GSGCRoq4BXXiLEUi9ZEWq843ZgWiR5vkExbZG/yHOT
+	3S+mApfLVEAmz4yOdQ8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuF4a-00000003feC-2AJn;
-	Mon, 17 Mar 2025 18:20:24 +0000
-Received: from mail-ej1-x649.google.com ([2a00:1450:4864:20::649])
+	id 1tuF5A-00000003fnA-2gFw;
+	Mon, 17 Mar 2025 18:21:00 +0000
+Received: from mail-ed1-x549.google.com ([2a00:1450:4864:20::549])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuF4Y-00000003fdi-34R8
+	id 1tuF58-00000003flu-1C9u
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Mar 2025 18:20:23 +0000
-Received: by mail-ej1-x649.google.com with SMTP id a640c23a62f3a-ac29ae0b2fbso477501666b.0
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Mar 2025 11:20:21 -0700 (PDT)
+	Mon, 17 Mar 2025 18:20:59 +0000
+Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-5e6136633b1so4534988a12.0
+        for <linux-mtd@lists.infradead.org>; Mon, 17 Mar 2025 11:20:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1742235620; x=1742840420; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1742235656; x=1742840456; darn=lists.infradead.org;
         h=cc:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=/7NZ7peIlm0yG+Cn7UyH1yowKXkfRqsYGiOXYDLW9yw=;
-        b=MtJWl656ohbsYGlS43lY3BhmPLf5XOpayWpFdKbOGJI5N5gVA8nRpzxxPcZcWwm403
-         eFB/Z1ZZBRp9JyAFN7vsskZeYTXGlgQBEfQyPK6P6D+xMq8NrKLw64j20wVbyVWHIxMR
-         lUvV9PkH1DR5roGdtrhcfh9ekO9aRZJB2QdVEZ858/C8e20w9jmWqoYplxiF4Hs5PM6u
-         ljSzlfSRC0MF3mAhqN5wOGLSF2MkD5+69d3CempsV0LI1wmSf7SqGg2Ic9kS+yNrECT9
-         DQMlGmwANxaqINuMTJZBQxTRBQtb5G0S+aT0WUTVNlHApwjSn6DwzyeczUTK6e5skpsk
-         z/cA==
+        bh=78VRu6+9psP2tn8WejDwRNX+ffhQVxd9hB24F6U+zQI=;
+        b=FfFrClaeIUqbw/flZsS+A1mTB1nYWvVYRZdUmv20OMUYa8JZn6U9TfymG+GnOa/fmq
+         TcBRUdS2Zg1Gvbl3n7LAiWFmXzlv+L8f/dPetF/UxdD1InM6F+C0xk1eZ4PSpLaEibri
+         imQW/2k8hjDcrjWDgJMsXIj4cnaKuzncJi2NRS7Yb3ZQPIfZCugYHpzRih4sbGjZG3N4
+         k7AawqGQN1P/aJF0FnSB6aoooBG2xc5lnAkmpeG40tbMjul9DwdaVfeBo/cdljFrjP7i
+         CTxfgKmAL4ZMDhmA3wSOOkYoGF5yj0yVBZnnuy6aivq5d+3d9A3lrMABDdpAMzhiq7HT
+         dspg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742235620; x=1742840420;
+        d=1e100.net; s=20230601; t=1742235656; x=1742840456;
         h=cc:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/7NZ7peIlm0yG+Cn7UyH1yowKXkfRqsYGiOXYDLW9yw=;
-        b=va93R0588FPJef36GK94jF7kMyLWd5UKh5+iRv5Ho37JzoBy04O+kJSCbFiWUAOf4Q
-         TgHxdx7Kj2DnrVNcEIfs3SsuJK44YW1Ei1oijoiy/ywk0onsRpgwZPIDG/dTAwxD9g7/
-         m7DE2Xpd3ExH5V7o10JanhnZcC382xnfIt6ohFtmbSv3zz+SZtORcXBSoNJQu52YLpgc
-         aW7ZkixXAAcBhJ6quUcTOUf1xL5VinMdh2J9aOzYctNpMymbvbv/R7aOidZCRVik4xfQ
-         1ZOlHuQ15tnoB4w+7mztnPR1J6w/mMRN2/77ukCvb3O2HW7sBhwRZk1nW8dXSsQUMTMg
-         VORQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVe29+dS77w6Hqgn1vgnC61ZpwbPTwgp1gap+ZEM+dbxl/dAnhJnBM+PngGxiZdJBCJjzq0zc3IYNs=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxa08i8nCqwStrV+FpG+ZoqmdqdQdcjY5D9UMw1ln+9AchJGxjd
-	+LEYMcvN4bXvz7wLQt4IuqHjBBagyZkC6aZWRRfUWmBvoKKn6scwMf9VGdTlbD58RUFnHNSyQFW
-	F4WX9og==
-X-Google-Smtp-Source: AGHT+IE84F2eM4gDbNKOPL/wvEHNq3+GiqxIQtJuObp+x01KaqbBtyapAgs6XaomjtlNda8x+qKPNMx0IHSC
-X-Received: from ejpl10.prod.google.com ([2002:a17:906:7d4a:b0:ac1:fe6f:8a88])
- (user=czapiga job=prod-delivery.src-stubby-dispatcher) by 2002:a17:907:368a:b0:ac1:f162:fb0d
- with SMTP id a640c23a62f3a-ac38d514eebmr71247366b.37.1742235620357; Mon, 17
- Mar 2025 11:20:20 -0700 (PDT)
-Date: Mon, 17 Mar 2025 18:18:51 +0000
+        bh=78VRu6+9psP2tn8WejDwRNX+ffhQVxd9hB24F6U+zQI=;
+        b=r4Ihf2bHzqXCf2xyfx1y518kD5Ie8Yoy5yDkulJdekUta55XNskVggvU9rt21n1bjc
+         8P4BQVnYzyelupn6sSAqra0Z9NO+iSjGl/B8ij65Xu8H4kjJgg1EjsqXt0KpwreDp+dU
+         3q8GqyjBbvkYowvUgQMKYDkCkCFaz4OWrQ847EjD0Ug8TXq1an0suSMwSEsxKERZZjhA
+         +tnAfPuXtgdg37TZQGBcHzD/UYVPxGUqQjdNraISt3ux7Fkf1D/RNe2R9Fr7qOIQMk9Q
+         hzqt80/sj7h9Yl4X4gJ1Bd8Y8dwyL0TOk4dqwxrXcD5XZpFPYvvkyTz3x1Tt0LWuSaYy
+         f7VA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTCk4oNzfTx3f/BfZvkCutHv/lZlwQz5wWoIoEIEHCPxU72U2+M7oDEURZUNQGPssRX74+wkjaG+w=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxUaS6TyKnGFmbKwCOMzXrDS94+6guPqkHmfzYU51M6wLt58ZmL
+	YmY3Rsysh1Il77Zp5Ak4nYchcV06v/nDsLlCq1DanZJ3JAv+Njpr12LRCg4TOmF7RqUfiih4xNK
+	gSTRiYQ==
+X-Google-Smtp-Source: AGHT+IESE69/iddcPk7ehPy7NsOJmNhG1D3/pIzqBBHE1LoGJdUPkmqYoQ6QIm5bo43o00RoxkTuy8sKiOiK
+X-Received: from edbel4.prod.google.com ([2002:a05:6402:3604:b0:5ea:815a:c43c])
+ (user=czapiga job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6402:35d4:b0:5e6:1838:e8c6
+ with SMTP id 4fb4d7f45d1cf-5e8a032c2b4mr13262186a12.22.1742235656080; Mon, 17
+ Mar 2025 11:20:56 -0700 (PDT)
+Date: Mon, 17 Mar 2025 18:20:20 +0000
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.49.0.rc1.451.g8f38331e32-goog
-Message-ID: <20250317181856.2059536-1-czapiga@google.com>
-Subject: [PATCH] mtd: spi-nor: eon: fix lock and non-SFDP flags
+Message-ID: <20250317182047.2060036-1-czapiga@google.com>
+Subject: [PATCH] mtd: spi-nor: gigadevice: add lock flags for GD25Q128/256 and GD25LQ128D
 From: Jakub Czapiga <czapiga@google.com>
 Cc: Jakub Czapiga <czapiga@google.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
 	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -72,9 +72,8 @@ Cc: Jakub Czapiga <czapiga@google.com>, Tudor Ambarus <tudor.ambarus@linaro.org>
 	Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
 	linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250317_112022_771882_D1B26C93 
-X-CRM114-Status: UNSURE (   9.44  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250317_112058_321051_19A497C2 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,104 +90,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Set appropriate FLASH lock feature flags for chips that support it.
-Set top-bottom protection bit flag for chips that support it.
-Add no-SFDP flags for chips with missing SFDP or without clear
-SFDP description regarding 4K sectors, dual and quad read support.
-Remove no-SFDP flags for chips which documentation states that this
-information can be extracted from SFDP.
+Set appropriate FLASH lock feature flags.
+Set top-bottom protection configuration bit flags.
 
 Modified chips:
-- EN25Q32 (+lock)
-- EN25Q64 (+lock)
-- EN25Q32B (+lock, +tb, +4k, +dual, +quad)
-- EN25Q64 (+lock, +tb, +dual, +quad)
-- EN25F32 (+lock, +tb)
-- EN25S64 (+lock, +tb, +4k, +dual, +quad)
-- EN25QH16 (+lock, +tb, -4k, -dual)
-- EN25QH32 (+lock, +tb)
-- EN25QH64 (+lock, +tb, -4k, -dual)
-- EN25QH128 (+lock, +tb)
-- EN25QH256 (+lock, +tb)
+- GD25Q128 (+lock, +tb)
+- GD25Q256 (+lock)
+- GD25Q256D, GD25Q256E (+tb)
+- GD25LQ128D (+lock, +tb)
 
 Signed-off-by: Jakub Czapiga <czapiga@google.com>
 ---
- drivers/mtd/spi-nor/eon.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/gigadevice.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
-index c1ddf662f782..10ed06022a76 100644
---- a/drivers/mtd/spi-nor/eon.c
-+++ b/drivers/mtd/spi-nor/eon.c
-@@ -13,10 +13,12 @@ static const struct flash_info eon_nor_parts[] = {
- 		.id = SNOR_ID(0x1c, 0x20, 0x16),
- 		.name = "en25p32",
- 		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x20, 0x17),
- 		.name = "en25p64",
- 		.size = SZ_8M,
-+		.flags = SPI_NOR_HAS_LOCK,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x30, 0x14),
- 		.name = "en25q80a",
-@@ -26,42 +28,51 @@ static const struct flash_info eon_nor_parts[] = {
- 		.id = SNOR_ID(0x1c, 0x30, 0x16),
- 		.name = "en25q32b",
- 		.size = SZ_4M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x30, 0x17),
- 		.name = "en25q64",
- 		.size = SZ_8M,
--		.no_sfdp_flags = SECT_4K,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x31, 0x16),
- 		.name = "en25f32",
- 		.size = SZ_4M,
- 		.no_sfdp_flags = SECT_4K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	}, {
- 		.name = "en25s64",
- 		.id = SNOR_ID(0x1c, 0x38, 0x17),
- 		.size = SZ_8M,
--		.no_sfdp_flags = SECT_4K,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x70, 0x15),
- 		.name = "en25qh16",
- 		.size = SZ_2M,
--		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x70, 0x16),
- 		.name = "en25qh32",
- 		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x70, 0x17),
- 		.name = "en25qh64",
- 		.size = SZ_8M,
--		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x70, 0x18),
- 		.name = "en25qh128",
+diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+index ef1edd0add70..8eec6557b036 100644
+--- a/drivers/mtd/spi-nor/gigadevice.c
++++ b/drivers/mtd/spi-nor/gigadevice.c
+@@ -16,6 +16,7 @@ gd25q256_post_bfpt(struct spi_nor *nor,
+ 	/*
+ 	 * GD25Q256C supports the first version of JESD216 which does not define
+ 	 * the Quad Enable methods. Overwrite the default Quad Enable method.
++	 * Otherwise set TB to SR(6).
+ 	 *
+ 	 * GD25Q256 GENERATION | SFDP MAJOR VERSION | SFDP MINOR VERSION
+ 	 *      GD25Q256C      | SFDP_JESD216_MAJOR | SFDP_JESD216_MINOR
+@@ -25,6 +26,8 @@ gd25q256_post_bfpt(struct spi_nor *nor,
+ 	if (bfpt_header->major == SFDP_JESD216_MAJOR &&
+ 	    bfpt_header->minor == SFDP_JESD216_MINOR)
+ 		nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
++	else
++		nor->flags |= SNOR_F_HAS_SR_TB | SNOR_F_HAS_SR_TB_BIT6;
+ 
+ 	return 0;
+ }
+@@ -56,12 +59,12 @@ static const struct flash_info gigadevice_nor_parts[] = {
+ 		.id = SNOR_ID(0xc8, 0x40, 0x18),
+ 		.name = "gd25q128",
  		.size = SZ_16M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
  	}, {
- 		.id = SNOR_ID(0x1c, 0x70, 0x19),
- 		.name = "en25qh256",
-+		.size = SZ_32M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+ 		.id = SNOR_ID(0xc8, 0x40, 0x19),
+ 		.name = "gd25q256",
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_4BIT_BP,
+ 		.fixups = &gd25q256_fixups,
+ 		.fixup_flags = SPI_NOR_4B_OPCODES,
+ 	}, {
+@@ -80,7 +83,7 @@ static const struct flash_info gigadevice_nor_parts[] = {
+ 		.id = SNOR_ID(0xc8, 0x60, 0x18),
+ 		.name = "gd25lq128d",
+ 		.size = SZ_16M,
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
  	},
  };
- 
 -- 
 2.49.0.rc1.451.g8f38331e32-goog
 
