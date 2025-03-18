@@ -4,85 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0513CC282EC
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Mar 2025 06:22:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33FF3C282EC
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Mar 2025 06:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=h77/cja6udf5xwuN4WiVufEfAaNCccvmDzRLb36hQr4=; b=0HD9MAR+zaXiQ0
-	aejJXYqQQH8Lao6Cb/YVu8l6h+nxNl0SnQqULPpAALhZIiP1xAZE1yuQ+mdFWldXDg2uZ0i6XaMhP
-	vOh8MbPlDzgR9jiCOL2fdRYW5lwfHl7jHn9wQrt/klCwh89rxOQa0Qsn2JYcXoU8G79xgtLnAa4Qt
-	Os1pRPFouy2cduHbCAGA+5hUoHPzY8c6M9Ip86E+xqAmIDx6keLzN2BmNmR0i0dhUoazxZXyOU+Vz
-	AwxWLKcTSrzVWdhjwPj/FPT8iVUXQyX9Vl83d/rxnXckf5VBMk32zuGIYCMyaewvwfEbdqcN0g63b
-	AhGrwmZBXlV2NnsvXLoA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=RJ3mDe00BSmsc8W7HtDfcU0KKITzaFW0gMlEDStoc6E=; b=QwqxoM9mvxBLf9
+	AG/TuvLVeETTfs+w5w0d8z7sK/ll5RKskw6VwR6BYl/Gz7fjF8Re4iaTeZKjInuQ/itxHvYx59dIs
+	cNW/Lv0JFdckQOS6KjiUtsQj8HhnRdPaJO84TYTT7NnTCdMyiwUS73cQp4JlrSShlgHFArmeLFOHV
+	DQyRoWsLWzHG/EzNpXP77YMSVi6ND5QuLxT4uyvP3H6NZ07wdWBvbP11zC6NNXM9ondp2ae+TsHwK
+	/zG4sLtccT5unO+06vWpn3RMG1FzjI/MT4MAIPtDrSPCxtIxUPyIqJpa2PWjTOxPnc4rexQ96aWT7
+	T3RowHuUPCSNrSBiJafg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuQLg-00000004ojM-2zjQ;
-	Tue, 18 Mar 2025 06:22:48 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1tuQQ0-00000004p6I-0Gc6;
+	Tue, 18 Mar 2025 06:27:16 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuQK2-00000004oYc-32Pp
+	id 1tuQPx-00000004p5t-1iZf
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Mar 2025 06:21:10 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-390e3b3d3f4so3079808f8f.2
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Mar 2025 23:21:06 -0700 (PDT)
+	Tue, 18 Mar 2025 06:27:14 +0000
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5e5b6f3025dso7599627a12.1
+        for <linux-mtd@lists.infradead.org>; Mon, 17 Mar 2025 23:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1742278865; x=1742883665; darn=lists.infradead.org;
-        h=content-transfer-encoding:subject:cc:to:content-language:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vpu53nh42i5pf5ZgjwfUkqGTj0+7zcXw8ix0nx7M47Y=;
-        b=qZUjbdBPNKEGTLIPsT8sL2QVa2q5iBDALIy0QYTr1AcIwm3Y3FA9U1h4+fU9tzK5q1
-         8l/LhUhS78so2GQYWEz6DPwcTlO1LOUC6Tr4DyhZ63dYPLLKV3qYsYnOKt+QioDZ7JAa
-         vnc0lVvYFZmWXOUIVyVogFIrN/ff/tuOvbuC8QBTARTIlzrX5NPheiQVvqdjrURoVFhx
-         fSyY/Ea23W5Bs8VxAIXG0BRstmFTB2SMcXdDPeevrSDA5Y9Ivnk3RBj3XC9jCdD/m9dq
-         oPWg5c63XB4xotWnO+ZB6nIPnubU3LNKPjnbBwMdDWUdwNftShXBWSii2FoAl6RpIXLU
-         Uenw==
+        d=linaro.org; s=google; t=1742279232; x=1742884032; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RS+d+wLLTpLukrshu1KgCi2J/6kgXfG5Xv9HH4pKDHM=;
+        b=L0hsdUbO1BlEROCFy9gjhkS01zNd9SDes2vv57EDO1RIxgasFY52IPz7ExEYW3NpjF
+         Pd0r1cgD2mX/gJ6mBaJjXFHAwj76IQL7yIOvPR15HOJvWDJ2YOaIOG9JgQ54o/DjHzEK
+         KZrDnNgX7bFGzaqWG0HyNwY5MDYuqUGzNIoD/8TCsxU5GpuaLPPBC69pgwKHG6fFTm0b
+         m8O2WhMAjWjkV+eevkN0Zod8X1FVowjuIHUP+YjgiN+3eNMlX/dqgpmGEHDLRo44A9BG
+         jcBTOJnS+zHrWY7CuO1Mynzz4MDkukwktwXmH0iIbJ/UAbwNnOZe2pZhdWDvTO5o8ubZ
+         Q0uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742278865; x=1742883665;
-        h=content-transfer-encoding:subject:cc:to:content-language:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vpu53nh42i5pf5ZgjwfUkqGTj0+7zcXw8ix0nx7M47Y=;
-        b=wW5lWDaUI73G15IUIx55NWQHLd+ywaDqnXraLC05qh+dJBNf83YC9z85gFpfLrVoRm
-         xIjhkbray1/RihWG/ZqObVWu7hDNrZxs7WHF55xvM/Ie5x2ENLnj+Y/Rg5ioiUAkKEDF
-         hk6ClejUNxBSCfkThPctzMxxzBXmM87bMYXgbrPYQFln4u7B/ARI83OO3Ld4vvF1LIbQ
-         0AyUDi/lsl0l1FCtg1hZTffS5M5onPESS4/n5OerHgwXrbUetCgWMDOassN0H6a/G2UK
-         Dosk1dq9oVn2qIiVW3HdndsmTeaHzHCck6BcKhuOFks0oyponK19iK6o0ublJrshj3tq
-         6gmQ==
-X-Gm-Message-State: AOJu0YwOu1SCZb/JQe4coPKl7mORNQuyUIM7NFZ3j+7nkgwvdzgMgUON
-	BbIs/O9GcTmu4iiKlPGbPRAU/XWJ0gA37mD9QNTi5gBnpYC18QImiHXQoKdHSd4=
-X-Gm-Gg: ASbGncvwsutpSI+f3oCjYGbLF9/tqf7O7hpB/dbCXKjrpfcPKsxlFJEGTquh3EGHC6e
-	CKODnXX4U1oI4GPodGohdDfEBwNUbC7oZNgA9LC5aLkLjQp4M9VG96ctmWjP09ilF7wZcLGC/Ru
-	8KTR7q9jhFUkHC+yUCPGW36PwRYEmqUJLouYvPyCrYLbVwax9kf68H91k6ypXlsY4zw8T9JqNe0
-	xjkStIM6MDHW0TNd4Jr4bqxeQvTziYMYZIKQbIyH47tdUP4NvK7ySy8GAbjkTvqm9hP7THKj+bH
-	bMcMPYASWlW07ddgglAMzVDXvc8HiT5HyGZZ7CiU2gklwaXwzGJmqg==
-X-Google-Smtp-Source: AGHT+IFmV8ri8McgD8SuHy1n7IpZVLiiv0FTWkc+zIL91pEGCeh4L4Esr7mc76X51YGKfSvE+jVJpg==
-X-Received: by 2002:a5d:47cf:0:b0:391:42f2:5c82 with SMTP id ffacd0b85a97d-3996b446d67mr1853456f8f.21.1742278864982;
-        Mon, 17 Mar 2025 23:21:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1742279232; x=1742884032;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RS+d+wLLTpLukrshu1KgCi2J/6kgXfG5Xv9HH4pKDHM=;
+        b=XBQjg2+EqBGXi65zxYFiD9LjOCD/aCGGQuh4e9KRsvZjahyi3+iHUvSr8y6WjZFD19
+         PjdND/DL4WBuXXc27UtEpsR2fYoZ8ZTbwUR9ojTSOcnWuBb7YxLGfe1YgIrEqk7pyHul
+         U7yaiClyjj6WlDXTq1apWcIXvMATS4GaTy2enHjg3CSouTUhBRRH2Qu8mo+06E/FIwR8
+         OYVtRqwgGMyDomPtx4IuUcRHDYZ45KvV1BDnJvP0Z/huclMZI/BHl7tcxpC0mLdH7nkg
+         xdvugcxqZ6+smH1irF6Q3zdgZIm3t89fL3NEL0Em7sbRcbNQOvC9ACQBk1l0FT4zWEyS
+         71gg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLiXZ/ILFf53saieGSH4gF2mWZKDWduJk0ojpwjMeC/448BVY3mkPvu6KgJkEQbyL35XlBnANTfdE=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwEtkk3OxvqUbaFUYZCPtlOO2bdW+LXmGxrHLSt71atSVfHE96i
+	FRklSHi3PlHeH5zoRZj66/TmFC7Y4YsX54VvpcKnlRfZ41h45zTnhodJ7YK4POk=
+X-Gm-Gg: ASbGnctZEOAudqkhCfmjP8LeV4IDg8O6hJIIsPR+S3LMUemVZ94wKpKTmCRPkiGQjUq
+	2y/dRpic9M2+hW1ULxkjbdGwiKMZRqgfSzbVwc3dR/6Y0oIZPWvMfGb9i8e24Vg6P7dEMv6M3v4
+	BXn6Ny+29B/ZO1NeCJ4aTXZMJm+/AXXB55DNmXTlWwTeY5t1WhOwhRRvbyXxXGEQHihp+B01/z0
+	tqVxea/kV8OanS3nZyxMKGHCSiJCtL0484D1kmR8OztyVTDWlW8q+gii6BftYSlAbmDzsYweYgo
+	V9/RXuIfYI8+N5tSKtr2M7K/VIHAZSCY+ugKsXUXJo0wxp8cX429LQ==
+X-Google-Smtp-Source: AGHT+IEmbxfd59IWAvU+zhGTYt7uPPYn9mbPs0auwfyns4/IDUqNsQ9RKkZ6UgHGj0ak+k4BmthPIg==
+X-Received: by 2002:a05:6402:354d:b0:5e5:bdfe:6c16 with SMTP id 4fb4d7f45d1cf-5eb1deab100mr2062814a12.3.1742279231656;
+        Mon, 17 Mar 2025 23:27:11 -0700 (PDT)
 Received: from [192.168.0.62] ([79.115.63.206])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d1fdda30esm127226495e9.5.2025.03.17.23.21.02
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e816974b63sm7143534a12.28.2025.03.17.23.27.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Mar 2025 23:21:03 -0700 (PDT)
-Message-ID: <b4a5c030-e8af-4724-a0aa-b53f7e08f365@linaro.org>
-Date: Tue, 18 Mar 2025 08:21:01 +0200
+        Mon, 17 Mar 2025 23:27:11 -0700 (PDT)
+Message-ID: <e2e890a9-ebc4-45fb-92eb-502be027e807@linaro.org>
+Date: Tue, 18 Mar 2025 08:27:09 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: xmc: add support for XM25QH128C and
+ XM25QH256C
+To: Jakub Czapiga <czapiga@google.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20250317182107.2060739-1-czapiga@google.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Pratyush Yadav <pratyush@kernel.org>,
- Michael Walle <mwalle@kernel.org>
-Cc: "open list:SPI NOR SUBSYSTEM" <linux-mtd@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] mtd: spi-nor: changes for v6.15
+In-Reply-To: <20250317182107.2060739-1-czapiga@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250317_232106_774290_AA038336 
-X-CRM114-Status: UNSURE (   8.17  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250317_232713_463970_BB49DCEA 
+X-CRM114-Status: GOOD (  19.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,58 +102,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Miquel,
+Hi, Jakub,
 
-Here is the SPI NOR PR for v6.15. We'll try to have it a week earlier
-next time.
+Do you have access to these flashes? Can you test them?
 
-Thanks,
+We have a minimum testing requirement before updating or adding new
+flashes, here it is:
+https://docs.kernel.org/driver-api/mtd/spi-nor.html#minimum-testing-requirements
+
+It's true that we don't have yet locking tests described, but
+contributions to the documentation is welcomed!
+
+On 17.03.2025 20:21, Jakub Czapiga wrote:
+> Both chips support SFDP (JESD216).
+> XM25QH128C only supports 3-bit Block-Protection with Top-Bottom
+> configuration bit.
+> XM25QH256C supports 4-bit Block-Protection with Top-Bottom configuration
+> bit on SR(6).
+> 
+> Signed-off-by: Jakub Czapiga <czapiga@google.com>
+> ---
+>  drivers/mtd/spi-nor/xmc.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+> index d5a06054b0dd..963a44c3909a 100644
+> --- a/drivers/mtd/spi-nor/xmc.c
+> +++ b/drivers/mtd/spi-nor/xmc.c
+> @@ -19,7 +19,17 @@ static const struct flash_info xmc_nor_parts[] = {
+>  		.name = "XM25QH128A",
+>  		.size = SZ_16M,
+>  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+> -	},
+> +	}, {
+> +		.id = SNOR_ID(0x20, 0x40, 0x18),
+> +		.name = "XM25QH128C",
+
+for the next version, drop the name and add it just as a comment above
+the flash entry definition
+
+> +		.size = SZ_16M,
+
+if flash supports SFDP, drop the size parameter, it will trigger SFDP
+parsing.
+
+> +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+> +	}, {
+> +		.id = SNOR_ID(0x20, 0x40, 0x19),
+> +		.name = "XM25QH256C",
+> +		.size = SZ_32M,
+> +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_TB_SR_BIT6,
+
+same here. After switching to flash init based on SFDP, please do the
+tests mentioned above.
+
+Cheers,
 ta
-
-The following changes since commit 2014c95afecee3e76ca4a56956a936e23283f05b:
-
-  Linux 6.14-rc1 (2025-02-02 15:39:26 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
-tags/spi-nor/for-6.15
-
-for you to fetch changes up to eec373688d91f7f8988702e36d4a0e07b8e782b2:
-
-  mtd: spi-nor: drop unused <linux/of_platform.h> (2025-03-18 07:59:43
-+0200)
-
-----------------------------------------------------------------
-SPI NOR adds support for few flashes. Few cleanup patches for the core
-driver, where we touched the headers inclusion list and we start using
-the scope based mutex cleanup helpers.
-
-----------------------------------------------------------------
-Cheng Ming Lin (2):
-      mtd: spi-nor: macronix: Add post_sfdp fixups for Quad Input Page
-Program
-      mtd: spi-nor: macronix: add support for mx66{l2, u1}g45g
-
-Miquel Raynal (2):
-      mtd: spi-nor: winbond: Add support for w25q01jv
-      mtd: spi-nor: winbond: Add support for w25q02jv
-
-Tudor Ambarus (5):
-      mtd: spi-nor: sort headers alphabetically
-      mtd: spi-nor: use scope-based mutex cleanup helpers
-      mtd: spi-nor: explicitly include <linux/math64.h>
-      mtd: spi-nor: explicitly include <linux/of.h>
-      mtd: spi-nor: drop unused <linux/of_platform.h>
-
- drivers/mtd/spi-nor/core.c     | 77
-++++++++++++++++++++---------------------------------------
- drivers/mtd/spi-nor/macronix.c | 31 ++++++++++++++++++++++++
- drivers/mtd/spi-nor/otp.c      |  1 +
- drivers/mtd/spi-nor/swp.c      |  1 +
- drivers/mtd/spi-nor/winbond.c  | 88
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 146 insertions(+), 52 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
