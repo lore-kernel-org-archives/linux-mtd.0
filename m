@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8337FC282EC
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Mar 2025 06:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2077C282EC
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Mar 2025 07:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M/HkNatThv1aao0p8uTPeTrt78mdX9smZ4IMwXgtdF0=; b=aFrasX4XbQ60A0
-	t9aeVGgskVHgvqC2UqXPv9C519bImoLZczdVmxVm1yuMqojk37QQWP59LKzANKFmQdRxWYIfEaXeK
-	4w0k93MALpkqNhmwV67NbahXxwJMdXFM+vtZ7JakvRTkukII8kWv65ajx2GaTTdm/bAHWakUUYM/9
-	84IRV3VAeQGb56FSc7/QZeIank3/PILrb94h0iUj6PB+DlKs6AIr0sFIRjBCEeMrxlHpyxS5MI/yW
-	F4d0yeqUVoBCWd38/ihWInRdhjhOMGVk094+y+ZS5SqF/x9u/AUjPJGLPVt19jGk4hne0f+FcQR4r
-	AHWjK9DURnuX/y6XlLOw==;
+	List-Owner; bh=3532H00TOD9du68Ke7Kz5xfJBe5bBrop53dGsBWk3j0=; b=0QQwFza+qAqKdz
+	lXaMX+eAvcMRMK85IIlPRI9wGmdzVCyU7m16UwoTWBd3ooqEgtolS4Vbu1DZ/ZA2EwTsVBIoaj0gp
+	UcQ03ilczqYvSa7ECfStB9t9lymR3BbybShNMixsgefzFriKXQe+JTY7/VOI3m3PJLE5fyAI4D90e
+	OfKS0QfZNMQi9Eb7cI8H/jteU9L93Av4L4G1O2ZxhwrEwV9y7CqXCaZA+5wnd5/mV0ZiKVQ4pVQj8
+	nW5tXis91n8vz+IULtSyDvjom54jyd8hyNL+pRwkwxncvSuqYaOVIADB4cioXlO03ZE7EUPbhN3To
+	WTSq5xR/gzXU/siyy82g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuQTf-00000004pYr-3aWM;
-	Tue, 18 Mar 2025 06:31:03 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1tuR5N-00000004t6Z-01Qe;
+	Tue, 18 Mar 2025 07:10:01 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuQTd-00000004pXL-00aj
+	id 1tuR5K-00000004t60-1WiD
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Mar 2025 06:31:02 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-43cf680d351so15919075e9.0
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Mar 2025 23:31:00 -0700 (PDT)
+	Tue, 18 Mar 2025 07:09:59 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-43d0782d787so19924535e9.0
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Mar 2025 00:09:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1742279459; x=1742884259; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1742281796; x=1742886596; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WXsRVC7+O52roT2qjifznXtTujlYjDhziLvEJ4ugGCE=;
-        b=s/vQKUfB5YY45QizxNAvsiqx0TRENq0ZiioFyK6aC0Pl7t21AljqtUpfxMu3TXMuE0
-         klZiDOj1ra8PAb6OfgZS3lsNrdqRW2c1f643R55rj4m8p68N8SchW1IPr4yxHvKRGFVP
-         W98EgV6NjM1FMkNf2hIamSLhCUoAduIkC2uE6sE20PRAi6GiXqbDup95jwxm2qqICGsQ
-         4+iJ8IhB9R/KBmcJ+wIct5VX/W7Nyea4jJedT6papRRWlSJky7qvrZNi4tGxm8q2ZtCz
-         88Q0k1jKRDz1lWmv+2Jj9e4jDa1Fr6Am7BgWDpaWlyKKQ2P1hFhB60fdeFC2VTA/ILib
-         IokA==
+        bh=2pX1FLmGF0QpaVz+3C9gkeV+HuMIyKRUJE6MVHoPVhA=;
+        b=eXkaBGCk+0r+cb1UUQI7OIHmzF77R0sGCJxdhSh8VA/IhLLtAm6NMJk/FYcbJ/3ZsL
+         JfJcE1qVXdq7JAO3qlGFTBRq26I49JSyLuJaus+rt/BM3lwX6Hn/H6XtUwZ5py/tq3wM
+         WXiepYEmSxKVkJguqT34O3qnkIDaWfEyMH2OkSQbSEEDcqKBWZPYAT3SGzTKoo8bMqu6
+         NoQXjPSf8X+W61jkpCtDAYuYyQo7AQAWokC/pi78Wg/0IbaHtOQ/JnMSiyJxDHnaf62V
+         0e8eufsc/DyJDiwNkzQdZQ4fUI5OuSBdpLGw3lkWpOs2VLVKBnyp0XQHnmkblMfHbfMU
+         fOPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742279459; x=1742884259;
+        d=1e100.net; s=20230601; t=1742281796; x=1742886596;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WXsRVC7+O52roT2qjifznXtTujlYjDhziLvEJ4ugGCE=;
-        b=s3Uy1BMtAlTwnRTqFVqQbcqQrNRgXd6/X7mF+I606oSYNMASjxjvo7uhlql1mnYzhI
-         GzON/NlK7XhuetdIkrRJefyPuep1s5GHt1Oo7UqUoLGkiz82ON/bIQ/ngRquvZZjqVoJ
-         c01bWP3YnjBR9MHf8I6NQTdNanWtoz6vmyQ5S7t8KM/zO8fnnKzditL/XMVIQ1q8pJ62
-         76JfdbqxNrTYJveonmRaH86wZ824EidPB3dBheDRfwk4SVc9Hw9fRTQr+2tJylLJhK2I
-         0UQGFavj8XCQJdPAb8jAeNcW0Frm6K7vK65Ft22IWajRy8oO20PoXE7PBgWP7TbDg34R
-         JUPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqUtma87C1WIpiIdejqHgbs8mTbeTCvIQ/OPXD3rfnarmMA2G/tfJUPa/tHvi+K/DmyMM+8uIXjVo=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yyg9ZLibVAw+KgH1XHceI2keaZfdSvXioQwghBd9rzysqpyYSOz
-	WAvMBHbxXSxrjVGVfHtNuMMvbbmWvBxIwTJjjlPgHXcME7mvf2tA0lj0mJUvv5s=
-X-Gm-Gg: ASbGnct6eBvtP0XFSWpif9Fpkp7lzxAjTjuS3LHBvFzYqOvmRsRA4oNzonpDl6Ieswc
-	77bcF1WLRDTj9Z26pu4brVWY9Ke4uvoeY+iR2WK/fBTHHnO9XQrLBTIMSZGo4J5EWY7xJ9gQXia
-	/WyRUQDVT23GLWWoxZUh7vg/lYo2E0CPqLDcU/fbckKvS83/tCLRT/l2BW6+kUPJbw/3Hs7UZLT
-	gXjna3qUBUzGoPNwUN36BzVs7gQRtSWOdklU38KFMK3WZalIM34YefT61b1hw7TKgLh8RydP3th
-	E7rC7XWBpnTzNRNl7Xit1ioVJYTHAzr9xxKdcyJ2tGi4ZepMz02Nhg==
-X-Google-Smtp-Source: AGHT+IEvxvjjCIFKWh3dRxXm3eYkJA+qlr6RAryA7+n3CuEq0jX4K981fmJidDv6Ey2as6qSMTEnOQ==
-X-Received: by 2002:a05:6000:2ce:b0:391:bc8:564a with SMTP id ffacd0b85a97d-3996bb7747dmr1627926f8f.22.1742279459362;
-        Mon, 17 Mar 2025 23:30:59 -0700 (PDT)
+        bh=2pX1FLmGF0QpaVz+3C9gkeV+HuMIyKRUJE6MVHoPVhA=;
+        b=LQhePlNz08ysDPeONJlj0VNZta6JMi2cl7z/lYlvMmIxM357y6Hd8/d08Sf3gBQ7Mu
+         /ZV0beLAo3+xtfaxKZk5JX5PMpZQXRX97wSOwQsUsyjsFL0xlvK5QaOfYyzKhsmkXNtL
+         wYCtPwJ/DnET8p940hVW3x8WhbJBMQyi0gp5K5oj8/Jg6iXTJDtUHSHn/3iSkMXjsXCE
+         suqDNInGnflT6rLYVwUuLNsP+wBWGobBsDE/OZ0wp/hQd6JSMfFrYx4PGO6fu6aCsOOm
+         pWKr13eO8O+9xrLlQU28fz1SqQC5KFTit930WiSDKlTrao0cqpYHDbGJSZVSm+D4HvAi
+         Ydig==
+X-Forwarded-Encrypted: i=1; AJvYcCUv7zwvSoxXg6QCEnsVzy288wOIIT7aPE6h1nTTwMjj5giDJEAKtt6jmRZdbjLpwCdtRtjC9tzK3sk=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy3vWVk5YxnC/Rac7OK5d0ExpbePAG2iZNgWVDG9GXaQiQP7ZXX
+	xqLXTun9yfUWuwZFi3nZeEsumZaAaftl8tl7twMjAuGAAA41b188bnLwJvEo6S8=
+X-Gm-Gg: ASbGncuPOpUEQ1dU+lml0IeQ4DVHTYjXZ8vipqIap+5BGlqO8xe3iy2rv+o2zCUrwyD
+	dS1Js25ttZbvxykaKy3IUlTHOoKd5DhNbnlwNeR7xwXV4dlQuDwV8gI4Edl1dTQLdBlyJVutDrD
+	8tByJRPiw0PQXnagpWfGFOLpRorL5FRdUekQt3llGstad6AdmNtFtSmmMVIlteDgKxaAMKimbJE
+	v1aIMYuk/Es3Z4W22YjrqXecSgfBZDfAKuXlsC/MNasbrMK96RWyMdrj/warq0H0vP7H9z3uaiH
+	FfxUH6pNZ4SkFedEa5tvTmUA+eAFUYB91apF7Rb7z7PKXb8wGCPBxg==
+X-Google-Smtp-Source: AGHT+IGa8J4JxzKKGh0/XPpOyesw3o5rqSQlTd10QJ3OEEApVDmd/NM7aAXGbyEgafvjSSRXvrYOow==
+X-Received: by 2002:a05:600c:450d:b0:43c:ea1a:720c with SMTP id 5b1f17b1804b1-43d3b9b2b2bmr7662605e9.18.1742281796357;
+        Tue, 18 Mar 2025 00:09:56 -0700 (PDT)
 Received: from [192.168.0.62] ([79.115.63.206])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c83b6b2bsm16752377f8f.26.2025.03.17.23.30.58
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d1ffc3ee7sm125566505e9.19.2025.03.18.00.09.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Mar 2025 23:30:58 -0700 (PDT)
-Message-ID: <b3065eda-e224-48e5-a5fe-2d5c8f4e5b6c@linaro.org>
-Date: Tue, 18 Mar 2025 08:30:57 +0200
+        Tue, 18 Mar 2025 00:09:55 -0700 (PDT)
+Message-ID: <4be8afd5-65a9-4cfa-89b5-42caea3a9f93@linaro.org>
+Date: Tue, 18 Mar 2025 09:09:54 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: macronix: add MX77U25650F, MX77U25655F and
- MX77U51250F
+Subject: Re: [PATCH] mtd: spi-nor: gigadevice: add lock flags for GD25Q128/256
+ and GD25LQ128D
 To: Jakub Czapiga <czapiga@google.com>
 Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20250317182058.2060277-1-czapiga@google.com>
+References: <20250317182047.2060036-1-czapiga@google.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 Content-Language: en-US
-In-Reply-To: <20250317182058.2060277-1-czapiga@google.com>
+In-Reply-To: <20250317182047.2060036-1-czapiga@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250317_233101_051425_15461F98 
-X-CRM114-Status: GOOD (  17.48  )
+X-CRM114-CacheID: sfid-20250318_000958_419917_49221E48 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,50 +105,40 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 17.03.2025 20:20, Jakub Czapiga wrote:
-> MX77U25650F and MX77U25655F are 256Mbit chips with SFDP and block
-> protection support. MX77U51250F is 512Mbit chip with SFDP and block
-> protection support.
-> All chips also support top-bottom lock configuration, however this bit
-> is SR2(3) and is also OTP (defaults to top). Due to lack of API to
-> support TB in SR2(3) and due to it being OTP these chips will only
-> support top blocks protection.
+> Set appropriate FLASH lock feature flags.
+> Set top-bottom protection configuration bit flags.
+> 
+> Modified chips:
+> - GD25Q128 (+lock, +tb)
+> - GD25Q256 (+lock)
+> - GD25Q256D, GD25Q256E (+tb)
+> - GD25LQ128D (+lock, +tb)
 > 
 > Signed-off-by: Jakub Czapiga <czapiga@google.com>
 > ---
->  drivers/mtd/spi-nor/macronix.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
+>  drivers/mtd/spi-nor/gigadevice.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index 99936fd25d43..c65e7cdab5cf 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -193,7 +193,22 @@ static const struct flash_info macronix_nor_parts[] = {
->  		.name = "mx25l3255e",
->  		.size = SZ_4M,
->  		.no_sfdp_flags = SECT_4K,
-> -	},
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x75, 0x39),
-> +		.name = "mx77u25650f",
-> +		.size = SZ_32M,
-> +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x76, 0x39),
-> +		.name = "mx77u25655f",
-> +		.size = SZ_32M,
-> +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x75, 0x3a),
-> +		.name = "mx77u51250f",
-> +		.size = SZ_64M,
-> +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-
-drop name and size, add name as a comment and do the tests for the next
-version.
-> +	}
+> diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+> index ef1edd0add70..8eec6557b036 100644
+> --- a/drivers/mtd/spi-nor/gigadevice.c
+> +++ b/drivers/mtd/spi-nor/gigadevice.c
+> @@ -16,6 +16,7 @@ gd25q256_post_bfpt(struct spi_nor *nor,
 >  	/*
->  	 * This spares us of adding new flash entries for flashes that can be
->  	 * initialized solely based on the SFDP data, but still need the
+>  	 * GD25Q256C supports the first version of JESD216 which does not define
+>  	 * the Quad Enable methods. Overwrite the default Quad Enable method.
+> +	 * Otherwise set TB to SR(6).
+>  	 *
+>  	 * GD25Q256 GENERATION | SFDP MAJOR VERSION | SFDP MINOR VERSION
+>  	 *      GD25Q256C      | SFDP_JESD216_MAJOR | SFDP_JESD216_MINOR
+> @@ -25,6 +26,8 @@ gd25q256_post_bfpt(struct spi_nor *nor,
+>  	if (bfpt_header->major == SFDP_JESD216_MAJOR &&
+>  	    bfpt_header->minor == SFDP_JESD216_MINOR)
+>  		nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+> +	else
+> +		nor->flags |= SNOR_F_HAS_SR_TB | SNOR_F_HAS_SR_TB_BIT6;
+
+why do you tie locking by SFDP absence?
 
 ______________________________________________________
 Linux MTD discussion mailing list
