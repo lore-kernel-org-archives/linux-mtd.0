@@ -4,64 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFBBAC28B28
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Mar 2025 16:19:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D3B0C282EC
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Mar 2025 16:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lCexgaejm+W8QqV0jgQtyLybJgiOxo/7WmGsGK8b78g=; b=DVmnBtJLMjpkFx
-	w21h+MVpE7zetM3FoZFUGfYnla8b+v31yuyyuFQLwAqsftNFtKBupl2HirOk+QGhQMjNcBPqOIokl
-	0NQYq6GycTdV1jg2hp0N6+KmqjET30RifwR/DSTNthimWFCXb84t/bugsMgefKLIYaCYXBg2slo49
-	VP/hHp9oPgp5WAxH2u2/lgKGienUj9oWM/93zFNy5PdcAiNqWmX/2wz/7eT+4vUtxe8hH+besO5tq
-	QT9IdanuTaQfn1PRd7disINwXWXe4TeUXJJK9ia5FL4UU462VIOSl/fVA05OqyrcBItkvuAbmuArd
-	XylKR3BOjmmLOIQ76tRg==;
+	List-Owner; bh=XAc/ZticS+crpMS8cHypEO0/vGjphrQ/kxlMRsf8IS0=; b=EZxXqr7olGJi7f
+	svPfwrPkNZHkDa9piGzVocgUWbkTZoE3TJ2A+nMy15cbvbpxjUAHufbQT7KMy2GQ3SX2L4U9cVqqZ
+	IQZAHmeXr3Bc37wGK3M8MBsg0eC6Sw9/HkDPrxmcjYf/hAnuJIqGqIwjc1+5w4tLYnPj1vLlFKHNE
+	ze1Pon2VftNBSFg8X6vytoZp+cGVE7R3i5ciwU6POyfusKP2wNVTCxadnl8mhLN+eXMTgqqAddnew
+	NU0QiJiqjLTeCY1uZoOYKxlXgchWfWmr6gcjxC6KLdTwz+mQFeViKx3blmdDcajvQQ8lS87BwhVyj
+	q/nT72+jlpkEkeEyUalw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuZfG-00000006Urc-3WEh;
-	Tue, 18 Mar 2025 16:19:38 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1tuZgw-00000006VYy-3Jc5;
+	Tue, 18 Mar 2025 16:21:22 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuZf4-00000006Uod-428J
-	for linux-mtd@lists.infradead.org;
-	Tue, 18 Mar 2025 16:19:28 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9E91D44401;
-	Tue, 18 Mar 2025 16:19:23 +0000 (UTC)
+	id 1tuZf5-00000006Uoe-1sor;
+	Tue, 18 Mar 2025 16:19:29 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id ED1EF444D6;
+	Tue, 18 Mar 2025 16:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1742314764;
+	t=1742314765;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vy+dwG9Ed+BXIN6V7N6B5XsHShfpjTK1x/IEQLwhV1g=;
-	b=nRgon7ScSSVwqM6Ohvz+i4Nvuv026ZMBCSwfTfLJBd33Fr7KAtptQcBlI3hGsw4W2nQr0L
-	QHLJ+8/dwYXCK0Bb717cLFzakI5JE+RCYCJ9kaj8Uk1Ka9RXJp6OsC47FGPEQ2AOrHNYMO
-	i3e3NooY4bzIC/n8p+JPAY5gaURM1uI+DxN7fGJ79gmsPbnbQ1/sBL/eh0YIyivxbb1P7o
-	NvvHFTeDPSrIjDyxsXiHN+Bv1USIXyEppkRFveuRfYdQDFRtPLY5sJH0BJIFTKRvhpYPZC
-	ned1PcKK7ECH23v54b7KIYQRb+QTuAf+Kuwygzd9bEUmX7mWsQHyvEbVH8GLJA==
+	bh=k/AxgIgt8vecfvtvzMLhuv/34eYNrWZI3TyC35mHmZw=;
+	b=IhggZrELsy2jktQSttbwimH0C/+Ti+xR7lRFIi8W9GwEmfzp5Cb9a7r+puX9C5lr/dcm/j
+	riQmWafNX5Kdvv1eLT/cPa/BkRQ2O276+H+ynspd0ISlLF5kwSycQCGec/BICzeTVJUlvh
+	M1SRHc+FuR6tH64h80rrN2tDBdalQUYew2zYQeFJnWmkRSd/3RGMmeyjvmpk0KVCS1jqOP
+	HwlQUFW91l9rOxiRyE2vDyoX98aGpo5ZMlDBY1/gvtgecdzzwbxXonEpu9MnWYuIc4p/3b
+	b89R8hWNtP+MPUo/HJM7NWxgUfoXBaYAYbQ7egQpmlEqLeh+5WqFZR1McoZ8Bw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: richard@nod.at, vigneshr@ti.com, han.xu@nxp.com, hs@denx.de, 
- david@protonic.nl, jre@pengutronix.de, Zhang Heng <zhangheng@kylinos.cn>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- imx@lists.linux.dev
-In-Reply-To: <20250313095756.945890-1-zhangheng@kylinos.cn>
-References: <20250313095756.945890-1-zhangheng@kylinos.cn>
-Subject: Re: [PATCH 1/2] mtd: rawnand: gpmi: Use str_enabled_disabled() in
- gpmi_nand_attach_chip()
-Message-Id: <174231476355.980483.5273570691547518617.b4-ty@bootlin.com>
-Date: Tue, 18 Mar 2025 17:19:23 +0100
+To: Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Nayab Sayed <nayabbasha.sayed@microchip.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20250317-atmel-dataflash-v1-1-1a3247f40299@microchip.com>
+References: <20250317-atmel-dataflash-v1-1-1a3247f40299@microchip.com>
+Subject: Re: [PATCH RESEND] dt-bindings: mtd: atmel,dataflash: convert txt
+ to yaml
+Message-Id: <174231476490.980483.3190469118057006004.b4-ty@bootlin.com>
+Date: Tue, 18 Mar 2025 17:19:24 +0100
 MIME-Version: 1.0
 X-Mailer: b4 0.15-dev
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugedvledtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevjghfuffkffggtgfgofesthekredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeehieffhfeulefgtdeltefgleevgffgheduledvheduudelgfehlefgheeivedvgeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrdegvddrgeeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedutddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepuggrvhhiugesphhrohhtohhnihgtrdhnlhdprhgtphhtthhopehhrghnrdiguhesnhigphdrtghomhdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmp
- dhrtghpthhtohephhhsseguvghngidruggvpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepihhmgieslhhishhtshdrlhhinhhugidruggvvh
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugedvledtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevjghfuffkffggtgfgofesthekredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeehieffhfeulefgtdeltefgleevgffgheduledvheduudelgfehlefgheeivedvgeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrdegvddrgeeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedufedprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrhiikhdoughtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepuggvvhhitggvthhrvggvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvhhig
+ hhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehnrgihrggssggrshhhrgdrshgrhigvugesmhhitghrohgthhhiphdrtghomhdprhgtphhtthhopehrohgshheskhgvrhhnvghlrdhorhhg
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250318_091927_126246_748E08F1 
-X-CRM114-Status: UNSURE (   4.48  )
+X-CRM114-CacheID: sfid-20250318_091927_629107_B56E8BFF 
+X-CRM114-Status: UNSURE (   4.63  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,16 +84,13 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCAxMyBNYXIgMjAyNSAxNzo1Nzo1NSArMDgwMCwgWmhhbmcgSGVuZyB3cm90ZToKPiBS
-ZW1vdmUgaGFyZC1jb2RlZCBzdHJpbmdzIGJ5IHVzaW5nIHRoZSBzdHJfZW5hYmxlZF9kaXNhYmxl
-ZCgpIGhlbHBlcgo+IGZ1bmN0aW9uLgo+IAo+IAoKQXBwbGllZCB0byBtdGQvbmV4dCwgdGhhbmtz
-IQoKWzEvMl0gbXRkOiByYXduYW5kOiBncG1pOiBVc2Ugc3RyX2VuYWJsZWRfZGlzYWJsZWQoKSBp
-biBncG1pX25hbmRfYXR0YWNoX2NoaXAoKQogICAgICBjb21taXQ6IDlmZTE2MTdkZjNjOGY1MjI3
-NTU5OTYzODNiOWEzYWJmOGNlODE2NjIKWzIvMl0gbXRkOiBtY2hwNDhsNjQwOiBVc2Ugc3RyX2Vu
-YWJsZV9kaXNhYmxlKCkgaW4gbWNocDQ4bDY0MF93cml0ZV9wcmVwYXJlKCkKICAgICAgY29tbWl0
-OiAzMDgxZjI2MDU5YTg4Y2U5ZjM5YTJmZTFjMWJmZWU4NTMyMDBiZDc5CgpQYXRjaGUocykgc2hv
-dWxkIGJlIGF2YWlsYWJsZSBvbiBtdGQvbGludXguZ2l0IGFuZCB3aWxsIGJlCnBhcnQgb2YgdGhl
-IG5leHQgUFIgKHByb3ZpZGVkIHRoYXQgbm8gcm9ib3QgY29tcGxhaW5zIGJ5IHRoZW4pLgoKS2lu
-ZCByZWdhcmRzLApNaXF1w6hsCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+T24gTW9uLCAxNyBNYXIgMjAyNSAxOTowMTowOCArMDUzMCwgTmF5YWIgU2F5ZWQgd3JvdGU6Cj4g
+Q29udmVydCBhdG1lbC1kYXRhZmxhc2gudHh0IGludG8gYXRtZWwsZGF0YWZsYXNoLnlhbWwKPiAK
+PiAKCkFwcGxpZWQgdG8gbXRkL25leHQsIHRoYW5rcyEKClsxLzFdIGR0LWJpbmRpbmdzOiBtdGQ6
+IGF0bWVsLGRhdGFmbGFzaDogY29udmVydCB0eHQgdG8geWFtbAogICAgICBjb21taXQ6IDQ4YTI5
+NzIxYzk2N2RhMWFmNjU3Mjc5ZmE2OTZkNmMzODZiZGQ1Y2EKClBhdGNoZShzKSBzaG91bGQgYmUg
+YXZhaWxhYmxlIG9uIG10ZC9saW51eC5naXQgYW5kIHdpbGwgYmUKcGFydCBvZiB0aGUgbmV4dCBQ
+UiAocHJvdmlkZWQgdGhhdCBubyByb2JvdCBjb21wbGFpbnMgYnkgdGhlbikuCgpLaW5kIHJlZ2Fy
+ZHMsCk1pcXXDqGwKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
