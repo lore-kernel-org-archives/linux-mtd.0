@@ -4,66 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FD34C35FFA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Mar 2025 10:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F33ECC35FFA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Mar 2025 11:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B35Si1bYWnWwSyZ35wlp0BPpmH0fIfQ5GRkKrh/xP3k=; b=fjlMy2un2dhDA7
-	KxpXLkUDTp3DyMPTkLF9ZM2hL5agv340v7UwKQVztqr4dw9A7dNnhCmMFRJfZkINSoAvkFBJ8+tF8
-	A9xcMaLvESMw9hf9OHqRUWx0Xh+rnBZpkj8YzN/UW8R5u714mDEACH9YpWm+G/HDVr21Oag91A/ga
-	xK9JC7B2+ORKD3tqEgPMe9zquh86PeFcx8/TVf3d4PDDrrHkQx/Xh1DyBjVfRk4oZqO4RXC6jwhCe
-	lcYYxwMYwnf1V6G8lj2uoPLOUt2mlwU/LrzxwHEbmjsJbBc+M3Rjnp1y+Ve/M/hXrICe6WP/sJKfo
-	VQSczuhdVgB0p508EX3w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3hb03sIBeDfsJo5Ufod9Brb0P00K0Btqg91SMfd2Bc8=; b=vza343HYBshATH
+	cUyhx5rf/Tfh1of17Ikw/P9khb1C8EQvCE7ImVUTSeyQYC9ruPzRGN5juHw3y+Dl1cUrJmJw7dTwA
+	wPBkmhBCJBWML8iFJZKbm7/da0To2Aq4TLGxxqANhzXeIMv8PMZCg8uus5wvqlUHj1BhRUHgErjvK
+	w+a6ztqxHnbb+iz2sA4rTD3kQ19aUGeuF72D/YMR0AaTcGraB3yFCOa6FYaPUBadNF1J9UQ92gNEx
+	2+YCpEtE6p2R59nNWhOWhdm0oeo6ECWGYbf0Hy/PR1Q7yLQ1fTned8jhXROT1LmgdaH4T7KyZWmec
+	3VOC9cFX8h8snIX6bVrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuqG9-00000008bhG-0G0w;
-	Wed, 19 Mar 2025 10:02:49 +0000
-Received: from abb.hmeau.com ([144.6.53.87])
+	id 1turPU-00000008mnj-2ykB;
+	Wed, 19 Mar 2025 11:16:32 +0000
+Received: from mx.swemel.ru ([95.143.211.150])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuqBA-00000008aps-3vgf
+	id 1turPR-00000008mkZ-0Jsl
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Mar 2025 09:57:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=soZjkWmnxzqoseqLHBteHQrecOxj2rcgJpWAd/MQWSw=; b=CvxxG/eyewwJvyAZXaUOdQOndl
-	dPKTxPdgPfY/0NRpPiisMELtLDbUeB0vdhyo0lmJkLaC6L7RHoge1S+gQf99Di1uGEOl61jmR96LW
-	nWCXuiF31cKw2pvW/he2hq8aaizHtVlEXIBh/lsA18cuWCY/ZYDKYiMYmKeNzwNP+0uMuJgoufnaC
-	MCB7+EcY2Jenq9G3HVYX7RqY2iExTkKmCaZIGgfl4UZKX43XgiKXdE7mBUMfDov4/I6muJ2xIyIV7
-	7jn6z2rVncpR/OnSDEmTSjvJSP5/VNj5UFnLi+2H11U7I0m6kXnS+jcVBh57CwvpBxl/hPl3NMQyR
-	2sfc2gOw==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1tuqB2-008My9-1x;
-	Wed, 19 Mar 2025 17:57:33 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 19 Mar 2025 17:57:32 +0800
-Date: Wed, 19 Mar 2025 17:57:32 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+	Wed, 19 Mar 2025 11:16:30 +0000
+From: Denis Arefev <arefev@swemel.ru>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
+	t=1742382982;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fxGghcda7/TGIIY3lDBoKyvwQc1Uh2+ER/W7JsyZyok=;
+	b=sXhWKfUySwCy73is8UVrucnMK194LvsAqaXhYFzS843cxDeTna6bqxizrj6cvOhkEL9/tf
+	A3G85sN0j9/sI8W4zlugN5tQuj/onJ+y8Dzg6/eosLnVfFSGngrfquL9lHhf4dMZBVs6tv
+	2ONBzx7pCr4LgZ17fXcykPnU2oBavVs=
+To: stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Mike Frysinger <vapier@gentoo.org>,
+	Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
 	linux-mtd@lists.infradead.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	netdev@vger.kernel.org
-Subject: Re: [v5 PATCH 10/14] crypto: acomp - Add support for folios
-Message-ID: <Z9qVDFAzse7y3zLa@gondor.apana.org.au>
-References: <cover.1742034499.git.herbert@gondor.apana.org.au>
- <aa5ce234573d4916ca7a2accf4297cea6f750437.1742034499.git.herbert@gondor.apana.org.au>
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Zhihao Cheng <chengzhihao1@huawei.com>
+Subject: [PATCH 6.1] ubi: Add a check for ubi_num
+Date: Wed, 19 Mar 2025 14:16:20 +0300
+Message-ID: <20250319111622.34057-1-arefev@swemel.ru>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <aa5ce234573d4916ca7a2accf4297cea6f750437.1742034499.git.herbert@gondor.apana.org.au>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250319_025740_978282_E4A4FE40 
-X-CRM114-Status: UNSURE (   9.90  )
+X-CRM114-CacheID: sfid-20250319_041629_610857_9A940C69 
+X-CRM114-Status: UNSURE (   9.41  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,36 +72,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Mar 15, 2025 at 06:30:40PM +0800, Herbert Xu wrote:
->
-> -		n = slen / PAGE_SIZE;
-> -		n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
-> -		if (slen <= req->src->length &&
-> -		    (!PageHighMem(nth_page(spage, n)) ||
-> -		     size_add(soff, slen) <= PAGE_SIZE))
-> +			spage = nth_page(spage, soff / PAGE_SIZE);
-> +			soff = offset_in_page(soff);
-> +
-> +			n = slen / PAGE_SIZE;
-> +			n += (offset_in_page(slen) + soff - 1) / PAGE_SIZE;
-> +			if (PageHighMem(nth_page(spage, n)) &&
-> +			    size_add(soff, slen) <= PAGE_SIZE)
-> +				break;
+From: Denis Arefev <arefev@swemel.ru>
 
-This should of course be
+commit 97bbf9e312c3fbaf0baa56120238825d2eb23b8a upstream.  
 
-			size_add(soff, slen) > PAGE_SIZE
+Added a check for ubi_num for negative numbers
+If the variable ubi_num takes negative values then we get:
 
-> +			if (PageHighMem(dpage + n) &&
-> +			    size_add(doff, dlen) <= PAGE_SIZE)
+qemu-system-arm ... -append "ubi.mtd=0,0,0,-22222345" ...
+[    0.745065]  ubi_attach_mtd_dev from ubi_init+0x178/0x218
+[    0.745230]  ubi_init from do_one_initcall+0x70/0x1ac
+[    0.745344]  do_one_initcall from kernel_init_freeable+0x198/0x224
+[    0.745474]  kernel_init_freeable from kernel_init+0x18/0x134
+[    0.745600]  kernel_init from ret_from_fork+0x14/0x28
+[    0.745727] Exception stack(0x90015fb0 to 0x90015ff8)
 
-Ditto.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Cheers,
+Fixes: 83ff59a06663 ("UBI: support ubi_num on mtd.ubi command line")
+Signed-off-by: Denis Arefev <arefev@swemel.ru>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+[Denis: minor fix to resolve merge conflict.]                                           
+Signed-off-by: Denis Arefev <arefev@swemel.ru>
+---
+ drivers/mtd/ubi/build.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 6fbd77dc1d18..6a7577e57617 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1460,9 +1460,9 @@ static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
+ 	if (token) {
+ 		int err = kstrtoint(token, 10, &p->ubi_num);
+ 
+-		if (err) {
+-			pr_err("UBI error: bad value for ubi_num parameter: %s",
+-			       token);
++		if (err || p->ubi_num < UBI_DEV_NUM_AUTO) {
++			pr_err("UBI error: bad value for ubi_num parameter: %s\n",
++					token);
+ 			return -EINVAL;
+ 		}
+ 	} else
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.43.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
