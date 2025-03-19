@@ -4,63 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC22BC35FFB
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Mar 2025 12:28:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C623CC35FFC
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Mar 2025 15:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=glmFTKaPzhmP0PYnGf2nVHmRhorhmCVal8TtZUv03Uo=; b=YoJyV7C0K/S+VokPEPFBBjw747
-	2xUIqsgiNO4ItKqGUEQkMhBebiTBHWZDfjyOiTcAHqr/jG+4PJO9iWqkXd9VKTrelfJvXY60sYDVV
-	yRqlZANJhwWHMf/jtm2iHXa/xyvDy6F9wZZtNB6INd26LaeXAMKP6+VQ70liX6mT20+BHNZeI5zum
-	piuuWvMNMiHVS4yULUs5B3KX1kZ4TJ6q3TEaRlP6EmJveZjjJoYRG/TkrYgmb16ZPcQ0gNMupCJ6P
-	bVbodmEDCYWnlRfMmcJpw/QRFCBeSg7f8U5R4jbX6nwjoe0RW9Q4tw49X8dWYFGpRhmgmSGjT6km/
-	bXtPMSuw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qVRUNAuepSQN6bu8HVeY4MpV+tQfC7D9V+KNBXEjIxE=; b=hUdyyFgEUo2nPo
+	G19fSb6XRevHMFgjEuLuEiQVP8r6DfIwYiaZMsGHjnkH31uijvMk8dIaAjJtLzY1aF5mQVXekRtVt
+	60iYhiE0F01o24Pa6I9Sy+hyYSjNwiiR7K9a9Y7pzWZl1ls4WbbnGofHS966ueQFo27EAolJohfph
+	ID3aL5UprdOceWCKHmEpkTAthgR41nadv0QAWQeD1X8VArH9NE2j4XDTlPGjfAcQwp6FX8+wQ32vn
+	qs4N7GsoMRquG7jO3GdwUUhPCfyz2JImP2cHPwJIalszbYeHmgzXSidFOnr0sqQ2B8WjWTbb4zECY
+	yX2kHPkMG0kF3iBBKVOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tusX7-00000008yA5-3hyc;
-	Wed, 19 Mar 2025 12:28:29 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1tuuwm-00000009IwJ-1Uvv;
+	Wed, 19 Mar 2025 15:03:08 +0000
+Received: from esa.hc1631-21.eu.iphmx.com ([23.90.122.185])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tusX3-00000008y8J-42wL
+	id 1tuuwj-00000009IuV-0f8n
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Mar 2025 12:28:27 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZHnwG4TVzzph7P;
-	Wed, 19 Mar 2025 20:25:02 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8E3FF180044;
-	Wed, 19 Mar 2025 20:28:16 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 19 Mar 2025 20:28:15 +0800
-Subject: Re: [v5 PATCH 14/14] ubifs: Pass folios to acomp
-To: Herbert Xu <herbert@gondor.apana.org.au>
-CC: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Richard
- Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-	<linux-pm@vger.kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
-	<netdev@vger.kernel.org>
-References: <cover.1742034499.git.herbert@gondor.apana.org.au>
- <99ae6a15afc1478bab201949dc3dbb2c7634b687.1742034499.git.herbert@gondor.apana.org.au>
- <9f77f2a4-e4ba-813e-f44d-3a42d9637d0f@huawei.com>
- <Z9qSkRbwig5VXstP@gondor.apana.org.au>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <82697910-2359-b96c-e454-e38abd8c0a7a@huawei.com>
-Date: Wed, 19 Mar 2025 20:28:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Wed, 19 Mar 2025 15:03:07 +0000
+X-CSE-ConnectionGUID: mBRjrAZASGKHyeRXLuPvbw==
+X-CSE-MsgGUID: 7X7XiWSfTqO7SppIzEcr2Q==
+Authentication-Results: ob1.hc1631-21.eu.iphmx.com; dkim=pass (signature verified) header.i=@thalesgroup.com
+X-THALES-CLOUD-URL: Yes
+X-IronPort-AV: E=McAfee;i="6700,10204,11321"; a="27701222"
+X-IronPort-AV: E=Sophos;i="6.13,221,1732575600"; 
+   d="scan'208";a="27701222"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=thalesgroup.com; i=@thalesgroup.com; s=bbmfo20230504;
+  t=1742396577;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=0LDoeesLvdZ523ovYsmSo5qSOKyf8LaBShPGp3uz9iM=;
+  b=W4lnSjit9SxAiUv2XO6akrCkK1Q6HdISHUEohBN0YwEkGAmnrp1jk3kI
+   uz1JS5ZSZCaca18e6hvif6ESFKs8HaSYHFW/GcWkjrlP7OHZQOYZKkaZ8
+   R4/eBq13FMYYoz6LuIpWD8JcCcDyJ4T02lP4B2OLAvsgGqnkwPO+8uidb
+   NeUGc4fuXfH7r9iL07HxugS+TiOHtC+GggAok75NIzOcSOkj3seFm6sPd
+   QuHXkFHhyDbI/LGdm6dhGOXaVO7feB+qdumyWWGJ1aps/FyO78hTlUDj0
+   a8w9MzEPkN+YTImutGlG32fkQhwPCqtdCjQftTet3nBEakyxjR+q0PvQd
+   g==;
+X-CSE-ConnectionGUID: szmL/iDXRJOi33A3USII9A==
+X-CSE-MsgGUID: pHa0ivfpRc6/7lZCZK2V8A==
+X-THALES-FO-URL: Yes
+X-CSE-ConnectionGUID: ITMLTdOYRnyvk4T0eveMnQ==
+X-CSE-MsgGUID: /pO87tomS3iowTU0/RoTfQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11378"; a="44072420"
+X-IronPort-AV: E=Sophos;i="6.14,259,1736809200"; 
+   d="scan'208";a="44072420"
+From: LECOINTRE Philippe <philippe.lecointre@thalesgroup.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+	<pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: LEJEUNE Sebastien <sebastien.lejeune@thalesgroup.com>, LENAIN Simon
+	<simon.lenain@thalesgroup.com>, RENAULT Xavier
+	<xavier.renault@thalesgroup.com>
+Subject: RE: [PATCH] mtd: spi-nor: spansion: Add support for CY15V104QSN
+Thread-Topic: [PATCH] mtd: spi-nor: spansion: Add support for CY15V104QSN
+Thread-Index: AQHbiejmrpjq/9QuH0uaX3lViTPuDrNl56+AgBTEOBA=
+Date: Wed, 19 Mar 2025 15:02:56 +0000
+Message-ID: <ba593d13fad2419c9dba03fc001d599a@thalesgroup.com>
+References: <87dbbbdfb2d54da781e4f8c5fa75851c@thalesgroup.com>
+ <9ae9eaf4-bd5d-4902-9ca8-d83b9f326245@linaro.org>
+In-Reply-To: <9ae9eaf4-bd5d-4902-9ca8-d83b9f326245@linaro.org>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+thales-sensitivity: {TGOPEN}
+dlpmanualfileclassification: {64c9cc36-7289-4c96-81d0-25ee8eefd11d}
+x-endpointsecurity-0xde81-ev: v:7.9.20.519, d:out, a:y, w:t, t:22,
+ sv:1742373770, ts:1742396577
+x-ms-exchange-nodisclaimer: 0
 MIME-Version: 1.0
-In-Reply-To: <Z9qSkRbwig5VXstP@gondor.apana.org.au>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250319_052826_148474_EEDFACDC 
-X-CRM114-Status: GOOD (  11.40  )
+X-CRM114-CacheID: sfid-20250319_080305_989636_43237A78 
+X-CRM114-Status: GOOD (  23.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,30 +94,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNS8zLzE5IDE3OjQ2LCBIZXJiZXJ0IFh1INC0tcA6Cj4gT24gV2VkLCBNYXIgMTksIDIw
-MjUgYXQgMDU6NDQ6MTdQTSArMDgwMCwgWmhpaGFvIENoZW5nIHdyb3RlOgo+Pgo+PiBUZXN0ZWQt
-Ynk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+ICMgRm9yIHhmc3Rlc3Rz
-Cj4gCj4gVGhhbmsgeW91IGZvciB0ZXN0aW5nIQo+IAo+Pj4KPj4+IGRpZmYgLS1naXQgYS9mcy91
-Ymlmcy9jb21wcmVzcy5jIGIvZnMvdWJpZnMvY29tcHJlc3MuYwo+Pj4gaW5kZXggYTI0MWJhMDFj
-OWE4Li5lYTZmMDZhZGNkNDMgMTAwNjQ0Cj4+PiAtLS0gYS9mcy91Ymlmcy9jb21wcmVzcy5jCj4+
-PiArKysgYi9mcy91Ymlmcy9jb21wcmVzcy5jCj4+PiBAQCAtMTYsNiArMTYsNyBAQAo+Pj4gICAg
-ICovCj4+PiAgICAjaW5jbHVkZSA8Y3J5cHRvL2Fjb21wcmVzcy5oPgo+Pj4gKyNpbmNsdWRlIDxs
-aW51eC9oaWdobWVtLmg+Cj4+PiAgICAjaW5jbHVkZSAidWJpZnMuaCIKPj4+ICAgIC8qIEZha2Ug
-ZGVzY3JpcHRpb24gb2JqZWN0IGZvciB0aGUgIm5vbmUiIGNvbXByZXNzb3IgKi8KPj4+IEBAIC0x
-MjYsNyArMTI3LDcgQEAgdm9pZCB1Ymlmc19jb21wcmVzcyhjb25zdCBzdHJ1Y3QgdWJpZnNfaW5m
-byAqYywgY29uc3Qgdm9pZCAqaW5fYnVmLAo+Pj4gICAgCXsKPj4+ICAgIAkJQUNPTVBfUkVRVUVT
-VF9BTExPQyhyZXEsIGNvbXByLT5jYywgR0ZQX05PRlMgfCBfX0dGUF9OT1dBUk4pOwo+Pj4gLQkJ
-YWNvbXBfcmVxdWVzdF9zZXRfc3JjX25vbmRtYShyZXEsIGluX2J1ZiwgaW5fbGVuKTsKPj4+ICsJ
-CWFjb21wX3JlcXVlc3Rfc2V0X3NyY19kbWEocmVxLCBpbl9idWYsIGluX2xlbik7Cj4+Cj4+IFdo
-eSBub3QgbWVyZ2luZyBpdCBpbnRvIHBhdGNoIDEzPwo+IAo+IEJlY2F1c2UgaXQgd2lsbCBicmVh
-ayB3aXRob3V0IHRoaXMgcGF0Y2guICBJZiB0aGUgaW5wdXQgaXMgYSBoaWdobWVtCj4gZm9saW8g
-aXQgY2Fubm90IGJlIGRpcmVjdGx5IHBhc3NlZCBvdmVyIHRvIERNQSAoYmVjYXVzZSB0aGUgdmly
-dHVhbAo+IGFkZHJlc3MgaGFzIGJlZW4gcmVtYXBwZWQgYnkga21hcF9sb2NhbCkuCgpNYWtlcyBz
-ZW5zZS4KPiAKPiBDaGVlcnMsCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Classified as: {OPEN}
+
+Hello,
+
+Thank you for your feedback.
+
+I encounter some issue attempting to use the at25 driver.
+I am not able to read the flash ID with at25 driver because the chipselect appear to be deselected between the RDID command and the read data. The RDID command is not taken into account and the chip only reply with 0xff.
+With at25 driver, it use a spi_message containing two spi_transfer, one spi_transfer for the command and one spi_transfer for the read data. For some reason, this end up in .transfer_one() in the spi_controller driver of my SoC.
+With spi-nor driver, it use spi_mem_exec_op() which work well in my case.
+It appear at25 driver can currently be used with Cypress FM25 chip and from some of the datasheet of this family it seems that the chipselect need to be driven low during the entire RDID sequence.
+Am I missing something here ?
+
+Currently, the at25 driver assume a lot of property from the ID data (manufacturer and size) which don't seems to be relevant with the CY15V104QSN model.
+This chip is similar to cy15b104q and cy15v104q currently supported by spi-nor driver.
+https://web.git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/drivers/mtd/spi-nor/spansion.c?id=8a2644d5f3608822925c9204a3d19a8e3025fd4a
+Also, I don't have access to at25 spi eeprom to validate any deep modifications on this driver if we need to do so according to the thread you are pointing to.
+
+How can we handle this ?
+
+Regards,
+Philippe
+
+
+{OPEN}
+
+> -----Original Message-----
+> From: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Sent: Thursday, March 6, 2025 11:54 AM
+> To: LECOINTRE Philippe <philippe.lecointre@thalesgroup.com>; Pratyush
+> Yadav <pratyush@kernel.org>; Michael Walle <mwalle@kernel.org>; linux-
+> mtd@lists.infradead.org
+> Cc: LEJEUNE Sebastien <sebastien.lejeune@thalesgroup.com>; LENAIN
+> Simon <simon.lenain@thalesgroup.com>; RENAULT Xavier
+> <xavier.renault@thalesgroup.com>
+> Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for CY15V104QSN
+> 
+> 
+> 
+> On 2/28/25 2:01 PM, LECOINTRE Philippe wrote:
+> > Infineon CY15V104QSN is 4Mbit serial SPI F-RAM device.
+> 
+> Please consider moving this flash to the at25 EEPROM driver:
+> https://lore.kernel.org/linux-mtd/20240604074231.1874972-1-
+> mwalle@kernel.org/
+> 
+> Cheers,
+> ta
+> >
+> > Signed-off-by: Philippe Lecointre <philippe.lecointre@thalesgroup.com>
+> > Acked-by: Simon Lenain <simon.lenain@thalesgroup.com>
+> > ---
+> >  drivers/mtd/spi-nor/spansion.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/spansion.c
+> > b/drivers/mtd/spi-nor/spansion.c index bf08dbf5e742..32f8892d7afe
+> > 100644
+> > --- a/drivers/mtd/spi-nor/spansion.c
+> > +++ b/drivers/mtd/spi-nor/spansion.c
+> > @@ -922,6 +922,12 @@ static const struct flash_info spansion_nor_parts[]
+> = {
+> >  		.size = SZ_512K,
+> >  		.sector_size = SZ_512K,
+> >  		.flags = SPI_NOR_NO_ERASE,
+> > +	}, {
+> > +		.id = SNOR_ID(0x50, 0x51, 0x80, 0x06, 0x00, 0x00),
+> > +		.name = "cy15v104qsn",
+> > +		.size = SZ_512K,
+> > +		.sector_size = SZ_512K,
+> > +		.flags = SPI_NOR_NO_ERASE,
+> >  	}, {
+> >  		.id = SNOR_ID(0x34, 0x2a, 0x1a, 0x0f, 0x03, 0x90),
+> >  		.name = "s25hl512t",
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
