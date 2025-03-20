@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A06CC36005
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Mar 2025 12:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFB68C28B30
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Mar 2025 12:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2dM5EmguTKwQFGRlB3I1OTQO86UVNbZnTBrZ9LBGnj4=; b=GclymuRNGo3yZ2
-	j+ANro1LoR+ePzAwJHy21ASRo7UVGigx59+JAIBAMxv43nIRQt4ijc/6mVJYlwvbyvigfh65VX2ua
-	PYg0QSMv5s3zpk1pKdNoA5u32teMyuREfbGW1sShzzekA7bmsUkuLh/LiUcB1RBZR+HXpO6SbwmjP
-	evrDUaDRQC9WLml4Ctdm2P3da10t0OODA++Sot9pFQ7TUTF1qiedGJNzbRPi3YBGnrJYkW9aDOmAq
-	7SJX+M74RBWtAFMgpabNRV/RnVJo2UFISu2UMocMAk+HUKgBNbkYRb84CJyMfrBGF9Zgk7nQ8iFkw
-	shi3E8pjB7yIyN6o6L2Q==;
+	List-Owner; bh=VDHcLTxfLcCvzPq4CZ5hmwiPiYFCcdzn4igkM6tDnz4=; b=42Lq9QLVERHzU8
+	QSNd6zEaI0L/4Jb3EocbarM/xr8o3yGehRSIYrETabBCvdAxx+EeYh1rzTioIgY2dC/JiHwb20ho3
+	uI0M3cXCIospdmqY/8NhO+DWDt+eqDvsfKVOUKGQQfp7OMzgxchvFcxTMokR6jVI3/5EKxmlA1dT1
+	IXS16HjtlBzHlwPuUSKv3XeQiPPON/D2MCTzyKjuTcXPgA7anfqGqmdKAx8X7JQNX7ZsM0ZVB15m2
+	NJu3Czt6okJFwg8nYwCsFNQXROyWKaQ7CwnRh5AEHoZPxje/qhou1uOh/hD882IrLH0ESyXIvSvpo
+	eRz9c72Y+6tyWfFqd/Zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvEx6-0000000C6eV-2hpu;
-	Thu, 20 Mar 2025 12:24:48 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1tvEyk-0000000C6zv-42pa;
+	Thu, 20 Mar 2025 12:26:30 +0000
+Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvEuk-0000000C64t-2ymI
+	id 1tvEvp-0000000C6Rb-2Ehv
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Mar 2025 12:22:23 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-43cebe06e9eso5055865e9.3
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2025 05:22:22 -0700 (PDT)
+	Thu, 20 Mar 2025 12:23:30 +0000
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-ac297cbe017so334365666b.0
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2025 05:23:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1742473341; x=1743078141; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1742473408; x=1743078208; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VB7C72uv0q6FGUYx5k/EdSd4Dq+r1W0sd0YC2URqROM=;
-        b=SP7gDZjpWwyj46i7S0bxJyo9/oFUe7jhq672mz3LLR9yA1GwddLA0xECRGwqoIXSwp
-         6ZQG8srfxdlutOnMgUBJgIaG1L51DDdYAf/pkK8vGJP8x+Ff8XnfmJvmEhv3Z2vRoiMW
-         4tecwPsICHHwjqMxZYEnSqtVCecriYRK0QgxVKkwLL06HGwAobMbzW+/eoAl5IILYxHY
-         xdiWfxQ4W7eQ+usqV3fRQDnbeuSXL56Mj830ywUpnq7QNPVjTlXr+d1gdOT7vmk/uxcq
-         a/h939e7yE3Ksxuon0jxkvFVv9hIkMryS7nLEzLyBjMK6yKOpzrne/2Gn5/ge+sdCgU1
-         C6jg==
+        bh=d4L0wtp4vAfj99xNR7JACQ5fBXNp5AHv/RHN+M6rMMI=;
+        b=R8UixQaQT4s2cmLYd4WRL+NGd2sOlWxz4RgMl2lpBvVO/tAPYZT8EN0z6+rmhDxZyF
+         NII33PLsFI3Ixc1MSDEjBNEVQuonNe16y3Gn6B0ao1ijXHwS2H7Fm6hJD3K+Xi/zmKd7
+         K+xKlqSh7tAGBQB2aGKd7nuy+jgvjvJ77+1LJIueB7FlJoten9qucQOrOVkYKUCzmkMW
+         XKaLyuI7csUyNkcHJCn78upCzandEG5Kcfg/3LRV4GMS7CNd0paJudfBifcUNjGLoInV
+         5cLxHxauc4Pj/4W69t43xNvav2p7ZVfCqE4bkrKs5hR8Hl5qGAQQlXh3AsAy51cyDDwG
+         Rm8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742473341; x=1743078141;
+        d=1e100.net; s=20230601; t=1742473408; x=1743078208;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VB7C72uv0q6FGUYx5k/EdSd4Dq+r1W0sd0YC2URqROM=;
-        b=HfrE99CG1LpkoUOTiZECsUM2YNY96apqSXsfDCu+DP+CDECI8suYpJw1HFUrG8Gv1W
-         XfKSanMR9ciNVZW+kbisFflk+HgsvgQOjmxaFjo9kXA8zqCrRnlLfnGfe8FCBHIjqsFj
-         HPkhyHhOCH7TJa31YRG1bbytK2iOJN3PGs+8drruDulgKFLG/l0lsQlbxmRTDyS2Myfq
-         FT7WIq5854zYnNTEPLEsnm1gtM0tNxPq2NJdiHRzLE3ZUAAfdoYIAxAKRruH1BEor5I0
-         wn4fFPZs418OWX2nJrK+KdRBB4x4lAMl4/D0J3W88FuQU6TaVwSnVanrulKSXY/a7niX
-         aE3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXLf2YbduXFRb0lEN+DK1dvQS6IuSLsVpoz5RntvM4zgUYdZ5vXcubroCr5v5pUKTZb41vQOnbeBFo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwFYDigNm9He0//tQrGtefjeqQJPLsYo96SZm28KEkVjc5uzpIX
-	TIqPfyGL+7Wx64l9FqwpuCgD3kcv9zmN7QRr25oC+adExNS9M9j2GgKf/mAHNtechrQMtmd95s+
-	w
-X-Gm-Gg: ASbGncs6HXEKyJZ/pXPHmg/q7eYcbmDMtqPipZep69qzX+t6IQDL6dfLA+VWUGBc8lC
-	S8xRbJTwg9L9V9n/DOf4RGAEhYvLxpXamzBij9BpOr2trGH8AtDMgsE1XUIMsTXOmFMNFeuDG52
-	MWv53RR17wr5VgRBJMD6S+vD+SuNLVJPnFu5uyLVCVWSJGiLEhWvP9hH3pMpeyNuAwckMp9/gH4
-	viBjzjGIA96HuFFrN9QtulaaeoSCtw78MydE/YGR0aEcYcQLo6GnQDBcbSmKJlJGI4rKOq0hrrF
-	Psqo0cM6czFpqF2rAWZdjy9RPiSjrOBDyU4uSsvsZ8hb/DC+IL7/zg==
-X-Google-Smtp-Source: AGHT+IEa4hSKgvDPWYGTY2ffk0ESLbrdnjJCFHK4rbjgFMQ6JpK5xa9Ql2PLLczNDIAmHxopLYeHzg==
-X-Received: by 2002:a05:600c:3b92:b0:43d:abd:ad0e with SMTP id 5b1f17b1804b1-43d43875949mr64957505e9.18.1742473340892;
-        Thu, 20 Mar 2025 05:22:20 -0700 (PDT)
+        bh=d4L0wtp4vAfj99xNR7JACQ5fBXNp5AHv/RHN+M6rMMI=;
+        b=kUyZr1M/EviSduo7gQPt3+sQvpG858SX/GwqqMb4zj9MugXlZ0rELeXqMRzbIIoMkQ
+         GLxoqVKTDiV8LQAeUrSSanwlRRnX6OAOJWqqgUQFkPiTWtvXKLGFNSp3kg/a9lYR4hEE
+         j409fHD/WkFJBDdHXMUS3pMLBd7MV4Zb9sqdu+bY7k/hvJmXDA7t/+Y9qUXVVYaFe1Fz
+         NmYvtHH5+li3+RAbESD1QJmpa6t1DPfiVOx60JUJ6wRxCGCwVHMixD3bv4F9czyQe+Am
+         FsO83jsoAdE/YRJlx8mkmZxiO1VCkS97RtM9xpjBFOdRE6UjmFC446H042HitrKr7Bl0
+         zQ3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWHlR60c3p4NeoOK2eSV8GuofgRHyrjEQam1ZfX0qvxVhgUoG0oAO1F2AP5i8sS5SYmPXGMIH7Ahi4=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz3atKcX7OluyK5gL98zDB4UIpnJm1WUcxSrbj0Ql9wuMsbmrtJ
+	Ba4+G6BHE+jIPGNMf+yvfuIyf1rH4FuSh1ZOjV87JCME/rqTRj/S8efQ/Tumqsc=
+X-Gm-Gg: ASbGnct6nd14PWXbbk3dJN2O5+DeISuzbxTaJCwUQSdyHa47JWTpy8aVe+bqDiO3lqm
+	VxCmEIRumdKFwH/zuErQe0TBgAMpImi/nOyuZHUb04VQ2ITROdhVF2YdH7mXnOyAr2OrPnxMk0M
+	YXU64EvT4rMRSgaCeQIVebuy1NyqZ/RGu6sy9/+iIDKERV8jhCTrC8irSr3QwVBo8avKjzFSI5D
+	HLdcqrILZ09wgnk2XniEdHrOVR7++pu9wWqbDE7YtS6IsZjh77n6I1ESZc4iTWP9J4uoB/IYK5/
+	Wx6u0Q4va+Mjl0ELoORleTWbETRIovnOCRNd1oHqRoT/66vB2zMAUg==
+X-Google-Smtp-Source: AGHT+IFy4ujO0Rlctp5VuJNnxmLa2FTdTGd/kenok8V6y6/ECSHPNsDf3e3bTkQH3sfVrQUIU8/JFg==
+X-Received: by 2002:a17:907:94c6:b0:ac3:8537:9042 with SMTP id a640c23a62f3a-ac3cdc8e455mr321840566b.30.1742473407716;
+        Thu, 20 Mar 2025 05:23:27 -0700 (PDT)
 Received: from [192.168.0.14] ([79.115.63.206])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c8975ae2sm24085743f8f.51.2025.03.20.05.22.19
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3da7e00dcsm96386066b.56.2025.03.20.05.23.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Mar 2025 05:22:20 -0700 (PDT)
-Message-ID: <c4153f4a-667b-4b5f-8e2b-82c512df9515@linaro.org>
-Date: Thu, 20 Mar 2025 12:22:19 +0000
+        Thu, 20 Mar 2025 05:23:27 -0700 (PDT)
+Message-ID: <5db8f280-8f1a-43e0-a2d3-baf694eb81d2@linaro.org>
+Date: Thu, 20 Mar 2025 12:23:24 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/21] mtd: spinand: Use more specific naming for the
- write enable/disable op
+Subject: Re: [PATCH 05/21] mtd: spinand: Use more specific naming for the
+ erase op
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Santhosh Kumar K <s-k6@ti.com>
@@ -83,13 +82,13 @@ Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
  Steam Lin <stlin2@winbond.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 References: <20250307-winbond-6-14-rc1-octal-v1-0-45c1e074ad74@bootlin.com>
- <20250307-winbond-6-14-rc1-octal-v1-2-45c1e074ad74@bootlin.com>
+ <20250307-winbond-6-14-rc1-octal-v1-5-45c1e074ad74@bootlin.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20250307-winbond-6-14-rc1-octal-v1-2-45c1e074ad74@bootlin.com>
+In-Reply-To: <20250307-winbond-6-14-rc1-octal-v1-5-45c1e074ad74@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250320_052222_777726_7002873D 
-X-CRM114-Status: GOOD (  16.75  )
+X-CRM114-CacheID: sfid-20250320_052329_585870_8910915F 
+X-CRM114-Status: GOOD (  17.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,10 +115,9 @@ On 3/7/25 3:08 PM, Miquel Raynal wrote:
 > and even octal DTR operations as well (including the opcode byte).
 > 
 > Let's clarify what the macro really means by describing the expected bus
-> topology in the write enable/disable macro names.
+> topology in the erase macro name.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
 > ---
@@ -128,30 +126,30 @@ Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 >  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index ea6b48242ad4a4e51c713907ce5cc55022cdb569..bbf0048104aac86e90b0706793db8503c8fc2a3b 100644
+> index b6c0993206ebab1dcee715ea6de33efe7d5af3a2..1959e8d9c64be004c71a0d6ac6454fde08e708fa 100644
 > --- a/drivers/mtd/nand/spi/core.c
 > +++ b/drivers/mtd/nand/spi/core.c
-> @@ -362,7 +362,7 @@ static void spinand_ondie_ecc_save_status(struct nand_device *nand, u8 status)
->  
->  static int spinand_write_enable_op(struct spinand_device *spinand)
+> @@ -529,7 +529,7 @@ static int spinand_erase_op(struct spinand_device *spinand,
 >  {
-> -	struct spi_mem_op op = SPINAND_WR_EN_DIS_OP(true);
-> +	struct spi_mem_op op = SPINAND_WR_EN_DIS_1S_0_0_OP(true);
+>  	struct nand_device *nand = spinand_to_nand(spinand);
+>  	unsigned int row = nanddev_pos_to_row(nand, pos);
+> -	struct spi_mem_op op = SPINAND_BLK_ERASE_OP(row);
+> +	struct spi_mem_op op = SPINAND_BLK_ERASE_1S_1S_0_OP(row);
 >  
 >  	return spi_mem_exec_op(spinand->spimem, &op);
 >  }
 > diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index 4f47adbe4566d7813ffd8fbfaddd1a85d88d0208..0d2f92d0746e8079e46bac9402ddd22d3d2a86bf 100644
+> index d041b1cc18de6add45800eaa7605bda1c64ca257..545531afe2dac593d112065483afd180226cc533 100644
 > --- a/include/linux/mtd/spinand.h
 > +++ b/include/linux/mtd/spinand.h
-> @@ -26,7 +26,7 @@
+> @@ -50,7 +50,7 @@
 >  		   SPI_MEM_OP_NO_DUMMY,					\
->  		   SPI_MEM_OP_NO_DATA)
+>  		   SPI_MEM_OP_DATA_IN(1, valptr, 1))
 >  
-> -#define SPINAND_WR_EN_DIS_OP(enable)					\
-> +#define SPINAND_WR_EN_DIS_1S_0_0_OP(enable)				\
->  	SPI_MEM_OP(SPI_MEM_OP_CMD((enable) ? 0x06 : 0x04, 1),		\
->  		   SPI_MEM_OP_NO_ADDR,					\
+> -#define SPINAND_BLK_ERASE_OP(addr)					\
+> +#define SPINAND_BLK_ERASE_1S_1S_0_OP(addr)				\
+>  	SPI_MEM_OP(SPI_MEM_OP_CMD(0xd8, 1),				\
+>  		   SPI_MEM_OP_ADDR(3, addr, 1),				\
 >  		   SPI_MEM_OP_NO_DUMMY,					\
 > 
 
