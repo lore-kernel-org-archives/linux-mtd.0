@@ -4,91 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC9A0C28B30
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Mar 2025 08:46:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A3EC28B30
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Mar 2025 09:34:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HZGdRKbXGTU6Me+/L1KDPRs3dXnZymHMa+iX+1/zVzY=; b=bV+C21Vup40mYb
-	dAQvyS3ID2YGmu2iqQpjwWZCB1r6az1RVlqbtykqrjda9lW3Kju+V3cemSphuiYjXNdc5jpaOTnxD
-	9DYtv/tDCYyYRcEFrufIorH2fM+gzwpIDgPHvyB/n4ylIgHslolSql4f9AhVQa6K2cnWJ/3TfZTly
-	1w4v08HqHU7nYbMcDwmAoZYGg7ZqEb3EI1Bwk3wj9Bv/fJvWSNvq6RYDjl+R6puY8DsD85F743txO
-	s2ERA6RVw/IBsiopvoY12S5oWYPBuQlxsunkW3WdaflEKXazZniquwD9yt9KF2c1HNB3t37KrRSGb
-	jxyC9SjavSsCByRPNiyg==;
+	List-Owner; bh=PKjn0VhApmBQHzC2dz/68gmxc6PTDmjTkl4Ia7sQrqE=; b=lv3lM5GcbNIC89
+	ZhHP9xOrW1n9RUNHZXVnsAyLgxXxXz1se5i/tNlnZmPv/xFk0VAcqZuYgLzNn8ctRezp8EOYNNMBm
+	430ubMdrqP6FqTiUY99oojL4hXQSUer4MlVNKuCqK83nranuCctTdou863aVz63HhwN83NIPfkzIp
+	GDpsPIM3/ghp+iJvx6eM9Jo7hgwkmR6Qr0BNlUsbw8crtkZ5gl8hgewbfU1gy/AkZkE1mlVcLDN5+
+	/clnsbWKyoonjhPAUIZwBmF5RXYFSyl9G+CiSMbGoMdNABPkYeNlPc7fOWcZC7VBmrVDHAP+DJ3uP
+	u1EyxSHOf7bCx2L1xQkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvBY0-0000000BaNL-0f7v;
-	Thu, 20 Mar 2025 08:46:40 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1tvCIC-0000000BiEA-37qH;
+	Thu, 20 Mar 2025 09:34:24 +0000
+Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvBXx-0000000BaLq-1Mvt
+	id 1tvCI2-0000000BiDN-3y4O
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Mar 2025 08:46:38 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-43cf680d351so9665535e9.0
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2025 01:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1742460395; x=1743065195; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WfkZbmXHv6HdaFKCvg0xy8xiKc1444qZgsmkOFSiajk=;
-        b=b2vRxIf8ordGe2wgUATH2wmUYwW5DScWHtfHrDwg+THlGH+3GPW6XBoRbFM7ZX87EZ
-         iQdIZv2oUHVfgMhNvIgOVnce1p0j3p9cke7uLxVOWrOIYvvokWYRz4Okjrab9rOAws5s
-         T+3oP4I/HKSQaO0F7hOcCpAGZ7mQg8BxooBWJdEFH6p+J2tkvNlTSzuPLXl/soob1jS+
-         cec/9H3D7yKO/2JZskZXf+uFj5o4o4CMJ9cLCf78mghCgcpxJtGEPtrrlIjbjdfTLiTz
-         9hh206QrmmxvjF9XDAR/DVn4NIgq1t5X3+bo3qqdJZAUYMHum1R8gAgkxBc+E/fjvCdM
-         zzOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742460395; x=1743065195;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WfkZbmXHv6HdaFKCvg0xy8xiKc1444qZgsmkOFSiajk=;
-        b=ZWkk06ee8AGcGeDfCTDV0Q7rUkqEPvMjYateR+KZi9oiIVzSPDoSsHSOaXCAZfAxfi
-         yLafF3GDTi97dgM4szK9SU8RFpy6D5+UaQbQQsjcfoyB3osrLpHssB6lQ/oMQcQ/P9LL
-         YZeavu157z8S3/UR1iX0aPCNag9i188YuN4xbeXDpzF46CfSpO9hS403C7lFx6WNzaRI
-         CLLxTHfgwtoDDCx2t5JRNwOq5xe9qblF7DrVih4J3bvYu+BOzpxaz0QWHWxRyxYU2Ilb
-         nrgsTpjGXBBO2dtEx/peRaS2ndRUQr9y46xwHhp+oCcuQ+qcmcjKzaOIzW7cq1LxpED+
-         j0eA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxoVu5U8z+mdsEllYlNAiGuSiFVUezCyZL1hCj9JOJtICAJVeeZD5RKYXM1IoTVVS7Vn0i3wqBmeg=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzi09JF9Cp0fKwMEZ80Bs1o1TzxpGmbwEZ1Mhk2C1HQDfOPeF9Q
-	1jzkZk8Qan/v97f52K8aWD8N8xGpnwUONYuWj062eY1seDRpsQ69o9lhlhY7jO0=
-X-Gm-Gg: ASbGnctjRHSYQT3DD9VBaQBgqdvQ9wBJABZCBBIc1X0DUkoFNrpcecit8W4oFVntbUY
-	yZfpYgsChntKbOTrklLjE5VX9IR8phzUwsZ2Em8fF+JFiJT2g+WY0E7YAiT7OfQY/7ajG5ZLQBv
-	Fo7iHr/5SdG3U6Vhk0sRZIJrVTP7uCpurAM51BEFalZQFxlMrsFVYbFa9GPjt1Yq6+YeN9FThtD
-	r7q7z2q0mAUbvAzsGTNuSaw/WcoHKyBYKDQlLkvmgeXW3l4AgKLuNvG00pJp9PGi8XICxCJwVvV
-	SgUdt//smH0qQEwqc79uErDV+nwZlGLzyL08LZee8Z8a6DaCF7RJGISXtxRK8L9e
-X-Google-Smtp-Source: AGHT+IFhAr87mT/WfIlGczrZhfPbuPAn/0ZVXaVyIrOXlRMdhsY8Tg/ShSQG2plPZGrbZoJlFbA9mQ==
-X-Received: by 2002:a05:600c:4448:b0:43b:bfa7:c7d with SMTP id 5b1f17b1804b1-43d4915e47emr26472375e9.2.1742460395436;
-        Thu, 20 Mar 2025 01:46:35 -0700 (PDT)
-Received: from [192.168.0.14] ([79.115.63.206])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d43f864d4sm42159145e9.37.2025.03.20.01.46.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Mar 2025 01:46:34 -0700 (PDT)
-Message-ID: <ceb81e52-3159-479b-9006-aae54a74fc3a@linaro.org>
-Date: Thu, 20 Mar 2025 08:46:32 +0000
+	Thu, 20 Mar 2025 09:34:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=NgDHGEQEM91sirkF0AfoRwO3nj0yC7YqaxjyVS0vZ7A=; b=AXLjn6h3p+ptU90LFBXmrST3qQ
+	3Uh9x6yofzozBU9OGkrnqfJmYis+jGw+KswC8ZzAAS7BwOMjVlx1psug331Rpohj6oy1o42tV/k7X
+	hRTiPUowHypiiNaxT6mupCE7AJlGz4sgBjDhp8U5DMHRfTjzRW9oOMz+YJXIpKtRhC7gsUqwCO56v
+	q4sfFzB4wUNPx29wl+iBmiFnT5iCOvJF07avkO/faIN2OITJJdrJMfJo+Orkv6scMAV74iHmK+rUQ
+	4Iyy6kktqUsFMtK1yu8cg2vRcOlU3KGctyn53lnYWfJkYkJxyYORZHQU+14rNrXxfk07v/Kg7uKmo
+	+30tTLFA==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1tvCHm-008fU1-0b;
+	Thu, 20 Mar 2025 17:33:59 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 20 Mar 2025 17:33:58 +0800
+Date: Thu, 20 Mar 2025 17:33:58 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Cc: Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	linux-mtd@lists.infradead.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	netdev@vger.kernel.org
+Subject: Re: [v5 PATCH 11/14] xfrm: ipcomp: Use crypto_acomp interface
+Message-ID: <Z9vhBv2Jp0ABpZas@gondor.apana.org.au>
+References: <cover.1742034499.git.herbert@gondor.apana.org.au>
+ <d7bccafdf38259c2b820be79763f66bfaad1497e.1742034499.git.herbert@gondor.apana.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for CY15V104QSN
-To: LECOINTRE Philippe <philippe.lecointre@thalesgroup.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Cc: LEJEUNE Sebastien <sebastien.lejeune@thalesgroup.com>,
- LENAIN Simon <simon.lenain@thalesgroup.com>,
- RENAULT Xavier <xavier.renault@thalesgroup.com>
-References: <87dbbbdfb2d54da781e4f8c5fa75851c@thalesgroup.com>
- <9ae9eaf4-bd5d-4902-9ca8-d83b9f326245@linaro.org>
- <ba593d13fad2419c9dba03fc001d599a@thalesgroup.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <ba593d13fad2419c9dba03fc001d599a@thalesgroup.com>
+Content-Disposition: inline
+In-Reply-To: <d7bccafdf38259c2b820be79763f66bfaad1497e.1742034499.git.herbert@gondor.apana.org.au>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250320_014637_371430_EC5D64F4 
-X-CRM114-Status: GOOD (  30.33  )
+X-CRM114-CacheID: sfid-20250320_023414_980608_6D0BED8B 
+X-CRM114-Status: GOOD (  10.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,113 +80,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Sat, Mar 15, 2025 at 06:30:43PM +0800, Herbert Xu wrote:
+>
+> +	sg_init_table(dsg, dnfrags);
+> +	total = 0;
+> +	for (i = 0; i < dnfrags && total < dlen; i++) {
+> +		struct page *page;
+> +
+> +		page = alloc_page(GFP_ATOMIC);
+> +		if (!page)
+> +			break;
+> +		sg_set_page(dsg + i, page, PAGE_SIZE, 0);
+> +		total += PAGE_SIZE;
+> +	}
+> +	if (!i)
+> +		return ERR_PTR(-ENOMEM);
+> +	sg_mark_end(dsg + i - 1);
 
+This is missing a
 
-On 3/19/25 3:02 PM, LECOINTRE Philippe wrote:
-> Classified as: {OPEN}
-> 
-> Hello,
+	dlen = min(dlen, total);
 
-Hi,
-
-Don't top post please, it's hard to follow the emails exchanged.
-> 
-> Thank you for your feedback.
-
-you're welcome!
-
-> 
-> I encounter some issue attempting to use the at25 driver.
-> I am not able to read the flash ID with at25 driver because the chipselect appear to be deselected between the RDID command and the read data. The RDID command is not taken into account and the chip only reply with 0xff.
-> With at25 driver, it use a spi_message containing two spi_transfer, one spi_transfer for the command and one spi_transfer for the read data. For some reason, this end up in .transfer_one() in the spi_controller driver of my SoC.
-
-What spi controller driver, is it upstreamed?
-
-> With spi-nor driver, it use spi_mem_exec_op() which work well in my case.
-> It appear at25 driver can currently be used with Cypress FM25 chip and from some of the datasheet of this family it seems that the chipselect need to be driven low during the entire RDID sequence.
-> Am I missing something here ?
-
-Splitting opcode, address, dummy and data per spi_transfers shall work,
-spi_mem_exec_op() does it too when the controller does not define mem_ops.
-
-It probably just a bug somewhere, raising CS up between the transfers
-shall be fine.
-> 
-> Currently, the at25 driver assume a lot of property from the ID data (manufacturer and size) which don't seems to be relevant with the CY15V104QSN model.
-> This chip is similar to cy15b104q and cy15v104q currently supported by spi-nor driver.
-> https://web.git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/drivers/mtd/spi-nor/spansion.c?id=8a2644d5f3608822925c9204a3d19a8e3025fd4a
-
-having those flashes in SPI NOR was a mistake. We can't just drop them
-as we'll break backward compatibility.
-
-> Also, I don't have access to at25 spi eeprom to validate any deep modifications on this driver if we need to do so according to the thread you are pointing to.
-> 
-> How can we handle this ?
-
-You need to figure out why your flash doesn't work as expected and fix
-it. Is your controller spimem capable? If yes, try dropping the ctrl
-mem_ops and see if it behaves sane using SPI NOR and the controller
-using spi transfers. If it doesn't behave sane, then there's probably a
-problem into the controller driver.
+> +
+> +	acomp_request_set_params(req, sg, dsg, plen, dlen);
 
 Cheers,
-ta
-> 
-> Regards,
-> Philippe
-> 
-> 
-> {OPEN}
-> 
->> -----Original Message-----
->> From: Tudor Ambarus <tudor.ambarus@linaro.org>
->> Sent: Thursday, March 6, 2025 11:54 AM
->> To: LECOINTRE Philippe <philippe.lecointre@thalesgroup.com>; Pratyush
->> Yadav <pratyush@kernel.org>; Michael Walle <mwalle@kernel.org>; linux-
->> mtd@lists.infradead.org
->> Cc: LEJEUNE Sebastien <sebastien.lejeune@thalesgroup.com>; LENAIN
->> Simon <simon.lenain@thalesgroup.com>; RENAULT Xavier
->> <xavier.renault@thalesgroup.com>
->> Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for CY15V104QSN
->>
->>
->>
->> On 2/28/25 2:01 PM, LECOINTRE Philippe wrote:
->>> Infineon CY15V104QSN is 4Mbit serial SPI F-RAM device.
->>
->> Please consider moving this flash to the at25 EEPROM driver:
->> https://lore.kernel.org/linux-mtd/20240604074231.1874972-1-
->> mwalle@kernel.org/
->>
->> Cheers,
->> ta
->>>
->>> Signed-off-by: Philippe Lecointre <philippe.lecointre@thalesgroup.com>
->>> Acked-by: Simon Lenain <simon.lenain@thalesgroup.com>
->>> ---
->>>  drivers/mtd/spi-nor/spansion.c | 6 ++++++
->>>  1 file changed, 6 insertions(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spansion.c
->>> b/drivers/mtd/spi-nor/spansion.c index bf08dbf5e742..32f8892d7afe
->>> 100644
->>> --- a/drivers/mtd/spi-nor/spansion.c
->>> +++ b/drivers/mtd/spi-nor/spansion.c
->>> @@ -922,6 +922,12 @@ static const struct flash_info spansion_nor_parts[]
->> = {
->>>  		.size = SZ_512K,
->>>  		.sector_size = SZ_512K,
->>>  		.flags = SPI_NOR_NO_ERASE,
->>> +	}, {
->>> +		.id = SNOR_ID(0x50, 0x51, 0x80, 0x06, 0x00, 0x00),
->>> +		.name = "cy15v104qsn",
->>> +		.size = SZ_512K,
->>> +		.sector_size = SZ_512K,
->>> +		.flags = SPI_NOR_NO_ERASE,
->>>  	}, {
->>>  		.id = SNOR_ID(0x34, 0x2a, 0x1a, 0x0f, 0x03, 0x90),
->>>  		.name = "s25hl512t",
-
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
 ______________________________________________________
 Linux MTD discussion mailing list
