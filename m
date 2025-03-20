@@ -4,66 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A85EC28B30
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Mar 2025 12:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9243C28B30
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Mar 2025 12:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eo9B0foN/EnTAAC+zxRTVReX0C9m1flOb0Hbrh7vHE4=; b=LB2sZW+l0JmUZI
-	d27v8whT+c1l90Xb9G99f0f7V8GTRFlfqt5q597zU5gp0kGWFnYWucEWskT2db+/P8WhiHT9nnbcc
-	Ks5az9J1SP0Slb8118+AnqXPEXYL83ZZWc8R0Ljllk33A45d36Y4BNe0a4MJaakl6PCVl477u4r3c
-	Nci52u3nAHw5n8QWYviTSwLRTx1L7J4IGvIjkYEpNWo1vl5TSwkmrVNsxJnmZCA/4lvJt9lCN0fhj
-	qSdDcYzYep2NfsFPO/UuX/IwRd509mb8prnNOd2JbxhhTp800QXzM6HCVkCbLhe9XUIlqmKeWhVyl
-	g4PUu/fYNgvEoGqJPzjw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/UdH1QsCLFwwiH4HqyMJLMyY1gDAENtW9bS0N0LoTm4=; b=ILPDMAdInf0Va0
+	/JdGcXvfhj1NQRoqh2egDiiZzfBxY0bt284pB7hjGOc/7oqO/gHwozXzKRwfvXz9BWSjSKZI9ws8x
+	mP27jnoaQzJz6rl5Q0x8nBl3ZZQErqOQIMgjPQAAcIbyj9bZaTBT9i5KvHwO82BggKJLmGBVqorTg
+	etSFYD4EJAiwSSXIpXGZmPH8EWEzzwJccALuL7qd5Jqmbx7T+6rgZLnmD+RNNPx+kEw8pvLbcGctb
+	51DhFm1rgnGcaFF/h2ssavSKYGkVZvLxe7oTgVBBDWIatItj6QZbvNOWcyfhtYaF/rdhc/5Gm+AyD
+	kzDE4sHQXTGf6fnH+bTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvEi1-0000000C3tq-28ll;
-	Thu, 20 Mar 2025 12:09:13 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1tvElN-0000000C4ic-0GjE;
+	Thu, 20 Mar 2025 12:12:41 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvEW2-0000000C1Lb-3ES5
+	id 1tvEcc-0000000C2ax-11LA
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Mar 2025 11:56:52 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5855244385;
-	Thu, 20 Mar 2025 11:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1742471807;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=RrpUX2OXuDUhZRsn6w7EKaY4qY5AvVZ6xE/Z2kuruH4=;
-	b=VuWNkm7m3hHVaoyEWBwMudbnHbcUsY95uC/1am4IJ5jPwTrlRVfiTql+2GJdGbRRILSOFK
-	gPvKEfcroqX7+cK1uH+pMyiJ0AOlrA1F5DYTXgdEPWRU5E16DBvOX5nFuLWNxxh4uLG+vz
-	iaHeqi4LJPbX8jkOjByw1AX7zpZzpOopBlQpRwHOh3qosl1wq7RFCLi0rtXpaq4Ya9Wm0m
-	1QYHKGld8tvbHv8mrlVgeaPQzl+rnV/tekbeeH5X+uDcqFKN0UQXtwHRZlo+TPlaawHJ5y
-	AyqiBk5+kVNzxwFbQOIdoVawjoZBpJ+FpAoLBcRoREKTpH8TGxZLTg2IVXGq8A==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>,
-	<linux-spi@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2] spi: spi-mem: Introduce a default ->exec_op() debug log
-Date: Thu, 20 Mar 2025 12:56:44 +0100
-Message-ID: <20250320115644.2231240-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.48.1
+	Thu, 20 Mar 2025 12:03:39 +0000
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3912baafc58so565580f8f.1
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2025 05:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1742472216; x=1743077016; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EQDLeTVQO60i129NwHZhgyuH4YLDfE0eRqlKn+9+84M=;
+        b=rOK6N1Yeuz+u6VduvS8074d/3p5qz1skFTnDQxrkXlsBhyHZxcQzJHGGTDaQPyahOQ
+         IUdFu567R/yIjFQcGjsauyNudIAm36qp+Zd5WeFRoWIHdPSeiMjjQ8ywBKvyjeM17wI7
+         dFZww5umJevSpX19YealQr5ZUcvKgtSnvfTmvPsAgbcObXUI6szq3vDdDlAFJx8uVUHF
+         Oh9TonmbFWKbBBTBQi9pwkEn7VAm77viVe9usgZXl+/Brr/Z6bHO/BRyGnhRAy1QatTM
+         E9KJRE96fcUbuIodbKciLKBHbky5U+9IMNjQUAtzpHVrOlMSMIaFhg3hmVdWxCTFEqI1
+         Uhhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742472216; x=1743077016;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EQDLeTVQO60i129NwHZhgyuH4YLDfE0eRqlKn+9+84M=;
+        b=TFdsH4t/AOIQVQDz6JtlnF8iZ2tcNk1gzTpdmcDjbiCtQDoh/9sDBDw+odgPP5UWZP
+         X7Dc4B9Dm8/CgKFB46z0GeCWrEBdoOZhdrGkmkF/glZnKLWRUmAZLQkXl29OsX1/Bm/d
+         sxJE4pXL+cX/67R7t66TRlNp9wfaXsutT27RJgFea1vIBC8nG0qExZbNQ2ieLFxTYrNe
+         6ufdTb33VXEdUGdWNr4e9vdIAOThkY8rshCDmtbnl+FXEPTkg4G1GApSbahSNBNaWrAs
+         IT9llZoIwK07BieGypaEjRxFtKfHK/0dE/t+8i+U+bMw+WcHWoUjrg+67d5Rrm3TWj0q
+         TtZg==
+X-Forwarded-Encrypted: i=1; AJvYcCUtdf5/Wb4H20HGkPph2VTxmSZQ377jptsDMg7Zq3anTuouHEJDTirLzH4QriwVxvD2B7fWgPLETBM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzcJF7rVqc7KDxGcIKF/h8PMh6DTJAVUJijDLr/Pf2mCH2jbGBH
+	1WLOfe/aAxoka3J380S+xP9yZ7V/gB2sy3EHqVP9EO9EsSo6DDGXp/JU+kq6apc=
+X-Gm-Gg: ASbGncvCZashARNpQpz/F7wGPVwpqYzfpE04+DEf7DezwVMIX2SzQ5WAQqbmyL6NNUD
+	19Ggou1qu/FIewGvuXZTjyrW5BGNuxDT7rjQkdFWk2NPRL6qmDtAJY4ctJy6uoST7lL5OCIRmhB
+	iikfX17XUif+1r804IjPwUosSPKGQAtUUaPYnGrg4IGXubSWzjVAGURqzz6bypDARWYh5xRSemk
+	yNuKcLMAekvtDASeDLCufDgNGFF49CE4Ewahc7XKh9wAOEJ7XQOwEERMsjCf+9+rr5Pbqqyzf//
+	uOOO12glholfTuSfA6SYsN1gBMub6FV568mtZDk60xf/TfPRRLSWxw==
+X-Google-Smtp-Source: AGHT+IEK+xwmyzpLH4fUFYAK8pkY/PJG3xFWTRmMVVaoYGY6Hu+ouzrAyy9TiUC/EdmpUdoPxqvXIQ==
+X-Received: by 2002:a05:6000:1fac:b0:391:4835:d8a8 with SMTP id ffacd0b85a97d-399795a7e4cmr3253293f8f.1.1742472216356;
+        Thu, 20 Mar 2025 05:03:36 -0700 (PDT)
+Received: from [192.168.0.14] ([79.115.63.206])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c7df402esm23250656f8f.1.2025.03.20.05.03.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Mar 2025 05:03:35 -0700 (PDT)
+Message-ID: <4d36e51f-323c-451c-afeb-a6e378e3ed53@linaro.org>
+Date: Thu, 20 Mar 2025 12:03:33 +0000
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugeekudehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepgeetfeduleefjeffheevleeggfdtvdduhfdugeeuieejveejiedvhfdugfettdehnecukfhppeelvddrudekgedruddutddrfedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledvrddukeegrdduuddtrdeftddphhgvlhhopehffidrshhtvghphhgrnhigphdrlhhotggrlhdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedutddprhgtphhtthhopegsrhhoohhnihgvsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhsphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehtuhguohhrrdgrmhgsrghruhhssehlihhnrghrohdrohhrghdprhgtphhtthhop
- ehprhgrthihuhhshheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrggvlhesfigrlhhlvgdrtggtpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrgh
-X-GND-Sasl: miquel.raynal@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/21] mtd: spinand: Use more specific naming for the
+ reset op
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Santhosh Kumar K <s-k6@ti.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Steam Lin <stlin2@winbond.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20250307-winbond-6-14-rc1-octal-v1-0-45c1e074ad74@bootlin.com>
+ <20250307-winbond-6-14-rc1-octal-v1-1-45c1e074ad74@bootlin.com>
+ <9004166e-5535-4024-8114-9fdb217407bb@linaro.org>
+ <87v7skrgjl.fsf@bootlin.com>
+ <f1111d1b-a111-4171-9467-450d90a14c0a@linaro.org>
+ <87iko50vvb.fsf@bootlin.com>
+ <ba99ef52-0c98-45a9-91e0-4fd205649e00@linaro.org>
+ <87msdgvsyc.fsf@bootlin.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <87msdgvsyc.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250320_045651_095263_C5DEF048 
-X-CRM114-Status: GOOD (  14.58  )
+X-CRM114-CacheID: sfid-20250320_050338_293586_4E53DD4F 
+X-CRM114-Status: GOOD (  20.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,149 +111,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Many spi-mem controller drivers have a very similar debug log at the
-beginning of their ->exec_op() callback implementation. This debug log is
-effectively useful, so let's create one that is complete and concise
-enough, so developers no longer need to write their own. The verbosity
-being high, VERBOSE_DEBUG will be required in this case.
 
-Remove the debug log from individual drivers and propose a common one.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-Changes in v2:
-- Switch to dev_vdbg() as the log is quite chatty as advised by Tudor.
-- Use two characters for the dummy bytes number to make sure alignment
-  is not broken in octal mode.
----
- drivers/spi/spi-aspeed-smc.c   |  7 -------
- drivers/spi/spi-mem.c          | 11 +++++++++++
- drivers/spi/spi-mtk-snfi.c     |  3 ---
- drivers/spi/spi-npcm-fiu.c     |  5 -----
- drivers/spi/spi-stm32-qspi.c   |  5 -----
- drivers/spi/spi-zynq-qspi.c    |  4 ----
- drivers/spi/spi-zynqmp-gqspi.c |  4 ----
- 7 files changed, 11 insertions(+), 28 deletions(-)
+On 3/20/25 11:31 AM, Miquel Raynal wrote:
+> 
+>>>> How do you feel about a OP-An-Bn-Cn-transaction-format,
+>>>> 	where A, B, C is {1, 2, 4, 8}
+>>>> 	n is {S, D}
+>>>> 	transaction format is {0,1,2,3}{A,B,C,...}
+>>>>
+>>>> Care must be taken care of at the transaction format, as I see there are
+>>>> a few, depending on the xSPI profile and protocol mode.
+>>>
+>>> I must admit I really dislike the transaction format abbreviation because
+>>
+>> I'm not in love with the "transaction format" either.
+>>
+>>> it is specific to a spec we do not follow and is not explicit. I have a
+>>> strong preference towards keeping just "An-Bn-Cn", like I did in this
+>>
+>> Okay.
+>>
+>>> series. If people are in doubt, they can check what is in the op, it is
+>>> self explanatory. I chose this in the first place because it is more
+>>> explicit than just "An" which may feel like a cropped
+>>> acronym. Furthermore, most octal capable datasheets I've looked at seem
+>>> to use the "An-Bn-Cn" format, even for single opcodes.
+>>
+>> So for RESET, WREN, WRDI and other opcodes that don't require address
+>> and data, are those datasheets referring to these opcodes as 1-1-1 commands?
+>> Can you point me to one of these datasheets, please?
+> 
+> All Winbond datasheets use this convention:
+> https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+> See 7.1.2 Instruction Set Table p.25.
+> 
 
-diff --git a/drivers/spi/spi-aspeed-smc.c b/drivers/spi/spi-aspeed-smc.c
-index e9beae95dded..62a11142bd63 100644
---- a/drivers/spi/spi-aspeed-smc.c
-+++ b/drivers/spi/spi-aspeed-smc.c
-@@ -303,13 +303,6 @@ static int do_aspeed_spi_exec_op(struct spi_mem *mem, const struct spi_mem_op *o
- 	u32 ctl_val;
- 	int ret = 0;
- 
--	dev_dbg(aspi->dev,
--		"CE%d %s OP %#x mode:%d.%d.%d.%d naddr:%#x ndummies:%#x len:%#x",
--		chip->cs, op->data.dir == SPI_MEM_DATA_IN ? "read" : "write",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth,
--		op->addr.nbytes, op->dummy.nbytes, op->data.nbytes);
--
- 	addr_mode = readl(aspi->regs + CE_CTRL_REG);
- 	addr_mode_backup = addr_mode;
- 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index a9f0f47f4759..a31a1db07aa4 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -377,6 +377,17 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	/* Make sure the operation frequency is correct before going futher */
- 	spi_mem_adjust_op_freq(mem, (struct spi_mem_op *)op);
- 
-+	dev_vdbg(&mem->spi->dev, "[cmd: 0x%02x][%dB addr: %#8llx][%2dB dummy][%4dB data %s] %d%c-%d%c-%d%c-%d%c @ %uHz\n",
-+		 op->cmd.opcode,
-+		 op->addr.nbytes, (op->addr.nbytes ? op->addr.val : 0),
-+		 op->dummy.nbytes,
-+		 op->data.nbytes, (op->data.nbytes ? (op->data.dir == SPI_MEM_DATA_IN ? " read" : "write") : "     "),
-+		 op->cmd.buswidth, op->cmd.dtr ? 'D' : 'S',
-+		 op->addr.buswidth, op->addr.dtr ? 'D' : 'S',
-+		 op->dummy.buswidth, op->dummy.dtr ? 'D' : 'S',
-+		 op->data.buswidth, op->data.dtr ? 'D' : 'S',
-+		 op->max_freq ? op->max_freq : mem->spi->max_speed_hz);
-+
- 	ret = spi_mem_check_op(op);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/spi/spi-mtk-snfi.c b/drivers/spi/spi-mtk-snfi.c
-index fdbea9dffb62..e82ee6dcf498 100644
---- a/drivers/spi/spi-mtk-snfi.c
-+++ b/drivers/spi/spi-mtk-snfi.c
-@@ -1284,9 +1284,6 @@ static int mtk_snand_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- {
- 	struct mtk_snand *ms = spi_controller_get_devdata(mem->spi->controller);
- 
--	dev_dbg(ms->dev, "OP %02x ADDR %08llX@%d:%u DATA %d:%u", op->cmd.opcode,
--		op->addr.val, op->addr.buswidth, op->addr.nbytes,
--		op->data.buswidth, op->data.nbytes);
- 	if (mtk_snand_is_page_ops(op)) {
- 		if (op->data.dir == SPI_MEM_DATA_IN)
- 			return mtk_snand_read_page_cache(ms, op);
-diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
-index 958bab27a081..67cc1d86de42 100644
---- a/drivers/spi/spi-npcm-fiu.c
-+++ b/drivers/spi/spi-npcm-fiu.c
-@@ -550,11 +550,6 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	int ret = 0;
- 	u8 *buf;
- 
--	dev_dbg(fiu->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth, op->addr.val,
--		op->data.nbytes);
--
- 	if (fiu->spix_mode || op->addr.nbytes > 4)
- 		return -EOPNOTSUPP;
- 
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 540b6948b24d..9691197bbf5a 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -362,11 +362,6 @@ static int stm32_qspi_send(struct spi_device *spi, const struct spi_mem_op *op)
- 	u32 ccr, cr;
- 	int timeout, err = 0, err_poll_status = 0;
- 
--	dev_dbg(qspi->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth,
--		op->addr.val, op->data.nbytes);
--
- 	cr = readl_relaxed(qspi->io_base + QSPI_CR);
- 	cr &= ~CR_PRESC_MASK & ~CR_FSEL;
- 	cr |= FIELD_PREP(CR_PRESC_MASK, flash->presc);
-diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
-index 2bd25c75f881..5232483c4a3a 100644
---- a/drivers/spi/spi-zynq-qspi.c
-+++ b/drivers/spi/spi-zynq-qspi.c
-@@ -540,10 +540,6 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
- 	int err = 0, i;
- 	u8 *tmpbuf;
- 
--	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth);
--
- 	zynq_qspi_chipselect(mem->spi, true);
- 	zynq_qspi_config_op(xqspi, mem->spi, op);
- 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index d800d79f62a7..1c78713ad61a 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -1067,10 +1067,6 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
- 	u16 opcode = op->cmd.opcode;
- 	u64 opaddr;
- 
--	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
--		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
--		op->dummy.buswidth, op->data.buswidth);
--
- 	mutex_lock(&xqspi->op_lock);
- 	zynqmp_qspi_config_op(xqspi, op);
- 	zynqmp_qspi_chipselect(mem->spi, false);
--- 
-2.48.1
+Nice, thanks!
 
+> I checked Macronix and Gigadevice datasheets, they simply never "name"
+> these opcodes clearly.
+
+okay
+
+> 
+>> In SPI NOR, WREN is just WREN, regardless of the number of lines it is
+>> sent on, 1, 4, or 8. How would you model it here, 1-0-0, 4-0-0, 8-0-0
+>> using the same opcode?
+> 
+> I guess, yes.
+> 
+>>> So unless there are strong arguments against, I'd prefer to keep the
+>>> current formatting. TBH, it is not set in stone and can still evolve
+>>> later if that's needed.
+>>
+>> I find the naming scheme An-Bn-Cn good, I'm arguing that it's not needed
+>> everywhere, opcode only commands are better off with it, I think.
+> 
+> Ok, I can drop the -0-0 in this case if you prefer.
+
+Not needed. Just wanted to make sure we have a unified way of dealing
+with the protocol modes. Having WREN-1-0-0 and WREN-8d-0-0 is not that
+bad after all, it allows you to specify the number of lines directly,
+without mangling the op afterwards.
+
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+Thanks for the patience. I'll check the other patches next week.
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
