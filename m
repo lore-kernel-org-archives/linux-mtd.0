@@ -4,93 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C6BC35FF3
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Mar 2025 07:11:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6071BC35FF3
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Mar 2025 08:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Cc:
+	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3PQHxDW/ZpevhVJtvxBlgzaYj83Ka+Y7JxewoFnuwMg=; b=FjPIJ6mYAhvryr
-	qOLA/sDf6i25KbvePIb+BYICMdENB1zLDyjF3nGv2tlZFYciX1bPLW+/b/Gu+EZ7vNmHQDuI0bXNv
-	AkgPWDy/sBYN8DjOwFLl3kQPKDmmt7yGtuU0f1zw/mV6mn9FQUbEETHqNYz2eHn/8+rr5T9YrkbDb
-	H6OlXybTXdHRrawYWtNOmeTrWiMs8gcg0ZAGZEGgBp5HGO37gh62jUQjer0f7yN3+D7+leD4rIdDZ
-	sC0c0q0W1OKLlAvW4qf8BT66FMnTfgKSMsZMj3VX6gp22SIO9J+hx3wsQ/JPdvxHodYsvNTxYC5c0
-	cu3RjVja69BuxNzimhKQ==;
+	List-Owner; bh=YfqsBWa+xBeCi5wWeuiRLDA+EJN4/4fGBtz5Y2yYgFo=; b=xymtMpHgCnV/V0
+	u4M1cWW0wwRk8GvzdBL7d7+FSkpcaHgl8f0klEX5zq9rao/vrEw0vgy4HiQMOZlwV0NcFVLAAyHX3
+	5o/Gjqq/EHHa+ENjUxB0ON6kN+afZutjqN5OVleZFysEcpLcCRsRVcEteVBewTDypRFBL0HC2gj0w
+	B3NkB8Xli90fztWDjENfVnRcXPEFU+AO/sRHAo1o0Og/ub4z55bEKz6YVlmTxdRzLnFTFlfOt+rfh
+	2haabkCnuoY50tpY/Gwf8Uo+2x2oQuSHNFIdmqr1GbDXVkHnZT0QSwWMXFROkKCZwY71yTGJRi7c/
+	aohXLkrJd0SY35qGPA8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvWX7-0000000E4FR-1vuL;
-	Fri, 21 Mar 2025 07:11:09 +0000
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+	id 1tvXTB-0000000ED8S-3f7y;
+	Fri, 21 Mar 2025 08:11:09 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tvWX1-0000000E4F2-4AMN
+	id 1tvXIs-0000000EBBH-21w6
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Mar 2025 07:11:07 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3914a5def6bso961214f8f.1
-        for <linux-mtd@lists.infradead.org>; Fri, 21 Mar 2025 00:11:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1742541062; x=1743145862; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F+k0bBxJrWknfpCCY6jrjqLCimQ9SIMuvuSKup5q//c=;
-        b=em6Aa6jjvETaiPlZVsZuIm8mUdCtpkEeX9MrRSSO8uve33XOeWr2yuCwuwrIeuX1tv
-         1rODLBb1X/BWc8md5CYvFJSJ76fJaTxJgL7/URfydYsh9odxftciE0fqjK3ZwJrV05pC
-         6r4DveV4XEbDV7PuQX+cgpZpqkTOQOOTSGqSup16ZRYXDrtHvDbtAFDnAtK99YcVcRbj
-         w6GFWHwoX1v8XoUdkbK73DJs17ul/iFoTzq36uhOI7/nned7XgiqOKy91QZtbRhGwb0B
-         jcKBXj2zTuyKck7Ce42S7/UGWMS1EgHY/IGazFqzYKS13NHPx8VTOhzYwWyJxSWRun5y
-         02aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742541062; x=1743145862;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F+k0bBxJrWknfpCCY6jrjqLCimQ9SIMuvuSKup5q//c=;
-        b=Vf75yVPO//q0KtaYObQJZecL8IRvQLG45Vgv4NTfwOJLXRfi1F+sL8GU+yjbD51tvy
-         +GH8YHZXukqjJYX6+KEGV6ThSx2TUPqS2Ee846vBNlWMk27p4G82ltuOBNWbIJKs9Tdc
-         e/j1EwV8xNV+gTDe+a9IW7DeRke3EIuF1+UhbVq9wVdYLI6arir/yzqkt6uHmM41nWny
-         YaPeJGULCwkrHgsykz1+DErsFJIBMgRS5dgOlD6Zz++Ki3BIqFXxvT80raZMmhndAUAr
-         BaHO10AAS0iIkRzPa2waV3Hir83/tDrhvWZ/J80kxIoLMKEivhhZBJH7rNYeOkA6f+bI
-         YWDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXYlDphmKcIsHRPT+weWgY+NlU0u3dnIQEQSZvUk+CMN3iGxa1RuugBdaxoF5lDjdqcQ7hR8wRb5JU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzZ8TT47HSR/ul5L8rXKi3rAL6K4WniIjDHdFQssEGs2JNllqXJ
-	DHDDd0iUvWiGzFsU7v1O/XVnk+x0PFLYGs9+zVE804ELtasrWVCjDd8YFo2oDhM=
-X-Gm-Gg: ASbGncsM+Z09LLuPT7pc0feHOxYtlI/D4dGYdwRGphUgSQkcdQVMnqZ4pGrHXxkKmY+
-	GctXxXkMtP3rDCYcEz806TtsdameVFtmnsGr6360EjqV4JXS/rHOHPyBR55NKfeqcjgnv2PXpq8
-	zT28QuAGgbvRKrIyecOq9mF7GtDLmp9TnRytwStdOyiqH5JN9mxLTXE+decYCF8i2ZI47at5uoM
-	4p8QW1FNZqktmMZVmzlJDqTyDNpClWabQkDaXihMD5unInSwwTnVllJ+zpNHP3hBDOdPz8yCD5q
-	N1E5idftXbFsqiCW1nJhrn4hv+mmCbOoYg1ocohzLkXbJrJIcQjngi9UBX24eO+l
-X-Google-Smtp-Source: AGHT+IFLLyWtNCurYN5IHsDLYjTJAeaz+9FTtagTbBiNXq0Igdg4GgDL7Yy06ujM541m3DzuhmXzAg==
-X-Received: by 2002:a05:6000:184b:b0:391:3998:2660 with SMTP id ffacd0b85a97d-3997f8ee94amr1495646f8f.7.1742541062072;
-        Fri, 21 Mar 2025 00:11:02 -0700 (PDT)
-Received: from [192.168.0.14] ([79.115.63.206])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3997f9b4ce9sm1594888f8f.53.2025.03.21.00.10.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Mar 2025 00:10:59 -0700 (PDT)
-Message-ID: <3c176372-ad82-460f-979e-9bf1cf09d931@linaro.org>
-Date: Fri, 21 Mar 2025 07:10:57 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for CY15V104QSN
-To: LECOINTRE Philippe <philippe.lecointre@thalesgroup.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Cc: LEJEUNE Sebastien <sebastien.lejeune@thalesgroup.com>,
- LENAIN Simon <simon.lenain@thalesgroup.com>,
- RENAULT Xavier <xavier.renault@thalesgroup.com>
-References: <87dbbbdfb2d54da781e4f8c5fa75851c@thalesgroup.com>
- <9ae9eaf4-bd5d-4902-9ca8-d83b9f326245@linaro.org>
- <ba593d13fad2419c9dba03fc001d599a@thalesgroup.com>
- <ceb81e52-3159-479b-9006-aae54a74fc3a@linaro.org>
- <a76c17aeb7a645b9a5adbc79c2337b16@thalesgroup.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <a76c17aeb7a645b9a5adbc79c2337b16@thalesgroup.com>
+	Fri, 21 Mar 2025 08:00:31 +0000
+Received: from localhost (unknown [IPv6:2a02:810b:4320:1000:4685:ff:fe12:5967])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id C13764CF;
+	Fri, 21 Mar 2025 09:00:18 +0100 (CET)
+Mime-Version: 1.0
+Date: Fri, 21 Mar 2025 09:00:18 +0100
+Message-Id: <D8LSAUU0358V.2H1D7QXB9WBOF@kernel.org>
+Subject: Re: [PATCH 2/3] mtd: spi-nor: use rdid-dummy-ncycles DT property
+Cc: "Takahiro Kuwano" <tkuw584924@gmail.com>, "Pratyush Yadav"
+ <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>, "Conor
+ Dooley" <conor+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Bacem
+ Daassi" <Bacem.Daassi@infineon.com>, "Takahiro Kuwano"
+ <Takahiro.Kuwano@infineon.com>, "Mark Brown" <broonie@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Rob Herring"
+ <robh@kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20250319-snor-rdid-dummy-ncycles-v1-0-fbf64e4c226a@infineon.com> <20250319-snor-rdid-dummy-ncycles-v1-2-fbf64e4c226a@infineon.com> <20250319233024.GA2625856-robh@kernel.org> <a3818477-5a67-43ad-8961-88fa02916968@linaro.org> <CAL_JsqKtz5+R1kjEzjo6bVicOX2c=UauC0_STAF0T02rSDqO+w@mail.gmail.com> <50de19f7-2021-433e-b8f8-d928ed7d5d57@linaro.org>
+In-Reply-To: <50de19f7-2021-433e-b8f8-d928ed7d5d57@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250321_001104_052743_F2B58986 
-X-CRM114-Status: GOOD (  27.59  )
+X-CRM114-CacheID: sfid-20250321_010030_675196_CCD301BA 
+X-CRM114-Status: GOOD (  44.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,76 +70,127 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
+> >>>> There are infineon flashes [1] that require 8 dummy cycles for the
+> >>>> 1-1-1 Read ID command. Since the command is not covered by JESD216
+> >>>> or any other standard, get the number of dummy cycles from DT and use
+> >>>> them to correctly identify the flash.
+> >>>
+> >>> If Read ID fails, then couldn't you just retry with dummy cycles? Or
+> >>
+> >> I think Read ID won't fail when the op requires 8 dummy cycles, it
+> >> probably just reads garbage on the first 8 cycles, so we risk to wrongly
+> >> match other flash IDs.
+> >>
+> >>> would unconditionally adding dummy cycles adversely affect other chips?
+> >>
+> >> Adding 8 dummy cycles to chips that don't need it, would mean ignoring
+> >> the first byte of the flash ID, thus we again risk to wrongly match
+> >> against other flash IDs.
+> >>
+> >>>
+> >>> Otherwise, add a specific compatible to imply this requirement. Adding
+> >>> quirk properties doesn't scale.
+> >>
+> >> Do you mean a flash name compatible, like "cyrs17b512,spi-nor"?
+> > 
+> > Yes, but that's not the format of compatible strings.
+> > 
+> >> The
+> >> problem that I see with that is that we no longer bind against the
+> >> generic jedec,spi-nor compatible, so people need to update their DT in
+> >> case they use/plug-in a different flash on their board.
+> > 
+> > This chip is clearly *not* compatible with a generic chip.
+>
+> I think it is compatible. The chip defines the SFDP (serial flash
+> discoverable parameters) tables. At probe time we parse those tables and
+> initialize the flash based on them.
 
-On 3/20/25 4:55 PM, LECOINTRE Philippe wrote:
+I disagree. It's not compatible with "jedec,spi-nor", which is
+defined as
 
->> I encounter some issue attempting to use the at25 driver.
->>> I am not able to read the flash ID with at25 driver because the chipselect
->> appear to be deselected between the RDID command and the read data. The
->> RDID command is not taken into account and the chip only reply with 0xff.
->>> With at25 driver, it use a spi_message containing two spi_transfer, one
->> spi_transfer for the command and one spi_transfer for the read data. For
->> some reason, this end up in .transfer_one() in the spi_controller driver of my
->> SoC.
->>
->> What spi controller driver, is it upstreamed?
-> 
-> The SoC use the upstream "snps,dw-apb-ssi" spi controller driver.
-> 
->>
->>> With spi-nor driver, it use spi_mem_exec_op() which work well in my case.
->>> It appear at25 driver can currently be used with Cypress FM25 chip and
->> from some of the datasheet of this family it seems that the chipselect need
->> to be driven low during the entire RDID sequence.
->>> Am I missing something here ?
->>
->> Splitting opcode, address, dummy and data per spi_transfers shall work,
->> spi_mem_exec_op() does it too when the controller does not define
->> mem_ops.
->>
->> It probably just a bug somewhere, raising CS up between the transfers shall
->> be fine.
-> 
-> Using an oscilloscope with spi protocol decode, it is the big difference I can see.
-> 
->>>
->>> Currently, the at25 driver assume a lot of property from the ID data
->> (manufacturer and size) which don't seems to be relevant with the
->> CY15V104QSN model.
->>> This chip is similar to cy15b104q and cy15v104q currently supported by spi-
->> nor driver.
->>> https://web.git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/c
->>> ommit/drivers/mtd/spi-
->> nor/spansion.c?id=8a2644d5f3608822925c9204a3d19a
->>> 8e3025fd4a
->>
->> having those flashes in SPI NOR was a mistake. We can't just drop them as
->> we'll break backward compatibility.
->>
->>> Also, I don't have access to at25 spi eeprom to validate any deep
->> modifications on this driver if we need to do so according to the thread you
->> are pointing to.
->>>
->>> How can we handle this ?
->>
->> You need to figure out why your flash doesn't work as expected and fix it. Is
->> your controller spimem capable? If yes, try dropping the ctrl mem_ops and
->> see if it behaves sane using SPI NOR and the controller using spi transfers. If
->> it doesn't behave sane, then there's probably a problem into the controller
->> driver.
-> 
-> Good advice !
-> I have commented out the dw_spi_init_mem_ops() function call in dw_spi_add_host() and I end up with the same result as at25 driver.
-> spi-nor spi3.0: unrecognized JEDEC id bytes: ff ff ff ff ff ff
+      SPI NOR flashes compatible with the JEDEC SFDP standard or which may be
+      identified with the READ ID opcode (0x9F) do not deserve a specific
+      compatible. They should instead only be matched against the generic
+      "jedec,spi-nor" compatible.
 
-Can you plugin a different flash and test?
+The first part was recently added and is a bit misleading. The old
+definition was:
 
-What frequency are you running the flash? Do things improve if you run
-it at 50 MHz for example?
+      Must also include "jedec,spi-nor" for any SPI NOR flash that can be
+      identified by the JEDEC READ ID opcode (0x9F).
 
-Cheers,
-ta
+See my first reply, on how to possibly fix this mess (new
+compatible if accepted, just use RDSFDP sequence which is backed by
+the standard and do some fingerprinting).
+
+FWIW, a new (or rather different) compatible is needed because we
+cannot distinguish between random data returned during the dummy
+cycles and a proper manufacturer id. So there is no way we could fix
+this in the core itself.
+
+At least if we keep the logic as it is for now, if we use RDSFDP to
+fingerprint first and then fall back to RDID, we could get away with
+the old compatible.
+
+> We don't even care about the chip ID, if all the flash parameters can be
+> discovered via SFDP. Unfortunately these tables do not describe all the
+> flash capabilities (block protection being one). Or worse, manufacturers
+> mangle these tables.
+>
+> So vendors need to identify chips to either fix those tables via some
+> quirks after the parsing is done, or to specify support that's not
+> covered by those tables.
+>
+> For basic ops, flashes that get the SFDP tables right, don't even need a
+> flash entry defined, we don't care about their ID, we just initialize
+> the flash solely based on SFDP.
+>
+> In this particular case, this flash needs identification to fix some
+> wrong SFDP field, it corrects just the mode cycles for the FAST READ
+> command. All the other commands seem fine according to patch 3/3.
+>
+> > 
+> > You have the same problem with a property. Users have to add or remove
+>
+> True. It's the same problem. Even if we specify the dummy cycles via a
+> property, the next plugged-in flash will use those. We can of course
+> fallback to the SFDP only init if the ID doesn't match any flash entry,
+> but the problem is the same.
+>
+> > the property if the flash changes. Anyone thinking they can use this
+> > chip as a compatible 2nd source is SOL.
+> > 
+>
+> I think the property vs compatible decision resumes at whether we
+> consider that the dummy cycles requirement for Read ID is/will be
+> generic or not.
+
+It is not generic. Because it will break autodetection. And that is
+the whole purpose of this. Adding that property means, we can just
+autodetect flashes within this 'group'. And personally, I think this
+is a bad precedent.
+
+> I noticed that with higher frequencies or protocol modes (e.g, octal
+> DTR), flashes tend to require more dummy cycles. I think with time,
+> we'll have more flashes with such requirement. Takahiro can jump in and
+> tell if it's already the case with IFX.
+
+But hopefully not with RDID. Again this doesn't play nice with other
+flashes (or all flashes for now). Instead of adding random delay
+cycles one should rather define a max clock speed for this opcode.
+
+-michael
+
+> Thus instead of having lots of new compatibles for this, I lean towards
+> having this property. I'm still open for the compatible idea, I just
+> wanted to explain better where we are.
+>
+> Thanks,
+> ta
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
