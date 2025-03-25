@@ -4,72 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3019C3600C
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Mar 2025 16:37:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DFE5C3600B
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Mar 2025 19:45:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YGeJK/WgjFVoEvVnMuHNnEX2eI9u3ouxZ6LBQKFSeaU=; b=TvNiZb0z74A4He
-	h7zhIKCtVukUeJJCmrfWe9nSqt14IAw94joCay6mR5Ew2lZA6WCIO1sK0plzSPm7B+YPcBP8aXlPA
-	jzkPbSym/iaWgD7BwkB+2BrPTg6u8VieBBUFBOXxH9FSsKeNFHua1n6ThCjKFwLRZbrZhnFMybfyg
-	IopP5b/R5LUFhyHQ9H/FyYBIhrT+arIA6IAqGD1hNjUhxg/YrnO8P93Yfaf596pK9I9V3nRhbKDfq
-	40Xb6CPsnjWRPI0tS5X5CWfkziOCg7WtMz+1tZpur/gWfi3F050UkL/n2Lx0a2Ntq/Y0B9yPOepJt
-	/nZ16hZqL/1+Kk7XcoBA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=FGVfX5rKFV9Az4JES7kR77hyZ+YOfIm/+6t0cM7OVQ8=; b=knHJspqM+/3MD/
+	3P8zM1hDw5WIJq6r/dLU8k8sl35S661o+ukEScK4wxS8Lv4a94U+i5/qm0x3YcHRaQ5EbFHY88+cP
+	6Sf3ISi7TnrtVIABmaPoWcvdvpb38ah4czXkekDKM9NykQKHuEVV7/sgxkNacGtwMd+mBof3gDUTp
+	ztORnmlNcUuNZDIl6v/8q/TxUwVpDFRLsOj47y5PDKamrzT0qkxfphUm2NpRh8VJ5KlhYmmhhiN3M
+	nGIRtHQ8IGxwHzVW0zBhCvbzyoeQNVjRYdAj6Efnc4vjLcK4NYyFqAGMKFYbu7cCdwTYfCB7beUpf
+	xzxmbzY6pcep1HaAiRdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tx7Hc-00000006VJo-0UcS;
-	Tue, 25 Mar 2025 16:37:44 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1txACk-00000006tc7-31zf;
+	Tue, 25 Mar 2025 19:44:54 +0000
+Received: from [2607:7c80:54:3::138] (helo=mail.zytor.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tx7Ck-00000006Ukx-3UdC
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 25 Mar 2025 16:32:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=xtjQNCIG90SkONBmw2cPQ+VxbDhw9iY6/7ps8Q1kb8g=; b=eSqisGGPJdSgvFKMobqgQU0oSa
-	aAcYM7Fmd19MVlCswTalge8T/CbCnXTOX+JI1MyOzdBzGzirn07DVHzuiI06ELT9i601hu+NRGbqS
-	Qh+RhpFGmKK4hN+SaMl5BIpKBlfyG9DJ61ck3XnU3sIEHs/cpLJySIvt1vH5DO0q+rQUpdNzuB1wf
-	h7bCYiLZA7S8AhBf4g7401qIYMOJ0IuTLSQhjskQIya9a4M4Xv2j/Us+ImeKhEOIZUySKBBqzcEKr
-	iq2yx4Yxi7QXHjITYKtfCFiTt3OExPXkq+TtXFesn/KWHVO0r+iYRXNJI9otGLCmOW3Bvy3IVRw+5
-	WcP0/Y5A==;
-Received: from mail.ispras.ru ([83.149.199.84])
-	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tx7Cf-00000005ej7-1o0z
+	id 1txACe-00000006tbM-45T6
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Mar 2025 16:32:40 +0000
-Received: from fedora.intra.ispras.ru (unknown [10.10.165.13])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 4161C448787A;
-	Tue, 25 Mar 2025 16:32:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 4161C448787A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1742920349;
-	bh=xtjQNCIG90SkONBmw2cPQ+VxbDhw9iY6/7ps8Q1kb8g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=IFWRq18xmsCHUVqvKa7vP77Ae03kPGXNyvbr33sDvejaQOUZiEnIwgVm7sloBCkNh
-	 ACyuNMbQ/EdaLzr9MpGbAB6oFmHrhIetXs4QH+sTk2cIyCUl49rRkkURmEdd6GJgSc
-	 zrN+6Vc4R6fsIE2EfmP4Ll3oxPFOwrWqNd97DEdk=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	stable@vger.kernel.org
-Subject: [PATCH] jffs2: check jffs2_prealloc_raw_node_refs() result in few other places
-Date: Tue, 25 Mar 2025 19:32:13 +0300
-Message-ID: <20250325163215.287311-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.49.0
+	Tue, 25 Mar 2025 19:44:50 +0000
+Received: from [IPV6:2601:646:8083:1982:248d:9102:5b8a:6e6c] ([IPv6:2601:646:8083:1982:248d:9102:5b8a:6e6c])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 52PJhUIl603946
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 25 Mar 2025 12:43:32 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 52PJhUIl603946
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1742931824;
+	bh=UJj21FC15p3nVLzkicX5dgxkBEi54nR03XqBTpnd5V4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=kdM3Nj1MybR90X09rU1nRONRJ2jg1AtjqKoXLnxsg2cojdKgyvQq1sB0dmO1P9B7e
+	 Oh0GOCPxLEaRXZFe7o1Sfjp8n54w75H5iN/HAzeysNqCT9wYOr7jEP2Dae4W47cuTE
+	 IJENwVV1LUrY+RUTP8SIu8IuTBsqVtESVxKjQe2igsVqYUE9/vC+W48eqqzXH+7yPQ
+	 lLYCfriDAqV0glFFkq5y8djhKy78jC5zQ7rOCh2GQVPUddqvu2o3Kp1cuthMCi7rCc
+	 T1rY4JTt0lRSRGlEjcanOa/VKXXmOhoSIUQpV16G1iV32q6fHAz8KlUXWCNdcW9vny
+	 jM4Umn7OoVMWA==
+Message-ID: <eec0dfd7-5e4f-4a08-928c-b7714dbc4a17@zytor.com>
+Date: Tue, 25 Mar 2025 12:43:25 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, Yury Norov <yury.norov@gmail.com>
+Cc: David Laight <david.laight.linux@gmail.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
+        akpm@linux-foundation.org, alistair@popple.id.au,
+        andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
+        arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
+        bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
+        davem@davemloft.net, dmitry.torokhov@gmail.com,
+        dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
+        edumazet@google.com, eleanor15x@gmail.com, gregkh@linuxfoundation.org,
+        hverkuil@xs4all.nl, jernej.skrabec@gmail.com, jirislaby@kernel.org,
+        jk@ozlabs.org, joel@jms.id.au, johannes@sipsolutions.net,
+        jonas@kwiboo.se, jserv@ccns.ncku.edu.tw, kuba@kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux@rasmusvillemoes.dk,
+        louis.peens@corigine.com, maarten.lankhorst@linux.intel.com,
+        mchehab@kernel.org, mingo@redhat.com, miquel.raynal@bootlin.com,
+        mripard@kernel.org, neil.armstrong@linaro.org, netdev@vger.kernel.org,
+        oss-drivers@corigine.com, pabeni@redhat.com,
+        parthiban.veerasooran@microchip.com, rfoss@kernel.org, richard@nod.at,
+        simona@ffwll.ch, tglx@linutronix.de, tzimmermann@suse.de,
+        vigneshr@ti.com, x86@kernel.org
+References: <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
+ <5A790652-1B22-4D13-AAC5-5D9931E90903@zytor.com>
+ <20250307195310.58abff8c@pumpkin>
+ <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
+ <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name> <Z9CyuowYsZyez36c@thinkpad>
+ <80771542-476C-493E-858A-D2AF6A355CC1@zytor.com> <Z9GtcNJie8TRKywZ@thinkpad>
+ <Z9G2Tyypb3iLoBjn@visitorckw-System-Product-Name>
+ <Z9KMKwnZXA2mkD2s@visitorckw-System-Product-Name>
+ <Z+AlyB461xwMxMtG@visitorckw-System-Product-Name>
+Content-Language: en-US
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <Z+AlyB461xwMxMtG@visitorckw-System-Product-Name>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250325_163237_797633_DE0E9E1B 
-X-CRM114-Status: GOOD (  10.89  )
+X-CRM114-CacheID: sfid-20250325_124449_025300_1E047352 
+X-CRM114-Status: GOOD (  12.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,90 +100,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fuzzing hit another invalid pointer dereference due to the lack of
-checking whether jffs2_prealloc_raw_node_refs() completed successfully.
-Subsequent logic implies that the node refs have been allocated.
+On 3/23/25 08:16, Kuan-Wei Chiu wrote:
+> 
+> Interface 3: Multiple Functions
+> Description: bool parity_odd8/16/32/64()
+> Pros: No need for explicit casting; easy to integrate
+>        architecture-specific optimizations; except for parity8(), all
+>        functions are one-liners with no significant code duplication
+> Cons: More functions may increase maintenance burden
+> Opinions: Only I support this approach
+> 
 
-Handle that. The code is ready for propagating the error upwards.
+OK, so I responded to this but I can't find my reply or any of the 
+followups, so let me go again:
 
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 1 PID: 5835 Comm: syz-executor145 Not tainted 5.10.234-syzkaller #0
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-RIP: 0010:jffs2_link_node_ref+0xac/0x690 fs/jffs2/nodelist.c:600
-Call Trace:
- jffs2_mark_erased_block fs/jffs2/erase.c:460 [inline]
- jffs2_erase_pending_blocks+0x688/0x1860 fs/jffs2/erase.c:118
- jffs2_garbage_collect_pass+0x638/0x1a00 fs/jffs2/gc.c:253
- jffs2_reserve_space+0x3f4/0xad0 fs/jffs2/nodemgmt.c:167
- jffs2_write_inode_range+0x246/0xb50 fs/jffs2/write.c:362
- jffs2_write_end+0x712/0x1110 fs/jffs2/file.c:302
- generic_perform_write+0x2c2/0x500 mm/filemap.c:3347
- __generic_file_write_iter+0x252/0x610 mm/filemap.c:3465
- generic_file_write_iter+0xdb/0x230 mm/filemap.c:3497
- call_write_iter include/linux/fs.h:2039 [inline]
- do_iter_readv_writev+0x46d/0x750 fs/read_write.c:740
- do_iter_write+0x18c/0x710 fs/read_write.c:866
- vfs_writev+0x1db/0x6a0 fs/read_write.c:939
- do_pwritev fs/read_write.c:1036 [inline]
- __do_sys_pwritev fs/read_write.c:1083 [inline]
- __se_sys_pwritev fs/read_write.c:1078 [inline]
- __x64_sys_pwritev+0x235/0x310 fs/read_write.c:1078
- do_syscall_64+0x30/0x40 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x67/0xd1
+I prefer this option, because:
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+a. Virtually all uses of parity is done in contexts where the sizes of 
+the items for which parity is to be taken are well-defined, but it is 
+*really* easy for integer promotion to cause a value to be extended to 
+32 bits unnecessarily (sign or zero extend, although for parity it 
+doesn't make any difference -- if the compiler realizes it.)
 
-Fixes: 2f785402f39b ("[JFFS2] Reduce visibility of raw_node_ref to upper layers of JFFS2 code.")
-Fixes: f560928baa60 ("[JFFS2] Allocate node_ref for wasted space when skipping to page boundary")
-Cc: stable@vger.kernel.org
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
+b. It makes it easier to add arch-specific implementations, notably 
+using __builtin_parity on architectures where that is known to generate 
+good code.
 
-Similar to https://lore.kernel.org/linux-mtd/20250307163409.13491-2-a.sadovnikov@ispras.ru/
-but touches two remaining places.
+c. For architectures where only *some* parity implementations are 
+fast/practical, the generic fallbacks will either naturally synthesize 
+them from components via shift-xor, or they can be defined to use a 
+larger version; the function prototype acts like a cast.
 
- fs/jffs2/erase.c | 4 +++-
- fs/jffs2/scan.c  | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+d. If there is a reason in the future to add a generic version, it is 
+really easy to do using the size-specific functions as components; this 
+is something we do literally all over the place, using a pattern so 
+common that it, itself, probably should be macroized:
 
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index ef3a1e1b6cb0..fda9f4d6093f 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -425,7 +425,9 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
- 			.totlen =	cpu_to_je32(c->cleanmarker_size)
- 		};
- 
--		jffs2_prealloc_raw_node_refs(c, jeb, 1);
-+		ret = jffs2_prealloc_raw_node_refs(c, jeb, 1);
-+		if (ret)
-+			goto filebad;
- 
- 		marker.hdr_crc = cpu_to_je32(crc32(0, &marker, sizeof(struct jffs2_unknown_node)-4));
- 
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index 29671e33a171..62879c218d4b 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -256,7 +256,9 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
- 
- 		jffs2_dbg(1, "%s(): Skipping %d bytes in nextblock to ensure page alignment\n",
- 			  __func__, skip);
--		jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
-+		ret = jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
-+		if (ret)
-+			goto out;
- 		jffs2_scan_dirty_space(c, c->nextblock, skip);
- 	}
- #endif
--- 
-2.49.0
-
+#define parity(x) 				\
+({						\
+	typeof(x) __x = (x);			\
+	bool __y;				\
+	switch (sizeof(__x)) {			\
+		case 1:				\
+			__y = parity8(__x);	\
+			break;			\
+		case 2:				\
+			__y = parity16(__x);	\
+			break;			\
+		case 4:				\
+			__y = parity32(__x);	\
+			break;			\
+		case 8:				\
+			__y = parity64(__x);	\
+			break;			\
+		default:			\
+			BUILD_BUG();		\
+			break;			\
+	}					\
+	__y;					\
+})
+				
 
 ______________________________________________________
 Linux MTD discussion mailing list
