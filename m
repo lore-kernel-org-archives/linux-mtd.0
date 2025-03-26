@@ -4,84 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A2F5C36008
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Mar 2025 14:25:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58FF9C36008
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Mar 2025 15:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b2254yQMDWyI+ormL6kESZCuT45CuP+o+Y5vKmNXQBk=; b=bxeyM7Po+VxIgC
-	cKu26oqBlJl/qKed/p8CGTaPCrdwv09rXB/da3baqS5zYmzxq+ZiuStnChvQK9avN8L9WLWT9LjNf
-	lhksDUXzpSgxe0r9wc6wXpkEHPWuukb1PxaPoKSQTcW2vdKEG+cbx9/OP4AuiXCQXLLewFhyp/gCI
-	zWn17z8Iy0agXNw2gHq8yn/MUvRNY6tmk2DnfsGuqF52A9ZnmHMOSduidD7m5fjFmypCvxWMR24qu
-	2+5schS2gCd3goFbg9Fz17mcLtcwOLDgCTlgclQylXPf9nGE+YG/f1C+UuOWSJ/NVS1kbMoiIhgVB
-	oDg9p57+bW632fpjF0BQ==;
+	List-Owner; bh=N9T3vkdwSw9njbyPSO8fiKDwWxAxNvnCJw+SU5zgjA0=; b=L1Vly0oKQJ6pMM
+	9+fhsa+A07BHtFI1uLNNLNSG9k2d7oICkbrkXm4cozbxaMgvK18J11uV31xkojdt3IhYfIU64+47N
+	uLgE5jJSYwuvYS6RvrZWpfboJPEEV0yDZYFOh7TcVpFQ5Zehz+G+j5O99ZRdVNE2jFRmf8o2jrBrG
+	iGM6F3114z5p4Bh52WatOS+16J8o0O3Ysq9tKio5JUOsjsKzIER+fd2D1OPz8RpRRok7L0yVl83UH
+	S3+Ezlo+SUm7YwuLsCW2/KGA6MlRzX4O3g1vDM178/46i++Txr8vzH0pqj3Z3EVfcNDFkToTUcVOt
+	yY0YFspVbpuNjycv4UAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1txRhL-00000008gPH-0ujA;
-	Wed, 26 Mar 2025 14:25:39 +0000
-Received: from mail-ej1-f48.google.com ([209.85.218.48])
+	id 1txSRg-00000008of2-2P41;
+	Wed, 26 Mar 2025 15:13:32 +0000
+Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1txRg7-00000008gD0-3ZvN
+	id 1txS00-00000008jQ3-2Eob
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Mar 2025 14:24:25 +0000
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ac289147833so1009689966b.2
-        for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2025 07:24:23 -0700 (PDT)
+	Wed, 26 Mar 2025 14:44:58 +0000
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4393dc02b78so50802685e9.3
+        for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2025 07:44:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1743000295; x=1743605095; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=REtKXp4hi6sgBm+AS7b2V8Aev3l8C+kzOBfn08oN45c=;
+        b=jUsjJ1VLggmUcFgL8WPnP8zTfJwPyHUbl1hyHLYbd/XVKwYqb1+3/JsG8JKunYeVIM
+         DlzLlskrdOG/uvv46mVnqyusWO7a1hfqQT6fKyJLLGRLfgKhJ585bGkK36xtgdlxsPng
+         QcYXnkF7n0PtMwFcAKczS+QFx9aKlxJ+C0we6TWpHwgTpYUvZI3BDXyLindy90MvgUi6
+         YAzOjH9TGu5xxEDr5IlLeE62Ebg7VnQtCuCQOzRukEVVRlU5XumR9PLn4GSHMXw14JJ3
+         D4OatQr3Spt0TQD1qrX7Rrtx8ybzAggFgs8zQ3JE0Lc4tXBI94ci1jL6GBVpSXAuttZX
+         8hMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742999060; x=1743603860;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yVeEr5fe+QcsB1CPbzMqouy4dYpCMr7o6TNfEQFa78s=;
-        b=u21k/g+DlWo603jMixSPLInCqeEM8x5GjT7kahEkJSKxUHvE0IShlE5t7QgJ9sRwN9
-         XxSla75xm30JLKBtFim1l0ve1LfyCc3ObjwGnb3S5ZynbsNUeMAc/jQhRWlUO/Wfa9N2
-         Q5XpohIvQSaev0qq+sKGMmWCdJhcDlJSg2OmX/vw39mdUDsYnP62PAKv/kZRPbHA/ado
-         dNPLRTSShwd5zqBv7rT1S4H0KKGcRf6ktjm7Odv4NB8x9rK2ox0JdcA2lfL7a4XqwNfk
-         hWA6XzVbpUH0onDHZ6swUIdeVel/+3kdOHrSBjlGSklVH6Oqk3dkmeogBQO6TG8K5avM
-         I1dw==
-X-Forwarded-Encrypted: i=1; AJvYcCXs6wgDHxWukS4+scVUf4oTpfcmkDCzeBr4yfFJJyJzdOrxWxVBcBsOfT/ejGLkk+YVIpbMhdHZC24=@lists.infradead.org
-X-Gm-Message-State: AOJu0YySO40sibBo9alB5C6dDWPqEFBKiY3ruiSckrod4KLmp3AUo62W
-	0uliPGTl356AVvZ8/OLXrdxzEeDLEHINni41Qpm2w0Z/zGC6MSrP9u7hAeDAdYQ=
-X-Gm-Gg: ASbGncuVApKooXQvjQgJkuZG70g3wXXmdZYizztKSP6O4nJHIfPyk4a1e7MWqxvHKMz
-	fqbB0bt+tw1MReCGC6iO58BEdIuXEbNwCb+GpFq5p9GUMua0Z9CRW2wc24lLuuuaDNRPsAsjc+J
-	MWNQwuUS1xTEwqa6eZybfoOdGE4m4cox7DmLNO3itFwyHcioz+B6d7SZpNOlH33sKS7LKjdTcKH
-	BPw2s8jdr2oyVY9oIcgVisHLofPXUnFZHX7NBQb3fp0UithWScwwScpns49iMGc9frt3BoNEHre
-	ELz227YOMgI1x1GH9WcAQF4mIhlVP07mCzw9udRc2jC4WznzcTsFZNBH9pDZpNuXzSWk6g6QE3A
-	qRM++wj0=
-X-Google-Smtp-Source: AGHT+IEQs9l6R4c9EzV3m5cYmmS3pm/Kb5ig8usqndfP6tTc7fmMgmwLaeOH7Xmd0winsw58g46aYg==
-X-Received: by 2002:a17:907:6095:b0:ac3:4138:6ae5 with SMTP id a640c23a62f3a-ac3f24c852dmr2117905466b.46.1742999060118;
-        Wed, 26 Mar 2025 07:24:20 -0700 (PDT)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efd3aab3sm1018370266b.156.2025.03.26.07.24.17
-        for <linux-mtd@lists.infradead.org>
+        d=1e100.net; s=20230601; t=1743000295; x=1743605095;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=REtKXp4hi6sgBm+AS7b2V8Aev3l8C+kzOBfn08oN45c=;
+        b=MXFwa85vdErkgwqabk57HYV0m1s9rtw6JbvqF2R97elv3i+oveVJRxxjwqvfIcd5Dr
+         bifR9PWsLRCOXMPzo4Kpjt8RlAWCOCyub4NraVqpNmxXxxajWjN5AbXGIPzw+tNOg+IJ
+         MG8fJtxS40cgb2Rmp1G/8ixrU97Y8sJ1D2ppAOAnRdkRMDGTHxgBQwkWxuXI+2DqCGEZ
+         Jd4EMYLnN4lILN8abNkCH3qtitbhfNxK08SKW67WWFwzZna5YXj0s7K5Vyx0ECvndaSb
+         vwU0Hgm83HDl/GNjnpHkc5F9QgSN1eJ3Afub+zqPbFU5NY5xYkgf1+BB2zJQ7bPSiWxv
+         E9Fw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBBHbAqXhizKsb7niNbPRdUQC+l0pfFm7vYx/EY2GwFE4tZVRJRk7knxjcQ9ZKo+bpRRjndRV/OIk=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxMNTwbNJGa96w2TdavfQX/x13btI77+oBc9HBQ5mHqGQV3zy9g
+	LP1U410dz+dSh9I7Ls9rvz1l64+DePaTDZvYJy4IntuZoUOXGycCh+jIk2u7rRM=
+X-Gm-Gg: ASbGncs1gXl1GrJCsiQZNnh9bKNDtgX9+4ibWNku9yKKFSN1ZckZdxki2/r/E6fADDv
+	qGMEX3zj12Yk0lWizFVOvx5OdhYHXYFpw40BrMJl7smQbGKiREY1geE0bIg9ZaMlCWXYxKu/XwR
+	myqXTcLWiFpax7w3SNGWQd+2Nt9HX4TY6DLrgaGcvenyPoAgi6DGI3mP5VvF59LKHn2xs92llsA
+	ERHPYPqu6bv+8OBvVu7MQPLo/hmTfbBbGd8WKCIU4vX4SRqixC682ONV29iWDK7BGXnQSa+RKIp
+	7q8rSpqRO3SFynnrHLc3M/uiGqyo97TE1aBcIn3/htDJZ8ZSSmlPo0cyluQVs30Xgg==
+X-Google-Smtp-Source: AGHT+IHDOuf6KYAidi0f/+wH2oPjsGxXXLqRAgkCOSMQfLCi0UZThvqs+OxaqR5hMnEF4EQhlhmaOQ==
+X-Received: by 2002:a05:600c:45cf:b0:43c:e478:889 with SMTP id 5b1f17b1804b1-43d508715e4mr191868365e9.0.1743000294919;
+        Wed, 26 Mar 2025 07:44:54 -0700 (PDT)
+Received: from [192.168.0.251] ([79.115.63.206])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d82dedd03sm4190975e9.3.2025.03.26.07.44.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Mar 2025 07:24:17 -0700 (PDT)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5eb5ecf3217so12656716a12.3
-        for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2025 07:24:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXvklIMLxOGk9J4t2AAcYNq3K4e19HgAXP8EOUT5JWscHitBuPPUsB5sKBgDSA7Krc9F6xH2EmWgHU=@lists.infradead.org
-X-Received: by 2002:a05:6402:210d:b0:5ed:2762:727a with SMTP id
- 4fb4d7f45d1cf-5ed27627ba1mr4923443a12.11.1742999057224; Wed, 26 Mar 2025
- 07:24:17 -0700 (PDT)
+        Wed, 26 Mar 2025 07:44:54 -0700 (PDT)
+Message-ID: <be8e5758-8f85-4476-b6c0-4400c8151cbe@linaro.org>
+Date: Wed, 26 Mar 2025 14:44:52 +0000
 MIME-Version: 1.0
-References: <20250224111414.2809669-1-quic_mdalam@quicinc.com> <20250224111414.2809669-3-quic_mdalam@quicinc.com>
-In-Reply-To: <20250224111414.2809669-3-quic_mdalam@quicinc.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 26 Mar 2025 15:24:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUOt8PxbRt-vGfeD5=uEtMVV0TLPUridu=nCkzX9iP24Q@mail.gmail.com>
-X-Gm-Features: AQ5f1JrfbKrmBiixGhwve_DBCFWEH-PHEu3H-5oG_9hBLQTIaQ4FX125IicniZo
-Message-ID: <CAMuHMdUOt8PxbRt-vGfeD5=uEtMVV0TLPUridu=nCkzX9iP24Q@mail.gmail.com>
-Subject: Re: [PATCH v15 2/2] spi: spi-qpic: add driver for QCOM SPI NAND flash Interface
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org, 
-	conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at, 
-	vigneshr@ti.com, linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] mtd: spi-nor: use rdid-dummy-ncycles DT property
+To: Michael Walle <mwalle@kernel.org>, Rob Herring <robh@kernel.org>
+Cc: Takahiro Kuwano <tkuw584924@gmail.com>,
+ Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Bacem Daassi <Bacem.Daassi@infineon.com>,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20250319-snor-rdid-dummy-ncycles-v1-0-fbf64e4c226a@infineon.com>
+ <20250319-snor-rdid-dummy-ncycles-v1-2-fbf64e4c226a@infineon.com>
+ <20250319233024.GA2625856-robh@kernel.org>
+ <a3818477-5a67-43ad-8961-88fa02916968@linaro.org>
+ <CAL_JsqKtz5+R1kjEzjo6bVicOX2c=UauC0_STAF0T02rSDqO+w@mail.gmail.com>
+ <50de19f7-2021-433e-b8f8-d928ed7d5d57@linaro.org>
+ <D8LSAUU0358V.2H1D7QXB9WBOF@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <D8LSAUU0358V.2H1D7QXB9WBOF@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250326_072423_890354_B3A8869A 
-X-CRM114-Status: GOOD (  28.42  )
+X-CRM114-CacheID: sfid-20250326_074456_593399_9341E054 
+X-CRM114-Status: GOOD (  25.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,103 +113,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi, Michael,
 
-On Mon, 24 Feb 2025 at 12:15, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
-> This driver implements support for the SPI-NAND mode of QCOM NAND Flash
-> Interface as a SPI-MEM controller with pipelined ECC capability.
+Sorry, I somehow missed your replies.
+
+On 3/21/25 8:00 AM, Michael Walle wrote:
+
+cut
+
+>>>> The
+>>>> problem that I see with that is that we no longer bind against the
+>>>> generic jedec,spi-nor compatible, so people need to update their DT in
+>>>> case they use/plug-in a different flash on their board.
+>>>
+>>> This chip is clearly *not* compatible with a generic chip.
+>>
+>> I think it is compatible. The chip defines the SFDP (serial flash
+>> discoverable parameters) tables. At probe time we parse those tables and
+>> initialize the flash based on them.
+> 
+> I disagree. It's not compatible with "jedec,spi-nor", which is
+> defined as
+> 
+
+cut
+
+> 
+> See my first reply, on how to possibly fix this mess (new
+> compatible if accepted, just use RDSFDP sequence which is backed by
+> the standard and do some fingerprinting).
 >
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 
-Thanks for your patch, which is now commit 7304d1909080ef0c
-("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
-upstream.
+this won't work unless there's a unique parameter or ID in the sfdp or
+vendors tables, which I doubt. Takahiro to confirm.
 
-> Change in [v11]
->
-> * Changed "depends on MTD" to "select MTD" in
->   drivers/spi/Kconfig file
+> FWIW, a new (or rather different) compatible is needed because we
+> cannot distinguish between random data returned during the dummy
+> cycles and a proper manufacturer id. So there is no way we could fix
+> this in the core itself.
 
-Why? This is the only driver that selects MTD instead of depending on it.
+Yes, I agree, new compatible it is then.
 
-> Change in [v7]
->
-> * Made CONFIG_SPI_QPIC_SNAND as bool
+cut
 
-Why? The driver uses MODULE_*, so a janitor may remove the latter.
+>> I think the property vs compatible decision resumes at whether we
+>> consider that the dummy cycles requirement for Read ID is/will be
+>> generic or not.
+> 
+> It is not generic. Because it will break autodetection. And that is
+> the whole purpose of this. Adding that property means, we can just
+> autodetect flashes within this 'group'. And personally, I think this
+> is a bad precedent.
+> 
 
-> --- a/drivers/spi/Kconfig
-> +++ b/drivers/spi/Kconfig
-> @@ -936,6 +936,15 @@ config SPI_QCOM_QSPI
->         help
->           QSPI(Quad SPI) driver for Qualcomm QSPI controller.
->
-> +config SPI_QPIC_SNAND
-> +       bool "QPIC SNAND controller"
-> +       depends on ARCH_QCOM || COMPILE_TEST
-> +       select MTD
+yes, I agree.
 
-As SPI_QPIC_SNAND is bool, this forces MTD (and various related symbols)
-to be built-in, as seen in an allmodconfig kernel.
+>> I noticed that with higher frequencies or protocol modes (e.g, octal
+>> DTR), flashes tend to require more dummy cycles. I think with time,
+>> we'll have more flashes with such requirement. Takahiro can jump in and
+>> tell if it's already the case with IFX.
+> 
+> But hopefully not with RDID. Again this doesn't play nice with other
+> flashes (or all flashes for now). Instead of adding random delay
+> cycles one should rather define a max clock speed for this opcode.
 
-So I think SPI_QPIC_SNAND should be tristate, and it should depend on
-MTD to avoid circular dependency issues.
+This could work, yes. But not for this flash. Or maybe encourage vendors
+to either contribute and enlarge the SFDP database or define their own
+vendor tables for all the flash properties that are not covered yet.
+It's strange how Block Protection is not yet covered by SFDP after all
+these years.
 
-> +       help
-> +         QPIC_SNAND (QPIC SPI NAND) driver for Qualcomm QPIC controller.
-> +         QPIC controller supports both parallel nand and serial nand.
-> +         This config will enable serial nand driver for QPIC controller.
-> +
->  config SPI_QUP
->         tristate "Qualcomm SPI controller with QUP interface"
->         depends on ARCH_QCOM || COMPILE_TEST
-
---- /dev/null
-+++ b/drivers/spi/spi-qpic-snand.c
-
-> +static const struct of_device_id qcom_snandc_of_match[] = {
-> +       {
-> +               .compatible = "qcom,ipq9574-snand",
-> +               .data = &ipq9574_snandc_props,
-> +       },
-> +       {}
-> +}
-
-Missing semicolon, so that's why you are forcing the driver built-in? ;-)
-
-> +MODULE_DEVICE_TABLE(of, qcom_snandc_of_match);
-> +
-> +static struct platform_driver qcom_spi_driver = {
-> +       .driver = {
-> +               .name           = "qcom_snand",
-> +               .of_match_table = qcom_snandc_of_match,
-> +       },
-> +       .probe = qcom_spi_probe,
-> +       .remove = qcom_spi_remove,
-> +};
-> +module_platform_driver(qcom_spi_driver);
-> +
-> +MODULE_DESCRIPTION("SPI driver for QPIC QSPI cores");
-> +MODULE_AUTHOR("Md Sadre Alam <quic_mdalam@quicinc.com>");
-> +MODULE_LICENSE("GPL");
-
-I have sent a patch to fix these issues
-https://lore.kernel.org/b63db431cbf35223a4400e44c296293d32c4543c.1742998909.git.geert+renesas@glider.be
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
