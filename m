@@ -4,211 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34EADC3600B
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Mar 2025 15:23:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34871C36011
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Mar 2025 16:02:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+mu4uC0t5eqCiCT3Z8i14l3JH4gifWf2McDPGcyp6YY=; b=A6e4TEbHnnUuzG
-	xVuhKRPLX5OyXyaRiD13BMVZ0h6cV9lXt+sh/j/hHC00taQ0rAG/jKWPeOuv+X6AIUN5Z8buaLBo+
-	2Zq0xvrUC+zYhUY+piV9AYLUzYclzi/YLpL37JkFbx+cbKdv4xZgsbCUhvpSFu9jG5QovpzRM8NXc
-	wst5xQ8VRp2kc//SXFzB3ZEjBw3pRFWs799BF4CdDan45YR+IHLN7kHQP+7lmPziih9OZjkDEFX+s
-	i6ZIrSkhDHZTabfBiORPXeQ7qlhRJRkphRJ9QtzWuL2wRDpsK1xpbJT79rdy5//HFrf2H4yJMRvio
-	MyhPVYW4U7e8BNGENhew==;
+	List-Owner; bh=r/irQOxdCzWQmZ/7Guw8tmQunlzYZg5GPE+GrdoBqjw=; b=gPV+1GKhZKZiHO
+	/tjBuTuPvA4Xu/dsih24/yGz8WUu5XvCUJkFcRTvUnqCbImn3UIsvfweMqo/y+dkY63GJ7277ED8B
+	ZV5AeoqIGQ1/z0cmj+GCyVb/sS+vwUO4BerydqhPuqC8wgvcPG+wGZVz614h2W/swYpgo4CU+C4ns
+	3CHFpsRTCD7r/B0WNJi5+cm3wM30tmKs3QWQXVJg6VMtzCTeHVSGcRpJejKpUolcrPFwIS5Oi6QUL
+	BQcOFVl0ySKKjGPczbvVCGaPVyxI5Zq8elgC+XE75zBr8u1U+oW8KxLJC9VDijhhsETEx0rcILDYm
+	d5YXdeGvoWWQDgQiNJSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1txSbi-00000008qRT-0nyO;
-	Wed, 26 Mar 2025 15:23:54 +0000
-Received: from mgamail.intel.com ([198.175.65.13])
+	id 1txTD8-00000008wX2-0qpA;
+	Wed, 26 Mar 2025 16:02:34 +0000
+Received: from mgamail.intel.com ([198.175.65.12])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1txSao-00000008qBy-22hS
+	id 1txSov-00000008soB-304E
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Mar 2025 15:23:00 +0000
+	Wed, 26 Mar 2025 15:37:35 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1743002578; x=1774538578;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=d2Lu8dMF2XAyh41YoyJLYdh8pJ1V+Vl5K7ImDVFk8aA=;
-  b=hnX/oUCSsnGX2RwaeRUWPifm3RVaGHx/g/CIyGfjhnpb8sVGhaf6m9Up
-   AQ9JLQFqyKDTTYq3Iyq50TsP7R2NgSsSDMvBQfmhjsnOg6w6qFUFEV0KH
-   +v41UtXC6LGok77lX41W7Mn+3s8neMtSjqKbIw++L/hNjS7dej8OKdz+r
-   SBRu0wcFOFH5kdTUCtS33DuAVb8cUSqnh3LMLLizNjiSlOgPva41d795e
-   Ww3l1sLR66N0m0Yg0gjEkO2g0gLxC3rQUuyvxAh7ds4y8RPybQTdwlsCa
-   eQpWGfpiDGyLEBNhZZZPU2uYUD/D6A3UOYphMntjPqYgIjJM9q2EK+XE7
-   g==;
-X-CSE-ConnectionGUID: 9qBeweT4QB6PWiiPyzDTJA==
-X-CSE-MsgGUID: LJVl+s2HQV2BKsd2KgvXpg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11385"; a="55296834"
+  t=1743003454; x=1774539454;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=a0B7fMkJxt2Wb7bBeMVZwsKjEvvl5x89e9KqNreoDzc=;
+  b=SxkReU6kSKcyMYxm0KkXtJKtCi7H3oHXoAXZOX/nlxnQj+hgjq3Sb2jP
+   SYr5b6r977vCTuWPLj18TXKaoc0lSRfFqjQmskavSkPt0tkaJIXnQ1MHv
+   y5vSluD4zV/vfGWGmDCKLinnQcSYd4hT/Y/EWqLAFxspqrOKQjtiLEq2q
+   xCMjTDGuilNijD8YV4958gVjEnHmkfw4yl7z98Yf6Gh1ykTYmrJFwiA2l
+   BG/oUAtRLqEpeWt7ZVUbxALFHHqmoRwPzJXK+pmvXdvnW/ZVRl4oivfi7
+   vhqRlcQ1Ja9D+wHIS4DtyfNduudqh1chxfcbeGZC1AK4vNLoxwRYHYQrP
+   Q==;
+X-CSE-ConnectionGUID: Tc7e0aJQToyBtq0Icwk4yA==
+X-CSE-MsgGUID: pWgs6yVLQWWadVMK6qnOLw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11385"; a="55665475"
 X-IronPort-AV: E=Sophos;i="6.14,278,1736841600"; 
-   d="scan'208";a="55296834"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2025 08:22:40 -0700
-X-CSE-ConnectionGUID: T1FRASn7R0GlSBlOixl/7Q==
-X-CSE-MsgGUID: cPZXxwWVSlW/MleA363ZxQ==
+   d="scan'208";a="55665475"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2025 08:37:34 -0700
+X-CSE-ConnectionGUID: RZBONXYVRCGe23F7ODszrw==
+X-CSE-MsgGUID: GWV/PHCrRA6GpfuUZsM3KQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.14,278,1736841600"; 
-   d="scan'208";a="155712074"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Mar 2025 08:22:41 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Wed, 26 Mar 2025 08:22:39 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Wed, 26 Mar 2025 08:22:39 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.177)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Wed, 26 Mar 2025 08:22:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=obIqrFe2nuPmpY3W8JtZ8Uny7gS3h1mg+FUrdWbBf6epmLMwPdyLXSa9fAGBglHtZtReZhxnZOJXNqSZAYvbUcdUmt9TiA02e5hoUwIwvqJPuIqnpaLweF/qgC1tJ6LV6etu5EPNbA6Cujd+Rtc5Ztx7hnyvyU7Qa52mqvKmbAgdRZt0m1XJgu0jmOk1rz3iBJZDyIzNrvJQzzz51x0a/AcgJhH+jfZLkoz4AROl4kKo3Wtq/3D9ZLkYRfgQ+AIi5NL8Lj8IZFMD+Km2KWjnr4I3M0rAXnNQvDTE9yY9EzLVswL2l8VZZUcFxIZLQ3EZK6pY8Yk2uculRvo/9yYnnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d2Lu8dMF2XAyh41YoyJLYdh8pJ1V+Vl5K7ImDVFk8aA=;
- b=daq64Zd7DlfE6wmLZsjlCAE9VXcrCo7DeV9DWLcJa4AQQAbCa+S6mCk7YcrQQk8jLcTe5Q3GdSEcx7qn314oqXCkXeL6nEyjkgZ3Fy5pAe9lMfGOeCfzO6X6E1QOk+ZFjW4sEhMXtvQGKfgmf1VLC92EHnfy5J/T/4MtxBAFsoOkKAGPof30Nn3anGRPBdVcSRDTOIT6VXrXr9eJAGUBmpRDGxUT89RVlR8m2fng0Zs5ww+AK8lCI/fLNVWnlzr+BJ9/h++y+rc1nw2W81Efsa4ZF3DSpxN7avnbDQoSNAX0tDNqMA91Ttct8hsixd8mhm9s/L+flvz+W7ZGkoGu6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
- by SJ5PPF1FF629472.namprd11.prod.outlook.com (2603:10b6:a0f:fc02::818) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Wed, 26 Mar
- 2025 15:22:37 +0000
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778]) by CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778%5]) with mapi id 15.20.8534.043; Wed, 26 Mar 2025
- 15:22:37 +0000
-From: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, "De Marchi, Lucas" <lucas.demarchi@intel.com>,
-	=?utf-8?B?VGhvbWFzIEhlbGxzdHLDtm0=?= <thomas.hellstrom@linux.intel.com>,
-	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
-	<tursulin@ursulin.net>, "Poosa, Karthik" <karthik.poosa@intel.com>, "Abliyev,
- Reuven" <reuven.abliyev@intel.com>, "Weil, Oren jer"
-	<oren.jer.weil@intel.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "intel-gfx@lists.freedesktop.org"
-	<intel-gfx@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 00/11] mtd: add driver for Intel discrete graphics
-Thread-Topic: [PATCH v6 00/11] mtd: add driver for Intel discrete graphics
-Thread-Index: AQHbi35IQi39kKi940mYFiM9rsv6CLN5J3IjgAyGYXA=
-Date: Wed, 26 Mar 2025 15:22:37 +0000
-Message-ID: <CY5PR11MB63667AD68B469B7EC4A12581EDA62@CY5PR11MB6366.namprd11.prod.outlook.com>
-References: <20250302140921.504304-1-alexander.usyskin@intel.com>
- <87frja72ee.fsf@bootlin.com>
-In-Reply-To: <87frja72ee.fsf@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY5PR11MB6366:EE_|SJ5PPF1FF629472:EE_
-x-ms-office365-filtering-correlation-id: d8b3db72-362d-458e-f410-08dd6c7a0a5b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016|38070700018;
-x-microsoft-antispam-message-info: =?utf-8?B?UndJUUliWWR0ZVc2UytvcW5mU05LMm1Gc3NiZnVwVm5HQTc2dndQeGJRb1JX?=
- =?utf-8?B?aVpTSVZvNmQ2RnVxMDZvcEhnRlFJb3hjcE5PV3NlWFl2LzY0emtEU2NRT3da?=
- =?utf-8?B?bmJ1U3QxMytibFc2ZGl1bFJLeUhOaUp6bkV2M2JLb1M5UVpOam0zNGo0MUIv?=
- =?utf-8?B?Ukx1eExSNWhWN1l2T21iTnROdTlJby9UTXQySi9JMyttanJuNWZhSmJoOE80?=
- =?utf-8?B?S01UV3Vmcm40azRPU2lRN2d1YzBhYTJvanpOTFpCb2ZZVWRtMUxmUVk1ajlW?=
- =?utf-8?B?ejhORmtvdEpHMnZXK2JEYXUwTU9GelNxUDkxYkZpVVZMdTJUZi9GcHltZHc2?=
- =?utf-8?B?QzJOK2ZDdXJHS081cFRRUEM0TTFScVhKV0FHMGxnK3JiY1FXZ0RVMlphdmhM?=
- =?utf-8?B?VE9QR1FCbElaTWN3ampzSnR2bkdiL2FJMnhDNnZSejd0RWxRQ3NQdWRRS3NH?=
- =?utf-8?B?a1VKVDhYZXc1TlhvOGEyNmlPV0JSdUZ2OGtRYlg1OXZ4Y1M2N2diRjVDM1gv?=
- =?utf-8?B?L0tjbG14T01GdHZKVWRQTU1qcUI1b0xhTk5hWmZMN0V5Yk9SdTkzR0VDUGV1?=
- =?utf-8?B?LzZyWDBCQkJSb1JBRzQxZTB0aG9PemdiOUc5NlVha0ZGUTJFTmhXeThLckNy?=
- =?utf-8?B?ck9YUDl1TVZ5R0k4bHZsUHZMb1RDZVhKSHZxdzhVeFdXbVNJa1UzYXp4Rklh?=
- =?utf-8?B?aUgzZFZhZDRWbm14L0tYOXl3WHROcCtyMGxZbE82amcvaHQ3TWJNMWZ1c2VE?=
- =?utf-8?B?ZlpOUEJoYkZLem5uenpMSVNUbWpPSUM1MTZqaVVzVGtScnhWWDBIYW9zS0hN?=
- =?utf-8?B?d1lEdUJ2eWxvZmJOVU56MHpOcWRZRFBLamhDZWIvUGhLb1Btb0I2N2lMRE9R?=
- =?utf-8?B?bnY4WlE5YjZKb3lVdjJZR3drcy9FRzNGc1dHQmZCOTltNFlEamEzc083Qzd4?=
- =?utf-8?B?SGhoVkJsd0VDUVFSSzNYV0dMRnU3WmxQZkhuR0FRaE4wRkdzR24rMGJBWVpI?=
- =?utf-8?B?S1BPWWp0MjEyNmlNWVZ0MGRRT1VuREVlNTU2L1RqdkowNGwxa2JMZXFJeWtG?=
- =?utf-8?B?SlM1UEp3MWtqQ1U2NXBsY0tOV0dvVy9rK1NIL3lPZGlJczUyN1ZtWVp2OVVC?=
- =?utf-8?B?Z3FsTGFwQWdNZi93Wms4Y01Hem1yU3Z6ZE95bDhaUU02QzNGOVJKSGtZWXlr?=
- =?utf-8?B?V0tIcHQ5a2Y3bHhvV2J5VGdCaGpXSnE2L1VFSThrS2JkUC9TaDR2MndIUkpu?=
- =?utf-8?B?enJ1Nmo0enp0SndzRWIvTUFxRStYTUk4TGRyMDRtSTdvWWlPNnBqODRnRWhX?=
- =?utf-8?B?MlBscUhGa1ZqUHcrVm8vUFlSc1hJMXdBSlltSkhTaHhpaWc0UEhOeS9lc2ky?=
- =?utf-8?B?dG9UaDZ5ZzNtWFFha1NjZ0lXOC9NN0pwSTM3L2czckJqUjhqT1JRV3pSMEU0?=
- =?utf-8?B?MUtnMmViY3hsK3dFY2N3SDdwYlNSSlFlQzFHeUtRT050QXZJaXRBN3hHcWsx?=
- =?utf-8?B?N0o4MzU5UEo4UzRzblZRTHRlbUZBNDEwU09vMnRGVy9sWW9mSnAvS0ljc1RD?=
- =?utf-8?B?SWtlaUlxa2EwdnNVR2VPRlUxSkpVck9lTkh5MWFyQlFwSllMUWFISG9lYTRJ?=
- =?utf-8?B?emJzVmRnelpIZDZER1Jpam9OcWFmR3hYYVRaZ0RJc0VKeGw4UHhYVUtwSzEv?=
- =?utf-8?B?amZvSUhmeXJTUXlhZDdTcS9qZzFacUpFOHhocXJObnBwUFhqaSszVkxSby9R?=
- =?utf-8?B?NzNhN3Z2RjVDMVJ6dGdNdUFPY3hsRWpWZ0tmVWdDOVFxSHE2QXduQWd2OFJs?=
- =?utf-8?B?TWo5dzFYSVNQcFR4TjZkeVZBVnNyNmV3dzlPb2JPS3BJOE1adUMycXl5YnFj?=
- =?utf-8?B?bCtEazd6ZVBOdDh6cWtXc2VleFR4Mlp5OTV4WGowMWNCRTF1Q080Z0FsSmFi?=
- =?utf-8?B?MmVpWG5TSFd0emY2dTRCaTVEU2pMTmZlS1hCVDJuNk54WGxYbWxZYmR4VFp6?=
- =?utf-8?Q?Q3SnNGFlqbCfNMakNmi3sTNFaEXWC4=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RWl5QVZBS1lHZENORzZZQzZHVXVvbEYySEcvYkYySjRBczFORzZJWFBha202?=
- =?utf-8?B?SFV2cHVqallSdmorQnJDU2hFNWs3SWduNnlhUG5wMjdvOGI1MzhxMmxKYTgz?=
- =?utf-8?B?SS8xay80TENpK2tib3hnSW5rZHlZOGNmVmJDSER5aTR1NUdDMkxZWTN5cWQ0?=
- =?utf-8?B?bEY4MlBNZjdyRHFWWFIxUTU5SlVJc2lKKzRoSWJ5cGpSdHdHaU9zRHdjYXhM?=
- =?utf-8?B?SkNydjhJL0dicjJhRTdJZjRha0E4N2tQQXhFUGJKTUxUZU5mMUZuRDBUdEFY?=
- =?utf-8?B?aEZBbWdadm1tWnQzVFpmMitvNW9qSHhVcGwrQ3ZFV1NuMVRRQTdsVTg1cXhY?=
- =?utf-8?B?T3BVQ0pFWG9aaFBlREdiYXZ3dk95WmVmOTlZRnNlZ1JmbWdLR0RPbzNUTTJH?=
- =?utf-8?B?OTd3dVBpMXdtQk53cXlEZzM5bktBaVoxaDBVMitaN0JkS0JRNEs0TEJ6SjRN?=
- =?utf-8?B?TmdNdGpxY3RxSlJXcmw5bVU0TlRlVVlYSG1EbExlY3prNHV5ODBmODQ3TFk0?=
- =?utf-8?B?TVpUcnYyTnoyZjhBdG9hNXV4OHA2VVhhUUtlTXBwbHNnckIwY3NZanZhYjd2?=
- =?utf-8?B?MVhsdDBYZjZvVjhPRXNJYysvSDFXblhKcUdnNjJmS3lvU3lWcG5wWGY2b2NU?=
- =?utf-8?B?REVoZzRFNUR0R1pwcWlsb0RjdDV4RnpnUkM5SEtjZFZ6cVI3R1hQQnh6WjIy?=
- =?utf-8?B?VnV0U2pNSkJHYWlqU2FFdFZXNWFXaTZwRHEwUjJtTVhzZ0x0eDI1QndsQlNU?=
- =?utf-8?B?S3d3cCtrcmpzQ2s5MDhNRFlmVllZNEZHL3ZBeWpQTVBwY05semxhalB6MURh?=
- =?utf-8?B?VDF4TkFVUVNKSDV4b2xvNDFKNE96U3VSMHhCYlJwVGpTSHlTd3NnSUIzYlVQ?=
- =?utf-8?B?MzQyZGZuU0dkWSs2WEJ0ZXNxWkl2VmRyek5FK0thUE9aNGM2ak9RbWVIcTha?=
- =?utf-8?B?TjRsWU5NekxLaUNHUUt5Uk5aVW9SbG5oNUlrTEszNDNFVXdINDRUZ2J2S0lN?=
- =?utf-8?B?Q3hiN2NKZmxibTh4Y1lSY0NPR3QyNUZ1Q3R5bjJJYlBqY1lQTDdjTHFrQXZv?=
- =?utf-8?B?ZTFoS2dQaWFKaGZ2L3NoTjNVZkNPNHN5ZHhDVldXZXBwdjRnK1MwcFlNbUdN?=
- =?utf-8?B?REx4V1lScCtaWFJTUG1BRkVnTXZEMTRYbk5aNE9SdWpkR0MwdW1VbEY5UWhX?=
- =?utf-8?B?UGJYbGIxNnN2blBFSUtsYU9KVXBLaWt3cHUyUldzYXp3QmR3MUFyVE1KSUZ0?=
- =?utf-8?B?Vk1reHJvZHRZQmNrdnNrb3NFaUxzOTRUL3NrR2FPSStqM2tzaVlROVpvT1hQ?=
- =?utf-8?B?Qk1jdktVamlWNVhkL0NLYldraEZQV2dvNHp2Z0hYcVQ2YzJRMnE0dGlTVUZm?=
- =?utf-8?B?SnVZM2hDNHRoaWx4aE9FSUt3VFlsQVhFSjB4VVRMNkhEWnRzQ2xxejEyZWs1?=
- =?utf-8?B?S2xlVHJOZHJJTGpXUm13OW5Bd1hzOUxaQXRqMCtXVjVZTjdKakp5dURqMWFk?=
- =?utf-8?B?REJLaXo3enRiSVIzWDZwcFhUSlpsSmNZc0dJMXllOCswS3pBVmhlRHROdWlT?=
- =?utf-8?B?Q3JWR3JKa0dHL2ZBYlI1VHkzejFMcnZXUUp6MWVDOGgvQkZhMjhZWHBDSHZl?=
- =?utf-8?B?N3ZlU09ScURkc0N1cWZLZlY2TGZ3TWc3dHlzS2hicUl3WXZLOE90Tk1QWUFo?=
- =?utf-8?B?VWpZTDlKcGZ3ZVlrSVVkdVFQUkNiemFXenJlMVhiU3pjVS9kU3VGc3NJYVZC?=
- =?utf-8?B?bXYzMDBTRWRJVUhYUEVXVU9nQUl2cXlmb0JpOVExVmxnR2dDejk2djJialVn?=
- =?utf-8?B?R2tVSUxnNXBpZ0ZzQXp1cDVzWGx0Q1hJcWtiU2FUQUlLckdwT0xBR1BVc2JN?=
- =?utf-8?B?T2lESi9KNGhvb2ZnRUZodjYzYlVHZHh5UFY0Z25JZjVDN0ZFWHEvR0lVaWF5?=
- =?utf-8?B?MkQyV3M2SmpwWmxlRXRiaFEvenQ2WFN0TUdody9hOGlaTjFDMDFjU3p0U3hL?=
- =?utf-8?B?dzN6OFlaR2NuZkZmV0d2NnMxSmtGUnpwWHFIUXpiQWp5THNsK2gydXNFUHRm?=
- =?utf-8?B?bVZqcmRDRjUzRjdwQjFxUGc2L01WMFRsemxkbnN5R1AxQTRvWmJRcTFjMG1U?=
- =?utf-8?Q?B5iBChNIonDIjfX16kGsk9n2N?=
+   d="scan'208";a="129923442"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2025 08:37:27 -0700
+From: Alexander Usyskin <alexander.usyskin@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Karthik Poosa <karthik.poosa@intel.com>
+Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
+	Oren Weil <oren.jer.weil@intel.com>,
+	linux-mtd@lists.infradead.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Usyskin <alexander.usyskin@intel.com>,
+	Tomas Winkler <tomasw@gmail.com>
+Subject: [PATCH v7 03/12] mtd: intel-dg: implement region enumeration
+Date: Wed, 26 Mar 2025 17:26:14 +0200
+Message-ID: <20250326152623.3897204-4-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250326152623.3897204-1-alexander.usyskin@intel.com>
+References: <20250326152623.3897204-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8b3db72-362d-458e-f410-08dd6c7a0a5b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2025 15:22:37.1561
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UO2mpMYl+8+fny9Q96erjDOD1wacYefLmjlYZdixTbn446BZdEJtrdTUcQiuYJWGoyZmsSQAiIdUYoj1vRWG+ybgutwvlhSty4iMAVfSJDg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPF1FF629472
-X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250326_082258_585118_909C5BDA 
-X-CRM114-Status: GOOD (  20.78  )
+X-CRM114-CacheID: sfid-20250326_083733_796611_FC82E8CC 
+X-CRM114-Status: GOOD (  21.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -220,32 +99,254 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-PiA+IEFkZCBkcml2ZXIgZm9yIGFjY2VzcyB0byBJbnRlbCBkaXNjcmV0ZSBncmFwaGljcyBjYXJk
-DQo+ID4gaW50ZXJuYWwgTlZNIGRldmljZS4NCj4gPiBFeHBvc2UgZGV2aWNlIG9uIGF1eGlsaWFy
-eSBidXMgYnkgaTkxNSBhbmQgWGUgZHJpdmVycyBhbmQNCj4gPiBwcm92aWRlIG10ZCBkcml2ZXIg
-dG8gcmVnaXN0ZXIgdGhpcyBkZXZpY2Ugd2l0aCBNVEQgZnJhbWV3b3JrLg0KPiA+DQo+ID4gVGhp
-cyBpcyBhIHJld3JpdGUgb2YgImRybS9pOTE1L3NwaTogc3BpIGFjY2VzcyBmb3IgZGlzY3JldGUg
-Z3JhcGhpY3MiDQo+ID4gYW5kICJzcGk6IGFkZCBkcml2ZXIgZm9yIEludGVsIGRpc2NyZXRlIGdy
-YXBoaWNzIg0KPiA+IHNlcmllcyB3aXRoIGNvbm5lY3Rpb24gdG8gdGhlIFhlIGRyaXZlciBhbmQg
-c3BsaXR0aW5nDQo+ID4gdGhlIHNwaSBkcml2ZXIgcGFydCB0byBzZXBhcmF0ZSBtb2R1bGUgaW4g
-bXRkIHN1YnN5c3RlbS4NCj4gPg0KPiA+IFRoaXMgc2VyaWVzIGludGVuZGVkIHRvIGJlIHB1c2hl
-ZCB0aHJvdWdoIGRybS14ZS1uZXh0Lg0KPiANCj4gSSBuZWVkIHRvIHRlc3QgcGF0Y2ggMSwgc29y
-cnkgZm9yIHRoZSBkZWxheSwgSSB3aWxsIGRvIHRoYXQgYW5kIGlmIEknbQ0KPiBoYXBweSB3aXRo
-IHRoZSByZXN1bHQgSSdsbCBhcHBseSB0aGlzIHBhdGNoIHRvIG10ZC9uZXh0IGF0IC1yYzEgKGJl
-dHRlcg0KPiBoYXZpbmcgdGhpcyBraW5kIG9mIGNoYW5nZSBlYXJseSBpbiB0aGUgY3ljbGUpLg0K
-PiANCj4gVGhlIG90aGVyIHBhdGNoZXMgY2FuIGdvIHRocm91Z2ggZHJtIEkgZ3Vlc3MsIHJlZ2Fy
-ZGxlc3Mgb2YgdGhlIHByZXNlbmNlDQo+IG9mIHBhdGNoIDEuIEknbGwgc2VuZCBteSBhY2tzIGFm
-dGVyIHRlc3RpbmcuDQo+IA0KDQpUaGFua3MgZm9yIHRlc3RpbmchDQpTdWJzZXF1ZW50IHBhdGNo
-ZXMgYXJlIGRlcGVuZGluZyBvbiBwYXRjaCAxIChhdCBsZWFzdCBwb3dlciBtYW5hZ2VtZW50IG9u
-ZSkuDQpTbywgSSdsbCBzeW5jIHRoZW0gd2l0aCB5b3VyIHByb2dyZXNzLg0KDQpJJ2xsIHB1c2gg
-YW5vdGhlciBzZXJpZXMgcmV2aXNpb24gYW55d2F5IHRvIGFkZCBmaXggZm9yIGVyYXNlIGZsb3cu
-DQpUaGUgbmV3IHBhdGNoIHNob3VsZCBiZSByZXZpZXdlZC4NCk5vIGNoYW5nZXMgaW4gb3RoZXIg
-cGF0Y2hlcy4NCg0KPiBUaGFua3MsDQo+IE1pcXXDqGwNCg0KDQotIC0gDQpUaGFua3MsDQpTYXNo
-YQ0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+In intel-dg, there is no access to the spi controller,
+the information is extracted from the descriptor region.
+
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Co-developed-by: Tomas Winkler <tomasw@gmail.com>
+Signed-off-by: Tomas Winkler <tomasw@gmail.com>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+---
+ drivers/mtd/devices/mtd_intel_dg.c | 198 +++++++++++++++++++++++++++++
+ 1 file changed, 198 insertions(+)
+
+diff --git a/drivers/mtd/devices/mtd_intel_dg.c b/drivers/mtd/devices/mtd_intel_dg.c
+index 963a88cacc6c..ba1c720e717b 100644
+--- a/drivers/mtd/devices/mtd_intel_dg.c
++++ b/drivers/mtd/devices/mtd_intel_dg.c
+@@ -3,6 +3,8 @@
+  * Copyright(c) 2019-2025, Intel Corporation. All rights reserved.
+  */
+ 
++#include <linux/bitfield.h>
++#include <linux/bits.h>
+ #include <linux/device.h>
+ #include <linux/intel_dg_nvm_aux.h>
+ #include <linux/io.h>
+@@ -22,9 +24,199 @@ struct intel_dg_nvm {
+ 		u8 id;
+ 		u64 offset;
+ 		u64 size;
++		unsigned int is_readable:1;
++		unsigned int is_writable:1;
+ 	} regions[] __counted_by(nregions);
+ };
+ 
++#define NVM_TRIGGER_REG       0x00000000
++#define NVM_VALSIG_REG        0x00000010
++#define NVM_ADDRESS_REG       0x00000040
++#define NVM_REGION_ID_REG     0x00000044
++/*
++ * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
++ * [23:16]-Reserved
++ * [31:24]-Erase MEM RegionID
++ */
++#define NVM_ERASE_REG         0x00000048
++#define NVM_ACCESS_ERROR_REG  0x00000070
++#define NVM_ADDRESS_ERROR_REG 0x00000074
++
++/* Flash Valid Signature */
++#define NVM_FLVALSIG          0x0FF0A55A
++
++#define NVM_MAP_ADDR_MASK     GENMASK(7, 0)
++#define NVM_MAP_ADDR_SHIFT    0x00000004
++
++#define NVM_REGION_ID_DESCRIPTOR  0
++/* Flash Region Base Address */
++#define NVM_FRBA      0x40
++/* Flash Region __n - Flash Descriptor Record */
++#define NVM_FLREG(__n) (NVM_FRBA + ((__n) * 4))
++/*  Flash Map 1 Register */
++#define NVM_FLMAP1_REG  0x18
++#define NVM_FLMSTR4_OFFSET 0x00C
++
++#define NVM_ACCESS_ERROR_PCIE_MASK 0x7
++
++#define NVM_FREG_BASE_MASK GENMASK(15, 0)
++#define NVM_FREG_ADDR_MASK GENMASK(31, 16)
++#define NVM_FREG_ADDR_SHIFT 12
++#define NVM_FREG_MIN_REGION_SIZE 0xFFF
++
++static inline void idg_nvm_set_region_id(struct intel_dg_nvm *nvm, u8 region)
++{
++	iowrite32((u32)region, nvm->base + NVM_REGION_ID_REG);
++}
++
++static inline u32 idg_nvm_error(struct intel_dg_nvm *nvm)
++{
++	void __iomem *base = nvm->base;
++
++	u32 reg = ioread32(base + NVM_ACCESS_ERROR_REG) & NVM_ACCESS_ERROR_PCIE_MASK;
++
++	/* reset error bits */
++	if (reg)
++		iowrite32(reg, base + NVM_ACCESS_ERROR_REG);
++
++	return reg;
++}
++
++static inline u32 idg_nvm_read32(struct intel_dg_nvm *nvm, u32 address)
++{
++	void __iomem *base = nvm->base;
++
++	iowrite32(address, base + NVM_ADDRESS_REG);
++
++	return ioread32(base + NVM_TRIGGER_REG);
++}
++
++static int idg_nvm_get_access_map(struct intel_dg_nvm *nvm, u32 *access_map)
++{
++	u32 flmap1;
++	u32 fmba;
++	u32 fmstr4;
++	u32 fmstr4_addr;
++
++	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
++
++	flmap1 = idg_nvm_read32(nvm, NVM_FLMAP1_REG);
++	if (idg_nvm_error(nvm))
++		return -EIO;
++	/* Get Flash Master Baser Address (FMBA) */
++	fmba = (FIELD_GET(NVM_MAP_ADDR_MASK, flmap1) << NVM_MAP_ADDR_SHIFT);
++	fmstr4_addr = fmba + NVM_FLMSTR4_OFFSET;
++
++	fmstr4 = idg_nvm_read32(nvm, fmstr4_addr);
++	if (idg_nvm_error(nvm))
++		return -EIO;
++
++	*access_map = fmstr4;
++	return 0;
++}
++
++static bool idg_nvm_region_readable(u32 access_map, u8 region)
++{
++	if (region < 12)
++		return access_map & BIT(region + 8); /* [19:8] */
++	else
++		return access_map & BIT(region - 12); /* [3:0] */
++}
++
++static bool idg_nvm_region_writable(u32 access_map, u8 region)
++{
++	if (region < 12)
++		return access_map & BIT(region + 20); /* [31:20] */
++	else
++		return access_map & BIT(region - 8); /* [7:4] */
++}
++
++static int idg_nvm_is_valid(struct intel_dg_nvm *nvm)
++{
++	u32 is_valid;
++
++	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
++
++	is_valid = idg_nvm_read32(nvm, NVM_VALSIG_REG);
++	if (idg_nvm_error(nvm))
++		return -EIO;
++
++	if (is_valid != NVM_FLVALSIG)
++		return -ENODEV;
++
++	return 0;
++}
++
++static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device)
++{
++	int ret;
++	unsigned int i, n;
++	u32 access_map = 0;
++
++	/* clean error register, previous errors are ignored */
++	idg_nvm_error(nvm);
++
++	ret = idg_nvm_is_valid(nvm);
++	if (ret) {
++		dev_err(device, "The MEM is not valid %d\n", ret);
++		return ret;
++	}
++
++	if (idg_nvm_get_access_map(nvm, &access_map))
++		return -EIO;
++
++	for (i = 0, n = 0; i < nvm->nregions; i++) {
++		u32 address, base, limit, region;
++		u8 id = nvm->regions[i].id;
++
++		address = NVM_FLREG(id);
++		region = idg_nvm_read32(nvm, address);
++
++		base = FIELD_GET(NVM_FREG_BASE_MASK, region) << NVM_FREG_ADDR_SHIFT;
++		limit = (FIELD_GET(NVM_FREG_ADDR_MASK, region) << NVM_FREG_ADDR_SHIFT) |
++			NVM_FREG_MIN_REGION_SIZE;
++
++		dev_dbg(device, "[%d] %s: region: 0x%08X base: 0x%08x limit: 0x%08x\n",
++			id, nvm->regions[i].name, region, base, limit);
++
++		if (base >= limit || (i > 0 && limit == 0)) {
++			dev_dbg(device, "[%d] %s: disabled\n",
++				id, nvm->regions[i].name);
++			nvm->regions[i].is_readable = 0;
++			continue;
++		}
++
++		if (nvm->size < limit)
++			nvm->size = limit;
++
++		nvm->regions[i].offset = base;
++		nvm->regions[i].size = limit - base + 1;
++		/* No write access to descriptor; mask it out*/
++		nvm->regions[i].is_writable = idg_nvm_region_writable(access_map, id);
++
++		nvm->regions[i].is_readable = idg_nvm_region_readable(access_map, id);
++		dev_dbg(device, "Registered, %s id=%d offset=%lld size=%lld rd=%d wr=%d\n",
++			nvm->regions[i].name,
++			nvm->regions[i].id,
++			nvm->regions[i].offset,
++			nvm->regions[i].size,
++			nvm->regions[i].is_readable,
++			nvm->regions[i].is_writable);
++
++		if (nvm->regions[i].is_readable)
++			n++;
++	}
++
++	dev_dbg(device, "Registered %d regions\n", n);
++
++	/* Need to add 1 to the amount of memory
++	 * so it is reported as an even block
++	 */
++	nvm->size += 1;
++
++	return n;
++}
++
+ static void intel_dg_nvm_release(struct kref *kref)
+ {
+ 	struct intel_dg_nvm *nvm = container_of(kref, struct intel_dg_nvm, refcnt);
+@@ -88,6 +280,12 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+ 		goto err;
+ 	}
+ 
++	ret = intel_dg_nvm_init(nvm, device);
++	if (ret < 0) {
++		dev_err(device, "cannot initialize nvm %d\n", ret);
++		goto err;
++	}
++
+ 	dev_set_drvdata(&aux_dev->dev, nvm);
+ 
+ 	return 0;
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
