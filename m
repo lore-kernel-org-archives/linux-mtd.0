@@ -4,69 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76E73C36010
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Apr 2025 13:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A30E3C36014
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Apr 2025 15:02:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VOhLgOToV5fl4uLCWmWgVfSFpSXW7RUIjNXLq8RTltw=; b=xn8C2H/1c7sPHs
-	XWDlTDLetza7d0zxWWD0gNa2CZbE8z72oz4ePyS6I90oCEHVyFId3q9jJSHATfzK/RGEbbMOwUMmw
-	3KjpMEbsAOUgIRyAKj7iteumtsgRuC4A1CwJryhEHaVY6251rpx0Y+CCNWn1tXRAbuRC4bln/DI5h
-	bPTtl8BWoIR4bY6YpkXKwHHvWobA3ZJhd28aXOot4Bz1erzjBm3IukX/AS++oELya0TJy3ylUjPh4
-	lmKysgAmdcK+T8eoyvIVb5v/ev1Qj0tZ2JrFEKeKoz905Qu/meHcBQb80zgppxMbIoMt1JF8a2kDA
-	iV2+Y/DRlARdf9uVEUjw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=djAcMzKI5xsEZQZcw+fjQb8n2GHPVdv/xhIy5gsiXXg=; b=ftzpm7tyPcWvvG
+	Ldi1FemX4cv3GlRnsK0K9ZtnsjxQ2e/UxJ+XX3Pz8xCjBO2VJhp11lqxm+jh/n9pgzkp0065hOnMw
+	mh3ELARi3LN4SU22mM+SVIoaHPLbChSSLFq+CbeJYn875M25lFEEU1eAEyUKfT1ny81/ORNfBGrpz
+	hsmD6c22u3fpQP81PNL7yBwnXsxxMPYNrXSItrispjCgCc73LzISSnfSDuwQZmfgZouKvYNHbvmYW
+	7ElVY1JA1M0xjI5+xSf792NhY0VkGJXDuqCA0s2n9Bk4rzIhGA9Fw7dAFhJLc/w3BFBJCxBjRKBTc
+	k1ybZpOOTfOK89y0H9Rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tzbnO-00000003Sh7-3Vjw;
-	Tue, 01 Apr 2025 13:36:50 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1tzd8H-00000003fDI-18mh;
+	Tue, 01 Apr 2025 15:02:29 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tzbnL-00000003Sfl-1RFR
+	id 1tzd6e-00000003ep0-2XRs
 	for linux-mtd@lists.infradead.org;
-	Tue, 01 Apr 2025 13:36:49 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E7ADF442E0;
-	Tue,  1 Apr 2025 13:36:42 +0000 (UTC)
+	Tue, 01 Apr 2025 15:00:50 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 921F5441C8;
+	Tue,  1 Apr 2025 15:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1743514605;
+	t=1743519646;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=G2Qh5l+gyOSzaVUsPnabujSE4kp0M+Vr17QUqK8IMGo=;
-	b=hnz0mJo/FtIuiTNZ17CpcKyWM2FhblLFMK+45rDewbz8BbFWIwv8s1qZ+3EPC0scP/O5hn
-	QS84C8zf56ouOgI4zlSLDcw7WxHMPntOkmrqBaHJkomASPBwWlCfTO+og0I5fH3bQn0yNz
-	eOQ+mx204PtGiZy8L8y3rXIVaw9yQAUiOca/dpCN42P+KVYSkQ1Jkz96vs056aGj7xL5m5
-	T+EllEztzlrwhY4NREW3J85uWfEs0ZzFCWOyTm05gYfVviCg0p2AmM4fUsh9/gnQa0waqZ
-	B7THuwJgijtQQlWJZYJLZXihmgGQoEsb9c8iG2FxZzO76ecPXOKVLZ76S9f4eQ==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z6SUzGcMkPKel2Eccn/jYaKzkfn5nDr4VwnUJsYHcl0=;
+	b=GMFYHBDmkQqPnwkmOAvUpfp7X/+LmL7dcjdsCjsTdJynnH4itkSn1hQxCz5+SCHo1uaclf
+	DhgtZjY4wTeHh3eozM/vo5clyziidRAKCKFpzukdJ18oiayB6OHyD0IAd2+Luv1CSMp1gD
+	zY/JN/ez/OxbyQY0KoB1rJxDH4cgB5kVBny+R9Xqxu+BqgxnjIxQ7QpvHp8Jrrz21EIWBv
+	8JOX6UARWLuysU9uR3cJezATqmPZbdx1VtrBi/dHC/aKYZWjiGqymqvGJBV9Qw7YGDO25i
+	GAc2Rla0P/hRZ+f7DASVPsS87VlZylgntjN5l/aSlpNhYftOGqddTvQHiMmsfA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	<linux-kernel@vger.kernel.org>,
-	Steam Lin <stlin2@winbond.com>,
-	Jean Delvare <jdelvare@suse.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	kernel test robot <lkp@intel.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: spinand: Fix build with gcc < 7.5
-Date: Tue,  1 Apr 2025 15:36:37 +0200
-Message-ID: <20250401133637.219618-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.48.1
+To: Alexander Usyskin <alexander.usyskin@intel.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Lucas De Marchi <lucas.demarchi@intel.com>,  Thomas
+ =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,  Rodrigo
+ Vivi
+ <rodrigo.vivi@intel.com>,  Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>,  Maxime Ripard <mripard@kernel.org>,
+  Thomas Zimmermann <tzimmermann@suse.de>,  David Airlie
+ <airlied@gmail.com>,  Simona Vetter <simona@ffwll.ch>,  Jani Nikula
+ <jani.nikula@linux.intel.com>,  Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>,  Tvrtko Ursulin <tursulin@ursulin.net>,
+  Karthik Poosa <karthik.poosa@intel.com>,  Reuven Abliyev
+ <reuven.abliyev@intel.com>,  Oren Weil <oren.jer.weil@intel.com>,
+  linux-mtd@lists.infradead.org,  dri-devel@lists.freedesktop.org,
+  intel-gfx@lists.freedesktop.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 01/12] mtd: core: always create master device
+In-Reply-To: <20250326152623.3897204-2-alexander.usyskin@intel.com> (Alexander
+	Usyskin's message of "Wed, 26 Mar 2025 17:26:12 +0200")
+References: <20250326152623.3897204-1-alexander.usyskin@intel.com>
+	<20250326152623.3897204-2-alexander.usyskin@intel.com>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Tue, 01 Apr 2025 17:00:43 +0200
+Message-ID: <87ecycrko4.fsf@bootlin.com>
 MIME-Version: 1.0
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukedvledvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepueeileelteeggffhfeevhfeihfeffedvtddvgfelvdejleejveelueeggeevleehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledvrddukeegrdduuddtrdduleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledvrddukeegrdduuddtrdduleefpdhhvghloheplhhotggrlhhhohhsthdrlhhotggrlhguohhmrghinhdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedufedprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtohepthhuughorhdrrghmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihgthhgrvghls
- eifrghllhgvrdgttgdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepthhhohhmrghsrdhpvghtrgiiiihonhhisegsohhothhlihhnrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukeeftdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledvrddukeegrdduuddtrdduleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledvrddukeegrdduuddtrdduleefpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvuddprhgtphhtthhopegrlhgvgigrnhguvghrrdhushihshhkihhnsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehluhgtrghsrdguvghmrghrtghhihesihhnthgvlhdrtghomhdprhgtphhtthhopehthhhomhgrshdrhhgvlhhlshhtrhhomheslhhinhhugidrihhnthgvl
+ hdrtghomhdprhgtphhtthhopehrohgurhhighhordhvihhvihesihhnthgvlhdrtghomhdprhgtphhtthhopehmrggrrhhtvghnrdhlrghnkhhhohhrshhtsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepmhhrihhprghrugeskhgvrhhnvghlrdhorhhg
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250401_063647_746771_233E19D3 
-X-CRM114-Status: GOOD (  11.69  )
+X-CRM114-CacheID: sfid-20250401_080049_085826_9FF8260B 
+X-CRM114-Status: GOOD (  12.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,50 +85,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-__VA_OPT__ is a macro that is useful when some arguments can be present
-or not to entirely skip some part of a definition. Unfortunately, it
-is a too recent addition that some of the still supported old GCC
-versions do not know about, and is anyway not part of C11 that is the
-version used in the kernel.
-
-Find a trick to remove this macro, typically '__VA_ARGS__ + 0' is a
-workaround used in netlink.h which works very well here, as we either
-expect:
-- 0
-- A positive value
-- No value, which means the field should be 0.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202503181330.YcDXGy7F-lkp@intel.com/
-Fixes: 7ce0d16d5802 ("mtd: spinand: Add an optional frequency to read from cache macros")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- include/linux/mtd/spinand.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 83301ef11aa9..0bb06aeffa62 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -67,7 +67,7 @@
- 		   SPI_MEM_OP_ADDR(2, addr, 1),				\
- 		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
- 		   SPI_MEM_OP_DATA_IN(len, buf, 1),			\
--		   __VA_OPT__(SPI_MEM_OP_MAX_FREQ(__VA_ARGS__)))
-+		   SPI_MEM_OP_MAX_FREQ(__VA_ARGS__ + 0))
- 
- #define SPINAND_PAGE_READ_FROM_CACHE_FAST_1S_1S_1S_OP(addr, ndummy, buf, len) \
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(0x0b, 1),				\
--- 
-2.48.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gQWxleGFuZGVyLAoKT24gMjYvMDMvMjAyNSBhdCAxNzoyNjoxMiArMDIsIEFsZXhhbmRl
+ciBVc3lza2luIDxhbGV4YW5kZXIudXN5c2tpbkBpbnRlbC5jb20+IHdyb3RlOgoKPiBDcmVhdGUg
+bWFzdGVyIGRldmljZSB3aXRob3V0IHBhcnRpdGlvbiB3aGVuCj4gQ09ORklHX01URF9QQVJUSVRJ
+T05FRF9NQVNURVIgZmxhZyBpcyB1bnNldC4KPgo+IFRoaXMgc3RyZWFtbGluZXMgZGV2aWNlIHRy
+ZWUgYW5kIGFsbG93cyB0byBhbmNob3IKPiBydW50aW1lIHBvd2VyIG1hbmFnZW1lbnQgb24gbWFz
+dGVyIGRldmljZSBpbiBhbGwgY2FzZXMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgVXN5
+c2tpbiA8YWxleGFuZGVyLnVzeXNraW5AaW50ZWwuY29tPgoKSSBzdWNjZXNzZnVsbHkgdGVzdGVk
+IGl0LCB0aGlzIHBhdGNoIHdpbGwgYmUgYXBwbGllZCBhdCAtcmMxIHRvIHRoZQptdGQvbmV4dCB0
+cmVlLgoKSSB3YXMgd29uZGVyaW5nLCBkbyB5b3UgdGhpbmsgaXQgd291bGQgYmUgcG9zc2libGUg
+dG8ga2VlcCB0aGUgY3JlYXRpb24Kb2YgbXRkX21hc3RlciBhbmQgbWFrZSBpdCBhIHN5bWJvbGlj
+IGxpbmsgdG8gbXRkeCB3aGVuCk1URF9QQVJUSVRJT05FRF9NQVNURVI9eSBvciB3aGVuIHRoZXJl
+IGlzIG5vIHBhcnRpdGlvbj8gSW4gc2hvcnQsIGFsd2F5cwpoYXZpbmcgbXRkX21hc3RlcngsIGJl
+Y2F1c2UgSSBmZWFyIGF0IHNvbWUgcG9pbnQgd2UnbGwgaGF2ZSBwcm9ibGVtcwpvdGhlcndpc2Ug
+Oi0pCgpSaWdodCBub3cgd2UgaGF2ZToKCi0gV2l0aG91dCBwYXJ0aXRpb246Cm10ZDAgKG10ZDBy
+byBtdGRibG9jazApCi0gV2l0aCBwYXJ0aXRpb24gYW5kIE1URF9QQVJUSVRJT05FRF9NQVNURVI9
+bgptdGQwIChtdGQwcm8gbXRkYmxvY2swKQptdGRfbWFzdGVyMAotIFdpdGggcGFydGl0aW9uIGFu
+ZCBNVERfUEFSVElUSU9ORURfTUFTVEVSPXkKbXRkMCAobXRkMHJvIG10ZGJsb2NrMCkgW3RoaXMg
+aXMgdGhlIG1hc3Rlcl0KbXRkMSAobXRkMXJvIG10ZGJsb2NrMSkKCkkgYW0gc3VnZ2VzdGluZzoK
+LSBXaXRob3V0IHBhcnRpdGlvbjoKbXRkMCAobXRkMHJvIG10ZGJsb2NrMCkKbXRkX21hc3RlcjAg
+LT4gbGluayB0byBtdGQwCi0gV2l0aCBwYXJ0aXRpb24gYW5kIE1URF9QQVJUSVRJT05FRF9NQVNU
+RVI9bgptdGQwIChtdGQwcm8gbXRkYmxvY2swKQptdGRfbWFzdGVyMAotIFdpdGggcGFydGl0aW9u
+IGFuZCBNVERfUEFSVElUSU9ORURfTUFTVEVSPXkKbXRkMCAobXRkMHJvIG10ZGJsb2NrMCkgW3Ro
+aXMgaXMgdGhlIG1hc3Rlcl0KbXRkMSAobXRkMXJvIG10ZGJsb2NrMSkKbXRkX21hc3RlcjAgLT4g
+bGluayB0byBtdGQwCgpXaGF0IGRvIHlvdSB0aGluaz8gT3IgbWF5YmUgZXZlbiBhbHdheXMgbXRk
+X21hc3RlciBpbiB0aGUgZmlyc3QgcGxhY2UuCgpSaWNoYXJkLCB5b3VyIHBvaW50IG9mIHZpZXcg
+b24gdGhpcz8KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
