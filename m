@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD4A3C3601B
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Apr 2025 08:58:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2189C3601C
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Apr 2025 08:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fEB4cjT5d3aPSLtca24AkUwm/dU6/BCXgivp9wzg5Ik=; b=1MPfqDNggB6tQu
-	KpbseXzdFgIGXeFlz2Oe438IKUNGO2oHF1GilXJ6Pa1xAwktSt4rArJbZOwY1UWN7mwtAZvuTEna4
-	ds/97UU4h7//nhhIr2nd5uGzS7vZFtXbpmQPD6mva057oDn5MmTLO1J+/JtDgVswsJ+KyF0xro7cJ
-	ipOQLDoYBhpVykQBEDd2jW3Tv0fFHOjHUWU2xbU4GWaqkFvyLeOKsdLoRIgiqCUIROU4vkQb4r424
-	0+qS3RrnVl46DQQJW7angtAuSSeGf6nd68QaT9NBHPW7JKt1pU1ZoPyp3XtynVSnXRHFkT9Bj1tqE
-	eo87dwHzW2q9XpEfdiVA==;
+	List-Owner; bh=578cQWy+mLJNz5SZv0UcNvOwSi5Ks8IW4pUjsYQMDz0=; b=vFOYIYRXbq32tV
+	tHHjudO4zhwoW0SpkkeiGoHf1fpSWiPpllCbkd6ZgQMMk+mFTSVRCoKQlO5KR7qCGktc4qsBmhH5e
+	EkPmrv9+ulpYNQ/yMbc/YVYsmeDXbwR2s+KYR1Twr9y046u6pojXGjzN8dxETwrud09kv7JPRG2mC
+	TomzhC2pZuewjIBO+vUAuyfCmKkIdl1e4zSYKVJwby7lbr3vHoC5e+opJGC4c5cX1GrFuIxFE2aXR
+	4PkS45nl0v1w61NlJETKJLgZ0vPMo0I51Ifvu6kqRWzL/aHwthVuxXi4P82LHwP0dAOijH+49cm21
+	0qgu52ch1gcCpWlVLmqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tztvA-00000005bOf-3npd;
-	Wed, 02 Apr 2025 08:58:05 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1tztvC-00000005bPl-1Q57;
+	Wed, 02 Apr 2025 08:58:06 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tztuE-00000005bBj-0mAh
+	id 1tztuF-00000005bCW-2Eig
 	for linux-mtd@lists.infradead.org;
-	Wed, 02 Apr 2025 08:57:07 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-2295d78b45cso39288955ad.0
-        for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2025 01:57:05 -0700 (PDT)
+	Wed, 02 Apr 2025 08:57:08 +0000
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-227b828de00so112919875ad.1
+        for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2025 01:57:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743584225; x=1744189025; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1743584227; x=1744189027; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WWAPszpWlvrmrWFqRVfzalTuSm2t7m4HZ4+y2asZ5jM=;
-        b=HVROsZxNQznNZXETF4+qdHTIKiGP9Ih5U2wD6Em3GnpxghpbOg5/THNYtPuhWQnUXk
-         cYvtvro/XqdJoensYz4wS1Qumii5WO/uQ7MepwyhnvmE/gyOCM/jwYOKk4oB5DiEjp5x
-         J3jREcodRonHAixEAZD+Yhx7Xr+kBl3s5k5VRF0IquOuZSrS2s/BtqQpz+AUeeJsmQX5
-         FK5rsQcxZ7PyjiHNsWPjyc2ceLF67nimUWP9hMWLmT0SYaiMuYwSalfswqlWsOZ7ZXnr
-         fCdcw4b8UduE5JLwsU1ytOkiHvdlndaLwjfsVGDbxpPlt8WhVxt1OzUfUIG2fadD9yEW
-         tmMA==
+        bh=2L6fD6nlIa393DR0GjOYRfyiTfAg8gVxKRvxkE78qM8=;
+        b=b2RIXgEVd3dUjFJsm4m3W+91UAbryI92gWyGgp/QxecyzMCyfZtawBfnuZHT7CeTHj
+         Zazhb5q1yAG+k7pcyu8mL1AVE9wYt/sEZxXmzvK0iDDxQOX2MO3Gyq2E/YUSEAaILKRq
+         GvgucO57n+89IU0DII1Ab3ZF8oX1iwlTMXHcr0H64CjXHqx9iEkK6fW1No5P7kz2pwj2
+         7ShTyJobNwi/c1QKPGHWnvEnf0ajzsAtx4uwDu26iQEgTvR7HrvHpP/bFxIP1bk/kvja
+         HxuaSV1QC0aDxUsf52rMP/klUNYAt4mPVGsMxscu+R+7ezPPb/Et5LtvEADbepLg4aa+
+         k0AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743584225; x=1744189025;
+        d=1e100.net; s=20230601; t=1743584227; x=1744189027;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WWAPszpWlvrmrWFqRVfzalTuSm2t7m4HZ4+y2asZ5jM=;
-        b=tBXQzEvW5G9f4iwMVa9bRBGNTfBBMCRg+qYMZNJuP3a4zq/sQH8fbS63+zXDqbW/8d
-         VZL+lVqQxaQF9iPnUCiVXoAyhF/6GMkKNkpMELTZDmjsd77FJkz9HRrEmsFgE/RVIR8c
-         j1ySYezeDdbFmOPn5q5N9r9TIByNR5++nkcdXu1o2DzXCRP985x/aBgj3n1NIGYw7Ucf
-         zrahMZaejEWe0H+KGCtkPpPL5e87bSQhQFc+Hgn+2Yja67EP263FmVbbMsBoNK6+KL3p
-         asRTziQiUaOIHvdyGyiAFKcZoK4TosxZIA+g8oBEZ27B2qaN7rF79JWE7FMqFcFFOcIQ
-         UxmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWNpitPUYnle2LmrUL8vktc3+HCmSa5Cl5YQqkviiZz2ym+7cUmC3O5XZOo/W6bC31AW8XuCR/AEyk=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy+Rh5LAgN0U42snku2zDk0WnLovrfJC9LZPCQWjoHPQdLPagEV
-	WfYQsJc4meKuqGP4GiwL+CtudpziV4rSkrEL6EjgFdD3+Xddi8z9
-X-Gm-Gg: ASbGncsxRa/ldvZg+gAxnjDbsXYpiJ3Hu6yIGKgFTNsQWns+KxfNY1vyxbTR0PgfmI5
-	decUoiBBIY+2Ofhr+6A+UvBY3yZDTvZAfTNtyN4aiGC2AQW8FMYhzIyMRID1283a19PkDJnnMHC
-	IW3fLVkNQkRjOoSWVRguyn+Dlgy54wyGv8EaAMGm845PyZZZknoqgF4pnyE6g3VU7KhtTVuTO+0
-	2TVclT853CnztPmfOEBNAxk3lZiBwcuvAhEVc1E+CZ4stnZ3UboGFqUYe76ipryfwkRsDM3nNDX
-	yscykgWvZFvCGFk9bGGjWpWCR/gHkEcP266UIbFs9E0YnfyhsYk5ngUiyIbg8289/MvL
-X-Google-Smtp-Source: AGHT+IEB11GBk+GAE4+ZVetVY/CYu/AG8QyTGlgekDHi/jvsC7njBUNP5H6KE5bwxY7hZlGb8lzR/g==
-X-Received: by 2002:a17:903:1c7:b0:224:c46:d166 with SMTP id d9443c01a7336-2292f9e53camr256175075ad.40.1743584225005;
-        Wed, 02 Apr 2025 01:57:05 -0700 (PDT)
+        bh=2L6fD6nlIa393DR0GjOYRfyiTfAg8gVxKRvxkE78qM8=;
+        b=eyKafejGadwjo/M7BmsOK1exQU3jM2BSXOZGmTyzY2LGgvX1lIwIor/11P56NR4qdk
+         m3GKGWSLYqcQhWClxDSHyBQcH329qxwC6fFgPqhV1LSqWfNxZ07oWXUL0pUYSn5/9uBw
+         xzzrWxBj4oKiQcnUuj7VWDYE9Hq9JEFIWDokMdtAudSxAKQVLydWiL+DNnZjVbiCQZAt
+         OnQJrUWXDIQOjUgzk33kqYy4HnEm7dtFSjeRbY4o52CF6X1YagItWZer3gvmp/vl2q2q
+         zDyICL1ZOQyCX6RdEn0soWAFLaWUM59prmEQo9mPksDxUJ+kXoHRah9cZ+YzMT/XQc+Y
+         OrWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVnG2HtwtWLoGPM+dYRzrTGWyPF2n4jCk6afFFofijC0dQpRuoyFA448u+CNQU/HiJXJLMX9EliqZI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyIH7WXRwDEkGzdXSFxQLDEZFKvjDmoxCLks6zXewm9QspG7h0m
+	JfRqwygeUsnU6lnsO43SZgAaGNy84iGvpHSIMQIB367Osf+2aive
+X-Gm-Gg: ASbGncte6oeyH+PrQko1laKmI9PYycyCl/kE9ewTPihoBAvL0XBd0ay4+665sO3Xxoa
+	hRj9uJFjbRxXYQYVLnB/+QM775PVRyztIl/DCahT3RXlzXVgrbRlq/h0aVsLbH6I8Xe0VO3XuHc
+	P1WeIHD3khD+oHqNK5U1uFCYcT1mkcSNAzhctAMgjp++dHam9pYTr9wpCD6x7BD0gMkWGexrUAl
+	JT37xSPp5BgQarhtyQZy87wxL25Qpg0pOUOrmJaWHd0dcwobZe7UNSee9Hd2QUrMeYIpWg4D4/o
+	6U6nYIhk/XUHrZyhhdNdWDw24fCY+AEI38mYQZew67+pEk0a0XNoXQDa8Q88hFAUOggtGrciEp4
+	AL4Y=
+X-Google-Smtp-Source: AGHT+IGZgi69Abih38Lloz1v9kLCgGQu6o9alyyOKDi5TM595XFdyW5Z+Sc4LA3KYAlvCBtd3nkQfQ==
+X-Received: by 2002:a17:902:e549:b0:223:325c:89f6 with SMTP id d9443c01a7336-2296c605374mr25463065ad.10.1743584226867;
+        Wed, 02 Apr 2025 01:57:06 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291f1de7d7sm102753925ad.173.2025.04.02.01.57.04
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291f1dedb5sm103221535ad.176.2025.04.02.01.57.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Apr 2025 01:57:04 -0700 (PDT)
+        Wed, 02 Apr 2025 01:57:05 -0700 (PDT)
 Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 0103E80605;
+	by twhmp6px (Postfix) with ESMTPS id 0368E80642;
 	Wed,  2 Apr 2025 17:06:10 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: tudor.ambarus@linaro.org,
@@ -83,17 +84,16 @@ To: tudor.ambarus@linaro.org,
 Cc: alvinzhou@mxic.com.tw,
 	leoyu@mxic.com.tw,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH 2/3] mtd: spi-nor: macronix: Remove duplicate flash info entries
-Date: Wed,  2 Apr 2025 16:51:28 +0800
-Message-Id: <20250402085129.1027670-3-linchengming884@gmail.com>
+Subject: [PATCH 3/3] mtd: spi-nor: macronix: Move macronix_nor_default_init logic to macronix_nor_late_init
+Date: Wed,  2 Apr 2025 16:51:29 +0800
+Message-Id: <20250402085129.1027670-4-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20250402085129.1027670-1-linchengming884@gmail.com>
 References: <20250402085129.1027670-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250402_015706_224352_9EE487C8 
-X-CRM114-Status: UNSURE (   9.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250402_015707_675082_B1102E5A 
+X-CRM114-Status: GOOD (  12.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,31 +112,57 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-To clean up the code and reduce duplication, this entry is removed.
+Remove macronix_nor_default_init and move its functionality to
+macronix_nor_late_init to ensure proper quad_enable initialization.
+
+For MX25L3255E, SFDP follows JESD216, which does not include the Quad
+Enable bit Requirements field in its version. When the size field is
+removed, manufacturer->fixups->default_init hook is not executed, causing
+params->quad_enable not being overwritten with the intended function.
+Consequently, it remains as the default spi_nor_sr2_bit1_quad_enable.
+
+By moving quad_enable setup from default_init to late_init, quad_enable
+is correctly assigned after spi_nor_init_params, regardless of the size
+field removal.
+
+Additionally, according to spi-nor/core.h, quad_enable is more
+appropriately placed in late_init, as older SFDP versions did not define
+the Quad Enable bit Requirements. This change removes default_init and
+moves quad_enable handling to late_init accordingly.
 
 Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/macronix.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/mtd/spi-nor/macronix.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 2acd8e28d1c4..07e0bd0b70a0 100644
+index 07e0bd0b70a0..216c02b92bfe 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
-@@ -160,13 +160,6 @@ static const struct flash_info macronix_nor_parts[] = {
- 		/* MX25U51245G */
- 		.id = SNOR_ID(0xc2, 0x25, 0x3a),
- 		.fixups = &macronix_qpp4b_fixups,
--	}, {
--		.id = SNOR_ID(0xc2, 0x25, 0x3a),
--		.name = "mx66u51235f",
--		.size = SZ_64M,
--		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
--		.fixup_flags = SPI_NOR_4B_OPCODES,
--		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		/* MX66U1G45G */
- 		.id = SNOR_ID(0xc2, 0x25, 0x3b),
+@@ -282,22 +282,17 @@ static int macronix_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+ 	return enable ? macronix_nor_octal_dtr_en(nor) : macronix_nor_octal_dtr_dis(nor);
+ }
+ 
+-static void macronix_nor_default_init(struct spi_nor *nor)
+-{
+-	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+-}
+-
+ static int macronix_nor_late_init(struct spi_nor *nor)
+ {
+ 	if (!nor->params->set_4byte_addr_mode)
+ 		nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
++	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+ 	nor->params->set_octal_dtr = macronix_nor_set_octal_dtr;
+ 
+ 	return 0;
+ }
+ 
+ static const struct spi_nor_fixups macronix_nor_fixups = {
+-	.default_init = macronix_nor_default_init,
+ 	.late_init = macronix_nor_late_init,
+ };
+ 
 -- 
 2.25.1
 
