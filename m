@@ -4,76 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A30E3C36014
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Apr 2025 15:02:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4349FC36010
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Apr 2025 03:18:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=djAcMzKI5xsEZQZcw+fjQb8n2GHPVdv/xhIy5gsiXXg=; b=ftzpm7tyPcWvvG
-	Ldi1FemX4cv3GlRnsK0K9ZtnsjxQ2e/UxJ+XX3Pz8xCjBO2VJhp11lqxm+jh/n9pgzkp0065hOnMw
-	mh3ELARi3LN4SU22mM+SVIoaHPLbChSSLFq+CbeJYn875M25lFEEU1eAEyUKfT1ny81/ORNfBGrpz
-	hsmD6c22u3fpQP81PNL7yBwnXsxxMPYNrXSItrispjCgCc73LzISSnfSDuwQZmfgZouKvYNHbvmYW
-	7ElVY1JA1M0xjI5+xSf792NhY0VkGJXDuqCA0s2n9Bk4rzIhGA9Fw7dAFhJLc/w3BFBJCxBjRKBTc
-	k1ybZpOOTfOK89y0H9Rg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=shX10411ETt3eZ0h+TRjf9DeuEHqpJh9b8d7R8FECvw=; b=EnhdFpz0ZYMm19
+	zJyEBmFc39PQFmIZJwY8tlA4N8RG/a9rFCL4HDtOdSMeg9qpWLtHlV/t3WEYM1bJllZ3TY+LEe2L6
+	45kHNWfGRQ4Xq6dkLgYkCTwsw+lciqH13FOQbgYofdAFa+kOleTmA9hMcINAacTORegLoVeCl1US6
+	Ht6BV0OJxBL0AWR2KtKCnxPddMNRI4bgcVIuwnBKEjEwjwyKH8GijwCQs3WWUo6bIVq+9vW2pz3Kf
+	Qlu0V2XnmMuuHRfff5UHgk/OZPs9fEBLb7fS7KBuCiYyWy5NHM/RRz22u/M28UGhNHUB/nDaA/Z37
+	sAmdjDI/T58iFQ48Qq5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tzd8H-00000003fDI-18mh;
-	Tue, 01 Apr 2025 15:02:29 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1tzoc8-000000051VX-08UD;
+	Wed, 02 Apr 2025 03:18:04 +0000
+Received: from smtp84.cstnet.cn ([159.226.251.84] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tzd6e-00000003ep0-2XRs
+	id 1tzobM-000000051Ql-36Mh
 	for linux-mtd@lists.infradead.org;
-	Tue, 01 Apr 2025 15:00:50 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 921F5441C8;
-	Tue,  1 Apr 2025 15:00:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1743519646;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z6SUzGcMkPKel2Eccn/jYaKzkfn5nDr4VwnUJsYHcl0=;
-	b=GMFYHBDmkQqPnwkmOAvUpfp7X/+LmL7dcjdsCjsTdJynnH4itkSn1hQxCz5+SCHo1uaclf
-	DhgtZjY4wTeHh3eozM/vo5clyziidRAKCKFpzukdJ18oiayB6OHyD0IAd2+Luv1CSMp1gD
-	zY/JN/ez/OxbyQY0KoB1rJxDH4cgB5kVBny+R9Xqxu+BqgxnjIxQ7QpvHp8Jrrz21EIWBv
-	8JOX6UARWLuysU9uR3cJezATqmPZbdx1VtrBi/dHC/aKYZWjiGqymqvGJBV9Qw7YGDO25i
-	GAc2Rla0P/hRZ+f7DASVPsS87VlZylgntjN5l/aSlpNhYftOGqddTvQHiMmsfA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Alexander Usyskin <alexander.usyskin@intel.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Lucas De Marchi <lucas.demarchi@intel.com>,  Thomas
- =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,  Rodrigo
- Vivi
- <rodrigo.vivi@intel.com>,  Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>,  Maxime Ripard <mripard@kernel.org>,
-  Thomas Zimmermann <tzimmermann@suse.de>,  David Airlie
- <airlied@gmail.com>,  Simona Vetter <simona@ffwll.ch>,  Jani Nikula
- <jani.nikula@linux.intel.com>,  Joonas Lahtinen
- <joonas.lahtinen@linux.intel.com>,  Tvrtko Ursulin <tursulin@ursulin.net>,
-  Karthik Poosa <karthik.poosa@intel.com>,  Reuven Abliyev
- <reuven.abliyev@intel.com>,  Oren Weil <oren.jer.weil@intel.com>,
-  linux-mtd@lists.infradead.org,  dri-devel@lists.freedesktop.org,
-  intel-gfx@lists.freedesktop.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/12] mtd: core: always create master device
-In-Reply-To: <20250326152623.3897204-2-alexander.usyskin@intel.com> (Alexander
-	Usyskin's message of "Wed, 26 Mar 2025 17:26:12 +0200")
-References: <20250326152623.3897204-1-alexander.usyskin@intel.com>
-	<20250326152623.3897204-2-alexander.usyskin@intel.com>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Tue, 01 Apr 2025 17:00:43 +0200
-Message-ID: <87ecycrko4.fsf@bootlin.com>
+	Wed, 02 Apr 2025 03:17:18 +0000
+Received: from localhost.localdomain (unknown [124.16.141.245])
+	by APP-05 (Coremail) with SMTP id zQCowADXDgcsrOxnHJMABQ--.17449S2;
+	Wed, 02 Apr 2025 11:17:06 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Wentao Liang <vulab@iscas.ac.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: inftlcore: Add error check for inftl_read_oob()
+Date: Wed,  2 Apr 2025 11:16:43 +0800
+Message-ID: <20250402031643.3025-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.42.0.windows.2
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukeeftdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledvrddukeegrdduuddtrdduleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledvrddukeegrdduuddtrdduleefpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvuddprhgtphhtthhopegrlhgvgigrnhguvghrrdhushihshhkihhnsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehluhgtrghsrdguvghmrghrtghhihesihhnthgvlhdrtghomhdprhgtphhtthhopehthhhomhgrshdrhhgvlhhlshhtrhhomheslhhinhhugidrihhnthgvl
- hdrtghomhdprhgtphhtthhopehrohgurhhighhordhvihhvihesihhnthgvlhdrtghomhdprhgtphhtthhopehmrggrrhhtvghnrdhlrghnkhhhohhrshhtsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepmhhrihhprghrugeskhgvrhhnvghlrdhorhhg
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-CM-TRANSID: zQCowADXDgcsrOxnHJMABQ--.17449S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF48JF4rWry3Gr4UtrWfuFg_yoW8JFy3pa
+	yDArWUA348Cr95u3Wvyr1UCF15AayrKFW29F4UX3WfXw45GasxZwn0qFW0qrWUJFWxW3Wx
+	KF4vyr98AayDCaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+	1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v2
+	6r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
+	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+	AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
+	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSfO7
+	UUUUU==
+X-Originating-IP: [124.16.141.245]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBwsAA2fsiD9yogABsi
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250401_080049_085826_9FF8260B 
-X-CRM114-Status: GOOD (  12.16  )
+X-CRM114-CacheID: sfid-20250401_201717_161151_B24CE829 
+X-CRM114-Status: UNSURE (   8.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,36 +77,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gQWxleGFuZGVyLAoKT24gMjYvMDMvMjAyNSBhdCAxNzoyNjoxMiArMDIsIEFsZXhhbmRl
-ciBVc3lza2luIDxhbGV4YW5kZXIudXN5c2tpbkBpbnRlbC5jb20+IHdyb3RlOgoKPiBDcmVhdGUg
-bWFzdGVyIGRldmljZSB3aXRob3V0IHBhcnRpdGlvbiB3aGVuCj4gQ09ORklHX01URF9QQVJUSVRJ
-T05FRF9NQVNURVIgZmxhZyBpcyB1bnNldC4KPgo+IFRoaXMgc3RyZWFtbGluZXMgZGV2aWNlIHRy
-ZWUgYW5kIGFsbG93cyB0byBhbmNob3IKPiBydW50aW1lIHBvd2VyIG1hbmFnZW1lbnQgb24gbWFz
-dGVyIGRldmljZSBpbiBhbGwgY2FzZXMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgVXN5
-c2tpbiA8YWxleGFuZGVyLnVzeXNraW5AaW50ZWwuY29tPgoKSSBzdWNjZXNzZnVsbHkgdGVzdGVk
-IGl0LCB0aGlzIHBhdGNoIHdpbGwgYmUgYXBwbGllZCBhdCAtcmMxIHRvIHRoZQptdGQvbmV4dCB0
-cmVlLgoKSSB3YXMgd29uZGVyaW5nLCBkbyB5b3UgdGhpbmsgaXQgd291bGQgYmUgcG9zc2libGUg
-dG8ga2VlcCB0aGUgY3JlYXRpb24Kb2YgbXRkX21hc3RlciBhbmQgbWFrZSBpdCBhIHN5bWJvbGlj
-IGxpbmsgdG8gbXRkeCB3aGVuCk1URF9QQVJUSVRJT05FRF9NQVNURVI9eSBvciB3aGVuIHRoZXJl
-IGlzIG5vIHBhcnRpdGlvbj8gSW4gc2hvcnQsIGFsd2F5cwpoYXZpbmcgbXRkX21hc3RlcngsIGJl
-Y2F1c2UgSSBmZWFyIGF0IHNvbWUgcG9pbnQgd2UnbGwgaGF2ZSBwcm9ibGVtcwpvdGhlcndpc2Ug
-Oi0pCgpSaWdodCBub3cgd2UgaGF2ZToKCi0gV2l0aG91dCBwYXJ0aXRpb246Cm10ZDAgKG10ZDBy
-byBtdGRibG9jazApCi0gV2l0aCBwYXJ0aXRpb24gYW5kIE1URF9QQVJUSVRJT05FRF9NQVNURVI9
-bgptdGQwIChtdGQwcm8gbXRkYmxvY2swKQptdGRfbWFzdGVyMAotIFdpdGggcGFydGl0aW9uIGFu
-ZCBNVERfUEFSVElUSU9ORURfTUFTVEVSPXkKbXRkMCAobXRkMHJvIG10ZGJsb2NrMCkgW3RoaXMg
-aXMgdGhlIG1hc3Rlcl0KbXRkMSAobXRkMXJvIG10ZGJsb2NrMSkKCkkgYW0gc3VnZ2VzdGluZzoK
-LSBXaXRob3V0IHBhcnRpdGlvbjoKbXRkMCAobXRkMHJvIG10ZGJsb2NrMCkKbXRkX21hc3RlcjAg
-LT4gbGluayB0byBtdGQwCi0gV2l0aCBwYXJ0aXRpb24gYW5kIE1URF9QQVJUSVRJT05FRF9NQVNU
-RVI9bgptdGQwIChtdGQwcm8gbXRkYmxvY2swKQptdGRfbWFzdGVyMAotIFdpdGggcGFydGl0aW9u
-IGFuZCBNVERfUEFSVElUSU9ORURfTUFTVEVSPXkKbXRkMCAobXRkMHJvIG10ZGJsb2NrMCkgW3Ro
-aXMgaXMgdGhlIG1hc3Rlcl0KbXRkMSAobXRkMXJvIG10ZGJsb2NrMSkKbXRkX21hc3RlcjAgLT4g
-bGluayB0byBtdGQwCgpXaGF0IGRvIHlvdSB0aGluaz8gT3IgbWF5YmUgZXZlbiBhbHdheXMgbXRk
-X21hc3RlciBpbiB0aGUgZmlyc3QgcGxhY2UuCgpSaWNoYXJkLCB5b3VyIHBvaW50IG9mIHZpZXcg
-b24gdGhpcz8KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+In INFTL_findwriteunit(), the return value of inftl_read_oob()
+need to be checked. A proper implementation can be
+found in INFTL_deleteblock(). The status will be set as
+SECTOR_IGNORE to break from the while-loop correctly
+if the inftl_read_oob() fails.
+
+Fixes: 8593fbc68b0d ("[MTD] Rework the out of band handling completely")
+Cc: stable@vger.kernel.org # v2.6+
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+---
+ drivers/mtd/inftlcore.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
+index 9739387cff8c..58c6e1743f5c 100644
+--- a/drivers/mtd/inftlcore.c
++++ b/drivers/mtd/inftlcore.c
+@@ -482,10 +482,11 @@ static inline u16 INFTL_findwriteunit(struct INFTLrecord *inftl, unsigned block)
+ 		silly = MAX_LOOPS;
+ 
+ 		while (thisEUN <= inftl->lastEUN) {
+-			inftl_read_oob(mtd, (thisEUN * inftl->EraseSize) +
+-				       blockofs, 8, &retlen, (char *)&bci);
+-
+-			status = bci.Status | bci.Status1;
++			if (inftl_read_oob(mtd, (thisEUN * inftl->EraseSize) +
++				       blockofs, 8, &retlen, (char *)&bci) < 0)
++				status = SECTOR_IGNORE;
++			else
++				status = bci.Status | bci.Status1;
+ 			pr_debug("INFTL: status of block %d in EUN %d is %x\n",
+ 					block , writeEUN, status);
+ 
+-- 
+2.42.0.windows.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
