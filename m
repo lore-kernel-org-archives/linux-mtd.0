@@ -4,92 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C3EAC3600C
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Apr 2025 06:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB265C3600C
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Apr 2025 07:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5iHm7alywjaNygbeeewKBgbiOjXZUaMreK4khOsQweQ=; b=p9Q4t2bVDR2L8C
-	/qPizeE2RxSCOLy20n4+SoHa1UVIhQRy9MyoILEJ0buP9mA+3Mx9J/NIWpjY/K64Zsu3ajtmMLycZ
-	9zzKv+n5u2t5MZ8S0HR7IKWvTYuVKoNRQZe7DaHSKRJMZniJs/bdMMGfe+VShSEPwLL3lmYjDWPwz
-	Z8mZ9HUS7ktR8GrYhbMDdANM6i1uSQwrnMvZaHSJ1zK4WOcWR1KwdOPRnfIkofJwLKAXLVxtNLlus
-	D4QMveM8qxlH5nCnwYhLizRfToSUnPxxEfzOEsAvfZvqoLArTfgyFXbkmTZuTC6//H67jr71tp1DU
-	iDPTRtnoOZjHxTBF1NqQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+QFSjMhmlUrgrXIZWS+zxHYzurP31leb0Q7nB21xptU=; b=vpiS6d6LMSllym
+	zCNcNP7auMdSPj0K4zrhyeP25klBgStDvU25rWOLI+LW8Vx0TRWMK8xlR2MepAnqbepU/CE/fCYD7
+	icJYhNu+KzKb7JskdJ0AzaEgqQozxsflo6j4RiuCmUnQNwAk8+DiQtM1sPIcsHFOSODm5SKtKNxTt
+	lBCEVtAdvYj+NQVq0Yq0cKxm0RxeaIafNUR7Pbzs1+tiiRAnfkKp/5DmHGNNiG9VyLY2JqkU7Dfyj
+	mGVMvMoMRXlL+RBgceRdPL++EkAcKmfUFGKUCrvO5lwT46MVcXkxxfqMbRzZxRSlo6WwEJHWOtWrk
+	3aA+dC9TZ518gxlDdcVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0Dva-00000007u9f-29hR;
-	Thu, 03 Apr 2025 06:19:50 +0000
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+	id 1u0F7l-000000088QI-28cF;
+	Thu, 03 Apr 2025 07:36:29 +0000
+Received: from mail.novaplan.pl ([51.195.118.1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0Dv6-00000007u5K-0YWh
+	id 1u0F7h-000000088OI-1hTn
 	for linux-mtd@lists.infradead.org;
-	Thu, 03 Apr 2025 06:19:21 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-39c1efc457bso294370f8f.2
-        for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2025 23:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1743661157; x=1744265957; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4hMx6SEeGvAeTt/gW/t4ifk30FnOIAfJuMp44OHabpI=;
-        b=xCK7GObvb7kSNpwQVw9ZUM6P9xgYuxLafs69Cro8IfMUi1yXG6mu29FxPdJ4ycdgZN
-         zn86+wz93/fz9koOBXHKbkxPjNIMQQRuwJTJdMp8xkhRGoaqokXIDWYEXnzCwf8j1HLK
-         NMRehSlhqS526d2U+ddIcmyM67Nqubk2wgQZqkfBdo3hq0ZaUolL4nSR2Erg4fCYKMMD
-         ZpQ0Wns9w56nVUTSGWmwDBogDMOW22DIz9gkCLXil0h+RIaKdQKsqz4BMTyxz6qXG0X/
-         3dOHrzgmcvsHrsezYzeCZI0PyVSaW2O6ShaMzNCvUgS8T4/cRd3B6O+vBty3hzteembG
-         rQBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743661157; x=1744265957;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4hMx6SEeGvAeTt/gW/t4ifk30FnOIAfJuMp44OHabpI=;
-        b=qOnqvg4gSoaUyJ1mOfvhJASUiNx7SKcnx2uOQfOvKOvQ2dIhINzHuxw9m/RRAP6//J
-         1Z4GqINkcSLJgcmdz+QjHNi4ON1MWDmPWxtBenszFpsMS8G3NKMbGgZIidOxf2lxoAva
-         qHjuzxiexOoK9468jq5uj6w4+7sljFjybcqyxJAHz2mXeWMLCjmUTWggypzgm5XW8uNl
-         /BF3ikO8fBT7J046LkXKc4dlxc23AtUcXSldnXQsJPo2bow0pKzY4zWrVWJpAHhuXJFS
-         3sFZHKLDeYRE6jEnukAR4OkDeTrbacKxrsFmCBeVAd8BZS022UeQA0BD+sTNtuUNmGWB
-         y3Rw==
-X-Forwarded-Encrypted: i=1; AJvYcCW5ue76UqtL73IwQa44rX/BgGk0EbvJWmXXFigEW0WYetHyYMjOzeRzpzQ8PT2oGHgnhBMA/CKZ9nc=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxq8X/Y4WcdXw5kq4IAJa/sAOk/wjUu2CqEthgKODcZ2U6mmnLg
-	U3pWGdywloJBerfoFY8qH9wa7hl9c7NGUxKnEyqfXVw0Si4dcODlZ/VBIQzWDms=
-X-Gm-Gg: ASbGncszDBEjsawPUPjES7COcAIjBDWNs+QCJcpM2tJmY0IukY4mgkYqpQzswG2ohs4
-	aJ7rKyAsxSMDXrzeJAjx2qndXs6EJey4gwocjfMq/Pwp0SZc2Z40iXzOfwag474IoOA+uAE2Uw/
-	xExTXw5LEgrAcBZFJkdaB829UfqTR05a9/1wJwPYi6n4hHujH67Vm1sPL3JlPy2AB7tN8rImldc
-	RAp0iykpGOkH3Q6HTWifvgDU5KuRm/yHxpdaqDVejYMMWbgMdwCfFF+Si8uZS44eh+zjX1i1lTk
-	UbmfzjzcHKIjiwI6ynl7JtSwZNEm6hjfQU4xJuPvxXxJzceHlaViNA==
-X-Google-Smtp-Source: AGHT+IEXLGJhxZC80I6dZhEzixmZFPKOcjX+LixzCOppdHEq1mZk+wbowjRnvFMqjnJz0bgWZJImyQ==
-X-Received: by 2002:a05:6000:1888:b0:391:31f2:b998 with SMTP id ffacd0b85a97d-39c2f8c62e9mr810532f8f.6.1743661156922;
-        Wed, 02 Apr 2025 23:19:16 -0700 (PDT)
-Received: from [192.168.0.14] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c302269a2sm840986f8f.91.2025.04.02.23.19.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Apr 2025 23:19:16 -0700 (PDT)
-Message-ID: <5463acad-ee29-45de-9d22-16eb7947002c@linaro.org>
-Date: Thu, 3 Apr 2025 07:19:15 +0100
+	Thu, 03 Apr 2025 07:36:27 +0000
+Received: by mail.novaplan.pl (Postfix, from userid 1002)
+	id CB140A35F8; Thu,  3 Apr 2025 09:36:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=novaplan.pl; s=mail;
+	t=1743665779; bh=jxb0oDMobd7GaIcoqojTSF8ZoNcoVg4kM8ohJkoHKb8=;
+	h=Date:From:To:Subject:From;
+	b=cT7lQgoI85ecpch+qNgd/RwN8H7tT461z57K+YIV0cTIwTN1xhgGVZv74LfkkA7Pj
+	 sr+6UbtVCtkZAnT0PmsiGrc57KTFS5bNubv262BMeBIAeVz61t2etA6b2tj7D28Trh
+	 NzztTHilh+AaBojvSa9/4HIuJPMJEJv7ViBNLaKFKKtsqaKn+uxuksQXIK3VNFlvb6
+	 Zx4Gs3Qq5GhYhTBXNinW+sC7f0hUfVhWtgjPKCF0bLAf1fn4n2t4fDyJKMm6Ad5vwX
+	 gg49SXDv+2/4FamvmTDrDx3KfzvAPS+6vF5BET/hCNe5XmY3TgcBMugOLsaHbjF8Rn
+	 ZV3Y2+yn59wtQ==
+Received: by mail.novaplan.pl for <linux-mtd@lists.infradead.org>; Thu,  3 Apr 2025 07:36:00 GMT
+Message-ID: <20250403084500-0.1.kt.1ln3e.0.lbb8lqm2d2@novaplan.pl>
+Date: Thu,  3 Apr 2025 07:36:00 GMT
+From: "Adrian Liszka" <adrian.liszka@novaplan.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
+X-Mailer: mail.novaplan.pl
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/21] mtd: spinand: winbond: Rename DTR variants
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Santhosh Kumar K <s-k6@ti.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Steam Lin <stlin2@winbond.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20250307-winbond-6-14-rc1-octal-v1-0-45c1e074ad74@bootlin.com>
- <20250307-winbond-6-14-rc1-octal-v1-15-45c1e074ad74@bootlin.com>
- <3ebd53ef-c7fd-4c8c-96f3-32e97b355b6b@linaro.org>
- <871puaqz6m.fsf@bootlin.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <871puaqz6m.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250402_231920_236916_717C9B14 
-X-CRM114-Status: GOOD (  15.92  )
+X-CRM114-CacheID: sfid-20250403_003626_153591_A3164482 
+X-CRM114-Status: UNSURE (   0.58  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,53 +61,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 4/2/25 5:57 PM, Miquel Raynal wrote:
-> Hello Tudor,
-> 
-> First, thanks a lot for the time spent reviewing, much appreciated.
-> 
-> On 02/04/2025 at 16:19:00 +01, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
-> 
->> Hi, Miquel,
->>
->> On 3/7/25 3:08 PM, Miquel Raynal wrote:
->>> -static SPINAND_OP_VARIANTS(read_cache_dtr_variants,
->>> +static SPINAND_OP_VARIANTS(read_cache_dual_quad_dtr_variants,
->>
->> why not read_cache_single_dual_quad_dtr_variants? I see single dtr too
->> in the supported ops.
-> 
-> That's true, but single modes are literally always supported, so it is
-
-literally, meaning from experience I guess, or is it mandatory that
-dual, quad or octal dtr to imply single dtr as well? That's fine either
-way, just curious.
-
-Does quad dtr imply dual dtr? And octal dtr imply quad dtr and dual dtr?
-If so, then maybe name it by the maximum IO dtr supported.
-
-btw, not strictly related to this patch, but for the overall
-architecture picture, why do the SPI NAND flashes need to define their
-supported ops? SPI NORs for example are capable of discovering their
-supported ops by parsing at runtime some SFDP tables that describe most
-of the flash parameters and setting. I see SFDP standard (jesd216g)
-mentions SPI NAND devices as well. Have you or anybody else played with
-SPI NANDs SFDP?
-
-> not very discriminant, and here my goal is to differentiate the variants
-> supported by the dual/quad chips vs. the variants supported by the octal
-> chips (which are not capable of dual/quad transfers). What do you think?
-
-I find it fine to differentiate between the variants.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
+cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
+xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
+Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
+ZG8ga29udGFrdHUuCgoKWiBwb3pkcm93aWVuaWFtaQpBZHJpYW4gTGlzemthCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
