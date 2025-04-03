@@ -4,131 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCEE6C3600C
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Apr 2025 11:18:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48288C3601E
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Apr 2025 11:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zxj/rm10Icmvypc5Adu9MtLsJejtZLw/lVbIRzs3AgQ=; b=GVIaPJpIzuYMZY
-	PrGpOdK+bYcJXnEU5VX2IeYsWxF6vMvrh9F85ZVZCEGZ197HarPuDVpyCI7puWOTenw6leQ8sS92p
-	XrXUKeo/+M3FwuSHSdsSdQMyqnY9MWy3WxapmCLEvHRb02wadyzQ7OTwWeg6HwQYTUQXoHxv/aEUY
-	zsYUeXFGL95HgBfdlKY61qjtrgsszQyNvlAm1YhcIdpEUkPT6le4GEzeoX0PJKhY5kv3YbmyRlvBe
-	yOjn2L5ASZA/U2Qbxysh16i3zox2rSDiMiJzK9tw8V49LS28AptThZ0B23u0egxU7fn4Vur1eVmFM
-	0h9xMLME0H5y0OjIjrOA==;
+	List-Owner; bh=2+FPwqePrQuVcWuTH10uzhqUlGJfhP4Jo3ZF7uT8td0=; b=JThOFxsgWPcPSp
+	oIPnSHx2YkjoBb3l5sR2zNpg1RjD7NnMKxjbOTi5PIKJ0HjpRPQ+m84zPKVODdORoirphr29vzdkh
+	JKdPRasgrqBKG8Gl3ZTlX7fKb3hmtk+IVwny/AgNoyXlq9JwXgoEjT1W+Rrbao90VMyMVWcywxUpc
+	2zxh0VthxBaKR1t8FGI/OnIrVxvEe0WrBJSMhe8mcXQIP+KzbT5/28xE2XAviY/K360wFUq3w6X1t
+	w/nGkGoeJVkCICxXCIhKJvVKeX4CTeHBF44ZDU8RGTnGnvzkDh/NWnslZj8ILOf/4d8+hsuANTQkS
+	E9z0kkzJSX+cdPcEQOKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0Ib3-00000008gax-0d8l;
-	Thu, 03 Apr 2025 11:18:57 +0000
-Received: from smtp-out1.suse.de ([195.135.223.130])
+	id 1u0Ib6-00000008geG-2KPY;
+	Thu, 03 Apr 2025 11:19:00 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0IBv-00000008dB4-3bHz
+	id 1u0Gji-00000008Nox-3151
 	for linux-mtd@lists.infradead.org;
-	Thu, 03 Apr 2025 10:53:01 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7C8D9211B3;
-	Thu,  3 Apr 2025 10:52:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1743677574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	Thu, 03 Apr 2025 09:19:48 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A1F943231;
+	Thu,  3 Apr 2025 09:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1743671985;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
-	b=ucnJKdiMegpOJAdc2tH5ka7+226kXUodBZMjJOuH8o7n/l4F3VZl53M+C1+Jg0RD+JAcXA
-	wWyEeEhrGSqmqmvZG4QGaAY/k1ax7ymRyFZrJeuduL/9BITbQp9PAHxk2ZnWjWHlotXj5D
-	Vnxn0hnMxKJxTCgtybHZlzSZ9Juw+yk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1743677574;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
-	b=CjPRKR3vdRJbDa0YIb0G/MQr/L2JCsmTMz2xbLc2iXEdn6EM9PYT/smyZRDaO+9bLxmDLX
-	j0Drw6N2bPE2+dBQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ucnJKdiM;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=CjPRKR3v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1743677574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
-	b=ucnJKdiMegpOJAdc2tH5ka7+226kXUodBZMjJOuH8o7n/l4F3VZl53M+C1+Jg0RD+JAcXA
-	wWyEeEhrGSqmqmvZG4QGaAY/k1ax7ymRyFZrJeuduL/9BITbQp9PAHxk2ZnWjWHlotXj5D
-	Vnxn0hnMxKJxTCgtybHZlzSZ9Juw+yk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1743677574;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
-	b=CjPRKR3vdRJbDa0YIb0G/MQr/L2JCsmTMz2xbLc2iXEdn6EM9PYT/smyZRDaO+9bLxmDLX
-	j0Drw6N2bPE2+dBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 048BC1392A;
-	Thu,  3 Apr 2025 10:52:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XE+5OoVo7mfnDQAAD6G6ig
-	(envelope-from <jdelvare@suse.de>); Thu, 03 Apr 2025 10:52:53 +0000
-Date: Thu, 3 Apr 2025 12:52:52 +0200
-From: Jean Delvare <jdelvare@suse.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
- <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, <linux-kernel@vger.kernel.org>, Steam Lin
- <stlin2@winbond.com>, kernel test robot <lkp@intel.com>,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: spinand: Fix build with gcc < 7.5
-Message-ID: <20250403125252.03432904@endymion>
-In-Reply-To: <20250401133637.219618-1-miquel.raynal@bootlin.com>
-References: <20250401133637.219618-1-miquel.raynal@bootlin.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.43; x86_64-suse-linux-gnu)
+	bh=Y666on2pUo05s7SFk3AWKKYFxcfy7Oy/E6qTMRf1BnY=;
+	b=i8zdl7bXBOAuz+gDyTilhE3r9aMPcmdoAepANPycV4YrJYAuURuOo8ivH+3Yn8af0MqwiV
+	rkJuX6Y7fiLXRXscW5lt55qun+r+PnqUz55Qj+0qxEk5e5cBFfkyGxAPkZgbF+VD0khFTH
+	p9EAWBst99qBZrosi0bjq2/JlL3gk+B8CUZB4Pl51lVIDCd8SUAsDarpkkzkPmU/uz2/8n
+	qGiuAaJ13FqWXN/6lMLkzrE9yT6rytmweK2qcXwupUByQobHk4xnQ4ETbCD0AB7qRLDzWd
+	yZIngZRbDic4jcGgp+7/QcGxE7qupPnqQ2uy5iDQfyZu7j3VBog3nyk13zEXCA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Thu, 03 Apr 2025 11:19:27 +0200
+Subject: [PATCH v2 17/19] mtd: spinand: winbond: Add support for W35N01JW
+ in single mode
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 7C8D9211B3
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,bootlin.com:email,intel.com:email]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+Message-Id: <20250403-winbond-6-14-rc1-octal-v2-17-7846bd88fe83@bootlin.com>
+References: <20250403-winbond-6-14-rc1-octal-v2-0-7846bd88fe83@bootlin.com>
+In-Reply-To: <20250403-winbond-6-14-rc1-octal-v2-0-7846bd88fe83@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Santhosh Kumar K <s-k6@ti.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Steam Lin <stlin2@winbond.com>, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+X-Mailer: b4 0.15-dev
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukeekudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelgfehvdduieefieeikeffgffggfdttdeugeffieetheeuleelfeehffdtffetveenucfkphepledvrddukeegrdduuddtrdduleelnecuvehluhhsthgvrhfuihiivgepudefnecurfgrrhgrmhepihhnvghtpeelvddrudekgedruddutddrudelledphhgvlhhopegludelvddrudeikedruddruddtiegnpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddupdhrtghpthhtohepshhtlhhinhdvseifihhnsghonhgurdgtohhmpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhitghhrghru
+ gesnhhougdrrghtpdhrtghpthhtohepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdprhgtphhtthhopehtuhguohhrrdgrmhgsrghruhhssehlihhnrghrohdrohhrghdprhgtphhtthhopehsqdhkieesthhirdgtohhm
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250403_035300_050376_2C1BA9E5 
-X-CRM114-Status: GOOD (  14.40  )
+X-CRM114-CacheID: sfid-20250403_021946_915114_B254D683 
+X-CRM114-Status: GOOD (  12.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,33 +81,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue,  1 Apr 2025 15:36:37 +0200, Miquel Raynal wrote:
-> __VA_OPT__ is a macro that is useful when some arguments can be present
-> or not to entirely skip some part of a definition. Unfortunately, it
-> is a too recent addition that some of the still supported old GCC
-> versions do not know about, and is anyway not part of C11 that is the
-> version used in the kernel.
-> 
-> Find a trick to remove this macro, typically '__VA_ARGS__ + 0' is a
-> workaround used in netlink.h which works very well here, as we either
-> expect:
-> - 0
-> - A positive value
-> - No value, which means the field should be 0.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202503181330.YcDXGy7F-lkp@intel.com/
-> Fixes: 7ce0d16d5802 ("mtd: spinand: Add an optional frequency to read from cache macros")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Add support for the W35N series by describing the smaller (single die)
+chip. It has 1b/512B ECC support and its own OOB layout.
 
-Tested-by: Jean Delvare <jdelvare@suse.de>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/spi/winbond.c | 54 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-Thanks Miquel!
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index 99b9f333eb3142999d8f73d43537f1ed9789c975..9b0369a077efadac8bd6be632f15b822d42a7227 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -23,6 +23,16 @@
+  * "X4" in the core is equivalent to "quad output" in the datasheets.
+  */
+ 
++static SPINAND_OP_VARIANTS(read_cache_octal_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_FAST_1S_1S_1S_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_1S_OP(0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_octal_variants,
++		SPINAND_PROG_LOAD_1S_1S_1S_OP(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_octal_variants,
++		SPINAND_PROG_LOAD_1S_1S_1S_OP(false, 0, NULL, 0));
++
+ static SPINAND_OP_VARIANTS(read_cache_dual_quad_dtr_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_4D_4D_OP(0, 8, NULL, 0, 80 * HZ_PER_MHZ),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1D_4D_OP(0, 2, NULL, 0, 80 * HZ_PER_MHZ),
+@@ -141,6 +151,41 @@ static const struct mtd_ooblayout_ops w25n02kv_ooblayout = {
+ 	.free = w25n02kv_ooblayout_free,
+ };
+ 
++static int w35n01jw_ooblayout_ecc(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *region)
++{
++	if (section > 7)
++		return -ERANGE;
++
++	region->offset = (16 * section) + 12;
++	region->length = 4;
++
++	return 0;
++}
++
++static int w35n01jw_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section > 7)
++		return -ERANGE;
++
++	region->offset = 16 * section;
++	region->length = 12;
++
++	/* Extract BBM */
++	if (!section) {
++		region->offset += 2;
++		region->length -= 2;
++	}
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops w35n01jw_ooblayout = {
++	.ecc = w35n01jw_ooblayout_ecc,
++	.free = w35n01jw_ooblayout_free,
++};
++
+ static int w25n02kv_ecc_get_status(struct spinand_device *spinand,
+ 				   u8 status)
+ {
+@@ -227,6 +272,15 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&w25n01kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W35N01JW", /* 1.8V */
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdc, 0x21),
++		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
++					      &write_cache_octal_variants,
++					      &update_cache_octal_variants),
++		     0,
++		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL)),
+ 	/* 2G-bit densities */
+ 	SPINAND_INFO("W25M02GV", /* 2x1G-bit 3.3V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab, 0x21),
 
 -- 
-Jean Delvare
-SUSE L3 Support
+2.48.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
