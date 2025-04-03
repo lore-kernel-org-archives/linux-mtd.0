@@ -4,69 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F5C0C3601B
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Apr 2025 11:15:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCEE6C3600C
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Apr 2025 11:18:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=khiBTMBWvkKpZziick8weAXITBwW80xwr5+utAuImpM=; b=NUseClkSVpWoR+
-	zXie967w2oz08lO3ECRCRYd04X3yg9vA9DYgFaFVWk49eFVll+190eq0sl2CwHFbQeE5d/SZHo3oi
-	tF2DL4lydBCRAB4pay5pYVEe1Fxd+SaxkaytFAWS1MV5Dh1MBDQVNDPr1S9e1bEUICbLeLKM06aIX
-	bQ47Jew5wPvM6O8pEZDnncFOvQgDRcUYtyDFcuytrHUEMHEhsLi/k5lFQ1owj85XTeu0dtX5+Ynz4
-	9XR+thNNxvwdSGvcQyRrvwKZEE5m7B9uiGoV0qcq5v8MeVZBun2uLrcE2WbuoP9/JVJT9QLbv+e65
-	kGX8bXGFZcIOcJRsh86g==;
+	List-Owner; bh=zxj/rm10Icmvypc5Adu9MtLsJejtZLw/lVbIRzs3AgQ=; b=GVIaPJpIzuYMZY
+	PrGpOdK+bYcJXnEU5VX2IeYsWxF6vMvrh9F85ZVZCEGZ197HarPuDVpyCI7puWOTenw6leQ8sS92p
+	XrXUKeo/+M3FwuSHSdsSdQMyqnY9MWy3WxapmCLEvHRb02wadyzQ7OTwWeg6HwQYTUQXoHxv/aEUY
+	zsYUeXFGL95HgBfdlKY61qjtrgsszQyNvlAm1YhcIdpEUkPT6le4GEzeoX0PJKhY5kv3YbmyRlvBe
+	yOjn2L5ASZA/U2Qbxysh16i3zox2rSDiMiJzK9tw8V49LS28AptThZ0B23u0egxU7fn4Vur1eVmFM
+	0h9xMLME0H5y0OjIjrOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0IXV-00000008fTi-06Bp;
-	Thu, 03 Apr 2025 11:15:17 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1u0Ib3-00000008gax-0d8l;
+	Thu, 03 Apr 2025 11:18:57 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0HvT-00000008aYj-0Kou
+	id 1u0IBv-00000008dB4-3bHz
 	for linux-mtd@lists.infradead.org;
-	Thu, 03 Apr 2025 10:36:00 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E06E5432ED;
-	Thu,  3 Apr 2025 10:35:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1743676555;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	Thu, 03 Apr 2025 10:53:01 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7C8D9211B3;
+	Thu,  3 Apr 2025 10:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1743677574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WHybtPrEE+zi5o3ljeKTwzS5wA2OXV70yRBDLljR35w=;
-	b=C20eoSCK8YmsgFGWX7ymeJwf/cLoORxjYSJC+1tfnDfd6nDamJk+Oh94R6Anjcy5qeoT6K
-	GpQS9iZYBRVH3/w7MegRlNwob+XJcbtO7+C9j75LwbdhYOnmZcecIyrdosCk6HTRIQly1p
-	X9yX+5tVhSfetuDHT7VUtMQ1rgIXsQKHUO5tIZsV4KfTMiUw7yyLb+G71xEc9206GwwxE9
-	ZPydJJuV5LIca/fmpNOfmJPH8awDgwdEmk8mB/eiLu2sk/91cFUvLf7A5TMXLvzeUwvy7q
-	kTx2+XKI0TnZHn/cfTSbO1sxUHAq0i14giWgkTTzTwCjuirjbfCfNqyge67hYw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Santhosh Kumar K <s-k6@ti.com>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <michael@walle.cc>,  Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>,  Steam Lin <stlin2@winbond.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/19] mtd: spinand: winbond: Add support for
- W35N02JW and W35N04JW chips
-In-Reply-To: <05c0fc18-f50f-4f62-bc64-a297cbf927fd@linaro.org> (Tudor
-	Ambarus's message of "Thu, 3 Apr 2025 11:13:36 +0100")
-References: <20250403-winbond-6-14-rc1-octal-v2-0-7846bd88fe83@bootlin.com>
-	<20250403-winbond-6-14-rc1-octal-v2-19-7846bd88fe83@bootlin.com>
-	<05c0fc18-f50f-4f62-bc64-a297cbf927fd@linaro.org>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Thu, 03 Apr 2025 12:35:51 +0200
-Message-ID: <875xjl352w.fsf@bootlin.com>
+	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
+	b=ucnJKdiMegpOJAdc2tH5ka7+226kXUodBZMjJOuH8o7n/l4F3VZl53M+C1+Jg0RD+JAcXA
+	wWyEeEhrGSqmqmvZG4QGaAY/k1ax7ymRyFZrJeuduL/9BITbQp9PAHxk2ZnWjWHlotXj5D
+	Vnxn0hnMxKJxTCgtybHZlzSZ9Juw+yk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1743677574;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
+	b=CjPRKR3vdRJbDa0YIb0G/MQr/L2JCsmTMz2xbLc2iXEdn6EM9PYT/smyZRDaO+9bLxmDLX
+	j0Drw6N2bPE2+dBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ucnJKdiM;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=CjPRKR3v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1743677574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
+	b=ucnJKdiMegpOJAdc2tH5ka7+226kXUodBZMjJOuH8o7n/l4F3VZl53M+C1+Jg0RD+JAcXA
+	wWyEeEhrGSqmqmvZG4QGaAY/k1ax7ymRyFZrJeuduL/9BITbQp9PAHxk2ZnWjWHlotXj5D
+	Vnxn0hnMxKJxTCgtybHZlzSZ9Juw+yk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1743677574;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RJRwADuh9Gf8w3cJ3qkn0sEpYgoWwqfQMCfDUgsVJYo=;
+	b=CjPRKR3vdRJbDa0YIb0G/MQr/L2JCsmTMz2xbLc2iXEdn6EM9PYT/smyZRDaO+9bLxmDLX
+	j0Drw6N2bPE2+dBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 048BC1392A;
+	Thu,  3 Apr 2025 10:52:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XE+5OoVo7mfnDQAAD6G6ig
+	(envelope-from <jdelvare@suse.de>); Thu, 03 Apr 2025 10:52:53 +0000
+Date: Thu, 3 Apr 2025 12:52:52 +0200
+From: Jean Delvare <jdelvare@suse.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, <linux-kernel@vger.kernel.org>, Steam Lin
+ <stlin2@winbond.com>, kernel test robot <lkp@intel.com>,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: spinand: Fix build with gcc < 7.5
+Message-ID: <20250403125252.03432904@endymion>
+In-Reply-To: <20250401133637.219618-1-miquel.raynal@bootlin.com>
+References: <20250401133637.219618-1-miquel.raynal@bootlin.com>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.43; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukeekfeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeejgeeftdefledvieegvdejlefgleegjefhgfeuleevgfdtjeehudffhedvheegueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeelvddrudekgedruddutddrudelleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeelvddrudekgedruddutddrudelledphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddtpdhrtghpthhtohepthhuughorhdrrghmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehsqdhkieesthhirdgtohhmpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtt
- hhopehmihgthhgrvghlseifrghllhgvrdgttgdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopehsthhlihhnvdesfihinhgsohhnugdrtghomh
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Rspamd-Queue-Id: 7C8D9211B3
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	HAS_ORG_HEADER(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,bootlin.com:email,intel.com:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250403_033559_267219_AF74D0FD 
-X-CRM114-Status: GOOD (  10.39  )
+X-CRM114-CacheID: sfid-20250403_035300_050376_2C1BA9E5 
+X-CRM114-Status: GOOD (  14.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,85 +140,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDMvMDQvMjAyNSBhdCAxMToxMzozNiArMDEsIFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFy
-dXNAbGluYXJvLm9yZz4gd3JvdGU6Cgo+IEhpLCBNaXF1ZWwsCj4KPiBPbiA0LzMvMjUgMTA6MTkg
-QU0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+IFRoZXNlIGNoaXBzIHN1cHBvcnQgc2luZ2xlIFNQ
-SSwgb2N0YWwgU1BJIGFuZCBvY3RhbCBERFIgU1BJLgo+PiAKPj4gRm9yIG5vdywgb25seSB0aGUg
-U0RSIHByb3RvY29scyBhcmUgc3VwcG9ydGVkLgo+PiAKPj4gVGVzdGVkIHdpdGggdGhlIFczNU4w
-MkpXIHZhcmlhbnQsIGJ1dCB0aGUgMDQgb25lIGp1c3QgaGFzIHR3aWNlIG1vcmUKPj4gZGllcyBh
-bmQgaXMgZGVzY3JpYmVkIGluIHRoZSBzYW1lIGRhdGFzaGVldCwgc28gd2UgY2FuIHJlYXNvbmFi
-bHkgZXhwZWN0Cj4+IHRoYXQgaXQgd2lsbCBiZWhhdmUgaWRlbnRpY2FsbHkuCj4+IAo+PiBSZXZp
-ZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPgo+PiBTaWdu
-ZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+Cj4g
-Q2hlY2tlZCBwYXRjaGVzIDE1LTE5IG5vdywgSSdtIG9rIHdpdGggdGhlbS4gV2hlbiBhcHBseWlu
-ZywgcGxlYXNlCj4gc3Vic3RpdHV0ZSBteSBSZXZpZXdlZC1ieSB0YWcgd2l0aCBBY2tlZC1ieSBm
-b3IgcGF0Y2hlcyBmcm9tIDcgdG8gMjEuCj4gSSBleHBsYWluZWQgd2h5IGluIHRoZSByZXBseSBv
-ZiB2MiAxNC8xOS4gVGhhbmtzLgoKRHVseSBub3RlZC4KCkkgY2hlY2tlZCB0aGUgYjQgbG9nLCBJ
-IGRvbid0IHVuZGVyc3RhbmQgd2h5IGl0IHBpY2tlZCB5b3VyIFItYnkgdGFnIG9uCmFsbCB0aGVz
-ZSBjb21taXRzOgoKJCBiNCB0cmFpbGVycyAtU3UKRmluZGluZyBjb2RlLXJldmlldyB0cmFpbGVy
-cyBmb3IgMjIgY29tbWl0cy4uLgpDaGVja2luZyBjaGFuZ2UtaWQgIjIwMjUwMjE0LXdpbmJvbmQt
-Ni0xNC1yYzEtb2N0YWwtNmY3ZGI2YmUwMjA0IgpHcmFiYmluZyBzZWFyY2ggcmVzdWx0cyBmcm9t
-IGxvcmUua2VybmVsLm9yZwpBbmFseXppbmcgNTIgY29kZS1yZXZpZXcgbWVzc2FnZXMKLS0tCiAg
-KyBBY2tlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPgogICAg
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL2NkYzM4MjY2LTE4YTktNGVmZi1iZGFkLWM4OGIz
-MTYzMTBiM0BsaW5hcm8ub3JnCiAgKyBSZXZpZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3Iu
-YW1iYXJ1c0BsaW5hcm8ub3JnPgogICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzRkMzZl
-NTFmLTMyM2MtNDUxYy1hZmViLWE2ZTM3OGUzZWQ1M0BsaW5hcm8ub3JnCi0tLQpQcmVzcyBFbnRl
-ciB0byBhcHBseSB0aGVzZSB0cmFpbGVycyBvciBDdHJsLUMgdG8gYWJvcnQKICBtdGQ6IHNwaW5h
-bmQ6IFVzZSBtb3JlIHNwZWNpZmljIG5hbWluZyBmb3IgdGhlIChkdWFsIG91dHB1dCkgcmVhZCBm
-cm9tIGNhY2hlIG9wcwogICAgKyBBY2tlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1
-c0BsaW5hcm8ub3JnPiAo4pyTIERLSU0vbGluYXJvLm9yZykKICAgICsgUmV2aWV3ZWQtYnk6IFR1
-ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4gKOKclyBES0lNL2xpbmFyby5v
-cmcpCiAgbXRkOiBzcGluYW5kOiBVc2UgbW9yZSBzcGVjaWZpYyBuYW1pbmcgZm9yIHRoZSAoZHVh
-bCBJTykgcmVhZCBmcm9tIGNhY2hlIG9wcwogICAgKyBBY2tlZC1ieTogVHVkb3IgQW1iYXJ1cyA8
-dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiAo4pyTIERLSU0vbGluYXJvLm9yZykKICAgICsgUmV2
-aWV3ZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4gKOKclyBE
-S0lNL2xpbmFyby5vcmcpCiAgbXRkOiBzcGluYW5kOiBVc2UgbW9yZSBzcGVjaWZpYyBuYW1pbmcg
-Zm9yIHRoZSAocXVhZCBvdXRwdXQpIHJlYWQgZnJvbSBjYWNoZSBvcHMKICAgICsgQWNrZWQtYnk6
-IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4gKOKckyBES0lNL2xpbmFy
-by5vcmcpCiAgICArIFJldmlld2VkLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxp
-bmFyby5vcmc+ICjinJcgREtJTS9saW5hcm8ub3JnKQogIG10ZDogc3BpbmFuZDogVXNlIG1vcmUg
-c3BlY2lmaWMgbmFtaW5nIGZvciB0aGUgKHF1YWQgSU8pIHJlYWQgZnJvbSBjYWNoZSBvcHMKICAg
-ICsgQWNrZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4gKOKc
-kyBES0lNL2xpbmFyby5vcmcpCiAgICArIFJldmlld2VkLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRv
-ci5hbWJhcnVzQGxpbmFyby5vcmc+ICjinJcgREtJTS9saW5hcm8ub3JnKQogIG10ZDogc3BpbmFu
-ZDogVXNlIG1vcmUgc3BlY2lmaWMgbmFtaW5nIGZvciB0aGUgcHJvZ3JhbSBleGVjdXRpb24gb3AK
-ICAgICsgQWNrZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4g
-KOKckyBES0lNL2xpbmFyby5vcmcpCiAgICArIFJldmlld2VkLWJ5OiBUdWRvciBBbWJhcnVzIDx0
-dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+ICjinJcgREtJTS9saW5hcm8ub3JnKQogIG10ZDogc3Bp
-bmFuZDogVXNlIG1vcmUgc3BlY2lmaWMgbmFtaW5nIGZvciB0aGUgKHNpbmdsZSkgcHJvZ3JhbSBs
-b2FkIG9wCiAgICArIEFja2VkLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxpbmFy
-by5vcmc+ICjinJMgREtJTS9saW5hcm8ub3JnKQogICAgKyBSZXZpZXdlZC1ieTogVHVkb3IgQW1i
-YXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiAo4pyXIERLSU0vbGluYXJvLm9yZykKICBt
-dGQ6IHNwaW5hbmQ6IFVzZSBtb3JlIHNwZWNpZmljIG5hbWluZyBmb3IgdGhlIChxdWFkKSBwcm9n
-cmFtIGxvYWQgb3AKICAgICsgQWNrZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNA
-bGluYXJvLm9yZz4gKOKckyBES0lNL2xpbmFyby5vcmcpCiAgICArIFJldmlld2VkLWJ5OiBUdWRv
-ciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+ICjinJcgREtJTS9saW5hcm8ub3Jn
-KQogIG10ZDogc3BpbmFuZDogd2luYm9uZDogUmVuYW1lIERUUiB2YXJpYW50cwogICAgKyBSZXZp
-ZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiAo4pyXIERL
-SU0vbGluYXJvLm9yZykKICBtdGQ6IHNwaW5hbmQ6IHdpbmJvbmQ6IEFkZCBzdXBwb3J0IGZvciBX
-MzVOMDFKVyBpbiBzaW5nbGUgbW9kZQogICAgKyBSZXZpZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8
-dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiAo4pyXIERLSU0vbGluYXJvLm9yZykKICBtdGQ6IHNw
-aW5hbmQ6IERlZmluZSBvY3RhbCByZWFkIGZyb20gY2FjaGUgb3BlcmF0aW9ucwogICAgKyBSZXZp
-ZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiAo4pyXIERL
-SU0vbGluYXJvLm9yZykKICBtdGQ6IHNwaW5hbmQ6IHdpbmJvbmQ6IEFkZCBvY3RhbCByZWFkIHN1
-cHBvcnQKICAgICsgUmV2aWV3ZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGlu
-YXJvLm9yZz4gKOKclyBES0lNL2xpbmFyby5vcmcpCiAgbXRkOiBzcGluYW5kOiBEZWZpbmUgb2N0
-YWwgbG9hZCB0byBjYWNoZSBvcGVyYXRpb25zCiAgICArIFJldmlld2VkLWJ5OiBUdWRvciBBbWJh
-cnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+ICjinJcgREtJTS9saW5hcm8ub3JnKQogIG10
-ZDogc3BpbmFuZDogd2luYm9uZDogQWRkIG9jdGFsIHByb2dyYW0gc3VwcG9ydAogICAgKyBSZXZp
-ZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiAo4pyXIERL
-SU0vbGluYXJvLm9yZykKICBtdGQ6IHNwaW5hbmQ6IHdpbmJvbmQ6IEFkZCBzdXBwb3J0IGZvciBX
-MzVOMDJKVyBhbmQgVzM1TjA0SlcgY2hpcHMKICAgICsgUmV2aWV3ZWQtYnk6IFR1ZG9yIEFtYmFy
-dXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4gKOKclyBES0lNL2xpbmFyby5vcmcpCi0tLQpJ
-bnZva2luZyBnaXQtZmlsdGVyLXJlcG8gdG8gdXBkYXRlIHRyYWlsZXJzLgpOZXcgaGlzdG9yeSB3
-cml0dGVuIGluIDAuMTcgc2Vjb25kcy4uLgpDb21wbGV0ZWx5IGZpbmlzaGVkIGFmdGVyIDAuMzgg
-c2Vjb25kcy4KVHJhaWxlcnMgdXBkYXRlZC4KCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+On Tue,  1 Apr 2025 15:36:37 +0200, Miquel Raynal wrote:
+> __VA_OPT__ is a macro that is useful when some arguments can be present
+> or not to entirely skip some part of a definition. Unfortunately, it
+> is a too recent addition that some of the still supported old GCC
+> versions do not know about, and is anyway not part of C11 that is the
+> version used in the kernel.
+> 
+> Find a trick to remove this macro, typically '__VA_ARGS__ + 0' is a
+> workaround used in netlink.h which works very well here, as we either
+> expect:
+> - 0
+> - A positive value
+> - No value, which means the field should be 0.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202503181330.YcDXGy7F-lkp@intel.com/
+> Fixes: 7ce0d16d5802 ("mtd: spinand: Add an optional frequency to read from cache macros")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Tested-by: Jean Delvare <jdelvare@suse.de>
+
+Thanks Miquel!
+
+-- 
+Jean Delvare
+SUSE L3 Support
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
