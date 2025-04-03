@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1C27C3600C
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2A4BC3601B
 	for <linux-mtd@archiver.kernel.org>; Thu,  3 Apr 2025 10:10:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,41 +12,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zb7C+neLlKfl1yF30/zHlxraSTyhGc+Of9tGDMP25/0=; b=MAFNtwvu0v0Bq4
-	ezCxym0MAyBhZ0+3Im35pwHsbex6b9JQTp/xRgThxg2W75576lKEl9pUA4U7P9D5GV7M2kfHqcrh7
-	h20U0AoBCmmYzdF+uIHd1/b0o15g+C5p53IPdUMSGNLTOytpYKyA4jjSp2J1nvIP9sUoGjsVBUPAf
-	3bRpfA15yXTCm69T1PlDFAzVCIynSu6kJBgC9NXANPf6tp9rnRyS2ZMSbsUcUPRMKnRMEYaYXbpJH
-	Kk7cK+bUcNH62HyxFmxk64PwcgnQr6rk/6NX2ITRlA23eJEN9bwN4zgpZ2vNHZ0Xm/6dOah2yTY/5
-	6x2/V9QlHCvMEluRd26w==;
+	List-Owner; bh=jYR7OBfuQfuBwi5iNZblQApuaqFNJb29Ti5CRK3bK6U=; b=4P6aU3pHRKFTak
+	5y1qw+j76TJg+YI8Ms/HpJljNWq2kXequUf1MXqAacRQBua+s4DIOYHR1gYV7tfPQlCQmEmuaEKav
+	UPppHsD//UpGHCwdXIFT7CkV/mttwNs6BRB5XQJMAcZg2EyVWqNDoLPwONGUmKGhLkwgruKp9cohD
+	ziTJiL1EiJY8ywtYUycR6LsthueaMm8eP10gSsI765TPTa5nTdgU5ugVTsiSTmO7vagKZ70KEB7O5
+	v9/M7HxQL2g0bS2opELDvHs54UzTvzbh1cVeIasKuiSf4g7SPN3cS3NxWkhN7eBnh9+I7Ma9sdds5
+	7HAaq+vtOKSUbWWcD1UQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0HWw-00000008UZ1-3R58;
+	id 1u0HWw-00000008UYn-1Gci;
 	Thu, 03 Apr 2025 10:10:38 +0000
 Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0GjS-00000008Ngs-2d9P
+	id 1u0GjR-00000008NgS-1835
 	for linux-mtd@lists.infradead.org;
-	Thu, 03 Apr 2025 09:19:32 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E5F5643226;
-	Thu,  3 Apr 2025 09:19:27 +0000 (UTC)
+	Thu, 03 Apr 2025 09:19:30 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8851B43229;
+	Thu,  3 Apr 2025 09:19:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1743671969;
+	t=1743671967;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=an1llH+UyiV3b2bkiCbz04NGh1wf3wI0HK8yfBIf6k4=;
-	b=IqyMYX1K4FFniH6k9UKTeITdnoZSlGmjfmefwR+YFQFgLRjWziqBhY4q1U9vq9BdElTf+u
-	bd9eBXSJCn13bbm1QAJTtKIaWn6ZK8izmSMXdoGn2p++eBNFQDrsgnr07Z+A/8IQrqpbG2
-	temyFKHAnh9jvd94UFhS6OKpYA9aoLSLdgyUKL7diU5zMbcn9gIiBZw8Ux91fV+Wmw1/+I
-	sJjrliPV5193TW9ksAAjMnt51zmNo73RwM/gXhLBwgocjNOK07GztKqYGqdpWntonwrAfD
-	Xmhmwwf34b70dAGkn9jFMsAznOsClyT8du7PLE/lzjgVgjr5FYYHDljGJuFc8Q==
+	bh=r6F19xsrfcjvm1+Kgpchw0zwnGPEmUts0SlL1DoOvE8=;
+	b=pu/Tya8ILhoHkxd9Zqsc/L/6AfOAHS4LvxdjmcT+MBWnBFBPoOvBq6bbwtq7LbvQLehxKe
+	Mv/aYZ4/EvmXDlCu4M/tpN2MogrgIRmASFFXdXX3499YAFFrsIHqc5EJXBXkLpJlXciEzo
+	b6yG06K292iGZavWKpL+FsSLxTFo6nnul4PUHr/2+OaIRo0h3pGpfihiolE8B0ox9+Z9zl
+	y6XPzCmWdVfU+m+n9On/s2rm5oe1yJxC1OUrNEnzTXm0E02XqiZInEaO2TpAe9DaGFEDiX
+	rzu6bNCpK9LzmdGWNhF98gUwBmYJ0FYk+wMa9H6lJxolu8FRuoZ0/cWsLOZdUg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 03 Apr 2025 11:19:16 +0200
-Subject: [PATCH v2 06/19] mtd: spinand: Use more specific naming for the
- page read op
+Date: Thu, 03 Apr 2025 11:19:15 +0200
+Subject: [PATCH v2 05/19] mtd: spinand: Use more specific naming for the
+ erase op
 MIME-Version: 1.0
-Message-Id: <20250403-winbond-6-14-rc1-octal-v2-6-7846bd88fe83@bootlin.com>
+Message-Id: <20250403-winbond-6-14-rc1-octal-v2-5-7846bd88fe83@bootlin.com>
 References: <20250403-winbond-6-14-rc1-octal-v2-0-7846bd88fe83@bootlin.com>
 In-Reply-To: <20250403-winbond-6-14-rc1-octal-v2-0-7846bd88fe83@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, 
@@ -59,12 +59,12 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.15-dev
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukeekudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelgfehvdduieefieeikeffgffggfdttdeugeffieetheeuleelfeehffdtffetveenucfkphepledvrddukeegrdduuddtrdduleelnecuvehluhhsthgvrhfuihiivgepheenucfrrghrrghmpehinhgvthepledvrddukeegrdduuddtrdduleelpdhhvghloheplgduledvrdduieekrddurddutdeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeduuddprhgtphhtthhopehsthhlihhnvdesfihinhgsohhnugdrtghomhdprhgtphhtthhopehprhgrthihuhhshheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgus
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukeekudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelgfehvdduieefieeikeffgffggfdttdeugeffieetheeuleelfeehffdtffetveenucfkphepledvrddukeegrdduuddtrdduleelnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehinhgvthepledvrddukeegrdduuddtrdduleelpdhhvghloheplgduledvrdduieekrddurddutdeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeduuddprhgtphhtthhopehsthhlihhnvdesfihinhgsohhnugdrtghomhdprhgtphhtthhopehprhgrthihuhhshheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgus
  ehnohgurdgrthdprhgtphhtthhopehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhrtghpthhtohepthhuughorhdrrghmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshdqkheisehtihdrtghomh
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250403_021930_812897_FA2F9F69 
-X-CRM114-Status: GOOD (  11.10  )
+X-CRM114-CacheID: sfid-20250403_021929_458721_88FB4C92 
+X-CRM114-Status: GOOD (  11.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,7 +88,7 @@ naming, followed by DTR operations. Soon we might see octal
 and even octal DTR operations as well (including the opcode byte).
 
 Let's clarify what the macro really means by describing the expected bus
-topology in the page read macro name.
+topology in the erase macro name.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
@@ -98,29 +98,29 @@ Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 1959e8d9c64be004c71a0d6ac6454fde08e708fa..2ebc802299068ef69068422d1ef6585f63365832 100644
+index b6c0993206ebab1dcee715ea6de33efe7d5af3a2..1959e8d9c64be004c71a0d6ac6454fde08e708fa 100644
 --- a/drivers/mtd/nand/spi/core.c
 +++ b/drivers/mtd/nand/spi/core.c
-@@ -372,7 +372,7 @@ static int spinand_load_page_op(struct spinand_device *spinand,
+@@ -529,7 +529,7 @@ static int spinand_erase_op(struct spinand_device *spinand,
  {
  	struct nand_device *nand = spinand_to_nand(spinand);
- 	unsigned int row = nanddev_pos_to_row(nand, &req->pos);
--	struct spi_mem_op op = SPINAND_PAGE_READ_OP(row);
-+	struct spi_mem_op op = SPINAND_PAGE_READ_1S_1S_0_OP(row);
+ 	unsigned int row = nanddev_pos_to_row(nand, pos);
+-	struct spi_mem_op op = SPINAND_BLK_ERASE_OP(row);
++	struct spi_mem_op op = SPINAND_BLK_ERASE_1S_1S_0_OP(row);
  
  	return spi_mem_exec_op(spinand->spimem, &op);
  }
 diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 09f374d2a27c30a2b1334c2ef2c56a93f6726c56..10b2c1279c0e2e0e3ddec3b4ce93e7fe25402c9f 100644
+index a9e2500d941ecd68891c5dd324944fc8950f1dba..09f374d2a27c30a2b1334c2ef2c56a93f6726c56 100644
 --- a/include/linux/mtd/spinand.h
 +++ b/include/linux/mtd/spinand.h
-@@ -56,7 +56,7 @@
+@@ -50,7 +50,7 @@
  		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_NO_DATA)
+ 		   SPI_MEM_OP_DATA_IN(1, valptr, 1))
  
--#define SPINAND_PAGE_READ_OP(addr)					\
-+#define SPINAND_PAGE_READ_1S_1S_0_OP(addr)				\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(0x13, 1),				\
+-#define SPINAND_BLK_ERASE_OP(addr)					\
++#define SPINAND_BLK_ERASE_1S_1S_0_OP(addr)				\
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(0xd8, 1),				\
  		   SPI_MEM_OP_ADDR(3, addr, 1),				\
  		   SPI_MEM_OP_NO_DUMMY,					\
 
