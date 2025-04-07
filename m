@@ -4,73 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98190C36010
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 16:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79107C369A1
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 18:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hAGGDAkZHdN4e1ceeo0ox06H3NnfS0KhCB3nRn59diI=; b=V6krJfJXghLIrO
-	2OrBP9rz/hDLLZiynuxDd8iYzSHmFO78XMujDJ7t3gLgWVL38nkI+DEUFIvHtP2yGTg6Xg2AC5peF
-	wPbk6XVUVutGnY31qitfmN9/KYdOclNgHpEmtkXeSSmGyUaFqciQg/uoy15L5I5OBcq7SKgshPQgW
-	qIhlzVv0bIxUUa+TSdauxJ9tlyT5XhlTNx9na5NaYdXh9nkarkRbc91bgd9K1oQv8qSi81dbsc4ia
-	st85uS+kY/CsiN85LAljUMoAAOmgsy0+5Y1HjQXq9aYgXQVzCo7U39hlvcZ4bbXgX6cFEZBQXy9Ip
-	+zLgEsmjzgKYpCA6IbBA==;
+	List-Owner; bh=Wm9zgDRvzU+Lw5xiNiG7v1AwAkKRSER/olMlQeFZpvY=; b=RVkrFnpKFN9VM4
+	Ne/AuEOVA1HS+VYl7evo+SYJ7Dl07SiH5BMkfmMgQ/jxvZKyHOQ31f3gEr+uyzuzOSReK7p7+Zm1e
+	SHhf5TzG4cYTckVyg7dzoKSRMkIUJR/+FjJcTOwZ279cMSE3KKg0r6D5TQo0E/BCao1omjdDcSZ1y
+	Lt1AURSV7dQ4c089i2eYT643la7awSUMH7zLox3Z20Kh76ATUI9Ohg1S7MKhhyXDhKL2xC3nsjN7w
+	kQpvOoAXYgWGw9SA+H/mFxk6PmceGt4pr9zbn1kI1u93CV1Os4fhzjFULH+9Dml0xbBl6dSmv9h/K
+	EJW2T+RD7f3o8VYnCR9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1pam-00000001GNc-0oGj;
-	Mon, 07 Apr 2025 16:45:00 +0000
-Received: from 004.mia.mailroute.net ([199.89.3.7])
+	id 1u1r1e-00000001VXT-2QLr;
+	Mon, 07 Apr 2025 18:16:50 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1om8-000000011Sl-1kgZ
+	id 1u1p8b-000000017qW-3K6y
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 07 Apr 2025 16:15:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=NlnadeUtfIffpDHS95wqPo0yPGar+etcKexR3IwBc9Y=; b=eGiVJyuDV/EJoRd6H5kua+oVRM
+	iizkdWaKoWCGPVxDb3ywpJ2PzCmAixnsro/IwQUTGjGUwuniGcRFrweInhZCa+r7ix9VUK79lQQom
+	bllmJ/7qEGlLMLU1b3EreRVzwWhORYYW46TGVdEhl1ZteQruahFNAeBDgtSXOHnmaNa0idmmRaRRn
+	aclBF0sWZz6m29o3gu6ED+AnUIZFC/DovvmJtGa2vkMMdIWqfG7b+dkpyMycxXw0AI1j8IgXmkXV9
+	4R9wEQokW+uowFarpisM3gjNnA1hKCAG5VuMPhCMS7kZmRTmcygMSQToDup1Pki+OEwE6DdAeOfSR
+	S5tNU6nQ==;
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u1p8Y-000000082yP-2d4P
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Apr 2025 15:52:41 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by 004.mia.mailroute.net (Postfix) with ESMTP id 4ZWYcq50LWzm1Hbv;
-	Mon,  7 Apr 2025 15:52:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1744041145; x=1746633146; bh=oxvfkoktGok/Tj8yNFuiqz5n
-	ymZiR4HzCdd9/8a13b4=; b=p/bq2h/oyn3YhPR9Avw3KgPwhX7fOjlTQxDLy87i
-	Lvq3NB3pAb5v+B6278kf7bhbB4ILbrrXofcauEJH6P3UEgqmRb0X2qaWM5LlvPpw
-	vwE+LxRK14AUAZ3m972Np4MhpnwUkSPS58LjYKDnH+FtdQ0koYAHO8C4iiPahT2t
-	1iN16w6/2z4OuNC9S8Mp98RGmKofKWhru8NAsqd624u7zBlc2vBoD1gFhwc2U7jS
-	IMUrKokmfpmz2jjInkoVJoJ+/Ueeo2QIggCm8193H8NNENlwEzflzLNuIYDmA9MM
-	QRDo4ZK3FouV9sx8iwWUnS9FnX/jnpCKh+cP26Sfd2kIVQ==
-X-Virus-Scanned: by MailRoute
-Received: from 004.mia.mailroute.net ([127.0.0.1])
- by localhost (004.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id Xe_ks9NQxyHZ; Mon,  7 Apr 2025 15:52:25 +0000 (UTC)
-Received: from [100.66.154.22] (unknown [104.135.204.82])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 004.mia.mailroute.net (Postfix) with ESMTPSA id 4ZWYcd104Jzm0djP;
-	Mon,  7 Apr 2025 15:52:15 +0000 (UTC)
-Message-ID: <e65d2884-a021-44e2-b3cc-9e9badad56e7@acm.org>
-Date: Mon, 7 Apr 2025 08:52:13 -0700
+	Mon, 07 Apr 2025 16:15:52 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 6427644F0D;
+	Mon,  7 Apr 2025 16:15:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E19CC4CEDD;
+	Mon,  7 Apr 2025 16:15:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744042546;
+	bh=/vZrV4sTxkcoN28b/L2BHGZocW18xExXmkYKNBBY7JA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=m6+8k+pTP+eQ5L1rJZalS2n9o8JLaIHkqpYaDH4HWm5Jt8FAOftYvYzgYYntHdbgt
+	 VRfxh6vTQhLfVW7KbLPtcSdrv+0O9cgh9hKGPzAR2SUUncF6Z1fMjBB/poXyzJjPy4
+	 rZVUxatZDX9MyjueUQ3lwriMMxzoj7APJL6eZX4waS5/c7XryZuxLG3E4hw1zzkyyL
+	 /dWEzGvDZqSVvncbLDPndVQfNRfzreNpqz1JaF3M0OD+NOuJlaxWy93Mxkx7Pdb6EL
+	 Gm0ZC1FOYMQjkHVSSjTtTbp45X4bAtrsMaRM2fnyqbo1JhJr0zyi6FpiLMYzBCqDE6
+	 5TDpTGvVM2HCw==
+From: Mark Brown <broonie@kernel.org>
+To: Gabor Juhos <j4g8y7@gmail.com>
+Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ Varadarajan Narayanan <quic_varada@quicinc.com>, linux-spi@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20250320-qpic-snand-kmalloc-v1-1-94e267550675@gmail.com>
+References: <20250320-qpic-snand-kmalloc-v1-1-94e267550675@gmail.com>
+Subject: Re: [PATCH next] spi: spi-qpic-snand: use kmalloc() for OOB buffer
+ allocation
+Message-Id: <174404254509.780717.1127447329039664549.b4-ty@kernel.org>
+Date: Mon, 07 Apr 2025 17:15:45 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: bio segment constraints
-To: Christoph Hellwig <hch@infradead.org>, Keith Busch <kbusch@kernel.org>
-Cc: Sean Anderson <seanga2@gmail.com>, Jens Axboe <axboe@kernel.dk>,
- linux-block@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, Zhihao Cheng <chengzhihao1@huawei.com>
-References: <8dfd97ac-59e7-ae69-238a-85b7a2dae4f1@gmail.com>
- <Z_N5nxLDOBb5NDAM@infradead.org> <Z_PXONJyuv4Z8ATr@kbusch-mbp>
- <Z_PaW2QS3OXTXHSO@infradead.org>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <Z_PaW2QS3OXTXHSO@infradead.org>
+X-Mailer: b4 0.15-dev-c25d1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_085240_521592_3BB58F34 
-X-CRM114-Status: GOOD (  13.36  )
+X-CRM114-CacheID: sfid-20250407_171550_904896_84312A24 
+X-CRM114-Status: GOOD (  11.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,29 +86,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/7/25 6:59 AM, Christoph Hellwig wrote:
-> On Mon, Apr 07, 2025 at 02:46:32PM +0100, Keith Busch wrote:
->> O_DIRECT only requires each user iovec be a multiple of the logical
->> block size with the address aligned to the dma_alignment. If the
->> dma_alignment is smaller than the logical block size, then this could
->> create bvec segments that are smaller. For nvme where we have 4-byte
->> dma alignment, you could have the first segment be the last 4 bytes of a
->> page, then the remaing 508 bytes from a different page in the next
->> segment.
+On Thu, 20 Mar 2025 19:11:59 +0100, Gabor Juhos wrote:
+> The qcom_spi_ecc_init_ctx_pipelined() function allocates zeroed
+> memory for the OOB buffer, then it fills the buffer with '0xff'
+> bytes right after the allocation. In this case zeroing the memory
+> during allocation is superfluous, so use kmalloc() instead of
+> kzalloc() to avoid that.
 > 
-> Oh, right - with a smaller dma alignment this can actually happen.
+> 
+> [...]
 
-Some time ago I added src/discontiguous-io.cpp to the blktests project
-to trigger this scenario. This test program submits an SG_IO request
-with multiple 4 byte segments. Maybe this test program should be
-modified such that it uses O_DIRECT instead of SG_IO.
+Applied to
 
-Bart.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: spi-qpic-snand: use kmalloc() for OOB buffer allocation
+      commit: f48d80503504257682e493dc17408f2f0b47bcfa
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
