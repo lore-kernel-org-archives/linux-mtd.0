@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71C15C3601E
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 10:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56D4EC36010
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 10:03:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:References
 	:In-Reply-To:Message-Id:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=clEHz6qZtOg8h9f9cf0X1kO5epcDDy3s/B5tht5D2k4=; b=U+xk7lPMSfeWAw
-	o+Bq7g+qpSqC12C0P3JsU3tSP8dkEDjSUUhFSunVsuIv4GXgnfsHEYoWXwGzsAxb6JIgkuOWyjfB6
-	aSURSvcrBmQtg8LDEMbpjbw1rppfbJ7hXanvrtwAJGoYizYVs116PsjPpb/xh78kkW5xw5KH0PBRu
-	Yxyc8nS3gWd8s2MBJ8GV2KWtlmbhyt0JABZb2UwM4NUTU39LEle8A2Ud6PHBlGOWLiEevLzIDAUbO
-	MWidQpMltNJWVV4yEwX0lmBHSENv3kg361CRWDQa22RSslyQD8Z9wtXPHcNEKwIB+a7ZDVhVsFwwT
-	iBLZMlncqRvxuHoovj5A==;
+	List-Owner; bh=87kZ2BvbT+Qnnk62r7wQobR2KCgkTabt/Mum3y6xjHs=; b=wTgh86sPVit75q
+	lGlVDXeurTJEMIMNSraBJCdz6YtauKnPIo+/UQAdbeS5kvmqQqIrJssDxaYrtMCix3mVw9TRGIAVX
+	cUpqFmeHI77u6+OhCEEQx51vEMW92yrKZ+/4Jj52KoyGdsajKlY1wJDVqsRTYljeuM4JEbUM8ZrOa
+	d/MOFXhsMCorlgM2AaKYmBo3FB10U559e7nTOCAGQPdPJ7ZIHliZu0rnGiAnhGNXRshm2FtGJYDyV
+	ZhJacoIV2cdf+E/kLAfPKOZRoK7uj+h1GnYGESwKpiHuoYkJahlvifPc5Wvf2SBZIN2hCvMpkYVXb
+	s/lH04OxEZBnmQzel6iQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1jJt-0000000HJmO-1AQ8;
-	Mon, 07 Apr 2025 10:03:09 +0000
+	id 1u1jJv-0000000HJpM-3RDb;
+	Mon, 07 Apr 2025 10:03:11 +0000
 Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1jJq-0000000HJik-1G37
+	id 1u1jJt-0000000HJkx-0t35
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Apr 2025 10:03:07 +0000
+	Mon, 07 Apr 2025 10:03:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
 	s=formenos; h=Cc:To:Subject:From:References:In-Reply-To:Message-Id:Date:
 	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=N/kV/3akXRd58FogHn86jKF/OX5hcoPGbXayJwTkJqI=; b=XG6jzAZ1FnKDPjeKXr+71wxvcV
-	uPaOB/awuKivEwilwSo8Ln/vKITvuq+xMfCUo5AL+VrnvCUyKi+hWtaV6Hk+A4hJpl+bGGuAn/N1i
-	W1ssWpT2d6+EuRrN+JcKFbPFgXYttlS5eGwps8R0kRIlKj1BsxrMMGLkdg2Q3YE4fGY4BES8Vo2PA
-	qqoH/Oyn536KRwoCk8Fe5k6VKFjon4KE5YTyNquGI0MkJk4x+Pi8M4Bmmw/P3tIKWyEFQ7Ose+Ydg
-	PzZrI0UYCZp1rJv5K6dKQBv/G3jFcEw1bk/N6COFY5LnjWMd9kzwz2AAGoajskoPROo7SJxkIXiag
-	zFqOKCew==;
+	bh=Cs4FQRl6EvMojc3T3B3xIezvpCgWvmdn7fNz4ncQaHc=; b=dCYPBL/KfpbXlPe+4eWjESqOEA
+	QW6D2VuCWnUK489WDvGX3dXlTwkeQ5Ui9QYuWCSSpvWfhoGkk29BCrtKs18QXfHaDJkppyhk3ZRym
+	PokAKXQzMxtTvXETyKa/9AoYqLM9RrQxPxP0t+tgOIMTPlVxzkCYMnYaKmksWYwUReso9eXa1qMdo
+	iduTs5Wo/tcSrU4AJmP/sXKkVBeRdZaIQG7h8smgFH0SLcUAOKtY8FZk1lrHPOviszoiGl2GnDCmp
+	tT9L/at1qbscBsA2sKYuTZP0Xk6kaAVMjQXpGIrszrDRvVU7V+iaUd8UNeEi7391vkbIjeKXOLbqo
+	+11UNCVA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1u1jJi-00DTHo-0M;
-	Mon, 07 Apr 2025 18:02:59 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 07 Apr 2025 18:02:58 +0800
-Date: Mon, 07 Apr 2025 18:02:58 +0800
-Message-Id: <5e73c54a230c711c581238979936dc72543c7f02.1744019630.git.herbert@gondor.apana.org.au>
+	id 1u1jJk-00DTI1-1L;
+	Mon, 07 Apr 2025 18:03:01 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 07 Apr 2025 18:03:00 +0800
+Date: Mon, 07 Apr 2025 18:03:00 +0800
+Message-Id: <043f54180138940db2dce180f192e240a81771bd.1744019630.git.herbert@gondor.apana.org.au>
 In-Reply-To: <cover.1744019630.git.herbert@gondor.apana.org.au>
 References: <cover.1744019630.git.herbert@gondor.apana.org.au>
 From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4/7] crypto: iaa - Switch to ACOMP_FBREQ_ON_STACK
+Subject: [PATCH 5/7] crypto: acomp - Add ACOMP_REQUEST_CLONE
 To: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Cc: Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_030306_348386_F46F7B4D 
-X-CRM114-Status: UNSURE (   8.21  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250407_030309_251046_10DA074F 
+X-CRM114-Status: GOOD (  12.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,32 +72,167 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rather than copying the request by hand, use the ACOMP_FBREQ_ON_STACK
-helper to do it.
+Add a new helper ACOMP_REQUEST_CLONE that will transform a stack
+request into a dynamically allocated one if possible, and otherwise
+switch it over to the sycnrhonous fallback transform.  The intended
+usage is:
+
+	ACOMP_STACK_ON_REQUEST(req, tfm);
+
+	...
+	err = crypto_acomp_compress(req);
+	/* The request cannot complete synchronously. */
+	if (err == -EAGAIN) {
+		/* This will not fail. */
+		req = ACOMP_REQUEST_CLONE(req, gfp);
+
+		/* Redo operation. */
+		err = crypto_acomp_compress(req);
+	}
 
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 ---
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ crypto/acompress.c                  | 23 ++++++++++++++++++++++
+ include/crypto/acompress.h          | 30 +++++++++++++++++++++++++----
+ include/crypto/internal/acompress.h | 11 +++--------
+ 3 files changed, 52 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index aa63df16f20b..b4f15e738cee 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -999,12 +999,9 @@ static inline int check_completion(struct device *dev,
- 
- static int deflate_generic_decompress(struct acomp_req *req)
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index 85cef01bd638..9eed20ad0f24 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -316,6 +316,8 @@ int crypto_acomp_compress(struct acomp_req *req)
  {
--	ACOMP_REQUEST_ON_STACK(fbreq, crypto_acomp_reqtfm(req));
-+	ACOMP_FBREQ_ON_STACK(fbreq, req);
- 	int ret;
+ 	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
  
--	acomp_request_set_callback(fbreq, 0, NULL, NULL);
--	acomp_request_set_params(fbreq, req->src, req->dst, req->slen,
--				 req->dlen);
- 	ret = crypto_acomp_decompress(fbreq);
- 	req->dlen = fbreq->dlen;
++	if (acomp_req_on_stack(req) && acomp_is_async(tfm))
++		return -EAGAIN;
+ 	if (crypto_acomp_req_chain(tfm) || acomp_request_issg(req))
+ 		crypto_acomp_reqtfm(req)->compress(req);
+ 	return acomp_do_req_chain(req, true);
+@@ -326,6 +328,8 @@ int crypto_acomp_decompress(struct acomp_req *req)
+ {
+ 	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
  
++	if (acomp_req_on_stack(req) && acomp_is_async(tfm))
++		return -EAGAIN;
+ 	if (crypto_acomp_req_chain(tfm) || acomp_request_issg(req))
+ 		crypto_acomp_reqtfm(req)->decompress(req);
+ 	return acomp_do_req_chain(req, false);
+@@ -599,5 +603,24 @@ int acomp_walk_virt(struct acomp_walk *__restrict walk,
+ }
+ EXPORT_SYMBOL_GPL(acomp_walk_virt);
+ 
++struct acomp_req *acomp_request_clone(struct acomp_req *req,
++				      size_t total, gfp_t gfp)
++{
++	struct crypto_acomp *tfm = crypto_acomp_reqtfm(req);
++	struct acomp_req *nreq;
++
++	nreq = kmalloc(total, gfp);
++	if (!nreq) {
++		acomp_request_set_tfm(req, tfm->fb);
++		req->base.flags = CRYPTO_TFM_REQ_ON_STACK;
++		return req;
++	}
++
++	memcpy(nreq, req, total);
++	acomp_request_set_tfm(req, tfm);
++	return req;
++}
++EXPORT_SYMBOL_GPL(acomp_request_clone);
++
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Asynchronous compression type");
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index f383a4008854..93cee67c27c0 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -49,10 +49,19 @@
+ #define	MAX_SYNC_COMP_REQSIZE		0
+ 
+ #define ACOMP_REQUEST_ALLOC(name, tfm, gfp) \
++        char __##name##_req[sizeof(struct acomp_req) + \
++                            MAX_SYNC_COMP_REQSIZE] CRYPTO_MINALIGN_ATTR; \
++        struct acomp_req *name = acomp_request_alloc_init( \
++                __##name##_req, (tfm), (gfp))
++
++#define ACOMP_REQUEST_ON_STACK(name, tfm) \
+         char __##name##_req[sizeof(struct acomp_req) + \
+                             MAX_SYNC_COMP_REQSIZE] CRYPTO_MINALIGN_ATTR; \
+         struct acomp_req *name = acomp_request_on_stack_init( \
+-                __##name##_req, (tfm), (gfp), false)
++                __##name##_req, (tfm))
++
++#define ACOMP_REQUEST_CLONE(name, gfp) \
++	acomp_request_clone(name, sizeof(__##name##_req), gfp)
+ 
+ struct acomp_req;
+ struct folio;
+@@ -571,12 +580,12 @@ int crypto_acomp_compress(struct acomp_req *req);
+  */
+ int crypto_acomp_decompress(struct acomp_req *req);
+ 
+-static inline struct acomp_req *acomp_request_on_stack_init(
+-	char *buf, struct crypto_acomp *tfm, gfp_t gfp, bool stackonly)
++static inline struct acomp_req *acomp_request_alloc_init(
++	char *buf, struct crypto_acomp *tfm, gfp_t gfp)
+ {
+ 	struct acomp_req *req;
+ 
+-	if (!stackonly && (req = acomp_request_alloc(tfm, gfp)))
++	if ((req = acomp_request_alloc(tfm, gfp)))
+ 		return req;
+ 
+ 	req = (void *)buf;
+@@ -586,4 +595,17 @@ static inline struct acomp_req *acomp_request_on_stack_init(
+ 	return req;
+ }
+ 
++static inline struct acomp_req *acomp_request_on_stack_init(
++	char *buf, struct crypto_acomp *tfm)
++{
++	struct acomp_req *req = (void *)buf;
++
++	acomp_request_set_tfm(req, tfm);
++	req->base.flags = CRYPTO_TFM_REQ_ON_STACK;
++	return req;
++}
++
++struct acomp_req *acomp_request_clone(struct acomp_req *req,
++				      size_t total, gfp_t gfp);
++
+ #endif
+diff --git a/include/crypto/internal/acompress.h b/include/crypto/internal/acompress.h
+index 8840fd2c1db5..b51d66633935 100644
+--- a/include/crypto/internal/acompress.h
++++ b/include/crypto/internal/acompress.h
+@@ -17,12 +17,6 @@
+ #include <linux/spinlock.h>
+ #include <linux/workqueue_types.h>
+ 
+-#define ACOMP_REQUEST_ON_STACK(name, tfm) \
+-        char __##name##_req[sizeof(struct acomp_req) + \
+-                            MAX_SYNC_COMP_REQSIZE] CRYPTO_MINALIGN_ATTR; \
+-        struct acomp_req *name = acomp_request_on_stack_init( \
+-                __##name##_req, (tfm), 0, true)
+-
+ #define ACOMP_FBREQ_ON_STACK(name, req) \
+         char __##name##_req[sizeof(struct acomp_req) + \
+                             MAX_SYNC_COMP_REQSIZE] CRYPTO_MINALIGN_ATTR; \
+@@ -245,9 +239,10 @@ static inline struct acomp_req *acomp_fbreq_on_stack_init(
+ 	char *buf, struct acomp_req *old)
+ {
+ 	struct crypto_acomp *tfm = crypto_acomp_reqtfm(old);
+-	struct acomp_req *req;
++	struct acomp_req *req = (void *)buf;
+ 
+-	req = acomp_request_on_stack_init(buf, tfm, 0, true);
++	acomp_request_set_tfm(req, tfm->fb);
++	req->base.flags = CRYPTO_TFM_REQ_ON_STACK;
+ 	acomp_request_set_callback(req, acomp_request_flags(old), NULL, NULL);
+ 	req->base.flags &= ~CRYPTO_ACOMP_REQ_PRIVATE;
+ 	req->base.flags |= old->base.flags & CRYPTO_ACOMP_REQ_PRIVATE;
 -- 
 2.39.5
 
