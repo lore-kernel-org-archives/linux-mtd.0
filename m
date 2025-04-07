@@ -4,68 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A565AC369A1
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 07:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EB90C36010
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 07:56:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9WVGnYQd9Zwkhdtjt87LEY/BiND7nYPNHWmaFyhvh9Y=; b=oJDG5Jap0jOh4v
-	wwNgS1tDOcDe9NCZNItjEoeaHDTjk+Jd9V6B20pjeSb2g081Ose8CFhFCaZ1XKeIz9F5nhXaopDzd
-	WNsZCX6YDBKumZvUXgkg0LLxOkznEL2KYm4qovDL7qz0MYzTxhX+kuxkNrc9bqPYJ4yVijvKav/qu
-	XrdbrhuOea8mUdUXFaGctuXjgiPVpojT5nVlbjjPJ47erPfmn8mM+5A6ERNCT4tZR8qonK442ynaE
-	ot/xn5w84Ps1EIVfgw2vlvXFNXKVxgMCNP6uMnolhrOWPxjXMvE0U7mAjEZ/sccO6MAAuHLmrnqgW
-	Z2G7FUz5QW9HP1svWKbQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oA4V9n39P+9TGiOAXE+iYYbUwxie/+TkgvfT4D7JKyU=; b=KBMLxW1+AGzP2G
+	D0jlz94c0z5uaEkfqL6ZsBAsl5Q2Uzax0bcsxCdrMq+xCsXJEi4yuSNWYVdirfIBPjncz8yRuC3G8
+	JTAvn8ZN5vFF2iHa9JGM/9R/gEoyRraWbQ9+h2jEwpHh7+I42Rd4sdZ8JjsbuexoKm88tpDFCkowG
+	jkcMBRcsF6yeXiq72WSGiH2PxrJZHRp0qLkESGAyFt+9sfvg0ZA/Quqa+Vc09U3p6ebcv/ZPeGPzO
+	Km28ki9CD/y4JeTrWBFTAFZ9MkJNrFt+Wmt+uazWJH7uJnoVsp5UbdiLUvDHet57gCxLEzzsBx9GM
+	mJInGrA/kd2T68ODl7qQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1gnz-0000000Gjn6-0RWr;
-	Mon, 07 Apr 2025 07:22:03 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1u1hL9-0000000Gt6G-2yIN;
+	Mon, 07 Apr 2025 07:56:19 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1gjD-0000000GiHA-1S3l
+	id 1u1gta-0000000Gllh-4795
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Apr 2025 07:17:08 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 84A8820579;
-	Mon,  7 Apr 2025 07:17:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1744010224;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zKwzOYh8aAJuS+S3TkD57w5LMO2QhltXuYUO7CZQNWM=;
-	b=RXDCWCMNUclxLzRL6AiK1Fmxi79I2R8O37PVEhcp5lNPDKqaT2r42YJRp2/v6lyOzf7QvT
-	Poqw1OEyv/XO2jhlihzZshc2WMeMl7V4OOVUlEQNW5c7VVdVuhAEUy4ZkefKIl9703X1Lx
-	aAi1UzRmliogVdI/Dzk5IgeFfmxAWEkSE9Kw0iXCYDiRyFV4nqEO1cGUZiFM0IWD5b7G5o
-	DU2u9aAZF+fuxVjmSuQ9BSlPVAT+BkcQ53Xvf2ODYFcAKdiGeaAGrYC4gKCtMlUnUXrwXJ
-	ZKOPY2qIfBOv/d9TlmMIKVrLwer5cQD1ax7aZq/lwXkJYaybnVH5MuItoHd4cA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Pratyush Yadav <pratyush@kernel.org>,
-  Michael Walle <michael@walle.cc>,  <linux-mtd@lists.infradead.org>,
-  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-  <linux-kernel@vger.kernel.org>,  Steam Lin <stlin2@winbond.com>,  Jean
- Delvare <jdelvare@suse.de>,  kernel test robot <lkp@intel.com>,
-  stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: spinand: Fix build with gcc < 7.5
-In-Reply-To: <20250401133637.219618-1-miquel.raynal@bootlin.com> (Miquel
-	Raynal's message of "Tue, 1 Apr 2025 15:36:37 +0200")
-References: <20250401133637.219618-1-miquel.raynal@bootlin.com>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Mon, 07 Apr 2025 09:16:59 +0200
-Message-ID: <87ikngh250.fsf@bootlin.com>
+	Mon, 07 Apr 2025 07:27:51 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id C021661146;
+	Mon,  7 Apr 2025 07:27:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD250C4CEDD;
+	Mon,  7 Apr 2025 07:27:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744010869;
+	bh=R1GWFoYuoKhtrKRR83vBYR9KoCi0p9VDekqu42J5Cps=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TAqQ7o68O0x+FZ0U221QbKnNfxIVtuJSPMzjCpWCK+2Zk+NF+DcE3985Wnk2rAFfF
+	 kZVbxdSq68ljoZyTfUbl3aSUcUj/+Orz6LU3nP9NPU5E75m/nB/MoHbcSfXkvJX4O0
+	 r37NmgaaDDI2k0rp2g18TiqsJkFXGlWuh/NjTCBJT6s6MRJ6jLMma4o0HDFG/eZPIZ
+	 AhBSNVwLE8WJjlKfArX+/u+85RqEqMCGyOUv0XzFz3NxHPMSg7qAKltOQTWtZZWw5i
+	 wmOgXV3N/uyJPf1NRNkfyWHZW0y+RddW9+4dFyPLcmEXjGQGh7bXUgTqAxhC6FXpgv
+	 KfVoXAYNNW4pg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Md Sadre Alam <quic_mdalam@quicinc.com>,
+	Mark Brown <broonie@kernel.org>,
+	Varadarajan Narayanan <quic_varada@quicinc.com>,
+	Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: spi-qpic: fix common module build
+Date: Mon,  7 Apr 2025 09:27:14 +0200
+Message-Id: <20250407072745.186831-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduleelheehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeejgeeftdefledvieegvdejlefgleegjefhgfeuleevgfdtjeehudffhedvheegueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeelvddrudekgedruddtkedrfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeelvddrudekgedruddtkedrfedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddvpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehtuhguohhrrdgrmhgsrghruhhssehlihhnrghrohdrohhrghdprhgtphhtthhopehprhgrthihuhhshheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrggvlhesfigrlhhlvgdrtggtpdhrtghpt
- hhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_001707_532154_F4C432C7 
-X-CRM114-Status: GOOD (  10.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,29 +69,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpPbiAwMS8wNC8yMDI1IGF0IDE1OjM2OjM3ICswMiwgTWlxdWVsIFJheW5hbCA8bWlx
-dWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cgo+IF9fVkFfT1BUX18gaXMgYSBtYWNybyB0
-aGF0IGlzIHVzZWZ1bCB3aGVuIHNvbWUgYXJndW1lbnRzIGNhbiBiZSBwcmVzZW50Cj4gb3Igbm90
-IHRvIGVudGlyZWx5IHNraXAgc29tZSBwYXJ0IG9mIGEgZGVmaW5pdGlvbi4gVW5mb3J0dW5hdGVs
-eSwgaXQKPiBpcyBhIHRvbyByZWNlbnQgYWRkaXRpb24gdGhhdCBzb21lIG9mIHRoZSBzdGlsbCBz
-dXBwb3J0ZWQgb2xkIEdDQwo+IHZlcnNpb25zIGRvIG5vdCBrbm93IGFib3V0LCBhbmQgaXMgYW55
-d2F5IG5vdCBwYXJ0IG9mIEMxMSB0aGF0IGlzIHRoZQo+IHZlcnNpb24gdXNlZCBpbiB0aGUga2Vy
-bmVsLgo+Cj4gRmluZCBhIHRyaWNrIHRvIHJlbW92ZSB0aGlzIG1hY3JvLCB0eXBpY2FsbHkgJ19f
-VkFfQVJHU19fICsgMCcgaXMgYQo+IHdvcmthcm91bmQgdXNlZCBpbiBuZXRsaW5rLmggd2hpY2gg
-d29ya3MgdmVyeSB3ZWxsIGhlcmUsIGFzIHdlIGVpdGhlcgo+IGV4cGVjdDoKPiAtIDAKPiAtIEEg
-cG9zaXRpdmUgdmFsdWUKPiAtIE5vIHZhbHVlLCB3aGljaCBtZWFucyB0aGUgZmllbGQgc2hvdWxk
-IGJlIDAuCj4KPiBSZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+
-Cj4gQ2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQtYWxsLzIwMjUwMzE4
-MTMzMC5ZY0RYR3k3Ri1sa3BAaW50ZWwuY29tLwo+IEZpeGVzOiA3Y2UwZDE2ZDU4MDIgKCJtdGQ6
-IHNwaW5hbmQ6IEFkZCBhbiBvcHRpb25hbCBmcmVxdWVuY3kgdG8gcmVhZCBmcm9tIGNhY2hlIG1h
-Y3JvcyIpCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiBTaWduZWQtb2ZmLWJ5OiBNaXF1
-ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgoKQXBwbGllZCBvbiB0b3Agb2Yg
-bXRkL2ZpeGVzIHdpdGggYW4gdW5yZWxhdGVkIGNvbmZsaWN0IHJlc29sdmVkLgoKVGhhbmtzLApN
-aXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Arnd Bergmann <arnd@arndb.de>
+
+When the NAND driver is a loadable module, and the SPI driver is
+turned off, the common part is not built:
+
+ERROR: modpost: "qcom_nandc_unalloc" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_write_reg_dma" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_read_reg_dma" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_nandc_dev_to_mem" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_nandc_alloc" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_submit_descs" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_clear_read_regs" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_clear_bam_transaction" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_read_data_dma" [drivers/spi/spi-qpic-snand.ko] undefined!
+ERROR: modpost: "qcom_write_data_dma" [drivers/spi/spi-qpic-snand.ko] undefined!
+
+Simplify the Makefile to just build the common bits for either of the two,
+so it will be built-in whenever one of them is, or otherwise a loadable
+module if needed.
+
+Fixes: 7304d1909080 ("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/nand/Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index db516a45f0c5..44913ff1bf12 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -3,11 +3,8 @@
+ nandcore-objs := core.o bbt.o
+ obj-$(CONFIG_MTD_NAND_CORE) += nandcore.o
+ obj-$(CONFIG_MTD_NAND_ECC_MEDIATEK) += ecc-mtk.o
+-ifeq ($(CONFIG_SPI_QPIC_SNAND),y)
+ obj-$(CONFIG_SPI_QPIC_SNAND) += qpic_common.o
+-else
+ obj-$(CONFIG_MTD_NAND_QCOM) += qpic_common.o
+-endif
+ obj-y	+= onenand/
+ obj-y	+= raw/
+ obj-y	+= spi/
+-- 
+2.39.5
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
