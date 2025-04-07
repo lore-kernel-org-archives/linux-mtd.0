@@ -4,67 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3553DC3601E
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 02:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF45C3601E
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 05:05:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=23M56ppWCJmpmLFdjcZTrt8PA3kKpCelrtueOZl1mPM=; b=0/F8jeueYzux0C
-	F7zKUuP9YHVZ7Zjk3ysOzBWkERYh76Qt7WgyAWWCNl3ks3XPMVaTfLP1fNlaJWUKjG/JKAC+YEuSQ
-	Egw4TYfsx1C4h7ij6J6SokYrYSTeHXJt0BhzuvGFahb+TyDmvWkfvwTqD3SRN/utuJ/MEM5A7FydA
-	VFMRsEQViR+pbAhXuUbV2zruzUkaoPyBMbti/zDxCSMcGtwV6hjqe/NuV7Vy6wA7SKR+PRiQh/ANj
-	GXiEzTIhVwPwBB1M3zfsCL0SflJ3iwAzwwUsg0Y196OK5QrE+PE30/gOMBw1dkss2DiZBjE9RE3PI
-	aOOkNXBS3fYTEEcToP0A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=p6SKu2/Pg8mYVraFcGXqHd8IGQMuBPa2P2dOuEOlvxY=; b=e0oc4XhjyFrZY2
+	b5IU0DtfLNZ4klnS4VPPg2D9uv/cja8Z0YBYLq3g0A0xDHS8PppVnWXwAAZJJPkJvxd8Jj+Jvxv4G
+	6JdeSax7IqhG28/UDdAWZfNHa6aKMsPBFgSs4Hza1U9OwpWjL9ZVXotkC35RTm5gYShXin4dqXgYK
+	bBiKKfTxIr/XvyxtpGXKeU0G7/H6H7aNsofYMItb+xvUghBI0OaG3WpXyqHenNwOyMIx2BHiWL+Wp
+	XI3sGgoZDGQklhjA84j62K7ARl++LPW/LJ4tuWcQkXAe7IfmXmZ/FvYjVRwWLrEOtlIEEO30qcaXq
+	glJBO8ppSTbT+zoTjt7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1bvz-0000000GAel-1Vi2;
-	Mon, 07 Apr 2025 02:09:59 +0000
-Received: from smtp84.cstnet.cn ([159.226.251.84] helo=cstnet.cn)
+	id 1u1eg3-0000000GPdw-3L0E;
+	Mon, 07 Apr 2025 05:05:43 +0000
+Received: from mgamail.intel.com ([198.175.65.20])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1bvv-0000000GAct-2eh2
+	id 1u1eNc-0000000GMmi-3OFF
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Apr 2025 02:09:58 +0000
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-05 (Coremail) with SMTP id zQCowAA3dQ3gM_NnLGnGBg--.8741S2;
-	Mon, 07 Apr 2025 10:09:42 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
+	Mon, 07 Apr 2025 04:46:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744001201; x=1775537201;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cDebycVq9pZjSWmtfxT+24dkoAq4Mrn9Etuxjp80A74=;
+  b=gAmxD/V4UeehyfOgjPC3YBVGuZgj/KrEBrur+yFgoGQ3hIauc4gR7Sfk
+   kXJ4sbXyi8k7wYZmxQna95aIyv0kLDj+iahVy3VXGr0yqTfZH+pjQ0B/B
+   U29uAeRU5mSVo5XC3gQfn741Xi+Newe+UA+uMv5JBobPLdnbybTLeJSNX
+   ODLtdGUUA9k+O9JYueQsXPfUYE31wkauXNXlX2ifxyRE1e31lWZ8PG90D
+   0sBptsnHHB0VSqVUm18jCe/8xpr5wlC+wj3ygDJjFdJNmnwzf26jog1FP
+   8WW/6mhYzF0K6w6UH87pcaBo65KxaCRxnice0ZqtDHKWWtuwhQW+mOiuz
+   g==;
+X-CSE-ConnectionGUID: Li/capgHQ2G3G6ZC8bYr4A==
+X-CSE-MsgGUID: AKhDcoYqRhmt22XARtNZ0Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11396"; a="45082030"
+X-IronPort-AV: E=Sophos;i="6.15,193,1739865600"; 
+   d="scan'208";a="45082030"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2025 21:46:39 -0700
+X-CSE-ConnectionGUID: TiNzR/hbRMuCM2b0J0C9Kw==
+X-CSE-MsgGUID: DIZn/0IFR/aeyqsIXFmV3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,193,1739865600"; 
+   d="scan'208";a="128356380"
+Received: from lkp-server01.sh.intel.com (HELO b207828170a5) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 06 Apr 2025 21:46:37 -0700
+Received: from kbuild by b207828170a5 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1u1eNW-0002zz-2D;
+	Mon, 07 Apr 2025 04:46:34 +0000
+Date: Mon, 7 Apr 2025 12:46:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Wentao Liang <vulab@iscas.ac.cn>, miquel.raynal@bootlin.com,
+	richard@nod.at, vigneshr@ti.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 	Wentao Liang <vulab@iscas.ac.cn>
-Subject: [PATCH] mtd: nand: Add error log for marvell_nfc_end_cmd()
-Date: Mon,  7 Apr 2025 10:09:16 +0800
-Message-ID: <20250407020917.1242-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+Subject: Re: [PATCH] mtd: nand: Add error log for marvell_nfc_end_cmd()
+Message-ID: <202504071221.XxGT6EaS-lkp@intel.com>
+References: <20250407020917.1242-1-vulab@iscas.ac.cn>
 MIME-Version: 1.0
-X-CM-TRANSID: zQCowAA3dQ3gM_NnLGnGBg--.8741S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7urWrZw1xWw1UtFW8AF4fXwb_yoW8AryDpw
-	4rZFW5KF40ya1YyrnxJa1DuFy5t3Z3K348K3Wvva4j9r4xGF4jgrsFya40gF1UAayfAw1a
-	qrZxKr9Y9Fn0yFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-	1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-	7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AK
-	xVWUAVWUtwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-	17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-	C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-	73UjIFyTuYvjfUYdgADUUUU
-X-Originating-IP: [124.16.141.245]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCRAFA2fytf-jFwAAs0
+Content-Disposition: inline
+In-Reply-To: <20250407020917.1242-1-vulab@iscas.ac.cn>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250406_190956_040949_685EE6EC 
-X-CRM114-Status: UNSURE (   8.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250406_214641_083469_0A21BF11 
+X-CRM114-Status: GOOD (  16.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,48 +90,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The function marvell_nfc_hw_ecc_bch_read_chunk() calls the function
-marvell_nfc_end_cmd(), but dose not check its return value. Since it
-is incorrect to bail from the loop if the marvell_nfc_end_cmd() fails,
-an error log is necessary to prevent silent failure.
+Hi Wentao,
 
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- drivers/mtd/nand/raw/marvell_nand.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 303b3016a070..1069a17dae9d 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -1351,16 +1351,20 @@ static void marvell_nfc_hw_ecc_bch_read_chunk(struct nand_chip *chip, int chunk,
- 	 * Length is a multiple of 32 bytes, hence it is a multiple of 8 too.
- 	 */
- 	for (i = 0; i < data_len; i += FIFO_DEPTH * BCH_SEQ_READS) {
--		marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
--				    "RDDREQ while draining FIFO (data)");
-+		err = marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
-+					  "RDDREQ while draining FIFO (data)");
-+		if (err)
-+			dev_err(nfc->dev, "Fail to confirm the NDSR.RDDREQ");
- 		marvell_nfc_xfer_data_in_pio(nfc, data,
- 					     FIFO_DEPTH * BCH_SEQ_READS);
- 		data += FIFO_DEPTH * BCH_SEQ_READS;
- 	}
- 
- 	for (i = 0; i < spare_len; i += FIFO_DEPTH * BCH_SEQ_READS) {
--		marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
--				    "RDDREQ while draining FIFO (OOB)");
-+		err = marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
-+					  "RDDREQ while draining FIFO (OOB)");
-+		if (err)
-+			dev_err(nfc->dev, "Fail to confirm the NDSR.RDDREQ");
- 		marvell_nfc_xfer_data_in_pio(nfc, spare,
- 					     FIFO_DEPTH * BCH_SEQ_READS);
- 		spare += FIFO_DEPTH * BCH_SEQ_READS;
+[auto build test ERROR on mtd/nand/next]
+[also build test ERROR on linus/master v6.15-rc1 next-20250404]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Wentao-Liang/mtd-nand-Add-error-log-for-marvell_nfc_end_cmd/20250407-101213
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20250407020917.1242-1-vulab%40iscas.ac.cn
+patch subject: [PATCH] mtd: nand: Add error log for marvell_nfc_end_cmd()
+config: arm64-randconfig-001-20250407 (https://download.01.org/0day-ci/archive/20250407/202504071221.XxGT6EaS-lkp@intel.com/config)
+compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project 92c93f5286b9ff33f27ff694d2dc33da1c07afdd)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250407/202504071221.XxGT6EaS-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202504071221.XxGT6EaS-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/mtd/nand/raw/marvell_nand.c:89:
+   In file included from include/linux/dmaengine.h:12:
+   In file included from include/linux/scatterlist.h:8:
+   In file included from include/linux/mm.h:2224:
+   include/linux/vmstat.h:504:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     504 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     505 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:511:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     511 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     512 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:524:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     524 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     525 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/nand/raw/marvell_nand.c:1354:3: error: use of undeclared identifier 'err'
+    1354 |                 err = marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
+         |                 ^
+   drivers/mtd/nand/raw/marvell_nand.c:1356:7: error: use of undeclared identifier 'err'
+    1356 |                 if (err)
+         |                     ^
+   drivers/mtd/nand/raw/marvell_nand.c:1364:3: error: use of undeclared identifier 'err'
+    1364 |                 err = marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
+         |                 ^
+   drivers/mtd/nand/raw/marvell_nand.c:1366:7: error: use of undeclared identifier 'err'
+    1366 |                 if (err)
+         |                     ^
+   3 warnings and 4 errors generated.
+
+
+vim +/err +1354 drivers/mtd/nand/raw/marvell_nand.c
+
+  1302	
+  1303	static void marvell_nfc_hw_ecc_bch_read_chunk(struct nand_chip *chip, int chunk,
+  1304						      u8 *data, unsigned int data_len,
+  1305						      u8 *spare, unsigned int spare_len,
+  1306						      int page)
+  1307	{
+  1308		struct marvell_nand_chip *marvell_nand = to_marvell_nand(chip);
+  1309		struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+  1310		const struct marvell_hw_ecc_layout *lt = to_marvell_nand(chip)->layout;
+  1311		int i, ret;
+  1312		struct marvell_nfc_op nfc_op = {
+  1313			.ndcb[0] = NDCB0_CMD_TYPE(TYPE_READ) |
+  1314				   NDCB0_ADDR_CYC(marvell_nand->addr_cyc) |
+  1315				   NDCB0_LEN_OVRD,
+  1316			.ndcb[1] = NDCB1_ADDRS_PAGE(page),
+  1317			.ndcb[2] = NDCB2_ADDR5_PAGE(page),
+  1318			.ndcb[3] = data_len + spare_len,
+  1319		};
+  1320	
+  1321		ret = marvell_nfc_prepare_cmd(chip);
+  1322		if (ret)
+  1323			return;
+  1324	
+  1325		if (chunk == 0)
+  1326			nfc_op.ndcb[0] |= NDCB0_DBC |
+  1327					  NDCB0_CMD1(NAND_CMD_READ0) |
+  1328					  NDCB0_CMD2(NAND_CMD_READSTART);
+  1329	
+  1330		/*
+  1331		 * Trigger the monolithic read on the first chunk, then naked read on
+  1332		 * intermediate chunks and finally a last naked read on the last chunk.
+  1333		 */
+  1334		if (chunk == 0)
+  1335			nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW);
+  1336		else if (chunk < lt->nchunks - 1)
+  1337			nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_NAKED_RW);
+  1338		else
+  1339			nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_LAST_NAKED_RW);
+  1340	
+  1341		marvell_nfc_send_cmd(chip, &nfc_op);
+  1342	
+  1343		/*
+  1344		 * According to the datasheet, when reading from NDDB
+  1345		 * with BCH enabled, after each 32 bytes reads, we
+  1346		 * have to make sure that the NDSR.RDDREQ bit is set.
+  1347		 *
+  1348		 * Drain the FIFO, 8 32-bit reads at a time, and skip
+  1349		 * the polling on the last read.
+  1350		 *
+  1351		 * Length is a multiple of 32 bytes, hence it is a multiple of 8 too.
+  1352		 */
+  1353		for (i = 0; i < data_len; i += FIFO_DEPTH * BCH_SEQ_READS) {
+> 1354			err = marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
+  1355						  "RDDREQ while draining FIFO (data)");
+  1356			if (err)
+  1357				dev_err(nfc->dev, "Fail to confirm the NDSR.RDDREQ");
+  1358			marvell_nfc_xfer_data_in_pio(nfc, data,
+  1359						     FIFO_DEPTH * BCH_SEQ_READS);
+  1360			data += FIFO_DEPTH * BCH_SEQ_READS;
+  1361		}
+  1362	
+  1363		for (i = 0; i < spare_len; i += FIFO_DEPTH * BCH_SEQ_READS) {
+  1364			err = marvell_nfc_end_cmd(chip, NDSR_RDDREQ,
+  1365						  "RDDREQ while draining FIFO (OOB)");
+  1366			if (err)
+  1367				dev_err(nfc->dev, "Fail to confirm the NDSR.RDDREQ");
+  1368			marvell_nfc_xfer_data_in_pio(nfc, spare,
+  1369						     FIFO_DEPTH * BCH_SEQ_READS);
+  1370			spare += FIFO_DEPTH * BCH_SEQ_READS;
+  1371		}
+  1372	}
+  1373	
+
 -- 
-2.42.0.windows.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
