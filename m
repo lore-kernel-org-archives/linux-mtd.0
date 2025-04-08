@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66AA0C369A2
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Apr 2025 14:54:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 470FEC369A1
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Apr 2025 21:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dNVy+RvarkyM/hJ3wpoBQ1uOk+R4rB/N9PsuCCq2Z1Y=; b=Bg7N4u669w0Pe1
-	MojU8MT/Hs9U8jzkDhpAgly+vrH982xeDtnyrvmBAQf7B1cKP+NzrzowLgsje3/fVbq3VsICh5tR3
-	N4Y9AMyqzjcdwVWPJ0CjeDuUxq9ZrPehJ5mDmgH2IxsIbSe1CLlaPBWrP3K7S9qzkzevzflNdgjyQ
-	2Hh+XlvdXJ/5Xh8sH/GIw56i8q+IICiS6THzMF4jlYtKlu8pzhhPZ4BwpvhHYITgZpK/W9uGFjZWC
-	0L/x9WQwK43icFAfGx9Xok+vOsG2uVLV8qgjGE3g2QoeXvJWaGX9WDMVz6fHXuv7rLerGi4Q7I6Wv
-	6EVw5yrXLzhqeC9yD7cQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=5aGBdQZd2MwbqNuFg9XAYXWKE7Yo30VqHOCANwSpMDA=; b=r5g3nM/aflgZOx
+	N/i4DeBwj7W2SSixfOgbhlI9FsXbQBCH+/6hZzohpnYmoHLfeQnhosWNSG/XZzZmWi1eYPItVEbQy
+	4Eq7EpNbmB9vGTqMxCcL7ihg3JVsbwHs0+zzCS8DbOT2IoQIzCiyeQ7TxndPU8WidtOiKgYLoZr6C
+	D1lLFJtgM0doMFtHFVP9bSQe7RSN1q06O2uo/2DzHFNJY3WcsPA/TqfDmLPtNvmsJfiGo6Mx/OCqq
+	nzInHIuG+UQGtfUAGerE70AWzXt6ihTJGNu1U6uU4yK8+g3gZElJGRvfyqY1UTUBscMht3ER0xBiz
+	g9k/WCpX0TuR4qJ5H0Xg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u2ALO-00000004TLS-0OuM;
-	Tue, 08 Apr 2025 14:54:30 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u2AJ9-00000004Sug-3O93
+	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1u2GhZ-00000005SyH-1ovp;
+	Tue, 08 Apr 2025 21:41:49 +0000
+Received: from forward102d.mail.yandex.net ([178.154.239.213])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1u2GfB-00000005SeD-1bIY
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Apr 2025 14:52:13 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A23875C5655;
-	Tue,  8 Apr 2025 14:49:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5DD4C4CEE5;
-	Tue,  8 Apr 2025 14:52:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744123930;
-	bh=dkh/98yD4kXhtEKPe+HK8ikqP0ZY141EiqYtwVGcXm4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=PW+18Ek3XAbcHQkGvhfLQ5tsAJ/zpAlfljO9hdR3BuLaI0Q2JH6C997h2WKNN+2MQ
-	 xQ3Ejq06d3SZorw44irBRrDN0wKSEeCxVr91B8Z6Z8xMrwbVLBsZB5OZwgO9aq5SVI
-	 ekMO6gMB+l6ZnrnXyvTsJdQ011xANihVY3an3fDWU8HIIRmtvXvsn/EWxM0VaOqe0m
-	 WNSIhJkzlf4esKK7pbv9rWEcO7HFazR1ZbOrFWuhuqhyJTX7XIIU+hC9UER7HJpG80
-	 49LWg2MRjAWDkT7KNXr5bkmt4l750hZyjrvrYj9CpTuV6zMIs3Prx7BA75ofD88G0y
-	 6H9tKtSy2Fn2A==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Cheng Ming Lin <linchengming884@gmail.com>
-Cc: tudor.ambarus@linaro.org,  pratyush@kernel.org,  mwalle@kernel.org,
-  miquel.raynal@bootlin.com,  richard@nod.at,  vigneshr@ti.com,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  alvinzhou@mxic.com.tw,  leoyu@mxic.com.tw,  Cheng Ming Lin
- <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH v2 3/3] mtd: spi-nor: macronix: Add fixups for MX25L3255E
-In-Reply-To: <20250407075400.1113177-4-linchengming884@gmail.com>
-References: <20250407075400.1113177-1-linchengming884@gmail.com>
-	<20250407075400.1113177-4-linchengming884@gmail.com>
-Date: Tue, 08 Apr 2025 14:52:07 +0000
-Message-ID: <mafs0semipuy0.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 08 Apr 2025 21:39:24 +0000
+Received: from mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net [IPv6:2a02:6b8:c42:c54a:0:640:3e90:0])
+	by forward102d.mail.yandex.net (Yandex) with ESMTPS id 24FFE6098D;
+	Wed,  9 Apr 2025 00:39:14 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 8dlTpA3Lj4Y0-JWBBQtGG;
+	Wed, 09 Apr 2025 00:39:13 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosa.ru; s=mail;
+	t=1744148353; bh=JZcXqYJrQv6btI2jGdZDGW5h7bHWwXKxZoNoLSUTsnk=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=OdDSfyarzXf6b9xGs1RS9fAjnVN0YHKQSNeUJ7HGsUFO6080+NKjIt5Qt1+EAWsHS
+	 t10a9cQfD2P3M50WLiBn1CL9as/uCNnlw1WsENBaZLPOiE9STo5ljkkCncfaZEIHZB
+	 nODID2ntwoKtZtL6XIp6YF2AA1oow9gQJwpJH9p8=
+Authentication-Results: mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net; dkim=pass header.i=@rosa.ru
+From: Mikhail Arkhipov <m.arhipov@rosa.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Mikhail Arkhipov <m.arhipov@rosa.ru>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] mtd: nand: ecc-mxic: Fix use of uninitialized variable ret
+Date: Wed,  9 Apr 2025 00:39:06 +0300
+Message-Id: <20250408213906.23129-1-m.arhipov@rosa.ru>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250408_075211_900210_31EE8F32 
-X-CRM114-Status: GOOD (  19.74  )
+X-CRM114-CacheID: sfid-20250408_143921_917896_6FCF2378 
+X-CRM114-Status: GOOD (  10.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,72 +72,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 07 2025, Cheng Ming Lin wrote:
+If ctx->steps is zero, the loop processing ECC steps is skipped,
+and the variable ret remains uninitialized. It is later checked
+and returned, which leads to undefined behavior and may cause
+unpredictable results in user space or kernel crashes.
 
-> From: Cheng Ming Lin <chengminglin@mxic.com.tw>
->
-> SFDP of MX25L3255E is JESD216, which does not include the Quad
-> Enable bit Requirement in BFPT. As a result, during BFPT parsing,
-> the quad_enable method is not set to spi_nor_sr1_bit6_quad_enable.
-> Therefore, it is necessary to correct this setting by late_init.
->
-> In addition, MX25L3255E also supports 1-4-4 page program in 3-byte
-> address mode. However, since the 3-byte address 1-4-4 page program
-> is not defined in SFDP, it needs to be configured in late_init.
->
-> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
-> ---
->  drivers/mtd/spi-nor/macronix.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index 07e0bd0b70a0..4bbd3b651cec 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -58,6 +58,31 @@ macronix_qpp4b_post_sfdp_fixups(struct spi_nor *nor)
->  	return 0;
->  }
->  
-> +static int
-> +mx25l3255e_late_init_fixups(struct spi_nor *nor)
-> +{
-> +	/*
-> +	 * SFDP of MX25L3255E is JESD216, which does not include the Quad
-> +	 * Enable bit Requirement in BFPT. As a result, during BFPT parsing,
-> +	 * the quad_enable method is not set to spi_nor_sr1_bit6_quad_enable.
-> +	 * Therefore, it is necessary to correct this setting by late_init.
-> +	 */
-> +	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
-> +
-> +	/*
-> +	 * In addition, MX25L3255E also supports 1-4-4 page program in 3-byte
-> +	 * address mode. However, since the 3-byte address 1-4-4 page program
-> +	 * is not defined in SFDP, it needs to be configured in late_init.
-> +	 */
-> +	struct spi_nor_flash_parameter *params = nor->params;
+This scenario can be triggered in edge cases such as misconfigured
+geometry, ECC engine misuse, or if ctx->steps is not validated
+after initialization.
 
-Please don't have variable declarations in the middle of the function.
-It looks odd. Though neither checkpatch nor cc seem to complain about
-this. I thought they did...
+Initialize ret to zero before the loop to ensure correct and safe
+behavior regardless of the ctx->steps value.
 
-Anyway, no need for a new revision, this can be fixed when applying by
-me or Tudor.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Acked-by: Pratyush Yadav <pratyush@kernel.org>
+Fixes: 48e6633a9fa2 ("mtd: nand: mxic-ecc: Add Macronix external ECC engine support")
+Signed-off-by: Mikhail Arkhipov <m.arhipov@rosa.ru>
+---
+ drivers/mtd/nand/ecc-mxic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +
-> +	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_4_4;
-> +	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_4_4],
-> +				SPINOR_OP_PP_1_4_4, SNOR_PROTO_1_4_4);
-> +
-> +	return 0;
-> +}
-> +
-[...]
-
+diff --git a/drivers/mtd/nand/ecc-mxic.c b/drivers/mtd/nand/ecc-mxic.c
+index 6b487ffe2f2d..e8bbe009c04e 100644
+--- a/drivers/mtd/nand/ecc-mxic.c
++++ b/drivers/mtd/nand/ecc-mxic.c
+@@ -614,7 +614,7 @@ static int mxic_ecc_finish_io_req_external(struct nand_device *nand,
+ {
+ 	struct mxic_ecc_engine *mxic = nand_to_mxic(nand);
+ 	struct mxic_ecc_ctx *ctx = nand_to_ecc_ctx(nand);
+-	int nents, step, ret;
++	int nents, step, ret = 0;
+ 
+ 	if (req->mode == MTD_OPS_RAW)
+ 		return 0;
 -- 
-Regards,
-Pratyush Yadav
+2.39.5 (Apple Git-154)
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
