@@ -4,77 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79107C369A1
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Apr 2025 18:16:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B9CEC3600C
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Apr 2025 06:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wm9zgDRvzU+Lw5xiNiG7v1AwAkKRSER/olMlQeFZpvY=; b=RVkrFnpKFN9VM4
-	Ne/AuEOVA1HS+VYl7evo+SYJ7Dl07SiH5BMkfmMgQ/jxvZKyHOQ31f3gEr+uyzuzOSReK7p7+Zm1e
-	SHhf5TzG4cYTckVyg7dzoKSRMkIUJR/+FjJcTOwZ279cMSE3KKg0r6D5TQo0E/BCao1omjdDcSZ1y
-	Lt1AURSV7dQ4c089i2eYT643la7awSUMH7zLox3Z20Kh76ATUI9Ohg1S7MKhhyXDhKL2xC3nsjN7w
-	kQpvOoAXYgWGw9SA+H/mFxk6PmceGt4pr9zbn1kI1u93CV1Os4fhzjFULH+9Dml0xbBl6dSmv9h/K
-	EJW2T+RD7f3o8VYnCR9Q==;
+	List-Owner; bh=4hHXNLZWZGlVJXlXba5zsavfKU83z2A6JsHU2aNaGiQ=; b=dRPR5/Iq3uAWBu
+	wPxrUiHwXgeSP70Gb2eqIr5soC2YtMSgIX9fjDZ/PhY+P8+k359Y8fEm3TvmxAoeiBsVuqZ+cczPv
+	BpmXcq1F96mAE3IqWi+Jkw/Ig3F0r+1z9ilVXQp7HSul5onkS5ETIFrCuV1zncvBxAkP8LzpvhSrp
+	NQOrv50lpwWpX7aRCmTY9dMcKTjgt/pE6P0Aol9LgfdGmetlsTBeSQYxUg1O4sZtub1laZmlzxlF/
+	xcQb2l7eO00Y0QE06hzczprAekLsBwBR1LfGyRRogXlHkHznKwqbm1c/skWpPi0MOaFlZSIZ+T7vt
+	u097Btd6psh36e85i8CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1r1e-00000001VXT-2QLr;
-	Mon, 07 Apr 2025 18:16:50 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1u22C2-00000002rwW-2dBt;
+	Tue, 08 Apr 2025 06:12:18 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1p8b-000000017qW-3K6y
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 07 Apr 2025 16:15:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=NlnadeUtfIffpDHS95wqPo0yPGar+etcKexR3IwBc9Y=; b=eGiVJyuDV/EJoRd6H5kua+oVRM
-	iizkdWaKoWCGPVxDb3ywpJ2PzCmAixnsro/IwQUTGjGUwuniGcRFrweInhZCa+r7ix9VUK79lQQom
-	bllmJ/7qEGlLMLU1b3EreRVzwWhORYYW46TGVdEhl1ZteQruahFNAeBDgtSXOHnmaNa0idmmRaRRn
-	aclBF0sWZz6m29o3gu6ED+AnUIZFC/DovvmJtGa2vkMMdIWqfG7b+dkpyMycxXw0AI1j8IgXmkXV9
-	4R9wEQokW+uowFarpisM3gjNnA1hKCAG5VuMPhCMS7kZmRTmcygMSQToDup1Pki+OEwE6DdAeOfSR
-	S5tNU6nQ==;
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
-	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1p8Y-000000082yP-2d4P
+	id 1u22Ai-00000002rbB-2GjG
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Apr 2025 16:15:52 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6427644F0D;
-	Mon,  7 Apr 2025 16:15:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E19CC4CEDD;
-	Mon,  7 Apr 2025 16:15:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744042546;
-	bh=/vZrV4sTxkcoN28b/L2BHGZocW18xExXmkYKNBBY7JA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=m6+8k+pTP+eQ5L1rJZalS2n9o8JLaIHkqpYaDH4HWm5Jt8FAOftYvYzgYYntHdbgt
-	 VRfxh6vTQhLfVW7KbLPtcSdrv+0O9cgh9hKGPzAR2SUUncF6Z1fMjBB/poXyzJjPy4
-	 rZVUxatZDX9MyjueUQ3lwriMMxzoj7APJL6eZX4waS5/c7XryZuxLG3E4hw1zzkyyL
-	 /dWEzGvDZqSVvncbLDPndVQfNRfzreNpqz1JaF3M0OD+NOuJlaxWy93Mxkx7Pdb6EL
-	 Gm0ZC1FOYMQjkHVSSjTtTbp45X4bAtrsMaRM2fnyqbo1JhJr0zyi6FpiLMYzBCqDE6
-	 5TDpTGvVM2HCw==
-From: Mark Brown <broonie@kernel.org>
-To: Gabor Juhos <j4g8y7@gmail.com>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, linux-spi@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20250320-qpic-snand-kmalloc-v1-1-94e267550675@gmail.com>
-References: <20250320-qpic-snand-kmalloc-v1-1-94e267550675@gmail.com>
-Subject: Re: [PATCH next] spi: spi-qpic-snand: use kmalloc() for OOB buffer
- allocation
-Message-Id: <174404254509.780717.1127447329039664549.b4-ty@kernel.org>
-Date: Mon, 07 Apr 2025 17:15:45 +0100
+	Tue, 08 Apr 2025 06:10:58 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D368121160;
+	Tue,  8 Apr 2025 06:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1744092654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oj3NtTMaIdmS7f74bC9S8exgrmgilgWjdRpkYIVpsYg=;
+	b=hB2R5CC13J5f2F9jzZ4zBglctMigPbWXk4fTWPJXxJp8xD1YU6h85/iTX0aoV7SXnUTnNX
+	/JHXqnoBgWuxigtzjDwh7m3n8X7GyadA6WB5kY5lldHP5FgpdF31ivjVoHPyjpwWnrLkpe
+	tm53WCV2MBHYGJvAnlXz5h/edye0ZC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1744092654;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oj3NtTMaIdmS7f74bC9S8exgrmgilgWjdRpkYIVpsYg=;
+	b=Qqk9nfeIY2mqJVKCS0dZ4Q9X7yq/BgpIew3KBkTRGV+8dn++IjtsZpbkpOwIiiFCPnkNOa
+	I6YJMJubnYg6g6Dg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1744092654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oj3NtTMaIdmS7f74bC9S8exgrmgilgWjdRpkYIVpsYg=;
+	b=hB2R5CC13J5f2F9jzZ4zBglctMigPbWXk4fTWPJXxJp8xD1YU6h85/iTX0aoV7SXnUTnNX
+	/JHXqnoBgWuxigtzjDwh7m3n8X7GyadA6WB5kY5lldHP5FgpdF31ivjVoHPyjpwWnrLkpe
+	tm53WCV2MBHYGJvAnlXz5h/edye0ZC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1744092654;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oj3NtTMaIdmS7f74bC9S8exgrmgilgWjdRpkYIVpsYg=;
+	b=Qqk9nfeIY2mqJVKCS0dZ4Q9X7yq/BgpIew3KBkTRGV+8dn++IjtsZpbkpOwIiiFCPnkNOa
+	I6YJMJubnYg6g6Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8721513A1E;
+	Tue,  8 Apr 2025 06:10:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FxfsHu699GeGJQAAD6G6ig
+	(envelope-from <hare@suse.de>); Tue, 08 Apr 2025 06:10:54 +0000
+Message-ID: <7b8c4805-a91f-4455-a021-e5d8b6078d8b@suse.de>
+Date: Tue, 8 Apr 2025 08:10:54 +0200
 MIME-Version: 1.0
-X-Mailer: b4 0.15-dev-c25d1
+User-Agent: Mozilla Thunderbird
+Subject: Re: bio segment constraints
+To: Sean Anderson <seanga2@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, Zhihao Cheng <chengzhihao1@huawei.com>
+References: <8dfd97ac-59e7-ae69-238a-85b7a2dae4f1@gmail.com>
+ <8a232716-74f8-4bba-a514-d0f766492344@suse.de>
+ <a0ffa9b9-8649-1b63-3d56-3fc45fdfda83@gmail.com>
+Content-Language: en-US
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <a0ffa9b9-8649-1b63-3d56-3fc45fdfda83@gmail.com>
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[gmail.com,kernel.dk,vger.kernel.org];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid,imap1.dmz-prg2.suse.org:helo]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_171550_904896_84312A24 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20250407_231056_723407_016F578E 
+X-CRM114-Status: GOOD (  16.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,50 +132,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 20 Mar 2025 19:11:59 +0100, Gabor Juhos wrote:
-> The qcom_spi_ecc_init_ctx_pipelined() function allocates zeroed
-> memory for the OOB buffer, then it fills the buffer with '0xff'
-> bytes right after the allocation. In this case zeroing the memory
-> during allocation is superfluous, so use kmalloc() instead of
-> kzalloc() to avoid that.
-> 
-> 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: spi-qpic-snand: use kmalloc() for OOB buffer allocation
-      commit: f48d80503504257682e493dc17408f2f0b47bcfa
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gNC83LzI1IDE2OjE0LCBTZWFuIEFuZGVyc29uIHdyb3RlOgo+IE9uIDQvNy8yNSAwMzoxMCwg
+SGFubmVzIFJlaW5lY2tlIHdyb3RlOgo+PiBPbiA0LzYvMjUgMjE6NDAsIFNlYW4gQW5kZXJzb24g
+d3JvdGU6Cj4+PiBIaSBhbGwsCj4+Pgo+Pj4gSSdtIG5vdCByZWFsbHkgc3VyZSB3aGF0IGd1YXJh
+bnRlZXMgdGhlIGJsb2NrIGxheWVyIG1ha2VzIHJlZ2FyZGluZyB0aGUKPj4+IHNlZ21lbnRzIGlu
+IGEgYmlvIGFzIHBhcnQgb2YgYSByZXF1ZXN0IHN1Ym1pdHRlZCB0byBhIGJsb2NrIGRyaXZlci4g
+QXMKPj4+IGZhciBhcyBJIGNhbiB0ZWxsIHRoaXMgaXMgbm90IGRvY3VtZW50ZWQgYW55d2hlcmUu
+IEluIHBhcnRpY3VsYXIsCj4+Pgo+Pj4gLSBJcyBidl9sZW4gYWxpZ25lZCB0byBTRUNUT1JfU0la
+RT8KPj4KPj4gVGhlIGJsb2NrIGxheWVyIGFsd2F5cyB1c2VzIGEgNTEyIGJ5dGUgc2VjdG9yIHNp
+emUsIHNvIHllcy4KPj4KPj4+IC0gVG8gbG9naWNhbF9zZWN0b3Jfc2l6ZT8KPj4KPj4gTm90IG5l
+Y2Vzc2FyaWx5LiBCdmVjcyBhcmUgYSBjb25zZWN1dGl2ZSBsaXN0IG9mIGJ5dGUgcmFuZ2VzIHdo
+aWNoCj4+IG1ha2UgdXAgdGhlIGRhdGEgcG9ydGlvbiBvZiBhIGJpby4KPj4gVGhlIGxvZ2ljYWwg
+c2VjdG9yIHNpemUgaXMgYSBwcm9wZXJ0eSBvZiB0aGUgcmVxdWVzdCBxdWV1ZSwgd2hpY2ggaXMK
+Pj4gYXBwbGllZCB3aGVuIGEgcmVxdWVzdCBpcyBmb3JtZWQgZnJvbSBvbmUgb3Igc2V2ZXJhbCBi
+aW9zLgo+PiBGb3IgdGhlIHJlcXVlc3QgdGhlIG92ZXJhbGwgbGVuZ3RoIG5lZWQgdG8gYmUgYSBt
+dWx0aXBsZSBvZiB0aGUgbG9naWNhbAo+PiBzZWN0b3Igc2l6ZSwgYnV0IG5vdCBuZWNlc3Nhcmls
+eSB0aGUgaW5kaXZpZHVhbCBiaW9zLgo+IAo+IE9oLCBzbyB0aGlzIGlzIHdvcnNlIHRoYW4gSSB0
+aG91Z2h0LiBTbyBpZiB5b3UgY2FyZSBhYm91dCBlLmcuIG9ubHkgCj4gc3VibWl0dGluZyBJL08g
+aW4gdW5pdHMgb2YgbG9naWNhbF9ibG9ja19zaXplLCB5b3UgaGF2ZSB0byBjb21iaW5lCiA+IHNl
+Z21lbnRzIGFjcm9zcyB0aGUgZW50aXJlIHJlcXVlc3QuPgpXZWxsLCB5ZXMsIGFuZCBuby4KWW91
+IG1pZ2h0IGJlIHNlZWluZyBhIHJlcXVlc3Qgd2l0aCBzZXZlcmFsIGJpb3MsIGVhY2ggaGF2aW5n
+IHNtYWxsCmJ2ZWNzLiBCdXQgaW4gdGhlIGRyaXZlciB5b3Ugd2lsbCB3YW50IHRvIHVzZSBhbiBp
+b3YgaXRlcmF0b3Igb3IgbWFwCml0IGludG8gYSBzZyBsaXN0IHZpYSBibGtfcnFfbWFwX3NnKCks
+IGFuZCB0aGVuIGl0ZXJhdGUgb3ZlciB0aGF0CmZvciBzdWJtaXNzaW9uLgoKWyAuLiBdCj4+PiAt
+IENhbiBJIHNvbWVob3cgcmVxdWVzdCB0byBvbmx5IGdldCBzZWdtZW50cyB3aXRoIGJ2X2xlbiBh
+bGlnbmVkIHRvCj4+PiDCoMKgIGxvZ2ljYWxfc2VjdG9yX3NpemU/IE9yIGRvIEkgbmVlZCB0byBk
+byBteSBvd24gY29hbGVzY2luZyBhbmQgYm91bmNlCj4+PiDCoMKgIGJ1ZmZlcmluZyBmb3IgdGhh
+dD8KPj4+Cj4+Cj4+IFRoZSBkcml2ZXIgc3VyZWx5IGNhbi4gWW91IHNob3VsZCBiZSBhYmxlIHRv
+IHNldCAnbWF4X3NlZ21lbnRfc2l6ZScgdG8KPj4gdGhlIGxvZ2ljYWwgYmxvY2sgc2l6ZSwgYW5k
+IHRoYXQgc2hvdWxkIGdpdmUgeW91IHdoYXQgeW91IHdhbnQuCj4gCj4gQnV0IGNvdWxkbid0IEkg
+Z2V0IHNlZ21lbnRzIHNtYWxsZXIgdGhhbiB0aGF0PyBtYXhfc2VnbWVudF9zaXplIHNlZW1zIGxp
+a2UKPiBpdCB3b3VsZCBvbmx5IHJlc3RyaWN0IHRoZSBtYXhpbXVtIHNpemUsIGxlYXZpbmcgdGhl
+IHBvc3NpYmlsaXR5IG9wZW4gZm9yCj4gc21hbGxlciBzZWdtZW50cy4KPiAKQXMgbWVudGlvbmVk
+OiBpbmRpdmlkdWFsIHNlZ21lbnRzIG1pZ2h0LiBUaGUgb3ZlcmFsbCByZXF1ZXN0IHN0aWxsIHdp
+bGwgCmFkaGVyZSB0byB0aGUgbG9naWNhbCBibG9jayBzaXplIHNldHRpbmcgKGllIGl0IHdpbGwg
+bmV2ZXIgYmUgc21hbGxlciAKdGhhbiB0aGUgbG9naWNhbCBibG9jayBzaXplKS4KCk1heWJlIGhh
+dmUgYSBsb29rIGF0IGRyaXZlcnMvbXRkL3ViaS9ibG9jay5jLiBUaGVyZSB0aGUgZHJpdmVyIHdp
+bGwKbWFwIHRoZSByZXF1ZXN0IG9udG8gYSBzY2F0dGVybGlzdCwgYW5kIHRoZW4gaXRlcmF0ZSBv
+dmVyIHRoZSBzZyBlbnRyaWVzCnRvIHJlYWQgaW4gdGhlIGRhdGEuCgpOb3RlOiBtYXBwaW5nIG9u
+dG8gYSBzY2F0dGVybGlzdCB3aWxsIGNvYWxlc2NlIGFkamFjZW50IGJ2ZWNzLCBzbyBvbiB0aGUK
+c2NhdHRlcmxpc3QgeW91IHdpbGwgZmluZCBvbmx5IGNvbnRpZ3VvdXMgc2VnbWVudHMgd2hpY2gg
+YWRoZXJlIHRvIHRoZQpsb2dpY2FsIGJsb2NrIHNpemUgbGlubWl0YXRpb25zLgoKQ2hlZXJzLAoK
+SGFubmVzCi0tIApEci4gSGFubmVzIFJlaW5lY2tlICAgICAgICAgICAgICAgICAgS2VybmVsIFN0
+b3JhZ2UgQXJjaGl0ZWN0CmhhcmVAc3VzZS5kZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKzQ5IDkxMSA3NDA1MyA2ODgKU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR21iSCwgRnJhbmtl
+bnN0ci4gMTQ2LCA5MDQ2MSBOw7xybmJlcmcKSFJCIDM2ODA5IChBRyBOw7xybmJlcmcpLCBHRjog
+SS4gVG90ZXYsIEEuIE1jRG9uYWxkLCBXLiBLbm9ibGljaAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
