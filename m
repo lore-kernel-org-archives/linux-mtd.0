@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D49E0C369A6
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Apr 2025 15:47:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CD58C36002
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Apr 2025 16:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tcykvz9aSSHReZ13HAFevXDulr1WYNQjO6cBXJ2VVYM=; b=cIw0VGKqbEEQU1
-	pQ5FdtDxm6lwmdT/KvW1R0dJGnVKhsAsTeL4tHqHOHCyPWAr4FBjaKyrEmOMzmI8doekiy5pj9bsv
-	RqiaciifGTZXsvS/ay7Q9eVjMcd7F9LngsgBO4mUZgk24SKyaX4tBgsSVMM83iTs27+3Vo8HCXL6v
-	5+2qhP/0oEKg8pjed27E8PDeHiXMDkN9/fHO2KJTwYvlD1r+2xpSPXTZWwr6VEP1E6x0n1Fapp/VL
-	CzlhiIQv7KXgHRFy3V8DjIg5vWOufFscuBH0f+oOxT21H9DP/gb6a7VCb0XbWARBNhkSBLp31cPGQ
-	W+Zxk8Pxd9elqOrffP+w==;
+	List-Owner; bh=LxjOo+wA6LIMH+/xhEw/MPhsTaf5Qv5SqqTQ+v6QWmM=; b=1qVNYUKqGmOCSj
+	ZX6E3I1HRDdMNNXDaJyB28pSkOGytsF321fuOeueKdyOa3PGHfreus7E4d+gsJC6pyybJC2yj23OX
+	anWwzqYsuJtLbJYPrg8wG8guP4NKDbg6J81b/sZBd/MVeqFQOGxR6DHALgspBiK9F185ubvuQaPwH
+	Hm0FcvFeXfr7F89Y+Ib9j1RvpVv0axh+Enwi+gP7rlgA/J6mfoKw7skgzv5xhQVO90qObn6T7GfBl
+	o22f86bQK558L6dQt37xnv5eGEXZCN5IPEhgXFmwCGpzIq66N22xa7N0pFN6ooxLGkEuYISr/LPKT
+	4w8iZLJDEZwKTEJjKnKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2Xdt-00000007lUI-1bXv;
-	Wed, 09 Apr 2025 15:47:09 +0000
-Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
+	id 1u2YkQ-00000007xlY-3x03;
+	Wed, 09 Apr 2025 16:57:58 +0000
+Received: from mail-pg1-x531.google.com ([2607:f8b0:4864:20::531])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2Xdq-00000007lSZ-3gMT;
-	Wed, 09 Apr 2025 15:47:08 +0000
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-301cda78d48so6370447a91.0;
-        Wed, 09 Apr 2025 08:47:06 -0700 (PDT)
+	id 1u2XdJ-00000007lA7-1rdn;
+	Wed, 09 Apr 2025 15:46:35 +0000
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-af9925bbeb7so5316246a12.3;
+        Wed, 09 Apr 2025 08:46:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744213626; x=1744818426; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1744213593; x=1744818393; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sCEd/+juUKZOFlQ/4SCoGPbjU2jFBlmcZeDTBbgWCik=;
-        b=E8odrwhozMW7oF1c1Lsogd3geEuwweqst25wmINNY8uFBX2mW83vjDu2TsWXDsR8uC
-         0x8UXHQ6eascEfUjgpu9NpdYjvNSzP/CKxAFp2PUN2j+m9+sdXn6GkZe6sfDSx+Z7Clf
-         mNxGXkJgPv9cnYOUbp6NQrmsegMGqS5JCmrONwCtU+0iJ6/ADHHZiL1YIN7xRr/DQE0t
-         sR4bc317KdT9ziyMyThioz8FGxCdWi+3Itc4FMg3ZDFG7mQNfPIChXe8iv9NwTK1nJbU
-         nuYGZwJ/PHLuglQLXCxfLDPtOxnQjjUP/iSmqeX+XQlldRHxR2ZiiMsAJS7A3LWkkACn
-         ImFw==
+        bh=GxwU2Eo6SZITicqBQinN6iBaz5ky/0lGxu1bDy42GZ4=;
+        b=bri3v8hQXkYE4uNwg9gzAuRogQcJ7cpLzGhXgRkezEaoTkZuu0PxfN87eQI/xIKRgB
+         TWOQfjm92WFf2CpqdqDy9nBeFVtgRbZ+Uc0T9ZwHQ4zFY9o9sjKVv6wHd/j4RnoEYnfC
+         x7n7cptQxN9jFxkHSOBBZlVRS6o08PnmLc7pSobCjVWfnHWHzuktQYMv8NUrsQqqN5yq
+         aEwINwQW+llbc+kHSfDUuMi1itg+6XW0qNoe1kSok58wPbzxPdAO3RBJIQ7c0iUxVbkE
+         KG/g8gK+WEPPT5lywA9zu9aujgxxiUGACHM0+JoLIocwiuRdqSGjK4/GGW3YNMjMX0J7
+         1Z/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744213626; x=1744818426;
+        d=1e100.net; s=20230601; t=1744213593; x=1744818393;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sCEd/+juUKZOFlQ/4SCoGPbjU2jFBlmcZeDTBbgWCik=;
-        b=hfn4w72zDID9XP4BpMbq5NcmQWEPuvU23/fbfcSTjlkI2iY6VPTQJfvexv5l51hDtT
-         SAXt2geWWQZ1/S/kfAqMm5EX/40Jp5SNh+elN4jKWJvcGXse77MXjVtj2f6ljxlWUKKv
-         Cvl9C53vVpaXRrkIw+4DPfpgOZm5iZlMgnhcqUni8IAv2aP24ala5ew+6H3Fb/Nj5bQv
-         lOtcSwXYMu7pk8vzl5li6eTTimlXXyvQFAGL+TukuAAzYK5EmzHQCHTq1xc9izm2v6ml
-         3ykaBbfb+W7306KsWxzmAb61XBF17MSL7iWcPGWSBXeZRydvxhC+Tq+CyqGxtRKvp93G
-         17BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUDgmM5Nir46cAjQ3RGoBUb6ScJlhjkA595rlq2XkhRoC7zz/DDYVRyLf2oYjCn7C0n1f9JK8/y9yHO@lists.infradead.org, AJvYcCXwJGdaOUimYjpMuO+6Y2wVGW3GPjgF59Q4gLKla16Mcwjvj88m0S+lzMloN8fqoj97LPjnZtnJ0AA=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwS9ixSqT6Wlh2ub1KNKJrlbvAkQTOXe3GdL4ouAqCNZPoCsWu3
-	3qBewZw9LVmUs/awH4P8j5kZinebSwvQgLUz8iCG2B5gF6YYQqyz
-X-Gm-Gg: ASbGnctl12MLlSUk1XiW+2j36/Fqf2p1QQcukL9/HEThHQ1DEJZcqEpmgMNLpdt2mfZ
-	K+lF52xDCQyeivYfDGPFBwRB7ZxUKIUVcuiGOcvRfGBkCkkDpNvh7o4sGasdtxykbmbtQdTSH/P
-	yLyITAacvqY+E0cvrAdj1TYzgdXjMidIqL/G53ZYy4T63T0pVGvNbZtoJW1AuGaO6+8fIHAL1zP
-	iP5RPesW6zGAKBQ1oWqgh+TuZSBV45bztsfGTd82j1D4cjpbq/d963Aqgw7dXd79SxWf3mMEzEz
-	THeEprARwDZnE2LzkbzCSAJLwf5AMOlPUGVAh/5+01P/fqzwHKLXEXiMkH2qLsnwFUhsrks=
-X-Google-Smtp-Source: AGHT+IF8SQ2JgM5sFunT9Xi0DOo/QXgkDUpLAzWqHE4Pm6PBSNMIs+CrkMQPqWas8YcuXm51yI9Ehg==
-X-Received: by 2002:a17:90b:58cf:b0:2f9:9ddd:68b9 with SMTP id 98e67ed59e1d1-306dbc0c8abmr4476592a91.26.1744213625892;
-        Wed, 09 Apr 2025 08:47:05 -0700 (PDT)
+        bh=GxwU2Eo6SZITicqBQinN6iBaz5ky/0lGxu1bDy42GZ4=;
+        b=SD9pvCk6gzIhbwfWfA41f9ZsLtt2EupwjlcnZDGJcxJTiaX1U0BhkAupI3YfLwEWDw
+         nL59061U1/gksmnaH+abKSwLgS3V+IHcJZM6Q5+lelI2sY7EEwJLFREU8CeNpO4ioQFo
+         GQ7UxrRheaYLM4ofDY5hZ1zCtCiQ99yAKPScZmlfbraE07l1m/gwfnRFUR8zMuoOL/Xt
+         8zUPPqXNV9nTjFulQbjL9/ufF49+dMvFBjd3z9zv0B6I/F0nUfyFYoSDxgTSF8g7RJPv
+         eDjETbhRA1uW4bjg8y0EnN99fX9yNqrYCccMEN7Iza9SVQpGIVg7SixxszO2hGjkCy8Z
+         mHYA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKN3vHICU0y9dv+GPdfjf/I6ryRH1Pwt5RnfsgA0mhBJ7a6/ZatxQO6Jovdu5nXDR9AoEo4RNGDMs=@lists.infradead.org, AJvYcCXVkYF1c+HAxa0zwBENzb1NhteS1yiJ26Ds3QDhfeoQfSSVFKmugQhtRzeDuwwfR4ZP2PfD64g6O4rL@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy+pdvg1ruJWTRYt3MYYpDz71qp5ciOgfw+V9YNxeMIm5cOWJ/q
+	s/EPp2+/n/6k4A0qzcNn9ncECAO6vnLeOyOacD0LOrvqYw3yXWR0
+X-Gm-Gg: ASbGncuOpy9ompgwRLwG5FNSSkagvT71ucMHc6l7cAy2rMfWWIckn+eJSaAR4VVUdpd
+	jCFEBPj8bAsDagXA7N3K0CWfaaBw0lgd52CwfpllrVgpkmGTQ60fxYFJgjXo1ouWsZB059Z1UjP
+	ZJnhtBIb5hshVsOuSf3pnIccmQhtLemzbjv8VpePssSF1+sWVUYWgBMNQqHMNa8PVeyG63OPKeS
+	etWdT77CY82HY63aooDM93kG5QE0rAZg2CZsARQTqkM+0CE1cTYCzzr+nGlOiGeJGSrj1sjZmiJ
+	QjLlAuJc+tEO2u50sbiYEPD0NZ2ttj+Ip4gfMNAKotpm4Nhof1/02f1fd5MNGII/BKiVsnA=
+X-Google-Smtp-Source: AGHT+IGJskC9aR+5Dgsn/0q7tVfn/b9wEb0pUAkxSpjYPK7zbEkvmX2PCK7JdW0DCG7ccVky18srmw==
+X-Received: by 2002:a17:90a:c887:b0:301:a0e9:66f with SMTP id 98e67ed59e1d1-306dd521d88mr4820575a91.14.1744213592804;
+        Wed, 09 Apr 2025 08:46:32 -0700 (PDT)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd171991sm1952304a91.37.2025.04.09.08.46.56
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd171991sm1952304a91.37.2025.04.09.08.46.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 08:47:05 -0700 (PDT)
+        Wed, 09 Apr 2025 08:46:32 -0700 (PDT)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -135,16 +135,16 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v4 13/13] nfp: bpf: Replace open-coded parity calculation with parity_odd()
-Date: Wed,  9 Apr 2025 23:43:56 +0800
-Message-Id: <20250409154356.423512-14-visitorckw@gmail.com>
+Subject: [PATCH v4 10/13] drm/bridge: dw-hdmi: Replace open-coded parity calculation with parity_odd()
+Date: Wed,  9 Apr 2025 23:43:53 +0800
+Message-Id: <20250409154356.423512-11-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250409154356.423512-1-visitorckw@gmail.com>
 References: <20250409154356.423512-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250409_084706_914630_1715F5AA 
-X-CRM114-Status: UNSURE (   9.01  )
+X-CRM114-CacheID: sfid-20250409_084633_478754_49BF3FE6 
+X-CRM114-Status: UNSURE (   9.17  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -169,34 +169,35 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/net/ethernet/netronome/nfp/nfp_asm.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_asm.c b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-index 154399c5453f..2f8f78abb6f5 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-@@ -295,11 +295,6 @@ static const u64 nfp_ustore_ecc_polynomials[NFP_USTORE_ECC_POLY_WORDS] = {
- 	0x0daf69a46910ULL,
- };
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
+index cf1f66b7b192..abf2c72be622 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
+@@ -4,6 +4,7 @@
+  *
+  * Written and tested against the Designware HDMI Tx found in iMX6.
+  */
++#include <linux/bitops.h>
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+@@ -171,12 +172,7 @@ static void dw_hdmi_reformat_iec958(struct snd_dw_hdmi *dw,
  
--static bool parity(u64 value)
--{
--	return hweight64(value) & 1;
--}
--
- int nfp_ustore_check_valid_no_ecc(u64 insn)
+ static u32 parity(u32 sample)
  {
- 	if (insn & ~GENMASK_ULL(NFP_USTORE_OP_BITS, 0))
-@@ -314,7 +309,7 @@ u64 nfp_ustore_calc_ecc_insn(u64 insn)
- 	int i;
- 
- 	for (i = 0; i < NFP_USTORE_ECC_POLY_WORDS; i++)
--		ecc |= parity(nfp_ustore_ecc_polynomials[i] & insn) << i;
-+		ecc |= parity_odd(nfp_ustore_ecc_polynomials[i] & insn) << i;
- 
- 	return insn | (u64)ecc << NFP_USTORE_OP_BITS;
+-	sample ^= sample >> 16;
+-	sample ^= sample >> 8;
+-	sample ^= sample >> 4;
+-	sample ^= sample >> 2;
+-	sample ^= sample >> 1;
+-	return (sample & 1) << 27;
++	return parity_odd(sample) << 27;
  }
+ 
+ static void dw_hdmi_reformat_s24(struct snd_dw_hdmi *dw,
 -- 
 2.34.1
 
