@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 775E7C36002
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Apr 2025 18:31:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A922C36002
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Apr 2025 18:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+DaXIa37+JZGEq5BGL9T4xHNzPnT5n6TVpDA1y/2z4U=; b=lcUvf3vci1AZ1X
-	qZxm9C/N8yk0reRArw3xajEMvdBdLaqYLNOe/BKR6nvbeJzXLXl3tys3oMrm/Ox9oeA0xju9qRDm0
-	F/4GNwYWaSq5r9sPQSDdsLM/meulchdZVypyWOxZvVE0GdRgkGbYBJosNRuk6rtpu3lQ/bUTUn0zn
-	v1FsqUee9KS0YjB5GlSxoJuKdWBM0TjROO47kUmzOtR72PML2uaMCb4NrLQlmJg+gPNktHiyLvzrN
-	TQvo2cCi/oejDSEg4xDwSOtftaib9WSBhC6Kbnl4D87uO4gAqcOV7v/8G3zg2kARpk2sQfm4tG3i1
-	/JVnQN4GlQ2ztzmin/rQ==;
+	List-Owner; bh=R/Xzrjf/OCa5Eg2SfXcZuqwAR4yBdyxNvfrj685YGj0=; b=396JfuIRThgaYk
+	Iy9AH3H4UWYHulZeqb2YkKJ7200uzwW7tCDNOPorZ234/ZatpLF7GbouAYaaJjqKSCbKFoYNVlLox
+	dmSecwhTUQkLigv5IvVJFZGQm+0xmIDovdusvEwdT4X6f75fVuFr/SY3bcDkgFH7h/MSlMXnvz6US
+	v9rniWMxjiR8pH0NYo31X6r+iFR5z7+8ZhJjZ/9mQJ41062nandIv2TPsVyLFiL9RWl+uncWV945M
+	I4wF/2NCzAgohIFW/l8K2H5ckJbHPJ4zulkBspLmEgZUEOcqvZSDF7Lo7NgeSHD4TF1RwWi16c1Ab
+	McL0WFegssNj+fRqpAZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2aCY-00000008BEG-1IAR;
-	Wed, 09 Apr 2025 18:31:06 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1u2aFg-00000008BiF-1aL7;
+	Wed, 09 Apr 2025 18:34:20 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2aCU-00000008BCY-3Dp5;
-	Wed, 09 Apr 2025 18:31:04 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-301c4850194so5811644a91.2;
-        Wed, 09 Apr 2025 11:31:02 -0700 (PDT)
+	id 1u2aEY-00000008Ba5-0KfN;
+	Wed, 09 Apr 2025 18:33:11 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-22403cbb47fso77158135ad.0;
+        Wed, 09 Apr 2025 11:33:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744223462; x=1744828262; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1744223589; x=1744828389; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yWp8HcqQEiUK9VmrP5Fyuyk5glVIpEEzW3GEoFZN0j0=;
-        b=AsKCNltH6yDyQG4GpkBKvihiZl0fy6NH8d4wMeX96z7eES9b+VJNAfXmD/sDuHt0NM
-         6UdMlZ1zy4xsmCJJTz5cs7I5aJfbRpr5JOzhcdALI7j4RTt7r8ztgSgHVOaSMxYhpJa2
-         tNI+n6wUM4qxg7CfPlStP0pEOd+pUloS3RCWrC0OXTkKdWtkgE3GKAfamcULux/RLzTN
-         XzYmU2su4hGJXIjRqSWf1YkTm1QVoCOS96Ihgzq81HlAoDpQGiXhyfbXFq3MO3fi21cE
-         VtsfhctmeaqfQjhOyiccgUvdVLmPc3XxCBLpoPwj901UVy7rmjvg0Xx9apt8gJj4d7BC
-         2aXQ==
+        bh=pEZZtQmHxD6cS3JefhP/59PsGmANbj8tqGBgctIT62U=;
+        b=OXY0njgp19i1cNWMQyfqw5prZxGBKKV5OR4Pe5HkpRygqYKhcUZNYOgXn4ItkNRkDg
+         gt/9XbSsnRPGWtbrwJd3In6zGRtTj3wI5PNA+HifBADa+n7zLlmkLKAVmC5jAkaxBGdl
+         B+dedMyVKcP6/SYPiCiquFUOKcKQ2Rt3/eZeHheLDtQLwPnVmt+gga8zSPibqBzwQumS
+         886m5qG5nZ2ElJm2nug39PNFsJ5Em09Ls25ZquYRCt92+nYsL1QXt2B7fXWzQF4Rs7lc
+         AqhNQ79GzIVHMm0igcBZmEpUD1HHu9EKwfBiW46ZDabxXkMWYe8XAigu5dssVZ7UOnlX
+         wP9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744223462; x=1744828262;
+        d=1e100.net; s=20230601; t=1744223589; x=1744828389;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yWp8HcqQEiUK9VmrP5Fyuyk5glVIpEEzW3GEoFZN0j0=;
-        b=Lje1Lxb575D0gxgBALcsu19EkSgBbqvbM1Y57Yf1pMcYhVzcmPpvXrryk8ZxnkDVlc
-         zz0taQEcQeaNKHYEKZ6VJTZpWRGdTWfW048nyKSRTmzjGJuV4GeFjD0oJz8Y8pz33XFM
-         VR0Sw+STtjVp3vaSFF2i2b5lO4AyZyJd3e62jfh+QXhMnrpEggRMj6jw8SWoIWAWp6sw
-         8m88SjZ8uve1vEGkFArb/B/N3wahNUSRQkTBV5yQH6BoT0W6NeK9zZkbMeLDSrbEINh9
-         qjoyC3CkRgJsAizZHKSgAV9uQXJsVTvdHtHKy/sAIz3YtBc41MBnuUrw7l6qP5locj58
-         CKww==
-X-Forwarded-Encrypted: i=1; AJvYcCX1F+MYhVsdABxpSPXVaa+SZ94H+qZ3NoTfpAQJfbxbs+kbjDsQ1kQgekHc5cSMTuPBzNR34bnp49uF@lists.infradead.org, AJvYcCXF0bJiJw1MBqLm6J+gDbnRgJWPn9cvHxeddl+wNzaHVNMZUgIgh0zDEz8kputzUYIA0fSCRhap3Fw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzCnrwOqsekDD2AhEult9ugpGXjejI6HHBmoRj14rP0TvHxdf6I
-	cNxZP1vLjpk9pjnU/DTBUiFEW7FHnzeaVaL8aZ2vg2qZVwwTJRQm
-X-Gm-Gg: ASbGncvuueGXbYoOwNZPPwTBCRYERWc20L2hsOpQqbzA+AwWsHQ2FZIDy3KiLL4TJJd
-	AfgkvC+9LGJqtbQL8i/VyHSxeyYjBkUt2gt7ypk4v+xOcX08eWlFtQcAgfhvQJfWWtI007Xn1K6
-	uWsqXikhXZ+7ucuzgXGOMdn2VxymXE8QCFqNiDEaDCmb3l7dbctYLgVrQI8xhnnGQpcwMGtyZVB
-	hmnPDGnxmvbHn4cANHTko28S8482BkrUZ0w7uxzZAtnU7WEnr4B4BqKgImoCAbAjhnAcSESrHgW
-	jsVQB/QAF+xJRj0VJs8eTYe3J0B6Sinnge2lKK4jIdjm7N3hFaUGFVxNx76On4biHVm9
-X-Google-Smtp-Source: AGHT+IEojffDEHS0j3whbiNP8KyNCEs3sfRNMc8qkUsRgVj5cXjPuj6Pe0BT8ErsKVVmpVlb9KZMXw==
-X-Received: by 2002:a17:90b:548b:b0:2fe:a742:51b0 with SMTP id 98e67ed59e1d1-306dd5789bbmr4467876a91.31.1744223461782;
-        Wed, 09 Apr 2025 11:31:01 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306eaec023asm436047a91.33.2025.04.09.11.30.52
+        bh=pEZZtQmHxD6cS3JefhP/59PsGmANbj8tqGBgctIT62U=;
+        b=NFwDioSt3B/KQZ48h2vZ+AUmxYaF3Tsigkc08FzHWdXvXQJEirb3/hHPpqDF1IJ0TP
+         6sJ+6XCMWhyRt0hyfzdYpYlZLUeyRC0h7ycS2GcWVRU6xbSw3Zt0oGx9lzFyIDuRtZM2
+         yi7HLusHxAPixhbZrK67BAHFKnsaGrrBOgzjnrJ6ajlbspO28oTiWg7AmhMou7vflrT7
+         JLK2dHfLqa0/zSZoWeIBC6iEjZf/TQwLKH7RAitZeQZC19X3LlSxr7cajEFX8EXmv5IL
+         af19YwpcWlV4qwTvH0dip6KSLIiS17Di8n83q6cjk1kaIALOrGXqBsWjKaK7zGcbFhve
+         Z5+A==
+X-Forwarded-Encrypted: i=1; AJvYcCURNRWO1GRqS2Oc2os0SsjEECmM8KyLXmwbb2F9nBwfq9PUmoAMoYqaXKykc+clqvcwlIcZ8kwpne8=@lists.infradead.org, AJvYcCV6i9jzZ5L6mefdOBfStrOat8Y4ZubQaqSbiatT63NI4fqXteDSsT5VhY+a+uBUfdww2EAk36WP/b1y@lists.infradead.org
+X-Gm-Message-State: AOJu0YzsnO+64J7Bs6fce3OeByls4G3yF1XAD7BZFBV+AjK3i+S7oEwx
+	43Grc4WDXGN/HSt2JrKMhMEwIPB8r3WMO2qrGNbbSL8emKZucZw7
+X-Gm-Gg: ASbGnctoAMBK+FaFdpIRusGbGJUbkZmirs/5LjsPO9Wm+/nhjMoAjiiO08DHU1+fK9x
+	OrPzAIRw4vk5FaznRJAl7lqOLq+Q5bz0q1PMucNbhknOYhGj6nP8HY8HqXyZ+pHtdBB7/if6GeM
+	qgRX+PmAr1xy7pkUi2u9VbPDc9fJwoXJGY1RkPbt/q14C/rs5jzhYlOhw3ezl9tv1hIKaM5/T4f
+	P7y4nbTLyDjdaan7+XP2+3mfBhYk+l3cjDd2NRExPsG7eJ3dBLISJ5lOEdhHRQuZL6m8MtYXrPe
+	uH3oa9C5ERShZd7wDl+6Dhvry3oBTYP26tHg+Td0
+X-Google-Smtp-Source: AGHT+IE8wK8xLsT0Kpo2+eqnCnHqRBL6GoNWR5XNtZUkQwRprgm7rO+knOmPkUYsLXDP1SYqhAYEsw==
+X-Received: by 2002:a17:903:2f86:b0:224:10a2:cae1 with SMTP id d9443c01a7336-22ac2a25780mr61351915ad.37.1744223589016;
+        Wed, 09 Apr 2025 11:33:09 -0700 (PDT)
+Received: from localhost ([216.228.127.131])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b02a0817f2dsm1575586a12.11.2025.04.09.11.33.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 11:31:01 -0700 (PDT)
-Date: Thu, 10 Apr 2025 02:30:50 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Yury Norov <yury.norov@gmail.com>
+        Wed, 09 Apr 2025 11:33:08 -0700 (PDT)
+Date: Wed, 9 Apr 2025 14:33:06 -0400
+From: Yury Norov <yury.norov@gmail.com>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
 Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
 	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
 	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
@@ -97,18 +97,18 @@ Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
 	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
 	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 05/13] serial: max3100: Replace open-coded parity
- calculation with parity_odd()
-Message-ID: <Z/a82sdjEDaqE9v0@visitorckw-System-Product-Name>
+Subject: Re: [PATCH v4 00/13] Introduce parity_odd() and refactor redundant
+ parity code
+Message-ID: <Z_a9YpE46Xf8581l@yury>
 References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-6-visitorckw@gmail.com>
- <Z_atODqZDkff5sjj@yury>
+ <Z_amQp3gK5Dm8Qz3@yury>
+ <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Z_atODqZDkff5sjj@yury>
+In-Reply-To: <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250409_113102_805413_E3283410 
-X-CRM114-Status: GOOD (  21.32  )
+X-CRM114-CacheID: sfid-20250409_113310_118141_FFFCFF6C 
+X-CRM114-Status: GOOD (  33.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,79 +125,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Apr 09, 2025 at 01:24:08PM -0400, Yury Norov wrote:
-> On Wed, Apr 09, 2025 at 11:43:48PM +0800, Kuan-Wei Chiu wrote:
-> > Refactor parity calculations to use the standard parity_odd() helper.
-> > This change eliminates redundant implementations.
+On Thu, Apr 10, 2025 at 02:15:30AM +0800, Kuan-Wei Chiu wrote:
+> On Wed, Apr 09, 2025 at 12:54:35PM -0400, Yury Norov wrote:
+> > On Wed, Apr 09, 2025 at 11:43:43PM +0800, Kuan-Wei Chiu wrote:
+> > > Several parts of the kernel contain open-coded and redundant
+> > > implementations of parity calculation. This patch series introduces
+> > > a unified helper, parity_odd(), to simplify and standardize these
+> > > cases.
+> > > 
+> > > The first patch renames parity8() to parity_odd(), changes its argument
 > > 
-> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> >  drivers/tty/serial/max3100.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > Alright, if it's an extension of the area of applicability, it should be
+> > renamed to just parity(). I already shared a table that summarized the
+> > drivers authors' view on that, and they clearly prefer not to add the
+> > suffix - 13 vs 2. The __builtin_parity() doesn't care of suffix as well. 
 > > 
-> > diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
-> > index f2dd83692b2c..36ed41eef7b1 100644
-> > --- a/drivers/tty/serial/max3100.c
-> > +++ b/drivers/tty/serial/max3100.c
-> > @@ -16,6 +16,7 @@
-> >  /* 4 MAX3100s should be enough for everyone */
-> >  #define MAX_MAX3100 4
-> >  
-> > +#include <linux/bitops.h>
-> >  #include <linux/container_of.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/device.h>
-> > @@ -133,7 +134,7 @@ static int max3100_do_parity(struct max3100_port *s, u16 c)
-> >  	else
-> >  		c &= 0xff;
-> >  
-> > -	parity = parity ^ (hweight8(c) & 1);
-> > +	parity = parity ^ parity_odd(c);
-> 
-> This can be simplified for more unless I misunderstand something...
-> 
-I usually don't change the existing coding style since each subsystem
-may have its own preferred style.  
+> > https://lore.kernel.org/all/Z9GtcNJie8TRKywZ@thinkpad/
+> > 
+> > Yes, the argument that boolean function should explain itself sounds
+> > correct, but in this case, comment on top of the function looks enough
+> > to me.
+> > 
+> > The existing codebase doesn't care about the suffix as well. If no
+> > strong preference, let's just pick a short and sweet name?
+> > 
+> I don't have a strong preference for the name, but if I had to guess
+> the return value from the function prototype, I would intuitively
+> expect an int to return "0 for even and 1 for odd," and a bool to
+> return "true for even, false for odd." I recall Jiri and Jacob shared
+> similar thoughts, which is why I felt adding _odd could provide better
+> clarity.
 
-But yeah, if this is the preferred way, I can make this change in the
-next version.
+I think they said they are convinced that parity should return 1 for
+odd because of folding and __builtin_parity() arguments.
+ 
+> However, I agree that if the kernel doc comment is clear, it might not
+> be a big issue. But David previously mentioned that he doesn't want to
+> rely on checking the function's documentation every time while reading
+> the code.
 
-Regards,
-Kuan-Wei
+He's wrong. Kernel engineers _must_ read documentation, regardless.
+ 
+> Regardless, I'm flexible as long as we all reach a consensus on the
+> naming.
+> 
+> > > type from u8 to u64 for broader applicability, and updates its return
+> > > type from int to bool to make its usage and return semantics more
+> > > intuitive-returning true for odd parity and false for even parity. It
+> > > also adds __attribute_const__ to enable compiler optimizations.
+> > 
+> > That's correct and nice, but can you support it with a bloat-o-meter's
+> > before/after and/or asm snippets? I also think it worth to be a separate
+> > patch, preferably the last patch in the series.
+> > 
+> I quickly tested it with the x86 defconfig, and it appears that the
+> generated code doesn't change. I forgot who requested the addition
+> during the review process, but I initially thought it would either
+> improve the generated code or leave it unchanged without significantly
+> increasing the source code size.
 
-> From: Yury Norov <yury.norov@gmail.com>
-> Date:   Wed Apr 9 13:22:04 2025 -0400
-> 
-> serial: max3100: Replace open-coded parity
-> 
-> diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
-> index f2dd83692b2c..07d332b8e87d 100644
-> --- a/drivers/tty/serial/max3100.c
-> +++ b/drivers/tty/serial/max3100.c
-> @@ -121,20 +121,12 @@ static DEFINE_MUTEX(max3100s_lock);		   /* race on probe */
->  
->  static int max3100_do_parity(struct max3100_port *s, u16 c)
->  {
-> -	int parity;
-> -
-> -	if (s->parity & MAX3100_PARITY_ODD)
-> -		parity = 1;
-> -	else
-> -		parity = 0;
-> -
->  	if (s->parity & MAX3100_7BIT)
->  		c &= 0x7f;
->  	else
->  		c &= 0xff;
->  
-> -	parity = parity ^ (hweight8(c) & 1);
-> -	return parity;
-> +	return s->parity & MAX3100_PARITY_ODD ? !parity(c) : parity(c);
->  }
->  
->  static int max3100_check_parity(struct max3100_port *s, u16 c)
+That's what I actually expected, but was shy to guess openly. :). It's
+hard to imagine how compiler may improve code generation in this case...
+
+This attribute is used when there's an asm block, or some non-trivial
+function call. In this case, the function is self-consistent and makes
+no calls. And you see, const annotation raises more questions than
+solves problems. Let's drop it.
+
+Thanks,
+Yury
 
 ______________________________________________________
 Linux MTD discussion mailing list
