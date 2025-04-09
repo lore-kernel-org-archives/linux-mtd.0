@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3E4EC369A1
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Apr 2025 18:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC348C36002
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Apr 2025 18:23:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2SSbj0t6rD97uhCHlR6Cq9x7OBI5W2goePlTnfq4RJ0=; b=yK3TwN1t8isyR9
-	MRA3HOV0Kmcq2LFa+7YkHJVQAU8zneTG3WUJyMotE5QEom5ymGBJSGprRQWrwHbxIO/b+mQMOpe+m
-	v56Xt+PCjaJQh0yKVUatUiiZv0iOwgZxnW1WehnaBsI06ouceGhCdZqNR3CdvfZP70UqEZ6VFNKFw
-	eiaw5HrV/Rt8a39AVECdMuJkrtXUB4y0p+4vsQfMLEeQHQ1PFoqpy/xmYBOTSiGNxSmJ6LhLb6+wv
-	PKRasBTDYPs6NK3IMtH9TJMikAddfP+Zz39AKJl9dThnOlTf4+Xs+KVZAAycJuHvUwSB6ymzQ6ld1
-	uMX8foPPhrGCs12jr5IA==;
+	List-Owner; bh=+zAn4ijJda1p5aEt9/Hvc+A4tdPmSDbxjAjn/DlSmEU=; b=wC4c+QyUPMTPEk
+	bRFnIuRKHUEdFJxCIYQ4jgI7UrVufNNu4kaeZggDh/LwD5OjeKIcikBFSqDEqAJSr+BcazN42S5J3
+	yI8cZgVLWhX248hQhG3TzKVAYcZ/BzKhswOyosTx7H0i6lTlrPWxGMVsL7qJWZoH/LsYLXtMLTZzS
+	Q8b+kDukbUCGb3v0xjStpZqC59MBCBkZZIB0MFxdrCBJiSVAAaMcAxniWOjXZNTt+TUlnivMsBb+m
+	uQrykjvrGoUP3fVjtN8s8Srf7YzvLHRfybCpIRosoL5O7ss6BqgqbbaINQikgdMSeuJLZ+3KcSGN/
+	cVNRiegU+VboPjA8JHcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2Zxh-000000088i9-34fK;
-	Wed, 09 Apr 2025 18:15:45 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1u2a56-000000089so-0NvD;
+	Wed, 09 Apr 2025 18:23:24 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2Zxe-000000088hC-3rBk;
-	Wed, 09 Apr 2025 18:15:44 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-736a7e126c7so6641185b3a.3;
-        Wed, 09 Apr 2025 11:15:42 -0700 (PDT)
+	id 1u2a53-000000089rX-1WTa;
+	Wed, 09 Apr 2025 18:23:22 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-22435603572so71198595ad.1;
+        Wed, 09 Apr 2025 11:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744222542; x=1744827342; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1744223000; x=1744827800; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RLlYeHtvUctAB5rHW2z6orExJGooSjFURuTNigxPPWQ=;
-        b=XsrdsqWgxwcDTi9zy8sClrroLoNfqAc0dZ9KeLZ5KdPRAt+0yfL9/IN7oVYtJpvien
-         lVwqJRmnVCRW3fcULD1OpD6kYuCsiI3ZICPHXJhoRDQMA166JUNHWUb+0IbSYTZ0nb5b
-         86asYWkv4SYKadHW1ZaHkZNG2RWBbnAQOqgbO9baLnKgeUk+rkgB5AN4tL0NzGP383Z0
-         awziCxXGQhCnrrwk2vrew/PbK2s0N8rENk/T9Uww8EWZmaxI8zElIx7LRNdKI6wVqrVt
-         nKmQm3oH22xswfOA+poUfZHfJGTPTLAOktgzSC6O8mKdvVpAaULiktu5SmIHBNrjb02J
-         okzg==
+        bh=WYzoH1Uwhcqg2+qDINtEMV7dZsf/NWh1BI5tm3o/1uQ=;
+        b=LPgRyXz2CIbTA2p/5PYpIWfUcwUAQeR0eNYifYmo2kY1kZedAIO83JURtihdwh/xrU
+         /fmTEAb4KIFSPLlL5YC/0QsaoNXRTz1Og6ovhY1OkPfm6Hv97m5kQEHxQClupt40R9t9
+         mZOox8/04FWcAahrVTrKfhhSS/4e4Kknu93ceq59cXCcKNH/0zMWSya4C9QHG5IM+sOG
+         lDdgUK/ZvZ5Jf3s04GdbrESg8H90wJLj2g2mskKYhiEWfcSzhPe4utszKylXE9HXQIPt
+         M1qa9ExW7EaTUy8Es/GwHtojCzwyJvZHPe+aGVCUUKt7u1I2wvuPpatnmWrB0iJ125/k
+         9wKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744222542; x=1744827342;
+        d=1e100.net; s=20230601; t=1744223000; x=1744827800;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RLlYeHtvUctAB5rHW2z6orExJGooSjFURuTNigxPPWQ=;
-        b=AGuKCY7OGEneVWC8w52elYov1qZIjqJsvkTp2Sar8Vs9gjoiGLA9KLKuefy67jye0X
-         NvwMoIPaiaJivrM0hxxM0XOAlQg63wjk3i+z+GyL1y4czJNanTwxdiYgS2499QqgTOgG
-         5i2zstQ5g9OCkvcntBPZuKACqjglxxJJhF8mQoEl/CkRYS4U+UneOBPJruA8vXK19jk0
-         CbT0bc9FwBkwGGcm5SKJwcM1pAn5cPLJP0/3j1DQqlQeaxDzJMR4yEARyBk7/ouoC9jS
-         H95mU+R7MRfZ3FCBESkwzYQk3whG8/+UGik405nc3U8iDmRUM/kW7+wDY44wQApwwcjK
-         F+lA==
-X-Forwarded-Encrypted: i=1; AJvYcCU949cT/lRZt2yq+tp2lGQGHl5ZrY7jYeJVQtpw/NOMutgp4r/nykZRkHuUy1FNtto+y97RJEZ1JoSI@lists.infradead.org, AJvYcCUWyXPtYa0TW0thAOlCVBfhdu03KdFcPSV64vuoICJgLmySjHu3w8qyg24/5HOU1LttaSaH3nHSu1I=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxrqwmYlIyGzRL8L+IIIfpbx0XS52gkmYJ0ZaRn+0dv3NqWUgHG
-	yorKcufMby7/Vn9yUzNdiMFaSbXDvy/wMzqL596wQp8/TEZ3yF5A
-X-Gm-Gg: ASbGncsCQkiTyios0/a2+hS381ILmpwF6BlaboebrpYAMQ4bs+42WH2xFMtvBw+eslh
-	o+McA5IBc2LgebbEd3Z70iJB7Ig9xoLXAodPEZwoUx8yCXeQbimDX9b34guZ5Gsy6dRjelKWEPw
-	fGSuhIEIfzhd8ItuhjqAw+C4BZmA8qVKL0PEFS+XmGlU65waD8a56fKHEnmbQVhaj2PneYvJi8+
-	PKkV+Yzn0qAdbBjXWlSj1gbUA4Y8KKApJGYzZ2qd0xQV2BvUom8dZ3oOBTrNOtnBKFlomzWipcw
-	VLoj+RJcsrXp8HRPrR/Vlnq5XwysB4l4zKK4y3FhtE1+sijuVaSXaO2V2qk/h7LTQvlo
-X-Google-Smtp-Source: AGHT+IGEA9hhRRBDeyzG4WkKt+49d7gFcuvCU6+XKMxeG2gY6BreZ4BlmPPM+Kdczsk2MzNQJdHAMw==
-X-Received: by 2002:a05:6a00:4606:b0:736:9fa2:bcbb with SMTP id d2e1a72fcca58-73bafd708c5mr4555757b3a.24.1744222541802;
-        Wed, 09 Apr 2025 11:15:41 -0700 (PDT)
+        bh=WYzoH1Uwhcqg2+qDINtEMV7dZsf/NWh1BI5tm3o/1uQ=;
+        b=cObaiJtDg5DBPN9UD5LdZY/xvfBhm7+CW6KsXYy4gCPVtCadIClYbg6Bb8qs7M0WOj
+         aZVsW05XQlWb34xJM4hwe7/jYC51o2/tkh6Ym+AAQlUtU18bzILIEZt+GfMalo1bdOj0
+         0sETcJkbdAjOw2ZloH+0TbOKtllo0MEY12BGJLUbhci185zZDqyGecJWtarmWpS4r+Bv
+         B4vHTEOdGbujuQS+5QPs2GV5qBeVJoAjRZLEi49Uz2C61q9CHA7pSxf8e0W5azMFHBJ/
+         b/Oazco/8VkMXglHvR8b78v7CsJkeXg7/n0JxDQPfDxMX2j1N/XWTGaFhk3SJQ9bhJb1
+         SF5w==
+X-Forwarded-Encrypted: i=1; AJvYcCV76ruadWnZ6Xp1z+lEbYTo6pRVv4p8JAIsveIxnpvvtstYP4o5v+yBC6GSLKFRO+E590oZpvN5jHY=@lists.infradead.org, AJvYcCVT4rNI3MaYDR3o9xs9dzUufKzyHVmkxVNXispkfoqE7JdjHpet84YMMtHiGkc+xWZNOLY0T/8LyYP9@lists.infradead.org
+X-Gm-Message-State: AOJu0YzNZZjxW9++8Xh9kSc0Sk/zglDqMvleEX5rFLTc51lyfH40nGgj
+	ODZR7sWxzx9S+711H0/2TVpXSiJkGCIF95LlbDyuzAXCeERWt4SX
+X-Gm-Gg: ASbGncvRY9UndsA94ibhoFfQhVhzUk7qUGwjXetb6uyMa8wdrZ89GPeyysbuUgDWGq8
+	4ISf80V4NlrNxTfnBcCR3faV5mGnj0HHKUlPYlgfIKfgmoY7IuIZJx2JBlk6btBPeQbJlhk9NL4
+	d5q8ewAGQugT3ojvuifBZL+XL0Yjtgho9W3aTcBZIMh9+B1eNlTFV3sU56pNZQnSNdjRgagN7uj
+	PlqnCnzgGqOtZQToXz22gL6pk17qXTz4qF0yPZ4u6pU/SbKeEpvs/kP3OWVwN2sXubkaLn0sops
+	RbTrzUtAW0zxUc5w21HV+TbPyQEz5AdUlQ6I2uuPHgB10Q3NYvrRZFxRD4rWkR7NtHv9
+X-Google-Smtp-Source: AGHT+IFJTXcO6iff2D3m6F14Oejj60CpisJRfAo2/LdtyKFQF1rTvBeD9sWDrAGl2dH2tL/2lZXd/A==
+X-Received: by 2002:a17:903:2441:b0:223:2361:e855 with SMTP id d9443c01a7336-22ac2a1aefemr59522875ad.39.1744223000437;
+        Wed, 09 Apr 2025 11:23:20 -0700 (PDT)
 Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1d2ae8dsm1728722b3a.18.2025.04.09.11.15.32
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1e6b8ebsm1679194b3a.180.2025.04.09.11.23.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 11:15:41 -0700 (PDT)
-Date: Thu, 10 Apr 2025 02:15:30 +0800
+        Wed, 09 Apr 2025 11:23:19 -0700 (PDT)
+Date: Thu, 10 Apr 2025 02:23:09 +0800
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: Yury Norov <yury.norov@gmail.com>
 Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
@@ -97,17 +97,18 @@ Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
 	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
 	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 00/13] Introduce parity_odd() and refactor redundant
- parity code
-Message-ID: <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
+Subject: Re: [PATCH v4 02/13] media: media/test_drivers: Replace open-coded
+ parity calculation with parity_odd()
+Message-ID: <Z/a7DecDljuLtKeS@visitorckw-System-Product-Name>
 References: <20250409154356.423512-1-visitorckw@gmail.com>
- <Z_amQp3gK5Dm8Qz3@yury>
+ <20250409154356.423512-3-visitorckw@gmail.com>
+ <Z_aobrK3t7zdwZRK@yury>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Z_amQp3gK5Dm8Qz3@yury>
+In-Reply-To: <Z_aobrK3t7zdwZRK@yury>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250409_111542_959986_F89346EE 
-X-CRM114-Status: GOOD (  44.70  )
+X-CRM114-CacheID: sfid-20250409_112321_400816_99E464B4 
+X-CRM114-Status: GOOD (  19.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,161 +125,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Apr 09, 2025 at 12:54:35PM -0400, Yury Norov wrote:
-> On Wed, Apr 09, 2025 at 11:43:43PM +0800, Kuan-Wei Chiu wrote:
-> > Several parts of the kernel contain open-coded and redundant
-> > implementations of parity calculation. This patch series introduces
-> > a unified helper, parity_odd(), to simplify and standardize these
-> > cases.
-> > 
-> > The first patch renames parity8() to parity_odd(), changes its argument
-> 
-> Alright, if it's an extension of the area of applicability, it should be
-> renamed to just parity(). I already shared a table that summarized the
-> drivers authors' view on that, and they clearly prefer not to add the
-> suffix - 13 vs 2. The __builtin_parity() doesn't care of suffix as well. 
-> 
-> https://lore.kernel.org/all/Z9GtcNJie8TRKywZ@thinkpad/
-> 
-> Yes, the argument that boolean function should explain itself sounds
-> correct, but in this case, comment on top of the function looks enough
-> to me.
-> 
-> The existing codebase doesn't care about the suffix as well. If no
-> strong preference, let's just pick a short and sweet name?
-> 
-I don't have a strong preference for the name, but if I had to guess
-the return value from the function prototype, I would intuitively
-expect an int to return "0 for even and 1 for odd," and a bool to
-return "true for even, false for odd." I recall Jiri and Jacob shared
-similar thoughts, which is why I felt adding _odd could provide better
-clarity.
-
-However, I agree that if the kernel doc comment is clear, it might not
-be a big issue. But David previously mentioned that he doesn't want to
-rely on checking the function's documentation every time while reading
-the code.
-
-Regardless, I'm flexible as long as we all reach a consensus on the
-naming.
-
-> > type from u8 to u64 for broader applicability, and updates its return
-> > type from int to bool to make its usage and return semantics more
-> > intuitive-returning true for odd parity and false for even parity. It
-> > also adds __attribute_const__ to enable compiler optimizations.
-> 
-> That's correct and nice, but can you support it with a bloat-o-meter's
-> before/after and/or asm snippets? I also think it worth to be a separate
-> patch, preferably the last patch in the series.
-> 
-I quickly tested it with the x86 defconfig, and it appears that the
-generated code doesn't change. I forgot who requested the addition
-during the review process, but I initially thought it would either
-improve the generated code or leave it unchanged without significantly
-increasing the source code size.
-
-However, if there's no actual difference in the generated code, maybe
-let's just remove it?
-
-Regards,
-Kuan-Wei
-
-> > While more efficient implementations may exist, further optimization is
-> > postponed until a use case in performance-critical paths arises.
-> > 
-> > Subsequent patches refactor various kernel components to replace
-> > open-coded parity logic with the new helper, reducing code duplication
-> > and improving consistency.
+On Wed, Apr 09, 2025 at 01:03:42PM -0400, Yury Norov wrote:
+> On Wed, Apr 09, 2025 at 11:43:45PM +0800, Kuan-Wei Chiu wrote:
+> > Refactor parity calculations to use the standard parity_odd() helper.
+> > This change eliminates redundant implementations.
 > > 
 > > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 > > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 > > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 > > ---
+> >  drivers/media/test-drivers/vivid/vivid-vbi-gen.c | 8 ++------
+> >  1 file changed, 2 insertions(+), 6 deletions(-)
 > > 
-> > To H. Peter:
-> > I understand your preference for a parity8/16/32/64() style interface,
-> > and I agree that such a design would better accommodate potential
-> > arch-specific implementations. However, I suspect there are very few,
-> > if any, users who care about the performance of parity calculations
-> > enough to warrant such optimizations. So my inclination is to defer any
-> > arch-specific or optimized implementations until we see parity_odd()
-> > being used in hot paths.
-> > 
-> > Changes in v4:
-> > - Rename parity8() to parity_odd().
-> > - Change the argument type from u8 to u64.
-> > - Use a single parity_odd() function.
-> > 
-> > Changes in v3:
-> > - Avoid using __builtin_parity.
-> > - Change return type to bool.
-> > - Drop parity() macro.
-> > - Change parityXX() << y to !!parityXX() << y.
-> > 
-> > Changes in v2:
-> > - Provide fallback functions for __builtin_parity() when the compiler
-> >   decides not to inline it
-> > - Use __builtin_parity() when no architecture-specific implementation
-> >   is available
-> > - Optimize for constant folding when val is a compile-time constant
-> > - Add a generic parity() macro
-> > - Drop the x86 bootflag conversion patch since it has been merged into
-> >   the tip tree
-> > 
-> > v3: https://lore.kernel.org/lkml/20250306162541.2633025-1-visitorckw@gmail.com/
-> > v1: https://lore.kernel.org/lkml/20250223164217.2139331-1-visitorckw@gmail.com/
-> > v2: https://lore.kernel.org/lkml/20250301142409.2513835-1-visitorckw@gmail.com/
-> > 
-> > Kuan-Wei Chiu (13):
-> >   bitops: Change parity8() to parity_odd() with u64 input and bool
-> >     return type
-> >   media: media/test_drivers: Replace open-coded parity calculation with
-> >     parity_odd()
-> >   media: pci: cx18-av-vbi: Replace open-coded parity calculation with
-> >     parity_odd()
-> >   media: saa7115: Replace open-coded parity calculation with
-> >     parity_odd()
-> >   serial: max3100: Replace open-coded parity calculation with
-> >     parity_odd()
-> >   lib/bch: Replace open-coded parity calculation with parity_odd()
-> >   Input: joystick - Replace open-coded parity calculation with
-> >     parity_odd()
-> >   net: ethernet: oa_tc6: Replace open-coded parity calculation with
-> >     parity_odd()
-> >   wifi: brcm80211: Replace open-coded parity calculation with
-> >     parity_odd()
-> >   drm/bridge: dw-hdmi: Replace open-coded parity calculation with
-> >     parity_odd()
-> >   mtd: ssfdc: Replace open-coded parity calculation with parity_odd()
-> >   fsi: i2cr: Replace open-coded parity calculation with parity_odd()
-> >   nfp: bpf: Replace open-coded parity calculation with parity_odd()
-> > 
-> >  arch/x86/kernel/bootflag.c                    |  4 +--
-> >  drivers/fsi/fsi-master-i2cr.c                 | 20 +++------------
-> >  .../drm/bridge/synopsys/dw-hdmi-ahb-audio.c   |  8 ++----
-> >  drivers/hwmon/spd5118.c                       |  2 +-
-> >  drivers/i3c/master/dw-i3c-master.c            |  2 +-
-> >  drivers/i3c/master/i3c-master-cdns.c          |  2 +-
-> >  drivers/i3c/master/mipi-i3c-hci/dat_v1.c      |  2 +-
-> >  drivers/input/joystick/grip_mp.c              | 17 ++-----------
-> >  drivers/input/joystick/sidewinder.c           | 25 ++++---------------
-> >  drivers/media/i2c/saa7115.c                   | 12 ++-------
-> >  drivers/media/pci/cx18/cx18-av-vbi.c          | 12 ++-------
-> >  .../media/test-drivers/vivid/vivid-vbi-gen.c  |  8 ++----
-> >  drivers/mtd/ssfdc.c                           | 20 +++------------
-> >  drivers/net/ethernet/netronome/nfp/nfp_asm.c  |  7 +-----
-> >  drivers/net/ethernet/oa_tc6.c                 | 19 +++-----------
-> >  .../broadcom/brcm80211/brcmsmac/dma.c         | 18 ++-----------
-> >  drivers/tty/serial/max3100.c                  |  3 ++-
-> >  include/linux/bitops.h                        | 19 ++++++++------
-> >  lib/bch.c                                     | 14 +----------
-> >  19 files changed, 49 insertions(+), 165 deletions(-)
+> > diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
+> > index 70a4024d461e..5e1b7b1742e4 100644
+> > --- a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
+> > +++ b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
+> > @@ -5,6 +5,7 @@
+> >   * Copyright 2014 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
+> >   */
+> >  
+> > +#include <linux/bitops.h>
+> >  #include <linux/errno.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/ktime.h>
+> > @@ -165,12 +166,7 @@ static const u8 vivid_cc_sequence2[30] = {
+> >  
+> >  static u8 calc_parity(u8 val)
+> >  {
+> > -	unsigned i;
+> > -	unsigned tot = 0;
+> > -
+> > -	for (i = 0; i < 7; i++)
+> > -		tot += (val & (1 << i)) ? 1 : 0;
+> > -	return val | ((tot & 1) ? 0 : 0x80);
+> > +	return val | (parity_odd(val) ? 0 : 0x80);
 > 
-> OK, now it looks like a nice consolidation and simplification of code
-> base. Thanks for the work.
-> 
-> Thanks,
-> Yury
+> So, if val == 0 than parity_odd(val) is also 0, and this can be
+> simplified just to:
+>         return parity(val) ? 0 : 0x80;
+> Or I miss something?
+>
+If val == 0x01, the return value of calc_parity() will remain 0x01.
+If changed to return parity_odd(val) ? 0 : 0x80;, the return value will
+be changed to 0x00.
+
+Regards,
+Kuan-Wei
+
+> >  }
+> >  
+> >  static void vivid_vbi_gen_set_time_of_day(u8 *packet)
+> > -- 
+> > 2.34.1
 
 ______________________________________________________
 Linux MTD discussion mailing list
