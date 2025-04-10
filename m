@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32BAEC369A8
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Apr 2025 11:37:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 362C3C3601E
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Apr 2025 14:09:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=e3TScui+pLsOE263QfrQ+9iKinVyUoROOi3V/zWFW2Q=; b=NlTYORzuYc4xJGu22wDwJ9M1FT
-	ZxbWdN4EayycvS5mxGNhUOq+kvR598npNecYCpllP5HnTMiK1pTnJc14dO0HZDh2Wdxv+o9wr368I
-	SFCImc65ED6Rz9/D5kWOpfjDH3ryOhyNwrHQRMcXTkXN3nKVG+1bdXZPtUDFc4QpfEV9c3XwrbfHL
-	wo0BjpFmYXKU9qYuiMgehxiaeRKUaEE4gN2/rQ2yVJVBjbJ7l9w7TKHM3PODaF2JiTtF4B/5m8QTP
-	9/IWiRyqanIDEBuoAatBxPXFdlxqm+JDGDje+vWOGSzf+byrWaOoBcFy4Rw94J193XJiKaUu0o2tR
-	Td2uQdfw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=xw5Do1FY+hLpE3rTRtSTvJ9iPvOKWlgozsPXlRPgSPM=; b=s0QSp/KQuOdPth
+	DyizZwjpvjZx9vKLP/L8YNn/PIrT64ON72VXYMXL94ASTO4hR5dQX+tNslWtushTEXzOCHLsfZIO2
+	LVw9r9skWy1zr/yxvSrPf3OOF08yF+djCQWwNVLB3VF2MJOL0ZSBrt2Rmzg37MzJMgWdyfknv204j
+	xgFgGjdmogMMS7XgEmdzS+bfck8T4BVr/ZETvKSTmV/5nY3UiBzzy3Z2Tt7utSi5Bp6ueF3EHoDeL
+	IBk7/YtvgD7SkBdjslOXKWutZ0DF4v+cNw1VXtgs/2/g5Q9FpVszy4km9h9jJ08ZbStd0XnnB1Qnq
+	sBEgeadZ1oACEl5Oc5kA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2qEC-0000000AKCl-3zzN;
-	Thu, 10 Apr 2025 11:37:52 +0000
+	id 1u2sb3-0000000Amqi-1U3J;
+	Thu, 10 Apr 2025 14:09:37 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2pw8-0000000AGGg-126R
+	id 1u2sb1-0000000AmqW-3eqj
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Apr 2025 11:19:12 +0000
+	Thu, 10 Apr 2025 14:09:35 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1DC5F6843D;
-	Thu, 10 Apr 2025 11:19:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5194AC4CEE3;
-	Thu, 10 Apr 2025 11:19:08 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id CE7BC6844D;
+	Thu, 10 Apr 2025 14:09:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E28DBC4CEE8;
+	Thu, 10 Apr 2025 14:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744283951;
-	bh=gAFvWpcAGBkegBSikm87MrNHJtZam8cHZvJScZa1YO8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nDJ/YYu1BZTH/wCI43Y6qFG2VpBm778RH4Ahe5Lc/hjvbh1mPHOR+bvIjtIPJjYgJ
-	 v76zeBUcAzeaobXpwpPB7F7N0ALkeKNOaFnrhpk6sh66f9Qq5EB3MlOqdwPKagcXVR
-	 qESJGDXIsbKlwIZEcvsjR9TJHMy91PyntBiKbuwosnfvlBOiCpyaX6CEbo+QYYZdQo
-	 989+V2m7iEwdmFqFModMA/SB7YnDKCkRP0j3+pIwbbXK833s0X/Mj41iX3O1OhOXiw
-	 EGkOzcjwYaS1KffEtbBp/kiovBdomvAga1HaEZ7a6AukOUsLLIF4iCovZVhtRDb3i8
-	 Ly1tWWkexHEjQ==
-Date: Thu, 10 Apr 2025 12:19:05 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	manivannan.sadhasivam@linaro.org, absahu@codeaurora.org,
-	bbrezillon@kernel.org, architt@codeaurora.org,
-	quic_srichara@quicinc.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-spi@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] mtd: rawnand: qcom: Pass 18 bit offset from NANDc
- base to BAM base
-Message-ID: <79349446-2e87-4f3a-9644-9262a4ccb12a@sirena.org.uk>
-References: <20250410100019.2872271-1-quic_mdalam@quicinc.com>
- <20250410100019.2872271-2-quic_mdalam@quicinc.com>
-MIME-Version: 1.0
-In-Reply-To: <20250410100019.2872271-2-quic_mdalam@quicinc.com>
-X-Cookie: You will be awarded some great honor.
+	s=k20201202; t=1744294175;
+	bh=hnc1HD5fbqLWewm3HtfKeq9YNebjhVnVUk0MfPuXTkk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=NIwHjEZ0mBZJljZaXszq9gD176kD5ClRGvR+jgR964IUaf7aUe2stWe6FpWb2Eg9k
+	 oL9ad6CuJ9lt/zng1/c1RPd3mVT7v5K8cVJl8a3BIHm2bapj3LyrxeQ45IG9ohF0V0
+	 bFxKl1ZTTCeey1E1WXx76Bq4imy1bP+ejZ9q8FRPwJR5aLg29BIAgrXQzNoXPOcgO2
+	 l78gA2W6PTt4D/grh7iB6uJab/OnL0K0bDYDjRyE1eDWXdXkXb9aKNjtdDSvGGVbtu
+	 VRq6/sRJidEBgJyEVjLf9qvSrN8WGOATXKEnXb32wQhf3mbFQHVLH/6RSrvR1QBug3
+	 T6wqOmCskMQgA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE384380CEF4;
+	Thu, 10 Apr 2025 14:10:13 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Fixes for 6.15-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <87h62wcvno.fsf@bootlin.com>
+References: <87h62wcvno.fsf@bootlin.com>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <87h62wcvno.fsf@bootlin.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-6.15-rc2
+X-PR-Tracked-Commit-Id: 1c1fd374a2fe72b8a6dde62d3c3a9fd153e7581c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b4991c01ad07c1b3954a95e49bfae80c726b4b48
+Message-Id: <174429421227.3685623.2999815226849881135.pr-tracker-bot@kernel.org>
+Date: Thu, 10 Apr 2025 14:10:12 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Richard Weinberger <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,58 +71,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5778000422276334817=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The pull request you sent on Thu, 10 Apr 2025 09:39:39 +0200:
 
---===============5778000422276334817==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="BHGlqQ/YgKipM5ku"
-Content-Disposition: inline
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-6.15-rc2
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b4991c01ad07c1b3954a95e49bfae80c726b4b48
 
---BHGlqQ/YgKipM5ku
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you!
 
-On Thu, Apr 10, 2025 at 03:30:17PM +0530, Md Sadre Alam wrote:
-> The BAM command descriptor provides only 18 bits to specify the NAND
-> register offset. Additionally, in the BAM command descriptor, the NAND
-> register offset is supposed to be specified as "(NANDc base - BAM base)
-> + reg_off". Since, the BAM controller expecting the value in the form of
-> "NANDc base - BAM base", so that added a new field 'bam_offset' in the NAND
-> properties structure and use it while preparing the command descriptor.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---BHGlqQ/YgKipM5ku
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmf3qSgACgkQJNaLcl1U
-h9A8LQf/Qdes70/Rw94WVFtMtWkzp5YAtG82yLUA5LOSLIt8DTuvKh/B7Q216lDc
-DeHth7xNLhU0NKwpmVt0ESrPHrcLcMYMdq59924cs3EY5/HN4hk7YStIIX3OJxVM
-qcLdtHyiWGvQBAKptqbjM997MTKHzNMtPSb0ZZWNXjLe/x/rizeTgOQ7loGdgxFv
-bpDvk3Fy4TDZmBQ6ZcolMTFBV+B0S8ZIjv8bDbaN/hbbsuoayf1erKpP0tSW9Wvm
-Ag+/0fS0Lp/aD4ZaRPMLNH9e5ZtgFfDWSSAf88NypR3se0QgelmM9Vi45JEdK0ML
-fiTlbY3OQXlRIFO/WkjvS4GBx2t2sA==
-=JRjg
------END PGP SIGNATURE-----
-
---BHGlqQ/YgKipM5ku--
-
-
---===============5778000422276334817==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5778000422276334817==--
-
