@@ -4,149 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4576DC3601E
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Apr 2025 21:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B872BC36010
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Apr 2025 16:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zP0hpkwyUyT4qnMPa2bFlggxYPbPaVxk4/Cbf7n+Cig=; b=uQ5LeYP6Ii5oLm
-	WbuoXU37Sc/pNs5yj55Oujn1xvlLwIYlJFjXVhRb0L2O+m2ZbRjaIjxXZo8zroytP+gRpgk1Wo2Fw
-	A0Oimpz5rYu5kfAu078PMvDqrhgp7tZDqh7sKfuiPfKhLI2+T3qqQVGWb+T7VzvIHh0HxSMdRVYLt
-	jJfWoi+aYWhZNlzC6pm/w0IRL9J08vj4uhezMdIv0LLMqWZnreIUujMDtfpEubw0fBy0xjrJggo8k
-	+DeSNr1HbglQCsDJjIgwiFajAU/axMIN1EhS2Ud/Faz+BdjLC38Q4gcNDZPmbRIutXLilU0m50wpw
-	vqndn4HhwvEc4mZbxp4g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6+iI/R+0q0BWItpFIDhtiFYby35CMLxBY2hNbFL8FSQ=; b=V8xZ+vw+kYdI3u
+	lPallrDKu9WsiQh7olsQkvih/B/vBsSwLR6viY2YLx+IPmGUHbP1oZelYsmpBBMld7+DdDiHHK8W6
+	WZxzxBDxNqfTuP+X9fRGbVsIsclyV4mfSkk61qCl7dy6gPMdK1An/5USMABzbvr3OpozJbhh7MGNo
+	KH9HVuAKPBu6uujc0rwh2Xd2xN9W+bKpO4uea2Kn61C7bSSDansgvKIZfzBC+yyzgK32DvDRjpqSc
+	2VySE41rMHsK3ZyAEnBL0yRjD3xKdU79vLCLhSro8m1kKdnQkEpuYysMXbDgCE1TyUSIA/0gJEgKB
+	T5frRJqFNIV2N5SSDthA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2z4f-0000000BrwF-1Z7X;
-	Thu, 10 Apr 2025 21:04:37 +0000
-Received: from mail-vi1eur05on20613.outbound.protection.outlook.com ([2a01:111:f403:2613::613] helo=EUR05-VI1-obe.outbound.protection.outlook.com)
+	id 1u3HKy-0000000ENcg-2Axz;
+	Fri, 11 Apr 2025 16:34:40 +0000
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2z4c-0000000BrvX-30VI
-	for linux-mtd@lists.infradead.org;
-	Thu, 10 Apr 2025 21:04:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=C50J4TpNaOAX/hDKtCbAvQYmv/eoac6Pj7Y/SkHblpGFZ060sYbeslmD6WfI301OJ96yDOurr+VEu3KLTerGSUQxP5WbnpEvy+1JPDQc5QIYA5szaF2IfCPEtm5ABfwDYnDGC5KLksnRsZsbwFO6vVoFhbdkKTmyoIsZcrLq7nELht3NfTkI1bCcdPhBAJjNYAkUQ/T7lzaQTSpsfHa+DaIZMQvilBL9/BGSggmfU4rr/iI+IT4g/rRI+5RUGENCuV+e9s6SBWSNHTHVn+Sq2+NScwVHr8Xe5Sk4Z+Yw3Fwg2rxaSDYydDpzyhaFPx7AsH+dIUlDSemMfUHQgOzM4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=By8w/ai1jGePB47S2IF7IJKaCOdzR4Sjs0qXG8yPSz4=;
- b=iM2yoH2ESFK6vH34VIjfhLi/hDIfvxda47694ZUH0oMw6Hh+a9QcfFenaEcVbkJjhQVIjdWo0tyQZNYmP2g3Es0CRrPfUf0Dtw3aNSm4czx74HJGUwC+f+5EadTQPMJ04ILd30WyMUQH+hNbZu2E2BQnyy1RaDdwOQePiYzr4fBn0o4kFi4fFE6bzPc2f+h9YlhcghVhdHQeVUjuTMkrJq8sE+zy55MD4diD9+ca2jOtrt9eBv1HqolljN0izrK2P6Nne/2pLUFjS5NoGIerAtvUIDhiXcxrvONvW3v4EuFKVZf17wbQVy1Rns8xh10r3okfCvEvW/MPTY+SRL7Wpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=By8w/ai1jGePB47S2IF7IJKaCOdzR4Sjs0qXG8yPSz4=;
- b=bfYNA6SxIg4aa5AbhJCPqlxpgEZScnSmDR1HnWZOlLjNIgvmvjDRDilSMJeHEzaH9Fly2dllfjEAlLVIbr1Yg3v+dyCPBNZOxhCzhJiMu264KN3PrcK1/EzfzfAwHODBMJL/BME6KOBGOIIA7O6Easnd4gkZ+s5EQG87VGSr8hY+T2DjaHbEo3taLa5WRNgEQxPtWwqMOtLkmL65QzMILceNoBuvbyPn8/DkOfnXHr40gzy7+qyIfxL4BghdvZY0WjS8iI+w6NZqCxIcH2TEmtrEDFI4iY1ZH5XYDgaYwphvcIF9fFXmixcg+j9JsoRlENyfNYFL6t7hi9uEvrXTow==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by GV1PR04MB10894.eurprd04.prod.outlook.com (2603:10a6:150:20e::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8606.36; Thu, 10 Apr
- 2025 21:04:25 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06%2]) with mapi id 15.20.8632.021; Thu, 10 Apr 2025
- 21:04:25 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	masahiroy@kernel.org,
-	nathan@kernel.org,
-	nicolas.schier@linux.dev,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org
-Cc: imx@lists.linux.dev
-Subject: [PATCH 1/1] dt-bindings: mtd: convert vf610-nfc to yaml format
-Date: Thu, 10 Apr 2025 17:04:09 -0400
-Message-Id: <20250410210409.3234260-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-X-ClientProxiedBy: SJ0PR13CA0060.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::35) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	id 1u3HKu-0000000ENbY-3vR0;
+	Fri, 11 Apr 2025 16:34:38 +0000
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-736c1cf75e4so1675757b3a.2;
+        Fri, 11 Apr 2025 09:34:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744389275; x=1744994075; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i2OP7V+QE6E9gg3GbdLcYE8UHgSFfj9Jnjg73a7+53s=;
+        b=bvFZ+QVcmIC3fc75UGK1pMmR2uJhKJuXF8tiWmSOR1LAoDoPpPhTNYM51XTJiEZqqp
+         B8aB6bRwTCo3+gJ63SxZU6cZoBFTDunEnsKTsjuvxYaLuGza3I2FEUXzOttykLZxOTtK
+         Z6q+f+xuzqW2GESddyFqhEoRRPHxekE+eFExbMH7sBIO+/gL3QUAorg62f+JqT4r5ptc
+         aYyJFBdyptKrsFaNxrApkaGR2PJvFtqOv7JF7GzNEharnbnlLij860TxHmlm+FsB8LlV
+         QAyr0dgZUsrBK1wdnqihYjuRF61zq5/XZTdHbs8g4Ui5IORKvDTWL0cSwwrsSVtFHME1
+         qbzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744389275; x=1744994075;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i2OP7V+QE6E9gg3GbdLcYE8UHgSFfj9Jnjg73a7+53s=;
+        b=WuOpS2Sv2YP2Vt9Z3TuZkzgVV3tJcfDUCWHhN3/pkTtUPuePYZVwy7N+5lkBWClu6W
+         zjiFJDnvwNuIElpij3Na/+HQLzfLhpO4SFDXLPJejuv0UTVPxvA8i5XoIY+CaQzHuLdP
+         cd3qO9WP5IPuFoU/OOJhhlZOD97uJf2Y1UxgptSLKTlKEVFP7xMEe3XNmuHJxkooN7OU
+         xRT66J9k0rBgEC4p79E6T2wVFnB5ejOSpAIIm41qz2OfFowJUcF+YwCfFuMvUzePFDJ0
+         EMn1KjRecVk+5ItrcFxH3mnqrnV7Gbp9T86FJ8lCPM2uKz0UWKmn4r1z3TJIUh914ikd
+         qn8g==
+X-Forwarded-Encrypted: i=1; AJvYcCX1nWRzpUZ+titzvNg5ZRascXfsPcHlRqXGHuPdFkagQkc0M/BNWeGdMnYhTVPL5HNa4HHLX2hwSP0j@lists.infradead.org, AJvYcCXcPLmLj1wLf1ug7Dvpqm3TnQJAp2JY4JCikGR+SI1SwwIBqVD0Qekp93Ngb5Lp/0RcA/OP5Uzsr4I=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwpIrbJYT0fljk7y25G/6FOJX3WAkjJ21Qa0fTQdR8G3CJIC+uG
+	HaJrcEq+Lec5LQ8yuJpLPD3VTGLfsysd9u2blVj4ZzKN8ISKd7ZA
+X-Gm-Gg: ASbGnctq5XZLcuRkM8zMtqFKFMZVXA+Vi+azrsk/3Wte787WH7NOYMWzeIEQ6pz2exC
+	+irAK4OwsVv86sNgnx2Zd44NdJOD5XiVt9Mp2mDuk8tOo10lZjp5TFmJWJTCFbTWMtEafRVVyYf
+	LXhWY5736UEMdBYEmOofPwwy1LWf5KxR8IpjhRD50+MHsxCM1MXvCL9fbQZV1bKkHkA2vZhOLIO
+	dbj4LTamuWpatheU7fiY0vvQCtknVBObqB3UtGO1twBCWCSH5kHf6fI2xsY+TVfqnm7tGQp4aBi
+	TPd76hwPbwZXkIX6tqa1t0Itqzom1Htgvg2nLQuP5nlmozFKLPyyk1l//RUC6pK/+cJAgwLJjoG
+	p7CI=
+X-Google-Smtp-Source: AGHT+IEYqWSvO9nmRhuvu9Nod5I62ZHK0q1nd8Adc2Nrxqu798p8njg5jLN2TKIb2S4uFWzFr2oiJA==
+X-Received: by 2002:a05:6a20:d503:b0:1f5:902e:1e97 with SMTP id adf61e73a8af0-2017998c2d3mr6583017637.41.1744389275369;
+        Fri, 11 Apr 2025 09:34:35 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b06161333a8sm258713a12.7.2025.04.11.09.34.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Apr 2025 09:34:34 -0700 (PDT)
+Date: Sat, 12 Apr 2025 00:34:24 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Yury Norov <yury.norov@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+	andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+	rfoss@kernel.org, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+	simona@ffwll.ch, dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, akpm@linux-foundation.org, jdelvare@suse.com,
+	linux@roeck-us.net, alexandre.belloni@bootlin.com, pgaj@cadence.com,
+	alistair@popple.id.au, linux@rasmusvillemoes.dk,
+	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+	jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
+	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
+	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH v4 00/13] Introduce parity_odd() and refactor redundant
+ parity code
+Message-ID: <Z/lEkDwefWvw4ZA3@visitorckw-System-Product-Name>
+References: <20250409154356.423512-1-visitorckw@gmail.com>
+ <Z_amQp3gK5Dm8Qz3@yury>
+ <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
+ <Z_a9YpE46Xf8581l@yury>
+ <e97a83a2-dabd-4dc3-b69a-840ca17d70b5@zytor.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|GV1PR04MB10894:EE_
-X-MS-Office365-Filtering-Correlation-Id: cce58e19-8b07-4bdf-c5a8-08dd7873461a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014|52116014|921020|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?kUXJvggQilmp/0xSppKnSedJUotJrU1jNxtWYM4avO5Kd/JX3GH/mhhVlTWN?=
- =?us-ascii?Q?lqa71KMzzpjsS6i81ANTFV0ETyYdnd0iN/B2Ft2Ff4HQwCJF9f3OjG//WFS5?=
- =?us-ascii?Q?m15mAwfXFLtduR4L/viuO3QJX0445FMrssaVfhR55kiduwY0XJEsyVj2If0S?=
- =?us-ascii?Q?lEChkOwuHyr0lpIko0BUOJgkkyraqCfM3ajsIeCK0+8YSKWJU8x3sEHY6Et9?=
- =?us-ascii?Q?nfSqJR9C2StVJ1TAU8+nOknMA9iOcsCNyZFh15T3woqS1gjyt1tP8Yfd4ldA?=
- =?us-ascii?Q?DINX0DQKW7cwn1/hWbhSBHFciiKnMuqtSkV9VVeRSWM1EayrK6Qli8Z0azeD?=
- =?us-ascii?Q?BnZICrU9Dvxdekvi9cYWVFTy9JaVPzA5a7Wa6xCoLGtZJYe4CTQ6bkUDEPwc?=
- =?us-ascii?Q?brDS8UHJikx9nRQqluLHwVnVGGSe4QYw3eEKhicneup71TWpri9xDxXUpkkK?=
- =?us-ascii?Q?X2E8e/r76rw87QX/xskIhKMXZ1uId31gfxC6aR5vilgCq0KhsPbj7yDInKFd?=
- =?us-ascii?Q?JO+hscvNDeFEVtQqdRTf7uZAIggde4xn6peR4Xyh+fYqz86MNK34XqcSLjNm?=
- =?us-ascii?Q?ybFy3VohYYxryz3M5hXxC6/vEqLjEbeIYfsGA8xexmUe+uFTwYr4GoepAHu/?=
- =?us-ascii?Q?8n7UoX/NKWZOy2hpp+8jaq6J1+nJRhmVGh+h9KeK3tDbWZ+XJHQPRTmi/kHx?=
- =?us-ascii?Q?oxjV21LrGJF2ly9ncnR/rMG62AeKBQ4D+1pCkiCp0VlC09CCFwON54fsIYNG?=
- =?us-ascii?Q?XhGWq+46Vh/BlwHtKiMOsLmO7w5Z0zcVsVmvqEiJgjvKglGPctBFRLTV+KM3?=
- =?us-ascii?Q?zyndRvS82kXlAb5xF2KP6w+Ul6qXyWpdPQGaI6IsKfIvq0j3HfMJe63Txv3j?=
- =?us-ascii?Q?D3najJllRcS5lhKenX4n8bQh0FrytjmVDQpk+jTVtVtdenTm66mQOLil7Sz7?=
- =?us-ascii?Q?jHVoBh53NNjjI5vy5iA++BPfIU2+4kaSDDWb+kRKk1ZDPDpdAltnPpoUS8ZW?=
- =?us-ascii?Q?V76pMcQxclevQulE7XMjlx+zzP+mcZfvEc8qDCUEb6yhc+D7gBwdLf5VBu9k?=
- =?us-ascii?Q?d4Ox/m/YUzx9nwNPHkC6i1mUPH3DpSaUVT6BfSnoTm80sZjMTJldU71RsF1+?=
- =?us-ascii?Q?zhc8hH8iowsWlUjPVFO8UuK5zcdZ6FJp7Rd+EDhcRXETp8ENrEr1lDlbNjCQ?=
- =?us-ascii?Q?9RKKDLYfHCsO6vhB5rAkO08nrEPjnm3Kyk0V2Zy/F9sqBKUjSEiNx0akUfzT?=
- =?us-ascii?Q?MCZWpFKX0WYsl8czI8kXnGm4qlgYYcdAxJqBMyZSgknt27e1cidRrCw2BUox?=
- =?us-ascii?Q?oNkpYSJkrBrYztc89idfmdlRC3K5hMHKLObLhGkXKLd8vrjqbpS2sq8yJBOv?=
- =?us-ascii?Q?P5THLMgvUp5VWVQ+pUgM6Sv88x+LeatmY7EYWFcKQDSxAlhI7Y/i7bNQqQK9?=
- =?us-ascii?Q?DWEKaXT17R3XIcvcIrWQogKIT7Hh/8d2?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(52116014)(921020)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ExGis3KslUeJZiBPVh9ALYwP9SWBS4V7fOY18eq9ExJti5qDhCPrO5qoc5bT?=
- =?us-ascii?Q?tCKlMCBlfkocFGvDy60amTvC0kmWx1ZqanZIkUp8Q5c5iF3Pl3eWNhsTxB9D?=
- =?us-ascii?Q?vlfTTvA73qA9qgBYuF342i2lhhI4tb9aQQFyOoNGDv+79MSFV0+MiT2Qi6ED?=
- =?us-ascii?Q?WVWcNU62Y4MqJEeeh6IA1NQQedTag9/4XODnbDwTj3hZBbj/XpNMxHndc99b?=
- =?us-ascii?Q?f9OdJ83zXEi8ccHpoM/aWzcf/x0JgOTLBe5suIVJbL7IYGLdK4v7OKOCip/L?=
- =?us-ascii?Q?jT8ua9vUEnUXVXjzQpMXSyQBH+deawqVJSQUcBgXtaJpxO+UgY4RGbgfq1AF?=
- =?us-ascii?Q?HCFWQRfLyTHxU/gm8lfFP5E7s+48hIHWNV6arRV6EnPTZs4uy9r2Rg+H3zhl?=
- =?us-ascii?Q?6kjgFLhdVZ93iRull+L2BCxkEBgzsj20+D0vDlXWuwSvPNHlgb2bGqfj/6QG?=
- =?us-ascii?Q?1WNiF876jBZTrqjwnGGkHybMeW83EWjtr9cXDUFZYRWkpud0yBu1Tb0dLGu8?=
- =?us-ascii?Q?p1Qbe+VuE1fJfNp59UCl2KDzeRNhdgCmPg+9QG5dBxCz6RMEFYX4nPBoq1uT?=
- =?us-ascii?Q?dP4XJ/grAxPdSd/Iyw8SOrPa23aakw2sthvpWAOCohOUWacU12YU1gF+YFLh?=
- =?us-ascii?Q?f24seFSrIfuvEe3DRuEPup9y8vAuBflJsYM4BgsMYBc5qB4G2d1UiJ+tWRlp?=
- =?us-ascii?Q?13Ie+y+sibepWGGIYweaqMF+XpWENyqhl7VgKfE/6HlIRGV8qKN0tNZ16+XJ?=
- =?us-ascii?Q?GIdvDJujF6tqIepmL0dcNomLEdMvT62UHUnUt2+uTzY2QvJNr0bp/6DBN6FU?=
- =?us-ascii?Q?+tU3HOuO3BjQ9c6DA3jcq82lPGuLeLunJ15FKpvQ/0C5eixxQ0b1g+B5X0hA?=
- =?us-ascii?Q?9xv9yCNfeflHOTXYK0jQwH+xsAgj5Thoy7XsNXwQuPTNIXKMQBSYsQNQSAFS?=
- =?us-ascii?Q?GRFx951MEyEHKBDJha0EVUQJAjqmQANTynxjMsGB6l6fWrvDlV0jdRVrcJM0?=
- =?us-ascii?Q?/fpO/31uukMzjipUf5q/PSKNQdIHrNVMjBOE4iFbgan0x4293ynz6N+UUGYM?=
- =?us-ascii?Q?IwfOjOVFpNdfjtgPZueu6WIeFSR7KLJuUMM9huUTbBFm803p9RCUFXhZ+1Ql?=
- =?us-ascii?Q?pdtgzZa44Vt5pEdZYV92R0tECtz5UN0ELir2XGeCEq2UoFmL/+ehIn/0T2K3?=
- =?us-ascii?Q?Gav/BJhPQldNsS0ahmvKzTmkJws58Q/KCwpToqgQTda/4bZViZdjqC1w1gB1?=
- =?us-ascii?Q?7KEq+GaLBg/Vn3pp2FVDOH0M/UlnDgTUi3XsUOEUxUK8x19kGvC784M3MJKU?=
- =?us-ascii?Q?Jm+jLBiIWS3GxCwuZMjK1T1YqwzDqCxnp+QqSdtyOWcCrSsl5rq+sxqnUNXk?=
- =?us-ascii?Q?/DPhwvC4THagHX/qhAI7KkfKSYNuBaD10q0J7t56GLARZ2UglUPJPFB3QGzl?=
- =?us-ascii?Q?EuqXDe13vFLvgSsorsZMr44G902VP79yW7H08ybRSC645wv2hymwD9cy0ex3?=
- =?us-ascii?Q?zwjOiTWYZAr11glqeiGluBfhqkmdoixvHm17c83AHl3cnORF5QYKxoFaQ/rT?=
- =?us-ascii?Q?L4kY8J8OpW6oF429SzXmQGG5BfXa2nbR+A8CWuLk?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cce58e19-8b07-4bdf-c5a8-08dd7873461a
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2025 21:04:25.1759
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qtl4sd8Qr4UZqonaxllvcWRJxOwVKv88cIMufXR+7m3c3bzQ6cJ5oncjhpu/jgdhjmtWOVR+fosUAc/N3H6Zsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB10894
+Content-Disposition: inline
+In-Reply-To: <e97a83a2-dabd-4dc3-b69a-840ca17d70b5@zytor.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250410_140434_757020_C51C40B7 
-X-CRM114-Status: GOOD (  18.97  )
+X-CRM114-CacheID: sfid-20250411_093436_976409_CF79E592 
+X-CRM114-Status: GOOD (  47.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,195 +128,178 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert binding doc vf610-nfc to yaml format.
+On Wed, Apr 09, 2025 at 07:09:28PM -0700, H. Peter Anvin wrote:
+> On 4/9/25 11:33, Yury Norov wrote:
+> > > > 
+> > > I don't have a strong preference for the name, but if I had to guess
+> > > the return value from the function prototype, I would intuitively
+> > > expect an int to return "0 for even and 1 for odd," and a bool to
+> > > return "true for even, false for odd." I recall Jiri and Jacob shared
+> > > similar thoughts, which is why I felt adding _odd could provide better
+> > > clarity.
+> > 
+> > I think they said they are convinced that parity should return 1 for
+> > odd because of folding and __builtin_parity() arguments.
+> > 
+> 
+> And for bool, 0 == false, and 1 == true. In fact, the *definitions* for
+> false and true in C (but not C++) is:
+> 
+> <stdbool.h>:
+> typedef _Bool bool;
+> #define false	0
+> #define true	1
+> 
+> If someone wants to make more clear, it would be better to put "typedef bool
+> bit_t" in a common header, but that personally seems ridiculous to me.
+>   >>>> type from u8 to u64 for broader applicability, and updates its return
+> > > > > type from int to bool to make its usage and return semantics more
+> > > > > intuitive-returning true for odd parity and false for even parity. It
+> > > > > also adds __attribute_const__ to enable compiler optimizations.
+> > > > 
+> > > > That's correct and nice, but can you support it with a bloat-o-meter's
+> > > > before/after and/or asm snippets? I also think it worth to be a separate
+> > > > patch, preferably the last patch in the series.
+> > > > 
+> > > I quickly tested it with the x86 defconfig, and it appears that the
+> > > generated code doesn't change. I forgot who requested the addition
+> > > during the review process, but I initially thought it would either
+> > > improve the generated code or leave it unchanged without significantly
+> > > increasing the source code size.
+> > 
+> > That's what I actually expected, but was shy to guess openly. :). It's
+> > hard to imagine how compiler may improve code generation in this case...
+> > 
+> > This attribute is used when there's an asm block, or some non-trivial
+> > function call. In this case, the function is self-consistent and makes
+> > no calls. And you see, const annotation raises more questions than
+> > solves problems. Let's drop it.
+> 
+> Ah yes; one of the quirks about gcc asm is that an asm is implicitly assumed
+> "const" (with no memory operands) or "pure" (with memory operands) unless
+> declared volatile or given an explicit "memory" clobber.
+> 
+> So yes, the compiler can most definitely derive the constness from the form
+> of the function even in the variable case.
+> 
+> I would still like to see __builtin_parity() being used as an architecture
+> opt-in; it can, of course, also be unconditionally used in the constant
+> case.
+> 
+> So in the end one of these two become my preferred implementation, and I
+> really don't think it is very complicated:
+> 
+> #ifndef use_builtin_parity
+> #define use_builtin_parity(x) __builtin_constant_p(x)
+> #endif
+> 
+> static inline bool parity8(u8 val)
+> {
+> 	if (use_builtin_parity(val))
+> 		return __builtin_parity(val);
+> 	val ^= val >> 4;
+> 	return (0x6996 >> (val & 0xf)) & 1;
+> }
+> 
+> static inline bool parity16(u16 val)
+> {
+> 	if (use_builtin_parity(val))
+> 		return __builtin_parity(val);
+> 	return parity8(val ^ (val >> 8));
+> }
+> 
+> static inline bool parity32(u32 val)
+> {
+> 	if (use_builtin_parity(val))
+> 		return __builtin_parity(val);
+> 	return parity16(val ^ (val >> 16));
+> }
+> 
+> static inline bool parity64(u64 val)
+> {
+> 	if (use_builtin_parity(val))
+> 		return __builtin_parityll(val);
+> 	return parity32(val ^ (val >> 32));
+> }
+> 
+> This means that an architecture -- in particular, x86 -- can still ask to
+> use __builtin_parity*() directly. It means that architectures on which
+> __builtin_parity*() produces bad code should either complain to the
+> gcc/clang team and have it fixed, or we can add additional mechanism for
+> them to override the implementation at that time.
+> 
+> The alternative is to stop worrying about overengineering, and just do it
+> once and for all:
+> 
+> #ifndef parity8
+> static inline bool parity8(u8 val)
+> {
+> 	val ^= val >> 4;
+> 	return (0x6996 >> (val & 0xf)) & 1;
+> }
+> #endif
+> 
+> #ifndef parity16
+> static inline bool parity16(u16 val)
+> {
+> 	return parity8(val ^ (val >> 8));
+> }
+> #endif
+> 
+> #ifndef parity32
+> static inline bool parity32(u32 val)
+> {
+> 	return parity16(val ^ (val >> 16));
+> }
+> #endif
+> 
+> #ifndef parity64
+> static inline bool parity64(u64 val)
+> {
+> 	return parity32(val ^ (val >> 32));
+> }
+> #endif
+> 
+> In either case, instead of packing the cascade into one function, make good
+> use of it.
+> 
+> In the latter case, __builtin_constant_p() isn't necessary as it puts the
+> onus on the architecture to separate out const and non-const cases, if it
+> matters -- which it doesn't if the architecture simply wants to use
+> __builtin_parity:
+> 
+> #define parity8(x)  ((bool) __builtin_parity((u8)(x)))
+> #define parity16(x) ((bool) __builtin_parity((u16)(x)))
+> #define parity32(x) ((bool) __builtin_parity((u32)(x)))
+> #define parity64(x) ((bool) __builtin_parityll((u64)(x)))
+> 
+> As stated before, I don't really see that the parity function itself would
+> be very suitable for a generic helper, but if it were to, then using the
+> "standard" macro construct for it would seem to be the better option.
+> 
+> (And I would be very much in favor of not open-coding the helper everywhere
+> but to macroize it; effectively creating a C++ template equivalent. It is
+> out of scope for this project, though.)
+> 
+IIUC, you prefer using the parity8/16/32/64() interface with
+__builtin_parity(), regardless of whether there are users on the hot
+path?
 
-Additional changes:
-- ref to nand-controller.yaml.
-- include gic.h and clk.h in examples.
-- add clocks and clock-names description.
-- remove #address-cells, #size-cells assigned-clocks and
-assigned-clock-rates.
+If the maintainer has no concerns about maintenance burden, I also lean
+toward this interface. While I don't think the implementation is
+particularly complex, I'm not the maintainer, so I'd rather not argue
+about the maintenance aspect. Also, to be clear, I don't think I'm the
+right person to provide evidence that performance or code generation
+matters to any user.
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- .../bindings/mtd/fsl,vf610-nfc.yaml           | 84 +++++++++++++++++++
- .../devicetree/bindings/mtd/vf610-nfc.txt     | 59 -------------
- Makefile                                      |  2 +-
- 3 files changed, 85 insertions(+), 60 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+OTOH, If we do end up going with one of the two approaches, since
+bitops.h is included (directly or indirectly) by many files while
+parity is only used in fewer than 20, perhaps we should move the
+parity-related code to a separate parity.h. It doesn't necessarily have
+to be maintained by Yury - it could be someone else, or me.
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml b/Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml
-new file mode 100644
-index 0000000000000..cffa621dbb022
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml
-@@ -0,0 +1,84 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/fsl,vf610-nfc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale's NAND flash controller (NFC)
-+
-+description:
-+  This variant of the Freescale NAND flash controller (NFC) can be found on
-+  Vybrid (vf610), MPC5125, MCF54418 and Kinetis K70.
-+
-+maintainers:
-+  - Frank Li <Frank.Li@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,vf610-nfc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: nfc
-+
-+patternProperties:
-+  "^nand@[a-f0-9]$":
-+    type: object
-+    $ref: raw-nand-chip.yaml
-+    properties:
-+      compatible:
-+        const: fsl,vf610-nfc-nandcs
-+      reg:
-+        const: 0
-+      nand-ecc-strength:
-+        enum: [24, 32]
-+      nand-ecc-step-size:
-+        const: 2048
-+    unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+allOf:
-+  - $ref: nand-controller.yaml
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/vf610-clock.h>
-+
-+    nand-controller@400e0000 {
-+        compatible = "fsl,vf610-nfc";
-+        reg = <0x400e0000 0x4000>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks VF610_CLK_NFC>;
-+        clock-names = "nfc";
-+        assigned-clocks = <&clks VF610_CLK_NFC>;
-+        assigned-clock-rates = <33000000>;
-+
-+        nand@0 {
-+            compatible = "fsl,vf610-nfc-nandcs";
-+            reg = <0>;
-+            nand-bus-width = <8>;
-+            nand-ecc-mode = "hw";
-+            nand-ecc-strength = <32>;
-+            nand-ecc-step-size = <2048>;
-+            nand-on-flash-bbt;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
-deleted file mode 100644
-index 7db5e6e609df6..0000000000000
---- a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
-+++ /dev/null
-@@ -1,59 +0,0 @@
--Freescale's NAND flash controller (NFC)
--
--This variant of the Freescale NAND flash controller (NFC) can be found on
--Vybrid (vf610), MPC5125, MCF54418 and Kinetis K70.
--
--Required properties:
--- compatible: Should be set to "fsl,vf610-nfc".
--- reg: address range of the NFC.
--- interrupts: interrupt of the NFC.
--- #address-cells: shall be set to 1. Encode the nand CS.
--- #size-cells : shall be set to 0.
--- assigned-clocks: main clock from the SoC, for Vybrid <&clks VF610_CLK_NFC>;
--- assigned-clock-rates: The NAND bus timing is derived from this clock
--    rate and should not exceed maximum timing for any NAND memory chip
--    in a board stuffing. Typical NAND memory timings derived from this
--    clock are found in the SoC hardware reference manual. Furthermore,
--    there might be restrictions on maximum rates when using hardware ECC.
--
--- #address-cells, #size-cells : Must be present if the device has sub-nodes
--  representing partitions.
--
--Required children nodes:
--Children nodes represent the available nand chips. Currently the driver can
--only handle one NAND chip.
--
--Required properties:
--- compatible: Should be set to "fsl,vf610-nfc-cs".
--- nand-bus-width: see nand-controller.yaml
--- nand-ecc-mode: see nand-controller.yaml
--
--Required properties for hardware ECC:
--- nand-ecc-strength: supported strengths are 24 and 32 bit (see nand-controller.yaml)
--- nand-ecc-step-size: step size equals page size, currently only 2k pages are
--    supported
--- nand-on-flash-bbt: see nand-controller.yaml
--
--Example:
--
--	nfc: nand@400e0000 {
--		compatible = "fsl,vf610-nfc";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		reg = <0x400e0000 0x4000>;
--		interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&clks VF610_CLK_NFC>;
--		clock-names = "nfc";
--		assigned-clocks = <&clks VF610_CLK_NFC>;
--		assigned-clock-rates = <33000000>;
--
--		nand@0 {
--			compatible = "fsl,vf610-nfc-nandcs";
--			reg = <0>;
--			nand-bus-width = <8>;
--			nand-ecc-mode = "hw";
--			nand-ecc-strength = <32>;
--			nand-ecc-step-size = <2048>;
--			nand-on-flash-bbt;
--		};
--	};
-diff --git a/Makefile b/Makefile
-index 38689a0c36052..b38f91696c567 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1466,7 +1466,7 @@ kselftest-merge:
- # Devicetree files
- 
- ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
--dtstree := arch/$(SRCARCH)/boot/dts
-+dtstree := arch/$(SRCARCH)/boot/dts/nxp
- endif
- 
- ifneq ($(dtstree),)
--- 
-2.34.1
-
+Regards,
+Kuan-Wei
 
 ______________________________________________________
 Linux MTD discussion mailing list
