@@ -4,112 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 377A9C36010
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Apr 2025 17:06:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47356C369A2
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Apr 2025 19:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Subject:References:In-Reply-To:
-	Message-ID:Date:CC:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ogp5q9a2q1wnW5IhVxD5jiNQ5O1lTi3VRzlqG+x4h1Y=; b=Q/+3RI1vb84i08
-	Mn4wPOMQuZkyszrJk+IIW5md+n9PkTbacLgWYV5KYc8b/GvjzdpM1YotxLwiC8YBA7oiODZrMoCLY
-	efAg3naKRkmokORq9U1jfTER4fkqRKNY7Wze82q9j3ycIYscf/JZC+/SRTvPLFG6z+vyYHjrSYNhG
-	DXHq9xKrBxJPmw4+MwefucsQ5I2xVSyRE4+24SGh20jt2aLxbiwUzern4Czcw4cqUHASzJXvY4XG4
-	EMR99yuu+1mLmdJoGHhoaAwqGDuR3Atq/JpWU4jEkbDsyMOpeq3FdKHY6l5EGVYZJO6tBicKXkOWQ
-	BnYrmYRwMi9sUY+2w2IA==;
+	List-Owner; bh=BEnpZGQtLyebfyPmREh2XyIA6Dh2SJC/JuFbCDimG7g=; b=u7iYmHMpZR8zGJ
+	Z3Nj2aUq5ud1LIO1m2n/37RSvOZDqzAJMMFNBLQPQWny3WpKcfiJYPyvPaU+1jnEx7+SNiWOs+q33
+	+IZLC8Gg1ikLAlWcuzC9Q4oi5QMN62t+VaE5TqpHzFMLS8ZX3mguTnk6uYWXRte5faC8KCFa9ErLV
+	FBUZqSgphD6P8fezscHnbo1e6GAFxKzlIXD0khQiNyy6PO8l5GSuTIYOTt8GgI2XQLBsRTi0cjBH6
+	CSsCUHtYbhOAAHlfPXW0xKsVs/Dp/9vVYm4StrvEKQDtihmkO0URwskhc/MJNyYZJKACNW3Zn6zZS
+	PRZSCZWaPJMrGhg3xhnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u3Hpa-0000000EScf-3Sfm;
-	Fri, 11 Apr 2025 17:06:18 +0000
-Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
+	id 1u3K55-0000000EjYc-270i;
+	Fri, 11 Apr 2025 19:30:27 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u3HoR-0000000ESRr-0ZkH
+	id 1u3K52-0000000EjXd-2UcO
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Apr 2025 17:05:08 +0000
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-224019ad9edso30573445ad.1
-        for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2025 10:05:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1744391106; x=1744995906; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zs24uJAaPNdL7CMzi1gfleFstPNRatFfxR2lJdWyGy0=;
-        b=Cv2j2HKlOi7R8T0hKwtMjNpayLIvQuAlmi6vRi69ZpATI+spe/wn2HF8Xqmt55q4UI
-         N5epNg+wTri8Ed7wtH6bj0gIVrSSqFUS0QLPI0+oiuRrH1XMPnnt8W+Wk5QURpW27hDu
-         xGs/TzT7WUV/ss8nbBIEIPziZJMkvRhYj1trA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744391106; x=1744995906;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zs24uJAaPNdL7CMzi1gfleFstPNRatFfxR2lJdWyGy0=;
-        b=ioDTuImjhd2yCD7qptC/pXgKiqSwbjh8xq2yJH+PJkc82hDoMJ2hj6BAFbWUmZqF8R
-         xtAX6MFS9SMsCPWPIEACFVb4zoas1mB2NBZ49ibL44A53Lb4fAk7KOF66VixovWNx6hJ
-         oTfvES2mBx/5WQrg/ysvqSDm9qZm0i2huol78f39lq8lsrybGvB/aDWWQMPUIlSA+BFQ
-         LJ2YNCNrSZD0NGUvmwNX7EqMwgXJ1kYF3n06+L0kXJiXecHOSdIkwXQJ8gzloNiath1j
-         xi9vHJdpT6Hex3EFLvAobeCGBJqlvf8zKeIOsB/VxUtCmYungsFnYC2yBfoqbhN0xw/k
-         Uryg==
-X-Forwarded-Encrypted: i=1; AJvYcCXW4szLT+reIgp23M9o7+0dav2KhIQIOWWbhj4ocMxqs64dy9eo2nr+XMS9WlYKTxYRNWgy1K1GItg=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxb0L1Dq+oRPoZzawCru2WcbcPFfWnh5faS2XKU27xbOvkZCTeI
-	FcPUF5vapw3hJRNnIOSb9h7g7O/r7rSQ2ZSy279ZBIvYEMOJGwycDtoCnojQCQ==
-X-Gm-Gg: ASbGncvl/YMvXrqGeOEpqQCiCbdZ4foTKd6ozivFJJe6p4jwqhtSAyp7iWYlksi0SmR
-	uOyj8AhQFwH4m7Px24dIDSTIM/zc0mkPB2IRy9Gz4phsVLg8gyms67FDiSEgXXdzIZdfwKjvwBi
-	WrxKC7m6iPsXBydfPJFE+s1Hr8y+3qH/E1eQ/euwgavO4+vL45p3Y95WucDMEnrxFlSCOnzmwYr
-	jMU70/rS7o862iTvd6/V+YDTl+aOG9xAUeToid3XE8k1BIzIa9pMUUDO9sA2pHsPakS6gVU0VEn
-	efedPvJS/+HAMg7ZUKoFxK5ll2w2rwIaA89kRHY1+PvtIKu9uB1bFEgIL1ZGYTtzkPNzy79UlRu
-	7Owk=
-X-Google-Smtp-Source: AGHT+IFsxw8IYiWvCcCfohL9OR/GeWdiXtYFPHAC7JyqV95Ksyc9aMccKi6WlaMRFkxD3Uw+BXU/BA==
-X-Received: by 2002:a17:902:e5cf:b0:215:94eb:adb6 with SMTP id d9443c01a7336-22bea4efe58mr64393975ad.40.1744391105389;
-        Fri, 11 Apr 2025 10:05:05 -0700 (PDT)
-Received: from [192.168.178.39] (f215227.upc-f.chello.nl. [80.56.215.227])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7c93aa3sm52081595ad.149.2025.04.11.10.04.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Apr 2025 10:05:04 -0700 (PDT)
-From: Arend Van Spriel <arend.vanspriel@broadcom.com>
-To: "Kuan-Wei Chiu" <visitorckw@gmail.com>
-CC: Johannes Berg <johannes@sipsolutions.net>, <tglx@linutronix.de>, <mingo@redhat.com>, 
-	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>, 
-	<jk@ozlabs.org>, <joel@jms.id.au>, <eajames@linux.ibm.com>, 
-	<andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>, <rfoss@kernel.org>, 
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>, 
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <simona@ffwll.ch>, 
-	<dmitry.torokhov@gmail.com>, <mchehab@kernel.org>, <awalls@md.metrocast.net>, 
-	<hverkuil@xs4all.nl>, <miquel.raynal@bootlin.com>, <richard@nod.at>, 
-	<vigneshr@ti.com>, <louis.peens@corigine.com>, <andrew+netdev@lunn.ch>, 
-	<davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>, 
-	<parthiban.veerasooran@microchip.com>, <gregkh@linuxfoundation.org>, 
-	<jirislaby@kernel.org>, <yury.norov@gmail.com>, <akpm@linux-foundation.org>, 
-	<jdelvare@suse.com>, <linux@roeck-us.net>, <alexandre.belloni@bootlin.com>, 
-	<pgaj@cadence.com>, <hpa@zytor.com>, <alistair@popple.id.au>, 
-	<linux@rasmusvillemoes.dk>, <Laurent.pinchart@ideasonboard.com>, 
-	<jonas@kwiboo.se>, <jernej.skrabec@gmail.com>, <kuba@kernel.org>, 
-	<linux-kernel@vger.kernel.org>, <linux-fsi@lists.ozlabs.org>, 
-	<dri-devel@lists.freedesktop.org>, <linux-input@vger.kernel.org>, 
-	<linux-media@vger.kernel.org>, <linux-mtd@lists.infradead.org>, 
-	<oss-drivers@corigine.com>, <netdev@vger.kernel.org>, 
-	<linux-wireless@vger.kernel.org>, <brcm80211@lists.linux.dev>, 
-	<brcm80211-dev-list.pdl@broadcom.com>, <linux-serial@vger.kernel.org>, 
-	<bpf@vger.kernel.org>, <jserv@ccns.ncku.edu.tw>, <Frank.Li@nxp.com>, 
-	<linux-hwmon@vger.kernel.org>, <linux-i3c@lists.infradead.org>, 
-	<david.laight.linux@gmail.com>, <andrew.cooper3@citrix.com>, 
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Date: Fri, 11 Apr 2025 19:04:43 +0200
-Message-ID: <19625cf93f8.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-In-Reply-To: <Z/lFQ85vhSQiFDBm@visitorckw-System-Product-Name>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-4-visitorckw@gmail.com>
- <25b7888d-f704-493b-a2d7-c5e8fff9cfb4@broadcom.com>
- <740c7de894d39249665c6333aa3175762cfb13c6.camel@sipsolutions.net>
- <1961e19ee10.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
- <Z/lFQ85vhSQiFDBm@visitorckw-System-Product-Name>
-User-Agent: AquaMail/1.54.1 (build: 105401536)
-Subject: Re: [PATCH v4 03/13] media: pci: cx18-av-vbi: Replace open-coded parity calculation with parity_odd()
+	Fri, 11 Apr 2025 19:30:26 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 509C3A482A8;
+	Fri, 11 Apr 2025 19:24:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46B1DC4CEE2;
+	Fri, 11 Apr 2025 19:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744399823;
+	bh=OsijeQ6Wv1y5t9DTr1GpVIB1AXtpK3LlVqMX294fdJg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SGdbWaPvFi983YWMKJrt104UEJw2tGk1dgLmoNxV3z3iUApRvvNcBfa8ygDPf9MwE
+	 bOklRNXTe0nrmdNJtc8VE1ysAuekM8u8VxvOIcvovjyWHz3lchmKXNTp7NYXFxDNbk
+	 mAm1A4DY9QnoEbK8mNJO6E9Q0g2Qin+ZqnVzutI3ir10UE6XgAPDaMq57cHZb+LuV9
+	 V2MS9zjFJtky+rd4PM3aiwg6uG5eLG7JpmgSvs63jUEGtpRysjONx+o9A5Mci5IRoj
+	 XjUyAIK6tpE8gTl/Y2nYF0SzkprXrhlpisSdiqvWBA5JFYLJ4QBacYPHVrnSxfb8Pl
+	 47tce/GvQpeEw==
+Date: Fri, 11 Apr 2025 14:30:22 -0500
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	krzk+dt@kernel.org, conor+dt@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, nicolas.schier@linux.dev,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	imx@lists.linux.dev
+Subject: Re: [PATCH 1/1] dt-bindings: mtd: convert vf610-nfc to yaml format
+Message-ID: <20250411193022.GA3762102-robh@kernel.org>
+References: <20250410210409.3234260-1-Frank.Li@nxp.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20250410210409.3234260-1-Frank.Li@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250411_100507_209631_002ED9BF 
-X-CRM114-Status: UNSURE (   9.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250411_123024_763451_785F42B4 
+X-CRM114-Status: GOOD (  25.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,39 +70,218 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On April 11, 2025 6:37:35 PM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+On Thu, Apr 10, 2025 at 05:04:09PM -0400, Frank Li wrote:
+> Convert binding doc vf610-nfc to yaml format.
+> 
+> Additional changes:
+> - ref to nand-controller.yaml.
+> - include gic.h and clk.h in examples.
+> - add clocks and clock-names description.
+> - remove #address-cells, #size-cells assigned-clocks and
+> assigned-clock-rates.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  .../bindings/mtd/fsl,vf610-nfc.yaml           | 84 +++++++++++++++++++
+>  .../devicetree/bindings/mtd/vf610-nfc.txt     | 59 -------------
+>  Makefile                                      |  2 +-
+>  3 files changed, 85 insertions(+), 60 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml b/Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml
+> new file mode 100644
+> index 0000000000000..cffa621dbb022
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/fsl,vf610-nfc.yaml
+> @@ -0,0 +1,84 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/fsl,vf610-nfc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale's NAND flash controller (NFC)
+> +
+> +description:
+> +  This variant of the Freescale NAND flash controller (NFC) can be found on
+> +  Vybrid (vf610), MPC5125, MCF54418 and Kinetis K70.
+> +
+> +maintainers:
+> +  - Frank Li <Frank.Li@nxp.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,vf610-nfc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: nfc
+> +
+> +patternProperties:
+> +  "^nand@[a-f0-9]$":
+> +    type: object
+> +    $ref: raw-nand-chip.yaml
 
-> On Thu, Apr 10, 2025 at 07:08:58AM +0200, Arend Van Spriel wrote:
->> On April 10, 2025 12:06:52 AM Johannes Berg <johannes@sipsolutions.net> wrote:
->>
->>> On Wed, 2025-04-09 at 20:43 +0200, Arend van Spriel wrote:
->>>>
->>>> This is orthogonal to the change to parity_odd() though. More specific
->>>> to the new parity_odd() you can now do following as parity_odd()
->>>> argument is u64:
->>>>
->>>> err = !parity_odd(*(u16 *)p);
->>>
->>> Can it though? Need to be careful with alignment with that, I'd think.
->>
->> My bad. You are absolutely right.
-> Then maybe we can still go with:
->
-> err = !parity_odd(p[0] ^ p[1]);
->
-> I believe this should still be a fairly safe approach?
+blank line
 
-Yes. Or whatever the name will be ;-)
+> +    properties:
+> +      compatible:
+> +        const: fsl,vf610-nfc-nandcs
 
-Regards,
-Arend
+blank line
 
+> +      reg:
+> +        const: 0
 
+blank line
+
+> +      nand-ecc-strength:
+> +        enum: [24, 32]
+
+blank line
+> +      nand-ecc-step-size:
+> +        const: 2048
+
+blank line
+
+> +    unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +allOf:
+> +  - $ref: nand-controller.yaml
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/vf610-clock.h>
+> +
+> +    nand-controller@400e0000 {
+> +        compatible = "fsl,vf610-nfc";
+> +        reg = <0x400e0000 0x4000>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&clks VF610_CLK_NFC>;
+> +        clock-names = "nfc";
+> +        assigned-clocks = <&clks VF610_CLK_NFC>;
+> +        assigned-clock-rates = <33000000>;
+> +
+> +        nand@0 {
+> +            compatible = "fsl,vf610-nfc-nandcs";
+> +            reg = <0>;
+> +            nand-bus-width = <8>;
+> +            nand-ecc-mode = "hw";
+> +            nand-ecc-strength = <32>;
+> +            nand-ecc-step-size = <2048>;
+> +            nand-on-flash-bbt;
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> deleted file mode 100644
+> index 7db5e6e609df6..0000000000000
+> --- a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+> +++ /dev/null
+> @@ -1,59 +0,0 @@
+> -Freescale's NAND flash controller (NFC)
+> -
+> -This variant of the Freescale NAND flash controller (NFC) can be found on
+> -Vybrid (vf610), MPC5125, MCF54418 and Kinetis K70.
+> -
+> -Required properties:
+> -- compatible: Should be set to "fsl,vf610-nfc".
+> -- reg: address range of the NFC.
+> -- interrupts: interrupt of the NFC.
+> -- #address-cells: shall be set to 1. Encode the nand CS.
+> -- #size-cells : shall be set to 0.
+> -- assigned-clocks: main clock from the SoC, for Vybrid <&clks VF610_CLK_NFC>;
+> -- assigned-clock-rates: The NAND bus timing is derived from this clock
+> -    rate and should not exceed maximum timing for any NAND memory chip
+> -    in a board stuffing. Typical NAND memory timings derived from this
+> -    clock are found in the SoC hardware reference manual. Furthermore,
+> -    there might be restrictions on maximum rates when using hardware ECC.
+> -
+> -- #address-cells, #size-cells : Must be present if the device has sub-nodes
+> -  representing partitions.
+> -
+> -Required children nodes:
+> -Children nodes represent the available nand chips. Currently the driver can
+> -only handle one NAND chip.
+> -
+> -Required properties:
+> -- compatible: Should be set to "fsl,vf610-nfc-cs".
+> -- nand-bus-width: see nand-controller.yaml
+> -- nand-ecc-mode: see nand-controller.yaml
+> -
+> -Required properties for hardware ECC:
+> -- nand-ecc-strength: supported strengths are 24 and 32 bit (see nand-controller.yaml)
+> -- nand-ecc-step-size: step size equals page size, currently only 2k pages are
+> -    supported
+> -- nand-on-flash-bbt: see nand-controller.yaml
+> -
+> -Example:
+> -
+> -	nfc: nand@400e0000 {
+> -		compatible = "fsl,vf610-nfc";
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -		reg = <0x400e0000 0x4000>;
+> -		interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+> -		clocks = <&clks VF610_CLK_NFC>;
+> -		clock-names = "nfc";
+> -		assigned-clocks = <&clks VF610_CLK_NFC>;
+> -		assigned-clock-rates = <33000000>;
+> -
+> -		nand@0 {
+> -			compatible = "fsl,vf610-nfc-nandcs";
+> -			reg = <0>;
+> -			nand-bus-width = <8>;
+> -			nand-ecc-mode = "hw";
+> -			nand-ecc-strength = <32>;
+> -			nand-ecc-step-size = <2048>;
+> -			nand-on-flash-bbt;
+> -		};
+> -	};
+> diff --git a/Makefile b/Makefile
+> index 38689a0c36052..b38f91696c567 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1466,7 +1466,7 @@ kselftest-merge:
+>  # Devicetree files
+>  
+>  ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
+> -dtstree := arch/$(SRCARCH)/boot/dts
+> +dtstree := arch/$(SRCARCH)/boot/dts/nxp
+
+Don't think you wanted this...
+
+>  endif
+>  
+>  ifneq ($(dtstree),)
+> -- 
+> 2.34.1
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
