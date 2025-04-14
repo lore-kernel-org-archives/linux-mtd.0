@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2479C369BA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5873BC369B9
 	for <linux-mtd@archiver.kernel.org>; Mon, 14 Apr 2025 09:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,48 +12,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vGgBODsE8cR1j7syWbXQVzeZL3ulj3lOUUvx/QQTUEs=; b=aPcgj27NICbsnW
-	E8IyuhvKvHshL9NnEZmnPa/H0tIhk0rtqJL6z0L0engHdrPQSLlSXZRRT2+U8G36XHpaULiDMxHGw
-	ypqVrWF5uDZcLNr1pWQ6wHO34R5Skpwcfs0SawE3Q4YmMzyLnB2rbbMEgkC2RBHugj8Z38U/oGwj4
-	Elb8pxiP+fNM/QYtjvmVp8D7Jz30VkO3AWWa9J6tbXcUvs1vWg253wSY5zAmc1EPDI6i8n568tE64
-	LdqpvdLV7dppC3YN7uy+FKkUgTzWrnzKHOAybe30KteSuN5qHD0lO77VKkUL4+dgLG2x7dnl93jDv
-	Hi0E9XvnRdgWIvCz++qg==;
+	List-Owner; bh=dKjd0b+Xfn+jt/pX/I6s7yMwjX8onTCE8eZsr4g3La0=; b=hk5gb7Gu1lT4Xe
+	+46k12kvDBFXWLqyzTS6HwyvQ1Ns8eB97VV62S72gJO0KeufEYGWuQx9hwNauKuNP14uP+aYO2bNZ
+	NBNCAng4RfX1lbqjyj0x9rc1xoFlqjxXog27veA/KZ+4/K+ijnkLhmWhoGV6qjFPaHQhMVCXastAG
+	PlZCegGEAaitDlsdWutdJEH9vn1vzxi8r65k7lr79Ak/BadWqbQtzuXwOxJx800YDSTd1XYf3atBF
+	Yxn6k/RWt071i0UJYGMvdUz9mUJjTuIOXtXkPY8KO/pKbjxqrry+pzfJ6b495NkcCIsL6ZL5Qe82p
+	1C/lcbGQHas1cxz/oKtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4GT8-00000001L3X-16fb;
-	Mon, 14 Apr 2025 09:51:10 +0000
+	id 1u4GT4-00000001Kzj-1y4s;
+	Mon, 14 Apr 2025 09:51:06 +0000
 Received: from mgamail.intel.com ([192.198.163.19])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4GS7-00000001Kf9-2fmr
+	id 1u4GRT-00000001KIL-0gfQ
 	for linux-mtd@lists.infradead.org;
-	Mon, 14 Apr 2025 09:50:09 +0000
+	Mon, 14 Apr 2025 09:49:28 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744624208; x=1776160208;
+  t=1744624167; x=1776160167;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jp8JwSIuJk4GFCR3LmfzYuHpnYGRU8UeJvhnzagKb4c=;
-  b=HNIg16Rof0KEy2W1TZpSTOnbZUafi4oGnYNyxoUX7xPzMumbO5YlWZrS
-   RmKRCQG+WA4qY8sSjOJc5i/nFKvD7k8CVj5MYXSX/EJIHQy+4hn9bwoB/
-   YEd9dwu28sTYrCLFBNB7ULLQVZzRBZW5eC2uzgaWSjBY9w0HiaPFSlhvt
-   gSYkl3+25DMJEDfkr0M2c0r5aZszm28podWAHr4W8HcQEhP4dX3CmJDp4
-   7mn4CC02l7NKtUhdsQiMrUrSXPfV6NWvvc5nqhmATPMSh+0YjdB2iKxhp
-   Vh0HlONDiIlYmsclpR5Kxi5mzhEPusuj300KGmZneSIL1/beZs7+3RHmT
+  bh=3/hTDi2F+AW7vI8uPGYluEvnRCjR8QEBwsqAK4AjFTA=;
+  b=ZMqfVhQ9jU0iDQPbPTpF0PX6TGRj2gKJB0m3UAaCVbfjFevMHbUkgGJH
+   1pSKUiJwy0y8T8eztElbfu7sZkpKKRhrz25wNE7CZdmlPZ88pQGACveIn
+   nJL+6pmtkThzH102dPX9WEECriOWFQeyQ0+XGq3HbOOtDcJtknPvjECR+
+   //Pq6oHpULHEWJa/WKyamFIGw6F1rDbhnZlJgdrAYzM+iZtHyfDXGWAZl
+   1i/DBfEx/BcG9Fh/D3EDMx/jhA0QDe43wONei7Oh2VHO7xMZI8Rsn8gxS
+   Lf+FSBOdUt5xh+fu0+f1S31/3VJWzU3a+i9tO8UOKXHXOShfroJcnehNl
    A==;
-X-CSE-ConnectionGUID: A0GbAQxuQD+EvIRjBF8yjg==
-X-CSE-MsgGUID: 048pUHXbQIaDG9s0lut4yQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11402"; a="45222860"
+X-CSE-ConnectionGUID: kBhjGwhFSca5UqG/mYYjvQ==
+X-CSE-MsgGUID: PUk4H7oxR1uStsQZ4TdaJw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11402"; a="45222639"
 X-IronPort-AV: E=Sophos;i="6.15,212,1739865600"; 
-   d="scan'208";a="45222860"
+   d="scan'208";a="45222639"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2025 02:50:07 -0700
-X-CSE-ConnectionGUID: RBwtBu+/TcK6uLlU31VsmA==
-X-CSE-MsgGUID: 10QK9666SoiL6KNjlrB6Lg==
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2025 02:49:27 -0700
+X-CSE-ConnectionGUID: NLgwFse2S7akAZmcQlwmDA==
+X-CSE-MsgGUID: NPRdBFV0RUKXasfWUjavZQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,212,1739865600"; 
-   d="scan'208";a="152955063"
+   d="scan'208";a="152954857"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2025 02:50:02 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2025 02:49:21 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -77,17 +77,18 @@ Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	intel-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Alexander Usyskin <alexander.usyskin@intel.com>
-Subject: [PATCH v8 09/12] drm/i915/nvm: add support for access mode
-Date: Mon, 14 Apr 2025 12:38:00 +0300
-Message-ID: <20250414093803.2133463-10-alexander.usyskin@intel.com>
+	Alexander Usyskin <alexander.usyskin@intel.com>,
+	Tomas Winkler <tomasw@gmail.com>
+Subject: [PATCH v8 02/12] mtd: add driver for intel graphics non-volatile memory device
+Date: Mon, 14 Apr 2025 12:37:53 +0300
+Message-ID: <20250414093803.2133463-3-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250414093803.2133463-1-alexander.usyskin@intel.com>
 References: <20250414093803.2133463-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250414_025007_689719_9A9E5E8B 
-X-CRM114-Status: GOOD (  12.89  )
+X-CRM114-CacheID: sfid-20250414_024927_214915_DF0F23E4 
+X-CRM114-Status: GOOD (  26.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,65 +105,254 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Check NVM access mode from GSC FW status registers
-and overwrite access status read from SPI descriptor, if needed.
+Add auxiliary driver for intel discrete graphics
+non-volatile memory device.
 
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
 Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Co-developed-by: Tomas Winkler <tomasw@gmail.com>
+Signed-off-by: Tomas Winkler <tomasw@gmail.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/gpu/drm/i915/intel_nvm.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ MAINTAINERS                        |   7 ++
+ drivers/mtd/devices/Kconfig        |  11 +++
+ drivers/mtd/devices/Makefile       |   1 +
+ drivers/mtd/devices/mtd_intel_dg.c | 138 +++++++++++++++++++++++++++++
+ include/linux/intel_dg_nvm_aux.h   |  27 ++++++
+ 5 files changed, 184 insertions(+)
+ create mode 100644 drivers/mtd/devices/mtd_intel_dg.c
+ create mode 100644 include/linux/intel_dg_nvm_aux.h
 
-diff --git a/drivers/gpu/drm/i915/intel_nvm.c b/drivers/gpu/drm/i915/intel_nvm.c
-index 75d3ebe669ff..dd3999c934a7 100644
---- a/drivers/gpu/drm/i915/intel_nvm.c
-+++ b/drivers/gpu/drm/i915/intel_nvm.c
-@@ -10,6 +10,7 @@
- #include "intel_nvm.h"
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 251b1f3d0e92..b349e6c01acf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11833,6 +11833,13 @@ L:	linux-kernel@vger.kernel.org
+ S:	Supported
+ F:	arch/x86/include/asm/intel-family.h
  
- #define GEN12_GUNIT_NVM_SIZE 0x80
-+#define HECI_FW_STATUS_2_NVM_ACCESS_MODE BIT(3)
++INTEL DISCRETE GRAPHICS NVM MTD DRIVER
++M:	Alexander Usyskin <alexander.usyskin@intel.com>
++L:	linux-mtd@lists.infradead.org
++S:	Supported
++F:	drivers/mtd/devices/mtd_intel_dg.c
++F:	include/linux/intel_dg_nvm_aux.h
++
+ INTEL DRM DISPLAY FOR XE AND I915 DRIVERS
+ M:	Jani Nikula <jani.nikula@linux.intel.com>
+ M:	Rodrigo Vivi <rodrigo.vivi@intel.com>
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index ff2f9e55ef28..59be6d3f0d32 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -183,6 +183,17 @@ config MTD_POWERNV_FLASH
+ 	  platforms from Linux. This device abstracts away the
+ 	  firmware interface for flash access.
  
- static const struct intel_dg_nvm_region regions[INTEL_DG_NVM_REGIONS] = {
- 	[0] = { .name = "DESCRIPTOR", },
-@@ -22,6 +23,28 @@ static void i915_nvm_release_dev(struct device *dev)
- {
- }
++config MTD_INTEL_DG
++	tristate "Intel Discrete Graphics non-volatile memory driver"
++	depends on AUXILIARY_BUS
++	depends on MTD
++	help
++	  This provides an MTD device to access Intel Discrete Graphics
++	  non-volatile memory.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called mtd-intel-dg.
++
+ comment "Disk-On-Chip Device Drivers"
  
-+static bool i915_nvm_writable_override(struct drm_i915_private *i915)
+ config MTD_DOCG3
+diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+index d11eb2b8b6f8..9fe4ce9cffde 100644
+--- a/drivers/mtd/devices/Makefile
++++ b/drivers/mtd/devices/Makefile
+@@ -18,6 +18,7 @@ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+ obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+ obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
+ obj-$(CONFIG_MTD_POWERNV_FLASH)	+= powernv_flash.o
++obj-$(CONFIG_MTD_INTEL_DG)	+= mtd_intel_dg.o
+ 
+ 
+ CFLAGS_docg3.o			+= -I$(src)
+diff --git a/drivers/mtd/devices/mtd_intel_dg.c b/drivers/mtd/devices/mtd_intel_dg.c
+new file mode 100644
+index 000000000000..963a88cacc6c
+--- /dev/null
++++ b/drivers/mtd/devices/mtd_intel_dg.c
+@@ -0,0 +1,138 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright(c) 2019-2025, Intel Corporation. All rights reserved.
++ */
++
++#include <linux/device.h>
++#include <linux/intel_dg_nvm_aux.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/string.h>
++#include <linux/slab.h>
++#include <linux/types.h>
++
++struct intel_dg_nvm {
++	struct kref refcnt;
++	void __iomem *base;
++	size_t size;
++	unsigned int nregions;
++	struct {
++		const char *name;
++		u8 id;
++		u64 offset;
++		u64 size;
++	} regions[] __counted_by(nregions);
++};
++
++static void intel_dg_nvm_release(struct kref *kref)
 +{
-+	resource_size_t base;
-+	bool writable_override;
++	struct intel_dg_nvm *nvm = container_of(kref, struct intel_dg_nvm, refcnt);
++	int i;
 +
-+	if (IS_DG1(i915)) {
-+		base = DG1_GSC_HECI2_BASE;
-+	} else if (IS_DG2(i915)) {
-+		base = DG2_GSC_HECI2_BASE;
-+	} else {
-+		drm_err(&i915->drm, "Unknown platform\n");
-+		return true;
-+	}
-+
-+	writable_override =
-+		!(intel_uncore_read(&i915->uncore, HECI_FWSTS(base, 2)) &
-+		  HECI_FW_STATUS_2_NVM_ACCESS_MODE);
-+	if (writable_override)
-+		drm_info(&i915->drm, "NVM access overridden by jumper\n");
-+	return writable_override;
++	pr_debug("freeing intel_dg nvm\n");
++	for (i = 0; i < nvm->nregions; i++)
++		kfree(nvm->regions[i].name);
++	kfree(nvm);
 +}
 +
- void intel_nvm_init(struct drm_i915_private *i915)
- {
- 	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
-@@ -43,7 +66,7 @@ void intel_nvm_init(struct drm_i915_private *i915)
- 
- 	nvm = i915->nvm;
- 
--	nvm->writeable_override = true;
-+	nvm->writable_override = i915_nvm_writable_override(i915);
- 	nvm->bar.parent = &pdev->resource[0];
- 	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
- 	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
++static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
++			      const struct auxiliary_device_id *aux_dev_id)
++{
++	struct intel_dg_nvm_dev *invm = auxiliary_dev_to_intel_dg_nvm_dev(aux_dev);
++	struct device *device;
++	struct intel_dg_nvm *nvm;
++	unsigned int nregions;
++	unsigned int i, n;
++	char *name;
++	int ret;
++
++	device = &aux_dev->dev;
++
++	/* count available regions */
++	for (nregions = 0, i = 0; i < INTEL_DG_NVM_REGIONS; i++) {
++		if (invm->regions[i].name)
++			nregions++;
++	}
++
++	if (!nregions) {
++		dev_err(device, "no regions defined\n");
++		return -ENODEV;
++	}
++
++	nvm = kzalloc(struct_size(nvm, regions, nregions), GFP_KERNEL);
++	if (!nvm)
++		return -ENOMEM;
++
++	kref_init(&nvm->refcnt);
++
++	nvm->nregions = nregions;
++	for (n = 0, i = 0; i < INTEL_DG_NVM_REGIONS; i++) {
++		if (!invm->regions[i].name)
++			continue;
++
++		name = kasprintf(GFP_KERNEL, "%s.%s",
++				 dev_name(&aux_dev->dev), invm->regions[i].name);
++		if (!name)
++			continue;
++		nvm->regions[n].name = name;
++		nvm->regions[n].id = i;
++		n++;
++	}
++	nvm->nregions = n; /* in case where kasprintf fail */
++
++	nvm->base = devm_ioremap_resource(device, &invm->bar);
++	if (IS_ERR(nvm->base)) {
++		dev_err(device, "mmio not mapped\n");
++		ret = PTR_ERR(nvm->base);
++		goto err;
++	}
++
++	dev_set_drvdata(&aux_dev->dev, nvm);
++
++	return 0;
++
++err:
++	kref_put(&nvm->refcnt, intel_dg_nvm_release);
++	return ret;
++}
++
++static void intel_dg_mtd_remove(struct auxiliary_device *aux_dev)
++{
++	struct intel_dg_nvm *nvm = dev_get_drvdata(&aux_dev->dev);
++
++	if (!nvm)
++		return;
++
++	dev_set_drvdata(&aux_dev->dev, NULL);
++
++	kref_put(&nvm->refcnt, intel_dg_nvm_release);
++}
++
++static const struct auxiliary_device_id intel_dg_mtd_id_table[] = {
++	{
++		.name = "i915.nvm",
++	},
++	{
++		.name = "xe.nvm",
++	},
++	{
++		/* sentinel */
++	}
++};
++MODULE_DEVICE_TABLE(auxiliary, intel_dg_mtd_id_table);
++
++static struct auxiliary_driver intel_dg_mtd_driver = {
++	.probe  = intel_dg_mtd_probe,
++	.remove = intel_dg_mtd_remove,
++	.driver = {
++		/* auxiliary_driver_register() sets .name to be the modname */
++	},
++	.id_table = intel_dg_mtd_id_table
++};
++
++module_auxiliary_driver(intel_dg_mtd_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Intel Corporation");
++MODULE_DESCRIPTION("Intel DGFX MTD driver");
+diff --git a/include/linux/intel_dg_nvm_aux.h b/include/linux/intel_dg_nvm_aux.h
+new file mode 100644
+index 000000000000..68df634c994c
+--- /dev/null
++++ b/include/linux/intel_dg_nvm_aux.h
+@@ -0,0 +1,27 @@
++/* SPDX-License-Identifier: MIT */
++/*
++ * Copyright(c) 2019-2025, Intel Corporation. All rights reserved.
++ */
++
++#ifndef __INTEL_DG_NVM_AUX_H__
++#define __INTEL_DG_NVM_AUX_H__
++
++#include <linux/auxiliary_bus.h>
++
++#define INTEL_DG_NVM_REGIONS 13
++
++struct intel_dg_nvm_region {
++	const char *name;
++};
++
++struct intel_dg_nvm_dev {
++	struct auxiliary_device aux_dev;
++	bool writable_override;
++	struct resource bar;
++	const struct intel_dg_nvm_region *regions;
++};
++
++#define auxiliary_dev_to_intel_dg_nvm_dev(auxiliary_dev) \
++	container_of(auxiliary_dev, struct intel_dg_nvm_dev, aux_dev)
++
++#endif /* __INTEL_DG_NVM_AUX_H__ */
 -- 
 2.43.0
 
