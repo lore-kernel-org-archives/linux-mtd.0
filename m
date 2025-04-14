@@ -4,66 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78342C3601E
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Apr 2025 06:32:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 422D1C369B2
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Apr 2025 07:58:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=C8+vkCFL/ERkF6APLtgiKqcF75AGgpqsM+yVtjSQmKA=; b=CUhIf1vF5VJRn9
-	Usly6teNF9vH9rPCrbWtIwwoEnkK0LmylTfrJEr1E29uGe6vV1cx7zwdmtCfICKc2ML4F6H9F7Mox
-	mF4QKw8czKbninA02Vzae2j0PeNzUtXlftb6Q0wJwBlqx6HZtEC+T3kj93Rdgu7IZh0l9Mm+idvrl
-	GFyXT5ei5CSApakc0oGuOYAwhiIevMJfL9hSxD7uHhgPlJEvaz4sbJ2huQs7BQJ3k25NOnKe+BGVI
-	7ofKjEYF2hgRiWo5Ue9Xet/l5Tvp3/u5velYNyqbbvUL5JEmCSJhql+mzNuIajqoQI2RMFwLQE3dG
-	VikjSzeur5BqZXTrrrMA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=IIpnlORSpm9hTfR3gpmxmLN7MnZI49zwP2+RC7K7JDA=; b=4SLH7wIkCPsi1f
+	x1XizmVTHIwVAugUweC2bAbV4GSmBozB+7Ppup+SUVIeloWRoOrKFmAzdw2g7MNITxvfkPzh0G2fj
+	hkBpSbW32mJSQr0VYoDvBQmQXtHLZwQrQvRcANzds+jqUhghPXY5eBknQdybgbN+8Cqb2m3oJIx36
+	uhFrR/u7X63uMgDrJjd/3mtEG0/jhnPogNpd5fqPdwshMhWxTUP3KJIokwHyx7ci51nyBvCBYSdJL
+	GWyPZG/FSSpy1lJwZZBgAlxt0pW4KDY3dyo8W7vplw4F4WJASGGDRroo0WqYl6SNqDV4ar3vruTcu
+	H2WrQTou3vd20vRKKqug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4DMf-00000000ntn-2wSX;
-	Mon, 14 Apr 2025 06:32:17 +0000
-Received: from smtp84.cstnet.cn ([159.226.251.84] helo=cstnet.cn)
+	id 1u4EiR-000000010iZ-3gRY;
+	Mon, 14 Apr 2025 07:58:51 +0000
+Received: from mail.commetro.pl ([217.61.16.142])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4DLh-00000000nl7-1MOm
+	id 1u4EiP-000000010iE-0kBJ
 	for linux-mtd@lists.infradead.org;
-	Mon, 14 Apr 2025 06:31:19 +0000
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-05 (Coremail) with SMTP id zQCowAAnYgqqq_xnDYjlCA--.14406S2;
-	Mon, 14 Apr 2025 14:31:08 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>
-Subject: [PATCH v3 RESEND] mtd: bcm47xxnflash: Add error handling for bcm47xxnflash_ops_bcm4706_ctl_cmd()
-Date: Mon, 14 Apr 2025 14:30:40 +0800
-Message-ID: <20250414063041.2060-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	Mon, 14 Apr 2025 07:58:50 +0000
+Received: by mail.commetro.pl (Postfix, from userid 1002)
+	id 630E382B43; Mon, 14 Apr 2025 09:56:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=commetro.pl; s=mail;
+	t=1744617396; bh=COht1CALZmZz8MRkow5xVDQUyVzx29Nu6ozA/Y0jgb4=;
+	h=Date:From:To:Subject:From;
+	b=uM2mD8bj/WTv7snGz2+fE9g+Ciy7+mM4MDIJ090opudV+wUCB44hRKvvWIUMOICJe
+	 naCVjPX/IxSn5NvBNz2GrxDxLdG/iV6zscOF5woMnA8qHMRETQnFSESgW2DM0x9cSD
+	 qBsfNzD2tdKmgqOMO+n7lI9xkG1msr5M4iHJIFVsDZmbL8ziY6sywqtawkEjEyiWoS
+	 QalejiXamAPTmVXrYZtkO24RtGbp65IWbvrQNZrHktYb2z85YTXHfH/0+/7Ndmp6Ja
+	 W0GbsKKBQfMYu3WG3c/8MkT4NPbwfAemJVgUfX9CVgV5g0KEnKimlqQBxsn2B7aoq0
+	 1tWBB4pHWj2VQ==
+Received: by mail.commetro.pl for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2025 07:55:54 GMT
+Message-ID: <20250414084500-0.1.1z.n3aw.0.97yaa73rcv@commetro.pl>
+Date: Mon, 14 Apr 2025 07:55:54 GMT
+From: =?UTF-8?Q?"Jaros=C5=82aw_Kownacki"?= <jaroslaw.kownacki@commetro.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_ofert=C4=99?=
+X-Mailer: mail.commetro.pl
 MIME-Version: 1.0
-X-CM-TRANSID: zQCowAAnYgqqq_xnDYjlCA--.14406S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw18WF17uw47XFyUAr1UZFb_yoW8WFWUpr
-	47Xa45t3Z5X3WDtFyUWF18KF1Yv348KF4jg3yvva48ursavFWxGrZ3Ga4jq3y8Gw18Jw17
-	XF4F93WxWr9FkrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-	67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-	UI43ZEXa7VUUmL9UUUUUU==
-X-Originating-IP: [124.16.141.245]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCRAMA2f8nMA0BgAAsj
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250413_233117_788252_EA8B5876 
-X-CRM114-Status: GOOD (  11.26  )
+X-CRM114-CacheID: sfid-20250414_005849_338551_180E6587 
+X-CRM114-Status: UNSURE (   0.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,54 +61,15 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The function bcm47xxnflash_ops_bcm4706_cmd_ctrl() calls the function
-bcm47xxnflash_ops_bcm4706_ctl_cmd(), but does not check its return value.
-A proper implementation can be found in bcm47xxnflash_ops_bcm4706_write().
-
-Add error log to the bcm47xxnflash_ops_bcm4706_ctl_cmd() via pr_err()
-to prevent silent failure. The error Log funciton 'dev_err' is unsuitable
-in this situation for it is hard to get device pointer.
-
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
-v3: Improve code for logging error.
-v2: Fix spelling problem.
-
- drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index 6487dfc64258..e532c3535b16 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -171,6 +171,7 @@ static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
- {
- 	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
- 	u32 code = 0;
-+	int rc;
- 
- 	if (cmd == NAND_CMD_NONE)
- 		return;
-@@ -182,7 +183,9 @@ static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
- 	if (cmd != NAND_CMD_RESET)
- 		code |= NCTL_CSA;
- 
--	bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
-+	rc = bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
-+	if (rc)
-+		pr_err("ctl_cmd didn't work with error %d\n", rc);
- }
- 
- /* Default nand_select_chip calls cmd_ctrl, which is not used in BCM4706 */
--- 
-2.42.0.windows.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IHBvdHJ6ZWJ1asSFIFBhxYRzdHdvIGFrdHVhbG5pZSBub3d5Y2gg
+a2xpZW50w7N3ID8KClNrdXRlY3puaWUgcG9tYWdhbXkgcm96cG9jenluYcSHIHJvem1vd3kgaGFu
+ZGxvd2UgeiBrbGllbnRhbWkgemFpbnRlcmVzb3dhbnltaSBQYcWEc3R3YSBvZmVydMSFLgoKWmFw
+cmFzemFtIGRvIGtvbnRha3R1IHp3cm90bmVnby4KCgpQb3pkcmF3aWFtIHNlcmRlY3puaWUKSmFy
+b3PFgmF3IEtvd25hY2tpCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
