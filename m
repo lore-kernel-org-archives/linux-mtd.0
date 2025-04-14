@@ -4,72 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2FC3C369B2
-	for <linux-mtd@archiver.kernel.org>; Sat, 12 Apr 2025 17:09:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78342C3601E
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Apr 2025 06:32:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
-	In-Reply-To:To:Cc:From:MIME-Version:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=4mXXXMUj2KDdHZMJF29kRUz94oPYKjT50ozGTlFyT48=; b=plxp0JRhBIz5rt93oJo95CVSzQ
-	/YwG7of2B6E6SltSqIe6QI6fzWcOLnINlQwL452e3derGldZi+4A+DkmlyaskOBbGLNsEI6bIrUGT
-	cXvFqHzbJAM7xV8dEBZg9tH025j6j1oiGhBpkpp3KKDiH2CaI8wV/r9BronM6m7VAKRpaQqNQMqr9
-	laB6oDMON939yKTWesgJtJWAaWNLr8j3y/rO1BuUTXlZWcWfxu7ry6mlg8k5RX/9VTGVhm2lFpzGR
-	yEp07nw+eEZx1z3MxeVKxCiMlOxf4Oo1y98qEmWr8+rJ4JlRouEXxce3PygEziijpQDrivFLT+nIQ
-	lpBgwCFQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=C8+vkCFL/ERkF6APLtgiKqcF75AGgpqsM+yVtjSQmKA=; b=CUhIf1vF5VJRn9
+	Usly6teNF9vH9rPCrbWtIwwoEnkK0LmylTfrJEr1E29uGe6vV1cx7zwdmtCfICKc2ML4F6H9F7Mox
+	mF4QKw8czKbninA02Vzae2j0PeNzUtXlftb6Q0wJwBlqx6HZtEC+T3kj93Rdgu7IZh0l9Mm+idvrl
+	GFyXT5ei5CSApakc0oGuOYAwhiIevMJfL9hSxD7uHhgPlJEvaz4sbJ2huQs7BQJ3k25NOnKe+BGVI
+	7ofKjEYF2hgRiWo5Ue9Xet/l5Tvp3/u5velYNyqbbvUL5JEmCSJhql+mzNuIajqoQI2RMFwLQE3dG
+	VikjSzeur5BqZXTrrrMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u3eMH-0000000GBNk-1qlL;
-	Sat, 12 Apr 2025 17:09:33 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1u4DMf-00000000ntn-2wSX;
+	Mon, 14 Apr 2025 06:32:17 +0000
+Received: from smtp84.cstnet.cn ([159.226.251.84] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u3eME-0000000GBNJ-1YuS
+	id 1u4DLh-00000000nl7-1MOm
 	for linux-mtd@lists.infradead.org;
-	Sat, 12 Apr 2025 17:09:31 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6C56B4A44B;
-	Sat, 12 Apr 2025 17:09:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08093C4CEE5;
-	Sat, 12 Apr 2025 17:09:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744477767;
-	bh=3ld2o6Mj/F94jH7yDDeMdOra5lZxxX/tPTJX7Yh+cYE=;
-	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
-	b=IWRVIa6sQUgho1AjQlyyF1dR2vufCEmTq5gfMz6DO89U8OuHsnIbwwUFu1fxxmr6+
-	 BLz2rnOjdLDRYzOxg7nfywH0THh5hUeHHf1E/ZwEUFt/2pgaUo/c2Ng5kYhiKKNXFJ
-	 Al+SEkYxWCrzi7MUCzebwi0KcDKaAUClL3IZEI34S7THE1Cx7GAUT8OtdTKm4x4xmu
-	 wf/ddAueD5ctLxkxcb7AnVLoDyZbdiaU5BnTBRt2sGw+maqs/GpQOPjbsBw9I6gBpZ
-	 q29EMBZGXGGSU4CbJYJ+x5ELE8ADYaX37sNResOcYTYCLnhx4IbIUclRItuVsF4wNR
-	 x8LOU/42YAXxA==
-Date: Sat, 12 Apr 2025 12:09:26 -0500
+	Mon, 14 Apr 2025 06:31:19 +0000
+Received: from localhost.localdomain (unknown [124.16.141.245])
+	by APP-05 (Coremail) with SMTP id zQCowAAnYgqqq_xnDYjlCA--.14406S2;
+	Mon, 14 Apr 2025 14:31:08 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Wentao Liang <vulab@iscas.ac.cn>
+Subject: [PATCH v3 RESEND] mtd: bcm47xxnflash: Add error handling for bcm47xxnflash_ops_bcm4706_ctl_cmd()
+Date: Mon, 14 Apr 2025 14:30:40 +0800
+Message-ID: <20250414063041.2060-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.42.0.windows.2
 MIME-Version: 1.0
-From: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: Maxime Ripard <mripard@kernel.org>, Crystal Wood <oss@buserror.net>, 
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- Krzysztof Kozlowski <krzk@kernel.org>, 
- Thomas Zimmermann <tzimmermann@suse.de>, Conor Dooley <conor+dt@kernel.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, Frank Li <Frank.Li@nxp.com>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, linux-mtd@lists.infradead.org, 
- Naveen N Rao <naveen@kernel.org>, devicetree@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, Richard Weinberger <richard@nod.at>, 
- Nicholas Piggin <npiggin@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, David Airlie <airlied@gmail.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-To: =?utf-8?q?J=2E_Neusch=C3=A4fer?= <j.ne@posteo.net>
-In-Reply-To: <20250412-ppcyaml-elbc-v5-4-03f0e577139f@posteo.net>
-References: <20250412-ppcyaml-elbc-v5-0-03f0e577139f@posteo.net>
- <20250412-ppcyaml-elbc-v5-4-03f0e577139f@posteo.net>
-Message-Id: <174447776475.1354537.103427368501741372.robh@kernel.org>
-Subject: Re: [PATCH v5 4/4] dt-bindings: memory-controllers: Convert
- fsl,elbc to YAML
+X-CM-TRANSID: zQCowAAnYgqqq_xnDYjlCA--.14406S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw18WF17uw47XFyUAr1UZFb_yoW8WFWUpr
+	47Xa45t3Z5X3WDtFyUWF18KF1Yv348KF4jg3yvva48ursavFWxGrZ3Ga4jq3y8Gw18Jw17
+	XF4F93WxWr9FkrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
+	JF0_Jw1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+	UI43ZEXa7VUUmL9UUUUUU==
+X-Originating-IP: [124.16.141.245]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCRAMA2f8nMA0BgAAsj
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250412_100930_451740_7FF32D00 
-X-CRM114-Status: GOOD (  19.99  )
+X-CRM114-CacheID: sfid-20250413_233117_788252_EA8B5876 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,82 +75,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ck9uIFNhdCwgMTIgQXByIDIwMjUgMTU6MTY6MDUgKzAyMDAsIEouIE5ldXNjaMOkZmVyIHdyb3Rl
-Ogo+IENvbnZlcnQgdGhlIEZyZWVzY2FsZSBsb2NhbGJ1cyBjb250cm9sbGVyIGJpbmRpbmdzIGZy
-b20gdGV4dCBmb3JtIHRvCj4gWUFNTC4gQ29tcGFyZWQgdG8gdGhlIC50eHQgdmVyc2lvbiwgdGhl
-IFlBTUwgYmluZGluZyBjb250YWlucyBhIG5ldwo+IHVzYWdlIGV4YW1wbGUgd2l0aCBGQ00gTkFO
-RCBmbGFzaCwgYW5kIGEgZnVsbCBsaXN0IG9mIGNvbXBhdGlibGUgc3RyaW5ncwo+IGJhc2VkIG9u
-IGN1cnJlbnQgdXNhZ2UgaW4gYXJjaC9wb3dlcnBjL2Jvb3QvZHRzLy4KPiAKPiBOb3RlIHRoYXQg
-dGhlIGJvdGggdGhlIGNvbXBhdGlibGUgc3RyaW5ncyBhbmQgdGhlIHVuaXQgYWRkcmVzcyBmb3Jt
-YXQKPiBhcmUga2VwdCBhcy1pcywgZm9yIGNvbXBhdGliaWxpdHkgd2l0aCBleGlzdGluZyBrZXJu
-ZWxzIGFuZCBkZXZpY2UKPiB0cmVlcywgYXMgd2VsbCBhcyB1bml0IGFkZHJlc3MgcmVhZGFiaWxp
-dHkuIFRoaXMgcmVzdWx0cyBpbiBkdHMKPiB2YWxpZGF0aW9uIHdhcm5pbmdzOgo+IAo+ICAgV2Fy
-bmluZyAoc2ltcGxlX2J1c19yZWcpOiAvZXhhbXBsZS0wL2xvY2FsYnVzQGYwMDEwMTAwL2JvYXJk
-LWNvbnRyb2xAMSwwOgo+ICAgc2ltcGxlLWJ1cyB1bml0IGFkZHJlc3MgZm9ybWF0IGVycm9yLCBl
-eHBlY3RlZCAiMTAwMDAwMDAwIgo+IAo+IFNpZ25lZC1vZmYtYnk6IEouIE5ldXNjaMOkZmVyIDxq
-Lm5lQHBvc3Rlby5uZXQ+Cj4gLS0tCj4gCj4gVjU6Cj4gLSBmaXggcmVmZXJlbmNlIHRvIGZzbC9s
-YmMudHh0IGluCj4gICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9z
-c2QxMjg5ZmIudHh0Cj4gCj4gVjQ6Cj4gLSBubyBjaGFuZ2VzCj4gCj4gVjM6Cj4gLSBtb3ZlIHRo
-aXMgcGF0Y2ggYWZ0ZXIgdGhlIEdQQ00vRkNNIHBhdGNoZXMgdG8gZHRzY2hlbWEvZHRjIHdhcm5p
-bmdzCj4gICBkdWUgdG8gbWlzc2luZyBiaW5kaW5ncyBmb3IgZnNsLGVsYmMtZ3BjbS11aW8gYW5k
-IGZzbCxlbGJjLWZjbS1uYW5kCj4gLSBhZGQgInNpbXBsZS1idXMiIGFnYWluLCBmb3IgY29tcGF0
-aWJpbGl0eSB3aXRoIGV4aXN0aW5nIERUcy9kcml2ZXJzCj4gICBiYXNlZCBvbiBkaXNjdXNzaW9u
-IHdpdGggQ3J5c3RhbCBXb29kIGFuZCBSb2IgSGVycmluZwo+IC0gZml4IGZzbCxwcTItbG9jYWxi
-dXMgY29tcGF0aWJsZSBwcm9wZXJ0aWVzIGJhc2VkIG9uIG1nY29nZS5kdHMgLyBlcDgyNDhlLmR0
-cwo+ICAgKHdhcyBtaXNzaW5nICJzaW1wbGUtYnVzIikKPiAtIGFkZCBib2FyZC1jb250cm9sIChi
-Y3NyKSBleGFtcGxlIGFnYWluLCBub3cgdXNpbmcgdGhlIGNvbXBhdGlibGUKPiAgIHN0cmluZyBs
-aXN0ZWQgaW4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2JvYXJkL2ZzbCxiY3Ny
-LnlhbWwKPiAtIHJlbW92ZSBpbnRlcnJ1cHQtcGFyZW50IHByb3BlcnR5IGZyb20gZXhhbXBsZQo+
-IC0gcmV3b3JrIHRoZSBjb21taXQgbWVzc2FnZQo+IAo+IFYyOgo+IC0gZml4IG9yZGVyIG9mIHBy
-b3BlcnRpZXMgaW4gZXhhbXBsZXMsIGFjY29yZGluZyB0byBkdHMgY29kaW5nIHN0eWxlCj4gLSBt
-b3ZlIHRvIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxl
-cnMKPiAtIGNsYXJpZnkgdGhlIGNvbW1pdCBtZXNzYWdlIGEgdGlueSBiaXQKPiAtIHJlbW92ZSB1
-bm5lY2Vzc2FyeSBtdWx0aWxpbmUgbWFya2VycyAofCkKPiAtIGRlZmluZSBhZGRyZXNzIGZvcm1h
-dCBpbiBwYXR0ZXJuUHJvcGVydGllcwo+IC0gdHJpbSBzdWJqZWN0IGxpbmUgKHJlbW92ZSAiYmlu
-ZGluZyIpCj4gLSByZW1vdmUgdXNlIG9mICJzaW1wbGUtYnVzIiwgYmVjYXVzZSBpdCdzIHRlY2hu
-aWNhbGx5IGluY29ycmVjdAo+IC0tLQo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5
-L3NzZDEyODlmYi50eHQgICAgICB8ICAgMiArLQo+ICAuLi4vYmluZGluZ3MvbWVtb3J5LWNvbnRy
-b2xsZXJzL2ZzbCxlbGJjLnlhbWwgICAgICB8IDE1OCArKysrKysrKysrKysrKysrKysrKysKPiAg
-Li4uL2RldmljZXRyZWUvYmluZGluZ3MvcG93ZXJwYy9mc2wvbGJjLnR4dCAgICAgICAgfCAgNDMg
-LS0tLS0tCj4gIDMgZmlsZXMgY2hhbmdlZCwgMTU5IGluc2VydGlvbnMoKyksIDQ0IGRlbGV0aW9u
-cygtKQo+IAoKTXkgYm90IGZvdW5kIGVycm9ycyBydW5uaW5nICdtYWtlIGR0X2JpbmRpbmdfY2hl
-Y2snIG9uIHlvdXIgcGF0Y2g6Cgp5YW1sbGludCB3YXJuaW5ncy9lcnJvcnM6CgpkdHNjaGVtYS9k
-dGMgd2FybmluZ3MvZXJyb3JzOgpEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVt
-b3J5LWNvbnRyb2xsZXJzL2ZzbCxlbGJjLmV4YW1wbGUuZHRzOjI5LjIzLTM0LjE1OiBXYXJuaW5n
-IChzaW1wbGVfYnVzX3JlZyk6IC9leGFtcGxlLTAvbG9jYWxidXNAZjAwMTAxMDAvZmxhc2hAMCww
-OiBzaW1wbGUtYnVzIHVuaXQgYWRkcmVzcyBmb3JtYXQgZXJyb3IsIGV4cGVjdGVkICIwIgpEb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL2ZzbCxlbGJj
-LmV4YW1wbGUuZHRzOjM2LjMxLTM5LjE1OiBXYXJuaW5nIChzaW1wbGVfYnVzX3JlZyk6IC9leGFt
-cGxlLTAvbG9jYWxidXNAZjAwMTAxMDAvYm9hcmQtY29udHJvbEAxLDA6IHNpbXBsZS1idXMgdW5p
-dCBhZGRyZXNzIGZvcm1hdCBlcnJvciwgZXhwZWN0ZWQgIjEwMDAwMDAwMCIKRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVycy9mc2wsZWxiYy5leGFtcGxl
-LmR0czo0MS4zMS00Ni4xNTogV2FybmluZyAoc2ltcGxlX2J1c19yZWcpOiAvZXhhbXBsZS0wL2xv
-Y2FsYnVzQGYwMDEwMTAwL3NpbXBsZS1wZXJpcGhAMiwwOiBzaW1wbGUtYnVzIHVuaXQgYWRkcmVz
-cyBmb3JtYXQgZXJyb3IsIGV4cGVjdGVkICIyMDAwMDAwMDAiCkRvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvZnNsLGVsYmMuZXhhbXBsZS5kdHM6ODIu
-MjMtODkuMTU6IFdhcm5pbmcgKHNpbXBsZV9idXNfcmVnKTogL2V4YW1wbGUtMS9sb2NhbGJ1c0Bl
-MDAwNTAwMC9mbGFzaEAwLDA6IHNpbXBsZS1idXMgdW5pdCBhZGRyZXNzIGZvcm1hdCBlcnJvciwg
-ZXhwZWN0ZWQgIjAiCkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29u
-dHJvbGxlcnMvZnNsLGVsYmMuZXhhbXBsZS5kdHM6OTEuMjItOTcuMTU6IFdhcm5pbmcgKHNpbXBs
-ZV9idXNfcmVnKTogL2V4YW1wbGUtMS9sb2NhbGJ1c0BlMDAwNTAwMC9uYW5kQDEsMDogc2ltcGxl
-LWJ1cyB1bml0IGFkZHJlc3MgZm9ybWF0IGVycm9yLCBleHBlY3RlZCAiMTAwMDAwMDAwIgoKZG9j
-IHJlZmVyZW5jZSBlcnJvcnMgKG1ha2UgcmVmY2hlY2tkb2NzKToKClNlZSBodHRwczovL3BhdGNo
-d29yay5vemxhYnMub3JnL3Byb2plY3QvZGV2aWNldHJlZS1iaW5kaW5ncy9wYXRjaC8yMDI1MDQx
-Mi1wcGN5YW1sLWVsYmMtdjUtNC0wM2YwZTU3NzEzOWZAcG9zdGVvLm5ldAoKVGhlIGJhc2UgZm9y
-IHRoZSBzZXJpZXMgaXMgZ2VuZXJhbGx5IHRoZSBsYXRlc3QgcmMxLiBBIGRpZmZlcmVudCBkZXBl
-bmRlbmN5CnNob3VsZCBiZSBub3RlZCBpbiAqdGhpcyogcGF0Y2guCgpJZiB5b3UgYWxyZWFkeSBy
-YW4gJ21ha2UgZHRfYmluZGluZ19jaGVjaycgYW5kIGRpZG4ndCBzZWUgdGhlIGFib3ZlCmVycm9y
-KHMpLCB0aGVuIG1ha2Ugc3VyZSAneWFtbGxpbnQnIGlzIGluc3RhbGxlZCBhbmQgZHQtc2NoZW1h
-IGlzIHVwIHRvCmRhdGU6CgpwaXAzIGluc3RhbGwgZHRzY2hlbWEgLS11cGdyYWRlCgpQbGVhc2Ug
-Y2hlY2sgYW5kIHJlLXN1Ym1pdCBhZnRlciBydW5uaW5nIHRoZSBhYm92ZSBjb21tYW5kIHlvdXJz
-ZWxmLiBOb3RlCnRoYXQgRFRfU0NIRU1BX0ZJTEVTIGNhbiBiZSBzZXQgdG8geW91ciBzY2hlbWEg
-ZmlsZSB0byBzcGVlZCB1cCBjaGVja2luZwp5b3VyIHNjaGVtYS4gSG93ZXZlciwgaXQgbXVzdCBi
-ZSB1bnNldCB0byB0ZXN0IGFsbCBleGFtcGxlcyB3aXRoIHlvdXIgc2NoZW1hLgoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+The function bcm47xxnflash_ops_bcm4706_cmd_ctrl() calls the function
+bcm47xxnflash_ops_bcm4706_ctl_cmd(), but does not check its return value.
+A proper implementation can be found in bcm47xxnflash_ops_bcm4706_write().
+
+Add error log to the bcm47xxnflash_ops_bcm4706_ctl_cmd() via pr_err()
+to prevent silent failure. The error Log funciton 'dev_err' is unsuitable
+in this situation for it is hard to get device pointer.
+
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+---
+v3: Improve code for logging error.
+v2: Fix spelling problem.
+
+ drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+index 6487dfc64258..e532c3535b16 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+@@ -171,6 +171,7 @@ static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
+ {
+ 	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+ 	u32 code = 0;
++	int rc;
+ 
+ 	if (cmd == NAND_CMD_NONE)
+ 		return;
+@@ -182,7 +183,9 @@ static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
+ 	if (cmd != NAND_CMD_RESET)
+ 		code |= NCTL_CSA;
+ 
+-	bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
++	rc = bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
++	if (rc)
++		pr_err("ctl_cmd didn't work with error %d\n", rc);
+ }
+ 
+ /* Default nand_select_chip calls cmd_ctrl, which is not used in BCM4706 */
+-- 
+2.42.0.windows.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
