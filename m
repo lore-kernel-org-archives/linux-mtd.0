@@ -4,113 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FAA5C369B4
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Apr 2025 10:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D35F2C369AB
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Apr 2025 16:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hOasRTIY+HVhR2rr5GfXRkItthjYNCIlXxRscnIlh3Q=; b=IngM6COLfkUS44
-	93XY0GUjHf/kiy/iku/oLx4nBMSn1RdKeoSUMdW/YQc5Vca1W6nGcFkTuBzkCTHEj3v1vY98vw0kU
-	PoS29eHmXQDS3Ta3S666vmpRiw/ukRO+y5PondhsOr8GNw53vSTqJHqD9Aoft/j5OdkwC0foHmJuP
-	qGI7Sio8pcqtLhL8Ttk/hqdT2fqdv9DRfs2lrRDO5Eg1bC7A/CvW8foWrfVCKpz7j8WNukSeDXHdw
-	OmFxYJgnJ5wgpiqxpu9EUgyCJjbSMMImOTjLUtaBb9CZj9eu/KSqgzS34drF144Ki07cimXJaEUMF
-	kHT9oVh/aObcdTaToTJw==;
+	List-Owner; bh=XoacoZVRyfE/q+bWi7QXy5bz8achpv9SZe0vAvupc3g=; b=UIUP/0RCtQkNji
+	jcuKMw7omE153uLPLDfGfSQSriujpC1XfzeH9ksZkxlgRqk3dTg/EOCkQMQzTLi+SXPzy3Fac+M0t
+	ntdwJzqodFRepYKjZ7xy2HslkYJ3eSI4rPmM4WsQsQP4k+cJELsuhEbFURdpS5Kg5y0LIPemeL7zh
+	P+3X7Aac2q3VyeqKQAjc818ahasSUCK6Krr2B9yDTE2VvZsDc3WoYTS+oRqdh0c3sP02cB92tjtOg
+	OMvHyF1voHPocR75v+GCakN3YT6xHomPrsIuOYy8XXdWIfNj48vMgleGdk+c4vk2GkXzOXZycOUEe
+	4y7tP6Gbt2coYAa4O5Ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4dEU-00000005HIM-3m3K;
-	Tue, 15 Apr 2025 10:09:34 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1u4jJD-00000006R76-1Mp6;
+	Tue, 15 Apr 2025 16:38:51 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4czM-00000005DiX-0oid
-	for linux-mtd@lists.infradead.org;
-	Tue, 15 Apr 2025 09:53:57 +0000
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53F8tdw5012914
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 09:53:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	qxeuE2eVL5Eoo29xjyLgJecbYqVi8+nNdiHJPQLgII4=; b=o7Rsj/zAPhupkj9v
-	IGCH94/ff7yFpwjI2gpAfE8QGpx3kwHZDwAS5MXs/SXf0DpFAxaTjzM0oLBVgMq2
-	ptXqv4ku56/vrPfk0xRA1LH/NSdEA7Un30R1sBs1dHdLBAcIPE2zP9faNY+7zvG7
-	lFOsezFz5NG7J6fXs9lrLhtTpDRcArRxfPfekByzCw9k1md2DlkA0DL76H2E7Qhz
-	YAkZLxDWldSx0HdYEYp9GP+upHc14UTKK+DpX5BrEHqddo4NpTJckqO938Dv4CSl
-	gB0ussQi7u3O9XF6NJJpEytyWt4U42J/btVyx3tXhGY1I/EmdnZVDmIInlqa3uS9
-	G/MLCw==
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com [209.85.219.71])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 45ydhq7tfr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 09:53:55 +0000 (GMT)
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6e906c7cd2bso11640506d6.3
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 02:53:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744710834; x=1745315634;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qxeuE2eVL5Eoo29xjyLgJecbYqVi8+nNdiHJPQLgII4=;
-        b=VHNF4IOuQ6Z2MNVDcGHGRoD+l83e4y36DbCo39W1ZE1ozhgwKTBlp+QrAlYdgYTKIb
-         3IpNC9vzcGW2fQbTWs3MRvqCVTfPN9BrBL+hdaJ3uO6iTAV4gvVjXscIUI9PkLvbrZBg
-         AzXdySFPuuwI4/ipg8ouhl0q2rTeysyTTNW7ob1xb4/q8S9vc+JUNbVgCgl2kDYn7c9t
-         rGSzhZUU7tL/TTmExw5EOEhX83osf9V7w5MiThlKkzA6xlzdcted2ol/57IV8IvNQXoL
-         kkGU+QQrBmFX+1kpDPvuTaJUq6H+t4b1fxZ1aENJ7wjBnjhQjn/ZYJdqu7PkZ00obSsr
-         nkRw==
-X-Forwarded-Encrypted: i=1; AJvYcCWOUrA6dY1pSTpBoK4B9mPz1Fw8a767AF485BwkUZnGyMxCUaVOxWhEOxZEXQ04hOC6G80EXfkBCsQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzLF8aam4y9I7i+7YmuFs9h5htFZmB9oiVzVd1mfGIlAnp+ZJWM
-	y0w+EwI8UPKIfzS9VKmDePptktVtG+nzSOvQMziOuy629cLxz6pzGGV5Vd02/vEiljHP7YhmBx2
-	SiZk0IW1xZL+77SdR0lpT5a1loaAiRIg5XhCKv+uI05bj0+E7Z7DOphv1k6KUeSMj
-X-Gm-Gg: ASbGncuJ3QLiY6zURD27zxz00/+Z8s3hEL8blStOqwEJDa4damRNyrpxhgMgn0BT35s
-	K+LN9W/3ND4r4GiW7AHciLLFCcsDfz/uMTkrEYREdnVz3i1uKwCNbqMk8ifJoJqt2f0DluzhR4F
-	BtmKnPEucMQgrLBk9CVEcpgGuIC2eC/DeyIDsvciwHWQf6k3FKJ5VUsd46xELBA6kmh1+E+aXAi
-	ByPOnDgrvn0nCy596k6jQXbV03XNvR4XjZbV1bXbXaF2k4ANqJ/YTqL6gy+bJk8LwcsKvBEsZVN
-	d8dNDHbXkQKtOgcQaokSQS5VRjtMTYLjxfjhU78E5TsQ0euH12rEMZUNqrOKjHUHc6A=
-X-Received: by 2002:a05:6214:20cc:b0:6e8:f019:af59 with SMTP id 6a1803df08f44-6f230cb9754mr96287756d6.1.1744710834363;
-        Tue, 15 Apr 2025 02:53:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGgaJX2J+7JlHuueBHmISXlo1aK9U92F4gsipjLZi1j7TSnpCxzm7LQz4Rmzpb9J06CEF1Qug==
-X-Received: by 2002:a05:6214:20cc:b0:6e8:f019:af59 with SMTP id 6a1803df08f44-6f230cb9754mr96287716d6.1.1744710834041;
-        Tue, 15 Apr 2025 02:53:54 -0700 (PDT)
-Received: from [192.168.65.246] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acaa1bb3120sm1049550566b.1.2025.04.15.02.53.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Apr 2025 02:53:53 -0700 (PDT)
-Message-ID: <4c57a98f-045f-4487-8354-807b647b2040@oss.qualcomm.com>
-Date: Tue, 15 Apr 2025 11:53:51 +0200
+	id 1u4iv3-00000006NNu-25XM;
+	Tue, 15 Apr 2025 16:13:54 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id A2DFDA49F7F;
+	Tue, 15 Apr 2025 16:08:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 382BAC4CEEB;
+	Tue, 15 Apr 2025 16:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744733631;
+	bh=1jFrBy0lzqpyUKpmfkbxvJvV2QeeBiFeu/gLSlD6DXw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Iwf/xepfn8XdaQPkl3OXO2pziEP0MlRo4kLwGSJsiPog0Lg5Q1zc16D6DMGJwuihR
+	 wFxPHaCtVDUNGtTLwsWTrCyK5ML3+2kHLLu+hLOI9049UI/1wvm6ANh7f1RkqDDqZE
+	 sfK6i25rKsc+rZPzOJjQiMNZCqS9qAsXy/ekUZsqbaFi5M/YNucILhk7ZNjcpj8xhR
+	 cTpu1IqsMZdWOGrrLhNg9KBwOnjf8is+U1vUkxZI9HftXGggDq4mt6mtnKRdxCOmja
+	 JYxKuYVHbxzBtX6yyWjjBDmrCV6qBEG+qekX20hC4nqmB77hh3oQmv7Pech6xvsaet
+	 8MiIM487OnzWg==
+Date: Tue, 15 Apr 2025 17:13:37 +0100
+From: Simon Horman <horms@kernel.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org, rfoss@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+	dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, yury.norov@gmail.com,
+	akpm@linux-foundation.org, jdelvare@suse.com, linux@roeck-us.net,
+	alexandre.belloni@bootlin.com, pgaj@cadence.com, hpa@zytor.com,
+	alistair@popple.id.au, linux@rasmusvillemoes.dk,
+	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+	jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
+	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
+	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH v4 09/13] wifi: brcm80211: Replace open-coded parity
+ calculation with parity_odd()
+Message-ID: <20250415161337.GZ395307@horms.kernel.org>
+References: <20250409154356.423512-1-visitorckw@gmail.com>
+ <20250409154356.423512-10-visitorckw@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/5] arm64: dts: qcom: sdx75: Add QPIC NAND support
-To: Kaushal Kumar <quic_kaushalk@quicinc.com>, vkoul@kernel.org,
-        robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-        manivannan.sadhasivam@linaro.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, andersson@kernel.org,
-        konradybcio@kernel.org, agross@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-References: <20250415072756.20046-1-quic_kaushalk@quicinc.com>
- <20250415072756.20046-5-quic_kaushalk@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20250415072756.20046-5-quic_kaushalk@quicinc.com>
-X-Proofpoint-ORIG-GUID: IIgNiV4DeYXhv16-TPW_ZD6D_wsVnKn0
-X-Authority-Analysis: v=2.4 cv=C7DpyRP+ c=1 sm=1 tr=0 ts=67fe2cb3 cx=c_pps a=UgVkIMxJMSkC9lv97toC5g==:117 a=FpWmc02/iXfjRdCD7H54yg==:17 a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=COk6AnOGAAAA:8 a=EUspDBNiAAAA:8 a=HfTDXfZYWx141HAPJAYA:9 a=QEXdDO2ut3YA:10
- a=-9l76b1btMQA:10 a=1HOtulTD9v-eNWfpl4qZ:22 a=TjNXssC_j7lpFel5tvFf:22
-X-Proofpoint-GUID: IIgNiV4DeYXhv16-TPW_ZD6D_wsVnKn0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-15_04,2025-04-10_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=807
- priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 bulkscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
- classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2502280000
- definitions=main-2504150069
+Content-Disposition: inline
+In-Reply-To: <20250409154356.423512-10-visitorckw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250415_025356_361034_FEDCCAAE 
-X-CRM114-Status: UNSURE (   9.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250415_091353_662978_6F1FE498 
+X-CRM114-Status: GOOD (  16.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,16 +100,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/15/25 9:27 AM, Kaushal Kumar wrote:
-> Add devicetree node to enable support for QPIC NAND controller on Qualcomm
-> SDX75 platform.
+On Wed, Apr 09, 2025 at 11:43:52PM +0800, Kuan-Wei Chiu wrote:
+> Refactor parity calculations to use the standard parity_odd() helper.
+> This change eliminates redundant implementations.
 > 
-> Signed-off-by: Kaushal Kumar <quic_kaushalk@quicinc.com>
+> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
 > ---
+>  .../wireless/broadcom/brcm80211/brcmsmac/dma.c | 18 ++----------------
+>  1 file changed, 2 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
+> index 80c35027787a..5d7500ee2d3b 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/delay.h>
+>  #include <linux/pci.h>
+> +#include <linux/bitops.h>
+>  #include <net/cfg80211.h>
+>  #include <net/mac80211.h>
+>  
+> @@ -283,24 +284,9 @@ struct dma_info {
+>  	bool aligndesc_4k;
+>  };
+>  
+> -/* Check for odd number of 1's */
+> -static u32 parity32(__le32 data)
+> -{
+> -	/* no swap needed for counting 1's */
+> -	u32 par_data = *(u32 *)&data;
+> -
+> -	par_data ^= par_data >> 16;
+> -	par_data ^= par_data >> 8;
+> -	par_data ^= par_data >> 4;
+> -	par_data ^= par_data >> 2;
+> -	par_data ^= par_data >> 1;
+> -
+> -	return par_data & 1;
+> -}
+> -
+>  static bool dma64_dd_parity(struct dma64desc *dd)
+>  {
+> -	return parity32(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
+> +	return parity_odd(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
+>  }
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+parity32 expected a little-endian integer as it's argument
+while parity_odd expects a host byte order value.
 
-Konrad
+I realise that the existing code just casts-away the endianness
+annotation, but this patch adds a Sparse warning.
+
+ .../brcmsmac/dma.c:289:66: warning: incorrect type in argument 1 (different base types)
+ .../brcmsmac/dma.c:289:66:    expected unsigned long long [usertype] val
+ .../brcmsmac/dma.c:289:66:    got restricted __le32
+
+>  
+>  /* descriptor bumping functions */
+> -- 
+> 2.34.1
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
