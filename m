@@ -4,86 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D35F2C369AB
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Apr 2025 16:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C969C369BA
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Apr 2025 18:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XoacoZVRyfE/q+bWi7QXy5bz8achpv9SZe0vAvupc3g=; b=UIUP/0RCtQkNji
-	jcuKMw7omE153uLPLDfGfSQSriujpC1XfzeH9ksZkxlgRqk3dTg/EOCkQMQzTLi+SXPzy3Fac+M0t
-	ntdwJzqodFRepYKjZ7xy2HslkYJ3eSI4rPmM4WsQsQP4k+cJELsuhEbFURdpS5Kg5y0LIPemeL7zh
-	P+3X7Aac2q3VyeqKQAjc818ahasSUCK6Krr2B9yDTE2VvZsDc3WoYTS+oRqdh0c3sP02cB92tjtOg
-	OMvHyF1voHPocR75v+GCakN3YT6xHomPrsIuOYy8XXdWIfNj48vMgleGdk+c4vk2GkXzOXZycOUEe
-	4y7tP6Gbt2coYAa4O5Ag==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=6aH1ClfEbaAI4wN4zq8ruDtmKCObynDVc+QEbUHpw/c=; b=E97jvZEJxB+nDx
+	d65RhvYkfpgpuiA3EacNnrjAsoAfmR5olRk4/s8WF7ntfC3RpkaSOLzRFgBTiqIHbtnTTEZQ3qw8X
+	XQSRmpLpUNnQarkxSDXDz3Lg4OWuPSmv+CjW9xc+9z7AY4JWdqPzJK5SmteiBUPwgfpOZ1UXQ2wAY
+	7hk18KI94B1kgibZLckvgnFpx9xhsTTmOfXS9qHd2bwFfsnDIfTRQLcmNzxFem5IxBMu8dSbACL10
+	QA9POpM+fS9Cn6I78EnDM0o7ftAIovrIhW3CPrkK4u+HlqLRbCAh98tTVs36ucXEWY3XDyU27bluE
+	3XE/jqzHF6PBwYJXVjqQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4jJD-00000006R76-1Mp6;
-	Tue, 15 Apr 2025 16:38:51 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1u4khf-00000006fsj-124Q;
+	Tue, 15 Apr 2025 18:08:11 +0000
+Received: from fw2.prolan.hu ([193.68.50.107])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4iv3-00000006NNu-25XM;
-	Tue, 15 Apr 2025 16:13:54 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id A2DFDA49F7F;
-	Tue, 15 Apr 2025 16:08:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 382BAC4CEEB;
-	Tue, 15 Apr 2025 16:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744733631;
-	bh=1jFrBy0lzqpyUKpmfkbxvJvV2QeeBiFeu/gLSlD6DXw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Iwf/xepfn8XdaQPkl3OXO2pziEP0MlRo4kLwGSJsiPog0Lg5Q1zc16D6DMGJwuihR
-	 wFxPHaCtVDUNGtTLwsWTrCyK5ML3+2kHLLu+hLOI9049UI/1wvm6ANh7f1RkqDDqZE
-	 sfK6i25rKsc+rZPzOJjQiMNZCqS9qAsXy/ekUZsqbaFi5M/YNucILhk7ZNjcpj8xhR
-	 cTpu1IqsMZdWOGrrLhNg9KBwOnjf8is+U1vUkxZI9HftXGggDq4mt6mtnKRdxCOmja
-	 JYxKuYVHbxzBtX6yyWjjBDmrCV6qBEG+qekX20hC4nqmB77hh3oQmv7Pech6xvsaet
-	 8MiIM487OnzWg==
-Date: Tue, 15 Apr 2025 17:13:37 +0100
-From: Simon Horman <horms@kernel.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, yury.norov@gmail.com,
-	akpm@linux-foundation.org, jdelvare@suse.com, linux@roeck-us.net,
-	alexandre.belloni@bootlin.com, pgaj@cadence.com, hpa@zytor.com,
-	alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
-	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 09/13] wifi: brcm80211: Replace open-coded parity
- calculation with parity_odd()
-Message-ID: <20250415161337.GZ395307@horms.kernel.org>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-10-visitorckw@gmail.com>
+	id 1u4kec-00000006fSv-1Gsr
+	for linux-mtd@lists.infradead.org;
+	Tue, 15 Apr 2025 18:05:04 +0000
+Received: from proxmox-mailgw.intranet.prolan.hu (localhost.localdomain [127.0.0.1])
+	by proxmox-mailgw.intranet.prolan.hu (Proxmox) with ESMTP id BD2EEA033A;
+	Tue, 15 Apr 2025 20:04:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prolan.hu; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:from:from:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=mail; bh=sPS8nj2wBTS7IxcXsWDBnWC5IdTmxtmClDTDfzz4lXs=; b=
+	jhjgINil9atXgMLsXfj/xug9qfrTEqP4k8IuuvkmvwH6R03Hc8XLh0p1BAIMjQ/l
+	Ey2x2bH8GAkvakXDj7Q69lNuYI04D+V1HB36pmzyFY6MMHVcllJkiw+ppwBzpA2A
+	JmOuWYgSj99eIk7n26pE8KUDR+Jhz2qbw4/K2NFf2r7nErYLlARbx3A5A0n+Akh6
+	mFrcDGuCf3VZqfDUaYR5h62zl00Ef49r/JuMSy7n46LDXj4rU+mu0exwwoyPSFlz
+	oqEMc78RE8N7e4QrGZ7Qsm/JOSmXT5mb6F0F1EXT3ET+g33lM+YuDXZX/eLiHjDT
+	D5+MBOW+gh9Y2DylR9biM+dIZNyGtjZ2cc9Z1ZlDgYtMUUbFsIoqYYmOp0wWM4mw
+	TlDj92NF63S+anebINtZUpexrGB9O8clFfqQws8viNtbgspdfok1OdXifYXoPn9e
+	Zg5xwf7W5rPWKoY2VVgHu1or7cU20RcK887/TI80nlX9nFW2gtPxWVcUUy3GimDc
+	BcmHOcxSpG2yesN49mfWLq90YgrHZu2FOglM1ItPS1HcAljgUG2VwQGSrBSTq3MA
+	NpAUWvhrGNDDcZJZAaNitflvdRwJ6b694dyEpgFLskzPsRjQuYGTNQUDZHk+vaFF
+	t5l8oFJ97Wpfo7c3aZidUBqRgigbOVKEbWDMGapnK9w=
+From: =?UTF-8?q?Bence=20Cs=C3=B3k=C3=A1s?= <csokas.bence@prolan.hu>
+To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: =?UTF-8?q?Cs=C3=B3k=C3=A1s=2C=20Bence?= <csokas.bence@prolan.hu>,
+	=?UTF-8?q?Szentendrei=2C=20Tam=C3=A1s?= <szentendrei.tamas@prolan.hu>, "Tudor
+ Ambarus" <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] spi-nor: Verify written data in paranoid mode
+Date: Tue, 15 Apr 2025 20:04:32 +0200
+Message-ID: <20250415180434.513405-1-csokas.bence@prolan.hu>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250409154356.423512-10-visitorckw@gmail.com>
+X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1744740288;VERSION=7989;MC=1442698083;ID=77153;TRN=0;CRV=0;IPC=;SP=0;SIPS=0;PI=3;F=0
+X-ESET-Antispam: OK
+X-EsetResult: clean, is OK
+X-EsetId: 37303A2980D94853647662
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250415_091353_662978_6F1FE498 
-X-CRM114-Status: GOOD (  16.56  )
+X-CRM114-CacheID: sfid-20250415_110502_813084_D861E0B4 
+X-CRM114-Status: GOOD (  13.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,77 +75,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Apr 09, 2025 at 11:43:52PM +0800, Kuan-Wei Chiu wrote:
-> Refactor parity calculations to use the standard parity_odd() helper.
-> This change eliminates redundant implementations.
-> 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> ---
->  .../wireless/broadcom/brcm80211/brcmsmac/dma.c | 18 ++----------------
->  1 file changed, 2 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-> index 80c35027787a..5d7500ee2d3b 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-> @@ -17,6 +17,7 @@
->  #include <linux/slab.h>
->  #include <linux/delay.h>
->  #include <linux/pci.h>
-> +#include <linux/bitops.h>
->  #include <net/cfg80211.h>
->  #include <net/mac80211.h>
->  
-> @@ -283,24 +284,9 @@ struct dma_info {
->  	bool aligndesc_4k;
->  };
->  
-> -/* Check for odd number of 1's */
-> -static u32 parity32(__le32 data)
-> -{
-> -	/* no swap needed for counting 1's */
-> -	u32 par_data = *(u32 *)&data;
-> -
-> -	par_data ^= par_data >> 16;
-> -	par_data ^= par_data >> 8;
-> -	par_data ^= par_data >> 4;
-> -	par_data ^= par_data >> 2;
-> -	par_data ^= par_data >> 1;
-> -
-> -	return par_data & 1;
-> -}
-> -
->  static bool dma64_dd_parity(struct dma64desc *dd)
->  {
-> -	return parity32(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
-> +	return parity_odd(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
->  }
-
-parity32 expected a little-endian integer as it's argument
-while parity_odd expects a host byte order value.
-
-I realise that the existing code just casts-away the endianness
-annotation, but this patch adds a Sparse warning.
-
- .../brcmsmac/dma.c:289:66: warning: incorrect type in argument 1 (different base types)
- .../brcmsmac/dma.c:289:66:    expected unsigned long long [usertype] val
- .../brcmsmac/dma.c:289:66:    got restricted __le32
-
->  
->  /* descriptor bumping functions */
-> -- 
-> 2.34.1
-> 
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogQ3PDs2vDoXMsIEJlbmNlIDxjc29rYXMuYmVuY2VAcHJvbGFuLmh1PgoKQWRkIE1URF9T
+UElfTk9SX1BBUkFOT0lEIGNvbmZpZyBvcHRpb24gZm9yIHZlcmlmeWluZyBhbGwgd3JpdHRlbiBk
+YXRhIHRvCnByZXZlbnQgc2lsZW50IGJpdCBlcnJvcnMgdG8gYmUgdW5kZXRlY3RlZCwgYXQgdGhl
+IGNvc3Qgb2YgaGFsdmluZyBTUEkKYmFuZHdpZHRoLgoKQ28tZGV2ZWxvcGVkLWJ5OiBTemVudGVu
+ZHJlaSwgVGFtw6FzIDxzemVudGVuZHJlaS50YW1hc0Bwcm9sYW4uaHU+ClNpZ25lZC1vZmYtYnk6
+IFN6ZW50ZW5kcmVpLCBUYW3DoXMgPHN6ZW50ZW5kcmVpLnRhbWFzQHByb2xhbi5odT4KU2lnbmVk
+LW9mZi1ieTogQ3PDs2vDoXMsIEJlbmNlIDxjc29rYXMuYmVuY2VAcHJvbGFuLmh1PgotLS0KIGRy
+aXZlcnMvbXRkL3NwaS1ub3IvS2NvbmZpZyB8IDEwICsrKysrKysrKysKIGRyaXZlcnMvbXRkL3Nw
+aS1ub3IvY29yZS5jICB8IDMzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMiBm
+aWxlcyBjaGFuZ2VkLCA0MyBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+c3BpLW5vci9LY29uZmlnIGIvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnCmluZGV4IDI0Y2Qy
+NWRlMmI4Yi4uNDI1ZWE5YTIyNDI0IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL0tj
+b25maWcKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnCkBAIC02OCw2ICs2OCwxNiBA
+QCBjb25maWcgTVREX1NQSV9OT1JfU1dQX0tFRVAKIAogZW5kY2hvaWNlCiAKK2NvbmZpZyBNVERf
+U1BJX05PUl9QQVJBTk9JRAorCWJvb2wgIlJlYWQgYmFjayB3cml0dGVuIGRhdGEgKHBhcmFub2lk
+IG1vZGUpIgorCWhlbHAKKwkgIFRoaXMgb3B0aW9uIG1ha2VzIHRoZSBTUEkgTk9SIGNvcmUgcmVh
+ZCBiYWNrIGFsbCBkYXRhIG9uIGEgd3JpdGUKKwkgIGFuZCByZXBvcnQgYW4gZXJyb3IgaWYgaXQg
+ZG9lc24ndCBtYXRjaCB0aGUgd3JpdHRlbiBkYXRhLiBUaGlzIGNhbgorCSAgc2FmZWd1YXJkIGFn
+YWluc3Qgc2lsZW50IGJpdCBlcnJvcnMgcmVzdWx0aW5nIGZyb20gYSBmYXVsdHkgRmxhc2gsCisJ
+ICBjb250cm9sbGVyIG9kZGl0aWVzLCBidXMgbm9pc2UgZXRjLgorCisJICBJZiB5b3UgYXJlIHVu
+c3VyZSwgc2VsZWN0ICduJy4KKwogc291cmNlICJkcml2ZXJzL210ZC9zcGktbm9yL2NvbnRyb2xs
+ZXJzL0tjb25maWciCiAKIGVuZGlmICMgTVREX1NQSV9OT1IKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKaW5kZXggYWM0
+Yjk2MDEwMWNjLi5jYTA1YTZlYzhhZmUgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+Y29yZS5jCisrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jCkBAIC0yMDYzLDYgKzIwNjMs
+NyBAQCBzdGF0aWMgaW50IHNwaV9ub3Jfd3JpdGUoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZf
+dCB0bywgc2l6ZV90IGxlbiwKIAlzaXplX3QgKnJldGxlbiwgY29uc3QgdV9jaGFyICpidWYpCiB7
+CiAJc3RydWN0IHNwaV9ub3IgKm5vciA9IG10ZF90b19zcGlfbm9yKG10ZCk7CisJdV9jaGFyICp2
+ZXJpZnlfYnVmID0gTlVMTDsKIAlzaXplX3QgaTsKIAlzc2l6ZV90IHJldDsKIAl1MzIgcGFnZV9z
+aXplID0gbm9yLT5wYXJhbXMtPnBhZ2Vfc2l6ZTsKQEAgLTIwNzMsNiArMjA3NCwxNCBAQCBzdGF0
+aWMgaW50IHNwaV9ub3Jfd3JpdGUoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCB0bywgc2l6
+ZV90IGxlbiwKIAlpZiAocmV0KQogCQlyZXR1cm4gcmV0OwogCisjaWYgSVNfRU5BQkxFRChDT05G
+SUdfTVREX1NQSV9OT1JfUEFSQU5PSUQpCisJdmVyaWZ5X2J1ZiA9IGRldm1fa21hbGxvYyhub3It
+PmRldiwgcGFnZV9zaXplLCBHRlBfS0VSTkVMKTsKKwlpZiAoIXZlcmlmeV9idWYpIHsKKwkJcmV0
+ID0gLUVOT01FTTsKKwkJZ290byB3cml0ZV9lcnI7CisJfQorI2VuZGlmCisKIAlmb3IgKGkgPSAw
+OyBpIDwgbGVuOyApIHsKIAkJc3NpemVfdCB3cml0dGVuOwogCQlsb2ZmX3QgYWRkciA9IHRvICsg
+aTsKQEAgLTIwOTksMTEgKzIxMDgsMzUgQEAgc3RhdGljIGludCBzcGlfbm9yX3dyaXRlKHN0cnVj
+dCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgdG8sIHNpemVfdCBsZW4sCiAJCXJldCA9IHNwaV9ub3Jf
+d2FpdF90aWxsX3JlYWR5KG5vcik7CiAJCWlmIChyZXQpCiAJCQlnb3RvIHdyaXRlX2VycjsKKwor
+I2lmIElTX0VOQUJMRUQoQ09ORklHX01URF9TUElfTk9SX1BBUkFOT0lEKQorCQkvKiByZWFkIGJh
+Y2sgdG8gbWFrZSBzdXJlIGl0J3MgY29ycmVjdCAqLworCQlyZXQgPSBzcGlfbm9yX3JlYWRfZGF0
+YShub3IsIGFkZHIsIHdyaXR0ZW4sIHZlcmlmeV9idWYpOworCQlpZiAocmV0IDwgMCkKKwkJCWdv
+dG8gd3JpdGVfZXJyOworCQlpZiAocmV0ICE9IHdyaXR0ZW4pIHsKKwkJCS8qIFdlIHNob3VsZG4n
+dCBzZWUgc2hvcnQgcmVhZHMgKi8KKwkJCWRldl9lcnIobm9yLT5kZXYsICJWZXJpZnkgZmFpbGVk
+LCB3cml0dGVuICV6ZCBidXQgb25seSByZWFkICV6ZCIsCisJCQkJd3JpdHRlbiwgcmV0KTsKKwkJ
+CXJldCA9IC1FSU87CisJCQlnb3RvIHdyaXRlX2VycjsKKwkJfQorCisJCWlmIChtZW1jbXAodmVy
+aWZ5X2J1ZiwgYnVmICsgaSwgd3JpdHRlbikpIHsKKwkJCWRldl9lcnIobm9yLT5kZXYsICJWZXJp
+ZnkgZmFpbGVkLCBjb21wYXJlIG1pc21hdGNoISIpOworCQkJcmV0ID0gLUVJTzsKKwkJCWdvdG8g
+d3JpdGVfZXJyOworCQl9CisjZW5kaWYKKworCQlyZXQgPSAwOworCiAJCSpyZXRsZW4gKz0gd3Jp
+dHRlbjsKIAkJaSArPSB3cml0dGVuOwogCX0KIAogd3JpdGVfZXJyOgorCWRldm1fa2ZyZWUobm9y
+LT5kZXYsIHZlcmlmeV9idWYpOwogCXNwaV9ub3JfdW5sb2NrX2FuZF91bnByZXBfcGUobm9yLCB0
+bywgbGVuKTsKIAogCXJldHVybiByZXQ7CgpiYXNlLWNvbW1pdDogODM0YTRhNjg5Njk5MDkwYTQw
+NmQxNjYyYjAzYWZmYThiMTU1ZDAyNQotLSAKMi40OS4wCgoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
