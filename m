@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F331BC369AB
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Apr 2025 10:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FAA5C369B4
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Apr 2025 10:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a3kY/7e9zjj19BMuT4TYUlyx/eDwSOjOB/5u8hkK9sA=; b=NYv4CuczHUNitZ
-	WqOf09BjmvbcLe2DmpOVlJ3LUQEzP4O6YB5uI6FEZmI2nWolgfcqWfR8+xwkLwl0SCqXWGRjsESFi
-	4odpWVrUY8IxMQCqbivGIYZCAQmWR6zQsClrvXcLlzQS9IIOyY0ZPrMXHphz/hejDD5DLTqA5uiYj
-	2JBqT9DhrTF3LEy8CqBCvUckSfyyebj46pVhuXXit0fOuF1nhB4SW9kfQAxbx5cANVUQT4pzmISn6
-	ft93aIKF6ggZE1eZ9WJRakcGCzQkrTOygrPzSFNXgrCIwqFXlwu1MAI2kOvXNMhNMOO/UOHdNNHu+
-	cLvFqjhy9qHkkfmFJy8Q==;
+	List-Owner; bh=hOasRTIY+HVhR2rr5GfXRkItthjYNCIlXxRscnIlh3Q=; b=IngM6COLfkUS44
+	93XY0GUjHf/kiy/iku/oLx4nBMSn1RdKeoSUMdW/YQc5Vca1W6nGcFkTuBzkCTHEj3v1vY98vw0kU
+	PoS29eHmXQDS3Ta3S666vmpRiw/ukRO+y5PondhsOr8GNw53vSTqJHqD9Aoft/j5OdkwC0foHmJuP
+	qGI7Sio8pcqtLhL8Ttk/hqdT2fqdv9DRfs2lrRDO5Eg1bC7A/CvW8foWrfVCKpz7j8WNukSeDXHdw
+	OmFxYJgnJ5wgpiqxpu9EUgyCJjbSMMImOTjLUtaBb9CZj9eu/KSqgzS34drF144Ki07cimXJaEUMF
+	kHT9oVh/aObcdTaToTJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4dEK-00000005HCC-49qe;
-	Tue, 15 Apr 2025 10:09:24 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1u4dEU-00000005HIM-3m3K;
+	Tue, 15 Apr 2025 10:09:34 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4cxY-00000005DPh-2MPP
+	id 1u4czM-00000005DiX-0oid
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Apr 2025 09:52:05 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53F8tL1s019767
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 09:52:04 GMT
+	Tue, 15 Apr 2025 09:53:57 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53F8tdw5012914
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 09:53:55 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	ebp25KTVcY1mUAqA9R7DsK7wGxUkxQQ3jeK5351XBkw=; b=pAR6955ZBN+rB+Xu
-	Ug2zNd10LaLaYRvzPKm2NsQkiyUtPKGRyaLHgaruAuxeshAn6v2SyMpKeKSnbVm3
-	5Is1o2h5kNsOzAeaskQqzmCfIdKMvGs5vD/+mms/2KxuNYqySHXZE0eVr2R8dZ+k
-	n9XqCRxU4uMMnpnCelU7pFqByzzJnh0ugW4DLh9vHCGPCxkWKWNjo7VabkCZgS36
-	+hlPjhFy7KnqEKJMOx9uDr7gzhie/j5OjC/K9+ZzHBzfE7+wSck1hZ12dKSzH/TH
-	JF8ZIE9kxLuhVXHyW1kLGYVn3oWlyeR9dd+Un0JrUdg0aDq0t6mPR+7s7Y+R/THv
-	v9iGGw==
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com [209.85.222.200])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 45yhfcyf96-1
+	qxeuE2eVL5Eoo29xjyLgJecbYqVi8+nNdiHJPQLgII4=; b=o7Rsj/zAPhupkj9v
+	IGCH94/ff7yFpwjI2gpAfE8QGpx3kwHZDwAS5MXs/SXf0DpFAxaTjzM0oLBVgMq2
+	ptXqv4ku56/vrPfk0xRA1LH/NSdEA7Un30R1sBs1dHdLBAcIPE2zP9faNY+7zvG7
+	lFOsezFz5NG7J6fXs9lrLhtTpDRcArRxfPfekByzCw9k1md2DlkA0DL76H2E7Qhz
+	YAkZLxDWldSx0HdYEYp9GP+upHc14UTKK+DpX5BrEHqddo4NpTJckqO938Dv4CSl
+	gB0ussQi7u3O9XF6NJJpEytyWt4U42J/btVyx3tXhGY1I/EmdnZVDmIInlqa3uS9
+	G/MLCw==
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com [209.85.219.71])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 45ydhq7tfr-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 09:52:03 +0000 (GMT)
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7c5ad42d6bcso110628885a.2
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 02:52:03 -0700 (PDT)
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 09:53:55 +0000 (GMT)
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6e906c7cd2bso11640506d6.3
+        for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2025 02:53:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744710722; x=1745315522;
+        d=1e100.net; s=20230601; t=1744710834; x=1745315634;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ebp25KTVcY1mUAqA9R7DsK7wGxUkxQQ3jeK5351XBkw=;
-        b=Nh5TF0o8pXoYN8AE1LMHECvjbRLFw4AkF6rNAzidYajPhgNwE3UEnj+QcrLvAgWkoM
-         kOCPsuX7VRcSR+gq9pXHHFlBJHCJHs2A5ieamJbTHwJJuBTsA398t2LIAZ7au1RA3TlZ
-         /kGDbxDzibgX8T+6tV8OF2TRr96F8KRmLcmR12inW7ka76RKhEefamTlNCdpOklwgL8y
-         jh9DNRaKxozPm+s8mzaa3cjlwiIn8Bp7BGOj6TzGO6dskt2Ax0o+r3LWXNIqViasmbfG
-         teUHw8vt7Zantn8xfzJeyxVR34v3cWKh/c7DJU/obJopkXAbl/YY3NgMrw+EKJY19mpC
-         /9QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWtxNpT1jv/q+rn1W8ZQ0yki7HgiEDepzh/W86gcz+U7a5nE2wHuHsMknHN2oH6vg7D2wrZ1fPUkkQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwlE6IW09XnGKWTW++zWKyekEq9Ns+SMQesADMWfIyTmr7FUphH
-	22PtNK9Z49unOX5Vw5yEv4gm2ZdVg5M/lDtJhjuDxBQePnHbLzDU7vfdXKtFpdNnBZWQSGflXFT
-	/hDTQITT6Rr7NGgIuEqSicmeihf3r+ORO9VmBhWMESUN+9NBrJPDemH/omWVLJBTX
-X-Gm-Gg: ASbGncuG7ynh7BXzaDDlX/+e73l7ZavNNvgeYuKM3yu/tzHLn+NqgMwGQ2Gi5kAuRCj
-	/YO5DReNTXLTWiQCVLclXuvj6jKz7itu4J1MgQKAF4bH/sMVIR5yL/rGBlm4BMWNJieP94ujYxi
-	WrlaGKv7c2/ln4NjqsLWF5TrKkRty9Hbm9c1j42Wt/kn1Ev5OBd8v1fPM+/fX5OYuhFhRcA53iJ
-	9gO5R8vk4XJQph5SAad8+XM3h18uPj9ksxOSaZhRArLUmevJPj4sdtRpFzM/c7NF0gjut0YyBW9
-	setT1a3FWbxDVV1rGQO6OI+Uk62EtlwCFY5XTjhgyDvSYoQS36uPCHTxOO1V+nlb5IU=
-X-Received: by 2002:a05:620a:28d6:b0:7c3:bcb2:f450 with SMTP id af79cd13be357-7c7e5b706c3mr148945585a.15.1744710722499;
-        Tue, 15 Apr 2025 02:52:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE6eE3aexRTtrLGQXx+8WtgcWasctyUV4noEcYBOFknm9DaHBEdqfmSXMP2iUTUVqabA0Ebxg==
-X-Received: by 2002:a05:620a:28d6:b0:7c3:bcb2:f450 with SMTP id af79cd13be357-7c7e5b706c3mr148945185a.15.1744710722203;
-        Tue, 15 Apr 2025 02:52:02 -0700 (PDT)
+        bh=qxeuE2eVL5Eoo29xjyLgJecbYqVi8+nNdiHJPQLgII4=;
+        b=VHNF4IOuQ6Z2MNVDcGHGRoD+l83e4y36DbCo39W1ZE1ozhgwKTBlp+QrAlYdgYTKIb
+         3IpNC9vzcGW2fQbTWs3MRvqCVTfPN9BrBL+hdaJ3uO6iTAV4gvVjXscIUI9PkLvbrZBg
+         AzXdySFPuuwI4/ipg8ouhl0q2rTeysyTTNW7ob1xb4/q8S9vc+JUNbVgCgl2kDYn7c9t
+         rGSzhZUU7tL/TTmExw5EOEhX83osf9V7w5MiThlKkzA6xlzdcted2ol/57IV8IvNQXoL
+         kkGU+QQrBmFX+1kpDPvuTaJUq6H+t4b1fxZ1aENJ7wjBnjhQjn/ZYJdqu7PkZ00obSsr
+         nkRw==
+X-Forwarded-Encrypted: i=1; AJvYcCWOUrA6dY1pSTpBoK4B9mPz1Fw8a767AF485BwkUZnGyMxCUaVOxWhEOxZEXQ04hOC6G80EXfkBCsQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzLF8aam4y9I7i+7YmuFs9h5htFZmB9oiVzVd1mfGIlAnp+ZJWM
+	y0w+EwI8UPKIfzS9VKmDePptktVtG+nzSOvQMziOuy629cLxz6pzGGV5Vd02/vEiljHP7YhmBx2
+	SiZk0IW1xZL+77SdR0lpT5a1loaAiRIg5XhCKv+uI05bj0+E7Z7DOphv1k6KUeSMj
+X-Gm-Gg: ASbGncuJ3QLiY6zURD27zxz00/+Z8s3hEL8blStOqwEJDa4damRNyrpxhgMgn0BT35s
+	K+LN9W/3ND4r4GiW7AHciLLFCcsDfz/uMTkrEYREdnVz3i1uKwCNbqMk8ifJoJqt2f0DluzhR4F
+	BtmKnPEucMQgrLBk9CVEcpgGuIC2eC/DeyIDsvciwHWQf6k3FKJ5VUsd46xELBA6kmh1+E+aXAi
+	ByPOnDgrvn0nCy596k6jQXbV03XNvR4XjZbV1bXbXaF2k4ANqJ/YTqL6gy+bJk8LwcsKvBEsZVN
+	d8dNDHbXkQKtOgcQaokSQS5VRjtMTYLjxfjhU78E5TsQ0euH12rEMZUNqrOKjHUHc6A=
+X-Received: by 2002:a05:6214:20cc:b0:6e8:f019:af59 with SMTP id 6a1803df08f44-6f230cb9754mr96287756d6.1.1744710834363;
+        Tue, 15 Apr 2025 02:53:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGgaJX2J+7JlHuueBHmISXlo1aK9U92F4gsipjLZi1j7TSnpCxzm7LQz4Rmzpb9J06CEF1Qug==
+X-Received: by 2002:a05:6214:20cc:b0:6e8:f019:af59 with SMTP id 6a1803df08f44-6f230cb9754mr96287716d6.1.1744710834041;
+        Tue, 15 Apr 2025 02:53:54 -0700 (PDT)
 Received: from [192.168.65.246] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acaa1cb40c0sm1076488366b.109.2025.04.15.02.51.59
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acaa1bb3120sm1049550566b.1.2025.04.15.02.53.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Apr 2025 02:52:01 -0700 (PDT)
-Message-ID: <c9a91cf2-f9c3-4687-a68d-c34209c4520c@oss.qualcomm.com>
-Date: Tue, 15 Apr 2025 11:51:59 +0200
+        Tue, 15 Apr 2025 02:53:53 -0700 (PDT)
+Message-ID: <4c57a98f-045f-4487-8354-807b647b2040@oss.qualcomm.com>
+Date: Tue, 15 Apr 2025 11:53:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] arm64: dts: qcom: sdx75-idp: Enable QPIC BAM &
- QPIC NAND support
+Subject: Re: [PATCH v2 4/5] arm64: dts: qcom: sdx75: Add QPIC NAND support
 To: Kaushal Kumar <quic_kaushalk@quicinc.com>, vkoul@kernel.org,
         robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
         manivannan.sadhasivam@linaro.org, miquel.raynal@bootlin.com,
@@ -91,26 +90,26 @@ Cc: linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mtd@lists.infradead.org
 References: <20250415072756.20046-1-quic_kaushalk@quicinc.com>
- <20250415072756.20046-6-quic_kaushalk@quicinc.com>
+ <20250415072756.20046-5-quic_kaushalk@quicinc.com>
 Content-Language: en-US
 From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20250415072756.20046-6-quic_kaushalk@quicinc.com>
-X-Authority-Analysis: v=2.4 cv=CfUI5Krl c=1 sm=1 tr=0 ts=67fe2c43 cx=c_pps a=hnmNkyzTK/kJ09Xio7VxxA==:117 a=FpWmc02/iXfjRdCD7H54yg==:17 a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=COk6AnOGAAAA:8 a=EUspDBNiAAAA:8 a=WWQFUNGd85j635JlVwcA:9 a=QEXdDO2ut3YA:10
- a=-9l76b1btMQA:10 a=PEH46H7Ffwr30OY-TuGO:22 a=TjNXssC_j7lpFel5tvFf:22
-X-Proofpoint-GUID: 4DUDdFb7piza8-4Gi9u4SmuzsFw8yU_c
-X-Proofpoint-ORIG-GUID: 4DUDdFb7piza8-4Gi9u4SmuzsFw8yU_c
+In-Reply-To: <20250415072756.20046-5-quic_kaushalk@quicinc.com>
+X-Proofpoint-ORIG-GUID: IIgNiV4DeYXhv16-TPW_ZD6D_wsVnKn0
+X-Authority-Analysis: v=2.4 cv=C7DpyRP+ c=1 sm=1 tr=0 ts=67fe2cb3 cx=c_pps a=UgVkIMxJMSkC9lv97toC5g==:117 a=FpWmc02/iXfjRdCD7H54yg==:17 a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=COk6AnOGAAAA:8 a=EUspDBNiAAAA:8 a=HfTDXfZYWx141HAPJAYA:9 a=QEXdDO2ut3YA:10
+ a=-9l76b1btMQA:10 a=1HOtulTD9v-eNWfpl4qZ:22 a=TjNXssC_j7lpFel5tvFf:22
+X-Proofpoint-GUID: IIgNiV4DeYXhv16-TPW_ZD6D_wsVnKn0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-04-15_04,2025-04-10_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 malwarescore=0 impostorscore=0 spamscore=0 phishscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=790 mlxscore=0 clxscore=1015
- adultscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=807
+ priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 bulkscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2502280000
  definitions=main-2504150069
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250415_025204_609991_68DE48DA 
-X-CRM114-Status: UNSURE (   9.64  )
+X-CRM114-CacheID: sfid-20250415_025356_361034_FEDCCAAE 
+X-CRM114-Status: UNSURE (   9.13  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -129,8 +128,8 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 4/15/25 9:27 AM, Kaushal Kumar wrote:
-> Enable QPIC BAM and QPIC NAND devicetree nodes for Qualcomm SDX75-IDP
-> board.
+> Add devicetree node to enable support for QPIC NAND controller on Qualcomm
+> SDX75 platform.
 > 
 > Signed-off-by: Kaushal Kumar <quic_kaushalk@quicinc.com>
 > ---
