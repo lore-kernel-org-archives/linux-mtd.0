@@ -4,112 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4583BC369C5
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Apr 2025 15:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC633C369C9
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Apr 2025 18:42:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NhmkTaK0UcZ8gXt0Xngz/9LgyMHjFdiIPwLiWX2NzRc=; b=KYBhQD8vlt6cqF
-	owgTTcba2mJ61yd4EtF4ZP3dW8X4U1UoA35xDkJsZ/I2boHVlbeExIijuVCXo7jXCVUxMNwj70JtV
-	DChyzF/461b0rTLnmBKIPEyMlJxIQerS+UloPtFGDmeMFmlC+NBCSukkQE2ngmP3sMS/vw3CKTKFc
-	mdSUFGtI9Tb+jiOrFgPz7e5feCoUbeX1vCIOd0eUUuInYq1b+a+55DU6dxkmgGbngogo9ZqnPLlLf
-	QvD4WGozNCplQ4kAU4MTya8eCPYAHfoKfZF6HBArDa7O+/DCqOVzmXtku7jSSb0hPfperh9KksBRW
-	d52GHsNLHd/4DFxChi1Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=mbxJv494fQcRdeliH4DrfoSeg0tLiQYUv130n1jJDW4=; b=oFks6duSeJcTYnY/GYs8yn1Gb3
+	jnQlv9qCVP69g7I+Dhp7ksiZQzE3emKGHl6HYx9ASha/yEL1Wgk6ozvXAJsnJG0kSbml45XLQtdBM
+	InBqAenJ9Dorjt3GXisjBqfhFJqh+9Wf5fERBLcWCqfvBGbrzWvdEccGtpdA2+nIzD7bu1gvWALIv
+	9oSQEcvnKtarhCQ8dVBqP0u4T+I4frSvSHAHrDJL4fr4vmfgqvdvsyjptTqkj+Bl1/3AvAeBWjuPY
+	ZTmL20OeYIpL8MF1NkiAa+cyHUpep9ObzE1d0Lgwo8ZvlGmkRWfJ7UoNeoNa5ykNqjfPEhAZMdT0T
+	c7fmmRGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u54l7-0000000A5iV-2zvG;
-	Wed, 16 Apr 2025 15:33:05 +0000
-Received: from mout.web.de ([212.227.15.3])
+	id 1u57iS-0000000AazY-2Ot2;
+	Wed, 16 Apr 2025 18:42:32 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u54FR-00000009zB2-1RM6
+	id 1u57hK-0000000Aaj9-28WT
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Apr 2025 15:00:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1744815610; x=1745420410; i=markus.elfring@web.de;
-	bh=JwG+vvXK0gW0CaUyaX5L4N0GIiyWr9E8Vf0rHqz3H7w=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
-	 Subject:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=eNP6FUgjGeC0+axdEPhi6S1ZctcC0oYZ26ptr3S6FFCXUz3Sr2+TcxQgNSVF3Vyz
-	 vK1rYLpbaK8GJ4rNHMVJmpzDbmX9I0PIW2Kp8n0arFp4voBt5mC/bd0rccNf0lKAB
-	 eza3fB6kPr7SHrXMEX82bxVpzXTmHcOoDd5mEiGu3/xa/c1FagQCLT4/MeNNQzrJZ
-	 bMZT7IqwGaj8fkpbfTGKS8yl+zU5NyrArzfDWR4IfpGuidK2dyjlH1uKMTe4NdBZg
-	 OS30xfrRy5DuV0FsMO7eNleXj0Y3jEmxiyxLrSB7FbKbV1SM6YX8VP8HVj4cgxrju
-	 6VlgqQlakSXmqX5oXw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.93.13]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M5Qm1-1u3gfX35XB-0093kY; Wed, 16
- Apr 2025 17:00:10 +0200
-Message-ID: <81979474-04ac-4712-a28b-3d15b697c97e@web.de>
-Date: Wed, 16 Apr 2025 17:00:08 +0200
+	Wed, 16 Apr 2025 18:41:24 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 57A49294730;
+	Wed, 16 Apr 2025 20:41:19 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id sM60Dn9crzIu; Wed, 16 Apr 2025 20:41:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 92068298566;
+	Wed, 16 Apr 2025 20:41:18 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id IfrJQsT_emOt; Wed, 16 Apr 2025 20:41:18 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 66DDC294730;
+	Wed, 16 Apr 2025 20:41:18 +0200 (CEST)
+Date: Wed, 16 Apr 2025 20:41:18 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: =?utf-8?B?Q3PDs2vDoXM=?= Bence <csokas.bence@prolan.hu>
+Cc: Michael Walle <mwalle@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	=?utf-8?Q?Tam=C3=A1s?= Szentendrei <szentendrei.tamas@prolan.hu>, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	pratyush <pratyush@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <81225127.297167214.1744828878236.JavaMail.zimbra@nod.at>
+In-Reply-To: <c56c52c0-a824-4ad7-9847-e0e973f811ed@prolan.hu>
+References: <20250415180434.513405-1-csokas.bence@prolan.hu> <D981O3AA6NK9.2EEVUPM62EV6S@kernel.org> <dd3c7cc0-a568-4046-b105-e6786b5c80f8@prolan.hu> <373620122.295980015.1744808943985.JavaMail.zimbra@nod.at> <c56c52c0-a824-4ad7-9847-e0e973f811ed@prolan.hu>
+Subject: Re: [PATCH] spi-nor: Verify written data in paranoid mode
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-mtd@lists.infradead.org, Michal Simek <michal.simek@amd.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, Chenyuan Yang
- <chenyuan0y@gmail.com>, Michael Walle <michael@walle.cc>,
- Julia Lawall <julia.lawall@inria.fr>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] mtd: rawnand: pl353: Replace devm_kasprintf() call by
- devm_kstrdup() in pl35x_nand_chip_init()
-X-Provags-ID: V03:K1:GtCprZMrhcdkUfwX51AoGw4EjPScQrmbPVPc33hq8MmD3rlFby9
- Ye50aEmAHcVFdhABGmrWLWuMUhhV6mEH0Q6zP2Q93Jg1rKqV7EJ1bhkamkR2ZpOQFBCAbjA
- u9yBqRAaHH9Sx220Y0VDWxvosFhGJl9W9Z2IR/7b6rKZGBsiGg1oURS0iwwSsd2RQ4wB809
- 8T8v3U+bjMAeMhZbXHaSg==
-UI-OutboundReport: notjunk:1;M01:P0:K/MLVp6BMHo=;nITy5TtiXZJM7oqaDMnbQQOMkD9
- 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
- l4rsg1Kq6PtBDSZcaJ5DNwgZffdUshfqEl
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF136 (Linux)/8.8.12_GA_3809)
+Thread-Topic: spi-nor: Verify written data in paranoid mode
+Thread-Index: 316iU8/+hGzm5OegdVUSCxd/avO+wg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250416_080021_675452_32987E9F 
-X-CRM114-Status: UNSURE (   8.30  )
+X-CRM114-CacheID: sfid-20250416_114122_685435_184F11C2 
+X-CRM114-Status: UNSURE (   7.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -122,44 +77,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 16 Apr 2025 16:52:04 +0200
-
-Use a devm_kstrdup() call instead of a devm_kasprintf() call
-in this function implementation because only a single string
-should be copied.
-
-The source code was transformed by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-index 09440ed4652e..86f684bf8624 100644
---- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -1071,8 +1071,8 @@ static int pl35x_nand_chip_init(struct pl35x_nandc *nfc,
- 	mtd->dev.parent = nfc->dev;
- 	nand_set_flash_node(chip, np);
- 	if (!mtd->name) {
--		mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
--					   "%s", PL35X_NANDC_DRIVER_NAME);
-+		mtd->name = devm_kstrdup(nfc->dev, PL35X_NANDC_DRIVER_NAME,
-+					 GFP_KERNEL);
- 		if (!mtd->name) {
- 			dev_err(nfc->dev, "Failed to allocate mtd->name\n");
- 			return -ENOMEM;
--- 
-2.49.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkNzw7Nrw6FzIEJlbmNlIiA8
+Y3Nva2FzLmJlbmNlQHByb2xhbi5odT4KPj4gSSdtIG5vdCBzbyBzdXJlIHdoZXRoZXIgaXQgbWFr
+ZXMgc2Vuc2UgYXQgYWxsLgo+PiBJbiBpdCdzIGN1cnJlbnQgZm9ybSwgdGhlcmUgaXMgbm8gcmVj
+b3ZlcnkuIFNvIGFueXRoaW5nIG5vbi10cml2aWFsCj4+IG9uIHRvcCBvZiB0aGUgTVREIHdpbGwg
+anVzdCBzZWUgYW4gLUVJTyBhbmQgaGFzIHRvIGdpdmUgdXAuCj4+IEUuZy4gYSBmaWxlc3lzdGVt
+IHdpbGwgcmVtb3VudCByZWFkLW9ubHkuCj4gCj4gSW4gb3VyIGNhc2UsIHdlIHVzZSBVQklGUyBv
+biB0b3Agb2YgVUJJLCB3aGljaCBpbiB0aGlzIGNhc2UgY2hvb3Nlcwo+IGFub3RoZXIgZXJhc2Vi
+bG9jayB0byBob2xkIHRoZSBkYXRhIGluc3RlYWQsIHRoZW4gcmUtdGVzdHMgKGVyYXNlK3dyaXRl
+Cj4gY3ljbGVzKSB0aGUgb25lIHdoaWNoIGdhdmUgLUVJTy4gU2luY2UgdGhlIGJ1cyBlcnJvciBp
+cyBvbmx5IHRyYW5zaWVudCwKPiBpdCBnb2VzIGF3YXkgYnkgdGhpcyB0aW1lLCBhbmQgdGh1cyBV
+QklGUyB3aWxsIHJlY292ZXIgZnJvbSB0aGlzIGNsZWFubHkuCgpBcmUgeW91IHN1cmUgYWJvdXQg
+dGhhdD8KCkknZCBleHBlY3QgVUJJIHRvIGdvIGludG8gUk8gbW9kZSB2aWEgYSBjYWxsIHBhdGgg
+bGlrZToKdWJpX2ViYV93cml0ZV9sZWIoKSAtPiB1YmlfaW9fd3JpdGUoKSAtPiBtdGRfd3JpdGUo
+KQpJZiBtdGRfd3JpdGUoKSByZXR1cm5zIGFuIEVJTywgVUJJIHdpbGwgZ28gaW50byBSTyBtb2Rl
+IGltbWVkaWF0ZWx5LgoKKEknbSBhc3N1bWluZywgeW91ciBTUEktTk9SIGhhcyBubyBiYWQgYmxv
+Y2sgc3VwcG9ydCwgc28gdWJpLT5iYWRfYWxsb3dlZAppcyBmYWxzZSkuCgpUaGFua3MsCi8vcmlj
+aGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
