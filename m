@@ -4,66 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAD6AC369CB
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Apr 2025 04:14:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F591C369CB
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Apr 2025 09:01:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=C8+vkCFL/ERkF6APLtgiKqcF75AGgpqsM+yVtjSQmKA=; b=ksYLfR5Vi3uSm4
-	JaKnfAbDnqT1TzF4kYfQYIzgCMwmEo3d1VbuG59iiczftg2lPQUawGWpSk6CjowN1u1Aw8XtbWf5m
-	hc7aZQoX9J8kLjFhMelos6HwR+j3SKbQYyuAebwEBpqdrikVVyhorze2euGSe4dWBNBmxRW8c/VXJ
-	RkX8UkdfacCsd90dGYmBxKsKKBXcluvifAk3DprtioTjwmJpKAXzaj3z5Ht+VGNFWfOh+en1I0Zg9
-	TUARbhLK2eDnXbpDPFEPljDPW+gkdPh2ft3LAhqwy2rngCJ4O8bh+rLf86lCbcSpS1xJlKTGEdqSK
-	BM17y+Tj4pkuSNIRyB8Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=YBqJOaSAyP6g4n4eUi39GOnXXsYrbEVj+YM4tL1Pi6o=; b=T2i8scfTfVnAgw
+	vUXxFxLJBBLM7HeSdu4Ya1AgEe+kFgfBYwbyRKYyuSOqpiKoLYxo6CLp0o67ABzg33Rnbgt+A658s
+	Nqb7gAmeCKbVS7tU1O4XtpI1Uq4VupBmvXTA9mnWJ0THhjxstReBEJCsWmolX2yGWrHnfcWeHfyNb
+	u+xgGI4fwRNPowxHJtExcfRn0AsRLvI94bvEXxHeCfnNkczHIlNrlf6++QuOZf2s+nfaJidaTZAKD
+	Dx2Z/j2zLdxCmUHAQ6t50nFi08R2P4JY7g+5fUVsov0S7xMnZCPHgJ+M8C2cjpB45RAdGJ3zKIW9s
+	/pRAy4V4WDPVs7hkwu+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u751w-00000005lyz-2jmd;
-	Tue, 22 Apr 2025 04:14:44 +0000
-Received: from smtp84.cstnet.cn ([159.226.251.84] helo=cstnet.cn)
+	id 1u79VV-00000006TGv-2vZl;
+	Tue, 22 Apr 2025 09:01:33 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u751t-00000005lyV-1aQI
+	id 1u793X-00000006KGA-0zLs
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Apr 2025 04:14:43 +0000
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-05 (Coremail) with SMTP id zQCowADnIgupFwdoqiIlCw--.27997S2;
-	Tue, 22 Apr 2025 12:14:34 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>
-Subject: [PATCH v3 RESEND] mtd: bcm47xxnflash: Add error handling for bcm47xxnflash_ops_bcm4706_ctl_cmd()
-Date: Tue, 22 Apr 2025 12:14:16 +0800
-Message-ID: <20250422041416.2192-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	Tue, 22 Apr 2025 08:32:41 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53M4OjGc006443;
+	Tue, 22 Apr 2025 08:32:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	YYbsaB//72owVvHfmFOaZEketf2iik/PzXc+Wi3iH14=; b=OJBmLnMzEdMhEPeI
+	2I3pXD5cUU97Uo34qsuOAB0bCyITrMMUlUh+i4VOrQyijEEjC3oYgClfs0AOriU5
+	rVPRCXnE8dOQOTIDdb16UkOyG98VuGpBQxsfGAblwdx1Z/SgfENPchDVtQsHojz+
+	oo4vTpPkWAG+5htsapGf+Q3CuaiAJnRvn2g5aMF/swS1bAj7/9texQBtQjpdX6lv
+	rsA87QOplUbc9FXW5zQirlwpuOe4ulmVGaNokDM7RXtvnY86jyn2MkGqz6GLuwO6
+	k3huLA0vnoj4rCp+Nkncvhv9ckpxIXJCVeMp2a98pKgl0lCl3S92WQiArRrvE0rh
+	BPEiYA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 464426pmtx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 22 Apr 2025 08:32:32 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 53M8WVDJ006787
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 22 Apr 2025 08:32:31 GMT
+Received: from [10.218.18.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 22 Apr
+ 2025 01:32:26 -0700
+Message-ID: <9ad0d6ec-1391-5c41-24cd-7add0d3b1e08@quicinc.com>
+Date: Tue, 22 Apr 2025 14:02:23 +0530
 MIME-Version: 1.0
-X-CM-TRANSID: zQCowADnIgupFwdoqiIlCw--.27997S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw18WF17uw47XFyUAr1UZFb_yoW8WFWUpr
-	47Xa45t3Z5X3WDtFyUWF18KF1Yv348KF4jg3yvva48ursavFWxGrZ3Ga4jq3y8Gw18Jw17
-	XF4F93WxWr9FkrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1lc2xSY4AK67AK6r45MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-	67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-	UI43ZEXa7VUUxwIDUUUUU==
-X-Originating-IP: [124.16.141.245]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgsAA2gG5vDKhQAAs5
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/5] arm64: dts: qcom: sdx75: Add QPIC BAM support
+To: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>, <vkoul@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <manivannan.sadhasivam@linaro.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>, <andersson@kernel.org>,
+        <konradybcio@kernel.org>, <agross@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>
+References: <20250415072756.20046-1-quic_kaushalk@quicinc.com>
+ <20250415072756.20046-4-quic_kaushalk@quicinc.com>
+ <68a48388-f42b-4136-a97f-9d575fb84d42@oss.qualcomm.com>
+Content-Language: en-US
+From: Kaushal Kumar <quic_kaushalk@quicinc.com>
+In-Reply-To: <68a48388-f42b-4136-a97f-9d575fb84d42@oss.qualcomm.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: rHOX6qJnXPjGnITH3nhT2nOPxGeo3gMW
+X-Proofpoint-GUID: rHOX6qJnXPjGnITH3nhT2nOPxGeo3gMW
+X-Authority-Analysis: v=2.4 cv=IP8CChvG c=1 sm=1 tr=0 ts=68075420 cx=c_pps a=ouPCqIW2jiPt+lZRy3xVPw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17 a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=COk6AnOGAAAA:8 a=mRvqLfeVl_ZLl3yoDasA:9 a=QEXdDO2ut3YA:10
+ a=TjNXssC_j7lpFel5tvFf:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-22_04,2025-04-21_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=919 spamscore=0
+ mlxscore=0 malwarescore=0 clxscore=1015 priorityscore=1501 bulkscore=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
+ definitions=main-2504220064
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250421_211441_781899_7BD07B10 
-X-CRM114-Status: GOOD (  11.46  )
+X-CRM114-CacheID: sfid-20250422_013239_287518_5CED8282 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,53 +104,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The function bcm47xxnflash_ops_bcm4706_cmd_ctrl() calls the function
-bcm47xxnflash_ops_bcm4706_ctl_cmd(), but does not check its return value.
-A proper implementation can be found in bcm47xxnflash_ops_bcm4706_write().
-
-Add error log to the bcm47xxnflash_ops_bcm4706_ctl_cmd() via pr_err()
-to prevent silent failure. The error Log funciton 'dev_err' is unsuitable
-in this situation for it is hard to get device pointer.
-
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
-v3: Improve code for logging error.
-v2: Fix spelling problem.
-
- drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index 6487dfc64258..e532c3535b16 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -171,6 +171,7 @@ static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
- {
- 	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
- 	u32 code = 0;
-+	int rc;
- 
- 	if (cmd == NAND_CMD_NONE)
- 		return;
-@@ -182,7 +183,9 @@ static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
- 	if (cmd != NAND_CMD_RESET)
- 		code |= NCTL_CSA;
- 
--	bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
-+	rc = bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
-+	if (rc)
-+		pr_err("ctl_cmd didn't work with error %d\n", rc);
- }
- 
- /* Default nand_select_chip calls cmd_ctrl, which is not used in BCM4706 */
--- 
-2.42.0.windows.2
-
+On 4/15/2025 3:20 PM, Konrad Dybcio wrote:
+> On 4/15/25 9:27 AM, Kaushal Kumar wrote:
+>> Add devicetree node to enable support for QPIC BAM DMA controller on
+>> Qualcomm SDX75 platform.
+>>
+>> Signed-off-by: Kaushal Kumar <quic_kaushalk@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sdx75.dtsi | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+>> index b0a8a0fe5f39..e3a0ee661c4a 100644
+>> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+>> @@ -880,6 +880,20 @@
+>>   			qcom,bcm-voters = <&apps_bcm_voter>;
+>>   		};
+>>   
+>> +		qpic_bam: dma-controller@1c9c000 {
+>> +			compatible = "qcom,bam-v1.7.0";
+> v1.7.4, looks good otherwise
+Ack. v1.7.4 is backward compatible with v1.7.0 supported by the driver. 
+I will update this in next patch version.
+> Konrad
+- Kaushal
 
 ______________________________________________________
 Linux MTD discussion mailing list
