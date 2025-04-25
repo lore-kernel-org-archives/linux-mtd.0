@@ -4,58 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC0BAC369C2
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Apr 2025 13:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 984DBC369D5
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Apr 2025 13:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oAn6WuZUkhlFhH6ULf+R5+cU3Z2AADLB/AdxHA/qweI=; b=p05kpsnY3KGlkQ
-	A4t+e2s/ha0OJXIHPTx1P+zw/hC+Q/ciMMXuCho1ZqSHBAx1U+psSRu9wkwW7cKha9NM+iLqA/IBz
-	WqM4VAzHkSAh2O1Tdp2f5gi3B9EvTYtFNaMes1gbuCPl8j6m5UPOdYIkS5fpwz41dgjTnmXm2cg4f
-	i/NcPVQamO7C3cRbD95U+33pJNsHaKTP5eWCye4Du0Elx2hh1+bYK0z6GanEc0bUA2r5SO84VYiDm
-	7hcKTPTkZnsyNvYi0s/DGZZ0WXpZf4GaZqWhpuy2nKe3DioLDMY2y0S9ODda0QKRBxIlOs3LV/tX3
-	ROf9XYVKgfVAq1Crf7wg==;
+	List-Owner; bh=Ztn7UfRBWBSJ5HfOYfy/i7SbfmnqffdV3mPpj6ne8Qs=; b=TYyZ6qD/lSoktW
+	EuSFsHm/tUxeskQAT6w0kmA5BqBQlOJQOYLzPeo46h7e8yx63qe7EQBCgAADzolfdmeeVkxH1GZo8
+	2/3RusovQaNtNyEBNlAK4ioKQylDWlZopqb3Xywa3szCq4lbFxnjXcU4FR6iZHF0moPKZ0FlLzJOV
+	c6hCxvJgQbsdf9GCkFdsX4MZt+dymgw3nnuYeFuhw9JrohkymQi/2c2m4Ngg4fJ6BHI0upxeHM5O9
+	6wsAmsl8l5IjSD0oNR9OYE7p6ThcRcB/xVa1MLOezlRTSRX8cKvgr46gW/tZqcIZ2rnsmX2+pYHPQ
+	5TvBd41omP5rOF5+q5PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8Iue-0000000HFAf-04o6;
+	id 1u8Iue-0000000HFB3-29ge;
 	Fri, 25 Apr 2025 13:16:16 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+Received: from abb.hmeau.com ([144.6.53.87])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8Hzw-0000000H6Dm-2AGT
+	id 1u8I3D-0000000H6qZ-2ySa
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Apr 2025 12:17:40 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7C9A56845F;
-	Fri, 25 Apr 2025 12:17:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C66CC4CEE4;
-	Fri, 25 Apr 2025 12:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745583459;
-	bh=4MYw+OiWjZy5NvznOlobaVbCe5rT9u35DDQsuwAxFjU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=d1Vz4erUhPGFhzsnAAeuZ5NElwklcHXMRTNQM7LTtlMIzmi1z62RWza4rm/4RoKRc
-	 ztnKRz8avF+zp0K5+ZuNHbcPUEQBLgdtkRlxwTm4/jthwS/pEvl3j3bR4tm8HI9q1g
-	 v5au4njtwe/A+SkRvMjT9xGb2eWREoB5fcyRyS5IzvcxoxKOYBnF1+2MCXTko5/8cz
-	 uFQT1vRHR/2XI13bXtTP9xx/F70b01jk2LhSCm9PeA5JL+GwuXmbJn8BRSucyiT0xb
-	 bU0lhpmhlKICUj/venIce/kMYbKYg92xjUbrS7BaW2baonQsVWd5y2QRTlBRcM7+GX
-	 jwdEuSp0jnPrg==
-From: Mark Brown <broonie@kernel.org>
-To: Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Md Sadre Alam <quic_mdalam@quicinc.com>, Gabor Juhos <j4g8y7@gmail.com>
-Cc: linux-spi@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20250423-qpic-snand-propagate-error-v1-1-4b26ed45fdb5@gmail.com>
-References: <20250423-qpic-snand-propagate-error-v1-1-4b26ed45fdb5@gmail.com>
-Subject: Re: [PATCH] spi: spi-qpic-snand: propagate errors from
- qcom_spi_block_erase()
-Message-Id: <174558345792.35738.16221002646787907698.b4-ty@kernel.org>
-Date: Fri, 25 Apr 2025 13:17:37 +0100
+	Fri, 25 Apr 2025 12:21:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=Fc/25MkrpBeQ5N+c0EPmb7zcVe24kUxWCCXYa4mSP68=; b=IsQT5opmNOuSSThUWcBeGkcobG
+	5ycosMTSABz34FQRjWDlNnTSeHToSWXB0JM9EtXW9pzXugp13H0IskALZaPk3fZ9AOJfUefig2HeD
+	ZDMXepl4UZPl/HO0IfLCiJ0MLfu1Kk2L735q3wLzTZwNxiZ9iJZ6rSxMM6Hvw9MTONkOV/BzPgOuq
+	QoVkoym3vz2kWlyKi0OpbZkokU+xKkbCJ7ieZrjCMMYKuLrsXSDkX8E9i/794shaBTs42eMiO1wF+
+	DqLJz4DA3WKZFYrQGwu0mEuIVmaaugRNzruZ1mwHfeAT3m+zklb56qRZSGYS958oTX58wH11c/lQk
+	zGbKZyaw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1u8I2s-000yzT-25;
+	Fri, 25 Apr 2025 20:20:43 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Apr 2025 20:20:42 +0800
+Date: Fri, 25 Apr 2025 20:20:42 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Sabrina Dubroca <sd@queasysnail.net>
+Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	linux-mtd@lists.infradead.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	netdev@vger.kernel.org
+Subject: Re: [v5 PATCH 11/14] xfrm: ipcomp: Use crypto_acomp interface
+Message-ID: <aAt-GiUloeLEfu7O@gondor.apana.org.au>
+References: <cover.1742034499.git.herbert@gondor.apana.org.au>
+ <d7bccafdf38259c2b820be79763f66bfaad1497e.1742034499.git.herbert@gondor.apana.org.au>
+ <aAt8AIiFWZZwgCyj@krikkit>
 MIME-Version: 1.0
-X-Mailer: b4 0.15-dev-c25d1
+Content-Disposition: inline
+In-Reply-To: <aAt8AIiFWZZwgCyj@krikkit>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250425_052103_749613_32A5A43A 
+X-CRM114-Status: UNSURE (   9.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,41 +83,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 23 Apr 2025 21:31:57 +0200, Gabor Juhos wrote:
-> The qcom_spi_block_erase() function returns with error in case of
-> failure. Change the qcom_spi_send_cmdaddr() function to propagate
-> these errors to the callers instead of returning with success.
+On Fri, Apr 25, 2025 at 02:11:44PM +0200, Sabrina Dubroca wrote:
+>
+> The splat goes away with
 > 
+>  	/* Only update truesize on input. */
+>  	if (!hlen)
+> -		skb->truesize += dlen - plen;
+> +		skb->truesize += dlen;
+>  	skb->data_len = dlen;
+>  	skb->len += dlen;
 > 
+> pskb_trim_unique ends up calling skb_condense, which seems to adjust
+> the truesize to account for all frags being dropped.
+> 
+> Does that look like the right fix to you?
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: spi-qpic-snand: propagate errors from qcom_spi_block_erase()
-      commit: 722a6ad4867ce8c4cb131a3371d0b5389a75dee0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+You're right.  I must've missed the truesize update in skb_condense
+when writing this.
 
 Thanks,
-Mark
-
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
 ______________________________________________________
 Linux MTD discussion mailing list
