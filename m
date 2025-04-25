@@ -4,116 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC25DC369D5
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Apr 2025 08:52:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD442C369C2
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Apr 2025 13:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nIvZnXY38yab8a72/19S+Kuw7e+sANlVBHb5fKkYHFg=; b=xunGUWfGeMY1gs
-	OvKSFKEkoDWBZvS56GP3RNymcpK+LLIaTddyoihXiMIMMy2I4m7DznlJSSQO9OgfMjwI8KObW5pWJ
-	9U/0yssuQlyr0uYgRG7ZWUahlQ6mIWEk/KJtjjoiPKW5lRJh60Sys/RYIVJWwkiO2YFm7Ei6PYkKO
-	gN700FUerQ6IjDoogAnW2qk8Kb6/w6i6Sy7ggJqcKi4Mgy2FpUEVU4VMJMcuM7vja56TAyvzCnpYJ
-	+wXlEm6YMYkmygumifxnAoPokkxJ0sFhhguxdIEzWtBJS/iKkRsmvfGJUPq0EocvdsLexkssh59oG
-	i5/4ZOLoX6ORRLcdeBrw==;
+	List-Owner; bh=6lwO+rFRPc0/RYBh/EbpakyqGlIgaHCJif0J9nPeRLs=; b=qEOHaTkseGZlNT
+	AUHAZcpSWEhlaNPNwa272sv+C1Y96HTIRHM2pEdSsmdadyGbsjyN4kNyJ/OG97lCvhY5DdbYFWNff
+	phWEYKrSxQ876NumSneEE5TGNolXIaxj1rtwD2XPGTTS7y2NFZEWtrKIu6VtFFVyagIOwV5Qc0Ywi
+	SuNwg663Tj8cKT7BsASK/NJth+fd+YRcEsLUVTS+iV0U0OzZCcDcNtk11qoQRFA5g+c4va8iHMRON
+	hBFkmhsaPjoygDDVd+CR6ny26xpTeEEGLMCAhuCbCecJkX0/taG6+lrzpNypEP2KL4Ti4YBfgSggW
+	rRGha7VgfHz1+n9adWpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8En8-0000000GQ3D-30Ac;
-	Fri, 25 Apr 2025 08:52:14 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1u8IsG-0000000HEde-2lMC;
+	Fri, 25 Apr 2025 13:13:48 +0000
+Received: from fhigh-b6-smtp.messagingengine.com ([202.12.124.157])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8En5-0000000GQ26-02lp;
-	Fri, 25 Apr 2025 08:52:13 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 11BE15C4CC2;
-	Fri, 25 Apr 2025 08:49:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BAE6C4CEE4;
-	Fri, 25 Apr 2025 08:51:58 +0000 (UTC)
-Message-ID: <8c1e6d90-c394-4d98-96f9-eff526a987ed@xs4all.nl>
-Date: Fri, 25 Apr 2025 10:51:56 +0200
+	id 1u8HuK-0000000H4jz-1BrA
+	for linux-mtd@lists.infradead.org;
+	Fri, 25 Apr 2025 12:11:54 +0000
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 8ED622540202;
+	Fri, 25 Apr 2025 08:11:48 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-07.internal (MEProxy); Fri, 25 Apr 2025 08:11:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=queasysnail.net;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1745583108; x=
+	1745669508; bh=EB/sg/VgUNtrfCqfzNTqoSG/O7x/uW7lya+Nhl3Jdqo=; b=Z
+	AkWblRTxeLrtZL4lsbHJBVc2FQyyO8F5wSZgMYj7q1amHSUMvgmdcyEvQ0C8zlUM
+	Ym2iGmY4NEHN2R5T5rEc+W2lcx4pRqZdX1yCYzHzUUIm4I9T82QGbt5w4DxggNZP
+	cm9deS7r22Pyf2xNG8dxMHeaTxSsYqb/ckRWHnxhe5U8MITEdkNKxJBXQgsOUBAx
+	GIqKFy0aDZudSiGM8qD8I+6kU0IPEdeeaY/fqN8zwfZca61ICLLkOX412w5I/aHA
+	hBTgM0zbg9zQl1ZrhYTiUn8lSNdvzEt/Dq44gceehCCi5r/Sdwf0eEZhgEjUnX8a
+	OD2zLt5UlctDAt0n/HTsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1745583108; x=1745669508; bh=EB/sg/VgUNtrfCqfzNTqoSG/O7x/uW7lya+
+	Nhl3Jdqo=; b=KeQvJ6PtaInmK6r+lAsb2Uir6eNKSJP73Vcb92/tLIwqTvODuRh
+	bbgqcF4t0mm/TI8SMXls4mMrfbSJl6HqD8sQ7i5U1j7w5YFE+CRtS353uU1ByOyx
+	5v97UGKKpFPRLDmVSc65LTjuHv3qMOh+dMJmGt9EP8k6TTua90f1qkW0a8IOIbMe
+	lmPkQIUyI1v83xt2m9DUcmbiLxkJTD1180Kfs+Jmo7iN6KTPgZL2qqsW/DlCtHW9
+	f5ZYKr86GXjOo00LVb4I2q5AwAV7y7ihEIoDt8Tx0fUe3Fa2Dw06zVh4W4vB+qG/
+	zBikZxIi2t+Xm6bv3hDNNQkcKYeZW9dIueg==
+X-ME-Sender: <xms:A3wLaEialxA_l_fysmZHryF4fDebLkiMD8kaIQizLEXMKW6e_OiQow>
+    <xme:A3wLaNB8fzc0JBBamWUWL3tTnc4E5etbeFca-XxU1BKEx3KaArArirXuU7WR6gW-Y
+    q4QpZQDYjZgBn9amrk>
+X-ME-Received: <xmr:A3wLaMFci5J-y-AKyghueCGS3s05O47r8dxM9mV7vTtvYSk4MwKgOnzgfmxn>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvhedvfedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    jeenucfhrhhomhepufgrsghrihhnrgcuffhusghrohgtrgcuoehsugesqhhuvggrshihsh
+    hnrghilhdrnhgvtheqnecuggftrfgrthhtvghrnhepuefhhfffgfffhfefueeiudegtdef
+    hfekgeetheegheeifffguedvuefffefgudffnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepshgusehquhgvrghshihsnhgrihhlrdhnvghtpdhn
+    sggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohephhgvrh
+    gsvghrthesghhonhguohhrrdgrphgrnhgrrdhorhhgrdgruhdprhgtphhtthhopehlihhn
+    uhigqdgtrhihphhtohesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrih
+    gthhgrrhgusehnohgurdgrthdprhgtphhtthhopegthhgvnhhgiihhihhhrghoudeshhhu
+    rgifvghirdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfh
+    hrrgguvggrugdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepphgrvhgvlhesuhgtfidrtgiipdhrtghpthhtoheplhhinhhugidqph
+    hmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhtvghffhgvnhdrkhhl
+    rghsshgvrhhtsehsvggtuhhnvghtrdgtohhm
+X-ME-Proxy: <xmx:A3wLaFRQe7_guGjIwgkZymX2ZHd4S5z9BR4_hu7TXBEwNaOfcpPXZg>
+    <xmx:A3wLaBxwYHM1NMGFrVSv-o4fcyyChZVMb6OCsmZ4w9o7RHEv1Liv6g>
+    <xmx:A3wLaD6Af-espcLvZj-OjQF2WhxwdJNc1vJVrrzkS8tL_2O1onIcMw>
+    <xmx:A3wLaOzfRo6hNLYY4qWOotzFSj6yWMVw--gedv7_a0t8b3t07HW1nA>
+    <xmx:BHwLaP7eu4lWYrHeZg_N_X7zSzUkCuNnUJ_g2mKpOuSEqwSza19zu1Wd>
+Feedback-ID: i934648bf:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 25 Apr 2025 08:11:46 -0400 (EDT)
+Date: Fri, 25 Apr 2025 14:11:44 +0200
+From: Sabrina Dubroca <sd@queasysnail.net>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	linux-mtd@lists.infradead.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	netdev@vger.kernel.org
+Subject: Re: [v5 PATCH 11/14] xfrm: ipcomp: Use crypto_acomp interface
+Message-ID: <aAt8AIiFWZZwgCyj@krikkit>
+References: <cover.1742034499.git.herbert@gondor.apana.org.au>
+ <d7bccafdf38259c2b820be79763f66bfaad1497e.1742034499.git.herbert@gondor.apana.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 04/13] media: saa7115: Replace open-coded parity
- calculation with parity_odd()
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
- jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
- arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
- gregkh@linuxfoundation.org, jirislaby@kernel.org, yury.norov@gmail.com,
- akpm@linux-foundation.org, jdelvare@suse.com, linux@roeck-us.net,
- alexandre.belloni@bootlin.com, pgaj@cadence.com
-Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Frank.Li@nxp.com, linux-hwmon@vger.kernel.org,
- linux-i3c@lists.infradead.org, david.laight.linux@gmail.com,
- andrew.cooper3@citrix.com, Yu-Chun Lin <eleanor15x@gmail.com>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-5-visitorckw@gmail.com>
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20250409154356.423512-5-visitorckw@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <d7bccafdf38259c2b820be79763f66bfaad1497e.1742034499.git.herbert@gondor.apana.org.au>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250425_015211_153801_25C493F5 
-X-CRM114-Status: GOOD (  12.53  )
+X-CRM114-CacheID: sfid-20250425_051153_244033_6E5E32D6 
+X-CRM114-Status: GOOD (  10.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,62 +121,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/04/2025 17:43, Kuan-Wei Chiu wrote:
-> Refactor parity calculations to use the standard parity_odd() helper.
-> This change eliminates redundant implementations.
-> 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Hi Herbert,
 
-Reviewed-by: Hans Verkuil <hverkuil@xs4all.nl>
-
-Regards,
-
-	Hans
-
-> ---
->  drivers/media/i2c/saa7115.c | 12 ++----------
->  1 file changed, 2 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/saa7115.c b/drivers/media/i2c/saa7115.c
-> index a1c71187e773..a7886269dcfc 100644
-> --- a/drivers/media/i2c/saa7115.c
-> +++ b/drivers/media/i2c/saa7115.c
-> @@ -25,6 +25,7 @@
+2025-03-15, 18:30:43 +0800, Herbert Xu wrote:
+> +static int ipcomp_post_acomp(struct sk_buff *skb, int err, int hlen)
+> +{
+> +	struct acomp_req *req = ipcomp_cb(skb)->req;
+> +	struct ipcomp_req_extra *extra;
+> +	const int plen = skb->data_len;
+> +	struct scatterlist *dsg;
+> +	int len, dlen;
 >  
->  #include "saa711x_regs.h"
+> -	len = dlen - plen;
+> -	if (len > skb_tailroom(skb))
+> -		len = skb_tailroom(skb);
+> +	if (unlikely(err))
+> +		goto out_free_req;
 >  
-> +#include <linux/bitops.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
-> @@ -664,15 +665,6 @@ static const unsigned char saa7115_init_misc[] = {
->  	0x00, 0x00
->  };
+> -	__skb_put(skb, len);
+> +	extra = acomp_request_extra(req);
+> +	dsg = extra->sg;
+> +	dlen = req->dlen;
 >  
-> -static int saa711x_odd_parity(u8 c)
-> -{
-> -	c ^= (c >> 4);
-> -	c ^= (c >> 2);
-> -	c ^= (c >> 1);
-> -
-> -	return c & 1;
-> -}
-> -
->  static int saa711x_decode_vps(u8 *dst, u8 *p)
->  {
->  	static const u8 biphase_tbl[] = {
-> @@ -1227,7 +1219,7 @@ static int saa711x_decode_vbi_line(struct v4l2_subdev *sd, struct v4l2_decode_vb
->  		vbi->type = V4L2_SLICED_TELETEXT_B;
->  		break;
->  	case 4:
-> -		if (!saa711x_odd_parity(p[0]) || !saa711x_odd_parity(p[1]))
-> +		if (!parity_odd(p[0]) || !parity_odd(p[1]))
->  			return 0;
->  		vbi->type = V4L2_SLICED_CAPTION_525;
->  		break;
+> -	len += plen;
+> -	skb_copy_to_linear_data(skb, scratch, len);
+> +	pskb_trim_unique(skb, 0);
+> +	__skb_put(skb, hlen);
+>  
+> -	while ((scratch += len, dlen -= len) > 0) {
+> +	/* Only update truesize on input. */
+> +	if (!hlen)
+> +		skb->truesize += dlen - plen;
 
+Are you sure we need to subtract plen here? When I run fragmented
+traffic with ipcomp, I'm hitting the WARN from skb_try_coalesce during
+reassembly, ie truesize is too small:
+
+    delta = from->truesize - SKB_TRUESIZE(skb_end_offset(from));
+    WARN_ON_ONCE(delta < len);
+
+The splat goes away with
+
+ 	/* Only update truesize on input. */
+ 	if (!hlen)
+-		skb->truesize += dlen - plen;
++		skb->truesize += dlen;
+ 	skb->data_len = dlen;
+ 	skb->len += dlen;
+
+pskb_trim_unique ends up calling skb_condense, which seems to adjust
+the truesize to account for all frags being dropped.
+
+Does that look like the right fix to you?
+
+-- 
+Sabrina
 
 ______________________________________________________
 Linux MTD discussion mailing list
