@@ -4,115 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7266C369CB
-	for <linux-mtd@archiver.kernel.org>; Sat, 26 Apr 2025 10:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00474C369D3
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Apr 2025 07:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XYso7iHvMjpBpA/yoKcthq1q0l4ooDqhmoVhv9n8soA=; b=EI4VOR5ZknVkhn
-	LoqaGgG5dGtjGJ8H03+HTZyIt42QA/yjQQ9ZxV2yPz27o/M0lzWT4/vuyT6I6W7W49PxTRv4Ll6AL
-	06dw+FQ4osXm1gLgW1alR8DuCOXkZiJcWbCm0R6msZPFreJi4H7Am8FUvywcfRogEugHPG8XhitGq
-	6iH7qRS9Am4BSISAGuZUi/lejGOMH4z8GhHim6l4VJ4EuqHnz5st60/bKsYffvJi+yBZPgAzniTJS
-	4dy+vlvh4XRAT5Q/OtacgWUjxslF0FRX3yaW6ZVxaXXs+6CiDQKYw+Zrrm9q7spRrt2wqZQEdC+6X
-	o8JaZM9GwMLLSFWWDbaQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=G7FAyXlOvCOBge1BXFhgK0fA1jVXMtTyyxRsJdUvEMU=; b=bcOqFWnHOZ0SzP
+	kQm7KXPpoP7D1IgMeBKFoGDi3p64vnIsKVXCWwrvV87Jc+I4W4Ibk4b7l/oXTvPhVTpCeNp8tq3BC
+	Bwc6WISS+1LQphM2TXI3Q1cl1abdKl8HUvBRR+aQ1bqLJXHxuISmHCVIfU36l7DlSVLYc3hJnDNnv
+	3JT/YmA1xvqhw3tJtvIGxk5xmSO4ob5gzZykuLXB3HPi7kWKPpMdQVaohe3d9H+Bznwr2Bqe6MjOH
+	FvoVcSwyWdg0FnQpCPN2gW8pe9byM49paW1ySHhH3KszJ8BIxvoFPhopTNBHsoSD7PHmP2/Hd2+oZ
+	U4lyhGyeyMQoSRoNY/Uw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8cgB-00000001rTu-2Aw4;
-	Sat, 26 Apr 2025 10:22:39 +0000
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+	id 1u9JBY-00000005IQj-2rBG;
+	Mon, 28 Apr 2025 07:45:52 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u8bcQ-00000001nIX-37vI;
-	Sat, 26 Apr 2025 09:14:43 +0000
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-7376e311086so4234342b3a.3;
-        Sat, 26 Apr 2025 02:14:41 -0700 (PDT)
+	id 1u9IxJ-00000005FqA-0fcB
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 28 Apr 2025 07:31:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
+	Reply-To:Content-ID:Content-Description:In-Reply-To:References;
+	bh=4TbMRqWlbuD8Jk0c4g1z1Zqott/oeTMW5o8nGkLNa1I=; b=FCEuFAP+8KFjnvwWLEjK9C86Nd
+	T2Dx7JyHmAC1A+rYaRoD7CmDqU4BL2pR53qqHnuOYIvGew1Ll1NdxXFXGvp6gWL5Y6Q0tGotKYGiQ
+	xDpJkiEFQ7D25axe8FrxERBibmoYyjHEEk4wwSk66r7MM67ukNEgCooP26GerkiWgX9B+yQPUE/fK
+	Vh6x7vSj9RTvsKC1K+pc9lTFgMiUdybqqgvsFYsCzz/Aki/68QkpV7B3UOamLYK6GsnXGHaBRQ5Mh
+	ZoTzr36abx5tZpm91W0DP0WAVeRVFmc8eQVbOfaFv3HFAZoaLwMc9Lb3v2D7pjGSMfMiOvCzumlmQ
+	iZzaeNWg==;
+Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u9IxE-0000000CaDg-3Wdf
+	for linux-mtd@lists.infradead.org;
+	Mon, 28 Apr 2025 07:31:07 +0000
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5f6c3f7b0b0so8249349a12.0
+        for <linux-mtd@lists.infradead.org>; Mon, 28 Apr 2025 00:31:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745658881; x=1746263681; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dpw6EJump0TSOrBYBam8lLy7cnOl6Tzi7s2IdyQv1Eo=;
-        b=cTbsGDxSTLjSsPcQCMhE9goSDIoS/BvDqPZl1LqjMUjlHtz4gMmA4EaLwyJku9dCe5
-         iBzIVlVIXRSofqhDhtNwg3ojm0ELAS4hZLEpQnSiKGWmgKGseieK6+ukvlW3Tx4GZBi0
-         r7fd0NEM11vrzlc7Q24tE22noG15Mn0VohAR7lV0qFjSKris4+rsuU1xeF8hQQEFNZU9
-         R15b7u/AapGmjOm3Z7amLGSzKiSxA0FSyd4roswITRBX1glR1HIl/Fz7HfebowTwiquo
-         ZNwL/GqJKipTvZCeHf1hyUhLR+vP2DPsrcGElPzkaK59kALUXXi8BhxbdxBOSdyrtH5J
-         eQew==
+        d=gmail.com; s=20230601; t=1745825461; x=1746430261; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4TbMRqWlbuD8Jk0c4g1z1Zqott/oeTMW5o8nGkLNa1I=;
+        b=QEJVeMTJPy71jgOPTtR3easE0DuGwK4cDgQ97CnlTKQFImJj6qr2LFWfKdwpaQc3+r
+         dh+WlZDfMe12LwjrqX5qXnKYNXHHGmjJfdwaHiTUNrfSu2oUWUo6AWA0WyZSPsoOjPja
+         /owhSq1y21Onst8pzEdrNV3V6HWsdf8kyQrWQt8xJtMi3zeZ7aX0RW4JwJn8r+HZaw/P
+         u29Muyo8GeJakI0eeKlPRJWDwdKUyVhSUQX079f6JDKbik5BMGPFZDJSsSmMyF6Kf9X6
+         GivXUFDadrCV1QlzOdGyA8pyuNFh7gbwhZfRdP8gJkbz7wDC95YZmA/2GmzfCXsCmsQy
+         bfDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745658881; x=1746263681;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dpw6EJump0TSOrBYBam8lLy7cnOl6Tzi7s2IdyQv1Eo=;
-        b=RJ1qFevwfTIEDWEctjkfp/+e5d0/9PXtx4s3pfzr5kzVnt91mMNJg8BYfblKXNVPzo
-         uyi6XadDyj3soXj2dmApO+HA5ONhEntHY/dUjQFqWJyjf6v2G/NSxWeXbv9lQdaQTIdt
-         k2YLhelrLgyJiJo1juL35aQ1RgoaC9iYHM49DBP/N1yKhF+NlM+ubOEWWfdMrkNxJtlt
-         1rrUadS8VZ+lPl0btUnxHGNDrYtyWcCr6UnI3edZOffKKHTEc7ZmgRlLQmjKmeVYYN5Q
-         gvZEmNCn8VWkB1xVt5iA0EQviVWEKB2PMvuSXOiKcFgQ16s0f8MUGEF2Y5yEFoG1Sqva
-         sT5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUu4StV44Zhm8pfFyshyXpvLmB7DB5CdDXSUTVoJBruOPPwcAXYekcvfofZVMEIzbLUzvJk6jfpxsg=@lists.infradead.org, AJvYcCVaXhxRpQoEdp2NKz8Un2+tWOMzUPnIsnAAIc4P2GlOZ+M+Bzrw3/IhtalFO27GUUj17bz8pPdIZtj9@lists.infradead.org
-X-Gm-Message-State: AOJu0YyzuoVFI6+dgjFQISQw/UPYRdrBygA3rn8UmmQ/xbAgbUyEbtFV
-	vF4Qp2VWduma8mjz1HPnua0iTFr13529dbg8bHgMU5SWVtT+t4vI
-X-Gm-Gg: ASbGncuya/gQxUO0Sb8ZxtbrUB41kFGBnAMXF6eoHUbiqLOq4laiAhmsxUcc3G4DHKO
-	zkNziLd+FCfAH2/J8X8pLbqLNm7/MWnAIJuOVpZp06V7YFfN6eI8shjkU5Ul0qyJFURF8R8qVfs
-	2yo26ifiFotNlhAu1Bmj+Xy+ocn6tzvmUA3wrVKIlG4P4tQQSkpVyX4bqdWK0FYvMd61HIza00K
-	riqXQ38LUoH+FqpNIgMZwJn0of0fWFVbJ2XEL8p5gqydPHnMjVNAB6NC/JqRujwdDF+D7JGqUI9
-	4T78vEDKSmubS4IxF/uBWJ9E4hVK0NlRVMUxyYvy4QDbPH4up4mSVCRLm/COpnLSFzHW
-X-Google-Smtp-Source: AGHT+IFgnshRXYAm4vLgOrmgYGZWM8t1SObZHkSRdPxsGHvAJ5uKKQ60xC74a/vGxL92untQtleJTA==
-X-Received: by 2002:a05:6a00:1306:b0:736:73ad:365b with SMTP id d2e1a72fcca58-73fd74c23c4mr7475320b3a.14.1745658881199;
-        Sat, 26 Apr 2025 02:14:41 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73e259412b2sm4594535b3a.66.2025.04.26.02.14.31
+        d=1e100.net; s=20230601; t=1745825461; x=1746430261;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4TbMRqWlbuD8Jk0c4g1z1Zqott/oeTMW5o8nGkLNa1I=;
+        b=NySgTso9z9i5caonEXi0MWGRkMuUClqe3ZM748Xy4Bddw78IxGzHxU1bL2LOLJXVBr
+         mNARobOZjwd3GelfWuw4sD4pjdVs0e6SeFdj/urfa8hHXIVGFJlxndpw5t6SbY1mY6Ws
+         mofiA+1SrfS3pDqUg5SLk3isbpAdTl0mlEm2KmGEKbEJ3Amk11/OPkjB6LvM4fdVSzrr
+         ASjnGQGtibx0oBs9zeBxEjA7NZbeqOe1v/Y8tm4LPbQe3EyIhkOpap6aJ/1/ae1hOPkD
+         RWUwmsCGwgJff+SdBjWmzNXgERh+jTU8MNjLuQo032Tp4uldsx8tnHesHiwrVlj5Nkne
+         jCfw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6ZxgLPaHAXuUNvr+4FqbDmfOJUGeBYQcqIGuD/rjAU8Et2eb6dJ1jB1bwjHVNJDOUB/iYFrnWiwA=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxyzoe2yCBGL9ArQhVFckOh3n9EIhWJi+uPoRBkgcqmq43QOzWA
+	w/rVVtAIz/sr8bYgnh9T2XsszwYh0Oil8WRO5TsRkqxITw5ADVfzCyFvig==
+X-Gm-Gg: ASbGncunRlIlhDOfWB9Z7no4y4VsDt18Vxpty56ZV0btr/uhDtmh39nt4fK6qX/Bbsh
+	aU0+SKPNe5k5Swh8W70CBu98zRcmaiWORDWyQUg9bm4fX1Rqfe2PsOHy+NJK6OEma47PrOxui4y
+	9N+SiknH/dKDLfU+EBDzQ4OyX4MDERZFvQihs3IF15AASVMP5etgRLytD3FPYZccWoBAxtxpoXG
+	tzHcINavAGsMw3zG710tOcQP0tkeLLOTKgdX0jCxioYXlAOL0xBsnbzSOX7TQLXf21elxzo3Ak/
+	cOw+sMmDll1Oe56yJqumTza6BDobfEL9m4tEmobRC9V/WyzTfK5qdwXqP/HcMDLlh48DrLDTDK3
+	Wxoi27g==
+X-Google-Smtp-Source: AGHT+IECkAD0RhKI699skwaAuKgZAu1ETRTnosTVuSJZ0BYUVLz8u5qyGONHw+yQVtW+1wfmwORi6g==
+X-Received: by 2002:a50:858d:0:b0:5f8:215d:769f with SMTP id 4fb4d7f45d1cf-5f8215d76aamr95590a12.2.1745825460645;
+        Mon, 28 Apr 2025 00:31:00 -0700 (PDT)
+Received: from [192.168.20.124] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
+        by smtp.googlemail.com with ESMTPSA id 4fb4d7f45d1cf-5f70354638bsm5371527a12.63.2025.04.28.00.30.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Apr 2025 02:14:40 -0700 (PDT)
-Date: Sat, 26 Apr 2025 17:14:29 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: "H. Peter Anvin" <hpa@zytor.com>, Yury Norov <yury.norov@gmail.com>
-Cc: Yury Norov <yury.norov@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
-	andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-	rfoss@kernel.org, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-	simona@ffwll.ch, dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, akpm@linux-foundation.org, jdelvare@suse.com,
-	linux@roeck-us.net, alexandre.belloni@bootlin.com, pgaj@cadence.com,
-	alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
-	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 00/13] Introduce parity_odd() and refactor redundant
- parity code
-Message-ID: <aAyj9SMvYrN9tXZC@visitorckw-System-Product-Name>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <Z_amQp3gK5Dm8Qz3@yury>
- <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
- <Z_a9YpE46Xf8581l@yury>
- <e97a83a2-dabd-4dc3-b69a-840ca17d70b5@zytor.com>
- <Z/lEkDwefWvw4ZA3@visitorckw-System-Product-Name>
- <8571fd6f-4e71-4a6d-b2e8-16d9d72fa56e@zytor.com>
+        Mon, 28 Apr 2025 00:31:00 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Mon, 28 Apr 2025 09:30:55 +0200
+Subject: [PATCH] spi: spi-qpic-snand: fix NAND_READ_LOCATION_2 register
+ handling
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8571fd6f-4e71-4a6d-b2e8-16d9d72fa56e@zytor.com>
+Message-Id: <20250428-qpic-snand-readloc2-fix-v1-1-50ce0877ff72@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAK4uD2gC/x2MywqEMAwAf0VyNlDja9lfEQ81iRpYqtuCCOK/W
+ zzOwMwFSaNpgm9xQdTDkm0hQ1UWwKsPi6JJZiBHrWvog//dGFPwQTCql9/GhLOdODGL63mmTmr
+ I9R416/c8jPf9AIu5D79pAAAA
+X-Change-ID: 20250428-qpic-snand-readloc2-fix-bccd07cf26d3
+To: Mark Brown <broonie@kernel.org>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Md Sadre Alam <quic_mdalam@quicinc.com>
+Cc: linux-spi@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250426_021442_804910_F291F88C 
-X-CRM114-Status: GOOD (  19.16  )
+X-CRM114-CacheID: sfid-20250428_083105_034642_8C6CF458 
+X-CRM114-Status: GOOD (  12.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,41 +120,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Apr 25, 2025 at 12:33:21PM -0700, H. Peter Anvin wrote:
-> On 4/11/25 09:34, Kuan-Wei Chiu wrote:
-> > > 
-> > > In either case, instead of packing the cascade into one function, make good
-> > > use of it.
-> > > 
-> > > In the latter case, __builtin_constant_p() isn't necessary as it puts the
-> > > onus on the architecture to separate out const and non-const cases, if it
-> > > matters -- which it doesn't if the architecture simply wants to use
-> > > __builtin_parity:
-> > > 
-> > > #define parity8(x)  ((bool) __builtin_parity((u8)(x)))
-> > > #define parity16(x) ((bool) __builtin_parity((u16)(x)))
-> > > #define parity32(x) ((bool) __builtin_parity((u32)(x)))
-> > > #define parity64(x) ((bool) __builtin_parityll((u64)(x)))
-> > > 
-> > > As stated before, I don't really see that the parity function itself would
-> > > be very suitable for a generic helper, but if it were to, then using the
-> > > "standard" macro construct for it would seem to be the better option.
-> > > 
-> > > (And I would be very much in favor of not open-coding the helper everywhere
-> > > but to macroize it; effectively creating a C++ template equivalent. It is
-> > > out of scope for this project, though.)
-> > > 
-> > IIUC, you prefer using the parity8/16/32/64() interface with
-> > __builtin_parity(), regardless of whether there are users on the hot
-> > path?
-> 
-> As a per-architecture opt-in, yes.
-> 
-I'd prefer to see Yury agree first, otherwise there's a high risk of a
-maintainer NAK after the next submission.
+The precomputed value for the NAND_READ_LOCATION_2 register should be
+stored in 'snandc->regs->read_location2'.
 
-Regards,
-Kuan-Wei
+Fix the qcom_spi_set_read_loc_first() function accordingly.
+
+Fixes: 7304d1909080 ("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+ drivers/spi/spi-qpic-snand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
+index ae32c452d0bcf852b69b76e595f3588ea7e1a670..94948c8781e83f30650e5fbac56897daf5eb3c2c 100644
+--- a/drivers/spi/spi-qpic-snand.c
++++ b/drivers/spi/spi-qpic-snand.c
+@@ -142,7 +142,7 @@ static void qcom_spi_set_read_loc_first(struct qcom_nand_controller *snandc,
+ 	else if (reg == NAND_READ_LOCATION_1)
+ 		snandc->regs->read_location1 = locreg_val;
+ 	else if (reg == NAND_READ_LOCATION_2)
+-		snandc->regs->read_location1 = locreg_val;
++		snandc->regs->read_location2 = locreg_val;
+ 	else if (reg == NAND_READ_LOCATION_3)
+ 		snandc->regs->read_location3 = locreg_val;
+ }
+
+---
+base-commit: 15cfe55ec58ace931a73e19e5367598734ceb074
+change-id: 20250428-qpic-snand-readloc2-fix-bccd07cf26d3
+
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
