@@ -4,88 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB14CC3ABA9
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Apr 2025 09:44:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60EE3C3ABA9
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Apr 2025 10:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sSAKwoB7GoShP/DRwmXsc+cy8i1cL1lgA8etieadclw=; b=4Uq5c8ENbR9ST0
-	lk16iiD3zSs6AuvDWgKFXt4Z7UOlO1erpBVWQBe9MsayaMxmgFtyiOhywp8TR3CL3xUNM/5xi6ryk
-	FB7EcUtGRSpORGZjPDalt8iEzq+TjOh6IeI4s/lf2O3kf/1yjj9et5+ToMHCUF69+RX+6Be4LC+qt
-	di2ACJ/BwxfPJzRCpieOgC3cepNgEG9m/4py/UMtBm4mfde1OIOOVk3CdrP2yU17ldhAwp9jVz/ql
-	epP2S1dmRKmufKRs1dlzaJzHCgFNeR7GGT5rpTQIQ56lworn2Ub4zfmtVwjDWHpllFIM/zoyBUshP
-	s38N6YqozcWsqZAlPXww==;
+	List-Owner; bh=QWvYH8pAzme5E0S68dtXoKxjvARa968Ca1Fw/mQ3Nvc=; b=18Q5I8Nr1a2VWU
+	ZnTBz0bGLKz5PNlrdjHwXKNnCLZpHkRXsPcoFaLYOHxLsSELGW7LeHR3A5aRp7pnu1oEudfhdscdq
+	vZMuWqIgDo1uIGXsCcbeQR1pf7Ste1wHb9uIeucvZibRNiZ7oppXD1ZsTy2YACguFSjBg/hpw5zju
+	jOG0LDgSvuoBM4VUtGSBQ8dIEGCANUKFPmXueK6P03PLnt8grE1VUl1S4A9YzU0Pv8jx7E8IOX23m
+	uOYuo/yf0UdfpuSTRnU7O6fXABKkvPJwLq9LQ3dd9TJj1HH2XgFxr3rsSy/aN3xK0KsuX+sX5IV/R
+	3pRXIO4mNQnvFWU11rEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9hVo-00000009BZW-2G9q;
-	Tue, 29 Apr 2025 09:44:24 +0000
-Received: from mgamail.intel.com ([198.175.65.11])
+	id 1u9i6V-00000009I5B-2WSA;
+	Tue, 29 Apr 2025 10:22:19 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9hVm-00000009BYy-2Mob
+	id 1u9i5E-00000009Hur-1W8c
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Apr 2025 09:44:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1745919862; x=1777455862;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wh7FchBcfOdfExNX3BYz2qNe2hMS+gRAYru+0UUvZes=;
-  b=OCv6+IaaG06WCSW2P2KzmTcgLMRgcX/Mf0Wibn8O7+DG5NCiJj5pTpr5
-   IpDzjWnBy192+ixxYub7XjUmbbBD3GYWdvrBNTF1/CstMwNvHS37eMZEz
-   i1Lx0nkyDIFBQTyksg5hX66XRYCSr8c7XWD+sPLFTthBckf5QCy5z+0oI
-   SwubT8TuGU+zZ6mn2hD4yZQ72GYFiUnUv4NQF1mg95ZWjQ+p3bgLSTzBe
-   4FwRxgT5aEWhEGUCvnH1RjPWyJimy4svtGlFlHbUG2rcotBL/NapygJfL
-   nZMehfVtZcbHpl5ZuA0sjddE5q/M2A5LeMZqNCyyqFg5QcCp2ziRvBMB9
-   w==;
-X-CSE-ConnectionGUID: 7MPgDYpjQuSKn9asMBTwFg==
-X-CSE-MsgGUID: ULMI12T9Qemn9v6cKvawrg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11417"; a="57731560"
-X-IronPort-AV: E=Sophos;i="6.15,248,1739865600"; 
-   d="scan'208";a="57731560"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2025 02:44:21 -0700
-X-CSE-ConnectionGUID: ESk4VnhqRUumDTvwR81cKw==
-X-CSE-MsgGUID: cp5503b2Siai0RouYOw96g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,248,1739865600"; 
-   d="scan'208";a="133726320"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2025 02:44:16 -0700
-Date: Tue, 29 Apr 2025 12:44:13 +0300
-From: Raag Jadav <raag.jadav@intel.com>
-To: Alexander Usyskin <alexander.usyskin@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	Karthik Poosa <karthik.poosa@intel.com>,
-	Reuven Abliyev <reuven.abliyev@intel.com>,
-	Oren Weil <oren.jer.weil@intel.com>, linux-mtd@lists.infradead.org,
-	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Tomas Winkler <tomasw@gmail.com>
-Subject: Re: [PATCH v9 03/12] mtd: intel-dg: implement region enumeration
-Message-ID: <aBCfbaYs9CnXL2h1@black.fi.intel.com>
-References: <20250424132536.3043825-1-alexander.usyskin@intel.com>
- <20250424132536.3043825-4-alexander.usyskin@intel.com>
+	Tue, 29 Apr 2025 10:21:01 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53T9rPq3015584;
+	Tue, 29 Apr 2025 10:20:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	EIbRRhBoADcI+1rAWz3pn4vq2fzm9cFIBshsTy1XdCw=; b=dQ9JAecLAzkwoqc9
+	q7DDZNAH3aXnJXTq0Wws6gnWoDqsVzo3JMIDQkdr2mMzg8yi9/DxCK4bqgU5QPYA
+	x+3454539bvNAVxXTC37HpX95gpu7LdBuFdrUTCCZFvbOPlvIbI07A0l/0XjqL/R
+	oMkMtVslfxTBc2/xqQpEL8K5Ywb8g4Wc4F7F34OhSFn2uBzeShi2w6yHbdzP9n/Y
+	R5JZCyF8CBCgSYleKqu25XXvmTWschb802jsZkpmZstQkyDHeT+hF7ck4mMGa6YY
+	ROZs53EU0zNEq+Kyr9yL2n514wqNq0pkIqFhMifFAYmBSo5XTbqYNuMlM9QgCBb7
+	g1tAtg==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 468qjwv4kx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 29 Apr 2025 10:20:50 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 53TAKbHT026640
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 29 Apr 2025 10:20:37 GMT
+Received: from [10.151.36.30] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 29 Apr
+ 2025 03:20:34 -0700
+Message-ID: <ab24fa96-8c2a-8be3-bcb2-f31e9e6f1ec6@quicinc.com>
+Date: Tue, 29 Apr 2025 15:50:31 +0530
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250424132536.3043825-4-alexander.usyskin@intel.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] spi: spi-qpic-snand: fix NAND_READ_LOCATION_2 register
+ handling
+Content-Language: en-US
+To: Gabor Juhos <j4g8y7@gmail.com>, Mark Brown <broonie@kernel.org>,
+        "Sricharan Ramabadhran" <quic_srichara@quicinc.com>,
+        Varadarajan Narayanan
+	<quic_varada@quicinc.com>
+CC: <linux-spi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20250428-qpic-snand-readloc2-fix-v1-1-50ce0877ff72@gmail.com>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <20250428-qpic-snand-readloc2-fix-v1-1-50ce0877ff72@gmail.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: cheBpp22EDXEz9QtfgNkn56uxQHyxvKc
+X-Proofpoint-GUID: cheBpp22EDXEz9QtfgNkn56uxQHyxvKc
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNDI5MDA3NyBTYWx0ZWRfX3RVWVafmDu3r aiVKwtepLBdc4DmaFd1072webve7JoHqsJolLlzIj0+M9wu9uHNwimZ4LOtrNU7OSMq4V04CIqS pPiXV9fv52MDG5A11domMkWxenTTj2j+kFBJ/ZUeNibFyhySO34l+ojWpYGkeuwb5VGelHSXz7f
+ YGcZ5UjXHRwPtSM8X3tp0F7FehEAc3JLUxJd2pfdI1dvSUhGn0KtUoSWqYiNXt2y1H4/TLqqCmb YbWBXDB9jy/kVURRSNquO1IUNvVBhfoCNKbloJBdTpQ8Bnt1/BDs80O7GpMFwR4J8Amk6KUOHy3 7jIaJrnP8ADYFSIMtb2jQpdFFylfVF9BlqFeb0Re/rLbYlx1NhnM9Rwm3LVAUYIcyV+2pDWnYVw
+ TrIRhD1ZRelo9FZmbgI1G09Tz6D9sWRODhSjSKALusW7vff/S7iAyPd1eYy/mddiwWTHWfAQ
+X-Authority-Analysis: v=2.4 cv=c/urQQ9l c=1 sm=1 tr=0 ts=6810a802 cx=c_pps a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17 a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=XR8D0OoHHMoA:10 a=pGLkceISAAAA:8 a=COk6AnOGAAAA:8 a=2CvQLFO0oMS28NyxHQUA:9
+ a=QEXdDO2ut3YA:10 a=TjNXssC_j7lpFel5tvFf:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-04-29_03,2025-04-24_02,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=995
+ phishscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ clxscore=1015 spamscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2504290077
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250429_024422_649017_0FAB2F7D 
-X-CRM114-Status: GOOD (  16.39  )
+X-CRM114-CacheID: sfid-20250429_032100_527328_54B9A754 
+X-CRM114-Status: GOOD (  15.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,140 +104,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 24, 2025 at 04:25:27PM +0300, Alexander Usyskin wrote:
-> In intel-dg, there is no access to the spi controller,
-> the information is extracted from the descriptor region.
 
-...
 
-> @@ -22,9 +24,199 @@ struct intel_dg_nvm {
->  		u8 id;
->  		u64 offset;
->  		u64 size;
-> +		unsigned int is_readable:1;
-> +		unsigned int is_writable:1;
->  	} regions[] __counted_by(nregions);
->  };
->  
-> +#define NVM_TRIGGER_REG       0x00000000
-> +#define NVM_VALSIG_REG        0x00000010
-> +#define NVM_ADDRESS_REG       0x00000040
-> +#define NVM_REGION_ID_REG     0x00000044
-> +/*
-> + * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
-> + * [23:16]-Reserved
-> + * [31:24]-Erase MEM RegionID
-> + */
-> +#define NVM_ERASE_REG         0x00000048
-> +#define NVM_ACCESS_ERROR_REG  0x00000070
-> +#define NVM_ADDRESS_ERROR_REG 0x00000074
-> +
-> +/* Flash Valid Signature */
-> +#define NVM_FLVALSIG          0x0FF0A55A
-> +
-> +#define NVM_MAP_ADDR_MASK     GENMASK(7, 0)
-> +#define NVM_MAP_ADDR_SHIFT    0x00000004
-> +
-> +#define NVM_REGION_ID_DESCRIPTOR  0
-> +/* Flash Region Base Address */
-> +#define NVM_FRBA      0x40
-> +/* Flash Region __n - Flash Descriptor Record */
-> +#define NVM_FLREG(__n) (NVM_FRBA + ((__n) * 4))
-> +/*  Flash Map 1 Register */
-> +#define NVM_FLMAP1_REG  0x18
-> +#define NVM_FLMSTR4_OFFSET 0x00C
-> +
-> +#define NVM_ACCESS_ERROR_PCIE_MASK 0x7
-> +
-> +#define NVM_FREG_BASE_MASK GENMASK(15, 0)
-> +#define NVM_FREG_ADDR_MASK GENMASK(31, 16)
-> +#define NVM_FREG_ADDR_SHIFT 12
-> +#define NVM_FREG_MIN_REGION_SIZE 0xFFF
+On 4/28/2025 1:00 PM, Gabor Juhos wrote:
+> The precomputed value for the NAND_READ_LOCATION_2 register should be
+> stored in 'snandc->regs->read_location2'.
+> 
+> Fix the qcom_spi_set_read_loc_first() function accordingly.
+> 
+> Fixes: 7304d1909080 ("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
+> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+> ---
+>   drivers/spi/spi-qpic-snand.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
+> index ae32c452d0bcf852b69b76e595f3588ea7e1a670..94948c8781e83f30650e5fbac56897daf5eb3c2c 100644
+> --- a/drivers/spi/spi-qpic-snand.c
+> +++ b/drivers/spi/spi-qpic-snand.c
+> @@ -142,7 +142,7 @@ static void qcom_spi_set_read_loc_first(struct qcom_nand_controller *snandc,
+>   	else if (reg == NAND_READ_LOCATION_1)
+>   		snandc->regs->read_location1 = locreg_val;
+>   	else if (reg == NAND_READ_LOCATION_2)
+> -		snandc->regs->read_location1 = locreg_val;
+> +		snandc->regs->read_location2 = locreg_val;
+>   	else if (reg == NAND_READ_LOCATION_3)
+>   		snandc->regs->read_location3 = locreg_val;
+>   }
+> 
+> ---
+> base-commit: 15cfe55ec58ace931a73e19e5367598734ceb074
+> change-id: 20250428-qpic-snand-readloc2-fix-bccd07cf26d3
 
-Should we move these to a header?
+Reviewed-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 
-> +static inline void idg_nvm_set_region_id(struct intel_dg_nvm *nvm, u8 region)
-> +{
-> +	iowrite32((u32)region, nvm->base + NVM_REGION_ID_REG);
-> +}
-> +
-> +static inline u32 idg_nvm_error(struct intel_dg_nvm *nvm)
-> +{
-> +	void __iomem *base = nvm->base;
-> +
-> +	u32 reg = ioread32(base + NVM_ACCESS_ERROR_REG) & NVM_ACCESS_ERROR_PCIE_MASK;
-> +
-> +	/* reset error bits */
-> +	if (reg)
-> +		iowrite32(reg, base + NVM_ACCESS_ERROR_REG);
-> +
-> +	return reg;
-> +}
-> +
-> +static inline u32 idg_nvm_read32(struct intel_dg_nvm *nvm, u32 address)
-> +{
-> +	void __iomem *base = nvm->base;
-> +
-> +	iowrite32(address, base + NVM_ADDRESS_REG);
-> +
-> +	return ioread32(base + NVM_TRIGGER_REG);
-> +}
-> +
-> +static int idg_nvm_get_access_map(struct intel_dg_nvm *nvm, u32 *access_map)
-> +{
-> +	u32 flmap1;
-> +	u32 fmba;
-> +	u32 fmstr4;
-> +	u32 fmstr4_addr;
-
-Nit: These are in order of appearance vs reverse xmas tree in other places.
-Perhaps make them consistent?
-
-> +	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
-> +
-> +	flmap1 = idg_nvm_read32(nvm, NVM_FLMAP1_REG);
-> +	if (idg_nvm_error(nvm))
-> +		return -EIO;
-> +	/* Get Flash Master Baser Address (FMBA) */
-> +	fmba = (FIELD_GET(NVM_MAP_ADDR_MASK, flmap1) << NVM_MAP_ADDR_SHIFT);
-> +	fmstr4_addr = fmba + NVM_FLMSTR4_OFFSET;
-> +
-> +	fmstr4 = idg_nvm_read32(nvm, fmstr4_addr);
-> +	if (idg_nvm_error(nvm))
-> +		return -EIO;
-> +
-> +	*access_map = fmstr4;
-> +	return 0;
-> +}
-> +
-> +static bool idg_nvm_region_readable(u32 access_map, u8 region)
-> +{
-> +	if (region < 12)
-
-Anything special about 12? Should it have a macro def somewhere?
-
-> +		return access_map & BIT(region + 8); /* [19:8] */
-> +	else
-> +		return access_map & BIT(region - 12); /* [3:0] */
-> +}
-> +
-> +static bool idg_nvm_region_writable(u32 access_map, u8 region)
-> +{
-> +	if (region < 12)
-
-Ditto.
-
-> +		return access_map & BIT(region + 20); /* [31:20] */
-> +	else
-> +		return access_map & BIT(region - 8); /* [7:4] */
-> +}
-
-Raag
+> 
+> Best regards,
 
 ______________________________________________________
 Linux MTD discussion mailing list
