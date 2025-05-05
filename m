@@ -4,108 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 855F7C3ABB0
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 May 2025 11:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF68C3ABAA
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 May 2025 13:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CjZ+TOabCXhNcnhJU0MDRFeBoh0YnOLX/wlfpO3fNsw=; b=HKx/mNxHxLk9kh
-	xNLVXn/VzY9CSSQ5ruF88v5dPqI9cx+7y2nJQoSGfPc+41oCVr7nfp+FGi5pMIk63EOlyKvA7FyI1
-	WeauIu34hcdd0ze26VYqPihk2v9K7FHbSEKM1aHWISORuAv0YSyu2tExw8PFRXK7BGshYJ85sNHfh
-	zLrmsodMojQG9YUr+Zg75dJoFZaroNB44mQytGiv72Z31wgPj+Kh4tVs3By72woh4UIenHbT0Y/bW
-	aP3vPSU0Gf8VoKiKPHrniwb/yQ0N/OR2YqLC20xym2W8IuzfcYpp4Nntmy3I1HEkIHhYxqJR6zXrQ
-	IcLdXIQk7NuDWhdSLegQ==;
+	List-Owner; bh=QGaYRog42CAdjQS6xxUwXaf2wm/45xrynaRCt9Wf3bo=; b=JdWNy811PLvFQk
+	U/7nQf+NQN+IvvhMs8wLT+kUGbxtQd64Ls6w6GYCyoHyMEpcJW5H5RkdMz8nb1KqFLj2o6RcdOqmI
+	HhtU5mFFlCns4hYFTBWO2BctS1GOmGdemrMjQCofm2AZKMNUb9RwGTFofdtvNQCvg3GQPZ6YpgNsF
+	+589/nTvQ7YlkpWUJ1rX2xFVPaR9oYJaBVILaL6cjfMOpc1VUNhrI0Dv3SrxM7LbS1KIVqpFFAfZm
+	EKatws+khZ6Ik9QivDFPrcSXgB5raXmjwHj5d0h1tw4ZaxZnEFasvRXKWx9WcPD60i86KNP33lMJe
+	hxMaaU8URW3AFNe3u+3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uBtp9-000000078lS-031p;
-	Mon, 05 May 2025 11:17:27 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uBvlh-00000007TCe-238Y;
+	Mon, 05 May 2025 13:22:01 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uBtp6-000000078l7-2okF
+	id 1uBvlc-00000007T8e-0ZFi
 	for linux-mtd@lists.infradead.org;
-	Mon, 05 May 2025 11:17:25 +0000
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5450rcaZ000439;
-	Mon, 5 May 2025 11:17:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	Sce1n6nYEDj8whhsIhFwKfjHNOo5EQdFM1/P/ZcBQDI=; b=K3dkW2LzjjtKAbWM
-	fKpV1ineVhMf5IhASdNVEmqF2/23AZO26R0tWu4bY0RuXLDvNFihtWnnB52CWC0T
-	UBqXw3SO4bR7BlvvLvSB6eEao2q+vdpB0xfBGXEIbFr0yokCrWTOvuXPcNnTjvkh
-	odk7yYQXAxJ4xCeA4A98lLqqjwuF6tb3f/dm38sU240M42HKM73hA4dV0qPnYymQ
-	vtaEQNC4xdNXKW7/f39YUvDO/cm5vc1oRTO9sZ/althXfnLXXLGGnzFoDskn/+He
-	YBd4FlowiwSPjZJ00cSIiVA/jdZBi0FSUB46Ol8FttQh8dbP+fsqpYhqq4RHJx4N
-	8sLD+w==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46dce9bt1g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 May 2025 11:17:18 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 545BHH2A011675
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 5 May 2025 11:17:17 GMT
-Received: from [10.152.201.53] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 5 May 2025
- 04:17:12 -0700
-Message-ID: <8aa3d4da-da3e-2af4-e0f9-cd56d6259d8f@quicinc.com>
-Date: Mon, 5 May 2025 16:47:09 +0530
+	Mon, 05 May 2025 13:21:59 +0000
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5f861d16622so7530557a12.2
+        for <linux-mtd@lists.infradead.org>; Mon, 05 May 2025 06:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746451314; x=1747056114; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E/aTIIb8Wt9mHnUVaIv3WqxGzaHlKMrFSeU6LEqVxaw=;
+        b=A57CyoX3bXk17GzDSOwAb8gqiRU3iajl6b2blfKdHW1NkeV6ZDSNcZiuYqACqCRNYS
+         n9i3YY8A97cwJ/uajSGcLytwXic1i1uJwn2WFmMmasauLT/rNFQg7QiCtY+k4dHWJ1If
+         s73x6PqvnjlDCHDWSkuaOJz3b97SpseP4A6XIRpbZGFcXu8cg44Pae7p9eAJRxYyB6bW
+         WB5ta2TAVQTxzJo1IQmn7L8FyCH8etTRgbMfENGRrHKfQ8J8BbMRkP3HPPH1+S6zRJUM
+         LfGI2Z1luU1JOHF5h4I1XnOO24tMt2bdKVkUjKxj+aHKjDPEfpWPHs5U0ASirs9tVzEF
+         uDEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746451314; x=1747056114;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E/aTIIb8Wt9mHnUVaIv3WqxGzaHlKMrFSeU6LEqVxaw=;
+        b=lRBCYS4OiYa7T6yoaqnHf/+2dMkDSa0CLZObR9n8cCgXlBfN8C5Gw//ZNMcuTx8W1/
+         V3VUzRsmRVUFhXkIRRTTuWKHUNDHKLy07QZZaegJren/tX7DAtO4WJAwxwWcben90gGS
+         ckUt7qqlMMIjTyUBNFFE5klhFqXvE9PPzvS/StXr6hpOOpW6mSbrA0DdbGkmlCHNBYWI
+         MZ11lYiCwdKAfFPaWz6PR0eURuUzo39bURplSt4C+vCI9O+oypUtfd9ux+tDvRGslTqx
+         gQKdnv9Lr4+xcg13D1I6uUG+jxsXN3JvEYuVMvVBt8erSKBep+xhMop6a6sahwmLw1vB
+         tjGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXOa9D1ZRJPRar4waKbKIj9JQexDDIsByzyHSGGiL96MCzwCZKJroJ611SSgBPdsrzi+6IzAFcN0/A=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw3KDoB1ckq+lK6ugwylBmMV1jvbfEfIb23fpmEnUHrd1Su72JZ
+	QS4gzacaqlEFhJOF2kjILGzD1viemvJ9Qgj9RqkbsVsmr7iCutzx
+X-Gm-Gg: ASbGncvS9vq4kteC4nbiJhiau5DFOd9b4IJ4ogDdQhm2Q+Tw/zXNJV5MYRW6e2jO1g8
+	I4j848VfMDANZHLtwHfY3wUET2gDTgsxFLxRoV/0a0ipsxa7QN/gozW8lz8TIQGuak7c/Vcrwhn
+	75yM6A8c6wfrWgzKLNetsmH5PALMrTkGwDLbRRKJ67ar3v6yYfwrMHKbkXL9SW/exf4YpKZMrTw
+	+KpFM3wN9zP/lsaIhP29SrayOvFqEyDYQ7OKPqIgD4qvrhRFxG6HCmbwk8EC0n5kJIjJ0bi3z7B
+	8TA/GTPC9C3M7Qmvca+eWq9n8yosh/5RZy4Vh61RyLS5n+Q8CQtTdxwrd+zkt0FVuOk150ivmCu
+	Rx11SUw==
+X-Google-Smtp-Source: AGHT+IGr6/Er04ihWAiKCaSmmuGAWScKsAt5Ixq8keSch2sNLQcPFE8U/H8frEpg5MVGyiYg0RsHWA==
+X-Received: by 2002:a17:907:7248:b0:ad1:76d2:d06 with SMTP id a640c23a62f3a-ad1a4b06c35mr624087366b.47.1746451313504;
+        Mon, 05 May 2025 06:21:53 -0700 (PDT)
+Received: from [192.168.20.170] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad1891a3c69sm494099266b.59.2025.05.05.06.21.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 May 2025 06:21:53 -0700 (PDT)
+Message-ID: <c1729d39-9f7f-4c6d-b8a4-72dfee4bfca5@gmail.com>
+Date: Mon, 5 May 2025 15:21:52 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH next 2/2] spi: spi-qpic-snand: add support for 8 bits ECC
  strength
-Content-Language: en-US
-To: Gabor Juhos <j4g8y7@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Miquel Raynal
-	<miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        "Vignesh
- Raghavendra" <vigneshr@ti.com>
-CC: Varadarajan Narayanan <quic_varada@quicinc.com>,
-        Sricharan Ramabadhran
-	<quic_srichara@quicinc.com>,
-        <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Content-Language: hu
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, Mark Brown <broonie@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Varadarajan Narayanan <quic_varada@quicinc.com>,
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20250502-qpic-snand-8bit-ecc-v1-0-95f3cd08bbc5@gmail.com>
  <20250502-qpic-snand-8bit-ecc-v1-2-95f3cd08bbc5@gmail.com>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20250502-qpic-snand-8bit-ecc-v1-2-95f3cd08bbc5@gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA1MDEwNyBTYWx0ZWRfX0koTvaHjC/wW
- KTvP3wL1pjDKieKi+hMyhXVaNfQBi62ZQD+FFFeeRYHQwcE68lChplb9w+vpQc2rhIvRiO6koDa
- 8fh+c2h54uqgwgsyZYrWtAK+93RDWdi/zFutGKzsE4CbOxMzcJJbJRw7QkegBlqHN4cMgRM1EQE
- Mc8WB/ok2NgucHgPawVgKUBXs+2rVAKXgjbcYCuiAiompfr0x0WfiWyYr2QBUcT0LgWzA3nVFKN
- abeppkSXNAfF7nGx2u0cJGWiQo3zqkMbjitswEupQLKJkcsFpWH12B7Tq9e3hj9mjiy+oiIhVwE
- HFOp4qzv/yzZgG5n1bZbsVBUOt/zY0F7RRIeMRL39GdV73JfYayx+WHJlt30/unYyMCT4uJu2oX
- BvhS9Q7hpFpNeFDGDBV8cD0LOkTRctZ1PVW5xxnyTBcposp13pRFTQPPeqtd5CF8NBToniO+
-X-Proofpoint-ORIG-GUID: -46UvJVAFOLQGBFEwHTn765jo_wEMhj3
-X-Authority-Analysis: v=2.4 cv=Qope3Uyd c=1 sm=1 tr=0 ts=68189e3e cx=c_pps
- a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
- a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=pGLkceISAAAA:8
- a=jFRyK2_P28nSYqVi4BUA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: -46UvJVAFOLQGBFEwHTn765jo_wEMhj3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-05_05,2025-04-30_01,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 adultscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 suspectscore=0 impostorscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
- definitions=main-2505050107
+ <8aa3d4da-da3e-2af4-e0f9-cd56d6259d8f@quicinc.com>
+From: Gabor Juhos <j4g8y7@gmail.com>
+In-Reply-To: <8aa3d4da-da3e-2af4-e0f9-cd56d6259d8f@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250505_041724_726646_72EAA7EF 
-X-CRM114-Status: GOOD (  13.99  )
+X-CRM114-CacheID: sfid-20250505_062156_182177_668EC195 
+X-CRM114-Status: UNSURE (   7.02  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,355 +104,352 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 5/3/2025 1:01 AM, Gabor Juhos wrote:
-> Even though the hardware supports 8 bits ECC strength, but that is not
-> handled in the driver yet. This change adds the missing bits in order
-> to allow using the driver with chips which require 8 bits ECC strength.
-> 
-> No functional changes intended with regard to the existing 4 bits ECC
-> strength support.
-> 
-> Tested on an IPQ9574 platform using a GigaDevice GD5F2GM7REYIG chip.
-> 
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
-> mtdtest results:
-> 
->    # dmesg | grep nand
->    [    0.678143] spi-nand spi0.0: GigaDevice SPI NAND was found.
->    [    0.687393] spi-nand spi0.0: 256 MiB, block size: 128 KiB, page size: 2048, OOB size: 128
->    # cat /proc/mtd
->    dev:    size   erasesize  name
->    mtd0: 10000000 00020000 "spi0.0"
->    # insmod mtd_test
->    # insmod mtd_speedtest dev=0
->    [   63.128425]
->    [   63.128452] =================================================
->    [   63.128979] mtd_speedtest: MTD device: 0
->    [   63.134622] mtd_speedtest: MTD device size 268435456, eraseblock size 131072, page size 2048, count of eraseblocks 2048, pages per eraseblock 64, OOB size 128
->    [   63.139561] mtd_test: scanning for bad eraseblocks
->    [   63.756447] mtd_test: scanned 2048 eraseblocks, 0 are bad
->    [   71.085514] mtd_speedtest: testing eraseblock write speed
->    [  202.745977] mtd_speedtest: eraseblock write speed is 1991 KiB/s
->    [  202.746022] mtd_speedtest: testing eraseblock read speed
->    [  284.104591] mtd_speedtest: eraseblock read speed is 3222 KiB/s
->    [  291.405533] mtd_speedtest: testing page write speed
->    [  422.516341] mtd_speedtest: page write speed is 1999 KiB/s
->    [  422.516384] mtd_speedtest: testing page read speed
->    [  504.144630] mtd_speedtest: page read speed is 3211 KiB/s
->    [  511.476726] mtd_speedtest: testing 2 page write speed
->    [  643.114443] mtd_speedtest: 2 page write speed is 1991 KiB/s
->    [  643.114485] mtd_speedtest: testing 2 page read speed
->    [  724.434752] mtd_speedtest: 2 page read speed is 3223 KiB/s
->    [  724.434796] mtd_speedtest: Testing erase speed
->    [  731.792729] mtd_speedtest: erase speed is 35648 KiB/s
->    [  731.792772] mtd_speedtest: Testing 2x multi-block erase speed
->    [  739.162513] mtd_speedtest: 2x multi-block erase speed is 35589 KiB/s
->    [  739.162558] mtd_speedtest: Testing 4x multi-block erase speed
->    [  746.486241] mtd_speedtest: 4x multi-block erase speed is 35820 KiB/s
->    [  746.486287] mtd_speedtest: Testing 8x multi-block erase speed
->    [  753.789683] mtd_speedtest: 8x multi-block erase speed is 35919 KiB/s
->    [  753.789728] mtd_speedtest: Testing 16x multi-block erase speed
->    [  761.093075] mtd_speedtest: 16x multi-block erase speed is 35920 KiB/s
->    [  761.093120] mtd_speedtest: Testing 32x multi-block erase speed
->    [  768.396145] mtd_speedtest: 32x multi-block erase speed is 35922 KiB/s
->    [  768.396222] mtd_speedtest: Testing 64x multi-block erase speed
->    [  775.699819] mtd_speedtest: 64x multi-block erase speed is 35918 KiB/s
->    [  775.699863] mtd_speedtest: finished
->    [  775.705259] =================================================
->    # insmod mtd_readtest dev=0
->    [  919.060671]
->    [  919.060699] =================================================
->    [  919.061226] mtd_readtest: MTD device: 0
->    [  919.066957] mtd_readtest: MTD device size 268435456, eraseblock size 131072, page size 2048, count of eraseblocks 2048, pages per eraseblock 64, OOB size 128
->    [  919.070556] mtd_test: scanning for bad eraseblocks
->    [  919.086016] mtd_test: scanned 2048 eraseblocks, 0 are bad
->    [  919.089465] mtd_readtest: testing page read
->    [ 1090.778227] mtd_readtest: finished
->    [ 1090.778286] =================================================
->    # insmod mtd_pagetest dev=0
->    [ 1216.297313]
->    [ 1216.297341] =================================================
->    [ 1216.297867] mtd_pagetest: MTD device: 0
->    [ 1216.303509] mtd_pagetest: MTD device size 268435456, eraseblock size 131072, page size 2048, count of eraseblocks 2048, pages per eraseblock 64, OOB size 128
->    [ 1216.307213] mtd_test: scanning for bad eraseblocks
->    [ 1216.322680] mtd_test: scanned 2048 eraseblocks, 0 are bad
->    [ 1216.326077] mtd_pagetest: erasing whole device
->    [ 1223.694968] mtd_pagetest: erased 2048 eraseblocks
->    [ 1223.695009] mtd_pagetest: writing whole device
->    [ 1223.763930] mtd_pagetest: written up to eraseblock 0
->    [ 1240.268942] mtd_pagetest: written up to eraseblock 256
->    [ 1256.641498] mtd_pagetest: written up to eraseblock 512
->    [ 1273.139048] mtd_pagetest: written up to eraseblock 768
->    [ 1289.718929] mtd_pagetest: written up to eraseblock 1024
->    [ 1306.244553] mtd_pagetest: written up to eraseblock 1280
->    [ 1322.939723] mtd_pagetest: written up to eraseblock 1536
->    [ 1339.246937] mtd_pagetest: written up to eraseblock 1792
->    [ 1355.613729] mtd_pagetest: written 2048 eraseblocks
->    [ 1355.613770] mtd_pagetest: verifying all eraseblocks
->    [ 1355.854290] mtd_pagetest: verified up to eraseblock 0
->    [ 1416.657733] mtd_pagetest: verified up to eraseblock 256
->    [ 1477.384593] mtd_pagetest: verified up to eraseblock 512
->    [ 1538.008142] mtd_pagetest: verified up to eraseblock 768
->    [ 1599.080797] mtd_pagetest: verified up to eraseblock 1024
->    [ 1660.775431] mtd_pagetest: verified up to eraseblock 1280
->    [ 1722.177149] mtd_pagetest: verified up to eraseblock 1536
->    [ 1783.090166] mtd_pagetest: verified up to eraseblock 1792
->    [ 1844.450757] mtd_pagetest: verified 2048 eraseblocks
->    [ 1844.450798] mtd_pagetest: crosstest
->    [ 1844.455676] mtd_pagetest: reading page at 0x0
->    [ 1844.458603] mtd_pagetest: reading page at 0xffff800
->    [ 1844.463047] mtd_pagetest: reading page at 0x0
->    [ 1844.467790] mtd_pagetest: verifying pages read at 0x0 match
->    [ 1844.471636] mtd_pagetest: crosstest ok
->    [ 1844.477062] mtd_pagetest: erasecrosstest
->    [ 1844.480833] mtd_pagetest: erasing block 0
->    [ 1844.488498] mtd_pagetest: writing 1st page of block 0
->    [ 1844.489821] mtd_pagetest: reading 1st page of block 0
->    [ 1844.494475] mtd_pagetest: verifying 1st page of block 0
->    [ 1844.498942] mtd_pagetest: erasing block 0
->    [ 1844.507505] mtd_pagetest: writing 1st page of block 0
->    [ 1844.509042] mtd_pagetest: erasing block 2047
->    [ 1844.516725] mtd_pagetest: reading 1st page of block 0
->    [ 1844.518087] mtd_pagetest: verifying 1st page of block 0
->    [ 1844.522415] mtd_pagetest: erasecrosstest ok
->    [ 1844.527495] mtd_pagetest: erasetest
->    [ 1844.531613] mtd_pagetest: erasing block 0
->    [ 1844.538671] mtd_pagetest: writing 1st page of block 0
->    [ 1844.540249] mtd_pagetest: erasing block 0
->    [ 1844.547869] mtd_pagetest: reading 1st page of block 0
->    [ 1844.548927] mtd_pagetest: verifying 1st page of block 0 is all 0xff
->    [ 1844.553326] mtd_pagetest: erasetest ok
->    [ 1844.559440] mtd_pagetest: finished with 0 errors
->    [ 1844.563233] =================================================
->    # insmod mtd_subpagetest dev=0
->    [ 1942.429708]
->    [ 1942.429736] =================================================
->    [ 1942.430262] mtd_subpagetest: MTD device: 0
->    [ 1942.435905] mtd_subpagetest: MTD device size 268435456, eraseblock size 131072, page size 2048, subpage size 2048, count of eraseblocks 2048, pages per eraseblock 64, OOB size 128
->    [ 1942.439994] mtd_test: scanning for bad eraseblocks
->    [ 1942.457111] mtd_test: scanned 2048 eraseblocks, 0 are bad
->    [ 1949.824564] mtd_subpagetest: writing whole device
->    [ 1949.826670] mtd_subpagetest: written up to eraseblock 0
->    [ 1950.351816] mtd_subpagetest: written up to eraseblock 256
->    [ 1950.875797] mtd_subpagetest: written up to eraseblock 512
->    [ 1951.399912] mtd_subpagetest: written up to eraseblock 768
->    [ 1951.923618] mtd_subpagetest: written up to eraseblock 1024
->    [ 1952.447361] mtd_subpagetest: written up to eraseblock 1280
->    [ 1952.970834] mtd_subpagetest: written up to eraseblock 1536
->    [ 1953.494635] mtd_subpagetest: written up to eraseblock 1792
->    [ 1954.016265] mtd_subpagetest: written 2048 eraseblocks
->    [ 1954.016294] mtd_subpagetest: verifying all eraseblocks
->    [ 1954.021617] mtd_subpagetest: verified up to eraseblock 0
->    [ 1954.347458] mtd_subpagetest: verified up to eraseblock 256
->    [ 1954.667446] mtd_subpagetest: verified up to eraseblock 512
->    [ 1954.987343] mtd_subpagetest: verified up to eraseblock 768
->    [ 1955.307385] mtd_subpagetest: verified up to eraseblock 1024
->    [ 1955.627462] mtd_subpagetest: verified up to eraseblock 1280
->    [ 1955.947277] mtd_subpagetest: verified up to eraseblock 1536
->    [ 1956.266834] mtd_subpagetest: verified up to eraseblock 1792
->    [ 1956.585581] mtd_subpagetest: verified 2048 eraseblocks
->    [ 1963.889308] mtd_subpagetest: verifying all eraseblocks for 0xff
->    [ 1963.930487] mtd_subpagetest: verified up to eraseblock 0
->    [ 1974.592567] mtd_subpagetest: verified up to eraseblock 256
->    [ 1985.180953] mtd_subpagetest: verified up to eraseblock 512
->    [ 1995.805397] mtd_subpagetest: verified up to eraseblock 768
->    [ 2006.348859] mtd_subpagetest: verified up to eraseblock 1024
->    [ 2016.900530] mtd_subpagetest: verified up to eraseblock 1280
->    [ 2027.447587] mtd_subpagetest: verified up to eraseblock 1536
->    [ 2037.962383] mtd_subpagetest: verified up to eraseblock 1792
->    [ 2048.587863] mtd_subpagetest: verified 2048 eraseblocks
->    [ 2048.587906] mtd_subpagetest: writing whole device
->    [ 2048.648174] mtd_subpagetest: written up to eraseblock 0
->    [ 2062.643145] mtd_subpagetest: written up to eraseblock 256
->    [ 2076.699015] mtd_subpagetest: written up to eraseblock 512
->    [ 2091.004910] mtd_subpagetest: written up to eraseblock 768
->    [ 2105.149879] mtd_subpagetest: written up to eraseblock 1024
->    [ 2119.470691] mtd_subpagetest: written up to eraseblock 1280
->    [ 2133.746861] mtd_subpagetest: written up to eraseblock 1536
->    [ 2147.776477] mtd_subpagetest: written up to eraseblock 1792
->    [ 2161.947734] mtd_subpagetest: written 2048 eraseblocks
->    [ 2161.947776] mtd_subpagetest: verifying all eraseblocks
->    [ 2161.986109] mtd_subpagetest: verified up to eraseblock 0
->    [ 2170.818316] mtd_subpagetest: verified up to eraseblock 256
->    [ 2179.596875] mtd_subpagetest: verified up to eraseblock 512
->    [ 2188.405116] mtd_subpagetest: verified up to eraseblock 768
->    [ 2197.188588] mtd_subpagetest: verified up to eraseblock 1024
->    [ 2206.002204] mtd_subpagetest: verified up to eraseblock 1280
->    [ 2214.784815] mtd_subpagetest: verified up to eraseblock 1536
->    [ 2223.557141] mtd_subpagetest: verified up to eraseblock 1792
->    [ 2232.472832] mtd_subpagetest: verified 2048 eraseblocks
->    [ 2239.818213] mtd_subpagetest: verifying all eraseblocks for 0xff
->    [ 2239.861404] mtd_subpagetest: verified up to eraseblock 0
->    [ 2250.439035] mtd_subpagetest: verified up to eraseblock 256
->    [ 2261.176485] mtd_subpagetest: verified up to eraseblock 512
->    [ 2271.713183] mtd_subpagetest: verified up to eraseblock 768
->    [ 2282.356892] mtd_subpagetest: verified up to eraseblock 1024
->    [ 2292.891424] mtd_subpagetest: verified up to eraseblock 1280
->    [ 2303.543110] mtd_subpagetest: verified up to eraseblock 1536
->    [ 2314.116690] mtd_subpagetest: verified up to eraseblock 1792
->    [ 2324.607804] mtd_subpagetest: verified 2048 eraseblocks
->    [ 2324.607846] mtd_subpagetest: finished with 0 errors
->    [ 2324.611859] =================================================
->    # insmod mtd_oobtest dev=0
->    [ 2336.159109]
->    [ 2336.159138] =================================================
->    [ 2336.159664] mtd_oobtest: MTD device: 0
->    [ 2336.165308] mtd_oobtest: MTD device size 268435456, eraseblock size 131072, page size 2048, count of eraseblocks 2048, pages per eraseblock 64, OOB size 128
->    [ 2336.169043] mtd_test: scanning for bad eraseblocks
->    [ 2336.184354] mtd_test: scanned 2048 eraseblocks, 0 are bad
->    [ 2336.187716] mtd_oobtest: test 1 of 5
->    [ 2343.495966] mtd_oobtest: writing OOBs of whole device
->    [ 2343.496073] mtd_oobtest: written up to eraseblock 0
->    [ 2343.516803] mtd_oobtest: written up to eraseblock 256
->    [ 2343.533527] mtd_oobtest: written up to eraseblock 512
->    [ 2343.549945] mtd_oobtest: written up to eraseblock 768
->    [ 2343.563666] mtd_oobtest: written up to eraseblock 1024
->    [ 2343.575186] mtd_oobtest: written up to eraseblock 1280
->    [ 2343.584310] mtd_oobtest: written up to eraseblock 1536
->    [ 2343.593011] mtd_oobtest: written up to eraseblock 1792
->    [ 2343.600847] mtd_oobtest: written 2048 eraseblocks
->    [ 2343.600861] mtd_oobtest: verifying all eraseblocks
->    [ 2343.604542] mtd_oobtest: verified up to eraseblock 0
->    [ 2343.616606] mtd_oobtest: verified up to eraseblock 256
->    [ 2343.623992] mtd_oobtest: verified up to eraseblock 512
->    [ 2343.631390] mtd_oobtest: verified up to eraseblock 768
->    [ 2343.638788] mtd_oobtest: verified up to eraseblock 1024
->    [ 2343.646184] mtd_oobtest: verified up to eraseblock 1280
->    [ 2343.653570] mtd_oobtest: verified up to eraseblock 1536
->    [ 2343.660970] mtd_oobtest: verified up to eraseblock 1792
->    [ 2343.668356] mtd_oobtest: verified 2048 eraseblocks
->    [ 2343.668369] mtd_oobtest: test 2 of 5
->    [ 2350.985635] mtd_oobtest: writing OOBs of whole device
->    [ 2350.985743] mtd_oobtest: written up to eraseblock 0
->    [ 2351.006445] mtd_oobtest: written up to eraseblock 256
->    [ 2351.023170] mtd_oobtest: written up to eraseblock 512
->    [ 2351.039645] mtd_oobtest: written up to eraseblock 768
->    [ 2351.053395] mtd_oobtest: written up to eraseblock 1024
->    [ 2351.064954] mtd_oobtest: written up to eraseblock 1280
->    [ 2351.074144] mtd_oobtest: written up to eraseblock 1536
->    [ 2351.082848] mtd_oobtest: written up to eraseblock 1792
->    [ 2351.090707] mtd_oobtest: written 2048 eraseblocks
->    [ 2351.090721] mtd_oobtest: verifying all eraseblocks
->    [ 2351.094373] mtd_oobtest: verified up to eraseblock 0
->    [ 2351.099353] mtd_oobtest: verified up to eraseblock 256
->    [ 2351.104460] mtd_oobtest: verified up to eraseblock 512
->    [ 2351.109437] mtd_oobtest: verified up to eraseblock 768
->    [ 2351.114528] mtd_oobtest: verified up to eraseblock 1024
->    [ 2351.119683] mtd_oobtest: verified up to eraseblock 1280
->    [ 2351.124772] mtd_oobtest: verified up to eraseblock 1536
->    [ 2351.129996] mtd_oobtest: verified up to eraseblock 1792
->    [ 2351.135187] mtd_oobtest: verified 2048 eraseblocks
->    [ 2351.140130] mtd_oobtest: test 3 of 5
->    [ 2358.448438] mtd_oobtest: writing OOBs of whole device
->    [ 2358.448546] mtd_oobtest: written up to eraseblock 0
->    [ 2358.469297] mtd_oobtest: written up to eraseblock 256
->    [ 2358.486095] mtd_oobtest: written up to eraseblock 512
->    [ 2358.501993] mtd_oobtest: written up to eraseblock 768
->    [ 2358.515473] mtd_oobtest: written up to eraseblock 1024
->    [ 2358.526708] mtd_oobtest: written up to eraseblock 1280
->    [ 2358.535426] mtd_oobtest: written up to eraseblock 1536
->    [ 2358.544152] mtd_oobtest: written up to eraseblock 1792
->    [ 2358.551732] mtd_oobtest: written 2048 eraseblocks
->    [ 2358.551744] mtd_oobtest: verifying all eraseblocks
->    [ 2358.555424] mtd_oobtest: verified up to eraseblock 0
->    [ 2358.567572] mtd_oobtest: verified up to eraseblock 256
->    [ 2358.575045] mtd_oobtest: verified up to eraseblock 512
->    [ 2358.582537] mtd_oobtest: verified up to eraseblock 768
->    [ 2358.590024] mtd_oobtest: verified up to eraseblock 1024
->    [ 2358.597511] mtd_oobtest: verified up to eraseblock 1280
->    [ 2358.604984] mtd_oobtest: verified up to eraseblock 1536
->    [ 2358.612468] mtd_oobtest: verified up to eraseblock 1792
->    [ 2358.619923] mtd_oobtest: verified 2048 eraseblocks
->    [ 2358.619936] mtd_oobtest: test 4 of 5
->    [ 2365.924669] mtd_oobtest: attempting to start write past end of OOB
->    [ 2365.924711] mtd_oobtest: an error is expected...
->    [ 2365.929795] mtd_oobtest: error occurred as expected
->    [ 2365.934520] mtd_oobtest: attempting to start read past end of OOB
->    [ 2365.939150] mtd_oobtest: an error is expected...
->    [ 2365.945371] mtd_oobtest: error occurred as expected
->    [ 2365.950087] mtd_oobtest: attempting to write past end of device
->    [ 2365.954660] mtd_oobtest: an error is expected...
->    [ 2365.960623] mtd_oobtest: error occurred as expected
->    [ 2365.965422] mtd_oobtest: attempting to read past end of device
->    [ 2365.970064] mtd_oobtest: an error is expected...
->    [ 2365.975925] mtd_oobtest: error occurred as expected
->    [ 2365.984256] mtd_oobtest: attempting to write past end of device
->    [ 2365.985300] mtd_oobtest: an error is expected...
->    [ 2365.991242] mtd_oobtest: error: wrote past end of device
->    [ 2365.996064] mtd_oobtest: attempting to read past end of device
->    [ 2366.001389] mtd_oobtest: an error is expected...
->    [ 2366.007028] mtd_oobtest: error: read past end of device
->    [ 2366.011776] mtd_oobtest: test 5 of 5
->    [ 2373.317991] mtd_oobtest: writing OOBs of whole device
->    [ 2373.318034] mtd_oobtest: written up to eraseblock 0
->    [ 2373.322028] mtd_oobtest: written up to eraseblock 0
->    [ 2373.327465] mtd_oobtest: written up to eraseblock 256
->    [ 2373.331576] mtd_oobtest: written up to eraseblock 256
->    [ 2373.337501] mtd_oobtest: written up to eraseblock 512
->    [ 2373.341820] mtd_oobtest: written up to eraseblock 512
->    [ 2373.347566] mtd_oobtest: written up to eraseblock 768
->    [ 2373.351888] mtd_oobtest: written up to eraseblock 768
->    [ 2373.357634] mtd_oobtest: written up to eraseblock 1024
->    [ 2373.361957] mtd_oobtest: written up to eraseblock 1024
->    [ 2373.367710] mtd_oobtest: written up to eraseblock 1280
->    [ 2373.372113] mtd_oobtest: written up to eraseblock 1280
->    [ 2373.377841] mtd_oobtest: written up to eraseblock 1536
->    [ 2373.382355] mtd_oobtest: written up to eraseblock 1536
->    [ 2373.387962] mtd_oobtest: written up to eraseblock 1792
->    [ 2373.392597] mtd_oobtest: written up to eraseblock 1792
->    [ 2373.398190] mtd_oobtest: written 2047 eraseblocks
->    [ 2373.402838] mtd_oobtest: verifying all eraseblocks
->    [ 2373.407629] mtd_oobtest: verified up to eraseblock 0
->    [ 2373.412483] mtd_oobtest: verified up to eraseblock 256
->    [ 2373.417625] mtd_oobtest: verified up to eraseblock 512
->    [ 2373.422518] mtd_oobtest: verified up to eraseblock 768
->    [ 2373.427650] mtd_oobtest: verified up to eraseblock 1024
->    [ 2373.432760] mtd_oobtest: verified up to eraseblock 1280
->    [ 2373.437912] mtd_oobtest: verified up to eraseblock 1536
->    [ 2373.443091] mtd_oobtest: verified up to eraseblock 1792
->    [ 2373.448337] mtd_oobtest: verified 2047 eraseblocks
->    [ 2373.453358] mtd_oobtest: finished with 2 errors
->    [ 2373.458250] =================================================
-> 
-> Note: the two errors are present even even without this patch when testing
-> the driver with a flash chip requiring 4 bits ECC strength.
-> 
->    # insmod mtd_stresstest dev=0
->    [ 2383.256453]
->    [ 2383.256482] =================================================
->    [ 2383.257008] mtd_stresstest: MTD device: 0
->    [ 2383.262650] mtd_stresstest: MTD device size 268435456, eraseblock size 131072, page size 2048, count of eraseblocks 2048, pages per eraseblock 64, OOB size 128
->    [ 2383.268254] mtd_test: scanning for bad eraseblocks
->    [ 2383.281992] mtd_test: scanned 2048 eraseblocks, 0 are bad
->    [ 2383.285565] mtd_stresstest: doing operations
->    [ 2383.291047] mtd_stresstest: 0 operations done
->    [ 2427.841267] mtd_stresstest: 1024 operations done
->    [ 2471.142229] mtd_stresstest: 2048 operations done
->    [ 2514.405277] mtd_stresstest: 3072 operations done
->    [ 2555.451926] mtd_stresstest: 4096 operations done
->    [ 2598.107133] mtd_stresstest: 5120 operations done
->    [ 2639.936952] mtd_stresstest: 6144 operations done
->    [ 2680.724751] mtd_stresstest: 7168 operations done
->    [ 2720.344163] mtd_stresstest: 8192 operations done
->    [ 2761.645640] mtd_stresstest: 9216 operations done
->    [ 2791.760534] mtd_stresstest: finished, 10000 operations done
->    [ 2791.760817] =================================================
->    #
-Could you please run biterror test "mtd_nandbiterrs" with the same 
-device, since you are adding 8-bit ECC support.
-
-Regards,
-Alam.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+MjAyNS4gMDUuIDA1LiAxMzoxNyBrZWx0ZXrDqXNzZWwsIE1kIFNhZHJlIEFsYW0gw61ydGE6Cj4g
+Cj4gCgpbLi4uXQoKPj4gwqDCoCBbIDI3MjAuMzQ0MTYzXSBtdGRfc3RyZXNzdGVzdDogODE5MiBv
+cGVyYXRpb25zIGRvbmUKPj4gwqDCoCBbIDI3NjEuNjQ1NjQwXSBtdGRfc3RyZXNzdGVzdDogOTIx
+NiBvcGVyYXRpb25zIGRvbmUKPj4gwqDCoCBbIDI3OTEuNzYwNTM0XSBtdGRfc3RyZXNzdGVzdDog
+ZmluaXNoZWQsIDEwMDAwIG9wZXJhdGlvbnMgZG9uZQo+PiDCoMKgIFsgMjc5MS43NjA4MTddID09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4gwqDCoCAj
+Cj4gQ291bGQgeW91IHBsZWFzZSBydW4gYml0ZXJyb3IgdGVzdCAibXRkX25hbmRiaXRlcnJzIiB3
+aXRoIHRoZSBzYW1lIGRldmljZSwgc2luY2UKPiB5b3UgYXJlIGFkZGluZyA4LWJpdCBFQ0Mgc3Vw
+cG9ydC4KClN1cmUsIGhlcmUgaXMgdGhlIHJlc3VsdDoKCiMgaW5zbW9kIG10ZF90ZXN0CiMgZm9y
+IGkgaW4gJChzZXEgMCA0KTsgZG8gaW5zbW9kIG10ZF9uYW5kYml0ZXJyczsgZG9uZQpbICAgNDUu
+NDA1NjEwXQpbICAgNDUuNDA1NjM4XSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PQpbICAgNDUuNDA2MTY0XSBtdGRfbmFuZGJpdGVycnM6IE1URCBkZXZp
+Y2U6IDAKWyAgIDQ1LjQxMTgwN10gbXRkX25hbmRiaXRlcnJzOiBNVEQgZGV2aWNlIHNpemUgMjY4
+NDM1NDU2LCBlcmFzZWJsb2NrPTEzMTA3MiwKcGFnZT0yMDQ4LCBvb2I9MTI4ClsgICA0NS40MTU5
+OTBdIG10ZF9uYW5kYml0ZXJyczogRGV2aWNlIHVzZXMgMSBzdWJwYWdlcyBvZiAyMDQ4IGJ5dGVz
+ClsgICA0NS40MjQ0OTVdIG10ZF9uYW5kYml0ZXJyczogVXNpbmcgcGFnZT0wLCBvZmZzZXQ9MCwg
+ZXJhc2VibG9jaz0wClsgICA0NS40MzQ2ODZdIG10ZF9uYW5kYml0ZXJyczogaW5jcmVtZW50YWwg
+Yml0ZXJyb3JzIHRlc3QKWyAgIDQ1LjQzNjY1M10gbXRkX25hbmRiaXRlcnJzOiB3cml0ZV9wYWdl
+ClsgICA0NS40NDI2MzRdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0NS40NDY0
+MDhdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0NS40NTAzNDZdIG10ZF9uYW5kYml0
+ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ1LjQ1MzMyMF0gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNz
+ZnVsbHkgY29ycmVjdGVkIDAgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDUuNDU3NDA1XSBt
+dGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMC81ClsgICA0NS40NjQ0MzFdIG10
+ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0NS40NzAyMTZdIG10ZF9uYW5kYml0ZXJy
+czogcmVhZF9wYWdlClsgICA0NS40NzM4NTJdIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRl
+ZCAxIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0NS40NzY5MDldIG10ZF9uYW5kYml0ZXJyczog
+dmVyaWZ5X3BhZ2UKWyAgIDQ1LjQ4MzA5MF0gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkg
+Y29ycmVjdGVkIDEgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDUuNDg3MDk4XSBtdGRfbmFu
+ZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMC8yClsgICA0NS40OTQxMTFdIG10ZF9uYW5k
+Yml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0NS40OTk4NTBdIG10ZF9uYW5kYml0ZXJyczogcmVh
+ZF9wYWdlClsgICA0NS41MDM1NTddIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAxIGNv
+cnJlY3RlZCBiaXQgZXJyb3JzClsgICA0NS41MDY1OTddIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5
+X3BhZ2UKWyAgIDQ1LjUxMjc3N10gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVj
+dGVkIDIgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDUuNTE2NzY4XSBtdGRfbmFuZGJpdGVy
+cnM6IEluc2VydGVkIGJpdGVycm9yIEAgMC8wClsgICA0NS41MjM4MTBdIG10ZF9uYW5kYml0ZXJy
+czogcmV3cml0ZSBwYWdlClsgICA0NS41Mjk1ODZdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdl
+ClsgICA0NS41MzMyMjRdIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAxIGNvcnJlY3Rl
+ZCBiaXQgZXJyb3JzClsgICA0NS41MzYzMDVdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UK
+WyAgIDQ1LjU0MjQ2NF0gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDMg
+Yml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDUuNTQ2NDU3XSBtdGRfbmFuZGJpdGVycnM6IElu
+c2VydGVkIGJpdGVycm9yIEAgMS83ClsgICA0NS41NTM0NzBdIG10ZF9uYW5kYml0ZXJyczogcmV3
+cml0ZSBwYWdlClsgICA0NS41NTkyNDRdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0
+NS41NjI5MTRdIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAyIGNvcnJlY3RlZCBiaXQg
+ZXJyb3JzClsgICA0NS41NjU5OTFdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ1
+LjU3MjE1M10gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDQgYml0IGVy
+cm9ycyBwZXIgc3VicGFnZQpbICAgNDUuNTc2MTQyXSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVk
+IGJpdGVycm9yIEAgMS81ClsgICA0NS41ODMxNThdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBw
+YWdlClsgICA0NS41ODg5MjddIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0NS41OTI1
+OTldIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAyIGNvcnJlY3RlZCBiaXQgZXJyb3Jz
+ClsgICA0NS41OTU2ODBdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ1LjYwMTg0
+MF0gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDUgYml0IGVycm9ycyBw
+ZXIgc3VicGFnZQpbICAgNDUuNjA1ODMxXSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVy
+cm9yIEAgMS8yClsgICA0NS42MTI4NDZdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsg
+ICA0NS42MTg2MThdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0NS42MjIyODZdIG10
+ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAyIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0
+NS42MjU0MzRdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ1LjYzMTUyOF0gbXRk
+X25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDYgYml0IGVycm9ycyBwZXIgc3Vi
+cGFnZQpbICAgNDUuNjM1NTE3XSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAg
+MS8wClsgICA0NS42NDI1MzNdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0NS42
+NDgzMDNdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0NS42NTE5NzVdIG10ZF9uYW5k
+Yml0ZXJyczogUmVhZCByZXBvcnRlZCAyIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0NS42NTUw
+NTVdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ1LjY2MTIxNV0gbXRkX25hbmRi
+aXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDcgYml0IGVycm9ycyBwZXIgc3VicGFnZQpb
+ICAgNDUuNjY1MjA3XSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMi82Clsg
+ICA0NS42NzIyMjFdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0NS42Nzc5ODdd
+IG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0NS42ODE2NjNdIG10ZF9uYW5kYml0ZXJy
+czogUmVhZCByZXBvcnRlZCAzIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0NS42ODQ3NDFdIG10
+ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ1LjY5MDkwMl0gbXRkX25hbmRiaXRlcnJz
+OiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDggYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDUu
+Njk0ODkyXSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMi81ClsgICA0NS43
+MDE5MDhdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0NS43MDc2NzhdIG10ZF9u
+YW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0NS43MTEzNTFdIG10ZF9uYW5kYml0ZXJyczogZXJy
+b3I6IHJlYWQgZmFpbGVkIGF0IDB4MApbICAgNDUuNzE0NDMxXSBtdGRfbmFuZGJpdGVycnM6IEFm
+dGVyIDkgYml0ZXJyb3JzIHBlciBzdWJwYWdlLCByZWFkIHJlcG9ydGVkCmVycm9yIC03NApbICAg
+NDUuNzIyOTc1XSBtdGRfbmFuZGJpdGVycnM6IGZpbmlzaGVkIHN1Y2Nlc3NmdWxseS4KWyAgIDQ1
+LjcyNzEwMV0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0KWyAgIDQ2LjIwMDQ4NV0KWyAgIDQ2LjIwMDUxMl0gPT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0KWyAgIDQ2LjIwMTAzOV0gbXRkX25hbmRiaXRlcnJz
+OiBNVEQgZGV2aWNlOiAwClsgICA0Ni4yMDY3NTFdIG10ZF9uYW5kYml0ZXJyczogTVREIGRldmlj
+ZSBzaXplIDI2ODQzNTQ1NiwgZXJhc2VibG9jaz0xMzEwNzIsCnBhZ2U9MjA0OCwgb29iPTEyOApb
+ICAgNDYuMjEwNzYzXSBtdGRfbmFuZGJpdGVycnM6IERldmljZSB1c2VzIDEgc3VicGFnZXMgb2Yg
+MjA0OCBieXRlcwpbICAgNDYuMjE5Mzc3XSBtdGRfbmFuZGJpdGVycnM6IFVzaW5nIHBhZ2U9MCwg
+b2Zmc2V0PTAsIGVyYXNlYmxvY2s9MApbICAgNDYuMjI4OTQxXSBtdGRfbmFuZGJpdGVycnM6IGlu
+Y3JlbWVudGFsIGJpdGVycm9ycyB0ZXN0ClsgICA0Ni4yMzE1MjJdIG10ZF9uYW5kYml0ZXJyczog
+d3JpdGVfcGFnZQpbICAgNDYuMjM3NTI0XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpb
+ICAgNDYuMjQxMTk5XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDYuMjQ1MTc1XSBt
+dGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0Ni4yNDgxOTVdIG10ZF9uYW5kYml0ZXJy
+czogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAwIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ2
+LjI1MjI1NF0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDAvNQpbICAgNDYu
+MjU5MzE3XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDYuMjY1MjMwXSBtdGRf
+bmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDYuMjY4OTU1XSBtdGRfbmFuZGJpdGVycnM6IFJl
+YWQgcmVwb3J0ZWQgMSBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDYuMjcxNzg0XSBtdGRfbmFu
+ZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0Ni4yNzc5ODddIG10ZF9uYW5kYml0ZXJyczogU3Vj
+Y2Vzc2Z1bGx5IGNvcnJlY3RlZCAxIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ2LjI4MTk0
+MV0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDAvMgpbICAgNDYuMjg4OTg1
+XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDYuMjk0ODAzXSBtdGRfbmFuZGJp
+dGVycnM6IHJlYWRfcGFnZQpbICAgNDYuMjk4NDE0XSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVw
+b3J0ZWQgMSBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDYuMzAxNDcyXSBtdGRfbmFuZGJpdGVy
+cnM6IHZlcmlmeV9wYWdlClsgICA0Ni4zMDc2NzddIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1
+bGx5IGNvcnJlY3RlZCAyIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ2LjMxMTYyOV0gbXRk
+X25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDAvMApbICAgNDYuMzE4Njg2XSBtdGRf
+bmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDYuMzI0NDcwXSBtdGRfbmFuZGJpdGVycnM6
+IHJlYWRfcGFnZQpbICAgNDYuMzI4MTAwXSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQg
+MSBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDYuMzMxMTU5XSBtdGRfbmFuZGJpdGVycnM6IHZl
+cmlmeV9wYWdlClsgICA0Ni4zMzczNzFdIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNv
+cnJlY3RlZCAzIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ2LjM0MTMxNl0gbXRkX25hbmRi
+aXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDEvNwpbICAgNDYuMzQ4MzY1XSBtdGRfbmFuZGJp
+dGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDYuMzU0MTIzXSBtdGRfbmFuZGJpdGVycnM6IHJlYWRf
+cGFnZQpbICAgNDYuMzU3Nzg3XSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMiBjb3Jy
+ZWN0ZWQgYml0IGVycm9ycwpbICAgNDYuMzYwODQ2XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9w
+YWdlClsgICA0Ni4zNjcwNDddIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3Rl
+ZCA0IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ2LjM3MTAwM10gbXRkX25hbmRiaXRlcnJz
+OiBJbnNlcnRlZCBiaXRlcnJvciBAIDEvNQpbICAgNDYuMzc4MDQ2XSBtdGRfbmFuZGJpdGVycnM6
+IHJld3JpdGUgcGFnZQpbICAgNDYuMzgzNzk0XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpb
+ICAgNDYuMzg3NDc1XSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMiBjb3JyZWN0ZWQg
+Yml0IGVycm9ycwpbICAgNDYuMzkwNTM0XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsg
+ICA0Ni4zOTY3NDddIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA1IGJp
+dCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ2LjQwMDY5MV0gbXRkX25hbmRiaXRlcnJzOiBJbnNl
+cnRlZCBiaXRlcnJvciBAIDEvMgpbICAgNDYuNDA3NzMzXSBtdGRfbmFuZGJpdGVycnM6IHJld3Jp
+dGUgcGFnZQpbICAgNDYuNDEzNDgzXSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDYu
+NDE3MTkwXSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMiBjb3JyZWN0ZWQgYml0IGVy
+cm9ycwpbICAgNDYuNDIwMjIyXSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0Ni40
+MjY0MTldIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA2IGJpdCBlcnJv
+cnMgcGVyIHN1YnBhZ2UKWyAgIDQ2LjQzMDM3OV0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBi
+aXRlcnJvciBAIDEvMApbICAgNDYuNDM3NDIzXSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFn
+ZQpbICAgNDYuNDQzMTY4XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDYuNDQ2ODc1
+XSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMiBjb3JyZWN0ZWQgYml0IGVycm9ycwpb
+ICAgNDYuNDQ5OTA4XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0Ni40NTYxMDld
+IG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA3IGJpdCBlcnJvcnMgcGVy
+IHN1YnBhZ2UKWyAgIDQ2LjQ2MDA2Nl0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJv
+ciBAIDIvNgpbICAgNDYuNDY3MTA5XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAg
+NDYuNDcyODg4XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDYuNDc2NTY5XSBtdGRf
+bmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMyBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDYu
+NDc5NTk3XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0Ni40ODU3OTZdIG10ZF9u
+YW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA4IGJpdCBlcnJvcnMgcGVyIHN1YnBh
+Z2UKWyAgIDQ2LjQ4OTc1M10gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDIv
+NQpbICAgNDYuNDk2Nzk3XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDYuNTAy
+NTQwXSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDYuNTA2MjQ5XSBtdGRfbmFuZGJp
+dGVycnM6IGVycm9yOiByZWFkIGZhaWxlZCBhdCAweDAKWyAgIDQ2LjUwOTI4NF0gbXRkX25hbmRi
+aXRlcnJzOiBBZnRlciA5IGJpdGVycm9ycyBwZXIgc3VicGFnZSwgcmVhZCByZXBvcnRlZAplcnJv
+ciAtNzQKWyAgIDQ2LjUxNzg2N10gbXRkX25hbmRiaXRlcnJzOiBmaW5pc2hlZCBzdWNjZXNzZnVs
+bHkuClsgICA0Ni41MjE5NTZdID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09ClsgICA0Ny4xNTAzMTNdClsgICA0Ny4xNTAzNDFdID09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClsgICA0Ny4xNTA4NjddIG10ZF9u
+YW5kYml0ZXJyczogTVREIGRldmljZTogMApbICAgNDcuMTU2NTY0XSBtdGRfbmFuZGJpdGVycnM6
+IE1URCBkZXZpY2Ugc2l6ZSAyNjg0MzU0NTYsIGVyYXNlYmxvY2s9MTMxMDcyLApwYWdlPTIwNDgs
+IG9vYj0xMjgKWyAgIDQ3LjE2MDU5MV0gbXRkX25hbmRiaXRlcnJzOiBEZXZpY2UgdXNlcyAxIHN1
+YnBhZ2VzIG9mIDIwNDggYnl0ZXMKWyAgIDQ3LjE2OTIwMV0gbXRkX25hbmRiaXRlcnJzOiBVc2lu
+ZyBwYWdlPTAsIG9mZnNldD0wLCBlcmFzZWJsb2NrPTAKWyAgIDQ3LjE3ODc3OF0gbXRkX25hbmRi
+aXRlcnJzOiBpbmNyZW1lbnRhbCBiaXRlcnJvcnMgdGVzdApbICAgNDcuMTgxMzUwXSBtdGRfbmFu
+ZGJpdGVycnM6IHdyaXRlX3BhZ2UKWyAgIDQ3LjE4NzMzNF0gbXRkX25hbmRiaXRlcnJzOiByZXdy
+aXRlIHBhZ2UKWyAgIDQ3LjE5MTAxNl0gbXRkX25hbmRiaXRlcnJzOiByZWFkX3BhZ2UKWyAgIDQ3
+LjE5NDk5N10gbXRkX25hbmRiaXRlcnJzOiB2ZXJpZnlfcGFnZQpbICAgNDcuMTk4MDE5XSBtdGRf
+bmFuZGJpdGVycnM6IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgMCBiaXQgZXJyb3JzIHBlciBzdWJw
+YWdlClsgICA0Ny4yMDIwODFdIG10ZF9uYW5kYml0ZXJyczogSW5zZXJ0ZWQgYml0ZXJyb3IgQCAw
+LzUKWyAgIDQ3LjIwOTEzMl0gbXRkX25hbmRiaXRlcnJzOiByZXdyaXRlIHBhZ2UKWyAgIDQ3LjIx
+NDk2Ml0gbXRkX25hbmRiaXRlcnJzOiByZWFkX3BhZ2UKWyAgIDQ3LjIxODU1NF0gbXRkX25hbmRi
+aXRlcnJzOiBSZWFkIHJlcG9ydGVkIDEgY29ycmVjdGVkIGJpdCBlcnJvcnMKWyAgIDQ3LjIyMTYx
+Ml0gbXRkX25hbmRiaXRlcnJzOiB2ZXJpZnlfcGFnZQpbICAgNDcuMjI3ODE0XSBtdGRfbmFuZGJp
+dGVycnM6IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgMSBiaXQgZXJyb3JzIHBlciBzdWJwYWdlClsg
+ICA0Ny4yMzE3NjldIG10ZF9uYW5kYml0ZXJyczogSW5zZXJ0ZWQgYml0ZXJyb3IgQCAwLzIKWyAg
+IDQ3LjIzODgxNl0gbXRkX25hbmRiaXRlcnJzOiByZXdyaXRlIHBhZ2UKWyAgIDQ3LjI0NDU3NF0g
+bXRkX25hbmRiaXRlcnJzOiByZWFkX3BhZ2UKWyAgIDQ3LjI0ODI0Ml0gbXRkX25hbmRiaXRlcnJz
+OiBSZWFkIHJlcG9ydGVkIDEgY29ycmVjdGVkIGJpdCBlcnJvcnMKWyAgIDQ3LjI1MTMwMF0gbXRk
+X25hbmRiaXRlcnJzOiB2ZXJpZnlfcGFnZQpbICAgNDcuMjU3NDk5XSBtdGRfbmFuZGJpdGVycnM6
+IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgMiBiaXQgZXJyb3JzIHBlciBzdWJwYWdlClsgICA0Ny4y
+NjE0NTddIG10ZF9uYW5kYml0ZXJyczogSW5zZXJ0ZWQgYml0ZXJyb3IgQCAwLzAKWyAgIDQ3LjI2
+ODUwNF0gbXRkX25hbmRiaXRlcnJzOiByZXdyaXRlIHBhZ2UKWyAgIDQ3LjI3NDMwMV0gbXRkX25h
+bmRiaXRlcnJzOiByZWFkX3BhZ2UKWyAgIDQ3LjI3NzkzMF0gbXRkX25hbmRiaXRlcnJzOiBSZWFk
+IHJlcG9ydGVkIDEgY29ycmVjdGVkIGJpdCBlcnJvcnMKWyAgIDQ3LjI4MDk4N10gbXRkX25hbmRi
+aXRlcnJzOiB2ZXJpZnlfcGFnZQpbICAgNDcuMjg3MTg3XSBtdGRfbmFuZGJpdGVycnM6IFN1Y2Nl
+c3NmdWxseSBjb3JyZWN0ZWQgMyBiaXQgZXJyb3JzIHBlciBzdWJwYWdlClsgICA0Ny4yOTExNDVd
+IG10ZF9uYW5kYml0ZXJyczogSW5zZXJ0ZWQgYml0ZXJyb3IgQCAxLzcKWyAgIDQ3LjI5ODE5MV0g
+bXRkX25hbmRiaXRlcnJzOiByZXdyaXRlIHBhZ2UKWyAgIDQ3LjMwMzk1MV0gbXRkX25hbmRiaXRl
+cnJzOiByZWFkX3BhZ2UKWyAgIDQ3LjMwNzYxOV0gbXRkX25hbmRiaXRlcnJzOiBSZWFkIHJlcG9y
+dGVkIDIgY29ycmVjdGVkIGJpdCBlcnJvcnMKWyAgIDQ3LjMxMDY3NV0gbXRkX25hbmRiaXRlcnJz
+OiB2ZXJpZnlfcGFnZQpbICAgNDcuMzE2ODc2XSBtdGRfbmFuZGJpdGVycnM6IFN1Y2Nlc3NmdWxs
+eSBjb3JyZWN0ZWQgNCBiaXQgZXJyb3JzIHBlciBzdWJwYWdlClsgICA0Ny4zMjA4MzJdIG10ZF9u
+YW5kYml0ZXJyczogSW5zZXJ0ZWQgYml0ZXJyb3IgQCAxLzUKWyAgIDQ3LjMyNzg3NV0gbXRkX25h
+bmRiaXRlcnJzOiByZXdyaXRlIHBhZ2UKWyAgIDQ3LjMzMzYyOV0gbXRkX25hbmRiaXRlcnJzOiBy
+ZWFkX3BhZ2UKWyAgIDQ3LjMzNzMwNV0gbXRkX25hbmRiaXRlcnJzOiBSZWFkIHJlcG9ydGVkIDIg
+Y29ycmVjdGVkIGJpdCBlcnJvcnMKWyAgIDQ3LjM0MDM2Ml0gbXRkX25hbmRiaXRlcnJzOiB2ZXJp
+ZnlfcGFnZQpbICAgNDcuMzQ2NTYzXSBtdGRfbmFuZGJpdGVycnM6IFN1Y2Nlc3NmdWxseSBjb3Jy
+ZWN0ZWQgNSBiaXQgZXJyb3JzIHBlciBzdWJwYWdlClsgICA0Ny4zNTA1MTldIG10ZF9uYW5kYml0
+ZXJyczogSW5zZXJ0ZWQgYml0ZXJyb3IgQCAxLzIKWyAgIDQ3LjM1NzU2MV0gbXRkX25hbmRiaXRl
+cnJzOiByZXdyaXRlIHBhZ2UKWyAgIDQ3LjM2MzMxMF0gbXRkX25hbmRiaXRlcnJzOiByZWFkX3Bh
+Z2UKWyAgIDQ3LjM2NzAyMV0gbXRkX25hbmRiaXRlcnJzOiBSZWFkIHJlcG9ydGVkIDIgY29ycmVj
+dGVkIGJpdCBlcnJvcnMKWyAgIDQ3LjM3MDA1MF0gbXRkX25hbmRiaXRlcnJzOiB2ZXJpZnlfcGFn
+ZQpbICAgNDcuMzc2MjQ4XSBtdGRfbmFuZGJpdGVycnM6IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQg
+NiBiaXQgZXJyb3JzIHBlciBzdWJwYWdlClsgICA0Ny4zODAyMDddIG10ZF9uYW5kYml0ZXJyczog
+SW5zZXJ0ZWQgYml0ZXJyb3IgQCAxLzAKWyAgIDQ3LjM4NzI1MF0gbXRkX25hbmRiaXRlcnJzOiBy
+ZXdyaXRlIHBhZ2UKWyAgIDQ3LjM5Mjk5Nl0gbXRkX25hbmRiaXRlcnJzOiByZWFkX3BhZ2UKWyAg
+IDQ3LjM5NjcwM10gbXRkX25hbmRiaXRlcnJzOiBSZWFkIHJlcG9ydGVkIDIgY29ycmVjdGVkIGJp
+dCBlcnJvcnMKWyAgIDQ3LjM5OTczN10gbXRkX25hbmRiaXRlcnJzOiB2ZXJpZnlfcGFnZQpbICAg
+NDcuNDA1OTM2XSBtdGRfbmFuZGJpdGVycnM6IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgNyBiaXQg
+ZXJyb3JzIHBlciBzdWJwYWdlClsgICA0Ny40MDk4OTRdIG10ZF9uYW5kYml0ZXJyczogSW5zZXJ0
+ZWQgYml0ZXJyb3IgQCAyLzYKWyAgIDQ3LjQxNjkzOF0gbXRkX25hbmRiaXRlcnJzOiByZXdyaXRl
+IHBhZ2UKWyAgIDQ3LjQyMjY4NV0gbXRkX25hbmRiaXRlcnJzOiByZWFkX3BhZ2UKWyAgIDQ3LjQy
+NjM4N10gbXRkX25hbmRiaXRlcnJzOiBSZWFkIHJlcG9ydGVkIDMgY29ycmVjdGVkIGJpdCBlcnJv
+cnMKWyAgIDQ3LjQyOTQyNF0gbXRkX25hbmRiaXRlcnJzOiB2ZXJpZnlfcGFnZQpbICAgNDcuNDM1
+NjM3XSBtdGRfbmFuZGJpdGVycnM6IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgOCBiaXQgZXJyb3Jz
+IHBlciBzdWJwYWdlClsgICA0Ny40Mzk1ODJdIG10ZF9uYW5kYml0ZXJyczogSW5zZXJ0ZWQgYml0
+ZXJyb3IgQCAyLzUKWyAgIDQ3LjQ0NjYyNF0gbXRkX25hbmRiaXRlcnJzOiByZXdyaXRlIHBhZ2UK
+WyAgIDQ3LjQ1MjM2OV0gbXRkX25hbmRiaXRlcnJzOiByZWFkX3BhZ2UKWyAgIDQ3LjQ1NjA4MF0g
+bXRkX25hbmRiaXRlcnJzOiBlcnJvcjogcmVhZCBmYWlsZWQgYXQgMHgwClsgICA0Ny40NTkxMTFd
+IG10ZF9uYW5kYml0ZXJyczogQWZ0ZXIgOSBiaXRlcnJvcnMgcGVyIHN1YnBhZ2UsIHJlYWQgcmVw
+b3J0ZWQKZXJyb3IgLTc0ClsgICA0Ny40Njc2OTldIG10ZF9uYW5kYml0ZXJyczogZmluaXNoZWQg
+c3VjY2Vzc2Z1bGx5LgpbICAgNDcuNDcxNzg0XSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQpbICAgNDguMDgwMzExXQpbICAgNDguMDgwMzM5XSA9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpbICAgNDguMDgw
+ODY2XSBtdGRfbmFuZGJpdGVycnM6IE1URCBkZXZpY2U6IDAKWyAgIDQ4LjA4NjU2MF0gbXRkX25h
+bmRiaXRlcnJzOiBNVEQgZGV2aWNlIHNpemUgMjY4NDM1NDU2LCBlcmFzZWJsb2NrPTEzMTA3MiwK
+cGFnZT0yMDQ4LCBvb2I9MTI4ClsgICA0OC4wOTA1OTBdIG10ZF9uYW5kYml0ZXJyczogRGV2aWNl
+IHVzZXMgMSBzdWJwYWdlcyBvZiAyMDQ4IGJ5dGVzClsgICA0OC4wOTkyMDRdIG10ZF9uYW5kYml0
+ZXJyczogVXNpbmcgcGFnZT0wLCBvZmZzZXQ9MCwgZXJhc2VibG9jaz0wClsgICA0OC4xMDg3NjVd
+IG10ZF9uYW5kYml0ZXJyczogaW5jcmVtZW50YWwgYml0ZXJyb3JzIHRlc3QKWyAgIDQ4LjExMTM1
+M10gbXRkX25hbmRiaXRlcnJzOiB3cml0ZV9wYWdlClsgICA0OC4xMTczMjVdIG10ZF9uYW5kYml0
+ZXJyczogcmV3cml0ZSBwYWdlClsgICA0OC4xMjEwMTddIG10ZF9uYW5kYml0ZXJyczogcmVhZF9w
+YWdlClsgICA0OC4xMjQ5OTZdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ4LjEy
+ODAxN10gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDAgYml0IGVycm9y
+cyBwZXIgc3VicGFnZQpbICAgNDguMTMyMDgwXSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJp
+dGVycm9yIEAgMC81ClsgICA0OC4xMzkxMzFdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdl
+ClsgICA0OC4xNDQ4ODFdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0OC4xNDg1NTJd
+IG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAxIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsg
+ICA0OC4xNTE2MTFdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ4LjE1NzgxNl0g
+bXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDEgYml0IGVycm9ycyBwZXIg
+c3VicGFnZQpbICAgNDguMTYxNzY4XSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9y
+IEAgMC8yClsgICA0OC4xNjg4OTFdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0
+OC4xNzQ1NzFdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0OC4xNzgyNDFdIG10ZF9u
+YW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAxIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0OC4x
+ODEyOTldIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ4LjE4NzUwMF0gbXRkX25h
+bmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDIgYml0IGVycm9ycyBwZXIgc3VicGFn
+ZQpbICAgNDguMTkxNDU1XSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMC8w
+ClsgICA0OC4xOTg1MDZdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0OC4yMDQy
+OTldIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0OC4yMDc5MzFdIG10ZF9uYW5kYml0
+ZXJyczogUmVhZCByZXBvcnRlZCAxIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0OC4yMTA5ODVd
+IG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ4LjIxNzE4N10gbXRkX25hbmRiaXRl
+cnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDMgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAg
+NDguMjIxMTQyXSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMS83ClsgICA0
+OC4yMjgxODhdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0OC4yMzM5NTBdIG10
+ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0OC4yMzc2MTddIG10ZF9uYW5kYml0ZXJyczog
+UmVhZCByZXBvcnRlZCAyIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0OC4yNDA2NzNdIG10ZF9u
+YW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ4LjI0Njg3Ml0gbXRkX25hbmRiaXRlcnJzOiBT
+dWNjZXNzZnVsbHkgY29ycmVjdGVkIDQgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDguMjUw
+ODMxXSBtdGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMS81ClsgICA0OC4yNTc4
+NzVdIG10ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0OC4yNjM2MzFdIG10ZF9uYW5k
+Yml0ZXJyczogcmVhZF9wYWdlClsgICA0OC4yNjczMDNdIG10ZF9uYW5kYml0ZXJyczogUmVhZCBy
+ZXBvcnRlZCAyIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0OC4yNzAzNjFdIG10ZF9uYW5kYml0
+ZXJyczogdmVyaWZ5X3BhZ2UKWyAgIDQ4LjI3NjU2MF0gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNz
+ZnVsbHkgY29ycmVjdGVkIDUgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDguMjgwNTMxXSBt
+dGRfbmFuZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMS8yClsgICA0OC4yODc1OTJdIG10
+ZF9uYW5kYml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0OC4yOTMzMzhdIG10ZF9uYW5kYml0ZXJy
+czogcmVhZF9wYWdlClsgICA0OC4yOTcwMzBdIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRl
+ZCAyIGNvcnJlY3RlZCBiaXQgZXJyb3JzClsgICA0OC4zMDAwNDldIG10ZF9uYW5kYml0ZXJyczog
+dmVyaWZ5X3BhZ2UKWyAgIDQ4LjMwNjI0N10gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkg
+Y29ycmVjdGVkIDYgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDguMzEwMjA1XSBtdGRfbmFu
+ZGJpdGVycnM6IEluc2VydGVkIGJpdGVycm9yIEAgMS8wClsgICA0OC4zMTcyNTBdIG10ZF9uYW5k
+Yml0ZXJyczogcmV3cml0ZSBwYWdlClsgICA0OC4zMjI5OTRdIG10ZF9uYW5kYml0ZXJyczogcmVh
+ZF9wYWdlClsgICA0OC4zMjY3MDVdIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAyIGNv
+cnJlY3RlZCBiaXQgZXJyb3JzClsgICA0OC4zMjk3MzZdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5
+X3BhZ2UKWyAgIDQ4LjMzNTkzNV0gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVj
+dGVkIDcgYml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDguMzM5ODkyXSBtdGRfbmFuZGJpdGVy
+cnM6IEluc2VydGVkIGJpdGVycm9yIEAgMi82ClsgICA0OC4zNDY5MzZdIG10ZF9uYW5kYml0ZXJy
+czogcmV3cml0ZSBwYWdlClsgICA0OC4zNTI2MzNdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdl
+ClsgICA0OC4zNTYzOTFdIG10ZF9uYW5kYml0ZXJyczogUmVhZCByZXBvcnRlZCAzIGNvcnJlY3Rl
+ZCBiaXQgZXJyb3JzClsgICA0OC4zNTk0MjNdIG10ZF9uYW5kYml0ZXJyczogdmVyaWZ5X3BhZ2UK
+WyAgIDQ4LjM2NTYyNl0gbXRkX25hbmRiaXRlcnJzOiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDgg
+Yml0IGVycm9ycyBwZXIgc3VicGFnZQpbICAgNDguMzY5NTgxXSBtdGRfbmFuZGJpdGVycnM6IElu
+c2VydGVkIGJpdGVycm9yIEAgMi81ClsgICA0OC4zNzY2MjddIG10ZF9uYW5kYml0ZXJyczogcmV3
+cml0ZSBwYWdlClsgICA0OC4zODIzMjJdIG10ZF9uYW5kYml0ZXJyczogcmVhZF9wYWdlClsgICA0
+OC4zODYwNzddIG10ZF9uYW5kYml0ZXJyczogZXJyb3I6IHJlYWQgZmFpbGVkIGF0IDB4MApbICAg
+NDguMzg5MTEwXSBtdGRfbmFuZGJpdGVycnM6IEFmdGVyIDkgYml0ZXJyb3JzIHBlciBzdWJwYWdl
+LCByZWFkIHJlcG9ydGVkCmVycm9yIC03NApbICAgNDguMzk3Njk1XSBtdGRfbmFuZGJpdGVycnM6
+IGZpbmlzaGVkIHN1Y2Nlc3NmdWxseS4KWyAgIDQ4LjQwMTc4M10gPT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KWyAgIDQ4Ljk0MDU1OF0KWyAgIDQ4Ljk0
+MDU4Nl0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0K
+WyAgIDQ4Ljk0MTExMl0gbXRkX25hbmRiaXRlcnJzOiBNVEQgZGV2aWNlOiAwClsgICA0OC45NDY4
+MTFdIG10ZF9uYW5kYml0ZXJyczogTVREIGRldmljZSBzaXplIDI2ODQzNTQ1NiwgZXJhc2VibG9j
+az0xMzEwNzIsCnBhZ2U9MjA0OCwgb29iPTEyOApbICAgNDguOTUwODM3XSBtdGRfbmFuZGJpdGVy
+cnM6IERldmljZSB1c2VzIDEgc3VicGFnZXMgb2YgMjA0OCBieXRlcwpbICAgNDguOTU5NDQ4XSBt
+dGRfbmFuZGJpdGVycnM6IFVzaW5nIHBhZ2U9MCwgb2Zmc2V0PTAsIGVyYXNlYmxvY2s9MApbICAg
+NDguOTY5MDE0XSBtdGRfbmFuZGJpdGVycnM6IGluY3JlbWVudGFsIGJpdGVycm9ycyB0ZXN0Clsg
+ICA0OC45NzE1OTZdIG10ZF9uYW5kYml0ZXJyczogd3JpdGVfcGFnZQpbICAgNDguOTc3NTk0XSBt
+dGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDguOTgxMjc3XSBtdGRfbmFuZGJpdGVy
+cnM6IHJlYWRfcGFnZQpbICAgNDguOTg1MjQ3XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdl
+ClsgICA0OC45ODgyNjldIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAw
+IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ4Ljk5MjMyN10gbXRkX25hbmRiaXRlcnJzOiBJ
+bnNlcnRlZCBiaXRlcnJvciBAIDAvNQpbICAgNDguOTk5NDI4XSBtdGRfbmFuZGJpdGVycnM6IHJl
+d3JpdGUgcGFnZQpbICAgNDkuMDA1NTA4XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAg
+NDkuMDA4ODM2XSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMSBjb3JyZWN0ZWQgYml0
+IGVycm9ycwpbICAgNDkuMDExODU4XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0
+OS4wMTgwNjFdIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAxIGJpdCBl
+cnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ5LjAyMjAxNV0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRl
+ZCBiaXRlcnJvciBAIDAvMgpbICAgNDkuMDI5MDU4XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUg
+cGFnZQpbICAgNDkuMDM0ODQ4XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDkuMDM4
+NTE2XSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMSBjb3JyZWN0ZWQgYml0IGVycm9y
+cwpbICAgNDkuMDQxNTQ1XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0OS4wNDc3
+NTVdIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAyIGJpdCBlcnJvcnMg
+cGVyIHN1YnBhZ2UKWyAgIDQ5LjA1MTcwMl0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRl
+cnJvciBAIDAvMApbICAgNDkuMDU4NzYwXSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpb
+ICAgNDkuMDY0NTY1XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDkuMDY4MjAzXSBt
+dGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMSBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAg
+NDkuMDcxMjMyXSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0OS4wNzc0MzJdIG10
+ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAzIGJpdCBlcnJvcnMgcGVyIHN1
+YnBhZ2UKWyAgIDQ5LjA4MTM4OV0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBA
+IDEvNwpbICAgNDkuMDg4NDMyXSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDku
+MDk0MTk3XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDkuMDk3ODg5XSBtdGRfbmFu
+ZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQgMiBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDkuMTAw
+OTE5XSBtdGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0OS4xMDcxMjFdIG10ZF9uYW5k
+Yml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA0IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UK
+WyAgIDQ5LjExMTA3N10gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDEvNQpb
+ICAgNDkuMTE4MTM3XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDkuMTIzODky
+XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDkuMTI3NTc2XSBtdGRfbmFuZGJpdGVy
+cnM6IFJlYWQgcmVwb3J0ZWQgMiBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDkuMTMwNjA4XSBt
+dGRfbmFuZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0OS4xMzY4MDhdIG10ZF9uYW5kYml0ZXJy
+czogU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA1IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ5
+LjE0MDc2NF0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDEvMgpbICAgNDku
+MTQ3ODA3XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDkuMTUzNjA3XSBtdGRf
+bmFuZGJpdGVycnM6IHJlYWRfcGFnZQpbICAgNDkuMTU3MjY4XSBtdGRfbmFuZGJpdGVycnM6IFJl
+YWQgcmVwb3J0ZWQgMiBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDkuMTYwMjk0XSBtdGRfbmFu
+ZGJpdGVycnM6IHZlcmlmeV9wYWdlClsgICA0OS4xNjY0OTZdIG10ZF9uYW5kYml0ZXJyczogU3Vj
+Y2Vzc2Z1bGx5IGNvcnJlY3RlZCA2IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ5LjE3MDQ1
+Ml0gbXRkX25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDEvMApbICAgNDkuMTc3NDk4
+XSBtdGRfbmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDkuMTgzMjUzXSBtdGRfbmFuZGJp
+dGVycnM6IHJlYWRfcGFnZQpbICAgNDkuMTg2OTc0XSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVw
+b3J0ZWQgMiBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDkuMTg5OTgzXSBtdGRfbmFuZGJpdGVy
+cnM6IHZlcmlmeV9wYWdlClsgICA0OS4xOTYxOTRdIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1
+bGx5IGNvcnJlY3RlZCA3IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ5LjIwMDE0MF0gbXRk
+X25hbmRiaXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDIvNgpbICAgNDkuMjA3MTgyXSBtdGRf
+bmFuZGJpdGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDkuMjEyODk1XSBtdGRfbmFuZGJpdGVycnM6
+IHJlYWRfcGFnZQpbICAgNDkuMjE2NjcxXSBtdGRfbmFuZGJpdGVycnM6IFJlYWQgcmVwb3J0ZWQg
+MyBjb3JyZWN0ZWQgYml0IGVycm9ycwpbICAgNDkuMjE5NjcwXSBtdGRfbmFuZGJpdGVycnM6IHZl
+cmlmeV9wYWdlClsgICA0OS4yMjU4NzJdIG10ZF9uYW5kYml0ZXJyczogU3VjY2Vzc2Z1bGx5IGNv
+cnJlY3RlZCA4IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKWyAgIDQ5LjIyOTgyN10gbXRkX25hbmRi
+aXRlcnJzOiBJbnNlcnRlZCBiaXRlcnJvciBAIDIvNQpbICAgNDkuMjM2ODcxXSBtdGRfbmFuZGJp
+dGVycnM6IHJld3JpdGUgcGFnZQpbICAgNDkuMjQyNjI5XSBtdGRfbmFuZGJpdGVycnM6IHJlYWRf
+cGFnZQpbICAgNDkuMjQ2MzQ4XSBtdGRfbmFuZGJpdGVycnM6IGVycm9yOiByZWFkIGZhaWxlZCBh
+dCAweDAKWyAgIDQ5LjI0OTM1Nl0gbXRkX25hbmRiaXRlcnJzOiBBZnRlciA5IGJpdGVycm9ycyBw
+ZXIgc3VicGFnZSwgcmVhZCByZXBvcnRlZAplcnJvciAtNzQKWyAgIDQ5LjI1Nzk1OF0gbXRkX25h
+bmRiaXRlcnJzOiBmaW5pc2hlZCBzdWNjZXNzZnVsbHkuClsgICA0OS4yNjIwMjldID09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiMKClJlZ2FyZHMsCkdh
+Ym9yCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
