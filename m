@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 229EEC3ABC3
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 May 2025 19:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 520CDC3ABC9
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 May 2025 19:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G0YuESFS2P8qHlAQte0aBUnvCd9zL0oyEtak1321ArU=; b=nE7h8fp2ZHx+tU
-	Zn4FYKFuoUuxAukfNrLM5RRekH74VN7Q5JDnQA0FUVjTliuXCkRHvcKbuSSVs3SZie3Qm8hAEpQTO
-	IiM/1YHqpQWg03SFnKloAiH3A4ys3USaLf85Rx8gpfg2xr7WuR34PMq+U2EbPE7QwfD9olSGspmCm
-	DiLtmg0TjPrR3lDu0PvEEQzwWBk+wYCYexMQcJu9/Uz5CcISWhh2PNnasH2wkJFcwLnZsq95GVAbw
-	8mLQsJW6M72jT7YIG8V4jKXDJP2PNTn3BNo6NkCzaxAyyqs/STOyC0NTfX/0lWrQs3nQLmq9eMMaE
-	NrxgCqDbXnqWwqrbs08Q==;
+	List-Owner; bh=rMerWVcIksTHmAIdRv8VyoQWH1DWYmrjT7z1NCImFiM=; b=DfRSWms0nG80JR
+	8h9lg5NoUAwZhJyFxKEQgz/HkxeV7qTZl2n6TrUnq1rT4J3On1KlWaDSo3g0vqm5C4gXk4l5lIpHz
+	eR33g/79CPQN69GY82p+ZA8idZq1yhfjxHvK8qhNoDDrv9pBGcE/Jf+IHpMQZ2T0qbncDkgPUJ/Yg
+	K79Jj16g2nefFjfCy+QSeHezMSLvNjq+CPeVKqIdEaKnsF/riozmv/93Jj0ww8QXA7Pgh8hvc9cqd
+	MjTkdi+P5ek1JpbcPBSfG51IegzqCOSBeOj3x3flV1L4TkDQsjwJicj0Tc170ja96iEb13u5lSpjU
+	Hetsavgv50pIm3i+hMkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uDqA4-00000006JvR-1WIf;
-	Sat, 10 May 2025 19:47:04 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+	id 1uDqC7-00000006K4z-2Tqs;
+	Sat, 10 May 2025 19:49:11 +0000
+Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uDq62-00000006JBB-25EB;
-	Sat, 10 May 2025 19:42:55 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-30c1c4a8224so2225673a91.0;
-        Sat, 10 May 2025 12:42:54 -0700 (PDT)
+	id 1uDq6F-00000006JDx-01o9;
+	Sat, 10 May 2025 19:43:09 +0000
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-b1fd59851baso2077814a12.0;
+        Sat, 10 May 2025 12:43:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746906173; x=1747510973; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1746906186; x=1747510986; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ajRywws6lD8KHlYjxWd9Od+zJbHSPGQcC6B7Bpdbzrc=;
-        b=NdTiLn13MKjdpIG71LiS+cEki3DfT2YLVZlYcg0tkwN5GyYlabTTk0kDmjhgbuJsi1
-         Wf0C6hqfHJA0til7v3krg0CGYG5jCfIVDAtAwzXwVX3yGmUWz0toXGY3rkvrhd6DxTaJ
-         IEST6HRdJsC4jcsv8LP8k2ie6NXvXSZiYQeHo5KqJKJhZ/IlB5UBtHMu/dLlNThQ8xzK
-         25JVIOcK9/eITq5ZAvYSqYcGPYOfmfIB3TVoVf5Ntv+myyhoLX2ME1i7AMYcdlwm6Nkl
-         fgNCcYPYWmM5Kyy7Y/+sSz0iKxaR/1xiNW+fnFQg3Qd/8QZ4RsdxTh/L/PQwh080A7Ah
-         WYgQ==
+        bh=hBGCGR+DudjR4q+SCafR4sOWrb5VFF5pYEvlVG+7oyY=;
+        b=I3bnF+15IUnV1wFssgN1HFj/y1NvK2Q/NwtgqToYV8dtXOnWAkikvzo+9x4G6SYTkY
+         C+yKBrK9WbUt1N71dbqQp+XcunmZOb17WakYdJJaAXWXRjSyEeY+rcyQzIFOO1tV1mWF
+         aT3ojEdmgQJbvky7SDCeyYEWxeVK3mH92Zya1yFjrehBKT/HeL/345e2vGjcNhDjaQc4
+         Q77TvJnlkbyBFHxQFXa3BAMj2FkTH2NtblXUpl8xm+IdaR0J0DV9LexsNZlfsMmgj5xu
+         58oIkXbHpXDuPjnMfDQrHCn67ecWVgax2GdeACeHH3wkCZ9kYV/aExCZUt5az+rHUcN7
+         wT7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746906173; x=1747510973;
+        d=1e100.net; s=20230601; t=1746906186; x=1747510986;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ajRywws6lD8KHlYjxWd9Od+zJbHSPGQcC6B7Bpdbzrc=;
-        b=h9Jf8wAyibtMDkmshrSdro078jtOTcxjjnOSn2m8jdyem1sOkWV/BbNGxjAza1sfKo
-         DjiZS/tt3flNAPvAvSKHeX0lFWhqPhGSyBmLPIvAFESRPX46yigb7v3V/72rO2KUTmkc
-         uUGx+YJfgy+Sa4OlhAvgjXVsGhxCga/OeesqiaPYu8C8YBd6CtyIbHZE8YlwPVaC9gtu
-         4Hd2u3oplxN6o8WpqUZCjIePHKZFq5gZYiIEC8cPb+0y/G5jFZKsISIG9yRE56G7yIxx
-         VZ/j3NGKrgWi81wjtTZjWwSe0x90oLnu5fCqh4dOpOKmnTWrmKsHpSQOk5VphEB3XZJg
-         gptg==
-X-Forwarded-Encrypted: i=1; AJvYcCWppsMoHxCiu3YpKViM331UOGd6N+7xDShJBcyIpC1VPMlFlA+l6jsqs6MjN+SRUdP+8r6UxYZf36ga@lists.infradead.org, AJvYcCXs1Pr4DZ5SLhJ6dKgCmFEf2ncrbHxIr4lBlrmGTs6E5jjD8iK/nBB8fySXF8l/TV0+JUNqqBQe40b7Ve5zaTgR@lists.infradead.org
-X-Gm-Message-State: AOJu0YwKSkX5n+L0iirc+1bXC04NZGY3pVNWAlURCSpnJqURSWmvzPvL
-	t+vvicS7KtTLOVcoLP5kEpJRFfmlsXzdEQCBBzs7S2a4LHCDl5ZpmYKZ4Sps
-X-Gm-Gg: ASbGncsvMObN8WYeGlFRkEb/MVyvuIqC/2PkQT/VI4+DXcslkwuuFXiMbCnlMuqb5w9
-	F7cQcV04WhITp4amoQ4hb10+XTlUsPH4iwhWqifIdkGK7o+kf/w4B93YjbYc43M7ww0fOhOkTS/
-	ah63jT+wliMl6eqpxoEEOkdQZ/ipZIphIdZUDsZ/ozTia0+Kiavo4sjgG7UU+P9EdER72fheKZ2
-	9eCVieHsDQqScI7wlOvrA9miYqJqncYQopX4vAgARFjS+uZStradgT6LF2Slpw1bANwHVoorMuF
-	a7pqVlAaLe54RkLdo7T0pLUjlETaCkKXUwyGG7dn3Al1rRWPKDN+gxkgsv8Z0I8=
-X-Google-Smtp-Source: AGHT+IHF/6vAuUa2FDr0Jh21aQSSYaG/h9piroxVtpPE5qcBaQXlPgMlxHqaDut6EeR4ncYQAZR0jQ==
-X-Received: by 2002:a17:90b:390f:b0:2ee:ee5e:42fb with SMTP id 98e67ed59e1d1-30c3cff29ddmr12950783a91.13.1746906173489;
-        Sat, 10 May 2025 12:42:53 -0700 (PDT)
+        bh=hBGCGR+DudjR4q+SCafR4sOWrb5VFF5pYEvlVG+7oyY=;
+        b=QiWotsxsdH40OpqkWcy3ow3qEMdkqvHwKvpqDGARG0UVAvySfw/M9x9UKChbke3Ky2
+         oHI8V1Dxk9cjXklHjRwmEWtgISROLj16gnFFNmV7XBmOsX/kP/UIZvzbOIPVRyIcyZC8
+         TVKWw+81xtC900XS7UZZIuBGphll3D1mryXgPw1JL8v33Hb1brjLBaTS+28SIjcp0aqR
+         wGtsym0ZvETgEa41Ka6/VH652JDPhmXuDbi9BxGw/7GLbJ7H11vbkw6s3T2dW/OUH5n/
+         Pp0nSw10SyroRG0J0u6zER5TjB5qmorsmv7aufZLSs8A/1QK+7XU5dek+G3o1w7IzWV0
+         lMCg==
+X-Forwarded-Encrypted: i=1; AJvYcCU39CbJeOe3UPjiCkjAfGZw4hUCgR3KumDXJrSdmuJJ5I1kC/N/zkGBE9tvKSX3ieTVi36O5o7Vbe9Nu0Dl7nXS@lists.infradead.org, AJvYcCX+jwEsDOZzRaNGBW6Ia7mw/toGRza4ZBE2vL1rmS2HoI0fOa/iWeuSG6G/shyIQRGnutjecCVHhfcI@lists.infradead.org
+X-Gm-Message-State: AOJu0YxsJe0+DoiOGPn+U2a16QZI9MM3Z18yOh6cnDifNmkZBS50zWBn
+	vufGeMID8XSYAf3NYfqU76O+v+YtWv+tx1PtcAXW9JL2RUYcrOcf
+X-Gm-Gg: ASbGncuae3MDED+sfhLWBpmmWI54sN+rjRS4qbvCbgYJ+nANyB3+R+hHc5Y6clrJvwo
+	JE/ueF7So2j1cIME/dO8Ii+hsMS1qHlDDSbtxYKX907fToBKVlNvvgi3Gd9/T/OTP+5WpKRY9AY
+	TZ0KRCX1hccURroDP3sE51auH9WlkNN0wgnauZJ4KK1KZu3135P10h9NZ8N/324UV6/7ztNn129
+	yhRik8M64YYSIrELJFsNogX9qdBtGn1mJSCRZTRCrXX+8e3hoHX8dyTPVGWNcVYJiuiI9WPQWl8
+	H29rBImyoq90U7N2OT8klu9h6V9u/3GgB5i8AW24W/41F5hRf5Sds4yXZ4HTtDs5cVdSMB7C5A=
+	=
+X-Google-Smtp-Source: AGHT+IFzKOJYasnUn+55LfFZE9jK2KzyBx3+B3BN8g1tgWlMPEY7JLwdXCS0DbglTGKj9lXo91xUqw==
+X-Received: by 2002:a17:903:2351:b0:223:2cae:4a96 with SMTP id d9443c01a7336-22fc918c11emr108862695ad.42.1746906186030;
+        Sat, 10 May 2025 12:43:06 -0700 (PDT)
 Received: from NB-GIGA003.letovo.school ([5.194.95.139])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2523e67d53sm2223670a12.19.2025.05.10.12.42.42
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2523e67d53sm2223670a12.19.2025.05.10.12.42.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 May 2025 12:42:53 -0700 (PDT)
+        Sat, 10 May 2025 12:43:05 -0700 (PDT)
 From: Alexey Charkov <alchark@gmail.com>
-Date: Sat, 10 May 2025 23:42:21 +0400
-Subject: [PATCH 1/3] dt-bindings: spi: Add VIA/WonderMedia serial flash
- controller
+Date: Sat, 10 May 2025 23:42:22 +0400
+Subject: [PATCH 2/3] mtd: spi-nor: Add a driver for the VIA/WonderMedia
+ serial flash controller
 MIME-Version: 1.0
-Message-Id: <20250510-wmt-sflash-v1-1-02a1ac6adf12@gmail.com>
+Message-Id: <20250510-wmt-sflash-v1-2-02a1ac6adf12@gmail.com>
 References: <20250510-wmt-sflash-v1-0-02a1ac6adf12@gmail.com>
 In-Reply-To: <20250510-wmt-sflash-v1-0-02a1ac6adf12@gmail.com>
 To: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>, 
@@ -87,16 +88,16 @@ Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
  linux-arm-kernel@lists.infradead.org, Alexey Charkov <alchark@gmail.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1746906149; l=4940;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1746906149; l=18425;
  i=alchark@gmail.com; s=20250416; h=from:subject:message-id;
- bh=mMLcIpsEhoq8UdQQpLuognQnHIyH8ycLrQgiuLuYhxs=;
- b=qVbf4RLXYHvpthPaLv01NOrHydUepNylWyn5bR8XeTaRW3QuUOwUcom2Wc7juU8PLY+eUEjZ3
- AzqsQn1ud4KD1jQxQL29PwhpRzDUazDtepjXqcyy8fbVOkMuAmp9j/c
+ bh=MVc+D8UeDXfnWqkaT4VNih6uJUURgP2ypi9Yz0FaNNQ=;
+ b=J3oAoN7HjFgJWUp6oIwA5GRzLKqmj1Ey7aBaqQmmbiQWIHo4LGQ1j7dsDLEdLrsI1q6obcOTK
+ Zo5n9cFECFgAZu8iDEseuAHiPm/dN0g0GOjr21dpE2NGHiFblNNkK4f
 X-Developer-Key: i=alchark@gmail.com; a=ed25519;
  pk=ltKbQzKLTJPiDgPtcHxdo+dzFthCCMtC3V9qf7+0rkc=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250510_124254_544048_B0EECC0F 
-X-CRM114-Status: GOOD (  19.13  )
+X-CRM114-CacheID: sfid-20250510_124307_067579_A1872CAF 
+X-CRM114-Status: GOOD (  26.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,156 +114,600 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a binding for the serial flash controller found on VIA/WonderMedia
-SoCs, which provides semi-transparent access to SPI NOR chips by
-mapping their contents to the physical CPU address space.
+The controller is tailored to SPI NOR flash memory and abstracts away all
+SPI communications behind a small set of MMIO registers and a physical
+memory mapping of the actual chip contents.
+
+It doesn't expose chip probing functions beyond reading the ID though, so
+use lower level chip opcodes via the "programmable command mode" of the
+controller and the kernel's SPI NOR framework to avoid hard-coding chip
+parameters for each ID the way the vendor kernel does it.
+
+Currently tested on a WonderMedia WM8950 SoC with a Macronix MX25L4005A
+flash chip (APC Rock board), but should work on all VIA/WonderMedia SoCs
 
 Signed-off-by: Alexey Charkov <alchark@gmail.com>
 ---
- .../devicetree/bindings/spi/via,vt8500-sflash.yaml | 122 +++++++++++++++++++++
- MAINTAINERS                                        |   1 +
- 2 files changed, 123 insertions(+)
+ MAINTAINERS                                  |   1 +
+ drivers/mtd/spi-nor/controllers/Kconfig      |  14 +
+ drivers/mtd/spi-nor/controllers/Makefile     |   1 +
+ drivers/mtd/spi-nor/controllers/wmt-sflash.c | 525 +++++++++++++++++++++++++++
+ 4 files changed, 541 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/spi/via,vt8500-sflash.yaml b/Documentation/devicetree/bindings/spi/via,vt8500-sflash.yaml
-new file mode 100644
-index 0000000000000000000000000000000000000000..d2ea0dacdd56118c0cb5a1cb510ceb7591e1e5ca
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/via,vt8500-sflash.yaml
-@@ -0,0 +1,122 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/via,vt8500-sflash.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: VIA/WonderMedia serial flash controller
-+
-+description:
-+  This controller is used on VIA/WonderMedia SoCs such as VIA VT8500,
-+  WonderMedia WM8850 and similar. It provides a semi-transparent interface
-+  for reading and writing SPI NOR chip contents via a physical memory map,
-+  abstracting away all SPI communication, while also providing a direct
-+  mechanism for issuing "programmable commands" to the underlying SPI chip
-+
-+maintainers:
-+  - Alexey Charkov <alchark@gmail.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - via,vt8500-sflash
-+      - wm,wm8505-sflash
-+      - wm,wm8650-sflash
-+      - wm,wm8750-sflash
-+      - wm,wm8850-sflash
-+
-+  reg:
-+    items:
-+      - description: MMIO registers region of the controller
-+      - description:
-+          Physical memory region within which the controller will map the
-+          flash contents of chip 0 for reading and writing. If the flash
-+          size is smaller than this region, it will be mapped at its end.
-+          Note that if this chip is used as the boot device (as is most
-+          often the case), the boot ROM maps it at the very end of the
-+          CPU address space (i.e. ending at 0xffffffff)
-+      - description:
-+          Physical memory region within which the controller will map the
-+          flash contents of chip 1 for reading and writing. If the flash
-+          size is smaller than this region, it will be mapped at its end
-+
-+  reg-names:
-+    items:
-+      - const: io
-+      - const: chip0-mmap
-+      - const: chip1-mmap
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+patternProperties:
-+  "^flash@[0-1]$":
-+    type: object
-+    additionalProperties: true
-+
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    sflash: spi-nor-controller@d8002000 {
-+        compatible = "wm,wm8850-sflash";
-+        reg = <0xd8002000 0x400>,
-+              <0xff800000 0x800000>,
-+              <0xef800000 0x800000>;
-+        reg-names = "io", "chip0-mmap", "chip1-mmap";
-+        clocks = <&clksf>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        flash@0 {
-+            compatible = "jedec,spi-nor";
-+            reg = <0>;
-+
-+            partitions {
-+                compatible = "fixed-partitions";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                partition@0 {
-+                    label = "U-boot";
-+                    reg = <0 0x50000>;
-+                    read-only;
-+                };
-+
-+                partition@1 {
-+                    label = "U-boot environment 1";
-+                    reg = <0x50000 0x10000>;
-+                };
-+
-+                partition@2 {
-+                    label = "U-boot environment 2";
-+                    reg = <0x60000 0x10000>;
-+                };
-+
-+                partition@3 {
-+                    label = "W-load";
-+                    reg = <0x70000 0x10000>;
-+                    read-only;
-+                };
-+            };
-+        };
-+    };
-+
-+...
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 6dbdf02d6b0c9357ad1da520a0f6c16b7f38f879..f09c457bbfc5ef71a3f8379c111bac52b767cbbc 100644
+index f09c457bbfc5ef71a3f8379c111bac52b767cbbc..ff849c03a3b79a0487d3ab7e704ed11ffdb58f41 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -3475,6 +3475,7 @@ F:	Documentation/devicetree/bindings/hwinfo/via,vt8500-scc-id.yaml
- F:	Documentation/devicetree/bindings/i2c/wm,wm8505-i2c.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/via,vt8500-intc.yaml
- F:	Documentation/devicetree/bindings/pwm/via,vt8500-pwm.yaml
-+F:	Documentation/devicetree/bindings/spi/via,vt8500-sflash.yaml
- F:	arch/arm/boot/dts/vt8500/
- F:	arch/arm/mach-vt8500/
+@@ -3481,6 +3481,7 @@ F:	arch/arm/mach-vt8500/
  F:	drivers/clocksource/timer-vt8500.c
+ F:	drivers/i2c/busses/i2c-viai2c-wmt.c
+ F:	drivers/mmc/host/wmt-sdmmc.c
++F:	drivers/mtd/spi-nor/controllers/wmt-sflash.c
+ F:	drivers/pwm/pwm-vt8500.c
+ F:	drivers/rtc/rtc-vt8500.c
+ F:	drivers/soc/vt8500/
+diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
+index ca45dcd3ffe81f87dbf9ddc2a1535244ea92be20..aa8400b9aeaaec3b8b3f8996d501f5ac77a488ea 100644
+--- a/drivers/mtd/spi-nor/controllers/Kconfig
++++ b/drivers/mtd/spi-nor/controllers/Kconfig
+@@ -16,3 +16,17 @@ config SPI_NXP_SPIFI
+ 	  SPIFI is a specialized controller for connecting serial SPI
+ 	  Flash. Enable this option if you have a device with a SPIFI
+ 	  controller and want to access the Flash as a mtd device.
++
++config SPI_WMT_SFLASH
++	tristate "VIA/WonderMedia serial flash controller"
++	depends on ARCH_VT8500 || COMPILE_TEST
++	depends on OF
++	depends on HAS_IOMEM
++	help
++	  Enable support for the VIA/WonderMedia serial flash controller.
++
++	  This is the specialized controller driving SPI NOR flash chips
++	  inside VIA/WonderMedia SoCs. Most if not all VIA/WonderMedia
++	  based devices use SPI NOR flash as their boot storage, so select
++	  this if you need to access the primary or secondary bootloader
++	  and their environment partitions.
+diff --git a/drivers/mtd/spi-nor/controllers/Makefile b/drivers/mtd/spi-nor/controllers/Makefile
+index 0b8e1d5309138619bbfdf3e27639b6be2935e65e..9c0365354a37986755f3c067ba2f1f5708fd20ad 100644
+--- a/drivers/mtd/spi-nor/controllers/Makefile
++++ b/drivers/mtd/spi-nor/controllers/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
+ obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
++obj-$(CONFIG_SPI_WMT_SFLASH)	+= wmt-sflash.o
+diff --git a/drivers/mtd/spi-nor/controllers/wmt-sflash.c b/drivers/mtd/spi-nor/controllers/wmt-sflash.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..d63c3402345a9dac7e8a0591bb032481ad3b02f7
+--- /dev/null
++++ b/drivers/mtd/spi-nor/controllers/wmt-sflash.c
+@@ -0,0 +1,525 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * VIA/WonderMedia SPI NOR flash controller driver
++ *
++ * Copyright (c) 2025 Alexey Charkov <alchark@gmail.com>
++ */
++#include <linux/clk.h>
++#include <linux/bitops.h>
++#include <linux/errno.h>
++#include <linux/iopoll.h>
++#include <linux/log2.h>
++#include <linux/minmax.h>
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/spi-nor.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#define SF_CHIP_SEL_0_CFG	0x000		/* chip select 0 config */
++#define SF_CHIP_SEL_1_CFG	0x008		/* chip select 0 config */
++#define SF_CHIP_SEL_CFG(x)	(8 * (x))
++#define SF_CHIP_SEL_ADDR	GENMASK(31, 16) /* 64kb aligned address */
++#define SF_CHIP_SEL_SIZE	GENMASK(11, 8)	/* log2(size/32kb) */
++
++#define SF_SPI_INTF_CFG		0x040	/* SPI interface config */
++#define SF_ADDR_WIDTH_32	BIT(0)	/* 0: 24 bit, 1: 32 bit addr */
++#define SF_USR_RD_CMD_MOD	BIT(4)	/* 0: normal, 1: user cmd read */
++#define SF_USR_WR_CMD_MOD	BIT(5)	/* 0: normal, 1: user cmd write */
++#define SF_PROG_CMD_MOD		BIT(6)	/* 0: normal, 1: prog cmd */
++#define SF_CS_DELAY		GENMASK(18, 16)	/* chip select delay */
++#define SF_RES_DELAY		GENMASK(27, 24) /* reset delay */
++#define SF_PDWN_DELAY		GENMASK(31, 28) /* power down delay */
++
++#define SF_SPI_RD_WR_CTR	0x050	/* read/write control */
++#define SF_RD_FAST		BIT(0)	/* 0: normal read, 1: fast read */
++#define SF_RD_ID		BIT(4)	/* 0: read status, 1: read ID */
++
++#define SF_SPI_WR_EN_CTR	0x060	/* write enable control */
++#define SF_CS0_WR_EN		BIT(0)
++#define SF_CS1_WR_EN		BIT(1)
++#define SF_CS_WR_EN(x)		BIT(x)
++
++#define SF_SPI_ER_CTR		0x070	/* erase control */
++#define SF_CHIP_ERASE		BIT(0)	/* full chip erase */
++#define SF_SEC_ERASE		BIT(15)	/* sector erase */
++
++#define SF_SPI_ER_START_ADDR	0x074	/* erase start address */
++#define SF_CHIP_ER_CS0		BIT(0)	/* erase chip 0 */
++#define SF_CHIP_ER_CS1		BIT(1)	/* erase chip 1 */
++#define SF_CHIP_ER_CS(x)	BIT(x)
++#define SF_ER_START_ADDR	GENMASK(31, 16)
++
++#define SF_SPI_ERROR_STATUS	0x080
++#define SF_MASLOCK_ERR		BIT(0)	/* master lock */
++#define SF_PCMD_ACC_ERR		BIT(1)	/* programmable cmd access */
++#define SF_PCMD_OP_ERR		BIT(2)	/* programmable cmd opcode */
++#define SF_PWR_DWN_ACC_ERR	BIT(3)	/* power down access */
++#define SF_MEM_REGION_ERR	BIT(4)	/* memory region */
++#define SF_WR_PROT_ERR		BIT(5)	/* write protection */
++#define SF_SPI_ERROR_CLEARALL	(SF_MASLOCK_ERR | \
++				 SF_PCMD_ACC_ERR | \
++				 SF_PCMD_OP_ERR | \
++				 SF_PWR_DWN_ACC_ERR | \
++				 SF_MEM_REGION_ERR | \
++				 SF_WR_PROT_ERR)
++
++#define SF_SPI_MEM_0_SR_ACC	0x100	/* status read from chip 0 */
++#define SF_SPI_MEM_1_SR_ACC	0x110	/* status read from chip 1 */
++#define SF_SPI_MEM_SR_ACC(x)	(0x100 + 0x10 * (x))
++
++#define SF_SPI_PDWN_CTR_0	0x180	/* power down chip 0 */
++#define SF_SPI_PDWN_CTR_1	0x190	/* power down chip 1 */
++#define SF_SPI_PDWN_CTR_(x)	(0x180 + 0x10 * (x))
++#define SF_PWR_DOWN		BIT(0)
++
++#define SF_SPI_PROG_CMD_CTR	0x200	/* programmable cmd control */
++#define SF_PROG_CMD_EN		BIT(0)	/* enable programmable cmd */
++#define SF_PROG_CMD_CS		GENMASK(1, 1)	/* chip select for cmd */
++#define SF_RX_DATA_SIZE		GENMASK(22, 16)	/* receive data size */
++#define SF_TX_DATA_SIZE		GENMASK(30, 24)	/* transmit data size */
++
++#define SF_SPI_USER_CMD_VAL	0x210
++#define SF_USR_RD_CMD		GENMASK(7, 0)	/* user read command */
++#define SF_USR_WR_CMD		GENMASK(23, 16)	/* user write command */
++
++#define SF_SPI_PROG_CMD_WBF	0x300	/* 64 bytes pcmd write buffer */
++#define SF_SPI_PROG_CMD_RBF	0x380	/* 64 bytes pcmd read buffer */
++
++#define SF_WAIT_TIMEOUT		1000000
++
++struct wmt_sflash_priv {
++	size_t			cs;
++	struct wmt_sflash_host	*host;
++	void __iomem		*mmap_base;
++	resource_size_t		mmap_phys;
++};
++
++#define SF_MAX_CHIP_NUM		2
++struct wmt_sflash_host {
++	struct device		*dev;
++	struct clk		*clk;
++
++	void __iomem		*regbase;
++	struct resource		*mmap_res[SF_MAX_CHIP_NUM];
++
++	struct spi_nor		*nor[SF_MAX_CHIP_NUM];
++	size_t			num_chips;
++};
++
++static int wmt_sflash_prep(struct spi_nor *nor)
++{
++	struct wmt_sflash_priv *priv = nor->priv;
++	struct wmt_sflash_host *host = priv->host;
++
++	return clk_prepare_enable(host->clk);
++}
++
++static void wmt_sflash_unprep(struct spi_nor *nor)
++{
++	struct wmt_sflash_priv *priv = nor->priv;
++	struct wmt_sflash_host *host = priv->host;
++
++	clk_disable_unprepare(host->clk);
++}
++
++static void wmt_sflash_pcmd_mode(struct wmt_sflash_host *host, bool enable)
++{
++	u32 reg = readl(host->regbase + SF_SPI_INTF_CFG);
++
++	reg &= ~SF_PROG_CMD_MOD;
++	reg |= FIELD_PREP(SF_PROG_CMD_MOD, enable);
++	writel(reg, host->regbase + SF_SPI_INTF_CFG);
++}
++
++static inline int wmt_sflash_wait_pcmd(struct wmt_sflash_host *host)
++{
++	u32 reg;
++
++	return readl_poll_timeout(host->regbase + SF_SPI_PROG_CMD_CTR, reg,
++		!(reg & SF_PROG_CMD_EN), 1, SF_WAIT_TIMEOUT);
++}
++
++static int wmt_sflash_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
++			       size_t len)
++{
++	struct wmt_sflash_priv *priv = nor->priv;
++	struct wmt_sflash_host *host = priv->host;
++	int ret;
++	u32 reg;
++
++	if (len > 64) {
++		dev_err(host->dev,
++		"Cannot read %d bytes from registers\n", len);
++		return -EINVAL;
++	}
++
++	wmt_sflash_pcmd_mode(host, true);
++	writeb(opcode, host->regbase + SF_SPI_PROG_CMD_WBF);
++
++	reg = SF_PROG_CMD_EN |
++	      FIELD_PREP(SF_PROG_CMD_CS, priv->cs) |
++	      FIELD_PREP(SF_TX_DATA_SIZE, 1) |
++	      FIELD_PREP(SF_RX_DATA_SIZE, len);
++	writel(reg, host->regbase + SF_SPI_PROG_CMD_CTR);
++
++	ret = wmt_sflash_wait_pcmd(host);
++
++	if (len)
++		memcpy_fromio(buf, host->regbase + SF_SPI_PROG_CMD_RBF, len);
++
++	wmt_sflash_pcmd_mode(host, false);
++
++	return ret;
++}
++
++static int wmt_sflash_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
++				size_t len)
++{
++	struct wmt_sflash_priv *priv = nor->priv;
++	struct wmt_sflash_host *host = priv->host;
++	int ret;
++	u32 reg;
++
++	if (len > 63) {
++		dev_err(host->dev,
++		"Cannot write %d bytes to registers\n", len);
++		return -EINVAL;
++	}
++
++	wmt_sflash_pcmd_mode(host, true);
++	writeb(opcode, host->regbase + SF_SPI_PROG_CMD_WBF);
++
++	if (len)
++		memcpy_toio(host->regbase + SF_SPI_PROG_CMD_WBF + 1, buf, len);
++
++	reg = SF_PROG_CMD_EN |
++	      FIELD_PREP(SF_PROG_CMD_CS, priv->cs) |
++	      FIELD_PREP(SF_TX_DATA_SIZE, len + 1);
++	writel(reg, host->regbase + SF_SPI_PROG_CMD_CTR);
++
++	ret = wmt_sflash_wait_pcmd(host);
++	wmt_sflash_pcmd_mode(host, false);
++
++	return ret;
++}
++
++static int wmt_sflash_wait_spi(struct wmt_sflash_priv *priv)
++{
++	struct wmt_sflash_host *host = priv->host;
++	int timeout = SF_WAIT_TIMEOUT;
++	u32 error;
++
++	while (timeout--) {
++		if (!(readl(host->regbase +
++			    SF_SPI_MEM_SR_ACC(priv->cs)) & 1))
++			return 0;
++
++		error = readl(host->regbase + SF_SPI_ERROR_STATUS);
++		if (error & SF_MASLOCK_ERR) {
++			dev_err(host->dev,
++				"Master lock error\n");
++			goto err;
++		}
++		if (error & SF_PCMD_ACC_ERR) {
++			dev_err(host->dev,
++				"Programmable command access error\n");
++			goto err;
++		}
++		if (error & SF_PCMD_OP_ERR) {
++			dev_err(host->dev,
++				"Programmable command opcode error\n");
++			goto err;
++		}
++		if (error & SF_PWR_DWN_ACC_ERR) {
++			dev_err(host->dev,
++				"Power down access error\n");
++			goto err;
++		}
++		if (error & SF_MEM_REGION_ERR) {
++			dev_err(host->dev,
++				"Memory region error\n");
++			goto err;
++		}
++		if (error & SF_WR_PROT_ERR) {
++			dev_err(host->dev,
++				"Write protection error\n");
++			goto err;
++		}
++	}
++	return 0;
++
++err:
++	writel(SF_SPI_ERROR_CLEARALL, host->regbase + SF_SPI_ERROR_STATUS);
++	return -EBUSY;
++}
++
++static ssize_t wmt_sflash_read(struct spi_nor *nor, loff_t from, size_t len,
++			       u_char *read_buf)
++{
++	struct wmt_sflash_priv *priv = nor->priv;
++	struct wmt_sflash_host *host = priv->host;
++	u32 reg = nor->read_opcode == SPINOR_OP_READ_FAST ? SF_RD_FAST : 0;
++
++	writel(reg, host->regbase + SF_SPI_RD_WR_CTR);
++
++	if (wmt_sflash_wait_spi(priv))
++		return 0;
++
++	memcpy_fromio(read_buf, priv->mmap_base + from, len);
++	return len;
++}
++
++static ssize_t wmt_sflash_write(struct spi_nor *nor, loff_t to, size_t len,
++				const u_char *write_buf)
++{
++	struct wmt_sflash_priv *priv = nor->priv;
++	struct wmt_sflash_host *host = priv->host;
++	size_t burst, offset = 0;
++
++	writel(SF_CS_WR_EN(priv->cs),
++	       host->regbase + SF_SPI_WR_EN_CTR);
++
++	while (offset < len) {
++		/* select 8 / 4 / 2 / 1 byte write length */
++		burst = 1 << min(3, ilog2(len - offset));
++		memcpy_toio(priv->mmap_base + to + offset,
++			    write_buf + offset, burst);
++
++		if (wmt_sflash_wait_spi(priv))
++			return offset;
++
++		offset += burst;
++	}
++
++	writel(0, host->regbase + SF_SPI_WR_EN_CTR);
++
++	return offset;
++}
++
++static int wmt_sflash_erase(struct spi_nor *nor, loff_t offs)
++{
++	struct wmt_sflash_priv *priv = nor->priv;
++	struct wmt_sflash_host *host = priv->host;
++	int ret = 0;
++	u32 reg;
++
++	if (offs & (SZ_64K - 1)) {
++		dev_err(host->dev,
++			"Erase offset 0x%llx not on 64k boundary\n", offs);
++		return -EINVAL;
++	}
++
++	writel(SF_CS_WR_EN(priv->cs),
++	       host->regbase + SF_SPI_WR_EN_CTR);
++
++	reg = SF_CHIP_ER_CS(priv->cs) |
++	      FIELD_PREP(SF_ER_START_ADDR, (priv->mmap_phys + offs) >> 16);
++	writel(reg, host->regbase + SF_SPI_ER_START_ADDR);
++
++	writel(SF_SEC_ERASE, host->regbase + SF_SPI_ER_CTR);
++
++	ret = wmt_sflash_wait_spi(priv);
++	writel(0, host->regbase + SF_SPI_WR_EN_CTR);
++
++	return ret;
++}
++
++static const struct spi_nor_controller_ops wmt_sflash_controller_ops = {
++	.prepare	= wmt_sflash_prep,
++	.unprepare	= wmt_sflash_unprep,
++	.read_reg	= wmt_sflash_read_reg,
++	.write_reg	= wmt_sflash_write_reg,
++	.read		= wmt_sflash_read,
++	.write		= wmt_sflash_write,
++	.erase		= wmt_sflash_erase,
++};
++
++static int wmt_sflash_register(struct device_node *np,
++				   struct wmt_sflash_host *host)
++{
++	const struct spi_nor_hwcaps hwcaps = {
++		.mask = SNOR_HWCAPS_READ |
++			SNOR_HWCAPS_READ_FAST |
++			SNOR_HWCAPS_PP,
++	};
++	struct device *dev = host->dev;
++	struct wmt_sflash_priv *priv;
++	struct mtd_info *mtd;
++	struct spi_nor *nor;
++	int ret;
++	u32 reg;
++
++	nor = devm_kzalloc(dev, sizeof(*nor), GFP_KERNEL);
++	if (!nor)
++		return -ENOMEM;
++
++	nor->dev = dev;
++	spi_nor_set_flash_node(nor, np);
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	ret = of_property_read_u32(np, "reg", &priv->cs);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "There's no reg property for %pOF\n",
++				     np);
++
++	if (priv->cs >= SF_MAX_CHIP_NUM)
++		return dev_err_probe(dev, -ENXIO,
++				     "Chip select %d is out of bounds\n",
++				     priv->cs);
++
++	priv->host = host;
++	nor->priv = priv;
++	nor->controller_ops = &wmt_sflash_controller_ops;
++
++	ret = spi_nor_scan(nor, NULL, &hwcaps);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "Failed to scan SPI NOR chip\n");
++
++	mtd = &nor->mtd;
++	mtd->name = np->name;
++
++	priv->mmap_phys = host->mmap_res[priv->cs]->end - mtd->size + 1;
++	priv->mmap_phys &= -SZ_64K;
++
++	priv->mmap_base = devm_ioremap(dev, priv->mmap_phys, mtd->size);
++	if (IS_ERR(priv->mmap_base))
++		return dev_err_probe(dev, PTR_ERR(priv->mmap_base),
++			"Failed to map chip %d at address 0x%x size 0x%llx\n",
++			priv->cs, priv->mmap_phys, mtd->size);
++
++	reg = FIELD_PREP(SF_CHIP_SEL_ADDR, priv->mmap_phys >> 16) |
++	      FIELD_PREP(SF_CHIP_SEL_SIZE, order_base_2(mtd->size) - 15);
++	writel(reg, host->regbase + SF_CHIP_SEL_CFG(priv->cs));
++
++	reg = FIELD_PREP(SF_CS_DELAY, 3);
++	writel(reg, host->regbase + SF_SPI_INTF_CFG);
++
++	/* the controller only handles 64k aligned addresses */
++	mtd->erasesize = max(mtd->erasesize, SZ_64K);
++
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "Failed to register MTD device\n");
++
++	host->nor[host->num_chips] = nor;
++	host->num_chips++;
++	return 0;
++}
++
++static void wmt_sflash_unregister_all(struct wmt_sflash_host *host)
++{
++	int i;
++
++	for (i = 0; i < host->num_chips; i++)
++		mtd_device_unregister(&host->nor[i]->mtd);
++}
++
++static int wmt_sflash_register_all(struct wmt_sflash_host *host)
++{
++	struct device *dev = host->dev;
++	struct device_node *np;
++	int ret;
++
++	for_each_available_child_of_node(dev->of_node, np) {
++		ret = wmt_sflash_register(np, host);
++		if (ret) {
++			of_node_put(np);
++			goto fail;
++		}
++
++		if (host->num_chips == SF_MAX_CHIP_NUM) {
++			dev_warn(dev, "Flash count exceeds the maximum chipselect number\n");
++			of_node_put(np);
++			break;
++		}
++	}
++	return 0;
++
++fail:
++	wmt_sflash_unregister_all(host);
++	return ret;
++}
++
++static int wmt_sflash_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct wmt_sflash_host *host;
++	char mmap_str[32];
++	int ret, i;
++
++	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
++	if (!host)
++		return dev_err_probe(dev, -ENOMEM,
++			"Failed to allocate controller private data\n");
++
++	platform_set_drvdata(pdev, host);
++	host->dev = dev;
++
++	host->regbase = devm_platform_ioremap_resource_byname(pdev, "io");
++	if (IS_ERR(host->regbase))
++		return dev_err_probe(dev, PTR_ERR(host->regbase),
++			"Failed to remap controller MMIO registers\n");
++
++	for (i = 0; i < SF_MAX_CHIP_NUM; i++) {
++		snprintf(mmap_str, sizeof(mmap_str), "chip%d-mmap", i);
++
++		host->mmap_res[i] = platform_get_resource_byname(pdev,
++						IORESOURCE_MEM, mmap_str);
++		if (!host->mmap_res[i])
++			return dev_err_probe(dev, -ENXIO,
++				"Memory map region not found for chip %d\n",
++				i);
++	}
++
++	host->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(host->clk))
++		return dev_err_probe(dev, PTR_ERR(host->clk),
++			"Failed to get clock\n");
++
++	ret = clk_prepare_enable(host->clk);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to enable clock\n");
++
++	ret = wmt_sflash_register_all(host);
++
++	clk_disable_unprepare(host->clk);
++	return ret;
++}
++
++static void wmt_sflash_remove(struct platform_device *pdev)
++{
++	struct wmt_sflash_host *host = platform_get_drvdata(pdev);
++
++	wmt_sflash_unregister_all(host);
++}
++
++static const struct of_device_id wmt_sflash_dt_ids[] = {
++	{ .compatible = "via,vt8500-sflash"},
++	{ .compatible = "wm,wm8505-sflash"},
++	{ .compatible = "wm,wm8650-sflash"},
++	{ .compatible = "wm,wm8750-sflash"},
++	{ .compatible = "wm,wm8850-sflash"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, wmt_sflash_dt_ids);
++
++static struct platform_driver wmt_sflash_driver = {
++	.driver = {
++		.name	= "wmt-sflash",
++		.of_match_table = wmt_sflash_dt_ids,
++	},
++	.probe	= wmt_sflash_probe,
++	.remove = wmt_sflash_remove,
++};
++module_platform_driver(wmt_sflash_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("VIA/WonderMedia SPI NOR flash controller driver");
 
 -- 
 2.49.0
