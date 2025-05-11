@@ -4,86 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02639C3ABC5
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 May 2025 09:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC406C3ABC3
+	for <linux-mtd@archiver.kernel.org>; Sun, 11 May 2025 11:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=Z8vmmah0dL+3MjLJyg237LW89t1DcCC3gyBeboL8VNs=; b=0vH
-	/RZ+FyoTlx6iRnGbrAuHS4lojYXRUt3aAXQYfBW89qKlrCc04MfYOcmJ/jft5Eb4u9siGlO3hYAs3
-	siPN1VkvCF5Jt8G6TN4RsmWKuhAe/s5sek5V1ylErb4cQhroR8J0TGztiVCFDLXhbfEWWLGgt0oZQ
-	N2PiJ2AQeuMPZU4i6p5svscfI1Y+42fv5URHSWqSk8pqS6/oSLq7DYpDxsi1UFj27w7h6aXSVNjdX
-	MWFeE9WrGWMUQ68+/dR6UVlxbgOdzMrHdzt6URy8F/lyG8lrEvedVcXPYfsflWVWMTly3SZdCVQNw
-	0qVUSRecWb9J5UppHr1L348K6JdO+YQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=QkpezSJWjpZ/7QSbV9Ha+RLNjZT/6q41J1pKXnH0sNM=; b=s/xw/s3KGzGtmL
+	BT8aU6B/zteWypu0mz/EFpeQY8Rh71vQ+veVuKYhjIbgID9bIx0zZCLcImxx3N9aWwrHmoAlcED7a
+	bk8kb23cAX2SEwhouOve0lI/6XD0zNyFz5KNjpaUHX5ZYoGRQNg0DkjTCnGzy92FljWJtQmW5ZuuM
+	38IDbFKWSwshbKYvTXLOLjsXVhh+1o+ABvkPH476kcL6sNgTNYWeIj5cgDcFAFsIZ10F50UF/2jLa
+	6LZpJ9oExXjySQmmsjli+fdVosBSXrt6MgYoOgcJyiDWyBpQ7Sz+uASL2fbvBEGT3bMOT5l/TMtox
+	C8vtGNAfm/uv2NwiyzOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uE3D9-000000071at-3Dgj;
-	Sun, 11 May 2025 09:43:07 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1uE4cl-000000078lF-1TCI;
+	Sun, 11 May 2025 11:13:39 +0000
+Received: from mgamail.intel.com ([192.198.163.19])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uE3D6-000000071aQ-21r4
-	for linux-mtd@lists.infradead.org;
-	Sun, 11 May 2025 09:43:05 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-73bf5aa95e7so3506835b3a.1
-        for <linux-mtd@lists.infradead.org>; Sun, 11 May 2025 02:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746956583; x=1747561383; darn=lists.infradead.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SnC89AHyslSef6V2aYLkekOdGeOj9PF1IUYLzzXqRiM=;
-        b=nMGR/CLl/QjqAMhJjqjgh1xjDuHK3QROY/cqUmv8iKbFwrV79INv0Aun9DwFHgYQFN
-         oOxvFQUEAPADZmhS6lco2ODTcY16dqbUtXjqTv8CoA0BtcOpJf1kQLbSEeLPLb0Hx9IP
-         hLhoBwVoRtE7xWaxijUmx+G1/VcyjJAPWi22ATIh6JDY413ebKDNYKvniKEgkNmnqcd9
-         WHNNFSr1kYvepbwONrIMl24l2s59R1Qd2N1VhRercjv9h4PE8pFFf2/aUYcL7+MVUv/V
-         guOgdzMrneq3jxv2O7m3Ocs/U88b9ehnJgWc+6rda6UJ/I6rSr/RAP+EZYBvV2v0fVAB
-         d4rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746956583; x=1747561383;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SnC89AHyslSef6V2aYLkekOdGeOj9PF1IUYLzzXqRiM=;
-        b=WNCEx0F+1wUzDWfMSnxnj+C13bpFj7YZZiEO28LAjrbalhMwFIMn2OdADHdzBir5zT
-         855FlnAfgM6u6a4451phHWxSK8Lrp86oVwN2mvaCtc4SgMOV3gQQF0JdqofNpCU+Uj40
-         MyZc5JHsjwjytZ9WsptaPHyp+o8WtfUPbfzorn6+I4B4nuBxlSxmogW4Dk2fUbXGv6nu
-         HkL5Pci7itTf1FXENeEM/RIV+2zuAPZ+D9HvLwvHOtL4ELPwcQv5TJHTrpd6pQ+fsMrx
-         hbCuCqzXLi3oFuu+kBaq7MDR82gR6WnSuPfZSVDkP/Fhj57ewfInqBWSs10mAhYc73bO
-         s4qQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWsW7Fw/+8iZHKInB28gRKfV2v2S13ieaHP72CoGh+blV1nQpHN4+DcNcI6MMs1eOTg6y7O5ADiRps=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz5ZwritG4mnybDFoSLiRwk+gVsKQN2FfXIupk0aVh0aJfEf/u6
-	8kzZHNrxI5rlt2BTkG5A1b9EvrhmW6o0K4AJRJ5wGASr5WhF5mkeiarrFRALMgUofoGE1ZrumDG
-	uxz1Pfv1bj0tcMtN3yQIH/F2fH8KGiTsZ
-X-Gm-Gg: ASbGncueFYS/FrznuCIjbBGru5YzQGMYQm4eGiKZ3CKBmU1CKvl1t8Ud/SHp3TY7K/F
-	GU17n7+GARbmvRU42criQfGz/rcV4Ed71Ipq5ne6fz8PODOXkxUPi6loRkeG2VCSioVHrA1s932
-	lbYrJV3SRxraFeaNnFZwHrihiHWWJqyMUCq6Oxa40ZAkc8s7ZvOdJEA6BpejY7oJxvc7E=
-X-Google-Smtp-Source: AGHT+IH/mJ0x32ZlNKoI2eDR9O84MqogT0fzcKY9eBjFtKcEWG4I2sMg71tE4UvVNHYrlB5MENrq/i8SwY18K6OTj4U=
-X-Received: by 2002:a05:6a21:3510:b0:1f5:7cb4:b713 with SMTP id
- adf61e73a8af0-215abb3a301mr14054823637.19.1746956583393; Sun, 11 May 2025
- 02:43:03 -0700 (PDT)
+	id 1uE4cj-000000078kq-1ECJ;
+	Sun, 11 May 2025 11:13:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1746962017; x=1778498017;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1rAsgwZYIQE6e6R96BL5uR52KMCv8+3yF9wTwCO3IdI=;
+  b=UhjUUKWP/iwtAZ4qKI3Gi+3TflP3EjeJ1gKhvrL+IreFhg7hqbqint2m
+   hyNSHcc0s9TBs/Cd+vr1vNDJPnHX+jtmQqdCje7D2q0rI78CsmfM9shS3
+   axkd/HoAB9cEPgdcS+811+l4VUuaeVYm5vPd+gD7/DHtnOdwnnzrwS1w8
+   /A/pmD4F+ptZ7pE0K8lvPYZaIFj8D+2JQGl64lx05q7encGEz0xQ7xnK1
+   B7cfjFR1D7rK6O7E17JEgSmB2soWG5xoejtkivCHwzrc+EVdziyg5snfx
+   ESJSX9z8zZSBWmiCq+Faeqx0e30aimhTTMd45/zXEzE6Log2DyD1WYm36
+   g==;
+X-CSE-ConnectionGUID: XK5ecwsyRYOxXMccgBjdKQ==
+X-CSE-MsgGUID: x/uX8+RwQfahqyOCu5VkCg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11429"; a="47873556"
+X-IronPort-AV: E=Sophos;i="6.15,280,1739865600"; 
+   d="scan'208";a="47873556"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2025 04:13:37 -0700
+X-CSE-ConnectionGUID: kXTEaESAQbGa6BLvEcG9BA==
+X-CSE-MsgGUID: cG3jbXnLQ2qq1JMScR/teQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,280,1739865600"; 
+   d="scan'208";a="137603556"
+Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 11 May 2025 04:13:34 -0700
+Received: from kbuild by 1992f890471c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uE4cc-000Djb-1r;
+	Sun, 11 May 2025 11:13:30 +0000
+Date: Sun, 11 May 2025 19:13:00 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alexey Charkov <alchark@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Alexey Charkov <alchark@gmail.com>
+Subject: Re: [PATCH 2/3] mtd: spi-nor: Add a driver for the VIA/WonderMedia
+ serial flash controller
+Message-ID: <202505111905.tlinDurh-lkp@intel.com>
+References: <20250510-wmt-sflash-v1-2-02a1ac6adf12@gmail.com>
 MIME-Version: 1.0
-From: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Date: Sun, 11 May 2025 11:42:27 +0200
-X-Gm-Features: AX0GCFuZrFjEp_RkcV0WctIvu4X1yuw5s5lS-0WHsmvO4h373KZg12qijyqjgv4
-Message-ID: <CAKR-sGezB_SEb7UfPV6o6T2yibkAzNSqK9Hry1kNM46BMsH2_g@mail.gmail.com>
-Subject: mtd: rawnand: brcmnand: exec_op patch broke < v5.0 controllers
-To: dregan@broadcom.com, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, 
-	MTD Maling List <linux-mtd@lists.infradead.org>, Florian Fainelli <f.fainelli@gmail.com>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	joel.peshkin@broadcom.com, Brian Norris <computersforpeace@gmail.com>, 
-	dan.beygelman@broadcom.com, William Zhang <william.zhang@broadcom.com>, 
-	frieder.schrempf@kontron.de, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Vignesh R <vigneshr@ti.com>, 
-	Richard Weinberger <richard@nod.at>, bbrezillon@kernel.org, Kamal Dasu <kdasu.kdev@gmail.com>, 
-	liao jaime <jaimeliao.tw@gmail.com>, kilobyte@angband.pl, 
-	Jonas Gorski <jonas.gorski@gmail.com>, dgcbueu <dgcbueu@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20250510-wmt-sflash-v1-2-02a1ac6adf12@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250511_024304_533353_50511D5E 
-X-CRM114-Status: UNSURE (   9.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250511_041337_345494_85517380 
+X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,29 +94,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRGF2aWQsCgpJJ3ZlIGp1c3QgcmVhbGl6ZWQgdGhhdCB5b3VyIGV4ZWNfb3AgaW1wbGVtZW50
-YXRpb24gcGF0Y2ggYnJva2UKc3VwcG9ydCBvZiB2Mi4xLCB2Mi4yIGFuZCB2NC4wIGNvbnRyb2xs
-ZXJzLgpodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvY29tbWl0LzNjODI2MGNlNzY2
-MzQyOTFhZWQ4NzcwMzJhNDFlMzczODg0ZDY5ZTQKaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9y
-Zy9wcm9qZWN0L2xpbnV4LW10ZC9wYXRjaC8yMDIzMTEyNTAxMjQzOC4xNTE5MS00LWRyZWdhbkBi
-cm9hZGNvbS5jb20vCkkga25vdyBpdCdzIGFuIG9sZCBwYXRjaCBmcm9tIDYuOCBidXQgSSBqdXN0
-IGRpc2NvdmVyZWQgdGhpcyB3aGlsZQp0cnlpbmcgdG8gYWRkIDYuMTIgc3VwcG9ydCBmb3IgYm1p
-cHMgb24gT3BlbldydCAoZnJvbSA2LjYpOgpodHRwczovL2dpdGh1Yi5jb20vb3BlbndydC9vcGVu
-d3J0L3B1bGwvMTg3NDYKClRoZSBpc3N1ZSBpcyB0aGF0IGxvdyBsZXZlbCBvcHMgYWx3YXlzIHJl
-dHVybiAwIG9uIHY0LjAgY29udHJvbGxlcnMKYW5kIHYyLjEvdjIuMiBjb250cm9sbGVycyBkb24n
-dCBldmVuIGhhdmUgdGhlIGxvdyBsZXZlbCByZWdpc3RlcnMKZGVmaW5lZDoKaHR0cHM6Ly9naXRo
-dWIuY29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvM2NlOTkyNTgyM2M3ZDZiYjBlNmViOTUxYmYyZGIw
-ZTllMTgyNTgyZC9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jI0wzNTcK
-aHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvM2NlOTkyNTgyM2M3ZDZiYjBl
-NmViOTUxYmYyZGIwZTllMTgyNTgyZC9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNt
-bmFuZC5jI0wzNzEKCkkgZ3Vlc3MgdGhhdCByZXN0b3JpbmcgdGhlIGxlZ2FjeSBmdW5jdGlvbnMg
-aXNuJ3QgZ29pbmcgdG8gaGFwcGVuLCBidXQKaXMgaXQgcG9zc2libGUgdG8gcmVzdG9yZSA8IHY1
-LjAgY29tcGF0aWJpbGl0eSBvbiB0aGUgbmV3IGV4ZWNfb3AKaW1wbGVtZW50YXRpb24/CgpCZXN0
-IHJlZ2FyZHMsCsOBbHZhcm8uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Alexey,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on ed61cb3d78d585209ec775933078e268544fe9a4]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexey-Charkov/dt-bindings-spi-Add-VIA-WonderMedia-serial-flash-controller/20250511-034459
+base:   ed61cb3d78d585209ec775933078e268544fe9a4
+patch link:    https://lore.kernel.org/r/20250510-wmt-sflash-v1-2-02a1ac6adf12%40gmail.com
+patch subject: [PATCH 2/3] mtd: spi-nor: Add a driver for the VIA/WonderMedia serial flash controller
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20250511/202505111905.tlinDurh-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250511/202505111905.tlinDurh-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202505111905.tlinDurh-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/mtd/spi-nor/controllers/wmt-sflash.c: In function 'wmt_sflash_pcmd_mode':
+>> drivers/mtd/spi-nor/controllers/wmt-sflash.c:132:16: error: implicit declaration of function 'FIELD_PREP' [-Wimplicit-function-declaration]
+     132 |         reg |= FIELD_PREP(SF_PROG_CMD_MOD, enable);
+         |                ^~~~~~~~~~
+
+
+vim +/FIELD_PREP +132 drivers/mtd/spi-nor/controllers/wmt-sflash.c
+
+   126	
+   127	static void wmt_sflash_pcmd_mode(struct wmt_sflash_host *host, bool enable)
+   128	{
+   129		u32 reg = readl(host->regbase + SF_SPI_INTF_CFG);
+   130	
+   131		reg &= ~SF_PROG_CMD_MOD;
+ > 132		reg |= FIELD_PREP(SF_PROG_CMD_MOD, enable);
+   133		writel(reg, host->regbase + SF_SPI_INTF_CFG);
+   134	}
+   135	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
