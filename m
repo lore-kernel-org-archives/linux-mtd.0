@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB09EC3ABC3
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 May 2025 09:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B018EC3ABBC
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 May 2025 09:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aE4X65fkDaxsCc45O/65Fn5eJpjotKuQowd8zYAFz74=; b=Sv1uzf071Hxm5F
-	Ea6nUMhN0w7BxPDwlC3VQUoBbQfo75ghwLMFdZq91wsX7aKu4SSB2pC1I9Azqr7Zc0NFS8ds21Gsl
-	0lMGmWk1mx3JQJx/Jcm8wuh7Z/x55CM7yfNY//lUex980MV58XWgtxBMDpjX9YuXrdmbQT+ykkbp7
-	8jyVeGf3viGSjYdKkfmz3dZFOXdysFCii5Ea8EHcw5d/GLI7zSrDeOVDiCsaJP3N3TY/3ky1ND9fw
-	JmAdK3l7JV3ZSgstIp5Bi8LpxB9oPJ51VPWMwuNRMHkjXaZzrIAZJq/iiLeynpfGPN/Xd+6LJwnd7
-	y4OVSjTDTtK944dWxlbg==;
+	List-Owner; bh=gx75c6Mey4mS5hSAuRhzg8GMNsJ6DoI0tZwzgGP2wt8=; b=wQsG7sxmgsUPw/
+	W7dzapu1PRblzrjDgJIw/H0tvQ51pefCZP+uH5EQVSDcMhbnEbEj4EmfuIXV+m8LRf4Hq72uTVt/x
+	PoiUuvKLVwto1sq0uBnczqwUPvV1gDjTQ9GT9cqCJN75PKJASFPxztym6W/4f7VdPCVcjWN5n9TpO
+	8s/ZckaEcAMIDH5ZIfbrNgQOVT6jPfisyQ6E3MOw9OLt1r1VQexzqxCzo+uoqSr5Tb7dVM8LN4eHt
+	bzfIOKF4/BBXIGRlsHC6RPuoyF/qZZ8c2znV3KLgeYxlQhLgRu3gWqxGLQJ6+6H6e7fZt3V0To/Gh
+	QElY2Hkz9KFSLQb86t0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uEPF0-00000008sx6-2sG6;
-	Mon, 12 May 2025 09:14:30 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1uEPMv-00000008u7Q-3JsI;
+	Mon, 12 May 2025 09:22:41 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uEPEy-00000008swL-3NjY
-	for linux-mtd@lists.infradead.org;
-	Mon, 12 May 2025 09:14:30 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AF7FA43ACA;
-	Mon, 12 May 2025 09:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1747041266;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=71NJibszXJxK146D6odNbBLRQc8NbVhYjl6rwxOZ04M=;
-	b=TT+vIWCkvORfoZ7wpP5Ld2dJywaXLJFde9jPu4T4ot5GeKbXOoaGXeOcW3nMbjwS2uGWjw
-	wWugIFfLYq6iHNOoGca9vuCC7nWTRN+egl+bq+OzCdhW9EVw5fXKqylk6ZtqkPymxUKWAW
-	XigQXei5qasG7ngOpS2T88jzJl09+G7QHb3O8yGwSl8CJCVne03L2h7I8VEfs1cYNuwktF
-	Sdgi/EgBAK5PgLr12zMTtL2fV1xnmm8iPQ+bztMgGX6BHTaaL0IsuLEQbxDzsVI8PF8Bek
-	G7qbgAtylwmJStV1x5C7XC1BMdE18P/pKWNDC9VCbbm9awpbUUExl6Bb03sEFA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bence =?utf-8?B?Q3PDs2vDoXM=?= <csokas.bence@prolan.hu>
-Cc: <linux-mtd@lists.infradead.org>,  <linux-kernel@vger.kernel.org>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>
-Subject: Re: [PATCH v3] mtd: Verify written data in paranoid mode
-In-Reply-To: <20250512084033.69718-1-csokas.bence@prolan.hu> ("Bence
- =?utf-8?B?Q3PDs2vDoXMiJ3M=?=
-	message of "Mon, 12 May 2025 10:40:32 +0200")
-References: <20250512084033.69718-1-csokas.bence@prolan.hu>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Mon, 12 May 2025 11:14:25 +0200
-Message-ID: <87frhambri.fsf@bootlin.com>
+	id 1uEPKt-00000008tta-2PEB;
+	Mon, 12 May 2025 09:20:36 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 20404A4C92C;
+	Mon, 12 May 2025 09:20:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61FEDC4CEE7;
+	Mon, 12 May 2025 09:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747041633;
+	bh=iXPNXOwECHF6vzmv4N3t7dpHwXal1mkPGC6CEteuntI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=nDUqrjR+3krhDJ5Ew/pgFcib4HULQgxv4dAlZInqyhQuuxUJBdkpuer4jT/99Wvms
+	 KeN2hLfi7CWsgMmXuelniYaUvQ7HplFyye9CGeYTj1qjgNT/cqDlI6U6tAu1gyPNlj
+	 r2aToEYKw/cggt+4zhuutClE+6TGoIzC/gLHwEixB+1tZI9dUXg1311tkCB3/6rsVH
+	 pU3MsCb6MIoOlbkCRtLrIgZMF6hSJsTLeig1rwVD2mICsjQSBHRcovAXvoG5EHnE7S
+	 bSiuynmX3XWP6EFYx0fne0Kq79PAsIOGGaOnd0If2dxi9cRv5xnIcl/hYjFlsUJ78o
+	 4hTU5HRjTENXg==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>,  Rob Herring <robh@kernel.org>,
+  Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
+ <conor+dt@kernel.org>,  Tudor Ambarus <tudor.ambarus@linaro.org>,
+  Pratyush Yadav <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,
+  Miquel Raynal <miquel.raynal@bootlin.com>,  Richard Weinberger
+ <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,  Krzysztof
+ Kozlowski <krzk@kernel.org>,  linux-spi@vger.kernel.org,
+  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/3] mtd: spi-nor: Add a driver for the VIA/WonderMedia
+ serial flash controller
+In-Reply-To: <20250510-wmt-sflash-v1-2-02a1ac6adf12@gmail.com>
+References: <20250510-wmt-sflash-v1-0-02a1ac6adf12@gmail.com>
+	<20250510-wmt-sflash-v1-2-02a1ac6adf12@gmail.com>
+Date: Mon, 12 May 2025 09:20:30 +0000
+Message-ID: <mafs01psu89sx.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeftddtkeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheptghsohhkrghsrdgsvghntggvsehprhholhgrnhdrhhhupdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhm
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250512_021428_990224_068CB867 
-X-CRM114-Status: GOOD (  25.94  )
+X-CRM114-CacheID: sfid-20250512_022035_673901_358317D7 
+X-CRM114-Status: GOOD (  19.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,71 +75,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTIvMDUvMjAyNSBhdCAxMDo0MDozMiArMDIsIEJlbmNlIENzw7Nrw6FzIDxjc29rYXMuYmVu
-Y2VAcHJvbGFuLmh1PiB3cm90ZToKCj4gQWRkIE1URF9QQVJBTk9JRCBjb25maWcgb3B0aW9uIGZv
-ciB2ZXJpZnlpbmcgYWxsIHdyaXR0ZW4gZGF0YSB0byBwcmV2ZW50Cj4gc2lsZW50IGJpdCBlcnJv
-cnMgYmVpbmcgdW5kZXRlY3RlZCwgYXQgdGhlIGNvc3Qgb2Ygc29tZSBiYW5kd2lkdGggb3Zlcmhl
-YWQuCj4KPiBTaWduZWQtb2ZmLWJ5OiBCZW5jZSBDc8Oza8OhcyA8Y3Nva2FzLmJlbmNlQHByb2xh
-bi5odT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvS2NvbmZpZyAgIHwgMTQgKysrKysrKysrKysrCj4g
-IGRyaXZlcnMvbXRkL210ZGNvcmUuYyB8IDUxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCA2MyBpbnNlcnRpb25zKCspLCAyIGRl
-bGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL0tjb25maWcgYi9kcml2ZXJz
-L210ZC9LY29uZmlnCj4gaW5kZXggNzk2YTJlY2NiZWYwLi5lNzVmNGE1N2RmNmEgMTAwNjQ0Cj4g
-LS0tIGEvZHJpdmVycy9tdGQvS2NvbmZpZwo+ICsrKyBiL2RyaXZlcnMvbXRkL0tjb25maWcKPiBA
-QCAtMjA2LDYgKzIwNiwyMCBAQCBjb25maWcgTVREX1BBUlRJVElPTkVEX01BU1RFUgo+ICAJICB0
-aGUgcGFyZW50IG9mIHRoZSBwYXJ0aXRpb24gZGV2aWNlIGJlIHRoZSBtYXN0ZXIgZGV2aWNlLCBy
-YXRoZXIgdGhhbgo+ICAJICB3aGF0IGxpZXMgYmVoaW5kIHRoZSBtYXN0ZXIuCj4gIAo+ICtjb25m
-aWcgTVREX1BBUkFOT0lECj4gKwlib29sICJSZWFkIGJhY2sgd3JpdHRlbiBkYXRhIChwYXJhbm9p
-ZCBtb2RlKSIKPiArCWhlbHAKPiArCSAgVGhpcyBvcHRpb24gbWFrZXMgdGhlIE1URCBjb3JlIHJl
-YWQgYmFjayBhbGwgZGF0YSBvbiBhIHdyaXRlIGFuZAo+ICsJICByZXBvcnQgYW4gZXJyb3IgaWYg
-aXQgZG9lc24ndCBtYXRjaCB0aGUgd3JpdHRlbiBkYXRhLiBUaGlzIGNhbgo+ICsJICBzYWZlZ3Vh
-cmQgYWdhaW5zdCBzaWxlbnQgYml0IGVycm9ycyByZXN1bHRpbmcgZnJvbSBhIGZhdWx0eSBGbGFz
-aCwKPiArCSAgY29udHJvbGxlciBvZGRpdGllcywgYnVzIG5vaXNlIGV0Yy4KPiArCj4gKwkgIEl0
-IGlzIHVwIHRvIHRoZSBsYXllciBhYm92ZSBNVEQgKGUuZy4gdGhlIGZpbGVzeXN0ZW0pIHRvIGhh
-bmRsZQo+ICsJICB0aGlzIGNvbmRpdGlvbiwgZm9yIGV4YW1wbGUgYnkgZ29pbmcgcmVhZC1vbmx5
-IHRvIHByZXZlbnQgZnVydGhlcgo+ICsJICBkYXRhIGNvcnJ1cHRpb24sIG9yIHRvIG1hcmsgYSBj
-ZXJ0YWluIHJlZ2lvbiBvZiBGbGFzaCBhcyBiYWQuCj4gKwo+ICsJICBJZiB5b3UgYXJlIHVuc3Vy
-ZSwgc2VsZWN0ICduJy4KPiArCj4gIHNvdXJjZSAiZHJpdmVycy9tdGQvY2hpcHMvS2NvbmZpZyIK
-PiAgCj4gIHNvdXJjZSAiZHJpdmVycy9tdGQvbWFwcy9LY29uZmlnIgo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL210ZC9tdGRjb3JlLmMgYi9kcml2ZXJzL210ZC9tdGRjb3JlLmMKPiBpbmRleCA1YmE5
-YTc0MWY1YWMuLjNmOTg3NGNkNDEyNiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9tdGRjb3Jl
-LmMKPiArKysgYi9kcml2ZXJzL210ZC9tdGRjb3JlLmMKPiBAQCAtMTc0NSw4ICsxNzQ1LDggQEAg
-aW50IG10ZF9yZWFkX29vYihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IGZyb20sIHN0cnVj
-dCBtdGRfb29iX29wcyAqb3BzKQo+ICB9Cj4gIEVYUE9SVF9TWU1CT0xfR1BMKG10ZF9yZWFkX29v
-Yik7Cj4gIAo+IC1pbnQgbXRkX3dyaXRlX29vYihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90
-IHRvLAo+IC0JCQkJc3RydWN0IG10ZF9vb2Jfb3BzICpvcHMpCj4gK3N0YXRpYyBpbnQgX210ZF93
-cml0ZV9vb2Ioc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCB0bywKPiArCQkJICBzdHJ1Y3Qg
-bXRkX29vYl9vcHMgKm9wcykKCkkgZG9uJ3QgbGlrZSB0aGVzZSAnXycgcHJlZml4ZXMsIHRoZXkg
-ZG8gbm90IGluZGljYXRlIG11Y2ggYWJvdXQgdGhlCmNvbnRlbnQgb2YgdGhlIGZ1bmN0aW9uLiBJ
-IGRvbid0IHRoaW5rIHdlIG5lZWQgYW4gZXh0cmEgZnVuY3Rpb24gZm9yCnRoYXQsIGp1c3QgaW5j
-bHVkZSB0aGUgY2hlY2sgaW4gbXRkX3dyaXRlX29vYj8KCj4gIHsKPiAgCXN0cnVjdCBtdGRfaW5m
-byAqbWFzdGVyID0gbXRkX2dldF9tYXN0ZXIobXRkKTsKPiAgCWludCByZXQ7Cj4gQEAgLTE3NzEs
-NiArMTc3MSw1MyBAQCBpbnQgbXRkX3dyaXRlX29vYihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9m
-Zl90IHRvLAo+ICAKPiAgCXJldHVybiBtdGRfd3JpdGVfb29iX3N0ZChtdGQsIHRvLCBvcHMpOwo+
-ICB9Cj4gKwo+ICtzdGF0aWMgaW50IF9tdGRfdmVyaWZ5KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBs
-b2ZmX3QgdG8sIHNpemVfdCBsZW4sIGNvbnN0IHU4ICpidWYpCj4gK3sKPiArCXN0cnVjdCBkZXZp
-Y2UgKmRldiA9ICZtdGQtPmRldjsKPiArCXVfY2hhciAqdmVyaWZ5X2J1ZjsKPiArCXNpemVfdCBy
-X3JldGxlbjsKPiArCWludCByZXQ7Cj4gKwo+ICsJdmVyaWZ5X2J1ZiA9IGRldm1fa21hbGxvYyhk
-ZXYsIGxlbiwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIXZlcmlmeV9idWYpCj4gKwkJcmV0dXJuIC1F
-Tk9NRU07Cj4gKwo+ICsJcmV0ID0gbXRkX3JlYWQobXRkLCB0bywgbGVuLCAmcl9yZXRsZW4sIHZl
-cmlmeV9idWYpOwo+ICsJaWYgKHJldCA8IDApCj4gKwkJZ290byBlcnI7Cj4gKwo+ICsJaWYgKGxl
-biAhPSByX3JldGxlbikgewo+ICsJCS8qIFdlIHNob3VsZG4ndCBzZWUgc2hvcnQgcmVhZHMgKi8K
-PiArCQlkZXZfZXJyKGRldiwgIlZlcmlmeSBmYWlsZWQsIHdyaXR0ZW4gJXpkIGJ1dCBvbmx5IHJl
-YWQgJXpkIiwKPiArCQkJbGVuLCByX3JldGxlbik7Cj4gKwkJcmV0ID0gLUVJTzsKPiArCQlnb3Rv
-IGVycjsKPiArCX0KPiArCj4gKwlpZiAobWVtY21wKHZlcmlmeV9idWYsIGJ1ZiwgbGVuKSkgewo+
-ICsJCWRldl9lcnIoZGV2LCAiVmVyaWZ5IGZhaWxlZCwgY29tcGFyZSBtaXNtYXRjaCEiKTsKPiAr
-CQlyZXQgPSAtRUlPOwo+ICsJfQo+ICsKPiArZXJyOgo+ICsJZGV2bV9rZnJlZShkZXYsIHZlcmlm
-eV9idWYpOwo+ICsJcmV0dXJuIHJldDsKPiArfQo+ICsKPiAraW50IG10ZF93cml0ZV9vb2Ioc3Ry
-dWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCB0bywKPiArCQkgIHN0cnVjdCBtdGRfb29iX29wcyAq
-b3BzKQo+ICt7Cj4gKwlpbnQgcmV0ID0gX210ZF93cml0ZV9vb2IobXRkLCB0bywgb3BzKTsKPiAr
-Cj4gKwlpZiAocmV0IDwgMCkKPiArCQlyZXR1cm4gcmV0Owo+ICsKPiArCWlmIChJU19FTkFCTEVE
-KENPTkZJR19NVERfUEFSQU5PSUQpKQo+ICsJCXJldCA9IF9tdGRfdmVyaWZ5KG10ZCwgdG8sIG9w
-cy0+cmV0bGVuLCBvcHMtPmRhdGJ1Zik7CgpXaHkgX210ZF92ZXJpZnkgYW5kIG5vdCBtdGRfdmVy
-aWZ5PwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Alexey,
+
+On Sat, May 10 2025, Alexey Charkov wrote:
+
+> The controller is tailored to SPI NOR flash memory and abstracts away all
+> SPI communications behind a small set of MMIO registers and a physical
+> memory mapping of the actual chip contents.
+>
+> It doesn't expose chip probing functions beyond reading the ID though, so
+> use lower level chip opcodes via the "programmable command mode" of the
+> controller and the kernel's SPI NOR framework to avoid hard-coding chip
+> parameters for each ID the way the vendor kernel does it.
+>
+> Currently tested on a WonderMedia WM8950 SoC with a Macronix MX25L4005A
+> flash chip (APC Rock board), but should work on all VIA/WonderMedia SoCs
+>
+> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> ---
+>  MAINTAINERS                                  |   1 +
+>  drivers/mtd/spi-nor/controllers/Kconfig      |  14 +
+>  drivers/mtd/spi-nor/controllers/Makefile     |   1 +
+>  drivers/mtd/spi-nor/controllers/wmt-sflash.c | 525 +++++++++++++++++++++++++++
+
+Drivers in drivers/mtd/spi-nor/controllers/ are deprecated, and we want
+to eventually get rid of the API. The expected way is for drivers to use
+SPI MEM (drivers/spi/spi-mem.c). SPI MEM drivers are usually more
+general and not tailored specifically to SPI NOR flashes, so it might be
+a bit tricky to write drivers for specialized hardware with it. But I
+think the drivers/spi/spi-intel.c driver is written for similar kind of
+hardware so it should be possible.
+>
+[...]
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
