@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B018EC3ABBC
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 May 2025 09:22:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85B24C3ABC3
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 May 2025 10:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gx75c6Mey4mS5hSAuRhzg8GMNsJ6DoI0tZwzgGP2wt8=; b=wQsG7sxmgsUPw/
-	W7dzapu1PRblzrjDgJIw/H0tvQ51pefCZP+uH5EQVSDcMhbnEbEj4EmfuIXV+m8LRf4Hq72uTVt/x
-	PoiUuvKLVwto1sq0uBnczqwUPvV1gDjTQ9GT9cqCJN75PKJASFPxztym6W/4f7VdPCVcjWN5n9TpO
-	8s/ZckaEcAMIDH5ZIfbrNgQOVT6jPfisyQ6E3MOw9OLt1r1VQexzqxCzo+uoqSr5Tb7dVM8LN4eHt
-	bzfIOKF4/BBXIGRlsHC6RPuoyF/qZZ8c2znV3KLgeYxlQhLgRu3gWqxGLQJ6+6H6e7fZt3V0To/Gh
-	QElY2Hkz9KFSLQb86t0g==;
+	List-Owner; bh=8fS/235ZbanSFhGQvTPwRPamnOcmDMTCPi7GgwyQXbY=; b=nfmQ6txukdpSff
+	9bHL5ToGIrXZ7ysfT3vymhwWFgOKutVwR2Fvogts1jD+t5w4f7N+1Fc7iiCUttqwdrGadmdP7sTHJ
+	6sE+DVdpMRVilRSOTB98HY3hyzLxRcexy0sIzs9mnrnFsEJ2V2yRkXAB24bcMYK2FaAUrG+faCPKc
+	/pwOsud0qDrZLJJzGRKPC+5xaSh7YHcSpSQ0SQ727iRl3zMWjwUdw1nh7ZkSDjeAFCBsUPjIDw4y6
+	kXamOSEcu74k8K190J2xqHY82IoiH7yS0f02Sxes0j4R60UZKrl3+JovPdZGUCyZSWiuq5OgZJciC
+	+VzQftxJUsLSghzrVRqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uEPMv-00000008u7Q-3JsI;
-	Mon, 12 May 2025 09:22:41 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1uEQDP-000000094i0-0SIV;
+	Mon, 12 May 2025 10:16:55 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uEPKt-00000008tta-2PEB;
-	Mon, 12 May 2025 09:20:36 +0000
+	id 1uEPYf-00000008xLA-3fDW
+	for linux-mtd@lists.infradead.org;
+	Mon, 12 May 2025 09:34:49 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 20404A4C92C;
-	Mon, 12 May 2025 09:20:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61FEDC4CEE7;
-	Mon, 12 May 2025 09:20:31 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 3C00761127;
+	Mon, 12 May 2025 09:34:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A031C4CEE7;
+	Mon, 12 May 2025 09:34:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747041633;
-	bh=iXPNXOwECHF6vzmv4N3t7dpHwXal1mkPGC6CEteuntI=;
+	s=k20201202; t=1747042488;
+	bh=w58paniyZtCqV2wtIcE3EAeN7LrUtsoNYt39HAUVduQ=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=nDUqrjR+3krhDJ5Ew/pgFcib4HULQgxv4dAlZInqyhQuuxUJBdkpuer4jT/99Wvms
-	 KeN2hLfi7CWsgMmXuelniYaUvQ7HplFyye9CGeYTj1qjgNT/cqDlI6U6tAu1gyPNlj
-	 r2aToEYKw/cggt+4zhuutClE+6TGoIzC/gLHwEixB+1tZI9dUXg1311tkCB3/6rsVH
-	 pU3MsCb6MIoOlbkCRtLrIgZMF6hSJsTLeig1rwVD2mICsjQSBHRcovAXvoG5EHnE7S
-	 bSiuynmX3XWP6EFYx0fne0Kq79PAsIOGGaOnd0If2dxi9cRv5xnIcl/hYjFlsUJ78o
-	 4hTU5HRjTENXg==
+	b=tbajbUW78IyTN4z0SlV8ai34Qau8HaPSBbmS72QqKwBh8hUezo7G0aiz07N83Mmq3
+	 MXpJTfpBVPaMW6yMhzcBbUIcAvTMGFdWZChj0jH7oyD0Q/y5oQiC3EwDabSCBq7cQu
+	 GuhSWQN4Vlsr7/Id1NTFVA2/v3VzDQ5+0ORf4dEKE7sIVDArUGyiVElmpQcqpntRDi
+	 QOLDmtggOsIzzTyxfIICI97sfJGM6SWQX/2cx1ONC7y99fV+uRjtcXCkb91ALd8G9y
+	 BQLbKOFBFRNDtsh+r1iW/uGLQfOKYaRA6yFXYxFAriMfoPX+Ylvs6KUc1kSAUbA4Kj
+	 b9Evr3OudGl6g==
 From: Pratyush Yadav <pratyush@kernel.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>,  Rob Herring <robh@kernel.org>,
-  Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
- <conor+dt@kernel.org>,  Tudor Ambarus <tudor.ambarus@linaro.org>,
-  Pratyush Yadav <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,
-  Miquel Raynal <miquel.raynal@bootlin.com>,  Richard Weinberger
- <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,  Krzysztof
- Kozlowski <krzk@kernel.org>,  linux-spi@vger.kernel.org,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-mtd@lists.infradead.org,  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] mtd: spi-nor: Add a driver for the VIA/WonderMedia
- serial flash controller
-In-Reply-To: <20250510-wmt-sflash-v1-2-02a1ac6adf12@gmail.com>
-References: <20250510-wmt-sflash-v1-0-02a1ac6adf12@gmail.com>
-	<20250510-wmt-sflash-v1-2-02a1ac6adf12@gmail.com>
-Date: Mon, 12 May 2025 09:20:30 +0000
-Message-ID: <mafs01psu89sx.fsf@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Luke Wang <ziniu.wang_1@nxp.com>,
+  "broonie@kernel.org" <broonie@kernel.org>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+  "michael@walle.cc" <michael@walle.cc>,  "p.yadav@ti.com"
+ <p.yadav@ti.com>,  "richard@nod.at" <richard@nod.at>,  "vigneshr@ti.com"
+ <vigneshr@ti.com>,  Bough Chen <haibo.chen@nxp.com>,  Han Xu
+ <han.xu@nxp.com>
+Subject: Re: [PATCH v2 6/6] mtd: spi-nor: core: avoid odd length/address
+ writes in 8D-8D-8D mode
+In-Reply-To: <87cycep8go.fsf@bootlin.com>
+References: <DU2PR04MB85678048FE8B475B1E323E0AED802@DU2PR04MB8567.eurprd04.prod.outlook.com>
+	<10b40148-b949-442d-9d43-0db09517269a@linaro.org>
+	<mafs0zffo3gea.fsf@kernel.org> <87cycep8go.fsf@bootlin.com>
+Date: Mon, 12 May 2025 09:34:45 +0000
+Message-ID: <mafs0wmam6ukq.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250512_022035_673901_358317D7 
-X-CRM114-Status: GOOD (  19.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,38 +80,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Alexey,
+On Mon, May 12 2025, Miquel Raynal wrote:
 
-On Sat, May 10 2025, Alexey Charkov wrote:
+> Hello,
+>
+> On 07/05/2025 at 09:43:25 GMT, Pratyush Yadav <pratyush@kernel.org> wrote:
+>
+>> Hi Luke,
+>>
+>> On Tue, Apr 29 2025, Tudor Ambarus wrote:
+>>
+>>> On 4/29/25 10:03 AM, Luke Wang wrote:
+>>>> Hi Pratyush,
+>>>> 
+>>>> I'm following up on this patch series [1] Avoid odd length/address read/
+>>>> writes in 8D-8D-8D mode. While some of the series has been merged, the
+>>>> patch 4-6 remains unmerged.
+>>>> 
+>>>> In fact, we also encountered similar read/write issue of odd address/
+>>>> length with NXP FSPI controller (spi-nxp-fspi.c). Currently, we handled
+>>>> the odd address/length in the controller driver, but I think this should
+>>>> be a common issue in the octal dtr mode. Was there a technical reason
+>>>> for not merging the core layer solution?
+>>>
+>>> I guess I stumbled on those small comments and did not consider the
+>>> greater benefit of taking the patches. No one cared and we forgot about
+>>> it. Please address the comments and resubmit.
+>>
+>> Yes, it should have been a simple next revision from me but apparently
+>> it fell through the cracks. I do strongly agree that this should be done
+>> in SPI NOR, and not in controller drivers. So it would be great if you
+>> can respin the remaining patches of the series.
+>
+> The fact is that we will have octal DTR support in SPI NAND as well at some
+> point, hence a common solution would be welcome as we will likely face
+> similar problems when performing these unaligned accesses. I don't know
+> how feasible it is yet, but if we have a fix for SPI NOR, we will need
+> something similar for SPI NAND.
 
-> The controller is tailored to SPI NOR flash memory and abstracts away all
-> SPI communications behind a small set of MMIO registers and a physical
-> memory mapping of the actual chip contents.
->
-> It doesn't expose chip probing functions beyond reading the ID though, so
-> use lower level chip opcodes via the "programmable command mode" of the
-> controller and the kernel's SPI NOR framework to avoid hard-coding chip
-> parameters for each ID the way the vendor kernel does it.
->
-> Currently tested on a WonderMedia WM8950 SoC with a Macronix MX25L4005A
-> flash chip (APC Rock board), but should work on all VIA/WonderMedia SoCs
->
-> Signed-off-by: Alexey Charkov <alchark@gmail.com>
-> ---
->  MAINTAINERS                                  |   1 +
->  drivers/mtd/spi-nor/controllers/Kconfig      |  14 +
->  drivers/mtd/spi-nor/controllers/Makefile     |   1 +
->  drivers/mtd/spi-nor/controllers/wmt-sflash.c | 525 +++++++++++++++++++++++++++
-
-Drivers in drivers/mtd/spi-nor/controllers/ are deprecated, and we want
-to eventually get rid of the API. The expected way is for drivers to use
-SPI MEM (drivers/spi/spi-mem.c). SPI MEM drivers are usually more
-general and not tailored specifically to SPI NOR flashes, so it might be
-a bit tricky to write drivers for specialized hardware with it. But I
-think the drivers/spi/spi-intel.c driver is written for similar kind of
-hardware so it should be possible.
->
-[...]
+The common solution would then probably be in SPI MEM? Since you need to
+make sure you don't do an out of bounds read, you need to know the size
+of the flash at least. That is recorded in the dirmap operations, so
+perhaps we can have this logic in spi_mem_dirmap_{read,write}()? Haven't
+thought too deeply so not sure if it would end up being a good idea.
 
 -- 
 Regards,
