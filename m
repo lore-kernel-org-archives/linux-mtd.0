@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85B24C3ABC3
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 May 2025 10:17:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16573C3ABBC
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 May 2025 10:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8fS/235ZbanSFhGQvTPwRPamnOcmDMTCPi7GgwyQXbY=; b=nfmQ6txukdpSff
-	9bHL5ToGIrXZ7ysfT3vymhwWFgOKutVwR2Fvogts1jD+t5w4f7N+1Fc7iiCUttqwdrGadmdP7sTHJ
-	6sE+DVdpMRVilRSOTB98HY3hyzLxRcexy0sIzs9mnrnFsEJ2V2yRkXAB24bcMYK2FaAUrG+faCPKc
-	/pwOsud0qDrZLJJzGRKPC+5xaSh7YHcSpSQ0SQ727iRl3zMWjwUdw1nh7ZkSDjeAFCBsUPjIDw4y6
-	kXamOSEcu74k8K190J2xqHY82IoiH7yS0f02Sxes0j4R60UZKrl3+JovPdZGUCyZSWiuq5OgZJciC
-	+VzQftxJUsLSghzrVRqg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=XZMlsvX4VNOqK4Vteob9iWrjqzaxUP0OR0w+NRwJrn8=; b=mktjmrn7R3i3IRc8mfsXEkLqGq
+	E9pNysiub1KE3pKBo5kyqF1Wxegid+0Z8r7uEltIyTy2ekiGQAHzEoIF6aV6LMI3nf894HII5a65H
+	SlRKY/gKdLhW2qbQT/1OA0/d+eNvdsvnVL/EoaSV+cs3hk8WnILK/0Ptq58cg+GTn6UBH1DxAHCHP
+	Gt/3j2fGuSeXnyv/fo9kItqghm9igeIT0IV0528WDAzBPm+rxS5scmeTtUtGQmDNQ4s3FFP6eDjQN
+	LPzZvUij7HqBG7sQU/zabdA2zP2AQJAXlySgx+rKDAbda9aZBsgbMYd1wALOIHyFCEOcv20IDLbLM
+	VwKJkeoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uEQDP-000000094i0-0SIV;
-	Mon, 12 May 2025 10:16:55 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1uEQJQ-000000095UD-3Dbj;
+	Mon, 12 May 2025 10:23:08 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uEPYf-00000008xLA-3fDW
+	id 1uEPiq-00000008z8T-1Cad
 	for linux-mtd@lists.infradead.org;
-	Mon, 12 May 2025 09:34:49 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 3C00761127;
-	Mon, 12 May 2025 09:34:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A031C4CEE7;
-	Mon, 12 May 2025 09:34:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747042488;
-	bh=w58paniyZtCqV2wtIcE3EAeN7LrUtsoNYt39HAUVduQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=tbajbUW78IyTN4z0SlV8ai34Qau8HaPSBbmS72QqKwBh8hUezo7G0aiz07N83Mmq3
-	 MXpJTfpBVPaMW6yMhzcBbUIcAvTMGFdWZChj0jH7oyD0Q/y5oQiC3EwDabSCBq7cQu
-	 GuhSWQN4Vlsr7/Id1NTFVA2/v3VzDQ5+0ORf4dEKE7sIVDArUGyiVElmpQcqpntRDi
-	 QOLDmtggOsIzzTyxfIICI97sfJGM6SWQX/2cx1ONC7y99fV+uRjtcXCkb91ALd8G9y
-	 BQLbKOFBFRNDtsh+r1iW/uGLQfOKYaRA6yFXYxFAriMfoPX+Ylvs6KUc1kSAUbA4Kj
-	 b9Evr3OudGl6g==
-From: Pratyush Yadav <pratyush@kernel.org>
+	Mon, 12 May 2025 09:45:22 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 5BEE5294730;
+	Mon, 12 May 2025 11:45:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id UIaDJ1vK0JpE; Mon, 12 May 2025 11:45:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 0AF27298563;
+	Mon, 12 May 2025 11:45:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id NPwyG4Fo_tZg; Mon, 12 May 2025 11:45:14 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id D73EE294730;
+	Mon, 12 May 2025 11:45:14 +0200 (CEST)
+Date: Mon, 12 May 2025 11:45:14 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Luke Wang <ziniu.wang_1@nxp.com>,
-  "broonie@kernel.org" <broonie@kernel.org>,
-  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-  "michael@walle.cc" <michael@walle.cc>,  "p.yadav@ti.com"
- <p.yadav@ti.com>,  "richard@nod.at" <richard@nod.at>,  "vigneshr@ti.com"
- <vigneshr@ti.com>,  Bough Chen <haibo.chen@nxp.com>,  Han Xu
- <han.xu@nxp.com>
-Subject: Re: [PATCH v2 6/6] mtd: spi-nor: core: avoid odd length/address
- writes in 8D-8D-8D mode
-In-Reply-To: <87cycep8go.fsf@bootlin.com>
-References: <DU2PR04MB85678048FE8B475B1E323E0AED802@DU2PR04MB8567.eurprd04.prod.outlook.com>
-	<10b40148-b949-442d-9d43-0db09517269a@linaro.org>
-	<mafs0zffo3gea.fsf@kernel.org> <87cycep8go.fsf@bootlin.com>
-Date: Mon, 12 May 2025 09:34:45 +0000
-Message-ID: <mafs0wmam6ukq.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+Cc: =?utf-8?B?Q3PDs2vDoXM=?= Bence <csokas.bence@prolan.hu>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <328640247.29680292.1747043114691.JavaMail.zimbra@nod.at>
+In-Reply-To: <87frhambri.fsf@bootlin.com>
+References: <20250512084033.69718-1-csokas.bence@prolan.hu> <87frhambri.fsf@bootlin.com>
+Subject: Re: [PATCH v3] mtd: Verify written data in paranoid mode
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF138 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Verify written data in paranoid mode
+Thread-Index: eln+2YgBQKlJyCVwub6wSu0FYk52RQ==
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250512_024520_468166_FD41CBE3 
+X-CRM114-Status: UNSURE (   7.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,59 +74,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 12 2025, Miquel Raynal wrote:
-
-> Hello,
->
-> On 07/05/2025 at 09:43:25 GMT, Pratyush Yadav <pratyush@kernel.org> wrote:
->
->> Hi Luke,
->>
->> On Tue, Apr 29 2025, Tudor Ambarus wrote:
->>
->>> On 4/29/25 10:03 AM, Luke Wang wrote:
->>>> Hi Pratyush,
->>>> 
->>>> I'm following up on this patch series [1] Avoid odd length/address read/
->>>> writes in 8D-8D-8D mode. While some of the series has been merged, the
->>>> patch 4-6 remains unmerged.
->>>> 
->>>> In fact, we also encountered similar read/write issue of odd address/
->>>> length with NXP FSPI controller (spi-nxp-fspi.c). Currently, we handled
->>>> the odd address/length in the controller driver, but I think this should
->>>> be a common issue in the octal dtr mode. Was there a technical reason
->>>> for not merging the core layer solution?
->>>
->>> I guess I stumbled on those small comments and did not consider the
->>> greater benefit of taking the patches. No one cared and we forgot about
->>> it. Please address the comments and resubmit.
->>
->> Yes, it should have been a simple next revision from me but apparently
->> it fell through the cracks. I do strongly agree that this should be done
->> in SPI NOR, and not in controller drivers. So it would be great if you
->> can respin the remaining patches of the series.
->
-> The fact is that we will have octal DTR support in SPI NAND as well at some
-> point, hence a common solution would be welcome as we will likely face
-> similar problems when performing these unaligned accesses. I don't know
-> how feasible it is yet, but if we have a fix for SPI NOR, we will need
-> something similar for SPI NAND.
-
-The common solution would then probably be in SPI MEM? Since you need to
-make sure you don't do an out of bounds read, you need to know the size
-of the flash at least. That is recorded in the dirmap operations, so
-perhaps we can have this logic in spi_mem_dirmap_{read,write}()? Haven't
-thought too deeply so not sure if it would end up being a good idea.
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk1pcXVlbCBSYXluYWwiIDxt
+aXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+PiArY29uZmlnIE1URF9QQVJBTk9JRAo+PiArCWJv
+b2wgIlJlYWQgYmFjayB3cml0dGVuIGRhdGEgKHBhcmFub2lkIG1vZGUpIgo+PiArCWhlbHAKPj4g
+KwkgIFRoaXMgb3B0aW9uIG1ha2VzIHRoZSBNVEQgY29yZSByZWFkIGJhY2sgYWxsIGRhdGEgb24g
+YSB3cml0ZSBhbmQKPj4gKwkgIHJlcG9ydCBhbiBlcnJvciBpZiBpdCBkb2Vzbid0IG1hdGNoIHRo
+ZSB3cml0dGVuIGRhdGEuIFRoaXMgY2FuCj4+ICsJICBzYWZlZ3VhcmQgYWdhaW5zdCBzaWxlbnQg
+Yml0IGVycm9ycyByZXN1bHRpbmcgZnJvbSBhIGZhdWx0eSBGbGFzaCwKPj4gKwkgIGNvbnRyb2xs
+ZXIgb2RkaXRpZXMsIGJ1cyBub2lzZSBldGMuCj4+ICsKPj4gKwkgIEl0IGlzIHVwIHRvIHRoZSBs
+YXllciBhYm92ZSBNVEQgKGUuZy4gdGhlIGZpbGVzeXN0ZW0pIHRvIGhhbmRsZQo+PiArCSAgdGhp
+cyBjb25kaXRpb24sIGZvciBleGFtcGxlIGJ5IGdvaW5nIHJlYWQtb25seSB0byBwcmV2ZW50IGZ1
+cnRoZXIKPj4gKwkgIGRhdGEgY29ycnVwdGlvbiwgb3IgdG8gbWFyayBhIGNlcnRhaW4gcmVnaW9u
+IG9mIEZsYXNoIGFzIGJhZC4KPj4gKwo+PiArCSAgSWYgeW91IGFyZSB1bnN1cmUsIHNlbGVjdCAn
+bicuCgpJIHN0aWxsIGhhdmUgYSBoYXJkIHRpbWUgc2VlaW5nIHRoZSBiZW5lZml0IG9mIHRoaXMu
+ClRvIG1lIGl0IGxvb2tzIGxpa2UgeW91J3JlIHdvcmtpbmcgYXJvdW5kIGJyb2tlbiBoYXJkd2Fy
+ZS4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
