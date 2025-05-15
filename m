@@ -4,85 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DABD7C2D0CD
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 May 2025 05:35:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45D45C54754
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 May 2025 07:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fKZDQXILJKKDCqbwjd0tA4pkdTCEidSsuYryshyY4z0=; b=oAr1Z86om1kZO+
-	5ZWSh1gRvcknd7huO9jcCUhNUgF5bFOWKHTnq1oFOMOVTHSq+UUPAKkvZHy2sT6x5eCEvTpt6ndN8
-	oADzh64lXvgnTOTH9Y1edOnjS5GHnzFoxmsPnBy+BDoWLSmG48RMOngM9P0G60oyh9V/IyzQ+oTJo
-	stwLgPHwugGlK353K4PgMw5b8nudApVvsLDaY0HhHqhJVIJBHVFjuGnsSUMNn6YTUBYeFrUcn9F+O
-	QY6V5pf5YW5uJOL7PzqN8GBCz/kMEk8b5ZaBKUTnFtAXh7y+CLfkxYaSv2OYIkX9h2ycP3Xx+qyfx
-	Q9eD5plc6gjsxdGDLe9g==;
+	List-Owner; bh=Q7gIdi24Q480Sd0+6gp3EWXbfR/F+1NZlaX9Hwrf9bI=; b=CQwy/HEnnCFMIF
+	pd4sqlmKsUymEkwmrFJxKvFMqnVQrJkd9fTAZHJfLBigE2Dv4CWU5u9W677YZrXocr7qJuxUyTEz0
+	LXP0Uqe3/100iTh6w2hfjIUb6RJ4Ctk/xjWpAMJQyWQuk6TxlxjiJClb5+txHP84aGP/N9jXRuI0k
+	rae/oF8T+pUTeQ1hZIn6YBsw/fyqQZSFTVvFtdOhlLx8ymnlIK6fu/V1WdjWkcdnwzVBcNmtCbulb
+	jvT2UOdleEfD/zJXIAuwZ53PKsn0gA9D1KIDJ1F9ZNz2GK2l2Hrfg44HLSYecPTaHs/XltFo6UtF5
+	O22gKzrS3lfnqpiCavcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFRFz-0000000H3jG-28AP;
-	Thu, 15 May 2025 05:35:47 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1uFT9p-0000000HNHO-3PGo;
+	Thu, 15 May 2025 07:37:33 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFRD1-0000000H3TU-35e0
+	id 1uFT84-0000000HMyK-1dps
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 May 2025 05:32:45 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-22e19c71070so695685ad.3
-        for <linux-mtd@lists.infradead.org>; Wed, 14 May 2025 22:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1747287162; x=1747891962; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nL/AwWb0UIVn64Fvbx3EViIj2Wlcd9QM/9GrTWRiGjg=;
-        b=CY2G8RnUXhHOix8r3qCEFVIDilnaErMLTz10CFSZoTwXRrPLyEi2wbtgZ+gnyXRP+f
-         3Zf5u0bmU+VpXG+JkfMYlQy7THZKHhtpf3FHOqF5fgysLyKQKax72I/KPj/+WD6TuPaC
-         86xW+O4ewp2ad9GEfYD4qgxLzJKXMc3FDv+3Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747287162; x=1747891962;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nL/AwWb0UIVn64Fvbx3EViIj2Wlcd9QM/9GrTWRiGjg=;
-        b=l3jqjZUQ3GxEXhwekPlT/aENLXH8nGvHOtVew4WaUHdEy5J//8U5xIy6GIWNJfbpfe
-         zmEEmDMHxnIeu6RQu3V+knLlSA4Q9CRKL/6vMYtXB7aQGOQpJ2e0KBqg37pI4d2oV9DM
-         HBu5WXgsfLSo3MyMpy/2Hnucr//q3Ax1Icz9R9ir77I5/MEkIiop6KW+rZecEpmLQ67a
-         CD43T7gd+XJRZLy02Y8fOHgJm+/EUY4W9sMdwR0aigMnSqKBfXDD9eXwGHlxOn9l3R7D
-         Wy/Qk14a+B75/8kqJB5E8kE+ixNbS2oWD5+Qv5MvSb/BLEp6XDuWpMfCd1SoFyouXAir
-         tqPQ==
-X-Gm-Message-State: AOJu0Yy5lwwE1kDqWHIwoLOp1Fwqct1Hqbs/DAd3bgA/AbDDqj2lhMIA
-	wGQKlQF2iC0o4OHRw6ix9Td2gjJlDhC33gJGvzIBvtQfQKblz9YMGu/TVUxIXEUusQGDl8NpzKY
-	sNrsF2pSOTg6KwqcO7f8MAOxi6Yz6POB3abfQ
-X-Gm-Gg: ASbGncvyBLxiOUCB6bGNLxA0m+y5ToaCypYqUNjHvtowEjib3+clRIkdeNjxnIGO3Pm
-	bFCgWULwymbHAk0OwcsSTT2skznwOPLk5PKzW1qf4O7JIn1qI3B6m+K+uMcLjReCczZEo53ooHL
-	rcHKWobKPXkBGBOsGUTgW1kM2hZKsmp9wPgA==
-X-Google-Smtp-Source: AGHT+IHjXkpLBXt/bMjg33+WVFUaSd/5/LoxdlrGFWxzaSd7+0wnULTfmZFBOauHFUUZpvdpHd7H5RsAXugeCLqIBsQ=
-X-Received: by 2002:a17:903:1a6f:b0:224:1001:6777 with SMTP id
- d9443c01a7336-231980e406fmr34818825ad.4.1747287162486; Wed, 14 May 2025
- 22:32:42 -0700 (PDT)
+	Thu, 15 May 2025 07:35:44 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id CA42D614B3;
+	Thu, 15 May 2025 07:35:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A7B9C4CEE7;
+	Thu, 15 May 2025 07:35:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747294543;
+	bh=ZGqhlVU+6Emh7nm8gXe/l4szD7AQKdUsT7UjppTo/Hc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=bRoFcG1SGszUdhO8yF6/iWM2ASI88v+yD+FMjtga4NajMtvxYMmKnhSadVU6m6YZB
+	 fMJP7UuJNH3o2CWQx59nSf7vHBEJhe+ra1CRbL+0vg4zOdBYXibpiwSbN9eu/m8GQ3
+	 jrECyqJ5tNOesY5uVqwc2IPM6hRTOyRhmsxe85VyqnbjOO9O5EKPtva5SMvo5iZwmG
+	 1WPp3WyeNmvuJzgrYpEv79LXOX2Nxrm5NaTs3rnkWqe5O/LKvWdDgFywLzlo45kpA0
+	 rGOgT88iJCt6yT5Nn0qtfk4t58bFfikBKx2RMlIqQTHmGsGakldAQzdSGYZrQiqLgp
+	 LMbP/Y8oUeyXQ==
+From: Mark Brown <broonie@kernel.org>
+To: Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Md Sadre Alam <quic_mdalam@quicinc.com>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ Gabor Juhos <j4g8y7@gmail.com>
+Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20250501-qpic-snand-validate-ecc-v1-1-532776581a66@gmail.com>
+References: <20250501-qpic-snand-validate-ecc-v1-1-532776581a66@gmail.com>
+Subject: Re: [PATCH next] spi: spi-qpic-snand: validate user/chip specific
+ ECC properties
+Message-Id: <174729453999.272648.10698524382095396308.b4-ty@kernel.org>
+Date: Thu, 15 May 2025 09:35:39 +0200
 MIME-Version: 1.0
-References: <20250515050759.1016697-1-noltari@gmail.com>
-In-Reply-To: <20250515050759.1016697-1-noltari@gmail.com>
-From: David Regan <dregan@broadcom.com>
-Date: Wed, 14 May 2025 22:32:31 -0700
-X-Gm-Features: AX0GCFuBzuM5yglHwu4fr8itEusd5BhutkEYpX6HMBXs1GZE0IJlKKeEKb2lfPc
-Message-ID: <CAA_RMS5ntpk6Lhqgv5OD5HQQ2X3bnaZCC64+ZuDHivLA6VBw=A@mail.gmail.com>
-Subject: Re: [PATCH v4] mtd: rawnand: brcmnand: legacy exec_op implementation
-To: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Regan <dregan@broadcom.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, bcm-kernel-feedback-list@broadcom.com, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, rafal@milecki.pl, 
-	computersforpeace@gmail.com, Kamal Dasu <kamal.dasu@broadcom.com>, 
-	Dan Beygelman <dan.beygelman@broadcom.com>, William Zhang <william.zhang@broadcom.com>, 
-	frieder.schrempf@kontron.de, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>, kdasu.kdev@gmail.com, 
-	JaimeLiao <jaimeliao.tw@gmail.com>, Adam Borowski <kilobyte@angband.pl>, jonas.gorski@gmail.com, 
-	dgcbueu@gmail.com
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250514_223243_810938_EBD2A0C4 
-X-CRM114-Status: UNSURE (   8.86  )
-X-CRM114-Notice: Please train this message.
+X-Mailer: b4 0.15-dev-c25d1
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,21 +68,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBNYXkgMTQsIDIwMjUgYXQgMTA6MDjigK9QTSDDgWx2YXJvIEZlcm7DoW5kZXogUm9q
-YXMKPG5vbHRhcmlAZ21haWwuY29tPiB3cm90ZToKPgo+IENvbW1pdCAzYzgyNjBjZTc2NjMgKCJt
-dGQ6IHJhd25hbmQ6IGJyY21uYW5kOiBleGVjX29wIGltcGxlbWVudGF0aW9uIikKPiByZW1vdmVk
-IGxlZ2FjeSBpbnRlcmZhY2UgZnVuY3Rpb25zLCBicmVha2luZyA8IHY1LjAgY29udHJvbGxlcnMg
-c3VwcG9ydC4KPiBJbiBvcmRlciB0byBmaXggb2xkZXIgY29udHJvbGxlcnMgd2UgbmVlZCB0byBh
-ZGQgYW4gYWx0ZXJuYXRpdmUgZXhlY19vcAo+IGltcGxlbWVudGF0aW9uIHdoaWNoIGRvZXNuJ3Qg
-cmVseSBvbiBsb3cgbGV2ZWwgcmVnaXN0ZXJzLgo+Cj4gRml4ZXM6IDNjODI2MGNlNzY2MyAoIm10
-ZDogcmF3bmFuZDogYnJjbW5hbmQ6IGV4ZWNfb3AgaW1wbGVtZW50YXRpb24iKQo+IFNpZ25lZC1v
-ZmYtYnk6IMOBbHZhcm8gRmVybsOhbmRleiBSb2phcyA8bm9sdGFyaUBnbWFpbC5jb20+CgpUaGFu
-ayB5b3Ugw4FsdmFybwoKUmV2aWV3ZWQtYnk6IERhdmlkIFJlZ2FuIDxkcmVnYW5AYnJvYWRjb20u
-Y29tPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu, 01 May 2025 18:19:16 +0200, Gabor Juhos wrote:
+> The driver only supports 512 bytes ECC step size and 4 bit ECC strength
+> at the moment, however it does not reject unsupported step/strength
+> configurations. Due to this, whenever the driver is used with a flash
+> chip which needs stronger ECC protection, the following warning is shown
+> in the kernel log:
+> 
+>   [    0.574648] spi-nand spi0.0: GigaDevice SPI NAND was found.
+>   [    0.635748] spi-nand spi0.0: 256 MiB, block size: 128 KiB, page size: 2048, OOB size: 128
+>   [    0.649079] nand: WARNING: (null): the ECC used on your system is too weak compared to the one required by the NAND chip
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: spi-qpic-snand: validate user/chip specific ECC properties
+      commit: 65cb56d49f6edea409600a3c61effc70ee5d43d8
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
