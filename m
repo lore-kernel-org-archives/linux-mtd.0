@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BEB1C2D0CD
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 May 2025 13:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4C88C3DA6D
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 May 2025 13:48:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3SlbVyc98Uqk6F2XHdEDvWZ9BCTMQVT8D3ovb14NvkA=; b=uh0/uAX4RtdJkf
-	Bm4GDYRUiO5hip5p6/cZIpiVoPpLB3yO5oaGOmklyL9AGXp69v2geBGdDmEuHOpJDGZ4A73csyXAX
-	QQ2mAqnf4mWpylaVcIZrQPSlFLjvfg9mmlbU0ecC6yxxOZLg98HvP5ioew/8SEaV7iWEHcYzedBQ9
-	k6fj56krGRz+QUh0iDrjRndmZtHtW+3xKJcVKO9dvmba3JAvkruq9qC2vXxi7R4ZB16Iyj21WQ3lA
-	A++nbZeIpzl3xtX1VdjqBRb3O/heds5TfqX2djt7z9xHeR/wksJIYxl0XT+Qb/M0IilEgomRUPkfE
-	/WMOFzlv1M4m0dgRI8ng==;
+	List-Owner; bh=4pm/edUPnjIleW3M/LYpVbG/bcwaKath6RitjQDBpYI=; b=iYjSCJPIclQpuW
+	5B2AQQAz2o8m1usB3rKBXKkxwz/VbIYCsgVOYFenWpFyPn/CUMvM49tbJWdVUsgr2BKjVSfZ1D6dt
+	wJqy9oLmxQAbkrVnzo2eNzbA5k3u+0CXne2hhyfTTmSyxQx+OxfJ/Al8J2yw0+trGM/9Ke0Ku1bGS
+	Waxeb7l3kAke4RBbMss2d4tX37M38FHxZNA31tr6F9ed/QrHR1SuhOXi9sMHEp4A47+3b0o2r+Cae
+	fN+E9/Ae778YBbxk6/mfaRJyAxQ2tKBh4+L0xlBoLmqj84giWiUwZRuX2mfMMqFAOE2ZF5i6di2Ir
+	D1qYzMVvn7ua3U+/jeag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFYwj-00000000mxz-2ODe;
-	Thu, 15 May 2025 13:48:25 +0000
+	id 1uFYwo-00000000n3e-0ePm;
+	Thu, 15 May 2025 13:48:30 +0000
 Received: from mgamail.intel.com ([198.175.65.10])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFYwg-00000000mc1-2P3G
+	id 1uFYwm-00000000mc1-0YYb
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 May 2025 13:48:23 +0000
+	Thu, 15 May 2025 13:48:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747316903; x=1778852903;
+  t=1747316909; x=1778852909;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=vwloMlT29iZTBRzeF9KgToMA/vQ27A3cZYZiIl3YXwU=;
-  b=VIkCycqfX8I6Bu+x1gGQXtK6atMexTWDIv1f9rv1OtA0QwZmhREZPMg8
-   VZFFuALmtszeEXqC3Bg6+ilnTl6YQ4JvjKlupKZpXhS6D6cH65SD/nkhy
-   dA/oZEuUVtsxZiEPzW/omqg7Kls09gWemvYzTcHBF7db8zOr/nGxuFa51
-   JqiukVXxOjO6znvRbaZ5pscLQuvjxG84jCC0EFDSGnCtr9YzqLjgJKv2n
-   TCP83qpjXyqGxYIwWZRMY2LlZLiNB9W/OoOZVl3nVAxQ/UmseyJvcLE+S
-   1L2LRmkRxkl+MViA/BDX4cE/q2M5MtJYYDv81mzu0ktLD0vIdXOqcUiOI
-   A==;
-X-CSE-ConnectionGUID: aUXrD2yFT06SNgXriW/+sQ==
-X-CSE-MsgGUID: piS1PQbqTj+ApaPHDUDd0w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11434"; a="66660803"
+  bh=lBZ2ULNOwanm8+4z0E89ucXzMn5Qz+pSLa83A9usEGo=;
+  b=Ymby3nUMJe17UPf/KXseHJmJGy2nZfbbeaujHdjEjp26n8RVzDyo3JxJ
+   tFcz7LPd8oPDfjYkTbSGH9mnM93ekLksVlDRRUz9jraPhpZDMKg93ooP9
+   2QbdUyrf5gq/1LnVV8sJkoysOJhTPHGQs+Hj/K7ZqAKj4wlJ7I21PL6UU
+   gqtuISZ3KQhNSYAEVO16IAIOMfS4I/H1RnIUSy9ug5I2Sv8C3QmhCbdiV
+   ZYP9AONFlEFcsAXFPZZ7wzvcviUbqpKo0kiSQsQBAxl34WoLX2O68AbCo
+   OEwOWjlKElmOAslYSpvzlvP26YEyDzLFH4uTg1pw1yZUw3JT5PujHXUZ2
+   g==;
+X-CSE-ConnectionGUID: HyoWC8HPT/qDBip7gs4dpg==
+X-CSE-MsgGUID: 2+W2g06jSC6HVYNPovRZqw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11434"; a="66660832"
 X-IronPort-AV: E=Sophos;i="6.15,291,1739865600"; 
-   d="scan'208";a="66660803"
+   d="scan'208";a="66660832"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 06:48:23 -0700
-X-CSE-ConnectionGUID: BxhC7chBR8aGSlAD385D+w==
-X-CSE-MsgGUID: XViOe7Z0SdesHa6s9N9dmg==
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 06:48:28 -0700
+X-CSE-ConnectionGUID: bLNDiCe9S3SgwADdVlfwGw==
+X-CSE-MsgGUID: L93tc7/rTySqno/gi/h2kg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,291,1739865600"; 
-   d="scan'208";a="138428342"
+   d="scan'208";a="138428352"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 06:48:16 -0700
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 06:48:22 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -78,18 +78,17 @@ Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	intel-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Alexander Usyskin <alexander.usyskin@intel.com>,
-	Tomas Winkler <tomasw@gmail.com>
-Subject: [PATCH v10 06/10] drm/i915/nvm: add nvm device for discrete graphics
-Date: Thu, 15 May 2025 16:33:41 +0300
-Message-ID: <20250515133345.2805031-7-alexander.usyskin@intel.com>
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Subject: [PATCH v10 07/10] drm/i915/nvm: add support for access mode
+Date: Thu, 15 May 2025 16:33:42 +0300
+Message-ID: <20250515133345.2805031-8-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250515133345.2805031-1-alexander.usyskin@intel.com>
 References: <20250515133345.2805031-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250515_064822_680928_E1A7D7CF 
-X-CRM114-Status: GOOD (  21.88  )
+X-CRM114-CacheID: sfid-20250515_064828_218728_B6B12A20 
+X-CRM114-Status: GOOD (  13.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,225 +105,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Enable access to internal non-volatile memory on
-DGFX devices via a child device.
-The nvm child device is exposed via auxiliary bus.
+Check NVM access mode from GSC FW status registers
+and overwrite access status read from SPI descriptor, if needed.
 
-CC: Lucas De Marchi <lucas.demarchi@intel.com>
 Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Co-developed-by: Tomas Winkler <tomasw@gmail.com>
-Signed-off-by: Tomas Winkler <tomasw@gmail.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/gpu/drm/i915/Makefile      |  4 ++
- drivers/gpu/drm/i915/i915_driver.c |  6 ++
- drivers/gpu/drm/i915/i915_drv.h    |  3 +
- drivers/gpu/drm/i915/i915_reg.h    |  1 +
- drivers/gpu/drm/i915/intel_nvm.c   | 92 ++++++++++++++++++++++++++++++
- drivers/gpu/drm/i915/intel_nvm.h   | 15 +++++
- 6 files changed, 121 insertions(+)
- create mode 100644 drivers/gpu/drm/i915/intel_nvm.c
- create mode 100644 drivers/gpu/drm/i915/intel_nvm.h
+ drivers/gpu/drm/i915/intel_nvm.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-index 1a90eb1f180a..2e0fa85491a8 100644
---- a/drivers/gpu/drm/i915/Makefile
-+++ b/drivers/gpu/drm/i915/Makefile
-@@ -212,6 +212,10 @@ i915-y += \
- i915-y += \
- 	gt/intel_gsc.o
- 
-+# graphics nvm device (DGFX) support
-+i915-y += \
-+	intel_nvm.o
-+
- # graphics hardware monitoring (HWMON) support
- i915-$(CONFIG_HWMON) += \
- 	i915_hwmon.o
-diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
-index 2b0bcb9aa3c7..c7ab0352d31d 100644
---- a/drivers/gpu/drm/i915/i915_driver.c
-+++ b/drivers/gpu/drm/i915/i915_driver.c
-@@ -82,6 +82,8 @@
- #include "soc/intel_dram.h"
- #include "soc/intel_gmch.h"
- 
-+#include "intel_nvm.h"
-+
- #include "i915_debugfs.h"
- #include "i915_driver.h"
- #include "i915_drm_client.h"
-@@ -646,6 +648,8 @@ static int i915_driver_register(struct drm_i915_private *dev_priv)
- 	/* Depends on sysfs having been initialized */
- 	i915_perf_register(dev_priv);
- 
-+	intel_nvm_init(dev_priv);
-+
- 	for_each_gt(gt, dev_priv, i)
- 		intel_gt_driver_register(gt);
- 
-@@ -688,6 +692,8 @@ static void i915_driver_unregister(struct drm_i915_private *dev_priv)
- 
- 	i915_hwmon_unregister(dev_priv);
- 
-+	intel_nvm_fini(dev_priv);
-+
- 	i915_perf_unregister(dev_priv);
- 	i915_pmu_unregister(dev_priv);
- 
-diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index 93b4c504b710..1212117d07ef 100644
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -65,6 +65,7 @@
- struct drm_i915_clock_gating_funcs;
- struct vlv_s0ix_state;
- struct intel_pxp;
-+struct intel_dg_nvm_dev;
- 
- #define GEM_QUIRK_PIN_SWIZZLED_PAGES	BIT(0)
- 
-@@ -310,6 +311,8 @@ struct drm_i915_private {
- 
- 	struct i915_perf perf;
- 
-+	struct intel_dg_nvm_dev *nvm;
-+
- 	struct i915_hwmon *hwmon;
- 
- 	struct intel_gt *gt[I915_MAX_GT];
-diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
-index 2e4190da3e0d..7f538ef3cbb5 100644
---- a/drivers/gpu/drm/i915/i915_reg.h
-+++ b/drivers/gpu/drm/i915/i915_reg.h
-@@ -321,6 +321,7 @@
- #define DG2_GSC_HECI2_BASE	0x00374000
- #define MTL_GSC_HECI1_BASE	0x00116000
- #define MTL_GSC_HECI2_BASE	0x00117000
-+#define GEN12_GUNIT_NVM_BASE	0x00102040
- 
- #define HECI_H_CSR(base)	_MMIO((base) + 0x4)
- #define   HECI_H_CSR_IE		REG_BIT(0)
 diff --git a/drivers/gpu/drm/i915/intel_nvm.c b/drivers/gpu/drm/i915/intel_nvm.c
-new file mode 100644
-index 000000000000..75d3ebe669ff
---- /dev/null
+index 75d3ebe669ff..dd3999c934a7 100644
+--- a/drivers/gpu/drm/i915/intel_nvm.c
 +++ b/drivers/gpu/drm/i915/intel_nvm.c
-@@ -0,0 +1,92 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * Copyright(c) 2019-2024, Intel Corporation. All rights reserved.
-+ */
-+
-+#include <linux/intel_dg_nvm_aux.h>
-+#include <linux/irq.h>
-+#include "i915_reg.h"
-+#include "i915_drv.h"
-+#include "intel_nvm.h"
-+
-+#define GEN12_GUNIT_NVM_SIZE 0x80
-+
-+static const struct intel_dg_nvm_region regions[INTEL_DG_NVM_REGIONS] = {
-+	[0] = { .name = "DESCRIPTOR", },
-+	[2] = { .name = "GSC", },
-+	[11] = { .name = "OptionROM", },
-+	[12] = { .name = "DAM", },
-+};
-+
-+static void i915_nvm_release_dev(struct device *dev)
+@@ -10,6 +10,7 @@
+ #include "intel_nvm.h"
+ 
+ #define GEN12_GUNIT_NVM_SIZE 0x80
++#define HECI_FW_STATUS_2_NVM_ACCESS_MODE BIT(3)
+ 
+ static const struct intel_dg_nvm_region regions[INTEL_DG_NVM_REGIONS] = {
+ 	[0] = { .name = "DESCRIPTOR", },
+@@ -22,6 +23,28 @@ static void i915_nvm_release_dev(struct device *dev)
+ {
+ }
+ 
++static bool i915_nvm_writable_override(struct drm_i915_private *i915)
 +{
-+}
++	resource_size_t base;
++	bool writable_override;
 +
-+void intel_nvm_init(struct drm_i915_private *i915)
-+{
-+	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
-+	struct intel_dg_nvm_dev *nvm;
-+	struct auxiliary_device *aux_dev;
-+	int ret;
-+
-+	/* Only the DGFX devices have internal NVM */
-+	if (!IS_DGFX(i915))
-+		return;
-+
-+	/* Nvm pointer should be NULL here */
-+	if (WARN_ON(i915->nvm))
-+		return;
-+
-+	i915->nvm = kzalloc(sizeof(*nvm), GFP_KERNEL);
-+	if (!i915->nvm)
-+		return;
-+
-+	nvm = i915->nvm;
-+
-+	nvm->writeable_override = true;
-+	nvm->bar.parent = &pdev->resource[0];
-+	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
-+	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
-+	nvm->bar.flags = IORESOURCE_MEM;
-+	nvm->bar.desc = IORES_DESC_NONE;
-+	nvm->regions = regions;
-+
-+	aux_dev = &nvm->aux_dev;
-+
-+	aux_dev->name = "nvm";
-+	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) |
-+		       PCI_DEVID(pdev->bus->number, pdev->devfn);
-+	aux_dev->dev.parent = &pdev->dev;
-+	aux_dev->dev.release = i915_nvm_release_dev;
-+
-+	ret = auxiliary_device_init(aux_dev);
-+	if (ret) {
-+		drm_err(&i915->drm, "i915-nvm aux init failed %d\n", ret);
-+		return;
++	if (IS_DG1(i915)) {
++		base = DG1_GSC_HECI2_BASE;
++	} else if (IS_DG2(i915)) {
++		base = DG2_GSC_HECI2_BASE;
++	} else {
++		drm_err(&i915->drm, "Unknown platform\n");
++		return true;
 +	}
 +
-+	ret = auxiliary_device_add(aux_dev);
-+	if (ret) {
-+		drm_err(&i915->drm, "i915-nvm aux add failed %d\n", ret);
-+		auxiliary_device_uninit(aux_dev);
-+		return;
-+	}
++	writable_override =
++		!(intel_uncore_read(&i915->uncore, HECI_FWSTS(base, 2)) &
++		  HECI_FW_STATUS_2_NVM_ACCESS_MODE);
++	if (writable_override)
++		drm_info(&i915->drm, "NVM access overridden by jumper\n");
++	return writable_override;
 +}
 +
-+void intel_nvm_fini(struct drm_i915_private *i915)
-+{
-+	struct intel_dg_nvm_dev *nvm = i915->nvm;
-+
-+	/* Only the DGFX devices have internal NVM */
-+	if (!IS_DGFX(i915))
-+		return;
-+
-+	/* Nvm pointer should not be NULL here */
-+	if (WARN_ON(!nvm))
-+		return;
-+
-+	auxiliary_device_delete(&nvm->aux_dev);
-+	auxiliary_device_uninit(&nvm->aux_dev);
-+	kfree(nvm);
-+	i915->nvm = NULL;
-+}
-diff --git a/drivers/gpu/drm/i915/intel_nvm.h b/drivers/gpu/drm/i915/intel_nvm.h
-new file mode 100644
-index 000000000000..7bc3d1114a3f
---- /dev/null
-+++ b/drivers/gpu/drm/i915/intel_nvm.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * Copyright(c) 2019-2024 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INTEL_NVM_H__
-+#define __INTEL_NVM_H__
-+
-+struct drm_i915_private;
-+
-+void intel_nvm_init(struct drm_i915_private *i915);
-+
-+void intel_nvm_fini(struct drm_i915_private *i915);
-+
-+#endif /* __INTEL_NVM_H__ */
+ void intel_nvm_init(struct drm_i915_private *i915)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
+@@ -43,7 +66,7 @@ void intel_nvm_init(struct drm_i915_private *i915)
+ 
+ 	nvm = i915->nvm;
+ 
+-	nvm->writeable_override = true;
++	nvm->writable_override = i915_nvm_writable_override(i915);
+ 	nvm->bar.parent = &pdev->resource[0];
+ 	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
+ 	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
 -- 
 2.43.0
 
