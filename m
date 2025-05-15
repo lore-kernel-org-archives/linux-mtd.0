@@ -4,93 +4,216 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9F2DC2D0CD
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 May 2025 12:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83056C3ABC9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 May 2025 13:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yv+1ruUK+vfHEK7nHraPH/8YJ/VvPJ+xPmesioR+zeQ=; b=upQrhKqi3AONwH
-	h6blMYydE6is0qyRBvw3uxvg08JKIoseDED+WCR49/w1pKonBxMKTmB1SL68yOF4SY0Dqv6Reb8eJ
-	qR9Q83/UW/9hJmOhjG62nmA/ElUFLWmpWaQf3k/yvpH6dAVHukS+OU9PqT/RojRj1MNUhcyN4uVcL
-	fbPVqvFdf9JWg+S+eDVi4jgJpG45Y6mfwJbhxpD781Uo0eVfxOfovINBdgg0bUuYOx6i5y4X3DnhU
-	Bi5FaZ+haahWo/9cBOyGnT51HpSTt73Gw1DEJhOzWCysA4R+4gvWRNknpwySv+MROvbN6IMceZck3
-	0/tAHiG8fG3Qgf8nYuWA==;
+	List-Owner; bh=8iRVkQNlkLRsdB/2kClDmKBg6wrrmXMH7uCHAcmBhlA=; b=NxzJNf585U4COj
+	z1GBxus7FsDlwS26cISOhgG2aobEFNE9mEGaRJGEF1MVWE0UJ1iIxlrmrg6l5ChEFGoadVjFPfcVI
+	ZHsGQWEaS6Geo8ZI9+9BFQRIzKMP8PM47x4ZHT3bih3woSMkI+J9UHh6LljeFfkKKjnGrc+trkB3d
+	2YzgKCW/XEDY4nOMM9x2MhGttOl6chTEsPh9sTLpOXXa0Zzu6TaAoNnhXbP2o2F5KqHrEH46i44HZ
+	tVjFCz05raAJZgqlsETnlX5KAK928/Lona3491XNRdB2/1UMtFia4CGLw3bk+Ei3qNo5sSCn6pxgY
+	2SYTRCyeYmyMcofbkoAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFXYu-00000000Xb6-1Vb5;
-	Thu, 15 May 2025 12:19:44 +0000
-Received: from mgamail.intel.com ([198.175.65.18])
+	id 1uFYTV-00000000hcb-3WH4;
+	Thu, 15 May 2025 13:18:13 +0000
+Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFXYs-00000000XZF-24Fb
+	id 1uFYJV-00000000g6l-1Bm2
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 May 2025 12:19:43 +0000
+	Thu, 15 May 2025 13:07:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747311582; x=1778847582;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wFAQ3NK4nPQd0IHrWUbmpnTo8qjx6xZhrLCMhXW/F14=;
-  b=M6JWmQX1eVEX9pSpYugCOTbR32dUfh8yzc/OqOt3gKw2wFOGTFOL1Kfx
-   NHDd6eyCZpbRBEQaomXcaYoHbWXSMTGenHtQJWxst7p+oOID57rDR4BTX
-   tfZ/XnruT3trb4qUlDCObF4HNUc7SDrfIB3r2/xPvsSu3WYXWgIyi/z+7
-   pngyTnuOm3SKO9CYlyPnoZmC3EZKKnwrHY4yvqDy9w6xxy21S88XIKyni
-   gkvw/EYnDBGQ9vnC4rsErkCAYd0RHfgrDqS2Zy3m+RV/NFTyaFIcgLuJW
-   5MeusKLo4viUatho6Hi84n6uvONYeUfmWFjFOYa/u0Z+sVSvP5ZROB6Kz
+  t=1747314473; x=1778850473;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=h2JHSBiwq4Uxt/GfWGYsE8R6vKPxpcCmJDpwzHB5JaI=;
+  b=hmIpUJ/uBAbkqZOUJQ+FQoI22R5sgFocDwHL11ZIl3cKx/+al3q/DHSV
+   af7TRW0VX5JlO5GmAXEMCIQh88uj77BBY+HNybf2HIATGKnmZowL0o0aN
+   zQn9FnuzvyESawp4FvYSp//CquqHSW309U8gqEE4AzuztPqySVDTG6s1n
+   sCFXil+Po0wf0MPS1kdKLwHjkf/8og4zBCjw4MApG8JV4ELC520eqr0y5
+   Gq24wD0UJe3liWvSyHUocc15ZKxpJD02oPxqX2yz+Ry4AZflG13vPV8R4
+   IXut8OKWGh3bKz+54SN2//8V4zcJk+B7nTWMzIhSyCLLpGqQwJhyg1dGk
    Q==;
-X-CSE-ConnectionGUID: EXpuN9P/QpCYV1lwzvXCAg==
-X-CSE-MsgGUID: mrpDiCrXRpKDgEANeEAysQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11434"; a="49402650"
+X-CSE-ConnectionGUID: JV5SpXenSaGm2SQtQ1EOSg==
+X-CSE-MsgGUID: fiihuvZ5RWC+Ds98atdS/w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11434"; a="51885497"
 X-IronPort-AV: E=Sophos;i="6.15,291,1739865600"; 
-   d="scan'208";a="49402650"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 05:19:40 -0700
-X-CSE-ConnectionGUID: yuRuvhS8TrOvZRAiYDej+Q==
-X-CSE-MsgGUID: TYMuvsbVQ/aKlzbvndqzBw==
+   d="scan'208";a="51885497"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 06:07:52 -0700
+X-CSE-ConnectionGUID: 9wUrUlaUQMyAi3o1VgJvaQ==
+X-CSE-MsgGUID: uo4c4J5oSdOAKPV4qBC3nw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,291,1739865600"; 
-   d="scan'208";a="143553856"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 05:19:36 -0700
-Date: Thu, 15 May 2025 15:19:32 +0300
-From: Raag Jadav <raag.jadav@intel.com>
-To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"De Marchi, Lucas" <lucas.demarchi@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	"Poosa, Karthik" <karthik.poosa@intel.com>,
-	"Abliyev, Reuven" <reuven.abliyev@intel.com>,
-	"Weil, Oren jer" <oren.jer.weil@intel.com>,
+   d="scan'208";a="143250731"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 06:07:52 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Thu, 15 May 2025 06:07:51 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Thu, 15 May 2025 06:07:51 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Thu, 15 May 2025 06:07:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cRpRuzkbUYtAVQnj1JrtFwt36JD6nm1VlN7y1JxDpTh5rGPtAG710ZqMB2GpTWGZ3A0xFzn8oUFpLS2xOeIWMhD9kHBGBpAttpIHUEA6woR9ynOwqKmkbhP3kPgW1THihpFz5+Lb2/afdJXYxpiMfy4LnHMTOKiXSz+elMSUahTCGiVjKRK0841adQNVDGe63lvQvyMfkaxD5mhjdgygIHcBOfABUB2W1G3rP7ovoTNzJhIgUlYn2C8Uhw0xnGsreQ0EaTDMS2RqbAEZmrRK9ydEvzn8gfBrpxb/CLF2pGmHjRw3Moe3i23iHsyXknhD+Uw3wFkSPNlf3hdb/Aqk2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h2JHSBiwq4Uxt/GfWGYsE8R6vKPxpcCmJDpwzHB5JaI=;
+ b=SRqs/ChrODixHLQa7q/HWquh+9NSrlrXZJgWVUNcre01prKpVFSmMT56GpEhLtcJ3eRZ9zoL33Y75wy0dcMP0K1GCYybbEOr2nXvd568c2GVZWz/5EkwlLKNxJfow1L5gbpVUubbQvteLa1oWeJzZvn1MA4Frq9d4vPiVyq9QLgWW9s/lq4uSi0WMHnFKglWqRgbFoSGdXUszK+XzHmvaT5wO6rQKzuzYu+Jt9SJjSITOhu16V19P97xQDGF08ZxaEYzBh7vvXVthwznG+qfIekeyBfdqlEkguwgPopB88Thw3o416KOcMbOkYMARFhMoWjWPquGjSM4mPPzj3/Dxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
+ by SA2PR11MB4795.namprd11.prod.outlook.com (2603:10b6:806:118::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.30; Thu, 15 May
+ 2025 13:07:48 +0000
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::6826:6928:9e6:d778]) by CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::6826:6928:9e6:d778%3]) with mapi id 15.20.8722.027; Thu, 15 May 2025
+ 13:07:48 +0000
+From: "Usyskin, Alexander" <alexander.usyskin@intel.com>
+To: "Jadav, Raag" <raag.jadav@intel.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, "De Marchi, Lucas"
+	<lucas.demarchi@intel.com>, =?utf-8?B?VGhvbWFzIEhlbGxzdHLDtm0=?=
+	<thomas.hellstrom@linux.intel.com>, "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jani Nikula
+	<jani.nikula@linux.intel.com>, Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>,
+	"Poosa, Karthik" <karthik.poosa@intel.com>, "Abliyev, Reuven"
+	<reuven.abliyev@intel.com>, "Weil, Oren jer" <oren.jer.weil@intel.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	"intel-xe@lists.freedesktop.org" <intel-xe@lists.freedesktop.org>,
 	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
 	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Tomas Winkler <tomasw@gmail.com>
-Subject: Re: [PATCH v9 03/12] mtd: intel-dg: implement region enumeration
-Message-ID: <aCXb1NjwGquN6vGN@black.fi.intel.com>
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Tomas Winkler
+	<tomasw@gmail.com>
+Subject: RE: [PATCH v9 03/12] mtd: intel-dg: implement region enumeration
+Thread-Topic: [PATCH v9 03/12] mtd: intel-dg: implement region enumeration
+Thread-Index: AQHbtR4fMekOitQZHke4tW+4RuIcRLO6bEuAgBk0gmCAABwwAIAADSZw
+Date: Thu, 15 May 2025 13:07:48 +0000
+Message-ID: <CY5PR11MB6366670BABA9A473DC864322ED90A@CY5PR11MB6366.namprd11.prod.outlook.com>
 References: <20250424132536.3043825-1-alexander.usyskin@intel.com>
  <20250424132536.3043825-4-alexander.usyskin@intel.com>
  <aBCfbaYs9CnXL2h1@black.fi.intel.com>
  <CY5PR11MB6366AACB5EA494893CA8D16DED90A@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <aCXb1NjwGquN6vGN@black.fi.intel.com>
+In-Reply-To: <aCXb1NjwGquN6vGN@black.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR11MB6366:EE_|SA2PR11MB4795:EE_
+x-ms-office365-filtering-correlation-id: 9b23d7cd-e7cd-4b73-1fb3-08dd93b17db5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014|38070700018;
+x-microsoft-antispam-message-info: =?utf-8?B?bzM5K0g3V3hpVkpqT1Qzei9vN0RNRTNlMW9NT3AvOW1jbmhBRWN4NFgrSi9s?=
+ =?utf-8?B?bms3OStDeUtLN1BtbkIyYVJrS0tObU41WDRvaENSK2loOWxFaUZuZTVGcXY1?=
+ =?utf-8?B?eUhIUytKcWU5Y1o1VzIrMUcyREtPY3pTSkRveUsvR0MyMDdsOXFFRFRQdis3?=
+ =?utf-8?B?TGxkS3ZUY3AxYktLcTI4MkQ2WnQ5aWw4S3ZScU91YjRaclNETHNCZXlQOTFR?=
+ =?utf-8?B?K1lNNFhPa0ZDcVE0QTE1TGtMMlY0NDd3SHgzd0p6ODFTWVd6QkJmcHdKa1BY?=
+ =?utf-8?B?R0hMQ2g0bVM2elVKMXJvN1llekZLSFltM2NJQm9jMVY1QVZBc0lrT3BsWXFn?=
+ =?utf-8?B?QTNtNHdKWGk0c2lBTmh6dFdFcEp0eCtYbzhEckRBYXFiUGRXaG5UT2p2ZHh4?=
+ =?utf-8?B?eDJkODFNYVVoWlUwd3pURkh6WnhpS1BSQ3h6dktYMEhYMUxNWU5BWUp0OGUw?=
+ =?utf-8?B?M2xJWWw2SEVrM1VIbDduOHZOV1NpSVF5U0tVdzE1Zm8wUmN3SXNhQUVaM0tk?=
+ =?utf-8?B?WkpqaS9aZHpLUDFtcDMrU2IrNWtQNkFBbjg2MTN6N1BRVXZnMGdETW9BR01E?=
+ =?utf-8?B?d252b1dCclo3SCtQYXlmcUdWdmd2T2lza0l5bUtNVmh4ams1R2NkdXJtaXpO?=
+ =?utf-8?B?Z05obG04cGx4VmhWSllMVllpUEhWZS91RVBCeTFXL1czaW5oM01DZ1lGOFVl?=
+ =?utf-8?B?YTFJZS9SNzhqbUw5akhoTU1GN2EzbHc0cVI2QnZVNGYvN09WTzBod0JlamUr?=
+ =?utf-8?B?bnJGc2pVWmw4RXo3a25nTnpaT1FPQkpTVWNJTVozT1U1SXJ3SFd0VGlmRFBM?=
+ =?utf-8?B?VWJ0Y2R5cm1ITmtDRWlpa09JM1p5Ym0rVWxsZHJGOExPYXdjL3hHWk94Y1p0?=
+ =?utf-8?B?RkYzbTFqSmFVRmpaMEROZFJmTVRqQkIxYnBLUlpZUXBWSWdtbTJXQUUzUEtx?=
+ =?utf-8?B?Y2lZL0lZZitZWkhJWEN1dzVsQXU4RzBweDdGTFZXTG9mbGNEblZTcVJJKzZ4?=
+ =?utf-8?B?dnNFM3pPemdENjgyTG56alo3bnRLYlNCR0ErRTlvTTZvMTU0eEIvbHdYTTND?=
+ =?utf-8?B?T1lnYzJPby8rU1BhdEpLZVovMjZJa0wzV3BybktQSkZxb1RidHYxMkZOcnVJ?=
+ =?utf-8?B?VVJaNUpnZ1VOQ0N5REJ4c2hpbHZyNzBweFl5ZnVvQjdnSktOdDJRdFQxczBV?=
+ =?utf-8?B?K3I5eW43eWswSDZuRkF5MGRFdWNiaFAzMUMvQzhORmc3YUJuOVpWQmdRamRL?=
+ =?utf-8?B?MldYWlA5dE9vT2ZBMTloOWRZMHBrb2dIZnloekx1Z2ZlU0hmcXBxdjZRU3BY?=
+ =?utf-8?B?enpWaGc0ZDZONFFab0RmcE9ERGxHTU9NMzhNV1FtNUxKRWFlc0VJYXA4V0l2?=
+ =?utf-8?B?WWhyc0dJdHFmejhmUG1IenhnRzdXeHhUNzNMVkpGTHRXSG1PWEVTenlmZVMv?=
+ =?utf-8?B?U3h3TG4weCtUNkdkbzRBZ2I5c1VCK2J1d0tLek9Id2Z1Y2Jpc0x0U09xWDBy?=
+ =?utf-8?B?MDJnejN6WGRFZkx0YmFMc2tTa2lPUUI4QUpGdHd2RlcrMXZnZWlmODlxVStZ?=
+ =?utf-8?B?aTBRWTJBaDROa1RiODNoaGIrc1liL25UNlU4ODlPYXpZL0VEWUVkdTY5UzZI?=
+ =?utf-8?B?MWhIbGRBQnVaUllhTm5adGV0UjBuNFpuS0prYjU5ZDNFT0xlOGluQ1BsblBu?=
+ =?utf-8?B?aXJvOGdJeEdaRzJySkk0QmFMVjFCaERhd0pQeEJXNGI2YmVabjA0U2ZvWjdh?=
+ =?utf-8?B?QUtzT1pzcUdHYVU3NU5aOS9FTWI1QkFlLzJFaDNtb05oVlhDeDF5a0pROHJs?=
+ =?utf-8?B?TWNMTFNtYTJqM2NveVJYT3lzYzdmQ0tUUmFVVWsxVVIrd3lnUWU1aTBCa0RU?=
+ =?utf-8?B?MUdiMWtnYnB2RDhMd25kVGthWmVHTTc2L0dQSS9HbnFZYkdYSlZjNnpXUXpt?=
+ =?utf-8?B?dnRKMDZLWjRLMUZFY1kwUVh5dHNReFd4dkpoYk1acyt6eHRPU3hKN1ByZHRQ?=
+ =?utf-8?Q?WegounbvN3/j/156Ea98NxWhhYRbAY=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OE1MeXVWVE5Nc1hBTkNnWXplcVMvemdZL01maGVTUGFMb1VrdWFHNEZLUldn?=
+ =?utf-8?B?NXFLUFpodTY0SXNFa1JPbU9qRlE4OHplay92MEJMa2llakpiVDlZNmRVMWFl?=
+ =?utf-8?B?RS8zZmk2K0JQODZXTHc0QXJhQ3JnREpDSktGdjZSK2dsTDJMS2Mxb0VIdjFV?=
+ =?utf-8?B?UWFtZ0NIMnVGUjdIc3BHUml5VUJ6UDYrKzFxUWVYZ3p2Y28xVlNvaEJlUXRk?=
+ =?utf-8?B?ZWdHVTNoMHRsa0g0eUloUkFOajVCV1FPUy85R2JUUVpyZXpxK1VqTnR2bDls?=
+ =?utf-8?B?V281Y1Zwd1JRSjZFWDFVKzVsSmxSTWZHbWRrejQ1L0ZZUU1WTlFFRjdqcDdw?=
+ =?utf-8?B?aTNVd0NENkpaaldLQWFUMUJkczQ0Ny9FUXp6YzVPd1o5dE11Wmg2eWE1R3kw?=
+ =?utf-8?B?NVl1ZGpyNWU5RDU3N1ptajVxOHZpb0RwWnJYalRkSVMwQmtZS3ZMcW84OWx0?=
+ =?utf-8?B?eEZBczhyTDA5TlVuS0owdzdUNTVEbm40cXlNV1FISVp1NkcxWGhJd2pjYmpQ?=
+ =?utf-8?B?MXpaMjVIdmR1V0tHVWhnWGtwcUVqZ003OFhvOWROd3pRL2tjSG94S0lHUStu?=
+ =?utf-8?B?WFl0cjFuNEFwQ0kycUZrbU9mWjVSTlQ1UHMrZ3hZSVEwQUpkN3dUMmcwU1Ru?=
+ =?utf-8?B?RkFOQVV2WFdYdmhUT2NYdUE1TEtoNldIK3c2L1RVNG1lTFBZUndKdDlzNlJq?=
+ =?utf-8?B?SGxmVHlaQnJyUFdUdXM0eElyOTE5YnRUMFFNTzFTSmNpUmlXMVNWWHdqRFRi?=
+ =?utf-8?B?VWJOK041amQ4SWJjcEU3c3pUWTJlOXhsMGNac1FJOWRGMGFoRk5jSHdHeHY0?=
+ =?utf-8?B?TXR4ZEIxVDd4NTFZOUdDWEZTd1NXdmRZRVFBOEZwL1hpeUNUMEZoeFBYNDlo?=
+ =?utf-8?B?UWM0N0RKUjBiUytUaXVSWGVZZjFUaDk3bjdaRmVtWUdGeEw3NDJnYXMwVk5K?=
+ =?utf-8?B?Zk55dE9TZEdDR3JEUDdqcFlrRWplUGVQV3JWYVlQcUxXaHpVU2tLMXRGY3V6?=
+ =?utf-8?B?Mnl0cnNqZElyUVJKeXJBOC9HRUlsS1RWb3VoOXhDcmNZTzFBc25wSG15Z3pT?=
+ =?utf-8?B?VmFrd1JIK1p4ZWZTY3RzTHZjQ2lwY0VHVXQ0L1N5N0cxL040THZxdXNOM3Fs?=
+ =?utf-8?B?VGRDQks0blNZejZyV2tiV2pqRzdzOFdBbkE1bkpHeWcrZGh0QkRRMXdqYmI2?=
+ =?utf-8?B?bi93NGx0Wlo0YS9EbkkvU1ZnZE45bVJEZWJkcnpxajZXblpIY0hFekNnem9H?=
+ =?utf-8?B?a2NwNEkxd3hvMXdMZ0hrUCtyVUxpUzNlMm1Eby90T3VvYVNWSlNMcEpjbnFT?=
+ =?utf-8?B?dHUyODQzeHVHd3hFRUhFemZ3NG91a3Z4aC9HWHp3VnV0ZWlKSzdpd0t3NTY2?=
+ =?utf-8?B?TXdqRkhJVXFRT1VZQVI3dUxMTHpSdGpqYVZYOXJRNE80WDFXTU92MmhxbjVY?=
+ =?utf-8?B?YkdCK3dqMFFVQWlyWHdkSlBaUzhEL0VaNUtiZHhPQ0VpaDVIUXZRcjVoamMx?=
+ =?utf-8?B?RVduSVZPSVduOTJKQjBlTjNwdTdHUWZYcGxWVWNQZDI0SVNDY2FTdzh6ZXpi?=
+ =?utf-8?B?SmphbTRqUFBRU0VSUncweUtCMEIzTHlyU1BaeXN5VWttSXJDS0Nwd1JacWtS?=
+ =?utf-8?B?dFZsVWxiVHU3bjJwb2FYYUNNcEtBeTduaVZoR0JNemJMaHJXV0VRdkwrZ0pB?=
+ =?utf-8?B?MmcxVUxYMXdFT1EvdGwrR3NYVng4WFYway9YbGtJUHptZUVpajJJTERxTUwr?=
+ =?utf-8?B?WCtaTVJZc1JOMDZTVXhPZzN4T0hEb0VqdWE0Tk5RTUxoLzFyRUFvd0pDVFRK?=
+ =?utf-8?B?NHhyQUpZQmdIZlloSTJOdS9pM090dTRBVEtDOC9GdmpjdWNFcVVVRDkvZ3RG?=
+ =?utf-8?B?TXNvSmE2S2hNUWx1aWhnT2NBSkNETFhqNTNoU2lYb3lWVFpxQS84elNiNlkz?=
+ =?utf-8?B?WlhPQVR2Q0pwbXdaWjVUSXRuMVlaeCtFNUVPOFIvaWdWTFNZMFo4NmtJU2sw?=
+ =?utf-8?B?REtSdElCeTQ0VGNqd1dLS3pRQlhHbWVWWWdoV0gvMWx3a2w1YWxGRWpFSnJV?=
+ =?utf-8?B?Y09VanNTeWk1OHJFSUdMcHlRK0IraVY3a1BncTIzMGtNNlpVQmowUG9mTzNT?=
+ =?utf-8?Q?7EyvYyXxnhdw7LqE8EfYdOXWq?=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CY5PR11MB6366AACB5EA494893CA8D16DED90A@CY5PR11MB6366.namprd11.prod.outlook.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b23d7cd-e7cd-4b73-1fb3-08dd93b17db5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2025 13:07:48.3764
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kbOPRnnBQIpUbJ2pv2xgeSR+m9It/dmukwtPuSX6PpQ0F3urZV4b15Xl7TeqQkmTTYmqY76Gv+5VadiB6cQk1Z2lXmXIWy8V4yVyNnE0hJo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4795
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250515_051942_560005_CE3CC495 
-X-CRM114-Status: GOOD (  19.42  )
+X-CRM114-CacheID: sfid-20250515_060753_344336_F6699752 
+X-CRM114-Status: GOOD (  16.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,94 +230,105 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 15, 2025 at 04:53:38PM +0530, Usyskin, Alexander wrote:
-> > On Thu, Apr 24, 2025 at 04:25:27PM +0300, Alexander Usyskin wrote:
-> > > In intel-dg, there is no access to the spi controller,
-> > > the information is extracted from the descriptor region.
-> > 
-> > ...
-> > 
-> > > @@ -22,9 +24,199 @@ struct intel_dg_nvm {
-> > >  		u8 id;
-> > >  		u64 offset;
-> > >  		u64 size;
-> > > +		unsigned int is_readable:1;
-> > > +		unsigned int is_writable:1;
-> > >  	} regions[] __counted_by(nregions);
-> > >  };
-> > >
-> > > +#define NVM_TRIGGER_REG       0x00000000
-> > > +#define NVM_VALSIG_REG        0x00000010
-> > > +#define NVM_ADDRESS_REG       0x00000040
-> > > +#define NVM_REGION_ID_REG     0x00000044
-> > > +/*
-> > > + * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
-> > > + * [23:16]-Reserved
-> > > + * [31:24]-Erase MEM RegionID
-> > > + */
-> > > +#define NVM_ERASE_REG         0x00000048
-> > > +#define NVM_ACCESS_ERROR_REG  0x00000070
-> > > +#define NVM_ADDRESS_ERROR_REG 0x00000074
-> > > +
-> > > +/* Flash Valid Signature */
-> > > +#define NVM_FLVALSIG          0x0FF0A55A
-> > > +
-> > > +#define NVM_MAP_ADDR_MASK     GENMASK(7, 0)
-> > > +#define NVM_MAP_ADDR_SHIFT    0x00000004
-> > > +
-> > > +#define NVM_REGION_ID_DESCRIPTOR  0
-> > > +/* Flash Region Base Address */
-> > > +#define NVM_FRBA      0x40
-> > > +/* Flash Region __n - Flash Descriptor Record */
-> > > +#define NVM_FLREG(__n) (NVM_FRBA + ((__n) * 4))
-> > > +/*  Flash Map 1 Register */
-> > > +#define NVM_FLMAP1_REG  0x18
-> > > +#define NVM_FLMSTR4_OFFSET 0x00C
-> > > +
-> > > +#define NVM_ACCESS_ERROR_PCIE_MASK 0x7
-> > > +
-> > > +#define NVM_FREG_BASE_MASK GENMASK(15, 0)
-> > > +#define NVM_FREG_ADDR_MASK GENMASK(31, 16)
-> > > +#define NVM_FREG_ADDR_SHIFT 12
-> > > +#define NVM_FREG_MIN_REGION_SIZE 0xFFF
-> > 
-> > Should we move these to a header?
-> They are used only in this file, not shared to anyone, why to put in header?
-
-If we know we won't be further expanding/splitting, sure.
-
-...
-
-> > > +static bool idg_nvm_region_readable(u32 access_map, u8 region)
-> > > +{
-> > > +	if (region < 12)
-> > 
-> > Anything special about 12? Should it have a macro def somewhere?
-> > 
+> Subject: Re: [PATCH v9 03/12] mtd: intel-dg: implement region enumeration
 > 
-> The access bits are separated for first 12 regions and last 4.
-> My feeling that making below numbers #define will make
-> code less readable.
+> On Thu, May 15, 2025 at 04:53:38PM +0530, Usyskin, Alexander wrote:
+> > > On Thu, Apr 24, 2025 at 04:25:27PM +0300, Alexander Usyskin wrote:
+> > > > In intel-dg, there is no access to the spi controller,
+> > > > the information is extracted from the descriptor region.
+> > >
+> > > ...
+> > >
+> > > > @@ -22,9 +24,199 @@ struct intel_dg_nvm {
+> > > >  		u8 id;
+> > > >  		u64 offset;
+> > > >  		u64 size;
+> > > > +		unsigned int is_readable:1;
+> > > > +		unsigned int is_writable:1;
+> > > >  	} regions[] __counted_by(nregions);
+> > > >  };
+> > > >
+> > > > +#define NVM_TRIGGER_REG       0x00000000
+> > > > +#define NVM_VALSIG_REG        0x00000010
+> > > > +#define NVM_ADDRESS_REG       0x00000040
+> > > > +#define NVM_REGION_ID_REG     0x00000044
+> > > > +/*
+> > > > + * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
+> > > > + * [23:16]-Reserved
+> > > > + * [31:24]-Erase MEM RegionID
+> > > > + */
+> > > > +#define NVM_ERASE_REG         0x00000048
+> > > > +#define NVM_ACCESS_ERROR_REG  0x00000070
+> > > > +#define NVM_ADDRESS_ERROR_REG 0x00000074
+> > > > +
+> > > > +/* Flash Valid Signature */
+> > > > +#define NVM_FLVALSIG          0x0FF0A55A
+> > > > +
+> > > > +#define NVM_MAP_ADDR_MASK     GENMASK(7, 0)
+> > > > +#define NVM_MAP_ADDR_SHIFT    0x00000004
+> > > > +
+> > > > +#define NVM_REGION_ID_DESCRIPTOR  0
+> > > > +/* Flash Region Base Address */
+> > > > +#define NVM_FRBA      0x40
+> > > > +/* Flash Region __n - Flash Descriptor Record */
+> > > > +#define NVM_FLREG(__n) (NVM_FRBA + ((__n) * 4))
+> > > > +/*  Flash Map 1 Register */
+> > > > +#define NVM_FLMAP1_REG  0x18
+> > > > +#define NVM_FLMSTR4_OFFSET 0x00C
+> > > > +
+> > > > +#define NVM_ACCESS_ERROR_PCIE_MASK 0x7
+> > > > +
+> > > > +#define NVM_FREG_BASE_MASK GENMASK(15, 0)
+> > > > +#define NVM_FREG_ADDR_MASK GENMASK(31, 16)
+> > > > +#define NVM_FREG_ADDR_SHIFT 12
+> > > > +#define NVM_FREG_MIN_REGION_SIZE 0xFFF
+> > >
+> > > Should we move these to a header?
+> > They are used only in this file, not shared to anyone, why to put in header?
+> 
+> If we know we won't be further expanding/splitting, sure.
+> 
+> ...
+> 
+> > > > +static bool idg_nvm_region_readable(u32 access_map, u8 region)
+> > > > +{
+> > > > +	if (region < 12)
+> > >
+> > > Anything special about 12? Should it have a macro def somewhere?
+> > >
+> >
+> > The access bits are separated for first 12 regions and last 4.
+> > My feeling that making below numbers #define will make
+> > code less readable.
+> 
+> Then perhaps a small comment would be useful.
+Sure, documenting this.
 
-Then perhaps a small comment would be useful.
+> 
+> > > > +		return access_map & BIT(region + 8); /* [19:8] */
+> > > > +	else
+> > > > +		return access_map & BIT(region - 12); /* [3:0] */
+> > > > +}
+> > > > +
+> > > > +static bool idg_nvm_region_writable(u32 access_map, u8 region)
+> > > > +{
+> > > > +	if (region < 12)
+> 
+> Ditto.
+The comment before previous function will include both read and write access bits.
 
-> > > +		return access_map & BIT(region + 8); /* [19:8] */
-> > > +	else
-> > > +		return access_map & BIT(region - 12); /* [3:0] */
-> > > +}
-> > > +
-> > > +static bool idg_nvm_region_writable(u32 access_map, u8 region)
-> > > +{
-> > > +	if (region < 12)
+> 
+> > > > +		return access_map & BIT(region + 20); /* [31:20] */
+> > > > +	else
+> > > > +		return access_map & BIT(region - 8); /* [7:4] */
+> > > > +}
+> 
+> Raag
 
-Ditto.
+- - 
+Thanks,
+Sasha
 
-> > > +		return access_map & BIT(region + 20); /* [31:20] */
-> > > +	else
-> > > +		return access_map & BIT(region - 8); /* [7:4] */
-> > > +}
-
-Raag
 
 ______________________________________________________
 Linux MTD discussion mailing list
