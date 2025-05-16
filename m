@@ -4,102 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE7F6C3ABC9
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 May 2025 08:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48497C3ABD8
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 May 2025 14:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kki036EK9s7llpFzBnaVbXObs01tUNvjxXaIHkmFUko=; b=H1V9hRWUjJpArR
-	yXb3XotFqMjfwI9SOS1BfStkWDB697X3/yfJwKapZv0ViSJ+7w4Ro085I3Jmnv24FhnAkkR03utI9
-	Qccv7c8fhTDWQ4le/QUsPe4H3ACrbzF0pRLV+XvEmHJ9gWgH9uL+764ntiD28pNtDD5mb1wUpf4su
-	P/gzam0V0tWRJNZHheA3ECT9dFGxS8L+qWqyCbjuQhHiPOJrWaauAf4M8R9ojHsKyhhJlRoWrD9Zj
-	/0usDnWhHtP9TiJjoURiLwutOH0SVte8gUkpVgQEYXqVSWl82WIGRGkcZBpHJ60fMwQEuyhVJKfMl
-	7KguhY0VSoSd+B/k2F6w==;
+	List-Owner; bh=z03JYhBwNVHRRFxsznIN24QFGu40WEVn2fGLQN85VDk=; b=vAvPho2eawmNWX
+	sQzH0ry5t1JsHxYmMLzgHa3uIeZBTDkiLXRtFsPtMgUzIxx8ikKkj3zNMqRDKkUIJV6NRsft5Z4tN
+	nT0aeBNI5EeWIwomSFvNKWayImx3fiuGXKbm3mJlftQqtMdRfxhFMX5xCYvGSiuBko8hiZTueRDyf
+	Tdv4fmaOUDYeiEf0Vd4S5OtlIx3OV8s1h6RKf5T0t7pyKGJ4R+/eTb4oAuHf6ugD0ouUYi+xDTnd3
+	EdLk5Tb0BL9/saoaV4zVbrc6HedRHeia1HjeSDgsrknH9g3REdZULyrlBCv0dIgcpRBHR5OLRoyEo
+	4rDtf9q6PsWL/7sUmz3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFqLH-00000002pHc-3Xez;
-	Fri, 16 May 2025 08:22:55 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uFwL3-00000003iCW-39SK;
+	Fri, 16 May 2025 14:47:05 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uFqJP-00000002oVR-2hjC
+	id 1uFvi6-00000003bzc-0r2m
 	for linux-mtd@lists.infradead.org;
-	Fri, 16 May 2025 08:21:01 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54G2qoG8024409;
-	Fri, 16 May 2025 08:20:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	KlTck5+gut5iDxag9Y+PUWa5zCFEnS8qkkpw//kTaqU=; b=Bd93Exl4me8ZlhpO
-	VrkhWA3GXTCzSxIIrU6j975In7roK6yqeP94oAn0HXFB5UODqle/53X34S/SM3jg
-	bH+LwLAiy26EVesv5xJk3sg1OLVOdqVpukokgjMQMdu5ZXsgqtSYVvpWqunaQOww
-	tTZuci4lOeGtIbhL2/6BtUGyF28t2OaXKaINKCzPTMYSLdFwDCnYDPFdotOD7/Qf
-	oaozZZIymVn1mT5PV8C2qddg+ssW4HOUBRMwK/RM+FUzL/3MtSkOpmyk7Co2aaRa
-	2yjgJytVO9S0oEBCeQ49DMtnhd7mIOd6GGdU7Mtc+rOL3GJN1TG7XK2SacykJAIv
-	WmcvEg==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46mbcn1e7p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 May 2025 08:20:56 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 54G8KtrV012508
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 May 2025 08:20:55 GMT
-Received: from [10.151.36.184] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 16 May
- 2025 01:20:52 -0700
-Message-ID: <9bb380f9-ba7f-8c6c-bf57-bb84eb96302f@quicinc.com>
-Date: Fri, 16 May 2025 13:50:50 +0530
+	Fri, 16 May 2025 14:06:52 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CC69E4399F;
+	Fri, 16 May 2025 14:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1747404403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7FNaCT4ZQwywoNYi1aikoPuxQeiAAAtXSDPCSbSoQYY=;
+	b=Cp8Anbs3tIhc8FvhUb0RNthAJPHEeUjwx9VmSb6FIaINNL81nGtSTJ188OY96x8D3KpVwH
+	eM/Vy69l9h8+IzytTJXijZyRXmmNcrexqy4isLI0OWbCzE8ED6/q5/jsX6aqNlJTycUNig
+	zJLld6lvyiRe8joEgtGWc2uioTw3gI0ICoojca399xh/ruR4NcfgyNBo07uCBe0q2BJ0nj
+	uQ/g+Q3Y/3sy+gdC63lTh6B00vDYFTGzAbuzgTPo+OB0ghdspBOJPByuJqiKGBp3Qhi8K5
+	4mRBlYxsqTx3CK1vooo5+H0InweCrOfay/P4VPAUadkU3VY3kJ0/wzqWKAf8Rg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
+Cc: "richard@nod.at" <richard@nod.at>,  "vigneshr@ti.com" <vigneshr@ti.com>,
+  "robh@kernel.org" <robh@kernel.org>,  "krzk+dt@kernel.org"
+ <krzk+dt@kernel.org>,  "conor+dt@kernel.org" <conor+dt@kernel.org>,
+  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,  "git
+ (AMD-Xilinx)" <git@amd.com>,  "amitrkcian2002@gmail.com"
+ <amitrkcian2002@gmail.com>,  Bernhard Frauendienst
+ <kernel@nospam.obeliks.de>
+Subject: Re: [PATCH v12 3/3] mtd: Add driver for concatenating devices
+In-Reply-To: <IA0PR12MB7699B60558C5211F8F80C471DC96A@IA0PR12MB7699.namprd12.prod.outlook.com>
+	(Amit Kumar Mahapatra's message of "Tue, 13 May 2025 14:45:39 +0000")
+References: <20250205133730.273985-1-amit.kumar-mahapatra@amd.com>
+	<20250205133730.273985-4-amit.kumar-mahapatra@amd.com>
+	<8734fa8hed.fsf@bootlin.com>
+	<IA0PR12MB76994BA493127004B569F2AEDC832@IA0PR12MB7699.namprd12.prod.outlook.com>
+	<87o6vyjgfl.fsf@bootlin.com>
+	<IA0PR12MB7699B60558C5211F8F80C471DC96A@IA0PR12MB7699.namprd12.prod.outlook.com>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Fri, 16 May 2025 16:06:41 +0200
+Message-ID: <87o6vsejke.fsf@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/2] spi: spi-qpic-snand: extend FIELD_PREP() macro usage
-Content-Language: en-US
-To: Gabor Juhos <j4g8y7@gmail.com>, Mark Brown <broonie@kernel.org>
-CC: Varadarajan Narayanan <quic_varada@quicinc.com>,
-        Sricharan Ramabadhran
-	<quic_srichara@quicinc.com>,
-        <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20250515-qpic-snand-use-bitmasks-v1-0-11729aeae73b@gmail.com>
- <20250515-qpic-snand-use-bitmasks-v1-2-11729aeae73b@gmail.com>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20250515-qpic-snand-use-bitmasks-v1-2-11729aeae73b@gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: JvoF3Xa_2Tna_T_Cxr5MsZbXcOaExYFn
-X-Authority-Analysis: v=2.4 cv=HZ4UTjE8 c=1 sm=1 tr=0 ts=6826f568 cx=c_pps
- a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
- a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=pGLkceISAAAA:8
- a=COk6AnOGAAAA:8 a=GCHeSRd5Ohs72rWH-XEA:9 a=QEXdDO2ut3YA:10
- a=TjNXssC_j7lpFel5tvFf:22
-X-Proofpoint-GUID: JvoF3Xa_2Tna_T_Cxr5MsZbXcOaExYFn
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTE2MDA3NiBTYWx0ZWRfXwVvCuwoLezJl
- jFgMF1i0YFsi1UDF2ITXjmp4tlwTuSlovrgfLGhZMxtXwJCNLIrUg8QLZ9+iwsN5oMPJcWeBTl1
- kTrC55aZiNjdnpwSeifBSKN/euPJb8iIJcW3jxaXShE6idiIvurSUDL8y3Wl7foz8vBshSiY/4Z
- 2opBIIMgZGfKZEnFRWjcbg61PFF2Yoai32BYodaBWT31XMub7JxSM7DbNBQ8vPa0C+voz72Dcv6
- zaqkAiKx181xCk9Cq35kKgIIsNpWbF7xO8l+tzLO1ac/PTnnciwb87I9CNg65b1zikI56n7k3Z+
- oQ0bXAD1QTyFcEJQeK29GRUoDO1LLR7N4aPGqGBGq0B5uvnwUhaNxUGMBWAgzYlvpqeZY/dR00I
- pjbT1e4CWzs9Osc9F1CcUiAnZphjLBqs8lUWHZtbgI27wcWtGiG0iWK5QvBWyflp/jarzruz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-16_03,2025-05-15_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 adultscore=0 spamscore=0 clxscore=1015 priorityscore=1501
- suspectscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- bulkscore=0 phishscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505070000
- definitions=main-2505160076
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdefuddvleegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeduvddprhgtphhtthhopegrmhhithdrkhhumhgrrhdqmhgrhhgrphgrthhrrgesrghmugdrtghomhdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtoheprhhosghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrhiikhdoughtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegtohhnohhrodgutheskhgvr
+ hhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopeguvghvihgtvghtrhgvvgesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250516_012059_708443_480AE7FF 
-X-CRM114-Status: GOOD (  16.39  )
+X-CRM114-CacheID: sfid-20250516_070650_830470_0F67E9FC 
+X-CRM114-Status: GOOD (  22.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,74 +84,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 5/16/2025 12:28 AM, Gabor Juhos wrote:
-> Large part of the code uses the FIELD_PREP() macro already to construct
-> values to be written to hardware registers. Change the code to use also
-> the macro for more registers of which the corresponding bitmasks are
-> defined already.
-> 
-> This makes the code more readable. It also syncs the affected
-> codes with their counterparts in the 'qcom_nandc' driver, so it
-> makes it easier to spot the differences between the two
-> implementations.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
->   drivers/spi/spi-qpic-snand.c | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-> index bc45b834fadc5456eda1fe778e5ca8b16177465e..ad01bb456a88b54f0ffc801dd14eb3fa2708ec2e 100644
-> --- a/drivers/spi/spi-qpic-snand.c
-> +++ b/drivers/spi/spi-qpic-snand.c
-> @@ -130,9 +130,9 @@ static void qcom_spi_set_read_loc_first(struct qcom_nand_controller *snandc,
->   					int is_last_read_loc)
->   {
->   	__le32 locreg_val;
-> -	u32 val = (((cw_offset) << READ_LOCATION_OFFSET) |
-> -		  ((read_size) << READ_LOCATION_SIZE) | ((is_last_read_loc)
-> -		  << READ_LOCATION_LAST));
-> +	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
-> +		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
-> +		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
->   
->   	locreg_val = cpu_to_le32(val);
->   
-> @@ -151,9 +151,9 @@ static void qcom_spi_set_read_loc_last(struct qcom_nand_controller *snandc,
->   				       int is_last_read_loc)
->   {
->   	__le32 locreg_val;
-> -	u32 val = (((cw_offset) << READ_LOCATION_OFFSET) |
-> -		  ((read_size) << READ_LOCATION_SIZE) | ((is_last_read_loc)
-> -		  << READ_LOCATION_LAST));
-> +	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
-> +		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
-> +		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
->   
->   	locreg_val = cpu_to_le32(val);
->   
-> @@ -352,7 +352,7 @@ static int qcom_spi_ecc_init_ctx_pipelined(struct nand_device *nand)
->   			       FIELD_PREP(ECC_MODE_MASK, 0) |
->   			       FIELD_PREP(ECC_PARITY_SIZE_BYTES_BCH_MASK, ecc_cfg->ecc_bytes_hw);
->   
-> -	ecc_cfg->ecc_buf_cfg = 0x203 << NUM_STEPS;
-> +	ecc_cfg->ecc_buf_cfg = FIELD_PREP(NUM_STEPS_MASK, 0x203);
->   	ecc_cfg->clrflashstatus = FS_READY_BSY_N;
->   	ecc_cfg->clrreadstatus = 0xc0;
->   
-> 
-
-Reviewed-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMTMvMDUvMjAyNSBhdCAxNDo0NTozOSBHTVQsICJNYWhhcGF0cmEsIEFtaXQgS3VtYXIiIDxh
+bWl0Lmt1bWFyLW1haGFwYXRyYUBhbWQuY29tPiB3cm90ZToKCj4gW0FNRCBPZmZpY2lhbCBVc2Ug
+T25seSAtIEFNRCBJbnRlcm5hbCBEaXN0cmlidXRpb24gT25seV0KPgo+IEhlbGxvIE1pcXVlbCwK
+Pgo+PiA+PiA+ICsgICAgICAgICAgIG10ZC0+ZGV2LnBhcmVudCA9IGNvbmNhdC0+c3ViZGV2WzBd
+LT5kZXYucGFyZW50Owo+PiA+PiA+ICsgICAgICAgICAgIG10ZC0+ZGV2ID0gY29uY2F0LT5zdWJk
+ZXZbMF0tPmRldjsKPj4gPj4gPiArCj4+ID4+ID4gKyAgICAgICAgICAgLyogUmVnaXN0ZXIgdGhl
+IHBsYXRmb3JtIGRldmljZSAqLwo+PiA+PiA+ICsgICAgICAgICAgIHJldCA9IG10ZF9kZXZpY2Vf
+cmVnaXN0ZXIobXRkLCBOVUxMLCAwKTsKPj4gPj4gPiArICAgICAgICAgICBpZiAocmV0KQo+PiA+
+PiA+ICsgICAgICAgICAgICAgICAgICAgZ290byBkZXN0cm95X2NvbmNhdDsKPj4gPj4gPiArICAg
+fQo+PiA+PiA+ICsKPj4gPj4gPiArICAgcmV0dXJuIDA7Cj4+ID4+ID4gKwo+PiA+PiA+ICtkZXN0
+cm95X2NvbmNhdDoKPj4gPj4gPiArICAgbXRkX2NvbmNhdF9kZXN0cm95KG10ZCk7Cj4+ID4+ID4g
+Kwo+PiA+PiA+ICsgICByZXR1cm4gcmV0Owo+PiA+PiA+ICt9Cj4+ID4+ID4gKwo+PiA+PiA+ICts
+YXRlX2luaXRjYWxsKG10ZF92aXJ0X2NvbmNhdF9jcmVhdGVfam9pbik7Cj4+ID4+Cj4+ID4+IFRo
+ZSBjdXJyZW50IGltcGxlbWVudGF0aW9uIGRvZXMgbm90IHN1cHBvcnQgcHJvYmUgZGVmZXJyYWxz
+LCBJCj4+ID4+IGJlbGlldmUgaXQgc2hvdWxkIGJlIGhhbmRsZWQuCj4+ID4KPj4gPiBJIHNlZSB0
+aGF0IHRoZSBwYXJzZV9tdGRfcGFydGl0aW9ucygpIEFQSSBjYW4gcmV0dXJuIC1FUFJPQkVfREVG
+RVIKPj4gPiBkdXJpbmcgTVREIGRldmljZSByZWdpc3RyYXRpb24sIGJ1dCB0aGlzIGJlaGF2aW9y
+IGlzIHNwZWNpZmljIHRvIHRoZQo+PiA+IHBhcnNlX3Fjb21zbWVtX3BhcnQgcGFyc2VyLiBOb25l
+IG9mIHRoZSBvdGhlciBwYXJzZXJzIGFwcGVhciB0bwo+PiA+IHN1cHBvcnQgcHJvYmUgZGVmZXJy
+YWwuIEFzIGRpc2N1c3NlZCBpbiBSRkMgWzFdLCB0aGUgdmlydHVhbCBjb25jYXQKPj4gPiBmZWF0
+dXJlIGlzIHB1cmVseSBhIGZpeGVkLXBhcnRpdGlvbiBjYXBhYmlsaXR5LCBhbmQgYmFzZWQgb24g
+bXkKPj4gPiB1bmRlcnN0YW5kaW5nLCB0aGUgZml4ZWQtcGFydGl0aW9uIHBhcnNlciBkb2VzIG5v
+dCBzdXBwb3J0IHByb2JlIGRlZmVycmFsLgo+PiA+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3Ug
+Y2FuIHRoaW5rIG9mIGFueSBvdGhlciBwcm9iZSBkZWZlcnJhbAo+PiA+IHNjZW5hcmlvcyB0aGF0
+IG1pZ2h0IGltcGFjdCB0aGUgdmlydHVhbCBjb25jYXQgZHJpdmVyLgo+Pgo+PiBUaGF0J3MgdHJ1
+ZSwgYnV0IEkga2luZCBvZiBkaXNsaWtlIHRoZSBsYXRlX2luaXRjYWxsLCBJIGZlYXIgaXQgbWln
+aHQgYnJlYWsgaW4gY3JlYXRpdmUgd2F5cy4KPgo+IEkgdW5kZXJzdGFuZCwgYnV0IHNpbmNlIHdl
+IHJlcXVpcmUgdGhlIHBhcnRpdGlvbiBpbmZvcm1hdGlvbiB0byBiZQo+IGF2YWlsYWJsZSwgbGF0
+ZV9pbml0Y2FsbCBzZWVtcyB0byBiZSB0aGUgbW9zdCBzdWl0YWJsZSBjaG9pY2UgYW1vbmcgdGhl
+Cj4gaW5pdGNhbGwgbGV2ZWxz4oCUaWYgd2UgZGVjaWRlIHRvIHByb2NlZWQgd2l0aCB1c2luZyBh
+biBpbml0Y2FsbC4KPiBSZWdhcmRpbmcgcG90ZW50aWFsIGZhaWx1cmVzLCBhcyBmYXIgYXMgSSBj
+YW4gdGVsbCwgdGhlIG9wZXJhdGlvbiB3b3VsZAo+IGZhaWwgaWYsIGF0IHRoZSB0aW1lIG9mIGNv
+bmNhdGVuYXRpb24sIG9uZSBvciBtb3JlIG9mIHRoZSBNVEQgZGV2aWNlcwo+IGludm9sdmVkIGlu
+IHRoZSBjb25jYXQgYXJlIG5vdCB5ZXQgYXZhaWxhYmxlLiBJbiBzdWNoIGEgc2NlbmFyaW8sIHdl
+IGNhbgo+IGlzc3VlIGEga2VybmVsIHdhcm5pbmcgYW5kIGV4aXQgZ3JhY2VmdWxseS4gQnV0LCBI
+b3dldmVyLCBpZiB5b3UgcHJlZmVyCj4gdG8gbW92ZSBhd2F5IGZyb20gdXNpbmcgaW5pdGNhbGxz
+IGFuZCBoYXZlIGFuIGFsdGVybmF0aXZlCj4gaW1wbGVtZW50YXRpb24gYXBwcm9hY2ggaW4gbWlu
+ZCwgcGxlYXNlIGxldCB1cyBrbm93LgoKSSBhbSBzb3JyeSBidXQgdGhpcyBkb2VzIG5vdCB3b3Jr
+IHdpdGggbW9kdWxlcywgYW5kIHdlIGNhbm5vdCBpZ25vcmUgdGhpcwpjYXNlIEkgYmVsaWV2ZS4g
+TW9yZSBzcGVjaWZpY2FsbHksIGlmIGEgY29udHJvbGxlciBwcm9iZSBpcyBkZWZlcnJlZAood2l0
+aCBFUFJPQkVfREVGRVIgb3IganVzdCBwcmV2ZW50ZWQgYmVjYXVzZSBzb21lIGRlcGVuZGVuY2ll
+cyBhcmUgbm90CnlldCBzYXRpc2ZpZWQpLCB5b3UnbGwgZ2V0IGluY29ycmVjdGx5IGRlZmluZWQg
+bXRkIGRldmljZXMuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
