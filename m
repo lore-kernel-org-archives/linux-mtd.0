@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B1AC2D0CD
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 May 2025 16:45:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86C5AC54754
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 May 2025 02:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KxHmMTdahDHnWJJkmFHGaer5qNy5JvWQGgJ3OtC1guo=; b=X0ok5/kd9fsbPi
-	toaFG4u2oyr0/t7PIfj/cAvfljJBukQkfmT4n9yng53B/HlQnoVfY+uf4Z77n2q6Lq34WfM4Ofaeq
-	6Q3dT7KYMVIU7sowRUKHO5f+/O4to1VYpCubytXP1lQht/XJeKJTxLRneNaJysrzPhErOfcavRW34
-	yIBKJBsBNzJMUAZGbljS/uYFHQjlH6XMG0qYMj6vLIBdrPKYXBmv4uvj6dlXJsy5Uz00MLJXV8ama
-	CzDnMC4Bj9JAUeIkIhyiNDNipwxx9N69n4Ji4Ox80lt3Q0ab4zTgA/DZEWmb0S+3QVB409BX2V1DI
-	GCTS4dkTABbHiQNsgvWg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=0CbP/G8eC0M+2kRw2Seiy2ZZZdUZ/Kf/QKhXaEu5V6Q=; b=BNTMmJIRDTpOQ+
+	EWQeRhBxAJ5zwaeTOlCJ2KuvZ4/cF5va0Dl1NUAUEJLFDPiy1Lewucp94oi2glilGYuYB0HLcq/rN
+	DtUtGsXTbPDjhkDArOkRzVMLzxt0O8CQtJAQh0++6DCvI2xGdYJuhXMLu+/0Gx244+OIuiGJD/e5y
+	7DdOKNyPnd/TvOAlNvBy0NsOX0rDs8dzJHOIgdrdvX9TCKv+NVYgaChNsG3PONLLA4N9pEyVAlO7P
+	8m847+3jG8mDOxnmHt8rbjtomAJ//gdzfxaFaRuNseN9dIgSSCH+os/i8RZ8i5vFgj6FKNLDzaRSF
+	uMRnjfJK3yZQhnXgIcBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uH3bo-00000009r3a-1wo0;
-	Mon, 19 May 2025 16:45:00 +0000
-Received: from smtp21.cstnet.cn ([159.226.251.21] helo=cstnet.cn)
+	id 1uHCZ4-0000000BJyk-1e3B;
+	Tue, 20 May 2025 02:18:46 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uH2dl-00000009ea3-2qXH;
-	Mon, 19 May 2025 15:42:59 +0000
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-01 (Coremail) with SMTP id qwCowAAHcL96UStoD9NmAQ--.49806S2;
-	Mon, 19 May 2025 23:42:52 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: miquel.raynal@bootlin.com,
+	id 1uHCVp-0000000BJL1-3RrU
+	for linux-mtd@lists.infradead.org;
+	Tue, 20 May 2025 02:15:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5E4375C3E91;
+	Tue, 20 May 2025 02:13:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0430AC4CEE4;
+	Tue, 20 May 2025 02:15:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747707324;
+	bh=EPiQV0+RFQ6SbjXgsSYabKbALscwJInqg1lm97yoZBI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Wa214EZqr7yeyORFF/dO6socO/YzFt2sqs2SSaN+xPqZA/lO8wIo+3LoJiCcVpjXz
+	 dSClB5qk6rhS59EBXVhhpvg+ju/RT9GEMSa05OFHjMtCLJ/ZI5ZL1a71LZEnoDvvkk
+	 bQMFCG9UTPmaZ37NPv4ynUcplOKhuvl3v/XlrIP3kWVadN6SAshYepHOqKI1+L1KOH
+	 /Q6q6WpfpbAnlknhsw7RMJQ1sYA+sW/VjS6vRiImw9zgAC6zxeEhr9dY4L7rxGbbJt
+	 OETprUUxa8F70bshPdD7FV8loFeSbsq/iZu8S2S1ScPG9UPmct5yZwzhfqIHjNB1kP
+	 ZXpdQT9nOHogA==
+From: Bjorn Andersson <andersson@kernel.org>
+To: vkoul@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	manivannan.sadhasivam@linaro.org,
+	miquel.raynal@bootlin.com,
 	richard@nod.at,
 	vigneshr@ti.com,
-	wens@csie.org,
-	jernej.skrabec@gmail.com,
-	samuel@sholland.org,
-	ruanjinjie@huawei.com,
-	u.kleine-koenig@baylibre.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
+	konradybcio@kernel.org,
+	agross@kernel.org,
+	Kaushal Kumar <quic_kaushalk@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: nand: sunxi: Add randomizer configuration before randomizer enable
-Date: Mon, 19 May 2025 23:42:24 +0800
-Message-ID: <20250519154225.2928-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	linux-mtd@lists.infradead.org
+Subject: Re: (subset) [PATCH v2 0/5] Enable QPIC BAM and QPIC NAND support for SDX75
+Date: Mon, 19 May 2025 21:14:51 -0500
+Message-ID: <174770727729.36693.10794691902044161695.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250415072756.20046-1-quic_kaushalk@quicinc.com>
+References: <20250415072756.20046-1-quic_kaushalk@quicinc.com>
 MIME-Version: 1.0
-X-CM-TRANSID: qwCowAAHcL96UStoD9NmAQ--.49806S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7XF4rGr1DtFy8GF4xtFb_yoWDtFc_W3
-	y2v34kKr1Uur93JF1fuF4xCry7tw4UWr4vqwnIqrW3A3W3XryIq3s0vrn7AF1kXF18uFy5
-	Aaykt3WxA34jqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbf8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCY02Avz4vE14v_XrWl42xK82IYc2Ij64vIr4
-	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
-	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14
-	v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbrgA7UUUUU==
-X-Originating-IP: [124.16.141.245]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgoHA2grSSUO0QABs5
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250519_084258_107856_B5B83593 
-X-CRM114-Status: UNSURE (   7.24  )
+X-CRM114-CacheID: sfid-20250519_191525_904411_FF8199D4 
+X-CRM114-Status: UNSURE (   8.45  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -88,34 +86,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In sunxi_nfc_hw_ecc_read_chunk(), the sunxi_nfc_randomizer_enable() is
-called without the config of randomizer. A proper implementation can be
-found in sunxi_nfc_hw_ecc_read_chunks_dma().
 
-Add sunxi_nfc_randomizer_config() before the start of randomization.
+On Tue, 15 Apr 2025 12:57:51 +0530, Kaushal Kumar wrote:
+> This series adds and enables devicetree nodes for QPIC BAM and QPIC NAND
+> for Qualcomm SDX75 platform.
+> 
+> This patch series depends on the below patches:
+> https://lore.kernel.org/linux-spi/20250310120906.1577292-5-quic_mdalam@quicinc.com/T/
+> 
 
-Fixes: 4be4e03efc7f ("mtd: nand: sunxi: add randomizer support")
-Cc: stable@vger.kernel.org # v4.6
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- drivers/mtd/nand/raw/sunxi_nand.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied, thanks!
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index fab371e3e9b7..9179719f639e 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -817,6 +817,7 @@ static int sunxi_nfc_hw_ecc_read_chunk(struct nand_chip *nand,
- 	if (ret)
- 		return ret;
- 
-+	sunxi_nfc_randomizer_config(nand, page, false);
- 	sunxi_nfc_randomizer_enable(nand);
- 	writel(NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ECC_OP,
- 	       nfc->regs + NFC_REG_CMD);
+[3/5] arm64: dts: qcom: sdx75: Add QPIC BAM support
+      commit: 5cf0ebd4800dc5b67a332c9f56d20882c41d6099
+[4/5] arm64: dts: qcom: sdx75: Add QPIC NAND support
+      commit: c25dcb4d42a9506d5270179bb32cf538a1a28423
+[5/5] arm64: dts: qcom: sdx75-idp: Enable QPIC BAM & QPIC NAND support
+      commit: d838ac6903eede0c2840bebd8788afa95a5aa0fb
+
+Best regards,
 -- 
-2.42.0.windows.2
-
+Bjorn Andersson <andersson@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
