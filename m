@@ -4,59 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C73D4C3ABDD
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 May 2025 12:18:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B99CBC3ABDD
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 May 2025 16:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YpuHOuOirZheyMke/ZCCY2SAQGlhMh8mZo4SfXvcWaI=; b=BL8gKg+WGMr197
-	KquRtwHBgVwDc9qirWBMnYI3U3xk/D1AIgYhfRmJQBmx1JTXB8kXen/O507UIYGYvkZeyUVJmEIcs
-	GjuEuS/rHQmrCMSA5qCRDSxjFanBOdbhjwCGyowZsTGxFmuYbwAdpGeuqIEO/wgQ8oXSmPViNqV8B
-	bRsH9vhobAlrX2wBPXqevEPcPt4GccEe+txoN+EBcj9m9zhctPcHHsrYg+kMO/JDW9AaLyN2Nt2n6
-	RTrs/rAaV59DpDxa85o1L5gD++ksvg3RxCGyIuVtR1jVfnfWrGTuE6EiigVHRADm7hYxrv7lNQn5p
-	K6awdcCiCb1aEwSnpoYA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bQzZ0Ui0W52LThILB7lPAX0l5FhSA6vgorcjnj9T/hg=; b=kNAi0ExR6bVOGn
+	nDnW9n7v29ADSOoz5eSpdAV7fWjpOD1nCyvMCQDLoNz1JWKbrgYDWKWZupTPe8/YXHpkyqB9Pqz8y
+	ZI7v3l66lFUbjsBMZhFQqpZlx3qczyL9+QIj78O401vHUCNLgnyyTjNdEDpoXdNsKsXpcLcPYFUTV
+	juw+GCT+9lnxDm12W8ZpQo1h9YYW//tzRy8BQqkaeg4A96sRKm+hOrO5mJcHxhL0kY7cgzbYkemE0
+	4TcEX1oNz0IB38H6pCR5jV25PPnSRQAoe5spv0s3BsV21zW8n+jbgY11D32QeF38/T1d9TwMQ5Vub
+	gpOYBgiDtNvFj6kdzAGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHLvV-0000000Cq2Y-0OJ5;
-	Tue, 20 May 2025 12:18:33 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1uHPPD-0000000DR7l-3pR8;
+	Tue, 20 May 2025 16:01:27 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHLvS-0000000Cq1O-0e5V
-	for linux-mtd@lists.infradead.org;
-	Tue, 20 May 2025 12:18:31 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 07AD85C495B;
-	Tue, 20 May 2025 12:16:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE557C4CEEA;
-	Tue, 20 May 2025 12:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747743508;
-	bh=PRiFo9KWy8TRBO8vxhgfcI5cP/HxfY4NvAcMmV7/m3Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=A7PUiSRvwgYxJWbbDLrYlF+9qpGrwxiUYRbN9zcfnh8z9rJWVy7pZjWEeirAaCSqv
-	 dcrSj3Of9z82304KsusGWEHA+ugnvaStOTbx7PZwMHtWJLv1HTjbYm9U/ulaJ1A+UO
-	 b+yiXV4l8dvAgX8sxDJQgdkEDCqCLpXAPzRfxZHTdT82KrXi0CnwhYFWsG79jmB+j6
-	 z6Bt3H4Z/EdE0yWuNb9EEJvyhIOdoGzomKFDavSoQskQ4A9KKYpXagSWhB4ve+wTQ4
-	 hPGvjBpku6DycyVU4anf77ThJwyRPZixk0c28X6kAuJhVsWJLhbOvcGoI4jkR2ocES
-	 Yah/EFbs1nvxw==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [GIT PULL] mtd: spi-nor: changes for v6.16
-Date: Tue, 20 May 2025 14:18:26 +0200
-Message-ID: <mafs0ldqrtqzx.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	id 1uHOzk-0000000DMsY-37uM;
+	Tue, 20 May 2025 15:35:10 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DB11A432FA;
+	Tue, 20 May 2025 15:35:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1747755303;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xtli7qrKdDqJDEKpaUtEPgLih8RTCPqJd1HrwnUKnAs=;
+	b=XhrodVPKe2Da9aIjEgLFROZaIR+dwQscLhUZdqThMEllrC+kwxvD/y1Ytxkw22DIKBtpTz
+	tcwo6aIfjMlt3QLRhhq6b3/9Ywaw5w4uP2D1XY2coO245jfBFW8oAWFNhgZppstOgIDOEj
+	CXqtM1lv5TzvzC9XHKLtzGR0/mo3YgITipMR8XBuFzEg5yS4R+zMoTLS/Rx6N23vGFUklY
+	UzUnfAbv49s8IJwrPyRh2QusLZaoJC+y0JpahMcQyvrh1RZ/xYEgcVTvZmZTpYbTCIxU/p
+	fvEGxxolSE4tbmX1icEJcTcnjhjv7SHw0CsGnePan6FDrAglZREa0z3B6Rt1Uw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: richard@nod.at, vigneshr@ti.com, wens@csie.org, 
+ jernej.skrabec@gmail.com, samuel@sholland.org, ruanjinjie@huawei.com, 
+ u.kleine-koenig@baylibre.com, Wentao Liang <vulab@iscas.ac.cn>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org
+In-Reply-To: <20250519154225.2928-1-vulab@iscas.ac.cn>
+References: <20250519154225.2928-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH] mtd: nand: sunxi: Add randomizer configuration before
+ randomizer enable
+Message-Id: <174775530075.689292.3024700439135563644.b4-ty@bootlin.com>
+Date: Tue, 20 May 2025 17:35:00 +0200
 MIME-Version: 1.0
+X-Mailer: b4 0.15-dev
+X-GND-State: clean
+X-GND-Score: 0
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdehkeculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucenucfjughrpefhvfevjghfuffkffggtgfgofesthekredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeehieffhfeulefgtdeltefgleevgffgheduledvheduudelgfehlefgheeivedvgeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrdegvddrgeeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedufedprhgtphhtthhopehurdhklhgvihhnvgdqkhhovghnihhgsegsrgihlhhisghrvgdrtghomhdprhgtphhtthhopehjvghrnhgvjhdrshhkrhgrsggvtgesghhmrghilhdrtghomhdprhgtphhtthhopehsthgrsghlvgesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehlihhnuhigqdgrrhhmqdhkvghrnhgvlheslhhishhtshdrihhnf
+ hhrrgguvggrugdrohhrghdprhgtphhtthhopeifvghnshestghsihgvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqshhunhigiheslhhishhtshdrlhhinhhugidruggvvh
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250520_051830_234595_A1B038A2 
-X-CRM114-Status: UNSURE (   7.52  )
+X-CRM114-CacheID: sfid-20250520_083508_913986_D7031CCA 
+X-CRM114-Status: UNSURE (   6.46  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,48 +75,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-Here are the SPI NOR changes for v6.16.
-
-Regards,
-Pratyush Yadav
-
-The following changes since commit 0af2f6be1b4281385b618cb86ad946eded089ac8:
-
-  Linux 6.15-rc1 (2025-04-06 13:11:33 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-6.16
-
-for you to fetch changes up to 594c8df92b946c851bb767455f32f9e762d99810:
-
-  mtd: spi-nor: macronix: Add fixups for MX25L3255E (2025-04-08 15:04:54 +0000)
-
-----------------------------------------------------------------
-SPI NOR changes for 6.16
-
-Notable changes:
-
-- Cleanup some Macronix flash entries.
-
-- Add SFDP table fixups for Macronix MX25L3255E.
-
-----------------------------------------------------------------
-Cheng Ming Lin (3):
-      mtd: spi-nor: macronix: Drop the redundant flash info fields
-      mtd: spi-nor: macronix: Remove duplicate flash info entries
-      mtd: spi-nor: macronix: Add fixups for MX25L3255E
-
- drivers/mtd/spi-nor/macronix.c | 73 ++++++++++++++++++++++--------------------
- 1 file changed, 39 insertions(+), 34 deletions(-)
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAxOSBNYXkgMjAyNSAyMzo0MjoyNCArMDgwMCwgV2VudGFvIExpYW5nIHdyb3RlOgo+
+IEluIHN1bnhpX25mY19od19lY2NfcmVhZF9jaHVuaygpLCB0aGUgc3VueGlfbmZjX3JhbmRvbWl6
+ZXJfZW5hYmxlKCkgaXMKPiBjYWxsZWQgd2l0aG91dCB0aGUgY29uZmlnIG9mIHJhbmRvbWl6ZXIu
+IEEgcHJvcGVyIGltcGxlbWVudGF0aW9uIGNhbiBiZQo+IGZvdW5kIGluIHN1bnhpX25mY19od19l
+Y2NfcmVhZF9jaHVua3NfZG1hKCkuCj4gCj4gQWRkIHN1bnhpX25mY19yYW5kb21pemVyX2NvbmZp
+ZygpIGJlZm9yZSB0aGUgc3RhcnQgb2YgcmFuZG9taXphdGlvbi4KPiAKPiAKPiBbLi4uXQoKQXBw
+bGllZCB0byBuYW5kL25leHQsIHRoYW5rcyEKClsxLzFdIG10ZDogbmFuZDogc3VueGk6IEFkZCBy
+YW5kb21pemVyIGNvbmZpZ3VyYXRpb24gYmVmb3JlIHJhbmRvbWl6ZXIgZW5hYmxlCiAgICAgIGNv
+bW1pdDogNGE1YTk5YmM3OWNkYzRiZTYzOTMzNjUzNjgyYjAyNjFhNjdhMGM5ZgoKUGF0Y2hlKHMp
+IHNob3VsZCBiZSBhdmFpbGFibGUgb24gbXRkL2xpbnV4LmdpdCBhbmQgd2lsbCBiZQpwYXJ0IG9m
+IHRoZSBuZXh0IFBSIChwcm92aWRlZCB0aGF0IG5vIHJvYm90IGNvbXBsYWlucyBieSB0aGVuKS4K
+CktpbmQgcmVnYXJkcywKTWlxdcOobAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
