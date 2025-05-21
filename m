@@ -4,91 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BDC1C54E71
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 May 2025 19:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28F70C2D0CD
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 May 2025 05:38:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=uxwrBjYzY4YSCTzviNgoHE0Q9jhZm/xQ6DdvuVH49so=; b=l8wuevRdqmmGl0
-	fB3/dTZaYVbti2TXTpizezemQ46WNkCCq/6jjTWE+ju3NBi36TTKerWVvSMkLvaZkFUtoKEAHL/oz
-	54w+eQoe8Ta87EObIcoRsQ7BfwiF+vwQY/9wsxwO/UPLh5ryhZv+liuBS8+nzX3EK/KVsOQSvbwm2
-	iiBNK9jHrUrQiANpJWJkNGWAn8ZbM5SIJ6hSZsdUPfLKDVdxY89FPUoKbN4XuMFo28fepnNnqombL
-	Jew2z0jH2Mb6cuG/EbUiWfRwNFaZPi76gfL9Jbpt5AYiyXAHWd0D0jb2/SOl3cwm/JFX63eAjt8px
-	ZYjpAKBufE+HV7Wofxvw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Zblq17/JiP04Ys/YZYwCvdl62KpGPcSOWh70oTItnW8=; b=FU+Cj+p3FHt6fy
+	a7xHI+xGtbMpenw0vmrjCT01wAYhxPRJNLnUyonKGQJ6BhG7s435PLcCiMtmwxkJ5SROg6iyUPoCo
+	M+UvrgrDK72XL/4Qpfr26ich7vuwUsNbqTv11rAWZb67ABmq6SJ+iBh5vyExFuRiUgWCt7uLyKzKR
+	glu0DsOLZjgQeWDcDCE6tC4/1444v0M06rqEPUOFH1X48fbFOYigTIICrKwXsVISauhHxHLAG9cKv
+	Oz1+bQK/uKS5LALPhR7vtoH2axwXlYvzARBw3ENwCRHEZsDtfZ5AXplXVIG/jw1GCKx9xlw3Q53LR
+	x+P1Y9b8BgqzK83HZMNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHSTC-0000000DuQ5-3Nir;
-	Tue, 20 May 2025 19:17:46 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1uHc9s-0000000ErUE-0SEb;
+	Wed, 21 May 2025 05:38:28 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHSKn-0000000DtVR-0dgL
+	id 1uHc9p-0000000ErTp-0DXL
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 May 2025 19:09:06 +0000
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3a375888197so1288274f8f.0
-        for <linux-mtd@lists.infradead.org>; Tue, 20 May 2025 12:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747768143; x=1748372943; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e2K6MoWsuqULzUu6YkUYRAAATfxs31Smc/0Z0m7qtI8=;
-        b=YeSP+/+wUM+Vs1tl+ZaKVe0ZdgwkjF2BT7auOFGAi0QDYBCqKhriZXbEM5q04XSCjX
-         cpR279uRQPzWoOnQvkugNuExxYJZXDU9P1slLbBCes8rf9FIXEdSFK3oeHxSpmee+xkz
-         n86gvJokUJ0HmNX8Beeq5e0iRXS5uPNOsBET2NUpyZgR7qvglFosjtuS4bRNKiJFLm69
-         QqdVhmfn3MsqYDIwH/nGCQDQevXGIdxbdYPJ1B0cJI/EnvJRMkLd+7TpkHFGnF80j9l1
-         5IzMMVGed5F2aZn5JnFXfHT1pP6nQKhgwCuH/QQ4P8RXiqMpSGom4SNPzIbaUHLwhTAs
-         NlZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747768143; x=1748372943;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e2K6MoWsuqULzUu6YkUYRAAATfxs31Smc/0Z0m7qtI8=;
-        b=b9MhWS2Kxsf8HKvSbYeIiaxyuvGJLJpZ1CofvitPsPOhBeNxWDV+JKM7btDB71lKS5
-         euUHAP4Exd4uoxK4K0Wc5ZP/FK6AES1wKBA6/P4WVuDwmAVvPIjdgK5LoRoSVW3zirgH
-         Uh1PCH2e74S2fGPqg2EZC3E++GwDOZfddn7tYlBKjGLEJOkDBhHbj1uDgVqz6RSWpA85
-         pSz+cUZq8lKRrwsSLfyAgZkQLQWCqPnQ/9uao9AX7DXq3Loy/4Vyp0mn+ekHQ/n7/PO8
-         SqR8n00u5ZBapbbdVRrnXZFRraOfxaW9oaeVj7g0T1EnbNmxKciUIUTKy5RfqiyKot2l
-         7s4w==
-X-Forwarded-Encrypted: i=1; AJvYcCUf4qNuOOTd7jP5Kau6NE9uOdus1MG3O7+Pp6hCOTOqAkXnfmDvTM+MCBdrDIS8HasZ9eajNe986hs=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzKXLusMX8/Gbc4MUv759HZjH4FiRFsbM3qfnquwhKU1j9rN5hL
-	1ZL2xV2+4LlRXTTCdqgEBrAZnXgJqLZsQoGODhPG3TMYs5i+v1ejG8GL
-X-Gm-Gg: ASbGnctg3Rq4y3QOP++0O7HcXnzEWeTSSe/kjrTxr7NlZIxZcRg1JWhTNIpeJj1+fXS
-	EpkKbv1GTh0RaJUnyUcN8wTAhu5vwU6x9LIEHg06Ff26SrCqlXwAV0IggtG+5Zayh+IhgIk+kTx
-	6XYJaDzxD51F1u6ctfZbcIv5r8N9kXRC56Hv8gFDcdLTrnZbL1DhH8bptpis2/5+URFvn2bSZqr
-	WetgZg9x0sUg+UDZf6NFTd4+KX2/vlzF8TG3QEO+mkGjq3JLCgc+5N/+GdVX0hWc6fU6wa559Nb
-	On5FdGBTrgU+j4PjwF4HDm9gBh6Z3q/LpQZtR8hXr/OpfwKje0JKThttTuiFHLdeGJtDPi4ZUW9
-	x1VMt
-X-Google-Smtp-Source: AGHT+IH3V6A6ySleXz4Mm/IFzFSTFv6ap6SC5pohNVPeEh9z8mi2hHYoVR4dCF/KVQ7Uv17+2clYrg==
-X-Received: by 2002:a05:6000:1449:b0:3a3:7638:d754 with SMTP id ffacd0b85a97d-3a37638d82bmr5517381f8f.21.1747768142935;
-        Tue, 20 May 2025 12:09:02 -0700 (PDT)
-Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-447f6b29619sm44130955e9.7.2025.05.20.12.09.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 May 2025 12:09:02 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Tue, 20 May 2025 21:08:56 +0200
-Subject: [PATCH next] spi: spi-qpic-snand: remove superfluous parameters of
- qcom_spi_check_error()
+	Wed, 21 May 2025 05:38:26 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54L5JAia019165;
+	Wed, 21 May 2025 05:38:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	1rIXHTD4csw6kw4kJQD3SUf479s6VR/JxiTwReVlOHY=; b=WoGqUnhTryWGHLFf
+	7RC/X9H8XXL09zf+tY5lcWWfS5qEo2Jcj0fSPz+wbzryEc4yflTWeGXqCg5omNfm
+	B4S5Gni0I2vy4GtnaQU9n7+URF+Ae9Rep5/SP6aXsLKqc/QF+TpOGXs9leyuBY40
+	YfvDOTCPg5RQk8Vy9/HQMfZ4NyyLEC96A+2C+QyTLO2HNmkU5l1PrxRCU4Kz/M4M
+	dgkWK/G+70BIWq6zjMvD7/ybCRla3HLM2YDRbQFW6Ud4JAssdU0aw7A8/Bgz0B25
+	CZizA6dq4OD7RtZ5nposlOGOmi2pJVb/7JHfc3289JccKt2BMTjQbpba5ko40QNd
+	+i2WuQ==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46rwh59mj6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 May 2025 05:38:17 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 54L5cGTs020104
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 May 2025 05:38:16 GMT
+Received: from [10.50.1.151] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 20 May
+ 2025 22:38:13 -0700
+Message-ID: <e9f460c3-a575-1014-cca7-27f1d79024e2@quicinc.com>
+Date: Wed, 21 May 2025 11:08:02 +0530
 MIME-Version: 1.0
-Message-Id: <20250520-qpic-snand-superfluous-params-v1-1-86dd4963e90f@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAEfTLGgC/x3MywrCQAwF0F8pWRvo9OHrV8RFaG81oOk4caRQ+
- u8dXJ7NWcmRFE7XaqWEn7rOVhAOFQ1PsQdYx2Jq6qav+9DyJ+rAbmIje45I0yvP2TlKkrczzp3
- giBancKFyxIRJl/9/I8Pypfu27W52QoF1AAAA
-X-Change-ID: 20250513-qpic-snand-superfluous-params-e84ae6e3e719
-To: Mark Brown <broonie@kernel.org>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.14.2
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH next 2/2] spi: spi-qpic-snand: add support for 8 bits ECC
+ strength
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Gabor Juhos <j4g8y7@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Richard Weinberger
+	<richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "Varadarajan
+ Narayanan" <quic_varada@quicinc.com>,
+        Sricharan Ramabadhran
+	<quic_srichara@quicinc.com>,
+        <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20250502-qpic-snand-8bit-ecc-v1-0-95f3cd08bbc5@gmail.com>
+ <20250502-qpic-snand-8bit-ecc-v1-2-95f3cd08bbc5@gmail.com>
+ <8aa3d4da-da3e-2af4-e0f9-cd56d6259d8f@quicinc.com>
+ <c1729d39-9f7f-4c6d-b8a4-72dfee4bfca5@gmail.com> <878qn2nsa0.fsf@bootlin.com>
+ <16195524-1f31-4968-a3fd-f3d24f1c4223@gmail.com> <87msbhezjf.fsf@bootlin.com>
+ <007881c9-e03c-1473-d8eb-53fbad8c6a8e@quicinc.com>
+ <87frh4ej87.fsf@bootlin.com>
+Content-Language: en-US
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <87frh4ej87.fsf@bootlin.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIxMDA1MyBTYWx0ZWRfX/2G/PLeDfvwU
+ AKDm/VEWgRmm5Je2fSjPQEqzqALTfgMTpAntgbAb9Qil9EbPOZPB47MqPUfSBwIyjOw402nNeoC
+ JN5/jJIMo0OI4Y2R5CS8FDIgk4pOf45DCzfaPbByPMQGQVKKaOte9lq8CuvaycC3XH0h7VFXMAX
+ oKXiGtDnVtRGenKiI9wj1RyO7kOMfdQ7kEPsV89z2kmWv0upEbiNXjYoQty9iJeTgQVq6+J2Ggl
+ w5M6FcozbEN8U1gEs7stzj3axjfhzbKd2E2Z51tIVtsIpWFy8r4IJErsCEowo5+XVp141BfEYvJ
+ WaH0pWvY2nO70BQOEYEHfS0pszW30XjFQFh3M5GSs4DT6KbPJk1l0/tteABD1GCLXTDDnOwEHKZ
+ XqJXCd8Z1RWT3zZ2Hf7YN4LupesNQC+y7VvsPNFvdIbT6SVaDA5C3naxxzqZXa2YIIDlL4MD
+X-Authority-Analysis: v=2.4 cv=XeWJzJ55 c=1 sm=1 tr=0 ts=682d66c9 cx=c_pps
+ a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+ a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10
+ a=1P9lDc0nu8lX0kGsQioA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: lX6Lf87Bh5Z_R65mhOqeVWWz-ecQjf5h
+X-Proofpoint-ORIG-GUID: lX6Lf87Bh5Z_R65mhOqeVWWz-ecQjf5h
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-21_01,2025-05-20_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 clxscore=1015 mlxlogscore=831 mlxscore=0 bulkscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505210053
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250520_120905_197437_A13CD5CE 
-X-CRM114-Status: GOOD (  17.62  )
+X-CRM114-CacheID: sfid-20250520_223825_113050_1652979E 
+X-CRM114-Status: GOOD (  13.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,134 +122,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The qcom_spi_check_error() function determines the errors of a previous
-page read operation solely by using the cached register values in the
-register read buffer. The data pointed by the 'data_buf' and the 'oob_buf'
-parameters are not used for that at all.
+Hi,
 
-Remove the superfluous parameters of the function along with the related
-local variables to simplify the code. Also, remove the variables from the
-caller functions which became unused due to the change.
+On 5/16/2025 7:44 PM, Miquel Raynal wrote:
+> 
+>>>> Interestingly enough, it reports the correct number of bit errors now.
+>>>> For me it seems, that the hardware reports the number of the corrected
+>>>> *bytes* instead of the corrected *bits*.
+>>> I doubt that, nobody counts bytes of errors.
+>>> You results are surprising. I initially though in favour of a software
+>>> bug, but then it looks even weirder than that. Alam?
+>> I have checked with HW team , the QPIC ECC HW engine reports the bit
+>> error byte wise not bit wise.
+>>
+>> e.g
+>>      Byte0 --> 2-bitflips --> QPIC ECC counts 1 only
+>>      Byte1 --> 3-bitflips --> QPIC ECC counts 1 only
+>>      Byte2 --> 1-bitflips --> QPIC ECC counts 1 only
+>>      Byte3 --> 4-bitflips --> QPIC ECC counts 1 only (in 8-bit ecc)
+>>      Byte4 --> 6-bitflips --> QPIC ECC counts 1 only (in 8-bit ecc)
+>>
+>> Hope this can clearify the things now.
+> 
+> o_O ????
+> 
+> How is that even useful? This basically means UBI will never refresh the
+> data because we will constantly underestimate the number of bitflips! We
+> need to know the actual number, this averaging does not make any sense
+> for Linux. Is there another way to get the raw number of bitflips?
+I have re-checked with HW team, unfortunately currently there is no 
+register fields available to get the raw number of bit flips. But
+for newer chipset they have fixed this issue. But currently the QPIC
+QPIC_NANDC_BUFFER_STATUS | 0x79B0018 register bit-8 will get set if 
+there is uncorrectable bitflips happened.
 
-Note:
-Althought the similar parse_read_errors() function in the 'qcom_nand'
-driver has the same parameters, but that function passes down the
-pointers to check_for_erased_page() at the end of the function.
+For 4-bit ECC if 5-bit raw bit flips happened then bit-8 will get set in
+QPIC_NANDC_BUFFER_STATUS.
 
-It is not clear, that a similar call is missing here, or the superfluous
-parameters are simply leftovers of the development process. Nevertheless,
-if additional code is needed, the parameters can be added back later.
+similar for 8-bit ECC if 9-bit raw bit flips happened then bit-8 will 
+get set in QPIC_NANDC_BUFFER_STATUS.
 
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
- drivers/spi/spi-qpic-snand.c | 30 +++++-------------------------
- 1 file changed, 5 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 7207bbb57802ce53dfab4d9689113e7f9ba8f131..b5960df106ffa2eea10890901828b6a730750588 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -587,7 +587,7 @@ static int qcom_spi_read_last_cw(struct qcom_nand_controller *snandc,
- 	return ret;
- }
- 
--static int qcom_spi_check_error(struct qcom_nand_controller *snandc, u8 *data_buf, u8 *oob_buf)
-+static int qcom_spi_check_error(struct qcom_nand_controller *snandc)
- {
- 	struct snandc_read_status *buf;
- 	struct qpic_ecc *ecc_cfg = snandc->qspi->ecc;
-@@ -604,15 +604,6 @@ static int qcom_spi_check_error(struct qcom_nand_controller *snandc, u8 *data_bu
- 
- 	for (i = 0; i < num_cw; i++, buf++) {
- 		u32 flash, buffer, erased_cw;
--		int data_len, oob_len;
--
--		if (i == (num_cw - 1)) {
--			data_len = NANDC_STEP_SIZE - ((num_cw - 1) << 2);
--			oob_len = num_cw << 2;
--		} else {
--			data_len = ecc_cfg->cw_data;
--			oob_len = 0;
--		}
- 
- 		flash = le32_to_cpu(buf->snandc_flash);
- 		buffer = le32_to_cpu(buf->snandc_buffer);
-@@ -636,11 +627,6 @@ static int qcom_spi_check_error(struct qcom_nand_controller *snandc, u8 *data_bu
- 			snandc->qspi->ecc_stats.corrected += stat;
- 			max_bitflips = max(max_bitflips, stat);
- 		}
--
--		if (data_buf)
--			data_buf += data_len;
--		if (oob_buf)
--			oob_buf += oob_len + ecc_cfg->bytes;
- 	}
- 
- 	if (flash_op_err)
-@@ -794,15 +780,12 @@ static int qcom_spi_read_page_ecc(struct qcom_nand_controller *snandc,
- 				  const struct spi_mem_op *op)
- {
- 	struct qpic_ecc *ecc_cfg = snandc->qspi->ecc;
--	u8 *data_buf = NULL, *data_buf_start, *oob_buf = NULL, *oob_buf_start;
-+	u8 *data_buf = NULL, *oob_buf = NULL;
- 	int ret, i;
- 	u32 cfg0, cfg1, ecc_bch_cfg, num_cw = snandc->qspi->num_cw;
- 
- 	data_buf = op->data.buf.in;
--	data_buf_start = data_buf;
--
- 	oob_buf = snandc->qspi->oob_buf;
--	oob_buf_start = oob_buf;
- 
- 	snandc->buf_count = 0;
- 	snandc->buf_start = 0;
-@@ -883,21 +866,18 @@ static int qcom_spi_read_page_ecc(struct qcom_nand_controller *snandc,
- 		return ret;
- 	}
- 
--	return qcom_spi_check_error(snandc, data_buf_start, oob_buf_start);
-+	return qcom_spi_check_error(snandc);
- }
- 
- static int qcom_spi_read_page_oob(struct qcom_nand_controller *snandc,
- 				  const struct spi_mem_op *op)
- {
- 	struct qpic_ecc *ecc_cfg = snandc->qspi->ecc;
--	u8 *data_buf = NULL, *data_buf_start, *oob_buf = NULL, *oob_buf_start;
-+	u8 *oob_buf = NULL;
- 	int ret, i;
- 	u32 cfg0, cfg1, ecc_bch_cfg, num_cw = snandc->qspi->num_cw;
- 
- 	oob_buf = op->data.buf.in;
--	oob_buf_start = oob_buf;
--
--	data_buf_start = data_buf;
- 
- 	snandc->buf_count = 0;
- 	snandc->buf_start = 0;
-@@ -965,7 +945,7 @@ static int qcom_spi_read_page_oob(struct qcom_nand_controller *snandc,
- 		return ret;
- 	}
- 
--	return qcom_spi_check_error(snandc, data_buf_start, oob_buf_start);
-+	return qcom_spi_check_error(snandc);
- }
- 
- static int qcom_spi_read_page(struct qcom_nand_controller *snandc,
-
----
-base-commit: 5b31d2d81a4bcdd9915e7b152fb3cdc3dc7f4ecb
-change-id: 20250513-qpic-snand-superfluous-params-e84ae6e3e719
-
-Best regards,
--- 
-Gabor Juhos <j4g8y7@gmail.com>
-
+Thanks,
+Alam.
 
 ______________________________________________________
 Linux MTD discussion mailing list
