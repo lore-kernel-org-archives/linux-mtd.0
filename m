@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0199C54E65
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 May 2025 20:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBF6AC54E90
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 May 2025 21:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=924sEPLWUrUkZZSyNH2CXBmHKUhxRcDku+bapuWdppo=; b=sZqYsHX3z8hnkS
-	MTt9BKnbyhTIoI/Fhfe4QK90QsC2de/OTgUA5mqfgrDFFQLd0or6OxVKiv0AdhBwWCvg2NnZFP9EZ
-	Z2KrhLfdo1eRV1iv7Qve0NBYj7kgSNXFMbxQ3Jb3scWGwknIj5ABGP4gEkNzYAiKRhdM7boTpdZBn
-	EbtPyRQdJZYuQ7GjS3m2bSKM7LqMrUSg8FyU+MQoxp0a2pY2Rg7TlfpAzRo+HqM8aSbM2Q5vzd2aQ
-	p9I0OIWiDNhMOupuZkirc1ZkEDHTs2xOQJB06wHIuZxH/7G7YoljHSGtBScGk0Cm5uLKizxlPvyoG
-	RSwUcxss9zlUebLM8mdg==;
+	List-Owner; bh=6eN41X8NpV8mOq4is+9clDNvYZtAKBrL2XsKT5AmkOQ=; b=MqAfl00cucjPii
+	q1450OYHBu7P/p5Bkn2ftx0no9x10Eb8RfzQ8/qC3CeirQgU3fbbFZjUrgkYXmOJ3p+RTBvUlIz99
+	7f+rursIf5SX2/hjzcwkLbg5Xh970idffIj9p6CtvgA1KItEqtHVPkTO+cfIZGaZsH2nJQvFb8XJA
+	AkI8QIK20tU/+v2G/1+Vu/NzxjFDa11AJ88Tc82JG7IJeRvi4MsNxukqO+1ClhwKrbeKDTKhJ0kfd
+	6B4STwI56xWkl9FxZXXkCyZjQeIHcXtr0fySBUJqAKBYFUrveoU3e8uYKf+uJOgG1MsblHXP80HCh
+	he3OfO0SDRm8jP7ORiVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHq1P-0000000GmgI-0k2B;
-	Wed, 21 May 2025 20:26:39 +0000
-Received: from mgamail.intel.com ([198.175.65.21])
+	id 1uHr8B-0000000GsBR-0l0X;
+	Wed, 21 May 2025 21:37:43 +0000
+Received: from mgamail.intel.com ([198.175.65.17])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHq1L-0000000GmfN-4Br4
+	id 1uHr7u-0000000Gs6b-3GMc
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 May 2025 20:26:37 +0000
+	Wed, 21 May 2025 21:37:27 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747859196; x=1779395196;
+  t=1747863447; x=1779399447;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=aLtQzNGu5/O0fU0Cv03GWH9zFR3LL3UOULcLPG921iI=;
-  b=EX7E3lMxtSy12LxNi3nfG4JSUyAmqQLaQ1M1anZ/SMm+Bz91m1X+eRGd
-   N2jz0kP0ce3Jtvoggd2L27UhABJemPPFmObD9x7k4VKKeatD4npSvwsnN
-   TegPAbCrM4dsPdUr/LXTKdXGcOmLx/fzxSRYzjYUrhrg8YWEDSaGPNF1t
-   un0X5YIl25rkisCsYV1TGU3WoSBSpuyB2Q/lBaHd7CFQBwYplrLYfwTdm
-   lT35jkxvxyZLmIOg3noxkcJQnH4ISsr5htlR8pb3mOMZZ7oNsgi4qyR1j
-   o8vt+/2nyIn9bSJvSu4kmsnkpalV7B6DZS88BPwsybPKnZ8fVDPJ0j+lJ
+  bh=/TRHgk4WgbfqINcXZ2LzA/XzOmn7LII0S0I9TtZCzhk=;
+  b=A8IDtbSqQFFsfRg3cex80kESaGVb5HDfibyHNT0+TTiqyoGhmXJ035uX
+   9MTvYg/SLayloPHYKx+85laF3UpO1ftHD37fh2/AV3/ZRFZMX1teIzsOP
+   2aXYodFmjgulW6YndDavCNCwa9uebMQdi+yiqJeO4dEyilnhKFyJZovwz
+   18mVQ45q5pJqNNj0zw56hCzq1RW+y9nFmWYwTtS8Y99C9kOxMZr+/KpcM
+   DHGC8d54O/YqtN+WDp0jXmBszyOz/mQoN86eV20j/40zGEVu664FAZpxz
+   NMjimuetj1eQYeEsYYLD1dClmp4O+p+b1hZw+xuXnBvFiPBPSTJvdFXPi
    A==;
-X-CSE-ConnectionGUID: ReER7U8FRISX7opIbN9ZHA==
-X-CSE-MsgGUID: gkrypWhFTlaDyD7s1Zl8mQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="49762881"
+X-CSE-ConnectionGUID: ALXILcemRGiChC+mSL9fVA==
+X-CSE-MsgGUID: iIFebL1rTD6h9qcxSYsW3g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="49851099"
 X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
-   d="scan'208";a="49762881"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 13:26:35 -0700
-X-CSE-ConnectionGUID: qZCX3NfvRmW5MjpehmDrkQ==
-X-CSE-MsgGUID: D1ORkfQ1S9OCFvbKBj7yjw==
+   d="scan'208";a="49851099"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 14:37:26 -0700
+X-CSE-ConnectionGUID: yOQi57DvSxaVw+HjU/f7UA==
+X-CSE-MsgGUID: hTBnemMxSU2khYiz+9BJWA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
-   d="scan'208";a="140088834"
+   d="scan'208";a="144987316"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 13:26:29 -0700
-Date: Wed, 21 May 2025 23:26:24 +0300
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 14:37:21 -0700
+Date: Thu, 22 May 2025 00:37:17 +0300
 From: Raag Jadav <raag.jadav@intel.com>
 To: Alexander Usyskin <alexander.usyskin@intel.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -77,16 +77,16 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
 	Tomas Winkler <tomasw@gmail.com>,
 	Vitaly Lubart <lubvital@gmail.com>
-Subject: Re: [PATCH v10 03/10] mtd: intel-dg: implement access functions
-Message-ID: <aC428Ak5j_x6Cr2o@black.fi.intel.com>
+Subject: Re: [PATCH v10 04/10] mtd: intel-dg: register with mtd
+Message-ID: <aC5HjQKRf_4Ewous@black.fi.intel.com>
 References: <20250515133345.2805031-1-alexander.usyskin@intel.com>
- <20250515133345.2805031-4-alexander.usyskin@intel.com>
+ <20250515133345.2805031-5-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250515133345.2805031-4-alexander.usyskin@intel.com>
+In-Reply-To: <20250515133345.2805031-5-alexander.usyskin@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250521_132636_090798_40C6AF3E 
-X-CRM114-Status: GOOD (  14.09  )
+X-CRM114-CacheID: sfid-20250521_143726_861950_4426A76D 
+X-CRM114-Status: GOOD (  16.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,73 +103,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 15, 2025 at 04:33:38PM +0300, Alexander Usyskin wrote:
-> Implement read(), erase() and write() functions.
+On Thu, May 15, 2025 at 04:33:39PM +0300, Alexander Usyskin wrote:
+> Register the on-die nvm device with the mtd subsystem.
+> Refcount nvm object on _get and _put mtd callbacks.
+> For erase operation address and size should be 4K aligned.
+> For write operation address and size has to be 4bytes aligned.
 
 ...
 
-> +__maybe_unused
-> +static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
-> +			 loff_t to, size_t len, const unsigned char *buf)
+> +static int intel_dg_nvm_init_mtd(struct intel_dg_nvm *nvm, struct device *device,
+> +				 unsigned int nparts, bool writable_override)
 > +{
-> +	size_t i;
-> +	size_t len8;
-> +	size_t len4;
-> +	size_t to4;
-> +	size_t to_shift;
-> +	size_t len_s = len;
-> +	ssize_t ret;
-> +
-> +	idg_nvm_set_region_id(nvm, region);
-> +
-> +	to4 = ALIGN_DOWN(to, sizeof(u32));
-> +	to_shift = min(sizeof(u32) - ((size_t)to - to4), len);
-> +	if (to - to4) {
-> +		ret = idg_nvm_rewrite_partial(nvm, to4, to - to4, to_shift, (uint32_t *)&buf[0]);
+> +	unsigned int i;
+> +	unsigned int n;
+> +	struct mtd_partition *parts = NULL;
+> +	int ret;
 
-Forgot to add, you're using both uint32_t and u32.
-Perhaps make it consistent?
+Reverse xmas order (along with all other places).
 
-> +		if (ret < 0)
-> +			return ret;
+> +	dev_dbg(device, "registering with mtd\n");
 > +
-> +		buf += to_shift;
-> +		to += to_shift;
-> +		len_s -= to_shift;
+> +	nvm->mtd.owner = THIS_MODULE;
+> +	nvm->mtd.dev.parent = device;
+> +	nvm->mtd.flags = MTD_CAP_NORFLASH | MTD_WRITEABLE;
+
+Isn't MTD_CAP_NORFLASH already writable?
+
+> +	nvm->mtd.type = MTD_DATAFLASH;
+> +	nvm->mtd.priv = nvm;
+> +	nvm->mtd._write = intel_dg_mtd_write;
+> +	nvm->mtd._read = intel_dg_mtd_read;
+> +	nvm->mtd._erase = intel_dg_mtd_erase;
+> +	nvm->mtd._get_device = intel_dg_mtd_get_device;
+> +	nvm->mtd._put_device = intel_dg_mtd_put_device;
+> +	nvm->mtd.writesize = SZ_1; /* 1 byte granularity */
+> +	nvm->mtd.erasesize = SZ_4K; /* 4K bytes granularity */
+> +	nvm->mtd.size = nvm->size;
+> +
+> +	parts = kcalloc(nvm->nregions, sizeof(*parts), GFP_KERNEL);
+> +	if (!parts)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0, n = 0; i < nvm->nregions && n < nparts; i++) {
+> +		if (!nvm->regions[i].is_readable)
+> +			continue;
+> +		parts[n].name = nvm->regions[i].name;
+> +		parts[n].offset  = nvm->regions[i].offset;
+> +		parts[n].size = nvm->regions[i].size;
+> +		if (!nvm->regions[i].is_writable && !writable_override)
+> +			parts[n].mask_flags = MTD_WRITEABLE;
+> +		n++;
 > +	}
 > +
-> +	len8 = ALIGN_DOWN(len_s, sizeof(u64));
-> +	for (i = 0; i < len8; i += sizeof(u64)) {
-> +		u64 data;
+> +	ret = mtd_device_register(&nvm->mtd, parts, n);
 > +
-> +		memcpy(&data, &buf[i], sizeof(u64));
-> +		idg_nvm_write64(nvm, to + i, data);
-> +		if (idg_nvm_error(nvm))
-> +			return -EIO;
-> +	}
-> +
-> +	len4 = len_s - len8;
-> +	if (len4 >= sizeof(u32)) {
-> +		u32 data;
-> +
-> +		memcpy(&data, &buf[i], sizeof(u32));
-> +		idg_nvm_write32(nvm, to + i, data);
-> +		if (idg_nvm_error(nvm))
-> +			return -EIO;
-> +		i += sizeof(u32);
-> +		len4 -= sizeof(u32);
-> +	}
-> +
-> +	if (len4 > 0) {
-> +		ret = idg_nvm_rewrite_partial(nvm, to + i, 0, len4, (uint32_t *)&buf[i]);
+> +	kfree(parts);
 
-Ditto (and also in all other places if any).
+I didn't find anything questionable about this, but hope this is tested
+and there are no side-effects of this.
 
-> +		if (ret < 0)
-> +			return ret;
-> +	}
 > +
-> +	return len;
+
+Nit: Redundant blank line.
+
+> +	return ret;
 > +}
 
 Raag
