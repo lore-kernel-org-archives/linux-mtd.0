@@ -4,59 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1700DC3ABC9
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 May 2025 13:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0199C54E65
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 May 2025 20:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
-	In-Reply-To:To:Cc:From:MIME-Version:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=8PTC8SKFdUhDvaRpRrkGjWfnyPRnUB4kKKRHjs5W0kc=; b=mblBVT8LGkC86vBNxUphW0DaUz
-	voVEkEqLznBlwvZ7fCZdngcSNNMG9T5+sH1SYPWnI829I1I7FgMO8oDentLg/lBLOWVHZ2WpGyA/c
-	RJwDbt6yllHUYXuaZqw5edeUkUeodIZf3rmkhr2cR44AC21ZKw/8Xzhyq+LnfjOP0xOavbTDSzT65
-	dJgt8z6SWgp9lz7d6vFCCyAsc/75ZeFUGR0W8epAmxPZzeOoy5YGnxlW3UuenvyzicRJL+uT/KZD3
-	TR3UoMyIYFPE+vG+SHYcitp9NiTit0I8SmZmCaDX6RRwSuybPjqfHJbY9Op1Oi+f81F/f04oqMpnX
-	bpgmFHfQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=924sEPLWUrUkZZSyNH2CXBmHKUhxRcDku+bapuWdppo=; b=sZqYsHX3z8hnkS
+	MTt9BKnbyhTIoI/Fhfe4QK90QsC2de/OTgUA5mqfgrDFFQLd0or6OxVKiv0AdhBwWCvg2NnZFP9EZ
+	Z2KrhLfdo1eRV1iv7Qve0NBYj7kgSNXFMbxQ3Jb3scWGwknIj5ABGP4gEkNzYAiKRhdM7boTpdZBn
+	EbtPyRQdJZYuQ7GjS3m2bSKM7LqMrUSg8FyU+MQoxp0a2pY2Rg7TlfpAzRo+HqM8aSbM2Q5vzd2aQ
+	p9I0OIWiDNhMOupuZkirc1ZkEDHTs2xOQJB06wHIuZxH/7G7YoljHSGtBScGk0Cm5uLKizxlPvyoG
+	RSwUcxss9zlUebLM8mdg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHjP9-0000000FvQK-3Wn9;
-	Wed, 21 May 2025 13:22:43 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1uHq1P-0000000GmgI-0k2B;
+	Wed, 21 May 2025 20:26:39 +0000
+Received: from mgamail.intel.com ([198.175.65.21])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHizW-0000000FqhA-3F4P;
-	Wed, 21 May 2025 12:56:14 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D47B7629E7;
-	Wed, 21 May 2025 12:56:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE17C4CEE4;
-	Wed, 21 May 2025 12:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747832173;
-	bh=IM7NTdSfeNt5Q2RVCsl9ffDdJiDnlEFyeiTU0lAfpCs=;
-	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
-	b=b4UYdYVkYO+JRCAhVHklYeNAi7X639NQpXT9Y9G3vxPGZYKSWq1a4XNjHrEVEQa1U
-	 PJzqwccwlvtcO0SYsn6v+/VCdnE//jJ8NXxJ/mLwRVmM5oDLow6110V516u4eTvmOV
-	 Vxq4gfFJMlO/9fv+drEvm81rQfdEb2jhgcBv4DqMuAumJ1QMsKuE+DrTo29S+T8kQr
-	 mD8sAA3rusU861pvLsGrRrc4O1LWAtpg64RoAcahG3SqiFpirEnKP9qekOk5DD2NgN
-	 hMwoFyb9EfIeUjyNXravtbgKQ/IAQBhwq1mS6GLMsJc6oiEYRomiotNfALSdd3dVVS
-	 ALu8ypT/j523g==
-Date: Wed, 21 May 2025 07:56:11 -0500
+	id 1uHq1L-0000000GmfN-4Br4
+	for linux-mtd@lists.infradead.org;
+	Wed, 21 May 2025 20:26:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747859196; x=1779395196;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aLtQzNGu5/O0fU0Cv03GWH9zFR3LL3UOULcLPG921iI=;
+  b=EX7E3lMxtSy12LxNi3nfG4JSUyAmqQLaQ1M1anZ/SMm+Bz91m1X+eRGd
+   N2jz0kP0ce3Jtvoggd2L27UhABJemPPFmObD9x7k4VKKeatD4npSvwsnN
+   TegPAbCrM4dsPdUr/LXTKdXGcOmLx/fzxSRYzjYUrhrg8YWEDSaGPNF1t
+   un0X5YIl25rkisCsYV1TGU3WoSBSpuyB2Q/lBaHd7CFQBwYplrLYfwTdm
+   lT35jkxvxyZLmIOg3noxkcJQnH4ISsr5htlR8pb3mOMZZ7oNsgi4qyR1j
+   o8vt+/2nyIn9bSJvSu4kmsnkpalV7B6DZS88BPwsybPKnZ8fVDPJ0j+lJ
+   A==;
+X-CSE-ConnectionGUID: ReER7U8FRISX7opIbN9ZHA==
+X-CSE-MsgGUID: gkrypWhFTlaDyD7s1Zl8mQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="49762881"
+X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
+   d="scan'208";a="49762881"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 13:26:35 -0700
+X-CSE-ConnectionGUID: qZCX3NfvRmW5MjpehmDrkQ==
+X-CSE-MsgGUID: D1ORkfQ1S9OCFvbKBj7yjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
+   d="scan'208";a="140088834"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 13:26:29 -0700
+Date: Wed, 21 May 2025 23:26:24 +0300
+From: Raag Jadav <raag.jadav@intel.com>
+To: Alexander Usyskin <alexander.usyskin@intel.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Karthik Poosa <karthik.poosa@intel.com>,
+	Reuven Abliyev <reuven.abliyev@intel.com>,
+	Oren Weil <oren.jer.weil@intel.com>, linux-mtd@lists.infradead.org,
+	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	Tomas Winkler <tomasw@gmail.com>,
+	Vitaly Lubart <lubvital@gmail.com>
+Subject: Re: [PATCH v10 03/10] mtd: intel-dg: implement access functions
+Message-ID: <aC428Ak5j_x6Cr2o@black.fi.intel.com>
+References: <20250515133345.2805031-1-alexander.usyskin@intel.com>
+ <20250515133345.2805031-4-alexander.usyskin@intel.com>
 MIME-Version: 1.0
-From: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: linux-mtd@lists.infradead.org, pratyush@kernel.org, conor+dt@kernel.org, 
- tudor.ambarus@linaro.org, krzk+dt@kernel.org, miquel.raynal@bootlin.com, 
- mwalle@kernel.org, linux-kernel@vger.kernel.org, claudiu.beznea@tuxon.dev, 
- vigneshr@ti.com, linux-arm-kernel@lists.infradead.org, 
- alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com, 
- devicetree@vger.kernel.org, richard@nod.at
-To: Manikandan Muralidharan <manikandan.m@microchip.com>
-In-Reply-To: <20250521070336.402202-1-manikandan.m@microchip.com>
-References: <20250521070336.402202-1-manikandan.m@microchip.com>
-Message-Id: <174783212327.3233239.2531825211332843471.robh@kernel.org>
-Subject: Re: [PATCH v3 0/3] Read MAC Address from SST vendor specific SFDP
- region
+Content-Disposition: inline
+In-Reply-To: <20250515133345.2805031-4-alexander.usyskin@intel.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250521_132636_090798_40C6AF3E 
+X-CRM114-Status: GOOD (  14.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,82 +103,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Thu, May 15, 2025 at 04:33:38PM +0300, Alexander Usyskin wrote:
+> Implement read(), erase() and write() functions.
 
-On Wed, 21 May 2025 12:33:33 +0530, Manikandan Muralidharan wrote:
-> This patch series adds support to parse the SFDP SST vendor map, read and
-> store the EUI-48 and EUI-64 Address (if its programmed) using the
-> resource-managed devm_kcalloc which will be freed on driver detach.
-> Register EUI addresses into NVMEM framework for the net drivers to access
-> them using nvmem properties.
-> This change ensures consistent and reliable MAC address retrieval
-> from QSPI benefiting boards like the sama5d27_wlsom1, sama5d29 curiosity
-> and sam9x75 curiosity.
-> 
-> --------
-> changes in v3:
-> - 2/3 - add support to update the QSPI partition into 'fixed-partition'
-> 	binding in sama5d27_wlsom1
-> - 3/3 - add nvmem-layout in qspi node for EUI48 MAC Address and nvmem cell
-> 	properties for macb node in sama5d27_wlsom1
-> 
-> changes in v2:
-> - 1/3 - parse the SST vendor table, read and store the addresses
-> 	into a resource - managed space. Register the addresses
-> 	into NVMEM framework
-> - 2/3 - add support to update the QSPI partition into 'fixed-partition'
-> 	binding
-> --------
-> 
-> Manikandan Muralidharan (3):
->   mtd: spi-nor: sfdp: parse SFDP SST vendor map and register EUI
->     addresses into NVMEM framework
->   ARM: dts: microchip: sama5d27_wlsom1: update the QSPI partitions using
->     "fixed-partition" binding
->   ARM: dts: microchip: sama5d27_wlsom1: Add nvmem-layout in QSPI for
->     EUI48 MAC Address
-> 
->  .../dts/microchip/at91-sama5d27_wlsom1.dtsi   |  65 ++++---
->  drivers/mtd/spi-nor/sfdp.c                    | 161 ++++++++++++++++++
->  include/linux/mtd/spi-nor.h                   |   7 +
->  3 files changed, 209 insertions(+), 24 deletions(-)
-> 
-> --
-> 2.25.1
-> 
-> 
-> 
+...
 
+> +__maybe_unused
+> +static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
+> +			 loff_t to, size_t len, const unsigned char *buf)
+> +{
+> +	size_t i;
+> +	size_t len8;
+> +	size_t len4;
+> +	size_t to4;
+> +	size_t to_shift;
+> +	size_t len_s = len;
+> +	ssize_t ret;
+> +
+> +	idg_nvm_set_region_id(nvm, region);
+> +
+> +	to4 = ALIGN_DOWN(to, sizeof(u32));
+> +	to_shift = min(sizeof(u32) - ((size_t)to - to4), len);
+> +	if (to - to4) {
+> +		ret = idg_nvm_rewrite_partial(nvm, to4, to - to4, to_shift, (uint32_t *)&buf[0]);
 
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
+Forgot to add, you're using both uint32_t and u32.
+Perhaps make it consistent?
 
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		buf += to_shift;
+> +		to += to_shift;
+> +		len_s -= to_shift;
+> +	}
+> +
+> +	len8 = ALIGN_DOWN(len_s, sizeof(u64));
+> +	for (i = 0; i < len8; i += sizeof(u64)) {
+> +		u64 data;
+> +
+> +		memcpy(&data, &buf[i], sizeof(u64));
+> +		idg_nvm_write64(nvm, to + i, data);
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +	}
+> +
+> +	len4 = len_s - len8;
+> +	if (len4 >= sizeof(u32)) {
+> +		u32 data;
+> +
+> +		memcpy(&data, &buf[i], sizeof(u32));
+> +		idg_nvm_write32(nvm, to + i, data);
+> +		if (idg_nvm_error(nvm))
+> +			return -EIO;
+> +		i += sizeof(u32);
+> +		len4 -= sizeof(u32);
+> +	}
+> +
+> +	if (len4 > 0) {
+> +		ret = idg_nvm_rewrite_partial(nvm, to + i, 0, len4, (uint32_t *)&buf[i]);
 
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
+Ditto (and also in all other places if any).
 
-  pip3 install dtschema --upgrade
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return len;
+> +}
 
-
-This patch series was applied (using b4) to base:
- Base: attempting to guess base-commit...
- Base: tags/next-20250516 (best guess, 2/3 blobs matched)
-
-If this is not the correct base, please add 'base-commit' tag
-(or use b4 which does this automatically)
-
-New warnings running 'make CHECK_DTBS=y for arch/arm/boot/dts/microchip/' for 20250521070336.402202-1-manikandan.m@microchip.com:
-
-arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dtb: flash@0 (jedec,spi-nor): Unevaluated properties are not allowed ('nvmem-layout', 'spi-cs-setup-ns' were unexpected)
-	from schema $id: http://devicetree.org/schemas/mtd/jedec,spi-nor.yaml#
-
-
-
-
-
+Raag
 
 ______________________________________________________
 Linux MTD discussion mailing list
