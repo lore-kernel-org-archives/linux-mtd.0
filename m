@@ -4,89 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBF6AC54E90
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 May 2025 21:37:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 087F7C54756
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 May 2025 08:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6eN41X8NpV8mOq4is+9clDNvYZtAKBrL2XsKT5AmkOQ=; b=MqAfl00cucjPii
-	q1450OYHBu7P/p5Bkn2ftx0no9x10Eb8RfzQ8/qC3CeirQgU3fbbFZjUrgkYXmOJ3p+RTBvUlIz99
-	7f+rursIf5SX2/hjzcwkLbg5Xh970idffIj9p6CtvgA1KItEqtHVPkTO+cfIZGaZsH2nJQvFb8XJA
-	AkI8QIK20tU/+v2G/1+Vu/NzxjFDa11AJ88Tc82JG7IJeRvi4MsNxukqO+1ClhwKrbeKDTKhJ0kfd
-	6B4STwI56xWkl9FxZXXkCyZjQeIHcXtr0fySBUJqAKBYFUrveoU3e8uYKf+uJOgG1MsblHXP80HCh
-	he3OfO0SDRm8jP7ORiVA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kchiygqhcPk8foplYAvbqG0V0gnu1l2jfzdaG9K3JTo=; b=odqHyHaqzLkkDP
+	OUslhCjCltn+l4A956iIDYdCvbzEnZ4ZL9bN/gZgDC427RI2ueLFVqhPPNxeGTlb9sK3M2QXuOj1E
+	NuVflfHRi+zRdFvg7ZOFqeyDbW6tBhxINIgZ7+GHeeXspLT3ElUOoouc0J9MRH4iDpzC3WtELPTU9
+	Z6OErfaw2qp21+TeWSNLohIVxCdzLqKVeIXMS0ORIPFWnidSN63ggRduJYkOX5Ut+KfjyqX0TBu6w
+	U9ahrdrx4G1S5UA40IFWHjHQGh9M7Me52gv61noxaUBQ9dOEtZggcCwk4cHKJ9QlnN3ITyNThDRkt
+	sNHzAl+Ux/ZRQFSf9IXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHr8B-0000000GsBR-0l0X;
-	Wed, 21 May 2025 21:37:43 +0000
-Received: from mgamail.intel.com ([198.175.65.17])
+	id 1uI1Te-00000000Jf2-39Q3;
+	Thu, 22 May 2025 08:40:34 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uHr7u-0000000Gs6b-3GMc
+	id 1uI1A9-00000000GNs-1yH1
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 May 2025 21:37:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747863447; x=1779399447;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/TRHgk4WgbfqINcXZ2LzA/XzOmn7LII0S0I9TtZCzhk=;
-  b=A8IDtbSqQFFsfRg3cex80kESaGVb5HDfibyHNT0+TTiqyoGhmXJ035uX
-   9MTvYg/SLayloPHYKx+85laF3UpO1ftHD37fh2/AV3/ZRFZMX1teIzsOP
-   2aXYodFmjgulW6YndDavCNCwa9uebMQdi+yiqJeO4dEyilnhKFyJZovwz
-   18mVQ45q5pJqNNj0zw56hCzq1RW+y9nFmWYwTtS8Y99C9kOxMZr+/KpcM
-   DHGC8d54O/YqtN+WDp0jXmBszyOz/mQoN86eV20j/40zGEVu664FAZpxz
-   NMjimuetj1eQYeEsYYLD1dClmp4O+p+b1hZw+xuXnBvFiPBPSTJvdFXPi
-   A==;
-X-CSE-ConnectionGUID: ALXILcemRGiChC+mSL9fVA==
-X-CSE-MsgGUID: iIFebL1rTD6h9qcxSYsW3g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="49851099"
-X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
-   d="scan'208";a="49851099"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 14:37:26 -0700
-X-CSE-ConnectionGUID: yOQi57DvSxaVw+HjU/f7UA==
-X-CSE-MsgGUID: hTBnemMxSU2khYiz+9BJWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
-   d="scan'208";a="144987316"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 14:37:21 -0700
-Date: Thu, 22 May 2025 00:37:17 +0300
-From: Raag Jadav <raag.jadav@intel.com>
-To: Alexander Usyskin <alexander.usyskin@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	Karthik Poosa <karthik.poosa@intel.com>,
-	Reuven Abliyev <reuven.abliyev@intel.com>,
-	Oren Weil <oren.jer.weil@intel.com>, linux-mtd@lists.infradead.org,
-	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Tomas Winkler <tomasw@gmail.com>,
-	Vitaly Lubart <lubvital@gmail.com>
-Subject: Re: [PATCH v10 04/10] mtd: intel-dg: register with mtd
-Message-ID: <aC5HjQKRf_4Ewous@black.fi.intel.com>
-References: <20250515133345.2805031-1-alexander.usyskin@intel.com>
- <20250515133345.2805031-5-alexander.usyskin@intel.com>
+	Thu, 22 May 2025 08:20:27 +0000
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-ad52d9be53cso950478466b.2
+        for <linux-mtd@lists.infradead.org>; Thu, 22 May 2025 01:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1747902023; x=1748506823; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I43E9Used7ZzOVDhq/ufhep8eOi1ZE1QL/P9g55nGak=;
+        b=EtfydumDC5lcWE/kXQADBcejxr0aRzqLAh9ogDKk/vLRE9xhhsH2dKOM/KoDBgi7Va
+         P+PTwkVEvlW9o1AqO28V6pnJ4r/dZimZcpOE2jk8WiTAm/hyF5slAki1li2aekYwN3+S
+         RQY9JJT3bCDrZLw5iofZNoqQRHEwm3p4ADs2bJoqbm4YlXflVQAG7ihqxWDW0w/yR5D9
+         Wb3a76zVDt05iIxp/CLWqkeyzwfeoqp72zCajc7cCwxqS1P2Ft6O+Z/Cl5Hbu/Gak/DZ
+         1OkAZlCS1+B79RK59WQovlk7Lf76YbbRyQ18sHgp1e+BV8RL0nUs8J19+VHVigkoC4NY
+         Ueyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747902023; x=1748506823;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I43E9Used7ZzOVDhq/ufhep8eOi1ZE1QL/P9g55nGak=;
+        b=sl44xgeIyqT0YU6XleMwsOK2U+/EaVgJaCOaaxQaBRXeSss4fuRm9bkFTkn4VmganT
+         DEwV0UR6va7U2SV0niZ43P5dHNxXW7by98bxp6uNVGujBub8BI9MqA9ngNzfkzuzKwja
+         yWvqXz3NPEhqXc8Ks8jKvlnj1OdbeimanYbOTt1TjO/c2C7sLTFjjIEdifKEmNo2bVaU
+         O6coCt9YsBSC3xIlfAmIH2murKeLIUo+404i11qBHvw9n84h0VpJ7vOfzI1ryK2+Izwh
+         t3i0zsLjoKEE/oodZuQPpsJzrmTXLIPFDiwpT9KMWRatJZ3aSCc9Yq+RqPE7UZyVZGwo
+         EWUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWdkTOVIK9ZD5687I5igvxDpY786onnORUi52Ge7kOBLy5Hsb37n+0PcaAdZWzNmYlF852TWYx9Sw=@lists.infradead.org
+X-Gm-Message-State: AOJu0YydRv43Qt7860N2XClZOJXQW21EuzBCcC2nNjxLdZvAfNF5CYY3
+	cutidWuZeo0Bc1/bQfmXFfGTpVPvN6ZpfMU0pfQiXcKPHd2ee++arNCXnydwcb80uWu5JWndE0S
+	woRD8b0xAow==
+X-Gm-Gg: ASbGnctVo4gOqob4OPz6ZC/s+BQS6yL6dAtf1OPuwURD5ukoPLiXbbbYYKtT5PIi4Wu
+	twa9HCx/8MuV2rhofbvYekEdcTzDBZopPBhoh8E7jAA2n9d86cov4GH9491bHLBnhkSqqEVVuBV
+	syTFHlSgm65Z7IfteEHlhtxXJSxeM7Mx3mXSFjxqELpm/5yzk0S63pUhRNPIsJYifVXaKWguFWa
+	aFDua65zTjxIa68oyRkOGcsk9E1s+khHFOoGtabvfEmhSDMaYk+CU+N5dMf1aUASQmqxkesOHXK
+	S3wz1C9xXN1Kg7mjjTGK6o+I3SC0aN6TSZpDKZQdAfc/rpF2sYgJBDZpGaL81aKdf5E+nRvFqP6
+	dMNioDAeSVJwwAiHyjlxBHMv8
+X-Google-Smtp-Source: AGHT+IHd/c+RlpU9wZSwKb6MHnIxte3dN22uhcNe9UW8PMtyUqFZZ0KzS+tArvGbttCUDJzPrSUFTg==
+X-Received: by 2002:a17:907:3f08:b0:ad5:68b7:b0df with SMTP id a640c23a62f3a-ad568b7b232mr1504511566b.46.1747902022820;
+        Thu, 22 May 2025 01:20:22 -0700 (PDT)
+Received: from somecomputer (ip-046-005-029-055.um12.pools.vodafone-ip.de. [46.5.29.55])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad53603a399sm998546366b.40.2025.05.22.01.20.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 May 2025 01:20:22 -0700 (PDT)
+From: Richard Weinberger <richard@sigma-star.at>
+To: linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [ANNOUNCE] Alpine Linux Persistence and Storage Summit 2025
+Date: Thu, 22 May 2025 10:20:20 +0200
+Message-ID: <1826170.yIU609i1g2@pliers>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250515133345.2805031-5-alexander.usyskin@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250521_143726_861950_4426A76D 
-X-CRM114-Status: GOOD (  16.02  )
+X-CRM114-CacheID: sfid-20250522_012025_804239_05BCA70D 
+X-CRM114-Status: UNSURE (   7.12  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,73 +97,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 15, 2025 at 04:33:39PM +0300, Alexander Usyskin wrote:
-> Register the on-die nvm device with the mtd subsystem.
-> Refcount nvm object on _get and _put mtd callbacks.
-> For erase operation address and size should be 4K aligned.
-> For write operation address and size has to be 4bytes aligned.
+We proudly announce the 8th Alpine Linux Persistence and Storage Summit
+(ALPSS), which will be held September 29th to October 2nd at the
+Lizumerhuette (https://www.lizumer-huette.at/) in Austria.
 
-...
+The goal of this conference is to discuss the hot topics in Linux storage
+and file systems, such as persistent memory, NVMe, zoned storage, and I/O
+scheduling in a cool and relaxed setting with spectacular views in the
+Austrian alps.
 
-> +static int intel_dg_nvm_init_mtd(struct intel_dg_nvm *nvm, struct device *device,
-> +				 unsigned int nparts, bool writable_override)
-> +{
-> +	unsigned int i;
-> +	unsigned int n;
-> +	struct mtd_partition *parts = NULL;
-> +	int ret;
+We plan to have a small selection of short and to the point talks with
+lots of room for discussion in small groups, as well as ample downtime
+to enjoy the surroundings
 
-Reverse xmas order (along with all other places).
+Attendance is free except for the accommodation and food at the lodge
+but the number of seats is strictly limited.  Cost for accommodation and
+half board is between 55 and 84 EUR depending on the room category,
+with additional discounts for members of an alpine society.
 
-> +	dev_dbg(device, "registering with mtd\n");
-> +
-> +	nvm->mtd.owner = THIS_MODULE;
-> +	nvm->mtd.dev.parent = device;
-> +	nvm->mtd.flags = MTD_CAP_NORFLASH | MTD_WRITEABLE;
+If you are interested in attending please reserve a seat by mailing your
+favorite topic(s) to:
 
-Isn't MTD_CAP_NORFLASH already writable?
+        alpss-pc@penguingang.at
 
-> +	nvm->mtd.type = MTD_DATAFLASH;
-> +	nvm->mtd.priv = nvm;
-> +	nvm->mtd._write = intel_dg_mtd_write;
-> +	nvm->mtd._read = intel_dg_mtd_read;
-> +	nvm->mtd._erase = intel_dg_mtd_erase;
-> +	nvm->mtd._get_device = intel_dg_mtd_get_device;
-> +	nvm->mtd._put_device = intel_dg_mtd_put_device;
-> +	nvm->mtd.writesize = SZ_1; /* 1 byte granularity */
-> +	nvm->mtd.erasesize = SZ_4K; /* 4K bytes granularity */
-> +	nvm->mtd.size = nvm->size;
-> +
-> +	parts = kcalloc(nvm->nregions, sizeof(*parts), GFP_KERNEL);
-> +	if (!parts)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0, n = 0; i < nvm->nregions && n < nparts; i++) {
-> +		if (!nvm->regions[i].is_readable)
-> +			continue;
-> +		parts[n].name = nvm->regions[i].name;
-> +		parts[n].offset  = nvm->regions[i].offset;
-> +		parts[n].size = nvm->regions[i].size;
-> +		if (!nvm->regions[i].is_writable && !writable_override)
-> +			parts[n].mask_flags = MTD_WRITEABLE;
-> +		n++;
-> +	}
-> +
-> +	ret = mtd_device_register(&nvm->mtd, parts, n);
-> +
-> +	kfree(parts);
+If you are interested in giving a short and crisp talk please also send
+an abstract to the same address.
 
-I didn't find anything questionable about this, but hope this is tested
-and there are no side-effects of this.
+The Lizumerhuette is an Alpine Society lodge in a high alpine environment.
+A hike of approximately 2 hours is required to the lodge, and no other
+accommodations are available within walking distance.
 
-> +
+Please note: reservations for the lodge are not handled through the
+reservation system, but as part of the ALPSS registration.
 
-Nit: Redundant blank line.
+Check our website at https://www.alpss.at/ for more details.
 
-> +	return ret;
-> +}
+Thank you on behalf of the program committee:
 
-Raag
+    Christoph Hellwig
+    Johannes Thumshirn
+    Richard Weinberger
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
