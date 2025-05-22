@@ -4,83 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 087F7C54756
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 May 2025 08:40:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB58EC54E90
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 May 2025 09:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=kchiygqhcPk8foplYAvbqG0V0gnu1l2jfzdaG9K3JTo=; b=odqHyHaqzLkkDP
-	OUslhCjCltn+l4A956iIDYdCvbzEnZ4ZL9bN/gZgDC427RI2ueLFVqhPPNxeGTlb9sK3M2QXuOj1E
-	NuVflfHRi+zRdFvg7ZOFqeyDbW6tBhxINIgZ7+GHeeXspLT3ElUOoouc0J9MRH4iDpzC3WtELPTU9
-	Z6OErfaw2qp21+TeWSNLohIVxCdzLqKVeIXMS0ORIPFWnidSN63ggRduJYkOX5Ut+KfjyqX0TBu6w
-	U9ahrdrx4G1S5UA40IFWHjHQGh9M7Me52gv61noxaUBQ9dOEtZggcCwk4cHKJ9QlnN3ITyNThDRkt
-	sNHzAl+Ux/ZRQFSf9IXw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ywH+yqeyxK56TCKjG3XNDLpCsP5hAzzNg2peRkAndK4=; b=1gXRtBDpzb2K+z
+	8H8+6xMrEY6DkgykMfyoMeIx716fHgeF/AaHsStNcIURKnde2U1c8YQMXnXNquWtnI1ZNh27g3J8T
+	yRrqmeuc8omCxdsJ2D2lmYopenhCi2pkf6Fh2A+1yBIb40ck8MP2v+SRSPAw/CLDp4laRgw9BDuuC
+	OcYn+eHuf/jebjTQBiLWbfeFTyDw2N+RZv3KGmAK9LUDX+ya2spAok9qDWginf9B8LgfypDfRh7Dn
+	bmT6kbYjuoyDvquciU/Vw1MvcriLGmFkF1+Iimcfsun7m3olAhGjZtN7uIpTXthNYdi3eVgH+/b4k
+	mojroAZON58p6MqvGgnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uI1Te-00000000Jf2-39Q3;
-	Thu, 22 May 2025 08:40:34 +0000
-Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
+	id 1uI2DS-00000000Uv1-159x;
+	Thu, 22 May 2025 09:27:54 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uI1A9-00000000GNs-1yH1
+	id 1uI2DF-00000000Uqd-2TFS
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 May 2025 08:20:27 +0000
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-ad52d9be53cso950478466b.2
-        for <linux-mtd@lists.infradead.org>; Thu, 22 May 2025 01:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1747902023; x=1748506823; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I43E9Used7ZzOVDhq/ufhep8eOi1ZE1QL/P9g55nGak=;
-        b=EtfydumDC5lcWE/kXQADBcejxr0aRzqLAh9ogDKk/vLRE9xhhsH2dKOM/KoDBgi7Va
-         P+PTwkVEvlW9o1AqO28V6pnJ4r/dZimZcpOE2jk8WiTAm/hyF5slAki1li2aekYwN3+S
-         RQY9JJT3bCDrZLw5iofZNoqQRHEwm3p4ADs2bJoqbm4YlXflVQAG7ihqxWDW0w/yR5D9
-         Wb3a76zVDt05iIxp/CLWqkeyzwfeoqp72zCajc7cCwxqS1P2Ft6O+Z/Cl5Hbu/Gak/DZ
-         1OkAZlCS1+B79RK59WQovlk7Lf76YbbRyQ18sHgp1e+BV8RL0nUs8J19+VHVigkoC4NY
-         Ueyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747902023; x=1748506823;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I43E9Used7ZzOVDhq/ufhep8eOi1ZE1QL/P9g55nGak=;
-        b=sl44xgeIyqT0YU6XleMwsOK2U+/EaVgJaCOaaxQaBRXeSss4fuRm9bkFTkn4VmganT
-         DEwV0UR6va7U2SV0niZ43P5dHNxXW7by98bxp6uNVGujBub8BI9MqA9ngNzfkzuzKwja
-         yWvqXz3NPEhqXc8Ks8jKvlnj1OdbeimanYbOTt1TjO/c2C7sLTFjjIEdifKEmNo2bVaU
-         O6coCt9YsBSC3xIlfAmIH2murKeLIUo+404i11qBHvw9n84h0VpJ7vOfzI1ryK2+Izwh
-         t3i0zsLjoKEE/oodZuQPpsJzrmTXLIPFDiwpT9KMWRatJZ3aSCc9Yq+RqPE7UZyVZGwo
-         EWUg==
-X-Forwarded-Encrypted: i=1; AJvYcCWWdkTOVIK9ZD5687I5igvxDpY786onnORUi52Ge7kOBLy5Hsb37n+0PcaAdZWzNmYlF852TWYx9Sw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YydRv43Qt7860N2XClZOJXQW21EuzBCcC2nNjxLdZvAfNF5CYY3
-	cutidWuZeo0Bc1/bQfmXFfGTpVPvN6ZpfMU0pfQiXcKPHd2ee++arNCXnydwcb80uWu5JWndE0S
-	woRD8b0xAow==
-X-Gm-Gg: ASbGnctVo4gOqob4OPz6ZC/s+BQS6yL6dAtf1OPuwURD5ukoPLiXbbbYYKtT5PIi4Wu
-	twa9HCx/8MuV2rhofbvYekEdcTzDBZopPBhoh8E7jAA2n9d86cov4GH9491bHLBnhkSqqEVVuBV
-	syTFHlSgm65Z7IfteEHlhtxXJSxeM7Mx3mXSFjxqELpm/5yzk0S63pUhRNPIsJYifVXaKWguFWa
-	aFDua65zTjxIa68oyRkOGcsk9E1s+khHFOoGtabvfEmhSDMaYk+CU+N5dMf1aUASQmqxkesOHXK
-	S3wz1C9xXN1Kg7mjjTGK6o+I3SC0aN6TSZpDKZQdAfc/rpF2sYgJBDZpGaL81aKdf5E+nRvFqP6
-	dMNioDAeSVJwwAiHyjlxBHMv8
-X-Google-Smtp-Source: AGHT+IHd/c+RlpU9wZSwKb6MHnIxte3dN22uhcNe9UW8PMtyUqFZZ0KzS+tArvGbttCUDJzPrSUFTg==
-X-Received: by 2002:a17:907:3f08:b0:ad5:68b7:b0df with SMTP id a640c23a62f3a-ad568b7b232mr1504511566b.46.1747902022820;
-        Thu, 22 May 2025 01:20:22 -0700 (PDT)
-Received: from somecomputer (ip-046-005-029-055.um12.pools.vodafone-ip.de. [46.5.29.55])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad53603a399sm998546366b.40.2025.05.22.01.20.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 May 2025 01:20:22 -0700 (PDT)
-From: Richard Weinberger <richard@sigma-star.at>
-To: linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [ANNOUNCE] Alpine Linux Persistence and Storage Summit 2025
-Date: Thu, 22 May 2025 10:20:20 +0200
-Message-ID: <1826170.yIU609i1g2@pliers>
+	Thu, 22 May 2025 09:27:42 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id DB46AA4E92E;
+	Thu, 22 May 2025 09:27:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E29C4CEEF;
+	Thu, 22 May 2025 09:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747906060;
+	bh=8zYFm2/+iwmpkOGr5JNANwTIY7S1T/GRs1rvV4bxXfg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=KJlxGnYDHsrrJJ7Q69yDauuRz6o9ebRYVFgSnPSy+ebfpVhSFcMMLuBM8O9H755qs
+	 YA1B7c8dewFsFnuLE8hkZ06+1iTRMEUl0yVqMyIH87X8mcw+vKbHuqFYJLoJF9UNhX
+	 pJ+KBxXS63nSf44Jjr8c08yznZsMYzbYfzFpqES4JjrD050JyR8MGf0ZSXOxdkw8HS
+	 WiZTo7zgIJtf3gU9kB17C8j64hdG0VrPa+X1mJezVp4EyemGXO8iNHLr3j5M2s9/LB
+	 KOc8LJElLUCh5yVraqU+F4GmpWnqzi0Yla9yFyHzEWUiJkx/vc60yNwZPNloIrMIXP
+	 WRZsmR+GDYIxg==
+From: Mark Brown <broonie@kernel.org>
+To: Gabor Juhos <j4g8y7@gmail.com>
+Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
+ Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20250514-qpic-snand-error-check-v1-1-c0ebd3aae72a@gmail.com>
+References: <20250514-qpic-snand-error-check-v1-1-c0ebd3aae72a@gmail.com>
+Subject: Re: [PATCH] spi: spi-qpic-snand: reuse
+ qcom_spi_check_raw_flash_errors()
+Message-Id: <174790605877.30110.13985629144771079611.b4-ty@kernel.org>
+Date: Thu, 22 May 2025 10:27:38 +0100
 MIME-Version: 1.0
+X-Mailer: b4 0.15-dev-c25d1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250522_012025_804239_05BCA70D 
-X-CRM114-Status: UNSURE (   7.12  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250522_022741_705799_532C3737 
+X-CRM114-Status: GOOD (  13.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,47 +76,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We proudly announce the 8th Alpine Linux Persistence and Storage Summit
-(ALPSS), which will be held September 29th to October 2nd at the
-Lizumerhuette (https://www.lizumer-huette.at/) in Austria.
+On Wed, 14 May 2025 12:16:38 +0200, Gabor Juhos wrote:
+> The qcom_spi_check_raw_flash_errors() function can be used to
+> verify the flash status after raw operations.
+> 
+> Move the function slightly up in the code and change the
+> qcom_spi_read_last_cw() function to call it instead of using
+> an open coded implementation of the same check.
+> 
+> [...]
 
-The goal of this conference is to discuss the hot topics in Linux storage
-and file systems, such as persistent memory, NVMe, zoned storage, and I/O
-scheduling in a cool and relaxed setting with spectacular views in the
-Austrian alps.
+Applied to
 
-We plan to have a small selection of short and to the point talks with
-lots of room for discussion in small groups, as well as ample downtime
-to enjoy the surroundings
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Attendance is free except for the accommodation and food at the lodge
-but the number of seats is strictly limited.  Cost for accommodation and
-half board is between 55 and 84 EUR depending on the room category,
-with additional discounts for members of an alpine society.
+Thanks!
 
-If you are interested in attending please reserve a seat by mailing your
-favorite topic(s) to:
+[1/1] spi: spi-qpic-snand: reuse qcom_spi_check_raw_flash_errors()
+      commit: 4026c6b51cb9ffd1eea2206191552f8aa3cb55ea
 
-        alpss-pc@penguingang.at
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-If you are interested in giving a short and crisp talk please also send
-an abstract to the same address.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The Lizumerhuette is an Alpine Society lodge in a high alpine environment.
-A hike of approximately 2 hours is required to the lodge, and no other
-accommodations are available within walking distance.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Please note: reservations for the lodge are not handled through the
-reservation system, but as part of the ALPSS registration.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Check our website at https://www.alpss.at/ for more details.
-
-Thank you on behalf of the program committee:
-
-    Christoph Hellwig
-    Johannes Thumshirn
-    Richard Weinberger
-
+Thanks,
+Mark
 
 
 ______________________________________________________
