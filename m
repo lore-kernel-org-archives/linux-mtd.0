@@ -4,91 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6DAAC54E65
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 May 2025 17:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1C75C54E65
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 May 2025 17:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=snYfhOzqFnn0x09Z4D7Z5fk0WlKEcQY8QMJUklsDE6k=; b=hOSA/lXDW/7q/3
-	EmnPxeTZY75En9ArxfUvHIUe0AaLlIWuyM/smdC7Q+2itBWx0Is9eFW9E3wHqezlpbJYPhrHJ2kGB
-	0SNhCSU79VsqxY2+ZSwwGBrOXnO+TcUWMUh0iGnGTxe1Ck+No4+i0R71g4nYzJnyK/kW//g6dmk7r
-	F/+2j/DM7DtysXjfi7pD2F7WHItc9DS8T+lngBP4ew5uI4GuB8Up0YREW9Nx0GRBKbOJWoSM4N29M
-	VtQi7mnm+UMpWpY1NRalxBk/fMG1GIYChG4uFt1LvXR8vdRSWv+dbsNzld7R03aEui3EAqARKkDr5
-	03yAVThm/2sGTmevSDxg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bQK3dCS/f60xaqZS38y0mdZ5ebwYHbg6vkoYjXES8qI=; b=UOiibAkDbmYDvs
+	Nk100z3as5MJs5+A/jhvMJPn/ufgdeBg9XKTIIO15GSegpyRL7TSrGzIzHd+bLgh3XtDvhXKaKPiC
+	lCRV5046iNU6Y5T6Rf9Tlru5xOdydYa1CHJ9Jh0pI/CoIx1zXw+R7/ZPKi9+NRvb7ceFrrMo2uFOE
+	iT42yR9uOBiP4tLIw0w24cpRku3+R9N/ZZi1kfKTQL9nFsYhC/yM/SVBoPsSNPDQ0enjibh8x+Nbv
+	Wm07+m/wy0K3J5Mh08vQR3VhKvXSQo7+DSr8OaK3i4+dFsJPFGRIp5oI/jjgYVfsrscir3Wufysel
+	2wjvtBmmpF4DSTadk2ig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uI9nY-00000001kOQ-0ehR;
-	Thu, 22 May 2025 17:33:40 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1uIA2r-00000001mfs-37hf;
+	Thu, 22 May 2025 17:49:29 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uI9nV-00000001kO2-2x5K
+	id 1uIA2p-00000001mfA-1X46
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 May 2025 17:33:39 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-ad5533c468cso871800766b.0
-        for <linux-mtd@lists.infradead.org>; Thu, 22 May 2025 10:33:37 -0700 (PDT)
+	Thu, 22 May 2025 17:49:28 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-ad5394be625so559596566b.2
+        for <linux-mtd@lists.infradead.org>; Thu, 22 May 2025 10:49:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747935216; x=1748540016; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MTeoN2ZNwpBqEf481xeP9DNeHeY17srYObiFUpBv5hM=;
-        b=Yjz5XPMxRCCt+VoAkPpaFrOdSpI40Ilr97CsH8BCmZs4jeX+Hv3+SrIGHXT1Q40Ibh
-         HjlHCjzNALc1Bu5Oj/QqcV6lvNdDQUbu7fLGTniHC22opKelNmS0hm0N3Ykguxg3zfGa
-         3nRoanUnVxOJVtb3iSZ+fNlKTPYZhR2GXr/5KBaH8KhEFzfoPUnO5c3JlTbqetGbW3X2
-         cxM27PZdFT5YPj8Vagq1rZWIMZCGIYoaSD9PqLkk/5LfCfWWl+mykuRb+PXRHXLaOj4Z
-         H7YBEdwPHlWFXKr3z3Nv6hybp6EO0/Aa+DFUdy1XJBEpOxUmTs2IQYyH30OobViRM1Hr
-         nqVA==
+        d=gmail.com; s=20230601; t=1747936166; x=1748540966; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UXlb98Jq8xguu+7ZKl/TCFGce1LzzWdMVuvQ7hjHTWY=;
+        b=m1obh1e7MNBLaGFVdZr2cz+4DbMwAXLdJTnFxAcQa8hG1D8TIn7jS3CyaIc+CfvWHV
+         Fdmr5EVdzd6HcJAADRCVWW3IcgzmUkpDt3VuvKsmPD2nkkcWhxz9g47/B5WeFT0vsdRt
+         JRU7UHfYIeUBpGb8RRzPqLQ8t2YPKMRpPLVh+PVdzi7C2tc0R19E+DhLaeFnI01DJ8Sd
+         svtLKS4abmo43//PNJd+f4+yr9woxay7rwxKU21izX8APaPbqKq5vyVwHEvoBatoXBoK
+         RrpuNya/BQ1l9YcGLXuLbyE/1vncnmbQHVLeMHtEyINp/aj1Fed5dQ3bTGXNJnmnZZSm
+         Vt/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747935216; x=1748540016;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MTeoN2ZNwpBqEf481xeP9DNeHeY17srYObiFUpBv5hM=;
-        b=u05VyTUqFLs6Y8vwBsJ3Fvm9KkwUyQsywkt0Paa5EBoaIoNHnSbEp54J4axT6cwqgh
-         lXDd+SfYepwHgEPtTe07z26whVzX2/oRecJWdIv0pRETAfXYdVs2gANI1CKWgh7Nhi8s
-         WGUqOgzCYt0hdI0Y2+XBseqrBUnfdfFiRdHmL0RHOUM7ZY+KAqPy3k4fdX7C7iGTV6sP
-         q9/Vu/91kxDoDxtPE2006r6EyQvh4v8nHsz9c5fxAA9KJk9ci/F1KGiviX+2JstCJxAe
-         WKplHvkff+ZLi7flrAyebdUhSzHmJhEIVVVpsMoyxtOHLELobDsCuStYbIk6AWgm0pSd
-         IYeA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+QyEDWAwUd8IQpZKryhx6fqEfxTIC7cZVnFvOJtpRKJl5qwFEV9yddGa+TpCh+jl3v7xvBnFE+/4=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwQwcumFVbIRlfIFGOX7K2GeazIn60/xvRagHvtvHWnilc7vLfN
-	mQ99p7nRd21qIO9MSFyUrr1cQ+Lk03t5nw9hBRy0M245aCcBT2jT2t8l
-X-Gm-Gg: ASbGncvPVBPlvWf0HYSGT8qY4ednwNswSSFleGOUT8QD3ahHYQ1GZJZxhAvVi7b6auG
-	XS4ZHDTQLzFQJs4nlsTrgiJuTB0J5531hwx5upzDDkMDBV0jJFu2U/LofJSydUDh4YiNjEzaORz
-	73v68L/adxxDIxl4b0UAyOmdE0QcQUkvqkrShivflq5DRFpks7RbXPow8kCpC1oqknRINREiLNK
-	GcZLvowdDkT1pF5N0F8/uP+sdmdZ2wRJqBbObYj4GmLxdl0ygWORboxlu28mveevZhBa3yYsVGT
-	9KSihUa9/+OjZ3WFyr/ERfhrTV/jXrB5BtRbIRx3w5qVgh+8H+yQxRzr43Z3Ht+XatlVAaqjJEp
-	41mZz
-X-Google-Smtp-Source: AGHT+IEJfDL3Z6GwGYXoUDscFxORY7Y5IAtF5LadMRdJVetuBsgTokkfHqjuWjdkON4+K8+lf3vDlg==
-X-Received: by 2002:a17:907:3fa7:b0:ad5:a12d:6665 with SMTP id a640c23a62f3a-ad5a12d6948mr956070166b.33.1747935215255;
-        Thu, 22 May 2025 10:33:35 -0700 (PDT)
-Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-ad52d06b532sm1098506966b.43.2025.05.22.10.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 May 2025 10:33:34 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 22 May 2025 19:33:26 +0200
-Subject: [PATCH RFC] spi: spi-qpic-snand: overestimate corrected bitflips
+        d=1e100.net; s=20230601; t=1747936166; x=1748540966;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UXlb98Jq8xguu+7ZKl/TCFGce1LzzWdMVuvQ7hjHTWY=;
+        b=wCaAMHTSmX4ojDJWbR9d74fV907ITT8iXv46ezbvZF5jsQB0rYtZTyDvAthmdFAaV4
+         zTIUPI6bHE1o11b/HixMNw2Lfm/TXCG4QWWvZSygWFRA4w/xpxZNQfjmD/uky8M/xo5N
+         fcOwzjndH7SVDoejq/c5aiuVc3+LbrDVwAKP76LJmh2JOKgndm0gMc90l79/2M0xjoeY
+         2vdiS2ikNQK8IrRJYDRelRwXt2A8eiJLSd3BZTKi16KWuPG8xGJ2sjvfIWJpE3NSB1jC
+         Cls5KFoPbxbGUg+jn3hf19tEFiWJ46i04cfuoMJK7V11FiEVOu6pO45t9ChtWpLozTW4
+         iJdg==
+X-Forwarded-Encrypted: i=1; AJvYcCXsVSbc2wvmbFD2xQ0r09bf9eHIWCzEmw6Sm53cwf1z/LVlA816MHwLNHGMJz8XWpPhl507kCIUXog=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzPXe1TI1ZTfPjfeAgjJdeBIYzPxdPTdkJyt4CLt4GHj2MtXZ12
+	cCzgdYqD8QrR2wwIkqTl/ixmVcF1sF5Mfz+h4CdtFwx8bfUf0lg2Zhos
+X-Gm-Gg: ASbGnctEif/IsFkYJitGUYSW+Bwy6X8ghnY4Gwj9BOlQqr8Bm5zcC9BIDBj8PvTC36E
+	cHKEMIb38W6rHi15UV+ERIFxjyNQUjoWar/yTluOfXdaeAy9G19eu1wnQlLNvL/8iECNpt8xeq0
+	fLSQX+wZ7e03bX5rRfduACFa0zgsQS9dCfk6K2qYI6GukBpZsiVgbpu2FU1LiRfnYVdGcmEHKs4
+	SxmDISGFqfJ0IvMv8tfA/izSqj8vhjryVTHCDw1PHajW2Dfh3xPPcKAhSuU9BtiY38gmFaiGKYW
+	086w0GwHMJ9oNSsRS940zRINsi2IaQGWZOVbcmcYKTGFEQDmzSd0f2ULZz7+dmbumNNtpZsTt6A
+	x5Mna9/P4Wurr0reV
+X-Google-Smtp-Source: AGHT+IEacT+OnQkIksGL3phaucP09y9PwnZSl4uyglfhmqkNpX/VieVElIyjZVOywJVl3/l2zAuGmw==
+X-Received: by 2002:a17:907:3ea4:b0:ad2:49b5:8e0d with SMTP id a640c23a62f3a-ad536b7f1c3mr2350148266b.15.1747936165504;
+        Thu, 22 May 2025 10:49:25 -0700 (PDT)
+Received: from [192.168.20.170] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad52d047c30sm1101122166b.6.2025.05.22.10.49.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 May 2025 10:49:24 -0700 (PDT)
+Message-ID: <dec260e9-8874-4727-9211-de939991a344@gmail.com>
+Date: Thu, 22 May 2025 19:49:24 +0200
 MIME-Version: 1.0
-Message-Id: <20250522-qpic-snand-overestimate-bitflips-v1-1-35c65c05068e@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAOVfL2gC/x3NQQrCMBBA0auUWTvQiW2RbgUP4FZcxGRSB2qaZ
- kIRSu9ucPk2/++gnIUVxmaHzJuoLLGCTg24t40To/hqMK3p294QrkkcarTR47JxZi3ysYXxJSX
- MkhSHjsj40JE7X6BmUuYg3//iAffbFZ7H8QO4AwpVdwAAAA==
-X-Change-ID: 20250521-qpic-snand-overestimate-bitflips-64112df41c38
-To: Mark Brown <broonie@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.14.2
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH next 2/2] spi: spi-qpic-snand: add support for 8 bits ECC
+ strength
+Content-Language: hu
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Md Sadre Alam <quic_mdalam@quicinc.com>
+Cc: Mark Brown <broonie@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Varadarajan Narayanan <quic_varada@quicinc.com>,
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250502-qpic-snand-8bit-ecc-v1-0-95f3cd08bbc5@gmail.com>
+ <20250502-qpic-snand-8bit-ecc-v1-2-95f3cd08bbc5@gmail.com>
+ <8aa3d4da-da3e-2af4-e0f9-cd56d6259d8f@quicinc.com>
+ <c1729d39-9f7f-4c6d-b8a4-72dfee4bfca5@gmail.com> <878qn2nsa0.fsf@bootlin.com>
+ <16195524-1f31-4968-a3fd-f3d24f1c4223@gmail.com> <87msbhezjf.fsf@bootlin.com>
+ <007881c9-e03c-1473-d8eb-53fbad8c6a8e@quicinc.com>
+ <87frh4ej87.fsf@bootlin.com>
+ <e9f460c3-a575-1014-cca7-27f1d79024e2@quicinc.com>
+ <87h61e8kow.fsf@bootlin.com>
+From: Gabor Juhos <j4g8y7@gmail.com>
+In-Reply-To: <87h61e8kow.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250522_103337_749117_5383697F 
-X-CRM114-Status: GOOD (  12.85  )
+X-CRM114-CacheID: sfid-20250522_104927_406567_5A2D0B4B 
+X-CRM114-Status: GOOD (  20.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,120 +110,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The QPIC hardware is not capable of reporting the exact number of the
-corrected bitflips, it only reports the number of the corrected bytes.
-However the current code treats that as corrected bitflips which is
-quite inaccurate in most cases. For example, even if the hardware reports
-only one byte as corrected, that byte may have contained multiple bit
-errors from one up to the maximum number of correctable bits.
-
-Change the code to report the maximum of the possibly corrected bits,
-thus allowing upper layers to do certain actions before the data gets
-lost due to uncorrectable errors.
-
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
-The patch tries to address Miquel's concerns [1] about the corrected bit
-error reporting capabilities of the QPIC hardware.
-
-[1] https://lore.kernel.org/all/87h61e8kow.fsf@bootlin.com
-
-nanbiterrs test result after the change:
-
-  # insmod mtd_test; insmod mtd_nandbiterrs dev=4
-  [   40.685251]
-  [   40.685278] ==================================================
-  [   40.685803] mtd_nandbiterrs: MTD device: 4
-  [   40.691566] mtd_nandbiterrs: MTD device size 7602176, eraseblock=131072, page=2048, oob=128
-  [   40.695528] mtd_nandbiterrs: Device uses 1 subpages of 2048 bytes
-  [   40.703789] mtd_nandbiterrs: Using page=0, offset=0, eraseblock=0
-  [   40.713655] mtd_nandbiterrs: incremental biterrors test
-  [   40.716118] mtd_nandbiterrs: write_page
-  [   40.722126] mtd_nandbiterrs: rewrite page
-  [   40.725878] mtd_nandbiterrs: read_page
-  [   41.103196] mtd_nandbiterrs: verify_page
-  [   41.106915] mtd_nandbiterrs: Successfully corrected 0 bit errors per subpage
-  [   41.111001] mtd_nandbiterrs: Inserted biterror @ 1/7
-  [   41.118007] mtd_nandbiterrs: rewrite page
-  [   41.123850] mtd_nandbiterrs: read_page
-  [   41.127458] qcom_snand 79b0000.spi: the number of corrected bits may be inaccurate
-  [   41.130538] mtd_nandbiterrs: Read reported 4 corrected bit errors
-  [   41.138060] mtd_nandbiterrs: verify_page
-  [   41.144265] mtd_nandbiterrs: Successfully corrected 1 bit errors per subpage
-  [   41.148217] mtd_nandbiterrs: Inserted biterror @ 3/7
-  [   41.155260] mtd_nandbiterrs: rewrite page
-  [   41.161076] mtd_nandbiterrs: read_page
-  [   41.164687] qcom_snand 79b0000.spi: the number of corrected bits may be inaccurate
-  [   41.167750] mtd_nandbiterrs: Read reported 4 corrected bit errors
-  [   41.175324] mtd_nandbiterrs: verify_page
-  [   41.181511] mtd_nandbiterrs: Successfully corrected 2 bit errors per subpage
-  [   41.185456] mtd_nandbiterrs: Inserted biterror @ 5/7
-  [   41.192516] mtd_nandbiterrs: rewrite page
-  [   41.198301] mtd_nandbiterrs: read_page
-  [   41.201949] qcom_snand 79b0000.spi: the number of corrected bits may be inaccurate
-  [   41.204990] mtd_nandbiterrs: Read reported 4 corrected bit errors
-  [   41.212568] mtd_nandbiterrs: verify_page
-  [   41.218720] mtd_nandbiterrs: Successfully corrected 3 bit errors per subpage
-  [   41.222714] mtd_nandbiterrs: Inserted biterror @ 7/7
-  [   41.229739] mtd_nandbiterrs: rewrite page
-  [   41.235548] mtd_nandbiterrs: read_page
-  [   41.239168] mtd_nandbiterrs: Read reported 4 corrected bit errors
-  [   41.242252] mtd_nandbiterrs: verify_page
-  [   41.248407] mtd_nandbiterrs: Successfully corrected 4 bit errors per subpage
-  [   41.252406] mtd_nandbiterrs: Inserted biterror @ 8/7
-  [   41.259413] mtd_nandbiterrs: rewrite page
-  [   41.265238] mtd_nandbiterrs: read_page
-  [   41.268858] mtd_nandbiterrs: error: read failed at 0x0
-  [   41.271937] mtd_nandbiterrs: After 5 biterrors per subpage, read reported error -74
-  [   41.280512] mtd_nandbiterrs: finished successfully.
-  [   41.284587] ==================================================
-  failed to insert /lib/modules/6.15.0-rc5+/mtd_nandbiterrs.ko
-  #
----
- drivers/spi/spi-qpic-snand.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 17bcd12f6cb932fdf2d968692359a0301ce4acdc..137d60081754db04ceb5db64e6f250f6477021db 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -638,6 +638,21 @@ static int qcom_spi_check_error(struct qcom_nand_controller *snandc)
- 			unsigned int stat;
- 
- 			stat = buffer & BS_CORRECTABLE_ERR_MSK;
-+
-+			if (stat && stat != ecc_cfg->strength) {
-+				/*
-+				 * The exact number of the corrected bits is
-+				 * unknown because the hardware only reports
-+				 * the number of the corrected bytes.
-+				 *
-+				 * Assume the worst case scenario and use
-+				 * the maximum.
-+				 */
-+				dev_warn(snandc->dev,
-+					 "the number of corrected bits may be inaccurate\n");
-+				stat = ecc_cfg->strength;
-+			}
-+
- 			snandc->qspi->ecc_stats.corrected += stat;
- 			max_bitflips = max(max_bitflips, stat);
- 		}
-
----
-base-commit: e7f3d11567c2c79c4342791ba91c500b434ce147
-change-id: 20250521-qpic-snand-overestimate-bitflips-64112df41c38
-
-Best regards,
--- 
-Gabor Juhos <j4g8y7@gmail.com>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+MjAyNS4gMDUuIDIxLiA5OjUyIGtlbHRlesOpc3NlbCwgTWlxdWVsIFJheW5hbCDDrXJ0YToKPiBP
+biAyMS8wNS8yMDI1IGF0IDExOjA4OjAyICswNTMwLCBNZCBTYWRyZSBBbGFtIDxxdWljX21kYWxh
+bUBxdWljaW5jLmNvbT4gd3JvdGU6Cj4gCj4+IEhpLAo+Pgo+PiBPbiA1LzE2LzIwMjUgNzo0NCBQ
+TSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPj4+Cj4+Pj4+PiBJbnRlcmVzdGluZ2x5IGVub3VnaCwg
+aXQgcmVwb3J0cyB0aGUgY29ycmVjdCBudW1iZXIgb2YgYml0IGVycm9ycyBub3cuCj4+Pj4+PiBG
+b3IgbWUgaXQgc2VlbXMsIHRoYXQgdGhlIGhhcmR3YXJlIHJlcG9ydHMgdGhlIG51bWJlciBvZiB0
+aGUgY29ycmVjdGVkCj4+Pj4+PiAqYnl0ZXMqIGluc3RlYWQgb2YgdGhlIGNvcnJlY3RlZCAqYml0
+cyouCj4+Pj4+IEkgZG91YnQgdGhhdCwgbm9ib2R5IGNvdW50cyBieXRlcyBvZiBlcnJvcnMuCj4+
+Pj4+IFlvdSByZXN1bHRzIGFyZSBzdXJwcmlzaW5nLiBJIGluaXRpYWxseSB0aG91Z2ggaW4gZmF2
+b3VyIG9mIGEgc29mdHdhcmUKPj4+Pj4gYnVnLCBidXQgdGhlbiBpdCBsb29rcyBldmVuIHdlaXJk
+ZXIgdGhhbiB0aGF0LiBBbGFtPwo+Pj4+IEkgaGF2ZSBjaGVja2VkIHdpdGggSFcgdGVhbSAsIHRo
+ZSBRUElDIEVDQyBIVyBlbmdpbmUgcmVwb3J0cyB0aGUgYml0Cj4+Pj4gZXJyb3IgYnl0ZSB3aXNl
+IG5vdCBiaXQgd2lzZS4KPj4+Pgo+Pj4+IGUuZwo+Pj4+ICAgICAgQnl0ZTAgLS0+IDItYml0Zmxp
+cHMgLS0+IFFQSUMgRUNDIGNvdW50cyAxIG9ubHkKPj4+PiAgICAgIEJ5dGUxIC0tPiAzLWJpdGZs
+aXBzIC0tPiBRUElDIEVDQyBjb3VudHMgMSBvbmx5Cj4+Pj4gICAgICBCeXRlMiAtLT4gMS1iaXRm
+bGlwcyAtLT4gUVBJQyBFQ0MgY291bnRzIDEgb25seQo+Pj4+ICAgICAgQnl0ZTMgLS0+IDQtYml0
+ZmxpcHMgLS0+IFFQSUMgRUNDIGNvdW50cyAxIG9ubHkgKGluIDgtYml0IGVjYykKPj4+PiAgICAg
+IEJ5dGU0IC0tPiA2LWJpdGZsaXBzIC0tPiBRUElDIEVDQyBjb3VudHMgMSBvbmx5IChpbiA4LWJp
+dCBlY2MpCj4+Pj4KPj4+PiBIb3BlIHRoaXMgY2FuIGNsZWFyaWZ5IHRoZSB0aGluZ3Mgbm93Lgo+
+Pj4gb19PID8/Pz8KPj4+IEhvdyBpcyB0aGF0IGV2ZW4gdXNlZnVsPyBUaGlzIGJhc2ljYWxseSBt
+ZWFucyBVQkkgd2lsbCBuZXZlciByZWZyZXNoCj4+PiB0aGUKPj4+IGRhdGEgYmVjYXVzZSB3ZSB3
+aWxsIGNvbnN0YW50bHkgdW5kZXJlc3RpbWF0ZSB0aGUgbnVtYmVyIG9mIGJpdGZsaXBzISBXZQo+
+Pj4gbmVlZCB0byBrbm93IHRoZSBhY3R1YWwgbnVtYmVyLCB0aGlzIGF2ZXJhZ2luZyBkb2VzIG5v
+dCBtYWtlIGFueSBzZW5zZQo+Pj4gZm9yIExpbnV4LiBJcyB0aGVyZSBhbm90aGVyIHdheSB0byBn
+ZXQgdGhlIHJhdyBudW1iZXIgb2YgYml0ZmxpcHM/Cj4+IEkgaGF2ZSByZS1jaGVja2VkIHdpdGgg
+SFcgdGVhbSwgdW5mb3J0dW5hdGVseSBjdXJyZW50bHkgdGhlcmUgaXMgbm8KPj4gcmVnaXN0ZXIg
+ZmllbGRzIGF2YWlsYWJsZSB0byBnZXQgdGhlIHJhdyBudW1iZXIgb2YgYml0IGZsaXBzLiBCdXQK
+Pj4gZm9yIG5ld2VyIGNoaXBzZXQgdGhleSBoYXZlIGZpeGVkIHRoaXMgaXNzdWUuIEJ1dCBjdXJy
+ZW50bHkgdGhlIFFQSUMKPj4gUVBJQ19OQU5EQ19CVUZGRVJfU1RBVFVTIHwgMHg3OUIwMDE4IHJl
+Z2lzdGVyIGJpdC04IHdpbGwgZ2V0IHNldCBpZgo+PiB0aGVyZSBpcyB1bmNvcnJlY3RhYmxlIGJp
+dGZsaXBzIGhhcHBlbmVkLgo+Pgo+PiBGb3IgNC1iaXQgRUNDIGlmIDUtYml0IHJhdyBiaXQgZmxp
+cHMgaGFwcGVuZWQgdGhlbiBiaXQtOCB3aWxsIGdldCBzZXQgaW4KPj4gUVBJQ19OQU5EQ19CVUZG
+RVJfU1RBVFVTLgo+Pgo+PiBzaW1pbGFyIGZvciA4LWJpdCBFQ0MgaWYgOS1iaXQgcmF3IGJpdCBm
+bGlwcyBoYXBwZW5lZCB0aGVuIGJpdC04IHdpbGwKPj4gZ2V0IHNldCBpbiBRUElDX05BTkRDX0JV
+RkZFUl9TVEFUVVMuCj4gCj4gSSBiZWxpZXZlIHRoZSB1bnJlY292ZXJhYmxlIHNpdHVhdGlvbiBp
+cyBoYW5kbGVkIGNvcnJlY3RseS4gV2hhdCBpcyBub3QKPiBpcyB0aGUgZmFjdCB0aGF0IHdlIGNh
+cmUgYWJvdXQgdGhlIG51bWJlciBvZiBiaXRmbGlwcyBiZWZvcmUgaGF2aW5nIGEKPiBmYWlsdXJl
+IGJlY2F1c2UgaWYgaXQgcmVhY2hlcyBhIGNlcnRhaW4gdGhyZXNob2xkICh0eXBpY2FsbHkgMi8z
+IG9mIHRoZQo+IHN0cmVuZ3RoKSB0aGUgdXBwZXIgbGF5ZXIgaXMgcmVzcG9uc2libGUgb2YgbW92
+aW5nIHRoZSBkYXRhIGFyb3VuZCB0bwo+IGF2b2lkIGxvb3NpbmcgaXQuCj4gCj4gWW91IG5lZWQg
+dG8gaWRlbnRpZnkgdGhlIGhhcmR3YXJlIHJldmlzaW9uIHRoYXQgZml4ZWQgaXQgYW5kIHByb3Zp
+ZGUgYQo+IHdhcm5pbmcgb3RoZXJ3aXNlLCBvciBhdCBsZWFzdCBhIGNvbW1lbnQgaW4gdGhlIGNv
+ZGUuLi4KCkluIGl0c2VsZiwgbmVpdGhlciBhIGNvbW1lbnQsIG5vciBhIHdhcm5pbmcgd2lsbCBo
+ZWxwIGFzIGZhciBhcyB0aGUgdXBwZXIgbGF5ZXIKaXMgY29uY2VybmVkLiBIb3dldmVyIHRoZSBk
+cml2ZXIgY2FuIGJlIGNoYW5nZWQgdG8gb3ZlcmVzdGltYXRlIHRoZSBudW1iZXIgb2YKY29ycmVj
+dGVkIGJpdGZsaXBzLgoKSSBqdXN0IHNlbnQgYSBwYXRjaCBbMV0gd2hpY2ggdHJpZXMgdG8gYWRk
+cmVzc2VzIHRoaXMuIEkgYWRtaXQgdGhhdCBpdCBpcyBub3QKaWRlYWwsIGJ1dCBpbiBteSBvcGlu
+aW9uIGl0IGlzIGEgcmVhc29uYWJsZSB0cmFkZW9mZiB3aGljaCBjYW4gYmUgdXNlZCBhcyBhCnRl
+bXBvcmFyeSBzb2x1dGlvbi4KCkZvciBhIGxvbmcgdGVybSBmaXgsIHByb2JhYmx5IGl0IHdvdWxk
+IGJlIHBvc3NpYmxlIHRvIGNoYW5nZSB0aGUgZHJpdmVyIHRvIGRvCnRoZSBFQ0MgY29ycmVjdGlv
+biBpbiBzb2Z0d2FyZS4gIEFsdGhvdWdoIEkgaGF2ZSBubyBpZGVhIGhvdyB0aGF0IHdvdWxkIGlt
+cGFjdAp0aGUgcGVyZm9ybWFuY2UuCgpbMV0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDI1
+MDUyMi1xcGljLXNuYW5kLW92ZXJlc3RpbWF0ZS1iaXRmbGlwcy12MS0xLTM1YzY1YzA1MDY4ZUBn
+bWFpbC5jb20KClJlZ2FyZHMsCkdhYm9yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
