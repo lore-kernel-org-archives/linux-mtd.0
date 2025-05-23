@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 770C5C54EDA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C91C8C54E65
 	for <linux-mtd@archiver.kernel.org>; Fri, 23 May 2025 00:24:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Ibf7QSKkMx4pi3EUQjym6rS9BQdjvenHz/ANh0onEoo=; b=3Uz81ZgIvzPSRx
-	fwCWE7XGVvh+/YZMlt1zRUVnMNDk8tSuqFW1RtzN5Q8PXVzUjE1Kh1FRoCUu9HvClBS5vCwyPZrGM
-	+2AiJ7pbXYhkPsPc+ghnBJvTdblVvnIigRNKURPFN8jNXU1T0aj5y0gHm7ma4PYiswMM8lkC4IoB3
-	zDub/FXYT5UHP6IkpEpdl1Emm5UY1CM6DYDvy3YkbOw5TgZvm8mz5Y8JJRX8JvOL6grp1J0Gom98g
-	8wvy7nk6ePF8TglTjThyGJYSeupMNyKreRJ88kVinyse042tL3qwobfeackqrkkjdrJ9lixu3H41g
-	fZSEetHS8gIRQ3uM0G3A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:To:
+	Subject:Message-ID:Date:MIME-Version:In-Reply-To:References:From:Reply-To:Cc:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=rUukSdm3AFwQau3Di8nPDtFQ9TDFAWa+ydTm/xyvnuU=; b=OYKTQSCMjxCycn70nGu3EjlVMf
+	dx8sV8qxC7zSqgq6ykMQMOMDJKnuPgKZJhAgKkcX0ZUaiYFFHlMNQD/sNjzBRSEMlaGc/bDxEt1dG
+	97bhu5SiYLhBeyMY6eqeIK7VhAiPSLUV/m9CEOzKoBsMrIRIaweW3FOPCoRX7hX1REuZdeWa22nqz
+	ZWc7X8/45+cbA0azy8Jom04O8YR4umfnbl0uMR8D9wXZ3F66tWfuoCIB/hQsaDfa1RjfcWLPElUld
+	KMYRScAv7VdXui8h1VpGMJ5tmIiM/KuhY2xcV/N4iSjjj8RL5h65lg3qXE7kpqCJadRwc6a439QzX
+	eF+NLQMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIGCy-00000002aNt-3Fo8;
+	id 1uIGCy-00000002aNm-1FqL;
 	Fri, 23 May 2025 00:24:20 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+Received: from mail-qk1-x72b.google.com ([2607:f8b0:4864:20::72b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIG3S-00000002ZS3-1Bsv
+	id 1uIFt9-00000002YFm-1Hrl
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 May 2025 00:14:31 +0000
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-231d4679580so61089625ad.1
-        for <linux-mtd@lists.infradead.org>; Thu, 22 May 2025 17:14:29 -0700 (PDT)
+	Fri, 23 May 2025 00:03:55 +0000
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-7c560c55bc1so835840185a.1
+        for <linux-mtd@lists.infradead.org>; Thu, 22 May 2025 17:03:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wkennington-com.20230601.gappssmtp.com; s=20230601; t=1747959269; x=1748564069; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tp0QRA01GhKZcH3WzS0osTNI00rf/GlEFqf7jT8l7Mc=;
-        b=bMlbq6a2lJKDAa4V68H7eKXb1UPhiv1ktqSFUMnhZl6D8d0DT4kbEO2lErn+uaydvC
-         gkeYcRYw6OcP9xsTt9T4hIjJZFUl50ndNeiNA2E5BfziSDobyRdqfifpF8LmCRvaA+7a
-         uqFC+/DjNux7bvS31SJtnBE8I5k5U7UWM7mPp00FimlN26gzZTW47NkNT4j7/EcqvXfn
-         8/tmn91p1H4huSgTRCvsxKltU3I0yvjrq0O83u7wGEH+x4MDLqa+LVsbaYVboHwW3aMO
-         fPfJ3kkeOrii0eR5uo4YXWUIx2++N7nxhgcV436kq6NptdspyN0QJxOrt17zDLLp+wEN
-         0+6g==
+        d=broadcom.com; s=google; t=1747958628; x=1748563428; darn=lists.infradead.org;
+        h=to:subject:message-id:date:thread-index:mime-version:in-reply-to
+         :references:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fB0nzJNuRIHSJXXr+VyCoAEgrMMXzvjrWySgp9xJVKU=;
+        b=FcsQF20GrhxyxqYGWYmh9T7czICGoCh+t2hkUknOtc+zpGnR8tp/iLQ3GMKvbOicxx
+         P7QfY45PYDdMVd4uaRsC+ey5aJfsM3YX3KMLjJEuXPGuBauUNkt4AZ68Qzhsx6oOICRu
+         savqF45g5rhkJAUXS2OFpt7gt1D4HaJPyEPdg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747959269; x=1748564069;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Tp0QRA01GhKZcH3WzS0osTNI00rf/GlEFqf7jT8l7Mc=;
-        b=MT5K8aK+43K3OKEcH+jsGnEqfTyBV+Kth/V9NP/ARldmbJPb2bWOGzB1V7BSJltwL0
-         23HUZmGFtz3KgOi9sIW5w75JjgvYMWuP9+HXUWD3LOBjUMrMxeByEWJOqQo+75C03ran
-         p7bj3ZFWwv49UzkRGb+ZNMkm9COXMmCfF72M7RlU/APlkKWOxtf/KYjAs7JM9zgAR4ee
-         yBRy6o6sqd76tVrYhXVNnY5s/pzW/4/jWoH5wA77TJYsUFK1dOpC7qroZxQ9uk32K6z3
-         6ex8M1ri2dauZ0/Q7FZTrQ1uDlCR1fq+gW1/hc+Wjb8X26+zH3ufO1o8W/WrooEzbz+T
-         iJeg==
-X-Gm-Message-State: AOJu0YyUy3ioHxTAMpEsgrkXYRxfkioPoqdp/9aOdqAwQn3bWTVjbjTv
-	coQu4IsXVbto1jHRzxTl3IKcThjqqd/JNUOEXcw6/aW3NkANJKgMZVn6xf7atJXYtherzzOQ3In
-	9pey5qYY=
-X-Gm-Gg: ASbGncsXI8lSFgufHP9MY0bJklG0EmDx4SVqYsC//k9SIjflfIIOa+B4fxEwgBNcZgX
-	sRdoEbBC1azDoN6YvnKvjKpavX8SntGsbtyuA/v3e0Q+/impP5T76LzH/4zt31XewEnrbS2wnAK
-	aahNaPSqDgVy0F1ruZUT0kjMtv6qvZtyiWVheR/OGk984gl5QfLAmoH7wGv00N66Gu6x2hcevYb
-	5syNt9uqYdH71sE6t1m5rkZSDtcRcEkvHBrHYuufccuUjaquSup92tPSqkY+nLOL+oYlGaVfv88
-	nAP2l8HuY43MFR71+hn+bKv1uqNL1OXha4zQuqjRaU6SxFsqDFaGoxB6BjO+nNPvP9tWV4UVZYU
-	/7/croeqmg8c439qjDYZ2yCM1UuTAKnK20KV0dgM=
-X-Google-Smtp-Source: AGHT+IGyriXvVaDtGmLTkO0pmYK5X9MSri1TecWPB1OUf3Ug8GWD5/2TBrkBh+ZgQX8XZ506G6IsWQ==
-X-Received: by 2002:a17:903:3bd0:b0:223:47b4:aaf8 with SMTP id d9443c01a7336-233f262a7d2mr12221715ad.52.1747959268808;
-        Thu, 22 May 2025 17:14:28 -0700 (PDT)
-Received: from wak-linux.svl.corp.google.com ([2a00:79e0:2e5b:9:10b9:7db5:9893:e976])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ebae71sm113650795ad.190.2025.05.22.17.14.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 May 2025 17:14:28 -0700 (PDT)
-From: "William A. Kennington III" <william@wkennington.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	"William A. Kennington III" <william@wkennington.com>
-Subject: [PATCH RFC] mtd: spi-nor: Sleep between ready checks
-Date: Thu, 22 May 2025 17:14:11 -0700
-Message-ID: <20250523001412.878560-1-william@wkennington.com>
-X-Mailer: git-send-email 2.49.0.1151.ga128411c76-goog
+        d=1e100.net; s=20230601; t=1747958628; x=1748563428;
+        h=to:subject:message-id:date:thread-index:mime-version:in-reply-to
+         :references:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fB0nzJNuRIHSJXXr+VyCoAEgrMMXzvjrWySgp9xJVKU=;
+        b=dBYjg01dFSgOeNVFIMfTF/HYcc3R3J2KkHlpT3m6hESfPNJbYgQ/p0KJsBDe1JDVv7
+         XXAUP6pVoIPYStERna8MnPtX3y8xUNKGYCg9F6OvW/tGEmCSYZ4ZFRDORl3ILfEfcvh0
+         nR8VQHDPTpjy4vScYpXtXdMiTua7aY4FdBhXvWqvwbXYX70AZjAgrUVCD0vux3+7jNcP
+         UTeaCxUWXNeo5p5b/UIUv5IPL1ZxKaEDKTr1HvmGBl046KHMzDSomXlZv/S1Gzp2x+IF
+         qK8tSkKE0B3lyU8GM+7oU4QJRZ1tsuzD+Yl195SpZtKQDttvm5CaDppt9FobOi6jUPDa
+         LZCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVe6V2MFp2IxXwirmel3X67ogh0nU7I0AazXhpENIrpaJWEIL7TpAc6b1rlOVuMBOi02gCQmTtwn9M=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx+GkbZRx7ziYnea+s6MG8MPLpeY6RXRuyK3YF4aovWMhzLNeZx
+	FFLJi+/FvD+L4xOqF3aLXUkPCQCZBOewP29HR9tZ4D2qYx5A3QVr4qXUSknYcf0ZtIKfO01yeXC
+	4kln+BfWvN0hDgRkv27cUWrX+iLQT/l0hgQVAPpQd
+X-Gm-Gg: ASbGncs4qQJur60Bul5w8kTVCFPQDeWPirnN37OyzeOYR+LtS87+4kJno8G4fSMH9IE
+	Zu8CMBvJmJIWgFww/dxGx2IDlqaeJyV7KfwsPZek45xaHCnShqTs4655QuPNWVWGuoaB6xzuH3D
+	Uip5SuvKke0PAk6m7fTKq0NGuRmu7J9joV9o0Dc5CzIvsN
+X-Google-Smtp-Source: AGHT+IHi9XsOKbk7IF//vrYaviFV99YOSxxu+OUOCYnSN6cXsi1Ha0iKoNp1o6aW7SiL6xcmJXoYfGjNXSX1IUn8DuM=
+X-Received: by 2002:a05:620a:17a2:b0:7c5:50ab:de07 with SMTP id
+ af79cd13be357-7cd46722387mr4138264485a.21.1747958628061; Thu, 22 May 2025
+ 17:03:48 -0700 (PDT)
+From: William Zhang <william.zhang@broadcom.com>
+References: <20250521080325.581366-1-noltari@gmail.com>
+In-Reply-To: <20250521080325.581366-1-noltari@gmail.com>
 MIME-Version: 1.0
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQEau4l2NieTobi/jvpPRXRGx/ckD7VhdRpg
+Date: Thu, 22 May 2025 17:03:46 -0700
+X-Gm-Features: AX0GCFuncgF1XPgtLCJIcLqgZHOWWtWNB8O4WMzDpDY2GTxQfZTMmWysLGcd2i8
+Message-ID: <7cfd86d84bec5522dec4292605d6828e@mail.gmail.com>
+Subject: RE: [PATCH v5] mtd: rawnand: brcmnand: legacy exec_op implementation
+To: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>, 
+	linux-mtd@lists.infradead.org, dregan@broadcom.com, miquel.raynal@bootlin.com, 
+	bcm-kernel-feedback-list@broadcom.com, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, rafal@milecki.pl, 
+	computersforpeace@gmail.com, Kamal Dasu <kamal.dasu@broadcom.com>, 
+	Dan Beygelman <dan.beygelman@broadcom.com>, frieder.schrempf@kontron.de, 
+	linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at, 
+	bbrezillon@kernel.org, kdasu.kdev@gmail.com, jaimeliao.tw@gmail.com, 
+	kilobyte@angband.pl, jonas.gorski@gmail.com, dgcbueu@gmail.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250522_171430_520257_02381C2C 
-X-CRM114-Status: GOOD (  17.36  )
+X-CRM114-CacheID: sfid-20250522_170351_498927_82BA1B55 
+X-CRM114-Status: GOOD (  35.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,121 +93,460 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6039494371127240439=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We have SPI NOR devices that respond very slowly (200ms+) to some
-commands. This causes our CPU to stall while repeatedly polling the NOR
-with no cooldown in between attempts. In order to reduce overhead, this
-patch introduces an exponential backoff in SPI readiness polling, that
-self tunes the polling interval to match the speed of most transactions.
+--===============6039494371127240439==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="00000000000021546d0635c255f8"
 
-Signed-off-by: William A. Kennington III <william@wkennington.com>
----
- drivers/mtd/spi-nor/core.c  | 56 +++++++++++++++++++++++++++----------
- include/linux/mtd/spi-nor.h |  2 ++
- 2 files changed, 44 insertions(+), 14 deletions(-)
+--00000000000021546d0635c255f8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ac4b960101cc..75d3a4a1c1e3 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -714,27 +714,47 @@ static int spi_nor_ready(struct spi_nor *nor)
- static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
- 						unsigned long timeout_jiffies)
- {
--	unsigned long deadline;
--	int timeout = 0, ret;
--
--	deadline = jiffies + timeout_jiffies;
--
--	while (!timeout) {
--		if (time_after_eq(jiffies, deadline))
--			timeout = 1;
-+	unsigned long deadline = jiffies + timeout_jiffies;
-+	unsigned long sleep = nor->ready_sleep;
-+	int ret, sleeps = 0;
- 
-+	while (true) {
- 		ret = spi_nor_ready(nor);
- 		if (ret < 0)
- 			return ret;
--		if (ret)
-+		if (ret) {
-+			/*
-+			 * We want to decrease the polling interval in cases
-+			 * where multiple requests finish in a single iteration
-+			 * or less. We don't want to do it for single outliers,
-+			 * but we give more weight to short transactions.
-+			 */
-+			if (sleeps < 2)
-+				nor->ready_sleep_down += 2;
-+			else if (nor->ready_sleep_down > 0)
-+				nor->ready_sleep_down--;
-+
-+			if (nor->ready_sleep_down >= 5) {
-+				nor->ready_sleep >>= 1;
-+				nor->ready_sleep_down = 0;
-+			}
- 			return 0;
-+		}
-+		if (time_after_eq(jiffies, deadline)) {
-+			dev_dbg(nor->dev, "flash operation timed out\n");
-+			return -ETIMEDOUT;
-+		}
- 
--		cond_resched();
--	}
--
--	dev_dbg(nor->dev, "flash operation timed out\n");
-+		fsleep(sleep);
-+		sleeps++;
- 
--	return -ETIMEDOUT;
-+		/*
-+		 * Exponentially backoff the sleep, but hard limit at
-+		 * 1ms to avoid responsiveness issues.
-+		 */
-+		if (sleep < 1000)
-+			sleep += (sleep >> 1) + 1;
-+	}
- }
- 
- /**
-@@ -3449,6 +3469,14 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 
- 	nor->info = info;
- 
-+	/*
-+	 * Pick an initial sleep value that will get downtuned.
-+	 * We want this value to be higher than needed for most flashes
-+	 * as it will clamp down to the fastest transactions.
-+	 */
-+	nor->ready_sleep = 127;
-+	nor->ready_sleep_down = 0;
-+
- 	mutex_init(&nor->lock);
- 
- 	/* Init flash parameters based on flash_info struct and SFDP */
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index cdcfe0fd2e7d..27bb4243db64 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -406,6 +406,8 @@ struct spi_nor {
- 	enum spi_nor_protocol	reg_proto;
- 	bool			sst_write_second;
- 	u32			flags;
-+	unsigned long		ready_sleep;
-+	unsigned int		ready_sleep_down;
- 	enum spi_nor_cmd_ext	cmd_ext_type;
- 	struct sfdp		*sfdp;
- 	struct dentry		*debugfs_root;
--- 
-2.49.0.1151.ga128411c76-goog
+> -----Original Message-----
+> From: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Sent: Wednesday, May 21, 2025 1:03 AM
+> To: linux-mtd@lists.infradead.org; dregan@broadcom.com;
+> miquel.raynal@bootlin.com; bcm-kernel-feedback-list@broadcom.com;
+> florian.fainelli@broadcom.com; rafal@milecki.pl;
+> computersforpeace@gmail.com; kamal.dasu@broadcom.com;
+> dan.beygelman@broadcom.com; william.zhang@broadcom.com;
+> frieder.schrempf@kontron.de; linux-kernel@vger.kernel.org;
+> vigneshr@ti.com;
+> richard@nod.at; bbrezillon@kernel.org; kdasu.kdev@gmail.com;
+> jaimeliao.tw@gmail.com; kilobyte@angband.pl; jonas.gorski@gmail.com;
+> dgcbueu@gmail.com
+> Cc: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Subject: [PATCH v5] mtd: rawnand: brcmnand: legacy exec_op implementation
+>
+> Commit 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+> removed legacy interface functions, breaking < v5.0 controllers support.
+> In order to fix older controllers we need to add an alternative exec_op
+> implementation which doesn't rely on low level registers.
+>
+> Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Reviewed-by: David Regan <dregan@broadcom.com>
+> ---
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 222
+> ++++++++++++++++++++++-
+>  1 file changed, 215 insertions(+), 7 deletions(-)
+>
+>  v5: add changes requested by Miqu=C3=A8l Raynal:
+>   - Mention and explain legacy in native_cmd_conv.
+>   - EOPNOTSUPP instead of EINVAL for instr->type else.
+>   - Implement missing check_only functionality.
+>
+>  v4: add changes requested by Jonas Gorski:
+>   - Add missing breaks in brcmnand_exec_instructions_legacy.
+>   - Restore missing ret assignment in brcmnand_exec_op.
+>
+>  v3: add changes requested by Florian and other improvements:
+>   - Add associative array for native command conversion.
+>   - Add function pointer to brcmnand_controller for exec_instr
+>     functionality.
+>   - Fix CMD_BLOCK_ERASE address.
+>   - Drop NAND_CMD_READOOB support.
+>
+>  v2: multiple improvements:
+>   - Use proper native commands for checks.
+>   - Fix NAND_CMD_PARAM/NAND_CMD_RNDOUT addr calculation.
+>   - Remove host->last_addr usage.
+>   - Remove sector_size_1k since it only applies to v5.0+ controllers.
+>   - Remove brcmnand_wp since it doesn't exist for < v5.0 controllers.
+>   - Use j instead of i for flash_cache loop.
+>
+> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> index 299dd2bca5b4..5ed79ffa271c 100644
+> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> @@ -65,6 +65,7 @@ module_param(wp_on, int, 0444);
+>  #define CMD_PARAMETER_READ		0x0e
+>  #define CMD_PARAMETER_CHANGE_COL	0x0f
+>  #define CMD_LOW_LEVEL_OP		0x10
+> +#define CMD_NOT_SUPPORTED		0xff
+>
+>  struct brcm_nand_dma_desc {
+>  	u32 next_desc;
+> @@ -199,6 +200,30 @@ static const u16 flash_dma_regs_v4[] =3D {
+>  	[FLASH_DMA_CURRENT_DESC_EXT]	=3D 0x34,
+>  };
+>
+> +/* Native command conversion for legacy controllers (< v5.0) */
+> +static const u8 native_cmd_conv[] =3D {
+> +	[NAND_CMD_READ0]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_READ1]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_RNDOUT]	=3D CMD_PARAMETER_CHANGE_COL,
+> +	[NAND_CMD_PAGEPROG]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_READOOB]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_ERASE1]	=3D CMD_BLOCK_ERASE,
+> +	[NAND_CMD_STATUS]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_SEQIN]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_RNDIN]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_READID]	=3D CMD_DEVICE_ID_READ,
+> +	[NAND_CMD_ERASE2]	=3D CMD_NULL,
+> +	[NAND_CMD_PARAM]	=3D CMD_PARAMETER_READ,
+> +	[NAND_CMD_GET_FEATURES]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_SET_FEATURES]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_RESET]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_READSTART]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_READCACHESEQ]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_READCACHEEND]	=3D CMD_NOT_SUPPORTED,
+> +	[NAND_CMD_RNDOUTSTART]	=3D CMD_NULL,
+> +	[NAND_CMD_CACHEDPROG]	=3D CMD_NOT_SUPPORTED,
+> +};
+> +
+>  /* Controller feature flags */
+>  enum {
+>  	BRCMNAND_HAS_1K_SECTORS			=3D BIT(0),
+> @@ -237,6 +262,12 @@ struct brcmnand_controller {
+>  	/* List of NAND hosts (one for each chip-select) */
+>  	struct list_head host_list;
+>
+> +	/* Functions to be called from exec_op */
+> +	int (*check_instr)(struct nand_chip *chip,
+> +			   const struct nand_operation *op);
+> +	int (*exec_instr)(struct nand_chip *chip,
+> +			  const struct nand_operation *op);
+> +
+>  	/* EDU info, per-transaction */
+>  	const u16               *edu_offsets;
+>  	void __iomem            *edu_base;
+> @@ -2478,18 +2509,190 @@ static int brcmnand_op_is_reset(const struct
+> nand_operation *op)
+>  	return 0;
+>  }
+>
+> +static int brcmnand_check_instructions(struct nand_chip *chip,
+> +				       const struct nand_operation *op)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int brcmnand_exec_instructions(struct nand_chip *chip,
+> +				      const struct nand_operation *op)
+> +{
+> +	struct brcmnand_host *host =3D nand_get_controller_data(chip);
+> +	unsigned int i;
+> +	int ret =3D 0;
+> +
+> +	for (i =3D 0; i < op->ninstrs; i++) {
+> +		ret =3D brcmnand_exec_instr(host, i, op);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int brcmnand_check_instructions_legacy(struct nand_chip *chip,
+> +					      const struct nand_operation *op)
+> +{
+> +	const struct nand_op_instr *instr;
+> +	unsigned int i;
+> +	u8 cmd;
+> +
+> +	for (i =3D 0; i < op->ninstrs; i++) {
+> +		instr =3D &op->instrs[i];
+> +
+> +		switch (instr->type) {
+> +		case NAND_OP_CMD_INSTR:
+> +			cmd =3D native_cmd_conv[instr->ctx.cmd.opcode];
+> +			if (cmd =3D=3D CMD_NOT_SUPPORTED)
+> +				return -EOPNOTSUPP;
+> +			break;
+> +		case NAND_OP_ADDR_INSTR:
+> +		case NAND_OP_DATA_IN_INSTR:
+> +		case NAND_OP_WAITRDY_INSTR:
+> +			break;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int brcmnand_exec_instructions_legacy(struct nand_chip *chip,
+> +					     const struct nand_operation *op)
+> +{
+> +	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> +	struct brcmnand_host *host =3D nand_get_controller_data(chip);
+> +	struct brcmnand_controller *ctrl =3D host->ctrl;
+> +	const struct nand_op_instr *instr;
+> +	unsigned int i, j;
+> +	u8 cmd =3D CMD_NULL, last_cmd =3D CMD_NULL;
+> +	int ret =3D 0;
+> +	u64 last_addr;
+> +
+> +	for (i =3D 0; i < op->ninstrs; i++) {
+> +		instr =3D &op->instrs[i];
+> +
+> +		if (instr->type =3D=3D NAND_OP_CMD_INSTR) {
+> +			cmd =3D native_cmd_conv[instr->ctx.cmd.opcode];
+> +			if (cmd =3D=3D CMD_NOT_SUPPORTED) {
+> +				dev_err(ctrl->dev, "unsupported cmd=3D%d\n",
+> +					instr->ctx.cmd.opcode);
+> +				ret =3D -EOPNOTSUPP;
+> +				break;
+> +			}
+> +		} else if (instr->type =3D=3D NAND_OP_ADDR_INSTR) {
+> +			u64 addr =3D 0;
+> +
+> +			if (cmd =3D=3D CMD_NULL)
+> +				continue;
+> +
+> +			if (instr->ctx.addr.naddrs > 8) {
+> +				dev_err(ctrl->dev, "unsupported naddrs=3D%u\n",
+> +					instr->ctx.addr.naddrs);
+> +				ret =3D -EOPNOTSUPP;
+> +				break;
+> +			}
+> +
+> +			for (j =3D 0; j < instr->ctx.addr.naddrs; j++)
+> +				addr |=3D (instr->ctx.addr.addrs[j]) << (j << 3);
+> +
+> +			if (cmd =3D=3D CMD_BLOCK_ERASE)
+> +				addr <<=3D chip->page_shift;
+> +			else if (cmd =3D=3D CMD_PARAMETER_CHANGE_COL)
+> +				addr &=3D ~((u64)(FC_BYTES - 1));
+> +
+> +			brcmnand_set_cmd_addr(mtd, addr);
+> +			brcmnand_send_cmd(host, cmd);
+> +			last_addr =3D addr;
+> +			last_cmd =3D cmd;
+> +			cmd =3D CMD_NULL;
+> +			brcmnand_waitfunc(chip);
+> +
+> +			if (last_cmd =3D=3D CMD_PARAMETER_READ ||
+> +			    last_cmd =3D=3D CMD_PARAMETER_CHANGE_COL) {
+> +				/* Copy flash cache word-wise */
+> +				u32 *flash_cache =3D (u32 *)ctrl->flash_cache;
+> +
+> +				brcmnand_soc_data_bus_prepare(ctrl->soc, true);
+> +
+> +				/*
+> +				 * Must cache the FLASH_CACHE now, since
+> changes in
+> +				 * SECTOR_SIZE_1K may invalidate it
+> +				 */
+> +				for (j =3D 0; j < FC_WORDS; j++)
+> +					/*
+> +					 * Flash cache is big endian for parameter
+> pages, at
+> +					 * least on STB SoCs
+> +					 */
+> +					flash_cache[j] =3D
+> be32_to_cpu(brcmnand_read_fc(ctrl, j));
+> +
+> +				brcmnand_soc_data_bus_unprepare(ctrl->soc,
+> true);
+> +			}
+> +		} else if (instr->type =3D=3D NAND_OP_DATA_IN_INSTR) {
+> +			u8 *in =3D instr->ctx.data.buf.in;
+> +
+> +			if (last_cmd =3D=3D CMD_DEVICE_ID_READ) {
+> +				u32 val;
+> +
+> +				if (instr->ctx.data.len > 8) {
+> +					dev_err(ctrl->dev, "unsupported
+> len=3D%u\n",
+> +						instr->ctx.data.len);
+> +					ret =3D -EOPNOTSUPP;
+> +					break;
+> +				}
+> +
+> +				for (j =3D 0; j < instr->ctx.data.len; j++) {
+> +					if (j =3D=3D 0)
+> +						val =3D brcmnand_read_reg(ctrl,
+> BRCMNAND_ID);
+> +					else if (j =3D=3D 4)
+> +						val =3D brcmnand_read_reg(ctrl,
+> BRCMNAND_ID_EXT);
+> +
+> +					in[j] =3D (val >> (24 - ((j % 4) << 3))) & 0xff;
+> +				}
+> +			} else if (last_cmd =3D=3D CMD_PARAMETER_READ ||
+> +				   last_cmd =3D=3D CMD_PARAMETER_CHANGE_COL) {
+> +				u64 addr;
+> +				u32 offs;
+> +
+> +				for (j =3D 0; j < instr->ctx.data.len; j++) {
+> +					addr =3D last_addr + j;
+> +					offs =3D addr & (FC_BYTES - 1);
+> +
+> +					if (j > 0 && offs =3D=3D 0)
+> +
+> 	nand_change_read_column_op(chip, addr, NULL, 0,
+> +									   false);
+> +
+> +					in[j] =3D ctrl->flash_cache[offs];
+> +				}
+> +			}
+> +		} else if (instr->type =3D=3D NAND_OP_WAITRDY_INSTR) {
+> +			ret =3D bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY,
+> NAND_CTRL_RDY, 0);
+> +			if (ret)
+> +				break;
+> +		} else {
+> +			dev_err(ctrl->dev, "unsupported instruction type: %d\n",
+> instr->type);
+> +			ret =3D -EOPNOTSUPP;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  static int brcmnand_exec_op(struct nand_chip *chip,
+>  			    const struct nand_operation *op,
+>  			    bool check_only)
+>  {
+>  	struct brcmnand_host *host =3D nand_get_controller_data(chip);
+> +	struct brcmnand_controller *ctrl =3D host->ctrl;
+>  	struct mtd_info *mtd =3D nand_to_mtd(chip);
+>  	u8 *status;
+> -	unsigned int i;
+>  	int ret =3D 0;
+>
+>  	if (check_only)
+> -		return 0;
+> +		return ctrl->check_instr(chip, op);
+>
+>  	if (brcmnand_op_is_status(op)) {
+>  		status =3D op->instrs[1].ctx.data.buf.in;
+> @@ -2513,11 +2716,7 @@ static int brcmnand_exec_op(struct nand_chip *chip=
+,
+>  	if (op->deassert_wp)
+>  		brcmnand_wp(mtd, 0);
+>
+> -	for (i =3D 0; i < op->ninstrs; i++) {
+> -		ret =3D brcmnand_exec_instr(host, i, op);
+> -		if (ret)
+> -			break;
+> -	}
+> +	ret =3D ctrl->exec_instr(chip, op);
+>
+>  	if (op->deassert_wp)
+>  		brcmnand_wp(mtd, 1);
+> @@ -3130,6 +3329,15 @@ int brcmnand_probe(struct platform_device *pdev,
+> struct brcmnand_soc *soc)
+>  	if (ret)
+>  		goto err;
+>
+> +	/* Only v5.0+ controllers have low level ops support */
+> +	if (ctrl->nand_version >=3D 0x0500) {
+> +		ctrl->check_instr =3D brcmnand_check_instructions;
+> +		ctrl->exec_instr =3D brcmnand_exec_instructions;
+> +	} else {
+> +		ctrl->check_instr =3D brcmnand_check_instructions_legacy;
+> +		ctrl->exec_instr =3D brcmnand_exec_instructions_legacy;
+> +	}
+> +
+>  	/*
+>  	 * Most chips have this cache at a fixed offset within 'nand' block.
+>  	 * Some must specify this region separately.
+> --
+> 2.39.5
 
+Reviewed-by: William Zhang <william.zhang@broadcom.com>
+
+--00000000000021546d0635c255f8
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
+6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
+xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
+VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
+/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
+0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
+urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJg
+MIICXAIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
+JOEwDQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcNAQkEMSIEII3EZravAMUiV0kMsWmRXdQa388Y
+ZGLnw7GlGAj9wfI7MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1
+MDUyMzAwMDM0OFowXAYJKoZIhvcNAQkPMU8wTTALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3
+DQEBAQUABIIBAG8+10CVDsaOhrnY685GaKP/W1UyVYq3dhjypAQm+XxBxh8gvb0Uji2KVvgCoXTz
+5IcWsuLvjQKmo/XTBNrH545LfeMvv2BoW2IEmyOdADqcRlF1xV9SbNVhWpI5zhu0OGURPOH4n2qz
+4YDB2tdypeoJVieyIwB2e5iK5aiODXbr17zriYSBw4wLAOFWfgqZ75GQibHVmmwVAXYIQC4mNLZM
+kPbG7+xA+Q+B2aeRdD3m2OHjHC8i0gtqYOPV2UqbWiyLa9OjWlg+0BNHNGlYsZllHybc1A2C2CP6
+4UqXcbAvwvrk172bsVqWVcNOT26tPrJ4G+64pjFVGxzli9LSfxM=
+--00000000000021546d0635c255f8--
+
+
+--===============6039494371127240439==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6039494371127240439==--
+
