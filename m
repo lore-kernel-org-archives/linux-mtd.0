@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 834D5C54F32
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 May 2025 10:20:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B00DAC54F32
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 May 2025 10:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jmhddv8HSscaXQMzdlO+1g8ZePm0Ps60+1TINYH3ERA=; b=zamHelBYC3SnCV
-	uIEiIyOmfW0u9iAK/1064pkF9Svv0z8Va3KKQoUmIWQLxpDOlZp42Rig/nGlGiNvO1/2rIkAiAskj
-	oLCxJ2tiv05r3u7jS7hdUmDqn1rmABYYpwb8AMNevbsXIqEP+0isAnATAkgh13AvU6MXjZleFBF0L
-	qOuNgYDO9AhBxZLBlHEpizulIZ/EpzpBABxNwhoJFZfvw36Q7ZSsvFFbD0cG5PdR0U8SWwJnZR/Kz
-	o5PGrv+n2yw7R1+UKH7HF9UJtC+Jw3suTUMK7hzdLkwH/ZtzE5j0OSziYBEOA12elyKpSUpOaqJuZ
-	B5VrMzqeIJwiydGjlm5Q==;
+	List-Owner; bh=Y9lN84OpiFKzscDVpj4rfH73T0q2qTlkE7QD7vPis2o=; b=z6SxZBOEu4Aq/K
+	mXK1IxZtTxzRsvfo6ZeCHWwWjrylImtX6YnIKYXJy3dBmzt7P1lHWYxawSxUY+SCUHlpqjvwnM3q5
+	IVOAN135o3yudZg50A2JLafKgl5/K4VMIVEJg19RDT5TxJxwjOO7kdcJyLSSx1riNkJuyalSW0sER
+	IVHH1eZBrLAAvFjw7fcZTzfyU+vISI6ptX20hJBcKgpPmrb4f8vW3Glh54tc2TJNvOs+3tmaYXHRM
+	WDIUtdAF2in76/D8E+EDIdFs5EihM9MyS+/tZ3K/UikDvTSTjjkazSz1dwtjncDU4Kb/bB9FNCphL
+	FSmTURVzOu79/ktjn9xg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIlzM-00000005jOQ-0aaD;
-	Sat, 24 May 2025 10:20:24 +0000
-Received: from mgamail.intel.com ([192.198.163.19])
+	id 1uIm8D-00000005jq8-2AtH;
+	Sat, 24 May 2025 10:29:33 +0000
+Received: from mgamail.intel.com ([192.198.163.7])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIlzH-00000005jO1-44Zh
+	id 1uIm8B-00000005jpi-1b9w
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 May 2025 10:20:21 +0000
+	Sat, 24 May 2025 10:29:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748082020; x=1779618020;
+  t=1748082572; x=1779618572;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=KAzAK7TgNRgfMo1XSxTNbqWPQmUnZXND6HQQpmqPXwQ=;
-  b=QvuF6eQkqyqXqD6ztHsblXOsiEMZVT5jsYjoB5gdKou+tlYxHzsle2H/
-   oaj9X2XZoJPRMRuO07KQor4NwxOcL9HIf5spz7SRa0g6/CqRCASwopw/u
-   P3YDUXyRDmOLwjIDA2SycdsfJV5ymEDpYYa1Dq3t7If56xB1Yni3nSrGm
-   038gyna59VeMeA0ZubrQPAN8joMa//8SRGmDmBgp8qAs4UdccpYGVs6DJ
-   imwLNaIHegjKnbN2VoMaJqL+X90oHGip2hrsQkkC/cgG/tz1A8J0w7uPD
-   0OYC+WVJ9jaLhE2ylADTrxzlk9xJcjQL8D9ez93RT5kKm1fmMkE2vhnUP
+  bh=s6UiEN1Jm7OVCrzrD4ZPy3L4yqbPYUdJaL8UHsYSCNY=;
+  b=kSF0V4Vk2rZGJIvujfm4LTnUtfm0GXbKSQBfGPWCk7UylTGfIvLN/S8C
+   rK5zxdXmfudrQSmkKg0W6oJY+4jN++5Kud3Px+YlfCtfNoqNAjQdp/+3J
+   Enh67qIorIId5KTSO9k+Yh3gqBRwLgsUkRK3Ej2XVWYxSKJuym64dt+Gq
+   rqf3YvbwAz690CfR9IN8B8vc2+vOMbCCEnHh3yFj5H/gYqLzQl9ty8GIS
+   9SF0VvKFk2S0+o80Amv7egB1G17yCLbw8PqxdWl4ooIXcLb1kwzdBhz/D
+   ddNvjYXBbxZjzbmO/wS6Tu1GlVLLit0nKYRuAPc59ZyRgj+LLdhG3yWx8
    g==;
-X-CSE-ConnectionGUID: zXAH8h3zThSMmdevzoFv4g==
-X-CSE-MsgGUID: VM+yuyPZSWirrFem0YlqZg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11441"; a="49241372"
+X-CSE-ConnectionGUID: hQt3Hlf6QG2e398Q1dHTSA==
+X-CSE-MsgGUID: 1YCs8pxYTH+Ra+utI2L1Aw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11441"; a="75522101"
 X-IronPort-AV: E=Sophos;i="6.15,311,1739865600"; 
-   d="scan'208";a="49241372"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:20:18 -0700
-X-CSE-ConnectionGUID: UtDEC9GMRJ229+0hrrPFMw==
-X-CSE-MsgGUID: vhFYDXKRSCaVzMriwIjFzA==
+   d="scan'208";a="75522101"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:29:30 -0700
+X-CSE-ConnectionGUID: HrBfmwpQQvqMks20J/JY6g==
+X-CSE-MsgGUID: a+CwcV1LRRSjgimO27u1cw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,311,1739865600"; 
-   d="scan'208";a="146382875"
+   d="scan'208";a="146700425"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:20:13 -0700
-Date: Sat, 24 May 2025 13:20:10 +0300
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:29:25 -0700
+Date: Sat, 24 May 2025 13:29:22 +0300
 From: Raag Jadav <raag.jadav@intel.com>
 To: Alexander Usyskin <alexander.usyskin@intel.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -74,19 +74,18 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Reuven Abliyev <reuven.abliyev@intel.com>,
 	Oren Weil <oren.jer.weil@intel.com>, linux-mtd@lists.infradead.org,
 	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Tomas Winkler <tomasw@gmail.com>
-Subject: Re: [PATCH v10 06/10] drm/i915/nvm: add nvm device for discrete
- graphics
-Message-ID: <aDGdWof1HfViERND@black.fi.intel.com>
+	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 08/10] drm/xe/nvm: add on-die non-volatile memory
+ device
+Message-ID: <aDGfgubuFfa3e0K_@black.fi.intel.com>
 References: <20250515133345.2805031-1-alexander.usyskin@intel.com>
- <20250515133345.2805031-7-alexander.usyskin@intel.com>
+ <20250515133345.2805031-9-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250515133345.2805031-7-alexander.usyskin@intel.com>
+In-Reply-To: <20250515133345.2805031-9-alexander.usyskin@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250524_032020_127392_E1126FDF 
-X-CRM114-Status: GOOD (  13.60  )
+X-CRM114-CacheID: sfid-20250524_032931_487442_934C3737 
+X-CRM114-Status: GOOD (  12.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,42 +102,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 15, 2025 at 04:33:41PM +0300, Alexander Usyskin wrote:
-> Enable access to internal non-volatile memory on
-> DGFX devices via a child device.
+On Thu, May 15, 2025 at 04:33:43PM +0300, Alexander Usyskin wrote:
+> Enable access to internal non-volatile memory on DGFX
+> with GSC/CSC devices via a child device.
 > The nvm child device is exposed via auxiliary bus.
 
 ...
 
-> +void intel_nvm_init(struct drm_i915_private *i915)
+> +void xe_nvm_init(struct xe_device *xe)
 > +{
 
-Lucas recently revamped xe driver to address this, so let's not hide bugs
-and return an error where possible.
+Same as patch 6, please handle errors.
 
-> +	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
+> +	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
 > +	struct intel_dg_nvm_dev *nvm;
 > +	struct auxiliary_device *aux_dev;
 > +	int ret;
 > +
-> +	/* Only the DGFX devices have internal NVM */
-> +	if (!IS_DGFX(i915))
+> +	if (!xe->info.has_gsc_nvm)
+> +		return;
+> +
+> +	/* No access to internal NVM from VFs */
+> +	if (IS_SRIOV_VF(xe))
 > +		return;
 > +
 > +	/* Nvm pointer should be NULL here */
-> +	if (WARN_ON(i915->nvm))
+> +	if (WARN_ON(xe->nvm))
 > +		return;
 > +
-> +	i915->nvm = kzalloc(sizeof(*nvm), GFP_KERNEL);
-> +	if (!i915->nvm)
+> +	xe->nvm = kzalloc(sizeof(*nvm), GFP_KERNEL);
+> +	if (!xe->nvm)
 > +		return;
 > +
-> +	nvm = i915->nvm;
+> +	nvm = xe->nvm;
 > +
-> +	nvm->writeable_override = true;
+> +	nvm->writeable_override = false;
 > +	nvm->bar.parent = &pdev->resource[0];
 > +	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
 > +	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
+
+Just out of curiosity, why off by one? Aren't ioremaps all PAGE_SIZEd?
+
 > +	nvm->bar.flags = IORESOURCE_MEM;
 > +	nvm->bar.desc = IORES_DESC_NONE;
 > +	nvm->regions = regions;
@@ -149,20 +153,20 @@ and return an error where possible.
 > +	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) |
 > +		       PCI_DEVID(pdev->bus->number, pdev->devfn);
 
-Why not just pci_dev_id()?
+Ditto as patch 6.
 
 > +	aux_dev->dev.parent = &pdev->dev;
-> +	aux_dev->dev.release = i915_nvm_release_dev;
+> +	aux_dev->dev.release = xe_nvm_release_dev;
 > +
 > +	ret = auxiliary_device_init(aux_dev);
 > +	if (ret) {
-> +		drm_err(&i915->drm, "i915-nvm aux init failed %d\n", ret);
+> +		drm_err(&xe->drm, "xe-nvm aux init failed %d\n", ret);
 > +		return;
 > +	}
 > +
 > +	ret = auxiliary_device_add(aux_dev);
 > +	if (ret) {
-> +		drm_err(&i915->drm, "i915-nvm aux add failed %d\n", ret);
+> +		drm_err(&xe->drm, "xe-nvm aux add failed %d\n", ret);
 > +		auxiliary_device_uninit(aux_dev);
 > +		return;
 > +	}
