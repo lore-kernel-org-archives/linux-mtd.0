@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56051C54F30
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 May 2025 10:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 834D5C54F32
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 May 2025 10:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4ZVouwHlKBA4jqSCH8MNMFa2HD35PdPedJLbe5ebKtA=; b=inJhEdboZncCdv
-	v5SMT8w89OLzmvdGzwDpkkGUHw4KJ5NyJaVEphznxNWgGFOnESnkgWLMU0pG5R/wyaGQxdHLlrmDf
-	75465cMX6P8jMa2j03jFyYQXF0aQiGdSTSeUUAOM2540PSOO5S9qbP6rri3NV3Wh/AkI1xWkCSxNh
-	WfyucrCkiC9ekttDYLfZVCW8CYqXt78hFLvA9f4yg5hxX4lETXRSGKgUCw7g3kid8bU6zlHytEX58
-	Dicim3DoBEr2sThnEoga1ut41LwyKo9tXhjQHQ1gaQY/l6dP6Sr6kOPNJ6w9QWCl/uCwtW01uPFB6
-	B9eyPGQHMpHFd0uWIN3g==;
+	List-Owner; bh=jmhddv8HSscaXQMzdlO+1g8ZePm0Ps60+1TINYH3ERA=; b=zamHelBYC3SnCV
+	uIEiIyOmfW0u9iAK/1064pkF9Svv0z8Va3KKQoUmIWQLxpDOlZp42Rig/nGlGiNvO1/2rIkAiAskj
+	oLCxJ2tiv05r3u7jS7hdUmDqn1rmABYYpwb8AMNevbsXIqEP+0isAnATAkgh13AvU6MXjZleFBF0L
+	qOuNgYDO9AhBxZLBlHEpizulIZ/EpzpBABxNwhoJFZfvw36Q7ZSsvFFbD0cG5PdR0U8SWwJnZR/Kz
+	o5PGrv+n2yw7R1+UKH7HF9UJtC+Jw3suTUMK7hzdLkwH/ZtzE5j0OSziYBEOA12elyKpSUpOaqJuZ
+	B5VrMzqeIJwiydGjlm5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIlhW-00000005hra-0xIf;
-	Sat, 24 May 2025 10:01:58 +0000
-Received: from mgamail.intel.com ([192.198.163.9])
+	id 1uIlzM-00000005jOQ-0aaD;
+	Sat, 24 May 2025 10:20:24 +0000
+Received: from mgamail.intel.com ([192.198.163.19])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIlhS-00000005hqq-18Lq
+	id 1uIlzH-00000005jO1-44Zh
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 May 2025 10:01:55 +0000
+	Sat, 24 May 2025 10:20:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748080914; x=1779616914;
+  t=1748082020; x=1779618020;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=8Z1S/hNWZ9pEp/mNhwra4+VgljiQYHC4PHrsvJbhuBA=;
-  b=emV46PVgrR3hkzOENDnOVHm0p9GcjuvvL3+gcztVi9esJ76z/SUe/lFS
-   EzGjiHyW673y0t5fmkf73o6qIYY51kF+8AHI9f2seE9NxG9RKMj1uBRLM
-   ODDKmDPlje3TaAMxdhtJvnR/R2lAFT8R6vCZmN6o3cK31zLPJAcuqXyWr
-   KL3eNfFJOdVZrrkCWFAEvfaVpVvvEg1pqUKsYNASxFoPabJtgbjsARG5b
-   ucuGuFn874nl3eHR1+i6xa4aF9a87Oxm5L6/T/JnD4939HYfOJAPVhdEd
-   Ey0Z3MwYw65Z7qPqNrRGe0N1mLjj7kb7QMijrEPUdzDE2wZfaqJZWag/q
-   A==;
-X-CSE-ConnectionGUID: Vz912ZPxS3Kr1AsHA+FWmA==
-X-CSE-MsgGUID: 53i6FtjuTuGm86/7kcTzSA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11441"; a="60778847"
+  bh=KAzAK7TgNRgfMo1XSxTNbqWPQmUnZXND6HQQpmqPXwQ=;
+  b=QvuF6eQkqyqXqD6ztHsblXOsiEMZVT5jsYjoB5gdKou+tlYxHzsle2H/
+   oaj9X2XZoJPRMRuO07KQor4NwxOcL9HIf5spz7SRa0g6/CqRCASwopw/u
+   P3YDUXyRDmOLwjIDA2SycdsfJV5ymEDpYYa1Dq3t7If56xB1Yni3nSrGm
+   038gyna59VeMeA0ZubrQPAN8joMa//8SRGmDmBgp8qAs4UdccpYGVs6DJ
+   imwLNaIHegjKnbN2VoMaJqL+X90oHGip2hrsQkkC/cgG/tz1A8J0w7uPD
+   0OYC+WVJ9jaLhE2ylADTrxzlk9xJcjQL8D9ez93RT5kKm1fmMkE2vhnUP
+   g==;
+X-CSE-ConnectionGUID: zXAH8h3zThSMmdevzoFv4g==
+X-CSE-MsgGUID: VM+yuyPZSWirrFem0YlqZg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11441"; a="49241372"
 X-IronPort-AV: E=Sophos;i="6.15,311,1739865600"; 
-   d="scan'208";a="60778847"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:01:53 -0700
-X-CSE-ConnectionGUID: Gsn2aVMxTheSeNn7uAZ8ig==
-X-CSE-MsgGUID: x09pD8gQTg284T1blC2gRw==
+   d="scan'208";a="49241372"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:20:18 -0700
+X-CSE-ConnectionGUID: UtDEC9GMRJ229+0hrrPFMw==
+X-CSE-MsgGUID: vhFYDXKRSCaVzMriwIjFzA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,311,1739865600"; 
-   d="scan'208";a="142063527"
+   d="scan'208";a="146382875"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:01:47 -0700
-Date: Sat, 24 May 2025 13:01:44 +0300
+  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2025 03:20:13 -0700
+Date: Sat, 24 May 2025 13:20:10 +0300
 From: Raag Jadav <raag.jadav@intel.com>
 To: Alexander Usyskin <alexander.usyskin@intel.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -74,17 +74,19 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Reuven Abliyev <reuven.abliyev@intel.com>,
 	Oren Weil <oren.jer.weil@intel.com>, linux-mtd@lists.infradead.org,
 	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 05/10] mtd: intel-dg: align 64bit read and write
-Message-ID: <aDGZCL_B3fEkvahj@black.fi.intel.com>
+	intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	Tomas Winkler <tomasw@gmail.com>
+Subject: Re: [PATCH v10 06/10] drm/i915/nvm: add nvm device for discrete
+ graphics
+Message-ID: <aDGdWof1HfViERND@black.fi.intel.com>
 References: <20250515133345.2805031-1-alexander.usyskin@intel.com>
- <20250515133345.2805031-6-alexander.usyskin@intel.com>
+ <20250515133345.2805031-7-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20250515133345.2805031-6-alexander.usyskin@intel.com>
+In-Reply-To: <20250515133345.2805031-7-alexander.usyskin@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250524_030154_347527_F465F71C 
-X-CRM114-Status: GOOD (  18.76  )
+X-CRM114-CacheID: sfid-20250524_032020_127392_E1126FDF 
+X-CRM114-Status: GOOD (  13.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,77 +103,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 15, 2025 at 04:33:40PM +0300, Alexander Usyskin wrote:
-> GSC NVM controller HW errors on quad access overlapping 1K border.
-> Align 64bit read and write to avoid readq/writeq over 1K border.
-> 
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> ---
->  drivers/mtd/devices/mtd_intel_dg.c | 35 ++++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/mtd_intel_dg.c b/drivers/mtd/devices/mtd_intel_dg.c
-> index eedc0974bb5b..2f32ed311ffd 100644
-> --- a/drivers/mtd/devices/mtd_intel_dg.c
-> +++ b/drivers/mtd/devices/mtd_intel_dg.c
-> @@ -246,6 +246,24 @@ static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
->  		len_s -= to_shift;
->  	}
->  
-> +	if (!IS_ALIGNED(to, sizeof(u64)) &&
-> +	    ((to ^ (to + len_s)) & GENMASK(31, 10))) {
-> +		/*
-> +		 * Workaround reads/writes across 1k-aligned addresses
-> +		 * (start u32 before 1k, end u32 after)
-> +		 * as this fails on hardware.
+On Thu, May 15, 2025 at 04:33:41PM +0300, Alexander Usyskin wrote:
+> Enable access to internal non-volatile memory on
+> DGFX devices via a child device.
+> The nvm child device is exposed via auxiliary bus.
 
-If there's a spec definition, we usually mention workarounds with
-Wa_ID:platform so that they're easy to track. intel_workarounds.c
-is good reference for it.
+...
 
-> +		 */
-> +		u32 data;
+> +void intel_nvm_init(struct drm_i915_private *i915)
+> +{
+
+Lucas recently revamped xe driver to address this, so let's not hide bugs
+and return an error where possible.
+
+> +	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
+> +	struct intel_dg_nvm_dev *nvm;
+> +	struct auxiliary_device *aux_dev;
+> +	int ret;
 > +
-> +		memcpy(&data, &buf[0], sizeof(u32));
-> +		idg_nvm_write32(nvm, to, data);
-> +		if (idg_nvm_error(nvm))
-> +			return -EIO;
-> +		buf += sizeof(u32);
-> +		to += sizeof(u32);
-> +		len_s -= sizeof(u32);
+> +	/* Only the DGFX devices have internal NVM */
+> +	if (!IS_DGFX(i915))
+> +		return;
+> +
+> +	/* Nvm pointer should be NULL here */
+> +	if (WARN_ON(i915->nvm))
+> +		return;
+> +
+> +	i915->nvm = kzalloc(sizeof(*nvm), GFP_KERNEL);
+> +	if (!i915->nvm)
+> +		return;
+> +
+> +	nvm = i915->nvm;
+> +
+> +	nvm->writeable_override = true;
+> +	nvm->bar.parent = &pdev->resource[0];
+> +	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
+> +	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
+> +	nvm->bar.flags = IORESOURCE_MEM;
+> +	nvm->bar.desc = IORES_DESC_NONE;
+> +	nvm->regions = regions;
+> +
+> +	aux_dev = &nvm->aux_dev;
+> +
+> +	aux_dev->name = "nvm";
+> +	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) |
+> +		       PCI_DEVID(pdev->bus->number, pdev->devfn);
+
+Why not just pci_dev_id()?
+
+> +	aux_dev->dev.parent = &pdev->dev;
+> +	aux_dev->dev.release = i915_nvm_release_dev;
+> +
+> +	ret = auxiliary_device_init(aux_dev);
+> +	if (ret) {
+> +		drm_err(&i915->drm, "i915-nvm aux init failed %d\n", ret);
+> +		return;
 > +	}
 > +
->  	len8 = ALIGN_DOWN(len_s, sizeof(u64));
->  	for (i = 0; i < len8; i += sizeof(u64)) {
->  		u64 data;
-> @@ -303,6 +321,23 @@ static ssize_t idg_read(struct intel_dg_nvm *nvm, u8 region,
->  		from += from_shift;
->  	}
->  
-> +	if (!IS_ALIGNED(from, sizeof(u64)) &&
-> +	    ((from ^ (from + len_s)) & GENMASK(31, 10))) {
-> +		/*
-> +		 * Workaround reads/writes across 1k-aligned addresses
-> +		 * (start u32 before 1k, end u32 after)
-> +		 * as this fails on hardware.
-> +		 */
-> +		u32 data = idg_nvm_read32(nvm, from);
-> +
-> +		if (idg_nvm_error(nvm))
-> +			return -EIO;
-> +		memcpy(&buf[0], &data, sizeof(data));
-> +		len_s -= sizeof(u32);
-> +		buf += sizeof(u32);
-> +		from += sizeof(u32);
+> +	ret = auxiliary_device_add(aux_dev);
+> +	if (ret) {
+> +		drm_err(&i915->drm, "i915-nvm aux add failed %d\n", ret);
+> +		auxiliary_device_uninit(aux_dev);
+> +		return;
 > +	}
-> +
->  	len8 = ALIGN_DOWN(len_s, sizeof(u64));
->  	for (i = 0; i < len8; i += sizeof(u64)) {
->  		u64 data = idg_nvm_read64(nvm, from + i);
-> -- 
-> 2.43.0
-> 
+> +}
+
+Raag
 
 ______________________________________________________
 Linux MTD discussion mailing list
