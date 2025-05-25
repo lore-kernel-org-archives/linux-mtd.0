@@ -4,79 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A32AFC54ED1
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 May 2025 17:29:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B012BC54FB3
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 May 2025 14:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=t0Vtnu1T3gHe9+P30BcUWeYFsasrWiT5pqBkptHD60M=; b=CeIx1cmZlqSc+q
-	RZnq0S6T5V5v0GdVnrbmK+00f5hhFgGyRPdsbYUvvDyeuSTBjx+xand8q4Ir59t0OMnWdwWnC0jqM
-	P8gkW9TzZXWDI+6CN7G+FaGvhj/8u1AeBRRzEXVZAOhUodGVQDry4UrtD2FkICJp+MBAecuLn7OvE
-	8iqwFt0mGkKgD9jSJXPlCR7fLV9UFKjZ5/I/ofDG3pp+PjydxySwJQQvVMuN24LLYWPjKJFCXkbOu
-	Svl2/rdWE5kuUZ5E96NzFMcj+1f+MR+6upfhwkCukjcam2sfrmPfoAHyRGzcaxbeGC0AvSSykuu6q
-	lm2EiHywosGgvvqET0Kg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3HV3tmbfQ8JuKM+qBxHhkx6b/Ho68bGAfelBnDDJc0g=; b=aHuZZbvo0ORerR
+	ENH25q4ltixX7vioV6xNWWXSgF8y3yM48L06LupyGtPHLYBqEdBtsEQWL3YuwN9AYTtGvzI+kv9s3
+	XMvH5uPb1iKphh9L2O5kNOYWSMF+SpFggCl6D4LwIckmT9nML840kfHdUi6un3VQ43vKhRpKT52uv
+	W6xY1FjvHmI3TPuMuJyby0hRLBE/A/rrjnPNHwzJ/nrx2+BlHKAIKTnS8DVbwh2DdFWnqlUnJnnWP
+	TLCKfrrRyKaLeJ5nNZCb0tA5PDXM5oixYheL8UHoL9Mn1o8KbtA23h15jsDrkdsnjW9E1KgBryerF
+	tWrihQ7xM4yPyDva92SQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIsgL-000000062IX-40ig;
-	Sat, 24 May 2025 17:29:13 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1uJCpB-00000007E6e-1A9A;
+	Sun, 25 May 2025 14:59:41 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uIsgH-000000062Gd-3q5U
-	for linux-mtd@lists.infradead.org;
-	Sat, 24 May 2025 17:29:11 +0000
-Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 78F62120008
-	for <linux-mtd@lists.infradead.org>; Sat, 24 May 2025 20:28:54 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 78F62120008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1748107734;
-	bh=9e2NGCZXdKaLTi6zNY5RG65DkABPO8WloFrYVCOsn/Q=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=F4AwNAIUs1WuQNM9or4A7BBgLE1bj2TvthjEoWGFTGy8shfTlaZ29Uz5KCtFdMwrY
-	 kiNh4rYs7jclbvNyYXV33dASgkf6t6rq+q+6U2r2yo5zS84iuOdQAm+MuJhhZldHW2
-	 gbKIWw+hn/bO2+FGQbaKpushvhfyjFR56iTY2Tb/QKMStZ3tfl4LieNTGuba5MXHvK
-	 7e7XLTlptEGqRHbtiVLtT85SKF6wdyR5+BT/cTQKTESQad76eMjMmTPxaUYG7gDWoN
-	 HwS39qsqCGflkGwGpGXOBWHH8j5jFUtdz0ftoaLtkQoG+aa/79KC0ZS3dW6OLW/p8i
-	 I4iV1zX7HBCAQ==
-Received: from smtp.sberdevices.ru (p-exch-cas-s-m1.sberdevices.ru [172.16.210.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS
-	for <linux-mtd@lists.infradead.org>; Sat, 24 May 2025 20:28:54 +0300 (MSK)
-From: <KAMenyaev@salutedevices.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <sdfw_system_team@salutedevices.com>, Konstantin Menyaev
-	<KAMenyaev@salutedevices.com>
-Subject: [PATCH] ubi-utils: ubirsvol: resize volume using all available free space
-Date: Sat, 24 May 2025 20:26:39 +0300
-Message-ID: <20250524172639.1294040-1-KAMenyaev@salutedevices.com>
-X-Mailer: git-send-email 2.49.0
+	id 1uJCp9-00000007E5Q-0lrZ;
+	Sun, 25 May 2025 14:59:40 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-23035b3edf1so8586485ad.3;
+        Sun, 25 May 2025 07:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748185179; x=1748789979; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L2v8T6KWNdY86EGnTj0qWjYV1Oss6TPbGlyKa00x9/Y=;
+        b=PixUmEHpupTrGcrR7DoZBDM7HS1f15nF3H3gF6ASrIVRUnyXRqAIkVN7xwrOBSv5Eb
+         cuRDEYyS5nBwaMYXl1dKau4Al+B75JkSbm3PyUrQgaWyMiDlhctAfKYJQooujDxO1wDC
+         8eUyEUqn9kOmwpaawbgPCftdyFx0pVx8EZJ4+yjxSOOpwxswGj7/fvBEieI57vD0sFr5
+         Rxr9WsYh/eeuk67MF9AaOkkg68VgT7t0ciRtYis6a4SPADpC6crpKvcOyZrhj48Y807e
+         XyN70/tBZDZPqL0WNvxnIFnXpqWWf9+H05VneWNPqr39JVTOq0bg9lZmO4njyDiphSPZ
+         OJGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748185179; x=1748789979;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L2v8T6KWNdY86EGnTj0qWjYV1Oss6TPbGlyKa00x9/Y=;
+        b=XbmK3gM7MuL2oQseqQPuTyC7W9wmP++kMRQ6dGs/IO1NsRXXQxjjBagUSEITOlz0OE
+         QSNgNhqBNPdzIAZlCi7tmSDMHzFu0eQQqcmLprTv4Z3MsolkLUN84We39tA9sf4ADb4k
+         Jtmu+JR3BuR0f1HKhTSUhRg/yZewDx8klOpPX+3WqO2U39Jv5kIgMNsYH0K4mU/K/c+w
+         Xl5YR280KPIKz944SUtWHokDihLTFfapYdEscoYkPRH/Sa1JW4c7ilmy3GXKTI5kNNle
+         J7Wd3lgGqaB5vGjQG18srJMJ6PHzRElYErbEuvEzl8JYn1YjDy1hWvozzNl8auK2CyDf
+         lxhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvkK+jcqVceSt9sIaVqk02arxRSmgiumUpFZrMise5czHmlGUkWrVQEhRgfL/dm+mObNi5LAqB4qOiKA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxPe+PQdNOQe8SYQukq9FXbpOkXwV4X4VjlgcFypF/W/qbws7wS
+	88iXRlTgE2rHKG4z3WdpM8Fy+wJg/Aq171x09T8nCJ0Lu7zDYhNb19r9
+X-Gm-Gg: ASbGncsq3nZSkPt0I6enADs6Ap6utJSKYJzCF9vebBuQE78q+okOi6z+rC49fGPTc8z
+	//XQ9snOaBAH893DB1Ve8CtIOphdlre1G7tPJRWpqSSTQr8krbb72OMhqb156pLPTjMfPuhuoAs
+	mRqGptGBwV7yttDhc/mbjXybnlpGzh1DIzKS0RLnumWpf6UFAP9Hg95LMa6nemZx3wrN6KOthSy
+	blpQ/CL6yxQm74dXE00sXxQVtrAuxhRiKerL252vwRh+zEWhCXS42ywo668QvDCLi6lGh0Hr8gZ
+	mdxU8VOiB9kq6DyQlun2S7tmGLo92C07L5ioz8FdYNI=
+X-Google-Smtp-Source: AGHT+IF3VxyOXCOt5MifU2/DGUUb39EyyEwfytGdkDvdcnGlAfj/NomQNLMDPNZlESfRl5TpLDFVyw==
+X-Received: by 2002:a17:902:cf4b:b0:224:1579:5e8e with SMTP id d9443c01a7336-23414f490d3mr103435265ad.1.1748185178225;
+        Sun, 25 May 2025 07:59:38 -0700 (PDT)
+Received: from [127.0.0.1] ([2001:250:5800:1000::3fc8])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2343f8e2fbesm12204845ad.250.2025.05.25.07.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 May 2025 07:59:37 -0700 (PDT)
+From: Zixian Zeng <sycamoremoon376@gmail.com>
+Date: Sun, 25 May 2025 22:58:41 +0800
+Subject: [PATCH v2 1/3] spi: dt-bindings: spi-sg2044-nor: Add SOPHGO SG2042
 MIME-Version: 1.0
-X-Originating-IP: [46.138.23.227]
-X-ClientProxiedBy: p-exch-cas-a-m1.sberdevices.ru (172.24.201.216) To
- p-exch-cas-s-m1.sberdevices.ru (172.16.210.2)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 193567 [May 23 2025]
-X-KSMG-AntiSpam-Version: 6.1.1.11
-X-KSMG-AntiSpam-Envelope-From: kamenyaev@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 59 0.3.59 65f85e645735101144875e459092aa877af15aaa, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2025/05/24 14:44:00 #27632728
-X-KSMG-AntiVirus-Status: Clean, skipped
+Message-Id: <20250525-sfg-spifmc-v2-1-a3732b6f5ab4@gmail.com>
+References: <20250525-sfg-spifmc-v2-0-a3732b6f5ab4@gmail.com>
+In-Reply-To: <20250525-sfg-spifmc-v2-0-a3732b6f5ab4@gmail.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Chen Wang <unicorn_wang@outlook.com>, Inochi Amaoto <inochiama@gmail.com>, 
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Alexandre Ghiti <alex@ghiti.fr>, Longbin Li <looong.bin@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ sophgo@lists.linux.dev, linux-spi@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
+ Zixian Zeng <sycamoremoon376@gmail.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1748185167; l=972;
+ i=sycamoremoon376@gmail.com; s=20250113; h=from:subject:message-id;
+ bh=ilUYEgJmQyNUKpmFci8Kk389OiK2lk6BxrCD1iEtz9k=;
+ b=/S/3KAGCz8dlqvZlnfhD+8hHniV19KAKuwt34rdhKH1UkljaAUHveB9PC4zxaS9vpti1qMKYN
+ o7xr0qeiF8WDgiC+YscypYvEUghQVx83m8v2rb1Nf2MCcchHL7XlOLh
+X-Developer-Key: i=sycamoremoon376@gmail.com; a=ed25519;
+ pk=OYfH6Z2Nx3aU1r0UZdvhskmddV6KC6V1nyFjsQQt4J8=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250524_102910_619644_B30C9E69 
-X-CRM114-Status: GOOD (  12.27  )
+X-CRM114-CacheID: sfid-20250525_075939_234580_5AE2DE35 
+X-CRM114-Status: UNSURE (   8.60  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,57 +117,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Konstantin Menyaev <KAMenyaev@salutedevices.com>
+Add bindings for the SOPHGO SG2042 SPI-NOR flash controller,
+which is compatible with SOPHGO SG2044.
 
-useful in resizing last ubi volume,
-some kind of auto-resize ubinize option.
-
-Signed-off-by: Konstantin Menyaev <KAMenyaev@salutedevices.com>
+Signed-off-by: Zixian Zeng <sycamoremoon376@gmail.com>
 ---
- ubi-utils/ubirsvol.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/spi/spi-sg2044-nor.yaml | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/ubi-utils/ubirsvol.c b/ubi-utils/ubirsvol.c
-index 73d2f68..55f6794 100644
---- a/ubi-utils/ubirsvol.c
-+++ b/ubi-utils/ubirsvol.c
-@@ -57,8 +57,10 @@ static const char optionsstr[] =
- "-N, --name=<volume name>   volume name to resize\n"
- "-s, --size=<bytes>         volume size volume size in bytes, kilobytes (KiB)\n"
- "                           or megabytes (MiB)\n"
-+"                           zero size means use all available free bytes\n"
- "-S, --lebs=<LEBs count>    alternative way to give volume size in logical\n"
- "                           eraseblocks\n"
-+"                           zero size means use all available free LEBs\n"
- "-h, -?, --help             print help message\n"
- "-V, --version              print program version";
+diff --git a/Documentation/devicetree/bindings/spi/spi-sg2044-nor.yaml b/Documentation/devicetree/bindings/spi/spi-sg2044-nor.yaml
+index 948ff7a096433a8c3c64cba13fc1339d18f6c19d..66e54dedab140a167ad84c43f312f93af2bfa06a 100644
+--- a/Documentation/devicetree/bindings/spi/spi-sg2044-nor.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-sg2044-nor.yaml
+@@ -14,7 +14,12 @@ allOf:
  
-@@ -114,13 +116,13 @@ static int parse_opt(int argc, char * const argv[])
- 		switch (key) {
- 		case 's':
- 			args.bytes = util_get_bytes(optarg);
--			if (args.bytes <= 0)
-+			if (args.bytes < 0)
- 				return errmsg("bad volume size: \"%s\"", optarg);
- 			break;
+ properties:
+   compatible:
+-    const: sophgo,sg2044-spifmc-nor
++    oneOf:
++      - const: sophgo,sg2044-spifmc-nor
++      - items:
++          - enum:
++              - sophgo,sg2042-spifmc-nor
++          - const: sophgo,sg2044-spifmc-nor
  
- 		case 'S':
- 			args.lebs = simple_strtoull(optarg, &error);
--			if (error || args.lebs <= 0)
-+			if (error || args.lebs < 0)
- 				return errmsg("bad LEB count: \"%s\"", optarg);
- 			break;
- 
-@@ -233,6 +235,9 @@ int main(int argc, char * const argv[])
- 	if (args.lebs != -1)
- 		args.bytes = (long long)vol_info.leb_size * args.lebs;
- 
-+	if (args.lebs == 0 || args.bytes == 0)
-+		args.bytes = vol_info.rsvd_bytes + dev_info.avail_bytes;
-+
- 	err = ubi_rsvol(libubi, args.node, args.vol_id, args.bytes);
- 	if (err) {
- 		sys_errmsg("cannot UBI resize volume");
+   reg:
+     maxItems: 1
+
 -- 
 2.49.0
 
