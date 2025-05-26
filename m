@@ -4,107 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF569C54FB3
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 May 2025 06:54:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73F2FC5AD49
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 May 2025 07:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sYt0R/Co7eZ1bpIpPyc1uPYXjdYt2Rn1r5GSRseI9WM=; b=1i9kT+g8lgi351
-	ZxSsZNS3hHWZ+TE2LAa/HFLU0cFX+GEJBmpu+8y5VMEgx4MA1y/NjcaYAnMRqHOnA4OL96rTONSQj
-	ugb2Lf6QLwWmv5jSuVJaQw/lxqzEz7Jef5RF684lGjaF3kXaYlwh7t73QYCtu+0OUezkvHZaqmWmS
-	bZGrdHZ4X0EYW0qZzqp38KsyQxK4hyKBMSwRp8hr4WLYHz4dncTQoO8dMnEKnchBMlFFqC3qsvdoq
-	CpBLj/6Og4AGyiJzTgew46y2pE4IUhYSoaefqIXiI7cEDy2+YRxVfYAfkoBq+NeCZfdtGAwvn3PCO
-	+QLKHWXZ6GljWNFEAvsA==;
+	List-Owner; bh=iUEApah32zOTecSL/l9dTlxMOaT/m3F0sLKdtbVsCAY=; b=aXUDFmE8gnd05b
+	wzW6KDu6FNPJnFEYD+qoGLHmFyX/2L9Qb8GN6BqDkinTqvtAoOaYbol5lTH8nCWRLxFFF48ACVGtO
+	CJVM+JUTH9cA6N7Ra5R9WTNZn+uq/0rayptf5zBahuOBYunLeO/4vH2OS//pxhWbukxmZNYFtZLIr
+	e6hENKNmX+I2sGoerOkIDHb84mBFsrpRK5Gml88qR4WBHgXBKNa+nAh26BGHhMKP1Gg5Xq/nF18YW
+	oWap3H/K8bOHjiiMko2C5G0NUV9rSMNDFGWHTa2h10a3l1l+sjMlDwSronxmBT+ySAMXm5VnQG9Kz
+	OPZq7IEDzXT8jUHgCqjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uJRiq-00000008Epj-1DIc;
-	Mon, 26 May 2025 06:54:08 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1uJSG2-00000008HS6-0bhb;
+	Mon, 26 May 2025 07:28:26 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uJRio-00000008EpM-0scR
+	id 1uJSFm-00000008HQY-3RJX
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 May 2025 06:54:07 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54PNhrIx009222;
-	Mon, 26 May 2025 06:53:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	K8X+G7OVif2Hyi+wYo4fU0ZlnLfPPCyOrafETyvYiyU=; b=lPVQQnCfxytJqtb2
-	iX4YFQkAGjA0+I+6v7DckaVc2YB2TeWyZZaj3KtAquWMftv4EcpFF4v63dBpysbo
-	wlE+SdiQeRy7CzUQ2YaimetO0jzVJmrIFxtWnpt23yDaQYgOYNTdULdqYbkvvst7
-	QPHZynGp19WW29J/ZqmepbQ8yZdQwV+ontpr0ohV/XBccih4NY/FRhZDpCn62AQi
-	hqDE7H8YdhPxOeKruMYC8WdiORSlgveFFyLxMWSVChVtQcw1O3Zr0qpyxL+If0yd
-	guvPSdqr5T+sH0nPNPf7gK8dqW7Yj3SNCzD+iPBYyhsjBzW+NmLnDsIZmtrxuQz0
-	iUbkTQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46u79p35qy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 May 2025 06:53:53 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 54Q6rel1027719
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 May 2025 06:53:40 GMT
-Received: from [10.151.36.184] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Sun, 25 May
- 2025 23:53:36 -0700
-Message-ID: <8ab1e48a-f698-9859-3992-6a26f63d62f1@quicinc.com>
-Date: Mon, 26 May 2025 12:23:33 +0530
+	Mon, 26 May 2025 07:28:13 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 115C71FD57;
+	Mon, 26 May 2025 07:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1748244486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JXhPQXCLhDCgYneej08WV86s5Giw6eGuE0pYiMGU66g=;
+	b=m/nJKWziJhOQY9nl6l4s/wHgvsOUsW31W/CsW1ew99KrW/l8fWBmJq2Wlhztpa6lI7B3HT
+	/NfHNwsT1rkc+/YgVCkWNLlbmmVIqaeM7wblJ/ZLiJPuke6FEITyLiCK05dSpIaJXVqpNR
+	EOVhDdqBEfRetefABhjzpfOrIsK3UcVTlmp3862g6yloKHB/JpGkGX0brDclxszaaomYPo
+	qnHlAjfD7L7pZTJcnlWqNsStcGrcOTp+CGe1NmdVK6EaYiOpJHjkTkFZ3gkKbQW29dWD5S
+	LKCh7JIE10cAwk7+x7yPuUfQ8NDKuoulLmP/kSnre4EWXSSCVm3mk33sDGQzLg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez?= Rojas <noltari@gmail.com>
+Cc: linux-mtd@lists.infradead.org,  dregan@broadcom.com,
+  bcm-kernel-feedback-list@broadcom.com,  florian.fainelli@broadcom.com,
+  rafal@milecki.pl,  computersforpeace@gmail.com,  kamal.dasu@broadcom.com,
+  dan.beygelman@broadcom.com,  william.zhang@broadcom.com,
+  frieder.schrempf@kontron.de,  linux-kernel@vger.kernel.org,
+  vigneshr@ti.com,  richard@nod.at,  bbrezillon@kernel.org,
+  kdasu.kdev@gmail.com,  jaimeliao.tw@gmail.com,  kilobyte@angband.pl,
+  jonas.gorski@gmail.com,  dgcbueu@gmail.com
+Subject: Re: [PATCH v5] mtd: rawnand: brcmnand: legacy exec_op implementation
+In-Reply-To: <CAKR-sGeUGpUFBf_Zvg=7ro0EpGKy0dQVF58mAQt27YX+79qv1A@mail.gmail.com>
+	(=?utf-8?Q?=22=C3=81lvaro_Fern=C3=A1ndez?= Rojas"'s message of "Fri, 23 May
+ 2025 20:08:56
+	+0200")
+References: <20250521080325.581366-1-noltari@gmail.com>
+	<87wma74ceh.fsf@bootlin.com>
+	<CAKR-sGeUGpUFBf_Zvg=7ro0EpGKy0dQVF58mAQt27YX+79qv1A@mail.gmail.com>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Mon, 26 May 2025 09:28:02 +0200
+Message-ID: <874ix74yrh.fsf@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/2] mtd: nand: qpic_common: prevent out of bounds access
- of BAM arrays
-Content-Language: en-US
-To: Gabor Juhos <j4g8y7@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Varadarajan Narayanan <quic_varada@quicinc.com>,
-        Sricharan Ramabadhran
-	<quic_srichara@quicinc.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC: <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Lakshmi
- Sowjanya D" <quic_laksd@quicinc.com>
-References: <20250525-qpic-snand-avoid-mem-corruption-v1-0-5fe528def7fb@gmail.com>
- <20250525-qpic-snand-avoid-mem-corruption-v1-2-5fe528def7fb@gmail.com>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20250525-qpic-snand-avoid-mem-corruption-v1-2-5fe528def7fb@gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: RXjusBSknU5VieHskKnvNYTVDr6AQ9GF
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI2MDA1NyBTYWx0ZWRfX0l/1e2sMK6lJ
- nR0nUd07ROoAO++yCFr3iLzu3LsxFsjn+9j3YAyKvWvZsK1QToGIEOO245ymg0Gx+IO/cunuAgw
- VGQy+OpwbInCFffETybswzmwZnN3F6PTOtx3So3H7U9iNBKZUQN66JQ8nC7OAfuT5TuafaiTvFt
- S3Lp6vD3czDkGWahR0SUATM/3jepvVVaz+N9OEp2s9cuZGn4Futxx22e5zKWk/mKrj8nyAz8M8i
- +gHhDEk8DtwaYGFt99N1VYwoqNNpT497fTTdeqBNLCwZHPnWkOjlLRRcosOLwnCgWdKX+w9LijX
- 6hVeQC+sMOxe3pcPvlDsR1FSS4w3ZgLC/Jr8K/rk4IUgOesmkCfoaIU3FHUDPooUho7k7tjwLj0
- CJUhpP+lYiXIsEtZEPnTC+GtSBV/8fhE9ELnFInzzvzS32IrADfiEwoDotCgj/T055wup+JF
-X-Authority-Analysis: v=2.4 cv=HNnDFptv c=1 sm=1 tr=0 ts=68341001 cx=c_pps
- a=JYp8KDb2vCoCEuGobkYCKw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
- a=GEpy-HfZoHoA:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=COk6AnOGAAAA:8
- a=5Abef97-AoBQRPTZQeIA:9 a=QEXdDO2ut3YA:10 a=TjNXssC_j7lpFel5tvFf:22
-X-Proofpoint-ORIG-GUID: RXjusBSknU5VieHskKnvNYTVDr6AQ9GF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-26_03,2025-05-22_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 suspectscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0
- priorityscore=1501 mlxlogscore=990 phishscore=0 mlxscore=0 spamscore=0
- bulkscore=0 impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
- definitions=main-2505260057
+X-GND-State: clean
+X-GND-Score: 0
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdduieelvdculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeeftdehieelledvveduudelieeggeehkedvheeikeelkefhkeelffetffeitdethfenucffohhmrghinhepghhithhhuhgsrdgtohhmpdgvtggtrdhrvggrugenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvtddprhgtphhtthhopehnohhlthgrrhhisehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegurhgvghgrnhessghrohgruggtohhmrdgtohhmpdhrtghpthhtohepsggtmhdqkhgvrhhnvghlqdhfvggvuggsrggtkhdqlhhishhtsegsrhhorggutghom
+ hdrtghomhdprhgtphhtthhopehflhhorhhirghnrdhfrghinhgvlhhlihessghrohgruggtohhmrdgtohhmpdhrtghpthhtoheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheptghomhhpuhhtvghrshhfohhrphgvrggtvgesghhmrghilhdrtghomhdprhgtphhtthhopehkrghmrghlrdgurghsuhessghrohgruggtohhmrdgtohhm
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250525_235406_287503_23D0AC19 
-X-CRM114-Status: GOOD (  19.22  )
+X-CRM114-CacheID: sfid-20250526_002811_033962_39E374D2 
+X-CRM114-Status: GOOD (  27.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,47 +82,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 5/25/2025 10:35 PM, Gabor Juhos wrote:
-> The common QPIC code does not do any boundary checking when it handles
-> the command elements and scatter gater list arrays of a BAM transaction,
-> thus it allows to access out of bounds elements in those.
-> 
-> Although it is the responsibility of the given driver to allocate enough
-> space for all possible BAM transaction variations, however there can be
-> mistakes in the driver code which can lead to hidden memory corruption
-> issues which are hard to debug.
-> 
-> This kind of problem has been observed during testing the 'spi-qpic-snand'
-> driver. Although the driver has been fixed with a preceding patch, but it
-> still makes sense to reduce the chance of having such errors again later.
-> 
-> In order to prevent such errors, change the qcom_alloc_bam_transaction()
-> function to store the number of elements of the arrays in the
-> 'bam_transaction' strucutre during allocation. Also, add sanity checks to
-> the qcom_prep_bam_dma_desc_{cmd,data}() functions to avoid using out of
-> bounds indices for the arrays.
-> 
-> Tested with the 'spi-qpic-snand' driver only.
-I recommend testing this patch on both the IPQ and SDX platforms,
-as the QPIC raw NAND driver are utilized across both.
-
-If you have access to IPQ and SDX devices with raw NAND, please proceed
-with testing on both.
-
-Otherwise, I can handle testing on the IPQ raw NAND device and 
-coordinate with Lakshmi Sowjanya D (quic_laksd@quicinc.com)
-for testing on the SDX platform.
-
-Thanks,
-Alam.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjMvMDUvMjAyNSBhdCAyMDowODo1NiArMDIsIMOBbHZhcm8gRmVybsOhbmRleiBSb2phcyA8
+bm9sdGFyaUBnbWFpbC5jb20+IHdyb3RlOgoKPiBIaSBNaXF1w6hsLAo+Cj4gRWwgdmllLCAyMyBt
+YXkgMjAyNSBhIGxhcyAxNjo0MiwgTWlxdWVsIFJheW5hbAo+ICg8bWlxdWVsLnJheW5hbEBib290
+bGluLmNvbT4pIGVzY3JpYmnDszoKPj4KPj4gT24gMjEvMDUvMjAyNSBhdCAxMDowMzoyNSArMDIs
+IMOBbHZhcm8gRmVybsOhbmRleiBSb2phcyA8bm9sdGFyaUBnbWFpbC5jb20+IHdyb3RlOgo+Pgo+
+PiA+IENvbW1pdCAzYzgyNjBjZTc2NjMgKCJtdGQ6IHJhd25hbmQ6IGJyY21uYW5kOiBleGVjX29w
+IGltcGxlbWVudGF0aW9uIikKPj4gPiByZW1vdmVkIGxlZ2FjeSBpbnRlcmZhY2UgZnVuY3Rpb25z
+LCBicmVha2luZyA8IHY1LjAgY29udHJvbGxlcnMgc3VwcG9ydC4KPj4gPiBJbiBvcmRlciB0byBm
+aXggb2xkZXIgY29udHJvbGxlcnMgd2UgbmVlZCB0byBhZGQgYW4gYWx0ZXJuYXRpdmUgZXhlY19v
+cAo+PiA+IGltcGxlbWVudGF0aW9uIHdoaWNoIGRvZXNuJ3QgcmVseSBvbiBsb3cgbGV2ZWwgcmVn
+aXN0ZXJzLgo+PiA+Cj4+ID4gRml4ZXM6IDNjODI2MGNlNzY2MyAoIm10ZDogcmF3bmFuZDogYnJj
+bW5hbmQ6IGV4ZWNfb3AgaW1wbGVtZW50YXRpb24iKQo+PiA+IFNpZ25lZC1vZmYtYnk6IMOBbHZh
+cm8gRmVybsOhbmRleiBSb2phcyA8bm9sdGFyaUBnbWFpbC5jb20+Cj4+ID4gUmV2aWV3ZWQtYnk6
+IERhdmlkIFJlZ2FuIDxkcmVnYW5AYnJvYWRjb20uY29tPgo+PiA+IC0tLQo+PiA+ICBkcml2ZXJz
+L210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jIHwgMjIyICsrKysrKysrKysrKysrKysr
+KysrKystCj4+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyMTUgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlv
+bnMoLSkKPj4gPgo+PiA+ICB2NTogYWRkIGNoYW5nZXMgcmVxdWVzdGVkIGJ5IE1pcXXDqGwgUmF5
+bmFsOgo+PiA+ICAgLSBNZW50aW9uIGFuZCBleHBsYWluIGxlZ2FjeSBpbiBuYXRpdmVfY21kX2Nv
+bnYuCj4+ID4gICAtIEVPUE5PVFNVUFAgaW5zdGVhZCBvZiBFSU5WQUwgZm9yIGluc3RyLT50eXBl
+IGVsc2UuCj4+ID4gICAtIEltcGxlbWVudCBtaXNzaW5nIGNoZWNrX29ubHkgZnVuY3Rpb25hbGl0
+eS4KPj4gPgo+PiA+ICB2NDogYWRkIGNoYW5nZXMgcmVxdWVzdGVkIGJ5IEpvbmFzIEdvcnNraToK
+Pj4gPiAgIC0gQWRkIG1pc3NpbmcgYnJlYWtzIGluIGJyY21uYW5kX2V4ZWNfaW5zdHJ1Y3Rpb25z
+X2xlZ2FjeS4KPj4gPiAgIC0gUmVzdG9yZSBtaXNzaW5nIHJldCBhc3NpZ25tZW50IGluIGJyY21u
+YW5kX2V4ZWNfb3AuCj4+ID4KPj4gPiAgdjM6IGFkZCBjaGFuZ2VzIHJlcXVlc3RlZCBieSBGbG9y
+aWFuIGFuZCBvdGhlciBpbXByb3ZlbWVudHM6Cj4+ID4gICAtIEFkZCBhc3NvY2lhdGl2ZSBhcnJh
+eSBmb3IgbmF0aXZlIGNvbW1hbmQgY29udmVyc2lvbi4KPj4gPiAgIC0gQWRkIGZ1bmN0aW9uIHBv
+aW50ZXIgdG8gYnJjbW5hbmRfY29udHJvbGxlciBmb3IgZXhlY19pbnN0cgo+PiA+ICAgICBmdW5j
+dGlvbmFsaXR5Lgo+PiA+ICAgLSBGaXggQ01EX0JMT0NLX0VSQVNFIGFkZHJlc3MuCj4+ID4gICAt
+IERyb3AgTkFORF9DTURfUkVBRE9PQiBzdXBwb3J0Lgo+PiA+Cj4+ID4gIHYyOiBtdWx0aXBsZSBp
+bXByb3ZlbWVudHM6Cj4+ID4gICAtIFVzZSBwcm9wZXIgbmF0aXZlIGNvbW1hbmRzIGZvciBjaGVj
+a3MuCj4+ID4gICAtIEZpeCBOQU5EX0NNRF9QQVJBTS9OQU5EX0NNRF9STkRPVVQgYWRkciBjYWxj
+dWxhdGlvbi4KPj4gPiAgIC0gUmVtb3ZlIGhvc3QtPmxhc3RfYWRkciB1c2FnZS4KPj4gPiAgIC0g
+UmVtb3ZlIHNlY3Rvcl9zaXplXzFrIHNpbmNlIGl0IG9ubHkgYXBwbGllcyB0byB2NS4wKyBjb250
+cm9sbGVycy4KPj4gPiAgIC0gUmVtb3ZlIGJyY21uYW5kX3dwIHNpbmNlIGl0IGRvZXNuJ3QgZXhp
+c3QgZm9yIDwgdjUuMCBjb250cm9sbGVycy4KPj4gPiAgIC0gVXNlIGogaW5zdGVhZCBvZiBpIGZv
+ciBmbGFzaF9jYWNoZSBsb29wLgo+PiA+Cj4+Cj4+IC4uLgo+Pgo+PiA+ICtzdGF0aWMgaW50IGJy
+Y21uYW5kX2NoZWNrX2luc3RydWN0aW9uc19sZWdhY3koc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwK
+Pj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0
+cnVjdCBuYW5kX29wZXJhdGlvbiAqb3ApCj4+ID4gK3sKPj4gPiArICAgICBjb25zdCBzdHJ1Y3Qg
+bmFuZF9vcF9pbnN0ciAqaW5zdHI7Cj4+ID4gKyAgICAgdW5zaWduZWQgaW50IGk7Cj4+ID4gKyAg
+ICAgdTggY21kOwo+PiA+ICsKPj4gPiArICAgICBmb3IgKGkgPSAwOyBpIDwgb3AtPm5pbnN0cnM7
+IGkrKykgewo+PiA+ICsgICAgICAgICAgICAgaW5zdHIgPSAmb3AtPmluc3Ryc1tpXTsKPj4gPiAr
+Cj4+ID4gKyAgICAgICAgICAgICBzd2l0Y2ggKGluc3RyLT50eXBlKSB7Cj4+ID4gKyAgICAgICAg
+ICAgICBjYXNlIE5BTkRfT1BfQ01EX0lOU1RSOgo+PiA+ICsgICAgICAgICAgICAgICAgICAgICBj
+bWQgPSBuYXRpdmVfY21kX2NvbnZbaW5zdHItPmN0eC5jbWQub3Bjb2RlXTsKPj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgaWYgKGNtZCA9PSBDTURfTk9UX1NVUFBPUlRFRCkKPj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVPUE5PVFNVUFA7Cj4+ID4gKyAgICAgICAg
+ICAgICAgICAgICAgIGJyZWFrOwo+PiA+ICsgICAgICAgICAgICAgY2FzZSBOQU5EX09QX0FERFJf
+SU5TVFI6Cj4+ID4gKyAgICAgICAgICAgICBjYXNlIE5BTkRfT1BfREFUQV9JTl9JTlNUUjoKPj4K
+Pj4gTm8gTkFORF9PUF9EQVRBX09VVF9JTlNUUj8KPgo+IEFGQUlLLCB0aGUgbGVnYWN5IGZ1bmN0
+aW9ucyB3ZXJlIG9ubHkgdXNpbmcgaXQgZm9yCj4gTkFORF9DTURfU0VUX0ZFQVRVUkVTLCB3aGlj
+aCB3ZSBkb24ndCBzdXBwb3J0Ogo+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9i
+bG9iL2M4NmI2M2I4MmZkZTRmOTZlZTk0ZGRlODI3YTVmMjhmZjVhZGViNTcvZHJpdmVycy9tdGQv
+bmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyNMMTkyMi1MMTkzOAo+Cj4gVGhlIG90aGVyIHVz
+ZXMgSSBjb3VsZCBmaW5kIGFyZSBhbHJlYWR5IGNvdmVyZWQgYnkgb3VyCj4gY2hpcC0+ZWNjLnJl
+YWQvd3JpdGUgZnVuY3Rpb25zLgo+Cj4gSW4gYW55IGNhc2UgSSd2ZSB0ZXN0ZWQgdGhlIHBhdGNo
+IGZvciByZWFkaW5nLCBlcmFzaW5nIGFuZCB3cml0aW5nIHRoZQo+IE5BTkQgYW5kIHNvIGZhciBJ
+IGhhdmVuJ3QgZm91bmQgYW55IHVuc3VwcG9ydGVkIGVycm9yIGFwYXJ0IGZyb20KPiBOQU5EX0NN
+RF9HRVRfRkVBVFVSRVMgd2l0aCBhIE1hY3Jvbml4IE5BTkQgaW4gdGhlIFNlcmNvbSBINTAwLXMK
+PiAoQkNNNjMyNjgpLgo+IEkgYmVsaWV2ZSBpdCdzIHVzZWQgZm9yIHVubG9ja2luZyB0aGUgTkFO
+RCwgd2hpY2ggaXNuJ3QgbmVlZGVkIGluIHRoYXQKPiBkZXZpY2UuCgpXZWxsLCB5b3UgYXJlIHJl
+c3RvcmluZyBhbiBvbGQgYmVoYXZpb3Igc28gSSB3b24ndCBhc2sgZm9yIGEgYmV0dGVyCnN1cHBv
+cnQsIGJ1dCB5b3Ugc2hvdWxkIG5vcm1hbGx5IGFsbG93IHNvZnR3YXJlIEVDQyBlbmdpbmVzIChh
+bmQgZXZlbiBubwplbmdpbmUgYXQgYWxsKSBhbmQgaW4gdGhpcyBjYXNlIHRoZSBjb3JlIHdpbGwg
+cmVxdWlyZSBhIHdyaXRlIHBhdGguIEkKaG9uZXN0bHkgdGhpbmsgaXQgaXMgbm90IHZlcnkgY29t
+cGxleCB0byBpbXBsZW1lbnQgYnV0IGlmIHNvbWVvbmUgaXMKbGFja2luZyB0aGlzIGZlYXR1cmUg
+aXQgY2FuIGJlIGFkZGVkIGxhdGVyLgoKUGxlYXNlIGp1c3QgZml4IHRoZSBicmFjZXMgaW4gdGhl
+IGZvciBsb29wIHRoYXQgd2FzIHJlcG9ydGVkLCBidXQgbm8KaHVycnksIEknbGwgb25seSB0YWtl
+IHRoaXMgYWZ0ZXIgLXJjMS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
