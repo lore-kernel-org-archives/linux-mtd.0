@@ -4,92 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D61CC54ED1
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 May 2025 11:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D20DBC54ED1
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 May 2025 11:29:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5GKpmEoajeK+ql+qEfg4hp0T4AVzSKSw3bj5J8VaejU=; b=Pmp1LUHPZpQ5/t
-	IiA6/Bno0CYcNtxeVrpzZuh6l3U+7nDD0YFCLXHvGljpBcf71CWozmy2tyu9LoQNwkiCpjDmLifmC
-	ZPsSXsGn9W/DpZImUqQDlvt9XhiYWV5aOngjwbMwE42rWpvZxXrjV7bPMi+1M7pQS0CqMnjZk1qYo
-	eOFLnQEaQaXWNZbIaR7kQ3V6p/thPKVijLDq+IA5LPgyHotDgukvXSQwjkdnZfgcsEHeXDxdk1TGT
-	TeMctMz+RYRRMAFI/madY5B+oSE+Mb9Eivs4wNVGafzQaljXgt8kVilX3BgRz5RdpigkGiNPrgCf0
-	PzIlBEHx17jUlD/3ErHg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=VMUUZGAzl1fQ3yYRMrrhxBeJLR8ihtVDxs2okrSYMyU=; b=NBvj3hWPFsovJAovH9PODbQFFn
+	R9XwzMptX7uImgSVwInhsrP53iuy40A68EGxmdnNPHBozyALBC004zeS/5i3/yaKpUgq9ANpke09u
+	warfXytLcKtvOXE3BSqeHNuvAffaJlUp6f2cHldt7c3H+n4zdw+PEd3JhOivHnxx44fYw0w+5+31R
+	q3PBFOWmnUpPY/ckcNFT2PHZS7Ro693IhlzE109+RyZBxceJpNQ/dubf0NTdvYYgHyABjlQbcobKH
+	U2ONxZI2lAcebRvOv5NTO8QGfwBQWhNAqtLxIaRlmiGiwHaoE3ZgpSCcsBi3MTGQPUItKX9YfzZtx
+	r6SX5TCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uJsAl-0000000AX6i-0RRA;
-	Tue, 27 May 2025 11:08:43 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1uJsUR-0000000AZe6-0KyF;
+	Tue, 27 May 2025 11:29:03 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uJsAh-0000000AX5p-3ti3
+	id 1uJsUO-0000000AZdc-1avZ
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 May 2025 11:08:41 +0000
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-ad1f6aa2f84so648356366b.0
-        for <linux-mtd@lists.infradead.org>; Tue, 27 May 2025 04:08:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748344118; x=1748948918; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VrzlUqZN0a5R+G7GF9tUab03ZGWFooFwFU0L4xjwtxM=;
-        b=jUSiOHQ8NGdGXmcnWigKz9irUGud9A1Nciz6/x05X8sZIEq9y9+c1IRJSCR/rQ5nov
-         19jG3EOqp62r/VTKknCEnhkZDujU9Ij+Z1LjoZjzakcdM0ef41c9q6InZatYIJjVBcpD
-         VbQ6jwS8g94Vv9fGMRph5rTeMBH/tbuss+RAsPQiIESpT+IrQKRUASRfZRuPPEt5k9Mn
-         YDRq/+9d+ow7b8uXZ0+fqY4JuBTctD3BQI2JzqH+C7WXzKckAX+O7kaGcPhkrhs/xcpM
-         B8tLdq1cMWvORYHy2npLzdEFJyeB9n0q+cn7F64ub9XQ0D3rNcyqjJVKbxbgYLoouyTX
-         YhRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748344118; x=1748948918;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VrzlUqZN0a5R+G7GF9tUab03ZGWFooFwFU0L4xjwtxM=;
-        b=XqgBYokiGQgUHhJeeMqBvZ9y/v/V5gtnqEgV8ZN9rbK8sjbTyi4qYW6qcqrer0Vnfk
-         AjF10XapbHfK95sV49vupIyRnoyb6PA1NfAg+EapRzMTnuARa+j16z4ypLivjRpHt2UF
-         JGcEepxRErTQo+FsKEUY4MyTPR3EJlMwicbf4E5mbY9zbnE8qTdRitRBuczH3zhim2L4
-         1N+mMcC7fzqB26raYjS04KRWkGHuW2BVRjSENs+p6/v77GoCZF92mU1EFx9CBfQBdfkj
-         pld/ymCWnVlzDzn9pbPRwHdtt6YN+CpTYcJzkhkecw8Dpq/xKbJv6K+hWy62gH2P13kB
-         X93w==
-X-Forwarded-Encrypted: i=1; AJvYcCV4iPmHmf05nFM67yLjqvVeghwbX1Dwvz+RZstnKDMR5v4+MGsdKD/nT44y5+Vc/z4zkAPZBRfGNRs=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx27QilizcMpPqXOvbL9yIWpaMWLDxYHURFTvz11UaA4UdR0rVX
-	1WZSatWFHxfXC+hq4TqyAym3MevP3lCrAyAhJ6EqFVPHzTiHR5iGPgDXS5RkmDV5
-X-Gm-Gg: ASbGnctfkNDZCm4616eu9eRTaSp85ozlPGt8OMmIv4HGS3eNZfALUVQ5zFx4nTFFqd1
-	OqHqaxCOv+S7SXJQkb9eHAGKdksZwHOfPpZ6le8s4kx+4/TIaHXiKO491RpH3gKx0Jjtq0QP8oZ
-	kAeB5A6lB3FbScjGIiXRWdlYvj2PcXSTD28LN0BgaJpiUN/VZuXuYxzs8Ib3HA93RmdGNkX8lX3
-	JGQ2hBM8wH+oT3TEdd/HDfv+CM9olp35keLQu0ofE3kovxIboBPb0peRST91x9klnopPmrVNwVs
-	BS72XIPJ/xdbPvA8Y3DKTTYWJRRQYllaT8XtrNf4vOnsNb6cseU9lYvxWszNRGiBSJ/fF1qkNNn
-	47put
-X-Google-Smtp-Source: AGHT+IGJFDt2RJQxu8Iu8q4jKRN0K1XcgwMH030e180iig8ad6QB0tPqnPyZqTiw7ph0nwENS67CkA==
-X-Received: by 2002:a17:907:9483:b0:ad8:6dae:11e6 with SMTP id a640c23a62f3a-ad8986f270emr21002766b.0.1748344116076;
-        Tue, 27 May 2025 04:08:36 -0700 (PDT)
-Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-ad52d4cbe90sm1819389666b.165.2025.05.27.04.08.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 May 2025 04:08:35 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Tue, 27 May 2025 13:08:16 +0200
-Subject: [PATCH] spi: spi-qpic-snand: document the limited bit error
- reporting capability
+	Tue, 27 May 2025 11:29:01 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id A1B94A4F623;
+	Tue, 27 May 2025 11:28:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F45DC4CEE9;
+	Tue, 27 May 2025 11:28:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748345339;
+	bh=rwmtje4bUGVaeN3ojBIVgWdhDOnFTHhqrxRv1ndILaI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uPajK+iPkSs8jQ8PgcxIFb4hWFdGUIlwgBs1j7xi6Wal/fN2pkyF0gdAIsJTffCsY
+	 hQZJNIoxyHINaXcEjcDwfh1qWAXIF90fNTxmOhpzuCNN/h57mom+JW+5GbGDdAlxv9
+	 Rxh7f3na5kL/fONhlgZGhY8NT6qNqeywVwLYCfNq4siJd+XeTtviLkZ/AmlXl5rt/6
+	 HxKBJzBsLcPgK6Kj6O0i/hKLQukbjvzwz7zBiKwczLV/k+3EpEK0cCvJXe+9/C3xqr
+	 Lh340o1TxoG8j/7+X5gFhW2SqJZhIEGuTz72PYffJbb17p+aNAfk9GQYnNU+XiyF2X
+	 gQMM97Oh8IURA==
+Date: Tue, 27 May 2025 12:28:54 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Gabor Juhos <j4g8y7@gmail.com>
+Cc: Md Sadre Alam <quic_mdalam@quicinc.com>,
+	Varadarajan Narayanan <quic_varada@quicinc.com>,
+	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-spi@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] spi: spi-qpic-snand: reallocate BAM transactions
+Message-ID: <cc53dca0-74d1-42d2-936a-adc383bd571a@sirena.org.uk>
+References: <20250525-qpic-snand-avoid-mem-corruption-v1-0-5fe528def7fb@gmail.com>
+ <20250525-qpic-snand-avoid-mem-corruption-v1-1-5fe528def7fb@gmail.com>
 MIME-Version: 1.0
-Message-Id: <20250527-qpic-snand-limited-biterr-caps-v1-1-61f7cf87be1e@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAB+dNWgC/x2NQQqDMBAAvyJ7diEJiLZfEQ9rstqFNo27pQji3
- w1eBuYyc4CxChs8mwOU/2LyzVV820B8UV4ZJVWH4ELnutDjViSiZcoJ3/KRHyecK1UxUjEk/xh
- m56NfHEGNFOVF9nswTud5AUPqiVxwAAAA
-X-Change-ID: 20250527-qpic-snand-limited-biterr-caps-a198b01c1f0a
-To: Mark Brown <broonie@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.14.2
+In-Reply-To: <20250525-qpic-snand-avoid-mem-corruption-v1-1-5fe528def7fb@gmail.com>
+X-Cookie: New customers only.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250527_040839_969887_B86951AE 
-X-CRM114-Status: GOOD (  12.08  )
+X-CRM114-CacheID: sfid-20250527_042900_480286_6EBC29FE 
+X-CRM114-Status: UNSURE (   9.90  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,59 +75,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4468361426761677428=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The QPIC hardware is not capable of reporting the exact number of the
-corrected bit errors, it only reports the number of the corrected bytes.
 
-Document this behaviour in the code, and also issue a warning message
-to inform the user about it.
+--===============4468361426761677428==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4heDsfrle+qDlMWp"
+Content-Disposition: inline
 
-No functional changes.
 
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
- drivers/spi/spi-qpic-snand.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+--4heDsfrle+qDlMWp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index fd129650434f0129e24d3bdac7e7c4d5542627e6..c2f5ef899f6a60ad98b9d754b7cac1832d0500eb 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -639,6 +639,20 @@ static int qcom_spi_check_error(struct qcom_nand_controller *snandc)
- 			unsigned int stat;
- 
- 			stat = buffer & BS_CORRECTABLE_ERR_MSK;
-+
-+			/*
-+			 * The exact number of the corrected bits is
-+			 * unknown because the hardware only reports the
-+			 * number of the corrected bytes.
-+			 *
-+			 * Since we have no better solution at the moment,
-+			 * report that value as the number of bit errors
-+			 * despite that it is inaccurate in most cases.
-+			 */
-+			if (stat && stat != ecc_cfg->strength)
-+				dev_warn_once(snandc->dev,
-+					      "Warning: due to hw limitation, the reported number of the corrected bits may be inaccurate\n");
-+
- 			snandc->qspi->ecc_stats.corrected += stat;
- 			max_bitflips = max(max_bitflips, stat);
- 		}
+On Sun, May 25, 2025 at 07:05:35PM +0200, Gabor Juhos wrote:
 
----
-base-commit: b00d6864a4c948529dc6ddd2df76bf175bf27c63
-change-id: 20250527-qpic-snand-limited-biterr-caps-a198b01c1f0a
+>   # reboot
+>   [  877.178844] Unable to handle kernel read from unreadable memory at virtual address 0000000000000078
+>   [  877.178913] Mem abort info:
+>   [  877.186767]   ESR = 0x0000000096000005
+>   [  877.189508]   EC = 0x25: DABT (current EL), IL = 32 bits
+>   [  877.193312]   SET = 0, FnV = 0
+>   [  877.198780]   EA = 0, S1PTW = 0
 
-Best regards,
--- 
-Gabor Juhos <j4g8y7@gmail.com>
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative (it often is
+for search engines if nothing else) then it's usually better to pull out
+the relevant sections.
 
+--4heDsfrle+qDlMWp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmg1ofUACgkQJNaLcl1U
+h9C4Bgf7BYX7fYSmMG+RLdZPEv1vQHP0zWlVNMcyOFXq5XSd+PWAdXwVdtd2t1rX
+o4vrmXu8LUTwVjNQyjQHdNmAzWpJSgPgd1v+DVMJaRQ/7nlHOCgwEq3ZWbCXkPqK
+EB2nLdapopuCG4ODGz6/rcFjfSuF/Opscmzks/wMtxHM6EEDED2ZydP1oTGQSYFw
+l5X/eR1mki1uM2EcgflX8qu7bsSBF9wVDmvpfpiTREq3Hl0rYI/NbPwkJCnb1FKF
+Pxj2qIxAflmoDS3KatQlAye8ylo/Y5Wm6L4EsxG0E27+i3X/9kbMFt+FV+0B0r1d
+VQpUiRr0Z0wguo3kPj1VDtfnTXGTgA==
+=smaR
+-----END PGP SIGNATURE-----
+
+--4heDsfrle+qDlMWp--
+
+
+--===============4468361426761677428==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4468361426761677428==--
+
