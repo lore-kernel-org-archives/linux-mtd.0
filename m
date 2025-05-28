@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EBF5C5B558
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BF27C5B556
 	for <linux-mtd@archiver.kernel.org>; Wed, 28 May 2025 14:17:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5G5AAa8bE5NzFCxghfn96Rpzg9ARoHlVgViuSIojJ1M=; b=gZNAi/WK4Ep8Co
-	nYrJ0o2bLsuVHNfm4nGyLoHtd1eGQtRPW+Si3vz53c03aRkmT48vVfOHP7CBXi73SHegEIv+w3LLC
-	bv1MC+jzmM6/3exX3fwZIftyZ58H+sPuozAgh+63RCFw+f1GXUUgJckrxxzqFXSH/RvQEQXSd3fEA
-	3pca/oYe82fbAIjB/RSZnrdT7uMldtv9lmB7UI/P0guJTQrnR6YJwcEd2Veg7ZvICcnkxvFRQgL87
-	3qN+Se+ZqGmQu+mFmO8FRs2RgXD7jxKsaBsr1UlGWzM68CeU92TrEP/9ZMwHCztkfgZWILdEaaOn3
-	4/gu/uEcjJKOo9FkdNtQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZvrL4Y+MOC57IZbQZMWY/diR+PJk5jeTon50TrCEmIs=; b=TOmgStam5XHxNp
+	4OOdZEbZtaV4cgdaRdKTf74+3dkWipB5VNGDk2FWC6xgsXmQTKthdDeD5HuRWNmx9oYUW+z8S9ZiB
+	tBh6i+c4d1uNSA84+WWHEyV3T3sozts4Ys9E9Y5TmNothHhW1Ys+5js/+w91Z47+zm1X2O9X+MpdL
+	jm+0TXg85qA4UMYas11h8A5l/tXy33tP+1vTTri7KPhnyK7VV5d6x0z2jWY8sZZYIDRKuHRG1V0WC
+	QUzqOgEJNAH4y/Z4JHpgWvHrQP2OFVdO+b+aJoInfdtHBYABE4GUSFWDT/vri06IU0xYjTwsgFtuB
+	Z7p1CPyFp0wQCAcmDDxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKHb4-0000000DLjW-0IIi;
-	Wed, 28 May 2025 14:17:34 +0000
+	id 1uKHb8-0000000DLmc-48zW;
+	Wed, 28 May 2025 14:17:38 +0000
 Received: from mgamail.intel.com ([198.175.65.13])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKHP9-0000000DJa3-2OgR
+	id 1uKHPr-0000000DJdw-0A9N
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 May 2025 14:05:16 +0000
+	Wed, 28 May 2025 14:06:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748441116; x=1779977116;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=a+b8oFQ+o3n4GVpZkSbmFKxukgJHOdKZ0BeU7RaJ1ok=;
-  b=Pnnx6JGZOcc72M9wGVYJeIFwdFKNJsVyLyh+KipBeRIikjUlRKYvFyaK
-   mXoz40GqS2RO36KADsYm9inru4Jrk2gE6eHE9tB7IndQy6yylKtQOigCK
-   R2PB6OZS7X6wtV2E5u56MzApq1QV5qlLpsNHJJvX8dG9OmiJ15ZdyswE5
-   h011JtXzJ4IflJ6dxnE9c+rM9mgwa0eY2SOYLPPkjCaBMe5Jjr0xJEtdB
-   WFzFpLdkgq+vcsNMgbi61qtwOAp+V0GapJ2LbX5NUbpC9h8r5Ab5HgPgF
-   8KvWKYSRxR6CQgV5fCnq2A0JzJh/aeIuM7B+6/ZLlE9f0OXfOhm6LKz61
-   g==;
-X-CSE-ConnectionGUID: XDGwqc24RkmfwASWZ5iXwA==
-X-CSE-MsgGUID: VvG+8PPiRaiV7VKcOplkeA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="61524761"
+  t=1748441159; x=1779977159;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=luOze6g0PP5F5pCLOK5jBaa2umhqnsfnayAFqvQ9H4M=;
+  b=IPx63CV8KTHnInz3r+h7NlonDcl5qvy+gG/opHSZZ9HdIhyY3q5Ic9Zx
+   k1b2+2dV2qEU6x4u4LxJZu3Fhddz672IM5krlAtiexsTAUh6e9fi0TH+n
+   76CHpMASaW2FkseJHSmRouTqf+KQsaZ6gQsoHVXVnNBREsgQeih+75epI
+   SLqqaPGZw8LtoRci+LI8mPa7CdLGyaXJltDmVG3FbVjAw3cuiFsaQrg3z
+   DOw8SlpGwAlshlk+/e+HljsLfd+hmWAhdAyDKt3rAUcDGTnknT1oaWWHn
+   sVN+z7jhEw1Kqwe0gJiVlWGot8mlSHdo+fjYUhxohDSLW03XhFBs6EcXy
+   w==;
+X-CSE-ConnectionGUID: vkzfkwGXSDyRANBU2dFxJg==
+X-CSE-MsgGUID: Lv1pnjZuSrSJC/F2gwvKdw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="61525157"
 X-IronPort-AV: E=Sophos;i="6.15,321,1739865600"; 
-   d="scan'208";a="61524761"
+   d="scan'208";a="61525157"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:09 -0700
-X-CSE-ConnectionGUID: T4slOBrWRYOzAaVlSgycZQ==
-X-CSE-MsgGUID: qwiu8CfXTtaojvQo5zb2hA==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:59 -0700
+X-CSE-ConnectionGUID: mgVxrcfnQM6GGEThWBtUMA==
+X-CSE-MsgGUID: 2w3uEq3qRkm6nkCiUod65A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,321,1739865600"; 
-   d="scan'208";a="143238784"
+   d="scan'208";a="143239149"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:04 -0700
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:53 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -79,14 +79,16 @@ Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
 	intel-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Alexander Usyskin <alexander.usyskin@intel.com>
-Subject: [PATCH v11 00/10] mtd: add driver for Intel discrete graphics
-Date: Wed, 28 May 2025 16:51:05 +0300
-Message-ID: <20250528135115.2512429-1-alexander.usyskin@intel.com>
+Subject: [PATCH v11 09/10] drm/xe/nvm: add support for access mode
+Date: Wed, 28 May 2025 16:51:14 +0300
+Message-ID: <20250528135115.2512429-10-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250528135115.2512429-1-alexander.usyskin@intel.com>
+References: <20250528135115.2512429-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250528_070515_661989_5ECCCD11 
-X-CRM114-Status: GOOD (  14.92  )
+X-CRM114-CacheID: sfid-20250528_070559_119690_B35CD525 
+X-CRM114-Status: GOOD (  13.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,100 +105,118 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add driver for access to Intel discrete graphics card
-internal NVM device.
-Expose device on auxiliary bus by i915 and Xe drivers and
-provide mtd driver to register this device with MTD framework.
+Check NVM access mode from GSC FW status registers
+and overwrite access status read from SPI descriptor, if needed.
 
-This is a rewrite of "drm/i915/spi: spi access for discrete graphics"
-and "spi: add driver for Intel discrete graphics"
-series with connection to the Xe driver and splitting
-the spi driver part to separate module in mtd subsystem.
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+---
+ drivers/gpu/drm/xe/regs/xe_gsc_regs.h |  4 +++
+ drivers/gpu/drm/xe/xe_heci_gsc.c      |  5 +---
+ drivers/gpu/drm/xe/xe_nvm.c           | 37 ++++++++++++++++++++++++++-
+ 3 files changed, 41 insertions(+), 5 deletions(-)
 
-This series intended to be pushed through drm-xe-next.
-
-V2: Replace dev_* prints with drm_* prints in drm (xe and i915) patches.
-    Enable NVM device on Battlemage HW (xe driver patch)
-    Fix overwrite register address (xe driver patch)
-    Add Rodrigo's r-b
-
-V3: Use devm_pm_runtime_enable to simplify flow.
-    Drop print in i915 unload that was accidentally set as error.
-    Drop HAS_GSC_NVM macro in line with latest Xe changes.
-    Add more Rodrigo's r-b and Miquel's ack.
-
-V4: Add patch that always creates mtd master device
-    and adjust mtd-intel-dg power management to use this device.
-
-V5: Fix master device creation to accomodate for devices without
-    partitions (create partitoned master in this case)
-    Rebase over latest drm-xe-next
-    Add ack's
-V6: Fix master device release (use rigth idr in release)
-    Rebase over latest drm-xe-next
-    Grammar and style fixes
-
-V7: Add patch with non-posted erase support (fix hang on BMG)
-    Rebase over latest drm-xe-next
-
-V8: Create separate partition device under master device, if requested
-    and configure parent of usual partitions to this partition.
-    Rebase over drm-tip.
-
-V9: Fix checkpatch warning on non-posted erase patch.
-    Add Rodrigo's review and ack.
-
-V10: Drop master device creation patch as it now in mtd-next.
-     Drop power-management patch, it will be merged lately after
-     master device patch is propagated.
-     Rebase over drm-tip.
-
-V11: Fix review comments.
-     Add reviewed-by.
-     Add cleanup in error path.
-     Add PADDING region that exists on some BMG devices.
-
-Alexander Usyskin (9):
-  mtd: add driver for intel graphics non-volatile memory device
-  mtd: intel-dg: implement region enumeration
-  mtd: intel-dg: implement access functions
-  mtd: intel-dg: register with mtd
-  mtd: intel-dg: align 64bit read and write
-  drm/i915/nvm: add nvm device for discrete graphics
-  drm/i915/nvm: add support for access mode
-  drm/xe/nvm: add on-die non-volatile memory device
-  drm/xe/nvm: add support for access mode
-
-Reuven Abliyev (1):
-  drm/xe/nvm: add support for non-posted erase
-
- MAINTAINERS                           |   7 +
- drivers/gpu/drm/i915/Makefile         |   4 +
- drivers/gpu/drm/i915/i915_driver.c    |   6 +
- drivers/gpu/drm/i915/i915_drv.h       |   3 +
- drivers/gpu/drm/i915/i915_reg.h       |   1 +
- drivers/gpu/drm/i915/intel_nvm.c      | 121 ++++
- drivers/gpu/drm/i915/intel_nvm.h      |  15 +
- drivers/gpu/drm/xe/Makefile           |   1 +
- drivers/gpu/drm/xe/regs/xe_gsc_regs.h |   4 +
- drivers/gpu/drm/xe/xe_device.c        |   5 +
- drivers/gpu/drm/xe/xe_device_types.h  |   6 +
- drivers/gpu/drm/xe/xe_heci_gsc.c      |   5 +-
- drivers/gpu/drm/xe/xe_nvm.c           | 167 ++++++
- drivers/gpu/drm/xe/xe_nvm.h           |  15 +
- drivers/gpu/drm/xe/xe_pci.c           |   6 +
- drivers/mtd/devices/Kconfig           |  11 +
- drivers/mtd/devices/Makefile          |   1 +
- drivers/mtd/devices/mtd_intel_dg.c    | 830 ++++++++++++++++++++++++++
- include/linux/intel_dg_nvm_aux.h      |  32 +
- 19 files changed, 1236 insertions(+), 4 deletions(-)
- create mode 100644 drivers/gpu/drm/i915/intel_nvm.c
- create mode 100644 drivers/gpu/drm/i915/intel_nvm.h
- create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
- create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
- create mode 100644 drivers/mtd/devices/mtd_intel_dg.c
- create mode 100644 include/linux/intel_dg_nvm_aux.h
-
+diff --git a/drivers/gpu/drm/xe/regs/xe_gsc_regs.h b/drivers/gpu/drm/xe/regs/xe_gsc_regs.h
+index 7702364b65f1..9b66cc972a63 100644
+--- a/drivers/gpu/drm/xe/regs/xe_gsc_regs.h
++++ b/drivers/gpu/drm/xe/regs/xe_gsc_regs.h
+@@ -16,6 +16,10 @@
+ #define MTL_GSC_HECI1_BASE	0x00116000
+ #define MTL_GSC_HECI2_BASE	0x00117000
+ 
++#define DG1_GSC_HECI2_BASE	0x00259000
++#define PVC_GSC_HECI2_BASE	0x00285000
++#define DG2_GSC_HECI2_BASE	0x00374000
++
+ #define HECI_H_CSR(base)	XE_REG((base) + 0x4)
+ #define   HECI_H_CSR_IE		REG_BIT(0)
+ #define   HECI_H_CSR_IS		REG_BIT(1)
+diff --git a/drivers/gpu/drm/xe/xe_heci_gsc.c b/drivers/gpu/drm/xe/xe_heci_gsc.c
+index 27d11e06a82b..6d7b62724126 100644
+--- a/drivers/gpu/drm/xe/xe_heci_gsc.c
++++ b/drivers/gpu/drm/xe/xe_heci_gsc.c
+@@ -11,15 +11,12 @@
+ #include "xe_device_types.h"
+ #include "xe_drv.h"
+ #include "xe_heci_gsc.h"
++#include "regs/xe_gsc_regs.h"
+ #include "xe_platform_types.h"
+ #include "xe_survivability_mode.h"
+ 
+ #define GSC_BAR_LENGTH  0x00000FFC
+ 
+-#define DG1_GSC_HECI2_BASE			0x259000
+-#define PVC_GSC_HECI2_BASE			0x285000
+-#define DG2_GSC_HECI2_BASE			0x374000
+-
+ static void heci_gsc_irq_mask(struct irq_data *d)
+ {
+ 	/* generic irq handling */
+diff --git a/drivers/gpu/drm/xe/xe_nvm.c b/drivers/gpu/drm/xe/xe_nvm.c
+index 33ba635ce116..20aa3b5d3637 100644
+--- a/drivers/gpu/drm/xe/xe_nvm.c
++++ b/drivers/gpu/drm/xe/xe_nvm.c
+@@ -6,8 +6,11 @@
+ #include <linux/intel_dg_nvm_aux.h>
+ #include <linux/pci.h>
+ 
++#include "xe_device.h"
+ #include "xe_device_types.h"
++#include "xe_mmio.h"
+ #include "xe_nvm.h"
++#include "regs/xe_gsc_regs.h"
+ #include "xe_sriov.h"
+ 
+ #define GEN12_GUNIT_NVM_BASE 0x00102040
+@@ -26,6 +29,38 @@ static void xe_nvm_release_dev(struct device *dev)
+ {
+ }
+ 
++static bool xe_nvm_writable_override(struct xe_device *xe)
++{
++	struct xe_gt *gt = xe_root_mmio_gt(xe);
++	bool writable_override;
++	resource_size_t base;
++
++	switch (xe->info.platform) {
++	case XE_BATTLEMAGE:
++		base = DG2_GSC_HECI2_BASE;
++		break;
++	case XE_PVC:
++		base = PVC_GSC_HECI2_BASE;
++		break;
++	case XE_DG2:
++		base = DG2_GSC_HECI2_BASE;
++		break;
++	case XE_DG1:
++		base = DG1_GSC_HECI2_BASE;
++		break;
++	default:
++		drm_err(&xe->drm, "Unknown platform\n");
++		return true;
++	}
++
++	writable_override =
++		!(xe_mmio_read32(&gt->mmio, HECI_FWSTS2(base)) &
++		  HECI_FW_STATUS_2_NVM_ACCESS_MODE);
++	if (writable_override)
++		drm_info(&xe->drm, "NVM access overridden by jumper\n");
++	return writable_override;
++}
++
+ int xe_nvm_init(struct xe_device *xe)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
+@@ -50,7 +85,7 @@ int xe_nvm_init(struct xe_device *xe)
+ 
+ 	nvm = xe->nvm;
+ 
+-	nvm->writable_override = false;
++	nvm->writable_override = xe_nvm_writable_override(xe);
+ 	nvm->bar.parent = &pdev->resource[0];
+ 	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
+ 	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
 -- 
 2.43.0
 
