@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EA3BC5B554
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 May 2025 14:17:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED2EEC5B553
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 May 2025 14:17:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AgUrmUw2ndKj9/57YL3z5Lc8UBRLzZr4Xay+DoNUPng=; b=PrYSqk3sDKnrdY
-	ery+nsw610adUyXDpSGbFY0o2jDBDfHBtiZB2vLUA9TjyALllbJZTeT2IWnrntc07meEsqWXWwQRU
-	nxLMzLehnGtK/vcEufS+bUnRIzbdvNgg9ZqqsVEBDIIBOAf7+qa0qT8KDG0PjAuJaJpNMWONwIzVB
-	hEAlT0ibtwWVcrREgkkE1XxogMJyXE7K3jrSt19GK86Y0CMxLIOs28BQ/LdvqEFnWiwcbjix7vkiC
-	xnJiijfA4fcL/R3F7kJsLsWErRmIGxEXyC0iaESCASMkbC6p/b+T644DBaGW2/dISwnaVXAFsrZG8
-	hNzBmzXDO1f8k58VImng==;
+	List-Owner; bh=OQyRtvh45sx1xIXgBagEIRwCwJgXrTPteHH79EfWOf4=; b=RElqnViLIKJNpq
+	RJgCSdqoqbjTJDIgwJ1lGivL1vsTTFTOV/vr5L4GpZ8vqYJvYmrD9Qqt+Nnb0mfWj+pUTR/h1vRL4
+	+BsndnvhDajPY2ghaW0DKEbz9onv6xaoS3mJRh6wYMsKY/Wj4eUPc2+S8HqMbCiGFqDj16Y/CfDlt
+	zdJBCBu5s42FR9UiDhFMFzxItCvJzNQ5ZSukQEh/HZMpEI/unkqdYkdsWpNb+fDyoPb/hfbtgTeZd
+	Xb2AviNubRO5u7NdAVuJ1ARNnr9+GwNV11z0SfLNDOe7e+wmd0sLg+6hONSQevYumIiEQ47Q+fUr3
+	M7IOXNC1ZJBlXNZyc1QA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKHb5-0000000DLjv-0DnA;
-	Wed, 28 May 2025 14:17:35 +0000
+	id 1uKHb8-0000000DLm7-1Xz6;
+	Wed, 28 May 2025 14:17:38 +0000
 Received: from mgamail.intel.com ([198.175.65.13])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKHPE-0000000DJdw-3My2
+	id 1uKHPl-0000000DJdw-2zNh
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 May 2025 14:05:21 +0000
+	Wed, 28 May 2025 14:05:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748441121; x=1779977121;
+  t=1748441154; x=1779977154;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xuOsmuG5r7vSiKxfwOymLvRfT9zBWtOZCDj+znIt+wE=;
-  b=GdzhH9HSj0F7uodEAQLAx1A8tWmD4eUdnP5vD29gboTN0SwVi4Jtiwma
-   HWzVUcU69Wd/CcLFVUt37eLXMenH8zjOIz9G6zW5SCiuIc9alNE3C46zC
-   eo41qrooU/KM5wyb/1MouUymBWChrcRLruO9TzrRM3uA3NJE+vbobspJr
-   SnypQPLFsUbG2KlWvNMp1gGQMN6lN61pZ2CLoYT2dYua0vYtoHgspuXqw
-   jnDCR7gP9TGeBIgUJ3baCx8231tHaHwJ3SiQV0HgmUUb0QaiHtVmrwyhl
-   m5q3J+W37b9HF8VFN6cl7tM95NLNC3y7tVDKY2CSXzqJ0Yqttx6OT51DK
-   Q==;
-X-CSE-ConnectionGUID: VMUfhSqsRw6fleAIZrCOeQ==
-X-CSE-MsgGUID: gZL0tZpxTDmem2rWDy7hNQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="61524910"
+  bh=dwgUQc5Nfwk6m4k6OFonRzkMBcsQnk6U+Nke7KShjnk=;
+  b=V1Vg0RUAC1YDO1g04Sp4Hs7UE/UsJx3poF/l3qBPXOLFCDIc8YJI0df+
+   3say/EssL9itU5gGqFAL99lLOPB5eqyb8n/LGzab4PRMNED3Sn4EYMGZ8
+   ntu29gxWneov1Rq7Sjckugol0X1FU42T3tmTH5cDNIjaO8OSgFVHpahZx
+   LiL7oEdc3hNvwvErxiZ9Y2+JrOJuGjsizSqm05uHvCf+8LPrYdu+cMK/A
+   cpqiWfVYWGwtikALYKD+hv7OMPHzHBmBbbn7A4OqhH9r40ku5hc7rfZsm
+   TE4zIbLlQtQ3K9JlhClYnPYsXOTJBS1PunACHNqXqzeTy9lrtbAvr/qCk
+   g==;
+X-CSE-ConnectionGUID: 7tYFbZR1SAWzFVE569qkkA==
+X-CSE-MsgGUID: MxAGUuVCRYSp4g75qjnOkA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="61525147"
 X-IronPort-AV: E=Sophos;i="6.15,321,1739865600"; 
-   d="scan'208";a="61524910"
+   d="scan'208";a="61525147"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:20 -0700
-X-CSE-ConnectionGUID: XS25QKXrSRS+RPwKIQ46LA==
-X-CSE-MsgGUID: 41Gy93DqTXS9GgI93xC79A==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:53 -0700
+X-CSE-ConnectionGUID: /9XkjIXXReKQi7rzjfdVdg==
+X-CSE-MsgGUID: TO+JuOyeTdmnn3iSq6QfMg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,321,1739865600"; 
-   d="scan'208";a="143238888"
+   d="scan'208";a="143239123"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:14 -0700
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 07:05:48 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -78,18 +78,17 @@ Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	intel-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Alexander Usyskin <alexander.usyskin@intel.com>,
-	Tomas Winkler <tomasw@gmail.com>
-Subject: [PATCH v11 02/10] mtd: intel-dg: implement region enumeration
-Date: Wed, 28 May 2025 16:51:07 +0300
-Message-ID: <20250528135115.2512429-3-alexander.usyskin@intel.com>
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Subject: [PATCH v11 08/10] drm/xe/nvm: add on-die non-volatile memory device
+Date: Wed, 28 May 2025 16:51:13 +0300
+Message-ID: <20250528135115.2512429-9-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250528135115.2512429-1-alexander.usyskin@intel.com>
 References: <20250528135115.2512429-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250528_070520_888334_CB3411FE 
-X-CRM114-Status: GOOD (  21.89  )
+X-CRM114-CacheID: sfid-20250528_070553_796720_4797D513 
+X-CRM114-Status: GOOD (  23.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,253 +105,283 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In intel-dg, there is no access to the spi controller,
-the information is extracted from the descriptor region.
+Enable access to internal non-volatile memory on DGFX
+with GSC/CSC devices via a child device.
+The nvm child device is exposed via auxiliary bus.
 
-CC: Lucas De Marchi <lucas.demarchi@intel.com>
 Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Co-developed-by: Tomas Winkler <tomasw@gmail.com>
-Signed-off-by: Tomas Winkler <tomasw@gmail.com>
+Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/mtd/devices/mtd_intel_dg.c | 206 +++++++++++++++++++++++++++++
- 1 file changed, 206 insertions(+)
+ drivers/gpu/drm/xe/Makefile          |   1 +
+ drivers/gpu/drm/xe/xe_device.c       |   5 ++
+ drivers/gpu/drm/xe/xe_device_types.h |   6 ++
+ drivers/gpu/drm/xe/xe_nvm.c          | 107 +++++++++++++++++++++++++++
+ drivers/gpu/drm/xe/xe_nvm.h          |  15 ++++
+ drivers/gpu/drm/xe/xe_pci.c          |   6 ++
+ 6 files changed, 140 insertions(+)
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
+ create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
 
-diff --git a/drivers/mtd/devices/mtd_intel_dg.c b/drivers/mtd/devices/mtd_intel_dg.c
-index c2d0dbfb0378..478dd2b158e3 100644
---- a/drivers/mtd/devices/mtd_intel_dg.c
-+++ b/drivers/mtd/devices/mtd_intel_dg.c
-@@ -3,6 +3,8 @@
-  * Copyright(c) 2019-2025, Intel Corporation. All rights reserved.
-  */
- 
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
- #include <linux/device.h>
- #include <linux/intel_dg_nvm_aux.h>
- #include <linux/io.h>
-@@ -22,9 +24,207 @@ struct intel_dg_nvm {
- 		u8 id;
- 		u64 offset;
- 		u64 size;
-+		unsigned int is_readable:1;
-+		unsigned int is_writable:1;
- 	} regions[] __counted_by(nregions);
- };
- 
-+#define NVM_TRIGGER_REG       0x00000000
-+#define NVM_VALSIG_REG        0x00000010
-+#define NVM_ADDRESS_REG       0x00000040
-+#define NVM_REGION_ID_REG     0x00000044
-+/*
-+ * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
-+ * [23:16]-Reserved
-+ * [31:24]-Erase MEM RegionID
-+ */
-+#define NVM_ERASE_REG         0x00000048
-+#define NVM_ACCESS_ERROR_REG  0x00000070
-+#define NVM_ADDRESS_ERROR_REG 0x00000074
-+
-+/* Flash Valid Signature */
-+#define NVM_FLVALSIG          0x0FF0A55A
-+
-+#define NVM_MAP_ADDR_MASK     GENMASK(7, 0)
-+#define NVM_MAP_ADDR_SHIFT    0x00000004
-+
-+#define NVM_REGION_ID_DESCRIPTOR  0
-+/* Flash Region Base Address */
-+#define NVM_FRBA      0x40
-+/* Flash Region __n - Flash Descriptor Record */
-+#define NVM_FLREG(__n) (NVM_FRBA + ((__n) * 4))
-+/*  Flash Map 1 Register */
-+#define NVM_FLMAP1_REG  0x18
-+#define NVM_FLMSTR4_OFFSET 0x00C
-+
-+#define NVM_ACCESS_ERROR_PCIE_MASK 0x7
-+
-+#define NVM_FREG_BASE_MASK GENMASK(15, 0)
-+#define NVM_FREG_ADDR_MASK GENMASK(31, 16)
-+#define NVM_FREG_ADDR_SHIFT 12
-+#define NVM_FREG_MIN_REGION_SIZE 0xFFF
-+
-+static inline void idg_nvm_set_region_id(struct intel_dg_nvm *nvm, u8 region)
-+{
-+	iowrite32((u32)region, nvm->base + NVM_REGION_ID_REG);
-+}
-+
-+static inline u32 idg_nvm_error(struct intel_dg_nvm *nvm)
-+{
-+	void __iomem *base = nvm->base;
-+
-+	u32 reg = ioread32(base + NVM_ACCESS_ERROR_REG) & NVM_ACCESS_ERROR_PCIE_MASK;
-+
-+	/* reset error bits */
-+	if (reg)
-+		iowrite32(reg, base + NVM_ACCESS_ERROR_REG);
-+
-+	return reg;
-+}
-+
-+static inline u32 idg_nvm_read32(struct intel_dg_nvm *nvm, u32 address)
-+{
-+	void __iomem *base = nvm->base;
-+
-+	iowrite32(address, base + NVM_ADDRESS_REG);
-+
-+	return ioread32(base + NVM_TRIGGER_REG);
-+}
-+
-+static int idg_nvm_get_access_map(struct intel_dg_nvm *nvm, u32 *access_map)
-+{
-+	u32 fmstr4_addr;
-+	u32 fmstr4;
-+	u32 flmap1;
-+	u32 fmba;
-+
-+	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
-+
-+	flmap1 = idg_nvm_read32(nvm, NVM_FLMAP1_REG);
-+	if (idg_nvm_error(nvm))
-+		return -EIO;
-+	/* Get Flash Master Baser Address (FMBA) */
-+	fmba = (FIELD_GET(NVM_MAP_ADDR_MASK, flmap1) << NVM_MAP_ADDR_SHIFT);
-+	fmstr4_addr = fmba + NVM_FLMSTR4_OFFSET;
-+
-+	fmstr4 = idg_nvm_read32(nvm, fmstr4_addr);
-+	if (idg_nvm_error(nvm))
-+		return -EIO;
-+
-+	*access_map = fmstr4;
-+	return 0;
-+}
-+
-+/*
-+ * Region read/write access encoded in the access map
-+ * in the following order from the lower bit:
-+ * [3:0] regions 12-15 read state
-+ * [7:4] regions 12-15 write state
-+ * [19:8] regions 0-11 read state
-+ * [31:20] regions 0-11 write state
-+ */
-+static bool idg_nvm_region_readable(u32 access_map, u8 region)
-+{
-+	if (region < 12)
-+		return access_map & BIT(region + 8); /* [19:8] */
-+	else
-+		return access_map & BIT(region - 12); /* [3:0] */
-+}
-+
-+static bool idg_nvm_region_writable(u32 access_map, u8 region)
-+{
-+	if (region < 12)
-+		return access_map & BIT(region + 20); /* [31:20] */
-+	else
-+		return access_map & BIT(region - 8); /* [7:4] */
-+}
-+
-+static int idg_nvm_is_valid(struct intel_dg_nvm *nvm)
-+{
-+	u32 is_valid;
-+
-+	idg_nvm_set_region_id(nvm, NVM_REGION_ID_DESCRIPTOR);
-+
-+	is_valid = idg_nvm_read32(nvm, NVM_VALSIG_REG);
-+	if (idg_nvm_error(nvm))
-+		return -EIO;
-+
-+	if (is_valid != NVM_FLVALSIG)
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device)
-+{
-+	u32 access_map = 0;
-+	unsigned int i, n;
-+	int ret;
-+
-+	/* clean error register, previous errors are ignored */
-+	idg_nvm_error(nvm);
-+
-+	ret = idg_nvm_is_valid(nvm);
-+	if (ret) {
-+		dev_err(device, "The MEM is not valid %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (idg_nvm_get_access_map(nvm, &access_map))
-+		return -EIO;
-+
-+	for (i = 0, n = 0; i < nvm->nregions; i++) {
-+		u32 address, base, limit, region;
-+		u8 id = nvm->regions[i].id;
-+
-+		address = NVM_FLREG(id);
-+		region = idg_nvm_read32(nvm, address);
-+
-+		base = FIELD_GET(NVM_FREG_BASE_MASK, region) << NVM_FREG_ADDR_SHIFT;
-+		limit = (FIELD_GET(NVM_FREG_ADDR_MASK, region) << NVM_FREG_ADDR_SHIFT) |
-+			NVM_FREG_MIN_REGION_SIZE;
-+
-+		dev_dbg(device, "[%d] %s: region: 0x%08X base: 0x%08x limit: 0x%08x\n",
-+			id, nvm->regions[i].name, region, base, limit);
-+
-+		if (base >= limit || (i > 0 && limit == 0)) {
-+			dev_dbg(device, "[%d] %s: disabled\n",
-+				id, nvm->regions[i].name);
-+			nvm->regions[i].is_readable = 0;
-+			continue;
-+		}
-+
-+		if (nvm->size < limit)
-+			nvm->size = limit;
-+
-+		nvm->regions[i].offset = base;
-+		nvm->regions[i].size = limit - base + 1;
-+		/* No write access to descriptor; mask it out*/
-+		nvm->regions[i].is_writable = idg_nvm_region_writable(access_map, id);
-+
-+		nvm->regions[i].is_readable = idg_nvm_region_readable(access_map, id);
-+		dev_dbg(device, "Registered, %s id=%d offset=%lld size=%lld rd=%d wr=%d\n",
-+			nvm->regions[i].name,
-+			nvm->regions[i].id,
-+			nvm->regions[i].offset,
-+			nvm->regions[i].size,
-+			nvm->regions[i].is_readable,
-+			nvm->regions[i].is_writable);
-+
-+		if (nvm->regions[i].is_readable)
-+			n++;
-+	}
-+
-+	dev_dbg(device, "Registered %d regions\n", n);
-+
-+	/* Need to add 1 to the amount of memory
-+	 * so it is reported as an even block
-+	 */
-+	nvm->size += 1;
-+
-+	return n;
-+}
-+
- static void intel_dg_nvm_release(struct kref *kref)
- {
- 	struct intel_dg_nvm *nvm = container_of(kref, struct intel_dg_nvm, refcnt);
-@@ -85,6 +285,12 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
- 		goto err;
+diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
+index e4bf484d4121..4c51fe3520dc 100644
+--- a/drivers/gpu/drm/xe/Makefile
++++ b/drivers/gpu/drm/xe/Makefile
+@@ -80,6 +80,7 @@ xe-y += xe_bb.o \
+ 	xe_mmio.o \
+ 	xe_mocs.o \
+ 	xe_module.o \
++	xe_nvm.o \
+ 	xe_oa.o \
+ 	xe_observation.o \
+ 	xe_pat.o \
+diff --git a/drivers/gpu/drm/xe/xe_device.c b/drivers/gpu/drm/xe/xe_device.c
+index d4b6e623aa48..845b38aea692 100644
+--- a/drivers/gpu/drm/xe/xe_device.c
++++ b/drivers/gpu/drm/xe/xe_device.c
+@@ -46,6 +46,7 @@
+ #include "xe_memirq.h"
+ #include "xe_mmio.h"
+ #include "xe_module.h"
++#include "xe_nvm.h"
+ #include "xe_oa.h"
+ #include "xe_observation.h"
+ #include "xe_pat.h"
+@@ -884,6 +885,8 @@ int xe_device_probe(struct xe_device *xe)
+ 			return err;
  	}
  
-+	ret = intel_dg_nvm_init(nvm, device);
-+	if (ret < 0) {
-+		dev_err(device, "cannot initialize nvm %d\n", ret);
++	xe_nvm_init(xe);
++
+ 	err = xe_heci_gsc_init(xe);
+ 	if (err)
+ 		return err;
+@@ -941,6 +944,8 @@ void xe_device_remove(struct xe_device *xe)
+ {
+ 	xe_display_unregister(xe);
+ 
++	xe_nvm_fini(xe);
++
+ 	drm_dev_unplug(&xe->drm);
+ 
+ 	xe_bo_pci_dev_remove_all(xe);
+diff --git a/drivers/gpu/drm/xe/xe_device_types.h b/drivers/gpu/drm/xe/xe_device_types.h
+index 50b2bfa682ac..938cf1a440de 100644
+--- a/drivers/gpu/drm/xe/xe_device_types.h
++++ b/drivers/gpu/drm/xe/xe_device_types.h
+@@ -35,6 +35,7 @@
+ #include "intel_display_device.h"
+ #endif
+ 
++struct intel_dg_nvm_dev;
+ struct xe_ggtt;
+ struct xe_pat_ops;
+ struct xe_pxp;
+@@ -319,6 +320,8 @@ struct xe_device {
+ 		u8 has_fan_control:1;
+ 		/** @info.has_flat_ccs: Whether flat CCS metadata is used */
+ 		u8 has_flat_ccs:1;
++		/** @info.has_gsc_nvm: Device has gsc non-volatile memory */
++		u8 has_gsc_nvm:1;
+ 		/** @info.has_heci_cscfi: device has heci cscfi */
+ 		u8 has_heci_cscfi:1;
+ 		/** @info.has_heci_gscfi: device has heci gscfi */
+@@ -544,6 +547,9 @@ struct xe_device {
+ 	/** @heci_gsc: graphics security controller */
+ 	struct xe_heci_gsc heci_gsc;
+ 
++	/** @nvm: discrete graphics non-volatile memory */
++	struct intel_dg_nvm_dev *nvm;
++
+ 	/** @oa: oa observation subsystem */
+ 	struct xe_oa oa;
+ 
+diff --git a/drivers/gpu/drm/xe/xe_nvm.c b/drivers/gpu/drm/xe/xe_nvm.c
+new file mode 100644
+index 000000000000..33ba635ce116
+--- /dev/null
++++ b/drivers/gpu/drm/xe/xe_nvm.c
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: MIT
++/*
++ * Copyright(c) 2019-2025, Intel Corporation. All rights reserved.
++ */
++
++#include <linux/intel_dg_nvm_aux.h>
++#include <linux/pci.h>
++
++#include "xe_device_types.h"
++#include "xe_nvm.h"
++#include "xe_sriov.h"
++
++#define GEN12_GUNIT_NVM_BASE 0x00102040
++#define GEN12_GUNIT_NVM_SIZE 0x80
++#define HECI_FW_STATUS_2_NVM_ACCESS_MODE BIT(3)
++
++static const struct intel_dg_nvm_region regions[INTEL_DG_NVM_REGIONS] = {
++	[0] = { .name = "DESCRIPTOR", },
++	[2] = { .name = "GSC", },
++	[9] = { .name = "PADDING", },
++	[11] = { .name = "OptionROM", },
++	[12] = { .name = "DAM", },
++};
++
++static void xe_nvm_release_dev(struct device *dev)
++{
++}
++
++int xe_nvm_init(struct xe_device *xe)
++{
++	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
++	struct auxiliary_device *aux_dev;
++	struct intel_dg_nvm_dev *nvm;
++	int ret;
++
++	if (!xe->info.has_gsc_nvm)
++		return 0;
++
++	/* No access to internal NVM from VFs */
++	if (IS_SRIOV_VF(xe))
++		return 0;
++
++	/* Nvm pointer should be NULL here */
++	if (WARN_ON(xe->nvm))
++		return -EFAULT;
++
++	xe->nvm = kzalloc(sizeof(*nvm), GFP_KERNEL);
++	if (!xe->nvm)
++		return -ENOMEM;
++
++	nvm = xe->nvm;
++
++	nvm->writable_override = false;
++	nvm->bar.parent = &pdev->resource[0];
++	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
++	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
++	nvm->bar.flags = IORESOURCE_MEM;
++	nvm->bar.desc = IORES_DESC_NONE;
++	nvm->regions = regions;
++
++	aux_dev = &nvm->aux_dev;
++
++	aux_dev->name = "nvm";
++	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) | pci_dev_id(pdev);
++	aux_dev->dev.parent = &pdev->dev;
++	aux_dev->dev.release = xe_nvm_release_dev;
++
++	ret = auxiliary_device_init(aux_dev);
++	if (ret) {
++		drm_err(&xe->drm, "xe-nvm aux init failed %d\n", ret);
 +		goto err;
 +	}
 +
- 	dev_set_drvdata(&aux_dev->dev, nvm);
++	ret = auxiliary_device_add(aux_dev);
++	if (ret) {
++		drm_err(&xe->drm, "xe-nvm aux add failed %d\n", ret);
++		auxiliary_device_uninit(aux_dev);
++		goto err;
++	}
++	return 0;
++
++err:
++	kfree(nvm);
++	xe->nvm = NULL;
++	return ret;
++}
++
++void xe_nvm_fini(struct xe_device *xe)
++{
++	struct intel_dg_nvm_dev *nvm = xe->nvm;
++
++	if (!xe->info.has_gsc_nvm)
++		return;
++
++	/* No access to internal NVM from VFs */
++	if (IS_SRIOV_VF(xe))
++		return;
++
++	/* Nvm pointer should not be NULL here */
++	if (WARN_ON(!nvm))
++		return;
++
++	auxiliary_device_delete(&nvm->aux_dev);
++	auxiliary_device_uninit(&nvm->aux_dev);
++	kfree(nvm);
++	xe->nvm = NULL;
++}
+diff --git a/drivers/gpu/drm/xe/xe_nvm.h b/drivers/gpu/drm/xe/xe_nvm.h
+new file mode 100644
+index 000000000000..7f3d5f57bed0
+--- /dev/null
++++ b/drivers/gpu/drm/xe/xe_nvm.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: MIT */
++/*
++ * Copyright(c) 2019-2025 Intel Corporation. All rights reserved.
++ */
++
++#ifndef __XE_NVM_H__
++#define __XE_NVM_H__
++
++struct xe_device;
++
++int xe_nvm_init(struct xe_device *xe);
++
++void xe_nvm_fini(struct xe_device *xe);
++
++#endif
+diff --git a/drivers/gpu/drm/xe/xe_pci.c b/drivers/gpu/drm/xe/xe_pci.c
+index b68c90910d82..6aa9850bb342 100644
+--- a/drivers/gpu/drm/xe/xe_pci.c
++++ b/drivers/gpu/drm/xe/xe_pci.c
+@@ -63,6 +63,7 @@ struct xe_device_desc {
  
- 	return 0;
+ 	u8 has_display:1;
+ 	u8 has_fan_control:1;
++	u8 has_gsc_nvm:1;
+ 	u8 has_heci_gscfi:1;
+ 	u8 has_heci_cscfi:1;
+ 	u8 has_llc:1;
+@@ -271,6 +272,7 @@ static const struct xe_device_desc dg1_desc = {
+ 	PLATFORM(DG1),
+ 	.dma_mask_size = 39,
+ 	.has_display = true,
++	.has_gsc_nvm = 1,
+ 	.has_heci_gscfi = 1,
+ 	.require_force_probe = true,
+ };
+@@ -282,6 +284,7 @@ static const u16 dg2_g12_ids[] = { INTEL_DG2_G12_IDS(NOP), 0 };
+ #define DG2_FEATURES \
+ 	DGFX_FEATURES, \
+ 	PLATFORM(DG2), \
++	.has_gsc_nvm = 1, \
+ 	.has_heci_gscfi = 1, \
+ 	.subplatforms = (const struct xe_subplatform_desc[]) { \
+ 		{ XE_SUBPLATFORM_DG2_G10, "G10", dg2_g10_ids }, \
+@@ -318,6 +321,7 @@ static const __maybe_unused struct xe_device_desc pvc_desc = {
+ 	PLATFORM(PVC),
+ 	.dma_mask_size = 52,
+ 	.has_display = false,
++	.has_gsc_nvm = 1,
+ 	.has_heci_gscfi = 1,
+ 	.max_remote_tiles = 1,
+ 	.require_force_probe = true,
+@@ -346,6 +350,7 @@ static const struct xe_device_desc bmg_desc = {
+ 	.dma_mask_size = 46,
+ 	.has_display = true,
+ 	.has_fan_control = true,
++	.has_gsc_nvm = 1,
+ 	.has_heci_cscfi = 1,
+ 	.needs_scratch = true,
+ };
+@@ -589,6 +594,7 @@ static int xe_info_init_early(struct xe_device *xe,
+ 	xe->info.dma_mask_size = desc->dma_mask_size;
+ 	xe->info.is_dgfx = desc->is_dgfx;
+ 	xe->info.has_fan_control = desc->has_fan_control;
++	xe->info.has_gsc_nvm = desc->has_gsc_nvm;
+ 	xe->info.has_heci_gscfi = desc->has_heci_gscfi;
+ 	xe->info.has_heci_cscfi = desc->has_heci_cscfi;
+ 	xe->info.has_llc = desc->has_llc;
 -- 
 2.43.0
 
