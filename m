@@ -4,92 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C89D8C54ED1
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 May 2025 18:50:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42014C5AE59
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 May 2025 06:11:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UtGTHVDJwE/aGErm5yWbtSMlwgDbAfSdU6Akf9TixYg=; b=Yq2zm2VpjwfB6h
-	vqXMWEB00rUPCuQ/9LdCJ2+acAK/UdlxQ4qj8yYRRkabpGGgFfQJfxrV9O8Tu4OYjFAO5//wwABGI
-	SMYWw+ZCk4Vyn+XUC3eq5GerVEcxqK69KfLVBavdk9a/XCvabFCz2feCvpy6MkvNwNk3oiqViORcu
-	GTnLC32M48/MFB4shxTvkCtegDwNb39diPOeUpdkD63hXT0FsY6ByuaboGqWHPosn8qAWt+XQeLlL
-	LITJ4rnxuBh0UNEDwP6cctaJITidTus22eu8JaomIXteaptTd7utgRxyG+FWMleoIRyIwnQzRUBmP
-	ML4h0fBpCKc5gaGK1Eag==;
+	List-Owner; bh=5ZZqzLoujWnmCWE9q+tU/FJlpRwWQZfi61OAwvKrqPs=; b=M74XkToLyQf3nJ
+	7QqEtSDdS+GErt70fU1m9fXuv5tCw+sFxLrcb8Awo2bmQ2YDD7s9RYRRt/lDyMeXYUlGtLWNUKiew
+	Pv3Udbpnki7A14whgwUpIFk0CpajH2D/GYQ6PL0FD4LwVVOYkH9IYRih+kAamsRURTJKtKC3SmUl2
+	r1URh59cH/ckDTfr0yVT7GdpDQ/IYcOq4wTR1DabhQhMfDafUc8Bkf+sNZkAdzydiniej6Z317PGX
+	2NFH3Yvo9C68cFS6Xgu1PdmXM0swI0waTj4vnas6lGEq1dphUI0ZJzX++T4Jyvnd7jkoqDE/FZuJn
+	YQh4lMc0p2RzEZhpP3LQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uJzN9-0000000BNlG-2em2;
-	Tue, 27 May 2025 18:49:59 +0000
-Received: from mgamail.intel.com ([198.175.65.13])
+	id 1uKA0f-0000000CGsC-28z3;
+	Wed, 28 May 2025 06:11:29 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uJzN7-0000000BNkF-0Skh
+	id 1uKA0c-0000000CGrI-3PUu
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 May 2025 18:49:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748371797; x=1779907797;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4XPP3GOIqEuNTDva7xUb4Pijg8qL5gQlGrrO0uFeFTI=;
-  b=bV+M0+PFsAwhVjTIpMUxjZpOpPu049wDd94k/RoVhLA+zpYTTo9TKXiG
-   iflmu9xiiu1nnnA2VMQg/1bAaw5CpLIWhFA75HCeTaQ+WJE4Ph2u4ZjzT
-   sOTV7iwipSFP0TNv5BytN2VwbzrgZvLC97osVCOHvXlAneqehO6YjxBlY
-   sSNNAjsYMiJ27N3kmlCT34LrF+UlKRYDMUZoifpFtqnAdqW6rHsMHjs10
-   UQRGwd65woOKoMQpe6wAS67Wcob+HsHWvXQsXaRNOJmUKE6Zb7wbvtviD
-   KUX47VhtpCUWVsqJZvLAWVlVggq3jLO5pQ2OEiXZ8IeeEFdZ4/XhXP3QX
-   Q==;
-X-CSE-ConnectionGUID: XGcQFmj5TAGAxtigqCSk1w==
-X-CSE-MsgGUID: AwwDhKimQh+5Mp3hfcC6ww==
-X-IronPort-AV: E=McAfee;i="6700,10204,11446"; a="61431127"
-X-IronPort-AV: E=Sophos;i="6.15,319,1739865600"; 
-   d="scan'208";a="61431127"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2025 11:49:52 -0700
-X-CSE-ConnectionGUID: NTG3c+mbSlWEHG5NEwB8JA==
-X-CSE-MsgGUID: ldVFg4/LSoqXZ5tLnXnV0Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,319,1739865600"; 
-   d="scan'208";a="148212316"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2025 11:49:47 -0700
-Date: Tue, 27 May 2025 21:49:43 +0300
-From: Raag Jadav <raag.jadav@intel.com>
-To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"De Marchi, Lucas" <lucas.demarchi@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	"Poosa, Karthik" <karthik.poosa@intel.com>,
-	"Abliyev, Reuven" <reuven.abliyev@intel.com>,
-	"Weil, Oren jer" <oren.jer.weil@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"intel-xe@lists.freedesktop.org" <intel-xe@lists.freedesktop.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 05/10] mtd: intel-dg: align 64bit read and write
-Message-ID: <aDYJR8r6BCd6cSe8@black.fi.intel.com>
-References: <20250515133345.2805031-1-alexander.usyskin@intel.com>
- <20250515133345.2805031-6-alexander.usyskin@intel.com>
- <aDGZCL_B3fEkvahj@black.fi.intel.com>
- <CY5PR11MB636674D63B2769B15A79B172ED64A@CY5PR11MB6366.namprd11.prod.outlook.com>
+	Wed, 28 May 2025 06:11:28 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54RKFpu9016904;
+	Wed, 28 May 2025 06:11:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	M2fOF6/NsrkitikutpZi4P4ogLVHf096azvULrGKkXY=; b=Ffo52/UJ7/yuZnSU
+	7paK4qN5ohPBNPCjSai9R+mjjR2bLgFHbWJYlbIAQnmRcwT03F6UtEx+BN8CFZFQ
+	v44U6B/ojJukNoxlLub2AB6SSZVUrH6JelhsANRTnYxDRa/5lY3vqYgm5rLAoOK2
+	IFOPlgwEGfJJRX21Btn1iuJLPntBf/2eERhtdf7XDDWCbPndVKW7fJaAynNKviq/
+	EG6emiweMNA/PwNIbn7zj8HTURwsj45WaGo412/F0x1bId7vs/+LGlF2KNlTbvXe
+	w9DsuMg56KB4Bc5cltdICrwVNwUSFABEdx+j90QDPU8eNefd4lySIm28I48j/8fj
+	Kf214A==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 46vmgcwpyp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 May 2025 06:11:19 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 54S6BIYh014820
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 May 2025 06:11:18 GMT
+Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Tue, 27 May 2025 23:11:17 -0700
+Received: from nalasex01c.na.qualcomm.com ([fe80::88c3:e10b:adc4:a38f]) by
+ nalasex01c.na.qualcomm.com ([fe80::88c3:e10b:adc4:a38f%11]) with mapi id
+ 15.02.1544.009; Tue, 27 May 2025 23:11:17 -0700
+From: "Lakshmi Sowjanya D (QUIC)" <quic_laksd@quicinc.com>
+To: Gabor Juhos <j4g8y7@gmail.com>,
+        "Md Sadre Alam (QUIC)"
+	<quic_mdalam@quicinc.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Varadarajan
+ Narayanan (QUIC)" <quic_varada@quicinc.com>,
+        "Sricharan Ramabadhran (QUIC)"
+	<quic_srichara@quicinc.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] mtd: nand: qpic_common: prevent out of bounds access
+ of BAM arrays
+Thread-Topic: [PATCH 2/2] mtd: nand: qpic_common: prevent out of bounds access
+ of BAM arrays
+Thread-Index: AQHbzZdYfct6aVWiz0mO9tgTnO5SQLPk7/SAgADcJoCAAcYsIA==
+Date: Wed, 28 May 2025 06:11:17 +0000
+Message-ID: <f467dcc6e92149b8b46ca8a879d36d6c@quicinc.com>
+References: <20250525-qpic-snand-avoid-mem-corruption-v1-0-5fe528def7fb@gmail.com>
+ <20250525-qpic-snand-avoid-mem-corruption-v1-2-5fe528def7fb@gmail.com>
+ <8ab1e48a-f698-9859-3992-6a26f63d62f1@quicinc.com>
+ <b9134a1d-3dbc-4cd9-b22a-90b1c8934ce9@gmail.com>
+In-Reply-To: <b9134a1d-3dbc-4cd9-b22a-90b1c8934ce9@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.219.56.236]
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CY5PR11MB636674D63B2769B15A79B172ED64A@CY5PR11MB6366.namprd11.prod.outlook.com>
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Xal3xMLZHkDh3alf69vUZ6Iak3lMKEGi
+X-Proofpoint-GUID: Xal3xMLZHkDh3alf69vUZ6Iak3lMKEGi
+X-Authority-Analysis: v=2.4 cv=Ws4rMcfv c=1 sm=1 tr=0 ts=6836a907 cx=c_pps
+ a=ouPCqIW2jiPt+lZRy3xVPw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=xqWC_Br6kY4A:10 a=8ewgkwWz-JgA:10 a=8nJEP1OIZ-IA:10 a=dt9VzEwgFbYA:10
+ a=pGLkceISAAAA:8 a=COk6AnOGAAAA:8 a=VwQbUJbxAAAA:8 a=P-IC7800AAAA:8
+ a=sozttTNsAAAA:8 a=JfrnYn6hAAAA:8 a=r6KVuAiU_dlV6dZd_TEA:9 a=wPNLvfGTeEIA:10
+ a=TjNXssC_j7lpFel5tvFf:22 a=d3PnA9EDa4IxuAV0gXij:22 a=1CNFftbPRP8L7MoqJWF3:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI4MDA1MiBTYWx0ZWRfX9eOJAwKHTo3/
+ KvqLuZBRwdza862lK9i7cnE3d4uzW4Jepic5Y+zvutM0IStucDxou+rWlODhMFCxGWwkWToxsEF
+ KB2RBtHZoQXuy9t9nY61U7Kj241QKGY7euhVCkLLTXOg3aHeveMs9zH5pGdqbmZXr4wylmVBcEv
+ kIZOF8EI+yNIapxMJYkJUInygrj2r7qqg2xrVXtU2vuxxiIEehnZJjpLqfxk+b6CR9CmBQTNiyI
+ SDi/KFJ/SmpUawW8q2x4x+oEi9uxgzCQHmd76+jmFegj5VcX7o/ZdiDNQaYzM3wd/YPg3mAJkiR
+ r+tvd08NV6h1x0NPL1nr3fJJbfjkJBmzOj/0YNtrABOXcwGBZ0uuqfKxeHFRwmJahPTPu1mMS9y
+ j+gTQGM4PW61Y6LwxPYv0v+4GqQz1UHKS620Yp3bmI/xnCQtzuhKUdMbekjBJhIG1T4Yb890
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-28_03,2025-05-27_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 clxscore=1011 impostorscore=0 spamscore=0 adultscore=0
+ phishscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 classifier=spam authscore=0
+ authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2505160000 definitions=main-2505280052
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250527_114957_181457_DB3A9080 
-X-CRM114-Status: GOOD (  20.90  )
+X-CRM114-CacheID: sfid-20250527_231126_983490_EB58C5B7 
+X-CRM114-Status: GOOD (  32.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,53 +129,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 27, 2025 at 11:33:10AM +0530, Usyskin, Alexander wrote:
-> > Subject: Re: [PATCH v10 05/10] mtd: intel-dg: align 64bit read and write
-> > 
-> > On Thu, May 15, 2025 at 04:33:40PM +0300, Alexander Usyskin wrote:
-> > > GSC NVM controller HW errors on quad access overlapping 1K border.
-> > > Align 64bit read and write to avoid readq/writeq over 1K border.
-> > >
-> > > Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> > > ---
-> > >  drivers/mtd/devices/mtd_intel_dg.c | 35
-> > ++++++++++++++++++++++++++++++
-> > >  1 file changed, 35 insertions(+)
-> > >
-> > > diff --git a/drivers/mtd/devices/mtd_intel_dg.c
-> > b/drivers/mtd/devices/mtd_intel_dg.c
-> > > index eedc0974bb5b..2f32ed311ffd 100644
-> > > --- a/drivers/mtd/devices/mtd_intel_dg.c
-> > > +++ b/drivers/mtd/devices/mtd_intel_dg.c
-> > > @@ -246,6 +246,24 @@ static ssize_t idg_write(struct intel_dg_nvm *nvm,
-> > u8 region,
-> > >  		len_s -= to_shift;
-> > >  	}
-> > >
-> > > +	if (!IS_ALIGNED(to, sizeof(u64)) &&
-> > > +	    ((to ^ (to + len_s)) & GENMASK(31, 10))) {
-> > > +		/*
-> > > +		 * Workaround reads/writes across 1k-aligned addresses
-> > > +		 * (start u32 before 1k, end u32 after)
-> > > +		 * as this fails on hardware.
-> > 
-> > If there's a spec definition, we usually mention workarounds with
-> > Wa_ID:platform so that they're easy to track. intel_workarounds.c
-> > is good reference for it.
-> > 
-> There is nothing in spec that I can find.
-> Not sure that i can formalize i as workaround.
 
-I'm a bit uninformed about the history here, but in any case I'm fine
-as long as the maintainers are okay with it.
 
-Raag
+> -----Original Message-----
+> From: Gabor Juhos <j4g8y7@gmail.com>
+> Sent: Tuesday, May 27, 2025 1:31 AM
+> To: Md Sadre Alam (QUIC) <quic_mdalam@quicinc.com>; Mark Brown
+> <broonie@kernel.org>; Varadarajan Narayanan (QUIC)
+> <quic_varada@quicinc.com>; Sricharan Ramabadhran (QUIC)
+> <quic_srichara@quicinc.com>; Miquel Raynal <miquel.raynal@bootlin.com>;
+> Richard Weinberger <richard@nod.at>; Vignesh Raghavendra
+> <vigneshr@ti.com>
+> Cc: linux-spi@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
+> msm@vger.kernel.org; linux-kernel@vger.kernel.org; Lakshmi Sowjanya D
+> (QUIC) <quic_laksd@quicinc.com>
+> Subject: Re: [PATCH 2/2] mtd: nand: qpic_common: prevent out of bounds
+> access of BAM arrays
+> =
+
+> 2025. 05. 26. 8:53 keltez=E9ssel, Md Sadre Alam =EDrta:
+> > Hi,
+> >
+> > On 5/25/2025 10:35 PM, Gabor Juhos wrote:
+> >> The common QPIC code does not do any boundary checking when it
+> >> handles the command elements and scatter gater list arrays of a BAM
+> >> transaction, thus it allows to access out of bounds elements in those.
+> >>
+> >> Although it is the responsibility of the given driver to allocate
+> >> enough space for all possible BAM transaction variations, however
+> >> there can be mistakes in the driver code which can lead to hidden
+> >> memory corruption issues which are hard to debug.
+> >>
+> >> This kind of problem has been observed during testing the 'spi-qpic-sn=
+and'
+> >> driver. Although the driver has been fixed with a preceding patch,
+> >> but it still makes sense to reduce the chance of having such errors ag=
+ain
+> later.
+> >>
+> >> In order to prevent such errors, change the
+> >> qcom_alloc_bam_transaction() function to store the number of elements
+> >> of the arrays in the 'bam_transaction' strucutre during allocation.
+> >> Also, add sanity checks to the qcom_prep_bam_dma_desc_{cmd,data}()
+> >> functions to avoid using out of bounds indices for the arrays.
+> >>
+> >> Tested with the 'spi-qpic-snand' driver only.
+> > I recommend testing this patch on both the IPQ and SDX platforms, as
+> > the QPIC raw NAND driver are utilized across both.
+> >
+> > If you have access to IPQ and SDX devices with raw NAND, please
+> > proceed with testing on both.
+> =
+
+> Sorry, I have no SDX devices at all, and unfortunately I can't access my =
+older
+> IPQ boards before next week.
+> =
+
+> >
+> > Otherwise, I can handle testing on the IPQ raw NAND device and
+> > coordinate with Lakshmi Sowjanya D (quic_laksd@quicinc.com) for
+> > testing on the SDX platform.
+> =
+
+> If you could do some testing in the meantime, that would be superb.
+> Thanks for that in advance!
+> =
+
+> Regards,
+> Gabor
+
+Tested-by: Lakshmi Sowjanya D <quic_laksd@quicinc.com>     # on SDX75
+
+--
+Regards
+Lakshmi Sowjanya
 
 ______________________________________________________
 Linux MTD discussion mailing list
