@@ -4,65 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 592D8C3ABB2
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 May 2025 18:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64095C54FB3
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 May 2025 07:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TM0OLW9l3wZd9x9wEIlLOhDIB88CBObL46rfCR4VSRc=; b=MO2yYpBJaYwzyr
-	iuvsY2plhqlsdP12CqqV47q7X/dDdXk8ibmTzzb+XV2sjilHXaQ9WYc6WPZ5OCtk+c8n915bKKqVJ
-	M4vj+FmDbrGj8BucogrhTnOrzJJsap4U2b+yAhpwlp052rKCEpMoqvcbXHcnEYjm7tAduqWceE0mD
-	CUT+iteykFS2lowf0O+mEb0k2tzqSXJOErciGkAl+6QsopMtgmebA9Usq1xwlg316E+5Y+6tSoVbk
-	zOkByLWzGLtpCIqf+ryblRrpwGsAgZDc0Y4rhGhW67/pMuqHUILRM7p6FIfJORdGO0UhU/ubEnkWZ
-	dDnE2Pmt6UnM88PbpROA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=I+a+xGHeYpxD+y+L24+cKAUi02EoX/bAoTnjcSUzLL8=; b=ht33q5mG95Hkw8
+	D6qoeCM5ReX7blvAD3br3nU+ZHnC5jBxkmG6qxD5EAcPv0RH/disdmxaDFKaQPD+JEjp23hrg2imR
+	bHFgNJcDbiWqgAkKYeAzYqxFzJ+kdNzn5zIgpbD3L+unP6ijUsZR9CqOz3v51YnEQhIyk06yErOA7
+	RqNLIdfc1JYwnb/02l/DGOw+1an1eWfXf+TelnuipUDqDF3SLwylk04x9f9epjoqOR/4TfZimcQmb
+	4/3ezbwfwHZ8jmx/ZQ7zUyj/i9tLbsu+z5rLKpAIJsdQBIRcZ1rPyrVynSxNtDNu6KlBD2pOompzE
+	ncl4p5WEenkuz8/LLVOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKLy8-0000000Dx2J-3TX3;
-	Wed, 28 May 2025 18:57:40 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1uKXpS-0000000FBuZ-0e58;
+	Thu, 29 May 2025 07:37:30 +0000
+Received: from mail.genbiz.pl ([94.177.225.232])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKLy7-0000000Dx2D-2gWq
+	id 1uKXp0-0000000FBo1-3Glg
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 May 2025 18:57:39 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id BA50461F1B;
-	Wed, 28 May 2025 18:57:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48774C4CEE3;
-	Wed, 28 May 2025 18:57:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748458658;
-	bh=NP57BkZzjq1plXytv+G2I0CdgzK0RRxKGjgpR/vkFpU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=sEp2ES2M+ul6PIPV1rZfhiYM/d90zzKKgNVDy225KDFyY1bxf2Dj92txydVum6btm
-	 caEqAbBbSyU/ts78I9S8NxWVIZVAYfc1y2CLRBaPx7XdRsMFUTY0d9WStdFuIKL81I
-	 EnGoSwXZbtCsyXYGQ9BvZAE19IytBgSlNa5ZBoTve76yq+3fa14y2M9LoVM33DDSk6
-	 UQeraxWvFw7UD2WLjzqJ4N2X69jIckJOiiuJ5bHCsrNHmB0nvNJ2EAZawFcdGiUyUX
-	 wDscLytqpT9VQaJznHUJwkPOCnCoUFlFALDgV5xoR4tUYnga2j87v4mbOQ35XeqJ9a
-	 kJRXKgy0D3ckg==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Michael Walle <mwalle@kernel.org>,  Miquel
- Raynal <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  Rob Herring <robh@kernel.org>,
-  Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
- <conor+dt@kernel.org>,  "open list:SPI NOR SUBSYSTEM"
- <linux-mtd@lists.infradead.org>,  "open list:OPEN FIRMWARE AND FLATTENED
- DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,  open list
- <linux-kernel@vger.kernel.org>,  imx@lists.linux.dev
-Subject: Re: [PATCH 1/1] dt-bindings: mtd: jedec,spi-nor: Add atmel,at26*
- compatible string
-In-Reply-To: <aDcscr4pF5vC4kNq@lizhi-Precision-Tower-5810>
-References: <20250523155258.546003-1-Frank.Li@nxp.com>
-	<mafs0r00arpzx.fsf@kernel.org>
-	<aDcscr4pF5vC4kNq@lizhi-Precision-Tower-5810>
-Date: Wed, 28 May 2025 20:57:35 +0200
-Message-ID: <mafs0tt54r2ao.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Thu, 29 May 2025 07:37:04 +0000
+Received: by mail.genbiz.pl (Postfix, from userid 1002)
+	id 93DAA83491; Thu, 29 May 2025 09:35:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=genbiz.pl; s=mail;
+	t=1748504190; bh=QE2s7Sx3IpLcBTCvlyAnhlStw9+iPMwbl94HYtFJXq0=;
+	h=Date:From:To:Subject:From;
+	b=Gvfb+2RpkoVz5fG7pbNe/LGTdQDHWC5cahz2AkZQufxkGPSspXW0k1joPgEVid/tj
+	 3ldZipxmeFxLcd5WEsWQbpd2JBbzVXplqnJ8f3mOW3I9TfQl6w6NXMqxZk0F5J5t1y
+	 Y9S2FcNXIzbNxkD3pHRiInqt+m4ckUpLjzfA898w6tQeD5qNJISnuJuQWPfVjDucLE
+	 b90ZxTAyTVzHCfKPgKqS1EPDkj+ABv4fDw/D0tPqnAPO3wLjvfY5M6pBIRnwR4EbeC
+	 iMOZ9IX2RreeddTyG/HOdBCUSdzHM/cggDMtzqwGxWEv23kAo8gO2ArgQdeC+NoWct
+	 tlJtLkKf36xLw==
+Received: by mail.genbiz.pl for <linux-mtd@lists.infradead.org>; Thu, 29 May 2025 07:35:30 GMT
+Message-ID: <20250529084502-0.1.1n.1x8f.0.87h3bpo8od@genbiz.pl>
+Date: Thu, 29 May 2025 07:35:30 GMT
+From: =?UTF-8?Q?"Rados=C5=82aw_Grabowski"?= <radoslaw.grabowski@genbiz.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Pytanie_o_samoch=C3=B3d_?=
+X-Mailer: mail.genbiz.pl
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250529_003703_071048_71AB511B 
+X-CRM114-Status: UNSURE (   0.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,39 +61,14 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 28 2025, Frank Li wrote:
-
-> On Tue, May 27, 2025 at 06:13:22PM +0200, Pratyush Yadav wrote:
->> On Fri, May 23 2025, Frank Li wrote:
->>
->> > Add atmel,at26* compatible string to fix below CHECK_DTB warning:
->> >
->> > arch/arm/boot/dts/nxp/vf/vf610-twr.dtb: /soc/bus@40000000/spi@4002c000/at26df081a@0:
->> >     failed to match any schema with compatible: ['atmel,at26df081a']
->>
->> Is there any problem with setting the compatible to "jedec,spi-nor" in
->> the DTS instead? If not, it would better to do that instead.
->
-> I suppose it should work. But it is quite old legancy boards. I have not
-> board to test it.  And dt also prefer add chip specific compatible string
-> before common failback compatible string in case need workaround some chip
-> issues.
-
-Hmm, poking around with old DTs is probably not a good idea. Anyway, the
-flash is listed in spi_nor_dev_ids just like the others in this yaml, so
-this patch looks fine.
-
-Acked-by: Pratyush Yadav <pratyush@kernel.org>
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGludGVyZXN1amUgUGHFhHN0d2Egcm96d2nEhXphbmllIHVtb8W8
+bGl3aWFqxIVjZSBtb25pdG9yb3dhbmllIHNhbW9jaG9kw7N3IGZpcm1vd3ljaCBvcmF6IG9wdHlt
+YWxpemFjasSZIGtvc3p0w7N3IGljaCB1dHJ6eW1hbmlhPyAKCgpQb3pkcmF3aWFtClJhZG9zxYJh
+dyBHcmFib3dza2kKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
