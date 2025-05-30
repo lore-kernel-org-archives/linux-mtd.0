@@ -4,96 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E2DFC5B549
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 May 2025 11:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54278C5B549
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 May 2025 13:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uib0sLx5BiufF0jh2l4/jC9dnTVJOZlg5m1Cu3CjidI=; b=ge/mqNCQFqJwJy
-	iqincUCp9qdAny8ZDnJTLLnRHhqZor01vyPUWkWoTMG4bfx9L0+FrjM9XMCkuCMCMf3le1bw5KIkg
-	s+Acj8J5iDMm+IWssdY7sllMwyaow7m3grR1HQffNz9jHTegffce9iD8kYfxk+ijOJeHc+NlI5U7n
-	3mcPnSOiNDYg7yYZMdDzM5TIVdZZSBwJbijkAo4vmnxg4cjRLrfNofB1L+5WKkLmYARME7jmponKx
-	eHaNoIkurT6mkTILXx/aWHC+NslwdrH9T26SC/WU8YW4wR3hw1j6zeKffwWuLZaunMULhPFMkSvlJ
-	QqkemY56qMkoi2vWR5DQ==;
+	List-Owner; bh=TaQXFvLlcABOIH5C7ENviE+NrwWrhXI2mzit1sKElpY=; b=ktUjshkgUMYf6Y
+	v+4FdKHhwIj0v8O75Fcwnrn3tNBzrUF9OkljAKNwFWkzPoy8aAis7ex69ldKC59QBpLcGQW9g3X1i
+	P/nABWFdpXkW17kUDtckhEwNs+4caGty/izEd7W3BWzKgs0ZM55UghUY5til/xDElJSyhAEKlYjZO
+	Zj1tAgTaP/JO3R1skIFXzdtBqghdhk2QE3Nd0SmELbgN43lf2s54D9tuwoCJWvCLPvrkebj7+F4h9
+	YPiu79Nj6tqknXbp6236UE8Hgom2M6mirMOWnbm2ZpOF0RVt5FbFA1XtwM07G9cJNhSVEiIraaEUR
+	EkJkVlOkioN2iBLnFAcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKxaN-00000000MDF-46po;
-	Fri, 30 May 2025 11:07:39 +0000
-Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
+	id 1uKzjb-00000000l4a-2IyX;
+	Fri, 30 May 2025 13:25:19 +0000
+Received: from mgamail.intel.com ([198.175.65.16])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uKxaM-00000000MCp-15C5
+	id 1uKzjY-00000000l3P-252Y
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 May 2025 11:07:39 +0000
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-60477f1a044so3129633a12.0
-        for <linux-mtd@lists.infradead.org>; Fri, 30 May 2025 04:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748603256; x=1749208056; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i4ZdmHPp5u88c677hlTmVdlU6RsFYWCDgNeLS1e4+ps=;
-        b=AgHeVUvIVHhkQbKLSF/iNMeF9yxOqrQBkyqgh0e9GiBkotE+OknVaZlTlP1huaSbN/
-         eCIlGDkfw5/Q9huVaRIKoHXYFT5GqAsUC64Rv/LRZRg4++HtFeNgbYYAwHSr3HZhV7Ll
-         rSFBI18wMcqrN+jicZ+Xn5JD5V2oRJ2LeJtt2dbliG7bpkE+pao8QgBr+7svTg8PSRAG
-         Z740M4iiBLlxwGgnR7MFsAL2gBGRYDLjH5nldxAwd7Kz8oaM16+6D3w0xBK9912Ugbdm
-         uFmRN15Q07riGZxWxYduc9e0Jt3PJGdn+PARkPwATF9y02uDYE3PLlcV9BDlryb9TPSW
-         16Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748603256; x=1749208056;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i4ZdmHPp5u88c677hlTmVdlU6RsFYWCDgNeLS1e4+ps=;
-        b=j4XWQ0yXwdVEt8HHfQoog9iditdg05y4St3Y40l6gtMeKHlrfD1CRY/HCTap4YlM25
-         hlue1y9k793W0i0pkK7OFUjjIUw20CL4asrjLH2X0HgRVh/qWyIDyRHTf3n9tFOOIYAe
-         4bXKcAHV2dOrkjicK2ogVm6Bjrg5+xgw4qlJ79DK7RTZmmK5zgxBf5Fmm2GidDb/Tr0N
-         U0wBH/hFh0Is8QwNxnl+PbEeFzHWI0i0cxSsMYeVJpnTNykAPVjkPSZgKc1F+I6ODLrt
-         7wuMOokJKWARIwhTqILpcjiHEfMLocI+xo0hDS1uctOkM9GAZC3CqaDXReHXtR16QpHC
-         mUqA==
-X-Forwarded-Encrypted: i=1; AJvYcCXzboxNMC3JkP2OnogjENmZrtuOUXqPIiJNGSh7+Uk7zJ8DMyIg7Tz+0aJkPA0c11FZm0N3fbYhLE4=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx3cc9umYpZVMZJfN259iYFHUnpTq9lqAOYiJ59lVvfNu+OajbY
-	RHUy6+JUMeD0SoaaKIfMoAyk8Tg5F5tQUYOxF8SRBOwu0iTy0H5nAqae
-X-Gm-Gg: ASbGncuUpBzgJzkkKG4QLh/hp8dFChGDfqL+FJLCwwgc/9TkfMchJ8GX7sW2oNBlolB
-	xydjV5/EbegbLlHqxYC0FSsKHTcdGeYSYkK2AZ8plns8ulHglBnJLO4og1J+W4MTLN9Do87IcDh
-	3Cksx8uWVxEPIiF3KJUaEdr2+dwO3d1j8UPMYxVNSuXol8v6H8am8yKVCKfhGXso7eRmb9aa0Iv
-	HrhFc0r9VNKwKN6PGYLtfd6jmWHiA+chr48uwPcn2n+DxNl/bv30XIjkdBQ7WGTzQcpzGPwVXdm
-	50xDC0OgHnnybmYcaxMDOyEiXNxfsg8vew9lP7dmQew0dtEQfshDHqjKkxYn0BFtvu2aFiFMbze
-	oX+BbmTB5r/k13Vqi75nYc5ZhTnc=
-X-Google-Smtp-Source: AGHT+IEJEZ0HZGATsOA3e1o6i0DTK+hWUEQ2zJOHWGQcm9LQPtIAr5i0sQqhE620G4EgLJF6VkfVkg==
-X-Received: by 2002:a17:907:3f09:b0:ad8:8d3c:8a73 with SMTP id a640c23a62f3a-adb3228d6aemr265848566b.17.1748603256265;
-        Fri, 30 May 2025 04:07:36 -0700 (PDT)
-Received: from [192.168.20.170] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ada6ad3952esm306355166b.126.2025.05.30.04.07.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 May 2025 04:07:35 -0700 (PDT)
-Message-ID: <28db650d-a911-4df9-9ad4-f926ea0683e6@gmail.com>
-Date: Fri, 30 May 2025 13:07:35 +0200
+	Fri, 30 May 2025 13:25:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1748611517; x=1780147517;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0kthnVRhTRRX2apxh9rZ0wbaR6efYxE+DnDU7flD2ts=;
+  b=mW8HKr47vH7fl+qTZG9aJvAau1spuEIQY2pMCbIGM/Vx5kdyXWpOHpwY
+   pNIPiTMPPcaUT1kDMeA4KW5sbHzGO1mM2AErgZ0ZLpVGg7tWNQzuAkgeE
+   4A0Vjst8GragkWQfqGHrfk6SdrK0plfmmIzlXP8otku/zp2awX253VUiE
+   GY8KSEypQurv/N00AJpDAU6W8mA2d3Llky40WBLw3e4mBGB9RaqvjOt+t
+   RllUTUNqjQbJ2kEioqW3tYev6cKyx9HzabGGOUpj7iJ49vDlROLIh4Vbr
+   S0Z3eDfY46rcnbAGjhWg8w0uaBYL8W9sMbf+9n5DHcolYG0eTLFPdguZ4
+   Q==;
+X-CSE-ConnectionGUID: VvX4qIUHQWeav+iclQwMXQ==
+X-CSE-MsgGUID: nZqGK8sQROuuq8PjWpnHIQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11449"; a="50756349"
+X-IronPort-AV: E=Sophos;i="6.16,195,1744095600"; 
+   d="scan'208";a="50756349"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2025 06:25:15 -0700
+X-CSE-ConnectionGUID: wGwFwY+DSPaWAYB57NEarQ==
+X-CSE-MsgGUID: 17mc5XVJT7yfulx2L8/uvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,195,1744095600"; 
+   d="scan'208";a="144206830"
+Received: from fpallare-mobl4.ger.corp.intel.com (HELO [10.245.244.234]) ([10.245.244.234])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2025 06:25:10 -0700
+Message-ID: <1d7eb70c-7752-411f-8e20-f41f85438d31@linux.intel.com>
+Date: Fri, 30 May 2025 15:25:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mtd: nand: qpic_common: prevent out of bounds
- access of BAM arrays
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Mark Brown <broonie@kernel.org>, Md Sadre Alam <quic_mdalam@quicinc.com>,
- Varadarajan Narayanan <quic_varada@quicinc.com>,
- Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+Subject: Re: [PATCH v11 08/10] drm/xe/nvm: add on-die non-volatile memory
+ device
+To: Alexander Usyskin <alexander.usyskin@intel.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Lakshmi Sowjanya D <quic_laksd@quicinc.com>
-References: <20250529-qpic-snand-avoid-mem-corruption-v2-0-2f0d13afc7d2@gmail.com>
- <KuueBg3qliXMt9QN9kV_5_on2xJV-BEWZAsktO_Ce-Fq1iBAPCFypbYUVZxlV4LjF0AUZG57KqiXZZ3uefQrXw==@protonmail.internalid>
- <20250529-qpic-snand-avoid-mem-corruption-v2-2-2f0d13afc7d2@gmail.com>
- <68c54d56-3e44-4f43-8bd6-f6b7fa1f379b@linaro.org>
-Content-Language: hu
-From: Gabor Juhos <j4g8y7@gmail.com>
-In-Reply-To: <68c54d56-3e44-4f43-8bd6-f6b7fa1f379b@linaro.org>
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Lucas De Marchi <lucas.demarchi@intel.com>,
+ =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Tvrtko Ursulin <tursulin@ursulin.net>,
+ Karthik Poosa <karthik.poosa@intel.com>, Raag Jadav <raag.jadav@intel.com>
+Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
+ Oren Weil <oren.jer.weil@intel.com>, linux-mtd@lists.infradead.org,
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20250528135115.2512429-1-alexander.usyskin@intel.com>
+ <20250528135115.2512429-9-alexander.usyskin@intel.com>
+Content-Language: en-US
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20250528135115.2512429-9-alexander.usyskin@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250530_040738_300774_16A435CC 
-X-CRM114-Status: GOOD (  11.03  )
+X-CRM114-CacheID: sfid-20250530_062516_590201_C771E870 
+X-CRM114-Status: GOOD (  29.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,44 +94,303 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MjAyNS4gMDUuIDMwLiAxMDo1NiBrZWx0ZXrDqXNzZWwsIEJyeWFuIE8nRG9ub2dodWUgw61ydGE6
-CgouLi4KCj4gVGhpcyBvbmUgZG9lc24ndCBhcHBseSB0byAtbmV4dAoKSXQgaXMgYmVjYXVzZSB0
-aGUgc2VyaWVzIGlzIGJhc2VkIG9uIHRoZSBTUEkgdHJlZSwgYW5kIC1uZXh0IGNvbnRhaW5zIGFu
-b3RoZXIKY2hhbmdlIGZvciAnZHJpdmVycy9tdGQvbmFuZC9xcGljX2NvbW1vbi5jJyB3aGljaCBj
-b21lcyBmcm9tIHRoZSBNVEQgdHJlZS4KCkl0IGNhbiBiZSBhcHBsaWVkIGJ5IHNwZWNpZnlpbmcg
-dGhlICdNJyBzd2l0Y2ggZm9yIGI0IHNoYXphbS4KCgokIGdpdCByZXNldCAtLWhhcmQgbmV4dC0y
-MDI1MDUzMApIRUFEIGlzIG5vdyBhdCAzYTgzYjM1MGI1YmUgQWRkIGxpbnV4LW5leHQgc3BlY2lm
-aWMgZmlsZXMgZm9yIDIwMjUwNTMwCiQgYjQgc2hhemFtIC1NIDIwMjUwNTI5LXFwaWMtc25hbmQt
-YXZvaWQtbWVtLWNvcnJ1cHRpb24tdjItMC0yZjBkMTNhZmM3ZDJAZ21haWwuY29tCkdyYWJiaW5n
-IHRocmVhZCBmcm9tIGxvcmUua2VybmVsLm9yZy9hbGwvMjAyNTA1MjktcXBpYy1zbmFuZC1hdm9p
-ZC1tZW0tY29ycnVwdGlvbi12Mi0wLTJmMGQxM2FmYzdkMkBnbWFpbC5jb20vdC5tYm94Lmd6CkNo
-ZWNraW5nIGZvciBuZXdlciByZXZpc2lvbnMKR3JhYmJpbmcgc2VhcmNoIHJlc3VsdHMgZnJvbSBs
-b3JlLmtlcm5lbC5vcmcKQW5hbHl6aW5nIDQgbWVzc2FnZXMgaW4gdGhlIHRocmVhZApBbmFseXpp
-bmcgMTIgY29kZS1yZXZpZXcgbWVzc2FnZXMKQ2hlY2tpbmcgYXR0ZXN0YXRpb24gb24gYWxsIG1l
-c3NhZ2VzLCBtYXkgdGFrZSBhIG1vbWVudC4uLgotLS0KICA/IFtQQVRDSCB2MiAxLzJdIHNwaTog
-c3BpLXFwaWMtc25hbmQ6IHJlYWxsb2NhdGUgQkFNIHRyYW5zYWN0aW9ucwogID8gW1BBVENIIHYy
-IDIvMl0gbXRkOiBuYW5kOiBxcGljX2NvbW1vbjogcHJldmVudCBvdXQgb2YgYm91bmRzIGFjY2Vz
-cyBvZiBCQU0gYXJyYXlzCiAgLS0tCiAgPyBTaWduZWQ6IERLSU0vZ21haWwuY29tCi0tLQpUb3Rh
-bCBwYXRjaGVzOiAyCi0tLQogQmFzZTogdXNpbmcgc3BlY2lmaWVkIGJhc2UtY29tbWl0IGIwMGQ2
-ODY0YTRjOTQ4NTI5ZGM2ZGRkMmRmNzZiZjE3NWJmMjdjNjMKTWFnaWM6IFByZXBhcmluZyBhIHNw
-YXJzZSB3b3JrdHJlZQotLS0KQXBwbHlpbmc6IHNwaTogc3BpLXFwaWMtc25hbmQ6IHJlYWxsb2Nh
-dGUgQkFNIHRyYW5zYWN0aW9ucwpBcHBseWluZzogbXRkOiBuYW5kOiBxcGljX2NvbW1vbjogcHJl
-dmVudCBvdXQgb2YgYm91bmRzIGFjY2VzcyBvZiBCQU0gYXJyYXlzCi0tLQpGZXRjaGluZyBpbnRv
-IEZFVENIX0hFQUQKV2lsbCBleGVjOiBnaXQgbWVyZ2UgLS1uby1mZiAtRiAvaG9tZS9qdWhvc2cv
-ZGV2ZWwvbGludXgtaXBxOTV4eC8uZ2l0L2I0LWNvdmVyIC0tZWRpdCBGRVRDSF9IRUFEIC0tc2ln
-bm9mZgpQcmVzcyBFbnRlciB0byBjb250aW51ZSBvciBDdHJsLUMgdG8gYWJvcnQKQXV0by1tZXJn
-aW5nIGRyaXZlcnMvbXRkL25hbmQvcXBpY19jb21tb24uYwpBdXRvLW1lcmdpbmcgZHJpdmVycy9z
-cGkvc3BpLXFwaWMtc25hbmQuYwpBdXRvLW1lcmdpbmcgaW5jbHVkZS9saW51eC9tdGQvbmFuZC1x
-cGljLWNvbW1vbi5oCk1lcmdlIG1hZGUgYnkgdGhlICdvcnQnIHN0cmF0ZWd5LgogZHJpdmVycy9t
-dGQvbmFuZC9xcGljX2NvbW1vbi5jICAgICAgIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysr
-KystLS0tCiBkcml2ZXJzL3NwaS9zcGktcXBpYy1zbmFuZC5jICAgICAgICAgfCAxNiArKysrKysr
-KysrKysrKysrCiBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLXFwaWMtY29tbW9uLmggfCAgOCArKysr
-KysrKwogMyBmaWxlcyBjaGFuZ2VkLCA1MCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQok
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hey,
+
+I was looking into testing this with the xe code on PVC, and noticed some small changes that would be useful to integrate before merging.
+
+On 2025-05-28 15:51, Alexander Usyskin wrote:
+> Enable access to internal non-volatile memory on DGFX
+> with GSC/CSC devices via a child device.
+> The nvm child device is exposed via auxiliary bus.
+> 
+> Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> ---
+>  drivers/gpu/drm/xe/Makefile          |   1 +
+>  drivers/gpu/drm/xe/xe_device.c       |   5 ++
+>  drivers/gpu/drm/xe/xe_device_types.h |   6 ++
+>  drivers/gpu/drm/xe/xe_nvm.c          | 107 +++++++++++++++++++++++++++
+>  drivers/gpu/drm/xe/xe_nvm.h          |  15 ++++
+>  drivers/gpu/drm/xe/xe_pci.c          |   6 ++
+>  6 files changed, 140 insertions(+)
+>  create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
+>  create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
+> 
+> diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
+> index e4bf484d4121..4c51fe3520dc 100644
+> --- a/drivers/gpu/drm/xe/Makefile
+> +++ b/drivers/gpu/drm/xe/Makefile
+> @@ -80,6 +80,7 @@ xe-y += xe_bb.o \
+>  	xe_mmio.o \
+>  	xe_mocs.o \
+>  	xe_module.o \
+> +	xe_nvm.o \
+>  	xe_oa.o \
+>  	xe_observation.o \
+>  	xe_pat.o \
+> diff --git a/drivers/gpu/drm/xe/xe_device.c b/drivers/gpu/drm/xe/xe_device.c
+> index d4b6e623aa48..845b38aea692 100644
+> --- a/drivers/gpu/drm/xe/xe_device.c
+> +++ b/drivers/gpu/drm/xe/xe_device.c
+> @@ -46,6 +46,7 @@
+>  #include "xe_memirq.h"
+>  #include "xe_mmio.h"
+>  #include "xe_module.h"
+> +#include "xe_nvm.h"
+>  #include "xe_oa.h"
+>  #include "xe_observation.h"
+>  #include "xe_pat.h"
+> @@ -884,6 +885,8 @@ int xe_device_probe(struct xe_device *xe)
+>  			return err;
+>  	}
+>  
+> +	xe_nvm_init(xe);
+> +
+>  	err = xe_heci_gsc_init(xe);
+>  	if (err)
+>  		return err;
+> @@ -941,6 +944,8 @@ void xe_device_remove(struct xe_device *xe)
+>  {
+>  	xe_display_unregister(xe);
+>  
+> +	xe_nvm_fini(xe);
+> +
+>  	drm_dev_unplug(&xe->drm);
+>  
+>  	xe_bo_pci_dev_remove_all(xe);
+> diff --git a/drivers/gpu/drm/xe/xe_device_types.h b/drivers/gpu/drm/xe/xe_device_types.h
+> index 50b2bfa682ac..938cf1a440de 100644
+> --- a/drivers/gpu/drm/xe/xe_device_types.h
+> +++ b/drivers/gpu/drm/xe/xe_device_types.h
+> @@ -35,6 +35,7 @@
+>  #include "intel_display_device.h"
+>  #endif
+>  
+> +struct intel_dg_nvm_dev;
+>  struct xe_ggtt;
+>  struct xe_pat_ops;
+>  struct xe_pxp;
+> @@ -319,6 +320,8 @@ struct xe_device {
+>  		u8 has_fan_control:1;
+>  		/** @info.has_flat_ccs: Whether flat CCS metadata is used */
+>  		u8 has_flat_ccs:1;
+> +		/** @info.has_gsc_nvm: Device has gsc non-volatile memory */
+> +		u8 has_gsc_nvm:1;
+Is this flag really needed, or is IS_DGFX() enough? It's literally only used during NVM init, so any conditions could probably just be put there.
+
+>  		/** @info.has_heci_cscfi: device has heci cscfi */
+>  		u8 has_heci_cscfi:1;
+>  		/** @info.has_heci_gscfi: device has heci gscfi */
+> @@ -544,6 +547,9 @@ struct xe_device {
+>  	/** @heci_gsc: graphics security controller */
+>  	struct xe_heci_gsc heci_gsc;
+>  
+> +	/** @nvm: discrete graphics non-volatile memory */
+> +	struct intel_dg_nvm_dev *nvm;
+> +
+>  	/** @oa: oa observation subsystem */
+>  	struct xe_oa oa;
+>  
+> diff --git a/drivers/gpu/drm/xe/xe_nvm.c b/drivers/gpu/drm/xe/xe_nvm.c
+> new file mode 100644
+> index 000000000000..33ba635ce116
+> --- /dev/null
+> +++ b/drivers/gpu/drm/xe/xe_nvm.c
+> @@ -0,0 +1,107 @@
+> +// SPDX-License-Identifier: MIT
+> +/*
+> + * Copyright(c) 2019-2025, Intel Corporation. All rights reserved.
+> + */
+> +
+> +#include <linux/intel_dg_nvm_aux.h>
+> +#include <linux/pci.h>
+> +
+> +#include "xe_device_types.h"
+> +#include "xe_nvm.h"
+> +#include "xe_sriov.h"
+> +
+> +#define GEN12_GUNIT_NVM_BASE 0x00102040
+> +#define GEN12_GUNIT_NVM_SIZE 0x80
+> +#define HECI_FW_STATUS_2_NVM_ACCESS_MODE BIT(3)
+> +
+> +static const struct intel_dg_nvm_region regions[INTEL_DG_NVM_REGIONS] = {
+> +	[0] = { .name = "DESCRIPTOR", },
+> +	[2] = { .name = "GSC", },
+> +	[9] = { .name = "PADDING", },
+> +	[11] = { .name = "OptionROM", },
+> +	[12] = { .name = "DAM", },
+> +};
+> +
+Small ask, can we enable PSC for PVC too? Or at least bump regions with 1 so it's doable.
+
+> +static void xe_nvm_release_dev(struct device *dev)
+> +{
+> +}
+> +
+> +int xe_nvm_init(struct xe_device *xe)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
+> +	struct auxiliary_device *aux_dev;
+> +	struct intel_dg_nvm_dev *nvm;
+> +	int ret;
+> +
+> +	if (!xe->info.has_gsc_nvm)
+> +		return 0;
+> +
+> +	/* No access to internal NVM from VFs */
+> +	if (IS_SRIOV_VF(xe))
+> +		return 0;
+> +
+> +	/* Nvm pointer should be NULL here */
+> +	if (WARN_ON(xe->nvm))
+> +		return -EFAULT;
+> +
+> +	xe->nvm = kzalloc(sizeof(*nvm), GFP_KERNEL);
+> +	if (!xe->nvm)
+> +		return -ENOMEM;
+> +
+> +	nvm = xe->nvm;
+> +
+> +	nvm->writable_override = false;
+> +	nvm->bar.parent = &pdev->resource[0];
+> +	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
+> +	nvm->bar.end = nvm->bar.start + GEN12_GUNIT_NVM_SIZE - 1;
+> +	nvm->bar.flags = IORESOURCE_MEM;
+> +	nvm->bar.desc = IORES_DESC_NONE;
+> +	nvm->regions = regions;
+> +
+> +	aux_dev = &nvm->aux_dev;
+> +
+> +	aux_dev->name = "nvm";
+> +	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) | pci_dev_id(pdev);
+> +	aux_dev->dev.parent = &pdev->dev;
+> +	aux_dev->dev.release = xe_nvm_release_dev;
+> +
+> +	ret = auxiliary_device_init(aux_dev);
+> +	if (ret) {
+> +		drm_err(&xe->drm, "xe-nvm aux init failed %d\n", ret);
+> +		goto err;
+> +	}
+> +
+> +	ret = auxiliary_device_add(aux_dev);
+> +	if (ret) {
+> +		drm_err(&xe->drm, "xe-nvm aux add failed %d\n", ret);
+> +		auxiliary_device_uninit(aux_dev);
+> +		goto err;
+> +	}
+> +	return 0;
+> +
+> +err:
+> +	kfree(nvm);
+> +	xe->nvm = NULL;
+> +	return ret;
+> +}
+> +
+> +void xe_nvm_fini(struct xe_device *xe)
+> +{
+> +	struct intel_dg_nvm_dev *nvm = xe->nvm;
+> +
+> +	if (!xe->info.has_gsc_nvm)
+> +		return;
+> +
+> +	/* No access to internal NVM from VFs */
+> +	if (IS_SRIOV_VF(xe))
+> +		return;
+> +
+> +	/* Nvm pointer should not be NULL here */
+> +	if (WARN_ON(!nvm))
+> +		return;
+> +
+> +	auxiliary_device_delete(&nvm->aux_dev);
+> +	auxiliary_device_uninit(&nvm->aux_dev);
+> +	kfree(nvm);
+> +	xe->nvm = NULL;
+> +}
+In xe, instead of exporting nvm_fini, it would be good to use the drmm interface, like drmm_kzalloc for allocating NVM so it doesn't have to be freed on failure, and drmm_add_action_or_reset as last action in during init. That also removes all checks from fini().
+
+> diff --git a/drivers/gpu/drm/xe/xe_nvm.h b/drivers/gpu/drm/xe/xe_nvm.h
+> new file mode 100644
+> index 000000000000..7f3d5f57bed0
+> --- /dev/null
+> +++ b/drivers/gpu/drm/xe/xe_nvm.h
+> @@ -0,0 +1,15 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * Copyright(c) 2019-2025 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef __XE_NVM_H__
+> +#define __XE_NVM_H__
+> +
+> +struct xe_device;
+> +
+> +int xe_nvm_init(struct xe_device *xe);
+> +
+> +void xe_nvm_fini(struct xe_device *xe);
+> +
+> +#endif
+> diff --git a/drivers/gpu/drm/xe/xe_pci.c b/drivers/gpu/drm/xe/xe_pci.c
+> index b68c90910d82..6aa9850bb342 100644
+> --- a/drivers/gpu/drm/xe/xe_pci.c
+> +++ b/drivers/gpu/drm/xe/xe_pci.c
+> @@ -63,6 +63,7 @@ struct xe_device_desc {
+>  
+>  	u8 has_display:1;
+>  	u8 has_fan_control:1;
+> +	u8 has_gsc_nvm:1;
+>  	u8 has_heci_gscfi:1;
+>  	u8 has_heci_cscfi:1;
+>  	u8 has_llc:1;
+> @@ -271,6 +272,7 @@ static const struct xe_device_desc dg1_desc = {
+>  	PLATFORM(DG1),
+>  	.dma_mask_size = 39,
+>  	.has_display = true,
+> +	.has_gsc_nvm = 1,
+>  	.has_heci_gscfi = 1,
+>  	.require_force_probe = true,
+>  };
+> @@ -282,6 +284,7 @@ static const u16 dg2_g12_ids[] = { INTEL_DG2_G12_IDS(NOP), 0 };
+>  #define DG2_FEATURES \
+>  	DGFX_FEATURES, \
+>  	PLATFORM(DG2), \
+> +	.has_gsc_nvm = 1, \
+>  	.has_heci_gscfi = 1, \
+>  	.subplatforms = (const struct xe_subplatform_desc[]) { \
+>  		{ XE_SUBPLATFORM_DG2_G10, "G10", dg2_g10_ids }, \
+> @@ -318,6 +321,7 @@ static const __maybe_unused struct xe_device_desc pvc_desc = {
+>  	PLATFORM(PVC),
+>  	.dma_mask_size = 52,
+>  	.has_display = false,
+> +	.has_gsc_nvm = 1,
+>  	.has_heci_gscfi = 1,
+>  	.max_remote_tiles = 1,
+>  	.require_force_probe = true,
+> @@ -346,6 +350,7 @@ static const struct xe_device_desc bmg_desc = {
+>  	.dma_mask_size = 46,
+>  	.has_display = true,
+>  	.has_fan_control = true,
+> +	.has_gsc_nvm = 1,
+>  	.has_heci_cscfi = 1,
+>  	.needs_scratch = true,
+>  };
+> @@ -589,6 +594,7 @@ static int xe_info_init_early(struct xe_device *xe,
+>  	xe->info.dma_mask_size = desc->dma_mask_size;
+>  	xe->info.is_dgfx = desc->is_dgfx;
+>  	xe->info.has_fan_control = desc->has_fan_control;
+> +	xe->info.has_gsc_nvm = desc->has_gsc_nvm;
+>  	xe->info.has_heci_gscfi = desc->has_heci_gscfi;
+>  	xe->info.has_heci_cscfi = desc->has_heci_cscfi;
+>  	xe->info.has_llc = desc->has_llc;
+
+Kind regards,
+Maarten Lankhorst
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
