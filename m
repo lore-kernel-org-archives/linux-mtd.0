@@ -4,88 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 051F1C54FB3
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 05:35:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B9A5C54FB3
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 05:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=qIEYg1zac5HPjz
-	OXRfSbhYn02fS3TyTYh3wQCLx2Apb1a6h2iKbpUiVyetmEe7Y+IazWo1N4v9ZkpUa6o0Gpv17tweN
-	jQGFMb0N6MY+Y26mJT/IuTUyXOvCjOX7HDBWT0Ar6jVHgUNmjBmDW+z7CkzBgQfIKTJQu15W384oR
-	gKWypmvEfYzolqlLqJDRBzYwVCwHeHzvna25jrSbCgPzJoMVFuM/TMC+S2Gqkk2WAbnQoLEJA3EOF
-	fpQiEcCGZk2UaEDMgvdEPRHXvepZlhhghzA3AY/Y3G7eBOYWkWoVKJr2wVFlOmTpnsRmyNpZdJ0nY
-	VVxr/qeQAfV7TekNj+2g==;
+	List-Owner; bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=A5mvWlWQWepe80
+	7zHPpO1n4keBQ66F3FpyJNj1GF0BUd7cJ9p+ydmgNuyDDCDY7bNY9CAq8wgkCZ9XNGYQnYsLW6F5X
+	2tNqjr+waAqgawmHiwX/bnvtSkt3lMww4MeMZNERmgTnDfGaskMVuKBH1s3CsTRTDY+6BUP0r8dR7
+	2cPTTLS4oZVNeUMiOeEvMwTNr2MDT3wlDU3F1rNXb8OlrZoaqnSvWG2Z0DqOp0Vq5U+nL4VP6RI2c
+	h340FYgbsHsl3kKayMERVIlGcrDr4VsDsNA+Hgk7rrP9SaPbUi63KPAXgZ0y3D+eU6xvc4sSeieqM
+	0Evlh59lkvX78KWz1+6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLxpA-00000006ksb-22fU;
-	Mon, 02 Jun 2025 05:35:04 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1uLxpV-00000006kxM-44jc;
+	Mon, 02 Jun 2025 05:35:25 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLxp6-00000006krD-2ILQ
+	id 1uLxpT-00000006kwl-3PF0
 	for linux-mtd@lists.infradead.org;
-	Mon, 02 Jun 2025 05:35:02 +0000
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3a4fdc27c4aso848117f8f.3
-        for <linux-mtd@lists.infradead.org>; Sun, 01 Jun 2025 22:34:59 -0700 (PDT)
+	Mon, 02 Jun 2025 05:35:24 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3a374f727dbso3398924f8f.0
+        for <linux-mtd@lists.infradead.org>; Sun, 01 Jun 2025 22:35:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1748842498; x=1749447298; darn=lists.infradead.org;
+        d=sigma-star.at; s=google; t=1748842522; x=1749447322; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
         bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
-        b=Tb7L11GwwmW+i+p4AeutGUaqA1Pxy8Styipaol2dMqzVPg43f9Eee4EPB9B0rcL7CF
-         62dIyg1YlrnsIF/SyzqDv9pQO/aAk7IZ/fERrZzPHl7UXadBcQloklIBpaV+nWiuWvwP
-         OW/ivzNDnzpsyaSqGAzQKsYhLyDk+7JFKH2FQkLSeXD62y21xC9gc3nZ38ZaE1ljCbDz
-         mQIdeHymx5YFMtoUXDsUzbZBibuWuO37K4yaQWbQtgH6702/GH8c7QDP6eLrExeNqA9I
-         OlwmtDmV4r8dCZGzFr5TNEJ+GanFAdqBoHNXmmVWdA5574LCcVFjLOOX5JkooBp30IRf
-         5MYA==
+        b=FzZ5etx5JER7KSDNfA0pH+k8a7HEr8UVd6I4vqjygCcmTKergK9EnMRGpI9PGELhZU
+         EoaXQ7TSO2dAVhd2KDFjmquDubDQcYeLoEPC0opeCBKSA4b/BigJmcPuXEOIvaNnSRkb
+         O4crbK3thAJV9wddeOZydgqFIFX0nUahZHCISt1uV03G8KdiCqp+SyKRPdPokPBj+n6T
+         le0cbUsnh/J1ilFBfZWXOT3AO0B1a1kFdaU5DBPtfxA68erAYzf7uXX6gJ/xkO0/or/w
+         B7ZPsedUcrNYggV9fI7xORN7wDkoNZmXgAke4a0XAQ45LUmoG0gvI7aWMdi7PqDTEqp9
+         AntQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748842498; x=1749447298;
+        d=1e100.net; s=20230601; t=1748842522; x=1749447322;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
         bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
-        b=d/FDtN6DTH12Rlx8llRUYhzK/7NG4j6aykvtfl5nYWpGSGQPCv7hS5ajXq4noYIlvH
-         +OIBCcAQ1ecBYxv5nopSUBg8r1pWTRMNDR6kymsd6Q7QuiuEn0ZyEhM3QP91x7NhLJwL
-         2Z5cEHykNkzpU6X9bKNe9ML0d2Q36p/kuMoUhfAXibAS2Hzoj/9Ar1cPdX8ywe7OVYkH
-         FsSu0fSlne5BzXDLo8UWW5hsqTFVnZJo70iLI6UYMujhtFhRP1h7Z5iDRVEJjTEcnbVL
-         GSyayXde62RTQwADWggLSA1LNWzhhgKEF7fAxue2XILm5RQKAFrMEc5umQZvzqhaYvDK
-         0nKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQpXvljmrIedTvP8jPk/fpn6Z21JdX6a3lrTpqJLUPhJm9SNnLBUL2Qo8srmZC7LQnhWx4Wy5gzEA=@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywbg+N1dqIqmbuDSH/RzG4d2cC3QHVb22D5p3awy6Nkkv1897Fx
-	iIqtGeye2+TWdONXWve91qDCBEgjfrDlgYNZ0ztvlRMnzUeSigSkyZIPC8jLQMnhKJw=
-X-Gm-Gg: ASbGncsuWIw3nKcZpRX0KnvTctuFbEa7L40N24BNDiSTltj646IX593bT9bybti3Vqi
-	hw9b3AFgULKjnGnWDJhLN9O6CXjeXvn+aVvfYTaMS7cw3EroRC8V1UF80FjTLFl1iartdU3ApeD
-	wsMElXRGrpl/jxG+zY5cm14cca0c5huO7RQGLAnl8NXs+OmNBQsus9Y3AapefslbWFAMAaN6D4G
-	WdSN38Nu9YY7GgK7xzLEj0pmJe7t10AOINvb5XzooLkNe7ph+ayMTaVJvqjCwRJ7vz1ApbDzk19
-	O1WaUOTrGYO/jMlKvDvyLr+FZH2odz5pWS2TW1XbMs7ijd6TSnSVRb6mAvVw6tWT/xaLMQk1JQ=
-	=
-X-Google-Smtp-Source: AGHT+IEumKLf2vhxNlK4SOLwbDoPh/4j+EukKM54eJEL6gkMcDVyYC63ryIv7+6aDHcNaRy6ugxf4Q==
-X-Received: by 2002:a05:6000:4014:b0:3a4:ec32:e4da with SMTP id ffacd0b85a97d-3a4f89bebfamr8489315f8f.15.1748842498079;
-        Sun, 01 Jun 2025 22:34:58 -0700 (PDT)
+        b=QEF4ENjGgl88vxneO6dRFLOq2+/kZqbucEHUASwkIj3uSt4iReBkkoVDvOKPx+aQ7X
+         rTO/HVrZg8VK4427HZu1SntUnjIgCKqKlRArzRiXJJ9xt0xZE7a95U9sFCfJ3GsUmBtj
+         xoAh5gsbnx9XNXQh6qLnAd6pnI9/Udb50RWKqkMKd8cAqqua0IG4ZdjpAigQmCZmgTKm
+         CKn1g+Uf4jzgnKmA4UQJyGHWHUHkDA4dgxfWWqq+YNwfTIuRCq/izO6vvl3dOKGckWUo
+         nAD6/D9ZYVo2xm6P4txHRrO0N1b7aXxNCcd99s34CmPyKHfKUpfpbSx8DSxqt8DQuM1u
+         4Sqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXm599BuzDZWTmBUo4z/SkRLdU0PRhG13JsH4krw8gCZ1eH/BYv5wxe9huNgLfNeLzn7ucF0IahLcY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzmuPsNK79jbOnzcgbj7oE0O6SCymo0dsqWXQVGq0VuWqmoveC+
+	CGYmO1Kpq1RET/Ut20biUVIU+Z5P++HSAsPLbN411LyMfsaYK4VWk0m4iqpYHaxr89c=
+X-Gm-Gg: ASbGnctzKKxfMuemliKKWcecshE1smlTf7XYRGstw5a+wKSChmMEdO2Tqu+gfbn5pUu
+	FwNaFMf8d0GuGAbQrsbu8G8bf7i5gP45Kd7KFUWWzuj5r+ux1/fM/hZO+ZxXNiwqYTxgNyOUSne
+	iU1w2QWN5mvwaXOVsbXAbvuFOI9LZEIy3AfRGYubY7ssEvCULQ8TIJhuWhlUt7C4Mcb29TNXbkY
+	gRCHeTI1/0anLJwQnLLD9c64SqrKK9q0Ohj8VjoQ6hGZ0ADH94/cqjqLDSIM5Y1w7jgb5KOlYfD
+	4CKti8UmuBiqjgcTQ87BBhEhz02VRKhh4iOBlrFUpoECpidsiYW8mxEw009badqEfE6hGDmi9O/
+	uUdnO7waS
+X-Google-Smtp-Source: AGHT+IGrQIiFUnlXQDaPi6teG3/LlZQK7PtXW+9VSsAPWMfTzkxlKDODBimIm/ATErooBRp+aHyk7Q==
+X-Received: by 2002:a05:6000:2dc6:b0:3a4:dc32:6cbb with SMTP id ffacd0b85a97d-3a4f89cd26dmr7838401f8f.31.1748842522025;
+        Sun, 01 Jun 2025 22:35:22 -0700 (PDT)
 Received: from [10.115.255.165] ([82.150.214.1])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4efe6c91fsm13640308f8f.35.2025.06.01.22.34.57
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4f00a13fasm13677597f8f.98.2025.06.01.22.35.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Jun 2025 22:34:57 -0700 (PDT)
-Message-ID: <f883cf9b-a8e3-4019-b21e-878ff1688532@sigma-star.at>
-Date: Mon, 2 Jun 2025 07:34:56 +0200
+        Sun, 01 Jun 2025 22:35:21 -0700 (PDT)
+Message-ID: <43255889-3d35-48ba-9013-312d4f61ac5a@sigma-star.at>
+Date: Mon, 2 Jun 2025 07:35:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ubi-utils: ubirsvol: resize volume using all available
- free space
-To: Zhihao Cheng <chengzhihao1@huawei.com>, KAMenyaev@salutedevices.com,
- linux-mtd@lists.infradead.org
-Cc: sdfw_system_team@salutedevices.com
-References: <20250524172639.1294040-1-KAMenyaev@salutedevices.com>
- <9dce98b5-9504-67f3-fae9-32af50fac722@huawei.com>
+Subject: Re: [PATCH] ubifs-utils: common: fix memory leak in devtable.c
+To: Anton Moryakov <ant.v.moryakov@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Zhihao Cheng <chengzhihao1@huawei.com>
+References: <20250515082515.1666-1-ant.v.moryakov@gmail.com>
 Content-Language: en-US
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-In-Reply-To: <9dce98b5-9504-67f3-fae9-32af50fac722@huawei.com>
+In-Reply-To: <20250515082515.1666-1-ant.v.moryakov@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250601_223500_884029_50041F68 
-X-CRM114-Status: UNSURE (   3.59  )
+X-CRM114-CacheID: sfid-20250601_223523_844319_34586808 
+X-CRM114-Status: UNSURE (   4.15  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
