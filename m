@@ -4,72 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0190C54FB3
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 14:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03F47C54FB3
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 15:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yB4Y/GUvjWsXvQ7OzaLjrslh2uZrneN9CfLmnRCwNcw=; b=2bDzKj5v1exP+0
-	diASuawXCJ3+6jB6VZCrPOT12MfLjsdotx17VZrGF6ZaJ9TiPPqLSdPwyBVsnMkNEUwZV3YFQIMUO
-	Zu+cGf8+TNpdKaSuzT7dHgytQo9I36nYq8vB8Dn6UzeheSHeIJ0dE6NWCKbuRzilr/r52mCONKalZ
-	tT1/HsryjBOWU3cDKntB9GsO2tdZAdip7Nx25DLVQtujXPjn6cx/etTjNc8NHL5z0+0RYSQLi0fvz
-	XjxDdDYlE1/3TLBND4B6UhJF/n/ih8LeNyMYDmNqnlseY5fcjNhXHLs8T4wNsm9R8qnGlhM3gnwEz
-	kf7SSOjdJMQwTJe99JuA==;
+	List-Owner; bh=K0OZ/4GASwormrwwuy+54tpz8SWv43H3gPbda0lCP9Y=; b=utEsiQR8GVq8bB
+	Y+xBfYhqbDsr41amxb88wxCkYWaSoYNoA0OWA+rFuhsDxhvuQJFw87uIkpQ8aPBq/6oONakXf3D63
+	8q1PYEEHKlrrdoNobqRKiu11HdgiAA8JBSBhDJ4/t512z+u893QTdmwXzRflJShaejpNuO7p434NW
+	ZWgCPWfuG7WZagZymWsJSSifayJ2nst120Uh5a0nM/WsJBunwl/U6/xmDR9Ew8zJg5/Sr6UcUljrT
+	6YVY2JkzdcsjoXbo8z4gTx8Qpxk27QY3bCwB0z8XNSBroFo0U1LNPSTRiKKQ+uNBGTKW0L4CivgZV
+	5WGQwtQL4gWQP/p457pA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uM60t-00000007c23-3HYY;
-	Mon, 02 Jun 2025 14:19:43 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1uM7VN-00000007pcw-2hJA;
+	Mon, 02 Jun 2025 15:55:17 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uM60r-00000007c0i-17WY
+	id 1uM7RC-00000007ozU-2ZoS
 	for linux-mtd@lists.infradead.org;
-	Mon, 02 Jun 2025 14:19:42 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 98B1143917;
-	Mon,  2 Jun 2025 14:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1748873977;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ev6iNL22PFHIL/H7k7mv5eeLl0WdLTXXN8qyBlvf9KQ=;
-	b=Yhcjc4DxVpktZG2sfeGOKAu/dtCMwVl5FNgFFfgFjN3slTiJUtJJF+ikpi/fX3QH+OYtKA
-	9KL9rvadfV5+7ugK0PxfdB8Zj8yPYzfxIQ3WbjmPn8JeJCRXuvq0c5Ret7yYt95QYsuny3
-	0uemBmiFPhwloDZrclMZfGRm5HEvxyzHIiFB2rp4ltO2HWaSMYUuPvPLdh6FXpDq3EQf/u
-	UCT/Ywvwgng4Z8SP13e8Qf98i9yx7h8bvtyu9NOV3ZGqviB/DVS4Ez7+7SeuOf1LqJmpaE
-	sHxb7/R1CrfVnwTbNR7+YL/TftLazYh+CdIOLXUQ3sEcjmSiK02soKfLrKvkfQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: David Regan <dregan@broadcom.com>
-Cc: linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org,
-  bcm-kernel-feedback-list@broadcom.com,  william.zhang@broadcom.com,
-  anand.gore@broadcom.com,  florian.fainelli@broadcom.com,
-  kamal.dasu@broadcom.com,  dan.beygelman@broadcom.com,  =?utf-8?Q?=C3=81l?=
- =?utf-8?Q?varo_Fern=C3=A1ndez?=
- Rojas <noltari@gmail.com>,  rafal@milecki.pl,
-  computersforpeace@gmail.com,  frieder.schrempf@kontron.de,
-  vigneshr@ti.com,  richard@nod.at,  bbrezillon@kernel.org,
-  kdasu.kdev@gmail.com,  jaimeliao.tw@gmail.com,  kilobyte@angband.pl,
-  jonas.gorski@gmail.com,  dgcbueu@gmail.com,  dregan@mail.com
-Subject: Re: [PATCH] mtd: nand: brcmnand: fix mtd corrected bits stat
-In-Reply-To: <20250530034713.4165309-1-dregan@broadcom.com> (David Regan's
-	message of "Thu, 29 May 2025 20:46:59 -0700")
-References: <20250530034713.4165309-1-dregan@broadcom.com>
-User-Agent: mu4e 1.12.7; emacs 29.4
-Date: Mon, 02 Jun 2025 16:19:35 +0200
-Message-ID: <87ecw2ns3s.fsf@bootlin.com>
+	Mon, 02 Jun 2025 15:50:59 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 694BD40C2A;
+	Mon,  2 Jun 2025 15:50:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95282C4CEEB;
+	Mon,  2 Jun 2025 15:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748879456;
+	bh=YEPHIKlGLClOFLF3x9dL/ailZKjYUZH2cpkfYEmXJxw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Fm+Hxg67Svs9O77QDuWaZdE5wzZ3qE+sSAUBwYIt9isqkYP2Ly312pLBdPmcZnx/o
+	 DRTKLg+mE+dknYQXr8Glkl/Q1tWhlqOtMS6OiheU3LyV2D1i9UvxfGODNYlt0rec8k
+	 98o461YMkXtyMac0hoDd/YemsneaNt9c38NwzPHtS1nKSk66+0hCZ7Tt2WezasTB2L
+	 LYxiYUWQhcko+9qEKPLEApdNp8RljEbwEZmwEO/Pvp4uveYRZtxhJIh7QRM9nPOzaR
+	 6MATg6ZO8yuU4zAVVe5s3lfjNmtZvbVpV9tSLxTcycozDovJ9oAF+8sFt6pIL+VABl
+	 F1lCCQyRs7JXg==
+From: Mark Brown <broonie@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Gabor Juhos <j4g8y7@gmail.com>
+Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
+ Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20250527-qpic-snand-limited-biterr-caps-v1-1-61f7cf87be1e@gmail.com>
+References: <20250527-qpic-snand-limited-biterr-caps-v1-1-61f7cf87be1e@gmail.com>
+Subject: Re: [PATCH] spi: spi-qpic-snand: document the limited bit error
+ reporting capability
+Message-Id: <174887945434.88179.3123674776894271663.b4-ty@kernel.org>
+Date: Mon, 02 Jun 2025 16:50:54 +0100
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdefjeeltdculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppedvuddvrddutdehrdduhedtrddvhedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdduvddruddthedrudehtddrvdehvddphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvddvpdhrtghpthhtohepughrvghgrghnsegsrhhorggutghomhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepsggtmhdqkhgvrhhnvghlqdhfvggvuggsrggtkhdqlhhishhtsegsr
- hhorggutghomhdrtghomhdprhgtphhtthhopeifihhllhhirghmrdiihhgrnhhgsegsrhhorggutghomhdrtghomhdprhgtphhtthhopegrnhgrnhgurdhgohhrvgessghrohgruggtohhmrdgtohhmpdhrtghpthhtohepfhhlohhrihgrnhdrfhgrihhnvghllhhisegsrhhorggutghomhdrtghomhdprhgtphhtthhopehkrghmrghlrdgurghsuhessghrohgruggtohhmrdgtohhm
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Mailer: b4 0.15-dev-c25d1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250602_071941_621685_A7F35A23 
-X-CRM114-Status: UNSURE (   6.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250602_085058_699646_49706D29 
+X-CRM114-Status: GOOD (  10.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,24 +72,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjkvMDUvMjAyNSBhdCAyMDo0Njo1OSAtMDcsIERhdmlkIFJlZ2FuIDxkcmVnYW5AYnJvYWRj
-b20uY29tPiB3cm90ZToKCj4gQ3VycmVudGx5IHdlIGF0dGVtcHQgdG8gZ2V0IHRoZSBhbW91bnQg
-b2YgZmxpcHBlZCBiaXRzIGZyb20gYSBoYXJkd2FyZQo+IGxvY2F0aW9uIHdoaWNoIGlzIHJlc2V0
-IG9uIGV2ZXJ5IHN1YnBhZ2UuIEluc3RlYWQgb2J0YWluIHRvdGFsIGZsaXBwZWQKPiBiaXRzIHN0
-YXQgZnJvbSBoYXJkd2FyZSBhY2N1bXVsYXRvci4gSW4gYWRkaXRpb24gaWRlbnRpZnkgdGhlIGNv
-cnJlY3QKPiBtYXhpbXVtIHN1YnBhZ2UgY29ycmVjdGVkIGJpdHMuCgpUaGlzIGNoYW5nZSBkb2Vz
-IG5vdCBmZWVsIGNvcnJlY3QuIFdlIGdhdGhlciB0d28gc3RhdGlzdGljczoKLSB0aGUgbWF4aW11
-bSBudW1iZXIgb2YgYml0ZmxpcHMgY29ycmVjdGVkIGluIGEgc2luZ2xlIEVDQyBjaHVuawotIHRo
-ZSB0b3RhbCBudW1iZXIgb2YgYml0ZmxpcHMgYW1vbmcgdGhlIHdob2xlIHBhZ2UKClRoZSBtb3N0
-IGltcG9ydGFudCBvbmUgaXMgdGhlIGZvcm1lciwgYmVjYXVzZSBpdCBtYXkgdHJpZ2dlciB3ZWFy
-CmxldmVsbGluZyBmcm9tIHRoZSB0b3AgbGF5ZXIgKFVCSSwgdXN1YWxseSkuIEl0IGZlZWxzIGxp
-a2UgeW91IGFyZQpicmVha2luZyB0aGlzLCBhbSBJIHdyb25nPyBXb3VsZCB5b3UgbWluZCB0byBi
-ZSBtb3JlIGV4cGxpY2l0IG90aGVyd2lzZT8KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+On Tue, 27 May 2025 13:08:16 +0200, Gabor Juhos wrote:
+> The QPIC hardware is not capable of reporting the exact number of the
+> corrected bit errors, it only reports the number of the corrected bytes.
+> 
+> Document this behaviour in the code, and also issue a warning message
+> to inform the user about it.
+> 
+> No functional changes.
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: spi-qpic-snand: document the limited bit error reporting capability
+      commit: 57cf46cd1fe351846e1b065ca9546eef66675ecd
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
