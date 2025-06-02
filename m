@@ -4,86 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B9A5C54FB3
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 05:35:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 877E4C54FB3
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 05:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=A5mvWlWQWepe80
-	7zHPpO1n4keBQ66F3FpyJNj1GF0BUd7cJ9p+ydmgNuyDDCDY7bNY9CAq8wgkCZ9XNGYQnYsLW6F5X
-	2tNqjr+waAqgawmHiwX/bnvtSkt3lMww4MeMZNERmgTnDfGaskMVuKBH1s3CsTRTDY+6BUP0r8dR7
-	2cPTTLS4oZVNeUMiOeEvMwTNr2MDT3wlDU3F1rNXb8OlrZoaqnSvWG2Z0DqOp0Vq5U+nL4VP6RI2c
-	h340FYgbsHsl3kKayMERVIlGcrDr4VsDsNA+Hgk7rrP9SaPbUi63KPAXgZ0y3D+eU6xvc4sSeieqM
-	0Evlh59lkvX78KWz1+6g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=D6HLoIlz2AMTu0JmwOkdHE/ZQ3L81zNNsABQHW9HJQI=; b=z3GRTkRpbGhK2O
+	0NdRRRW5mfk1gc0e31QbN0T2Z4KgVCXnUQcGVO+3FLBw408CDuitFTgSoiIgkyNoDO647p3Vxk20H
+	EY9mS9C42Y7xw46MjEJvH33QJoSgrRRvCjBCl4dddssIWTEhJyr1HoNXNtroUCpBAanjQksLkq1Rs
+	eLT1Ca4LyKHQacPqwkRpdGDt4Lz9lAQAinaUrpxSaNRLkctB3tT8mI6/GR1kF+MEyzms/Rf/sDL1B
+	ANfG5zGSr8/uZquZj2Oe1L9AkOi/5GjSpOtpvyAWbPrqe/GDQkrGAYlsQOGYN/1VedX2ZFtL4ulsR
+	N6v0NV2phdjUljSm5j5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLxpV-00000006kxM-44jc;
-	Mon, 02 Jun 2025 05:35:25 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1uLxpv-00000006l42-29wq;
+	Mon, 02 Jun 2025 05:35:51 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLxpT-00000006kwl-3PF0
-	for linux-mtd@lists.infradead.org;
-	Mon, 02 Jun 2025 05:35:24 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3a374f727dbso3398924f8f.0
-        for <linux-mtd@lists.infradead.org>; Sun, 01 Jun 2025 22:35:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1748842522; x=1749447322; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
-        b=FzZ5etx5JER7KSDNfA0pH+k8a7HEr8UVd6I4vqjygCcmTKergK9EnMRGpI9PGELhZU
-         EoaXQ7TSO2dAVhd2KDFjmquDubDQcYeLoEPC0opeCBKSA4b/BigJmcPuXEOIvaNnSRkb
-         O4crbK3thAJV9wddeOZydgqFIFX0nUahZHCISt1uV03G8KdiCqp+SyKRPdPokPBj+n6T
-         le0cbUsnh/J1ilFBfZWXOT3AO0B1a1kFdaU5DBPtfxA68erAYzf7uXX6gJ/xkO0/or/w
-         B7ZPsedUcrNYggV9fI7xORN7wDkoNZmXgAke4a0XAQ45LUmoG0gvI7aWMdi7PqDTEqp9
-         AntQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748842522; x=1749447322;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
-        b=QEF4ENjGgl88vxneO6dRFLOq2+/kZqbucEHUASwkIj3uSt4iReBkkoVDvOKPx+aQ7X
-         rTO/HVrZg8VK4427HZu1SntUnjIgCKqKlRArzRiXJJ9xt0xZE7a95U9sFCfJ3GsUmBtj
-         xoAh5gsbnx9XNXQh6qLnAd6pnI9/Udb50RWKqkMKd8cAqqua0IG4ZdjpAigQmCZmgTKm
-         CKn1g+Uf4jzgnKmA4UQJyGHWHUHkDA4dgxfWWqq+YNwfTIuRCq/izO6vvl3dOKGckWUo
-         nAD6/D9ZYVo2xm6P4txHRrO0N1b7aXxNCcd99s34CmPyKHfKUpfpbSx8DSxqt8DQuM1u
-         4Sqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXm599BuzDZWTmBUo4z/SkRLdU0PRhG13JsH4krw8gCZ1eH/BYv5wxe9huNgLfNeLzn7ucF0IahLcY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzmuPsNK79jbOnzcgbj7oE0O6SCymo0dsqWXQVGq0VuWqmoveC+
-	CGYmO1Kpq1RET/Ut20biUVIU+Z5P++HSAsPLbN411LyMfsaYK4VWk0m4iqpYHaxr89c=
-X-Gm-Gg: ASbGnctzKKxfMuemliKKWcecshE1smlTf7XYRGstw5a+wKSChmMEdO2Tqu+gfbn5pUu
-	FwNaFMf8d0GuGAbQrsbu8G8bf7i5gP45Kd7KFUWWzuj5r+ux1/fM/hZO+ZxXNiwqYTxgNyOUSne
-	iU1w2QWN5mvwaXOVsbXAbvuFOI9LZEIy3AfRGYubY7ssEvCULQ8TIJhuWhlUt7C4Mcb29TNXbkY
-	gRCHeTI1/0anLJwQnLLD9c64SqrKK9q0Ohj8VjoQ6hGZ0ADH94/cqjqLDSIM5Y1w7jgb5KOlYfD
-	4CKti8UmuBiqjgcTQ87BBhEhz02VRKhh4iOBlrFUpoECpidsiYW8mxEw009badqEfE6hGDmi9O/
-	uUdnO7waS
-X-Google-Smtp-Source: AGHT+IGrQIiFUnlXQDaPi6teG3/LlZQK7PtXW+9VSsAPWMfTzkxlKDODBimIm/ATErooBRp+aHyk7Q==
-X-Received: by 2002:a05:6000:2dc6:b0:3a4:dc32:6cbb with SMTP id ffacd0b85a97d-3a4f89cd26dmr7838401f8f.31.1748842522025;
-        Sun, 01 Jun 2025 22:35:22 -0700 (PDT)
-Received: from [10.115.255.165] ([82.150.214.1])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4f00a13fasm13677597f8f.98.2025.06.01.22.35.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Jun 2025 22:35:21 -0700 (PDT)
-Message-ID: <43255889-3d35-48ba-9013-312d4f61ac5a@sigma-star.at>
-Date: Mon, 2 Jun 2025 07:35:21 +0200
+	id 1uLxps-00000006l2E-1ghL;
+	Mon, 02 Jun 2025 05:35:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1748842548; x=1780378548;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xYawO1iMI+DktvXg7m+0yXGAuCtCj8eg6S/Kl5Wr6tI=;
+  b=Ktv7ARMAIv92idOnaW4AIA7fxMc+kZi2/cTutKeEFJBRBg+ZZxK4HyD1
+   BZfLWnfSTDc4nTpiUdSmA0GdPT1mG17kAB70njr1WKej0juDxltA/Icx4
+   HxCAbmFbuCno467KJCFbF2cXJvHK6TUjw4GqPXkHUl+2QgWEAQNpCXuKk
+   ggyLgx57ExUUTlLZv/+Wl6gSPty+lC7qDI4/JyRrnGzAEVP5klPxpVanU
+   ikwVaxJ+gdpRPIHAvNJBpDi+NLzLGTDkCrgs+BYjfT//Z2oaJgzeWaX3c
+   Ma4hQZwhKaELuTKmsds0Lfl+zKTska/5zNskRvz19hKQlgQbskUBK4lwU
+   Q==;
+X-CSE-ConnectionGUID: 8pkaetzaTf2iFp4Ql+AwUg==
+X-CSE-MsgGUID: xIBj22/+S1y/yI3wQAnNUQ==
+X-IronPort-AV: E=Sophos;i="6.16,202,1744095600"; 
+   d="scan'208";a="42865331"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Jun 2025 22:35:45 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Sun, 1 Jun 2025 22:35:24 -0700
+Received: from che-lt-i64410lx.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.44 via Frontend Transport; Sun, 1 Jun 2025 22:35:17 -0700
+From: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+	<claudiu.beznea@tuxon.dev>, <krzysztof.kozlowski+dt@linaro.org>
+CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+Subject: [PATCH v3 0/4] dt-bindings: mtd: microchip-nand: convert txt to yaml
+Date: Mon, 2 Jun 2025 11:05:03 +0530
+Message-ID: <20250602053507.25864-1-balamanikandan.gunasundar@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ubifs-utils: common: fix memory leak in devtable.c
-To: Anton Moryakov <ant.v.moryakov@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>
-References: <20250515082515.1666-1-ant.v.moryakov@gmail.com>
-Content-Language: en-US
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20250515082515.1666-1-ant.v.moryakov@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250601_223523_844319_34586808 
-X-CRM114-Status: UNSURE (   4.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250601_223548_615822_CD230476 
+X-CRM114-Status: GOOD (  15.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,16 +80,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Applied to mtd-utils.git master.
+Convert microchip nand controllers from text to yaml
 
-Thanks,
+Summary of changes:
 
-David
+Note:
+- The changes are made on top of v6.15. 
+
+v2 -> v3:
+
+[PATCH 1/4] dt-bindings: mtd: microchip-nand: convert txt to yaml
+- Remove pmecc nodes in example as it has a seperate binding
+
+[PATCH 2/4] dt-bindings: mtd: microchip-nand: add atmel pmecc
+- Dropped '|' from description
+- Merged the fallback compatibles
+- Dropped 'base address and size of' from description
+- Dropeed clock source description
+- Modifed if/then condition. the clock source is only required for sam9x7
+ 
+[PATCH 3/4] dt-bindings: mtd: atmel-nand: add legacy nand
+- Dropped '|' from description
+- Fix address-cells and size-cells ranges
+- Define each gpio entry. RB, CE and CD
+- Move vendor specific properties to last.
+- Fix node names in examples.
+
+[PATCH 4/4] MAINTAINERS: add entry for microchip nand controller
+- New patch updating myself as maintainer.
+
+v1 -> v2:
+
+https://lore.kernel.org/all/20250311122847.90081-1-balamanikandan.gunasundar@microchip.com/
+
+[PATCH 1/3] dt-bindings: mtd: microchip-nand: convert txt to yaml
+- Change the filename to match the compatible string
+- Drop items and oneOf in the compatible property as it is just an enum
+- Remove the if in the #address-cells and #size-cells
+- Remove the unwanted comments that refers to .txt files
+- Fix reg property description
+- Define the properties in a list and add constraints
+- Fix DT coding style and droped unused labels
+
+[PATCH 2/3] dt-bindings: mtd: microchip-nand: add atmel pmecc
+- Rename filename to match compatible string
+- Add constraints for sam9x7
+- Droped unused dt labels 
+
+[PATCH 3/3] dt-bindings: mtd: atmel-nand: add legacy nand
+- Filename matching the compatibles
+- Remove "bindings" from the subject
+- Remove "deprecated" as these are the only bindings available for the devices
+- Add missing constraints.
+- Add default for nand-ecc-mode
+- Add 32 in pmecc-cap for sama5d2
+- Add default for sector-size, pmecc-lookup-table-offset, nand-bus-width
+
+Balamanikandan Gunasundar (4):
+  dt-bindings: mtd: microchip-nand: convert txt to yaml
+  dt-bindings: mtd: microchip-nand: add atmel pmecc
+  dt-bindings: mtd: atmel-nand: add legacy nand controllers
+  MAINTAINERS: add entry for microchip nand controller
+
+ .../devicetree/bindings/mtd/atmel-nand.txt    | 227 ------------------
+ .../devicetree/bindings/mtd/atmel-nand.yaml   | 167 +++++++++++++
+ .../mtd/microchip,nand-controller.yaml        | 169 +++++++++++++
+ .../bindings/mtd/microchip,pmecc.yaml         |  62 +++++
+ MAINTAINERS                                   |   5 +-
+ 5 files changed, 401 insertions(+), 229 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/microchip,nand-controller.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/microchip,pmecc.yaml
+
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
