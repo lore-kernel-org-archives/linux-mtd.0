@@ -4,147 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E64B9C54FB3
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 14:10:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0190C54FB3
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 14:19:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=r5sXnRdP2A/s6ff+yb7xFoIkxI3srhi26si7FxWRDCo=; b=nGTUFTKnCd7/62
-	c3xRBfg1F+o259TNQ/XCZpoCFoWraU1SWuLedOAVSOZQJqo+tNqmAgitG83rNYMLryZYA4Ioxe+6f
-	5fKLDh9h/POjisGrFKacVCGqRJ4jOsdCC8NE/viqN2R7/A0jC8ko0Ao9i5+LAIia6vVHdKcyPkJxR
-	5AEEgvOFTHI9uvEDo0/LzOTrwfr/eHjODTnWg6uwwAgigktmAtXtfqTY+EusOZWlELCmAXLd+IrNa
-	E4Qp8JSyrqqjMNWlleeHdaODLWQGDMY3UI4VaS2zi+gm+gRWQJN1sIEQd5hsr/JmWwXbVYNRjO1Zs
-	CItCtJY+fRmztv9dG2nQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yB4Y/GUvjWsXvQ7OzaLjrslh2uZrneN9CfLmnRCwNcw=; b=2bDzKj5v1exP+0
+	diASuawXCJ3+6jB6VZCrPOT12MfLjsdotx17VZrGF6ZaJ9TiPPqLSdPwyBVsnMkNEUwZV3YFQIMUO
+	Zu+cGf8+TNpdKaSuzT7dHgytQo9I36nYq8vB8Dn6UzeheSHeIJ0dE6NWCKbuRzilr/r52mCONKalZ
+	tT1/HsryjBOWU3cDKntB9GsO2tdZAdip7Nx25DLVQtujXPjn6cx/etTjNc8NHL5z0+0RYSQLi0fvz
+	XjxDdDYlE1/3TLBND4B6UhJF/n/ih8LeNyMYDmNqnlseY5fcjNhXHLs8T4wNsm9R8qnGlhM3gnwEz
+	kf7SSOjdJMQwTJe99JuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uM5rr-00000007Zqv-1ZH9;
-	Mon, 02 Jun 2025 14:10:23 +0000
-Received: from mail-northeuropeazlp170120005.outbound.protection.outlook.com ([2a01:111:f403:c200::5] helo=DUZPR83CU001.outbound.protection.outlook.com)
+	id 1uM60t-00000007c23-3HYY;
+	Mon, 02 Jun 2025 14:19:43 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uM5rY-00000007ZmK-03iZ
+	id 1uM60r-00000007c0i-17WY
 	for linux-mtd@lists.infradead.org;
-	Mon, 02 Jun 2025 14:10:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Pgr1/72LfVuWaDCg2M4a7IurwZxsUZ6yiuow+SYB81WGaZuNY9n1oEbE7umDwMzcBKY5KwwTFV7Lim0C/O/Qom7jhHUMG3E5yXXxTAsp/pAtZG7P6kKSYBXOP5fAP3e+0NY3I2KEOUKPJKbxieaQBJUfabjMdaR69aIczTQzANnngfcXeNfpV+LmA6Rd6uU5ctlgma2WVyIawCxoPvWo/kFya5B5ydYK/8WQzgYEqU2OgxDtVI6lryWRSP/A/7+Nzdlqn+KynnxOEHVUd2irrN5neKzXQVSxdpX6iqbOsp4Z9JLFO31CmCm6zjLS5fW28Z/UoMcn34enDOtKTMxC1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aW2gZrk/6cvMaQMCa/chQEXaKtBK5fH+ldv7x6PwQQ0=;
- b=GwBKmf+sg72kl+hWFtlK58/zAVvs8T4U+N4UDfstmgWmQqTV56Q9lksMi3MCYeUeyhLxGhxPD9r45blePoAf/fuYj0JNWY+jLf0FvZzZINJ/KccIq6HMIqvCNK+PRTL6T2bstn3clLpEKi7ARh/dPNnp5DiC+Oet033/IQEyYFx5VRS9gjqNSocRWnzXWrMrFAfdBGEq6bsONXZMi9Uq7YU8e5vu4QPBmoGmDO1wIUPFgtceuhIsEOI9tmubwyn2U017EfLFXiXj1Z6pDGBkz6DPSQDvLqTzZG+QmhzCiyPrSbkHfjnhVJU+CvREKmiTs+FjieYjKZuD1P0OdqrvLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aW2gZrk/6cvMaQMCa/chQEXaKtBK5fH+ldv7x6PwQQ0=;
- b=VBsT4GLKqga6ZiiZDlnytWcSxpLoox2YpvxvMFW2GXFumMm63peLIJNPfU+3W8NhEKLj2IfJJIsh3w16scA2yDGnGruSFYKjFsVgOpPl4oGkuuqQLa80dfPetc+Tud9n5NViUdFgbHwnw7FXGZF/yCo2UdVMPj/OlKWXbo6PhCfchoFRKEwj6TYKRlYaKz+oEevTYkEOrg+KlOtfTOynIZbwcjwtRQD6WHDV1Pe3EeWFKvuo59UlG6CPRLk7JSj6rzR3prnpWedlIcvLG6zdNcf0vrfAEjZcSBEXh0X0cWIiM5fW8FGBqTHFqamZycrY+n9BGCAklOXu2hRoUH8vlA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DUZPR04MB9846.eurprd04.prod.outlook.com (2603:10a6:10:4db::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8769.37; Mon, 2 Jun
- 2025 14:10:00 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06%6]) with mapi id 15.20.8769.025; Mon, 2 Jun 2025
- 14:10:00 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	linux-kernel@vger.kernel.org (open list)
-Cc: imx@lists.linux.dev
-Subject: [PATCH 1/1] dt-bindings: mtd: convert nxp-spifi.txt to yaml format
-Date: Mon,  2 Jun 2025 10:09:45 -0400
-Message-Id: <20250602140946.941159-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-X-ClientProxiedBy: BYAPR02CA0059.namprd02.prod.outlook.com
- (2603:10b6:a03:54::36) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	Mon, 02 Jun 2025 14:19:42 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 98B1143917;
+	Mon,  2 Jun 2025 14:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1748873977;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ev6iNL22PFHIL/H7k7mv5eeLl0WdLTXXN8qyBlvf9KQ=;
+	b=Yhcjc4DxVpktZG2sfeGOKAu/dtCMwVl5FNgFFfgFjN3slTiJUtJJF+ikpi/fX3QH+OYtKA
+	9KL9rvadfV5+7ugK0PxfdB8Zj8yPYzfxIQ3WbjmPn8JeJCRXuvq0c5Ret7yYt95QYsuny3
+	0uemBmiFPhwloDZrclMZfGRm5HEvxyzHIiFB2rp4ltO2HWaSMYUuPvPLdh6FXpDq3EQf/u
+	UCT/Ywvwgng4Z8SP13e8Qf98i9yx7h8bvtyu9NOV3ZGqviB/DVS4Ez7+7SeuOf1LqJmpaE
+	sHxb7/R1CrfVnwTbNR7+YL/TftLazYh+CdIOLXUQ3sEcjmSiK02soKfLrKvkfQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: David Regan <dregan@broadcom.com>
+Cc: linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org,
+  bcm-kernel-feedback-list@broadcom.com,  william.zhang@broadcom.com,
+  anand.gore@broadcom.com,  florian.fainelli@broadcom.com,
+  kamal.dasu@broadcom.com,  dan.beygelman@broadcom.com,  =?utf-8?Q?=C3=81l?=
+ =?utf-8?Q?varo_Fern=C3=A1ndez?=
+ Rojas <noltari@gmail.com>,  rafal@milecki.pl,
+  computersforpeace@gmail.com,  frieder.schrempf@kontron.de,
+  vigneshr@ti.com,  richard@nod.at,  bbrezillon@kernel.org,
+  kdasu.kdev@gmail.com,  jaimeliao.tw@gmail.com,  kilobyte@angband.pl,
+  jonas.gorski@gmail.com,  dgcbueu@gmail.com,  dregan@mail.com
+Subject: Re: [PATCH] mtd: nand: brcmnand: fix mtd corrected bits stat
+In-Reply-To: <20250530034713.4165309-1-dregan@broadcom.com> (David Regan's
+	message of "Thu, 29 May 2025 20:46:59 -0700")
+References: <20250530034713.4165309-1-dregan@broadcom.com>
+User-Agent: mu4e 1.12.7; emacs 29.4
+Date: Mon, 02 Jun 2025 16:19:35 +0200
+Message-ID: <87ecw2ns3s.fsf@bootlin.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DUZPR04MB9846:EE_
-X-MS-Office365-Filtering-Correlation-Id: d365d06b-de0b-4644-05b4-08dda1df290a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014|52116014|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?pJRokxTCGEq2Rfp18XGvael9RLTMxneOo36/ekIBVw70hxmja1eNesyjf4Mr?=
- =?us-ascii?Q?Ko/XUz5MfCI1b9+q+thv7P/XumBSU3y6Ext3/EX95cTAlavo7K5F2aVZRDkg?=
- =?us-ascii?Q?1n7ac82S3t8rrLPFJQa6Sefb5DLpQbeJr94QV7li1aYF1o6xOrDYTD4a+EvQ?=
- =?us-ascii?Q?3+pw8h8ih9YHzKZpS1DEwuynCtMmxz+tzy2peuvGw3tthLIklm6DODkkCgNa?=
- =?us-ascii?Q?0ysyzdouv5qLQwstK2WmSbIHrgYX+4mVi2VBjdm0WKATNOqBqQSsjJTapSPu?=
- =?us-ascii?Q?mdlOVtrv8VlGQVhvPRxKMi/qHbFNT58Ifb3NgcdXziFJow4MtHMvrlC7wHfC?=
- =?us-ascii?Q?LyZcX0nXxzaP/j+lwyXAJ8a7sjuki10zFRZLcTXP07xNfbunS0kOHbE5pUn3?=
- =?us-ascii?Q?qVH+w0Xx1Wuie66K/Km7hA1gYa6jVhC5YtsMp1swaJvfvkkFCC8+cexQ80AB?=
- =?us-ascii?Q?FxhZBglTtncrzqg9W8Yyg4KKET5MWV+aTVwfXXKcBXxOBo22hfP7NRGMhTIx?=
- =?us-ascii?Q?J8Xiy8XNNv7CWc9fy/OQQAMPwwv6NCdrJneKvL7s0527pQPMICjFUcFwTA9Y?=
- =?us-ascii?Q?+yuqD9ewyIR7vp73vh0HWYhQLSYrvyCy8HHnIVyUNIQBjFeHCGxaia2Fmk3J?=
- =?us-ascii?Q?oys15h5WO0E7hhht2HPuqr64+lsho12JJRI4EqFbC67+NVskyDPHCQzpLnlx?=
- =?us-ascii?Q?fPnKOL1UgZ5Cu5cHLaQ9ZGzuQwk4ll+ogV9EsU47qPOM5MkDqLK0yF617GZm?=
- =?us-ascii?Q?xIcDqVsJWHu7yqnbgptPmCJXayNEfTZ/XWBmeBjFrCMYLTmKZ1GYBjcH3nOt?=
- =?us-ascii?Q?i5CGZ3+9HwgaJqLGN0YIcjgSjLxSiYeYxX/QA3hjvXliXkiluCX+9WCNlSWd?=
- =?us-ascii?Q?vbKufoCUfPPHm6WHM1cy1lU2MYNX9XOo38wBYpW0ldaOnj5U9TTBbTKrBs2c?=
- =?us-ascii?Q?xzUoXdM7HxD/H+NlMaU9Ra5WTbdklwIGB7bz9vKRUlRveU8qtruEHSdormcW?=
- =?us-ascii?Q?fCBnGRecZb8fAKap7Pfl4bt6yo8WAis+EXNtjUJ9McghvFfsrIT+zoWJI9HK?=
- =?us-ascii?Q?dDBU2C/REifUD0ab2OFzbx1yxrs1i+KugsWHqRTODzpNxe9fnn1OrWiHgCBA?=
- =?us-ascii?Q?NaW/JI8RzrMAKOmv+4ivdQp73q5+APqWUZebSCMlKMyfrP9T9sCkrZtde5yP?=
- =?us-ascii?Q?CZbk2ZPy14NiNldOR1Kfzz0l5ma/ON2kf0OefnOnvqXVvpf8h1TWA6cuUVLR?=
- =?us-ascii?Q?+O37I1hVDfh5HEZrb8s8nzWQuvD89GFYaMtEkB4FzzNN3zgEZUuF5Wmrz88S?=
- =?us-ascii?Q?u+QQBCDQpwwKT4R2cVKXczkueK281yLxc0J72ELEz8tQPuaiQIu3pUDoWnMw?=
- =?us-ascii?Q?qlB1Rin/WuRUb14bVlQRDZXoqeZmcl+fj4qQKys+Bay4Eh8bvCVMQ7dHAYr8?=
- =?us-ascii?Q?MUnt36tWrgwjTUqqaDZaOGvosOV90CMh?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(52116014)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7d2N66ZxxARAKTNTj5db7iraKhywLiZAnsJbWX8S1dSn7Zm/bz+Y0KWdtGZs?=
- =?us-ascii?Q?oqUO1uzMAi8vvLGKuac78RJpuiVyspznah5XbYA45o+ra3fH1ktzDo2BHPRX?=
- =?us-ascii?Q?ood6VyjVIzE/tWXv9BM7cE6/Cz7juxoy/Tdmr5rTdu240UlHJm1S12LletU1?=
- =?us-ascii?Q?sGHAvTZcqYapgeaBwf8Z0xe/TvzZa+A8z8N9HUjrXuf/l5GoPlUkZmo1wc/u?=
- =?us-ascii?Q?cB7YHTe7t6S6+GddllrCY8TYCkKM+YM+GqGgfqVX0qBuLEwjBaP9IefMmR0F?=
- =?us-ascii?Q?hVWJvo6luGuJXL92zzQCIE/DSjwW/0fsNkFp3esw7vJI9wXq8Fe8/J2qtM30?=
- =?us-ascii?Q?j3Ee4kOh6xTtA7c4XF6kOLLyR1fdbqebYHhiGzaG/yW7FsHXlQC5nRoFBA2C?=
- =?us-ascii?Q?hfR9R5OE1CaGgM2rw3n0DpWbMGksdIcJWCS6VBn9nSrOLogVqv5ZLzGiuHWg?=
- =?us-ascii?Q?KUwxN+nvWOoyiGcuTW/QnBSoUysUYBhkeJRF2aLfI/QsXZzvTvJCxmkbr8QK?=
- =?us-ascii?Q?B4SVtv/5yqx8WaEupNJIKyhfEkFTYzSbfo2ITULYYj5wFUDVJvsccWBStkH2?=
- =?us-ascii?Q?4Wi1vaThXW5ZciFaWs4HSvZRTK8Oz5NqakNTocmfinKcs7jUEdQVDCkOs0di?=
- =?us-ascii?Q?XHQ9u7c+o6WlowyIJ8jsc/cwMcPWrsKxp6wW30NTbM3NH2TBd48l603aU3Oy?=
- =?us-ascii?Q?brI+aUir1r3ngzmZj48rpnMhXA/AYU2vLj5dagIrc3GoQiTG9V50wA7vYAfM?=
- =?us-ascii?Q?H1IaS7dn50YzqAPAVD5QRpy+qIM8CBmsrfUvrjoaBVrH6Ct673OKPcc5LA3D?=
- =?us-ascii?Q?sKyR/SkbpcdLkvWz5GzWfmD4SBNPl3QbvxvwB7aJXCCdaLxeGda9mRucdm5E?=
- =?us-ascii?Q?Zo4jnsYRSUbmNfCsAyBDXwqnVQ5s7n69fuFSRCx+IxQ8L/KQT5biakyxGzKG?=
- =?us-ascii?Q?6LqFeYNycnFxz5nN/QulQqJDurDnnZhOF9l2eG9IQAnrkdmonTBafC4q34MA?=
- =?us-ascii?Q?xMK9D5kpA3Z0n3yfKnOvF0H0U3bpPyjGt6SKT1sJ846dTEKUwbaZqc5DiuxZ?=
- =?us-ascii?Q?QQiDboMXTGI2D0LpycLJC+GRCCIl8muySWvCTVHIEno+hKclnj76wv5i3lIH?=
- =?us-ascii?Q?pb4fmy/if/ViOWl8Y40sO8NFZrjY+UD90ewpRB27vO62wX5TxvfxlpO+x587?=
- =?us-ascii?Q?u7cJwf2hnVwhIo6GxvoSk1R1MIeVf4Bx3ROv/wJinXtXp5Xy+uTEHQKWTIXV?=
- =?us-ascii?Q?rIJpHWyN79CUI+qbW6BSjqcgqhiD0lPWi4qULC3b75DyFX8EaaYS2OBCl+jZ?=
- =?us-ascii?Q?UCcQcmG6Cn2pULK82ivnWIuPaGLP8pE9oKN0MefHrKYBMOkUUphmb09l8tsJ?=
- =?us-ascii?Q?F/VTCy0W6IMmc1ZSCZj5LQLZWYpg+1pVM+NCLe4Tx+8zMnCiLau//dPNeWLy?=
- =?us-ascii?Q?NSejCBRko7cHWQOfzGdteL8YGyX1yew60Ewxo5+XVC//Uu/8NHX72H5d1J8P?=
- =?us-ascii?Q?k/MVaNygZlkAlikeZe4gis1Qz8kiqHCzt21SooKAoQFIAMkaU3SijTnoPw3f?=
- =?us-ascii?Q?sBt2z/tBnycHGCu7Td6nnwt/7C3AgjTyVES0lRGl?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d365d06b-de0b-4644-05b4-08dda1df290a
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2025 14:09:59.9568
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: imEztRbSth3hSkkcjMVUGzRyrQ+W9kaMqI2dRP4ADeta19Xj6gdNOnBd+2VnPQ05XsSEiPBE3aXGuK/mSdzXEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB9846
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdefjeeltdculddtuddrgeefvddrtddtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppedvuddvrddutdehrdduhedtrddvhedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdduvddruddthedrudehtddrvdehvddphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvddvpdhrtghpthhtohepughrvghgrghnsegsrhhorggutghomhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepsggtmhdqkhgvrhhnvghlqdhfvggvuggsrggtkhdqlhhishhtsegsr
+ hhorggutghomhdrtghomhdprhgtphhtthhopeifihhllhhirghmrdiihhgrnhhgsegsrhhorggutghomhdrtghomhdprhgtphhtthhopegrnhgrnhgurdhgohhrvgessghrohgruggtohhmrdgtohhmpdhrtghpthhtohepfhhlohhrihgrnhdrfhgrihhnvghllhhisegsrhhorggutghomhdrtghomhdprhgtphhtthhopehkrghmrghlrdgurghsuhessghrohgruggtohhmrdgtohhm
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250602_071004_056239_A4D69101 
-X-CRM114-Status: GOOD (  20.14  )
+X-CRM114-CacheID: sfid-20250602_071941_621685_A7F35A23 
+X-CRM114-Status: UNSURE (   6.16  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,175 +81,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert nxp-spifi.txt to yaml format.
-
-Additional changes:
-- ref /schemas/spi/spi-controller.yaml.
-- remove label in example.
-- change node name to spi in example.
-- remove child node in example.
-
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- .../bindings/mtd/nxp,lpc1773-spifi.yaml       | 74 +++++++++++++++++++
- .../devicetree/bindings/mtd/nxp-spifi.txt     | 58 ---------------
- 2 files changed, 74 insertions(+), 58 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/nxp,lpc1773-spifi.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/nxp-spifi.txt
-
-diff --git a/Documentation/devicetree/bindings/mtd/nxp,lpc1773-spifi.yaml b/Documentation/devicetree/bindings/mtd/nxp,lpc1773-spifi.yaml
-new file mode 100644
-index 0000000000000..d6efb9417b7a9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/nxp,lpc1773-spifi.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/nxp,lpc1773-spifi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP SPI Flash Interface (SPIFI)
-+
-+description:
-+  NXP SPIFI is a specialized SPI interface for serial Flash devices.
-+  It supports one Flash device with 1-, 2- and 4-bits width in SPI
-+  mode 0 or 3. The controller operates in either command or memory
-+  mode. In memory mode the Flash is accessible from the CPU as
-+  normal memory.
-+
-+maintainers:
-+  - Frank Li <Frank.Li@nxp.com>
-+
-+properties:
-+  compatible:
-+    const: nxp,lpc1773-spifi
-+
-+  reg:
-+    maxItems: 2
-+
-+  reg-names:
-+    items:
-+      - const: spifi
-+      - const: flash
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: spifi
-+      - const: reg
-+
-+  resets:
-+    maxItems: 1
-+
-+  spi-cpol:
-+    enum: [0, 3]
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-controller.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/lpc18xx-ccu.h>
-+
-+    spi@40003000 {
-+        compatible = "nxp,lpc1773-spifi";
-+        reg = <0x40003000 0x1000>, <0x14000000 0x4000000>;
-+        reg-names = "spifi", "flash";
-+        interrupts = <30>;
-+        clocks = <&ccu1 CLK_SPIFI>, <&ccu1 CLK_CPU_SPIFI>;
-+        clock-names = "spifi", "reg";
-+        resets = <&rgu 53>;
-+    };
-+
-diff --git a/Documentation/devicetree/bindings/mtd/nxp-spifi.txt b/Documentation/devicetree/bindings/mtd/nxp-spifi.txt
-deleted file mode 100644
-index f8b6b250654e5..0000000000000
---- a/Documentation/devicetree/bindings/mtd/nxp-spifi.txt
-+++ /dev/null
-@@ -1,58 +0,0 @@
--* NXP SPI Flash Interface (SPIFI)
--
--NXP SPIFI is a specialized SPI interface for serial Flash devices.
--It supports one Flash device with 1-, 2- and 4-bits width in SPI
--mode 0 or 3. The controller operates in either command or memory
--mode. In memory mode the Flash is accessible from the CPU as
--normal memory.
--
--Required properties:
--  - compatible : Should be "nxp,lpc1773-spifi"
--  - reg : the first contains the register location and length,
--          the second contains the memory mapping address and length
--  - reg-names: Should contain the reg names "spifi" and "flash"
--  - interrupts : Should contain the interrupt for the device
--  - clocks : The clocks needed by the SPIFI controller
--  - clock-names : Should contain the clock names "spifi" and "reg"
--
--Optional properties:
-- - resets : phandle + reset specifier
--
--The SPI Flash must be a child of the SPIFI node and must have a
--compatible property as specified in bindings/mtd/jedec,spi-nor.txt
--
--Optionally it can also contain the following properties.
-- - spi-cpol : Controller only supports mode 0 and 3 so either
--              both spi-cpol and spi-cpha should be present or
--              none of them
-- - spi-cpha : See above
-- - spi-rx-bus-width : Used to select how many pins that are used
--                      for input on the controller
--
--See bindings/spi/spi-bus.txt for more information.
--
--Example:
--spifi: spifi@40003000 {
--	compatible = "nxp,lpc1773-spifi";
--	reg = <0x40003000 0x1000>, <0x14000000 0x4000000>;
--	reg-names = "spifi", "flash";
--	interrupts = <30>;
--	clocks = <&ccu1 CLK_SPIFI>, <&ccu1 CLK_CPU_SPIFI>;
--	clock-names = "spifi", "reg";
--	resets = <&rgu 53>;
--
--	flash@0 {
--		compatible = "jedec,spi-nor";
--		spi-cpol;
--		spi-cpha;
--		spi-rx-bus-width = <4>;
--		#address-cells = <1>;
--		#size-cells = <1>;
--
--		partition@0 {
--			label = "data";
--			reg = <0 0x200000>;
--		};
--	};
--};
--
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjkvMDUvMjAyNSBhdCAyMDo0Njo1OSAtMDcsIERhdmlkIFJlZ2FuIDxkcmVnYW5AYnJvYWRj
+b20uY29tPiB3cm90ZToKCj4gQ3VycmVudGx5IHdlIGF0dGVtcHQgdG8gZ2V0IHRoZSBhbW91bnQg
+b2YgZmxpcHBlZCBiaXRzIGZyb20gYSBoYXJkd2FyZQo+IGxvY2F0aW9uIHdoaWNoIGlzIHJlc2V0
+IG9uIGV2ZXJ5IHN1YnBhZ2UuIEluc3RlYWQgb2J0YWluIHRvdGFsIGZsaXBwZWQKPiBiaXRzIHN0
+YXQgZnJvbSBoYXJkd2FyZSBhY2N1bXVsYXRvci4gSW4gYWRkaXRpb24gaWRlbnRpZnkgdGhlIGNv
+cnJlY3QKPiBtYXhpbXVtIHN1YnBhZ2UgY29ycmVjdGVkIGJpdHMuCgpUaGlzIGNoYW5nZSBkb2Vz
+IG5vdCBmZWVsIGNvcnJlY3QuIFdlIGdhdGhlciB0d28gc3RhdGlzdGljczoKLSB0aGUgbWF4aW11
+bSBudW1iZXIgb2YgYml0ZmxpcHMgY29ycmVjdGVkIGluIGEgc2luZ2xlIEVDQyBjaHVuawotIHRo
+ZSB0b3RhbCBudW1iZXIgb2YgYml0ZmxpcHMgYW1vbmcgdGhlIHdob2xlIHBhZ2UKClRoZSBtb3N0
+IGltcG9ydGFudCBvbmUgaXMgdGhlIGZvcm1lciwgYmVjYXVzZSBpdCBtYXkgdHJpZ2dlciB3ZWFy
+CmxldmVsbGluZyBmcm9tIHRoZSB0b3AgbGF5ZXIgKFVCSSwgdXN1YWxseSkuIEl0IGZlZWxzIGxp
+a2UgeW91IGFyZQpicmVha2luZyB0aGlzLCBhbSBJIHdyb25nPyBXb3VsZCB5b3UgbWluZCB0byBi
+ZSBtb3JlIGV4cGxpY2l0IG90aGVyd2lzZT8KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
