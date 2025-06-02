@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24B58C5B549
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 07:21:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD558C54FB3
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jun 2025 07:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=knorffnTK62o31AvmWvmRekJYUb0wm3YEsi/rVf3VZo=; b=FvImx3i3+NMmG1
-	4y9+RCFAytqZBatPLCyyJpmFE43T8OBw3bVTU2f06SYSNufe7TbUL4xFTojxKSEQKWuPhBnRF90pv
-	2dc+eI8+S0P0KpHSxxbBNDjpQSIofmb68Wdlc3WL6m3LeZMOKLKIwF8asvBNH2c4OteDw6pFEoSWk
-	kro0sDuhbHw8LE/4eeSzfVn5FkRR86D68NZdgiUh4lfhqpWvT6lpX4UTJafC6mj+fYTsykns6WgY9
-	tOv64Y5ofAQCoRViymnmJjeps0wbKFIybi2R+3l6PynCz6sm4Nc5nQxrnZW95e5xlwt6YexQEK2FY
-	b0AnEuJInvxdhH+NTg3g==;
+	List-Owner; bh=4en9j7p4CEHueijeUByY7e4tHW2QtD8VKuvHgi6tlAY=; b=Mf5N2Y7mN0Yqh8
+	SpCvYEIrJ9evMNlVTHYqqYYMfhohCXWC5FpK9U0enbL1DvZsQ9uU5sL0zef793QlVvkTPYcTuzrQ3
+	eOqK21Bzd36VVu9JoZMrDVN8reZPudo6OVi/pCxPRLUBsubszjmHT/9bYMfzQsJ3IfCISbTPPWqdg
+	z/QHHy0PGX8CvGFTNR1T7Jm/y0n8z8V++VnyFJi/PCDhxnwXXGkPFkNUg7hIBno9nuTUH3g/3iySG
+	QZSNYZ7s8FVH9GDDnCDp8qShwXof9TPImMwSVGiKiXbB7iQ96ZDSNUCgPVbzsb8OAytYlaf7CgRZH
+	NUU1aMDCgBiymK4O7ysw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLzTm-00000006ts1-0mD2;
-	Mon, 02 Jun 2025 07:21:06 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1uLzaG-00000006uYu-3uBj;
+	Mon, 02 Jun 2025 07:27:48 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLzQk-00000006tdn-4BJh;
-	Mon, 02 Jun 2025 07:17:59 +0000
+	id 1uLzWc-00000006uE4-31sj;
+	Mon, 02 Jun 2025 07:24:04 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 32C316111C;
-	Mon,  2 Jun 2025 07:17:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2398CC4CEEE;
-	Mon,  2 Jun 2025 07:17:53 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id A960B5C5A5A;
+	Mon,  2 Jun 2025 07:21:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3190C4CEEB;
+	Mon,  2 Jun 2025 07:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748848677;
-	bh=Z+N8q4PnEzGkLrijFZh7xC3DE4TrqXKMkBEWm3vH+yM=;
+	s=k20201202; t=1748849039;
+	bh=s9xNx+NS3r0HHm3PTq5Rn39oisNfhLK0A1fU5X4LW0s=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mrlxoAFxZgNY1MQpsxSF3dS5SWODz8tFnpfpeCpoEwa1lsclIZ88B2ncrFG0dL9+n
-	 gXHZyHIG55JnmrTIYMn1j99SV+f69p/Rlyh43Kio0ZlVm6Uidb8MExeZXk8ZzVZ1Hg
-	 rQvYw0IwA9G3QdUYDOR7wVz8GKwUkQDpsvTg2+FV0FFgz6zcG4GBSLgFWo6AL1y/Js
-	 fV+l6q7r89NApz8oB2GvsdEVIRbDQhM7T9dr5e6RjVoF8k55/nz8M+FlY3V58TZJd6
-	 c1i0Y2D9CcbMQM7SG2SQRdw1D+sDd49OCurQXiyMd+BI2FwkkQozZdc//YcPTGWxAv
-	 aZFrn2V+GD25g==
-Message-ID: <b17ff2df-aed1-42b0-9061-2f2e6655b958@kernel.org>
-Date: Mon, 2 Jun 2025 09:17:52 +0200
+	b=OUcjO8bIwiyhtM98VJyCsdJ8wRM2aLytNR913o4tMLk9IKSwacD8Ru41v07BekA5X
+	 FLq8Zso71U/nWHXyk2ZFkAyi9Szp1r4ZmOpyKJD/IeOyXnd7LlZaZokxANsQvlQJJP
+	 mpuE10SumP3o3em4dAF335q4AoYg2NOJcTRoXkuwGkJwvCr7zrep7efStyXYiJwpxm
+	 Ap0Q5jGUQ8hGbwnIFsMmuGF7Yc+/k0+pAv45sI1i7JawJki0MuRpaOWZ6SEtcBfdJZ
+	 aq1JRNGwylRfPkZ5VJOu0EKzdIAlypbB3owL40gwcwl2GjU7zYHBnnX99nQ3QZjWCy
+	 k4KYesLwJIp9Q==
+Message-ID: <3825dcb6-00b1-4e03-ab1a-258bcd3265ba@kernel.org>
+Date: Mon, 2 Jun 2025 09:23:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] MAINTAINERS: add entry for microchip nand
- controller
+Subject: Re: [PATCH v3 3/4] dt-bindings: mtd: atmel-nand: add legacy nand
+ controllers
 To: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, robh@kernel.org,
  krzk+dt@kernel.org, conor+dt@kernel.org, nicolas.ferre@microchip.com,
@@ -55,7 +55,7 @@ To: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20250602053507.25864-1-balamanikandan.gunasundar@microchip.com>
- <20250602053507.25864-5-balamanikandan.gunasundar@microchip.com>
+ <20250602053507.25864-4-balamanikandan.gunasundar@microchip.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -101,7 +101,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <20250602053507.25864-5-balamanikandan.gunasundar@microchip.com>
+In-Reply-To: <20250602053507.25864-4-balamanikandan.gunasundar@microchip.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250602_002402_852153_8A25C9B5 
+X-CRM114-Status: GOOD (  28.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,28 +122,239 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 02/06/2025 07:35, Balamanikandan Gunasundar wrote:
-> Add myself as maintainer for microchip nand controller driver
+> Add support for atmel legacy nand controllers. These bindings should not be
+
+No new support for legacy bindings. Both your commit msg and subject do
+not describe what you do here. I see you convert EXISTING bindings
+instead of adding support. But if you insist on adding, that would be
+NAKed because why would we want to accept new stuff which is already
+deprecated?
+
+> used with the new device trees.
 > 
 > Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
 > ---
->  MAINTAINERS | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index dd844ac8d910..53cc327b8985 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16064,9 +16064,10 @@ S:	Maintained
->  F:	drivers/mmc/host/atmel-mci.c
->  
->  MICROCHIP NAND DRIVER
-> +M:	Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
->  L:	linux-mtd@lists.infradead.org
-> -S:	Orphan
-> -F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
+>  .../devicetree/bindings/mtd/atmel-nand.txt    | 116 ------------
+>  .../devicetree/bindings/mtd/atmel-nand.yaml   | 167 ++++++++++++++++++
 
-Your patchset is not bisectable. This belongs to the patch removing the
-file.
+Filename matching compatible. Also look at your 4/4 patch and compare
+what is here and there.
+
+>  2 files changed, 167 insertions(+), 116 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-nand.yaml
+> 
+
+
+...
+
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.yaml b/Documentation/devicetree/bindings/mtd/atmel-nand.yaml
+> new file mode 100644
+> index 000000000000..a437d40a523f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.yaml
+> @@ -0,0 +1,167 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/atmel-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Atmel NAND flash controller
+> +
+> +maintainers:
+> +  - Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+> +
+> +description:
+> +  Atmel nand flash controller. These are legacy bindings and
+> +  deprecated. Find the latest in microchip,nand-controller.yaml
+> +
+
+Missing allOf/ref to nand-controller
+
+> +properties:
+> +  $nodename:
+> +    pattern: "^nand(@.*)?"
+
+Drop
+
+> +
+> +  compatible:
+> +    enum:
+> +      - atmel,at91rm9200-nand
+> +      - atmel,sama5d2-nand
+> +      - atmel,sama5d4-nand
+> +
+> +  reg:
+> +    description:
+> +      The localbus address and size used for the chip, and hardware ECC
+> +      controller if available. If the hardware ECC is PMECC, it should
+> +      contain address and size for PMECC and PMECC Error Location
+> +      controller. The PMECC lookup table address and size in ROM is
+> +      optional. If not specified, driver will build it in runtime.
+> +
+> +  nand-on-flash-bbt:
+> +    description:
+> +      enable on flash bbt option if not present false
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +
+> +  nand-ecc-mode:
+> +    description:
+> +      operation mode of the NAND ecc
+> +    enum:
+> +      [none, soft, hw, hw_syndrome, hw_oob_first, soft_bch]
+> +    default: soft
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +
+> +  nand-bus-width:
+> +    description:
+> +      nand bus width
+> +    enum:
+> +      [8, 16]
+> +    default: 8
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 1
+
+You have several redundant properties. What's more, you are basically
+re-definingn them. Drop and keep only constraints. Look at other
+bindings and follow how they are doing this.
+
+> +
+> +  gpios:
+> +    minItems: 2
+> +    items:
+> +      - description: Ready/Busy
+> +      - description: Chip Enable
+> +      - description: Optional Card detect GPIO; can be 0 if unused
+> +
+> +  atmel,nand-addr-offset:
+> +    description:
+> +      offset for the address latch.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 31
+> +
+> +  atmel,nand-cmd-offset:
+> +    description:
+> +      offset for the command latch.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 31
+> +
+> +  atmel,nand-has-dma:
+> +    description:
+> +      support dma transfer for nand read/write.
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +
+> +  atmel,has-pmecc:
+> +    description:
+> +      enable Programmable Multibit ECC hardware, capable of BCH encoding
+> +      and decoding, on devices where it is present.
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +
+> +  atmel,pmecc-cap:
+> +    description:
+> +      error correct capability for Programmable Multibit ECC Controller.
+> +    enum:
+> +      [2, 4, 8, 12, 24, 32]
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  atmel,pmecc-sector-size:
+> +    description:
+> +      sector size for ECC computation.
+> +    enum:
+> +      [512, 1024]
+> +    default: 512
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +
+
+Just one blank line
+
+> +  atmel,pmecc-lookup-table-offset:
+> +    description:
+> +      Two offsets of lookup table in ROM for different sector size. First
+> +      one is for sector size 512, the next is for sector size 1024. If not
+> +      specified, driver will build the table in runtime.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    default: 512
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - atmel,nand-addr-offset
+> +  - atmel,nand-cmd-offset
+> +  - "#address-cells"
+> +  - "#size-cells"
+
+Use consistent quotes, either ' or "
+
+> +
+> +unevaluatedProperties: false
+
+Without $ref this makes no sense, so it clearly points you to missing ref.
+
+> +
+> +examples:
+> +  - |
+> +    nand@40000000 {
+> +        compatible = "atmel,at91rm9200-nand";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+
+Follow DTS coding style.
+
+> +        reg = <0x40000000 0x10000000
+> +               0xffffe800 0x200>;
+
+These are two entries, not one.
+
+
+> +        atmel,nand-addr-offset = <21>;	/* ale */
+> +        atmel,nand-cmd-offset = <22>;	/* cle */
+> +        nand-on-flash-bbt;
+> +        nand-ecc-mode = "soft";
+> +        gpios = <&pioC 13 0	/* rdy */
+> +                 &pioC 14 0     /* nce */
+> +                 0		/* cd */
+
+All this is not following standard style. Two entries. Use proper
+defines for GPIO flags.
+
+> +                >;
+> +    };
+> +  - |
+> +    /* for PMECC supported chips */
+> +    nand@40000000 {
+> +        compatible = "atmel,at91rm9200-nand";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        reg = <0x40000000 0x10000000	/* bus addr & size */
+> +               0xffffe000 0x00000600	/* PMECC addr & size */
+> +               0xffffe600 0x00000200	/* PMECC ERRLOC addr & size */
+> +               0x00100000 0x00100000>;	/* ROM addr & size */
+
+Four entries, not one.
+
+> +
+> +        atmel,nand-addr-offset = <21>;	/* ale */
+> +        atmel,nand-cmd-offset = <22>;	/* cle */
+> +        nand-on-flash-bbt;
+> +        nand-ecc-mode = "hw";
+> +        atmel,has-pmecc;	/* enable PMECC */
+> +        atmel,pmecc-cap = <2>;
+> +        atmel,pmecc-sector-size = <512>;
+> +        atmel,pmecc-lookup-table-offset = <0x8000 0x10000>;
+> +        gpios = <&pioD 5 0	/* rdy */
+> +                 &pioD 4 0	/* nce */
+> +                 0		/* cd */
+> +                >;
+> +    };
 
 
 Best regards,
