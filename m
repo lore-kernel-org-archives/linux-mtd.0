@@ -4,89 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D4E9C5AE59
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Jun 2025 08:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E566AC5AE59
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Jun 2025 14:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RXqOmC8lIVsBhXyHNUd+n2pfdcRZboU7uc39KmUPMCg=; b=Uq5vpKr1Bf305N
-	G74qOCPPqK0Ajm16bEi9fqGzPZTUJD+aOzbew9iVMXQShpif453t27mIbkd8XQ76QoudqVJokOK68
-	vP1GX4kxLI12sDjslp0NZ/CP58C5m7CvVi9D3XnMNBS+RcBttaBcoCv9k5UiyiRA9jxkmKnZ12tKy
-	lgFKvNBdIUJXy/EKKXcgpGO54FDPt3VvBQv4yjdwIncBxDcOjKiAFZQcl36XKWhHOI3/ieqhG+exO
-	0t6fmXaRzYzLFYqQyrgwEihnWG9QjRmqdQ7Fogf1KChL0/4myIQ6I/prNzl5r8ibxUDlXS+pHKLMb
-	jof/oA0bspIAwCYG16Vg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bzOwVxAvD7D9iulEupKxTvZo9L3dhirUMCqyZoJiCbQ=; b=T1OUhm0B0DM9Zm
+	B6faRDCKcM/sXQrs3xNfwn2Zb56RPboGuGNQo8S0wxOwwO1H1UM2GGVuTEYnY8mHjfaIlGBfHgjlK
+	SupYW41nZNwCF945kt2T+GLgX4nMeqc5t8hyFlXJ1VqO6wq2GPFvPYrNTpMetjpHTzstHj7oMLfX3
+	vICHyBwZVvucIIDtEQmqZI8YBbaeTMJBmsLOzcSiisaajNoSaYfKHyUPmQekWAvb7ndEBoWDOdbNa
+	RovBpy/SmYfamPKhgVEie3AbsOycdCsmSAu7lCG6ZbIO+SeyMzlH7OJDGmRQ08MalWjctVR4vYHXx
+	9YZX/ejdZmxqq3hl1ciQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uN6OI-0000000F6YZ-0op1;
-	Thu, 05 Jun 2025 08:56:02 +0000
-Received: from mail-oa1-x32.google.com ([2001:4860:4864:20::32])
+	id 1uNBHF-0000000Fjh8-1eWy;
+	Thu, 05 Jun 2025 14:09:05 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uN6OE-0000000F6YD-0Izo
+	id 1uNAwQ-0000000FhFH-0iFx
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Jun 2025 08:55:59 +0000
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-2db2149ffceso671285fac.1
-        for <linux-mtd@lists.infradead.org>; Thu, 05 Jun 2025 01:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749113756; x=1749718556; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=o+lQs+l5O6HjY/GiUTefrdUeHH1FdWN2CtX0+R7lfgk=;
-        b=lMIpOarNMaGgDXdYjVM7r6t8mEijVKpPWmKW3ZSV2OPyHdVycktmPbBXg1RrrLYcZr
-         ASHYoBH4XDn1oYOvM0JyGo4Ebhrf2iId4/vkr+92MepBTSsGsFPSi04j5zaJ5wJyZC/m
-         0E5UQLIo3P9eVI9QG9qXOmG+vTg8poSYf1yCI1YYBqs6Xa49xLoYL1kMjjRnGskHstgb
-         nmMU4IOakqkSI3kn3ZNqwKeVJk2HGjb6sT0xW5RBZs+QqMjwg+F6/1h+k/pdKH8Lg0V9
-         OZZbgLPbP2Prw+jKZskCLD7Ci0ZbdMG90+gzzLVb4afd2tMPxjuzdgaAUUgPHkKZyKcJ
-         NoJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749113756; x=1749718556;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o+lQs+l5O6HjY/GiUTefrdUeHH1FdWN2CtX0+R7lfgk=;
-        b=nQ5DbElimWHxxZOVk0mQ0Ao7Xz4gh1bGisp+K3vgIdJmH75ZSTEe/1fv5DCIVqbQbj
-         /Q7GVVg8r9aJCwfkIfFNkEuCIjYZ8ZZ6PzBZZHxzWyCB0zCTjZLIiBXxAXf5fIQ/5OmO
-         Vo6GWw9szUyVirHHtU8CqU+5OlBnwhgbrIAb1OHx7bGAGu7zU5iJkCir4/rem1hFzKdc
-         dh+JeFNwNwgWG3LJqCl8j3jzAFjBInL2nsXAis0AZprIsvxdJAsq/zWCjAch/KW5eouE
-         VkpVrWQFELU61BkjujKcuHd1FLXvJgRf2HftCf5FBkP8cOG38xI4O2Od+Y84dyqIS5rN
-         e/fw==
-X-Gm-Message-State: AOJu0Yy9wL/tpKENnk7NBRCELTAOg9UqY9YdhNCf/QoVNq+FdU11cApD
-	8wqio/GKbPzSOJQJKfWUmVznIfJIHconSocs7Zsl/wVBWjsW86SfwQ+Wt6hXBw==
-X-Gm-Gg: ASbGncsUL7VEB5gKHWWm+6sAISx0cwdf5B0xNn1TSRbQ4meUpNn1Mt46FtfPX1fxIjZ
-	AgmUNsISFCpfuFhyxrkanqsFe5f/ckZ5rYAxWYYTHqQYI79+PpyVKgDwZsxQwHn0Izmnch6eMaH
-	MNqnlxFoX9UQcDL2aVSsmmpEX5PmXeELutT9/Y00AKmFZbpLGd4sLokNvYpzIoYrOxqHia4zGaN
-	KSCj8nyS3BGKk0dPkfxGGnD5T8Ikws3R8smYpDod/2G/tPolEEinf7ozXzDQhD4p+WInvR1ZYP9
-	m9Ntm1eIY6E+cCb2cDnPHcb/+VPz/AXwnpy01NUOvC2XRydzWrBWvqsD/SIO8lNjjJZnZ4jxL0/
-	hGqH6avCA3DJo9DPpzqj+iCqxWXsugiSOuQjQRStbpXEduy7nypUcQ20=
-X-Google-Smtp-Source: AGHT+IEeDh+UzhZwda7CuSDBKjM/ZF5oYWtS0YOOBby2/sUC1UscAhQRGFrqgu+EO/fWnUWA1ANYaA==
-X-Received: by 2002:a05:6a00:14d4:b0:742:a82c:d832 with SMTP id d2e1a72fcca58-7480b4650abmr9980656b3a.24.1749113745114;
-        Thu, 05 Jun 2025 01:55:45 -0700 (PDT)
-Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747afeabc6asm12843624b3a.53.2025.06.05.01.55.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jun 2025 01:55:44 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH] mtd: spi-nor: spansion: Fixup params->set_4byte_addr_mode for SEMPER
-Date: Thu,  5 Jun 2025 17:55:35 +0900
-Message-Id: <20250605085535.17963-1-Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.34.1
+	Thu, 05 Jun 2025 13:47:36 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id DC29249EA8;
+	Thu,  5 Jun 2025 13:47:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8273CC4CEE7;
+	Thu,  5 Jun 2025 13:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749131253;
+	bh=E9UAI5/sHcwgTTNJ9bwD0qg+BJ3oUIA5vyBcIyxvHu4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jmdri2IOjk0732jc3DNoUQJM1nSm0hqSQxNSfR7rTBu0IR80Ay9p7es5CDUc/rHIo
+	 /jsyD999SdJ6cTBNSVNtugt6XJAYCSsN6UePi/DwO3KhYURdgfh9rmmv+SEcLVsaKp
+	 LzZJFu9Q3enHClb52Mym9E2s9XFt4h0mtkep0UXbcj+0a0FqYgrob1C0C0aFbSCCVn
+	 xHhSFFw4EQLTEwk3wLJ7cbnVUH5gcHsc7kjexXR0wTiOiqApf4HpluPasKqX2d0biZ
+	 CiZse0KDGIT22zvfKGG02pv2SYoc87hMmIzk0M2HMHXnWUqeMysT2l8902Uw6X2S4l
+	 /YukcNQY7FqFg==
+Date: Thu, 5 Jun 2025 08:47:31 -0500
+From: Rob Herring <robh@kernel.org>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	krzk+dt@kernel.org, conor+dt@kernel.org,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, git@amd.com, amitrkcian2002@gmail.com
+Subject: Re: [PATCH v13 1/3] dt-bindings: mtd: Describe MTD partitions
+ concatenation
+Message-ID: <20250605134731.GA2439158-robh@kernel.org>
+References: <20250603194209.1341374-1-amit.kumar-mahapatra@amd.com>
+ <20250603194209.1341374-2-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20250603194209.1341374-2-amit.kumar-mahapatra@amd.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250605_015558_114845_91616FB3 
-X-CRM114-Status: GOOD (  11.18  )
+X-CRM114-CacheID: sfid-20250605_064734_249845_D4CA9FB5 
+X-CRM114-Status: GOOD (  23.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,83 +76,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+On Wed, Jun 04, 2025 at 01:12:07AM +0530, Amit Kumar Mahapatra wrote:
+> The AMD QSPI controller supports an advanced connection modes called
+> Stacked mode which allow the controller to treat two different flashes
+> as one storage.
+> 
+> In Stacked connection mode flashes share the same SPI bus, but different CS
+> line, controller driver asserts the CS of the flash to which it needs to
+> communicate. Stacked mode is a software abstraction rather than a
+> controller feature or capability. At any given time, the controller
+> communicates with one of the two connected flash devices, as determined by
+> the requested address and data length. If an operation starts on one flash
+> and ends on the other, the mtd layer needs to split it into two separate
+> operations and adjust the data length accordingly. For more information on
+> the modes please feel free to go through the controller flash interface
+> below [1].
+> 
+> To support stacked mode, the existing MTD concat driver has been extended
+> to be more generic, enabling multiple sets of MTD partitions to be
+> virtually concatenated, with each set forming a distinct logical MTD
+> device.
+> 
+> A new Device Tree property is introduced to facilitate this, containing
+> phandles of the partitions to be concatenated with the one where the
+> property is defined. This approach supports multiple sets of concatenated
+> partitions.
+> 
+> [1] https://docs.amd.com/r/en-US/am011-versal-acap-trm/QSPI-Flash-Device-Interface
+> 
+> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> ---
+>  .../bindings/mtd/partitions/partition.yaml     | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> index 80d0452a2a33..2ef4bde02cd9 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> @@ -57,6 +57,13 @@ properties:
+>        user space from
+>      type: boolean
+>  
+> +  part-concat-next:
+> +    description: List of phandles to MTD partitions that need be concatenated
+> +      with the current partition.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    minItems: 1
+> +    maxItems: 16
 
-Infineon SEMPER flash family does not support E9h opcode as Exit 4-byte
-mode (EX4B). Therefore, params->set_4byte_addr_mode is not determined by
-BFPT parse. Fixup it up by introducing vendor specific EX4B opcode (B8h)
-and function.
+Add:
 
-Fixes: c87c9b11c53ce ("mtd: spi-nor: spansion: Determine current address mode")
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
- drivers/mtd/spi-nor/spansion.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+       items:
+         maxItems: 1
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index bf08dbf5e742..9162b9297ce8 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -17,6 +17,7 @@
- 
- #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
- #define SPINOR_OP_CLPEF		0x82	/* Clear program/erase failure flags */
-+#define SPINOR_OP_CYPRESS_EX4B	0xB8	/* Exit 4-byte address mode */
- #define SPINOR_OP_CYPRESS_DIE_ERASE		0x61	/* Chip (die) erase */
- #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
- #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
-@@ -58,6 +59,13 @@
- 		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
- 		   SPI_MEM_OP_DATA_IN(1, buf, 0))
- 
-+#define CYPRESS_NOR_EN4B_EX4B_OP(enable)				\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(enable ? SPINOR_OP_EN4B :		\
-+					   SPINOR_OP_CYPRESS_EX4B, 0),	\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
- #define SPANSION_OP(opcode)						\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
- 		   SPI_MEM_OP_NO_ADDR,					\
-@@ -356,6 +364,20 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int cypress_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
-+	struct spi_mem_op op = CYPRESS_NOR_EN4B_EX4B_OP(enable);
-+
-+	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-+
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
-+
-+	return ret;
-+}
-+
- /**
-  * cypress_nor_determine_addr_mode_by_sr1() - Determine current address mode
-  *                                            (3 or 4-byte) by querying status
-@@ -424,6 +446,13 @@ static int cypress_nor_set_addr_mode_nbytes(struct spi_nor *nor)
- 	u8 addr_mode;
- 	int ret;
- 
-+	/*
-+	 * 4-byte address mode method is not determined by BFPT parse as SEMPER
-+	 * does not support EX4B(E9h). Assign device-specific method before
-+	 * spi_nor_set_4byte_addr_mode() is called.
-+	 */
-+	nor->params->set_4byte_addr_mode = cypress_nor_set_4byte_addr_mode;
-+
- 	/*
- 	 * Read SR1 by RDSR1 and RDAR(3- AND 4-byte addr). Use write enable
- 	 * that sets bit-1 in SR1.
--- 
-2.34.1
+Because phandle-array is really a matrix.
 
+> +
+>    align:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      minimum: 2
+> @@ -138,4 +145,15 @@ examples:
+>              reg = <0x200000 0x100000>;
+>              align = <0x4000>;
+>          };
+> +
+> +        part0: partition@400000 {
+> +            part-concat-next = <&part1>;
+> +            label = "part0_0";
+> +            reg = <0x400000 0x100000>;
+> +        };
+> +
+> +        part1: partition@800000 {
+> +            label = "part0_1";
+> +            reg = <0x800000 0x800000>;
+> +        };
+>      };
+> -- 
+> 2.34.1
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
