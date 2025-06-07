@@ -4,77 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C3B9C61CE7
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Jun 2025 14:40:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49924C61CE7
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Jun 2025 14:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0/70AsV7Opj11wxFOFQkVxil7t+ghCe1oglzXSVvtr0=; b=ddKTC6PW9cnNiD
-	mRS04kinTJbBA+J7m5/cZTS+zl5FsSeSHdc4FN3ESyWK4IdlGYam3MCBWh1B+fF/PQj7GraJnsPRa
-	JnmvRIZFXjnIoai02i01FpKPVAN3biIhSZDj8xjYdBNeroPIxIDMeYBDA/tGrN6vOfymfKUMJI14d
-	y+XwuaYAJRMfQIKtq1ilsW6f/5Jo9+Gh3lKzPDtXRYpwA6gdnYsa3dmxuPHu6Wc0OM3DulTSzsj8y
-	0nZUShogQfnJ7GOLd76WpTuqzPJM9tHMFM4EBon9ZfH11b9jsvdZbgme6HCTVT/YDm1arLBFWN6sX
-	YPDNmBJMlpruGbdQaILw==;
+	List-Owner; bh=HPgMflXsKhpBg0r+Yt+Qomg/XWKRlhaqUeLnwN9L++Q=; b=DtWbhnHA3Y32zF
+	xLR1vjesKR1NRA4MB9faaxLNxhhaaRyPT6GPvh5ICJ6R0GQKWfyNRNx2fbjDyln1gMhJKuzDr19lP
+	+pVEc6o43PKGjiuyxsWazWyXAzR8A6ALhsARnyoLECEhB61WthD3JEqFLU4qOm2Fj0I7+xjtVUtRC
+	F5gN3ZcZFfubIIdZvpNNehc0rBCzb0J/D30O2xAUbkbARkduDZvFtGQUrv1DPEIQQMYiy3Y/OexRL
+	ZAe+DsrJBJy3SvAsX7wzZQgmtuTpbY8pgo+3nO6B1ajZaDP1vteKoDCelnhNXqm6MFKPSEa97HSYZ
+	Z42j0Sxx7KjLlONG0pQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uNuiE-00000001lut-2gpO;
-	Sat, 07 Jun 2025 14:39:58 +0000
-Received: from mail-yw1-x1131.google.com ([2607:f8b0:4864:20::1131])
+	id 1uNuit-00000001m5J-3EDx;
+	Sat, 07 Jun 2025 14:40:39 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uNuiB-00000001luX-1enx
+	id 1uNuir-00000001m3c-2sqn
 	for linux-mtd@lists.infradead.org;
-	Sat, 07 Jun 2025 14:39:56 +0000
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-70a57a8ffc3so30727617b3.0
-        for <linux-mtd@lists.infradead.org>; Sat, 07 Jun 2025 07:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1749307194; x=1749911994; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lHqv39PDsJJNauBVvC0f9jO64Wr+HDbnLVQoK8iIq1E=;
-        b=hPBX411Pt+LTYO6bhZM2plqxtoDcg5pudMyoyneEBKAy8mRi2D7uzuwEOIQgw1qxd+
-         Nnr/XVqYinnsika6U0qfLo2oayBf2LrwrXJJS4I4NZn+qdhzVm9XllVLl8yKivbG16Ru
-         zneWRlzZ2P+ZtTr6y+uuxeSj9UrOJVRHPYLxM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749307194; x=1749911994;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lHqv39PDsJJNauBVvC0f9jO64Wr+HDbnLVQoK8iIq1E=;
-        b=MY/KgcneWccNgafRaKXCUvXWqdaa87z0A72GjMSACzK1YC81Th+0/tlccAgAcO7pXT
-         m9CHj8BMOCDq2lU1sjuDdjZuhbvkG4984VPLkyYD6L8WZCx3OOo62QbfuZjCDYVSB6EO
-         xtLDqXypM4aLxrQnLn459BIeSxCplSOkF4tQO3rHimCpnqzjOZ1mGZnbs5d3xkpOl4Ik
-         MZVxfNWpBARyz+UXo1W/njMsACUxzHWxihiRPktLckW8Sur4HiUo1cDmCe471IMSj9DU
-         5jkTRw1dfLMxDimfUfcpKL3uL4EY+2h2kt7PdWxOYEg2ahYCF1GnmUCwjT+aFx62CQz1
-         0n6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVgq81cGTDt1Noed8GQ7l511fgmn9zcFbkclnGziNX6EifqXJC4f+JILh8KzySnuqfmVyjx2Qb+76I=@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywep8IiDEbqVgQuejY9Lko5N7KTbuhb55s75drRTURtlXNNdOER
-	aw0d5v2naoJLCKSjUyXb+qrobQ//cQrWX31nwCOUg1qRInynOFZIFhIxaBxYJsLLC2bSpfMz7rh
-	t4GxuzLxtof1LauYAViGXWXSpYPTpw5FziWbJOScWgA==
-X-Gm-Gg: ASbGnctPiNZxfj4ABdKenaofxbc1Nl87nBi1nGp6eboKAUE78FLMETsOWDEe03lQ30Y
-	KrCPprvz4JPr+wCl31VGj8Hz0LR3aGTzCdGddKaTDFAcpUcHM4iJxUw91jwldKV26JW90Rg1gLA
-	Nr534i3RInsUBY2m5hSu3EexSff9q2Dt4mUV5a17E24QeEUTbmTbDKPSNUiGIb8SrXk8Ak8tQOi
-	smd0yln2Jfoh6c=
-X-Google-Smtp-Source: AGHT+IGXnLbdTQ7WY5qyr2MwKl55pntZEcHn/Q+8WNYqfpbKBhNFpRmGll0I/fU9W4buHfMSUs8ba72UGYvlnZAAI6Q=
-X-Received: by 2002:a05:690c:4982:b0:70a:192d:122 with SMTP id
- 00721157ae682-710f771089fmr102515197b3.30.1749307193885; Sat, 07 Jun 2025
- 07:39:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <1612150437.134340417.1749275991560.JavaMail.zimbra@nod.at>
-In-Reply-To: <1612150437.134340417.1749275991560.JavaMail.zimbra@nod.at>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 7 Jun 2025 07:39:43 -0700
-X-Gm-Features: AX0GCFsJZiLqhp1HZhoxRCSdZw1tdEdtzPFkAQHiKsxEvo8cWqyF1tEmjiU5N-8
-Message-ID: <CAADWXX-=CvpwaMJLiWMLXbxzN2Y62VrJ7mhwxUmQBVshdzViaw@mail.gmail.com>
+	Sat, 07 Jun 2025 14:40:38 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id E7B475C06A4;
+	Sat,  7 Jun 2025 14:38:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A7C7C4CEE4;
+	Sat,  7 Jun 2025 14:40:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749307235;
+	bh=yXUT3i0z6a8WQl96H5LHFhs7mbe0fZvd8f3Eywv3fcM=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=n0s5U68LRd5heC+3GkXG4iqV/Uahx4l4Pan+aqGayY7SKbSbisvIHtD0DRasEtzf1
+	 jyLF/wQeVj8ZSy8xmmScMNrg2BpywZh3h6sW3kCZGw5Pu9KBpsAwX9Hgj2FLjJNnuC
+	 Owmvjj+hy9/7b8+vcGzhxc6UUH9YtNP1hVq8N7sGjbf6WCRkB41rpApry1CiMebtQg
+	 +avHq1lYX2bmXvRq5mjH7EfUf9eN0TKl6k/vJCZSSTXa+MhymKBMDZGKpr6IkgEYbt
+	 N6M87KYHuNG8vmg006y+EckBxrS8f6TLEhxb6azVP58gAZDYIv1lD1cZxkpDm46jKq
+	 1Leh5G4aP4frA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0BD3806649;
+	Sat,  7 Jun 2025 14:41:07 +0000 (UTC)
 Subject: Re: [GIT PULL] JFFS2 and UBIFS fixes for v6.16-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1612150437.134340417.1749275991560.JavaMail.zimbra@nod.at>
+References: <1612150437.134340417.1749275991560.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <1612150437.134340417.1749275991560.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.16-rc1
+X-PR-Tracked-Commit-Id: 2b6d96503255a3ed676cd70f8368870c6d6a25c6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5b032cac622533631b8f9b7826498b7ce75001c6
+Message-Id: <174930726655.61778.51942806686421281.pr-tracker-bot@kernel.org>
+Date: Sat, 07 Jun 2025 14:41:06 +0000
 To: Richard Weinberger <richard@nod.at>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250607_073955_454669_C4F288A6 
-X-CRM114-Status: UNSURE (   9.75  )
+X-CRM114-CacheID: sfid-20250607_074037_764221_4573C84B 
+X-CRM114-Status: UNSURE (   4.54  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,27 +75,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBKdW4gNiwgMjAyNSBhdCAxMDo1OeKAr1BNIFJpY2hhcmQgV2VpbmJlcmdlciA8cmlj
-aGFyZEBub2QuYXQ+IHdyb3RlOgo+Cj4gVGhpcyBwdWxsIHJlcXVlc3QgY29udGFpbnMgdGhlIGZv
-bGxvd2luZyBmaXhlcyBmb3IgSkZGUzIgYW5kIFVCSUZTOgoKZ21haWwgaGF0ZXMgeW91IGFuZCB0
-aGlzIHdhcyBpbiBteSBzcGFtIGZvbGRlci4KCkkgb2J2aW91c2x5IGRvIGNoZWNrIG15IHNwYW0g
-Zm9sZGVyIHJlbGlnaW91c2x5IGFuZCBub3RpY2VkCmltbWVkaWF0ZWx5IC0gYnV0IHdoaWxlIGNo
-ZWNraW5nIHNwYW0gaXMgYWJvdXQgYXMgcmVsaWdpb3VzIGFzIEkgZXZlcgpnZXQsIHRoYXQncyBz
-dGlsbCBub3QgdmVyeSByZWxpZ2lvdXMgYXQgYWxsLgoKU28gd2hpbGUgSSBkbyB0ZW5kIHRvIG5v
-dGljZSBlbWFpbCB0aGF0IGdldHMgY2F1Z2h0IGFzIHNwYW0gYXMgcGFydCBvZgpteSBtb3JuaW5n
-IGNlcmVtb25pZXMsIEkgcmVhbGx5IGNhbid0IGd1YXJhbnRlZSBpdC4KCkluIGZhY3QsIG9mdGVu
-IG15IHNwYW0gb2JzZXJ2YW5jZSBpcyB2ZXJ5IGN1cnNvcnkgaW5kZWVkLgoKSXQncyBub3QgZW50
-aXJlbHkgb2J2aW91cyBfd2h5XyBnbWFpbCBoYXRlcyB5b3UuIFRoZXJlJ3Mgbm90aGluZwpvdmVy
-dGx5IHdyb25nIHdpdGggdGhlIGVtYWlsLCBhbmQgeW91IGhhdmUgcHJvcGVyIHNwZiByZWNvcmRz
-LiBCdXQgaWYKcG9zc2libGUsIHlvdSBtaWdodCB3YW50IHRvIGxvb2sgaW50byBhbHNvIGFkZGlu
-ZyBETUFSQyBmb3IgdGhlIG5vZC5hdApkb21haW4uCgpJdCBkb2VzIGxvb2sgbGlrZSBsaXRob3Bz
-LnNpZ21hLXN0YXIuYXQgKHdoaWNoIGlzIHdoYXQgeW91IHNlZW0gdG8gZ28KdGhyb3VnaCkgaXMg
-YmxhY2tsaXN0ZWQgYXQgczVoLm5ldCwgYnV0IEkgaGF2ZSBubyBpZGVhIGlmIGdtYWlsIGNhcmVz
-LgoKICAgICAgICAgICAgICBMaW51cwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The pull request you sent on Sat, 7 Jun 2025 07:59:51 +0200 (CEST):
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.16-rc1
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5b032cac622533631b8f9b7826498b7ce75001c6
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
