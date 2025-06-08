@@ -4,213 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72EEAC61CE8
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Jun 2025 07:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 061A0C5AD49
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Jun 2025 12:53:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oS+DRhmlA6ZwQHcHK2NXYa2mKOygyJKLUVqn+o2CqTE=; b=JhYZo13TcENTnW
-	2l8K5ZfmDJjbvDJMX1wL6FcHyGcFoKaIXCYL1/TP9hO01xt4EA5dX8pQ3APbIZhblUN1P5MT4XouX
-	tPq2LfMrkB5pYXXgJY8XNt40CdfPxtzOLc4b2dFPvSYDVZwft4ImFeu62YcgNfNi1O8y/Webh5z+P
-	iQX2oxJQbXIpNKhuJsAeCEmtKUxyaFoy9CSB3BRerdsMK5OB2d5iMv/O3QjKaM+2axrUOQvsf0LuF
-	rDLUSy3yyL1bi2f3rrAQiGa6UCo0hT0RiZu+Pu2YEOeJWG82/HP17g+ObejnZpR2TpNLaumQXj7+q
-	xvKs4ds1556HPGGRDj/w==;
+	List-Owner; bh=LXDxTKNfNNJYZOoz0PpXjmLfM5Xfa0t62u5SNyrdxfs=; b=FBQanHEuRPWDzu
+	ozL1FYmnp4auJWXe779CBNp47NSr1QtkGUG3eRH6uucpe1QRg4VnAyar8pVUIZVMGVkSYb0OCVlsY
+	YPiz4NI/6plycxqsUnZJ09+vxbCZIJeYUCYy9VMNNKJB+yMRXlbD52RUeqT8tcoII2UH8uWy8CdG5
+	suXhojvEVYhniIOlHOucJnpeC+pM47DU2rKMihb2fOIMwd60A76zEbJX4mVtuKwSL8cD7VGyYT/5T
+	SuKcOxXdtzLDiAdQL1OysZSzth1psS/Ihi/vk7jk3FMeEAuTqBHXPGWUYep7wvmXCbCXQ/omMKr1z
+	mWwG/4pmnFSXcDthCx2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uOA13-00000002PLV-02vm;
-	Sun, 08 Jun 2025 07:00:25 +0000
-Received: from mgamail.intel.com ([198.175.65.20])
+	id 1uOFWa-00000002c6S-1a5G;
+	Sun, 08 Jun 2025 12:53:20 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uOA0y-00000002PL2-0EJs
+	id 1uOFWW-00000002c64-1YRH
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Jun 2025 07:00:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749366020; x=1780902020;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=dqmc05PGJVnfF18/A+KT0QxopGCiH+XcsSh8ajRtEj0=;
-  b=XZezacaH7JMdYZTBk1Z7Yg6zhPTfrlVgjA6Gl4so/+wcwvSn77zVC4hs
-   WayGOAplUYWEIfVejNpNdDyQkRhK/jJE/fanL0jw04+yWcmdoJskXORmj
-   hwJ3en66+d37jxQfio7ltXM0QSpwGLIihu3/TigHd7N29sIGeWHrfW7Xx
-   5RqiwDbw1XFUw8Dm3Q/RRVHAeeXizFRWp1Cxlga4zVSMcyIih4jMSGpxX
-   ofd9uBKC2QOZKtS838I/7bbXLsUPyCgWcqN3TBOdrA9IAOOeK5cBYNJMA
-   NFxavVbhdTW5A2OqWKH0Xrbyri7WX2sQ2nICYielPQkzNsZDa6eazL4ky
-   Q==;
-X-CSE-ConnectionGUID: oX7i7WdYTduAdJ0VNP3WTw==
-X-CSE-MsgGUID: TY4LVC+WSOazcE+WBfKh0w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11457"; a="51173343"
-X-IronPort-AV: E=Sophos;i="6.16,220,1744095600"; 
-   d="scan'208";a="51173343"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2025 00:00:14 -0700
-X-CSE-ConnectionGUID: LznLH+VvSuuHb28mimmklQ==
-X-CSE-MsgGUID: va5Zdm75SGW6NMLKTlccPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,220,1744095600"; 
-   d="scan'208";a="169391009"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2025 00:00:14 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Sun, 8 Jun 2025 00:00:13 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25 via Frontend Transport; Sun, 8 Jun 2025 00:00:13 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (40.107.95.60) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.55; Sun, 8 Jun 2025 00:00:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Lx2PIOFcqPXNaj8rrggYDH6xxFTKwls/HIuo9WpJCvFSmhuaeQ3jjZv4f6J15X/+CVG4I5I1/RpjDbe2wil5s28TnJSiebTE2yZR01gJuHgDUOkqBQNFkcXO5YmR9FMwUcuFKzcBOfIHbWfiH47h4+0a16S76afOzT+D55GnNt/Ra0Dq1PKxEXAK3MzlwM2UsUDr+EhJy22742EiJnF8cBThvs9iBll0CTz0PCb3t/HfECGrpMSj8Tvl2GE4D4Kb7qNPcPIU8cKtP9XFqwvWfkKDy8xyhOQp1dek3tpttRtC+IocYn3bnH6Bwv9e1erkxyiwYaRkR4ALPddhwSrkWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dqmc05PGJVnfF18/A+KT0QxopGCiH+XcsSh8ajRtEj0=;
- b=IiV4aCJSEvV93XF6LnG98+zUuspQIGwLxuybm0FIjHb/dyCarN4yNI2wRJ3qwcZ5+217pQ6wChJLJLgy4ugCL13qNA7cLCrn74m0aa05opM6ihN0jjN0my5aiqNN4Q7oHiE+ljs9GuiVJPxw1bStVGOpGrb0191/yGdA7ze5eZV7ka4MoNZj+TI8w8QXQztg3U77dl91rTYikdjEU4LkIx0kN2Xtm3voZVbV72jqDNdz9+poAdcYk96OM043GZlXJv6ROfORm1Gm2Zr22skuPoBboGRxVxzTYQ/vjT+UAj/ZgXPEmw0s1TTWGNv6YAHgXIBSyhms37vvUbWDfTqmbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
- by MW6PR11MB8392.namprd11.prod.outlook.com (2603:10b6:303:23a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8813.26; Sun, 8 Jun
- 2025 07:00:11 +0000
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778]) by CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778%3]) with mapi id 15.20.8813.020; Sun, 8 Jun 2025
- 07:00:10 +0000
-From: "Usyskin, Alexander" <alexander.usyskin@intel.com>
+	Sun, 08 Jun 2025 12:53:17 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 44E635C53EA;
+	Sun,  8 Jun 2025 12:50:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96240C4CEEE;
+	Sun,  8 Jun 2025 12:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749387194;
+	bh=WpC1dLFp/Wi7G/2VKn3FpcBmL1fZHH1R+LC1nGQz4XI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=QEOYUUuk+I3G6jM3pO9RbfGR+898/w4Y2pN+fZUPsDAF7cMV4QbNu3agrdZVs8ksy
+	 rzcRdp9kjzmyg/fZXivBA6+weCSANn1fjyWlZJX4B3rWpTHwH//u0OF9M/siuuJAJs
+	 apiab57LHQQknxKuae3NVM5pQaBefaJTxGKuqfkV76ZEFGeC5csCU6tF689OBRE9Xl
+	 GjeeCbFie3xoWRhcsunj9slesLHvP9ASIvCdd2CmDv4iQmdefAjo05zc0jbtmyJqKV
+	 IqajMtvPVrw/VFrLy97AMTmV9KvBiuoK767UXHL8Q2B8s75iovH2h8azzpZk0wgo01
+	 sPzPSBWhz3ahw==
+From: Pratyush Yadav <pratyush@kernel.org>
 To: Guenter Roeck <linux@roeck-us.net>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, "De Marchi, Lucas"
-	<lucas.demarchi@intel.com>, =?utf-8?B?VGhvbWFzIEhlbGxzdHLDtm0=?=
-	<thomas.hellstrom@linux.intel.com>, "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
-	<airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jani Nikula
-	<jani.nikula@linux.intel.com>, Joonas Lahtinen
-	<joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>,
-	"Poosa, Karthik" <karthik.poosa@intel.com>, "Abliyev, Reuven"
-	<reuven.abliyev@intel.com>, "Weil, Oren jer" <oren.jer.weil@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 01/11] mtd: core: always create master device
-Thread-Topic: [PATCH v6 01/11] mtd: core: always create master device
-Thread-Index: AQHbi35N9ptLZMK+/0+KHmcJoUKk0bP5FNKAgABXSdA=
-Date: Sun, 8 Jun 2025 07:00:10 +0000
-Message-ID: <CY5PR11MB63666AE267B9F1609213D93CED68A@CY5PR11MB6366.namprd11.prod.outlook.com>
-References: <20250302140921.504304-1-alexander.usyskin@intel.com>
- <20250302140921.504304-2-alexander.usyskin@intel.com>
- <9dfb2954-fc3e-464c-a4fd-8c1a4dffa327@roeck-us.net>
-In-Reply-To: <9dfb2954-fc3e-464c-a4fd-8c1a4dffa327@roeck-us.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY5PR11MB6366:EE_|MW6PR11MB8392:EE_
-x-ms-office365-filtering-correlation-id: 311aac21-f871-4ad6-814f-08dda65a1c57
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016|38070700018;
-x-microsoft-antispam-message-info: =?utf-8?B?bGRRNWNacmswZ09rVVFqdStYQ2lsRUxJQy9KRW1WSTl2M2pla2ZJK1hGNU1B?=
- =?utf-8?B?bEZWdXN1UDNnck51VzdzWXpoazU1NnMrbEZqR3c4NnJrcXFKTkNzRDBpYUV2?=
- =?utf-8?B?RkszNU9SYy95cWtuRVk2WXFTSndFNWtQcktPSWRZeUNISFdVZWFGMVd4VGNv?=
- =?utf-8?B?WEQzRHV1THVjZld4U1VlaXh3WGJMYUkxNk5CbWVUTi94SlRrbUZDd3pNUE4y?=
- =?utf-8?B?V0FUd3Q0bmd0REN4NFpEbDhWV1JIMkQ3bEFPUi9tZGoyVEZSdnZkc2MwM2Zw?=
- =?utf-8?B?TERPam5sUTA5N3lpdEZ6TUpEOW9mWm45OUtMZ3FLNnlRTWFla3FCMXprWGg2?=
- =?utf-8?B?Wk8vbEtKNUcyTzZaWHlzcUZhK0FUQjJibEJsUm1VVFUwR1E0Qjk1RE91bnJw?=
- =?utf-8?B?emhzaEVGNFNTSGZWVUF4N2RDS0NMNVpkbjR5YmFLaEkyQklBQ2NEcGJNZ1Bj?=
- =?utf-8?B?U0ZkZWlubStZSnEzVlZ0Q1JQdHBYMHB6bzBVdC9nNHZHZTA3N21XekpIZE1o?=
- =?utf-8?B?WUtOQWpTRXRNZmE0ZHh0QjNndVM0aThhb3c0enJONjBwcnJKQmNGdHdKc2Ez?=
- =?utf-8?B?TGR0NklINnhLL2hJSi9DbWpwQ3pzVG9IZVpXKzdWK2pTKy9wYmYwUFBiZEtx?=
- =?utf-8?B?ZDdlVTBoMkRRblFjTksrQUcwd01QZnU0Y2lEZ1QxakNNV3FlR0xQem1EaXdY?=
- =?utf-8?B?K0xlTHJrRVRyODU1dlJha0tMZFBvbmswalRMRUR4dDdZaGZYQkQwMGxYeG5I?=
- =?utf-8?B?Q1BvRTdhQWNnRk8yQmNIZEZpalBUWUJuQ1pIMGw1djg5SytEK000NFZ5NmVM?=
- =?utf-8?B?UENLRkhLcHo4dHM4QnRJN3hEbDFjV1VHWWFLK1pRS0pFUER6K1R1RXA4M2Qw?=
- =?utf-8?B?eVVoUjVHRDZZcjZ4SHBrd2hsR05VT2RkTVNRTVR2VklKSzk2d3pIR1VuVUR3?=
- =?utf-8?B?WlpFempXVlhvOHhzS1B4OTJ4bEZ4Wm95dWNJN2hjQjhuQ0ZEK3duUHJLdkwr?=
- =?utf-8?B?eEpsU3VtSHZwNnZqYkdJUFo2SXprNnRaWkFlWFFaeUEwTmxRQWhrOUJreEx4?=
- =?utf-8?B?MGhPT1NSTDM2VzFhQWZQODZrRDQ4WWhqdWVLdjBSTm9hV0g1a3BhNjUxZE5N?=
- =?utf-8?B?UmV5b0YvNDVIbWVIbm9wYThpS1lYb2NSL0ZvSnhlMm9iNFdDV0NPWUxSdFZR?=
- =?utf-8?B?dU12bEVCQ1QzaEJhUEFaTVl6T2NaeGZtMUpDVlNyelNSM1A0eGhXcXI0dWs5?=
- =?utf-8?B?S1FSdlN1bjRGS0p1dFIwWStEaUo3RHI4THMrQnU3ci9uenVtSEtzMWJUeVlm?=
- =?utf-8?B?bTA3aHBrS0VoVW5OY203VlBxbVY5ZVpsZ2ZPTm9QY3BsV3FmQTZ0SGxkUXp2?=
- =?utf-8?B?VzJSS2JrUWhwbVB0WXFoRHdHWEJkNmxRUTFLYU1FaWg2bisvYjhDNzlYbFli?=
- =?utf-8?B?MGdmcXZ4RkZkKzU0QlJDUWlySDlwTjNKaTY5eHo0ZUFUbkRaMjNmZTIwZWdo?=
- =?utf-8?B?RjVOTzhiZWxqR0Z3cWp2N0JnNUF0TW5xeDVVUCsrRGdEMks2d05nc2J4M01t?=
- =?utf-8?B?Z0F4a25NcFc5RmdpTTFVQXRJblVyKzVvM1BxTEt3ckhJaThOZGx2aHp6YkNJ?=
- =?utf-8?B?RnEzZUd6Y2U2UnR3NTBoYWMyWjduazFFNEhZajBMc3FqbVRlQUEwd25EdG03?=
- =?utf-8?B?QU9Zc2JRemsxbG9QTC9uVXI4ejIwcklOcUpMOTdNVm5wYkFKbzkwT2lhK0dp?=
- =?utf-8?B?Y3ovR2RIeXZoTVlWUXcwU3haVlltTGdETFlaZE9vcGtPZXNrd3VlWHZqZnMv?=
- =?utf-8?B?dFVIV3kvMzNvREl4Myt0azBNMU9SVGZteVV5SHBTTFNGUXF0dUwrZHJFVUZ0?=
- =?utf-8?B?K1NGMExGSVZKYk95dW5panB1L2IzUHBaVHZkbG1yK0JvdlZrMnU5UTU2YXIr?=
- =?utf-8?B?ek8razNBZFl0OXd6OEI0STNGZjNmTGJaRlVGNlhZWER1dzgrSkJ2eTZsdUlP?=
- =?utf-8?Q?hnYPDFAzayqXimxShAPvAo4B7Jd6MI=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MVljOWdqQzFNazQ5YjBmZkIzNmxaRDAxRG5RSVVSbUZzcit1WElTc1c4QzV2?=
- =?utf-8?B?N2FHWE9YY1hpWHJqcFdtMGpBK2psanZOa0VDSTZFWU5QbFpFQ2w3L2luM3c2?=
- =?utf-8?B?UlN5MkY2QWU3cXVabWJZTUZEZzV1RHhPZ1N4ZTgwNWJVK3luMC91OTlLVE1E?=
- =?utf-8?B?eGF4U2RhdU1jL3lSN3ZLZGZFOEJER2FSWmVyRjZEVkVST0p5dTZxOGthR0U2?=
- =?utf-8?B?alpyTWhib2RqWXZRL3BwcStmQUF0WTcrUmdhdVE1SXJKbDZvbEhuWXJ5cHBa?=
- =?utf-8?B?TmYzMjltYklaZEI5bVoyU2tCRmFuMjBReVprcnZxNGE5b2NRa3VscDBoYWRR?=
- =?utf-8?B?MG5vbTkrV0V6anNoQjhjQXNveSsxM3lYT0ZFMXQzSWppbUEraEt5cmNxRnM3?=
- =?utf-8?B?Qm05bjVTV0dWOEtRQ1FsYkYrS2t0bHMydm5LcUNGN3l2ZjlodEN6NmFnakgw?=
- =?utf-8?B?aEJrZU42RVVmcHRsd3gzTG5zOWFJU2VwNTZUMGp6a1VTaVZJUDh3VjVnT21h?=
- =?utf-8?B?LzF2bkliSXRrMG1DYlVhUWdWaytxZXQxQUJQV2hPRDVNbHVwM0FSeVpHTGxl?=
- =?utf-8?B?Wk1ST280ckFxSXdNU3NiMERQMkF4c1l6ZjNlUkx3TmVzNzNyZGlMdk4xRGUz?=
- =?utf-8?B?ZGtldGcvajJuQWJVeTNKeUsyUWNBdTlRdkQxZE5aYzdXY09tY1RYTzZwMFN2?=
- =?utf-8?B?RTdCZjZqM0tzaWtQYXZnSUZ2cXRrUjhFRUNIdDV1TmNLZlVxMC9JT2NCWFVQ?=
- =?utf-8?B?UWZKeEdiY1hQL2w0WXEzdG15TjZ4MVNmZmdhbVFFNkJwVWxVdEZUMmQwM0RW?=
- =?utf-8?B?ejBjNU5mYVlzeFlsL0pNQ3FuZFhKMnhYTFlOWGFtdVI1akxrTmFXeUVoUDlX?=
- =?utf-8?B?cUFtSDAvUFlDaWEzNTdUNVprU3MzSkM5NzNLNWIySGwvdFRyVXJ2dHdSd2gw?=
- =?utf-8?B?VzJPeFliY29YN3pMK2o5cEFNSXkzd3BLVXdFc2srOEJTMm56aHA1dmFZZEcy?=
- =?utf-8?B?b3lVdThsWklxckR4ZFA0RGdBQ0c0eWpicGMrNkg3S2QrcHRvU3dPVEdtbFdv?=
- =?utf-8?B?cWRZYnhVZFJNWERTYjBXRUlwdEpDRVJ2dCsxZ0djcEM3YVlNcktnNldYZllm?=
- =?utf-8?B?ZUZaRERBS0s3bkZjeVBzVkFybkIzM0VuZm9LeWdHT0NxZEpGYUJTRUVGRjVN?=
- =?utf-8?B?cytPSjgxbi9MbTduTlg3TTl6TDBCRGxJdTk5MDB6cDVIUWZ2R3BES2Zta3lK?=
- =?utf-8?B?cFVtd1kweEpWYUtHWVVVN0NnRUlPTXdrQzh0N255N2Y1TXNOTkFNY0J4TDhT?=
- =?utf-8?B?aW5jaEo1RUJrcUpiZG8rRkZRNFJEUG9RVHc2YUE2VlNLRTA3ckQxK0RaUUV2?=
- =?utf-8?B?dDhFWTNkT2lCZmVGZnRSZlk4WTFSb1JoVjZQS0d5eGRSSHFTUFY4Ni8rY1VF?=
- =?utf-8?B?anFmeTMzMEhWcXJ6cDFmUHM3QVczNk9TVkJMYXVEb2hvNUhjUnBpajN6SWl6?=
- =?utf-8?B?aytEMG5ZcUdZcFZYZDREUW5ySkVPOW5JOGJpU1NjcXVKL2VDc1VmYlF2YVBI?=
- =?utf-8?B?ckRDcVI0RWhkMGFZaW5xemQzdVUwSVErUGxSdEh2ZnVoUEZld283anlUQzNW?=
- =?utf-8?B?TlZodFRYVTNFUHBEZmcxbnp1cmZKRUxtZ3NkRFNxdDJBN1pFRkxsVW8xMGhq?=
- =?utf-8?B?Qm9kajlGczN0UDExWHZpZVdHN2RlRGg3UDk0KzdWczNacTNZS2pSYzhTU01O?=
- =?utf-8?B?UU1MY1d4N05vZERZNVMwT1lleUhMdU1Wc0xzNHdqTkZ1MkRTNTlUS1cxanBR?=
- =?utf-8?B?LzdEamsvQ3E2eEk3UjQ3UCtDRkVCUmkrZ0ZORm43Y095RzF6OVd4ODE4T3J0?=
- =?utf-8?B?K05qSlJlNEg2OGk2T1FDaDVqUFJYYkYySTFDeVBZbmFnQjI2cnMzSG5rYmFn?=
- =?utf-8?B?S2hzN0xxQXdaRWlPV2Z4TFgycUVOTzloVXovSDl3WlcvbWxQejh5L1FuenNl?=
- =?utf-8?B?YTA5QlBkeVJUUlo0MDJWVmpMUDlXejlCOGVJbVZFeVR0cWJzaWRSZHRrYmlE?=
- =?utf-8?B?ZGNZYlRwaUtVRXQ3NlplcC9aYXB2YldqMFNCeUVGdk5WUHM1NUpaZ2l3dmZC?=
- =?utf-8?B?NTlSYlhMTnhuSFp5WFF3SkFVbUNaU1l1NGR2NkFCZFM0aW55TDUyR0RFeGV5?=
- =?utf-8?B?UFE9PQ==?=
+Cc: Cheng Ming Lin <linchengming884@gmail.com>,  tudor.ambarus@linaro.org,
+  pratyush@kernel.org,  mwalle@kernel.org,  miquel.raynal@bootlin.com,
+  richard@nod.at,  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  alvinzhou@mxic.com.tw,  leoyu@mxic.com.tw,
+  Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH v2 1/3] mtd: spi-nor: macronix: Drop the redundant flash
+ info fields
+In-Reply-To: <d98f6eee-d5f7-43b7-bbc8-d6e7e274723a@roeck-us.net>
+References: <20250407075400.1113177-1-linchengming884@gmail.com>
+	<20250407075400.1113177-2-linchengming884@gmail.com>
+	<d98f6eee-d5f7-43b7-bbc8-d6e7e274723a@roeck-us.net>
+Date: Sun, 08 Jun 2025 14:53:11 +0200
+Message-ID: <mafs05xh6pf7s.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 311aac21-f871-4ad6-814f-08dda65a1c57
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2025 07:00:10.8827
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Q2Zs0W9HuRgRoirgfYrPIdoGQPAgXzLNFwzPrc7fGu8C0O2GflS5kx3k/IjugjOboMOkT2Ri9Q27L9BV0UP64Vib/bhs7b8C57ldFa2kN+s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR11MB8392
-X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250608_000020_196089_956C6C82 
-X-CRM114-Status: GOOD (  20.59  )
+X-CRM114-CacheID: sfid-20250608_055316_457360_CAB19B5F 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -227,42 +78,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Sat, Jun 07 2025, Guenter Roeck wrote:
 
-> Subject: Re: [PATCH v6 01/11] mtd: core: always create master device
-> 
 > Hi,
-> 
-> On Sun, Mar 02, 2025 at 04:09:11PM +0200, Alexander Usyskin wrote:
-> > Create master device without partition when
-> > CONFIG_MTD_PARTITIONED_MASTER flag is unset.
-> >
-> > This streamlines device tree and allows to anchor
-> > runtime power management on master device in all cases.
-> >
-> > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> 
-> Several of my qemu boot tests fail to boot from mtd devices with this patch
-> in the mainline kernel. Reverting it fixes the problem. As far as I can
-> see this affects configurations with CONFIG_MTD_PARTITIONED_MASTER=y
-> when
-> trying to boot from an mtd partition other than mtdblock0, with the
-> mtd partition data in devicetree (.../aspeed/openbmc-flash-layout.dtsi).
-> Is there a guidance describing the changed behavior, by any chance,
-> and how the boot command line now needs to look like when using one of
-> the flash partitions as root file system ?
-> 
-> Thanks,
-> Guenter
+>
+> On Mon, Apr 07, 2025 at 03:53:58PM +0800, Cheng Ming Lin wrote:
+>> From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+>> 
+>> Many flash devices share the same ID but have different part numbers.
+>> To avoid confusion, the part number field is removed.
+>> 
+>> Additionally, since SFDP already provides size information and
+>> functionality covered by no_sfdp_flags, these fields are also removed.
+>> 
+>> Furthermore, when 4-byte address instruction table is available,
+>> the SPI_NOR_4B_OPCODES flag is no longer needed and is removed.
+>> 
+>> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+>> Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>
+> With this patch in place, some of my qemu tests no longer recognize the
+> flash chips (MX25L25635E/F). Do you have a suggestion on how to handle
+> this other than avoiding Macronix flash chips when working with qemu ?
 
-I've tried to make is as transparent as possible for the existing users.
-Only change is that now every partition has master that is not partitioned.
-Is the CONFIG_MTD_PARTITIONED_MASTER=n fixed the problem for you?
+Could you share some logs? Does the flash fail to detect, or does the
+SFDP-based probing fail? Since this is qemu, it would be even better if
+you can share a setup/reproduction guide. I have been meaning to set up
+qemu for SPI NOR testing for some time now, but never got around to
+figuring it out.
 
-- - 
-Thanks,
-Sasha
-
-
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
