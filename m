@@ -4,101 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02968C5AD49
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Jun 2025 00:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E47C3C5AD49
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Jun 2025 01:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ezfz3/wqX7ljgnu1/gJ0iciggHLxouw+mamz1OEjij0=; b=Bs8JzQL5hrVa8h
-	RhQlY4xNrEO8hTICJO0lUip2usGl/YaX198QN9SgfFMr1I+2I4UD3WgaWghcmZfxXix+X/TOcurjQ
-	FD56uO+lpQFsmnKU/cvOOtb83KC8/KUrJjB7q3fGBOyaZN2KMF3k7WF2XJ8+kepGLCHPSKR7/mYK2
-	IlvnSk6DE2+gtZuawucOokMGoHiliSB1F1JU+hgd/rFLmd2EvU6ulwYlYrSRFDpZPRibKaCODoWJ6
-	204eac72BukMScNF5DsAMnM3W+9lTUIYgpGKGeAKIy9feUr67qEjN0cfJHKNejRWo64KOhjyVjOau
-	V65JX9ZZIayK05clATTw==;
+	List-Owner; bh=FoSssJlkbXZ9fIn5MekbeGQPyJ4SFuxTKsw2hydyyF0=; b=t8aTpJ5y7wqh9i
+	zibZuS/VK/Cn6QSF5MeaEmaCuAC45FRj9jqIbGpDK04ARIjF0OHrniUh60o4COOL6hpt7X0hdpdPu
+	EK06zUAVTyPp/hfVaZnAQFlOA0CwZYgUKWqKZKdGISBJomPsnhh0DXsC8CS7boxh9FvxsefMOpsRk
+	Lyl9ad4gy16t/yjpZM7J8H+5/JfKc35RbJ2sOCZ4BmHcncEUUfinGLmv2ypd7T/s/4GZZXBfeo17r
+	v+16W2t+W+cm9nklBtOlDCpl+jObGI7zh9X1pKz8JrqPwVUezm6UNbGKv3Ma8RuUlQ8EMu2I/uJRC
+	sAo/ay+CycjVnvcBukBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uOQrY-00000003DAp-0yti;
-	Mon, 09 Jun 2025 00:59:44 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1uOR4d-00000003E1V-2yk0;
+	Mon, 09 Jun 2025 01:13:15 +0000
+Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uOQrV-00000003DAV-16gF
+	id 1uOR4b-00000003E18-3NtR
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Jun 2025 00:59:42 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2360ff7ac1bso11570525ad.3
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Jun 2025 17:59:41 -0700 (PDT)
+	Mon, 09 Jun 2025 01:13:14 +0000
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-73972a54919so3138452b3a.3
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Jun 2025 18:13:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749430780; x=1750035580; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1749431593; x=1750036393; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=1UZ3G3hP2PMByn8gAasj2ugyuBhdWDYhYy8rSg1DMCk=;
-        b=gBHo9k3pH2jbRYNAbOG+8H//ttoF+6hLDghdIdVUQiXEODDS7gFb6wS/2L8Djb3zGt
-         PNSQPl8542rESg7q6vc0qGuo/b0C+eAyJaoIjWywuFhwopqKauL62ta9BrLZ9NZzukYM
-         7gqSYKJFH1PyUYSInj6x1/QjH5KVfMMEbXzE8v0VgLiY/kRhZ0DjdlwtNCJ+ASQz9azk
-         1Lso9+Ntr8jAalQTEdFMcIg5lZaxfS4DocfGHrUQuj8vTlvaxokv+KbAeK/zDi5l/Rkx
-         mtjnrnmvs4rUp5WaVzMO+/iljoAZtaDeUqzXJrXqsKQmUwiUgUvPQ2lSfxF5mlCzkukm
-         DZiA==
+        bh=Zzv2Z32HyhBbevN9sWOTHP2DeH7U5lczNhzolLKy40k=;
+        b=Q6MIYAjdIAVKCshSMz9/GPttuleqyLrpmkcrC2qpBzz93d42mktjHzUf21V+XHv7D+
+         ULURSRODuMvfoNmZo7T/CO+dPEd+AFnVE9RbNgg1chkF7B0N7Uta2tKYm1kJNgw5O5wd
+         7pgWZKZbGsP1KuRRV9UwXznTllGukAaPVX0XYTftAlMVHQGYg7v7rXQZzeTyv/aIg5MK
+         RLcY07ntdP9ISUNrg1Hr5XJZkoXufk6Ya32IrrAcZeESpt+tlQzSOCwJM6IWlxV6Plhs
+         ne6mHWR3tqDN45u1uCYaTEY+ivnth7VXVuEVOsXHQHqAsBa/iGd7QBnB0FhXHa1bBcqQ
+         WNFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749430780; x=1750035580;
+        d=1e100.net; s=20230601; t=1749431593; x=1750036393;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1UZ3G3hP2PMByn8gAasj2ugyuBhdWDYhYy8rSg1DMCk=;
-        b=cvOHftqJZuKfRx2QbPFXjZkSJA2BHbFkHoI37AD95GhXukKHq3U/sfDB2hIFkJjXGK
-         +l7Wn51t2LUkY/PFhM4G/BTkgJYBxpwlUGkdSUJh5UXf0oPBQ6tPBbpKq2oxYueY1myK
-         REyBVawgjclSdg2pa2822J+WuhPI4QX+thWlMuE+3hJHRjB5r5jrWT4oxIOp45FGhGSK
-         bUiXr3Wzs7xLsH2LRVJMbDpG4FB/tL+8UEflMyBXZkpUUit8wKXLLT3tDfQYsFtwdKbd
-         UqWmELLvbAGBEyh3/a/ZauJvwfoJ8MZMM3k4hfTusTfHixdSR9kNF0G+hKjpBoEQdRRi
-         1Q8w==
-X-Forwarded-Encrypted: i=1; AJvYcCXKqvTyXefi/neDTAfmdUGDhCaUIW8kkOOuTPjC4Ed3WUS1wokr8mUKS8r7i77tP0uPlmbuRlqQz6o=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyidxslxMxRlNTfxamInoO7imkAg8Z8XbpLPP2FD5VxLKSTvZq6
-	t/Ko38zjfkVk66DriuiwDEKhjgEs2uFVzc4Q678PZ61++lOqNTt73lQK
-X-Gm-Gg: ASbGncur26O/mZXp1FqVfBHPhedDjoyfE0P/oIsRH3YJez1y8LLQ8eR/5GoAOYGObK+
-	aLTRwR/Qhk3m84pZzBHKRnTEhCaCbIwCmL00pRO+lYHYNaExvksshxqXj2yIq3wKs6rfcZSNi6O
-	CVXvLzVrVLWD4x5UAodcYSO0gx2cNDLhlB3XKljkWlJgm5ICCOyFi6x7srIoIJZAh/IGo3W9cTv
-	kFtbndZTHYSn1SfHZyXb7muhApKuIGSOTvLLkNEwOwlo1EIe6jdAZBBO0I6XJJRViXlw3K8f2Wm
-	9tUE8jWXUwBQK4zkDJNCuGAFgvB4TQ4DfzA84hczooFf4dessfte/g1Bvp9Zl7tkeXM78rctzOh
-	ZHAVGNGmhUdcfvwnMt+nag087/8KoZeHZnnzJnoXFTwuePw==
-X-Google-Smtp-Source: AGHT+IFx7Bw//bf81ZFuNLNFxpt0Z3XFm1C4VkqMkhOt4fhQ54pvjlNDTtmhS80ppAjEon3na2MsaA==
-X-Received: by 2002:a17:902:e84b:b0:234:cf24:3be8 with SMTP id d9443c01a7336-23601d172bbmr161947955ad.28.1749430780376;
-        Sun, 08 Jun 2025 17:59:40 -0700 (PDT)
+        bh=Zzv2Z32HyhBbevN9sWOTHP2DeH7U5lczNhzolLKy40k=;
+        b=kt9AEiOiq+UBo9PXbo5MFtvR2hUkwWKVg1C4tS1TMgM2eoodvr6WEQi+/GBfVNzoZ9
+         VaD6neE+8AJYAwYljyOl26Mbfa+78QcHiMTwQE4KTrp2VfuEbGVE8Ed1JhfpIKzdPTyL
+         zXvOcz3uZ2h9vtwsdLCq3oeJVy1y6GOUWZyEdJwSiIQ2pjpLonM8anAJnBky9HeU+lAe
+         peAL872Fmd9Iiw5k/ulcODEDkjErIE8UUtPcx8F9GhLI98LbxUNLyX7sB/ICnCVEK1zj
+         CvHzdBAbmUXaFygb18HkdExblluqPWfVetK8xSi7sBVEiJqkZ6SxL3T3qRhv+xoIHxaw
+         6QQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjwRLNzxPc/pDqGP2tRkEWE9e2RijJPwtXDaTRa9UuHvypkwWoENIh9GFo25iw5i4WggjHoIMLrhQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxLtdkINXQWElFo+0HhtjcSQqhAI2glwkIuQK18MHU7LYNPNa5G
+	G/kaTljq2O+9L+8hMBIZrmrfaZvY4PVEB4+N9afhuE2NOavXRBe2anVJ
+X-Gm-Gg: ASbGnctnHosgyNj8vmEDw/6wgpeHBbJ7wY3ziDQzyy4H8dj/r+yEZe/8oLUIevT7uBu
+	2+xF2fv7/PGPaCC4dfJ3OTe+S0h82A9eR/PPMkk3r2WUwNdVlsphyF+6U+tSey6sRf8oXna1LBz
+	AZ6at/V/ior0jigpdV27Ma8XJAAFG2lHRtASF+3Et9R3Q1EfLciDn9GjOvbVDzCJ7hSZtt5ZpmX
+	GvkLP24ZsVwssz2ADqnbcWJSBRt09NMrwy4X5pmfiWuFY7PRyE1kS/bcvwNW0LOl9Q3rUZ33Xc/
+	5KALLuQxiD44dSev3eQxfr0ZAa4XxVxH5ovMdA999bX0CGVjeJU7Ee7JBpMk2cZz3TkJdLqcZnD
+	unJqPKKaLbZTjU+mR0Xy/cOLE
+X-Google-Smtp-Source: AGHT+IERZXXJmLUp5a0fm5aKZrN/RHRQVF5VsEpm3yXM37V2sOYOT+DgDTx6OM4kL7Ussl4hyDFxwg==
+X-Received: by 2002:a05:6a00:2e86:b0:742:a02e:dd8d with SMTP id d2e1a72fcca58-74827f36224mr16505756b3a.20.1749431592641;
+        Sun, 08 Jun 2025 18:13:12 -0700 (PDT)
 Received: from ?IPV6:2600:1700:e321:62f0:da43:aeff:fecc:bfd5? ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23603096983sm44234525ad.85.2025.06.08.17.59.38
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7482b0ea282sm4603052b3a.151.2025.06.08.18.13.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Jun 2025 17:59:39 -0700 (PDT)
-Message-ID: <2f3d3ff9-e483-42cc-aaed-f376d46a6701@roeck-us.net>
-Date: Sun, 8 Jun 2025 17:59:37 -0700
+        Sun, 08 Jun 2025 18:13:11 -0700 (PDT)
+Message-ID: <da58fc81-3c99-4951-85bc-e3c139283b5a@roeck-us.net>
+Date: Sun, 8 Jun 2025 18:13:09 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/11] mtd: core: always create master device
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, "De Marchi, Lucas" <lucas.demarchi@intel.com>,
- =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Tvrtko Ursulin <tursulin@ursulin.net>,
- "Poosa, Karthik" <karthik.poosa@intel.com>,
- "Abliyev, Reuven" <reuven.abliyev@intel.com>,
- "Weil, Oren jer" <oren.jer.weil@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20250302140921.504304-1-alexander.usyskin@intel.com>
- <20250302140921.504304-2-alexander.usyskin@intel.com>
- <9dfb2954-fc3e-464c-a4fd-8c1a4dffa327@roeck-us.net>
- <CY5PR11MB63666AE267B9F1609213D93CED68A@CY5PR11MB6366.namprd11.prod.outlook.com>
- <87bjqyja7o.fsf@bootlin.com>
+Subject: Re: [PATCH v2 1/3] mtd: spi-nor: macronix: Drop the redundant flash
+ info fields
+To: Pratyush Yadav <pratyush@kernel.org>
+Cc: Cheng Ming Lin <linchengming884@gmail.com>, tudor.ambarus@linaro.org,
+ mwalle@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, alvinzhou@mxic.com.tw, leoyu@mxic.com.tw,
+ Cheng Ming Lin <chengminglin@mxic.com.tw>
+References: <20250407075400.1113177-1-linchengming884@gmail.com>
+ <20250407075400.1113177-2-linchengming884@gmail.com>
+ <d98f6eee-d5f7-43b7-bbc8-d6e7e274723a@roeck-us.net>
+ <mafs05xh6pf7s.fsf@kernel.org>
 Content-Language: en-US
 From: Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
@@ -144,10 +131,10 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  F0WaMvQMNrk9UAUziVcUkLU52NS9SXqpVg8vgrO0JKx97IXFPcNh0DWsSj/0Y8HO/RDkGXYn
  FDMj7fZSPKyPQPmEHg+W/KzxSSfdgWIHF2QaQ0b2q1wOSec4Rti52ohmNSY+KNIW/zODhugJ
  np3900V20aS7eD9K8GTU0TGC1pyz6IVJwIE=
-In-Reply-To: <87bjqyja7o.fsf@bootlin.com>
+In-Reply-To: <mafs05xh6pf7s.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250608_175941_309354_BF1B008F 
-X-CRM114-Status: GOOD (  20.16  )
+X-CRM114-CacheID: sfid-20250608_181313_867245_86B9AED2 
+X-CRM114-Status: GOOD (  18.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,63 +151,54 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 6/8/25 12:37, Miquel Raynal wrote:
-> Hi Guenter,
+On 6/8/25 05:53, Pratyush Yadav wrote:
+> On Sat, Jun 07 2025, Guenter Roeck wrote:
 > 
-> On 08/06/2025 at 07:00:10 GMT, "Usyskin, Alexander" <alexander.usyskin@intel.com> wrote:
-> 
->>> Subject: Re: [PATCH v6 01/11] mtd: core: always create master device
->>>
->>> Hi,
->>>
->>> On Sun, Mar 02, 2025 at 04:09:11PM +0200, Alexander Usyskin wrote:
->>>> Create master device without partition when
->>>> CONFIG_MTD_PARTITIONED_MASTER flag is unset.
->>>>
->>>> This streamlines device tree and allows to anchor
->>>> runtime power management on master device in all cases.
->>>>
->>>> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
->>>
->>> Several of my qemu boot tests fail to boot from mtd devices with this patch
->>> in the mainline kernel. Reverting it fixes the problem. As far as I can
->>> see this affects configurations with CONFIG_MTD_PARTITIONED_MASTER=y
->>> when
->>> trying to boot from an mtd partition other than mtdblock0, with the
->>> mtd partition data in devicetree (.../aspeed/openbmc-flash-layout.dtsi).
->>> Is there a guidance describing the changed behavior, by any chance,
->>> and how the boot command line now needs to look like when using one of
->>> the flash partitions as root file system ?
->>>
->>> Thanks,
->>> Guenter
+>> Hi,
 >>
->> I've tried to make is as transparent as possible for the existing users.
->> Only change is that now every partition has master that is not partitioned.
->> Is the CONFIG_MTD_PARTITIONED_MASTER=n fixed the problem for you?
+>> On Mon, Apr 07, 2025 at 03:53:58PM +0800, Cheng Ming Lin wrote:
+>>> From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+>>>
+>>> Many flash devices share the same ID but have different part numbers.
+>>> To avoid confusion, the part number field is removed.
+>>>
+>>> Additionally, since SFDP already provides size information and
+>>> functionality covered by no_sfdp_flags, these fields are also removed.
+>>>
+>>> Furthermore, when 4-byte address instruction table is available,
+>>> the SPI_NOR_4B_OPCODES flag is no longer needed and is removed.
+>>>
+>>> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+>>> Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>>
+>> With this patch in place, some of my qemu tests no longer recognize the
+>> flash chips (MX25L25635E/F). Do you have a suggestion on how to handle
+>> this other than avoiding Macronix flash chips when working with qemu ?
 > 
-> No change is expected, can you please describe the devices that you
-> observe with and without the patch? Maybe there is something wrong in
-> the core logic.
+> Could you share some logs? Does the flash fail to detect, or does the
+> SFDP-based probing fail? Since this is qemu, it would be even better if
+> you can share a setup/reproduction guide. I have been meaning to set up
+> qemu for SPI NOR testing for some time now, but never got around to
+> figuring it out.
 > 
 
-I am trying to boot supermicro-x11spi-bmc in qemu from flash partition 6.
-The qemu command line is something like
+I suspect that the SFDP data for the affected flashes is incorrect in qemu.
+Since this is very likely a qemu problem, I'll just configure different flash
+chips when running affected tests.
 
-     qemu-system-arm -M supermicro-x11spi-bmc,fmc-model=n25q256a13,spi-model=n25q256a13 \
-	-kernel arch/arm/boot/zImage -no-reboot -snapshot \
-	-audio none \
-	-drive file=/tmp/flash,format=raw,if=mtd,index=1 \
-	-nic user \
-	--append "root=/dev/mtdblock6 rootwait console=ttyS4,115200 earlycon=uart8250,mmio32,0x1e784000,115200n8" \
+For reference, here is a sample qemu command line.
+
+qemu-system-arm -M supermicro-x11spi-bmc,fmc-model=n25q256a13,spi-model=n25q256a13 \
+	-kernel arch/arm/boot/zImage -no-reboot -snapshot -audio none \
+	-drive file=/tmp/flash,format=raw,if=mtd -nic user \
+	--append "root=/dev/mtdblock0 rootwait console=ttyS4,115200 earlycon=uart8250,mmio32,0x1e784000,115200n8" \
 	-dtb arch/arm/boot/dts/aspeed/aspeed-bmc-supermicro-x11spi.dtb \
 	-nographic -monitor null -serial stdio
 
-This is with aspeed_g5_defconfig. Note that the flash models need to be specified.
-The default flashes are no longer recognized when booting from qemu since commit
-947c86e481a0 ("mtd: spi-nor: macronix: Drop the redundant flash info fields").
-
-The above only works with this patch reverted (or with v6.15 and older, of course).
+This is with aspeed_g5_defconfig. In this example, ",fmc-model=n25q256a13,spi-model=n25q256a13"
+is used to override the default flash model (MX25L25635E) because it longer works after
+this patch. Normally that should not be required, but it is useful to test support
+for different flash chips.
 
 Guenter
 
