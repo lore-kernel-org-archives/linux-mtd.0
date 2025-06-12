@@ -4,91 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA625C61CE8
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Jun 2025 07:12:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96DC6C71143
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Jun 2025 08:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5KWLw79tqKyBG29TDAYKHVZQ9lxx4Ivdt7el/Me8rsQ=; b=GTP7X/XHwHYDKW
-	x6tZJXFCNFsXoOiTJup5aYMK4ecImD9BWTBaarVxyFZYQ1Cv4JdJNb1PhF6a+qe88r6J9YZHxQqHl
-	oIxTUWhOB/JATCBOPskJrUZfImADCWjb9ZyYFihum7a3Tqr21tdh8PNZcuZ8Ks0abd7JLkX/IYn5B
-	Vj+QLvI7iQYpWNreN3Phh0zYJjgiOgGbN6ushA0xaZy3nZCMcoMoTBitDDN4/ptVnvbtT6U4tLAav
-	EZ3lQdguUUJJAxBfR6Mj6CBm//G6hJCWhsp9dxobj/9JK8sjwsjDZABx54Zwc+FhdYqEOBrhHSsZj
-	foI/b8UhkqHYLZe3uXvw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zO4ajZ7Dar4515V04O3Gl1kbmql2uX0GwtGU35it5FY=; b=YvOsZozMnEgBoe
+	s8S6QkgWsnpGZZTV8sI4IgJn3hIZz9Qaixg4Ie97U4H0+ZZd+aIOq675QoNW6+kdh1+5NEBP3VEhI
+	qKyUQQ4nUGuevDULoc6bupZ6xXV5SRU8Cf7I3LRGKiHpF27nr242T7r7PPmJq25RMDLSEaO9skYH+
+	Y2IdxKoZTUzlLzEUi8n+Sal/M6MehbeNAUf6Glwy3NDMCOglWsVMNr5DT0lyEO8hp2vHFKhlyD1iE
+	zVwNoDr6oMmIwzxBUHEmgXcUTYCspQesJbRcDcEszybZhXYfTN+aiu2J8gi3AzCnxKYXHBOT5JfBN
+	8UHVKkS1PQ/eL2YpsPaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uPc7E-0000000CPCa-3ILl;
-	Thu, 12 Jun 2025 07:12:48 +0000
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+	id 1uPd0L-0000000CYqF-3bTe;
+	Thu, 12 Jun 2025 08:09:45 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uPc7C-0000000CPC7-2OEE
+	id 1uPcdL-0000000CUa3-0W2Q
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Jun 2025 07:12:47 +0000
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-742c3d06de3so876864b3a.0
-        for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2025 00:12:46 -0700 (PDT)
+	Thu, 12 Jun 2025 07:46:01 +0000
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-234d3261631so4770705ad.1
+        for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2025 00:45:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749712366; x=1750317166; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sgn7QcDTxClMZ/7hIchp6dD06DoeI6xy/UUqpaSAsaY=;
-        b=Sfnt+GyRvG9uhnQwEMJEVROOF6I9FgQcYxJnzvKJVY/f7Zf3HA/wXNbJwF+iD/6nkO
-         PX7FfzMqeKd7TnEPvrT9XCtqtLKKlzQuZ19DlI3V2HV2GCb2b4yeKZrNHlNLjmJ8rVat
-         1g1oVu9OQOX9U1N+TQkZUUH4OjwcY4RnGzfNpC0G7T6SRafVm2ydGuQWsM1L/d987Da4
-         gkZjCEtGyOeV63Dpfc4MWt0mc/p/kNFvhw2qYNsgCAbfCKy/CYWnJtsBZErvY5yZMdvu
-         0h45cworkxL+X31dl2NowyWx4JHjaTSRzZppjVFz2OlpMK8nyUAxNwQtGsBHxx4UbDDb
-         0Xtg==
+        d=gmail.com; s=20230601; t=1749714358; x=1750319158; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VzvLXRakggIa4bBtP40TgDjj2rPWIFEhf6AHkIfLiBQ=;
+        b=VMTi2Fv/uSkYFsGudOPO3h5QMrZHbe+EVKfNAs4jFxLU7EbnqkgNJoMDPMeh8edsL3
+         Y0NFaim0QvzrEaxCeL4H2xrWTmmXin3IhxJC8Fvn7oK5mNWBUortS/dwq2aAg7DawIJi
+         FwBFIs6XdLTOt0fI5qfiAYvdudfloV4ucdNnj0zoqVfLVelNWz/0mgaBoIs/xdfzqUgr
+         kUaIcraz9RHLBpak73D5eEsJxz7Nzue0MUtOXHjO4svfleB6aGBjx7BuCsK7888+/zob
+         n6nP5fnIfJg2mKrUcBioGclF+5h5YGHZAu7/yJZ1GQcWq9Go/n9HnOWox1afWlbHWCOX
+         CKHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749712366; x=1750317166;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sgn7QcDTxClMZ/7hIchp6dD06DoeI6xy/UUqpaSAsaY=;
-        b=IVsgY03F50WCpZXcaWoVIXNKTcMoVitICorstTd8btKE3bXZdYE2wGl3SfcrfFvO1E
-         9ItLnocmljA1oWoJpRadxxWfM6ZQiVGVBNrr94nJuwg3rWewn4LmksYj1DP7C3HetSOI
-         ktB6hiT8T1VU6vf9ifRBZ2LlHOCxuzoWjEd1XAJ817ySb/3S7dBlz4AUSC/zFRrAHCYS
-         ICtmrc85Pa+DBe/s8jWINHzJ+LgSTzutA7Fs+FnpMXIbuofkxwPKb4aTYTpgcvyJoyMA
-         ku5J4EiHtyFhspP5m/Zh3fOEDmhgc/3p2XPJukDNfAx7aSWZxe/Aw/r6L7MHVOkcp9R5
-         5fJg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6MfSfIoixJ5AI3jKVowRrzI/gEQH9nIUJnmLApDrxAuDtfuCWr+cbdKro8SF4muKm2gWJPhQT1Ms=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx0Pwfe7DoNpKUh7M3FdgCZYnhHAYjnf4+bUmIt7vUPGLNL6HVg
-	q+VLcOVdl3JhPhZOjEh4m4eDIUmoo+bAcC2IN+zfY2Cpi4ngUZKdTYbd
-X-Gm-Gg: ASbGncuHFNBjA/wDCe/7nfl7twuQGBMmQpxlZdlVrie199fVoKJx1+1PekyjazNA7ZV
-	wYh/BVjglMkrTM5abbhwbTv1R7gtjJocZEHT+vE+acjnOCU0+1Q+tLlqJ4QMd01rFBeYqGdcXAm
-	I6r1LZDzJ1Zb8jU9FxcWtotuQXjiU9VUEY40lR71Bo9EmDVJLvlX3ZnIYLK0J5kt1YbiL82EAZM
-	r9z19VtMVoVzmSwS5oC/ZW+hJ+wgYys96wZKgBiR8XA8nkNZJHSEBoSzpsyF3xMdGrEsbHcKgiU
-	8kf4ToNc3uQOoc9f6OdJw8iPaY9g7D+ORVDuV/qKFYqwF2qsB0hiK+Ak+jM0uDOcsJKvbdDWJJN
-	AEZBYCE20aWpwoalAco2dhIkaLvWJScfz8dxOKAA/rXl4xkEG
-X-Google-Smtp-Source: AGHT+IF1b6I1n++T5N4mojz9evE8kNdWlqqlWfPd8DPA9XCgCOHNPhh7enKFh1xVQ7vnggPNl6j1hA==
-X-Received: by 2002:a05:6a00:138d:b0:740:9e87:9625 with SMTP id d2e1a72fcca58-7487c207d4emr3476376b3a.4.1749712365772;
-        Thu, 12 Jun 2025 00:12:45 -0700 (PDT)
-Received: from [192.168.0.11] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74880a0eeb6sm725498b3a.167.2025.06.12.00.12.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Jun 2025 00:12:45 -0700 (PDT)
-Message-ID: <b0888f34-0bf4-423c-b09c-5614fe62a854@gmail.com>
-Date: Thu, 12 Jun 2025 16:12:42 +0900
+        d=1e100.net; s=20230601; t=1749714358; x=1750319158;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VzvLXRakggIa4bBtP40TgDjj2rPWIFEhf6AHkIfLiBQ=;
+        b=nbzwOIL5prH/MIhpaAYeIY82wpzm0Rbf3Ilmh+cTIdIGL+GaE1ifVn+9yM/uScifgN
+         gGR//PahER9+7iKDJ9opoK9bwLwkR8f2hGUkYkwBuB9P5DX+s2LXxsgV9A8DKArtVxrM
+         9RUh9x6A2VSmsuCHiv7MVW5o1iUg0hg6dHR1tv2TRMXKWCspqk8cQ90f7z7YwkGmP4MG
+         QUibyTgUFPNKNkD0Vvc4bpHRF4m8l6idv9GUeu0CnMNQOpvClqgvfokP0de2de/7adGo
+         gasMv2ZXLlWn02dhULffJNojUPPQ7dPn6Io17iqWSy1OJ6H9gDv0E1YZS+7IMJDFkTnY
+         yubA==
+X-Gm-Message-State: AOJu0YyNoYbLDP+e7sI8/dLtjbrrF7DLE5vOIGf3ltKkSpJODAz31bTW
+	NJmHU7B6mFdClxResAb6GDijs5NrNRnww6EGS3wRP5H285lwsx3fvMmtrt/0SA==
+X-Gm-Gg: ASbGncvEfgQhWQiYpIcIlOpu3qZofnjI2aTAwdcXhQFX9pBZj5cOfdU+9wzue7hkFPO
+	7TquRMGHnQdR9uOrqkFIb4qf+cJ2f0eg7Tk1wC2afiKSkuERMrp4LatDS60FXuNHr1++GJ/LbIp
+	dy9zLXjtaYjXHFH7SMGOPYvRjGmMnJG7SeZyBNIv88Wg51yp+Omq2iC4sBN5sg/uleeItbAIltd
+	SD4/DF7+yHayo/kkI6Cg1VaqhdMAKJlaNfU/8INSFyik77DcyIDudpbFnzLxYFVXDVfBBXbAicM
+	EFRAiwZcT7RqvcL16ZKIwqrL4b0uliSXLA3TksLxHtKug46GFnRi/uKNBCR7CD3t1jgUsacJIjx
+	WmK11QsZ9GUGDc4u+CaGjAjvD8gMlhaUeVGcGKcM3cU2o9OhQzrR9PK4=
+X-Google-Smtp-Source: AGHT+IEiLC+gcOZEc+iXS/cf93hxuf8tlhtMJHsICTNTOh2kJGmzRHW9d3JJ4vLpKPYOTRMM1OKIpQ==
+X-Received: by 2002:a17:903:1b6c:b0:235:f45f:ed2b with SMTP id d9443c01a7336-2364c8e1b6amr35329865ad.1.1749714358356;
+        Thu, 12 Jun 2025 00:45:58 -0700 (PDT)
+Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e7031efsm7691855ad.188.2025.06.12.00.45.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Jun 2025 00:45:57 -0700 (PDT)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	tkuw584924@gmail.com,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v2] mtd: spi-nor: spansion: Fixup params->set_4byte_addr_mode for SEMPER
+Date: Thu, 12 Jun 2025 16:44:27 +0900
+Message-Id: <20250612074427.22263-1-Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Fixup params->set_4byte_addr_mode
- for SEMPER
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, linux-mtd@lists.infradead.org
-Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-References: <20250605085535.17963-1-Takahiro.Kuwano@infineon.com>
- <0b0cc45f-e6c0-4020-9324-758cb815400b@linaro.org>
- <c1088cb5-2f12-4dd1-b3cd-42e4709ef05d@gmail.com>
- <b00fb746-b4c6-4a84-90f3-700ab77fb335@linaro.org>
-Content-Language: en-US
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <b00fb746-b4c6-4a84-90f3-700ab77fb335@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250612_001246_613828_B47CF1AD 
-X-CRM114-Status: GOOD (  13.73  )
+X-CRM114-CacheID: sfid-20250612_004559_159465_BAC003E0 
+X-CRM114-Status: GOOD (  12.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,59 +103,101 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 6/12/2025 4:04 PM, Tudor Ambarus wrote:
-> 
-> 
-> On 6/12/25 8:01 AM, Takahiro Kuwano wrote:
->> On 6/10/2025 12:19 AM, Tudor Ambarus wrote:
->>> Hi, Takahiro,
->>>
->>> On 6/5/25 9:55 AM, tkuw584924@gmail.com wrote:
->>>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>>
->>>> Infineon SEMPER flash family does not support E9h opcode as Exit 4-byte
->>>> mode (EX4B). Therefore, params->set_4byte_addr_mode is not determined by
->>>> BFPT parse. Fixup it up by introducing vendor specific EX4B opcode (B8h)
->>>> and function.
->>>>
->>>> Fixes: c87c9b11c53ce ("mtd: spi-nor: spansion: Determine current address mode")
->>>> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>> ---
->>>>  drivers/mtd/spi-nor/spansion.c | 29 +++++++++++++++++++++++++++++
->>>>  1 file changed, 29 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
->>>> index bf08dbf5e742..9162b9297ce8 100644
->>>> --- a/drivers/mtd/spi-nor/spansion.c
->>>> +++ b/drivers/mtd/spi-nor/spansion.c
->>>> @@ -17,6 +17,7 @@
->>>>  
->>>>  #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
->>>>  #define SPINOR_OP_CLPEF		0x82	/* Clear program/erase failure flags */
->>>> +#define SPINOR_OP_CYPRESS_EX4B	0xB8	/* Exit 4-byte address mode */
->>>>  #define SPINOR_OP_CYPRESS_DIE_ERASE		0x61	/* Chip (die) erase */
->>>>  #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
->>>>  #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
->>>> @@ -58,6 +59,13 @@
->>>>  		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
->>>>  		   SPI_MEM_OP_DATA_IN(1, buf, 0))
->>>>  
->>>> +#define CYPRESS_NOR_EN4B_EX4B_OP(enable)				\
->>>> +	SPI_MEM_OP(SPI_MEM_OP_CMD(enable ? SPINOR_OP_EN4B :		\
->>>> +					   SPINOR_OP_CYPRESS_EX4B, 0),	\
->>>
->>> I wonder if it would make sense to have per vendor opcodes. Updating the
->>> set_4byte_addr_mode() method wouldn't be needed in this case, you would
->>> just need to use some nor->vendor->ops->ex4b opcode, right?
->>>
->> Do you mean introducing new vendor opcodes structure into nor or
->> nor->params?
-> 
-> something like that. Maybe not right now, but something to have in mind
-> if we keep seeing vendor specific opcodes that are different than the
-> usual (BFPT-described?) ones.
-> 
-Understood, thanks!
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+
+Infineon SEMPER flash family does not support E9h opcode as Exit 4-byte
+mode (EX4B). Therefore, params->set_4byte_addr_mode is not determined by
+BFPT parse. Fixup it up by introducing vendor specific EX4B opcode (B8h)
+and function.
+
+Fixes: c87c9b11c53ce ("mtd: spi-nor: spansion: Determine current address mode")
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+---
+Changes in v2:
+  - Move set_4byte_addr_mode() assignment to post_bfpt fixup
+
+ drivers/mtd/spi-nor/spansion.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index bf08dbf5e742..b9f156c0f8bc 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -17,6 +17,7 @@
+ 
+ #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+ #define SPINOR_OP_CLPEF		0x82	/* Clear program/erase failure flags */
++#define SPINOR_OP_CYPRESS_EX4B	0xB8	/* Exit 4-byte address mode */
+ #define SPINOR_OP_CYPRESS_DIE_ERASE		0x61	/* Chip (die) erase */
+ #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+ #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
+@@ -58,6 +59,13 @@
+ 		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
+ 		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+ 
++#define CYPRESS_NOR_EN4B_EX4B_OP(enable)				\
++	SPI_MEM_OP(SPI_MEM_OP_CMD(enable ? SPINOR_OP_EN4B :		\
++					   SPINOR_OP_CYPRESS_EX4B, 0),	\
++		   SPI_MEM_OP_NO_ADDR,					\
++		   SPI_MEM_OP_NO_DUMMY,					\
++		   SPI_MEM_OP_NO_DATA)
++
+ #define SPANSION_OP(opcode)						\
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
+ 		   SPI_MEM_OP_NO_ADDR,					\
+@@ -356,6 +364,20 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
++static int cypress_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
++{
++	int ret;
++	struct spi_mem_op op = CYPRESS_NOR_EN4B_EX4B_OP(enable);
++
++	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
++
++	return ret;
++}
++
+ /**
+  * cypress_nor_determine_addr_mode_by_sr1() - Determine current address mode
+  *                                            (3 or 4-byte) by querying status
+@@ -526,6 +548,9 @@ s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
+ 	struct spi_mem_op op;
+ 	int ret;
+ 
++	/* Assign 4-byte address mode method that is not determined in BFPT */
++	nor->params->set_4byte_addr_mode = cypress_nor_set_4byte_addr_mode;
++
+ 	ret = cypress_nor_set_addr_mode_nbytes(nor);
+ 	if (ret)
+ 		return ret;
+@@ -591,6 +616,9 @@ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
+ {
+ 	int ret;
+ 
++	/* Assign 4-byte address mode method that is not determined in BFPT */
++	nor->params->set_4byte_addr_mode = cypress_nor_set_4byte_addr_mode;
++
+ 	ret = cypress_nor_set_addr_mode_nbytes(nor);
+ 	if (ret)
+ 		return ret;
+@@ -718,6 +746,9 @@ static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
+ 				   const struct sfdp_parameter_header *bfpt_header,
+ 				   const struct sfdp_bfpt *bfpt)
+ {
++	/* Assign 4-byte address mode method that is not determined in BFPT */
++	nor->params->set_4byte_addr_mode = cypress_nor_set_4byte_addr_mode;
++
+ 	return cypress_nor_set_addr_mode_nbytes(nor);
+ }
+ 
+-- 
+2.34.1
 
 
 ______________________________________________________
