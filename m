@@ -4,62 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D27ACC7113E
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Jun 2025 06:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F014C71136
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Jun 2025 07:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9JRIbuiF47CkGiTyOuHcyDbzwyNAVkuQg7wFPaslPi8=; b=a3CbLL9kFcSfwc
-	fIucVygsri45jIOqeVSyCNMdUEOyf/HQpeKbx/A6x59XYTBwNYqpwz4pnUW4d5s5HOBMUnGSoWQea
-	Q1RHc4ipuFi1Wb31nQ6PeM/9X/SwVZ22bAl1GRKkSHMqsEOExF/demG/xU6WLoGb1bEpbdUlUYpGo
-	TXPa+E7QhZTaPqjT0ug7z1OO2UH3B1SPt/t6k8nwLZnmp8jfN1Id5iCXHNEsJMLO6oro9llvbGwl1
-	4moEF+Ka/iK7At+hm6a//4cU88QwHIHMlTIMhCuDW1UKoF29rNSpYRJWVQmJka8yhRftVDT4u8qk9
-	GNrz+Y27+TbUPtiIZv5g==;
+	List-Owner; bh=9A4Qzw2mAWOCLV3SkmINUghfoXyz0ekxGKesGqmNLLs=; b=kZ7auG2pJIOuRX
+	FcynCc+/TOniu0aQrxdsv0PmZq0pZbmu3wix/1KR1TrOYjTjisXps6cQTpxZnKfgGYFXMr9/sREGX
+	Gg+tb2fq5vnlWOq/tfeK0I+Xv2y/VWhXonhVHscIBgGd5F+neyA2Mtf3E9XjXdFPDKQ5CyKCu9nqf
+	ZChgbH2N3t54BhBqt0mfDCpL9Z1jAJBKqS5ClD1H7ULQmNcUaMEO60q7J+OiOUOE0niuejcnaND+O
+	Fl/JMihWV3GJ3jnEB2DNZhIvXs+KBcr3f4hwlDm8S+G69hQwBUKoJ7GJF1gm8ZRxYUZalimCD4WwN
+	oo6TuOEieLgSzrOcFQRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uPbOG-0000000CJgG-2T4y;
-	Thu, 12 Jun 2025 06:26:20 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1uPbvx-0000000CO3O-1EYg;
+	Thu, 12 Jun 2025 07:01:09 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uPbOD-0000000CJfY-3tU7
+	id 1uPbvu-0000000CO2z-38P5
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Jun 2025 06:26:19 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B050D5C0E0E;
-	Thu, 12 Jun 2025 06:23:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C556AC4CEEA;
-	Thu, 12 Jun 2025 06:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749709547;
-	bh=M9CxTHdXT5WrEkUahJ2svzM+9WFZHYH6PnfsJfmp96g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JKL18zgaAsvyau0vg8RznAF41pnRn29ke6AvxA2D7Mw7V5apl+KttEkVoHd6d/tnL
-	 Tuo1iauSla5SB1LKgm+CI852NO9cSM9ti1JUQsc/o7dMziPmdWh9ZdbdQ2+TqECf72
-	 tKe6h029giSgUjLMox+O2hYJKhtS6lMpSEfXLsJfJnNduiMUk/nc06zKPQ6Xuo/CLw
-	 gDfzldMCEdbHvb9VdubI943kkJgzbIHMo9wMyw6AZYo1x8aI4EOPR+sgVoGrwCPBtm
-	 IjKOYTe5ai8875DlouqZWShNo2Danpn8JLN4tG1KOtY8p69UDDT8P0t64FjMsOusx5
-	 x4gCYIr9ucEUA==
-Date: Wed, 11 Jun 2025 23:25:21 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Simon Richter <Simon.Richter@hogyros.de>
-Cc: linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Message-ID: <20250612062521.GA1838@sol>
-References: <20250611205859.80819-1-ebiggers@kernel.org>
- <7f63be76-289b-4a99-b802-afd72e0512b8@hogyros.de>
- <20250612005914.GA546455@google.com>
+	Thu, 12 Jun 2025 07:01:07 +0000
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-742c27df0daso532619b3a.1
+        for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2025 00:01:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749711665; x=1750316465; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xk44NAJUy9DHfVvbiafUGTqxf73hdpOsqbAQW3O9xS8=;
+        b=EhegnbZaRxYu/dbZ9v+MG/daPuUpTpR4pXZRFWIw3ZaG1ZD88MQ+xWpQWngm9xkaOY
+         OZHWgjHpUoyKY9YHCJF6yx168hwQKIrnEpfQp7tsqiknrxysKzTfW8HNhErCwWoFmIUS
+         vE64c+BeNjzwm0vQrBHRD5XgiLajaZw3wJOJBO0QlKx1e5MTWJLa1Pegqlt1CtOepxSd
+         D7noYBaurgx+BcC//ezT9WKEk5lhEktAY2JNlRb42/I5f/CE2GjozmPliZsCZG/iRviF
+         HsWSnKL+iJPeQzoc9Wj2JOKAY+oib2Da+fuIF4oNIHV9qs/ZeMEgvQhu6C/i2OhT/qv+
+         j8Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749711665; x=1750316465;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xk44NAJUy9DHfVvbiafUGTqxf73hdpOsqbAQW3O9xS8=;
+        b=e0IJ6+sAse3u8OEyg/rYMYWjlbl4793NqfVM0UZ3lzjmiAbpGX+RDJdHC3jfiayDSK
+         KExOOCDu/xp5RjEIouzftl5XjgkHsLpASKS6gxb0O1bOq5qPOTxZC2uzf11F93NP5mMK
+         kjavIDI6tlgGHUy2U1p45G0bjXOxqJUu6ZnaHUncSXJB/t3GQeohkwJ1un3DQoAixtY0
+         IyWtT3rHykA9rfmSPA3qMNpAwrZDWEaRPw66iJsZ1GUFOKa7MUIotzgOZkv66GsSZ1WH
+         lU34T3pA3PyeGcrbJQj327/dYLQjTMbjKg4IwpN/wQPduL9VY/FXcKE8vTl+83uVqmXU
+         x7oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVGAbSbJCbZTDnBFQCfMa6Jc4n0+MykeCCBQX6NIOWlVM3pf8aQ4aOuid2oPPUqAhlIItQz/gdPyPE=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwBFz8OPgtim/zlroxhid+GW07zQQlSQ0NSP90Ht4fKuc2K7k1W
+	Jmo/RfP+4emL9aWtzaU4tagHOkhpeq+6EuAt4itaWb7A2Z2di1a5SQ1X
+X-Gm-Gg: ASbGncuEOhPNSbh+pNm4iAHYMlzM/B4wzQNv7+BixJAleV0DFa+ZYLi0mkBvhm6/cHn
+	0lkDEEh4v7hAgpAT9JyJK61uI1IHahP3R6xOtdRICkprrATxWMqEne3+jubguqa/79WlGoXTtce
+	YpCnmfWSmLoBhl4O3OrSZbZHAcFwnKR4/h/XJa/QUdNFxfwVD23hqysz7Ve4GU4MxzgKeiZHMHy
+	2SiFJZ1eLcOXD/m9UaMTWGI+v0KSgd0yOapGWsLhD4UV6XeHVXrxlzLHPO29WoQePAliA0s5UyY
+	VA/TM9UDTKK2hkbwazuVhKhmD2DKjhW+2RWZtgvD2icNanwW7Zbjv3J345VglvSaqh/qvUlbeSk
+	I7EDRDTTwaGwn98f9clsRyihF1OGtxU4s4ZT64Q==
+X-Google-Smtp-Source: AGHT+IEt+A2IXWFK9su5kcFeuQl2h9FWbLo3O+rikFjbZPDXElDNn1rvgIS2UTsIEhGpQK4JUFuoyg==
+X-Received: by 2002:a05:6a00:806:b0:740:9d7c:aeb9 with SMTP id d2e1a72fcca58-7486cde0b49mr8303282b3a.21.1749711664988;
+        Thu, 12 Jun 2025 00:01:04 -0700 (PDT)
+Received: from [192.168.0.11] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74880a0ec02sm732863b3a.148.2025.06.12.00.01.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Jun 2025 00:01:04 -0700 (PDT)
+Message-ID: <c1088cb5-2f12-4dd1-b3cd-42e4709ef05d@gmail.com>
+Date: Thu, 12 Jun 2025 16:01:00 +0900
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250612005914.GA546455@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Fixup params->set_4byte_addr_mode
+ for SEMPER
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, linux-mtd@lists.infradead.org
+Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <20250605085535.17963-1-Takahiro.Kuwano@infineon.com>
+ <0b0cc45f-e6c0-4020-9324-758cb815400b@linaro.org>
+Content-Language: en-US
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <0b0cc45f-e6c0-4020-9324-758cb815400b@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250611_232618_008893_55B3E72A 
-X-CRM114-Status: GOOD (  15.48  )
+X-CRM114-CacheID: sfid-20250612_000106_789737_6B9BA99F 
+X-CRM114-Status: GOOD (  18.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,40 +103,108 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 12, 2025 at 12:59:14AM +0000, Eric Biggers wrote:
-> On Thu, Jun 12, 2025 at 09:21:26AM +0900, Simon Richter wrote:
-> > Hi,
-> > 
-> > On 6/12/25 05:58, Eric Biggers wrote:
-> > 
-> > > But
-> > > otherwise this style of hardware offload is basically obsolete and has
-> > > been superseded by hardware-accelerated crypto instructions directly on
-> > > the CPU as well as inline storage encryption (UFS/eMMC).
-> > 
-> > For desktop, yes, but embedded still has quite a few of these, for example
-> > the STM32 crypto offload engine
+On 6/10/2025 12:19 AM, Tudor Ambarus wrote:
+> Hi, Takahiro,
+> 
+> On 6/5/25 9:55 AM, tkuw584924@gmail.com wrote:
+>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>>
+>> Infineon SEMPER flash family does not support E9h opcode as Exit 4-byte
+>> mode (EX4B). Therefore, params->set_4byte_addr_mode is not determined by
+>> BFPT parse. Fixup it up by introducing vendor specific EX4B opcode (B8h)
+>> and function.
+>>
+>> Fixes: c87c9b11c53ce ("mtd: spi-nor: spansion: Determine current address mode")
+>> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>> ---
+>>  drivers/mtd/spi-nor/spansion.c | 29 +++++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index bf08dbf5e742..9162b9297ce8 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -17,6 +17,7 @@
+>>  
+>>  #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+>>  #define SPINOR_OP_CLPEF		0x82	/* Clear program/erase failure flags */
+>> +#define SPINOR_OP_CYPRESS_EX4B	0xB8	/* Exit 4-byte address mode */
+>>  #define SPINOR_OP_CYPRESS_DIE_ERASE		0x61	/* Chip (die) erase */
+>>  #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+>>  #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
+>> @@ -58,6 +59,13 @@
+>>  		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
+>>  		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+>>  
+>> +#define CYPRESS_NOR_EN4B_EX4B_OP(enable)				\
+>> +	SPI_MEM_OP(SPI_MEM_OP_CMD(enable ? SPINOR_OP_EN4B :		\
+>> +					   SPINOR_OP_CYPRESS_EX4B, 0),	\
+> 
+> I wonder if it would make sense to have per vendor opcodes. Updating the
+> set_4byte_addr_mode() method wouldn't be needed in this case, you would
+> just need to use some nor->vendor->ops->ex4b opcode, right?
+> 
+Do you mean introducing new vendor opcodes structure into nor or
+nor->params?
 
-By the way, I noticed you specifically mentioned STM32.  I'm not sure if you
-looked at the links I had in my commit message, but one of them
-(https://github.com/google/fscryptctl/issues/32) was actually for the STM32
-driver being broken and returning the wrong results, which broke filename
-encryption.  The user fixed the issue by disabling the STM32 driver, and they
-seemed okay with that.
+>> +		   SPI_MEM_OP_NO_ADDR,					\
+>> +		   SPI_MEM_OP_NO_DUMMY,					\
+>> +		   SPI_MEM_OP_NO_DATA)
+>> +
+>>  #define SPANSION_OP(opcode)						\
+>>  	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
+>>  		   SPI_MEM_OP_NO_ADDR,					\
+>> @@ -356,6 +364,20 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
+>>  	return 0;
+>>  }
+>>  
+>> +static int cypress_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>> +{
+>> +	int ret;
+>> +	struct spi_mem_op op = CYPRESS_NOR_EN4B_EX4B_OP(enable);
+>> +
+>> +	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+>> +
+>> +	ret = spi_mem_exec_op(nor->spimem, &op);
+>> +	if (ret)
+>> +		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>  /**
+>>   * cypress_nor_determine_addr_mode_by_sr1() - Determine current address mode
+>>   *                                            (3 or 4-byte) by querying status
+>> @@ -424,6 +446,13 @@ static int cypress_nor_set_addr_mode_nbytes(struct spi_nor *nor)
+> 
+>>  	u8 addr_mode;
+>>  	int ret;
+>>  
+>> +	/*
+>> +	 * 4-byte address mode method is not determined by BFPT parse as SEMPER
+>> +	 * does not support EX4B(E9h). Assign device-specific method before
+>> +	 * spi_nor_set_4byte_addr_mode() is called.
+>> +	 */
+>> +	nor->params->set_4byte_addr_mode = cypress_nor_set_4byte_addr_mode;
+> 
+> not here please, but in the post_bfpt fixup hook.
+> addr_mode_nbytes is described in BFPT_DWORD[1], while
+> set_4byte_addr_mode in BFPT_DWORD[16], 2 different things.
+> 
+Noted.
 
-That doesn't sound like something useful, IMO.  It sounds more like something
-actively harmful to users.
+Thanks,
+Takahiro
 
-Here's another one I forgot to mention:
-https://github.com/google/fscryptctl/issues/9
+> Cheers,
+> ta
+> 
+>> +
+>>  	/*
+>>  	 * Read SR1 by RDSR1 and RDAR(3- AND 4-byte addr). Use write enable
+>>  	 * that sets bit-1 in SR1.
+> 
 
-I get blamed for these issues, because it's fscrypt that breaks.
-
-FWIW, here's what happens if you try to use the Intel QAT driver with dm-crypt:
-https://lore.kernel.org/r/CACsaVZ+mt3CfdXV0_yJh7d50tRcGcRZ12j3n6-hoX2cz3+njsg@mail.gmail.com/
-https://lore.kernel.org/r/0171515-7267-624-5a22-238af829698f@redhat.com/
-
-- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
