@@ -4,52 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ABDAC71135
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jun 2025 07:57:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7612DC71135
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jun 2025 09:02:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MKeQbiPEnNA7j0cIzGkmH9t7AuZe+Cti6zzGSx0Ay4Q=; b=hIhj6xivBn48Nz
-	WfO36ajZjIiI456au92h9Ft138nQfbBYLDiXxy9LMh3oXpP0aPjRgBcodQQCoY7b/NL7u1M8uMFkT
-	3UP3unvfwEpbQ+K8t+q8UDNC3x4hCyNTF4TZPemleAjShd+AC5eqI+caqbhjtDSuhYPLAju3NfhR9
-	EJO7hf3eUoj0IwYVZ0BrhZDhmLVPK1be3Qfd23hZQFRHi16C34WwKsSSMi4eaTvH0hYLRQ8QDShhC
-	ndlISYeVSyNsP99SrWtcMgwq09/s7NTEktDf3tRQuiocInue24vUtp3Y5F0Eqw5wrzBuHwyZhS4t9
-	Y8cFkCpnbtQgTIFbsubQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Az4ElPXbi+bumlsdD9Wvkyhm/wvkCj3nFZz8P6mp/EE=; b=H1imvPaYJhFDkm
+	j2LFvbnSc2cc0Ncv3dv5XCZ5XOsLvoC9wiBRYAX7qET4ZzTAD310nrz2z56jbX/0UA+IRPlMtkMWI
+	4R6L/+ZQ6oabFfnFV9xGxe1ZVz9/YoNf3c4bIo2szCe/2pSIWW/+l4kQbcFmCXTYlf2IXJGVdHHzQ
+	+VSfPz//I/RtC8ptvM0NPviFhNkFnkjanOB4e+unUq73vHCtZcoNJGI5HhwQZNJeXx4c2D74YYK5P
+	yyyvNOpiDjJ/qBXAItQTILFwufi7SZC+hUSFVvtXgoztUPjaBo5InyIR2j7jJqJ4YbD5OG5VE73OU
+	JNV4VDnVYztxp3bqqqJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uPzII-0000000Fi2d-2lj9;
-	Fri, 13 Jun 2025 07:57:46 +0000
-Received: from mail.commalix.pl ([141.95.18.5])
+	id 1uQ0Iz-0000000Fpu7-2LZl;
+	Fri, 13 Jun 2025 09:02:33 +0000
+Received: from mx08-00178001.pphosted.com ([91.207.212.93] helo=mx07-00178001.pphosted.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uPzIF-0000000Fi1D-2twe
+	id 1uQ0Iw-0000000FptV-35lc
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Jun 2025 07:57:45 +0000
-Received: by mail.commalix.pl (Postfix, from userid 1002)
-	id AB057A65A0; Fri, 13 Jun 2025 09:55:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=commalix.pl; s=mail;
-	t=1749801341; bh=CJaxe0/Oss+uuu+rAIpDCRNP1r/1Sj5XETuqIxCAGFI=;
-	h=Date:From:To:Subject:From;
-	b=Y8TPn62wsqFNkaWMf9Jx6HHExCFcdeMYg6EtL+mb8Har9yuWJkfTKN0M93LClpvFK
-	 RVnba0/6YCrcrYRxpNh4F/AmRHJ09zEvMwKZDH76wPBmvKO0SY3y5yWShnWoVOFzmj
-	 tuj04N6G3AmwhfGVzWdYYwuaZr0DmdAZlCf9h3v75M8ZQdHsIzFhkQIYZcm+J0MUlM
-	 OQci33Rv+6n9kRQhHQaTfrimGMiptFBz6Xv6vMKpCQIyXoLEBmsqONJdwceemeWEXk
-	 pn50LeynZ6BpkwlMfW+5eZH5il8BYfs74wYF0jOWEqyBHrfUnT25N4+Tb8GcvPq/Tb
-	 fPSQFZLtwCb0g==
-Received: by mail.commalix.pl for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2025 07:55:27 GMT
-Message-ID: <20250613084500-0.1.kf.2hred.0.c8g3bqxmlj@commalix.pl>
-Date: Fri, 13 Jun 2025 07:55:27 GMT
-From: "Piotr Toczek" <piotr.toczek@commalix.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: Rekrutacja handlowca 
-X-Mailer: mail.commalix.pl
+	Fri, 13 Jun 2025 09:02:32 +0000
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55D7x6wD001805;
+	Fri, 13 Jun 2025 11:02:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=selector1; bh=
+	dhCZHLOoz/DA9KLk72kzXl6//47HjrLiscmsJROqQU4=; b=TJC+HIwQFnR8RuRE
+	wppUKNBTKL3/NwpFH9nE0ngb/rqF9Lu/ileLRgMIYn9UyLjZyEKItkKvekDrpNco
+	CH2Ar921nY18Xdl/0P13yXdoS1ZBzpkgQY+25liPF5pVzK8R6E9CTtow/QLDHGU6
+	yPdG0oZwXpqhwfLaDOymuGleYwO6An1dIpbs9rOSkv8i7GQoffy8c3UWJ+uMlfvM
+	tauK1RzCWrm/luM7ZBmnYOHOabBLRh89Nw6WHyd9Vc/fcI6/JJ5bdV1tgLduLKaj
+	fzoB7FPeV6Etip+hdlvBfqPA2PiZJrvr7H+x16QQsMmf1UpyJFlDeSmTAZ3RplPw
+	qdJ18Q==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 474ajaktns-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 13 Jun 2025 11:02:23 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 8DF594005E;
+	Fri, 13 Jun 2025 11:01:37 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DA3C7B9447F;
+	Fri, 13 Jun 2025 11:01:04 +0200 (CEST)
+Received: from [10.48.86.103] (10.48.86.103) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 13 Jun
+ 2025 11:01:04 +0200
+Message-ID: <8f4c2f36-71af-4c84-bcee-2554cea991d0@foss.st.com>
+Date: Fri, 13 Jun 2025 11:01:03 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
+To: Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
+CC: <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <ceph-devel@vger.kernel.org>
+References: <20250611205859.80819-1-ebiggers@kernel.org>
+Content-Language: en-US
+From: Maxime MERE <maxime.mere@foss.st.com>
+In-Reply-To: <20250611205859.80819-1-ebiggers@kernel.org>
+X-Originating-IP: [10.48.86.103]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-12_10,2025-06-12_02,2025-03-28_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250613_005744_430295_641313BC 
-X-CRM114-Status: UNSURE (   0.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250613_020231_278570_CCB03707 
+X-CRM114-Status: GOOD (  10.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,16 +87,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-V2l0YW0sCgpDenkgbWFqxIUgUGHFhHN0d2EgYWt0dWFsbmllIHBvdHJ6ZWJ5IHogemFrcmVzdSBy
-ZWtydXRhY2ppIG9zw7NiIGRvIGR6aWHFgnUgaGFuZGxvd2Vnbz8gCgpQb21hZ2FteSBza3V0ZWN6
-bmllIHJla3J1dG93YcSHIG9zb2J5IG5hIHN0YW5vd2lza2EgUHJ6ZWRzdGF3aWNpZWxhIEhhbmRs
-b3dlZ28sIFNhbGVzIE1hbmFnZXJhLCBhIHRha8W8ZSBLYWRyeSBNYW5hZ2Vyc2tpZWogdyBvYnN6
-YXJ6ZSBzcHJ6ZWRhxbx5LgoKQ3p5IG1vxbxlbXkgcG9yb3ptYXdpYcSHPwoKClBvemRyYXdpYW0K
-UGlvdHIgVG9jemVrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hello,
+
+On 6/11/25 22:58, Eric Biggers wrote:
+> To protect users from these buggy and seemingly unhelpful drivers that I
+> have no way of testing, let's make fscrypt not use them.  Unfortunately
+> there is no direct support for doing so in the Crypto API, but we can
+> achieve something very close to it by disallowing algorithms that have
+> ASYNC, ALLOCATES_MEMORY, or KERN_DRIVER_ONLY set.
+
+I agree that software drivers are more efficient and less prone to bugs 
+than hardware drivers. However, I would like to highlight the fact that 
+certain ST products (the STM32MP2x series) have features that allow the 
+loading of a secret key via an internal bus from a Secure OS to the CRYP 
+peripheral (usable by the kernel). This enables cryptographic operations 
+to be delegated to the non-secure side (the kernel) without exposing the 
+key.
+
+If fscrypt no longer supports hardware drivers, then this type of 
+functionality could not be used, which I find unfortunate because it is 
+something that might interest users.
+
+
+cheers,
+
+Maxime
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
