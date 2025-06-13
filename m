@@ -4,61 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B035C71148
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jun 2025 15:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CAB4C71157
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jun 2025 19:04:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OvH41Wc/YhmGFQbjSE1QjAVCsJ61hkIRehi0GFkN+rU=; b=l+EgY1pII9MkCL
-	Rjj7XLXbW6DAU3btJtn8Az/SedxwKbmPQtJAa7e8fronNiugpJGd4k9CO/TkspNzx5h03JFG5wRhp
-	c1i18lfD92cn0MwLDsmMhJmu3Rx6oBng7TfIkwDmXe+qIyAvRyaCj7vg/F/2WEXqGDf/YvJpDaDYF
-	+LFXMbU9AvkRPxVIYotGlzF1bwrfHPqVoNmOu947GKblDJ3bMyL9zZ/b5s+bfsPVNBJkVKZVPHsCQ
-	xhxbHMk9rS9G0TmqCcCUVAQDECpO6dfOcIk5xMK44d6O9NJ9Rzi1DO64gGYAgbnuRWj66YzXt+0CX
-	tgQHccz6MN21nZ/CPTyA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=uk0gBlI0GdkflN56bOkS2yLuxdezw8le/JcoYs9AS9M=; b=zRPt+rTunNFEY7
+	6hPO71iN9sQ7Xireek5K2mUbQhQ9T0TKY5iKweD/Kd9oe4fxSNSiF+nJziRiOBR+g1dwr/NJWgbNz
+	ZQITokMdKBaeB9nRfkCwaLQZuwpqv6TqdwQO6kAxurVFZej3zGHwvRWeeyqbZQS90+m+x9CArgq75
+	QiJ1LL3jrQQhqt1kSIBAK3gIUHUR4chuMlDgKQNOpyI0sVv4OIn7KyRNX1hYL0VDc8MeQ3qkPUORV
+	lDRHRUATBLG2Kbn2goSHA32k5gnyoU0sVTos0tF3clRDlTuJrw16V/lPrlfcRDPxsfoYcywYh8hK+
+	wb/kYFkffeRjktXckEMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uQ6cB-0000000GwkQ-45Ik;
-	Fri, 13 Jun 2025 15:46:47 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1uQ9hG-0000000HNgw-0slB;
+	Fri, 13 Jun 2025 19:04:14 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uQ5cZ-0000000GjO3-2YLq
+	id 1uQ8oM-0000000HEOx-3cN0
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Jun 2025 14:43:08 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id CDDCDA511C0;
-	Fri, 13 Jun 2025 14:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40697C4CEE3;
-	Fri, 13 Jun 2025 14:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749825786;
-	bh=X8uCzsD5itqoI7POYg9wvCv44Y1Bhh9aSVeaZS08ftY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cpFPf1B01lZLa94UVQa51/VgBj9RwtCQJaDlD3SVGhwXzEGZYdDlaAcrCnvBSQri7
-	 9DNPosHAUVOyrQMIbBB/+2Wjlt+ohCPB/fNLZk9Q9MK4uf3fMpdAqz2An/+VcoUyuX
-	 xKHKE1bm45MNSEB8bBx2L8WTP1QSY8pnf1lkhFMeMCcomHCxZl3A9uBXRB8jHsJjbs
-	 9IkOmrjHo4lZU7OafX32/ep8bZb8Mp/wowKzwXA/DF1zUYwF5qBR7tCgJKUp9eSzUx
-	 K8fUOcYr8aBDNj2Y1dVSRMJgqyx/oJy1V4XkrJ4m94l2lylSW2dTEnDF+6knaZvHE8
-	 U80TOWjguDBUg==
-Date: Fri, 13 Jun 2025 07:42:39 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Maxime MERE <maxime.mere@foss.st.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Message-ID: <20250613144239.GA1287@sol>
-References: <20250611205859.80819-1-ebiggers@kernel.org>
- <8f4c2f36-71af-4c84-bcee-2554cea991d0@foss.st.com>
+	Fri, 13 Jun 2025 18:07:32 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A316A44260;
+	Fri, 13 Jun 2025 18:07:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1749838045;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ORacFdzbxg6Qw2fDI9bUe6DkU3osu7jneriADxrwHRU=;
+	b=R6kOjqyEZ/fWJqCvCP/Mp6A+qXHCSB0lwSXWs+N7qtDj7V1wDKtZtY3QoxGRQE2BxqL7sW
+	PrFt9tlQASrwq387l+/Nw+i6iRfk5qArF3JCtYdqiqbqUzVe0Dfah0I/T3GkbFEQjWNN9m
+	CqAIq6jG4xPhDnzfsgixF2/LRhavG1zk+TI4jbxiZw6O//K3fE0aLPEG/0Dk3TwAtTJ0TU
+	PPhqK66R2roI6MtS0I42q3Rnh25ujMR5sXFGmHlJDRv1nYy9fZgZNwojHD+mMAjy3nx/YW
+	dfTHGCu7GT9cOxElgZvBmO/fT45LcvRcEHyuXEAuSJAldfLDRnczr43gJYsoMg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] Revert "mtd: core: always create master device"
+Date: Fri, 13 Jun 2025 20:07:22 +0200
+Message-ID: <20250613180722.1268159-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8f4c2f36-71af-4c84-bcee-2554cea991d0@foss.st.com>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugddukeeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeegteefudelfeejffehveelgefgtddvudfhudegueeijeevjeeivdfhudfgtedtheenucfkphepvdgrtddumegtsgdurgemvdefmegsjedvvdemrgdutdgrmeelfhgvkeemudgsiegvmeelledtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtudemtggsudgrmedvfeemsgejvddvmegruddtrgemlehfvgekmedusgeivgemleeltddupdhhvghlohepfhifrddrpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepledprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtohepthhuughorhdrrghmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhop
+ ehmihgthhgrvghlseifrghllhgvrdgttgdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghlvgigrghnuggvrhdruhhshihskhhinhesihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigsehrohgvtghkqdhushdrnhgvth
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250613_074307_722229_4491E3FC 
-X-CRM114-Status: GOOD (  20.41  )
+X-CRM114-CacheID: sfid-20250613_110731_512707_CE5827D8 
+X-CRM114-Status: GOOD (  28.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,38 +79,463 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 13, 2025 at 11:01:03AM +0200, Maxime MERE wrote:
-> Hello,
-> 
-> On 6/11/25 22:58, Eric Biggers wrote:
-> > To protect users from these buggy and seemingly unhelpful drivers that I
-> > have no way of testing, let's make fscrypt not use them.  Unfortunately
-> > there is no direct support for doing so in the Crypto API, but we can
-> > achieve something very close to it by disallowing algorithms that have
-> > ASYNC, ALLOCATES_MEMORY, or KERN_DRIVER_ONLY set.
-> 
-> I agree that software drivers are more efficient and less prone to bugs than
-> hardware drivers. However, I would like to highlight the fact that certain
-> ST products (the STM32MP2x series) have features that allow the loading of a
-> secret key via an internal bus from a Secure OS to the CRYP peripheral
-> (usable by the kernel). This enables cryptographic operations to be
-> delegated to the non-secure side (the kernel) without exposing the key.
-> 
-> If fscrypt no longer supports hardware drivers, then this type of
-> functionality could not be used, which I find unfortunate because it is
-> something that might interest users.
+The idea behind this patch was to always let a "master" mtd device
+available to anchor runtime PM. Historically, there was no mtd device
+representing the whole storage as soon as partitions were coming into
+play. The introduction of CONFIG_MTD_PARTITIONED_MASTER allowed to keep
+this "master" device, but was not enabled by default to avoid breaking
+existing users (otherwise the mtd device numbering would be totally
+messed up with an off by 1, at least).
 
-What?  fscrypt doesn't support that anyway, and there isn't any path forward to
-supporting it in a way that would actually improve security.  (Considering how
-fscrypt's key derivation etc. works.)
+The approach of adding an mtd_master class on top of partitioned mtd
+devices is breaking the mtd core in many creative ways, so better think
+again this approach and revert the faulty changes for now.
 
-fscrypt does support hardware wrapped *inline encryption* keys, which is
-actually designed properly and does work.
+This reverts commit 0aa7b390fc40a871267a2328bbbefca8b37ad307.
 
-Honestly, the responses to this thread so far have made it even more clear that
-this patch is the right decision.
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/mtdchar.c          |   2 +-
+ drivers/mtd/mtdcore.c          | 152 +++++++++------------------------
+ drivers/mtd/mtdcore.h          |   2 +-
+ drivers/mtd/mtdpart.c          |  16 ++--
+ include/linux/mtd/partitions.h |   2 +-
+ 5 files changed, 51 insertions(+), 123 deletions(-)
 
-- Eric
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 391d81ad960c..8dc4f5c493fc 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -559,7 +559,7 @@ static int mtdchar_blkpg_ioctl(struct mtd_info *mtd,
+ 		/* Sanitize user input */
+ 		p.devname[BLKPG_DEVNAMELTH - 1] = '\0';
+ 
+-		return mtd_add_partition(mtd, p.devname, p.start, p.length, NULL);
++		return mtd_add_partition(mtd, p.devname, p.start, p.length);
+ 
+ 	case BLKPG_DEL_PARTITION:
+ 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 429d8c16baf0..5ba9a741f5ac 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -68,13 +68,7 @@ static struct class mtd_class = {
+ 	.pm = MTD_CLS_PM_OPS,
+ };
+ 
+-static struct class mtd_master_class = {
+-	.name = "mtd_master",
+-	.pm = MTD_CLS_PM_OPS,
+-};
+-
+ static DEFINE_IDR(mtd_idr);
+-static DEFINE_IDR(mtd_master_idr);
+ 
+ /* These are exported solely for the purpose of mtd_blkdevs.c. You
+    should not use them for _anything_ else */
+@@ -89,9 +83,8 @@ EXPORT_SYMBOL_GPL(__mtd_next_device);
+ 
+ static LIST_HEAD(mtd_notifiers);
+ 
+-#define MTD_MASTER_DEVS 255
++
+ #define MTD_DEVT(index) MKDEV(MTD_CHAR_MAJOR, (index)*2)
+-static dev_t mtd_master_devt;
+ 
+ /* REVISIT once MTD uses the driver model better, whoever allocates
+  * the mtd_info will probably want to use the release() hook...
+@@ -111,17 +104,6 @@ static void mtd_release(struct device *dev)
+ 	device_destroy(&mtd_class, index + 1);
+ }
+ 
+-static void mtd_master_release(struct device *dev)
+-{
+-	struct mtd_info *mtd = dev_get_drvdata(dev);
+-
+-	idr_remove(&mtd_master_idr, mtd->index);
+-	of_node_put(mtd_get_of_node(mtd));
+-
+-	if (mtd_is_partition(mtd))
+-		release_mtd_partition(mtd);
+-}
+-
+ static void mtd_device_release(struct kref *kref)
+ {
+ 	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
+@@ -385,11 +367,6 @@ static const struct device_type mtd_devtype = {
+ 	.release	= mtd_release,
+ };
+ 
+-static const struct device_type mtd_master_devtype = {
+-	.name		= "mtd_master",
+-	.release	= mtd_master_release,
+-};
+-
+ static bool mtd_expert_analysis_mode;
+ 
+ #ifdef CONFIG_DEBUG_FS
+@@ -657,13 +634,13 @@ static void mtd_check_of_node(struct mtd_info *mtd)
+ /**
+  *	add_mtd_device - register an MTD device
+  *	@mtd: pointer to new MTD device info structure
+- *	@partitioned: create partitioned device
+  *
+  *	Add a device to the list of MTD devices present in the system, and
+  *	notify each currently active MTD 'user' of its arrival. Returns
+  *	zero on success or non-zero on failure.
+  */
+-int add_mtd_device(struct mtd_info *mtd, bool partitioned)
++
++int add_mtd_device(struct mtd_info *mtd)
+ {
+ 	struct device_node *np = mtd_get_of_node(mtd);
+ 	struct mtd_info *master = mtd_get_master(mtd);
+@@ -710,17 +687,10 @@ int add_mtd_device(struct mtd_info *mtd, bool partitioned)
+ 	ofidx = -1;
+ 	if (np)
+ 		ofidx = of_alias_get_id(np, "mtd");
+-	if (partitioned) {
+-		if (ofidx >= 0)
+-			i = idr_alloc(&mtd_idr, mtd, ofidx, ofidx + 1, GFP_KERNEL);
+-		else
+-			i = idr_alloc(&mtd_idr, mtd, 0, 0, GFP_KERNEL);
+-	} else {
+-		if (ofidx >= 0)
+-			i = idr_alloc(&mtd_master_idr, mtd, ofidx, ofidx + 1, GFP_KERNEL);
+-		else
+-			i = idr_alloc(&mtd_master_idr, mtd, 0, 0, GFP_KERNEL);
+-	}
++	if (ofidx >= 0)
++		i = idr_alloc(&mtd_idr, mtd, ofidx, ofidx + 1, GFP_KERNEL);
++	else
++		i = idr_alloc(&mtd_idr, mtd, 0, 0, GFP_KERNEL);
+ 	if (i < 0) {
+ 		error = i;
+ 		goto fail_locked;
+@@ -768,18 +738,10 @@ int add_mtd_device(struct mtd_info *mtd, bool partitioned)
+ 	/* Caller should have set dev.parent to match the
+ 	 * physical device, if appropriate.
+ 	 */
+-	if (partitioned) {
+-		mtd->dev.type = &mtd_devtype;
+-		mtd->dev.class = &mtd_class;
+-		mtd->dev.devt = MTD_DEVT(i);
+-		dev_set_name(&mtd->dev, "mtd%d", i);
+-		error = dev_set_name(&mtd->dev, "mtd%d", i);
+-	} else {
+-		mtd->dev.type = &mtd_master_devtype;
+-		mtd->dev.class = &mtd_master_class;
+-		mtd->dev.devt = MKDEV(MAJOR(mtd_master_devt), i);
+-		error = dev_set_name(&mtd->dev, "mtd_master%d", i);
+-	}
++	mtd->dev.type = &mtd_devtype;
++	mtd->dev.class = &mtd_class;
++	mtd->dev.devt = MTD_DEVT(i);
++	error = dev_set_name(&mtd->dev, "mtd%d", i);
+ 	if (error)
+ 		goto fail_devname;
+ 	dev_set_drvdata(&mtd->dev, mtd);
+@@ -787,7 +749,6 @@ int add_mtd_device(struct mtd_info *mtd, bool partitioned)
+ 	of_node_get(mtd_get_of_node(mtd));
+ 	error = device_register(&mtd->dev);
+ 	if (error) {
+-		pr_err("mtd: %s device_register fail %d\n", mtd->name, error);
+ 		put_device(&mtd->dev);
+ 		goto fail_added;
+ 	}
+@@ -799,13 +760,10 @@ int add_mtd_device(struct mtd_info *mtd, bool partitioned)
+ 
+ 	mtd_debugfs_populate(mtd);
+ 
+-	if (partitioned) {
+-		device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
+-			      "mtd%dro", i);
+-	}
++	device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
++		      "mtd%dro", i);
+ 
+-	pr_debug("mtd: Giving out %spartitioned device %d to %s\n",
+-		 partitioned ? "" : "un-", i, mtd->name);
++	pr_debug("mtd: Giving out device %d to %s\n", i, mtd->name);
+ 	/* No need to get a refcount on the module containing
+ 	   the notifier, since we hold the mtd_table_mutex */
+ 	list_for_each_entry(not, &mtd_notifiers, list)
+@@ -813,16 +771,13 @@ int add_mtd_device(struct mtd_info *mtd, bool partitioned)
+ 
+ 	mutex_unlock(&mtd_table_mutex);
+ 
+-	if (partitioned) {
+-		if (of_property_read_bool(mtd_get_of_node(mtd), "linux,rootfs")) {
+-			if (IS_BUILTIN(CONFIG_MTD)) {
+-				pr_info("mtd: setting mtd%d (%s) as root device\n",
+-					mtd->index, mtd->name);
+-				ROOT_DEV = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
+-			} else {
+-				pr_warn("mtd: can't set mtd%d (%s) as root device - mtd must be builtin\n",
+-					mtd->index, mtd->name);
+-			}
++	if (of_property_read_bool(mtd_get_of_node(mtd), "linux,rootfs")) {
++		if (IS_BUILTIN(CONFIG_MTD)) {
++			pr_info("mtd: setting mtd%d (%s) as root device\n", mtd->index, mtd->name);
++			ROOT_DEV = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
++		} else {
++			pr_warn("mtd: can't set mtd%d (%s) as root device - mtd must be builtin\n",
++				mtd->index, mtd->name);
+ 		}
+ 	}
+ 
+@@ -838,10 +793,7 @@ int add_mtd_device(struct mtd_info *mtd, bool partitioned)
+ fail_added:
+ 	of_node_put(mtd_get_of_node(mtd));
+ fail_devname:
+-	if (partitioned)
+-		idr_remove(&mtd_idr, i);
+-	else
+-		idr_remove(&mtd_master_idr, i);
++	idr_remove(&mtd_idr, i);
+ fail_locked:
+ 	mutex_unlock(&mtd_table_mutex);
+ 	return error;
+@@ -859,14 +811,12 @@ int add_mtd_device(struct mtd_info *mtd, bool partitioned)
+ 
+ int del_mtd_device(struct mtd_info *mtd)
+ {
+-	struct mtd_notifier *not;
+-	struct idr *idr;
+ 	int ret;
++	struct mtd_notifier *not;
+ 
+ 	mutex_lock(&mtd_table_mutex);
+ 
+-	idr = mtd->dev.class == &mtd_class ? &mtd_idr : &mtd_master_idr;
+-	if (idr_find(idr, mtd->index) != mtd) {
++	if (idr_find(&mtd_idr, mtd->index) != mtd) {
+ 		ret = -ENODEV;
+ 		goto out_error;
+ 	}
+@@ -1106,7 +1056,6 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 			      const struct mtd_partition *parts,
+ 			      int nr_parts)
+ {
+-	struct mtd_info *parent;
+ 	int ret, err;
+ 
+ 	mtd_set_dev_defaults(mtd);
+@@ -1115,30 +1064,25 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = add_mtd_device(mtd, false);
+-	if (ret)
+-		goto out;
+-
+ 	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
+-		ret = mtd_add_partition(mtd, mtd->name, 0, MTDPART_SIZ_FULL, &parent);
++		ret = add_mtd_device(mtd);
+ 		if (ret)
+ 			goto out;
+-
+-	} else {
+-		parent = mtd;
+ 	}
+ 
+ 	/* Prefer parsed partitions over driver-provided fallback */
+-	ret = parse_mtd_partitions(parent, types, parser_data);
++	ret = parse_mtd_partitions(mtd, types, parser_data);
+ 	if (ret == -EPROBE_DEFER)
+ 		goto out;
+ 
+ 	if (ret > 0)
+ 		ret = 0;
+ 	else if (nr_parts)
+-		ret = add_mtd_partitions(parent, parts, nr_parts);
+-	else if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
+-		ret = mtd_add_partition(parent, mtd->name, 0, MTDPART_SIZ_FULL, NULL);
++		ret = add_mtd_partitions(mtd, parts, nr_parts);
++	else if (!device_is_registered(&mtd->dev))
++		ret = add_mtd_device(mtd);
++	else
++		ret = 0;
+ 
+ 	if (ret)
+ 		goto out;
+@@ -1158,14 +1102,13 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 		register_reboot_notifier(&mtd->reboot_notifier);
+ 	}
+ 
+-	return 0;
+ out:
+-	nvmem_unregister(mtd->otp_user_nvmem);
+-	nvmem_unregister(mtd->otp_factory_nvmem);
++	if (ret) {
++		nvmem_unregister(mtd->otp_user_nvmem);
++		nvmem_unregister(mtd->otp_factory_nvmem);
++	}
+ 
+-	del_mtd_partitions(mtd);
+-
+-	if (device_is_registered(&mtd->dev)) {
++	if (ret && device_is_registered(&mtd->dev)) {
+ 		err = del_mtd_device(mtd);
+ 		if (err)
+ 			pr_err("Error when deleting MTD device (%d)\n", err);
+@@ -1324,7 +1267,8 @@ int __get_mtd_device(struct mtd_info *mtd)
+ 		mtd = mtd->parent;
+ 	}
+ 
+-	kref_get(&master->refcnt);
++	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
++		kref_get(&master->refcnt);
+ 
+ 	return 0;
+ }
+@@ -1418,7 +1362,8 @@ void __put_mtd_device(struct mtd_info *mtd)
+ 		mtd = parent;
+ 	}
+ 
+-	kref_put(&master->refcnt, mtd_device_release);
++	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
++		kref_put(&master->refcnt, mtd_device_release);
+ 
+ 	module_put(master->owner);
+ 
+@@ -2585,16 +2530,6 @@ static int __init init_mtd(void)
+ 	if (ret)
+ 		goto err_reg;
+ 
+-	ret = class_register(&mtd_master_class);
+-	if (ret)
+-		goto err_reg2;
+-
+-	ret = alloc_chrdev_region(&mtd_master_devt, 0, MTD_MASTER_DEVS, "mtd_master");
+-	if (ret < 0) {
+-		pr_err("unable to allocate char dev region\n");
+-		goto err_chrdev;
+-	}
+-
+ 	mtd_bdi = mtd_bdi_init("mtd");
+ 	if (IS_ERR(mtd_bdi)) {
+ 		ret = PTR_ERR(mtd_bdi);
+@@ -2619,10 +2554,6 @@ static int __init init_mtd(void)
+ 	bdi_unregister(mtd_bdi);
+ 	bdi_put(mtd_bdi);
+ err_bdi:
+-	unregister_chrdev_region(mtd_master_devt, MTD_MASTER_DEVS);
+-err_chrdev:
+-	class_unregister(&mtd_master_class);
+-err_reg2:
+ 	class_unregister(&mtd_class);
+ err_reg:
+ 	pr_err("Error registering mtd class or bdi: %d\n", ret);
+@@ -2636,12 +2567,9 @@ static void __exit cleanup_mtd(void)
+ 	if (proc_mtd)
+ 		remove_proc_entry("mtd", NULL);
+ 	class_unregister(&mtd_class);
+-	class_unregister(&mtd_master_class);
+-	unregister_chrdev_region(mtd_master_devt, MTD_MASTER_DEVS);
+ 	bdi_unregister(mtd_bdi);
+ 	bdi_put(mtd_bdi);
+ 	idr_destroy(&mtd_idr);
+-	idr_destroy(&mtd_master_idr);
+ }
+ 
+ module_init(init_mtd);
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index 2258d31c5aa6..b014861a06a6 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -8,7 +8,7 @@ extern struct mutex mtd_table_mutex;
+ extern struct backing_dev_info *mtd_bdi;
+ 
+ struct mtd_info *__mtd_next_device(int i);
+-int __must_check add_mtd_device(struct mtd_info *mtd, bool partitioned);
++int __must_check add_mtd_device(struct mtd_info *mtd);
+ int del_mtd_device(struct mtd_info *mtd);
+ int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
+ int del_mtd_partitions(struct mtd_info *);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 5a3db36d734e..994e8c51e674 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -86,7 +86,8 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 	 * parent conditional on that option. Note, this is a way to
+ 	 * distinguish between the parent and its partitions in sysfs.
+ 	 */
+-	child->dev.parent = &parent->dev;
++	child->dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd_is_partition(parent) ?
++			    &parent->dev : parent->dev.parent;
+ 	child->dev.of_node = part->of_node;
+ 	child->parent = parent;
+ 	child->part.offset = part->offset;
+@@ -242,7 +243,7 @@ static int mtd_add_partition_attrs(struct mtd_info *new)
+ }
+ 
+ int mtd_add_partition(struct mtd_info *parent, const char *name,
+-		      long long offset, long long length, struct mtd_info **out)
++		      long long offset, long long length)
+ {
+ 	struct mtd_info *master = mtd_get_master(parent);
+ 	u64 parent_size = mtd_is_partition(parent) ?
+@@ -275,15 +276,12 @@ int mtd_add_partition(struct mtd_info *parent, const char *name,
+ 	list_add_tail(&child->part.node, &parent->partitions);
+ 	mutex_unlock(&master->master.partitions_lock);
+ 
+-	ret = add_mtd_device(child, true);
++	ret = add_mtd_device(child);
+ 	if (ret)
+ 		goto err_remove_part;
+ 
+ 	mtd_add_partition_attrs(child);
+ 
+-	if (out)
+-		*out = child;
+-
+ 	return 0;
+ 
+ err_remove_part:
+@@ -415,7 +413,7 @@ int add_mtd_partitions(struct mtd_info *parent,
+ 		list_add_tail(&child->part.node, &parent->partitions);
+ 		mutex_unlock(&master->master.partitions_lock);
+ 
+-		ret = add_mtd_device(child, true);
++		ret = add_mtd_device(child);
+ 		if (ret) {
+ 			mutex_lock(&master->master.partitions_lock);
+ 			list_del(&child->part.node);
+@@ -592,6 +590,9 @@ static int mtd_part_of_parse(struct mtd_info *master,
+ 	int ret, err = 0;
+ 
+ 	dev = &master->dev;
++	/* Use parent device (controller) if the top level MTD is not registered */
++	if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) && !mtd_is_partition(master))
++		dev = master->dev.parent;
+ 
+ 	np = mtd_get_of_node(master);
+ 	if (mtd_is_partition(master))
+@@ -710,7 +711,6 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		if (ret < 0 && !err)
+ 			err = ret;
+ 	}
+-
+ 	return err;
+ }
+ 
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 5daf80df9e89..b74a539ec581 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -108,7 +108,7 @@ extern void deregister_mtd_parser(struct mtd_part_parser *parser);
+ 		      deregister_mtd_parser)
+ 
+ int mtd_add_partition(struct mtd_info *master, const char *name,
+-		      long long offset, long long length, struct mtd_info **part);
++		      long long offset, long long length);
+ int mtd_del_partition(struct mtd_info *master, int partno);
+ uint64_t mtd_get_device_size(const struct mtd_info *mtd);
+ 
+-- 
+2.48.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
