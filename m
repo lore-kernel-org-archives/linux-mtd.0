@@ -4,97 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F2AEC7115B
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 10:22:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16575C71157
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 10:34:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WLXItgXQSiqS6w+L8vVJc0QSNGWCoAMOtExbpIkMhzg=; b=DAjjGGH+bFTjpw
-	CpEUSV3fjbCDtCFGi6cwouVYBJbpLXPL+mPgWQgkPIjWKZB119ytkzvpqKXvw9PQLnJU6U8oNmdnC
-	Cgl/seJmHvCHqSV8IgSWJSd2aeP8FEc9ZpFVSJbeJNlsz9ksq4ea/KbEUlh7xfHVudWIm/D74WNGK
-	M8IEktBmvL5RAK6iAYvIfcmI4g5mm49NCqIwS/iLT8VCsoygcjvsd7bMPBd+o938eHFNyFP3t6cc/
-	5c77Mcv+kTMIsy5EjSkH50lub8zAlry/HrW552noJM+0+lrkO4CUVup6yLd/B+M7vm9/9A1+X5iFs
-	nCIvFyrCLWFIe9i+tWVg==;
+	List-Owner; bh=lowzZ8KZwUb3EGy6JrDpD9sTEXan6yoZjmtfmE0yKLM=; b=lHiLy4dFV7uFbH
+	4sObHf5agzMH8nzuJGOE8r5R9Kpcfu7rR9R76SXnYXUkIQBNkMoQSkcJw/7qsGf83B3w2tSnYlv58
+	4CHwjc4I3kzW/xYIcoHrjikO6goxmwlcOWlhdM8dw5wr+OxDCMXbL1+NGwAqtDdO/9q1pkG5isnLG
+	vCZjeHOaWEgIVN7L3RGvVtBOC617BKYh0kGJTTH0WdKQw9/28MLAZvlBajTCg7BWhpJrU4CZg3pN9
+	eQAgccNg7V6SLZDBGvJi3/q3Vxxaos8fxdLfaScQ5QbxMhAtMkYFJmTC1FLotQvCpHXUzANae9he9
+	qrAQpXRwIJpEE22/X3TQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRTSl-00000006ttT-41uw;
-	Tue, 17 Jun 2025 10:22:43 +0000
+	id 1uRTe7-00000006w0r-4AfB;
+	Tue, 17 Jun 2025 10:34:27 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRTCP-00000006rvN-1agv
+	id 1uRTTm-00000006uUp-2KSj
 	for linux-mtd@bombadil.infradead.org;
-	Tue, 17 Jun 2025 10:05:49 +0000
+	Tue, 17 Jun 2025 10:23:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=; b=UrxoqoWrBy0MKvA097SYuf7cET
-	+6ck5lpq/hn6vXzssN1L6bDWwxTLk/459ur/P+p3zLjXmXU1m9tnW35aK6FsiTL8DYUdtYXzTM0Ml
-	cDUAP6RyRFw/ppgqQEwZrnT0lRROkXVY7TZD2+coMTPqa/4vLvzpusappOKnvqmLM3MOvxvFppQdr
-	Gw7V9hOU4SWG9cLJKjhmrQO1n5r/jXkdvGMblLSNI1WmCduzTuVUbpF1DcaBmgdlunkx59h9FWX+7
-	eQtWOD29kzQgrLY7CnmO3rV1rQ2Gg2qmB/a4/uu4hSZLQqlPexhO8LW8XYHKzL2K87i8t3NmYzoGA
-	dHnn4PEA==;
-Received: from smtp-out2.suse.de ([195.135.223.131])
+	bh=mgKx+Rhufud+xyv84CkP5jQpT6pJPjmkPqgzNgofRZY=; b=FSYsu+Gg4nNFtI9uwLUdtPI714
+	CBZsJ4PtIJCPHTWEWACEny4NnldXcxRXRcQXodKP/2RvVuH5HWVx3UHgULvN/Ps55my8nwjFu+aFL
+	w0qS5wAz+0k87xu97QhyIxDg6dLNtbh8B8msprS73HOq64UIs8BB4B4xT63i/Mm0giFWgC/88DhPh
+	ImToNtOPRkeo8AziMnEtwImh37XzHWnJRI+7AGh7Jv8GKkTHGwscEaT0lNdcphXJL7ZkkskIRJgyp
+	8EnKJNeZYNnR+MF7X36HPYTrEneG+BNfuYOowNKHwMX9xqzgRjPq17wdrRyOMlyFuGJ+xa/m6n0bB
+	bHc/xftQ==;
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRTCJ-00000003lRM-0hMO
+	id 1uRTTk-00000003m8v-1atp
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Jun 2025 10:05:49 +0000
+	Tue, 17 Jun 2025 10:23:46 +0000
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0C73A1F766;
-	Tue, 17 Jun 2025 10:05:40 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C3955211C4;
+	Tue, 17 Jun 2025 10:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750154740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1750155821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
-	b=WQDfhpwm6V87NT9z/A204y/3daztxVfitFICfHOJXVLDwuByiO2e6vsTYBDE6FG4qqCUJX
-	3HzGzjWxaQtyqKsXL+IvjDNtRiiJiJLsgvCFneuBuoU1vbXUzQkZ8tq3BMjIC8HSg5ocP3
-	Gay+RGH2nYC05chnnbilbsgAdzN2LlQ=
+	bh=mgKx+Rhufud+xyv84CkP5jQpT6pJPjmkPqgzNgofRZY=;
+	b=0vtO1r83WRAKyen/sl74pMYrwEeINd06w3kouKw4XtQ9dQRPADLJ6CM5JYXunqVAkAUnGT
+	9C9SJGFB86ITz6p0vbKmlWMotVPtFVkgbtgpanOBzpBUJ5FoTXmS1oeJ2zbY4BlWg4Kjqe
+	3fQ7eXKJ56YE6xUi6J3Ype8YfurulIE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750154740;
+	s=susede2_ed25519; t=1750155821;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
-	b=NrBo2tY17T6YGKPQqIdgrtSHngXWXYF5et4lwD2HsUZ61mZfDbx42vWdF6Fc5le8jO5HvC
-	BvGwhDZ7rlXldwCQ==
-Authentication-Results: smtp-out2.suse.de;
+	bh=mgKx+Rhufud+xyv84CkP5jQpT6pJPjmkPqgzNgofRZY=;
+	b=MFXM112gzLzycqzUCeXn0pDIkj1ZAFT7HH7Jay35zGiLu/sJ0s7oopW+e62NvCfn15BsWZ
+	ycahuii9UnS1A+BA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750154740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1750155821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
-	b=WQDfhpwm6V87NT9z/A204y/3daztxVfitFICfHOJXVLDwuByiO2e6vsTYBDE6FG4qqCUJX
-	3HzGzjWxaQtyqKsXL+IvjDNtRiiJiJLsgvCFneuBuoU1vbXUzQkZ8tq3BMjIC8HSg5ocP3
-	Gay+RGH2nYC05chnnbilbsgAdzN2LlQ=
+	bh=mgKx+Rhufud+xyv84CkP5jQpT6pJPjmkPqgzNgofRZY=;
+	b=0vtO1r83WRAKyen/sl74pMYrwEeINd06w3kouKw4XtQ9dQRPADLJ6CM5JYXunqVAkAUnGT
+	9C9SJGFB86ITz6p0vbKmlWMotVPtFVkgbtgpanOBzpBUJ5FoTXmS1oeJ2zbY4BlWg4Kjqe
+	3fQ7eXKJ56YE6xUi6J3Ype8YfurulIE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750154740;
+	s=susede2_ed25519; t=1750155821;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=C/1izpnjb4TYfec4R1JpDo8StS/h7UWyf7xuC9Z4Hyw=;
-	b=NrBo2tY17T6YGKPQqIdgrtSHngXWXYF5et4lwD2HsUZ61mZfDbx42vWdF6Fc5le8jO5HvC
-	BvGwhDZ7rlXldwCQ==
+	bh=mgKx+Rhufud+xyv84CkP5jQpT6pJPjmkPqgzNgofRZY=;
+	b=MFXM112gzLzycqzUCeXn0pDIkj1ZAFT7HH7Jay35zGiLu/sJ0s7oopW+e62NvCfn15BsWZ
+	ycahuii9UnS1A+BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA00B13AE1;
-	Tue, 17 Jun 2025 10:05:39 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A59B613A69;
+	Tue, 17 Jun 2025 10:23:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rKyOOPM9UWi3FgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 17 Jun 2025 10:05:39 +0000
+	id 9gFqKC1CUWhcHAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 17 Jun 2025 10:23:41 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9891DA29F0; Tue, 17 Jun 2025 12:05:39 +0200 (CEST)
-Date: Tue, 17 Jun 2025 12:05:39 +0200
+	id 5CF2BA29F0; Tue, 17 Jun 2025 12:23:41 +0200 (CEST)
+Date: Tue, 17 Jun 2025 12:23:41 +0200
 From: Jan Kara <jack@suse.cz>
 To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>, 
@@ -146,15 +146,16 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
 	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 02/10] mm/nommu: use file_has_valid_mmap_hooks() helper
-Message-ID: <gtjkxyljepqjjahbxic5xulqdxqresuuyfdr2i2vcc4tewy5yp@ziyb3wcdlvyw>
+Subject: Re: [PATCH 09/10] fs: convert most other generic_file_*mmap() users
+ to .mmap_prepare()
+Message-ID: <gexpfonlstqrggxbwxlorn7c6qvt42e2dof6lahipfyfecgfru@vexc23jbaxwc>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <5f120b644b5890d1b50202d0f0d4c9f0d6b62873.1750099179.git.lorenzo.stoakes@oracle.com>
+ <08db85970d89b17a995d2cffae96fb4cc462377f.1750099179.git.lorenzo.stoakes@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5f120b644b5890d1b50202d0f0d4c9f0d6b62873.1750099179.git.lorenzo.stoakes@oracle.com>
+In-Reply-To: <08db85970d89b17a995d2cffae96fb4cc462377f.1750099179.git.lorenzo.stoakes@oracle.com>
 X-Spamd-Result: default: False [-0.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	FORGED_RECIPIENTS(2.00)[m:akpm@linux-foundation.org,m:axboe@kernel.dk,m:rodrigo.vivi@intel.com,m:airlied@gmail.com,m:simona@ffwll.ch,m:ericvh@kernel.org,m:lucho@ionkov.net,m:asmadeus@codewreck.org,m:linux_oss@crudebyte.com,m:marc.dionne@auristor.com,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:bcrl@kvack.org,m:amir73il@gmail.com,m:aivazian.tigran@gmail.com,m:kees@kernel.org,m:clm@fb.com,m:idryomov@gmail.com,m:jaharkes@cs.cmu.edu,m:coda@cs.cmu.edu,m:xiang@kernel.org,m:chao@kernel.org,m:zbestahu@gmail.com,m:dhavale@google.com,m:lihongbo22@huawei.com,m:linkinjeon@kernel.org,m:adilger.kernel@dilger.ca,m:jaegeuk@kernel.org,m:slava@dubeyko.com,m:frank.li@vivo.com,m:anton.ivanov@cambridgegreys.com,m:mikulas@artax.karlin.mff.cuni.cz,m:dwmw2@infradead.org,m:shaggy@kernel.org,m:trondmy@kernel.org,m:anna@kernel.org,m:konishi.ryusuke@gmail.com,m:mark@fasheh.com,m:jlbec@evilplan.org,m:me@bobcopeland.com,m:ronniesahlberg@gmail.com,m:chengzhihao1@huawei.com,m:cem@kernel.org,m:dlemoal@kernel.or
  g,m:naohiro.aota@wdc.com,m:jth@kernel.org,m:dan.j.williams@intel.com,m:willy@infradead.org,m:jannh@google.com,m:linux-aio@kvack.org,m:linux-mm@kvack.org,m:codalist@coda.cs.cmu.edu,s:linux-mtd@lists.infradead.org,s:linux-um@lists.infradead.org,s:ntfs3@lists.linux.dev,s:nvdimm@lists.linux.dev,s:ocfs2-devel@lists.linux.dev,s:devel@lists.orangefs.org,s:samba-technical@lists.samba.org,s:jfs-discussion@lists.sourceforge.net,s:linux-f2fs-devel@lists.sourceforge.net,s:linux-karma-devel@lists.sourceforge.net];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -178,10 +179,10 @@ X-Spamd-Result: default: False [-0.30 / 50.00];
 	RCPT_COUNT_GT_50(0.00)[113];
 	RCVD_TLS_LAST(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_110543_444677_3B94B405 
-X-CRM114-Status: GOOD (  23.06  )
+X-CRM114-CacheID: sfid-20250617_112344_602862_0A2638EB 
+X-CRM114-Status: GOOD (  29.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -198,46 +199,169 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon 16-06-25 20:33:21, Lorenzo Stoakes wrote:
-> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
-> callback"), the f_op->mmap() hook has been deprecated in favour of
-> f_op->mmap_prepare().
+On Mon 16-06-25 20:33:28, Lorenzo Stoakes wrote:
+> Update nearly all generic_file_mmap() and generic_file_readonly_mmap()
+> callers to use generic_file_mmap_prepare() and
+> generic_file_readonly_mmap_prepare() respectively.
 > 
-> Therefore, update the check for file operations supporting mmap() by using
-> the file_has_valid_mmap_hooks() helper function, which checks for either
-> f_op->mmap or f_op->mmap_prepare rather than checking only for f_op->mmap
-> directly.
+> We update blkdev, 9p, afs, erofs, ext2, nfs, ntfs3, smb, ubifs and vboxsf
+> file systems this way.
+> 
+> Remaining users we cannot yet update are ecryptfs, fuse and cramfs. The
+> former two are nested file systems that must support any underlying file
+> ssytem, and cramfs inserts a mixed mapping which currently requires a VMA.
+> 
+> Once all file systems have been converted to mmap_prepare(), we can then
+> update nested file systems.
 > 
 > Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-Maybe Fixes tag would be appropriate here?
-
-								Honza
+Overall the patch looks good. Just a couple of notes regarding pointless
+local variable being created...
 
 > ---
->  mm/nommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  block/fops.c           |  9 +++++----
+>  fs/9p/vfs_file.c       | 11 ++++++-----
+>  fs/afs/file.c          | 11 ++++++-----
+>  fs/erofs/data.c        | 16 +++++++++-------
+>  fs/ext2/file.c         | 12 +++++++-----
+>  fs/nfs/file.c          | 13 +++++++------
+>  fs/nfs/internal.h      |  2 +-
+>  fs/nfs/nfs4file.c      |  2 +-
+>  fs/ntfs3/file.c        | 15 ++++++++-------
+>  fs/smb/client/cifsfs.c | 12 ++++++------
+>  fs/smb/client/cifsfs.h |  4 ++--
+>  fs/smb/client/file.c   | 14 ++++++++------
+>  fs/ubifs/file.c        |  8 ++++----
+>  fs/vboxsf/file.c       |  8 ++++----
+>  14 files changed, 74 insertions(+), 63 deletions(-)
 > 
-> diff --git a/mm/nommu.c b/mm/nommu.c
-> index b624acec6d2e..38c22ea0a95c 100644
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -719,7 +719,7 @@ static int validate_mmap_request(struct file *file,
+> diff --git a/block/fops.c b/block/fops.c
+> index 1309861d4c2c..5a0ebc81e489 100644
+> --- a/block/fops.c
+> +++ b/block/fops.c
+> @@ -911,14 +911,15 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+>  	return error;
+>  }
 >  
->  	if (file) {
->  		/* files must support mmap */
-> -		if (!file->f_op->mmap)
-> +		if (!file_has_valid_mmap_hooks(file))
->  			return -ENODEV;
+> -static int blkdev_mmap(struct file *file, struct vm_area_struct *vma)
+> +static int blkdev_mmap_prepare(struct vm_area_desc *desc)
+>  {
+> +	struct file *file = desc->file;
+>  	struct inode *bd_inode = bdev_file_inode(file);
+
+I guess no need to create 'file' variable here since it has only one use in
+the line above...
+
 >  
->  		/* work out if what we've got could possibly be shared
-> -- 
-> 2.49.0
-> 
+>  	if (bdev_read_only(I_BDEV(bd_inode)))
+> -		return generic_file_readonly_mmap(file, vma);
+> +		return generic_file_readonly_mmap_prepare(desc);
+>  
+> -	return generic_file_mmap(file, vma);
+> +	return generic_file_mmap_prepare(desc);
+>  }
+>  
+>  const struct file_operations def_blk_fops = {
+
+...
+
+> @@ -492,16 +492,17 @@ static void afs_drop_open_mmap(struct afs_vnode *vnode)
+>  /*
+>   * Handle setting up a memory mapping on an AFS file.
+>   */
+> -static int afs_file_mmap(struct file *file, struct vm_area_struct *vma)
+> +static int afs_file_mmap_prepare(struct vm_area_desc *desc)
+>  {
+> +	struct file *file = desc->file;
+>  	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+
+Same comment about pointless local variable here as well.
+
+>  	int ret;
+>  
+>  	afs_add_open_mmap(vnode);
+>  
+> -	ret = generic_file_mmap(file, vma);
+> +	ret = generic_file_mmap_prepare(desc);
+>  	if (ret == 0)
+> -		vma->vm_ops = &afs_vm_ops;
+> +		desc->vm_ops = &afs_vm_ops;
+>  	else
+>  		afs_drop_open_mmap(vnode);
+>  	return ret;
+> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+> index 6a329c329f43..52dfd1a44c43 100644
+> --- a/fs/erofs/data.c
+> +++ b/fs/erofs/data.c
+> @@ -409,20 +409,22 @@ static const struct vm_operations_struct erofs_dax_vm_ops = {
+>  	.huge_fault	= erofs_dax_huge_fault,
+>  };
+>  
+> -static int erofs_file_mmap(struct file *file, struct vm_area_struct *vma)
+> +static int erofs_file_mmap_prepare(struct vm_area_desc *desc)
+>  {
+> +	struct file *file = desc->file;
+> +
+>  	if (!IS_DAX(file_inode(file)))
+
+And here...
+
+> -		return generic_file_readonly_mmap(file, vma);
+> +		return generic_file_readonly_mmap_prepare(desc);
+>  
+> -	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_MAYWRITE))
+> +	if ((desc->vm_flags & VM_SHARED) && (desc->vm_flags & VM_MAYWRITE))
+>  		return -EINVAL;
+>  
+> -	vma->vm_ops = &erofs_dax_vm_ops;
+> -	vm_flags_set(vma, VM_HUGEPAGE);
+> +	desc->vm_ops = &erofs_dax_vm_ops;
+> +	desc->vm_flags |= VM_HUGEPAGE;
+>  	return 0;
+>  }
+...
+> diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+> index 9835672267d2..2ed5173cfa73 100644
+> --- a/fs/smb/client/file.c
+> +++ b/fs/smb/client/file.c
+> @@ -2995,8 +2995,9 @@ static const struct vm_operations_struct cifs_file_vm_ops = {
+>  	.page_mkwrite = cifs_page_mkwrite,
+>  };
+>  
+> -int cifs_file_strict_mmap(struct file *file, struct vm_area_struct *vma)
+> +int cifs_file_strict_mmap_prepare(struct vm_area_desc *desc)
+>  {
+> +	struct file *file = desc->file;
+>  	int xid, rc = 0;
+>  	struct inode *inode = file_inode(file);
+
+Again pointless local variable 'file' here.
+
+>  
+> @@ -3005,16 +3006,17 @@ int cifs_file_strict_mmap(struct file *file, struct vm_area_struct *vma)
+>  	if (!CIFS_CACHE_READ(CIFS_I(inode)))
+>  		rc = cifs_zap_mapping(inode);
+>  	if (!rc)
+> -		rc = generic_file_mmap(file, vma);
+> +		rc = generic_file_mmap_prepare(desc);
+>  	if (!rc)
+> -		vma->vm_ops = &cifs_file_vm_ops;
+> +		desc->vm_ops = &cifs_file_vm_ops;
+>  
+>  	free_xid(xid);
+>  	return rc;
+>  }
+>  
+> -int cifs_file_mmap(struct file *file, struct vm_area_struct *vma)
+> +int cifs_file_mmap_prepare(struct vm_area_desc *desc)
+>  {
+> +	struct file *file = desc->file;
+>  	int rc, xid;
+
+And here (the only use is in cifs_revalidate_file(file)).
+
+								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
