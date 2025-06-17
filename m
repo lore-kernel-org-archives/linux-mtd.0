@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1C25C7115B
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 11:54:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C702C71136
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 12:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ha0hm3rkmgVQvkaq0h3Oy/1xQ8QL8dfXdvcV/DyFZMY=; b=H/1o+R2eU/3LGJ
-	ojzQQ3HD5TbdPBEu8//arxiatUkrwQZV3g5O2/xxHjfnCUeZOLIAcEXVdRizwe2mCjUBwlLJjofPG
-	F1lcUnFdMgg6ADstynb7wD291Dx5oGZzbIYRYN0dMHxqrtWBs6f0hgZJ5DxH81oqE62kPaJNbGTgw
-	cFT/UTKxYG3vpXTWy8N+pv/8F6UL+4g4V19pXy4Ezl+dDO75eMGE7b1nxYUUTUNx4LiSch+Ju1jLB
-	zN1dkIMkz2/3PMuho//OBRaTPmty5MKuaMD29WuefK4bRVc8iRztOLE1K3HqnqUlJKWO01C2EbfB6
-	H6E6DZcZavgwMEHs7PjQ==;
+	List-Owner; bh=4rgg22onqygB/eQruMH9ITAOw7qiEyHEdTO9GKk2+Yk=; b=jzTcgi4rhsT/Dl
+	sV/VayMRqVlZyGM+yWAe9V7HtSBs7syViLj0AynV8AzWtA7PE8ay3KN5LGgsztXsOpOyBoAWLckYE
+	UKeNeQsgjU5xCA315S8PzTlhZFultDWMGuxOxvzr99wBUYi8oeic8i4X8RNn/4VS4PgcoPA1/QD7y
+	ZEJUvEbLe9WnVT89exfmUrsKQY2bXqFUxXvjiXDqXlTYNorCLpAStqZYJwLPFMzw4vW/6jkkjoIdj
+	E6KOXsSX+tpOegAWuyiYMyp8ihREP4dkcvo2juqqLUkAyvvA4TsIkdSDxE/EzQn+UV8DAwH97VqEg
+	H17S4oSeTH/ukkVHi2Jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRUtw-000000075hm-3Odh;
-	Tue, 17 Jun 2025 11:54:52 +0000
+	id 1uRUz7-000000076nE-2KR7;
+	Tue, 17 Jun 2025 12:00:13 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRUtt-000000075gn-0vPx;
-	Tue, 17 Jun 2025 11:54:51 +0000
+	id 1uRUwh-000000076I1-3H9Q;
+	Tue, 17 Jun 2025 11:57:45 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8187D5C644F;
-	Tue, 17 Jun 2025 11:52:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE2BC4CEE3;
-	Tue, 17 Jun 2025 11:54:24 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 81BE95C3AD7;
+	Tue, 17 Jun 2025 11:55:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EC2DC4CEE3;
+	Tue, 17 Jun 2025 11:57:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750161287;
-	bh=FM4A89teoGTiVHD+mgfi0AiySK9n5DYBMecgMr0uDqg=;
+	s=k20201202; t=1750161462;
+	bh=T+hj+yayJhfzqGA9kWHW1UQw8dsCOqK3Vx6p1g+lWhs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tFaXplkY5nyo20ol4Egr1jKpFof+Bu6EVWj8rd7Q/XVflaJDEuUt2QBZbBOzt+ds9
-	 QqRJ0416pNcF2gR1cOk/fhlCLM2NyYyFsqO7E+6LcmkPsrh7dOxbot5r+EPV6Mf/Eg
-	 m8Y6DUqcdfGWwY+D64Xca2p2YAi1GLXZEZrvZUt4zBrfooL7qgslbeGTMTkIs72Kmi
-	 ZyPQ8xq03VfK0FOehVNSaD+X4yl6DS92oWcHFB7su60iMijW1l2mzbjqhQKi8Q2XlY
-	 I0aiDlWsnalkNnHvD2WZzlIylBsOw4cpNRmvr5us4RCENbN2fbk5X67yCW3LloR+n5
-	 oLveA9uaTcrqQ==
-Date: Tue, 17 Jun 2025 13:54:21 +0200
+	b=ANNRMLSMbFJxF0/0JcpxGnRgNC2cM3iQk05j0kIN5dUOf6a+6FhzXEhCV9tljSO6h
+	 v2e3uV6HAxpTWa31kRKsnVAXQkLyFD1xYm1QZjMvIFL3ouF6AXeudY39YUcGZrolsh
+	 RyM2TZ/EQMyqQ6Y6s4GUWKP0gK9gINzD7L4jwsfBCJ1suak/ya3jB5me4TnYO/YFrF
+	 BrbHmvsabgMYM9Mbit9yWCy+NDOo9GjZfXkkWr9NdZCIoi7MIoTDvDFU7neHyJvL+Q
+	 sCBOLJVwQyL5L44PlP9UgERzG7VA2X0BjHsxmPcW0plFtm6qxZnaOBFYXof6KFwTQp
+	 Bv2/tmMRJtG5w==
+Date: Tue, 17 Jun 2025 13:57:17 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Jan Kara <jack@suse.cz>
 Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
@@ -93,18 +93,18 @@ Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
 	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 09/10] fs: convert most other generic_file_*mmap() users
- to .mmap_prepare()
-Message-ID: <20250617-allenfalls-brummen-3ce2da5794f8@brauner>
+Subject: Re: [PATCH 10/10] fs: replace mmap hook with .mmap_prepare for
+ simple mappings
+Message-ID: <20250617-karibus-abgrenzen-e534b9acd4c7@brauner>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <08db85970d89b17a995d2cffae96fb4cc462377f.1750099179.git.lorenzo.stoakes@oracle.com>
- <gexpfonlstqrggxbwxlorn7c6qvt42e2dof6lahipfyfecgfru@vexc23jbaxwc>
+ <f528ac4f35b9378931bd800920fee53fc0c5c74d.1750099179.git.lorenzo.stoakes@oracle.com>
+ <6nktgdc7ygt6hncfnl33d2jlwvlydspiiklwf6oxiqxxcjhzs2@j6f36ktyv774>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <gexpfonlstqrggxbwxlorn7c6qvt42e2dof6lahipfyfecgfru@vexc23jbaxwc>
+In-Reply-To: <6nktgdc7ygt6hncfnl33d2jlwvlydspiiklwf6oxiqxxcjhzs2@j6f36ktyv774>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_045449_345549_ACBB6B01 
-X-CRM114-Status: GOOD (  25.83  )
+X-CRM114-CacheID: sfid-20250617_045743_902911_ED6F7960 
+X-CRM114-Status: GOOD (  22.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,104 +121,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 17, 2025 at 12:23:41PM +0200, Jan Kara wrote:
-> On Mon 16-06-25 20:33:28, Lorenzo Stoakes wrote:
-> > Update nearly all generic_file_mmap() and generic_file_readonly_mmap()
-> > callers to use generic_file_mmap_prepare() and
-> > generic_file_readonly_mmap_prepare() respectively.
+On Tue, Jun 17, 2025 at 12:28:17PM +0200, Jan Kara wrote:
+> On Mon 16-06-25 20:33:29, Lorenzo Stoakes wrote:
+> > Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> > callback"), the f_op->mmap() hook has been deprecated in favour of
+> > f_op->mmap_prepare().
 > > 
-> > We update blkdev, 9p, afs, erofs, ext2, nfs, ntfs3, smb, ubifs and vboxsf
-> > file systems this way.
+> > This callback is invoked in the mmap() logic far earlier, so error handling
+> > can be performed more safely without complicated and bug-prone state
+> > unwinding required should an error arise.
 > > 
-> > Remaining users we cannot yet update are ecryptfs, fuse and cramfs. The
-> > former two are nested file systems that must support any underlying file
-> > ssytem, and cramfs inserts a mixed mapping which currently requires a VMA.
+> > This hook also avoids passing a pointer to a not-yet-correctly-established
+> > VMA avoiding any issues with referencing this data structure.
 > > 
-> > Once all file systems have been converted to mmap_prepare(), we can then
-> > update nested file systems.
+> > It rather provides a pointer to the new struct vm_area_desc descriptor type
+> > which contains all required state and allows easy setting of required
+> > parameters without any consideration needing to be paid to locking or
+> > reference counts.
+> > 
+> > Note that nested filesystems like overlayfs are compatible with an
+> > .mmap_prepare() callback since commit bb666b7c2707 ("mm: add mmap_prepare()
+> > compatibility layer for nested file systems").
+> > 
+> > In this patch we apply this change to file systems with relatively simple
+> > mmap() hook logic - exfat, ceph, f2fs, bcachefs, zonefs, btrfs, ocfs2,
+> > orangefs, nilfs2, romfs, ramfs and aio.
 > > 
 > > Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 > 
-> Overall the patch looks good. Just a couple of notes regarding pointless
-> local variable being created...
+> Two small nits below. Otherwise feel free to add:
 > 
-> > ---
-> >  block/fops.c           |  9 +++++----
-> >  fs/9p/vfs_file.c       | 11 ++++++-----
-> >  fs/afs/file.c          | 11 ++++++-----
-> >  fs/erofs/data.c        | 16 +++++++++-------
-> >  fs/ext2/file.c         | 12 +++++++-----
-> >  fs/nfs/file.c          | 13 +++++++------
-> >  fs/nfs/internal.h      |  2 +-
-> >  fs/nfs/nfs4file.c      |  2 +-
-> >  fs/ntfs3/file.c        | 15 ++++++++-------
-> >  fs/smb/client/cifsfs.c | 12 ++++++------
-> >  fs/smb/client/cifsfs.h |  4 ++--
-> >  fs/smb/client/file.c   | 14 ++++++++------
-> >  fs/ubifs/file.c        |  8 ++++----
-> >  fs/vboxsf/file.c       |  8 ++++----
-> >  14 files changed, 74 insertions(+), 63 deletions(-)
-> > 
-> > diff --git a/block/fops.c b/block/fops.c
-> > index 1309861d4c2c..5a0ebc81e489 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -911,14 +911,15 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
-> >  	return error;
-> >  }
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> > diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> > index 60a621b00c65..37522137c380 100644
+> > --- a/fs/ceph/addr.c
+> > +++ b/fs/ceph/addr.c
+> > @@ -2330,13 +2330,14 @@ static const struct vm_operations_struct ceph_vmops = {
+> >  	.page_mkwrite	= ceph_page_mkwrite,
+> >  };
 > >  
-> > -static int blkdev_mmap(struct file *file, struct vm_area_struct *vma)
-> > +static int blkdev_mmap_prepare(struct vm_area_desc *desc)
+> > -int ceph_mmap(struct file *file, struct vm_area_struct *vma)
+> > +int ceph_mmap_prepare(struct vm_area_desc *desc)
 > >  {
 > > +	struct file *file = desc->file;
-> >  	struct inode *bd_inode = bdev_file_inode(file);
+> >  	struct address_space *mapping = file->f_mapping;
 > 
-> I guess no need to create 'file' variable here since it has only one use in
-> the line above...
+> Pointless local variable here...
 
 Agreed, fixed in-tree.
 
-> > -static int afs_file_mmap(struct file *file, struct vm_area_struct *vma)
-> > +static int afs_file_mmap_prepare(struct vm_area_desc *desc)
+> > -static int exfat_file_mmap(struct file *file, struct vm_area_struct *vma)
+> > +static int exfat_file_mmap_prepare(struct vm_area_desc *desc)
 > >  {
 > > +	struct file *file = desc->file;
-> >  	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
 > 
-> Same comment about pointless local variable here as well.
+> Missing empty line here.
 
-Same.
-
-> > -static int erofs_file_mmap(struct file *file, struct vm_area_struct *vma)
-> > +static int erofs_file_mmap_prepare(struct vm_area_desc *desc)
-> >  {
-> > +	struct file *file = desc->file;
-> > +
-> >  	if (!IS_DAX(file_inode(file)))
-> 
-> And here...
-
-Same.
-
-> > -int cifs_file_strict_mmap(struct file *file, struct vm_area_struct *vma)
-> > +int cifs_file_strict_mmap_prepare(struct vm_area_desc *desc)
-> >  {
-> > +	struct file *file = desc->file;
-> >  	int xid, rc = 0;
-> >  	struct inode *inode = file_inode(file);
-> 
-> Again pointless local variable 'file' here.
-
-Same.
-
-> > -int cifs_file_mmap(struct file *file, struct vm_area_struct *vma)
-> > +int cifs_file_mmap_prepare(struct vm_area_desc *desc)
-> >  {
-> > +	struct file *file = desc->file;
-> >  	int rc, xid;
-> 
-> And here (the only use is in cifs_revalidate_file(file)).
-
-Same.
+Fixed in-tree.
 
 ______________________________________________________
 Linux MTD discussion mailing list
