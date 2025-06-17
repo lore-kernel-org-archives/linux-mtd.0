@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFC1BC71155
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 05:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 517B8C7114A
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 05:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vXSDb3+1pS975srQEYUM3er8kh4X+gD0gN31vP5wHEc=; b=3rSefddqvOO3jD
-	/0LD0aTYjbWjaiC/MHjfnoNl5KNPwyjFeOUmD7QMJLuQGAsmIsf9pDXKWq0Zqud+t0qD2P1CFfisx
-	OODSsTcL+WuHvF7EBqARCyD0B3sz89ZvfTvGrx3JPiTvSk7BKeWgMsiSf2jPoClpqjUL24Ee1eyZh
-	gj6DogrVku6WZqTXF2UoQXNtoJ1RS9IOt6lCZo+eZ5FWXh18f3GZgfRD/XuDWecgxYyDPek8WJfQn
-	sWrvgXCJbSxPaXe6fz+cWPrybHRGbT0Vp25+PlITXce++fyZOGH8lpCIfD/A3fXRtjb2i/x1NCeOU
-	x7PpKRETTBIBOgp5W/2A==;
+	List-Owner; bh=iuqL4xApLDNoFhD4gRfFONudaR/0fhSPOWYsC1Ft7nQ=; b=VzpnyFXG6v26RS
+	cpsESbxAgrEys50Mq0taJf1FJT2VCmZiOPRpJCsYs0K9/7W4z8RLJRvmUi6U6+mDQcOaG7wY8O8ss
+	7p+ii9F5bvgdNt4nmNYsld5xzsZSn/9Li3mfegybPQIgPNerJXTlzthAaQChpZrh9F4gdS0DQSiqB
+	1ErdR0uHOxvPHYqJKWQ4inE5sqneCNlz4/HbFei9Kc/oi1bIbyd/CoS8cMlg6qJknAOgMquTU0yH/
+	dJbeeqV8kzVEl15wKMrifpYvO61fpNCDcSGX/56sc7LLcBU3wtBIMcT8TsXYJ6LzU6diSpbropBCw
+	2AjEMz35MU7JdPIE9Q1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uROaf-00000006E9s-0kAE;
-	Tue, 17 Jun 2025 05:10:33 +0000
+	id 1uROba-00000006ETf-3Hwb;
+	Tue, 17 Jun 2025 05:11:30 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uROac-00000006E8g-3Ody;
-	Tue, 17 Jun 2025 05:10:30 +0000
-Date: Mon, 16 Jun 2025 22:10:30 -0700
+	id 1uRObY-00000006ERs-1HY9;
+	Tue, 17 Jun 2025 05:11:28 +0000
+Date: Mon, 16 Jun 2025 22:11:28 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -112,14 +112,14 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
 	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
 	linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 01/10] mm: rename call_mmap/mmap_prepare to
- vfs_mmap/mmap_prepare
-Message-ID: <aFD4xtpot22xvTEq@infradead.org>
+Subject: Re: [PATCH 03/10] fs: consistently use file_has_valid_mmap_hooks()
+ helper
+Message-ID: <aFD5AP7B80np-Szz@infradead.org>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
+ <b68145b609532e62bab603dd9686faa6562046ec.1750099179.git.lorenzo.stoakes@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
+In-Reply-To: <b68145b609532e62bab603dd9686faa6562046ec.1750099179.git.lorenzo.stoakes@oracle.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -136,21 +136,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 16, 2025 at 08:33:20PM +0100, Lorenzo Stoakes wrote:
-> The call_mmap() function violates the existing convention in
-> include/linux/fs.h whereby invocations of virtual file system hooks is
-> performed by functions prefixed with vfs_xxx().
+On Mon, Jun 16, 2025 at 08:33:22PM +0100, Lorenzo Stoakes wrote:
+> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> callback"), the f_op->mmap() hook has been deprecated in favour of
+> f_op->mmap_prepare().
 > 
-> Correct this by renaming call_mmap() to vfs_mmap(). This also avoids
-> confusion as to the fact that f_op->mmap_prepare may be invoked here.
+> Additionally, commit bb666b7c2707 ("mm: add mmap_prepare() compatibility
+> layer for nested file systems") permits the use of the .mmap_prepare() hook
+> even in nested filesystems like overlayfs.
 > 
-> Also rename __call_mmap_prepare() function to vfs_mmap_prepare() and adjust
-> to accept a file parameter, this is useful later for nested file systems.
+> There are a number of places where we check only for f_op->mmap - this is
+> incorrect now mmap_prepare exists, so update all of these to use the
+> general helper file_has_valid_mmap_hooks().
 > 
-> Finally, fix up the VMA userland tests and ensure the mmap_prepare -> mmap
-> shim is implemented there.
+> Most notably, this updates the elf logic to allow for the ability to
+> execute binaries on filesystems which have the .mmap_prepare hook, but
+> additionally we update nested filesystems.
 
-Can we please just kill these silly call_* helpers instead?
+Can you please give the function a better name before spreading it?
+file operations aren't hooks by any classic definition.
 
 
 ______________________________________________________
