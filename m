@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA0FAC73C66
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFE3EC7115E
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 15:46:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,48 +12,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ugEpUD+tjxPR43DH0ap+147bl3FOXHaOEMXpehNBREA=; b=3E2h4PllrxIVUM
-	7mEMjpDjghdmdu/2W3AU7HwHHFjWbRmmqW8A5Z2QyEkNqW2YWqTQEDbyquhzx2KBWHdd40KsKkSSc
-	hDq7dt7uq2xnasJC58xfYF+yPAPu4F0uCuhK/6jbOvSOGasXN7ofQYbaVVDctPJdXLUPoi1wEThAo
-	wO7iAVxykB3LgQ2Q0BAYd84J4KU+ffkjzoKTk+b1TjVntUWr8FaAWcTfUlqnBrbzgfUP491mjsgOc
-	J9DNiTuRpjuI0vIbSxlspFz+L+PtwWKQ1v8hGXDyqLQ8Gtj2fkasPYyfZjU+eVQ6maDmzH0ON5t2r
-	j2Cyuvaok9zA8CEXkvcw==;
+	List-Owner; bh=H/vwcWy1YuVvq9JpLjL2556HvVf5njQRKokVJFpmBlg=; b=Xl8E3tFzqRrxNW
+	9YrfnMCPsY2pNp8vy6YaiWAMBD97cBuRgDtJBXWvO0QCBqLsNYaF6EVdUn7YrMnuE5i8bKA/Bndn0
+	p96oz6j/PBIxv6xdYl415QWNx4i50Zx6LeqSpG0pFoqKQwbEAB9sjP7/1vzL9+kyuU76yBMNSK1qu
+	TvFyRiMmW8UHCzrFgsq5cE+G9zat8MtU5E9mYjtvc/9kE5vz/wNG9Ju8JpmEimu1RRflrYoK6CWoG
+	M0cd3yN+/4Yezh84Ek0RSsTSShmAG409DOSODc2oBFAyRJXjdLN+/5FDvfORp85jnelC/GLx5VRXo
+	8I7DhvOjafy6DqJGpCxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRYWE-00000007m5p-2pN0;
-	Tue, 17 Jun 2025 15:46:38 +0000
+	id 1uRYWD-00000007m4m-0Mwi;
+	Tue, 17 Jun 2025 15:46:37 +0000
 Received: from mgamail.intel.com ([198.175.65.15])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRWqf-00000007SBC-0nRo
+	id 1uRWqR-00000007S97-46jv
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Jun 2025 13:59:38 +0000
+	Tue, 17 Jun 2025 13:59:25 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1750168777; x=1781704777;
+  t=1750168764; x=1781704764;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=MkAaleCQCNNCm9AdIhhOV9O8nKl/pJB/jBgEA4uGWKQ=;
-  b=hOKbt8pN8zyGQf2D3Lu6pUGg6Hflr54GU4lcj2ee5MyDxvfKj2sFmzNs
-   CzCGMlO3M6lVwFdb9F1CknxEbqZKPmllIobT40X5CO3/B3Ijkf5yJD8Bl
-   DQ4Ev9FtD8HTZMiKHJW0RTZSc3ebWhDIDC31xVVwPWjz59qRXKkeMHcQu
-   ZMk455HDahZ63RmWQuLIE9/tA93z0Y2L73j3uCdxnBGrg7XqMzC7ZETPz
-   fAFvm+kv3qLk6dEtH6g2mxRY9b4LLtdNjcoPhv0JjbolYbr75HaJ5QGr7
-   vy9DiKz7KeVeKLW3Y3nKShyYbh7GepYCeXaqdMzEA9NxwOKQ7SCXa0FLM
-   w==;
-X-CSE-ConnectionGUID: 2HhLmPqoRWaYy2ITv/D6zA==
-X-CSE-MsgGUID: qPGpbHDVS321vS15RtI35A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11467"; a="56026556"
+  bh=WvLWJRAv8idelb+wbiysTqm+mBTnrzkj5Bl282lOSrk=;
+  b=ZSNZkArCJfph6hbnFLvRk8WcC5G+bvpMZUr9pRC3truUfyyBB0qv+6Jt
+   ptWqiFNzZ4VX5tyLzi3NUpCgjLjjkrTmZOPSbveWZaq0ih4DKU9fviHLz
+   rq5ypT8HV8IhvANz2Wa45FdBdLb3ZSZ3KvgRMcEjPB1CZDP/lxBfF5Kxu
+   fBCjjl0Y8+d4FHWaY6bHBnHgZ5zALSVVxZM1NtVFoNxRPjhYpZlMuUyiC
+   DEIiK0Ul61RNoGfGygiDcTdV79qQGpm+tvdD2k21JC7IY/ouj12f0a1ZE
+   nwRYWcx9rv9c9yFDWH49QtFLGwWL2zrvObaSkMGM4Ec5bEaAMbQhqPPhb
+   Q==;
+X-CSE-ConnectionGUID: cs65L5C6QFKUEDSc2WLaTQ==
+X-CSE-MsgGUID: XiAUGF40SQCN9I4xDaTCmg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11467"; a="56026516"
 X-IronPort-AV: E=Sophos;i="6.16,243,1744095600"; 
-   d="scan'208";a="56026556"
+   d="scan'208";a="56026516"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2025 06:59:37 -0700
-X-CSE-ConnectionGUID: PbhM4P2yTgCbvnOoS790gA==
-X-CSE-MsgGUID: JXDj5XcwRMOH719PZLtkww==
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2025 06:59:23 -0700
+X-CSE-ConnectionGUID: +TZD++AcRbmdfhPS3xwoHg==
+X-CSE-MsgGUID: O1/1xVXgTTuOECAmH2hHRg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.16,243,1744095600"; 
-   d="scan'208";a="153739519"
+   d="scan'208";a="153739481"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2025 06:59:30 -0700
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2025 06:59:17 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -77,17 +77,19 @@ Cc: Reuven Abliyev <reuven.abliyev@intel.com>,
 	dri-devel@lists.freedesktop.org,
 	intel-gfx@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Alexander Usyskin <alexander.usyskin@intel.com>
-Subject: [PATCH v13 05/10] mtd: intel-dg: align 64bit read and write
-Date: Tue, 17 Jun 2025 16:45:27 +0300
-Message-ID: <20250617134532.3768283-6-alexander.usyskin@intel.com>
+	Alexander Usyskin <alexander.usyskin@intel.com>,
+	Tomas Winkler <tomasw@gmail.com>,
+	Vitaly Lubart <lubvital@gmail.com>
+Subject: [PATCH v13 03/10] mtd: intel-dg: implement access functions
+Date: Tue, 17 Jun 2025 16:45:25 +0300
+Message-ID: <20250617134532.3768283-4-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250617134532.3768283-1-alexander.usyskin@intel.com>
 References: <20250617134532.3768283-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_065937_275266_12FB8AE2 
-X-CRM114-Status: GOOD (  11.20  )
+X-CRM114-CacheID: sfid-20250617_065924_053999_84BCFCBE 
+X-CRM114-Status: GOOD (  17.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,69 +106,250 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-GSC NVM controller HW errors on quad access overlapping 1K border.
-Align 64bit read and write to avoid readq/writeq over 1K border.
+Implement read(), erase() and write() functions.
 
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
+CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Reviewed-by: Raag Jadav <raag.jadav@intel.com>
 Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Co-developed-by: Tomas Winkler <tomasw@gmail.com>
+Signed-off-by: Tomas Winkler <tomasw@gmail.com>
+Co-developed-by: Vitaly Lubart <lubvital@gmail.com>
+Signed-off-by: Vitaly Lubart <lubvital@gmail.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/mtd/devices/mtd_intel_dg.c | 35 ++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ drivers/mtd/devices/mtd_intel_dg.c | 197 +++++++++++++++++++++++++++++
+ 1 file changed, 197 insertions(+)
 
 diff --git a/drivers/mtd/devices/mtd_intel_dg.c b/drivers/mtd/devices/mtd_intel_dg.c
-index 6d971fb77938..97e1dc1ada5d 100644
+index 478dd2b158e3..4d6e2c009b45 100644
 --- a/drivers/mtd/devices/mtd_intel_dg.c
 +++ b/drivers/mtd/devices/mtd_intel_dg.c
-@@ -246,6 +246,24 @@ static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
- 		len_s -= to_shift;
- 	}
+@@ -5,13 +5,16 @@
  
-+	if (!IS_ALIGNED(to, sizeof(u64)) &&
-+	    ((to ^ (to + len_s)) & GENMASK(31, 10))) {
-+		/*
-+		 * Workaround reads/writes across 1k-aligned addresses
-+		 * (start u32 before 1k, end u32 after)
-+		 * as this fails on hardware.
-+		 */
+ #include <linux/bitfield.h>
+ #include <linux/bits.h>
++#include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/intel_dg_nvm_aux.h>
+ #include <linux/io.h>
++#include <linux/io-64-nonatomic-lo-hi.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/string.h>
+ #include <linux/slab.h>
++#include <linux/sizes.h>
+ #include <linux/types.h>
+ 
+ struct intel_dg_nvm {
+@@ -91,6 +94,33 @@ static inline u32 idg_nvm_read32(struct intel_dg_nvm *nvm, u32 address)
+ 	return ioread32(base + NVM_TRIGGER_REG);
+ }
+ 
++static inline u64 idg_nvm_read64(struct intel_dg_nvm *nvm, u32 address)
++{
++	void __iomem *base = nvm->base;
++
++	iowrite32(address, base + NVM_ADDRESS_REG);
++
++	return readq(base + NVM_TRIGGER_REG);
++}
++
++static void idg_nvm_write32(struct intel_dg_nvm *nvm, u32 address, u32 data)
++{
++	void __iomem *base = nvm->base;
++
++	iowrite32(address, base + NVM_ADDRESS_REG);
++
++	iowrite32(data, base + NVM_TRIGGER_REG);
++}
++
++static void idg_nvm_write64(struct intel_dg_nvm *nvm, u32 address, u64 data)
++{
++	void __iomem *base = nvm->base;
++
++	iowrite32(address, base + NVM_ADDRESS_REG);
++
++	writeq(data, base + NVM_TRIGGER_REG);
++}
++
+ static int idg_nvm_get_access_map(struct intel_dg_nvm *nvm, u32 *access_map)
+ {
+ 	u32 fmstr4_addr;
+@@ -155,6 +185,173 @@ static int idg_nvm_is_valid(struct intel_dg_nvm *nvm)
+ 	return 0;
+ }
+ 
++__maybe_unused
++static unsigned int idg_nvm_get_region(const struct intel_dg_nvm *nvm, loff_t from)
++{
++	unsigned int i;
++
++	for (i = 0; i < nvm->nregions; i++) {
++		if ((nvm->regions[i].offset + nvm->regions[i].size - 1) >= from &&
++		    nvm->regions[i].offset <= from &&
++		    nvm->regions[i].size != 0)
++			break;
++	}
++
++	return i;
++}
++
++static ssize_t idg_nvm_rewrite_partial(struct intel_dg_nvm *nvm, loff_t to,
++				       loff_t offset, size_t len, const u32 *newdata)
++{
++	u32 data = idg_nvm_read32(nvm, to);
++
++	if (idg_nvm_error(nvm))
++		return -EIO;
++
++	memcpy((u8 *)&data + offset, newdata, len);
++
++	idg_nvm_write32(nvm, to, data);
++	if (idg_nvm_error(nvm))
++		return -EIO;
++
++	return len;
++}
++
++__maybe_unused
++static ssize_t idg_write(struct intel_dg_nvm *nvm, u8 region,
++			 loff_t to, size_t len, const unsigned char *buf)
++{
++	size_t len_s = len;
++	size_t to_shift;
++	size_t len8;
++	size_t len4;
++	ssize_t ret;
++	size_t to4;
++	size_t i;
++
++	idg_nvm_set_region_id(nvm, region);
++
++	to4 = ALIGN_DOWN(to, sizeof(u32));
++	to_shift = min(sizeof(u32) - ((size_t)to - to4), len);
++	if (to - to4) {
++		ret = idg_nvm_rewrite_partial(nvm, to4, to - to4, to_shift, (u32 *)&buf[0]);
++		if (ret < 0)
++			return ret;
++
++		buf += to_shift;
++		to += to_shift;
++		len_s -= to_shift;
++	}
++
++	len8 = ALIGN_DOWN(len_s, sizeof(u64));
++	for (i = 0; i < len8; i += sizeof(u64)) {
++		u64 data;
++
++		memcpy(&data, &buf[i], sizeof(u64));
++		idg_nvm_write64(nvm, to + i, data);
++		if (idg_nvm_error(nvm))
++			return -EIO;
++	}
++
++	len4 = len_s - len8;
++	if (len4 >= sizeof(u32)) {
 +		u32 data;
 +
-+		memcpy(&data, &buf[0], sizeof(u32));
-+		idg_nvm_write32(nvm, to, data);
++		memcpy(&data, &buf[i], sizeof(u32));
++		idg_nvm_write32(nvm, to + i, data);
 +		if (idg_nvm_error(nvm))
 +			return -EIO;
-+		buf += sizeof(u32);
-+		to += sizeof(u32);
-+		len_s -= sizeof(u32);
++		i += sizeof(u32);
++		len4 -= sizeof(u32);
 +	}
 +
- 	len8 = ALIGN_DOWN(len_s, sizeof(u64));
- 	for (i = 0; i < len8; i += sizeof(u64)) {
- 		u64 data;
-@@ -303,6 +321,23 @@ static ssize_t idg_read(struct intel_dg_nvm *nvm, u8 region,
- 		from += from_shift;
- 	}
- 
-+	if (!IS_ALIGNED(from, sizeof(u64)) &&
-+	    ((from ^ (from + len_s)) & GENMASK(31, 10))) {
-+		/*
-+		 * Workaround reads/writes across 1k-aligned addresses
-+		 * (start u32 before 1k, end u32 after)
-+		 * as this fails on hardware.
++	if (len4 > 0) {
++		ret = idg_nvm_rewrite_partial(nvm, to + i, 0, len4, (u32 *)&buf[i]);
++		if (ret < 0)
++			return ret;
++	}
++
++	return len;
++}
++
++__maybe_unused
++static ssize_t idg_read(struct intel_dg_nvm *nvm, u8 region,
++			loff_t from, size_t len, unsigned char *buf)
++{
++	size_t len_s = len;
++	size_t from_shift;
++	size_t from4;
++	size_t len8;
++	size_t len4;
++	size_t i;
++
++	idg_nvm_set_region_id(nvm, region);
++
++	from4 = ALIGN_DOWN(from, sizeof(u32));
++	from_shift = min(sizeof(u32) - ((size_t)from - from4), len);
++
++	if (from - from4) {
++		u32 data = idg_nvm_read32(nvm, from4);
++
++		if (idg_nvm_error(nvm))
++			return -EIO;
++		memcpy(&buf[0], (u8 *)&data + (from - from4), from_shift);
++		len_s -= from_shift;
++		buf += from_shift;
++		from += from_shift;
++	}
++
++	len8 = ALIGN_DOWN(len_s, sizeof(u64));
++	for (i = 0; i < len8; i += sizeof(u64)) {
++		u64 data = idg_nvm_read64(nvm, from + i);
++
++		if (idg_nvm_error(nvm))
++			return -EIO;
++
++		memcpy(&buf[i], &data, sizeof(data));
++	}
++
++	len4 = len_s - len8;
++	if (len4 >= sizeof(u32)) {
++		u32 data = idg_nvm_read32(nvm, from + i);
++
++		if (idg_nvm_error(nvm))
++			return -EIO;
++		memcpy(&buf[i], &data, sizeof(data));
++		i += sizeof(u32);
++		len4 -= sizeof(u32);
++	}
++
++	if (len4 > 0) {
++		u32 data = idg_nvm_read32(nvm, from + i);
++
++		if (idg_nvm_error(nvm))
++			return -EIO;
++		memcpy(&buf[i], &data, len4);
++	}
++
++	return len;
++}
++
++__maybe_unused
++static ssize_t
++idg_erase(struct intel_dg_nvm *nvm, u8 region, loff_t from, u64 len, u64 *fail_addr)
++{
++	void __iomem *base = nvm->base;
++	const u32 block = 0x10;
++	u64 i;
++
++	for (i = 0; i < len; i += SZ_4K) {
++		iowrite32(from + i, base + NVM_ADDRESS_REG);
++		iowrite32(region << 24 | block, base + NVM_ERASE_REG);
++		/* Since the writes are via sgunit
++		 * we cannot do back to back erases.
 +		 */
-+		u32 data = idg_nvm_read32(nvm, from);
-+
-+		if (idg_nvm_error(nvm))
-+			return -EIO;
-+		memcpy(&buf[0], &data, sizeof(data));
-+		len_s -= sizeof(u32);
-+		buf += sizeof(u32);
-+		from += sizeof(u32);
++		msleep(50);
 +	}
++	return len;
++}
 +
- 	len8 = ALIGN_DOWN(len_s, sizeof(u64));
- 	for (i = 0; i < len8; i += sizeof(u64)) {
- 		u64 data = idg_nvm_read64(nvm, from + i);
+ static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device)
+ {
+ 	u32 access_map = 0;
 -- 
 2.43.0
 
