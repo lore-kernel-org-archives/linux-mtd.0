@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CC0BC71136
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 11:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C09FC7115A
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jun 2025 11:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UNCdIX4SUdSEH9v+Z8ln6p9k3EILhI24Jpd3B5Yg+AM=; b=XXp/NGQs8hF2Vh
-	b9nOamMHx+BvCAAYdCN5eWcQy+XxxdAdnPtFnYQYvuyjKAqM5r502Xv1+jGae1VFETx97hUw4LJRz
-	UqsjD6tWdDN6PqHQ+O+cEUVFic4unM4TIbmUXprBlMbjHnWXHmrUHV8b5Lz69lSA2NraAh783mK0p
-	pUhlqZOi8R6Rc7jsOpiEJrDJ3emR4VfPV9BTMYlLVu/9INLSN43Pcu1mIQU9zk7NSq+yGHG6VtsW2
-	4XKiri+GivRzPEJl73gTQcQW24/JmU6aYZdntUN8NKqs/SY006DMDp8Lf2hvjseefM/YyTCOcGQgk
-	gir/RJmgrZSJ4EFhke3g==;
+	List-Owner; bh=9Jdesq9N6Jo4KR+hfXLChDMSZLKVDYBdaYVNWRVOoL0=; b=jq/F8GKnb1T8Mo
+	wF8J57SrixKCNswBVLIPygvSvhJej3ZeL37Du2o7a/r89T3wYrMcjN2lnrlQgOzccdaR/NyJTwZfK
+	FgZHQLuWiazzxWnjzA2fwthEb9ABzrKqqwCas6+zQOgJ1QSLXVMhAan50g9pt+IV3U10KFAzR4PBP
+	1WSi74rqPBupDJcBUvGPmJJi139RX11cfVn86TeKJa7uA4nAq31sSDkK6ZSrCqQe1zfQzm5BjInSJ
+	KkhvZ4mLaXna5VzpKpQWMSk7mnn8NOiYfCHdpkKEe6Kvd+IAC5L/y6lU0/OE9xFEhi1WSq/ILwtiz
+	UwZiyebxsGuGLSOcmvYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRUjW-000000074BV-3wQX;
-	Tue, 17 Jun 2025 11:44:06 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1uRUlS-000000074hc-2yEi;
+	Tue, 17 Jun 2025 11:46:06 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRUjU-000000074AJ-2z2K;
-	Tue, 17 Jun 2025 11:44:06 +0000
+	id 1uRUlQ-000000074gj-03ju;
+	Tue, 17 Jun 2025 11:46:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 77600A5000E;
-	Tue, 17 Jun 2025 11:44:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBABEC4CEE3;
-	Tue, 17 Jun 2025 11:43:39 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 27AE1448BF;
+	Tue, 17 Jun 2025 11:46:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E2A2C4CEE3;
+	Tue, 17 Jun 2025 11:45:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750160643;
-	bh=L4F/xAE2aK6xDa/QOHjQNfrbZ+ldwQ/xxyXW1QOlMqY=;
+	s=k20201202; t=1750160763;
+	bh=StMBYKo3IYdJvpDPP28DVy7nnfZ5iZVxiZzaq3OT7Gk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pglRVmSgsr6zVPCbLUxJit1HENECqtF+VKUELSm7DDvJTAXtRKCT9IonBR+vy/Pv+
-	 0KOSaKv4o78/UPxS/8WAJnS8XTOzb25DdQPvidNigl04+KbSBnUNdwYpWyPtjwUao2
-	 KVjU1eod47I9hfmAqu1HXs5NNkpj9ZmoKBDj9iEbYW+Iu4/Wq9ZnQvd/24RiYcCxU6
-	 ehoC5iKuDLDPBM85gO0tJ3zg29crJnqV/BFPF36D01IwNlhquecGAcdQBOYi0SfMgr
-	 iTlE7wC7JprLm5uHeq/OcqpnX3tE4351ouMdsYgL/8w6omsW5EvX+9RqdO82rtRfny
-	 Z7wz58Ln84EiQ==
-Date: Tue, 17 Jun 2025 13:43:36 +0200
+	b=LKZAHZAC9vUoLxqJ9kPw7y11d1vccxwHwO+yliNT9fTET47uPMg0jRAi/9kqollS2
+	 3j8hdqKrliDMUGiMhPw2i9dqvvInebMc6yA2lG7rgUpPGh/yxB0XWm17UXOqauVCc6
+	 Sagcwo9PDm6boEPAX0mIsK8saf5hKwJj0gSqfvOJcC35Ur+DJm/pIWbzY5aT2H/9YC
+	 9jut3Jn0eTCrVe+VIPmIgpnff0NScXFO+hEPUf2CI9uzx8gHglPFlh4VWh+b/JQt0q
+	 u82czCjtFdfG73DgONm2+NtA0s6Hq8jxAqKfQtbaaS8tUES6NzxY9nC8fYbzwdQBIB
+	 OrD8iaWSk5iyQ==
+Date: Tue, 17 Jun 2025 13:45:37 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
+To: Christoph Hellwig <hch@infradead.org>
 Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
 	Andrew Morton <akpm@linux-foundation.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
 	Jens Axboe <axboe@kernel.dk>, Jani Nikula <jani.nikula@linux.intel.com>, 
@@ -80,30 +80,31 @@ Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	Zhihao Cheng <chengzhihao1@huawei.com>, Hans de Goede <hdegoede@redhat.com>, 
 	Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
 	Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
-	Dan Williams <dan.j.williams@intel.com>, Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, 
-	Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, 
-	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org, linux-aio@kvack.org, 
-	linux-unionfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, 
-	ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+	Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-afs@lists.infradead.org, linux-aio@kvack.org, linux-unionfs@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, linux-btrfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
 	linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
 	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, 
 	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
 	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 04/10] fs/dax: make it possible to check dev dax support
- without a VMA
-Message-ID: <20250617-sehgewohnheiten-getagt-47e1ee917d4f@brauner>
+Subject: Re: [PATCH 06/10] fs/xfs: transition from deprecated .mmap hook to
+ .mmap_prepare
+Message-ID: <20250617-herdplatte-ringkampf-8e8b439e81f2@brauner>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <b09de1e8544384074165d92d048e80058d971286.1750099179.git.lorenzo.stoakes@oracle.com>
- <aFB-Do9FE6H9SsGY@casper.infradead.org>
+ <cba8b29ba5f225df8f63f50182d5f6e0fcf94456.1750099179.git.lorenzo.stoakes@oracle.com>
+ <aFD4M48RMZB0Hj-f@infradead.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aFB-Do9FE6H9SsGY@casper.infradead.org>
+In-Reply-To: <aFD4M48RMZB0Hj-f@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_044404_869877_78CBC829 
-X-CRM114-Status: GOOD (  15.40  )
+X-CRM114-CacheID: sfid-20250617_044604_097991_85A85A44 
+X-CRM114-Status: GOOD (  12.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,29 +121,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 16, 2025 at 09:26:54PM +0100, Matthew Wilcox wrote:
-> On Mon, Jun 16, 2025 at 08:33:23PM +0100, Lorenzo Stoakes wrote:
-> >  fs/ext4/file.c      |  2 +-
-> >  fs/xfs/xfs_file.c   |  3 ++-
+On Mon, Jun 16, 2025 at 10:08:03PM -0700, Christoph Hellwig wrote:
+> On Mon, Jun 16, 2025 at 08:33:25PM +0100, Lorenzo Stoakes wrote:
+> >  STATIC int
+> > -xfs_file_mmap(
+> > -	struct file		*file,
+> > -	struct vm_area_struct	*vma)
+> > +xfs_file_mmap_prepare(
+> > +	struct vm_area_desc *desc)
 > 
-> Both of these already have the inode from the file ...
+> Please stick to the existing alignment for the declarations.
 > 
-> > +static inline bool daxdev_mapping_supported(vm_flags_t vm_flags,
-> > +					    struct file *file,
-> > +					    struct dax_device *dax_dev)
-> >  {
-> > -	if (!(vma->vm_flags & VM_SYNC))
-> > +	if (!(vm_flags & VM_SYNC))
-> >  		return true;
-> > -	if (!IS_DAX(file_inode(vma->vm_file)))
-> > +	if (!IS_DAX(file_inode(file)))
-> >  		return false;
-> >  	return dax_synchronous(dax_dev);
-> 
-> ... and the only thing this function uses from the file is the inode.
-> So maybe pass in the inode rather than the file?
+> Otherwise this looks good.
 
-Agreed. I've converted this to take const struct inode *.
+Fixed in-tree.
 
 ______________________________________________________
 Linux MTD discussion mailing list
