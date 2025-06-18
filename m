@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AC73C73C66
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Jun 2025 13:08:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC991C7115A
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Jun 2025 13:28:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=EJ6ilxWLtxVqdvRwnpKd1CeRKFZZfAZYhxqUedy89uc=; b=ORw5GQh/uVFPu5
-	u49y2QB1qXxIDhXx8Vy0Edl075wVwh6u2GuyW1balaLtds0RMG154QCQODHVhTtlxdebnW+hW4Qua
-	dmk+PQy8c2cz3SyfFu+3yqUbThe5XL8yquQgJXMmE1tSFpHz5wDcVLhWSXg/mkbIdAmJTWkwi7lrD
-	uKaubVM/dwhsBfRG747ypOT1g128XyVIAzO6jwZ4Mf+Q4jyXNwShH39UQbttrQ1w8hGzUOy64ZmTG
-	ewgadxn9xNpiYuswUHpaKg1JcK2/Wcsg7TRCPKC1YTcblwsU/IZMfTGtqn8O0NJnaxfYDGnc0JzU7
-	Fdg5paa1uSOMrTzHDnxQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bux30KD9ZlG0ybSo4686qdm4kMLZYyLd40p6yjZgjkc=; b=mQHAGzWt2f9AHh
+	vw6ovG/HO/pSNpdbK0HhOmB8V39x2/TDudrlbyZE4aEG5NqfI1Pb5xEDIK7favUmbwrnAGtz9d/6C
+	tBhig2NAP8mNlG39nWiqqEMUlLTjxow9mVU/anBAGeGRh5UCLTG9lP1kmTTcEtkcccR8dvkztVyl3
+	GnFgKsaq4udbjp8FIQKBLulLMY/g2dHUQSRCG8wjZ5c3L8+tFGRK3To3zSOqm+wpRg1f5cOyrakRm
+	qgnQHoj3ho1vVVK7qamnAHvJeDl9CnPf2hVRXjMF0dS/REy+Wxq7j55g/rc7/unXCHhINg9RF4dPw
+	2bL0KH5dmwWk4C5Bv5wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRsWh-0000000AEWc-1dWw;
-	Wed, 18 Jun 2025 13:08:27 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1uRsqX-0000000AITp-1AUa;
+	Wed, 18 Jun 2025 13:28:57 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRr4d-00000009xXi-2Zzq
+	id 1uRrhd-0000000A5Rm-260P
+	for linux-mtd@bombadil.infradead.org;
+	Wed, 18 Jun 2025 12:15:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=WZWJRW69q+SS7CXANDbY2irrOFqYZ2dZT16BR2PmS8w=; b=RRgsPyAjrdoLHLs+0vzZMD+iKZ
+	H9S11AOBCRoXV2BPlsPOkC1tOBpmWtz+FnX9a2l1J2hq42/mzaKRUEeG+FDRH/oZfrYyutU6v/Sqk
+	mSM9Z46O8GV5BFSZY45gxb0HUnla4T5XVOeeQNgdmgp7aM9EmCJaxyVGlWs5y8DBrrsxqn4/EACXc
+	ii1DsufFWSQCOXRWO2ognFSQcyNT91LfVUgu/yb7RmVyQM8R/9kXFCje004px0G5y8SxCgUrmAHgd
+	mSAUCLl7UQVTZTLEB0qTphmoyvFbxSg7Byj6CY2a8Y0noNDmjR/7TTiz5+I+2P6YOXHKWe/NKSIdV
+	LX5nB9ww==;
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uRrhb-000000041gA-0ufB
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Jun 2025 11:35:25 +0000
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3a57c8e247cso3264993f8f.1
-        for <linux-mtd@lists.infradead.org>; Wed, 18 Jun 2025 04:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1750246521; x=1750851321; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=w/3t9gzDu5gcz3totM9Dz5vD1dhk8pE0+MfwGWIZiPY=;
-        b=Yr62K91iOsN1NU4uVXADgWtrFrJSV+JJ8UxN8aDo4eHZF2BLRGSqiuI+CeWW8ofRp/
-         YL0WTGKN0f3FuEwi6yOtfUocscl3L9qnvGuyWIYhA+AZbHJmmvGndhB/Hu0zXO0xzCFd
-         PCfPv6aVcuCyocpdVcSdnJdj3zjVOuRIjRcf+Yf6o2Q40I5ANI6LNKwAhZqPnxb1rYb8
-         AAcl46MMQEeaSMxTQZSBwf3TQ/bexkm5iYk5F8CgQHaAzPz5gW125ktsN1/FdmtkXh1W
-         NfYpWCiQJJbTDFZbn8I8eEQfg/7mngZSAW/owQm195iw9OxAHriGPJZPWXC9KT1eIWn8
-         zd6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750246521; x=1750851321;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w/3t9gzDu5gcz3totM9Dz5vD1dhk8pE0+MfwGWIZiPY=;
-        b=acxtFECUtPR5gizssG/b0e5Awpgra4qpT7ObyZ46tjAQb//DLOErXOEsW/1DOJNlbJ
-         V6z8jstgYqsYWFq4eqeywC0+wCfKvbcUeMxwKG1FGabUnR0iJvH3GX2sE9KSVZqu7LvO
-         s1oHh+jLGiRzmwaxGrr5GXh132+RRHzZGntfI1vHofRfLicwVshGbpvm3pmdt3b+VLoB
-         VcjKSFsG5CKT5HHqEOf0B4Ve3Biu1FRA9Y6VAHE/j7ijQ462bB7fVhYIaNe11oFkc9BA
-         hfHy+OacMFVFt31MSfi3SIhn71BEYfwZY7unZptxFRlYsKWIY5FbYmJzwU/I05oKuMpZ
-         mQug==
-X-Gm-Message-State: AOJu0YyJEUCf6Xh4BZQanSwaXJldUTqSko8571eN73U/oTcDxGtPIa9O
-	wBpwfDHgk851PMn1A24f7FXOxrt+ewzR+scm0EVKXMax56I8H6qVcaIxlmmkxe7HIrE=
-X-Gm-Gg: ASbGncuJHNFuE3QaNkLYc67ZvQTRGtZgz4N1LXIjZxN8DAQaiXyh+l0D+IoGKtE9NIp
-	xHGFx8/mFfneW/H5mFLi7wbJUTUrvdrAxmFLWMVDGXmXYmLnwAQqvVyWONbXHHMs4gIabnstQSO
-	QruzudrynCJNHXypUnWH1iSsJ/KkApa07w7BN3gxp6I7PdzIMw4ShDbDWc419irLgBHlJD1RJlP
-	hiq+3WpZIzKGRZkOpQTbeM4kZ/qREKexB3lbCh3W8+ctPfXAZ6C6dOz/nKE0mKsdXxBxTe034nu
-	MYmmPyF1AhdajlB2IEDegCKVtgUJOSYLfQPUBI/sxi3qWRX3UOZE28fokdv4O4tmM36N0mkgIEO
-	0Rk6Bv7BW/VKSU2Vc6VDkzRhhs7sdq9K/q3Ru12aYPdMy
-X-Google-Smtp-Source: AGHT+IFMrQSnrD2aOm8bRaNfhSUlYzNZdGYvuERh0UazXkurrO3hIJk2ehCa+mei6vsGVOTJed/PAw==
-X-Received: by 2002:a05:6000:26c1:b0:3a4:ee3f:e9a6 with SMTP id ffacd0b85a97d-3a572e898e3mr13639550f8f.54.1750246520984;
-        Wed, 18 Jun 2025 04:35:20 -0700 (PDT)
-Received: from pablomg-ThinkStation-P620.iliad.local (freebox.vlq16.iliad.fr. [213.36.7.13])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a547ecsm16910300f8f.17.2025.06.18.04.35.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 04:35:20 -0700 (PDT)
-From: Pablo Martin-Gomez <pmartin-gomez@freebox.fr>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	Pablo Martin-Gomez <pmartin-gomez@freebox.fr>
-Subject: [PATCH v2] mtd: spinand: fix memory leak of ECC engine conf
-Date: Wed, 18 Jun 2025 13:35:16 +0200
-Message-ID: <20250618113516.2137583-1-pmartin-gomez@freebox.fr>
-X-Mailer: git-send-email 2.43.0
+	Wed, 18 Jun 2025 12:15:40 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8791B4385A;
+	Wed, 18 Jun 2025 12:15:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1750248936;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WZWJRW69q+SS7CXANDbY2irrOFqYZ2dZT16BR2PmS8w=;
+	b=DtZWb7pzdH4o/7Nzgzkk0725atjbsimy+D+gYddGTforoC1m6f2p02mQUigg4nRo4H8KE3
+	y6u7d9s4F0P+LJwg1fYfzxnVwBEeoCAYZj5VKe5u3K9B9GJmy8iZzbNancOYNAlKA1T99B
+	46n9WbCrgkdJWgV9ejdAutMxJ8mCpjO3bAQqEU97XapNlA34mHgr4PxyJVRqXoNCok5r7A
+	+mT1Lis3KgB9RuyYn6Iz5CacPyQwc52Sgs4VMiZxcmzRIUyfO083HG3eoTEUY46+Ach5qS
+	lbw9TLqhDprM6IDcXWjQU5/FFZI2wisEkoMMLnKFLOGBmu5/09Ey5Iu6VyQeKQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Wed, 18 Jun 2025 14:14:18 +0200
+Subject: [PATCH 1/8] spi: spi-mem: Use picoseconds for calculating the op
+ durations
 MIME-Version: 1.0
+Message-Id: <20250618-winbond-6-16-rc1-octal-phy-upstream-v1-1-513202126013@bootlin.com>
+References: <20250618-winbond-6-16-rc1-octal-phy-upstream-v1-0-513202126013@bootlin.com>
+In-Reply-To: <20250618-winbond-6-16-rc1-octal-phy-upstream-v1-0-513202126013@bootlin.com>
+To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Yogesh S <yogeshs@ti.com>, Santhosh Kumar K <s-k6@ti.com>, 
+ Steam Lin <STLin2@winbond.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-spi@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ Miquel Raynal <miquel.raynal@bootlin.com>
+X-Mailer: b4 0.15-dev
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvieduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelgfehvdduieefieeikeffgffggfdttdeugeffieetheeuleelfeehffdtffetveenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrdegvddrgeeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeduuddprhgtphhtthhopegsrhhoohhnihgvsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopeihohhgvghshhhssehtihdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtp
+ hhtthhopehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhrtghpthhtohepuffvnfhinhdvseifihhnsghonhgurdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrgh
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250618_043523_757143_C6AB7394 
-X-CRM114-Status: UNSURE (   8.62  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250618_131539_363624_71BB432A 
+X-CRM114-Status: GOOD (  11.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,56 +96,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Memory allocated for the ECC engine conf is not released during spinand
-cleanup. Below kmemleak trace is seen for this memory leak:
+spi_mem_calc_op_duration() is deriving the duration of a specific op, by
+multiplying the number of cycles with the time a cycle will last. This
+time was measured in nanoseconds, which means at high frequencies the
+delta between two frequencies might not be properly catch due to
+roundings.
 
-unreferenced object 0xffffff80064f00e0 (size 8):
-  comm "swapper/0", pid 1, jiffies 4294937458
-  hex dump (first 8 bytes):
-    00 00 00 00 00 00 00 00                          ........
-  backtrace (crc 0):
-    kmemleak_alloc+0x30/0x40
-    __kmalloc_cache_noprof+0x208/0x3c0
-    spinand_ondie_ecc_init_ctx+0x114/0x200
-    nand_ecc_init_ctx+0x70/0xa8
-    nanddev_ecc_engine_init+0xec/0x27c
-    spinand_probe+0xa2c/0x1620
-    spi_mem_probe+0x130/0x21c
-    spi_probe+0xf0/0x170
-    really_probe+0x17c/0x6e8
-    __driver_probe_device+0x17c/0x21c
-    driver_probe_device+0x58/0x180
-    __device_attach_driver+0x15c/0x1f8
-    bus_for_each_drv+0xec/0x150
-    __device_attach+0x188/0x24c
-    device_initial_probe+0x10/0x20
-    bus_probe_device+0x11c/0x160
+For instance, the Winbond driver has a changing number of dummy cycles
+depending on the speed, adding +8 dummy cycles when running at 166MHz
+compared to 162MHz.
 
-Fix the leak by calling nanddev_ecc_engine_cleanup() inside
-spinand_cleanup().
+Both frequencies would lead to using a 6ns delay per cycle for the op
+duration computation, whereas in practice there is a small difference
+which actually offsets the number of extra dummy cycles on a normal page
+read.
 
-Signed-off-by: Pablo Martin-Gomez <pmartin-gomez@freebox.fr>
+Augmenting the precision of the calculation by using picoseconds
+prevents selecting a lower frequency if we can do slightly better with
+another frequency involving more cycles. As a result, the above
+situation leads to comparing cycles of 6024 and 6172 picoseconds which
+leads to picking the most efficient variant.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Changes in v2:
-- Rebased on top of 52da431bf03b, no other changes
----
-drivers/mtd/nand/spi/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-mem.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 7099db7a62be..c411fe9be3ef 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1585,6 +1585,7 @@ static void spinand_cleanup(struct spinand_device *spinand)
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 5db0639d3b01596b6f2f2df4b914422316eb9a3f..c42c227eb2a29ccd291bdced6b9d188c3b0bfb67 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -591,9 +591,11 @@ EXPORT_SYMBOL_GPL(spi_mem_adjust_op_freq);
+ u64 spi_mem_calc_op_duration(struct spi_mem_op *op)
  {
- 	struct nand_device *nand = spinand_to_nand(spinand);
+ 	u64 ncycles = 0;
+-	u32 ns_per_cycles;
++	u64 ps_per_cycles, duration;
++
++	ps_per_cycles = 1000000000000ULL;
++	do_div(ps_per_cycles, op->max_freq);
  
-+	nanddev_ecc_engine_cleanup(nand);
- 	nanddev_cleanup(nand);
- 	spinand_manufacturer_cleanup(spinand);
- 	kfree(spinand->databuf);
+-	ns_per_cycles = 1000000000 / op->max_freq;
+ 	ncycles += ((op->cmd.nbytes * 8) / op->cmd.buswidth) / (op->cmd.dtr ? 2 : 1);
+ 	ncycles += ((op->addr.nbytes * 8) / op->addr.buswidth) / (op->addr.dtr ? 2 : 1);
+ 
+@@ -603,7 +605,12 @@ u64 spi_mem_calc_op_duration(struct spi_mem_op *op)
+ 
+ 	ncycles += ((op->data.nbytes * 8) / op->data.buswidth) / (op->data.dtr ? 2 : 1);
+ 
+-	return ncycles * ns_per_cycles;
++	/* Derive the duration in ps */
++	duration = ncycles * ps_per_cycles;
++	/* Convert into ns */
++	do_div(duration, 1000);
++
++	return duration;
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_calc_op_duration);
+ 
+
 -- 
-2.43.0
+2.48.1
 
 
 ______________________________________________________
