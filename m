@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C783BC761AE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE4D0C73C66
 	for <linux-mtd@archiver.kernel.org>; Wed, 18 Jun 2025 09:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,35 +12,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ffiL9DVAm5RsS22zm6lmMYZ94uqaUkVfyyVqFqMwN1o=; b=m5f/gUfLwfSmiN
-	bWMNca49Rlzkk1K5qVnW0rK73wknn8BLgM7dNJ8lmzU7NlDEv22ei9wWFxuZzwgZwijkyxKbWlq3X
-	F/sv9OgGBqMSLEHJ0/ygv2kK9X+dAhjDCUSF9WaXFv/OaQjWLYSruD496Supg6HWOU97wxkRp2FpF
-	lWreCIvDtkPT440GGwMYFIF2rjZnUgekx7TqSGo/M7ypMiXQdQbXxxgSpLBjqQ7t97moJuutGLSRY
-	0DEh2e0wv5GAwjF5p0dVc8SL+ovZ4Hs6vl2TdV1+dXusFRWi3E/uN8hledA5aGQverSqjmJYprBif
-	/81907xCyOmVNbC2gKUg==;
+	List-Owner; bh=cmeI0Tdq/BQJtQyuTezKkP/ZPYQcCOKN8gZkV7rJtk8=; b=jych9DxdcrJlhy
+	iygcYMz7e73Yx/Pa5BrSO1goSN4zsEdJl2DzzOijqmf26MKmfXvgz5ATDXFFdTbnVOcb7lleMacSH
+	Zv1J1I3HP/0g3CFRXRa7U+Feu/281Bo+bPz0ckDn0YSvIgqSe8/HtHGZGONUyW5bumpD9Q//n9uBw
+	8ZMcGc0ONKct7n+aNbeaMVLmL2YcFLHjvGGr1RcWlGQO4Hd8mADfVkwyTZNViKpHoAiOMVNxU2ZOD
+	mX/IfosZPUeez0ScgG50tJVcFjM8g9PudVK5Pai0DAorFUcadW25Q2REgDJDS7DqgKgBY1xaiB/Vg
+	VCv0dMBo0/McnCu2O/Cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRouE-00000009Ve1-1xyN;
-	Wed, 18 Jun 2025 09:16:30 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1uRouF-00000009Vee-2Vf3;
+	Wed, 18 Jun 2025 09:16:31 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRoSk-00000009T0L-2xnu
+	id 1uRoSk-00000009T0g-3g7w
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Jun 2025 08:48:08 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DD8362044C;
-	Wed, 18 Jun 2025 08:48:03 +0000 (UTC)
+	Wed, 18 Jun 2025 08:48:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EB9DE1F433;
+	Wed, 18 Jun 2025 08:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1750236484;
+	t=1750236485;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A6FU6SDX17aNoN9IEiJOQ14OoPG5LsdEowjWPMC4qis=;
-	b=Owen+bOr8Ao+naIB9j/EiRrAlULlUhOgUFl6I52R9m0Zv34rM+IqEqiXgpvgwcI768LHaz
-	HjBl8GyUeU7FWf0QOI0mcrtQlqlXUIc/ZO4NBcWP/KdKUd/uXhKoGmUsdH47ZwSrZLMtmy
-	Ry5W60QztuSAytymv6Hp96Xm+OOBEjKHiKtJSnn/zSpNGP8j9Q2jdgtBHC5nsWUjTABuqI
-	IIyRatTUmUrnU9b3kP5ILFEuLdhF9Geg8lXs3ha7CW2qZMzFYuIZYblVXfE37iX5+6cYL+
-	G8wOMXtnBdbecO2aGa2HB0H26gZ3j+vCZJ/JuyxxQu7EqSLZ0HqjIH66bwHwaw==
+	bh=scr4w9LNGE+xiVVv5BjqF2MPYdmGongciREKFgskxPU=;
+	b=K0aQfI8/PydQWmvJqmdaC56BXdgIANP9mGc8n6fW7MS1vpYZls1v++gJHvXHDHTJzhVBXR
+	Z0kvBGd9NpEq39spzFFCgfev69YCbGk/gUWzY+BNKyBgs8LgIhdPxn4gxbHq2fBfyUHpyP
+	L/MgFzzGoWqOaeq5zL5kJZD3FPBQ4tRHASApzJVILZ003H1bdJFg4EKZ0j9LsBPZz8yvmM
+	sa63ZWJwTJf+r+KG/zfoZhrv/gwEA0SBCu3wXqIwML59fmrsmNwg1FxQD88GEWcQX8tK8Q
+	8OFUeNdZgV/KTjmhgnddyJawxYR++etDaqzmTdji2g00dNtxBkCFsmNnlylc0g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -50,24 +50,22 @@ To: Richard Weinberger <richard@nod.at>,
 	<linux-mtd@lists.infradead.org>
 Cc: Steam Lin <stlin2@winbond.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Andreas Dannenberg <dannenberg@ti.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 1/3] mtd: spinand: winbond: Fix W35N number of planes/LUN
-Date: Wed, 18 Jun 2025 10:47:58 +0200
-Message-ID: <20250618084800.1644246-2-miquel.raynal@bootlin.com>
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 3/3] mtd: spinand: winbond: Prevent unsupported frequencies on dual/quad I/O variants
+Date: Wed, 18 Jun 2025 10:48:00 +0200
+Message-ID: <20250618084800.1644246-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250618084800.1644246-1-miquel.raynal@bootlin.com>
 References: <20250618084800.1644246-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvvdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepueffgeevteevkeegkeehleetteffhffffefgleeuleevjedtgeelgeeutdekgeelnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehffidrrddpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeduuddprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtohepthhuughorhdrrghmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihgthhgrvghlseifrghllhgvrdgttgdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgru
- ggvrggurdhorhhgpdhrtghpthhtohepshhtlhhinhdvseifihhnsghonhgurdgtohhmpdhrtghpthhtohepthhhohhmrghsrdhpvghtrgiiiihonhhisegsohhothhlihhnrdgtohhm
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvvdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepueffgeevteevkeegkeehleetteffhffffefgleeuleevjedtgeelgeeutdekgeelnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehffidrrddpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeelpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehtuhguohhrrdgrmhgsrghruhhssehlihhnrghrohdrohhrghdprhgtphhtthhopehprhgrthihuhhshheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrggvlhesfigrlhhlvgdrtggtpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguv
+ ggrugdrohhrghdprhgtphhtthhopehsthhlihhnvdesfihinhgsohhnugdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomh
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250618_014806_918062_97717AE7 
-X-CRM114-Status: GOOD (  11.27  )
+X-CRM114-CacheID: sfid-20250618_014807_066900_A43B6B20 
+X-CRM114-Status: GOOD (  10.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,45 +82,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There's been a mistake when extracting the geometry of the W35N02 and
-W35N04 chips from the datasheet. There is a single plane, however there
-are respectively 2 and 4 LUNs. They are actually referred in the
-datasheet as dies (equivalent of target), but as there is no die select
-operation and the chips only feature a single configuration register for
-the entire chip (instead of one per die), we can reasonably assume we
-are talking about LUNs and not dies.
+Dual and quad capable chips natively support dual and quad I/O variants
+at up to 104MHz (1-2-2 and 1-4-4 operations). Reaching the maximum speed
+of 166MHz is theoretically possible (while still unsupported in the
+field) by adding a few more dummy cycles. Let's be accurate and clearly
+state this limit.
 
-Reported-by: Andreas Dannenberg <dannenberg@ti.com>
-Suggested-by: Vignesh Raghavendra <vigneshr@ti.com>
-Fixes: 25e08bf66660 ("mtd: spinand: winbond: Add support for W35N02JW and W35N04JW chips")
-Cc: stable@vger.kernel.org
+Setting a maximum frequency implies adding the frequency parameter to
+the macro, which is done using a variadic argument to avoid impacting
+all the other drivers which already make use of this macro.
+
+Fixes: 1ea808b4d15b ("mtd: spinand: winbond: Update the *JW chip definitions")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/winbond.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/spi/winbond.c |  4 ++--
+ include/linux/mtd/spinand.h    | 10 ++++++----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 19f8dd4a6370..2808bbd7a16e 100644
+index 0756966b4e3c..b7a28f001a38 100644
 --- a/drivers/mtd/nand/spi/winbond.c
 +++ b/drivers/mtd/nand/spi/winbond.c
-@@ -289,7 +289,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL)),
- 	SPINAND_INFO("W35N02JW", /* 1.8V */
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x22),
--		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 2, 1, 1),
-+		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 2, 1),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
- 					      &write_cache_octal_variants,
-@@ -298,7 +298,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL)),
- 	SPINAND_INFO("W35N04JW", /* 1.8V */
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x23),
--		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 4, 1, 1),
-+		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 4, 1),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
- 					      &write_cache_octal_variants,
+@@ -42,11 +42,11 @@ static SPINAND_OP_VARIANTS(update_cache_octal_variants,
+ static SPINAND_OP_VARIANTS(read_cache_dual_quad_dtr_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_4D_4D_OP(0, 8, NULL, 0, 80 * HZ_PER_MHZ),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1D_4D_OP(0, 2, NULL, 0, 80 * HZ_PER_MHZ),
+-		SPINAND_PAGE_READ_FROM_CACHE_1S_4S_4S_OP(0, 2, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_1S_4S_4S_OP(0, 2, NULL, 0, 104 * HZ_PER_MHZ),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_2D_2D_OP(0, 4, NULL, 0, 80 * HZ_PER_MHZ),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1D_2D_OP(0, 2, NULL, 0, 80 * HZ_PER_MHZ),
+-		SPINAND_PAGE_READ_FROM_CACHE_1S_2S_2S_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_1S_2S_2S_OP(0, 1, NULL, 0, 104 * HZ_PER_MHZ),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_2S_OP(0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1D_1D_OP(0, 2, NULL, 0, 80 * HZ_PER_MHZ),
+ 		SPINAND_PAGE_READ_FROM_CACHE_FAST_1S_1S_1S_OP(0, 1, NULL, 0),
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 811a0f356315..15eaa09da998 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -113,11 +113,12 @@
+ 		   SPI_MEM_DTR_OP_DATA_IN(len, buf, 2),			\
+ 		   SPI_MEM_OP_MAX_FREQ(freq))
+ 
+-#define SPINAND_PAGE_READ_FROM_CACHE_1S_2S_2S_OP(addr, ndummy, buf, len) \
++#define SPINAND_PAGE_READ_FROM_CACHE_1S_2S_2S_OP(addr, ndummy, buf, len, ...) \
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(0xbb, 1),				\
+ 		   SPI_MEM_OP_ADDR(2, addr, 2),				\
+ 		   SPI_MEM_OP_DUMMY(ndummy, 2),				\
+-		   SPI_MEM_OP_DATA_IN(len, buf, 2))
++		   SPI_MEM_OP_DATA_IN(len, buf, 2),			\
++		   SPI_MEM_OP_MAX_FREQ(__VA_ARGS__ + 0))
+ 
+ #define SPINAND_PAGE_READ_FROM_CACHE_3A_1S_2S_2S_OP(addr, ndummy, buf, len) \
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(0xbb, 1),				\
+@@ -151,11 +152,12 @@
+ 		   SPI_MEM_DTR_OP_DATA_IN(len, buf, 4),			\
+ 		   SPI_MEM_OP_MAX_FREQ(freq))
+ 
+-#define SPINAND_PAGE_READ_FROM_CACHE_1S_4S_4S_OP(addr, ndummy, buf, len) \
++#define SPINAND_PAGE_READ_FROM_CACHE_1S_4S_4S_OP(addr, ndummy, buf, len, ...) \
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(0xeb, 1),				\
+ 		   SPI_MEM_OP_ADDR(2, addr, 4),				\
+ 		   SPI_MEM_OP_DUMMY(ndummy, 4),				\
+-		   SPI_MEM_OP_DATA_IN(len, buf, 4))
++		   SPI_MEM_OP_DATA_IN(len, buf, 4),			\
++		   SPI_MEM_OP_MAX_FREQ(__VA_ARGS__ + 0))
+ 
+ #define SPINAND_PAGE_READ_FROM_CACHE_3A_1S_4S_4S_OP(addr, ndummy, buf, len) \
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(0xeb, 1),				\
 -- 
 2.48.1
 
