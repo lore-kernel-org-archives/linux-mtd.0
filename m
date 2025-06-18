@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC991C7115A
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Jun 2025 13:28:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1603EC71157
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Jun 2025 13:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bux30KD9ZlG0ybSo4686qdm4kMLZYyLd40p6yjZgjkc=; b=mQHAGzWt2f9AHh
-	vw6ovG/HO/pSNpdbK0HhOmB8V39x2/TDudrlbyZE4aEG5NqfI1Pb5xEDIK7favUmbwrnAGtz9d/6C
-	tBhig2NAP8mNlG39nWiqqEMUlLTjxow9mVU/anBAGeGRh5UCLTG9lP1kmTTcEtkcccR8dvkztVyl3
-	GnFgKsaq4udbjp8FIQKBLulLMY/g2dHUQSRCG8wjZ5c3L8+tFGRK3To3zSOqm+wpRg1f5cOyrakRm
-	qgnQHoj3ho1vVVK7qamnAHvJeDl9CnPf2hVRXjMF0dS/REy+Wxq7j55g/rc7/unXCHhINg9RF4dPw
-	2bL0KH5dmwWk4C5Bv5wg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=5ds2MJMNErZsggt5F8NCePNDp1lNcULqCXcdClxW92k=; b=gP2ceDOKZIjEo2
+	J9sIeb6UAg/qeNvrVEORn8sZ9bTNJ6xKD5x35YWbc9BowzHr0V9DjW0XLD3TlnEH/HBA5mRaZBmw+
+	DNftoX/2JUPr/MhuWEyN/NJJOUl95Ng8H5Akkj7XGwiFukQZ+3+diicRwuWP841X9ADhmHQen3QZH
+	SG7KuJAEeZNv6J2wTnCoSxL/C8GvHbtl8tCOxEa4POgfLIyOeW++/SwMewPQYHO+VpSWMJNW1f5/b
+	rC1B30DTnq98gVGY6WEXKg8t0uBoGPcS94+qToy6ZLZtzqUhIt4ni5E2VqhVCBWwh3/w1pl+kscLx
+	AXJxbgwBwQ0GghqudG+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRsqX-0000000AITp-1AUa;
+	id 1uRsqX-0000000AITx-3GBw;
 	Wed, 18 Jun 2025 13:28:57 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRrhd-0000000A5Rm-260P
+	id 1uRrhd-0000000A5Ro-2dhA
 	for linux-mtd@bombadil.infradead.org;
 	Wed, 18 Jun 2025 12:15:42 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=WZWJRW69q+SS7CXANDbY2irrOFqYZ2dZT16BR2PmS8w=; b=RRgsPyAjrdoLHLs+0vzZMD+iKZ
-	H9S11AOBCRoXV2BPlsPOkC1tOBpmWtz+FnX9a2l1J2hq42/mzaKRUEeG+FDRH/oZfrYyutU6v/Sqk
-	mSM9Z46O8GV5BFSZY45gxb0HUnla4T5XVOeeQNgdmgp7aM9EmCJaxyVGlWs5y8DBrrsxqn4/EACXc
-	ii1DsufFWSQCOXRWO2ognFSQcyNT91LfVUgu/yb7RmVyQM8R/9kXFCje004px0G5y8SxCgUrmAHgd
-	mSAUCLl7UQVTZTLEB0qTphmoyvFbxSg7Byj6CY2a8Y0noNDmjR/7TTiz5+I+2P6YOXHKWe/NKSIdV
-	LX5nB9ww==;
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	d=infradead.org; s=desiato.20200630; h=Cc:To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-Id:Date:Subject:From:Sender:Reply-To:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=lMS/pXtR5fwL/ucwouvgnFv8lBxKiYbXC7dEbGzUabk=; b=jAIGEqfCJjKMIGaFAbA6815Pkr
+	VKlufPjvhLxEM3E+YMt9rHZgLLd8YqC4v+ouHEA55t2zEz0yNbiQQEJdI6WmSCKYjzc70ofoSM3U+
+	6oW4FePo3R//NXWWmiTfdzkGMD0EZozV8bh9YuO7lYzaRjR1LUSk7bYMBIo3X7j8eD6p6EfH74RMO
+	9HartYY521ZJLtLxRSIoCTIhebMCMd4UTK/Mn/1cNrwlq1fGnPjCrodM1HN7+ffzd13F0eOeLcwwH
+	opnn/85BA/uk/NWLaoIlC5s76i0c3brGbE1wzHKicpbXccM1PCI6MXAVCJHR4+CZlPoTWJXF8wpU1
+	1gucx8vQ==;
+Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRrhb-000000041gA-0ufB
+	id 1uRrhb-000000041g9-0H1o
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Jun 2025 12:15:40 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8791B4385A;
-	Wed, 18 Jun 2025 12:15:35 +0000 (UTC)
+	Wed, 18 Jun 2025 12:15:41 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6DBF143137;
+	Wed, 18 Jun 2025 12:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1750248936;
+	t=1750248935;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WZWJRW69q+SS7CXANDbY2irrOFqYZ2dZT16BR2PmS8w=;
-	b=DtZWb7pzdH4o/7Nzgzkk0725atjbsimy+D+gYddGTforoC1m6f2p02mQUigg4nRo4H8KE3
-	y6u7d9s4F0P+LJwg1fYfzxnVwBEeoCAYZj5VKe5u3K9B9GJmy8iZzbNancOYNAlKA1T99B
-	46n9WbCrgkdJWgV9ejdAutMxJ8mCpjO3bAQqEU97XapNlA34mHgr4PxyJVRqXoNCok5r7A
-	+mT1Lis3KgB9RuyYn6Iz5CacPyQwc52Sgs4VMiZxcmzRIUyfO083HG3eoTEUY46+Ach5qS
-	lbw9TLqhDprM6IDcXWjQU5/FFZI2wisEkoMMLnKFLOGBmu5/09Ey5Iu6VyQeKQ==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lMS/pXtR5fwL/ucwouvgnFv8lBxKiYbXC7dEbGzUabk=;
+	b=ReCysK3eNS/98qQKJ59qIiZ2mDTh/7ctALlXb4OB3bqeSABHuNY/s/17JpKvhVUr+jq9co
+	MM4ArA1+5u7Fe46sPfCFL87o3cUl2qa4bQwNolsGeXVbOHgFJ2ooot0iGyyfWUTn39nojq
+	EBOFg9MxnhYYHlFSMDFCfBaAULLqOeGUHYLGnYgLgR/aw1oGJLUNMiNU0SGNfGo8Xnuegf
+	ulVR7z9FZb1Ml41e9sVUuLmlbUej1irMuzVBhHFf/dAp9/1Kp74rTQq3A2iRgWquUTNBuO
+	30Ix0CVJBC/tvOlzaUPiVeWzxKZXEHIqUbmwZTKNhYIeK/K/JJ3oF6317yRYNw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Wed, 18 Jun 2025 14:14:18 +0200
-Subject: [PATCH 1/8] spi: spi-mem: Use picoseconds for calculating the op
- durations
+Subject: [PATCH 0/8] Enhance Winbond SPI NAND support
+Date: Wed, 18 Jun 2025 14:14:17 +0200
+Message-Id: <20250618-winbond-6-16-rc1-octal-phy-upstream-v1-0-513202126013@bootlin.com>
 MIME-Version: 1.0
-Message-Id: <20250618-winbond-6-16-rc1-octal-phy-upstream-v1-1-513202126013@bootlin.com>
-References: <20250618-winbond-6-16-rc1-octal-phy-upstream-v1-0-513202126013@bootlin.com>
-In-Reply-To: <20250618-winbond-6-16-rc1-octal-phy-upstream-v1-0-513202126013@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAJqtUmgC/x3NSw7CMAwA0atUXmOpNhC1XAV1ERJDLUESOeWnq
+ ncnYvk2MytUMZUKp24Fk5dWzamBdh2E2aeboMZm4J6PvaM9vjVdcorokBxaIMxh8Xcs8xefpS4
+ m/oFhGHkcDiyRCVqpmFz187+cp237AbHezPd1AAAA
+X-Change-ID: 20250613-winbond-6-16-rc1-octal-phy-upstream-c8929842ed21
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
  Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Yogesh S <yogeshs@ti.com>, Santhosh Kumar K <s-k6@ti.com>, 
@@ -74,12 +74,12 @@ Cc: Yogesh S <yogeshs@ti.com>, Santhosh Kumar K <s-k6@ti.com>,
 X-Mailer: b4 0.15-dev
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvieduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelgfehvdduieefieeikeffgffggfdttdeugeffieetheeuleelfeehffdtffetveenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrdegvddrgeeingdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeduuddprhgtphhtthhopegsrhhoohhnihgvsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopeihohhgvghshhhssehtihdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtp
- hhtthhopehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhrtghpthhtohepuffvnfhinhdvseifihhnsghonhgurdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrgh
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvieduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhufffkfggtgfgvfevofesthejredtredtjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeeghfffiedvfeffheehgfevgeelueeihfeiudfgkeffuedtjefhudeglefhgfeuteenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrgedvrdegiegnpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddupdhrtghpthhtohepsghrohhonhhivgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephihoghgvshhhshesthhirdgtohhmpdhrtghpthhtohepthhhohhmrghsrdhpvghtrgiiiihonhhisegsohhothhlihhnrdgtohhmpdhrtghpthhtohepr
+ hhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdprhgtphhtthhopefuvffnihhnvdesfihinhgsohhnugdrtghomhdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhg
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250618_131539_363624_71BB432A 
-X-CRM114-Status: GOOD (  11.74  )
+X-CRM114-CacheID: sfid-20250618_131539_362298_9D476ACC 
+X-CRM114-Status: GOOD (  13.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,67 +96,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-spi_mem_calc_op_duration() is deriving the duration of a specific op, by
-multiplying the number of cycles with the time a cycle will last. This
-time was measured in nanoseconds, which means at high frequencies the
-delta between two frequencies might not be properly catch due to
-roundings.
+Both w25n**jw and w35n**jw chips have a "normal" and a "high speed"
+mode. In order to use the high speed modes, we need to configure
+internal registers and adapt the number of dummy cycles. The benefits
+are too interesting for not paying attention to this little extra
+configuration. In particular, it is an important building block for the
+introduction of PHY calibration on TI SPI controllers. With these
+changes combined, the frequency used on these chips can be bumped from
+~25MHz up to 166MHz.
 
-For instance, the Winbond driver has a changing number of dummy cycles
-depending on the speed, adding +8 dummy cycles when running at 166MHz
-compared to 162MHz.
+This series was tested on TI AM62A SK with a W35N01JW and on Nuvoton
+MA35D with a W25N01JW. At low speeds, this series does not bring any
+improvement. However when enabling high speed modes (on TI's platform),
+the difference is outstanding:
 
-Both frequencies would lead to using a 6ns delay per cycle for the op
-duration computation, whereas in practice there is a small difference
-which actually offsets the number of extra dummy cycles on a normal page
-read.
+W35N*JW running in 1S-8S-8S @ 25MHz:
 
-Augmenting the precision of the calculation by using picoseconds
-prevents selecting a lower frequency if we can do slightly better with
-another frequency involving more cycles. As a result, the above
-situation leads to comparing cycles of 6024 and 6172 picoseconds which
-leads to picking the most efficient variant.
+	 eraseblock read speed is 9552 KiB/s
+	 page read speed is 9516 KiB/s
+	 2 page read speed is 9552 KiB/s
+
+W35N*JW running in 1S-8S-8S @ 166MHz:
+
+	eraseblock read speed is 35555 KiB/s
+	page read speed is 33684 KiB/s
+	2 page read speed is 35068 KiB/s
+
+Enabling high speeds currently requires applying extra patches from TI
+to enable PHY calibration. They are currently in the upstreaming process.
+
+Link: https://github.com/miquelraynal/linux/tree/winbond/6.16-rc1/octal-phy
+
+In order to introduce all these variants and derive the quickest one, I
+had to improve a bit the helper deriving the time an ops would
+take. These changes can go through the spi tree, the other patches do
+not depend on them and the performance hit is rather acceptable without.
+
+While at adding maximum operation frequencies, I realized I got myself
+confused with the macro parameters due to some of them being
+optional (with variable arguments in macros). I decided it was too error
+prone so I propose to add these values on all READ_FROM_CACHE
+variants (where they are often relevant).
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mem.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Miquel Raynal (8):
+      spi: spi-mem: Use picoseconds for calculating the op durations
+      spi: spi-mem: Take into account the actual maximum frequency
+      mtd: spinand: Fix macro alignment
+      mtd: spinand: Add a frequency field to all READ_FROM_CACHE variants
+      mtd: spinand: Add a ->configure_chip() hook
+      mtd: spinand: winbond: Enable high-speed modes on w25n0xjw
+      mtd: spinand: winbond: Enable high-speed modes on w35n0xjw
+      mtd: spinand: winbond: Add comment about the maximum frequency
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 5db0639d3b01596b6f2f2df4b914422316eb9a3f..c42c227eb2a29ccd291bdced6b9d188c3b0bfb67 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -591,9 +591,11 @@ EXPORT_SYMBOL_GPL(spi_mem_adjust_op_freq);
- u64 spi_mem_calc_op_duration(struct spi_mem_op *op)
- {
- 	u64 ncycles = 0;
--	u32 ns_per_cycles;
-+	u64 ps_per_cycles, duration;
-+
-+	ps_per_cycles = 1000000000000ULL;
-+	do_div(ps_per_cycles, op->max_freq);
- 
--	ns_per_cycles = 1000000000 / op->max_freq;
- 	ncycles += ((op->cmd.nbytes * 8) / op->cmd.buswidth) / (op->cmd.dtr ? 2 : 1);
- 	ncycles += ((op->addr.nbytes * 8) / op->addr.buswidth) / (op->addr.dtr ? 2 : 1);
- 
-@@ -603,7 +605,12 @@ u64 spi_mem_calc_op_duration(struct spi_mem_op *op)
- 
- 	ncycles += ((op->data.nbytes * 8) / op->data.buswidth) / (op->data.dtr ? 2 : 1);
- 
--	return ncycles * ns_per_cycles;
-+	/* Derive the duration in ps */
-+	duration = ncycles * ps_per_cycles;
-+	/* Convert into ns */
-+	do_div(duration, 1000);
-+
-+	return duration;
- }
- EXPORT_SYMBOL_GPL(spi_mem_calc_op_duration);
- 
+ drivers/mtd/nand/spi/alliancememory.c |  12 +--
+ drivers/mtd/nand/spi/ato.c            |   6 +-
+ drivers/mtd/nand/spi/core.c           |  22 +++--
+ drivers/mtd/nand/spi/esmt.c           |   8 +-
+ drivers/mtd/nand/spi/foresee.c        |   8 +-
+ drivers/mtd/nand/spi/gigadevice.c     |  48 +++++-----
+ drivers/mtd/nand/spi/macronix.c       |   8 +-
+ drivers/mtd/nand/spi/micron.c         |  20 ++---
+ drivers/mtd/nand/spi/paragon.c        |  12 +--
+ drivers/mtd/nand/spi/skyhigh.c        |  12 +--
+ drivers/mtd/nand/spi/toshiba.c        |   8 +-
+ drivers/mtd/nand/spi/winbond.c        | 163 ++++++++++++++++++++++++++++++----
+ drivers/mtd/nand/spi/xtx.c            |  12 +--
+ drivers/spi/spi-mem.c                 |  27 ++++--
+ include/linux/mtd/spinand.h           |  70 +++++++++------
+ include/linux/spi/spi-mem.h           |   2 +-
+ 16 files changed, 308 insertions(+), 130 deletions(-)
+---
+base-commit: 065b897a1044b1c67ba4d1066ee090097bae1499
+change-id: 20250613-winbond-6-16-rc1-octal-phy-upstream-c8929842ed21
 
+Best regards,
 -- 
-2.48.1
+Miquel Raynal <miquel.raynal@bootlin.com>
 
 
 ______________________________________________________
