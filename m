@@ -4,145 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C32BC7115D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jun 2025 18:42:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A8BC7115D
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jun 2025 18:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ipQBbzIqeGR4/WrzHg2MVcZabF5ZQEQtS8izOLyuNM0=; b=xxUrgdDDZeiINL
-	9/0SN/DTDaQyISs2mEVcxjrvFjjiJasOXMM2NC3CMr4zP63cX/dCL5ttRV8DvUR8bUGL3YD1e0Fga
-	vQJnt3W3HXxASHd9zsDBY9lfjgvAGzZVghJEVZbk784s0bAmTu8jzH6QHoVE1Hr1tWoov6PdXyy66
-	vWyGjIIJRdZtXaCLgO4/SX+5pEP7HqjHx/S9bd7wVWx5NkBDfdfaKYpB+ryt1Q/bIkqLdq1U4BJ9Q
-	eFKYVdvzFwp33627jyi4u0CDk+/Gx8qZHpr2m5kGcRyRLf+17f1i4QbxOsXomxpW67jZ98lLJ4Z+x
-	RUT37rkwtuXqITjtq8ew==;
+	List-Owner; bh=y5BxlJawa8EiASPMl4JM/4HdslD83NDRduqzMQCAxIU=; b=40FC2XwWb9JtVd
+	GhPPj5sWofcD/O4c2blqobGRDbR/COc5CjB3fWy5PoIDNONmXeSvJABAwiZZfueRYWS28jBvh106v
+	i7wsNSniGw82FKn6/LcmoDl9AXPcJxems/gGUwJYXzMutZE0QydgIW0Z4TFzy42KAftsdJvC4jTNO
+	r23Hk5mbNkQ+O39ZukWki1a44B2azDrcrliAl7iE+GlDg8rYTkPX8idCBTVpkqvzajRm1ABwSUZgM
+	+kCiYhAWn+waoHIL08FAjTu8n9WKsWSmoB0RnFTU1xNCo9jJNw4XHl1cyw9qceoRkw45FtRslIVyw
+	MWaCLLBj4Qd+HtQT2Jsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSKDZ-0000000E0a1-3jwp;
-	Thu, 19 Jun 2025 18:42:33 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1uSKDo-0000000E0qJ-1Zqf;
+	Thu, 19 Jun 2025 18:42:48 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSJN6-0000000Do61-1hbM;
-	Thu, 19 Jun 2025 17:48:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=YvO5fzYLvhWnXwDLeu0osljtoe46Ll4TNlde5gM445I=; b=qPzBgSE18GECzxPD/Jej04d5D7
-	oPOwnwW1jBfWw0/AJ0OvVqGHfSDkBoxemXuq5eNmgnbYT7tSRtZnEHDpvvgtUv9FkfVxblTXfgxhA
-	iWaK9ZSaCTHWmAPJ6UB9LKJ7eCnfkfbNG0n+EhhO1HL0LgE+JPkfwnMYh2/44CJS1oGzuY2nJo4u4
-	0WhqwFXEYog+IT/Hsg7fj6HI0QO0q3u1osQS4+Y1B6jYB8CydQVjog1cUcPiDkkpqo4Oj5UeHpwwv
-	YmW3iTVwtuyKI/UFTh2i3IuqiWmGitYYja2pheMdv3sjwtZXBKO2oVC3IGRThZaV1KyPWtOsC8Rc4
-	IPg+iqdg==;
-Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSJN4-00000004W0a-08p6;
-	Thu, 19 Jun 2025 17:48:19 +0000
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-32b855b468bso9819991fa.3;
-        Thu, 19 Jun 2025 10:48:16 -0700 (PDT)
+	id 1uSJjQ-0000000DqEE-2wrs
+	for linux-mtd@lists.infradead.org;
+	Thu, 19 Jun 2025 18:11:26 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-311c95ddfb5so732275a91.2
+        for <linux-mtd@lists.infradead.org>; Thu, 19 Jun 2025 11:11:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750355295; x=1750960095; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YvO5fzYLvhWnXwDLeu0osljtoe46Ll4TNlde5gM445I=;
-        b=XLkQnt767jWaN5tHHjii6D+7mWMvi3+cn126Qv1l7/qy8gXvzkBT3StuYVii2E9BKU
-         mEZEaU87IGQh9lVBOXr1rvaZC2mmYqEwYdONbSLuPs1s10Mt9Q2+NLDD8YO1adLgLsEh
-         UKWqplPNLox9IW0I40eEsP/OiK2RusI6nZDOlRrZrhizgAcAJA2Z1nRYsRov2tuz/UgK
-         hG4a1AhJcj9lcZVxVpUfzBG3gsGmI99EF0OVVrh1CjIhUFbJSRydHURSq1zcHw4hMpzY
-         s+WNubyWiJBUWYJh6vyX6CuIHOpvlOrtlPlf/zjZrrPNXfepU59R7PWX5UdKqUZ+1Nvz
-         zyZw==
+        d=broadcom.com; s=google; t=1750356683; x=1750961483; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=F1ViY++JCslwslFZ2ivTe1AaApjS3uUEi0/MYj45rTI=;
+        b=UECRQ0cCacnbwMDDPq2F0MskeuG2uK8PYoMvzt9FUdfGl7bdbzdRz+FsuvGgVxpKf+
+         JUGFrwWucyuWmzI1vpmcVZ3Z0zl6faJG5L0CyoxYpOVNxlq+k8ykOxQSIVDpYHQZ0tTA
+         8OnrOHPOUcEU5bkU8EQBusb7CIdsMcce9y72k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750355295; x=1750960095;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YvO5fzYLvhWnXwDLeu0osljtoe46Ll4TNlde5gM445I=;
-        b=YQZXeqdhRGAs+CRwY1xmVue3oFOZrJyl/f3Qg6QA2CF4ZptSWCFtgy6L9fL7HoAZnT
-         DBgfbx6413y2Vwb8JQ7ugJYjzpTjI+4Ukkx8TLOFnmUGXr7cjgMcxVWW5mhYTolcFaOs
-         tJBwUAlxITz24loWt3V9q3GcFCwtwz6uGZ3e8M4UVxgUV23Y/0hDxVP4MbiR+NNTEeDJ
-         H9dzbDiBhXWLv3ShQRr/All1QmFEEb2ttT3M550g2HJMz8+IRzpeVq56uisXRIzBwgT1
-         kUImdfV6Qb/PciJukjWU9hsEJkx+DVyteve9xa1GBakafwnZjbhtQPD1EZOoUvbjoUjB
-         8TXA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/SOtpRLL41BP40P5Y1he0wxJWuMaUuwoxnhDJKSXa6ju6hkhdZU+7hjRAIkG7NYU/IF0uAAHiYEM=@lists.infradead.org, AJvYcCVFyAxrXiBkKl++56wGCleP0slUPKaZWP/ZXeBCpOTYqCkbh3vw8XN7brybMaWmcHiD/RP8HJYqHuQY@lists.infradead.org, AJvYcCWTDjYv8JsYsJunDbj7Kph/8A1tfqhE2zq5n03PxG4LS1mQ7dIMYAcGYaXh/6L4iRpdMA3RTZyf+G8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwY1lVK3iiGHOIljr2wSG65Nak/vvAoc10XBEZpu2hmOjcaefJ8
-	DauDkjxNScR+yQyTKNbs10vpSgL+iy6BVSltrI075QXjI+r7L6nfDn556E/T2sRyqKJcAPRy6kQ
-	jk1+8kSvBb26lZncnjD4fIJW5YfhdMKM=
-X-Gm-Gg: ASbGncs9LzBYOSokayHrDDKZIWFISCLVi4g8nIIGIcxq8lPM27I/NDWWCMoJX/Iv6AJ
-	bVkLb1zwrCKm6XYB+T0Bvvc8XKwUvROIugXWFIVskWRYPQKClztJdMNDqT9GdPoX55IdkmbBHiQ
-	LmOGMoMRjzvzuJLZjP1IeEwpWzB0eAfBHJP59QQ8awEyZKDN0/dkkjENhpkx++txLjdXYDjiFGL
-	CyjAA==
-X-Google-Smtp-Source: AGHT+IGL41V3DbmFvBsWr3jGwFHfcX0duW69mbczpCAOINsa85ECUigYdfUlpWqgF++enxibRnhFFvr8Kxdp2WtP+R0=
-X-Received: by 2002:a05:651c:2203:b0:32a:8297:54c9 with SMTP id
- 38308e7fff4ca-32b4a3088bbmr63065741fa.8.1750355294494; Thu, 19 Jun 2025
- 10:48:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750356683; x=1750961483;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F1ViY++JCslwslFZ2ivTe1AaApjS3uUEi0/MYj45rTI=;
+        b=LiuFLWN368P38VkYsoH+AaR2V6G4Da1/CGtv2aupdT3OgSl3FGiBft0oCmD8y6M+ul
+         uTOXynUiLaceDD5yg+yOEcDAv/KtpxQ5J5KjE0F2xZct3bgjITVyE8TIrv27JVxuvrwR
+         DX8vqLbN0UkaBCxyWPq+Hkfx4LAyWPdSvQr8LD6X3/8xNBzK+i3t/EFn4Vjjw08ea724
+         s46wNJqLVJTXdTVugiFf4kSZXJMEusx9d6ixYSte6KKAM3RJPSbfxEgKt8jCve3yg9Z9
+         f953eFa8B7TLZpQbpfMGHoz244G3UzvamL1x7eeQ4XS7fdcmbYaj4r+rDPaUX2h5HyeL
+         8Aqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXipkal4kJlGJMTGmPJTnu9ly1CUGdhzbFVLisvyIxRmyfDpjXTWQ+VOmV0w9BLuY60KnBKWmQ+YJc=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz+vgH7pwb4yU7MOR7hkUntaQUQwpZKWquYhu2amP3mX44eICD0
+	gNXjdQRDniiSPHnUHa8pJ4zr6op+s7GKEV3VPBCkLatq1cG7JvWdWqRQdCTO5QF7Kg==
+X-Gm-Gg: ASbGncvYGog/JM6I0vQnWQoa/dhkB1NCh1WlboeGYmUUn5gf60fFcIysv/POBXPqtwE
+	AtkiWH2M3sexFViiq53UihEf9defS16S15ICZ1IZzD/lGOJTreSuju8pjR0UjoBtFqU5WiwoNMK
+	VmWvBrh5rkNkFGhQII1ZF2InGUitAS+O2Nnj2H7I107xdBgW7o/VjmlaX9CYjE131T12vbDxk3g
+	/BYnUT8WJFetbfLtAI4hUVTsdLlqcaB0Dce+VZ6BYJ/Wvitx+DyaHDHyauhIFnWMdepMYZNx02B
+	rssGpXHQ6t3O8xW9S1eJ7CkIFKwufJYLg+V5at3K2yLaIjP47XtC31inZbztx+WGRTZn3rT5Aaw
+	bPu6gRSuPTTku9iFNCwx/1X17ow==
+X-Google-Smtp-Source: AGHT+IEUwsHN1GrfJdg9ZSt6e4DoOjhiR7sdM1DnwW5pSqQE0YhERlCw1nOK3dyoDhOAzyvBdUbgbA==
+X-Received: by 2002:a17:90b:538d:b0:313:283e:e87c with SMTP id 98e67ed59e1d1-3159d6347famr291618a91.3.1750356683084;
+        Thu, 19 Jun 2025 11:11:23 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3158a23e19bsm2548531a91.12.2025.06.19.11.11.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Jun 2025 11:11:22 -0700 (PDT)
+Message-ID: <44bc4834-da10-49fd-90bb-0ca63746aae8@broadcom.com>
+Date: Thu, 19 Jun 2025 11:11:20 -0700
 MIME-Version: 1.0
-References: <cover.1750099179.git.lorenzo.stoakes@oracle.com> <f528ac4f35b9378931bd800920fee53fc0c5c74d.1750099179.git.lorenzo.stoakes@oracle.com>
-In-Reply-To: <f528ac4f35b9378931bd800920fee53fc0c5c74d.1750099179.git.lorenzo.stoakes@oracle.com>
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date: Fri, 20 Jun 2025 02:47:58 +0900
-X-Gm-Features: AX0GCFsRgomy43xV-Lv7Stfld1a1yqIyJ3-ysZ2OVO90S8cEE5UAjZMSvGqxZQ8
-Message-ID: <CAKFNMom4NJ91Ov7twQ3AGT7PSqt5vN9ROrNHzfV53GHf=bK6oQ@mail.gmail.com>
-Subject: Re: [PATCH 10/10] fs: replace mmap hook with .mmap_prepare for simple mappings
-To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Jens Axboe <axboe@kernel.dk>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
-	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
-	David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, 
-	"Tigran A . Aivazian" <aivazian.tigran@gmail.com>, Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, 
-	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, 
-	Sandeep Dhavale <dhavale@google.com>, Hongbo Li <lihongbo22@huawei.com>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
-	Yuezhang Mo <yuezhang.mo@sony.com>, "Theodore Ts'o" <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, 
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Viacheslav Dubeyko <slava@dubeyko.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, 
-	Dave Kleikamp <shaggy@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>, 
-	Martin Brandenburg <martin@omnibond.com>, Steve French <sfrench@samba.org>, 
-	Paulo Alcantara <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
-	Bharath SM <bharathsm@microsoft.com>, Zhihao Cheng <chengzhihao1@huawei.com>, 
-	Hans de Goede <hdegoede@redhat.com>, Carlos Maiolino <cem@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, 
-	Johannes Thumshirn <jth@kernel.org>, Dan Williams <dan.j.williams@intel.com>, 
-	Matthew Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, 
-	Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, 
-	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org, 
-	linux-aio@kvack.org, linux-unionfs@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
-	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org, 
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, 
-	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, 
-	ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, 
-	devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, 
-	nvdimm@lists.linux.dev
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: nand: brcmnand: fix mtd corrected bits stat
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ David Regan <dregan@broadcom.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
+ William Zhang <william.zhang@broadcom.com>,
+ Anand Gore <anand.gore@broadcom.com>, Kamal Dasu <kamal.dasu@broadcom.com>,
+ Dan Beygelman <dan.beygelman@broadcom.com>,
+ =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
+ rafal@milecki.pl, computersforpeace@gmail.com, frieder.schrempf@kontron.de,
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <bbrezillon@kernel.org>, kdasu.kdev@gmail.com,
+ JaimeLiao <jaimeliao.tw@gmail.com>, Adam Borowski <kilobyte@angband.pl>,
+ Jonas Gorski <jonas.gorski@gmail.com>, dgcbueu@gmail.com, dregan@mail.com
+References: <20250606165756.1531164-1-dregan@broadcom.com>
+ <8734c9z2ye.fsf@bootlin.com>
+ <CAA_RMS7EB2v_h44Ysdoe0=WjC+T4G_5_4O-9DbCBE5OyRNArkg@mail.gmail.com>
+ <87h60dmn86.fsf@bootlin.com>
+Content-Language: en-US
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
+ M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
+ JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
+ PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
+ KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
+ AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
+ IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
+ ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
+ bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
+ Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
+ tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
+ TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
+ zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
+ WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
+ IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
+ U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
+ 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
+ pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
+ MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
+ IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
+ gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
+ obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
+ N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
+ CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
+ C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
+ wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
+ EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
+ fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
+ MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
+ 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
+ 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
+In-Reply-To: <87h60dmn86.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250619_184818_195911_4AAA6631 
-X-CRM114-Status: GOOD (  15.99  )
+X-CRM114-CacheID: sfid-20250619_111124_780666_E8528B2C 
+X-CRM114-Status: GOOD (  17.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,35 +138,106 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBKdW4gMTcsIDIwMjUgYXQgNDo0OOKAr0FNIExvcmVuem8gU3RvYWtlcyB3cm90ZToK
-Pgo+IFNpbmNlIGNvbW1pdCBjODRiZjZkZDJiODMgKCJtbTogaW50cm9kdWNlIG5ldyAubW1hcF9w
-cmVwYXJlKCkgZmlsZQo+IGNhbGxiYWNrIiksIHRoZSBmX29wLT5tbWFwKCkgaG9vayBoYXMgYmVl
-biBkZXByZWNhdGVkIGluIGZhdm91ciBvZgo+IGZfb3AtPm1tYXBfcHJlcGFyZSgpLgo+Cj4gVGhp
-cyBjYWxsYmFjayBpcyBpbnZva2VkIGluIHRoZSBtbWFwKCkgbG9naWMgZmFyIGVhcmxpZXIsIHNv
-IGVycm9yIGhhbmRsaW5nCj4gY2FuIGJlIHBlcmZvcm1lZCBtb3JlIHNhZmVseSB3aXRob3V0IGNv
-bXBsaWNhdGVkIGFuZCBidWctcHJvbmUgc3RhdGUKPiB1bndpbmRpbmcgcmVxdWlyZWQgc2hvdWxk
-IGFuIGVycm9yIGFyaXNlLgo+Cj4gVGhpcyBob29rIGFsc28gYXZvaWRzIHBhc3NpbmcgYSBwb2lu
-dGVyIHRvIGEgbm90LXlldC1jb3JyZWN0bHktZXN0YWJsaXNoZWQKPiBWTUEgYXZvaWRpbmcgYW55
-IGlzc3VlcyB3aXRoIHJlZmVyZW5jaW5nIHRoaXMgZGF0YSBzdHJ1Y3R1cmUuCj4KPiBJdCByYXRo
-ZXIgcHJvdmlkZXMgYSBwb2ludGVyIHRvIHRoZSBuZXcgc3RydWN0IHZtX2FyZWFfZGVzYyBkZXNj
-cmlwdG9yIHR5cGUKPiB3aGljaCBjb250YWlucyBhbGwgcmVxdWlyZWQgc3RhdGUgYW5kIGFsbG93
-cyBlYXN5IHNldHRpbmcgb2YgcmVxdWlyZWQKPiBwYXJhbWV0ZXJzIHdpdGhvdXQgYW55IGNvbnNp
-ZGVyYXRpb24gbmVlZGluZyB0byBiZSBwYWlkIHRvIGxvY2tpbmcgb3IKPiByZWZlcmVuY2UgY291
-bnRzLgo+Cj4gTm90ZSB0aGF0IG5lc3RlZCBmaWxlc3lzdGVtcyBsaWtlIG92ZXJsYXlmcyBhcmUg
-Y29tcGF0aWJsZSB3aXRoIGFuCj4gLm1tYXBfcHJlcGFyZSgpIGNhbGxiYWNrIHNpbmNlIGNvbW1p
-dCBiYjY2NmI3YzI3MDcgKCJtbTogYWRkIG1tYXBfcHJlcGFyZSgpCj4gY29tcGF0aWJpbGl0eSBs
-YXllciBmb3IgbmVzdGVkIGZpbGUgc3lzdGVtcyIpLgo+Cj4gSW4gdGhpcyBwYXRjaCB3ZSBhcHBs
-eSB0aGlzIGNoYW5nZSB0byBmaWxlIHN5c3RlbXMgd2l0aCByZWxhdGl2ZWx5IHNpbXBsZQo+IG1t
-YXAoKSBob29rIGxvZ2ljIC0gZXhmYXQsIGNlcGgsIGYyZnMsIGJjYWNoZWZzLCB6b25lZnMsIGJ0
-cmZzLCBvY2ZzMiwKPiBvcmFuZ2VmcywgbmlsZnMyLCByb21mcywgcmFtZnMgYW5kIGFpby4KPgo+
-IFNpZ25lZC1vZmYtYnk6IExvcmVuem8gU3RvYWtlcyA8bG9yZW56by5zdG9ha2VzQG9yYWNsZS5j
-b20+CgpGb3IgbmlsZnMyLAoKQWNrZWQtYnk6IFJ5dXN1a2UgS29uaXNoaSA8a29uaXNoaS5yeXVz
-dWtlQGdtYWlsLmNvbT4KClRoYW5rcywKUnl1c3VrZSBLb25pc2hpCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+On 6/18/25 02:07, Miquel Raynal wrote:
+> Hello David,
+> 
+>> I'm not familiar with nandbiterrs but here's the results from
+>> mtd_nandbiterrs.ko on my NAND set to BCH8:
+>>
+>> # insmod mtd_nandbiterrs.ko dev=0
+>> [  676.097190]
+>> [  676.098760] ==================================================
+>> [  676.104609] mtd_nandbiterrs: MTD device: 0
+>> [  676.108732] mtd_nandbiterrs: MTD device size 2097152,
+>> eraseblock=262144, page=4096, oob=216
+>> [  676.117089] mtd_nandbiterrs: Device uses 1 subpages of 4096 bytes
+>> [  676.123188] mtd_nandbiterrs: Using page=0, offset=0, eraseblock=0
+>> [  676.130863] mtd_nandbiterrs: incremental biterrors test
+>> [  676.136154] mtd_nandbiterrs: write_page
+>> [  676.140761] mtd_nandbiterrs: rewrite page
+>> [  676.145473] mtd_nandbiterrs: read_page
+>> [  676.149621] mtd_nandbiterrs: verify_page
+>> [  676.153625] mtd_nandbiterrs: Successfully corrected 0 bit errors per subpage
+>> [  676.160678] mtd_nandbiterrs: Inserted biterror @ 0/5
+>> [  676.165647] mtd_nandbiterrs: rewrite page
+>> [  676.170363] mtd_nandbiterrs: read_page
+>> [  676.174508] mtd_nandbiterrs: Read reported 1 corrected bit errors
+>> [  676.180606] mtd_nandbiterrs: verify_page
+>> [  676.184609] mtd_nandbiterrs: Successfully corrected 1 bit errors per subpage
+>> [  676.191662] mtd_nandbiterrs: Inserted biterror @ 0/2
+>> [  676.196631] mtd_nandbiterrs: rewrite page
+>> [  676.201342] mtd_nandbiterrs: read_page
+>> [  676.205487] mtd_nandbiterrs: Read reported 2 corrected bit errors
+>> [  676.211586] mtd_nandbiterrs: verify_page
+>> [  676.215588] mtd_nandbiterrs: Successfully corrected 2 bit errors per subpage
+>> [  676.222641] mtd_nandbiterrs: Inserted biterror @ 0/0
+>> [  676.227608] mtd_nandbiterrs: rewrite page
+>> [  676.228356] mtd_nandbiterrs: read_page
+>> [  676.228749] mtd_nandbiterrs: Read reported 3 corrected bit errors
+>> [  676.228751] mtd_nandbiterrs: verify_page
+>> [  676.228829] mtd_nandbiterrs: Successfully corrected 3 bit errors per subpage
+>> [  676.228831] mtd_nandbiterrs: Inserted biterror @ 1/7
+>> [  676.228833] mtd_nandbiterrs: rewrite page
+>> [  676.229530] mtd_nandbiterrs: read_page
+>> [  676.229922] mtd_nandbiterrs: Read reported 4 corrected bit errors
+>> [  676.229924] mtd_nandbiterrs: verify_page
+>> [  676.230001] mtd_nandbiterrs: Successfully corrected 4 bit errors per subpage
+>> [  676.230003] mtd_nandbiterrs: Inserted biterror @ 1/5
+>> [  676.230005] mtd_nandbiterrs: rewrite page
+>> [  676.294177] mtd_nandbiterrs: read_page
+>> [  676.298337] mtd_nandbiterrs: Read reported 5 corrected bit errors
+>> [  676.304436] mtd_nandbiterrs: verify_page
+>> [  676.308441] mtd_nandbiterrs: Successfully corrected 5 bit errors per subpage
+>> [  676.315494] mtd_nandbiterrs: Inserted biterror @ 1/2
+>> [  676.320464] mtd_nandbiterrs: rewrite page
+>> [  676.325174] mtd_nandbiterrs: read_page
+>> [  676.329327] mtd_nandbiterrs: Read reported 6 corrected bit errors
+>> [  676.335426] mtd_nandbiterrs: verify_page
+>> [  676.339429] mtd_nandbiterrs: Successfully corrected 6 bit errors per subpage
+>> [  676.346483] mtd_nandbiterrs: Inserted biterror @ 1/0
+>> [  676.351452] mtd_nandbiterrs: rewrite page
+>> [  676.356162] mtd_nandbiterrs: read_page
+>> [  676.360308] mtd_nandbiterrs: Read reported 7 corrected bit errors
+>> [  676.366407] mtd_nandbiterrs: verify_page
+>> [  676.370409] mtd_nandbiterrs: Successfully corrected 7 bit errors per subpage
+>> [  676.377462] mtd_nandbiterrs: Inserted biterror @ 2/6
+>> [  676.382432] mtd_nandbiterrs: rewrite page
+>> [  676.387142] mtd_nandbiterrs: read_page
+>> [  676.391287] mtd_nandbiterrs: Read reported 8 corrected bit errors
+>> [  676.397385] mtd_nandbiterrs: verify_page
+>> [  676.401388] mtd_nandbiterrs: Successfully corrected 8 bit errors
+>> per subpage
+> 
+> So far the reporting looks good (and the nandflipbits output looks
+> correct as well).
+> 
+>> [  676.408441] mtd_nandbiterrs: Inserted biterror @ 2/5
+>> [  676.413411] mtd_nandbiterrs: rewrite page
+>> [  676.418122] mtd_nandbiterrs: read_page
+>> [  676.422267] mtd_nandbiterrs: verify_page
+>> [  676.426194] mtd_nandbiterrs: Error: page offset 0, expected 25, got 00
+>> [  676.432727] mtd_nandbiterrs: Error: page offset 1, expected a5, got 00
+>> [  676.439260] mtd_nandbiterrs: Error: page offset 2, expected 65, got 05
+>> [  676.445868] mtd_nandbiterrs: ECC failure, read data is incorrect
+>> despite read success
+> 
+> Here however there is something wrong. We do expect a read failure,
+> instead of returning wrong data. There is still a problem, I do not know
+> if this problem was there before though, but this must be fixed.
+> 
+> Hello Florian, if you have time, I'd welcome you opinion on this patch :)
+
+I don't think I am entitled any opinion on this patch other than 
+confirming the register offset locations. Both William and David have 
+far more experience with this NAND controller and devices that I do.
+-- 
+Florian
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
