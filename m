@@ -4,58 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84252C7115D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jun 2025 17:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 396A2C77B7A
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jun 2025 18:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3i/M+QrNBeEUoPX/OwKl7lbyy/a3weSPXHlkmKKgKV0=; b=aXCcUYOHpnIu01
-	OSzewNBqRD/fmzJnxNkkS71qHEuoMC/NHhoIZ2n3JcqkHv1FzUtFGypo1tqiQJO/bQbjJynn4oFKm
-	pxjh5ux4quUuybBfcZ+ngrKJHjMyaAOrDlvnD0Eplex1wqsnRX8fmzf9VA18VtwOw6hnR0F9yMFjh
-	CAX4Q6ncJ+RoOVLr8CiaILzXN+MVbAzcjhnNc+uxOUgG8Ww3CFvwo8WV8vMWx4oDrbLlSufuf6Fmc
-	M5MkXiFz6vX/a5RHp+gCa4FT/qxkFTQHgvfsq4LEO4wuCEE3mmPrcaWLkr0M26oe3qDL1gB9G/5RG
-	2jaCIaJGvpJSf54VDt9A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XEEt4PmIhluEFChjSIe1m3CDP+l7vouZRaTjYxp3Geo=; b=2rZH2JOZ1oGtlW
+	C9UfiptcwGWetKyYdYyPnY066sM7N6rPSVb+ptBcUfcNtL0DdM6Vfz0LxvjRv5Wbc2dMbD/RtuIxK
+	nmgb3nU1ep0yq/z5D+fk7Rnbv/EicdaCNkDUPkVuml4PcK/7AeFqdFIrAgmUjbqHUmNlbC3UCw2mu
+	yUKdNf/85k33ZtgeR4YvSmFbOipY4C42uiVcLdTTvBV+nlMPzIWzzR9vFdqsz/IM3bBI/sg1kbPon
+	YafPTBFF/IGyQAgY7X5VbLDxAgXWohOC/GzJKtlm4eCJj/OUdRJbTCcD9kB0z7Za8ZUx8LGdZ5GSW
+	SCFXdAON6Jt1l5cxzAhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSIfc-0000000DgME-2jHK;
-	Thu, 19 Jun 2025 17:03:24 +0000
-Received: from forward101b.mail.yandex.net ([178.154.239.148])
+	id 1uSKBf-0000000DyIz-2eCH;
+	Thu, 19 Jun 2025 18:40:35 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSGeH-0000000DKNX-2W2S
+	id 1uSISm-0000000Ddaj-1G0P
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Jun 2025 14:53:56 +0000
-Received: from mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net [IPv6:2a02:6b8:c24:2213:0:640:2844:0])
-	by forward101b.mail.yandex.net (Yandex) with ESMTPS id 8C69C60B23;
-	Thu, 19 Jun 2025 17:53:46 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id UrPtqvCLgmI0-dlGck7kH;
-	Thu, 19 Jun 2025 17:53:45 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=itb.spb.ru; s=mail;
-	t=1750344825; bh=TFnT8rksRCUkHgk0vFmvFTJCSDIZN2HPazNQku+gKOY=;
-	h=Message-Id:Date:Cc:Subject:To:From;
-	b=pyp8Cer0jSVMtcjVrgDJqjPpqSsUmcId6ayTUYaow8Vu6AZbjvjoXT/vHUEV5+dP+
-	 ugOEcc0ckV3d0CSSqIXiExUfAvG6SURIinqx8CW1LiND+OG2ue0EnrcPykko83Es/h
-	 xyl8vhdILP8sW6k+wNZsl0OAV5XQA/cj7KF9R1oI=
-Authentication-Results: mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net; dkim=pass header.i=@itb.spb.ru
-From: Ivan Stepchenko <sid@itb.spb.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Ivan Stepchenko <sid@itb.spb.ru>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] mtd: fix possible integer overflow in erase_xfer()
-Date: Thu, 19 Jun 2025 17:53:13 +0300
-Message-Id: <20250619145313.5823-1-sid@itb.spb.ru>
-X-Mailer: git-send-email 2.39.5
+	Thu, 19 Jun 2025 16:50:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4A9D9432D1;
+	Thu, 19 Jun 2025 16:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1750351801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JyqRMJ2fwx6K6s3v2591yW/FKD6BGZfrH5Cs1G7qqng=;
+	b=TouPEzxBZWAb/GQQAQLqo5ArR3pBYlKCHajda7YsUwNJnmvvzW7Qg5ivw8Ev5ZzT6qpIof
+	TmUHA5ujT2JTBC8quOrj9t4QURJK0Z43e/LCpHeb7z2R3XPnAbgOvzodJ+KoduOrRkWGCM
+	pKfymekq6rROk1DkpjruNpbWhmLGqfCciEoTm+V4ipkLgtHqwgu3CMMGiX0yg2TiDla8TQ
+	CbfBq20YcACiAyLIU1BMoue6BRN/BKk/N9sq3OfNA6MpMQzE+IFGzhZjgt+n6ZMW07HgsO
+	k70AL8ESMxfnsnIPGUmOStoZoIvySFbbck+nrBIcyUqvvJYdt4slI2k2HUE8PQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chukun Pan <amadeus@jmu.edu.cn>
+Cc: vigneshr@ti.com,  gch981213@gmail.com,  linchengming884@gmail.com,
+  richard@nod.at,  linux-mtd@lists.infradead.org, Cheng Ming Lin
+ <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH 1/1] mtd: spi-nand: macronix: disable continuous read
+ for MX35LFxGE4AD
+In-Reply-To: <20250619140003.103637-1-amadeus@jmu.edu.cn> (Chukun Pan's
+	message of "Thu, 19 Jun 2025 22:00:03 +0800")
+References: <5c7ad4dc-a80b-488a-87aa-ecd6389e86c8@ti.com>
+	<20250619140003.103637-1-amadeus@jmu.edu.cn>
+User-Agent: mu4e 1.12.7; emacs 30.1
+Date: Thu, 19 Jun 2025 18:49:57 +0200
+Message-ID: <87zfe3zney.fsf@bootlin.com>
 MIME-Version: 1.0
+X-GND-State: clean
+X-GND-Score: 0
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgdeitdegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecunecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppeelvddrudekgedruddutddruddujeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeelvddrudekgedruddutddruddujedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepjedprhgtphhtthhopegrmhgruggvuhhssehjmhhurdgvughurdgtnhdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtohepghgthhelkeduvddufeesghhmrghilhdrtghomhdprhgtphhtthhopehlihhntghhvghnghhmihhnghekkeegsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdpr
+ hgtphhtthhopegthhgvnhhgmhhinhhglhhinhesmhigihgtrdgtohhmrdhtfi
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250619_075354_145031_1AA2B25C 
-X-CRM114-Status: GOOD (  10.87  )
+X-CRM114-CacheID: sfid-20250619_095008_634017_081A3634 
+X-CRM114-Status: GOOD (  19.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,42 +75,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The expression '1 << EraseUnitSize' is evaluated in int, which causes
-a negative result when shifting by 31 - the upper bound of the valid
-range [10, 31], enforced by scan_header(). This leads to incorrect
-extension when storing the result in 'erase->len' (uint64_t), producing
-a large unexpected value.
-
-Found by Linux Verification Center (linuxtesting.org) with Svace.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Ivan Stepchenko <sid@itb.spb.ru>
----
- drivers/mtd/ftl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
-index 8c22064ead38..f2bd1984609c 100644
---- a/drivers/mtd/ftl.c
-+++ b/drivers/mtd/ftl.c
-@@ -344,7 +344,7 @@ static int erase_xfer(partition_t *part,
-             return -ENOMEM;
- 
-     erase->addr = xfer->Offset;
--    erase->len = 1 << part->header.EraseUnitSize;
-+    erase->len = 1ULL << part->header.EraseUnitSize;
- 
-     ret = mtd_erase(part->mbd.mtd, erase);
-     if (!ret) {
--- 
-2.39.5
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgorIENoZW5nIE1pbmcgZnJvbSBNYWNyb25peAoKT24gMTkvMDYvMjAyNSBhdCAyMjow
+MDowMyArMDgsIENodWt1biBQYW4gPGFtYWRldXNAam11LmVkdS5jbj4gd3JvdGU6Cgo+IEhpLAo+
+Cj4+IFBsZWFzZSBjYyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyBmb3IgYWxsIHBhdGNo
+ZXMgYW5kIHF1ZXJpZXMKPj4gcmVsYXRlZCB0byBNVEQgc3Vic3lzdGVtcy4KPj4gUnVuIC4vc2Ny
+aXB0cy9nZXRfbWFpbnRhaW5lcnMucGwgb24gdGhlIHBhdGNoIGZvciBtb3JlIGluZm9ybWF0aW9u
+Lgo+Cj4gU29ycnksIEkgZm9yZ290IHRvIGFkZCB0aGUgZm9sbG93aW5nIG1haWxpbmcgbGlzdC4K
+PiBEbyBJIG5lZWQgdG8gcmVzZW5kIHRoaXMgcGF0Y2g/Cj4KPj4gV2h5PyB0aGlzIGRhdGFzaGVl
+dCBzYXlzIG90aGVyd2lzZSBbMV06Cj4+Cj4+IFdvdWxkIGl0IGJlIHBvc3NpYmxlIHRoYXQgU1BJ
+L1FTUEkgY29udHJvbGxlciBvZiBHTC5pTmV0IEdMLU1UMzAwMAo+PiBoYXMgYSBsaW1pdGF0aW9u
+Pwo+Cj4gR0wuaU5ldCBHTC1NVDMwMDAgdXNlcyBNZWRpYVRlayBNVDc5ODEgU29DLCB3aXRoIFNQ
+SSBjb250cm9sbGVycwo+IGJhc2VkIG9uIElQTSBkZXNpZ24uIFsxXQo+Cj4gSSBkb24ndCBrbm93
+IHdoYXQgdGhlIGRpZmZlcmVuY2UgaXMgYmV0d2VlbiB0aGUgU1BJIGNvbnRyb2xsZXJzIG9mCj4g
+TVQ3OTgxIGFuZCB0aGUgWnlucSB1c2VkIGluIGNvbW1pdCBbMl0uCj4KPiBJbiBteSBjYXNlLCB1
+YmlfaW9fcmVhZCBhbmQgZWNjIGVycm9ycyBvY2N1cnJlZCB3aGVuIHRoZSBvcGVud3J0Cj4gYXR0
+YWNoIHViaSBwYXJ0aXRpb24gKE5NQk0gaGFzIGJlZW4gZGlzYWJsZWQgWzNdKToKPgo+IFsgICAg
+Ny44NTIwMDBdIHViaTAgd2FybmluZzogdWJpX2lvX3JlYWQ6IGVycm9yIC01IHdoaWxlIHJlYWRp
+bmcgMTI2OTc2IGJ5dGVzIGZyb20gUEVCIDUxNzo0MDk2LCByZWFkIG9ubHkgMCBieXRlcywgcmV0
+cnkKPiBbICAgIDcuODY1Mzc0XSB1YmkwIHdhcm5pbmc6IHViaV9pb19yZWFkOiBlcnJvciAtNSB3
+aGlsZSByZWFkaW5nIDEyNjk3NiBieXRlcyBmcm9tIFBFQiA1MTc6NDA5NiwgcmVhZCBvbmx5IDAg
+Ynl0ZXMsIHJldHJ5Cj4gWyAgICA3Ljg3ODc0Ml0gdWJpMCB3YXJuaW5nOiB1YmlfaW9fcmVhZDog
+ZXJyb3IgLTUgd2hpbGUgcmVhZGluZyAxMjY5NzYgYnl0ZXMgZnJvbSBQRUIgNTE3OjQwOTYsIHJl
+YWQgb25seSAwIGJ5dGVzLCByZXRyeQo+IFsgICAgNy44OTIxMDRdIHViaTAgZXJyb3I6IHViaV9p
+b19yZWFkOiBlcnJvciAtNSB3aGlsZSByZWFkaW5nIDEyNjk3NiBieXRlcyBmcm9tIFBFQiA1MTc6
+NDA5NiwgcmVhZCAwIGJ5dGVzCj4gWyAgICA3LjkwMTc1NF0gVUJJRlMgZXJyb3IgKHViaTA6MiBw
+aWQgNjg3KTogdWJpZnNfbGViX3JlYWQ6IHJlYWRpbmcgMTI2OTc2IGJ5dGVzIGZyb20gTEVCIDE6
+MCBmYWlsZWQsIGVycm9yIC01Cj4KPiBBZnRlciBkaXNhYmxpbmcgY29udGludW91cyByZWFkLCB0
+aGlzIGZsYXNoIHdvcmtzIGZpbmUuCj4gU28gZGVzcGl0ZSB0aGUgZGF0YXNoZWV0IHN0YXRpbmcg
+c3VwcG9ydCwgSSB0aGluayBpdCB3b3VsZCBiZQo+IGJldHRlciB0byBkaXNhYmxlIGl0IGZpcnN0
+IHRvIGF2b2lkIGJyaWNraW5nIE1UNzk4MSBkZXZpY2VzCj4gd2l0aCBNWDM1TEZ4R0U0QUQgZmxh
+c2guCgpJIGFtIHNvcnJ5IGJ1dCBkaXNhYmxpbmcgdGhlIGZlYXR1cmUgZm9yIGV2ZXJ5IHVzZXIg
+b2YgdGhlIGNoaXAgZG9lcyBub3QKd29yayBpZiB0aGUgcHJvYmxlbSBjb21lcyBmcm9tIHRoZSBT
+UEkgY29udHJvbGxlci4KCkkganVzdCBhZGRlZCBDaGVuZyBNaW5nIGZyb20gTWFjcm9uaXguIENo
+ZW5nIE1pbmcsIGNhbiB5b3UgY29uZmlybSB0aGVzZQpjaGlwcyBzdXBwb3J0IGNvbnRpbnVvdXMg
+cmVhZD8gSXMgdGhlcmUgYW55dGhpbmcgc3BlY2lmaWMgYWJvdXQgdGhlbQp0aGF0IG1pZ2h0IGNh
+dXNlIHRoaXMgYnJlYWthZ2U/CgpUaGFua3MgYSBsb3QsCk1pcXXDqGwKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
