@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1360CC7115D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jun 2025 17:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84252C7115D
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jun 2025 17:03:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gx9uYiHuDLJowS2kZaXIwwq+9CVC5VMFHMK/jG5WAu8=; b=P5r4OQpLrvo84h
-	2zOywnuJMqcSRaoNW23GmX7uDZYKjATyouKYQle/7PB7PtlPdktLsDIP4ga+XZRUHns6KVDjEeVG/
-	IQAFNT1c+bOBXcDXMfgVTwDq/w1t+eYVW9pGSVyokV8Xd6/aD449VvBZOE7U9Gbrfc1Z5lDZxKsIz
-	q4cS+9C7JHCBCAvurrvOckqj7QMwkl8Lv3vsqHLrHjEdyRYkRmdXPMwSzEcQyrGLKQr3G1C0zbnsQ
-	NEQabh81rfrwGXQbxkLjqE1MIbK8RNLLbSHtV0wZhjFhWtXPUhCzelz6Y9d/XQ/wKcINKiPCe0ad1
-	G5HXesQwXHp+ybnDeVgQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3i/M+QrNBeEUoPX/OwKl7lbyy/a3weSPXHlkmKKgKV0=; b=aXCcUYOHpnIu01
+	OSzewNBqRD/fmzJnxNkkS71qHEuoMC/NHhoIZ2n3JcqkHv1FzUtFGypo1tqiQJO/bQbjJynn4oFKm
+	pxjh5ux4quUuybBfcZ+ngrKJHjMyaAOrDlvnD0Eplex1wqsnRX8fmzf9VA18VtwOw6hnR0F9yMFjh
+	CAX4Q6ncJ+RoOVLr8CiaILzXN+MVbAzcjhnNc+uxOUgG8Ww3CFvwo8WV8vMWx4oDrbLlSufuf6Fmc
+	M5MkXiFz6vX/a5RHp+gCa4FT/qxkFTQHgvfsq4LEO4wuCEE3mmPrcaWLkr0M26oe3qDL1gB9G/5RG
+	2jaCIaJGvpJSf54VDt9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSIeq-0000000Df0a-3gFw;
-	Thu, 19 Jun 2025 17:02:36 +0000
-Received: from mail-m49198.qiye.163.com ([45.254.49.198])
+	id 1uSIfc-0000000DgME-2jHK;
+	Thu, 19 Jun 2025 17:03:24 +0000
+Received: from forward101b.mail.yandex.net ([178.154.239.148])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSFoR-0000000DFF2-1mYw
+	id 1uSGeH-0000000DKNX-2W2S
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Jun 2025 14:00:21 +0000
-Received: from localhost.localdomain (unknown [116.25.95.207])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 194321c20;
-	Thu, 19 Jun 2025 22:00:07 +0800 (GMT+08:00)
-From: Chukun Pan <amadeus@jmu.edu.cn>
-To: vigneshr@ti.com
-Cc: amadeus@jmu.edu.cn,
-	gch981213@gmail.com,
-	linchengming884@gmail.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/1] mtd: spi-nand: macronix: disable continuous read for MX35LFxGE4AD
-Date: Thu, 19 Jun 2025 22:00:03 +0800
-Message-Id: <20250619140003.103637-1-amadeus@jmu.edu.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <5c7ad4dc-a80b-488a-87aa-ecd6389e86c8@ti.com>
-References: <5c7ad4dc-a80b-488a-87aa-ecd6389e86c8@ti.com>
+	Thu, 19 Jun 2025 14:53:56 +0000
+Received: from mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net [IPv6:2a02:6b8:c24:2213:0:640:2844:0])
+	by forward101b.mail.yandex.net (Yandex) with ESMTPS id 8C69C60B23;
+	Thu, 19 Jun 2025 17:53:46 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id UrPtqvCLgmI0-dlGck7kH;
+	Thu, 19 Jun 2025 17:53:45 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=itb.spb.ru; s=mail;
+	t=1750344825; bh=TFnT8rksRCUkHgk0vFmvFTJCSDIZN2HPazNQku+gKOY=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=pyp8Cer0jSVMtcjVrgDJqjPpqSsUmcId6ayTUYaow8Vu6AZbjvjoXT/vHUEV5+dP+
+	 ugOEcc0ckV3d0CSSqIXiExUfAvG6SURIinqx8CW1LiND+OG2ue0EnrcPykko83Es/h
+	 xyl8vhdILP8sW6k+wNZsl0OAV5XQA/cj7KF9R1oI=
+Authentication-Results: mail-nwsmtp-smtp-production-main-70.sas.yp-c.yandex.net; dkim=pass header.i=@itb.spb.ru
+From: Ivan Stepchenko <sid@itb.spb.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Ivan Stepchenko <sid@itb.spb.ru>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] mtd: fix possible integer overflow in erase_xfer()
+Date: Thu, 19 Jun 2025 17:53:13 +0300
+Message-Id: <20250619145313.5823-1-sid@itb.spb.ru>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZQ0sdVkgdGk1KGhhKQx5NSVYeHw5VEwETFhoSFy
-	QUDg9ZV1kYEgtZQVlKSk1VSU5VQk5VSUtMWVdZFhoPEhUdFFlBWU9LSFVKS0hKTkxOVUpLS1VKQk
-	tLWQY+
-X-HM-Tid: 0a97887d60a903a2kunm761b0416a3612
-X-HM-MType: 10
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRQ6PSo4KzEyAjZJI042EB1D
-	CUkKCRdVSlVKTE5LSE9KTUtDT0tKVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWUpK
-	TVVJTlVCTlVJS0xZV1kIAVlBSU9NTjcG
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250619_070019_644368_FB438A3A 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20250619_075354_145031_1AA2B25C 
+X-CRM114-Status: GOOD (  10.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,49 +72,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+The expression '1 << EraseUnitSize' is evaluated in int, which causes
+a negative result when shifting by 31 - the upper bound of the valid
+range [10, 31], enforced by scan_header(). This leads to incorrect
+extension when storing the result in 'erase->len' (uint64_t), producing
+a large unexpected value.
 
-> Please cc linux-mtd@lists.infradead.org for all patches and queries
-> related to MTD subsystems.
-> Run ./scripts/get_maintainers.pl on the patch for more information.
+Found by Linux Verification Center (linuxtesting.org) with Svace.
 
-Sorry, I forgot to add the following mailing list.
-Do I need to resend this patch?
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Ivan Stepchenko <sid@itb.spb.ru>
+---
+ drivers/mtd/ftl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Why? this datasheet says otherwise [1]:
->
-> Would it be possible that SPI/QSPI controller of GL.iNet GL-MT3000
-> has a limitation?
-
-GL.iNet GL-MT3000 uses MediaTek MT7981 SoC, with SPI controllers
-based on IPM design. [1]
-
-I don't know what the difference is between the SPI controllers of
-MT7981 and the Zynq used in commit [2].
-
-In my case, ubi_io_read and ecc errors occurred when the openwrt
-attach ubi partition (NMBM has been disabled [3]):
-
-[    7.852000] ubi0 warning: ubi_io_read: error -5 while reading 126976 bytes from PEB 517:4096, read only 0 bytes, retry
-[    7.865374] ubi0 warning: ubi_io_read: error -5 while reading 126976 bytes from PEB 517:4096, read only 0 bytes, retry
-[    7.878742] ubi0 warning: ubi_io_read: error -5 while reading 126976 bytes from PEB 517:4096, read only 0 bytes, retry
-[    7.892104] ubi0 error: ubi_io_read: error -5 while reading 126976 bytes from PEB 517:4096, read 0 bytes
-[    7.901754] UBIFS error (ubi0:2 pid 687): ubifs_leb_read: reading 126976 bytes from LEB 1:0 failed, error -5
-
-After disabling continuous read, this flash works fine.
-So despite the datasheet stating support, I think it would be
-better to disable it first to avoid bricking MT7981 devices
-with MX35LFxGE4AD flash.
-
-[1] https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/mediatek/mt7981b.dtsi#L160
-[2] https://github.com/torvalds/linux/commit/631cfdd0520d19b7f4fc13b834fd9c8b46c6dbac
-[3] MediaTek-specific solution for transparently handling NAND bad blocks
-
-Thanks,
-Chukun
-
---
-2.25.1
+diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index 8c22064ead38..f2bd1984609c 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -344,7 +344,7 @@ static int erase_xfer(partition_t *part,
+             return -ENOMEM;
+ 
+     erase->addr = xfer->Offset;
+-    erase->len = 1 << part->header.EraseUnitSize;
++    erase->len = 1ULL << part->header.EraseUnitSize;
+ 
+     ret = mtd_erase(part->mbd.mtd, erase);
+     if (!ret) {
+-- 
+2.39.5
 
 
 ______________________________________________________
