@@ -4,59 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D22FEC7115B
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Jun 2025 03:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CFECC7115B
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Jun 2025 06:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ZSLtfH0f4LQYZ3z/WyeM3Z8VHrILL3bySnQlVIlov3Q=; b=W+iLllyOTR9o3p
-	8uWtaeTr6Ahqc/yz+R/0JEPBF1mQ2J+cevX2j8oV3hwWhujRUWSNwaBZahHyckDSj2orb7EXxVEvp
-	q5YIWeNcHntfyOL1VHQiBOhexh0CG0PZUVkzKUwRdFM7TdviVV+aQchFOe5jlZF5MOfs828g7RgJS
-	HGvZI9PFvEVImDoTrc4Ojrt2FpEjsqfCGbJFSX1hgLb4Yg9uJQapdqXaxx0Jx1iV3NC8Q8RhPRi+I
-	ryhL/MRRMwXvjuU+hjdMIh5RnCI/lfIvGXFrPEPHVqWAlZnEwI8lwwoSs5J+CgHwslBxLCx/+KUP6
-	XdHaWk4VigRHZW15bz6g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lPfSepb/slCRgEtZfVNtCPF5PvBC2kSzheAz+vX/s4g=; b=wA8SoOXTmplGPUwgHP9D7GUNsp
+	ho91OoekT2YkUIQpHQ9nRiZraFqs3nPl8Xi2uUsL75WbMdUnTZrgwWYXcrWzAqIbzfeWVtaOIK9q4
+	K0Ke9UMoBco9TUeA/05SUtunRQA/YR5qsbNyiyB8eorUUbDmf8b7yFgMhknJXuFHv9nXUKlf4Z5vW
+	LsHnqCnScG86HerL+91rLIRSsjLRbUrDZFf8vrsIQnVBXtw43REJBoLJQSZA8uxQZiFzVw99QOhTA
+	qlEvQTho+d2xQr/H9SlMiAbP2bKbz3HZcGFiAmMmyF1iKdiw1RPg+SHMhlRKNhA3gpGDBkyX22pzC
+	9jzUvh4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSShN-0000000Egao-0KON;
-	Fri, 20 Jun 2025 03:45:53 +0000
-Received: from abb.hmeau.com ([144.6.53.87])
+	id 1uSVHx-0000000ErYw-0F7s;
+	Fri, 20 Jun 2025 06:31:49 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSSgt-0000000EgZe-2bZe
+	id 1uSVHt-0000000ErXu-2J3w
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Jun 2025 03:45:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
-	s=formenos; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:
-	Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=FOObGMt2zmekDQSV/9HvR5INLPUOaT9w1VIobsdSqCo=; b=d2wW5oC8+G1KZoeNIL6ZSgywBU
-	jjbqjlVzEByPhPYkF1LFfOHFmtjY+RPUOmcCqe45lnunB97YHMQKNaQkCXv7UFseMvrHAQ8zRjf9B
-	nVifGhAXNF+xXWxm+GxICDmXrgbHKD76ZYP23MhFuW0Uj8JJLYYWJ+aFpnpjFHqPx8I1LEzRQS/nu
-	dtlKBUlXy+QEu0u5enwTVc0g/J9qC6XocSLT68n4K8RB6q/d9xgxSnx0crpKTKxjFpcwDsf4SyS9J
-	dLt9FE5qPF3v4rgskM1EiQvN15EnwjIJ2YNsCgZ9/6ys92Mso9vNsvwmSgFOuGBs7e0dXyOpIv/DR
-	0nMl/Utw==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1uSSRJ-000THE-2T;
-	Fri, 20 Jun 2025 11:45:06 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 20 Jun 2025 11:45:05 +0800
-Date: Fri, 20 Jun 2025 11:45:05 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] ubifs: Allocate shash export state on stack
-Message-ID: <aFTZQb_Biyz9j5Nn@gondor.apana.org.au>
+	Fri, 20 Jun 2025 06:31:47 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4bNncx2Gkmz1d1q1;
+	Fri, 20 Jun 2025 14:29:21 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 314DE1800B1;
+	Fri, 20 Jun 2025 14:31:35 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 20 Jun 2025 14:31:34 +0800
+Subject: Re: [PATCH] ubifs: Allocate shash export state on stack
+To: Herbert Xu <herbert@gondor.apana.org.au>, Richard Weinberger
+	<richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <aFTZQb_Biyz9j5Nn@gondor.apana.org.au>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <5c3eddb9-19f4-adf0-04ff-0f3e684e9772@huawei.com>
+Date: Fri, 20 Jun 2025 14:31:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <aFTZQb_Biyz9j5Nn@gondor.apana.org.au>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250619_204523_661962_FD86C297 
-X-CRM114-Status: UNSURE (   5.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250619_233145_774508_CCF6102A 
+X-CRM114-Status: GOOD (  12.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,53 +65,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The output size of crypto_shash_export should be obtained via
-crypto_shash_statesize and not crypto_shash_descsize.  The latter
-could be too small (but is usually big enough).
-
-However, as state sizes are API-limited, simply allocate it on the
-stack.
-
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-index a4a0158f712d..edf012aa51bf 100644
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -474,13 +474,9 @@ int __ubifs_node_verify_hmac(const struct ubifs_info *c, const void *node,
- int __ubifs_shash_copy_state(const struct ubifs_info *c, struct shash_desc *src,
- 			     struct shash_desc *target)
- {
--	u8 *state;
-+	u8 state[HASH_MAX_STATESIZE];
- 	int err;
- 
--	state = kmalloc(crypto_shash_descsize(src->tfm), GFP_NOFS);
--	if (!state)
--		return -ENOMEM;
--
- 	err = crypto_shash_export(src, state);
- 	if (err)
- 		goto out;
-@@ -488,8 +484,6 @@ int __ubifs_shash_copy_state(const struct ubifs_info *c, struct shash_desc *src,
- 	err = crypto_shash_import(target, state);
- 
- out:
--	kfree(state);
--
- 	return err;
- }
- 
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNS82LzIwIDExOjQ1LCBIZXJiZXJ0IFh1INC0tcA6Cj4gVGhlIG91dHB1dCBzaXplIG9m
+IGNyeXB0b19zaGFzaF9leHBvcnQgc2hvdWxkIGJlIG9idGFpbmVkIHZpYQo+IGNyeXB0b19zaGFz
+aF9zdGF0ZXNpemUgYW5kIG5vdCBjcnlwdG9fc2hhc2hfZGVzY3NpemUuICBUaGUgbGF0dGVyCj4g
+Y291bGQgYmUgdG9vIHNtYWxsIChidXQgaXMgdXN1YWxseSBiaWcgZW5vdWdoKS4KPiAKPiBIb3dl
+dmVyLCBhcyBzdGF0ZSBzaXplcyBhcmUgQVBJLWxpbWl0ZWQsIHNpbXBseSBhbGxvY2F0ZSBpdCBv
+biB0aGUKPiBzdGFjay4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBIZXJiZXJ0IFh1IDxoZXJiZXJ0QGdv
+bmRvci5hcGFuYS5vcmcuYXU+Cj4gCgpSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3po
+aWhhbzFAaHVhd2VpLmNvbT4KCk1heWJlIGFkZGluZyBhIGZpeCB0YWcgaXMgYmV0dGVyLCBjb21t
+aXQgNDk1MjVlNWVlY2NhNWUxKCJ1YmlmczogQWRkIApoZWxwZXIgZnVuY3Rpb25zIGZvciBhdXRo
+ZW50aWNhdGlvbiBzdXBwb3J0IikuCgo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy9hdXRoLmMgYi9m
+cy91Ymlmcy9hdXRoLmMKPiBpbmRleCBhNGEwMTU4ZjcxMmQuLmVkZjAxMmFhNTFiZiAxMDA2NDQK
+PiAtLS0gYS9mcy91Ymlmcy9hdXRoLmMKPiArKysgYi9mcy91Ymlmcy9hdXRoLmMKPiBAQCAtNDc0
+LDEzICs0NzQsOSBAQCBpbnQgX191Ymlmc19ub2RlX3ZlcmlmeV9obWFjKGNvbnN0IHN0cnVjdCB1
+Ymlmc19pbmZvICpjLCBjb25zdCB2b2lkICpub2RlLAo+ICAgaW50IF9fdWJpZnNfc2hhc2hfY29w
+eV9zdGF0ZShjb25zdCBzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgc3RydWN0IHNoYXNoX2Rlc2MgKnNy
+YywKPiAgIAkJCSAgICAgc3RydWN0IHNoYXNoX2Rlc2MgKnRhcmdldCkKPiAgIHsKPiAtCXU4ICpz
+dGF0ZTsKPiArCXU4IHN0YXRlW0hBU0hfTUFYX1NUQVRFU0laRV07Cj4gICAJaW50IGVycjsKPiAg
+IAo+IC0Jc3RhdGUgPSBrbWFsbG9jKGNyeXB0b19zaGFzaF9kZXNjc2l6ZShzcmMtPnRmbSksIEdG
+UF9OT0ZTKTsKPiAtCWlmICghc3RhdGUpCj4gLQkJcmV0dXJuIC1FTk9NRU07Cj4gLQo+ICAgCWVy
+ciA9IGNyeXB0b19zaGFzaF9leHBvcnQoc3JjLCBzdGF0ZSk7Cj4gICAJaWYgKGVycikKPiAgIAkJ
+Z290byBvdXQ7Cj4gQEAgLTQ4OCw4ICs0ODQsNiBAQCBpbnQgX191Ymlmc19zaGFzaF9jb3B5X3N0
+YXRlKGNvbnN0IHN0cnVjdCB1Ymlmc19pbmZvICpjLCBzdHJ1Y3Qgc2hhc2hfZGVzYyAqc3JjLAo+
+ICAgCWVyciA9IGNyeXB0b19zaGFzaF9pbXBvcnQodGFyZ2V0LCBzdGF0ZSk7Cj4gICAKPiAgIG91
+dDoKPiAtCWtmcmVlKHN0YXRlKTsKPiAtCj4gICAJcmV0dXJuIGVycjsKPiAgIH0KPiAgIAo+IAoK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
