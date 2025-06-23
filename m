@@ -4,136 +4,188 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26A5CC7EE2A
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jun 2025 12:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1622EC77B7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jun 2025 21:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8Z+Bx/DSPrDlk0zn6zFXhGfw5XcNO4ECPiPXzQQ/VkU=; b=tyMWjio8arnrfz
-	du1M/ZcI01X+iEWOT+g6R13k2c9JC0msdYRraBkDDbJtxYYzAHYY3JzZxyltxoUuxvuhCyIlIQAzC
-	qx+sH5KptSrA9x9UaLNAyHELe+9eQgMgv1bVHVNhja/gKTzYbArP/mRNI4VsHWhq1kgnW4AKLQnK6
-	gj/hfTfjWN90LNkbOq3kbqTp+Z7OZWsGYbP444UTiZQW7xq9Hxf4WFaLkVnauTk8JyMfQ0gzboKK5
-	uvO4+bBst10L5O6j9pBIdNfPhwS9MJ4ILDVdY+kAR0ORLIqA0b5r/GuDnSZ1IiQyL9lMEz0HNScnN
-	jLoHi8ljfMYIVkT36WWg==;
+	List-Owner; bh=nX8E80suRAtJlJzzYuS+Fn/KbxWso+CKLKHXn8gjrow=; b=F2RHIQVkjML7SW
+	vN8oV60+hGEjnJ8srPEFZ8qZApOFbTyTSUW3WVe86A6xgBfXYvzlIi+7viw6TiYoZsOhUuabHm2KJ
+	+/bsb2n2NLAKvCJiGXQmmZtyzdgVsTgJmRM8kYnOdRdK5T8ObT3pZOeYbwpatun0/njEiCR0JOrX3
+	bNZn8zvlvzfAF286brt54cJ0YIII4kyvhx/+fXE1I5VTQgv79B7yXZb+OzvG/yWadk66Il3JCOogN
+	FoTo+RawAUGYZwcXQdvrqvqUMruUt+krfLRGUOaghhrf6zNCN1thMpvFcUk5Uht130tOH/YfNltZ6
+	ewEJm+pn9ORA5zs83o1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTgSv-00000002jD9-11LV;
-	Mon, 23 Jun 2025 12:40:01 +0000
-Received: from mail-dm6nam12on20628.outbound.protection.outlook.com ([2a01:111:f403:2417::628] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
+	id 1uToxN-000000041zp-3vnl;
+	Mon, 23 Jun 2025 21:44:01 +0000
+Received: from mgamail.intel.com ([192.198.163.9])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTepl-00000002S06-0E5W
+	id 1uTknB-00000003X50-0pS3
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Jun 2025 10:55:30 +0000
+	Mon, 23 Jun 2025 17:17:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1750699033; x=1782235033;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=5f+m7z2QGKzljSQDwr0tYDKXIu6JgQgrqdHKMg1IyeM=;
+  b=FbyKRcvUwk0VaNa/BAL1QJmXD8cPyuyQ7V4j9ZDRjLMgC/dHMUkZjA8Z
+   V1N2KXRwlfjNndmNbGMtApvuuQ3nxdSxHJO7i2QxW0C4InE8Sj+mhCG94
+   xE3vXw2UTF9N17d5Bl9bylWwp+qs8jYNJD1vb89qhkbiAAqeMym2c3xp8
+   F9hfvH8gMdrz3zRc2O1Jmn3LEg2FC8w0XCPnfIt5nJQ5vjrAPfjd3bl9G
+   2khrRghAf2L95J/kzKDPXJPZRZm5sXOK8G6Id6b78bNQiW+6wJ7ReuGrn
+   hsBhPKjfawcAJakf/7fjYqDJLrfjo5+muw17ysq2loSuUbdRfWxL8krLu
+   g==;
+X-CSE-ConnectionGUID: L/SNl1EnTeKRC7k23KXnfg==
+X-CSE-MsgGUID: ZEtnN5gBTaO6MFu5eVZjfg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11473"; a="63611622"
+X-IronPort-AV: E=Sophos;i="6.16,259,1744095600"; 
+   d="scan'208";a="63611622"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2025 10:17:09 -0700
+X-CSE-ConnectionGUID: ntkvUp/KTZGnpe4OYUeEew==
+X-CSE-MsgGUID: tHtr3Rw8TBu3xBpOs3islA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,259,1744095600"; 
+   d="scan'208";a="151429702"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2025 10:17:09 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Mon, 23 Jun 2025 10:17:08 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25 via Frontend Transport; Mon, 23 Jun 2025 10:17:08 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (40.107.93.44) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Mon, 23 Jun 2025 10:17:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=B6NAssyom7xPqSwfJnxItIM1HQsWMpsNbceTXaPzBVF1PD6e9XyQDxec097Z0HAsH4OpKZAV77epG0SgrMJZ4XoFweGI7J6FThhjUdTie6X4MBrd4OvdHg74fAfZwb2KrB2zvoQbXV+7EJUe5TKbyaSz4PFL7oMWwHRRMTZf2Spf5lSYcVOf/fBSUrtcir2I1V1we1Fwu/WJ01NY9fanGRHWjTNGabBsbyB8h6a5JSIYKuJTsFg7DujpLx1g/2PRzRMwE+lvFP5sY3bj54nKA8eZdaa58Idb6t+Z+dNP+F4hpQ+OgnGc0NWxp0Gu+z4+iWBv+fZvJeYf5hPIcuYsmw==
+ b=M6c1ojmxJIQNx/pxNeJLpjMl81x13RFwdrFqqavZT/Qp85rw0ASQRhk4MEYIv7JovvSdAmIPO5iQb4OgwnWyHbrfix3A/zGl9HdQV0qEw7bylJfr9VatIXzZaIjxBGaqplq6A2L0ABBRQ/603ytt2RJ9Coo0E1+vZ7Efua5fhC9sugs5+HF71xnIttYVRSoPSfETjfgqP5kAVfLt2mH9RsNVa6W/YR1TeKN1kmKFkln83jalGjE4bQl4vI8fKqN5Au0rRYwoodXeO42pVE6o/kxVXyXugltPlLqM4AsqEm4ZR43n+kXHDh8UmulF+zf7aURpwpgZnl+EAYbD4kRu3A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QscXTedR6K7qQyn5qxxQGUMHcOo8IRnJo3VvZ6LVBHQ=;
- b=d/x8PBnFS0VwWyVxjGuYdQOoGz1j9aX9SkWuV8lkqOnYHskYpa/5FL3lkgwwnMD6Yke/EJrmWx+RE+q6D38Pf3B8EtF4LpKTOuGCx1d2A/TXb0J0Nido0UkE6HzUDO7d9kdSfcnGUlKlKGebYsY9gPzudcvyMtGATfz6Uc9XkSUcQze4z2iGHegCv4wLrSi8+FsQg2/XPXKU5cPw6DwsK5izTholYHnyE1qp1PB3UzRvfrTleZtRZHUbW4NEWHsl6q/nG61/cb9VhYoWgq02Z7i3/wlBv8tZnQ45WaSjxht+nhzYSPXO0zT/OOeeiNLznsYLIkJK8/1LGGHRpuaoNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=bootlin.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QscXTedR6K7qQyn5qxxQGUMHcOo8IRnJo3VvZ6LVBHQ=;
- b=NWzrCCl8T2ge1syD7TXlvTL1r3G+Erd+9G+uJM5vzSJDz/7sKVnir4i4cR7Ouxgs/oLx9ue0O+49KFpOfPbs3Fu6P1WXZVZpxNJLYfzFCZGDf4JLwqkbraP3h1vtaM0IHIcDRyidqtwCN23tcuIotzoUQqHd7c5g/kMvecgcjw4=
-Received: from MW4PR03CA0096.namprd03.prod.outlook.com (2603:10b6:303:b7::11)
- by CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7) with
+ bh=ru5506HeaiZ/C631TFOyGm+nmmTx3cCRPDGKyAmHZNY=;
+ b=cwp0/m6VIB0OhqkQ/rguoKFbwrZ9bz1ZxDvzq3uW5lnraerjfclfPGbh97tDbP+tNgNB10t6El2qWgXsPubjTukTJyW78UNHpTpSyVTs0Sk2fbfqfYonPANapI8Kw6sU7tWSQGdcRmOjvto9bevdV2Zciv2PhJoSwe4FPgc692doyID+QvutcQ/LHInGBlz0DDPAMreNcG/a6VFNUouhxKR2+UGF7cEqI9Rw75WtPMU6MQBPX8w159oShw+iBQAp4QJcrsN3Ju5MN/NA3Kkd8/L80dC16h5nCLsuEhqWcMJU+e/VUXiZJ92D64x748aSveRg5X5AocVbzF1AQtQl2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CYYPR11MB8430.namprd11.prod.outlook.com (2603:10b6:930:c6::19)
+ by SJ0PR11MB5136.namprd11.prod.outlook.com (2603:10b6:a03:2d1::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8857.20; Mon, 23 Jun
- 2025 10:55:19 +0000
-Received: from SJ1PEPF00001CE7.namprd03.prod.outlook.com
- (2603:10b6:303:b7:cafe::79) by MW4PR03CA0096.outlook.office365.com
- (2603:10b6:303:b7::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8835.32 via Frontend Transport; Mon,
- 23 Jun 2025 10:55:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ1PEPF00001CE7.mail.protection.outlook.com (10.167.242.23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8880.14 via Frontend Transport; Mon, 23 Jun 2025 10:55:19 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 23 Jun
- 2025 05:55:05 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 23 Jun
- 2025 05:55:01 -0500
-Received: from xhdakumarma40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.39 via Frontend
- Transport; Mon, 23 Jun 2025 05:54:58 -0500
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <git@amd.com>, <amitrkcian2002@gmail.com>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>, Bernhard Frauendienst
-	<kernel@nospam.obeliks.de>
-Subject: [PATCH v14 3/3] mtd: Add driver for concatenating devices
-Date: Mon, 23 Jun 2025 16:24:45 +0530
-Message-ID: <20250623105445.2394825-4-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250623105445.2394825-1-amit.kumar-mahapatra@amd.com>
-References: <20250623105445.2394825-1-amit.kumar-mahapatra@amd.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8857.28; Mon, 23 Jun
+ 2025 17:16:52 +0000
+Received: from CYYPR11MB8430.namprd11.prod.outlook.com
+ ([fe80::76d2:8036:2c6b:7563]) by CYYPR11MB8430.namprd11.prod.outlook.com
+ ([fe80::76d2:8036:2c6b:7563%4]) with mapi id 15.20.8857.026; Mon, 23 Jun 2025
+ 17:16:52 +0000
+Date: Mon, 23 Jun 2025 13:16:46 -0400
+From: Rodrigo Vivi <rodrigo.vivi@intel.com>
+To: Alexander Usyskin <alexander.usyskin@intel.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Lucas De Marchi
+	<lucas.demarchi@intel.com>, Thomas =?iso-8859-1?Q?Hellstr=F6m?=
+	<thomas.hellstrom@linux.intel.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
+	<tursulin@ursulin.net>, Karthik Poosa <karthik.poosa@intel.com>, Raag Jadav
+	<raag.jadav@intel.com>, Reuven Abliyev <reuven.abliyev@intel.com>,
+	<linux-mtd@lists.infradead.org>, <intel-xe@lists.freedesktop.org>,
+	<dri-devel@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v13 00/10] mtd: add driver for Intel discrete graphics
+Message-ID: <aFmL_g4LSPLEfxu-@intel.com>
+References: <20250617134532.3768283-1-alexander.usyskin@intel.com>
+Content-Disposition: inline
+In-Reply-To: <20250617134532.3768283-1-alexander.usyskin@intel.com>
+X-ClientProxiedBy: SJ0PR05CA0018.namprd05.prod.outlook.com
+ (2603:10b6:a03:33b::23) To CYYPR11MB8430.namprd11.prod.outlook.com
+ (2603:10b6:930:c6::19)
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE7:EE_|CH3PR12MB9194:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b0fe83a-04f5-42e8-7ace-08ddb24471b9
+X-MS-TrafficTypeDiagnostic: CYYPR11MB8430:EE_|SJ0PR11MB5136:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8bde624f-dff4-4bc6-2cae-08ddb279bee6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|82310400026|36860700013|7053199007;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?guWjSTL/FZ+5MzNEnwB9vj6l1cci1RNxj853DbOcBAcR0rlvGEsElJa/pvzI?=
- =?us-ascii?Q?HFTAz+tVp4F0KmpOF3hHnp34W7JDkOGC8KtfkU/LzS7j9M8lFKLItsjXJGFt?=
- =?us-ascii?Q?LnCvF/gQC1jjs2nfo8Sa/Mz3KCZXzL6KriSfnuvSR1t7MTB8PC29MOxP+H/T?=
- =?us-ascii?Q?MdkUmCKqevj6mcPLEi0aOwVEKFM68WWBWVS+/DR1nX4uxbHP3zr7q9fXL0q4?=
- =?us-ascii?Q?edpdVuMidXf3qEJiZZO3hyOUj/fuSofZVICvSK/thoIwXffIOjHju4+e6WER?=
- =?us-ascii?Q?VsoSiBp0wh/13HSIrrhDQZKr0vcuCOrfTOyiPpPPMMFiXbFomhWGxkwPkZZb?=
- =?us-ascii?Q?trNBlEh4Wb5Dr7Zb4Ya6iI7+HIsP023j6isRbjmcCr1jrS6aOLpfXbbTUidJ?=
- =?us-ascii?Q?wgOy0F0IPEmdp8/czRsE7KNBjYf3aPc6Nea5oDwQ1M3bBMaLJNI1SX4/Rw/H?=
- =?us-ascii?Q?FteKQ6KkVGDgvvtTjmgKvKvlE3bFGg2oA1c86VaDPBaMp23MjDdOBhGU85uk?=
- =?us-ascii?Q?BCxkvZ6VTch52tTFzchAgaTqZEQ4CVSVBK0afD2wKx/dJtOAU7dDYyxHoPpQ?=
- =?us-ascii?Q?KHmP6eGy6sv272KesJDEI3035cDeE39tTozH0T4O3GS8Rn2nVh+VklULAR7y?=
- =?us-ascii?Q?xpjN/NwMOG7gj5Fhb1mh6AgmNl/l+uoTjdrjt7gAvT7xmR4gGGRijruS1J5x?=
- =?us-ascii?Q?3GvN/kdoa3dKDQN+IJeKV1jqe9DWNC/NplNmlwbvn7ZRNAvIoJcqeZvDGsie?=
- =?us-ascii?Q?zlp2zlqEoZaky+P6bktGTJwJVYD2FN1ITgrTEduwNbOBOHWig/0ei0hbP/P7?=
- =?us-ascii?Q?cG3aS09EGUtNx483IQETFtFGhHbsFTV8Jv2jZ7eYw/UixqyThOEQ3nWJm3t3?=
- =?us-ascii?Q?+BuEPhLTU68kvkb1HIK02TsQPKFDmbzPjQgDRdgKhe+f6k44/ZiC3QbfV5EU?=
- =?us-ascii?Q?svvSOdAhmZCi8S2ShORetpy80jw14Ckkcr3mksitxkuf7XHK7RgivWcpnqNa?=
- =?us-ascii?Q?OcSLIq0dztTzVl7r6Se4p3amThX9aVFhY589vNABbQqmu8CiyjERbhhW9MIT?=
- =?us-ascii?Q?YFfoOpJ8GUfgA7vIhdz4NZP/tceU0hXOZM0qP780mhR94GO4RuXs/lR5nvHO?=
- =?us-ascii?Q?uqVN0KK5EgaToL9qz7jJmrZ0uN2sH6CtUqTm7g0i5lYEaSosZ3uqeJOkVLVT?=
- =?us-ascii?Q?yNZJU4FPT+mb7gLfTZSYDtvLfUDzcwYq28SSQBMqvgmqw5A2r9+MkH9Up1FG?=
- =?us-ascii?Q?pnDJ91pkkOq8ALguf+Z9wBRzml+/G9nT7iRxo4Bup5VAWTESeMB06yCNxmvn?=
- =?us-ascii?Q?W3hsSZlIYpOjyWIkFyZ12sx86HVgkBl8d/SNSdOSohQ9tWNLWTiR0gOicD6E?=
- =?us-ascii?Q?X711/327uT3nTBnGolxQ6VaOaAOUn5EKs/GCpx5ueD6hmjPFyGGvkTsrm5/i?=
- =?us-ascii?Q?ggKMw+7jsyPNzc6J7fGtTGMDGYjDNfgAr/MFoemRfJOd6ITeBuIp12t2U7ZY?=
- =?us-ascii?Q?ShuI26tg3F8Icw3YrcYd+9Bb9kq94TyISnWq?=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(82310400026)(36860700013)(7053199007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2025 10:55:19.0624
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?4/iqHRS/4ubJ4nbyqLkbZiWSbgB5PKEYktsNm7j2iFU+b88sbFpxwZ+IIO6U?=
+ =?us-ascii?Q?Fk8pKBDV5D/4ZqZB9nHREh/59XH9jLVFkbzdfNpLQ/k6RWimf8D7qSE6GeSk?=
+ =?us-ascii?Q?jp8+MkaWe0tLrMCAJNq7VdRsYkJQQOgur18C+sgAzwh+Pf3g4vVzKtmf3boi?=
+ =?us-ascii?Q?+Ahv9yuzjo0jv28EcGDgZHfrNrjOYjFH6DvDzkuyuyHFyxAO2fJxPGBb5e4B?=
+ =?us-ascii?Q?ECLMA2A4HLhtyKtnvKJ7Z6PhiJu9oGnttZT5CzhZW7Dm0XAZtSh86YrWhqwi?=
+ =?us-ascii?Q?9h2xZ9OqzXA104q9txf6b9WAiX/ImKfQvTB5R6VXqQbZDbhYIk+nDEC02WKs?=
+ =?us-ascii?Q?h+Y23+cNgkudiVVgsVQg1s1K0INHEsDDJ4s6YvRwrf/lKsYeT5zQpJ8axOAg?=
+ =?us-ascii?Q?h3hMaVWi6TNLMwY+/5EgDfcQK4AsoHb2hnzjTaDWxyffafIxpBdJIkf6/Rc3?=
+ =?us-ascii?Q?mgZG1H6bY546Gm3fRX8p3kl7OG4/VP7AQOR3gPDS0ajAnQTB01V7d89fAApc?=
+ =?us-ascii?Q?KaQswdRH/9N2bWnks3nK5biduvUKMv1QpixVJlV5stXylEH27bHmbicr7fVI?=
+ =?us-ascii?Q?wm/qmDfJyJkNnIwGH5ztAqbi+CQRoOTe1UgbV5mgHuEkVG9dzDfht0Ox8flW?=
+ =?us-ascii?Q?smuXKzBxRtf6Spv+uXSdhBkvxm11pkh8Xf2BTiLSbNv6VPpwn50U7m7RQ5sf?=
+ =?us-ascii?Q?WJdyLxzIErE+iCKoRdC2QkPkoOxCEPAgCsTGofwG7kPOWBKS8OKY7NqjnqDz?=
+ =?us-ascii?Q?31BdhRPTlxlerNcEIzr/9M2/EWAydY2F93yNMSKCNPdDatYRjTGLXJsCvPmz?=
+ =?us-ascii?Q?jLD0/NT92jeV2YgpPEeDCfqvEyJfs5LiAryiSQGyWwwoYz1ZkVRrcriC3PoC?=
+ =?us-ascii?Q?63oiUHiUYDb6w5I6W2VEkNccUQG9BdJRu+WFDDynMAOhwedJQM6/nuS4EqOt?=
+ =?us-ascii?Q?2e+oFEAj+sAObF0zOj/El6w9HLxJycn8lERwFZARE63deZhF/MIdVDNjktaj?=
+ =?us-ascii?Q?T1NAYvSzXnPxaHY1EOSeqRhL9T97RoZ7MPoVuNzcDsr7NBR34StHAoCQZpyU?=
+ =?us-ascii?Q?l/QyqvgivJE0U5xItsKNHTrqhlozHTq/rIRZ/x+m9nWmnpfvC6OvtHWkXBaF?=
+ =?us-ascii?Q?S/HaJqCmbWIU2p0Tp00a5V44SAHgWfQFQo9RmxwDbqcyWbBrLy7atqvIkH6C?=
+ =?us-ascii?Q?loS9Lnr5K7UON6yb8ErBK3I8+TIsDzjsJ7RVYobJXz0xD5VjTQ8R0FtcZvhz?=
+ =?us-ascii?Q?/9aqU2oXq5VV2hNOoyniP5E6kdolGodbPI/gpcdpvz7vbCgSwQXpZOAFycU/?=
+ =?us-ascii?Q?QRa+T2G7OGblmk2vOLccJbPfVxAeO7HXA0ozEiJw75Ah1xh1QdoJZEVFP4YE?=
+ =?us-ascii?Q?dqUM4fcPu4jqjBd5fmQDd9PZJA8xplUdKLoZKt2HiWYPIebzjsQDt06uHnWB?=
+ =?us-ascii?Q?sN2OjEsvHf0=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR11MB8430.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aFkCJP6DWY8A/UU1JekS0//idRHmJ9DYpX/DJwtO12B9477l2y1c3yYjXKeB?=
+ =?us-ascii?Q?v8Y8HhmiueITqM0Ox+N5kkrdAs0ppbynJFpdYc+hPyYmTaP3LLZmoMIY/93T?=
+ =?us-ascii?Q?16mKvpTQYIfvToV7OQf4OA0jGfeZm3Nqs5G25pfLRCfMs9BeprbZT6MaMAJD?=
+ =?us-ascii?Q?2/Px+fILO8I5tvUSEZdbcT8gFCK+HiGlCdQJpEukmZtmJgRsfQ5CGBp4Ox+k?=
+ =?us-ascii?Q?7M98ltn3QY3LCPYoaxiaef4xUG73bCmS87X9BpGBaPl4+g71A3h/6ToucPef?=
+ =?us-ascii?Q?uowdVQEp2OTkQtQXXRVjmHHtUHsB4DWLr3ZsX10F1LNYBBPrVMmvc6lOrlST?=
+ =?us-ascii?Q?CdsNSDqmTlikPnAAjMdzQbhH2nLYCjkOUXvaIq4bwBj0R7N9oeinDWNj3P+6?=
+ =?us-ascii?Q?GtWauImX210zWuI23rFFL4nC0lqXN3jv8k23HQdQgf3d9mDY4h5YZZ/Muhez?=
+ =?us-ascii?Q?syldstzXqfDGo8O7YprXEZPxbyOtobd/fxDwcQwQu1zRXPsdozfQCjbsrzvv?=
+ =?us-ascii?Q?KLTRBSfD+8jbnSCpsF6RU9Aha2LyWKiIxZoQ5K0AMuieQ98cti8/rl1aydqq?=
+ =?us-ascii?Q?0BSTVM9dXZb7SBM/mZXw4LmbTSMT1qaaXOIbM8Bf4jNU9RDD2SzrtUZu9c6u?=
+ =?us-ascii?Q?dz4pAMSrCx8J9pzWUmtslcTXIPeWvW8dAM9xaCbftOVs97CCn6a4DteC244g?=
+ =?us-ascii?Q?FgExUKpJiRg0mrN9ENvMkbb1kTWU51eVynYPl53O4PjK6HzRujjxBCNh0YKD?=
+ =?us-ascii?Q?eRH3vKn2e1kK0oOLRdf++amfyk77nKCPgWwZdFLdhvWnYTmyCKEk/1nP2xOF?=
+ =?us-ascii?Q?/7Ld2Vjk85b3f0PuGeaR8c7d0scGtgwJKlh6Fb9nkDJkuW+yLAIW7voaQzld?=
+ =?us-ascii?Q?UzR53Ab8AoOppAWX7CQ7sGngCQpvtmM4GBWoIrwqYhSZy+0UALpaVV/VBtb0?=
+ =?us-ascii?Q?N4Z1XfO7qXaDzvlxbxg+nNmXtrLPEycrLl/+aF4hDvnkaJu43dYxg+p/rDbb?=
+ =?us-ascii?Q?VLzDk5JSJQ+4AD+jcHKvIU44LQF+CNCneSCbNrucin7Mu5VRRENG9z1lJ3Ex?=
+ =?us-ascii?Q?lM4YRF53M4EPEL3S8PYWeG5Ge1OrTwEeDMtTdo5M3atP2D9Ho1DPVRJi6+Uw?=
+ =?us-ascii?Q?qsx36+rWbmDEEWsqUJfTod2qzWagALSQAQCENNCOGVZjRtNJ2pmyCUlIJ0Fd?=
+ =?us-ascii?Q?a2Tt+QdIcWAlNMbNuwQm/bDcHhPSr3ALSK1MjXN+MnOJEp6gK+C+V6R9dCwg?=
+ =?us-ascii?Q?iUAs5aAYa1dnT/p8S7kWyb76wOzRXTjyBcWAUMGAdYrKg5but40n/mVTsN9X?=
+ =?us-ascii?Q?68EiPLOPxxsihen3Dwq1Tv8njhl8I3zPFcjbxz6nXqxYy78r8usIBblFXIBW?=
+ =?us-ascii?Q?u9NHbU79sJmERKy/PHsIXhiej9jk35kKcYKNr1m3cG5mfkO8P0/go7lV2ZWZ?=
+ =?us-ascii?Q?Pajz5KciVnlnVEn66sVW4Z5W/M3vqwqPldxuX6yI2X9i2H0ZMm18LtQs9FgN?=
+ =?us-ascii?Q?lxFwIFxFnMOPA9hkbh9FFW7bEbSjnwpqiGrLs5glavwOVdWbJubRfzkd/gWo?=
+ =?us-ascii?Q?oEfpRbV7Toz4c7j/jcjKKx+xDxoDCy0zOa02VdA9?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bde624f-dff4-4bc6-2cae-08ddb279bee6
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR11MB8430.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2025 17:16:52.4597
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b0fe83a-04f5-42e8-7ace-08ddb24471b9
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PEPF00001CE7.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9194
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CH/peamtZj3hCHVM/j/eDq60f5+hHb6QCmTC34ynZeQy/UVYJtQLiombqQMTQliwy1ExY954OQ5gq9ilfpiAYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5136
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250623_035529_152769_A6CB47D0 
-X-CRM114-Status: GOOD (  25.12  )
+X-CRM114-CacheID: sfid-20250623_101713_284371_7056A25C 
+X-CRM114-Status: GOOD (  23.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -150,632 +202,116 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Introducing CONFIG_MTD_VIRT_CONCAT to separate the legacy flow from the new
-approach, where only the concatenated partition is registered as an MTD
-device, while the individual partitions that form it are not registered
-independently, as they are typically not required by the user.
-CONFIG_MTD_VIRT_CONCAT is a boolean configuration option that depends on
-CONFIG_MTD_PARTITIONED_MASTER. When enabled, it allows flash nodes to be
-exposed as individual MTD devices along with the other partitions.
+On Tue, Jun 17, 2025 at 04:45:22PM +0300, Alexander Usyskin wrote:
+> Add driver for access to Intel discrete graphics card
+> internal NVM device.
+> Expose device on auxiliary bus by i915 and Xe drivers and
+> provide mtd driver to register this device with MTD framework.
+> 
+> This is a rewrite of "drm/i915/spi: spi access for discrete graphics"
+> and "spi: add driver for Intel discrete graphics"
+> series with connection to the Xe driver and splitting
+> the spi driver part to separate module in mtd subsystem.
+> 
+> This series intended to be pushed through drm-xe-next.
+> 
+> V2: Replace dev_* prints with drm_* prints in drm (xe and i915) patches.
+>     Enable NVM device on Battlemage HW (xe driver patch)
+>     Fix overwrite register address (xe driver patch)
+>     Add Rodrigo's r-b
+> 
+> V3: Use devm_pm_runtime_enable to simplify flow.
+>     Drop print in i915 unload that was accidentally set as error.
+>     Drop HAS_GSC_NVM macro in line with latest Xe changes.
+>     Add more Rodrigo's r-b and Miquel's ack.
+> 
+> V4: Add patch that always creates mtd master device
+>     and adjust mtd-intel-dg power management to use this device.
+> 
+> V5: Fix master device creation to accomodate for devices without
+>     partitions (create partitoned master in this case)
+>     Rebase over latest drm-xe-next
+>     Add ack's
+> V6: Fix master device release (use rigth idr in release)
+>     Rebase over latest drm-xe-next
+>     Grammar and style fixes
+> 
+> V7: Add patch with non-posted erase support (fix hang on BMG)
+>     Rebase over latest drm-xe-next
+> 
+> V8: Create separate partition device under master device, if requested
+>     and configure parent of usual partitions to this partition.
+>     Rebase over drm-tip.
+> 
+> V9: Fix checkpatch warning on non-posted erase patch.
+>     Add Rodrigo's review and ack.
+> 
+> V10: Drop master device creation patch as it now in mtd-next.
+>      Drop power-management patch, it will be merged lately after
+>      master device patch is propagated.
+>      Rebase over drm-tip.
+> 
+> V11: Fix review comments.
+>      Add reviewed-by.
+>      Add cleanup in error path.
+>      Add PADDING region that exists on some BMG devices.
+> 
+> V12: Add Raag's r-b.
+>      Rebase over drm-tip.
+> 
+> V13: Rebase over drm-tip again to make it mergable.
 
-The solution focuses on fixed-partitions description only as it depends on
-device boundaries. It supports multiple sets of concatenated devices, each
-comprising two or more partitions.
+I pushed this version to drm-xe-next, including i915 patches.
 
-    flash@0 {
-            reg = <0>;
-            partitions {
-                    compatible = "fixed-partitions";
+Thanks,
+Rodrigo.
 
-                    part0@0 {
-                            part-concat-next = <&flash0_part1>;
-                            label = "part0_0";
-                            reg = <0x0 0x800000>;
-                    };
-
-                    flash0_part1: part1@800000 {
-                            label = "part0_1";
-                            reg = <800000 0x800000>;
-                    };
-
-                    part2@1000000 {
-                            part-concat-next = <&flash1_part0>;
-                            label = "part0_2";
-                            reg = <0x800000 0x800000>;
-                    };
-            };
-    };
-
-    flash@1 {
-            reg = <1>;
-            partitions {
-                    compatible = "fixed-partitions";
-
-                    flash1_part0: part1@0 {
-                            label = "part1_0";
-                            reg = <0x0 0x800000>;
-                    };
-
-                    part1@800000 {
-                            label = "part1_1";
-                            reg = <0x800000 0x800000>;
-                    };
-            };
-    };
-
-The partitions that gets created are
-
-flash@0
-part0_0-part0_1-concat
-flash@1
-part1_1
-part0_2-part1_0-concat
-
-Suggested-by: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
----
- drivers/mtd/Kconfig           |  10 +
- drivers/mtd/Makefile          |   1 +
- drivers/mtd/mtd_virt_concat.c | 380 ++++++++++++++++++++++++++++++++++
- drivers/mtd/mtdcore.c         |  17 ++
- drivers/mtd/mtdpart.c         |   6 +
- include/linux/mtd/concat.h    |  47 +++++
- 6 files changed, 461 insertions(+)
- create mode 100644 drivers/mtd/mtd_virt_concat.c
-
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 796a2eccbef0..b91c3026ac7c 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -206,6 +206,16 @@ config MTD_PARTITIONED_MASTER
- 	  the parent of the partition device be the master device, rather than
- 	  what lies behind the master.
- 
-+config MTD_VIRT_CONCAT
-+	bool "Virtual concatenated MTD devices"
-+	default n
-+	depends on MTD_PARTITIONED_MASTER
-+	help
-+	  The driver enables the creation of virtual MTD device by
-+	  concatenating multiple physical MTD devices into a single
-+	  entity. This allows for the creation of partitions larger than
-+	  the individual physical chips, extending across chip boundaries.
-+
- source "drivers/mtd/chips/Kconfig"
- 
- source "drivers/mtd/maps/Kconfig"
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 593d0593a038..d1d577f89a22 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -22,6 +22,7 @@ obj-$(CONFIG_SM_FTL)		+= sm_ftl.o
- obj-$(CONFIG_MTD_OOPS)		+= mtdoops.o
- obj-$(CONFIG_MTD_PSTORE)	+= mtdpstore.o
- obj-$(CONFIG_MTD_SWAP)		+= mtdswap.o
-+obj-$(CONFIG_MTD_VIRT_CONCAT)	+= mtd_virt_concat.o
- 
- nftl-objs		:= nftlcore.o nftlmount.o
- inftl-objs		:= inftlcore.o inftlmount.o
-diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
-new file mode 100644
-index 000000000000..f6e8e17390a8
---- /dev/null
-+++ b/drivers/mtd/mtd_virt_concat.c
-@@ -0,0 +1,380 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Virtual concat MTD device driver
-+ *
-+ * Copyright (C) 2018 Bernhard Frauendienst
-+ * Author: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/mtd/mtd.h>
-+#include "mtdcore.h"
-+#include <linux/mtd/partitions.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/concat.h>
-+
-+#define CONCAT_PROP "part-concat-next"
-+#define CONCAT_POSTFIX "concat"
-+#define MIN_DEV_PER_CONCAT 1
-+
-+static LIST_HEAD(concat_node_list);
-+
-+/**
-+ * struct mtd_virt_concat_node - components of a concatenation
-+ * @head: List handle
-+ * @count: Number of nodes
-+ * @nodes: Pointer to the nodes (partitions) to concatenate
-+ * @concat: Concatenation container
-+ */
-+struct mtd_virt_concat_node {
-+	struct list_head head;
-+	unsigned int count;
-+	struct device_node **nodes;
-+	struct mtd_concat *concat;
-+};
-+
-+/**
-+ * mtd_is_part_concat - Check if the device is already part
-+ *                       of a concatenated device
-+ * @dev:        pointer to 'device_node'
-+ *
-+ * Return: true if the device is already part of a concatenation,
-+ *         false otherwise.
-+ */
-+static bool mtd_is_part_concat(struct device_node *dev)
-+{
-+	struct mtd_virt_concat_node *item;
-+	int idx;
-+
-+	list_for_each_entry(item, &concat_node_list, head) {
-+		for (idx = 0; idx < item->count; idx++) {
-+			if (item->nodes[idx] == dev)
-+				return true;
-+		}
-+	}
-+	return false;
-+}
-+
-+static void mtd_virt_concat_put_mtd_devices(struct mtd_concat *concat)
-+{
-+	int i;
-+
-+	for (i = 0; i < concat->num_subdev; i++)
-+		put_mtd_device(concat->subdev[i]);
-+}
-+
-+static void mtd_virt_concat_destroy_joins(void)
-+{
-+	struct mtd_virt_concat_node *item, *tmp;
-+	struct mtd_info *mtd;
-+
-+	list_for_each_entry_safe(item, tmp, &concat_node_list, head) {
-+		mtd = &item->concat->mtd;
-+		if (item->concat) {
-+			mtd_device_unregister(mtd);
-+			kfree(mtd->name);
-+			mtd_concat_destroy(mtd);
-+			mtd_virt_concat_put_mtd_devices(item->concat);
-+		}
-+	}
-+}
-+
-+/**
-+ * mtd_virt_concat_destroy - Destroy the concat that includes the mtd object
-+ * @mtd:        pointer to 'mtd_info'
-+ *
-+ * Return: 0 on success, -error otherwise.
-+ */
-+int mtd_virt_concat_destroy(struct mtd_info *mtd)
-+{
-+	struct mtd_info *child, *master = mtd_get_master(mtd);
-+	struct mtd_virt_concat_node *item, *tmp;
-+	struct mtd_concat *concat;
-+	int idx, ret = 0;
-+	bool is_mtd_found;
-+
-+	list_for_each_entry_safe(item, tmp, &concat_node_list, head) {
-+		is_mtd_found = false;
-+
-+		/* Find the concat item that hold the mtd device */
-+		for (idx = 0; idx < item->count; idx++) {
-+			if (item->nodes[idx] == mtd->dev.of_node) {
-+				is_mtd_found = true;
-+				break;
-+			}
-+		}
-+		if (!is_mtd_found)
-+			continue;
-+		concat = item->concat;
-+
-+		/*
-+		 * Since this concatenated device is being removed, retrieve
-+		 * all MTD devices that are part of it and register them
-+		 * individually.
-+		 */
-+		for (idx = 0; idx < concat->num_subdev; idx++) {
-+			child = concat->subdev[idx];
-+			if (child->dev.of_node != mtd->dev.of_node) {
-+				ret = add_mtd_device(child);
-+				if (ret)
-+					goto out;
-+			}
-+		}
-+		/* Destroy the concat */
-+		if (concat->mtd.name) {
-+			del_mtd_device(&concat->mtd);
-+			kfree(concat->mtd.name);
-+			mtd_concat_destroy(&concat->mtd);
-+			mtd_virt_concat_put_mtd_devices(item->concat);
-+		}
-+
-+		for (idx = 0; idx < item->count; idx++)
-+			of_node_put(item->nodes[idx]);
-+
-+		kfree(item->nodes);
-+		kfree(item);
-+	}
-+	return 0;
-+out:
-+	mutex_lock(&master->master.partitions_lock);
-+	list_del(&child->part.node);
-+	mutex_unlock(&master->master.partitions_lock);
-+	kfree(mtd->name);
-+	kfree(mtd);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(mtd_virt_concat_destroy);
-+
-+/**
-+ * mtd_virt_concat_create_item - Create a concat item
-+ * @parts:        pointer to 'device_node'
-+ * @count:        number of mtd devices that make up
-+ *                the concatenated device.
-+ *
-+ * Return: 0 on success, -error otherwise.
-+ */
-+static int mtd_virt_concat_create_item(struct device_node *parts,
-+				       unsigned int count)
-+{
-+	struct mtd_virt_concat_node *item;
-+	struct mtd_concat *concat;
-+	int i;
-+
-+	for (i = 0; i < (count - 1); i++) {
-+		if (mtd_is_part_concat(of_parse_phandle(parts, CONCAT_PROP, i)))
-+			return 0;
-+	}
-+
-+	item = kzalloc(sizeof(*item), GFP_KERNEL);
-+	if (!item)
-+		return -ENOMEM;
-+
-+	item->count = count;
-+	item->nodes = kcalloc(count, sizeof(*item->nodes), GFP_KERNEL);
-+	if (!item->nodes) {
-+		kfree(item);
-+		return -ENOMEM;
-+	}
-+
-+	/*
-+	 * The partition in which "part-concat-next" property
-+	 * is defined is the first device in the list of concat
-+	 * devices.
-+	 */
-+	item->nodes[0] = parts;
-+
-+	for (i = 1; i < count; i++)
-+		item->nodes[i] = of_parse_phandle(parts, CONCAT_PROP, (i - 1));
-+
-+	concat = kzalloc(sizeof(*concat), GFP_KERNEL);
-+	if (!concat) {
-+		kfree(item);
-+		return -ENOMEM;
-+	}
-+
-+	concat->subdev = kcalloc(count, sizeof(*concat->subdev), GFP_KERNEL);
-+	if (!concat->subdev) {
-+		kfree(item);
-+		kfree(concat);
-+		return -ENOMEM;
-+	}
-+	item->concat = concat;
-+
-+	list_add_tail(&item->head, &concat_node_list);
-+
-+	return 0;
-+}
-+
-+static void mtd_virt_concat_destroy_items(void)
-+{
-+	struct mtd_virt_concat_node *item, *temp;
-+	int i;
-+
-+	list_for_each_entry_safe(item, temp, &concat_node_list, head) {
-+		for (i = 0; i < item->count; i++)
-+			of_node_put(item->nodes[i]);
-+
-+		kfree(item->nodes);
-+		kfree(item);
-+	}
-+}
-+
-+/**
-+ * mtd_virt_concat_create_add - Add a mtd device to the concat list
-+ * @mtd:        pointer to 'mtd_info'
-+ *
-+ * Return: true on success, false otherwise.
-+ */
-+bool mtd_virt_concat_add(struct mtd_info *mtd)
-+{
-+	struct mtd_virt_concat_node *item;
-+	struct mtd_concat *concat;
-+	int idx;
-+
-+	list_for_each_entry(item, &concat_node_list, head) {
-+		concat = item->concat;
-+		for (idx = 0; idx < item->count; idx++) {
-+			if (item->nodes[idx] == mtd->dev.of_node) {
-+				concat->subdev[concat->num_subdev++] = mtd;
-+				return true;
-+			}
-+		}
-+	}
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(mtd_virt_concat_add);
-+
-+/**
-+ * mtd_virt_concat_node_create - List all the concatenations found in DT
-+ *
-+ * Return: 0 on success, -error otherwise.
-+ */
-+int mtd_virt_concat_node_create(void)
-+{
-+	struct device_node *parts = NULL;
-+	int ret = 0, count = 0;
-+
-+	/* List all the concatenations found in DT */
-+	do {
-+		parts = of_find_node_with_property(parts, CONCAT_PROP);
-+		if (!of_device_is_available(parts))
-+			continue;
-+
-+		if (mtd_is_part_concat(parts))
-+			continue;
-+
-+		count = of_count_phandle_with_args(parts, CONCAT_PROP, NULL);
-+		if (count < MIN_DEV_PER_CONCAT)
-+			continue;
-+
-+		/*
-+		 * The partition in which "part-concat-next" property is defined
-+		 * is also part of the concat device, so increament count by 1.
-+		 */
-+		count++;
-+
-+		ret = mtd_virt_concat_create_item(parts, count);
-+		if (ret) {
-+			of_node_put(parts);
-+			goto destroy_items;
-+		}
-+	} while (parts);
-+
-+	return ret;
-+
-+destroy_items:
-+	mtd_virt_concat_destroy_items();
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(mtd_virt_concat_node_create);
-+
-+/**
-+ * mtd_virt_concat_create_join - Create and register the concatenated
-+ *                                 MTD device.
-+ *
-+ * Return: 0 on success, -error otherwise.
-+ */
-+int mtd_virt_concat_create_join(void)
-+{
-+	struct mtd_virt_concat_node *item;
-+	struct mtd_concat *concat;
-+	struct mtd_info *mtd;
-+	ssize_t name_sz;
-+	int ret, idx;
-+	char *name;
-+
-+	list_for_each_entry(item, &concat_node_list, head) {
-+		concat = item->concat;
-+		/*
-+		 * Check if item->count != concat->num_subdev, it indicates
-+		 * that the MTD information for all devices included in the
-+		 * concatenation are not handy, concat MTD device can't be
-+		 * created hence switch to next concat device.
-+		 */
-+		if (item->count != concat->num_subdev) {
-+			continue;
-+		} else {
-+			/* Calculate the legth of the name of the virtual device */
-+			for (idx = 0, name_sz = 0; idx < concat->num_subdev; idx++)
-+				name_sz += (strlen(concat->subdev[idx]->name) + 1);
-+			name_sz += strlen(CONCAT_POSTFIX);
-+			name = kmalloc(name_sz + 1, GFP_KERNEL);
-+			if (!name) {
-+				mtd_virt_concat_put_mtd_devices(concat);
-+				return -ENOMEM;
-+			}
-+
-+			ret = 0;
-+			for (idx = 0; idx < concat->num_subdev; idx++) {
-+				ret += sprintf((name + ret), "%s-",
-+					       concat->subdev[idx]->name);
-+			}
-+			sprintf((name + ret), CONCAT_POSTFIX);
-+
-+			if (concat->mtd.name) {
-+				ret = memcmp(concat->mtd.name, name, name_sz);
-+				if (ret == 0)
-+					continue;
-+			}
-+			mtd = mtd_concat_create(concat->subdev, concat->num_subdev, name);
-+			if (!mtd) {
-+				kfree(name);
-+				return -ENXIO;
-+			}
-+			concat->mtd = *mtd;
-+			/* Arbitrary set the first device as parent */
-+			concat->mtd.dev.parent = concat->subdev[0]->dev.parent;
-+			concat->mtd.dev = concat->subdev[0]->dev;
-+
-+			/* Add the mtd device */
-+			ret = add_mtd_device(&concat->mtd);
-+			if (ret)
-+				goto destroy_concat;
-+		}
-+	}
-+
-+	return 0;
-+
-+destroy_concat:
-+	mtd_concat_destroy(mtd);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(mtd_virt_concat_create_join);
-+
-+static void __exit mtd_virt_concat_exit(void)
-+{
-+	mtd_virt_concat_destroy_joins();
-+	mtd_virt_concat_destroy_items();
-+}
-+module_exit(mtd_virt_concat_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Bernhard Frauendienst <kernel@nospam.obeliks.de>");
-+MODULE_AUTHOR("Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>");
-+MODULE_DESCRIPTION("Virtual concat MTD device driver");
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 5ba9a741f5ac..bd7b496a3b3c 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -34,6 +34,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/mtd/concat.h>
- 
- #include "mtdcore.h"
- 
-@@ -1070,6 +1071,12 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 			goto out;
- 	}
- 
-+	if (IS_REACHABLE(CONFIG_MTD_VIRT_CONCAT)) {
-+		ret = mtd_virt_concat_node_create();
-+		if (ret < 0)
-+			goto out;
-+	}
-+
- 	/* Prefer parsed partitions over driver-provided fallback */
- 	ret = parse_mtd_partitions(mtd, types, parser_data);
- 	if (ret == -EPROBE_DEFER)
-@@ -1087,6 +1094,11 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 	if (ret)
- 		goto out;
- 
-+	if (IS_REACHABLE(CONFIG_MTD_VIRT_CONCAT)) {
-+		ret = mtd_virt_concat_create_join();
-+		if (ret < 0)
-+			goto out;
-+	}
- 	/*
- 	 * FIXME: some drivers unfortunately call this function more than once.
- 	 * So we have to check if we've already assigned the reboot notifier.
-@@ -1136,6 +1148,11 @@ int mtd_device_unregister(struct mtd_info *master)
- 	nvmem_unregister(master->otp_user_nvmem);
- 	nvmem_unregister(master->otp_factory_nvmem);
- 
-+	if (IS_REACHABLE(CONFIG_MTD_VIRT_CONCAT)) {
-+		err = mtd_virt_concat_destroy(master);
-+		if (err)
-+			return err;
-+	}
- 	err = del_mtd_partitions(master);
- 	if (err)
- 		return err;
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 994e8c51e674..f4381d906167 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -18,6 +18,7 @@
- #include <linux/err.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
-+#include <linux/mtd/concat.h>
- 
- #include "mtdcore.h"
- 
-@@ -409,6 +410,11 @@ int add_mtd_partitions(struct mtd_info *parent,
- 			goto err_del_partitions;
- 		}
- 
-+		if (IS_REACHABLE(CONFIG_MTD_VIRT_CONCAT)) {
-+			if (mtd_virt_concat_add(child))
-+				continue;
-+		}
-+
- 		mutex_lock(&master->master.partitions_lock);
- 		list_add_tail(&child->part.node, &parent->partitions);
- 		mutex_unlock(&master->master.partitions_lock);
-diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
-index b42d9af87c4e..81d7d75fb762 100644
---- a/include/linux/mtd/concat.h
-+++ b/include/linux/mtd/concat.h
-@@ -28,5 +28,52 @@ struct mtd_info *mtd_concat_create(
- 
- void mtd_concat_destroy(struct mtd_info *mtd);
- 
-+/**
-+ * mtd_virt_concat_node_create - Create a component for concatenation
-+ *
-+ * Returns a positive number representing the no. of devices found for
-+ * concatenation, or a negative error code.
-+ *
-+ * List all the devices for concatenations found in DT and create a
-+ * component for concatenation.
-+ */
-+int mtd_virt_concat_node_create(void);
-+
-+/**
-+ * mtd_virt_concat_add - add mtd_info object to the list of subdevices for concatenation
-+ * @mtd: pointer to new MTD device info structure
-+ *
-+ * Returns true if the mtd_info object is added successfully else returns false.
-+ *
-+ * The mtd_info object is added to the list of subdevices for concatenation.
-+ * It returns true if a match is found, and false if all subdevices have
-+ * already been added or if the mtd_info object does not match any of the
-+ * intended MTD devices.
-+ */
-+bool mtd_virt_concat_add(struct mtd_info *mtd);
-+
-+/**
-+ * mtd_virt_concat_create_join - Create and register the concatenated MTD device
-+ *
-+ * Returns 0 on succes, or a negative error code.
-+ *
-+ * Creates and registers the concatenated MTD device
-+ */
-+int mtd_virt_concat_create_join(void);
-+
-+/**
-+ * mtd_virt_concat_destroy - Remove the concat that includes a specific mtd device
-+ *                           as one of its components.
-+ * @mtd: pointer to MTD device info structure.
-+ *
-+ * Returns 0 on succes, or a negative error code.
-+ *
-+ * If the mtd_info object is part of a concatenated device, all other MTD devices
-+ * within that concat are registered individually. The concatenated device is then
-+ * removed, along with its concatenation component.
-+ *
-+ */
-+int mtd_virt_concat_destroy(struct mtd_info *mtd);
-+
- #endif
- 
--- 
-2.34.1
-
+> 
+> 
+> Alexander Usyskin (9):
+>   mtd: add driver for intel graphics non-volatile memory device
+>   mtd: intel-dg: implement region enumeration
+>   mtd: intel-dg: implement access functions
+>   mtd: intel-dg: register with mtd
+>   mtd: intel-dg: align 64bit read and write
+>   drm/i915/nvm: add nvm device for discrete graphics
+>   drm/i915/nvm: add support for access mode
+>   drm/xe/nvm: add on-die non-volatile memory device
+>   drm/xe/nvm: add support for access mode
+> 
+> Reuven Abliyev (1):
+>   drm/xe/nvm: add support for non-posted erase
+> 
+>  MAINTAINERS                           |   7 +
+>  drivers/gpu/drm/i915/Makefile         |   4 +
+>  drivers/gpu/drm/i915/i915_driver.c    |   6 +
+>  drivers/gpu/drm/i915/i915_drv.h       |   3 +
+>  drivers/gpu/drm/i915/i915_reg.h       |   1 +
+>  drivers/gpu/drm/i915/intel_nvm.c      | 121 ++++
+>  drivers/gpu/drm/i915/intel_nvm.h      |  15 +
+>  drivers/gpu/drm/xe/Makefile           |   1 +
+>  drivers/gpu/drm/xe/regs/xe_gsc_regs.h |   4 +
+>  drivers/gpu/drm/xe/xe_device.c        |   5 +
+>  drivers/gpu/drm/xe/xe_device_types.h  |   6 +
+>  drivers/gpu/drm/xe/xe_heci_gsc.c      |   5 +-
+>  drivers/gpu/drm/xe/xe_nvm.c           | 167 ++++++
+>  drivers/gpu/drm/xe/xe_nvm.h           |  15 +
+>  drivers/gpu/drm/xe/xe_pci.c           |   6 +
+>  drivers/mtd/devices/Kconfig           |  11 +
+>  drivers/mtd/devices/Makefile          |   1 +
+>  drivers/mtd/devices/mtd_intel_dg.c    | 830 ++++++++++++++++++++++++++
+>  include/linux/intel_dg_nvm_aux.h      |  32 +
+>  19 files changed, 1236 insertions(+), 4 deletions(-)
+>  create mode 100644 drivers/gpu/drm/i915/intel_nvm.c
+>  create mode 100644 drivers/gpu/drm/i915/intel_nvm.h
+>  create mode 100644 drivers/gpu/drm/xe/xe_nvm.c
+>  create mode 100644 drivers/gpu/drm/xe/xe_nvm.h
+>  create mode 100644 drivers/mtd/devices/mtd_intel_dg.c
+>  create mode 100644 include/linux/intel_dg_nvm_aux.h
+> 
+> -- 
+> 2.43.0
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
