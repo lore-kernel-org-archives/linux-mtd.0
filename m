@@ -4,60 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12DBFC7EE2A
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Jun 2025 02:37:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A33CEC77B7F
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Jun 2025 07:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vtqxDVX9jscwmFoETQgbb40G7Ia852IzKNTkUYUFiAQ=; b=zj7/OjcUiIDQHF
-	TP+5mQc0RMq9+skXoYfGcBTmWydvHjXHRb718WILUAQBz/hHohPKolzSj5XCK2JFQqidV5u1ecQJ9
-	0c7fDiK5dAhVG+ZXy+x+ewl/BV4dquPnTroRrTSp+sEptZW4I20BxE690INvUv628I4+QFKrXNiE/
-	rZbyzCJYv+tC6DsV5V+XytNiTsLmtyp2hYEjuC6T7BmBJN7i6ldTIKev+vk7HbyMwIceovkBNz8it
-	FkIwI1uYKFXznhVDK7+6bwp9ePL5FizjUjJPk3MWRW7eDGqpHHZK6lyS8rSfLb3Xj7Vvf6iCfBN+1
-	zXIEzJ58N26ZVYNyNEgg==;
+	List-Owner; bh=AcoLrBeAtGVhXW5LCHs8G1JV8LwBSUGgct7Up/xg6qM=; b=xJfLiWBESoRyFV
+	Q+aetMw9fKsJqCrBXW/uUXsgc1eLskclobKt4Jl7hUp3/MJ70B2u74d97Cq1jAF+yZjjZgfpocwlp
+	WcdFNMKF2taKbQfM1jrgqMPw88z+LQ0nzhp/KcP1tZ0T7I5EhbOM069Tp1arTkSj0HYJy2RAvxKVc
+	HgSSM1l+zbRzidX0U/fl7EcKOMvgxfrSgrmr5l984pNejPWDlOHXBomcHSdZQJK+j9ZbUUQcQSeW8
+	ZA6QeaDhLAOfDLstagcNt7BqOqQRQFi1PZL9z75DAWLvN2mHI5HO2T2hiqFzSFrEJErONix3CLBeF
+	jycyvou6wzKTuBCIIt/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUcU7-0000000ASIh-3lWa;
-	Thu, 26 Jun 2025 02:37:07 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1uUgzk-0000000Anr9-1Dwf;
+	Thu, 26 Jun 2025 07:26:04 +0000
+Received: from relay16.mail.gandi.net ([217.70.178.236])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUcU5-0000000ASHe-3bzN
+	id 1uUgzf-0000000Anqh-0avu
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Jun 2025 02:37:05 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id DBB4A617F2;
-	Thu, 26 Jun 2025 02:37:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54BE1C4CEEA;
-	Thu, 26 Jun 2025 02:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750905424;
-	bh=3JMG6iB8TJvIJcGTwj3LS7AOTxOpDIfMUVTPuJlJB1k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q5khl0MZs0YrWvdZchwUX1U8I1eBplhj+0tYpxr8rentRjTAoVs7bPlp+FAbfTRvL
-	 JhCVPANA5DFDFgLXppQGBuXsjHW7Xz7xWcK709Ocg2i1mh1rJyUgd601mvbHuidnOs
-	 J988JDLYvhXyk48jfkHfr9MRohCkHot3o8lP0zemiipe4KzF9cFFy42mBjU+DsGfHq
-	 O69fJjbacyWap17eWJ+Grp8TQ/miRrSE6LaMds95gGAynho5fbgUfqKzSvfhd6EExi
-	 uvpSKAP/X3v6eXj9pxZTQA2xDOoqO19oLIYkdNjy7/Ij3KwUmEdHlwUSHVxEc19mOf
-	 p7iABbX9Eblrw==
-Date: Wed, 25 Jun 2025 19:36:29 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Maxime MERE <maxime.mere@foss.st.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: don't use hardware offload Crypto API drivers
-Message-ID: <20250626023629.GA4797@sol>
-References: <20250611205859.80819-1-ebiggers@kernel.org>
- <8f4c2f36-71af-4c84-bcee-2554cea991d0@foss.st.com>
- <20250613144239.GA1287@sol>
- <c1671c5e-d824-4131-861e-470d09371e05@foss.st.com>
+	Thu, 26 Jun 2025 07:26:01 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6541044A0C;
+	Thu, 26 Jun 2025 07:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1750922755;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cP+LS+JT48xAm+OMUAjyBYcTGTWWmH6uA1TAjVp0oik=;
+	b=Tf9KD+6HR5QRq1KpbRFlU6OXd/2oZFt2nMpY3dRF2jQlBntgE/uXldQe4ASkyQuEFeGFpU
+	x54Kx+uyFahHqD3gLmlKtEeKISIFQ3cFUyziK87YXTImfrxfbju0VCXhTsvDnQf8BdN7O8
+	G+zSkknpujMQcnwoCAGu3wP0+pY75y1JNixyG/vHrgLA+Xz2GjaglsXBYqN65JcNmkJ2IG
+	CHr/pRPQ8jqPg5GqRIOY8ZPudj3lLBUSn3TIOdglIrwN8v5Vv1JujssPROvaReJZsZkxOD
+	dkBbPLZ+LpAu3fgJ86CilDjP0TbjiVkr+5k4q4FmlPID1oN06B+OH98gZbKc7w==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Gabor Juhos <j4g8y7@gmail.com>,  Md Sadre Alam
+ <quic_mdalam@quicinc.com>,  Varadarajan Narayanan
+ <quic_varada@quicinc.com>,  Sricharan Ramabadhran
+ <quic_srichara@quicinc.com>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>,  linux-spi@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  linux-arm-msm@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  Lakshmi Sowjanya D
+ <quic_laksd@quicinc.com>
+Subject: Re: [PATCH v3 0/2] spi: spi-qpic-snand: avoid memory corruption
+In-Reply-To: <aFx7ix0uikB8dkm4@finisterre.sirena.org.uk> (Mark Brown's message
+	of "Wed, 25 Jun 2025 23:43:23 +0100")
+References: <20250618-qpic-snand-avoid-mem-corruption-v3-0-319c71296cda@gmail.com>
+	<aFx7ix0uikB8dkm4@finisterre.sirena.org.uk>
+User-Agent: mu4e 1.12.7; emacs 30.1
+Date: Thu, 26 Jun 2025 09:25:53 +0200
+Message-ID: <8734bnx8u6.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c1671c5e-d824-4131-861e-470d09371e05@foss.st.com>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvhedtgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddvpdhrtghpthhtohepsghrohhonhhivgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhegghekhiejsehgmhgrihhlrdgtohhmpdhrtghpthhtohepqhhuihgtpghmuggrlhgrmhesqhhuihgtihhntgdrtghomhdprhgtphhtthhopehquhhitggpvhgrrhgruggrsehquhhitghinhgtrdgtohhmpdhrtghpthhtohepqhhuihgtpghsrhhitghhrghrrgesqhhuihgtihhntgdrtghomhdprhgtphhtt
+ hhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtoheplhhinhhugidqshhpihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250626_002559_923209_ABB1C9A8 
+X-CRM114-Status: GOOD (  11.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,40 +78,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 25, 2025 at 06:29:17PM +0200, Maxime MERE wrote:
-> Regarding robustness and maintenance, ST ensures regular updates of its
-> drivers and can fix any reported bugs. We have conducted internal tests with
-> dm-crypt that demonstrate the proper functioning of these drivers for this
-> type of application.
-
-In addition to the bug I mentioned earlier where the STM32 crypto driver
-produced incorrect ciphertext (https://github.com/google/fscryptctl/issues/32),
-the following fix shows that the STM32 crypto driver computed incorrect hash
-values for years (2017 through 2023):
-
-    https://git.kernel.org/linus/e6af5c0c4d32a27e
-
-While these bugs may be fixed now, they show a serious lack of testing.  They
-also show that these sorts of drivers are really hard to get right.
-
-I absolutely do not want fscrypt using anything like this.  I want the crypto to
-be done correctly.
-
-(And also efficiently, which clearly these offloads don't actually do either.)
-
-BTW, it seems all the hardware offload crypto drivers have quality issues like
-this.  I gave other examples in the thread, for example the Intel QAT driver
-causing data corruption.  So my intent isn't to single out the STM32 driver per
-se.  (And of course this patch applies to all drivers.)  I'm just responding to
-STM32 because of the people pushing it in this thread for some reason.
-
-- Eric
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFyaywKCk9uIDI1LzA2LzIwMjUgYXQgMjM6NDM6MjMgKzAxLCBNYXJrIEJyb3duIDxicm9v
+bmllQGtlcm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBXZWQsIEp1biAxOCwgMjAyNSBhdCAxMDoyMjo0
+OFBNICswMjAwLCBHYWJvciBKdWhvcyB3cm90ZToKPj4gVGhlICdzcGktcXBpYy1uYW5kJyBkcml2
+ZXIgbWF5IGNhdXNlIG1lbW9yeSBjb3JydXB0aW9uIHVuZGVyIHNvbWUKPj4gY2lyY3Vtc3RhbmNl
+cy4gVGhlIGZpcnN0IHBhdGNoIGluIHRoZSBzZXJpZXMgY2hhbmdlcyB0aGUgZHJpdmVyIHRvCj4+
+IGF2b2lkIHRoYXQsIHdoZXJlYXMgdGhlIHNlY29uZCBhZGRzIHNvbWUgc2FuaXR5IGNoZWNrcyB0
+byB0aGUgY29tbW9uCj4+IFFQSUMgY29kZSBpbiBvcmRlciB0byBtYWtlIGRldGVjdGluZyBzdWNo
+IGVycm9ycyBlYXNpZXIgaW4gdGhlIGZ1dHVyZS4KPj4gCj4+IFByZWZlcmFibHksIHRoZSB0d28g
+cGF0Y2hlcyBzaG91bGQgZ28gYWxvbmcgaW4gdmlhIHRoZSBTUEkgdHJlZS4KPj4gSXQgaXMgbm90
+IGEgc3RyaWN0IHJlcXVpcmVtZW50IHRob3VnaCwgaW4gdGhlIGNhc2UgdGhlIHNlY29uZCBwYXRj
+aAo+PiBnZXRzIGluY2x1ZGVkIHNlcGFyYXRlbHkgdGhyb3VnaCB0aGUgTVREIHRyZWUgaXQgcmV2
+ZWFscyB0aGUgYnVnCj4+IHdoaWNoIGlzIGZpeGVkIGluIHRoZSBmaXJzdCBwYXRjaC4KPgo+IE1p
+cXVlbCwgYXJlIHlvdSBPSyB3aXRoIHRoaXMgcGxhbiBmb3IgbWVyZ2luZyB2aWEgdGhlIFNQSSB0
+cmVlPwoKQWJzb2x1dGVseSwgbXkgQWNrIGlzIGFscmVhZHkgdGhlcmUsIHRoYW5rcyBmb3IgYXNr
+aW5nLgoKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
