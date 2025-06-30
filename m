@@ -4,60 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0D19C7EE39
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Jun 2025 09:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64983C7EE39
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Jun 2025 11:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bWhWUQZDKoPis13z7Sjv+VproGbdpyGq0GJuLNTVAJE=; b=dcVIt4Ah2JxCCQ9y1ftsvVPGoR
-	d+HgaRTIqmN6yEGCBiv2pSVzg/kioFpDZlFcE5AE1/b5awY5O4REieUzSFeC1VSlSoiwI9PoYcLn6
-	SByX+pD+GIECps5WNnil+9IoWV5Y67ektSseVdddA98SNqq3ruXBqBqJc7Ak+RkHDE8zZ3L7YBjH8
-	HjITM4FQzpyuD30nKCx2oytFsCKzNuyGpECHzVYpcFaiHoMxwPyoTvHlG/hPM2kkv4FbVWGIoKOxY
-	K9mxVHgN/+IJlT4sP3H12PEK0gNY/L9v0W4NlLqTP5gXhxVw+YkAGDt9B83J3kz6IU1lZrjG7VNwx
-	Yi1btzGw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TAqweEI2qDnIlPF4Pr+d3fkTjYuqM0v12/JgKhMbc6o=; b=mEdTMRIYiPecjH
+	U7c3wGH7WOypm5Qp3aG0Te1zwkUA6tanEw8fu/NrfrJiU+1OcnOFTLt9b3em5vE7Sb8C9laUoz1et
+	RZKLnOCyqzbxswVDm6RnqVpdwMNdD2u/eP/xkplHbZNqv0Vyz/DJZwmVlQCXyfDdtiazTzQTQwjZy
+	i9ygFQHPv+B/HI2xUUXoK0+SPYdDjOt6rtqlzj9/IwF5zKNpw+uMdHsTsu24twDPFNhqVROmsETwk
+	3o9KJZTKZUbjl7r2TLJ/z11HQRB0KER/0qnYC1YdudAGpkXjDs1hCmP1MlF/r1GHySogK0P+CtR8u
+	Js38iXZ3Tykymc8MDRRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWAlu-00000001kSB-1wUA;
-	Mon, 30 Jun 2025 09:25:54 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1uWCZE-000000020PM-1rGr;
+	Mon, 30 Jun 2025 11:20:56 +0000
+Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWAlp-00000001kRT-0Bpg
+	id 1uWCAS-00000001x4o-2mgN
 	for linux-mtd@lists.infradead.org;
-	Mon, 30 Jun 2025 09:25:50 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6ADA0462AA;
-	Mon, 30 Jun 2025 09:25:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA57AC4CEE3;
-	Mon, 30 Jun 2025 09:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751275548;
-	bh=smX2YBtkYqzCCe10Vwr0s1kVTj75TS4LURSnqOo+jGE=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=cfDcJZSoZB3Kzntdi+rvfCVC88AiefVnO+ej4yLk/X5N7hP+gia+AY1ZUMXjvZf41
-	 w2xS27Sz6VLshhKmMpIUgPBNmdSswJ/zxnIU5meuFjz9tCx4JfjXxoGD0cAP+kTb34
-	 g9G0fHQEjL+4TpPyBpp0ah/fZ1v1PSriAMw6nFqyqWPX2BSVaEoTxakZC4cB/7DjcX
-	 gii6UmzNkovRU346nRLN6XyyTAS0SsI2VWvle2iRcalx6QbyS/TSdhTAUd6gBlRLnG
-	 vrMqbJlgBAvUPZKPIBKiXvNOq+tlaafTaiO8Fz99mPP9f/4Zh+rddoVhLOtwr2qKqA
-	 U8S0wglC8Owcg==
-Date: Mon, 30 Jun 2025 11:25:44 +0200
-Message-Id: <DAZRDAEP431C.26ALRPF1GSJQH@kernel.org>
-Subject: Re: [bug] spi-nor not unlocking on Ubiquiti XW and WA
-Cc: <tim.j.wilkinson@gmail.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Jean-Marc Ranger" <jmranger@hotmail.com>, <tudor.ambarus@linaro.org>,
- <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.16.0
-References: <DM6PR06MB561177323DC5207E34AF2A06C547A@DM6PR06MB5611.namprd06.prod.outlook.com>
-In-Reply-To: <
- <DM6PR06MB561177323DC5207E34AF2A06C547A@DM6PR06MB5611.namprd06.prod.outlook.com>
+	Mon, 30 Jun 2025 10:55:22 +0000
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-b2fd091f826so3720797a12.1
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2025 03:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751280919; x=1751885719; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vOLt0laTo71qmfivlEGpwRyCLDx2kN9fgg5USjybj84=;
+        b=h0mI5290dchrD3i68OSPIppsU2KPMpOUYMqOcJ9ZN1+/nvFKbsKeeU86xZMHAhDzyg
+         TAwi35pvAu+o1oFmTjF3lQmZ5wgFR7/SuGwdO22ZNtHzTECMrEcPka+njsnBf7vPTTNE
+         fVifNWUlCk/NZ89CmXf6yzhVSKRQNS0Up8yf8DgbLplgOK6eTUdLOfUt2h6ZrG3Mrk55
+         K1WnPFrN/ybIgeBflU3hEkH18Krj387kRI6Vh7oq1Mp7KN4vPm27FmkCrCYB5vyexTje
+         WZalYhNmCwmWWeGDPJDmwGHb2Jxi3HKEfE/WsM+gBxn2tGOMY2e1u+52lCJcFzEWthRt
+         NCNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751280919; x=1751885719;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vOLt0laTo71qmfivlEGpwRyCLDx2kN9fgg5USjybj84=;
+        b=ufimZjmZy+r0tLTtVLFbhY/JPjVudV0Yi98If2XRvL0pmsY2OSedqAV1ruNunrq8Fl
+         zfd9z6VhQdK0iemodPWzWXorbL2gdIL7bngsMprkoVaqudbL+y3kjp5RuqdywLJyvsLj
+         ysEBt+03c7h3DUhdwpXPQAYFr7LU9o5/SblCuvI08aJg2jCkUR94phch7T8c4+N94rJt
+         imQ7205FGZzGBaEU7aDflpqzjfajwAt/IuYvH2Ola/9uyNAgYZJu33iA/ag8NBdqy4MV
+         RyhQsB1bPvFMQSQ0Oye9NBIa/Me25gfVQioSAKWZBG58n3o7GQA+OEjNh7LO+10otmBN
+         FhvA==
+X-Forwarded-Encrypted: i=1; AJvYcCVx/wvQi8GjSsC1bnj7beRzjhVaAzBxkHCjSK4GQOFBmzq+ZjYEGTY3R++YDx3wbOj82Mxypqm9qJM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzGggFa8AvJ0JPgSln8R2GUR4WqEJ7Yrffd8qS7DXwl9mdNZlzT
+	AbGsaNnqPaQiAkWy0GjAMRx6G9YR3G5ZkN5CWqFfb6ibDLBSznay1PWv
+X-Gm-Gg: ASbGncsI9RsTP/cuIaxrZeUWz9iKqxxctaheve+ToWLvFXUXohbYWHnOkkYrka6VmGJ
+	ZJCW/QlT4keZTqCA3XvIQgOKfawqGCBk2SZgwC/4Ohbw4UUvj5es0Wbo9Lk/HbST7321LYSew/1
+	L8bkzw8sUXrMVd/iZn+VTh0osCDDYHrsvXYSt72t8qRCQiLKUy2hCJroJGMzg5n8mGo5xU/FXPN
+	XUZzeZyDi7mAllFHYL39ROq1gquA7ou53KVunu0gYU8aFhDcW4MHg/6HYMH1eevXZ70gNrmfK2f
+	LoRbStGXTlXlrMyxWfdudqWt20EatqfRGWIx2Bcb90S/f32TvWckphhi8fBoSTMXa50OBIX2xYF
+	9wgnfU+Q=
+X-Google-Smtp-Source: AGHT+IHPWCrIrwpVH5Rem/E0e4ErtM5i1TOdgOMS91Bjqqze7RazUd/vesCtrg2Yzq0nJxTCTEpWFg==
+X-Received: by 2002:a05:6a20:3d8d:b0:220:1c04:80cc with SMTP id adf61e73a8af0-220a091ded2mr22546214637.9.1751280919295;
+        Mon, 30 Jun 2025 03:55:19 -0700 (PDT)
+Received: from sun-virtual-machine.localdomain ([104.168.88.190])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5409895sm8705367b3a.7.2025.06.30.03.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jun 2025 03:55:18 -0700 (PDT)
+From: Ssunk <ssunkkan@gmail.com>
+To: pratyush@kernel.org
+Cc: hhlee@google.com,
+	linux-mtd@lists.infradead.org,
+	miquel.raynal@bootlin.com,
+	mwalle@kernel.org,
+	richard@nod.at,
+	roccochen@google.com,
+	ssunkkan@gmail.com,
+	tudor.ambarus@linaro.org,
+	vigneshr@ti.com
+Subject: [PATCH v2] Add support for XM25LU64C
+Date: Mon, 30 Jun 2025 18:55:03 +0800
+Message-Id: <20250630105503.4673-1-ssunkkan@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <mafs0ecwarovz.fsf@kernel.org>
+References: <mafs0ecwarovz.fsf@kernel.org>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250630_022549_133201_C32039C7 
-X-CRM114-Status: GOOD (  42.43  )
+X-CRM114-CacheID: sfid-20250630_035520_711127_494A6DA3 
+X-CRM114-Status: GOOD (  12.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,261 +101,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7465026611264170766=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7465026611264170766==
-Content-Type: multipart/signed;
- boundary=9999c2a3d1de4970bbc0b7b85935accf772f7e48f1c61a8f61f2cc29655e;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+The device is produced by Wuhan Xinxin Semiconductor Manufacturing Corp. (XMC)
+and found on some routers from Chinese manufactures.
+We need to add this chip to google's AVL
+The flash ID was incorrectly set to 0x16 0x41 0x17.
+Update to 0x20 0x41 0x17 as per the datasheet.
 
---9999c2a3d1de4970bbc0b7b85935accf772f7e48f1c61a8f61f2cc29655e
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+The data sheet can be found here:
+https://www.xmcwh.com/uploads/954/XM25LU64C%20_%20Ver1.5.pdf
 
-Hi,
+Signed-off-by: Kankan Sun <ssunkkan@gmail.com>
+---
+Changes in v2: 
+ - Fix flash ID from 0x16 0x41 0x17 to 0x20 0x41 0x17 (datasheet confirmed).
+ drivers/mtd/spi-nor/xmc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> I'm reporting this as an user of OpenWRT 23.05 on an Ubiquiti=20
-> Nanostation AC, who hopes to upgrade to 24.10. Currently, upgrading=20
-> results in a device where no configuration can be saved. Recovery=20
-> requires physical presence, on devices often installed outdoor.
+diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+index d5a06054b0dd..bc7b1a2afa9b 100644
+--- a/drivers/mtd/spi-nor/xmc.c
++++ b/drivers/mtd/spi-nor/xmc.c
+@@ -19,6 +19,11 @@ static const struct flash_info xmc_nor_parts[] = {
+ 		.name = "XM25QH128A",
+ 		.size = SZ_16M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0x41, 0x17),
++		.name = "XM25LU64C",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 	},
+ };
+ 
+-- 
+2.34.1
 
-thanks for the bug report.
-
-> The issue has an explanation and a patch (for kernel 6.6) has been=20
-> available since late 2024 [1, attached below][2, which merges multiple=20
-> fixes]. It has been used by others [3] and myself. However, its author=20
-> believes that it doesn't have the correct approach to be upstreamed [4].=
-=20
-> OpenWRT maintainers are waiting for an ACK or better from upstream=20
-> before applying [5].
->
-> Is there a way to "unlock" this (pun intended) ?
->
-> For reference, OpenWRT configures those devices with=20
-> CONFIG_MTD_SPI_NOR_SWP_DISABLE [6].
->
-> I'm available to test, but:
-> - the only device I can use is a production one
-> - OpenWRT is still working on upgrading ath79 from 6.6 to 6.12 [7], so=20
-> I'd be limited to testing on 6.6
->
-> Let me know how I can help.
->
-> Thanks!
->
-> Jean-Marc
->
->
-> [1]=20
-> https://github.com/openwrt/openwrt/pull/17287/commits/c98a55f95268f109911=
-c5fddf5a153cfe3565b74
-> [2] https://github.com/aredn/aredn/blob/main/patches/006-flash-fixes.patc=
-h
-> [3] https://github.com/openwrt/openwrt/issues/17285#issuecomment-29469788=
-32
-> [4] https://github.com/openwrt/openwrt/pull/17287#issuecomment-2558569582
-> [5] https://github.com/openwrt/openwrt/pull/17287#issuecomment-2558502454
-> [6]=20
-> https://github.com/openwrt/openwrt/blob/bb59922007043c0a0813d62b0d9f6e801=
-caff9df/target/linux/ath79/generic/config-default
-> [7] https://github.com/openwrt/openwrt/issues/16569
->
->
->  From c98a55f95268f109911c5fddf5a153cfe3565b74 Mon Sep 17 00:00:00 2001
-> From: Tim Wilkinson <tim.j.wilkinson@gmail.com>
-> Date: Mon, 16 Dec 2024 09:37:34 -0800
-> Subject: [PATCH] kernel: Fix setup of flash chips which must be unlocked
->   before use.
->
-> Setup the mtd information for spi nor flash before calling running
-> the nor setup.
->
-> The current code assumes the nor setup doesnt make reference to the mtd
-> information. There's even a comment to this effect. However, at least
-> when flash chips must be unlocked, this isn't true.  Consequently, the
-> unlock code will fail because it makes reference to uninitialized mtd
-> information. This failure is silent because the bad mtd information
-> claims the flash is 0 bytes long, and so there is nothing to unlock.
->
-> This patch moves the mtd initialization before the nor setup, so the
-> mtd info is available.
->
-> This fix has been tested on two different Ubiquiti devices - the
-> Rocket AC Lite and the Rocket M5 XW. These use the mx25l12805d and
-> mx25l6405d Macronix flash chips respectively.  Previously these devices
-> had failed to operate correctly as it was not possible for any
-> persistent changes to be made once the factory build had been installed.
-> With this change these devices behave correctly.
->
-> Signed-off-by: Tim Wilkinson <tim.j.wilkinson@gmail.com>
-> ---
->   .../436-mtd-spi-earlier-mtd-setup.patch       | 20 +++++++++++++++++++
->   1 file changed, 20 insertions(+)
->   create mode 100644=20
-> target/linux/generic/pending-6.6/436-mtd-spi-earlier-mtd-setup.patch
->
-> diff --git=20
-> a/target/linux/generic/pending-6.6/436-mtd-spi-earlier-mtd-setup.patch=20
-> b/target/linux/generic/pending-6.6/436-mtd-spi-earlier-mtd-setup.patch
-> new file mode 100644
-> index 00000000000000..da75e9f7abfe96
-> --- /dev/null
-> +++ b/target/linux/generic/pending-6.6/436-mtd-spi-earlier-mtd-setup.patc=
-h
-> @@ -0,0 +1,20 @@
-> +--- a/drivers/mtd/spi-nor/core.c
-> ++++ b/drivers/mtd/spi-nor/core.c
-> +@@ -3540,14 +3540,14 @@
-> + 	if (ret)
-> + 		return ret;
-> +
-> ++	/* No mtd_info fields should be used up to this point. */
-> ++	spi_nor_set_mtd_info(nor);
-> ++
-> + 	/* Send all the required SPI flash commands to initialize device */
-> + 	ret =3D spi_nor_init(nor);
-> + 	if (ret)
-> + 		return ret;
-> +
-> +-	/* No mtd_info fields should be used up to this point. */
-> +-	spi_nor_set_mtd_info(nor);
-> +-
-
-This seems to be due to the use of the uninitalized "mtd->size".
-Could you try the following patch which is based on the latest
-next kernel. It replaces mtd->size with nor->params->size, so you
-could backport it to 6.6, but maybe it will apply anyway.
-
----snip---
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 9c9328478d8a..9b07f83aeac7 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -56,7 +56,6 @@ static u64 spi_nor_get_min_prot_length_sr(struct spi_nor =
-*nor)
- static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t=
- *ofs,
- 					u64 *len)
- {
--	struct mtd_info *mtd =3D &nor->mtd;
- 	u64 min_prot_len;
- 	u8 mask =3D spi_nor_get_sr_bp_mask(nor);
- 	u8 tb_mask =3D spi_nor_get_sr_tb_mask(nor);
-@@ -77,13 +76,13 @@ static void spi_nor_get_locked_range_sr(struct spi_nor =
-*nor, u8 sr, loff_t *ofs,
- 	min_prot_len =3D spi_nor_get_min_prot_length_sr(nor);
- 	*len =3D min_prot_len << (bp - 1);
-=20
--	if (*len > mtd->size)
--		*len =3D mtd->size;
-+	if (*len > nor->params->size)
-+		*len =3D nor->params->size;
-=20
- 	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
- 		*ofs =3D 0;
- 	else
--		*ofs =3D mtd->size - *len;
-+		*ofs =3D nor->params->size - *len;
- }
-=20
- /*
-@@ -158,7 +157,6 @@ static bool spi_nor_is_unlocked_sr(struct spi_nor *nor,=
- loff_t ofs, u64 len,
-  */
- static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- {
--	struct mtd_info *mtd =3D &nor->mtd;
- 	u64 min_prot_len;
- 	int ret, status_old, status_new;
- 	u8 mask =3D spi_nor_get_sr_bp_mask(nor);
-@@ -183,7 +181,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t =
-ofs, u64 len)
- 		can_be_bottom =3D false;
-=20
- 	/* If anything above us is unlocked, we can't use 'top' protection */
--	if (!spi_nor_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
-+	if (!spi_nor_is_locked_sr(nor, ofs + len, nor->params->size - (ofs + len)=
-,
- 				  status_old))
- 		can_be_top =3D false;
-=20
-@@ -195,11 +193,11 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_=
-t ofs, u64 len)
-=20
- 	/* lock_len: length of region that should end up locked */
- 	if (use_top)
--		lock_len =3D mtd->size - ofs;
-+		lock_len =3D nor->params->size - ofs;
- 	else
- 		lock_len =3D ofs + len;
-=20
--	if (lock_len =3D=3D mtd->size) {
-+	if (lock_len =3D=3D nor->params->size) {
- 		val =3D mask;
- 	} else {
- 		min_prot_len =3D spi_nor_get_min_prot_length_sr(nor);
-@@ -248,7 +246,6 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t =
-ofs, u64 len)
-  */
- static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- {
--	struct mtd_info *mtd =3D &nor->mtd;
- 	u64 min_prot_len;
- 	int ret, status_old, status_new;
- 	u8 mask =3D spi_nor_get_sr_bp_mask(nor);
-@@ -273,7 +270,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_=
-t ofs, u64 len)
- 		can_be_top =3D false;
-=20
- 	/* If anything above us is locked, we can't use 'bottom' protection */
--	if (!spi_nor_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
-+	if (!spi_nor_is_unlocked_sr(nor, ofs + len, nor->params->size - (ofs + le=
-n),
- 				    status_old))
- 		can_be_bottom =3D false;
-=20
-@@ -285,7 +282,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_=
-t ofs, u64 len)
-=20
- 	/* lock_len: length of region that should remain locked */
- 	if (use_top)
--		lock_len =3D mtd->size - (ofs + len);
-+		lock_len =3D nor->params->size - (ofs + len);
- 	else
- 		lock_len =3D ofs;
-=20
----snip---
-
--michael
-
---9999c2a3d1de4970bbc0b7b85935accf772f7e48f1c61a8f61f2cc29655e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaGJYGBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/gfgwGA3Ko8TBN84GT/zYns53y2ZAuxtjg0ptNZ
-GmZWRKNJXahheM2IZUVUORUE34lRLgxVAX0eEFSzUOnUp+YQfVV8cxDFk9MXk/As
-Rkn8y0jh8T5RXQggbdvw6TV/uNQnzJ65tR0=
-=V/h6
------END PGP SIGNATURE-----
-
---9999c2a3d1de4970bbc0b7b85935accf772f7e48f1c61a8f61f2cc29655e--
-
-
---===============7465026611264170766==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7465026611264170766==--
-
