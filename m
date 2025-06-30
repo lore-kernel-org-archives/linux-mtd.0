@@ -4,64 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B634CC83030
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Jun 2025 12:43:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8289BC8302D
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Jun 2025 15:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AKeyl+r6jnERUMNMme/Pa64/oSraD2/raD15AmhWjeY=; b=ut9mA372JK6hpE
-	QGYhREe+kV8k8say0HbAkMRYNSH03Nttvset3DGoon/tjHFlTey1ZxmwxVn5ggcdvWs2aQ62NqbbP
-	RUq7Kytcy6HA9TIKH4nuKYuD0FSvwPve+/lTIrA/PnxxCQB2l0+HZ+qqGPqf2A8eXGkpS3rrngahD
-	HmVh9fqh6s6nVDyG2x8zA4yb25vsfCeltqiOKeBz5vL0T67PKyStNrfHj5gWluCIeVkEL7XtaEf6J
-	pBx4E100unlSVml64Uu/AbaJqGdJTokE8fjZBIf5za2Y+AbfuOUez639GS0YRm8XxJYObMd38UIFL
-	bcLXbCBh5/rpzvAaRAsg==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=aCzvJAY+MxxT6hqI2FFGCAGzTTZsE35xhQNWa1cfCP0=; b=DDb
+	aZYe1OBdwoJGotMS7phPCWtkgCpeISeOWB3LE3nh/PjTKV2iBS94+7D+bFexRf6O9v88TNoMxvUJK
+	10KuXPMjcNRpS7XNDAj4FfSQTXRslgDTNMygwGZS8CLoO8rVV5SCb7OcYFqZl64C3CqQgUFfJsAH+
+	OEenjONkMX+iZms3iSO6EVh4FC0JEHoUzAoOtlm9/fOqF3s44e/wJd1qfTgeGhpxgkICf9pxLCyOD
+	JHDfEHyJK5cixiyDk0pGlbrqluA+5zkm9xloQEb9rnIz3Eje2oMAIBoyFoN6ep+jFPSCpOuMOsvbr
+	0aWPO6aftaevS0+OUzQmF4znWIZ9pKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWDrJ-00000002E8E-3xFX;
-	Mon, 30 Jun 2025 12:43:41 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1uWGAH-00000002hfe-0kI2;
+	Mon, 30 Jun 2025 15:11:25 +0000
+Received: from mail-lf1-x135.google.com ([2a00:1450:4864:20::135])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWDlf-00000002Cwq-3fNh
+	id 1uWFee-00000002bK4-3LKn
 	for linux-mtd@lists.infradead.org;
-	Mon, 30 Jun 2025 12:37:53 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 72DF6463A2;
-	Mon, 30 Jun 2025 12:37:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21B7BC4CEEF;
-	Mon, 30 Jun 2025 12:37:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751287071;
-	bh=MgteINiIKUQxM+bP/XS1w/Exa/rjYBe6TpvG+0r5tHc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=cVd4TYtVqTETn+Jn4o6QczGXELg7AdEF4TxhCrZ3a7C8RtfZFZTR+Nz/2dv33RhBq
-	 9oSb4XxIjI4P3Tsah3SMIxBe4NvvjKm1ia/xWQ8uns3a7Ju/Ymph1qGxkpsH8f/HOl
-	 qoX/VpIf8Qzz7b6YpMvGKMW1AG6tJdTkaGt9370dBjGKk5BNlF3LLDrOA+lpy9zHWg
-	 vU43e1ouMJe+2adJHFJSPCJVHZ7V0FVtmTIXfSXPXziUK98IbgFz/nIgEHXlDMT5Vd
-	 Mt7g9FR8PGkOafqN/gSs/UIUPvgPdQmJFRtA3LROK/gE1FqSQwnSMI0j5U1wda8RP/
-	 x4oVZCYG+KUEw==
-From: Mark Brown <broonie@kernel.org>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Gabor Juhos <j4g8y7@gmail.com>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Lakshmi Sowjanya D <quic_laksd@quicinc.com>
-In-Reply-To: <20250618-qpic-snand-avoid-mem-corruption-v3-0-319c71296cda@gmail.com>
-References: <20250618-qpic-snand-avoid-mem-corruption-v3-0-319c71296cda@gmail.com>
-Subject: Re: [PATCH v3 0/2] spi: spi-qpic-snand: avoid memory corruption
-Message-Id: <175128706885.37861.8770064610677476494.b4-ty@kernel.org>
-Date: Mon, 30 Jun 2025 13:37:48 +0100
+	Mon, 30 Jun 2025 14:38:46 +0000
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-553bcba4ff8so2357958e87.2
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2025 07:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hifiphile-com.20230601.gappssmtp.com; s=20230601; t=1751294322; x=1751899122; darn=lists.infradead.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5aROwHTVbyl9D9zeojKZoCOh6LjGW5da//8YHEuJ/oI=;
+        b=nXIneRqE+IcfREIUoxxgwYGzyY4XEOEz6tiH6QJIuRYxWxbZqwJFgt+Qs1MaqHrYhX
+         9ol7VJ3s/VwtE2s8HYOwyrVShEgnomPjbDmeJz+WQVkHlU6RAhwSZO22xBLEJikqzfj5
+         J5lxWS0/pSYcauO0opNHZD6iAPtQnc23wr/22Fl8gSOGms5l1gj24X8z3wobSq/kPGDy
+         XogMkGjYAqUPKA5oUxLJvjzjPT8j1vBNfMx6Qg13mONF8GxGutDPggXZVU+TSVLPyJnj
+         HNdvqH4ti7Zh8G568kaJJISu/zgHbxnBgXnHrHFJENELUEwGTfAzh/7Egj2ZrPDBSonu
+         liDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751294322; x=1751899122;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5aROwHTVbyl9D9zeojKZoCOh6LjGW5da//8YHEuJ/oI=;
+        b=bicqhid1utF6BmsFmxlethkVfAaBXtlN3SUhLL4KZFT9cIHvAj+da1dUOJjoUSQnH8
+         9uN+AYIPrHbGE+bxPKoxqqn8PqFqZshqhYAXr/E6CGbObLSrmWKxHh7LbzBn4+2XqauV
+         XMOFTGQPGd0IhtHtc/BQt1DnkcvYzYXkAQ50iA6GA7HyzpCXGiScfGffVx6xsfyr0qsH
+         bsyHnGxiO78yr8PmP5XsM7BcECU9z+0CtgNpgzCR8yXDh4T5u+uwfnBPxBC+x9Yf5oPM
+         3S5ilziFbuBds+Lxiyvt6GVhGoN6EvQtGvsLtEBwk5k0X3Kn+3iJvF8PwbutpfIFpziG
+         avvw==
+X-Forwarded-Encrypted: i=1; AJvYcCXxlDQTULe+GpeZpFvUpC4TjYvO3Vnmm5F/sQ4f7zVbk9ZvDzBBxRz2z+4QFsRJR127+yUlRN9pjr8=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzFuKVkJOCassEe2U6UyQsGGHbbwQbmCcaxFzXjVi1m3hRUK7xE
+	msEk7mHBRzGlUDBogNCnR7vJkl/gvYlgkM14U3vDkDgBWRSY/ag+/c/v0dbJU9wvHAWXFalYNgv
+	ypoPljIYc/YiosaimnztF0OLvfmrIIJxnewvcxnEo9Q==
+X-Gm-Gg: ASbGncvFOOuSamPF2lzT7CCF0RMhy0yFmLQd+Ni91/Ego8IPUL+HGBxhl0fMCzxyadt
+	kf3onyuQy4HV1LTI/whY+4PBO/c1UbTn+Zlt8p79boshxvcyRGRYWB5oHVgDm5r478miYrtPBJ/
+	jaoHXACTsRLhwwmaJWhaslZ2mucUuaP9agPXRk77plMX4=
+X-Google-Smtp-Source: AGHT+IFnqcLpgxNaCsk7PoNMYONyRs0hnLK3ll4UkAxFSTpn8mAkmMX5sbsExFDwtXdwFg+jhcuCDPedsHKii9UuAHs=
+X-Received: by 2002:a05:651c:1116:20b0:32c:bc69:e91a with SMTP id
+ 38308e7fff4ca-32cdc525e8amr30785301fa.36.1751294322210; Mon, 30 Jun 2025
+ 07:38:42 -0700 (PDT)
 MIME-Version: 1.0
-X-Mailer: b4 0.15-dev-cff91
+From: Zixun LI <admin@hifiphile.com>
+Date: Mon, 30 Jun 2025 16:38:31 +0200
+X-Gm-Features: Ac12FXyz1YASyU_kIOho436uejsR4G8SmZtLl7LY6YsKeZfU1QFCNlm6WQE6lL0
+Message-ID: <CA+GyqebQnWQ3fj4Lrb4-hvzRpphuqw+jh4B9En1j2NDTNFumvQ@mail.gmail.com>
+Subject: mtd: rawnand: atmel: ECC error after update to kernel 6.6
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+	linux-mtd@lists.infradead.org, 
+	"SoC support'" <linux-arm-kernel@lists.infradead.org>, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250630_053751_939610_939F143E 
-X-CRM114-Status: GOOD (  16.46  )
+X-CRM114-CacheID: sfid-20250630_073845_070657_ED4EEDCE 
+X-CRM114-Status: UNSURE (   8.90  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,49 +94,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 18 Jun 2025 22:22:48 +0200, Gabor Juhos wrote:
-> The 'spi-qpic-nand' driver may cause memory corruption under some
-> circumstances. The first patch in the series changes the driver to
-> avoid that, whereas the second adds some sanity checks to the common
-> QPIC code in order to make detecting such errors easier in the future.
-> 
-> Preferably, the two patches should go along in via the SPI tree.
-> It is not a strict requirement though, in the case the second patch
-> gets included separately through the MTD tree it reveals the bug
-> which is fixed in the first patch.
-> 
-> [...]
+Hi,
 
-Applied to
+After updating our SAM9G25 device from kernel 3.16 to 6.6, we have
+encountered UBIFS failures with ECC errors:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+  ubi0 warning: ubi_io_read: error -74 (ECC error) while reading
+126976 bytes from PEB 8:4096, read only 126976 bytes, retry
 
-Thanks!
+On the old system (kernel 3.16), nandtest passed successfully:
 
-[1/2] spi: spi-qpic-snand: reallocate BAM transactions
-      commit: d85d0380292a7e618915069c3579ae23c7c80339
-[2/2] mtd: nand: qpic_common: prevent out of bounds access of BAM arrays
-      commit: ddaad4ad774d4ae02047ef873a8e38f62a4b7b01
+  nandtest -p 1 -l 0x40000 /dev/mtd2
+  ECC corrections: 1
+  ECC failures : 0
+  Bad blocks : 0
+  BBT blocks : 0
+  00020000: checking...
+  Finished pass 1 successfully
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+But on the new system (kernel 6.6), nandtest reports many errors:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+  nandtest -p 1 -l 0x40000 /dev/mtd2
+  ECC corrections: 1667
+  ECC failures : 1205
+  Bad blocks : 1
+  BBT blocks : 0
+  00000000: reading (1 of 4)...
+  218 bit(s) ECC corrected at 00000000
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+After some diagnostics, I used devmem2 to compare SMC and PMECC
+registers between the two kernels. All values match except for the
+PMECC_CLK register, which is 2 in kernel 3.16 [1] and 0 in kernel 6.6
+[2]. It appears the clock setting is missing since the kernel 4.14
+refactor.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+According to the SAM9G25 datasheet this field must be programmed with 2.
 
-Thanks,
-Mark
+Manually setting PMECC_CLK to 2 (devmem2 0xffffe010 w 2) resolves the
+nandtest issue.
 
+Is the clock setting moved to elsewhere after the refactor ?
+
+Best regards,
+Zixun LI
+
+[1] https://github.com/torvalds/linux/blob/19583ca584d6f574384e17fe7613dfaeadcdc4a6/drivers/mtd/nand/atmel_nand.c#L1058
+[2] https://github.com/torvalds/linux/blob/ffc253263a1375a65fa6c9f62a893e9767fbebfa/drivers/mtd/nand/raw/atmel/pmecc.c#L772
 
 ______________________________________________________
 Linux MTD discussion mailing list
