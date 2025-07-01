@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AFFDC83038
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 14:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 475EBC83038
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 15:05:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FwTXDOtmbAeQBweFhr20JF0bCWx8O4tiYWC0entcTMQ=; b=arW9qKs3q8iKl5
-	VxqO6KOoHqV2owrDG5CtbFfisJWWKNBQ9MN9D0S4UqRd0rlP/TevJuWYh0gqGbrJSe6KSGMiZanNs
-	LfZ5VayBFtvq2QiK2maIjHGk44aADsPqSD0GHjg8UC5VKbZVAgktZndZZms5qgiIlYazIZUifOU/D
-	WlFyEZFHHhq6BbrClGXLzQ+B34cQI5P2cK/IWz9fPaz9lRefBy9GAOFwPJAssvVqGs2ZnI5IZC9ks
-	PRlZxqAutFQgvYJnGXuEd6TPgNCvSitRCIopln3Csg+uVsvYg3+nyYFetmyoY0efbFuNUHY+WSxCl
-	twXI1WgmTP4EGoAN6u2A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VCz4sQviIFBVHLsi8AY1Di95stD6do6oI2ezkN5l53o=; b=20P/XSTY7T5mok
+	xATflHraKSPNE5J+fn23kESsbSQgyQjoo+1HCpfDTwrgtbpi7zez/ASdn0zqji6T/VfRpr757KEAy
+	ATzND7gXTpw+PlEesoO2ge/Cv2h0NRcYKCUV61peq1H/isTfK3zLJ35BKgVEODnKv4mSjrlPDMKfs
+	KZzIx6q4XY6th4stqjqI1TIwMTPcgEUO4WQ72U1Q0FyUTNIM+rwi/NzRdp8Ms/ffj+SoFUEVRRDeW
+	wxkxD138cYWZE7g2VCtIcKlj4IWRvkcd8BdqnCZx2XVBjU8m1VC5g1wMq7YrYVQZsLimQu6KIoES/
+	Wgb0ovaqin2B9scunNqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWbso-00000005gdT-0Yvz;
-	Tue, 01 Jul 2025 14:22:50 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1uWcYR-00000005pau-0dui;
+	Tue, 01 Jul 2025 15:05:51 +0000
+Received: from mta-65-226.siemens.flowmailer.net ([185.136.65.226])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWaTd-00000005OBj-18CD
+	id 1uWb7H-00000005Wsv-3FY7
 	for linux-mtd@lists.infradead.org;
-	Tue, 01 Jul 2025 12:52:46 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 15B5343A0C;
-	Tue,  1 Jul 2025 12:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1751374363;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LPWusB319hqcjd//15Bc5xcoYqrH7jO6QhAyal/DX+o=;
-	b=SJ/lrnNPdamf043ssGzRJW11GCZhIZalKvKQdBn0kqhMaPSGPG8XCuoj0zDpFpQj9RKgXd
-	dBW8VS9x5psVADG7aeD5MPZCELoG+gH+TS9liybefNtGazRsTJqM7to87t2+5/RMpQv+5G
-	vj3I0zLBLk46t8aRM6jGzt9HfqP+AuB6KQPMfY3oiM1qUyhC4M7F3d9sTR9kvaHAJXVkvL
-	0MQhSVdNgDK+ofLR3QeiVHrUbOYKszKZNRSwHWL7ixMRTYWk6YKk/rHpWWo41B5nxp2JT8
-	04k801X770tXhlokV2KLiHV/608wh5On92TbIYNAJ+8jm4t2eHqVCVGe7Ng9Hw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Thomas Fourier <fourier.thomas@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Uwe =?utf-8?Q?Kleine-K=C3=B6nig?=
- <u.kleine-koenig@baylibre.com>,
-  David Woodhouse <David.Woodhouse@intel.com>,  Viresh Kumar
- <vireshk@kernel.org>,  Artem Bityutskiy
- <artem.bityutskiy@linux.intel.com>,  Vipin Kumar <vipin.kumar@st.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand/fsmc:  Add missing check after DMA map
-In-Reply-To: <20250701115519.30772-2-fourier.thomas@gmail.com> (Thomas
-	Fourier's message of "Tue, 1 Jul 2025 13:55:15 +0200")
-References: <20250701115519.30772-2-fourier.thomas@gmail.com>
-User-Agent: mu4e 1.12.7; emacs 30.1
-Date: Tue, 01 Jul 2025 14:52:41 +0200
-Message-ID: <87zfdooyxy.fsf@bootlin.com>
+	Tue, 01 Jul 2025 13:33:45 +0000
+Received: by mta-65-226.siemens.flowmailer.net with ESMTPSA id 20250701133337718be8c7aae7ffad9f
+        for <linux-mtd@lists.infradead.org>;
+        Tue, 01 Jul 2025 15:33:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
+ d=siemens.com; i=alexander.sverdlin@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
+ bh=YhxdcWDoChMeKmCKFHUBRgx8Fy37YPqEiFc2G1XZk/I=;
+ b=NT0/xHW6kCxGPbT2r9IA2uCj2BwYytVU4zBooT76wG4djkO052AKLKBGKI6R7ptSMfv1eJ
+ LxneKxMSRmfdxcs2wHR1BP4Mq9ijo/x8elVuh7E54tc2P5RicaWiB6V110bABX7oL4/33xx8
+ PIujI8DMQQbMI23ckyP9MIoAU+DEaohpJKGHT1Fq9Tgnwh30kFXM52z5tdtap/794luuoOK4
+ QR2vUhhP4n9ZV5GX2xAVvgBsT2BiaeA/jdjh6wGf6/ogS1Q2ezEzMNB0yzBw87T7lCql6/4I
+ 4HmpD7R2/wwjtodREGMGGv0iPNc9D00KYxZnpWiRt38FsTxBfjdvYqug==;
+From: "A. Sverdlin" <alexander.sverdlin@siemens.com>
+To: Boris Brezillon <bbrezillon@kernel.org>,
+	linux-mtd@lists.infradead.org
+Cc: Alexander Sverdlin <alexander.sverdlin@siemens.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: raw: atmel: Respect tAR, tCLR in read setup timing
+Date: Tue,  1 Jul 2025 15:33:28 +0200
+Message-ID: <20250701133333.3871085-1-alexander.sverdlin@siemens.com>
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddugeehlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepffeghfejtdefieeguddukedujeektdeihfelleeuieeuveehkedvleduheeivdefnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddtpdhrtghpthhtohepfhhouhhrihgvrhdrthhhohhmrghssehgmhgrihhlrdgtohhmpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehurdhklhgvihhnvgdqkhhovghnihhgsegsrgihlhhisghrvgdrtghomhdprhgtphhtthhopeffrghvihgurdghohhoughhohhushgvsehinhhtvghlrdgtohhmpdhrtghpt
- hhtohepvhhirhgvshhhkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghrthgvmhdrsghithihuhhtshhkihihsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepvhhiphhinhdrkhhumhgrrhesshhtrdgtohhm
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-456497:519-21489:flowmailer
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250701_055245_453729_054F1A61 
-X-CRM114-Status: UNSURE (   6.07  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250701_063344_409466_60563DA9 
+X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,18 +71,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVGhvbWFzLAoKT24gMDEvMDcvMjAyNSBhdCAxMzo1NToxNSArMDIsIFRob21hcyBGb3VyaWVy
-IDxmb3VyaWVyLnRob21hc0BnbWFpbC5jb20+IHdyb3RlOgoKPiBUaGUgRE1BIG1hcCBmdW5jdGlv
-bnMgY2FuIGZhaWwgYW5kIHNob3VsZCBiZSB0ZXN0ZWQgZm9yIGVycm9ycy4KCi1UaGUKClNhbWUg
-Y29tbWVudHMgYXMgaW4gdGhlIG90aGVyIHRocmVhZCwgdGhlIHRpdGxlIHNob3VsZCBiZSAibXRk
-OiByYXduYW5kOgpmc21jOiIgYW5kIHlvdSBtaXNzIENjJ2luZyBzdGFibGVALgoKPgo+IEZpeGVz
-OiA0Nzc0ZmIwYTQ4YWEgKCJtdGQ6IG5hbmQvZnNtYzogQWRkIERNQSBzdXBwb3J0IikKPiBTaWdu
-ZWQtb2ZmLWJ5OiBUaG9tYXMgRm91cmllciA8Zm91cmllci50aG9tYXNAZ21haWwuY29tPgoKVGhh
-bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+
+Having setup time 0 violates tAR, tCLR of some chips, for instance
+TOSHIBA TC58NVG2S3ETAI0 cannot be detected successfully (first ID byte
+being read duplicated, i.e. 98 98 dc 90 15 76 14 03 instead of
+98 dc 90 15 76 ...).
+
+Atmel Application Notes postulated 1 cycle NRD_SETUP without explanation
+[1], but it looks more appropriate to just calculate setup time properly.
+
+Without the fix we've measured -2ns tAR delay (REn asserted before ALE
+deassert!); with the fix -- 60ns (subject to module clock).
+
+[1] Link: https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ApplicationNotes/ApplicationNotes/doc6255.pdf
+Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+---
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index dedcca87defc7..844df72f45063 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -1377,14 +1377,25 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Read setup timing depends on the operation done on the NAND:
++	 *
++	 * NRD_SETUP = max(tAR, tCLR)
++	 */
++	timeps = max(conf->timings.sdr.tAR_min, conf->timings.sdr.tCLR_min);
++	ncycles = DIV_ROUND_UP(timeps, mckperiodps);
++	totalcycles += ncycles;
++	ret = atmel_smc_cs_conf_set_setup(smcconf, ATMEL_SMC_NRD_SHIFT,
++					  ncycles);
++	if (ret)
++		return ret;
++
+ 	/*
+ 	 * The read cycle timing is directly matching tRC, but is also
+ 	 * dependent on the setup and hold timings we calculated earlier,
+ 	 * which gives:
+ 	 *
+-	 * NRD_CYCLE = max(tRC, NRD_PULSE + NRD_HOLD)
+-	 *
+-	 * NRD_SETUP is always 0.
++	 * NRD_CYCLE = max(tRC, NRD_SETUP + NRD_PULSE + NRD_HOLD)
+ 	 */
+ 	ncycles = DIV_ROUND_UP(conf->timings.sdr.tRC_min, mckperiodps);
+ 	ncycles = max(totalcycles, ncycles);
+-- 
+2.50.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
