@@ -4,86 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A9D8C8303C
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 19:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F049C83038
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 21:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QIBFwqQfjtCv6/ypZ2mOf43wIbfXyER39CDb4q6pHFI=; b=e7xSOZgX4LC1FJ
-	/QnAaH3m/i2UPuAbjGgI5QrDGv87Xetsrem/vw2JfDUB9s/uDJfXfSU0jkCyIk+5QrdzmaVnLAjNN
-	y4IdettQTcYDYhkQY7/luPcrnYG5J6Znuc2MNe7jILSJpc9tHp6Mh0Njzbdpah6U+lnThu2SPmwQb
-	Hh44EIUYty6ZOnDAiO3o/bf6GG0Gfp4LjFjQjiVECGISwk1nrl9Dy54NGv2ts4wGCICCLTC3w0itC
-	sbp4zOXswBt1X8gn7F4v0z4lF4Vh9gMaiL22c54WOpweH12qtUMux5mXms/8r9OlLmLuyJCQR2YIq
-	xulzKSfidGkudju3ZRIw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=BOp0NtnCrmub/3B7OjRiE9O5NRTeXqDMjElhECXKnKw=; b=ATUOb0n1YnhaqO
+	agOtdi1gBbDD60ez2dPoDCqJ5ypxpuNJ2+FCk57oBUJiciptHf/etiLHfihLp2Ur0NB6ZdR75OrUG
+	LRZVoHJaaNGXeTvfzMg1gM6Vm7ZBCYUQMDQNMf6ipyI5hw0uSOoc3H6aXWzW9i0LD/mBpHOGee7uK
+	/2lh8IDJtM+7NC4GnnUu8PGWgf9pjL04bpWbLVcsr3vDLp572HIHCB6ueHMgj5381QDpjoOQJ9VLA
+	Lx+Us/i2ssnr/iHO82aYW8vhmzKCP5t4u2euaIxLGLl2W1Mz7cV4cMvs1L0fviHOYcDJIIDuLJxE5
+	HzQWi0M9vZY0mm34fw2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWgt7-00000006Ulc-126k;
-	Tue, 01 Jul 2025 19:43:29 +0000
-Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
+	id 1uWiTm-00000006gSQ-0pO2;
+	Tue, 01 Jul 2025 21:25:26 +0000
+Received: from mail-northeuropeazlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c200::3] helo=DU2PR03CU002.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWfLA-00000006INf-2AmQ
-	for linux-mtd@lists.infradead.org;
-	Tue, 01 Jul 2025 18:04:21 +0000
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-32b5226e6beso32382501fa.2
-        for <linux-mtd@lists.infradead.org>; Tue, 01 Jul 2025 11:04:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hifiphile-com.20230601.gappssmtp.com; s=20230601; t=1751393058; x=1751997858; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OZd53S9/hYXg0lSakaTI6z3l/FmVI9v+j6PYAZZJc5E=;
-        b=W5eFdF1mxszPXdI9wGtbPFeWXbBGyiHP2X9AM5QifAnBDrdMukqmmNa72VmXL+txPZ
-         QLO1ePNb8+seTsu9xNHwAOmHD9Nr6THj7hQIekr+irQlaU4/U0O9XD2Kb6zXvUtv++6o
-         z+9Jz9jqIZ637ZtiA4qpEfvaPj3Fhv9ulm0aOjuMDfk/sccwrUjvmoVcJoGgcE8S5tnp
-         UvTNf4Oo4UZHNVQwP/Gi4N/ApzbMt8IvjQ0guIz3ZTFj7aKYRaCzH+HKplrR7XIU58eX
-         XPXQSlAWY1BoWs75VkXv5w+SK8ZAJu8AxcUZkSD3M4H6YQO97B3mUU3ckOAwiV9L3T7j
-         JFMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751393058; x=1751997858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OZd53S9/hYXg0lSakaTI6z3l/FmVI9v+j6PYAZZJc5E=;
-        b=Q3FeLInEKTdhRu9zoooPb9l51ehuEZyGZ9tTxgK3fg0Edwic3HMp8P2MXWTULVWyVG
-         qfRIamRww7soXpmqUYNfT81bSH2/WLHSiQcJFm6SvJS4mSeKcB1RX/9gxuIdZf0taFPC
-         qM/EXJtyFUaDLOo4pBmKK12qAig8i3bGexCPer7/VCKsfw6MEXxogszFKSLrrxT4ncz1
-         5v2oGOGlqXAqgnWmfF4QP2p3xKPv+p07ivHzhIrn4ejCccdlA3pOFVyCP5hxBrRjHxVl
-         QHd0R7raY+u/V44BZKJmIuZimS7HZJ2xHYiOTr0IHwlhZekAKD7Jfq7+JPPqGMQLehkd
-         WaJw==
-X-Forwarded-Encrypted: i=1; AJvYcCX6WjD34T7KmHH6ZsJslEmq/LClw5m5MOh4JubAUfqFMRPVXBo2YyCytPv1RQf0NlCAw9ac41Kly5c=@lists.infradead.org
-X-Gm-Message-State: AOJu0YznlZH1VHfLBRf8GX4K+ffWwBNX14j2iDPmP3gcMsst8a0x+FmP
-	LPRmUhrWTzydPlc+o26FUf34bJsLUTmkltRJAmYti2EA7/HcpKAURDmE+mE2W8jxPOdIQ1AbIqS
-	gJC8RzN9ZonGHWycb/sbWWdMxtfbx5zRdlhf7DpRJTw==
-X-Gm-Gg: ASbGncvwRGDneuM/JM+PcI6bgkCT2CrxQzHkKSggsX4cpUdxhz3VYpdu9m+MIN/vUGr
-	ydjc9RCM+XieL9k/PdsVu7iawe4F75d31yP5pMpe5YEo2gg13nOwE6sh/A9PVCc8btg+l2exd01
-	opo7ooVhGm7bT4t9umaMHQYxGlnruCxC6i0F8T+EyZDTIiKYNQEUZ/IlnYo5qWX1TsVH7VXpvXa
-	n4lMg==
-X-Google-Smtp-Source: AGHT+IE6y9R8uLja1br0fCyfzE0jDMNUQXyj9K5jFieZgPvJ9HnnxDlqVbdU3xGPBSrKWNmGMVpDlPgjkWqfN3nYZzk=
-X-Received: by 2002:a05:651c:41d4:b0:32b:9e00:1237 with SMTP id
- 38308e7fff4ca-32e00075d6amr326841fa.32.1751393057890; Tue, 01 Jul 2025
- 11:04:17 -0700 (PDT)
+	id 1uWiTj-00000006gR2-2Wja;
+	Tue, 01 Jul 2025 21:25:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=u6hBrpVNJ+vR44J9BMgHzIBJG+/lEUkIDj5tvQfe22Un+KmVJSMDDnDYaeLqXU//OT9+i6jDuQjBmssjGnwV72E5QltjmQY8pL8j1/RBa4BmoRjoLzHIHG8VL7bGqcFQGzn0RQMzc8yE+i3A079mJkfthCddgFDc6Exi3lQlNunRlZqevt+NArZuaNbwqvMnn1daTBfh1ch+7R2AJXwx5t7MkA0MhyI+pnwnSgPfXki9+IDNY9cmKLeXa/Nn1MY2HT6tbYR20kyzj9+VpkKXUYaGmJHMOXugjE1hMIiTr5axDAKjDAcyN9WpxGJVRggTxk5618bjbnxBIeZs2C86gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TLi5BFAHP1zLkagP+f0skAk5JLbzCqyNxSPOgyPy2jA=;
+ b=BNG0RViuQkR1qGKBn2/7TlnKT619ussn+bS3GYa9gkD2xyAX0GkNM0dijyPHoA1IcHLgqVrSpm+pd+INJyHVct7WymZ1zHJm7W7UEzFDkBVFv+3j4TtAL5KtAPFETAanXoFqlLJDae9O0mN3tf6cRf5O7qdVTKccyDhR9ioCVzx+wA4Ak+lxFf5JI1sv/l6IbF31rizd+JiK8Vk1lIGxegaPJyT+Ub6/2ArN49DzCEaF9g+GdbjVnDr390KP8D1in14WXcWJzQb1OKiENo9qdPFEVeHx0NAjOGiJ6bwP0rqqpTUsVM8iJyVGwPrZSZXHot/aGq23etegMDfZbYKaFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TLi5BFAHP1zLkagP+f0skAk5JLbzCqyNxSPOgyPy2jA=;
+ b=Rr/zQNeCWdfmph1MynDGr9fHYnaMIRFwwhHEwIHVzT3a3IYOXyqjnA3fcMWNGITSx798EKBRVb0X2wOCPRYUbLHVJKLXM+6UEoJ6lKxNmS+jR8UdBGPxK+ZsP4GoIw3E8zrwyDHqxqLxExLn8inZmq6GbK+QgCi2Of7XaUcRnGdk8nNWj3Vf237A1YtBhEW4JDrJ1nqKFCRL0uMnZuBJyED1ylc+6UGc6zm/JHo+Nd2F6pn30m8XoK5t6PPqsQImBAGzsGujcEA2dFFlhemkDeJEdeqxCJzXqbjdhZJfGuRqfzt/RRuVYHsZYrOOA54LOqXYOLnXIVGN0eLrUzg9BQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAXPR04MB8895.eurprd04.prod.outlook.com (2603:10a6:102:20e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.19; Tue, 1 Jul
+ 2025 21:25:08 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06%7]) with mapi id 15.20.8880.029; Tue, 1 Jul 2025
+ 21:25:08 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
+	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-arm-kernel@lists.infradead.org (moderated list:ARM/LPC32XX SOC SUPPORT),
+	linux-kernel@vger.kernel.org (open list)
+Cc: imx@lists.linux.dev
+Subject: [PATCH v2 1/1] dt-bindings: mtd: convert lpc32xx-slc.txt to yaml format
+Date: Tue,  1 Jul 2025 17:24:54 -0400
+Message-Id: <20250701212455.3106629-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+X-ClientProxiedBy: AM0PR04CA0038.eurprd04.prod.outlook.com
+ (2603:10a6:208:1::15) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 MIME-Version: 1.0
-References: <CA+GyqebQnWQ3fj4Lrb4-hvzRpphuqw+jh4B9En1j2NDTNFumvQ@mail.gmail.com>
- <599c677a-ace0-41fe-b264-51de0fa7badf@arm.com>
-In-Reply-To: <599c677a-ace0-41fe-b264-51de0fa7badf@arm.com>
-From: Zixun LI <admin@hifiphile.com>
-Date: Tue, 1 Jul 2025 20:04:06 +0200
-X-Gm-Features: Ac12FXzHRMRJLOOItsRIrxYGyHt7wf3A5-pMjsV73wxTRtwvTIExDU1XymzmqNg
-Message-ID: <CA+GyqebFpav_ixDyp84-XA2WcQdrm_t6nfaKckm98tt5MpM2EA@mail.gmail.com>
-Subject: Re: mtd: rawnand: atmel: ECC error after update to kernel 6.6
-To: Ada Couprie Diaz <ada.coupriediaz@arm.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Tudor Ambarus <tudor.ambarus@linaro.org>, Nicolas Ferre <nicolas.ferre@microchip.com>, 
-	Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	"SoC support'" <linux-arm-kernel@lists.infradead.org>, 
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8895:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5d770821-bd24-4fdf-2e59-08ddb8e5c128
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|52116014|366016|19092799006|921020|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?3e+YLbeqRalDEUXv7g0y2noM2phXkhPbaP3BSLsuDxSr/L1H6uRWIC2SjfXm?=
+ =?us-ascii?Q?tF+BiciA+u7MdXn90Q6VD72JBtUV+Wb4KwnLI6MOkEGEvvQWXi0JpmfDw+M7?=
+ =?us-ascii?Q?J36RMVWd5hrq5sy3yLi78bmGHmPyjM2kmaczuy5vtp9a6ZBV4n35E9oJDgGd?=
+ =?us-ascii?Q?TWLAqZJW3ICiU91zvoGMCat6UJofvEOQJwIW74GQNMb+ssZovvT/mFgWoYc4?=
+ =?us-ascii?Q?FHgaE0RH/vuzBNjuaSXEc/QDK4QFIV6c5zD5+DYsRNEKS2r7YZ/NM8qrO2Dk?=
+ =?us-ascii?Q?+KSZae7R83EVSotw7NKQGWTJte9r5eYp9RnGg11d0J/XENe1FG1/A/l65RtL?=
+ =?us-ascii?Q?xbYD2d9sCrNzNOGmzHzAAR4bEnILLWvSztLA/FQX/3KI11mmru9q/Q/1VqUV?=
+ =?us-ascii?Q?L11xOyhc0Iat4fYswPojlxLtSJZMQkdzq4AY4guNkwxGqaALpLmCZMlm6o3E?=
+ =?us-ascii?Q?F9aBoof1Z/eGTVlnNw9N7kRpDn8UKxDYnvE8wUXL6BSZnVKGn2EqinwcLwBO?=
+ =?us-ascii?Q?XlNqz4VK8Z+XRdqXZ/81wJh1OAjDQVOnHmg92aICaYWdoVXPrODtvYPB1Tg3?=
+ =?us-ascii?Q?l2WwuNclYYuMAi4LizxslyENHciUuh0XXTZJdG/ELB1R6sModTBVR2omWJA9?=
+ =?us-ascii?Q?cSQQu5Nlt0aIqRucRAtWPVO5JltcNKPjVpTh63XbIQ1kVmvPZgNrikiVOOUc?=
+ =?us-ascii?Q?gFuFNDrxJsMNUe/aKm+Al6XWCMvjMo0eJTStXNnsLXeGrsPnox1Rdtw1T7zs?=
+ =?us-ascii?Q?oqxdbABal6dE0ptmVi6F67ZrSrLSk3xSeo0HeqlxiAc+kf7IDxlQpMeiIlsT?=
+ =?us-ascii?Q?OLb0Kf+Cp/+lUTlc7Jr6Ny6yOeIAdoYAe9TlG0Ie56ProRZAZFPIAu4QQ5m4?=
+ =?us-ascii?Q?ZBnEaYdo80ToJlFyjOrp51THFtFvKfsM4rykLE8QC8/795twNdjt3H9U5fj2?=
+ =?us-ascii?Q?7/tnTi7MeP+8tkoZQpZZvSswxA5Puu8yTTBpFhSiZQQqLzpwH7puRQZq4ora?=
+ =?us-ascii?Q?oKx4y2See2nb4LQDz/bpd+C3GPc6S6wnOJvl8X4rkc20n4UqQ3/9XslYZr42?=
+ =?us-ascii?Q?Qa3qoWz7ebk9mY68pdpCRmj+vcb7YlptK5jd4dMCuBLk6Fzd2fFOemp5kCZb?=
+ =?us-ascii?Q?FjoRGVgfwuR34c9Kqom+Nyk/Pqlpy/eAb3nbR8W2NnWEKu3EDzOHrYvOfkRG?=
+ =?us-ascii?Q?BUOpfhUXJZIGLtIgKKjwF0SvV7L2+KDfYbSA9EoTGiR7v5kfAJ78oAJhTAez?=
+ =?us-ascii?Q?jwt+OqYm/zYeCyRrqdjTNeQQMO4aqQztin5bQrngvoAp15ySvIWkIDPcIJtn?=
+ =?us-ascii?Q?VjDXvSl71J1ArXInLaoBtzil/GOl8g5FmhqcvZoXJz8BT9PIli9HMxKUtN6F?=
+ =?us-ascii?Q?TT1lAMrO94nSXAdpViI6YUOddSbz1Vow3qQEUkGiAuql71A9sUO5Kn6uAcGe?=
+ =?us-ascii?Q?OjUaCCqV/BO4rAlF6yiYVA0IZWtCJ8Ch88brYuaCAkDMKLNZ4BcC4g=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(52116014)(366016)(19092799006)(921020)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?X9Nh9Eifv0RyQCtWrOXkaEdG2ct/Sdsf4ZIXY5iL+u4HpwkD62N3L684m4BJ?=
+ =?us-ascii?Q?hlCcOHQkS3HP5YojVmzlqHYy/2Mqk/drQT38GIU0e3QYtvZhmrufmjKvpCc6?=
+ =?us-ascii?Q?WDvNDucDuV+ulmlephwwhdiia9LuceTZtf2yHE3f22ENG0bYhTtmOT3JsEsl?=
+ =?us-ascii?Q?HPpINvZNn2H7J7q0Vd8kmHoa5AVxEAovqZqy8hVJQ5PuLi0d+P2aCDbwukfT?=
+ =?us-ascii?Q?CDf8LHfYnnLdGLlSsGW1q5dvGwFM44TEdL6ERne0pJJiyL9u+wiNVfqeILvi?=
+ =?us-ascii?Q?U3RF6SBDa1d9D2YWg9HSdVG7w2IBmknvir3lbvtxDGhGE5TjVLES6p62+guF?=
+ =?us-ascii?Q?x/Z/ax1QH3zRC/9Yv+/DK549lnLQCIq6IJB14sJPcu77q8aL8nLkHFtfcO0H?=
+ =?us-ascii?Q?cYnNQo/2kfE+/T+EeZeeaTnOfndcblhbbd2irS2Fg+hfqp0uSdHbbz4zUWJw?=
+ =?us-ascii?Q?6afebyCzbqODDYHO7MGXUAcll2kqGlX2NNRsFKZmYE3GBRzS9RDPFPV8OPXN?=
+ =?us-ascii?Q?8I/N2hy7Aba2eGMsc0miGcqABbaOQ2PA/u01HTmbwfbvgeuTy6wffgVoqYW9?=
+ =?us-ascii?Q?z+YC0Iq76XMfzg2IFv2o+a5TjaTFDeo/vuuy37kT5+rydN5n8Q0TYVxku71r?=
+ =?us-ascii?Q?8UR6hDQCLqGrMFaOEGT6HoBAoHplFzMDQEJabfOgjwfhGaG+5hy7cvUx9zPp?=
+ =?us-ascii?Q?6f7JwCuEVc4v0bxpscX1ty0wPF2jXrjqg9Zxh2nzFdAyLh29nUA4A7vUnD2a?=
+ =?us-ascii?Q?97KU9jQbbfWkNkwKMPQGna6Y0oHXXItVmqnMcktQZmXFRYqe1LY58+tRwBSz?=
+ =?us-ascii?Q?74Uxa5fvlwlSQHoAYtuzJhN1gokKipJWwKecChLdmxAYC8h+P3oefrCdJfky?=
+ =?us-ascii?Q?SPRWAEZcF7yE9qv9jYWdfi4J6YN44924ohjtvD2OzB22gWt8v41PP42/g3a4?=
+ =?us-ascii?Q?ZteElBKXr0ePzvwNsTpZivOJXxPWl69cd8UIRsIjS8Dmt+iKechP9dt/ftHn?=
+ =?us-ascii?Q?BPCzBiFnY7Zmi0qq4FXn2xkzcexM7fd5rvRolEn/NQDpOnBivKS0WgbwjAb8?=
+ =?us-ascii?Q?9hqR+Pks3xA6plQPbcbiMwM88dsTMcIR3HfqsPuRUruQubve/UOgMosnu4gh?=
+ =?us-ascii?Q?U9feerP4RdxFwb0vUjwS1KX0pVeW+RRWkwEVK9//dceeBONeRBsZw/l+08Cv?=
+ =?us-ascii?Q?il86FcSGt85XFRnfbqzVwwR24EZ+KQyjn7JFAp5zZXG6Ac6bvanAB0Me4klN?=
+ =?us-ascii?Q?6SVK7N6iIza/vvEbKPG0+4AWC31YQkCC7aVnvxP2Nc7ujfYIH0edf4iGPZUc?=
+ =?us-ascii?Q?jnWdEwjAKlqwXOysB3dbZI5h/oQow/CMBfj5mVF3ji0PLDzUyEyQ3xxIQGuR?=
+ =?us-ascii?Q?w4XSJhqHlMkls2ptVRqlNHe61UoWXT+gNadxR0le+adMHI0fv/cpjeZvNvFV?=
+ =?us-ascii?Q?79//RR+pGtp/0CFGHBVaex/Ys7676fdNcBF5EXWE6SgoYmaC7S0pKjZvr/V3?=
+ =?us-ascii?Q?mcFzqYOgMGMAPcEUkWJP+1JOllJdjXYtrULO2uTwEj88XkOJLcRfZOiBPQgn?=
+ =?us-ascii?Q?FLuUfH5J0ZKaYHehwTp8/z1Lx44lk6GufXpYuEWD?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d770821-bd24-4fdf-2e59-08ddb8e5c128
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2025 21:25:08.7090
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lzKyOJo8fqpngc7bf2tRj9RzWzKBeNG+wwbsFcRKtxCmUanliQdnYuM4uImGSqD1oEehgSQ9jKqdFW6jpYE9zA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8895
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250701_110420_660763_B85811DF 
-X-CRM114-Status: GOOD (  13.46  )
+X-CRM114-CacheID: sfid-20250701_142523_638938_E14AC0AC 
+X-CRM114-Status: GOOD (  16.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,29 +158,192 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBKdWwgMSwgMjAyNSBhdCA1OjQ54oCvUE0gQWRhIENvdXByaWUgRGlheiA8YWRhLmNv
-dXByaWVkaWF6QGFybS5jb20+IHdyb3RlOgo+Cj4gSGksCj4KPiBJJ3ZlIHdyaXR0ZW4gYSBzbWFs
-bCBwYXRjaCBiZWxvdyB0aGF0IEkgdGhpbmsgc2hvdWxkIGZpeCB0aGUgaXNzdWUsIGJ1dCBhZ2Fp
-bgo+IEkgZG9uJ3Qga25vdyBpZiB0aGF0J3MgdXBzdHJlYW1hYmxlIGFzLWlzLgo+Cj4gPiBCZXN0
-IHJlZ2FyZHMsCj4gPiBaaXh1biBMSQo+ID4KPiA+IFsxXSBodHRwczovL2dpdGh1Yi5jb20vdG9y
-dmFsZHMvbGludXgvYmxvYi8xOTU4M2NhNTg0ZDZmNTc0Mzg0ZTE3ZmU3NjEzZGZhZWFkY2RjNGE2
-L2RyaXZlcnMvbXRkL25hbmQvYXRtZWxfbmFuZC5jI0wxMDU4Cj4gPiBbMl0gaHR0cHM6Ly9naXRo
-dWIuY29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvZmZjMjUzMjYzYTEzNzVhNjVmYTZjOWY2MmE4OTNl
-OTc2N2ZiZWJmYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9hdG1lbC9wbWVjYy5jI0w3NzIKPiA+Cj4g
-SG9wZWZ1bGx5IHRoYXQgY2FuIGhlbHAgIQo+IEJlc3QgcmVnYXJkcywKPiBBZGEKPgoKSGkgQWRh
-LApUaGFuayB5b3UgZm9yIGxvb2tpbmcgaW50byB0aGlzLiBJbnRlcm5hbGx5IEkndmUgd3JpdHRl
-biB0aGUgc2FtZSBwYXRjaCBhcwp5b3VycyBhbmQgaXQgd29ya3MgZmluZS4KCldoYXQncyBtb3Jl
-IGludGVyZXN0aW5nIGlzIHRoZSBpc3N1ZSBoYXBwZW5zIGRlcGVuZGluZyBvbiBjaGlwIGluZGl2
-aWR1YWwKZGlmZmVyZW5jZSBvciBhZ2luZy4gQW1vbmcgMyBjaGlwcyB0ZXN0ZWQsIHR3byB3aXRo
-IGRhdGUgY29kZSBvZiAxOTMzIGFuZApvbmUgd2l0aCAyMjIzLiBUaGUgMXN0IG9uZSBoYXMgbWFu
-eSBFQ0MgZXJyb3JzIGFzIGluIHRoZSBtYWlsLCAybmQgb25lCmhhcyBsZXNzIGVycm9ycywgd2hp
-bGUgdGhlIDNyZCBvbmUgcGFzc2VkIHRoZSBuYW5kdGVzdCB3aXRob3V0IGVycm9yLgpNYXliZSB0
-aGF0J3Mgd2h5IHRoaXMgaXNzdWUgaXMgb3Zlcmxvb2tlZC4KCkJlc3QgcmVnYXJkcywKWml4dW4g
-TEkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Convert lpc32xx-slc.txt to yaml format.
+- add clocks and partitions to match existed dts.
+- allow nand-on-flash-bbt.
+
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+change in v2
+- fix miss 's' at partition.yaml
+- remove ref nand-controller.yaml because existed dts have not nand child
+nodes.
+---
+ .../devicetree/bindings/mtd/lpc32xx-slc.txt   | 52 ----------
+ .../bindings/mtd/nxp,lpc3220-slc.yaml         | 96 +++++++++++++++++++
+ 2 files changed, 96 insertions(+), 52 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/nxp,lpc3220-slc.yaml
+
+diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
+deleted file mode 100644
+index 39f17630a3011..0000000000000
+--- a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
++++ /dev/null
+@@ -1,52 +0,0 @@
+-NXP LPC32xx SoC NAND SLC controller
+-
+-Required properties:
+-- compatible: "nxp,lpc3220-slc"
+-- reg: Address and size of the controller
+-- nand-on-flash-bbt: Use bad block table on flash
+-- gpios: GPIO specification for NAND write protect
+-
+-The following required properties are very controller specific. See the LPC32xx
+-User Manual:
+-- nxp,wdr-clks: Delay before Ready signal is tested on write (W_RDY)
+-- nxp,rdr-clks: Delay before Ready signal is tested on read (R_RDY)
+-(The following values are specified in Hz, to make them independent of actual
+-clock speed:)
+-- nxp,wwidth: Write pulse width (W_WIDTH)
+-- nxp,whold: Write hold time (W_HOLD)
+-- nxp,wsetup: Write setup time (W_SETUP)
+-- nxp,rwidth: Read pulse width (R_WIDTH)
+-- nxp,rhold: Read hold time (R_HOLD)
+-- nxp,rsetup: Read setup time (R_SETUP)
+-
+-Optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+-
+-Example:
+-
+-	slc: flash@20020000 {
+-		compatible = "nxp,lpc3220-slc";
+-		reg = <0x20020000 0x1000>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-
+-		nxp,wdr-clks = <14>;
+-		nxp,wwidth = <40000000>;
+-		nxp,whold = <100000000>;
+-		nxp,wsetup = <100000000>;
+-		nxp,rdr-clks = <14>;
+-		nxp,rwidth = <40000000>;
+-		nxp,rhold = <66666666>;
+-		nxp,rsetup = <100000000>;
+-		nand-on-flash-bbt;
+-		gpios = <&gpio 5 19 1>; /* GPO_P3 19, active low */
+-
+-		mtd0@00000000 {
+-			label = "phy3250-boot";
+-			reg = <0x00000000 0x00064000>;
+-			read-only;
+-		};
+-
+-		...
+-
+-	};
+diff --git a/Documentation/devicetree/bindings/mtd/nxp,lpc3220-slc.yaml b/Documentation/devicetree/bindings/mtd/nxp,lpc3220-slc.yaml
+new file mode 100644
+index 0000000000000..ff2110b58bedc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/nxp,lpc3220-slc.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/nxp,lpc3220-slc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP LPC32xx SoC NAND SLC controller
++
++maintainers:
++  - Frank Li <Frank.Li@nxp.com>
++
++properties:
++  compatible:
++    const: nxp,lpc3220-slc
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  gpios:
++    maxItems: 1
++    description:
++      GPIO specification for NAND write protect
++
++  nand-on-flash-bbt: true
++
++  partitions:
++    type: object
++    $ref: partitions/partitions.yaml
++    unevaluatedProperties: false
++
++  nxp,wdr-clks:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Delay before Ready signal is tested on write (W_RDY)
++
++  nxp,rdr-clks:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Delay before Ready signal is tested on read (R_RDY)
++
++  nxp,wwidth:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Write pulse width (W_WIDTH) in Hz
++
++  nxp,whold:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Write hold time (W_HOLD) in Hz
++
++  nxp,wsetup:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Write setup time (W_SETUP) in Hz
++
++  nxp,rwidth:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Read pulse width (R_WIDTH) in Hz
++
++  nxp,rhold:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Read hold time (R_HOLD) in Hz
++
++  nxp,rsetup:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Read setup time (R_SETUP) in Hz
++
++required:
++  - compatible
++  - reg
++  - gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    nand-controller@20020000 {
++        compatible = "nxp,lpc3220-slc";
++        reg = <0x20020000 0x1000>;
++        nxp,wdr-clks = <14>;
++        nxp,wwidth = <40000000>;
++        nxp,whold = <100000000>;
++        nxp,wsetup = <100000000>;
++        nxp,rdr-clks = <14>;
++        nxp,rwidth = <40000000>;
++        nxp,rhold = <66666666>;
++        nxp,rsetup = <100000000>;
++        nand-on-flash-bbt;
++        gpios = <&gpio 5 19 1>; /* GPO_P3 19, active low */
++    };
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
