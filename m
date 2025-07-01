@@ -4,67 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B82BC7EE30
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 16:24:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69660C8303F
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 18:31:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:Cc:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aTCys1WmBZP45Bshvya3bjksjSA8d/HUyUWlz/g2UbM=; b=vO3LX0jWSmfvIP
-	PfL3LJgwzJII+x+Kj0Vzn8XWRQkT5/ew1bX5aRS9qV2J5ZhZJ2Q62wSR+GAPuM/szu2XBdLM8uuzy
-	kMWhkfndoDU+HibXkTTLYKQXa8hQHSSHPNkEbGpOewma1fFiG/8XK6mimGPFRCI1jCOY55OIG/bQW
-	8ObyVNOs06dzIUk4hi97nM7HVJ1vkFoFFXa/Wu9Szv2F/bJ7HDQKdYqynwrbyJ1YdN77bkvKD+2Pr
-	UE/I3wXVVNIk7TzhK1qjhwRZVylqjC1JXOSC01Cf0xj3yQ6wtiWTB2fuoyLeaG6/V+AsbvN9m9vy3
-	uRVIyG1TnPYdDtHl06PQ==;
+	List-Owner; bh=gKU5foO0f9OQy5Ywy76rqX1dLFFSTzhvnNw0JRYJrOU=; b=U8HUnolIoxemfv
+	Mg6CpLtfwBQtVxvw7lXgQ8EZgxq3c6YFjsc+1KyDtG5PdNKuMm0TavCRU9i3fvQgkkHXaQUMB5JSL
+	LyV27SMFgWi7fvHXERDxnXAkNicVmP6Ecc432fgejTWuD0sFXllQjQ6EeixoHs6HhM02ibEjZs6GQ
+	2s8WNuQ8EE7lG/8FNHEdw/B1K/jKULBVb+ufuHtcHpU5HvhmuPIWHuTjAwzT83bmrMRcqcSO2FadV
+	NHaMrdWucK8hdGXirqAIKFnIZZJjHMgNatNyA0ABkBOdXjBc73tQQyLOD9+LPLFf8raugWtXfp63c
+	wOFl1LbL2FHMMQbwXQAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWdmV-000000061qH-2QZt;
-	Tue, 01 Jul 2025 16:24:27 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWc8e-00000005kJ2-2v6H;
-	Tue, 01 Jul 2025 14:39:14 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B3C91205B2;
-	Tue,  1 Jul 2025 14:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1751380750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=prNrXolkjfaud3bDDiSuiyyGfRfPFPDh9Iys4bsEwLk=;
-	b=kOYb2rUxixLfppnTRvGBVq741Tu4dTNQQ/xfJWB/FikMaWEB7QW3H1NB6sI7ZgSbPp7SUX
-	81/jelmC1MZn0M0e5aTZpZZiZrQmZ6KXAIilp3MLnnLfsqjApojvbTsyZzwWNwUf04o8H6
-	a46No/sjlgOzlA/V7TLEDpXLThDU64bxCh0RejAroK5fDMVFzDljDpihYNkLJj6JiR/d/0
-	k1QsbxuQYM53YsqUH+xfpKe42PiSzbkbTQHj8fA66tlQdvCQJvTiDudpDNTubV2FzCeNgi
-	4PqYs4PE5cOqz6Crbb5q2lbB9TLvvO6xd09cIP5yNsnIyHX0H1H8V2TCiPrT8Q==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "A. Sverdlin" <alexander.sverdlin@siemens.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,  linux-mtd@lists.infradead.org,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Nicolas Ferre <nicolas.ferre@microchip.com>,
-  Alexandre Belloni <alexandre.belloni@bootlin.com>,  Claudiu Beznea
- <claudiu.beznea@tuxon.dev>,  linux-arm-kernel@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: raw: atmel: Respect tAR, tCLR in read setup
- timing
-In-Reply-To: <20250701133333.3871085-1-alexander.sverdlin@siemens.com>
-	(A. Sverdlin's message of "Tue, 1 Jul 2025 15:33:28 +0200")
-References: <20250701133333.3871085-1-alexander.sverdlin@siemens.com>
-User-Agent: mu4e 1.12.7; emacs 30.1
-Date: Tue, 01 Jul 2025 16:39:07 +0200
-Message-ID: <87ikkcou0k.fsf@bootlin.com>
+	id 1uWflP-00000006Krz-3P7B;
+	Tue, 01 Jul 2025 18:31:27 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uWdEG-00000005wFA-3Imf;
+	Tue, 01 Jul 2025 15:49:06 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9475B1595;
+	Tue,  1 Jul 2025 08:48:46 -0700 (PDT)
+Received: from [10.1.30.206] (e137867.arm.com [10.1.30.206])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C85D3F66E;
+	Tue,  1 Jul 2025 08:48:59 -0700 (PDT)
+Message-ID: <599c677a-ace0-41fe-b264-51de0fa7badf@arm.com>
+Date: Tue, 1 Jul 2025 16:48:52 +0100
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddugeejkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefujghffgffkfggtgfgsehtqhertddtreejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepheekkeegvdfgudevueetfeekuddvhefhgeekheduueejudeukedtveejkeehteeunecuffhomhgrihhnpehmihgtrhhotghhihhprdgtohhmnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddtpdhrtghpthhtoheprghlvgigrghnuggvrhdrshhvvghrughlihhnsehsihgvmhgvnhhsrdgtohhmpdhrtghpthhtohepsggsrhgviihilhhlohhnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrt
- ghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehnihgtohhlrghsrdhfvghrrhgvsehmihgtrhhotghhihhprdgtohhmpdhrtghpthhtoheprghlvgigrghnughrvgdrsggvlhhlohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopegtlhgruhguihhurdgsvgiinhgvrgesthhugihonhdruggvvh
-X-GND-Sasl: miquel.raynal@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: mtd: rawnand: atmel: ECC error after update to kernel 6.6
+To: Zixun LI <admin@hifiphile.com>
+References: <CA+GyqebQnWQ3fj4Lrb4-hvzRpphuqw+jh4B9En1j2NDTNFumvQ@mail.gmail.com>
+From: Ada Couprie Diaz <ada.coupriediaz@arm.com>
+Cc: Ada Couprie Diaz <ada.coupriediaz@arm.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ SoC support' <linux-arm-kernel@lists.infradead.org>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Content-Language: en-US
+Organization: Arm Ltd.
+In-Reply-To: <CA+GyqebQnWQ3fj4Lrb4-hvzRpphuqw+jh4B9En1j2NDTNFumvQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250701_073912_871524_90869E30 
-X-CRM114-Status: GOOD (  15.38  )
+X-CRM114-CacheID: sfid-20250701_084904_909013_9B9FC92C 
+X-CRM114-Status: GOOD (  25.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,46 +67,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gQWxleGFuZGVyLAoKT24gMDEvMDcvMjAyNSBhdCAxNTozMzoyOCArMDIsICJBLiBTdmVy
-ZGxpbiIgPGFsZXhhbmRlci5zdmVyZGxpbkBzaWVtZW5zLmNvbT4gd3JvdGU6Cgo+IEZyb206IEFs
-ZXhhbmRlciBTdmVyZGxpbiA8YWxleGFuZGVyLnN2ZXJkbGluQHNpZW1lbnMuY29tPgo+Cj4gSGF2
-aW5nIHNldHVwIHRpbWUgMCB2aW9sYXRlcyB0QVIsIHRDTFIgb2Ygc29tZSBjaGlwcywgZm9yIGlu
-c3RhbmNlCj4gVE9TSElCQSBUQzU4TlZHMlMzRVRBSTAgY2Fubm90IGJlIGRldGVjdGVkIHN1Y2Nl
-c3NmdWxseSAoZmlyc3QgSUQgYnl0ZQo+IGJlaW5nIHJlYWQgZHVwbGljYXRlZCwgaS5lLiA5OCA5
-OCBkYyA5MCAxNSA3NiAxNCAwMyBpbnN0ZWFkIG9mCj4gOTggZGMgOTAgMTUgNzYgLi4uKS4KPgo+
-IEF0bWVsIEFwcGxpY2F0aW9uIE5vdGVzIHBvc3R1bGF0ZWQgMSBjeWNsZSBOUkRfU0VUVVAgd2l0
-aG91dCBleHBsYW5hdGlvbgo+IFsxXSwgYnV0IGl0IGxvb2tzIG1vcmUgYXBwcm9wcmlhdGUgdG8g
-anVzdCBjYWxjdWxhdGUgc2V0dXAgdGltZSBwcm9wZXJseS4KPgo+IFdpdGhvdXQgdGhlIGZpeCB3
-ZSd2ZSBtZWFzdXJlZCAtMm5zIHRBUiBkZWxheSAoUkVuIGFzc2VydGVkIGJlZm9yZSBBTEUKPiBk
-ZWFzc2VydCEpOyB3aXRoIHRoZSBmaXggLS0gNjBucyAoc3ViamVjdCB0byBtb2R1bGUgY2xvY2sp
-Lgo+Cj4gWzFdIExpbms6IGh0dHBzOi8vd3cxLm1pY3JvY2hpcC5jb20vZG93bmxvYWRzL2FlbURv
-Y3VtZW50cy9kb2N1bWVudHMvTVBVMzIvQXBwbGljYXRpb25Ob3Rlcy9BcHBsaWNhdGlvbk5vdGVz
-L2RvYzYyNTUucGRmCj4gRml4ZXM6IGY5Y2UyZWRkZjE3NiAoIm10ZDogbmFuZDogYXRtZWw6IEFk
-ZCAtPnNldHVwX2RhdGFfaW50ZXJmYWNlKCkgaG9va3MiKQo+IFNpZ25lZC1vZmYtYnk6IEFsZXhh
-bmRlciBTdmVyZGxpbiA8YWxleGFuZGVyLnN2ZXJkbGluQHNpZW1lbnMuY29tPgoKUGxlYXNlIGFk
-ZCBDYzogc3RhYmxlCgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9hdG1lbC9uYW5kLWNv
-bnRyb2xsZXIuYyB8IDE3ICsrKysrKysrKysrKysrLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAxNCBp
-bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2F0bWVsL25hbmQtY29udHJvbGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcv
-YXRtZWwvbmFuZC1jb250cm9sbGVyLmMKPiBpbmRleCBkZWRjY2E4N2RlZmM3Li44NDRkZjcyZjQ1
-MDYzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2F0bWVsL25hbmQtY29udHJv
-bGxlci5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvbmFuZC1jb250cm9sbGVy
-LmMKPiBAQCAtMTM3NywxNCArMTM3NywyNSBAQCBzdGF0aWMgaW50IGF0bWVsX3NtY19uYW5kX3By
-ZXBhcmVfc21jY29uZihzdHJ1Y3QgYXRtZWxfbmFuZCAqbmFuZCwKPiAgCWlmIChyZXQpCj4gIAkJ
-cmV0dXJuIHJldDsKPiAgCj4gKwkvKgo+ICsJICogUmVhZCBzZXR1cCB0aW1pbmcgZGVwZW5kcyBv
-biB0aGUgb3BlcmF0aW9uIGRvbmUgb24gdGhlIE5BTkQ6Cj4gKwkgKgo+ICsJICogTlJEX1NFVFVQ
-ID0gbWF4KHRBUiwgdENMUikKPiArCSAqLwo+ICsJdGltZXBzID0gbWF4KGNvbmYtPnRpbWluZ3Mu
-c2RyLnRBUl9taW4sIGNvbmYtPnRpbWluZ3Muc2RyLnRDTFJfbWluKTsKPiArCW5jeWNsZXMgPSBE
-SVZfUk9VTkRfVVAodGltZXBzLCBtY2twZXJpb2Rwcyk7Cj4gKwl0b3RhbGN5Y2xlcyArPSBuY3lj
-bGVzOwo+ICsJcmV0ID0gYXRtZWxfc21jX2NzX2NvbmZfc2V0X3NldHVwKHNtY2NvbmYsIEFUTUVM
-X1NNQ19OUkRfU0hJRlQsCj4gKwkJCQkJICBuY3ljbGVzKTsKCk5pdCBhcyB5b3UnbGwgbmVlZCB0
-byByZXNlbmQgYW55d2F5IDopLCB0aGlzIGNhbiBiZSBvbiB0aGUgcHJldmlvdXMgbGluZS4KCk90
-aGVyd2lzZSBsZ3RtLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Hi,
+
+I'm not really involved in this part of the kernel or drivers,
+but I took some time to look into it. Hopefully I'm not completely
+missing something !
+
+On 30/06/2025 15:38, Zixun LI wrote:
+> Hi,
+>
+> After updating our SAM9G25 device from kernel 3.16 to 6.6, we have
+> encountered UBIFS failures with ECC errors
+>
+> [...]
+>
+> After some diagnostics, I used devmem2 to compare SMC and PMECC
+> registers between the two kernels. All values match except for the
+> PMECC_CLK register, which is 2 in kernel 3.16 [1] and 0 in kernel 6.6
+> [2]. It appears the clock setting is missing since the kernel 4.14
+> refactor.
+>
+> According to the SAM9G25 datasheet this field must be programmed with 2.
+>
+> Manually setting PMECC_CLK to 2 (devmem2 0xffffe010 w 2) resolves the
+> nandtest issue.
+>
+> Is the clock setting moved to elsewhere after the refactor ?
+
+As far as I can tell, the setting of the *PMECC_CLK* was lost in
+f88fc122cc34 (mtd: nand: Cleanup/rework the atmel_nand driver),
+which was merged for 4.12.
+
+The register offset and values are  part of the defines it introduces
+but are unused, so they might have been forgotten.
+I couldn't find another place where this was done, and I think it would
+make sense for it to be done here still.
+
+The tricky part is that now the driver handles other PMECCs that do not have
+this register at all in their datasheets :
+  - SAMA5D2 series[3], page 713, 36.20 Register summary :
+      0x80 (0x10 offset) is marked reserved,
+  - SAMA5D4 series[4], page 512, Table 30-20 :
+      0x080 (0x10 offset) is marked reserved,
+
+So I think it's best not to add this write back for all cases.
+
+I also checked, as some other SoCs' PMECCs are marked compatible with
+the one used in your SAM9G25 (`atmel,at91sam9g45-pmecc`) :
+  - SAM9x60 series[5], page 256, 21.6 Register Summary :
+      0x10 offset has PMECC_CLK present, recommends setting to 2 at 133MHz,
+  - SAM9x7 series[6], page 263, 21.6 Register Summary :
+      0x10 offset has PMECC_CLK present, reccomends setting to 2 at 133MHz.
+
+So it should be safe to write 2 to this register for all those matching
+this /compatible/ string.
+
+The datasheet itself is not clear as to what to do for other MCK frequencies,
+though as 133MHz is the highest supported frequency and it worked before,
+hopefully it just means a cycle or two of useless delay at worse,
+but at least it keeps it simple.
+
+I've written a small patch below that I think should fix the issue, but again
+I don't know if that's upstreamable as-is.
+
+> Best regards,
+> Zixun LI
+>
+> [1] https://github.com/torvalds/linux/blob/19583ca584d6f574384e17fe7613dfaeadcdc4a6/drivers/mtd/nand/atmel_nand.c#L1058
+> [2] https://github.com/torvalds/linux/blob/ffc253263a1375a65fa6c9f62a893e9767fbebfa/drivers/mtd/nand/raw/atmel/pmecc.c#L772
+>
+Hopefully that can help !
+Best regards,
+Ada
+
+
+[3]: https://ww1.microchip.com/downloads/en/DeviceDoc/SAMA5D2-Series-Data-Sheet-DS60001476C.pdf
+[4]: https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductDocuments/DataSheets/SAMA5D4-Series-Data-Sheet-DS60001525.pdf
+[5]: https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductDocuments/DataSheets/SAM9X60-Data-Sheet-DS60001579.pdf
+[6]: https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductDocuments/DataSheets/SAM9X7-Series-Data-Sheet-DS60001813.pdf
+
+------------------------ >8 ------------------------
+
+diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
+index 3c7dee1be21d..cd96b44f3f30 100644
+--- a/drivers/mtd/nand/raw/atmel/pmecc.c
++++ b/drivers/mtd/nand/raw/atmel/pmecc.c
+@@ -143,6 +143,7 @@ struct atmel_pmecc_caps {
+  	int nstrengths;
+  	int el_offset;
+  	bool correct_erased_chunks;
++	bool need_clk_config;
+  };
+  
+  struct atmel_pmecc {
+@@ -787,6 +788,9 @@ int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op)
+  	writel(PMECC_CTRL_ENABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
+  	writel(PMECC_CTRL_DATA, pmecc->regs.base + ATMEL_PMECC_CTRL);
+  
++	if (pmecc->caps->need_clk_config)
++		writel(PMECC_CLK_133MHZ, pmecc->regs.base + ATMEL_PMECC_CLK);
++
+  	return 0;
+  }
+  EXPORT_SYMBOL_GPL(atmel_pmecc_enable);
+@@ -896,6 +900,7 @@ static struct atmel_pmecc_caps at91sam9g45_caps = {
+  	.strengths = atmel_pmecc_strengths,
+  	.nstrengths = 5,
+  	.el_offset = 0x8c,
++	.need_clk_config = true,
+  };
+  
+  static struct atmel_pmecc_caps sama5d4_caps = {
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
