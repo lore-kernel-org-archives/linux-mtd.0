@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 475EBC83038
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 15:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07707C7EE30
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Jul 2025 15:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VCz4sQviIFBVHLsi8AY1Di95stD6do6oI2ezkN5l53o=; b=20P/XSTY7T5mok
-	xATflHraKSPNE5J+fn23kESsbSQgyQjoo+1HCpfDTwrgtbpi7zez/ASdn0zqji6T/VfRpr757KEAy
-	ATzND7gXTpw+PlEesoO2ge/Cv2h0NRcYKCUV61peq1H/isTfK3zLJ35BKgVEODnKv4mSjrlPDMKfs
-	KZzIx6q4XY6th4stqjqI1TIwMTPcgEUO4WQ72U1Q0FyUTNIM+rwi/NzRdp8Ms/ffj+SoFUEVRRDeW
-	wxkxD138cYWZE7g2VCtIcKlj4IWRvkcd8BdqnCZx2XVBjU8m1VC5g1wMq7YrYVQZsLimQu6KIoES/
-	Wgb0ovaqin2B9scunNqA==;
+	List-Owner; bh=Cu9f8iAk/kdOEcVcF1YYqKp/E1BhXr+rz7mhCIzDhp4=; b=pv4c1rMYfr73Jk
+	JYJfxWrmMSiFwbIXkGTmAa1SA5T+Xjx+mHDvO2nI+thYSVUGG0HBnvK0L68RY9tCv6tIYiVxTmrF3
+	3VKRXE3ufZfgAdxRk3kWOdj1hSch7cptUIV4qkGukK8cNbMw7rGNd7Bh/xCzAqvr45Z37Wc22pqT7
+	IbEmmxdGWTrbxKf/q/vGvXw6J05W/EaaXHVxIQUgD1fqdwrl6wUDMPrAYu4NDeYW6O3yMkbbVT6Wm
+	+BsEwkIYDlIbQvDCgPdQr6N7zJBUkBX8EgbyjGc2N3RVD6HFLuLKseCtf8bvTiMoDMBPghQSHXb+R
+	7j57K4+85jhQdao37Inw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWcYR-00000005pau-0dui;
-	Tue, 01 Jul 2025 15:05:51 +0000
-Received: from mta-65-226.siemens.flowmailer.net ([185.136.65.226])
+	id 1uWdGF-00000005wYb-1LSP;
+	Tue, 01 Jul 2025 15:51:07 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWb7H-00000005Wsv-3FY7
+	id 1uWbb6-00000005dA4-30uT
 	for linux-mtd@lists.infradead.org;
-	Tue, 01 Jul 2025 13:33:45 +0000
-Received: by mta-65-226.siemens.flowmailer.net with ESMTPSA id 20250701133337718be8c7aae7ffad9f
-        for <linux-mtd@lists.infradead.org>;
-        Tue, 01 Jul 2025 15:33:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=alexander.sverdlin@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
- bh=YhxdcWDoChMeKmCKFHUBRgx8Fy37YPqEiFc2G1XZk/I=;
- b=NT0/xHW6kCxGPbT2r9IA2uCj2BwYytVU4zBooT76wG4djkO052AKLKBGKI6R7ptSMfv1eJ
- LxneKxMSRmfdxcs2wHR1BP4Mq9ijo/x8elVuh7E54tc2P5RicaWiB6V110bABX7oL4/33xx8
- PIujI8DMQQbMI23ckyP9MIoAU+DEaohpJKGHT1Fq9Tgnwh30kFXM52z5tdtap/794luuoOK4
- QR2vUhhP4n9ZV5GX2xAVvgBsT2BiaeA/jdjh6wGf6/ogS1Q2ezEzMNB0yzBw87T7lCql6/4I
- 4HmpD7R2/wwjtodREGMGGv0iPNc9D00KYxZnpWiRt38FsTxBfjdvYqug==;
-From: "A. Sverdlin" <alexander.sverdlin@siemens.com>
-To: Boris Brezillon <bbrezillon@kernel.org>,
-	linux-mtd@lists.infradead.org
-Cc: Alexander Sverdlin <alexander.sverdlin@siemens.com>,
+	Tue, 01 Jul 2025 14:04:32 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 0578A61443;
+	Tue,  1 Jul 2025 14:04:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6BE6C4CEEB;
+	Tue,  1 Jul 2025 14:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751378671;
+	bh=/MBHO/HqDaUBfzBgNGZeYC4UQPMQnREgL2F3m4ayADY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BDb1gITGKIO6DCGeNfIDtTY3aHfaO9vINFNOBkMJJ+rTmWSAbobkDnC0tSb7FjsOQ
+	 PqIqe1g6Jpv5iHlaDsLAIiDGd1cBWwGJVJctOuQ0ooMWRB/0xBlvK3+oYeETKbsbEZ
+	 JfXb9yJomsLbsqZQAnKkuzUxRi1e7fppRexivtCRSvBVMcutFaXucS8uuNT+RrM9O3
+	 AcD0CRvi0qKDBCCxXcAWZPQZTcgDyvZPILEkHNw1UdvFiN/zE1YaSn6Wmnhr3LngOV
+	 1t4UyA3czdAQ1cd+wk46KBMHfkkoMM8GLaV1XxWKO/smBH8FYhhl3RwRKR4r2CZuhM
+	 QmK4C6ApXV9/g==
+From: Michael Walle <mwalle@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: nand: raw: atmel: Respect tAR, tCLR in read setup timing
-Date: Tue,  1 Jul 2025 15:33:28 +0200
-Message-ID: <20250701133333.3871085-1-alexander.sverdlin@siemens.com>
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Jean-Marc Ranger <jmranger@hotmail.com>
+Subject: [PATCH] mtd: spi-nor: Fix spi_nor_try_unlock_all()
+Date: Tue,  1 Jul 2025 16:04:26 +0200
+Message-Id: <20250701140426.2355182-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-456497:519-21489:flowmailer
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250701_063344_409466_60563DA9 
-X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,61 +74,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+Commit ff67592cbdfc ("mtd: spi-nor: Introduce spi_nor_set_mtd_info()")
+moved all initialization of the mtd fields at the end of spi_nor_scan().
+Normally, the mtd info is only needed for the mtd ops on the device,
+with one exception: spi_nor_try_unlock_all(), which will also make use
+of the mtd->size parameter. With that commit, the size will always be
+zero because it is not initialized. Fix that by not using the size of
+the mtd_info struct, but use the size from struct spi_nor_flash_parameter.
 
-Having setup time 0 violates tAR, tCLR of some chips, for instance
-TOSHIBA TC58NVG2S3ETAI0 cannot be detected successfully (first ID byte
-being read duplicated, i.e. 98 98 dc 90 15 76 14 03 instead of
-98 dc 90 15 76 ...).
-
-Atmel Application Notes postulated 1 cycle NRD_SETUP without explanation
-[1], but it looks more appropriate to just calculate setup time properly.
-
-Without the fix we've measured -2ns tAR delay (REn asserted before ALE
-deassert!); with the fix -- 60ns (subject to module clock).
-
-[1] Link: https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ApplicationNotes/ApplicationNotes/doc6255.pdf
-Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+Fixes: ff67592cbdfc ("mtd: spi-nor: Introduce spi_nor_set_mtd_info()")
+Cc: stable@vger.kernel.org
+Reported-by: Jean-Marc Ranger <jmranger@hotmail.com>
+Closes: https://lore.kernel.org/all/DM6PR06MB561177323DC5207E34AF2A06C547A@DM6PR06MB5611.namprd06.prod.outlook.com/
+Tested-by: Jean-Marc Ranger <jmranger@hotmail.com>
+Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/swp.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index dedcca87defc7..844df72f45063 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1377,14 +1377,25 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
- 	if (ret)
- 		return ret;
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index 9c9328478d8a..9b07f83aeac7 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -56,7 +56,6 @@ static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
+ 					u64 *len)
+ {
+-	struct mtd_info *mtd = &nor->mtd;
+ 	u64 min_prot_len;
+ 	u8 mask = spi_nor_get_sr_bp_mask(nor);
+ 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+@@ -77,13 +76,13 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
+ 	min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+ 	*len = min_prot_len << (bp - 1);
  
-+	/*
-+	 * Read setup timing depends on the operation done on the NAND:
-+	 *
-+	 * NRD_SETUP = max(tAR, tCLR)
-+	 */
-+	timeps = max(conf->timings.sdr.tAR_min, conf->timings.sdr.tCLR_min);
-+	ncycles = DIV_ROUND_UP(timeps, mckperiodps);
-+	totalcycles += ncycles;
-+	ret = atmel_smc_cs_conf_set_setup(smcconf, ATMEL_SMC_NRD_SHIFT,
-+					  ncycles);
-+	if (ret)
-+		return ret;
-+
- 	/*
- 	 * The read cycle timing is directly matching tRC, but is also
- 	 * dependent on the setup and hold timings we calculated earlier,
- 	 * which gives:
- 	 *
--	 * NRD_CYCLE = max(tRC, NRD_PULSE + NRD_HOLD)
--	 *
--	 * NRD_SETUP is always 0.
-+	 * NRD_CYCLE = max(tRC, NRD_SETUP + NRD_PULSE + NRD_HOLD)
- 	 */
- 	ncycles = DIV_ROUND_UP(conf->timings.sdr.tRC_min, mckperiodps);
- 	ncycles = max(totalcycles, ncycles);
+-	if (*len > mtd->size)
+-		*len = mtd->size;
++	if (*len > nor->params->size)
++		*len = nor->params->size;
+ 
+ 	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
+ 		*ofs = 0;
+ 	else
+-		*ofs = mtd->size - *len;
++		*ofs = nor->params->size - *len;
+ }
+ 
+ /*
+@@ -158,7 +157,6 @@ static bool spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, u64 len,
+  */
+ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+-	struct mtd_info *mtd = &nor->mtd;
+ 	u64 min_prot_len;
+ 	int ret, status_old, status_new;
+ 	u8 mask = spi_nor_get_sr_bp_mask(nor);
+@@ -183,7 +181,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 		can_be_bottom = false;
+ 
+ 	/* If anything above us is unlocked, we can't use 'top' protection */
+-	if (!spi_nor_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
++	if (!spi_nor_is_locked_sr(nor, ofs + len, nor->params->size - (ofs + len),
+ 				  status_old))
+ 		can_be_top = false;
+ 
+@@ -195,11 +193,11 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 
+ 	/* lock_len: length of region that should end up locked */
+ 	if (use_top)
+-		lock_len = mtd->size - ofs;
++		lock_len = nor->params->size - ofs;
+ 	else
+ 		lock_len = ofs + len;
+ 
+-	if (lock_len == mtd->size) {
++	if (lock_len == nor->params->size) {
+ 		val = mask;
+ 	} else {
+ 		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+@@ -248,7 +246,6 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+  */
+ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+-	struct mtd_info *mtd = &nor->mtd;
+ 	u64 min_prot_len;
+ 	int ret, status_old, status_new;
+ 	u8 mask = spi_nor_get_sr_bp_mask(nor);
+@@ -273,7 +270,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 		can_be_top = false;
+ 
+ 	/* If anything above us is locked, we can't use 'bottom' protection */
+-	if (!spi_nor_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
++	if (!spi_nor_is_unlocked_sr(nor, ofs + len, nor->params->size - (ofs + len),
+ 				    status_old))
+ 		can_be_bottom = false;
+ 
+@@ -285,7 +282,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 
+ 	/* lock_len: length of region that should remain locked */
+ 	if (use_top)
+-		lock_len = mtd->size - (ofs + len);
++		lock_len = nor->params->size - (ofs + len);
+ 	else
+ 		lock_len = ofs;
+ 
 -- 
-2.50.0
+2.39.5
 
 
 ______________________________________________________
