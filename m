@@ -4,62 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CBF1C77B7C
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jul 2025 17:26:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4E7CC83030
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Jul 2025 20:57:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=02m3iC1EcmYNVVTpmMzdCVswb2fhVQ6HNIuPstEW/gM=; b=lscaWSAZHlDWb3
-	Kga6LKHbeIkYnOU7QjhAaKU+J+ePB1I3iLUcgKWCmC23zAAUAZS2uQcpS6If8/2TRVhyVFa/zeD+p
-	vsx9/v+YVj0qmeeIHZOicgDe+HzMNQ0n5L6zWaAVU6uDaHOd+4sZJcHXygi+FJgRdAzrFU5kBLcGk
-	89MJh1DpDB8JfIVSP9rLzSykRPQ/LWx0oUFnE85Jw/lRCcfPin2WfkOe8Hf/JAWNkaMBYjEhmT7qG
-	hoqUclo2MGmKxn+HrPFxMjwt95JRSZWhJENeX7mO1ozVXuhIiUEe5i0Ep0VFf5JCgj3/+FkcONEo+
-	QqppRNP/vOXt9vVPgI4Q==;
+	List-Owner; bh=6dtOPuh/a2j8bXniXgu+uR71VsHeOfkXNZjWCnNeXiU=; b=VOkDtZI5gxJabO
+	Df9419qc1f6djVc80+oqNtohn5FPEdH3afBS+RHzy6j5ePhI1RgxyUAN6/19KsVwbEzsKkJO7GhUa
+	C1V88v6BGw9x3vBCc4VYqjDnNfIV5SGkR7qkdglcnPt9n0HvHPr3ZHYahkF2Pq66oeuHa6vFgu1Iv
+	3M1ai9N25WZ+OUPTiYv62HaFMNdtJEhKkIedD56S7cswrXMe5hIkXzl0D9XmLx6zbu4XkiBpFRzk6
+	qvZWXbowTWHUlWdDvP13a/FQ9QRTe2Vgb+VHAUrzOqlNUyMcavhtYqKkVbpttCmONSLTgikJj7URA
+	9zyE2d/9mLOeM3a7WEVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uXNhT-0000000C8QY-1HMD;
-	Thu, 03 Jul 2025 17:26:19 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1uXQzZ-0000000CTI0-13Hj;
+	Thu, 03 Jul 2025 20:57:13 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uXLOE-0000000BkNH-0BGR
+	id 1uXLcj-0000000BmNd-0tVJ
 	for linux-mtd@lists.infradead.org;
-	Thu, 03 Jul 2025 14:58:19 +0000
+	Thu, 03 Jul 2025 15:13:17 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 4B5B9A53890;
-	Thu,  3 Jul 2025 14:58:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58703C4CEF1;
-	Thu,  3 Jul 2025 14:58:15 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 9F8CB61446;
+	Thu,  3 Jul 2025 15:13:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8A21C4CEF2;
+	Thu,  3 Jul 2025 15:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751554697;
-	bh=872+7tXOem1OrbfSNY5lnOE/vEVSwPzQKMYLZWB69fQ=;
+	s=k20201202; t=1751555596;
+	bh=8e5mj+lNVEPhzv6lVExpdk5WTdjfGcM+AvYmWCMOf/Q=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=EdCSCguC0Yp15sN2d+GJmd5XG8EI607MdgHRpu6p9JFuYQzEmwRgQvWjy3AAKXMZ8
-	 rPewmLlnAOGy6PO2Juucxq9h/CRcOYWptIQlGyeLAfyxz/Uury3Xc0mNelzZ031i4Y
-	 scbeKLMBqTZX0XIaYM76gZvH3eC3KoPrGo3TNa8kt2HDKbGQAupb9tPTC039lm3AvR
-	 biTMpw50WPjIlY15aL14USlnbz/8uA05l+u8+q9j6sPG6dAudc578HFbP/6LWeaRxU
-	 1yeYT8vF0I3yHjW2UBbaAcVDTiKBAqtkyVt0NkePUArNqlRZEvxvLI3Xp5HlwCgnRg
-	 mBNhqFiXteWeg==
+	b=EvSYvhWQKzKV27w7+3Ixr/7N1sLHclKLx7rxFl8hztoEiB9UEDZXFfnyJy+Ax8yVX
+	 zx2rVF3oiVJ11sWkrknBIDPtMOvdEYevge3k3Xw9LvmlBGD49uQ/qd1Ku7h+KaAYym
+	 rMQobezhY8xiv75FaN+JJwjC7wDf4nfDQ8ffj058gv/v/TNmAZi7+YOdwxH2OgeYYN
+	 /I8sANGHL9rrFBfVbHXazhJSJSk5EzYHeS0NBX3ZagEgZrSuAdV8PlmfqalqgOcCG6
+	 aWFsMEISu55ziLVNqkUUO3FFzM2Nt2x5/z+AcOwZPkZ1e17zWeGk5H0i+SVtJ+nrT9
+	 2Sp+Qzkye9+kw==
 From: Pratyush Yadav <pratyush@kernel.org>
-To: tkuw584924@gmail.com
-Cc: linux-mtd@lists.infradead.org,  tudor.ambarus@linaro.org,
-  pratyush@kernel.org,  mwalle@kernel.org,  miquel.raynal@bootlin.com,
-  richard@nod.at,  vigneshr@ti.com,  Bacem.Daassi@infineon.com,  Takahiro
- Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: spansion: Fixup
- params->set_4byte_addr_mode for SEMPER
-In-Reply-To: <20250612074427.22263-1-Takahiro.Kuwano@infineon.com>
-References: <20250612074427.22263-1-Takahiro.Kuwano@infineon.com>
-Date: Thu, 03 Jul 2025 16:58:14 +0200
-Message-ID: <mafs0jz4p1fuh.fsf@kernel.org>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  stable@vger.kernel.org,  Jean-Marc Ranger
+ <jmranger@hotmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Fix spi_nor_try_unlock_all()
+In-Reply-To: <20250701140426.2355182-1-mwalle@kernel.org>
+References: <20250701140426.2355182-1-mwalle@kernel.org>
+Date: Thu, 03 Jul 2025 17:13:13 +0200
+Message-ID: <mafs0bjq11f5i.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250703_075818_143138_8267D9EE 
-X-CRM114-Status: UNSURE (   7.06  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,19 +73,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 12 2025, tkuw584924@gmail.com wrote:
+On Tue, Jul 01 2025, Michael Walle wrote:
 
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> Commit ff67592cbdfc ("mtd: spi-nor: Introduce spi_nor_set_mtd_info()")
+> moved all initialization of the mtd fields at the end of spi_nor_scan().
+> Normally, the mtd info is only needed for the mtd ops on the device,
+> with one exception: spi_nor_try_unlock_all(), which will also make use
+> of the mtd->size parameter. With that commit, the size will always be
+> zero because it is not initialized. Fix that by not using the size of
+> the mtd_info struct, but use the size from struct spi_nor_flash_parameter.
 >
-> Infineon SEMPER flash family does not support E9h opcode as Exit 4-byte
-> mode (EX4B). Therefore, params->set_4byte_addr_mode is not determined by
-> BFPT parse. Fixup it up by introducing vendor specific EX4B opcode (B8h)
-> and function.
->
-> Fixes: c87c9b11c53ce ("mtd: spi-nor: spansion: Determine current address mode")
-> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> Fixes: ff67592cbdfc ("mtd: spi-nor: Introduce spi_nor_set_mtd_info()")
+> Cc: stable@vger.kernel.org
+> Reported-by: Jean-Marc Ranger <jmranger@hotmail.com>
+> Closes: https://lore.kernel.org/all/DM6PR06MB561177323DC5207E34AF2A06C547A@DM6PR06MB5611.namprd06.prod.outlook.com/
+> Tested-by: Jean-Marc Ranger <jmranger@hotmail.com>
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 
-Applied to spi-nor/next. Thanks!
+This patch hasn't had much time on the list but we are already at -rc4
+and I want it to get some time in linux-next. If later reviews come in
+and changes are needed, I can drop it and apply the new version. So
+applied to spi-nor/next. Thanks!
 
 [...]
 
