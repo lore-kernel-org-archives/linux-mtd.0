@@ -4,152 +4,168 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DB75C83F09
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jul 2025 01:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20A93C8303C
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Jul 2025 01:34:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G4Xb21zOnYn6kDbU91XlR8p6hKuG02PS8/TyY19CPoY=; b=JfLwDkTdsX2ky1
-	3u09USlcyhZRigMYtb0Wx9oa58BkmwhSheU81opnT/Cks2HNsRRr0zJVFtU0fSps4eIrFTlOkywx4
-	KzA6tW090d89fd7BiHq/Prb4o6JVIB9mxrJLYYt4jVk7HGNiJUNfhGdowowF6U5/pV0fuwpQfE1sw
-	qFGSEkbVuNZhV3ic9MBXgOEFjisXIv/4EGW1sBI8huqrzlVoqyi2GvDbWWIFn8RVMHvVqtZ6Q0Ggu
-	WlI1FWb9OFfG6aFxVR0OfVnaiJCRFlM+zF+gkQRFUwkQyiacJEsLIRsnJUkP81iO6b3Bl/7f1gV89
-	6gNm0Sq6+QADlEBkfjGw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:To:Subject:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TjMHn8h49zXHQGwRyVwd/v5G3AsQBdb+1mgrq8OnZfY=; b=IKisxLCSSZCV71LucawIq1FSmZ
+	C+fcYKfZYvfk+e8NEh+EpqfwkV7n6JEH2uz/VqlV3HX6Kssj7wF/ektHi8psCubRxoVBgqeoeW7nB
+	yb2kFGnrcmt81/TzBmlc7qiohPpr4P0nGQf95/vam3QxlCeP+7O0FEVoY+0YZx7MJ1hSW+kNwfwag
+	FrD/KOEedAeRjhB1YTm392fTMAopcDqx2Z4NEgn6iX+TJJohxgBRpFBwhkBvAiwYfres0Owh7KII5
+	lVetijv9HHxiOnk1mzvQGukVvAHvvMrzUz9VHqlJe4HJzDb8vJ7IvctjEfwpXYyujN3BnIg9pLhu9
+	AnS/jFeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZJfW-0000000773w-2OGW;
-	Wed, 09 Jul 2025 01:32:18 +0000
-Received: from mail-westusazlp170120002.outbound.protection.outlook.com ([2a01:111:f403:c001::2] helo=SJ2PR03CU001.outbound.protection.outlook.com)
+	id 1uZJhN-000000077GS-0hlx;
+	Wed, 09 Jul 2025 01:34:13 +0000
+Received: from mail-bn8nam12on20631.outbound.protection.outlook.com ([2a01:111:f403:2418::631] helo=NAM12-BN8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZJe5-000000076u8-05cI
+	id 1uZJhL-000000077Fr-0ifD
 	for linux-mtd@lists.infradead.org;
-	Wed, 09 Jul 2025 01:30:50 +0000
+	Wed, 09 Jul 2025 01:34:12 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=l6Rnf/kSJ/DVvIuFj08J9y2ZSsrD8iUepuVdBjr4D6NZX4ZlG1GIlrYJnSipjua+PplAjQgWMwX9FSv+laAoHJ4aAfUQSCKWlMJGSV9cCdZhBXoU5DI6bZRMQTuX63CNlrL1MvxRHgtDueA69ET/ayriZcD5ZbBVsj22bET4E8Ac4i7osFih999DwYG+GZRdpIyEh0s+iRh55eidImQrFg8WULhn8xXdb6rvLEAnEPEZf1lFnWWvFV+DWEayuc2E1GL/V4itjDLxhX9HbjSKbSpUfbcIfl+DG7gxGC+8UCpGa3rTtgDLi+M4blWQJtWoWfQ+O4y58RsCIadnrKL5eA==
+ b=DzMyU4Y4FduCESy6iQL8pQ99AzRilcYtmxZN2Iv2g9VwqLXCX5eDI9fBfk+0E6Mh+3sjnGiusaj/5xT0A1/HmvdVhUli8plUs+nv+6mgKnosiL863zv2ZORrgzJ+fK8PamHBEQZbwnLQHViM50BBSPcJ6FaRwLvFdKG1HTI+jTOd1nvGsznKAXHbi4HXd+ZZVA2tinaXPSRWvct+fiK491+f5XSByD7eD/WeUJjLKCBOrAKCrSw7nftdACej70kqy/LDaAxvxiD8riflxm8195+l+nxNl6Q/hTonZA3Dp/kVCpNdleml+pk65oChe6NIdJVsRKkNXx1xTUu/cZVshg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pwQCd5w7ng5GNlVH4PvzQ3K/MBDgqxtE2zetaqYB5+Q=;
- b=iPEgIxmQyftFY22fDN+nsv9kBoZzZfbO0mZmCd3Tuq3dbiga8BscMJzijTgNLoorzEWVMJZLaP75S2jO+CwHMWIPdp2OX6D9Y0nwIi7kU55ckg8CPTUd14BO5tmX0HmoLuDVK2/SIe6AA3av85hvauZ2ZbCCFuH5pShVJcn9q77AFJj1UDKOEzjoov1rvO2/+dqSs90UWKF1Pcaxl/sTsJPb4ughU71+krSlOHm6//qnRXdR6egGQJ3AgpaobzmthxJDAVrD0a+98VBa/uQ6QrU1kUcY6dK2pI8htPPoqH//5XENPVRfbPiKWTFPRnR6WbOJmw02vKecpRQ3vkEcEQ==
+ bh=QN5iwhKsYt/aFkph4X5eMGm/52PLCL2050nmEfHLjZU=;
+ b=bOylClzUzxdzziFQGrIcd3ayH/jIndZflQ1J8USR3wHII1j5fmU+TowuCEX6Qjk2pOD1xMX0G9DBZQoBJE5hwxSdF6CglUdwYwdpXmPKgLTi8iShPLivoXjTMe/TY4Uvqtgdp98qzACZ7VWW17y4r+phmyOhEc/uAfwUNhMzkpt9PA0hWaYMndo8lbzdeUQZj0fGBeR1PytXNImDKE55XBbjPyGyL644MRPJC/8esX+ElynAGoD3Fb2N4CpN07Pj1JhvAJ3DaNn1astD+/OHX8gGgoV+sIOdfCGmAt6gcSV727wtiGPevtCARDc/JxRZ91AeYqX7bnkxFskvozVEqA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
  dkim=pass header.d=altera.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pwQCd5w7ng5GNlVH4PvzQ3K/MBDgqxtE2zetaqYB5+Q=;
- b=pcA7g9FP4pKQ5ZZ4/SKglyLs2MYGOf1mHfCMVpsyMYaG7HagA4eXh0XQXQmkVY9ZbiRaCmYCFhsPxhMObtW2h4nGUOeRjNOjWYjVAtF2chtE6PtKLGhlKtkU83oj+o6yCqdnnTxQZsaTjyxQRxYq6XGGwjLjU9dHU0/7UtO7oKC/d1FTSHXezrTYDN674lR8NVI2MdsvfqIxjh7BkMuB1RZguGitINGXwOidTbTIALzm+YOdKPu12CPdeqQIvgS68wtxrJuTDrVpL5eLzL/Cz3PKs626PgDZtfCgVjKJnb7hO9JlH7Ck13PPwJg1K5AkV4w5AqUkgLORTePwtdNwIQ==
+ bh=QN5iwhKsYt/aFkph4X5eMGm/52PLCL2050nmEfHLjZU=;
+ b=SWDQMwoXGQKgMWCJBxRUkKhb3qZd52hDQl7d9Isw2FT6LI3Jy5jWOuf0CaQZcHpCX8IAiS4lDrXp3xLbkFyUo7y3/dZSEoMVWWzofKyTZlKKWnLBlk8YemjDTnhZS6GpH7IZ/+L47JTfIdHxLwHpKKd7x3H8Kg3sGmi9pBk9w93NvBbEU6OEEI2jFz02X5Rnj9ohetyji3jl1jT1DTexOzoDHiBFRjGbkLm1CNO78sUqEWAJWLSBg+HxMgazy+Ih5mDbwqHSPbyGomeONbyWMDmQnrKLB+IwpRPQfo9Frp1pTRCOpnsXtO0e9M4GT5RojT5eIm0+EXWnZnkq9l6wGg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=altera.com;
-Received: from BY5PR03MB5299.namprd03.prod.outlook.com (2603:10b6:a03:229::12)
- by DS7PR03MB5576.namprd03.prod.outlook.com (2603:10b6:5:2cb::6) with
+Received: from BYAPR03MB3461.namprd03.prod.outlook.com (2603:10b6:a02:b4::23)
+ by DM4PR03MB6030.namprd03.prod.outlook.com (2603:10b6:5:391::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.28; Wed, 9 Jul
- 2025 01:30:43 +0000
-Received: from BY5PR03MB5299.namprd03.prod.outlook.com
- ([fe80::b106:261f:6a67:9615]) by BY5PR03MB5299.namprd03.prod.outlook.com
- ([fe80::b106:261f:6a67:9615%5]) with mapi id 15.20.8901.024; Wed, 9 Jul 2025
- 01:30:43 +0000
-From: khairul.anuar.romli@altera.com
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
-	linux-kernel@vger.kernel.org (open list),
-	Matthew Gerlach <matthew.gerlach@altera.com>,
-	Khairul Anuar Romli <khairul.anuar.romli@altera.com>
-Subject: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver removal with active read or write operations
-Date: Wed,  9 Jul 2025 09:30:38 +0800
-Message-Id: <e439e6b85e650a91607a1d02d5d432d096363315.1752024352.git.khairul.anuar.romli@altera.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <cover.1752024352.git.khairul.anuar.romli@altera.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.24; Wed, 9 Jul
+ 2025 01:34:06 +0000
+Received: from BYAPR03MB3461.namprd03.prod.outlook.com
+ ([fe80::706b:dd15:bc81:313c]) by BYAPR03MB3461.namprd03.prod.outlook.com
+ ([fe80::706b:dd15:bc81:313c%6]) with mapi id 15.20.8901.024; Wed, 9 Jul 2025
+ 01:34:06 +0000
+Message-ID: <2287f4f8-f4e2-4f93-b050-afeb41955719@altera.com>
+Date: Tue, 8 Jul 2025 18:34:05 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver
+ removal with active read or write operations
+To: khairul.anuar.romli@altera.com, Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ "open list:SPI NOR SUBSYSTEM" <linux-mtd@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>
 References: <cover.1752024352.git.khairul.anuar.romli@altera.com>
-X-ClientProxiedBy: SJ0PR13CA0234.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::29) To BY5PR03MB5299.namprd03.prod.outlook.com
- (2603:10b6:a03:229::12)
+ <e439e6b85e650a91607a1d02d5d432d096363315.1752024352.git.khairul.anuar.romli@altera.com>
+Content-Language: en-US
+From: Matthew Gerlach <matthew.gerlach@altera.com>
+In-Reply-To: <e439e6b85e650a91607a1d02d5d432d096363315.1752024352.git.khairul.anuar.romli@altera.com>
+X-ClientProxiedBy: BY5PR16CA0026.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::39) To BYAPR03MB3461.namprd03.prod.outlook.com
+ (2603:10b6:a02:b4::23)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR03MB5299:EE_|DS7PR03MB5576:EE_
-X-MS-Office365-Filtering-Correlation-Id: b1031199-91da-480c-8bb4-08ddbe88389c
+X-MS-TrafficTypeDiagnostic: BYAPR03MB3461:EE_|DM4PR03MB6030:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b38c281-e433-4b9a-98c6-08ddbe88b200
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|921020;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?D8aYEsJUioahTjWjjs7f7gEllmRixLvRwMAY479nvuU5Wx9I9hUbEwQamDJ8?=
- =?us-ascii?Q?EfLIQtUzjERy9IskDoST7ZI2X0SIopxLcD+TLha9W74J3yhk1Z2bUpUGDhPf?=
- =?us-ascii?Q?wfuk4ugf4PKLYUKP6dW2+MhjtaBte9hi7AWA+8VIJYTMjpEQYVROz3iqsCH7?=
- =?us-ascii?Q?kryP91+h4P28HQwukST1cjpDHrR2HK6fIMmPT0sXPGBuKgvZqqg1QummXRbw?=
- =?us-ascii?Q?P56I4nMwx8aEO0wcRCUkejf6gjrqykT0fwgO/yslcm8bJJyjr19JDb2TRW9B?=
- =?us-ascii?Q?DekJ+dgEwDbwfUSzo8Faw0vl1yz690ib86RF10ePuBcIIBwDiNUmoJQdOD6C?=
- =?us-ascii?Q?5uJRe3qd5CyeCCA1tO1s3O2gDrUCblmDLZEXjo65+D1D/7Rwz5CY3jZqsbSQ?=
- =?us-ascii?Q?uU5TnL7p8dIll2eApjh2YeH9QdZyCIT+Hg/bXTc0zr/p7oh2fKeEXOtJLHsu?=
- =?us-ascii?Q?mEUK6dj4zs/tZgnyrYzKryOtf8aVjnTSiWv21d9VsEQWqYzcpJZwCNuYRP+B?=
- =?us-ascii?Q?TImxCmOhRTGCBPTtapYqm6Jdaa8dT0auDrntpOH0/HFC9jmhDDD+DcScwd24?=
- =?us-ascii?Q?2Lh3yo0al5kQ7J2HcqtUJ9nD0h5BD/oO91fwHdNhO3OJSdkQeqNQiIsWt3Vj?=
- =?us-ascii?Q?e7HxBD0faCHmqTspFWNWQVzD6IQXwaS85E0oZoZ9BON+/85s6wh0y9yfCwDg?=
- =?us-ascii?Q?q2rOR8t2oJEe33CA4yy/0iNsJoj0FYJ8AfrgzxYRrSmFMkF4krmAX4jhcAhD?=
- =?us-ascii?Q?FM+ahB85zXT2+QYffvC2KjzQqF5Myqc9nNNJ0Daw7OFGey8zB7oksejui22Q?=
- =?us-ascii?Q?5KF3cqXVAc7TcIW0Gyi6fhHemCb/E8dkxu3puAvQrRoOPZKRagXSZ4LkLsJy?=
- =?us-ascii?Q?kYAZyFvFiaibPRvrPhkGdRKOO9I7bDhr2wjrhCpmhOyUPMWlMZs32eP+Jif0?=
- =?us-ascii?Q?r1yPBqPgVeezF966WiCA8AAXTyP8vdsaGkt9hFbzK9P9ONCaZ1mrRurZSJWd?=
- =?us-ascii?Q?yptaD1/NSPRC0JULOhsNtKLMxgiDQEbjmydGA02bLS9acTEJRB03tsekFNGp?=
- =?us-ascii?Q?vPRJkz1n7y544dYZxKQ48PcbjoIXcQv2DCUB10HyxZQHSwLadU/WX359qmuO?=
- =?us-ascii?Q?/ahCqya0CmVVlStFDEfkH/m4oHmU5pSnVlJXQwbQFLaIjM9pdfbt1OqthuZp?=
- =?us-ascii?Q?rBmCUPnGfpk8vxbTbSchSv+avVmdhcieQtMTFQlx8AvCu5mECj45+GpH+z2L?=
- =?us-ascii?Q?MXNRSpkoiOEUZvqg0//ds5mHselNzDr3lNxYEn3A4/IlhQnIeR1vaN+YiqsP?=
- =?us-ascii?Q?HD5vNQNJR1PFtQFSuu6PAyqeDbFfmCHflCqw6cqLzruwI4P478/pfdHFEMji?=
- =?us-ascii?Q?RHItolZdRSpLyCEQTns+szDXlF0EAVi5rKA7m6oKp+zJVfrTvs0HwK+s/OcR?=
- =?us-ascii?Q?LUZpOs7yvk7fKjmFkTH6KKJ0AFDLWnJnPpRmbTSk0e7RsOPKSHKGAg=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5299.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?bnN6UjJPMnBMZXMyQUJaL0FDTjZXcWlOZ1RjRGNZT3JobnVSVHEzNldoUnJh?=
+ =?utf-8?B?THBxdG5tdGREU1dYU0tXNTFxWGZyVjU1NkgrVFhpVTB4ZzJEak9PSlJVZXFM?=
+ =?utf-8?B?T0xZU0FaZWsySWJ5VjBXT3RzNmxUUytTUEo5MVp6YWhVOFlaN3VpRFJQT1lw?=
+ =?utf-8?B?d21NYUJtRlMxN2N1T29xSGVLMUVlYTZXMHE1UWNadkdKb3NheElxeUpFTFVx?=
+ =?utf-8?B?TjdUSXhCRDI4dFhXSWgrQTdiNys3cWdFbEs4ckxHdnJvQXhxaEJlanZyMEVO?=
+ =?utf-8?B?M1BHZUVYdE1XM2t6TzlZMjJXdWcvQkNMUG5NMzdPY0tGdCtDbXp5ZFFlU2kv?=
+ =?utf-8?B?WDkySkxmOUpGKytZZTJKaU1rc2lHWlNWL3FNK0x3WnNhODBwNzh4eXhRRWlM?=
+ =?utf-8?B?YVhvUzQwTDF4QkdVU2d6a1Q2T1lhV0dDNE0ybUJGYWlSRHVHSFRQUVFjU3Q0?=
+ =?utf-8?B?WkZibm41cWFsbllYaDJMZ0s0bUJ0VTVUYUs2QU1ZdjNMd2lERVZ2R3lSblNK?=
+ =?utf-8?B?ekNjLytzeDJTVWZjSmxySzhqd1BJaHhmUjlTSGRZbFdaUHpTak5EaURKZXZG?=
+ =?utf-8?B?dUVzbVJIR1pMWWhtYW9YZWFlbWNIaUl2U2NxRDJlYU1RS3ZnRWRxMklCLy9C?=
+ =?utf-8?B?SUZST3Q0UHJNaVRBL3U4aGlNZGVCYTFLUzB3U09XR0RGYjBITVlQMkJ0OEY2?=
+ =?utf-8?B?QVdlRnRUOTM0Mzd5QmVVbjI5Z2wzQngxYUY1bGVUanVXOGhEVVNxQlBrWFNR?=
+ =?utf-8?B?cGV5Uzd2N0QxZWNGWmovcUViZzEvTjJmYlVLYlZKRUhySE1HNEk3VG5KQVNH?=
+ =?utf-8?B?KzAweE16Y1c1Wk9ZSUwzTUJzU1hnelBwNWNTVHp1c3htT2xMckRNcEUxdXZE?=
+ =?utf-8?B?NTREbnZFWWllQ1ZtbWZnMmFqU1ZkWEkvMTFXVGhkT3doYTcxc0haNnNHai8x?=
+ =?utf-8?B?RngySkcvRmNHTEYyY1pnbHcwZEZpWUM5YStKWW9MSkd2VTRnWkxBbCtBRnNw?=
+ =?utf-8?B?MnUyekpLV1BydHk4dWR0c0FOQmNRblovbzhxVDlrbVRZWDJDeVl0SjhuM1dP?=
+ =?utf-8?B?Q011SHNVOGlBcFdyWURHd3V2L3M4RWJjNjQ0bDJQSDIvWTJ5YjR0L1J1eFd0?=
+ =?utf-8?B?MFlUNk1MdW9PNnRLL3VvMHN3cEk4dnFlNHlRYVZUVjh4NUhNSGc0MzE4ZWln?=
+ =?utf-8?B?OVNqdkd1M0FGYnc0UGpzdGFHUytWWFFHUkR5RnpsaHZ6TFFqQW1XNmxzRkdT?=
+ =?utf-8?B?UHcwQnVnNVVZeHJMem5YdE5QN3RGcjBrNmxuMXR5blRzL0pUZDNBMEpSaGdD?=
+ =?utf-8?B?Zi8wVnh5L1dkU0dZZlFXcENqWHlZQ0JVMDloM2luVnYvcnI2NXY4VnRhZTgv?=
+ =?utf-8?B?elNHWWdJQ0VPdDlwdUVQcmV4dGUxQ29DY25xclA3ZVlZRG5ZYXdxS0dNc0JU?=
+ =?utf-8?B?M3A3QWlRM2pscndvYWNRU3ZNS3lPTEk4OXBzSlpEMzlVQzVxclEzU3Y5dlJt?=
+ =?utf-8?B?OUdYQ2dOdWNFSGJhcEJ1aDU0ZkIxR2hHR1lEbXdmQmJSRk9wOXlkeVNtdUxU?=
+ =?utf-8?B?SlBKdHkzdThTeXByTis2WnFuSXRDR3poSWFzU3hhc29tLzZEWXhJdkdNMWdR?=
+ =?utf-8?B?eURrVEJyV0RjaTl3SmxSRDNQM2hkSTJGNyswZy8vdWNDK1BJLzFJVExCWDho?=
+ =?utf-8?B?bnZOZERkbHo5d0NTazdrL3hMK1BvUE1MWmJzNU5KVGUxWUNBaW1ONHh5Y1VO?=
+ =?utf-8?B?MXBqck5EY0JxNW1kWEJDMkJ5L1FzOXB1NDAyRk9mZ3pyZm5vQ1lZcVlqS3RY?=
+ =?utf-8?B?ZFpObzRNQ2NJN0pIMXNjeitxTFM2OHJ2emZIM3BzSXBieTdBZ3NBU0kvSWhF?=
+ =?utf-8?B?aTRNWnp6eXNuQ1lSYjJ5a1UvTytJRGZlTTg5ZEFLNnZVYk1nRXZUb1NEaUU5?=
+ =?utf-8?Q?mP7/77xKbw8=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3461.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SEF3aZ7rbpL7clxS8qdBVgY7yUqooDzIhYv0dQ95W4394rrFXr6idfVwtoHF?=
- =?us-ascii?Q?VWLwx/AHttgJS9gR7LZYWMkCUXdQ5NSvRXJBlXn65G46TeCFIrWCOgicILkR?=
- =?us-ascii?Q?C7a4R7ctD0YYgcctdT+zv9duGXc4gKpixiveK11Q3FQDYBCv9AsbTejCAdVr?=
- =?us-ascii?Q?X/cACvvrY4XyOtprRAeNyIXdjQ28/XzZMYnitRtfCh+NpDavSx7zcqmx7FBP?=
- =?us-ascii?Q?Ko92Ety3ueW3yAoKJyBUIwvoa6q7DSKyEwj4N0SRHWgMcuK0jyd67VICsFnX?=
- =?us-ascii?Q?qiM/t3ZAdGxTeMuJKN6DbiW+YcQiidGW6EkNHyDwBMpvTHmLrikD8jQfm0Kd?=
- =?us-ascii?Q?SICf+eTNeZlD1T8SHYWhYbyU6Ngz5sOfAYnF8hXdEdL3IwU7+J21ZsXTu0Tj?=
- =?us-ascii?Q?+UjEaAkpSodOGDJG3EvlQHm+yfoSfrLocWv9xem4k62TApLc/3E/eUGflAal?=
- =?us-ascii?Q?nLlGJ6jpnl+MdRCqqT4VXyYlv/lUrIRIPxVvXWIpg8uldSyZ/ql7uBinKnXb?=
- =?us-ascii?Q?lH5NEk+nCl/p0Sbv5RPKTxHWKvErobW1naYKW1C3Kp/slxcNmwyaACTJQHIS?=
- =?us-ascii?Q?GOK7Dg5CAQesmAPr11kE/0rCX08bVXEoUv39YFkqRSHSGJRmwFc7Y/JjF1f/?=
- =?us-ascii?Q?iofYgAxInIcV8aPv7mHjaQK2hFZkak6D1tI9HTDej3QhK2NYsJHjlAQ3JLSr?=
- =?us-ascii?Q?3moMm6fh/vy6moVFiVlXFgKyjUbpOx3Logsc0S5YYh4A1JwqpzxW0iXXozmp?=
- =?us-ascii?Q?gLj+7dobAxmBlr/k5MSg1njjPjg6UskI/iQoQlUDzltynnQPU+7x5u6wWbu7?=
- =?us-ascii?Q?UhfNs9ViLl81+o13jUp3RC+AThWPHlCqGC5jkVvVwfet9yJArAGu/DEb+ZYr?=
- =?us-ascii?Q?lENc61CU4ZKvJbnZGMPhtPo3sh4QGjEE+GXYSk0wa4+92N9oDnN6RBKVST+Z?=
- =?us-ascii?Q?M313lQ081hVwmGciCzhShQgZ0grSjYVUOhBXnA3DI0oIe6y/7Oo/mvU6VND/?=
- =?us-ascii?Q?KmI7PUhIyFrJyroaLFWFON2QrcA4goFt/mEhsFYJjlUinWNJPhSaf1xRAKD4?=
- =?us-ascii?Q?uadoYd5e93SVIZTbrlvq4mAL/zm+qZAnkebblXbocFk18tMVyR8K6U80jWlX?=
- =?us-ascii?Q?WsSL3ZeL8PwRpr8kxz1o86S9BXilXRYCu+XpEHHVlWmG/0v1CNBGbRPCoGUM?=
- =?us-ascii?Q?XibtFO/wCn17X9UsrWODLi0Vck+f5BP2ZvsdVjVwi8gee0L3OZae3tvw0bge?=
- =?us-ascii?Q?YzBT+hZZw6wyOwm7HmA/VmTAduLvd+8xS3sna6z/xBvzzUhIt9U92vH3oESN?=
- =?us-ascii?Q?vFGwpY6eqAleKGk+9EEEzs++01retrblfLxc8ktA4yKBcRbudW2bfGnlOnAf?=
- =?us-ascii?Q?wQOWiducBWCLJdjrIuxRwIYy4ZKq6uYsABWJ97SGiOu9k8S0wd+Eaci86zQq?=
- =?us-ascii?Q?ex9DdCb1l7xcbk6ci3y/U7Fpswad0AgNWXRr0gaolqED1KO/aQJMhQFRiFr4?=
- =?us-ascii?Q?TnTC9XEZ6wq5qHlwvJZGXwc6YdfokTWwBW6ZwjQnFBn00qq9yRhXGyU8UfKL?=
- =?us-ascii?Q?X+thNxxmhKHA/dUpP6KZ9JYWoMybPdmGa0WaPOOfof0oYQiu6on8hzA/PzCk?=
- =?us-ascii?Q?Lw=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SnNmV21xZWhNYWJ3ODZFUFAwaUVIOFU1Zi9oVWs2c3JHTmRzMXZjODBmN0Ix?=
+ =?utf-8?B?ZzdiTklQenV3MlFCdmpLREpzT3M3cE1oN1U0QWQ2Z3JRRzZPS054YUpVSjFl?=
+ =?utf-8?B?YXVVcVA3NldvWlJFTTI3NmZ3Z0dtRWRzVjRqM0U5Q1hwUGxlamluS2xzS1Bx?=
+ =?utf-8?B?S0pjOEZGczhUejdGMldURm5aVjFHWFZITkQ2d0ZhQ3lrSENXbXRXdG53K3Fo?=
+ =?utf-8?B?ZzcxclVheGdlUTUwWHZCTURhU0N1dEQzcis4dzRQaHpNOWVndG96N2ExbWZF?=
+ =?utf-8?B?MndGRVhoRFh6RE8rNkd6ZGVER3Nyemh1Q2QrVndXcGFvZEhSbUxEMk1uNzN5?=
+ =?utf-8?B?REx0OEJhSTROanowYlJCcXo0MnBJVklrOHZiQlNqR2xUWWhqZ1ZmUHlLTWQ5?=
+ =?utf-8?B?SUxsU1VFblREcWZwSmRnVWttUktoemxkZDRnVmhtSFVGN0ludWNTYnVZNCsr?=
+ =?utf-8?B?Um5UVjJ6MmhsQ2R3a3JiZjN3VVQxQm1INVlCK3YzWDBSY01leUg1V0J0WDJZ?=
+ =?utf-8?B?N0hHZUVzL0RtajZMNVJvM3A3azJ4S2ZpYnp0Wm9ud0g0cFFSSXhUb2R5VThP?=
+ =?utf-8?B?RUhGK2l5YXRYVElURnZybzdYaVFjc2N0a1dVTmpXaFRSd21EOGpwc0ZadTcw?=
+ =?utf-8?B?Z1NXMyt3SWl3MG95Z3BKcDJRY0F0ME9DUXBCNStxbGdZY1dscGZFUWZLRS9x?=
+ =?utf-8?B?eFNELzRCSkUxTHIyUHdVUVJJRGdTdXFHTnlRajQwSnZCbzVrRGpvZ0JlRi9E?=
+ =?utf-8?B?a3hQWS9wZ0NCY3d6bjNqdFFhSVJxYXBEWjRjTVFzZ2dMRlBRWk9GWHBaL1p2?=
+ =?utf-8?B?MitYV2dSRmNuMEs4dmlVYjJUTFl1RGNhRTd5Wk1lMXYzUW9hbVhhUTVwaXlR?=
+ =?utf-8?B?Ukhvc3U0bVp4U1ZOY01OaG9KVTNEemx5SDd5bVZtZlJHaC94a2pPOXYzTWdQ?=
+ =?utf-8?B?VDRtaWZzVm9hUVNIT2tzUGw2cWVaYW9MQVVMRSszUXRrZFpQNENjOUNkZGtq?=
+ =?utf-8?B?R0dxRGpEYnNVWE51VkNpeVNwZEVrVm5ZbFM3VElyTWVRaFFjRURiY0tFRkdp?=
+ =?utf-8?B?a25jVVlsamdZTWpMaS9uSUxjVy9DaFRiZkp1RXVYUmJoQ3FhbzFkNzZEaFFp?=
+ =?utf-8?B?bmZkREpUeW9nazRkd1pjZEdRWGkrKzhiaXBxNElyRTFjUWZHcTVMN1ZLd1py?=
+ =?utf-8?B?SVNaeDJJb1pZblVwSGlEbVdtQ0s1ZU44VjBPRHMrV3lLemVjVjhFWDd5SjBS?=
+ =?utf-8?B?WE9QZWxqYkh5TlBBVWJjQlU2MndHM29abExpVVU4QWc3YmdtQk5kaXpYY2F1?=
+ =?utf-8?B?cUVBRlNjMmVmNVl1SUNpLzBkalY0QUZCZE41V0xLMW5oUlY2OFFadTQ3ZWZU?=
+ =?utf-8?B?dHczTHhrY2FiMWh1cE95MklmdDZHTnRmeS9ScVdwWjk3VFFVT3I2K25XaVBG?=
+ =?utf-8?B?T294SFJ3a1hiWU56YnB2NDlPNjl5WTAyS0ZpdHBsMVNob0lHYWREQk1zV3FQ?=
+ =?utf-8?B?VXJvNGY1V0lDbUh6RXlKYm9OV05NaG1GemRFT0RJN3d4V3p0aTRZUzBXMFZE?=
+ =?utf-8?B?dnRWZk83YXlNbGVmQzZTcEVyeCt6VWRYOTM4WTJsQythUUIyOXVOekRVTkNU?=
+ =?utf-8?B?ZkRqbGxJZUh3SXRuNndrbXhQZ2hGbHpOMTJnUDRnQ0ZWNi9jOHBmQzl0Wlow?=
+ =?utf-8?B?S3ROM0xBTU5zY0hQeElQSGNuYmc5OWRYWXhnOEhyaS9UZFNHVzkxNnBrRnRR?=
+ =?utf-8?B?TTMrUm1Ud3JzUlo4OUJsaVprZHNiV0VBQ0RPRHhTelVoRmo5ZEdlTDNFOEIv?=
+ =?utf-8?B?c0JPMzNRTkZDTGpEN0N5T2pQdHo2a2NQZExHRnBEVEFzdDlEMThMdm5keml5?=
+ =?utf-8?B?M0owM2VTc2p1ckovNnJNSk96V2lvZWd5dm0xazhRL3RQY1Q1ZkNHeDNjV2hn?=
+ =?utf-8?B?RFg3YmVRYXRzVmxPaENhYXBYbnFtQWk1T1NwUUhSZ1U0aGI3SGxvVWdSUGd1?=
+ =?utf-8?B?cFhMQVNJcW0waklTMkJoTVhBTXJ4ZExkN2JBN3FxN292U2JleHB3aXNCeWFD?=
+ =?utf-8?B?TlpxUVdFYVFnV1NBeVJuN2U3M0ZqRXlRVFR3cFJlcHZiTXd4WUVkWHl2YWZW?=
+ =?utf-8?B?dk1wZTF6L0RoRFJwWFNtOVhzdkdPaW1oUHEyakpGZ3pTb0JCUTV1czlVL1M4?=
+ =?utf-8?B?WWc9PQ==?=
 X-OriginatorOrg: altera.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1031199-91da-480c-8bb4-08ddbe88389c
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5299.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b38c281-e433-4b9a-98c6-08ddbe88b200
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3461.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2025 01:30:43.5127
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2025 01:34:06.8587
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ih2q/Wix/IZrhkclUuI1i0p+Zj575VfFyRS6Su4HkAD1hczfVrh508x2h7WZbFdGb7OlVAU4mV4qLdiLtPakvk0PLJkV4B2xYw2RyocPjN4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR03MB5576
+X-MS-Exchange-CrossTenant-UserPrincipalName: wmhscd4qEFqOVj5f7vUExyY4y5tg8zP7SG/Ue80gHBVxLStZLw6hbo9Cvr2rNsM5rbrX22o5aRWEJSAKveqGdtKhx+OkI7oUCdIiS1Bo0R0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR03MB6030
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250708_183049_076918_C7FE4986 
-X-CRM114-Status: GOOD (  13.84  )
+X-CRM114-CacheID: sfid-20250708_183411_299445_4617E654 
+X-CRM114-Status: GOOD (  20.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -161,109 +177,111 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: kromli <khairul.anuar.romli@altera.com>
 
-Ensure that the pointer passed to module_put() in spi_nor_put_device() is
-not NULL before use. This change adds a guard clause to return early,
-preventing the kernel crash below when the cadence-qspi driver is removed
-during a dd operation:
 
-[  200.448732] Unable to handle kernel NULL pointer deref
-erence at virtual address 0000000000000010
-[  200.457576] Mem abort info:
-[  200.460370]   ESR = 0x0000000096000004
-[  200.464136]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  200.469527]   SET = 0, FnV = 0
-[  200.472609]   EA = 0, S1PTW = 0
-[  200.475904]   FSC = 0x04: level 0 translation fault
-[  200.480786] Data abort info:
-[  200.483659]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-[  200.489141]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[  200.494189]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[  200.499500] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000185df8000
-[  200.505932] [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
-[  200.512720] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-[  200.518968] Modules linked in: 8021q garp mrp stp llc bluetooth ecdh_generic
-ecc rfkill crct10dif_ce rtc_ds1307 at24 stratix10_soc soc64_hwmon gpio_altera of
-_fpga_region fpga_region fpga_bridge uio_pdrv_genirq uio fuse drm backlight ipv6
-[  200.540016] CPU: 0 UID: 0 PID: 372 Comm: dd Not tainted 6.12.19-altera-gb6b26
-c4179a6 #1
-[  200.547996] Hardware name: SoCFPGA Stratix 10 SoCDK (DT)
-[  200.553292] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  200.560234] pc : spi_nor_put_device+0x30/0x60
-[  200.564594] lr : __put_mtd_device+0x8c/0x120
-[  200.568856] sp : ffff80008411bc20
-[  200.572161] x29: ffff80008411bc20 x28: ffff000185e2c500 x27: 0000000000000000
-[  200.579282] x26: 0000000000000000 x25: ffff000185e2cb00 x24: ffff000185e2cc88
-[  200.586404] x23: ffff00018034c620 x22: 0000000000000001 x21: ffff00018873e080
-[  200.593524] x20: 0000000000000000 x19: ffff00018873e080 x18: ffffffffffffffff
-[  200.600645] x17: 0030393d524f4a41 x16: 4d0064746d3d4d45 x15: ffff000185757700
-[  200.607767] x14: 0000000000000000 x13: ffff000180045010 x12: ffff0001857576c0
-[  200.614888] x11: 000000000000003a x10: ffff000180045018 x9 : ffff000180045010
-[  200.622009] x8 : ffff80008411bb70 x7 : 0000000000000000 x6 : ffff000181325048
-[  200.629129] x5 : 00000000820001cf x4 : fffffdffc60095e0 x3 : 0000000000000000
-[  200.636250] x2 : 0000000000000000 x1 : ffff00018873e080 x0 : 0000000000000000
-[  200.643371] Call trace:
-[  200.645811]  spi_nor_put_device+0x30/0x60
-[  200.649816]  __put_mtd_device+0x8c/0x120
-[  200.653731]  put_mtd_device+0x30/0x48
-[  200.657387]  mtdchar_close+0x30/0x78
-[  200.660958]  __fput+0xc8/0x2d0
-[  200.664011]  ____fput+0x14/0x20
-[  200.667146]  task_work_run+0x70/0xdc
-[  200.670718]  do_exit+0x2b4/0x8e4
-[  200.673944]  do_group_exit+0x34/0x90
-[  200.677512]  pid_child_should_wake+0x0/0x60
-[  200.681686]  invoke_syscall+0x48/0x104
-[  200.685432]  el0_svc_common.constprop.0+0xc0/0xe0
-[  200.690128]  do_el0_svc+0x1c/0x28
-[  200.693439]  el0_svc+0x30/0xcc
-[  200.696454] dw_mmc ff808000.mmc: Unexpected interrupt latency
-[  200.696485]  el0t_64_sync_handler+0x120/0x12c
-[  200.706552]  el0t_64_sync+0x190/0x194
-[  200.710213] Code: f9400000 f9417c00 f9402000 f9403400 (f9400800)
-[  200.716290] ---[ end trace 0000000000000000 ]---
-[  200.720948] Fixing recursive fault but reboot is needed!
-
-Fixes: be94215be1ab ("mtd: spi-nor: core: Fix an issue of releasing resources during read/write")
-CC: stable@vger.kernel.org # 6.12+
-Signed-off-by: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
-Reviewed-by: Matthew Gerlach <matthew.gerlach@altera.com>
----
- drivers/mtd/spi-nor/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ac4b960101cc..501e48a342ad 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3213,6 +3213,9 @@ static int spi_nor_get_device(struct mtd_info *mtd)
- 	if (!try_module_get(dev->driver->owner))
- 		return -ENODEV;
- 
-+	if (!dev && !dev->driver && !dev->driver->owner)
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
-@@ -3227,7 +3230,8 @@ static void spi_nor_put_device(struct mtd_info *mtd)
- 	else
- 		dev = nor->dev;
- 
--	module_put(dev->driver->owner);
-+	if (dev && dev->driver && dev->driver->owner)
-+		module_put(dev->driver->owner);
- }
- 
- static void spi_nor_restore(struct spi_nor *nor)
--- 
-2.35.3
+On 7/8/25 6:30 PM, khairul.anuar.romli@altera.com wrote:
+> From: kromli <khairul.anuar.romli@altera.com>
+>
+> Ensure that the pointer passed to module_put() in spi_nor_put_device() is
+> not NULL before use. This change adds a guard clause to return early,
+> preventing the kernel crash below when the cadence-qspi driver is removed
+> during a dd operation:
+Let's get this submitted!
+>
+> [  200.448732] Unable to handle kernel NULL pointer deref
+> erence at virtual address 0000000000000010
+> [  200.457576] Mem abort info:
+> [  200.460370]   ESR = 0x0000000096000004
+> [  200.464136]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [  200.469527]   SET = 0, FnV = 0
+> [  200.472609]   EA = 0, S1PTW = 0
+> [  200.475904]   FSC = 0x04: level 0 translation fault
+> [  200.480786] Data abort info:
+> [  200.483659]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+> [  200.489141]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> [  200.494189]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> [  200.499500] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000185df8000
+> [  200.505932] [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
+> [  200.512720] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+> [  200.518968] Modules linked in: 8021q garp mrp stp llc bluetooth ecdh_generic
+> ecc rfkill crct10dif_ce rtc_ds1307 at24 stratix10_soc soc64_hwmon gpio_altera of
+> _fpga_region fpga_region fpga_bridge uio_pdrv_genirq uio fuse drm backlight ipv6
+> [  200.540016] CPU: 0 UID: 0 PID: 372 Comm: dd Not tainted 6.12.19-altera-gb6b26
+> c4179a6 #1
+> [  200.547996] Hardware name: SoCFPGA Stratix 10 SoCDK (DT)
+> [  200.553292] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [  200.560234] pc : spi_nor_put_device+0x30/0x60
+> [  200.564594] lr : __put_mtd_device+0x8c/0x120
+> [  200.568856] sp : ffff80008411bc20
+> [  200.572161] x29: ffff80008411bc20 x28: ffff000185e2c500 x27: 0000000000000000
+> [  200.579282] x26: 0000000000000000 x25: ffff000185e2cb00 x24: ffff000185e2cc88
+> [  200.586404] x23: ffff00018034c620 x22: 0000000000000001 x21: ffff00018873e080
+> [  200.593524] x20: 0000000000000000 x19: ffff00018873e080 x18: ffffffffffffffff
+> [  200.600645] x17: 0030393d524f4a41 x16: 4d0064746d3d4d45 x15: ffff000185757700
+> [  200.607767] x14: 0000000000000000 x13: ffff000180045010 x12: ffff0001857576c0
+> [  200.614888] x11: 000000000000003a x10: ffff000180045018 x9 : ffff000180045010
+> [  200.622009] x8 : ffff80008411bb70 x7 : 0000000000000000 x6 : ffff000181325048
+> [  200.629129] x5 : 00000000820001cf x4 : fffffdffc60095e0 x3 : 0000000000000000
+> [  200.636250] x2 : 0000000000000000 x1 : ffff00018873e080 x0 : 0000000000000000
+> [  200.643371] Call trace:
+> [  200.645811]  spi_nor_put_device+0x30/0x60
+> [  200.649816]  __put_mtd_device+0x8c/0x120
+> [  200.653731]  put_mtd_device+0x30/0x48
+> [  200.657387]  mtdchar_close+0x30/0x78
+> [  200.660958]  __fput+0xc8/0x2d0
+> [  200.664011]  ____fput+0x14/0x20
+> [  200.667146]  task_work_run+0x70/0xdc
+> [  200.670718]  do_exit+0x2b4/0x8e4
+> [  200.673944]  do_group_exit+0x34/0x90
+> [  200.677512]  pid_child_should_wake+0x0/0x60
+> [  200.681686]  invoke_syscall+0x48/0x104
+> [  200.685432]  el0_svc_common.constprop.0+0xc0/0xe0
+> [  200.690128]  do_el0_svc+0x1c/0x28
+> [  200.693439]  el0_svc+0x30/0xcc
+> [  200.696454] dw_mmc ff808000.mmc: Unexpected interrupt latency
+> [  200.696485]  el0t_64_sync_handler+0x120/0x12c
+> [  200.706552]  el0t_64_sync+0x190/0x194
+> [  200.710213] Code: f9400000 f9417c00 f9402000 f9403400 (f9400800)
+> [  200.716290] ---[ end trace 0000000000000000 ]---
+> [  200.720948] Fixing recursive fault but reboot is needed!
+>
+> Fixes: be94215be1ab ("mtd: spi-nor: core: Fix an issue of releasing resources during read/write")
+> CC: stable@vger.kernel.org # 6.12+
+> Signed-off-by: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
+> Reviewed-by: Matthew Gerlach <matthew.gerlach@altera.com>
+> ---
+>   drivers/mtd/spi-nor/core.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index ac4b960101cc..501e48a342ad 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3213,6 +3213,9 @@ static int spi_nor_get_device(struct mtd_info *mtd)
+>   	if (!try_module_get(dev->driver->owner))
+>   		return -ENODEV;
+>   
+> +	if (!dev && !dev->driver && !dev->driver->owner)
+> +		return -EINVAL;
+> +
+>   	return 0;
+>   }
+>   
+> @@ -3227,7 +3230,8 @@ static void spi_nor_put_device(struct mtd_info *mtd)
+>   	else
+>   		dev = nor->dev;
+>   
+> -	module_put(dev->driver->owner);
+> +	if (dev && dev->driver && dev->driver->owner)
+> +		module_put(dev->driver->owner);
+>   }
+>   
+>   static void spi_nor_restore(struct spi_nor *nor)
 
 
 ______________________________________________________
