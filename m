@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3099C83F1E
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jul 2025 07:15:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C7ABC83F21
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jul 2025 07:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=y6BJtLM6dxVxw5jH/ALJMlTJkInEpwdwSmt9NAg94Ic=; b=iv3xsFL8zfFzfW
-	/uKfUOotveKeYuV5+x8dR5PTrCfQO2MJizaj79ic0kxF3f9GBjTEUb+E8Zq0TfW3JyDfP7GqjFIps
-	mR4ST25oSpw4oo1JcCQQSCiX+a3u89S2FgjK8CBm0URjlenK9Q03H6+paej2flVb6SREW5AK2ZFa9
-	WFutKyS4hZfJBwwarpiDKiVHcpcqIJ5H808vBe5ZT+ZPxr25H5o4DbHydZCeXmDgVNhl2oxX6NYBw
-	yooMJmGPrD03JjA7H92QDczqDuyjBh6G0EPnai5bmZqYjOb+ts7ltctjFKAzY3Yw2yXeHIb1uoDVz
-	HjuPCJ17CRc1H1U3pO+w==;
+	List-Owner; bh=pSCHGbYhvblrl39CieEBIT6ZiKBpKX7nuw1zRU9KGSw=; b=Z8nYKW3sWdAZ57
+	VMlA99frCm1+csgTO1agyeVqcufNhdpjtOnP1p9k5qNM2NCcyxojG/vpC6aPbR3QjoBIfE6CKk04L
+	Az/7ODCHnv6/LkhbgjCaHD/7Ze2KbZrNheUnbexRgEBM5RBrj3/9H5LI54lnWdQvMrDKyvb2ADyjj
+	YyTN/oK3pvAZx7KXUs7adoVV8XlIWJS9HQuAcMDI8zptO9kCZW5M1vdoXSNLqyUUh3JCm7oYIqwxw
+	gyGiNsYd5Sl2MMV/n25vz6IjM8gRH9tJyoWI7Y4htegAOf/E6pXCQteR0KK9r6at0Ba/9+LqJMaA4
+	sCFbmBW54Uqfxj227Tjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZlV2-0000000AyKK-3xXZ;
-	Thu, 10 Jul 2025 07:15:20 +0000
+	id 1uZlV3-0000000AyKV-1xGA;
+	Thu, 10 Jul 2025 07:15:21 +0000
 Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZkTu-0000000Aoke-1jIz
+	id 1uZkTv-0000000AolN-0YZP
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Jul 2025 06:10:07 +0000
+	Thu, 10 Jul 2025 06:10:08 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id B98F2A5403D;
-	Thu, 10 Jul 2025 06:10:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51EA1C4CEF7;
-	Thu, 10 Jul 2025 06:10:05 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 76363A5410D;
+	Thu, 10 Jul 2025 06:10:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 117B6C4CEF5;
+	Thu, 10 Jul 2025 06:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752127805;
-	bh=qDZA3q6MtJW6bQsPm9daCNoU1IFqN8412dZMoCnn0Nc=;
+	s=k20201202; t=1752127806;
+	bh=ISOZqqMIoJ6Bo5XTcKQL1qoCe0p7TsANa33nW9/riCk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TNn2rCNHY0NRRm1MIqGuPjwXrcH5FXxY27IDshq9VsRnJdBWbB/ZAj8iZwoOsexLh
-	 VbKneDzh4Ggfq30V0oCFgLPSUY7YiBkKNxBy7z8LC463pGS5vMXvfgopgj/DqkGmbc
-	 xQSTO9QIi1cevXJVksNpcRmPMOFaj0mvNSIMO60rjeEfKN7HlA8kTS0voOSsRhHWGJ
-	 6VIyQD7waoS5wiRl9frOl4GczOLR+mCezepQvGDFQAOs5EMej4c9jp6SBpQEvQCBAx
-	 2aKzO+7+Qo5OgQrkjgGSSMP/Y46E1B35NCkAu+WSlzH4FANfyPLkB2x2QijZcIF5BK
-	 +prBB4Nl0q/Ng==
+	b=PYovnpkzkt5PCA7vwOfL7C9eve152diJJlXfQx15ECLzlSRHlPsJXGI7QIgDzWuoP
+	 KudQTYDaakvkIV42pmfVyvPlJa9ZF74H5TewLj2ilLCEeTo3pna7RkK0mGcIk6yvvo
+	 5FxRLBVr6R79yOMb1tCqOk6u+95B63IVaZeFE/rwBYd1ch+ESB5jj1VHX08Y4jhOBH
+	 59teAf9H1O4Ztnx0cJeZWnu+2mUyKUeAvwwofKB9C4FLCdRinGdO5fULHMSzLgu93W
+	 p7TdAuxyh4mVuB10S9v+8y+T03k3vfl/ITOeeGJufJA03zOH7HGV8ORpz3aoe4a4ca
+	 hJl5D/+QR0cJw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
@@ -50,16 +50,16 @@ Cc: linux-crypto@vger.kernel.org,
 	ceph-devel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 4/6] fscrypt: Remove gfp_t argument from fscrypt_crypt_data_unit()
-Date: Wed,  9 Jul 2025 23:07:51 -0700
-Message-ID: <20250710060754.637098-5-ebiggers@kernel.org>
+Subject: [PATCH v2 6/6] ceph: Remove gfp_t argument from ceph_fscrypt_encrypt_*()
+Date: Wed,  9 Jul 2025 23:07:53 -0700
+Message-ID: <20250710060754.637098-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250710060754.637098-1-ebiggers@kernel.org>
 References: <20250710060754.637098-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250709_231006_604087_87510CD9 
-X-CRM114-Status: GOOD (  11.68  )
+X-CRM114-CacheID: sfid-20250709_231007_302127_C9A6301E 
+X-CRM114-Status: GOOD (  17.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,120 +80,156 @@ This argument is no longer used, so remove it.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- fs/crypto/bio.c             |  3 +--
- fs/crypto/crypto.c          | 14 +++++---------
- fs/crypto/fscrypt_private.h |  3 +--
- 3 files changed, 7 insertions(+), 13 deletions(-)
+ fs/ceph/crypto.c | 10 ++++------
+ fs/ceph/crypto.h | 10 ++++------
+ fs/ceph/file.c   |  3 +--
+ fs/ceph/inode.c  |  3 +--
+ 4 files changed, 10 insertions(+), 16 deletions(-)
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index 13ad2dd771b64..486fcb2ecf13e 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -165,12 +165,11 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 		i = 0;
- 		offset = 0;
- 		do {
- 			err = fscrypt_crypt_data_unit(ci, FS_ENCRYPT, du_index,
- 						      ZERO_PAGE(0), pages[i],
--						      du_size, offset,
--						      GFP_NOFS);
-+						      du_size, offset);
- 			if (err)
- 				goto out;
- 			du_index++;
- 			sector += 1U << (du_bits - SECTOR_SHIFT);
- 			du_remaining--;
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 646b1831e6831..bab0aacd4da36 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -108,12 +108,11 @@ void fscrypt_generate_iv(union fscrypt_iv *iv, u64 index,
- 
- /* Encrypt or decrypt a single "data unit" of file contents. */
- int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
- 			    fscrypt_direction_t rw, u64 index,
- 			    struct page *src_page, struct page *dest_page,
--			    unsigned int len, unsigned int offs,
--			    gfp_t gfp_flags)
-+			    unsigned int len, unsigned int offs)
- {
- 	struct crypto_sync_skcipher *tfm = ci->ci_enc_key.tfm;
- 	SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
- 	union fscrypt_iv iv;
- 	struct scatterlist dst, src;
-@@ -195,11 +194,11 @@ struct page *fscrypt_encrypt_pagecache_blocks(struct folio *folio,
- 		return ERR_PTR(-ENOMEM);
- 
- 	for (i = offs; i < offs + len; i += du_size, index++) {
- 		err = fscrypt_crypt_data_unit(ci, FS_ENCRYPT, index,
- 					      &folio->page, ciphertext_page,
--					      du_size, i, gfp_flags);
-+					      du_size, i);
- 		if (err) {
- 			fscrypt_free_bounce_page(ciphertext_page);
- 			return ERR_PTR(err);
- 		}
- 	}
-@@ -233,12 +232,11 @@ int fscrypt_encrypt_block_inplace(const struct inode *inode, struct page *page,
- 				  u64 lblk_num, gfp_t gfp_flags)
- {
- 	if (WARN_ON_ONCE(inode->i_sb->s_cop->supports_subblock_data_units))
- 		return -EOPNOTSUPP;
- 	return fscrypt_crypt_data_unit(inode->i_crypt_info, FS_ENCRYPT,
--				       lblk_num, page, page, len, offs,
--				       gfp_flags);
-+				       lblk_num, page, page, len, offs);
+diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
+index 6d04d528ed038..91e62db0c2050 100644
+--- a/fs/ceph/crypto.c
++++ b/fs/ceph/crypto.c
+@@ -514,12 +514,11 @@ int ceph_fscrypt_decrypt_block_inplace(const struct inode *inode,
+ 	return fscrypt_decrypt_block_inplace(inode, page, len, offs, lblk_num);
  }
- EXPORT_SYMBOL(fscrypt_encrypt_block_inplace);
  
- /**
-  * fscrypt_decrypt_pagecache_blocks() - Decrypt data from a pagecache folio
-@@ -274,12 +272,11 @@ int fscrypt_decrypt_pagecache_blocks(struct folio *folio, size_t len,
+ int ceph_fscrypt_encrypt_block_inplace(const struct inode *inode,
+ 				  struct page *page, unsigned int len,
+-				  unsigned int offs, u64 lblk_num,
+-				  gfp_t gfp_flags)
++				  unsigned int offs, u64 lblk_num)
+ {
+ 	struct ceph_client *cl = ceph_inode_to_client(inode);
  
- 	for (i = offs; i < offs + len; i += du_size, index++) {
- 		struct page *page = folio_page(folio, i >> PAGE_SHIFT);
+ 	doutc(cl, "%p %llx.%llx len %u offs %u blk %llu\n", inode,
+ 	      ceph_vinop(inode), len, offs, lblk_num);
+@@ -639,21 +638,20 @@ int ceph_fscrypt_decrypt_extents(struct inode *inode, struct page **page,
+  * ceph_fscrypt_encrypt_pages - encrypt an array of pages
+  * @inode: pointer to inode associated with these pages
+  * @page: pointer to page array
+  * @off: offset into the file that the data starts
+  * @len: max length to encrypt
+- * @gfp: gfp flags to use for allocation
+  *
+- * Decrypt an array of cleartext pages and return the amount of
++ * Encrypt an array of cleartext pages and return the amount of
+  * data encrypted. Any data in the page prior to the start of the
+  * first complete block in the read is ignored. Any incomplete
+  * crypto blocks at the end of the array are ignored.
+  *
+  * Returns the length of the encrypted data or a negative errno.
+  */
+ int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **page, u64 off,
+-				int len, gfp_t gfp)
++				int len)
+ {
+ 	int i, num_blocks;
+ 	u64 baseblk = off >> CEPH_FSCRYPT_BLOCK_SHIFT;
+ 	int ret = 0;
  
- 		err = fscrypt_crypt_data_unit(ci, FS_DECRYPT, index, page,
--					      page, du_size, i & ~PAGE_MASK,
--					      GFP_NOFS);
-+					      page, du_size, i & ~PAGE_MASK);
- 		if (err)
- 			return err;
- 	}
+@@ -670,11 +668,11 @@ int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **page, u64 off,
+ 		unsigned int pgoffs = offset_in_page(blkoff);
+ 		int fret;
+ 
+ 		fret = ceph_fscrypt_encrypt_block_inplace(inode, page[pgidx],
+ 				CEPH_FSCRYPT_BLOCK_SIZE, pgoffs,
+-				baseblk + i, gfp);
++				baseblk + i);
+ 		if (fret < 0) {
+ 			if (ret == 0)
+ 				ret = fret;
+ 			break;
+ 		}
+diff --git a/fs/ceph/crypto.h b/fs/ceph/crypto.h
+index d0768239a1c9c..6db28464ff803 100644
+--- a/fs/ceph/crypto.h
++++ b/fs/ceph/crypto.h
+@@ -153,19 +153,18 @@ static inline void ceph_fscrypt_adjust_off_and_len(struct inode *inode,
+ int ceph_fscrypt_decrypt_block_inplace(const struct inode *inode,
+ 				  struct page *page, unsigned int len,
+ 				  unsigned int offs, u64 lblk_num);
+ int ceph_fscrypt_encrypt_block_inplace(const struct inode *inode,
+ 				  struct page *page, unsigned int len,
+-				  unsigned int offs, u64 lblk_num,
+-				  gfp_t gfp_flags);
++				  unsigned int offs, u64 lblk_num);
+ int ceph_fscrypt_decrypt_pages(struct inode *inode, struct page **page,
+ 			       u64 off, int len);
+ int ceph_fscrypt_decrypt_extents(struct inode *inode, struct page **page,
+ 				 u64 off, struct ceph_sparse_extent *map,
+ 				 u32 ext_cnt);
+ int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **page, u64 off,
+-			       int len, gfp_t gfp);
++			       int len);
+ 
+ static inline struct page *ceph_fscrypt_pagecache_page(struct page *page)
+ {
+ 	return fscrypt_is_bounce_page(page) ? fscrypt_pagecache_page(page) : page;
+ }
+@@ -244,12 +243,11 @@ static inline int ceph_fscrypt_decrypt_block_inplace(const struct inode *inode,
  	return 0;
  }
-@@ -308,12 +305,11 @@ int fscrypt_decrypt_block_inplace(const struct inode *inode, struct page *page,
- 				  u64 lblk_num)
+ 
+ static inline int ceph_fscrypt_encrypt_block_inplace(const struct inode *inode,
+ 					  struct page *page, unsigned int len,
+-					  unsigned int offs, u64 lblk_num,
+-					  gfp_t gfp_flags)
++					  unsigned int offs, u64 lblk_num)
  {
- 	if (WARN_ON_ONCE(inode->i_sb->s_cop->supports_subblock_data_units))
- 		return -EOPNOTSUPP;
- 	return fscrypt_crypt_data_unit(inode->i_crypt_info, FS_DECRYPT,
--				       lblk_num, page, page, len, offs,
--				       GFP_NOFS);
-+				       lblk_num, page, page, len, offs);
+ 	return 0;
  }
- EXPORT_SYMBOL(fscrypt_decrypt_block_inplace);
  
- /**
-  * fscrypt_initialize() - allocate major buffers for fs encryption.
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index bffeb14501fd0..d8b485b9881c5 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -335,12 +335,11 @@ typedef enum {
- extern struct kmem_cache *fscrypt_inode_info_cachep;
- int fscrypt_initialize(struct super_block *sb);
- int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
- 			    fscrypt_direction_t rw, u64 index,
- 			    struct page *src_page, struct page *dest_page,
--			    unsigned int len, unsigned int offs,
--			    gfp_t gfp_flags);
-+			    unsigned int len, unsigned int offs);
- struct page *fscrypt_alloc_bounce_page(gfp_t gfp_flags);
+ static inline int ceph_fscrypt_decrypt_pages(struct inode *inode,
+@@ -267,11 +265,11 @@ static inline int ceph_fscrypt_decrypt_extents(struct inode *inode,
+ 	return 0;
+ }
  
- void __printf(3, 4) __cold
- fscrypt_msg(const struct inode *inode, const char *level, const char *fmt, ...);
+ static inline int ceph_fscrypt_encrypt_pages(struct inode *inode,
+ 					     struct page **page, u64 off,
+-					     int len, gfp_t gfp)
++					     int len)
+ {
+ 	return 0;
+ }
  
+ static inline struct page *ceph_fscrypt_pagecache_page(struct page *page)
+diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+index a7254cab44cc2..9b79da6d1aee7 100644
+--- a/fs/ceph/file.c
++++ b/fs/ceph/file.c
+@@ -1990,12 +1990,11 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
+ 			break;
+ 		}
+ 
+ 		if (IS_ENCRYPTED(inode)) {
+ 			ret = ceph_fscrypt_encrypt_pages(inode, pages,
+-							 write_pos, write_len,
+-							 GFP_KERNEL);
++							 write_pos, write_len);
+ 			if (ret < 0) {
+ 				doutc(cl, "encryption failed with %d\n", ret);
+ 				ceph_release_page_vector(pages, num_pages);
+ 				break;
+ 			}
+diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+index 06cd2963e41ee..fc543075b827a 100644
+--- a/fs/ceph/inode.c
++++ b/fs/ceph/inode.c
+@@ -2434,12 +2434,11 @@ static int fill_fscrypt_truncate(struct inode *inode,
+ 		memset(iov.iov_base + boff, 0, PAGE_SIZE - boff);
+ 
+ 		/* encrypt the last block */
+ 		ret = ceph_fscrypt_encrypt_block_inplace(inode, page,
+ 						    CEPH_FSCRYPT_BLOCK_SIZE,
+-						    0, block,
+-						    GFP_KERNEL);
++						    0, block);
+ 		if (ret)
+ 			goto out;
+ 	}
+ 
+ 	/* Insert the header */
 -- 
 2.50.1
 
