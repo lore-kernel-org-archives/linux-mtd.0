@@ -4,62 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C7ABC83F21
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jul 2025 07:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA26FC83F1D
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jul 2025 09:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pSCHGbYhvblrl39CieEBIT6ZiKBpKX7nuw1zRU9KGSw=; b=Z8nYKW3sWdAZ57
-	VMlA99frCm1+csgTO1agyeVqcufNhdpjtOnP1p9k5qNM2NCcyxojG/vpC6aPbR3QjoBIfE6CKk04L
-	Az/7ODCHnv6/LkhbgjCaHD/7Ze2KbZrNheUnbexRgEBM5RBrj3/9H5LI54lnWdQvMrDKyvb2ADyjj
-	YyTN/oK3pvAZx7KXUs7adoVV8XlIWJS9HQuAcMDI8zptO9kCZW5M1vdoXSNLqyUUh3JCm7oYIqwxw
-	gyGiNsYd5Sl2MMV/n25vz6IjM8gRH9tJyoWI7Y4htegAOf/E6pXCQteR0KK9r6at0Ba/9+LqJMaA4
-	sCFbmBW54Uqfxj227Tjw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=6PvaUQy74vSzvsRZUrJNBQ94rzgeDa1aZPx1L6gaEUE=; b=2/76Wl7+Mt6J7c
+	9za2Xk2fiyGbXHtRwpMG9TCvFVWvtjfuuKN/GO/dVccyfFwkPWOkqZp4yXzBhnKRe65QWHDuCADSp
+	XkoETfIh9CBO50a97tFjZdc5WzZkT/j0ankpzhCA2kOBTYAmmhYiz2zFppFU675RbXNqIMaZ769Rd
+	h12YQuK4k5AeaSz6ja/WozUq4wkmtxBhWOlTeQAopG4Q9R2YjNQan17kJizUCbLEDoSrgH8hGyfId
+	Eqi/CCekB+inDY9ynGvxFqo4OtNOe5iOn1VLeLnffOoHB05BYmQfi3y+ChOR9YjgGqOptz7ow2Dnl
+	WXWypIn/emmEK7L2/DNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZlV3-0000000AyKV-1xGA;
-	Thu, 10 Jul 2025 07:15:21 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1uZnDq-0000000BHqp-2vBO;
+	Thu, 10 Jul 2025 09:05:42 +0000
+Received: from mail.biznator.pl ([162.19.205.13])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZkTv-0000000AolN-0YZP
+	id 1uZmC2-0000000B5y8-2Rki
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Jul 2025 06:10:08 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 76363A5410D;
-	Thu, 10 Jul 2025 06:10:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 117B6C4CEF5;
-	Thu, 10 Jul 2025 06:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752127806;
-	bh=ISOZqqMIoJ6Bo5XTcKQL1qoCe0p7TsANa33nW9/riCk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PYovnpkzkt5PCA7vwOfL7C9eve152diJJlXfQx15ECLzlSRHlPsJXGI7QIgDzWuoP
-	 KudQTYDaakvkIV42pmfVyvPlJa9ZF74H5TewLj2ilLCEeTo3pna7RkK0mGcIk6yvvo
-	 5FxRLBVr6R79yOMb1tCqOk6u+95B63IVaZeFE/rwBYd1ch+ESB5jj1VHX08Y4jhOBH
-	 59teAf9H1O4Ztnx0cJeZWnu+2mUyKUeAvwwofKB9C4FLCdRinGdO5fULHMSzLgu93W
-	 p7TdAuxyh4mVuB10S9v+8y+T03k3vfl/ITOeeGJufJA03zOH7HGV8ORpz3aoe4a4ca
-	 hJl5D/+QR0cJw==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org,
-	Yuwen Chen <ywen.chen@foxmail.com>,
-	linux-mtd@lists.infradead.org,
-	ceph-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 6/6] ceph: Remove gfp_t argument from ceph_fscrypt_encrypt_*()
-Date: Wed,  9 Jul 2025 23:07:53 -0700
-Message-ID: <20250710060754.637098-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250710060754.637098-1-ebiggers@kernel.org>
-References: <20250710060754.637098-1-ebiggers@kernel.org>
+	Thu, 10 Jul 2025 07:59:47 +0000
+Received: by mail.biznator.pl (Postfix, from userid 1002)
+	id A436129921; Thu, 10 Jul 2025 09:56:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=biznator.pl; s=mail;
+	t=1752134227; bh=DjNALEe96gRlzA4ffLINmOD2oI1cqzpVK/E4I+uckvQ=;
+	h=Date:From:To:Subject:From;
+	b=bBDUmKQ2DyBj0tsI0drxbprTmONHxsr+uRKgWPcvYsZDKGtmqd/0BIoI/JlVttXvB
+	 3+PSbUl++Z7liTIw1JLhXNKJu38FSWFo2X7UDY7ecWKo8nqsWLW/ClcE+ZfPFDrRSA
+	 p+ElNhrh55LFwZkizBvUfnrJrf6xj1yhDR+ZdwsohpmKdmqAzj3JYHF2gJ6TM5wCnU
+	 o9kZoqUQfJLrMapi+Q78y6vHyeTL2GdLBfhulhyyDIJt9PxG4BdhY7ZfSsVfdj5cUw
+	 dVUEPpkwWZMA1bRnFw1cCqfNqvTX2RB39kcwx0iw9CeeYdePdVk1jpTCZ6RtETaqqN
+	 YUmOOcZQiysDw==
+Received: by mail.biznator.pl for <linux-mtd@lists.infradead.org>; Thu, 10 Jul 2025 07:56:22 GMT
+Message-ID: <20250710084500-0.1.id.13zfd.0.crl7qg51tm@biznator.pl>
+Date: Thu, 10 Jul 2025 07:56:22 GMT
+From: "Wojciech Mroczka" <wojciech.mroczka@biznator.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: Instalacja pv
+X-Mailer: mail.biznator.pl
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250709_231007_302127_C9A6301E 
-X-CRM114-Status: GOOD (  17.44  )
+X-CRM114-CacheID: sfid-20250710_005946_773822_9BD318BA 
+X-CRM114-Status: UNSURE (   1.00  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,169 +61,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This argument is no longer used, so remove it.
-
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- fs/ceph/crypto.c | 10 ++++------
- fs/ceph/crypto.h | 10 ++++------
- fs/ceph/file.c   |  3 +--
- fs/ceph/inode.c  |  3 +--
- 4 files changed, 10 insertions(+), 16 deletions(-)
-
-diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
-index 6d04d528ed038..91e62db0c2050 100644
---- a/fs/ceph/crypto.c
-+++ b/fs/ceph/crypto.c
-@@ -514,12 +514,11 @@ int ceph_fscrypt_decrypt_block_inplace(const struct inode *inode,
- 	return fscrypt_decrypt_block_inplace(inode, page, len, offs, lblk_num);
- }
- 
- int ceph_fscrypt_encrypt_block_inplace(const struct inode *inode,
- 				  struct page *page, unsigned int len,
--				  unsigned int offs, u64 lblk_num,
--				  gfp_t gfp_flags)
-+				  unsigned int offs, u64 lblk_num)
- {
- 	struct ceph_client *cl = ceph_inode_to_client(inode);
- 
- 	doutc(cl, "%p %llx.%llx len %u offs %u blk %llu\n", inode,
- 	      ceph_vinop(inode), len, offs, lblk_num);
-@@ -639,21 +638,20 @@ int ceph_fscrypt_decrypt_extents(struct inode *inode, struct page **page,
-  * ceph_fscrypt_encrypt_pages - encrypt an array of pages
-  * @inode: pointer to inode associated with these pages
-  * @page: pointer to page array
-  * @off: offset into the file that the data starts
-  * @len: max length to encrypt
-- * @gfp: gfp flags to use for allocation
-  *
-- * Decrypt an array of cleartext pages and return the amount of
-+ * Encrypt an array of cleartext pages and return the amount of
-  * data encrypted. Any data in the page prior to the start of the
-  * first complete block in the read is ignored. Any incomplete
-  * crypto blocks at the end of the array are ignored.
-  *
-  * Returns the length of the encrypted data or a negative errno.
-  */
- int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **page, u64 off,
--				int len, gfp_t gfp)
-+				int len)
- {
- 	int i, num_blocks;
- 	u64 baseblk = off >> CEPH_FSCRYPT_BLOCK_SHIFT;
- 	int ret = 0;
- 
-@@ -670,11 +668,11 @@ int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **page, u64 off,
- 		unsigned int pgoffs = offset_in_page(blkoff);
- 		int fret;
- 
- 		fret = ceph_fscrypt_encrypt_block_inplace(inode, page[pgidx],
- 				CEPH_FSCRYPT_BLOCK_SIZE, pgoffs,
--				baseblk + i, gfp);
-+				baseblk + i);
- 		if (fret < 0) {
- 			if (ret == 0)
- 				ret = fret;
- 			break;
- 		}
-diff --git a/fs/ceph/crypto.h b/fs/ceph/crypto.h
-index d0768239a1c9c..6db28464ff803 100644
---- a/fs/ceph/crypto.h
-+++ b/fs/ceph/crypto.h
-@@ -153,19 +153,18 @@ static inline void ceph_fscrypt_adjust_off_and_len(struct inode *inode,
- int ceph_fscrypt_decrypt_block_inplace(const struct inode *inode,
- 				  struct page *page, unsigned int len,
- 				  unsigned int offs, u64 lblk_num);
- int ceph_fscrypt_encrypt_block_inplace(const struct inode *inode,
- 				  struct page *page, unsigned int len,
--				  unsigned int offs, u64 lblk_num,
--				  gfp_t gfp_flags);
-+				  unsigned int offs, u64 lblk_num);
- int ceph_fscrypt_decrypt_pages(struct inode *inode, struct page **page,
- 			       u64 off, int len);
- int ceph_fscrypt_decrypt_extents(struct inode *inode, struct page **page,
- 				 u64 off, struct ceph_sparse_extent *map,
- 				 u32 ext_cnt);
- int ceph_fscrypt_encrypt_pages(struct inode *inode, struct page **page, u64 off,
--			       int len, gfp_t gfp);
-+			       int len);
- 
- static inline struct page *ceph_fscrypt_pagecache_page(struct page *page)
- {
- 	return fscrypt_is_bounce_page(page) ? fscrypt_pagecache_page(page) : page;
- }
-@@ -244,12 +243,11 @@ static inline int ceph_fscrypt_decrypt_block_inplace(const struct inode *inode,
- 	return 0;
- }
- 
- static inline int ceph_fscrypt_encrypt_block_inplace(const struct inode *inode,
- 					  struct page *page, unsigned int len,
--					  unsigned int offs, u64 lblk_num,
--					  gfp_t gfp_flags)
-+					  unsigned int offs, u64 lblk_num)
- {
- 	return 0;
- }
- 
- static inline int ceph_fscrypt_decrypt_pages(struct inode *inode,
-@@ -267,11 +265,11 @@ static inline int ceph_fscrypt_decrypt_extents(struct inode *inode,
- 	return 0;
- }
- 
- static inline int ceph_fscrypt_encrypt_pages(struct inode *inode,
- 					     struct page **page, u64 off,
--					     int len, gfp_t gfp)
-+					     int len)
- {
- 	return 0;
- }
- 
- static inline struct page *ceph_fscrypt_pagecache_page(struct page *page)
-diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-index a7254cab44cc2..9b79da6d1aee7 100644
---- a/fs/ceph/file.c
-+++ b/fs/ceph/file.c
-@@ -1990,12 +1990,11 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 			break;
- 		}
- 
- 		if (IS_ENCRYPTED(inode)) {
- 			ret = ceph_fscrypt_encrypt_pages(inode, pages,
--							 write_pos, write_len,
--							 GFP_KERNEL);
-+							 write_pos, write_len);
- 			if (ret < 0) {
- 				doutc(cl, "encryption failed with %d\n", ret);
- 				ceph_release_page_vector(pages, num_pages);
- 				break;
- 			}
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 06cd2963e41ee..fc543075b827a 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -2434,12 +2434,11 @@ static int fill_fscrypt_truncate(struct inode *inode,
- 		memset(iov.iov_base + boff, 0, PAGE_SIZE - boff);
- 
- 		/* encrypt the last block */
- 		ret = ceph_fscrypt_encrypt_block_inplace(inode, page,
- 						    CEPH_FSCRYPT_BLOCK_SIZE,
--						    0, block,
--						    GFP_KERNEL);
-+						    0, block);
- 		if (ret)
- 			goto out;
- 	}
- 
- 	/* Insert the header */
--- 
-2.50.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKY3p5IHPEhSBQYcWEc3R3byBvdHdhcmNpIG5hIG5pZXpvYm93acSFenVq
+xIVjxIUgcm96bW93xJkgbmEgdGVtYXQgZm90b3dvbHRhaWtpPwoKSmFrbyBmaXJtYSBzcGVjamFs
+aXp1asSFY2Egc2nEmSB3IGluc3RhbGFjamkgaSBzZXJ3aXNpZSBuYWpsZXBzenljaCBqYWtvxZtj
+aW93byBwYW5lbGkgc8WCb25lY3pueWNoIG5hIHJ5bmt1IGNoY2lhxYJieW0gcHJ6ZWRzdGF3acSH
+IHByb3BvenljasSZLCBqYWvEhSB3c3DDs2xuaWUgeiB6ZXNwb8WCZW0gcHJ6eWdvdG93YWxpxZtt
+eSBkbGEgUGHFhHN0d2Egb2JpZWt0dS4KCkLEmWTEmSB3ZHppxJljem55IHphIHdpYWRvbW/Fm8SH
+IG9kIFBhxYRzdHdhIGN6eSBtb8W8ZW15IHBvcm96bWF3aWHEhwoKClBvemRyYXdpYW0KV29qY2ll
+Y2ggTXJvY3prYQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
