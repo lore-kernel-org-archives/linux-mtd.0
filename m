@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05A87C83F1C
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jul 2025 07:15:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0966C83F1B
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Jul 2025 07:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iQy0rycTca250TYt82NElSjL2Thjm9XvpZA3aSo13js=; b=SszV0wuvRy0m2U
-	L4TJ4gdFGZ+SwK3sQ485tHsf646AevhLzjMvyZ+Sf+OnD7CltfEQnXH+dOeA3wo+JgKXUCGTeDQAX
-	yNCea1zE9QXYYKNJOxgXJYjutwwBx8Ko1Q0u95vpm/n95htf+vJXnxZhGWGKR98njir1z1k8GOIom
-	eTSqHmtbkhLD2HsAtfKGJtU1RZ30nTavYloE1+csv+ymGaNUZrNia67OmLgyTtHJBBzLTB3FDLxP1
-	LcOQYIFqm7b7rZqwdLPFe5Cbo9WgiHifdZ+1CxElxqNE9UGT+2odNZKSF0XA4rup57XMriwGkEgN8
-	nGDaopZab+iI1T50fk7g==;
+	List-Owner; bh=tEusLuxumYQrFQJr+pilRGaUSwPJRlTKAUzvcZBCLGk=; b=Otju+4WbI946ME
+	nEj48m486VFrd6/P8aC11+M+k0ObGy8O9+uwv2wKsiHaURGutKOkE6tqJ/gumMv3iCxsVoJRLN00d
+	4eSa+en6R+7605McOfL6XIEec9KItBU90F/kGPAdiqvU+MrdlqyBQ/6NG80NdB6r2LcWQz0JNgUE2
+	WDgO5HikXHw/M6gqYSXJ2qPP45pYVCPcAMdgWW36JPxc4oGv6ZbR2Z5K2gtSSUQJKhqjpqFup4mo8
+	WzILQwNd5Q5jt7YkivzXcLnbx2c/XkhVrMcfBrwyetUVo8emdHucz+dhgzYRUPlM3BOq1uv7MJjEM
+	AL7zwOdDYk23Za7C88Wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZlV1-0000000AyJY-1WxX;
-	Thu, 10 Jul 2025 07:15:19 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1uZlV0-0000000AyJC-1dtP;
+	Thu, 10 Jul 2025 07:15:18 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZkTt-0000000AokE-2Y25
+	id 1uZkTt-0000000Aojp-1a7y
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Jul 2025 06:10:06 +0000
+	Thu, 10 Jul 2025 06:10:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5A3FE46E36;
-	Thu, 10 Jul 2025 06:10:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB9D9C4CEF6;
+	by tor.source.kernel.org (Postfix) with ESMTP id AF2096145E;
+	Thu, 10 Jul 2025 06:10:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3253FC4CEF4;
 	Thu, 10 Jul 2025 06:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752127805;
-	bh=J7UXOFxzMEHRI0EFzXWqDcw9MtzAeL4sqY2rV62CUrU=;
+	s=k20201202; t=1752127804;
+	bh=zLqHswEdALQQG33DjYXOoqtVVEv8AVXTJwVwIILDSgQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OXCDP/iP5bueZ7g3NdjPK6P78g6x/kZDkLvDK9yW1q/TJ5vR0rP0U0085Sevdv48t
-	 b7jVx7ynyycIWtNxyt6E60ja4QYufaxzQ1SAeTohn8o5SzHDr8RW1wHCaF8n9uUnor
-	 Tz837h3QZkcaGlRtYNLm3otwrkubn2iesFWHayMP5L4g3Y3QI3aIWQI1w54xk3K1Q9
-	 fhfX5oawb44BllsNjyqgqLcEOoulAMSFOqdz4Jlx+MlJfKK5sFIxTAIYrCgyBOQlL/
-	 Nvgp8b2+zPXH/Ov0iOQx0fjiRi32nDy0hzL/hMdbUXj6AhuEZsVCu2tx7NgiA2GEor
-	 MTqApSqUrd5AA==
+	b=kgGrS5zek5qD/iR7/psHqKB/OndvNlcjgJ/MERuR412fdLN75FF3xKUO0bmKRedcM
+	 QIF6gwPeOIJyTFZcD8Zt2cy+LSuO5+rmuBs1c8xeUWffPL5sTyq4rIiRzKhkzFQTpr
+	 jQ2s0TuDSI0CXiOkePRtXW7vdK5sckp+AdvBSfMmC2VcgWfG2DEcJP5fpSURqyeMu1
+	 edqIixSuORVy+IRgP+SNTr6pHQ8cNLPS7JjF/r/CrMe57kk/KcR5RNuLzb66ClCEM3
+	 D0uD4hGD0NeGLI99WwdFzbHCZUCrf9TywadcqopBiPDnE67he/r1bWn4jqHxMxgLif
+	 tA99asZ+BaPQg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
@@ -50,16 +50,13 @@ Cc: linux-crypto@vger.kernel.org,
 	ceph-devel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 3/6] fscrypt: Switch to sync_skcipher and on-stack requests
-Date: Wed,  9 Jul 2025 23:07:50 -0700
-Message-ID: <20250710060754.637098-4-ebiggers@kernel.org>
+Subject: [PATCH v2 1/6] fscrypt: Don't use asynchronous CryptoAPI algorithms
+Date: Wed,  9 Jul 2025 23:07:48 -0700
+Message-ID: <20250710060754.637098-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250710060754.637098-1-ebiggers@kernel.org>
 References: <20250710060754.637098-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250709_231005_685794_BB291E0A 
-X-CRM114-Status: GOOD (  23.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,361 +73,206 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that fscrypt uses only synchronous skciphers, switch to the actual
-sync_skcipher API and the corresponding on-stack requests.  This
-eliminates a heap allocation per en/decryption operation.
+Now that fscrypt's incomplete support for non-inline crypto engines has
+been removed, and none of the CPU-based algorithms have the
+CRYPTO_ALG_ASYNC flag set anymore, there is no need to accommodate
+asynchronous algorithms.  Therefore, explicitly allocate only
+synchronous algorithms.  Then, remove the code that handled waiting for
+asynchronous en/decryption operations to complete.
+
+This commit should *not* be backported to kernels that lack commit
+0ba6ec5b2972 ("crypto: x86/aes - stop using the SIMD helper"), as then
+it would disable the use of the optimized AES code on x86.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- fs/crypto/crypto.c          | 24 ++++++-----------
- fs/crypto/fname.c           | 53 ++++++++++++------------------------
- fs/crypto/fscrypt_private.h |  2 +-
- fs/crypto/keysetup.c        | 23 ++++++++--------
- fs/crypto/keysetup_v1.c     | 54 ++++++++++++++++---------------------
- 5 files changed, 61 insertions(+), 95 deletions(-)
+ fs/crypto/crypto.c          |  7 +++----
+ fs/crypto/fname.c           | 18 ++++++++----------
+ fs/crypto/fscrypt_private.h |  5 +++--
+ fs/crypto/keysetup_v1.c     |  9 ++++-----
+ 4 files changed, 18 insertions(+), 21 deletions(-)
 
 diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 43d1658e07cec..646b1831e6831 100644
+index ddf6991d46da2..43d1658e07cec 100644
 --- a/fs/crypto/crypto.c
 +++ b/fs/crypto/crypto.c
-@@ -111,48 +111,40 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
- 			    fscrypt_direction_t rw, u64 index,
- 			    struct page *src_page, struct page *dest_page,
+@@ -113,11 +113,10 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
  			    unsigned int len, unsigned int offs,
  			    gfp_t gfp_flags)
  {
-+	struct crypto_sync_skcipher *tfm = ci->ci_enc_key.tfm;
-+	SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
  	union fscrypt_iv iv;
--	struct skcipher_request *req = NULL;
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
  	struct scatterlist dst, src;
--	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
--	int res = 0;
-+	int err;
+ 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
+ 	int res = 0;
  
  	if (WARN_ON_ONCE(len <= 0))
- 		return -EINVAL;
- 	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
- 		return -EINVAL;
+@@ -131,21 +130,21 @@ int fscrypt_crypt_data_unit(const struct fscrypt_inode_info *ci,
+ 	if (!req)
+ 		return -ENOMEM;
  
- 	fscrypt_generate_iv(&iv, index, ci);
- 
--	req = skcipher_request_alloc(tfm, gfp_flags);
--	if (!req)
--		return -ENOMEM;
--
  	skcipher_request_set_callback(
  		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
- 		NULL, NULL);
--
+-		crypto_req_done, &wait);
++		NULL, NULL);
+ 
  	sg_init_table(&dst, 1);
  	sg_set_page(&dst, dest_page, len, offs);
  	sg_init_table(&src, 1);
  	sg_set_page(&src, src_page, len, offs);
  	skcipher_request_set_crypt(req, &src, &dst, len, &iv);
  	if (rw == FS_DECRYPT)
--		res = crypto_skcipher_decrypt(req);
-+		err = crypto_skcipher_decrypt(req);
+-		res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
++		res = crypto_skcipher_decrypt(req);
  	else
--		res = crypto_skcipher_encrypt(req);
--	skcipher_request_free(req);
--	if (res) {
-+		err = crypto_skcipher_encrypt(req);
-+	if (err)
+-		res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++		res = crypto_skcipher_encrypt(req);
+ 	skcipher_request_free(req);
+ 	if (res) {
  		fscrypt_err(ci->ci_inode,
  			    "%scryption failed for data unit %llu: %d",
--			    (rw == FS_DECRYPT ? "De" : "En"), index, res);
--		return res;
--	}
--	return 0;
-+			    (rw == FS_DECRYPT ? "De" : "En"), index, err);
-+	return err;
- }
- 
- /**
-  * fscrypt_encrypt_pagecache_blocks() - Encrypt data from a pagecache folio
-  * @folio: the locked pagecache folio containing the data to encrypt
+ 			    (rw == FS_DECRYPT ? "De" : "En"), index, res);
 diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 17edc24ccd42f..f9f6713e144f7 100644
+index fb01dde0f2e55..17edc24ccd42f 100644
 --- a/fs/crypto/fname.c
 +++ b/fs/crypto/fname.c
-@@ -92,48 +92,37 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
-  * Return: 0 on success, -errno on failure
+@@ -93,11 +93,10 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
   */
  int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
  			  u8 *out, unsigned int olen)
  {
--	struct skcipher_request *req = NULL;
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
  	const struct fscrypt_inode_info *ci = inode->i_crypt_info;
--	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
-+	struct crypto_sync_skcipher *tfm = ci->ci_enc_key.tfm;
-+	SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
+ 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
  	union fscrypt_iv iv;
  	struct scatterlist sg;
--	int res;
-+	int err;
+ 	int res;
+@@ -116,18 +115,18 @@ int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *iname,
  
- 	/*
- 	 * Copy the filename to the output buffer for encrypting in-place and
- 	 * pad it with the needed number of NUL bytes.
- 	 */
- 	if (WARN_ON_ONCE(olen < iname->len))
- 		return -ENOBUFS;
- 	memcpy(out, iname->name, iname->len);
- 	memset(out + iname->len, 0, olen - iname->len);
- 
--	/* Initialize the IV */
- 	fscrypt_generate_iv(&iv, 0, ci);
- 
--	/* Set up the encryption request */
--	req = skcipher_request_alloc(tfm, GFP_NOFS);
--	if (!req)
--		return -ENOMEM;
- 	skcipher_request_set_callback(
- 		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
- 		NULL, NULL);
+ 	/* Set up the encryption request */
+ 	req = skcipher_request_alloc(tfm, GFP_NOFS);
+ 	if (!req)
+ 		return -ENOMEM;
+-	skcipher_request_set_callback(req,
+-			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-			crypto_req_done, &wait);
++	skcipher_request_set_callback(
++		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
++		NULL, NULL);
  	sg_init_one(&sg, out, olen);
  	skcipher_request_set_crypt(req, &sg, &sg, olen, &iv);
--
--	/* Do the encryption */
--	res = crypto_skcipher_encrypt(req);
--	skcipher_request_free(req);
--	if (res < 0) {
--		fscrypt_err(inode, "Filename encryption failed: %d", res);
--		return res;
--	}
--
--	return 0;
-+	err = crypto_skcipher_encrypt(req);
-+	if (err)
-+		fscrypt_err(inode, "Filename encryption failed: %d", err);
-+	return err;
- }
- EXPORT_SYMBOL_GPL(fscrypt_fname_encrypt);
  
- /**
-  * fname_decrypt() - decrypt a filename
-@@ -147,37 +136,29 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_encrypt);
-  */
+ 	/* Do the encryption */
+-	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++	res = crypto_skcipher_encrypt(req);
+ 	skcipher_request_free(req);
+ 	if (res < 0) {
+ 		fscrypt_err(inode, "Filename encryption failed: %d", res);
+ 		return res;
+ 	}
+@@ -149,33 +148,32 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_encrypt);
  static int fname_decrypt(const struct inode *inode,
  			 const struct fscrypt_str *iname,
  			 struct fscrypt_str *oname)
  {
--	struct skcipher_request *req = NULL;
--	struct scatterlist src_sg, dst_sg;
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
+ 	struct scatterlist src_sg, dst_sg;
  	const struct fscrypt_inode_info *ci = inode->i_crypt_info;
--	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
-+	struct crypto_sync_skcipher *tfm = ci->ci_enc_key.tfm;
-+	SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
+ 	struct crypto_skcipher *tfm = ci->ci_enc_key.tfm;
  	union fscrypt_iv iv;
--	int res;
-+	struct scatterlist src_sg, dst_sg;
-+	int err;
-+
-+	fscrypt_generate_iv(&iv, 0, ci);
+ 	int res;
  
--	/* Allocate request */
--	req = skcipher_request_alloc(tfm, GFP_NOFS);
--	if (!req)
--		return -ENOMEM;
- 	skcipher_request_set_callback(
- 		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
- 		NULL, NULL);
--
--	/* Initialize IV */
--	fscrypt_generate_iv(&iv, 0, ci);
--
--	/* Create decryption request */
+ 	/* Allocate request */
+ 	req = skcipher_request_alloc(tfm, GFP_NOFS);
+ 	if (!req)
+ 		return -ENOMEM;
+-	skcipher_request_set_callback(req,
+-		CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-		crypto_req_done, &wait);
++	skcipher_request_set_callback(
++		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
++		NULL, NULL);
+ 
+ 	/* Initialize IV */
+ 	fscrypt_generate_iv(&iv, 0, ci);
+ 
+ 	/* Create decryption request */
  	sg_init_one(&src_sg, iname->name, iname->len);
  	sg_init_one(&dst_sg, oname->name, oname->len);
  	skcipher_request_set_crypt(req, &src_sg, &dst_sg, iname->len, &iv);
--	res = crypto_skcipher_decrypt(req);
--	skcipher_request_free(req);
--	if (res < 0) {
--		fscrypt_err(inode, "Filename decryption failed: %d", res);
--		return res;
-+	err = crypto_skcipher_decrypt(req);
-+	if (err) {
-+		fscrypt_err(inode, "Filename decryption failed: %d", err);
-+		return err;
+-	res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
++	res = crypto_skcipher_decrypt(req);
+ 	skcipher_request_free(req);
+ 	if (res < 0) {
+ 		fscrypt_err(inode, "Filename decryption failed: %d", res);
+ 		return res;
  	}
- 
- 	oname->len = strnlen(oname->name, iname->len);
- 	return 0;
- }
 diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 06fa8f2b2d081..bffeb14501fd0 100644
+index 6e7164530a1e2..06fa8f2b2d081 100644
 --- a/fs/crypto/fscrypt_private.h
 +++ b/fs/crypto/fscrypt_private.h
-@@ -237,11 +237,11 @@ struct fscrypt_symlink_data {
-  * @blk_key: key for blk-crypto
+@@ -57,12 +57,13 @@
+  * Adiantum is faster still, and is the recommended option on such platforms...)
   *
-  * Normally only one of the fields will be non-NULL.
+  * Note that fscrypt also supports inline crypto engines.  Those don't use the
+  * Crypto API and work much better than the old-style (non-inline) engines.
   */
- struct fscrypt_prepared_key {
--	struct crypto_skcipher *tfm;
-+	struct crypto_sync_skcipher *tfm;
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
- 	struct blk_crypto_key *blk_key;
- #endif
- };
+-#define FSCRYPT_CRYPTOAPI_MASK \
+-	(CRYPTO_ALG_ALLOCATES_MEMORY | CRYPTO_ALG_KERN_DRIVER_ONLY)
++#define FSCRYPT_CRYPTOAPI_MASK                            \
++	(CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY | \
++	 CRYPTO_ALG_KERN_DRIVER_ONLY)
  
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index 74d4a2e1ad23a..4f3b9ecbfe4e6 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -95,19 +95,19 @@ select_encryption_mode(const union fscrypt_policy *policy,
- 		  inode->i_ino, (inode->i_mode & S_IFMT));
- 	return ERR_PTR(-EINVAL);
- }
+ #define FSCRYPT_CONTEXT_V1	1
+ #define FSCRYPT_CONTEXT_V2	2
  
- /* Create a symmetric cipher object for the given encryption mode and key */
--static struct crypto_skcipher *
-+static struct crypto_sync_skcipher *
- fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- 			  const struct inode *inode)
- {
--	struct crypto_skcipher *tfm;
-+	struct crypto_sync_skcipher *tfm;
- 	int err;
- 
--	tfm = crypto_alloc_skcipher(mode->cipher_str, 0,
--				    FSCRYPT_CRYPTOAPI_MASK);
-+	tfm = crypto_alloc_sync_skcipher(mode->cipher_str, 0,
-+					 FSCRYPT_CRYPTOAPI_MASK);
- 	if (IS_ERR(tfm)) {
- 		if (PTR_ERR(tfm) == -ENOENT) {
- 			fscrypt_warn(inode,
- 				     "Missing crypto API support for %s (API name: \"%s\")",
- 				     mode->friendly_name, mode->cipher_str);
-@@ -123,25 +123,26 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
- 		 * crypto algorithm implementation is used.  Help people debug
- 		 * performance problems by logging the ->cra_driver_name the
- 		 * first time a mode is used.
- 		 */
- 		pr_info("fscrypt: %s using implementation \"%s\"\n",
--			mode->friendly_name, crypto_skcipher_driver_name(tfm));
-+			mode->friendly_name,
-+			crypto_skcipher_driver_name(&tfm->base));
- 	}
--	if (WARN_ON_ONCE(crypto_skcipher_ivsize(tfm) != mode->ivsize)) {
-+	if (WARN_ON_ONCE(crypto_sync_skcipher_ivsize(tfm) != mode->ivsize)) {
- 		err = -EINVAL;
- 		goto err_free_tfm;
- 	}
--	crypto_skcipher_set_flags(tfm, CRYPTO_TFM_REQ_FORBID_WEAK_KEYS);
--	err = crypto_skcipher_setkey(tfm, raw_key, mode->keysize);
-+	crypto_sync_skcipher_set_flags(tfm, CRYPTO_TFM_REQ_FORBID_WEAK_KEYS);
-+	err = crypto_sync_skcipher_setkey(tfm, raw_key, mode->keysize);
- 	if (err)
- 		goto err_free_tfm;
- 
- 	return tfm;
- 
- err_free_tfm:
--	crypto_free_skcipher(tfm);
-+	crypto_free_sync_skcipher(tfm);
- 	return ERR_PTR(err);
- }
- 
- /*
-  * Prepare the crypto transform object or blk-crypto key in @prep_key, given the
-@@ -150,11 +151,11 @@ fscrypt_allocate_skcipher(struct fscrypt_mode *mode, const u8 *raw_key,
-  * and IV generation method (@ci->ci_policy.flags).
-  */
- int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 			const u8 *raw_key, const struct fscrypt_inode_info *ci)
- {
--	struct crypto_skcipher *tfm;
-+	struct crypto_sync_skcipher *tfm;
- 
- 	if (fscrypt_using_inline_encryption(ci))
- 		return fscrypt_prepare_inline_crypt_key(prep_key, raw_key,
- 							ci->ci_mode->keysize,
- 							false, ci);
-@@ -174,11 +175,11 @@ int fscrypt_prepare_key(struct fscrypt_prepared_key *prep_key,
- 
- /* Destroy a crypto transform object and/or blk-crypto key. */
- void fscrypt_destroy_prepared_key(struct super_block *sb,
- 				  struct fscrypt_prepared_key *prep_key)
- {
--	crypto_free_skcipher(prep_key->tfm);
-+	crypto_free_sync_skcipher(prep_key->tfm);
- 	fscrypt_destroy_inline_crypt_key(sb, prep_key);
- 	memzero_explicit(prep_key, sizeof(*prep_key));
- }
- 
- /* Given a per-file encryption key, set up the file's crypto transform object */
+ /* Keep this in sync with include/uapi/linux/fscrypt.h */
 diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
-index 75b0f1211a1e6..c4d05168522b0 100644
+index 158ceae8a5bce..3fdf174384f3d 100644
 --- a/fs/crypto/keysetup_v1.c
 +++ b/fs/crypto/keysetup_v1.c
-@@ -46,42 +46,34 @@ static DEFINE_SPINLOCK(fscrypt_direct_keys_lock);
-  */
- static int derive_key_aes(const u8 *master_key,
+@@ -48,11 +48,10 @@ static int derive_key_aes(const u8 *master_key,
  			  const u8 nonce[FSCRYPT_FILE_NONCE_SIZE],
  			  u8 *derived_key, unsigned int derived_keysize)
  {
--	int res = 0;
--	struct skcipher_request *req = NULL;
--	struct scatterlist src_sg, dst_sg;
--	struct crypto_skcipher *tfm =
--		crypto_alloc_skcipher("ecb(aes)", 0, FSCRYPT_CRYPTOAPI_MASK);
--
--	if (IS_ERR(tfm)) {
--		res = PTR_ERR(tfm);
--		tfm = NULL;
--		goto out;
--	}
--	req = skcipher_request_alloc(tfm, GFP_KERNEL);
--	if (!req) {
--		res = -ENOMEM;
--		goto out;
--	}
--	skcipher_request_set_callback(
--		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
--		NULL, NULL);
--	res = crypto_skcipher_setkey(tfm, nonce, FSCRYPT_FILE_NONCE_SIZE);
--	if (res < 0)
--		goto out;
-+	struct crypto_sync_skcipher *tfm;
-+	int err;
+ 	int res = 0;
+ 	struct skcipher_request *req = NULL;
+-	DECLARE_CRYPTO_WAIT(wait);
+ 	struct scatterlist src_sg, dst_sg;
+ 	struct crypto_skcipher *tfm =
+ 		crypto_alloc_skcipher("ecb(aes)", 0, FSCRYPT_CRYPTOAPI_MASK);
  
--	sg_init_one(&src_sg, master_key, derived_keysize);
--	sg_init_one(&dst_sg, derived_key, derived_keysize);
--	skcipher_request_set_crypt(req, &src_sg, &dst_sg, derived_keysize,
--				   NULL);
--	res = crypto_skcipher_encrypt(req);
--out:
--	skcipher_request_free(req);
--	crypto_free_skcipher(tfm);
--	return res;
-+	tfm = crypto_alloc_sync_skcipher("ecb(aes)", 0, FSCRYPT_CRYPTOAPI_MASK);
-+	if (IS_ERR(tfm))
-+		return PTR_ERR(tfm);
-+
-+	err = crypto_sync_skcipher_setkey(tfm, nonce, FSCRYPT_FILE_NONCE_SIZE);
-+	if (err == 0) {
-+		SYNC_SKCIPHER_REQUEST_ON_STACK(req, tfm);
-+		struct scatterlist src_sg, dst_sg;
-+
-+		skcipher_request_set_callback(req,
-+					      CRYPTO_TFM_REQ_MAY_BACKLOG |
-+						      CRYPTO_TFM_REQ_MAY_SLEEP,
-+					      NULL, NULL);
-+		sg_init_one(&src_sg, master_key, derived_keysize);
-+		sg_init_one(&dst_sg, derived_key, derived_keysize);
-+		skcipher_request_set_crypt(req, &src_sg, &dst_sg,
-+					   derived_keysize, NULL);
-+		err = crypto_skcipher_encrypt(req);
-+	}
-+	crypto_free_sync_skcipher(tfm);
-+	return err;
+ 	if (IS_ERR(tfm)) {
+@@ -64,22 +63,22 @@ static int derive_key_aes(const u8 *master_key,
+ 	req = skcipher_request_alloc(tfm, GFP_KERNEL);
+ 	if (!req) {
+ 		res = -ENOMEM;
+ 		goto out;
+ 	}
+-	skcipher_request_set_callback(req,
+-			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+-			crypto_req_done, &wait);
++	skcipher_request_set_callback(
++		req, CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
++		NULL, NULL);
+ 	res = crypto_skcipher_setkey(tfm, nonce, FSCRYPT_FILE_NONCE_SIZE);
+ 	if (res < 0)
+ 		goto out;
+ 
+ 	sg_init_one(&src_sg, master_key, derived_keysize);
+ 	sg_init_one(&dst_sg, derived_key, derived_keysize);
+ 	skcipher_request_set_crypt(req, &src_sg, &dst_sg, derived_keysize,
+ 				   NULL);
+-	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++	res = crypto_skcipher_encrypt(req);
+ out:
+ 	skcipher_request_free(req);
+ 	crypto_free_skcipher(tfm);
+ 	return res;
  }
- 
- /*
-  * Search the current task's subscribed keyrings for a "logon" key with
-  * description prefix:descriptor, and if found acquire a read lock on it and
 -- 
 2.50.1
 
