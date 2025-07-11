@@ -4,56 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2676C83F23
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jul 2025 10:02:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E33E9C83F1A
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Jul 2025 17:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ypA58ANU0xcv6HkfuTCsEo0vMBLKANX8RivJx9IpLCM=; b=ZTIvb9i55kkWNkASYs7X7CRhVg
-	P0BAGM/ct+S5zHz4slHLciD9MHYPl0wzT+HZhzuxkC0JSPz4Xg6JwV/rF0cLN0NWcCRZJEArfrebo
-	Y6s4K7tvY/PSg3apP26TenWcImCt4LKrpm4V0NvFBGiTZzVWHTaA0Yc47bIWIpnZ45WRghMssJB9y
-	frDy0XecajQLCIJ/3vSxkcGYJoP3QOdUHPJjbTa2xxHJaIfpSuhZQA5in1DJYGXlVZXeDZ+7A6Ri0
-	KxmOBGV81PPDEmJlyn4rIfBN358TyjwX7ysEcR//NXwFpfcU/GSjJ903Kc1L9SKgpnM4eD8JUMMDY
-	hjRwzszw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=jLbbRcNVA6Rx6bw3lywDlPtj8XG+wERQWTVD/VEcz5g=; b=37mgB4MC9iUz4q
+	B4Ab+dtVOWm5dS4V+7WXsBoN9W34EsehL4F+KzmIpKCldXZNBtrvKoWghse7Si79On6wvgwDl879a
+	EBmVlxMTd4hlYkxE5vD2NCGSCM+59oHlXwy9lFxS7UC/tTG3BQh46wRk7n51zKEODft7pJLWdr8Ql
+	ZJ2xfbdc1cbQerrdXT2vLCi7rwdP+3Cu5zn2brJPhJdWHpF0D7RGMO5NXDEZeOjqMAEKXAyGheOT9
+	G4NRL/UzER/bS9/RkIVMBcE6PxPW4ZAQp3Np25QIAKTZK7qWOL6XCDzhDUpo/kWfRJ2abtKSOFz0j
+	h7N177ggHNNReFJ8TkIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uaAaV-0000000EQQ3-2OW8;
-	Fri, 11 Jul 2025 10:02:39 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1uaHHR-0000000FMyY-2Lme;
+	Fri, 11 Jul 2025 17:11:25 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ua9lP-0000000EGX5-2Hhr
+	id 1uaGgV-0000000FIYR-34d2
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Jul 2025 09:09:53 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4bdm844kYZz2FbQC;
-	Fri, 11 Jul 2025 17:07:48 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0F2161400CB;
-	Fri, 11 Jul 2025 17:09:46 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 11 Jul 2025 17:09:45 +0800
-Subject: Re: [PATCH] ubifs: stop using write_cache_pages
-To: Christoph Hellwig <hch@lst.de>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>
-References: <20250711081116.564445-1-hch@lst.de>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <35dcb159-ddf9-2403-f1dc-f11d8d4562ce@huawei.com>
-Date: Fri, 11 Jul 2025 17:09:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Fri, 11 Jul 2025 16:33:16 +0000
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3a582e09144so1538723f8f.1
+        for <linux-mtd@lists.infradead.org>; Fri, 11 Jul 2025 09:33:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752251594; x=1752856394; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=A1r7lOXR2bkUYaFtDJ7CylYLTgBc/fYyMcmc/+yJZ30=;
+        b=bVGdN1oTTIDJn6F/zkXU+nN76ofByLqCHdfWcHMVJSXCaLo3rwxpBU7PSWdXpgBrbv
+         fRCLrXjo237ccMGcyWXDYciw1ZhWllJ+OEZWDaBDnQLwe5MH4qNpJmow9TL0CPv/rQoR
+         SZ9oGt75zaeB/LjKhq1PWF232YAN62WUdOR88cg+zvSp9UB6DwetZCIWP47KoSQd+iaG
+         /ffUnJCB6hVF9YE40lm0F41PFw3lDZ8x14kqqDWPE3PVr1boC/F+GMXDxEireKoCegRC
+         pUPGIrwv+FO/nq1UprCyv/defim4ASpBSUe22F+aSROhTKSscyVUYUN1hVsW/jBbpWYQ
+         LrgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752251594; x=1752856394;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A1r7lOXR2bkUYaFtDJ7CylYLTgBc/fYyMcmc/+yJZ30=;
+        b=QrudWMRG0YKdcNI6HClgz5AYxQqR9EAb131eCViKCRIxav2n7E/q9/3Zil1lNuNTwL
+         d74aVkscSa88Hs+xUgm4KC+9DDKBx++hnWOjZLKCPerhQMIoQHhnkkm1sc4AgXeh832h
+         7+kSs8s901fmC6EdW9AQwktraH8S/vvBy4tTzhf4B1jUVsr7aRVPO9ShzC5zf++pyUbx
+         Z02X3CwxSD4STeR9yYDYxFCt4SEUUGJxgwWvBQ80zGqigPRtOxNYFzpW+bn2Wuu9VIhJ
+         dDHuQYUjyjilnWU6xuG8bTPklvqKe4aGOGl3XW9yIFrPNe5zGoKzo9jjKKknb9S6lxs+
+         j1DA==
+X-Forwarded-Encrypted: i=1; AJvYcCVRZ20KyE/cg6kNlLuYn2zFY0mn066Y9xGHnou1FsCSMNO9NU44ZEgiABKo9p6V9ifZd1Rse+CqAm0=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyIgWfbuV7+Z8id45R0EY8mIFxyBwuhMrA4ksU1sgl7l+RJ/MEG
+	ECdqwqIjmp0pujkVcdzp6SyKr6fAINMFxkA0m0+3kqrVss+z5mP/lu6CcAk6tw==
+X-Gm-Gg: ASbGncvlAGJkSFxokb9A9IQxH1j2Es2QKIKKLh5eUNKwN3K9eZlQLDRMfE5K1uHGIiS
+	BpR4Vz+oPKE+LvpFCPoB3/I8CfWvmKlfxsrO3gq2XrSANZ5GNEyy89OjCC/FfJXNU/vn0qmEvDV
+	51XBBaVYS8CdzanPETYbZosQq065cpsvB3kq4KMa+HLkgO1PqFOV/9Gop9bD/iezEeD6Vut27QQ
+	3mOr5GwxHjOAtPtZyFqRjzG037OI3j/KE+YZO4RiNvbnUo58VG2zbE0PAMw7qj5GpEa4pcu706x
+	Pwh1U82vp5lXYlWZY/jzTjnextF5NjqIwIx2/ngczO36fYtGWrTmAK5PNvVjXSdT7Ntx+/GemsD
+	vHgF+tAR/e58N19JuNyKwtegb6PtNBkENys67MY35C/hYU0GzQNE=
+X-Google-Smtp-Source: AGHT+IEZlhPktMwwW0Jbf3RqoTX/NKhZqR5TJTdFaddNSu4Crn0tbA5n062K8UspEDbchBqtVVg+fw==
+X-Received: by 2002:a05:6000:40ca:b0:3a4:f786:4fa1 with SMTP id ffacd0b85a97d-3b5f2db14eamr3033408f8f.2.1752251593613;
+        Fri, 11 Jul 2025 09:33:13 -0700 (PDT)
+Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-3b5e8e0d4b5sm4969860f8f.53.2025.07.11.09.33.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jul 2025 09:33:13 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Fri, 11 Jul 2025 18:32:52 +0200
+Subject: [PATCH] spi: spi-qpic-snand: simplify bad block marker duplication
 MIME-Version: 1.0
-In-Reply-To: <20250711081116.564445-1-hch@lst.de>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+Message-Id: <20250711-qpic-snand-simplify-bbm-copy-v1-1-dd2608325f72@gmail.com>
+X-B4-Tracking: v=1; b=H4sIALM8cWgC/x3MwQqDMAwA0F+RnBeIAXHsV4YHjVEDa60NDEX67
+ ys7vsu7wTWbOryaG7J+zW2PFe2jAdnGuCraXA1M3FHfEh7JBD2OcUa3kD62XDhNAWVPFz5ZhJS
+ IWXqoRcq62Pnv30MpP0IL7B1uAAAA
+X-Change-ID: 20250710-qpic-snand-simplify-bbm-copy-82cc0e0022c7
+To: Mark Brown <broonie@kernel.org>
+Cc: Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Md Sadre Alam <quic_mdalam@quicinc.com>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250711_020951_766918_33C61473 
-X-CRM114-Status: GOOD (  15.78  )
+X-CRM114-CacheID: sfid-20250711_093315_776563_EB3DC65C 
+X-CRM114-Status: GOOD (  13.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,36 +99,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNS83LzExIDE2OjExLCBDaHJpc3RvcGggSGVsbHdpZyDQtLXAOgo+IFN0b3AgdXNpbmcg
-dGhlIG9ic29sZXRlIHdyaXRlX2NhY2hlX3BhZ2VzIGFuZCB1c2Ugd3JpdGViYWNrX2l0ZXIgZGly
-ZWN0bHkuCj4gCj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+
-Cj4gLS0tCj4gICBmcy91Ymlmcy9maWxlLmMgfCAxMCArKysrKysrLS0tCj4gICAxIGZpbGUgY2hh
-bmdlZCwgNyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+IAoKUmV2aWV3ZWQtYnk6IFpo
-aWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+Cj4gZGlmZiAtLWdpdCBhL2ZzL3Vi
-aWZzL2ZpbGUuYyBiL2ZzL3ViaWZzL2ZpbGUuYwo+IGluZGV4IGJmMzExYzM4ZDlhOC4uZDUyMTgx
-ZjUzM2FjIDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL2ZpbGUuYwo+ICsrKyBiL2ZzL3ViaWZzL2Zp
-bGUuYwo+IEBAIC05NzcsOCArOTc3LDcgQEAgc3RhdGljIGludCBkb193cml0ZXBhZ2Uoc3RydWN0
-IGZvbGlvICpmb2xpbywgc2l6ZV90IGxlbikKPiAgICAqIG9uIHRoZSBwYWdlIGxvY2sgYW5kIGl0
-IHdvdWxkIG5vdCB3cml0ZSB0aGUgdHJ1bmNhdGVkIGlub2RlIG5vZGUgdG8gdGhlCj4gICAgKiBq
-b3VybmFsIGJlZm9yZSB3ZSBoYXZlIGZpbmlzaGVkLgo+ICAgICovCj4gLXN0YXRpYyBpbnQgdWJp
-ZnNfd3JpdGVwYWdlKHN0cnVjdCBmb2xpbyAqZm9saW8sIHN0cnVjdCB3cml0ZWJhY2tfY29udHJv
-bCAqd2JjLAo+IC0JCXZvaWQgKmRhdGEpCj4gK3N0YXRpYyBpbnQgdWJpZnNfd3JpdGVwYWdlKHN0
-cnVjdCBmb2xpbyAqZm9saW8sIHN0cnVjdCB3cml0ZWJhY2tfY29udHJvbCAqd2JjKQo+ICAgewo+
-ICAgCXN0cnVjdCBpbm9kZSAqaW5vZGUgPSBmb2xpby0+bWFwcGluZy0+aG9zdDsKPiAgIAlzdHJ1
-Y3QgdWJpZnNfaW5mbyAqYyA9IGlub2RlLT5pX3NiLT5zX2ZzX2luZm87Cj4gQEAgLTEwNTAsNyAr
-MTA0OSwxMiBAQCBzdGF0aWMgaW50IHViaWZzX3dyaXRlcGFnZShzdHJ1Y3QgZm9saW8gKmZvbGlv
-LCBzdHJ1Y3Qgd3JpdGViYWNrX2NvbnRyb2wgKndiYywKPiAgIHN0YXRpYyBpbnQgdWJpZnNfd3Jp
-dGVwYWdlcyhzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywKPiAgIAkJc3RydWN0IHdyaXRl
-YmFja19jb250cm9sICp3YmMpCj4gICB7Cj4gLQlyZXR1cm4gd3JpdGVfY2FjaGVfcGFnZXMobWFw
-cGluZywgd2JjLCB1Ymlmc193cml0ZXBhZ2UsIE5VTEwpOwo+ICsJc3RydWN0IGZvbGlvICpmb2xp
-byA9IE5VTEw7Cj4gKwlpbnQgZXJyb3I7Cj4gKwo+ICsJd2hpbGUgKChmb2xpbyA9IHdyaXRlYmFj
-a19pdGVyKG1hcHBpbmcsIHdiYywgZm9saW8sICZlcnJvcikpKQo+ICsJCWVycm9yID0gdWJpZnNf
-d3JpdGVwYWdlKGZvbGlvLCB3YmMpOwo+ICsJcmV0dXJuIGVycm9yOwo+ICAgfQo+ICAgCj4gICAv
-KioKPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Due to the expectations of the SPINAND code, the driver duplicates
+the bad block markers during raw OOB reads.
+
+It has been implemented by using two if statements, and due to the
+opposite conditions one of conditional codepaths always runs. Since
+the effect of both codepaths is the same, remove the if statements
+and use a single line solution instead.
+
+Also add a note about why the duplication is required.
+
+No functional changes intended.
+
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+ drivers/spi/spi-qpic-snand.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
+index b711c8be42c1f76029497b0c17d00cd8e52f5aa2..94c4d76cee34420d1dc3894aadad0086c6f22d96 100644
+--- a/drivers/spi/spi-qpic-snand.c
++++ b/drivers/spi/spi-qpic-snand.c
+@@ -597,10 +597,16 @@ static int qcom_spi_read_last_cw(struct qcom_nand_controller *snandc,
+ 
+ 	bbpos = mtd->writesize - ecc_cfg->cw_size * (num_cw - 1);
+ 
+-	if (snandc->data_buffer[bbpos] == 0xff)
+-		snandc->data_buffer[bbpos + 1] = 0xff;
+-	if (snandc->data_buffer[bbpos] != 0xff)
+-		snandc->data_buffer[bbpos + 1] = snandc->data_buffer[bbpos];
++	/*
++	 * TODO: The SPINAND code expects two bad block marker bytes
++	 * at the beginning of the OOB area, but the OOB layout used by
++	 * the driver has only one. Duplicate that for now in order to
++	 * avoid certain blocks to be marked as bad.
++	 *
++	 * This can be removed once single-byte bad block marker support
++	 * gets implemented in the SPINAND code.
++	 */
++	snandc->data_buffer[bbpos + 1] = snandc->data_buffer[bbpos];
+ 
+ 	memcpy(op->data.buf.in, snandc->data_buffer + bbpos, op->data.nbytes);
+ 
+
+---
+base-commit: 7d61715c58a39edc5f74fc7366487726fc223530
+change-id: 20250710-qpic-snand-simplify-bbm-copy-82cc0e0022c7
+
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
