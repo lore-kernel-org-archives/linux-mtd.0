@@ -4,93 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FF40C83F17
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Jul 2025 19:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDED9C83F17
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Jul 2025 00:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=CdKGHgAmu2T59ppJ3eTc3tLwhQ0T0830TTt6oVgDzko=; b=XXgc5/XnOzQThG
-	xHpubdS/JkjtOAfrWF52gk16n5q2peO41y3SJMz4shA4k4qk/Sz+p3DL4cXYMFajOJZvVNyUeSKX8
-	XAHgmI4UiI7RZMGr7gXbHzgSCaUV/2S+6rXKsWXV/qBkr35ged+vqaNsTcdi7anP9//EKQcdERjg7
-	rzhmaFt5BjSMefpOujIJpEB6Vr195Ga8EgKpqf9LvjVGybi4WVClTOZGbu15OyCfWLeHX+oUoiyOI
-	9TgPj2tyVcfOonNzgSEPR20KGh6kl5CsIRr+U9urxIwHQ++VmMA++HhBi/G1qftpZe+fyT1Huaztk
-	SoNlpYhkpCKsMs6ivVag==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6HpCIpDBW65x5c5sxOOeH8SKOPQQ73ahjEggAKJugrk=; b=zJrejr2SqN/3yg
+	Q6XGXTBgSQaVVherzJgIrPVzyLEwC+OVKLMTC6Npk0bWRUnM3GTBkE+lEELVOHbfvIBlifIjuZjTv
+	6PH4a80y7BxLk3SvLH1YK/IVax2Yeqmu987IwA2n2UVO0MgefGDJkGR/VE31SIZzgWLZPmwdCK/lC
+	NeFCKU5mQFCB5Rv2S5SLpq+50VWq7uhMyC6WmfUJmeWyZeg5e6XyDiKrsfPeESV33+J3jKOlReSdP
+	nvVjjGLkgPjm3B/AINUqQMRPOiz36sf/ej2j+ZI3fimJmDBPBPJPoERlf3/oFMuQtfQh2ncacIyHO
+	ZY0KeKIvah3JS5YzXdcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ubOsF-000000038qU-1PsN;
-	Mon, 14 Jul 2025 19:30:03 +0000
-Received: from mail-oa1-x2e.google.com ([2001:4860:4864:20::2e])
+	id 1ubTRF-00000003cyR-1A0X;
+	Tue, 15 Jul 2025 00:22:29 +0000
+Received: from mail-dm6nam10on20626.outbound.protection.outlook.com ([2a01:111:f403:2413::626] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ubOsB-000000038ps-3vws
+	id 1ubTKI-00000003cEM-2TSM
 	for linux-mtd@lists.infradead.org;
-	Mon, 14 Jul 2025 19:30:01 +0000
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-2f3dab2a2a9so2633696fac.2
-        for <linux-mtd@lists.infradead.org>; Mon, 14 Jul 2025 12:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1752521399; x=1753126199; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Q+m9wicpIeBCH++LBohVYCNSQtrcgHGVb/S1A0eRqg=;
-        b=uwN/15XhPwL+DrFAq5Px/RZJtvea7Y0GBUgJvVDkygnIJyHHeC19sFtSue92UE2QLj
-         uGwQluaTM2PKVE3hZb9J28uLXJD020u52kIs/N1+psKsNb+HoXwkk7x43QjFC8/xAaZH
-         jP3nRPAiiMI5kePSeJO9l6BGZkZXN4A3cGb9ZZbF5Gr5Sg+0+aYClzUuvovaNGifE2gQ
-         FLiv5hfwiQSB+mMq3UIGyyx+nhyfRYQfdrWT8lR+Mp3PDyO3pLGaPO1tmSQoK1CCC4Dp
-         gpBwA8hbNGXN4rDGSnnmq26a0LJ5b8eBr3f5ZmHHVad9p5eEKiikZn3RrtD2zkQ2HcPQ
-         o5iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752521399; x=1753126199;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/Q+m9wicpIeBCH++LBohVYCNSQtrcgHGVb/S1A0eRqg=;
-        b=MSEKyJUXsNt2FDzF+7twGXJAQNMX1x0kuHKBrw8d7Q6F9VbnRPjD6htrAVHztZeecZ
-         GcgHwHxCvNNaVyfO5zDBc6iA3cqqDaEKDTccq7Mu+ReC8GssAkPy+gCgCEJt7UNy8Tku
-         HRKz6jKX9fvKKDs9h5NZ+XxzzelO9EtoSBmv9NTJeXYEOq/8/x4DtCSIsLJZHCcGhIXQ
-         h5PGgMoFQnO5YZu04309Jng0IwC+JqEAUJ1qUGjILnox+aLeNoxhLTt4Yrc3Cy9EMS5H
-         YuAxhK/FNQgpEW0DNfTal0qiR9sk3ysS0kqk3bkywL1pDlvc4qN0dzFToMadcQXOMlqD
-         jPHA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUUOmr+ur4puDkjh9acqDkDxFkj4saUGnY7HxFsP7OA7nGeuBAmB49+ZrL1PJQGWJkLCx2bTcxcDs=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxuhzzHpqh6u3kU99d/DgBlzZzcS2c0eJp7yN7yKPBEEahsoY0U
-	JkR7SMLTgVjyPCTgqA/TF8L5/ixNMqi/B/0f4UXW5mPz2b1W9WFMU7B3m1jqFxizuzE=
-X-Gm-Gg: ASbGncuenrTd54tzTrvA+gn7IZtm8u/IsNaFr8ySecpcX+BQ/1jm8AhYuFWHT0mAQ0c
-	KDKxUFdH/jRr07VHaKr1RwTmnfxiuV/LaMIs4oyKILhto6gYlftKUdQIQZiPYDd9LlZG4PixPR/
-	AFk8Pi7OEfIDSWZ0qPHWs89Eo65ufbenFiZ53EiEOyoKTs+c0jnS/8JwLQnqy/++L8A1R9N5KZA
-	zMW8SYIcXYZyxweYHMpgB5GrQ7116TAjXBl/9Kz4hDDRz6J89nen/KypbnQ/4m/L1iMtPYU2jQG
-	jdZXL82/e1auVH9A0O41VTeQrbANFLBKVxBdwf6waLLZ/d5Nh1nltR2cl4R9o3QVvNf68HzlQg0
-	b1N5OKvr2JSYj9wTMsywKPWqsWrL8B0mKxrUb8yPp
-X-Google-Smtp-Source: AGHT+IGcqvFf04VyN5VwO5vDsILubomPqyNpRQlsi0uJ6i+fQzutbyHm2vZrUuvCt3pRKpj82Fk+9g==
-X-Received: by 2002:a05:6871:d804:20b0:2ef:eddd:690d with SMTP id 586e51a60fabf-2ff26913aa7mr6688707fac.24.1752521398832;
-        Mon, 14 Jul 2025 12:29:58 -0700 (PDT)
-Received: from localhost ([2603:8080:b800:f700:6bb2:d90f:e5da:befc])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2ff11686ad2sm1991198fac.28.2025.07.14.12.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jul 2025 12:29:58 -0700 (PDT)
-Date: Mon, 14 Jul 2025 22:29:54 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, khairul.anuar.romli@altera.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"open list:SPI NOR SUBSYSTEM" <linux-mtd@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Matthew Gerlach <matthew.gerlach@altera.com>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver
+	Tue, 15 Jul 2025 00:15:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ljZhSiCnl1G8KOD4Cf7Dq4KMEGKl1RRzveq5LPaji//NQNWkF+4e2xgT7yU80Ye2/YGNqY5wdyvLt7Q5nL0MSOALOZWOjTMD47Bi4FTh4jSaDfTRZBids1IYCa1/PCUE4n1ZkSMICloS5X6rHrQLESshlVOCNf9BetyOwxkWXEX/+GYQkUwGTeh9oNtGhdYHXktc1Ze2fQzeES6PBNhOJb2yNeqJ3KveaI4HRM8+/fw/ShiNdf5aixkDddoA1673ucKO9DJf5Y/YcmMjffhFEUPTIzR2/9s9xmnt6ic3grOkqgItIdaTpDHGn1ilADLyEFDLwemolCgMBaX2fY0OGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5ENXR/9YlwsjZ8HpbJQqE6VIt/dyRNttMYZB7+yAq6o=;
+ b=g7F6IoA1ZkizMkyEEh69LjL3j9dRDhINsualHE1UHDZGqURdOd4GHO+mJjgIsTxIkVNwziHBg8YTI7wLSN1lJ5u9iCEYTjVRwf1IZ8FD4Tt6qVxgOhwO1v8c1CXzNJSWn/N2aY084yeYWbiyINIZGApL/TEaGFSDMtP9u47KP+73chpHzhKcYiMl0nh0gNCCOkyJvSNkkdWtWrzTiQowSlHVEl0oFmJl60lpQHGmNQgIXWsaBemkpq+rl2aqxzDiiI8oWsO1Gdb4LSeLCQMxxW2QPhUdpZ/8N42BSCpjG86clw13DulGZwi5tj4Gy1yEjO++weUzfp/HxTwMXjbeRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
+ dkim=pass header.d=altera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5ENXR/9YlwsjZ8HpbJQqE6VIt/dyRNttMYZB7+yAq6o=;
+ b=dkRDyiiRtkCHpKUrJSgjrRmhGC5Lh2/npM75mxzg5UfcdUiRgRDCXwKgt5NtoYjwKz1efUOIMIycGEKtcrwo88HJovESecE10PsGptiFVlSKyhDAAKwTHAhodmWbszGs9hRa2SFD4p+pOW+5Rssnze1lr/XMqTfNkRr9+NbIkvMqVPiN7wC95EmdN1akPci3z+yIb1twFP44oXR8SAAVPm6ZLAEjjAZG5IjeMNjmtg/2bJS6I0AUtfbTxoEc9AXymfhs04CQAwPbUzBmjlcF6zBUaycXqe0VkyS8flmOogPHmEYSYdXE4ndWiIWAPuW5x16VWG/5p53TFWC6Ubmu+Q==
+Received: from BY5PR03MB5299.namprd03.prod.outlook.com (2603:10b6:a03:229::12)
+ by SJ0PR03MB5790.namprd03.prod.outlook.com (2603:10b6:a03:2dd::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8922.33; Tue, 15 Jul
+ 2025 00:15:06 +0000
+Received: from BY5PR03MB5299.namprd03.prod.outlook.com
+ ([fe80::b106:261f:6a67:9615]) by BY5PR03MB5299.namprd03.prod.outlook.com
+ ([fe80::b106:261f:6a67:9615%5]) with mapi id 15.20.8922.028; Tue, 15 Jul 2025
+ 00:15:06 +0000
+From: "Romli, Khairul Anuar" <khairul.anuar.romli@altera.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>, "oe-kbuild@lists.linux.dev"
+	<oe-kbuild@lists.linux.dev>, Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, "open list:SPI NOR
+ SUBSYSTEM" <linux-mtd@lists.infradead.org>, open list
+	<linux-kernel@vger.kernel.org>, "Gerlach, Matthew"
+	<matthew.gerlach@altera.com>
+CC: "lkp@intel.com" <lkp@intel.com>, "oe-kbuild-all@lists.linux.dev"
+	<oe-kbuild-all@lists.linux.dev>
+Subject: RE: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver
  removal with active read or write operations
-Message-ID: <2bf9baaa-e66a-40ba-96b3-44b2e5e78550@suswa.mountain>
+Thread-Topic: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver
+ removal with active read or write operations
+Thread-Index: AQHb8HEWd6E44iO/WUekBLL20IMrdbQyCncAgABOzJA=
+Date: Tue, 15 Jul 2025 00:15:06 +0000
+Message-ID: <BY5PR03MB5299B38CB5D3A3D14428698AC657A@BY5PR03MB5299.namprd03.prod.outlook.com>
+References: <e439e6b85e650a91607a1d02d5d432d096363315.1752024352.git.khairul.anuar.romli@altera.com>
+ <2bf9baaa-e66a-40ba-96b3-44b2e5e78550@suswa.mountain>
+In-Reply-To: <2bf9baaa-e66a-40ba-96b3-44b2e5e78550@suswa.mountain>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=altera.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR03MB5299:EE_|SJ0PR03MB5790:EE_
+x-ms-office365-filtering-correlation-id: 1d7c5388-131c-48fc-6d4c-08ddc334a6fa
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|921020|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?66Jy/hptczXBJ0BGE0A8QchTqBu/pI3rIl3Lfk1cnNner+ZLq823r67XQBHW?=
+ =?us-ascii?Q?ei/ZZ0tq8jm9Tk9rGmcdjdlyfseH+RKZ0xmXPaExVYFzD8rlibsnt1JhDK7r?=
+ =?us-ascii?Q?fQC+OXBVEWXrwaEpJp2M+bntlP020vj1zD6SV21dcybZhBhwbR2L72Nihn4U?=
+ =?us-ascii?Q?9M09ajTrpKhLVm5+7AScy7yklB5UWuBuxqCKSErp2GtXo5e1YOqPysT/pW4N?=
+ =?us-ascii?Q?gip8X0ydUPogREmYfiMIJHLKcvz4Db486LJiLtrjMZ9J4KUYJM+mPT934EDQ?=
+ =?us-ascii?Q?Lb68JdeS10oUM3wFvKe9ryEgMwqkG3fMztwvyvkWpZwJPlgeu3rZkY+AClag?=
+ =?us-ascii?Q?vL8gVZU1DIYYUJGWDmsLLobNAH2TgKNX8Z6RZZGpNALX8FsvotS1N40GTpKB?=
+ =?us-ascii?Q?GxhItPbIDzumQFkBnyyIrB40SJGUQtf6kJ1vRtJSOXQo3SJdCCo8hyYKFDYN?=
+ =?us-ascii?Q?g9KsPP44bBKwqGHajkK1lAdBcteuWlGYZS9DIJf2ae3BVefVJA+ygYo8AZLT?=
+ =?us-ascii?Q?SvSV2Uee6BL/T5Ph1WBbD+mzmdHfMVy8HlHJLLSQkopbuGccK0+IQ6kfJDBQ?=
+ =?us-ascii?Q?QAHLMcKrfUogd+SNfePZpj0q7Pxlm4Q9UgPJgx1k2so2MGF5g5COSl0JofS3?=
+ =?us-ascii?Q?IGzAXCScSdxC2B0WlFynFB7RvVP/fuI9wjtFFUVDIJSyG4u4ox1YLWoxLtQ5?=
+ =?us-ascii?Q?FzAcvVDeoKwC/HHrwXKb4pCpDKt9yZ6PxuprI58Xy/eDgVwl26IWaQ85c57z?=
+ =?us-ascii?Q?iOvPrtdHMECbHiBM73DFl0/7GST0XTHszRvznqpoQKo47vNTr5jJ+v6F/d4+?=
+ =?us-ascii?Q?aLTrJlLSvhV3LtUdjCDeOdbo8/iX4+pAlDdnKgSf4KNLw+zaB5wEMyR1TuFX?=
+ =?us-ascii?Q?na/nzXmh3XYwjJzk4gYstRHgDIZtzb+F0z5br4eyBbhD143D2fmlT/gip8JX?=
+ =?us-ascii?Q?HnXnuQMq5OIYXxkWIe3IL/uS0IpTxR81bJRqcZ9iQq2/3BizhTkYjryEtRdL?=
+ =?us-ascii?Q?CtcDV3Q+SLn7YY2MWeiMabrLxvFDAyTqljB9UYmxzDV3WgsPh2iljfcSNbCX?=
+ =?us-ascii?Q?IwNOZSPOuc7Z/xxi28urR2TrK8uC+siCopVytD2RyfD/psKXTd2lvUV0AkiA?=
+ =?us-ascii?Q?NEybgaGJZXqWRFUBWlhgFi/Ap36OyrKA49GSM3w/cwUl5UQqxMwscgFju8LF?=
+ =?us-ascii?Q?dHgGsgHYT75ViGrgUDDRmyKjHoz4h5+w3aVwY5wa2SfeeBLVOMxFeFgp2nop?=
+ =?us-ascii?Q?h1j0su/Y9ZAL2cHpuVcLku5BJFDwQTzPifOcxXySC1MlcNlTOysomTJS9ONT?=
+ =?us-ascii?Q?6PEFL4iaxSPJOdUjSgbyAq9eCQlS7iC/lmJnHelkl7SZvaHJ16SRhXBLhY0F?=
+ =?us-ascii?Q?4YKY4HmjfzNWaYmh51DFN+N6CaU0DgFm5p3e3QJpnmsExWYVPPv4mHHpBUoz?=
+ =?us-ascii?Q?e6x0Z/DQ9ohVX1lhiS1GK5Pq8LQqUeS4?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5299.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(921020)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vejU6IRTjKOQbLg03z1zkPMM/a3JmX2COumMRT3owPh8GbjKAI85s2JyuERv?=
+ =?us-ascii?Q?shLK51ikfK4dWDeSOB8jl5HiVJGF4TOfQkFFWfr7U1G2lMdMx26TGhB5ic0L?=
+ =?us-ascii?Q?d4KRxhjp6EjbpWg7TIeceQV2Ep110YPNu3Rq1vkYkav87rzQbea3RkOxVnSe?=
+ =?us-ascii?Q?D5mXzBn0HKy67bqN+qYXNR1hup8lKdjjkzA9KfOEISYrXKlj/2KGBa+NlqRm?=
+ =?us-ascii?Q?bv/XGtp02k2rxoT8qidzW9rTSjmX66ExDeHO7h7AMjq+OcHnwFhIg6V3ml++?=
+ =?us-ascii?Q?xCcRnB0FHz+eaK/wG82UMNmTaL4g9UmHLlL+GFFf4dKxJiBVJmGz1WtxFXBw?=
+ =?us-ascii?Q?ssF9lrpXTTPfepDpbbtUxI5iEn0bJ2e5Ut4AUW0OPmo+XCk/Yv8rbn4YPVFO?=
+ =?us-ascii?Q?OZcJsXbbBJFHF+tpS6HbFjOrDM/ebs4j0QCHUJte23uyeObanKueK488Mahb?=
+ =?us-ascii?Q?RXpDUddxcZRcWUwubBz+Uo1HRVMr4J/RW0rmMIlePxI6wp1pAlcK9KGSXc7F?=
+ =?us-ascii?Q?PblZ3++vpCN6lNVTg7+ao34M9k696LV90tEtyXgCqibFD36KjxPaB6mJiLIy?=
+ =?us-ascii?Q?/pbvzfVh7ELSXGFU0aDGit1oD5lA1tpPnJFL+yoGL1Vlzpcd75PItAoBp3Tv?=
+ =?us-ascii?Q?mR0Eoyh3IeQ5uY86osADjOStHjTU01jv1n7XjyzsI9BYnLh5BogOMcT172mL?=
+ =?us-ascii?Q?HgLgyRIVr6YPx2dvuGNZVepTgVen3QK6HANwzDwGqiyXAyWJyjIZhiGcmLle?=
+ =?us-ascii?Q?Unyi5HzzLVbasrFJG7/fndI1OBdxtQz7njIlMM7J1AdbSBEyftfmhbcleELL?=
+ =?us-ascii?Q?tjuu77W6GZbcS4si/zE30P2vlSge3g+urApXj/qG+GCCrvwIMgrBtto3ZXWv?=
+ =?us-ascii?Q?BAMZ4o9PY8h1cWRm2SXoW5W18sQ9rdS6aZ1aDiNIVPDteK5ry2B+ns9QQSLf?=
+ =?us-ascii?Q?NHai2ynqb9unb+76bzY8j1stdsXIXgEauph/d1GCVpICy0XNNJwc5jP0qnHH?=
+ =?us-ascii?Q?lWJXKglwbzONdomB5jsRIb5+Uv+CzHMY6qIhI/xqqi8CsbpZZiGRiv4RcSzd?=
+ =?us-ascii?Q?GEeWCk0hzNyrq3oc5iv94F2N2T8OTUH6NrpeVushID5TLAW3DY6k0jDtMA21?=
+ =?us-ascii?Q?4P5jP3ZVQ+aiVqLp6Qsx2ARyZe7dZYRd4dEKXmBBbMwU5wywyqprC1+v8Xyi?=
+ =?us-ascii?Q?vfkXgHaodGbf7y9ah2RTHyysEgnPRUotOGvqm7Up0lLWsP/Xx7l7QwyL8LXM?=
+ =?us-ascii?Q?xTBmZbfxybVZTaSnXoQGFkXmprXmu8wqLrn74avGAjxj6kQXLXzp8nd6Y1ft?=
+ =?us-ascii?Q?k/KVXJreE5F2MyGERG2jCmDfdg70cxMN+e1B/osW3C+4cC9DNpOQNXvvJIHP?=
+ =?us-ascii?Q?brIzFzJJChHQm67VSy96j3ozcM5sxLrEUjr6rkP2OrXZU5GmLDMSf62+Jr/f?=
+ =?us-ascii?Q?/1Pn/z3+9g2VOUAo6TNC8g7clN7XcZ2Jk8hjH5kEwWWuIm+eT+yhnRNrrlxm?=
+ =?us-ascii?Q?QDOQkGu6zZKYu4SP6FLGs8GOm7pCDWPiWDpv4J1nIypSNHxYu3IVZAo52nZr?=
+ =?us-ascii?Q?ZgFJxUY+eCNz3aXVyqky8s8q7yvZYNlQolf3pcZ0?=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e439e6b85e650a91607a1d02d5d432d096363315.1752024352.git.khairul.anuar.romli@altera.com>
+X-OriginatorOrg: altera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5299.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d7c5388-131c-48fc-6d4c-08ddc334a6fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2025 00:15:06.3437
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fbd72e03-d4a5-4110-adce-614d51f2077a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T7l9ozYHxty3WE32K3a3bsnhrI6DD6QaHWqPc0QfW/gciK2tAWOgB9rAdAprsR+hnLTfq/8dopJjykcSFBfdqOIZFNe7mlansy4Az+E6V4c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB5790
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250714_123000_006368_E05730E8 
-X-CRM114-Status: UNSURE (   9.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250714_171518_696587_489F8BF9 
+X-CRM114-Status: GOOD (  13.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,61 +170,174 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+> From: Dan Carpenter <dan.carpenter@linaro.org>
+> Sent: Tuesday, 15 July, 2025 3:30 AM
+> To: oe-kbuild@lists.linux.dev; Romli, Khairul Anuar
+> <khairul.anuar.romli@altera.com>; Tudor Ambarus
+> <tudor.ambarus@linaro.org>; Pratyush Yadav <pratyush@kernel.org>;
+> Michael Walle <mwalle@kernel.org>; Miquel Raynal
+> <miquel.raynal@bootlin.com>; Richard Weinberger <richard@nod.at>;
+> Vignesh Raghavendra <vigneshr@ti.com>; open list:SPI NOR SUBSYSTEM
+> <linux-mtd@lists.infradead.org>; open list <linux-kernel@vger.kernel.org>;
+> Gerlach, Matthew <matthew.gerlach@altera.com>
+> Cc: lkp@intel.com; oe-kbuild-all@lists.linux.dev
+> Subject: Re: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver
+> removal with active read or write operations
+>
+> Hi,
+>
+> kernel test robot noticed the following build warnings:
+>
+> https://git-/
+> scm.com%2Fdocs%2Fgit-format-
+> patch%23_base_tree_information&data=05%7C02%7Ckhairul.anuar.romli%4
+> 0altera.com%7Cf6c3b8bb5b844138259308ddc30cd2ae%7Cfbd72e03d4a54
+> 110adce614d51f2077a%7C0%7C0%7C638881182091182847%7CUnknow
+> n%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIl
+> AiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sd
+> ata=eR42SdwIvE8%2BT3uUpe1WKz%2Fn0V4DNnLHExb1IPi1Gas%3D&reserv
+> ed=0]
+>
+> url:
+> https://gith/
+> ub.com%2Fintel-lab-lkp%2Flinux%2Fcommits%2Fkhairul-anuar-romli-altera-
+> com%2Fmtd-spi-nor-core-Prevent-oops-during-driver-removal-with-active-
+> read-or-write-operations%2F20250709-
+> 103107&data=05%7C02%7Ckhairul.anuar.romli%40altera.com%7Cf6c3b8bb
+> 5b844138259308ddc30cd2ae%7Cfbd72e03d4a54110adce614d51f2077a%
+> 7C0%7C0%7C638881182091208992%7CUnknown%7CTWFpbGZsb3d8eyJF
+> bXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiT
+> WFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=KJm%2FUt2CNwr3J2
+> Gsoxd2oe36gitqmmby3df73UWsZHo%3D&reserved=0
+> base:
+> https://git.k/
+> ernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fmtd%2Flinux.git&dat
+> a=05%7C02%7Ckhairul.anuar.romli%40altera.com%7Cf6c3b8bb5b8441382
+> 59308ddc30cd2ae%7Cfbd72e03d4a54110adce614d51f2077a%7C0%7C0%
+> 7C638881182091223786%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hc
+> GkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIld
+> UIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=u3%2FCugi1Z%2BobMTJu5qWFj
+> 4tkjYr%2FgC4PGVt0NJvAktA%3D&reserved=0 spi-nor/next
+> patch link:
+> https://lore/.
+> kernel.org%2Fr%2Fe439e6b85e650a91607a1d02d5d432d096363315.1752
+> 024352.git.khairul.anuar.romli%2540altera.com&data=05%7C02%7Ckhairul.
+> anuar.romli%40altera.com%7Cf6c3b8bb5b844138259308ddc30cd2ae%7C
+> fbd72e03d4a54110adce614d51f2077a%7C0%7C0%7C6388811820912375
+> 62%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLj
+> AuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%
+> 7C%7C%7C&sdata=sy%2BIZORvA8IgYI5BZsHEQgoIH9wKyndszhYwQ6N7vzw
+> %3D&reserved=0
+> patch subject: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver
+> removal with active read or write operations
+> config: i386-randconfig-141-20250711
+> (https://do/
+> wnload.01.org%2F0day-
+> ci%2Farchive%2F20250711%2F202507110922.btkgvYrn-
+> lkp%40intel.com%2Fconfig&data=05%7C02%7Ckhairul.anuar.romli%40altera
+> .com%7Cf6c3b8bb5b844138259308ddc30cd2ae%7Cfbd72e03d4a54110ad
+> ce614d51f2077a%7C0%7C0%7C638881182091250946%7CUnknown%7CT
+> WFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJX
+> aW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=zvj
+> oJvmjeQnS7dTajwXbAB6GiqNwecZtS3win3Sv7lM%3D&reserved=0)
+> compiler: clang version 20.1.8
+> (https://gith/
+> ub.com%2Fllvm%2Fllvm-
+> project&data=05%7C02%7Ckhairul.anuar.romli%40altera.com%7Cf6c3b8bb
+> 5b844138259308ddc30cd2ae%7Cfbd72e03d4a54110adce614d51f2077a%
+> 7C0%7C0%7C638881182091264782%7CUnknown%7CTWFpbGZsb3d8eyJF
+> bXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiT
+> WFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=FYcm8fzKMhihgW5At
+> oVRcGTCV56qKYNlx3uJpT%2B4DPo%3D&reserved=0
+> 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes:
+> |
+> https://lore/
+> | .kernel.org%2Fr%2F202507110922.btkgvYrn-
+> lkp%40intel.com%2F&data=05%7C0
+> |
+> 2%7Ckhairul.anuar.romli%40altera.com%7Cf6c3b8bb5b844138259308ddc3
+> 0cd2a
+> |
+> e%7Cfbd72e03d4a54110adce614d51f2077a%7C0%7C0%7C638881182091
+> 278235%7CUn
+> |
+> known%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAw
+> MCIsIlAiOi
+> |
+> JXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=
+> NMmQgJov
+> | ArDDW9sbKYrmIdl3lTRLvDD2SNq10pYeQ9s%3D&reserved=0
+>
+> smatch warnings:
+> drivers/mtd/spi-nor/core.c:3216 spi_nor_get_device() warn: variable
+> dereferenced before check 'dev' (see line 3213)
+> drivers/mtd/spi-nor/core.c:3216 spi_nor_get_device() warn: variable
+> dereferenced before check 'dev->driver' (see line 3213)
+>
+> vim +/dev +3216 drivers/mtd/spi-nor/core.c
+>
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3202
+> static int spi_nor_get_device(struct mtd_info *mtd)
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3203
+> {
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3204
+>       struct mtd_info *master = mtd_get_master(mtd);
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3205
+>       struct spi_nor *nor = mtd_to_spi_nor(master);
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3206
+>       struct device *dev;
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3207
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3208
+>       if (nor->spimem)
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3209
+>               dev = nor->spimem->spi->controller->dev.parent;
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3210
+>       else
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3211
+>               dev = nor->dev;
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3212
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01
+> @3213         if (!try_module_get(dev->driver->owner))
+>                                                                                                     ^^^^^^^^^^^^^^^^^^
+> Dereference
+>
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3214
+>               return -ENODEV;
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3215
+> 240522762fc4bc drivers/mtd/spi-nor/core.c    kromli     2025-07-09 @3216
+>       if (!dev && !dev->driver && !dev->driver->owner)
+>
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> These checks are done too late.  Also missing module put.
 
-kernel test robot noticed the following build warnings:
+I will send the v2 revision to fix this. I don't think we need module put. Module put
+Will cause the kernel oops if any of the nodes are null.
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/khairul-anuar-romli-altera-com/mtd-spi-nor-core-Prevent-oops-during-driver-removal-with-active-read-or-write-operations/20250709-103107
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
-patch link:    https://lore.kernel.org/r/e439e6b85e650a91607a1d02d5d432d096363315.1752024352.git.khairul.anuar.romli%40altera.com
-patch subject: [PATCH 1/1] mtd: spi-nor: core: Prevent oops during driver removal with active read or write operations
-config: i386-randconfig-141-20250711 (https://download.01.org/0day-ci/archive/20250711/202507110922.btkgvYrn-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202507110922.btkgvYrn-lkp@intel.com/
-
-smatch warnings:
-drivers/mtd/spi-nor/core.c:3216 spi_nor_get_device() warn: variable dereferenced before check 'dev' (see line 3213)
-drivers/mtd/spi-nor/core.c:3216 spi_nor_get_device() warn: variable dereferenced before check 'dev->driver' (see line 3213)
-
-vim +/dev +3216 drivers/mtd/spi-nor/core.c
-
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3202  static int spi_nor_get_device(struct mtd_info *mtd)
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3203  {
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3204  	struct mtd_info *master = mtd_get_master(mtd);
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3205  	struct spi_nor *nor = mtd_to_spi_nor(master);
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3206  	struct device *dev;
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3207  
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3208  	if (nor->spimem)
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3209  		dev = nor->spimem->spi->controller->dev.parent;
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3210  	else
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3211  		dev = nor->dev;
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3212  
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01 @3213  	if (!try_module_get(dev->driver->owner))
-                                                                                                    ^^^^^^^^^^^^^^^^^^
-Dereference
-
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3214  		return -ENODEV;
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3215  
-240522762fc4bc drivers/mtd/spi-nor/core.c    kromli     2025-07-09 @3216  	if (!dev && !dev->driver && !dev->driver->owner)
-                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-These checks are done too late.  Also missing module put.
-
-
-240522762fc4bc drivers/mtd/spi-nor/core.c    kromli     2025-07-09  3217  		return -EINVAL;
-240522762fc4bc drivers/mtd/spi-nor/core.c    kromli     2025-07-09  3218  
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3219  	return 0;
-be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3220  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> 240522762fc4bc drivers/mtd/spi-nor/core.c    kromli     2025-07-09  3217
+>               return -EINVAL;
+> 240522762fc4bc drivers/mtd/spi-nor/core.c    kromli     2025-07-09  3218
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3219
+>       return 0;
+> be94215be1ab19 drivers/mtd/spi-nor/core.c    Xiang Chen 2021-04-01  3220
+> }
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://gith/
+> ub.com%2Fintel%2Flkp-
+> tests%2Fwiki&data=05%7C02%7Ckhairul.anuar.romli%40altera.com%7Cf6c3
+> b8bb5b844138259308ddc30cd2ae%7Cfbd72e03d4a54110adce614d51f20
+> 77a%7C0%7C0%7C638881182091292007%7CUnknown%7CTWFpbGZsb3d
+> 8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkF
+> OIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=SSQX73%2Bm
+> m3Eqb6XaYih3tHM7sL5d%2Fuodt3DggYXTBNc%3D&reserved=0
 
 
 ______________________________________________________
