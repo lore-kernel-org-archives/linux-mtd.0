@@ -4,80 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0311C83F22
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jul 2025 01:07:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23C20C83F22
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jul 2025 02:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fcrAm4ouswBW0XG8dR7iVOX1b+J9HG0SuxJOC6nKJ+4=; b=xtkkQomL25eIna
-	HpuLOgdCRHokyDVH8UqH+8dt/w+3GHLg7/quRTd67Cr0Wuoo/Jnzw8TxJE8nD7ncBpCbtG7bcHTSK
-	0VLbsLlZBGaSCmq7vB17PvubgwYGP8/oeFv74Sjua7tPqPFj9M13Xh/Jzsnc5TobMuGMd5C45fgyZ
-	C8WSlR4ImNbLjbvW6eemorOhNs0FJ30V5QQww/kGQJe92fC63fzydNJATXU/JCG01R0Orcsm9xA+3
-	JjZLkCfd9pBwWvqJak5WmyK3D3VjkZO0XH9zZzCiXuxBMIdGsFtmrEGmV8tMqpas+91QSUgrDZxET
-	kWCUgcoVHskJXsM3Neiw==;
+	List-Owner; bh=v1UM8Lghb9Z0zI++f92lvt2i0E+hyf5bgK9x8OjhDho=; b=hQcenDrYgC1FWg
+	FMa/FsH5q3Y7GMLD8KhKgu+WrFn14BRjOTNrDNEIdyriKnWZGMvOeqJ1XdE4VVfj5t1eiAwJs2ynO
+	LgyQNxbygOW7f1ifzWUYs2PGxRauOwcc2AN4B0SdNsboPLop52vG35UPLF+kxDOpn3Je7XUvzzhqr
+	qo/8KY8WOD+pxTJ+WwQYfgn2BVA38+bZ1juv3iv5LAeAZTJt3dmGE6c9TFx8m8Q46Du5STIZD+wzL
+	5TWhFeHVocP0F1bYWqUWWvnBb/j+1FTNueLqN0O6URKpg7ptqIy1YE3mLJeJaExLiVpRdS8qAFTYU
+	aAa7p3bGMIslKBt/RR2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ucD5o-00000008xfO-3QD8;
-	Thu, 17 Jul 2025 01:07:24 +0000
-Received: from m16.mail.126.com ([117.135.210.8])
-	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ucD3u-00000008xRD-1Rms
+	id 1ucEh1-000000095Fo-1voT;
+	Thu, 17 Jul 2025 02:49:55 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ucEgy-000000095Ev-3zaR
 	for linux-mtd@lists.infradead.org;
-	Thu, 17 Jul 2025 01:05:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=EI
-	JgRbo2yBEeYOe56FQ8t29uLldSsA6Cw8nKiYtCDc8=; b=jz6XkYHHjOmUNGKAG8
-	7zHJBqjQXWUhQMLTDbg8FNOvmse7PPf0qd3RKFzMwx+JQAzX7qb7lfhMl1oceFhG
-	mZ7e/kTlAWcimrvizDTPt+1IpmD3mXC2jrhIei67mlLI9wrFG/fO1X7lbE1DqhuP
-	M5O7aAVyT0SiYT1bn6IUAqBD0=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wDnL_QZTHhoBW1MAQ--.5971S2;
-	Thu, 17 Jul 2025 09:04:39 +0800 (CST)
-From: Nanzhe Zhao <nzzhao@126.com>
-To: nzzhao.sigma@gmail.com
-Cc: almaz.alexandrovich@paragon-software.com,
-	clm@fb.com,
-	dhowells@redhat.com,
-	dsterba@suse.com,
-	dwmw2@infradead.org,
-	jack@suse.cz,
-	jaegeuk@kernel.org,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-f2fs-devel@lists.sourceforge.net,
+	Thu, 17 Jul 2025 02:49:54 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id A53B2A576DD;
+	Thu, 17 Jul 2025 02:49:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E1B0C4CEE7;
+	Thu, 17 Jul 2025 02:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752720591;
+	bh=+3M7g91K1wbKWaHCHWCVlTkf6dVFqoCHka6+sKX8uc0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Dxj0Av8D5AZtIisXh2L9yJig4uXBQuxbS9ixY/JMlxvl70bIPu8iWlVqGEzCoOgUi
+	 +5jU7iXSPRY863B1eVwqkKI4XyGU8N1oiPiSPYP3NlYWjMsCzjY3/zNUSeI4PfvJj0
+	 n7GfspSMnUer51mMfjRjFN8s+TltBz1xAqzFf/4SamHGdauI6kCAc8//1mfU95Af06
+	 zzmzEaGEDSNSTgcJHuXYUJGBMCRzfTCgpsxnK/GcWE+60f/gZxYXyl9b+IaN0vufU4
+	 oIMmh0U1QCuDEp6Cvy24xlk5jGum/YFcnprJ1x7H5mudjZboZP0UCU72iFYOMe7L+u
+	 czU/b0esZtW6Q==
+Date: Wed, 16 Jul 2025 19:49:03 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Phillip Lougher <phillip@squashfs.org.uk>
+Cc: Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	linux-erofs@lists.ozlabs.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
 	linux-fsdevel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	netfs@lists.linux.dev,
-	nico@fluxnic.net,
-	ntfs3@lists.linux.dev,
-	pc@manguebit.org,
-	phillip@squashfs.org.uk,
-	richard@nod.at,
-	sfrench@samba.org,
-	willy@infradead.org,
-	xiang@kernel.org
-Subject: Re: [f2fs-dev] Compressed files & the page cache
-Date: Thu, 17 Jul 2025 09:04:14 +0800
-Message-ID: <20250717010414.1595-1-nzzhao@126.com>
-X-Mailer: git-send-email 2.42.0.windows.2
-In-Reply-To: <CAMLCH1HCPByhWGQjix6040fZuZhjkj19k=4pqmNzPDtGeZ0Q6A@mail.gmail.com>
-References: <CAMLCH1HCPByhWGQjix6040fZuZhjkj19k=4pqmNzPDtGeZ0Q6A@mail.gmail.com>
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+	David Howells <dhowells@redhat.com>, netfs@lists.linux.dev,
+	Paulo Alcantara <pc@manguebit.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	ntfs3@lists.linux.dev, Steve French <sfrench@samba.org>,
+	linux-cifs@vger.kernel.org
+Subject: Re: Compressed files & the page cache
+Message-ID: <20250717024903.GA1288@sol>
+References: <aHa8ylTh0DGEQklt@casper.infradead.org>
+ <f4b9faf9-8efd-4396-b080-e712025825ab@squashfs.org.uk>
 MIME-Version: 1.0
-X-CM-TRANSID: _____wDnL_QZTHhoBW1MAQ--.5971S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCrykZr1DGr4rXrWxurWxJFb_yoW5XFWkpF
-	W5KF1rKr4kXr4xAw47Aa12gFyF93s5JF47J34fKFWqy3W5J3sa9r1Dtas0vFWDGr93Xa1q
-	vr4q934093s0vFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UpwZcUUUUU=
-X-Originating-IP: [34.216.57.139]
-X-CM-SenderInfo: xq22xtbr6rjloofrz/1tbiZBKNz2h4PiLMHQAAsp
+Content-Disposition: inline
+In-Reply-To: <f4b9faf9-8efd-4396-b080-e712025825ab@squashfs.org.uk>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250716_180526_718582_FD02B3C8 
-X-CRM114-Status: GOOD (  12.75  )
+X-CRM114-CacheID: sfid-20250716_194953_122780_442EC904 
+X-CRM114-Status: GOOD (  25.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,56 +85,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Dear Mr.Matthew and other fs developers:
-I'm very sorry.My gmail maybe be blocked for reasons I don't know.I have to change
-my email domain.
-> So, my proposal is that filesystems tell the page cache that their minimu=
-m
-> folio size is the compression block size.  That seems to be around 64k,
-> so not an unreasonable minimum allocation size.
-Excuse me,but could you please clarify the meaning of "compression block si=
-ze"?
-If you mean the minimum buffer window size that a filesystem requires
-to perform one whole compress write/decompress read io(also we can
-call it the granularity),which,in f2fs context we can interpret as the
-cluster size.Then that means for compress files,we could not fallback
-to 0 order folio in memory pressure case when setting folio's minmium
-order to "compression block size"?
+On Wed, Jul 16, 2025 at 11:37:28PM +0100, Phillip Lougher wrote:
+> > There also seems to be some discrepancy between filesystems whether the
+> > decompression involves vmap() of all the memory allocated or whether the
+> > decompression routines can handle doing kmap_local() on individual pages.
+> > 
+> 
+> Squashfs does both, and this depends on whether the decompression
+> algorithm implementation in the kernel is multi-shot or single-shot.
+> 
+> The zlib/xz/zstd decompressors are multi-shot, in that you can call them
+> multiply, giving them an extra input or output buffer when it runs out.
+> This means you can get them to output into a 4K page at a time, without
+> requiring the pages to be contiguous.  kmap_local() can be called on each
+> page before passing it to the decompressor.
 
-If that is the case,then when f2fs' cluster size was configured,the
-minium order was determined(and may beyond 64KiB.Depending on how we
-set the cluster size).If the cluster size was set to a large number,we
-will encounter much more risk when in memory pressure case.
+While those compression libraries do provide streaming APIs, it's sort
+of an illusion.  They still need the uncompressed data in a virtually
+contiguous buffer for the LZ77 match finding and copying to work.  So,
+internally they copy the uncompressed data into a virtually contiguous
+buffer.  I suspect that vmap() (or vm_map_ram() which is what f2fs uses)
+is actually more efficient than these streaming APIs, since it avoids
+the internal copy.  But it would need to be measured.
 
-Well,as for the 64Kib minimum granularity,because Android now switchs
-page size to 16Kib so for current f2fs compress implementation the
-minimum possible granularity indeed just exactly equals 64Kib.But I do
-hold a opinion that may not be a very good point for f2fs. Because
-just as I know,there are lots of small random write on Android.So
-instead of having a minimum granularity in 64Kib,I appreciate future
-f2fs's compression's implementation should support smaller cluster
-size for compression. As far as I know,storage engineers from vivo is
-experimenting a dynamic cluster compression implementation.It can
-adjust the cluster size within a file adaptively.(Maybe larger in some
-part and smaller in other part)
-They didn't publish the code now.But this design maybe more suitable
-for cooperating with folios for its vary-order feature.
+> > So, my proposal is that filesystems tell the page cache that their minimum
+> > folio size is the compression block size.  That seems to be around 64k,
+> > so not an unreasonable minimum allocation size.  That removes all the
+> > extra code in filesystems to allocate extra memory in the page cache.
+> > It means we don't attempt to track dirtiness at a sub-folio granularity
+> > (there's no point, we have to write back the entire compressed bock
+> > at once).  We also get a single virtually contiguous block ... if you're
+> > willing to ditch HIGHMEM support.  Or there's a proposal to introduce a
+> > vmap_file() which would give us a virtually contiguous chunk of memory
+> > (and could be trivially turned into a noop for the case of trying to
+> > vmap a single large folio).
 
->  It means we don't attempt to track dirtiness at a sub-folio granularity
->
-> (there's no point, we have to write back the entire compressed bock
-> at once).
-That DO has point for f2fs.Because we cannot control the order of
-folio that readahead gave us if we don't set maximum order.A large folio can cross 
-multi clusters in f2fs as I have mentioned.
-Since f2fs has no buffered head or a concept of subpage as we have discussed previously,
-It must rely on iomap_folio_state or a similar per folio struct to distinguish which
-cluster range of this folio is dirty.
-And it must distinguish a partialy dirted cluster to avoid compress write.
-Besides,l do think larger folio can cross multi compressed extent in
-btrfs too if I didn't misunderstand.May I ask how do btrfs deal with
-the possible write amplification?
+... but of course, if we could get a virtually contiguous buffer
+"for free" (at least in the !HIGHMEM case) as in the above proposal,
+that would clearly be the best option.
 
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
