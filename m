@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBA3CC83F22
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jul 2025 08:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0332C83F22
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Jul 2025 08:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=73QvCl6YFlCYMJXO2wlDUXZVouv4zhCoPhCMDlwzWjY=; b=UpLVUlYm1DJLou
-	j80KUOz0R0cwSVElC59Y6s+ivP7AjOl7qXle6yD6wJwLmg3wuXLjwODdeEXusptMW4TxN6VT96CP4
-	rG3VbzmzyfZ+O/98AweN4SlhvE7+50AjGLHUJC65rlCik81tj8yUoGJC3EOLutfOTHsJ16DbpfcWR
-	QqsH8zKstrNjK+s63VRXirSZJkVB4pp+ukfMrtZwmOmiH8bZPKaN2ZRCA9hBaiueOdJMGiABl5+rk
-	GL4OssKyUHfLL5j4onoiPs4NQ7TAC0PoSv32SS88pEcosKP/IPUOocB1qaAw5+jTIFwg5dfkbCxlR
-	x1sgRJ9uTfNi+xF2tblA==;
+	List-Owner; bh=LnyV9/+n/aNP74Suoxk5aoTY7GIt121gpHrRltFv7Go=; b=eimqejJ561B07i
+	/T5NxKVcwjJy/8WckM5r/Ujdour4KXXJhl6J3XMcILusBwtBETUXbE7SrWY/3uzRfyE/fkOEB5G22
+	iSyodDPpHFjYXhlmLWdAeon9meG4AJgrEiXkmLiSDUnUzGtqxaYwg6kjM9fGnxRSInJsnxjvQX9XL
+	KiOpP88CRs48GHxn1W2SSlTRP5r71BTqIp1kfyol9DpJCjnU0Ddx22PkhrCL7yZp47AOT6wzrqjAP
+	neuT1hDVheLfdoh34EJk5xzRyMrkaXInZdKR944Jy/40LyUfkNOS+D5gftvYJRXw7mDGLQPm9QfgB
+	ZqVHVjZ6vPzbkKUynK6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1udPTo-0000000F1y3-3zjv;
-	Sun, 20 Jul 2025 08:33:08 +0000
-Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
+	id 1udPTy-0000000F23X-0DJZ;
+	Sun, 20 Jul 2025 08:33:18 +0000
+Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1udPTm-0000000F1ww-1gwb;
-	Sun, 20 Jul 2025 08:33:07 +0000
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-31ca042d3b8so2775781a91.0;
-        Sun, 20 Jul 2025 01:33:06 -0700 (PDT)
+	id 1udPTv-0000000F225-3UnF;
+	Sun, 20 Jul 2025 08:33:16 +0000
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-b3508961d43so3032026a12.3;
+        Sun, 20 Jul 2025 01:33:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753000385; x=1753605185; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1753000395; x=1753605195; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=i5wbWJbaeWY+aCgMCUPKFnVolPrX/Znw1ZkbaA0O6dg=;
-        b=eS5IcY0wpV++jkenWuyd8SRYhPyFTgvjQO4MGeatr0lp1U4wvqKfvZrCIsqBtWqvEw
-         tUb9OYJB81VXU6iIybAdYNhRip5+C1CUJC+Fa4vrZ9nIaHQyu9pxrx6fBi63upVBTuZL
-         oXTuLfShtatjlaTY4MQ/CBpx+DPcQIGgnq01TwADWmFzuU1GwjtcJkes/kg023tqUhuK
-         dC3KLM7J69xMl6ny29t9jHckpUct6NHaHiLvVK/EzqELX/gbmh6bmVWP1rkZ1ZKDtaP5
-         NZVJ9yVHcGF9+wp5o637+7vW431A+5Q7ACcu2T+VA7mMTIqxcU5XeYVWHcCB+SBLgBy9
-         bqkQ==
+        bh=Nq9V4nWfYcJsLfYnrUeKCl4BP7Q+oHE4ZTsPuy9Af74=;
+        b=RRiYAJm2/92moy+txkd58DbJvk6RmtkKO/9E0u/rxTWyJwaLvtO5TTmpZca2u7i/7x
+         HQeUWcugLikFfelaPDwK4H2gNKq2tiOe+GMfXxvcy4USVzKL1Lo/5Xeg0sb9SzOHrcoL
+         QjR9x9gfmZ86gIbXUXY+nfS1Ow0s7FhuQk/ayIcPApUdqSzpp78S81bqZugjGLpBGxH5
+         02IzXRSX+LE98L/hqfntKGMlPH2WmSLyQOnbQrL2mjeFaup7jN8D2NzBMPy+UHeIgPl5
+         /1PikiMQydeAEKNgYrwrsnMato3+sw9zQ4Drnugx44vedCsmX/fMcv/NG8dkD+0YcdCo
+         /8Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753000385; x=1753605185;
+        d=1e100.net; s=20230601; t=1753000395; x=1753605195;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i5wbWJbaeWY+aCgMCUPKFnVolPrX/Znw1ZkbaA0O6dg=;
-        b=EhR3I4cUifccxcTJQFwrER9UiLQ8ydqaSMnZTcbWUuEFAeCSI3ltGuCEauu2LrTPMC
-         M77xMmAO66ba43Y9f40FsiSOec4At6pBC8N/Kaj91vJ4GtGGG/YMP+WIEBobuY8BxwWW
-         mAF6vyAAIcWsXz5CN3c8I09arCDwd5pcBYt41xRhm2LkRdb+cUg2F/2ouL6NeVNx+n1m
-         fdElQewim1ecjFqTLecV299JPHTer08crx18kkw1UokfbxhpwADc0+hrmhnVmpIc4wc/
-         Og/7jWzHUyDgLHzSiN8NATprxRpcpnKT/ccv23wGFK8qUal+/Ye+dX08ma2FJU7rycq/
-         ElVA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMEdq7GNJUU+nIXV/Jaaj0c9+kGJqrljIc1JBVivbv2rk966S+NlM2UOOpH2Pxll7Jbu4iVPOW7hKxaA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyAh6LHoWDKAxqOUKWg61d+WJv3NehJGfT5lnMT1UDJTX5UKjOB
-	V8BIeXhlkCyu1FJB6PG6Ol+cvu9h0+7JTM8QjKvT9gmcX5kK5JxaBVx1
-X-Gm-Gg: ASbGncthDssjoZkoCauaURh8kl45INSpm6VFBXL5EEghayj0hcqqj0a/kUQwJjPfRL7
-	Z8jDqcUgDZBiJdGyxT02Vs3+jzutaMjshWnSjLpl42GsTSi4XC6/D2R6pXbdzvlsOtLzLw70BCV
-	A9NrYKGSdc/FWXXGOalxe+gSwUcqUIKDa3Tlb9NjWpNVCwjp12/192X7YLvrwYN3InOmOLpWpy6
-	63gOZccMFYC1swImL+W4dwvRbdld7+CiQu9zSk5Gm5RD+9e71ZtNWz+LR7BnIKAzRPHoaeqp4iX
-	xDJZKDorFXvur2WWODB9VugUz6lcHpIZ1kxmNZK/33Ls4M1xnJQ8MklFGu2tM1L1pJtjcWX3D7p
-	8h9nBT4Q5jCH+kA==
-X-Google-Smtp-Source: AGHT+IEIyn/EvzX9sOaySrc2fPhMzwDi1IA4hwef15+G6nshGtYUjbbJ9FoduKOhpG+jz6ytWli4wQ==
-X-Received: by 2002:a17:90b:5483:b0:311:c970:c9bc with SMTP id 98e67ed59e1d1-31c9e79000emr23616583a91.30.1753000385221;
-        Sun, 20 Jul 2025 01:33:05 -0700 (PDT)
+        bh=Nq9V4nWfYcJsLfYnrUeKCl4BP7Q+oHE4ZTsPuy9Af74=;
+        b=pgoBPFtuOFiIRgZcSvdzlIheXZZ+fAw03D9Ux2lcjQgeg4WFjpwvUGYiwiyBuu3/2a
+         GMOCQGvEdRa2Hox9C3IjwvDJWqWtf+CK2WEu+seGefAaml3RAwBm8+wPuLVTQOJBe/Hn
+         o2G3C89dRFUAQ0RtVz2u0poE8Px1AH288g66IaNQvI867s4aSdf53N8CheeV5Iv49xCA
+         t9g0imnkQOA+G2CsO36tQ/YHTSFJCSiNa3+CsD0Mi0kL6gaRDjCon1bjo/9DRJqzNAXh
+         +ZHOfEknQ5yMck8xyHjbWdvwV5qC9avi5B/SnoXXou2ehMQf/Pn9nOvq6iMzsYRKZRrL
+         FYIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXHqD8FkaPEB4sCtqnTx7ZdCqvCqwk/yDzXvpcEr7SIikIcwvQOq6UJZi8u8IzynrR+PNa6UiMYIKh8tg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YywjzlwJga2ca2PNg/bTJL933BPXtt9CRGrGrVUKuRpos/AYB2R
+	GaToixfUH+ELbdBdA2JMd0psbOehxdXRkL2+S67PVK87W43zyzx/Rj49
+X-Gm-Gg: ASbGncvyN8rX06C3IoWzSN7GNJ9vUl6aj2bjobhRavVPOjvDGN9/CW7np9HGmtTHFyu
+	jGT+MsGEyiVCOiiUI4U5Xv2dTYz8Cdb3dCIl/5NtwCwXv1IQJ/jlDl7nquHAMjKj0o7Yrxh1I1P
+	2c0XfFohRio8DqWsinTWXmixqyB3Pgp9Nkz8rTQG+LtqQ9gsXnE/cAgRGCNCJlsaG82w8zyM/+8
+	9n0VVwsZf1R9UtOUe3pKrVtt+v90rkGp3AlfZfejWRTZ2/f4mpbMkxtG7reJuGLjqqqdXtqC2Dr
+	olVvB9TWReqVfMYK5/t/LcmMNrrGFB8C/tM8/ylKxCvF6hDckahvtxF85L9G76+Uu7VwxilYLWj
+	7WjfgUKshN5ma9A==
+X-Google-Smtp-Source: AGHT+IEpU7ppf8Ier2F7amqI42rtLsgYRSxajHznZeT7Ire18+UMD7933EljvqHA+AOKkjcPgT9mKg==
+X-Received: by 2002:a17:902:cf0d:b0:235:7c6:eba2 with SMTP id d9443c01a7336-23e3b84e8fdmr114036045ad.37.1753000394653;
+        Sun, 20 Jul 2025 01:33:14 -0700 (PDT)
 Received: from [127.0.0.1] ([2001:250:5800:1002::1d55])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cc3f46b97sm4079721a91.41.2025.07.20.01.32.56
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cc3f46b97sm4079721a91.41.2025.07.20.01.33.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jul 2025 01:33:04 -0700 (PDT)
+        Sun, 20 Jul 2025 01:33:14 -0700 (PDT)
 From: Zixian Zeng <sycamoremoon376@gmail.com>
-Date: Sun, 20 Jul 2025 16:31:44 +0800
-Subject: [PATCH v4 2/4] spi: spi-sg2044-nor: Add configurable chip_info
+Date: Sun, 20 Jul 2025 16:31:45 +0800
+Subject: [PATCH v4 3/4] spi: spi-sg2044-nor: Add SPI-NOR controller for
+ SG2042
 MIME-Version: 1.0
-Message-Id: <20250720-sfg-spifmc-v4-2-033188ad801e@gmail.com>
+Message-Id: <20250720-sfg-spifmc-v4-3-033188ad801e@gmail.com>
 References: <20250720-sfg-spifmc-v4-0-033188ad801e@gmail.com>
 In-Reply-To: <20250720-sfg-spifmc-v4-0-033188ad801e@gmail.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -92,16 +93,17 @@ Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Conor Dooley <conor.dooley@microchip.com>, 
  Zixian Zeng <sycamoremoon376@gmail.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1753000358; l=3096;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753000358; l=1077;
  i=sycamoremoon376@gmail.com; s=20250113; h=from:subject:message-id;
- bh=g46DzEpcJPn1i0I3gZxZ5oIULesc7GWeVCVQQpgoe9c=;
- b=YukjZRjuG7zBKFA+bLUHLliBzwC6HfzWrgebpe6NZrnhXBeKuzke63c7trXlc8ATk42WV+NB4
- W3cceLQ0bkGCGS/lgwlQfEoVojsHeaYJy9zSK89/okcCCNQrWR90uBB
+ bh=invs7khMKVNjBA2XGVM7X5zuJ+fCJ3XQUvHieDAkEjI=;
+ b=d+ztnvccC+X0a+IaXeQ4YkUZ41YMfOYok04lF94NFY4peKxfthcRHU5Vd3KA1PF3HomUiCxxz
+ pvgOE7rHvSkDFItDqH9m2wD99AXpdFdKrdGzn2NdJDgsLUdHxDEmixP
 X-Developer-Key: i=sycamoremoon376@gmail.com; a=ed25519;
  pk=OYfH6Z2Nx3aU1r0UZdvhskmddV6KC6V1nyFjsQQt4J8=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250720_013306_445641_63A2C879 
-X-CRM114-Status: GOOD (  14.86  )
+X-CRM114-CacheID: sfid-20250720_013315_887682_22C91DE4 
+X-CRM114-Status: UNSURE (   9.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,87 +120,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SG2044 and SG2042 have similar SPI-NOR flash controller design,
-but have incompatibility which causes existing driver
-not working on SG2042:
-1. SPI-NOR flash controller on SG2042 have no OPT register.
-2. FIFO trigger level on SG2042 should be strictly less than 8.
+Add support for SOPHGO SG2042 SPI-NOR flash controller.
 
-So introduce a new configurable chip_info structure to hold the
-different configuration.
-
-Link: https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/SPI-flash.rst
 Signed-off-by: Zixian Zeng <sycamoremoon376@gmail.com>
 ---
- drivers/spi/spi-sg2044-nor.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ drivers/spi/spi-sg2044-nor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/spi/spi-sg2044-nor.c b/drivers/spi/spi-sg2044-nor.c
-index a59aa3fc55d277653d01df9c83b3f0aa08edab46..0ef569eb28b7609df1f23d89a6b3e7afc2569c80 100644
+index 0ef569eb28b7609df1f23d89a6b3e7afc2569c80..af48b1fcda930f3cd0bdd57d80e076918d94010d 100644
 --- a/drivers/spi/spi-sg2044-nor.c
 +++ b/drivers/spi/spi-sg2044-nor.c
-@@ -84,12 +84,18 @@
- 
- #define SPIFMC_MAX_READ_SIZE			0x10000
- 
-+struct sg204x_spifmc_chip_info {
-+	bool has_opt_reg;
-+	u32 rd_fifo_int_trigger_level;
-+};
-+
- struct sg2044_spifmc {
- 	struct spi_controller *ctrl;
- 	void __iomem *io_base;
- 	struct device *dev;
- 	struct mutex lock;
- 	struct clk *clk;
-+	const struct sg204x_spifmc_chip_info *chip_info;
+@@ -485,8 +485,14 @@ static const struct sg204x_spifmc_chip_info sg2044_chip_info = {
+ 	.rd_fifo_int_trigger_level = SPIFMC_TRAN_CSR_FIFO_TRG_LVL_8_BYTE,
  };
  
- static int sg2044_spifmc_wait_int(struct sg2044_spifmc *spifmc, u8 int_type)
-@@ -139,7 +145,7 @@ static ssize_t sg2044_spifmc_read_64k(struct sg2044_spifmc *spifmc,
- 
- 	reg = sg2044_spifmc_init_reg(spifmc);
- 	reg |= (op->addr.nbytes + op->dummy.nbytes) << SPIFMC_TRAN_CSR_ADDR_BYTES_SHIFT;
--	reg |= SPIFMC_TRAN_CSR_FIFO_TRG_LVL_8_BYTE;
-+	reg |= spifmc->chip_info->rd_fifo_int_trigger_level;
- 	reg |= SPIFMC_TRAN_CSR_WITH_CMD;
- 	reg |= SPIFMC_TRAN_CSR_TRAN_MODE_RX;
- 
-@@ -335,7 +341,8 @@ static ssize_t sg2044_spifmc_trans_reg(struct sg2044_spifmc *spifmc,
- 		reg |= SPIFMC_TRAN_CSR_TRAN_MODE_RX;
- 		reg |= SPIFMC_TRAN_CSR_TRAN_MODE_TX;
- 
--		writel(SPIFMC_OPT_DISABLE_FIFO_FLUSH, spifmc->io_base + SPIFMC_OPT);
-+		if (spifmc->chip_info->has_opt_reg)
-+			writel(SPIFMC_OPT_DISABLE_FIFO_FLUSH, spifmc->io_base + SPIFMC_OPT);
- 	} else {
- 		/*
- 		 * If write values to the Status Register,
-@@ -457,6 +464,11 @@ static int sg2044_spifmc_probe(struct platform_device *pdev)
- 	ret = devm_mutex_init(dev, &spifmc->lock);
- 	if (ret)
- 		return ret;
-+	spifmc->chip_info = device_get_match_data(&pdev->dev);
-+	if (!spifmc->chip_info) {
-+		dev_err(&pdev->dev, "Failed to get specific chip info\n");
-+		return -EINVAL;
-+	}
- 
- 	sg2044_spifmc_init(spifmc);
- 	sg2044_spifmc_init_reg(spifmc);
-@@ -468,8 +480,13 @@ static int sg2044_spifmc_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct sg204x_spifmc_chip_info sg2044_chip_info = {
-+	.has_opt_reg = true,
-+	.rd_fifo_int_trigger_level = SPIFMC_TRAN_CSR_FIFO_TRG_LVL_8_BYTE,
++static const struct sg204x_spifmc_chip_info sg2042_chip_info = {
++	.has_opt_reg = false,
++	.rd_fifo_int_trigger_level = SPIFMC_TRAN_CSR_FIFO_TRG_LVL_1_BYTE,
 +};
 +
  static const struct of_device_id sg2044_spifmc_match[] = {
--	{ .compatible = "sophgo,sg2044-spifmc-nor" },
-+	{ .compatible = "sophgo,sg2044-spifmc-nor", .data = &sg2044_chip_info },
+ 	{ .compatible = "sophgo,sg2044-spifmc-nor", .data = &sg2044_chip_info },
++	{ .compatible = "sophgo,sg2042-spifmc-nor", .data = &sg2042_chip_info },
  	{ /* sentinel */ }
  };
  MODULE_DEVICE_TABLE(of, sg2044_spifmc_match);
