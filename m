@@ -4,143 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5F3AC83F1A
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jul 2025 11:39:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14C76C83F1A
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jul 2025 11:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uWyZPlDi/y7qCIqfB/IoEe7zu6IGUzp9n9C+IUfp/3s=; b=SGy9QMJwjjTFXe
-	DYR0JKAw0pYFo64g88KrNSMnB66RQTN0cmhkvhOsZH7YGtYR8iqfGevNdEKU/9zzpGZGRwbdecf8z
-	0Gw48Ot/SYDx5VEvJ+feJKYLcPN6ND48M11+rvks9cCXWN7MPXewA/KsKlZSws7bBdcuLPVtwT5sv
-	WSNCcywRNqYOJ9CRP+MaEAaCJ9MoF2dTPIxcnI0AAx52B2Tts5mUKI3GdGxH0Dwf34yxNXcNNFlJl
-	C8H6yHoMpzX+4TfzBdeUxDOJR/iKpsXV21PxxNm2X/r5vtbi5m6hdEyAhZ4VWaAmIirQ2yldHuRJg
-	dKzsbd54ecHbpgqhY4Zw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LH7ImFzfeCIkc9LvHr2J2W2mEPMeQ3NbUaSkCHrJxqI=; b=fysXfGfGB1TSdi
+	kdLJGEag7UFRLpCmVwXrg/zquJhNW3Vx/9G3Gq/thi2cPcjyC6q215DoaUDMNEFezmfY3NzUTRKAs
+	DJUQggcqvkGLsQwZIoh/Kgo90yNhkF6GhL8glQHpGtWbqOfkNg0v9mhb5H7sP1voULw0W/p2EdRqw
+	wTd7xPUVH9keaBc6tbekRQyCoSt5lA7XJDnT8YvCZxmwibN+DHrW7Fs1Ag0cG2HVG6s+gO4doXn2i
+	wEhGC+fwBBQjUjUTFOf/N33IHheVLuJgGJRODFlPTUT47MCdLYxB8nnSWVCcdxUL9zFA5aTrw4xa3
+	dicoXb5adVgVJkTXTNLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1udorv-0000000H7um-0bjL;
-	Mon, 21 Jul 2025 11:39:43 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1udosH-0000000H8VQ-1gR5;
+	Mon, 21 Jul 2025 11:40:05 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1udniY-0000000GxLN-2Nac
-	for linux-mtd@lists.infradead.org;
-	Mon, 21 Jul 2025 10:25:59 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 51A1E1F397;
-	Mon, 21 Jul 2025 10:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753093555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=baH6ow82NzmU1jGwAd7SMMrxH3jdioo5q/Xo9G5hG+4=;
-	b=GGCpmZZgbAB5XlOhPaT/l0zeSwhiqSn6JbNbcSAdSIrsIWr7T0Mc7Nurq9TLL5MlDIKSzb
-	G3mxxnF5X/WFL2F9PDn8NfEprPokB+uugrjkHFG+jVRlyIUBsFn+89vrEh51dQKAspuIIa
-	bOQxVSvP+dassyYss7hQFywZfgAWP9Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753093555;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=baH6ow82NzmU1jGwAd7SMMrxH3jdioo5q/Xo9G5hG+4=;
-	b=TiuaNzkKooiGvnBZgx/DGGdlv5vk/tkXPxkZgwh1y7czyZp1RZa8jl8Z3vpXSlkZ0+KbS8
-	LZDo/WglGtJ31cBg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GGCpmZZg;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=TiuaNzkK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753093555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=baH6ow82NzmU1jGwAd7SMMrxH3jdioo5q/Xo9G5hG+4=;
-	b=GGCpmZZgbAB5XlOhPaT/l0zeSwhiqSn6JbNbcSAdSIrsIWr7T0Mc7Nurq9TLL5MlDIKSzb
-	G3mxxnF5X/WFL2F9PDn8NfEprPokB+uugrjkHFG+jVRlyIUBsFn+89vrEh51dQKAspuIIa
-	bOQxVSvP+dassyYss7hQFywZfgAWP9Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753093555;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=baH6ow82NzmU1jGwAd7SMMrxH3jdioo5q/Xo9G5hG+4=;
-	b=TiuaNzkKooiGvnBZgx/DGGdlv5vk/tkXPxkZgwh1y7czyZp1RZa8jl8Z3vpXSlkZ0+KbS8
-	LZDo/WglGtJ31cBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3453C13A88;
-	Mon, 21 Jul 2025 10:25:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Lyt7DLMVfmi/GgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 21 Jul 2025 10:25:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5D047A0884; Mon, 21 Jul 2025 12:25:54 +0200 (CEST)
-Date: Mon, 21 Jul 2025 12:25:54 +0200
-From: Jan Kara <jack@suse.cz>
-To: Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc: Barry Song <21cnbao@gmail.com>, Matthew Wilcox <willy@infradead.org>, 
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>, 
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, linux-erofs@lists.ozlabs.org, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, linux-f2fs-devel@lists.sourceforge.net, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, 
-	David Howells <dhowells@redhat.com>, netfs@lists.linux.dev, Paulo Alcantara <pc@manguebit.org>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, ntfs3@lists.linux.dev, Steve French <sfrench@samba.org>, 
-	linux-cifs@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>, 
-	Hailong Liu <hailong.liu@oppo.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Compressed files & the page cache
-Message-ID: <z2ule3ilnnpoevo5mvt3intvjtuyud7vg3pbfauon47fhr4owa@giaehpbie4a5>
-References: <aHa8ylTh0DGEQklt@casper.infradead.org>
- <e5165052-ead3-47f4-88f6-84eb23dc34df@linux.alibaba.com>
- <b61c4b7f-4bb1-4551-91ba-a0e0ffd19e75@linux.alibaba.com>
- <CAGsJ_4xJjwsvMpeBV-QZFoSznqhiNSFtJu9k6da_T-T-a6VwNw@mail.gmail.com>
- <7ea73f49-df4b-4f88-8b23-c917b4a9bd8a@linux.alibaba.com>
+	id 1udo0R-0000000GzGJ-2mSd;
+	Mon, 21 Jul 2025 10:44:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1753094667; x=1784630667;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eeZcPHFZpOhD4zGpk7fZOIrm0FhI2Ay4ZWryebwV3e4=;
+  b=Wfl9Sn/5JOZlcqCkIeOnI0UnMfVQR2V9hG9F1IIp0NTQsuSo1Zgd0tMX
+   RgkYvJk0sLbJfGx3pV4KAdaJ2ExNPSHucCgiTP8Tv1AaqeNOWUjkyG+Zy
+   0Zply/9Mr97GJnwqXkwyq6rPGshse6unpYsSb9IgYAsSbz2AqRmPgVbsT
+   KBsA0oVORNtOwAHjSLbu3CkFUuB7cl7usX/s5QgtnIx51nWueusoDITHw
+   zMTIQGrbvpE8mxElEhMShVOuYzMQG+Ue13U6s8/v69fvoz0VGHvxvElwz
+   VWFXdoosVOZC6ZXXkBo70IfeXfTYiWZJ2rrRoFrS8rD7E39kCxsUwVwWe
+   g==;
+X-CSE-ConnectionGUID: CsUIskr/T/eitnidkJP48g==
+X-CSE-MsgGUID: 0iSy9X3VQZalEvopVExI4A==
+X-IronPort-AV: E=Sophos;i="6.16,328,1744095600"; 
+   d="scan'208";a="44829020"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Jul 2025 03:44:23 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Mon, 21 Jul 2025 03:44:05 -0700
+Received: from che-lt-i64410lx.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.44 via Frontend Transport; Mon, 21 Jul 2025 03:44:00 -0700
+From: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+	<claudiu.beznea@tuxon.dev>, <dan.carpenter@linaro.org>,
+	<bbrezillon@kernel.org>, <linux-mtd@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>,
+	"Zixun LI" <admin@hifiphile.com>, Ada Couprie Diaz <ada.coupriediaz@arm.com>
+Subject: [PATCH] mtd: rawnand: atmel: set pmecc data setup time
+Date: Mon, 21 Jul 2025 16:13:40 +0530
+Message-ID: <20250721104340.113581-1-balamanikandan.gunasundar@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7ea73f49-df4b-4f88-8b23-c917b4a9bd8a@linux.alibaba.com>
-X-Rspamd-Queue-Id: 51A1E1F397
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RL76kpr34nasjgd69zbi7paxtw)];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,infradead.org,fb.com,toxicpanda.com,suse.com,vger.kernel.org,fluxnic.net,kernel.org,lists.ozlabs.org,lists.sourceforge.net,suse.cz,nod.at,lists.infradead.org,redhat.com,lists.linux.dev,manguebit.org,paragon-software.com,samba.org,squashfs.org.uk,oppo.com,gmx.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250721_032558_905632_AAA1D3D3 
-X-CRM114-Status: GOOD (  24.19  )
+X-CRM114-CacheID: sfid-20250721_034427_948240_7181C1CD 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,43 +80,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uIDIxLTA3LTI1IDExOjE0OjAyLCBHYW8gWGlhbmcgd3JvdGU6Cj4gSGkgQmFycnksCj4g
-Cj4gT24gMjAyNS83LzIxIDA5OjAyLCBCYXJyeSBTb25nIHdyb3RlOgo+ID4gT24gV2VkLCBKdWwg
-MTYsIDIwMjUgYXQgODoyOOKAr0FNIEdhbyBYaWFuZyA8aHNpYW5na2FvQGxpbnV4LmFsaWJhYmEu
-Y29tPiB3cm90ZToKPiA+ID4gCj4gCj4gLi4uCj4gCj4gPiA+IAo+ID4gPiAuLi4gaGlnaC1vcmRl
-ciBmb2xpb3MgY2FuIGNhdXNlIHNpZGUgZWZmZWN0cyBvbiBlbWJlZGRlZCBkZXZpY2VzCj4gPiA+
-IGxpa2Ugcm91dGVycyBhbmQgSW9UIGRldmljZXMsIHdoaWNoIHN0aWxsIGhhdmUgTWlCcyBvZiBt
-ZW1vcnkgKGFuZCBJCj4gPiA+IGJlbGlldmUgdGhpcyB3b24ndCBjaGFuZ2UgZHVlIHRvIHRoZWly
-IHVzZSBjYXNlcykgYnV0IHRoZXkgYWxzbyB1c2UKPiA+ID4gTGludXgga2VybmVsIGZvciBxdWl0
-ZSBsb25nIHRpbWUuICBJbiBzaG9ydCwgSSBkb24ndCB0aGluayBlbmFibGluZwo+ID4gPiBsYXJn
-ZSBmb2xpb3MgZm9yIHRob3NlIGRldmljZXMgaXMgdmVyeSB1c2VmdWwsIGxldCBhbG9uZSBsaW1p
-dGluZwo+ID4gPiB0aGUgbWluaW11bSBmb2xpbyBvcmRlciBmb3IgdGhlbSAoSXQgd291bGQgbWFr
-ZSB0aGUgZmlsZXN5c3RlbSBub3QKPiA+ID4gc3VpdGFibGUgYW55IG1vcmUgZm9yIHRob3NlIHVz
-ZXJzLiAgQXQgbGVhc3QgdGhhdCBpcyB3aGF0IEkgbmV2ZXIKPiA+ID4gd2FudCB0byBkbykuICBB
-bmQgSSBiZWxpZXZlIHRoaXMgaXMgZGlmZmVyZW50IGZyb20gdGhlIGN1cnJlbnQgTEJTCj4gPiA+
-IHN1cHBvcnQgdG8gbWF0Y2ggaGFyZHdhcmUgY2hhcmFjdGVyaXN0aWNzIG9yIExCUyBhdG9taWMg
-d3JpdGUKPiA+ID4gcmVxdWlyZW1lbnQuCj4gPiAKPiA+IEdpdmVuIHRoZSBkaWZmaWN1bHR5IG9m
-IGFsbG9jYXRpbmcgbGFyZ2UgZm9saW9zLCBpdCdzIGFsd2F5cyBhIGdvb2QKPiA+IGlkZWEgdG8g
-aGF2ZSBvcmRlci0wIGFzIGEgZmFsbGJhY2suIFdoaWxlIEkgYWdyZWUgd2l0aCB5b3VyIHBvaW50
-LAo+ID4gSSBoYXZlIGEgc2xpZ2h0bHkgZGlmZmVyZW50IHBlcnNwZWN0aXZlIOKAlCBlbmFibGlu
-ZyBsYXJnZSBmb2xpb3MgZm9yCj4gPiB0aG9zZSBkZXZpY2VzIG1pZ2h0IGJlIGJlbmVmaWNpYWws
-IGJ1dCB0aGUgbWF4aW11bSBvcmRlciBzaG91bGQKPiA+IHJlbWFpbiBzbWFsbC4gSSdtIHJlZmVy
-cmluZyB0byAic21hbGwiIGxhcmdlIGZvbGlvcy4KPiAKPiBZZWFoLCBhZ3JlZWQuIEhhdmluZyBh
-IHdheSB0byBsaW1pdCB0aGUgbWF4aW11bSBvcmRlciBmb3IgdGhvc2Ugc21hbGwKPiBkZXZpY2Vz
-IChyYXRoZXIgdGhhbiBkaXNhYmxpbmcgaXQgY29tcGxldGVseSkgd291bGQgYmUgaGVscGZ1bC4g
-IEF0Cj4gbGVhc3QgInNtYWxsIiBsYXJnZSBmb2xpb3MgY291bGQgc3RpbGwgcHJvdmlkZSBiZW5l
-Zml0cyB3aGVuIG1lbW9yeQo+IHByZXNzdXJlIGlzIGxpZ2h0LgoKV2VsbCwgaW4gdGhlIHBhZ2Ug
-Y2FjaGUgeW91IGNhbiB0dW5lIG5vdCBvbmx5IHRoZSBtaW5pbXVtIGJ1dCBhbHNvIHRoZQptYXhp
-bXVtIG9yZGVyIG9mIGEgZm9saW8gYmVpbmcgYWxsb2NhdGVkIGZvciBlYWNoIGlub2RlLiBCdHJm
-cyBhbmQgZXh0NAphbHJlYWR5IHVzZSB0aGlzIGZ1bmN0aW9uYWxpdHkuIFNvIGluIHByaW5jaXBs
-ZSB0aGUgZnVuY3Rpb25hbGl0eSBpcyB0aGVyZSwKaXQgaXMgImp1c3QiIGEgcXVlc3Rpb24gb2Yg
-cHJvcGVyIHVzZXIgaW50ZXJmYWNlcyBvciBhdXRvbWF0aWMgbG9naWMgdG8KdHVuZSB0aGlzIGxp
-bWl0LgoKCQkJCQkJCQlIb256YQotLSAKSmFuIEthcmEgPGphY2tAc3VzZS5jb20+ClNVU0UgTGFi
-cywgQ1IKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Setup the pmecc data setup time as 3 clock cycles for 133MHz as recommended
+by the datasheet.
+
+Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+Reported-by: Zixun LI <admin@hifiphile.com>
+Closes: https://lore.kernel.org/all/c015bb20-6a57-4f63-8102-34b3d83e0f5b@microchip.com
+Suggested-by: Ada Couprie Diaz <ada.coupriediaz@arm.com>
+Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+---
+ drivers/mtd/nand/raw/atmel/pmecc.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
+index 3c7dee1be21d..0b402823b619 100644
+--- a/drivers/mtd/nand/raw/atmel/pmecc.c
++++ b/drivers/mtd/nand/raw/atmel/pmecc.c
+@@ -143,6 +143,7 @@ struct atmel_pmecc_caps {
+ 	int nstrengths;
+ 	int el_offset;
+ 	bool correct_erased_chunks;
++	bool clk_ctrl;
+ };
+ 
+ struct atmel_pmecc {
+@@ -843,6 +844,10 @@ static struct atmel_pmecc *atmel_pmecc_create(struct platform_device *pdev,
+ 	if (IS_ERR(pmecc->regs.errloc))
+ 		return ERR_CAST(pmecc->regs.errloc);
+ 
++	/* pmecc data setup time */
++	if (caps->clk_ctrl)
++		writel(PMECC_CLK_133MHZ, pmecc->regs.base + ATMEL_PMECC_CLK);
++
+ 	/* Disable all interrupts before registering the PMECC handler. */
+ 	writel(0xffffffff, pmecc->regs.base + ATMEL_PMECC_IDR);
+ 	atmel_pmecc_reset(pmecc);
+@@ -896,6 +901,7 @@ static struct atmel_pmecc_caps at91sam9g45_caps = {
+ 	.strengths = atmel_pmecc_strengths,
+ 	.nstrengths = 5,
+ 	.el_offset = 0x8c,
++	.clk_ctrl = true,
+ };
+ 
+ static struct atmel_pmecc_caps sama5d4_caps = {
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
