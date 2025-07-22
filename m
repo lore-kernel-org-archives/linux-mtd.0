@@ -4,79 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C036C87FD1
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jul 2025 09:22:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AD81C83F25
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jul 2025 09:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8lOv/24fGk1aotoshFVq+jsMyZUJobdWTUR/RMb7IvY=; b=UivwKPTQ2kweyu
-	gSokBNa9vh3XK6u2ddCHYoAzUXx86lY3ga2khcTfOLnJGkRb6A4jAbR1JpPEniwJ0nUrVHb9glbbe
-	Se1ujcTreQ/rIbxpr+nIU9W7jCzddIukaJmNefQQcHCXaYc2dS7guwaja3oHUSjC4kIWM1E1VMLAt
-	jkQlMAS3eKKCnYmljjEEVjxmzPyHn9i9EZS17D/1DDzEKq7RlJqulOvQ67ky6ANmRUoYu+4aA4pzd
-	BJdmD2trPtJflZ5rz/DRmL1G2q/JnSgZ7PHQTAtfJPOguzDV+u/V68Xg2LJiySwj6Sv0kuouTkqB/
-	BGKEVJDWSvRS7MtYhAYQ==;
+	List-Owner; bh=GxU/9CWbaSADhDuznTfRhgchnmaIGvRLuD9L/RkZ/Gk=; b=B3zmXiZ6YY8zlH
+	CcvU45ELZATkVqVcdZ4WNwrjnI/pO85kXBCOj0ALX/umPEx093CQntZNHEeEpO0xCHGZlTkCIgFEy
+	xsxOHl7fg+ldaBip1e8F/7rRyK70hMbJwqUMrBu98MFAOE55aYxnDqapPgxc0JfMel/T4Fa1JzHgk
+	AnWfpGYszTT091OxDu02XMf0HclY2hQT59xGBUNpRQXVhzvOIDtEl+V6L68MYIFE8YGmS6WFjRLNw
+	6LC6ovTKHdULUgIEOrAPcEj8Vxx8WnKC7+KMHsWMPoVKrlIvQGqGXUEMBpsLBnvG0pJqLXIS4cQre
+	dmMLe5xz9zujajvgWkSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ue9CF-00000001zZG-2HoI;
-	Tue, 22 Jul 2025 09:22:03 +0000
-Received: from mail.loongson.cn ([114.242.206.163])
-	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ue92P-00000001xPy-0Isa
+	id 1ue9Th-000000022Le-2aUn;
+	Tue, 22 Jul 2025 09:40:05 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ue9RO-000000021vU-2eYb
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Jul 2025 09:11:54 +0000
-Received: from loongson.cn (unknown [223.64.68.193])
-	by gateway (Coremail) with SMTP id _____8AxWXHTVX9oDYAvAQ--.31603S3;
-	Tue, 22 Jul 2025 17:11:47 +0800 (CST)
-Received: from localhost.localdomain (unknown [223.64.68.193])
-	by front1 (Coremail) with SMTP id qMiowJAxQMLQVX9oJLMhAA--.38709S2;
-	Tue, 22 Jul 2025 17:11:46 +0800 (CST)
-From: Binbin Zhou <zhoubinbin@loongson.cn>
-To: Binbin Zhou <zhoubb.aaron@gmail.com>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Keguang Zhang <keguang.zhang@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Huacai Chen <chenhuacai@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	loongarch@lists.linux.dev,
-	devicetree@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH v1 8/8] mtd: rawnand: loongson: Add Loongson-2K1000 NAND controller support
-Date: Tue, 22 Jul 2025 17:11:32 +0800
-Message-ID: <840028b74879eb330e2e0cb5c9076ff48f390d95.1753166096.git.zhoubinbin@loongson.cn>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1753166096.git.zhoubinbin@loongson.cn>
-References: <cover.1753166096.git.zhoubinbin@loongson.cn>
+	Tue, 22 Jul 2025 09:37:43 +0000
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-60768f080d8so10113077a12.1
+        for <linux-mtd@lists.infradead.org>; Tue, 22 Jul 2025 02:37:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1753177060; x=1753781860; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4pV0KmP7SnZDTkv34ZusWsOS5sGMMAlP7jVm4P/E25g=;
+        b=l9Sy2q3g5HrRD72wZSaW+qgieVaKNzjSdCXCVWmNfvLUm+ZrUmaP5VRkwieyEI/dJp
+         JEShGkqQTMw2XUCW4ObJteDBTfk2TDCLNNgHMDmtiTiLvd3E84v1vL8sxmQn7lnWLEtp
+         FHEg53DH4ZagrOY+qWKTfcBKMfkHd2I6M3JQeyfpJ6Qy3RMqKuXMFKV5Ix/oP8UEqxmM
+         eQXPjBoqtOp/dMw+HDxRQKMGO93z0gb15jWEXjgRQuRtlhiEpwH5QXi/tAJxfNyBqMD5
+         6/Ty342HMSsD7T/569CLi0c98h3VY7twTqugy14IFLixoV6CP6ZGG9kFztPeLMWocazQ
+         B+Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753177060; x=1753781860;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4pV0KmP7SnZDTkv34ZusWsOS5sGMMAlP7jVm4P/E25g=;
+        b=Y5cR1kTVfh+s3O9ONgnSupwAuatC95IXU+3pjuZAdfKfzqI4nmyugADOVDGR5JU8j+
+         GzyJXFzG5r9PdmZ4Z8rc8GeVaIEO/VdOGFVo5ysk9IwZkf4XEiK0arC3oUlbE4inqfwi
+         h0i412MEdcXONX92IvZL18T9lA9aq7p3a08pazOKH0HIQorptyecWoFd8bxDe3G9PTnW
+         W1hCAJA17sGQCxWCbPiGI98egUPR6/WEvo/aO/7wJtxwaSzZsBRWmcNniGax5D7ZKwcl
+         2yM891SaiJm8GCzqXClfFErBvfvJhcEfM6DV0edHbobAGS64xonD5nIBcSXEJ5qhj3ME
+         LzPg==
+X-Gm-Message-State: AOJu0YxDHqXS2SFeKheTedLkYi3q3gaIDDdVFcsY7+CbvCW7Yidcj67K
+	Q6krKIdyDTMx7KKCVgZxoujvmXVNMFC4pTbp8PuS18eO6mBYi2Il9ZfgIahHY/ZJI00=
+X-Gm-Gg: ASbGncsKFAsg49Vbe7K6TWKo/Q3gpzsXagheD95xt32advQ6piYTWF1vLbtDeIN0pw2
+	fVQ6x+crk1iKEH3OeDt0qDITk5B6K6FANiyWWS4tX/ITQ5IjgDUn/C0lrJKyfgP1eH+XEr6dBk2
+	dXPG/sO/U39fi0p66BRt4O7kTH2UZrCv2PFMcXjKdhEoPs2ZbhqI3fJZ/eDOF+XigzVU+8lXk2m
+	APCg4o3DyPZP1zxTJDsm5ym6DLb9bXHufLBFRyMFsW6WZR3GMaYMGStu9AYvewgWoyQSmozE1jc
+	36yfVu0iJHCQFwKB2sHBcHpzoxlbJugI1gmisavZvY6NlRq1CsJJ11WhDSyIbUmF+sL6LmAfZO/
+	k+eqcUnfZ/0TPof2pfdBTlY3qbTNbj40=
+X-Google-Smtp-Source: AGHT+IF2mpYCyGVUcU1jI9o10RqcMKRUSsS4RESsp4aChq6sbBycz3536/vpVNzy6Tu9lWLcrVnzdg==
+X-Received: by 2002:a17:907:96a2:b0:ae3:60e5:ece3 with SMTP id a640c23a62f3a-ae9cdd8436fmr2406915166b.6.1753177060157;
+        Tue, 22 Jul 2025 02:37:40 -0700 (PDT)
+Received: from [172.20.10.10] ([46.97.171.248])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6ca7bc8esm836474166b.106.2025.07.22.02.37.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jul 2025 02:37:39 -0700 (PDT)
+Message-ID: <c13f39b5-020d-4553-a79f-e22a0cbd1dfa@linaro.org>
+Date: Tue, 22 Jul 2025 10:37:37 +0100
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJAxQMLQVX9oJLMhAA--.38709S2
-X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGw45WFW3CrW8Cr1UXw48Zrc_yoW5Kr47pa
-	y5Aay3KFy5KF4Y9a98tayrCr13Z34fJr9rJFZrW34xK3s3J3srWFy8GF10qF4avryfXryx
-	ZFyvgas7uFsrXrbCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkmb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26Fy26r45twAv7VC2z280
-	aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20x
-	vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-	3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIx
-	AIcVC0I7IYx2IY67AKxVW7JVWDJwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
-	42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4
-	A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU4X_-DUUUU
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: spi-nor: winbond: Add support for W77Q51NW
+To: Michael Walle <mwalle@kernel.org>,
+ Marek Vasut <marek.vasut+renesas@mailbox.org>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+References: <20250721202257.83936-1-marek.vasut+renesas@mailbox.org>
+ <9eabfe619554cbdd493086dcffef8f44@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <9eabfe619554cbdd493086dcffef8f44@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250722_021153_476480_2832FDC3 
-X-CRM114-Status: GOOD (  14.57  )
+X-CRM114-CacheID: sfid-20250722_023742_682896_8E289243 
+X-CRM114-Status: GOOD (  14.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,120 +97,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Loongson-2K1000 NAND controller is also similar to the Loongson-1C.
-
-It supports a maximum capacity of 16GB FLASH per chip with a maximum
-page size of 8KB, and it supports up to 4 chip selects and 4 RDY
-signals.
-
-The key difference from the Loongson-2K0500 is that it requires explicit
-configuration of the DMA control route. Typically, it is configured as
-APBDMA0.
-
-Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
----
- .../mtd/nand/raw/loongson-nand-controller.c   | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/loongson-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
-index 7a15df3fcd31..9c377062a3a1 100644
---- a/drivers/mtd/nand/raw/loongson-nand-controller.c
-+++ b/drivers/mtd/nand/raw/loongson-nand-controller.c
-@@ -73,9 +73,18 @@
- #define LOONGSON_NAND_READ_ID_TIMEOUT_US	5000
- 
- #define LOONGSON_NAND_64BIT_DMA		BIT(0)
-+#define LOONGSON_NAND_DMA_CONFIG	BIT(1)
- 
- #define BITS_PER_WORD			(4 * BITS_PER_BYTE)
- 
-+/* Loongson-2K1000 NAND DMA routing register */
-+#define LS2K1000_NAND_DMA_MASK         GENMASK(2, 0)
-+#define LS2K1000_DMA0_CONF             0x0
-+#define LS2K1000_DMA1_CONF             0x1
-+#define LS2K1000_DMA2_CONF             0x2
-+#define LS2K1000_DMA3_CONF             0x3
-+#define LS2K1000_DMA4_CONF             0x4
-+
- struct loongson_nand_host;
- 
- struct loongson_nand_op {
-@@ -768,6 +777,23 @@ static void loongson_nand_controller_cleanup(struct loongson_nand_host *host)
- 		dma_release_channel(host->dma_chan);
- }
- 
-+static int ls2k1000_nand_apbdma_config(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	void __iomem *regs;
-+	int val;
-+
-+	regs = devm_platform_ioremap_resource(pdev, 2);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
-+
-+	val = readl(regs);
-+	val |= FIELD_PREP(LS2K1000_NAND_DMA_MASK, LS2K1000_DMA0_CONF);
-+	writel(val, regs);
-+
-+	return 0;
-+}
-+
- static int loongson_nand_controller_init(struct loongson_nand_host *host)
- {
- 	struct device *dev = host->dev;
-@@ -786,6 +812,12 @@ static int loongson_nand_controller_init(struct loongson_nand_host *host)
- 	if (host->data->flags & LOONGSON_NAND_64BIT_DMA)
- 		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
- 
-+	if (host->data->flags & LOONGSON_NAND_DMA_CONFIG) {
-+		ret = ls2k1000_nand_apbdma_config(dev);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	chan = dma_request_chan(dev, "rxtx");
- 	if (IS_ERR(chan))
- 		return dev_err_probe(dev, PTR_ERR(chan), "failed to request DMA channel\n");
-@@ -950,6 +982,18 @@ static const struct loongson_nand_data ls2k0500_nand_data = {
- 	.set_addr = ls1c_nand_set_addr,
- };
- 
-+static const struct loongson_nand_data ls2k1000_nand_data = {
-+	.max_id_cycle = 6,
-+	.id_cycle_field = GENMASK(14, 12),
-+	.status_field = GENMASK(23, 16),
-+	.op_scope_field = GENMASK(29, 16),
-+	.hold_cycle = 0x4,
-+	.wait_cycle = 0x12,
-+	.nand_cs = 0x2,
-+	.flags = LOONGSON_NAND_64BIT_DMA | LOONGSON_NAND_DMA_CONFIG,
-+	.set_addr = ls1c_nand_set_addr,
-+};
-+
- static const struct of_device_id loongson_nand_match[] = {
- 	{
- 		.compatible = "loongson,ls1b-nand-controller",
-@@ -963,6 +1007,10 @@ static const struct of_device_id loongson_nand_match[] = {
- 		.compatible = "loongson,ls2k0500-nand-controller",
- 		.data = &ls2k0500_nand_data,
- 	},
-+	{
-+		.compatible = "loongson,ls2k1000-nand-controller",
-+		.data = &ls2k1000_nand_data,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, loongson_nand_match);
--- 
-2.47.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiA3LzIyLzI1IDk6NDMgQU0sIE1pY2hhZWwgV2FsbGUgd3JvdGU6Cj4gSGkgTWFyZWssCj4g
+Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jCj4+ICsrKyBiL2RyaXZlcnMv
+bXRkL3NwaS1ub3Ivd2luYm9uZC5jCj4+IEBAIC0zNDMsNiArMzQzLDEwIEBAIHN0YXRpYyBjb25z
+dCBzdHJ1Y3QgZmxhc2hfaW5mbyB3aW5ib25kX25vcl9wYXJ0c1tdID0gewo+PiDCoMKgwqDCoMKg
+wqDCoMKgIC5pZCA9IFNOT1JfSUQoMHhlZiwgMHg4MCwgMHgyMCksCj4+IMKgwqDCoMKgwqDCoMKg
+wqAgLm5hbWUgPSAidzI1cTUxMm53bSIsCj4+IMKgwqDCoMKgwqDCoMKgwqAgLm90cCA9IFNOT1Jf
+T1RQKDI1NiwgMywgMHgxMDAwLCAweDEwMDApLAo+PiArwqDCoMKgIH0sIHsKPj4gK8KgwqDCoMKg
+wqDCoMKgIC8qIFc3N1E1MU5XICovCj4+ICvCoMKgwqDCoMKgwqDCoCAuaWQgPSBTTk9SX0lEKDB4
+ZWYsIDB4OGEsIDB4MWEpLAo+PiArwqDCoMKgwqDCoMKgwqAgLm90cCA9IFNOT1JfT1RQKDI1Niwg
+MywgMHgxMDAwLCAweDEwMDApLAo+IAo+IERpZCB5b3UgYWxzbyB0ZXN0IHRoZSBPVFAgcmVhZCBh
+bmQgd3JpdGU/IEknZCBndWVzcyBzbywgYmVjYXVzZSBvdGhlcndpc2UKCkFueSBvZiB5b3UgaW50
+ZXJlc3RlZCBpbiBhZGRpbmcgdGVzdGluZyByZXF1aXJlbWVudHMgYW5kIGV4YW1wbGVzIGZvciBv
+dHA/Cgo+IHlvdSB3b3VsZG4ndCBuZWVkIHRoYXQgZW50cnkgYXQgYWxsLCByaWdodD8gT3IgaXMg
+aXQgYmVjYXVzZSBvZiB0aGUKPiB3aW5ib25kX25vcl9sYXRlX2luaXQoKSB3aGljaCB3aWxsIGJl
+IGNhbGxlZCBhcyBhIG1hbnVmYWN0dXJlciBmaXh1cD8KCk0sCgp0aGUgb3ZlcndyaXRlIG9mIHNl
+dF80Ynl0ZV9hZGRyX21vZGUgaW4gd2luYm9uZF9ub3JfbGF0ZV9pbml0KCkgc2VlbXMgYQpsaXR0
+bGUgdHJhc2h5LCB3ZSBhc3N1bWUgdGhhdCB3aW5ib25kIHdpbGwgYWx3YXlzIHVzZQpzcGlfbm9y
+X3NldF80Ynl0ZV9hZGRyX21vZGVfZW40Yl9leDRiKCksIGFwYXJ0IG9mIHRoZSBleHRyYSBvcHMg
+dGhhdCB3ZSdyZQpkb2luZyB0aGVyZS4gQXJlbid0IHdlIGJldHRlciB3aXRob3V0IHRoaXMgZ2Vu
+ZXJhbGl6YXRpb24/Cgo+IEluIHRoYXQgY2FzZSB3ZSBjb3VsZCBkbyB0aGUgc2FtZSBhcyBpbiBj
+b21taXQgYWZlMWVhMTM0NGJiICgibXRkOiBzcGktbm9yOgo+IGFkZCBzdXBwb3J0IGZvciBNYWNy
+b25peCBPY3RhbCBmbGFzaCIpLgo+IAo+IC1taWNoYWVsCgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
