@@ -4,59 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6758C83F1A
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jul 2025 14:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B646C87FCE
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jul 2025 15:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=P5tNHwQZPWoIFxJd1sPGKj31sRIDaKEV4bxQJamuZos=; b=EvN8uFlHShpVNrG7zz4oN8+fWh
-	NHepJuceG7vARtHYXKpIwUsjO3ttU3uDnFuNn0xCDULYB2MYDYBdYY2j4oJe9TfKCcOl3251/Rffu
-	CFx9Hf4dDczRdh/JnjioQZuEhrbJFVotNLpQrcbzkOcU4PRk1iMQsRB/fGcoccJLO4haReTT2rSiE
-	AL9PRjhddpV74G5Z2BCtsZMRWApuQIYavLKbqFNVkqTXrnctmYmHo17gO6EzW/N3Oqy5RZbqvZtq5
-	nISntJ7ifj8rURNQiRW7Ug+N3kaaqV8IQ9Bs7+m/su3G9SdM6UNTeMNK70QI/2vV8r8nAgV8mAViQ
-	6YaRNHmA==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mum/inuCSG2uiv56IpD9HYms0GaMzPpcyG2V5duP+KA=; b=r3SKMzq+WKuyd+
+	fh3wcKFd77cUKR0oQF3PtKJ9RKJ2m20FLLZBTTKPfdAG72fouapLsZjmINOXURbijLRhlvlWubqze
+	jU8Oq4r/slMuXKurptZqV7VdqyQ4qphlDUzpISCvDNS44w5fKJjOqdTJD9vCqWqU3TTkFRI0bzaiM
+	YYQgKqaQ67lNlbbVq9IjcCNauXQLGrlxFhl4jx92tNqPTtIwc0o0ovloQEaayLw8vlLbFrCIB11BW
+	VbXBr2B+CTqSCxC5Ei1i3SNc+iyqzABzJ+cXamW3JlmfKi/E4s1kCzgtfD1qt+ffY2ipsaI5IP1UB
+	ibC6QSjKYjr5Q9sJYC8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ueDtQ-00000002gfG-2LB9;
-	Tue, 22 Jul 2025 14:22:56 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1ueFNw-00000002vuz-0a4x;
+	Tue, 22 Jul 2025 15:58:32 +0000
+Received: from mout-p-101.mailbox.org ([80.241.56.151])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ueDPJ-00000002bKf-2IvP
+	id 1ueDyj-00000002hi9-0uJj
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Jul 2025 13:51:49 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id AC9AB601FB;
-	Tue, 22 Jul 2025 13:51:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD205C4CEEB;
-	Tue, 22 Jul 2025 13:51:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753192308;
-	bh=VakZKKnUbpQ2tyJo/9Ti6S/BvWQx1CCmjdif3cutG1k=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=IEdeGY+idZh/JlTGJu8q6FLSKR0gOHCv784m9e3X6/GVU/3SQp9pitmRRal9jZBdr
-	 fVuJUe+LzZX6WF695Df7YB1OCgPYOxScmN+MGhSZ2MPmnBnOR/K+UakP5x+fzCJdgG
-	 krxjKGwQYQp5XbriXYl/jSxVKX+HnQlf3UmV96IyiOitwtw/icoNtxPukzvxqzlTHI
-	 dYJscgEPsa9Jm5UgWOSFyJfNjLj8ZOo4b57dlrpbpKodsoQwEPU6c4TYFrkF7ixvlh
-	 uOjUSeIh9xGQaTQhK8FrI0YhOepk284kuC7I/AcAdXBsUm6pIljl/UgqoGBZLBMiYH
-	 Y2Ss+3RrNzETw==
-Date: Tue, 22 Jul 2025 15:51:44 +0200
-Message-Id: <DBIMSXRWMT9X.1030Q3NLFE83Y@kernel.org>
+	Tue, 22 Jul 2025 14:28:26 +0000
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4bmfkt5gPlz9sqs;
+	Tue, 22 Jul 2025 16:28:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1753194502;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QoZeSq3Ft9zf022HB19vAIpK1dHjyTYwqBtZvyRFCXI=;
+	b=eZtIqqwp/7w6FnBDYMq9ulsCseyYSJI6D81LFNCvmmCN+Eh4peo1IvAV1sDxLtyVYQXsra
+	lKfqeZ92TJqSGet9uB1onzjqbe5WzYx6VAf/SM8crVDKIpItL/SbSb7GaDK2UghkLyj9YQ
+	HI2JWfx0nV6zIoF6bZe3ndqBZcTTPQ2dJvuqJYHJh6O1bg+z5Icqr8aDwGT9EC3FO7Z3gb
+	q8rxT9XdTsQ0TZc2SJR0dPKgE7tkvBmEzl2WsVKovlFmYye9KboGwLOPHSWjqUN8s2FoFl
+	xKFUuNGRNu2+cKK8r/YgG6t68xb77pnA36R6LTtLSbXhP/TEj1wr92WDk5IHDg==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=pass header.d=mailbox.org header.s=mail20150812 header.b=QWzlBzep;
+	spf=pass (outgoing_mbo_mout: domain of marek.vasut@mailbox.org designates 2001:67c:2050:b231:465::2 as permitted sender) smtp.mailfrom=marek.vasut@mailbox.org
+Message-ID: <62383ff7-0a14-4f15-818b-f5e5c56332c5@mailbox.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1753194500;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QoZeSq3Ft9zf022HB19vAIpK1dHjyTYwqBtZvyRFCXI=;
+	b=QWzlBzepyhq2y1E5mc3THppQod1M4AOspjRIxVn/hXKoPsFj0opxOLv2xncbqHqdDKgiZ1
+	rEF1juluq6IUvCPSfESIWmA+xZm87wPSdIPEpx1Cuo47u+yn8hoCT0Avwx/VxZoWqHIDiU
+	HrnJKGuJjA8S6KG5xpL1oRXDiKzVuB/LFqxbRA+w4xsZAWGYukQlWVZZMwCfECjHXcjoHi
+	TnaU/e6BHnkazTUm4PVmkqGG4vctDbqPbmTs4j8PJIge6RJ1dAHCN1LT7J53EkIwsPqACP
+	p6kgupxN4nPLayYLh8kySqki7J1CuOfyu07NWNB1BWImY1elWE7KWDnz9fhLIQ==
+Date: Tue, 22 Jul 2025 16:28:17 +0200
+MIME-Version: 1.0
 Subject: Re: [PATCH v2] mtd: spi-nor: winbond: Add support for W77Q51NW
-Cc: <linux-mtd@lists.infradead.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Marek Vasut"
- <marek.vasut+renesas@mailbox.org>
-X-Mailer: aerc 0.16.0
+To: Michael Walle <mwalle@kernel.org>,
+ Marek Vasut <marek.vasut+renesas@mailbox.org>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
 References: <20250721202257.83936-1-marek.vasut+renesas@mailbox.org>
  <9eabfe619554cbdd493086dcffef8f44@kernel.org>
- <c13f39b5-020d-4553-a79f-e22a0cbd1dfa@linaro.org>
-In-Reply-To: <c13f39b5-020d-4553-a79f-e22a0cbd1dfa@linaro.org>
+Content-Language: en-US
+From: Marek Vasut <marek.vasut@mailbox.org>
+In-Reply-To: <9eabfe619554cbdd493086dcffef8f44@kernel.org>
+X-MBO-RS-META: 9hjry69xq8ezz76u599fti8f57agswgn
+X-MBO-RS-ID: 39ef04fce8a48af26b9
+X-Rspamd-Queue-Id: 4bmfkt5gPlz9sqs
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250722_072825_459500_6165F4D7 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,109 +92,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5078729081544239007=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============5078729081544239007==
-Content-Type: multipart/signed;
- boundary=f39008052706824fb663390bc6caa983138aaa342a0ed11310985f88e26e;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-
---f39008052706824fb663390bc6caa983138aaa342a0ed11310985f88e26e
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-On Tue Jul 22, 2025 at 11:37 AM CEST, Tudor Ambarus wrote:
->
->
-> On 7/22/25 9:43 AM, Michael Walle wrote:
-> > Hi Marek,
-> >=20
-> >> --- a/drivers/mtd/spi-nor/winbond.c
-> >> +++ b/drivers/mtd/spi-nor/winbond.c
-> >> @@ -343,6 +343,10 @@ static const struct flash_info winbond_nor_parts[=
-] =3D {
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .id =3D SNOR_ID(0xef,=
- 0x80, 0x20),
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .name =3D "w25q512nwm=
-",
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .otp =3D SNOR_OTP(256=
-, 3, 0x1000, 0x1000),
-> >> +=C2=A0=C2=A0=C2=A0 }, {
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* W77Q51NW */
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .id =3D SNOR_ID(0xef, 0x8a=
-, 0x1a),
-> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .otp =3D SNOR_OTP(256, 3, =
-0x1000, 0x1000),
-> >=20
-> > Did you also test the OTP read and write? I'd guess so, because otherwi=
-se
->
-> Any of you interested in adding testing requirements and examples for otp=
-?
-
-Let's add this to my pile of "things to do when I'm having time
-again" :)
-
->
-> > you wouldn't need that entry at all, right? Or is it because of the
-> > winbond_nor_late_init() which will be called as a manufacturer fixup?
->
-> M,
->
-> the overwrite of set_4byte_addr_mode in winbond_nor_late_init() seems a
-> little trashy, we assume that winbond will always use
-> spi_nor_set_4byte_addr_mode_en4b_ex4b(), apart of the extra ops that we'r=
-e
-> doing there. Aren't we better without this generalization?
-
-Not sure where that comes from originally. But we are overwriting
-what SFDP is figuring out, correct? Maybe we should do the same as
-in macronix.c; just set it when it is not set. If the SFDP doesn't
-specify the method, I'd say it is a fair assumption that any (older)
-winbond flash use that stateful method to enter 4 byte addressing
-mode. Newer flashes probably features SFDP.
-
-For the extra ops.. I'm not sure if that is/was just a quirk for
-that particular flash or if any winbond flash has that problem.
-
--michael
-
->
-> > In that case we could do the same as in commit afe1ea1344bb ("mtd: spi-=
-nor:
-> > add support for Macronix Octal flash").
-> >=20
-> > -michael
-
-
---f39008052706824fb663390bc6caa983138aaa342a0ed11310985f88e26e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaH+XcBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/jWEAGApIIE/MDSnt49pTFVFfBPqz+IVUUv0NFs
-R9B/CUoXpRWElmRovIj3JjSnrWZ4pCmGAX46gfSJ4fAieQXaP+fczayZQzhnwM2k
-Kpzz9aPnEHLQJUsvcHvNUv59l9ampSC/L6M=
-=GoqN
------END PGP SIGNATURE-----
-
---f39008052706824fb663390bc6caa983138aaa342a0ed11310985f88e26e--
-
-
---===============5078729081544239007==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5078729081544239007==--
-
+T24gNy8yMi8yNSAxMDo0MyBBTSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPiBIaSBNYXJlaywKCkhp
+LAoKPj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci93aW5ib25kLmMKPj4gKysrIGIvZHJpdmVy
+cy9tdGQvc3BpLW5vci93aW5ib25kLmMKPj4gQEAgLTM0Myw2ICszNDMsMTAgQEAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBmbGFzaF9pbmZvIAo+PiB3aW5ib25kX25vcl9wYXJ0c1tdID0gewo+PiDCoMKg
+wqDCoMKgwqDCoMKgIC5pZCA9IFNOT1JfSUQoMHhlZiwgMHg4MCwgMHgyMCksCj4+IMKgwqDCoMKg
+wqDCoMKgwqAgLm5hbWUgPSAidzI1cTUxMm53bSIsCj4+IMKgwqDCoMKgwqDCoMKgwqAgLm90cCA9
+IFNOT1JfT1RQKDI1NiwgMywgMHgxMDAwLCAweDEwMDApLAo+PiArwqDCoMKgIH0sIHsKPj4gK8Kg
+wqDCoMKgwqDCoMKgIC8qIFc3N1E1MU5XICovCj4+ICvCoMKgwqDCoMKgwqDCoCAuaWQgPSBTTk9S
+X0lEKDB4ZWYsIDB4OGEsIDB4MWEpLAo+PiArwqDCoMKgwqDCoMKgwqAgLm90cCA9IFNOT1JfT1RQ
+KDI1NiwgMywgMHgxMDAwLCAweDEwMDApLAo+IAo+IERpZCB5b3UgYWxzbyB0ZXN0IHRoZSBPVFAg
+cmVhZCBhbmQgd3JpdGU/IEknZCBndWVzcyBzbywgYmVjYXVzZSBvdGhlcndpc2UKPiB5b3Ugd291
+bGRuJ3QgbmVlZCB0aGF0IGVudHJ5IGF0IGFsbCwgcmlnaHQ/IE9yIGlzIGl0IGJlY2F1c2Ugb2Yg
+dGhlCj4gd2luYm9uZF9ub3JfbGF0ZV9pbml0KCkgd2hpY2ggd2lsbCBiZSBjYWxsZWQgYXMgYSBt
+YW51ZmFjdHVyZXIgZml4dXA/Cj4gSW4gdGhhdCBjYXNlIHdlIGNvdWxkIGRvIHRoZSBzYW1lIGFz
+IGluIGNvbW1pdCBhZmUxZWExMzQ0YmIgKCJtdGQ6IHNwaS1ub3I6Cj4gYWRkIHN1cHBvcnQgZm9y
+IE1hY3Jvbml4IE9jdGFsIGZsYXNoIikuCgpJIGhhdmUgbGltaXRlZCBzdXBwbHkgb2YgdGhlc2Ug
+ZGV2aWNlcywgc28gT1RQIGlzIHVudGVzdGVkLiBUaGUgZmxhc2ggCmRvZXMgaGF2ZSBPVFAgcmVn
+aXN0ZXJzLCB0aGF0J3Mgd2h5IHRoZSAub3RwIGVudHJ5IGlzIHRoZXJlLiBXaHkgc2hvdWxkIApJ
+IHJlbW92ZSBpdCBpZiB0aGUgT1RQIHJlZ2lzdGVycyBhcmUgaW4gdGhlIGNoaXAgPwoKLS0gCkJl
+c3QgcmVnYXJkcywKTWFyZWsgVmFzdXQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
