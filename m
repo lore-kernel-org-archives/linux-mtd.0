@@ -4,85 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF69AC87FCC
-	for <linux-mtd@archiver.kernel.org>; Sun, 27 Jul 2025 20:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD28FC87FCE
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jul 2025 07:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m6WFKBpNRvGx2KaKZOiULLy5PM12o5G4Vx1qOFWAY5A=; b=xT8L+oNzJGEZjs
-	z5+rVS60+gt1gKn2HgSSsarYROk2oZKSmAeAuK0J4sKvC925k7mc5jc+issSERNXMX6eH9ha6Y6J9
-	rqbWobCeqVrGgRFeoDZYZAV6//Zae704dATrwXG+S52nF2lXIWuaxg8wMQFKzd2YHTGBc5qVUsSqC
-	kLdoy7aBOMwsJB7B6dG27LqMfKPgM4Gqgl8hJeO4S9qyjEzkLpB/qemMFEaE4LplKKsfbf0ja8GVe
-	yhA3wo9p85ejuk9gvLJcLXuON5nn+/b0ICf1x19oMwt6QiRIoCtGkDuQS6dEroebjVPe3q5eqpNiK
-	tqfQn99olL+TZicOK17w==;
+	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=xjsP2vz2mRYo3KdLyDsm2R+KiCdMOGKEcL5dHWVtMVU=; b=ZhP6QevGsP6I5RPfntoEsFZaCc
+	UcX6AFmGWPOlEaf0Qg9Puj1XABqjrRV5cDR5piBjTNTe4PHt2Js3tFxx+LN/1DU64kJe1q0csCglM
+	Ws2GLaJSH8dufF19In15pSxpKdS0c6AuXicpvlkolFSKLBG+jdtdMtY1rpu5ngp6+Qlv8RupKHIv4
+	LYMjMOhEv5bc8FfqMs3s6FCYIC/YxTfAmfRymwt6kDTo5KDdCSzk5hByHKhsR/kNhw1qjQ1WI+GKJ
+	2LKO/1mbSKwJVSsGJCQrRW/yd/9ZWhF9i/Di7nxi5keZVk54nPCKdNFuu8nf/+un2+RxnGUevLZiU
+	AEl7bG3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ug7wq-0000000DCLT-05Sr;
-	Sun, 27 Jul 2025 20:26:20 +0000
-Received: from mout-p-103.mailbox.org ([2001:67c:2050:0:465::103])
+	id 1ugI4r-0000000Dps4-3cHU;
+	Mon, 28 Jul 2025 07:15:17 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ug7wl-0000000DCKt-345r
+	id 1ugHPz-0000000DljF-0cro
 	for linux-mtd@lists.infradead.org;
-	Sun, 27 Jul 2025 20:26:16 +0000
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4bqtRN5Gk2z9scL;
-	Sun, 27 Jul 2025 22:26:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1753647968;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pVqjetrkruUe9JYviGggH7WtL8pQ7Lddsrbp4Xeri80=;
-	b=mbkFk88cUhr8yUpYFnvFyHoRMZwVzFl7ZmlDyWPraJYGpRvaDwc310f/sX/24Gyp2/2T1K
-	Z3J8qZ0YgL91XVVsLcec0GWBFln/NwksWx1K9rhAM85867/E/6uyCl2imuu1pKuDNcxvT0
-	gy9kGsjY1KF6WFjZ4dRk8y0cmft6S8B1ez6i0w48Ru2HGpj0ABLi3YXij8CV6dyq3W1uIb
-	OZ4nR2+uYcRYjSrvY9FGvcSgEIsYt17zEnwZp4XGFQQWrKT1LOFJgq1N2yvVl6GoRPfKiL
-	sEBPDLqkIiMoBXcnkyM/Y+zAKTZibEsliGIi0jepWUYS08tvDN8MxQeRIh7YZw==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=pass header.d=mailbox.org header.s=mail20150812 header.b=uxwoLRAM;
-	spf=pass (outgoing_mbo_mout: domain of marek.vasut@mailbox.org designates 2001:67c:2050:b231:465::102 as permitted sender) smtp.mailfrom=marek.vasut@mailbox.org
-Message-ID: <0d0cd3cb-61e5-4ec6-958b-ec48b82429bf@mailbox.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1753647966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pVqjetrkruUe9JYviGggH7WtL8pQ7Lddsrbp4Xeri80=;
-	b=uxwoLRAMja5/+qIvB5BOrKRros6quYAHEzVx7j14Flhg+xyTOnSP4gDMGAJqhuRUNsczy4
-	8n4DfZ+CC2S0RAvKhwZ8GGlqpbFwqkAZurzSp5mI5af95pjWXps1BpQr6NXSdQT1Oxjb4y
-	F6cUgzixSf993iszkCTPn9wtqcJswE4WZuFm0SJauDBSX4OvK7AyExdq20PiWMyKZpBPOI
-	RY13MtNgTgIoLqCX+AOJzPbHygdV6tM2B5/e8Vz/Nx89iKLQd02+u4jrEuOleMm7+uLYl+
-	wW+vQi7h/IrfX8eoDe80EQMm4QiOuoisfQeDBWqZcqsU+PTklWMZugnYfwVqaQ==
-Date: Sun, 27 Jul 2025 22:26:04 +0200
-MIME-Version: 1.0
+	Mon, 28 Jul 2025 06:33:04 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id F4037A5488E;
+	Mon, 28 Jul 2025 06:33:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 280D8C4CEE7;
+	Mon, 28 Jul 2025 06:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753684381;
+	bh=K4Bmq3xPhvDgkAu6fzp61axct5xS8LWojEAY59LKeG4=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=Z1siwN/AY6Adk9JPdKCM6hHqt5adql2vPlwoTFb1AcdJ1rJDBPyHLC0xE8nQQZZQ1
+	 d35kk86QuTWnD/l15jp+wVr9l1a8pfgLto/62ATH81iHCI1PNG8fvnX0EgNEwQJnAG
+	 eWBc1WmQFFZUXRiLhunxHabIeQxlrvywV6nYfJaYJ5ebJAXzQVfjMnwWVWizRcvEo0
+	 9g2l8fM1ZiydYeglqsB+zDLMuO4c1PbFPgnof3FTn57I0VlEEqZa30YQPF3yR72dpo
+	 Olf6BV1j8e0hPHp/QQa9vW3VIQ2qKclyT0D2iKaREDcgB4H9awsHPmNEVJDgDt3jTp
+	 Kzl+eXzFVM4iA==
+Date: Mon, 28 Jul 2025 08:32:55 +0200
+Message-Id: <DBNH88949QTH.3I3MSOA019UJL@kernel.org>
 Subject: Re: [PATCH v2] mtd: spi-nor: winbond: Add support for W77Q51NW
-To: Michael Walle <mwalle@kernel.org>,
- Marek Vasut <marek.vasut+renesas@mailbox.org>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Cc: <linux-mtd@lists.infradead.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>,
+ "Richard Weinberger" <richard@nod.at>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>, "Vignesh Raghavendra" <vigneshr@ti.com>,
+ <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Marek Vasut" <marek.vasut@mailbox.org>, "Marek Vasut"
+ <marek.vasut+renesas@mailbox.org>
+X-Mailer: aerc 0.16.0
 References: <20250721202257.83936-1-marek.vasut+renesas@mailbox.org>
  <9eabfe619554cbdd493086dcffef8f44@kernel.org>
  <62383ff7-0a14-4f15-818b-f5e5c56332c5@mailbox.org>
  <DBJ86H8MDFNX.2Y6T55E0NH63R@kernel.org>
-Content-Language: en-US
-From: Marek Vasut <marek.vasut@mailbox.org>
-In-Reply-To: <DBJ86H8MDFNX.2Y6T55E0NH63R@kernel.org>
-X-MBO-RS-ID: c7f887b48f46c31999d
-X-MBO-RS-META: enizhpo9cnkw6gcodok8afkhzh1januq
-X-Rspamd-Queue-Id: 4bqtRN5Gk2z9scL
+ <0d0cd3cb-61e5-4ec6-958b-ec48b82429bf@mailbox.org>
+In-Reply-To: <0d0cd3cb-61e5-4ec6-958b-ec48b82429bf@mailbox.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250727_132615_955632_7B4A8FF2 
-X-CRM114-Status: GOOD (  15.45  )
+X-CRM114-CacheID: sfid-20250727_233303_254730_AFD17D1E 
+X-CRM114-Status: GOOD (  12.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,38 +74,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============4681343776495478943=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gNy8yMy8yNSA4OjM2IEFNLCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IE9uIFR1ZSBKdWwgMjIs
-IDIwMjUgYXQgNDoyOCBQTSBDRVNULCBNYXJlayBWYXN1dCB3cm90ZToKPj4gT24gNy8yMi8yNSAx
-MDo0MyBBTSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4+IEhpIE1hcmVrLAo+Pgo+PiBIaSwKPj4K
-Pj4+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYwo+Pj4+ICsrKyBiL2RyaXZl
-cnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jCj4+Pj4gQEAgLTM0Myw2ICszNDMsMTAgQEAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvCj4+Pj4gd2luYm9uZF9ub3JfcGFydHNbXSA9IHsKPj4+
-PiAgwqDCoMKgwqDCoMKgwqDCoCAuaWQgPSBTTk9SX0lEKDB4ZWYsIDB4ODAsIDB4MjApLAo+Pj4+
-ICDCoMKgwqDCoMKgwqDCoMKgIC5uYW1lID0gIncyNXE1MTJud20iLAo+Pj4+ICDCoMKgwqDCoMKg
-wqDCoMKgIC5vdHAgPSBTTk9SX09UUCgyNTYsIDMsIDB4MTAwMCwgMHgxMDAwKSwKPj4+PiArwqDC
-oMKgIH0sIHsKPj4+PiArwqDCoMKgwqDCoMKgwqAgLyogVzc3UTUxTlcgKi8KPj4+PiArwqDCoMKg
-wqDCoMKgwqAgLmlkID0gU05PUl9JRCgweGVmLCAweDhhLCAweDFhKSwKPj4+PiArwqDCoMKgwqDC
-oMKgwqAgLm90cCA9IFNOT1JfT1RQKDI1NiwgMywgMHgxMDAwLCAweDEwMDApLAo+Pj4KPj4+IERp
-ZCB5b3UgYWxzbyB0ZXN0IHRoZSBPVFAgcmVhZCBhbmQgd3JpdGU/IEknZCBndWVzcyBzbywgYmVj
-YXVzZSBvdGhlcndpc2UKPj4+IHlvdSB3b3VsZG4ndCBuZWVkIHRoYXQgZW50cnkgYXQgYWxsLCBy
-aWdodD8gT3IgaXMgaXQgYmVjYXVzZSBvZiB0aGUKPj4+IHdpbmJvbmRfbm9yX2xhdGVfaW5pdCgp
-IHdoaWNoIHdpbGwgYmUgY2FsbGVkIGFzIGEgbWFudWZhY3R1cmVyIGZpeHVwPwo+Pj4gSW4gdGhh
-dCBjYXNlIHdlIGNvdWxkIGRvIHRoZSBzYW1lIGFzIGluIGNvbW1pdCBhZmUxZWExMzQ0YmIgKCJt
-dGQ6IHNwaS1ub3I6Cj4+PiBhZGQgc3VwcG9ydCBmb3IgTWFjcm9uaXggT2N0YWwgZmxhc2giKS4K
-Pj4KPj4gSSBoYXZlIGxpbWl0ZWQgc3VwcGx5IG9mIHRoZXNlIGRldmljZXMsIHNvIE9UUCBpcyB1
-bnRlc3RlZC4gVGhlIGZsYXNoCj4+IGRvZXMgaGF2ZSBPVFAgcmVnaXN0ZXJzLCB0aGF0J3Mgd2h5
-IHRoZSAub3RwIGVudHJ5IGlzIHRoZXJlLiBXaHkgc2hvdWxkCj4+IEkgcmVtb3ZlIGl0IGlmIHRo
-ZSBPVFAgcmVnaXN0ZXJzIGFyZSBpbiB0aGUgY2hpcCA/Cj4gCj4gV2Ugb25seSBhZGQgdGVzdGVk
-IGZlYXR1cmVzLiBJJ20ganVzdCB0aGUgbWVzc2VuZ2VyIGhlcmUgOm8uIEFueXdheSwKPiBPVFAg
-aXMgbm90IHJlYWxseSBvbmUtdGltZS1wcm9ncmFtbWFibGUgaGVyZSwgeW91IGNhbiB3cml0ZSBh
-bmQKPiBlcmFzZSBpdCBhZ2FpbiBhcyBsb25nIGFzIHlvdSBkb24ndCBsb2NrIGl0LCBpZiB0aGF0
-IHdhcyB5b3VyCj4gY29uY2Vybi4KClNvIGhvdyBkbyBJIHRlc3QgdGhlIE9UUCB3aXRob3V0IGxv
-Y2tpbmcgaXQgPwoKLS0gCkJlc3QgcmVnYXJkcywKTWFyZWsgVmFzdXQKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+--===============4681343776495478943==
+Content-Type: multipart/signed;
+ boundary=fd11ad08ce12bebac6607f5852f9e8f7f714528d81476904b87071075ca2;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--fd11ad08ce12bebac6607f5852f9e8f7f714528d81476904b87071075ca2
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+> >> I have limited supply of these devices, so OTP is untested. The flash
+> >> does have OTP registers, that's why the .otp entry is there. Why shoul=
+d
+> >> I remove it if the OTP registers are in the chip ?
+> >=20
+> > We only add tested features. I'm just the messenger here :o. Anyway,
+> > OTP is not really one-time-programmable here, you can write and
+> > erase it again as long as you don't lock it, if that was your
+> > concern.
+>
+> So how do I test the OTP without locking it ?
+
+flash_otp_{write,info,dump,erase}, just don't use flash_otp_lock.
+
+-michael
+
+--fd11ad08ce12bebac6607f5852f9e8f7f714528d81476904b87071075ca2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaIcZmBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hQxAF7BpIRkqGDrx1GJOllCbP0wy0qHAg4813O
+BSVBM2IYsc7XmtQOoaq0U9HQDzg7Bgs2AYC96Pa5Dd8DCmx/hCkAsMfCYBimSgXd
+hxZSGH6ASOrVFnqD11SXHpUw6WHtAsPQMzo=
+=va+2
+-----END PGP SIGNATURE-----
+
+--fd11ad08ce12bebac6607f5852f9e8f7f714528d81476904b87071075ca2--
+
+
+--===============4681343776495478943==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4681343776495478943==--
+
