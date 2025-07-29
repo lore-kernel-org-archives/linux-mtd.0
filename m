@@ -4,84 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B452AC87FCB
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jul 2025 11:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38DC1C83F26
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jul 2025 03:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QGwm21aBuXf3KF3XWM2Y5gnrqKe6j6FfxT41cqIDcbs=; b=G2qEFs55xEGFx9
-	2n+A+5yddFZel7Vbdg/QrvmXbDrpzbUG5R67qWjub0sdaO5rlZhP/169u4eomxVXAiRkvvA/I9BT8
-	twftqvmLaZkU+PtGc2oHy3Xcls0QdcuVnR+si614J9ZJE3cktHVlnWSglMqEdZ/SPMR6kBmJkZstF
-	lJaidrJ7MdEdt3HWU8vGpvlmfsKF2qpK7AZxNKT2+43oFQhqfAVB4BLZgILMduep5q5Uf9MUabXnm
-	hohOqRzQ5xI6B9jhRsjHdRUFo2/ycHO8ytzIxtYI0NKeB5Hj5ZT4XwMXvOAYBO9B7wJIZZxlJB0kn
-	Wy10HxZHrjvjOc0Zppew==;
+	List-Owner; bh=x3vuygEFqCoh9Jj1u9ZIYRnRXNfP20DEXJsVDkR808w=; b=MW3Yv3S8QF0/ev
+	VyjqoN2M5f9ITTk3o952/0kL6EPaXBXYNNbZhIdDSoAJ8PhTSkfflu4A7y4oVP9CDtjCZqMS8CZ8G
+	hlDyZx23nGGgUq1TrcC+utZdi1BVQ9Rn1qU+n8TDhHx/d5L+RA+weyBaTJICrCK9QHbRVFlbDEhNW
+	wj41a/nUuMkrmLcJK8fWCgjF1rs59MsaRIq8F6yC1wdt/KV8p7n87G+0rbUnoFLhrC94uxlO0W+V5
+	cm3CzamjBmyRvQDd+LF1or6R/ca6+r/9SDPp7ra36uDEZsoLeRXT9OFVmBeDXdDuNNZhRHBzBeW92
+	iPawTVOpVvU7ooUu7dKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugM18-0000000ELh0-1lOF;
-	Mon, 28 Jul 2025 11:27:42 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1ugbPh-0000000FriI-1uXP;
+	Tue, 29 Jul 2025 03:54:05 +0000
+Received: from mout-p-102.mailbox.org ([80.241.56.152])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugKv3-0000000ECXd-1CXW
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 28 Jul 2025 10:17:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=tB/giJamLwrlrWdb+yV4MiXhuFOprryUVJQyo9azviI=; b=kC7+6M4K2t6Sp3ia1o2rGOsbr9
-	qgvTJd/slWv707viVSHHzlAuSGhoPfjRtawj75m1dF2zoe8qyG++prsPOIEpA4mXLQ+JrYzrIa/1N
-	Tco/lhSCHDJqx5VEtLk7a66v+Rd0PXenua+FrhDtRtKiQDasj8jbcaXJpowHU/tVz1Bx4eZUj8l4t
-	BLfbbPL95fc8fvXy4rJaw1GarKHUeBrw8Bh26U0KnAdMm4/fuqKC3irlxjwAE2C3dMmy4nNgg5aqJ
-	PZY/YwjH7vD13pD5wQn0stzhZcW87mYcyltyi/9WxJiF6Yx6XlKQspcO+F0+4io2MPo9DFyn8ePeO
-	EdoFndCg==;
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugKur-0000000CQxE-41wp
+	id 1ugbNp-0000000Frdg-2M74
 	for linux-mtd@lists.infradead.org;
-	Mon, 28 Jul 2025 10:17:17 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B535143295;
-	Mon, 28 Jul 2025 10:17:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1753697828;
+	Tue, 29 Jul 2025 03:52:11 +0000
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4brhHK40CNz9tYZ;
+	Tue, 29 Jul 2025 05:51:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1753761117;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tB/giJamLwrlrWdb+yV4MiXhuFOprryUVJQyo9azviI=;
-	b=Gvl8upK1SXANWVdQ+RKqeWjUJwzaYa1IC7pSWxIHaT+PJiZxljCfZp8obsC2xIoS0hTWZp
-	t64TYwVMiSipYJV+i5zLQUb/RANjGYc3Tdk8ZVHztV501TnBPfu5Mo6HvzoCqODZYqcZ3Z
-	qSC11MduGjowoht84bSVJd6k3DyIcQDWLNQeq0Xe5MTXKoP04DY3T68TzoWEYMHJvuUYs/
-	aDb492zuOm7qam46TkpgGTPMvGKlOdxLzFHob8xtjmVKkiO2T5BKKfW2ospCLGPO3uen4X
-	ETVav/UWaPfAkKqeEDgXF6XIrGxA2ELKrMAMAMYoyxhRCgUWLYqlhz9WWWhlFQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Thomas Fourier <fourier.thomas@gmail.com>
-Cc: stable@vger.kernel.org, Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>, 
- Viresh Kumar <vireshk@kernel.org>, 
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, 
- Vipin Kumar <vipin.kumar@st.com>, 
- David Woodhouse <David.Woodhouse@intel.com>, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20250707073941.22407-2-fourier.thomas@gmail.com>
-References: <20250707073941.22407-2-fourier.thomas@gmail.com>
-Subject: Re: [PATCH v3] mtd: rawnand: fsmc: Add missing check after DMA map
-Message-Id: <175369782769.102528.246537562442649222.b4-ty@bootlin.com>
-Date: Mon, 28 Jul 2025 12:17:07 +0200
+	bh=/mrZr0k1CH1wBQQfdXAImWXil90dxRbLtJqXjKs7gYI=;
+	b=rzGUbzf1QNkYSJ+O4AXWqnJoWe1NR7WsIsgvkSGDKBDjZdp5NNId59nAGx4LYudZxAGHvu
+	VNvNUg+JH5jrGUFHDPaRLCVKCM3TLYMY3/FKkiAP6AZWlHWfsdZvKJRwLDakr1lI2vP+H9
+	nZy3pI5XAWLrd2ITilDowrcsMkuR1v4ggSZQQkRWuRkTs7aeqcGsiX6c2gaDpuPj5QjWEi
+	m+XD7FigCaIGUkhxH/CZ0jIKoJqGK5rCWFrjS6LQGN/H6bSOEnz5iy2qEKesb2J9PbOIYD
+	Y1AubsLwLpK3p7mI1Gh0hvsDTpojC6DGziC6S4CgO0wzn2YC4I//vKtomMgQBA==
+Message-ID: <d592e97a-fad2-4269-b854-d3e82d985035@mailbox.org>
+Date: Tue, 29 Jul 2025 05:51:55 +0200
 MIME-Version: 1.0
-X-Mailer: b4 0.14.2
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdeludeludcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvegjfhfukfffgggtgffosehtkeertdertdejnecuhfhrohhmpefoihhquhgvlhcutfgrhihnrghluceomhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepheeifffhueelgfdtleetgfelvefggfehudelvdehuddulefgheelgfehieevvdegnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrgedvrdegiegnpdhmrghilhhfrhhomhepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepuddupdhrtghpthhtohepuhdrkhhlvghinhgvqdhkohgvnhhighessggrhihlihgsrhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehvihhpihhnrdhkuhhmrghrsehsthdrtghomhdprhgtphhtthhopeffrghvihgurdghohhoughhohhushgvsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhitghhr
- ghrugesnhhougdrrghtpdhrtghpthhtohepvhhirhgvshhhkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghrthgvmhdrsghithihuhhtshhkihihsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepfhhouhhrihgvrhdrthhhohhmrghssehgmhgrihhlrdgtohhm
-X-GND-Sasl: miquel.raynal@bootlin.com
+Subject: Re: [PATCH v2] mtd: spi-nor: winbond: Add support for W77Q51NW
+To: Michael Walle <mwalle@kernel.org>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+References: <20250721202257.83936-1-marek.vasut+renesas@mailbox.org>
+ <9eabfe619554cbdd493086dcffef8f44@kernel.org>
+ <62383ff7-0a14-4f15-818b-f5e5c56332c5@mailbox.org>
+ <DBJ86H8MDFNX.2Y6T55E0NH63R@kernel.org>
+ <0d0cd3cb-61e5-4ec6-958b-ec48b82429bf@mailbox.org>
+ <DBNH88949QTH.3I3MSOA019UJL@kernel.org>
+Content-Language: en-US
+From: Marek Vasut <marek.vasut@mailbox.org>
+In-Reply-To: <DBNH88949QTH.3I3MSOA019UJL@kernel.org>
+X-MBO-RS-META: k9gc1ikgent8pos756noof5a6xn5qegr
+X-MBO-RS-ID: 9cb17900f721a6b5267
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250728_111714_343311_CDF60068 
-X-CRM114-Status: UNSURE (   5.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250728_205209_821537_FFCDC887 
+X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,18 +79,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAwNyBKdWwgMjAyNSAwOTozOTozNyArMDIwMCwgVGhvbWFzIEZvdXJpZXIgd3JvdGU6
-Cj4gVGhlIERNQSBtYXAgZnVuY3Rpb25zIGNhbiBmYWlsIGFuZCBzaG91bGQgYmUgdGVzdGVkIGZv
-ciBlcnJvcnMuCj4gCj4gCgpBcHBsaWVkIHRvIG5hbmQvbmV4dCwgdGhhbmtzIQoKWzEvMV0gbXRk
-OiByYXduYW5kOiBmc21jOiBBZGQgbWlzc2luZyBjaGVjayBhZnRlciBETUEgbWFwCiAgICAgIGNv
-bW1pdDogN2M5ZTdiZGQ2NjNiMjM4ZjMyYzkzNTQ5MzhmZjY1ZDAyM2YxM2RhZgoKUGF0Y2hlKHMp
-IHNob3VsZCBiZSBhdmFpbGFibGUgb24gbXRkL2xpbnV4LmdpdCBhbmQgd2lsbCBiZQpwYXJ0IG9m
-IHRoZSBuZXh0IFBSIChwcm92aWRlZCB0aGF0IG5vIHJvYm90IGNvbXBsYWlucyBieSB0aGVuKS4K
-CktpbmQgcmVnYXJkcywKTWlxdcOobAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 7/28/25 8:32 AM, Michael Walle wrote:
+>>>> I have limited supply of these devices, so OTP is untested. The flash
+>>>> does have OTP registers, that's why the .otp entry is there. Why should
+>>>> I remove it if the OTP registers are in the chip ?
+>>>
+>>> We only add tested features. I'm just the messenger here :o. Anyway,
+>>> OTP is not really one-time-programmable here, you can write and
+>>> erase it again as long as you don't lock it, if that was your
+>>> concern.
+>>
+>> So how do I test the OTP without locking it ?
+> 
+> flash_otp_{write,info,dump,erase}, just don't use flash_otp_lock.
+
+Thanks. flash_otp_dump -u /dev/mtd0 returns zeroes, so I suspect the OTP 
+is not working. The chip does work even without this entry and the 
+content /sys/kernel/debug/spi-nor/spi0.0/capabilities and 
+/sys/kernel/debug/spi-nor/spi0.0/params did not change, so I think the 
+best way forward is to drop this patch, until I can figure out the OTP 
+on this chip ?
+
+-- 
+Best regards,
+Marek Vasut
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
