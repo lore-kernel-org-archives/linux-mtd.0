@@ -4,66 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8BCBC83F26
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jul 2025 08:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50BE5C83F26
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jul 2025 13:44:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ohbNPYbotxGfs1nWBgCLCRGmL2X1864q9nSDdQTQoR0=; b=dtU0vYldlB+GGoXuAC1oQ1VVXi
-	vd3qT5jkgbclzoLBXnbRU5FQhx9d6/FaMs/+Z4fyrWOb7AQskZf35BhJ717ros1TvHQ9iZZ1t23tf
-	eoGiThEmJt4x3y7iHCby4tpY/1Dr/Jdd6dBJj64k5l8DiCuWb17u0YrwWIuEBXsQPF9cyyihjFmiR
-	9W3wEYcQOW254EZSQvn1ikMZwWIIYr8FBk9ldS3A5+hVoZ5E92ytz2wFHdbFsj4s+5xU8kGDmEsZX
-	+p+awp10wN92v5Re7FZK7qoiMXWePpkSzF8dfa/nhSmfLPDQFrtzTxlfEgoNJIWANOrLfPDUqXfYg
-	JwEGWOgQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+RtrYt/TSqRw1Sx6pIdvAXFD8HdTrQIGN1ySWDVlrA0=; b=ETSRXboVdj9ZUt
+	LEvsOvnbdztrdcKg3mcnpBQigw2tDNaVKFQfk50yx3VVwuFROoxuIzBM6YBdB4l4r2RMsjQ9FBBYP
+	07YBCyxXi/os4WjRIVkCosaYCx4i2KsStkAU3Qs570Sx9+5/1lEHmM3rwYWi6KSnCOuPyXNgxSRLb
+	kXvIN3mnU5NhZ2OgnumXVbHCJtjU7oATQ/yFnguEANvlXqqmhLYlSdQzWve8smCFSstlkHnMd828Q
+	ZNb+wpjRlU5ZqQjKUf8nNzMEWRMWJZ7dIJ2GRO26mXPC1/anKNtxx7nn2NGDEb62vTUEyobhcyeXk
+	rrfVIKIjUVwranCFmupw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugg3K-0000000GITy-3hsl;
-	Tue, 29 Jul 2025 08:51:18 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1ugkcg-0000000Gpgk-1QHP;
+	Tue, 29 Jul 2025 13:44:06 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugg0U-0000000GI5f-1S2d
+	id 1ugkce-0000000Gpfn-0Fc1
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Jul 2025 08:48:23 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A6D7A5C57D4;
-	Tue, 29 Jul 2025 08:48:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 018BAC4CEF5;
-	Tue, 29 Jul 2025 08:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753778899;
-	bh=v/kpOVMVL0VbZRPfgljdXv2bn6Gc6hW9fXhN63RQtSM=;
-	h=Date:From:To:Subject:Cc:References:In-Reply-To:From;
-	b=d5soMQEduk1cxpl222qHqtta+r7E8SYfc1QU9usEcnPhZv35AaX5pimLRT/GG6PIp
-	 9EPwXZpv2KqcCiA5fzMv7IvXkQqm9TweGZfhoW5M6HTczBg6Z4cfvnicSePwgrCIN9
-	 JwshVQemLNK+vm6arLlSrXhdK4iP3gYVb7NFMTQeutIDaBTvBm5+KsO+OPzl/XExVU
-	 x7pU5wzI4+FGTfP37itq8zTKCIUNSsZvMhh1tGKdyJ7abgy/FwU2dh/SuKGCD+wOyy
-	 Dx0Z0Oy5sabvs3pbZGO27Etqsb90h0lVRxaxeoFqHhdM1PeJRSsUI/BmiIPilc1GPW
-	 Eu5TizYdJuURA==
-Date: Tue, 29 Jul 2025 10:48:15 +0200
-Message-Id: <DBOEQE01XFID.21SA81RTH4OOX@kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Marek Vasut" <marek.vasut@mailbox.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: winbond: Add support for W77Q51NW
-Cc: <linux-mtd@lists.infradead.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>,
- "Richard Weinberger" <richard@nod.at>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20250721202257.83936-1-marek.vasut+renesas@mailbox.org>
- <9eabfe619554cbdd493086dcffef8f44@kernel.org>
- <62383ff7-0a14-4f15-818b-f5e5c56332c5@mailbox.org>
- <DBJ86H8MDFNX.2Y6T55E0NH63R@kernel.org>
- <0d0cd3cb-61e5-4ec6-958b-ec48b82429bf@mailbox.org>
- <DBNH88949QTH.3I3MSOA019UJL@kernel.org>
- <d592e97a-fad2-4269-b854-d3e82d985035@mailbox.org>
-In-Reply-To: <d592e97a-fad2-4269-b854-d3e82d985035@mailbox.org>
+	Tue, 29 Jul 2025 13:44:05 +0000
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3b7834f2e72so1802778f8f.2
+        for <linux-mtd@lists.infradead.org>; Tue, 29 Jul 2025 06:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753796642; x=1754401442; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nFsz2UHtorJJsTYKHr5ZAg3v318PyN1bhW8UxJDcjho=;
+        b=HpGgIEUVVqqUKVHEx/HvaYlTxurTCliWcZz9kkg8xm/EsltPpJdEDN1foN3/HXq0TD
+         cW4Yf/80YUxvrVyQ4k0Ab+1vHBJ+oXz+2Aq5G2tYNF6PkX0p/yWoZ7229gnLQHq8zePI
+         uMNv95yAKMJkezlUUwZLqx1fPJQoSSYfCpi/8rNTxlgYWT7d3DE1/2SioPyMGF4VOs3Y
+         NLHNVhc8ibb3b2ViNnb6xgTpDDMEP2qt4+npVwVckPl0k+DB1TMWOELRpyscVuCYkj8Y
+         3w6dfA6N1n9PPs1Y21DPWQw5uhf/vNhjwnibo4nmqveltyWq1gzvJI5JVnLy2KkOltmb
+         MCCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753796642; x=1754401442;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nFsz2UHtorJJsTYKHr5ZAg3v318PyN1bhW8UxJDcjho=;
+        b=CQxZ906VD0JKDQQottUXfPA6gB0yK4mjF1N6OxjSvNXWhcz0mVKmStwq/7hCVjsdgd
+         XXVvHauF3GuioGovgsd+dG1yDorKrtETqH2r3C4tjhMrRcchgR4+t8abNXgigPGu1edf
+         Qi3iiFXCxgxQA8B/2dPBQunb+4lc2Hef0XGKB9GeaNjxgGAmWGd8v00NMjbUFmZnSgpj
+         n/O+Rx3swIfeRcbBlrbQh5X+HkqfM+qFsITh3AjT4XRw6EF1t78H5vCtjV4/8AOIkVww
+         3OTa3T41+Uv4qrlou/8moNP0ZQhrI8u775xHuJn4dGDbA3JH7ENIOpDyj9LI6GyhDRV0
+         VBBg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9BRaMRsz+BE9pGjuD8bGl5FQt4n5rSSqIN8gYvf4Exut4PpNqkjkI37I4MY4SGy2JB0Jpvc5sw0g=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyerJ+bgLYhov85S5GDmoQberFDrOhJc4X8mXY2toQ9SnwVAcDv
+	4ZgcvOcmoU9Q0k6V+HOkk6Ht/YydLrQButyGp3OlqnMJHcTYMAKNf3TJ
+X-Gm-Gg: ASbGncu5NiOWJvhQ9KacmLFa4FBVjIdYITtumlTIQeZptU0/sbCP28xt9PjnYbYdKxV
+	k+AO3IrvSuglQzx/eeL6i9/XFg1JOblLG27NUxAetBPRdmVWcs13sSMBoMDeRqUa2XcTcjAn2gB
+	PFvnDLThlt/Nsdv8VuqR13bQ6U+wH9ilEW4OWOHs9nug8e/4Esfak/9Uh16xVucgjgjmiEgmo+M
+	7rkq9eihFT7jHgbQBzBtccNE+840vs9y97h/ko9eklbMZ0XUhZC+m79I7q7dHvUnu552nElZnq3
+	P0yiub5abRyf/jB5eqwrvtM7OT8wMqkO71Bwyr7i2d6l6YFgcl6McBDAIyqSCXmwxzl/EU8NkFA
+	/GuEg8U12PbSdrutgN0X5
+X-Google-Smtp-Source: AGHT+IGUDDCTZFd6Nu6hjYHDPeBMUaySJz3sutucWDvbnC/FjKn0QB0RI5umqEZ11eOIoZstnOmNgQ==
+X-Received: by 2002:a05:6000:2503:b0:3a4:e844:745d with SMTP id ffacd0b85a97d-3b77678ec4dmr10246893f8f.56.1753796642230;
+        Tue, 29 Jul 2025 06:44:02 -0700 (PDT)
+Received: from localhost ([87.254.0.133])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3b778eb27besm12419531f8f.9.2025.07.29.06.44.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jul 2025 06:44:01 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Artem Sadovnikov <a.sadovnikov@ispras.ru>,
+	linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] jffs2: Remove space before newline
+Date: Tue, 29 Jul 2025 14:43:27 +0100
+Message-ID: <20250729134327.1935856-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.50.0
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250729_014822_447412_7791709B 
-X-CRM114-Status: GOOD (  17.27  )
+X-CRM114-CacheID: sfid-20250729_064404_094934_F46FCA83 
+X-CRM114-Status: GOOD (  11.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,74 +95,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7798790408003765687=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7798790408003765687==
-Content-Type: multipart/signed;
- boundary=20717ec1f244d1b8495b8ac4321eba2428d3341753c744a573ed0c316169;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+There are a couple of instances of an extraneous space before a
+newline in printk and debug messages. Remove the spaces.
 
---20717ec1f244d1b8495b8ac4321eba2428d3341753c744a573ed0c316169
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/jffs2/erase.c   | 2 +-
+ fs/jffs2/summary.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Tue Jul 29, 2025 at 5:51 AM CEST, Marek Vasut wrote:
-> On 7/28/25 8:32 AM, Michael Walle wrote:
-> >>>> I have limited supply of these devices, so OTP is untested. The flas=
-h
-> >>>> does have OTP registers, that's why the .otp entry is there. Why sho=
-uld
-> >>>> I remove it if the OTP registers are in the chip ?
-> >>>
-> >>> We only add tested features. I'm just the messenger here :o. Anyway,
-> >>> OTP is not really one-time-programmable here, you can write and
-> >>> erase it again as long as you don't lock it, if that was your
-> >>> concern.
-> >>
-> >> So how do I test the OTP without locking it ?
-> >=20
-> > flash_otp_{write,info,dump,erase}, just don't use flash_otp_lock.
->
-> Thanks. flash_otp_dump -u /dev/mtd0 returns zeroes, so I suspect the OTP=
-=20
-> is not working. The chip does work even without this entry and the=20
-> content /sys/kernel/debug/spi-nor/spi0.0/capabilities and=20
-> /sys/kernel/debug/spi-nor/spi0.0/params did not change, so I think the=20
-> best way forward is to drop this patch, until I can figure out the OTP=20
-> on this chip ?
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index fda9f4d6093f..5b7ddec4217c 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -252,7 +252,7 @@ static inline void jffs2_remove_node_refs_from_ino_list(struct jffs2_sb_info *c,
+ 	D2({
+ 		int i=0;
+ 		struct jffs2_raw_node_ref *this;
+-		printk(KERN_DEBUG "After remove_node_refs_from_ino_list: \n");
++		printk(KERN_DEBUG "After remove_node_refs_from_ino_list:\n");
+ 
+ 		this = ic->nodes;
+ 
+diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
+index d83372d3e1a0..a0c1e8b2a02f 100644
+--- a/fs/jffs2/summary.c
++++ b/fs/jffs2/summary.c
+@@ -615,7 +615,7 @@ int jffs2_sum_scan_sumnode(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
+ 
+ 	if ( je32_to_cpu(summary->cln_mkr) ) {
+ 
+-		dbg_summary("Summary : CLEANMARKER node \n");
++		dbg_summary("Summary : CLEANMARKER node\n");
+ 
+ 		ret = jffs2_prealloc_raw_node_refs(c, jeb, 1);
+ 		if (ret)
+-- 
+2.50.0
 
-Probably. Good to know that the flash is working for you.
-
--michael
-
---20717ec1f244d1b8495b8ac4321eba2428d3341753c744a573ed0c316169
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaIiKzxIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/jb/QGAhc+gsKxCknmtQPaaJ/FTrerEZic21gys
-8Tbc7+kOt1qxnZgCX56A6Nxab3UmzitDAYDN4qFM0IG70A1EM4VIcSz+wKAf0Kgd
-AfAUJKmvZPgzv5xKMIaK572Gb6FYTnlPYn8=
-=0Gkt
------END PGP SIGNATURE-----
-
---20717ec1f244d1b8495b8ac4321eba2428d3341753c744a573ed0c316169--
-
-
---===============7798790408003765687==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7798790408003765687==--
-
