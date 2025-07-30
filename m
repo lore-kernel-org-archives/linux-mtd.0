@@ -4,79 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4364FC87FCC
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jul 2025 20:12:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C89EC87FCA
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jul 2025 01:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=HHq0OK6BVET/vV2jiRmZ4WH0csLmrJtxPfxWYWnB4Bs=; b=cFq
-	ESqEjKASumXbS5NyznbiL3woH/2+seu77ponDgeCLCRglfnbbrDP93flkqg4nNtPDa1dcx8Bl7V6x
-	ivb2ThpbbWRfzl+kw6Z0izBvfpEIR3UEb0qkMuP5IxwLyhBgswkdBCpDTnr/FNZatdl6TxNOAdFog
-	kyZujaiVPWa2JlRkBh9FCcxbGCWyZMAHOgehZv4qOOkxf5GOG5Yd5RtaC02K/21ogI8WDOPWfNebE
-	gAJVuu7Con0st84FJYGvQZ1y0q0FdtVyZvynqg0tNmd9XxeD1MNISGz24IbRYA6E6AHh5uuVcq/Lh
-	xlxP9xO5SOc3xhHSYSIfCLuaAUhz8kw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CC2lCWl+Z3Srq8p2jhja8kLBTuu1IyWaX8GyN4YRd0I=; b=d+dKe5nQHzE6dI
+	AotmHdzhWGZRQhpp/assrPmS7RCBJdDWp9ZuN8HVKGAy7tinvDYkiryXzzSMILc5mC2nhRnXQCfFE
+	BH7sZzQw/S8iveTgywhznKAvrCALMbiO6ziFFqF7T8HWLBKsqj11rRSu7KI1KbdjksyDgQTsEmrQP
+	TCNg4od47QTBPMb+WW6FpTdC94Pheq4MtoAtC9KzrqjM0/tCga3hc99vTglNlHS40+Ya5OYPnwR4O
+	OguI+uGuZejj7Y8M/P7bjpidrFTdarMyf2XEE8UDBDn9EM9VuodIWkUWPddU8eiPJCfTGM4spI2Yz
+	i5T73+66yxNwxv+bO+Bw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugqgd-000000002Bp-2FUj;
-	Tue, 29 Jul 2025 20:12:35 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1ugvnD-00000000T8F-0iMN;
+	Wed, 30 Jul 2025 01:39:43 +0000
+Received: from mail-mw2nam10on2061e.outbound.protection.outlook.com ([2a01:111:f403:2412::61e] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugqee-0000000021m-3P8E
+	id 1ugvnA-00000000T7U-1jI5
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Jul 2025 20:10:34 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-aec5a714ae9so878980966b.3
-        for <linux-mtd@lists.infradead.org>; Tue, 29 Jul 2025 13:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1753819829; x=1754424629; darn=lists.infradead.org;
-        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FKuOQIUzxLcHTK7W3h1Rqt2SBeSCsDHUPMu2l8U3bnA=;
-        b=BEAZG8rc1qo8R05zhT7N871b18h2/QymWDkaQZSXoGx+j5qsoPJfcAxs+7GF3do7P7
-         ocBKyGdwdc+/OBfQFbG7UrMAFA79lpu/AEMunmQEzPSw0LZkHom7uaGfpbuixYWzU9m6
-         lIAG4BMj8kQJIbvnawQT51lpgD69NpjbnIRS5ENA8A6k3TR5ZcXK5xB0ClEKdE5bc+50
-         T5WHB81l8fT6ZtON1Tgc3cKH+qr1bZRRru8wVFo/sRPi2a7oNjicYbAcYGGFSCYJS0uF
-         Qni/wN63gwOmhOzuBOzad0dTP9ok5WC09QFRf0ytGpiEqNLijYJOorDrjRy40yxKYSRy
-         jSpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753819829; x=1754424629;
-        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FKuOQIUzxLcHTK7W3h1Rqt2SBeSCsDHUPMu2l8U3bnA=;
-        b=k/Z8HBhMOf5itaPPgUCa0g6VCfKrzf/+fIYFAb3Ccd6BB8ugZ5QZbfG0USmvnt3mS+
-         t2gPOwGrRJtwZkZli/t4q0DHI3uvikZD2Ux9E+qAE/XV8/pozjU37uDAdGRsnmk4lH0j
-         MoI4hSpCRuSjSTSrkeepDgeY8PDtYViyo6DKk73/Qaj/nvoC4neMfRXYB8nPwpME2MpM
-         RTf5C3rWar0mAQABZpLtsN5z4ai5kn/05yYVaPt8Fk/q2Cs+BzuFLlXUGSkdv77DtrB4
-         nzQZRaYGQj8e2GuaR8gx9iCEX9LX0CvO1ze3KhOqEMPBmMqiRASQsbOhf88a1mZ6+TEz
-         74+Q==
-X-Gm-Message-State: AOJu0YzMafxUT9QzS4VTfZmTI+xkgEe4REjTfZs9lYZPu7MLrFCWhnLZ
-	DqKar6SidPcijJRFAH0j4kIxDYWD59O4laODGY60zH/bOj2h4Cdgdxsid2SONGGfkBQeZ/QJ1hS
-	qhMne
-X-Gm-Gg: ASbGnctsaYdBvKVqrQMwxpRTuZ0VYYIkvFBASLXgnwkPH9et5pTiL6DiHrAAWtjYqMU
-	ayQoKEgbtLVJ0x3ozHCcnYYcTSXkymLy9hsYysgFuR+QK/7tviC1fusGQbW86VFEb+df6VsNEL8
-	iRHHOIkdxGBvUvLQJz4z9u/1+yvx076CZ7DqcLdbxsLiHBA0praCa3wbsrYxqgjy47VHdrJsmUM
-	nRHBPIrB6gJpJnRFw8OCdNlptzzveo2aflkTY3uWi8HE9i9Q5fs5wzflG5sAaBlHn5zOm3RXaNh
-	bj9shS6h1vMWmcHRr7+HOPdUNH4th7Pq2ixTMWqATeEvvvSbOJUPFeHrcnLpHzB92U7ANdWVA/o
-	Re2ogdq/78x7KpKvR68nrHKcvFRQ41oIEh9xTU+e4G9VM053feQsMFqyJ/MBpYTM=
-X-Google-Smtp-Source: AGHT+IHOcV6g/UKdaeOksJAZv8oqi/ykcVNEIP0+IbKecU0CG+YVXXzJt1mG7mOgdrjHD5QqgjsYNA==
-X-Received: by 2002:a17:906:f59c:b0:ae9:8cb4:2fe8 with SMTP id a640c23a62f3a-af8fd97327fmr77327966b.37.1753819828620;
-        Tue, 29 Jul 2025 13:10:28 -0700 (PDT)
-Received: from somecomputer (85-127-105-52.dsl.dynamic.surfer.at. [85.127.105.52])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af635a65fffsm622702966b.76.2025.07.29.13.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jul 2025 13:10:28 -0700 (PDT)
-From: Richard Weinberger <richard@sigma-star.at>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] UBI and UBIFS changes for v6.17-rc1
-Date: Tue, 29 Jul 2025 22:10:26 +0200
-Message-ID: <7787490.DFzTOozpa1@nailgun>
+	Wed, 30 Jul 2025 01:39:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Dn9WX/ct4kh04ZVkLuR7l3jB4tL0lJLjoyT0cusiPh9H9ibQXD8M23Uerxhv1Q0ymHKrHX72VIyiTF5kEniq6qcJ0nSAA5M4z26A2vhIzkkyxL7WnqNXbJ255Y+0CIjlAdxdU/ngsN5scD4Z8hwdoWn1ICOvF71H1T32F+312iIWbBUTGQcBbGSCe26voCPfMnkp5e8FtrB2wRxWXikjaEcYpuuIwtDjJ18XLP5q5uLqRWT03SQY1q3+f2b0GqfuhZsuasX2P3WS5gi5+cxuIQBC9jhKlXlwKpWW799mAMmFeaFpYhg3SrB+JRK46ZumgAaOgl1jyDtsniZRpoO0Xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1G4Obh/d3GJ46WHJ5jkZ/lYRA5OJAJ0QRbC7ftnOGVw=;
+ b=RATLnxcDurOtCyaQIvUpW3E22d+sFuaxdUV4xXyruTwVrG/Z5zg99f88+p4OtJC3tp+SEVPJswbrHtFPrinUij6lzjfAXyvRFQyD+t63FxwCjRdK/O4yDssX4VzUtYRuQUU++oWTyR+QjAFWjrM/z/D7d48G9t6nWZi62HlCVa4EBiNIeQbdSN9pI1d/j2LMFetg+RCnu8eheikJ0cQVbC7D7LAjo7RI47KEmA5xbh0urGZb46f/Er2DPAJPcqpzoix9C6Fz8ogP3U79w8HkfPCQWd8svQTY8gTgkEGQvGEwg7YQJm/5vrFPN/kbRO7HmNdU6AcBhTII8S8Ej6NCBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
+ dkim=pass header.d=altera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1G4Obh/d3GJ46WHJ5jkZ/lYRA5OJAJ0QRbC7ftnOGVw=;
+ b=p9sU+UOsc6ez3dzxGhpjebFzOEp+WeaA+67yEIODkSYYrO0GazT2tDiPFthrtFKgzCyGdrRDgFKD8lZudB/OdqVbmK2EPC6wAqnEy/h8JScp4yf1OIjDLsP19cR8ISgV793M+eBFlFwBvDEOfHTYI3R48fHtnAfm6QeCLRneuEsX8D0DqiXJuFc8otdVCIIPVXW34DqJli+0EDTpnI8cORyM+jtw/K0llcD7Hm6LbVIp5DWCApCh0ztHvqpiC+YIrgd+yd4ki5pA/p0ux6augfzD3zXw/5eSP/13Uk2OnRsp+40nOp7/4pV1vTkvgII13iEmVoAJXzKZqCJKrr400A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=altera.com;
+Received: from MN2PR03MB4927.namprd03.prod.outlook.com (2603:10b6:208:1a8::8)
+ by MN2PR03MB4925.namprd03.prod.outlook.com (2603:10b6:208:1a3::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8989.11; Wed, 30 Jul
+ 2025 01:39:31 +0000
+Received: from MN2PR03MB4927.namprd03.prod.outlook.com
+ ([fe80::bfcb:80f5:254c:c419]) by MN2PR03MB4927.namprd03.prod.outlook.com
+ ([fe80::bfcb:80f5:254c:c419%4]) with mapi id 15.20.8989.010; Wed, 30 Jul 2025
+ 01:39:31 +0000
+From: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list),
+	Matthew Gerlach <matthew.gerlach@altera.com>,
+	Khairul Anuar Romli <khairul.anuar.romli@altera.com>
+Subject: [PATCH v3 1/1] mtd: spi-nor: core: Prevent oops during driver removal with active read or write operations
+Date: Wed, 30 Jul 2025 09:39:18 +0800
+Message-Id: <566fc1168db723672ab0bc6482ec7b72b4b8fe2b.1753839339.git.khairul.anuar.romli@altera.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <cover.1753839339.git.khairul.anuar.romli@altera.com>
+References: <cover.1753839339.git.khairul.anuar.romli@altera.com>
+X-ClientProxiedBy: SJ2PR07CA0003.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::26) To MN2PR03MB4927.namprd03.prod.outlook.com
+ (2603:10b6:208:1a8::8)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR03MB4927:EE_|MN2PR03MB4925:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a99b76f-f6c4-4ea6-39f5-08ddcf09edca
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|921020;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?4p5T1WBv4QEUBJdjlVV3Nj3XscWXRKFx+dkh7LLVOlDl1C4MdXKzcGP2vkq5?=
+ =?us-ascii?Q?Pz3S1godEt+gwe/xMgCFZrPee9r5Mib+o3A5QhOd82qfik5BEC17kQ89qbaj?=
+ =?us-ascii?Q?4qxdoyh/amrvIQFM/7O1KQyvBkX6ASSnxL0zyBjA+zYDlTQD+7hnOoqpzlpM?=
+ =?us-ascii?Q?pEjzyvcCOyFSZKiaJ1yDng3wSq1rm1vWsqtVQ/AQJbajnp58P2bfzyxAKbhm?=
+ =?us-ascii?Q?/K9DyY2sLQuEWKaBJ3pQgKJEbT2EjcfHYMPPNWHJ+QauF6xE7VsK61INgddx?=
+ =?us-ascii?Q?Kz+SiKwtLj3zncXxfRcLZGI66MJ9rMWIkn2qMkxNng7RncD8BZU7+J6QzqyG?=
+ =?us-ascii?Q?DmzWVHfajpwkXNoe7w4ntoQkL3NQxR7Q/VNQWhi8gyaw0oXkVXZLCJimb102?=
+ =?us-ascii?Q?qHkxUA56NR7vkTbBi+0DZ2ipTKKpG6y7eHHxLjQIS4ffsxlfiROCbwHQT4ir?=
+ =?us-ascii?Q?NMJTXjwGwFWM6vSuvVn8S3nvm+iZuBy+UgunhF/7zHxDUxJ6KETa8YSjGgem?=
+ =?us-ascii?Q?iOQ7RPec2qhlaVrcvG13GBSI1wEN3iae/im7uBc/AThfhlKVULf031ndbThv?=
+ =?us-ascii?Q?FOgp69gdRKrRy+o74gTV4jVuaFNPLgum8vbHIynlemj8TuBTaB64vHWP6ySO?=
+ =?us-ascii?Q?+gBJuPrndMGK0sjPM0t3v/WJJcGol7x06q3rdqxnemBEEx0cSoM7gl3qMMBl?=
+ =?us-ascii?Q?QFirK0k9AJ36HYEUZTpwNCzzFtHH8HF3lt8xnSmJMthvmUDk25U9agY6IfZb?=
+ =?us-ascii?Q?/rIg+Lk1SohR180hHkCbbkfWafG37zQ0GoNlGSUraaX6MGV3c+tN78FU8OuO?=
+ =?us-ascii?Q?MsnJ7bckMxBQwuLVkklR+LubJN4wYb9hQTtMIke+9JUh+Un5REQTrrBqUmZZ?=
+ =?us-ascii?Q?t0eq8HwUIUIh+0NKRyU41zC4RA5LABu2kapNMguBu0JjhwzDX0ajzKk7vkUT?=
+ =?us-ascii?Q?fR7keeL37Qk9TpFVKJhKNyY1hGAlJd4Jh8CE5aK+N3KUdpgaYX+KJjpFaCkU?=
+ =?us-ascii?Q?iihPNDU3yFU/wL9NDdApE7KXmisWhK+VWyb2bqrmE0M0kIcIhrWdav9WXfIu?=
+ =?us-ascii?Q?xvyFdHP4sIwk/H7NHSg6sye0FjTaU90uA4LdjopBpyd0hKV5CVIdfA4KEzS3?=
+ =?us-ascii?Q?SmZ1JCIXO9ISE26xXn7NUbiAX2U/SbnzNZdYCdnavFV1MrvW5BUwdfR3TiQ6?=
+ =?us-ascii?Q?GYU+TOr0HHzWPX/cpHTPHgozYuAZumADypW1eMQXgtqt4bjKlg4nWQZdyI4+?=
+ =?us-ascii?Q?gfd36QF7+41AfQ65Z+g0duvM7wmGAf5tHAa7XcOQoZ3a+8VQNe4EzWmjrPsV?=
+ =?us-ascii?Q?mKlaG1c97jprNCstm/gcdFdgLbLEzfa9W+PoeAtXQZdFo+jKv92E48GF1xmM?=
+ =?us-ascii?Q?0LMLp1WM6Q9FL6gvlXrTKsDy55tKE5YDkj4HAHnlg2F3AZ6ixKociX+HkSIZ?=
+ =?us-ascii?Q?2vtlHGNm+tqBlkV2m+UhL9TfZg4qPJg4D6cvsm9WjkHK/Dvt9gCRhg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR03MB4927.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cW33vuo/PVWXjPO8+7hw5uzxSE1kqxRNxN79XhkzdikqaX2rc5QDAzQwJCUd?=
+ =?us-ascii?Q?rta56kiJ+IAREPtVI1hbPM0A9had+5hNJMWYT6rXsCe5fyuxUeYNav4bmr+M?=
+ =?us-ascii?Q?xC9iChcg0gSi98Tc+81S+UWOcNVzNOtjxXjtN2L8fbihkjFIhhdEy9no9lr7?=
+ =?us-ascii?Q?yirSNtJQeZzVfMpOnG3vQy3OwVsQ/VnEU97IdmGt1/4fSJjfB+K9A2/mkFjo?=
+ =?us-ascii?Q?8fB/9SAqpZFRMeCQ4GwMCFBMThwLgwyJDA0TeNPfMSaEvj4JUkBCY2JBB5PV?=
+ =?us-ascii?Q?h33mMER8ldW5Etezdhr5hlrW1n/PHTCe54wC9h9B73fBwvpEL3glId+T/5Sr?=
+ =?us-ascii?Q?SgztUVch64LqSqM9wICPuOjKf2ISbsiB3+TCqKtD1nILUCcgFc1RRlxJZNBN?=
+ =?us-ascii?Q?F0BUYHTDhDPNCtn6k6WCspKzV7s7N7XjF0oUIsk+yxn8TgsIVQwSiNynLbr0?=
+ =?us-ascii?Q?aWTUjUa2fOtyxxYzjnF96VnQWtMMBevS6YbC4KlNOrqRBIJXa88mpvyDRtvH?=
+ =?us-ascii?Q?8JjVnfPpRW5pG/W8sT7R3d0UW45TL8Lu2Kw4NNrBiAsrj0yl79dEUb99XVSG?=
+ =?us-ascii?Q?T4pz9D7KVhH96RaDWRVgxD5Pbh94btQTW2ZHZkzGLoH1WuB4FipONotVnUwK?=
+ =?us-ascii?Q?pKneXJw07S64uqMmnxgkXiu7DKxYn7xoLELccfhJ720/qXo0dhUJUzP3OdBY?=
+ =?us-ascii?Q?rAIc6qfhqukA17Py9jnZ/GgQWNTPmWGkQiuQnBIleZE5rcS545I45C0HJVHh?=
+ =?us-ascii?Q?BuqCOin2vin2Esx/jNmxw2/ALvtxA32aetKe5harBAgGPLWtf5xJR0G3wNcs?=
+ =?us-ascii?Q?ze0Twe6BrrLaCAqn9cT4hSGAyrnTlZ/JATsq7muVV5Mv1A9KxDW25r+BPwtP?=
+ =?us-ascii?Q?LJM+/k2YaWNaR93VVw7DS736UBvnRDKtOUiwa9QK0zq6l6TwwgilkTJujkkn?=
+ =?us-ascii?Q?LhAtjDvTJyFtaA++IQwRSmirqrcNe4qnD+yPG7KSmy45RW5FdnGMmXmPhkpT?=
+ =?us-ascii?Q?Kx4rX8mIe0yESthIAH7ISYfT+vTuByrwKgU2WTa9Stxm3SksMZ83iQE240MA?=
+ =?us-ascii?Q?cf68Bpkvdi02gqdhgcw3Fndt5bybf9ROxQLN+q7PIMAWKv+unZZSTpfnbLf0?=
+ =?us-ascii?Q?LGFofDxGOH9D3nvqTmQblhM0fBSL+l+pFfyYc777A38JeBtnlPnCLwYs9asU?=
+ =?us-ascii?Q?TKlsJf0/+Bbub7qMqDW0QR3iPByafMJ5WMfwJ3K8fofEjj1nJo1QWaXTSKmy?=
+ =?us-ascii?Q?fywnSkTL5ScIYIKor9U0ib2qRuPDSjIVsxWr1tQ/5jKqaw56lTYzo7/YkJLk?=
+ =?us-ascii?Q?U4/e/uXnseuXiQqICdy6e4BRPqqIwM16YKeUaPlXHXZAisxEtvyTa8Jd0FpA?=
+ =?us-ascii?Q?eJfwljPKG+7/Su5sqq4ZRgUfmt+LE4ZA08Fgw6bGjFHlSPhqP6cPdYUTyiMz?=
+ =?us-ascii?Q?6ji9QpkNKHRER8lud9UvKkNyK9G29cO/kuwLjKwTbTi2jl8M+HhbqL+KI4M+?=
+ =?us-ascii?Q?2e3zdKDJ5YOhiwMLWzZq1E1KYeFeBu5In3/cZaNZjPMBz+n/EGlkyTyVmDJB?=
+ =?us-ascii?Q?R0bFSRh+GMVKLUf8WWHuRvUcmIapRvj3dZg7Uiq/SpBgVk/YBfOtzwGvpB7d?=
+ =?us-ascii?Q?Vg=3D=3D?=
+X-OriginatorOrg: altera.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a99b76f-f6c4-4ea6-39f5-08ddcf09edca
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR03MB4927.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2025 01:39:31.3835
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BqA/Nn/eZSsFJ2jgZTSkft6KEiizn1I4PKQq3BidYqvHecvFD92h5hJWsi7mNyU4v7vxEFfYT0cqsnxw1s4kK+fRzUzMAM95Jmj0JW/WD4E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR03MB4925
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250729_131033_381174_D3CCCE9B 
-X-CRM114-Status: GOOD (  10.21  )
+X-CRM114-CacheID: sfid-20250729_183940_477736_8BE5BA20 
+X-CRM114-Status: GOOD (  14.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,101 +161,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5904316351919407856=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============5904316351919407856==
-Content-Type: multipart/signed; boundary="nextPart8201394.atp6XCIr46";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+From: kromli <khairul.anuar.romli@altera.com>
 
---nextPart8201394.atp6XCIr46
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
-From: Richard Weinberger <richard@sigma-star.at>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [GIT PULL] UBI and UBIFS changes for v6.17-rc1
-Date: Tue, 29 Jul 2025 22:10:17 +0200
-Message-ID: <7787490.DFzTOozpa1@nailgun>
-MIME-Version: 1.0
+Ensure that the pointer passed to module_put() in spi_nor_put_device() is
+not NULL before use. This change adds a guard clause to return early,
+preventing the kernel crash below when the cadence-qspi driver is removed
+during a dd operation:
 
-Linus,
+[  200.448732] Unable to handle kernel NULL pointer deref
+erence at virtual address 0000000000000010
+[  200.457576] Mem abort info:
+[  200.460370]   ESR = 0x0000000096000004
+[  200.464136]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  200.469527]   SET = 0, FnV = 0
+[  200.472609]   EA = 0, S1PTW = 0
+[  200.475904]   FSC = 0x04: level 0 translation fault
+[  200.480786] Data abort info:
+[  200.483659]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[  200.489141]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[  200.494189]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[  200.499500] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000185df8000
+[  200.505932] [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
+[  200.512720] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+[  200.518968] Modules linked in: 8021q garp mrp stp llc bluetooth ecdh_generic
+ecc rfkill crct10dif_ce rtc_ds1307 at24 stratix10_soc soc64_hwmon gpio_altera of
+_fpga_region fpga_region fpga_bridge uio_pdrv_genirq uio fuse drm backlight ipv6
+[  200.540016] CPU: 0 UID: 0 PID: 372 Comm: dd Not tainted 6.12.19-altera-gb6b26
+c4179a6 #1
+[  200.547996] Hardware name: SoCFPGA Stratix 10 SoCDK (DT)
+[  200.553292] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  200.560234] pc : spi_nor_put_device+0x30/0x60
+[  200.564594] lr : __put_mtd_device+0x8c/0x120
+[  200.568856] sp : ffff80008411bc20
+[  200.572161] x29: ffff80008411bc20 x28: ffff000185e2c500 x27: 0000000000000000
+[  200.579282] x26: 0000000000000000 x25: ffff000185e2cb00 x24: ffff000185e2cc88
+[  200.586404] x23: ffff00018034c620 x22: 0000000000000001 x21: ffff00018873e080
+[  200.593524] x20: 0000000000000000 x19: ffff00018873e080 x18: ffffffffffffffff
+[  200.600645] x17: 0030393d524f4a41 x16: 4d0064746d3d4d45 x15: ffff000185757700
+[  200.607767] x14: 0000000000000000 x13: ffff000180045010 x12: ffff0001857576c0
+[  200.614888] x11: 000000000000003a x10: ffff000180045018 x9 : ffff000180045010
+[  200.622009] x8 : ffff80008411bb70 x7 : 0000000000000000 x6 : ffff000181325048
+[  200.629129] x5 : 00000000820001cf x4 : fffffdffc60095e0 x3 : 0000000000000000
+[  200.636250] x2 : 0000000000000000 x1 : ffff00018873e080 x0 : 0000000000000000
+[  200.643371] Call trace:
+[  200.645811]  spi_nor_put_device+0x30/0x60
+[  200.649816]  __put_mtd_device+0x8c/0x120
+[  200.653731]  put_mtd_device+0x30/0x48
+[  200.657387]  mtdchar_close+0x30/0x78
+[  200.660958]  __fput+0xc8/0x2d0
+[  200.664011]  ____fput+0x14/0x20
+[  200.667146]  task_work_run+0x70/0xdc
+[  200.670718]  do_exit+0x2b4/0x8e4
+[  200.673944]  do_group_exit+0x34/0x90
+[  200.677512]  pid_child_should_wake+0x0/0x60
+[  200.681686]  invoke_syscall+0x48/0x104
+[  200.685432]  el0_svc_common.constprop.0+0xc0/0xe0
+[  200.690128]  do_el0_svc+0x1c/0x28
+[  200.693439]  el0_svc+0x30/0xcc
+[  200.696454] dw_mmc ff808000.mmc: Unexpected interrupt latency
+[  200.696485]  el0t_64_sync_handler+0x120/0x12c
+[  200.706552]  el0t_64_sync+0x190/0x194
+[  200.710213] Code: f9400000 f9417c00 f9402000 f9403400 (f9400800)
+[  200.716290] ---[ end trace 0000000000000000 ]---
+[  200.720948] Fixing recursive fault but reboot is needed!
 
-This time I'm sending from my business account because Google still hates
-my mail setup at nod.at.
+Fixes: be94215be1ab ("mtd: spi-nor: core: Fix an issue of releasing resources during read/write")
+CC: stable@vger.kernel.org # 6.12+
+Signed-off-by: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
+Reviewed-by: Matthew Gerlach <matthew.gerlach@altera.com>
+---
+Changes in v3:
+    - exclude !dev && !dev->driver check in spi_nor_get_device to
+      resolve kernel test robot smatchwarnings.
+Changes in v2:
+    - Move the null check prior to try_module_get().
+---
+ drivers/mtd/spi-nor/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-The following changes since commit 347e9f5043c89695b01e66b3ed111755afcf1911:
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index ac4b960101cc..eb21d660036b 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3210,6 +3210,9 @@ static int spi_nor_get_device(struct mtd_info *mtd)
+ 	else
+ 		dev = nor->dev;
+ 
++	if (!dev->driver->owner)
++		return -EINVAL;
++
+ 	if (!try_module_get(dev->driver->owner))
+ 		return -ENODEV;
+ 
+@@ -3227,7 +3230,8 @@ static void spi_nor_put_device(struct mtd_info *mtd)
+ 	else
+ 		dev = nor->dev;
+ 
+-	module_put(dev->driver->owner);
++	if (dev && dev->driver && dev->driver->owner)
++		module_put(dev->driver->owner);
+ }
+ 
+ static void spi_nor_restore(struct spi_nor *nor)
+-- 
+2.35.3
 
-  Linux 6.16-rc6 (2025-07-13 14:25:58 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.17-rc1
-
-for you to fetch changes up to 99dbb2a1bd661418be33b1ff1462c09b7d2221cf:
-
-  ubifs: stop using write_cache_pages (2025-07-24 22:23:14 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UBI and UBIFS:
-
-UBIFS:
-	- No longer use write_cache_pages()
-
-UBI:
-	- Removal of an unused function
-
-----------------------------------------------------------------
-Christoph Hellwig (1):
-      ubifs: stop using write_cache_pages
-
-Dr. David Alan Gilbert (1):
-      mtd: ubi: Remove unused ubi_flush
-
- drivers/mtd/ubi/kapi.c  | 27 ---------------------------
- fs/ubifs/file.c         | 10 +++++++---
- include/linux/mtd/ubi.h |  1 -
- 3 files changed, 7 insertions(+), 31 deletions(-)
---nextPart8201394.atp6XCIr46
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEdgfidid8lnn52cLTZvlZhesYu8EFAmiJKqkACgkQZvlZhesY
-u8HUMg/8CFqSNVKYHdzD7cewEieFJ0YNPN+DD0MkgLGoDKfahWzLFN8owTKjEvXV
-ScyrVG6gSXuyGkYDIarmmupKnD8YXyNfoLLlVoYDh/LvdJhJNvcYo46jPZoBTmjK
-r6oiI1pDdWV60BT1Vx10SJqA+J/xkbyrxlmtVgEeLbhH6SuzzqOxrfrmargK1q6h
-TIsbzhK57x1o6DxTB8oFpVSPqmeegNEsuaCZhZ/RwrVUUgADnfImFkjhFafSS41w
-IBmTY7NBnEKQVBgCjLBDWAIt0mqxcZsptFaNPe7UJtUk841Ts5kEMIt9B5mlupnC
-qQmRGDjDUX8JS/MeMbISqBlp+0JgJLN826lRtD9sli/RFMUhO+d2ONYvGJ1XADl1
-zfkITxx2SWQHSmBwe6QUY/OpsgM1eqr2N4PVbPwTDV0266XSrr2CB/uFawbpKWTC
-RGCv+8/yxXfI1+yxjpT0HVVT/5YfbMM4Z8nWDK5PAYqJ1GTL+WcYfShE/xke1sos
-tKtjIip/zk1MDbCNo0GwVl0wlOJpL5jhwVWdf3HbbDoTRdAuNSov6batWzY9L+EA
-aBnrqkK1dgOwnikGLnTACrYsOqYGUEhuLtokFFBQdWSTq3XZP43YRUKmG9umj9bZ
-VSYbKZxs6WwUCdRyfIYzF2+OCE3L6C7p6cJcU+TYdqhACSiRJzs=
-=3YD8
------END PGP SIGNATURE-----
-
---nextPart8201394.atp6XCIr46--
-
-
-
-
-
---===============5904316351919407856==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5904316351919407856==--
-
-
-
-
