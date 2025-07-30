@@ -4,57 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25A3AC87FCB
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jul 2025 14:13:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1553AC87FCB
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jul 2025 19:48:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GcVYdqjEH15lg4A5K40BlrmQHHcT6N6UjTNOCLUlHn4=; b=Lid2AQAFdA2hBC
-	eRB3o/3Uz3G8ayUFWYrlrikjBDm4lM2xW3pfE+16Wl5XrOr+iQd6BiuMb15m/G/hCPixXc0sIf8sI
-	j/WbIKOgF3XsepeJ98Pxe3xCDSdta5d2cnjcVLM95WEiPEd2hoSpo/cPUhlaoyA3V9yfMBZerZ0ow
-	xQtTfeomee3I7AlYrWVUsmGkutEEM9gHPGPrHO5jNehgmtxo2x+OTHqyf94PBXnFnnL/5OOMLiVws
-	G4jNJZfgVJl6xQVtvK1TZSw2TX1g4uVtSFWy7BqqA+INSkLlrLtF8jg73VxSeIbyjEa1jZrDgUbNF
-	olTXAwJrY8HvOJ0qZMVQ==;
+	List-Owner; bh=yekMGynCLhWwzCK+zYoikZ+30mhFaCPUn5jN/9PkxNo=; b=KzMQ5uRzjs8qyP
+	n8qEvh0qusfv3J8Wx4GTAS4cNKTIRP21R7kf+W8SUBeUymOVoOZcB0TYVpmfE5PYXhEVjsCrperbT
+	EmHYgwDZBknYCnPG9lkG2l4Yp/98+07MbQxpmlEHa5VOICKnn4zf9LxZsxsl/CVmWcm/CuviA+9+5
+	DT4aEAL7NeTlGQ3emCL2b5DQk3h945Afj7zqXbNbszQsqfMUu4nWOE9vMenVjRhgDAkgmVpyQQaMk
+	rI8fGaFEQ8RIUgApysRmfjt6xyeyyc+7KpWB2w+ZI167lRK0XMXg+fSNDw7BOV9BXqibYIqGu/0s1
+	Xqjjh61yQO9UZIEJzN3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uh7Yo-00000001huB-2wwI;
-	Wed, 30 Jul 2025 14:13:38 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1uhCmS-00000002J1E-3hcR;
+	Wed, 30 Jul 2025 19:48:04 +0000
+Received: from smtp-28.smtpout.orange.fr ([80.12.242.28] helo=smtp.smtpout.orange.fr)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uh7LH-00000001g3w-1Lh5
-	for linux-mtd@lists.infradead.org;
-	Wed, 30 Jul 2025 13:59:39 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8EE336113A;
-	Wed, 30 Jul 2025 13:59:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A17DAC4CEE3;
-	Wed, 30 Jul 2025 13:59:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753883978;
-	bh=N3+NIbm5eiDev1M+UzrXcz/aTODki3H4qf2X/mq2JzU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=U3TOXbtVl6wxmpHXPj4zmgqZHrEbB0UeMs5FY0LVR3iDlJ1NVNNeXxlOwovBrnyD4
-	 GW/yRVZFNUxtmw+0pm9H491HTmFyEsLfbV23THcTNPhIfjU7yioP3qnhNLDnQW5JW3
-	 Gkq0ilv9VAlJ/ZQas0MoQjjgyoTZonO7vK5r/HMqHgrnSNOPInheXuU694Jg9FPtfv
-	 pIfYCRwZsyGmPYW+w6+G789nzBgXd/7JDBbHkC134sD5xmzPrrGA4YjXVFB67LHhlh
-	 YNRtwNrisSprnh/av5slh8r0QSzEmuPaImkWjzPFZD7zp/3UvkLWYg8Swjb97icOS8
-	 yeBpUlVf64JUQ==
-From: Arnd Bergmann <arnd@kernel.org>
+	id 1uhCmQ-00000002J0W-2Wcu;
+	Wed, 30 Jul 2025 19:48:04 +0000
+Received: from fedora.home ([IPv6:2a01:cb10:785:b00:8347:f260:7456:7662])
+	by smtp.orange.fr with ESMTPA
+	id hCmHu9fPBsl3lhCmHuCkHa; Wed, 30 Jul 2025 21:47:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1753904877;
+	bh=S8vcU+qlyvgic/IsK7WROuRtOUR18FvRKrLARPKltNk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=Z3w+Ybc635EoBM2qQeo4lmiMQozrgmQluSGV5HEJ/q+765q/Y1h38zD8gQRTtEtDi
+	 zqb3VwIyVYSphJ9dXMbYpWR5znReF3TxgBjPYr1aXILW77pkGN8UK+AByzjTgWVKp1
+	 2DVBxamqAH0yg/Ur5zomCRCsqbtM7n7vNks8q9oi3sGokNo0bFW67NoaK0GGp7d0Qz
+	 ixAvy5sX86OfxxEPYGkwlSFrKLko2KDe013lctPsfTXYgxggSf3EfyU6YncChAoz83
+	 a3cnyqw0ovRdSSEO611YoyamSFQyytFwV5IHm1fxMLt3mMrDg2UW28FMqKeuNxu89+
+	 Jlp9SB3XfZtlA==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 30 Jul 2025 21:47:57 +0200
+X-ME-IP: 2a01:cb10:785:b00:8347:f260:7456:7662
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Hui-Ping Chen <hpchen0nvt@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: map: add back asm/barrier.h inclusion
-Date: Wed, 30 Jul 2025 15:59:24 +0200
-Message-Id: <20250730135934.1712198-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.5
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] mtd: rawnand: nuvoton: Fix an error handling path in ma35_nand_chips_init()
+Date: Wed, 30 Jul 2025 21:47:46 +0200
+Message-ID: <a2a4ca2010ac4aa2aee0bec151d2e57e812510a0.1753904852.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250730_124802_770682_EDC410A3 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,36 +79,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+If a ma35_nand_chip_init() call fails, then a reference to 'nand_np' still
+needs to be released.
 
-The mb() macro is used in this header:
+Use for_each_child_of_node_scoped() to fix the issue.
 
-In file included from include/linux/mtd/qinfo.h:5,
-                 from include/linux/mtd/pfow.h:8,
-                 from drivers/mtd/lpddr/lpddr_cmds.c:14:
-include/linux/mtd/map.h: In function 'inline_map_write':
-include/linux/mtd/map.h:428:9: error: implicit declaration of function 'mb' [-Wimplicit-function-declaration]
-
-Fixes: 56eb7c13b97c ("mtd: map: Don't use "proxy" headers")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 5abb5d414d55 ("mtd: rawnand: nuvoton: add new driver for the Nuvoton MA35 SoC")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- include/linux/mtd/map.h | 1 +
- 1 file changed, 1 insertion(+)
+Compile tested only
+---
+ drivers/mtd/nand/raw/nuvoton-ma35d1-nand-controller.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 288ef765a44e..75b0b2abc880 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -14,6 +14,7 @@
- #include <linux/string.h>
- #include <linux/types.h>
- #include <linux/unaligned.h>
-+#include <asm/barrier.h>
+diff --git a/drivers/mtd/nand/raw/nuvoton-ma35d1-nand-controller.c b/drivers/mtd/nand/raw/nuvoton-ma35d1-nand-controller.c
+index c23b537948d5..1a285cd8fad6 100644
+--- a/drivers/mtd/nand/raw/nuvoton-ma35d1-nand-controller.c
++++ b/drivers/mtd/nand/raw/nuvoton-ma35d1-nand-controller.c
+@@ -935,10 +935,10 @@ static void ma35_chips_cleanup(struct ma35_nand_info *nand)
  
- struct device_node;
- struct module;
+ static int ma35_nand_chips_init(struct device *dev, struct ma35_nand_info *nand)
+ {
+-	struct device_node *np = dev->of_node, *nand_np;
++	struct device_node *np = dev->of_node;
+ 	int ret;
+ 
+-	for_each_child_of_node(np, nand_np) {
++	for_each_child_of_node_scoped(np, nand_np) {
+ 		ret = ma35_nand_chip_init(dev, nand, nand_np);
+ 		if (ret) {
+ 			ma35_chips_cleanup(nand);
 -- 
-2.39.5
+2.50.1
 
 
 ______________________________________________________
