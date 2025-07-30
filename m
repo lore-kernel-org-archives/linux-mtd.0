@@ -4,78 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D39AC87FC9
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jul 2025 12:19:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25A3AC87FCB
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jul 2025 14:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KrfIYxcv3Z0I4fTEG1U+Zg6eCadXeLLbDH/Pe3uu2lc=; b=GPRufAaHDGtuB8
-	6omY9WmjHSIo3DJXY3EMM+SRw2GOefDSdQm0WUkumvK/xBiikucEbzAXmzD4pHmzZh6rsbuL2eRYc
-	lMcRTG30uUS1VFkgz+wFe3P8dEgKGvCl0XxMV1BiWilo/6ZIyjw3SAo7WtC46MpsbSNgrUV2/mhOr
-	kcn9RoWJZPEF/mULf56xf5+U5U+xkHvQu521kxdDkwCVgmtj/DSV7x0avygnTiReMFeA7ZhhFc1zp
-	bv59KW/Zd6XztM9RwPod3wMdokvGJmvhjtn6AGdokc+RIyircV9M3D+jZ4hXgowzxmm0zuoCrheSw
-	fuCaElfnqLXisiNW9f8Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=GcVYdqjEH15lg4A5K40BlrmQHHcT6N6UjTNOCLUlHn4=; b=Lid2AQAFdA2hBC
+	eRB3o/3Uz3G8ayUFWYrlrikjBDm4lM2xW3pfE+16Wl5XrOr+iQd6BiuMb15m/G/hCPixXc0sIf8sI
+	j/WbIKOgF3XsepeJ98Pxe3xCDSdta5d2cnjcVLM95WEiPEd2hoSpo/cPUhlaoyA3V9yfMBZerZ0ow
+	xQtTfeomee3I7AlYrWVUsmGkutEEM9gHPGPrHO5jNehgmtxo2x+OTHqyf94PBXnFnnL/5OOMLiVws
+	G4jNJZfgVJl6xQVtvK1TZSw2TX1g4uVtSFWy7BqqA+INSkLlrLtF8jg73VxSeIbyjEa1jZrDgUbNF
+	olTXAwJrY8HvOJ0qZMVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uh5m3-00000001REE-0v0h;
-	Wed, 30 Jul 2025 12:19:11 +0000
-Received: from mgamail.intel.com ([192.198.163.8])
+	id 1uh7Yo-00000001huB-2wwI;
+	Wed, 30 Jul 2025 14:13:38 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uh4pF-00000001KZ1-1Xi3
+	id 1uh7LH-00000001g3w-1Lh5
 	for linux-mtd@lists.infradead.org;
-	Wed, 30 Jul 2025 11:18:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753874305; x=1785410305;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=t0ejpR8IQbxsMHqtnT89W08zsv2WKywm9SjCHzeDXwU=;
-  b=gCA8PN8snDe86GPLb1mFPWspmzJQ4ySWS78RcTA7dXR+ecmgTTbrtO2F
-   vYrXyPslBWno8wur6+dwCXL/uZky6/BNYf53Nl2eG240P2Zw1vfMauswA
-   TrOIOb6E4gfTQAox7VmPVnkmJ+1YJQDB/DmQbHGMBpA2o6FPk/b9kKJWB
-   dMC0gXIvaqY+I7zJp/A50XwpmGU4cnI1WRufIdiH4xQObmHePT9U8VDQF
-   JDacJUPB0o+32QFehoPZlFWA772OdJzdkX2C/BcdoN8fbT1STHLa6VOjQ
-   P5+50rylKULjrOO4poVR6BY2024QiJwpNSzYRRoACwzE0FHJIUjfmQnLc
-   g==;
-X-CSE-ConnectionGUID: d/z2mwHqSC2WHozINyx43w==
-X-CSE-MsgGUID: 6o1bBp5SRtiyH7AWbNJ2GQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11506"; a="73759350"
-X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="73759350"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2025 04:18:22 -0700
-X-CSE-ConnectionGUID: 1rX3xvXVTHyxd2N7bYOKJg==
-X-CSE-MsgGUID: zvgzea4oRlqjWZvn+Mm2vA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="168267976"
-Received: from black.igk.intel.com ([10.91.253.5])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2025 04:18:19 -0700
-Date: Wed, 30 Jul 2025 14:18:28 +0200
-From: Raag Jadav <raag.jadav@intel.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Wed, 30 Jul 2025 13:59:39 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 8EE336113A;
+	Wed, 30 Jul 2025 13:59:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A17DAC4CEE3;
+	Wed, 30 Jul 2025 13:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753883978;
+	bh=N3+NIbm5eiDev1M+UzrXcz/aTODki3H4qf2X/mq2JzU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=U3TOXbtVl6wxmpHXPj4zmgqZHrEbB0UeMs5FY0LVR3iDlJ1NVNNeXxlOwovBrnyD4
+	 GW/yRVZFNUxtmw+0pm9H491HTmFyEsLfbV23THcTNPhIfjU7yioP3qnhNLDnQW5JW3
+	 Gkq0ilv9VAlJ/ZQas0MoQjjgyoTZonO7vK5r/HMqHgrnSNOPInheXuU694Jg9FPtfv
+	 pIfYCRwZsyGmPYW+w6+G789nzBgXd/7JDBbHkC134sD5xmzPrrGA4YjXVFB67LHhlh
+	 YNRtwNrisSprnh/av5slh8r0QSzEmuPaImkWjzPFZD7zp/3UvkLWYg8Swjb97icOS8
+	 yeBpUlVf64JUQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tomas Winkler <tomasw@gmail.com>,
-	Alexander Usyskin <alexander.usyskin@intel.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	linux-mtd@lists.infradead.org, intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: MTD_INTEL_DG should depend on DRM_I915 or DRM_XE
-Message-ID: <aIoNlFucSI18G0oX@black.igk.intel.com>
-References: <07f67ab8ee78f6bf2559131e193381aafff7479a.1753870424.git.geert+renesas@glider.be>
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: map: add back asm/barrier.h inclusion
+Date: Wed, 30 Jul 2025 15:59:24 +0200
+Message-Id: <20250730135934.1712198-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <07f67ab8ee78f6bf2559131e193381aafff7479a.1753870424.git.geert+renesas@glider.be>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250730_041825_411210_E8759298 
-X-CRM114-Status: UNSURE (   7.10  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,10 +71,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jul 30, 2025 at 12:21:49PM +0200, Geert Uytterhoeven wrote:
-> Intel Discrete Graphics non-volatile memory is onlt present on intel
+From: Arnd Bergmann <arnd@arndb.de>
 
-only
+The mb() macro is used in this header:
+
+In file included from include/linux/mtd/qinfo.h:5,
+                 from include/linux/mtd/pfow.h:8,
+                 from drivers/mtd/lpddr/lpddr_cmds.c:14:
+include/linux/mtd/map.h: In function 'inline_map_write':
+include/linux/mtd/map.h:428:9: error: implicit declaration of function 'mb' [-Wimplicit-function-declaration]
+
+Fixes: 56eb7c13b97c ("mtd: map: Don't use "proxy" headers")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/mtd/map.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index 288ef765a44e..75b0b2abc880 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -14,6 +14,7 @@
+ #include <linux/string.h>
+ #include <linux/types.h>
+ #include <linux/unaligned.h>
++#include <asm/barrier.h>
+ 
+ struct device_node;
+ struct module;
+-- 
+2.39.5
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
