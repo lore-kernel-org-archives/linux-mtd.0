@@ -4,43 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2811C83F17
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jul 2025 07:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0CD3C87FD3
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jul 2025 08:35:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=G8ZPTRNMjR+uMduEtVYA+jdxRNsEGbWlijUCMhrc3lw=; b=0louW8ZLlJaWKm
-	MP1PWFAWI7C8bhyS2SNLcyKH1iNLsVa2r6cUhLLOepyxvMxwwhz/swadltZjh5pKwmX6eVZNK2Dgl
-	tIWS/oS6mQ81db1R8kVlfd5e1junpuBT5zImFXlOiBJhXMmxeiHwGlZ/6V6TEG34lg/EwgwUxrNnp
-	/wIlAB4XWn8dYxyE1BqTXyDZvRMoEPNQO83ey45EApz6Dk413pD/lZa+GpJBd/zp3BAsjVDZ7C52U
-	LRW3e/R3n3O2cddhEdkuQCXb3Kzr+aQKrgjAxTZyMTz3/5VW4kftq6IPh7fae7/48YNG6DAffABDv
-	bwshQBwU00g43oTjisog==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hMfnTC1LQBYVrlWvzkZ3Mx5u/SS7CpPJkbPkKCUF0hU=; b=QJyKFE2s1jcuIm
+	nLevDPceBgF05gRF8becqdIu+497QgD/qo8q4Y5eoYpbiFtb2tkFimAtUCSH+xryKEOb5ICSuAjX9
+	x3IxeUCh01x4HjTUYy6DI3tgMPosJmoeiDpttqYtft6ViUf8u6/ecqVLCLZuQAMylgw5kdmyMAXQo
+	bD8NHmCaDQG2wVnq96I5aFSi5kI+vjFLaHnY/m7LlN6Vg5s2nRzPBXG14VM1VahIavJRD0F4LfTrL
+	G0umX3oiEhg41/W6RNiAO54fGh39jd95oI7n1qRfrs+g39y1AwHjHQz60y4rPMkBan/xMy8mLaSIp
+	pXsswnulmJTGoAKszQDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uhOCU-000000036W7-06ho;
-	Thu, 31 Jul 2025 07:59:42 +0000
-Received: from mail.subventuro.com ([51.83.133.170])
+	id 1uhOkx-00000003Ap2-0TRk;
+	Thu, 31 Jul 2025 08:35:19 +0000
+Received: from mgamail.intel.com ([192.198.163.17])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uhOA0-000000035xG-3CBO
+	id 1uhOa2-000000039az-2p3u
 	for linux-mtd@lists.infradead.org;
-	Thu, 31 Jul 2025 07:57:09 +0000
-Received: by mail.subventuro.com (Postfix, from userid 1002)
-	id B4489A68D1; Thu, 31 Jul 2025 09:55:49 +0200 (CEST)
-Received: by mail.subventuro.com for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2025 07:55:36 GMT
-Message-ID: <20250731084500-0.1.ln.32b5f.0.on5hl0dvh7@CyberCircuitryCo.com>
-Date: Thu, 31 Jul 2025 07:55:36 GMT
-From: "Wiktoria Bielaszka" <wiktoria.bielaszka@subventuro.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Energia elektryczna - zmiany
-X-Mailer: mail.CyberCircuitryCo.com
+	Thu, 31 Jul 2025 08:24:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753950243; x=1785486243;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=vZdZhm9xDF4gkYxa7DvvCi+1X0MEoSDFakhsxDjtwt4=;
+  b=XvpHxejhv49C9/qnzZfuvzeagEufTGiQvGCSo03mw+yXfQgFYBQGxEQw
+   IkZtDQnksIWvsktqauDhBuVNt+EZrCUGUeY4kvGz7OFAwnj4eMyFFgxdV
+   UTvOafXlk1pcemglrtZoHxaOGQQdj44TjZcrf0x0UrWYvHpTtwYAwCeUK
+   V5Z+1nY2JQ9AIBGAAmbBi5HORNnc7Yz/92aKSDtyMY5juuXljYNHGTb1y
+   9ayxVOREDT7dl170koiQkM1/GryVwni8degctRJ5+tCKg0LCrDvm6wJiQ
+   rbXhRFDFaYmH9pebezFi5GX0FWM1HCCeACc1lwUSZlPdKpAAJ5Wqa1qHB
+   w==;
+X-CSE-ConnectionGUID: +CWih8X7SUuuHnJoHIQh/g==
+X-CSE-MsgGUID: PFb4Y9uXTZ+oV99WrmNa7A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11507"; a="56196359"
+X-IronPort-AV: E=Sophos;i="6.16,353,1744095600"; 
+   d="scan'208";a="56196359"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2025 01:24:02 -0700
+X-CSE-ConnectionGUID: CZfv+/DSRk+rl6+M54rjlQ==
+X-CSE-MsgGUID: +yLlr+rmT4aWzQ5IT7BDfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,353,1744095600"; 
+   d="scan'208";a="167430187"
+Received: from mjarzebo-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.246.108])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2025 01:23:58 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rodrigo Vivi
+ <rodrigo.vivi@intel.com>, Tomas Winkler <tomasw@gmail.com>, Alexander
+ Usyskin <alexander.usyskin@intel.com>, Raag Jadav <raag.jadav@intel.com>,
+ linux-mtd@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: MTD_INTEL_DG should depend on DRM_I915 or DRM_XE
+In-Reply-To: <CAMuHMdUJF6V4v1+zbKKG1A_UvHUXU-ySXe7Xj_ryZtRnk2B2nQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <07f67ab8ee78f6bf2559131e193381aafff7479a.1753870424.git.geert+renesas@glider.be>
+ <d947168fd02d6f820159b456099e6aa8f465b633@intel.com>
+ <CAMuHMdUJF6V4v1+zbKKG1A_UvHUXU-ySXe7Xj_ryZtRnk2B2nQ@mail.gmail.com>
+Date: Thu, 31 Jul 2025 11:23:54 +0300
+Message-ID: <b58c7cdee44b573c84e0f79dad2655f8286bc89a@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250731_005708_969787_98A328D8 
-X-CRM114-Status: UNSURE (   1.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250731_012402_721129_8D1F0C34 
+X-CRM114-Status: GOOD (  19.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -52,16 +85,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKY3p5IG1vZ2xpYnnFm215IHVtw7N3acSHIHNpxJkgbmEga3LDs3RrxIUg
-cm96bW93xJkgbmEgdGVtYXQgem1pYW55IG9iZWNuZWdvIGRvc3Rhd2N5IGVuZXJnaWk/CgpVZG9z
-dMSZcG5pYW15IG5hamtvcnp5c3RuaWVqc3plIG5hIHJ5bmt1IHdhcnVua2kgbmEgc3RhYmlsbmUg
-ZG9zdGF3eSBlbmVyZ2lpIGVsZWt0cnljem5lai4KCkN6eSBtb2fEmSBuaWV6b2Jvd2nEhXp1asSF
-Y28gcHJ6ZWRzdGF3acSHIHByb3BvenljasSZPwoKClBvemRyYXdpYW0KV2lrdG9yaWEgQmllbGFz
-emthCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, 30 Jul 2025, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Hi Jani,
+>
+> On Wed, 30 Jul 2025 at 12:32, Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>> On Wed, 30 Jul 2025, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+>> > Intel Discrete Graphics non-volatile memory is onlt present on intel
+>> > discrete graphics devices, and its auxiliary device is instantiated by
+>> > the Intel i915 and Xe2 DRM drivers.  Hence add dependencies on DRM_I915
+>> > and DRM_XE, to prevent asking the user about this driver when
+>> > configuring a kernel without Intel graphics support.
+>> >
+>> > Fixes: ceb5ab3cb6463795 ("mtd: add driver for intel graphics non-volatile memory device")
+>> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>> > ---
+>> >  drivers/mtd/devices/Kconfig | 4 ++--
+>> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+>> > index 46cebde79f34b0b7..f0ab74d695347117 100644
+>> > --- a/drivers/mtd/devices/Kconfig
+>> > +++ b/drivers/mtd/devices/Kconfig
+>> > @@ -185,8 +185,8 @@ config MTD_POWERNV_FLASH
+>> >
+>> >  config MTD_INTEL_DG
+>> >       tristate "Intel Discrete Graphics non-volatile memory driver"
+>> > -     depends on AUXILIARY_BUS
+>> > -     depends on MTD
+>> > +     depends on AUXILIARY_BUS && MTD
+>> > +     depends on DRM_I915 || DRM_XE || COMPILE_TEST
+>>
+>> I understand the intent, but IIUC auxiliary bus usage should not require
+>> a "depends on" relationship. Couldn't you have MTD_INTEL_DG=y and
+>> DRM_I915=m just fine?
+>
+> That is indeed a good point!
+>
+> What about
+>
+>     depends on DRM_I915!=n || DRM_XE!=n || COMPILE_TEST
+>
+> instead?
+
+Fine by me, up to Alexander.
+
+BR,
+Jani.
+
+
+
+-- 
+Jani Nikula, Intel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
