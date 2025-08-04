@@ -4,65 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECD65C87FCA
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Aug 2025 15:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6A2AC87FD3
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Aug 2025 06:23:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zn7K1Baq/s7mWv4X8lkS9AGmpZBNgCXrFQMrk5qzCCA=; b=T+HdyXtZ1ctC/I
-	7k+x08xtxMQ5i1P7mDAFdM85Qp7HzUyyI7vx2qZ/JwuagEp7uItugMpZbnNHyui3/1OKIuyvh/HnA
-	cojBCyxXUx9pG1w30CYrk7+IUVYI1nhkrZsZUYRGyXUm3ch52DoPnp3LVYYTNZZnuoaR+9UhWK4FB
-	WXqO05RmXnDbJVz8prfwdYhDlBFBcFYziDGKawJJMDXiMugTB7VLET2FxSyXGjiTObaWliO3IDJnG
-	ad/p6NK2yV70/vaJOb+Mk2VDJBYQUDFSaCbDj1s0C5ikba4JL8PRwwoQGlZjBf1yAmVmuJBrXpjcD
-	jSaN/ki+UbT7UsARs3Wg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7PI2svO+CZ+kBlkJdundxgko6vbpTJDkUzXxqFwxAs4=; b=bwmRCgVY1qAHVj
+	N2rpv75idf1UW0tuRrmcsVOi3ZZ5JK5/2MDsI6c1HounbArwqHpJDMqRoMWvGVbG8WXrg8QDHUrvx
+	OhA7Z1EaE/DYOpcGD5JrLBOCSaM2fCTMRjRp6h6kfxqxwVVoxcxHL3qzQ/+R+xsvd+Nh7zGe7U6Oo
+	AKKZPgLnIdBBy/DV80WrpILbJF2PhFKwVfhXdWtHkeil0W2o3ajLCfSLsTz4T38G09rO44qYJZ1Ws
+	tUSBB/FXlKi7WB0Kw6heM4RVwB+V8vRf2HXrPEBpc4O7iNuV2PGW3Jkqj2weNxQ0jz6qTS5nbirZy
+	1Qz8GM/ouJFc4wOBIynQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uhrOt-00000006Jry-2GPS;
-	Fri, 01 Aug 2025 15:10:27 +0000
-Received: from relay15.mail.gandi.net ([217.70.178.235])
+	id 1uiobr-00000009jPZ-1jDy;
+	Mon, 04 Aug 2025 06:23:47 +0000
+Received: from mail-francecentralazolkn190130003.outbound.protection.outlook.com ([2a01:111:f403:d20a::3] helo=PA4PR04CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uhrGk-00000006IY2-0Pbs
+	id 1uiobo-00000009jOx-2EYM
 	for linux-mtd@lists.infradead.org;
-	Fri, 01 Aug 2025 15:02:03 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 05FEB4313C;
-	Fri,  1 Aug 2025 15:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1754060518;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OHeQ+iNjCeeStCG+4u33K+6ZFUSjcu8esN2e6wzi/bs=;
-	b=DsfMI65liwAPWXYXlAlEY3n+9o2pwz27UGoR/CDW03Ilq3W0kHlb/ridnt6MzFTlWgXRUn
-	GYMu93UWTdYziRKSKdWnSPWH87xvA4KXdmRTOtKwgg039AaixBwA5c+o/+i+pJeY4VWbrJ
-	5fwnpxnQ3ZPf/+q7QJ4etlVbWEObikaDQ16xj/1h02sokcghPPFaHuHS2RyZKlq0CJt9e8
-	VBiBBQE/s7RA42A817JgYnR3SsZbRMQTXfRNRi5oiuGabL3TN2AWK7U7kg8FEbPPujL1PD
-	J4YP+x5/aVVJyCB99+auYhajXJeHk6q+rJQgDrFc8McjZw1Mh+SMnpULPtRKsw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Pratyush Yadav <pratyush@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,  Richard Weinberger
- <richard@nod.at>,  Tudor Ambarus <Tudor.Ambarus@linaro.org>,  Vignesh
- Raghavendra <vigneshr@ti.com>,  Frieder Schrempf
- <frieder.schrempf@kontron.de>,  Michael Walle <michael@walle.cc>,
-  linux-mtd@lists.infradead.org
-Subject: Re: [GIT PULL] mtd: Changes for 6.17
-In-Reply-To: <mafs0v7n7cd5a.fsf@kernel.org> (Pratyush Yadav's message of "Fri,
-	01 Aug 2025 16:47:13 +0200")
-References: <87o6t08fen.fsf@bootlin.com> <mafs0v7n7cd5a.fsf@kernel.org>
-User-Agent: mu4e 1.12.7; emacs 30.1
-Date: Fri, 01 Aug 2025 17:01:56 +0200
-Message-ID: <87cy9f5bmj.fsf@bootlin.com>
+	Mon, 04 Aug 2025 06:23:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=k9FNB9205T/ONhZ8I8f4Ztj+n+j2/OXtY7yuMci8MZH0p+8VnHR43ULL+bCL5NHTW/xyYKssolgBWX7ooYhpgYKJX6Jm52VRI57Q35D+qgVIOoOTj/ZdMIEkM8hvfgbuDuXutLvxDIswjtZhD4wl9M68l05sx5ut4r1AYbjR7tvzJ0jdRfD/1v3X/5kEqDDuD4dQrmxiryBh3RycXjl8p1lq9EEm/78fkQgENuiM4eRWlIZjZsTTfl5GbsuwBlzt3H+rw/+V1xn5X24J8LRVn0TXuzpoqY4zzEzh4w73ZPMZbB1vfdM7HtUUIlCxoWvggO2Fl8pImcKWRWYoru7jBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7VurZuiBmdk/NuT9SGGY3RioaOspNuk13a3HNyeOO3I=;
+ b=ndX1Rx1a5IzMx5dL7QDPKOAbDKvFx2AHkuTj4D2AEYu2sB6b7B81AgO5p8Fitgo4IwaOTgdMxex9sNslQIb1nnJyDL91wRjsqeFDwVTn/YTgHCpC8EYlQBh5lQuAdlIPIJIZwlNvHLC3OvtQZn4YmRMCBPL0SElhXN7pYLuEKt/VgIHwmpzXzM25hiw18fhauI0aKckN0LT+YY3v3aaNFTKf1Ll3gJSU45I8d9Dh2UYnDdcizWvjdjHuCwuhim9vBxj+o055cvV40uZUGieR54tC/68L1Dt9rZD8GEL0LFLOYo5hAWVIevcoDcew6O3IaAUdvJHrmMfFtzJZL1DMdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7VurZuiBmdk/NuT9SGGY3RioaOspNuk13a3HNyeOO3I=;
+ b=pn39XbRRWN7Cpw0m6FA0xLnjEzvGw/4y8id7p3OouFY7y57uFtfJhkuFss+h1H8XqKHD+45zdS2Xvp84qVMn8XRe8Gl6dHdQhpZkybIwbnn6NfM7gf/0B51dQINtDA2tjdPBmDGpT0MOiNYVGJ9DktY6bpB/ZpuUNvN6AFIb1ma1dJhvWDtJ/LzG5B+uPl6kduTEZFCwfEVlk1/jeJiMCw+ch5cPxQzmR9UtKqpaGS5SS6g6I0nxQ2QTnaVMLo7duZpYUPhUPj8mUM0WKSPPYU5v8CmPX2iReJHjpQ/XJGEMWdKYRe37Cg4dE8kyjGcVozW8ZL5Lh52zfw1bY57dIA==
+Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
+ (2603:10a6:20b:63e::17) by DB3PR0202MB8986.eurprd02.prod.outlook.com
+ (2603:10a6:10:43b::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8989.20; Mon, 4 Aug
+ 2025 06:23:36 +0000
+Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
+ ([fe80::5556:4de5:6245:a3c]) by AS8PR02MB10217.eurprd02.prod.outlook.com
+ ([fe80::5556:4de5:6245:a3c%7]) with mapi id 15.20.8989.018; Mon, 4 Aug 2025
+ 06:23:36 +0000
+From: David Binderman <dcb314@hotmail.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "richard@nod.at"
+	<richard@nod.at>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, Linux Kernel Mailing List
+	<linux-kernel@vger.kernel.org>
+Subject: linux-6.16/fs/jffs2/readinode.c:189: loop can never finish
+Thread-Topic: linux-6.16/fs/jffs2/readinode.c:189: loop can never finish
+Thread-Index: AQHcBQfRDoZHJasgNEalzePb9X2IJw==
+Date: Mon, 4 Aug 2025 06:23:36 +0000
+Message-ID: <AS8PR02MB10217F68E5D37ECD491495E669C23A@AS8PR02MB10217.eurprd02.prod.outlook.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS8PR02MB10217:EE_|DB3PR0202MB8986:EE_
+x-ms-office365-filtering-correlation-id: 8a02c3e2-2eb3-41e8-8f23-08ddd31f71cb
+x-microsoft-antispam: BCL:0;ARA:14566002|8062599012|8060799015|15030799006|15080799012|19110799012|31061999003|461199028|3412199025|39105399003|40105399003|440099028|51005399003|102099032;
+x-microsoft-antispam-message-info: =?iso-8859-1?Q?rPU/Uttc6355fbugwMPusZo/pEVEm9VoD/cyEztt3V/OfzxaxoopQyvjTb?=
+ =?iso-8859-1?Q?Q4Rkr36hSajxQxhBaReZ14zDQ7wORRaeubZmb9UTf6qDg1TabqBYQ1DbY2?=
+ =?iso-8859-1?Q?IUE6bSO8B2v2i2zK9OPP31dlCOgqekmau7FEawWnp/5mrDHkHg0xLQRb3u?=
+ =?iso-8859-1?Q?SZr9w3nRhVReQGcipkqZyh2bTy0qNtmVcnXMJhy1b2qolv+IIc2441GvU8?=
+ =?iso-8859-1?Q?feHtWE9izMKHuWCIJNFQbVFpZJwLX4Clz8JhukfCirBBr3wm9pkNnFyur8?=
+ =?iso-8859-1?Q?m1yIFGpLVcqejUv9iQdZvT/vC9bmDUoWMlsJ1YNWD2pNRl2gR6iYejP99H?=
+ =?iso-8859-1?Q?k3oxpGgk3e8h2HpSHFQRjsu1n4KlOrGewVfF3NtPE3+kSCQn50hP72W952?=
+ =?iso-8859-1?Q?at4Wx5eIvT2o+4xBg/fYBtmmm0I7sOflbGXTvqlARw/Ui2DaeETjI9pUR6?=
+ =?iso-8859-1?Q?CZqz/PyfJCg82Xsu7lzjAo34ZmxVTXQBwYXIr7Mn6llLr1ehwkmY34QWrz?=
+ =?iso-8859-1?Q?0kNt+UbLLlib+2ZfYQg27mgFSxp9EqYKLTibOSMejlK+IiSiso/GSxv7kH?=
+ =?iso-8859-1?Q?v4diUGJ4XA9RQnB1/QKzRjjVgQTWG3OoxlHQaVno7DaiUmkP5LOcAM0yZW?=
+ =?iso-8859-1?Q?cfDZKf6bv8jJF1T+GQvM3iYZgKaqH9O5WHHMrNpGREx+P1VecK+fXoMAe0?=
+ =?iso-8859-1?Q?+XuOYNJzia5Ak6MK2R63fmv/tArLIAodLxQMwno+2TgqJRuNdrHil7ByXH?=
+ =?iso-8859-1?Q?Ms8dj/0cm+gQw+dngENoUinERKsqmiNpCVpPQ0mEAmB0LZY2eRIhiWEJEL?=
+ =?iso-8859-1?Q?JSo4er8ytb+WRyT24lSFpNeSTyH/xS/cuzuOkvAPIH2C+AdF4JbTgcOxCv?=
+ =?iso-8859-1?Q?Fpbtw5VeLTPsAqFqwup9l377dmuW/Q4DncT4FcfjAUkjFTaRsROq80Bz5M?=
+ =?iso-8859-1?Q?AHcNBh29YSVp80oRs8uy8fJgyxmUWUq8VWcvlagXlE0tcYCIgOS8nPaD9X?=
+ =?iso-8859-1?Q?TSgxQnh5b9KJEaHDVmDzWZ+uct/x44yDqr0rn3mLQxWYIhkRqYSD9U6Yzv?=
+ =?iso-8859-1?Q?4O+Nj9+sdaL4kEP/Q7rn4eFlZ1RvbhGma+XoJ4AdEaJfgUeus/6Pxx59Vv?=
+ =?iso-8859-1?Q?WlV1bnd56C1772yi45A+o9OETdrbyFYbDFMIczRTkI6ILzDhZsCWF3puVr?=
+ =?iso-8859-1?Q?k5mDNvPKFSzL9jJ9PL7Y79D+GFxqPtYZbbh3ZV9NP8DD+diHAUzkV2YANz?=
+ =?iso-8859-1?Q?nVOOVEK9J8k7IBhXKmUIhGSpmqwiumkX8lbyjkoSg=3D?=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?p9kCqJWqwLEfeoj2/rn+C8zH4el6QxBggW2K8+b/dNzONncB/6JYXPZK5L?=
+ =?iso-8859-1?Q?hPzPJ4KkTmFZytP8YB7cdeA73PqE5UK14L8hPfIbokkyYOaTv10wvLHloS?=
+ =?iso-8859-1?Q?suMSz8RenZ31FAxFRoaGRV7bwvj/A8WssSwwaKO6JAFzuXn2JdzaBwP5dk?=
+ =?iso-8859-1?Q?SC+YDLXxtWgM9m/CQCyWfmfQ0wkpO015BmbItYmMJ2BccQPxXlPljnmZeg?=
+ =?iso-8859-1?Q?Wv9ak7hrIf+o/pWUh7WeQEqWS3t+Jt4gXOZqmMt6Hsg1M8lzoC9MooPDim?=
+ =?iso-8859-1?Q?PnRlHhuFQhZOnBYx0PuvjX6D8ixD5td5hw8jMtSJ8EnYfBz2wOZKkcErEb?=
+ =?iso-8859-1?Q?bmuL3jtOA9PDj26wXw1AhSJ+uGGPdvB0QoVk79PeOj8ALQuH8OSRVPsHbL?=
+ =?iso-8859-1?Q?cCKTmDrOanImx6Wfyp5/NhaJYe3fC6g64lvnh2Fr4xDg0liCbnKL18/fWM?=
+ =?iso-8859-1?Q?dMy3MBQxraM7xnFhaEMRlCaz0Be6xuQiHDbx0zWFZMS8zdX1rH84uCQ+kS?=
+ =?iso-8859-1?Q?Udqt53BbP1PRMLAu9ZXbnOOC0K7TTfqvrqE1BstQlVQfSW1Xw0ObDYx6N7?=
+ =?iso-8859-1?Q?s5YL8izYLCF5scvi0sHzxqHoBveHEyOd88LdvZk0lZBiQNNfAz7jgaRtKY?=
+ =?iso-8859-1?Q?kFYJoV8iB5wQI1d3121Gu+XcMbGntRSx9fHflMXHwYgSee0AP50iBl9hwT?=
+ =?iso-8859-1?Q?ItzUNeKqpWR/R0u+RiPHh0SZ3Jo3M0oWjZvTmUHN3QanjLPk14dPzsnRBj?=
+ =?iso-8859-1?Q?vZV1p7O6t1gEjUfNdT9IP6BNxVIbyj8+mwYeFxPmJgSK998BKJf5q/TUQ3?=
+ =?iso-8859-1?Q?yjHZnjSnQFJfUqqfff6trhRW7fl60RD8xhde3cXgSNp3P4z4wWjTofA8n0?=
+ =?iso-8859-1?Q?asa+6biy8C7UdmhD0JY8eMvXXzCAJuYg3hNHCbKdjMuJElWwOPQ28qAVeb?=
+ =?iso-8859-1?Q?7KAQz9vcAcjiD7czS2458dlA+6XWvVpvwH6+gjgnZ1jhHaao39rS0nnP60?=
+ =?iso-8859-1?Q?RpyVrG9CjpOsEHfeuukzMC7BmcdrSwgGJVT0igssQPtFz+/hcRtKOlykpM?=
+ =?iso-8859-1?Q?H4L/YrRUwP3jnkPCIRrf18N4FAn+bXuumVbBn134I2kPb59MuJKgY76p9L?=
+ =?iso-8859-1?Q?Y5XLWPD1SYPWUjDLwyI22KTfDcsqsVv8Y+1ZWTVxlTkbZDdaXkpPiqhWki?=
+ =?iso-8859-1?Q?j4WjK2GvoJ7ms1ZmhR658ahkmeGsYl3VxbX2Kd6lsxXtbHWjl6bQ8srZ7a?=
+ =?iso-8859-1?Q?dSFqFWY0RnLE3TDSEQ6g=3D=3D?=
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddutdegtddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeekpdhrtghpthhtohepphhrrghthihushhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepvfhuughorhdrtehmsggrrhhusheslhhinhgrrhhordhorhhgpdhrtghpthhtohepvhhighhnvghshhhrsehtihdrtghomhdprhgtphhtthhopehfr
- hhivgguvghrrdhstghhrhgvmhhpfheskhhonhhtrhhonhdruggvpdhrtghpthhtohepmhhitghhrggvlhesfigrlhhlvgdrtggtpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrgh
+X-OriginatorOrg: sct-15-20-8534-20-msonline-outlook-5faa0.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB10217.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a02c3e2-2eb3-41e8-8f23-08ddd31f71cb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2025 06:23:36.3013
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0202MB8986
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250801_080202_623380_94C82A97 
-X-CRM114-Status: GOOD (  12.92  )
+X-CRM114-CacheID: sfid-20250803_232344_585814_40C36F6E 
+X-CRM114-Status: UNSURE (   4.85  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,35 +142,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gUHJhdHl1c2gsCgo+PiAqIFNQSSBOT1IgY2hhbmdlczoKPj4KPj4gQSBub3RhYmxlIGNo
-YW5nZXMgaXMgdGhlIGZpeCBmb3IgZXhpdGluZyA0LWJ5dGUgYWRkcmVzc2luZyBvbiBJbmZpbmVv
-bgo+PiBTRU1QRVIgZmxhc2hlcy4gVGhlc2UgZmxhc2hlcyBkbyBub3Qgc3VwcG9ydCB0aGUgc3Rh
-bmRhcmQgRVg0Qgo+PiBvcGNvZGUgKEU5aCksIGFuZCB1c2UgYSB2ZW5kb3Itc3BlY2lmaWMgb3Bj
-b2RlIChCOGgpIGluc3RlYWQuCj4+Cj4+IFRoZXJlIGlzIGFsc28gYSBmaXggZm9yIHVubG9ja2lu
-ZyBmbGFzaGVzIHRoYXQgYXJlIHdyaXRlLXByb3RlY3RlZCBhdAo+PiBwb3dlci1vbi4gVGhpcyB3
-YXMgY2F1c2VkIGJ5IHVzaW5nIGFuIHVuaW5pdGlhbGl6ZWQgbXRkX2luZm8gaW4KPj4gc3BpX25v
-cl90cnlfdW5sb2NrX2FsbCgpLgo+Cj4gSSBwZXJzb25hbGx5IHRoaW5rIGJ1bGxldCBwb2ludHMg
-YXJlIGEgYml0IGVhc2llciB0byByZWFkIGZvciBjaGFuZ2Vsb2dzCj4gY29tcGFyZWQgdG8gcGFy
-YWdyYXBocyBzaW5jZSB0aGVyZSBpcyBsZXNzIGZpbGxlciB0ZXh0IG5lZWRlZC4gRm9yCj4gZXhh
-bXBsZSwgbXkgb3JpZ2luYWwgbWVyZ2UgbWVzc2FnZSBkaWRuJ3QgdGhlICJ0aGVyZSBpcyBhbHNv
-IGEgZml4IGZvciIuCj4gSXQganVzdCBzYWlkICJGaXggdW5sb2NraW5nIG9mLi4uIi4KPgo+IEFu
-eXdheSwgaWYgeW91IHN0aWxsIHByZWZlciBwYXJhZ3JhcGhzIHRoZW4gZG8gbGV0IG1lIGtub3cg
-YW5kIEknbGwgdXNlCj4gdGhvc2UgbmV4dCB0aW1lIGFyb3VuZCBhbmQgc2F2ZSB5b3Ugc29tZSBl
-ZGl0aW5nLgoKU29tZSB0aW1lIGFnbyBMaW51cyBhc2tlZCBtZSB0byBjaGFuZ2UgdGhlIGNvbnRl
-bnQgb2YgdGhlIFBSIGRlc2NyaXB0aW9uCihJIHdhcyBtb3N0bHkgbGlzdGluZyB0aGUgcGF0Y2hl
-cykgYW5kIHBvaW50ZWQgdG8gZXhhbXBsZXMgd2hpY2ggd2VyZQptb3N0bHkgcGxhaW4gRW5nbGlz
-aCwgbm90IGJ1bGxldCBwb2ludHMuIFNvIEkgY2hhbmdlZCBib3RoIHRoZSBjb250ZW50CihoaW50
-aW5nIHdoYXQgYXJlIHRoZSBtYWpvciBjaGFuZ2VzIGFuZCByb3VnaGx5IGRlc2NyaWJpbmcgdGhl
-IHNtYWxsCm9uZXMpIGFuZCB0aGUgZm9ybSAobm8gYnVsbGV0IHBvaW50cykuIEkndmUga2VwdCBz
-cGxpdHRpbmcgdGhlCnN1YnN5c3RlbXMgd2l0aCAnKicgdGhvdWdoLCBhcyB0aGUgY2hhbmdlcyBp
-biBlYWNoIHN1YnN5c3RlbSBhcmUKbW9zdGx5IHVucmVsYXRlZC4KCkknbSBmaW5lIGVpdGhlciB3
-YXlzLCBidXQgSSBhc3N1bWVkIHVudGlsIG5vdyB0aGF0IHRoZSBwcmVmZXJyZWQgZm9ybQp3YXMg
-cGxhaW4gdGV4dCBkZXNjcmlwdGlvbnMuCgpDaGVlcnMsCk1pcXXDqGwKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+Hello there,
+
+Static analyser cppcheck said:
+
+linux-6.16/fs/jffs2/readinode.c:189:24: style: Expression is always true because 'else if' condition is opposite to previous condition at line 187. [multiCondition]
+
+Source code is
+
+    while (next) {
+        tn = rb_entry(next, struct jffs2_tmp_dnode_info, rb);
+
+        if (tn->fn->ofs < offset)
+            next = tn->rb.rb_right;
+        else if (tn->fn->ofs >= offset)
+            next = tn->rb.rb_left;
+        else
+            break;
+    }
+
+It looks to me like this loop will never finish. 
+Suggest change ">=" to ">".
+
+Regards
+
+David Binderman
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
