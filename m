@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 430CACA0EC2
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEAC0C87FD2
 	for <linux-mtd@archiver.kernel.org>; Fri,  8 Aug 2025 10:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,56 +12,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b5PqF8IDqPEVUHcYzdNmVLMSIYOUV1IPPzGkY6cT97E=; b=fmpGgL7Ghw5jzB
-	ppfZk2huV00G0B/U9rRsGOjfnqMDHvm2EOUQhD6iA5k857lV18eKNbyYFLuXkOePSV/ROS7bz5Hqs
-	Fh+FtnJ9WoJZ02Hwv5AKTNYKTffypSjMBSThUpMHG6eT0TbLqy3PFqvndaUhFOa8g8DTkQ9o3ZzAK
-	c2VSSsyE1JtJ+xOmdYUQwRJxqnJP1D3ZDMen8QIGAsfoH24wWaW69fCToB0Ixff1Ddh4+t/HwcuKk
-	57B7003VGg/NY6BXRnrM/qhzi2w6EJKDQXelvGWfNNixjf3ONN9/JuAnMSnNMM0TPKVohfON97aBq
-	30byMO9WZPcAdwpBUzHg==;
+	List-Owner; bh=Ch6KZV7lUGFrayKsrMZyxFXRmGvKTGTa76Gh/56VSpc=; b=zmtBQMbzo344/p
+	VXX3L/dudCtXhM7L48jmBc3/gCGtjBLnS8tkooLKs40+edO+cRlB50UJK2v/pfr3oMljFb15BGgCa
+	WQ54Br7b7OMn3osTtbCUPmpgfvfmvWXmmXm/05Mc+aJD+E+olXdSKEa2duYYRa1wGcxi01TJQoMq8
+	mTBm5WxBlvu81Z0PhI9nq6vr6hB2tx28ZyGdMr/cg03HPBEirUc1MOBQyZew+p9dhbLNuSDsev5W9
+	XT/+GEH7oZ1H8W7Mzq7oqT8VsUrgflmsY9JMvKFIn9oBhHp3coS1uY+8w7F+I9Z0uK9c4ZTc+wHiW
+	Kr4u4nL3FDK1ByjtpPeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ukKcW-00000002ask-0wPb;
+	id 1ukKcW-00000002asx-33P2;
 	Fri, 08 Aug 2025 10:46:44 +0000
-Received: from relay15.mail.gandi.net ([2001:4b98:dc4:8::235])
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ukK8N-00000002XmW-1EXe
+	id 1ukKCA-00000002YK6-111H
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Aug 2025 10:15:37 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BCE5E43145;
-	Fri,  8 Aug 2025 10:15:31 +0000 (UTC)
+	Fri, 08 Aug 2025 10:19:31 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B4A984320D;
+	Fri,  8 Aug 2025 10:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1754648132;
+	t=1754648367;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=l+/cjitHQaCn5Z2qFtrgnop6PRPmcwaQTWfAxvoFm44=;
-	b=E0O0eyTL5CSCW9zYLfXjJYG+MrSNMES9PWx+hdfNrHkAk29sheGYLyET1egCdCzjJERF9/
-	E99actiq6It4TqLFk9JQZr4lmPAZpDQmbwvWj74Ta4k2ATEdB8ozfbblfkU720JNdvSvVo
-	uuctgDRTuCftk4/n0hpcwC+QqCEMv80hwmlTLwlGq/5yXM+4nS6vA0tWIk6Dh+8CJJ7HVO
-	xyefbxaDrI6vqap8R4hffTdyKBKuDgn4INe2qj6GaO/WsAnFYsdcJgMVWmW79bgjgux2Oi
-	o+7lmm1PgUgF3Cd37RPS3OhbctCwTFW4YYEeKfVhude3mfs6YMwrjmPwF9LqOg==
+	bh=GfxpN6ZiqcVyW4i6uW3ZKSO2WB/dwXVU69neRz5alTU=;
+	b=de0HcDcgkFyNffryiXNWtj9t9e6pkWr4eO+Ju24QUompQtVAHzWdirHO5b3WoIrsoFdMM/
+	xMgS9HjJk3e4qsvLaXstVbszXWHSekkXHjX8frJOjK+sHgFPNmjyDVpd2ZeFz84eCUifXU
+	V50emlFWTl0JDzRZ8vomXmgBRRx+DXBiosIJ826gNeXX3ZDqaNoH8ZKqWd8xc1T7Xp62XE
+	i65Kl5n/ORw2ShJMKvvCS9NE7y/OAL6BUPIv3dQJHN3zA6ZU88/e7OeymDnWRFeHy4wgwS
+	E4u8DIaZF6T1VRZXGy0bBnqtzDJ6ZCQvN+zYFIBFjZsMrefmmbkkIvz0ibkg1w==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Cheng Ming Lin <linchengming884@gmail.com>
 Cc: vigneshr@ti.com,  linux-mtd@lists.infradead.org,
   linux-kernel@vger.kernel.org,  richard@nod.at,  alvinzhou@mxic.com.tw,
   leoyu@mxic.com.tw,  Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH 1/2] mtd: spi-nand: Add support for randomizer
-In-Reply-To: <20250808095503.906244-2-linchengming884@gmail.com> (Cheng Ming
-	Lin's message of "Fri, 8 Aug 2025 17:55:02 +0800")
+Subject: Re: [PATCH 2/2] mtd: spi-nand: macronix: Add randomizer support
+In-Reply-To: <20250808095503.906244-3-linchengming884@gmail.com> (Cheng Ming
+	Lin's message of "Fri, 8 Aug 2025 17:55:03 +0800")
 References: <20250808095503.906244-1-linchengming884@gmail.com>
-	<20250808095503.906244-2-linchengming884@gmail.com>
+	<20250808095503.906244-3-linchengming884@gmail.com>
 User-Agent: mu4e 1.12.7; emacs 30.1
-Date: Fri, 08 Aug 2025 12:15:30 +0200
-Message-ID: <878qjuazlp.fsf@bootlin.com>
+Date: Fri, 08 Aug 2025 12:19:24 +0200
+Message-ID: <87zfca9kur.fsf@bootlin.com>
 MIME-Version: 1.0
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduvdefheegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledvrddukeegrddutdekrdeiheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeelvddrudekgedruddtkedrieehpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhgthhgvnhhgmhhinhhgkeekgeesghhmrghilhdrtghomhdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrt
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduvdefheeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledvrddukeegrddutdekrdeiheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeelvddrudekgedruddtkedrieehpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhgthhgvnhhgmhhinhhgkeekgeesghhmrghilhdrtghomhdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrt
  hdprhgtphhtthhopegrlhhvihhniihhohhusehmgihitgdrtghomhdrthifpdhrtghpthhtoheplhgvohihuhesmhigihgtrdgtohhmrdhtfidprhgtphhtthhopegthhgvnhhgmhhinhhglhhinhesmhigihgtrdgtohhmrdhtfi
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250808_031535_863339_45308594 
-X-CRM114-Status: UNSURE (   7.23  )
+X-CRM114-CacheID: sfid-20250808_031930_412749_1DDD4251 
+X-CRM114-Status: UNSURE (   8.70  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,15 +80,23 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hlbmcgTWluZywKCk9uIDA4LzA4LzIwMjUgYXQgMTc6NTU6MDIgKzA4LCBDaGVuZyBNaW5n
-IExpbiA8bGluY2hlbmdtaW5nODg0QGdtYWlsLmNvbT4gd3JvdGU6Cgo+IEZyb206IENoZW5nIE1p
-bmcgTGluIDxjaGVuZ21pbmdsaW5AbXhpYy5jb20udHc+Cj4KPiBBZGQgcmFuZG9taXplciBvcGVy
-YXRpb24gc3VwcG9ydCBmb3IgdXNlciBkYXRhIHNjcmFtYmxpbmcuCj4KPiBGb3IgbW9yZSBoaWdo
-LXJlbGlhYmlsaXR5IGNvbmNlcm4sIGlmIHN1YnBhZ2Ugd3JpdGUgbm90IGF2YWlsYWJsZSB3aXRo
-Cj4gaGFyZHdhcmUgRUNDIGFuZCB0aGVuIHRvIGVuYWJsZSByYW5kb21pemVyIGlzIHJlY29tbWVu
-ZGVkIGJ5IGRlZmF1bHQuCgpDb3VsZCB3ZSBhZG9wdCBhIGhlbHBlciB0aGF0IGFsbG93cyB0byBl
-bmFibGUgYW5kIGRpc2FibGUgdGhlCnJhbmRvbWl6ZXI/CgpJIGhhdmUgbm8gdXNlIGNhc2UgaW4g
-bWluZCByaWdodCBub3csIGJ1dCBJIGZlZWwgbGlrZSBpdCB3b3VsZCBiZSBhCmJldHRlciBhcHBy
-b2FjaC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+T24gMDgvMDgvMjAyNSBhdCAxNzo1NTowMyArMDgsIENoZW5nIE1pbmcgTGluIDxsaW5jaGVuZ21p
+bmc4ODRAZ21haWwuY29tPiB3cm90ZToKCj4gRnJvbTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWlu
+Z2xpbkBteGljLmNvbS50dz4KPgo+IEVuYWJsZSByYW5kb21pemVyIGZ1bmN0aW9uIGJ5IHNwZWNp
+ZmljIGZsb3djaGFydCB0byBzZXQgdGhlIGRlZmF1bHQgdmFsdWUKPiBvZiBSQU5ERU4gdG8gMS4K
+Pgo+IFJhbmRvbWl6ZXIgaW50cm9kdWNlcyB0d28gbmV3IERUIHByb3BlcnRpZXMgZm9yIGNoaWxk
+IG5vZGVzIHRvIGNvbmZpZ3VyZQo+IHRoZSByYW5kb21pemVyIGZ1bmN0aW9uYWxpdHkgYW5kIGNv
+dmVyYWdlIG9wdGlvbnMuCj4gIC0gbXhpYyxlbmFibGUtcmFuZG9taXplci1vdHA6IFNwZWNpZnkg
+d2hldGhlciB0byBhY3RpdmF0ZSB0aGUgcmFuZG9taXplcgo+ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBmZWF0dXJlLgo+ICAtIG14aWMscmFuZG9wdDogRGVmaW5lIHRoZSByYW5kb21p
+emVyIGFyZWEgcGVyIHBhZ2UuCgpDYW4gd2UgY3JlYXRlIGEgZ2xvYmFsIE5BTkQgRFQgcHJvcGVy
+dHkgZm9yIHRoYXQ/IEVuYWJsaW5nIGEgcmFuZG9taXplcgppcyBxdWl0ZSBhIGdlbmVyaWMgc3Rl
+cC4KCj4gVGhlIHBlbmFsdHkgb2YgcmFuZG9taXplciBhcmUgc3VicGFnZSBhY2Nlc3NlcyBwcm9o
+aWJpdGVkIGFuZCBtb3JlIHRpbWUKPiBwZXJpb2QgaXMgbmVlZGVkIGluIHByb2dyYW0gb3BlcmF0
+aW9uIGFuZCBlbnRlcmluZyBkZWVwIHBvd2VyLWRvd24gbW9kZS4KPiBpLmUuLCB0UFJPRyAzMjB1
+cyB0byAzNjB1cyAocmFuZG9taXplciBlbmFibGVkKS4KCkRvIHlvdSB3YW50IHRvIHNoYXJlIHdo
+YXQgaXMgdGhlIGFkZGVkIHZhbHVlIGluIHRlcm1zIG9mIGxpZmV0aW1lIHRvCmVuYWJsZSB0aGUg
+cmFuZG9taXplciwgZ2l2ZW4gdGhlIGRyYXdiYWNrcyB3aGljaCBhcmUgc2lnbmlmaWNhbnQ/CgpU
+aGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
