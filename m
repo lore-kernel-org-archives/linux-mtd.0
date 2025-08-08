@@ -4,66 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEAC0C87FD2
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E388ECA0EC3
 	for <linux-mtd@archiver.kernel.org>; Fri,  8 Aug 2025 10:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ch6KZV7lUGFrayKsrMZyxFXRmGvKTGTa76Gh/56VSpc=; b=zmtBQMbzo344/p
-	VXX3L/dudCtXhM7L48jmBc3/gCGtjBLnS8tkooLKs40+edO+cRlB50UJK2v/pfr3oMljFb15BGgCa
-	WQ54Br7b7OMn3osTtbCUPmpgfvfmvWXmmXm/05Mc+aJD+E+olXdSKEa2duYYRa1wGcxi01TJQoMq8
-	mTBm5WxBlvu81Z0PhI9nq6vr6hB2tx28ZyGdMr/cg03HPBEirUc1MOBQyZew+p9dhbLNuSDsev5W9
-	XT/+GEH7oZ1H8W7Mzq7oqT8VsUrgflmsY9JMvKFIn9oBhHp3coS1uY+8w7F+I9Z0uK9c4ZTc+wHiW
-	Kr4u4nL3FDK1ByjtpPeQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iAFQ+Y129NubW7tI/IUraa+9cA10Lwo5As6XZCH1heg=; b=VrPelYi4dxwYBo
+	gtW+vHIRsoNgYct9isU4+eufk6gpwzcWnA724GxlKe4FB4d2B2dkyuX2Un617Z3CYJJtJfc2+iA/z
+	2j4GsRQCXq/fzx1+eFtFIGi8oIxhBripMaTHgic5nsRYjzHUU9mFJzIEq557Yc23LpsMvXnJg3wm7
+	VMihgbI8rFmas2MuCE6W44/xZKfvjdZyJoJg7GVjNqf2BV/Kf5qaemCTh3tcWqq1gniJTfoP+8Ifh
+	pAYhTJc3qYBb77XCGsyE4HlcbpE318kUpJeVTKJbW1+Ix37OUXC5Q2fIELgQxQqDptHaJpQFPyirj
+	c6uoI0NS9x0moiYpAYWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ukKcW-00000002asx-33P2;
-	Fri, 08 Aug 2025 10:46:44 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1ukKcV-00000002asM-32CT;
+	Fri, 08 Aug 2025 10:46:43 +0000
+Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ukKCA-00000002YK6-111H
+	id 1ukK6z-00000002XVD-3qko
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Aug 2025 10:19:31 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B4A984320D;
-	Fri,  8 Aug 2025 10:19:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1754648367;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GfxpN6ZiqcVyW4i6uW3ZKSO2WB/dwXVU69neRz5alTU=;
-	b=de0HcDcgkFyNffryiXNWtj9t9e6pkWr4eO+Ju24QUompQtVAHzWdirHO5b3WoIrsoFdMM/
-	xMgS9HjJk3e4qsvLaXstVbszXWHSekkXHjX8frJOjK+sHgFPNmjyDVpd2ZeFz84eCUifXU
-	V50emlFWTl0JDzRZ8vomXmgBRRx+DXBiosIJ826gNeXX3ZDqaNoH8ZKqWd8xc1T7Xp62XE
-	i65Kl5n/ORw2ShJMKvvCS9NE7y/OAL6BUPIv3dQJHN3zA6ZU88/e7OeymDnWRFeHy4wgwS
-	E4u8DIaZF6T1VRZXGy0bBnqtzDJ6ZCQvN+zYFIBFjZsMrefmmbkkIvz0ibkg1w==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Cheng Ming Lin <linchengming884@gmail.com>
-Cc: vigneshr@ti.com,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  richard@nod.at,  alvinzhou@mxic.com.tw,
-  leoyu@mxic.com.tw,  Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH 2/2] mtd: spi-nand: macronix: Add randomizer support
-In-Reply-To: <20250808095503.906244-3-linchengming884@gmail.com> (Cheng Ming
-	Lin's message of "Fri, 8 Aug 2025 17:55:03 +0800")
-References: <20250808095503.906244-1-linchengming884@gmail.com>
-	<20250808095503.906244-3-linchengming884@gmail.com>
-User-Agent: mu4e 1.12.7; emacs 30.1
-Date: Fri, 08 Aug 2025 12:19:24 +0200
-Message-ID: <87zfca9kur.fsf@bootlin.com>
+	Fri, 08 Aug 2025 10:14:11 +0000
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3b8de193b60so1117797f8f.0
+        for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2025 03:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754648048; x=1755252848; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZlopvggkmWltQy9MW6Am3UkajqZswoegEQEmKjx/+LE=;
+        b=GB9RoP/fvdscz7w6y4QY0g86Q2suTAZrdHkIGf/LGd/a3Ug7Uv8DT0IJhQY58o+zDD
+         ntxnoO6ejQ9XycBjZdRNaenW0jOQmo9KQkYf23WzOy/mwa0j84wB1wzxJa5cZ829ryuF
+         FlIPwswRy8fBKwtAT+19VijkKcBQX2qRYjArFQE//2YhvGD0a7yy26UCCWG6dA8zPKjd
+         zdoNQCgyPmX63azsAHQj1BYxA2XV6QddLHzz2Ht9NUBRMvAvMuk7DKlN9k8hl0n9p+Wj
+         rjftxVkgvWzxGIeUrZhPGg2wspXzZpCeDNibdtbrimbnsvR5Ca+xootvBb5MnuTS4FKD
+         qUJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754648048; x=1755252848;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZlopvggkmWltQy9MW6Am3UkajqZswoegEQEmKjx/+LE=;
+        b=myvoRp69TiK4Cz/ULwkAjEizvqx5OBDOjXLIkNUF/d3TzAL+/ChlBH/OU3ObpeHynM
+         y2Hezox5xlxk13unWM8E358/zKc0agEmJY2FQ7TRZY6QfoXj8D/8XX2OG7hVxLc1dnMu
+         3t6HfnuiaTNSlEzKepQ83PX+KsVXFLBICDGq4GZjeABWM+m1zbkH1gAv5NvFmJ6B3UZL
+         aj6S4TQikq7hEZjjkG4ITNaC7n1xMfUqeoPQ/P7683I6dr1SX8OiC2HWeD/x3oXwkmMp
+         RL39ei4CLiAOc0CLhOBZEDCDO22i+c1E78LmlWey7QAx7y2zPq191QOyYwIRCvxTA/eY
+         u9Ew==
+X-Forwarded-Encrypted: i=1; AJvYcCXEGY9Xjjn0FLxxvNex0qM1GadSvt9LjzmbBAicT5HbCZjA1J9DhFjG9TEMXUPGRAR/wEvdTUnxqUo=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz3KucRGJmY8xSqkXBkxRrR4ErSEeQw+eCeBtwy6l7ucgbMdUoB
+	r0h5cBJCKi/jViLIDu1r4MK05UUrwaXKNa6dta3V0hX2cUqqza4iUmJz
+X-Gm-Gg: ASbGncuVdltLQLeA7NNZdi19T0/0Gwu/pbz/wZW5folmhpXNvPSyEfCwopxBwHWTro+
+	qKUX1MwPACAibyBNzibtx/QXwZdPCh4AAvNWMRcIlbMgz8cuHcdVvQjHX8Y5EGXb7/ZgpyviBBD
+	pGBhi9XDTp7fjNFLYTZZ8CfRM4BJHH7c/EcngbhXY2N0H1Cj07tPOpMKzanZ3AVxE4n2gt2DqMW
+	qwHTH3lsnSAzhM+QuKdNp3mP5HpnQpahyXorLf+mGYbLntXXn7ZGYzc7rmIyyWRUqAZce/eR/fy
+	lFcgLZpTDQh39JuKim37Aduo1TQjHvc2f625BpCD3/LhvAf9vf7pG2uMVrGbpDsOf5/knVqLyZF
+	uMVJ0/3kDbTC8Tc4Fr1ay4CAs4C6a2qmMEGWOot43seTHG7mloOQ=
+X-Google-Smtp-Source: AGHT+IEdy/jbdLYN+e27n7MEC8ya/SRxMZrvBHWFoaQjCz9Rqf1J5qSgsl1RQ6XbQSmwA1BDED6c7w==
+X-Received: by 2002:a5d:5f8b:0:b0:3b7:940e:6529 with SMTP id ffacd0b85a97d-3b900929571mr2062954f8f.10.1754648047920;
+        Fri, 08 Aug 2025 03:14:07 -0700 (PDT)
+Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-459e58400f5sm125834915e9.2.2025.08.08.03.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Aug 2025 03:14:06 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Fri, 08 Aug 2025 12:13:44 +0200
+Subject: [PATCH v2] mtd: core: expose ooblayout information via debugfs
 MIME-Version: 1.0
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduvdefheeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhgffffkgggtgfesthhqredttderjeenucfhrhhomhepofhiqhhuvghlucftrgihnhgrlhcuoehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffgefhjedtfeeigeduudekudejkedtiefhleelueeiueevheekvdeludehiedvfeenucfkphepledvrddukeegrddutdekrdeiheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeelvddrudekgedruddtkedrieehpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeekpdhrtghpthhtoheplhhinhgthhgvnhhgmhhinhhgkeekgeesghhmrghilhdrtghomhdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrt
- hdprhgtphhtthhopegrlhhvihhniihhohhusehmgihitgdrtghomhdrthifpdhrtghpthhtoheplhgvohihuhesmhigihgtrdgtohhmrdhtfidprhgtphhtthhopegthhgvnhhgmhhinhhglhhinhesmhigihgtrdgtohhmrdhtfi
-X-GND-Sasl: miquel.raynal@bootlin.com
+Message-Id: <20250808-mtd-ooblayout-sysfs-v2-1-fa620506d1ce@gmail.com>
+X-B4-Tracking: v=1; b=H4sIANfNlWgC/32NQQ6CMBBFr0Jm7RhaAkVX3sOwKHSASYCaTiUSw
+ t2tHMDle8l/fwehwCRwz3YItLKwXxLoSwbdaJeBkF1i0Lkuc6NuOEeH3reT3fw7omzSCxpj+6p
+ UbWGKGtLyFajnz1l9NolHlujDdp6s6mf/91aFCil3Ve1qo0mZxzBbnq6dn6E5juMLUT8Gi7YAA
+ AA=
+X-Change-ID: 20250719-mtd-ooblayout-sysfs-77af651b3738
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250808_031930_412749_1DDD4251 
-X-CRM114-Status: UNSURE (   8.70  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250808_031409_957947_4C44BF83 
+X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,28 +97,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDgvMDgvMjAyNSBhdCAxNzo1NTowMyArMDgsIENoZW5nIE1pbmcgTGluIDxsaW5jaGVuZ21p
-bmc4ODRAZ21haWwuY29tPiB3cm90ZToKCj4gRnJvbTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWlu
-Z2xpbkBteGljLmNvbS50dz4KPgo+IEVuYWJsZSByYW5kb21pemVyIGZ1bmN0aW9uIGJ5IHNwZWNp
-ZmljIGZsb3djaGFydCB0byBzZXQgdGhlIGRlZmF1bHQgdmFsdWUKPiBvZiBSQU5ERU4gdG8gMS4K
-Pgo+IFJhbmRvbWl6ZXIgaW50cm9kdWNlcyB0d28gbmV3IERUIHByb3BlcnRpZXMgZm9yIGNoaWxk
-IG5vZGVzIHRvIGNvbmZpZ3VyZQo+IHRoZSByYW5kb21pemVyIGZ1bmN0aW9uYWxpdHkgYW5kIGNv
-dmVyYWdlIG9wdGlvbnMuCj4gIC0gbXhpYyxlbmFibGUtcmFuZG9taXplci1vdHA6IFNwZWNpZnkg
-d2hldGhlciB0byBhY3RpdmF0ZSB0aGUgcmFuZG9taXplcgo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBmZWF0dXJlLgo+ICAtIG14aWMscmFuZG9wdDogRGVmaW5lIHRoZSByYW5kb21p
-emVyIGFyZWEgcGVyIHBhZ2UuCgpDYW4gd2UgY3JlYXRlIGEgZ2xvYmFsIE5BTkQgRFQgcHJvcGVy
-dHkgZm9yIHRoYXQ/IEVuYWJsaW5nIGEgcmFuZG9taXplcgppcyBxdWl0ZSBhIGdlbmVyaWMgc3Rl
-cC4KCj4gVGhlIHBlbmFsdHkgb2YgcmFuZG9taXplciBhcmUgc3VicGFnZSBhY2Nlc3NlcyBwcm9o
-aWJpdGVkIGFuZCBtb3JlIHRpbWUKPiBwZXJpb2QgaXMgbmVlZGVkIGluIHByb2dyYW0gb3BlcmF0
-aW9uIGFuZCBlbnRlcmluZyBkZWVwIHBvd2VyLWRvd24gbW9kZS4KPiBpLmUuLCB0UFJPRyAzMjB1
-cyB0byAzNjB1cyAocmFuZG9taXplciBlbmFibGVkKS4KCkRvIHlvdSB3YW50IHRvIHNoYXJlIHdo
-YXQgaXMgdGhlIGFkZGVkIHZhbHVlIGluIHRlcm1zIG9mIGxpZmV0aW1lIHRvCmVuYWJsZSB0aGUg
-cmFuZG9taXplciwgZ2l2ZW4gdGhlIGRyYXdiYWNrcyB3aGljaCBhcmUgc2lnbmlmaWNhbnQ/CgpU
-aGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Add two new debugfs files which allows to determine the OOB layout
+used by a given MTD device. This can be useful to verify the current
+layout during driver development without adding extra debug code.
+The exposed information also makes it easier to analyze NAND dumps
+without the need of crawling out the layout from the driver code.
+
+The content of the new debugfs files is similar to this:
+
+    # cat /sys/kernel/debug/mtd/mtd0/ooblayout_ecc
+    0      0   49
+    1     65   63
+    # cat /sys/kernel/debug/mtd/mtd0/ooblayout_free
+    0     49   16
+
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+Changes in v2:
+  - rebase on tip of mtd/next
+  - expose informations via debugfs instead of sysfs
+  - drop sysfs ABI documentation changes
+  - update subject and commit description
+  - Link to v1: https://lore.kernel.org/r/20250719-mtd-ooblayout-sysfs-v1-1-e0d68d872e17@gmail.com
+---
+ drivers/mtd/mtdcore.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5ba9a741f5ac3c297ae21329c2827baf5dc471f0..6a1a514021730fb4baafbf3803e900a9ed6b21b2 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -384,14 +384,64 @@ EXPORT_SYMBOL_GPL(mtd_check_expert_analysis_mode);
+ 
+ static struct dentry *dfs_dir_mtd;
+ 
++static int mtd_ooblayout_show(struct seq_file *s, void *p,
++			      int (*iter)(struct mtd_info *, int section,
++			      struct mtd_oob_region *region))
++{
++	struct mtd_info *mtd = s->private;
++	int section;
++
++	for (section = 0;; section++) {
++		struct mtd_oob_region region;
++		int err;
++
++		err = iter(mtd, section, &region);
++		if (err) {
++			if (err == -ERANGE)
++				break;
++
++			return err;
++		}
++
++		seq_printf(s, "%-3d %4u %4u\n", section, region.offset,
++			   region.length);
++	}
++
++	return 0;
++}
++
++static int mtd_ooblayout_ecc_show(struct seq_file *s, void *p)
++{
++	return mtd_ooblayout_show(s, p, mtd_ooblayout_ecc);
++}
++DEFINE_SHOW_ATTRIBUTE(mtd_ooblayout_ecc);
++
++static int mtd_ooblayout_free_show(struct seq_file *s, void *p)
++{
++	return mtd_ooblayout_show(s, p, mtd_ooblayout_free);
++}
++DEFINE_SHOW_ATTRIBUTE(mtd_ooblayout_free);
++
+ static void mtd_debugfs_populate(struct mtd_info *mtd)
+ {
+ 	struct device *dev = &mtd->dev;
++	struct mtd_oob_region region;
+ 
+ 	if (IS_ERR_OR_NULL(dfs_dir_mtd))
+ 		return;
+ 
+ 	mtd->dbg.dfs_dir = debugfs_create_dir(dev_name(dev), dfs_dir_mtd);
++	if (IS_ERR_OR_NULL(mtd->dbg.dfs_dir))
++		return;
++
++	/* Create ooblayout files only if at least one region is present. */
++	if (mtd_ooblayout_ecc(mtd, 0, &region) == 0)
++		debugfs_create_file("ooblayout_ecc", 0444, mtd->dbg.dfs_dir,
++				    mtd, &mtd_ooblayout_ecc_fops);
++
++	if (mtd_ooblayout_free(mtd, 0, &region) == 0)
++		debugfs_create_file("ooblayout_free", 0444, mtd->dbg.dfs_dir,
++				    mtd, &mtd_ooblayout_free_fops);
+ }
+ 
+ #ifndef CONFIG_MMU
+
+---
+base-commit: 9cf9db888f387844e063efc6296e9fa5c042995e
+change-id: 20250719-mtd-ooblayout-sysfs-77af651b3738
+
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
