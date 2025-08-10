@@ -4,156 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7408C87FCB
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Aug 2025 21:12:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A1E0CA0EC0
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Aug 2025 08:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fDUPOSsjeX0gGxhaQlM8YPGnX+Znu/INsLCqAJDybDo=; b=cw+FoVaSfbbH6p
-	M8JXFAeSjE4+H5oOHtBYO3zfR6BeNM9sGJOzOHLY6xKGGFcwdxlh7o5DsDYTytYAYzrydmBqeaqui
-	ZrS0jYlV3JcALDMMUpv/3o98AJTrrm8ReNS7miT9ecKnOFiTTILGCNnhm9nStRMnbhAqzkk9FeoLo
-	q78UAW2wr43I3BW3Qii7kI/iAmMHObyWEW3E7yy7+f9Rlk/tpvts7hhfqMjk72m3otPxfYoqzG9s9
-	w2B30ZEsGelVHbq14lCWW35Y7FUgCM8b9N8A8iBiD2rrFETFcYjLaDk+CnHe+Gh6Nas+QwpSkc2fi
-	fNuUi/kkN988CSpalnkg==;
+	List-Owner; bh=5HOvp+eQINkKsTyvbaQnIgqiPFDk6/2cEK/PYiHt30Q=; b=e6Y5ZRp/p9/Pmv
+	iOq7rkznsi8D8XJWMpS4MVbotBxDIqB6h0Cp+LSpRk97olECQ6DTSiR8whxIQeuxjkTW7Ra52GVjm
+	/XRR1P6aFuHXvQWWUKyU0Qr7dZWxWd1GY7JzeI6pbBY8KoS5bsQDmTVtH08+i7Iys47UN9zV/w+wa
+	Pao5xawVGkKZqUlO9aH+K++ukrJ105oqF6+2vH8OPtT0TF1mhFX+/THxU3W/OJ3gZKb6zU5ICAFfs
+	/MRNOcEZ3TBWJzS/xYrsColDzq/AnlxkkR4r6p3I+pDhqYX0Q9G3z9b8OyiqDtKhYfiPcgZG70rkM
+	J+Wpj8zHBGvfS6gTNlDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ukUO0-00000003iiX-2vpc;
-	Fri, 08 Aug 2025 21:12:24 +0000
-Received: from mail-francesouthazlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c207::3] helo=MRWPR03CU001.outbound.protection.outlook.com)
+	id 1ul0yX-00000005QKw-48h8;
+	Sun, 10 Aug 2025 08:00:17 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ukUE6-00000003hUt-3lrc;
-	Fri, 08 Aug 2025 21:02:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=a+VZL/Ao9p4dg4Z7D5mblWbI2AKC/rbl4dQfH7jWUtwaISvgK+3JVOnmenVAxJuJti84XlPRzrfzAu/KhT5y1ev5/9m9/APK29L2JzUOqqjG18nnBPGqLmqogTzHgxN6MyTbtO77eraHbBi5uEjpfHougAyL0bXV1epnl43NOVh8IrBUwZasSBJyulP8hHaVWkB4zL68sz7FdB3ZKzxT6kOWh+XrUxITJhnq/gwCWtC/l8xvI7ew6xIh/XuaOl7W+oDHdn3pl5t7cgNF+yclzSeQEjGVWRh96iJZJXkqvdPfmW4oIdO3CD2SGkVsY7pAPU6ZZ8Bo22fYXK/LkRhbXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jkk+3t535n4/UAVvjzJbOsMv5YHbb19o1eB9ufbaG6U=;
- b=vBkzq3AIlguOJEsnJ5dqpjS+UepMdGiFGEgFTbPiGm1ROuUkfoBpFDKHBgNgbsyV2wEvkeSIwNzt4Gbc96E+dA2BaVBiuQSwU581glRnUMiNzYdmUfOPfWGLhdbTg1bk4ObIKKdLE1d/0sTlAvCpZ5GWx/5RjyyWargQksR4/3cCA/Dg159M+Pg+6QriCLEWJ1aL9088049dlHy4TSxJOOXvKKxFYEIimUMIuTBC5CSdU6THjjCGj2sY25PtTB4LvxJmvFuWdFBdB3xnzvwcxcBfygZDiMxGdZfTEHD6YdygJX5sV993OjzMfQ2TnIQPNYWTNquM3MlDuxPjj3fPLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=genexis.eu; dmarc=pass action=none header.from=iopsys.eu;
- dkim=pass header.d=iopsys.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iopsys.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jkk+3t535n4/UAVvjzJbOsMv5YHbb19o1eB9ufbaG6U=;
- b=2KoGsUROtkBMbyqPwiIjjcvTl1FGLEZbxQKqiXD9i7CayyywJndWJyasNfTsxkbCLJxHob6wERXQbPURTtlJe5+Q+pWaXwI2IyI9seWs9BTeksmhg3TdTOVkHV7e6obHdQ4TaCAcQXV+3fFfqfwUcAp+nW3icQ4OF5Xo4K4ekTF6I8inyXOnSXFyZEUOq/DfnY3P6M2M4iQ8ECEtgDykLCgh6XbLM78Og6b1IchjVn5QLsEL464Ez4qXld7UFEcKzilQdMluyaYESvlaj8V8OxAibfF2OF5nEosAPeUtENPwNjIpFSIhDL8aV1xUbIxsZ9QlpledGpZAtlWXXtpBUw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=iopsys.eu;
-Received: from GV2PR08MB8121.eurprd08.prod.outlook.com (2603:10a6:150:7d::22)
- by AS2PR08MB9739.eurprd08.prod.outlook.com (2603:10a6:20b:605::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.16; Fri, 8 Aug
- 2025 21:02:03 +0000
-Received: from GV2PR08MB8121.eurprd08.prod.outlook.com
- ([fe80::4cd3:da80:2532:daa0]) by GV2PR08MB8121.eurprd08.prod.outlook.com
- ([fe80::4cd3:da80:2532:daa0%4]) with mapi id 15.20.8989.018; Fri, 8 Aug 2025
- 21:02:03 +0000
-From: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Ray Liu <ray.liu@airoha.com>,
-	Mark Brown <broonie@kernel.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
-	Martin Kurbanov <mmkurbanov@salutedevices.com>,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>,
+	id 1ul0yR-00000005QFc-3yjb
+	for linux-mtd@lists.infradead.org;
+	Sun, 10 Aug 2025 08:00:13 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 188EDA55134;
+	Sun, 10 Aug 2025 08:00:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FAB9C4CEEB;
+	Sun, 10 Aug 2025 08:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754812810;
+	bh=hTLksDqAG7iJZbJnGqd8JyQQhFVP3K3qP+WNZUyThvI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SLFlFAFYjVyvx9ggNdb5bWTXUqjDAUbaAo7N9/6UnJmEJtn+vKgzQPSAsWKAsRRRL
+	 So3V9vSSaOSZ6Ds6ARu8XEUs1FVfS4QUCRq4ZHQrfPc+rBVQhL3v9wIQaxwh3+aQXB
+	 k2ubttllOoJvrh7zV/bz9kqO1TlYZEs1y0/O8Oyc1IkXRMPZ74rzJNYA4fyBXPEpMJ
+	 /brqN4ToKmH+IcQQqnwa6y3VbfRNfVQosWIZdaAiMRv8+lLvNNZA8f1nmW1uL0/aTx
+	 NURcg6NCqctDVHUqEvUCetLBqq3zGe3Ta/k9LE0yd/xaBpAv3jwBpD7nQrShG7pq1M
+	 V6O2XmUIE9Lsg==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org,
+	fsverity@lists.linux.dev
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-spi@vger.kernel.org
-Cc: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
-Subject: [PATCH v2 4/4] spi: spi-airoha-snfi: return an error for continuous mode dirmap creation cases
-Date: Sat,  9 Aug 2025 00:01:47 +0300
-Message-ID: <20250808210147.3085391-5-mikhail.kshevetskiy@iopsys.eu>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250808210147.3085391-1-mikhail.kshevetskiy@iopsys.eu>
-References: <87cy98g6ts.fsf@bootlin.com>
- <20250808210147.3085391-1-mikhail.kshevetskiy@iopsys.eu>
-X-ClientProxiedBy: HE1P190CA0037.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:52::26)
- To GV2PR08MB8121.eurprd08.prod.outlook.com (2603:10a6:150:7d::22)
+	linux-btrfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH v5 07/13] fs: remove inode::i_crypt_info
+Date: Sun, 10 Aug 2025 00:57:00 -0700
+Message-ID: <20250810075706.172910-8-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20250810075706.172910-1-ebiggers@kernel.org>
+References: <20250810075706.172910-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV2PR08MB8121:EE_|AS2PR08MB9739:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0a234dfe-458c-4fbd-22f1-08ddd6bed354
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|52116014|7416014|921020|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?0BJabd7NwZVygzgjTw7YDCFPeb96DdGA+ovvMSDJdtXzRup8is2RdoyNzaAh?=
- =?us-ascii?Q?6k5y9jJXZmzpaYtolWuMlUkePcxkO7drsZe4AAOhcLn4k3lqsbf5gNx31thV?=
- =?us-ascii?Q?38r0DE+fLP1YPrQJm1+hy7K/xCNBUrNsrWRGc+WwNaDfzgnVepkluza0tyRz?=
- =?us-ascii?Q?Wu8yPWww1vbZfnILenjyhXhzfaVddgDyQanDiFmzQZRHLuWHp40GWae0zioa?=
- =?us-ascii?Q?WuoASblrSwcab1kjqobPTlGYLsEqrXe6YfZy30Oiy1ipEbtmUk754ZSpz4Bn?=
- =?us-ascii?Q?5R/lCo3aRVYtXZiS1uZ6h0ifW+3XYfeXfWfkILeuIVMKbTGePOr8Z4EcT7+J?=
- =?us-ascii?Q?2aSzlactLvI3MgpHDKZ4z3nR3cb0MFnmy6XL/YiwVRVuw8MKqA+gze9EHKpo?=
- =?us-ascii?Q?vXbjmS7R+nLL8q/OtxUUgKDZnJCKyLcjVuS5sSkS4dea2AwDDIjhvJ9sRhav?=
- =?us-ascii?Q?5Y98X4MLbubKJTaeqQdF10xitMeIuPXuRSzHEUEXVekRHu7UckSGlrMsLFlB?=
- =?us-ascii?Q?mDJHeoAD0EJ/kWhMarv1Wkymc+2cRTcvU9T3kZcK5HVboxddrRNInvvJlGM0?=
- =?us-ascii?Q?rjNGYCniQHyocCiUuV17oQWuteTlpClRSNxDAL/b1NJgHRX8+nLTDg3bKuir?=
- =?us-ascii?Q?Z7rSrUmm5Fi7Cs034wFEWvsGm5ZBrXB1kUSEfDFmltqTMBiIOBGtrXd3fL/Z?=
- =?us-ascii?Q?AYnLyYfPiOMjSVOTQQbcp/zFdXR9yqObzvgN9LT+Jyo8g336wsLdla5hsllR?=
- =?us-ascii?Q?JZIJvhrIV8u50Ekty0OgsMzNU7weSqjsCdtRDtHOJH0rmscR7v02SMH/8720?=
- =?us-ascii?Q?MSAFBnrLtq9wa2BwAQm9ol51aMciDioBWclvZt0cGl9cjNqO4/Xhe68OEFcu?=
- =?us-ascii?Q?Vl66DrUKcZHMoX+czUJNC0aL+z4YXLkQQM2HdvdGTvMtHLyztJc870GJOYZp?=
- =?us-ascii?Q?PrYd7rzsHuIKCalurNxhIAp/E0upbT6OYUp3IMmqO1vE63A/3hAcEHkfBHbZ?=
- =?us-ascii?Q?m6GHPmvOspRRxpJ+40yQbpb93hn+3AZHX22XrmxrQ0WlaY+S36PWCbPN4b/+?=
- =?us-ascii?Q?JeTn85ep03Ho2FSXSbN+86zgNLVE1nV75pifh717H2iCPgm+kuExWkXWeSfU?=
- =?us-ascii?Q?tnjcAzvlPe78wWCWW189i9c7veOYpU9lgyJ13Vm+oh7tErAoA2vADqAVRl/k?=
- =?us-ascii?Q?u0w7Za3ZdHpZhGIHK1CCKowKq5GPRA6NJ00o4S+CeOLPRoX0c9ZnDYyfwA9y?=
- =?us-ascii?Q?kuVEQgxzGS/hmQOfJ6OTygSrClPTo88uJZrSHky1YympPJpmV15gjXveQ5FA?=
- =?us-ascii?Q?MZBUTa/S2ZwZRxzvRrnqTg7vlTxNtQTzcn4EvxuotZ9vtDWYn3pYjPCfmfLx?=
- =?us-ascii?Q?erc8TYFL9q2Nvw2jI2Zo3F7YC/WasSlU3sH4ITS6vBSDMVHsprgbzJINf3GD?=
- =?us-ascii?Q?b98m2MT6l0nqTA0Fs0dkt8p/Eu6Oc6FZWfNmY8UjE1Sbjdv/jkcpz3JMt3BW?=
- =?us-ascii?Q?sn4O2RadRKiOSPM=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR08MB8121.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(52116014)(7416014)(921020)(38350700014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Tcv1yc6EWKezAtVEysq6xWrruyeXwjAAgiVGJ+7xdBg9jfDqecfyLeL6IY9P?=
- =?us-ascii?Q?E3iO1EZtXF8kSxNQcJR54TOniH59fH5mBSxLD4Nh6L1akuyiwGHxbdKVgIYh?=
- =?us-ascii?Q?ZAuNKZGQ0bF4kcqgfilWhAd5rwP1o+7PcD7lXYkzpJQIQzEwET2mtUATNiC1?=
- =?us-ascii?Q?g+Hzkyb2dhVFhtWghe//+cx5wIqs7UlAWq0qJrkajTP6MZf0gbxNORS47ok1?=
- =?us-ascii?Q?jwK9mSkFeM/HQAEOg5oiC+Y8ongGA9CSiCA/OcSE1OhjAQMV89q1FLbi/7ml?=
- =?us-ascii?Q?nTT3Zb9S27n8HX7H2AjxT/JThYXtsIibWhDRkM5+Z9nkRBsRRrh1y7hOCZZn?=
- =?us-ascii?Q?KFmM7E0p2X8MVWElEwktNvv+vD7fHafjWJAwOvz82z809VOJAMSXb8bExRcA?=
- =?us-ascii?Q?ih7+3KfiLfBuW56Gqp06+Y7y+auTe4xl4L7d5YeEU9tI1AIB47kB37NAIZz8?=
- =?us-ascii?Q?q2ZfnVu27OBPxhFXsmxq5iShenT2ldHwDZ+OuYlxs6DjIYg4VIyV4NcZKQga?=
- =?us-ascii?Q?h8glUQ+lNsF26cm7U5XmnWdSrsDYYHWs+yKgU9dkP71blcHQ241FKCoKvoRS?=
- =?us-ascii?Q?6RbPh8yJIqKAMsvjKvjb2k0cY5t7NMbyxxlYzeWGqsWPh02hz7QxqMC3G7sn?=
- =?us-ascii?Q?wxdC+8ECa8FPALf+O44gkSxN1jRC0AzrpQrsbvW+h5ZG6Cr11h9gxaLR//kj?=
- =?us-ascii?Q?PbjusRktwbdRPO8tEQk9UmeHfQapzU+QtDa4knDQaj2QKgZiKUuegHMHpNFU?=
- =?us-ascii?Q?aT6QyAco11wv9nsHer3b0wn9WOsCctYb9StWMr/Fnc61NXJOQH/suA9TtVU+?=
- =?us-ascii?Q?MWUgOnQWdIcUu71Ml/AxhnSqmYYySFcCNVyAwaGnmh7jf4gB2Y9M+ntaqSB+?=
- =?us-ascii?Q?n0UmqigLZ7Hi9092H4vJFgmfohR0H4UL66kz4GPVbs0qiaSPvb4szbOnY1ZH?=
- =?us-ascii?Q?ZGUTiY6DFM83eFr18XtmbJwffRYrihK4QXaxKjqOa8+ChDvoHxc8vVe4rBcW?=
- =?us-ascii?Q?3MSmzWWvzHQpuQeAJUk+4RMgZ4TlZ9Eu9Ck7thhp3bGdX90mcE7PG1n6KCRX?=
- =?us-ascii?Q?lG9IQtQsQkR0iYBNIJMBKft9Au2s6dKQcIIm1KsJX+kDSjZ15rZEakJL6Vh8?=
- =?us-ascii?Q?1GetU3NBHmZ6ZFdpt52fvL35x3+Ttp1buroOrBr+7xoJ1iaCYktZ3Hziec1m?=
- =?us-ascii?Q?MakDqItoccPvxv2gn+v5Qb3OKqjB5VkeuXSwniLP2QYE5zJoNWEf47iwNOq9?=
- =?us-ascii?Q?0KfvE+beVWdUB7G3luAs1JtihJpu8X2LU/lHCgNHqhWyRgz6GjroTwhOdK1m?=
- =?us-ascii?Q?cysW/YnLcax3uvgt8YOVkgt838HFzi35M7/s1sSwDm8fpDktFmHMZgxZliM4?=
- =?us-ascii?Q?ZxoFNybb539mmgdh+JUHvMW6KOXpiYZTYKK+pKpRKyu+OWgtYWLCXIdcPW4w?=
- =?us-ascii?Q?mj+iIh8QZOuE2tj2J/DYQ0gcbVQlG3N0j23WGrSCDffn1EzWUTWc9LwyI9tL?=
- =?us-ascii?Q?lSbmR+jR9czgU8uoRfAWd3WSSwii81nHgRNXKiZzljUkWP3iftdXLENX8tHB?=
- =?us-ascii?Q?q5ExLZGIwuWkN0wP9M+yz3wepPKg+mUVbcgoOBSWdm3NIWS2Ifsy5K3YzRtz?=
- =?us-ascii?Q?MA=3D=3D?=
-X-OriginatorOrg: iopsys.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a234dfe-458c-4fbd-22f1-08ddd6bed354
-X-MS-Exchange-CrossTenant-AuthSource: GV2PR08MB8121.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2025 21:02:03.6155
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8d891be1-7bce-4216-9a99-bee9de02ba58
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KeQ9ezwvsYFdO09+GB/X5v0OGQwI/8++OVjuaBZcaNb4DFvX1FtWPsFmqjIbDDfUdm7SfMaDL7B3D9IOaylJy3HnHJJdwYbRcYG5y7wkFZM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR08MB9739
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250808_140210_945464_AC04FEAE 
-X-CRM114-Status: GOOD (  11.63  )
+X-CRM114-CacheID: sfid-20250810_010012_139273_D38A0CFB 
+X-CRM114-Status: GOOD (  12.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -170,35 +79,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This driver can accelerate single page operations only, thus
-continuous reading mode should not be used.
+Now that all fscrypt-capable filesystems store the pointer to
+fscrypt_inode_info in the filesystem-specific part of the inode
+structure, inode::i_crypt_info is no longer needed.  Update
+fscrypt_inode_info_addr() to no longer support the fallback to
+inode::i_crypt_info.  Finally, remove inode::i_crypt_info itself along
+with the now-unnecessary forward declaration of fscrypt_inode_info.
 
-Continuous reading will use sizes up to the size of one erase block.
-This size is much larger than the size of single flash page. Use this
-difference to identify continuous reading and return an error.
+The end result of the migration to the filesystem-specific pointer is
+memory savings on CONFIG_FS_ENCRYPTION=y kernels for all filesystems
+that don't support fscrypt.  Specifically, their in-memory inodes are
+now smaller by the size of a pointer: either 4 or 8 bytes.
 
-Signed-off-by: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
+Co-developed-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- drivers/spi/spi-airoha-snfi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/fs.h      | 5 -----
+ include/linux/fscrypt.h | 8 ++++++--
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/spi/spi-airoha-snfi.c b/drivers/spi/spi-airoha-snfi.c
-index dbe640986825..043a03cd90a1 100644
---- a/drivers/spi/spi-airoha-snfi.c
-+++ b/drivers/spi/spi-airoha-snfi.c
-@@ -618,6 +618,10 @@ static int airoha_snand_dirmap_create(struct spi_mem_dirmap_desc *desc)
- 	if (desc->info.offset + desc->info.length > U32_MAX)
- 		return -EINVAL;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index d7ab4f96d7051..1dafa18169be6 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -70,11 +70,10 @@ struct vfsmount;
+ struct cred;
+ struct swap_info_struct;
+ struct seq_file;
+ struct workqueue_struct;
+ struct iov_iter;
+-struct fscrypt_inode_info;
+ struct fscrypt_operations;
+ struct fsverity_info;
+ struct fsverity_operations;
+ struct fsnotify_mark_connector;
+ struct fsnotify_sb_info;
+@@ -778,14 +777,10 @@ struct inode {
+ 	__u32			i_fsnotify_mask; /* all events this inode cares about */
+ 	/* 32-bit hole reserved for expanding i_fsnotify_mask */
+ 	struct fsnotify_mark_connector __rcu	*i_fsnotify_marks;
+ #endif
  
-+	/* continuous reading is not supported */
-+	if (desc->info.length > SPI_NAND_CACHE_SIZE)
-+		return -E2BIG;
-+
- 	if (!airoha_snand_supports_op(desc->mem, &desc->info.op_tmpl))
- 		return -EOPNOTSUPP;
+-#ifdef CONFIG_FS_ENCRYPTION
+-	struct fscrypt_inode_info	*i_crypt_info;
+-#endif
+-
+ #ifdef CONFIG_FS_VERITY
+ 	struct fsverity_info	*i_verity_info;
+ #endif
  
+ 	void			*i_private; /* fs or device private pointer */
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index d7ff53accbfef..516aba5b858b5 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -199,15 +199,19 @@ struct fscrypt_operations {
+ };
+ 
+ int fscrypt_d_revalidate(struct inode *dir, const struct qstr *name,
+ 			 struct dentry *dentry, unsigned int flags);
+ 
++/*
++ * Returns the address of the fscrypt info pointer within the
++ * filesystem-specific part of the inode.  (To save memory on filesystems that
++ * don't support fscrypt, a field in 'struct inode' itself is no longer used.)
++ */
+ static inline struct fscrypt_inode_info **
+ fscrypt_inode_info_addr(const struct inode *inode)
+ {
+-	if (inode->i_sb->s_cop->inode_info_offs == 0)
+-		return (struct fscrypt_inode_info **)&inode->i_crypt_info;
++	VFS_WARN_ON_ONCE(inode->i_sb->s_cop->inode_info_offs == 0);
+ 	return (void *)inode + inode->i_sb->s_cop->inode_info_offs;
+ }
+ 
+ /*
+  * Load the inode's fscrypt info pointer, using a raw dereference.  Since this
 -- 
-2.47.2
+2.50.1
 
 
 ______________________________________________________
