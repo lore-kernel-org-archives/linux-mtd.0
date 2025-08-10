@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54318C87FCF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32CE2C87FCA
 	for <linux-mtd@archiver.kernel.org>; Sun, 10 Aug 2025 14:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0eJ5z6agx5GW6SUGVlZM65Cki2n565Yvyv7oBVPMrrU=; b=mswG9oW6y2h6Kc
-	LbTqd7gr/1zBBZIPdwihVnxde8s3gRvh34D6CzKELAGANYqTACn7BRzZoLzMfdZ3+E2C03KOnPqcZ
-	FbKG2A4HLq81okIFg0w1RXXOvlfud8qVpJjpXr8Cb0Mlpe/SmQ/xsZzz5Aow71WxCzGKrwxjcqsfh
-	3L9ZkxiCnN902UeJI8M10ZoAVV8qShPK95GeWu4VqZD8lrDEB1Rfu3qDzVFvS5KVeG6GdUzg7yPYu
-	YQSzYGaBFBlqAdWX7VVhTsIRMZwqt7/dyGlxbSdr1N8dkT+kX6bIgN7wtNvTbCw5fCWAOGUgt3Dag
-	SNYiBH3P96aRbRLv0reA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=AV0b9BernUYMW4X69l9O1xpv+fjfl8U61TKs2VjB240=; b=09RFD24xFf0B87
+	M9xhc7i3516wqTixdHbHaetqN5D40SHF7U9e7pfBU//s4PXP/ZBVaycTUGA6g5OZj36w+GmKBbnI4
+	Rhh+E+pjtm0IZ1Zxxm3Xl5w5/Jj2hu+7nzRYHDS/X1uS83UahTggl5HH/gTOFz1OEb/sV19RK/WQ/
+	5gq8JjCC52JbJMy3pMFEYK3FQCiO+gWSCV7aJXSvVXOMxeNrGeeuUI2gdCM6qTM874EpAkUiXcHtt
+	v9YAJsRK0+LvLGSaR4VL2GQXvLjIg9pNTpmUN9Qc3qY3dlRmQS9py8SSwPjgufPmLrwS865fogaiA
+	f9g4I+V0hu3uAIggSU7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ul7Ck-00000005hin-2bV7;
-	Sun, 10 Aug 2025 14:39:22 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ul7Ch-00000005hha-0Z4T
-	for linux-mtd@lists.infradead.org;
+	id 1ul7Ci-00000005hi9-0UCk;
 	Sun, 10 Aug 2025 14:39:20 +0000
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-458aee6e86aso22349695e9.3
-        for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2025 07:39:18 -0700 (PDT)
+Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ul7Cg-00000005hhZ-0puJ
+	for linux-mtd@lists.infradead.org;
+	Sun, 10 Aug 2025 14:39:19 +0000
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3b7892609a5so1954817f8f.1
+        for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2025 07:39:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754836757; x=1755441557; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9O7vRcMwEFVP7dodHcQ7X4md2K8okfmo/tHy/twqkHg=;
-        b=TJZyOVW+X+Nu4p+/wIX5lvLPp7HQnmhOlBIKm3yXzUkxQ7/v9M6M8xx+DT7WC3JX2o
-         PBjMKWyz3ldYnyVgWpPcl0l4L4u2eE3Lr1bw2O2gT9BLsX2KNBNoP1cQAhBLjZ/eVGtI
-         ce7a7Sb56YoLu1Ch3qnrDA2rVFgJmK6uCc0vbEV/R7XFnrliv1b26EN4bSno8lFtrZlx
-         pZWz2dqf2/1mnFb5p3wOY9Ka23WK4yWFPMsYoOaTvRew4JA0/jkcIDiQ6qIGtVOzewMp
-         QrP3IOl2q5eaWAvG7z/N1/vaeVSgHV9+i55JWdiaGtf3hDFC+C/iJ6TdlC6gfXGbw4xB
-         OqJw==
+        d=gmail.com; s=20230601; t=1754836756; x=1755441556; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LoY0CPX3Mp6Pye3EdbyOcGWTEgfX2frxQgeHIT5DyZ0=;
+        b=ExY9FOscIEwkClGSI2Nu3RCu/pBtXMoOOxwaKtiZ4aixq568wNponGsw+uHpNUIFl4
+         RdR27PJlJrHbD2my/h/3KovrAXoC5Z4YswJmU0G02yYkD/tS/BqWEaeF/abHmB0k4Hti
+         yEM4mljHtwV+9qKPPicAaRRtBsGlEqOIQcykd90I4oePe3CL8r4UVUcogeLrnTt+MjqP
+         wV48X/J0VFVzj9yLoSWiogay/Kkv2Z6j+bUu34K7/WdU5yfMb02ovcyBc6+hc+g8RTyR
+         ixYIh5vPG96HjlANZaqc1i/AtnITvh9AcCzrNbEbPHozFsLep4/gYvzA2qbkUbm+p90t
+         dGTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754836757; x=1755441557;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9O7vRcMwEFVP7dodHcQ7X4md2K8okfmo/tHy/twqkHg=;
-        b=OHTnCew8ZU+0QOhoTnCqjDDkYDbv47Ihdc9eSN4mqcLQ6Vseppv1NFXnVZvfaxOPQj
-         ThfjlcG045VEb6oXH/WOUBqFAex0U59Gg63L9oHEhrpFvLHf/S/WiaXNW/aM3DoUOaYC
-         +Kwn+P6CEbXP8OCrxd1ZiOmljJXnNeyf0uINO51ebMcadIoGhLbde7ZPW3drcv4Nftqj
-         ryxo3ohfkhktuUY+7mxDvs36vCBTDJDEZnwBil9epBQJA/fqL7NXHrW0LkEebSNkLAYL
-         lMkdMiMsyI3iQuns31E17I/HtYbkkhDapwQwNXiCu/HRK0ZG7v5PKySVbtQT44vGo9x8
-         8WIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUS8mnRRNnHiPuAzUmD/2ZMSU2TwCE6cBA+mCacHNRPW69mQtKJa7Tq3jAKe7mQ6G9kGHN4RYTbubU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyXhmXWUAiJl6ER2v+sWweDuvzYXS6h8pSl35SJWCGR0i7dBik8
-	wAlxTOo+1EZ7ZtsrDxv88ySzSZAKBa5DWiwi4XCQWDHEOwCSHWsBupXT
-X-Gm-Gg: ASbGncvr3bbuzmB6HS4IqhSdLBVz6XimAo4hSBEfk2gRm09Via0J9fzOXAqI0TXHMCa
-	FJW60GS2T/vlVJNCw+4Mz+Mo6f192yyUW8hh8qaFN2QjvRq19A7nZ8hOqE/5WkxtCTfGDxFJV4h
-	ZchvWnONXUam3PUrJ26cLaDUQ5cOeIu8MKMijmIgPHvsjhf3zgC85EZd/GQK5N06BP4uZ6f1yE6
-	eDOXbHXmuEhc43MLnMPlV0D6hMMe55QjTHgmLUAcw5kE44CDwkpSq18fvIuamogjPYFMP6H5ijK
-	n9EhLC0SLLSkMAWITcO5CSRCn3QbpgJ5+uK/dr5izohiQjZrVbBuLNFJFU3VBDeSbJ0LHzc0Nco
-	XiyQn6Y8tlgwCx1XAf5W/uS6lHgIesoOnLtCJhs2SrCHGk8CJoj8=
-X-Google-Smtp-Source: AGHT+IFriHNfRSUY+nrgYqvfc98x7fIebMd0YvKqXJrl8fH85WF3xqxHwfsGbrwLZHbCzjxKoBC2Ng==
-X-Received: by 2002:a05:600c:4ed0:b0:456:1bae:5470 with SMTP id 5b1f17b1804b1-459f4eb4126mr90929485e9.8.1754836757121;
-        Sun, 10 Aug 2025 07:39:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1754836756; x=1755441556;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LoY0CPX3Mp6Pye3EdbyOcGWTEgfX2frxQgeHIT5DyZ0=;
+        b=PkOy+2ZiBtHxHqx+iMzwmUXr7bNA81fMeLgGNwycV7airhfWMlLRDhoBjLPYUCQmRT
+         03NafoZ5jBTRXqOG1T0uenRMs5B6cMwv7iwNmI77mHJa0gO3BgTnQdI3WDbSoWTYbvtm
+         PMFwOPTrIePL2sRbBFykbu/zzCA0LY3cB6YgExdeOFiGhRv2HvU/bbg3YTDvHPOsCrZn
+         UxNeXY1SWCtVLy5gTy5G6n7fBeBfpBJ2pZonb/bCsD9OoK13MIRnpTMKpZsmQ7OKkDNC
+         37d/IXmyEC+31Nl/vaIZLXtKwlGLyKo6GMlnHv83IRhQGNNyMt+CxUHhpg3bV2c7Dz2d
+         I6FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPcefT8LTn2oAUo9JiT8pFNsm3Q4NYBjk62osHbPxqcDJOYyS6lkw9voFqMzSdVEK4lp5es3bvLXU=@lists.infradead.org
+X-Gm-Message-State: AOJu0YySyUNMvk3+bs1pBz9QXupfF5Z3ce1yE58DxfS0dnzGPMu7/Q5z
+	SjlMqsdFQFSANvdSBXNsh6/5UoLqnvXKHENQAwhtZ5EaDQzThECgoIha
+X-Gm-Gg: ASbGncusNlRQ8PAktMLDM87/JS5NqbA3DSGU8Rkx106DzsMtgSEcJ0umW6gyncCkCfD
+	QXh6UE7KDIAA5oYfxSUV8dPxsJeTnLAr4gkNtfoRXaqbxPC1AO6RnnbXSrz1qW4lRJBZ3ax41LW
+	Cj257PuJN7vtLA9+EJe2+pwOLs3ni1RCe1tzUBqecRJ6L3EN2W6+dDIqFLVMutBTuf55Ho+prI3
+	jBW6NKSfWaDQDzdY3RD08UaveU1PrmCZCSsQh7ri5d+B6HevgGWninj8R0YEYJuDvD2LVKabWdR
+	GHxNu4ru0LGXCGr4yvdrkyJIVSuW+UeLG/aQ4sLFh2RTXz0KVSIH4VhWV0tu4f4fQ/L5khkfGw7
+	9iTh/FCDjZThd8lZd1XYq9bN6zMtCZIWu8ure0MXycXhXmVZBeaE=
+X-Google-Smtp-Source: AGHT+IFhoUBteOIXdLbP6G3nDlH8fThEqymPt+BorrfMt3eobqFuWPiyuio+qlb4fl+hAUyIoDRqhA==
+X-Received: by 2002:a05:6000:2388:b0:3b7:9ae1:eb9 with SMTP id ffacd0b85a97d-3b900b2dbe2mr8626495f8f.23.1754836755948;
+        Sun, 10 Aug 2025 07:39:15 -0700 (PDT)
 Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-459dbba5210sm287721715e9.2.2025.08.10.07.39.16
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-459dbba5210sm287721715e9.2.2025.08.10.07.39.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Aug 2025 07:39:16 -0700 (PDT)
+        Sun, 10 Aug 2025 07:39:15 -0700 (PDT)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Sun, 10 Aug 2025 16:38:50 +0200
-Subject: [PATCH 1/2] spi: spi-qpic-snand: remove unused 'dev' member of
- struct 'qpic_ecc'
+Subject: [PATCH 0/2] spi: spi-qpic-snand: cleanup 'qpic_ecc' structure
+Date: Sun, 10 Aug 2025 16:38:49 +0200
+Message-Id: <20250810-qpic-snand-qpic_ecc-cleanup-v1-0-33a6b2bcbc67@gmail.com>
 MIME-Version: 1.0
-Message-Id: <20250810-qpic-snand-qpic_ecc-cleanup-v1-1-33a6b2bcbc67@gmail.com>
-References: <20250810-qpic-snand-qpic_ecc-cleanup-v1-0-33a6b2bcbc67@gmail.com>
-In-Reply-To: <20250810-qpic-snand-qpic_ecc-cleanup-v1-0-33a6b2bcbc67@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAPmumGgC/x3MQQqDMBBG4avIrDsQNYJ6lVJKmPy2AzKmCS0F8
+ e4Gd+/bvJ0KsqLQ3OyU8dOim1W0t4bkHewF1lhNnesGN7qJP0mFiwWLVz4hwrIi2Dex+DguHn7
+ C0FM9pIxF/9f9/jiOE01Wm1dtAAAA
+X-Change-ID: 20250809-qpic-snand-qpic_ecc-cleanup-c4d8f4e49e53
 To: Mark Brown <broonie@kernel.org>
 Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
  Varadarajan Narayanan <quic_varada@quicinc.com>, 
@@ -86,8 +86,9 @@ Cc: Md Sadre Alam <quic_mdalam@quicinc.com>,
  Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.14.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250810_073919_174752_677066FE 
-X-CRM114-Status: GOOD (  10.75  )
+X-CRM114-CacheID: sfid-20250810_073918_244328_1E734E57 
+X-CRM114-Status: UNSURE (   8.37  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,31 +105,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The 'dev' member of the 'qpic_ecc' structure is never used in the
-code so remove that.
-
-No functional changes.
+The series consist of two small patches to clean up the qpic_ecc structure
+in the spi-qpic-snand driver. The first one removes an unused member from
+the structure, whereas the second reduces code duplication and removes
+another two members from the same.
 
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
- drivers/spi/spi-qpic-snand.c | 1 -
- 1 file changed, 1 deletion(-)
+Gabor Juhos (2):
+      spi: spi-qpic-snand: remove unused 'dev' member of struct 'qpic_ecc'
+      spi: spi-qpic-snand: remove 'clr*status' members of struct 'qpic_ecc'
 
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 7b76d2c82a5287df13ee6fcebc4abbe58ca861ee..bc2158e560be3b0ab1b26882e4de524ecf662d14 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -78,7 +78,6 @@ struct qcom_ecc_stats {
- };
- 
- struct qpic_ecc {
--	struct device *dev;
- 	int ecc_bytes_hw;
- 	int spare_bytes;
- 	int bbm_size;
+ drivers/spi/spi-qpic-snand.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
+---
+base-commit: 13d0fe84a214658254a7412b2b46ec1507dc51f0
+change-id: 20250809-qpic-snand-qpic_ecc-cleanup-c4d8f4e49e53
 
+Best regards,
 -- 
-2.50.1
+Gabor Juhos <j4g8y7@gmail.com>
 
 
 ______________________________________________________
