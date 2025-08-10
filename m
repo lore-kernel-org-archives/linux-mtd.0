@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E972CA0ECC
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Aug 2025 08:00:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D92E9CA0ECA
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Aug 2025 08:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2gjuWKU2SLWCTt3NTvkmFjGFOeIuJh8QC0DC7aoPZvQ=; b=PC3Tj+6XmLaDxL
-	cHgiBNu6IqbbqUM4v41KKPefN4pJecaqvzNJnAr6cVx7cli/0D39YTKbXpsbpw0XYmk2iNfo7FLDh
-	t1DrR7C7v6TkUMpyvsukA0vYmbgLf+Sh03rTSg6hSAkRP85b15fDGrec/gDHD/DDKlq46ZFETImzB
-	Bdqv8tfvQGKX1UCQjpdDh2/CJQ7ozXDSMGHrQ95RJ0tHiO3Z3H4VlV6FDCB5WJEVHoY6gb9DX05Rq
-	kVA17n5GldOzYZlV3B4B47m2gpjW9H8cyG3F15iMsMUzwpAbgcy2GwfrbZ3sj0ZTCgQiJ2IKL3wr/
-	Ov1mxt3q6JCQL+oTtlxQ==;
+	List-Owner; bh=eSmlGlszv7WzAG5ovNzVYwBBV75xx6fvv2hOo2X7xMA=; b=wFealA9eYy9FkZ
+	qd//ww15YlRgsNADk8fOyJP8av8z0J+zsRNsUNYmzFSAC5Lx6xyJB+GSlhQPY28Tq2n2MiIbLxMqL
+	f/Z4cRpTc4ioZB15m5l7t115qlKqgg5yzseUHfxRlUZRz8QxVkp/NkjNqCsoTlJaUcnfXatkrDuIH
+	hytWQf/ULx0hRiJ6SphHUu35Hhd9vlDVFGqmmgLiC9IHwUWzFgkpKx2uTkZ66U+Xz8m1pzChuI6b9
+	93PsicIrYc8s7kGeklPYMVneTuwREMHp1/zW37ugMUD3Ayo08P8ZPbEctDZR4mCCEm8+3mD21quyP
+	4641wlueZOE6devqIqwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ul0ya-00000005QNh-3kPo;
+	id 1ul0ya-00000005QNK-1PN7;
 	Sun, 10 Aug 2025 08:00:20 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ul0yT-00000005QH9-0Kkb
+	id 1ul0yS-00000005QG0-1nGt
 	for linux-mtd@lists.infradead.org;
 	Sun, 10 Aug 2025 08:00:14 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id C0C4945C74;
-	Sun, 10 Aug 2025 08:00:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3376CC19421;
-	Sun, 10 Aug 2025 08:00:12 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id EA4825C5721;
+	Sun, 10 Aug 2025 08:00:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FFA2C4CEF0;
+	Sun, 10 Aug 2025 08:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754812812;
-	bh=uSWAqJvL/RiAtfpBphLEdbPpxmsErLOL7QyUHYYHGg4=;
+	s=k20201202; t=1754812811;
+	bh=0W2QfxH3SEgQE9yRuqSbCQDiVKMNeIT6t0Ume6h8gTo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dvISGINgSttzGx8S1Yo6P0RNV1i2csXZr4uItP+Yiv8ictOEXawreDSudyFW5/fK3
-	 TrwPhv1wyy4MawAWSn2oSte2ZGC1l5i5yo6Jtv2FSBFQ/p2zYBEF9QutXIQiBecGmi
-	 JpxfpZIcybAHf26NvHx6M0iOxLRcc/g0TGocFP8mTe0GO5rP4SutVwcgL3p8EGl4uN
-	 qUS2D/z/OLXWkHCjIv8gzAGFAcRuZoAivquHz1RBh847/S+SFMxhbYwiwFbk45SmQS
-	 bBQlYp+rFGlZeRYHd59Wsn6XV4FG+gZ/PDxO+U3ame2WBmS/tDBEH2Tz1E4UFj/ith
-	 d3raZqdhdM4RQ==
+	b=nbO0fBqNeeMZN0WDI+kgBFdzKJGAGVEHnaPJxNqqowTDLniJGOt0j4uw17U+6FdFo
+	 H1Rc+/DvLZMsGO2D5fctgnRrjZXcK7So5ofrPTD2H2yqTs1twguCtFJ2JNW4cMPtPp
+	 TrBjF8WHO/Fqi8b5bl1QcFjUuAV1wELwTmlaoVQa+YVbKZI//49bHAJwmSo25dwBt1
+	 9Velrja88wsmjHCfWt9uhUSDzFuUBb8Ukug6Giba73mFWBZs8MnCbze0Ch6npBgJ7e
+	 PSD9t23xAMkrpUHkqc+5V+32XM9Fgs/eeDPf3ADl5GWNi5DG2oJSS8jBlPWdvKu8/N
+	 WR+Wmk3zLpjvA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -53,16 +53,16 @@ Cc: linux-fsdevel@vger.kernel.org,
 	ceph-devel@vger.kernel.org,
 	Christian Brauner <brauner@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v5 11/13] btrfs: move verity info pointer to fs-specific part of inode
-Date: Sun, 10 Aug 2025 00:57:04 -0700
-Message-ID: <20250810075706.172910-12-ebiggers@kernel.org>
+Subject: [PATCH v5 09/13] ext4: move verity info pointer to fs-specific part of inode
+Date: Sun, 10 Aug 2025 00:57:02 -0700
+Message-ID: <20250810075706.172910-10-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250810075706.172910-1-ebiggers@kernel.org>
 References: <20250810075706.172910-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250810_010013_185970_2FA35987 
-X-CRM114-Status: GOOD (  11.54  )
+X-CRM114-CacheID: sfid-20250810_010012_503371_9173ECBF 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,7 +80,7 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Move the fsverity_info pointer into the filesystem-specific part of the
-inode by adding the field btrfs_inode::i_verity_info and configuring
+inode by adding the field ext4_inode_info::i_verity_info and configuring
 fsverity_operations::inode_info_offs accordingly.
 
 This is a prerequisite for a later commit that removes
@@ -91,66 +91,65 @@ Co-developed-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- fs/btrfs/btrfs_inode.h | 5 +++++
- fs/btrfs/inode.c       | 3 +++
- fs/btrfs/verity.c      | 2 ++
- 3 files changed, 10 insertions(+)
+ fs/ext4/ext4.h   | 4 ++++
+ fs/ext4/super.c  | 3 +++
+ fs/ext4/verity.c | 2 ++
+ 3 files changed, 9 insertions(+)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index b99fb02732929..2c9489497cbea 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -336,10 +336,15 @@ struct btrfs_inode {
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index c897109dadb15..6cb784a56b3ba 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1184,10 +1184,14 @@ struct ext4_inode_info {
+ 	kprojid_t i_projid;
  
- 	/* Hook into fs_info->delayed_iputs */
- 	struct list_head delayed_iput;
- 
- 	struct rw_semaphore i_mmap_lock;
+ #ifdef CONFIG_FS_ENCRYPTION
+ 	struct fscrypt_inode_info *i_crypt_info;
+ #endif
 +
 +#ifdef CONFIG_FS_VERITY
 +	struct fsverity_info *i_verity_info;
 +#endif
-+
- 	struct inode vfs_inode;
  };
  
- static inline u64 btrfs_get_first_dir_index_to_log(const struct btrfs_inode *inode)
- {
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b77dd22b8cdbe..de722b232ec14 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7959,10 +7959,13 @@ int btrfs_drop_inode(struct inode *inode)
- static void init_once(void *foo)
- {
- 	struct btrfs_inode *ei = foo;
- 
+ /*
+  * File system states
+  */
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 0c3059ecce37c..46138a6cb32a3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1471,10 +1471,13 @@ static void init_once(void *foo)
  	inode_init_once(&ei->vfs_inode);
+ 	ext4_fc_init_inode(&ei->vfs_inode);
+ #ifdef CONFIG_FS_ENCRYPTION
+ 	ei->i_crypt_info = NULL;
+ #endif
 +#ifdef CONFIG_FS_VERITY
 +	ei->i_verity_info = NULL;
 +#endif
  }
  
- void __cold btrfs_destroy_cachep(void)
+ static int __init init_inodecache(void)
  {
- 	/*
-diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-index b7a96a005487e..4633cbcfcdb90 100644
---- a/fs/btrfs/verity.c
-+++ b/fs/btrfs/verity.c
-@@ -800,10 +800,12 @@ static int btrfs_write_merkle_tree_block(struct inode *inode, const void *buf,
- 	return write_key_bytes(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY,
- 			       pos, buf, size);
+ 	ext4_inode_cachep = kmem_cache_create_usercopy("ext4_inode_cache",
+diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
+index d9203228ce979..b0acb0c503137 100644
+--- a/fs/ext4/verity.c
++++ b/fs/ext4/verity.c
+@@ -387,10 +387,12 @@ static int ext4_write_merkle_tree_block(struct inode *inode, const void *buf,
+ 
+ 	return pagecache_write(inode, buf, size, pos);
  }
  
- const struct fsverity_operations btrfs_verityops = {
-+	.inode_info_offs         = (int)offsetof(struct btrfs_inode, i_verity_info) -
-+				   (int)offsetof(struct btrfs_inode, vfs_inode),
- 	.begin_enable_verity     = btrfs_begin_enable_verity,
- 	.end_enable_verity       = btrfs_end_enable_verity,
- 	.get_verity_descriptor   = btrfs_get_verity_descriptor,
- 	.read_merkle_tree_page   = btrfs_read_merkle_tree_page,
- 	.write_merkle_tree_block = btrfs_write_merkle_tree_block,
+ const struct fsverity_operations ext4_verityops = {
++	.inode_info_offs	= (int)offsetof(struct ext4_inode_info, i_verity_info) -
++				  (int)offsetof(struct ext4_inode_info, vfs_inode),
+ 	.begin_enable_verity	= ext4_begin_enable_verity,
+ 	.end_enable_verity	= ext4_end_enable_verity,
+ 	.get_verity_descriptor	= ext4_get_verity_descriptor,
+ 	.read_merkle_tree_page	= ext4_read_merkle_tree_page,
+ 	.write_merkle_tree_block = ext4_write_merkle_tree_block,
 -- 
 2.50.1
 
