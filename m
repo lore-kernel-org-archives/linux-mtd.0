@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A1E0CA0EC0
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA2EACA0EC8
 	for <linux-mtd@archiver.kernel.org>; Sun, 10 Aug 2025 08:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5HOvp+eQINkKsTyvbaQnIgqiPFDk6/2cEK/PYiHt30Q=; b=e6Y5ZRp/p9/Pmv
-	iOq7rkznsi8D8XJWMpS4MVbotBxDIqB6h0Cp+LSpRk97olECQ6DTSiR8whxIQeuxjkTW7Ra52GVjm
-	/XRR1P6aFuHXvQWWUKyU0Qr7dZWxWd1GY7JzeI6pbBY8KoS5bsQDmTVtH08+i7Iys47UN9zV/w+wa
-	Pao5xawVGkKZqUlO9aH+K++ukrJ105oqF6+2vH8OPtT0TF1mhFX+/THxU3W/OJ3gZKb6zU5ICAFfs
-	/MRNOcEZ3TBWJzS/xYrsColDzq/AnlxkkR4r6p3I+pDhqYX0Q9G3z9b8OyiqDtKhYfiPcgZG70rkM
-	J+Wpj8zHBGvfS6gTNlDQ==;
+	List-Owner; bh=RTsowij9/PFcOmJsHeDnUMSxFLeHyS6gqL4dFFJ+t8s=; b=zjAJEekHZAkfmF
+	58m+m2xyKhKDU8u84TVayEuHsWY70clOQKjyxcb5slkskIRecSy9te65ClD8brwvKrymOjn9ILc+W
+	KcktQ3uA0QPIro162irdhAPfZjzaetTJEmgCgKuYWhS2APt/099BZ3Q9YPZJOXkZz5VIXtBKBKIPv
+	5v1J5qLvHU9h8XdnbEr5/lJrJyEUCPZNlai7EQTJCh+sMhLJGjEkY9haAZzsFcEmpmQBnseNrtDAj
+	K37sg/MALxGNe78ecv59vUt+EppnzfozG4tkNH117ejmuw3ewsRRvm9nFbyfrEzjM0rWeAESBqvBn
+	ZNcLd6yoZMon3OXv1BXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ul0yX-00000005QKw-48h8;
+	id 1ul0yX-00000005QKf-1xDm;
 	Sun, 10 Aug 2025 08:00:17 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ul0yR-00000005QFc-3yjb
+	id 1ul0yQ-00000005QE0-2l5L
 	for linux-mtd@lists.infradead.org;
 	Sun, 10 Aug 2025 08:00:13 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 188EDA55134;
-	Sun, 10 Aug 2025 08:00:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FAB9C4CEEB;
+	by sea.source.kernel.org (Postfix) with ESMTP id 6880B45C5F;
 	Sun, 10 Aug 2025 08:00:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0353DC4CEFB;
+	Sun, 10 Aug 2025 08:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1754812810;
-	bh=hTLksDqAG7iJZbJnGqd8JyQQhFVP3K3qP+WNZUyThvI=;
+	bh=bmB+BqOK47AQ74zOAlenVEXHIBC1qQuTYrDPLOSDJDw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SLFlFAFYjVyvx9ggNdb5bWTXUqjDAUbaAo7N9/6UnJmEJtn+vKgzQPSAsWKAsRRRL
-	 So3V9vSSaOSZ6Ds6ARu8XEUs1FVfS4QUCRq4ZHQrfPc+rBVQhL3v9wIQaxwh3+aQXB
-	 k2ubttllOoJvrh7zV/bz9kqO1TlYZEs1y0/O8Oyc1IkXRMPZ74rzJNYA4fyBXPEpMJ
-	 /brqN4ToKmH+IcQQqnwa6y3VbfRNfVQosWIZdaAiMRv8+lLvNNZA8f1nmW1uL0/aTx
-	 NURcg6NCqctDVHUqEvUCetLBqq3zGe3Ta/k9LE0yd/xaBpAv3jwBpD7nQrShG7pq1M
-	 V6O2XmUIE9Lsg==
+	b=o3Ppu9lCK+UMIRCJ649FLlexF8zz+c5Fny3h+DogkpOBxxoTI+SD12otxBd4HJPGN
+	 KrDlaO+YuVwOT5khIksO9p/0SHCSpmXkMAtaa9ZYhjNb+HopBdHl5Dgaq7wIamHvE4
+	 Lx0RUvlNHg9683rs5qCfE6WCKJafDQIjyfimusDQPjsBQCFnURsh7M1PygjfbmsQsO
+	 TcauGSZNJ/T+xRc3iJJaE+4/RX8mbkSg3olk0B9E8OMQ3IYEwZXXP7hfpdQCMrWXxi
+	 v6M244Sk1mMSGGyYMPXvvqKBHDNMb/N2yOcxgbUKe/kBGuifA8XvEt1Ov4Sxny0gpD
+	 tevQolZt9j7OA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -53,16 +53,16 @@ Cc: linux-fsdevel@vger.kernel.org,
 	ceph-devel@vger.kernel.org,
 	Christian Brauner <brauner@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v5 07/13] fs: remove inode::i_crypt_info
-Date: Sun, 10 Aug 2025 00:57:00 -0700
-Message-ID: <20250810075706.172910-8-ebiggers@kernel.org>
+Subject: [PATCH v5 06/13] ceph: move crypt info pointer to fs-specific part of inode
+Date: Sun, 10 Aug 2025 00:56:59 -0700
+Message-ID: <20250810075706.172910-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250810075706.172910-1-ebiggers@kernel.org>
 References: <20250810075706.172910-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250810_010012_139273_D38A0CFB 
-X-CRM114-Status: GOOD (  12.31  )
+X-CRM114-CacheID: sfid-20250810_010010_720575_A2889ACC 
+X-CRM114-Status: GOOD (  10.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,83 +79,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that all fscrypt-capable filesystems store the pointer to
-fscrypt_inode_info in the filesystem-specific part of the inode
-structure, inode::i_crypt_info is no longer needed.  Update
-fscrypt_inode_info_addr() to no longer support the fallback to
-inode::i_crypt_info.  Finally, remove inode::i_crypt_info itself along
-with the now-unnecessary forward declaration of fscrypt_inode_info.
+Move the fscrypt_inode_info pointer into the filesystem-specific part of
+the inode by adding the field ceph_inode_info::i_crypt_info and
+configuring fscrypt_operations::inode_info_offs accordingly.
 
-The end result of the migration to the filesystem-specific pointer is
-memory savings on CONFIG_FS_ENCRYPTION=y kernels for all filesystems
-that don't support fscrypt.  Specifically, their in-memory inodes are
-now smaller by the size of a pointer: either 4 or 8 bytes.
+This is a prerequisite for a later commit that removes
+inode::i_crypt_info, saving memory and improving cache efficiency with
+filesystems that don't support fscrypt.
 
 Co-developed-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- include/linux/fs.h      | 5 -----
- include/linux/fscrypt.h | 8 ++++++--
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ fs/ceph/crypto.c | 2 ++
+ fs/ceph/inode.c  | 1 +
+ fs/ceph/super.h  | 1 +
+ 3 files changed, 4 insertions(+)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index d7ab4f96d7051..1dafa18169be6 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -70,11 +70,10 @@ struct vfsmount;
- struct cred;
- struct swap_info_struct;
- struct seq_file;
- struct workqueue_struct;
- struct iov_iter;
--struct fscrypt_inode_info;
- struct fscrypt_operations;
- struct fsverity_info;
- struct fsverity_operations;
- struct fsnotify_mark_connector;
- struct fsnotify_sb_info;
-@@ -778,14 +777,10 @@ struct inode {
- 	__u32			i_fsnotify_mask; /* all events this inode cares about */
- 	/* 32-bit hole reserved for expanding i_fsnotify_mask */
- 	struct fsnotify_mark_connector __rcu	*i_fsnotify_marks;
- #endif
- 
--#ifdef CONFIG_FS_ENCRYPTION
--	struct fscrypt_inode_info	*i_crypt_info;
--#endif
--
- #ifdef CONFIG_FS_VERITY
- 	struct fsverity_info	*i_verity_info;
- #endif
- 
- 	void			*i_private; /* fs or device private pointer */
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index d7ff53accbfef..516aba5b858b5 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -199,15 +199,19 @@ struct fscrypt_operations {
- };
- 
- int fscrypt_d_revalidate(struct inode *dir, const struct qstr *name,
- 			 struct dentry *dentry, unsigned int flags);
- 
-+/*
-+ * Returns the address of the fscrypt info pointer within the
-+ * filesystem-specific part of the inode.  (To save memory on filesystems that
-+ * don't support fscrypt, a field in 'struct inode' itself is no longer used.)
-+ */
- static inline struct fscrypt_inode_info **
- fscrypt_inode_info_addr(const struct inode *inode)
+diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
+index cab7226192073..7026e794813ca 100644
+--- a/fs/ceph/crypto.c
++++ b/fs/ceph/crypto.c
+@@ -131,10 +131,12 @@ static const union fscrypt_policy *ceph_get_dummy_policy(struct super_block *sb)
  {
--	if (inode->i_sb->s_cop->inode_info_offs == 0)
--		return (struct fscrypt_inode_info **)&inode->i_crypt_info;
-+	VFS_WARN_ON_ONCE(inode->i_sb->s_cop->inode_info_offs == 0);
- 	return (void *)inode + inode->i_sb->s_cop->inode_info_offs;
+ 	return ceph_sb_to_fs_client(sb)->fsc_dummy_enc_policy.policy;
  }
  
- /*
-  * Load the inode's fscrypt info pointer, using a raw dereference.  Since this
+ static struct fscrypt_operations ceph_fscrypt_ops = {
++	.inode_info_offs	= (int)offsetof(struct ceph_inode_info, i_crypt_info) -
++				  (int)offsetof(struct ceph_inode_info, netfs.inode),
+ 	.needs_bounce_pages	= 1,
+ 	.get_context		= ceph_crypt_get_context,
+ 	.set_context		= ceph_crypt_set_context,
+ 	.get_dummy_policy	= ceph_get_dummy_policy,
+ 	.empty_dir		= ceph_crypt_empty_dir,
+diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+index fc543075b827a..480cb3a1d639a 100644
+--- a/fs/ceph/inode.c
++++ b/fs/ceph/inode.c
+@@ -663,10 +663,11 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
+ 
+ 	INIT_WORK(&ci->i_work, ceph_inode_work);
+ 	ci->i_work_mask = 0;
+ 	memset(&ci->i_btime, '\0', sizeof(ci->i_btime));
+ #ifdef CONFIG_FS_ENCRYPTION
++	ci->i_crypt_info = NULL;
+ 	ci->fscrypt_auth = NULL;
+ 	ci->fscrypt_auth_len = 0;
+ #endif
+ 	return &ci->netfs.inode;
+ }
+diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+index cf176aab0f823..25d8bacbcf440 100644
+--- a/fs/ceph/super.h
++++ b/fs/ceph/super.h
+@@ -461,10 +461,11 @@ struct ceph_inode_info {
+ 
+ 	struct work_struct i_work;
+ 	unsigned long  i_work_mask;
+ 
+ #ifdef CONFIG_FS_ENCRYPTION
++	struct fscrypt_inode_info *i_crypt_info;
+ 	u32 fscrypt_auth_len;
+ 	u32 fscrypt_file_len;
+ 	u8 *fscrypt_auth;
+ 	u8 *fscrypt_file;
+ #endif
 -- 
 2.50.1
 
