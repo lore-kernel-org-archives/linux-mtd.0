@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DFAC88CB9
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 10:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73266C88CB9
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 11:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=hS+pRbw6DCxBKg/SJLnWucqJi7kJZgaCTyGI3cDXjow=; b=cPwz/aSDTZNruuC3M8uOBhSUPM
-	FM9RFx0MQsFBTi1tdS/ThrEqUr4loRTOm1YrX+jcLPDiY2h2qJkle8wgoYJntQDj85/cYVPjZ3etu
-	1vq+mNsythcI96OAOEhBXbbIk/ba0ebIaCwCVdoGmn8S7gDtqlRlCybvGT18+tKbkCWCbc/Ng849f
-	b7uiSfWLJJ1STq7In2IrOuP72uBkcUETwnlyYmZ+Za0R5Ak7ZOt2PrudaKGmluHYfRtVPeAeHlC+r
-	FFJglbrf6z9K7Yo630sw1afcN+83czBqgXG+6QCA40VynAK7frbhfUuwGg64VcJigeJv1hr7ugblC
-	HklqSDIQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bRaRP1A1XfG7l55TKmulhDBK8DSvvulyx8OPPrV+vHU=; b=QwWx/KfMYGc6/k
+	Ar4/PJc+Pd6SchLsufFJFQQuOaHxjIxtxGyMwMu4yB9NWJAw+7OtoJtSf59hI+WDoBbWjrE9s453J
+	fV8GeNLke8YazfHS4AASIp3autyf0tle99fwPpFELn3CDTT7kG5Ii2HbpbJ7R+laMzgdsoQS+LrBa
+	FLigAAbGH9EOQmvAVhkzcGZxuNvG5A52FMoFH80CGuhoI9+Z0JJCncqdWUizOHoMp5X/Ad9dPkTOf
+	/x0APeo0T7+brsUC3rBs3T0mrY7lsXaXSAKD02Q1BZ7JzYQLJB0e7BNQIopCxCAY4rj9EDWvuA8J7
+	TfokxXycOaR1YYhTu7Zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulQ3B-00000007O1l-1iQ9;
-	Mon, 11 Aug 2025 10:46:45 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
+	id 1ulQpT-00000007XvZ-460n;
+	Mon, 11 Aug 2025 11:36:39 +0000
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulPnj-00000007K7P-3WVd
+	id 1ulQTR-00000007TJY-23jA
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Aug 2025 10:30:49 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id F0F282CFCA2;
-	Mon, 11 Aug 2025 12:30:36 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 5BH2MNXWoEOq; Mon, 11 Aug 2025 12:30:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 10A3B2CFCA7;
-	Mon, 11 Aug 2025 12:30:36 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id o6PhqYes8Ibu; Mon, 11 Aug 2025 12:30:35 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id E04312CFCA2;
-	Mon, 11 Aug 2025 12:30:35 +0200 (CEST)
-Date: Mon, 11 Aug 2025 12:30:35 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Xichao Zhao <zhao.xichao@vivo.com>
-Cc: chengzhihao1 <chengzhihao1@huawei.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1568241822.99082.1754908235674.JavaMail.zimbra@nod.at>
-In-Reply-To: <20250811101529.436635-1-zhao.xichao@vivo.com>
-References: <20250811101529.436635-1-zhao.xichao@vivo.com>
-Subject: Re: [PATCH] ubifs: Simplify the code and remove unnecessary
- parameters.
+	Mon, 11 Aug 2025 11:13:55 +0000
+Received: from trampoline.thunk.org (pool-173-48-111-121.bstnma.fios.verizon.net [173.48.111.121])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 57BBDaM5029819
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Aug 2025 07:13:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1754910820; bh=yHFvHo6R+wyvHhllEY32hSJMp83zXaOzd29KX8MLnHU=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=CjQtsYYRB4hjhMsFcG4MM7KsFeE/ne0VzdfIAZXYral+rbBfboazdcrCorY8copyA
+	 /9lJZwoxtASPD5sZV/SlFnG6XNbOiqjpEOjxnUW4WC9tSdT+NEKtkNGueJ88vuAblh
+	 I4eTexci9aW1BAwDNmf+Bq+UIQ/aP1lNsAJjqA8yMgP8eB0ohGD81Flq1zMxVV+jzo
+	 I0ZJ7vxAzqqNcJHLA6hm8X0UNbnhbZf0TsJCflzsu260J6EIuQJfOxbCCno0TBO9aE
+	 7uKTEs5qw7kfPPGMDMZp+/zOHXpj9Budfyg1vGCowkZgTDvwzSZcjPq6YgIr3c+YRm
+	 FJplTrp1n8j2A==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 525CB2E00D6; Mon, 11 Aug 2025 07:13:36 -0400 (EDT)
+Date: Mon, 11 Aug 2025 07:13:36 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v5 03/13] ext4: move crypt info pointer to fs-specific
+ part of inode
+Message-ID: <20250811111336.GB984814@mit.edu>
+References: <20250810075706.172910-1-ebiggers@kernel.org>
+ <20250810075706.172910-4-ebiggers@kernel.org>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF141 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: Simplify the code and remove unnecessary parameters.
-Thread-Index: cSlLst+Q8vbSL98lrl9oiwh3IrKzog==
+Content-Disposition: inline
+In-Reply-To: <20250810075706.172910-4-ebiggers@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250811_033048_020337_56A6C947 
-X-CRM114-Status: UNSURE (   3.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250811_041353_685116_424A93CE 
+X-CRM114-Status: GOOD (  10.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,22 +74,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlhpY2hhbyBaaGFvIiA8emhh
-by54aWNoYW9Adml2by5jb20+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4gQ0M6
-ICJjaGVuZ3poaWhhbzEiIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4sICJsaW51eC1tdGQiIDxs
-aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1rZXJuZWwiCj4gPGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc+LCAiWGljaGFvIFpoYW8iIDx6aGFvLnhpY2hhb0B2aXZvLmNv
-bT4KPiBHZXNlbmRldDogTW9udGFnLCAxMS4gQXVndXN0IDIwMjUgMTI6MTU6MjkKPiBCZXRyZWZm
-OiBbUEFUQ0hdIHViaWZzOiBTaW1wbGlmeSB0aGUgY29kZSBhbmQgcmVtb3ZlIHVubmVjZXNzYXJ5
-IHBhcmFtZXRlcnMuCgo+IFJlbW92ZSB0aGUgcGFyYW1ldGVyICcqYycgZnJvbSB0aGUgdWJpZnNf
-Y3JjX25vZGUgZnVuY3Rpb24sCgouLi5iZWNhdXNlIGMgaXMgbm90IHVzZWQ/Cgo+IGFuZCByZXBs
-YWNlIHBhcnQgb2YgdGhlIGNvZGUgdXNpbmcgdWJpZnNfY3JjX25vZGUuCgpUaGlzIGFyZSB0d28g
-dGhpbmdzLCBvbmUgbG9naWNhbCBjaGFuZ2UgcGVyIGNvbW1pdCwgcGxlYXNlLgoKVGhhbmtzLAov
-L3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Sun, Aug 10, 2025 at 12:56:56AM -0700, Eric Biggers wrote:
+> Move the fscrypt_inode_info pointer into the filesystem-specific part of
+> the inode by adding the field ext4_inode_info::i_crypt_info and
+> configuring fscrypt_operations::inode_info_offs accordingly.
+> 
+> This is a prerequisite for a later commit that removes
+> inode::i_crypt_info, saving memory and improving cache efficiency with
+> filesystems that don't support fscrypt.
+> 
+> Co-developed-by: Christian Brauner <brauner@kernel.org>
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
