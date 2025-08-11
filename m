@@ -4,83 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86016C87FDA
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 03:03:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2694CA0EC0
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 06:02:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BMe8Q0P8xXxBLQxh3Ci5P2c8IDf6yG6VgxrR+NDd6is=; b=WF1i8/bgVMNzQH
-	Nan1OvBacrChv6puBQcUygWrBVnmsfJXRvtkw2+AbP1FXEwGffzl1lF1nSScfRZ8bwD6UkSSLBipU
-	DzKjqd9TqLmSNO6D8YXucQCNaYtOj9S/jIwoPGJ6hzZDvondQ4C3OzTXvXvAgikFcWHZr/4qUaafN
-	AMjjRY+D62RMlQ+Ntl0UJIJIbF3yP/s5IV+dRuQjFtpTDiF65bW5KNb4aMFjvX1OqqXJ8ZZuL5ehS
-	QzHzA64wm9UIE2vYnt0zLcJpcSG5ZuLVN4MKqxhMpVB5YRQMfbOnGwW/kZlA8bACQ/qtD1RH8mrFr
-	x/A3Sj6DzQHZc9K09A7Q==;
+	List-Owner; bh=fL4+rhJQ3YZhmHH4OJPZ4HMl86VZUv+cJNJRJRmYce0=; b=tPzIsebHytGAEY
+	rkRLxuURHvDv3oVAIMVi3HL+xUpNr/PnwClAXQBTViJN9F5kzrjzpeWOkiftrRZajFbPnV1b9Z7+V
+	lB0AKkTLB1XEsKgCQLZe+FYbntRxkl93U1xgTxOW5QWBOkvmPy8BCW7pLKkRi2Y0+38yW+bmtiV93
+	GrocUnJEzj0crg+QgvNTuUx0+754a57CH3s19r9VPJs73d7+A6BUH6La6n8Dk7H08ei+C3Nh3dGU2
+	vIZq3l3ShBfH1+sk7s+PWKvVgr+ugUPHZNReECXcg9KqqMMXKiOXXFpoGnfur+8wBPFqoXPJqGimG
+	FbNUDbVvsYxp4wE9PO/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulIp0-00000006OMM-1TmL;
-	Mon, 11 Aug 2025 03:03:38 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulIoy-00000006OM1-1vse
+	id 1ulLcR-00000006YIV-0j9Z;
+	Mon, 11 Aug 2025 06:02:51 +0000
+Received: from mail.loongson.cn ([114.242.206.163])
+	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ulLcN-00000006YH3-3wHi
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Aug 2025 03:03:37 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-31efc10bb03so3233295a91.0
-        for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2025 20:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754881415; x=1755486215; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rsATNO7vxMuxyYylZDIuowEvn5aJ6XccLf59i9aEyTY=;
-        b=bDFcWKvJlYysknd2h2d6ysG60btRYwo6JdPcIPXd6k/DFP37fMYQnK6FlN51rrQ4A+
-         59hg6h4tLjIty9YI4gq2IJCsShaTf53U/2qmfDBKu5VRNIYXBqIVMFWpPasRvHYzFFsR
-         yMshnP8OSnHjFhLOixG9vZN5zSdas0UPYftBz32tsIrfLtK60GEVXjoIXGlDAt/MLPYT
-         W6LVxRfQxwdxrRd5+mPApEmkytZltowFaheDU+p5Ceps+uVc8/ATryb9YIndiaPg3IP+
-         PaW4RnMLHZ3AAu2lhN+2TQmRw2nZUQ7B26QnZRz7RGvm/E0yCJPms+psHCfQo3q5LUOx
-         Nmcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754881415; x=1755486215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rsATNO7vxMuxyYylZDIuowEvn5aJ6XccLf59i9aEyTY=;
-        b=ahpiT4mrbDjUjqDw78OgOA/zTc1nvwfWbBG8P4IKqazcNbloGqkzSnd5qlWf3mlaOC
-         4qORcd2s9eNkS+VOAYGNtZYBHw0B58KtKYDEKG0A4GBhb6IR6vMJ2pn4ZWwzT3/bNbjF
-         FIC/OhoNAbuUgQ6rVkATB8Iamd4tWaiuvRXB9mn3wb3G5gLhe+VG4VQvP3a97RKpVbAe
-         VgCe7iu2olAl4EcNOgLALDyED9AwfGa3eVCcuuMUo2DXVKXAhYuSYnQLtm+KYnsqitAo
-         PisFM84EhGNK53aESEy7eQpYfyub2bmL5C7r9ygGmVltWdtAqBwFLpGPgdNCTQ22u10+
-         DoCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWufRSjXGtW2YyYHI56nQD2ynlDjwCGBo1tNJFJFRXE3f247u9ueVtjip+fECF69XjHimZ8feCHJEA=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwohHrAFRCnOEG4MKoKG1PBQsVFqeYrldc1opNDu43AsPvfTPX5
-	zBfyc5J7emshciGzaZp31q8udDbKhXodeTZdHhoO8J7fTQxgkjaiJ4QyMx2q9t8QnDUWa4z1pov
-	l6K1eAB/VTVvlt6ToHZiU4sz2gMJXDsgEpB/V
-X-Gm-Gg: ASbGncsqaB82nSrJLEFATTKQsgMhcEqrx9Mgiqx4xQ6I4tB6t2AxpfYBBiQqRYZHcSH
-	ezNF4NrmBYE3P15Y/hOJUrEQPEQXncRPkXjglWWjJiPutwxRdMKWu5J3rtgMl+t0O7d5B8sdc7G
-	OhrT0kJaYXka7ohnHRSgTk1ktXzVFuT8pFuylzb77F22F5Qey6omg9xn+nei9AKR5F0FRQK0coy
-	VICh10=
-X-Google-Smtp-Source: AGHT+IHYv4HPwLaWAoIc23z+VO1nf1+EcK+dCdc0O8MvKoLhP9opU9gnjKgA4klmEdxO3ouanYg29RJ4Y0QMjiqbdEU=
-X-Received: by 2002:a17:90b:5786:b0:315:9cae:bd8 with SMTP id
- 98e67ed59e1d1-32183b4d95fmr13760150a91.23.1754881415361; Sun, 10 Aug 2025
- 20:03:35 -0700 (PDT)
+	Mon, 11 Aug 2025 06:02:49 +0000
+Received: from loongson.cn (unknown [223.64.69.45])
+	by gateway (Coremail) with SMTP id _____8DxQK+Dh5loS0I+AQ--.17694S3;
+	Mon, 11 Aug 2025 14:02:43 +0800 (CST)
+Received: from localhost.localdomain (unknown [223.64.69.45])
+	by front1 (Coremail) with SMTP id qMiowJAxE+R8h5loyFRCAA--.51398S4;
+	Mon, 11 Aug 2025 14:02:42 +0800 (CST)
+From: Binbin Zhou <zhoubinbin@loongson.cn>
+To: Binbin Zhou <zhoubb.aaron@gmail.com>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
+	devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH v2 2/8] mtd: rawnand: loongson: Rename loongson1 to loongson
+Date: Mon, 11 Aug 2025 14:02:26 +0800
+Message-ID: <47545b7ed4943a088b27021a0fdbeaf56947e833.1754890670.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <cover.1754890670.git.zhoubinbin@loongson.cn>
+References: <cover.1754890670.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
-References: <20250808095503.906244-1-linchengming884@gmail.com>
- <20250808095503.906244-3-linchengming884@gmail.com> <87zfca9kur.fsf@bootlin.com>
-In-Reply-To: <87zfca9kur.fsf@bootlin.com>
-From: Cheng Ming Lin <linchengming884@gmail.com>
-Date: Mon, 11 Aug 2025 11:01:25 +0800
-X-Gm-Features: Ac12FXztBa2kKDLSenS5JsM2SIpn-RB4gfFpR_F9raTQNRdao7XKxJAG8-pMJdA
-Message-ID: <CAAyq3SZbPpVX_LyoYaHYhA3ZNeb0NYWQ4KC6-+uubB1GGCqZag@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nand: macronix: Add randomizer support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: vigneshr@ti.com, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, richard@nod.at, alvinzhou@mxic.com.tw, 
-	leoyu@mxic.com.tw, Cheng Ming Lin <chengminglin@mxic.com.tw>
+X-CM-TRANSID: qMiowJAxE+R8h5loyFRCAA--.51398S4
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxGF18trykWFy5GFyDZrWDAwc_yoW5Ww4fpF
+	1UA3y7CF1UtF45Z3s0ga48Gr15Zas7JryDGa9rX34093s7X34Uuwn0yF1rtF47JF12qr47
+	Zr93Wan5CFs8ArbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE
+	14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j5l1kUUUUU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250810_200336_502970_F263C1E1 
-X-CRM114-Status: GOOD (  14.63  )
+X-CRM114-CacheID: sfid-20250810_230248_333567_B144E517 
+X-CRM114-Status: GOOD (  10.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,38 +88,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4g5pa8
-IDIwMjXlubQ45pyIOOaXpSDpgLHkupQg5LiL5Y2INjoxOeWvq+mBk++8mgo+Cj4gT24gMDgvMDgv
-MjAyNSBhdCAxNzo1NTowMyArMDgsIENoZW5nIE1pbmcgTGluIDxsaW5jaGVuZ21pbmc4ODRAZ21h
-aWwuY29tPiB3cm90ZToKPgo+ID4gRnJvbTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWluZ2xpbkBt
-eGljLmNvbS50dz4KPiA+Cj4gPiBFbmFibGUgcmFuZG9taXplciBmdW5jdGlvbiBieSBzcGVjaWZp
-YyBmbG93Y2hhcnQgdG8gc2V0IHRoZSBkZWZhdWx0IHZhbHVlCj4gPiBvZiBSQU5ERU4gdG8gMS4K
-PiA+Cj4gPiBSYW5kb21pemVyIGludHJvZHVjZXMgdHdvIG5ldyBEVCBwcm9wZXJ0aWVzIGZvciBj
-aGlsZCBub2RlcyB0byBjb25maWd1cmUKPiA+IHRoZSByYW5kb21pemVyIGZ1bmN0aW9uYWxpdHkg
-YW5kIGNvdmVyYWdlIG9wdGlvbnMuCj4gPiAgLSBteGljLGVuYWJsZS1yYW5kb21pemVyLW90cDog
-U3BlY2lmeSB3aGV0aGVyIHRvIGFjdGl2YXRlIHRoZSByYW5kb21pemVyCj4gPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgZmVhdHVyZS4KPiA+ICAtIG14aWMscmFuZG9wdDogRGVmaW5l
-IHRoZSByYW5kb21pemVyIGFyZWEgcGVyIHBhZ2UuCj4KPiBDYW4gd2UgY3JlYXRlIGEgZ2xvYmFs
-IE5BTkQgRFQgcHJvcGVydHkgZm9yIHRoYXQ/IEVuYWJsaW5nIGEgcmFuZG9taXplcgo+IGlzIHF1
-aXRlIGEgZ2VuZXJpYyBzdGVwLgo+Cj4gPiBUaGUgcGVuYWx0eSBvZiByYW5kb21pemVyIGFyZSBz
-dWJwYWdlIGFjY2Vzc2VzIHByb2hpYml0ZWQgYW5kIG1vcmUgdGltZQo+ID4gcGVyaW9kIGlzIG5l
-ZWRlZCBpbiBwcm9ncmFtIG9wZXJhdGlvbiBhbmQgZW50ZXJpbmcgZGVlcCBwb3dlci1kb3duIG1v
-ZGUuCj4gPiBpLmUuLCB0UFJPRyAzMjB1cyB0byAzNjB1cyAocmFuZG9taXplciBlbmFibGVkKS4K
-Pgo+IERvIHlvdSB3YW50IHRvIHNoYXJlIHdoYXQgaXMgdGhlIGFkZGVkIHZhbHVlIGluIHRlcm1z
-IG9mIGxpZmV0aW1lIHRvCj4gZW5hYmxlIHRoZSByYW5kb21pemVyLCBnaXZlbiB0aGUgZHJhd2Jh
-Y2tzIHdoaWNoIGFyZSBzaWduaWZpY2FudD8KClRoZSByYW5kb21pemVyIG1haW5seSB0YXJnZXRz
-IGV4dHJlbWVseSB1bmJhbGFuY2VkIGRhdGEgcGF0dGVybnMsCndoaWNoIG1pZ2h0IHBvdGVudGlh
-bGx5IGxlYWQgdG8gZGF0YSBlcnJvcnMuCgpQbGVhc2UgcmVmZXIgdG8gdGhlIGF0dGFjaGVkIGRv
-Y3VtZW50OgpodHRwczovL3d3dy5teGljLmNvbS50dy9MaXN0cy9BcHBsaWNhdGlvbk5vdGUvQXR0
-YWNobWVudHMvMjE1MS9BTjEwNTFWMS1UaGUlMjBJbnRyb2R1Y3Rpb24lMjBvZiUyMFJhbmRvbWl6
-ZXIlMjBGZWF0dXJlJTIwb24lMjBNWDMweEZ4RzI4QURfTVgzNXhGeEcyNEFELnBkZgoKRmlndXJl
-IDEgc2hvd3MgdGhhdCBjb250aW51b3VzbHkgcHJvZ3JhbW1pbmcgdG9vCm1hbnkgMHMgY2FuIHJl
-c3VsdCBpbiBkYXRhIGVycm9ycy4KCj4KPiBUaGFua3MsCj4gTWlxdcOobAoKVGhhbmtzLApDaGVu
-ZyBNaW5nIExpbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The second step in preparing to add Loongson-2K support is to change the
+names of the driver files and Kconfig options from Loongson1-specific to
+Loongson-generic.
+
+Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+---
+ MAINTAINERS                                                 | 2 +-
+ drivers/mtd/nand/raw/Kconfig                                | 6 +++---
+ drivers/mtd/nand/raw/Makefile                               | 2 +-
+ ...ongson1-nand-controller.c => loongson-nand-controller.c} | 0
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+ rename drivers/mtd/nand/raw/{loongson1-nand-controller.c => loongson-nand-controller.c} (100%)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4bac4ea21b64..cc502582c9f1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16722,7 +16722,7 @@ F:	Documentation/devicetree/bindings/*/loongson,ls1*.yaml
+ F:	arch/mips/include/asm/mach-loongson32/
+ F:	arch/mips/loongson32/
+ F:	drivers/*/*loongson1*
+-F:	drivers/mtd/nand/raw/loongson1-nand-controller.c
++F:	drivers/mtd/nand/raw/loongson-nand-controller.c
+ F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+ F:	sound/soc/loongson/loongson1_ac97.c
+ 
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 4b99d9c422c3..d9e3f13666ac 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -462,12 +462,12 @@ config MTD_NAND_NUVOTON_MA35
+ 	  Enables support for the NAND controller found on
+ 	  the Nuvoton MA35 series SoCs.
+ 
+-config MTD_NAND_LOONGSON1
+-	tristate "Loongson1 NAND controller"
++config MTD_NAND_LOONGSON
++	tristate "Loongson NAND controller"
+ 	depends on LOONGSON1_APB_DMA || COMPILE_TEST
+ 	select REGMAP_MMIO
+ 	help
+-	  Enables support for NAND controller on Loongson1 SoCs.
++	  Enables support for NAND controller on Loongson family chips.
+ 
+ comment "Misc"
+ 
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 711d043ad4f8..c182b9703a9e 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -59,7 +59,7 @@ obj-$(CONFIG_MTD_NAND_ROCKCHIP)		+= rockchip-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_PL35X)		+= pl35x-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_RENESAS)		+= renesas-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_NUVOTON_MA35)	+= nuvoton-ma35d1-nand-controller.o
+-obj-$(CONFIG_MTD_NAND_LOONGSON1)	+= loongson1-nand-controller.o
++obj-$(CONFIG_MTD_NAND_LOONGSON)		+= loongson-nand-controller.o
+ 
+ nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
+ nand-objs += nand_onfi.o
+diff --git a/drivers/mtd/nand/raw/loongson1-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
+similarity index 100%
+rename from drivers/mtd/nand/raw/loongson1-nand-controller.c
+rename to drivers/mtd/nand/raw/loongson-nand-controller.c
+-- 
+2.47.3
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
