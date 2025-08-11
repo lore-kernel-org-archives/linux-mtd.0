@@ -4,94 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AEEAC87FDA
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 06:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B221C87FD2
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 06:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8lOv/24fGk1aotoshFVq+jsMyZUJobdWTUR/RMb7IvY=; b=B0ieP1SiRpAx3h
-	Yg9DGyw3Q12AEUvaiIF6AQoLr331COAICEi6vztlj0E2P98k1KsFGuVHHuL8QkvtWFe4x/r7h2+pB
-	CmccO+CvLF2gpFYCI0/wJ5u0o8oQ7jaRs8IQb/3e2ri4vf/FsFL4Z1PtriDlevwM3doB32pnC0aul
-	pzjeJg0jrT5RyN36AzBXSjjMnQrV3quqrA6rtedIGXPKm9YudNnUN/Jq7qWdzKx7AlpE/XJK4IPdA
-	t5Udd1OnvoTX9N3U0fJh2CzN6AyRI/B1oKlUpHTcar8Ba5fjrY7bapDKMlyIVopZ/nCtpPulzukRe
-	VTij4/Ubsa8+o8BUYkrA==;
+	List-Owner; bh=9C4GH3l1whXwnAYf7znSqn0g7UewrXA1fXQVr9IOMz0=; b=iZ8o7+YUCssTEj
+	6LEExvBOlD9q7KK7sKmHPWf1vqTPhr+ArYQ7EP5j1s4NB0k146Jd5/cy1CfYiKio/gFF+hE0XIphT
+	tV3BWwk4i8gRDkiZioRjIFz3uQXodjTPIj7pSXwL1E276ua+WpWkt3N1KjBF28q1sSj/3D0jVS8gZ
+	zzLIcqYX3v62uXVPjNU4RgZDZa08dW4KOkNwwjkb/wN1WZINMkI4gNV+NDaokbCSuvkJxQ9Eee42n
+	15oBqSzvdk4tBFLuTphd7Z8gkvySDPS2jnUnDjW+CNbAqdCs2CKEPmKhNYzpqHEV/iys8YYxS35Ws
+	qemoWp2LBeZhZKyuxcpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulLde-00000006YkZ-2wkN;
-	Mon, 11 Aug 2025 06:04:06 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1ulM9W-00000006c92-31O5;
+	Mon, 11 Aug 2025 06:37:02 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulLde-00000006YkD-0TqO
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Aug 2025 06:04:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=DJa91XtBMA6Vd89ZErv5lNJu0V6ymZpfDD8ML4ui2E8=; b=IvZjlCen3keepSKVfvaOPyIXnx
-	nVNbOBzikdSYWokWpfZwV6tsqjAYRbuQs96/EZFahelbs/zJxpBB5KOCminwy3no2nwExOzE0Ssvo
-	6w61QkbtU4dq+jedR1Alv3lqm1pPSOXsLHVG5rRUUFdBuJLJMj8DPx+YCdNczPtG8BpxcdJqWv+MK
-	ZFFcA0yavh7Pmkavvjq+bG+DkEFTvvzolAGuJAerypmcGSv73+HNyc0xQaobYV+51GoLOjp4WK3BV
-	JNAjhT+/MHVTfEQK+GAIBAvLoNRTS5WJO2O80o+8pBTKacx11SlbEpdk+MZXe5ksiNuj2kKT9Cxzc
-	wY8/ebgA==;
-Received: from mail.loongson.cn ([114.242.206.163])
-	by casper.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulLdZ-00000001fyq-2CFP
+	id 1ulM9U-00000006c8f-1C8V
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Aug 2025 06:04:04 +0000
-Received: from loongson.cn (unknown [223.64.69.45])
-	by gateway (Coremail) with SMTP id _____8Ax3eLPh5loJkM+AQ--.14563S3;
-	Mon, 11 Aug 2025 14:03:59 +0800 (CST)
-Received: from localhost.localdomain (unknown [223.64.69.45])
-	by front1 (Coremail) with SMTP id qMiowJBxzsHMh5loslVCAA--.24696S2;
-	Mon, 11 Aug 2025 14:03:58 +0800 (CST)
-From: Binbin Zhou <zhoubinbin@loongson.cn>
-To: Binbin Zhou <zhoubb.aaron@gmail.com>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Keguang Zhang <keguang.zhang@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Huacai Chen <chenhuacai@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	loongarch@lists.linux.dev,
-	devicetree@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH v2 8/8] mtd: rawnand: loongson: Add Loongson-2K1000 NAND controller support
-Date: Mon, 11 Aug 2025 14:03:48 +0800
-Message-ID: <1097082673acb35e41c07937a24c184eb7000437.1754890670.git.zhoubinbin@loongson.cn>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1754890670.git.zhoubinbin@loongson.cn>
-References: <cover.1754890670.git.zhoubinbin@loongson.cn>
+	Mon, 11 Aug 2025 06:37:01 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 04D235C5BBC
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2025 06:36:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0107C4CEF7
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2025 06:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754894218;
+	bh=TAkKb+GwzMVZEi3A6tp7zglmhPEKp9E9776BvdS2RkY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=EO/VIzJkanp53gB3fy90v9P9a9lc3ybLWhQoKtbQ0l8tYAkJn70bvY9DEdI+mlVOQ
+	 9f40eDKq5osoHg+Co04YHithvcRtMsDsy82pK+9BF0w26FjTSZagzaGfh/CHs+dc1E
+	 P2Aunmfk0bwdGoBLM65S7YEHwFD4W/tLKtggH2bV8TeGQKhvtuOdQnWu1Df/pCO35M
+	 YO+4K9jvLLbYeibYEaZO46dnBxnNXw7YvhmSovbloeXBJcfdN+TC8iaIYGm4Cmi9GF
+	 c4IJbOpXndxAqAU4TssXZRpAS74bKcBcoCzngYt25+gvWPTySY90PdLSAScHTESsV9
+	 DqMUzSBipOhAA==
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-61813e2fc73so2302967a12.0
+        for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2025 23:36:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUDt2iREkVZDcLjLVePXiMOYV7obskAa68Z37EIZwmuTACsRwlk11wwRAXX7Mmy9ASNG5EFtvXMDt8=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwycHj1Qe5QISo9T60U8uHa3muG5FdZ2n2W5YV9Ht4iHE3gaP7C
+	h2pxWn7Naqi+508/knwLhj3oWU6pE/czGhupqsJeU5eB3P8xIfKFfIM/fbTmU732aiqWFUQTNAD
+	md/4sKOhhA/oBJUjHbR0PWS3RVpqK9UI=
+X-Google-Smtp-Source: AGHT+IH+K+psA1IClURB1rkm9587M1kJsBTT4nC9DIShwJ+z9EKZ/x4f8CpP9bm6bTiA0ekm74ibs0RbSFElzSLbGjg=
+X-Received: by 2002:a05:6402:2801:b0:617:d155:bc94 with SMTP id
+ 4fb4d7f45d1cf-617e2e80dd9mr11588787a12.30.1754894217160; Sun, 10 Aug 2025
+ 23:36:57 -0700 (PDT)
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJBxzsHMh5loslVCAA--.24696S2
-X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGw45WFW3CrW8Cr1UXw48Zrc_yoW5Kr47pa
-	y5Aay3KFy5KF4Y9a98tayrCr13Z34fJr9rJFZrW34xK3s3J3srWFy8GF10qF4avryfXryx
-	ZFyvgas7uFsrXrbCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkmb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26Fy26r45twAv7VC2z280
-	aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20x
-	vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-	3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIx
-	AIcVC0I7IYx2IY67AKxVW7JVWDJwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
-	42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4
-	A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUcIzuDUUUU
+References: <cover.1754890670.git.zhoubinbin@loongson.cn> <47545b7ed4943a088b27021a0fdbeaf56947e833.1754890670.git.zhoubinbin@loongson.cn>
+In-Reply-To: <47545b7ed4943a088b27021a0fdbeaf56947e833.1754890670.git.zhoubinbin@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Mon, 11 Aug 2025 14:36:46 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4h5qZ8gCjoKMKd8wBYG+secmTrHdo+AY1A60rmhKrCoQ@mail.gmail.com>
+X-Gm-Features: Ac12FXzwE_q2FIPFkdw9NNfcXNZKdKVnCriK7o66Fy-FNERs2XMBw-uOH0VYEz0
+Message-ID: <CAAhV-H4h5qZ8gCjoKMKd8wBYG+secmTrHdo+AY1A60rmhKrCoQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] mtd: rawnand: loongson: Rename loongson1 to loongson
+To: Binbin Zhou <zhoubinbin@loongson.cn>
+Cc: Binbin Zhou <zhoubb.aaron@gmail.com>, Huacai Chen <chenhuacai@loongson.cn>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Keguang Zhang <keguang.zhang@gmail.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Xuerui Wang <kernel@xen0n.name>, loongarch@lists.linux.dev, 
+	devicetree@vger.kernel.org, linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250811_070402_953744_FFAE302C 
-X-CRM114-Status: GOOD (  13.57  )
+X-CRM114-CacheID: sfid-20250810_233700_406003_3798FAE8 
+X-CRM114-Status: GOOD (  22.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,120 +82,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Loongson-2K1000 NAND controller is also similar to the Loongson-1C.
-
-It supports a maximum capacity of 16GB FLASH per chip with a maximum
-page size of 8KB, and it supports up to 4 chip selects and 4 RDY
-signals.
-
-The key difference from the Loongson-2K0500 is that it requires explicit
-configuration of the DMA control route. Typically, it is configured as
-APBDMA0.
-
-Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
----
- .../mtd/nand/raw/loongson-nand-controller.c   | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/loongson-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
-index 7a15df3fcd31..9c377062a3a1 100644
---- a/drivers/mtd/nand/raw/loongson-nand-controller.c
-+++ b/drivers/mtd/nand/raw/loongson-nand-controller.c
-@@ -73,9 +73,18 @@
- #define LOONGSON_NAND_READ_ID_TIMEOUT_US	5000
- 
- #define LOONGSON_NAND_64BIT_DMA		BIT(0)
-+#define LOONGSON_NAND_DMA_CONFIG	BIT(1)
- 
- #define BITS_PER_WORD			(4 * BITS_PER_BYTE)
- 
-+/* Loongson-2K1000 NAND DMA routing register */
-+#define LS2K1000_NAND_DMA_MASK         GENMASK(2, 0)
-+#define LS2K1000_DMA0_CONF             0x0
-+#define LS2K1000_DMA1_CONF             0x1
-+#define LS2K1000_DMA2_CONF             0x2
-+#define LS2K1000_DMA3_CONF             0x3
-+#define LS2K1000_DMA4_CONF             0x4
-+
- struct loongson_nand_host;
- 
- struct loongson_nand_op {
-@@ -768,6 +777,23 @@ static void loongson_nand_controller_cleanup(struct loongson_nand_host *host)
- 		dma_release_channel(host->dma_chan);
- }
- 
-+static int ls2k1000_nand_apbdma_config(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	void __iomem *regs;
-+	int val;
-+
-+	regs = devm_platform_ioremap_resource(pdev, 2);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
-+
-+	val = readl(regs);
-+	val |= FIELD_PREP(LS2K1000_NAND_DMA_MASK, LS2K1000_DMA0_CONF);
-+	writel(val, regs);
-+
-+	return 0;
-+}
-+
- static int loongson_nand_controller_init(struct loongson_nand_host *host)
- {
- 	struct device *dev = host->dev;
-@@ -786,6 +812,12 @@ static int loongson_nand_controller_init(struct loongson_nand_host *host)
- 	if (host->data->flags & LOONGSON_NAND_64BIT_DMA)
- 		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
- 
-+	if (host->data->flags & LOONGSON_NAND_DMA_CONFIG) {
-+		ret = ls2k1000_nand_apbdma_config(dev);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	chan = dma_request_chan(dev, "rxtx");
- 	if (IS_ERR(chan))
- 		return dev_err_probe(dev, PTR_ERR(chan), "failed to request DMA channel\n");
-@@ -950,6 +982,18 @@ static const struct loongson_nand_data ls2k0500_nand_data = {
- 	.set_addr = ls1c_nand_set_addr,
- };
- 
-+static const struct loongson_nand_data ls2k1000_nand_data = {
-+	.max_id_cycle = 6,
-+	.id_cycle_field = GENMASK(14, 12),
-+	.status_field = GENMASK(23, 16),
-+	.op_scope_field = GENMASK(29, 16),
-+	.hold_cycle = 0x4,
-+	.wait_cycle = 0x12,
-+	.nand_cs = 0x2,
-+	.flags = LOONGSON_NAND_64BIT_DMA | LOONGSON_NAND_DMA_CONFIG,
-+	.set_addr = ls1c_nand_set_addr,
-+};
-+
- static const struct of_device_id loongson_nand_match[] = {
- 	{
- 		.compatible = "loongson,ls1b-nand-controller",
-@@ -963,6 +1007,10 @@ static const struct of_device_id loongson_nand_match[] = {
- 		.compatible = "loongson,ls2k0500-nand-controller",
- 		.data = &ls2k0500_nand_data,
- 	},
-+	{
-+		.compatible = "loongson,ls2k1000-nand-controller",
-+		.data = &ls2k1000_nand_data,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, loongson_nand_match);
--- 
-2.47.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksIEJpbmJpbiwKCk9uIE1vbiwgQXVnIDExLCAyMDI1IGF0IDI6MDLigK9QTSBCaW5iaW4gWmhv
+dSA8emhvdWJpbmJpbkBsb29uZ3Nvbi5jbj4gd3JvdGU6Cj4KPiBUaGUgc2Vjb25kIHN0ZXAgaW4g
+cHJlcGFyaW5nIHRvIGFkZCBMb29uZ3Nvbi0ySyBzdXBwb3J0IGlzIHRvIGNoYW5nZSB0aGUKPiBu
+YW1lcyBvZiB0aGUgZHJpdmVyIGZpbGVzIGFuZCBLY29uZmlnIG9wdGlvbnMgZnJvbSBMb29uZ3Nv
+bjEtc3BlY2lmaWMgdG8KPiBMb29uZ3Nvbi1nZW5lcmljLgpJcyBpdCBwb3NzaWJsZSB0byBtZXJn
+ZSB0aGUgZmlyc3QgdHdvIHBhdGNoZXM/IElmIG5vdCwgaXQgaXMgYmV0dGVyIHRvCnVzZSBsb29u
+Z3NvbjEgcmF0aGVyIHRoYW4gbG9vbmdzb24gaW4gdGhlIHN1YmplY3QgbGluZSBvZiB0aGlzIHBh
+dGNoLgoKSHVhY2FpCgo+Cj4gU2lnbmVkLW9mZi1ieTogQmluYmluIFpob3UgPHpob3ViaW5iaW5A
+bG9vbmdzb24uY24+Cj4gLS0tCj4gIE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgMiArLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9L
+Y29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDYgKysrLS0tCj4gIGRyaXZl
+cnMvbXRkL25hbmQvcmF3L01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+MiArLQo+ICAuLi5vbmdzb24xLW5hbmQtY29udHJvbGxlci5jID0+IGxvb25nc29uLW5hbmQtY29u
+dHJvbGxlci5jfSB8IDAKPiAgNCBmaWxlcyBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVs
+ZXRpb25zKC0pCj4gIHJlbmFtZSBkcml2ZXJzL210ZC9uYW5kL3Jhdy97bG9vbmdzb24xLW5hbmQt
+Y29udHJvbGxlci5jID0+IGxvb25nc29uLW5hbmQtY29udHJvbGxlci5jfSAoMTAwJSkKPgo+IGRp
+ZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTCj4gaW5kZXggNGJhYzRlYTIxYjY0
+Li5jYzUwMjU4MmM5ZjEgMTAwNjQ0Cj4gLS0tIGEvTUFJTlRBSU5FUlMKPiArKysgYi9NQUlOVEFJ
+TkVSUwo+IEBAIC0xNjcyMiw3ICsxNjcyMiw3IEBAIEY6ICAgICAgRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzLyovbG9vbmdzb24sbHMxKi55YW1sCj4gIEY6ICAgICBhcmNoL21pcHMv
+aW5jbHVkZS9hc20vbWFjaC1sb29uZ3NvbjMyLwo+ICBGOiAgICAgYXJjaC9taXBzL2xvb25nc29u
+MzIvCj4gIEY6ICAgICBkcml2ZXJzLyovKmxvb25nc29uMSoKPiAtRjogICAgIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L2xvb25nc29uMS1uYW5kLWNvbnRyb2xsZXIuYwo+ICtGOiAgICAgZHJpdmVycy9t
+dGQvbmFuZC9yYXcvbG9vbmdzb24tbmFuZC1jb250cm9sbGVyLmMKPiAgRjogICAgIGRyaXZlcnMv
+bmV0L2V0aGVybmV0L3N0bWljcm8vc3RtbWFjL2R3bWFjLWxvb25nc29uMS5jCj4gIEY6ICAgICBz
+b3VuZC9zb2MvbG9vbmdzb24vbG9vbmdzb24xX2FjOTcuYwo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L0tjb25maWcgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnCj4g
+aW5kZXggNGI5OWQ5YzQyMmMzLi5kOWUzZjEzNjY2YWMgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9t
+dGQvbmFuZC9yYXcvS2NvbmZpZwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcK
+PiBAQCAtNDYyLDEyICs0NjIsMTIgQEAgY29uZmlnIE1URF9OQU5EX05VVk9UT05fTUEzNQo+ICAg
+ICAgICAgICBFbmFibGVzIHN1cHBvcnQgZm9yIHRoZSBOQU5EIGNvbnRyb2xsZXIgZm91bmQgb24K
+PiAgICAgICAgICAgdGhlIE51dm90b24gTUEzNSBzZXJpZXMgU29Dcy4KPgo+IC1jb25maWcgTVRE
+X05BTkRfTE9PTkdTT04xCj4gLSAgICAgICB0cmlzdGF0ZSAiTG9vbmdzb24xIE5BTkQgY29udHJv
+bGxlciIKPiArY29uZmlnIE1URF9OQU5EX0xPT05HU09OCj4gKyAgICAgICB0cmlzdGF0ZSAiTG9v
+bmdzb24gTkFORCBjb250cm9sbGVyIgo+ICAgICAgICAgZGVwZW5kcyBvbiBMT09OR1NPTjFfQVBC
+X0RNQSB8fCBDT01QSUxFX1RFU1QKPiAgICAgICAgIHNlbGVjdCBSRUdNQVBfTU1JTwo+ICAgICAg
+ICAgaGVscAo+IC0gICAgICAgICBFbmFibGVzIHN1cHBvcnQgZm9yIE5BTkQgY29udHJvbGxlciBv
+biBMb29uZ3NvbjEgU29Dcy4KPiArICAgICAgICAgRW5hYmxlcyBzdXBwb3J0IGZvciBOQU5EIGNv
+bnRyb2xsZXIgb24gTG9vbmdzb24gZmFtaWx5IGNoaXBzLgo+Cj4gIGNvbW1lbnQgIk1pc2MiCj4K
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvTWFrZWZpbGUgYi9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9NYWtlZmlsZQo+IGluZGV4IDcxMWQwNDNhZDRmOC4uYzE4MmI5NzAzYTllIDEw
+MDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L01ha2VmaWxlCj4gKysrIGIvZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvTWFrZWZpbGUKPiBAQCAtNTksNyArNTksNyBAQCBvYmotJChDT05GSUdf
+TVREX05BTkRfUk9DS0NISVApICAgICAgICAgICAgICAgKz0gcm9ja2NoaXAtbmFuZC1jb250cm9s
+bGVyLm8KPiAgb2JqLSQoQ09ORklHX01URF9OQU5EX1BMMzVYKSAgICAgICAgICAgKz0gcGwzNXgt
+bmFuZC1jb250cm9sbGVyLm8KPiAgb2JqLSQoQ09ORklHX01URF9OQU5EX1JFTkVTQVMpICAgICAg
+ICAgKz0gcmVuZXNhcy1uYW5kLWNvbnRyb2xsZXIubwo+ICBvYmotJChDT05GSUdfTVREX05BTkRf
+TlVWT1RPTl9NQTM1KSAgICArPSBudXZvdG9uLW1hMzVkMS1uYW5kLWNvbnRyb2xsZXIubwo+IC1v
+YmotJChDT05GSUdfTVREX05BTkRfTE9PTkdTT04xKSAgICAgICArPSBsb29uZ3NvbjEtbmFuZC1j
+b250cm9sbGVyLm8KPiArb2JqLSQoQ09ORklHX01URF9OQU5EX0xPT05HU09OKSAgICAgICAgICAg
+ICAgICArPSBsb29uZ3Nvbi1uYW5kLWNvbnRyb2xsZXIubwo+Cj4gIG5hbmQtb2JqcyA6PSBuYW5k
+X2Jhc2UubyBuYW5kX2xlZ2FjeS5vIG5hbmRfYmJ0Lm8gbmFuZF90aW1pbmdzLm8gbmFuZF9pZHMu
+bwo+ICBuYW5kLW9ianMgKz0gbmFuZF9vbmZpLm8KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+bmFuZC9yYXcvbG9vbmdzb24xLW5hbmQtY29udHJvbGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvbG9vbmdzb24tbmFuZC1jb250cm9sbGVyLmMKPiBzaW1pbGFyaXR5IGluZGV4IDEwMCUKPiBy
+ZW5hbWUgZnJvbSBkcml2ZXJzL210ZC9uYW5kL3Jhdy9sb29uZ3NvbjEtbmFuZC1jb250cm9sbGVy
+LmMKPiByZW5hbWUgdG8gZHJpdmVycy9tdGQvbmFuZC9yYXcvbG9vbmdzb24tbmFuZC1jb250cm9s
+bGVyLmMKPiAtLQo+IDIuNDcuMwo+Cj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
