@@ -4,68 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2331C87FD2
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 12:47:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B40EC88CB9
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 13:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=ANjaYdTt3ntLN3SHMG/E7xot79tMUmRn3ZX95Z7KAlE=; b=elFncswpd1dL1osLLF4K9LSz28
-	tFCFQkP1nKA3O5vM59q8pvgVQ12K99rbwjl/O4FXHc02ccvGH111b81YFas2RAWGcHxFssyojNms4
-	vf9xn5QKDHA91XP9G6CDxKldEro1nE7HAIA+Po0+CwvOvXqAdZZWqxOBiUocRfysJg0qvhSse3Pts
-	XL3uGiWjXwdnK37EE3ciZGbW56mYjxeGyuyxdA8JOBSfVV6aABvxANMPNug7msAfv07OwBVSODhJR
-	caeV9G5dc/9WHcE9lNExvBFlXCMXFGiXhP781oi7c52269ZfS22kR5qaYN0rdQRpb/w/IPEFGl5Tg
-	7R9NTdig==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=UWERhkNNFAQrHiACrGQ7h7h3SOQYGegDcKWgdUa6MTk=; b=YJRXE3XOJkX1mR
+	X57brpN5umQwL2VwHfqHbx5CWbZovZvOkJEqPzXUlV+FS8b8LpxI4sX1It91gkO6KZnWXH31dEtIo
+	nDgGHMyh36OE3vScv/Yf6YE6s5vHDVP6df13HjC7AB5U0vkkxmt9e03FGuANm0PmnIIvPIIepq8mR
+	zG0ZqBWHyRsof9X9l4nNt/fXhzyQoWNfIbPCFntaesa6moJkwEzSg2+onzO9syJdl8e+7RlBvAdIp
+	OOutBvie3yiirghhabJwJSEaXS/dNFKcDVhyV8fj5UfRavOE3qrTkgcxyIoparmNBbk6UyZgZt3ly
+	pKOb4c/Wem1/Pp/YWpeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulRvS-00000007iDN-0rOZ;
-	Mon, 11 Aug 2025 12:46:54 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
+	id 1ulSS8-00000007nYb-3WXP;
+	Mon, 11 Aug 2025 13:20:40 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulRv7-00000007i9H-0gTx
+	id 1ulSOh-00000007n6v-2M5V
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Aug 2025 12:46:34 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 6754F2CFCA2;
-	Mon, 11 Aug 2025 14:46:30 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id zZlOK5j1gnYO; Mon, 11 Aug 2025 14:46:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 59B212CFCAD;
-	Mon, 11 Aug 2025 14:46:29 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id YszAZL2IXWFc; Mon, 11 Aug 2025 14:46:29 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 3896A2CFCA2;
-	Mon, 11 Aug 2025 14:46:29 +0200 (CEST)
-Date: Mon, 11 Aug 2025 14:46:29 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Miguel =?utf-8?Q?Garc=C3=ADa?= <miguelgarciaroman8@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, 
-	chengzhihao1 <chengzhihao1@huawei.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1786903963.99788.1754916389068.JavaMail.zimbra@nod.at>
-In-Reply-To: <20250811120912.144720-1-miguelgarciaroman8@gmail.com>
-References: <20250811120912.144720-1-miguelgarciaroman8@gmail.com>
-Subject: Re: [PATCH] mtd: ubi: replace strcpy with strscpy in mtd parameter
- parser
+	Mon, 11 Aug 2025 13:17:07 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id F0721601F7;
+	Mon, 11 Aug 2025 13:17:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C58FC4CEF4;
+	Mon, 11 Aug 2025 13:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754918226;
+	bh=9H/x5XG1IcYYuNxoZ/FRiA+0c4IRqwYORLUEqhmTUO8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rCD79R8WxTBcVrqg9rMg+tofGwTK8plCUX7hNKwEW3euMu+ELqZMDzG3+NaHbwoym
+	 Z69gkLPwTFj/nx6Bg1B+irqlcABZjhpqoq3jVFiKTJDeZyxYw5CnVFo3Q+bloZ86fg
+	 2m7vRUyEdvxYTnp4GkbhiIKHV/bfrHqC23dXRI85VIsNFxmxcLBjVAxLQmgF30a916
+	 xH/7d0xrt5yCWPjsIm3OC3Vy5w0lb1AV3fMcYGzfzRi4FUKJKTzdL5BmdhSAyC1qsd
+	 WvUrI1WnXciEAjbrhDJcFTMO79IkymShrf+HBHbQRv+JPtbb2CJrsIaGlHXIvqUdR+
+	 G4L8HPawNFllQ==
+Date: Mon, 11 Aug 2025 15:17:01 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev, 
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org
+Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
+ inode
+Message-ID: <20250811-distribuieren-nilpferd-bef047fa7992@brauner>
+References: <20250810075706.172910-1-ebiggers@kernel.org>
+ <20250810-tortur-gerammt-8d9ffd00da19@brauner>
+ <20250810090302.GA1274@sol>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF141 (Linux)/8.8.12_GA_3809)
-Thread-Topic: replace strcpy with strscpy in mtd parameter parser
-Thread-Index: coMJNePqoBbE5DTFLz9HlnrmJEa8+A==
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250811_054633_341671_1081ECFA 
-X-CRM114-Status: UNSURE (   6.40  )
-X-CRM114-Notice: Please train this message.
+Content-Disposition: inline
+In-Reply-To: <20250810090302.GA1274@sol>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,36 +69,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk1pZ3VlbCBHYXJjw61hIiA8
-bWlndWVsZ2FyY2lhcm9tYW44QGdtYWlsLmNvbT4KPiBBbjogInJpY2hhcmQiIDxyaWNoYXJkQG5v
-ZC5hdD4sICJNaXF1ZWwgUmF5bmFsIiA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4sICJWaWdu
-ZXNoIFJhZ2hhdmVuZHJhIiA8dmlnbmVzaHJAdGkuY29tPgo+IENDOiAiY2hlbmd6aGloYW8xIiA8
-Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+LCAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmc+LCAibGludXgta2VybmVsIgo+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
-b3JnPiwgIlNodWFoIEtoYW4iIDxza2hhbkBsaW51eGZvdW5kYXRpb24ub3JnPiwgIk1pZ3VlbCBH
-YXJjw61hIgo+IDxtaWd1ZWxnYXJjaWFyb21hbjhAZ21haWwuY29tPgo+IEdlc2VuZGV0OiBNb250
-YWcsIDExLiBBdWd1c3QgMjAyNSAxNDowOToxMgo+IEJldHJlZmY6IFtQQVRDSF0gbXRkOiB1Ymk6
-IHJlcGxhY2Ugc3RyY3B5IHdpdGggc3Ryc2NweSBpbiBtdGQgcGFyYW1ldGVyIHBhcnNlcgoKPiBS
-ZXBsYWNlIHRoZSBzdHJjcHkoKSBjYWxscyB1c2VkIHRvIGNvcHkgdGhlICdtdGQ9JyBwYXJhbWV0
-ZXIgaW50byBsb2NhbAo+IGJ1ZmZlcnMgd2l0aCBzdHJzY3B5KCkgdG8gYXZvaWQgcG90ZW50aWFs
-IG92ZXJmbG93IGFuZCBndWFyYW50ZWUgTlVMCj4gdGVybWluYXRpb24uIERlc3RpbmF0aW9ucyBh
-cmUgZml4ZWQtc2l6ZSBhcnJheXMgKGJ1ZiBhbmQgcC0+bmFtZSksIHNvCj4gdXNlIHNpemVvZigp
-Lgo+IAo+IFdoaWxlIHRoaXMgY29kZSBpcyBjdXJyZW50bHkgc2FmZSBkdWUgdG8gcHJpb3IgbGVu
-Z3RoIGNoZWNrcwo+IChzdHJubGVuKHZhbCwgTVREX1BBUkFNX0xFTl9NQVgpIGFuZCBlYXJseSBy
-ZXR1cm4gb24gb3ZlcmZsb3cpLAo+IHJlcGxhY2luZyBzdHJjcHkoKSB3aXRoIHN0cnNjcHkoKSBm
-b2xsb3dzIGN1cnJlbnQga2VybmVsIGJlc3QgcHJhY3RpY2VzCj4gYW5kIG1ha2VzIHRoZSBjb2Rl
-IG1vcmUgcm9idXN0IHRvIGZ1dHVyZSBjaGFuZ2VzLiBUaGUgc2l6ZW9mKCkgY2FsbHMKPiBjb3Jy
-ZWN0bHkgY29tcHV0ZSB0aGUgYnVmZmVyIHNpemVzLCBtYXRjaGluZyBNVERfUEFSQU1fTEVOX01B
-WC4KClRCSCwgSSdtIG5vdCBjb252aW5jZWQuIFdlJ3JlIHRhbGtpbmcgYWJvdXQga2VybmVsIG1v
-ZHVsZSBwYXJhbWV0ZXJzLApub3QgaG9zdGlsZSB1c2VyIGlucHV0LCBldGMuLi4KCkJ5IGFkZGlu
-ZyBzaXplb2YoKSB5b3UncmUgcmVwbGFjaW5nIG9uZSBmb29kZ3VuIHdpdGggYW5vdGhlciBvbmUu
-CklmIGJ1ZiBpcyBpbiBmdXR1cmUgY2hhbmdlZCB0byBhIHBvaW50ZXIsIHNpemVvZihidWYpIG5l
-ZWRzIGEgZml4dXAgdG9vLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+On Sun, Aug 10, 2025 at 02:03:02AM -0700, Eric Biggers wrote:
+> On Sun, Aug 10, 2025 at 10:47:32AM +0200, Christian Brauner wrote:
+> > On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
+> > > This is a cleaned-up implementation of moving the i_crypt_info and
+> > > i_verity_info pointers out of 'struct inode' and into the fs-specific
+> > > part of the inode, as proposed previously by Christian at
+> > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
+> > > 
+> > > The high-level concept is still the same: fs/crypto/ and fs/verity/
+> > > locate the pointer by adding an offset to the address of struct inode.
+> > > The offset is retrieved from fscrypt_operations or fsverity_operations.
+> > > 
+> > > I've cleaned up a lot of the details, including:
+> > > - Grouped changes into patches differently
+> > > - Rewrote commit messages and comments to be clearer
+> > > - Adjusted code formatting to be consistent with existing code
+> > > - Removed unneeded #ifdefs
+> > > - Improved choice and location of VFS_WARN_ON_ONCE() statements
+> > > - Added missing kerneldoc for ubifs_inode::i_crypt_info
+> > > - Moved field initialization to init_once functions when they exist
+> > > - Improved ceph offset calculation and removed unneeded static_asserts
+> > > - fsverity_get_info() now checks IS_VERITY() instead of v_ops
+> > > - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
+> > >   no longer think it's actually correct there.
+> > > - verity_data_blocks() now keeps doing a raw dereference
+> > > - Dropped fscrypt_set_inode_info() 
+> > > - Renamed some functions
+> > > - Do offset calculation using int, so we don't rely on unsigned overflow
+> > > - And more.
+> > > 
+> > > For v4 and earlier, see
+> > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
+> > > 
+> > > I'd like to take this series through the fscrypt tree for 6.18.
+> > > (fsverity normally has a separate tree, but by choosing just one tree
+> > > for this, we'll avoid conflicts in some places.)
+> > 
+> > Woh woh. First, I had a cleaned up version ready for v6.18 so if you
+> > plan on taking over someone's series and resend then maybe ask the
+> > author first whether that's ok or not. I haven't seen you do that. You
+> > just caused duplicated work for no reason.
+> 
+> Ah, sorry about that.  When I started looking at it again yesterday
+> there turned out to be way too many cleanups and fixes I wanted to make
+> (beyond the comments I gave earlier), and I hadn't seen activity from
+> you on it in a while.  So I figured it would be easier to just send a
+> series myself.  But I should have asked you first, sorry.
+
+So I started working on this pretty much right away. And I had planned
+on sending it out rather soon but then thought to better wait for -rc1
+to be released because I saw you had a bunch of crypto changes in for
+-rc1 that would've caused merge conflicts. It's no big deal overall but
+I just don't like that I wasted massaging all that stuff. So next time a
+heads-up would be nice. Thank you!
+
+> 
+> > And second general infrastructure changes that touch multiple fses and
+> > generic fs infrastructure I very much want to go through VFS trees.
+> > We'll simply use a shared tree.
+> 
+> So you'd like to discontinue the fscrypt and fsverity trees?  That's
+> what they are for: general infrastructure shared by multiple
+> filesystems.  Or is this comment just for this series in particular,
+> presumably because it touches 'struct inode'?
+
+My comment just applies this series. I'm not here to take away your
+trees ofc unless you would like to have them go through the VFS batch.
+That's something that some people like Amir have started doing.
+
+I'll put the series into vfs-6.17.inode and push it out then you can
+base any additional changes on top of that. I'll not touch it unless you
+tell me to. Linus knows that VFS trees often have work that is used as
+the base for other trees so he will merge VFS trees before any of the
+smaller trees and I always mention this to him.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
