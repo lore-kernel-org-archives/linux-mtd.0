@@ -4,64 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FAA0C87FDB
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 13:36:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58A55CA0ECD
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 15:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IKDbRkdOW5g3cip5lfGKQE1txUA57OQXLCTlUaIInKU=; b=qfVL7K/MAy+zpR
-	DAmNljwdoSTnI1x/Qct4vRoqhsD4Il6zOKP0wQJ2BUBaEKC2vdhJbq9ArEFYViuJ/fwrbZG+f94GX
-	R3lMeGpM+GAiSrI3jww0AQO+p+62/CMQt4KSEtKSEPqtZZAV/zMUCF1FekbJ9hy8Ik32HLlUixa5i
-	E3ryR3MUcg/nJAQ/e9O4kf3PCKcN984sm1GbvsRoy5ASS0V2OziAMlyVDvhFNXzXEZ65puKgRRNzP
-	ZlWIYDkgJzFI3ADUQNMTPlShhevPQc1PzBncc1ljozgR0++MWU6pldP6BrvMwmNVM6RFGG1mgeyB/
-	Ippfl3NiKEOGhmxrjOLw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xEI5AzISEru9uaHADbb0078w2VKOqobDPybr7uW1stQ=; b=gMF8FOVYnDxo3v
+	KJZtfuG+XOjfaqysBG3lZvz5Du5Q046XYor5lITHoWuXnJhWIgkRTSPTFWsZx3RBI/IASCL8DVMFr
+	jrbieMtbeZklASV0rKmTsE5cyU6J6x/mOiQm+mku3YM51qyt7cqgZ6vUxsr4an72IYwgoFFpG1Hu5
+	OQl4QW/FtmiB1gzvslaOR+NcwesbvAq5DCTcKq1TGumTww231ZnPbEPFmtouVD8PWC9qjfBt+3kU/
+	3ydH7dphud7DlSz1Lw6lhVuiv0Uj2sk+0HoZYqbqoTuX7IKJ2sjRwxAuy8PrdDyFeWM9VL2nOfJyq
+	syd5O70wxjXqIpITI6hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulSgw-00000007qLn-3kIp;
-	Mon, 11 Aug 2025 13:35:58 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1ulUfj-00000008Eul-0887;
+	Mon, 11 Aug 2025 15:42:51 +0000
+Received: from mout.gmx.net ([212.227.15.15])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulSfh-00000007q3z-2sD2
+	id 1ulT3H-00000007v0z-1jOi
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Aug 2025 13:34:43 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id A685BA4ED70;
-	Mon, 11 Aug 2025 13:34:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EB39C4CEED;
-	Mon, 11 Aug 2025 13:34:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754919280;
-	bh=Ba4T8JRIhY1ucolU1ke77/oTfZPh0CpkbfaJTVmXDGs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OLF36AqIkTxYij3rbRxLgiTKeAc20fE19pNkSF+6AsTmK4O7x7hqc6h9W1w8JaKxB
-	 F6Yd6j+Zuz3C0Z725mv1ub40YX4pJKu9nCeUFh2JxNvosAsHrd4mTQ2qzKY1GIBjIw
-	 utXSwPyDvH5GbbB4gOpKORIsVNVeawQrxrddtJU038mcQ5W0vgkBBoWX+bWpmCh+K1
-	 wrIWKmD6rZBzQrW6phPG619xf0GlruQdThXJEfKIWfoZkrpK2I9COSa5cZMyFHZNg/
-	 LG8LJcdQ3DDiYJIXqSDznqH/6+C6ULpc7F7fNadE2owbTdrJ+LR0jcwygpsMArWBYA
-	 ZgrzYeoo58MPw==
-Date: Mon, 11 Aug 2025 15:34:35 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev, 
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
- inode
-Message-ID: <20250811-unbedacht-vollmond-1a805b76212b@brauner>
-References: <20250810075706.172910-1-ebiggers@kernel.org>
- <20250810-tortur-gerammt-8d9ffd00da19@brauner>
- <20250810090302.GA1274@sol>
- <20250811-distribuieren-nilpferd-bef047fa7992@brauner>
+	Mon, 11 Aug 2025 13:59:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1754920738; x=1755525538;
+	i=markus.stockhausen@gmx.de;
+	bh=QKkQLq1m+vUnJ6jBofbEFz7yB6IELQQ9vuPfvjObDUE=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=lbqp4MVm4kvdJrFSn/HQV8CVr4o6P6x8oPKfaySOWJFKab60xRy9QrJStPocSfbB
+	 K8vYkAT7F0s8/qv0xeGcIdpJWtp7Bm1vjdhbawsN0ZbL91oklFZ2NLvYOrfNNAhIM
+	 sDdkckqdli67zVxn16xvAKX/zZhj2to8pQjI7NDdx3/cQBIwnyDCkxlNfvRk2rJqU
+	 v4uXZ140yHH5VII97HISrgtJTVhlz421h7yLYUVYdlXQ4RZdzjE4ywjtJ0+4RxQNM
+	 fSYAFnACHuKXNjdUMK/zYqmOyRxAR7fYLjkwRlry7kJ2WJ16kwwWIc2qzrh6hdom3
+	 MLCggCFqA5/E/rOIIA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from colnote55 ([94.31.70.55]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MUXpK-1vBlMQ3HkG-00ULri; Mon, 11
+ Aug 2025 15:58:58 +0200
+From: <markus.stockhausen@gmx.de>
+To: "'Miquel Raynal'" <miquel.raynal@bootlin.com>
+Cc: <vigneshr@ti.com>,
+	<richard@nod.at>,
+	<tudor.ambarus@linaro.org>,
+	<linux-mtd@lists.infradead.org>,
+	"'Chris Packham'" <Chris.Packham@alliedtelesis.co.nz>
+Subject: Realtek ECC engine (was NAND errors)
+Date: Mon, 11 Aug 2025 15:58:56 +0200
+Message-ID: <667201dc0ac8$153da250$3fb8e6f0$@gmx.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250811-distribuieren-nilpferd-bef047fa7992@brauner>
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: de
+Thread-Index: AdwKwyg0ubsB6aOvSTuLZvqhqMWoNw==
+X-Provags-ID: V03:K1:eM2Poi/Hg1AHx8/9gKxR+JhKBat3I6j/kFsgUKGnfasZhH3grwr
+ kNjFRVnQdUKwzg/4pC0PfoIJLYqskCo1GqhXC3WQcl6kRjUlMS0iHtkUDgy1DyQdROYmj0O
+ s3mLyYl6ACpXdxkDsZ76Xnn1sV8fX8hi/aIINlGtEthX6eJfO0e7sfe8yBfP5LRs/XkG2DU
+ fbc4zzie9Z2HW6yQDnH9Q==
+UI-OutboundReport: notjunk:1;M01:P0:xJf5SuvdbtM=;DS6GaFaLsnKpli0LDC756ook9e7
+ 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
+ HWeokhNQG/buM9jo/fqQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250811_063441_854115_6378A924 
-X-CRM114-Status: GOOD (  46.45  )
+X-CRM114-CacheID: sfid-20250811_065903_870081_59ABB954 
+X-CRM114-Status: UNSURE (   8.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,94 +132,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 11, 2025 at 03:17:01PM +0200, Christian Brauner wrote:
-> On Sun, Aug 10, 2025 at 02:03:02AM -0700, Eric Biggers wrote:
-> > On Sun, Aug 10, 2025 at 10:47:32AM +0200, Christian Brauner wrote:
-> > > On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
-> > > > This is a cleaned-up implementation of moving the i_crypt_info and
-> > > > i_verity_info pointers out of 'struct inode' and into the fs-specific
-> > > > part of the inode, as proposed previously by Christian at
-> > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > > > 
-> > > > The high-level concept is still the same: fs/crypto/ and fs/verity/
-> > > > locate the pointer by adding an offset to the address of struct inode.
-> > > > The offset is retrieved from fscrypt_operations or fsverity_operations.
-> > > > 
-> > > > I've cleaned up a lot of the details, including:
-> > > > - Grouped changes into patches differently
-> > > > - Rewrote commit messages and comments to be clearer
-> > > > - Adjusted code formatting to be consistent with existing code
-> > > > - Removed unneeded #ifdefs
-> > > > - Improved choice and location of VFS_WARN_ON_ONCE() statements
-> > > > - Added missing kerneldoc for ubifs_inode::i_crypt_info
-> > > > - Moved field initialization to init_once functions when they exist
-> > > > - Improved ceph offset calculation and removed unneeded static_asserts
-> > > > - fsverity_get_info() now checks IS_VERITY() instead of v_ops
-> > > > - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
-> > > >   no longer think it's actually correct there.
-> > > > - verity_data_blocks() now keeps doing a raw dereference
-> > > > - Dropped fscrypt_set_inode_info() 
-> > > > - Renamed some functions
-> > > > - Do offset calculation using int, so we don't rely on unsigned overflow
-> > > > - And more.
-> > > > 
-> > > > For v4 and earlier, see
-> > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > > > 
-> > > > I'd like to take this series through the fscrypt tree for 6.18.
-> > > > (fsverity normally has a separate tree, but by choosing just one tree
-> > > > for this, we'll avoid conflicts in some places.)
-> > > 
-> > > Woh woh. First, I had a cleaned up version ready for v6.18 so if you
-> > > plan on taking over someone's series and resend then maybe ask the
-> > > author first whether that's ok or not. I haven't seen you do that. You
-> > > just caused duplicated work for no reason.
-> > 
-> > Ah, sorry about that.  When I started looking at it again yesterday
-> > there turned out to be way too many cleanups and fixes I wanted to make
-> > (beyond the comments I gave earlier), and I hadn't seen activity from
-> > you on it in a while.  So I figured it would be easier to just send a
-> > series myself.  But I should have asked you first, sorry.
-> 
-> So I started working on this pretty much right away. And I had planned
-> on sending it out rather soon but then thought to better wait for -rc1
-> to be released because I saw you had a bunch of crypto changes in for
-> -rc1 that would've caused merge conflicts. It's no big deal overall but
-> I just don't like that I wasted massaging all that stuff. So next time a
-> heads-up would be nice. Thank you!
+Hi Miquel,
 
-I just pulled the series and now I see that you also changed the
-authorship of every single patch in the series from me to you and put my
-Co-developed-by in there.
+on the weekend I was able to hack together a very basic working version of 
+the Realtek ECC engine. See https://github.com/openwrt/openwrt/pull/19746
+Until now I was only focused on the devices that are available for testing 
+(Linksys LGS328C & LGS352C). Driver can now handle exactly the identified 
+data layout:
 
-I mean I acknowledge that there's changes between the branches and
-there's some function renaming but it's not to the point where
-authorship should be changed. And if you think that's necessary than it
-would be something you would want to talk to me about first.
+- 2048 bytes data (4*512 bytes)
+- 64 bytes OOB consisting of
+  - 4*6 bytes tag
+  - 4*10 bytes ECC
 
-I don't care about the stats but it was always hugely frustrating to me
-when I started kernel development when senior kernel developers waltzed
-in and thought they'd just take things over so I try very hard to not do
-that unless this is agreed upon first.
+There are two things I do not yet understand:
 
-> > > And second general infrastructure changes that touch multiple fses and
-> > > generic fs infrastructure I very much want to go through VFS trees.
-> > > We'll simply use a shared tree.
-> > 
-> > So you'd like to discontinue the fscrypt and fsverity trees?  That's
-> > what they are for: general infrastructure shared by multiple
-> > filesystems.  Or is this comment just for this series in particular,
-> > presumably because it touches 'struct inode'?
-> 
-> My comment just applies this series. I'm not here to take away your
-> trees ofc unless you would like to have them go through the VFS batch.
-> That's something that some people like Amir have started doing.
-> 
-> I'll put the series into vfs-6.17.inode and push it out then you can
-> base any additional changes on top of that. I'll not touch it unless you
-> tell me to. Linus knows that VFS trees often have work that is used as
-> the base for other trees so he will merge VFS trees before any of the
-> smaller trees and I always mention this to him.
+1. Interaction between request handling and mtd_ooblayout_ops. For now I 
+simply take the request data & oob buffers and put data where it "seems"
+right.
+
+2. The hardware does a lot of good things. It returns ok/errors/bitflips
+and I can simply pass them back. But how do I tell the upper layers that
+4 bitflips are getting close to the 6 bits the engine can handle. Is it
+in the driver or DTS? That currently reads.
+
+soc: soc {
+	compatible = "simple-bus";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	ranges = <0x0 0x18000000 0x20000>;
+
+	ecc0: ecc@1a600 {
+		status = "okay";
+		compatible = "realtek,nand-ecc-engine";
+		reg = <0x1a600 0x54>;
+	};	
+
+	snand: spi@1a400 {
+		compatible = "realtek,rtl9301-snand";
+		reg = <0x1a400 0x44>;
+		interrupt-parent = <&intc>;
+		interrupts = <19 2>;
+		clocks = <&lx_clk>;
+		#address-cells = <1>;
+		#size-cells = <0>;	
+		status = "okay";
+
+		flash@0 {
+			compatible = "spi-nand";
+			reg = <0>;
+			nand-ecc-engine = <&ecc0>;
+			partitions {
+				compatible = "fixed-partitions";
+
+Thanks in advance.
+
+Markus
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
