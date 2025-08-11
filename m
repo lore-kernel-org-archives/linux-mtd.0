@@ -4,107 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDBEEC87FD2
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 07:40:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 595CDCA0EC1
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 07:42:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zfhbo4PTlT6YhSDc2FFMh48t9i2a3lLddkf1CSEU+Co=; b=W8EuB0AlWuIa/r
-	Y9JO1xTpTVoaQMPMDkS52cZga5NfP6WcghV8WDVMDel3aMs7KPgwBX84Bx47JIaneqSF9dReHLMpN
-	ZyaPhJfNYr3zI0HRYs3i14OqFGdmN7RzTZOBZawxCFVlaKA1EmmoPn/5fSmEVM3g8YAXB1RIieDM2
-	s5f/GIGF728JN/yDoHW60++wbdlLeNBCU5bkDtH6Pb+Kc7/OWg3tTQETRTs3SY6GnTaNoOqvny9n/
-	OBgV2PM1dMyyo6mcSsu2gI1ololltn/kCrHpJn1+V1MORhEkE6MGEKKJWI+U7BRXuGsyjt9py5hF1
-	nUBrp1nckgga2Y1oJnXQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=KbO6D70KTUKVn/Ni7SyQVLyhUshwwkOCb+mFL8xL7Mg=; b=jdleSvwgFNhChW
+	dXdgzL9IiLEW95tZ62qJRgCEfNTcVQIWOOywB49ua7Z6p5QjOG4fxo6gI1zszRu7DaEoLymhWgT4b
+	/JRZjaHL/s1VY8e3K/4jKZTvopC5ierrJexjUeay4T8piPFikmh9PeYtoW45w9zk8QhOQcyxfRVK5
+	PijsU/5JD+Pcay3S1Qm8L3StgzuGcKfQmNbocql0OvWtmvYRqsTHTYqV0YC2YtmLCXpaPNvD0/oQ3
+	KoLftdgoXU+KhHDmVhmIvkQBPEoY9h4g2LRoiq9tfxfYQXdZYuWDyBal1ulmlpmnnxTeqBSs3aEt0
+	y652C9hRwKWaB0Wqlsdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulN8g-00000006jTm-3Xka;
-	Mon, 11 Aug 2025 07:40:14 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1ulNBG-00000006jrG-0tjh;
+	Mon, 11 Aug 2025 07:42:54 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulN1S-00000006iSv-0jc3
+	id 1ulN9K-00000006jgm-1ZoP
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Aug 2025 07:32:46 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8FBAA601D7;
-	Mon, 11 Aug 2025 07:32:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87832C4CEF1;
-	Mon, 11 Aug 2025 07:32:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754897565;
-	bh=AoVPEwayh/Oz3pK2Pi3/6ljDqWNPYnk8dyLRcATD1bs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hvFQckAv0CrfwELpmtbws5Fns1ZMdnfZKkJlLqGdokVFDnYoVhw5JNUx/bbDyeo1f
-	 9zwKVqQxhzmCJxpvmVECBf+jFo3xlrkN8JOWHnVm690r91XZmWD++5CfsWmaVNyPHr
-	 VVdX/kFOTto0OccWfgwSQuJq63nNWmkTHdW269tcY2DzUAkrzA3h9Z9HriwSGzXax8
-	 uMKz4KLi1fcYHpGNze9Rf2eo/2qCtNGiX+6zLjWxC0TZw3Dx0ZNy6K3Cn813oxifgZ
-	 aYwnsuD/X4oXAQiLp7vEgoEU3Kv83POfopJ5mLMPd5JwYDggOFlerFCnHpJp+ZufDW
-	 +tA9SXvUU7Bqg==
-Message-ID: <208c1e34-85b4-47d7-a4d3-8b8b7f2caa84@kernel.org>
-Date: Mon, 11 Aug 2025 09:32:39 +0200
+	Mon, 11 Aug 2025 07:40:55 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3b78d337dd9so2434395f8f.3
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2025 00:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754898053; x=1755502853; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ePuwivgJ8JPPoQeHPtBDqnWEaCRKjfjwhGiq9Y/F6l0=;
+        b=RFuv3OmPH5P9k3QEa0v4tfUqDozTtTzBXgwy+tHnZg3D4B8+dZrcR+21BxaLghs2cY
+         iXMwHSjbuIEkEY0VwCU1qjMV0yIj5/vgoQb+oI77U2iFTQ0vq7NAeTvyOQuvJweGJnls
+         /QDPnz0ky9KxHcOOECgdVJWkrYpLmpwbjxdPAlojUSszCT74ulZ3ZolDdOkjlMMXbGvS
+         0F4yhT/CBR5g3QBys/kqfMVWEInLxFMBx3LkiFhnibFY6qz4EPHj5rvtXKSUy3Z5/6Rq
+         oXGDlaJkxOWXj0BYpSUFqTFAmvyjKeCV4CI0lr1dcFGLDejKRjNTOJcGCauWT/Y0pYUz
+         I3Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754898053; x=1755502853;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ePuwivgJ8JPPoQeHPtBDqnWEaCRKjfjwhGiq9Y/F6l0=;
+        b=FbetfZUE6x+RWH1FoKv0BkudXhGefyhLc820Xiar0bt93wYpGLSNZqt/4oFMM/a9zm
+         WA4cYteZvaVdSFd6C+QRdRXNUdJwmyeMKOyi4YkNOAE3yDOVfzNjPcxaZmANk5D6iWXW
+         7Lr9Kycr7+dCw/m3jynd2k+atZXsiLwBWXsppXy9gEbpTJ+/dMj9YoCfzpgKeBzER5Ik
+         aaCTn7RydbGtJwiyD1JB882YrR4bbfr9q5ExF4y79WOwreWdF3Hl3CzSVFLC28BXvqp6
+         4qu5yH5o2uRxizpooiLjTw3wMeAmxTYqmedL9p1gTclRpew9ag8xFIMH20xY4/XUUIKa
+         YzWg==
+X-Gm-Message-State: AOJu0YzfWNyIlTOPHwaAlezc7qC/vctZITryv1dprs2loyn3X+BizMei
+	CSgkKrSMA5q/tsGA+whNKzocN+mPy/6cZCb0ZDHyVsiYmoG9sfFM/h6M
+X-Gm-Gg: ASbGnctVtUigUaV0alAuJKdwNGf1D+J4J7aKBJvNpc/Hrxd0bORx/b8fO/gMgSavj2d
+	Le0JwacNiap+cQp0I1ovMxLwZ7sbyq1cIfV5NiUijjiWD4IKTwGN0Vp9AgFIXqeUu6t9djD04e3
+	rI0bt7Ih22rH5X1knFeJeK2IBXlBlBs3iX8WXyg5sFgJRt1ECOoCJITzRRCmHk9GnDc14LNuhjl
+	1iYYUIsfTFPjHnne408wmgWEgCGQ9sC18emPgt1z01mT7REupYZPwJFLaatDWLgLKLyO4nq7BW+
+	M/1vkS3nQb0nFioH+IvwOKF5LQiYAq7fnNSJpSGdri/FFXVpU6kSf4j39NEtzcoATQC8fQpFcAf
+	1YulUQAYR2BbBbywy/BhmqBqTWu1oGnLYU28gTg7WnAz1ajLZgIE=
+X-Google-Smtp-Source: AGHT+IGHW6soSQokYYfZ1NuKLnkmHtvqgyJ6V1fhXaVhfGmx5+0IpuwlOprnqhm/EzfBt/uZyHcGtw==
+X-Received: by 2002:adf:ef8d:0:b0:3b7:930a:bb0d with SMTP id ffacd0b85a97d-3b900b2d93fmr6903262f8f.20.1754898052701;
+        Mon, 11 Aug 2025 00:40:52 -0700 (PDT)
+Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-3b79c3bf970sm39380181f8f.25.2025.08.11.00.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Aug 2025 00:40:52 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Mon, 11 Aug 2025 09:40:40 +0200
+Subject: [PATCH v2] mtd: nand: qpic-common: remove a bunch of unused
+ defines
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/8] dt-bindings: mtd: loongson,ls1b-nand-controller:
- Document the Loongson-2K0500 NAND controller
-To: Binbin Zhou <zhoubinbin@loongson.cn>, Binbin Zhou
- <zhoubb.aaron@gmail.com>, Huacai Chen <chenhuacai@loongson.cn>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Keguang Zhang <keguang.zhang@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+Message-Id: <20250811-qpic_common-unused-defines-v2-1-cfc5aea03a93@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAHeemWgC/42NUQ7CIBBEr9Lst2sKSrV+eQ/TGIS13cRCBUs0D
+ XcXewI/38zkzQKRAlOEU7VAoMSRvSsgNxWYQbuekG1hkLVUdSMbfE5srsaPo3c4uzmSRUt3dhR
+ RNJJUq29klYUimEIp3qv80hUeOL58+KxfSfzSv7RJoEDaCdOSrA97czz3o+bHtqyhyzl/AZ4UP
+ H3EAAAA
+X-Change-ID: 20250626-qpic_common-unused-defines-162e59abed5d
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Huacai Chen <chenhuacai@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
- loongarch@lists.linux.dev, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, "Rob Herring (Arm)" <robh@kernel.org>
-References: <cover.1754890670.git.zhoubinbin@loongson.cn>
- <a6b216e6726edc00a910ba543ef8f7a9195b94f7.1754890670.git.zhoubinbin@loongson.cn>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <a6b216e6726edc00a910ba543ef8f7a9195b94f7.1754890670.git.zhoubinbin@loongson.cn>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.2
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250811_004054_419122_63C743A4 
+X-CRM114-Status: GOOD (  10.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,17 +102,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 11/08/2025 08:03, Binbin Zhou wrote:
-> Add new compatible for the Loongson-2K NAND controller used for
-> Loongson-2K0500 SoC.
-> 
-> Acked-by: "Rob Herring (Arm)" <robh@kernel.org>
+A bunch of definitions in the 'nand-qpic-common.h' header became
+unused after the conversion of the 'qcom_nandc' and 'spi-qpic-snand'
+drivers to use the FIELD_PREP() macro, so remove those.
 
+No functional changes.
 
-Why do you add quotes?
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+Changes in v2:
+  - rebase on v6.17-rc1
+  - Link to v1: https://lore.kernel.org/r/20250626-qpic_common-unused-defines-v1-1-e31c9e2074c8@gmail.com
+---
+ include/linux/mtd/nand-qpic-common.h | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nand-qpic-common.h
+index 4e694b1aabbd389b5d663399e8d1451862debb6d..e8201d1b7cf9d0f0a5a0e07bd600362b3f0f1f67 100644
+--- a/include/linux/mtd/nand-qpic-common.h
++++ b/include/linux/mtd/nand-qpic-common.h
+@@ -71,14 +71,10 @@
+ 
+ /* NAND_DEVn_CFG0 bits */
+ #define	DISABLE_STATUS_AFTER_WRITE	BIT(4)
+-#define	CW_PER_PAGE			6
+ #define	CW_PER_PAGE_MASK		GENMASK(8, 6)
+-#define	UD_SIZE_BYTES			9
+ #define	UD_SIZE_BYTES_MASK		GENMASK(18, 9)
+ #define	ECC_PARITY_SIZE_BYTES_RS	GENMASK(22, 19)
+-#define	SPARE_SIZE_BYTES		23
+ #define	SPARE_SIZE_BYTES_MASK		GENMASK(26, 23)
+-#define	NUM_ADDR_CYCLES			27
+ #define	NUM_ADDR_CYCLES_MASK		GENMASK(29, 27)
+ #define	STATUS_BFR_READ			BIT(30)
+ #define	SET_RD_MODE_AFTER_STATUS	BIT(31)
+@@ -86,26 +82,20 @@
+ /* NAND_DEVn_CFG0 bits */
+ #define	DEV0_CFG1_ECC_DISABLE		BIT(0)
+ #define	WIDE_FLASH			BIT(1)
+-#define	NAND_RECOVERY_CYCLES		2
+ #define	NAND_RECOVERY_CYCLES_MASK	GENMASK(4, 2)
+ #define	CS_ACTIVE_BSY			BIT(5)
+-#define	BAD_BLOCK_BYTE_NUM		6
+ #define	BAD_BLOCK_BYTE_NUM_MASK		GENMASK(15, 6)
+ #define	BAD_BLOCK_IN_SPARE_AREA		BIT(16)
+-#define	WR_RD_BSY_GAP			17
+ #define	WR_RD_BSY_GAP_MASK		GENMASK(22, 17)
+ #define	ENABLE_BCH_ECC			BIT(27)
+ 
+ /* NAND_DEV0_ECC_CFG bits */
+ #define	ECC_CFG_ECC_DISABLE		BIT(0)
+ #define	ECC_SW_RESET			BIT(1)
+-#define	ECC_MODE			4
+ #define	ECC_MODE_MASK			GENMASK(5, 4)
+ #define	ECC_MODE_4BIT			0
+ #define	ECC_MODE_8BIT			1
+-#define	ECC_PARITY_SIZE_BYTES_BCH	8
+ #define	ECC_PARITY_SIZE_BYTES_BCH_MASK	GENMASK(12, 8)
+-#define	ECC_NUM_DATA_BYTES		16
+ #define	ECC_NUM_DATA_BYTES_MASK		GENMASK(25, 16)
+ #define	ECC_FORCE_CLK_OPEN		BIT(30)
+ 
+@@ -120,7 +110,6 @@
+ #define	SEQ_READ_START_VLD		BIT(4)
+ 
+ /* NAND_EBI2_ECC_BUF_CFG bits */
+-#define	NUM_STEPS			0
+ #define	NUM_STEPS_MASK			GENMASK(9, 0)
+ 
+ /* NAND_ERASED_CW_DETECT_CFG bits */
+@@ -141,11 +130,8 @@
+ #define	ERASED_CW			(CODEWORD_ALL_ERASED | CODEWORD_ERASED)
+ 
+ /* NAND_READ_LOCATION_n bits */
+-#define READ_LOCATION_OFFSET		0
+ #define READ_LOCATION_OFFSET_MASK	GENMASK(9, 0)
+-#define READ_LOCATION_SIZE		16
+ #define READ_LOCATION_SIZE_MASK		GENMASK(25, 16)
+-#define READ_LOCATION_LAST		31
+ #define READ_LOCATION_LAST_MASK		BIT(31)
+ 
+ /* Version Mask */
+
+---
+base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+change-id: 20250626-qpic_common-unused-defines-162e59abed5d
 
 Best regards,
-Krzysztof
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
