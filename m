@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12BB4CA0ED1
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 19:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66EC9CA0EDB
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Aug 2025 22:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lYEK5L2IMeyrv7ludKg0Zugjj7Z/jRZluBJJ8H3kCiM=; b=hSVnti8bp9WCoX
-	FLIRqF0f3W45FI4XwpUSAV5bxJ1266LnXDAzXGI9P9FkNbapdiqno2T/iduPoi+uAIVCrnIUmzd3M
-	MuksLwZYcXPpMOPEbvnSoI2tZeW0Q1qRjVNzrHaAH1VztgGwKNcmmY4Y+1bvsnnlgnGXp9dljnflN
-	cV3uGbbuLsbcNdSIVL6jRw31R6LBhHrfFd+ns5q1dWKNJ5mlg+oAQ9xWqL7lDMAQqKRas6RSFcCHP
-	+/YTeonmpaV+xT+qLJZBtLb49xCj+UVm8nhCzlEmaqwfJah9C4Gqg3a9hN1vfJ1ROIVTlJKOBQo1J
-	+/6IsDsqN/2RosQygowA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=FU5iytd3fiGCAsJS6gjLV3vXdZreJSbn4kx02pLAESo=; b=MvKl25iism2TKg
+	ohEdDV9eqxAp0M6+fZ5s3glIwXfcnT4J4rCjiU9V+olrpMggSbECu9jOgJlNpDxV5GWkmngcWQsoz
+	M3U1Gxde//pytg7HgJpm26yJhqKDM0WvjkV3nCUmV1VM7v5/7sIjHgXa2NSEsav5rstaxxf6Rt9FN
+	juC5GQZaC5QnMbtYemNaClmQtGwVglzYCjj2xRwdHKiz/7jxee66cfhfNOo245NCe1/3wZZ0ypuLG
+	XfQNzfMcLPfKN+NlXuToKx4N3542HKLqFm5nP/3CW1CiwU5skS8ZfoyHINalXqQAzIDKLbFW0Y2eX
+	CX6JU5y1Wg0YolP7FuuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulYP3-00000008xDI-36ud;
-	Mon, 11 Aug 2025 19:41:53 +0000
-Received: from layka.disroot.org ([178.21.23.139])
+	id 1ulad2-00000009DJk-34Hq;
+	Mon, 11 Aug 2025 22:04:28 +0000
+Received: from fllvem-ot04.ext.ti.com ([198.47.19.246])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulWy5-00000008iFb-1VFe
+	id 1ulYGY-00000008vy5-46K0
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Aug 2025 18:09:59 +0000
-Received: from mail01.disroot.lan (localhost [127.0.0.1])
-	by disroot.org (Postfix) with ESMTP id 669D122D9F;
-	Mon, 11 Aug 2025 20:09:54 +0200 (CEST)
-X-Virus-Scanned: SPAM Filter at disroot.org
-Received: from layka.disroot.org ([127.0.0.1])
- by localhost (disroot.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id eLziFljdYo3b; Mon, 11 Aug 2025 20:09:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=disroot.org; s=mail;
-	t=1754935793; bh=IHfWofOH+O8x7iEleneRbecji0kLTS0PrMQu3tYrRws=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=XPD/ANhgW9xWWTr4p+xWiPkL5CU9ohz8GwQIi0EKiAQOwkZOxWoZGbq/6ydmL3fYk
-	 tRJQ6qyoq9mbBlqh0+sNevKPhCuAS0+D4xc5g+gqt2ol4dv4RuWc4F9GGcytrizENA
-	 47wdzaLjJi6/ThRQEKxVUlyWBv/Hxsg5RwUyRT/1rsqDNRbpIcEfY8SBZCCZkIZIK2
-	 3Pto6QtDaCXcpdeaSQBqmP3ySp2unP9RcRmelgtT2Ih1AJoQvMODaO7ezwazBrJPFQ
-	 gCtlM6g71MbHBbBi8InA+blfhNRg7xrYrVM+1DoCnCD8msEgk5ADA5UKDWBPdZ9UMg
-	 9j83PhPZt+EUA==
-Date: Mon, 11 Aug 2025 18:09:45 +0000
-From: Yao Zi <ziyao@disroot.org>
-To: Binbin Zhou <zhoubinbin@loongson.cn>,
-	Binbin Zhou <zhoubb.aaron@gmail.com>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Keguang Zhang <keguang.zhang@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Huacai Chen <chenhuacai@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-	loongarch@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 6/8] mtd: rawnand: loongson: Add Loongson-2K0500 NAND
- controller support
-Message-ID: <aJox6R9eCZ5vSc7H@pie>
-References: <cover.1754890670.git.zhoubinbin@loongson.cn>
- <89732d64415077ecd9f74c5853c542e62c0dfe26.1754890670.git.zhoubinbin@loongson.cn>
+	Mon, 11 Aug 2025 19:33:08 +0000
+Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
+	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57BJWwlT1609347;
+	Mon, 11 Aug 2025 14:32:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1754940778;
+	bh=G8Kby90UsAQLrUgV/PU9XSM9vV3CObRxk/OXLyHe7pE=;
+	h=From:To:CC:Subject:Date;
+	b=IZbqyB/co7KVIMDsC1EMUvqYsAfI/RRV6N6jrQ9UrFmffhH3TTo721azBc43WVwxC
+	 FFWwvdeRS1ZZv2U4I/t6IoWukJqvb0p1cGSJgm08iQYTIsDdr39g2W8Zn8h9x9mHQN
+	 a9KsLq3oMqEvhlt6OQAENHs7mdlEI2y1ZyCJXr3c=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57BJWvjS3895668
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Mon, 11 Aug 2025 14:32:57 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 11
+ Aug 2025 14:32:57 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Mon, 11 Aug 2025 14:32:57 -0500
+Received: from santhoshkumark.dhcp.ti.com (santhoshkumark.dhcp.ti.com [172.24.233.254])
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57BJWq1n3690681;
+	Mon, 11 Aug 2025 14:32:53 -0500
+From: Santhosh Kumar K <s-k6@ti.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <broonie@kernel.org>, <tudor.ambarus@linaro.org>,
+        <pratyush@kernel.org>, <mwalle@kernel.org>, <p-mantena@ti.com>
+CC: <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <s-k6@ti.com>, <a-dutta@ti.com>,
+        <u-kumar1@ti.com>, <praneeth@ti.com>
+Subject: [RFC PATCH 00/10] SPINAND PHY Tuning Series
+Date: Tue, 12 Aug 2025 01:02:09 +0530
+Message-ID: <20250811193219.731851-1-s-k6@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <89732d64415077ecd9f74c5853c542e62c0dfe26.1754890670.git.zhoubinbin@loongson.cn>
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250811_110957_703612_6B3C9534 
-X-CRM114-Status: GOOD (  16.16  )
+X-CRM114-CacheID: sfid-20250811_123307_222765_6920C82D 
+X-CRM114-Status: GOOD (  13.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,43 +84,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 11, 2025 at 02:03:13PM +0800, Binbin Zhou wrote:
-> The Loongson-2K0500 NAND controller is similar to the Loongson-1C.
-> 
-> It supports a maximum capacity of 16GB FLASH per chip with a maximum
-> page size of 8KB, and it supports up to 4 chip selects and 4 RDY
-> signals.
-> 
-> Its DMA controller is defaulted to APBDMA0.
-> 
-> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> ---
->  drivers/mtd/nand/raw/Kconfig                  |  2 +-
->  .../mtd/nand/raw/loongson-nand-controller.c   | 55 ++++++++++++++++++-
->  2 files changed, 54 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index d9e3f13666ac..7b0c5d06aa95 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -464,7 +464,7 @@ config MTD_NAND_NUVOTON_MA35
->  
->  config MTD_NAND_LOONGSON
->  	tristate "Loongson NAND controller"
-> -	depends on LOONGSON1_APB_DMA || COMPILE_TEST
-> +	depends on LOONGSON1_APB_DMA || LOONGSON2_APB_DMA || COMPILE_TEST
+High-speed operation of certain SPI NAND/NOR controllers, such as the
+Cadence OSPI controller, requires execution of a PHY tuning sequence
+after switching the device to the appropriate mode (SDR or DDR).
+Without PHY, the controller in SDR mode can operate only at one-fourth
+of the reference clock. This series introduces an SDR-based PHY tuning
+procedure to enable higher-speed operation in SDR mode.
 
-Why is this dependency necessary? I think the DMA operations are done
-through DMAengine API, and thus the consumer decouples with the DMA
-provider. If so, I think the depends line should be removed, instead of
-extended.
+A new _execute_tuning() hook is added to the mtd_info structure for
+each MTD device. This hook is invoked when a flash partition named
+'ospi.phypattern' is detected. The flash-specific _execute_tuning()
+implementation retrieves the PHY tuning parameters-such as the
+pre-defined tuning pattern and its size-and uses them to perform a
+readback/compare operation against the known pre-flashed data in
+'ospi.phypattern' as part of the tuning process.
 
-Regards,
-Yao Zi
+From the flash driver, spi_mem_execute_tuning() is called with an
+appropriate read_op. This function invokes cqspi_execute_tuning(),
+which contains the PHY tuning algorithm. These APIs are flash-agnostic,
+relying only on the correct read_op being passed. DDR mode tuning with
+DQS support will be implemented in a future series.
 
->  	select REGMAP_MMIO
->  	help
->  	  Enables support for NAND controller on Loongson family chips.
+In the NOR driver, _execute_tuning() follows the same approach of
+pre-flashing a known pattern into the target partition and reading it
+back during tuning. For NAND flashes, the tuning pattern can be written
+directly to the cache via write_to_cache() and subsequently read back
+using read_from_cache() during the tuning procedure. This support will
+be added in a later phase.
+
+At present, the series does not implement fallback handling for tuning
+failures (e.g., reducing maximum frequency or adjusting dummy cycles).
+Future enhancements will add fallback mechanisms to select a lower
+operating frequency and optimal dummy cycle configuration.
+
+Device Tree updates required for this functionality will be submitted
+in a separate patch series after this one is merged.
+
+This series was tested on TI's AM62A SK with W35N01JW OSPI NAND flash.
+The read and write throughput with and without PHY:
+
+Without PHY:
+     READ: 7.1 MB/s
+     WRITE: 6 MB/s
+     
+Wth PHY:
+     READ: 35.1 MB/s
+     WRITE: 9.2 MB/s
+     
+Repo: https://github.com/santhosh21/linux/commits/spinand_phy_rfc_v1
+Test log: https://gist.github.com/santhosh21/d2d52cc03d2423200971b0ab9c3b9365
+
+Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+
+Pratyush Yadav (2):
+  spi: spi-mem: Introduce support for tuning controller
+  spi: cadence-quadspi: Enable PHY for aligned DAC reads
+
+Santhosh Kumar K (8):
+  spi: spi-mem: Define spi_mem_tuning_params and
+    spi_mem_get_tuning_params()
+  mtd: nand: spi: Introduce _execute_tuning for mtd devices
+  mtd: mtdcore: Call mtd_execute_tuning during mtd_register
+  spi: cadence-quadspi: Move cqspi_readdata_capture() above all
+    operations
+  spi: cadence-quadspi: Use BIT() macro for CQSPI_REG_READCAPTURE_BYPASS
+  spi: cadence-quadspi: Enable PHY for data writes
+  spi: cadence-quadspi: Implement PHY for higher frequencies in SDR mode
+  spi: cadence-quadspi: Define cqspi_get_tuning_params()
+
+ drivers/mtd/mtdcore.c             |  19 +
+ drivers/mtd/mtdcore.h             |   1 +
+ drivers/mtd/nand/spi/core.c       |  61 +++
+ drivers/spi/spi-cadence-quadspi.c | 727 ++++++++++++++++++++++++++++--
+ drivers/spi/spi-mem.c             |  22 +
+ include/linux/mtd/mtd.h           |   1 +
+ include/linux/spi/spi-mem.h       |  23 +
+ 7 files changed, 823 insertions(+), 31 deletions(-)
+
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
