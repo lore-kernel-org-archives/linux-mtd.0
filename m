@@ -4,61 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EA92CA0EC4
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Aug 2025 17:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A65BCA0EDC
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Aug 2025 02:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=posWeWOF5+W3/7NBrKSQNGABzcLW+nKAsILIdtL+1r8=; b=tlcUEU1iVybK/M
-	ZsqSgDRG/TZ2P0hFVpUgegp78Z/X1pcwK33Vvrf8Y4WLW3wKUoX/o++zgMNunx7+RjB51QbK5tTcO
-	VDjkCIC8j5dLjhLl5m4UJsI0SrQATBHkGiZNsdR+UDG7wg92gXh52EHMv5zsSC0M/eJWpq+ptXicS
-	LHyL7yvWN26PvQSwCUr35t9gQyTH85dW5SLSEehY8GUzHnvnsXWvTY1KwACqy3GQ9WGgRzbDrPqoZ
-	PWN1GhD/bi2XtNmVj0xXv5OPXOG8H66j9dRgug/JqhhGesexD9tdE/VixDFTc3VhaBDea9U/zf5ho
-	pOJksSQgJQB1itwLFS/A==;
+	List-Owner; bh=zRvqsUnsqMgSUsGDz7yxK+E7syhl3p16iJAbTQ22xaI=; b=A5l1jXBWOkELIk
+	f1hS30w8xQgal2W8KhDtu8kpJOxYN9t+p6aanTfjyveeNcoJ65DN3RcSDMRTFsy8IRB2Jmys+0Oig
+	fYQgUSz9ujUcMRH5MVpnqM6umwDoR0Z6tPsfYLlOVNWQD+vRvf6SzW5NIVvJnnWBqwFqeuglw17KR
+	uVaNUw1yfSBGY0n3NoDIwbaqYUbQgX0zehZuaHyuH9Z7tcXCRCwaIohcBa599mVdYKa5kX034kVMj
+	/4aEUx9VXkLb+rgmNFyRhqfjV7DZM6G5+iVRsxzNHw/0PjqckyYMvxFVH+j1U1qK0rGQzloTRrGDv
+	NtVgQhk58VmQHnFMyxqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ultDK-0000000Beav-3I0J;
-	Tue, 12 Aug 2025 17:55:10 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1um1Z7-0000000CS3D-0mOs;
+	Wed, 13 Aug 2025 02:50:13 +0000
+Received: from mail-westeuropeazlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c201::3] helo=AS8PR04CU009.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulpyI-0000000B3ai-0gwk
+	id 1um1Z4-0000000CS2E-0AOk
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Aug 2025 14:27:27 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 5EC62A57453;
-	Tue, 12 Aug 2025 14:27:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC82C4CEF0;
-	Tue, 12 Aug 2025 14:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755008845;
-	bh=gGOsuk0HqUZbPceh/FWXdNxVmPI/yvGvzEJu131frTQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=eJzPEmUrzBGHVSCIlbMboucTSpN5nLL7GEONgzk+6njRLg+nzdgohDQvV1TzOwGHr
-	 FfoKn59lZKsUS3prmSbuKxMsQvnRu3JYthTrsK7nF/TbiY0O5kz4DgX9f0OANXDAiu
-	 00Rs9GOBaaRS/Crf0goWbzYhCyOJ8BBAmOWLUuLFjjftYRdP8HlvMoJ0SC8HkeND0g
-	 ChYgZ913s/z+UBOwnFA2e4XLaugXSI2r7mkNQnQ83/2So/2phJ3Oi3+NYNzANAoFQ1
-	 z6UT8/YPSUjvPAxWETe0QhNQVfFDD3AyZULyFSoum6X8VaYrcVi7s1IwxiugSDKlkK
-	 c7+hn9rFh9Mww==
-From: Mark Brown <broonie@kernel.org>
-To: Gabor Juhos <j4g8y7@gmail.com>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20250810-qpic-snand-qpic_ecc-cleanup-v1-0-33a6b2bcbc67@gmail.com>
-References: <20250810-qpic-snand-qpic_ecc-cleanup-v1-0-33a6b2bcbc67@gmail.com>
-Subject: Re: [PATCH 0/2] spi: spi-qpic-snand: cleanup 'qpic_ecc' structure
-Message-Id: <175500884282.87496.16520963986341546507.b4-ty@kernel.org>
-Date: Tue, 12 Aug 2025 15:27:22 +0100
+	Wed, 13 Aug 2025 02:50:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=TRqCBiK8SpSccZp7N8yDDMdqE8364OMLffaeuDZZRIYo7LzbLtKDwJY3OZHNuvEEG+Ao/apw8/7pT+ABCIX3vqYJ9qCuNNlrFoXF+wLqSfCy7T3ZJe6Ksae93hlGL7ocGd5m8b9KT4t/voOdaTcJrBVwF9dxVQzapVSRghzOQfpUQfMCWamQ3hGV72J4wMWKC4oLCm/l9tYGJ9fke7bmpOy2TMI9n50ljvhfemNpyeCLELTk5Od5f3BtBJuRg4K9xKrqszj5BW4Q8IXbVvVhEz4+iRz+SdiLQJYoxV7um57VwcjlELfH0TREf1J+PW8RS2bSA+5HPo1vjr+OigXYnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=T9pYJl2lJ/zr0kSjwNp13SOZTEyXFtHiQ+v7wm8y9tE=;
+ b=HQ4kwT33dcDHpR51vPnmiX7oLGi3oQkJv/tBCbL0T9exTDqkb8Wj+XZnLHqGHCGqHX480bQQ3rfblYPpUotWW9+HMQty4tvEisvcAzDrjxiJRV6UXVmjVxCYjXbvw3MsBVuF6dmJHI13eFjkmHQ/m5wv5/7+WZdL50QNFvlzNKjkT1T75chr3Y3mtZ2E1lOBsHLD+02t1/YcUKgDBwE9MwR+x7W9qqezhpiJDHZkSfAtBIyB/Z6itcjK86aW/ff0vg8lV0sD+g1gbsjBZZBGO4SlmgPO71b6GVgBFlNootaqZ5k/cRkHD7Chx1MSpHEvJc9jA+/5Pokxz+p8R8o55Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T9pYJl2lJ/zr0kSjwNp13SOZTEyXFtHiQ+v7wm8y9tE=;
+ b=PZtt9rCTx7LplKfHn8SY8aXFebAJbN2L34mwl2OY2xXW2QxRy9zNtZH/SbbYuzV6c1wm5cl2bYgCbcChW56JrSB2aFqyqvRqwOGTsGpUAreh0XPTNSuIbp3ap8WbDF9nX4KJIsoH6ro5dSk3a25JTz3SRD7R0WpH5vzTIuDiK+SyyypaoyMXoXWK10fmmcr/TtudXoWK6yBsBGJvKZXKru3bQ22PwnY+MxOWO/3lfhiNT4QT+gW7wxu+jQHPZGfC84sjuRREs7ha1npGrhj9iKMKQnoh58Rzfr/BigCsA5EF1YeEqgOP38DSVBJ14d/n+fDJzB5sOm9qcYmAMD1Vkg==
+Received: from PAXPR04MB8574.eurprd04.prod.outlook.com (2603:10a6:102:215::19)
+ by PA4PR04MB7837.eurprd04.prod.outlook.com (2603:10a6:102:ca::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.13; Wed, 13 Aug
+ 2025 02:49:58 +0000
+Received: from PAXPR04MB8574.eurprd04.prod.outlook.com
+ ([fe80::60b6:6a5c:8db3:cce]) by PAXPR04MB8574.eurprd04.prod.outlook.com
+ ([fe80::60b6:6a5c:8db3:cce%7]) with mapi id 15.20.9031.012; Wed, 13 Aug 2025
+ 02:49:58 +0000
+From: Luke Wang <ziniu.wang_1@nxp.com>
+To: "pratyush@kernel.org" <pratyush@kernel.org>, "tudor.ambarus@linaro.org"
+	<tudor.ambarus@linaro.org>, "mwalle@kernel.org" <mwalle@kernel.org>,
+	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bough Chen
+	<haibo.chen@nxp.com>, Han Xu <han.xu@nxp.com>
+Subject: RE: [PATCH v3 2/2] mtd: spi-nor: core: avoid odd length/address
+ writes in 8D-8D-8D mode
+Thread-Topic: [PATCH v3 2/2] mtd: spi-nor: core: avoid odd length/address
+ writes in 8D-8D-8D mode
+Thread-Index: AQHb7+kr6X39dcfaRky9vQ05nZNeZ7RgGcFA
+Date: Wed, 13 Aug 2025 02:49:58 +0000
+Message-ID: <PAXPR04MB85749F748DD87CE41452AEBBED2AA@PAXPR04MB8574.eurprd04.prod.outlook.com>
+References: <20250708091646.292-1-ziniu.wang_1@nxp.com>
+ <20250708091646.292-2-ziniu.wang_1@nxp.com>
+In-Reply-To: <20250708091646.292-2-ziniu.wang_1@nxp.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB8574:EE_|PA4PR04MB7837:EE_
+x-ms-office365-filtering-correlation-id: 0cd914a0-57cd-4ca4-6f1f-08ddda14179d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|19092799006|38070700018|7053199007;
+x-microsoft-antispam-message-info: =?us-ascii?Q?wQyBM8XQKo4RJvOQFnD6SSMuPjAeteuhZbY9+vRWAy5tSMV2vDmFIvbkTxNM?=
+ =?us-ascii?Q?UNFfK4gj9ZEq2w3fDV096la62Z+Uflu8Me+J/MLG2V9vl3XWFITv+a1bwNwU?=
+ =?us-ascii?Q?/wk3JwVcAugpTp+QOmzpt3DJ1xdDTytcrpJu2+yFE+1cNbF4UdDXIWBFznyN?=
+ =?us-ascii?Q?PKDgwZ+P9D86RCoqFctGe/3zlswDqIxa62r8YyaHesEXEDvsmWZi4UHWbTPA?=
+ =?us-ascii?Q?y9fY1Q4Ce+QGYCHG8MP6VjzBECOKC3hWtEJyH6ys77EjJaHTYA+Bwkj13pLR?=
+ =?us-ascii?Q?3Zjk+X5PfARORFNoHqXMFTvVUY+JI4MBWrU1W1t4qhieYQAUF6Jifmkt1tJo?=
+ =?us-ascii?Q?6C+V2OBd8o//2cFHcxkQQK+C5Sp1nrAtGQQciGywoIpJQWic38PgVK2d2sRt?=
+ =?us-ascii?Q?7k5eLgJphMPjF1OtgVzfa1MmUhhutk0qrbNJpE1eqjjEYQToiID8OVOaGMWW?=
+ =?us-ascii?Q?v87kl+pUrdB9M2lbAnRE9f845yLXrvBBxUWi2faULYB+w/q2GyO2TxqhsbQt?=
+ =?us-ascii?Q?1hN7m9I7CTO1oWL47TEYvaox46WhoqrtTOXMihPHPytyHzkRzvFulk2qapZ1?=
+ =?us-ascii?Q?MG9SNWbJ6teczBXJfknAxGClrBU7MWk3/6jFCqdfPIaaRCSHbnI9R3a/3X1Q?=
+ =?us-ascii?Q?otVwoXbzh+dz17Yy79uXcvlb5btr72lryTv8tSCCzmacwiJcHFdWHQ+ySSN6?=
+ =?us-ascii?Q?lV9YiWHVU4CPLOAi1clzcBRorwRGg2vTK61N9SA19fK/0u/ujjBFZWDT6zIx?=
+ =?us-ascii?Q?DWXTvblzg9kO1B9rHbRydM35UuN/DvEtSM+xCl7l7+i8NEK9AK01spoDnRlb?=
+ =?us-ascii?Q?m03E3gqIYTNYU+kn8+VcEB7FK0D7EUDL7BGRwIxmmpyl8rB5s3PXPsHWrFAW?=
+ =?us-ascii?Q?PQNLquhfVnASbZsvS4o1WQR9u8Zz9lhOVYBJbV7TJqY5yT+8OzYKTEfBoi4G?=
+ =?us-ascii?Q?w9jY9NjO9LlBgRRzA4L6GM5xKcss6Heprrh69gXv/F+AVusDqWjTQDxdeYBk?=
+ =?us-ascii?Q?RR5+5W7ikDYIKRy96HhSSIc2oFKhCU9WTMXQxCThczTikF7/sK4o099d1cf5?=
+ =?us-ascii?Q?SMaLl0lqVs3pKTkiymwgHmpJjmSrlVDP30ORFXGzD1rqqwsfYh0PNmYwusWY?=
+ =?us-ascii?Q?AmQB84TuhcZB+xXUqm5A5p9Jxwh3PK0tBmeJT5QKxA1jnI2LI8eKEnJ2Yxla?=
+ =?us-ascii?Q?b5U3fRCDrwq2eda5N4/C9t8LxSFFiNS7abtfYN/p8xx9+NBYqeOVWj/vJyFn?=
+ =?us-ascii?Q?XVQfzqU3rBSAx+z/bU6lpQxXI+I03Wvgl6fsgrPPSVEGeB1D6c+m+sezTZXM?=
+ =?us-ascii?Q?lOEyeM3lExqvJ1h3hfbVVG9yo/Bk7ZfIo4wWjUOuCOrfmO8kpMrwg3Co1Epy?=
+ =?us-ascii?Q?npG9Gjg+MNvlxFWTAlFcTJdU1zPZ6Ljdn7rCSvptmZPzT4aveKTAPpQ1guGb?=
+ =?us-ascii?Q?nOIY23NI9uYkX5g8r9pUd0UmKF8Gd+FY3EhsJ0h8RtDqYtMscnkpfQ=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8574.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(19092799006)(38070700018)(7053199007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?BOSuH5e+ibk27ViIeiwzNo8sqzfMQ0F4Np9lPdWu3avkzjHLi65JjNA0d5aM?=
+ =?us-ascii?Q?mmGhvXgOxqRXG8oAvNMoZGwH3sELeS0rzns2QVdgD5kVONYTeg0zWIsB22Il?=
+ =?us-ascii?Q?NIZ2mbVqSyKOP+DDpomJKaF+8F/7EjYvHgnJn+0oVUBZW0P8k6oH69C8yRb2?=
+ =?us-ascii?Q?p2U75WmNnDAMqqdfsexBHLNruE2XrCD/W9+YXmdTHY2lBNEYIZXyBOm7dkRl?=
+ =?us-ascii?Q?oJUmlqZo7za7+12myCUiPTYal28G7BWCxSbbF1OzeTLQzjZUYF1eKj/KAqh8?=
+ =?us-ascii?Q?9nUDzr8U8YZm5m5DZnk6zaGHs19FSmj4qLfbtSE97Ar7qJXgk6kktEOrzPNO?=
+ =?us-ascii?Q?0CQQiXiE5NPFprSUElSkmJsUMcj5lVi3fb2savQSf8mO3BA8X/ThDDJLOFXY?=
+ =?us-ascii?Q?QU5ruWe424jHveEql1vmh6zuBXFNJa7pGRCdGcdvHVrznY8x8c5uaLqT5EHx?=
+ =?us-ascii?Q?5ajfmGMtjtnzwkMelsqcNw5TUoHxEH7IVwFuGd8sOkZXMuj1UQGd8ZHFP19W?=
+ =?us-ascii?Q?hRjJyrpMRq6wiMzJxH3s4dFWLZJgVGIIJC4n/2gQ2yylnt02YVXPzPcH59L6?=
+ =?us-ascii?Q?lthmHp7OwTKkEIies9bOx69oSp4YPU/GrW74DuuA05o1QFH48XiWn6ivj7gF?=
+ =?us-ascii?Q?2/xuL87RO2RR27GjZFSwp/AxKDHwcJqK2BoidI+hHPjXJ8wPvtZLImKzny4Q?=
+ =?us-ascii?Q?d68q8MqVoqb8nOIKsNqRto7Gh4DMefUUW0PsaYHzZ1DWbPX3/tdO8Pp3Y5nQ?=
+ =?us-ascii?Q?QeJvoX/3HB8n8midi0TGuWYtfLTszHyGBYBsz76GSUjNtS+K1hQTsAkUPyDS?=
+ =?us-ascii?Q?mbylPmLCxDnJupim7YrJGcb4lzgb6OijP1nqJtX0nkriuadQQVS//ceheO84?=
+ =?us-ascii?Q?/ZjlIQ6pW9a7t21lDXlTXOxFzfAIDUiEKQ3sThKKog3BR4uN8zmsZKHEGc7o?=
+ =?us-ascii?Q?OaATVsiaJylPpP2XRPRcvGPYX0nSyeZ7y8uR/el7OucxPrwB03KhEcmjVHSv?=
+ =?us-ascii?Q?gsJFsoAJdN7d2AkDsu6Iu93uyzmvyiRHoGzCHNpj9CpSj91CCAH6M4dPvZvn?=
+ =?us-ascii?Q?h0S+kFamXSgPa3R/Bd9ar9BY9ZvUx847Nf2zcQPj26C4g3amgj8IjNCiJRf4?=
+ =?us-ascii?Q?mOa++zEFnxt9dGGWoLKUv+91Kp1MNBCFaufeOcC/iH1Rxrgu2LcicCtEckSK?=
+ =?us-ascii?Q?+ovyLmr5S1/CI8fSTjsRyCxxeb6fH6MR0gVtnDPYnEZgFl3Ry6r0AkadONIS?=
+ =?us-ascii?Q?yTxRmHkhL71UklZliuikwoiN7EImkUpWcEQemWh85Cf/7xZqZ23uV5BPmh6C?=
+ =?us-ascii?Q?V6vodQjlwYVIrQfD6M08RCwPORCK5/dwHBlHZt4wQVeWm6NTZfljvr03/UT4?=
+ =?us-ascii?Q?0SjajXwd4YSpBQvreklPFJErAMGxkprUDMBr0Dt+i/RfJ0/hziQwbBdVfE2I?=
+ =?us-ascii?Q?AOSnCgNFp6nFOJXpsrroAyLz7gfzV7jowYmyuKcdsj1rLbfH+LOsUIYv5VYn?=
+ =?us-ascii?Q?A+atHVZov+fyjYYcYkOEKXwcyFIPFi+wmFAz0bTYL3cnTOh2APsT2EN+/+rx?=
+ =?us-ascii?Q?n2eDO/H6cJWi2bn3EgAMpAcKJRZrwo8rT/O8Opy1?=
 MIME-Version: 1.0
-X-Mailer: b4 0.15-dev-cff91
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8574.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cd914a0-57cd-4ca4-6f1f-08ddda14179d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Aug 2025 02:49:58.6478
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: A9/QSv6KEFeuVdtHcvJ1simQk5Pnfjp+APF+v3cZiOGUPGKB6qJPkGVbCcIyA3gXE8GpF9VKwXmOdN4riSGJkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7837
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250812_072726_271084_648257F1 
-X-CRM114-Status: GOOD (  13.21  )
+X-CRM114-CacheID: sfid-20250812_195010_113896_8BA2CD75 
+X-CRM114-Status: GOOD (  32.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,43 +165,135 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 10 Aug 2025 16:38:49 +0200, Gabor Juhos wrote:
-> The series consist of two small patches to clean up the qpic_ecc structure
-> in the spi-qpic-snand driver. The first one removes an unused member from
-> the structure, whereas the second reduces code duplication and removes
-> another two members from the same.
-> 
-> 
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/2] spi: spi-qpic-snand: remove unused 'dev' member of struct 'qpic_ecc'
-      commit: fbec18dc9940a89e094bae890b8dc0af00ddc4ff
-[2/2] spi: spi-qpic-snand: remove 'clr*status' members of struct 'qpic_ecc'
-      commit: 6b7e2aa50bdaf88cd4c2a5e2059a7bf32d85a8b1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Gentle ping on this, are there any comments or issues?
 
 Thanks,
-Mark
+Luke
+
+> -----Original Message-----
+> From: Luke Wang
+> Sent: Tuesday, July 8, 2025 5:18 PM
+> To: pratyush@kernel.org; tudor.ambarus@linaro.org; mwalle@kernel.org;
+> miquel.raynal@bootlin.com; richard@nod.at; vigneshr@ti.com
+> Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Bough Chen
+> <haibo.chen@nxp.com>; Han Xu <han.xu@nxp.com>
+> Subject: [PATCH v3 2/2] mtd: spi-nor: core: avoid odd length/address writes in
+> 8D-8D-8D mode
+> 
+> From: Pratyush Yadav <p.yadav@ti.com>
+> 
+> On Octal DTR capable flashes like Micron Xcella the writes cannot start
+> or end at an odd address in Octal DTR mode. Extra 0xff bytes need to be
+> appended or prepended to make sure the start address and end address are
+> even. 0xff is used because on NOR flashes a program operation can only
+> flip bits from 1 to 0, not the other way round. 0 to 1 flip needs to
+> happen via erases.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Luke Wang <ziniu.wang_1@nxp.com>
+> ---
+> Changes in v3:
+> - remove last if (ret < 0) check, as ret always >= 0
+> - remove Micron manufacturers info in comments
+> - change nor->page_size to nor->params->page_size for latest kernel
+> ---
+>  drivers/mtd/spi-nor/core.c | 69
+> +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 68 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 1b594f720b6c..20ea80450f22 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2128,6 +2128,68 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t
+> from, size_t len,
+>  	return ret;
+>  }
+> 
+> +/*
+> + * On Octal DTR capable flashes, writes cannot start or end at an odd address
+> + * in Octal DTR mode. Extra 0xff bytes need to be appended or prepended to
+> + * make sure the start address and end address are even. 0xff is used because
+> + * on NOR flashes a program operation can only flip bits from 1 to 0, not the
+> + * other way round. 0 to 1 flip needs to happen via erases.
+> + */
+> +static int spi_nor_octal_dtr_write(struct spi_nor *nor, loff_t to, size_t len,
+> +				   const u8 *buf)
+> +{
+> +	u8 *tmp_buf;
+> +	size_t bytes_written;
+> +	loff_t start, end;
+> +	int ret;
+> +
+> +	if (IS_ALIGNED(to, 2) && IS_ALIGNED(len, 2))
+> +		return spi_nor_write_data(nor, to, len, buf);
+> +
+> +	tmp_buf = kmalloc(nor->params->page_size, GFP_KERNEL);
+> +	if (!tmp_buf)
+> +		return -ENOMEM;
+> +
+> +	memset(tmp_buf, 0xff, nor->params->page_size);
+> +
+> +	start = round_down(to, 2);
+> +	end = round_up(to + len, 2);
+> +
+> +	memcpy(tmp_buf + (to - start), buf, len);
+> +
+> +	ret = spi_nor_write_data(nor, start, end - start, tmp_buf);
+> +	if (ret == 0) {
+> +		ret = -EIO;
+> +		goto out;
+> +	}
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	/*
+> +	 * More bytes are written than actually requested, but that number
+> can't
+> +	 * be reported to the calling function or it will confuse its
+> +	 * calculations. Calculate how many of the _requested_ bytes were
+> +	 * written.
+> +	 */
+> +	bytes_written = ret;
+> +
+> +	if (to != start)
+> +		ret -= to - start;
+> +
+> +	/*
+> +	 * Only account for extra bytes at the end if they were actually
+> +	 * written. For example, if for some reason the controller could only
+> +	 * complete a partial write then the adjustment for the extra bytes at
+> +	 * the end is not needed.
+> +	 */
+> +	if (start + bytes_written == end)
+> +		ret -= end - (to + len);
+> +
+> +out:
+> +	kfree(tmp_buf);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Write an address range to the nor chip.  Data must be written in
+>   * FLASH_PAGESIZE chunks.  The address range may be any size provided
+> @@ -2164,7 +2226,12 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t
+> to, size_t len,
+>  			goto write_err;
+>  		}
+> 
+> -		ret = spi_nor_write_data(nor, addr, page_remain, buf + i);
+> +		if (nor->write_proto == SNOR_PROTO_8_8_8_DTR)
+> +			ret = spi_nor_octal_dtr_write(nor, addr, page_remain,
+> +						      buf + i);
+> +		else
+> +			ret = spi_nor_write_data(nor, addr, page_remain,
+> +						 buf + i);
+>  		spi_nor_unlock_device(nor);
+>  		if (ret < 0)
+>  			goto write_err;
+> --
+> 2.34.1
 
 
 ______________________________________________________
