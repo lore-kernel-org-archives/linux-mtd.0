@@ -4,68 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93107CA0EE4
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B9FBCA0EE8
 	for <linux-mtd@archiver.kernel.org>; Thu, 14 Aug 2025 14:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=XMy81x+CtV3WU5cP4vcKSRLe7RkVV3dpWpxshVGPzuQ=; b=tf0hYV0wIDt2svtqpqUTF1yzkV
-	avYinW5Rl7eeytSSq/fC/dCh5OXQl3mfu+V1u2tg3WA4YS49fMtHmAYLV57JjbzR0sOL9fW2bMsAf
-	kCXNpz0V9GXSTvHjZ5i0i26Tccq2vLl5LP4AAEZSw+bRe4KDdsrTlgpkmg0soRCqd9dF0UGuV1+BS
-	OD9XZnDh5/A87ddSp8pUwipPAU0m9ciJ4lt/VkrmqQ3Zay7jPIepvb1YSUoktDNokym56Ps7f9Jx6
-	uqL6i/q2SuJd/e5RyWlQBxaoEgr6MSOXuU6zfrmgZU6b6t5b7n1YUAafDrFiyw4iy9LjNn8U9NFQu
-	dc3NUCeg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bidGjyp53+eFfZ5WkRnE/hJzh16PPESAqbX6qOuEVmo=; b=IiKcydJ6BeB/Hl
+	4UK52Z64pE99D3+XxDkpISlTl62t4AvQgpgm8h9+O7amyqEulU4DV1I/Mxe6cYqaF8RbDROMlxHnk
+	f2RlTL3mQ4wVX0rS01nVwLvKqd5aiTWzSBrqgjNx5ELiQwrkK5aLV5S07cIM54kMDkk+Hx5ulNVFI
+	b1RomNrybf83yK5D9Hum/09VNyOIL+LexhsrkJfI8dJtavpcWvrX6M4HoGeZtJzr4nAeYAMLetm5d
+	+gxkhRumK3kxUKeZtrZqdlky9ii6Ky+CPbitBugRYXqCponmv3uhh1QzEW0ExxdaTeRueyoDU30ac
+	dIg2UYjIZCh8S9DcuDqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umYzM-0000000HGWz-2vJT;
-	Thu, 14 Aug 2025 14:31:32 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
+	id 1umYzN-0000000HGX8-0gRO;
+	Thu, 14 Aug 2025 14:31:33 +0000
+Received: from lelvem-ot01.ext.ti.com ([198.47.23.234])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umWA5-0000000GkOl-3PGn
+	id 1umWEJ-0000000Gkoo-2k84
 	for linux-mtd@lists.infradead.org;
-	Thu, 14 Aug 2025 11:30:27 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id C38D32FFDA5;
-	Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id XP9eaYOi19Kn; Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 33BBC2FFDA9;
-	Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id OGe52fzWuMNR; Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id E51A62FFDA5;
-	Thu, 14 Aug 2025 13:30:13 +0200 (CEST)
-Date: Thu, 14 Aug 2025 13:30:13 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Cheng Ming Lin <linchengming884@gmail.com>
-Cc: chengzhihao1 <chengzhihao1@huawei.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	Alvin Zhou <alvinzhou@mxic.com.tw>, leoyu <leoyu@mxic.com.tw>, 
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Message-ID: <608935583.115196.1755171013804.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAAyq3SaEqYiKhbjYwLH0p6F2G=UR-MwZF28AG1xVMoKhznS3Og@mail.gmail.com>
-References: <20250812051949.983040-1-linchengming884@gmail.com> <152133202.103367.1754981828821.JavaMail.zimbra@nod.at> <CAAyq3SaEqYiKhbjYwLH0p6F2G=UR-MwZF28AG1xVMoKhznS3Og@mail.gmail.com>
-Subject: Re: [RFC] mtd: ubi: skip programming unused bits in ubi headers
+	Thu, 14 Aug 2025 11:34:48 +0000
+Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
+	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57EBYdtT1922781;
+	Thu, 14 Aug 2025 06:34:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1755171279;
+	bh=7LbU+yv2+Y6jnYq61nIb7SKpWsz0Z9nUrQStSnTQjvg=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=iicrYriFr/xt9We9t8/o/L9I1Wxtp+0cnkPfNnoE9Jgh3U33Uhcu0k6a3pWYfE/Y4
+	 eiDza8w56ia5wKHqjjk4IeNZHmP8hhLjj9p9AXK0ew2EpB4/642IRTPkJz4mcIFvwZ
+	 X+K+6OaD17VSnvwbZDPu9MQ52FO8rfEuFQASjBv4=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57EBYdEl1118411
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Thu, 14 Aug 2025 06:34:39 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Thu, 14
+ Aug 2025 06:34:38 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Thu, 14 Aug 2025 06:34:38 -0500
+Received: from [172.24.233.254] (santhoshkumark.dhcp.ti.com [172.24.233.254])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57EBYY1g3540111;
+	Thu, 14 Aug 2025 06:34:34 -0500
+Message-ID: <20487e7f-33dd-4b65-b1a8-5bb8a06ef859@ti.com>
+Date: Thu, 14 Aug 2025 17:04:33 +0530
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF141 (Linux)/8.8.12_GA_3809)
-Thread-Topic: skip programming unused bits in ubi headers
-Thread-Index: 63S535GLvQTJB7IX1iFPElc1JTBAaQ==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 01/10] spi: spi-mem: Introduce support for tuning
+ controller
+To: Mark Brown <broonie@kernel.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <mwalle@kernel.org>,
+        <p-mantena@ti.com>, <linux-spi@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <a-dutta@ti.com>, <u-kumar1@ti.com>, <praneeth@ti.com>, <s-k6@ti.com>
+References: <20250811193219.731851-1-s-k6@ti.com>
+ <20250811193219.731851-2-s-k6@ti.com>
+ <6c35baad-a332-4b0a-96ca-1cdb3840ad94@sirena.org.uk>
+Content-Language: en-US
+From: Santhosh Kumar K <s-k6@ti.com>
+In-Reply-To: <6c35baad-a332-4b0a-96ca-1cdb3840ad94@sirena.org.uk>
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250814_043025_991207_575BFF74 
-X-CRM114-Status: UNSURE (   5.95  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250814_043447_788393_BA0BAC5D 
+X-CRM114-Status: GOOD (  13.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,26 +85,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkNoZW5nIE1pbmcgTGluIiA8
-bGluY2hlbmdtaW5nODg0QGdtYWlsLmNvbT4KPj4gSSBoYXZlIGJlZW4gdG9sZCB0aGF0IHdyaXRp
-bmcgMHhGRiBieXRlcyB0byBOQU5EIHNob3VsZCBiZSBhdm9pZGVkLgo+PiBUaGlzIGlzIGFsc28g
-d2h5IFVCSSBpbml0aWFsaXplcyB0aGVtIHRvIDB4MDAuCj4gCj4gTm9ybWFsbHksIGFmdGVyIGEg
-TkFORCBmbGFzaCBibG9jayBpcyBlcmFzZWQsIGFsbCBiaXRzIGFyZSBpbiB0aGUgMHhGRgo+IHN0
-YXRlLiBQcm9ncmFtbWluZyAweEZGIGluIHRoaXMgY2FzZSB3aWxsIG5vdCBhY3R1YWxseSBjaGFu
-Z2UgdGhlIE5BTkQKPiBjZWxscywgYXMgdGhlIGRldmljZSBjYW4gaW5oaWJpdCBwcm9ncmFtbWlu
-Z+KAlGVpdGhlciBieSByYWlzaW5nIHRoZQo+IGJpdGxpbmUgdm9sdGFnZSBvciB1c2luZyBhIHNl
-bGYtYm9vc3RlZCBwcm9ncmFtIGluaGliaXQgbWVjaGFuaXNtLgo+IFRoZXJlZm9yZSwgcHJvZ3Jh
-bW1pbmcgMHhGRiBpcyBhIG5vcm1hbCBhbmQgaGFybWxlc3Mgb3BlcmF0aW9uIGZvciBOQU5ECj4g
-Zmxhc2guCgpUaGF0J3MgdGhlIGNydWNpYWwgcXVlc3Rpb24uIElzIHRoaXMgdHJ1ZSBmb3IgYWxs
-IE5BTkQgY2hpcHM/CkRvIGF2b2lkIGxhcmdlciB3cml0ZXMgb2YgMHhGRiBwYXR0ZXJucyBmaWxl
-IHN5c3RlbXMgc3VjaCBhcyBVQklGUwphbHNvIHVzZSBjb21wcmVzc2lvbiBhIGxvdC4KQXQgbGVh
-c3QgdGhhdCdzIHdoYXQgSSBoYXZlIGJlZW4gdG9sZCB3aGVuIEkgYXNrZWQgMTArIHllYXJzIGFn
-bwpob3cgVUJJIHdvcmtzLgoKVGhhbmtzLAovL3JpY2hhcmQKCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+Hello Mark,
+
+On 14/08/25 01:56, Mark Brown wrote:
+> On Tue, Aug 12, 2025 at 01:02:10AM +0530, Santhosh Kumar K wrote:
+>> From: Pratyush Yadav <pratyush@kernel.org>
+>>
+>> Some controllers like the Cadence OSPI controller need to perform a
+>> tuning sequence to operate at high data rates. Tuning is needs to happen
+>> once the device is switched to appropriate mode (say 8S-8S-8S or
+>> 8D-8D-8D). Add a hook that spi-mem client devices can call in order to tune
+>> the controller to operate in a given mode and data rate.
+>>
+>> This is somewhat similar to eMMC/SD tuning for higher speed modes like
+>> HS200, but there isn't a standard specification around the same though.
+> 
+> Should we have something that blocks these tuning required modes without
+> the appropriate tuning, and/or allows discovery of which modes require
+> this tuning?  This all feels very landmineish - client drivers just have
+> to know when tuning is required.
+
+The flash's maximum operating frequency determines whether PHY tuning is 
+required, as we need tuning in case of Cadence controller for 
+frequencies over 50 MHz.
+
+And we do check for this condition - see Patch 07/10,
+cqspi_phy_op_eligible_sdr(), which currently verifies the flash 
+frequency against 166 MHz. This logic can be improved by implementing 
+both min and max frequency checks, will update in the following version.
+
+Thanks,
+Santhosh.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
