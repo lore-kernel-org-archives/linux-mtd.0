@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98884CA0EDC
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Aug 2025 13:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93107CA0EE4
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Aug 2025 14:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MzIp7PINfh7znSXIrfwcQ8Sy4MV2sVg6wG4LevCLJi8=; b=LXtW78sREqghTlBINiCP+WWXII
-	gvxAvfVuyvopBbeNBgWo1xzu4fOyjAsH8Jp7K43q9i/cmzxxj6hnW/fGiPjWwAG8xugnL0eNq7FKZ
-	S2sj7YjZ2unRO5IKNIOyXQEc1AawloIwD86cKCfDXw3VtktFTts+HXXCbv5ZDL5ktyyAenh3kXs8n
-	DSSxerNZqAqSwTnN8LJzRbPxsGVowuhmZjfCLGIizpliuiVm73eOu3YMpAt56VxrPb5ZlHbTY7U7f
-	c8juWXjoeGs+9JcAHc1gb4oD48AJ1pk/kFQ77nlZN29g1iyKdd2swp7imay6ZFb+Bf02mjbwICs7G
-	z7JqUuwg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=XMy81x+CtV3WU5cP4vcKSRLe7RkVV3dpWpxshVGPzuQ=; b=tf0hYV0wIDt2svtqpqUTF1yzkV
+	avYinW5Rl7eeytSSq/fC/dCh5OXQl3mfu+V1u2tg3WA4YS49fMtHmAYLV57JjbzR0sOL9fW2bMsAf
+	kCXNpz0V9GXSTvHjZ5i0i26Tccq2vLl5LP4AAEZSw+bRe4KDdsrTlgpkmg0soRCqd9dF0UGuV1+BS
+	OD9XZnDh5/A87ddSp8pUwipPAU0m9ciJ4lt/VkrmqQ3Zay7jPIepvb1YSUoktDNokym56Ps7f9Jx6
+	uqL6i/q2SuJd/e5RyWlQBxaoEgr6MSOXuU6zfrmgZU6b6t5b7n1YUAafDrFiyw4iy9LjNn8U9NFQu
+	dc3NUCeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umY2K-0000000H3Xz-2rZr;
-	Thu, 14 Aug 2025 13:30:32 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1umYzM-0000000HGWz-2vJT;
+	Thu, 14 Aug 2025 14:31:32 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umXAK-0000000GrJ2-2Y2K
+	id 1umWA5-0000000GkOl-3PGn
 	for linux-mtd@lists.infradead.org;
-	Thu, 14 Aug 2025 12:34:44 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0D8F2601D8;
-	Thu, 14 Aug 2025 12:34:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D3BAC4CEED;
-	Thu, 14 Aug 2025 12:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755174883;
-	bh=0VrAhuKLaVyb61WaZNhMiNNuBwVKngCyRJ/V5YN1iC0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lejqI9kt2PAkvbRwc5AaugS5uDQA2HkPjMWYuMxXxEtFScLJzoUrTAQiqwJuBngFF
-	 lLVzwCltFh5qjf9/KX4a0w+Sd+CXsOL3dY2pq8juPi2E6gQCSO/IITqhxc4bDcm+lH
-	 8QgRcYEOPQh+19yrMj/gVX86hJADE2bn2LEjQyWQ6nat4FwWDtgEC+ImWeOeg0RIOv
-	 xTMKM0VOPQ/0ZiGH9lMcnz8b3Pkkhx77rG4nglx2PjjBfXqhZlyDrPZM0Jf/jg0+TB
-	 OJVeXwcsSpUAbZV42yDHMIFVThhRELGqvDhNvndpfzRPfYp23OfRcFlHVyDeB0ZrXs
-	 Nt2ds8u/ocxAA==
-Date: Thu, 14 Aug 2025 13:34:38 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Santhosh Kumar K <s-k6@ti.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	tudor.ambarus@linaro.org, pratyush@kernel.org, mwalle@kernel.org,
-	p-mantena@ti.com, linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	a-dutta@ti.com, u-kumar1@ti.com, praneeth@ti.com
-Subject: Re: [RFC PATCH 01/10] spi: spi-mem: Introduce support for tuning
- controller
-Message-ID: <2f051eae-61c7-4bff-9f85-cf37b02a7ea3@sirena.org.uk>
-References: <20250811193219.731851-1-s-k6@ti.com>
- <20250811193219.731851-2-s-k6@ti.com>
- <6c35baad-a332-4b0a-96ca-1cdb3840ad94@sirena.org.uk>
- <20487e7f-33dd-4b65-b1a8-5bb8a06ef859@ti.com>
+	Thu, 14 Aug 2025 11:30:27 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id C38D32FFDA5;
+	Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id XP9eaYOi19Kn; Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 33BBC2FFDA9;
+	Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id OGe52fzWuMNR; Thu, 14 Aug 2025 13:30:14 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id E51A62FFDA5;
+	Thu, 14 Aug 2025 13:30:13 +0200 (CEST)
+Date: Thu, 14 Aug 2025 13:30:13 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Cheng Ming Lin <linchengming884@gmail.com>
+Cc: chengzhihao1 <chengzhihao1@huawei.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Alvin Zhou <alvinzhou@mxic.com.tw>, leoyu <leoyu@mxic.com.tw>, 
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Message-ID: <608935583.115196.1755171013804.JavaMail.zimbra@nod.at>
+In-Reply-To: <CAAyq3SaEqYiKhbjYwLH0p6F2G=UR-MwZF28AG1xVMoKhznS3Og@mail.gmail.com>
+References: <20250812051949.983040-1-linchengming884@gmail.com> <152133202.103367.1754981828821.JavaMail.zimbra@nod.at> <CAAyq3SaEqYiKhbjYwLH0p6F2G=UR-MwZF28AG1xVMoKhznS3Og@mail.gmail.com>
+Subject: Re: [RFC] mtd: ubi: skip programming unused bits in ubi headers
 MIME-Version: 1.0
-In-Reply-To: <20487e7f-33dd-4b65-b1a8-5bb8a06ef859@ti.com>
-X-Cookie: This sentence no verb.
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF141 (Linux)/8.8.12_GA_3809)
+Thread-Topic: skip programming unused bits in ubi headers
+Thread-Index: 63S535GLvQTJB7IX1iFPElc1JTBAaQ==
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250814_043025_991207_575BFF74 
+X-CRM114-Status: UNSURE (   5.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,74 +77,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6257136539421136290=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============6257136539421136290==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hsVsvyCGymldcnqG"
-Content-Disposition: inline
-
-
---hsVsvyCGymldcnqG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 14, 2025 at 05:04:33PM +0530, Santhosh Kumar K wrote:
-> On 14/08/25 01:56, Mark Brown wrote:
-
-> > Should we have something that blocks these tuning required modes without
-> > the appropriate tuning, and/or allows discovery of which modes require
-> > this tuning?  This all feels very landmineish - client drivers just have
-> > to know when tuning is required.
-
-> The flash's maximum operating frequency determines whether PHY tuning is
-> required, as we need tuning in case of Cadence controller for frequencies
-> over 50 MHz.
-
-That's entirely specific to the Candence controller from the sounds of
-it, that makes it hard to write a client driver if you need to know
-exactly what the controller you're dealing with is and what it's
-requirements are.
-
-> And we do check for this condition - see Patch 07/10,
-> cqspi_phy_op_eligible_sdr(), which currently verifies the flash frequency
-> against 166 MHz. This logic can be improved by implementing both min and max
-> frequency checks, will update in the following version.
-
-I can't actually tell how that verifies if the tuning has been done
-appropriately TBH, at least not without more effort than I'd care to
-(and the tuning only gets added in patch 10?).
-
---hsVsvyCGymldcnqG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmid190ACgkQJNaLcl1U
-h9BuIAf9HOg6LtPbsCspgF6wLQokIeC1xc/j87GykKnreWyld/ZIRyHTDhWa+kJl
-KxWpWUNF/Nu1JT9nAnx03BTvx7fTOt+WKScIJg1kZFnWRHoULMQ0tEoYxEGMPUVG
-TnXuBDDrb+AfwJdR5w112Z0ixw8yTVk8cNFnAEfCAUoxkpxXnesWYjoTV3GhztRQ
-LTWxBj+EWthPRgIz0SnZFC0o54u+iJ9n5hkb7YiAVJ2A+O/XvcYogdXmulGWlvLl
-g5Ec19gMjIo0LwIc6h9MDc/fFNnUDkSHSvd2t9g6DhjCMf+/Y+phV3v3AHYRlKhC
-GYTzuHHYpdWrQbl/1JO/bw31IFhtcA==
-=1D0X
------END PGP SIGNATURE-----
-
---hsVsvyCGymldcnqG--
-
-
---===============6257136539421136290==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6257136539421136290==--
-
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkNoZW5nIE1pbmcgTGluIiA8
+bGluY2hlbmdtaW5nODg0QGdtYWlsLmNvbT4KPj4gSSBoYXZlIGJlZW4gdG9sZCB0aGF0IHdyaXRp
+bmcgMHhGRiBieXRlcyB0byBOQU5EIHNob3VsZCBiZSBhdm9pZGVkLgo+PiBUaGlzIGlzIGFsc28g
+d2h5IFVCSSBpbml0aWFsaXplcyB0aGVtIHRvIDB4MDAuCj4gCj4gTm9ybWFsbHksIGFmdGVyIGEg
+TkFORCBmbGFzaCBibG9jayBpcyBlcmFzZWQsIGFsbCBiaXRzIGFyZSBpbiB0aGUgMHhGRgo+IHN0
+YXRlLiBQcm9ncmFtbWluZyAweEZGIGluIHRoaXMgY2FzZSB3aWxsIG5vdCBhY3R1YWxseSBjaGFu
+Z2UgdGhlIE5BTkQKPiBjZWxscywgYXMgdGhlIGRldmljZSBjYW4gaW5oaWJpdCBwcm9ncmFtbWlu
+Z+KAlGVpdGhlciBieSByYWlzaW5nIHRoZQo+IGJpdGxpbmUgdm9sdGFnZSBvciB1c2luZyBhIHNl
+bGYtYm9vc3RlZCBwcm9ncmFtIGluaGliaXQgbWVjaGFuaXNtLgo+IFRoZXJlZm9yZSwgcHJvZ3Jh
+bW1pbmcgMHhGRiBpcyBhIG5vcm1hbCBhbmQgaGFybWxlc3Mgb3BlcmF0aW9uIGZvciBOQU5ECj4g
+Zmxhc2guCgpUaGF0J3MgdGhlIGNydWNpYWwgcXVlc3Rpb24uIElzIHRoaXMgdHJ1ZSBmb3IgYWxs
+IE5BTkQgY2hpcHM/CkRvIGF2b2lkIGxhcmdlciB3cml0ZXMgb2YgMHhGRiBwYXR0ZXJucyBmaWxl
+IHN5c3RlbXMgc3VjaCBhcyBVQklGUwphbHNvIHVzZSBjb21wcmVzc2lvbiBhIGxvdC4KQXQgbGVh
+c3QgdGhhdCdzIHdoYXQgSSBoYXZlIGJlZW4gdG9sZCB3aGVuIEkgYXNrZWQgMTArIHllYXJzIGFn
+bwpob3cgVUJJIHdvcmtzLgoKVGhhbmtzLAovL3JpY2hhcmQKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
