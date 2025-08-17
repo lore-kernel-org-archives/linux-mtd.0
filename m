@@ -4,66 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63B1CCA0EE4
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Aug 2025 16:14:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 655BACA0EE9
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 Aug 2025 08:13:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QaZOTPB7iYNYza5WTi1ex9aNIqc0ZVOBpZ0/5R1m/T4=; b=thHTS7V6ZF8di4
-	Y/SsMq10ACx6Kay7nF1UkuEkVb7BcwkKR5MOyUFkMGU36Pk7ncZ+zKiaX3KCGK/mM1UYu7sJs9PG5
-	WxfKTOLel0Kd8xu8PVHTqLgfrIALYoOUl4J035cKh5F5toibAimq9AL3hOJKDjxxAWYO/wowLVvfP
-	pYLgV4irymc2jMOUe8G59EgZwX88d15OMQ5ahbK2rxHCwDrc0tsl1718vDioFVG535h/AHvELUVHb
-	sjjc4DuwHJT8+LBodrlxwA5YsjeH/CRHJBa2iDNl36N4BQnH2UI4oJvtS6e5hZ9c2Ci/KHpK35MK9
-	QKE64rKXXf+at3zAxwQA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aQx71eAbumZf93180Sq0SzOn2/XpZy7pKT5K4lgJRtE=; b=VGN8hZdzBY93Po
+	poZCb2dvW+TPZqNatEQv8zmI7y/1GDXjjaCh+Sb+9XLAZ1m77g6eUY5aU2Y+bz699FFby6X1b3OMy
+	XQaS8rOgmuURZvXeSye5XJbAEU+FHrEDvEWuBplUOPwmB+QARpFRlCk3g1mJ5+rq+McAAon1de/T3
+	SbRL0feHeAiqOMigguPQcSDjFSBgMk2dPiBEch7uf9stj6svcjVdCvZurTcQyfM/DrrhTJTF8yhaB
+	DpEBX4kg58NmCRXT2h7JkkBCag5hucD/0BC/FcbMR+eF/eKJnL3GLYnlLuToa67WlFRe2MFLfhBrY
+	37s6LGZygBWY4+XMlRbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umx47-00000002wUL-099o;
-	Fri, 15 Aug 2025 16:14:03 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1unYVj-00000005TKW-0JtN;
+	Sun, 17 Aug 2025 08:13:03 +0000
+Received: from mail-japaneastazlp170120005.outbound.protection.outlook.com ([2a01:111:f403:c405::5] helo=TYPPR03CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umvPr-00000002iSN-07rC
+	id 1unYVf-00000005TID-0L3W
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Aug 2025 14:28:24 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2A4084527F;
-	Fri, 15 Aug 2025 14:28:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0BE4C4CEF5;
-	Fri, 15 Aug 2025 14:28:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755268102;
-	bh=NjlA2V0nQx0tBL4rAiZ29YI48biAV1hmLhasXfWKjKM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Vi/jyHyCpW3IS1hb6zQ4jJ+oAYD0DXsY2Im5ys51K44DIEZQHnGkTVraWsoFcqbwC
-	 JxJq03+C9R3fjpoMc9nQd4QG10bfgmJDeOjpatQAYOyzqylhQ1n0AYRglhszfcGetS
-	 FjhIcW7orUVId79eVQDk4m6yVnMF8nfROWLKKC2DlG1gQDlsTg5ndmXNr61rMo4qLc
-	 FwgVzCRxDCjKmjVaJfryczmqUHzyfxIQC23QMXOHkNvThADLMLAyeNAgSC/7uGhDd7
-	 iOBJ7p+fW43/8ExrYdQawHBPv3mNoLE+f/MSAzjfGGQ+rUABw1kKle6THgz2+iucuP
-	 LOrp6gISP0oAQ==
-Date: Fri, 15 Aug 2025 16:28:17 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev, 
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
- inode
-Message-ID: <20250815-pension-geleugnet-0b0502f0555c@brauner>
-References: <20250810075706.172910-1-ebiggers@kernel.org>
- <20250810-tortur-gerammt-8d9ffd00da19@brauner>
- <20250810090302.GA1274@sol>
- <20250811-distribuieren-nilpferd-bef047fa7992@brauner>
- <20250811-unbedacht-vollmond-1a805b76212b@brauner>
- <20250811163907.GA1268@sol>
+	Sun, 17 Aug 2025 08:13:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DQuCIdR98ZAe5kunmhoAyDBDfd6KtC/dl7iT3Jqh2LlVz/7LRHP9mYf0333IgZd5mHJhks6e+hJ0AoZot1ilIJHLV+7gYnVnTdg7lfTb5s+9hK0GcWtNkUBSlk/hsvbBNJDb5+VYDAz0Y7ZGBJhEiGEJ4UthWNFAhjxwTNl608HlWRv7m1SOI81eYz7nISjO7r2Z//ReGfRIpz+a+nnOsf3FxBV0nYlmAG2jDZ11dInYdIsj2y1M19+uDe2BKfu7+GWsZUMJy84h2zDoRT9aDEowcncX66FTgTlwZKKuzje3bNmZ4yea1EfKS/BQac8b8kM8Jt3s4qLANKxKJSoIkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dS2TvaxBzuntOREVMp3tCC6M4B2m/ntrTAJqUDmQg/I=;
+ b=JQDMl9fwjD/fBLLEKA6ZMpa8GIDgxqFkx9Qv2jRfDby3TPPCyGgGkG3TudlX9A9/VEeHELDXcJ+ACtPOSom5LJKrOVLnc6Gre2/aNYYzjOsZKz20rdO/FNNyvAP/7fEtzPA+0qroTAWvmy1Wr2ho0y/uZWOWNdoJPvigGzHLTWvocitEIoLTg05tiPhuJhv3WlCgLryFB1jR2MEhcvyP1RCPO7F4ilzlu6rBFV5UDbA72gVWrWlSP0TsQqjWTVfCllM9dwIAm+v/yDFPMW0lLmUBxSqWWpLPB8Ip6E3lTm00T4Vvl7ESPQLb/762kfDrPkCNqKcezVW2LDlul9dI7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dS2TvaxBzuntOREVMp3tCC6M4B2m/ntrTAJqUDmQg/I=;
+ b=QpfOf86/P2iao7fWDLBK+M8GqNaPIwyUezm4xTyj20vRFUM0XfsgSkwiAUTwW+7fB4oxAuiFcWGR6S7gGPi5moJeYQOXxhBAfSWY4XV4zpN8DvtBXJKRe5QvrQjSnDpb7jLvSn0Hn4aGHNr9AR+W0WEqVX77jMessRIaI2okm87EezRdDzkvpTuFP6Sxv1keH3mSy4RZc655gRnnJqgU3+C7IVmOS7gETR/6L5ovgJDh7HV32q71FtLKvy4RIzcYqZLembxcE9kvM1D3BsOdZv7E1mL61nvWuhX+jccYs9fSkoHGYvVfqhDEbmOQDpQgRvcm+WVSVIRZ1uE5UUexsQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9) by
+ SEZPR06MB7261.apcprd06.prod.outlook.com (2603:1096:101:226::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.19; Sun, 17 Aug
+ 2025 08:12:49 +0000
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666]) by SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666%5]) with mapi id 15.20.9031.021; Sun, 17 Aug 2025
+ 08:12:49 +0000
+From: Qianfeng Rong <rongqianfeng@vivo.com>
+To: Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Qianfeng Rong <rongqianfeng@vivo.com>
+Subject: [PATCH] ubifs: vmalloc(array_size()) -> vmalloc_array()
+Date: Sun, 17 Aug 2025 16:12:38 +0800
+Message-Id: <20250817081238.44785-1-rongqianfeng@vivo.com>
+X-Mailer: git-send-email 2.34.1
+X-ClientProxiedBy: TY2PR06CA0039.apcprd06.prod.outlook.com
+ (2603:1096:404:2e::27) To SI2PR06MB5140.apcprd06.prod.outlook.com
+ (2603:1096:4:1af::9)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20250811163907.GA1268@sol>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SI2PR06MB5140:EE_|SEZPR06MB7261:EE_
+X-MS-Office365-Filtering-Correlation-Id: efb4a573-62a0-4c51-3271-08dddd65daf5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|52116014|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?YwtYyjd614qHgRfluhMhftprm/qPXAWBr3JPXksAc50v3YH078bOF/R0FL/u?=
+ =?us-ascii?Q?kAv/xY6u0k2iahH4I60ifAJw8PywWwIN3Ge2WzHBu4Mf5V5tf2KE175Nzqn8?=
+ =?us-ascii?Q?ffgOfO7qQySlBiwanuysO0ArGO6wvX/9d4sAQ8u/HmNnzNUqn3pekJ8MHg3U?=
+ =?us-ascii?Q?ir6j0MRCobDPF8IDkTvviZUWMTgJ2hwTvpipV0x1zHdSBEIyXBdOoMgSU+aR?=
+ =?us-ascii?Q?yBAIXbWOM0qiStCA/LonO0vOuuiMkqHGQSbNIZg3TDMX8WFHWzgxrTtpJCsa?=
+ =?us-ascii?Q?SDZGQmTRXTNYb/s+xY3xRpICtYgb36oN050EwKP1GIzVmnvXw1Gw/iRkbBL4?=
+ =?us-ascii?Q?38x5c9Vq7W5pVTYUgRyIgfi9O9KrsivMEPu8bsxoqbtwe9QzAG1crjHsTibf?=
+ =?us-ascii?Q?5ajt13WOPnu4pu1db2YZkv0ihZq55KvRXXmH68p6hmjgsue3THivPMjEwLp+?=
+ =?us-ascii?Q?KRa6MfXxMn2ISW44AHD9Vj1Mw0trJKwvyVoCVFFNHxHFjk4lfmDvLaEMXnG6?=
+ =?us-ascii?Q?WnAxjZ6tFRXmrbuEzx0tC28sybgBf2tlkYTiHVXhv3w2zN3pLJBTsxh+iS/W?=
+ =?us-ascii?Q?l6vuJAzFADP0IPe4qeMLMnU9nDrH4YMXZ9rbZRY3UI+5HWesdt9S5sAJvRY1?=
+ =?us-ascii?Q?Nn9w4zIfjiI/blEpLF7ITVXE+E2UPiAZKWo2S7G2v8MImnsPUQxWbY0skAGV?=
+ =?us-ascii?Q?BAWwutdKbWA7JIeOhIOxbmJS5NQWzU7ZAuK8OY6GRnnwjGBiK01+/MohGSgu?=
+ =?us-ascii?Q?RHh7AX5KYrE2iS/TMpZstdXA91b9exrfK7X2i4ZQlQhic58sGjvBW1EM8W2D?=
+ =?us-ascii?Q?MT1KSzxrHdu8TBHeyftKm6GsrzxdWEp2vb6wLjjFfMe9KsTjmHplx6UcYxdR?=
+ =?us-ascii?Q?OE8K3jRvEEIi4za1VbXK9WSBeTvmFwsdNvYYBld9QKqv7/hpbtieQgQBthRq?=
+ =?us-ascii?Q?fa3dMfb9Rj/7GTi5oxp4a9Z3LxknPk+3x76t+A6syzsnQfnTbgidyn6J3/v5?=
+ =?us-ascii?Q?ryg7H3Ba2znEcKJ90WxGCkfkzZx6iJvtIp8wkcb0gUZLYGc0hJ4xyVLqMLPe?=
+ =?us-ascii?Q?j0ZKVKXKFRVhPiabq8tNg5OlCP/yZeM5f670e5UBVH35wss9KpgHvtHLVyYr?=
+ =?us-ascii?Q?2H6/HlU7gYXGJUuXJjcF7rHIBPqXRBNXtg8P216ZKMATrwk91qdD/rXR+0sJ?=
+ =?us-ascii?Q?rgeE+DPXZvR8A1nPLr8clCgf1w6LjXNyW0vh6n8v+7cD5YGRqeYm/ATYlXRZ?=
+ =?us-ascii?Q?/YeRydbhUJw/tAiu94fAY3VMEj2jdynczrN8OJd0f1VpGPfIN3Hk1MNAAXBS?=
+ =?us-ascii?Q?4hZC2JRQm2+TXDO5pb+gcf8yQT4TlgKB3Vx313pUuiW4s0Z35g+xqtBhZwKP?=
+ =?us-ascii?Q?pwY+dkWF7XATFJ4YztFyxQL68a7j0/VwhzC6uLkyP4Xo7aAxstx05zW4uKFK?=
+ =?us-ascii?Q?a9Mn1eWfPAule7uORmMij6IGMpnvezE6JEgPZlkZ3xxn7x5Pxv7pp8iXliIx?=
+ =?us-ascii?Q?WRVc6DGmTC11cco=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR06MB5140.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(52116014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AlvXaAyKjF8XegU9Z+r/M7ljBjikS3b4quBHVnpCnPA6C14bXfoYWjo0LsJW?=
+ =?us-ascii?Q?TwTBNiNcyyv8uMILcgEXQ64aCudXXanpH9VEqhZZaDNsJ3Okl6ypG1js0rqO?=
+ =?us-ascii?Q?tOdZUoZPN79VrY24ImL4pEmeo/+XZ9jR05JOmYrfFFsivqoDkv+wOkdi37jy?=
+ =?us-ascii?Q?TVjvD+6nfVomvoN9DxYrTnTpPurJpSj/bmJxmRb2t6vWXGgDYf7uVbkUVisI?=
+ =?us-ascii?Q?cDHKTiK6WWUiW6zSrcPzNOVxyS7Z2fPkwAnszL/nnxkpZqaU2CiI/i63E4pm?=
+ =?us-ascii?Q?B/RKm++/+daLtsl28DDssBS4VDKDuoAd1sC8j66VdsgQwGlUGjPHtI7qZC59?=
+ =?us-ascii?Q?2ZRFj0wLd3LZbh/1Tt8NdqBflAKZGY3sxJgRg2QTYbE4+/LhQScaNIdRnCKe?=
+ =?us-ascii?Q?Yauo1ojd2DcIOIuZPNWgsjkfmBiKvIlnJ6apRF565Qr5GHV0+eNp4CGOAI3S?=
+ =?us-ascii?Q?xkGJGUpuullWjLISCEvOnRgId5WYJfvNgCXvZnzIPT908tMKfdGG8GV+kjko?=
+ =?us-ascii?Q?2s2GUbUt/ElVuu2sqveBpOCMXGbMy3yY+PlKzZX5eSSAesgKFYE4NmYrQuFx?=
+ =?us-ascii?Q?KEEJNPZtGzjexbL8kwi83nYoiXRyjxBOYUNRNrO6Ph0iH5H0LfebqsjIlL9N?=
+ =?us-ascii?Q?VRd278t376VCcHV1aBt8N/GZKCdJA6MrYjj7bDW6rldAlfbW64lLaDVjQWmR?=
+ =?us-ascii?Q?luFh1OoUX7tScPEwnaT06q3ZbygAw+YR5ovbzbux0moqmlOmHNH83XGRr3O+?=
+ =?us-ascii?Q?tFqsAGmPCPpJEsTvADsg/PrmbNtjixszIh9stLmCcUgTQC8oxNTXhBYslLQm?=
+ =?us-ascii?Q?foQDrNqC7BMXmS5rShUVkpjehkZSRq2mQsshft+BMhGn+b2Degq362MABGAG?=
+ =?us-ascii?Q?PMaQgAzbORyg5J+AZwpefQU/mmwVu4xOrZEjUu91hsN8NUNiNb4LhE9jSvGH?=
+ =?us-ascii?Q?/jFslHYQMlRdV+jCv454XDDJwfQZfB8HahZ7fOyk4wYsQXnXPqtckxjAYw1R?=
+ =?us-ascii?Q?W7FH5VK7k0xhjuwF21QhahEXyevFdmWMB4VBlzZ7A7sefs9LCp14sU3FtdvK?=
+ =?us-ascii?Q?4SGX8b9lOezLNgOxyiI8bi6K1T5d9Tp44bPqf14o5mfZySvnSPUC/JUuHmX/?=
+ =?us-ascii?Q?UU6AiMAQ17RqvtUft5yhAX90wDaA3U/hINj9Mm6i1fGy5ydrsPXCgA1PvSIF?=
+ =?us-ascii?Q?MPNbKHagaK/wlC3z83/RRDejekmJQcAqPhzmG290C2dGR6fskTIpyF0KpjuB?=
+ =?us-ascii?Q?uvhRC0dkLs6Lp5xvgKuWEmlt2a4jXjQYmH5LfZT8xM5XcvQ3sDwkrVmoVpze?=
+ =?us-ascii?Q?AwKJwyciG4vg0Nh4xCXqwBH3Sy8p+m46perqw1UpenlnfUSIsvEhrGQn23UW?=
+ =?us-ascii?Q?aCISgSh2XGZvkanp/OMZNkLjSN/0veBO8ZaQhXUGokz/MiNGPTFBGU11bdy3?=
+ =?us-ascii?Q?QfhJquMF4lv4feKPAdSsj6S/0fdUNVrfv0Ow2reE+EUUzpJk9+iEDOa1rmTY?=
+ =?us-ascii?Q?9chdjtZllld8tlTu5TA3zm6CkiwzCh0ssy8iQ9S5QmiQoqFUDPYiJzg7Yjyi?=
+ =?us-ascii?Q?N+v4yh8f3ObXWbVQfKRVOrcUheCo77n1mJIhZQRW?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: efb4a573-62a0-4c51-3271-08dddd65daf5
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR06MB5140.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2025 08:12:49.3126
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KXu1YxS5Qup+DRrekwOr0PAtTP4CaZPD91OQJV7uzjLRFGovEeseVZBp0C25iA0QYkLlNbQDAZyzF7S4cjYqEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB7261
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250815_072823_111719_00B862D4 
-X-CRM114-Status: GOOD (  50.91  )
+X-CRM114-CacheID: sfid-20250817_011259_252431_91358C7B 
+X-CRM114-Status: UNSURE (   8.02  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,89 +158,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 11, 2025 at 09:39:07AM -0700, Eric Biggers wrote:
-> On Mon, Aug 11, 2025 at 03:34:35PM +0200, Christian Brauner wrote:
-> > On Mon, Aug 11, 2025 at 03:17:01PM +0200, Christian Brauner wrote:
-> > > On Sun, Aug 10, 2025 at 02:03:02AM -0700, Eric Biggers wrote:
-> > > > On Sun, Aug 10, 2025 at 10:47:32AM +0200, Christian Brauner wrote:
-> > > > > On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
-> > > > > > This is a cleaned-up implementation of moving the i_crypt_info and
-> > > > > > i_verity_info pointers out of 'struct inode' and into the fs-specific
-> > > > > > part of the inode, as proposed previously by Christian at
-> > > > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > > > > > 
-> > > > > > The high-level concept is still the same: fs/crypto/ and fs/verity/
-> > > > > > locate the pointer by adding an offset to the address of struct inode.
-> > > > > > The offset is retrieved from fscrypt_operations or fsverity_operations.
-> > > > > > 
-> > > > > > I've cleaned up a lot of the details, including:
-> > > > > > - Grouped changes into patches differently
-> > > > > > - Rewrote commit messages and comments to be clearer
-> > > > > > - Adjusted code formatting to be consistent with existing code
-> > > > > > - Removed unneeded #ifdefs
-> > > > > > - Improved choice and location of VFS_WARN_ON_ONCE() statements
-> > > > > > - Added missing kerneldoc for ubifs_inode::i_crypt_info
-> > > > > > - Moved field initialization to init_once functions when they exist
-> > > > > > - Improved ceph offset calculation and removed unneeded static_asserts
-> > > > > > - fsverity_get_info() now checks IS_VERITY() instead of v_ops
-> > > > > > - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
-> > > > > >   no longer think it's actually correct there.
-> > > > > > - verity_data_blocks() now keeps doing a raw dereference
-> > > > > > - Dropped fscrypt_set_inode_info() 
-> > > > > > - Renamed some functions
-> > > > > > - Do offset calculation using int, so we don't rely on unsigned overflow
-> > > > > > - And more.
-> > > > > > 
-> > > > > > For v4 and earlier, see
-> > > > > > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > > > > > 
-> > > > > > I'd like to take this series through the fscrypt tree for 6.18.
-> > > > > > (fsverity normally has a separate tree, but by choosing just one tree
-> > > > > > for this, we'll avoid conflicts in some places.)
-> > > > > 
-> > > > > Woh woh. First, I had a cleaned up version ready for v6.18 so if you
-> > > > > plan on taking over someone's series and resend then maybe ask the
-> > > > > author first whether that's ok or not. I haven't seen you do that. You
-> > > > > just caused duplicated work for no reason.
-> > > > 
-> > > > Ah, sorry about that.  When I started looking at it again yesterday
-> > > > there turned out to be way too many cleanups and fixes I wanted to make
-> > > > (beyond the comments I gave earlier), and I hadn't seen activity from
-> > > > you on it in a while.  So I figured it would be easier to just send a
-> > > > series myself.  But I should have asked you first, sorry.
-> > > 
-> > > So I started working on this pretty much right away. And I had planned
-> > > on sending it out rather soon but then thought to better wait for -rc1
-> > > to be released because I saw you had a bunch of crypto changes in for
-> > > -rc1 that would've caused merge conflicts. It's no big deal overall but
-> > > I just don't like that I wasted massaging all that stuff. So next time a
-> > > heads-up would be nice. Thank you!
-> > 
-> > I just pulled the series and now I see that you also changed the
-> > authorship of every single patch in the series from me to you and put my
-> > Co-developed-by in there.
-> > 
-> > I mean I acknowledge that there's changes between the branches and
-> > there's some function renaming but it's not to the point where
-> > authorship should be changed. And if you think that's necessary than it
-> > would be something you would want to talk to me about first.
-> > 
-> > I don't care about the stats but it was always hugely frustrating to me
-> > when I started kernel development when senior kernel developers waltzed
-> > in and thought they'd just take things over so I try very hard to not do
-> > that unless this is agreed upon first.
-> 
-> If you want to keep the authorship that's fine with me.  Make sure
-> you've checked the diff: the diff between v4 and v5 is larger than the
-> diff between the base and either version.  And as I mentioned, I rewrote
-> the commit messages and divided some of the changes into commits
-> differently as well.  If the situation was flipped, I wouldn't want to
-> be kept as the author.  But I realize there are different opinions about
-> this sort of thing, and I'm totally fine with whatever you prefer.
+Remove array_size() calls and replace vmalloc() with vmalloc_array() in
+ubifs_create_dflt_lpt()/lpt_init_rd()/lpt_init_wr(). vmalloc_array() is
+optimized better, resulting in less instructions being used [1].
 
-It's not that I oppose it per se it's just that it would be nice to have
-gotten a heads-up about both the rewrite and the authorship change.
-(Sorry, still on vacation and so answers are delayed.)
+[1]: https://lore.kernel.org/lkml/abc66ec5-85a4-47e1-9759-2f60ab111971@vivo.com/
+
+Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
+---
+ fs/ubifs/lpt.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
+index 441d0beca4cf..dde0aa3287f4 100644
+--- a/fs/ubifs/lpt.c
++++ b/fs/ubifs/lpt.c
+@@ -628,8 +628,8 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+ 	pnode = kzalloc(sizeof(struct ubifs_pnode), GFP_KERNEL);
+ 	nnode = kzalloc(sizeof(struct ubifs_nnode), GFP_KERNEL);
+ 	buf = vmalloc(c->leb_size);
+-	ltab = vmalloc(array_size(sizeof(struct ubifs_lpt_lprops),
+-				  c->lpt_lebs));
++	ltab = vmalloc_array(c->lpt_lebs,
++			     sizeof(struct ubifs_lpt_lprops));
+ 	if (!pnode || !nnode || !buf || !ltab || !lsave) {
+ 		err = -ENOMEM;
+ 		goto out;
+@@ -1777,8 +1777,8 @@ static int lpt_init_rd(struct ubifs_info *c)
+ {
+ 	int err, i;
+ 
+-	c->ltab = vmalloc(array_size(sizeof(struct ubifs_lpt_lprops),
+-				     c->lpt_lebs));
++	c->ltab = vmalloc_array(c->lpt_lebs,
++				sizeof(struct ubifs_lpt_lprops));
+ 	if (!c->ltab)
+ 		return -ENOMEM;
+ 
+@@ -1846,8 +1846,8 @@ static int lpt_init_wr(struct ubifs_info *c)
+ {
+ 	int err, i;
+ 
+-	c->ltab_cmt = vmalloc(array_size(sizeof(struct ubifs_lpt_lprops),
+-					 c->lpt_lebs));
++	c->ltab_cmt = vmalloc_array(c->lpt_lebs,
++				    sizeof(struct ubifs_lpt_lprops));
+ 	if (!c->ltab_cmt)
+ 		return -ENOMEM;
+ 
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
