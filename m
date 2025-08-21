@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB498CA0EFA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E46C1CA0EF8
 	for <linux-mtd@archiver.kernel.org>; Thu, 21 Aug 2025 07:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mnX5ee55+Lz8KHpQk04eQ9OWB2NlhVuHoMzFtDkSRyU=; b=eKHT3+O42QASW6
-	xMIuK812ZKrofBBmT+qaLwD4H8U7B6ryT3OH19helX37fmZB4iIX36iilbdah1E15vSsUHueTu458
-	Kt0/PQP0l8s7fqq/ya5hRInwR7joT3TaFAISLXYbx0l6TsNZVYmrueUZsl7K56MenMr0NHvt5eNlF
-	Cy9xGl5uNwyo5IrWBuh9AJDBzx4vkhGwdep0COlNG0nx4n4A9Vl03soquJYfYPeckOHYk5yjxKi1s
-	+5KuRvxSYhiFL3lKmO6hAtnunKkNO8E8EhlzPWBezdr82bpBuBuYYhCJx09+HRybv9l4B0LlGgL7R
-	iN01LK+zxlMKtV0TQD5w==;
+	List-Owner; bh=3dd0JeAwqA4AapQp968dtI0MGFN327YXJXOaOSIxRGA=; b=zN0acG6oRr2zeh
+	Hzemn1JIPhSRv4Npb6PYe5Um6pEDK2c+ejwi/H3kqZq2PjpL12oOVMndp96PCxEy4dd74Tz0dX4in
+	I+ux2rRWOkd7ST2Xo8qFxDIfIXz9KjcEVL2R0qC7vPKVfma0QwacOF6CBQctb+3kKFEKf0A5/Bzay
+	SpSeioE6FeWmx4BKj9Ha0udrFId4wHjmq/3OW2QctL5dJ5Q0QGYyk6NfwyeE4H2OtfmETJReo1ZtN
+	Th0YstwISa7OWiFcUV257rKAs2JLGSsgbXF4iP6fBrUp8kYjl0ciET3bMjx8/s3QXrlAIP1+X2Dtw
+	VHCCT+IR1re+oIDtYxMQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uozHL-0000000G1xS-3q2I;
-	Thu, 21 Aug 2025 07:00:07 +0000
+	id 1uozHJ-0000000G1wJ-3hIc;
+	Thu, 21 Aug 2025 07:00:05 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uoyxw-0000000FyhQ-16fM
+	id 1uoyxT-0000000Fyc1-0AQV
 	for linux-mtd@bombadil.infradead.org;
-	Thu, 21 Aug 2025 06:40:04 +0000
+	Thu, 21 Aug 2025 06:39:35 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=Ja+F/Ralu0iWz+CR1mwf/tiUOLJ7vfAP3EsyupxyM6A=; b=ML434aY80S5VY9H0Gv6ijgLkhS
-	OVrS02bWQH1KRzzr7bu687DfjiM7XAKq69Z8wMIjrxQVkr9qhWY2lQPX6xxFOoRmH6neC1/UZytYF
-	AJ+V0O0EOxdIbB2+pFPsnZ9jD+dSeh2AsLhAebQqN63TGMKUZglFqYp7BfEcEAVk+QZj4KkVhOcKe
-	QCy/9LICsc1gOzJYzuhUMuzkZTTVZf06hZBJXfaIUnph3sy0sZLeCFJl0BPdES3vtHZPF8c+wFDL+
-	FEzJGPe/cuHf9AYmjEB7olP9n8LboDZ6PYyHjO5WH+dUe916pxwSU5PMY66HwxnHuohUi0vR8vP5W
-	0pUZh0Tw==;
+	bh=DmsaLiR/5jBH/NHQ2N3ggzQOLEIEMbIMvqRoj58HxE0=; b=N8/ig1HSBVDOBc44FiyZFGh/FC
+	tR/4FclXLyb2B4i0MDyI5dCWxpqKahov6e4oew4Kkbn1TTmVSoXRWyVNvHLsKCRdWZGzAF8DCrrKI
+	/2lU0dmqXpqarJC32FTDwhOhcQDXgmLJNjGjoqCDnlj0tG0HJjs9Czr9sMjHMS7g/+d5SrudDvtqX
+	TChSnfDSBd5fpuCue1DHrus3E0MnIMeY5pNHgDGqT0+kyX4WO4NANQjUf5ZsWQ3f539jOM9rD2yzs
+	9KVTwcj8yuS7SXudNRMj5Jzve36rMFI9mkoJV634cAEQGeU4tTopnKw1WGIm5+1WBRyIksfd7YPmj
+	7tlChNWw==;
 Received: from mail.loongson.cn ([114.242.206.163])
 	by desiato.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uoyxr-00000000Ug3-49IB
+	id 1uoyxL-00000000Uf9-2Mhm
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Aug 2025 06:40:03 +0000
+	Thu, 21 Aug 2025 06:39:30 +0000
 Received: from loongson.cn (unknown [223.64.69.45])
-	by gateway (Coremail) with SMTP id _____8AxRNAuv6ZoAU4BAA--.2043S3;
-	Thu, 21 Aug 2025 14:39:42 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8Dx_tISv6ZooE0BAA--.2353S3;
+	Thu, 21 Aug 2025 14:39:14 +0800 (CST)
 Received: from localhost.localdomain (unknown [223.64.69.45])
-	by front1 (Coremail) with SMTP id qMiowJDxrcEhv6ZowvRcAA--.65049S5;
-	Thu, 21 Aug 2025 14:39:41 +0800 (CST)
+	by front1 (Coremail) with SMTP id qMiowJAxT+YIv6ZohPRcAA--.21919S5;
+	Thu, 21 Aug 2025 14:39:13 +0800 (CST)
 From: Binbin Zhou <zhoubinbin@loongson.cn>
 To: Binbin Zhou <zhoubb.aaron@gmail.com>,
 	Huacai Chen <chenhuacai@loongson.cn>,
@@ -64,35 +64,34 @@ Cc: Huacai Chen <chenhuacai@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH v3 7/7] mtd: rawnand: loongson: Add Loongson-2K1000 NAND controller support
-Date: Thu, 21 Aug 2025 14:39:21 +0800
-Message-ID: <f01986dcb9f16450bd7f38c8fd663df686e6d145.1755757841.git.zhoubinbin@loongson.cn>
+Subject: [PATCH v3 3/7] mtd: rawnand: loongson: Add nand chip select support
+Date: Thu, 21 Aug 2025 14:38:56 +0800
+Message-ID: <920eabfc69d7bc435769895c94e0a57f53031c7f.1755757841.git.zhoubinbin@loongson.cn>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1755757841.git.zhoubinbin@loongson.cn>
 References: <cover.1755757841.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJDxrcEhv6ZowvRcAA--.65049S5
+X-CM-TRANSID: qMiowJAxT+YIv6ZohPRcAA--.21919S5
 X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGw45WFW3CrW8Cr1UXw48Zrc_yoW5Kr4rpa
-	yUAay3KFW5KF4Y9a98tayrCr13Z34fJr9rJFZrW34xK3s3J34DWFy8GF10qF4avFyxWryx
-	ZFyvgas7uFsrXrbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoW3Ar1kJF15Xw1rGFyUuryDJwc_yoW7AFWDpa
+	yUAw4fKrnYkF4Uur4DKFs5Cr1Yy3yrJrW7GFZ2v34S93sxtw1UWF15CFyaqrWFkw1UKw1a
+	vw40gaykCF1UWrcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
 	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
-	xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWrXVW3AwAv7VC2z280aVAF
-	wI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7
-	AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW7JVWDJwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-	WxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7I
-	U0bo7JUUUUU==
+	0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AK
+	xVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcHUqUUUUU
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250821_074001_635664_2A573D9C 
-X-CRM114-Status: GOOD (  15.00  )
+X-CRM114-CacheID: sfid-20250821_073928_396360_96AF066E 
+X-CRM114-Status: GOOD (  17.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,111 +108,192 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Loongson-2K1000 NAND controller is also similar to the Loongson-1C.
+The page address register describes the page address of the starting
+address for NAND read/write/erase operations.
 
-It supports a maximum capacity of 16GB FLASH per chip with a maximum
-page size of 8KB, and it supports up to 4 chip selects and 4 RDY
-signals.
+According to the manual, it consists of two parts:
+	{chip select, page number}
 
-The key difference from the Loongson-2K0500 is that it requires explicit
-configuration of the DMA control route. Typically, it is configured as
-APBDMA0.
+The `chip select` is fixed at 2 bits, and the `page number` is
+determined based on the actual capacity of the single-chip memory.
+Therefore we need to determine the `chip select` bits base on the `page
+number`.
+
+For example, for a 1GB capacity chip (2K page size), it has 1M pages.
+Thus, [19:0] is used to represent the page number, and [21:20]
+represents the chip select.
 
 Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
 ---
- .../mtd/nand/raw/loongson-nand-controller.c   | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ .../mtd/nand/raw/loongson-nand-controller.c   | 117 ++++++++++++++----
+ 1 file changed, 91 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/loongson-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
-index 7b331d0ca2f0..6610c239f721 100644
+index 97cd566420a8..b26d1e133594 100644
 --- a/drivers/mtd/nand/raw/loongson-nand-controller.c
 +++ b/drivers/mtd/nand/raw/loongson-nand-controller.c
-@@ -73,9 +73,18 @@
- #define LOONGSON_NAND_READ_ID_TIMEOUT_US	5000
+@@ -82,6 +82,7 @@ struct loongson_nand_data {
+ 	unsigned int op_scope_field;
+ 	unsigned int hold_cycle;
+ 	unsigned int wait_cycle;
++	unsigned int nand_cs;
+ 	void (*set_addr)(struct loongson_nand_host *host, struct loongson_nand_op *op);
+ };
  
- #define LOONGSON_NAND_64BIT_DMA		BIT(0)
-+#define LOONGSON_NAND_DMA_CONFIG	BIT(1)
- 
- #define BITS_PER_WORD			(4 * BITS_PER_BYTE)
- 
-+/* Loongson-2K1000 NAND DMA routing register */
-+#define LS2K1000_NAND_DMA_MASK         GENMASK(2, 0)
-+#define LS2K1000_DMA0_CONF             0x0
-+#define LS2K1000_DMA1_CONF             0x1
-+#define LS2K1000_DMA2_CONF             0x2
-+#define LS2K1000_DMA3_CONF             0x3
-+#define LS2K1000_DMA4_CONF             0x4
-+
- struct loongson_nand_host;
- 
- struct loongson_nand_op {
-@@ -762,6 +771,23 @@ static void loongson_nand_controller_cleanup(struct loongson_nand_host *host)
- 		dma_release_channel(host->dma_chan);
+@@ -90,6 +91,7 @@ struct loongson_nand_host {
+ 	struct nand_chip chip;
+ 	struct nand_controller controller;
+ 	const struct loongson_nand_data *data;
++	unsigned int addr_cs_field;
+ 	void __iomem *reg_base;
+ 	struct regmap *regmap;
+ 	/* DMA Engine stuff */
+@@ -215,6 +217,26 @@ static int loongson_nand_parse_instructions(struct nand_chip *chip, const struct
+ 	return 0;
  }
  
-+static int ls2k1000_nand_apbdma_config(struct device *dev)
++static void loongson_nand_set_addr_cs(struct loongson_nand_host *host)
 +{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	void __iomem *regs;
-+	int val;
++	struct nand_chip *chip = &host->chip;
++	struct mtd_info *mtd = nand_to_mtd(chip);
 +
-+	regs = devm_platform_ioremap_resource(pdev, 2);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
++	if (!host->data->nand_cs)
++		return;
 +
-+	val = readl(regs);
-+	val |= FIELD_PREP(LS2K1000_NAND_DMA_MASK, LS2K1000_DMA0_CONF);
-+	writel(val, regs);
++	/*
++	 * The Manufacturer/Chip ID read operation precedes attach_chip, at which point
++	 * information such as NAND chip selection and capacity is unknown. As a
++	 * workaround, we use 128MB cellsize (2KB pagesize) as a fallback.
++	 */
++	if (!mtd->writesize)
++		host->addr_cs_field = GENMASK(17, 16);
 +
-+	return 0;
++	regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR2, host->addr_cs_field,
++			   host->data->nand_cs << __ffs(host->addr_cs_field));
 +}
 +
- static int loongson_nand_controller_init(struct loongson_nand_host *host)
+ static void ls1b_nand_set_addr(struct loongson_nand_host *host, struct loongson_nand_op *op)
  {
- 	struct device *dev = host->dev;
-@@ -780,6 +806,12 @@ static int loongson_nand_controller_init(struct loongson_nand_host *host)
- 	if (host->data->flags & LOONGSON_NAND_64BIT_DMA)
- 		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
- 
-+	if (host->data->flags & LOONGSON_NAND_DMA_CONFIG) {
-+		ret = ls2k1000_nand_apbdma_config(dev);
-+		if (ret)
-+			return ret;
-+	}
+ 	struct nand_chip *chip = &host->chip;
+@@ -263,6 +285,8 @@ static void ls1c_nand_set_addr(struct loongson_nand_host *host, struct loongson_
+ 			regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR2, mask, val);
+ 		}
+ 	}
 +
- 	chan = dma_request_chan(dev, "rxtx");
- 	if (IS_ERR(chan))
- 		return dev_err_probe(dev, PTR_ERR(chan), "failed to request DMA channel\n");
-@@ -939,6 +971,18 @@ static const struct loongson_nand_data ls2k0500_nand_data = {
- 	.set_addr = ls1c_nand_set_addr,
- };
++	loongson_nand_set_addr_cs(host);
+ }
  
-+static const struct loongson_nand_data ls2k1000_nand_data = {
-+	.max_id_cycle = 6,
-+	.id_cycle_field = GENMASK(14, 12),
-+	.status_field = GENMASK(23, 16),
-+	.op_scope_field = GENMASK(29, 16),
-+	.hold_cycle = 0x4,
-+	.wait_cycle = 0x12,
-+	.nand_cs = 0x2,
-+	.flags = LOONGSON_NAND_64BIT_DMA | LOONGSON_NAND_DMA_CONFIG,
-+	.set_addr = ls1c_nand_set_addr,
-+};
+ static void loongson_nand_trigger_op(struct loongson_nand_host *host, struct loongson_nand_op *op)
+@@ -603,42 +627,83 @@ static int loongson_nand_exec_op(struct nand_chip *chip, const struct nand_opera
+ 	return nand_op_parser_exec_op(chip, &loongson_nand_op_parser, op, check_only);
+ }
+ 
+-static int loongson_nand_attach_chip(struct nand_chip *chip)
++static int loongson_nand_get_chip_capacity(struct nand_chip *chip)
+ {
+ 	struct loongson_nand_host *host = nand_get_controller_data(chip);
+ 	u64 chipsize = nanddev_target_size(&chip->base);
+-	int cell_size = 0;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 
+-	switch (chipsize) {
+-	case SZ_128M:
+-		cell_size = 0x0;
+-		break;
+-	case SZ_256M:
+-		cell_size = 0x1;
+-		break;
+-	case SZ_512M:
+-		cell_size = 0x2;
+-		break;
+-	case SZ_1G:
+-		cell_size = 0x3;
+-		break;
+-	case SZ_2G:
+-		cell_size = 0x4;
++	switch (mtd->writesize) {
++	case SZ_512:
++		switch (chipsize) {
++		case SZ_8M:
++			host->addr_cs_field = GENMASK(15, 14);
++			return 0x9;
++		case SZ_16M:
++			host->addr_cs_field = GENMASK(16, 15);
++			return 0xa;
++		case SZ_32M:
++			host->addr_cs_field = GENMASK(17, 16);
++			return 0xb;
++		case SZ_64M:
++			host->addr_cs_field = GENMASK(18, 17);
++			return 0xc;
++		case SZ_128M:
++			host->addr_cs_field = GENMASK(19, 18);
++			return 0xd;
++		}
+ 		break;
+-	case SZ_4G:
+-		cell_size = 0x5;
++	case SZ_2K:
++		switch (chipsize) {
++		case SZ_128M:
++			host->addr_cs_field = GENMASK(17, 16);
++			return 0x0;
++		case SZ_256M:
++			host->addr_cs_field = GENMASK(18, 17);
++			return 0x1;
++		case SZ_512M:
++			host->addr_cs_field = GENMASK(19, 18);
++			return 0x2;
++		case SZ_1G:
++			host->addr_cs_field = GENMASK(20, 19);
++			return 0x3;
++		}
+ 		break;
+-	case SZ_8G:
+-		cell_size = 0x6;
++	case SZ_4K:
++		if (chipsize == SZ_2G) {
++			host->addr_cs_field = GENMASK(20, 19);
++			return 0x4;
++		}
+ 		break;
+-	case SZ_16G:
+-		cell_size = 0x7;
++	case SZ_8K:
++		switch (chipsize) {
++		case SZ_4G:
++			host->addr_cs_field = GENMASK(20, 19);
++			return 0x5;
++		case SZ_8G:
++			host->addr_cs_field = GENMASK(21, 20);
++			return 0x6;
++		case SZ_16G:
++			host->addr_cs_field = GENMASK(22, 21);
++			return 0x7;
++		}
+ 		break;
+-	default:
+-		dev_err(host->dev, "unsupported chip size: %llu MB\n", chipsize);
+-		return -EINVAL;
+ 	}
+ 
++	dev_err(host->dev, "Unsupported chip size: %llu MB with page size %u B\n",
++		chipsize, mtd->writesize);
++	return -EINVAL;
++}
 +
- static const struct of_device_id loongson_nand_match[] = {
- 	{
- 		.compatible = "loongson,ls1b-nand-controller",
-@@ -952,6 +996,10 @@ static const struct of_device_id loongson_nand_match[] = {
- 		.compatible = "loongson,ls2k0500-nand-controller",
- 		.data = &ls2k0500_nand_data,
- 	},
-+	{
-+		.compatible = "loongson,ls2k1000-nand-controller",
-+		.data = &ls2k1000_nand_data,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, loongson_nand_match);
++static int loongson_nand_attach_chip(struct nand_chip *chip)
++{
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
++	int cell_size = 0;
++
++	cell_size = loongson_nand_get_chip_capacity(chip);
++	if (cell_size < 0)
++		return cell_size;
++
+ 	switch (chip->ecc.engine_type) {
+ 	case NAND_ECC_ENGINE_TYPE_NONE:
+ 		break;
 -- 
 2.47.3
 
