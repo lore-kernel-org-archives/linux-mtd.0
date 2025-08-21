@@ -4,174 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E867ECA0EE6
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Aug 2025 03:38:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB498CA0EFA
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Aug 2025 07:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KhL5nCjMryrHo3iD2Sg2skXsJzV5/PtGsQASuERXrag=; b=Tce2if0cG+Xw/S
-	+YWvtazs6K3p74tYs7VDsi0sgHFI9EqCi1FMFav5NwOmHcY/XsKDxXYp9xJyVFyB0QyR7wtH1Iyej
-	EU/YhxU3XnsqZbwclA4IQyjjdBLrUu9Sus0AFDnlCbFS5j8+c+ZVHBXa+21Fl6y9CR9vhoruP+hUT
-	G8yJfUzIz1wr96ii5hXxqLVTt+qH/23oMKIjDWWT1fo9ryKkM2mhUhHBAgJ1NkLLuj1xJwukYIm1a
-	V7usqTDcUVcpfd4JrX5JTWp6ztf6fyB3OEELluQFLRHEAy5VVqGW5uco72KMiV24bg8yBCoIuaywE
-	pNja+mw9YL46aKyzp1zw==;
+	List-Owner; bh=mnX5ee55+Lz8KHpQk04eQ9OWB2NlhVuHoMzFtDkSRyU=; b=eKHT3+O42QASW6
+	xMIuK812ZKrofBBmT+qaLwD4H8U7B6ryT3OH19helX37fmZB4iIX36iilbdah1E15vSsUHueTu458
+	Kt0/PQP0l8s7fqq/ya5hRInwR7joT3TaFAISLXYbx0l6TsNZVYmrueUZsl7K56MenMr0NHvt5eNlF
+	Cy9xGl5uNwyo5IrWBuh9AJDBzx4vkhGwdep0COlNG0nx4n4A9Vl03soquJYfYPeckOHYk5yjxKi1s
+	+5KuRvxSYhiFL3lKmO6hAtnunKkNO8E8EhlzPWBezdr82bpBuBuYYhCJx09+HRybv9l4B0LlGgL7R
+	iN01LK+zxlMKtV0TQD5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uow7h-0000000FdfE-0Z1o;
-	Thu, 21 Aug 2025 03:37:57 +0000
-Received: from mail-mw2nam12on20624.outbound.protection.outlook.com ([2a01:111:f403:200a::624] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1uozHL-0000000G1xS-3q2I;
+	Thu, 21 Aug 2025 07:00:07 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uotEd-0000000FJQ1-0M6m
+	id 1uoyxw-0000000FyhQ-16fM
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 21 Aug 2025 06:40:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=Ja+F/Ralu0iWz+CR1mwf/tiUOLJ7vfAP3EsyupxyM6A=; b=ML434aY80S5VY9H0Gv6ijgLkhS
+	OVrS02bWQH1KRzzr7bu687DfjiM7XAKq69Z8wMIjrxQVkr9qhWY2lQPX6xxFOoRmH6neC1/UZytYF
+	AJ+V0O0EOxdIbB2+pFPsnZ9jD+dSeh2AsLhAebQqN63TGMKUZglFqYp7BfEcEAVk+QZj4KkVhOcKe
+	QCy/9LICsc1gOzJYzuhUMuzkZTTVZf06hZBJXfaIUnph3sy0sZLeCFJl0BPdES3vtHZPF8c+wFDL+
+	FEzJGPe/cuHf9AYmjEB7olP9n8LboDZ6PYyHjO5WH+dUe916pxwSU5PMY66HwxnHuohUi0vR8vP5W
+	0pUZh0Tw==;
+Received: from mail.loongson.cn ([114.242.206.163])
+	by desiato.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uoyxr-00000000Ug3-49IB
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Aug 2025 00:32:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DQz3w2BhHuygs9mv2KCtYA1ETrey7Y95MCAhOa5UEXjvm/Nd2UX13W9F+8drpPXVTx7LwEvLsq5F6Z3nbXF51sakGTvQ1FffbISJRaOjzFFkkseyKOhpGtAQ2VvMsJzmdxoQSSnHVs9X59SXybx9IxO73nHoFvIfR0X1CYmxeEgl9Umb5+vz1NwQ3fbFOUHXurg4IbMeFz6IPG0DCkoYcHAU/Xyzjl4wGP0ZplJXhU2vAqhvmtxtgP4ClEuMWGd0hUoXxggc2gO5m7VQh9hninblh+b3gb6oUQ8l4cJiM4/dgWQ8341NbPpsSYhjan7FXc7s8rn3DcfuQHIJhJAuFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nS2jvFJkkteK4Yw9eS7WlgNs+ZGEyX1Bl/zFFNsau4k=;
- b=B/HVdj0TN093Av0RRF3t5Yystp49OAD5jA4e9ZaQWIUD+YpEjBsfesDfCspLcSEEIpsl4/X22ABUrHcccpLf/kTkrj+rjuiW2DAP0cGIJHT1FXRvnv5zmEs9mppkBAKbAwcVykp8JNir5a5Lc10fjgZEj2OIepHjJNTd5S8nNeNbwCFqFRkWaMoxLC4ZsxnYCARtAB0lvs0YGAQfSHvw9sx7wjTufLDHnrQcXqzk6+t9lMcziQdDYwgLkWYHNhMmNRUyO/vd+IqiJq8gNp1vEeupOH9Ug5+9+8VOJlrsdG8CUOKLFqhjUmNpU56lc/rE414NjvJ4DwNhYuWT/jU3fQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
- dkim=pass header.d=altera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nS2jvFJkkteK4Yw9eS7WlgNs+ZGEyX1Bl/zFFNsau4k=;
- b=BLreti9ez+av8ONoCCxfGDNfOaI3e5tqWNFG8mQCuY37Zt9S3a7ZoUSZpl+nAf22DjqJ9kYuHqFk83M6U22mQFX4nk2WfY2G2SBkU66ih3c5ZmfxvK4upLvI7WaG0eWLKkQ9DTlA8oTXGsboCBE5FnD/tcceGs/9nmIeKU7yIpqwf7SG9M8gnPMNLdF8IVqTIE9ZyX8o6568W7qxucX3gPvFnVyy7QQztJIWY8W4mxUSWlmjNgbvme1RskKKbsYJvjKlDq6+Pota0k7etv9iWXqvH6u47OVm3YPlm8FQ2F6JYT+nEoyo3Muc8jAyySJuPUBgGSCOmtW1t7SsCe6RPg==
-Received: from MN2PR03MB4927.namprd03.prod.outlook.com (2603:10b6:208:1a8::8)
- by CH7PR03MB7785.namprd03.prod.outlook.com (2603:10b6:610:24f::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.13; Thu, 21 Aug
- 2025 00:32:45 +0000
-Received: from MN2PR03MB4927.namprd03.prod.outlook.com
- ([fe80::bfcb:80f5:254c:c419]) by MN2PR03MB4927.namprd03.prod.outlook.com
- ([fe80::bfcb:80f5:254c:c419%4]) with mapi id 15.20.9052.013; Thu, 21 Aug 2025
- 00:32:45 +0000
-From: "Romli, Khairul Anuar" <khairul.anuar.romli@altera.com>
-To: Michael Walle <mwalle@kernel.org>, Tudor Ambarus
-	<tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, "open list:SPI NOR SUBSYSTEM"
-	<linux-mtd@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>,
-	"Gerlach, Matthew" <matthew.gerlach@altera.com>
-Subject: RE: [PATCH v3 1/1] mtd: spi-nor: core: Prevent oops during driver
- removal with active read or write operations
-Thread-Topic: [PATCH v3 1/1] mtd: spi-nor: core: Prevent oops during driver
- removal with active read or write operations
-Thread-Index: AQHcAPLLJpnSjUK3G0+J/n9y4LRWFbRKRaUAgAAAp3CAAAT8GoAiGIWg
-Date: Thu, 21 Aug 2025 00:32:45 +0000
-Message-ID: <MN2PR03MB4927D29E06586CCE7D0547FEC632A@MN2PR03MB4927.namprd03.prod.outlook.com>
-References: <cover.1753839339.git.khairul.anuar.romli@altera.com>
- <566fc1168db723672ab0bc6482ec7b72b4b8fe2b.1753839339.git.khairul.anuar.romli@altera.com>
- <DBP7P3RWX17B.14Q27IBS3T3FL@kernel.org>
- <MN2PR03MB49271E2D022D305BC149BA4FC624A@MN2PR03MB4927.namprd03.prod.outlook.com>
- <DBP84FIUUQO7.369TFNTJFELMW@kernel.org>
-In-Reply-To: <DBP84FIUUQO7.369TFNTJFELMW@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=altera.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR03MB4927:EE_|CH7PR03MB7785:EE_
-x-ms-office365-filtering-correlation-id: 32b1faf5-1bd6-4fc6-e399-08dde04a3f4f
-x-ms-exchange-atpmessageproperties: SA
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|921020|38070700018;
-x-microsoft-antispam-message-info: =?utf-8?B?YWF1Ulg4T2xZa0NOa2xUNFYzSWNSVXI4VFZQb3l4WXpjQVpSL05QT1BXNzNT?=
- =?utf-8?B?RlJOUVZYbXR2dWdkaGZSbG5rYU5oanJOSWtZQ0RDM0xqOVh4NlIwMklrTFBD?=
- =?utf-8?B?V3UzMmtXTE5mRjgvNWp1bjRFenU4V3NLZ1hUSEZSb1dhQzBlNk5sM2FqeFJn?=
- =?utf-8?B?Nm9aWm9RQTZweVJjUHRkNXB2RS9Nd2YvTFE5cHJwVDg3aTlBZ0RHUTdjSmZs?=
- =?utf-8?B?TFYybEEvOGZRVmhBeStBV3dSRnQrazhRZk5PNDZSeENTcnl6V29ZeUd6M2ww?=
- =?utf-8?B?RDlmUSt4RVhmVTBtcGhoLzJ0TWh0MUZYWXpEM1p2VDZ0eHRCVHVxejJPdEVV?=
- =?utf-8?B?cDZxQTZUcG9HUmpTMTVmcWpmWHFqbjVWblVURExtM01nL3hyYjBNN0RsNERz?=
- =?utf-8?B?bmgzODZnU3JXbHZnV01QelB3OE95VEpnMFg5bE1YRWowUG5yL1kvU045UERn?=
- =?utf-8?B?M0V1SnkvUE1DWHIyaGV3WHVMbVBsanBaS0U1K0NPVi9McjFEY04wQzVlQVZ1?=
- =?utf-8?B?czlGMXdzUlV1cG52YzlPQkVsSjltNDBBVXNmK21ZYyt4QkZYOE9XNzd4QVlF?=
- =?utf-8?B?SkZ3YUpSSWE5cy9odi9JNjdCa2VFT3ZzMEdTQS9Ca3J6dXlHNzRNRFdjNmk5?=
- =?utf-8?B?UnZWbXovZkZUVUFZZjcvbkg3TVNIaC82aVlNYjdxcWVsWWVkcXZEMTJlLzla?=
- =?utf-8?B?b0lBYmRsZDFEbjJ6NzE5MnJaSmowQWxkbUlYNzJyTkZlN0xxc0p2clZ5WXlH?=
- =?utf-8?B?OEhzYVgvN01rS3A2aU50NXhDby8rT3JlWStaTDBsY3lWMGc5VGtQWmRmVm9G?=
- =?utf-8?B?UnhDR0JWc2dpK2ZUOHBiMG1uUGNXdHVpYldDM1M2dEJGeXN1cGFTTkZMM1VI?=
- =?utf-8?B?WG1uUzkxalhsVHZTTDEzeW5LRkk4Y1ptUzNuQzdLS2RQT1BoUC9vTE5Wek8w?=
- =?utf-8?B?TUM0L3dLOFdrUVgvNGpZTFc0ZnJiaFBlSU9iRmJSRzNjT1ZWc2U0UG9Ka3p1?=
- =?utf-8?B?SDhMMXByZm1oMFN5QWxZMlVNRGM5ZWlRcGcyTml0WFhPSDN3cCtVbUVSbEVt?=
- =?utf-8?B?M0hwUmt1dDlwdGZXWFpLN1RObmpXUmlubjhQSzdvTVZXS3Zva1I2aDhpOWZw?=
- =?utf-8?B?S0VNZWUzSzRnSWs4bjMwUVkvOEQyK3lpL2IxODNxN1ZNQ1NDTVpzeEVIcXlR?=
- =?utf-8?B?TElDSEJhSDMraUFBKy9WelJYazMrYmJSZWZqT1psdVNLNEFjYTRFZ2w1eTRY?=
- =?utf-8?B?UVhpbFB5eW5MaVZNN254TFBJNmN0QUlhd0ZzMGYzdzlpbXdHck0vMXlOc0Y0?=
- =?utf-8?B?dDhCclVlOFBsdUN0Q1J0SUxKMHJ6a0NKa1lKMVJKenhKRnZ1d2RmK0xHWDMw?=
- =?utf-8?B?K25NZUYvVXdsM3dURkVXSlpiTkNQeCs0TWdHZFU1YlB4bFp3Z2J1ZHE5V2Z2?=
- =?utf-8?B?ZnVZOVlZc0o2WFMyS0lKTE1aQjNZVVJ5cFVxUWVQS0lRRlI5NWdQRUdWMFZZ?=
- =?utf-8?B?WW1YdkxiUGVpQ3FyejFrNkpHQUp0clEvSjNHd0t3Q3hUak1zM0NKcGhmZHhC?=
- =?utf-8?B?TC9lZ1hIU1MzNnZCUFRxcWxiWUMwWVNHT2dMQkpKU0huM3VXa2pFSzdTbmZN?=
- =?utf-8?B?UGVHMVE0c3ZWck5hSGRPbHlCaGRoWDc2Z1MzTkhuUDVjM3FQY0FySm1BS0Ur?=
- =?utf-8?B?UlZ2UU44bk5yd0c3bytwUzdwM2hyeHdsRE81bVNSWmdPMkVBRUtOU2tBc0NL?=
- =?utf-8?B?QWFPMXhkeVFIR1lTNFY1cHIzOERlOFEvTGo3TWFaU2Y0N1FwRFV6aStaTnpD?=
- =?utf-8?B?OXBDaEhHSnVxc2VRK0dsb2trbisvUVRXZGx6eDc0NXJuSzJ2UGw5TmU2N1Zn?=
- =?utf-8?B?UW9hUVhSWkpkc3k5L0VqOFMyeXdVNGgva0JVV2RIV2xvNTRHRm1CMENZK2F2?=
- =?utf-8?B?d0RtTFhqQnJ6ZkVsR2h1NzR5d05kcENGUHdWK053SFhkYlNWYWdycHREeitL?=
- =?utf-8?Q?BjWiLwe4SSr30pLg6EmE/vFwF4Yg7Q=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR03MB4927.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(921020)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZnB6RVR4YkMxZFdvQzhoQkQ3NGM5OXdVQ3cyeDdtZjZKNm9MUVkrQzBxNkc3?=
- =?utf-8?B?cTIvdEpVdnJBaCtML1N3ZXF5NVhwRHNybWtYRTdnb0dIQ3ZqZjFtMVBMb01j?=
- =?utf-8?B?bEEwUmpGdWMxL1pwYkxWbUJ4TXpmUDhkalU2d016SjVZdHNRc1RsUEVzWDAv?=
- =?utf-8?B?NHA0T09zVEJ1d3pCWWdmNDdRUzdnZXVOMk42UVNzSzBDZFNmSDNNVTFKVFJE?=
- =?utf-8?B?WXpvK0pHMVI5V0xKejVDKzVMdno0NTFYV0tpamtaWXRTQTFyazhPaEVHNEhq?=
- =?utf-8?B?TWtUU2g1N2pKSS82ekJPakFJVE9QRlo4azRwQVRWOHc4MUtZRFRXMjNvcUdB?=
- =?utf-8?B?ZDdyeHVCZGVuY1NaTzQ1em5seTRQa0JKZFdIVXNZdE1KUWMxczFPVlNPQlJB?=
- =?utf-8?B?cFRHS1RWazczVGpPVlNiVjlhcW1KZk5oZWN4ZkVxWWZRWlBMTFVMT3p1SGg1?=
- =?utf-8?B?TWp3c1pCV21IRWJBbEI0NXhveFBDSStRdDMzZW9SN0hya0h5cWdKcktwY3Fp?=
- =?utf-8?B?NURVUE9GR0xNeXJ0UHFxclZlRk13Y2V3bnFTSG9VbTVNc3lyNi94M0drRnVt?=
- =?utf-8?B?cGdzd0NtOGdjaGpQR2p6SjVkWTltUUdvczZuZWJ6UFZUdmF6REFNL0JWMHZ4?=
- =?utf-8?B?VVNPTTgrdk1VZnFQZk80M1hVQURhdm9nczFrdHMwckRYL1lxSGhTcDBZcFZ0?=
- =?utf-8?B?bHE3V2FBRVZKMzNUWTFPTHM3RGg3UW9COVJuWWhYYkpPVDY4cGhEeW9tVkRP?=
- =?utf-8?B?TGNvY3pHa3lncHVxa2lRd1JmVG9aL3Z2WHhxZUExciswUE1WZFloL3Npb3hH?=
- =?utf-8?B?WHZ0eExTMkVqUytRR1J0WGR0WjN4enlXZDhMUktla3lOcmYxTTllSElleXcw?=
- =?utf-8?B?VStXUmVVYzRFUHo3VnhuVTVDK0NNQitoeHJNQ25rWHl2cjFzVG9mTERQdFFC?=
- =?utf-8?B?eVVGNkVqUi8wOTNzVWN1VktMU0tER3RvKzhKeFQ2UU1ta0ZTWmJ0ODN6THVu?=
- =?utf-8?B?S2dzWmc5NXNSa0VqVmY3Tmk3dlcxQTB2WFF5MU80eXRHbUpvSzlUOUpGUG5J?=
- =?utf-8?B?MWw3ZU5RZHZsSnY4V0dPOEduTEg0UnppdFhWK3llOHJSZkpXbGdkQzVMa0U2?=
- =?utf-8?B?cXo0T2l6a1J0VVd6OXVKZG83RUM2NDI2RVdPTk1Fb2JQV2pnUTFjVnMwK1FI?=
- =?utf-8?B?cmxWSy8wWTdpKzEvS0dHS0J6NFFYYVF5eW1QRlN2bS9BbkdJZElsOTdXeEVB?=
- =?utf-8?B?cnkyYVlwVWQ5TXMvWlZXWGlvemdjY2VNTjdVcDhTa0pxNVBlUmpscUM3MnRI?=
- =?utf-8?B?alViV015OWh6aVk3TGZLcGZUYjMwdHNLWGZBbnBXMEpyMisrSmw4UGFvMDBH?=
- =?utf-8?B?SUpreFJ6eEdIaXVqdGV5SzBHU2pPZWRWYWhkOFI1dmptYVRiWExrMmtMeWFE?=
- =?utf-8?B?UVl4bDlHNVkvL2Fvd2p0Y1J1eEd2Z2FKNEV1dnp3eXVhcWRKV0h4RHVjbm1T?=
- =?utf-8?B?eVpzek8vdnRaQUpQR1VJMElhcFdtQjM3elhGWkZYYWZyaC9VdW1xV01TL2xq?=
- =?utf-8?B?WWJmSWhOZHhBM2lTWmREZDgxcTJBQkNMNnl2dWd6SDlFSWRFZFZoWjU4Z2Jo?=
- =?utf-8?B?dW1JTXhhc2V1Y2FJTzFWZDFqUHgrb05HUGhOQ3RDeE44Wm8zV3hZSjVuSTBZ?=
- =?utf-8?B?MXNXUmdUeERXb2dUTU02WmFYM1F5ZHM5aXhKMlE0a3ZXWlBuTjBVK0JHZmg0?=
- =?utf-8?B?Qy9wU2lrWndtS25ETHc5UGNvR1hqWWZzeUJicmtDdEVDSnFETlpEOFJmOGhC?=
- =?utf-8?B?VkZQMmNlZndybWFHSk9hbHk0KzZTSzZLU3hOb0R3Z0gzQkNPclQwMzBpUFJB?=
- =?utf-8?B?Yy9YVlZTZlRXVGlyUlg2bzIxUlBMaHgyNjcreEF0aEZZZGxoVXZKeWRIWENC?=
- =?utf-8?B?alhSWjZ2TWwycVVjM3V6Y1RSaTRJUUtBd2RVL2RCdWtJTWNkTGVTQ1Y4ZTBw?=
- =?utf-8?B?eUQrZTI0dXozd3dDMEd6UnB0TFc1MnZ6dUNLU1hYQXBJQlF1MFlMZ2J2ZVo4?=
- =?utf-8?B?UVlEY2VQQzYzUm9BckxtUElBTEh0eldUeHhuZ28vcktzWjgyRm9XVlZXYldp?=
- =?utf-8?B?L1MraUlZVkorckcxSTIvcXdFRmdMcEoxanpab2RyTExPMzFMWWUyVzhhck8r?=
- =?utf-8?B?Y2c9PQ==?=
+	Thu, 21 Aug 2025 06:40:03 +0000
+Received: from loongson.cn (unknown [223.64.69.45])
+	by gateway (Coremail) with SMTP id _____8AxRNAuv6ZoAU4BAA--.2043S3;
+	Thu, 21 Aug 2025 14:39:42 +0800 (CST)
+Received: from localhost.localdomain (unknown [223.64.69.45])
+	by front1 (Coremail) with SMTP id qMiowJDxrcEhv6ZowvRcAA--.65049S5;
+	Thu, 21 Aug 2025 14:39:41 +0800 (CST)
+From: Binbin Zhou <zhoubinbin@loongson.cn>
+To: Binbin Zhou <zhoubb.aaron@gmail.com>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
+	devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH v3 7/7] mtd: rawnand: loongson: Add Loongson-2K1000 NAND controller support
+Date: Thu, 21 Aug 2025 14:39:21 +0800
+Message-ID: <f01986dcb9f16450bd7f38c8fd663df686e6d145.1755757841.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <cover.1755757841.git.zhoubinbin@loongson.cn>
+References: <cover.1755757841.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
-X-OriginatorOrg: altera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR03MB4927.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32b1faf5-1bd6-4fc6-e399-08dde04a3f4f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Aug 2025 00:32:45.0777
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fbd72e03-d4a5-4110-adce-614d51f2077a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Iu7hye2MHndiBvghNb3WJaHFpOKI/WD30MzfsqjHknUDqczzNFccIoW/7MOSfY7iVEXzP8SV8xeZC3bBMJBYlxZuOkxXVVubJK4HixpCdJY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH7PR03MB7785
+X-CM-TRANSID: qMiowJDxrcEhv6ZowvRcAA--.65049S5
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxGw45WFW3CrW8Cr1UXw48Zrc_yoW5Kr4rpa
+	yUAay3KFW5KF4Y9a98tayrCr13Z34fJr9rJFZrW34xK3s3J34DWFy8GF10qF4avFyxWryx
+	ZFyvgas7uFsrXrbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
+	xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWrXVW3AwAv7VC2z280aVAF
+	wI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7
+	AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
+	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW7JVWDJwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
+	WxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7I
+	U0bo7JUUUUU==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250820_173255_160555_99641502 
-X-CRM114-Status: GOOD (  22.56  )
+X-CRM114-CacheID: sfid-20250821_074001_635664_2A573D9C 
+X-CRM114-Status: GOOD (  15.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -188,60 +109,115 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
+The Loongson-2K1000 NAND controller is also similar to the Loongson-1C.
 
-Sorry for taking very long time to reply. Could you advise me what kind of analysis do you want me to provide?
+It supports a maximum capacity of 16GB FLASH per chip with a maximum
+page size of 8KB, and it supports up to 4 chip selects and 4 RDY
+signals.
 
-Thanks.
+The key difference from the Loongson-2K0500 is that it requires explicit
+configuration of the DMA control route. Typically, it is configured as
+APBDMA0.
 
-Regards,
-Khairul
+Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+---
+ .../mtd/nand/raw/loongson-nand-controller.c   | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-> -----Original Message-----
-> From: Michael Walle <mwalle@kernel.org>
-> Sent: Wednesday, 30 July, 2025 3:50 PM
-> To: Romli, Khairul Anuar <khairul.anuar.romli@altera.com>; Tudor Ambarus
-> <tudor.ambarus@linaro.org>; Pratyush Yadav <pratyush@kernel.org>; Miquel
-> Raynal <miquel.raynal@bootlin.com>; Richard Weinberger <richard@nod.at>;
-> Vignesh Raghavendra <vigneshr@ti.com>; open list:SPI NOR SUBSYSTEM
-> <linux-mtd@lists.infradead.org>; open list <linux-kernel@vger.kernel.org>;
-> Gerlach, Matthew <matthew.gerlach@altera.com>
-> Subject: Re: [PATCH v3 1/1] mtd: spi-nor: core: Prevent oops during driver
-> removal with active read or write operations
-> 
-> Hi,
-> 
-> > > On Wed Jul 30, 2025 at 3:39 AM CEST, Khairul Anuar Romli wrote:
-> > > > From: kromli <khairul.anuar.romli@altera.com>
-> > > >
-> > > > Ensure that the pointer passed to module_put() in
-> > > > spi_nor_put_device() is not NULL before use. This change adds a
-> > > > guard clause to return early, preventing the kernel crash below
-> > > > when the cadence-qspi driver is removed during a dd operation:
-> > >
-> > > As already asked in v2. This needs a (more detailed) description
-> > > what is going on and what is going wrong.
-> > >
-> > > -michael
-> >
-> > Hi,
-> >
-> > We just run the following test we observe the crash.
-> >
-> > time dd if=/dev/mtd1 of=out.img bs=1MB count=1000 & echo spi0.0 >
-> > /sys/bus/spi/drivers/spi-nor/unbind
-> > echo spi0.0 > /sys/bus/spi/drivers/spi-nor/bind
-> >
-> > From the observation, the dd is not entirely terminated when the unbind
-> took place.
-> > Maybe there is other changes require to ensure the dd operation gets
-> > terminated when driver unbind/remove.
-> 
-> I'd expect an analysis what's going wrong in the kernel to judge the correctness
-> of the patch.
-> 
-> Thanks,
-> -michael
+diff --git a/drivers/mtd/nand/raw/loongson-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
+index 7b331d0ca2f0..6610c239f721 100644
+--- a/drivers/mtd/nand/raw/loongson-nand-controller.c
++++ b/drivers/mtd/nand/raw/loongson-nand-controller.c
+@@ -73,9 +73,18 @@
+ #define LOONGSON_NAND_READ_ID_TIMEOUT_US	5000
+ 
+ #define LOONGSON_NAND_64BIT_DMA		BIT(0)
++#define LOONGSON_NAND_DMA_CONFIG	BIT(1)
+ 
+ #define BITS_PER_WORD			(4 * BITS_PER_BYTE)
+ 
++/* Loongson-2K1000 NAND DMA routing register */
++#define LS2K1000_NAND_DMA_MASK         GENMASK(2, 0)
++#define LS2K1000_DMA0_CONF             0x0
++#define LS2K1000_DMA1_CONF             0x1
++#define LS2K1000_DMA2_CONF             0x2
++#define LS2K1000_DMA3_CONF             0x3
++#define LS2K1000_DMA4_CONF             0x4
++
+ struct loongson_nand_host;
+ 
+ struct loongson_nand_op {
+@@ -762,6 +771,23 @@ static void loongson_nand_controller_cleanup(struct loongson_nand_host *host)
+ 		dma_release_channel(host->dma_chan);
+ }
+ 
++static int ls2k1000_nand_apbdma_config(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	void __iomem *regs;
++	int val;
++
++	regs = devm_platform_ioremap_resource(pdev, 2);
++	if (IS_ERR(regs))
++		return PTR_ERR(regs);
++
++	val = readl(regs);
++	val |= FIELD_PREP(LS2K1000_NAND_DMA_MASK, LS2K1000_DMA0_CONF);
++	writel(val, regs);
++
++	return 0;
++}
++
+ static int loongson_nand_controller_init(struct loongson_nand_host *host)
+ {
+ 	struct device *dev = host->dev;
+@@ -780,6 +806,12 @@ static int loongson_nand_controller_init(struct loongson_nand_host *host)
+ 	if (host->data->flags & LOONGSON_NAND_64BIT_DMA)
+ 		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
+ 
++	if (host->data->flags & LOONGSON_NAND_DMA_CONFIG) {
++		ret = ls2k1000_nand_apbdma_config(dev);
++		if (ret)
++			return ret;
++	}
++
+ 	chan = dma_request_chan(dev, "rxtx");
+ 	if (IS_ERR(chan))
+ 		return dev_err_probe(dev, PTR_ERR(chan), "failed to request DMA channel\n");
+@@ -939,6 +971,18 @@ static const struct loongson_nand_data ls2k0500_nand_data = {
+ 	.set_addr = ls1c_nand_set_addr,
+ };
+ 
++static const struct loongson_nand_data ls2k1000_nand_data = {
++	.max_id_cycle = 6,
++	.id_cycle_field = GENMASK(14, 12),
++	.status_field = GENMASK(23, 16),
++	.op_scope_field = GENMASK(29, 16),
++	.hold_cycle = 0x4,
++	.wait_cycle = 0x12,
++	.nand_cs = 0x2,
++	.flags = LOONGSON_NAND_64BIT_DMA | LOONGSON_NAND_DMA_CONFIG,
++	.set_addr = ls1c_nand_set_addr,
++};
++
+ static const struct of_device_id loongson_nand_match[] = {
+ 	{
+ 		.compatible = "loongson,ls1b-nand-controller",
+@@ -952,6 +996,10 @@ static const struct of_device_id loongson_nand_match[] = {
+ 		.compatible = "loongson,ls2k0500-nand-controller",
+ 		.data = &ls2k0500_nand_data,
+ 	},
++	{
++		.compatible = "loongson,ls2k1000-nand-controller",
++		.data = &ls2k1000_nand_data,
++	},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, loongson_nand_match);
+-- 
+2.47.3
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
