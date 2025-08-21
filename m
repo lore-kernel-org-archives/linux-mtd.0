@@ -4,70 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E980CA0EEB
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Aug 2025 12:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5794DCA0EFC
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Aug 2025 15:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
-	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wslHExarkyR8vHyScZli0RIBzAntAIwcO+lpH25WoLI=; b=jwBrcCsBvy5OJD
-	tC89PrCgjcISRwU73l4LCpfeznxAFVD9DKvGywvaAlLWh9TbaeGThXQZx5clmcwVus3iHqYJjs5Kn
-	TmfNyR95fIBMUo907uyUK1mb8aN4lvtLucC5yr6fSocKkUTcfv/jFv1iqniOkrO3Z96S0NTOaUSwp
-	dNiZ9WFO8eZZWpibFkZlMISkJBFdo/eQJaAZDgxuT9+qVbHiR1C+cdg4DC1sfpGOlCYp2IulQNPLw
-	+uShvI2gxhCQQUA5LdogWoxCW5eGv/AiBDkzSVTIDtCmoZVQAU7594z9YTGuZifqM8b3trhP7el7h
-	Bm+4QsuMiUJ22XN1CpIg==;
+	List-Owner; bh=q4lLeRYPC0daaOl6EYwjCtl0iT8G0DvM/5Q14xgWrGw=; b=RR6/40DSQfcyEr
+	NIGHZ52zkjsTb4Bv3bVARDxOWLhwrG57gtGMDCObh8e90kENjMt4/R93GJ22gNHhdmBTK1JCXR39o
+	6NHwtDlo1qNhm1zyMjdqPgUFc5mMhbBCrUYujAi109VnUVNOP/sy/xCiOQnRCIhxsLP785LhB1djm
+	KrM5OSeyWkYYZQim1kO0ZS8EyEZYmpgQJOkSImJhi1eyLR4esud/NUZh8Hth9XKSoHB4oUU2AqfLn
+	YnN719lPa6U5LKGAFiPojke8oECUNg2A7ynAa8dUMuirFcmonGzNY4QKkNnFlQIupGpllTHPNyNd0
+	SGVMn7QzLD0QzZY+uX8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1up4B7-0000000Gs1g-16Be;
-	Thu, 21 Aug 2025 12:14:01 +0000
-Received: from securitygw1.exwire.com ([216.171.192.25])
+	id 1up7Gj-0000000HOpn-17hU;
+	Thu, 21 Aug 2025 15:32:01 +0000
+Received: from mta-65-227.siemens.flowmailer.net ([185.136.65.227])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1up1ag-0000000GOjn-490n
+	id 1up3yt-0000000Gq32-0DWe
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Aug 2025 09:28:15 +0000
-X-exwire-MailScanner-EFA-Watermark: 1756372813.06858@h89OaGnXGeEbnVzc4tJNVA
-X-exwire-MailScanner-EFA-To: linux-mtd@lists.infradead.org
-X-exwire-MailScanner-EFA-From: nancymc@exwire.com
-X-exwire-MailScanner-EFA-SpamScore: sssssss
-X-exwire-MailScanner-EFA: Found to be clean
-X-exwire-MailScanner-EFA-ID: E2D6F1E5491.A3DB5
-X-exwire-MailScanner-EFA-Information: Please contact jdeverse@exwire.com for more information
-Received: from smtp01.exwire.com (smtp01.exwire.com [216.171.192.225])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by securitygw1.exwire.com (Postfix) with ESMTPS id E2D6F1E5491
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2025 02:20:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 securitygw1.exwire.com E2D6F1E5491
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=exwire.com;
-	s=default; t=1755768012;
-	bh=HV6ngFc0kAPeZqm3RhmqrUX5EZoxx49VvdfM3cgWoeI=;
-	h=Reply-To:From:To:Subject:Date:From;
-	b=n3lH9QsXkd5Ga9iS86oJ8rj92fVlDhfrEsphmKoNrWAIN6UWtWNT36iZMIIoQOhaD
-	 hWg1Pduuy/f1JtYKZe+XIf56QiI6PF+0H5ZWOOjpBTnWxA7DeAqSpeyFxPDo1jehD6
-	 j8qpDJkBDQaYvT2lCiE2XftMQHD4LRJccbBltn2s=
-Received: from localhost (localhost [127.0.0.1])
-	by smtp01.exwire.com (Postfix) with ESMTP id 9955346EF8B
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2025 00:19:27 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at smtp01.exwire.com
-Received: from smtp01.exwire.com ([127.0.0.1])
-	by localhost (smtp01.exwire.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 704FQpZTO-AR for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Aug 2025 00:19:27 -0700 (PDT)
-Received: from [45.138.16.152] (unknown [45.138.16.152])
-	by smtp01.exwire.com (Postfix) with ESMTPSA id 7855F5825B1
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Aug 2025 23:25:30 -0700 (PDT)
-From: nancymc@exwire.com
-To: linux-mtd@lists.infradead.org
-Subject: xl
-Date: 20 Aug 2025 23:25:30 -0700
-Message-ID: <20250820232529.50B2034DFE9C8549@exwire.com>
+	Thu, 21 Aug 2025 12:01:25 +0000
+Received: by mta-65-227.siemens.flowmailer.net with ESMTPSA id 202508211201155c39b5b66e7345eced
+        for <linux-mtd@lists.infradead.org>;
+        Thu, 21 Aug 2025 14:01:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm2;
+ d=siemens.com; i=alexander.sverdlin@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
+ bh=uFziv+Xoqi8s1O750PzRShk/r5lOsnFwo6no1Ndpf4A=;
+ b=FANoF1CSNcNhr0AzulgktsCv51sdgu0zyLNmYj8uo+YgW5H+jcFgTEBccktzoVBc0cXQqz
+ WZxAe1J/kqCmDXahSLd0oi//0StCM16PlOty2c9HNjqo71J6+dTuX1xgCG/1Aj6pakw2thA/
+ RYHKTD3gGvm0zZ0d+dngae0QJm40XFUVUER0jtG41a7XMMuvBLMqwHF6mhG8SaWMpdKggF7/
+ soaC1OgPgeedpFJghTnbrTLjH2Xyny5SZAZoVdbmJpwBucU1OejrhxmRA386vL2ywecXGz5+
+ /NkOrAmXc/He6Bki0O2CQJj6dtLU7aCGNdD0WrAOBgIKIRO5b8Z2w9ow==;
+From: "A. Sverdlin" <alexander.sverdlin@siemens.com>
+To: Boris Brezillon <bbrezillon@kernel.org>,
+	linux-mtd@lists.infradead.org
+Cc: Alexander Sverdlin <alexander.sverdlin@siemens.com>,
+	Balamanikandan.Gunasundar@microchip.com,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH v2] mtd: nand: raw: atmel: Respect tAR, tCLR in read setup timing
+Date: Thu, 21 Aug 2025 14:00:57 +0200
+Message-ID: <20250821120106.346869-1-alexander.sverdlin@siemens.com>
 MIME-Version: 1.0
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-456497:519-21489:flowmailer
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250821_022815_025080_247B0013 
-X-CRM114-Status: UNSURE (   3.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250821_050123_605921_77FC89E5 
+X-CRM114-Status: GOOD (  11.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,25 +73,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: info.superenalotto@gmail.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-V2lyIGZyZXVlbiB1bnMsIElobmVuIG1pdHRlaWxlbiB6dSBrw7ZubmVuLCBkYXNzIFNpZSB6dSBk
-ZW4gCkdld2lubmVybiBkZXIgasO8bmdzdGVuIFN1cGVyRW5hbG90dG8tWmllaHVuZyBpbiBadXNh
-bW1lbmFyYmVpdCAKbWl0IExvdHRvMjQsIEV1cm9NaWxsaW9ucyB1bmQgUG93ZXJiYWxsIGdlaMO2
-cmVuLiBTaWUgaGFiZW4gZWluZW4gCmVpbm1hbGlnZW4gR2V3aW5uIHZvbiDigqwzLjg1MC4wMDAg
-IGluIGRlciB6d2VpdGVuIEdld2lubmtsYXNzZSAKZ2V3b25uZW4uIFVtIElocmVuIEdld2lubiBh
-Ynp1d2lja2Vsbiwgc2VuZGVuIFNpZSB1bnMgYml0dGUgCmZvbGdlbmRlIEluZm9ybWF0aW9uZW4g
-cGVyIEUtTWFpbDoKClZvbGxzdMOkbmRpZ2VyIE5hbWU6IExhbmQ6IFdvaG5hZHJlc3NlOiBBbHRl
-cjogR2VzY2hsZWNodDogQmVydWY6IApIYW5keW51bW1lcjogV2hhdHNBcHAtTnVtbWVyLgoKSW0g
-TmFtZW4gZGVyIE9ubGluZS1Mb3R0ZXJpZWFidGVpbHVuZ2VuIFN1cGVyRW5hbG90dG8sIApFdXJv
-TWlsbGlvbnMgdW5kIFBvd2VyYmFsbCBncmF0dWxpZXJlbiB3aXIgSWhuZW4gaGVyemxpY2ggenUg
-CklocmVtIEdld2lubi4KCk1pdCBmcmV1bmRsaWNoZW4gR3LDvMOfZW4KCkZyYXUgS2F0aGVyaW5l
-IEZlZGVyaWNvCkxlaXRlcmluIE9ubGluZS1aYWhsdW5nZW4gLyBWYWxpZGllcnVuZ3NtYW5hZ2Vy
-aW4KQ29kZS1OYWNocmljaHQ6IDczN0dIUzk4CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+From: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+
+Having setup time 0 violates tAR, tCLR of some chips, for instance
+TOSHIBA TC58NVG2S3ETAI0 cannot be detected successfully (first ID byte
+being read duplicated, i.e. 98 98 dc 90 15 76 14 03 instead of
+98 dc 90 15 76 ...).
+
+Atmel Application Notes postulated 1 cycle NRD_SETUP without explanation
+[1], but it looks more appropriate to just calculate setup time properly.
+
+[1] Link: https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ApplicationNotes/ApplicationNotes/doc6255.pdf
+Cc: stable@vger.kernel.org
+Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+---
+v2:
+- Cc'ed stable
+- reformatted atmel_smc_cs_conf_set_setup() call
+- rebased onto mtd/fixes
+
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index dedcca87defc7..ad0eff385e123 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -1377,14 +1377,24 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Read setup timing depends on the operation done on the NAND:
++	 *
++	 * NRD_SETUP = max(tAR, tCLR)
++	 */
++	timeps = max(conf->timings.sdr.tAR_min, conf->timings.sdr.tCLR_min);
++	ncycles = DIV_ROUND_UP(timeps, mckperiodps);
++	totalcycles += ncycles;
++	ret = atmel_smc_cs_conf_set_setup(smcconf, ATMEL_SMC_NRD_SHIFT, ncycles);
++	if (ret)
++		return ret;
++
+ 	/*
+ 	 * The read cycle timing is directly matching tRC, but is also
+ 	 * dependent on the setup and hold timings we calculated earlier,
+ 	 * which gives:
+ 	 *
+-	 * NRD_CYCLE = max(tRC, NRD_PULSE + NRD_HOLD)
+-	 *
+-	 * NRD_SETUP is always 0.
++	 * NRD_CYCLE = max(tRC, NRD_SETUP + NRD_PULSE + NRD_HOLD)
+ 	 */
+ 	ncycles = DIV_ROUND_UP(conf->timings.sdr.tRC_min, mckperiodps);
+ 	ncycles = max(totalcycles, ncycles);
+-- 
+2.50.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
