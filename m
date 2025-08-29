@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E03FCCA0FF9
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 08:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9DFCA1000
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 08:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ftBc7r5IyD45ZP9M65L/GtgPZWRaADAbeGk8PrOkl4w=; b=R7lo1aWMbrjpww
-	MrdWBeEUypUBStWx6xxaxN6Ue2za3VIwFnD6A1wkLlzkzp8ufLQFdyH1MQp2NwY87FGkztYkb3MVV
-	EfFGqm3VHugh7OEmj0u+xu4xxmYczG8U6PPGddsz5OzXpR7cZldX7cse+XWKTJWfDqteAKCw0tAhz
-	H4omkYh0YgaZSHWIVYy7PHXiz/YU2QQ1qNsjcrl/1B2ohiVX59tkSx/SQxs5/nHbesZGtc0287XyX
-	9EYr6bfgV+Z+50p8weoip/SBUmNIUxr31PxIyFeLuF8h4qR1leT5VmVVUqzQj0yGlYENPS00orROp
-	VUa18TsFfzI1B8DByVdA==;
+	List-Owner; bh=sivMG9poplKI5LQ0r8ReVZZDbo0tRKvyp1rND1B9s48=; b=j+MfHB05OtC00h
+	WRBFt03LH8MMAwBvI2jefyhdCFX3/NkME3Yc/nDvjuEfNUlYBryNmyNKMNDJtcj4OnQuTduJ9Fdy/
+	4/Vuw5IXeAtvT68YqLVltQQekt3lYQm4fltHJ0LJyKo9nWp2fCEh2EKd68UpSZkjXNUc5ohW0fUBC
+	uw4c6eYGh1jdPrcD3chFcdRqS+Cp2nSmppy9Bw7nW942mfb7ZUrH75WWg/onrDsQH+Zy+AHAtkuRl
+	ZXWQ6uec+vmcpOsdzPC3y8WTXk62JxziHnhuccM3socPv4UPsPzNRevb9kSIYw9vPXWlSU3xdNDc9
+	8V5cEBkiwCIEZQYR8ZAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uruQ0-00000004y2T-2i2v;
-	Fri, 29 Aug 2025 08:25:08 +0000
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+	id 1uruQ1-00000004y3Y-3L8h;
+	Fri, 29 Aug 2025 08:25:09 +0000
+Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uru4W-00000004sov-1z0c
+	id 1uru4Z-00000004ss2-4Abf
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Aug 2025 08:02:58 +0000
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-771eecebb09so2471991b3a.3
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 01:02:56 -0700 (PDT)
+	Fri, 29 Aug 2025 08:03:01 +0000
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-7722c88fc5fso393224b3a.2
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756454576; x=1757059376; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1756454579; x=1757059379; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2kNx/lgQaweLHCKpOd5HxLBg5NtnJ9f3nOi2hx/97zs=;
-        b=AnGfaaOrEXclFflyQdeietSg+GDlQbzkP6kguaQ+4+sVZbksNnIQba961ta17T6A5h
-         4f8OHOMbMLghNdJuoTrZEGAKx16q+5T86rznkQcNUKrjkkQUCXkfjpInNuciI236D7YY
-         sGXmRolqYeqyqL9GdIleuSpw+S/S9JNF/E8BuxsVINfCjyHWJ8l/s88R4dg+nCzY0NbX
-         ulc/4ZxIAAlmUY8M6HvjQ/9UI1Jl36MRc5n+V/y8iVqB7y27AaXdss7/2VCkhja/v3/O
-         V7ngl4iyJHkv2CxINu22ObYetu1dYawVaZLV8gO24KOzVwcfntyPhsiIrMq1VJ9zIywt
-         q42w==
+        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
+        b=A91D4BF39ZnB6/+a8ADmJ5LzSXQX9mHboNzED6Y+2wE5H3szw6O2pag1n/tB9i9Zhd
+         3zNauRus65FXpkwif1UuclV0wLggArNdpfDvHmhoGw7Ou5JoY2vEmXanp0SjvpOrKMUa
+         gNiM+NhAXKXnO1Ete352QoUV7KkFwFVHmAbGUl+OXtYus74GyMhdekoJTcRjiu/NbiKp
+         N6jOc9D9NK7XuIYszXgUJScXKUTa1LaF9RYBghLjFYxInniIgHJeMU9Eb9Bnwv5uwKDB
+         BHdTD+oALVG3snTB5lqEyx71tLUopFr7ZSvrfi5lPEytpKhYtUu+1dOe6ttZIEJ66K/z
+         uwCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756454576; x=1757059376;
+        d=1e100.net; s=20230601; t=1756454579; x=1757059379;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2kNx/lgQaweLHCKpOd5HxLBg5NtnJ9f3nOi2hx/97zs=;
-        b=oX4hukkLzEZ16NAKYFXS0rBx2w61CrMh30kp42BVlatCm1WDRbevr87QWDBqbxNUo5
-         K0o+4RFv1O4OiMVVLxIETIV2HbDReAS2xqD0GoKfpcIbPo2541N4S58WPamjEtDbfBpI
-         HfQoMPIeOtTw21HyVlUGeWGqh19ntkkhGUlO6vuQZt99BjjmzAR8jgOA36E+0Pp6yWRI
-         OCp1g3Gj8b0itxCQAQ0hC6KwjEqH5ttVsQjdX59fPffPFh8idVq72AYgvhQJaA+0x/4l
-         uWbanwbuymfVztYrA5Ha3ZgYtS9/xTuOTxF80hlW5BupM9iK6G27gNf22zHbmZ1xO1fy
-         IURQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNgy0oOCBIEGJjPpY/3mkz4EdIK/OyR4bZPBlQSEDwP/O2z0XOWtDr6/qJEULgsJ6Y6L8oBl45SMw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyZpT7zrQ1cWpehX3src2rOP9OwdPWr4LsBQB5JTU4/2sRxhA7o
-	UAOslE8sPMwFOA3Jsi8KpeqhshtfrKZCRQtiV/FWvBFRYOSPbBNjZtwZ
-X-Gm-Gg: ASbGncuEYi2ziA4Zo0+yo0zkSEULjiTKM7z7AXQnQNV1b3K/AYreRV6fejjVlnT9ZzH
-	VEdZmcOsYBpMQsuEmfPrMWHte87Xfnx73lRa4tglD82gLatGfRbIZX2g8IXXumDLmcW7SC9YCyU
-	HzaDoCXmgGcPwJwHfg6FyKLClZWJd/mkL4v+yHUfQELYHSccTNQt66rGsi+yobSWP4S65ndhhP5
-	Fm6bPIkt4n/33r8ro4/+46ebRtH6FefW975OyYXjvdU6PL2axa63YdIoKUO5SFO1ENVtKTaMOv1
-	VbZUnQ5FeC915wiLwAnEnZAhjjW1c9IaOmHaWo5lLAWIqa6Im97tNuJKPszV6whge2VHOkk//7g
-	pt6VRzecjvpqXZ4FQWgaI1atffqrvUro1Khel
-X-Google-Smtp-Source: AGHT+IH+t29amFLYd0pmHfYJonIUbgBYX5deBT907gE9ZXzofCuXi+cmB62DwyrzhPtfYbGnFlKG4w==
-X-Received: by 2002:a17:902:d2c4:b0:249:25f2:16d0 with SMTP id d9443c01a7336-24925f219ebmr1591865ad.12.1756454575452;
-        Fri, 29 Aug 2025 01:02:55 -0700 (PDT)
+        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
+        b=JRto9dnxhlmVaMOF536agbv0DAY1+2ZElGgJVzXpO7Ax+NigduFN/ugJyyzOqMMHou
+         QZpuTX/zYkliC0O3kwLzRCFgzqzhwGU0F38z5iOk0qmybcMZZhkcMslMRLQYZnPdaumN
+         UYc9YxUpdCCDZ/rfVLYXeXfjhzvSrfulAkeT+LvwtX5M/8EgHpAmU2TkDoT1J3BZtxFF
+         3hozKUiubJHLxeRs7u9VpbjpwqssHfsQOIq6j2vaYQKSnygy8v541yTcQ29SwtXTWqnV
+         AV7QizbOVGB3uTSv9WpqM0JRpEzs0/h8g2yK+TyvCO+roSseUer3DjJuvSB5QVuZ1oK4
+         w6Jw==
+X-Forwarded-Encrypted: i=1; AJvYcCWiXlZGxq6Uhv415rU2OyEsi62bK/0yFy2lhQ1xRHLC0AL1HrOhUqTiGrp8BQtlGgu7HMZjN7g+VkY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxCY/0Luf04aOxCz6s/N1ZP/32+UR0MG5TJa6wRb/ar0V35k0KI
+	ZqIdlE7uqcf3Eyowz1AkA/CJsEfJe6Go+r9ls7gnGazfGDBSqDWdc3lg
+X-Gm-Gg: ASbGncv0BNtHqJ1W3pg271kJdIvmrAtJohLL9AvktuPga8FuOm9deGtVg6xCSOUELVJ
+	+dBwIZJNeZBSavbhoaxIZhMnTFcHK/g/21lhJQMuuivLi2Vvg07TWxEd/IlhM1ynz5xhy1dGbiu
+	SzVFtsAjZZctx7jPMPFRwNFWUolQlvdmL4ofbok55IgKgMFOHz/pWjAgi9HCZYXhWBYlc6bJCng
+	2ZhrwKRFZ1WTGq6CdqoDTNAdLtRObncEzFd/KTdMnrn8nLL/BqKDwA/oei1SPvwR88JykgDoeQF
+	flB41qnfHPKhj/xQhAx4WrxIUoQWrxq0xXUXCXXCWyQvtvLfM7Cg59Y3g9bH/ZIL7QSAA8pOTVe
+	evmhtdtHNNJJG59HLF1omPzuvHuIvFurjJS2QbOHewCwFyiM=
+X-Google-Smtp-Source: AGHT+IG4XzsUhVmrn4fJ8v1PNDsbGNCghgUfxDPbkeqpUjvEg9N6RxHWj66Wbdw1AdmD0ATs4dsvZw==
+X-Received: by 2002:a05:6a20:3ca8:b0:240:750:58f with SMTP id adf61e73a8af0-24340d91edcmr35447322637.30.1756454578938;
+        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-249037254a0sm16722785ad.33.2025.08.29.01.02.54
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4cd0e1c0besm1461992a12.24.2025.08.29.01.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 01:02:54 -0700 (PDT)
+        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id A15474480905; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
+	id 1E9654489F51; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -172,18 +172,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 07/14] Documentation: kasan: Use internal link to kunit
-Date: Fri, 29 Aug 2025 14:55:17 +0700
-Message-ID: <20250829075524.45635-8-bagasdotme@gmail.com>
+Subject: [PATCH 12/14] ASoC: doc: Internally link to Writing an ALSA Driver docs
+Date: Fri, 29 Aug 2025 14:55:22 +0700
+Message-ID: <20250829075524.45635-13-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
 References: <20250829075524.45635-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1129; i=bagasdotme@gmail.com; h=from:subject; bh=yEY9P3BA6E4kqaGTHyjuJlgmOOGj2m2ZOET4fPd8xcs=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY15eUeC/XH99x9zD0/p/z/9z+OvEiwfuXjriUbHJw 5Al4fDvwo5SFgYxLgZZMUWWSYl8Tad3GYlcaF/rCDOHlQlkCAMXpwBMZOZehv8FVlI3eaYvZbZV FT1yZ4VwhOvUr/8ro6tZD8+s1FyQW17C8E8vzE754pXFu0SKjG4wxTc6XF7j/+Pma/mjrVH18/Y ypfEAAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1684; i=bagasdotme@gmail.com; h=from:subject; bh=QIAPxg2EoM7XBiBH/OfCd9SfIrsCdhbBl57WJdF7gOo=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY14FftK8Ic/EqPdDdzlDXfSrtOCCiCo1tq0af6f2T rxS2nS/o5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABP5M42RYQe/RHjLfYX8tv8L 9vQt6eKUm/OnRm/3gUlFq/44pi2Xf8HI0BjxjsH0R+yFD+urVrRxaVu1SiT8M9vxwkWu7L/ecZP DfAA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250829_010256_514223_02037E7A 
-X-CRM114-Status: GOOD (  17.03  )
+X-CRM114-CacheID: sfid-20250829_010300_030772_75E59589 
+X-CRM114-Status: GOOD (  17.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -200,27 +200,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use internal linking to KUnit documentation.
+ASoC codec and platform driver docs contain reference to writing ALSA
+driver docs, as an external link. Use :doc: directive for the job
+instead.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/dev-tools/kasan.rst | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ Documentation/sound/soc/codec.rst    | 4 ++--
+ Documentation/sound/soc/platform.rst | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index 0a1418ab72fdfc..c0896d55c97af8 100644
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@ -562,7 +562,5 @@ There are a few ways to run the KASAN tests.
-    With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, it is also
-    possible to use ``kunit_tool`` to see the results of KUnit tests in a more
-    readable way. This will not print the KASAN reports of the tests that passed.
--   See `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_
--   for more up-to-date information on ``kunit_tool``.
--
--.. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
-+   See :doc:`KUnit documentation <kunit/index>` for more up-to-date information
-+   on ``kunit_tool``.
+diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
+index af973c4cac9309..b9d87a4f929b5d 100644
+--- a/Documentation/sound/soc/codec.rst
++++ b/Documentation/sound/soc/codec.rst
+@@ -131,8 +131,8 @@ The codec driver also supports the following ALSA PCM operations:-
+ 	int (*prepare)(struct snd_pcm_substream *);
+   };
+ 
+-Please refer to the ALSA driver PCM documentation for details.
+-https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
++Please refer to the :doc:`ALSA driver PCM documentation
++<../kernel-api/writing-an-alsa-driver>` for details.
+ 
+ 
+ DAPM description
+diff --git a/Documentation/sound/soc/platform.rst b/Documentation/sound/soc/platform.rst
+index 7036630eaf016c..bd21d0a4dd9b0b 100644
+--- a/Documentation/sound/soc/platform.rst
++++ b/Documentation/sound/soc/platform.rst
+@@ -45,8 +45,8 @@ snd_soc_component_driver:-
+ 	...
+   };
+ 
+-Please refer to the ALSA driver documentation for details of audio DMA.
+-https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
++Please refer to the :doc:`ALSA driver documentation
++<../kernel-api/writing-an-alsa-driver>` for details of audio DMA.
+ 
+ An example DMA driver is soc/pxa/pxa2xx-pcm.c
+ 
 -- 
 An old man doll... just what I always wanted! - Clara
 
