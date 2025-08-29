@@ -4,73 +4,167 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9C8FCA0FF7
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Aug 2025 17:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 022BEC8303F
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 07:34:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5qXVEvAxFfAxeJzTtSPnxsQW7BHcaHeUqeDm9YimcZE=; b=mrjtPgKUl+76Z/
-	zHj4MKd0wUi/pX4fX8/dMEtMQ7Y5dIIigUI+Eauc4TXet0tXUB/23vkGt65wTjYdO37FQz7O2RKdp
-	08by547vHvD+6wpIUmZ9QoVoZJgNwO1kDKpXXMjV1RT161gI8r0rA7a6qVmZ8VqiBPZebz8H9ZTnJ
-	Q2aq7/BtP4QVU62sdftaf51jcgrxKfqUtba3rc4CSLwR/2XhlvM6vsHgH3Ldtvf87pdCajiuxmldl
-	qx/N2qFvAZ7QctCFugHr9T7k2CIO/uv+UBzUzSAe4+IpKtD44/i9lAUJLYXk2tNPM4DcbCGxz05oL
-	NYwc0Mmh1FLHLZLO33Xw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:To:Subject:Date:Message-ID:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=OLH82ME6s+CSZ6SJWBYh7NAjeLgoSuXcwfw0zWXDXP4=; b=4kJ/E0iGHDp25hC16FTkhH+9TR
+	YdHz2bLn2XpxTM7mJOVpCxqdbzOOrDGIaJlI1XPGBA4A6QwffFzNeHIQCGwIGTU7pZGtRAI2xweV/
+	w1ljOQ9iNlkaXNn8bd8TMBd8A/15+FicywhQMQRcsFPtniFMn+MSIrtZ49zS1l5oCKaSgskjmRiWZ
+	AnuQn1tAqrsjfEHBWGySj+HE/ORXBo/Z4VCSl8g85yIvlWoGQsAquO03+eWBqVgd7yDDzYO0qz8YV
+	i31ixobD4cRZkoo1x/Rk8/aghkp5nR8eKSA360+0dTj5wUzNQJsxMgUAcvwud7L2P3XyrVjxmyZiK
+	1lYSAzzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urgQH-00000002Vpu-3b7A;
-	Thu, 28 Aug 2025 17:28:29 +0000
-Received: from mout.gmx.net ([212.227.15.15])
+	id 1urtcx-00000004mWj-2bs2;
+	Fri, 29 Aug 2025 07:34:27 +0000
+Received: from mail-northeuropeazlp170120005.outbound.protection.outlook.com ([2a01:111:f403:c200::5] helo=DUZPR83CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urdi7-00000001wFX-17y9
+	id 1urtKp-00000004jyv-2M64
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Aug 2025 14:34:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1756391661; x=1756996461;
-	i=markus.stockhausen@gmx.de;
-	bh=lIfDIy7cOlaPJOL4q9TdLTO0Q6ENKMXTOYMEygKgPMc=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=Rq+SzZonPaLsKiaAzEGl6NjusMmmfziDK7Yl/ZcydgxP4rQrX5mgIPXrX61x5lxc
-	 UsCm9JFiMuANumtieH5gY0biBHLwxQBg7uAO0jvsK//Iv6WKGpHR5YONAad7QYH57
-	 kOvG9h86wfuDWdbEW3fcSuhsMOntJQhoAsWxH34NMAl7TQiVqu7rYklcDrl4ntxMQ
-	 vtXTW8wdcP9lo/Kq635Og2Hd3HjdAqLTdnhZJ5TVEQlplem4vpJkhnjQ6qtMrsXPG
-	 ZYB6vMNMVipGenONHCKQs+rcOm1PW2lgR12SrtDd1yCsvEzXu9i6BWMJokDKE3SdH
-	 ebMRi2TAeoSUes2mfQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from openwrt ([94.31.70.55]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M4JmN-1uruou2F3R-003mnk; Thu, 28
- Aug 2025 16:34:21 +0200
-From: Markus Stockhausen <markus.stockhausen@gmx.de>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org
-Cc: Markus Stockhausen <markus.stockhausen@gmx.de>
-Subject: [PATCH v2 2/2] mtd: nand: realtek-ecc: Add Realtek external ECC engine support
-Date: Thu, 28 Aug 2025 10:34:08 -0400
-Message-ID: <20250828143408.2511086-3-markus.stockhausen@gmx.de>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20250828143408.2511086-1-markus.stockhausen@gmx.de>
-References: <20250828143408.2511086-1-markus.stockhausen@gmx.de>
+	Fri, 29 Aug 2025 07:15:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=xgOL6o0I/43eKRGLGoQcdhVhBkFSBYcmH6g32JNDFSKhR2r7iIBPpz0gSz8ZxOtj5SNayH5WSUWf5gl4IeoZEqaUMmIieFnx165Tk8en1xODWcyPSpIBeWTbxNucqcz4lgN0cp46Re4Jnd22nX2h3Tw2m2SHTRkor3ceDgacuah7Ethx99pGYClnUSU06Y8JFfzPze4l55NkYOnC90mYZhRkvFjxBtcW8uZkelP4iMpw2od1Xxtt5yyN9DAB8EOFVLxv/N/3mDQ34UCOrp3+ncpCRl2HrrLNFoFecGJ2EKoDUEYir+hpd5+ohl9H+A5TTXh4Upuly6GaQ5sweVY3NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IJbcD/l70DFDv3xunOkLgY+jSeqQiUGhyTchVqHob0A=;
+ b=pTmA7PWDesljaczjdE2M8DJkfBt0ZpXEeuMxMHjjzXjXfL8pOdRyS6J9jIvwuBUz70DjyYydUhQQT/P64vCzqAxOirrGqo0h3lbChE1aTuBwB/SiQ5slDDEdETYXPkqbdxKvAxRSG0KT3WfzvrXtdG0McVSnw/vyCjii8QLg47ZbKQA33fceolakH4994udywJr8CRRgYZzPGko70SfZ0lUCEFVZ0m64FDte8UWqs/yZ8ADIbDYRpfjKg/VYiutQa/H4Kn0LYlQTS0K0HgFgCU/DL4PwmoJ4AKuhZiVIlJN1qgje7NNLnaCJRqUWW2+GqfVL7m2y3t7XOAfMOOR6Cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=genexis.eu; dmarc=pass action=none header.from=iopsys.eu;
+ dkim=pass header.d=iopsys.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iopsys.eu;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IJbcD/l70DFDv3xunOkLgY+jSeqQiUGhyTchVqHob0A=;
+ b=W/eI88in6nWmyVmqtZdWRld1ylZrt6AJCdDJz+V2A++zu9bnbpUTb3QFVezSoHSdkWPNicB3E0eqktTZkiWovLvecWxeQvdd/fZ5JC/EGMXdShqRxi/rqYQFe//xVhgAmgGupZZIw/M2pvvXL+TtD9micvFzn3yq0Tym4LsQ3hIE5D2++/08SS+AKAwsz2pRwAQxj5L2+H73R5drmnE3QTxywQ+47XAhI0+gR6krAcBEaLXl1W7q39Mva0Kw3LzrekG+0GETwoDxrsfsFD9Rh51Ihf5kQB/QX6n2jAc0+e1PT1O8QZS6oU4RA1eViTHmMwXSG7z8LobKfWuuwSsmqw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=iopsys.eu;
+Received: from GV2PR08MB8121.eurprd08.prod.outlook.com (2603:10a6:150:7d::22)
+ by PR3PR08MB5820.eurprd08.prod.outlook.com (2603:10a6:102:90::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.16; Fri, 29 Aug
+ 2025 07:15:37 +0000
+Received: from GV2PR08MB8121.eurprd08.prod.outlook.com
+ ([fe80::4cd3:da80:2532:daa0]) by GV2PR08MB8121.eurprd08.prod.outlook.com
+ ([fe80::4cd3:da80:2532:daa0%4]) with mapi id 15.20.9031.018; Fri, 29 Aug 2025
+ 07:15:37 +0000
+Message-ID: <7a8ef758-3117-4b1c-8362-39e2efffd5ef@iopsys.eu>
+Date: Fri, 29 Aug 2025 10:15:35 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/3] mtd: spinand: fix continuous reading mode support
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Martin Kurbanov <mmkurbanov@salutedevices.com>,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+ Cheng Ming Lin <chengminglin@mxic.com.tw>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20250824171331.3964537-1-mikhail.kshevetskiy@iopsys.eu>
+ <20250824181850.3994184-1-mikhail.kshevetskiy@iopsys.eu>
+From: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
+Content-Language: en-US, ru-RU
+In-Reply-To: <20250824181850.3994184-1-mikhail.kshevetskiy@iopsys.eu>
+X-ClientProxiedBy: GV2PEPF00004535.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:158:401::360) To GV2PR08MB8121.eurprd08.prod.outlook.com
+ (2603:10a6:150:7d::22)
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:POTDHmCBSG2WfpqRr5X8EKZJyUQwHdbK8w8LCgMVq5jl/K9QBhI
- 3LGiPuyhhncTOQzgjCpKK5DBNsW6MH+SvMkqkTLVMtaN2Gr8kYiK/XoI9XKryiQEqVPWV++
- M26/t9Yk6TmxXSDoI7pvN9oAoDSvMJb+cCSCJCPoIBMhAZvmvhH72XGknnAW7e29i2SZEn9
- 5yl+qGFb2rL6DI0/qrgRg==
-UI-OutboundReport: notjunk:1;M01:P0:92xdAynrCMo=;6CFW71967vYUsPgv5YidK2QD8LA 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 ZpmAqGDlOMce9W6heNbmyOYCM3t3TKqw==
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV2PR08MB8121:EE_|PR3PR08MB5820:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb396f67-c511-4e4f-0399-08dde6cbda1d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?TXpjUGZSZFFxdWNjdmwwY3RKem00K0JHSTNkN3ltWVY1d1FoKzk3R1hCVTkx?=
+ =?utf-8?B?aUhERkh3MXBIUms4aStINWk4UmV6Nk4zYTFNVmhhOFZ3Zy94SFo0OEsrL0g4?=
+ =?utf-8?B?Ty9sZ2hKdHZxMUdYNnhyQ213d1k0V3kyVGp3SStFM0UzMVdKQjE5M1Q3UEtL?=
+ =?utf-8?B?eStESVRvMHd1VSs4SndzUFZRakcrZ3VuV09GK2NrSEgraFJFNmFXQjJTS3I5?=
+ =?utf-8?B?WDR5WG1GQ3VTRk9VMDhKbTdRdUZMZlhqdFhuREJLbmJaakNYQWsvMTE2RzM0?=
+ =?utf-8?B?anVZUkxLTWxCZG5ScU5qV2NuQkpvZkFnYytYQ2g3RzRIVWZmNlgzOXhBQWNl?=
+ =?utf-8?B?ZGJrc1F3enNJanQwOEgraTFlZjE0K3JuQmxIMFpSVjVzSlIvdDRWZTJMaWwv?=
+ =?utf-8?B?S015VEF2VnQzeVNxbzJ6Qks1T2VRWFkyeVRyellOVDNNTEIyalpwM3BZSHJF?=
+ =?utf-8?B?bDRGYWtIVm04em9sVDU5a3NpSkVXVktaNGwwcXo0Sjh5OStTSmVGVzZ6VHZM?=
+ =?utf-8?B?Y1RwSVNJWHdMVnNjaytHSXRBWXFiakRQUU5FeGQ4TTM5S0Y3bUlocmQ0d3VC?=
+ =?utf-8?B?NjlYU01kRkFrMGxYbHBTcTF6ck5BNlZPN1F3UjFReFd3aFVFMVZzRG1GVkty?=
+ =?utf-8?B?TE5pL3FQQytubUM2S0xndVoyTm5lL2pEQ1FyOFpWa0xWV2RVWGJuKzB6RUNo?=
+ =?utf-8?B?QUVGR3RwMEpITHJ5NTVFMVI1czhyZHl0UnpBSGltS3JEbkE4Zjd6eTIzUk9O?=
+ =?utf-8?B?WWhoT2JCRHVES0lBRVhtRW9vcnoxV0drTXRjbUFsQy9DTzRUcHhJdlRXbDVw?=
+ =?utf-8?B?d2FhU08xdGNqZ2tlMlp5ZkJ6dFg0a3lFY3JNVEwrQ3RmaHcvVXhnL0czZm9v?=
+ =?utf-8?B?dndZNVJwdVc4aTVRbzNhcjllWWxJYlB1YUJIUlcwY1c1eitPRkRSclpYdHY3?=
+ =?utf-8?B?ZkFyTGwyaXJwTzRUTVlkdndXNEc1Wm1VTHQwVjlDMEhGOCtEcUtyQkpXT0Zh?=
+ =?utf-8?B?MEZ0VjVER0szd1JEYkJBVjdUTHFjd0FYRm5yZTVCM29WVUpjaTdxNUFVOHNN?=
+ =?utf-8?B?SDFzVVRRcEMxVCtyZVo4Wm5CS0hIc1phM3k5bVpTZHpVa0Z4aU92b3Nhelps?=
+ =?utf-8?B?c24zeE02OHdrUDVDRXBja080cHQ3dEwwZHBsTk1UZ2JXZE9iTzVQbzQ3Kzh6?=
+ =?utf-8?B?Kyt5akVMaGowaXZ2VGlTYVB3Vko5bXdEMStzWUxMMnd1ZFkwME1nTmVTQ2dB?=
+ =?utf-8?B?NTB3cTZWcnV4ZDdDRUJRRU9BZFdMVHVYcmxySldzK1gxbzIwV2dyU3lVZXRK?=
+ =?utf-8?B?YmVGTzM2bnB2bDRxWlF1S0k0elVDRDJtK0I1NnowOXpLQnJaVFlLdDJUUlF2?=
+ =?utf-8?B?Vld0L0ZKcDFsTlhaOW1TWFM2UnB5SkpsUW90YnUwUDIrQlBnb0JOaklvRUM2?=
+ =?utf-8?B?dXBFZW5LZy9wT1kremJkQUdwUzVSMTZkOTZ3N0lPN3d2REsxQ3RyS0V3cWp3?=
+ =?utf-8?B?R1dEQVBiOEx6UkVtbzBkY0FXOCt6ZUxBWkhNeGVIbk5CWTZpTnVYRXFxV1h1?=
+ =?utf-8?B?WldVa0NqcjlEeStQMW9Vbm9QZzBSVDQxTVZkTmtTWXVmZG5aUDFBVjhNWEVl?=
+ =?utf-8?B?SDFoQUVHUTZFN2pQWUpxR0xkVVQ0cmlPT05vTGs3M2h0aVlQM2FPT3pTcXd6?=
+ =?utf-8?B?bE9MZ3EwZU04ODk2bFBkbUpmTTZWMnFlNGVGWkRIWGJIUGRFdHdiQW1ia0Ey?=
+ =?utf-8?B?SzlCOGM3YmdEN0JJaHhvZ01TUEVoU2dHaHdwbUFhQmcyUHRQMzR0MHhTSEll?=
+ =?utf-8?B?QWVBNVVWRFR1c3p5cUc0cXkzSEhiK3ExUDVEOEFTd1VOZUtSNFVtdTNJQy9p?=
+ =?utf-8?B?NXhxQjR1K1ZwL08xMHZTcG1uZG9DWU9UMCtZMDdac2hTK3c9PQ==?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR08MB8121.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eTJlUFVBckU5aHpWRjlQTllGZDc1Rml1L01md0x0c3VCM3lnSUpkK2FxUkls?=
+ =?utf-8?B?cEZSNGhDRWNmY2NnUCtzNkx3M1NQdWRHcGprL3EvMU9FS3R1MXFGMEVBZ0lH?=
+ =?utf-8?B?L1N1N3gvcHNWdTlyTjFPQWpuc2FmSzNwbEhjMENrZmIxbnRkUFFnUnAzdkRX?=
+ =?utf-8?B?eHUxTjduVDVVRjU4TWV3SWo5S0UxQTlwSEF5SGZlVFFWQVE5U0p1QWF3T3B0?=
+ =?utf-8?B?WEVlUkVjUk50QU1TQW1CNEx2SzJpdzZBeU15SU1KTzBtTUViVUo5TzczOWNk?=
+ =?utf-8?B?WlFrdU5iMXVucXJvQjFaRWdPdEVrTlRLdHNndi9Td1ZTYVMvNjBJZ2xoUTJh?=
+ =?utf-8?B?alVuakJHSTNSZHN0a3BiWVA3N1Njdlg4QXhVRUJPMEFvbHdjUzEzTWgrSHps?=
+ =?utf-8?B?dVpWMVkzcXhiMjRldjI5a3duN3RtM1VsVDBDbnZZVm1TS1ROOW9qZFRNaUMw?=
+ =?utf-8?B?UFZoSUMyRGVUZ0FsVmRtT3lIaEtwa2tFeEJrV1lJUnpGN0EycWlKV2Z5SjR0?=
+ =?utf-8?B?RmxpSjJXSTk4aUQ5WitmcGp0TlVWbGFxT0s3WW1KeU9MSjc1Qk9uSFdPa1E1?=
+ =?utf-8?B?NWR5aTFBWFo2VDdEMC9sMWZJOGRiRTZRS2NEa1owZko2bHBDbE9VMWhXNGhX?=
+ =?utf-8?B?V1F1bWZPQjZ4RUZhM3JyZGl0U2pMaSt0Qy9kbzhabzZ4T1ptYytvRUVLN0dB?=
+ =?utf-8?B?UzRLQ1J0OVBrNlRXalFYL3ZrTEgwRXljVTI0ZTFOQkdpOHdvTUhiU01URlZ5?=
+ =?utf-8?B?a0NkY0lBREFxenZ0R210VGV4aVo2MCt6dVBEQ2x5NklJc3Fpd0xhelFobU0r?=
+ =?utf-8?B?ODNsRzlmNG1oWFhlejIzMzhTckU5dGZQTHBkdVZQbnhpTmVHK01YeW5hT09O?=
+ =?utf-8?B?NXh6WVlja3RsQ2I2bVFPaWUvbE95SFdMQkR6TDM5NVJiRlY0Q25wL05wYTBY?=
+ =?utf-8?B?c25ialhrN2ZJVmpWNWpUM3QwLytTL3JuQWxjTHUyeHo3WVFObmt1S05Kdkp3?=
+ =?utf-8?B?WG5yY3luSktNWTVnZllGMm5paGdYZDZyeTgxcWVOaGZOWkZwbitVV21iMFQz?=
+ =?utf-8?B?ait0dDc0RUR5YVp4amwwUlZJYjQ1N2l6b3djem9XMEZYV0grWnBOU3JjWXNq?=
+ =?utf-8?B?bU1Hd3RKZTlJK29WeHR5U1lRcWtkNks2Y29UZW02dVp6WThNYzRVV2g5VTc0?=
+ =?utf-8?B?Um5LRzJjQ3BIL0c0RUliWk1LV1BnSUpSNE9vWmtJUFYwOHVmc1luSm52VllB?=
+ =?utf-8?B?YnNhOWgydnFSQTZ4N2pRS201ajMrMmRuakI3d25nSnlXZUc3ZDdvQTljSlhO?=
+ =?utf-8?B?N3IvclQwVnIxOW1BNUg0d1pCTXEvSnlFUFB6TVJqTVNnYXJueW10SzF1dWNv?=
+ =?utf-8?B?L0h1TCtDN05kbEdhaFlocnNneGRhcGtkSkJjVUJCQ1dnSXpHMk1GeW1yWU8v?=
+ =?utf-8?B?QWRSeEFZSzEwODY3bjFTM2FjOVNrNkRZbkZzNHNSUFZmb0hLdlFFUmVMYlMv?=
+ =?utf-8?B?N1lqckplbElUcnJyNkMvT0hYbHh4Y09TbFYrN2cxVXU4NDFvbEhFSWZvR2Yr?=
+ =?utf-8?B?WWQ0cGtNS09hRTNkZE03QnVlQVNYRXNtL3ZNMnZYTHhkQUJpb2FWWlRpcDBR?=
+ =?utf-8?B?ODNnUkNhTzVrbEt1bHhjbW5POUd1d01aTHhWdDFhNkJ4ZDRsbmFFUjZvWjBU?=
+ =?utf-8?B?MzVTWG5FRFVrTWxpQXp5T21MTnpGeVBmUnZxajFUamlQRkdNNlJxMTFVZjdl?=
+ =?utf-8?B?SFNLMDFwZkdwU0RDN21FOWhVWWg4U0NhOGxGbjRqOTJXcGNCakJtMUtGenBT?=
+ =?utf-8?B?bkNjWnhycmFWV2JIbjV4QjBxWUdBanlndHo0bGpvSTNiQ2hERHUrWnFicWpQ?=
+ =?utf-8?B?SHNaTXdXemd0dTZtZ2lwZXlaVTh3MDZtMTZ5TmpnUEZaY2h1REtqaEFpMXNu?=
+ =?utf-8?B?YldzN25UaURKUVY5akh5MEVzT25STEltY0E3SnhjZTdLb2pmeTZvMXBpN3A1?=
+ =?utf-8?B?L3dJSmZoZDhBbkM2YWF5MFIvUUNsY1FhREJjMk4ySlM2WHdkUEFoSy9xZXNJ?=
+ =?utf-8?B?aTFkd3V1YitqT3dTa1ZCTWRsUGtJTTV3Z00wU2o2N1FyWmhkeGpPVUlCdGF6?=
+ =?utf-8?B?SWJ2Slh4cys1aGxTVnBCNGJkRHlheklESnpDbHprUHYrTEd3K2FlVm9BcFpJ?=
+ =?utf-8?Q?sh+SS/MagjtV3+tKkF/FvPg=3D?=
+X-OriginatorOrg: iopsys.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb396f67-c511-4e4f-0399-08dde6cbda1d
+X-MS-Exchange-CrossTenant-AuthSource: GV2PR08MB8121.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2025 07:15:37.0323
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8d891be1-7bce-4216-9a99-bee9de02ba58
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N3yzpN8iSRWnvCuwlL8uNZ+DwGYZ3to47LrMY71K9dnGBkxg1YeKtsIVXeHCpiJb3n1/l1VSiuY5Cbp0+N1xZLbmAD/3PXHlPpwAhDg47b4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR08MB5820
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250828_073443_617990_28A915E3 
-X-CRM114-Status: GOOD (  23.06  )
+X-CRM114-CacheID: sfid-20250829_001543_607689_B9C24534 
+X-CRM114-Status: GOOD (  19.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,532 +181,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Realtek RTl93xx switch SoC series has a built in ECC controller
-that can provide BCH6 or BCH12 over 512 data and 6 tag bytes. It
-generates 10 (BCH6) or 20 (BCH12) bytes of parity.
+Miquel,
+is there any comments?
 
-This engine will most likely work in conjunction with the Realtek
-spi-mem based NAND controller but can work on its own. Therefore
-the initial implementation will be of type external.
+Best regards,
 
-Remark! The engine can support any data blocks that are multiples
-of 512 bytes. For now limit it to data+oob layouts that have been
-analyzed from existing devices. This way it keeps compatibility
-and pre-existing vendor data can be read.
+Mikhail Kshevetskiy
 
-Signed-off-by: Markus Stockhausen <markus.stockhausen@gmx.de>
----
-Changes in v2:
-- include bitfield.h
-- fill mtd->ecc_stats.corrected
-- Reduce chattiness with dev_dbg()
-- Convert return codes from context based to function based
-- Add more documentation about vendor specifications
-- Convert variables from vendor style to kernel style (e.g. tag)
----
- drivers/mtd/nand/Kconfig       |   8 +
- drivers/mtd/nand/Makefile      |   1 +
- drivers/mtd/nand/ecc-realtek.c | 457 +++++++++++++++++++++++++++++++++
- 3 files changed, 466 insertions(+)
- create mode 100644 drivers/mtd/nand/ecc-realtek.c
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5b0c2c95f10c..4a17271076bc 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -61,6 +61,14 @@ config MTD_NAND_ECC_MEDIATEK
- 	help
- 	  This enables support for the hardware ECC engine from Mediatek.
- 
-+config MTD_NAND_ECC_REALTEK
-+        tristate "Realtek RTL93xx hardware ECC engine"
-+        depends on HAS_IOMEM
-+        depends on MACH_REALTEK_RTL || COMPILE_TEST
-+        select MTD_NAND_ECC
-+        help
-+          This enables support for the hardware ECC engine from Realtek.
-+
- endmenu
- 
- endmenu
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 44913ff1bf12..2e0e56267718 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -3,6 +3,7 @@
- nandcore-objs := core.o bbt.o
- obj-$(CONFIG_MTD_NAND_CORE) += nandcore.o
- obj-$(CONFIG_MTD_NAND_ECC_MEDIATEK) += ecc-mtk.o
-+obj-$(CONFIG_MTD_NAND_ECC_REALTEK) += ecc-realtek.o
- obj-$(CONFIG_SPI_QPIC_SNAND) += qpic_common.o
- obj-$(CONFIG_MTD_NAND_QCOM) += qpic_common.o
- obj-y	+= onenand/
-diff --git a/drivers/mtd/nand/ecc-realtek.c b/drivers/mtd/nand/ecc-realtek.c
-new file mode 100644
-index 000000000000..4cbef7ca2c59
---- /dev/null
-+++ b/drivers/mtd/nand/ecc-realtek.c
-@@ -0,0 +1,457 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Support for Realtek hardware ECC engine in RTL93xx SoCs
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mutex.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+/*
-+ * The Realtek ECC engine has two operation modes.
-+ *
-+ * - BCH6  : Generate 10 ECC bytes from 512 data bytes plus 6 free bytes
-+ * - BCH12 : Generate 20 ECC bytes from 512 data bytes plus 6 free bytes
-+ *
-+ * It can run for arbitrary NAND flash chips with different block and OOB sizes. Currently there
-+ * are only two known devices in the wild that have NAND flash and make use of this ECC engine
-+ * (Linksys LGS328C & LGS352C). To keep compatibility with vendor firmware, new modes can only
-+ * be added when new data layouts have been analyzed. For now allow BCH6 on flash with 2048 byte
-+ * blocks and 64 bytes oob.
-+ *
-+ * This driver aligns with kernel ECC naming conventions. Neverthless a short notice on the
-+ * Realtek naming conventions for the different structures in the OOB area.
-+ *
-+ * - BBI      : Bad block indicator. The first two bytes of OOB. Protected by ECC!
-+ * - tag      : 6 User/free bytes. First tag "contains" 2 bytes BBI. Protected by ECC!
-+ * - syndrome : ECC/parity bytes
-+ *
-+ * Altogether this gives currently the following block layout.
-+ *
-+ * +------+------+------+------+-----+------+------+------+------+-----+-----+-----+-----+
-+ * |  512 |  512 |  512 |  512 |   2 |    4 |    6 |    6 |    6 |  10 |  10 |  10 |  10 |
-+ * +------+------+------+------+-----+------+------+------+------+-----+-----+-----+-----+
-+ * | data | data | data | data | BBI | free | free | free | free | ECC | ECC | ECC | ECC |
-+ * +------+------+------+------+-----+------+------+------+------+-----+-----+-----+-----+
-+ */
-+
-+#define RTL_ECC_ALLOWED_PAGE_SIZE 	2048
-+#define RTL_ECC_ALLOWED_OOB_SIZE	64
-+#define RTL_ECC_ALLOWED_STRENGTH	6
-+
-+#define RTL_ECC_BLOCK_SIZE 		512
-+#define RTL_ECC_FREE_SIZE 		6
-+#define RTL_ECC_PARITY_SIZE_BCH6	10
-+#define RTL_ECC_PARITY_SIZE_BCH12	20
-+
-+/*
-+ * The engine is fed with two DMA regions. One for data (always 512 bytes) and one for free bytes
-+ * and parity (either 16 bytes for BCH6 or 26 bytes for BCH12). Start and length of each must be
-+ * aligned to a multiple of 4.
-+ */
-+
-+#define RTL_ECC_DMA_FREE_PARITY_SIZE	ALIGN(RTL_ECC_FREE_SIZE + RTL_ECC_PARITY_SIZE_BCH12, 4)
-+#define RTL_ECC_DMA_SIZE		(RTL_ECC_BLOCK_SIZE + RTL_ECC_DMA_FREE_PARITY_SIZE)
-+
-+#define RTL_ECC_CFG			0x00
-+#define   RTL_ECC_BCH6			0
-+#define   RTL_ECC_BCH12			BIT(28)
-+#define   RTL_ECC_DMA_PRECISE		BIT(12)
-+#define   RTL_ECC_BURST_128		GENMASK(1, 0)
-+#define RTL_ECC_DMA_TRIGGER 		0x08
-+#define   RTL_ECC_OP_DECODE		0
-+#define   RTL_ECC_OP_ENCODE		BIT(0)
-+#define RTL_ECC_DMA_START		0x0c
-+#define RTL_ECC_DMA_TAG			0x10
-+#define RTL_ECC_STATUS			0x14
-+#define   RTL_ECC_CORR_COUNT		GENMASK(19, 12)
-+#define   RTL_ECC_RESULT		BIT(8)
-+#define   RTL_ECC_ALL_ONE		BIT(4)
-+#define   RTL_ECC_OP_STATUS		BIT(0)
-+
-+struct rtl_ecc_engine {
-+	struct device *dev;
-+	struct nand_ecc_engine engine;
-+	struct mutex lock;
-+	char *buf;
-+	dma_addr_t buf_dma;
-+	struct regmap *regmap;
-+};
-+
-+struct rtl_ecc_ctx {
-+	struct rtl_ecc_engine * rtlc;
-+	struct nand_ecc_req_tweak_ctx req_ctx;
-+	int steps;
-+	int bch_mode;
-+	int parity_size;
-+};
-+
-+static const struct regmap_config rtl_ecc_regmap_config = {
-+	.reg_bits	= 32,
-+	.val_bits	= 32,
-+	.reg_stride	= 4,
-+};
-+
-+static inline void *nand_to_ctx(struct nand_device *nand)
-+{
-+	return nand->ecc.ctx.priv;
-+}
-+
-+static inline struct rtl_ecc_engine *nand_to_rtlc(struct nand_device *nand)
-+{
-+	struct nand_ecc_engine *eng = nand->ecc.engine;
-+
-+	return container_of(eng, struct rtl_ecc_engine, engine);
-+}
-+
-+static int rtl_ecc_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	struct rtl_ecc_ctx *ctx = nand_to_ctx(nand);
-+
-+	if (section < 0 || section >= ctx->steps)
-+		return -ERANGE;
-+
-+	oobregion->offset = ctx->steps * RTL_ECC_FREE_SIZE + section * ctx->parity_size;
-+	oobregion->length = ctx->parity_size;
-+
-+	return 0;
-+}
-+
-+static int rtl_ecc_ooblayout_free(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	struct rtl_ecc_ctx *ctx = nand_to_ctx(nand);
-+	int bbm;
-+
-+	if (section < 0 || section >= ctx->steps)
-+		return -ERANGE;
-+
-+	/* reserve 2 BBM bytes in first block */
-+	bbm = section ? 0 : 2;
-+	oobregion->offset = section * RTL_ECC_FREE_SIZE + bbm;
-+	oobregion->length = RTL_ECC_FREE_SIZE - bbm;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops rtl_ecc_ooblayout_ops = {
-+	.ecc = rtl_ecc_ooblayout_ecc,
-+	.free = rtl_ecc_ooblayout_free,
-+};
-+
-+static void rtl_ecc_kick_engine(struct rtl_ecc_ctx *ctx, int operation)
-+{
-+	struct rtl_ecc_engine *rtlc = ctx->rtlc;
-+
-+	regmap_write(rtlc->regmap, RTL_ECC_CFG,
-+		     ctx->bch_mode | RTL_ECC_BURST_128 | RTL_ECC_DMA_PRECISE);
-+
-+	regmap_write(rtlc->regmap, RTL_ECC_DMA_START, rtlc->buf_dma);
-+	regmap_write(rtlc->regmap, RTL_ECC_DMA_TAG, rtlc->buf_dma + RTL_ECC_BLOCK_SIZE);
-+	regmap_write(rtlc->regmap, RTL_ECC_DMA_TRIGGER, operation);
-+}
-+
-+static int rtl_ecc_wait_for_engine(struct rtl_ecc_ctx *ctx)
-+{
-+	struct rtl_ecc_engine *rtlc = ctx->rtlc;
-+	int ret, status, bitflips;
-+	bool all_one;
-+
-+	/*
-+	 * The ECC engine needs 6-8 us to encode/decode a BCH6 syndrome for 512 bytes of data
-+	 * and 6 free bytes. In case the NAND area has been erased and all data and oob is
-+	 * set to 0xff, decoding takes 30us (reason unknown). Although the engine can trigger
-+	 * interrupts when finished, use active polling for now. 12 us maximum wait time has
-+	 * proven to be a good tradeoff between performance and overhead.
-+	 */
-+
-+	ret = regmap_read_poll_timeout(rtlc->regmap, RTL_ECC_STATUS, status,
-+				       !(status & RTL_ECC_OP_STATUS), 12, 600);
-+	if (ret)
-+		return ret;
-+
-+	ret = FIELD_GET(RTL_ECC_RESULT, status);
-+	all_one = FIELD_GET(RTL_ECC_ALL_ONE, status);
-+	bitflips = FIELD_GET(RTL_ECC_CORR_COUNT, status);
-+
-+	/* For erased blocks (all bits one) error status can be ignored */
-+	if (ret && all_one)
-+		ret = 0;
-+
-+	return ret ? -EBADMSG : bitflips;
-+}
-+
-+static int rtl_ecc_run_engine(struct rtl_ecc_ctx *ctx, char *data, char *free,
-+			      char *parity, int operation)
-+{
-+	struct rtl_ecc_engine *rtlc = ctx->rtlc;
-+	char *buf_parity = rtlc->buf + RTL_ECC_BLOCK_SIZE + RTL_ECC_FREE_SIZE;
-+	char *buf_free = rtlc->buf + RTL_ECC_BLOCK_SIZE;
-+	char *buf_data = rtlc->buf;
-+	int ret;
-+
-+	mutex_lock(&rtlc->lock);
-+
-+	memcpy(buf_data, data, RTL_ECC_BLOCK_SIZE);
-+	memcpy(buf_free, free, RTL_ECC_FREE_SIZE);
-+	memcpy(buf_parity, parity, ctx->parity_size);
-+
-+	dma_sync_single_for_device(rtlc->dev, rtlc->buf_dma, RTL_ECC_DMA_SIZE, DMA_TO_DEVICE);
-+	rtl_ecc_kick_engine(ctx, operation);
-+	ret = rtl_ecc_wait_for_engine(ctx);
-+	dma_sync_single_for_cpu(rtlc->dev, rtlc->buf_dma, RTL_ECC_DMA_SIZE, DMA_FROM_DEVICE);
-+
-+	if (ret >= 0) {
-+		memcpy(data, buf_data, RTL_ECC_BLOCK_SIZE);
-+		memcpy(free, buf_free, RTL_ECC_FREE_SIZE);
-+		memcpy(parity, buf_parity, ctx->parity_size);
-+	}
-+
-+	mutex_unlock(&rtlc->lock);
-+
-+	return ret;
-+}
-+
-+static int rtl_ecc_prepare_io_req(struct nand_device *nand, struct nand_page_io_req *req)
-+{
-+	struct rtl_ecc_engine *rtlc = nand_to_rtlc(nand);
-+	struct rtl_ecc_ctx *ctx = nand_to_ctx(nand);
-+	char *data, *free, *parity;
-+	int ret = 0;
-+
-+	if (req->mode == MTD_OPS_RAW)
-+		return 0;
-+
-+	nand_ecc_tweak_req(&ctx->req_ctx, req);
-+
-+	if (req->type == NAND_PAGE_READ)
-+		return 0;
-+
-+	free = req->oobbuf.in;
-+	data = req->databuf.in;
-+	parity = req->oobbuf.in + ctx->steps * RTL_ECC_FREE_SIZE;
-+
-+	for (int i = 0; i < ctx->steps; i++) {
-+		ret |= rtl_ecc_run_engine(ctx, data, free, parity, RTL_ECC_OP_ENCODE);
-+
-+		free += RTL_ECC_FREE_SIZE;
-+		data += RTL_ECC_BLOCK_SIZE;
-+		parity += ctx->parity_size;
-+	}
-+
-+	if (unlikely(ret))
-+		dev_dbg(rtlc->dev, "ECC calculation failed\n");
-+
-+	return ret ? -EBADMSG : 0;
-+}
-+
-+static int rtl_ecc_finish_io_req(struct nand_device *nand, struct nand_page_io_req *req)
-+{
-+	struct rtl_ecc_engine *rtlc = nand_to_rtlc(nand);
-+	struct rtl_ecc_ctx *ctx = nand_to_ctx(nand);
-+	struct mtd_info *mtd = nanddev_to_mtd(nand);
-+	char *data, *free, *parity;
-+	bool failure = false;
-+	int bitflips = 0;
-+	int ret;
-+
-+	if (req->mode == MTD_OPS_RAW)
-+		return 0;
-+
-+	if (req->type == NAND_PAGE_WRITE) {
-+		nand_ecc_restore_req(&ctx->req_ctx, req);
-+		return 0;
-+	}
-+
-+	free = req->oobbuf.in;
-+	data = req->databuf.in;
-+	parity = req->oobbuf.in + ctx->steps * RTL_ECC_FREE_SIZE;
-+
-+	for (int i = 0 ; i < ctx->steps; i++) {
-+		ret = rtl_ecc_run_engine(ctx, data, free, parity, RTL_ECC_OP_DECODE);
-+
-+		if (unlikely(ret < 0)) {
-+			failure = true;
-+			mtd->ecc_stats.failed ++;
-+		} else {
-+			mtd->ecc_stats.corrected += ret;
-+			bitflips = max_t(unsigned int, bitflips, ret);
-+		}
-+
-+		free += RTL_ECC_FREE_SIZE;
-+		data += RTL_ECC_BLOCK_SIZE;
-+		parity += ctx->parity_size;
-+	}
-+
-+	nand_ecc_restore_req(&ctx->req_ctx, req);
-+
-+	if (unlikely(failure))
-+		dev_dbg(rtlc->dev, "ECC correction failed\n");
-+	else if (unlikely(bitflips > 2))
-+		dev_dbg(rtlc->dev, "%d bitflips detected\n", bitflips);
-+
-+	return failure ? -EBADMSG : bitflips;
-+}
-+
-+static int rtl_ecc_check_support(struct nand_device *nand)
-+{
-+	struct mtd_info *mtd = nanddev_to_mtd(nand);
-+	struct device *dev = nand->ecc.engine->dev;
-+
-+	if (mtd->oobsize != RTL_ECC_ALLOWED_OOB_SIZE ||
-+	    mtd->writesize != RTL_ECC_ALLOWED_PAGE_SIZE) {
-+		dev_err(dev, "only flash geometry data=%d, oob=%d supported\n",
-+			RTL_ECC_ALLOWED_PAGE_SIZE, RTL_ECC_ALLOWED_OOB_SIZE);
-+		return -EINVAL;
-+	}
-+
-+	if (nand->ecc.user_conf.algo != NAND_ECC_ALGO_BCH ||
-+	    nand->ecc.user_conf.strength != RTL_ECC_ALLOWED_STRENGTH ||
-+	    nand->ecc.user_conf.placement != NAND_ECC_PLACEMENT_OOB ||
-+	    nand->ecc.user_conf.step_size != RTL_ECC_BLOCK_SIZE) {
-+		dev_err(dev, "only algo=bch, strength=%d, placement=oob, step=%d supported\n",
-+			RTL_ECC_ALLOWED_STRENGTH, RTL_ECC_BLOCK_SIZE);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rtl_ecc_init_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_props *conf = &nand->ecc.ctx.conf;
-+	struct rtl_ecc_engine *rtlc = nand_to_rtlc(nand);
-+	struct mtd_info *mtd = nanddev_to_mtd(nand);
-+	int strength = nand->ecc.user_conf.strength;
-+	struct device *dev = nand->ecc.engine->dev;
-+	struct rtl_ecc_ctx *ctx;
-+	int ret;
-+
-+	ret = rtl_ecc_check_support(nand);
-+	if (ret)
-+		return ret;
-+
-+	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	nand->ecc.ctx.priv = ctx;
-+	mtd_set_ooblayout(mtd, &rtl_ecc_ooblayout_ops);
-+
-+	conf->algo = NAND_ECC_ALGO_BCH;
-+	conf->strength = strength;
-+	conf->step_size = RTL_ECC_BLOCK_SIZE;
-+	conf->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
-+
-+	ctx->rtlc = rtlc;
-+	ctx->steps = mtd->writesize / RTL_ECC_BLOCK_SIZE;
-+	ctx->bch_mode = strength == 6 ? RTL_ECC_BCH6 : RTL_ECC_BCH12;
-+	ctx->parity_size = strength == 6 ? RTL_ECC_PARITY_SIZE_BCH6 : RTL_ECC_PARITY_SIZE_BCH12;
-+
-+	ret = nand_ecc_init_req_tweaking(&ctx->req_ctx, nand);
-+	if (ret)
-+		return ret;
-+
-+	dev_dbg(dev, "using bch%d with geometry data=%dx%d, free=%dx6, parity=%dx%d",
-+		conf->strength, ctx->steps, conf->step_size,
-+		ctx->steps, ctx->steps, ctx->parity_size);
-+
-+	return 0;
-+}
-+
-+static void rtl_ecc_cleanup_ctx(struct nand_device *nand)
-+{
-+	struct rtl_ecc_ctx *ctx = nand_to_ctx(nand);
-+
-+	if (ctx)
-+		nand_ecc_cleanup_req_tweaking(&ctx->req_ctx);
-+}
-+
-+static struct nand_ecc_engine_ops rtl_ecc_engine_ops = {
-+	.init_ctx = rtl_ecc_init_ctx,
-+	.cleanup_ctx = rtl_ecc_cleanup_ctx,
-+	.prepare_io_req = rtl_ecc_prepare_io_req,
-+	.finish_io_req = rtl_ecc_finish_io_req,
-+};
-+
-+static int rtl_ecc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct rtl_ecc_engine *rtlc;
-+	void __iomem *base;
-+	int ret;
-+
-+	rtlc = devm_kzalloc(dev, sizeof(*rtlc), GFP_KERNEL);
-+	if (!rtlc)
-+		return -ENOMEM;
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	ret = devm_mutex_init(dev, &rtlc->lock);
-+	if (ret)
-+		return ret;
-+
-+	rtlc->regmap = devm_regmap_init_mmio(dev, base, &rtl_ecc_regmap_config);
-+	if (IS_ERR(rtlc->regmap))
-+		return PTR_ERR(rtlc->regmap);
-+
-+	/*
-+	 * Focus on simplicity and use a preallocated DMA buffer for data exchange with the
-+	 * engine. For now make it a noncoherent memory model as invalidating/flushing caches
-+	 * is faster than reading/writing uncached memory on the known architectures.
-+	 */
-+
-+	rtlc->buf = dma_alloc_noncoherent(dev, RTL_ECC_DMA_SIZE, &rtlc->buf_dma,
-+					  DMA_BIDIRECTIONAL, GFP_KERNEL);
-+	if (IS_ERR(rtlc->buf))
-+		return PTR_ERR(rtlc->buf);
-+
-+	rtlc->dev = dev;
-+	rtlc->engine.dev = dev;
-+	rtlc->engine.ops = &rtl_ecc_engine_ops;
-+	rtlc->engine.integration = NAND_ECC_ENGINE_INTEGRATION_EXTERNAL;
-+
-+	nand_ecc_register_on_host_hw_engine(&rtlc->engine);
-+
-+	platform_set_drvdata(pdev, rtlc);
-+
-+	return 0;
-+}
-+
-+static void rtl_ecc_remove(struct platform_device *pdev)
-+{
-+	struct rtl_ecc_engine *rtlc = platform_get_drvdata(pdev);
-+
-+	nand_ecc_unregister_on_host_hw_engine(&rtlc->engine);
-+	dma_free_noncoherent(rtlc->dev, RTL_ECC_DMA_SIZE, rtlc->buf, rtlc->buf_dma,
-+			     DMA_BIDIRECTIONAL);
-+}
-+
-+static const struct of_device_id rtl_ecc_of_ids[] = {
-+	{
-+		.compatible = "realtek,rtl9301-ecc",
-+	},
-+	{ /* sentinel */ },
-+};
-+
-+static struct platform_driver rtl_ecc_driver = {
-+	.driver	= {
-+		.name = "rtl-nand-ecc-engine",
-+		.of_match_table = rtl_ecc_of_ids,
-+	},
-+	.probe = rtl_ecc_probe,
-+	.remove = rtl_ecc_remove,
-+};
-+module_platform_driver(rtl_ecc_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Markus Stockhausen <markus.stockhausen@gmx.de>");
-+MODULE_DESCRIPTION("Realtek NAND hardware ECC controller");
--- 
-2.47.0
-
+On 24.08.2025 21:18, Mikhail Kshevetskiy wrote:
+> Continuous reading mode is broken for some spi controllers. There are two
+> possible bug scenarios:
+>
+> 1) "continuous mode" flash and spi controller without dirmap support,
+>    but with restriction on transfer length in adjust_op_size()
+>
+> 2) "continuous mode" flash and spi controller with dirmap support for a
+>    single flash page
+>
+> In the first case, any read that exceeds the limit specified in adjust_op_size()
+> will result in an EIO error. The limit may even be less than a size of a single
+> flash page. In this case, any read will result in an error.
+>
+> In the second case, any read larger than flash page size will result in an EIO
+> error or spinand driver spoofing (because the spi controller driver returns
+> more bytes than were actually read).
+>
+> This patch series tries to fix continuous reading (spinand driver side).
+> Unfortunately these fixes can't resolve "spinand driver spoofing" case.
+> Spi controller drivers might need fixes as well.
+>
+> Changes v2:
+>  * added helper to create reading dirmap descriptor
+>  * fix spelling
+>  * error code is not used for regular reading fallback anymore
+>  * it's possible (but very unlucky) that someone will do raw reading
+>    of the flash in continuous mode (i.e. without OOB), so fix dirmap
+>    creation for that case as well.
+>
+> Changes v3:
+>  * improve description
+>  * move airoha spi controller driver fix to a separate airoha spi fix series
+>
+> Changes v4:
+>  * the period '.' at the end of the commit title was removed
+>
+> Changes v5:
+>  * rename spinand_create_rdesc_helper() to spinand_create_rdesc()
+>  * get rid of controller_is_buggy boolean
+>
+> Mikhail Kshevetskiy (3):
+>   mtd: spinand: fix direct mapping creation sizes
+>   mtd: spinand: try a regular dirmap if creating a dirmap for continuous
+>     reading fails
+>   mtd: spinand: repeat reading in regular mode if continuous reading
+>     fails
+>
+>  drivers/mtd/nand/spi/core.c | 74 +++++++++++++++++++++++++++++--------
+>  1 file changed, 59 insertions(+), 15 deletions(-)
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
