@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5187CA1003
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52FBDCA1000
 	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 08:21:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,65 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LXhNnmZDU6hmp5gQLXHS+8EtiaVzxYLxC7LwK6+y6W0=; b=azXgEW4dXIEebh
-	g/Z6OZQHbkacmNzuBuInd5fafaICnFXMx7KhCMDG7T2C46g5TA3uJOqXpsv9Q4Uephefqw6w/9cOe
-	579bUBoj5Fi9u99uIxjvyXx2nqbfMH1seIdmWOmGWM33SNmuKXYeGoGJmXeYbVK0lmuFyZWToOL1M
-	JXSocpYqHtYZYVOq0mSDwJz8INLQTjqbORMNJkTWqmbqLT3z0zXu+1XnRgOXDjJmDKJsOZzo6tyNN
-	Ut3aAvhMtJV26YPerBTxD6BxBiZbhM7pl4UT02N+JXqeW5BvlFHMTSmwdJ8c5ordgrsPBGkVvSkpW
-	k4ORzoTO5Qsu+5XjIeMg==;
+	List-Owner; bh=G8MCqmnxs7+RPvYySLJNUy1+EHoXsKrRi8pGFzj6hwk=; b=ouwyxF59gbMtOE
+	ULdmXBf7pbnc7oSqzHbqbkjeKoBQmp1FJ83EfgV+Sa98+Zi1PRs1OrstodMMZKXVLwglDamjiaaue
+	fILK6l96LQDhRFJM18cMN/lm13ailFyq9fMirLmpgDsMaPxftHGsjJ6zrfceXO9f9ssoAQW+L0SvP
+	8EOboBbhRL08CpI/MM2590bUhydI3+KXsZLgfJ/c/wU1XvnHS7IDF30lWdtLyaKkTRB9+vwDxH87A
+	bPJ2giuVtBaNzEk03a7Be+Y6x8RteY79JvwiBsAWY96a1OZD61VKnQHa7BynJWJarXrjvZI7hMD9y
+	eK2VxCceealHKq7vD9dA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uruMq-00000004wrP-2OVv;
-	Fri, 29 Aug 2025 08:21:52 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1uruMo-00000004wpz-37zg;
+	Fri, 29 Aug 2025 08:21:50 +0000
+Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urtxd-00000004qRo-2iis
+	id 1urtxX-00000004qKq-1kSL
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Aug 2025 07:55:51 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-32326e8005bso1895363a91.3
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 00:55:49 -0700 (PDT)
+	Fri, 29 Aug 2025 07:55:44 +0000
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-76e4fc419a9so1944883b3a.0
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 00:55:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756454149; x=1757058949; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1756454143; x=1757058943; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mQcUO3MMNiHKjyp0GXG4A4uvsTQgAsYSLBA8ucpISkE=;
-        b=ZmY11Ts6oGqxELsaOk1E5u0TywDZgsi7NPUxxOk+8BMe7eDxKDiAaFj4oCt5YGwI/t
-         o9+gidjbZ9QdC17rx5inzchkO0HFHMoMhjLaKcZnkcajpp/FCXJH1+BkaNJMlTCXlfb2
-         Mq+T77dfKXrk7KtbKiySsCgfvM2IU0PaFYl6EbmdUefATbBqbWqzikNi5NiO7QKbuiF6
-         vmj6ObTiWuAEmGYLkbCQGJcPI+T9cDrG04k/3L6hfPa1Qnklh05MsPoFJCzJDDxYD2FQ
-         +YT/i/WVJpdB9sb0O2sm94aeUJXUaEJqAdA44xt9PGapiDo94WYEjNmkz6qkbT50Oen9
-         pTYw==
+        bh=exY9byyl4etH+4IQEKnm6qXO5lYPceGxvCuurSN7fh0=;
+        b=dp8gtR+Lt8qLUafCSnN1Tr5TchF2oaf8ZAGZyzXVRmRYIlCK+ONna1/Hz8CKP/nWEw
+         YdVHVA+wmfZ/1K7w5QyzF4a5EyXjlRrojFfR+maF0XlDh012K2hNjhHWkEZ9d9qclb4m
+         Ezy4MIV3K5w3x5MirveYS4zbJS0VA5cNpaj68qDF9JToGpKzaOXgwJ6oOZyjV7fFqLvx
+         dtDtf/OlDDNLNj2xZbpokqF+/OrHWwvWxhu68dQasKb7zhK6jMYWVaRcfb4XrNS1jtoU
+         2rjjXD2bYaA6+tPkOSJJzZyIlenWUgXjy4UcyimJGBe6V1BeOH8HzcyqGtgXGntYi43o
+         gWKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756454149; x=1757058949;
+        d=1e100.net; s=20230601; t=1756454143; x=1757058943;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mQcUO3MMNiHKjyp0GXG4A4uvsTQgAsYSLBA8ucpISkE=;
-        b=cFuCgfCnEqnzbl7CTGLakWRVFSgWBK30QZqjv+Jk7naua0PMzrG0NQZFZ6nkxUfRt7
-         NLTeDUSNEIXDDGmFRkrMlDfFuKRSvkrdxSXkQmnFgbIvJ7XrW6eA4V4uYLqhNfucCded
-         4W8Nzxs1HPAL/KbwTCl0y4nmdg4Ei32Y2BHesIDYudpKQzt/dJfBBnTyqmdI+vruNzf1
-         3gBZ032E8d3zY65p7rYMY1fyAELULTkckfWYuLgxcDeBn/7F617COQMu7rc3JX1jdSAf
-         DCQjgx6Es38if3xLGyoyJJogmqR7mnrMaA79uTaK5FFl4hOW/w1VvOqMSicVehaZ4T3u
-         MdEw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+AHGJ0KKKmZ4P9ylbRkOERBblm7hWLSQ1Ycbxt2v4iARjYV/08GdSBhCyekPqxQoujXfdZXhwPkA=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxR4lJtEUHhbXS8dMDZZJj6dIs1YeLxNgasXmciWssqDnPOwS5e
-	YHzA97mNX/YBjIX3GWqhUDiyzRPJJmHBgtEFIQhlMlANLY+kh/CZLeG3
-X-Gm-Gg: ASbGnctGDFGov8IVkkXsNJ1z/2SrDHDJoObxFQPzJ3horUDo/hulQwWCwxCRF3crogF
-	Ksf8p4TO1shgfu6ykYrVxleNxsOeJXvjxH7DFCDqEQmyM76yFq0QwxdgRUA3wMbOEBdnIoMYd1M
-	xu25wUUtBbLIUiPURt7gcUo+lJd+n40vfSEhgcYgUHBT6WQ+MCQffQhFhU3n5NspmdzHdaf30Vb
-	nmBD4u72AL51xeTj8+RfBgwZw1tU/3PuYW/jnjlpoSoeLvrALwHcZg8VcibvLOk5y+Wq4mVOfd0
-	SRybkNlkYNwa4ijB+S4yR+Zz3J7uKPQLHfmlWERr3jZAiPb2LyelsAqrHeeIbZfuUTUmUnzARg9
-	KEmVQErDncb40TRNOWKPwaBFtV3f+Cibz1BBy
-X-Google-Smtp-Source: AGHT+IHLqM32trOVVzh172ftn7E15FM6Ea2Jk4ybBnzNmcbOCkm5faJ3oUsml9NRpuaa5OiBwPVbig==
-X-Received: by 2002:a17:90b:4ccc:b0:327:7c5a:fe77 with SMTP id 98e67ed59e1d1-3277c5aff68mr10961209a91.30.1756454148623;
-        Fri, 29 Aug 2025 00:55:48 -0700 (PDT)
+        bh=exY9byyl4etH+4IQEKnm6qXO5lYPceGxvCuurSN7fh0=;
+        b=DlEQpmKHEyMUuQBJbQykEcg2ymk72n8cbQdDjux6hdBuJzYGAIW5ZoaVqa76ydg7yQ
+         CGZZnJhkWW2rTPJU+vWlS3W2yOFNg61koAgTZ+lmt/hJph90a3xQMLqOOHFadH537zpa
+         qao2fHQe4ZE0IJvb5cDOwg/KYP4yF5a3vHQubPFODyPyDcPX4Xv8JamOgq1/Nep8Jn1R
+         vZY+TNcyzzGPpEPCjpm44lwDU9bpMI2MZOIUGulst1nfJl145iLSYgpSAqPfO8NDDZso
+         9jeR3ZjUbfde3E0DfjdDzYxBT8Fk7qyAcQRic2oJ6O4NCcVkXvxCwJTgqtm0pnm1aLIr
+         kzMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVoM8zjNoY4ouFonXefSoW8kP0LZT2rLoi2roYCmgdNG18qE50+u8k8qdTtawFLJj2Lhc5xUasgXkA=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxd9kh8Xh/q8/3OGB00mP9biNaDy+Ypw2IYohidj9L+Pi6pzyHe
+	w/BiXpctDj9I7huUL8l5crQ/0Irc587K07zZvp/aR7o09EDs6IdlL9gQ
+X-Gm-Gg: ASbGncvySsltrwP7txMpn6CRbbbdKxSwnd7qqVpBE/zzCkfzxUnJiZY7HwLaGOrURSX
+	Y+vUvd+wv+hFy7kZfTSyVlJQ4Pn6KgjWJTh4byNYARA3+WLMYndxnBcdma/wn7VdMnNFIeuBaXV
+	h2Zs4lnC1Di4LfdHQ9a+kEZe8K10sFreAI03SW09YZtjeiaDFC+mwP8pPlz859JMu7BUeZeRxtt
+	kvulRetcqANSbPP9xWdovIuG+PUGn8tT/tn/vCexc94emIcxZH6Hg43n/jX7AverYi46gjjhdBP
+	PzU0TIASWcwwv9hpK9uSvLI0Fxf2KtIic8F+xWB8wW9axNMzKZPbqOgvyMc1L3hNvjWAjnpAnpJ
+	pPnIjCp22+bdyYxZ+Bl1EXk/p07UgE6BPm9dKd1vsnYfdxtI=
+X-Google-Smtp-Source: AGHT+IGl2H1cpKBrzVIc01ALD2l+GqNGGEJdm0M1vP0Ajl0ap9rVA4eE5ntn2ncpRPD9DtXSzK3gDA==
+X-Received: by 2002:a05:6a20:1585:b0:232:7c7b:1c7b with SMTP id adf61e73a8af0-24340c429e2mr42540329637.14.1756454142509;
+        Fri, 29 Aug 2025 00:55:42 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-327a22ec24dsm2591905a91.3.2025.08.29.00.55.41
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a2aaa70sm1550930b3a.24.2025.08.29.00.55.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 00:55:43 -0700 (PDT)
+        Fri, 29 Aug 2025 00:55:37 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 3924545A3F85; Fri, 29 Aug 2025 14:55:29 +0700 (WIB)
+	id 7A9CF44808EB; Fri, 29 Aug 2025 14:55:27 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -172,18 +172,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 13/14] nitro_enclaves: Use internal cross-reference for kernel docs links
-Date: Fri, 29 Aug 2025 14:55:23 +0700
-Message-ID: <20250829075524.45635-14-bagasdotme@gmail.com>
+Subject: [PATCH 05/14] Documentation: blk-mq: Convert block layer docs external links
+Date: Fri, 29 Aug 2025 14:55:15 +0700
+Message-ID: <20250829075524.45635-6-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
 References: <20250829075524.45635-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1391; i=bagasdotme@gmail.com; h=from:subject; bh=evrdLEAoXKuQzTljW81Kh3KyWLApG8gUObVzJ2YlNgE=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY16J9usWFB1WvT+NSavLIanh+698vZJvp5Iqyn5cF Oeb1Xiho5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABPJ/8zI8C+tSSfleGvDlW33 Ss5v/Xrog5zFrjCmKzem/Vr2Ka6JL4WRod0y2uaV0GJBfuHrJzY9vTqdTVAvLqhtcdO5S89liyP teAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2751; i=bagasdotme@gmail.com; h=from:subject; bh=7QXrNRuCbHeHgCYdGUN3dSXlo+bJ6ZwXyeTt5Kf+8Ys=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY17q3TFftH6q+kyOiIzsCLYVR/ZOd/GUnnS+Yu6/k 6t6/fl6OkpZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjARpWqGfwYJyctD8hT/NwY/ sO81mNZXoe/tpx8864flkqYm66Aruxn+V81fprfBrut+sv/0I1K75vi+e3t4WtGyeRzBVy1DeSv K+QE=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250829_005549_730170_0E8B47A5 
-X-CRM114-Status: GOOD (  16.00  )
+X-CRM114-CacheID: sfid-20250829_005543_464287_15644B0E 
+X-CRM114-Status: GOOD (  19.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -200,34 +200,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert links to kernel docs pages from external link to internal
-cross-references.
+Convert external links to block layer docs to use internal linking.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/virt/ne_overview.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Documentation/block/blk-mq.rst | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/virt/ne_overview.rst b/Documentation/virt/ne_overview.rst
-index 74c2f5919c886e..572105eab452b2 100644
---- a/Documentation/virt/ne_overview.rst
-+++ b/Documentation/virt/ne_overview.rst
-@@ -91,10 +91,10 @@ running in the primary VM via a poll notification mechanism. Then the user space
- enclave process can exit.
+diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
+index fc06761b6ea906..4d511feda39cfd 100644
+--- a/Documentation/block/blk-mq.rst
++++ b/Documentation/block/blk-mq.rst
+@@ -87,17 +87,16 @@ IO Schedulers
+ There are several schedulers implemented by the block layer, each one following
+ a heuristic to improve the IO performance. They are "pluggable" (as in plug
+ and play), in the sense of they can be selected at run time using sysfs. You
+-can read more about Linux's IO schedulers `here
+-<https://www.kernel.org/doc/html/latest/block/index.html>`_. The scheduling
+-happens only between requests in the same queue, so it is not possible to merge
+-requests from different queues, otherwise there would be cache trashing and a
+-need to have a lock for each queue. After the scheduling, the requests are
+-eligible to be sent to the hardware. One of the possible schedulers to be
+-selected is the NONE scheduler, the most straightforward one. It will just
+-place requests on whatever software queue the process is running on, without
+-any reordering. When the device starts processing requests in the hardware
+-queue (a.k.a. run the hardware queue), the software queues mapped to that
+-hardware queue will be drained in sequence according to their mapping.
++can read more about Linux's IO schedulers at Documentation/block/index.rst.
++The scheduling happens only between requests in the same queue, so it is not
++possible to merge requests from different queues, otherwise there would be
++cache trashing and a need to have a lock for each queue. After the scheduling,
++the requests are eligible to be sent to the hardware. One of the possible
++schedulers to be selected is the NONE scheduler, the most straightforward one.
++It will just place requests on whatever software queue the process is running
++on, without any reordering. When the device starts processing requests in the
++hardware queue (a.k.a. run the hardware queue), the software queues mapped to
++that hardware queue will be drained in sequence according to their mapping.
  
- [1] https://aws.amazon.com/ec2/nitro/nitro-enclaves/
--[2] https://www.kernel.org/doc/html/latest/admin-guide/mm/hugetlbpage.html
-+[2] Documentation/admin-guide/mm/hugetlbpage.rst
- [3] https://lwn.net/Articles/807108/
--[4] https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
-+[4] Documentation/admin-guide/kernel-parameters.rst
- [5] https://man7.org/linux/man-pages/man7/vsock.7.html
--[6] https://www.kernel.org/doc/html/latest/x86/boot.html
--[7] https://www.kernel.org/doc/html/latest/arm64/hugetlbpage.html
--[8] https://www.kernel.org/doc/html/latest/arm64/booting.html
-+[6] Documentation/arch/x86/boot.rst
-+[7] Documentation/arch/arm64/hugetlbpage.rst
-+[8] Documentation/arch/arm64/booting.rst
+ Hardware dispatch queues
+ ~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -143,7 +142,7 @@ Further reading
+ 
+ - `NOOP scheduler <https://en.wikipedia.org/wiki/Noop_scheduler>`_
+ 
+-- `Null block device driver <https://www.kernel.org/doc/html/latest/block/null_blk.html>`_
++- Documentation/block/null_blk.rst
+ 
+ Source code documentation
+ =========================
 -- 
 An old man doll... just what I always wanted! - Clara
 
