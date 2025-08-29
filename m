@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFA00C8303F
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 08:21:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09921CA1001
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 08:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uNZU/mJfY/UnvIjq27M2L97uTdZmpLEvNYaTWJEjd50=; b=rWP0DgElrZwt6P
-	PUxDXPAMZbZB64MU9Izpe3eh2aM4SIYUjd3uzBVTpV4tYtfJVlxhqedNv4185CAyOa+n7KVx+QCeG
-	FaRn4ksr2Ty8wPqkX+EVEq100r8U56UiivNnID7Qp5uaeW+U7E8qRfV5/k53lM6wSKKN/9JJZmCWs
-	YI4PRyLz0o3R9aWRWAey7OWTzfwUIc1DSjxfNLf3KqUyYANzZeMHsuWOsx+TPRaK9ttVsEMMMWgBc
-	56V36StEA6NKtVwCbSwXkL2bkQQtlVG/qjsYUNaXfpWIEaXK94i9bDAnayZm5yoofdkdgFB692EnH
-	cJuL+yekXbrRvHscWaZg==;
+	List-Owner; bh=tc1buf3OH3Np8wsvcqmYJzJOp5yIUrA3lkEZ1cXftWk=; b=IXW/aUjv377b9k
+	VsDxLLLxNCfoPygMl71TH7eiriZrSny2+bce+xL/KvmnYYT9CdZaC76wUdChrd6qz/xkyL1F/VGT9
+	IzQZDuD3uyqF33WXL6M/acZLcpetGwzQMVtgshlFoS/jxKBr99bWd2JMzmXwB0zfsDbt70oNBnJOp
+	TWaikq46uIejJFGwexAzO8SPONZ/dMlvBL0KV8cTShqc3rKmqhNW1lcKo4vnxZyIkJdzfcZOWfs2X
+	reK4LLOMaq6P5DDSUB5n/5VmkK0qMpt49CeArrQsov3Lvpmcntbz/nrdPsdD+9tLPyOWOC3HB73PU
+	ZZaeJx5Cp3bU9ZZ90BFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uruMm-00000004wnx-1Kc1;
-	Fri, 29 Aug 2025 08:21:48 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1uruMn-00000004wp2-2ATa;
+	Fri, 29 Aug 2025 08:21:49 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urtxP-00000004qFt-0PYD
+	id 1urtxS-00000004qHl-0QP0
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Aug 2025 07:55:36 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-772301f8a4cso282520b3a.3
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 00:55:34 -0700 (PDT)
+	Fri, 29 Aug 2025 07:55:39 +0000
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-246648f833aso11818435ad.3
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 00:55:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756454134; x=1757058934; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1756454137; x=1757058937; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PKHUedwTpnE+6902OLKWJUrKeeyE0icmaP4M6h8VeIM=;
-        b=PV1qLJA9FikDWRgjKq36+a/H23XDya0ThDhLdYTWIGdEa+b8lGvWkCSRWutyVu/+LZ
-         y65X/Q8S+xPol9hAZKvKBiwH0gCXBe7tw/8YF9FNMLv4Vsw5iXFtFyP0X8Fxj/QpRilB
-         GYRtNX+T2UGF/1JEzaUNRpoj6c3gg2JMEX/KeDwU9jL/WX4jliLb48uGMFYOrcSslZA5
-         jT4a2rb3eSebLVVWGf6zE9Wj2pLRiGXqfEREBJ71GfG08iV9RbTq/yBkkpG7YiAxinmw
-         Js06kfdkvJR6+p6cZmRLGL/txeb3bBI578Ld4VRUA1TwenqOY66Wnj5ZRq1pD4mtcKvL
-         Kgfg==
+        bh=0koFSnJrv2UowuMhMeqtiJIslvN7BbZv6mHXQ/mKo7A=;
+        b=J72kRJAZ++/laUqBJd+24Elkzyqc6jPuOEBdrbi8VXOqfrDSm2Ngqx901TZTyeHyal
+         D8vIUtmTZYxsr7eoycOGzyxmyB2kAPkX6/npmiPsT/d7f+mP7b+bk2L+qIa+V/ONBm0n
+         kJLM3UD2JaqFtWDlUNTRskAthR7WgCHYA70E79w/wysXF514+uMSqsDBvtkDU3TUz7sf
+         dwWSNzjRGIHP6Z2HdsKQpQ1+8hw4naoLRHVkWmpquOQAYGy8zbs8ifj4UxZaw1dD77hC
+         LBcJLoMe6lL+1AZywGBRjtBffO3saptmeOqyXauWR7NRlzNG/FPDJovfD8r4oBPfsW59
+         KPhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756454134; x=1757058934;
+        d=1e100.net; s=20230601; t=1756454137; x=1757058937;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PKHUedwTpnE+6902OLKWJUrKeeyE0icmaP4M6h8VeIM=;
-        b=Yl1BjgN6ETLWNknAfDke1xABvsO+4Rl17/reMkdYRwlcKJW1E14BtYXpzWu8arzJEK
-         eUPPReFDxMuN1w0GSa/yHuyU8nP3QCNe0fCubDCFwnPtcreub/SyZgGZeAeK6eMc7ZAG
-         Go2fTG1DOebIHxMgrf34/zZ2Lawu09iENqqgmu0+ZVeG0qDteFL1DBqIpdV6k1/QbJKs
-         yAxLEo7QUahWPce1ecdsGINZN6s2wz73mnu/omtAcOfnL6pD5fMH06CTlgKDIz92/rrJ
-         iDUaJqjT7yjZVKPPbM0TobJQUUtBfGcff8aCFF+IfteE9Hdio2kOpljGV3C//UCCb7cj
-         I/tA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxw+wFqCA4Sqa0PK8TnRu3vP4/JlRlC+Zd4eZCtc/LPGOEnzPxBIslwEEy/k6DMbIkb/uKT4WTd0g=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz7BT7kwYaBcsgV0sgg/Hznk3VrCOesMYwPB8tIlDtfzou25tpy
-	PWwFke7uF+0Kb+RxgQSAp9ubPWk8mN99F+pwIJ/U8jsIOndwM+RQKDQW
-X-Gm-Gg: ASbGncu8SYeJMWMp7bmVL2dAF2nXgq0Sc1aH8Q+JL6kBmgYnljd+Uxb3QwdW/Qv/yBZ
-	F25/13UDdSsS8W6klb0pvnf4n2sd2xUVU9RwQFx6lwIXcPuUTB2RWW/vWisThJiB6NqP/pr0NSn
-	Kg98E4DseGhIhnlkCKZJm1jWaee5CB8qDL7PuTYJ+oTQ9maDAH3mARH1w64wRFRsn5k9G1pvApo
-	9oHN3ql/r/RacQcmPHQpUOhzcb3LXmgejQWhEqMonWNbEzCcM1RFnpZacCSXYSJkmDa+oEppz//
-	xAJDAbhyRVYAjQatK4Y9CPaqU/qfzbsGUN9A/jH+iARE5zkyn7FSEYksQ7Qjrn/A55SA3BScUaO
-	+ArNwcYZttHlwQJrxRTYjOzqwPQ==
-X-Google-Smtp-Source: AGHT+IGAIwvY26FUOsw+74AGPHA13vcCLFsNdM4e5R6RQVZDqKcVncdSUEtOIO22R3FiVyKLzy1QwA==
-X-Received: by 2002:a05:6a21:6d95:b0:243:9824:26f0 with SMTP id adf61e73a8af0-2439824377dmr17475585637.46.1756454134181;
-        Fri, 29 Aug 2025 00:55:34 -0700 (PDT)
+        bh=0koFSnJrv2UowuMhMeqtiJIslvN7BbZv6mHXQ/mKo7A=;
+        b=WvpdzLEiP6SIkXg+45ZuHbD/I+q0AZS/7vxARWHr+dpjRjjoh6lPcEu694qcdQS0Ge
+         c4JaUEUYrcq09TZsgYFNwZ/PP9saEEUf11v7Wj733fUTJI87SlwU/7D7OBzJfogJjHgR
+         ppYMybY51rpl/i2a1W1c12B24jyDya7qmMx41P3R1yLiTZM0wCRLFJEmeE96bKtwOi2K
+         a2Eg0J1gVx9WfYoZMm5k4tRYQ5H53lxIShR7H/89bvljYTd3ZGpa0ng8K74dvNSggWFw
+         VVLoorZs6NWbBkhyyLogovBa2y0umzmpCSo6YFqwAMyFc3UFPOaRT5/Ue/qFZBNVcTFT
+         eTOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVd4AURzoFo/kZHpDBsaDd/nQXMv9i+O/OYZvPqvlAupuEcqP1h5kvAl/n0Rzo3rn/McjqaUjdDWhU=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw84B/tX4VagkITpjLG30Xv8347wWQiNyXfFarcHghOaLRsU7AV
+	0GQltaJwiF0Egv50wQ3aqhKc+c3fB2V2CVaTmuIu9o1AFkrnh3W7Y7Qd
+X-Gm-Gg: ASbGnctzfdu6JOtaWYH5IZrnGNAYQdkZpzW4d/DVE37cEMUQ4RsTyJMOBprvCkollgT
+	krggytJPXl+Dzw72mwu4Xdp9S9nu/SlqX4HmAX7IAWUtVwTiUf9Y0054gaVvckbM8Cbh23kfzcM
+	05SDZVyZ0KyLCPAfjDy72FdDwcGtbhAq1WAubMrmEU8W3GywXd5/Mi7QYZprYy7Xsq9dzcrjoMY
+	rUJhRXbbMZ3Oe0rP7N9urVUoVu8fKH4Bw8w7zwge6pSfqwLsLbMfqQE0K+6nKoqk3tpAwxZnIQ9
+	A+56xDJGKiGvMJIeWZoDdkC3v4urGakR4e5aqGs7Keodo9QvkbMklu8UppyMB9SUEkYmiJMnmf7
+	rZ35rYmXNCeqdR4/773AThVRo4A==
+X-Google-Smtp-Source: AGHT+IGNjBdTFArxVwVJhrEyw48u+wDRa+YP0G1KaeCtmArj8lT7+bi74vyrPcJB8r8IUDLpPVmmVA==
+X-Received: by 2002:a17:902:e888:b0:240:a54e:21a0 with SMTP id d9443c01a7336-2462ee13154mr358734785ad.19.1756454137188;
+        Fri, 29 Aug 2025 00:55:37 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3276fcd336dsm7401665a91.18.2025.08.29.00.55.31
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24905da26b9sm16688215ad.93.2025.08.29.00.55.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 00:55:32 -0700 (PDT)
+        Fri, 29 Aug 2025 00:55:35 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id CE9134016442; Fri, 29 Aug 2025 14:55:27 +0700 (WIB)
+	id 2F80944808DE; Fri, 29 Aug 2025 14:55:27 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -172,18 +172,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 01/14] Documentation: hw-vuln: l1tf: Convert kernel docs external links
-Date: Fri, 29 Aug 2025 14:55:11 +0700
-Message-ID: <20250829075524.45635-2-bagasdotme@gmail.com>
+Subject: [PATCH 03/14] Documentation: perf-security: Convert security credentials bibliography link
+Date: Fri, 29 Aug 2025 14:55:13 +0700
+Message-ID: <20250829075524.45635-4-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
 References: <20250829075524.45635-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1333; i=bagasdotme@gmail.com; h=from:subject; bh=oQ/U51BIIgNGsRun+kwInz/tmig5xTqHruGeEvNRxQQ=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY144a/JZLY81M41OfrJ5W/1jtyyro8lZM99fCflwN Zg5yrW3o5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABMpCGH4p3zu88Pdlu95fhsv /CZ2ieHwual5ab7C13i5XivpL/Ip/M7IMI9vYUN6A5f856j5POvK+r6kxCYoXlPd7vthl2/zPqb NrAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1135; i=bagasdotme@gmail.com; h=from:subject; bh=OYt2QegR/+u0q3CRKm7Zg38q7SY9D/3L6tdzv43Jflg=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY17WLH+uxHuD5TvzhcJo65MVRz8evf+ht/Kg8H3eu d3xR8redZSyMIhxMciKKbJMSuRrOr3LSORC+1pHmDmsTCBDGLg4BeAmZzL8r1qVsXFN0aQnhlcd HbX/7Z5y0OBc87cVSY827u/OC7GTfMTI8J1f/vkt1YY1nGfMLy+IOlnmXaYQu3XLZy7bCT/2T+u /xQUA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250829_005535_140854_2F8CB296 
-X-CRM114-Status: GOOD (  16.53  )
+X-CRM114-CacheID: sfid-20250829_005538_140626_A03858B2 
+X-CRM114-Status: GOOD (  15.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -200,40 +200,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert external links to kernel docs to use internal cross-references.
+Use internal cross-reference for bibliography link to security
+credentials docs.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/admin-guide/hw-vuln/l1tf.rst | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ Documentation/admin-guide/perf-security.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/l1tf.rst b/Documentation/admin-guide/hw-vuln/l1tf.rst
-index 3eeeb488d95527..60bfabbf0b6e2d 100644
---- a/Documentation/admin-guide/hw-vuln/l1tf.rst
-+++ b/Documentation/admin-guide/hw-vuln/l1tf.rst
-@@ -239,9 +239,8 @@ Guest mitigation mechanisms
-    scenarios.
- 
-    For further information about confining guests to a single or to a group
--   of cores consult the cpusets documentation:
--
--   https://www.kernel.org/doc/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+   of cores consult the :doc:`cgroup cpusets documentation
-+   <../cgroup-v1/cpusets>`.
- 
- .. _interrupt_isolation:
- 
-@@ -266,9 +265,7 @@ Guest mitigation mechanisms
- 
-    Interrupt affinity can be controlled by the administrator via the
-    /proc/irq/$NR/smp_affinity[_list] files. Limited documentation is
--   available at:
--
--   https://www.kernel.org/doc/Documentation/core-api/irq/irq-affinity.rst
-+   available at Documentation/core-api/irq/irq-affinity.rst.
- 
- .. _smt_control:
- 
+diff --git a/Documentation/admin-guide/perf-security.rst b/Documentation/admin-guide/perf-security.rst
+index 34aa334320cad3..ec308e00771427 100644
+--- a/Documentation/admin-guide/perf-security.rst
++++ b/Documentation/admin-guide/perf-security.rst
+@@ -311,7 +311,7 @@ Bibliography
+ .. [2] `<http://man7.org/linux/man-pages/man2/perf_event_open.2.html>`_
+ .. [3] `<http://web.eece.maine.edu/~vweaver/projects/perf_events/>`_
+ .. [4] `<https://perf.wiki.kernel.org/index.php/Main_Page>`_
+-.. [5] `<https://www.kernel.org/doc/html/latest/security/credentials.html>`_
++.. [5] Documentation/security/credentials.rst
+ .. [6] `<http://man7.org/linux/man-pages/man7/capabilities.7.html>`_
+ .. [7] `<http://man7.org/linux/man-pages/man2/ptrace.2.html>`_
+ .. [8] `<https://en.wikipedia.org/wiki/Hardware_performance_counter>`_
 -- 
 An old man doll... just what I always wanted! - Clara
 
