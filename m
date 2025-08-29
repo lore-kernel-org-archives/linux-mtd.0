@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9DFCA1000
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDEB9CA0FF7
 	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 08:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,65 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sivMG9poplKI5LQ0r8ReVZZDbo0tRKvyp1rND1B9s48=; b=j+MfHB05OtC00h
-	WRBFt03LH8MMAwBvI2jefyhdCFX3/NkME3Yc/nDvjuEfNUlYBryNmyNKMNDJtcj4OnQuTduJ9Fdy/
-	4/Vuw5IXeAtvT68YqLVltQQekt3lYQm4fltHJ0LJyKo9nWp2fCEh2EKd68UpSZkjXNUc5ohW0fUBC
-	uw4c6eYGh1jdPrcD3chFcdRqS+Cp2nSmppy9Bw7nW942mfb7ZUrH75WWg/onrDsQH+Zy+AHAtkuRl
-	ZXWQ6uec+vmcpOsdzPC3y8WTXk62JxziHnhuccM3socPv4UPsPzNRevb9kSIYw9vPXWlSU3xdNDc9
-	8V5cEBkiwCIEZQYR8ZAA==;
+	List-Owner; bh=hTF7Ex9zWBQD4J/NYdlOmw4IBpi/HU3Fhe+dZ9YXCrs=; b=oXVSibyoQHhNc5
+	8HiU7dLsTlsJby9CuVeAz/nlqRr4tjnuM2IBAjoyDM7l5tJYBUV1Yqhag8n/muazJewsqJFIPehhM
+	KWMPfO2dnBGvo12csTak/W+rX5oSYIRkdAHkms5Ye/vPwNdsdp4mq/JnoZuqCEqcS4bo/QbPn27Q7
+	nZzoXW8gIFZBy8h0vEI/9B42C0hk1JthfToY9IpCkDh+s85iETf0cbyIBoK/H8BY39sQTatAHrUfX
+	1RZqFjXHPke9eidZmZEHLUPQV7Y0KYxLCAZO8XgztNPbnovoBoyin+tBGhLtKPrQvDC5r07+l0U/o
+	JjJZ9iVG0ho+NQYqFphg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uruQ1-00000004y3Y-3L8h;
-	Fri, 29 Aug 2025 08:25:09 +0000
-Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
+	id 1uruQ2-00000004y4j-2GZT;
+	Fri, 29 Aug 2025 08:25:10 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uru4Z-00000004ss2-4Abf
+	id 1uru4a-00000004ssI-1HUt
 	for linux-mtd@lists.infradead.org;
 	Fri, 29 Aug 2025 08:03:01 +0000
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-7722c88fc5fso393224b3a.2
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-2489acda3bbso14190725ad.1
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 01:03:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1756454579; x=1757059379; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
-        b=A91D4BF39ZnB6/+a8ADmJ5LzSXQX9mHboNzED6Y+2wE5H3szw6O2pag1n/tB9i9Zhd
-         3zNauRus65FXpkwif1UuclV0wLggArNdpfDvHmhoGw7Ou5JoY2vEmXanp0SjvpOrKMUa
-         gNiM+NhAXKXnO1Ete352QoUV7KkFwFVHmAbGUl+OXtYus74GyMhdekoJTcRjiu/NbiKp
-         N6jOc9D9NK7XuIYszXgUJScXKUTa1LaF9RYBghLjFYxInniIgHJeMU9Eb9Bnwv5uwKDB
-         BHdTD+oALVG3snTB5lqEyx71tLUopFr7ZSvrfi5lPEytpKhYtUu+1dOe6ttZIEJ66K/z
-         uwCw==
+        bh=0AfZlK+2PpvnkbeUUWLESRnsPEd9fz1tduXIyE8HjWg=;
+        b=JYJQgXiyE/hD3sppHgH6kVsjCC4LpC/OfdS+mp9ZA+UiKbVNWh/5cON47kjEMvRrN6
+         8tIepEspopgwp83Bjq4DSGcZZnTHenR/cBNAG2f8CD3BHuLfh2sWlXwWgp9z4ufizHg6
+         I8+Ghztw+CZRj91iGhLVr97ASoMSsLSqjhWbNOucLPZ3+dNZ3BAhXMN/1BXM8W7V1qbK
+         84xAry3FoFyOMQ3nFXm/ruvfiLv1bzSv+FCqopLwYIVtS7/N7yO142oAoQBYEM6xA/Sr
+         HCJV70ANPcYYUlZUI+c11HZy+hf3JB4d2HNuNLoGxs2B2e0/xZugQh6Zx4HaW1fqoklA
+         5dNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1756454579; x=1757059379;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
-        b=JRto9dnxhlmVaMOF536agbv0DAY1+2ZElGgJVzXpO7Ax+NigduFN/ugJyyzOqMMHou
-         QZpuTX/zYkliC0O3kwLzRCFgzqzhwGU0F38z5iOk0qmybcMZZhkcMslMRLQYZnPdaumN
-         UYc9YxUpdCCDZ/rfVLYXeXfjhzvSrfulAkeT+LvwtX5M/8EgHpAmU2TkDoT1J3BZtxFF
-         3hozKUiubJHLxeRs7u9VpbjpwqssHfsQOIq6j2vaYQKSnygy8v541yTcQ29SwtXTWqnV
-         AV7QizbOVGB3uTSv9WpqM0JRpEzs0/h8g2yK+TyvCO+roSseUer3DjJuvSB5QVuZ1oK4
-         w6Jw==
-X-Forwarded-Encrypted: i=1; AJvYcCWiXlZGxq6Uhv415rU2OyEsi62bK/0yFy2lhQ1xRHLC0AL1HrOhUqTiGrp8BQtlGgu7HMZjN7g+VkY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxCY/0Luf04aOxCz6s/N1ZP/32+UR0MG5TJa6wRb/ar0V35k0KI
-	ZqIdlE7uqcf3Eyowz1AkA/CJsEfJe6Go+r9ls7gnGazfGDBSqDWdc3lg
-X-Gm-Gg: ASbGncv0BNtHqJ1W3pg271kJdIvmrAtJohLL9AvktuPga8FuOm9deGtVg6xCSOUELVJ
-	+dBwIZJNeZBSavbhoaxIZhMnTFcHK/g/21lhJQMuuivLi2Vvg07TWxEd/IlhM1ynz5xhy1dGbiu
-	SzVFtsAjZZctx7jPMPFRwNFWUolQlvdmL4ofbok55IgKgMFOHz/pWjAgi9HCZYXhWBYlc6bJCng
-	2ZhrwKRFZ1WTGq6CdqoDTNAdLtRObncEzFd/KTdMnrn8nLL/BqKDwA/oei1SPvwR88JykgDoeQF
-	flB41qnfHPKhj/xQhAx4WrxIUoQWrxq0xXUXCXXCWyQvtvLfM7Cg59Y3g9bH/ZIL7QSAA8pOTVe
-	evmhtdtHNNJJG59HLF1omPzuvHuIvFurjJS2QbOHewCwFyiM=
-X-Google-Smtp-Source: AGHT+IG4XzsUhVmrn4fJ8v1PNDsbGNCghgUfxDPbkeqpUjvEg9N6RxHWj66Wbdw1AdmD0ATs4dsvZw==
-X-Received: by 2002:a05:6a20:3ca8:b0:240:750:58f with SMTP id adf61e73a8af0-24340d91edcmr35447322637.30.1756454578938;
-        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
+        bh=0AfZlK+2PpvnkbeUUWLESRnsPEd9fz1tduXIyE8HjWg=;
+        b=DRsToPpCmttvdIxE5+0F75fo9Bt0MhWVNumeREJKTtGB6q70OtHqwnLMM3BiqeSxIQ
+         CmwzaNOWyf5aYl/Ii5jygaakOo/soBlYiiQdY0qo+CWPdhiCngEY1zL61x7KkKn7ao/T
+         8K2+LjzUax7gvqfTDDOFGMpppH9rh/xhnc8RLwFg2xcTNNqXwSH5IxCFCfEeb8IkGPvh
+         YGQWNdbp8ULfTQyvToMEUoeDFcs1uYYEgOY/cO828Xf8pljEV83uRlaT9gGfM+zW7R2k
+         6c22l3xHwbOcWZr4Dhp7EkUMhOEnel6RH5aPSUd1i1rq64Q2IVBs2SnLxGUsoHd6z75X
+         MYzw==
+X-Forwarded-Encrypted: i=1; AJvYcCXD8oqBFleKRNf2+j2VHmJ2jO89xRRyxwkya3eA0bEqZSNA/ot3SRrbo7c7HEFhLuHbzzjwOu0tvUM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwqxrEZHs1UatOx3aj7JtMPiQhQrB7WxDaLxsDjD8gb1qk1jBVW
+	+jaPzBAWSF6LCL4R7LbB+ZvLMdN4x92LSuvPlWgfnrs4kzu8A7aY25oC
+X-Gm-Gg: ASbGnctDq4w89kHqO0p2aQpn5sg5+Qeyj32456bTKG2JME8WJO06PxrvSxRBRxy8ywf
+	6favr213wfi54tf2kZYoMZ3DTOkDWmzElJLuU0mACthUvecZOdMpqBptzuVJ//kwQs8pOlYV6ph
+	pAuMMZL4vf1Nf+zZGvk1GhrurYw0xxtLOLbiXRW9rxr82J2hI453Luzq99UHsXcb+Q8lH4cN1pW
+	q/4a0LGErqHxsQ9PBLgkMFQ5f6J65f850luuUPfupfFgTvomXLilPinRNR6VPy9c7RqGQod3Q7r
+	n2OV/oP/QHIx/2clNT5tdOTWisOlOgWBQAlC5m9hAjBVPpXlEv+IxbT0/Hk/YVtLtlWiK2tE5DE
+	CjrZWPVKktGJ8DxAgweXh6ooMMygkKLRlkOIdDBCSmZS2sjc=
+X-Google-Smtp-Source: AGHT+IEwoXGIzV8akza9wuHnzpdMDJjRSJFuE8pmXkEOlv9nwKY6YvijMOuiPPSYq1k0su7e61Abrw==
+X-Received: by 2002:a17:903:acd:b0:248:cd0b:344d with SMTP id d9443c01a7336-248cd0b381emr78909285ad.9.1756454579374;
+        Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4cd0e1c0besm1461992a12.24.2025.08.29.01.02.57
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24903702999sm17213525ad.3.2025.08.29.01.02.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
+        Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 1E9654489F51; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
+	id 08D794489F50; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -172,18 +172,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 12/14] ASoC: doc: Internally link to Writing an ALSA Driver docs
-Date: Fri, 29 Aug 2025 14:55:22 +0700
-Message-ID: <20250829075524.45635-13-bagasdotme@gmail.com>
+Subject: [PATCH 11/14] Documentation: net: Convert external kernel networking docs
+Date: Fri, 29 Aug 2025 14:55:21 +0700
+Message-ID: <20250829075524.45635-12-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
 References: <20250829075524.45635-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1684; i=bagasdotme@gmail.com; h=from:subject; bh=QIAPxg2EoM7XBiBH/OfCd9SfIrsCdhbBl57WJdF7gOo=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY14FftK8Ic/EqPdDdzlDXfSrtOCCiCo1tq0af6f2T rxS2nS/o5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABP5M42RYQe/RHjLfYX8tv8L 9vQt6eKUm/OnRm/3gUlFq/44pi2Xf8HI0BjxjsH0R+yFD+urVrRxaVu1SiT8M9vxwkWu7L/ecZP DfAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4099; i=bagasdotme@gmail.com; h=from:subject; bh=eMX/Qh24hdl/D8upWlphNzasCNRD/YCgXxsSIbz5MxY=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY16d1mKOz99m1qX25ldgn5beybqta3f6vFwaVK3P9 qU9Ts6io5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABP5Y8vIsLj5nquL3YaGH+H5 K1M/GSvVfagoWJf+Wf//FmmeVbsWnGJk2HnZqfzd057r3t1TvvSsKTBp/5q8NJD5d+PrUJ8N/JZ PmQE=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250829_010300_030772_75E59589 
-X-CRM114-Status: GOOD (  17.77  )
+X-CRM114-CacheID: sfid-20250829_010300_337987_E9A6DA26 
+X-CRM114-Status: GOOD (  18.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -200,45 +200,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ASoC codec and platform driver docs contain reference to writing ALSA
-driver docs, as an external link. Use :doc: directive for the job
-instead.
+Convert cross-references to kernel networking docs that use external
+links into internal ones.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/sound/soc/codec.rst    | 4 ++--
- Documentation/sound/soc/platform.rst | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ .../device_drivers/can/ctu/ctucanfd-driver.rst       |  3 +--
+ .../device_drivers/ethernet/amazon/ena.rst           |  4 ++--
+ Documentation/networking/ethtool-netlink.rst         |  3 +--
+ Documentation/networking/snmp_counter.rst            | 12 +++++-------
+ 4 files changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index af973c4cac9309..b9d87a4f929b5d 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -131,8 +131,8 @@ The codec driver also supports the following ALSA PCM operations:-
- 	int (*prepare)(struct snd_pcm_substream *);
-   };
+diff --git a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
+index 1661d13174d5b8..4f9f36414333fd 100644
+--- a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
++++ b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
+@@ -40,8 +40,7 @@ About SocketCAN
+ SocketCAN is a standard common interface for CAN devices in the Linux
+ kernel. As the name suggests, the bus is accessed via sockets, similarly
+ to common network devices. The reasoning behind this is in depth
+-described in `Linux SocketCAN <https://www.kernel.org/doc/html/latest/networking/can.html>`_.
+-In short, it offers a
++described in Documentation/networking/can.rst. In short, it offers a
+ natural way to implement and work with higher layer protocols over CAN,
+ in the same way as, e.g., UDP/IP over Ethernet.
  
--Please refer to the ALSA driver PCM documentation for details.
--https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
-+Please refer to the :doc:`ALSA driver PCM documentation
-+<../kernel-api/writing-an-alsa-driver>` for details.
+diff --git a/Documentation/networking/device_drivers/ethernet/amazon/ena.rst b/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
+index 14784a0a6a8a10..b7b314de857b01 100644
+--- a/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
++++ b/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
+@@ -366,9 +366,9 @@ RSS
  
+ DEVLINK SUPPORT
+ ===============
+-.. _`devlink`: https://www.kernel.org/doc/html/latest/networking/devlink/index.html
  
- DAPM description
-diff --git a/Documentation/sound/soc/platform.rst b/Documentation/sound/soc/platform.rst
-index 7036630eaf016c..bd21d0a4dd9b0b 100644
---- a/Documentation/sound/soc/platform.rst
-+++ b/Documentation/sound/soc/platform.rst
-@@ -45,8 +45,8 @@ snd_soc_component_driver:-
- 	...
-   };
+-`devlink`_ supports reloading the driver and initiating re-negotiation with the ENA device
++:doc:`devlink </networking/devlink/index>` supports reloading the driver and
++initiating re-negotiation with the ENA device
  
--Please refer to the ALSA driver documentation for details of audio DMA.
--https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
-+Please refer to the :doc:`ALSA driver documentation
-+<../kernel-api/writing-an-alsa-driver>` for details of audio DMA.
+ .. code-block:: shell
  
- An example DMA driver is soc/pxa/pxa2xx-pcm.c
+diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+index ab20c644af2485..3445b575cb5d39 100644
+--- a/Documentation/networking/ethtool-netlink.rst
++++ b/Documentation/networking/ethtool-netlink.rst
+@@ -1100,8 +1100,7 @@ This feature is mainly of interest for specific USB devices which does not cope
+ well with frequent small-sized URBs transmissions.
+ 
+ ``ETHTOOL_A_COALESCE_RX_PROFILE`` and ``ETHTOOL_A_COALESCE_TX_PROFILE`` refer
+-to DIM parameters, see `Generic Network Dynamic Interrupt Moderation (Net DIM)
+-<https://www.kernel.org/doc/Documentation/networking/net_dim.rst>`_.
++to DIM parameters, see Documentation/networking/net_dim.rst.
+ 
+ COALESCE_SET
+ ============
+diff --git a/Documentation/networking/snmp_counter.rst b/Documentation/networking/snmp_counter.rst
+index ff1e6a8ffe2164..c51d6ca9eff2c7 100644
+--- a/Documentation/networking/snmp_counter.rst
++++ b/Documentation/networking/snmp_counter.rst
+@@ -782,13 +782,11 @@ TCP ACK skip
+ ============
+ In some scenarios, kernel would avoid sending duplicate ACKs too
+ frequently. Please find more details in the tcp_invalid_ratelimit
+-section of the `sysctl document`_. When kernel decides to skip an ACK
+-due to tcp_invalid_ratelimit, kernel would update one of below
+-counters to indicate the ACK is skipped in which scenario. The ACK
+-would only be skipped if the received packet is either a SYN packet or
+-it has no data.
+-
+-.. _sysctl document: https://www.kernel.org/doc/Documentation/networking/ip-sysctl.rst
++section of the Documentation/networking/ip-sysctl.rst. When kernel
++decides to skip an ACK due to tcp_invalid_ratelimit, kernel would
++update one of below counters to indicate the ACK is skipped in
++which scenario. The ACK would only be skipped if the received
++packet is either a SYN packet or it has no data.
+ 
+ * TcpExtTCPACKSkippedSynRecv
  
 -- 
 An old man doll... just what I always wanted! - Clara
