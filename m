@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EB35CA0FF9
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ADE0CA0FF7
 	for <linux-mtd@archiver.kernel.org>; Fri, 29 Aug 2025 08:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1E/4q3dsVfurOUgeHPH/HfcHn62anWWP/eR/FapARFI=; b=hu6hk9QxyPM5A8
-	1Qmcu9jQ8Bx7S0T+AyM9NlRgUcM/HEXhxGYnWdmF/vdsoAA2sZ+oaf7ETXaF4ILlXuxrFalEXm1rX
-	my2Y0/hCRlHZD0eNqdPlVME2FJHXU4JworsbgP86rIbBeH/sKEJ3AUy0BY1541iIEo4e4POZZAj6Y
-	2JU+cm00dg1FAEwfS9k43h+39djwyaV7vXXYkK6oyqJQpP87nx3rq3Vtet369cd6IOcP4yv1WYrZT
-	2XfX80M1w7FGsOwXkJtlrcSNU6qPlGmEHCsSA1vDbVdKpAMd81Lc2TLedA3nBe8FdJJ1oFXMFJC0z
-	0dAS7BvDx4csK6tlzcxg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9saP85gNt88nd+HBFFFYUb4Ia+ldpnWmf9UA0rc524Q=; b=tvQ1qPCQBrV3Af
+	NLsCf4Fs+eU6BxJsdRTm5VXKazWfXhbfgxeyUisFdf+Cido5qlTWv+vJhF/l6HCCFUY0tFI8+0c5+
+	PmUGI1T8/bwMR+7I6/a3Gt9P2uhvoAtWzSk9+GOOqlTd1/mxpOWGhJIugBBLaGw4HI5Jm9CquQtnq
+	g782/gbW550tg+KEmUY10bfIQp2XaTJ2AxPQgz3whviNUBNRKlYfExSmhSHkGaQR8PxkFejcQ0iTk
+	tKEPoIxu5T5kOHrhEIWFoPOksI3z58mVPlLYBBq4vwb/hjKMM0tFGsA3ref3t9pQdpCOvoFxTXNtg
+	OMzf1Q0HBBM0W8PIdTWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uruMm-00000004woN-3dg3;
-	Fri, 29 Aug 2025 08:21:48 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1uruMl-00000004wnY-3LL4;
+	Fri, 29 Aug 2025 08:21:47 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urtxP-00000004qGf-2kJr
+	id 1urtxO-00000004qFq-3EIF
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Aug 2025 07:55:38 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-2445806df50so14999395ad.1
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 00:55:35 -0700 (PDT)
+	Fri, 29 Aug 2025 07:55:36 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-244580523a0so18916785ad.1
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2025 00:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756454135; x=1757058935; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GkZ2LL+fO6oH27E7YsqUKpWK9h0JvMFOl/W1FWHyGxk=;
-        b=W/Q6aypW9r17rCcF2AnkaxldELu+652caUb1pfge3uFgrbFA+nLShrOesDI0YaIS0f
-         Za8U7Ekp5fmlvmcN0NZ6XvHR1qqySuVF+HfgoW3WY/FABQwHle6emU1Fjz+JunXTpcoc
-         8siQ0rmQimU/apoz7mZxPixDFKqz90y/seMRxohd133u9zh7uOfWlmMkjYYpg+F0s7VO
-         PT1WnAHfy+K1Yp0ZIhqLl1RDQBMchnspOJZEMRgUQBy1kgBPpTQ0K3sJA/zacCx8ce5t
-         qPr+XstCK0WXQSbp9lSj8R3cfE72V2+nyOmFLe9357HEMUsmy+WImVTy3odE++J2+k7R
-         ujJA==
+        d=gmail.com; s=20230601; t=1756454134; x=1757058934; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e1dzl/9HN9fCmWWoku2EUAe+4oZJtgdEcU9UZmXN/7A=;
+        b=RZLnLfPB4DejByxQZZygayvoJw7xn+8+FdriBgD+ORs0TK1BRi5fbMhizTHSCyw3Mn
+         HWhYPLFdA9306xWpx89AAkYapiTu5yxnr1zW9Epw+qjVikzv45wdbP6BCRjHrp5MNp65
+         T+3qSGPOWOT7tgXp98Kv5MwYUbULk2HkeDcnYedDSCuOd180aUT8bCrFGMfPel8CR1Ym
+         phXJe6QRwMss20H6wIc+9s3L2KUC4X05ipsUiEzixd9WqQviSLQ1f3TRYrH4OagwgzwO
+         z9koOFMJbitl2SR6yZQUzrV/gdySkQwKBUHpfvf0D76zbnWNQCG7mfVnttjf5USvytOC
+         N7lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756454135; x=1757058935;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GkZ2LL+fO6oH27E7YsqUKpWK9h0JvMFOl/W1FWHyGxk=;
-        b=HnZ0HQjj/nGs5raFVyo4vYzAKJNZtSiFqQ9nPBhn5VuTCCTiZ/aFmfibxw6gb5C4Hg
-         HxyJknI24qVFWFbmKGAUHqMkL01NnJ5nyv0cStFc5+adgZNFUhp8w/DaQ/5hg68Y55hP
-         XaXvgJosyxbcrYkWWefmRmzb+IxL+ocJ9EoPGfWSwGT1N+mlTIWu+hiQCW+xrW8vRwRV
-         6h01RuMSIdXI8vs0itBjUpOdzX5V7YVM7HzQtkk2MOGr4JIP2QR5UBJ2BImcRTLGqtAd
-         hdzr2oVzri961S8zNcht2ORdH3RA6HL3jkqVMrIBmaXrR5/M+iQbfAp1IxILrC/Py0Fv
-         u9Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCWp2RuqhywRPeUuGh5GGvRh6/JRv+CzgOjqjeg2K+1w7lgSyIBdzgFCAPGc9UQCCGbNQNiWSqhoUQY=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw9eLQkQwfOU7z45vUU36/YeJFGpTbVthuFprV3xd1248CmZQHp
-	NxidXvkP+7eKyg08x5LUoRUt6j7AKWQmJEGdvVWYAhChv94XVLa7jWxi
-X-Gm-Gg: ASbGnct6Mttqs87+6VzuRka9Fa0Ti/5HMPRozOzrNA6dikeY30pJ6FHYcbtOsML9frY
-	WZwesr5BN2CX8PZ7pBNyNGaT/taO8blW52dfYZtV6s/xbnGteaaqabYUgOn6FSh6Qv7o2GVjptf
-	3/DrnUhR2DzzwC17JYAc1FqkRENSDbUhEVTZa+F3U8TY6doYl2iuBTzqCoGwoJ2n6XFgw0jkvgY
-	NTCCOlLEWdBoi7CbzahY5CV3q8t4XoEBHtuuI6rId5XsG++TGk4OD9s3PWzlt2pDnCILSsOVv7G
-	EilRypGUq2b9OK524pDbviTZyX/70Nx6Ui3HAr2BzMGPEi1/HiqlNA/BRnObjQuT+tiBuvdX0Nq
-	hx5k0LOotalyrd8T/mwdH2uEeRGZpEjh1RNHu
-X-Google-Smtp-Source: AGHT+IHJ0etjvptegteXgkUWoFIILA9nIajrzCKr99WRD5OzNxzSggv2jyDezns1lof2dGSUjRUcTQ==
-X-Received: by 2002:a17:903:4b07:b0:249:2297:c424 with SMTP id d9443c01a7336-2492297c777mr3315565ad.15.1756454134776;
-        Fri, 29 Aug 2025 00:55:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756454134; x=1757058934;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e1dzl/9HN9fCmWWoku2EUAe+4oZJtgdEcU9UZmXN/7A=;
+        b=MFm302J0PZWSV9k7zBhUpLzVxMTxVPhfK3wYmVGDbAOofsbXyLTmINu5+qRW7ANqez
+         g1aVzuKb1SccFgK+3uHdYveXlhhmFdVm4G3+uNxILZGg80SqwD13S28DDy5P8VnIQMnv
+         GAMxl9/IkuWTPKn1ofJgWGjZz7TFjcFOFWCO6Lkoik9mriO3ww/WzxkDWmwatRwtfxPV
+         pTnGBOUwtuZE1jVXT7Nx9615Z11Tm0jCmlI2L5VFGX68tXnu9o726i0vMTP8IbSIMGwO
+         /C/9HyR/mKSf26EwBUiD6Qxb6TSXPiCZyHyyrXMLFRR0h8hk0OilW1uAujY043N2S5wp
+         g+0w==
+X-Forwarded-Encrypted: i=1; AJvYcCXiIk8yv5lEXjfF6wnZyNG/NoRObUOMx7YzWicEPlVLC9a/oeKiuIe1GC5zuYzIZo8FMpIRlf/eZaI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzJ0ETt5BgxOpdqnqUbuIGWRM2yhUbb/5fxTLFn/DuD8qPMZpHJ
+	YzLkyWPNKtjzISzi35++M7aeW3oJv73sBkVnSW4YT8WNaM3aOCjZa8mV
+X-Gm-Gg: ASbGnctTefPodZBja8nKkEmIuSl5U+I+DDuh49R4q3miexsqN2JsPZWUlvlY42mfIH6
+	R92/fk0u5jwbe58SzV7KquUotDkRyBtoJRV5eniDJB02E0TGun3GA3xvXX3QhdlryqD513ykNQW
+	GnYlfhuMCDBiVlD5r8E2+tMO+QKHnQszrZZ51TpGrDRQHg4l4t0BpGJJNJlVDWLHV3tm/xl5Wh9
+	onk86YX+gfZ8u5BxU7ghp2oY2oREXYu2XFU19eqMR4oxoBPyRgSP6zQGCIAo79t7/KxQieJjnVD
+	SViFJeiecTog3DqFt/AEn05VRrr5zI+JCbDoWFF2gTqfDwEhYVad+jP/9yLJhcIbbscZX3OLGW/
+	nJw/ZxofYwcBV5Pzt2X99xtYg/GTtZIC+TUVL
+X-Google-Smtp-Source: AGHT+IHHspv4kBSvuOju+syLfWNvxBR1WSkz7mrwJNK9paKzC+4NcNK8VdwZC8CcLSepusoSJLIitw==
+X-Received: by 2002:a17:903:15ce:b0:246:c7dd:8da7 with SMTP id d9443c01a7336-246c7dd91f6mr219457635ad.32.1756454133503;
+        Fri, 29 Aug 2025 00:55:33 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24903724ec8sm16944365ad.41.2025.08.29.00.55.34
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-249037043b3sm17009045ad.22.2025.08.29.00.55.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 00:55:34 -0700 (PDT)
+        Fri, 29 Aug 2025 00:55:31 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id EF6DE4444CA3; Fri, 29 Aug 2025 14:55:27 +0700 (WIB)
+	id 92CC9411BF96; Fri, 29 Aug 2025 14:55:27 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -172,18 +171,16 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 02/14] Documentation: damon: reclaim: Convert "Free Page Reporting" citation link
-Date: Fri, 29 Aug 2025 14:55:12 +0700
-Message-ID: <20250829075524.45635-3-bagasdotme@gmail.com>
+Subject: [PATCH 00/14] Internalize www.kernel.org/doc cross-reference
+Date: Fri, 29 Aug 2025 14:55:10 +0700
+Message-ID: <20250829075524.45635-1-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
-References: <20250829075524.45635-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=839; i=bagasdotme@gmail.com; h=from:subject; bh=br/gH56HVzhrfYYqrTP3c/xceN5BBvTsvI3pBYQ/yVo=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY14UOzeckV2lWTlnxluBwiWvpt1jF+xvT61/ejpwa tSzw60XO0pZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjAR0x5GhlnvrvsFdd3e6TjZ g2FTa8uK3U48C+++2yu+oPH13XO8khKMDP0RbvPq2Hk2WQbMuFkV7P77fsRatst+E/e4qhe89eI LYAcA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3498; i=bagasdotme@gmail.com; h=from:subject; bh=UJUK8/oCaP8or4xMM6dYj2gtHalMI9xq0zTRRM+Er48=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY17c4br6T35GuJHFF8Yt24416R5lZZr0d5nIjOkLd Wbtjd2k0FHKwiDGxSArpsgyKZGv6fQuI5EL7WsdYeawMoEMYeDiFICJxIow/NNvVZZWvf59gvln 8f09a96zlV1ddP/qfkeet3OelO1bF7GW4X+WSslpN8ZtovrZdcGNj+0m353MlHX12bkXf15P2h5 ctoADAA==
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250829_005535_686558_02C43E9F 
-X-CRM114-Status: GOOD (  15.64  )
+X-CRM114-CacheID: sfid-20250829_005534_812117_5909DB3B 
+X-CRM114-Status: GOOD (  15.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -200,24 +197,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use internal cross-reference for the citation link to Free Page
-Reporting docs.
+Cross-references to other docs (so-called internal links) are typically
+done following Documentation/doc-guide/sphinx.rst: either simply
+write the target docs (preferred) or use :doc: or :ref: reST directives
+(for use-cases like having anchor text or cross-referencing sections).
+In some places, however, links to https://www.kernel.org/doc
+are used instead (outgoing, external links), owing inconsistency as
+these requires Internet connection only to see docs that otherwise
+can be accessed locally (after building with ``make htmldocs``).
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/admin-guide/mm/damon/reclaim.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Convert such external links to internal links. Note that this does not
+cover docs.kernel.org links nor touching Documentation/tools (as
+docs containing external links are in manpages).
 
-diff --git a/Documentation/admin-guide/mm/damon/reclaim.rst b/Documentation/admin-guide/mm/damon/reclaim.rst
-index af05ae6170184f..92bb7cf1b5587a 100644
---- a/Documentation/admin-guide/mm/damon/reclaim.rst
-+++ b/Documentation/admin-guide/mm/damon/reclaim.rst
-@@ -298,4 +298,4 @@ granularity reclamation. ::
- 
- .. [1] https://research.google/pubs/pub48551/
- .. [2] https://lwn.net/Articles/787611/
--.. [3] https://www.kernel.org/doc/html/latest/mm/free_page_reporting.html
-+.. [3] Documentation/mm/free_page_reporting.rst
+This series is based on docs-next tree.
+
+Bagas Sanjaya (14):
+  Documentation: hw-vuln: l1tf: Convert kernel docs external links
+  Documentation: damon: reclaim: Convert "Free Page Reporting" citation
+    link
+  Documentation: perf-security: Convert security credentials
+    bibliography link
+  Documentation: amd-pstate: Use internal link to kselftest
+  Documentation: blk-mq: Convert block layer docs external links
+  Documentation: bpf: Convert external kernel docs link
+  Documentation: kasan: Use internal link to kunit
+  Documentation: gpu: Use internal link to kunit
+  Documentation: filesystems: Fix stale reference to device-mapper docs
+  Documentation: smb: smbdirect: Convert KSMBD docs link
+  Documentation: net: Convert external kernel networking docs
+  ASoC: doc: Internally link to Writing an ALSA Driver docs
+  nitro_enclaves: Use internal cross-reference for kernel docs links
+  Documentation: checkpatch: Convert kernel docs references
+
+ Documentation/admin-guide/hw-vuln/l1tf.rst    |   9 +-
+ .../admin-guide/mm/damon/reclaim.rst          |   2 +-
+ Documentation/admin-guide/perf-security.rst   |   2 +-
+ Documentation/admin-guide/pm/amd-pstate.rst   |   3 +-
+ Documentation/block/blk-mq.rst                |  23 ++--
+ Documentation/bpf/bpf_iterators.rst           |   3 +-
+ Documentation/bpf/map_xskmap.rst              |   5 +-
+ Documentation/dev-tools/checkpatch.rst        | 121 ++++++++++++------
+ Documentation/dev-tools/kasan.rst             |   6 +-
+ .../bindings/submitting-patches.rst           |   2 +
+ .../driver-api/driver-model/device.rst        |   2 +
+ Documentation/filesystems/fsverity.rst        |  11 +-
+ Documentation/filesystems/smb/smbdirect.rst   |   4 +-
+ Documentation/filesystems/sysfs.rst           |   2 +
+ .../filesystems/ubifs-authentication.rst      |   4 +-
+ Documentation/gpu/todo.rst                    |   6 +-
+ Documentation/kbuild/reproducible-builds.rst  |   2 +
+ Documentation/locking/lockdep-design.rst      |   2 +
+ .../can/ctu/ctucanfd-driver.rst               |   3 +-
+ .../device_drivers/ethernet/amazon/ena.rst    |   4 +-
+ Documentation/networking/ethtool-netlink.rst  |   3 +-
+ Documentation/networking/snmp_counter.rst     |  12 +-
+ Documentation/process/coding-style.rst        |  15 +++
+ Documentation/process/deprecated.rst          |   4 +
+ Documentation/process/submitting-patches.rst  |   4 +
+ Documentation/sound/soc/codec.rst             |   4 +-
+ Documentation/sound/soc/platform.rst          |   4 +-
+ Documentation/virt/ne_overview.rst            |  10 +-
+ 28 files changed, 165 insertions(+), 107 deletions(-)
+
+
+base-commit: ee9a6691935490dc39605882b41b9452844d5e4e
 -- 
 An old man doll... just what I always wanted! - Clara
 
