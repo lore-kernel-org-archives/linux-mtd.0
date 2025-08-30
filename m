@@ -4,127 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCD90CA0FF0
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Aug 2025 00:51:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD5BCCA0EFF
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Aug 2025 10:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XqJwbX5eq2W3ZYeUpvm5QC4Q0khptbegkiT8zwQvG5o=; b=TEcv7Do0dtyHSc
-	CaAXiWC6ppmeajGm+rCK3oUz4R4TzdT+V4znOOCiMTOu75Rn5TQFsYoOp3VV+wfuKUE9wvNIWZfT0
-	cA54cxNKyGcWc+XJ2zjvkIYkcRACi2+AsEmYbIaQXDiRByXpDpyO54oKfykW1c2Q4No+j+5GvuGtT
-	d69bg6/LJ4UwYsCWL78bO/PuLFdbJclGQJbqnubtNgEWiGdYGB1/AZfOVs8pYIosPWYM85Uq/ODXd
-	LrBCL5b7XIBw7enkcqYH3x0rAu9pW2pFcYSIf6bpWQeWINryzgwXTjpqjiJvcYODHOhj59ib1Xl2M
-	i+gwL3Ixw0xoNZTeJ6VA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2JxS3upRNdK8HWNfEHh7h0rlO0RYkYNhwznAaxs+Q9I=; b=P8WlfU1ryKkOQT
+	Y8xiWMyrwMi+BWG8AmB/6gJMZVdHxVcBq+1lIon2Wupc1tNCIQ2V0QL69xr0EaIfVgvsiipCb5aUK
+	KQk8Keh00b831cFd/iQ/kDLiSRAyXN1oIH7t9Q8TxMaA0p52ztIBsmLbXH9+QsbyUQR1N1kEwK2yl
+	ENz8yzQr6C8M+BH2pC/ZM6nzEvGuJSYJC0+1z0OOag6MYEO+qyGg5NOFse10c8zfu1ubqv3umuEAV
+	QTjiMRjFyOfl74e9UelhRsk3hQqfwOjaes5SPf735Ia7wnP8sLN5y47wUsBcl1CY8It68IHiIj9S6
+	JRhLjhwNQT83P6B3xuaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1us9oj-00000007Csc-31el;
-	Sat, 30 Aug 2025 00:51:41 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1usIU8-00000007iUe-1DJi;
+	Sat, 30 Aug 2025 10:07:00 +0000
+Received: from mail-japaneastazlp170120005.outbound.protection.outlook.com ([2a01:111:f403:c405::5] helo=TYPPR03CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1us7RM-00000006w5h-03mj
+	id 1usIU4-00000007iUF-0BTs
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Aug 2025 22:19:25 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8BA72438B8;
-	Fri, 29 Aug 2025 22:19:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D549C4CEF0;
-	Fri, 29 Aug 2025 22:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756505962;
-	bh=0bwPfbMyrek5L9hOu7GBREJXWyINw9aI7B0CsO+yy18=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=NpneGQ3QoAZZMVPOqxAMTMsnXEod1MdR9ylvjRjnlUJ/5Mz3jdgYOeIgkfRKPhZ/U
-	 vShN87eLYGT8BEANkp63jXP/WsDTW3PU0xitnIZmnudm3QKOtQPPDMN6lDjVT1DMy6
-	 XFRyCvB6YJQmelc7Wn3BJtfB7gPtsENP28OUr9nZgR3Z3uJVJ4N4zjTqq2R/gAAsif
-	 WTFcvK4iQOHAl7e/mRAw01njvP6SR0PeP/vp9kcpLKktQGVHBqKVQ45BB3W4Cv3bfY
-	 SvtEaHF5gGrpETbJNljug4x3qCKcghxgOt/gZHQtCpaow0R9q2yCiFsgb9Uaue3SoT
-	 1eYuRWMtynFfw==
-From: Mark Brown <broonie@kernel.org>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- Linux Documentation <linux-doc@vger.kernel.org>, 
- Linux DAMON <damon@lists.linux.dev>, 
- Linux Memory Management List <linux-mm@kvack.org>, 
- Linux Power Management <linux-pm@vger.kernel.org>, 
- Linux Block Devices <linux-block@vger.kernel.org>, 
- Linux BPF <bpf@vger.kernel.org>, 
- Linux Kernel Workflows <workflows@vger.kernel.org>, 
- Linux KASAN <kasan-dev@googlegroups.com>, 
- Linux Devicetree <devicetree@vger.kernel.org>, 
- Linux fsverity <fsverity@lists.linux.dev>, 
- Linux MTD <linux-mtd@lists.infradead.org>, 
- Linux DRI Development <dri-devel@lists.freedesktop.org>, 
- Linux Kernel Build System <linux-lbuild@vger.kernel.org>, 
- Linux Networking <netdev@vger.kernel.org>, 
- Linux Sound <linux-sound@vger.kernel.org>, 
- Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
- Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
- Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@redhat.com>, 
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
- Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>, 
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
- Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, 
- Mario Limonciello <mario.limonciello@amd.com>, 
- Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Dwaipayan Ray <dwaipayanray1@gmail.com>, 
- Lukas Bulwahn <lukas.bulwahn@gmail.com>, Joe Perches <joe@perches.com>, 
- Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
- Alexander Potapenko <glider@google.com>, 
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, 
- Vincenzo Frascino <vincenzo.frascino@arm.com>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Eric Biggers <ebiggers@kernel.org>, 
- tytso@mit.edu, Richard Weinberger <richard@nod.at>, 
- Zhihao Cheng <chengzhihao1@huawei.com>, David Airlie <airlied@gmail.com>, 
- Simona Vetter <simona@ffwll.ch>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- Nathan Chancellor <nathan@kernel.org>, 
- Nicolas Schier <nicolas.schier@linux.dev>, Ingo Molnar <mingo@redhat.com>, 
- Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, 
- Waiman Long <longman@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
- Shay Agroskin <shayagr@amazon.com>, Arthur Kiyanovski <akiyano@amazon.com>, 
- David Arinzon <darinzon@amazon.com>, Saeed Bishara <saeedb@amazon.com>, 
- Andrew Lunn <andrew@lunn.ch>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Alexandru Ciobotaru <alcioa@amazon.com>, 
- The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Steve French <stfrench@microsoft.com>, 
- Meetakshi Setiya <msetiya@microsoft.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Martin K. Petersen" <martin.petersen@oracle.com>, 
- Bart Van Assche <bvanassche@acm.org>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
- Masahiro Yamada <masahiroy@kernel.org>
-In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
-References: <20250829075524.45635-1-bagasdotme@gmail.com>
-Subject: Re: (subset) [PATCH 00/14] Internalize www.kernel.org/doc
- cross-reference
-Message-Id: <175650594072.395832.3911302052314725751.b4-ty@kernel.org>
-Date: Fri, 29 Aug 2025 23:19:00 +0100
+	Sat, 30 Aug 2025 10:06:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=SGSOvfjSmRnRAl5wXxmbbu2G4uUVY849fsBvel2zngZ8GqjGQUnE2XZH8E8mj3UpeQyRT5qaTOQLyphWTUe8PJaeJre9gPJ4bb0QM6WrJROhXEN3DfHJipnhxiPfLLYgwycMGHPCJltua3JCFrr4MKvCGFbSpVAF/8XkHEC5R4JeUwpAklv0aNqwJ28YpNIMzw3DwQhAIl/89SbUfgPFCZVEH7h+jOa+mBz3WMaI1DUuBjKMcdAp+SKqtINSidQVftACPAlt47lMVXJnSiUI1W1hupkZn+8BW/QH1c0NvSTagrngRu3tyenE48qowMeWFXeHmmhArGKvBJkIltuyxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PurIhIw5qMQwn+YYnd3n2GMvgVWcBufyQkl55gvUoWQ=;
+ b=GSPLZci5gkAfzoy/jW1nj5L6/VgHGgFRWPgTAqjuPrJtYWkAvgdMRzeuJEK/LoEsf9pptbTK2YmNWG087RGf4i4n92NXU2Pg2ikLLfPERsoqJHqnIJkgEyewsV2pfgKCzmQxV8QGQWllOiFR8+EKHEEVd5appG2PWS2iqukCF3a4SgKT1FSQ+neZIvyeIUlmQF6RKh49IP5eKWD1oTJPJ+LQr4W3/Dv8fLxYyCsSaXNDj4F6AWj50DXw5oXodEf3irqeygzLWSm8+LydmRfyo752gy9WN55SNizzPwVjh8sIGRNwk9s1zB7AEro5MN6KhA4OdhTIeL7nYYr/+I+Gwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PurIhIw5qMQwn+YYnd3n2GMvgVWcBufyQkl55gvUoWQ=;
+ b=KNckpyxYxVdG6d9dAzzFLP16DpYEOUJk9vB+RVdrrhbfwPRHm/MYB9OUKJEotTaGpcj/Y3+vTgj1qnfxR7+bosVbVPipx2Atn+I8x2cu631bIFPfSQ9MJwwUVqwSkUCe06K2MVnzYKdRtXuShQ8NiUWF+OuiInmARyg8+Luq3gTmFnzezbrqWpLtDAYUs36cDlg0HtNEromR0oASwMy2Ve0iXKzehAnejj+8OpK81/olcBsulc5oAnaTj9G7ophL4rMqfGz9gxTw3rGPqnsOAqw35eiA5b30XSi6EewOQ74/p8xz6gLdZ5T9m/phruMKVFCVVZZMpohF2/rUKjnXWQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9) by
+ PUZPR06MB6055.apcprd06.prod.outlook.com (2603:1096:301:106::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.25; Sat, 30 Aug
+ 2025 10:06:49 +0000
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666]) by SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666%5]) with mapi id 15.20.9073.021; Sat, 30 Aug 2025
+ 10:06:48 +0000
+From: Qianfeng Rong <rongqianfeng@vivo.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Qianfeng Rong <rongqianfeng@vivo.com>
+Subject: [PATCH] mtd: rawnand: pl353: Use int type to store negative error codes
+Date: Sat, 30 Aug 2025 18:06:37 +0800
+Message-Id: <20250830100637.14756-1-rongqianfeng@vivo.com>
+X-Mailer: git-send-email 2.34.1
+X-ClientProxiedBy: TYCP286CA0001.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:26c::7) To SI2PR06MB5140.apcprd06.prod.outlook.com
+ (2603:1096:4:1af::9)
 MIME-Version: 1.0
-X-Mailer: b4 0.15-dev-a9b2a
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SI2PR06MB5140:EE_|PUZPR06MB6055:EE_
+X-MS-Office365-Filtering-Correlation-Id: 39922657-9f7a-4c40-debd-08dde7aceee2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|52116014|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?s4MtDM+0TCCV4K3Bstz3TZ5L7nFTyRWR4krjQOqdsmNzRutfV18jLjW5mx1y?=
+ =?us-ascii?Q?BN0MHw9dbKYQSFruUUys6bcS+1BfNpwJ9qHRtOwLQj3Xi1VldVcWRk793okX?=
+ =?us-ascii?Q?asG4RdQU6y/6cv7AimvAD/mctoG0HlOCg59EK7wT6RaGkfJydVbY6Mc8eOHw?=
+ =?us-ascii?Q?E0OXw/8IZKz8cZCppltnI/DGMMIzZSnMqcE9WIUD6i7vDeLDOZmIa46GQs4L?=
+ =?us-ascii?Q?rvV6GlY+bmN7UJ4zdhmKCeZufqKTsQ1RED4KkTbh17UoS9Qr98hMVH28vu34?=
+ =?us-ascii?Q?QxuDQWx+aFxnvjQygD2q3WVKIwZJBA+H0nca86l8KYTyGkQSgtCfMEUnbnGO?=
+ =?us-ascii?Q?c2I64TKbBYTWYIpbAazb+UCnJSTxdTyjcgI59dN4vWMDNjuydwPjaj4jxNq2?=
+ =?us-ascii?Q?NZRMIygv6gbaakkwvrqV0dGshrDXGmKndMzhEC8PimamSxScjaCFRy0Rli+Y?=
+ =?us-ascii?Q?AtYWmr+p+E04+JIH9CPKqgg6Beac/Y857UKk1kneuuPFtEUyJ17ds+01s0Fi?=
+ =?us-ascii?Q?2z+rFMGwRXbDC6tKMgkUi5WmRdB/s0b1Z98DEcZn9Js3kvf9+7fDbxuCqU1r?=
+ =?us-ascii?Q?HIGclhSgojaxKCljjRXJROMl6tWkqNQEzzXV1jNG/I7eBO3D2cVlK+KXJrBt?=
+ =?us-ascii?Q?6X2wsA0nekb6m2KYzyngEe1Cy0pBp/NvQIwEZb0ZFS2j0bUT9IPSp2hkyprd?=
+ =?us-ascii?Q?ySJ1+Err9p1XZ4Y2adogARwct8s9G8xstA5TuHgqmeFe1X+QP9gd1nbPIgE4?=
+ =?us-ascii?Q?phvkybyTIBgOLAJe9uxv4a1CvF4RGKI3AnHCkH1F1O+jS5GDfSnqHieDCMNP?=
+ =?us-ascii?Q?gWgtdI/4jiybZTcKrLnIN9mfs/ElXK/UTHzNoMV68wRWxwsidGgB/njYHjP/?=
+ =?us-ascii?Q?FaQLn8JvakqmslG2yzMJcpE3HA7Kz7wPqiTkc+F2sylRJAMbADsFt3sceXwT?=
+ =?us-ascii?Q?+xFKABi+lUAkYcUhgzpwDdAhwYp8KwnXvQvP+7f/59MMu6LP6eA4Qh9XScSr?=
+ =?us-ascii?Q?ouM5pcfW3h811JZuOQy/M5Ghhc9bTJcgLVcgLnUxnR0cNmzJqHL2K70/rpPg?=
+ =?us-ascii?Q?9kcWVEgxZ0wEkEduLCfUX23GVakl9UQgWqXqONmPHAtr2iMn2wFVczl7PUIt?=
+ =?us-ascii?Q?Yfqa2EsaX9MItcx2bSjRek2AP1puhYjdUO0BhbUE0XXwM7ND9WCTxBp4pEfW?=
+ =?us-ascii?Q?8Y7F3nOtxsVKC29QterLHiKqcVSCNrxP42jcPDBPjHLUKKDO2KWLQ5mWKXnO?=
+ =?us-ascii?Q?L2J7bsIn1AYO/N447PI/OFJ3KyHKSgiWjDnpX8Je+z2two0OlYhd6y83eKUP?=
+ =?us-ascii?Q?QkC3OnvzP+JsLwHLtvmt0KI0cZZhgmG553Y21qVczaHBPXWTjV4oH9+XYeJE?=
+ =?us-ascii?Q?8u1hmIMglc2YMHbdJmVETcz/hkXCyF0/SmKs+kpjEVfegsS0xMXF22yY8J+F?=
+ =?us-ascii?Q?ZN5GYvYdO47FaaeWviBbEhFNh1aWXZKqVpzZUocAtoahQUsOlLuKGg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR06MB5140.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(52116014)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gtxZ3F6v+L/00XTl/j0iV5rMP6clAQl/hsoRdX5aW4UyXR7iR9IZwNjL3969?=
+ =?us-ascii?Q?BW1/K3WFRx/7B/CZKSD7Q7rvWwl/XRfSperO3OpEyrroGXlW9Cf8oMojSvXW?=
+ =?us-ascii?Q?sbEFawgxEubfwMWCGrdfo+KYFfGIe34JSHphISvOmPGWT+BUBvC69cdJJ3S6?=
+ =?us-ascii?Q?cSSMYX4Tqq59XM5j3IM4YN4WRfoujfBtVi4WXzrSnQEp3UuQyJ3Am/TduSvo?=
+ =?us-ascii?Q?YNllmouFZkDWBfQc+Ssqh/uTxmB/qqlAS5LhyO8um7guj3R/PwStdsoics2t?=
+ =?us-ascii?Q?+3VcMbyENJ0LERPciyV9SArcbiMiqUv8rKVIRnxyTep4PKy+wTVPZ9kc6skQ?=
+ =?us-ascii?Q?UJpmWJ11gGqnQClII3uULH+hCjLwMEZ+kdA05XfFAvXgia+2IV95YUTeRPJL?=
+ =?us-ascii?Q?+kJFiuK6m4e1/d/t9gOKG5YFs8K2V4NtaFyXR38rmOHFgO5qUbSppBHVnEWV?=
+ =?us-ascii?Q?ZJunoac0iRjBcnxpN7GBMlQ2pT1+vR7jq0XqqVNMDZdhZkwED60rRGec2Mln?=
+ =?us-ascii?Q?dNohMP2oblYSJLj8tXxYy3O7Gt2x2+Utdqqqm5VQu03T6Vg4yoHBIuOMVPFS?=
+ =?us-ascii?Q?7pI4chAAuff+5GV1Y0yon+24TdUT0hdFDX9GVeyp20t9alyzIQ0nWjazxggw?=
+ =?us-ascii?Q?7mtjLiclBlUrw/bgp6DZoir5NPC5JK9XyKLwpvmQLOWfkP6xCE7H7OEC9j6x?=
+ =?us-ascii?Q?rmYczjeih/s4QAZgKx1IGI8PR8qIwmgvlts/wB/4oqAtmRaulos03ULeo7yF?=
+ =?us-ascii?Q?wuQscJq8XRhPy3HAhWSKs2od6th/+F0z4laxHZiMFOxISY7YqdyTDDuaMvby?=
+ =?us-ascii?Q?myS3LjziE3XKEW9DyzVCdIkySszkbWAgjf38BTbWftiJo/r5dozFOBJg1WrK?=
+ =?us-ascii?Q?eF2n1x/HWDFVYHH0nmZVhUQPSmIH33S6KlRK+n8SPnWydyUHbjrXGJpPK858?=
+ =?us-ascii?Q?s87R7CZ2Ckixy/OuIiRke/qg5v8fEPHrR1Vta9unZFAiZyHQ2nmEqR8YKv5n?=
+ =?us-ascii?Q?UrfTsYSF/I83RPhUp8DaNiHq7PeKtOnx0CP64A8cWpCL1x2SrDhGzrZuB3r3?=
+ =?us-ascii?Q?UHuvX48wwenUVyjGXHMfM6rNYfOkmoy37XDIi4tU54mBCy/eSYaAyKRE13q3?=
+ =?us-ascii?Q?SRWZaSGCXnjT5p1fX6bWap11I34zOlj5aQJa3ztTkb9DHvDo3fD9OhSC6aWV?=
+ =?us-ascii?Q?kLgvcZuiMzvPv8bnsRH2yRVQ9Eju2k2xcwLDkdp21cIkHytWTsa2ba6Vztqy?=
+ =?us-ascii?Q?8JFRV/LVpcd5vgQh3rdwjnn0gahf2PKNHJhtZKvfBSbEOlQBmwUrHvIl3Ffa?=
+ =?us-ascii?Q?qEY+HB5yV818RoYv0pSFGK+u5A/V5t726xOivU+KhiGbmjmEdztgEIIccLII?=
+ =?us-ascii?Q?WjAw53J+xJonquxA+P6RUsuFFTVIJJj+TpNBEo2CjhFg67nnl1tllFTEcQft?=
+ =?us-ascii?Q?AuDWvqC+r/YnWcYzQuRk8ddWpGML1kRapfBchV05etVlXDtrswLHWo4PuQmZ?=
+ =?us-ascii?Q?eFhSfShyDgK2yF1POZ3Wa/FiPsNVvNu8TN2BdtdJWxOStUhjQRcV+wZPNv4O?=
+ =?us-ascii?Q?qOYdu4l9rX0fnAq27qdM9gdd/SAomqHIWbNRfDwx?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39922657-9f7a-4c40-debd-08dde7aceee2
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR06MB5140.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2025 10:06:48.6956
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZqwsKjPKX4po5MrrcokRpQv2ifE5AUxTqXzO5uJ3QgAxC4J6+hBT4LhyJoRf8IKi3adBNOxZVPQ9oNnWZkq4Lg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB6055
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250829_151924_104678_023C25B0 
-X-CRM114-Status: GOOD (  16.76  )
+X-CRM114-CacheID: sfid-20250830_030656_086420_1F20AD82 
+X-CRM114-Status: GOOD (  11.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,45 +158,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 29 Aug 2025 14:55:10 +0700, Bagas Sanjaya wrote:
-> Cross-references to other docs (so-called internal links) are typically
-> done following Documentation/doc-guide/sphinx.rst: either simply
-> write the target docs (preferred) or use :doc: or :ref: reST directives
-> (for use-cases like having anchor text or cross-referencing sections).
-> In some places, however, links to https://www.kernel.org/doc
-> are used instead (outgoing, external links), owing inconsistency as
-> these requires Internet connection only to see docs that otherwise
-> can be accessed locally (after building with ``make htmldocs``).
-> 
-> [...]
+Change the 'ret' variable from u32 to int in pl35x_nand_probe() to store
+negative error codes or zero;
 
-Applied to
+Storing the negative error codes in unsigned type, doesn't cause an issue
+at runtime but can be confusing. Additionally, assigning negative error
+codes to unsigned type may trigger a GCC warning when the -Wsign-conversion
+flag is enabled.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+No effect on runtime.
 
-Thanks!
+Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
+---
+ drivers/mtd/nand/raw/pl35x-nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[12/14] ASoC: doc: Internally link to Writing an ALSA Driver docs
-        commit: f522da9ab56c96db8703b2ea0f09be7cdc3bffeb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+index 09440ed4652e..37e92b86bf26 100644
+--- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
++++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+@@ -1137,7 +1137,7 @@ static int pl35x_nand_probe(struct platform_device *pdev)
+ 	struct device *smc_dev = pdev->dev.parent;
+ 	struct amba_device *smc_amba = to_amba_device(smc_dev);
+ 	struct pl35x_nandc *nfc;
+-	u32 ret;
++	int ret;
+ 
+ 	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
+ 	if (!nfc)
+-- 
+2.34.1
 
 
 ______________________________________________________
