@@ -4,170 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DB5CA0FFE
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Aug 2025 23:11:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE379CA0FF2
+	for <linux-mtd@archiver.kernel.org>; Sun, 31 Aug 2025 14:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=awVBemkMdQTquSQe7o7pQHUsRatT87RAVvXvetYRYxI=; b=MLcjgaT7IHU7EUCuxN4MBIwPcd
-	ucQZUuSSafn1DSr5T0+s3rkpNxLNt+adL7UvadvHengcfXzW2LvK5eg0eH7uFBct6OqaI9rBPh4Zy
-	PnrpCVwWkAnBKaoLwP4ciPbvWZRTZ8t0hzujXESs7bKP1yUB/b+qHgUDNC87hN6GRsPqSxZb8xk5m
-	7PLI2kte0qcE/bIP2gG5OCbsTL8t7D6d08HKYuiVDZ3+eJe4IZj0PZV9xuu39xMUuYVdZ0oisfPeW
-	nJnTTz6im6FUF2AXmLAbpXMgEzZ7u7F+rjT+HCZmcIMb4nWuE+KjBXoR2OGHf7KN61XSYEIaSsxdP
-	vpcUXZcw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Vx/r40KMxBZ+klqZ+gmyzOJ+Fnhn69KidXhW2aIaSk0=; b=NqB+4JI9G9xgWr
+	HTpuL5ykHt0gtX8PvUQvWl495b1yzvpto9kD2Unu0id2GeLkhVGTXPAOP8FyfZx4R8dEeWOLt7chd
+	PDVfUv3XQDoUTqHvjaz9ACI9xl3kKkFkJVAGJgiyoBAgTTVRtX2dGj9qUxWxTtxPPM9JmzD5BVDsw
+	KWgRoa8dURmIPl5bA6X4lJwKBYJCARF+AUMWPlPt2P478zNKa1EhIJf5gHtMx0gQcSrDskX4fWopa
+	iV4TxrNKuLfUCvvmQTXkoOAbVNDqeg1NXM9ILdXa5cEmrfq5dGa89h95n2X5zBu8bcXuaTu9ufYCc
+	86JlUMdvfjskXuH+4oOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1usUjQ-00000008WS9-2tUa;
-	Sat, 30 Aug 2025 23:11:36 +0000
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+	id 1usjEG-0000000AI3u-19Vj;
+	Sun, 31 Aug 2025 14:40:24 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1usUjO-00000008WRm-1yf1
+	id 1usjEC-0000000AI3R-2ZlE
 	for linux-mtd@lists.infradead.org;
-	Sat, 30 Aug 2025 23:11:35 +0000
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-b471756592cso2114199a12.3
-        for <linux-mtd@lists.infradead.org>; Sat, 30 Aug 2025 16:11:33 -0700 (PDT)
+	Sun, 31 Aug 2025 14:40:21 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-45b87a13242so7283455e9.0
+        for <linux-mtd@lists.infradead.org>; Sun, 31 Aug 2025 07:40:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756595493; x=1757200293; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pKJR3d1y6/pE646jp/qQ2LVHmuXD7qWjBS7Rpy0QVAg=;
-        b=C/K3XZg75aCE76JPNtQxxnNzFAkW1Fmem2wO1gKNBS1ivKEraaAgeKamo4sQlvDRrJ
-         rXUF2UKxLyN9xWm02fWUgP3ZpLUafEhJRPeMNMbYMYIVjx2K8/MXJthR1sYR1HTAu2wL
-         ALqh8SFoL8zimbAA4RIDD1XJRU0F+AWo784ui1r789zvez08ARy/Q2DPhnMBXgY1eb2Z
-         nTf7niVpkjgYAo9JT0+vhxsJmJf4ajsdnVK3MCrx7cuX1TigVsfycuFH4z5leMkQYqlS
-         ZmvuOpgRl+CLT0/ZicHMUvnv7v82b3Lfv43Wlj9gjKpFN2V6Cc7k7wprgHYpbk5DY4hC
-         ukYQ==
+        d=gmail.com; s=20230601; t=1756651219; x=1757256019; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8uK+63tF9hV8oMnf210yJC1/tTQmsNNUHWIDHsThjdw=;
+        b=ZWjtDozenXyuGD5qP4B8X6DceopXRqdtgJZ7g46oQVa/TgL0/JxGYSTanNQHjI6A32
+         TiU5ApReAuwJDfn2JYemFUmAf2sS6AZvODZrfl72lujKB9UUldYqekQg/GwbmMK5IsRX
+         3DaaQNs2QL5bo1pWm9aBr8qhO4CV31jamI8y4G9CTllnDB1N699h7lwMFjWAMdPHskpr
+         1/T3Ouy4Rg2H9ERnMTKkZoq8C2G4J0pjjCHc+GA4yZ2FsOrgc6ha/HdhWUfjSWNS1vBY
+         PrHlVMWud0RDC6D6RXFLTJf9MD/S+II6xGu2fZTKTzpBAXHKJhYNP4+mbzMfPsvcLwqN
+         yeIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756595493; x=1757200293;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pKJR3d1y6/pE646jp/qQ2LVHmuXD7qWjBS7Rpy0QVAg=;
-        b=SQFe80CBfb/Ur+Qm7wv9W2yMTb8OaJ0mrJaze9kmnOapuR/PvGwPlqDgG6xInEHaDu
-         foH7RjJ6J6V4OIuJDUdk9p4ifxskHHPcIiVHOo47RyZMbvY7IYETHnpcccAvERaN9rnG
-         9bEUsE3kKeolxq+PTPtO1qIuUoN9Nw4tKozQc2FtQq/GeasjFJD23ptLPrs70icU84n2
-         bhYkkiDT6pY21OGqN45cccTONUgkG9lkCLdSkHsSNPXJvW7KnOloSUXpZKUhizRq0iHJ
-         HEh1LBdTWnvFYQXYeQBdooyHxzl6oHmSOqqInEry+ST9vcGk/WeqEC0O2QT1DXAPt1Z6
-         0uvA==
-X-Forwarded-Encrypted: i=1; AJvYcCWjjuo0KT/6Xipl2ll5xFccRDcDY5Gk6ZchUq+/vj/SFXdZMoJdI2ZUY1mUPEttaw3d1NFx4t/3QR8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxXULYiDcExdFUgc/RBg3SUwdcGL+XF/OYoSeS/rlxpr3P6t5CA
-	uJ3DYLLyVsspMagKpjUloZXUZMlBqD5ez0gM5LgVex+p5S9U3ndicMm+
-X-Gm-Gg: ASbGncv7wfCFvJtxOP3mRvjvXf8EGpCDD9PlLMjye2M55TnmlOv0nJFHLsj/PbR9F35
-	tFUVTmzos9LUe4IGzWhID7drQ46wdF8jzMUhuNVvX7AWW+ue37LvHVTp5VZlcZzwIGMlM5EEWZV
-	DYt1+cYYxVtqFJ3M2p/CrtfMeBDWt202wv21zlNGNz8rW6j9ucq1wJmv3t2uC24wUa+hRzwVUdR
-	L9/AGgzlOhMLBRmFF9iyeo1UFteqimK31wlYLTg46rinnm8nfhSqFGHtu36TQDh2BO2U4dM/lW2
-	WllB3djIU1Y5efXvjVTyHRRWcK+3+FSgaqfkeVY68LO/OExnmr+FPdfv6saZHdfOBR/r+BDhgdi
-	xcUlzWVWklBmys590LHPIdwAbfHDngYuL/O9k
-X-Google-Smtp-Source: AGHT+IH09TdLkBTBS46a9KkDQcsPHCKV5BjcOl3BN1JIlX/axUWBHc8jxps5fYfmQWtY+6vT/lzr2w==
-X-Received: by 2002:a17:902:c952:b0:248:cd4c:d6e with SMTP id d9443c01a7336-2494488a679mr39782015ad.9.1756595492940;
-        Sat, 30 Aug 2025 16:11:32 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24906395aa0sm61840295ad.100.2025.08.30.16.11.31
+        d=1e100.net; s=20230601; t=1756651219; x=1757256019;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8uK+63tF9hV8oMnf210yJC1/tTQmsNNUHWIDHsThjdw=;
+        b=ILVXKPb543s7Vc0ZeQQ1WKOaaynMbN/VdSvyY9MGMaQHvV+d3uZNkVQ1gFk+ggim3Y
+         Jw6DXIjCFelBxtrC15sAmdAHoLwTVHz0pVjby4YBzW/c/V5+EJJ+hdEzLidCiRASEPuY
+         3JScSh2tR3FxQ7joAhD/Ba9tWAhTU5a2aHK1SdueqUJr9su6E1BN2nJahbYEJTzwQN1N
+         fDpCzablkiL0sKMsd9m40+TodE33YIDjHtYRmbxMnVUo35HSaZki358bDxkKf9f04Q9a
+         LEYchnyBl6lSbVIZYD3sBdgap3XRMUZo1BRwW9dbbG3i0SXjcNHQrEMFh7ZVsSjm1eHY
+         yZ7Q==
+X-Gm-Message-State: AOJu0Yw4KIlqepM+wpFAWnBoDYy8IJEQj5R+xxeSkCp2EXGDHWmGGPW4
+	yr9gWpUBeVUYoZpR4tfNEgPAKfos+GN4OnW6mcwUxWI7N57+JlZNKDaZEi1jMA==
+X-Gm-Gg: ASbGncsXRWgslO3Cc51CTQSx9oNmm6mUlwubxiAbmNOI5RJdhmRApRnsO+nsH72xIqD
+	BvXpAbTw9fcmOfTGUghQkq8VkOyWOrVfDnFzlA7NIc1K3qC6IRvQVCdpxS+hy59IUEgHZ2UxmdW
+	8769mZ4jzmhBiUpYF4ud8H3n5FXsgm8O8Ug1R0jC7PYp4g2D60WGP7JNEllRH++rc3V4+Z6QEae
+	Rzrsf2G+h16YCE55/ZWRfKdwAR3JgBFVRsF+DDWnGgoiugyPxXTXqexjLu9wjPdfqYuNP1X7rhe
+	EUK7DWEOu6tK4PVIrH3KFLj70zp0T40B6JmXnXdE2ZytWJDwHezAwft7KDU14AYkLZ9kAlwbknT
+	n/04eyiR4hPfzs2yXvBe99AQvoK7aN5j/RJ+8AjmIITpl0qoxpXA=
+X-Google-Smtp-Source: AGHT+IGmNiaoVhPlVK76Q0iZFW2fo2EpnrQ5R1q8cpqr1ZXwl1vz3jEJqjp7fRgR1H1I05IorYswug==
+X-Received: by 2002:a05:600c:3b84:b0:45b:89ef:65ae with SMTP id 5b1f17b1804b1-45b89ef6623mr24158065e9.16.1756651218368;
+        Sun, 31 Aug 2025 07:40:18 -0700 (PDT)
+Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-45b7e92a42asm115956885e9.20.2025.08.31.07.40.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Aug 2025 16:11:31 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 3F63E4222987; Sun, 31 Aug 2025 06:11:28 +0700 (WIB)
-Date: Sun, 31 Aug 2025 06:11:28 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux DAMON <damon@lists.linux.dev>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Linux Power Management <linux-pm@vger.kernel.org>,
-	Linux Block Devices <linux-block@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>,
-	Linux Kernel Workflows <workflows@vger.kernel.org>,
-	Linux KASAN <kasan-dev@googlegroups.com>,
-	Linux Devicetree <devicetree@vger.kernel.org>,
-	Linux fsverity <fsverity@lists.linux.dev>,
-	Linux MTD <linux-mtd@lists.infradead.org>,
-	Linux DRI Development <dri-devel@lists.freedesktop.org>,
-	Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Sound <linux-sound@vger.kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, Huang Rui <ray.huang@amd.com>,
-	"Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Joe Perches <joe@perches.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>, tytso@mit.edu,
-	Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas.schier@linux.dev>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Shay Agroskin <shayagr@amazon.com>,
-	Arthur Kiyanovski <akiyano@amazon.com>,
-	David Arinzon <darinzon@amazon.com>,
-	Saeed Bishara <saeedb@amazon.com>, Andrew Lunn <andrew@lunn.ch>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Alexandru Ciobotaru <alcioa@amazon.com>,
-	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Steve French <stfrench@microsoft.com>,
-	Meetakshi Setiya <msetiya@microsoft.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 12/14] ASoC: doc: Internally link to Writing an ALSA
- Driver docs
-Message-ID: <aLOFIEknbxQZ6FM2@archie.me>
-References: <20250829075524.45635-1-bagasdotme@gmail.com>
- <20250829075524.45635-13-bagasdotme@gmail.com>
- <20250830224614.6a124f82@foz.lan>
+        Sun, 31 Aug 2025 07:40:17 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Sun, 31 Aug 2025 16:40:10 +0200
+Subject: [PATCH] mtd: core: always verify OOB offset in mtd_check_oob_ops()
 MIME-Version: 1.0
-In-Reply-To: <20250830224614.6a124f82@foz.lan>
+Message-Id: <20250831-mtd-validate-ooboffs-v1-1-d3fdce7a8698@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAMletGgC/x3MTQqAIBBA4avErBvQyv6uEi0sxxqoDI0IwrsnL
+ b/Fey8E8kwB+uwFTzcHdkeCzDOYV30shGySoRCFEm0pcb8M3npjoy9C5yZnbUAq1dx0taqEJUj
+ p6cny82+HMcYPBDu9T2YAAAA=
+X-Change-ID: 20250831-mtd-validate-ooboffs-e35c796540fe
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250830_161134_515053_E4423682 
-X-CRM114-Status: GOOD (  19.48  )
+X-CRM114-CacheID: sfid-20250831_074020_668459_344DC2BD 
+X-CRM114-Status: GOOD (  21.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -179,66 +95,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5779794654293183950=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Using an OOB offset past end of the available OOB data is invalid,
+irregardless of whether the 'ooblen' is set in the ops or not. Move
+the relevant check out from the if statement to always verify that.
 
---===============5779794654293183950==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="q50L9+H94gXo88jD"
-Content-Disposition: inline
+The 'oobtest' module executes four tests to verify how reading/writing
+OOB data past end of the devices is handled. It expects errors in case
+of these tests, but this expectation fails in the last two tests on
+MTD devices, which have no OOB bytes available.
 
+This is indicated in the test output like the following:
 
---q50L9+H94gXo88jD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    [  212.059416] mtd_oobtest: attempting to write past end of device
+    [  212.060379] mtd_oobtest: an error is expected...
+    [  212.066353] mtd_oobtest: error: wrote past end of device
+    [  212.071142] mtd_oobtest: attempting to read past end of device
+    [  212.076507] mtd_oobtest: an error is expected...
+    [  212.082080] mtd_oobtest: error: read past end of device
+    ...
+    [  212.330508] mtd_oobtest: finished with 2 errors
 
-On Sat, Aug 30, 2025 at 10:46:22PM +0200, Mauro Carvalho Chehab wrote:
-> Em Fri, 29 Aug 2025 14:55:22 +0700
-> Bagas Sanjaya <bagasdotme@gmail.com> escreveu:
-> > -Please refer to the ALSA driver documentation for details of audio DMA.
-> > -https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-als=
-a-driver.html
-> > +Please refer to the :doc:`ALSA driver documentation
-> > +<../kernel-api/writing-an-alsa-driver>` for details of audio DMA.
->=20
-> Don't use relative paths for :doc:. They don't work well, specially
-> when one uses SPHINXDIRS.
->=20
-> The best is o use Documentation/kernel-api/writing-an-alsa-driver.rst
-> and let automarkup figure it out. As we have a checker, broken
-> references generate warnings at build time.
+For reference, here is the corresponding code from the oobtest module:
 
-Thanks for the tip!
+    /* Attempt to write off end of device */
+    ops.mode      = MTD_OPS_AUTO_OOB;
+    ops.len       = 0;
+    ops.retlen    = 0;
+    ops.ooblen    = mtd->oobavail;
+    ops.oobretlen = 0;
+    ops.ooboffs   = 1;
+    ops.datbuf    = NULL;
+    ops.oobbuf    = writebuf;
+    pr_info("attempting to write past end of device\n");
+    pr_info("an error is expected...\n");
+    err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+    if (err) {
+            pr_info("error occurred as expected\n");
+    } else {
+            pr_err("error: wrote past end of device\n");
+            errcnt += 1;
+    }
 
---=20
-An old man doll... just what I always wanted! - Clara
+As it can be seen, the code sets 'ooboffs' to 1, and 'ooblen' to
+mtd->oobavail which is zero in our case.
 
---q50L9+H94gXo88jD
-Content-Type: application/pgp-signature; name=signature.asc
+Since the mtd_check_oob_ops() function only verifies 'ooboffs' if 'ooblen'
+is not zero, the 'ooboffs' value does not gets validated and the function
+returns success whereas it should fail.
 
------BEGIN PGP SIGNATURE-----
+After the change, the oobtest module will bail out early with an error if
+there are no OOB bytes available on the MDT device under test:
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaLOFGwAKCRD2uYlJVVFO
-o9MMAPwIm+r4BZdTF0jZV4Naj+z2WrUBji4gRFJQ4f97vYNhfgEAwX/UGgC71a9U
-lMJHF+utPAWnldcv9PoyPOBgO71EEAA=
-=C7rV
------END PGP SIGNATURE-----
+    # cat /sys/class/mtd/mtd0/oobavail
+    0
+    # insmod mtd_test; insmod mtd_oobtest dev=0
+    [  943.606228]
+    [  943.606259] =================================================
+    [  943.606784] mtd_oobtest: MTD device: 0
+    [  943.612660] mtd_oobtest: MTD device size 524288, eraseblock size 131072, page size 2048, count of eraseblocks 4, pages per eraseblock 64, OOB size 128
+    [  943.616091] mtd_test: scanning for bad eraseblocks
+    [  943.629571] mtd_test: scanned 4 eraseblocks, 0 are bad
+    [  943.634313] mtd_oobtest: test 1 of 5
+    [  943.653402] mtd_oobtest: writing OOBs of whole device
+    [  943.653424] mtd_oobtest: error: writeoob failed at 0x0
+    [  943.657419] mtd_oobtest: error: use_len 0, use_offset 0
+    [  943.662493] mtd_oobtest: error -22 occurred
+    [  943.667574] =================================================
 
---q50L9+H94gXo88jD--
+This behaviour is more accurate than the current one where most tests
+are indicating successful writing of OOB data even that in fact nothing
+gets written into the device, which is quite misleading.
 
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+ drivers/mtd/mtdcore.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---===============5779794654293183950==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5ba9a741f5ac3c297ae21329c2827baf5dc471f0..9a3c9f163219bcb9fde66839f228fd8d38310f2d 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1590,12 +1590,12 @@ static int mtd_check_oob_ops(struct mtd_info *mtd, loff_t offs,
+ 	if (offs < 0 || offs + ops->len > mtd->size)
+ 		return -EINVAL;
+ 
++	if (ops->ooboffs >= mtd_oobavail(mtd, ops))
++		return -EINVAL;
++
+ 	if (ops->ooblen) {
+ 		size_t maxooblen;
+ 
+-		if (ops->ooboffs >= mtd_oobavail(mtd, ops))
+-			return -EINVAL;
+-
+ 		maxooblen = ((size_t)(mtd_div_by_ws(mtd->size, mtd) -
+ 				      mtd_div_by_ws(offs, mtd)) *
+ 			     mtd_oobavail(mtd, ops)) - ops->ooboffs;
+
+---
+base-commit: 1b237f190eb3d36f52dffe07a40b5eb210280e00
+change-id: 20250831-mtd-validate-ooboffs-e35c796540fe
+
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5779794654293183950==--
-
