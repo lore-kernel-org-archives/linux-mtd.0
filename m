@@ -4,67 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A4FDCA1005
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Sep 2025 19:09:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CA7FCA1005
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Sep 2025 21:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vqhQBM/0aXjNzpfrZLDILI9UidEDNM1XqRksCQirW3Q=; b=e5p7lDTUtUj6bf
-	YALgEpetL/+OnBXGo02zXA7/a7R0L5RafOsEtJpLCceGLKpcpyo961DtgkeQzjnAYVbQCEInpjyP1
-	cyRKKGXjZLvty8mBgiddfLSkv2fJg0TqQVdFDAFXTgo3k6sz1+SJX7PDuJbUGHFaecaytQ0L+OPS8
-	4K/S0EG4L8BdDpsZQFkbUtV3yRAgX7yTYNBMhqAYqRWHJTRvGzbpp0G/RDyIgzgSpSeXXjzCFI1mP
-	PYoiU6gJYs5w12ABENuKKSOuaIY63HThVuSOOC3P5RHyWT+ztC77wUqC5OiqDPNzOLBftas8tx9b0
-	rxJ8kTHn4+0Qg48UTWSQ==;
+	List-Owner; bh=dmpRe0GCTYCPtZX7Ki/Go11SZ56EjznBD4a6aJCFe+0=; b=qEKErShSXZ11NJ
+	hKUMWZrUzLBpzp0bKsetd6OLBTRblcC231mYyJ2x/WzDEGGw3lX5jSNp/MXUkNnsLX8WQ5yA6c6BM
+	cxloH1Wh2o33Okg2Z27Louomo3XkgeTE23vHU3QOFtD4EK93YP6D2XaS1+tY52jk4SAMsdCH3FZx2
+	JuA8PlLhZCxP0OwcofZq53DKO+UcyNjiDJFrar3y0dhN41DnUFtIsfBrY8qonpPiQY6QHTGIiezum
+	OVXLnzxOm55VwiSQAkHAMxVmF3hdqoHNlg6g78m5QWdodBjMi58TcJVRKM67QQhNF7qTjF4bugfkk
+	TLnWHcjtF9cucEHdePdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utWNx-00000001ZmC-2AT6;
-	Tue, 02 Sep 2025 19:09:41 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1utYpD-00000002EgY-0DMP;
+	Tue, 02 Sep 2025 21:45:59 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utQsb-0000000HZmF-2vrT
+	id 1utVtt-00000001Sq5-23eo
 	for linux-mtd@lists.infradead.org;
-	Tue, 02 Sep 2025 13:16:59 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 5660C1A0D65;
-	Tue,  2 Sep 2025 13:16:54 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 2D74960695;
-	Tue,  2 Sep 2025 13:16:54 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 248A61C22D253;
-	Tue,  2 Sep 2025 15:16:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1756819013; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=OD6qhRDyS8q2kCor5yPA7YDO6FHMm1Wu843InmsDchg=;
-	b=pKQeqfPK532IYnPuEdIw0daG1ELhvGs9hWjeL6miEsqUWjkImbjVc1681eRK2vsVOVJlTc
-	bRnJUgbmkTdkK87w8WxyJmycw1WLrgzZMdhKjEQ9Qa19UG7vKrN773KUDp6od6+L9HeyeD
-	P4qFOrx72oryIb1J576IhQs59ebIkECGfWV8BrIMQRwj1sd4JmSR9HrH2HvcHyQsvxbeJy
-	qftxJ7amt4jASpYDIj5zqZZOyObSGYaBb4wH3+XfalNkGf90rxh4Pc+MDT2HDxNXibsPrV
-	Xm5yT4FLCvbUKAiTwJK189aFcvHZys9osAzHHY2q+ksI8cb+BA1HnTfer3nRDg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Wang Zhaolong <wangzhaolong@huaweicloud.com>,  <richard@nod.at>,
-  <vigneshr@ti.com>,  <linux-mtd@lists.infradead.org>,
-  <linux-kernel@vger.kernel.org>,  <yi.zhang@huawei.com>,
-  <yangerkun@huawei.com>
-Subject: Re: [PATCH V2] mtd: core: skip badblocks increment for blocks
- already known bad
-In-Reply-To: <95bf5e07-7f03-efb0-da9b-cb50999c2524@huawei.com> (Zhihao Cheng's
-	message of "Tue, 2 Sep 2025 19:41:06 +0800")
-References: <20250902092732.2244544-1-wangzhaolong@huaweicloud.com>
-	<95bf5e07-7f03-efb0-da9b-cb50999c2524@huawei.com>
-User-Agent: mu4e 1.12.7; emacs 30.1
-Date: Tue, 02 Sep 2025 15:16:45 +0200
-Message-ID: <87ldmxm1tu.fsf@bootlin.com>
+	Tue, 02 Sep 2025 18:38:38 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-45b7d485173so35856295e9.0
+        for <linux-mtd@lists.infradead.org>; Tue, 02 Sep 2025 11:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756838316; x=1757443116; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HtIfgKLp3NVc3pSHlMfWF5VgNgJuRmHDA2CEfhOQ8+E=;
+        b=CxuM0IooTmK2SB1SmzGQRYffuDyXgoMXvIpIbSUpVajraf8KUIEJEwqHsYv8cMA/nB
+         Scl1YLGxdx7kfF6nes5wkZ9MeqZQXU5e6qmen9KV5LIy7kqgnRMibpBQunQZkSVGHwGw
+         0hfTQP6jyVkwFHU0itxVlucdHzwXgxxdvc3NLZC69M9KBD7JYDfUSkU/et/V8/sOemHK
+         Ht71h6H6A3pKXQCmu9Z4FrC5LqvC7x3b19yv2TI7qwLp6e7s49+sqQTwFLO2hzMl5Cnx
+         cRDVEHyLn78BTJ33u2dYZZ4zLVMqmp9GPW6GPQP1MgnJFfZcTJPYal98uBVGI9Qva2vx
+         QbVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756838316; x=1757443116;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HtIfgKLp3NVc3pSHlMfWF5VgNgJuRmHDA2CEfhOQ8+E=;
+        b=ZTr6IYDM842rkfyw9QLh746oJiAnceyk+TWXly7IirRMdORLajNbtbZFjtdCbrGeWS
+         4IziPMTT7hPXm6ioxabgqfsHCoVEocZfqWkUgKj//IT3T/4lKSrwTMimvUI7SOGAvAFl
+         1y//QntLmjqGHUe7qH4+ZmB7IRdVdgqUSKy9soPLPndeJPb1KVyyVeNaKaGMJ3sjraGS
+         r36SPm/SfLHAAgGX7YDDscuq91Qs44deWPE0Bu/90dfqQhcX3pcZDQvMqAX24fkBmYIy
+         mkd1Wguj0LiuZpKVqY9GTA/NY3edL9t308u9l88BZU3CgOqHrhrTKHbiG5dIDg3h5hkM
+         cayg==
+X-Forwarded-Encrypted: i=1; AJvYcCXy5b0+Je5dxPoBkZ+HVmL6qU/S6f4pJALoquAXry4eUZ8kVBX3CAovlP0lIgSArjUTG54RF+GeNiA=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy/jhGGumKh5YkVm+U6ie0eN2uEXL5oedya44RsusF/FZr5MvSs
+	iOAS9nS7i0TpTl2YGejwvED5r7zFSwbyBV5ZLSQjCOngMkDuodtSaOZF
+X-Gm-Gg: ASbGncvVsT4g0eFVU6HsSprhBlznpIWWZVs6RVXOqMXgMN0JnNeInzl5wUhsmPUTBzT
+	ZpyJTMAFA59Mi0evLe3MP4x5oEADvtgos4f/01zGbCkISeXr8re1tc/RRD2ygyeKBGmSGGGdIDi
+	2+o3Fo/lX+DTTEScuuR4UoLRg/I5/FFJdq+H04AXZx1H8TqkHWAir03bFuac3Y2V1hV2PXDN+0b
+	OFJLeICdQjqFDW7MirxSoYMF+i1bS/rq0p2k0wVMxNN9QuhjV/rIkkErpLU51rGRHU9HAtzz7fd
+	fVTdpYaOlNMoCJRMzQud5Rubg5szG9DdQWhMR3nQMl6+w4XPNeVW8LuevWiQwdy7JXkKdjnNUtH
+	JRFpePCPQSHyigRkR181GebBUJiXIDNIQdZMQ6g==
+X-Google-Smtp-Source: AGHT+IFZOtGXHRvSGQGMQlxqtMFkysWL1TKTqsEmVYhRZ84LZTFvZGmQrrRX0tM8g8SIZ1TNTU5eUQ==
+X-Received: by 2002:a05:600c:46c3:b0:458:c059:7db1 with SMTP id 5b1f17b1804b1-45b8557f254mr116499635e9.30.1756838315255;
+        Tue, 02 Sep 2025 11:38:35 -0700 (PDT)
+Received: from flaviu-Aspire-E5-572G.. ([5.15.80.80])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b85090262sm157641835e9.17.2025.09.02.11.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Sep 2025 11:38:34 -0700 (PDT)
+From: Flaviu Nistor <flaviu.nistor@gmail.com>
+To: Pratyush Yadav <pratyush@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	flaviu.nistor@gmail.com
+Subject: Re: [PATCH] mtd: spi-nor: issi: Add support for is25wx01g
+Date: Tue,  2 Sep 2025 21:38:18 +0300
+Message-ID: <20250902183818.17415-1-flaviu.nistor@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <mafs0cy8aw0yf.fsf@kernel.org>
+References: <mafs0cy8aw0yf.fsf@kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250902_061657_872054_E3D6CACA 
-X-CRM114-Status: UNSURE (   8.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250902_113837_529411_9D1B2CC1 
+X-CRM114-Status: GOOD (  16.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,28 +100,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cj4+IEBAIC0yMzQ5LDExICsyMzUwLDE5IEBAIGludCBtdGRfYmxvY2tfbWFya2JhZChzdHJ1Y3Qg
-bXRkX2luZm8gKm10ZCwgbG9mZl90IG9mcykKPj4gICAJCXJldHVybiAtRVJPRlM7Cj4+ICAgICAJ
-aWYgKG10ZC0+ZmxhZ3MgJiBNVERfU0xDX09OX01MQ19FTVVMQVRJT04pCj4+ICAgCQlvZnMgPSAo
-bG9mZl90KW10ZF9kaXZfYnlfZWIob2ZzLCBtdGQpICogbWFzdGVyLT5lcmFzZXNpemU7Cj4+ICAg
-LQlyZXQgPSBtYXN0ZXItPl9ibG9ja19tYXJrYmFkKG1hc3RlciwgbXRkX2dldF9tYXN0ZXJfb2Zz
-KG10ZCwKPj4gb2ZzKSk7Cj4+ICsJbW9mZnMgPSBtdGRfZ2V0X21hc3Rlcl9vZnMobXRkLCBvZnMp
-Owo+PiArCj4+ICsJaWYgKG1hc3Rlci0+X2Jsb2NrX2lzYmFkKSB7Cj4+ICsJCXJldCA9IG1hc3Rl
-ci0+X2Jsb2NrX2lzYmFkKG1hc3RlciwgbW9mZnMpOwo+PiArCQlpZiAocmV0ID4gMCkKPj4gKwkJ
-CXJldHVybiAwOwo+Cj4gSGksIE1pcXXDqGwuCj4gSGVyZSwgc2hvdWxkIHdlIGtlZXAgdGhlIHNh
-bWUgbG9naWMgd2l0aCB0aGUgbG93ZXIKPiBsZXZlbChlZy4gbmFuZF9ibG9ja19tYXJrYmFkLCBv
-bmVuYW5kX2Jsb2NrX21hcmtiYWQpIHdoZW4gJ3JldCA8IDAnIGlzCj4gcmV0dXJuZWQgYnkgbWFz
-dGVyLT5fYmxvY2tfaXNiYWQuIE1hbnkgc3BlY2lmaWMgbmFuZCBkcml2ZXJzKG1hcmtiYWQpCj4g
-cmV0dXJuIHRoZSBuZWdhdGl2ZSBjb2RlIHdoZW4gJ2lzYmFkJyBmYWlscy4KCkdvb2QgcXVlc3Rp
-b24sIEkgZ3Vlc3MgaW4gY2FzZSBvZiBlcnJvciBpbiBpc2JhZCgpIHdlIHNoYWxsIHByb2JhYmx5
-CnN0aWxsIHRyeSB0byBtYXJrIHRoZSBibG9jayBiYWQgYmVjYXVzZSBhY3R1YWxseSBtYXJraW5n
-IGEgYmxvY2sgYmFkIGlzCnByb2JhYmx5IG1vcmUgaW1wb3J0YW50IHRoYW4gcmV0dXJuaW5nIGNv
-cnJlY3Qgc3RhdGlzdGljcy4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+> Hi Flaviu,
+>
+> On Mon, Sep 01 2025, Flaviu Nistor wrote:
+>
+>> Add support for the IS25WX01G 128MB (1Gb) ISSI Serial Flash Memory.
+>>
+>> Signed-off-by: Flaviu Nistor <flaviu.nistor@gmail.com>
+>> ---
+>>  drivers/mtd/spi-nor/issi.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+>> index 18d9a00aa22e..e4997f9bd557 100644
+>> --- a/drivers/mtd/spi-nor/issi.c
+>> +++ b/drivers/mtd/spi-nor/issi.c
+>> @@ -126,6 +126,9 @@ static const struct flash_info issi_nor_parts[] = {
+>>  		.flags = SPI_NOR_QUAD_PP,
+>>  		.fixups = &is25lp256_fixups,
+>>  		.fixup_flags = SPI_NOR_4B_OPCODES,
+>> +	}, {
+>> +		/* IS25WX01G */
+>> +		.id = SNOR_ID(0x9d, 0x5b, 0x1b),
+>
+> It seems the flash needs no special configuration. IIUC it can be driven
+> entirely based on SFDP data. In that case, I don't think there is a need
+> for an entry at all. The generic SFDP-based driver should already be
+> enough for your flash. Just add a "jedec,spi-nor" node to your DT and it
+> should work.
+
+Thanks for the review and the explanation. I now see in
+the core driver that spi_nor_check_sfdp_signature() is
+used if spi_nor_match_id() does not find a valid entry.
+
+>
+>>  	}
+>>  };
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
