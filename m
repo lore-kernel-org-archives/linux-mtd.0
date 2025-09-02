@@ -4,82 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B377CA1005
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Sep 2025 07:48:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E282CA1005
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Sep 2025 08:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=e5aOwv/OoyKjZOq0qwCbUS347fI6wH1ceGXXIQY3dA4=; b=pURnLCA12ewoZsRNQCa++TJhEC
-	h/GHXd2i1B/sKRQHAYPs3IRxFjtkt0Kj3egLCKisDDBjxkqe8csHGSookH+Ugwz3h5U/DC4adgEBG
-	a38C48JlNeWB0thNyC5rrMXvlvZ69VgEWcxdFWlBLvOOxcFaBJKViRORHZdLR5WugR9yeY/yOQSkw
-	1U1UlmKYIcrGvCqJwauvlzyr6/1h2wQE3nMbaS4XPJSSyk3zSum1+yi9pKSWIOqI2ViqGhiVtCsFJ
-	WgEiMtpaOikNoCR9tUrKPv9+XH4DuoPulyYZEtK2DdY9HrlfEuNIMyE8dQxNdQ+mmDWYt+DazwnAl
-	J6rqHfAA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1OrKjpa1EuHYqC8oScnzhtEdzPo4O5sYSmQvw3vNtE4=; b=niaUu41+IR1XzB
+	YM7rY549f5F5FuNYjkhpS6zynBje/Oly65x+/89yhN9MkQA7ZXo48syQgTYz0UOAVDkIE3SW1N7I9
+	QihKSnxwNavG0VYvePL5LUF81rQeySz/rKs4521IKKa3ctoM7PXhkmDkfb+FIT4ydbVKLYYn930KN
+	hodh2h7Jxx7w8RF7xWEeQxR+uKZE3KckPIpmYnryObL3P3GhrNF6tjgin79wZ4+e14JwWsYGOJitl
+	IAb8c4nqi18mGueRr0hNey5rpj63IEEjX0aCG/I9TIP/X+Ngu9BPVumnlJSkkf8S44EDm1/RIyYkS
+	zt61T8baI1VkalVeJcRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utLkl-0000000FpAZ-0B9H;
-	Tue, 02 Sep 2025 07:48:31 +0000
-Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+	id 1utMZW-0000000G7Nw-21cz;
+	Tue, 02 Sep 2025 08:40:58 +0000
+Received: from dggsgout11.his.huawei.com ([45.249.212.51])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utLki-0000000Fp9M-2TaD
+	id 1utM5o-0000000Fx0O-0DOb
 	for linux-mtd@lists.infradead.org;
-	Tue, 02 Sep 2025 07:48:30 +0000
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-24b1596b1beso3285255ad.2
-        for <linux-mtd@lists.infradead.org>; Tue, 02 Sep 2025 00:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756799308; x=1757404108; darn=lists.infradead.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TozCbK6Gu7kax824vW+1RZdfyYGAlXrJstUGToWApKc=;
-        b=RWvf7tKhfxX1Od6QXnIWFfK25f9wdUy0PqMrne+5mBNW85/yXeVkj79CgqAlAE0XOL
-         aGVUTR7ZP48exfURqhCoGxqxwWcysvyJpL0tVS8Zby2h9Gd4g3xaiXHagoV+ek1w7+Iu
-         in9NlRRYxLhM8PzXmIkiLrRiRBS2SGSBXY2+nSUWT3/OH5bth3i4edo6S++uCy+f1RlR
-         7TLF0hLncpOqz+gq2Hx+16D+Qwq7WUFL+xIcYX36X8TKcY/4NWlTbCDc09dBVdSbAbHR
-         MuUI1bQ1TleosZFfPdNpyUs1kluXWCE6xbFsUzRug0WR/YoLV5Y+qQfEuZhcSpXhVluV
-         mdxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756799308; x=1757404108;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TozCbK6Gu7kax824vW+1RZdfyYGAlXrJstUGToWApKc=;
-        b=AqbZcJmJ3lcPf3dHdk2Ln62WSbRRxvG7YkB/Klk19m/JGIe67BqN7EdNMpPHM0Nlb6
-         3u4uRZqXe9zhuPocJecNDc7syYqUJA+r+7Y/NNp7Pu7Je2RWjAmcCrhgzuNtyns74HHk
-         +/5rZEcBmEKHNgPo29WjiuY4f4sKtT0OMlOJTfu2+vDXHlHRsCDZySqz4UxTnbBb62vf
-         sf648D+x0LMCLfrNqYfVj0MQDwbLjsdRD2SP2rPZJeA1ES9vQhBO81IrXzlxYGmGQC39
-         vBhhOHOwFPV8Pu/eVG7B1ztr1KbIZ+g/+Xq2FEXHlKHuO2cwdyggD5q35ldyczC1ZW+d
-         5t1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUNegmj4VTX2amZjFKSbqk087WFqhuVI0QliWzVt903Kv+6HvfhCU9Y1zsbgPLhMTlTvEzCMvXSNms=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzN2x/0LyuzKEYXNfxDgzqKSwDTDgRTNGGNBYuxeNtxDbJVoLuh
-	z2NE7jXfz+sWSxv9fTG8ZaCXXFJgaWZejFKJWC0/zG8bWjyIiIB0kvqpY+GU9VBKZCSEU8xv3j2
-	a8oTzOmK5V4SGgptxGXgG0gnzi/9vdqQ=
-X-Gm-Gg: ASbGncsR3bTX04xhziNtkLO4SXyklSO9lWXhNTZ1MxDiIHyyb+anj1OZIUjG/JNkZrL
-	oGQYwtOijqocK9B80eI3xQR/SNY9Zf9vLlHRn92a2azDv5pzlPAYIhwYc+vfXM5lceZ5+xHUFJm
-	6AaXkMI9zHKTzC03H/v/M8EORVtl/ffDxThe1mTN43aLXKht03f0ymK2YmpOsu7/fVAlr+Pss8X
-	qpzajHSpkWRa8BL
-X-Google-Smtp-Source: AGHT+IFSTpNLnrarUYMsVhYePeIAaGEQ8xpKMejZyQKDrgCKsKJS/K2TWAHvZWBdQP2pCHAJyXPxjusAZYEddUvokg0=
-X-Received: by 2002:a17:902:e749:b0:24b:15b3:223d with SMTP id
- d9443c01a7336-24b15b34ad6mr16913685ad.16.1756799307721; Tue, 02 Sep 2025
- 00:48:27 -0700 (PDT)
+	Tue, 02 Sep 2025 08:10:21 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cGJMC3GhnzYQvpf
+	for <linux-mtd@lists.infradead.org>; Tue,  2 Sep 2025 16:10:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id EE8EB1A0D4B
+	for <linux-mtd@lists.infradead.org>; Tue,  2 Sep 2025 16:10:13 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgB3wY1jprZoh4x9BA--.23817S4;
+	Tue, 02 Sep 2025 16:10:13 +0800 (CST)
+From: Wang Zhaolong <wangzhaolong@huaweicloud.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	chengzhihao1@huawei.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH] mtd: core: only increment ecc_stats.badblocks on confirmed good->bad transition
+Date: Tue,  2 Sep 2025 16:01:17 +0800
+Message-Id: <20250902080117.3658372-1-wangzhaolong@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20250902-yarn-from-020874b4da63@thorsis.com> <CAFLxGvzO2yszspJtd_A3BSTCRNSF+ts_5+2aMkNksxM48DYEwA@mail.gmail.com>
- <20250902-life-domestic-c341a8992cac@thorsis.com>
-In-Reply-To: <20250902-life-domestic-c341a8992cac@thorsis.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 2 Sep 2025 09:48:15 +0200
-X-Gm-Features: Ac12FXwFpHf0iqgyEreb1xfoEqD4qKw1D3J2oevFGJ2IPUlmVQfGkwXoWME8zbA
-Message-ID: <CAFLxGvxdqkvhZmMnL+KzTW4O-cL1oJ+WL6koD1TzBnVzJ7oLjA@mail.gmail.com>
-Subject: Re: State of the UBI fastmap feature
-To: Richard Weinberger <richard.weinberger@gmail.com>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
+X-CM-TRANSID: gCh0CgB3wY1jprZoh4x9BA--.23817S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr48Aw1UZF17Cr4UGFy8Krg_yoW5Jw1fpa
+	15JryrGw4UWw1Iq3ZrAryIgwnag34fWFyUGF4xA3s8CF98Wa13Wrn5KFy8Xr12gF12yFnr
+	Wr45t3yUWay09rDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: pzdqw6xkdrz0tqj6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250902_004829_046598_F601E499 
-X-CRM114-Status: GOOD (  10.18  )
+X-CRM114-CacheID: sfid-20250902_011016_441529_22BAEE6E 
+X-CRM114-Status: GOOD (  15.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,24 +81,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBTZXAgMiwgMjAyNSBhdCA5OjM34oCvQU0gQWxleGFuZGVyIERhaGwgPGFkYUB0aG9y
-c2lzLmNvbT4gd3JvdGU6Cj4gPiBJIGd1ZXNzIHlvdXIgbW90aXZhdGlvbiBpcyByZWR1Y2luZyB0
-aGUgYXR0YWNoIHRpbWU/Cj4KPiBJbmRlZWQuICBOZWVkIHRvIHJlZHVjZSBib290IHRpbWUgaGVy
-ZSwgYW5kIFVCSSBpcyBhdHRhY2hlZCB0d2ljZS4KPiBPbmNlIGluIFUtQm9vdCB0byByZWFkIHRo
-ZSBrZXJuZWwgaW1hZ2UgYW5kIHRoZW4gYWdhaW4gaW4gTGludXguCgpTb21lIGlkZWFzIHRoYXQg
-Y291bGQgc2lnbmlmaWNhbnRseSBpbXByb3ZlIGF0dGFjaCB0aW1lIHdoaWxlIGJlaW5nCmxlc3Mg
-aW52YXNpdmUgdGhhbiBGYXN0bWFwOgoxLiBQYXNzIHRoZSBMRUItUEVCIG1hcHBpbmcgZnJvbSBV
-LUJvb3QgdG8gTGludXggc28gdGhhdCBzY2FubmluZwpvY2N1cnMgb25seSBpbiBVLUJvb3QuCjIu
-IE9wdGltaXplIEVDL1ZJRCBoZWFkZXIgcmVhZHM6CjIuMS4gSWYgc3VwcG9ydGVkIGJ5IHRoZSBk
-ZXZpY2UsIHRyYW5zZmVyIG9ubHkgdGhlIGFjdHVhbCBoZWFkZXIgc2l6ZQppbnN0ZWFkIG9mIHRo
-ZSBlbnRpcmUgKHN1YilwYWdlLgoyLjIuIFJlYWQgaGVhZGVycyB3aXRob3V0IEVDQyAoaWYgRUND
-IG92ZXJoZWFkIGlzIG1lYXN1cmFibGUpLiBJZiB0aGUKaGVhZGVyIENSQyBmYWlscywgcmUtcmVh
-ZCB3aXRoIEVDQy4KCi0tIApUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+Repeatedly marking the same eraseblock bad inflates
+mtd->ecc_stats.badblocks because mtd_block_markbad() unconditionally
+increments the counter on success, while some implementations (e.g.
+NAND) return 0 both when the block was already bad and when it has just
+been marked[1].
+
+Fix by probing the bad-block state before and after calling
+->_block_markbad() (when _block_isbad is available) and only increment
+the counter on a confirmed good->bad transition. If _block_isbad is not
+implemented, be conservative and do not increment.
+
+Keep the logic centralized in mtdcore; the markbad path is not a hot
+path, so the extra IO is acceptable.
+
+Link: https://lore.kernel.org/all/ef573188-9815-4a6b-bad1-3d8ff7c9b16f@huaweicloud.com/ [1]
+Signed-off-by: Wang Zhaolong <wangzhaolong@huaweicloud.com>
+---
+ drivers/mtd/mtdcore.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5ba9a741f5ac..a6d38da651e9 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -2338,10 +2338,12 @@ EXPORT_SYMBOL_GPL(mtd_block_isbad);
+ 
+ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
+ 	int ret;
++	loff_t moffs;
++	int oldbad = -1;
+ 
+ 	if (!master->_block_markbad)
+ 		return -EOPNOTSUPP;
+ 	if (ofs < 0 || ofs >= mtd->size)
+ 		return -EINVAL;
+@@ -2349,17 +2351,35 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 		return -EROFS;
+ 
+ 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
+ 		ofs = (loff_t)mtd_div_by_eb(ofs, mtd) * master->erasesize;
+ 
+-	ret = master->_block_markbad(master, mtd_get_master_ofs(mtd, ofs));
++	moffs = mtd_get_master_ofs(mtd, ofs);
++
++	/* Pre-check: remember current state if available. */
++	if (master->_block_isbad)
++		oldbad = master->_block_isbad(master, moffs);
++
++	ret = master->_block_markbad(master, moffs);
+ 	if (ret)
+ 		return ret;
+ 
+-	while (mtd->parent) {
+-		mtd->ecc_stats.badblocks++;
+-		mtd = mtd->parent;
++	/*
++	 * Post-check and bump stats only on a confirmed good->bad transition.
++	 * If _block_isbad is not implemented, be conservative and do not bump.
++	 */
++	if (master->_block_isbad) {
++		/* If it was already bad, nothing to do. */
++		if (oldbad > 0)
++			return 0;
++
++		if (master->_block_isbad(master, moffs) > 0) {
++			while (mtd->parent) {
++				mtd->ecc_stats.badblocks++;
++				mtd = mtd->parent;
++			}
++		}
+ 	}
+ 
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mtd_block_markbad);
+-- 
+2.39.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
