@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E16E8CA1009
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Sep 2025 19:18:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C1A7CA1015
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Sep 2025 02:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L+i6/FhYX5sjxKKCa43G2NMOB7/7eDF1KbE9dedn+8Y=; b=K1BCdThNRNyc3L
-	PTaY2BWkKbz8Vo2GVIvhIkwYacnUGA1Cu10DwLLA7pi11FYTVfO+NEu6PSiJ5Q92DSuVt8/omYqwG
-	ihSJkjt+M7ygWE8LBHMrc9UVGyecyk+HwL1dGKvMi9F+3dZ0qf1HMl+U4MJnkIMunKMkAXemAeU1G
-	zvp/PRpo0/xUHGQomoTdlVJ6wowWOO+5JeQfTy/m7oz4OU+G5Mg+npqdCJtHXC/suFCuLLdqcv39/
-	z49l1kTMpVHk8lBx9kiH0xhtNGllcQSm7QcxLi7dkAlxdJg9FfWaEHV8xgwPZC2xO/YzUxnzZ4FIg
-	xQTpGbXyvmjhXsSWwIFA==;
+	List-Owner; bh=P9abWdlyD1JzZ0wOH07imOj2w5zmZlL3nKAC6ae5kmc=; b=yYp4bLSQSf5Qo9
+	ucBluKZH/zWOhuVaAcdsRhc7uejXJOOy1+FYfUHz+9spCUS2njnNR+YN7LwnKLPyM2xvzZEWASXXh
+	mMmlY+vUIwnCqUtEahkH4ekWykmrqPME+4QT7RqOYWVthGJ7XlxaAQZB6RpTZCHSscZhrGUfmWwnH
+	rU39/pMAM7+Lot3hlG1n4GpuxKNQjYtjZd8aoBm8+IPt9ycMv5PfFciEmjLuL3LLTsWRGIx/M53GE
+	6MIjHYmgVtJSD2VGoZx6n55pv6I2xZKB7GBG7O5hM6SIROP+vRQWiAX4YiJzEDs+YVnpHsqUvhG6Q
+	+2yTLQU3OV3R91wFNN1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utt0P-00000007QuJ-2bJg;
-	Wed, 03 Sep 2025 19:18:53 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1utzQY-00000008E65-3ExJ;
+	Thu, 04 Sep 2025 02:10:18 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utoTs-00000006jjl-0dRy
+	id 1uttxq-00000007YHA-2fsk
 	for linux-mtd@lists.infradead.org;
-	Wed, 03 Sep 2025 14:29:01 +0000
+	Wed, 03 Sep 2025 20:20:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id CA3FE437ED;
-	Wed,  3 Sep 2025 14:28:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52280C4CEE7;
-	Wed,  3 Sep 2025 14:28:58 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id AFA79601BA;
+	Wed,  3 Sep 2025 20:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3DFCC4CEE7;
+	Wed,  3 Sep 2025 20:20:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756909739;
-	bh=+xPOd4f45WPDr95sOTBzfgNj/2vz11TzolSQbfG5XQ0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=bZ2rW4ICLruJv+JGuSoMKakoBEXTp7Jk+d8cZZE6AWS2vP8Q0+SjNxja7oaHFuFIS
-	 T4NunFW3lyX3Vw0OPRQ34DkUuxlG7taH4iJY8GP4lud5Ef60YjBZpWlpDCqk2qiqZx
-	 V2nUA3TbmADKujnSXGvXtqpz3FRPotHUjPE+pU5HsGmU+8fxMakCUL2oK5AxBg1q5i
-	 Trh+5mkmVhTE6pudGS9IEzm4BDkrpHDBQ/JLPQqx95gQkn/gIRnJRLoK3lN9jKW/jc
-	 z6jbh2EXREThbt2DeG85nafhlKBC+dHvhda9xfxa3wj/DkwhjVtT6LLJzKi1GAlbjr
-	 vhIjwBjO7jpzg==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Rahul Kumar <rk0006818@gmail.com>
-Cc: miquel.raynal@bootlin.com,  richard@nod.at,  vigneshr@ti.com,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  linux-kernel-mentees@lists.linux.dev,  skhan@linuxfoundation.org
-Subject: Re: [PATCH] mtd: sm_ftl: replace strncpy with memcpy
-In-Reply-To: <20250903121746.2527046-1-rk0006818@gmail.com>
-References: <20250903121746.2527046-1-rk0006818@gmail.com>
-Date: Wed, 03 Sep 2025 16:28:57 +0200
-Message-ID: <mafs0ms7bvcd2.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=k20201202; t=1756930817;
+	bh=49+4uYtFX1QMJbxzSswGEGQCDnZWGMG/+guZnJI0h88=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=RT6qb/t9B6J06t3tkRoM6uZL1bJFe0R4Q99BJw553PFaESTKtBu3XHcUL4sbheHQt
+	 7lkjpOUHn9OpcOJm1IPsa2H7ErwQv1pAOe23CMNJd6KCJs2hq6DYFk1Gq4XZUGiPyJ
+	 +M5zEFDCbASpxD2lzOpiRYmoZWMy4+n7KRC0insh9iF+o/WLoHqUovPJSTSCQoDHCT
+	 kEv4h+cuZI+1vJpgDerNcGMSYxSwd/YKdGt9DOBIb9xW3zGKpk7AR+74FLft4zpOoR
+	 01NIxLMgtZIQ3w60GtEbZerwiilBb/vv7z7FzVj9EOc3VZuJakWWuhYg/j6sBF01cc
+	 eA9ZW7P0LEHYQ==
+From: Mark Brown <broonie@kernel.org>
+To: Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Md Sadre Alam <quic_mdalam@quicinc.com>, Gabor Juhos <j4g8y7@gmail.com>
+Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20250903-qpic-snand-unregister-ecceng-v1-1-ef5387b0abdc@gmail.com>
+References: <20250903-qpic-snand-unregister-ecceng-v1-1-ef5387b0abdc@gmail.com>
+Subject: Re: [PATCH] spi: spi-qpic-snand: unregister ECC engine on probe
+ error and device remove
+Message-Id: <175693081575.280569.13359616771206407047.b4-ty@kernel.org>
+Date: Wed, 03 Sep 2025 21:20:15 +0100
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250903_072900_206966_21FB65AB 
-X-CRM114-Status: GOOD (  17.23  )
+X-Mailer: b4 0.15-dev-dfb17
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,44 +72,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 03 2025, Rahul Kumar wrote:
+On Wed, 03 Sep 2025 13:56:24 +0200, Gabor Juhos wrote:
+> The on-host hardware ECC engine remains registered both when
+> the spi_register_controller() function returns with an error
+> and also on device removal.
+> 
+> Change the qcom_spi_probe() function to unregister the engine
+> on the error path, and add the missing unregistering call to
+> qcom_spi_remove() to avoid possible use-after-free issues.
+> 
+> [...]
 
-> Replace strncpy with memcpy in sm_attr_show and explicitly add a NUL
-> terminator after the copy. This aligns with current kernel best practices
-> as strncpy is deprecated for such use, as explained in
-> Documentation/process/deprecated.rst. This change does not alter the
-> functionality or introduce any behavioral changes.
->
-> Signed-off-by: Rahul Kumar <rk0006818@gmail.com>
-> ---
->  drivers/mtd/sm_ftl.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-> index abc7b186353f..575e137ce8f3 100644
-> --- a/drivers/mtd/sm_ftl.c
-> +++ b/drivers/mtd/sm_ftl.c
-> @@ -44,7 +44,8 @@ static ssize_t sm_attr_show(struct device *dev, struct device_attribute *attr,
->  	struct sm_sysfs_attribute *sm_attr =
->  		container_of(attr, struct sm_sysfs_attribute, dev_attr);
->  
-> -	strncpy(buf, sm_attr->data, sm_attr->len);
-> +	memcpy(buf, sm_attr->data, sm_attr->len);
-> +	buf[sm_attr->len] = '\0';
+Applied to
 
-This writes one more byte than strncpy() (which would stop at
-buf[sm_attr->len - 1]). Is this safe?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
->  	return sm_attr->len;
+Thanks!
 
-Since you write sm_attr->len + 1 bytes now, I think this should also be
-updated.
+[1/1] spi: spi-qpic-snand: unregister ECC engine on probe error and device remove
+      commit: 1991a458528588ff34e98b6365362560d208710f
 
->  }
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
--- 
-Regards,
-Pratyush Yadav
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
