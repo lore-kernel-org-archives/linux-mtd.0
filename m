@@ -4,91 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81E22CA1014
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Sep 2025 12:49:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28E52CA0FF2
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Sep 2025 13:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qwHOBE9IjI7RhixSj6t/UAaOV8K/FilLDKXwdH56fvo=; b=baZB8meHoLiDut
-	GZ4cfzwMdQxm4dxZhFDmHYv9NWIGx+Hmkxws3cpvtILGAtFQBIAIdS8bgA/33jWWStoliXwJ8OcOt
-	CbS2MjRVNWtcPUEvh9zSVYYqJaAG7dM4xUur8/rP94H71ahCj9wSZeMpZzsV3RblayWHjC0DsU6XG
-	XOjNu0h9ZU5FxqdtXSqc+f0ZQCPISzJ4nY+S1ss+JC2pedLBpUGxb0PI9pF8F9mMMB1N83ZmgPvc6
-	r2rXjjIzaLYRNR9OhAjyXqjPQ7uE+7ZQVTFDi7fBN89kzd3WHWyvIVAoDGRJQcsxJeCF3rlC46aJA
-	8+alvvwNbMWSVN99DsFA==;
+	List-Owner; bh=WPDGXhlUmkhn0WKTgmnVDYD8QxKEfQYBgYDe0IZ9hRg=; b=Bj42yZ6N+BnDH+
+	lj/Nd3spKvaVPc42L1jHMGubxIRGjPcX2oF4cg8X/uLnfUSm+GH2kiaRN5EzVLeDcZCdpZs7rjSzV
+	+IULGw8yH3/x6VEVEcU+9tkbNs2vbfZTzp0JZENtIPCR0ww0YnxwMR6TFRQptZNs2aADVMM0dNPHn
+	YjnU2xpwKgT54O3Prj2Gkklq/yMd7VFH3GKKHldLkXeW8NmgxOTJ1YErA251wHEAYcGl8oZp8ZYHt
+	qE7Y8FEbk+K5eSTgkE8rmyH/6sio5djgC4PzN20STBoBoK2Br4KHwJFUmCCuhbkD2tpBw6putZEhD
+	Mb6h07109cV7bBINee8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utmvp-00000006SLc-3kqh;
-	Wed, 03 Sep 2025 12:49:45 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1utnIk-00000006XWm-2qyZ;
+	Wed, 03 Sep 2025 13:13:26 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utm6K-00000006IVF-0tgX
+	id 1utmRC-00000006Mbf-3wOD
 	for linux-mtd@lists.infradead.org;
-	Wed, 03 Sep 2025 11:56:33 +0000
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-b0411b83aafso567358566b.1
-        for <linux-mtd@lists.infradead.org>; Wed, 03 Sep 2025 04:56:31 -0700 (PDT)
+	Wed, 03 Sep 2025 12:18:08 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-77238a3101fso2844848b3a.0
+        for <linux-mtd@lists.infradead.org>; Wed, 03 Sep 2025 05:18:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756900590; x=1757505390; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bgQ4mzV7w6xYRm/v1nasWaTRjoxbGycA47ijfOscHNI=;
-        b=IlSi31pofe7tOp/T+84fNWzih5sCy73rr1kAEBjuCp2461SOyFoaKrdchF5/tSweDl
-         JAXH5BqcekgCZStLoxBV0UN1oamRKzN0qWRPebIDwMX6iTCET7Kq4neB1/okS93+OWcF
-         D8x6xkFa4rMEnchzida8J/PANH1xgWdmpib/yl9mdnyEwUEJpDxJ0fIAoZOG55UGJ3HS
-         1P03lMLJsDUMXsCXGy+GFqIrbh0aKT9cBWOIzjyzxe+Tobnjla+N9WMe0Q1VTiGekioV
-         JePSfwWqDlUZxM8FI0zAMogWWtcW3sKB2ZSfGtCxO6xIf5T5ZVoPNkbs60t7vxhnfxrU
-         VbMQ==
+        d=gmail.com; s=20230601; t=1756901886; x=1757506686; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AgtFd2zd49CBSr/rWNwpzPccn2qZ7bpb6f3yzM2Jf8c=;
+        b=cpRg7UdjRvrWBtbIjIkpVkNpsanaVw8zjbLCRsbMbVawNCV2TgJ679mvfztDPBbrN1
+         QbFWTPqTzM5/G79s4NnMIuAgeVp/09CkGx9gzCv5KGCfzpAFWMB+8dtSYK4wvtDZ9hdd
+         Fnp8dPGLFPbQxXiUmXzWPz02Y6mB/cLsEWLH/Yei3Uk1dy6X5uhKquqPT2Yh8ptRFUT9
+         XJ86fxLbqVvv/HyWyb/XCr43//6NSFuk2GkIzTLOSQEdaHleztReg4LGoZwmSXU1v44E
+         HU+RMQ/jr3B2KM93PgP6QiDil5CObBf1o7OFtdkCGrfRJ1Ot1keRVAUVzxDvSHWgArQH
+         ch9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756900590; x=1757505390;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1756901886; x=1757506686;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bgQ4mzV7w6xYRm/v1nasWaTRjoxbGycA47ijfOscHNI=;
-        b=CpU57+hKbROVQ1wymUKCUzuEsL+YCsaUZri4t06aSW5Z/7jhRP4SNe0JrXBVeiHKqF
-         ZXw0VMHE4KN4/Usk6YLSTVSJDyNHpyzT42xPdivM74sClAIIPUQeXFTzOdxumuMy+rbW
-         PzOp4stqUnfiIbgZ+/jdYF+84QOBpbW4GYbH1oaBIA8rJ6UTbnMCzimm6D2Xsm/GkP1O
-         7loR2ODoR2749kzfIL1NLUUaaMChMY6OPYmSqsdDhoko50xxyfMAeYj73imkwoKHHFCT
-         mLVbBWe2RUto5Bv/mrvXJZaQF+4UUax+P7zWIATISFsCgO/gD5GAJqfYqQ7QlU7wQjQb
-         o3BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFkOoz2Kkt/rUhOY+yDhbl9FxuspvxVnSRpR7mfHXk/0qreh3AzqEdWN9Pn1VcTMB8F0FXbA3N9+4=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxihMUe/1JwbdcdXvScg7wWLdACZZq8Ki2JQGKL91xkqiqk2XU1
-	e48sgxU44bKad03VrQ0VmP3qqT1OsL29oB0fvxEToGz2NPlzROZhU0Do7Lh6mw==
-X-Gm-Gg: ASbGncu2L7g8oaLp9IWDWx3YpBM29j33HyC0Ow9Z9LWnXv3dYVFsRRP+xfYzHi9MBG1
-	kI2zw8NEC4btXKxjVp7/jlXn76fQBUIT1n/t4hCkhIM92uxsWaddsKI6ZXJI7kc0smxzebmT4Hy
-	h0kBJbk3l3i6C+1SblLpM7uhppurXOSM2tLC3f7pJwbPRDYV6m54qbUvtkhDEY7Za4i5muGVUUj
-	cN3YTlrvOtsOgreoeasbbYhNQeFyfnyyTyZPR6opCp1RIYz/oRpG5tatkwZIaFPu/hic7a7bqiG
-	6Qmc+gf08bW3grpahTrtwWtc7yCKHPq+gH3X4Daxs8S1r+NgJVD+EZZnoP58el1Gb3GfJ1Z/99e
-	JWepvt8Cx5bT2tIVNlR4jQ7Q7ZfLsKuMoIUTv7Y2MWV1koBdpmlmP
-X-Google-Smtp-Source: AGHT+IHlpVkoZ714lm9sCOc6c6toH/Ap2jpLri6VfZ+0i+mVGwiseAQ3UC1Rjt/7WHA2hxWgBLDh9A==
-X-Received: by 2002:a17:906:9f8e:b0:afe:c6a0:d116 with SMTP id a640c23a62f3a-b01d8a6b700mr41197066b.18.1756900590218;
-        Wed, 03 Sep 2025 04:56:30 -0700 (PDT)
-Received: from [192.168.0.253] (5D59A51C.catv.pool.telekom.hu. [93.89.165.28])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-b04252103f2sm785506566b.50.2025.09.03.04.56.29
+        bh=AgtFd2zd49CBSr/rWNwpzPccn2qZ7bpb6f3yzM2Jf8c=;
+        b=uRTxeEecSybNrguHqYQyeAnC/swmrSjmmD8MLOP/xBF63iVsFhIEoDMl/yMKIC14QR
+         vV7nooGslxne74f0M8/X7YCrtCmFIopvy7nBge+VBOv9ZLwmFMV353NqjAZAeB5++OE2
+         HoYjs4da4A+ZbXkICLeybFIq6KkC2ObWzPw0Py0uvhcKH4FuyRe1WAc3fkNSsh7I+Fpc
+         UuJeYZW6gN02QSM/NpSfQIp/86QEXFtRsyi8hAptz9i8XWkdUIqN+ENouXOMhP7QXTFc
+         CDT6t1VcfQ74WFrEulUghaITN/rLVdSGhLxBLtq2Fe3iC5K4rEsZjjthXevqC5HjtwuT
+         5hZw==
+X-Gm-Message-State: AOJu0YzwH6iU2Eb/AgPDfH4z51kVcJ21DnRpSoBD1lGipX66IeXM1Vzr
+	ijaiROtGoP2EQz9fZf0iiZO+YwwEev1MF37K8sdtdWxYr7fkZCpOyCa5
+X-Gm-Gg: ASbGnctjno/U3ci8MBvNL/wbFmGr2sNKDr5NQlQi3s10V6AFv67NZEslX3iwHwNUbD7
+	yz1uVoHlVHOJrBjYBYIDT9j9Kof/dE8M9ci6d7rnRWm5BTq8lLzSPP/+qTbL+9TetxwdhvOiJ5B
+	BqcrYkmxU6yStbEUq+fIHwcE048ZD+/JxqgrRDVkO36fgV+Ou7FCx9wuQ2Td2x2VFzQcLwfbVAg
+	9bCi2t5YNnbubcauzitJ9iGnZy+/KqXhWPcxnDUmE1gT3PBfVJ1CCnPgzoP873VFkQomGVJ25/c
+	UIyKznCKKd7PmFXMLd4ch5KJJ/LiWE0MNZGmKC5dK/KFIvOERTNQpxWgm7Zkak7kda/Ws6solVp
+	Ik3bOT32zgvq/N9GSOc0HR0+8PHeHV4jedjTG
+X-Google-Smtp-Source: AGHT+IHXlQs3naooWGZvpcsO/wbHJ5kA1brIeIBq6OMurJmwLCXCEAjzel1TdBQ14vLml2G96C56Lw==
+X-Received: by 2002:a05:6a20:938c:b0:249:d3d:a508 with SMTP id adf61e73a8af0-2490d3e1f8emr1791836637.57.1756901885674;
+        Wed, 03 Sep 2025 05:18:05 -0700 (PDT)
+Received: from localhost.localdomain ([165.204.156.251])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7725ad1e9afsm9061010b3a.11.2025.09.03.05.18.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Sep 2025 04:56:29 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Wed, 03 Sep 2025 13:56:24 +0200
-Subject: [PATCH] spi: spi-qpic-snand: unregister ECC engine on probe error
- and device remove
+        Wed, 03 Sep 2025 05:18:05 -0700 (PDT)
+From: Rahul Kumar <rk0006818@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linux.dev,
+	skhan@linuxfoundation.org,
+	rk0006818@gmail.com
+Subject: [PATCH] mtd: sm_ftl: replace strncpy with memcpy
+Date: Wed,  3 Sep 2025 17:47:46 +0530
+Message-ID: <20250903121746.2527046-1-rk0006818@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Message-Id: <20250903-qpic-snand-unregister-ecceng-v1-1-ef5387b0abdc@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAOcsuGgC/x3MQQrCQAwF0KuUrA1MR4eiVxEXJf0zZhNroiKU3
- t3B5du8jQKuCLoMGzk+GvqwjvEwkNxna2BduimnXNI5ZX6uKhw228JvczSNF5whAmtcplxrmeS
- E40i9WB1Vv//+etv3H/Svi9RuAAAA
-X-Change-ID: 20250902-qpic-snand-unregister-ecceng-572ff57c4e31
-To: Mark Brown <broonie@kernel.org>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.14.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250903_045632_254547_03094DE4 
-X-CRM114-Status: GOOD (  13.54  )
+X-CRM114-CacheID: sfid-20250903_051806_975948_B8EB0A7F 
+X-CRM114-Status: GOOD (  12.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,56 +100,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The on-host hardware ECC engine remains registered both when
-the spi_register_controller() function returns with an error
-and also on device removal.
+Replace strncpy with memcpy in sm_attr_show and explicitly add a NUL
+terminator after the copy. This aligns with current kernel best practices
+as strncpy is deprecated for such use, as explained in
+Documentation/process/deprecated.rst. This change does not alter the
+functionality or introduce any behavioral changes.
 
-Change the qcom_spi_probe() function to unregister the engine
-on the error path, and add the missing unregistering call to
-qcom_spi_remove() to avoid possible use-after-free issues.
-
-Fixes: 7304d1909080 ("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+Signed-off-by: Rahul Kumar <rk0006818@gmail.com>
 ---
- drivers/spi/spi-qpic-snand.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/sm_ftl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 2812ffc421d27a7e932b8e11731bcbccd0d23600..28755dbce399d836ab6209e44f02f05532386344 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -1606,11 +1606,13 @@ static int qcom_spi_probe(struct platform_device *pdev)
- 	ret = spi_register_controller(ctlr);
- 	if (ret) {
- 		dev_err(&pdev->dev, "spi_register_controller failed.\n");
--		goto err_spi_init;
-+		goto err_register_controller;
- 	}
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index abc7b186353f..575e137ce8f3 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -44,7 +44,8 @@ static ssize_t sm_attr_show(struct device *dev, struct device_attribute *attr,
+ 	struct sm_sysfs_attribute *sm_attr =
+ 		container_of(attr, struct sm_sysfs_attribute, dev_attr);
  
- 	return 0;
+-	strncpy(buf, sm_attr->data, sm_attr->len);
++	memcpy(buf, sm_attr->data, sm_attr->len);
++	buf[sm_attr->len] = '\0';
+ 	return sm_attr->len;
+ }
  
-+err_register_controller:
-+	nand_ecc_unregister_on_host_hw_engine(&snandc->qspi->ecc_eng);
- err_spi_init:
- 	qcom_nandc_unalloc(snandc);
- err_snand_alloc:
-@@ -1632,7 +1634,7 @@ static void qcom_spi_remove(struct platform_device *pdev)
- 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	spi_unregister_controller(ctlr);
--
-+	nand_ecc_unregister_on_host_hw_engine(&snandc->qspi->ecc_eng);
- 	qcom_nandc_unalloc(snandc);
- 
- 	clk_disable_unprepare(snandc->aon_clk);
-
----
-base-commit: 793681dc7cc6482484fdeb658f5ac20bf0a570b9
-change-id: 20250902-qpic-snand-unregister-ecceng-572ff57c4e31
-
-Best regards,
 -- 
-Gabor Juhos <j4g8y7@gmail.com>
+2.43.0
 
 
 ______________________________________________________
