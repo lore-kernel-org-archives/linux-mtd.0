@@ -4,59 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60DEDCA1007
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Sep 2025 02:11:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A54DFCA1007
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Sep 2025 03:32:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jr2BYZbOBzsM6jq6KAg44sJM6hijXQKrVyLCIEO6DYI=; b=USTc0lsZTVQL+co2fDu8ZVQg2F
-	8BSkrdsPOtePpEb4P9s0FzM4nkopinX+kyr1/WWIgD3L1IM+VGoSQ+MvEhBMh1HbdLW0Zl5p5JSFF
-	gQ3FGghg2OVmYrPVtlaN4o9Bgc93H9WHOODtAdx49mhJZj+JgnZEuBPRURX2dP5rYQb4mhJ4HUXPu
-	J+Z5vQIUy5nGZJYfSQdjyBqkKWLUjU+ZkwnLzz9zbvHOH3YPaKXFYiuBrBiL52RqMq+YhMv3emLnS
-	+NbamD0C7/53nExvAEYNbmVoORDx0tv15skr6jSK15bVmv3iEcZ92vLayRalHjtk2NPFwcIfItC31
-	mNXfIazw==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nq2+C4VcYp8b9Td09ffqIYf7wa9G85uHKk4aCkz1jNU=; b=YUViMDsE6bKah0
+	z7TTtg3va3+rGLQ9V8LdWmN1kFabuP5cUpOOyZJ1wS9Jdz+gt3iSUXEfVxw0LV65VAbmkyRmWBuGj
+	QQMTn3MGrCnDKLAy/2VIlh3EGLqJlQVkbSoQcBUmGy62YhTGxbq4WaRzgpX0tUOWvkOaWg85sh4mE
+	I3Ol5T6ABHwJbBWAv4oqnOCBEUmrBuPMJShMzI/2agegmGAN4m11Bh8pyNXmtYihbrVZGSkhAzl++
+	b64g3GKZp1OjoFq32Y1bQ1kKbp83hel0HZ8Q/VHnHTzYgH6BxcfJx+y98vJ7QyGIgM3F2YH7AWYyu
+	Uue/kPN92ZZh4kcvKyjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utcy3-00000003COE-2bDJ;
-	Wed, 03 Sep 2025 02:11:23 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1uteEQ-00000003ajB-36rv;
+	Wed, 03 Sep 2025 03:32:22 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utcy0-00000003CLr-1NDE
+	id 1uteEP-00000003aj0-2PXy
 	for linux-mtd@lists.infradead.org;
-	Wed, 03 Sep 2025 02:11:21 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4cGmL92gwFz14MlG;
-	Wed,  3 Sep 2025 10:10:57 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4D4CE1402CA;
-	Wed,  3 Sep 2025 10:11:07 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 3 Sep 2025 10:11:06 +0800
-Subject: Re: [PATCH V2] mtd: core: skip badblocks increment for blocks already
- known bad
-To: Wang Zhaolong <wangzhaolong@huaweicloud.com>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20250902092732.2244544-1-wangzhaolong@huaweicloud.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <50be01fc-a9d3-0998-2728-82e3595b7820@huawei.com>
-Date: Wed, 3 Sep 2025 10:11:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Wed, 03 Sep 2025 03:32:21 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 73A156013B;
+	Wed,  3 Sep 2025 03:32:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C22F8C4CEF0;
+	Wed,  3 Sep 2025 03:32:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756870340;
+	bh=1armfrQSPhghEXbEgCR40kMT3Mz1KUNVgAlY6GjrTLM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=c6/aA16+bBkQH51tR2bcv5SM6tXtTwJMULf4022Tate2FmzdfUbzGvPiP2fkcVpWI
+	 RriSmrsN2ZlJj0IloB/qX3FQ3Nx9cN4lqbucrjYT4KLxt2DgUbVBqvIKo2olMXLgfB
+	 9N5kKv4v3IBmC1YJev3/3rxoXwXwhR46dCAt8jPxByNLb/XkehQ3Po6KdKfM7VpmMm
+	 1Q1BM8WVxFsEMqVtGOxGMqeKmeEKRty2lb7WMxAWqJ6tmtHvJWE+KovB1IE7Kw9o50
+	 ge8OGusvBxfm+9So2e0mbnLX+HsjFa6ZxAt4PFAo/YR4SAEcoNc0h0IuibbyWbTQJn
+	 FVh2NdAaEjS2A==
+Message-ID: <3242f4a2-9a5f-4165-8d24-5c2387967277@kernel.org>
+Date: Tue, 2 Sep 2025 22:32:05 -0500
 MIME-Version: 1.0
-In-Reply-To: <20250902092732.2244544-1-wangzhaolong@huaweicloud.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemk500005.china.huawei.com (7.202.194.90)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250902_191120_523929_AB7D47AE 
-X-CRM114-Status: GOOD (  19.44  )
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/14] Documentation: amd-pstate: Use internal link to
+ kselftest
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Documentation <linux-doc@vger.kernel.org>,
+ Linux DAMON <damon@lists.linux.dev>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ Linux Power Management <linux-pm@vger.kernel.org>,
+ Linux Block Devices <linux-block@vger.kernel.org>,
+ Linux BPF <bpf@vger.kernel.org>,
+ Linux Kernel Workflows <workflows@vger.kernel.org>,
+ Linux KASAN <kasan-dev@googlegroups.com>,
+ Linux Devicetree <devicetree@vger.kernel.org>,
+ Linux fsverity <fsverity@lists.linux.dev>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux DRI Development <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
+ Linux Networking <netdev@vger.kernel.org>,
+ Linux Sound <linux-sound@vger.kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+ Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
+ <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Dwaipayan Ray <dwaipayanray1@gmail.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Joe Perches <joe@perches.com>,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
+ tytso@mit.edu, Richard Weinberger <richard@nod.at>,
+ Zhihao Cheng <chengzhihao1@huawei.com>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas.schier@linux.dev>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Waiman Long <longman@redhat.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Shay Agroskin <shayagr@amazon.com>, Arthur Kiyanovski <akiyano@amazon.com>,
+ David Arinzon <darinzon@amazon.com>, Saeed Bishara <saeedb@amazon.com>,
+ Andrew Lunn <andrew@lunn.ch>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Alexandru Ciobotaru <alcioa@amazon.com>,
+ The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Steve French <stfrench@microsoft.com>,
+ Meetakshi Setiya <msetiya@microsoft.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Bart Van Assche <bvanassche@acm.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, Masahiro Yamada <masahiroy@kernel.org>
+References: <20250829075524.45635-1-bagasdotme@gmail.com>
+ <20250829075524.45635-5-bagasdotme@gmail.com>
+Content-Language: en-US
+From: Mario Limonciello <superm1@kernel.org>
+In-Reply-To: <20250829075524.45635-5-bagasdotme@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,50 +132,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNS85LzIgMTc6MjcsIFdhbmcgWmhhb2xvbmcg0LS1wDoKPiBSZXBlYXRlZGx5IG1hcmtp
-bmcgdGhlIHNhbWUgZXJhc2VibG9jayBiYWQgaW5mbGF0ZXMKPiBtdGQtPmVjY19zdGF0cy5iYWRi
-bG9ja3MgYmVjYXVzZSBtdGRfYmxvY2tfbWFya2JhZCgpIHVuY29uZGl0aW9uYWxseQo+IGluY3Jl
-bWVudHMgdGhlIGNvdW50ZXIgb24gc3VjY2Vzcywgd2hpbGUgc29tZSBpbXBsZW1lbnRhdGlvbnMg
-KGUuZy4KPiBOQU5EKSByZXR1cm4gMCBib3RoIHdoZW4gdGhlIGJsb2NrIHdhcyBhbHJlYWR5IGJh
-ZCBhbmQgd2hlbiBpdCBoYXMganVzdAo+IGJlZW4gbWFya2VkWzFdLgo+IAo+IEZpeCBieSBjaGVj
-a2luZyBpZiB0aGUgYmxvY2sgaXMgYWxyZWFkeSBiYWQgYmVmb3JlIGNhbGxpbmcKPiAtPl9ibG9j
-a19tYXJrYmFkKCkgd2hlbiBfYmxvY2tfaXNiYWQgaXMgYXZhaWxhYmxlLiBPbmx5IHNraXAgdGhl
-IGNvdW50ZXIKPiBpbmNyZW1lbnQgd2hlbiB3ZSBjYW4gY29uZmlybSB0aGUgYmxvY2sgd2FzIGFs
-cmVhZHkgYmFkLiBJbiBhbGwgb3RoZXIKPiBjYXNlcyBjb250aW51ZSBpbmNyZW1lbnRpbmcgdGhl
-IGNvdW50ZXIuCj4gCj4gVGhpcyBrZWVwcyB0aGUgbG9naWMgY2VudHJhbGl6ZWQgaW4gbXRkY29y
-ZSB3aXRob3V0IHJlcXVpcmluZyBkcml2ZXIKPiBjaGFuZ2VzLgo+IAo+IExpbms6IGh0dHBzOi8v
-bG9yZS5rZXJuZWwub3JnL2FsbC9lZjU3MzE4OC05ODE1LTRhNmItYmFkMS0zZDhmZjdjOWIxNmZA
-aHVhd2VpY2xvdWQuY29tLyBbMV0KPiBTaWduZWQtb2ZmLWJ5OiBXYW5nIFpoYW9sb25nIDx3YW5n
-emhhb2xvbmdAaHVhd2VpY2xvdWQuY29tPgo+IC0tLQo+IAo+IFYyOgo+IC0gQ2hlY2tzIG9sZCBz
-dGF0ZSB3aGVuIF9ibG9ja19pc2JhZCBleGlzdHMgYW5kIGJhaWxzIG91dCBlYXJseSBpZiBhbHJl
-YWR5IGJhZAo+IAo+ICAgZHJpdmVycy9tdGQvbXRkY29yZS5jIHwgMTEgKysrKysrKysrKy0KPiAg
-IDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gCgpSZXZp
-ZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9tdGQvbXRkY29yZS5jIGIvZHJpdmVycy9tdGQvbXRkY29yZS5jCj4gaW5k
-ZXggNWJhOWE3NDFmNWFjLi4wOTZhM2M5NDY3MGYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQv
-bXRkY29yZS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbXRkY29yZS5jCj4gQEAgLTIzMzcsMTAgKzIz
-MzcsMTEgQEAgaW50IG10ZF9ibG9ja19pc2JhZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90
-IG9mcykKPiAgIEVYUE9SVF9TWU1CT0xfR1BMKG10ZF9ibG9ja19pc2JhZCk7Cj4gICAKPiAgIGlu
-dCBtdGRfYmxvY2tfbWFya2JhZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IG9mcykKPiAg
-IHsKPiAgIAlzdHJ1Y3QgbXRkX2luZm8gKm1hc3RlciA9IG10ZF9nZXRfbWFzdGVyKG10ZCk7Cj4g
-Kwlsb2ZmX3QgbW9mZnM7Cj4gICAJaW50IHJldDsKPiAgIAo+ICAgCWlmICghbWFzdGVyLT5fYmxv
-Y2tfbWFya2JhZCkKPiAgIAkJcmV0dXJuIC1FT1BOT1RTVVBQOwo+ICAgCWlmIChvZnMgPCAwIHx8
-IG9mcyA+PSBtdGQtPnNpemUpCj4gQEAgLTIzNDksMTEgKzIzNTAsMTkgQEAgaW50IG10ZF9ibG9j
-a19tYXJrYmFkKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3Qgb2ZzKQo+ICAgCQlyZXR1cm4g
-LUVST0ZTOwo+ICAgCj4gICAJaWYgKG10ZC0+ZmxhZ3MgJiBNVERfU0xDX09OX01MQ19FTVVMQVRJ
-T04pCj4gICAJCW9mcyA9IChsb2ZmX3QpbXRkX2Rpdl9ieV9lYihvZnMsIG10ZCkgKiBtYXN0ZXIt
-PmVyYXNlc2l6ZTsKPiAgIAo+IC0JcmV0ID0gbWFzdGVyLT5fYmxvY2tfbWFya2JhZChtYXN0ZXIs
-IG10ZF9nZXRfbWFzdGVyX29mcyhtdGQsIG9mcykpOwo+ICsJbW9mZnMgPSBtdGRfZ2V0X21hc3Rl
-cl9vZnMobXRkLCBvZnMpOwo+ICsKPiArCWlmIChtYXN0ZXItPl9ibG9ja19pc2JhZCkgewo+ICsJ
-CXJldCA9IG1hc3Rlci0+X2Jsb2NrX2lzYmFkKG1hc3RlciwgbW9mZnMpOwo+ICsJCWlmIChyZXQg
-PiAwKQo+ICsJCQlyZXR1cm4gMDsKPiArCX0KPiArCj4gKwlyZXQgPSBtYXN0ZXItPl9ibG9ja19t
-YXJrYmFkKG1hc3RlciwgbW9mZnMpOwo+ICAgCWlmIChyZXQpCj4gICAJCXJldHVybiByZXQ7Cj4g
-ICAKPiAgIAl3aGlsZSAobXRkLT5wYXJlbnQpIHsKPiAgIAkJbXRkLT5lY2Nfc3RhdHMuYmFkYmxv
-Y2tzKys7Cj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 8/29/2025 2:55 AM, Bagas Sanjaya wrote:
+> Convert kselftest docs link to internal cross-reference.
+> 
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+>   Documentation/admin-guide/pm/amd-pstate.rst | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+> index e1771f2225d5f0..37082f2493a7c1 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -798,5 +798,4 @@ Reference
+>   .. [3] Processor Programming Reference (PPR) for AMD Family 19h Model 51h, Revision A1 Processors
+>          https://www.amd.com/system/files/TechDocs/56569-A1-PUB.zip
+>   
+> -.. [4] Linux Kernel Selftests,
+> -       https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+> +.. [4] Documentation/dev-tools/kselftest.rst
+
+Acked-by: Mario Limonciello (AMD) <superm1@kernel.org>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
