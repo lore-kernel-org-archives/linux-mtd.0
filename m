@@ -4,35 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D3DBCA1013
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Sep 2025 16:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84E50CA1013
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Sep 2025 16:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pq0XIe6E1735Nc+0zXAggN+c4vCegoauoZiB1F44qq0=; b=d37S3JL43VsX5n
-	Ds1Zm+0BpbvHiWDpm7jmEHxJiWr380tv3a00Cae3oJpSjH8FgS9n6p6xyFkr01TdwwlUIPnn8GZdK
-	QZ/gL3QLeOq9PCGKhASAmI3Ss3qjyHoWsn0GSlQ5dTR/q3dx4+ZNlr2LsP2AZiW1hzQ0h/ZfBjc96
-	Xp2bXTjCTixHJR/n1mD4TKup0nuYd2AqyUTaev9RBQbSHwRpkY2tlnJQsWean0tOKI6pqV/BARilA
-	PG9YnR/wpfR2W0cCXmZIUE0Rif+4aUqX4jIa04hZ8oafsc5PbSVOxkxIFjKFwBNDkMQ4Yub4LGmvE
-	di5AuGBwo5cC+u7DYRWQ==;
+	List-Owner; bh=YGzivK+0bZZDliYqhHnZSftM+3i6KCwP13M1dWIkFOI=; b=1rIhTW1IxFaJAR
+	uvEiaqyHjP/3jlXQW/nBmuwDEO+Yhoam640vC6U9+YyhnZvw3qWqyexbE7zkFiTHXyvDA4DKcWYDp
+	r9uNDakI1YSaiUIVigGSVXVChJMpLGhk+b2dsoX283TU0xWcDmva6CqMDOIq9WCjsQV/Qdc9w3WsX
+	Yo1FunP2bCHsx+Jf0MrkK9ndngYPxj+2j/FTRCPm2JceSL7+dmEaeDThLX/c49y3bpJgQHn83iBCG
+	Guq+kbP+ikwsiehK83BbW1MR7bTcyhzxanbhOO+wMVYKhvgbMVtBz/ZpT6AVB30LLaHvpxm1IQOKX
+	PD7AnuGxPUZrzR5bYXDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uuCmy-0000000Ct9v-1ECk;
-	Thu, 04 Sep 2025 16:26:20 +0000
+	id 1uuCn4-0000000CtHZ-13lA;
+	Thu, 04 Sep 2025 16:26:26 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uu9gu-0000000BmDn-0FkW
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 04 Sep 2025 13:07:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=MrPOPLB5pCQ0YZr0xWvEVDsDQTrG8YgD9MbwXMtPNqc=; b=JtPjEyu09NiH00UVXN96y+dA74
+	rcOpa9t40DOpt81prOEq0YS2DOC5iyNXtz5snxVE+XlZQsKPQgiE9U/NJewhkoD70655SEocf1hom
+	PnoDjEQaRaVzdNUWo0q+cT1BltIj72FsGT+zXzGecyIU/JWFiR9k50n05fb6cGsXSCepSwGAt4fzc
+	xCGOJyXrVIZMr0LrWwMfJnR67+Hg+ntfPHxF4ebDn6+wML6JoHYXBg9ShLSZQnQjlhimC0ZeNW6X3
+	0VSgID5dc4fuvQXVKolOAaV4S/XRJXzLkRAT1MLcxL7RAN1Ilic/jjpp5GWWnVg4kfgEVvfe8SAEZ
+	3/gwg8RQ==;
 Received: from mail.loongson.cn ([114.242.206.163])
-	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uu9gk-0000000BmB3-3vGh
+	by casper.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uu9gp-00000001DyJ-3XsN
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Sep 2025 13:07:44 +0000
+	Thu, 04 Sep 2025 13:07:51 +0000
 Received: from loongson.cn (unknown [223.64.68.89])
-	by gateway (Coremail) with SMTP id _____8AxSNEZj7lod6wGAA--.14219S3;
-	Thu, 04 Sep 2025 21:07:37 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8DxP9Mij7loi6wGAA--.13724S3;
+	Thu, 04 Sep 2025 21:07:46 +0800 (CST)
 Received: from localhost.localdomain (unknown [223.64.68.89])
-	by front1 (Coremail) with SMTP id qMiowJAxfcEIj7lotA5+AA--.16416S2;
-	Thu, 04 Sep 2025 21:07:36 +0800 (CST)
+	by front1 (Coremail) with SMTP id qMiowJAxfcEIj7lotA5+AA--.16416S4;
+	Thu, 04 Sep 2025 21:07:45 +0800 (CST)
 From: Binbin Zhou <zhoubinbin@loongson.cn>
 To: Binbin Zhou <zhoubb.aaron@gmail.com>,
 	Huacai Chen <chenhuacai@loongson.cn>,
@@ -50,34 +65,34 @@ Cc: Huacai Chen <chenhuacai@kernel.org>,
 	linux-mtd@lists.infradead.org,
 	Binbin Zhou <zhoubinbin@loongson.cn>,
 	"Rob Herring (Arm)" <robh@kernel.org>
-Subject: [PATCH v4 4/7] dt-bindings: mtd: loongson,ls1b-nand-controller: Document the Loongson-2K0500 NAND controller
-Date: Thu,  4 Sep 2025 21:07:08 +0800
-Message-ID: <5d2f1d765a87ff4ef9eedfdeae674c1301df66d5.1756991031.git.zhoubinbin@loongson.cn>
+Subject: [PATCH v4 6/7] dt-bindings: mtd: loongson,ls1b-nand-controller: Document the Loongson-2K1000 NAND controller
+Date: Thu,  4 Sep 2025 21:07:10 +0800
+Message-ID: <ff557c8a4a59ee9ee23f410deb8d7192bf1c8b47.1756991031.git.zhoubinbin@loongson.cn>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1756991031.git.zhoubinbin@loongson.cn>
 References: <cover.1756991031.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJAxfcEIj7lotA5+AA--.16416S2
+X-CM-TRANSID: qMiowJAxfcEIj7lotA5+AA--.16416S4
 X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Kr1ftr13XF4DJFyUKry3Awc_yoW8WF45pF
-	ZxC3yxKF1IyF13Za90ka48Cr13ZF93Jw4DJanrJ347G3sxWw1YqryayFn5X3WUAr4IqFWU
-	ZFyvga1rJ3WDAFbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoW7uFy3Ar1fCr43Ww1kGryrZrc_yoW8ury5pF
+	9xAayfKF12yF13uFZ8Ka48Gr13ZFyktw1DJFZrJryxG39xXa4UZryakr1rtFsxtr12qry5
+	ZFy0gF48G3ZFyrbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
 	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0xBIdaVrnRJUUUkSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
 	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
 	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
 	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26rWY6Fy7McIj6I8E87Iv67AK
-	xVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26F4j6r4UJwCI42IY6I8E87Iv6x
-	kF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU8P8n5UUUUU==
+	xVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVW7JVWDJwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8Jr0_Cr1UMIIF0xvEx4A2js
+	IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUIna9UUUUU
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250904_060743_327770_4DD491B0 
-X-CRM114-Status: UNSURE (   8.64  )
+X-CRM114-CacheID: sfid-20250904_140749_121609_57F42076 
+X-CRM114-Status: UNSURE (   7.34  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -96,43 +111,97 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Add new compatible for the Loongson-2K NAND controller used for
-Loongson-2K0500 SoC.
+Loongson-2K1000 SoC.
 
-Acked-by: Rob Herring (Arm) <robh@kernel.org>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
 ---
- .../bindings/mtd/loongson,ls1b-nand-controller.yaml         | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../mtd/loongson,ls1b-nand-controller.yaml    | 50 ++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1b-nand-controller.yaml b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nand-controller.yaml
-index a09e92e416c4..4ec2b5d1e89d 100644
+index 4ec2b5d1e89d..cf85d0cede00 100644
 --- a/Documentation/devicetree/bindings/mtd/loongson,ls1b-nand-controller.yaml
 +++ b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nand-controller.yaml
-@@ -4,13 +4,14 @@
- $id: http://devicetree.org/schemas/mtd/loongson,ls1b-nand-controller.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Loongson-1 NAND Controller
-+title: Loongson NAND Controller
- 
- maintainers:
-   - Keguang Zhang <keguang.zhang@gmail.com>
-+  - Binbin Zhou <zhoubinbin@loongson.cn>
- 
- description:
--  The Loongson-1 NAND controller abstracts all supported operations,
-+  The Loongson NAND controller abstracts all supported operations,
-   meaning it does not support low-level access to raw NAND flash chips.
-   Moreover, the controller is paired with the DMA engine to perform
-   READ and PROGRAM functions.
-@@ -24,6 +25,7 @@ properties:
-       - enum:
+@@ -26,18 +26,22 @@ properties:
            - loongson,ls1b-nand-controller
            - loongson,ls1c-nand-controller
-+          - loongson,ls2k0500-nand-controller
+           - loongson,ls2k0500-nand-controller
++          - loongson,ls2k1000-nand-controller
        - items:
            - enum:
                - loongson,ls1a-nand-controller
+           - const: loongson,ls1b-nand-controller
+ 
+   reg:
+-    maxItems: 2
++    minItems: 2
++    maxItems: 3
+ 
+   reg-names:
++    minItems: 2
+     items:
+       - const: nand
+       - const: nand-dma
++      - const: dma-config
+ 
+   dmas:
+     maxItems: 1
+@@ -54,6 +58,27 @@ required:
+ 
+ unevaluatedProperties: false
+ 
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - loongson,ls2k1000-nand-controller
++
++then:
++  properties:
++    reg:
++      minItems: 3
++    reg-names:
++      minItems: 3
++
++else:
++  properties:
++    reg:
++      maxItems: 2
++    reg-names:
++      maxItems: 2
++
+ examples:
+   - |
+     nand-controller@1fe78000 {
+@@ -72,3 +97,26 @@ examples:
+             nand-ecc-algo = "hamming";
+         };
+     };
++
++  - |
++    nand-controller@1fe26000 {
++        compatible = "loongson,ls2k1000-nand-controller";
++        reg = <0x1fe26000 0x24>,
++              <0x1fe26040 0x4>,
++              <0x1fe00438 0x8>;
++        reg-names = "nand", "nand-dma", "dma-config";
++        dmas = <&apbdma0 0>;
++        dma-names = "rxtx";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nand@0 {
++            reg = <0>;
++            label = "ls2k1000-nand";
++            nand-use-soft-ecc-engine;
++            nand-ecc-algo = "bch";
++            nand-ecc-strength = <8>;
++            nand-ecc-step-size = <512>;
++        };
++    };
 -- 
 2.47.3
 
