@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88903CA1013
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2686ACA1002
 	for <linux-mtd@archiver.kernel.org>; Thu,  4 Sep 2025 16:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Odsgjoz2No54PapdN921lIkmwVp7d+y9gEfWoEZhZ6k=; b=IDznmtzV1Bg6gd
-	CIkZ06BJhgUNCaXRPcEDJQlu+HPmhOdbv0oK9p6sZ20LgpYIF0KOFT1yEV5MlwIjubyhUdBCCBqLG
-	5GhUvWXns1/AhxG9rXSuAvqftbMnyb12zdn+4ngZRHO7ttRlOigAUhzzrDIoLhkdfLp0qGPtS6+bW
-	AdhE25VBc+/pZQAokxKl6YTDJ28spZdmOxlcoQ9cq097Mk2gvl0AsJ61wgUblCxpD7UlhUxX98Fh1
-	PQAKJg1eWsWqbSBRLk2PUZsr0EeHprMOdaXfrmfGhdUN8keYJ7Zs4aNhd4QY++fj5Wkog9txzbGG6
-	jBxdfAJyo5O7Z0TqQP4Q==;
+	List-Owner; bh=1vg8m5Cg4RJaZn2TTzQSLrU7ZfhaJ78+NW9gZwxFNCA=; b=QWqEcYhp/ugXlC
+	yp8RPHKLnewzrHKsCFy/M3TCBrSSiCINuyFRvOXseolUGTnmWxVPgtrzKBubrU75ub6qRebll4r7R
+	U5lpUMjAtf3zwBOKIHlGGAuFvHh8AJI35vuGOhfy3sJ3Nw+fxay69VWctMawcz6vCnJ8uCRlchdRW
+	743orPENNEJpQ5c4255upPjX5ZNX/k9amrj7xNkwylzg5Px5nqFxuuOv2FNFJmB679q17LaydD4wt
+	UCidHwY37VZXYsAFcScR3SFNtqnohs/dp2nBIlcUnh5EJ0d7pYhpQQbfPF/KhkX7R+GOSBoRfZ8lM
+	IifKVoMXWDr7nUXL0+Aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uuCmW-0000000Csaj-2J3c;
-	Thu, 04 Sep 2025 16:25:52 +0000
+	id 1uuCmM-0000000CsMs-1oKQ;
+	Thu, 04 Sep 2025 16:25:42 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uu9gK-0000000Bm4U-03rk
+	id 1uu9gJ-0000000Bm46-1wiM
 	for linux-mtd@bombadil.infradead.org;
-	Thu, 04 Sep 2025 13:07:16 +0000
+	Thu, 04 Sep 2025 13:07:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=MHZ5Ehyd1qzYy6nXBLDw97kJUWNCE1D0HSmP0+Retkc=; b=Xzz6MtQbtb4JUJRbeENT9ML0G7
-	l/nu8H56VJzya6c5THToLhS3uSUc6M9SYjo9eqZAqzWxJ/2PqsxEgWRt19GclLJz5WCsNq3wKYKHn
-	ai0X2Kt+7Hk3ydiu2y3vpScvDAqc/c2MdJ/KqAX67Ze7UQixzS2MGekX+LWZ8WzM7ICmghGT0AGQB
-	NzWVsUf4h2ZyVMA6QxvCDLTfEtwkyltIYGdWoMyakQIUcMHlIruTq8fyn2eglr08SgdmvfrE+GwPH
-	Pj+ZoPgvo5+Sjq6beCUtznrklMKiNsomRVF2xeq04R00hnU40q3oI66TJzOaq6agS8fbjvrL6/Lo0
-	Xmd+LdhQ==;
+	bh=KXgqGft5tdiS4dIshnqdmIbzTcWl+cLca/mRl3PPQTE=; b=fz2nqetnJ+6qOmUn0kzi60dwqV
+	ERs0ipUOKJ2rvKe1VKh87ajLRrWNHWMV6xS2NkF4nX9yFakrrIGasEy/9Kr8/loiOa5oRlZvMrl2+
+	ccoCuw7uWUCxbE/mRBPM8dfGpofsK6MtjFubbNKKBe/VwAKcP3vYNePVvBLc8i9MKKOcsub+0UZ36
+	V/UZdKwOjrzU49yNrV66524KNHB27m1VaaCiyyCISgSa3M7f0WLvjEq3yD3GAgiMS71m7w0vcfI5D
+	IK+/fQv0tAeGfMWDmSixWuFt5xUn5HAIAPJ/5OQWTlzwilY4Rj0boqKzOiQObed92fxYcMhRs4Kga
+	5lIrAREA==;
 Received: from mail.loongson.cn ([114.242.206.163])
 	by desiato.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uu9gG-00000004LyL-27N0
+	id 1uu9gE-00000004LyF-36x9
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Sep 2025 13:07:14 +0000
+	Thu, 04 Sep 2025 13:07:13 +0000
 Received: from loongson.cn (unknown [223.64.68.89])
-	by gateway (Coremail) with SMTP id _____8BxH9PzjrloRqwGAA--.13838S3;
-	Thu, 04 Sep 2025 21:06:59 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8DxudHwjrloO6wGAA--.14107S3;
+	Thu, 04 Sep 2025 21:06:56 +0800 (CST)
 Received: from localhost.localdomain (unknown [223.64.68.89])
-	by front1 (Coremail) with SMTP id qMiowJCxocLpjrlofA5+AA--.2906S4;
-	Thu, 04 Sep 2025 21:06:59 +0800 (CST)
+	by front1 (Coremail) with SMTP id qMiowJCxocLpjrlofA5+AA--.2906S3;
+	Thu, 04 Sep 2025 21:06:55 +0800 (CST)
 From: Binbin Zhou <zhoubinbin@loongson.cn>
 To: Binbin Zhou <zhoubb.aaron@gmail.com>,
 	Huacai Chen <chenhuacai@loongson.cn>,
@@ -64,34 +64,34 @@ Cc: Huacai Chen <chenhuacai@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH v4 2/7] mtd: rawnand: loongson: Add 6-byte NAND ID reading support
-Date: Thu,  4 Sep 2025 21:06:34 +0800
-Message-ID: <27a9ff3bfde299badcd5c3cb121021144c0a2476.1756991031.git.zhoubinbin@loongson.cn>
+Subject: [PATCH v4 1/7] mtd: rawnand: loongson1: Rename the prefix from ls1x to loongson
+Date: Thu,  4 Sep 2025 21:06:33 +0800
+Message-ID: <8c804abb75277f0ff389151c1cd58c94f2b258ca.1756991031.git.zhoubinbin@loongson.cn>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1756991031.git.zhoubinbin@loongson.cn>
 References: <cover.1756991031.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
-X-CM-TRANSID: qMiowJCxocLpjrlofA5+AA--.2906S4
+X-CM-TRANSID: qMiowJCxocLpjrlofA5+AA--.2906S3
 X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGw18WF43ZrWrCFW3CFy7XFc_yoW5KF17pa
-	yrAwsIkrs8tr4a9FyjqFZ8CF15uryfJ39rGa97u34I9wn3Jw17Wa45GF1FyFnIkr1Yqr1U
-	ZFyvga9Y9anrJrcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
-	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v2
-	6F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8jZX5UUUUU==
+X-Coremail-Antispam: 1Uk129KBj9fXoWfZr45tryUXr48KFyrtF13GFX_yoW5CFW3Co
+	WfXFn7Ar48tw4xXaySqwn2gF4xZ3Z8uw15tF1S9F98C3yqyw1DJ3y3Jr47Wa18Xa15Jr4U
+	AFyxGanxW3srZr1Ul-sFpf9Il3svdjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8wcxFpf
+	9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+	UjIYCTnIWjp_UUUYb7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
+	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+	Y2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+	v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AK
+	xVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
+	IIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jUSdgUUUUU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250904_140713_243399_9577144F 
-X-CRM114-Status: GOOD (  14.42  )
+X-CRM114-CacheID: sfid-20250904_140711_569985_09707E2D 
+X-CRM114-Status: GOOD (  22.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,105 +108,836 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Keguang Zhang <keguang.zhang@gmail.com>
+I am going to introduce the NAND controllers of the Loongson-2K series
+CPUs, which are similar to Loongson-1.
 
-Loongson-1C and Loongson-2K SoCs support NAND flash chips with 6-byte ID.
-However, the current implementation only handles 5-byte ID which can lead
-to incorrect chip detection.
+As preparation, rename all prefixes from Loongson1-specific to
+Loongson-generic.
 
-Extend loongson_nand_read_id_type_exec() to support 6-byte NAND ID.
+No functional change intended.
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
 ---
- .../mtd/nand/raw/loongson-nand-controller.c   | 29 +++++++++++++++----
- 1 file changed, 23 insertions(+), 6 deletions(-)
+ MAINTAINERS                                   |   2 +-
+ drivers/mtd/nand/raw/Kconfig                  |   6 +-
+ drivers/mtd/nand/raw/Makefile                 |   2 +-
+ ...ontroller.c => loongson-nand-controller.c} | 337 +++++++++---------
+ 4 files changed, 177 insertions(+), 170 deletions(-)
+ rename drivers/mtd/nand/raw/{loongson1-nand-controller.c => loongson-nand-controller.c} (61%)
 
-diff --git a/drivers/mtd/nand/raw/loongson-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
-index b5a7be0fcacc..97cd566420a8 100644
---- a/drivers/mtd/nand/raw/loongson-nand-controller.c
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fe168477caa4..470713cf4f8a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16992,7 +16992,7 @@ F:	Documentation/devicetree/bindings/*/loongson,ls1*.yaml
+ F:	arch/mips/include/asm/mach-loongson32/
+ F:	arch/mips/loongson32/
+ F:	drivers/*/*loongson1*
+-F:	drivers/mtd/nand/raw/loongson1-nand-controller.c
++F:	drivers/mtd/nand/raw/loongson-nand-controller.c
+ F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+ F:	sound/soc/loongson/loongson1_ac97.c
+ 
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index f053806333c3..489f5c05cda9 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -436,12 +436,12 @@ config MTD_NAND_NUVOTON_MA35
+ 	  Enables support for the NAND controller found on
+ 	  the Nuvoton MA35 series SoCs.
+ 
+-config MTD_NAND_LOONGSON1
+-	tristate "Loongson1 NAND controller"
++config MTD_NAND_LOONGSON
++	tristate "Loongson NAND controller"
+ 	depends on LOONGSON1_APB_DMA || COMPILE_TEST
+ 	select REGMAP_MMIO
+ 	help
+-	  Enables support for NAND controller on Loongson1 SoCs.
++	  Enables support for NAND controller on Loongson family chips.
+ 
+ comment "Misc"
+ 
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 363cd18eaf16..619760138d32 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -58,7 +58,7 @@ obj-$(CONFIG_MTD_NAND_ROCKCHIP)		+= rockchip-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_PL35X)		+= pl35x-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_RENESAS)		+= renesas-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_NUVOTON_MA35)	+= nuvoton-ma35d1-nand-controller.o
+-obj-$(CONFIG_MTD_NAND_LOONGSON1)	+= loongson1-nand-controller.o
++obj-$(CONFIG_MTD_NAND_LOONGSON)		+= loongson-nand-controller.o
+ 
+ nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
+ nand-objs += nand_onfi.o
+diff --git a/drivers/mtd/nand/raw/loongson1-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
+similarity index 61%
+rename from drivers/mtd/nand/raw/loongson1-nand-controller.c
+rename to drivers/mtd/nand/raw/loongson-nand-controller.c
+index ef8e4f9ce287..b5a7be0fcacc 100644
+--- a/drivers/mtd/nand/raw/loongson1-nand-controller.c
 +++ b/drivers/mtd/nand/raw/loongson-nand-controller.c
-@@ -50,6 +50,9 @@
- #define LOONGSON_NAND_COL_ADDR_CYC	2U
- #define LOONGSON_NAND_MAX_ADDR_CYC	5U
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * NAND Controller Driver for Loongson-1 SoC
++ * NAND Controller Driver for Loongson family chips
+  *
+  * Copyright (C) 2015-2025 Keguang Zhang <keguang.zhang@gmail.com>
+  */
+@@ -17,42 +17,45 @@
+ #include <linux/regmap.h>
+ #include <linux/sizes.h>
  
-+#define LOONGSON_NAND_READ_ID_SLEEP_US		1000
-+#define LOONGSON_NAND_READ_ID_TIMEOUT_US	5000
+-/* Loongson-1 NAND Controller Registers */
+-#define LS1X_NAND_CMD		0x0
+-#define LS1X_NAND_ADDR1		0x4
+-#define LS1X_NAND_ADDR2		0x8
+-#define LS1X_NAND_TIMING	0xc
+-#define LS1X_NAND_IDL		0x10
+-#define LS1X_NAND_IDH_STATUS	0x14
+-#define LS1X_NAND_PARAM		0x18
+-#define LS1X_NAND_OP_NUM	0x1c
+-
+-/* NAND Command Register Bits */
+-#define LS1X_NAND_CMD_OP_DONE		BIT(10)
+-#define LS1X_NAND_CMD_OP_SPARE		BIT(9)
+-#define LS1X_NAND_CMD_OP_MAIN		BIT(8)
+-#define LS1X_NAND_CMD_STATUS		BIT(7)
+-#define LS1X_NAND_CMD_RESET		BIT(6)
+-#define LS1X_NAND_CMD_READID		BIT(5)
+-#define LS1X_NAND_CMD_BLOCKS_ERASE	BIT(4)
+-#define LS1X_NAND_CMD_ERASE		BIT(3)
+-#define LS1X_NAND_CMD_WRITE		BIT(2)
+-#define LS1X_NAND_CMD_READ		BIT(1)
+-#define LS1X_NAND_CMD_VALID		BIT(0)
+-
+-#define LS1X_NAND_WAIT_CYCLE_MASK	GENMASK(7, 0)
+-#define LS1X_NAND_HOLD_CYCLE_MASK	GENMASK(15, 8)
+-#define LS1X_NAND_CELL_SIZE_MASK	GENMASK(11, 8)
+-
+-#define LS1X_NAND_COL_ADDR_CYC		2U
+-#define LS1X_NAND_MAX_ADDR_CYC		5U
+-
+-#define BITS_PER_WORD		(4 * BITS_PER_BYTE)
+-
+-struct ls1x_nand_host;
+-
+-struct ls1x_nand_op {
+-	char addrs[LS1X_NAND_MAX_ADDR_CYC];
++/* Loongson NAND Controller Registers */
++#define LOONGSON_NAND_CMD		0x0
++#define LOONGSON_NAND_ADDR1		0x4
++#define LOONGSON_NAND_ADDR2		0x8
++#define LOONGSON_NAND_TIMING		0xc
++#define LOONGSON_NAND_IDL		0x10
++#define LOONGSON_NAND_IDH_STATUS	0x14
++#define LOONGSON_NAND_PARAM		0x18
++#define LOONGSON_NAND_OP_NUM		0x1c
 +
- #define BITS_PER_WORD			(4 * BITS_PER_BYTE)
- 
- struct loongson_nand_host;
-@@ -73,6 +76,8 @@ struct loongson_nand_op {
++/* Bitfields of nand command register */
++#define LOONGSON_NAND_CMD_OP_DONE	BIT(10)
++#define LOONGSON_NAND_CMD_OP_SPARE	BIT(9)
++#define LOONGSON_NAND_CMD_OP_MAIN	BIT(8)
++#define LOONGSON_NAND_CMD_STATUS	BIT(7)
++#define LOONGSON_NAND_CMD_RESET		BIT(6)
++#define LOONGSON_NAND_CMD_READID	BIT(5)
++#define LOONGSON_NAND_CMD_BLOCKS_ERASE	BIT(4)
++#define LOONGSON_NAND_CMD_ERASE		BIT(3)
++#define LOONGSON_NAND_CMD_WRITE		BIT(2)
++#define LOONGSON_NAND_CMD_READ		BIT(1)
++#define LOONGSON_NAND_CMD_VALID		BIT(0)
++
++/* Bitfields of nand timing register */
++#define LOONGSON_NAND_WAIT_CYCLE_MASK	GENMASK(7, 0)
++#define LOONGSON_NAND_HOLD_CYCLE_MASK	GENMASK(15, 8)
++
++/* Bitfields of nand parameter register */
++#define LOONGSON_NAND_CELL_SIZE_MASK	GENMASK(11, 8)
++
++#define LOONGSON_NAND_COL_ADDR_CYC	2U
++#define LOONGSON_NAND_MAX_ADDR_CYC	5U
++
++#define BITS_PER_WORD			(4 * BITS_PER_BYTE)
++
++struct loongson_nand_host;
++
++struct loongson_nand_op {
++	char addrs[LOONGSON_NAND_MAX_ADDR_CYC];
+ 	unsigned int naddrs;
+ 	unsigned int addrs_offset;
+ 	unsigned int aligned_offset;
+@@ -69,19 +72,19 @@ struct ls1x_nand_op {
+ 	char *buf;
  };
  
- struct loongson_nand_data {
-+	unsigned int max_id_cycle;
-+	unsigned int id_cycle_field;
+-struct ls1x_nand_data {
++struct loongson_nand_data {
  	unsigned int status_field;
  	unsigned int op_scope_field;
  	unsigned int hold_cycle;
-@@ -458,10 +463,10 @@ static int loongson_nand_read_id_type_exec(struct nand_chip *chip, const struct
- 	struct loongson_nand_op op = {};
- 	int i, ret;
- 	union {
--		char ids[5];
-+		char ids[6];
- 		struct {
- 			int idl;
--			char idh;
-+			u16 idh;
- 		};
- 	} nand_id;
+ 	unsigned int wait_cycle;
+-	void (*set_addr)(struct ls1x_nand_host *host, struct ls1x_nand_op *op);
++	void (*set_addr)(struct loongson_nand_host *host, struct loongson_nand_op *op);
+ };
  
-@@ -469,11 +474,16 @@ static int loongson_nand_read_id_type_exec(struct nand_chip *chip, const struct
+-struct ls1x_nand_host {
++struct loongson_nand_host {
+ 	struct device *dev;
+ 	struct nand_chip chip;
+ 	struct nand_controller controller;
+-	const struct ls1x_nand_data *data;
++	const struct loongson_nand_data *data;
+ 	void __iomem *reg_base;
+ 	struct regmap *regmap;
+ 	/* DMA Engine stuff */
+@@ -91,40 +94,41 @@ struct ls1x_nand_host {
+ 	struct completion dma_complete;
+ };
+ 
+-static const struct regmap_config ls1x_nand_regmap_config = {
++static const struct regmap_config loongson_nand_regmap_config = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 	.reg_stride = 4,
+ };
+ 
+-static int ls1x_nand_op_cmd_mapping(struct nand_chip *chip, struct ls1x_nand_op *op, u8 opcode)
++static int loongson_nand_op_cmd_mapping(struct nand_chip *chip, struct loongson_nand_op *op,
++					u8 opcode)
+ {
+-	struct ls1x_nand_host *host = nand_get_controller_data(chip);
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
+ 
+ 	op->row_start = chip->page_shift + 1;
+ 
+ 	/* The controller abstracts the following NAND operations. */
+ 	switch (opcode) {
+ 	case NAND_CMD_STATUS:
+-		op->cmd_reg = LS1X_NAND_CMD_STATUS;
++		op->cmd_reg = LOONGSON_NAND_CMD_STATUS;
+ 		break;
+ 	case NAND_CMD_RESET:
+-		op->cmd_reg = LS1X_NAND_CMD_RESET;
++		op->cmd_reg = LOONGSON_NAND_CMD_RESET;
+ 		break;
+ 	case NAND_CMD_READID:
+ 		op->is_readid = true;
+-		op->cmd_reg = LS1X_NAND_CMD_READID;
++		op->cmd_reg = LOONGSON_NAND_CMD_READID;
+ 		break;
+ 	case NAND_CMD_ERASE1:
+ 		op->is_erase = true;
+-		op->addrs_offset = LS1X_NAND_COL_ADDR_CYC;
++		op->addrs_offset = LOONGSON_NAND_COL_ADDR_CYC;
+ 		break;
+ 	case NAND_CMD_ERASE2:
+ 		if (!op->is_erase)
+ 			return -EOPNOTSUPP;
+ 		/* During erasing, row_start differs from the default value. */
+ 		op->row_start = chip->page_shift;
+-		op->cmd_reg = LS1X_NAND_CMD_ERASE;
++		op->cmd_reg = LOONGSON_NAND_CMD_ERASE;
+ 		break;
+ 	case NAND_CMD_SEQIN:
+ 		op->is_write = true;
+@@ -132,7 +136,7 @@ static int ls1x_nand_op_cmd_mapping(struct nand_chip *chip, struct ls1x_nand_op
+ 	case NAND_CMD_PAGEPROG:
+ 		if (!op->is_write)
+ 			return -EOPNOTSUPP;
+-		op->cmd_reg = LS1X_NAND_CMD_WRITE;
++		op->cmd_reg = LOONGSON_NAND_CMD_WRITE;
+ 		break;
+ 	case NAND_CMD_READ0:
+ 		op->is_read = true;
+@@ -140,7 +144,7 @@ static int ls1x_nand_op_cmd_mapping(struct nand_chip *chip, struct ls1x_nand_op
+ 	case NAND_CMD_READSTART:
+ 		if (!op->is_read)
+ 			return -EOPNOTSUPP;
+-		op->cmd_reg = LS1X_NAND_CMD_READ;
++		op->cmd_reg = LOONGSON_NAND_CMD_READ;
+ 		break;
+ 	case NAND_CMD_RNDOUT:
+ 		op->is_change_column = true;
+@@ -148,7 +152,7 @@ static int ls1x_nand_op_cmd_mapping(struct nand_chip *chip, struct ls1x_nand_op
+ 	case NAND_CMD_RNDOUTSTART:
+ 		if (!op->is_change_column)
+ 			return -EOPNOTSUPP;
+-		op->cmd_reg = LS1X_NAND_CMD_READ;
++		op->cmd_reg = LOONGSON_NAND_CMD_READ;
+ 		break;
+ 	default:
+ 		dev_dbg(host->dev, "unsupported opcode: %u\n", opcode);
+@@ -158,8 +162,8 @@ static int ls1x_nand_op_cmd_mapping(struct nand_chip *chip, struct ls1x_nand_op
+ 	return 0;
+ }
+ 
+-static int ls1x_nand_parse_instructions(struct nand_chip *chip,
+-					const struct nand_subop *subop, struct ls1x_nand_op *op)
++static int loongson_nand_parse_instructions(struct nand_chip *chip, const struct nand_subop *subop,
++					    struct loongson_nand_op *op)
+ {
+ 	unsigned int op_id;
+ 	int ret;
+@@ -171,14 +175,14 @@ static int ls1x_nand_parse_instructions(struct nand_chip *chip,
+ 
+ 		switch (instr->type) {
+ 		case NAND_OP_CMD_INSTR:
+-			ret = ls1x_nand_op_cmd_mapping(chip, op, instr->ctx.cmd.opcode);
++			ret = loongson_nand_op_cmd_mapping(chip, op, instr->ctx.cmd.opcode);
+ 			if (ret < 0)
+ 				return ret;
+ 
+ 			break;
+ 		case NAND_OP_ADDR_INSTR:
+ 			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
+-			if (naddrs > LS1X_NAND_MAX_ADDR_CYC)
++			if (naddrs > LOONGSON_NAND_MAX_ADDR_CYC)
+ 				return -EOPNOTSUPP;
+ 			op->naddrs = naddrs;
+ 			offset = nand_subop_get_addr_start_off(subop, op_id);
+@@ -206,57 +210,57 @@ static int ls1x_nand_parse_instructions(struct nand_chip *chip,
+ 	return 0;
+ }
+ 
+-static void ls1b_nand_set_addr(struct ls1x_nand_host *host, struct ls1x_nand_op *op)
++static void ls1b_nand_set_addr(struct loongson_nand_host *host, struct loongson_nand_op *op)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	int i;
+ 
+-	for (i = 0; i < LS1X_NAND_MAX_ADDR_CYC; i++) {
++	for (i = 0; i < LOONGSON_NAND_MAX_ADDR_CYC; i++) {
+ 		int shift, mask, val;
+ 
+-		if (i < LS1X_NAND_COL_ADDR_CYC) {
++		if (i < LOONGSON_NAND_COL_ADDR_CYC) {
+ 			shift = i * BITS_PER_BYTE;
+ 			mask = (u32)0xff << shift;
+ 			mask &= GENMASK(chip->page_shift, 0);
+ 			val = (u32)op->addrs[i] << shift;
+-			regmap_update_bits(host->regmap, LS1X_NAND_ADDR1, mask, val);
++			regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR1, mask, val);
+ 		} else if (!op->is_change_column) {
+-			shift = op->row_start + (i - LS1X_NAND_COL_ADDR_CYC) * BITS_PER_BYTE;
++			shift = op->row_start + (i - LOONGSON_NAND_COL_ADDR_CYC) * BITS_PER_BYTE;
+ 			mask = (u32)0xff << shift;
+ 			val = (u32)op->addrs[i] << shift;
+-			regmap_update_bits(host->regmap, LS1X_NAND_ADDR1, mask, val);
++			regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR1, mask, val);
+ 
+ 			if (i == 4) {
+ 				mask = (u32)0xff >> (BITS_PER_WORD - shift);
+ 				val = (u32)op->addrs[i] >> (BITS_PER_WORD - shift);
+-				regmap_update_bits(host->regmap, LS1X_NAND_ADDR2, mask, val);
++				regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR2, mask, val);
+ 			}
+ 		}
+ 	}
+ }
+ 
+-static void ls1c_nand_set_addr(struct ls1x_nand_host *host, struct ls1x_nand_op *op)
++static void ls1c_nand_set_addr(struct loongson_nand_host *host, struct loongson_nand_op *op)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < LS1X_NAND_MAX_ADDR_CYC; i++) {
++	for (i = 0; i < LOONGSON_NAND_MAX_ADDR_CYC; i++) {
+ 		int shift, mask, val;
+ 
+-		if (i < LS1X_NAND_COL_ADDR_CYC) {
++		if (i < LOONGSON_NAND_COL_ADDR_CYC) {
+ 			shift = i * BITS_PER_BYTE;
+ 			mask = (u32)0xff << shift;
+ 			val = (u32)op->addrs[i] << shift;
+-			regmap_update_bits(host->regmap, LS1X_NAND_ADDR1, mask, val);
++			regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR1, mask, val);
+ 		} else if (!op->is_change_column) {
+-			shift = (i - LS1X_NAND_COL_ADDR_CYC) * BITS_PER_BYTE;
++			shift = (i - LOONGSON_NAND_COL_ADDR_CYC) * BITS_PER_BYTE;
+ 			mask = (u32)0xff << shift;
+ 			val = (u32)op->addrs[i] << shift;
+-			regmap_update_bits(host->regmap, LS1X_NAND_ADDR2, mask, val);
++			regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR2, mask, val);
+ 		}
+ 	}
+ }
+ 
+-static void ls1x_nand_trigger_op(struct ls1x_nand_host *host, struct ls1x_nand_op *op)
++static void loongson_nand_trigger_op(struct loongson_nand_host *host, struct loongson_nand_op *op)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -280,7 +284,7 @@ static void ls1x_nand_trigger_op(struct ls1x_nand_host *host, struct ls1x_nand_o
+ 	else
+ 		op->len = op->orig_len;
+ 
+-	writel(op->len, host->reg_base + LS1X_NAND_OP_NUM);
++	writel(op->len, host->reg_base + LOONGSON_NAND_OP_NUM);
+ 
+ 	/* set operation area and scope */
+ 	col = op->addrs[1] << BITS_PER_BYTE | op->addrs[0];
+@@ -288,33 +292,35 @@ static void ls1x_nand_trigger_op(struct ls1x_nand_host *host, struct ls1x_nand_o
+ 		unsigned int op_scope = 0;
+ 
+ 		if (col < mtd->writesize) {
+-			op->cmd_reg |= LS1X_NAND_CMD_OP_MAIN;
++			op->cmd_reg |= LOONGSON_NAND_CMD_OP_MAIN;
+ 			op_scope = mtd->writesize;
+ 		}
+ 
+-		op->cmd_reg |= LS1X_NAND_CMD_OP_SPARE;
++		op->cmd_reg |= LOONGSON_NAND_CMD_OP_SPARE;
+ 		op_scope += mtd->oobsize;
+ 
+ 		op_scope <<= __ffs(host->data->op_scope_field);
+-		regmap_update_bits(host->regmap, LS1X_NAND_PARAM,
++		regmap_update_bits(host->regmap, LOONGSON_NAND_PARAM,
+ 				   host->data->op_scope_field, op_scope);
+ 	}
+ 
+ 	/* set command */
+-	writel(op->cmd_reg, host->reg_base + LS1X_NAND_CMD);
++	writel(op->cmd_reg, host->reg_base + LOONGSON_NAND_CMD);
+ 
+ 	/* trigger operation */
+-	regmap_write_bits(host->regmap, LS1X_NAND_CMD, LS1X_NAND_CMD_VALID, LS1X_NAND_CMD_VALID);
++	regmap_write_bits(host->regmap, LOONGSON_NAND_CMD, LOONGSON_NAND_CMD_VALID,
++			  LOONGSON_NAND_CMD_VALID);
+ }
+ 
+-static int ls1x_nand_wait_for_op_done(struct ls1x_nand_host *host, struct ls1x_nand_op *op)
++static int loongson_nand_wait_for_op_done(struct loongson_nand_host *host,
++					  struct loongson_nand_op *op)
+ {
+ 	unsigned int val;
+ 	int ret = 0;
+ 
+ 	if (op->rdy_timeout_ms) {
+-		ret = regmap_read_poll_timeout(host->regmap, LS1X_NAND_CMD,
+-					       val, val & LS1X_NAND_CMD_OP_DONE,
++		ret = regmap_read_poll_timeout(host->regmap, LOONGSON_NAND_CMD,
++					       val, val & LOONGSON_NAND_CMD_OP_DONE,
+ 					       0, op->rdy_timeout_ms * MSEC_PER_SEC);
+ 		if (ret)
+ 			dev_err(host->dev, "operation failed\n");
+@@ -323,9 +329,9 @@ static int ls1x_nand_wait_for_op_done(struct ls1x_nand_host *host, struct ls1x_n
+ 	return ret;
+ }
+ 
+-static void ls1x_nand_dma_callback(void *data)
++static void loongson_nand_dma_callback(void *data)
+ {
+-	struct ls1x_nand_host *host = (struct ls1x_nand_host *)data;
++	struct loongson_nand_host *host = (struct loongson_nand_host *)data;
+ 	struct dma_chan *chan = host->dma_chan;
+ 	struct device *dev = chan->device->dev;
+ 	enum dma_status status;
+@@ -339,7 +345,7 @@ static void ls1x_nand_dma_callback(void *data)
+ 	}
+ }
+ 
+-static int ls1x_nand_dma_transfer(struct ls1x_nand_host *host, struct ls1x_nand_op *op)
++static int loongson_nand_dma_transfer(struct loongson_nand_host *host, struct loongson_nand_op *op)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct dma_chan *chan = host->dma_chan;
+@@ -374,7 +380,7 @@ static int ls1x_nand_dma_transfer(struct ls1x_nand_host *host, struct ls1x_nand_
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+-	desc->callback = ls1x_nand_dma_callback;
++	desc->callback = loongson_nand_dma_callback;
+ 	desc->callback_param = host;
+ 
+ 	host->dma_cookie = dmaengine_submit(desc);
+@@ -405,51 +411,51 @@ static int ls1x_nand_dma_transfer(struct ls1x_nand_host *host, struct ls1x_nand_
+ 	return ret;
+ }
+ 
+-static int ls1x_nand_data_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++static int loongson_nand_data_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+ {
+-	struct ls1x_nand_host *host = nand_get_controller_data(chip);
+-	struct ls1x_nand_op op = {};
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
++	struct loongson_nand_op op = {};
+ 	int ret;
+ 
+-	ret = ls1x_nand_parse_instructions(chip, subop, &op);
++	ret = loongson_nand_parse_instructions(chip, subop, &op);
  	if (ret)
  		return ret;
  
--	nand_id.idl = readl(host->reg_base + LOONGSON_NAND_IDL);
--	nand_id.idh = readb(host->reg_base + LOONGSON_NAND_IDH_STATUS);
-+	ret = regmap_read_poll_timeout(host->regmap, LOONGSON_NAND_IDL, nand_id.idl, nand_id.idl,
-+				       LOONGSON_NAND_READ_ID_SLEEP_US,
-+				       LOONGSON_NAND_READ_ID_TIMEOUT_US);
-+	if (ret)
-+		return ret;
+-	ls1x_nand_trigger_op(host, &op);
++	loongson_nand_trigger_op(host, &op);
  
--	for (i = 0; i < min(sizeof(nand_id.ids), op.orig_len); i++)
--		op.buf[i] = nand_id.ids[sizeof(nand_id.ids) - 1 - i];
-+	nand_id.idh = readw(host->reg_base + LOONGSON_NAND_IDH_STATUS);
-+
-+	for (i = 0; i < min(host->data->max_id_cycle, op.orig_len); i++)
-+		op.buf[i] = nand_id.ids[host->data->max_id_cycle - 1 - i];
+-	ret = ls1x_nand_dma_transfer(host, &op);
++	ret = loongson_nand_dma_transfer(host, &op);
+ 	if (ret)
+ 		return ret;
+ 
+-	return ls1x_nand_wait_for_op_done(host, &op);
++	return loongson_nand_wait_for_op_done(host, &op);
+ }
+ 
+-static int ls1x_nand_misc_type_exec(struct nand_chip *chip,
+-				    const struct nand_subop *subop, struct ls1x_nand_op *op)
++static int loongson_nand_misc_type_exec(struct nand_chip *chip, const struct nand_subop *subop,
++					struct loongson_nand_op *op)
+ {
+-	struct ls1x_nand_host *host = nand_get_controller_data(chip);
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
+ 	int ret;
+ 
+-	ret = ls1x_nand_parse_instructions(chip, subop, op);
++	ret = loongson_nand_parse_instructions(chip, subop, op);
+ 	if (ret)
+ 		return ret;
+ 
+-	ls1x_nand_trigger_op(host, op);
++	loongson_nand_trigger_op(host, op);
+ 
+-	return ls1x_nand_wait_for_op_done(host, op);
++	return loongson_nand_wait_for_op_done(host, op);
+ }
+ 
+-static int ls1x_nand_zerolen_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++static int loongson_nand_zerolen_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+ {
+-	struct ls1x_nand_op op = {};
++	struct loongson_nand_op op = {};
+ 
+-	return ls1x_nand_misc_type_exec(chip, subop, &op);
++	return loongson_nand_misc_type_exec(chip, subop, &op);
+ }
+ 
+-static int ls1x_nand_read_id_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++static int loongson_nand_read_id_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+ {
+-	struct ls1x_nand_host *host = nand_get_controller_data(chip);
+-	struct ls1x_nand_op op = {};
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
++	struct loongson_nand_op op = {};
+ 	int i, ret;
+ 	union {
+ 		char ids[5];
+@@ -459,12 +465,12 @@ static int ls1x_nand_read_id_type_exec(struct nand_chip *chip, const struct nand
+ 		};
+ 	} nand_id;
+ 
+-	ret = ls1x_nand_misc_type_exec(chip, subop, &op);
++	ret = loongson_nand_misc_type_exec(chip, subop, &op);
+ 	if (ret)
+ 		return ret;
+ 
+-	nand_id.idl = readl(host->reg_base + LS1X_NAND_IDL);
+-	nand_id.idh = readb(host->reg_base + LS1X_NAND_IDH_STATUS);
++	nand_id.idl = readl(host->reg_base + LOONGSON_NAND_IDL);
++	nand_id.idh = readb(host->reg_base + LOONGSON_NAND_IDH_STATUS);
+ 
+ 	for (i = 0; i < min(sizeof(nand_id.ids), op.orig_len); i++)
+ 		op.buf[i] = nand_id.ids[sizeof(nand_id.ids) - 1 - i];
+@@ -472,60 +478,61 @@ static int ls1x_nand_read_id_type_exec(struct nand_chip *chip, const struct nand
+ 	return ret;
+ }
+ 
+-static int ls1x_nand_read_status_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++static int loongson_nand_read_status_type_exec(struct nand_chip *chip,
++					       const struct nand_subop *subop)
+ {
+-	struct ls1x_nand_host *host = nand_get_controller_data(chip);
+-	struct ls1x_nand_op op = {};
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
++	struct loongson_nand_op op = {};
+ 	int val, ret;
+ 
+-	ret = ls1x_nand_misc_type_exec(chip, subop, &op);
++	ret = loongson_nand_misc_type_exec(chip, subop, &op);
+ 	if (ret)
+ 		return ret;
+ 
+-	val = readl(host->reg_base + LS1X_NAND_IDH_STATUS);
++	val = readl(host->reg_base + LOONGSON_NAND_IDH_STATUS);
+ 	val &= ~host->data->status_field;
+ 	op.buf[0] = val << ffs(host->data->status_field);
  
  	return ret;
  }
-@@ -676,6 +686,10 @@ static int loongson_nand_controller_init(struct loongson_nand_host *host)
+ 
+-static const struct nand_op_parser ls1x_nand_op_parser = NAND_OP_PARSER(
++static const struct nand_op_parser loongson_nand_op_parser = NAND_OP_PARSER(
+ 	NAND_OP_PARSER_PATTERN(
+-		ls1x_nand_read_id_type_exec,
++		loongson_nand_read_id_type_exec,
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+-		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LS1X_NAND_MAX_ADDR_CYC),
++		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LOONGSON_NAND_MAX_ADDR_CYC),
+ 		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 8)),
+ 	NAND_OP_PARSER_PATTERN(
+-		ls1x_nand_read_status_type_exec,
++		loongson_nand_read_status_type_exec,
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+ 		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 1)),
+ 	NAND_OP_PARSER_PATTERN(
+-		ls1x_nand_zerolen_type_exec,
++		loongson_nand_zerolen_type_exec,
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+ 		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
+ 	NAND_OP_PARSER_PATTERN(
+-		ls1x_nand_zerolen_type_exec,
++		loongson_nand_zerolen_type_exec,
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+-		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LS1X_NAND_MAX_ADDR_CYC),
++		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LOONGSON_NAND_MAX_ADDR_CYC),
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+ 		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
+ 	NAND_OP_PARSER_PATTERN(
+-		ls1x_nand_data_type_exec,
++		loongson_nand_data_type_exec,
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+-		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LS1X_NAND_MAX_ADDR_CYC),
++		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LOONGSON_NAND_MAX_ADDR_CYC),
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+ 		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
+ 		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 0)),
+ 	NAND_OP_PARSER_PATTERN(
+-		ls1x_nand_data_type_exec,
++		loongson_nand_data_type_exec,
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+-		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LS1X_NAND_MAX_ADDR_CYC),
++		NAND_OP_PARSER_PAT_ADDR_ELEM(false, LOONGSON_NAND_MAX_ADDR_CYC),
+ 		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, 0),
+ 		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+ 		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
+ 	);
+ 
+-static int ls1x_nand_is_valid_cmd(u8 opcode)
++static int loongson_nand_is_valid_cmd(u8 opcode)
+ {
+ 	if (opcode == NAND_CMD_STATUS || opcode == NAND_CMD_RESET || opcode == NAND_CMD_READID)
+ 		return 0;
+@@ -533,7 +540,7 @@ static int ls1x_nand_is_valid_cmd(u8 opcode)
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int ls1x_nand_is_valid_cmd_seq(u8 opcode1, u8 opcode2)
++static int loongson_nand_is_valid_cmd_seq(u8 opcode1, u8 opcode2)
+ {
+ 	if (opcode1 == NAND_CMD_RNDOUT && opcode2 == NAND_CMD_RNDOUTSTART)
+ 		return 0;
+@@ -550,7 +557,7 @@ static int ls1x_nand_is_valid_cmd_seq(u8 opcode1, u8 opcode2)
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int ls1x_nand_check_op(struct nand_chip *chip, const struct nand_operation *op)
++static int loongson_nand_check_op(struct nand_chip *chip, const struct nand_operation *op)
+ {
+ 	const struct nand_op_instr *instr1 = NULL, *instr2 = NULL;
+ 	int op_id;
+@@ -572,23 +579,23 @@ static int ls1x_nand_check_op(struct nand_chip *chip, const struct nand_operatio
+ 		return -EOPNOTSUPP;
+ 
+ 	if (!instr2)
+-		return ls1x_nand_is_valid_cmd(instr1->ctx.cmd.opcode);
++		return loongson_nand_is_valid_cmd(instr1->ctx.cmd.opcode);
+ 
+-	return ls1x_nand_is_valid_cmd_seq(instr1->ctx.cmd.opcode, instr2->ctx.cmd.opcode);
++	return loongson_nand_is_valid_cmd_seq(instr1->ctx.cmd.opcode, instr2->ctx.cmd.opcode);
+ }
+ 
+-static int ls1x_nand_exec_op(struct nand_chip *chip,
+-			     const struct nand_operation *op, bool check_only)
++static int loongson_nand_exec_op(struct nand_chip *chip, const struct nand_operation *op,
++				 bool check_only)
+ {
+ 	if (check_only)
+-		return ls1x_nand_check_op(chip, op);
++		return loongson_nand_check_op(chip, op);
+ 
+-	return nand_op_parser_exec_op(chip, &ls1x_nand_op_parser, op, check_only);
++	return nand_op_parser_exec_op(chip, &loongson_nand_op_parser, op, check_only);
+ }
+ 
+-static int ls1x_nand_attach_chip(struct nand_chip *chip)
++static int loongson_nand_attach_chip(struct nand_chip *chip)
+ {
+-	struct ls1x_nand_host *host = nand_get_controller_data(chip);
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
+ 	u64 chipsize = nanddev_target_size(&chip->base);
+ 	int cell_size = 0;
+ 
+@@ -632,14 +639,14 @@ static int ls1x_nand_attach_chip(struct nand_chip *chip)
+ 	}
+ 
+ 	/* set cell size */
+-	regmap_update_bits(host->regmap, LS1X_NAND_PARAM, LS1X_NAND_CELL_SIZE_MASK,
+-			   FIELD_PREP(LS1X_NAND_CELL_SIZE_MASK, cell_size));
++	regmap_update_bits(host->regmap, LOONGSON_NAND_PARAM, LOONGSON_NAND_CELL_SIZE_MASK,
++			   FIELD_PREP(LOONGSON_NAND_CELL_SIZE_MASK, cell_size));
+ 
+-	regmap_update_bits(host->regmap, LS1X_NAND_TIMING, LS1X_NAND_HOLD_CYCLE_MASK,
+-			   FIELD_PREP(LS1X_NAND_HOLD_CYCLE_MASK, host->data->hold_cycle));
++	regmap_update_bits(host->regmap, LOONGSON_NAND_TIMING, LOONGSON_NAND_HOLD_CYCLE_MASK,
++			   FIELD_PREP(LOONGSON_NAND_HOLD_CYCLE_MASK, host->data->hold_cycle));
+ 
+-	regmap_update_bits(host->regmap, LS1X_NAND_TIMING, LS1X_NAND_WAIT_CYCLE_MASK,
+-			   FIELD_PREP(LS1X_NAND_WAIT_CYCLE_MASK, host->data->wait_cycle));
++	regmap_update_bits(host->regmap, LOONGSON_NAND_TIMING, LOONGSON_NAND_WAIT_CYCLE_MASK,
++			   FIELD_PREP(LOONGSON_NAND_WAIT_CYCLE_MASK, host->data->wait_cycle));
+ 
+ 	chip->ecc.read_page_raw = nand_monolithic_read_page_raw;
+ 	chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
+@@ -647,25 +654,25 @@ static int ls1x_nand_attach_chip(struct nand_chip *chip)
+ 	return 0;
+ }
+ 
+-static const struct nand_controller_ops ls1x_nand_controller_ops = {
+-	.exec_op = ls1x_nand_exec_op,
+-	.attach_chip = ls1x_nand_attach_chip,
++static const struct nand_controller_ops loongson_nand_controller_ops = {
++	.exec_op = loongson_nand_exec_op,
++	.attach_chip = loongson_nand_attach_chip,
+ };
+ 
+-static void ls1x_nand_controller_cleanup(struct ls1x_nand_host *host)
++static void loongson_nand_controller_cleanup(struct loongson_nand_host *host)
+ {
+ 	if (host->dma_chan)
+ 		dma_release_channel(host->dma_chan);
+ }
+ 
+-static int ls1x_nand_controller_init(struct ls1x_nand_host *host)
++static int loongson_nand_controller_init(struct loongson_nand_host *host)
+ {
+ 	struct device *dev = host->dev;
+ 	struct dma_chan *chan;
+ 	struct dma_slave_config cfg = {};
+ 	int ret;
+ 
+-	host->regmap = devm_regmap_init_mmio(dev, host->reg_base, &ls1x_nand_regmap_config);
++	host->regmap = devm_regmap_init_mmio(dev, host->reg_base, &loongson_nand_regmap_config);
  	if (IS_ERR(host->regmap))
  		return dev_err_probe(dev, PTR_ERR(host->regmap), "failed to init regmap\n");
  
-+	if (host->data->id_cycle_field)
-+		regmap_update_bits(host->regmap, LOONGSON_NAND_PARAM, host->data->id_cycle_field,
-+				   host->data->max_id_cycle << __ffs(host->data->id_cycle_field));
-+
- 	chan = dma_request_chan(dev, "rxtx");
- 	if (IS_ERR(chan))
- 		return dev_err_probe(dev, PTR_ERR(chan), "failed to request DMA channel\n");
-@@ -800,6 +814,7 @@ static void loongson_nand_remove(struct platform_device *pdev)
+@@ -687,7 +694,7 @@ static int ls1x_nand_controller_init(struct ls1x_nand_host *host)
+ 	return 0;
  }
  
- static const struct loongson_nand_data ls1b_nand_data = {
-+	.max_id_cycle = 5,
+-static int ls1x_nand_chip_init(struct ls1x_nand_host *host)
++static int loongson_nand_chip_init(struct loongson_nand_host *host)
+ {
+ 	struct device *dev = host->dev;
+ 	int nchips = of_get_child_count(dev->of_node);
+@@ -728,11 +735,11 @@ static int ls1x_nand_chip_init(struct ls1x_nand_host *host)
+ 	return 0;
+ }
+ 
+-static int ls1x_nand_probe(struct platform_device *pdev)
++static int loongson_nand_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	const struct ls1x_nand_data *data;
+-	struct ls1x_nand_host *host;
++	const struct loongson_nand_data *data;
++	struct loongson_nand_host *host;
+ 	struct resource *res;
+ 	int ret;
+ 
+@@ -759,15 +766,15 @@ static int ls1x_nand_probe(struct platform_device *pdev)
+ 
+ 	host->dev = dev;
+ 	host->data = data;
+-	host->controller.ops = &ls1x_nand_controller_ops;
++	host->controller.ops = &loongson_nand_controller_ops;
+ 
+ 	nand_controller_init(&host->controller);
+ 
+-	ret = ls1x_nand_controller_init(host);
++	ret = loongson_nand_controller_init(host);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = ls1x_nand_chip_init(host);
++	ret = loongson_nand_chip_init(host);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -775,31 +782,31 @@ static int ls1x_nand_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ err:
+-	ls1x_nand_controller_cleanup(host);
++	loongson_nand_controller_cleanup(host);
+ 
+ 	return ret;
+ }
+ 
+-static void ls1x_nand_remove(struct platform_device *pdev)
++static void loongson_nand_remove(struct platform_device *pdev)
+ {
+-	struct ls1x_nand_host *host = platform_get_drvdata(pdev);
++	struct loongson_nand_host *host = platform_get_drvdata(pdev);
+ 	struct nand_chip *chip = &host->chip;
+ 	int ret;
+ 
+ 	ret = mtd_device_unregister(nand_to_mtd(chip));
+ 	WARN_ON(ret);
+ 	nand_cleanup(chip);
+-	ls1x_nand_controller_cleanup(host);
++	loongson_nand_controller_cleanup(host);
+ }
+ 
+-static const struct ls1x_nand_data ls1b_nand_data = {
++static const struct loongson_nand_data ls1b_nand_data = {
  	.status_field = GENMASK(15, 8),
  	.hold_cycle = 0x2,
  	.wait_cycle = 0xc,
-@@ -807,6 +822,8 @@ static const struct loongson_nand_data ls1b_nand_data = {
+ 	.set_addr = ls1b_nand_set_addr,
  };
  
- static const struct loongson_nand_data ls1c_nand_data = {
-+	.max_id_cycle = 6,
-+	.id_cycle_field = GENMASK(14, 12),
+-static const struct ls1x_nand_data ls1c_nand_data = {
++static const struct loongson_nand_data ls1c_nand_data = {
  	.status_field = GENMASK(23, 16),
  	.op_scope_field = GENMASK(29, 16),
  	.hold_cycle = 0x2,
+@@ -807,7 +814,7 @@ static const struct ls1x_nand_data ls1c_nand_data = {
+ 	.set_addr = ls1c_nand_set_addr,
+ };
+ 
+-static const struct of_device_id ls1x_nand_match[] = {
++static const struct of_device_id loongson_nand_match[] = {
+ 	{
+ 		.compatible = "loongson,ls1b-nand-controller",
+ 		.data = &ls1b_nand_data,
+@@ -818,19 +825,19 @@ static const struct of_device_id ls1x_nand_match[] = {
+ 	},
+ 	{ /* sentinel */ }
+ };
+-MODULE_DEVICE_TABLE(of, ls1x_nand_match);
++MODULE_DEVICE_TABLE(of, loongson_nand_match);
+ 
+-static struct platform_driver ls1x_nand_driver = {
+-	.probe = ls1x_nand_probe,
+-	.remove = ls1x_nand_remove,
++static struct platform_driver loongson_nand_driver = {
++	.probe = loongson_nand_probe,
++	.remove = loongson_nand_remove,
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
+-		.of_match_table = ls1x_nand_match,
++		.of_match_table = loongson_nand_match,
+ 	},
+ };
+ 
+-module_platform_driver(ls1x_nand_driver);
++module_platform_driver(loongson_nand_driver);
+ 
+ MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
+-MODULE_DESCRIPTION("Loongson-1 NAND Controller Driver");
++MODULE_DESCRIPTION("Loongson NAND Controller Driver");
+ MODULE_LICENSE("GPL");
 -- 
 2.47.3
 
