@@ -4,89 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8955ACA1002
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Sep 2025 16:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADEA3CA1015
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Sep 2025 18:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QAPrDvG84Z/VLig7FWsMW2TJRwgInCkF7a2qY3wC7D4=; b=fk+JtHihnyeTjX
-	kHezI3MEcmlC7YwORGMwVGRWQzYF5xHcJm/Ah5UwV6cg9o7YAPwNhSp0mWrB6vTD4YJwvYoTyEwDQ
-	PcbKL+zV4qY+/q5/UCHBrwILiNfkysfkW1KNhgK8JbwfihsDRDgOR3XsftirDJbn2mNMXnHaqSX3u
-	lr3Y3b+v9sE8KOIh0bbIHsBlbvcrXW9/4dnJ0MtGczGLKeSlq5qNT3ngG2j6Z8WFCGuFjaJess+ZL
-	Hdbs8b0QjySEqDf5n1UV0WWo16SjPB30EMz6PXGhZ7tGeGCNvNlMfvYtInIAj5OiCRuZPKD/1zzp/
-	bOisH0hHEuVm7DPi8AGw==;
+	List-Owner; bh=KFacU2J+RQ+oV+xq+LgopwX30+VpN06vJXxZwMrgnXY=; b=YBF7bbTCCZglx+
+	/yhiGoUhyRnqYGqgl58WIQxFp6j5ppb/o1SM/SWpP5AEynGHfyM8GyzBDmMbEctL7C1ydRtCb5Dq6
+	xjzH/6g81gCz5wL7vr0ghDUOU3mUP25R0ewnAT6s2IjhVuKftgPe2yE475a5Wd/+Fty3012coATYE
+	4Mm3Xok2MyPYDRaxPJeEFWL5YU27m20vT/dHtLi0WMWz/8GhPfC0ILDkWpIwkFfPpasxyDTKQzqbp
+	v1BuKFHY+xCYIoL0R+ihUCmYZP53AkmsfN3H/UqnRS6WUZuR8y+6O+v186rkYh42b8o0SBpsblpQB
+	5c0mRAAk5neyGBAhIcnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uuCoz-0000000CwCu-3Qxc;
-	Thu, 04 Sep 2025 16:28:25 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1uuEkT-0000000Dac8-0x4y;
+	Thu, 04 Sep 2025 18:31:53 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uuA7p-0000000Bvi6-42DZ
+	id 1uu9gQ-0000000Bm6g-1GK3
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 04 Sep 2025 13:07:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=DP4qZtk1DcVv6qfxjLNwYcMGyE7GJY35dO9FeCIUSGo=; b=USSTPTiZGDXH4OzuXKvRKQsQxj
+	8fwFU3W//X029gLb2GImsoKVivKJrkjtdFVE7k+wxZOcArqYZdcsHvOBirckZYHM3HU6ffyy/HoUH
+	DuzutIk1NiQ0BbxeerD9JFFpL3iRqnshQddsm+ahBt6XOpZCLQc/uFSWiWMgRS/96ZDetXW9xmAAt
+	KjxnRNYi7kaHyLNiXB69/PQcucwhdMOqixZiG29ZnNx0+NYzK6Nn48btr9n96msamuYipGffFaoyV
+	oZuT9+L2OAbtyJA3MNDtT/jmOVktXZssc/YQU/q0rrxnlvgLg8yvRm4ySVs5TbR1SDRN88/lh/apv
+	bZDIxfZg==;
+Received: from mail.loongson.cn ([114.242.206.163])
+	by casper.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uu9gM-00000001DiJ-0wXC
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Sep 2025 13:35:43 +0000
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-45b7c56a987so5077805e9.1
-        for <linux-mtd@lists.infradead.org>; Thu, 04 Sep 2025 06:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1756992940; x=1757597740; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ts7F9KH5ZUtAV3eFTPnD4ApkUPnB+DSSD84QPmcRSHo=;
-        b=CWTsWaSita6cT89WfRcaLtt/R6hgecnbIjYgkSY6jIORA7nczU2E6zL7jn6srRRp59
-         gVxzLRNcoNWTM/VV3yiRGtdGbGfdVYIIGNG/mOiPSMUw4749+36LZTUrDJmiagU3pfgd
-         yctY5wT74ckl/ENZW+9LVy5/Na8gAK+7Ok73dUgNHRZEmj61nAnn621odyENV9EcARBk
-         /uZkmOHyvcNu6+2VWMDqYz/7JDW1zOjirVsr8rkoZaoZW3bluQGZqWNZABbJToXQw38G
-         Fy9TJFqseB0sHd02KHToTGhz/1Iz390yRnA2bXNADAbkI2ew0mxyRamIqnkbPZuhdt5e
-         Jm8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756992940; x=1757597740;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ts7F9KH5ZUtAV3eFTPnD4ApkUPnB+DSSD84QPmcRSHo=;
-        b=OBcKRKaajcNHZ8+9yD1UmJjkSprVL8ZIEIaV8luik90jNhjwJI/YfrFzqOLiS+i+MB
-         fPfY65JVnXx38f1J9a2Y/rez+6tKZXBEkpdKM3bjRCmoG8crcVFIOQP++iey8c/k/5LO
-         oBepOPWEahKN4CAVJxhkJ4FbpZisFAjI/S8mu1BKiIgbGtxU1gUY5+ITcFvA3iGVmb97
-         aGIHuf3E9th74+YgnbdpLC0ZyaO2DUzq5ARiR11N3P8h8mVt3jymoPWwh/D59EEEw1Ml
-         rmzLon8sFfAzFXouHigixgDghFeOT1wzSV7MS0DrmQHjbtzMSxsN9+yVaIVbh3oo2CH9
-         6nMw==
-X-Gm-Message-State: AOJu0YyE20gdrWh0MmYFONf3En2diEGY+S4K8D+23vqw+tw/PoL+08vm
-	Kb7AlINov7KQuXIwOsXZ2MCoz5S/2EZIYFx5VUug4f0s590p9UbQdh0syA3tBfU2zOk=
-X-Gm-Gg: ASbGncv5FJzT4ni3t+KfSU9OuV3kBscCzynyzU0+SZ9x29lCIj925DzuXDqPT4atPuW
-	PhMq/fNNTMJ0NwUYzieBz14GLjYzhN+6qUvKFzQhQ4gr1gPk7raLsLlA2Wg5nEHhz2+80rJNVQK
-	LjVsqjwf2VYiuSb6OkcH9cJ6FGOZSB8nj54cZuRLh+kiKPZgcY377UdrEUUGOQcNj7fIcxeq/hx
-	jnLCuukzWpERXKTNBg9gyBZM1js70yUtbv+p8M+vELpqPAyE4bPYwiuUqAXCOZuQRQEX9Y5bow1
-	iTff+BfTuJt7SNlzdU6mkVc/oViLQMA3CjEi3+Z3AQILfokNNN2UMLhP2zE1yeCNK7EFHhaXLZH
-	s+laRtqxk0G+mlHmjING7zXalaS6LmJk3
-X-Google-Smtp-Source: AGHT+IE1nUiihSeVtcjexfaVaspPPiD19Kl/JDFihVARfiPUJVO2IQmMgm5+rACynonb45+j6ZD7CQ==
-X-Received: by 2002:a05:600c:1e8f:b0:45b:8067:d8ac with SMTP id 5b1f17b1804b1-45b8553362bmr139743805e9.13.1756992940021;
-        Thu, 04 Sep 2025 06:35:40 -0700 (PDT)
-Received: from [192.168.0.251] ([79.115.63.103])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b9c5c89f2sm100601555e9.14.2025.09.04.06.35.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Sep 2025 06:35:39 -0700 (PDT)
-Message-ID: <ec2b808f-4303-4a32-9a53-f5b9dfb57520@linaro.org>
-Date: Thu, 4 Sep 2025 14:35:37 +0100
+	Thu, 04 Sep 2025 13:07:21 +0000
+Received: from loongson.cn (unknown [223.64.68.89])
+	by gateway (Coremail) with SMTP id _____8Dxfb_2jrloUqwGAA--.12953S3;
+	Thu, 04 Sep 2025 21:07:02 +0800 (CST)
+Received: from localhost.localdomain (unknown [223.64.68.89])
+	by front1 (Coremail) with SMTP id qMiowJCxocLpjrlofA5+AA--.2906S5;
+	Thu, 04 Sep 2025 21:07:01 +0800 (CST)
+From: Binbin Zhou <zhoubinbin@loongson.cn>
+To: Binbin Zhou <zhoubb.aaron@gmail.com>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
+	devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH v4 3/7] mtd: rawnand: loongson: Add nand chip select support
+Date: Thu,  4 Sep 2025 21:06:35 +0800
+Message-ID: <1664ba1c55d84b4d383ec42ca159a6a1016b9bff.1756991031.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <cover.1756991031.git.zhoubinbin@loongson.cn>
+References: <cover.1756991031.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Modify addr_mode_nbytes for DTR
- mode
-To: Santhosh Kumar K <s-k6@ti.com>, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- praneeth@ti.com, p-mantena@ti.com, a-dutta@ti.com, u-kumar1@ti.com
-References: <20250904131309.3095165-1-s-k6@ti.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20250904131309.3095165-1-s-k6@ti.com>
+X-CM-TRANSID: qMiowJCxocLpjrlofA5+AA--.2906S5
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Ar1kJF15Xw1rGFyUuryDJwc_yoW7AFyxpa
+	y5Aw4fKrnYkF4Uur1DKFs5Cr1Yy3yrJrW7GFZ2v34S93sxtw1UWF15CFyaqrWFkw1UKwnx
+	Zw40gaykCF1UWrcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
+	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v2
+	6F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07URBT5UUUUU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250904_063542_040219_A447B018 
-X-CRM114-Status: UNSURE (   8.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250904_140719_490864_EACE9578 
+X-CRM114-Status: GOOD (  14.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,24 +108,194 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Takahiro,
+The page address register describes the page address of the starting
+address for NAND read/write/erase operations.
 
-Would you please review this patch?
+According to the manual, it consists of two parts:
+	{chip select, page number}
 
-Thanks!
-ta
+The `chip select` is fixed at 2 bits, and the `page number` is
+determined based on the actual capacity of the single-chip memory.
+Therefore we need to determine the `chip select` bits base on the `page
+number`.
 
+For example, for a 1GB capacity chip (2K page size), it has 1M pages.
+Thus, [19:0] is used to represent the page number, and [21:20]
+represents the chip select.
 
-On 9/4/25 2:13 PM, Santhosh Kumar K wrote:
-> The nor->params->addr_mode_nbytes parameter defines the address byte
-> count for the current addressing mode. When transitioning between SDR
-> and DDR modes, this parameter must be properly updated to maintain the
-> correct addressing behavior. So, implement the necessary updates to
-> nor->params->addr_mode_nbytes during both DDR mode enablement and
-> disablement operations to ensure address byte counts remain consistent
-> with the active transfer mode.
-> 
-> Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+---
+ .../mtd/nand/raw/loongson-nand-controller.c   | 116 ++++++++++++++----
+ 1 file changed, 90 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/loongson-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
+index 97cd566420a8..1427dd6943a7 100644
+--- a/drivers/mtd/nand/raw/loongson-nand-controller.c
++++ b/drivers/mtd/nand/raw/loongson-nand-controller.c
+@@ -82,6 +82,7 @@ struct loongson_nand_data {
+ 	unsigned int op_scope_field;
+ 	unsigned int hold_cycle;
+ 	unsigned int wait_cycle;
++	unsigned int nand_cs;
+ 	void (*set_addr)(struct loongson_nand_host *host, struct loongson_nand_op *op);
+ };
+ 
+@@ -90,6 +91,7 @@ struct loongson_nand_host {
+ 	struct nand_chip chip;
+ 	struct nand_controller controller;
+ 	const struct loongson_nand_data *data;
++	unsigned int addr_cs_field;
+ 	void __iomem *reg_base;
+ 	struct regmap *regmap;
+ 	/* DMA Engine stuff */
+@@ -215,6 +217,26 @@ static int loongson_nand_parse_instructions(struct nand_chip *chip, const struct
+ 	return 0;
+ }
+ 
++static void loongson_nand_set_addr_cs(struct loongson_nand_host *host)
++{
++	struct nand_chip *chip = &host->chip;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
++	if (!host->data->nand_cs)
++		return;
++
++	/*
++	 * The Manufacturer/Chip ID read operation precedes attach_chip, at which point
++	 * information such as NAND chip selection and capacity is unknown. As a
++	 * workaround, we use 128MB cellsize (2KB pagesize) as a fallback.
++	 */
++	if (!mtd->writesize)
++		host->addr_cs_field = GENMASK(17, 16);
++
++	regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR2, host->addr_cs_field,
++			   host->data->nand_cs << __ffs(host->addr_cs_field));
++}
++
+ static void ls1b_nand_set_addr(struct loongson_nand_host *host, struct loongson_nand_op *op)
+ {
+ 	struct nand_chip *chip = &host->chip;
+@@ -263,6 +285,8 @@ static void ls1c_nand_set_addr(struct loongson_nand_host *host, struct loongson_
+ 			regmap_update_bits(host->regmap, LOONGSON_NAND_ADDR2, mask, val);
+ 		}
+ 	}
++
++	loongson_nand_set_addr_cs(host);
+ }
+ 
+ static void loongson_nand_trigger_op(struct loongson_nand_host *host, struct loongson_nand_op *op)
+@@ -603,42 +627,82 @@ static int loongson_nand_exec_op(struct nand_chip *chip, const struct nand_opera
+ 	return nand_op_parser_exec_op(chip, &loongson_nand_op_parser, op, check_only);
+ }
+ 
+-static int loongson_nand_attach_chip(struct nand_chip *chip)
++static int loongson_nand_get_chip_capacity(struct nand_chip *chip)
+ {
+ 	struct loongson_nand_host *host = nand_get_controller_data(chip);
+ 	u64 chipsize = nanddev_target_size(&chip->base);
+-	int cell_size = 0;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 
+-	switch (chipsize) {
+-	case SZ_128M:
+-		cell_size = 0x0;
+-		break;
+-	case SZ_256M:
+-		cell_size = 0x1;
+-		break;
+-	case SZ_512M:
+-		cell_size = 0x2;
+-		break;
+-	case SZ_1G:
+-		cell_size = 0x3;
+-		break;
+-	case SZ_2G:
+-		cell_size = 0x4;
++	switch (mtd->writesize) {
++	case SZ_512:
++		switch (chipsize) {
++		case SZ_8M:
++			host->addr_cs_field = GENMASK(15, 14);
++			return 0x9;
++		case SZ_16M:
++			host->addr_cs_field = GENMASK(16, 15);
++			return 0xa;
++		case SZ_32M:
++			host->addr_cs_field = GENMASK(17, 16);
++			return 0xb;
++		case SZ_64M:
++			host->addr_cs_field = GENMASK(18, 17);
++			return 0xc;
++		case SZ_128M:
++			host->addr_cs_field = GENMASK(19, 18);
++			return 0xd;
++		}
+ 		break;
+-	case SZ_4G:
+-		cell_size = 0x5;
++	case SZ_2K:
++		switch (chipsize) {
++		case SZ_128M:
++			host->addr_cs_field = GENMASK(17, 16);
++			return 0x0;
++		case SZ_256M:
++			host->addr_cs_field = GENMASK(18, 17);
++			return 0x1;
++		case SZ_512M:
++			host->addr_cs_field = GENMASK(19, 18);
++			return 0x2;
++		case SZ_1G:
++			host->addr_cs_field = GENMASK(20, 19);
++			return 0x3;
++		}
+ 		break;
+-	case SZ_8G:
+-		cell_size = 0x6;
++	case SZ_4K:
++		if (chipsize == SZ_2G) {
++			host->addr_cs_field = GENMASK(20, 19);
++			return 0x4;
++		}
+ 		break;
+-	case SZ_16G:
+-		cell_size = 0x7;
++	case SZ_8K:
++		switch (chipsize) {
++		case SZ_4G:
++			host->addr_cs_field = GENMASK(20, 19);
++			return 0x5;
++		case SZ_8G:
++			host->addr_cs_field = GENMASK(21, 20);
++			return 0x6;
++		case SZ_16G:
++			host->addr_cs_field = GENMASK(22, 21);
++			return 0x7;
++		}
+ 		break;
+-	default:
+-		dev_err(host->dev, "unsupported chip size: %llu MB\n", chipsize);
+-		return -EINVAL;
+ 	}
+ 
++	dev_err(host->dev, "Unsupported chip size: %llu MB with page size %u B\n",
++		chipsize, mtd->writesize);
++	return -EINVAL;
++}
++
++static int loongson_nand_attach_chip(struct nand_chip *chip)
++{
++	struct loongson_nand_host *host = nand_get_controller_data(chip);
++	int cell_size = loongson_nand_get_chip_capacity(chip);
++
++	if (cell_size < 0)
++		return cell_size;
++
+ 	switch (chip->ecc.engine_type) {
+ 	case NAND_ECC_ENGINE_TYPE_NONE:
+ 		break;
+-- 
+2.47.3
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
