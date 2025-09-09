@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA292CAC583
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A73FACA0FED
 	for <linux-mtd@archiver.kernel.org>; Tue,  9 Sep 2025 17:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zkNOz1ybX/ZUt6PXHEpnftcyCHGsBFAMHjiZcnCLQUg=; b=wGsTrs0lU5Y4//
-	U7DzgQs2Z8aThJw9Dwn/16xZRugGdFJXqIP62C590RNiuR84aVehQU2DH8kHImmjBEjF3mCVkc5Md
-	SHV8rbKd69bAEzgQc1SSqpjH/7Hq+sMXg0qsL1eL8JQK+EFOI6toblhS1GK36BDZ6f+N9oOv9Ql2N
-	NY5M2DXUffRPq/fMrob6fuibIJBhOVH6G0lOyATTwrVAEBdkcLgpYhTiRdar+u04sKcu3UGF3/NEA
-	48g280YPcfXNiPcDByR80tMwUronbDH3vCYBdCEiaP4LS5BfTm8qJGfjxwjAqGWDHF+kTvdZH6+nX
-	pTRO2haWQ/HkRynp8pOw==;
+	List-Owner; bh=3Ue72lLHp7GDxwuweaOPxziSCVKnfMZFe9Ea9pLm09c=; b=k30sAIM1v3JHZ2
+	cax/KfUbNp/22L5smDABAiLrNDP7xDflSAoQilvpZh9C2IMDH9JrJ+K2Ki6wbxD1nWOH8xy7NZ0rT
+	EwswbcYmicwknmDCGK8tcLYZhZ0WIvq/Y1h39ML8K5hL56gNOJjEMT6ezz9icOpfRQorNPJYbzTFw
+	nQ8O9qD6cv+zTvKmRzxEW/lYzdkQztwh/GyUpOaQUxf2q8/crIAKEkEhYaHWyPSzmwJo7eLJxBRzt
+	tPJLCkk8jKUKr7hivshLSy0n4FQTG1f2XsiU5tXmYift7FRDNNuHnFT7qfaOhMzjQqMaZ4mHgHQxy
+	5aqKXwfEyP5ApIA5fOgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uw1vH-00000008mnu-3LDU;
-	Tue, 09 Sep 2025 17:14:28 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1uw1vK-00000008mvk-3H4f;
+	Tue, 09 Sep 2025 17:14:30 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uvwVA-00000006ixu-13Z2
+	id 1uvwmi-00000006q1H-1vmg
 	for linux-mtd@lists.infradead.org;
-	Tue, 09 Sep 2025 11:27:09 +0000
+	Tue, 09 Sep 2025 11:45:16 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6EB6943689;
-	Tue,  9 Sep 2025 11:27:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7FBFC4CEF4;
-	Tue,  9 Sep 2025 11:27:05 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A668460202;
+	Tue,  9 Sep 2025 11:45:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D883FC4CEF4;
+	Tue,  9 Sep 2025 11:45:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757417227;
-	bh=KlBc/FLfWJ60Mnd+Xoq1/937+YN8YpF4GupEf7cemXY=;
+	s=k20201202; t=1757418315;
+	bh=I1Zr6GfPdUae0GCJN0Q4GLwwgUaClw/TDrb4ATn1Wi8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=hDWMtW5vK0RsQR8w+ZBzz3DyHkSKsRPSO909jJQcQBc38u5RPxYKorg5QL3MZ99C1
-	 UCPeDEMnMBBZ2ht63eiMFXG+iGKQbFJ2lxGanfZ8ALZQN7feDUEfsUaftOetta4Iv3
-	 1EHY67CfnlNxcAwSWzQS/53fk/XtNi4KlcaNSgRSjf55i/nU7dpOUn+DEmox/baUni
-	 R9J56PQAFkXDolYsFpQaUNM9BBdGFbF2r9cLcDJLNubk+3Oq+aioIs0KaEKaqSIewu
-	 EEVNC+6RNpkA2vcxAjZDeOnS8eR0K8/whBu3obvVKKdkn0uQ4MN+GW/blIXtYOc3RN
-	 Tf8fEhx+QLVQw==
+	b=D0O9oSA9/kDnGADolh+NtrobV41APUI0gxZCt+g98Jkheqv0ld0VPIQw1y5ipZDdK
+	 pEViCp+8jlAP8bmYhdzaIa+4FD2LZa8UIEnHKf919YjoRYWPhS5ERwXTcbibsQcA7R
+	 Q8/mdKoBIR9VcFwcRjENaO0NidjCVX+8aPaR7hdWeC44z0OtF/pG45H0i9KU5TLk7L
+	 sywWS3Kzl3VSFwALy304kEI2G3Tyl1mdrIX5kRQiPy1lGMS73qVJSCGF3BOgE/SzW6
+	 v2aUV6EIqb+HNh1vucshaCtzZmCacsU2gXQsuf4J8xFMIRfJkzeBgaCdkbCUZZU9CD
+	 qbRWiN1P80xAg==
 From: Pratyush Yadav <pratyush@kernel.org>
-To: Rahul Kumar <rk0006818@gmail.com>
-Cc: miquel.raynal@bootlin.com,  richard@nod.at,  vigneshr@ti.com,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  linux-kernel-mentees@lists.linux.dev,  skhan@linuxfoundation.org,
-  Pratyush Yadav <pratyush@kernel.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,  Rahul Kumar
+ <rk0006818@gmail.com>,  Vignesh Raghavendra <vigneshr@ti.com>,  linux-mtd
+ <linux-mtd@lists.infradead.org>,  linux-kernel
+ <linux-kernel@vger.kernel.org>,  linux-kernel-mentees@lists.linux.dev,
+  Shuah Khan <skhan@linuxfoundation.org>,  pratyush <pratyush@kernel.org>
 Subject: Re: [PATCH v2] mtd: sm_ftl: replace strncpy with memcpy
-In-Reply-To: <20250908070124.2647038-1-rk0006818@gmail.com>
+In-Reply-To: <93578759.11447.1757322260340.JavaMail.zimbra@nod.at>
 References: <20250908070124.2647038-1-rk0006818@gmail.com>
-Date: Tue, 09 Sep 2025 13:27:04 +0200
-Message-ID: <mafs0cy7zn9x3.fsf@kernel.org>
+	<87tt1djtot.fsf@bootlin.com>
+	<93578759.11447.1757322260340.JavaMail.zimbra@nod.at>
+Date: Tue, 09 Sep 2025 13:45:12 +0200
+Message-ID: <mafs08qinn92v.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250909_042708_362090_109A38A2 
-X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,37 +69,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rahul,
-
-On Mon, Sep 08 2025, Rahul Kumar wrote:
-
-> Replace strncpy with memcpy in sm_attr_show and explicitly add a NUL
-> terminator after the copy. Also update the return value to reflect the
-> extra byte written for the terminator. This aligns with current kernel
-> best practices as strncpy is deprecated for such use, as explained in
-> Documentation/process/deprecated.rst.
->
-> No functional change, only cleanup for consistency.
->
-> Suggested-by: Pratyush Yadav <pratyush@kernel.org>
-
-A Suggested-by tag indicates that the patch idea was suggested by that
-person. In this case, I did not suggest this patch and merely reviewed
-it. So a Suggested-by is slightly odd here. You can read more about the
-tags here:
-https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
-
-[...]
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCBTZXAgMDggMjAyNSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgoKPiAtLS0tLSBV
+cnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4+IFZvbjogIk1pcXVlbCBSYXluYWwiIDxtaXF1ZWwu
+cmF5bmFsQGJvb3RsaW4uY29tPgo+PiBBbjogIlJhaHVsIEt1bWFyIiA8cmswMDA2ODE4QGdtYWls
+LmNvbT4KPj4+IC0Jc3RybmNweShidWYsIHNtX2F0dHItPmRhdGEsIHNtX2F0dHItPmxlbik7Cj4+
+PiAtCXJldHVybiBzbV9hdHRyLT5sZW47Cj4+PiArCW1lbWNweShidWYsIHNtX2F0dHItPmRhdGEs
+IHNtX2F0dHItPmxlbik7Cj4+PiArCWJ1ZltzbV9hdHRyLT5sZW5dID0gJ1wwJzsKPj4+ICsJcmV0
+dXJuIHNtX2F0dHItPmxlbiArIDE7Cj4+IAo+PiBBcmUgd2Ugc3VyZSB0aGUgYnVmZmVyIGlzIGFs
+d2F5cyBzbV9hdHRyLT5sZW4gKyAxIGxvbmc/CgpZZWFoLCB0aGF0IHdhcyB3aGF0IEkgd2FzIHdv
+bmRlcmluZyBvbiB0aGUgb3JpZ2luYWwgcGF0Y2ggdG9vLiBQb2tpbmcKYXJvdW5kIHRoZSBjb2Rl
+LCBJIHNlZSBpbiBkZXZfYXR0cl9zaG93KCkgdGhhdDoKCglpZiAoZGV2X2F0dHItPnNob3cpCgkJ
+cmV0ID0gZGV2X2F0dHItPnNob3coZGV2LCBkZXZfYXR0ciwgYnVmKTsKCWlmIChyZXQgPj0gKHNz
+aXplX3QpUEFHRV9TSVpFKSB7CgkJcHJpbnRrKCJkZXZfYXR0cl9zaG93OiAlcFMgcmV0dXJuZWQg
+YmFkIGNvdW50XG4iLAoJCQkJZGV2X2F0dHItPnNob3cpOwoJfQoKU28gSSBzdXBwb3NlIHRoZSBi
+dWZmZXIgaXMgUEFHRV9TSVpFIGxvbmcsIHRob3VnaCB0aGUgc2hvdygpIEFQSSBpcwpraW5kYSBw
+b29yIGZvciBub3QgcmVwb3J0aW5nIHRoZSBzaXplIGV4cGxpY2l0bHkuIElmIHdlIGRvIHJlYWxs
+eSB3YW50CnRvIG1ha2UgdGhpcyBzYWZlciwgSSBzdXBwb3NlIHRoaXMgaXMgd2hhdCBzaG91bGQg
+YmUgY2hlY2tlZCBmb3IuIFRoZQpzdHJuY3B5IHdpdGggbGVuZ3RoIGJlaW5nIGxpbWl0ZWQgdG8g
+dGhlIHN0cmluZyBsZW5ndGggaW5zdGVhZCBvZiBidWZmZXIKbGVuZ3RoIGlzIGNvbXBsZXRlbHkg
+dXNlbGVzcy4KCkFueXdheSwgaGVyZSBzbV9hdHRyLT5kYXRhIGlzIChTTV9TTUFMTF9QQUdFIC0g
+U01fQ0lTX1ZFTkRPUl9PRkZTRVQgKyAxKQpieXRlcyBsb25nLCB3aGljaCBzaG91bGQgYWRkIHVw
+IHRvIDE2OCBieXRlcywgd2hpY2ggaXMgcGVyZmVjdGx5IHNhZmUgdG8KanVzdCBjb3B5LgoKPgo+
+IENhbiB3ZSBwbGVhc2UganVzdCBzdG9wIG1lc3Npbmcgd2l0aCBwZXJmZWN0bHkgZmluZSBjb2Rl
+Pwo+IEknbSBzaWNrIG9mIHRoZSB3YXIgb24gc3RyaW5nIGZ1bmN0aW9ucy4KPiBGaXJzdCB3ZSBo
+YWQgdG8gcmVwbGFjZSBldmVyeXRoaW5nIHdpdGggc3RybmNweSgpLCB0aGVuIHN0cmxjcHkoKSwK
+PiB0aGVuIHN0cnNjcHkoKSwgLi4uCgpJIGhhZCBhIHNpbWlsYXIgcmVhY3Rpb24gaW5pdGFsbHkg
+dG9vLiBCdXQgVEJIIGlmIHRoZSBwYXRjaCBtYWRlIHRoZQpjb2RlIGFjdHVhbGx5IHNhZmVyIEkg
+cmVja29uIGl0IHdvdWxkIGJlIGZpbmUuIExvbmcgdGVybSwgdGhlc2Uga2luZCBvZgp0aGluZ3Mg
+Y2FuIGhlbHAgcHJldmVudCB1bmV4cGVjdGVkIGJ1Z3MuIEJ1dCBoZXJlIHdlIGRvbid0IGV2ZW4g
+a25vdyBob3cKbGFyZ2UgYnVmIGlzIHNvIHRoZXJlIGlzIG5vIHBvaW50IGluIHVzaW5nIGFueSBv
+ZiB0aGUgZmFuY3kgc3RyaW5nCmZ1bmN0aW9ucy4gQSBwbGFpbiBzdHJjcHkoYnVmLCBzdHIpIGlz
+IGp1c3QgYXMgInNhZmUiIGFzIGEKc3RybmNweShidWYsIHN0ciwgc3RybGVuKHN0cikpLCBvciBh
+bnkgb3RoZXIgZmFuY3kgdmFyaWF0aW9uLgoKU28geWVhaCwgSSBkb24ndCB0aGluayB0aGlzIHBh
+dGNoIGRvZXMgbXVjaC4uLgoKVGhhdCBzYWlkLCBSYWh1bCB5b3Ugc2VlbSBsaWtlIGEgbmV3IGNv
+bnRyaWJ1dG9yLiBJIHdvdWxkIHNheSBkb24ndCBiZQp0b28gZGlzY291cmFnZWQuIE5vdCBldmVy
+eSBwYXRjaCBlbmRzIHVwIGdvaW5nIHRocm91Z2guIEkgaGF2ZSBoYWQgbXkKZmFpciBzaGFyZSBv
+ZiByZWplY3RlZCBwYXRjaGVzLiBUYWtlIHRoaXMgYXMgYSBsZWFybmluZyBhbmQga2VlcCBsb29r
+aW5nCmZvciBvdGhlciBpbXByb3ZlbWVudHMgOi0pCgo+Cj4gRG9uJ3QgZ2V0IG1lIHdyb25nLCBJ
+J20gYWxsIGZvciBoYXJkZW5pbmcgY29kZSBwYXRocyB3aGVyZQo+IHN0cmluZ3MgYXJlIGFyYml0
+cmFyeSBpbnB1dCwgYnV0IGluIG1hbnkgb2YgdGhlc2UgY2FzZXMgYWxsIHN0cmluZ3MKPiBhcmUg
+bm8gaW5wdXQgb3IgYWxyZWFkeSBzYW5pdGl6ZWQuCgotLSAKUmVnYXJkcywKUHJhdHl1c2ggWWFk
+YXYKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
