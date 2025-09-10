@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95EF8CAC58E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36041CAC58D
 	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:51:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,65 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LXhNnmZDU6hmp5gQLXHS+8EtiaVzxYLxC7LwK6+y6W0=; b=m3KKes+qoSLheU
-	74EKwTeQY5M6+bwlPTewzm//1RWjHHD44gyDH9w7WyEuI9abnzN4N/+HgMjX2TF8VR/gxjzrCtzTt
-	q213ivENWp0cmw44dULYeAdF+XZmU4TappXUL6XMj4mvHFtkLe0CqfDFqOXyvsajrQKk6r7aH9AAH
-	2ZIw6uepxuBvyUZrAemm8AHnSFACnSv3Ex1Y8+dJ4Ivxy72Dqc7SU8ZcHpIfSXj/I/McytrTsNbyB
-	sWEdL6jwEWCqG65Mcg+a60YaVg+MWBjg8Cec9e9GHc7YcUtZDMB89u4U3tTlA76wM/mXJJsEq4gRj
-	FYHrQTjsWpMVQcmeQhcw==;
+	List-Owner; bh=zdu1jOpGadYiYKUW9ogkfW03gDuJZl/v4bRJm25zgTI=; b=O7UTWyCo2R4TpG
+	trK8xCbmrQ+IMjSctoppntY6Rw4czgLBf4AV0SMXPzTNvp+DBADcTOkgF2qhaYqGX/x7wXnh21zoA
+	bqMoVvGCzEipDNfEosQ/YK8j7z8Dt3cY/LxkTCfy9+4oZC+ggCdYLkQ7BX0eDaJIW1vHq6ImruoDs
+	p+0dxNjAM7R/82Nk8lpxsZlXS8oqQImZi4qByvJMJyBwyAxWCeoFastEj3T2USuEx0H6auU1l1hDA
+	jLKYFqSrfaEdiO0acKdxQDCbyx2VWdAmlifbGQYKz65PqQgycjfWzlZtafH0CxNvvD94CLi1K2ncZ
+	hBUXxqW48Bs9+icEOMGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAwA-0000000BkoJ-0z6W;
-	Wed, 10 Sep 2025 02:51:58 +0000
-Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
+	id 1uwAw9-0000000BknU-1vCQ;
+	Wed, 10 Sep 2025 02:51:57 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAw7-0000000Bkla-2rds
+	id 1uwAw7-0000000BklL-0n66
 	for linux-mtd@lists.infradead.org;
 	Wed, 10 Sep 2025 02:51:56 +0000
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-32b959b4895so4349929a91.1
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:51:55 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-b4c8bee055cso5374227a12.2
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:51:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472715; x=1758077515; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757472714; x=1758077514; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mQcUO3MMNiHKjyp0GXG4A4uvsTQgAsYSLBA8ucpISkE=;
-        b=bcg/RWWNiJxVgeqomvEZ9Gel1d4ULoYISolv46xhw7e+v/asfDmSRayjGKDMh8a/WQ
-         dB2o00JFTiu87SPsgvhMxpjw1nGxuLefsIo0alJqfGOx7CtTs65qiDNlljvYSqwcLu10
-         B37ZK07P4ZDhWCdM/qhpv7zXomtNANioE8ta0tWHO4qiEquYOzOj0TarKc85QLHVTYYc
-         UauNd8Qc5SUNSt3VHRB+fJCZy1eiTel4nOsM5oln3868PCipoaN+hCLz7IG/JV9rmP2f
-         RcBwwx3YCByly5XBn+G4ll/Oc3MQ6JV8WOt9ArcTLr8gsPYuORL+4XCkyaPP7bj1KNgw
-         YeHQ==
+        bh=jdhbTSK6p9ht0YngyCDiyyRtcLCfpgxS9tGDrcGiJGs=;
+        b=WC/OY9kzPDl7iwqcahXUoHczgdmRZTiwgC4gNkw9dvl7SvnD+TSldfTzgMC7kBVV92
+         LOGVSizhSmLcFP+LfMhsT8ZGL5RTKQOgobm0GX9oWHUJ8IrA7VKbIcmVoOZOv+Z16N9w
+         XiGOxNpyT6EH09kpaZXAhLhZhjUsw4oxgtKGxWbIafeU/MrP1LiE4kXx0zaj7WlnZtLg
+         owG4KK1FpcDZOcRJ17i87efax0qlhieBU8ykiHIEjsNfep2x2h0oJxlqO5r+v27z+RUF
+         6Jfj0TxVocWi9JmjzQaYjxsKVBH6GZD4lHmInLtlDRRcQEcElPAxoiDhz+QGUg4APrcv
+         auNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472715; x=1758077515;
+        d=1e100.net; s=20230601; t=1757472714; x=1758077514;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mQcUO3MMNiHKjyp0GXG4A4uvsTQgAsYSLBA8ucpISkE=;
-        b=Rdn1nUZGsR4lp7tgZGmIn4UefLTsyEmT+Qds+OINH7TGorEC+UBDDeSfeSou70F3hF
-         mbxoqtiTcnYTh2BhxRRzm6V5Ft0FOtJ6wswSJ9DLxihFnRkOGYG17nfm+tGC6oyRFgcm
-         I1JsQfswDFdhKwhdlaQpiVOXoEt4RoPkswVpkmkTsWoKWt2od4N6kALRjjLmz7vTcxp3
-         XM6avgmfBIm7ZYkwha78D4rmI4vjyhl4VwUtZObHwVGtP4XiCzH6kqAzx6IFD/nOOpzg
-         WBXtNOWdJcMM/CK0PhSPDYVXnzdBHdvVhXtAvYEOXwKJbAwP86h94L/Es7afR34ryHxa
-         DMuw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQS6hft2Urn+o2fp86bzV5geSpKP/dLGJWkM2qzXsiY+w2k2GXLw+q9hh8LoqSJ9hmgtwbo4n1akw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwsaZBACY9i4EmIAq0cniq/kNNCz3I4Tm98TBPhnAJDEz/GdUyL
-	CLHhYANZ5cNOlpX2iSYmDLcNXYO3UnpANV4Yh7I/gs/gSweEsLH/Nm2J
-X-Gm-Gg: ASbGncuWCvZcJmD0yD1PZ5ekvVDiBoh6f25m4/CeMBKWo6flkKlI0lhAUbMVEJiA0xT
-	St4Q3C8tMCOUmBhEqRecuUz95U+C4Vpq99RBnAPic+zL0w62yz81FdifmiyEdisGnGW0DT/zBsN
-	Xlhhxz8a4kX8J/4MXVRe4oIQGohNz/uwDHyWf49D1ScPzOPfAUBXA26iTR2KjKXtZe/D+J9XFzG
-	qM/tH8fHdezIN3vstzXep6Iovx3/QdUVrt0Iw1DsqNBuR6NMZfmhEEWfTEuHOtG4I1Cc/HCGPpM
-	ctjyoJhYWQUkyssSZP9JKEdEfj1lr4MjucwGvICQE6kF8CcP69bLgIFQKdESyP/GTOjnnNl8sIC
-	IPL4nCUqSFF0l7R9LtXeFfmB612is6eIPUc3g
-X-Google-Smtp-Source: AGHT+IHumoKCl0BwECrl0jFgQDm+a5TPs08x2B/wSLqiGEG+ifiNXW+7jwodpJ99kFpH7Ms7vygGwQ==
-X-Received: by 2002:a17:90b:2b43:b0:32b:5195:d119 with SMTP id 98e67ed59e1d1-32d43f04fc5mr19535835a91.12.1757472714800;
+        bh=jdhbTSK6p9ht0YngyCDiyyRtcLCfpgxS9tGDrcGiJGs=;
+        b=ClWxoO1kG92W62TaVgIkajTnHEhMc30uOx8uq3E8M+/lXWRcjGBoHVpJArN6UsYpf1
+         SgQl5YWzZlN7v1XY+tyqjKbo9AWodiPiRCnyPyeIXKR6xjFhlYZ8QywnEUJ/F68yvPtc
+         BrPqwlYX1sanvuky2I9d91DwRTvXbCTBuAk1KQQDRp9lrJuyjaxbDQW8AboerZyY2br1
+         9fz1v5QIMC3oKaYmSLtYriMg3ulzwpoeCUJm+nBxl/rAuuqtJiRCXVpEMyJvMvBCW5xH
+         HoEDphKymcbUlP2rXLwYkbgj41DIhyt/qqrazoDPgWyaP/JOmTcg8FGq7FplN796x5Th
+         ijyw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2Vd2Hi/D2IhjC1BQ+f5ApKutXvSvkYShhUvjCMLfRaJuJeK3h2pzL+LGGA4HjXYPhokZKpFQmMHs=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzgRwi6qIahHH1IITOo+BFrfOasBEyH46zPmA0PAg2IM1dpwHhq
+	B7Kd3fkuj/qCFlp7ePcPiLpCOwqhS+CpEdLwBm2goX8MpM+gEWzGoF7h
+X-Gm-Gg: ASbGncu85dvm1JnIBmMq0405gPO4NmK118Li5ry8ooyfeP05BXm49tpKJwW+3vl2/QP
+	0GHn9vWz6Tt2Ro9ipJ+0BzhAh1WO59ydPLI5M8r/pA6MtsmVisRhYTO8k4YUfHfEC8Wl8ZUlaFV
+	GrGChaqTs65YAeVNbv+NNDoYcmkJLnjwT2TQd31IDQsmCGWBLfWIAHs/7Hv/AkIUJAcom8iLl46
+	OF53abJajERHHkWwwE4vQsLOdK47G21rPGOhwX3fTMGyneK6L097FcBKuMyw/3rnLgz3Z16bfWf
+	REZix8k6nRPDYACiraRr40iLfjyaEUkkDChFYT4IzIr/H4PNUdxwDoBOj/KwZtcnqnF2gipZKRn
+	srGTYaWJCDpF8SvpWVphWzY5g6A==
+X-Google-Smtp-Source: AGHT+IEB/m099LrAl5yQVt4L0Nzl0jupOns8XwrHabjqcwIBBCUNyigNNYELdZPt4mBJxRKyTxzUaA==
+X-Received: by 2002:a17:902:da82:b0:24b:2b07:5f6d with SMTP id d9443c01a7336-2516d818031mr154485025ad.9.1757472714167;
         Tue, 09 Sep 2025 19:51:54 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dbb313dbasm659049a91.5.2025.09.09.19.51.53
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dbb032dc6sm679647a91.0.2025.09.09.19.51.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 09 Sep 2025 19:51:53 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 158E941BDD48; Wed, 10 Sep 2025 09:43:53 +0700 (WIB)
+	id DC0B441BEAA1; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -171,18 +171,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH v2 12/13] nitro_enclaves: Use internal cross-reference for kernel docs links
-Date: Wed, 10 Sep 2025 09:43:27 +0700
-Message-ID: <20250910024328.17911-13-bagasdotme@gmail.com>
+Subject: [PATCH v2 10/13] Documentation: smb: smbdirect: Convert KSMBD docs link
+Date: Wed, 10 Sep 2025 09:43:25 +0700
+Message-ID: <20250910024328.17911-11-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
 References: <20250910024328.17911-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1391; i=bagasdotme@gmail.com; h=from:subject; bh=evrdLEAoXKuQzTljW81Kh3KyWLApG8gUObVzJ2YlNgE=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHniiL9usWFB1WvT+NSavLIanh+698vZJvp5Iqyn5cF Oeb1Xiho5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABN50cHwvzL4D8eTgyE89fse HlBVStE02WjOOvl23fZ49/PHUnNONTP8FYh3YzzAeWbK5vj6FqvtSXp3M3+Vxhz3fMrXXv7oQq4 HPwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1002; i=bagasdotme@gmail.com; h=from:subject; bh=tVZea1ikNA4Sssls4g09ZchJ08JhUaFOY8Mmt8T2Tzg=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnihVZXUEfpV/XXVSre/C87lNIRyCV5IjnItu7ShZU PiphvtYRykLgxgXg6yYIsukRL6m07uMRC60r3WEmcPKBDKEgYtTACZych0jw9MiYfOuPx0mkkFP UiIWTa/TFphmY/DisofsPrHQd/6Zwgx/paxTd1xaG72+5ivH8bnS+nm3e6W3try5uGL6W3UVsUu 32QA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250909_195155_719235_C99BF2DB 
-X-CRM114-Status: GOOD (  16.52  )
+X-CRM114-CacheID: sfid-20250909_195155_225992_7A7167EC 
+X-CRM114-Status: GOOD (  17.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -199,34 +199,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert links to kernel docs pages from external link to internal
-cross-references.
+Convert KSMBD docs link to internal link.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/virt/ne_overview.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Documentation/filesystems/smb/smbdirect.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/virt/ne_overview.rst b/Documentation/virt/ne_overview.rst
-index 74c2f5919c886e..572105eab452b2 100644
---- a/Documentation/virt/ne_overview.rst
-+++ b/Documentation/virt/ne_overview.rst
-@@ -91,10 +91,10 @@ running in the primary VM via a poll notification mechanism. Then the user space
- enclave process can exit.
+diff --git a/Documentation/filesystems/smb/smbdirect.rst b/Documentation/filesystems/smb/smbdirect.rst
+index ca6927c0b2c084..6258de919511fa 100644
+--- a/Documentation/filesystems/smb/smbdirect.rst
++++ b/Documentation/filesystems/smb/smbdirect.rst
+@@ -76,8 +76,8 @@ Installation
+ Setup and Usage
+ ================
  
- [1] https://aws.amazon.com/ec2/nitro/nitro-enclaves/
--[2] https://www.kernel.org/doc/html/latest/admin-guide/mm/hugetlbpage.html
-+[2] Documentation/admin-guide/mm/hugetlbpage.rst
- [3] https://lwn.net/Articles/807108/
--[4] https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
-+[4] Documentation/admin-guide/kernel-parameters.rst
- [5] https://man7.org/linux/man-pages/man7/vsock.7.html
--[6] https://www.kernel.org/doc/html/latest/x86/boot.html
--[7] https://www.kernel.org/doc/html/latest/arm64/hugetlbpage.html
--[8] https://www.kernel.org/doc/html/latest/arm64/booting.html
-+[6] Documentation/arch/x86/boot.rst
-+[7] Documentation/arch/arm64/hugetlbpage.rst
-+[8] Documentation/arch/arm64/booting.rst
+-- Set up and start a KSMBD server as described in the `KSMBD documentation
+-  <https://www.kernel.org/doc/Documentation/filesystems/smb/ksmbd.rst>`_.
++- Set up and start a KSMBD server as described in the :doc:`KSMBD documentation
++  <ksmbd>`.
+   Also add the "server multi channel support = yes" parameter to ksmbd.conf.
+ 
+ - On the client, mount the share with `rdma` mount option to use SMB Direct
 -- 
 An old man doll... just what I always wanted! - Clara
 
