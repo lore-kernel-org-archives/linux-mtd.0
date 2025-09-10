@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E3D2CAC582
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CDEACAC58D
 	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,65 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uNZU/mJfY/UnvIjq27M2L97uTdZmpLEvNYaTWJEjd50=; b=MvdnBDM/9hLYZx
-	9WCU4SUVVtPGJAEcz6ndpfOgPq/hyesJa0c2sZ0ZPVrOq9jvgdm3iPH2YduWkl3I6ywMap7F0tlwd
-	VV3QkRWHkL41BK5GWaODZghl5zeu0PhQmClL/6EgoZnwTP1/knsUSbNqtgBBwT+rEz2GOUNGkItMO
-	5+/qpsbHCuywjg+Qh8pGtYgFOD6w+tkUy8BH46d/2Nh4rfjQVnugsGJTW/ox/kdoR7aj6sRo/SW/U
-	h0y/MOToDt/8to2tPaTn907Fy5acT9PUD5kv1jK96z7fcJgmbcyioH2OVRio+lkLWctfSNVy5sNCl
-	oktvtQQ1MYFPlOUTZYkg==;
+	List-Owner; bh=6uMX3uMIJsFFlNUOaJRPJDKpHQGeRHzzIqT/U0qlIaY=; b=nNE/rYonKqlJKd
+	nobZE0B1IT+3t+FfW2fljEr5RP7xGxUqfJYuYj84x8xChxg36tzk5Pmw0PzwT+4z/9LMljmC77nf3
+	y9f028MtFaAj5NOQ9smlkQ72lgY6lsnh+OOiJr6u4Sgdp+V6Fj/e5KRyNH3msTGAEdDKM8IePAPe7
+	L0xP/pf30hKcQLo26O8fOfJ8b8GTMjce9VQvr6lORiRj1UTJ3DicOhg49GUhjqvnnVt/c7mX84X83
+	YCCjCjqby/gcA599cJ+QZy80R9dTdPzLvfGvmGCD+7KdubBrYAxURKOpA5p+skuws8ZQ5g3XvMFgF
+	GgR+Pl2EpnI/VpXyMORQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoQ-0000000Bhfe-1wBF;
-	Wed, 10 Sep 2025 02:43:58 +0000
-Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	id 1uwAoU-0000000Bhjm-2uhd;
+	Wed, 10 Sep 2025 02:44:02 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoN-0000000Bhe9-47B6
+	id 1uwAoQ-0000000Bhg0-49hN
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Sep 2025 02:43:57 +0000
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-24b2de2e427so44549425ad.2
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:43:55 -0700 (PDT)
+	Wed, 10 Sep 2025 02:44:00 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-76e2ea933b7so149114b3a.1
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472235; x=1758077035; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757472238; x=1758077038; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PKHUedwTpnE+6902OLKWJUrKeeyE0icmaP4M6h8VeIM=;
-        b=cN3xOZ1erDZkuJVuArHTaTf1pjj60p9FrHpLMeq2U5PIOgeo5P8QfjP306AJ6KQbh8
-         vAOqp3g1Bheqb3zXRhY2UUEqTPKx9k1oa4HoFI2m52fH2cq9eE2J7PgP/cTMh6iwGBok
-         l060cJY85DsxpKhcuM5UnRn0fyXOwkHlmdTpkvt+3l4bVV5kmr96A5REZL3eUA3Fc3GE
-         i7UHKMvZuA53YTomu+1o3nZk7THjahSDB/TQdLfwHvI7F2KVF2q2WzEdMxIJS/ciWBqs
-         F6r/VKMHTtVnr/hIpeW7O5+XglqslScWupnwd97iUAeo5B1/kke2PMw6HpOmPZzdj3VA
-         vGeg==
+        bh=NJdcHxX57XebbZj4zrMMfWynAEuJyyuoNM4CHXO3dik=;
+        b=QXJ9XRcpvMgDmWRYUAm8D0YKYd50toopTNm3NrulR24G2c4P41tfQyM8yNGUm1KNrw
+         DMl9uM91gJrG1zrY9uMtOhoXlC++lEMguFCeNhu8HtdEZZvBhAeeiiSbRsWpu2wT/Rz2
+         lqwODvXCAAufS1D9ACWEYZFAAfq4nTCK+zDXeDAsa8tjgMBrckqFnBvmezjzILfvscBk
+         GFaiJCO6pnOps70NKDDq3pALtH4hGfKLGpEO1FXArGYmAwx+DMWw6zndLkMAA04mBPMo
+         8w2W5BvYFkZMOqdBU+11Cro3zzKy2igs9bZaT8BomBd3grXYSEJKG+VD80hYmuI+bVNQ
+         r+1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472235; x=1758077035;
+        d=1e100.net; s=20230601; t=1757472238; x=1758077038;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PKHUedwTpnE+6902OLKWJUrKeeyE0icmaP4M6h8VeIM=;
-        b=OJqt2o9qWWEMFTzcFeLE0b4TtGIOv7PeEpvB3x5VAXgQ0EqzBC3aGu0jxlJpuCAwvU
-         aSa36SSTB5ZdMPu2i5EnrnjOtJFaH4x6JjxrY/h3Sy2zRQhld7kGlFoGAqoKs5SoUbcj
-         hu81cl+hmnmamzMu25UuaEAleqatZ3fmMmyMVncS9slqaZhG/3puvN813AX6CIrYLtRt
-         UjXHN2EdZSWzY/7Dr7ouEMCE8fqQQQ0tEll0yBNmPszeR3AYua4T/5tWIRJWRs33DkKs
-         p+CpjH2XndakBtTLng5Pqv5xzT7wmEbuKJgNqVY6lDfRpKFLXZ5Q+x6w7sRs0Ocfuy39
-         /lqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWYlCeRocvu51+lhKPyiF5wpfwtCRa6BXo9/x0hXgpfGdwRxafU/+w9oXTZvKcIV/9hC8WFKDf5/yU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzVoVS27wvr3J9tJrI3P3/gmAGJQBDZ8Y7i3IADpaWG/dMFhaOX
-	IYgiKtVyRgVBXLybz9aGdFp/4+CqopZDfVzBlF0BitX8M3KZKcEtEARD
-X-Gm-Gg: ASbGncvDnkZtNn2GtPH+UeNUkgJ1vpIzt4PEjIh2ZmBV5GZnVt+E7/uc07XRYaCHeUQ
-	2TwKmmUu5dz1BWrHjMP68F0lp325peo433hS5TgrdoIZdOMcZrWhN5pSZ9fY2OjCrgblxO6qUGO
-	TziCRTASh4GoFJusNlmQHiu+YhRBKCUL8kGherBuznhIM1A743N+31pWOd8Fq+UF0yNFTVDWNtw
-	1oMmwnkL//Ds2rq/ENw6U6Bl51b8jHst2GdSAADsvcGeUmTo5r1o9KCym9OCsNI4t/6B4nOIT7+
-	PH7FqIhnOa1gVUNiRw/K9VY/CMINi1WjnS6jcgQ1ej+iExcs1JjtkylgYgH/Ai9FawEBgtIqQHg
-	aptYOLdj5PlxASRG5gI+oX1LkaQCHFqQpBwKL
-X-Google-Smtp-Source: AGHT+IHbDjWZY3VztYJWV/FENnSrT7+pUTw9iPKJIW8vQLIXrlNVN5ahZX5GB9eL2BwlCwOB0bsRtA==
-X-Received: by 2002:a17:902:fc50:b0:24b:640:ab6d with SMTP id d9443c01a7336-25172b4b335mr233139385ad.49.1757472234639;
-        Tue, 09 Sep 2025 19:43:54 -0700 (PDT)
+        bh=NJdcHxX57XebbZj4zrMMfWynAEuJyyuoNM4CHXO3dik=;
+        b=JtU0ukBww+MsJ5t0UTUOakjtkgjXMHLRKWFppPWUr7m5jRoa8MFj2d4oPs4krO2NAn
+         d5+63W76YPIrQm19a3ft67DnDTiKgz8sF4JjGn0Sevt67DUEzTthCSx5M3V439LBs/gy
+         tteQkROSgryZKlb7HajWRIs5wcOynwhPspZgAzocIPuPd1mbLTX0U1tQRN6K963RZLhy
+         LMMuLbHIGykQ+wLVOSB9wGibTqyHGfs2rjnts8Lebm+046uqMefdUxzXqqjcf1K0VMGl
+         9cN8gKp/A5f4Lh29NiQ0x1T8AbUK6VZ2yAPEOE4zlYUvOWKoQ+2r5KgIsLDtGRex/xMF
+         dq2g==
+X-Forwarded-Encrypted: i=1; AJvYcCWmFESscErHYqz42kUIicUtj7tcm13Bk5y+NCk+F35lZtuBQW0CHe1dTc9ptzV4tkzfzGX9RK2IyP0=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzh1B0giG2FMmdZci5Qi1BQVljs3tJBRV2KxiykcR9qgzLQrEdD
+	An2GqAaHBN6fNOsR9xG0Z7V838JZZLJMwg/KxloU5mD7mno4e+wIl/2Y
+X-Gm-Gg: ASbGnctZHNcEHpGufP/6mynIi3Rv3HdR2KUO2JZsGqURKlD2rBkmJlpse9fMTCQFAXG
+	/cpxC6o/2D2YW8lhj9vyA+mHeivsUQC+3tEfTe0QWQ9Zk5ntl0MStmuSnLD/JXY+uGlxKLZsMUY
+	hyf3+gsdZoVrYJ6nOSu2orwoakjym3XM0NodaN2zj0DN/H+Yl1LOEUaSKbBjIEOJEMhzc6t9T6q
+	gaHnn8Ow9fs6E51aWJNXHZE3KKo5u+FYkCl8lrZGptEaNBPouKiGddjnKrs6DYEhjEDNvKuUsSN
+	mSzenD6Q7WNe7vRV2sitaGwBuU+aBZiZ8d1FI/GzbopQ/3xcPc3Axzy/hMwxRvnqBkTCC0gIQ6M
+	IrPF5XlEZ0ra2cboVtq5OM7z9M+VBop559imx
+X-Google-Smtp-Source: AGHT+IHlW2FYAtqZ1nBeuiJ0erIdKTHM8TZOiaskQC50mFORCZ7qHar4U4e6n8dIjJOSKpsMSsisCg==
+X-Received: by 2002:a05:6a00:945a:b0:770:4f37:bffb with SMTP id d2e1a72fcca58-7741bebe705mr21095803b3a.3.1757472238265;
+        Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25a27422ffdsm11441735ad.17.2025.09.09.19.43.53
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-774662c73e0sm3425976b3a.73.2025.09.09.19.43.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 19:43:53 -0700 (PDT)
+        Tue, 09 Sep 2025 19:43:56 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id E4226420A809; Wed, 10 Sep 2025 09:43:51 +0700 (WIB)
+	id 0C94B41FA3A4; Wed, 10 Sep 2025 09:43:51 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -171,18 +171,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH v2 01/13] Documentation: hw-vuln: l1tf: Convert kernel docs external links
-Date: Wed, 10 Sep 2025 09:43:16 +0700
-Message-ID: <20250910024328.17911-2-bagasdotme@gmail.com>
+Subject: [PATCH v2 02/13] Documentation: damon: reclaim: Convert "Free Page Reporting" citation link
+Date: Wed, 10 Sep 2025 09:43:17 +0700
+Message-ID: <20250910024328.17911-3-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
 References: <20250910024328.17911-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1333; i=bagasdotme@gmail.com; h=from:subject; bh=oQ/U51BIIgNGsRun+kwInz/tmig5xTqHruGeEvNRxQQ=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnig6a/JZLY81M41OfrJ5W/1jtyyro8lZM99fCflwN Zg5yrW3o5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABOplmZkWLE7pDLv7RVG0Wlf H5ewasZymzr2NV7tNPkiErzi6eK/vxgZzoS7uJzLvPvRJPIa/z7RCs5jTcdeb3Q8EmZgt2n66RO ZTAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=883; i=bagasdotme@gmail.com; h=from:subject; bh=TM7A3b/55JCgQfCA5kxK7YxN6xbvfSMV2ctBC+dU0+o=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnih2mgVe6tXtn33sQOG2JKN6npsV2+KuvrWb+KLwo YbPrZOKHaUsDGJcDLJiiiyTEvmaTu8yErnQvtYRZg4rE8gQBi5OAZiIgi7D/1T1Zd+0q3NfXbSR WTM/c6Nt+dI0hVcvJi2QWSN+/Q/fJyVGhivi20SiX0RwBzyI4fPfm+rzyfPWB2YZV73+/5GK7JN 5GAE=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250909_194356_023000_42F5519B 
-X-CRM114-Status: GOOD (  17.13  )
+X-CRM114-CacheID: sfid-20250909_194359_026524_15535652 
+X-CRM114-Status: GOOD (  16.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -199,40 +199,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert external links to kernel docs to use internal cross-references.
+Use internal cross-reference for the citation link to Free Page
+Reporting docs.
 
+Reviewed-by: SeongJae Park <sj@kernel.org>
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/admin-guide/hw-vuln/l1tf.rst | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ Documentation/admin-guide/mm/damon/reclaim.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/l1tf.rst b/Documentation/admin-guide/hw-vuln/l1tf.rst
-index 3eeeb488d95527..60bfabbf0b6e2d 100644
---- a/Documentation/admin-guide/hw-vuln/l1tf.rst
-+++ b/Documentation/admin-guide/hw-vuln/l1tf.rst
-@@ -239,9 +239,8 @@ Guest mitigation mechanisms
-    scenarios.
+diff --git a/Documentation/admin-guide/mm/damon/reclaim.rst b/Documentation/admin-guide/mm/damon/reclaim.rst
+index af05ae6170184f..92bb7cf1b5587a 100644
+--- a/Documentation/admin-guide/mm/damon/reclaim.rst
++++ b/Documentation/admin-guide/mm/damon/reclaim.rst
+@@ -298,4 +298,4 @@ granularity reclamation. ::
  
-    For further information about confining guests to a single or to a group
--   of cores consult the cpusets documentation:
--
--   https://www.kernel.org/doc/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+   of cores consult the :doc:`cgroup cpusets documentation
-+   <../cgroup-v1/cpusets>`.
- 
- .. _interrupt_isolation:
- 
-@@ -266,9 +265,7 @@ Guest mitigation mechanisms
- 
-    Interrupt affinity can be controlled by the administrator via the
-    /proc/irq/$NR/smp_affinity[_list] files. Limited documentation is
--   available at:
--
--   https://www.kernel.org/doc/Documentation/core-api/irq/irq-affinity.rst
-+   available at Documentation/core-api/irq/irq-affinity.rst.
- 
- .. _smt_control:
- 
+ .. [1] https://research.google/pubs/pub48551/
+ .. [2] https://lwn.net/Articles/787611/
+-.. [3] https://www.kernel.org/doc/html/latest/mm/free_page_reporting.html
++.. [3] Documentation/mm/free_page_reporting.rst
 -- 
 An old man doll... just what I always wanted! - Clara
 
