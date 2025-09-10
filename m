@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CDEACAC58D
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D673CAC591
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6uMX3uMIJsFFlNUOaJRPJDKpHQGeRHzzIqT/U0qlIaY=; b=nNE/rYonKqlJKd
-	nobZE0B1IT+3t+FfW2fljEr5RP7xGxUqfJYuYj84x8xChxg36tzk5Pmw0PzwT+4z/9LMljmC77nf3
-	y9f028MtFaAj5NOQ9smlkQ72lgY6lsnh+OOiJr6u4Sgdp+V6Fj/e5KRyNH3msTGAEdDKM8IePAPe7
-	L0xP/pf30hKcQLo26O8fOfJ8b8GTMjce9VQvr6lORiRj1UTJ3DicOhg49GUhjqvnnVt/c7mX84X83
-	YCCjCjqby/gcA599cJ+QZy80R9dTdPzLvfGvmGCD+7KdubBrYAxURKOpA5p+skuws8ZQ5g3XvMFgF
-	GgR+Pl2EpnI/VpXyMORQ==;
+	List-Owner; bh=G8MCqmnxs7+RPvYySLJNUy1+EHoXsKrRi8pGFzj6hwk=; b=CJ2FeslD/yn2Ao
+	FSsr5dJ9zLGqBPC/UkNaQJcHfDlH+tOMao2emnhDWRY7djxKpjei2N4qIvF6BAYWj5wl2wMIn3GZr
+	d/4x+rcKidLHhRpykLIkK7rZnQznyOnWZttmKKD2Ec8z+EQe1vn7QAQsOwXHtvwNVFX97njg+GGa6
+	3oLy0kyZWKDYj8knji3zrHnEVSnv9F8Hikq6b/2pBzen5Od/QQ+9+hkkGXrnSM6camfMPkYkMXXAI
+	Om2H+8K6F9/9awGOeaN64QYMid4ZAf7zkzUeW92s1USZhTcqWsfYuoKTDlYPoLp18HAyFMk5dIo6I
+	kWLn+FbShXStvCiODmfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoU-0000000Bhjm-2uhd;
-	Wed, 10 Sep 2025 02:44:02 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1uwAoW-0000000BhlR-047g;
+	Wed, 10 Sep 2025 02:44:04 +0000
+Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoQ-0000000Bhg0-49hN
+	id 1uwAoS-0000000Bhh9-3nns
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Sep 2025 02:44:00 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-76e2ea933b7so149114b3a.1
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
+	Wed, 10 Sep 2025 02:44:02 +0000
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-76e4fc419a9so5200833b3a.0
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472238; x=1758077038; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757472240; x=1758077040; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NJdcHxX57XebbZj4zrMMfWynAEuJyyuoNM4CHXO3dik=;
-        b=QXJ9XRcpvMgDmWRYUAm8D0YKYd50toopTNm3NrulR24G2c4P41tfQyM8yNGUm1KNrw
-         DMl9uM91gJrG1zrY9uMtOhoXlC++lEMguFCeNhu8HtdEZZvBhAeeiiSbRsWpu2wT/Rz2
-         lqwODvXCAAufS1D9ACWEYZFAAfq4nTCK+zDXeDAsa8tjgMBrckqFnBvmezjzILfvscBk
-         GFaiJCO6pnOps70NKDDq3pALtH4hGfKLGpEO1FXArGYmAwx+DMWw6zndLkMAA04mBPMo
-         8w2W5BvYFkZMOqdBU+11Cro3zzKy2igs9bZaT8BomBd3grXYSEJKG+VD80hYmuI+bVNQ
-         r+1A==
+        bh=exY9byyl4etH+4IQEKnm6qXO5lYPceGxvCuurSN7fh0=;
+        b=FG/IZzAtjO/Qf8/eoK7K/n74Yw7N1nncWgIQtvGu26yfUGQWYWX4d4+Q/x66pqOfH0
+         +ag3v86P5OukQ9Lxg2rTeOkVW+KaXH75kJ5BN8EHxANG4cuVQwAraHWU67IpgWeZ7CJ8
+         eCGP3fyrq3IjSK1sbuXZZSHi4kBRKHxtidW0Lgv9NV8VuN8x9b1h45RhWX0brGBLrC2A
+         HcnBlc5V7X2tv+ICg9GpBJES0x4YU2S2HTSFX1nK37NeeoFizVbV7Mugm816x5FSolWm
+         ZiddzINl3X7/7fd/Iv8mq2fhEtSjCt9JT7N8XyNYmxHl9fFpf+GEAu0AjGOePIqMDnqo
+         mJMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472238; x=1758077038;
+        d=1e100.net; s=20230601; t=1757472240; x=1758077040;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NJdcHxX57XebbZj4zrMMfWynAEuJyyuoNM4CHXO3dik=;
-        b=JtU0ukBww+MsJ5t0UTUOakjtkgjXMHLRKWFppPWUr7m5jRoa8MFj2d4oPs4krO2NAn
-         d5+63W76YPIrQm19a3ft67DnDTiKgz8sF4JjGn0Sevt67DUEzTthCSx5M3V439LBs/gy
-         tteQkROSgryZKlb7HajWRIs5wcOynwhPspZgAzocIPuPd1mbLTX0U1tQRN6K963RZLhy
-         LMMuLbHIGykQ+wLVOSB9wGibTqyHGfs2rjnts8Lebm+046uqMefdUxzXqqjcf1K0VMGl
-         9cN8gKp/A5f4Lh29NiQ0x1T8AbUK6VZ2yAPEOE4zlYUvOWKoQ+2r5KgIsLDtGRex/xMF
-         dq2g==
-X-Forwarded-Encrypted: i=1; AJvYcCWmFESscErHYqz42kUIicUtj7tcm13Bk5y+NCk+F35lZtuBQW0CHe1dTc9ptzV4tkzfzGX9RK2IyP0=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzh1B0giG2FMmdZci5Qi1BQVljs3tJBRV2KxiykcR9qgzLQrEdD
-	An2GqAaHBN6fNOsR9xG0Z7V838JZZLJMwg/KxloU5mD7mno4e+wIl/2Y
-X-Gm-Gg: ASbGnctZHNcEHpGufP/6mynIi3Rv3HdR2KUO2JZsGqURKlD2rBkmJlpse9fMTCQFAXG
-	/cpxC6o/2D2YW8lhj9vyA+mHeivsUQC+3tEfTe0QWQ9Zk5ntl0MStmuSnLD/JXY+uGlxKLZsMUY
-	hyf3+gsdZoVrYJ6nOSu2orwoakjym3XM0NodaN2zj0DN/H+Yl1LOEUaSKbBjIEOJEMhzc6t9T6q
-	gaHnn8Ow9fs6E51aWJNXHZE3KKo5u+FYkCl8lrZGptEaNBPouKiGddjnKrs6DYEhjEDNvKuUsSN
-	mSzenD6Q7WNe7vRV2sitaGwBuU+aBZiZ8d1FI/GzbopQ/3xcPc3Axzy/hMwxRvnqBkTCC0gIQ6M
-	IrPF5XlEZ0ra2cboVtq5OM7z9M+VBop559imx
-X-Google-Smtp-Source: AGHT+IHlW2FYAtqZ1nBeuiJ0erIdKTHM8TZOiaskQC50mFORCZ7qHar4U4e6n8dIjJOSKpsMSsisCg==
-X-Received: by 2002:a05:6a00:945a:b0:770:4f37:bffb with SMTP id d2e1a72fcca58-7741bebe705mr21095803b3a.3.1757472238265;
-        Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
+        bh=exY9byyl4etH+4IQEKnm6qXO5lYPceGxvCuurSN7fh0=;
+        b=Cndwjxy3YfTb/5sbpG81SSQgapLe+RU7DXKFVGALYsc22rUZmlm4bYYbwH3Mm8NzL7
+         YYR5hgnJKpt2beca/BhZ0fX9LxDQalw+211EVkYHnMVwKwQspYnG9OXDM2JLa0ecUjB2
+         ub+lYYyQRhfVOUjJg0Gfm/1HvvrFQhYsy4MMcmD8izTbQDNj5jRD3bFUrwzf3ALxo7SY
+         UhHkgGhZUM1yvukF48LAbiFdVtsVIP/zVGBVVjBG9o3rWJNxKCVEezVfy/sQumC9t/Gg
+         v7i7k1yspVcrHxNzNRCv5fM8J+//0QREPUt1Wqt9GC1QMh1NKKQ6+7os6m9/jSbqn9d4
+         vmKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUbsclb0m/bJ8p1GBv/aGtehNA1GqPUtuh8aS8mQE3u5rHRCAEOzv/nsiXtrLHLlLTtAOwGqqY3KRY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxRaSv7Lvg7HqPu3h4UOFYo8iHrr32fACC/8hKA0+LLy1ZOCAsx
+	KmxCzVDFLgAZSwe6SD6BH2VepLELMpjxZhK0+9deKfBfIDglA48pjIOw
+X-Gm-Gg: ASbGnctEzjil2EPWuQ08WInI1FCcgIBnHvZJIAnTS6u3Gvg1Vhepgl0dtN+Vw9v1mV3
+	hg0aAEahhyW5jRmQ+75VWB9zRj88qpZwGiYvQw07ouh90m2R36D3R/HBn03krK2cDx4vfGZshza
+	5ye+69Fkxr8OhaMpba+pcoMcrkyzcsLIJ1p+AmjTn3VRJ3i/4bonucTz5r8XNH9ZkSBClgj91D6
+	K3iViyngZdkYPPEwArR9+iB5pmdXfDV0SF+nl0OlqMt6zHZd++lFhoP8m2zJ8cZgcM/VLmuSeeP
+	ijw/7FT0wGlENOhwtM6OTjwNePucBfAqoFR7rSNb+KiXOpEg/xRHuCm+oz2PZzYuZWtq6iH58h1
+	xWY5cheDNVz6Non3fLr3KabU7KyRz04GzgaOrhByFWTbspn0=
+X-Google-Smtp-Source: AGHT+IF4N06fuW1A2YnqT9YeYfBmdnDVAaiP1zDRDWLaUsyjpra5p/f/1OQFfNYpt7LKVATNwvRwQw==
+X-Received: by 2002:a05:6a21:33a6:b0:252:fbd4:630c with SMTP id adf61e73a8af0-253466f83c8mr21797369637.52.1757472239935;
+        Tue, 09 Sep 2025 19:43:59 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-774662c73e0sm3425976b3a.73.2025.09.09.19.43.56
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b548a602e14sm1057772a12.21.2025.09.09.19.43.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 19:43:56 -0700 (PDT)
+        Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 0C94B41FA3A4; Wed, 10 Sep 2025 09:43:51 +0700 (WIB)
+	id 614CF41F3D7B; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -171,18 +171,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH v2 02/13] Documentation: damon: reclaim: Convert "Free Page Reporting" citation link
-Date: Wed, 10 Sep 2025 09:43:17 +0700
-Message-ID: <20250910024328.17911-3-bagasdotme@gmail.com>
+Subject: [PATCH v2 05/13] Documentation: blk-mq: Convert block layer docs external links
+Date: Wed, 10 Sep 2025 09:43:20 +0700
+Message-ID: <20250910024328.17911-6-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
 References: <20250910024328.17911-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=883; i=bagasdotme@gmail.com; h=from:subject; bh=TM7A3b/55JCgQfCA5kxK7YxN6xbvfSMV2ctBC+dU0+o=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnih2mgVe6tXtn33sQOG2JKN6npsV2+KuvrWb+KLwo YbPrZOKHaUsDGJcDLJiiiyTEvmaTu8yErnQvtYRZg4rE8gQBi5OAZiIgi7D/1T1Zd+0q3NfXbSR WTM/c6Nt+dI0hVcvJi2QWSN+/Q/fJyVGhivi20SiX0RwBzyI4fPfm+rzyfPWB2YZV73+/5GK7JN 5GAE=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2751; i=bagasdotme@gmail.com; h=from:subject; bh=7QXrNRuCbHeHgCYdGUN3dSXlo+bJ6ZwXyeTt5Kf+8Ys=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnijp3TFftH6q+kyOiIzsCLYVR/ZOd/GUnnS+Yu6/k 6t6/fl6OkpZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjCRydwM/yu/ZhfqF9YvP7NL t0p2f917xpei8yqP3w+TKtx3xMg27gbDX5mQVefmZ+9qe6G15Ils7rRL855MXJGSeHOCjN6Gx61 PyrkA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250909_194359_026524_15535652 
-X-CRM114-Status: GOOD (  16.22  )
+X-CRM114-CacheID: sfid-20250909_194400_951731_2510C479 
+X-CRM114-Status: GOOD (  19.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -199,25 +199,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use internal cross-reference for the citation link to Free Page
-Reporting docs.
+Convert external links to block layer docs to use internal linking.
 
-Reviewed-by: SeongJae Park <sj@kernel.org>
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/admin-guide/mm/damon/reclaim.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/block/blk-mq.rst | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/damon/reclaim.rst b/Documentation/admin-guide/mm/damon/reclaim.rst
-index af05ae6170184f..92bb7cf1b5587a 100644
---- a/Documentation/admin-guide/mm/damon/reclaim.rst
-+++ b/Documentation/admin-guide/mm/damon/reclaim.rst
-@@ -298,4 +298,4 @@ granularity reclamation. ::
+diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
+index fc06761b6ea906..4d511feda39cfd 100644
+--- a/Documentation/block/blk-mq.rst
++++ b/Documentation/block/blk-mq.rst
+@@ -87,17 +87,16 @@ IO Schedulers
+ There are several schedulers implemented by the block layer, each one following
+ a heuristic to improve the IO performance. They are "pluggable" (as in plug
+ and play), in the sense of they can be selected at run time using sysfs. You
+-can read more about Linux's IO schedulers `here
+-<https://www.kernel.org/doc/html/latest/block/index.html>`_. The scheduling
+-happens only between requests in the same queue, so it is not possible to merge
+-requests from different queues, otherwise there would be cache trashing and a
+-need to have a lock for each queue. After the scheduling, the requests are
+-eligible to be sent to the hardware. One of the possible schedulers to be
+-selected is the NONE scheduler, the most straightforward one. It will just
+-place requests on whatever software queue the process is running on, without
+-any reordering. When the device starts processing requests in the hardware
+-queue (a.k.a. run the hardware queue), the software queues mapped to that
+-hardware queue will be drained in sequence according to their mapping.
++can read more about Linux's IO schedulers at Documentation/block/index.rst.
++The scheduling happens only between requests in the same queue, so it is not
++possible to merge requests from different queues, otherwise there would be
++cache trashing and a need to have a lock for each queue. After the scheduling,
++the requests are eligible to be sent to the hardware. One of the possible
++schedulers to be selected is the NONE scheduler, the most straightforward one.
++It will just place requests on whatever software queue the process is running
++on, without any reordering. When the device starts processing requests in the
++hardware queue (a.k.a. run the hardware queue), the software queues mapped to
++that hardware queue will be drained in sequence according to their mapping.
  
- .. [1] https://research.google/pubs/pub48551/
- .. [2] https://lwn.net/Articles/787611/
--.. [3] https://www.kernel.org/doc/html/latest/mm/free_page_reporting.html
-+.. [3] Documentation/mm/free_page_reporting.rst
+ Hardware dispatch queues
+ ~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -143,7 +142,7 @@ Further reading
+ 
+ - `NOOP scheduler <https://en.wikipedia.org/wiki/Noop_scheduler>`_
+ 
+-- `Null block device driver <https://www.kernel.org/doc/html/latest/block/null_blk.html>`_
++- Documentation/block/null_blk.rst
+ 
+ Source code documentation
+ =========================
 -- 
 An old man doll... just what I always wanted! - Clara
 
