@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6032ACAC58E
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F0DCA0FED
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZzyLBhefHuQIyqiZSm1MDDVgwXKUV7tiurjj3PoXQ5A=; b=R/cW2EoA1/sY3a
-	i/zNd/aaCfYdF4fvpK2ykxCQoxgSSESQlVUy+hP8DVUpvOwaHswiY/Piq7AAjdneIOaiAu+pcA40b
-	LINuP2/AqeI058YXXp8EUGg+ks/8RYDRa/6L1ai0M/10XqB88HN5Eb53PQ6YaPu3NUp/Lv4UglhuS
-	0Beyv+ESFUrZZthiyp6EVJEI+at6Lc7L4sxUasoapJBEo34WlbO9nJWdm8IS12ejh6yG6FYPXH+34
-	QhgTMEgxKyrNFPvUzrs7kxKGFYGRv6X1SVC4ZkYQ8GrblXIJB64SJbzHoPBenDv0mhjjK1NfvfTNk
-	dM2u0mDDr4Jpo8kpcwnA==;
+	List-Owner; bh=LH3bMkTq9N5+vFWesRjADmU3mhXftUVzsJ6o3CQjGRU=; b=tnfBaELS/ba0Kt
+	4NorXOzO5d3fvFR/tJbKIfSZb1jfiv5lsNBvx/DsI80OGeCVxxfqqPzKrv3B84nZlzOTrwmr+muIP
+	rrEdjd0lOW2j2z/DJaeDrV2lCO+AlfL3TvUUt1RqBb/X+3gfhksw3FqmdO2kWWz6FzFIlD57vMU0x
+	K8c/es9381NOtwGjPMOKowhdIy2or3MeUMZiOSUQhWySTuhvstbb/B2wBYJ19kjJO/gCKuripFRWf
+	Xh46Y5u9FrF1D3IPFUAS2+077rVyNkgcHJIODRgnLQyYNhhXx4jFHqhv22Ye1aJAmd/dY3rVAvyZg
+	KY3A6Au4mHy7tHeLdUBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoZ-0000000Bhqr-09bC;
-	Wed, 10 Sep 2025 02:44:07 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1uwAod-0000000Bi0l-3pV3;
+	Wed, 10 Sep 2025 02:44:11 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoW-0000000BhlG-1C3w
+	id 1uwAoa-0000000BhtB-2JKd
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Sep 2025 02:44:05 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-323266cdf64so5473252a91.0
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:44:04 -0700 (PDT)
+	Wed, 10 Sep 2025 02:44:09 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2570bf605b1so30274765ad.2
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:44:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472243; x=1758077043; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757472248; x=1758077048; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rNDvUkQSM5YXWXIzm38SWG/hRRo/bsx6SYKE7k7lSmY=;
-        b=mY7mpIVRgY5SxshQiX/yzneN9tHPHLOyd30dpGJJa7FWPdb8nNiiHWwllaqGJF5YP4
-         3xcLDDOCAjKndswWl92FuhyOz83T0/h23QFZF11gX3I5nMhiAvjTuTQT3mcraKDn7qS/
-         G5ja0ibnVx3TJVxMr3GWvNXfa3KIsbjDOeDy8t4gTY6MkrJ7g8i7R2NPZByqh5RZvrW0
-         85cwH3JLu9TVUyUyxbDDymfbhVmMqGlNbHDefGxqPwVdkw4+5UU4mddfLYw9JZwYwukC
-         NlvkD/1QEMS70cZroz65u/9ccwbJUFKhxrTwSLVNfi/m6x5PizRhEkxPc3LAhKd275g1
-         NV9Q==
+        bh=BATnrPttTGOeKRCCT0K3V4HzIU9KTE8stAVBRczt2LY=;
+        b=iWUV+LuFWIAvSdSflO9O+EK0sf6DSmEsuoXOSBnxSBIPUTdJk+iehcDynJRdgc6p+d
+         Ei8UdOCuRNWu6MuUGYEK/uRjnej4pwRbXUqpb2Ki8Lj54oagIS5h4wJCoSSCexwLNROK
+         0D/aY4kF1Buz4VIj2p3B4zDp0YyVy707LYnSH/0G+eutf2DXNr2bcLu4g4dyjb46QJDb
+         GKTqBXvMkY0gJio5nTTkMveu3pG1swHR+ZKTXxM70qFDN0USnWMctMyybN51ArMo2KQL
+         PT4kaQM1y6RP9PJZjavdfAljK2USddI5o+58YBn9/7qaXbxs8Sjf8kIZbh+EP2HHLdHp
+         R0bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472243; x=1758077043;
+        d=1e100.net; s=20230601; t=1757472248; x=1758077048;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rNDvUkQSM5YXWXIzm38SWG/hRRo/bsx6SYKE7k7lSmY=;
-        b=mvsqqLpvAwuXjQDq9kogbwVeQObGVxawhEsPZX0t1ao3zNxkMIO4QDgLZ8vFVHQMI5
-         ZP0kzbb++nf/s9FBciwIUG/fPGNhKm6TxTkSWEkvX2vzfyoig0X0Z9RqsbmB8634PzH5
-         NHFb+Wsd1Z56Ln2g+Ue8oH7yUOiq4Tddgx8qTr3gUFDuTH0m3EPFq8HUVoCMf+R7g2Wq
-         xGwV1yiyCtD8jGrsm96fQpXmnyDXcnwLaXeCmbnfYb4Iv92JtZ/OLpXeZ3HfkffWZtAU
-         voDBOrNu1im0vHH4wpO00xJ6qhP7nTmoZls/BctVnZrDuheGaugdNI5z42meLuogwV6Q
-         swMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUr8h6RZfmV+m98tPo6VQo1mT43vVwdwleXxIz/iUGFFUMNrUxN/dqEVWJwU0D9+ktwHLN6SXEj1Ek=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwYbgNyZHTv2MCtHtoWQWNlPHaJ5YCI0tqmIPpoLIr98TCXowQk
-	TA92l79mvzWH1euWl+FXuUjU+durFW99sn95FreoyKCAqZRCZecGHvlt
-X-Gm-Gg: ASbGnct1SPqFdNXrrFxqPOQ3iUUBf6d7FC3/prBiRxKh+Iu5U9SHqTV8ClIXtEhhGeC
-	YVXLyZz/x9Uo5BSWUdBXCzwc1sTK7vfdY/4UMMKCMqQOR46Dc9UYHrkPQNMBPt1LKddamgIl8Q6
-	uTn1hd3tcFwpbr66yagllMlbaacOoII3foJOnLTCUCZqOHZL9aWllK1FnSzGBR3G1IV+8yAXBmz
-	/59SCZQcpOsy8Yuy+IjbecKuKPoyk873DSJ5ZMQB2OBmkc4nr3EyylcnijnZoRMH0V25YEtaFtK
-	o1S+qgLiJOY7bLyhqQlYt6jMcCTPRADMd1IMygHbB4fWXOIzHJ1eUno+9tR7J8Dwy2kC6Dwi8Is
-	AMToMO5UxZoy+gEhazvF1xu0epKYKmUOrJGlX0yFDGO68Uxo=
-X-Google-Smtp-Source: AGHT+IHufov4+itUSgW37fW7I5+vYPKYGEYLT2O7M4oMOCb3e767p9iSPZEDIcWxDU07PyMVD30Hjg==
-X-Received: by 2002:a17:90b:48cc:b0:32b:5ea2:a4f6 with SMTP id 98e67ed59e1d1-32d43ef0806mr17274237a91.6.1757472243216;
-        Tue, 09 Sep 2025 19:44:03 -0700 (PDT)
+        bh=BATnrPttTGOeKRCCT0K3V4HzIU9KTE8stAVBRczt2LY=;
+        b=Yn14d0VVF3XbTEaaOll1fCZ3vVxt07OvDM+m0Ca+NpC2+gdTw3v649aZK516sfvE//
+         kqfG/fuLwM2qTtr2OW5fM0D4HrnhfvSDMAhVReWRkVKLMsBveYbVtfI5OqixqjcA4bg/
+         ExEks+0iogjppQTY75hbCLOTleOrQ38F8wQf6oID/tn9SdReSyy1DG1uIAvP8imc9xRk
+         bSUduSOtpndM95LcZbtVIRX65mZd2iKCK3lE/0Z4ksiKMqxfZO+YXqKH3rto4hsO21Q2
+         ppsVdm6tqonb4rhBJiLUqdAGIeW7hRzGkmojNhZXxJHWhKMAC85uoxuvpSU9nCn1geZz
+         E4kA==
+X-Forwarded-Encrypted: i=1; AJvYcCXJtp8NDMx4OfyxGg1ubhfacHooNylW8ALOEA1JgidnMLia6z9ggHgaoHb0m/RqEsZtzjcz0vnJwnw=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzpwZTjhpkNImrxAgj/tReXMvQBUqoTDDVDua7WuZvAw5HrQKMi
+	CS3GSB+jw6Z7JU9CVkGL+xVP5X3aAt7TWmcEX7e9srdu39t5w4zvuJtj
+X-Gm-Gg: ASbGnctGy8gjTDCKx4Meo8xM7tp5rN0aLd49UOT2xhq2TtAXMuq0iXOvK96u1kheV7/
+	7O+kGmCbEc1X+hExBIQg16Q05cuBG80qyW+/GDmQaoGGyuyiyPXPO+WEa6XUt8w3syFmHM7BwRH
+	NlXCpMF2pugeM9KZU+c8jxmHmj3Qv64XtW+NLb8jkZef7UYS3nW5s/wm9aMjm8iR45LsgePw6oM
+	R1N5XD2vsKfr7OcA3xD1cpcaqUdo8RAyfb356admzN9dVuBXT1Eo2C6UyxKUDnzEzah9Xb4j+6G
+	nI2DtgZ8zCQsqRCy4GbMXgTVCibZHpTc9QX0xLDj4rWHfk6FsIYs+05aPS54Fyo9Zo2d2DpWW1/
+	KF0QGHvzpYaGzEBi/Keop0oRDiuGWg3oXnuDD
+X-Google-Smtp-Source: AGHT+IFT6YbUc/m0qKUsx2gIlS1cyHwFE/YTWi5ShK7yx8zu8toS/bxgvdpLpOBm2BAA4mGAvmnSyA==
+X-Received: by 2002:a17:902:d501:b0:24e:3cf2:2457 with SMTP id d9443c01a7336-2516e69aee6mr211563725ad.24.1757472247632;
+        Tue, 09 Sep 2025 19:44:07 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32daac59f19sm1672020a91.1.2025.09.09.19.43.58
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-774662ef781sm3491871b3a.90.2025.09.09.19.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
+        Tue, 09 Sep 2025 19:44:03 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 7D27041BEA9C; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
+	id AD39841BEA9E; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -171,18 +171,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH v2 06/13] Documentation: bpf: Convert external kernel docs link
-Date: Wed, 10 Sep 2025 09:43:21 +0700
-Message-ID: <20250910024328.17911-7-bagasdotme@gmail.com>
+Subject: [PATCH v2 08/13] Documentation: gpu: Use internal link to kunit
+Date: Wed, 10 Sep 2025 09:43:23 +0700
+Message-ID: <20250910024328.17911-9-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
 References: <20250910024328.17911-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2744; i=bagasdotme@gmail.com; h=from:subject; bh=IiAjp2UiG4E4i0m+2wynqH3PCAcCcaK0of1KdBtx1KU=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnii1Whs7TnrT1LggM0BOd5LEqfAiXtc37zS3e5gl8 vnwGP7sKGVhEONikBVTZJmUyNd0epeRyIX2tY4wc1iZQIYwcHEKwERe5TH8D8jY+cG0Uf3udDP5 nmfVwtmWi5mup+fF7AiUlLjK8OXNJ4Z/BmfN3s08dUKM70wua9O148mfqhVc3wuvO6WtdrV4s/k pLgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1173; i=bagasdotme@gmail.com; h=from:subject; bh=WOOeaeuC9/RH4phIV+H+QiLxF/prahARBSHjeoa181M=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnijZrvnhN9eJ1+LvAp2zslcUft9O2uC6e1HKcd4J/ rFLDLiudJSyMIhxMciKKbJMSuRrOr3LSORC+1pHmDmsTCBDGLg4BWAiyg8Y/lmtiNJu8EtVbugK fub0kTH31Gy3pLdrgoTZz7qUXricksHI8GebzZaeM9lhFZ8KFVTdJ9stibqczP1vypfAmIZda2d 1MwIA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250909_194404_330428_78428DAA 
-X-CRM114-Status: GOOD (  21.49  )
+X-CRM114-CacheID: sfid-20250909_194408_613357_83FFE9E6 
+X-CRM114-Status: GOOD (  18.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -199,56 +199,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert links to other docs pages that use external links into
-internal cross-references.
+Use internal linking to kunit documentation.
 
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/bpf/bpf_iterators.rst | 3 +--
- Documentation/bpf/map_xskmap.rst    | 5 ++---
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ Documentation/gpu/todo.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/bpf/bpf_iterators.rst b/Documentation/bpf/bpf_iterators.rst
-index 189e3ec1c6c8e0..c8e68268fb3e76 100644
---- a/Documentation/bpf/bpf_iterators.rst
-+++ b/Documentation/bpf/bpf_iterators.rst
-@@ -123,8 +123,7 @@ which often takes time to publish upstream and release. The same is true for pop
- tools like `ss <https://man7.org/linux/man-pages/man8/ss.8.html>`_ where any
- additional information needs a kernel patch.
+diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
+index be8637da3fe950..efe9393f260ae2 100644
+--- a/Documentation/gpu/todo.rst
++++ b/Documentation/gpu/todo.rst
+@@ -655,9 +655,9 @@ Better Testing
+ Add unit tests using the Kernel Unit Testing (KUnit) framework
+ --------------------------------------------------------------
  
--To solve this problem, the `drgn
--<https://www.kernel.org/doc/html/latest/bpf/drgn.html>`_ tool is often used to
-+To solve this problem, the :doc:`drgn <drgn>` tool is often used to
- dig out the kernel data with no kernel change. However, the main drawback for
- drgn is performance, as it cannot do pointer tracing inside the kernel. In
- addition, drgn cannot validate a pointer value and may read invalid data if the
-diff --git a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap.rst
-index dc143edd923393..58562e37c16a01 100644
---- a/Documentation/bpf/map_xskmap.rst
-+++ b/Documentation/bpf/map_xskmap.rst
-@@ -10,7 +10,7 @@ BPF_MAP_TYPE_XSKMAP
+-The `KUnit <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_
+-provides a common framework for unit tests within the Linux kernel. Having a
+-test suite would allow to identify regressions earlier.
++The :doc:`KUnit </dev-tools/kunit/index>` provides a common framework for unit
++tests within the Linux kernel. Having a test suite would allow to identify
++regressions earlier.
  
- The ``BPF_MAP_TYPE_XSKMAP`` is used as a backend map for XDP BPF helper
- call ``bpf_redirect_map()`` and ``XDP_REDIRECT`` action, like 'devmap' and 'cpumap'.
--This map type redirects raw XDP frames to `AF_XDP`_ sockets (XSKs), a new type of
-+This map type redirects raw XDP frames to AF_XDP sockets (XSKs), a new type of
- address family in the kernel that allows redirection of frames from a driver to
- user space without having to traverse the full network stack. An AF_XDP socket
- binds to a single netdev queue. A mapping of XSKs to queues is shown below:
-@@ -181,12 +181,11 @@ AF_XDP-forwarding programs in the `bpf-examples`_ directory in the `libxdp`_ rep
- For a detailed explanation of the AF_XDP interface please see:
- 
- - `libxdp-readme`_.
--- `AF_XDP`_ kernel documentation.
-+- Documentation/networking/af_xdp.rst.
- 
- .. note::
-     The most comprehensive resource for using XSKMAPs and AF_XDP is `libxdp`_.
- 
- .. _libxdp: https://github.com/xdp-project/xdp-tools/tree/master/lib/libxdp
--.. _AF_XDP: https://www.kernel.org/doc/html/latest/networking/af_xdp.html
- .. _bpf-examples: https://github.com/xdp-project/bpf-examples
- .. _libxdp-readme: https://github.com/xdp-project/xdp-tools/tree/master/lib/libxdp#using-af_xdp-sockets
+ A good candidate for the first unit tests are the format-conversion helpers in
+ ``drm_format_helper.c``.
 -- 
 An old man doll... just what I always wanted! - Clara
 
