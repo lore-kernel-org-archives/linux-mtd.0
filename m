@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DFD1CAC582
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 475FFCAC587
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fm2h8V5Ruejtps9dgNjfX2iHgMRfcEfrzfgHBeSk25A=; b=iRyPklN3IzWUeO
-	7L0AWj54QTWy1G17AreiHNp+IaanwmWT+9Ago8PvGDD6EO+VGY0ngZh7+fDeLRrYrBMoi/r/PS/cY
-	puCUMx0xavSXcw/3xNYvbRneHWYeeAgMmwnjctx7uvazs/r90AF+sbuurif+XhyRlPd/QMLfTN2TJ
-	Y9QgT0i4nXnZ4qlbDnMCEVTEoOVb4t0ldV3XImRYzDdzb7IAfrJ0J6CCBmSsAepTZ6KU1DEa3c8wy
-	HNZPIzx5jvvP0mHpVqJqheogaY9NWF333fAjMsHAYyysCFv3Iy6gAyLdrjQv4vVYJvKdJp2jbH983
-	i4lP+69XpZApBIrPPjZw==;
+	List-Owner; bh=tc1buf3OH3Np8wsvcqmYJzJOp5yIUrA3lkEZ1cXftWk=; b=k1q4E/DYe0bN5l
+	ZGF8cgoa4gjndvisFZhVEAkvTky8NlmSrWTVoLxqf60RzaaNPgR4ibt4BQxSxuCZiXwfwPWaGxUvL
+	utGmLJcxgO3s0hPlWArgJSy1lAZOrjMfvQVmzmHC1QrDa1Cy3ZW6pHVnfSt9QyHGC2h3fiC5HdKuN
+	Z+a6uLoTlAzVu+4ExTOiw6mBh9sNWOxg30jsf2q4DWA1mC6X/AljWOmR8QnGJDyjOhOiqukhwClux
+	FcoeiYKtp4EVsqj1k4XvequR9zgrqICUnCtqy44QU3QQxs2LTTE9CxX+j6IfW+uwnBLRk2ck5hlU6
+	2L26MugyrM+H9zApV5lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoY-0000000BhpT-1vgw;
-	Wed, 10 Sep 2025 02:44:06 +0000
-Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
+	id 1uwAoZ-0000000BhrU-1ghm;
+	Wed, 10 Sep 2025 02:44:07 +0000
+Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoT-0000000Bhhh-1nVl
+	id 1uwAoW-0000000BhlJ-1CYX
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Sep 2025 02:44:03 +0000
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-b47173749dbso4360490a12.1
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:44:01 -0700 (PDT)
+	Wed, 10 Sep 2025 02:44:06 +0000
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-b4c9a6d3fc7so3799952a12.3
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:44:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472240; x=1758077040; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757472243; x=1758077043; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=isRfEajvq74JD8Gx5JZkbk62qSgMtw6IJwcPrIolSGc=;
-        b=Txj1HRMq5WJqlSkuG2b1wEtdcKZYMGLtcCeYK9JeqqeeX7QcOme6wzZV4yhoHp/+fB
-         /m7AstYTIp5ZBOOvqFHYk+e7WqEfkEF3NJI0gmAULVHbckB29iIislKO2SBdINNDIfSL
-         FkQHmthwyJI4TfuBQWW2WiBcoPRxO8qRa5sdgshjKJp52uDif+iU13lnXKl0qXapNpgn
-         g5p/8RiBGAqi5zy3ZZMg08bTvQSC2FysZYxjNyCQREmfWYj7GrBraiSJ5+oie7o0sZrt
-         UTop4M6Nil6D5gT3GByxareM1IgvSpFpZ+kZenpIt/yxANQf+ttHS3dhthS5tF42HXX2
-         7ooA==
+        bh=0koFSnJrv2UowuMhMeqtiJIslvN7BbZv6mHXQ/mKo7A=;
+        b=LjDemJuKWMIONJoYN1PePkmysScQlRyxUm6VfuN7eNW4/GipmwncEqDlqxjddSFn6B
+         1Ywvs4bEfYiunQRUQd2nlZNx2DghPDMaIioA9+L57gdsLisp+BDXPZm5+nsCMvExTtce
+         tuIuwI7yyo+dvjIgrQhV9tXZ7b5yZYI4K45ygY4pwZdsJv/sP/he07P/yg849c+/pP2O
+         uY4PIbDR4EMh0br8WKwxNahHUR89W5shnbVvmmNBVJ8CAjrY5YnlSM6C3zskwqdYKSpD
+         QHv7mD+6tKLtLVWtPQ76r9vM8Mc4ddVEgJdRyNTgOXY3ohk5jsxtINJxvEKpTq+CPaCj
+         u69A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472240; x=1758077040;
+        d=1e100.net; s=20230601; t=1757472243; x=1758077043;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=isRfEajvq74JD8Gx5JZkbk62qSgMtw6IJwcPrIolSGc=;
-        b=wsAuqgnyZ3TICq0wIGj0/z95ZbWI9EHDtWrmd2+xuJPseKYaJsslOebMSUEfQgxgiU
-         /C6cgnQhzA6q3xYhBIb6NSXPWoKHW+eh7m6KwcDf4L2ljk5kMVwQ+14rqVhM2R4s1F7+
-         9b6W9PErpb8dfjTRCpXAv9GJ27bCQYDJ6OBLdWqckAoe39rH1XLhJi0qiiGC/rC9yTm8
-         Je3iryt+ieGQHOV95Ma4GQGXJzPPlhRWKA3Lt7WSlHqxBMz9Ee/AiqREUfweJFvaab0x
-         d88uerYivCj8a3DjKMOYNmVFA6g3w61IAE1NDniTggD60hPkeXm6HoL2qTHKKxwVeU/m
-         aeMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVqYmTQnIx+toDe45en2EsFyBoVhN8J4VGvpVxfKogmATB4+Ky/v6H58/moj4G6fO4uRgY9qDinNcI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxEW79zEoZ3hA7q094841z1xjgoCJV7MTveoScl957PGzpZi2cp
-	4oRcwWOZZVWml3OumstWMii+8q4+510aDlv642fXRQJ19JD7LBbsImoy
-X-Gm-Gg: ASbGncssLD47AhtcLB17+6AEhLrcteXVUmLShqYr90OBCf0wSuFvCCtxv4Plec0AS7k
-	cnEcnNzd+Ey6FAh7LaBrpq3lqs+xcivioP9tD2gc7EgEfRlWcHr6grxwFW1FcFaSCQMmPKEzN8n
-	iqs5Fe/xSY4GK+0eyR1r/ka67Px9iR+HFgQ0+XCIMJqV31TtA5LZ/6PWxuuYTeF0kYfBYDcipH2
-	4MatkG2qtQwbxxeMVqzgdJZCUlG5/n9xzpN/I/8R2OvKnWr8GOsUuY+Qa0q0e4DWKkOwjWk/RmN
-	+Hs82jhLPOrSQwruFcmQyUEr5iJZXjqQtT8AqgJnwEc+r4+F4Kk4cmdSKXdN94mV/9HLAOWsHyZ
-	5IDr690l9EJHoLsQguHr9W0USHw==
-X-Google-Smtp-Source: AGHT+IFrrGtrsp5QApHqrAEsH4Lf99kNe3GTHl7qChWDynb5tQqdU4zGL9zb4NWW/Nh5w4cYNQSmBA==
-X-Received: by 2002:a17:902:c943:b0:24e:8118:cc2f with SMTP id d9443c01a7336-251734f2edcmr195946635ad.59.1757472240373;
-        Tue, 09 Sep 2025 19:44:00 -0700 (PDT)
+        bh=0koFSnJrv2UowuMhMeqtiJIslvN7BbZv6mHXQ/mKo7A=;
+        b=nPNmZC+PvjNEDQBqTRf0b6FOeCgxkdDSyGhHR241kd+/D4zgDwPWXyd9F48OEFrhe3
+         EMPyA3AfaiFm/3qcrKX1BVJHoxvH+F4uAGdY9I9TleSNTQlEt20HHwoUz1i2IZxPzWvx
+         O71Qc2huCN8cwpCSucrseTIA1ZaUo67H6K6EM8+kz5DDu9+uwbYvxzkuMldrvfVlvUAb
+         Bx5xQgdUlR1Wgtn1fwvwC5uIupzV+J4T6qnYbNTyUDB3elmkRkZqfVQL98noaycz4dFC
+         a9N7HfekYWq/DWyVYhHhWmZLJDTt6JiSa1gDAt+JrMBwMrNm1x0bcmPuWLZOjv65RFcR
+         6F4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWvjtrvy2BNeotkfqXPW23rx9tAXNagQpUB2wwj135uYjelu6hKx0E5NoVHYdlbEt+9kWdo97P08jQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwAzzqLyZaryNoe4zOV5t383yRc+P2uHWSIsl6AdOkoyYB+qC61
+	6blgIG1/Ys0RS0xiFbS2s3TsXKnEXOmIvfFfcOKviMR/icXIJqqswgDm
+X-Gm-Gg: ASbGnctdg1ej+mzNQHGydGIaoGqS44v5uX9NnLXu6IeCKaWigQXB7zXKxT4CUVnq2eN
+	lLeMjLfVra+l9+vto3jmW7cFcEuFhyfB3j5UBV3V+PE2fDYWRcZRMbf12duCJO3JZ4YKdNYI65W
+	1e47u52Nx+AM65bRXFiCcm3ovCC0xDYhwxcXBudON4x1FKU56F9kNmzOwuKCuRmp9hTMzKTZg9f
+	+QlxqdgNpgX4w+B1ckIefZk9XvyVBPxuOAlwnBaztUg9h9L2Ui778siqBrEtcIjhF0E72Rh0IhL
+	XcOgXD1WUxEXSZ060P2v+wdOv7DFfs4bTVX3QwRVwjU5aac/d5NPto/vMWPp2KUY/G/WTKu+wUm
+	YwM9UWVVrJ/mnexn6uSdw9fFTmQm90GNayLpC
+X-Google-Smtp-Source: AGHT+IHze3NqUFgqDMM+sZM9Wi/Xmfyi7sD03WA5eGHes94PFV7I4KKOuKIIQBvLXj+TekGgIh8lMA==
+X-Received: by 2002:a17:90b:1e51:b0:32b:d089:5c14 with SMTP id 98e67ed59e1d1-32d440c5edfmr18323077a91.35.1757472243321;
+        Tue, 09 Sep 2025 19:44:03 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25a2ac085d8sm10840225ad.118.2025.09.09.19.43.56
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dbc1c467csm201563a91.7.2025.09.09.19.43.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 4B76441F3D85; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
+	id 3876D41FA3A5; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -170,20 +170,19 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	Jani Nikula <jani.nikula@intel.com>,
-	"Mario Limonciello (AMD)" <superm1@kernel.org>
-Subject: [PATCH v2 04/13] Documentation: amd-pstate: Use internal link to kselftest
-Date: Wed, 10 Sep 2025 09:43:19 +0700
-Message-ID: <20250910024328.17911-5-bagasdotme@gmail.com>
+	Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH v2 03/13] Documentation: perf-security: Convert security credentials bibliography link
+Date: Wed, 10 Sep 2025 09:43:18 +0700
+Message-ID: <20250910024328.17911-4-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
 References: <20250910024328.17911-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=945; i=bagasdotme@gmail.com; h=from:subject; bh=Rg8Js/mQ+ji0aVDnd3uUR+wPkIV7f8cZoyAXSG+WzrA=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnihuCjbtUDpafXJnbOHtXRdvzJjhG/D0b9KEh6svl Jx1Ocjf0VHKwiDGxSArpsgyKZGv6fQuI5EL7WsdYeawMoEMYeDiFICJSHcx/FNfPsFU6huDt7vJ kh1V1uZRLxRT1SOqp3E8VV6+6XDdK15GhiW/r34XtloUdOCT982MLd7bz2VGXmhWZatxbn38c0u qDSMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1135; i=bagasdotme@gmail.com; h=from:subject; bh=OYt2QegR/+u0q3CRKm7Zg38q7SY9D/3L6tdzv43Jflg=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnijWLH+uxHuD5TvzhcJo65MVRz8evf+ht/Kg8H3eu d3xR8redZSyMIhxMciKKbJMSuRrOr3LSORC+1pHmDmsTCBDGLg4BWAiXd8Y/pkdXvTh5u5HL7eU z3No81zweEv6gxSt+G/HWyxWsM1N7zjH8E/xHeNT5tNsutFpemIVy+M+5pasa5QSXynjZOFf2v3 OnBkA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250909_194401_490957_C57F32A1 
-X-CRM114-Status: GOOD (  15.57  )
+X-CRM114-CacheID: sfid-20250909_194404_330246_61067BBA 
+X-CRM114-Status: GOOD (  16.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -200,25 +199,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert kselftest docs link to internal cross-reference.
+Use internal cross-reference for bibliography link to security
+credentials docs.
 
-Acked-by: Mario Limonciello (AMD) <superm1@kernel.org>
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/admin-guide/pm/amd-pstate.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ Documentation/admin-guide/perf-security.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
-index e1771f2225d5f0..37082f2493a7c1 100644
---- a/Documentation/admin-guide/pm/amd-pstate.rst
-+++ b/Documentation/admin-guide/pm/amd-pstate.rst
-@@ -798,5 +798,4 @@ Reference
- .. [3] Processor Programming Reference (PPR) for AMD Family 19h Model 51h, Revision A1 Processors
-        https://www.amd.com/system/files/TechDocs/56569-A1-PUB.zip
- 
--.. [4] Linux Kernel Selftests,
--       https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
-+.. [4] Documentation/dev-tools/kselftest.rst
+diff --git a/Documentation/admin-guide/perf-security.rst b/Documentation/admin-guide/perf-security.rst
+index 34aa334320cad3..ec308e00771427 100644
+--- a/Documentation/admin-guide/perf-security.rst
++++ b/Documentation/admin-guide/perf-security.rst
+@@ -311,7 +311,7 @@ Bibliography
+ .. [2] `<http://man7.org/linux/man-pages/man2/perf_event_open.2.html>`_
+ .. [3] `<http://web.eece.maine.edu/~vweaver/projects/perf_events/>`_
+ .. [4] `<https://perf.wiki.kernel.org/index.php/Main_Page>`_
+-.. [5] `<https://www.kernel.org/doc/html/latest/security/credentials.html>`_
++.. [5] Documentation/security/credentials.rst
+ .. [6] `<http://man7.org/linux/man-pages/man7/capabilities.7.html>`_
+ .. [7] `<http://man7.org/linux/man-pages/man2/ptrace.2.html>`_
+ .. [8] `<https://en.wikipedia.org/wiki/Hardware_performance_counter>`_
 -- 
 An old man doll... just what I always wanted! - Clara
 
