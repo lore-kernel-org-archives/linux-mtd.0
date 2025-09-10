@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADE25CAC582
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 03:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62E54CA0FED
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 03:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Maal+qrOzJQb8ZH6mHw3kwuSWifaTnzHWcONjL+vQ3w=; b=L86t7CdMSEEW74
-	cL9NS6vIVizgE3QrS7BEUrLAv0B5p7syEk1nyIGaNKQLRLzdzgk1UNeaHbd9ZLRaXVs7BXegc8fSQ
-	znRjCTHl4fkaMdF0mO8kzw1q4UK+siioVeZ7HDsMMj5RAHhuMBP2hY7FZN/hDKyAuCVqGWwXVMnOx
-	Q891yKcaY6ABCP2cPLU674eB+RI/Dd8Ng4scrWOL4CaY+8FgeM+hbk7l+NBNRaUIb7EKjYUMxCFV8
-	qHKShwj8hRP8do57QmRwc0MdldR4x/5/bx3briTr1AeDso5RsfvlV6ksjpHT575aY3pTGGl0cAuhe
-	dNfQAMxXMgpxAHyCSnqg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=D7+D99zePEN0JzjvDzN8c3xS3jyY505xTqxaIvGXgYQ=; b=bTfNhbovQRsy4L
+	CktQpIJy1wiEnN0Sec5POGP6qkqxaTfk/Xws1y36yZ2TmmIQnwaaeahWludTioI6XSIPy7P0n3chp
+	DWvSSjbASCRFQLhmdraJ8tMp0S0Nt55Bys3dU9jAm2eOCr41OOJoLwnkG0J0JZzAEop5R930YNlNO
+	myRNX3Nnh5ZCEueGpREk/NgwNhY3xryxJjll7XltZOvlBbvFAuF6xutKtxQkVa3leRC5HpeZ7nv/2
+	XUKTzEF2jeX/iAvTETtYA1FHXKg9fk1EB9VruMgls4tXvSG8JYEANp60Tk2eFVYC1CBwhxAF97F8d
+	NYznA2ewoOZ7WpDsmk/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwB9p-0000000BnLQ-1zde;
-	Wed, 10 Sep 2025 03:06:05 +0000
-Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
+	id 1uwB9r-0000000BnMb-1AQ6;
+	Wed, 10 Sep 2025 03:06:07 +0000
+Received: from mail-pg1-x531.google.com ([2607:f8b0:4864:20::531])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwB9m-0000000BnKX-385I
+	id 1uwB9o-0000000BnL7-2vKU
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Sep 2025 03:06:03 +0000
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-32d3e17d927so4173769a91.2
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 20:06:02 -0700 (PDT)
+	Wed, 10 Sep 2025 03:06:05 +0000
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-b523af71683so2038405a12.3
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 20:06:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757473561; x=1758078361; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQTQWVOok5Rz5EsWa62UL+1rMIHEWSusnO/rTh03xFQ=;
-        b=XtYYFpz4FySLuE+oGBRfzuFjYLvgXqfxnXmTu3RQo5yYRwzrr7jJyvjjyDzJCOuY08
-         wkwR7oLM/dRsJ0ZldBlKQFkJA/c9V1VMkoCB83OcPu/n0kVyErcfypOQDBpau3AeLgyg
-         phOP/RiT1jnR8y+CU+kX815yOg4LusMPa87yclyl1LjFYAKLoDTyOUHUe8qHUmrnxvSB
-         GTmNRDCMYrMQPiqtW8EpehNaEqf+7hB58UJ5/846Hz7mWT9fLysGJEIO0aXTnyjm5Gfz
-         HTKSvEDvH6x6SNZHda1FfDjo4BsvNKcVUcRI9DOeptZQcUin3o93mlQ7BAzVmCx1+l6p
-         J8Hg==
+        d=gmail.com; s=20230601; t=1757473564; x=1758078364; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lApSKWlbDDCVaUIvBgJHVYgBpeBz7q+50mzfJPpQ9Tw=;
+        b=FJxHC2SsCTMy+9l/rycRb8eagXLXHZgu7AWGqxCN2W6D1NYNu1rMLLaSdMqSKxZK2J
+         EJyNYfAaU0hzpVosB2VqACsZLRdi7sDfoOtU1WMVDyL/8Y/fGyxCApaVKnP6uOkZ0sky
+         Q/JFRQXDVDQ3wGiYiroFkCFn8OaDLZqtNgKMnxFFZB6K17AlO3jO7qRvvGxivNwxfQJq
+         7zhmoaXgz1IaFjetJTXzysV2PrtawYE51W3Hn94Hp9nafXfeGNsqQGlW8g6urC06QwV7
+         vD+CDtV7js8XiiQemL+IPBdYwh6S2cDdYMpiL+6kIEq/0jIXRz58Qpl6b20zuZ6POQXq
+         Js0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757473561; x=1758078361;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sQTQWVOok5Rz5EsWa62UL+1rMIHEWSusnO/rTh03xFQ=;
-        b=gfi3knzVBzzRXxgCgBgHSJ9cUDRmDHwYISASHsH2mLo4JUpaliksXAG1cLauV7dHhF
-         OwuOAUIVCZLpEKtygKoofpwUO62NZaGBaTUEai+io0vES0G3pvJLnwCslzz8w3a5n/04
-         Q8BY8w84YSHhVhjlc8QVNQNFe78ZRF26V0r8z9JQ+wiby1yLDmaGQ+iwgStZ29YA7gjW
-         DJC8NFPvp5w2vVDG2cPcFoVjGzQ+WlE2xPWK7jVH7ON1dhvAnd8IaBAeOrqhq5LgrMtm
-         ZjINN/Az4YcODZF92FgTGbqvcMwc+jxcIJBdp0SnRo76Vy7OMPbXW9HLV1rPsCsLqN7m
-         mazg==
-X-Forwarded-Encrypted: i=1; AJvYcCW33ieldZIbEf6vfI+LfLF9D8Z8TZghyWWlZi8f1obYjefPS5VYDSAOdcnvypUqvXmtBW9aFjAF9qY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwoeVVPt3sEhaFb70174gSAs01CF/aMM6YiXmVeEM2sY1/v3Fhs
-	MhOtCdH2UhRLTXBxVwsvPpLnD81Am29wwCO/2um/HyXJorQYGdr9S0LJ
-X-Gm-Gg: ASbGncsEznQ6dT9Vp8uhVpz68t6p3J5QVkqNu/93dAqE50f2Y2BxXpYFUB1nzXD8RpK
-	bzjxXDml2Ew6Ho8m68z3Id5lxTVGSv0yUX7+nX6cHFT1xgS55rMyqT1q7CN41LHy7T7PTSmoepV
-	mfZu5dbVhhjx2kZpALohl6FJa3OZOHi4E/K/XsSPxn8AndjRTwdJvKAm7KXEIAB+Al4f+4uSQOD
-	Xrg30VYRirvzYJNk7eCxv/dDOmWBY5MEMrJxFXkmsma1Rr3JwCG+rCKtwdNhXBoa/IAJfE+tOuE
-	aZr+dArFl8VrUo4Po5wm14+83HtKxMLNvUOGMHaN/y0aiDCKQe6tOVFB1sXwF36+xIBq8f//YV4
-	jkp+hTdaIi/lrAL6rkQaFasru/THdfzZQsNcU53FGrUFQfS27EflGJmhJFT34xJRDMcY6mbPenL
-	zNMj+PUPWHljjOoSp3UgQu5TbWG+WYG/f7xFOLYbm028gh4fPcFtaXCEk=
-X-Google-Smtp-Source: AGHT+IEQfzBjwOqCuuatAsbH0lkQs589LNfHL0lVajH292OEXnFVwAmGYUIRPLqbMCBNk93dfO2O4A==
-X-Received: by 2002:a17:90a:c2c7:b0:32b:df87:1ede with SMTP id 98e67ed59e1d1-32d43f18a2bmr19741918a91.12.1757473561477;
-        Tue, 09 Sep 2025 20:06:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757473564; x=1758078364;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lApSKWlbDDCVaUIvBgJHVYgBpeBz7q+50mzfJPpQ9Tw=;
+        b=ZFx0FuNuY79X5iSpJxRFVYPU8PDcevJ0eeiqxnhN8I1Ldsp27aZgUnln+ouGKppSru
+         TZaD8BBMIt54yxWURXlk7+rmqJ1U9tCX4/nQsp1Rly6nePRMk2/jL3WkIxv3uHlyVJYi
+         1kRa8FP+CboGxRJZwPTv6t4gcEtqgOnPVFtxfyHKgvDGDu3SkT+Vdc+s4KnSK8ABzi/1
+         VVIZ3hkdIIAjfZtvAWm9+mPyy1WXBPsQuLjqp/sWfPok8mBS09zhnag+VHi32tvmd/65
+         rAY+22yih216AkUo8wDCLKf74+q/AwLT3v2ctPFzcHd4EA3d/bEHI9aDv73WYOlJL+s5
+         l2tQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWyAQKLFKd8RxUpBON/hRvm/jd+Zl+x5s2tFfzzHk1Rqf83ITV5sPBjvKT5hwWqZhpmBlC2Bpixllc=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwRq7ENiBpv2HHt5PLd7iYmqhfXYl7AVfE/1kQwMlGE4tCo3ENZ
+	7Wl0IlkCE6OTNStYbMPHDN++wC6QBb8nYYvPT/9ZBzWSgGMvcL7oi9Iu
+X-Gm-Gg: ASbGncv/11yihlcz6TumcApVrFKi9bnXeCl1a8WaIjPjmXtt29gf4w5zR4OD6gz03O0
+	mmZ8U2v3OhgBxVg5Rgn4ioX4wyUQCPxlTIMxTwDDxaUVxK9f+tsrQWDUP5ZqgKMg/fYpxhM0lVa
+	1TcVU3/htfTiJmQf4QRtXycEWnL5jcsQLkJCOoXKaW2c+fPj78sa7buOZfLpMjaJXmRa2uLgfOe
+	Ty80opwwp7stIo/pYoNKKxBqoDvr1Xd02Dvg79ABdYsCCUQaBU07z0HPvns7KD/wsXMeaqB5F+X
+	WKJ7wkG3R2qKQb6omPkwqgHBUitU917yULmCwAyI48bpTgxQiJZIjTO43/836UYBdp5PsXVTm3q
+	OY3DSrjX9sr4hDVLL8nQ2wm34s3UTKM78DSompBiv7Kc75GvNlxsM3RGGgdAX9L6ivlZMZnCmIG
+	RAG/bjJGvOWheLpLvVezbhNMyWoChlZETUt12LHn3eAoluREzUP0prr7k=
+X-Google-Smtp-Source: AGHT+IHCY2/ZUuieJa6b8+0cszmNX36/5F/Lrag0799NXHCWBy1pFhZxsR4kZ6/iF+Li0mFGFmNmFw==
+X-Received: by 2002:a05:6a21:998d:b0:24e:e270:2f5d with SMTP id adf61e73a8af0-2534547a6fbmr21524873637.43.1757473563820;
+        Tue, 09 Sep 2025 20:06:03 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77466290d84sm3539093b3a.65.2025.09.09.20.06.00
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-774662908a5sm3512047b3a.60.2025.09.09.20.06.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 20:06:00 -0700 (PDT)
+        Tue, 09 Sep 2025 20:06:03 -0700 (PDT)
 Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id A4845800FC;
-	Wed, 10 Sep 2025 11:10:33 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id F16A2800FC;
+	Wed, 10 Sep 2025 11:10:36 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
@@ -88,14 +89,16 @@ Cc: tudor.ambarus@linaro.org,
 	linux-kernel@vger.kernel.org,
 	alvinzhou@mxic.com.tw,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v2 0/3] mtd: spi-nand: Add support for randomizer
-Date: Wed, 10 Sep 2025 11:02:58 +0800
-Message-Id: <20250910030301.1368372-1-linchengming884@gmail.com>
+Subject: [PATCH v2 1/3] dt-bindings: mtd: spi-nand: Add enable-randomizer-otp property
+Date: Wed, 10 Sep 2025 11:02:59 +0800
+Message-Id: <20250910030301.1368372-2-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20250910030301.1368372-1-linchengming884@gmail.com>
+References: <20250910030301.1368372-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250909_200602_788313_3D04F1E1 
-X-CRM114-Status: UNSURE (   8.29  )
+X-CRM114-CacheID: sfid-20250909_200604_741553_5B3609F7 
+X-CRM114-Status: UNSURE (   9.16  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -115,25 +118,29 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-Introduce randomizer feature for SPI-NAND devices.
+Add a new boolean property "enable-randomizer-otp" to enable the
+randomizer feature on supported SPI-NAND devices.
 
-Add a new DT property named "enable-randomizer-otp" to enable the
-randomizer feature.
+Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+---
+ Documentation/devicetree/bindings/mtd/spi-nand.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-v2:
-* Create a global NAND DT property
-
-Cheng Ming Lin (3):
-  dt-bindings: mtd: spi-nand: Add enable-randomizer-otp property
-  mtd: spi-nand: Add support for randomizer
-  mtd: spi-nand: macronix: Add randomizer support
-
- .../devicetree/bindings/mtd/spi-nand.yaml     |  4 +
- drivers/mtd/nand/spi/core.c                   | 24 +++++
- drivers/mtd/nand/spi/macronix.c               | 89 ++++++++++++++++---
- include/linux/mtd/spinand.h                   |  7 ++
- 4 files changed, 114 insertions(+), 10 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+index 77a8727c7..432bc79e9 100644
+--- a/Documentation/devicetree/bindings/mtd/spi-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+@@ -21,6 +21,10 @@ properties:
+     description: Encode the chip-select line on the SPI bus
+     maxItems: 1
+ 
++  enable-randomizer-otp:
++    description: Enable the randomizer feature
++    type: boolean
++
+ required:
+   - compatible
+   - reg
 -- 
 2.25.1
 
