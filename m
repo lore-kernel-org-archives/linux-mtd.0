@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8436CAC582
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA419CAC582
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Sep 2025 02:44:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0QHAH85XznyAvQ55hjseBnwQ35NfEvo3qVVhQWfeD2c=; b=RAxCEiZYdHgH28
-	QtrTQlAzFioXJ2lv855PPMWhXB3Lv2UfYWnDCkfUtJdNz3meIDrrBxWYq9qFK8T13rW0MZ70JBt2H
-	BxqjJAUbrmzH5fXCkG1dvTy9zFI4kBZmyzarF7kKk/MNb2eOQKt6lYxbteymqHH641g1DaN/GCvOJ
-	xk3t9y52TTsk5mX9GpBpL/NL1emt8KDCXOOdLNwSUfGOyv4Ntka5fk13AHYsnk1YdRtt7TUXb660k
-	CsvPzNLJkpDS9jRixYDKltQfTzq1rBhxvOSYpssmrE33sAHHRy5VgpyzzLfDKBAWKcn1+w4RKVrj5
-	ctfxgUmPdXOqfd5rS71w==;
+	List-Owner; bh=ftBc7r5IyD45ZP9M65L/GtgPZWRaADAbeGk8PrOkl4w=; b=EEZh5AlLV2P8s5
+	Kf4WMAMKR0DyEuq0oGMXS0bnIaWE5lmBw5aKNP7PMJHH8DSwJ40FeZd95R/tkTWNgohtt+jFL/bdG
+	kUow5ij+r28uwWEwu1lwZXEuqDF8uqvDIciDS/YEfv9ZpcyupHXILEadGU03EIIEIOQaWGBSsBFQP
+	mHhtKccCugoh/682qm7uMcM8c/qfCds+WiY9P8JkTRv9MK5ws0WfJ1Ow9lQdFpvwEtfAcite9kQh1
+	7ubTDht5ylTQlddR8Z3K2Zq8M9j65xtexqmoh0t/hbmN3boszsFFCT5JJ/8c3PPEVmQN9082ctBMs
+	jgwbAPLEm0zV6NhzpMnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAop-0000000BiLp-44OD;
-	Wed, 10 Sep 2025 02:44:23 +0000
+	id 1uwAov-0000000BiSl-1N3p;
+	Wed, 10 Sep 2025 02:44:29 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAoo-0000000BiJE-2kmM
+	id 1uwAot-0000000BiQD-40Ke
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 10 Sep 2025 02:44:22 +0000
+	Wed, 10 Sep 2025 02:44:28 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=fK0hEDM5Yyao3a7xqBzpr49p9H5HB+om5vfXDIKLdeg=; b=BwJ02qhBS/QB6JQWo7IaNl/TvW
-	yCV7Q7h/B5C/4cJAdzNo5GGt/sbpHvIHY78YTWrtxYzmh4hV2Y0MXGzagETGumRdJL5yEXFoDpyfj
-	0M/H5VjL45Lbz+US9MaKWyS6CVGWBN0RlyvZPQl3RGjXpErfCu/YU5dA6TcBHdHapB6IQeio3SdVp
-	UIPzDNJcYDmPowND284AUf7qba79AENkU9OvIWP0e/ck2SvlYleVaL616aENEVj1mtMqkkTYsUnKK
-	gdaYAJT4CD9ziTqnIuW/hB1Z62te/QcYSfITnL2gDI4fMpRiMYq1wlMBxEuLa3obsQuiui/4Rch91
-	FTjIiasQ==;
-Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
+	bh=2kNx/lgQaweLHCKpOd5HxLBg5NtnJ9f3nOi2hx/97zs=; b=fbghnCj33OF8/XSi/tL05g7o7o
+	cowtyiiMmgyRiXlYjEm0aMBcDzW4PvN6l4siq9VY+Py9soOLkI1ppLIRvq9mxOOarUattiotgDQqw
+	eAqFWHLij6EjQB61ZZOmJiPvLqHVfgtRcZDoL67henWqYKKEuK01OxuKMJ5hdnru9hShYeSQKYd/q
+	duena6QR2i7EBGWVCwC4PvNMUcP2oD55J90iRL24l9xf/Lmtwo0Ad5ieWUaUzLmVlhgnDkaY9v8b9
+	cF7d2zjf2Ix3rCsCXT0jKmULKo/3iU37PXeZOm9kPGM20QW1WD7uk1cdy9PI88/itJ7TdxakKmhV/
+	PdhLswyg==;
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwAof-00000005hM9-0vdM
+	id 1uwAoe-00000005hMA-3UsX
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Sep 2025 02:44:18 +0000
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-7741991159bso5863643b3a.0
+	Wed, 10 Sep 2025 02:44:22 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-77246079bc9so7425197b3a.3
         for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2025 19:44:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1757472248; x=1758077048; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fK0hEDM5Yyao3a7xqBzpr49p9H5HB+om5vfXDIKLdeg=;
-        b=RXayqBLNKkLj4x9W694xdgVJAjH1ux/JcBgPoLMP3ZOxyNy1nclYwA2d5s+xSjO41h
-         5OJ/aBhMckT11KaIB6W8lSxDMCTKE3eX6kVLKSMoxn+GcC58i1VJllHzdjxAZBqs4t1i
-         666UzDLXzKGPoxminH/K4o4pLsKuiafaAWcAacpahqo0HOVHNq+U+JKmVKvnfoV1it/0
-         kHriyEYj+AMFrJTb93a3R23nb+vNGsvpKOiekalWEjSACQ1sGaFyGXaePNraaRWGTgMb
-         syVuRNnRbwEaOwWqPMmN1ka0IWbKQisJp4TqqQKvK1+dNBIioMHFMy/CEHTNUA+IV1Tg
-         WkBg==
+        bh=2kNx/lgQaweLHCKpOd5HxLBg5NtnJ9f3nOi2hx/97zs=;
+        b=ZRwM/ulq4icbRZ0Vy+jNKWswNpZEjQ9InDWMbM7EnyJ52x3s0Afy4TkHxNlIKA/Kpl
+         +JTDb46C0pBHDnGsqFmyRm/y3dPQNRpVnRnxrazaROm4bXBV45ZQh7+CzGeumpQTiqUd
+         VJoeX4lZaZj3Qe7Y/4eFbkvmZl6RuNbKDOU3e8dxo8cv4lweJa0SO5TeCJYLiIzU15U5
+         Da11/sls8nJdK3y2urFCbBXpNrWkOv6vgD06pUOP6t2Tde7TJy85JfIt7FbyiKn0GWrR
+         0j913+bPUiqTid2DxH5+4tsir4980crtVKuRqyLk2yFaAUZwCEP0FpfHG1+gX9cCNKtX
+         sc7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1757472248; x=1758077048;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fK0hEDM5Yyao3a7xqBzpr49p9H5HB+om5vfXDIKLdeg=;
-        b=pyv1foHbAGzdTGgj5Pr3yABHcncDTK8qtUSgmPwYOU3on9AfMh5C/2eOt5QPz2QzN1
-         JEKERmY2NyXVZXGRUEp33J5aflH7pSfpH6crkXNsoKu0vUgzJb+zQpXjN9yl3wfHALy6
-         5EutH4exG2cx0vB7Jru9zbfiqMrCBb9PYn0+tnTSTbWzMLEjPlwdS+rNJ01jRcLzLO7S
-         jPqNYfb4PiHanR2D1pyZzfH6lslDKC2nLHZ58f/MiZ+QNHoIQ1XQ6Mw0SoJqKpo/c2XI
-         TtqIao+OK6BkHxKBF9GSuEhWrsjuMgAcv3p1Flg5i/qAoheR4DOyy0u7PCtU18hYeTgi
-         Tq+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWd36m6UtRS00fzPs0LLazdqI46JoMshWumhD/wfMLFMIt4D/xF+fYsYnhdHU8wpF5ALOUdCh/yRLE=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzuOCndnrlS46dRPuzUVma0Pv4+K7k826sJFN6ljCM8cIq8Xowf
-	uNDBFK4Jdb7Jc6CwqiPNgH1VIdpxp3PwR4OTjdsbnjXxduezPiS7c6R/
-X-Gm-Gg: ASbGncuzSFwM4UKSgeBtdmpCgM2HLi2cUO6Ro4LrnAVJ8+ASC2zCC6nq3UNtYxFj7Ms
-	QMNWL8Ap1DNzG/1yf6wl9S6xALaxYFtvKoOmmOh+GhUrfnNS6mFZ01nw8PRFAwbf6g4RtBS5Ddm
-	koG0k54ftiAS4ITK8qbTQfpDHCQtyw0GD77A1sDV0gC0tjp5oxHyAh6+zG/gO/KxjdWGCNlE3LQ
-	3RcmRzk4d0cExt3fNNDPiq9Ku5v5mWFboUNYlaUKI2pZ7d/A2+GVNbRH9u6Q+JO0lmO/3F7Tuuz
-	Wgt3w2zBlWdcghGJ9PKLMG8jPMOVbu+OuLomVBvGbYt9iraAHizATBGJ//bSNE2tYVjZn2ZOV6k
-	BW6FcMxJap/X3mpLTMKhB3gO/Zg==
-X-Google-Smtp-Source: AGHT+IHubWrsefo+d87orOab1DSwsve/ArB2W06/xMLWCSAZ2PZ8eNr96v1SI6ir/qnxEBjX+/LG4w==
-X-Received: by 2002:a05:6a00:2d16:b0:76b:f0ac:e7b2 with SMTP id d2e1a72fcca58-7742ddadd68mr16640975b3a.13.1757472247852;
+        bh=2kNx/lgQaweLHCKpOd5HxLBg5NtnJ9f3nOi2hx/97zs=;
+        b=Kixcnlq3/670xTqsrhWb1bSGDdi7dcyVEdkewrgg7CHrCDiJr2vYTa6HK7gsbK6arb
+         /9Jv6DyLQ+JKTbon4ndwQrvO3nadSfhb/VM4wpbNdNwnZ9Iu3nrPtnC8M2fCo/VqkjLb
+         trl9eCm3BrF1r0YW8qpo/fecYfKFKDuLxoDpreWCgrQBD/GjPLyzJZixCzux5pXHlFck
+         zxDYPGBC69zpDadGNavjfBRVXDzzm2SmyvHvUsHUIeDFh5ISFYZI4um/LS3T3zAXDrlo
+         xI54MkE/9A6WMZaRKoiQMB1SVzQQvQL+g38EeNbGBwX6EyDHi+H1rwUvYNMe1kAeNHja
+         8veA==
+X-Forwarded-Encrypted: i=1; AJvYcCXXWX+5W7LNIJF5WJvy8N3JI/fdujUoQ+lZ0ObZfT/hVMswgvALNlW5wtTkx0KtB0y9aniko/LZdLQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx+abAFfbBIMNI2Md5EIV1//e1Ohz/dM0CDQ/A5RlOccbYjHAAp
+	e31uA+VRC4wO+GH9XbalXB8uSrlRN03tjBU6OlZDUG+hzH3vWMXwUbQ5
+X-Gm-Gg: ASbGncvK3BukOE6Np16KOGtSflBfuhr5yvxnFGJuK4oigYiRNDZD76FB0Che3b4m9RK
+	U2ZoLp/bK63QM/uX/0S/U8KPraPTWZfyAaEGGnSdGpLybdOnfdsghCwHhO6lR0IwsScMcN6HRfW
+	H79GQ/W/1xrziLXz5QwyDrAXyuxYgVc8xQfRUkrTmWIlDwkbEaUAmz3UmymoLzEmHy/fqcp69Bg
+	Vxwj5tOCd4Ki4KCINOyFvWYHyjjwmJulkbRa4CladsNDezvro3unx9vvAlGZQIzBJsH3WN5dxmm
+	or1aOSuGg6TxUBvdKHRZx1f3wHIQNFoWsbzPtfGodMvzJEIVYa9dRyPAkvySe6EOGc02S9n8u3p
+	IAJ7j4l5x/wWl2Q8EmM0ugfd6kw==
+X-Google-Smtp-Source: AGHT+IEyED1mSm10/nBWu/PDugDe2kHeGr2B1Dlm/0Mxg3VMmmsn8EtrKKBRn8Kt1DMp+jVk5SErrA==
+X-Received: by 2002:a05:6a21:998d:b0:24e:e270:2f5d with SMTP id adf61e73a8af0-2534547a6fbmr21436774637.43.1757472247740;
         Tue, 09 Sep 2025 19:44:07 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77466290d84sm3499051b3a.65.2025.09.09.19.44.01
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b548a6bbc9fsm1061117a12.43.2025.09.09.19.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 09 Sep 2025 19:44:03 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id C367141BEA9F; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
+	id 999D241BEA9D; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -186,18 +186,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH v2 09/13] Documentation: filesystems: Fix stale reference to device-mapper docs
-Date: Wed, 10 Sep 2025 09:43:24 +0700
-Message-ID: <20250910024328.17911-10-bagasdotme@gmail.com>
+Subject: [PATCH v2 07/13] Documentation: kasan: Use internal link to kunit
+Date: Wed, 10 Sep 2025 09:43:22 +0700
+Message-ID: <20250910024328.17911-8-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
 References: <20250910024328.17911-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2828; i=bagasdotme@gmail.com; h=from:subject; bh=Ip9RCWVx3N2eFboDnh1dVntKjUKs5RT6sbpEBdmz23c=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHniixbj++M2M+e9AK28XZP75VaZfxL/rvM//ttckLa 3oE7/o/6yhlYRDjYpAVU2SZlMjXdHqXkciF9rWOMHNYmUCGMHBxCsBNZmb4p1i8uPKB8ZP13wum BPvKxR5SWdltK/h88a0CIW7J/3IPcxkZtk3KCLwZnfbq4QUbicP9bC8vlyYEbns3a5pPVM71i2f ecgIA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1129; i=bagasdotme@gmail.com; h=from:subject; bh=yEY9P3BA6E4kqaGTHyjuJlgmOOGj2m2ZOET4fPd8xcs=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnihdUeC/XH99x9zD0/p/z/9z+OvEiwfuXjriUbHJw 5Al4fDvwo5SFgYxLgZZMUWWSYl8Tad3GYlcaF/rCDOHlQlkCAMXpwBMpGYSI8Phu5uLfVhjJryT C+XOkO/82KnH+HRZtlehgA+3hxWLXwPDX5ny7U3LZzLMPNBzWixMoIP59nkt/0fGhV4ZjM5rXH1 d+AA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250910_034415_847354_199DFFD4 
-X-CRM114-Status: GOOD (  19.12  )
+X-CRM114-CacheID: sfid-20250910_034421_037592_D78498F1 
+X-CRM114-Status: GOOD (  17.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -214,57 +214,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 6cf2a73cb2bc42 ("docs: device-mapper: move it to the admin-guide")
-moves device mapper docs to Documentation/admin-guide, but left
-references (which happen to be external ones) behind, hence 404 when
-clicking them.
-
-Fix the references while also converting them to internal ones.
+Use internal linking to KUnit documentation.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/filesystems/fsverity.rst             | 11 +++++------
- Documentation/filesystems/ubifs-authentication.rst |  4 ++--
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ Documentation/dev-tools/kasan.rst | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
-index 412cf11e329852..54378a3926de7b 100644
---- a/Documentation/filesystems/fsverity.rst
-+++ b/Documentation/filesystems/fsverity.rst
-@@ -15,12 +15,11 @@ of read-only files.  Currently, it is supported by the ext4, f2fs, and
- btrfs filesystems.  Like fscrypt, not too much filesystem-specific
- code is needed to support fs-verity.
- 
--fs-verity is similar to `dm-verity
--<https://www.kernel.org/doc/Documentation/admin-guide/device-mapper/verity.rst>`_
--but works on files rather than block devices.  On regular files on
--filesystems supporting fs-verity, userspace can execute an ioctl that
--causes the filesystem to build a Merkle tree for the file and persist
--it to a filesystem-specific location associated with the file.
-+fs-verity is similar to :doc:`dm-verity
-+</admin-guide/device-mapper/verity>` but works on files rather than block
-+devices.  On regular files on filesystems supporting fs-verity, userspace can
-+execute an ioctl that causes the filesystem to build a Merkle tree for the file
-+and persist it to a filesystem-specific location associated with the file.
- 
- After this, the file is made readonly, and all reads from the file are
- automatically verified against the file's Merkle tree.  Reads of any
-diff --git a/Documentation/filesystems/ubifs-authentication.rst b/Documentation/filesystems/ubifs-authentication.rst
-index 106bb9c056f611..9fcad59820915d 100644
---- a/Documentation/filesystems/ubifs-authentication.rst
-+++ b/Documentation/filesystems/ubifs-authentication.rst
-@@ -439,9 +439,9 @@ References
- 
- [DMC-CBC-ATTACK]     https://www.jakoblell.com/blog/2013/12/22/practical-malleability-attack-against-cbc-encrypted-luks-partitions/
- 
--[DM-INTEGRITY]       https://www.kernel.org/doc/Documentation/device-mapper/dm-integrity.rst
-+[DM-INTEGRITY]       Documentation/admin-guide/device-mapper/dm-integrity.rst
- 
--[DM-VERITY]          https://www.kernel.org/doc/Documentation/device-mapper/verity.rst
-+[DM-VERITY]          Documentation/admin-guide/device-mapper/verity.rst
- 
- [FSCRYPT-POLICY2]    https://lore.kernel.org/r/20171023214058.128121-1-ebiggers3@gmail.com/
- 
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index 0a1418ab72fdfc..c0896d55c97af8 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -562,7 +562,5 @@ There are a few ways to run the KASAN tests.
+    With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, it is also
+    possible to use ``kunit_tool`` to see the results of KUnit tests in a more
+    readable way. This will not print the KASAN reports of the tests that passed.
+-   See `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_
+-   for more up-to-date information on ``kunit_tool``.
+-
+-.. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
++   See :doc:`KUnit documentation <kunit/index>` for more up-to-date information
++   on ``kunit_tool``.
 -- 
 An old man doll... just what I always wanted! - Clara
 
