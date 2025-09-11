@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2791CAC587
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Sep 2025 15:47:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DBECAC587
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Sep 2025 23:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Ch/L4GjV3n4cPsbKBoUMO4L9BNzevKKj+JL+wSIILcQ=; b=d6Auh2NXYsvlit
-	aeDhBwEAoknfZs8P37rd0If6DL9fJm+a1P1k40VjEgv9OxdzT+0NR+nljeTlM//hl7RyqDzuha9aM
-	mWMDT987jnwkKx0ekQV7LiGg5C0D2XWsYE3bTDsj/Iefq84xRSPtcTVqKzcILm4BA8GTEZYW87uH7
-	zKDe7uI/UJ7EbUWHOZ89w+WD37UdJFAVWvF3QfMzHsTM8sBztOvJhVfUClVx7V/93an4AUMSo1FZT
-	QmAeZFeGp5IQIrY6hVM028FCw6CfPYV0P+ZpF/XD0cOqeg7lcbyBpYcJBcR54ZJp0ITe7ZPtd6oVu
-	WocpGzg9PyeGggjjJ4kg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=EBYXO0D4tfjzT0KiPfdT4RVadmaE78MS8F+cWnXST2c=; b=DCEcvV0CpIUuu/
+	b0CJe+xms+ofOgIlGWDdUTkjvhUI5xYmH5D8DsKzo06QR1F4SRJZwyQ4xAeBWsYEH9ah0NRebl+tc
+	MAuGiFsu342TsxYjB0SRqNu4UnIJIWftke7Do5d8lAmAV0/gQ09LGYwC9mTztcA+c8pXxXQKn8S7a
+	G+miRC89aQ65iBtYBAZtcD2Xe0h/MjPcY5qCdY3pCAOMQySqaiPuNwA7962VrMXorZ1In/lHk7TWN
+	KdgUZqeAbpW21jbmBEZGHChFrvu2CtC3jw5QruFBQIr8Kiuyd7+dvkzc0ZA9f+EXXzXH1ThPfPM3N
+	jZImpONoGmDrCQ3tLnrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwjW5-00000003z3V-077f;
-	Thu, 11 Sep 2025 15:47:21 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1uwr3U-00000005x7h-0pNj;
+	Thu, 11 Sep 2025 23:50:20 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwjW2-00000003z2N-2Nqp
+	id 1uwr3R-00000005x7b-0tJE
 	for linux-mtd@lists.infradead.org;
-	Thu, 11 Sep 2025 15:47:20 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 80D4EC6B3AB;
-	Thu, 11 Sep 2025 15:46:59 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 3786460638;
-	Thu, 11 Sep 2025 15:47:15 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DEB3C102F2A48;
-	Thu, 11 Sep 2025 17:46:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1757605634; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=tyK6sya1MCooidPg/687N77t/qJSNi3aG8tPDW0+KmY=;
-	b=ZvjIjY70oWpz6wc/g/lsF6FuCoqxU2jPAIdxXNFVGXXIWK22YhRAioKZqGNLUwbQy0T7Ml
-	xtTrJ891rQ8iBze1NzqIzPycRNG4GvuwNY7bTWTI680aJQCmlHqMjygoIXB1sTwEdx/yZt
-	UNG+NZ4JiYM18TTYY1XRQFYhWXcra8d10eGQXDKyI3HlDJttH1tsZwHQU/x3m8CIGyWiBE
-	Yly1SMn1X9X4Tt9KmfdiLwELCMEB1qcQV84A8encZFrT+m7ckorTT8Yv9x7h9B+Evyyhht
-	Bl9YgZrRPgywhMRzWhWNH8aaywVHVTfybSA5hZKu28wyBQloEitdFUkWauopoA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Richard Weinberger <richard@nod.at>, Tudor Ambarus
- <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder
- Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>,
- Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [GIT PULL] mtd: Fixes for 6.17-rc6
-User-Agent: mu4e 1.12.7; emacs 30.1
-Date: Thu, 11 Sep 2025 17:46:51 +0200
-Message-ID: <87ms71800k.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250911_084718_822127_6DB41A04 
-X-CRM114-Status: UNSURE (   6.14  )
-X-CRM114-Notice: Please train this message.
+	Thu, 11 Sep 2025 23:50:17 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 39897601E4;
+	Thu, 11 Sep 2025 23:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC6BAC4CEF0;
+	Thu, 11 Sep 2025 23:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757634615;
+	bh=FlmvLpSjYcWiAnT9+PiFdcZJRO+otL3K3h4kt9vBq58=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=DnTZosdPIC97TMwNFmZY4Qzf6amUM7TJnweGSHOjHf4MYL9bd336C5KIbvFrhGyiy
+	 NzSU7oodW19AP8XNs5LPGyr1GxcQ/5pydBaVM0DNCdmBwsdbtTf+AowW5HSTTrPVHU
+	 6/csEQFqV0TdNkKuuIKLrK3M5nt+OBysL4g/tfix86QXxFGdf86MFjqY6FUlzGuqTj
+	 39mNbbQY4vhl3zCZQqjIWGhkxh+OMPOYPE/gdH0cM1kkfGtDjtY52Lp7ccgsb9blUP
+	 SMWSSD4DRoFwXreLIzkmQZ7gJlYHB/lebxcQrrRNlq2ed3ohBOfwB/EZbAoMUEZiOW
+	 Qc8RBjLB4+jaw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADCD5383BF69;
+	Thu, 11 Sep 2025 23:50:19 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Fixes for 6.17-rc6
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <87ms71800k.fsf@bootlin.com>
+References: <87ms71800k.fsf@bootlin.com>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <87ms71800k.fsf@bootlin.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-6.17-rc6
+X-PR-Tracked-Commit-Id: 4550d33e18112a11a740424c4eec063cd58e918c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 320475fbd590dc94a0a3d9173f81e0797ee1a232
+Message-Id: <175763461840.2348395.5882959600004882395.pr-tracker-bot@kernel.org>
+Date: Thu, 11 Sep 2025 23:50:18 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Richard Weinberger <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,43 +71,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIGlzIGEgZml4ZXMgTVREIFBSIGZvciB0aGUgbmV4dCAtcmMgY3ljbGUuCgpU
-aGFua3MsCk1pcXXDqGwKClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgOGY1YWUz
-MGQ2OWQ3NTQzZWVlMGQ3MDA4M2RhZjRkZThmZTE1ZDU4NToKCiAgTGludXggNi4xNy1yYzEgKDIw
-MjUtMDgtMTAgMTk6NDE6MTYgKzAzMDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3Np
-dG9yeSBhdDoKCiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
-L210ZC9saW51eC5naXQgdGFncy9tdGQvZml4ZXMtZm9yLTYuMTctcmM2Cgpmb3IgeW91IHRvIGZl
-dGNoIGNoYW5nZXMgdXAgdG8gNDU1MGQzM2UxODExMmExMWE3NDA0MjRjNGVlYzA2M2NkNThlOTE4
-YzoKCiAgbXRkOiBzcGluYW5kOiB3aW5ib25kOiBGaXggb29iX2xheW91dCBmb3IgVzI1TjAxSlcg
-KDIwMjUtMDktMDUgMTc6MDM6NDQgKzAyMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNQSSBOQU5EIGZpeDoKCi0gV3Jv
-bmcgT09CIGxheW91dCBmb3IgV2luYm9uZCBXMjVOMDFKVyBTUEkgTkFORCBkZXZpY2VzCgpSYXcg
-TkFORCBmaXhlczoKLSBBdG1lbCByYXcgTkFORCBjb250cm9sbGVyIHRpbWluZ3MKLSBCdWZmZXIg
-aGFuZGxpbmcgaW4gc3RtMzJfZm1jMiBkcml2ZXIKLSBFcnJvciBoYW5kbGluZyBpbiBOdXZvdG9u
-J3MgZHJpdmVyCgpNVEQgZGV2aWNlcyBmaXhlczoKLSBXcm9uZyBkZXBlbmRzLW9uIGRlcGVuZGVu
-Y2llcyBvbiB0aGUgSW50ZWwgRFJNIGRyaXZlcgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBbGV4YW5kZXIgU3ZlcmRsaW4g
-KDEpOgogICAgICBtdGQ6IG5hbmQ6IHJhdzogYXRtZWw6IFJlc3BlY3QgdEFSLCB0Q0xSIGluIHJl
-YWQgc2V0dXAgdGltaW5nCgpDaHJpc3RvcGhlIEpBSUxMRVQgKDEpOgogICAgICBtdGQ6IHJhd25h
-bmQ6IG51dm90b246IEZpeCBhbiBlcnJvciBoYW5kbGluZyBwYXRoIGluIG1hMzVfbmFuZF9jaGlw
-c19pbml0KCkKCkNocmlzdG9waGUgS2VyZWxsbyAoMik6CiAgICAgIG10ZDogcmF3bmFuZDogc3Rt
-MzJfZm1jMjogYXZvaWQgb3ZlcmxhcHBpbmcgbWFwcGluZ3Mgb24gRUNDIGJ1ZmZlcgogICAgICBt
-dGQ6IHJhd25hbmQ6IHN0bTMyX2ZtYzI6IGZpeCBFQ0Mgb3ZlcndyaXRlCgpHZWVydCBVeXR0ZXJo
-b2V2ZW4gKDEpOgogICAgICBtdGQ6IE1URF9JTlRFTF9ERyBzaG91bGQgZGVwZW5kIG9uIERSTV9J
-OTE1IG9yIERSTV9YRQoKU2FudGhvc2ggS3VtYXIgSyAoMSk6CiAgICAgIG10ZDogc3BpbmFuZDog
-d2luYm9uZDogRml4IG9vYl9sYXlvdXQgZm9yIFcyNU4wMUpXCgogZHJpdmVycy9tdGQvZGV2aWNl
-cy9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArLQogZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvYXRtZWwvbmFuZC1jb250cm9sbGVyLmMgICAgICAgfCAxNiArKysrKystLQogLi4uL210
-ZC9uYW5kL3Jhdy9udXZvdG9uLW1hMzVkMS1uYW5kLWNvbnRyb2xsZXIuYyAgfCAgNCArLQogZHJp
-dmVycy9tdGQvbmFuZC9yYXcvc3RtMzJfZm1jMl9uYW5kLmMgICAgICAgICAgICAgfCA0NiArKysr
-KysrKysrKy0tLS0tLS0tLS0tCiBkcml2ZXJzL210ZC9uYW5kL3NwaS93aW5ib25kLmMgICAgICAg
-ICAgICAgICAgICAgICB8IDM3ICsrKysrKysrKysrKysrKystCiA1IGZpbGVzIGNoYW5nZWQsIDc3
-IGluc2VydGlvbnMoKyksIDMwIGRlbGV0aW9ucygtKQoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+The pull request you sent on Thu, 11 Sep 2025 17:46:51 +0200:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-6.17-rc6
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/320475fbd590dc94a0a3d9173f81e0797ee1a232
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
