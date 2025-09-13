@@ -4,69 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A8B8CAC58E
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Sep 2025 15:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D34BDCAC58E
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Sep 2025 22:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+6dhwvOSrpgvrt0TsninQHhA7REMmNihcUl6oIVg1kg=; b=dPvHl+AJxIZ91n
-	r31FFXyZ2eEqrJpNTRFL9Jv0Y/hdunH6iq0VD8CNglE1IZpFQrlbHsC9lhFd1Ox9V7NpwNC7Txlk7
-	krCKJeO4zLx+Wmd5hJcbDtn1bxIfi8V1DywNaRknym5HD3qoNR8g/Geygr9tkH60rJq+IwOHDncmS
-	Sag13qXVLVmgdtUZ02VElXohiZamCPeUEtla4tM0+92y1fOJMrHobiBx3nzHngdhEbScDVrqL41ST
-	O9lGB4y0BvHApOCIdVl6QWx76v0TvtzVharW4DOi7hyr+VHpJr6AA7Yl/Gxgos6plUDDO7mBJGlXx
-	B+tmmZP2q+gpwEBvJWRg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=f5jhrIUPJ+VkJ0+hv9uL1Egcq6SdF9wgh/rPxMYAeXE=; b=HDC3LE7xHXuWK5
+	6A7EgMjsQCIJgp1wb5SYpie0lQhs6AQFEZTYt3NVVCHXcMnHTlPf4X9MgvKY9tQiylldKZtLgxSjt
+	2+yzpogYzl1F+fGTwhFpaj2gvgrFCQxKHZ2tJR4xqX40Oh4SUQ6BxLEMb5vdhQROKsQTWUh/PMuQK
+	LtJYkRU/iL9Toaav4jTb/Tz1IBfW7uNKCLn16N62J5r6B39A3PROhuAjCRmx/XGERLkfL1G/m5Z/4
+	MfrrIzSO8uztYcpJqhKMhLaa4oROegRgjgIwrVcnK6Sct/N5CHkC78EJQw1j4izZm3EePhK1DhAAF
+	9FU+yUt17ba08F0j9q2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxS29-0000000FE0M-2Fb6;
-	Sat, 13 Sep 2025 15:19:25 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1uxYqQ-0000000GXb4-1XF5;
+	Sat, 13 Sep 2025 22:35:46 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxS26-0000000FDyx-0Duw;
-	Sat, 13 Sep 2025 15:19:23 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7A8FA43B3C;
-	Sat, 13 Sep 2025 15:19:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0BF1C4CEEB;
-	Sat, 13 Sep 2025 15:19:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757776759;
-	bh=3l1oTIkNxjy5OX16l6qHW4FBN6o/HIdlJKsNx/PnB8E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DvhQNiLrokdSbX0zoE8wOEAUlZEhtvHh5Ejbk+iAGs3xhPdbMoHvRPoeT62QVW1+R
-	 Ryq2MGV6Q1XhS5caliz+jZPSOOf9UJfofiFlMENHninWsoaLA/M+WCUsGKs5tlRUkX
-	 Spx5L9f/WBNJXRe3q91dKnTkBEs4iDJdBqvx5IJOcz+ppe4UOwUPHasbRYVcmPEU5J
-	 BEomchFqI8hUZOpncDK03NySvToKtUm2uqhq40jNDC/MGOkR8h3tX0GSVN5EioEXeC
-	 Q5Jl2Zjmr06eRoG5MYMaaUWL78Syjaj1upYMboBkjcYXHIdCnwIxQ7WWC2fsHI4yn0
-	 8NpFtDs5Jhliw==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org
-Cc: Jack Wang <jinpu.wang@ionos.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Christophe Kerello <christophe.kerello@foss.st.com>,
-	Cai Huoqing <cai.huoqing@linux.dev>,
-	linux-mtd@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10.y 1/2] mtd: rawnand: stm32_fmc2: Fix dma_map_sg error check
-Date: Sat, 13 Sep 2025 11:19:11 -0400
-Message-ID: <20250913151912.1412912-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <2025091309-quote-graves-e875@gregkh>
-References: <2025091309-quote-graves-e875@gregkh>
+	id 1uxYqN-0000000GXZa-3xKk
+	for linux-mtd@lists.infradead.org;
+	Sat, 13 Sep 2025 22:35:45 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-57171d58ebfso1351246e87.0
+        for <linux-mtd@lists.infradead.org>; Sat, 13 Sep 2025 15:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1757802941; x=1758407741; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EPeYvUoQ1NKFCYRNefeIpOFBJ+jeYICQ3irzWivgov0=;
+        b=oLyKNgtM38VOD6hTFv1t4iiSY6lWci3BYRUkyq7q1niU3kyTLd3M+lTLSEp0t/+OJc
+         HozVRK4ptxh2OvUuaWUDGLYwJJ6Ay7zWOO4FBlodkGFT5uoaXC4IOA5/dzQqWTSsVfF8
+         pmOMYl+n/1xYZvCGBO96+zg63lQdYtOp+k96UTh0FJ+1vFT9DPLEppqqB9YHEXHDAlXR
+         AIMWxfjPEuQ0X1de84chOWM60ywPqDHbbCXGJvx4TjGMJyBn2mhNVOYfbdZXm0YXC1/z
+         tpMguknCMoDnVaQJK2iSPL4KQfGUqcAURbcNrCfUE+UMN50DrhHjXX1srW2SY0+LTdYF
+         ypeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757802941; x=1758407741;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EPeYvUoQ1NKFCYRNefeIpOFBJ+jeYICQ3irzWivgov0=;
+        b=Ldz6J+kgRp/qr7FrPQy4zd/tADqFMD0/4eVSRxJXSZxKGnixTSTtbtFibwXueN58y2
+         uxr1m7/bWZq0e/KWfUjAlzt1k3ueaDPyK6VTMDni5mhGO6iWWOXdNfHuavq3dSARGa8U
+         98WODTyALrc247h8QtPvCETRGIP5EvbJ4Lef90Mkir/RXLnv20KfNWjQbnWVyrtdyPcr
+         pC70mPNltAYrovsHxP0rJf+312Zn7h3uupwdZAyq3dx/GvLcNXW/JiNaP58gpqX+59OR
+         m3xXjouia6urLZwAJBzjZaa1mUH78vGrUto4LEWxehg2tza8wzzlnxrcrfvsIuG+/LC+
+         992w==
+X-Gm-Message-State: AOJu0Yxa5uCWLmG0AooeKX2W7+BZudwZF7fvrBucVCQAyDGFSfWL9Mr1
+	JVz72thmXo+ZDrrFPNtSFtnf2t+4HJf0cC4g+rTVjDuaVXwm4khQakkv+zrCem6y+Qk=
+X-Gm-Gg: ASbGncsTvlu79jIpUJougG0NQiuKQsjh72VZflJxS64QVnd72ZdwSx9uC9ESWJlZeL2
+	zL3mwRYz1+EtSlA7lxPGABzuv/VRAiqsC7YEdDAQehOjDOcy0iCQD9hOJNDq7CRX3oUuyBm2V4C
+	2HZLUxv/Alxz/UR2VBDzqid7l6r24ODL8LJHkFBX/thhIu/RK4GJMpNjC8yKEJJlc9kU8FKtq5v
+	Z+ix27LLKF2tPzR9ilz3NBFpLHU/zR2p2EsNJSuccifzFBVCKLnjnPMp8lpDhpFtiFxwBXhVBvS
+	moYX8EOYRjwPwhc4Xtd07PVB4dRwnaRq6Y8XcS+nbizqI573PqifcY3NkMHbQWUjusfkh/XlSnm
+	hx3yE8LsX8lpGhq1+MrJeGufibIiU3Tm+dzcnneNR0WIbBAfX6OeFgH6tYxuQZF0EQQ==
+X-Google-Smtp-Source: AGHT+IEC7QVwutEBVn3PNNKxOZQMmGKOLggaNtpBBMBtCsBA3oalYyv7QE4vI2wtXu/RuCfEjabwcg==
+X-Received: by 2002:a05:6512:3f20:b0:570:4a6c:902e with SMTP id 2adb3069b0e04-57062589811mr1999144e87.26.1757802940364;
+        Sat, 13 Sep 2025 15:35:40 -0700 (PDT)
+Received: from [192.168.1.2] (c-92-34-217-190.bbcust.telenor.se. [92.34.217.190])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-56e63c63c87sm2324559e87.69.2025.09.13.15.35.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Sep 2025 15:35:39 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 14 Sep 2025 00:35:37 +0200
+Subject: [PATCH] mtd: rawnand: fsmc: Default to autodetect buswidth
 MIME-Version: 1.0
+Message-Id: <20250914-fsmc-v1-1-6d86d8b48552@linaro.org>
+X-B4-Tracking: v=1; b=H4sIALjxxWgC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1MDS0MT3bTi3GTdpBRDi1TDRAtDQ7M0JaDSgqLUtMwKsDHRsbW1ALgXGbx
+ WAAAA
+X-Change-ID: 20250914-fsmc-bd18e1a8116f
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org, 
+ Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.14.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250913_081922_114905_95C13137 
-X-CRM114-Status: GOOD (  11.35  )
+X-CRM114-CacheID: sfid-20250913_153544_024123_07C58FD4 
+X-CRM114-Status: GOOD (  12.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,63 +100,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Jack Wang <jinpu.wang@ionos.com>
+If you don't specify buswidth 2 (16 bits) in the device
+tree, FSMC doesn't even probe anymore:
 
-[ Upstream commit 43b81c2a3e6e07915151045aa13a6e8a9bd64419 ]
+fsmc-nand 10100000.flash: FSMC device partno 090,
+  manufacturer 80, revision 00, config 00
+nand: device found, Manufacturer ID: 0x20, Chip ID: 0xb1
+nand: ST Micro 10100000.flash
+nand: bus width 8 instead of 16 bits
+nand: No NAND device found
+fsmc-nand 10100000.flash: probe with driver fsmc-nand failed
+  with error -22
 
-dma_map_sg return 0 on error, in case of error return -EIO.
+With this patch to use autodetection unless buswidth is
+specified, the device is properly detected again:
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: Cai Huoqing <cai.huoqing@linux.dev>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20220819060801.10443-5-jinpu.wang@ionos.com
-Stable-dep-of: 513c40e59d5a ("mtd: rawnand: stm32_fmc2: avoid overlapping mappings on ECC buffer")
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+fsmc-nand 10100000.flash: FSMC device partno 090,
+  manufacturer 80, revision 00, config 00
+nand: device found, Manufacturer ID: 0x20, Chip ID: 0xb1
+nand: ST Micro NAND 128MiB 1,8V 16-bit
+nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+fsmc-nand 10100000.flash: Using 1-bit HW ECC scheme
+Scanning device for bad blocks
+
+I don't know where or how this happened, I think some change
+in the nand core.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/fsmc_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index c0c47f31c100d..9e535405e8b20 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -858,8 +858,8 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index df61db8ce466593d533e617c141a8d2498b3a180..154fd9bea3016b2fa7fa720a41ef9eeed6063fd5 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -879,7 +879,9 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
+ 		} else if (val != 1) {
+ 			dev_err(&pdev->dev, "invalid bank-width %u\n", val);
+ 			return -EINVAL;
+-		}
++		};
++	} else {
++		nand->options |= NAND_BUSWIDTH_AUTO;
+ 	}
  
- 	ret = dma_map_sg(nfc->dev, nfc->dma_data_sg.sgl,
- 			 eccsteps, dma_data_dir);
--	if (ret < 0)
--		return ret;
-+	if (!ret)
-+		return -EIO;
- 
- 	desc_data = dmaengine_prep_slave_sg(dma_ch, nfc->dma_data_sg.sgl,
- 					    eccsteps, dma_transfer_dir,
-@@ -889,8 +889,10 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 
- 		ret = dma_map_sg(nfc->dev, nfc->dma_ecc_sg.sgl,
- 				 eccsteps, dma_data_dir);
--		if (ret < 0)
-+		if (!ret) {
-+			ret = -EIO;
- 			goto err_unmap_data;
-+		}
- 
- 		desc_ecc = dmaengine_prep_slave_sg(nfc->dma_ecc_ch,
- 						   nfc->dma_ecc_sg.sgl,
+ 	if (of_property_read_bool(np, "nand-skip-bbtscan"))
+
+---
+base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+change-id: 20250914-fsmc-bd18e1a8116f
+
+Best regards,
 -- 
-2.51.0
+Linus Walleij <linus.walleij@linaro.org>
 
 
 ______________________________________________________
