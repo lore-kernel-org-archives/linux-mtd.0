@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1CDDCAC58F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Sep 2025 07:41:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88B1ACAC58E
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Sep 2025 09:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jC1zm8yQ4li1X/eNp8J67Vf5IaQ3+P5FLbrodcRGYHI=; b=Zpw2aSa63coUba
-	PVzMFRdNp1K29p7wvAOFb59HzMa0eDWdlmJPgJpqkvx9aUZRreh3qC7wm8d+czUhjP+FLBWuGjUqN
-	reAqm0mcW/lRKChEIvkOvMlVkkr/DHbRg9vy7G5nQfFJy7n6CYuHISe3ppmzCcsDOWLi6/l6g3zxW
-	S0+OP9AMGNgJSzUmHpItZfe7kXv3wpGp2PyjrwH2468hSmwgis3lSg5mXayMavsW1HyDw4FfNJ4sK
-	Yk7XXjSzhKuaHwTZkOoMHYd4Y8UxNTuDklEuLIPE5XIJNCiYI1cL4L+FFQxcPjoNhEE6mrGdNepsz
-	LRrATEFnraNPmRVlq0jQ==;
+	List-Owner; bh=r0Sozhn88/V8F2V4I0+Zjr4xrsAd5Aeb/VAyQkFrotY=; b=wUHOmP132dRQYj
+	+JhiJbtgvNYyp7dxzmJp9haozOtb2jDSssq7TJFHjoFPeenWnV9CGUDFUi+Wf4kF2FxybyAV4Y9eY
+	n53FTn1+4Hyr5K4WhVUTxBsL5dGcJrSDoVECZxPy50/EN0uyv+281HPsMb3SGIXUeGfBd+TCVmU8I
+	DPdCH1K5g/KxOiOYYzxA/ZL1efmeLIRth+gUwF8vLnTO/vxU2C6ly1SGhnZjtPnGH49AKDcJbeC7z
+	/HAkwiC4duO4mbAJDkeAT1Fmho2ide8oheszuz1O8F0nhI2T6oDJPJGpqOWL6zxSl5Da+eyhUVRSQ
+	ZbjFfXoYs3BAirv6yELg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy3qE-000000035bd-47Jd;
-	Mon, 15 Sep 2025 07:41:38 +0000
-Received: from lelvem-ot02.ext.ti.com ([198.47.23.235])
+	id 1uy5XV-00000003Tpe-1kNc;
+	Mon, 15 Sep 2025 09:30:25 +0000
+Received: from mail.inventec.com ([61.220.76.156])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy3qC-000000035az-0Fk0
+	id 1uy5XS-00000003TnU-2YGD
 	for linux-mtd@lists.infradead.org;
-	Mon, 15 Sep 2025 07:41:37 +0000
-Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
-	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 58F7fFhw1510294;
-	Mon, 15 Sep 2025 02:41:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1757922075;
-	bh=tEdZqpOd0p3VvYV6uzHABPpFXlZefqk+wQsFnV5+sps=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=TQijDgckIKgT9uwCLGaAqmDcdrBruQN11rlXEFDUuw2T0tih3c4ergAM44IJ6lPu1
-	 HP79l0Ed+nbXalOBG+0lqg5eQw4cb1owQbPJProSmPOJ58Y/qjtWq1XOScakMbenBQ
-	 ZZx2s9ngiJbH0ONFIi/y6cLyfP1jDvzlPlC0bbtk=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 58F7fFJB3789550
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Mon, 15 Sep 2025 02:41:15 -0500
-Received: from DLEE213.ent.ti.com (157.170.170.116) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 15
- Sep 2025 02:41:14 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE213.ent.ti.com
- (157.170.170.116) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Mon, 15 Sep 2025 02:41:14 -0500
-Received: from [172.24.233.254] (santhoshkumark.dhcp.ti.com [172.24.233.254])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 58F7fAFY3366317;
-	Mon, 15 Sep 2025 02:41:11 -0500
-Message-ID: <9fec8944-3bcd-4f89-b7d4-c5f5f9d6c185@ti.com>
-Date: Mon, 15 Sep 2025 13:11:09 +0530
+	Mon, 15 Sep 2025 09:30:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+    s=SEx04; d=inventec.com;
+    h=from:to:cc:subject:date:message-id:in-reply-to:content-type:
+      mime-version;
+    bh=pFg6HfnrKxKVyvxmZ4Rsr97LAuAW8GCGsUDqidRIsY8=;
+    b=TmkisrQ8R6pvmNYpwyttUckL9Q7xOEYxUkMMu9jXc8DuIM4JmOKjZk9lWCzuga
+      ygbT9ZSbFFtSJ2fFNfTebLs0XxUREbMwFcfMu2ojhKXLh9lOaQ1qsG6iIUfm+7
+      d0gAOeR5nZg9XqrtKPJt7ayMO/RenoBReNItc1kslSRS7XT6IfF4MnKMJwiez2
+      qnMmtjxcbPt5J+9WkGpqhE/kJxMvvIKimrUh/1GG4Y3N1VqUUgpalFLtComoqr
+      xAr3jhknPeybDT2Q0mQ/GZp2r+KTJ8uv00pIA9reoCsnfNi3u5dGDN8eWJs249
+      xe1dnxYzTF2B1gQs/BK97HAdo4tzUE+g==
+Received: from IEC1-EX2016-04.iec.inventec (10.1.254.222) by
+ IEC1-EX2016-04.iec.inventec (10.1.254.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.57; Mon, 15 Sep 2025 17:30:01 +0800
+Received: from IEC1-MSE-FE1.inventec.com (10.1.254.203) by
+ IEC1-EX2016-04.iec.inventec (10.1.254.222) with Microsoft SMTP Server id
+ 15.1.2507.57 via Frontend Transport; Mon, 15 Sep 2025 17:30:01 +0800
+Received: from IEC1-EX2016-02.iec.inventec (IEC1-EX2016-02.iec.inventec [10.1.254.221])
+	by IEC1-MSE-FE1.inventec.com with ESMTP id 58F9Tt5q082736;
+	Mon, 15 Sep 2025 17:29:55 +0800 (GMT-8)
+	(envelope-from Kang.Kerry@inventec.com)
+Received: from IEC1-EX2016-02.iec.inventec (10.1.254.221) by
+ IEC1-EX2016-02.iec.inventec (10.1.254.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.57; Mon, 15 Sep 2025 17:29:56 +0800
+Received: from IEC1-EX2016-02.iec.inventec ([fe80::25ef:f59e:6733:75ba]) by
+ IEC1-EX2016-02.iec.inventec ([fe80::25ef:f59e:6733:75ba%3]) with mapi id
+ 15.01.2507.057; Mon, 15 Sep 2025 17:29:56 +0800
+From: =?utf-8?B?S2FuZy5LZXJyeSDlurflrofoia8gVEFP?= <Kang.Kerry@inventec.com>
+To: Pratyush Yadav <pratyush@kernel.org>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: mtd: spi-nor: Add Winbond w25q512jvdtr
+Thread-Topic: mtd: spi-nor: Add Winbond w25q512jvdtr
+Thread-Index: AQHcImo2pZrtT3WrcUCVoD1JFifbDLSTvwyA
+Date: Mon, 15 Sep 2025 09:29:56 +0000
+Message-ID: <31265f84726047ebb49b3ea2e7836830@inventec.com>
+References: <CAG2w3Fsj6q8buVE+cXSuoTZj9gEP29u+mh6Xm3ryBqAxxRsQyg@mail.gmail.com>
+ <mafs0cy7yjon6.fsf@kernel.org>
+In-Reply-To: <mafs0cy7yjon6.fsf@kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.6.240.141]
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Modify addr_mode_nbytes for DTR
- mode
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-        <tkuw584924@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <praneeth@ti.com>, <p-mantena@ti.com>, <a-dutta@ti.com>,
-        <u-kumar1@ti.com>, <s-k6@ti.com>
-References: <20250904131309.3095165-1-s-k6@ti.com>
-Content-Language: en-US
-From: Santhosh Kumar K <s-k6@ti.com>
-In-Reply-To: <20250904131309.3095165-1-s-k6@ti.com>
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-MAIL: IEC1-MSE-FE1.inventec.com 58F9Tt5q082736
+X-TM-SNTS-SMTP: 5FD45C740A39DD0564FC7D617827201A029C85B13DE700C9F6957A6F1FEB4CC62000:8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250915_004136_236541_D7842EE5 
-X-CRM114-Status: UNSURE (   9.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250915_023022_953786_AE49E255 
+X-CRM114-Status: GOOD (  21.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,60 +89,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Pratyush and Takahiro,
-
-On 04/09/25 18:43, Santhosh Kumar K wrote:
-> The nor->params->addr_mode_nbytes parameter defines the address byte
-> count for the current addressing mode. When transitioning between SDR
-> and DDR modes, this parameter must be properly updated to maintain the
-> correct addressing behavior. So, implement the necessary updates to
-> nor->params->addr_mode_nbytes during both DDR mode enablement and
-> disablement operations to ensure address byte counts remain consistent
-> with the active transfer mode.
-> 
-> Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
-> ---
-> 
-> Tested on TI's AM62x SK
-> Logs: https://gist.github.com/santhosh21/8d69756bd54605d79086b00850e1083a
-
-We were facing write and erase failures in NOR flashes without this fix.
-
-Failure log:
-
-root@am62xx-evm:~# flash_erase /dev/mtd6 0 0
-Erasing 256 Kibyte @ 0 --  0 % complete [   33.078034] spi-nor spi0.0: 
-Erase Error occurred
-[   33.086178] spi-nor spi0.0: Erase Error occurredock 0 (mtd6)
-
-         error 5 (Input/output error)
-flash_erase: error!: /dev/mtd6: MTD Erase entire chip failureTrying one 
-by one each sector.
-              error 5 (Input/output error)
-Erasing 256 Kibyte @ 0 --  0 % complete libmtd: error!: MEMERASE64 ioctl 
-failed for eraseblock 0 (mtd6)
-         error 5 (Input/output error)
-flash_erase: error!: /dev/mtd6: MTD Erase failure
-              error 5 (Input/output error)
-Erasing 256 Kibyte @ 0 -- 100 % complete
-root@am62xx-evm:~#
-
-But, I just bisected and got to know that the
-commit b61c35e3404557779ec427c077f7a9f057bb053d
-"mtd: spi-nor: spansion: Use nor->addr_nbytes in octal DTR mode in 
-RD_ANY_REG_OP"
-fixed this issue. My bad!
-Lets drop this patch.
-
-Thanks and Regards,
-Santhosh.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUHJhdHl1c2gsDQpJIGNvbmZpZ3VyZWQgdGhlIERUUyB3aXRoICdjb21wYXRpYmxlID0gImpl
+ZGVjLHNwaS1ub3IiOycNCmFuZCBlbmFibGVkIHRoZSBrZXJuZWwgb3B0aW9uczoNCkNPTkZJR19N
+VERfUEFSVElUSU9ORURfTUFTVEVSPXkNCkNPTkZJR19NVERfU1BJX05PUj15DQoNCkhvd2V2ZXIs
+IHRoZSBkbWVzZyBvdXRwdXQgc2hvd3MgdGhhdCB0aGUga2VybmVsIGlzIGZhaWxpbmcgdG8gcmVj
+b2duaXplIHRoZSBmbGFzaCdzIEpFREVDIElELiBUaGlzIHN1Z2dlc3RzIHRoYXQgdGhlIGdlbmVy
+aWMgU0ZEUC1iYXNlZCBkcml2ZXIgaXNuJ3Qgd29ya2luZyBhcyBleHBlY3RlZC4NCg0KWyAgMTM1
+LjI5NDYyNF0gc3BpLW5vciBzcGkxLjA6IHVucmVjb2duaXplZCBKRURFQyBpZCBieXRlczogZWYg
+NzAgMjAgMDAgMDAgMDANClsgIDEzNS4zMDE2MDJdIHNwaS1ub3I6IHByb2JlIG9mIHNwaTEuMCBm
+YWlsZWQgd2l0aCBlcnJvciAtMg0KDQpJIHRoaW5rIHdlIG5lZWQgdG8gYWRkIHRoaXMgdG8gdGFi
+bGUgdG8gbWFrZSBzdXJlIFcyNVE1MTJKVi1EVFIgaXMgcmVjb2duaXplZC4NCg0KQlIsDQpLZXJy
+eQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogUHJhdHl1c2ggWWFkYXYgPHBy
+YXR5dXNoQGtlcm5lbC5vcmc+IA0KU2VudDogV2VkbmVzZGF5LCBTZXB0ZW1iZXIgMTAsIDIwMjUg
+MTE6NDcgUE0NClRvOiBLYW5nLktlcnJ5IOW6t+Wuh+iJryBUQU8gPEthbmcuS2VycnlAaW52ZW50
+ZWMuY29tPg0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBSZTog
+bXRkOiBzcGktbm9yOiBBZGQgV2luYm9uZCB3MjVxNTEyanZkdHINCg0KSGksDQoNCk9uIFdlZCwg
+U2VwIDEwIDIwMjUsIEthbmcuS2Vycnkg5bq35a6H6ImvIFRBTyB3cm90ZToNCg0KPiBTaW1pbGFy
+IHRvIHRoZSBvdGhlciBvbmVzLCBkaWZmZXJlbnQgc2l6ZS4gVGhlICJKVi1EVFIiIHN1ZmZpeCBp
+cyBpbiANCj4gdGhlIGRhdGFzaGVldCwgSSBoYXZlbid0IHNlZW4gbWVudGlvbnMgb2YgYSBkaWZm
+ZXJlbnQgb25lLg0KPg0KPiBUaGUgZGF0YXNoZWV0IGluZGljYXRlcyBEVUFMIGFuZCBRVUFEIGFy
+ZSBzdXBwb3J0ZWQuDQo+DQo+IGh0dHBzOi8vd3d3LndpbmJvbmQuY29tL3Jlc291cmNlLWZpbGVz
+L1cyNVE1MTJKViUyMERUUiUyMFJldkQlMjAwNjI5MjANCj4gMjAlMjAxMzMucGRmDQoNClRoZSBm
+bGFzaCBzZWVtcyB0byBoYXZlIFNGRFAuIEkgZG9uJ3QgdGhpbmsgeW91IG5lZWQgYW4gZW50cnkg
+aGVyZSBhdCBhbGwuIFRoZSBnZW5lcmljIFNGRFAtYmFzZWQgZHJpdmVyIHNob3VsZCBiZSBlbm91
+Z2ggZm9yIHlvdS4gSnVzdCBhZGQgdGhlIGplZGVjLHNwaS1ub3Igbm9kZSB0byB5b3VyIGRldmlj
+ZSB0cmVlLiBUcnkgdGhhdCBvdXQgYW5kIG9ubHkgYWRkIHRoZSBlbnRyeSBpZiBzb21ldGhpbmcg
+aXNuJ3Qgd29ya2luZywgYW5kIHRoYXQgd2l0aCBleHBsYW5hdGlvbnMgYW5kIGZpeGVzIHRvIHRo
+ZSBwcm9ibGVtcy4NCg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBLYW5nLktlcnJ5IA0KPiA8a2FuZy5r
+ZXJyeUBpbnZlbnRlYy5jb3JwLXBhcnRuZXIuZ29vZ2xlLmNvbT4NCj4gLS0tDQo+DQo+IFRoaXMg
+bW9kaWZpY2F0aW9uIGlzIGFkZCBCSU9TIFcyNVE1MTJKVi1EVFIgY2hpcCB0byB3aW5ib25kIGxp
+c3QNCj4NCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYyB8IDUgKysrKysN
+Cj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKykNCj4NCj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jIA0KPiBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivd2lu
+Ym9uZC5jIGluZGV4IDhkMGEwMGQ2OWUxMi4uNmNlNWY3MGJjMTFhIA0KPiAxMDA2NDQNCj4gLS0t
+IGEvZHJpdmVycy9tdGQvc3BpLW5vci93aW5ib25kLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvc3Bp
+LW5vci93aW5ib25kLmMNCj4gQEAgLTE0Niw2ICsxNDYsMTEgQEAgc3RhdGljIGNvbnN0IHN0cnVj
+dCBmbGFzaF9pbmZvIHdpbmJvbmRfbm9yX3BhcnRzW10gPSB7DQo+ICAgLm5hbWUgPSAidzI1cTUx
+Mmp2cSIsDQo+ICAgLnNpemUgPSBTWl82NE0sDQo+ICAgLm5vX3NmZHBfZmxhZ3MgPSBTRUNUXzRL
+IHwgU1BJX05PUl9EVUFMX1JFQUQgfCBTUElfTk9SX1FVQURfUkVBRCwNCj4gKyB9LCB7DQo+ICsg
+LmlkID0gU05PUl9JRCgweGVmLCAweDcwLCAweDIwKSwNCj4gKyAubmFtZSA9ICJ3MjVxNTEyanZk
+dHIiLA0KPiArIC5zemllID0gU1pfNjRNLA0KPiArIC5ub19zZmRwX2ZsYWdzID0gU0VDVF80SyB8
+IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQsDQo+ICAgfSwgew0KPiAgIC5p
+ZCA9IFNOT1JfSUQoMHhlZiwgMHg1MCwgMHgxMiksDQo+ICAgLm5hbWUgPSAidzI1cTIwYnciLA0K
+PiAtLQ0KPiAyLjQzLjANCj4NCg0KPg0KDQotLQ0KUmVnYXJkcywNClByYXR5dXNoIFlhZGF2DQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
