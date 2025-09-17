@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63B71CAC59A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01248CAC59F
 	for <linux-mtd@archiver.kernel.org>; Wed, 17 Sep 2025 21:54:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MdkoN3HF8mJjF9Y+oaGil/mb+Rb5EoP7SSwws4qVLYo=; b=QhimH477mU8SYS
-	u1qRFRjDhdD3AbCqUn90VAPx5gBs/XmOZ8b/L5LZXiV4j400ssPXVJaJVwlKeRRMZBQgqBPbU+RCG
-	7I1ZCX3o4yEaj6GJbSJDtDOZ8a2R4xM2uWhzIg0mVbT+yAaNk+wqgQGWP9kAALI3qlqaBFxcSw5z3
-	z8F4tmchFvqRExoxz6QlrCyvClVoWebBpiOhx9geReXff13ijc/VYGuhb7b5nAOG3AD+HtbmJTP3c
-	fUF5HRZD1aBfr/9huWoArYety3cs9zAHeYM0EuK8AuPozF0IFX/IuqpONipnshUrozGy2AvVekrHv
-	iqejpsDRXPkf82dDFiRQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=4ogOdXpbCtB1o7PlCuwD4z8ynBU1XJTkIcgV8blBCGg=; b=q4el3Xd4/QV2aa
+	0tNhUc9rVrHlFQN8zaSUo1qP5EEj+gQMZRECNeRJWA79PCjudxjsxE+hL0QVL0cU9PiwQD51irjPy
+	4rxzDZ5PuaDG2facHBYma0JAwZ28m+ZEQNHYVDWXaxj5JmYaQamvF9koUfXT0cIwS3ok9Mq2WiQMo
+	vrXn+/4814CWR6jAU+0sA85CaUX4ocIBisZKkNtJTHiYwTQx/QNohrb0pK5n0xP4BPIQc0FBePJuz
+	jqdsaihiG4eMzGY0aNjPhFdqFYndWINrYcUS0E/6ieYA6FzidjS9M0eGWwVbzF2YYE8F9ElV6k2yD
+	1Wm48oPUrKT7el1vibHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uz06b-0000000F2wa-1HVw;
-	Wed, 17 Sep 2025 21:54:25 +0000
+	id 1uz06X-0000000F2sx-2qHm;
+	Wed, 17 Sep 2025 21:54:21 +0000
 Received: from mail-westeuropeazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c201::1] helo=AM0PR83CU005.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uz06Y-0000000F2r1-1GlO
+	id 1uz06U-0000000F2r1-1WOz
 	for linux-mtd@lists.infradead.org;
-	Wed, 17 Sep 2025 21:54:23 +0000
+	Wed, 17 Sep 2025 21:54:19 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Fw+5+SBMZp5Jqbm3EFeifOqC2ssIJTVPUh2egjwMXT7tfUQRfkeJEVLcse8XDi7ZXFW2NquyimjwhziMS9uTyg4nMxZmreMjzVib0hydRRlFGuIe68B5foycjrILbOHT8UI7flPt2w66F56UR0+T1bWkpCUT+hbvYTzkcjLOK0RNKVAkJerCVZOiQ/aORW4f/PkNamiekQDv2+zc0/Jz21HBv7ibZNkkpsZQoA6fFzvuVd5xOWDtopzfjdLgZlZfyXnIuGPgVXcRAfuTkjFQbYPE4Jfs1iguDO54b7OF0AA6Q0Sg2g3xWWBY9pnc+1tHD3WfV6SnX5gRNJQpU316SA==
+ b=kUw6AnJ+6W1j97JrA4RoeUYNrDPOo776BxtYkjnSNV+2eqJ/vg6WNzu+0wIehUAo22CQTb7teD4Hv5Gj9ONQ3w8CJc/pQf77fiTOuGYzYJorRTgjalx/pHErxGStEKZdYHc6SxF97KSYuLzkpAqwxhY81P5P7Hns8j/WPQexDXgxVvNzYbxJtbHfjM39mZc2k3F3ll7HrMdPOzYC6XuEi+cM54gzUIj1loG6Joij2H7YQeWDVvssJFoNAQfV/8BwHNacvaq3M+f/mGqwg9KcbeXngarwjyhB65DOawtpnmIuD3SnOB4xegERfN87kCShXbXp/d/BVIIgF8LyyzGKHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PFwF+NE8DsI9DB7q0hBsjSci5MPJSQpZbQYGpyTYmFY=;
- b=eBa9Qhue3e6pKK5y9dGtaouWRkBRQKfoKNm45iqgGKqyeQzUrcXKyVb5xCjXqfMZCNsIUOtEh6Kd+bl8YJVJ+KM3uOCthPYReJ+v8l9vOpeEjY2mMJ76nDc+5kfaUPL+70i9+H7CMrk37DJvKNBtRcr0XaBvIWdIutPmJCggN0DWr0AWBGa8rVMBGF0CwaWyBGjLslxR8H5x6oCp2mjvhSPldGBFRv5w3+UZIfMuptWW5rhehLP59pxE3xRdDVx6e8QWZRLyb4YxCHAaBHyHa48L+Ux3/uff+GiRTdbfI5JDNiCWNz8HzJlOK3nWaa3byh/nC7SiEhjGGmU9fhYFZw==
+ bh=vYi/AiR3zqkZjpYlr2b+F7YJaNWqoakswQwYvAH8nfE=;
+ b=DBkfEkrbVBGdBsRhAR49fjN2sugrwkP6o+evMfB+MDvqEBvEMNrLlGCRSxq+ai45Gif/li3Zl5ENjYDCHf/PZqjc9Sv8gIuIg6RwN2t9s8J07IMsxl9i6ijRgqj8cD8nAc8d42fArfpYSQNZZxNvEEr+Ad8zVJVjnU18rc+53TzJElexdLzHaKLXBk5MBu1wBMJPGmWsfkUeMzq45hYIDh3wYUDRts0DlMlVhAULwaWmWSXgLuk/BMw+OpvTYUyQxRoDQUQnMLz5V4jHaUJn7wFWoEhV3IdFR8hNRDKMAB2/DVoJ2RhIMIpVbUhTjYg+E5b/Tr4q7rKYtulfUJpRnA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=genexis.eu; dmarc=pass action=none header.from=iopsys.eu;
  dkim=pass header.d=iopsys.eu; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iopsys.eu;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PFwF+NE8DsI9DB7q0hBsjSci5MPJSQpZbQYGpyTYmFY=;
- b=BJeJaDyziS6GsXEAdaPkyGtrdfQEXXUlVs49J8zibnTxXVm3iRdQCIM1jbA3Ya0NkpTp1tZ3cxMqxdXUD1iuOuEEhMEOEUNCS+0P9pIDAcug/k+IHQNWhECrpCf2Z6vY8Z1Lsw531hV/CYKbq1WokK2cZpd0aDoHLV4SvemDs3jk7NUXC5bEIb2Q/qzL3LBeKSZphShNCfmr0rtEHaCsuJnMCejnkOds9sq9yVBxg6vEWAHxkVAW3yI9FgpVjsIgnBcRW33HpGgsOms7pxjvnjcmutK5n2ql9PlBbQ+PXOD5s3tnIH/37jXF09bhlvsZoPced2VxyUXsmyeMihm0dg==
+ bh=vYi/AiR3zqkZjpYlr2b+F7YJaNWqoakswQwYvAH8nfE=;
+ b=mwR+fKFOym0HizWi1I0FRJXb9KfV7naDqfzAOI2BPqQCQ5ytxlFXsfWUho8xl8j++WvAdFjQ7fb0sWk9oCiuHv1d3osaMqfY7W5eXhxob0Qu6PhwZMMNECVX3dRcT0lptSP2qwRym0KunQ7fampdo9TDu+f1i++zOCVEk4QGAMrhJAhS7UvpA+YacO0zG6jH9NfXlwNOjhntXeyyPSAbAs4I+6uExsgPLTybjlJTrFN8VaApgvHkN6vQIgqg+f3QxDpdDcq8gb5Z2LGzkqK08n3jS7lW3wtch/lemDChcWoClTMg7Pog1eOHvhvzuR3KDina4opO1mgOXCp7x9o/Vg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=iopsys.eu;
 Received: from GV2PR08MB8121.eurprd08.prod.outlook.com (2603:10a6:150:7d::22)
  by AM8PR08MB6322.eurprd08.prod.outlook.com (2603:10a6:20b:361::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9137.13; Wed, 17 Sep
- 2025 21:54:11 +0000
+ 2025 21:54:09 +0000
 Received: from GV2PR08MB8121.eurprd08.prod.outlook.com
  ([fe80::4cd3:da80:2532:daa0]) by GV2PR08MB8121.eurprd08.prod.outlook.com
  ([fe80::4cd3:da80:2532:daa0%4]) with mapi id 15.20.9094.021; Wed, 17 Sep 2025
- 21:54:11 +0000
+ 21:54:09 +0000
 From: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -65,91 +65,89 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-kernel@vger.kernel.org
 Cc: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
 	Andreas Gnau <andreas.gnau@iopsys.eu>
-Subject: [PATCH RESEND v5 2/3] mtd: spinand: try a regular dirmap if creating a dirmap for continuous reading fails
-Date: Thu, 18 Sep 2025 00:54:00 +0300
-Message-ID: <20250917215401.19132-3-mikhail.kshevetskiy@iopsys.eu>
+Subject: [PATCH RESEND v5 0/3] mtd: spinand: fix continuous reading mode support
+Date: Thu, 18 Sep 2025 00:53:58 +0300
+Message-ID: <20250917215401.19132-1-mikhail.kshevetskiy@iopsys.eu>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250917215401.19132-1-mikhail.kshevetskiy@iopsys.eu>
-References: <20250917215401.19132-1-mikhail.kshevetskiy@iopsys.eu>
 X-ClientProxiedBy: GVX0EPF0001A043.SWEP280.PROD.OUTLOOK.COM
  (2603:10a6:158:401::488) To GV2PR08MB8121.eurprd08.prod.outlook.com
  (2603:10a6:150:7d::22)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: GV2PR08MB8121:EE_|AM8PR08MB6322:EE_
-X-MS-Office365-Filtering-Correlation-Id: dcc6ebe5-6d81-4566-82cb-08ddf634bbff
+X-MS-Office365-Filtering-Correlation-Id: b8e79f12-54d9-48d9-ee93-08ddf634baac
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|52116014|366016|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?g/73jsXSyow+5u97empXMlCqKfKgu4N/t+wiAcuUweKPi/8vhfPZJD6KUTIy?=
- =?us-ascii?Q?FKKlLy9/ZDqjTdEiCnVTza/bJxcq5y4sjpdeRRcMkLGji13757ygIUR+C6Xd?=
- =?us-ascii?Q?6dONkcsd4X5+jFTc5XOykJSW9tWOTY6r9yf/fGTM3lndsAd6tQ9a1jsfJuCb?=
- =?us-ascii?Q?nptdCqzOkfZh+PuXG7b8N0aBk0NJYlJ2iGYQQ7bQCR5gmbD4CdIRS8r5zaOT?=
- =?us-ascii?Q?NcgNcztRj+7Ex8as4dZglb0bn1CNIvEFhglSY2F8EzJBXBGwKnTByfqP2IWq?=
- =?us-ascii?Q?ROk9IuJpgsNViZ8oavmkbso+yZ4jEC3jhqzvTRp9PHOkGPXTvmoVZLOaMDhK?=
- =?us-ascii?Q?KXEkXugN9aqFBKc/uX44aCrB/FecKcs2ektJNvk0Ty1kKexQ5kV2NuFyjA5z?=
- =?us-ascii?Q?RLRtRGAsapw9cmitFbv59IE1sx91FzfJ+7T7BWak54bBog3osls1iSC+WCbp?=
- =?us-ascii?Q?ued8jz72ICgLOsQhMVfzB74BAQypTMvVBRdTsuRnP65kKfmZEoRH6uB7Fwkv?=
- =?us-ascii?Q?j92K5ZQ7emJZSM3YKg2zcwa6pjN+n8XPn7WEgcOrp5abjLD4Mq/Mi/rMp4RJ?=
- =?us-ascii?Q?ZoPsjY6EUFIX0fV7guSiDsgrCJserP54myW7w2rsa29XIBqw14v5StYYILIR?=
- =?us-ascii?Q?bQYS0u+bLgG5zHI/1j57zeq4mo4n9Kbfp3gWdNNZaI+A/ED3TRAL9s9A0C5Y?=
- =?us-ascii?Q?TubcKSocTmmePhsNJst+Vnhc2NuymPUIKDVsPdaHlX9QdZKDbw3mBrXtYs48?=
- =?us-ascii?Q?7LQH0dUbQBjYe+MxD3GpjD/a7UBTfHzeoaGP0dqjBE0jWtyvIEJc7KyEt+Y4?=
- =?us-ascii?Q?3hdxCY5C8ORqfgJyWfSCnnCugu91cYEGNNtUqH090+QIp0FsWdoKRVQN1TRQ?=
- =?us-ascii?Q?YLLq1rmgUtztTwyH1kdflnFDA+KTtZKEYWhly8wksTmS0z52dhh7/O/mNOZX?=
- =?us-ascii?Q?UOmZrt/89gRMtOH8h0xK7BCAJt8k/EkKNhDDx9zK1RKttQ+h3iwLRNqDpKzw?=
- =?us-ascii?Q?gaIVUZDjnCN1iaavkpkRjNjs6AfqIfr/QCXPinPQauMGKg/3LEmVNHMwfFPa?=
- =?us-ascii?Q?z/sp3cXY07H3/9avGQ5JU/f0t2OoeH9KDTkccQhrwmKhJa0rVmyilwauFepd?=
- =?us-ascii?Q?kA0LAf5TtR7rkZGtDY7iyorZ+M0AJ4uNHS8DXhD44wq28DP9z2prU5NXCJ5g?=
- =?us-ascii?Q?h/D8qDfD8fAPzoXb3WP4GJ88kU6YF+xPgrVb+tTZJrtW1VDyipTdo9VkjPHX?=
- =?us-ascii?Q?SBCyeT+ByCNJ8OppuqEjbygvtcspquyKWbU+zllrRwgjzvmYZzw2CNVIreC/?=
- =?us-ascii?Q?9mua0SQhklJPTsOYHM2X+hiF1JVoUdv0I8doXKHHLE1tiW4QvjdAzeknw7+4?=
- =?us-ascii?Q?PmvM4gZtLV8hhTOPaajj2S0keqPy4iQbXamb/T9z05j5KESi0qwe0cswbJvA?=
- =?us-ascii?Q?jtpjdInh6RrZuEx0oJByEARA38BGtn+Q06kUVZwtynHvspg6Uu+9kQ=3D=3D?=
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?47sd8WEd/PgnsLlmCym0QRVxHrhJLzuOvet3a1xGRIyg4JG67KsRxKg/87wr?=
+ =?us-ascii?Q?QhdVgyLfxAyZj41Rdh32QWh5755cbmMRcPHx/Thg7QN16X5mjQ3iwFoSW+8+?=
+ =?us-ascii?Q?cteJ+Lcr6NMY0BkuqoSUddJMs19Ran5s+mXwC06Zlo5CfkrIIR0UiL9wXxow?=
+ =?us-ascii?Q?WzX9H95CL+1RRUF1iNOCmdOrVFvqKgussRT9aUyzqXJGmFV3aUZmOcSEVpBQ?=
+ =?us-ascii?Q?wZbjK9ZqRx1iXMYTi4xaOMuyIUaASO/aG4w4F5Y/5QNBWZSfT4Yi5fVnXzNb?=
+ =?us-ascii?Q?G8mfoaOr9fVDjPd5O74f+rRhmwxeVmxEV4L7tON8FThECXh9ZKs3GnSo8+4T?=
+ =?us-ascii?Q?1LxK0uWQFUjHB9z4noZ/IQXOIxXh59ASqtE5NWeKGAmgt1Wyy++c2W3Xye7W?=
+ =?us-ascii?Q?GwS5/LyIvXRC6jeBUefcLtRHVmwmzsqVhMTctLBHW0D/APpEUZk7GGJRVqJF?=
+ =?us-ascii?Q?20WSIAK0+jkWkA3cXdeytXTz1NM9/yu/ZE2WoFibF4n3WZCF0n80rA3hlUKg?=
+ =?us-ascii?Q?MA+Dzh6YwSwmv+JqoWpBJe8vyU9+XdX44f/KLjthNmpOSqR5jyx0DBC5giYG?=
+ =?us-ascii?Q?ueyFacKzSxetVIaz9h46UAGVLgyOce5SIkhF+HljneG0dZJQ2ZjvNd4pyBHy?=
+ =?us-ascii?Q?oJgfJF02d5xK3XBSdbBXoZTAwqqnuEs90gbCTCSJ//DU9EuC0HEQG1xyajj2?=
+ =?us-ascii?Q?zEgULvHT8q+8ceFU1FB6eOfAPiErkMRiofgGXTXxiS1NZ+38mEpKHGJBBUc6?=
+ =?us-ascii?Q?4m0j7g84rbtOX0lR0f6OVb9afjsU+nbPLP480orrcvn1D3PH6Jxl5zHVE1Lp?=
+ =?us-ascii?Q?EDz1qoDME+DmfMiGMz8xpAuN7QoS34GGZrPINI9WKlcz1zC3Mmegthy6qthU?=
+ =?us-ascii?Q?K7urz3L2Xj5Er9LmZS/Qq9aPhLe2OztPV9xwbXK3X79DXXu33QIkQ1xAJ+DT?=
+ =?us-ascii?Q?6p7afUUcX+sH55ZKziACRWbL8nvQaJrBUrTppFTRrEEwOmhU7d053IxdKdmI?=
+ =?us-ascii?Q?8RDUvnoRyA21LN6TtI42SucwAJDrE6iH72bULpSmiAJU41axxs11XNjmDf4g?=
+ =?us-ascii?Q?rrIibCny4aicI7bweTxlbNBkCtnEe+R1tCTLa5Gz6gPGG4O2Bgs6eCfBa5fS?=
+ =?us-ascii?Q?zULvQLaPr1kWc1fNrhnoEoVVjhAfuSvPk/z114un8Ljv/mY6V4JU1gOGHD6Y?=
+ =?us-ascii?Q?Db5TDOvO1XXkWZsFjF7PpqTxY/tdxob8OviiT7/GMb8I30IsrBJYSSJL6gal?=
+ =?us-ascii?Q?h/LHEDbRlo47QTiHfHmEvQbKMV8s+fzM7wKW1Usc6EBxURH184b81Ac110q8?=
+ =?us-ascii?Q?MOIkDUclFjebPySSg7QH9d31lj+IacqzZzx36LhkN9eDBU2uJaN7uLUYqbQV?=
+ =?us-ascii?Q?MgkoMQh4yrpjqpoT3Y8eWblnc/u6NQUDy1Cz4PWOTzXfy7he5Bo28zpGcus5?=
+ =?us-ascii?Q?uYe0x8Z/pJ3xOAaPD6UOn+1p2SD9z9geKFaYWxF86ji+W6Dp/dDXRA=3D=3D?=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR08MB8121.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(52116014)(366016)(38350700014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/3hvkDrWop0UU+Utx8sJ0lXMAIJV2PgjqcQKzySZbWJFQUPZAhJA34kMW+Fq?=
- =?us-ascii?Q?8Ph9hRk1EfyyB5jawOf0oF/GEEL6Z8J0Tf65Z2Ca574JNEkwcbQRIoZVxk+q?=
- =?us-ascii?Q?fBSAgMbTPsI1gkRq0u6JfeKktkgN74eMHE8pg45sHbD3JDiLn43pHuFUAU4X?=
- =?us-ascii?Q?74KDjg47RARn2uqDl40xq5nbTGWoGtnfWtzsbmvZ5WNcpQyo6fxKkB/cAdh9?=
- =?us-ascii?Q?8XR0wJZLO7Yv+ZJwSAty34pzIupbaM4oXC7flxWTr5gMIaG46vXN8pd77N7C?=
- =?us-ascii?Q?fdw+Qo7CVPyvoFHzA3o5D9AIn7i0uG/0t/k+X48iszcJA82ggs/ZrhC8w9oU?=
- =?us-ascii?Q?ZvW0k1xfDh2skuRrwecXpCMoteSCYVLDL2cx9CtSxOdptSbkYOv+mmaJqEBa?=
- =?us-ascii?Q?cYFc+lL6lE1SEXZz5uA3yk4nCk0sMYdhhJfToyx62oK8p5sLUfZQNSqGRFtZ?=
- =?us-ascii?Q?Sttkh8zQGamw8Ll7H8QV/VNe7FECf4ZjxexsKIry6i3CwryaqlNwaKoogPsi?=
- =?us-ascii?Q?lOZ16bLz4/LH9Xvsyo6k7EkshG3c7JmKiLhQIKgYE24xabDDQqY5h/GUHkie?=
- =?us-ascii?Q?nyAux0Ik2Gb51em0vuZE9fU+MLYTvbt1Jv0AvIw740wXBhJZb59kCDuY7Wzr?=
- =?us-ascii?Q?fka5jqaU1tdz/8leRjRxF4F7L+V2GwvCdF1nWhy8ipbkhj4ZO70sZ9XX6jcF?=
- =?us-ascii?Q?zLr0i5JDwAn7d2AJjXzW4A9byjTFRL6l2rRKR+L0LP5t3yGRFSVq1F0faLge?=
- =?us-ascii?Q?WowrwIy36vFLmPv70Wvh8TGat+xFEiQLpJSfoZyzxpTgX4z5GhCLXyr228/h?=
- =?us-ascii?Q?N8hkmRfmiwTiouUouwHgQxuMLtI+lLXo6qj2/pwM9nHKgeLvqyfEtdv1BnzY?=
- =?us-ascii?Q?v4BWwgFshJy/DRsv6nSp23dLEIXbazcGsUrWT36sYeORPmUlAGs4B34MTDCL?=
- =?us-ascii?Q?CUL3iEFLeaqwVgh+uITrY3LJGUzdIzjS100w45MA+CAZdj4d02cX2H0QQVZq?=
- =?us-ascii?Q?MQBu4aMElqt6ZpL1i9smEpF9XMDrpLT6Ha0g7Q5Rq3c5UERnLM1MzpjvwgtS?=
- =?us-ascii?Q?0Sa3JJ8zV1x9rwqb/rlLulV2ZZXJpdDXPYkDRrhp0k8bdqcsukpL1AenAvBI?=
- =?us-ascii?Q?eZfu/8GLsyUgx5pfRUFCCyMSnm42tnamGqGP1T78JGgSa7PKM6SR5GEHmelr?=
- =?us-ascii?Q?4qg4FeTbd6qCpx9a8bWJHu+GF418c6vMNSuAUKPiHwC0yjAWVuh0K/S8F6Ie?=
- =?us-ascii?Q?MUv/agT94PntaxPZy8XbMnfpVu5VfG80drXGratP07RC9SVZmM9Q+ZFWXmmN?=
- =?us-ascii?Q?dvF5CdP/8ugyGFioPpNBMnkH/BK/JgpHtAafb5mitAB3nnkF5E9DlVQryODO?=
- =?us-ascii?Q?VxrbaLxM9JWwWpBa4v0HDDXNUasFJfKWfRVNbpdw/l1GiynQHA49D7/CxwbI?=
- =?us-ascii?Q?rD6jc58QvtIri/Yt27ZLLCBSQDnDIHNw/OR3c48aL863npoDmig7GtFu3FMe?=
- =?us-ascii?Q?Dp5de0RhxHJdnxxvt2+TGRi/dmT5LQOONSPVKuCWmk3Grl+6hQKRbpwC2U0w?=
- =?us-ascii?Q?UsJxKmuFVNY0uzoT4WGNgyszmfw0rTjRLHt6VccZosgtkYMAGv/jkavqNkbl?=
- =?us-ascii?Q?vzH1O+ueU8pbKN6v845Ak0Q=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZlVWUGkHXh2dOF2m//A9bAvnIivB2FU16rYrxuAyNOr8dDWPJj2gBfc9Y6Yg?=
+ =?us-ascii?Q?ZjplpIEoQvu8s3443jcME36fODhT2axqWrmFTErlpJpZUSxjl+LDaPAzhU/p?=
+ =?us-ascii?Q?30GDR82/A28g+gwTVksHE81DXTOqyWZ6Apdy8mexMWjAMHMWiXgRtPvakZFL?=
+ =?us-ascii?Q?xz8sJ+sZ4gTE1TJADCszAdXR07vFWIi9m6pXo1DWhxFmixNJdjt9c+Czo02w?=
+ =?us-ascii?Q?LQHWS1ZEv0CeTXRhOO9Q2xIjK/33pxFbuj9mR/V0XJbhIqzQL9IyCzka+0s8?=
+ =?us-ascii?Q?oTQugmO/lTL1uO2nB7pkYpW3CRsCUvCOlf0Vft0vHs8VimGGc3MjiCa+jco3?=
+ =?us-ascii?Q?CVYuBUp0tSJHk8+1K2zjS7Se4NgaV3Xynt4Zfpu1Ejnj6WJFAp1Ekagqmf7k?=
+ =?us-ascii?Q?MKR0eUB0P6dzeFeK3YxdL4ocqXCMnnsljPErsfX9UmfHkcYnp/uSeR+AE7Om?=
+ =?us-ascii?Q?QGUtVUKpt2EicUFcUoEfFBcuhvtUbKtIyeJ67ClqNwc8WpW4s6fW4p+yzGmW?=
+ =?us-ascii?Q?bs1g5UR9nYuRqI9rQ8YA2Fgx1vjgRRVPBw8IqkPp9TdjEw0FxI2bdsj2Ddz3?=
+ =?us-ascii?Q?hp6lCZpwYHHPn2Xl91/WK+93Ud4GRuurKTkB2VkNZkLEgKh6Ek05HLtDDcu8?=
+ =?us-ascii?Q?rN4REcxJrTjX1iTsLOtbr3hg2zWizfguPB/DoI75ujjtWI5oB6BUic4bPFrN?=
+ =?us-ascii?Q?btRCvW1FJWvH5XlqLsMLSqXgLJmu6mvRSAKKK2kXF37G1wlzaFMeziM4KVLb?=
+ =?us-ascii?Q?tBV0h6O/BHxC68vRV4N6iMrfOOQjW2GQTwClw3uE93GXqOr/V6VvK0FtPeqf?=
+ =?us-ascii?Q?Y3Venx613bzMSEWWnb56cyMV47ER0wShUdtZEagLmT1zwNdlDfw9qsgP2fRk?=
+ =?us-ascii?Q?oq1Su698BgM3i5D/xZwNlBfYeR4U2C9ElXObwS70Ruv4V4oTsUOi6slFCowS?=
+ =?us-ascii?Q?9bqo91lOpoDj1PZmP+3hUf6MX7hwY/3ETxh9CeC1KICpOpjfABHLjdsUxTb4?=
+ =?us-ascii?Q?GdoK/rFgKzzZJSnqhvHyvMBhgkYLex7anuEgxgJoOOIDNzU3+Btr1p7Pk/7h?=
+ =?us-ascii?Q?qd9MhtLN9RG7jhTjUISZ4MRefc45Chg6j4Edudq9wi0CU3Ohz/bFJuqueXB0?=
+ =?us-ascii?Q?Bi+MUy1CbPIzvCGPxsSBokBsozSBrYva0fvtlXtIk3e5ofrr3tsZBIfuXLDg?=
+ =?us-ascii?Q?cZTt9L3evcEER0U0jNdUf0DA8X6uTWr9a0jAOR02evDy/f8cGIu0oSRfjz7k?=
+ =?us-ascii?Q?DbFyOivj+dekcNhzHm1HtHbIkm+Hv/dKwPR/Dl99Ycesq1/uzIF2EeWJHwwm?=
+ =?us-ascii?Q?LkwsRyXOapIm2R2hGMaRA6RowA2rjEt5fr830mha41Jb2kdLsWiGHo4hiHyl?=
+ =?us-ascii?Q?hJnHMIJiwKXs6VgH4K6wnIuHqQKfPeZgToYuqpFvdUTNDW6CwJ7WgChMsiRe?=
+ =?us-ascii?Q?hQBwTMfOXMIa6TvSloNzskULetvCJJu81ANsMEsVGLCDsq4//bt+MCONJkhn?=
+ =?us-ascii?Q?j0XBoHzQp0z8bc1uXWf1+pN855PSzhwMybw+Suy+rEoWnlNwoOgQlLDMITx6?=
+ =?us-ascii?Q?+ak2vrTyPjdtPDTwfgInVlJ1BZmPy661wcn7eutiVj8KA4UzwuD7Spl5UwSA?=
+ =?us-ascii?Q?cDSXL10Wv+6UfAk9neJ2BhQ=3D?=
 X-OriginatorOrg: iopsys.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcc6ebe5-6d81-4566-82cb-08ddf634bbff
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8e79f12-54d9-48d9-ee93-08ddf634baac
 X-MS-Exchange-CrossTenant-AuthSource: GV2PR08MB8121.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2025 21:54:11.1381
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2025 21:54:08.9089
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8d891be1-7bce-4216-9a99-bee9de02ba58
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XFHTL+VV6iPMLsozJXfFf+p92pbp/ihmLL7tuNslkA/JuhmO0yLWIbcPbyW7ggJ00WnK8oaEsufmWb5XH20T/EBZsNChtv6znjSauxX+36k=
+X-MS-Exchange-CrossTenant-UserPrincipalName: UXl4A1HKgRC6xL+ECroIdlFOS7mb5WPxGTvEW3uprdv11lKxHSdtTGUEgp5kw0FLmmYtxdiLvDxKd5KTsSHrG1kTVhCf3pKnkRrHGFJW2po=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR08MB6322
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250917_145422_352539_1D410795 
-X-CRM114-Status: GOOD (  15.63  )
+X-CRM114-CacheID: sfid-20250917_145418_406239_57F47795 
+X-CRM114-Status: GOOD (  10.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -166,99 +164,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Continuous reading may result in multiple flash pages reading in one
-operation. Typically only one flash page has read/written (a little bit
-more than 2-4 Kb), but continuous reading requires the spi controller
-to read up to 512 Kb in one operation without toggling CS in beetween.
+Continuous reading mode is broken for some spi controllers. There are two
+possible bug scenarios:
 
-Roughly speaking spi controllers can be divided on 2 categories:
- * spi controllers without dirmap acceleration support
- * spi controllers with dirmap acceleration support
+1) "continuous mode" flash and spi controller without dirmap support,
+   but with restriction on transfer length in adjust_op_size()
 
-Firt of them will have issues with continuous reading if restriction on
-the transfer length is implemented in the adjust_op_size() handler.
-Second group often supports acceleration of single page only reading.
-Thus enabling of continuous reading can break flash reading.
+2) "continuous mode" flash and spi controller with dirmap support for a
+   single flash page
 
-This patch tries to create dirmap for continuous reading first and
-fallback to regular reading if spi controller refuses to create it.
+In the first case, any read that exceeds the limit specified in adjust_op_size()
+will result in an EIO error. The limit may even be less than a size of a single
+flash page. In this case, any read will result in an error.
 
-Signed-off-by: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
----
- drivers/mtd/nand/spi/core.c | 43 ++++++++++++++++++++++++++++++-------
- 1 file changed, 35 insertions(+), 8 deletions(-)
+In the second case, any read larger than flash page size will result in an EIO
+error or spinand driver spoofing (because the spi controller driver returns
+more bytes than were actually read).
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 09dd6e40e308..02e322490110 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1093,6 +1093,39 @@ static int spinand_mtd_block_isreserved(struct mtd_info *mtd, loff_t offs)
- 	return ret;
- }
- 
-+static struct spi_mem_dirmap_desc *spinand_create_rdesc(
-+					struct spinand_device *spinand,
-+					struct spi_mem_dirmap_info *info)
-+{
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	struct spi_mem_dirmap_desc *desc = NULL;
-+
-+	if (spinand->cont_read_possible) {
-+		/*
-+		 * spi controller may return an error if info->length is
-+		 * too large
-+		 */
-+		info->length = nanddev_eraseblock_size(nand);
-+		desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
-+						  spinand->spimem, info);
-+	}
-+
-+	if (IS_ERR_OR_NULL(desc)) {
-+		/*
-+		 * continuous reading is not supported by flash or
-+		 * its spi controller, use regular reading
-+		 */
-+		spinand->cont_read_possible = false;
-+
-+		info->length = nanddev_page_size(nand) +
-+			       nanddev_per_page_oobsize(nand);
-+		desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
-+						  spinand->spimem, info);
-+	}
-+
-+	return desc;
-+}
-+
- static int spinand_create_dirmap(struct spinand_device *spinand,
- 				 unsigned int plane)
- {
-@@ -1112,11 +1145,8 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
- 
- 	spinand->dirmaps[plane].wdesc = desc;
- 
--	if (spinand->cont_read_possible)
--		info.length = nanddev_eraseblock_size(nand);
- 	info.op_tmpl = *spinand->op_templates.read_cache;
--	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
--					  spinand->spimem, &info);
-+	desc = spinand_create_rdesc(spinand, &info);
- 	if (IS_ERR(desc))
- 		return PTR_ERR(desc);
- 
-@@ -1139,12 +1169,9 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
- 
- 	spinand->dirmaps[plane].wdesc_ecc = desc;
- 
--	if (spinand->cont_read_possible)
--		info.length = nanddev_eraseblock_size(nand);
- 	info.op_tmpl = *spinand->op_templates.read_cache;
- 	info.op_tmpl.data.ecc = true;
--	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
--					  spinand->spimem, &info);
-+	desc = spinand_create_rdesc(spinand, &info);
- 	if (IS_ERR(desc))
- 		return PTR_ERR(desc);
- 
+This patch series tries to fix continuous reading (spinand driver side).
+Unfortunately these fixes can't resolve "spinand driver spoofing" case.
+Spi controller drivers might need fixes as well.
+
+Changes v2:
+ * added helper to create reading dirmap descriptor
+ * fix spelling
+ * error code is not used for regular reading fallback anymore
+ * it's possible (but very unlucky) that someone will do raw reading
+   of the flash in continuous mode (i.e. without OOB), so fix dirmap
+   creation for that case as well.
+
+Changes v3:
+ * improve description
+ * move airoha spi controller driver fix to a separate airoha spi fix series
+
+Changes v4:
+ * the period '.' at the end of the commit title was removed
+
+Changes v5:
+ * rename spinand_create_rdesc_helper() to spinand_create_rdesc()
+ * get rid of controller_is_buggy boolean
+
+Mikhail Kshevetskiy (3):
+  mtd: spinand: fix direct mapping creation sizes
+  mtd: spinand: try a regular dirmap if creating a dirmap for continuous
+    reading fails
+  mtd: spinand: repeat reading in regular mode if continuous reading
+    fails
+
+ drivers/mtd/nand/spi/core.c | 74 +++++++++++++++++++++++++++++--------
+ 1 file changed, 59 insertions(+), 15 deletions(-)
+
 -- 
 2.51.0
 
