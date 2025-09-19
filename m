@@ -4,52 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 039E8CAC59A
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Sep 2025 08:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6400CAC592
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Sep 2025 14:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=pC7uGzyAi91/uMa6N9srz/KlNYY5zsFAFV8DG6S0xIE=; b=jRhB53InqrB8C5
-	FpcAMRIiG42DQeyMA+JwG7H9Olps26/9qsTI4ZKcG4d53YuQtV8KPscMqu/uzIloNDDcPo4qZeDpe
-	5cmckPzGnRmmTyq3smoCPxxdkAf6nRRgdYofQhgTphL27VTWYGT0yh5sHxF3wE/69VaTOvHS2jI8m
-	p7CVmU1DVTCgeGVv5FYQ7/XuJszprYm7Ibu1w2Y8d9upH16Ce+G06+Aq8H4jjVFWenGArZa4x+BGy
-	Dn2a3ssN8GYHzT3abAgNKgJrtJtwPDbmdXHjkwEdmjEYfqN5L0Pv8rWs0x2iW6fqvPs/0JgU+Osnw
-	Xb5Aehx+VN+y9Q31mEFg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6w9M3tDQ4kfewfYIvZeN5Sn2Tx6EwrtnxFe0DUDGxyA=; b=g2wmxMowjgpJOg
+	fWjw1Ljc7dInLoNvv4PD3oiYIeTG3vFDUIqMDP2Ow21bcZwbDPKGS4SLr7nEkodqhIobn5QjEH0FU
+	Qxw7EwsizflONOSmFnIdij3jpmT5Zj9ppgTQexB5yERLBi+hTwXZjugSzmMaqPJiWPf6Vzam8ghIu
+	X774cJXpSzZyeEnWDQCyIcqU/jSMIUQUgPV76E9eU1va44n3/ZZXPYypFIWNtUrgrJ1vRGuVQ5lqs
+	jbhs1M0ivR8j5i1tssvBrydfs++CfnMZV3BvxepWCaECSBff+qpaJH4YHF8REQCq3JQ3KmBPnru0u
+	KApPU6NIQ1WL5b5o+AZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzWAf-00000002CJ8-1cOr;
-	Fri, 19 Sep 2025 08:08:45 +0000
-Received: from mail.biznator.pl ([162.19.205.13])
+	id 1uzcKs-00000003Brc-2nWV;
+	Fri, 19 Sep 2025 14:43:42 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzWAc-00000002CIS-1o5r
+	id 1uzcKr-00000003Bqo-3l8T
 	for linux-mtd@lists.infradead.org;
-	Fri, 19 Sep 2025 08:08:43 +0000
-Received: by mail.biznator.pl (Postfix, from userid 1002)
-	id B60AF2B41B; Fri, 19 Sep 2025 10:00:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=biznator.pl; s=mail;
-	t=1758268871; bh=h3k5zkAZf6tEpPtEQC0QHe2u0TTQ7ZFRjUanCKLrdLo=;
-	h=Date:From:To:Subject:From;
-	b=Rw/TeBCPvMHZcAK/EQnTfz5E3jQ+YrYgDK8L0Na0mS8QySgeeuu4/v0Uu05rTAfat
-	 FP7wiKMviwx9pn7dwHeyV5z12Wzk6Uxln82p1ApmuI3MCIqkgppIDXFzdaRG9BdVG/
-	 BpH7sV+MU6UIchqOo+tWK52Zqq3/4HcVDWqW6293upDlAFkFpGTdmizhMZ4V8EtwNz
-	 gwH+V9Vr/t36ZiEkO9yeNfIs7vH7GCN4Ar6dGtEMic+tol0EcT17AxBP16rVfRqJdJ
-	 ByFeICSdY/fY4a9udidRuNXruLdctQ2RIoIX64zMq8CUj2B1XcqcTJlZtWZJxRxTPf
-	 VGIR3ss3C2XJg==
-Received: by mail.biznator.pl for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2025 08:00:34 GMT
-Message-ID: <20250919084500-0.1.js.1xyjj.0.zdo0fto6fm@biznator.pl>
-Date: Fri, 19 Sep 2025 08:00:34 GMT
-From: "Wojciech Mroczka" <wojciech.mroczka@biznator.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: Fotowoltaika dla firm
-X-Mailer: mail.biznator.pl
+	Fri, 19 Sep 2025 14:43:41 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 4EEEC6013A;
+	Fri, 19 Sep 2025 14:43:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6EA2C4CEF0;
+	Fri, 19 Sep 2025 14:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758293021;
+	bh=GRWvbLVJoCRvQy1pyW+E11G+20xo+6FXxHxhCH7vm2I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cAE8oEAXO2SokxMv8QENAiFM9e6YXxmWGbKCjAX65ddnuDthoABkFaYR3kInIQty/
+	 yvj3PV+3Vo+RD10ffFn7qSpXXAB9XZonxTqWIVlfpDuzExU1A/6xN5TEgCorYma4qp
+	 qSirgsPtyjQL7/2rV0sgYqirruH9uTABkJ+qqGBeipdCwmT4nTDSZJZqN+XxvjUCdy
+	 tMBNoWxjbuawQ1jr/po83GsRI4hUB/bF3hRWDFsKziCjMFuOB2zO8f+7XDSrsIRWY8
+	 RHAfz81zk1ZkMSyh4Yq1KeHzrDMjCL9hLL9te6WNzXiX+vo87aElDWSAhiMGoW7/58
+	 6Zn5ifF3wz4xg==
+Date: Fri, 19 Sep 2025 09:43:39 -0500
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Markus Stockhausen <markus.stockhausen@gmx.de>
+Cc: conor+dt@kernel.org, linux-mtd@lists.infradead.org, richard@nod.at,
+	krzk+dt@kernel.org, vigneshr@ti.com, miquel.raynal@bootlin.com,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: Add realtek,rtl9301-ecc
+Message-ID: <175829301902.882885.6356641284141772860.robh@kernel.org>
+References: <20250919075201.4177901-1-markus.stockhausen@gmx.de>
+ <20250919075201.4177901-2-markus.stockhausen@gmx.de>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_010842_612629_DE4B127B 
-X-CRM114-Status: UNSURE (   1.45  )
-X-CRM114-Notice: Please train this message.
+Content-Disposition: inline
+In-Reply-To: <20250919075201.4177901-2-markus.stockhausen@gmx.de>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,18 +66,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKcG9tYWdhbXkgbWlrcm8sIG1hxYJ5bSBpIMWbcmVkbmltIHByemVkc2nE
-mWJpb3JzdHdvbSBvYm5pxbx5xIcga29zenR5IGVuZXJnaWkgZWxla3RyeWN6bmVqIGR6acSZa2kg
-bW9udGHFvG93aSBpbnN0YWxhY2ppIGZvdG93b2x0YWljem5lai4gCgpBa3R1YWxuaWUgcHJvcG9u
-dWplbXkgYmV6a29ua3VyZW5jeWpuZSB3YXJ1bmtpIHdzcMOzxYJwcmFjeSwgb2QgcGxhbnUgcG9w
-cnpleiByZWFsaXphY2rEmSBhxbwgcG8gc2Vyd2lzLgoKUHJvc3rEmSBvIGluZm9ybWFjasSZIGN6
-eSBtb8W8ZW15IHByemVkc3Rhd2nEhyBwcm9wb3p5Y2plIGRsYSBQYcWEc3R3YSBmaXJteT8KCgpQ
-b3pkcmF3aWFtLApXb2pjaWVjaCBNcm9jemthCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+
+On Fri, 19 Sep 2025 03:52:00 -0400, Markus Stockhausen wrote:
+> Add a dtschema for the ECC engine on the Realtek RTL93xx SoCs.
+> The engine supports BCH6 and BCH12 parity for 512 byte blocks.
+> 
+> The hardware can make use of interrupts but this is not yet
+> supported by the driver. From the known datasheets it is
+> connected to the LXB (lexra bus) and propably depends on its
+> clock. Provide an optional clock property that can describe
+> the relation.
+> 
+> Signed-off-by: Markus Stockhausen <markus.stockhausen@gmx.de>
+> ---
+> Changes in v3:
+> - add optional properties clocks and interrupts.
+> 
+> Changes in v2:
+> - change cells from 2 to 1 (only 32 bit hardware)
+> ---
+>  .../bindings/mtd/realtek,rtl9301-ecc.yaml     | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/realtek,rtl9301-ecc.yaml
+> 
+
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
