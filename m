@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5962FCAC5B2
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Sep 2025 15:32:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E433CAC5B0
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Sep 2025 15:32:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hZychrBlpLclY26P8y4NI1BruEyjS0XKsiNAWWxPXDE=; b=fZAXhAFJkU6DYa
-	BAeRkes9yF/8EYbf0qBIER/7wtDYr47113LkaulSk4p75cCCuV70GrFu/SVZctB1BBucx1PoZa6hn
-	EmMSPW1kZMr3vWUPvl1wOh5F12NRHncK7d+f8sntEUOCSWeQCzWqhRyeqUBU8wkK/qk4t9TAmhs4N
-	CLuFJTu17qztfjiHgp4a6PuR+JDZ2/Y2A5bYl1Xcq5O7ZckAtVqC5+9J4rcQE/o6B6HmR9uDjoLAP
-	a40zhG8VJqbQ8Ie9b1m7C7FY93oDRNOeze3+LLL3EnXdl1oLAhdJ6pIcSKi70LfwP1zhDFB5+GVCs
-	nCSbkt8sSMaPDvfPeOmg==;
+	List-Owner; bh=O7HwqPYqt/lxqByYiXUy2m6DMHrQseSV+cJZHCfcxJ8=; b=O38/TeSPNAg2Rj
+	pru1MEIq60FGvsyikcmeiaXPcHcU37Abdh43bDRWGxaUQ2kZg7rthn3PyJ8NpyleO6UrVrj7nc4FX
+	ATnYhbRcgQaPhdKTH0ketyKvkAnTwPjfq58RRWjxRtfyW9gwAHWjykCiUUufsOgBli4xCkIQRbwng
+	/NAVYA0h9WOOPuUP6UiBfmCfFGbTLUyuDubugBQEVbsnEOXzd+We6B0S5TB06CesA3lQEj34jCAo2
+	I4iLtsEH6Ov2eNEqgm0TG/nNgXQwPth7rGIqGRfso5aSnGyrmMl5V6MmMoRH88zhSN5uk7GTbd+9P
+	iIJdZbSBqtciPvz7HxQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0iWP-0000000AoPp-0Epk;
-	Mon, 22 Sep 2025 15:32:09 +0000
+	id 1v0iWO-0000000AoPJ-1eze;
+	Mon, 22 Sep 2025 15:32:08 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0iWJ-0000000AoK7-3Aaf
+	id 1v0iWJ-0000000AoJU-2o20
 	for linux-mtd@lists.infradead.org;
 	Mon, 22 Sep 2025 15:32:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0791044EAE;
-	Mon, 22 Sep 2025 15:32:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB861C19424;
+	by sea.source.kernel.org (Postfix) with ESMTP id C481743694;
+	Mon, 22 Sep 2025 15:32:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C545C4CEF7;
 	Mon, 22 Sep 2025 15:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758555122;
-	bh=SfaFrl4QZz0bkddp7YAsKSPz8h9hoenE26+Qxca49Cg=;
+	bh=F/QqHKTdDoP1uBZAZZjnrrOZP/fFFhBzGoiYO8vzUdE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RSPOkrAwxVhlLva+kII+0FJHAR0eNKTqECqic4+PAVCuE4eqk7ooafrFxWCnltglU
-	 tMVsBTMGWAYkbapenkNHfeZef6UQJhu2w300uk+hEmCwGfxv2VXzbueMe1++4EU1Px
-	 QFw1Kx4f25xVrmUEGsvK0AvqiENk5Lzj86gODINbeNV+hb3JkXkquSeEm1khf5usU8
-	 mmiIyMuF3/0eK8PmV1veEFGDj16Z3md+IUbWyjj8YwWsW56B/NTPK4oDL6cyGsDW7e
-	 qXvWEvsp6CCFAAsViFmxyybQrX0hvXH5w54S5sH+7L4ILJcPbC7Sa34uqFF+ywT5Ql
-	 7Ir4Ztfd20jBg==
+	b=FGwUgvxIZtJT38NmYLl9PjbwLyElyqNSTIz1Fdp9HXKdVD2eDrzuibq2qz2bI/Q1N
+	 rHJstbynpjUW23il3TUbAiCd8ETSiFHwSRb3VKlFyRgVSV18Nuc2RKnEkz3Htmw4qz
+	 tagOr2QMpvnmg0qs1VJQcOBlVjQOFdvj6B5qpZfHn6U5GVfITY6byi3YDI5vIpqRDk
+	 6TWsr0ZPZS+XBtBVNI2l5FlL5KJYQeenyInL11YD72HicHr4vmbu1m74oYr43RWNk7
+	 Lkjh4KGbsy7rSsFhD6FQfK7F9V/iOnyjlzRPrbV4nxhYCHq9qQydjEmjFmEkx3oDyI
+	 nN2FrUNsjRfqA==
 Received: from johan by xi.lan with local (Exim 4.98.2)
 	(envelope-from <johan@kernel.org>)
-	id 1v0iWC-000000004Hp-1rny;
+	id 1v0iWC-000000004Hi-0e4V;
 	Mon, 22 Sep 2025 17:31:56 +0200
 From: Johan Hovold <johan@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
@@ -65,17 +65,16 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5/8] mtd: rawnand: pl353: drop unused module alias
-Date: Mon, 22 Sep 2025 17:31:04 +0200
-Message-ID: <20250922153107.16381-6-johan@kernel.org>
+Subject: [PATCH 2/8] mtd: onenand: omap2: drop unused module alias
+Date: Mon, 22 Sep 2025 17:31:01 +0200
+Message-ID: <20250922153107.16381-3-johan@kernel.org>
 X-Mailer: git-send-email 2.49.1
 In-Reply-To: <20250922153107.16381-1-johan@kernel.org>
 References: <20250922153107.16381-1-johan@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250922_083203_834018_531F13C6 
-X-CRM114-Status: UNSURE (   9.77  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250922_083203_763281_63542045 
+X-CRM114-Status: GOOD (  10.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,25 +91,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The driver has never supported anything but OF probing so drop the
-unused platform module alias.
+The driver only supports OF probing since commit a758f50f10cf ("mtd:
+onenand: omap2: Configure driver from DT") so drop the unused platform
+module alias.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 1 -
+ drivers/mtd/nand/onenand/onenand_omap2.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-index 09440ed4652e..a7dc45c7f214 100644
---- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -1193,6 +1193,5 @@ static struct platform_driver pl35x_nandc_driver = {
- module_platform_driver(pl35x_nandc_driver);
+diff --git a/drivers/mtd/nand/onenand/onenand_omap2.c b/drivers/mtd/nand/onenand/onenand_omap2.c
+index f9a386b69050..0793251ada3b 100644
+--- a/drivers/mtd/nand/onenand/onenand_omap2.c
++++ b/drivers/mtd/nand/onenand/onenand_omap2.c
+@@ -603,7 +603,6 @@ static struct platform_driver omap2_onenand_driver = {
  
- MODULE_AUTHOR("Xilinx, Inc.");
--MODULE_ALIAS("platform:" PL35X_NANDC_DRIVER_NAME);
- MODULE_DESCRIPTION("ARM PL35X NAND controller driver");
+ module_platform_driver(omap2_onenand_driver);
+ 
+-MODULE_ALIAS("platform:" DRIVER_NAME);
  MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Jarkko Lavinen <jarkko.lavinen@nokia.com>");
+ MODULE_DESCRIPTION("Glue layer for OneNAND flash on OMAP2 / OMAP3");
 -- 
 2.49.1
 
