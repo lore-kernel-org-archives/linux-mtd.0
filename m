@@ -4,78 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7CA7CAC5AA
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Sep 2025 15:32:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1349ECAC592
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Sep 2025 15:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u8VyEY07jV3FII2ePioR07053BqfsL8TNrX433iG4V4=; b=TglVOLmnN8Y4/y
-	llLlUMMtpOE8wF2BQOXQTEAj+FW6splbW8k+QwMH6ULERfXajA1ok89uOcJtVGyepdhBhuBdLwnGA
-	6iHa/S+7imCZbRMm2qvwm1l+7lp3pRmzS4o8JsR5CMwzi1lWgzMzV1QuDuFuf7rJUYyfmf4JGO1j9
-	6kBJOAb5pA+CTi0i2uI/8KXgvU9skPS+MEiwYhp1K0AUhg4iytlNiiR3UEbTS/2K82ACfYy6Df32D
-	PSDU1nIHLJVxTUm8GG0aEroi+CYuq42C10iOdhq8KhWn9yTr1rnT4BR35bMV/B9XWk2b4iiExM17H
-	rwj3av8tj8uLDMfYsJQQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ziwuOB87mQbuPaC5kfv3kswdf+dow+jNn/R+c0TDB00=; b=Z00yUQONVMKbDb
+	PbwkavODy8o6mRDsQPHVo8CPEvOHpZvcptz/8ZV+uPa/QVV011fsOLgzNdD1yiZl3fslRax5ZGHZM
+	6wXVHzUSHZztgBRgjRnVauktL2vI8BgSdHDvxPjM1TXfYyFdxYfikC3w/BA3wnZVzh6I4DDvttoXz
+	gsQFKY8GeRodcd+saMdbu7CzDmhblDkxFsKkqk5YLoJcVSrGfBxP3fuRo1HUIc0XQVtw52ltxQvUp
+	DV3vYWDccFvi4wQBWyGOj3ME45r8HyFXC/ycGymxYzLvHWFmAOk3/EEV6zV+mF255ZmYp7p2fRoky
+	Z7AIlttXui+xsCSnRC9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0iWR-0000000AoTb-1Thj;
-	Mon, 22 Sep 2025 15:32:11 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1v0iee-0000000AqzA-3TaY;
+	Mon, 22 Sep 2025 15:40:40 +0000
+Received: from smtp28.bhosted.nl ([2a02:9e0:8000::40])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0iWN-0000000AoNo-1oul
+	id 1v0ieb-0000000Aqxu-49gs
 	for linux-mtd@lists.infradead.org;
-	Mon, 22 Sep 2025 15:32:09 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7BAC64509D;
-	Mon, 22 Sep 2025 15:32:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BBADC19421;
-	Mon, 22 Sep 2025 15:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758555123;
-	bh=I9Zhr/ncIXq/m3dpt8T77ukTpAxt82yNYfe1wjICwFE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l0v40rMtUuCWItO0Sc01keGjKU8iGrhe5gVrS4BiJ48e1TdRGzdaRNq2EJDeVm2QV
-	 AjSPfqG0lk4YclZhLk8YioWPhrD+7YnGJRKSfbi/ghPLhE6wYs00Py+TbXTb66tf6+
-	 x2S28vHktHwCTYoHhY+ghoUhRMNHW4nHg0y7kLLp9doZbLeklnUpLxbEebpJ39fU7r
-	 TnApx1atpPeIyv9xaBZ/8Ox2f8ow1Q4LkDp1wIzp54MK5VZMLFAu/cbKfu8tJbRo4O
-	 jsXUW9+OKLdv6lMmnHKmjHNjkxXD5ILlaz9Gu3ZViy79BdJywHqdKNqH6xwWgJS5Sf
-	 h5ugw+9h7brEA==
-Received: from johan by xi.lan with local (Exim 4.98.2)
-	(envelope-from <johan@kernel.org>)
-	id 1v0iWC-000000004Hy-34zZ;
-	Mon, 22 Sep 2025 17:31:56 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Mon, 22 Sep 2025 15:40:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=zanders.be; s=202002;
+	h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+	 from;
+	bh=4m4XxfeOnQfD8SjFcUdl5itKBGk9YX/dPDna0jtQUXw=;
+	b=RgxdkXikJ4C1IUraDotl7A2lAWMKaHYSAdsmuRZvm8BojeT9lKz3aDSFV1hDbNaweRDCh65I7biJD
+	 QEURI2TTb330OHUuQRBgLjMiQYEsiY89rmaIZc+Zg7vZkcH3LOBVNDNHABrjRM4BsfWVCBqHGImtje
+	 KIuRjKZLZQOHMX/CGGZEXlXcOBO6n5SZOdErPH88gOy0+aJ1meSxnI2ZdQJroQyPfJccylXC5/mFX5
+	 E0odx9cc8O4C/CrXGk+VMvpqDBnOsLLJwCy4dWjPUB7fO6l/tCtfVGxCW1cOPzsn/26JdD5BMOIbYg
+	 Njis3hRXa303t/tc+Vdoq4kKIaUpNaw==
+X-MSG-ID: 78c8b809-97ca-11f0-867b-0050568164d1
+From: Maarten Zanders <maarten@zanders.be>
+To: Han Xu <han.xu@nxp.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Kyungmin Park <kyungmin.park@samsung.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Maarten Zanders <maarten@zanders.be>,
+	stable@vger.kernel.org,
+	imx@lists.linux.dev,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan@kernel.org>
-Subject: [PATCH 8/8] mtd: rawnand: sunxi: drop unused module alias
-Date: Mon, 22 Sep 2025 17:31:07 +0200
-Message-ID: <20250922153107.16381-9-johan@kernel.org>
-X-Mailer: git-send-email 2.49.1
-In-Reply-To: <20250922153107.16381-1-johan@kernel.org>
-References: <20250922153107.16381-1-johan@kernel.org>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: raw: gpmi: fix clocks when CONFIG_PM=N
+Date: Mon, 22 Sep 2025 17:39:38 +0200
+Message-ID: <20250922153938.743640-2-maarten@zanders.be>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250922_083207_497314_391BEABC 
-X-CRM114-Status: UNSURE (   8.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250922_084038_440351_EFFCC19A 
+X-CRM114-Status: GOOD (  10.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,25 +72,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The driver has never supported anything but OF probing so drop the
-unused platform module alias.
+Commit f04ced6d545e ("mtd: nand: raw: gpmi: improve power management
+handling") moved all clock handling into PM callbacks. With CONFIG_PM
+disabled, those callbacks are missing, leaving the driver unusable.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Add clock init/teardown for !CONFIG_PM builds to restore basic operation.
+Keeping the driver working without requiring CONFIG_PM is preferred over
+adding a Kconfig dependency.
+
+Fixes: f04ced6d545e ("mtd: nand: raw: gpmi: improve power management handling")
+Signed-off-by: Maarten Zanders <maarten@zanders.be>
+Cc: stable@vger.kernel.org
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 162cd5f4f234..f6a8e8ae819d 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -2205,4 +2205,3 @@ module_platform_driver(sunxi_nfc_driver);
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Boris BREZILLON");
- MODULE_DESCRIPTION("Allwinner NAND Flash Controller driver");
--MODULE_ALIAS("platform:sunxi_nand");
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index f4e68008ea03..a750f5839e34 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -145,6 +145,9 @@ static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
+ 	return ret;
+ }
+ 
++#define gpmi_enable_clk(x)	__gpmi_enable_clk(x, true)
++#define gpmi_disable_clk(x)	__gpmi_enable_clk(x, false)
++
+ static int gpmi_init(struct gpmi_nand_data *this)
+ {
+ 	struct resources *r = &this->resources;
+@@ -2765,6 +2768,11 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
++#ifndef CONFIG_PM
++	ret = gpmi_enable_clk(this);
++	if (ret)
++		goto exit_acquire_resources;
++#endif
+ 
+ 	ret = gpmi_init(this);
+ 	if (ret)
+@@ -2800,6 +2808,9 @@ static void gpmi_nand_remove(struct platform_device *pdev)
+ 	release_resources(this);
+ 	pm_runtime_dont_use_autosuspend(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
++#ifndef CONFIG_PM
++	gpmi_disable_clk(this);
++#endif
+ }
+ 
+ static int gpmi_pm_suspend(struct device *dev)
+@@ -2846,9 +2857,6 @@ static int gpmi_pm_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-#define gpmi_enable_clk(x)	__gpmi_enable_clk(x, true)
+-#define gpmi_disable_clk(x)	__gpmi_enable_clk(x, false)
+-
+ static int gpmi_runtime_suspend(struct device *dev)
+ {
+ 	struct gpmi_nand_data *this = dev_get_drvdata(dev);
 -- 
-2.49.1
+2.51.0
 
 
 ______________________________________________________
