@@ -4,59 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83613CAC592
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Sep 2025 15:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 957AECA100F
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Sep 2025 15:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MgRAPLKd2XTP/lSHuZ+ipsH8XF/f99Ly99EfgkenwAQ=; b=GOuXY9LSsg4657
-	orJvTUFBpUYKP/1MQraGiddMSA+RuUFroPRv1J5HW5L9n/fKhd7aoCv0WYsc3SCNM8yZfMND8PR80
-	FzffFvxwsM+/rFue6RlugxokVlMZ2QAGKNtB+y5tXn9P6oRny8Hd+XOmCf7/woJh+3IIXnUcNrad9
-	RJ2f15dXNJtvAWn9WIYwPR6Idcg2BKthBID6NnZSNh24AvikvLPpnZbze9Bmr6FZDHADtfKABNhwg
-	Vp+6CqPLLbRRSaEDC11Frb+aIGCpCMvgxcO4QvzodcdJ6NkqO2sWOuqwm6hls+tgFzE+Ot4nC3Wbe
-	T8h5b9JDxKWkIaCovY9A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=P2AuUXvVSOqaM0RaiM2M98vt3ILqfNAqLq3L249XXz4=; b=wFdNHI1vXZ+Ne2
+	+OFDF4zp9grEjJgnJvVLmWWOAk4RhCU2xhQBkvwzC7TZ65qjqdvhFJBqcGsgs032aGThnIKSvrnPI
+	fLKOG04xwWnGolMJEiuS7znzf6E/cYocvAVFy7UOJKSxq5PMge05qxNeP54MX8OMQmF0kCEuWL8Sw
+	njSsY7fradqlBJ8IFfQIO9I+BtvqpiNKzduaGfJEoCfwHnfClM5gOKM2YE66CaHEsL7j3Qdjq/h7x
+	zyIYiim08/H+RcxZk1XCfyuJNdRlQzPSqAvVw8qebGR8lSLdHlactIQ0ljCKtUGI5Ko5N2Ul9mgT8
+	dLM+2QGgC1Pm1Gd/wtTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0iNJ-0000000An3R-00P0;
-	Mon, 22 Sep 2025 15:22:45 +0000
+	id 1v0iWM-0000000AoMr-1bKp;
+	Mon, 22 Sep 2025 15:32:06 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0iNI-0000000An3H-1Yre
+	id 1v0iWK-0000000AoKZ-0i15
 	for linux-mtd@lists.infradead.org;
-	Mon, 22 Sep 2025 15:22:44 +0000
+	Mon, 22 Sep 2025 15:32:04 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id C0781601FD;
-	Mon, 22 Sep 2025 15:22:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70137C4CEF0;
-	Mon, 22 Sep 2025 15:22:43 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 8205D60218;
+	Mon, 22 Sep 2025 15:32:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C1DC4CEF0;
+	Mon, 22 Sep 2025 15:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758554563;
-	bh=f7AAOBOjgXPIcU9dvL/Owulz/NXNusEyUQL8u28tE64=;
-	h=From:To:Cc:Subject:Date:From;
-	b=bthpSdYL7IlA1gb80jBDIIEbLlx5ypcMwQy8n270nRKyvVp2qqoVwm7XVV4qo+icH
-	 5mVKkxyfIopxABReot/BduZH69ZZ+QwmprRz8TxWf4Ula1sDeqBqOAQ3DHJ9SdQXER
-	 6Z+3wXKI1vDydd3whAyxjhGnvfwBB1mceBXk3khO48AM/pAJbX/uPMYbhwjNvIk9wQ
-	 dwt0w2Zb94GgmyvYzfKKX0TjcfUdHGJiQfM6zvWFQUp3NV3f3iXiMmrFoMgoN6Q5zZ
-	 5PcHK2M0lpYFe6TI+ROeDAMKUyNM0rvsmf39zyXqGbi3CB6gIsHf/yJRfnZJjeu9Hn
-	 EZV//O/2oGclg==
+	s=k20201202; t=1758555123;
+	bh=/46VNVTt4hRRDh5qNYXbGvkTgn2zbGiWAxCXIl/j0UM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qAb746ait+z7U0VtEUwrdGoN50aXNUR2tNbPZA1ft84qr0fGqd+96zVb/GPcdmyzO
+	 FV7h66ZEcbdsclu20Yq52/2I747nwx878AgDhQDtDHXgmIRrPkLg6dmcLh/449UuaU
+	 VId6JLnKV5QQP24bu9APR9QPYVYH7CIdOSwCN9aNZrdrNHRMgFxKvllI4ZNtzB4hID
+	 p9pa+Hg61tQvX/O4ruXL2fb+IHje3+qJqgXdpnqExUiiY6WMHjB18A7QoWqXEgzRak
+	 l6VYm7y/pgrdb5bX+DTB6+S7nqxsrq0u9/F4++8I0mt/Gjg8vQm19t8RAulX6JLBYM
+	 nNaWxWTLTenOw==
 Received: from johan by xi.lan with local (Exim 4.98.2)
 	(envelope-from <johan@kernel.org>)
-	id 1v0iNA-00000000469-1DsI;
-	Mon, 22 Sep 2025 17:22:37 +0200
+	id 1v0iWC-000000004Hs-2I78;
+	Mon, 22 Sep 2025 17:31:56 +0200
 From: Johan Hovold <johan@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan@kernel.org>
-Subject: [PATCH] mtd: rawnand: omap2: fix device leak on probe failure
-Date: Mon, 22 Sep 2025 17:22:04 +0200
-Message-ID: <20250922152204.15702-1-johan@kernel.org>
+Subject: [PATCH 6/8] mtd: rawnand: rockchip: drop unused module alias
+Date: Mon, 22 Sep 2025 17:31:05 +0200
+Message-ID: <20250922153107.16381-7-johan@kernel.org>
 X-Mailer: git-send-email 2.49.1
+In-Reply-To: <20250922153107.16381-1-johan@kernel.org>
+References: <20250922153107.16381-1-johan@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,90 +88,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Make sure to drop the reference to the elm device taken by
-of_find_device_by_node() during probe on errors and on driver unload.
+The driver has never supported anything but OF probing so drop the
+unused platform module alias.
 
-Fixes: 62116e5171e0 ("mtd: nand: omap2: Support for hardware BCH error correction.")
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/mtd/nand/raw/omap2.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/rockchip-nand-controller.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index b8af3a3533fc..61fd98ad5c78 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -1979,7 +1979,7 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 		err = rawnand_sw_bch_init(chip);
- 		if (err) {
- 			dev_err(dev, "Unable to use BCH library\n");
--			return err;
-+			goto err_put_elm_dev;
- 		}
- 		break;
- 
-@@ -2016,7 +2016,7 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 		err = rawnand_sw_bch_init(chip);
- 		if (err) {
- 			dev_err(dev, "unable to use BCH library\n");
--			return err;
-+			goto err_put_elm_dev;
- 		}
- 		break;
- 
-@@ -2054,7 +2054,8 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 		break;
- 	default:
- 		dev_err(dev, "Invalid or unsupported ECC scheme\n");
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto err_put_elm_dev;
- 	}
- 
- 	if (elm_bch_strength >= 0) {
-@@ -2073,7 +2074,7 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 				 info->nsteps_per_eccpg, chip->ecc.size,
- 				 chip->ecc.bytes);
- 		if (err < 0)
--			return err;
-+			goto err_put_elm_dev;
- 	}
- 
- 	/* Check if NAND device's OOB is enough to store ECC signatures */
-@@ -2083,10 +2084,24 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 		dev_err(dev,
- 			"Not enough OOB bytes: required = %d, available=%d\n",
- 			min_oobbytes, mtd->oobsize);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto err_put_elm_dev;
- 	}
- 
- 	return 0;
-+
-+err_put_elm_dev:
-+	put_device(info->elm_dev);
-+
-+	return err;
-+}
-+
-+static void omap_nand_detach_chip(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct omap_nand_info *info = mtd_to_omap(mtd);
-+
-+	put_device(info->elm_dev);
- }
- 
- static void omap_nand_data_in(struct nand_chip *chip, void *buf,
-@@ -2187,6 +2202,7 @@ static int omap_nand_exec_op(struct nand_chip *chip,
- 
- static const struct nand_controller_ops omap_nand_controller_ops = {
- 	.attach_chip = omap_nand_attach_chip,
-+	.detach_chip = omap_nand_detach_chip,
- 	.exec_op = omap_nand_exec_op,
- };
- 
+diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+index c5d7cd8a6cab..9444ba02696d 100644
+--- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
++++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+@@ -1505,4 +1505,3 @@ module_platform_driver(rk_nfc_driver);
+ MODULE_LICENSE("Dual MIT/GPL");
+ MODULE_AUTHOR("Yifeng Zhao <yifeng.zhao@rock-chips.com>");
+ MODULE_DESCRIPTION("Rockchip Nand Flash Controller Driver");
+-MODULE_ALIAS("platform:rockchip-nand-controller");
 -- 
 2.49.1
 
