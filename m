@@ -4,75 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9AA5CAC5A5
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Sep 2025 17:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16CDBCAC5A7
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Sep 2025 06:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5LvQ4WSo6ZX+HZvsACkV7s+faj5Eu0JGn15IcXeSzxs=; b=Kh/7vNjHhJDJjK
-	VsypgHJ6Puf6HN8sOXhz3S1gampRX6Fa64jT5jUmGb3YOnVDELwft6Cv3oiwRt4ihoi5sX4XFixmB
-	Le34EXfqtJCU+Uo1vcZqynbmFK6cUbRqr8+9MEtyt+hOBCyEXb3IF0Y6QaSFhlvz4AtqrirOmObRL
-	Fx78U2udWsBNqZYW36v2je4ijV5Wh89IEvyLlcngPMI0JvILngzkc9lRxCLPpecndmtXqUNCNbUS5
-	Vz1eq/LNUqTR9AeH1UynY5zvmZyvJEtddH1sl/hYH1ZIOqdJkk2/1w2qnlPNeeshMefHHhUnUQ8vn
-	wpiM9TubfxQ0TDnNWA7A==;
+	List-Owner; bh=FHPzsxZFBuGyHEf44KBGGwBqTgiXwoV6mSUa1HGv19A=; b=dBAhNvOfAS3xgw
+	yJAMIUPpvQN1BcfZVWLD9mGSJaDfC6axKgP2iMiitNWVBzwySoGoBVO7lNftz20JSDurjZxDDPse5
+	EmHiPzeWojdbOUnU8nTbLfW99N69V7pM/cOL+lKrcBiA+C5VSlH9fZWPVRe2DlpEVy2arCp/ewh5F
+	KpHdJSlIr5Vy2O9MB2hC5F0MC8VZZhjWteymETh2N9xaeB36hve8xv1r5aQjhwGPnWlwxtUIKQVal
+	5TuPb/QNpvvlc8hXhyzPdaibi6WVqooGRFrDsudp4OkQZbHB8NXoxe5NbFRkzx1tNhtqvjtErtNY4
+	ismwGaFSAL/veZwthvng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v01oM-00000005iYZ-1VTz;
-	Sat, 20 Sep 2025 17:55:50 +0000
-Received: from fllvem-ot03.ext.ti.com ([198.47.19.245])
+	id 1v0ZbF-00000008uMc-20ru;
+	Mon, 22 Sep 2025 06:00:33 +0000
+Received: from fllvem-ot04.ext.ti.com ([198.47.19.246])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v01oI-00000005iY2-0baa
+	id 1v0ZbC-00000008uME-16KA
 	for linux-mtd@lists.infradead.org;
-	Sat, 20 Sep 2025 17:55:47 +0000
-Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 58KHtaJS451963;
-	Sat, 20 Sep 2025 12:55:36 -0500
+	Mon, 22 Sep 2025 06:00:32 +0000
+Received: from lelvem-sh01.itg.ti.com ([10.180.77.71])
+	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 58M60FDs1170592;
+	Mon, 22 Sep 2025 01:00:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1758390936;
-	bh=BsNE+Rm+oKuRjY6iHdZNAQBmBYyxgggjvzqX7HyUEoI=;
+	s=ti-com-17Q1; t=1758520815;
+	bh=APx8eOuMTJTC4YkubB7eJd0QwNCQpx44ZVFa/uuHCDk=;
 	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=ON08U9ZvIobizkKCBtBe5WC+CstDEr6XTYVVONCv21GzgeO1bcz+k3+DlHFge2Qqk
-	 L381ZSqjSE8ZdFYZi8DunmcSrZMODLMe1QZcuvLYA+02QIbL+zyaEZ+XOiKNk+HPOE
-	 Gaspig6XJ6wWxOtF7G+OflWhmYiTDAF5rUkmawKk=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 58KHtarK4055058
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Sat, 20 Sep 2025 12:55:36 -0500
-Received: from DLEE200.ent.ti.com (157.170.170.75) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Sat, 20
- Sep 2025 12:55:36 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE200.ent.ti.com
- (157.170.170.75) with Microsoft SMTP Server (version=TLS1_2,
+	b=ik0gJIOqHz6uYuG102dHRi9EmvmFWYwusfI5DrIzyA8jxNY6aefYkDtI6AyeiKvRc
+	 eISRZIfdqVrR/l6gw9X9Fo1g8u5pJqzx5KleHKTa1s+u3eHaMFMhucvvxFhQ3prinm
+	 zWb4g/9jlgBPR3I8fhxJ43tyMhO274mDiR9EktUI=
+Received: from DLEE209.ent.ti.com (dlee209.ent.ti.com [157.170.170.98])
+	by lelvem-sh01.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 58M60Fi0079861
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 22 Sep 2025 01:00:15 -0500
+Received: from DLEE204.ent.ti.com (157.170.170.84) by DLEE209.ent.ti.com
+ (157.170.170.98) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 22 Sep
+ 2025 01:00:14 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE204.ent.ti.com
+ (157.170.170.84) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Sat, 20 Sep 2025 12:55:36 -0500
-Received: from [172.24.233.254] (santhoshkumark.dhcp.ti.com [172.24.233.254])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 58KHtVZH4111233;
-	Sat, 20 Sep 2025 12:55:32 -0500
-Message-ID: <cb04a4ec-c643-4b80-9288-8fd8944cb4f7@ti.com>
-Date: Sat, 20 Sep 2025 23:25:31 +0530
+ Transport; Mon, 22 Sep 2025 01:00:14 -0500
+Received: from [172.24.17.2] (lt5cg1457vgj.dhcp.ti.com [172.24.17.2])
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 58M609t72276522;
+	Mon, 22 Sep 2025 01:00:10 -0500
+Message-ID: <e79d5220-2824-4cd2-8e61-b1da8d22d2a1@ti.com>
+Date: Mon, 22 Sep 2025 11:30:08 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 01/10] spi: spi-mem: Introduce support for tuning
- controller
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
-        <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-        <p-mantena@ti.com>, <linux-spi@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <a-dutta@ti.com>, <u-kumar1@ti.com>, <praneeth@ti.com>, <s-k6@ti.com>
-References: <20250811193219.731851-1-s-k6@ti.com>
- <20250811193219.731851-2-s-k6@ti.com> <87seguemzu.fsf@bootlin.com>
+User-Agent: Betterbird (Windows)
+Subject: Re: [PATCH] mtd: cfi: use struct_size() helper for cfiq allocation
+To: Gopi Krishna Menon <krishnagopi487@gmail.com>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <skhan@linuxfoundation.org>, <david.hunter.linux@gmail.com>,
+        <linux-kernel-mentees@lists.linux.dev>
+References: <20250918184420.76047-1-krishnagopi487@gmail.com>
+From: "Raghavendra, Vignesh" <vigneshr@ti.com>
 Content-Language: en-US
-From: Santhosh Kumar K <s-k6@ti.com>
-In-Reply-To: <87seguemzu.fsf@bootlin.com>
+In-Reply-To: <20250918184420.76047-1-krishnagopi487@gmail.com>
 X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250920_105546_326761_974AD70A 
-X-CRM114-Status: GOOD (  27.20  )
+X-CRM114-CacheID: sfid-20250921_230030_491979_BCE101DA 
+X-CRM114-Status: GOOD (  15.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,114 +81,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
 
-On 10/09/25 13:51, Miquel Raynal wrote:
-> On 12/08/2025 at 01:02:10 +0530, Santhosh Kumar K <s-k6@ti.com> wrote:
+
+On 9/19/2025 12:14 AM, Gopi Krishna Menon wrote:
+> Documentation/process/deprecated.rst recommends against performing
+> dynamic size calculations in the arguments of memory allocator
+> function due to the risk of overflow. Such calculations can
+> wrap around and result in a smaller allocation than what the caller
+> was expecting.
 > 
->> From: Pratyush Yadav <pratyush@kernel.org>
->>
->> Some controllers like the Cadence OSPI controller need to perform a
->> tuning sequence to operate at high data rates. Tuning is needs to happen
->> once the device is switched to appropriate mode (say 8S-8S-8S or
->> 8D-8D-8D).
-
-Apologies for the delay in response - I started prototyping new solution
-based on our discussions earlier, which took some additional time.
-
+> Replace the size calculation in cfiq allocation with struct_size()
+> helper to make the code clearer and handle the overflows correctly.
 > 
-> This is actually wrong. Tuning is way more generic than that :)
+> Signed-off-by: Gopi Krishna Menon <krishnagopi487@gmail.com>
+> ---
+>  drivers/mtd/chips/cfi_probe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> If someone wants to use a chip at a high frequency (50MHz in your case,
-> but whatever, there is a threshold above which additional care must be
-> taken), it must go through the calibration step. It does not matter in
-> which mode you are. Calibration would still be relevant in single SDR
-> mode.
+> diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+> index a04b6174181c..e254f9cd2796 100644
+> --- a/drivers/mtd/chips/cfi_probe.c
+> +++ b/drivers/mtd/chips/cfi_probe.c
+> @@ -208,7 +208,7 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+>  	if (!num_erase_regions)
+>  		return 0;
+>  
+> -	cfi->cfiq = kmalloc(sizeof(struct cfi_ident) + num_erase_regions * 4, GFP_KERNEL);
+> +	cfi->cfiq = kmalloc(struct_size(cfi->cfiq, EraseRegionInfo, num_erase_regions), GFP_KERNEL);
+>  	if (!cfi->cfiq)
+>  		return 0;
 > 
-> 
-> This 50MHz bothered Mark because it is too Cadence specific. Maybe this
-> should be a controller parameter? If the spi-mem core (or even the spi
-> core, by extensino) sees that the design allows running at XMHz (due to
-> the SPI peripheral properties or simply the absence of any limitation),
-> and if the controller states that it requires an extra tuning step above
-> YMHz (and X > Y), then it launches the calibration.
-> 
->  From a core perspective, I would like the calibration hook to be as
-> simple as possible, because what "calibration" means is highly
-> controller and chip specific.
 
-I understand the concern here.
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-Let me point out the options for launching the tuning procedure, along
-with the issues in each approach.
+There seems to be one more occurrence of this pattern in jedec_probe.c.
+Would appreciate if you could fix that too. Thanks!
 
-Option 1: Launch tuning as part of spi_mem_exec_op()
-    - After spi_mem_access_start(), introduce a spi_mem_needs_tuning()
-check (a new callback to SPI MEM controller) to check whether the
-current op requires tuning
-    - If yes, we call spi_mem_execute_tuning()
-         - on success, mark tuning complete in a flag within SPI MEM
-Controller private data
-         - on failure, we attempt a fallback by calling
-spi_mem_adjust_op_freq() and drop to a lower supported frequency
-
-Option 2: Launch tuning within spi_controller->exec_op() implementation
-    - Very similar to option 1, except that the spi_mem_execute_tuning()
-is triggered from within the controller's exec_op() implementation
-(no need for spi_mem_needs_tuning())
-
-Drawbacks in option 1 and 2:
-    - Tuning requires multiple reads of a known pattern, but the flash
-may not always be in a state to allow read commands
-    - No fallback on failures, can't make flash-specific adjustments in
-case of a tuning failure
-    - No access to write_op() to write known pattern temporarily to an
-on-die cache. Pattern needs to be always burnt into the flash
-
-    - Plus, in option 2 - we can't call spi_mem_adjust_op_freq()
-
-While the need for tuning is dictated by Controller specific
-characteristics the ops (and state of the chip) required to complete
-tuning is under the control of spi-mem users (spi-nand/spi-nor).
-So, it's impossible to achieve tuning without the help of spi-mem users.
-
-So, Option 3: Launch from SPI MEM clients
-                           (mtd/nand/spi or mtd/spi-nor, etc.,)
-    - Once the spi-mem chip is completely enumerated and best read and
-write ops are chosen call spi_mem_needs_tuning(read_op, write_op) as
-a part of .probe()
-    - If tuning is required, call
-spi_mem_execute_tuning(read_op, write_op)
-         - If only read_op is provided, it implies the tuning pattern is
-pre-flashed to the partition
-    - On tuning failure, retry by re-running spi_mem_needs_tuning() with
-the second best set of ops (max throughput - 1)
-
-With option 3, spi_mem users are limited to calling
-spi_mem_needs_tuning() and spi_mem_execute_tuning(). Rest is hidden
-within the controller drivers. If spi-mem users change read/write ops,
-the above sequence can be re-issued.
-
-The controller can store the read_op and write_op in case of a tuning
-success and periodically re-run tuning, ensuring we always have valid
-tuning parameters.
-
-One concern with option 3 is that we may not be able to make use of
-static data on certain flash as tuning patterns (like reading parameter
-page or SFDP table for tuning instead of controller specific attack
-patterns).
-
-Please let me know your thoughts on which of these directions makes the
-most sense.
-
-Thanks,
-Santhosh.
-
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
