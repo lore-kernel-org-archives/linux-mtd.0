@@ -4,60 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F312CAC5B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Sep 2025 00:43:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DE06CAC5A5
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Sep 2025 07:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:
-	Message-ID:To:From:Date:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=38tXdeZTQmAJM31OfRO5aU8Rg82OBQ1xD/IVrn+VR58=; b=jn9
-	7eTKfTBOEQi4/+w47uW5nsRMPUgScUVsh1E4V3MovsrApfoenjIS4RgRykdiJe6W/IP9qYCFO3Np5
-	scaHeKe8YGTE3JsRxtI/etbJ94D4QeNz0Lp329BWqTjaANGpcd8jz0e89CCF1nLW2DEWuwOQ0nJqP
-	VVC8PtdIAHgMr9+WBYClvlYFo7QyYiqsFSs44XyjyDsKqr25ak/R8dZL55MHBw0xLDGMMsB1KgO2o
-	z6T/Pzb3AeJXX2MVg9YertKcfnx6ysE2R4vAjIVBfY9PLgChVBieOUMs3cDCaWWnwsPC4gFgrNUJQ
-	2DtxzzJUiQw8Mn3cZN258SWLWz3MH/w==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OeamJegFKT4Koy+7th+8o7mQzZIyv57WlxdMxPm+jlg=; b=vtf8bh3+SOWscY
+	zgXVN0nhC0B5JyrwJcDpUkCQVlmbklcvY9OyOEgIkB23tqSfi+PkgpS3ermXRyzxzQqS8gWaGVAmF
+	c5W2Ys+FcssfGhJRBrL6ex3rdL2kXRb8XPDiioXgC73oyDY/wnMskR2RmQfJB8gZysZg9/A6VNFps
+	Na6vnoMDOjr+xB4EWv2IvwPlzlkjp2Y/Il10blQQBGQPlWuv/mprPLBpkurn/fY7CZxGnO6ahcuVH
+	bTUlQC+6pJjCw9ok/AYTI0TY0Qk2tKEphytte5FMqCFIUSBnFucyREVP1IPbJUa2gP3+818/s3NxA
+	uddipr0G6oLrFDJbpLdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1Dbj-0000000FEQl-0X4Q;
-	Wed, 24 Sep 2025 00:43:43 +0000
-Received: from sender4-g3-154.zohomail360.com ([136.143.188.154])
+	id 1v1KA1-0000000FltQ-12KP;
+	Wed, 24 Sep 2025 07:43:33 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1Dbg-0000000FEQM-3wh8
+	id 1v1K9x-0000000Flsf-2IEj
 	for linux-mtd@lists.infradead.org;
-	Wed, 24 Sep 2025 00:43:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1758674619; cv=none; 
-	d=us.zohomail360.com; s=zohoarc; 
-	b=QaOrlQRrMmptdRw2q325C4/quwMBDG5edIuWCoBBmrsf3d0ivHEDX2NWFpgELbmnbfsFFqqzEb4X39fXkOSAgsYSgU4NugOrpHHRQsgBv8UfJxZp6I7CXiQb+rGCdjX/4wa6Sxhy15atIJV7YGnU6ardzCGqPevr9mQz2GENIh0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=us.zohomail360.com; s=zohoarc; 
-	t=1758674619; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Reply-To:Reply-To:Subject:Subject:To:To:Message-Id:Cc; 
-	bh=zCtJBk26QBtzZOz+PVLHDTZ2zsLMJPG8ND+7jnOn3Fg=; 
-	b=sQ5PuiHQsJ5HIWc3ncFE4UjgG/LqAIp/cE/ZLJV6v9Hmu+NmkRRYJgglhuIASfQJj5R4MnhNh7meLVcPczsaXP8FvC5t1JfYPJ9d3Sdaf2fpeKZiEZULOc11IKFHPfS0Snj7WwIHrk6hHy+1br1RcIjYE9OrtXOav9k0gy6quJs=
-ARC-Authentication-Results: i=1; mx.us.zohomail360.com;
-	dkim=pass  header.i=maguitec.com.mx;
-	spf=pass  smtp.mailfrom=investorrelations+9a96d720-98d8-11f0-8217-5254007ea3ec_vt1@bounce-zem.maguitec.com.mx;
-	dmarc=pass header.from=<investorrelations@maguitec.com.mx>
-Received: by mx.zohomail.com with SMTPS id 1758671653186761.1382090174244;
-	Tue, 23 Sep 2025 16:54:13 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; b=FPdEjaaO5ZOUCAOOrTjfqLlN8PKPzBr54EsLGhm8gIAfQFNk4fEtzSWV890LjpjpHo3hQpEOqvy/cwm13aI3wEUF0Ce3r7m4dMlSGjSi7GtGe0wS3x4urI/YIQHjYcapucrMe814jsWX+jgzSCd86ico/CURmO7NehhD9HiqwoE=; c=relaxed/relaxed; s=15205840; d=maguitec.com.mx; v=1; bh=zCtJBk26QBtzZOz+PVLHDTZ2zsLMJPG8ND+7jnOn3Fg=; h=date:from:reply-to:to:message-id:subject:mime-version:content-type:content-transfer-encoding:date:from:reply-to:to:message-id:subject;
-Date: Tue, 23 Sep 2025 16:54:13 -0700 (PDT)
-From: Al Sayyid Sultan <investorrelations@maguitec.com.mx>
-To: linux-mtd@lists.infradead.org
-Message-ID: <2d6f.1aedd99b146bc1ac.m1.9a96d720-98d8-11f0-8217-5254007ea3ec.19978ffc592@bounce-zem.maguitec.com.mx>
-Subject: Thematic Funds Letter Of Intent
+	Wed, 24 Sep 2025 07:43:31 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id A276B4E40D1A;
+	Wed, 24 Sep 2025 07:43:24 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 70DBA606B5;
+	Wed, 24 Sep 2025 07:43:24 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 95138102F18E0;
+	Wed, 24 Sep 2025 09:43:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1758699803; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=kVm9WUZprq8Oz+SY2IG0V7UF+iOnsRaBXZJyJc3BusM=;
+	b=fMXEa7IiY4ulp0K7jeHZd9LsNKG+xjGqwEvwAj+h0qnZHKX5YNdLm1mKcJifroCcZmjhNa
+	jqziOwapABmIWd71jA9sYCVMsO+D4iwqbKBu8NtfEi15LTcg3g22mCSkrJwbvm9nJFBb4X
+	p58L7YIk6c54TSBNcZd66cQkOxvL/Lub34FIh9H4WkHEadnZuFJx27BHS60N66bgRf/1cm
+	3RfT6aszI0rOLd4OFnzq8m60yAi4WlXOsIZTyUzAvB8DMc7NRmNMO0WW1sKfiRmvZu/yKc
+	4wGWfk0gCCJ0nwzun9nKaWgBjEjT/hl/Shb5HBn4eGKTxNfuwT2V1S5DQ2F+/A==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Johan Hovold <johan@kernel.org>,  linux-mtd@lists.infradead.org,  LKML
+ <linux-kernel@vger.kernel.org>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] mtd: rawnand: omap2: fix device leak on probe failure
+In-Reply-To: <1341dc6b-49da-44f9-8b57-6828a64114fe@web.de> (Markus Elfring's
+	message of "Tue, 23 Sep 2025 19:05:19 +0200")
+References: <20250922152204.15702-1-johan@kernel.org>
+	<1341dc6b-49da-44f9-8b57-6828a64114fe@web.de>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Wed, 24 Sep 2025 09:43:16 +0200
+Message-ID: <87zfakpa7f.fsf@bootlin.com>
 MIME-Version: 1.0
-content-transfer-encoding-Orig: quoted-printable
-content-type-Orig: text/plain;\r\n\tcharset="utf-8"
-Original-Envelope-Id: 2d6f.1aedd99b146bc1ac.m1.9a96d720-98d8-11f0-8217-5254007ea3ec.19978ffc592
-X-JID: 2d6f.1aedd99b146bc1ac.s1.9a96d720-98d8-11f0-8217-5254007ea3ec.19978ffc592
-TM-MAIL-JID: 2d6f.1aedd99b146bc1ac.m1.9a96d720-98d8-11f0-8217-5254007ea3ec.19978ffc592
-X-App-Message-ID: 2d6f.1aedd99b146bc1ac.m1.9a96d720-98d8-11f0-8217-5254007ea3ec.19978ffc592
-X-Report-Abuse: <abuse+2d6f.1aedd99b146bc1ac.m1.9a96d720-98d8-11f0-8217-5254007ea3ec.19978ffc592@zeptomail.com>
-X-ZohoMailClient: External
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250923_174341_009435_4A55C44D 
-X-CRM114-Status: UNSURE (   2.53  )
+X-CRM114-CacheID: sfid-20250924_004330_075041_BDE5FAD1 
+X-CRM114-Status: UNSURE (   6.95  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -70,31 +74,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: investorrelations@alhaitham-investment.ae
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-To: linux-mtd@lists.infradead.org
-Date: 24-09-2025
-Thematic Funds Letter Of Intent
-
-It's a pleasure to connect with you
-
-Having been referred to your investment by my team, we would be 
-honored to review your available investment projects for onward 
-referral to my principal investors who can allocate capital for 
-the financing of it.
-
-kindly advise at your convenience
-
-Best Regards,
-
-Respectfully,
-Al Sayyid Sultan Yarub Al Busaidi
-Director
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFya3VzLAoKPj4gQEAgLTIwODMsMTAgKzIwODQsMjQgQEAgc3RhdGljIGludCBvbWFwX25h
+bmRfYXR0YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPj4gIAkJZGV2X2VycihkZXYs
+Cj4+ICAJCQkiTm90IGVub3VnaCBPT0IgYnl0ZXM6IHJlcXVpcmVkID0gJWQsIGF2YWlsYWJsZT0l
+ZFxuIiwKPj4gIAkJCW1pbl9vb2JieXRlcywgbXRkLT5vb2JzaXplKTsKPj4gLQkJcmV0dXJuIC1F
+SU5WQUw7Cj4+ICsJCWVyciA9IC1FSU5WQUw7Cj4+ICsJCWdvdG8gZXJyX3B1dF9lbG1fZGV2Owo+
+PiAgCX0KPiDigKYKPgo+IE1heSBzdWNoIGFuIGVycm9yIGNvZGUgYXNzaWdubWVudCBiZSBtb3Zl
+ZCBiZWhpbmQgYW4gYWRkaXRpb25hbCBsYWJlbD8KCkkgZG9uJ3QgdGhpbmsgdGhhdCdzIGhvdyBs
+YWJlbHMgYXJlIHN1cHBvc2VkIHRvIGJlIHVzZWQsIGN1cnJlbnQKcHJvcG9zYWwgbG9va3MgY29y
+cmVjdCBJTU8uCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
