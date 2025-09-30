@@ -4,71 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1DE2CCA468
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Sep 2025 15:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45CB6CAC5B8
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Sep 2025 16:10:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jSfzVbz0FsG5PLbrFGk7T/CkR+JdHaMSsWUNOrbi4VE=; b=Ll4mfwMdiS0SRZ
-	yXx8jbh0wcEr8Fig0c6ogZueDaCriY2E9R+gTUHMXROUx8bTC0FrnMMxWLYVYF+e3fEExeThb+0qJ
-	++PRWhy4BOQRpkg6ZIfdjhvQglH3vdnyy02LWstkqXw3vctYYrO9PkyVogoPHIqxaT5UYWmt5Wg+P
-	fcNMcPeNeIRsNrLvt50CS+mLuZjHU0SIzq7qcbv8wWdn7dnMWfrhorDGJlbs9c9zRvQlfVQ9s6+92
-	iSrh29vUbl2wtCZLLkErt4H8ha0rKU7M3V8azxANg81OouVcSGUUq2u+g+v5uLGBS/MEEZ9jypKlZ
-	nOQ/OyWYQsIq1hJ7MsxA==;
+	List-Owner; bh=CpDhmKnmbKt/E13rN3QniN3bQYlCoBzz9oUVHH5xso4=; b=Eq/lfHyEM2JHZ4
+	KxcuIcIvcsu2IgPnXT7K7hsq4fynzPSGGJxZruMdeaybA4zxvrz+4VdY4d8xVRi01n+x2r3TeYGvM
+	nwoHTCiPiIMKn5JPOqKXxzlSvY0cZJj0t7RPNhmGHewrae1MAbiuZG0w9wpW5m/7QKVCLFYqkLacY
+	ymy69cVMTcYRaToUzsTN2tj8T0q+ydqiKSY9s6AMa92BSBOyov/rPWRl/RKpblOxXhPKd4vnSQPW8
+	OtHVrGmGIGg4uP0eQmmaNvZjydk9T8ot1gZolYVUKVs7YZmnj7hsENtcFvpywlCOOGYgfrH38FHt4
+	An6VvgbK6uD+6z843dsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3bzB-00000005bbc-2grS;
-	Tue, 30 Sep 2025 15:09:49 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1v3cvV-00000005kBC-23eg;
+	Tue, 30 Sep 2025 16:10:05 +0000
+Received: from mail-westeuropeazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c201::1] helo=AM0PR83CU005.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3bz8-00000005baa-3lA7;
-	Tue, 30 Sep 2025 15:09:48 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 880CC439D6;
-	Tue, 30 Sep 2025 15:09:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3C58C4CEF0;
-	Tue, 30 Sep 2025 15:09:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1759244986;
-	bh=2d5mlbzXOEFsyGOAy7ajjjm9WNfNLYF3z4LyKA5hDZY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Lj6v4nBa+eawqtVfF84Khk5TBoxC+nap+CTnXeyc88t//36Mgc9DWzZPWpUmg/Z5I
-	 m6XoaAsuVc2vbcZzwJ8m6pl7CGxS6PzW53D+VpWOfbMf7oLHgnXx7WNQgq2981L8Jb
-	 KyzJryplUmvIXqYP1enYjpMmjdNdI9j7FxlNBqjE=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+	id 1v3cvQ-00000005k9u-3zck
+	for linux-mtd@lists.infradead.org;
+	Tue, 30 Sep 2025 16:10:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D/g83bpkTiA5rUfZy/o2hesIlk7QaM5Jkjmt9iERp87RzUmhFD0FIEMzKM7QA+UDU9+2gyQzv0774/Bvpn26sNEirGRMD4Npd53Xc//RA9V8RvPl0Q8Z0fssLamMPTBbnqEJo3G5aAk+DSdrHp4BUPrRHXwdeaAJAywwMeXSYRC2xDaoJcCk2QAmn/+e3sAkmInZfFKzKyMDCt1vhNnwoOSebdh7eqk/E1SmE/8X0/9ikCKonHc3ezzGrDP3wCIXJd3woQuNqX9o365X71Xw5ZiXkYQvd32NbwO/wN8TLqIGXaMc4BCQYPdeCjxdal1cAm+AW+efD5LzYnI2kzHYKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K0wzLEd5AL/qs7MBvF9S/zChyqfpqwk3t+iRRRkcWpk=;
+ b=YSMNPmsUvN2LJOR1FRiFuXW7/57yXg7sD5xmvZ9CjQhBbAG24ndDEhGt2OvcyBY3Eek7duWZLd1MW2aIZFc8U9fYwkJD01g3Mw9u0WtO6IT/Qw63EnpsbJFeLMpq9a8/J404dmcxnlHAKYZXlVtmt+Sp3rFtc7nOaErh8JqwVWbk0E6CA42xQBJ+xsxsGiYivlcot3ldq4tFt8/D8AD4wLVRCjaTOW1RA1ofY+UQrv8SLJraAKJWJn4qTyMe9wze8g4CwGVUyP566siN83+MrQhInn7A7fIZDi+07dDE4ZO7V5gtzi5MtqtrOe5ItJe4AiaL8KggJ2OwMllEPsxtyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K0wzLEd5AL/qs7MBvF9S/zChyqfpqwk3t+iRRRkcWpk=;
+ b=CRv7ScZPdWBQjrkD1DUGK85k0Rf2QR0DYpDgycR77/23F2YUKAhSO9xciCQqaqT3T7H/xKqKZ1iDsSIA+7G2bixgeu8GBvtIOXJM5yq3CJnSff8Yj5tKpP+jG/bo74R02d78tXv3jfK3hQCsIjY00Rvz6TP0/1npmnkuxNzQ4zbupI5uhUeCcUh1keiNhSt5VIhQ9UjeUF0lDbqc13WtU4nEQ0NDX3sm6hOGoHKLKcuGUBQyCppqyJXGdEnPIPsSBOi75xp1+50T8w0sa/7yukRfQ93GUfrbSSqsUgKi9TpQjoH45qwFw2+v3JzF621FKtD9vSqZdt2NpSqwJIxBPw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com (2603:10a6:150:22::11)
+ by VI0PR04MB10567.eurprd04.prod.outlook.com (2603:10a6:800:267::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9160.17; Tue, 30 Sep
+ 2025 16:09:48 +0000
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::b7f2:1d0:6b6a:ba58]) by GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::b7f2:1d0:6b6a:ba58%6]) with mapi id 15.20.9160.015; Tue, 30 Sep 2025
+ 16:09:48 +0000
+Date: Tue, 30 Sep 2025 11:09:40 -0500
+From: Han Xu <han.xu@nxp.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+	"suman.kumar.chakraborty@intel.com" <suman.kumar.chakraborty@intel.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"terrelln@fb.com" <terrelln@fb.com>,
+	"dsterba@suse.com" <dsterba@suse.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Christophe Kerello <christophe.kerello@foss.st.com>,
-	Cai Huoqing <cai.huoqing@linux.dev>,
-	linux-mtd@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 031/151] mtd: rawnand: stm32_fmc2: Fix dma_map_sg error check
-Date: Tue, 30 Sep 2025 16:46:01 +0200
-Message-ID: <20250930143828.856879967@linuxfoundation.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250930143827.587035735@linuxfoundation.org>
-References: <20250930143827.587035735@linuxfoundation.org>
-User-Agent: quilt/0.69
-X-stable: review
-X-Patchwork-Hint: ignore
+	"chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>
+Subject: Re: [PATCH] crypto: zstd - Fix compression bug caused by truncation
+Message-ID: <20250930160940.rfb2ed4ekal4ptid@cozumel>
+References: <GV1PR04MB9071B5AC95DBD48B67FACF44971BA@GV1PR04MB9071.eurprd04.prod.outlook.com>
+ <aNuQAr79Hdky3WII@gondor.apana.org.au>
+ <20250930133220.GB4052@suse.cz>
+Content-Disposition: inline
+In-Reply-To: <20250930133220.GB4052@suse.cz>
+X-ClientProxiedBy: SJ0PR05CA0102.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::17) To GV1PR04MB9071.eurprd04.prod.outlook.com
+ (2603:10a6:150:22::11)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR04MB9071:EE_|VI0PR04MB10567:EE_
+X-MS-Office365-Filtering-Correlation-Id: f9e354ad-2dd5-4e58-0385-08de003bc769
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|52116014|376014|7416014|19092799006|1800799024|366016|38350700014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?otNoqgnLi/73PC5ft6+YjqQGX811Oc72y56b4QLP07yssSNFrzgQJKj6ZsGs?=
+ =?us-ascii?Q?mwXrORNgdzF4i1Zp1gHzHkfwMNZdaqP/eJYTusak9wIiF6zbE/ueOPtSBv0h?=
+ =?us-ascii?Q?e4GVSuDqhVgSw7evxIiaDxDmDXZIVnD5+kCUyGW3D/jFbvj5JzzbMMVRTMpn?=
+ =?us-ascii?Q?pDbFe1NbExtGBK2gLPY6ZkG6UCfm3KW4Hus0ZfgxpN7ngU76KqSDXlcFMjcI?=
+ =?us-ascii?Q?RmtrflZKNByJ1eFQT0XlSo4bqtyrH3yaHe74mRDdAMw/ALcrBjvHW6cOahXe?=
+ =?us-ascii?Q?cQcGUd33nqR067wJ9+myGg35Bw8pE6tucPlk/s3QK0iaphXM36MfG0OnJhKq?=
+ =?us-ascii?Q?9aKDWQYEtIPaDIBUAHKRaL/8iyzcGQ154fzCXbEGrrXstRozNPf+txiRl4Mp?=
+ =?us-ascii?Q?HddPKu0yN0TcCI9kxYq+5YpGnqI+iC1fwteVQqLGYUdd57QV1ajrocc4AoAn?=
+ =?us-ascii?Q?RZhNw5/sUrV2lBcPdTIvzRdvxRR/ZS5AZctskg//PWIGZkDB9odMN3go1Cm8?=
+ =?us-ascii?Q?U0L5unnUGx8FL0u4Oo6IDso+ZXA8JBqrEKUrmejymJxrbHT1Q2HVUP+dJ+U/?=
+ =?us-ascii?Q?mdt+jvxP5mMww8J8QjwjBaM5s8EynI3qtttm+EYNwjj/uRCF5fpyukS+O4R4?=
+ =?us-ascii?Q?IlU7oj5tlDK3IpTrcbt770SLSWK/ZksLAVqTOcqhcGpj5WFf39pGlzjF1A7E?=
+ =?us-ascii?Q?QhkXLb8HcFvwswhx3Q8PdTjAyOIB8gotjaEoXMGxggvgh37KU6Q60CWidi2H?=
+ =?us-ascii?Q?brDBmTKGQBBgPCyIjta8gcMEtEQno99H4a6+mNcHEktyOITS0q54QO8Y7lO8?=
+ =?us-ascii?Q?xBCwiimz21FMy5MJuFkuDZCHFmq64tbf520SGvlX+ZHmr2rhwF1Rx5eUSPN2?=
+ =?us-ascii?Q?jjf0JCHruoEAlO2NJdydjwATkROBuCtES6LfkAxRhi/5hnrBh3S42YYiomVF?=
+ =?us-ascii?Q?NWZFOP/usC3VrkbRFDNuB3UY9Wz07LRAiqNEdgcpo2XHohc7n4aQigTL6XsQ?=
+ =?us-ascii?Q?hJzoiM2gF2nC8OsvKUX+HvHr/norKLQbz62kDZgWY+N2GbING7qW8HJinebz?=
+ =?us-ascii?Q?uFheH3ARWkwYvJeDfJFdBdFbUkcqm/wtnPkzn2lJvcgHaYQlfEjFhnI9NhSf?=
+ =?us-ascii?Q?FF3M+igFWGwSSoKLapwIq/jpL9HevigsC+KYQS0Bq+uYBU3S9RVF8Ham/AYq?=
+ =?us-ascii?Q?hcUm4aoxF3qdw0su0FHEyOkx1CJVgjCxIrwZ9EqH9cLm0cvyXkFpx0n100ws?=
+ =?us-ascii?Q?aO9E6sdnyX4b5Makv1f8GtOJ4eHxcveESnZ/Bl5yTjkWHYsctd8eGQ/jbscP?=
+ =?us-ascii?Q?5GmF2sIL90ZTMuooSHPW8mpNwiWmuJMw8aR0aspZr6dLgYIU+j7aoQMo+4OU?=
+ =?us-ascii?Q?FV2361qK1nzUS2pBshQSj2SgJeuIxATHJPwCX3l7MiMHO2vLueDL93P7zcX0?=
+ =?us-ascii?Q?DLMcPDNd63wWlMEzci9o2dC6ejpyzAnJUCaFkv7J+kVJ7WgxraKJp95s7+/R?=
+ =?us-ascii?Q?205mOQl0Q2QNXvkO/4epPwHT1z4Iy1ohef74?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR04MB9071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(376014)(7416014)(19092799006)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5bz12f+aeEhP9ZZZjmmrwhAqedx7EtXZ+FvrOtO0UrZek7kizpuBExdTvoeL?=
+ =?us-ascii?Q?QbLmKbxJuIVNsQWnvDdmtyM2uxOkUsAsmcYM6IoDSzm/8a7txCOXuv7pznDC?=
+ =?us-ascii?Q?IFKZno3IYc/cHcSuAueA6hTA27JNqpJ11J6DCxsFvmHunPDEDrN2MThVenqB?=
+ =?us-ascii?Q?89NPSr68+z2rNTQRVea1iNja8LuuqFkrG9feS+Xthdp4PHXjxTizGFFrzl1F?=
+ =?us-ascii?Q?kodnG+NAv/bOLoB+ybcuiPwYTWNmCvcqCxZI7twSVXF09UJTHxbwA1DH3LpA?=
+ =?us-ascii?Q?/re3cq2OC+RmL/ChHRAqe/RhvXDCKvN8MGDUXsXtEY2DdjCWnot1nAArzvZi?=
+ =?us-ascii?Q?Byu3neg2GNIbUEVrUf/T91LonbmVsgQCNJIbL8lm3wa0EaWVfHeuIIRcluyy?=
+ =?us-ascii?Q?kbZ5nKmeZJZ3sYJwaqHTXW7yVqPxhGZFabrvMungsTy90zW+sw8+bmzidn9n?=
+ =?us-ascii?Q?91Er4tsY0WkSQ9IInWvnjipWsqXuOBiViURrO1X6HuKy3pDkcKJsQK4laBf3?=
+ =?us-ascii?Q?tUaGhXTmYK2nnXSPNx0vxgS7AsLnij2S+9SxDQuGLG1SJIGTXOLc6aGpzzlf?=
+ =?us-ascii?Q?9aQC34Ebq5aH9KKZBFnczixLeq9HgtZJGX/lxSCSetPNOqO5/dmB0O3UMRWi?=
+ =?us-ascii?Q?vJf+akD1IiWH/YTDYAFfIGxi2k5OHIo3vg1y4NmEQ15n8ORwiH8BXpt4SGXp?=
+ =?us-ascii?Q?uybjpllF4MCcWdMf/ORXWFwMeASDYazOSw9XSx8qx58rArMV2j91J/X/zt6I?=
+ =?us-ascii?Q?j0zu3iFmw5WggTsZFrV92LATRt9m4EoLspC/i9FPXBcrt5hfK9Khx3NvlQ5M?=
+ =?us-ascii?Q?zt2Om6bssYT8+vmxaO/1mM+eQw8uvIBSq2NEJjfpTHoRIBOnY6eCiu2yuGyP?=
+ =?us-ascii?Q?wtHa0FpzfrW3GSMZr4X0zWiTZO6qN+EkAkSUfHaS/HC3Ety6CAWg9LjSZ9ON?=
+ =?us-ascii?Q?EWN4IlGHA+StMXWJxuyIrJu4K2Wli0Imk/u/CyoB1plzUsQVSTmfIrBoAw8q?=
+ =?us-ascii?Q?Vd3VbyzwTYAjspop2AhIfIckkIA8U0NF23U92wescM/7uRVX9zscDTrQBl2L?=
+ =?us-ascii?Q?nY9YRMJGDIJONentbwVqdiLA/QZ6PQ/hMJPODz5LygAmljmPs7muEOk8fazr?=
+ =?us-ascii?Q?l8ZneNopvntbzKVJDYemXsuarvFq/xAFjkOmONjJmVnQl1U1Le8MDfE7rbb1?=
+ =?us-ascii?Q?kDI55xhOvz+23VsWlbd4O/YrTZxQIv3vUjFifaD3rFaoZAA16h9IDX9DmJSn?=
+ =?us-ascii?Q?t2YEwssQREOYe73kwhmgOdn+9Cydiy/YCyXc+4ANtc7/XmwNLJw0pLQs59oM?=
+ =?us-ascii?Q?73wwF1ROliddbhSgBdrE2OJDcB2LZs402DQkxqVNDdckTXz80sc9VQzexkAy?=
+ =?us-ascii?Q?jrMDQF6EREzbDjZFbX131j7WjmNFZzfTqmJrdUdRYBJ7PXi/9YyBPUd/8VIi?=
+ =?us-ascii?Q?90fEn1q80bQWzHVX1YP8ATtX1EjYIeRlMhxLhfADyrM2pkwnz/Y2OULpkzxT?=
+ =?us-ascii?Q?oigbBbWoaV17U94Ei3FdmHjYKyTQ+Gy7Rl6OsHNxf9gLmPLHgceRftMM7i/N?=
+ =?us-ascii?Q?B7BpWr7JwQipZvx3fXA=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9e354ad-2dd5-4e58-0385-08de003bc769
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR04MB9071.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2025 16:09:48.4647
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sFXVQE/bY06L6jmskCEJ+e34R6Lsvubgndwy7RadfSHLNuYOMOCI3xYyYgS18ApR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR04MB10567
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250930_080946_952590_DDC8FFFD 
-X-CRM114-Status: GOOD (  12.01  )
+X-CRM114-CacheID: sfid-20250930_091001_010693_0BA08241 
+X-CRM114-Status: GOOD (  24.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,66 +169,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5.15-stable review patch.  If anyone has any objections, please let me know.
+On 25/09/30 03:32PM, David Sterba wrote:
+> 
+> On Tue, Sep 30, 2025 at 04:08:34PM +0800, Herbert Xu wrote:
+> > On Mon, Sep 29, 2025 at 11:51:36PM +0000, Han Xu wrote:
+> > > Hi Suman,
+> > >
+> > > The patch f5ad93ffb5411 "crypto: zstd - convert to acomp"
+> > > leads to the following kernel dump during UBIFS write back.
+> >
+> > Thanks for the detailed report and instructions!
+> >
+> > Please let me know if you still get the crash with this patch:
+> >
+> > ---8<---
+> > Use size_t for the return value of zstd_compress_cctx as otherwise
+> > negative errors will be truncated to a positive value.
+> >
+> > Reported-by: Han Xu <han.xu@nxp.com>
+> > Fixes: f5ad93ffb541 ("crypto: zstd - convert to acomp")
+> > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> Reviewed-by: David Sterba <dsterba@suse.com>
 
-------------------
+It works well now. Thanks for the quick fix.
 
-From: Jack Wang <jinpu.wang@ionos.com>
+Tested-by: Han Xu <han.xu@nxp.com>
 
-[ Upstream commit 43b81c2a3e6e07915151045aa13a6e8a9bd64419 ]
-
-dma_map_sg return 0 on error, in case of error return -EIO.
-
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: Cai Huoqing <cai.huoqing@linux.dev>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20220819060801.10443-5-jinpu.wang@ionos.com
-Stable-dep-of: 513c40e59d5a ("mtd: rawnand: stm32_fmc2: avoid overlapping mappings on ECC buffer")
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/mtd/nand/raw/stm32_fmc2_nand.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -860,8 +860,8 @@ static int stm32_fmc2_nfc_xfer(struct na
- 
- 	ret = dma_map_sg(nfc->dev, nfc->dma_data_sg.sgl,
- 			 eccsteps, dma_data_dir);
--	if (ret < 0)
--		return ret;
-+	if (!ret)
-+		return -EIO;
- 
- 	desc_data = dmaengine_prep_slave_sg(dma_ch, nfc->dma_data_sg.sgl,
- 					    eccsteps, dma_transfer_dir,
-@@ -891,8 +891,10 @@ static int stm32_fmc2_nfc_xfer(struct na
- 
- 		ret = dma_map_sg(nfc->dev, nfc->dma_ecc_sg.sgl,
- 				 eccsteps, dma_data_dir);
--		if (ret < 0)
-+		if (!ret) {
-+			ret = -EIO;
- 			goto err_unmap_data;
-+		}
- 
- 		desc_ecc = dmaengine_prep_slave_sg(nfc->dma_ecc_ch,
- 						   nfc->dma_ecc_sg.sgl,
-
-
+> 
+> >
+> > diff --git a/crypto/zstd.c b/crypto/zstd.c
+> > index c2a19cb0879d..ac318d333b68 100644
+> > --- a/crypto/zstd.c
+> > +++ b/crypto/zstd.c
+> > @@ -83,7 +83,7 @@ static void zstd_exit(struct crypto_acomp *acomp_tfm)
+> >  static int zstd_compress_one(struct acomp_req *req, struct zstd_ctx *ctx,
+> >                            const void *src, void *dst, unsigned int *dlen)
+> >  {
+> > -     unsigned int out_len;
+> > +     size_t out_len;
+> >
+> >       ctx->cctx = zstd_init_cctx(ctx->wksp, ctx->wksp_size);
+> >       if (!ctx->cctx)
+> > --
 
 ______________________________________________________
 Linux MTD discussion mailing list
