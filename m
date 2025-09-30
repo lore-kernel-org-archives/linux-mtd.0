@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E37CCCA470
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Sep 2025 14:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1DE2CCA468
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Sep 2025 15:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hf1rHjsmSv5CcOIfXK5HmnTjAjciTOGfhPOYFOGtuRE=; b=qLkCtpdo+H2Lqx
-	l4Zt1QodkC6ncHv0qyleNkngmC1ThH2CRm7lF0cVTWfOg9osDAf9bguzj/QueMGhf2aIR/UYXsFyz
-	b93EVnaBa+yrXdvkfj4b8+Vsby4X8CjUk5rGzkHh6d52MwEVCAUIhqw7N8nUW/3S9Pek6s4XiCmZk
-	/4jY0WgorSJYDT0MsshUEpqVVQrHwz400duviR6PbJ5YvzHjnjMiygxtDxCFr5VCY/ZJeUBvwVOh5
-	3MWsN2CcWs+E3hYJ8I0KdaWWwKjzden+LzrX5nEYrUDdX5o6xsZZwyHMmdnZGDq6adtGJN864RGYw
-	4Xw0+RCNuePsb7BhKFiQ==;
+	List-Owner; bh=jSfzVbz0FsG5PLbrFGk7T/CkR+JdHaMSsWUNOrbi4VE=; b=Ll4mfwMdiS0SRZ
+	yXx8jbh0wcEr8Fig0c6ogZueDaCriY2E9R+gTUHMXROUx8bTC0FrnMMxWLYVYF+e3fEExeThb+0qJ
+	++PRWhy4BOQRpkg6ZIfdjhvQglH3vdnyy02LWstkqXw3vctYYrO9PkyVogoPHIqxaT5UYWmt5Wg+P
+	fcNMcPeNeIRsNrLvt50CS+mLuZjHU0SIzq7qcbv8wWdn7dnMWfrhorDGJlbs9c9zRvQlfVQ9s6+92
+	iSrh29vUbl2wtCZLLkErt4H8ha0rKU7M3V8azxANg81OouVcSGUUq2u+g+v5uLGBS/MEEZ9jypKlZ
+	nOQ/OyWYQsIq1hJ7MsxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3bmH-00000005ZM0-2Pe0;
-	Tue, 30 Sep 2025 14:56:29 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1v3bzB-00000005bbc-2grS;
+	Tue, 30 Sep 2025 15:09:49 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3bmF-00000005ZKo-36Gs;
-	Tue, 30 Sep 2025 14:56:27 +0000
+	id 1v3bz8-00000005baa-3lA7;
+	Tue, 30 Sep 2025 15:09:48 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1ADAF62838;
-	Tue, 30 Sep 2025 14:56:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 360C6C113D0;
-	Tue, 30 Sep 2025 14:56:26 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 880CC439D6;
+	Tue, 30 Sep 2025 15:09:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3C58C4CEF0;
+	Tue, 30 Sep 2025 15:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1759244186;
-	bh=Z5d0b5DGcSBbhhIKTZeyvPJji5Ji+ULzzLR+8R5C37M=;
+	s=korg; t=1759244986;
+	bh=2d5mlbzXOEFsyGOAy7ajjjm9WNfNLYF3z4LyKA5hDZY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YcBoGkhq258ECAMb1o6jiyeSS/SUuq+mAN/fwi/5XZIpPUDzOJc3be9hDjD2g4ivo
-	 +NeU5vD+Z3jdpPBMxTpDxb2hnxY5JXIdT4trYrqPZjMkN+u3zdFPMkm4X0DrDR8O6l
-	 GHZlJ6F7yS+sjB8Wg6Dkc86+78l6P6vAR6Y2anAE=
+	b=Lj6v4nBa+eawqtVfF84Khk5TBoxC+nap+CTnXeyc88t//36Mgc9DWzZPWpUmg/Z5I
+	 m6XoaAsuVc2vbcZzwJ8m6pl7CGxS6PzW53D+VpWOfbMf7oLHgnXx7WNQgq2981L8Jb
+	 KyzJryplUmvIXqYP1enYjpMmjdNdI9j7FxlNBqjE=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -56,16 +56,19 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org,
 	Jack Wang <jinpu.wang@ionos.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 022/122] mtd: rawnand: stm32_fmc2: Fix dma_map_sg error check
-Date: Tue, 30 Sep 2025 16:45:53 +0200
-Message-ID: <20250930143823.902488364@linuxfoundation.org>
+Subject: [PATCH 5.15 031/151] mtd: rawnand: stm32_fmc2: Fix dma_map_sg error check
+Date: Tue, 30 Sep 2025 16:46:01 +0200
+Message-ID: <20250930143828.856879967@linuxfoundation.org>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250930143822.939301999@linuxfoundation.org>
-References: <20250930143822.939301999@linuxfoundation.org>
+In-Reply-To: <20250930143827.587035735@linuxfoundation.org>
+References: <20250930143827.587035735@linuxfoundation.org>
 User-Agent: quilt/0.69
 X-stable: review
 X-Patchwork-Hint: ignore
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250930_080946_952590_DDC8FFFD 
+X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,7 +85,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5.10-stable review patch.  If anyone has any objections, please let me know.
+5.15-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -117,7 +120,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -858,8 +858,8 @@ static int stm32_fmc2_nfc_xfer(struct na
+@@ -860,8 +860,8 @@ static int stm32_fmc2_nfc_xfer(struct na
  
  	ret = dma_map_sg(nfc->dev, nfc->dma_data_sg.sgl,
  			 eccsteps, dma_data_dir);
@@ -128,7 +131,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	desc_data = dmaengine_prep_slave_sg(dma_ch, nfc->dma_data_sg.sgl,
  					    eccsteps, dma_transfer_dir,
-@@ -889,8 +889,10 @@ static int stm32_fmc2_nfc_xfer(struct na
+@@ -891,8 +891,10 @@ static int stm32_fmc2_nfc_xfer(struct na
  
  		ret = dma_map_sg(nfc->dev, nfc->dma_ecc_sg.sgl,
  				 eccsteps, dma_data_dir);
