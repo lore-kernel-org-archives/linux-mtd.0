@@ -4,52 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5641CAC5BE
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Sep 2025 07:46:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5A30CAC5B9
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Sep 2025 08:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=M1p5+2kEskHoAf2VZeyyNk7JGofQ2Y3Eo3OIXxgQ328=; b=sXhHkLtL7ih1Px
-	//3KuDECzR8yibtgllL4hsgA+etRaLRJhFgWlN0axp/h+wJBLDvf1NIbxfozDPjzrCXNCa2Isc20O
-	uZOd8ubQBexz5A7/fi3tBs1FOO6E+tdCIGICFCIOItYFrTZwPIeQe2v0jj6u+5xyt8690i28WwuK4
-	SDbW1oWN14vXhT+JhFhbflpXCombTRGssbIkowzjbCX61GGXsh8LwVwZjyvblrFPuJmMVc4udCnwz
-	tb8IcXfzrX5LLF5mBBrzL9hLi6OBQd9JFkK8FMqcm7xe/1cawRfI4K8pudyTo6SJPsb/bHFMWARn+
-	dH6NLxN4AUXFq2IMpBGA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CPJsUbm0HbLJg3vwJqiFJlXT4xnLOK6g+N1dis5U+Tg=; b=XEg/Q3yN7Au/cI
+	3oEp3BQSBzp2711G0FzJFIOth36y2ZrlsXG95Yswf4ziMyMZBGmdvsPpGKa7nI9RSiL6hF07Awc1f
+	YlcOMicVKB4k37gCfyAZI/pULT5YU7losRMOhKXKtuPePzTmUUe1audJdrrfaV07vmIcxDScXuL3H
+	U1xPk/GslNDKNp4+sEmqwLlF6+IYRUVMUqaozusV0s5RWjhdHkTLZxmUIhOx5s80cJirWQ9WMmpm5
+	dgSlu/urjiMK28D3+ColcsAU9dBDd/MW2LSpm5cMoFrxggsBOcA7IztWMTtkvCcZ6nV3Ov/1/D+6w
+	rssNpJl1dBc/Rt6SqHgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3V4Y-00000004XNd-0dtk;
-	Tue, 30 Sep 2025 07:46:54 +0000
-Received: from mail.ventrixor.pl ([91.134.88.136])
+	id 1v3VQR-00000004b9Z-0EF9;
+	Tue, 30 Sep 2025 08:09:31 +0000
+Received: from abb.hmeau.com ([180.181.231.80])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3V4V-00000004XMX-0P5V
+	id 1v3VQN-00000004b63-3eZg
 	for linux-mtd@lists.infradead.org;
-	Tue, 30 Sep 2025 07:46:52 +0000
-Received: by mail.ventrixor.pl (Postfix, from userid 1002)
-	id CF44A2440C; Tue, 30 Sep 2025 07:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ventrixor.pl; s=mail;
-	t=1759218405; bh=Pi9+p40l7//vLKO8DuYTv+ORJz3B9aWETGdVOxLyydc=;
-	h=Date:From:To:Subject:From;
-	b=wMf2L9SEWbWtkmfKEnb7mAZOUXxY8N9ln9BMqfoil8OVEx4oKaQkFXucJPvTp0GRj
-	 war9AOaFlO5YP5zgPS4UvMewejVmiXuwK5Ij3VUaeGYJKl4VfN7lV8Mz1WmKgFlO3e
-	 WTGRArd6vxINnrrGdOvOTUFLnWxoBtc8W6RuA2FOfrv7J8DYGw/B+iBt5WvCiZXTwz
-	 ou4PW4aHeJtQFjavIANenxmcJb9Si38aVcTVrBP2Q5wcAzdRXwh9mVTz2zYVsvlxFl
-	 BTHCuGY6WSyf4gHNW4rvYLPC5KKF/UvxmBe1OvPgpt6+T1kU+5eunWzh8xY9w8ZROm
-	 ijBpZ/uxIxXZA==
-Received: by mail.ventrixor.pl for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2025 07:46:24 GMT
-Message-ID: <20250930064500-0.1.9p.274hn.0.ad6g6x3ltj@ventrixor.pl>
-Date: Tue, 30 Sep 2025 07:46:24 GMT
-From: "Jan Adamczyk" <jan.adamczyk@ventrixor.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: Rekrutacja handlowca 
-X-Mailer: mail.ventrixor.pl
+	Tue, 30 Sep 2025 08:09:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hmeau.com;
+	s=formenos; h=In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:
+	From:Date:cc:to:subject:message-id:date:from:reply-to;
+	bh=SNl+JjIRM7qiedHpV2E5vW8Z43H70pcL9HXRcwW98v8=; b=OUoPEgaY2Om8Dxww/thydnKrAA
+	UPck2JTT4NJ/82oH9tlSHFmZ6IKJbS8qyAIbgzWdk7Oel1UoTvj/N5uJmRsP9MZAzrwQRTarHgugZ
+	AOHtaGmT1ArzuycdwrH1Lb+0/bvLOnCmnPvAyZFwUHrc1doFgskyKFwDXdGEDvm9jGA2roNRgA6a9
+	D8YTkVVNKbhplJQjDaKxxdILtf7MiMhqA2NHDUrMrrBAMnmpfPWsWzThFYjtfAZ54BJCI4u3wvBPd
+	WFkPBq9S012jMzeZVro7+GE4HsCXO4/62UHJm93vAetQG+/Jgv/dvNjV1Uoc2qxqba0lhIGRwFXij
+	nOv63TSw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1v3VPW-009OTT-26;
+	Tue, 30 Sep 2025 16:08:35 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 30 Sep 2025 16:08:34 +0800
+Date: Tue, 30 Sep 2025 16:08:34 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Han Xu <han.xu@nxp.com>
+Cc: "suman.kumar.chakraborty@intel.com" <suman.kumar.chakraborty@intel.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"terrelln@fb.com" <terrelln@fb.com>,
+	"dsterba@suse.com" <dsterba@suse.com>,
+	Richard Weinberger <richard@nod.at>,
+	"chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>
+Subject: [PATCH] crypto: zstd - Fix compression bug caused by truncation
+Message-ID: <aNuQAr79Hdky3WII@gondor.apana.org.au>
+References: <GV1PR04MB9071B5AC95DBD48B67FACF44971BA@GV1PR04MB9071.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <GV1PR04MB9071B5AC95DBD48B67FACF44971BA@GV1PR04MB9071.eurprd04.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250930_004651_431578_0E3EE822 
-X-CRM114-Status: UNSURE (   2.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250930_010927_906733_01692518 
+X-CRM114-Status: GOOD (  12.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,16 +75,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-V2l0YW0sCgpDenkgbWFqxIUgUGHFhHN0d2EgYWt0dWFsbmllIHBvdHJ6ZWJ5IHogemFrcmVzdSBy
-ZWtydXRhY2ppIG9zw7NiIGRvIGR6aWHFgnUgaGFuZGxvd2Vnbz8gCgpQb21hZ2FteSBza3V0ZWN6
-bmllIHJla3J1dG93YcSHIG9zb2J5IG5hIHN0YW5vd2lza2EgUHJ6ZWRzdGF3aWNpZWxhIEhhbmRs
-b3dlZ28sIFNhbGVzIE1hbmFnZXJhLCBhIHRha8W8ZSBLYWRyeSBNYW5hZ2Vyc2tpZWogdyBvYnN6
-YXJ6ZSBzcHJ6ZWRhxbx5LgoKQ3p5IG1vxbxlbXkgcG9yb3ptYXdpYcSHPyAKCgpQb3pkcmF3aWFt
-CkphbiBBZGFtY3p5awoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Mon, Sep 29, 2025 at 11:51:36PM +0000, Han Xu wrote:
+> Hi Suman,
+> 
+> The patch f5ad93ffb5411 "crypto: zstd - convert to acomp"
+> leads to the following kernel dump during UBIFS write back.
+
+Thanks for the detailed report and instructions!
+
+Please let me know if you still get the crash with this patch:
+
+---8<---
+Use size_t for the return value of zstd_compress_cctx as otherwise
+negative errors will be truncated to a positive value.
+
+Reported-by: Han Xu <han.xu@nxp.com>
+Fixes: f5ad93ffb541 ("crypto: zstd - convert to acomp")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/crypto/zstd.c b/crypto/zstd.c
+index c2a19cb0879d..ac318d333b68 100644
+--- a/crypto/zstd.c
++++ b/crypto/zstd.c
+@@ -83,7 +83,7 @@ static void zstd_exit(struct crypto_acomp *acomp_tfm)
+ static int zstd_compress_one(struct acomp_req *req, struct zstd_ctx *ctx,
+ 			     const void *src, void *dst, unsigned int *dlen)
+ {
+-	unsigned int out_len;
++	size_t out_len;
+ 
+ 	ctx->cctx = zstd_init_cctx(ctx->wksp, ctx->wksp_size);
+ 	if (!ctx->cctx)
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
