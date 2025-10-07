@@ -4,59 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DE67CCA476
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Oct 2025 14:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61508CCA476
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Oct 2025 22:41:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YFOf93mqw6aarnPvdcgRT0xEfF4MeyLIfY03itDSCCY=; b=F9iPbH4v0OYY2y
-	lG69+chH+N9s61S21eZSujgtwopb5G3McAEKaFRvvqniEE9u0sLjHJj0ij05SmzxvIWN1h4YgcbiF
-	R6v8ioZiqSBRZfFGId9+AwAvSi0+zKw50VY47UgYe5qyO01ojHt2N0B75X9Dvr+g7kLfL6yKQt5Ag
-	TVZT5BxuErovKdq1UZl4IZxgMSO/11uXj/SiQ4jrTADGcHhnYRjPuUm51NAY+fU2RO4TZpEfDK3lB
-	KlBmg04mlmiTEVnzCSWQFO5qBBNHapqSnE0nQ+W1eUMuPGSv6RrOyXQRIvXMYElQvNLtd1f30FfNo
-	Ve3Vy7zz8iItxh7vaIxQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=gzeQgUd18tsBv5zmGHiGN1fOkEV4Mid0dJgqZqCd/eU=; b=q8xeMNvy6tSf0G
+	7ryGRmEu+eStlh7p1vAdoJO7Rr5dTa64fPXo4Gw4XHSzoa0M2EP+ZipJVy4Z/c4CzOu2jwkPIVGuy
+	eP35KzqktO42g9tjFyx0rPj0ZDT3+H6D+o9mU0OCfBnENjXLmXU3uRjx2Ebg7DXIE0wy69O6Sybnt
+	g6w4NpmLfyex8Dr75Xjs3kaVnAAAIaYMY0yPyV71IWL/FNWGUzmAobIC8tE5pTWmR6ZgTGHATSGvf
+	M02elT7cruLxCh/DxLh1571UdLL9ACFrL5QH+Sun6Z/6qdYFoGwZP3CKoYeOzBjWxNOY1mJ9bs9qq
+	NhPrLlf+2BJmf5AZrYkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v68Y0-00000002ALG-0LYD;
-	Tue, 07 Oct 2025 14:20:12 +0000
-Received: from out-189.mta0.migadu.com ([2001:41d0:1004:224b::bd])
+	id 1v6GMp-00000002tTo-2Lu4;
+	Tue, 07 Oct 2025 22:41:11 +0000
+Received: from mail-ot1-x32a.google.com ([2607:f8b0:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v68Xx-00000002AJO-3cfr
+	id 1v6GMm-00000002tSu-34xN
 	for linux-mtd@lists.infradead.org;
-	Tue, 07 Oct 2025 14:20:11 +0000
-Message-ID: <4888cefa-e8be-4f0d-9d4a-c82f9ff6cda0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759846806;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ngYQpH36569K++7CCAQsgIJKCzPaP0ImpmBI/4BGpek=;
-	b=HYz0w0ocj3aTEHZBOXPy4bsjjc6WbH9bd6NEk2nD/pGsK3BaVcHhRV7ggaCHI0sXHAp3gm
-	bIY2bUbzY8r4VuoZrfWcOpOsn2lEujFF7DoeqEOrbmbjMI3W8a7IltVhjgR/K3Hu+j3yp/
-	EKKvz/jrdSgaLy2uUnQgZ+j6QHlEn9Q=
-Date: Tue, 7 Oct 2025 10:20:01 -0400
+	Tue, 07 Oct 2025 22:41:09 +0000
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-74572fb94b3so4016098a34.2
+        for <linux-mtd@lists.infradead.org>; Tue, 07 Oct 2025 15:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759876867; x=1760481667; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IBfCBek8M+CyleueLSM0/f7MhRf1ZAzzj8LCZK7gE+I=;
+        b=EKwrY6cGmCkqMjSkF6LSN7IF5l8swBP/Wyf/ITaQRWADGr3g1kZPD/wEEkL6G28zBo
+         xGUjR632fhUzgbwdWd4mokKDYcR47jlJ6W4Ht6XFQDGNrL2gMVI+6Xde3n3lOFn4kjGf
+         aP7w+pefg6d+uvKjviKDJdokSyznktHKYYfHpsYWwrvegS7iMsPGvbnP6RePy1/HKqvO
+         A3/C1ak/PFv7aCNbqrcV+Ugn3TJid4bDMUM3pARquXW2tf19/sVfTZwnY2DAgFfWkwB9
+         yM+iX0JDzPWiNB8/xvPF/fUUIJZ44NYEVc0DXs+6U0efSn/dGNiZe8QDLttwNIDMupgE
+         ZAjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759876867; x=1760481667;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IBfCBek8M+CyleueLSM0/f7MhRf1ZAzzj8LCZK7gE+I=;
+        b=cF4ObgUyAS2s7dSwuhGfsE4MQtZxSb1cGZlugMAu0Bi7Vhw8EXb6MtrGToqPkoeteZ
+         QAvh7DkneY617WCbsIEBZNWVZladpcLyNIm6DFLUzdCYDufwLAqXbifZ0I/huzdIjztG
+         4UXmNJMpdubnVI+5ucptSLr5Y0gkhHqWL7hJHu6ZAXqzvoZJ+kNHmhig4FVT3qOspSBz
+         Prs0+BxTcPUDvB13JdnTCL+OPOnI9pgV6JtU0tn3HfjyCOHeyLF6Ijcnguzwxqz8b4kO
+         MrTtKyzRv4KLyvGF38OGq8p8wNCRH2LcitN+ZM40qyrBqhSZlv/1iGTw3lXrLvJ5BGJU
+         9rVA==
+X-Gm-Message-State: AOJu0YweG+kCcEjTPEIteIfQGizQqyew1OzIldyqgSoFSqJiMmowHbeI
+	jXZ6zzHL/U1whtdWztyjDV61zFZvjiwYgU2TsX9wtinah2+cHJUpM95zGoiMafdB
+X-Gm-Gg: ASbGnctVOpo7IEVsDXXBPjXSgNY2f22LYrLATIbyXaLsJSm7BDyRvmiw5rNwhHZ06S+
+	ED+HNO07sOIMWAZd4QCOUiH2dZ6Cd4DhYij8trTv8FzfVQBlZWtL0/1cS8dRWiVKSkeVWeM5yK0
+	uPrDyCm/rewbH7ciU4vSd7FPz3jCwpTePE1fS1iPloFTjEVL8ZO+UwQAoHIEwSjxo2Op9qrP+RS
+	bmGsYxfDYbFhoAudXrrWmv4sDjqHybQKsCU7cv6du+9AIWiT1gfPx06qTomWK4Obp0wG0NkSHIm
+	Bw+bns2TePOqTP1hEfglO+xCGN5YH7gG1cypCraXAHILsBbLB3KnB8+XP3dDSrTD2hR65YA3P7J
+	WSxhzawJ2q8JA3W2Qt1fRFa7txxMRjPjqiuPtMW1SJDhM4/5I1zPbhhLbh2iBrQ1/j/eNb4DciE
+	bzIMmjjIt76n5NJU8sVK8f2+jquo37bFriZ8wyhP4vv+ccW7p80MOydteyl/x6JdadFwXC/G/f
+X-Google-Smtp-Source: AGHT+IE1J58eiP+VZ/SYqsE+VJxT4uZEnpYq5J2Eo/+1x4KBfgRwP/Uu6PgKxEpsZMKZSBrgZnKoSg==
+X-Received: by 2002:a05:6830:d8d:b0:7af:1d61:1055 with SMTP id 46e09a7af769-7c0df784309mr973015a34.21.1759876867142;
+        Tue, 07 Oct 2025 15:41:07 -0700 (PDT)
+Received: from uacde259c55d655.ant.amazon.com (amazon.com.bear2.houston1.level3.net. [4.1.110.174])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7bf434f904dsm5265419a34.29.2025.10.07.15.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Oct 2025 15:41:06 -0700 (PDT)
+From: jayxu1990@gmail.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	avnerkhan@utexas.edu,
+	rdlee.upstream@gmail.com,
+	Jay Xu <jayxu1990@gmail.com>
+Subject: [PATCH] mtd: core: Add nand_id sysfs attribute for NAND devices
+Date: Wed,  8 Oct 2025 06:40:49 +0800
+Message-Id: <20251007224049.2798233-1-jayxu1990@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Subject: Re: [PATCH] mtd: spi-nor: Enable locking for n25q00a
-To: Pratyush Yadav <pratyush@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
- Michael Walle <mwalle@kernel.org>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-References: <20251006223409.3475001-1-sean.anderson@linux.dev>
- <mafs0ecreontu.fsf@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <mafs0ecreontu.fsf@kernel.org>
-X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251007_072010_055975_99B2B42B 
-X-CRM114-Status: GOOD (  24.61  )
+X-CRM114-CacheID: sfid-20251007_154108_780028_8C424905 
+X-CRM114-Status: GOOD (  22.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,77 +101,129 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/7/25 09:15, Pratyush Yadav wrote:
-> On Mon, Oct 06 2025, Sean Anderson wrote:
-> 
->> The datasheet for n25q00a shows that the status register has the same
->> layout as for n25q00, so use the same flags to enable locking support.
->> These flags should have been added back in commit 150ccc181588 ("mtd:
->> spi-nor: Enable locking for n25q128a11"), but they were removed by the
->> maintainer...
-> 
-> This makes it sound like the maintainer did something wrong, which is
-> not true. Tudor had a good reason for removing them.
+From: Jay Xu <jayxu1990@gmail.com>
 
-I disagree. The maintainer used his position of authority to make the
-submitter second-guess their correct patch.
+[Problem]
+Currently, NAND devices do not expose their NAND ID through sysfs,
+making it difficult for userspace applications to identify the specific
+NAND flash chip in use. For supply management reasons, electronics
+products are typically manufactured with multiple storage device
+suppliers, creating a need to identify which storage device is used
+on a particular product. The NAND ID is a semi-unique identifier that can
+be used to determine chip-specific characteristics such as maximum P/E
+cycles, which is essential for NAND health monitoring and wear leveling
+algorithms.
 
-These flashes have capacity of greater than the 8 MiB that can be
-protected using 3 BP bits. Micron (and ST before them?) addressed this
-by adding a fourth BP bit. This is consistent across every flash in this
-series, and is clearly documented in every datasheet. Defaulting to 3
-bits is buggy behavior: we should assume flashes behave per their
-datasheets until proven otherwise, especially for less-popular features
-that the original submitter may not have tested.
+[Solution]
+This patch adds a new 'nand_id' sysfs attribute that:
 
-The original patch was entirely correct, and the maintainer's
-justification for removing the second hunk is flawed.
+1. Exposes the full NAND ID (typically 5-8 bytes) in hexadecimal format
+2. Only appears on physical NAND devices (MTD_NANDFLASH/MTD_MLCNANDFLASH)
+3. Is hidden on virtual MTD devices
+4. Reads from the master device to ensure consistent ID across partitions
+5. Handles on-demand ID reading if not already populated during probe
 
-> Jungseung did not
-> have the flash at hand and Tudor didn't want to apply patches that
-> weren't tested. Both were in agreement for removing the n25q00a changes.
-> 
-> If you are going to mention that commit, then mention the full context,
-> and then also mention what has changed since that makes it possible to
-> add those changes back in. Having tested them on the real hardware for
-> example.
-> 
->>
->> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
->> ---
->> Tested with a mt25qu01gbbb, which shares the same flash ID.
-> 
-> Ughh, is this another case of flash ID reuse? Do mt25qu and n25q00a
-> flashes behave exactly the same and only have two names? If not, then
-> how do you know if n25q00a will also work with these changes?
+The implementation uses a separate attribute group with visibility control
+to avoid affecting existing MTD sysfs attributes. All NAND partitions
+from the same physical chip will show the same ID, as expected.
 
-I examined the datasheet for the n25q00a and determined that it has the
-same status register layout.
+This enables userspace tools to reliably identify NAND chips for
+health monitoring, bad block management, and device-specific
+optimizations.
 
-In fact, every n25q and mt25q flash has the same status register layout,
-which (as noted above) is necessary to support capacities greater than 8
-MiB (and all flashes in this series have such capacity).
+Signed-off-by: Jay Xu <jayxu1990@gmail.com>
+---
+ drivers/mtd/mtdcore.c | 60 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 59 insertions(+), 1 deletion(-)
 
---Sea
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5ba9a741f5ac..9290dbe04093 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -34,6 +34,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/mtd/rawnand.h>
+ 
+ #include "mtdcore.h"
+ 
+@@ -339,6 +340,54 @@ static ssize_t mtd_bbt_blocks_show(struct device *dev,
+ }
+ MTD_DEVICE_ATTR_RO(bbt_blocks);
+ 
++static ssize_t mtd_nand_id_show(struct device *dev,
++				struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++	struct mtd_info *master = mtd_get_master(mtd);
++	struct nand_chip *chip;
++	int ret;
++
++	/* Ensure this is actually a NAND device */
++	if (master->type != MTD_NANDFLASH && master->type != MTD_MLCNANDFLASH)
++		return -ENODEV;
++
++	chip = mtd_to_nand(master);
++
++	/* If ID not populated, try to read it now */
++	if (!chip->id.len) {
++		ret = nand_readid_op(chip, 0, chip->id.data, NAND_MAX_ID_LEN);
++		if (ret)
++			return sysfs_emit(buf, "read-error\n");
++		chip->id.len = strnlen(chip->id.data, NAND_MAX_ID_LEN);
++	}
++
++	return sysfs_emit(buf, "%*phN\n", chip->id.len, chip->id.data);
++}
++MTD_DEVICE_ATTR_RO(nand_id);
++
++static umode_t mtd_nand_id_visible(struct kobject *kobj, struct attribute *attr, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++
++	/* Only show on NAND devices (excludes UBI volumes which have type 'ubi') */
++	if (mtd->type != MTD_NANDFLASH && mtd->type != MTD_MLCNANDFLASH)
++		return 0;
++
++	return attr->mode;
++}
++
++static struct attribute *mtd_nand_attrs[] = {
++	&dev_attr_nand_id.attr,
++	NULL,
++};
++
++static const struct attribute_group mtd_nand_group = {
++	.attrs = mtd_nand_attrs,
++	.is_visible = mtd_nand_id_visible,
++};
++
+ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_flags.attr,
+@@ -359,7 +408,16 @@ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_bitflip_threshold.attr,
+ 	NULL,
+ };
+-ATTRIBUTE_GROUPS(mtd);
++
++static const struct attribute_group mtd_group = {
++	.attrs = mtd_attrs,
++};
++
++static const struct attribute_group *mtd_groups[] = {
++	&mtd_group,
++	&mtd_nand_group,
++	NULL,
++};
+ 
+ static const struct device_type mtd_devtype = {
+ 	.name		= "mtd",
+-- 
+2.47.3
 
->>
->>  drivers/mtd/spi-nor/micron-st.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
->> index 187239ccd549..17c7d6322508 100644
->> --- a/drivers/mtd/spi-nor/micron-st.c
->> +++ b/drivers/mtd/spi-nor/micron-st.c
->> @@ -486,6 +486,8 @@ static const struct flash_info st_nor_parts[] = {
->>  		.id = SNOR_ID(0x20, 0xbb, 0x21),
->>  		.name = "n25q00a",
->>  		.size = SZ_128M,
->> +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
->> +			 SPI_NOR_BP3_SR_BIT6,
->>  		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
->>  		.mfr_flags = USE_FSR,
->>  		.fixups = &n25q00_fixups,
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
