@@ -4,84 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E975CAC5BB
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Oct 2025 09:38:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC236CAC5BB
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Oct 2025 09:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zV4ox4T7cyrRFl2toTVLlVnDzF+2/VmINi/It6jri3I=; b=NWSF6shxbfV60+
-	A129Jnsb+yosNlW9gXHSesnWa9IvRXU9xszw21w4CYch+5Eh6ESIxGUhAXtwyLruY7sA3nJDEYs37
-	j3ATT4Flenqz7NuLM4D5Vn9tuC8rltFIiWP766qJ6idDtmO50YIgI8Tgyw7DNYn1tpZNIbdfMoP5p
-	vLQtvdmdq89RppfeISmfTkHjbjBuk639zJycK0jN2d0S5E25NqawoBZkk/HpJUUnfITH5DOXDtHJD
-	/K8YO0lLgjrE9Kg4D4Z6bqRAVeDGRKS/aTwQLvbAb2Izqq8qC0+t98VBPcC3EU1BLwPhRLCLDGzjC
-	kI2cKXQwcw3ZrXx+9ZAA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PSCL/8zkZ5wab1b9Do/36kumWWBHZ7pYxbGzh8OZySo=; b=dKrmImU2cWkb28
+	7A44/pBv68/Q1C89inyWZgGeXZYi5rUBDAZ47x8SAJf8tbhRd05DCyc58/2PK3nFtBr5yHvl+3NYy
+	HM1XU0Lx60PlTlqCv7pbOXQiiYg20uIiSeYr4QroXZOeyRktQH9pPSICVWF2DIL+SLkaREmZz+r+e
+	Pr8djW2KkZ9l3IUfyAE1op5DghZdF3ge1ONpgK/61GBbrZV23vnSXOiWi9u03mnWJRh6VDzL3wbgX
+	lO2aCuULql67AxrYSDEn1mVBT09tAx4v40NbMIFLd3MI1wLpFkA6WJdLNRcFCWhIeZIJjKof2Cha9
+	iIV6GOTvRSOP9GOqgrtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v6Qcq-00000003ZiE-0ZE5;
-	Wed, 08 Oct 2025 09:38:24 +0000
-Received: from mail-vk1-f179.google.com ([209.85.221.179])
+	id 1v6QlX-00000003aAv-2ZrV;
+	Wed, 08 Oct 2025 09:47:23 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v6Qcm-00000003Zhp-08b0
+	id 1v6QlW-00000003aAp-2Xtt
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 Oct 2025 09:38:21 +0000
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-54bc6356624so496964e0c.1
-        for <linux-mtd@lists.infradead.org>; Wed, 08 Oct 2025 02:38:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759916298; x=1760521098;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g6l+B9owPtIKrCSeyTE4F8NmW+PJqEJv1NByjt8yVUI=;
-        b=i7ta4CL7pCVQsWHpMG9cfJSCWNfy2lRydp0V1doB88nvSUQewpgIi1yP/EG2JgvDMg
-         pBTm2h5Dnpnx1tgcz3/R6rg1UM94FmjDmJuwNyX/zjtOpArymiS347t/I2dOx9Wi7PX4
-         FeHawaQjaGdSDwbbI+qM8uPYZkeTdDGb302I7a5prDk849SdBX+JHvcPOh8zhemeKvdd
-         L/LXBFboAC70b4px570oOgYmeH6x0kp2t5dNw2W7k61NewDX3eaUSKTDBxiJeYcK67yX
-         rbdKNqV2QEwzPUAwpCcx/chxAfjFApn5laJsHt2fxzuExopuhMyCcTa0WwCxsBbbY5PY
-         JZUg==
-X-Forwarded-Encrypted: i=1; AJvYcCVU6qIm7ELcop87EUKt+nNqIOAz6ggoLOISsxJnRY7zyZn2yItv6buWleaMlIYJjcnDrZGJSyx4VFc=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxPr7FzHbEFB1DoXpxX9N+Z69HlpuJkaNaU0o06+AUapu9FDeyH
-	4Ciiy1DbT04td9Gygt7wX2JT6vDJGZh4lEZ86wvo5EyPtWDd+LCQLTfUdMZSoJoj
-X-Gm-Gg: ASbGnctqUP7QH781/K961cbT2hZc2O9UFtOsErzm/CN0Mrs6I7AO1hEA3pNKFg6r+UJ
-	M8zcXA57kqLBGIp1blzW9Ebs9PW5YZrU44cD8R28ECKBRUy7iT/hPeWl01zL6nBBDDvxYUlN5ez
-	cUclMd4XwOZyYgbxCHZnIgHSG1EmrHqK7s0UkoWT+tYx/maz0pcENfMWBsL0fTafqgg9h5pKJAD
-	CU2t/hJbBcZYa50Ta2/22pkSJzavxMfb4hGz15V1AvkWF5TtPY2TvHE8KijJ5JyXYfv4Kcs3i0h
-	74x4apAIsHAD5iX0AUqRcCRnLgx8t7wNc6/BfuDR/MhJ9TYXPn8L3FY2+Z0CRscHV+qsWVeY4K7
-	c6h11ynE/cq0E8TAM/g9zXLoKVvKlz/JoKVoF4IONg9kMaauQF7A+q346MsodW+jCXj9uRVUTvQ
-	CRaw2XqYCxIK4NBl8QyUOw9BM=
-X-Google-Smtp-Source: AGHT+IEV6BlpW+/PldAgWCD5zyCJ7RpXN23lEBHl+OzR192paaiQ/VhagukoBwtJMRmjDKZmv2EoOw==
-X-Received: by 2002:a05:6122:3296:b0:541:80ff:31a5 with SMTP id 71dfb90a1353d-554b93b1b43mr244698e0c.3.1759916298101;
-        Wed, 08 Oct 2025 02:38:18 -0700 (PDT)
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5523cf65395sm4421229e0c.23.2025.10.08.02.38.17
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Oct 2025 02:38:17 -0700 (PDT)
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-54bc6356624so496936e0c.1
-        for <linux-mtd@lists.infradead.org>; Wed, 08 Oct 2025 02:38:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVzLxE59c6TfsjAnUqiyc5JKhgoWwxzb52gZbUxNILC9ts/UTLi+ljE3uba8bv4guRnSpSj+xEVlbc=@lists.infradead.org
-X-Received: by 2002:a05:6122:e011:20b0:54a:8ad3:7b5 with SMTP id
- 71dfb90a1353d-554a8c9b568mr2813894e0c.1.1759916297008; Wed, 08 Oct 2025
- 02:38:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <aN-XoqpP2Jz75pjj@stanley.mountain>
-In-Reply-To: <aN-XoqpP2Jz75pjj@stanley.mountain>
+	Wed, 08 Oct 2025 09:47:22 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id B229160010;
+	Wed,  8 Oct 2025 09:47:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C89BC4CEF4;
+	Wed,  8 Oct 2025 09:47:19 +0000 (UTC)
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 8 Oct 2025 11:38:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVwpWLvnAWhHqPUL1Cg7dq3rX8wzptHrWC954T0sh9bEw@mail.gmail.com>
-X-Gm-Features: AS18NWBegczPMChD6JEBf2DL6C5D4h1G1LphqBzffcl9ZraTnd023jN3u5ksKbg
-Message-ID: <CAMuHMdVwpWLvnAWhHqPUL1Cg7dq3rX8wzptHrWC954T0sh9bEw@mail.gmail.com>
-Subject: Re: [PATCH next] mtd: nand: realtek-ecc: Fix a IS_ERR() vs NULL bug
- in probe
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Markus Stockhausen <markus.stockhausen@gmx.de>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251008_023820_073135_61B6BAFE 
-X-CRM114-Status: GOOD (  16.75  )
+To: Markus Stockhausen <markus.stockhausen@gmx.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] mtd: nand: MTD_NAND_ECC_REALTEK should depend on HAS_DMA
+Date: Wed,  8 Oct 2025 11:47:15 +0200
+Message-ID: <5109cd228940c246d2e1ef4ff01799315601c285.1759916792.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,25 +61,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 3 Oct 2025 at 11:30, Dan Carpenter <dan.carpenter@linaro.org> wrote:
-> The dma_alloc_noncoherent() function doesn't return error pointers, it
-> returns NULL on error.  Fix the error checking to match.
->
-> Fixes: 3148d0e5b1c5 ("mtd: nand: realtek-ecc: Add Realtek external ECC engine support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+If CONFIG_NO_DMA=y:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+    ERROR: modpost: "dma_free_pages" [drivers/mtd/nand/ecc-realtek.ko] undefined!
+    ERROR: modpost: "dma_alloc_pages" [drivers/mtd/nand/ecc-realtek.ko] undefined!
 
-Gr{oetje,eeting}s,
+The driver cannot function without DMA, hence fix this by adding a
+dependency on HAS_DMA.
 
-                        Geert
+Fixes: 3148d0e5b1c5733d ("mtd: nand: realtek-ecc: Add Realtek external ECC engine support")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/mtd/nand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 4a17271076bc1c4a..1e57c8de857825d7 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -63,7 +63,7 @@ config MTD_NAND_ECC_MEDIATEK
+ 
+ config MTD_NAND_ECC_REALTEK
+         tristate "Realtek RTL93xx hardware ECC engine"
+-        depends on HAS_IOMEM
++        depends on HAS_IOMEM && HAS_DMA
+         depends on MACH_REALTEK_RTL || COMPILE_TEST
+         select MTD_NAND_ECC
+         help
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.43.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
