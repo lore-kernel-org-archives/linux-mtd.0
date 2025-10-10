@@ -4,51 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1896CAC5BB
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Oct 2025 10:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1547CAC5BB
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Oct 2025 10:24:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4nnCkMa3I702od84E1zHFXgekV8lKvIM5+mbgfVF1fQ=; b=H5BJ39uo+1Z0cV
-	UFAqtdwJnLIXoLndZ34J+lavQwAFMFkBMauEJfRa+U3VxsP/DFwebalWaD3h6slKGnTi7YZGimyyq
-	3fWo8zRPAmtgrHnFQwJery25WGOpyXpbu0ycCFV+T5Y7Hd4kB7vqhjXgZ7V3ik65ZZH7Vi2oIAbGE
-	j0Mog3fQh73ex+t4TfvROIt6RCHMRVM8/AsYFUBqlE5Uj1K9vmEkpad4exY1w5Ch5ewg0HTuOh3+0
-	RDg36JjsItzEgnqqdRgPS/EqdDC7hymhtePWBhhNiQO0mCCKfbKvYyLi6B+xsdzEFvAIgXF21L7YS
-	pFIYrZcrl/RwQSB3yjRA==;
+	List-Owner; bh=xj5joafWvnMMDz97S2uDMW9h5uYhVmC8oN8RLOVZSTQ=; b=qBcyJnOluOi0Z/
+	K/y9qBZsTjJ+fwdaG5ZKwtqKh9io3x1MfFNsPpVGSOIk2QPeupBQmF6HDkn23lF4CO6ugR/3Azyxj
+	8nHY6ucEYFefFUW3t+WRxWM1EtFXBDDjHYr9szY0Ji+J4B023hiJxI842JuwnjWLoa9DFbtJQxeOF
+	472UHX96Fhui5jQ117b7Ypwm2BrGK64B82w1Krm3iUxaYyjK+XnPh5n0JCiviYiePoH5kgOdqWrEP
+	bC5O5mi5avKuUHdKn9ZLhHP8cZt4D+5EEjpLBGpOi1qYBV4JfPor8NZghZprRwB1wUH9BKXr99frh
+	LsFuKtlvLcp0ph7tAEGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v7AGX-00000008Fl9-1nvt;
-	Fri, 10 Oct 2025 10:22:25 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1v7AIz-00000008G2e-3ZJP;
+	Fri, 10 Oct 2025 10:24:57 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v7AGT-00000008FkW-46eq;
-	Fri, 10 Oct 2025 10:22:23 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 87F4CC08CC7;
-	Fri, 10 Oct 2025 10:21:59 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 28C3B60667;
-	Fri, 10 Oct 2025 10:22:18 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 581C7102F220E;
-	Fri, 10 Oct 2025 12:22:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1760091737; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=LVAJyNJ/atriVmfO2odOrzCoxOhZwl6Ix4PMrqVToYk=;
-	b=ksoo2ILUKZ/ObF21JtYOUO92T+BCdn2ME3maRCv+7sMurv6VEfraalOYLbpMQ0EjylyjBy
-	WSTKA30jtDXWGYPIHWrBKYrwe3m2XDMq7maal7YBMI7cz9ycXn+pxMlr1VGgRR0nRjsly7
-	hXK69PIxeuPJ5mH29t35/QtLoAmMV59TS8V4pJzoJuZZdJrGk7Jz/dFwIcKYDD9gTG+alr
-	K2GnEemfK10+4rzRvNMtk9M68xllsp32Vh4XDqhEcyXBCSLGq0GZuWFrWO050Th0dh5yy4
-	ajEW4kvqmx7w7KzVSpcPZ6XJ+yZjmVuxZovTWslvdn0E2RMkY9G0HBHXrk3VGQ==
-Message-ID: <00f6ec33-bd86-4f57-8011-1c067e9321b4@bootlin.com>
-Date: Fri, 10 Oct 2025 12:22:13 +0200
+	id 1v7AIw-00000008G20-3ihx;
+	Fri, 10 Oct 2025 10:24:56 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 47F8D44078;
+	Fri, 10 Oct 2025 10:24:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B87FC4CEF5;
+	Fri, 10 Oct 2025 10:24:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760091894;
+	bh=lkp7nBjKgabSK8PsTTWM8Xy19DTPV1PKwluvMWdpwEc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=glXvUSWgFb1yy1sTSCRyN9iSvA8I4MMK1MojB6Cl+mX/H78DqWicqILYkwFz8lcSs
+	 L3ci45itZ004KXLa6WwpdO1qQjF6u88xKKYW/JFyh5Up2hbx88imcMPV2p2XMPn/mb
+	 M2szSqlAKW5JEqynQ4z/y+VVe1vlvNi3Yb29GFPiSas+CAPuWo0orwSeLG8Q4uyyT0
+	 RG3xNkc3IwX2JYHMgInkwq3iQy/7NRohVEEElJgbp+n/o/kDyFRowzJX6TOGpop9ZS
+	 j8NDUJp2En1dsq1gBKQ8V3msZ+y+xaNUDCDroZ+Qo7JaIMPW76YKz/+QQ9j4Ou+H4/
+	 AfSFuJ+WVjEAw==
+Message-ID: <a4a7f625-a276-4534-983c-15560dee350c@kernel.org>
+Date: Fri, 10 Oct 2025 12:24:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 03/15] arm64: dts: allwinner: h616: add NAND controller
-To: Krzysztof Kozlowski <krzk@kernel.org>,
+To: Richard GENOUD <richard.genoud@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -65,14 +63,57 @@ Cc: Wentao Liang <vulab@iscas.ac.cn>,
 References: <20251010084042.341224-1-richard.genoud@bootlin.com>
  <20251010084042.341224-4-richard.genoud@bootlin.com>
  <82bcd40f-7e94-43ca-99c9-234458011b9b@kernel.org>
-From: Richard GENOUD <richard.genoud@bootlin.com>
-Content-Language: en-US, fr
-Organization: Bootlin
-In-Reply-To: <82bcd40f-7e94-43ca-99c9-234458011b9b@kernel.org>
-X-Last-TLS-Session-Version: TLSv1.3
+ <00f6ec33-bd86-4f57-8011-1c067e9321b4@bootlin.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 a/A=
+In-Reply-To: <00f6ec33-bd86-4f57-8011-1c067e9321b4@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251010_032222_208937_480A3259 
-X-CRM114-Status: GOOD (  12.87  )
+X-CRM114-CacheID: sfid-20251010_032455_275281_E50864ED 
+X-CRM114-Status: UNSURE (   8.16  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,33 +125,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TGUgMTAvMTAvMjAyNSDDoCAxMDo0NywgS3J6eXN6dG9mIEtvemxvd3NraSBhIMOpY3JpdMKgOgo+
-IE9uIDEwLzEwLzIwMjUgMTA6NDAsIFJpY2hhcmQgR2Vub3VkIHdyb3RlOgo+PiBUaGUgSDYxNiBo
-YXMgYSBOQU5EIGNvbnRyb2xsZXIgcXVpdGUgc2ltaWxhciB0byB0aGUgQTEwL0EyMyBvbmVzLCBi
-dXQKPj4gd2l0aCBzb21lIHJlZ2lzdGVyIGRpZmZlcmVuY2VzLCBtb3JlIGNsb2NrcyAoZm9yIEVD
-QyBhbmQgTUJVUyksIG1vcmUgRUNDCj4+IHN0cmVuZ3Rocywgc28gdGhpcyByZXF1aXJlcyBhIG5l
-dyBjb21wYXRpYmxlIHN0cmluZy4KPj4KPj4gVGhpcyBwYXRjaCBhZGRzIHRoZSBOQU5EIGNvbnRy
-b2xsZXIgbm9kZSBhbmQgcGlucyBpbiB0aGUgZGV2aWNlIHRyZWUuCj4gCj4gCj4gUGxlYXNlIGRv
-IG5vdCB1c2UgIlRoaXMgY29tbWl0L3BhdGNoL2NoYW5nZSIsIGJ1dCBpbXBlcmF0aXZlIG1vb2Qu
-IFNlZQo+IGxvbmdlciBleHBsYW5hdGlvbiBoZXJlOgo+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4u
-Y29tL2xpbnV4L3Y2LjE2L3NvdXJjZS9Eb2N1bWVudGF0aW9uL3Byb2Nlc3Mvc3VibWl0dGluZy1w
-YXRjaGVzLnJzdCNMOTQKWW91J3JlIHJpZ2h0LCBJJ2xsIHJlZm9ybXVsYXRlIHRoYXQuCgoKPiAK
-Pj4KPj4gU2lnbmVkLW9mZi1ieTogUmljaGFyZCBHZW5vdWQgPHJpY2hhcmQuZ2Vub3VkQGJvb3Rs
-aW4uY29tPgo+PiAtLS0KPiAKPiBDb25mdXNpbmcgb3JkZXIgb2YgcGF0Y2hlcy4gRHJpdmVyIGNv
-ZGUgY2Fubm90IGRlcGVuZCBvbiBEVFMuCj4gCj4gU2VlIHN1Ym1pdHRpbmcgcGF0Y2hlcyBpbiBE
-VC4gSXQgaXMgVkVSWSBleHBsaWNpdCBhYm91dCBpdC4gUGxlYXNlIGFsc28KPiByZWFkIG1haW50
-YWluZXIgc29jIHByb2ZpbGUuCkluZGVlZCwgaXQncyBxdWl0ZSBleHBsaWNpdCBpbgpEb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3VibWl0dGluZy1wYXRjaGVzLnJzdApTb3JyeSBm
-b3IgdGhhdC4KCkJ1dCBJIGRvbid0IGtub3cgd2hhdCB5b3UgYXJlIHJlZmVycmluZyB0byBhcyAi
-bWFpbnRhaW5lciBzb2MgcHJvZmlsZSIKSSBndWVzcyBzb2MgaGVyZSBkb2Vzbid0IHN0YW5kIGZv
-ciBzeXN0ZW0gb24gY2hpcCA6KQoKVGhhbmtzIQoKPiAKPiBCZXN0IHJlZ2FyZHMsCj4gS3J6eXN6
-dG9mCgoKLS0gClJpY2hhcmQgR2Vub3VkLCBCb290bGluCkVtYmVkZGVkIExpbnV4IGFuZCBLZXJu
-ZWwgZW5naW5lZXJpbmcKaHR0cHM6Ly9ib290bGluLmNvbQoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+On 10/10/2025 12:22, Richard GENOUD wrote:
+>>> Signed-off-by: Richard Genoud <richard.genoud@bootlin.com>
+>>> ---
+>>
+>> Confusing order of patches. Driver code cannot depend on DTS.
+>>
+>> See submitting patches in DT. It is VERY explicit about it. Please also
+>> read maintainer soc profile.
+> Indeed, it's quite explicit in
+> Documentation/devicetree/bindings/submitting-patches.rst
+> Sorry for that.
+> 
+> But I don't know what you are referring to as "maintainer soc profile"
+> I guess soc here doesn't stand for system on chip :)
+
+Here:
+
+Documentation/process/maintainer-soc.rst
+
+Best regards,
+Krzysztof
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
