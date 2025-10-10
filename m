@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A63DCCA476
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Oct 2025 08:47:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72F9BCAC5BB
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Oct 2025 08:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fLiithYGzp4g2zSV6K70F/BqVIh3AF/SFVZOCtLEHfQ=; b=zm1LwMFgG0BXm0
-	mfW1Hq7uaLRDoUykzsjpCn5SY4oUdLVvmNd3QwDrKwZAyyLnUAftpium6CbI+kRL+oqsivv6W7Aoz
-	PlnSdGVzF1PGHmF2k6iTtdvlyLXXhpT6xheeADMJPcbPqIxryXeawgaARVKZUJBn14tmCqZPEshJy
-	2cfueBFvcFj9JLx92EDZTzovObqo7nPMg4GOKyQs75BMNhsuVadj/SdHOzxYHumaMMAgh8AcqMdxM
-	2+bFO0jgbIlXR/Mytm6E97fqSeKXDuCVtawMenFLUNb14mRFvs5axn3jFLxA2AzWMfYOkZNL481qP
-	cdXggSDSIeRly7OjnePw==;
+	List-Owner; bh=f7aVmZ0IamugvcXWv4gJH+Pc0jf6WKVVObxODuSJ8Vk=; b=4Fb+ZiWcKhFq2D
+	i4tDt4I8IqH63NvN/zic8e8W0fDhsIkG25BSsNLOCXqQ0E54yLf4kX0b2oPaBcyx6nYeFCWzo9UZb
+	Bh3mJtzvonOJJ2myPCwNBARAhFTNLBsnfGfvjoz6XhsoVlv2v6ii6ZE8h1Tv+ouoW4NmJUUhmbh2h
+	f4wKfKyreVjluQON+3AtcBgqX8na1LnyWc+t5tWeP9T4/NH/f/Imlk3H4crZK1xbuKjKq2IwZ5EPr
+	102JjRNwNghkw9dxeV2WPc/Xt62p5OTKE0dn+dVzrdD64jjwSQNNfsQZRInccSB8L06wxA7UlJP+o
+	o17L9CqD0geAho091yog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v78mh-000000084ur-41Sc;
-	Fri, 10 Oct 2025 08:47:31 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1v78oM-000000085BM-0c44;
+	Fri, 10 Oct 2025 08:49:14 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v78mf-000000084uO-1v3Z;
-	Fri, 10 Oct 2025 08:47:29 +0000
+	id 1v78oJ-000000085Aj-3udK;
+	Fri, 10 Oct 2025 08:49:13 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id DC9BA6254E;
-	Fri, 10 Oct 2025 08:47:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA31DC4CEF8;
-	Fri, 10 Oct 2025 08:47:21 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 17F934328E;
+	Fri, 10 Oct 2025 08:49:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 552BBC4CEF1;
+	Fri, 10 Oct 2025 08:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760086048;
-	bh=5ZjF/edBLuVtifBB9F7s4zV657A7tnM/MJmVoH+vwi0=;
+	s=k20201202; t=1760086150;
+	bh=a0RRr6OOdtVYcLYaZeReQC7vOkfUX13MwvuWF9/B8CU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=V69MybbWHyp/8CMwfh903AwO832Jv2dVCAVJmOvWnLGtlQLM8SwVk+hhO1Fk/h1Fw
-	 aquc6U8M7Uo8MASONl7uaqEp7Sec834nNPWeCcHiHP21VX6zarM55quog7iKRLIdK9
-	 hUAbZDunj2rQLmgrVu9sU2xH54CGA6EYLXiNaYHcThVp3jtsSexk5gl+tdS2HLBOab
-	 d1/O9nksvbP2cpHW3pJyqRmsNubKnt0pHL7jHP33uJm+oADjAK9H5cFmsS2cc+tdh9
-	 8y9eY4jDMS5TxtwxCWNyIvdXWn7aIO8u79+EoZaW1xDKPkMcYaCeAxh5dZ947L+4II
-	 o3fLz76yNcJ3w==
-Message-ID: <82bcd40f-7e94-43ca-99c9-234458011b9b@kernel.org>
-Date: Fri, 10 Oct 2025 10:47:19 +0200
+	b=gV1PWpU1uqJZj/+si8MbW1bv7yiRllIj9UxLg7JJrkJRaN7hL0KQ+xCLvQKcyXg4A
+	 m7t8CfNFgkdAXb7GgnG8skaN0XbnjSfGpQL/IQ8bQUPkQacjeMK17N1W4bAhwbztcb
+	 KBe30BcfXSye0825Gzv7QUqk63WtkwXRpG4/R/J4gRRiBN03OI3HEBmWJcPbqnvuFL
+	 8hV+f+UHcaZ7edZZhoWKUOkB6sGlWSRPpK8gonDyivR0ZXAMDOvQFGYdAeQ0PE/IZ/
+	 YC9LMWmy+PEW6yVkrzJWrRDF4YQaOkDMqCCmS5pr0eaDsF5camsEGZ/T0zhlozPP2j
+	 KgsOKO/L2l79Q==
+Message-ID: <02864e41-cbf7-42e1-87ba-95bdac6d9e6d@kernel.org>
+Date: Fri, 10 Oct 2025 10:49:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/15] arm64: dts: allwinner: h616: add NAND controller
+Subject: Re: [PATCH 02/15] dt-bindings: mtd: sunxi: Add new compatible
 To: Richard Genoud <richard.genoud@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -61,7 +61,7 @@ Cc: Wentao Liang <vulab@iscas.ac.cn>,
  linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
  linux-kernel@vger.kernel.org
 References: <20251010084042.341224-1-richard.genoud@bootlin.com>
- <20251010084042.341224-4-richard.genoud@bootlin.com>
+ <20251010084042.341224-3-richard.genoud@bootlin.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -107,7 +107,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <20251010084042.341224-4-richard.genoud@bootlin.com>
+In-Reply-To: <20251010084042.341224-3-richard.genoud@bootlin.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251010_014912_036315_83B26E4E 
+X-CRM114-Status: UNSURE (   5.50  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,25 +129,20 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 10/10/2025 10:40, Richard Genoud wrote:
-> The H616 has a NAND controller quite similar to the A10/A23 ones, but
-> with some register differences, more clocks (for ECC and MBUS), more ECC
-> strengths, so this requires a new compatible string.
-> 
-> This patch adds the NAND controller node and pins in the device tree.
+> +
+>  properties:
+>    compatible:
+>      enum:
+>        - allwinner,sun4i-a10-nand
+>        - allwinner,sun8i-a23-nand-controller
+> +      - allwinner,sun50i-h616-nand-controller
 
 
-Please do not use "This commit/patch/change", but imperative mood. See
-longer explanation here:
-https://elixir.bootlin.com/linux/v6.16/source/Documentation/process/submitting-patches.rst#L94
-
-> 
-> Signed-off-by: Richard Genoud <richard.genoud@bootlin.com>
-> ---
-
-Confusing order of patches. Driver code cannot depend on DTS.
-
-See submitting patches in DT. It is VERY explicit about it. Please also
-read maintainer soc profile.
+Also:
+1. missing new line - why did you remove it?
+2. Keep existing sunxi preferred order of entries. In other platforms it
+is alphanumerical, not natural. In case sunxi uses something else, just
+be sure you use sunxi order.
 
 Best regards,
 Krzysztof
