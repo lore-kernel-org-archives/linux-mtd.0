@@ -4,115 +4,157 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F19ECCD184
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Oct 2025 01:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC1B5CCD18C
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Oct 2025 05:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OwE4VK0scwz9zqxDhg8sXWJdX5jW35RrdixiyFfeLmo=; b=XHRqlcP2RMIeu4
-	0riJIaL0aoMJK9DXIURAiVt0KFph6PGonEJAtYshMEwIb+q6EmPasS29smuf2+ElZ4meGbAgPA+Ej
-	/ho6781w5LOXsLjVmlsAIUUTgHQUz0814Bdvw9cVIzEQBEYEcNrsZWxvQ3PLHZ82NGj8qdlx2Fv84
-	ArXpWIOz/qmY4SMhSTTFQ6QZP/F6xK7bBkfc+kcCpT8tq4kX78ipLalp3CqC/O/FDSpsEGWii/S7G
-	NfF+ds7YXFmCO/l0CPpUcKEPYFaCOoZ8F7yA7aFnO9yya+HtSD5PKTr2+E2hbg6GynFywIwqVVzf0
-	rU/8hUVEnh2x/IwGrhiw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JjXi0bv9TMeA3+DHGdWU8UwyLekuq5452bGQHQTgXr0=; b=DaE46v3ktYjTlU
+	kOeq0PQRBhEqrgis8vXHScWgxUjuhU8ezlmfg6eGep2u8XI2XPgAjvLMke05WRCTDMIJFAQYHpQ6/
+	b7z4Pu5DR/Su+c5JY7igG0M8B6fsebQu9WRe1yBAZ9OmeKIH6Zq2xlTKJC4/6Tq2RBYbqjwZx4uZY
+	Q2Sau4HVNTe0PtXo1ZP/UqAn3Ny7/4Nobi2mPaB0rFnu1kQha3nQAGHYvzAWwRYl7OBVNCEdS98vf
+	uUrZhCFR+eWUIZckD8JakaPi1I9ezZxbMLim0/DB0tR0vlpbZ+shHcTDiZqdYJZxeWI5xM5D3Mkd8
+	dafNp/HQQdnwAg6Kt3zA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v874g-0000000C2Lq-3srQ;
-	Mon, 13 Oct 2025 01:10:06 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1v8AwZ-0000000CEXK-45bU;
+	Mon, 13 Oct 2025 05:17:59 +0000
+Received: from mail-westcentralusazlp170100005.outbound.protection.outlook.com ([2a01:111:f403:c112::5] helo=CY7PR03CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v874e-0000000C2LX-1av6
+	id 1v8AwX-0000000CEWa-2lKI
 	for linux-mtd@lists.infradead.org;
-	Mon, 13 Oct 2025 01:10:05 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id C739340309;
-	Mon, 13 Oct 2025 01:10:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EAD3C4CEE7;
-	Mon, 13 Oct 2025 01:09:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760317803;
-	bh=JMhNmZnUKgnOwmM91wAyi7FAc6VRNRL6etkyvIL1mAc=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=TM+/9Ieg49odTu8HZnfRQW1WgR3tJx8ci6LJDFyVgRGG5PIzvwa4rrQfXPDHBd+5t
-	 Jmukbyy1Wjg7Ag2zEoMfrV/n+5ooLNBEYRDjv+NftWAxXZoTO9ACm+xjvpM1MmrsNe
-	 EEabkSlUlo42g6jl+qg9U8ZAqTuqLH7bYctSQS00F1G4QeQGleL4eqg5wYZeYnhAaQ
-	 8DNLTzRzW22MJtbOQnSxy5OgFpWbra4FWc9vzVkSCnYc8SkuA/mnd22Dm7063+ceAj
-	 BkbCaGhB0VYi1wGAACQafF/fY8WrLogHvpkSn9KXrHbbf7LdBmzFjelBMBlVBvBmEm
-	 dlFjP4UFvT1sw==
-Message-ID: <2c153e9b-e05b-472c-8150-355662d58dc5@kernel.org>
-Date: Mon, 13 Oct 2025 03:09:56 +0200
+	Mon, 13 Oct 2025 05:17:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YvGwjc4sUdqv+P8JW7eXYLxKD2mkYXLrHSJJz1DscXvgljzmozn69AcMKHo6Irvmqa6pE9yR312egeqiIxLToMhfGSVALDdKZjvERs1EBzvQ+FJ5vsn8eKde2lQD3CXpYoNijEFpCPwf8rU+4wh1Em8iQW2FZhxLwAPri/TXQZdoJcGUqWTShSAEGWynwaQjTk3/VKTmO5oKO+eN/FMjILT1EBAvEjK80HszVtJiLBIiM9BSeMiPPXptvNXuqo3iGDoIZC/01u4t+eY1Ls/FFq7WyWneKoWzRk9nBMoBnsNwxFQAnzHw0yE4U/awTl7XC1JnZmrWL+a69c+rsDnYBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DJyJYL//yMzmOhh/HJYdGA7CEwVItE+rfmOIFhT3nEs=;
+ b=C+koLQHsLzCbrAou9oZbp3VqdLtSe+eVTpiiUG6lkNwJmCnwGRnE6lbx25zeCyvaJHCTQ+DBR3K+HSYh+mkQHxf+DitqP1D0Z+A0+MdWS/XeX84cou6tBV8jzPpCN5fl0gB9Jq3amXhuTe2/+Kj5LxIgXZijz7Pnu3gnhNJah3r5HCOPTCMajuRwXGbM/0GhlKNzUipr+scmZzqsGpx+o4sxFuzZ/KVWKbZEHhPMTynUdSttmwC0YyvElqnhuexUTQuvWKhKwwPp4/EY5oRWe5RLW1M+EqYREbhiDF/0d5gc74xfmKcfn1CzvVPUbpfikYgp/8T/1p2+z30eDUe+Fw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
+ dkim=pass header.d=altera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DJyJYL//yMzmOhh/HJYdGA7CEwVItE+rfmOIFhT3nEs=;
+ b=BkOhVJi/dykV4zxHiASCehykoF2SSickYiQjer++hr4fxtKWESk//LuUEtwyNWGIq554tTkgo/+ohtCcmxJpfe2v/tgzyumYaNch7idM3nyDgNL5hm3YwJTSAIvFe3leM+8n3wSJjVoP7BWank1Tx4rklUelmYZrpUeepqzeAMKyX+OpinT5hC0mCn/LxMTWTf89ATbZAW+UBrjhuOy/31zrYsKOuJpwZXQ0NPcnxYkgWCfyyXwBWQJXR5d3a1iN1tQc1o5Y2Fdv9Y8Xn3uVBPjunCtESyYW/YusW0LR0GWxplHcx3UYbUhfGmsomneqdqXMz0jXf4iUWcWCZubxxQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=altera.com;
+Received: from MN2PR03MB4927.namprd03.prod.outlook.com (2603:10b6:208:1a8::8)
+ by SJ2PR03MB7450.namprd03.prod.outlook.com (2603:10b6:a03:561::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9203.12; Mon, 13 Oct
+ 2025 05:17:47 +0000
+Received: from MN2PR03MB4927.namprd03.prod.outlook.com
+ ([fe80::bfcb:80f5:254c:c419]) by MN2PR03MB4927.namprd03.prod.outlook.com
+ ([fe80::bfcb:80f5:254c:c419%5]) with mapi id 15.20.9203.009; Mon, 13 Oct 2025
+ 05:17:47 +0000
+From: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
+To: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	dmaengine@vger.kernel.org (open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM),
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-kernel@vger.kernel.org (open list),
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>,
+	linux-mtd@lists.infradead.org (open list:CADENCE NAND DRIVER),
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Khairul Anuar Romli <khairul.anuar.romli@altera.com>,
+	Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
+Subject: [PATCH v2 0/3] Add iommu supports
+Date: Mon, 13 Oct 2025 13:17:35 +0800
+Message-Id: <cover.1760331941.git.khairul.anuar.romli@altera.com>
+X-Mailer: git-send-email 2.35.3
+X-ClientProxiedBy: BY5PR03CA0028.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::38) To MN2PR03MB4927.namprd03.prod.outlook.com
+ (2603:10b6:208:1a8::8)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: mtd: cdns,hp-nfc: Add iommu property
-To: Khairul Anuar Romli <khairul.anuar.romli@altera.com>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Vinod Koul
- <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>,
- "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM"
- <dmaengine@vger.kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Niravkumar L Rabara <niravkumar.l.rabara@intel.com>,
- "open list:CADENCE NAND DRIVER" <linux-mtd@lists.infradead.org>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
-References: <cover.1760316996.git.khairul.anuar.romli@altera.com>
- <7a11eee56abb2cd59df7ab337204d24665539269.1760316996.git.khairul.anuar.romli@altera.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <7a11eee56abb2cd59df7ab337204d24665539269.1760316996.git.khairul.anuar.romli@altera.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR03MB4927:EE_|SJ2PR03MB7450:EE_
+X-MS-Office365-Filtering-Correlation-Id: 530a54cf-d920-47d4-6cda-08de0a17d8a6
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|921020;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?cDQFuuvL1pAL+T5/evw3wmzywULk4Dq3AaVRhPbO/DLXtfGxnDaFKiXZSPaV?=
+ =?us-ascii?Q?DjI/o5dz9y/MiWDS0b4JWql2rYXlA8+QQTLEyg0tjy5Smpu6C8u6m7cjxTki?=
+ =?us-ascii?Q?UzkZz8KEB2v/PzsCJjIEvgMoXfHOZKR1MdLWWW636RT32PT+EsZphfg3K3Be?=
+ =?us-ascii?Q?FWHQVj5+zB+0X+OIADSuLo5wsAPKNyiJJVNbc3hNW8fqL2vnpCZFqbbtqWRs?=
+ =?us-ascii?Q?3b13kjQixrjV4qENV8sDc7oTRRwoceQAxvUHwWzMlao3AVXPZ+Uky/aitAkM?=
+ =?us-ascii?Q?fpJ4+6o+ChFVC5YKE3gisV1Dn/44So7yqnxnovwr9Kb0S6cy8OuGJZu6Omnk?=
+ =?us-ascii?Q?SxN+h9LSsW4EOZzT4ummnuDOjCntM8zM2WU7+2ObajRLRmP1kUyRyox2rMAb?=
+ =?us-ascii?Q?M3761UopFLke/magfb0rn6aRzmf3YlcDDnpFGf5/niKAd3WSPtOA5gNoD2Zc?=
+ =?us-ascii?Q?4rcmEE3f41QjsaI0uzHhoCdmY12miH3JtRXJI50Y61yhYLEA9bylY3c0fc/2?=
+ =?us-ascii?Q?aNSKo1aDjG6cPgZj0E0aDjgdVtaQ1J7RcK50gQALFHti1r7XAIT3no84bkdX?=
+ =?us-ascii?Q?d4hrXFEtN40o/OnWE8DjSETjRBFonU7doN8lNEhYw6cYXmjLATKSrOikYv+s?=
+ =?us-ascii?Q?NtuERbuI4L/2oEPaAPx6CaPP6LrxT/xb+0iFr4DtMgPY0FWvdueyUwHrK8ze?=
+ =?us-ascii?Q?pB7EKS4WMWkoDdirZ96n5FEFw2FIQpB0xiq4NTOWZ3yfRHLkmeYC/XZqP78v?=
+ =?us-ascii?Q?mfyQ6oUfKY5KOXZ+7Q6G440DKqdudmD293WrP4OvxvDdAjHj/H/Ci49tWVPa?=
+ =?us-ascii?Q?DvH68l/MgWSN6ecEwlQBXgYJTuMp7n1JsBF2pd0qqRUKL1TzjflYIyOmnI/t?=
+ =?us-ascii?Q?fERPYyCkSgfHSQ0pzyrlxHfK3gjXQJwDdG1qI05rd9yQDwDFmt2BuQd0+jv/?=
+ =?us-ascii?Q?ZZxQe0of9lPM+t0By4pqi43VtNKlIcqS5Mrq8H4nNWva7ka28OG8Tzow0K1/?=
+ =?us-ascii?Q?C7fkyhcQkeH7ML5wDxgZ41TcQlh0GBOxj20v9NrZoj9PyLX4Wg2bglhLXG8e?=
+ =?us-ascii?Q?cWTbTwuEtRPob1fM0Vw0xZIuq+o7j6hQ17WEWQhUh1xDFWcDj5IxZwThXow9?=
+ =?us-ascii?Q?icgnjEyuF1Rq4FvOIJoXndJZClrSGk3/4PC+kiBK3a5SxgVROEIitWVXmep9?=
+ =?us-ascii?Q?BcXf5YVoxs8QyALxm5iylpj4rusFa6BgH7JMPSt5WNvSKcSTZ99h+OWBrsQI?=
+ =?us-ascii?Q?lkYRlSILhB7asYwOheV58TOhm6HsQh+G8XW/vUHhnJPZtXAaOxeIoWEnOg/m?=
+ =?us-ascii?Q?MrzuGyrHgVZ5UtHT4Z66qHBs2PbcS863R9wQcCBhVg6w03Hg9C+kX1Cdtk+Z?=
+ =?us-ascii?Q?ec01m+A0fyDoljcPNT/h5qf6OeqCTl15l+8urS/Cp3sVDQuaoO2bnGtFp7KV?=
+ =?us-ascii?Q?nUqAlW1u7GFkj+iOIZ+UP//NvXCHfFEYuYVsdnFOeXKkuA5gLlimWHifIKxP?=
+ =?us-ascii?Q?xMEF2WYe/LGBRQk=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR03MB4927.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mUvVGI3iXmJLu+QUfG6WvrPro/CQq2DUzzbmZtyFC8gbXsr2PNAkovzkHYAi?=
+ =?us-ascii?Q?F69ep1oZM3t+NbUCnBLj2+1WUkPkNpizehQ8KipSqCpviU7paPva8gEaLDno?=
+ =?us-ascii?Q?qKIzWhFjK3frGpGUYMeWFaw/bbB9PGxrAgEjU9avc22NOi/i8E1F0k38tjQz?=
+ =?us-ascii?Q?uROe17AMrCaN9YmWPEx/wkQH4s5yho8YTy93z+j8NnuJFacdi8oZe+fsVu/X?=
+ =?us-ascii?Q?4e328iGi3ROAyU0+MhaTnYpyntLYUR1UK4zBC3m/Lb7awLPubQhdQzEp0uTy?=
+ =?us-ascii?Q?BJKmXzB53iYu4gkfMWmeVA6A9iDKGrZrg+qMd6YYYpg14qTUENuA18blGh8C?=
+ =?us-ascii?Q?M7ir9oxMGNSGpRbek3cQN/ayOlmpckd/zeA+h+sZWswBtlxeTOd5SnL8Q9cB?=
+ =?us-ascii?Q?8iE+9H7L+evKKwXE00IeABskc4Pd5QWO69nyeP/ihEQ7aBTdKfv/ey/5lA8W?=
+ =?us-ascii?Q?CWuRZRx4+CF0rVvk+teYH4RpKk+rXP5BlQF96Sn0YQyBaX5MloZ2r1GQx5r0?=
+ =?us-ascii?Q?/GmNqeznaIJMr1bVAIMF8k8/iiIeHCMxEvOQ2xSbFmiuLcqj7wL8WIlzRG30?=
+ =?us-ascii?Q?OijLVgBvB2Y3SjatI0/6vyp2eUuKgbIhifXqJgwOj0CD2bO/6AwPJSAwHZLy?=
+ =?us-ascii?Q?uzDMhrIz+PuUT3FKQWH0bwQb4b5uKPjYGBSAIgvVYRlgictef/HIXud7D1bN?=
+ =?us-ascii?Q?BQpZ51fI60F0//z+ZEipz6F1WKjLLOsW2JlYnr/TkeVntcOhC3VYYSqyXbWB?=
+ =?us-ascii?Q?En52sEw74SMgPmHps9HOLBdG+PF3FC7x9clHT//ke9qjACh9s4RlnG0SnfVr?=
+ =?us-ascii?Q?BF7JuG9RWgpmmgj2/0lOdt9JZBDQixu/kv3nXupZPx7iCtSkgeUgOxaNiGvV?=
+ =?us-ascii?Q?1wonRG0VWJl4hhtGTwrHNyiq2v88SexMsgR98mr3HwqUpNncR8D/pQVQCkJA?=
+ =?us-ascii?Q?4hFw+2UjmvlahGBwSGmrSIssxiatibCXWAaHJ7Qhyo/gZlgHAPI0/wtuxai7?=
+ =?us-ascii?Q?r7JPTPO1VSbLFKCBhv4n4Os9dUsi2tdJNOwveV9bVubwLU3YZ6JujZZPXtBx?=
+ =?us-ascii?Q?9475gJj1Jb2FhDnwS9k0ExMN7svxeENROL7TRWsOYjZB1iRUzqcjlErYOquW?=
+ =?us-ascii?Q?bYF7Lju4GuuS4mjDInIxgbECaCPfVIDBv6lm+3aIPBLson6QkRG3nnF4eONr?=
+ =?us-ascii?Q?Pt/7leqKcBdpc6wy5CYG2x2BjrpTh6H0KOVoN5Uu9sKWZwKKBR8xdVSQajdu?=
+ =?us-ascii?Q?GlP18F1PJbmx1+DPISq0drUcX1MWu6vcl4x7U4TVNgRt+JtlSOrymjIOMnJq?=
+ =?us-ascii?Q?IcLGd8q+zQ9bRwel+nLYBWqvzSXchhqr+olw12e7q21rlgi3ye7X9K9L2G1V?=
+ =?us-ascii?Q?cbYsm1ea7lhauDGfnQnz4C3DB/LJF7R6n3zsKChW2vplO6Rt3sRiLn5PF0ax?=
+ =?us-ascii?Q?eKH3CXfEPmjbUPbHSyfX4ITugPatKHKgdyXLscc9uv8/zL1cok/S3o+vnliT?=
+ =?us-ascii?Q?28aVzB8NnWmnBpGyiFljxcTPEf7B5j5MA+rbnx10bBEeSp3yBLTtcy2NPMBT?=
+ =?us-ascii?Q?ZMzNUqhyf7FMd0WvmEDeFo2+xhUdxRBZmyuRL/ZDfMVIdcJXL2DE9OWBY8NO?=
+ =?us-ascii?Q?Hw=3D=3D?=
+X-OriginatorOrg: altera.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 530a54cf-d920-47d4-6cda-08de0a17d8a6
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR03MB4927.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2025 05:17:47.2517
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Cy36u0xQBd7uzLRNJ3Ej2kFgkNsfeNDg6xMW6D6LC+WASgQ5ZG7Kvy/CEECxe/WSdsaJBZAZFbRsYE6Y1/tCpQmLRUrWibUjsIPci513Kwc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR03MB7450
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251012_181004_504139_77A67AE3 
-X-CRM114-Status: UNSURE (   5.40  )
+X-CRM114-CacheID: sfid-20251012_221757_706420_01937757 
+X-CRM114-Status: UNSURE (   7.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -130,18 +172,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 13/10/2025 03:06, Khairul Anuar Romli wrote:
-> Add iommu as an optional property that can be added to the cdns,hp-nfc
-> compatible node.
+Add iommu property bindings to cadence hp-nfc and synopsis dw-axi-dmac. 
 
+Add smmu node in Agilex5 dts with the iommu bindings added.
 
-We see this from the diff, you said nothing new. Don't describe what the
-patch does, but say why, describe hardware. This message is completely
-redundant and non-informative.
+---
+Changes in v2:
+	- Add more description in the commit message body to clarify device required for this changes.
+---
+Khairul Anuar Romli (3):
+  dt-bindings: mtd: cdns,hp-nfc: Add iommu property
+  dt-bindings: dma: snps,dw-axi-dmac: Add iommu property
+  arm64: dts: socfpga: agilex5: Add SMMU nodes
 
+ .../bindings/dma/snps,dw-axi-dmac.yaml           |  3 +++
+ .../devicetree/bindings/mtd/cdns,hp-nfc.yaml     |  3 +++
+ arch/arm64/boot/dts/intel/socfpga_agilex5.dtsi   | 16 ++++++++++++++++
+ 3 files changed, 22 insertions(+)
 
-Best regards,
-Krzysztof
+-- 
+2.35.3
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
