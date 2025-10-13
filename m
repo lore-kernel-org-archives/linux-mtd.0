@@ -4,105 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40FFDCCD18E
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Oct 2025 16:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FF88CCD183
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Oct 2025 19:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date
-	:From:In-Reply-To:References:MIME-Version:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rJS4DNbClfKV+pEs/hNSdMEe9++HzAHj3s+d0wzRbQ4=; b=ZaUffMWInc9seB
-	lga+H3p3cROgpAi5KQAJKN8vNgxgMb1qy4LQsJ/w5+Zfayws00y7a3AJCUutSElsD2qq0raWijFsu
-	KmmkH/Te0iH21NpnFZF7nRVAIxZ24+wuDgAMF+CMusenJx6AYQParBKgxIQxUn7ywtW3BgQPqI/Q9
-	lbo1Jh4mYif1GdpbYtINYJmaQOJHyt89yhk4YTe69PeVJZ5N8rECe5rrU3Sm9BzzB94vf2IdR8r0j
-	YJiCKuO+O6HhYEIhDLPzBfOrN+6RsZTgGBdQQy+0z/4FQQ55AM+noAl2rnrJB+D0khQXZk6SpEuiv
-	53hdWBrHSgjUgtFtPBIg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=XUB/0DgkPDmJ6+5ptRCt0qeHG7maLx625CnErYt2vfI=; b=ZMCnG5tL7lg5aL73bEw8WMWlqe
+	Qbck4wWeyjuBbrjU6v21Ysku59a93Qfl0GvwGzNO34kOqNRzzVbd/Tzx/XNX3qmBbnS0QaMciZrOK
+	VwnstlXC2NOkVBNdoE5g+TM+x/ttSOhadSopLZPcPBq09JFSTNrM2YAFeT5vLm84bhk21hRAxlwDK
+	eMi2cChS4HMZuBH26gY6itjsGAq/rwJIrtoRm7eB5ji3UjkcAK181Alz8ZuRQYtxBo2zMRXvRLqGF
+	fUQep0uK2Nqwb9VZTvO9qj9xv93+8Xj+HM1mY4wUf3mSuryRiGj47S9d1jCXgWafXerRW1nPiS5b8
+	badpPGiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8KyE-0000000DmiM-0FmF;
-	Mon, 13 Oct 2025 16:00:22 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1v8OTZ-0000000EJbZ-0Lhg;
+	Mon, 13 Oct 2025 19:44:57 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8KyC-0000000Dmhi-45gY
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 13 Oct 2025 16:00:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Cc:To:Subject:Message-ID:Date:From:Reply-To:In-Reply-To:References:
-	MIME-Version:Sender:Content-ID:Content-Description;
-	bh=+UssLPOno9XWeKCQGJZY3GRGKSjKPPao4Ev4zfFKhM8=; b=VXnuG+uEOGxEzZSu9ZN/+OSsRG
-	+8Rjn0l4QH9pbdhuWT3RY334dXUjSTkfQBj7Vy1Dgk/6bVRbpSh7jSITgfEHgW9NkVtnC8s3c3wju
-	2aygmlfle2p+XeKa5YyUTwL23pSPvH122Ek0rL8OkSwFIRMl7KoKhqkEHXAsnDtL0RCAnSukO3aBF
-	LU/9sv62TL0oh1b7HKw1QWmMhcvdtkadlaF5WjdqM5YxcezDwNbKnB2xJS9Zy+iHRCldf3EeQdPG0
-	5qJlXvJioJxggiK7hhFAYvguLDWLXWmjjcNTX33gvwg78XGlYCnJpxosC71iJbeG7lYd08pAjEKh+
-	LqKumJsQ==;
-Received: from mail-lj1-f170.google.com ([209.85.208.170])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8Ky7-00000004Rm8-3dKg
-	for linux-mtd@lists.infradead.org;
-	Mon, 13 Oct 2025 16:00:18 +0000
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-367874aeeacso46544351fa.1
-        for <linux-mtd@lists.infradead.org>; Mon, 13 Oct 2025 09:00:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760371211; x=1760976011;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+UssLPOno9XWeKCQGJZY3GRGKSjKPPao4Ev4zfFKhM8=;
-        b=tVka18ffzrsrYYhr4Rb9pgEDZa3NGA8jlPsO+EL6/xJycqPd+5BwN0zGzPY6eUGL3T
-         mI2U0bhvO6Ok0u69cBH1XS0HxLbqmgn/UJVgldFyhbiTzpEFE+0fPYneLyuVSVMSQFVB
-         1b6DkI823zlrE2UWy/IEwhct/SHb7hCqY+Ebq6mh8Agf5RMVcFKL23sSrldJd7I/EDZk
-         t0EhiMgxl2Lz7ab0Qi7cMtKcrpxXBumhAnZX+6QFF7yClcB4s4TLfuVY9NWrXvauqwYM
-         Rrb81+ASr7zaCi8HZw0fwCOX/KyJHLV4aVgxCQqHWPM/JqXrQk1LV0df8I7lNSCJSrC3
-         Tr4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXMH5rakUxPvTZ8w7eXH7pUDlLo6g/ch4lUVlZaKFDbdqXU8JmIsMWlXi2+IIzRkeGMhtluE2MEYec=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz35lIsVUzQulAX4tDBw/auszjETTO/SNT80/5cpnX/chuBKqod
-	hlGvP3B2pGeEPDRtljHkEJziScJzqNz3o8lKC6g7GrRYtWn5RhWwm3VjVvwZ6XVt
-X-Gm-Gg: ASbGnctxk8vKHLrLiZiAAbC5zPeAfxyJSWozXHQh6ca2ugy4NgKedDTU2n4ovMC/cQp
-	XlzlnThenk0YIqE1B0M2bf0uTixc4o0UJ3OQK8fDBnreYy8eQoL2znk2GpK/9V+YPZy4H2Da+CX
-	U53tj0IIyWtWY0UATEGpeVjMiy/bl2Ijl2/SknQunmylh/xoGBepG51yzSMNoxz9PK58DS1xsdj
-	Elo9KzEyT3Dtz4u3ro6AxjCrbkOO7MzUcXN1Ap47vAlj8EfptIT8UnE5b5uhuGPdu++iKsDqdvt
-	XCEDIsO1zIeLmudr7ZXMDMNc39MBVAzvD1qGZWg5AhLZNs/FPiE7IAfoUpTCEvOw8qQOImB3Dto
-	IMwg9u4w329RJ7db2qSNHQLbyOd3elie/G2JZj1Sgpiq4XdX0d0Xh0J/k1DLIV79nFpyfJvRVVg
-	==
-X-Google-Smtp-Source: AGHT+IF+SJUJOJXLgwb6yMHjVj8+/QeJWQAjmbwaDJZS0hMbw1pU2duFYlN902XLiWLlxtSrz5L8Pw==
-X-Received: by 2002:a2e:bc14:0:b0:36e:f1ae:d4bc with SMTP id 38308e7fff4ca-37609d78cd1mr48064541fa.14.1760371210973;
-        Mon, 13 Oct 2025 09:00:10 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3762eb6a963sm31676211fa.57.2025.10.13.09.00.10
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Oct 2025 09:00:10 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-3612c38b902so39456791fa.2
-        for <linux-mtd@lists.infradead.org>; Mon, 13 Oct 2025 09:00:10 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX8CD7tQgXNvmPwjtJ6PtVKUUMCCrxFLJb0leIyxjE7kHGzLY+9N41johH3ydZHm+759vwzt6NLapg=@lists.infradead.org
-X-Received: by 2002:a05:6512:3e0e:b0:55f:71ad:590f with SMTP id
- 2adb3069b0e04-5906daea8f6mr6270458e87.53.1760370875744; Mon, 13 Oct 2025
- 08:54:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20251013152645.1119308-1-richard.genoud@bootlin.com> <20251013152645.1119308-3-richard.genoud@bootlin.com>
-In-Reply-To: <20251013152645.1119308-3-richard.genoud@bootlin.com>
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 13 Oct 2025 23:54:22 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66nojdOfU5oDOCTDummqpcXYuu5665MKJRee2-QfhS36A@mail.gmail.com>
-X-Gm-Features: AS18NWDKdIBd1rTcxTVsXd-_vXNa-9kC6YbGbqd54hyWKYs7fg_lZoQPdbhPU9g
-Message-ID: <CAGb2v66nojdOfU5oDOCTDummqpcXYuu5665MKJRee2-QfhS36A@mail.gmail.com>
-Subject: Re: [PATCH v2 02/15] mtd: rawnand: sunxi: move ECC strenghts in sunxi_nfc_caps
+	id 1v8OTV-0000000EJaa-35n4;
+	Mon, 13 Oct 2025 19:44:53 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id EE7D360503;
+	Mon, 13 Oct 2025 19:44:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1C21C4CEFE;
+	Mon, 13 Oct 2025 19:44:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760384692;
+	bh=E6/pf/UHO5d8TA7le9I1V6YxxiNG8tLSd+VRH9o46Yo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=id2g8kpeBR5QwQ6e0kXWljvUjTPSpyKdsb8J1BeAPFmyzUOGXSq6fs4e34eWqemi0
+	 pED7RGJj7jmCfeuzJqxoaBGNiMrbw0JjlmQnGKfFg8fL4WoW5OjHCeKpmgka7jlVW0
+	 Zlo6mcresiBg4OWQNhLXjIQ8SBWRX7eNTqA4gYRfgabt8CGCmRe8o+jV410mN8T3x2
+	 KvctzSks6htq+3ZSw7K6mbTxlKBUY7/eKaICyrtXfSqxit5K5qCMngjJBv8e1tPBOk
+	 qiRtX43mzj80iJqBWR1WdEqjgXUih6KELbeoiU4CqrjjFOWctVZV14jHDaT6Le/yIA
+	 FxtB/0qGW3BEQ==
+Date: Mon, 13 Oct 2025 20:44:46 +0100
+From: Conor Dooley <conor@kernel.org>
 To: Richard Genoud <richard.genoud@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@baylibre.com>, 
-	Wentao Liang <vulab@iscas.ac.cn>, Johan Hovold <johan@kernel.org>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251013_170016_265550_033B9AF4 
-X-CRM114-Status: UNSURE (   8.99  )
-X-CRM114-Notice: Please train this message.
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>,
+	Wentao Liang <vulab@iscas.ac.cn>, Johan Hovold <johan@kernel.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 14/15] dt-bindings: mtd: sunxi: Add H616 compatible
+Message-ID: <20251013-parrot-sandpaper-4e31d2d1a6b3@spud>
+References: <20251013152645.1119308-1-richard.genoud@bootlin.com>
+ <20251013152645.1119308-15-richard.genoud@bootlin.com>
+MIME-Version: 1.0
+In-Reply-To: <20251013152645.1119308-15-richard.genoud@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,18 +76,162 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: wens@csie.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1544475470062014232=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBPY3QgMTMsIDIwMjUgYXQgMTE6MjfigK9QTSBSaWNoYXJkIEdlbm91ZAo8cmljaGFy
-ZC5nZW5vdWRAYm9vdGxpbi5jb20+IHdyb3RlOgo+Cj4gSDYvSDYxNiBoYXMgbW9yZSBFQ0Mgc3Ry
-ZW5naHRzIHRoYW4gQTEwL0EyMy4KPgo+IE1vdmUgdGhlIEVDQyBzdHJlbmdodHMgYXJyYXkgdG8g
-c3VueGlfbmZjX2NhcHMgdG8gbWFrZSBpdCByZWFkeSBmb3IKPiBINi9INjE2IHN1cHBvcnQuCj4K
-PiBObyBmdW5jdGlvbmFsIGNoYW5nZS4KPgo+IFNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgR2Vub3Vk
-IDxyaWNoYXJkLmdlbm91ZEBib290bGluLmNvbT4KClJldmlld2VkLWJ5OiBDaGVuLVl1IFRzYWkg
-PHdlbnNAY3NpZS5vcmc+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+--===============1544475470062014232==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5/wzhoHrgV6FnNRe"
+Content-Disposition: inline
+
+
+--5/wzhoHrgV6FnNRe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Oct 13, 2025 at 05:26:44PM +0200, Richard Genoud wrote:
+> The H616 NAND controller is quite different from the A10 and A23 ones,
+> some registers offset changed, and some new one are introduced.
+> Also, the DMA handling is different (it uses chained descriptors)
+>=20
+> So, introduce a new compatible to represent this version of the IP.
+>=20
+> Signed-off-by: Richard Genoud <richard.genoud@bootlin.com>
+> ---
+>  .../mtd/allwinner,sun4i-a10-nand.yaml         | 57 ++++++++++++++++---
+>  1 file changed, 48 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-na=
+nd.yaml b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.ya=
+ml
+> index 054b6b8bf9b9..4b82de9fae17 100644
+> --- a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
+> @@ -6,9 +6,6 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+> =20
+>  title: Allwinner A10 NAND Controller
+> =20
+> -allOf:
+> -  - $ref: nand-controller.yaml
+> -
+>  maintainers:
+>    - Chen-Yu Tsai <wens@csie.org>
+>    - Maxime Ripard <mripard@kernel.org>
+> @@ -18,6 +15,8 @@ properties:
+>      enum:
+>        - allwinner,sun4i-a10-nand
+>        - allwinner,sun8i-a23-nand-controller
+> +      - allwinner,sun50i-h616-nand-controller
+> +
+>    reg:
+>      maxItems: 1
+> =20
+> @@ -25,14 +24,12 @@ properties:
+>      maxItems: 1
+> =20
+>    clocks:
+> -    items:
+> -      - description: Bus Clock
+> -      - description: Module Clock
+> +    minItems: 2
+> +    maxItems: 4
+> =20
+>    clock-names:
+> -    items:
+> -      - const: ahb
+> -      - const: mod
+> +    minItems: 2
+> +    maxItems: 4
+
+The clock descriptions and names should remain out here, with your new
+min/max constraints, since they're identical at indices 0 and 1 to for
+both types of device. The if/then should only set the min to 4 for the
+new device and the max to 2 for the existing ones.
+
+Cheers,
+Conor.
+
+pw-bot: changes-requested
+
+> =20
+>    resets:
+>      maxItems: 1
+> @@ -85,6 +82,48 @@ required:
+> =20
+>  unevaluatedProperties: false
+> =20
+> +allOf:
+> +  - $ref: nand-controller.yaml
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - allwinner,sun4i-a10-nand
+> +              - allwinner,sun8i-a23-nand-controller
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: Bus Clock
+> +            - description: Module Clock
+> +        clock-names:
+> +          items:
+> +            - const: ahb
+> +            - const: mod
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - allwinner,sun50i-h616-nand-controller
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: Bus Clock
+> +            - description: Module Clock
+> +            - description: ECC Clock
+> +            - description: MBus Clock
+> +        clock-names:
+> +          items:
+> +            - const: ahb
+> +            - const: mod
+> +            - const: ecc
+> +            - const: mbus
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/arm-gic.h>
+
+--5/wzhoHrgV6FnNRe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaO1WrgAKCRB4tDGHoIJi
+0r4LAQDT8m+TkP4HrMMysI/Hu7Y+VtRgvMLmFVew9qCn3J+QbAD7BhGtjw9fUtP4
+VHnuq+fhXnIRGUy0ntVx+tS+PGfOtgI=
+=gy6j
+-----END PGP SIGNATURE-----
+
+--5/wzhoHrgV6FnNRe--
+
+
+--===============1544475470062014232==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1544475470062014232==--
+
