@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 106DECCD199
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Oct 2025 06:06:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CEBECCD195
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Oct 2025 06:44:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=UsmLqZPe8eHeVEj74ATkT4jHMuMIO4NPhMZ1s9OkMBM=; b=TjYxRjzhXWOFIp
-	y4RPdmMZwjcFWlD7WOzWlT5iIHRv9zD4QUFhv3lcctEpZ+q/5X77ytjWGqcGtSxvf7xrOry6H5dyy
-	RcyGCDe4nESeI/3JuLyEdF/U0psmCn4j9F5rxZvaQjSrmqjsJA1XOGTSPa74zw7t1JFKrHPxdst1u
-	woSdDrtWoVxNftmyHU4AYArRla9gZ4Vkvl0aY0zDSlA29ThQb6blu5k8ToH6StKlkGK77R4atbAZt
-	XokitHf7tp592xyogWz8RXZ4bz6yokhVwDaxL78slTma89Yh0haP8ZXYV2TUpc00IPIOWb2fDE8t6
-	IdJPfRltwvetMH8ZhupA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=v+lV/PT6tjSCUNhMp5q2HliveQibgo79OvtMwfIZqIQ=; b=0DmePZUUdUJI2eUD9s2iqfSb1Y
+	LnMN9cFGpJVrQrVtub7jG61faAuzY9O8TLhbDgVJLx/dCNtKvoVSWyo2d30bWouRTNCmBVROK3REY
+	6JUKDpFlXbh8z2H8+7kj8ZyLCSOqFmiv1LB/mTiGCJdeIQrJ80ocYK3VNQFtZVXxZwyx9rz+VuraG
+	ekx4FLvcseKo5EMV0CRZuj0B+7Q5IprrmUI7Lt/7uosCNIHuyUsRpIlnbObBvJeVyu7DCBWCMaUWY
+	vmaJ95kyI2rwta9ELjqeA6vibzr2UMJNvIh9b6hQG/9f4emf7c4GT2EPM/6Ppdx9Xu7mbfiAO49+B
+	58OfU//g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9dbB-00000006gvb-0zps;
-	Fri, 17 Oct 2025 06:05:57 +0000
-Received: from mail.sinic.eu ([168.119.168.44])
+	id 1v9eCT-00000006pKC-0rs6;
+	Fri, 17 Oct 2025 06:44:29 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9db8-00000006gsE-2PV3;
-	Fri, 17 Oct 2025 06:05:56 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A9DE33F16A;
-	Fri, 17 Oct 2025 08:05:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sinic.eu; s=dkim;
-	t=1760681145; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=EocX1a7XiC78SMAYfzWXkhpGeubPEEt2A4XDo0VaZcA=;
-	b=Hw3uwCPs1UQdiaNMQhs1zky1zGH48CNcvQN0aGRsmpFukdSlNUX9Chfw2F1215QZmmVtkR
-	EJILPv0rZPGdui26N3lEF/xJ3Pga+Pp9m3bGBVqPwQqXPXRbKnsmH3oxaoFeflzAGJ484q
-	+HIUtz1coJTBXF6nX2+k3qoL/MJSTRJqLF6rPxm6+8aVhzWTi1eJ8r3JfaK34ZXBIe7eFT
-	v/54CbUf8SyI+SZ7rJF3DRTbDbSr3vOcOJJlU6c4lheo52kCQCZJxqBCGtm8Zyiyh1oHMy
-	33My9i3B5tnzl4UfPxCpS59vp6FpXtyhn+gyjpQkC+NOUtBjXLCnsuw+YpaubQ==
-From: Simon Richter <simon@sinic.eu>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Marcus Folkesson <marcus.folkesson@gmail.com>,
-	Simon Richter <simon@sinic.eu>
-Subject: [PATCH] mtd: spi-nor: atmel: add at25dn011
-Date: Fri, 17 Oct 2025 08:05:29 +0200
-Message-ID: <20251017060529.21169-1-simon@sinic.eu>
-X-Mailer: git-send-email 2.51.0
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+	id 1v9eCO-00000006pIr-2Kmy;
+	Fri, 17 Oct 2025 06:44:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 96EAF44D06;
+	Fri, 17 Oct 2025 06:44:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0A2FC4CEF9;
+	Fri, 17 Oct 2025 06:44:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760683463;
+	bh=7P4jh6kluLcdpaCNJenQWmykCB2CsHxYxuiH71O7f8U=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=MwccKLcYN/pX/zuOJmFiMxLkdXV91iDq/NMuWvu79+cX6Urmuqgrq3fyqMRBYVr3q
+	 AVfb8urT5KUy8SWL1ZemxNKEqyEECzYsk0QQwieDtvUtJx7dcyOWmJohUwTtrmoCtT
+	 FueWx3yXWx5n0coD0oVYd+ZC5Z+yqLxBzhnacTZN49Y3pFUIkHyMbtzUdFacaTRAWM
+	 2OOtm0nhgIWXaoD31QaON754lNuzQFBMdySQr/gK0o60bHTgX7MXinI33Bxs3Razdw
+	 B4IpHyXDtqSjuDf9fc/NcK3xod9LEjUP/V13okNO4riM7r+qWwsU78PuS3paMSsftZ
+	 o33a16Pctc3yA==
+Mime-Version: 1.0
+Date: Fri, 17 Oct 2025 08:44:18 +0200
+Message-Id: <DDKE72QORJS2.29XWZ4U0T0K4I@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: atmel: add at25dn011
+Cc: "Marcus Folkesson" <marcus.folkesson@gmail.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Simon Richter" <simon@sinic.eu>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Nicolas Ferre"
+ <nicolas.ferre@microchip.com>, "Alexandre Belloni"
+ <alexandre.belloni@bootlin.com>, "Claudiu Beznea"
+ <claudiu.beznea@tuxon.dev>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.20.0
+References: <20251017060529.21169-1-simon@sinic.eu>
+In-Reply-To: <20251017060529.21169-1-simon@sinic.eu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251016_230554_775934_1B1F7B6A 
-X-CRM114-Status: UNSURE (   7.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251016_234424_620409_252DAB9B 
+X-CRM114-Status: GOOD (  14.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,40 +72,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7983328783560254956=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add AT25DN011 with 1Mbit.
-Used on multiple custom boards and tested with this patch.
+--===============7983328783560254956==
+Content-Type: multipart/signed;
+ boundary=4fee797e4721044d08e9601b3b5e8700f6c06056cbf5c56b70d2e0a6e636;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Link: https://www.renesas.com/en/document/dst/at25dn011-datasheet?r=1608506
-Signed-off-by: Simon Richter <simon@sinic.eu>
----
- drivers/mtd/spi-nor/atmel.c | 5 +++++
- 1 file changed, 5 insertions(+)
+--4fee797e4721044d08e9601b3b5e8700f6c06056cbf5c56b70d2e0a6e636
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 82c592f0a1e1..0c2908bce0bc 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -171,6 +171,11 @@ static const struct flash_info atmel_nor_parts[] = {
- 		.name = "at45db081d",
- 		.size = SZ_1M,
- 		.no_sfdp_flags = SECT_4K,
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x42, 0x00),
-+		.name = "at25dn011",
-+		.size = SZ_128K,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x42, 0x16),
- 		.name = "at25sl321",
--- 
-2.51.0
+Hi Simon,
 
+On Fri Oct 17, 2025 at 8:05 AM CEST, Simon Richter wrote:
+> Add AT25DN011 with 1Mbit.
+> Used on multiple custom boards and tested with this patch.
+
+Could you add your testing to the next version of your patch (below
+a "---" line). See also [1].
+
+>
+> Link: https://www.renesas.com/en/document/dst/at25dn011-datasheet?r=3D160=
+8506
+
+Newer flash and no SFDP :|
+
+> Signed-off-by: Simon Richter <simon@sinic.eu>
+> ---
+>  drivers/mtd/spi-nor/atmel.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+> index 82c592f0a1e1..0c2908bce0bc 100644
+> --- a/drivers/mtd/spi-nor/atmel.c
+> +++ b/drivers/mtd/spi-nor/atmel.c
+> @@ -171,6 +171,11 @@ static const struct flash_info atmel_nor_parts[] =3D=
+ {
+>  		.name =3D "at45db081d",
+>  		.size =3D SZ_1M,
+>  		.no_sfdp_flags =3D SECT_4K,
+> +	}, {
+> +		.id =3D SNOR_ID(0x1f, 0x42, 0x00),
+> +		.name =3D "at25dn011",
+
+No .name please, the ID is enough. We've deprecated the use of a
+name.
+
+> +		.size =3D SZ_128K,
+> +		.no_sfdp_flags =3D SECT_4K | SPI_NOR_DUAL_READ
+
+missing trailing comma.
+
+-michael
+
+>  	}, {
+>  		.id =3D SNOR_ID(0x1f, 0x42, 0x16),
+>  		.name =3D "at25sl321",
+
+[1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
+
+--4fee797e4721044d08e9601b3b5e8700f6c06056cbf5c56b70d2e0a6e636
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaPHlwxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gmLwF+JiHyu3n9XMBIhiXLnXajztj5wG7/MjHp
+WunFdtYCZ+VyTvOPA/DytJuplHSgtXWHAX42m2HDy4l8RGIG/10nc2uLX0iousfN
+vFX+Y4mQhWsB9wyr8iYxD9fVyGdi8tzbF0w=
+=w87x
+-----END PGP SIGNATURE-----
+
+--4fee797e4721044d08e9601b3b5e8700f6c06056cbf5c56b70d2e0a6e636--
+
+
+--===============7983328783560254956==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7983328783560254956==--
+
