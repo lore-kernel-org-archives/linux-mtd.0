@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FC29CCD199
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Oct 2025 16:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4861CCD183
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Oct 2025 15:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FtMaSlylQw/ASWx/XKDtIw02UyV4fL9t4NRL8ihdeyI=; b=0SVvwW3fFWDyJU
-	g76hdM8aoewAekEJzNqI8fqCZeXVwhnUeoHGRY385scuKh1fI78Fi35WPC6bo5m16B+iMOkB3YsJc
-	OPukRIQ8eKOE+Oh51mT9Ncs7ZIHmNMPTBIXOVB0UGab7Fm8jI01QeScSzd9LkSAtRThzgyaCwSKRC
-	XYAqVLeuST+TS7FtkWn8shlDEBuEoXRYHquNmzdF06xUXLhZMPOSdSmf39RtUCJbHcX3ldPemgA4e
-	G1T61cnZ7ydtxpl6ifxjwKgBnpY9TnzkNcECANBd7RUpQT4PJzuPOxh30ZoZB3nvIMgM21YOaH43m
-	WN4fZdwqem7ihiyD6KRw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Sk8Lh6Pb33dK3+GcR8mLQCwkaiEsKKrG0C+1mKwjS5c=; b=U2JCi57PRk5NDM
+	51QdkH7IJan0LHyFMxB7LpmKuMOdC9LBFHkCWo/ccCpEz85E3yuKtrZEYgRf5qAIjVQk0Q67Y7XlY
+	8fUVupizEqTS32Vf9+iG8bi6VHM1OxptnnSticrjZKidemPa6m8YiVcUgkVa3G8keOEfxvBuZqYKT
+	6zLxs7SSxJBGNCQLyTsO7ZPpCPO/pXNusXswC55Fo6r+i4yBaltbnIfRsCfLISTOfoY7I7mGXFumI
+	O5pgh+TfQ+4KOTLsP3tD3FVu0NIRCOZfyfhj3amPsC63HSf2guPP4KQpMLsIAXZgbNQDrYrVi16pR
+	0+slaYHg0FU5XHU8ryzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9nfs-00000008VCX-2KBo;
-	Fri, 17 Oct 2025 16:51:28 +0000
-Received: from mout-p-201.mailbox.org ([80.241.56.171])
+	id 1vAVD3-0000000B95r-2261;
+	Sun, 19 Oct 2025 15:20:37 +0000
+Received: from mgamail.intel.com ([198.175.65.9])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9nfm-00000008V7S-3yj5
+	id 1vAVCz-0000000B95E-1A0P
 	for linux-mtd@lists.infradead.org;
-	Fri, 17 Oct 2025 16:51:24 +0000
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4cp9ng5HpGz9srJ;
-	Fri, 17 Oct 2025 18:51:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1760719879;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9jIKeB5CQhhRPKbeo1qJepeHkfAJbZnPhMPeHkZf6nQ=;
-	b=BWF3yg54b3Lnhf2AJh2Zr+YdNBLmsxPtolOLfuJYp9ya/vYL4edsOiiP9K5g7R8IwJQz+w
-	banMzejlrNxzfscA1LJQ05ybqG+oBwsO3u0/DMG7XBHXDunU89Bklym7OCizeBoHy8RrWK
-	5/I2sZTJ+7Rhzx0wLb2gT3WQ2tGst1jqtMOoF7hgRu2zO6tnkw0c+/e5UC06ARjGnpfvWl
-	ycSRgOV9gfGzVNUmH9ALoLZWEPL4MFyw26NVaC0t4pSeAKRqCbkRetHJe8TXkqYL/oP7YF
-	IU31I1EXb1dMvcINvSq4XfUb8TTmCESfsLrp/I5E3PjBFwMPWgm7aF4SBEspjA==
-Message-ID: <6426cb80-249b-4ebd-9826-91c87299f7b6@mailbox.org>
-Date: Fri, 17 Oct 2025 18:04:16 +0200
+	Sun, 19 Oct 2025 15:20:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1760887233; x=1792423233;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cNjpz4hZNJmVrvl9B2SFuN3WAlWTG+z2D8+nRo9WN5M=;
+  b=Zxu91mNYU316q9KRPnJRynXVIJDNMxRdW7ZlMWFHwg8hxpvR0HafH7HS
+   E67LQkeLboDh060eudEL8QhDRe2HDCugeKiNoveaq4ngMOiFPu83QSd6h
+   KAO3oBdG9Fmj97DANTDiQ2QPMpGsBYpnJNntzUhZmcAcn5IYZANaaqnMW
+   T6mkcbgOwYHDQ5mmn+6WrRxrvXFzYQYu2CiMzd8ZEHeAZEHMYnxzK55iL
+   NVyKJcMUz9XgqzBVln8DlAF0s3QFtffN+t5vY8aYUClJqtxNQqpbVSpGr
+   zbD9C5tif1+KLsCntauszsXLpTwn9qqwv9p5mXUf2J2Yq1qxawPROX36s
+   A==;
+X-CSE-ConnectionGUID: IDhKfzkGQIaFiZrF2DXBjw==
+X-CSE-MsgGUID: HqucESSaQDuPynBZtAZd2g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11587"; a="85648039"
+X-IronPort-AV: E=Sophos;i="6.19,241,1754982000"; 
+   d="scan'208";a="85648039"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2025 08:20:27 -0700
+X-CSE-ConnectionGUID: kxbWKDMLTxWete2e2BopsA==
+X-CSE-MsgGUID: gBvwE/G4TQy1J3O2OA9rOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,241,1754982000"; 
+   d="scan'208";a="188442116"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2025 08:20:25 -0700
+From: Alexander Usyskin <alexander.usyskin@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Reuven Abliyev <reuven.abliyev@intel.com>,
+	Alexander Usyskin <alexander.usyskin@intel.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>
+Subject: [PATCH] mtd: intel-dg: wake card on operations
+Date: Sun, 19 Oct 2025 18:01:45 +0300
+Message-ID: <20251019150145.3228079-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Subject: Re: [PATCH] mtd: spi-nor: spansion: Add SMPT fixup for S25FS512S
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, linux-mtd@lists.infradead.org,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
- Takahiro Kuwano <tkuw584924@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- Michael Walle <mwalle@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Pratyush Yadav <pratyush@kernel.org>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-renesas-soc@vger.kernel.org
-References: <20240914220859.128540-1-marek.vasut+renesas@mailbox.org>
- <0e0f1195-fd08-4d8b-a247-3c94b5628081@linaro.org>
- <c0cd93b5-4e94-4e4b-9b84-c96e024bcc3e@mailbox.org>
- <ee1d4085-df65-4e77-844f-c49658cd0713@linaro.org>
- <54058c12-3932-4dc1-bc51-6627fb46094a@mailbox.org>
- <7732351b-bf21-423d-bb70-177001cd24b9@linaro.org>
-Content-Language: en-US
-From: Marek Vasut <marek.vasut@mailbox.org>
-In-Reply-To: <7732351b-bf21-423d-bb70-177001cd24b9@linaro.org>
-X-MBO-RS-ID: fd004e20aedda8e2407
-X-MBO-RS-META: 6mzo15prrcdzk15kadqathdwyffz8kmb
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251017_095123_133252_ED9B8277 
-X-CRM114-Status: GOOD (  15.08  )
+X-CRM114-CacheID: sfid-20251019_082033_357557_E8047E6A 
+X-CRM114-Status: GOOD (  16.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,63 +83,206 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/13/25 5:41 PM, Tudor Ambarus wrote:
+Enable runtime PM in mtd driver to notify parent graphics driver
+that whole card should be kept awake while nvm operations are
+performed through this driver.
 
-Hello Tudor,
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+---
+ drivers/mtd/devices/mtd_intel_dg.c | 72 +++++++++++++++++++++++++-----
+ 1 file changed, 60 insertions(+), 12 deletions(-)
 
->>> The "Index Value" shall be the map_id that you passed in the code:
->>> spi_nor_post_smpt_fixups(nor, &map_id);
->>>
->>> Can you please print the map_id value that you obtain without updating it?
->>
->> 0x4
-> 
-> This translates to CR3NV[3] = 1, CR1NV[2] = 0,  CR3NV[1] = 0.
->>
->>> Let's also print the values of CR3NV and CR1NV.
->>
->> Both 0x0 and 0x0 .
-> 
-> But here CR3NV is 0, it contradicts the result from above.
+diff --git a/drivers/mtd/devices/mtd_intel_dg.c b/drivers/mtd/devices/mtd_intel_dg.c
+index b438ee5aacc3..9c8d1405219c 100644
+--- a/drivers/mtd/devices/mtd_intel_dg.c
++++ b/drivers/mtd/devices/mtd_intel_dg.c
+@@ -15,14 +15,18 @@
+ #include <linux/module.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/pm_runtime.h>
+ #include <linux/string.h>
+ #include <linux/slab.h>
+ #include <linux/sizes.h>
+ #include <linux/types.h>
+ 
++#define INTEL_DG_NVM_RPM_TIMEOUT_MS 500
++
+ struct intel_dg_nvm {
+ 	struct kref refcnt;
+ 	struct mtd_info mtd;
++	struct device *dev;
+ 	struct mutex lock; /* region access lock */
+ 	void __iomem *base;
+ 	void __iomem *base2;
+@@ -421,6 +425,8 @@ static int intel_dg_nvm_init(struct intel_dg_nvm *nvm, struct device *device,
+ 	unsigned int i, n;
+ 	int ret;
+ 
++	nvm->dev = device;
++
+ 	/* clean error register, previous errors are ignored */
+ 	idg_nvm_error(nvm);
+ 
+@@ -494,6 +500,7 @@ static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_info *info)
+ 	size_t total_len;
+ 	unsigned int idx;
+ 	ssize_t bytes;
++	int ret = 0;
+ 	loff_t from;
+ 	size_t len;
+ 	u8 region;
+@@ -512,20 +519,28 @@ static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_info *info)
+ 	total_len = info->len;
+ 	addr = info->addr;
+ 
++	ret = pm_runtime_resume_and_get(nvm->dev);
++	if (ret < 0) {
++		dev_err(&mtd->dev, "rpm: get failed %d\n", ret);
++		return ret;
++	}
++
+ 	guard(mutex)(&nvm->lock);
+ 
+ 	while (total_len > 0) {
+ 		if (!IS_ALIGNED(addr, SZ_4K) || !IS_ALIGNED(total_len, SZ_4K)) {
+ 			dev_err(&mtd->dev, "unaligned erase %llx %zx\n", addr, total_len);
+ 			info->fail_addr = addr;
+-			return -ERANGE;
++			ret = -ERANGE;
++			break;
+ 		}
+ 
+ 		idx = idg_nvm_get_region(nvm, addr);
+ 		if (idx >= nvm->nregions) {
+ 			dev_err(&mtd->dev, "out of range");
+ 			info->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+-			return -ERANGE;
++			ret = -ERANGE;
++			break;
+ 		}
+ 
+ 		from = addr - nvm->regions[idx].offset;
+@@ -541,14 +556,17 @@ static int intel_dg_mtd_erase(struct mtd_info *mtd, struct erase_info *info)
+ 		if (bytes < 0) {
+ 			dev_dbg(&mtd->dev, "erase failed with %zd\n", bytes);
+ 			info->fail_addr += nvm->regions[idx].offset;
+-			return bytes;
++			ret = bytes;
++			break;
+ 		}
+ 
+ 		addr += len;
+ 		total_len -= len;
+ 	}
+ 
+-	return 0;
++	pm_runtime_mark_last_busy(nvm->dev);
++	pm_runtime_put_autosuspend(nvm->dev);
++	return ret;
+ }
+ 
+ static int intel_dg_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+@@ -577,17 +595,25 @@ static int intel_dg_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (len > nvm->regions[idx].size - from)
+ 		len = nvm->regions[idx].size - from;
+ 
++	ret = pm_runtime_resume_and_get(nvm->dev);
++	if (ret < 0) {
++		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
++		return ret;
++	}
++
+ 	guard(mutex)(&nvm->lock);
+ 
+ 	ret = idg_read(nvm, region, from, len, buf);
+ 	if (ret < 0) {
+ 		dev_dbg(&mtd->dev, "read failed with %zd\n", ret);
+-		return ret;
++	} else {
++		*retlen = ret;
++		ret = 0;
+ 	}
+ 
+-	*retlen = ret;
+-
+-	return 0;
++	pm_runtime_mark_last_busy(nvm->dev);
++	pm_runtime_put_autosuspend(nvm->dev);
++	return ret;
+ }
+ 
+ static int intel_dg_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -616,17 +642,25 @@ static int intel_dg_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (len > nvm->regions[idx].size - to)
+ 		len = nvm->regions[idx].size - to;
+ 
++	ret = pm_runtime_resume_and_get(nvm->dev);
++	if (ret < 0) {
++		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
++		return ret;
++	}
++
+ 	guard(mutex)(&nvm->lock);
+ 
+ 	ret = idg_write(nvm, region, to, len, buf);
+ 	if (ret < 0) {
+ 		dev_dbg(&mtd->dev, "write failed with %zd\n", ret);
+-		return ret;
++	} else {
++		*retlen = ret;
++		ret = 0;
+ 	}
+ 
+-	*retlen = ret;
+-
+-	return 0;
++	pm_runtime_mark_last_busy(nvm->dev);
++	pm_runtime_put_autosuspend(nvm->dev);
++	return ret;
+ }
+ 
+ static void intel_dg_nvm_release(struct kref *kref)
+@@ -753,6 +787,17 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+ 	}
+ 	nvm->nregions = n; /* in case where kasprintf fail */
+ 
++	devm_pm_runtime_enable(device);
++
++	pm_runtime_set_autosuspend_delay(device, INTEL_DG_NVM_RPM_TIMEOUT_MS);
++	pm_runtime_use_autosuspend(device);
++
++	ret = pm_runtime_resume_and_get(device);
++	if (ret < 0) {
++		dev_err(device, "rpm: get failed %d\n", ret);
++		goto err_norpm;
++	}
++
+ 	nvm->base = devm_ioremap_resource(device, &invm->bar);
+ 	if (IS_ERR(nvm->base)) {
+ 		ret = PTR_ERR(nvm->base);
+@@ -781,9 +826,12 @@ static int intel_dg_mtd_probe(struct auxiliary_device *aux_dev,
+ 
+ 	dev_set_drvdata(&aux_dev->dev, nvm);
+ 
++	pm_runtime_put(device);
+ 	return 0;
+ 
+ err:
++	pm_runtime_put(device);
++err_norpm:
+ 	kref_put(&nvm->refcnt, intel_dg_nvm_release);
+ 	return ret;
+ }
+-- 
+2.43.0
 
-Maybe I messed up and was reading it the wrong way ?
-
-> Maybe it's the same problem that Takahiro identified: the flash needs
-> 8 dummy cycles, but the code uses zero dummy cycles, resulting in
-> reading garbage data, depending on whether your IO lines are pulled up/down
-> or floating.
-> 
-> Can you redo the test with the following please?
-
-Sure, although I saw some further discussion between you and Kuwano-san 
-, is this still applicable ?
-
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index 21727f9a4ac6..85443c903e59 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -752,7 +752,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
->   
->                  read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
->                  nor->addr_nbytes = spi_nor_smpt_addr_nbytes(nor, smpt[i]);
-> -               nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
-> +               nor->read_dummy = 8;
->                  nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
->                  addr = smpt[i + 1];
->   
-> @@ -767,6 +767,8 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
->                   * Configuration that is currently in use.
->                   */
->                  map_id = map_id << 1 | !!(*buf & read_data_mask);
-> +               dev_err(nor->dev, "i = %d, buf = %02x, map_id = %02x\n",
-> +                       i, buf[0], map_id);
->          }
-Sorry for the late reply.
 
 ______________________________________________________
 Linux MTD discussion mailing list
