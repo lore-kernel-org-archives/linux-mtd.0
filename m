@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEA44CCD199
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Oct 2025 12:53:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D963BCCD1A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Oct 2025 15:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qWdZ3Uifs8WV9uRbaTY+HqyM3kc3xwy5XN6wbss+xkg=; b=qrCOwinVE5LmwL
-	9j13Juv0wXjExl+nQqkvWNq1k7Na0tB8Z9uBVxGjNHG3B5emkQIAFQpipHrp8IedpkKnX4Bdu5Rq9
-	B4Im8lTLZa0/i+gG3pji2OOEMa7NzhfFN4ZO2smu3Zua6Piwcs3FE4MhgIEdapgXNLJmB7QB9PPNZ
-	Lr9ZSJx4bG7BI1YxMjyrfV0i9fsWaXGHy/FAKUgVz5hUkiEUlYRfdKtnOo6RFfV4CdVa0Ur/Nmvg2
-	ZHbuwNYAgyERCPKsXfTy+JlQVT/RfX8Ivq4VelwWC3BerHoonei6EY8N/vcxXZS1kn7/aOH+bN5Dt
-	OqdqvssJWeFN4HFNF5Cg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ZKPeSsg1VsDlpXik7Y1ITnvlkSUGRuvGYy28xgqDCJs=; b=wAdTbZLncVvK/GLTq90rgJ60mp
+	wWgUxkhajjDriOrozN7rFegfPSsUC8aIrTaiOY3k7+JOiFgqUKjD5lHLH2g4PpzpIgafjHU7W/vYC
+	fDQQNCOUYWsiBhJQkPfB+GQO6hSA7JOhZiYJnNXz2pbto6onAUdIJBX48t/Gp0xX1X8FAQVwiUyzh
+	xqhhpPdmTnJlfc5Hk/hPAksmeBH4RUpA06F8amzZJPsodPom8dCuUuzFgCZFVnIRxxfg+j6+TQGmd
+	QQdXMtWWZnqtSVBsuRTg+guoPF6Mtb5puSJRNm6UBQcsK8QdnYpbD0kCK98vciiaHKbCgcOwLHvG8
+	mSVM+PIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vApOY-0000000DeRA-3BAA;
-	Mon, 20 Oct 2025 12:53:50 +0000
-Received: from mailgw.kylinos.cn ([124.126.103.232])
+	id 1vAriv-0000000E6ho-27eU;
+	Mon, 20 Oct 2025 15:23:01 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vApOW-0000000DeOE-02iT
+	id 1vAris-0000000E6hU-2yRq
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Oct 2025 12:53:49 +0000
-X-UUID: cb4c0f12adb311f0a38c85956e01ac42-20251020
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:f910d0c3-7f34-48e6-b4ec-4a4fdabd0173,IP:0,UR
-	L:0,TC:0,Content:-5,EDM:25,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:20
-X-CID-META: VersionHash:a9d874c,CLOUDID:54cfd040c6b2de2905d497e7cb8a6c40,BulkI
-	D:nil,BulkQuantity:0,Recheck:0,SF:102|850,TC:nil,Content:0|50,EDM:5,IP:nil
-	,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:
-	1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: cb4c0f12adb311f0a38c85956e01ac42-20251020
-X-User: liqiang01@kylinos.cn
-Received: from localhost.localdomain [(10.44.16.150)] by mailgw.kylinos.cn
-	(envelope-from <liqiang01@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 813802747; Mon, 20 Oct 2025 20:53:36 +0800
-From: Li Qiang <liqiang01@kylinos.cn>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Li Qiang <liqiang01@kylinos.cn>
-Subject: [PATCH] mtd: rawnand: realtek: Make rtl_ecc_engine_ops const
-Date: Mon, 20 Oct 2025 20:53:33 +0800
-Message-Id: <20251020125333.3400488-1-liqiang01@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	Mon, 20 Oct 2025 15:22:58 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 0B0E761FE2;
+	Mon, 20 Oct 2025 15:22:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A271BC4CEF9;
+	Mon, 20 Oct 2025 15:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760973777;
+	bh=pkWCRgKje8+lMG6BeJd66Pm/J7E6gx/JTrAJgsFBx7k=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=d3QB9lk6p0NS7pcoM9t04x8GFUc9pFinspU4yAdGjmtuQtrnznIbNiSapRH7IUGdC
+	 4wSO4RDhLJHA+h8zyvb/hTBZifUD5oU/9iAOf4iv+m1stMym3MB+zSiADAbD4RDw1z
+	 do0hC+SSRhh9iYSuQgcwZaD1bvV3M1iljTXbVbyLfk6eJV+z6EDbwwW3IFXGbTb3dg
+	 EYziadNUZwTpGwFp6B4TQBo7ShqEZzU5oAdyI39RDZFJsVytgCc9BkoiKE43zbAOBX
+	 Duc1gVD0h0y/l2mZWcX/w+0Cr2kiQgpyJfYN+BoP6AA8PmpZ2yCgjBtd0IW32kR8b4
+	 RZFKSrF5KQPoQ==
+Message-ID: <6b9528bb-feee-4c6f-8d93-3bda1c4f7e96@kernel.org>
+Date: Mon, 20 Oct 2025 10:22:55 -0500
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251020_055348_348759_DDE078CA 
-X-CRM114-Status: UNSURE (   8.76  )
-X-CRM114-Notice: Please train this message.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] Add iommu supports
+To: Khairul Anuar Romli <khairul.anuar.romli@altera.com>,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Vinod Koul
+ <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>,
+ "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM"
+ <dmaengine@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Niravkumar L Rabara <niravkumar.l.rabara@intel.com>,
+ "open list:CADENCE NAND DRIVER" <linux-mtd@lists.infradead.org>,
+ Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
+References: <cover.1760486497.git.khairul.anuar.romli@altera.com>
+Content-Language: en-US
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <cover.1760486497.git.khairul.anuar.romli@altera.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,38 +76,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The rtl_ecc_engine_ops structure is only used to provide a set of
-callback functions and is never modified after initialization.
-Mark it as const so it can be placed in the read-only section, which
-improves safety and allows better compiler optimization.
-
-Signed-off-by: Li Qiang <liqiang01@kylinos.cn>
----
- drivers/mtd/nand/ecc-realtek.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/ecc-realtek.c b/drivers/mtd/nand/ecc-realtek.c
-index 7d718934c909..32da4c15fbe9 100644
---- a/drivers/mtd/nand/ecc-realtek.c
-+++ b/drivers/mtd/nand/ecc-realtek.c
-@@ -380,7 +380,7 @@ static void rtl_ecc_cleanup_ctx(struct nand_device *nand)
- 		nand_ecc_cleanup_req_tweaking(&ctx->req_ctx);
- }
- 
--static struct nand_ecc_engine_ops rtl_ecc_engine_ops = {
-+static const struct nand_ecc_engine_ops rtl_ecc_engine_ops = {
- 	.init_ctx = rtl_ecc_init_ctx,
- 	.cleanup_ctx = rtl_ecc_cleanup_ctx,
- 	.prepare_io_req = rtl_ecc_prepare_io_req,
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAxMC8xNC8yNSAxOToxMywgS2hhaXJ1bCBBbnVhciBSb21saSB3cm90ZToKPiBUaGlzIHBh
+dGNoIHNlcmllcyBhZGRzIElPTU1VIHN1cHBvcnQgZm9yIHRoZSBBZ2lsZXg1IHBsYXRmb3JtIGJ5
+Ogo+IAo+IC0gVXBkYXRpbmcgdGhlIGRldmljZSB0cmVlIGJpbmRpbmdzIGZvcjoKPiAgICAtIENh
+ZGVuY2UgSFAgTkFORCBjb250cm9sbGVyIChgY2RucyxocC1uZmNgKQo+ICAgIC0gU3lub3BzeXMg
+RGVzaWduV2FyZSBBWEkgRE1BIGNvbnRyb2xsZXIgKGBzbnBzLGR3LWF4aS1kbWFjYCkKPiAgICB0
+byBhY2NlcHQgdGhlIGBpb21tdXNgIHByb3BlcnR5Lgo+IAo+IC0gQWRkaW5nIHRoZSBTTU1VIChT
+eXN0ZW0gTWVtb3J5IE1hbmFnZW1lbnQgVW5pdCkgbm9kZSB0byB0aGUgQWdpbGV4NQo+ICAgIGRl
+dmljZSB0cmVlIGFuZCB3aXJpbmcgdXAgdGhlIElPTU1VIHByb3BlcnRpZXMgdG8gdGhlIHN1cHBv
+cnRlZAo+ICAgIHBlcmlwaGVyYWxzOgo+ICAgIC0gTkFORCBjb250cm9sbGVyCj4gICAgLSBETUEg
+Y29udHJvbGxlcgo+ICAgIC0gU1BJIGNvbnRyb2xsZXIKPiAKPiBUaGUgQWdpbGV4NSBTb0MgaW5j
+bHVkZXMgYW4gQVJNIFNNTVUgdjMgd2l0aCBkZWRpY2F0ZWQgVHJhbnNsYXRpb24gQnVmZmVyCj4g
+VW5pdHMgKFRCVXMpIGZvciBwZXJpcGhlcmFscy4gVGhlc2UgYWxsb3cgZm9yIGhhcmR3YXJlLWVu
+Zm9yY2VkIERNQQo+IGFkZHJlc3MgdHJhbnNsYXRpb24gYW5kIG1lbW9yeSBpc29sYXRpb24gdXNp
+bmcgdGhlIElPTU1VIGZyYW1ld29yay4KPiAKPiBFbmFibGluZyBJT01NVSBzdXBwb3J0IGVuc3Vy
+ZXMgcHJvcGVyIGludGVncmF0aW9uIG9mIHRoZXNlIGRldmljZXMgaW4KPiB2aXJ0dWFsaXplZCBv
+ciBzZWN1cmUgZW52aXJvbm1lbnRzLCBhbmQgYWxpZ25zIHRoZSBwbGF0Zm9ybSB3aXRoIEFSTeKA
+mXMKPiBhcmNoaXRlY3R1cmFsIHJlcXVpcmVtZW50cy4KPiAKPiAtLS0KPiBDaGFuZ2VzIGluIHYz
+Ogo+IAktIFJlZmluZWQgY29tbWl0IG1lc3NhZ2VzIHdpdGggZGV0YWlsZWQgaGFyZHdhcmUgZGVz
+Y3JpcHRpb25zLgo+IAktIENsYXJpZmllZCB3aGljaCBwZXJpcGhlcmFscyBhcmUgY292ZXJlZCBp
+biB0aGUgRFQgY2hhbmdlcy4KPiBDaGFuZ2VzIGluIHYyOgo+IAktIEFkZCBtb3JlIGRlc2NyaXB0
+aW9uIGluIHRoZSBjb21taXQgbWVzc2FnZSBib2R5IHRvIGNsYXJpZnkKPiAJICBkZXZpY2UgcmVx
+dWlyZWQgZm9yIHRoaXMgY2hhbmdlcy4KPiAtLS0KPiBLaGFpcnVsIEFudWFyIFJvbWxpICgzKToK
+PiAgICBkdC1iaW5kaW5nczogbXRkOiBjZG5zLGhwLW5mYzogQWRkIGlvbW11IHByb3BlcnR5Cj4g
+ICAgZHQtYmluZGluZ3M6IGRtYTogc25wcyxkdy1heGktZG1hYzogQWRkIGlvbW11IHByb3BlcnR5
+Cj4gICAgYXJtNjQ6IGR0czogc29jZnBnYTogYWdpbGV4NTogQWRkIFNNTVUgbm9kZXMKPiAKCkFw
+cGxpZWQhCgpUaGFua3MsCkRpbmgKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
