@@ -4,66 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B484ACCD199
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Oct 2025 10:33:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 494FFCCD199
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Oct 2025 11:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wTzvA7Uvtx59zYLV1aFMbRM0nlj0ldXfBOOb1wbNNBs=; b=yCkc5wjFPfSRLF
-	m4hlBMFziBEIA7NuBeE72+CgobsXDvUKm8aOAc2PqGvZfcolCCT/z/vLeB4r1Rs+th15SbGutdt6Y
-	x47Ck4fmh2KDCqp5Lhrm4h300DS6GqvkkUU6AzheZeXoOvR9yxIfBQOBDUkQR5YsJ3jT9BuEsnEWU
-	tI/LqbldkYMUxGWOmRoiBDjfIM9EQ0o1z7tM/5QLpPPaY1JRF2kJqJS4s/T44UgZxDjV7xaXnBUJZ
-	LQHBYLa67+c25xVaTLA3Kt6WvqxUIawBLpCiNecKkNDw0A/tzI/F8HT/rfL3qVZKolcQLgGqJdc9R
-	/34VCXGVY+9NMmm3WeRw==;
+	List-Owner; bh=Lb4YRzD0x9kklRasvZRwtnHYcJ4QiDZCvuXtM61YCwI=; b=YWgTzKvpUF9m/K
+	QoyJ0zSEvJ9CiswUozR0sbjAi3OHCmhkYEz7EOMc83Ptcmkpg3XglEjbd+mzhnXo5KdimoqOuBRPx
+	Ui/j4UvufqnV3dw7p4iPY8aZnh9W4IHzTsCrViJPEY3Kn0yGm5ySixgTesK6hdPurfdnQlLKgGmQQ
+	KLfcPBHkYYUyuQQl2dlSBbshJmlJB2WB8ngGyHEXgI3RCK/nZG79YleksOfu5nmbo8D2u2+LRFv2M
+	MLHH3jS/dTj7wQLXkEib17A892nF4zEFndV3LsQYyVTGUZNEj/WGMoSu9A6TyPgfx9QVXdWcNh6p9
+	N5gEXfMMVdowoqG6e48A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vAnCW-0000000Cs2c-16uo;
-	Mon, 20 Oct 2025 10:33:16 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vAnlP-0000000D0b0-1jHl;
+	Mon, 20 Oct 2025 11:09:19 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vAnCT-0000000Cs0i-1UGc
+	id 1vAnlN-0000000D0aB-0ozA
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Oct 2025 10:33:14 +0000
+	Mon, 20 Oct 2025 11:09:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 81BD341A4B;
-	Mon, 20 Oct 2025 10:33:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF3F4C4CEF9;
-	Mon, 20 Oct 2025 10:33:11 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id D38D94392D;
+	Mon, 20 Oct 2025 11:09:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C63C4CEF9;
+	Mon, 20 Oct 2025 11:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760956392;
-	bh=wv0DeCgmqpuaHOPBdjyj9Ov9pUIrLxPfa9Z6o8Bnxmc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R5B9NWyFY6Sa8DO2FQY8oGwAMfl213SXg4+DY5w00Ko+pZJdQ7ccqmm5xItLYiMFU
-	 kUkty54l7NF9ve0+aqhFkDTkYzQOG6DrT4yGG1c0/8AmHF+1xdP/piDuNl0e47knb+
-	 RLqlq09htt9H12w2Fcbx9FCvLzFqh4F6E4/cD+zy0zo+f0WBLwgvrhADiH9tqE72PL
-	 L/Fl6Me0ewj3HP+ZYJEAMP5MViExO/x6O6NVClTZdQoZeUVA+4dned4eoGQqmRVLIw
-	 +mar6yzmkN37mXBQWhXC5tdRFAZD4nPOq5kgaEDXM3hBo1bYROpxjLCRUvkKWPOK46
-	 Z/fkhu8667sRg==
-Date: Mon, 20 Oct 2025 12:33:09 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
-Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, 
-	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Niravkumar L Rabara <niravkumar.l.rabara@intel.com>, 
-	"open list:CADENCE NAND DRIVER" <linux-mtd@lists.infradead.org>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: mtd: cdns,hp-nfc: Add iommu property
-Message-ID: <20251020-faithful-gray-nautilus-b9ca71@kuoka>
-References: <cover.1760486497.git.khairul.anuar.romli@altera.com>
- <8f3ebbe7084c8330e9ea05e55b16af1544fa3dd8.1760486497.git.khairul.anuar.romli@altera.com>
+	s=k20201202; t=1760958556;
+	bh=gPhw4C5Mc1mlUVzNZ4fRDu3demukRrEs/UJmD6Ao5tI=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=ojMFcVpoy+tOys+d0AWRkpwO/JL9MoyUKe0mv2dr++BLdJfb/ae3YIrQY+mgJ8Js9
+	 LaTKrbRkGcDzfWD5WgrI8WTc0aQUKBiqFsiN3bvV3nD1XjCW6Wacs7zwwTQjmwCev5
+	 p/yAY0h7AK7bM9tLRpZk+WTHHM1popxBIua+wPVAniQGO3zGUAzL3J48SKYDJQV9NX
+	 SSDQTfC8oPDMqWbbfvTspNOpmHCocGI/+4kxcnuUizl92+YvJvujb8hg1c5Zfa8pMI
+	 Wvu0S8suxbYrfFvM6pZibYFDvYOrwR45VSKlEuFxLLhOyecvGDi04MKSKX7cSjVY/8
+	 Nd4pdPO3SKH+w==
+Message-ID: <66c1ebf0-1f91-4d9f-985f-71535f1e3d01@kernel.org>
+Date: Mon, 20 Oct 2025 13:09:11 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8f3ebbe7084c8330e9ea05e55b16af1544fa3dd8.1760486497.git.khairul.anuar.romli@altera.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: dma: snps,dw-axi-dmac: Add iommu
+ property
+To: Khairul Anuar Romli <khairul.anuar.romli@altera.com>,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Vinod Koul
+ <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>,
+ "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM"
+ <dmaengine@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Niravkumar L Rabara <niravkumar.l.rabara@intel.com>,
+ "open list:CADENCE NAND DRIVER" <linux-mtd@lists.infradead.org>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
+References: <cover.1760486497.git.khairul.anuar.romli@altera.com>
+ <b9bcc7542afae659d01553c5559e28e4f01966b1.1760486497.git.khairul.anuar.romli@altera.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 a/A=
+In-Reply-To: <b9bcc7542afae659d01553c5559e28e4f01966b1.1760486497.git.khairul.anuar.romli@altera.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251020_033313_423956_0DAF334B 
-X-CRM114-Status: GOOD (  17.84  )
+X-CRM114-CacheID: sfid-20251020_040917_278317_BB0F16E7 
+X-CRM114-Status: GOOD (  16.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,46 +130,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 15, 2025 at 08:13:37AM +0800, Khairul Anuar Romli wrote:
-> Agilex5 integrates an ARM SMMU (System Memory Management Unit) with
-> Translation Buffer Units (TBUs) assigned to various peripherals,
-> including the NAND controller.
+On 15/10/2025 02:13, Khairul Anuar Romli wrote:
+> Agilex5 integrates an ARM SMMU v3 (System Memory Management Unit) with
+> dedicated Translation Buffer Units (TBUs) assigned to various peripherals,
+> including the Synopsys DesignWare AXI DMA controller.
 > 
-> The Cadence HP NAND controller ("cdns,hp-nfc") on Agilex5 is behind a
-> TBU connected to the system's SMMUv3. To support this, the controller
-> requires an `iommus` property in the device tree to properly configure
-> address translation through the IOMMU framework.
+> Each TBU handles address translation for its associated device by mapping
+> stream IDs to memory access permissions and virtual-to-physical address
+> mappings via the SMMU core.
 > 
-> Adding the `iommus` property to the binding schema allows the OS
-> to associate the NAND controller with its corresponding SMMU stream ID.
-> This enables:
-> - DMA address translation between the controller and system memory
-> - Memory protection for NAND operations
-> - Proper functioning of the IOMMU framework in secure or virtualized
->   environments
+> The DesignWare AXI DMAC instances on Agilex5 are connected to their
+> respective TBUs. These TBUs forward DMA transactions from the controller
+> through the SMMU, enabling IOMMU-based features such as:
+> - Address translation for DMA operations
+> - Isolation and protection of memory regions accessed by the DMA controller
+> - Support for secure and virtualized environments through enforced access
+>   control
 > 
-> This change documents the IOMMU integration for the NAND controller
-> on platforms like Agilex5 where such hardware is present.
+> To support this configuration, the `iommus` property must be added to the
+> binding schema for `snps,dw-axi-dmac`. This allows the device tree to
+> associate each DMA controller with the correct SMMU stream ID, enabling
+> the Linux IOMMU framework to configure translation contexts at runtime.
+> 
+> This change documents the IOMMU support for the DMA controller on Agilex5
+> and allows proper integration with the SMMUv3 hardware.
 > 
 > Signed-off-by: Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
 > Signed-off-by: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
 > ---
 > Changes in v3:
 > 	- Refined commit messages with detailed hardware descriptions.
-> 	- Remove redundant commit message and add the hardware used for
-> 	  iommu.
+> 	- Remove redundant commit message and add hardware use for iommu.
 > Changes in v2:
-> 	- Updated the commit message to clarify the need for the changes
+>         - Updated the commit message to clarify the need for the changes
 > 	  and the hardware used of this changes.
 > ---
->  Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml | 3 +++
+>  Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 3 +++
 >  1 file changed, 3 insertions(+)
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
