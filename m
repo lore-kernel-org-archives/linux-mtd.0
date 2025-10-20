@@ -4,79 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06928CCD1A5
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Oct 2025 10:14:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B484ACCD199
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Oct 2025 10:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cDl4aBwA7nB/FJo6D/anHyxqsI1+XaRvb/kWb3YPSzU=; b=GRVpxLZSXIQnjM
-	3RM+vuPlg8qXj8IIcI/smEozAjLgVYT8Y5UHIsXK6XvRCGzw4EwigHJqfCYPwRYio/qmD69LmIth2
-	YZJXth9h4Da8qnxVx72yxEY8yWA+BxVN7ZetpX0MCTI8uZ0az9TdEAsj9KEEOKWsjlkCR/lkQjhyu
-	oN7Q0zhs03YnVjOjMsLJAHG8mW3W7JL5AHGCT6tkzonlEFVdPlnusLj45bbnyS8XgiNrtn7I2IK0i
-	qe51uOWEJ/QifkNaR1qhnM4ZveE4RFHvwDW6t1BZQcEkN4nBfnPGlJK9vRXJ1T4wD5uZFvwtFx0j/
-	l2pVJhtWb7HLOiTdM+gg==;
+	List-Owner; bh=wTzvA7Uvtx59zYLV1aFMbRM0nlj0ldXfBOOb1wbNNBs=; b=yCkc5wjFPfSRLF
+	m4hlBMFziBEIA7NuBeE72+CgobsXDvUKm8aOAc2PqGvZfcolCCT/z/vLeB4r1Rs+th15SbGutdt6Y
+	x47Ck4fmh2KDCqp5Lhrm4h300DS6GqvkkUU6AzheZeXoOvR9yxIfBQOBDUkQR5YsJ3jT9BuEsnEWU
+	tI/LqbldkYMUxGWOmRoiBDjfIM9EQ0o1z7tM/5QLpPPaY1JRF2kJqJS4s/T44UgZxDjV7xaXnBUJZ
+	LQHBYLa67+c25xVaTLA3Kt6WvqxUIawBLpCiNecKkNDw0A/tzI/F8HT/rfL3qVZKolcQLgGqJdc9R
+	/34VCXGVY+9NMmm3WeRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vAmui-0000000Cnno-0zj5;
-	Mon, 20 Oct 2025 10:14:52 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1vAnCW-0000000Cs2c-16uo;
+	Mon, 20 Oct 2025 10:33:16 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vAmu9-0000000Cn0d-337M
+	id 1vAnCT-0000000Cs0i-1UGc
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Oct 2025 10:14:20 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id A8E09C0AFE4;
-	Mon, 20 Oct 2025 10:13:55 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 3A2E7606D5;
-	Mon, 20 Oct 2025 10:14:15 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B2346102F23B3;
-	Mon, 20 Oct 2025 12:14:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1760955254; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=rZByAZ4a1Es55m5EId/mrhQ7knVrzCU0ipEljdw7k+I=;
-	b=mOLWAHZMEHaJ5DWrJzd5+jqoy2/ZuEto+BJiYKEPYIpIZznZ1Qpmclm7yQxwlw9M1ZrM4f
-	QntYP/j3GqyB/SyXjRR16YLDSWgkO0vEQWE3zXUCzWYHZ1RBUmq3XAMBtgVf5m3OacbPlF
-	1LBUPIQp3Ovz4QkHPu8ukKB1TOjDgPxU7aqf3wsAHT7busdUDwGc18E0eUwS/Wyzf68+k3
-	s2vkBLgrjp000yuOw46dETNd/O81ldxNW15bxro6cfvCCl94KF3oYctxWNsFbEG0JHPQLY
-	IaS36Q+uq5lzXVUouUtuWUlp+z1iVWIi3SSPWg0uKkf1a1gLLnJyaSb9Ve71pw==
-From: Richard Genoud <richard.genoud@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>
-Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	Johan Hovold <johan@kernel.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Richard Genoud <richard.genoud@bootlin.com>
-Subject: [PATCH v3 15/15] arm64: dts: allwinner: h616: add NAND controller
-Date: Mon, 20 Oct 2025 12:13:11 +0200
-Message-ID: <20251020101311.256819-16-richard.genoud@bootlin.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251020101311.256819-1-richard.genoud@bootlin.com>
-References: <20251020101311.256819-1-richard.genoud@bootlin.com>
+	Mon, 20 Oct 2025 10:33:14 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 81BD341A4B;
+	Mon, 20 Oct 2025 10:33:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF3F4C4CEF9;
+	Mon, 20 Oct 2025 10:33:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760956392;
+	bh=wv0DeCgmqpuaHOPBdjyj9Ov9pUIrLxPfa9Z6o8Bnxmc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R5B9NWyFY6Sa8DO2FQY8oGwAMfl213SXg4+DY5w00Ko+pZJdQ7ccqmm5xItLYiMFU
+	 kUkty54l7NF9ve0+aqhFkDTkYzQOG6DrT4yGG1c0/8AmHF+1xdP/piDuNl0e47knb+
+	 RLqlq09htt9H12w2Fcbx9FCvLzFqh4F6E4/cD+zy0zo+f0WBLwgvrhADiH9tqE72PL
+	 L/Fl6Me0ewj3HP+ZYJEAMP5MViExO/x6O6NVClTZdQoZeUVA+4dned4eoGQqmRVLIw
+	 +mar6yzmkN37mXBQWhXC5tdRFAZD4nPOq5kgaEDXM3hBo1bYROpxjLCRUvkKWPOK46
+	 Z/fkhu8667sRg==
+Date: Mon, 20 Oct 2025 12:33:09 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
+Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, 
+	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	"open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>, 
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Niravkumar L Rabara <niravkumar.l.rabara@intel.com>, 
+	"open list:CADENCE NAND DRIVER" <linux-mtd@lists.infradead.org>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: mtd: cdns,hp-nfc: Add iommu property
+Message-ID: <20251020-faithful-gray-nautilus-b9ca71@kuoka>
+References: <cover.1760486497.git.khairul.anuar.romli@altera.com>
+ <8f3ebbe7084c8330e9ea05e55b16af1544fa3dd8.1760486497.git.khairul.anuar.romli@altera.com>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <8f3ebbe7084c8330e9ea05e55b16af1544fa3dd8.1760486497.git.khairul.anuar.romli@altera.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251020_031418_037260_44E3CBCD 
-X-CRM114-Status: UNSURE (   8.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251020_033313_423956_0DAF334B 
+X-CRM114-Status: GOOD (  17.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,87 +80,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The H616 has a NAND controller quite similar to the A10/A23 ones, but
-with some register differences, more clocks (for ECC and MBUS), more ECC
-strengths, so this requires a new compatible string.
+On Wed, Oct 15, 2025 at 08:13:37AM +0800, Khairul Anuar Romli wrote:
+> Agilex5 integrates an ARM SMMU (System Memory Management Unit) with
+> Translation Buffer Units (TBUs) assigned to various peripherals,
+> including the NAND controller.
+> 
+> The Cadence HP NAND controller ("cdns,hp-nfc") on Agilex5 is behind a
+> TBU connected to the system's SMMUv3. To support this, the controller
+> requires an `iommus` property in the device tree to properly configure
+> address translation through the IOMMU framework.
+> 
+> Adding the `iommus` property to the binding schema allows the OS
+> to associate the NAND controller with its corresponding SMMU stream ID.
+> This enables:
+> - DMA address translation between the controller and system memory
+> - Memory protection for NAND operations
+> - Proper functioning of the IOMMU framework in secure or virtualized
+>   environments
+> 
+> This change documents the IOMMU integration for the NAND controller
+> on platforms like Agilex5 where such hardware is present.
+> 
+> Signed-off-by: Adrian Ng Ho Yin <adrianhoyin.ng@altera.com>
+> Signed-off-by: Khairul Anuar Romli <khairul.anuar.romli@altera.com>
+> ---
+> Changes in v3:
+> 	- Refined commit messages with detailed hardware descriptions.
+> 	- Remove redundant commit message and add the hardware used for
+> 	  iommu.
+> Changes in v2:
+> 	- Updated the commit message to clarify the need for the changes
+> 	  and the hardware used of this changes.
+> ---
+>  Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Add the NAND controller node and pins in the device tree.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Signed-off-by: Richard Genoud <richard.genoud@bootlin.com>
----
- .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
+Best regards,
+Krzysztof
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-index ceedae9e399b..2a4d70298655 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-@@ -304,6 +304,42 @@ mmc2_pins: mmc2-pins {
- 				bias-pull-up;
- 			};
- 
-+			/omit-if-no-ref/
-+			nand_pins: nand-pins {
-+				pins = "PC0", "PC1", "PC2", "PC5", "PC8", "PC9",
-+				       "PC10", "PC11", "PC12", "PC13", "PC14",
-+				       "PC15", "PC16";
-+				function = "nand0";
-+			};
-+
-+			/omit-if-no-ref/
-+			nand_cs0_pin: nand-cs0-pin {
-+				pins = "PC4";
-+				function = "nand0";
-+				bias-pull-up;
-+			};
-+
-+			/omit-if-no-ref/
-+			nand_cs1_pin: nand-cs1-pin {
-+				pins = "PC3";
-+				function = "nand0";
-+				bias-pull-up;
-+			};
-+
-+			/omit-if-no-ref/
-+			nand_rb0_pin: nand-rb0-pin {
-+				pins = "PC6";
-+				function = "nand0";
-+				bias-pull-up;
-+			};
-+
-+			/omit-if-no-ref/
-+			nand_rb1_pin: nand-rb1-pin {
-+				pins = "PC7";
-+				function = "nand0";
-+				bias-pull-up;
-+			};
-+
- 			/omit-if-no-ref/
- 			spi0_pins: spi0-pins {
- 				pins = "PC0", "PC2", "PC4";
-@@ -377,6 +413,22 @@ iommu: iommu@30f0000 {
- 			#iommu-cells = <1>;
- 		};
- 
-+		nfc: nand-controller@4011000 {
-+			compatible = "allwinner,sun50i-h616-nand-controller";
-+			reg = <0x04011000 0x1000>;
-+			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_NAND>, <&ccu CLK_NAND0>,
-+				<&ccu CLK_NAND1>, <&ccu CLK_MBUS_NAND>;
-+			clock-names = "ahb", "mod", "ecc", "mbus";
-+			resets = <&ccu RST_BUS_NAND>;
-+			reset-names = "ahb";
-+			dmas = <&dma 10>;
-+			dma-names = "rxtx";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		mmc0: mmc@4020000 {
- 			compatible = "allwinner,sun50i-h616-mmc",
- 				     "allwinner,sun50i-a100-mmc";
 
 ______________________________________________________
 Linux MTD discussion mailing list
