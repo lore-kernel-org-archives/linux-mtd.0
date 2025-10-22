@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 270BCCCD1AB
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Oct 2025 10:07:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AE91CCD195
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Oct 2025 10:08:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=opuWVfTJK1LREoyV3Qa9+goXU+HUsdHaPgM+2/WmRC4=; b=W5g62y8ZnbkHAT
-	JdD7iy4M1XIJtMBa/kCsIVEvfgxn0lnPrI826sU+AEBjAHdkH/zzbBXmnuvy7wT5RMTQOhEkNA6Is
-	tjxstyw7VVJi71cRykjEipdaR5y9GpfQHodUnpnHPKMSxTbqatFXtDPGcGloRw87+hlVBCuTk2D0g
-	TjGn+yQaP6OSrbp9+WKhK64k4IRj84D6p7D6O8YO8tJ9ksWel7d0OkQEcecNXt6rU3mtvCOEDVWWD
-	cW+iLfBWQErBNoDrCwhiCTp5VykUyn1m96hWzJ3A7rwcz6tu73XIs3BeRA+RXKMaFxeLK7UTyzlR8
-	6RSODEHbv5dZtPnbqqdg==;
+	List-Owner; bh=j75YXzvv8aS7lLFEIgDcMRUNMWmElIdLkxavuJyAaO4=; b=xMowQXPPQbphHx
+	s/LhS/+W8rfJwCsgriQQ4sqrS2UJJZvDpfpIwTIddJYfPCWaocCzT3mlnBdItjq34jocviGfyuoeW
+	+JvBRyZWQKFeDW8WS+zPO7QkPOMivkOUVztkOuxR/PSSxcUcm0HgBoTayAn0DU4ks4CD/h3Er2Z+P
+	hRGwy+XhfqlHsjRqurcrjD44U1SlPA/LTYkz/fNAadOHEqfCxgrGBgq/H8qtXAKm91YlAGA/nLdZd
+	MdCFpwUgh3MKtLP9os41eTS5UxZ7JQs537DIYjFcAKqgPtgg+2TUe6+JiyqYv00xUdRjqTg0m9RgF
+	P4d73BQvR2CNojMQKR4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBVl6-00000002PNd-28Ol;
-	Wed, 22 Oct 2025 10:07:56 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1vBVlB-00000002PSS-48jG;
+	Wed, 22 Oct 2025 10:08:01 +0000
+Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBVl3-00000002PLF-2H2z
+	id 1vBVl7-00000002POj-2eQQ
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Oct 2025 10:07:54 +0000
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-292322d10feso7285965ad.0
-        for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2025 03:07:53 -0700 (PDT)
+	Wed, 22 Oct 2025 10:07:59 +0000
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-b6cdcc27fb8so641856a12.1
+        for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2025 03:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761127673; x=1761732473; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1761127677; x=1761732477; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+Rin+olPBDSpDNBx3ZCCvnc8fn5rgxCNRJAfPjBnGKs=;
-        b=CaAVjsAZOaDvFBjOSfcBMs8G4U9XD7YZZo+ZCcx4z+RZ1Jnh4QyZGYnLA1em1V2LDw
-         0z0j0FweaQPgIfdMSxYi/fdnumsEWk/kjN4Cj3KtzzMsiNtw6TiXX6UEvPOL+hC0mNgZ
-         zBNcJkZVIt9WA0YibBBRfz7WOp/C/ucdQt6YXP32llD2sN+UwPEKMqYSxzTbhKM2oLON
-         lA8ME1TQIFDLZHVIA8AsPw28u5R9LqbD8sONSlLQwoavrc7QK97XJzRFIuMayt1TMRnc
-         J/o+fwmPO52prNM05gLUm+6uER8/qkvb5nYr5/QAYxQBVGvCI8ZWrL1nWZ3CfbQgvy3Q
-         bnsg==
+        bh=BhhPNj408J9IsKyB0ngF4mWpHs2Tqp+ApiMYzTxgWxQ=;
+        b=QWp5uRA0IYmSp3NWugV2mH/wlcaJVszKoh5dO3ldx2U0yt/ub2WtJZvp1Gi92uJP+b
+         1P5JESCqt7iQHL0orml0IeEmVclL132im5JyonLnZzOmw6qkx56NYygs5eCcnXXIze54
+         ulrtF5nMxVT5YWjTI8mppWyoXlz8PI1F6o1TDIDGwKCtrI1sMbb8dMvH5BdqzAU4dVJl
+         +ZxoEEZYtkDqSoMtNyKg7usooxSRlmE+2iHD8qaboCulAKJP/sUGZvPPzHCrE5MTujBn
+         fV0DfmsD+7Mj3kIt1Z2IKgdMG0m/g65dawb8Sp9d9o2vsJJgszZCvL5UszvM6/29SM4M
+         DlzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761127673; x=1761732473;
+        d=1e100.net; s=20230601; t=1761127677; x=1761732477;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+Rin+olPBDSpDNBx3ZCCvnc8fn5rgxCNRJAfPjBnGKs=;
-        b=aEic1uzXb906ALMmpmtbbyaI+5Y7PAgz4Bdlh/24i4JxznudC8DnZaZkKTxaEDSrJh
-         xrhzBnass2ow9a/zkl0EnQ2VRiV6FTCfLLJON2unpVYrW2tj7pO99RBA4yBq5DRdGsQ0
-         +1JimX6hzzh1rHBQUr9YzxVOQ7NH5pPRD1MWcJ3zs3SnCrjC7n3K9o+TZarXrjIZPGe2
-         DJMcjcvUnHdTaZnQbUtzyGczlHtfAba8bkmm8/Af5vetGa/w1328I0mmr8FnsOwct1dI
-         0pmiCvVFBJHgOZ/nVqGxEDSWOEResbRSfomYAcYVoOPP5IZ3yc1FugwyLNLuxnFAUh4I
-         nPDA==
-X-Gm-Message-State: AOJu0YxOx2wwTqMbLf6OkD6Bk5iD4pFtBLly4+2hPHBH0/v2agh8suxE
-	D20aR8tn8NCWqo4SK2KhDf0nBO6lG0GBvsgmRwh6Rdf7A0krtXZPGG3x
-X-Gm-Gg: ASbGncv7hBorHnBaUsIaCZ93CCjnu7zJNb0UTACpbF9UDtoX+REg++dVHlazXhKggw/
-	JI1nzH46SQkMURPhp03gyTGGyEI/SBJA1CIS3v4XY5Rf/+xaU3jovJEOLfKQ0rg0r5EJJHHlzJH
-	nqMtVAH7pgSVauaU2LSAU3qRB7X+xo4c97Kn59H8kU4lNVlFqKZ3TFH2pRjGVti4PRViFTxFhpH
-	IfvJiTdJx790iTzx9UhGae4Y0uvThmYqn9nTE95/QzjunbvzvgqaPwM+5Lr9xPljb0H3XE09dR6
-	pBFLrPtYtXia7vBWKS5/Z3g/hBAogL0EtblUUEldJE1zthMkwMvW/wVk5LwcJJuW9cW9/vYjc8G
-	P3Ji1K2d2ZXH8UBg36nHLQ3Xa7hh08iPiY5xlR+ALjhqK9YNUgBn33JhuVkHd2kfSKSh3QLNBHm
-	ymszTPek8Rn4D5Lr0RlSNtbyOaDEwD0ldi1QjnDxdSkMcpHue2/O29drcQZPJ2uCSfygO3ssyLn
-	Lz6ZGA=
-X-Google-Smtp-Source: AGHT+IEUiygtgTqcwUWRzcMEa52HUa99Ij9lNtSOVruV1mseZ8SjR/ReWp+fLosN/bNvr0EnD8Nfhw==
-X-Received: by 2002:a17:902:e5c3:b0:271:9b0e:54c7 with SMTP id d9443c01a7336-2935e03624bmr12703345ad.11.1761127672529;
-        Wed, 22 Oct 2025 03:07:52 -0700 (PDT)
+        bh=BhhPNj408J9IsKyB0ngF4mWpHs2Tqp+ApiMYzTxgWxQ=;
+        b=tEdSwpHWW/gG2vw9gkw0Mq/9OA1xIOS2F1+MNOxPpZWrboL8Xx1T8qaeUGUOgLGKtJ
+         vjDtHdyylTFqY9rYEclz/DbV36JOmrO56DOiFBckoBd9jrWsF/C5o1DcgvfzK4+CGm0M
+         rQPu4AD1GHLyOfm3GlLWFsT6AuN4DgZP89MlXIm7mYfm5ilpmZaZwcCuzeoWIz2siqR4
+         OHPt9/M6j/Y0PBN7viVsT/voYLwGih05QpUNZY6nCUvLWQVhigQqUT/q64OewzKEzA5m
+         1A++UTIe5tS7klgdhKtLOgV9DKUc3y7qvZUAmOacVa/ZWeAQF3SKLWXNMGy7F5YDomtX
+         pdew==
+X-Gm-Message-State: AOJu0YzpVlfKVxpJXeGwIl8CW/Ow+82Ny9am4fPl3euWpWCMpUcxt9Vr
+	rV49lyWuzz63EYzFVA4OuOJud9aSfZfyFZ406R6Gm1jXeNPWapIwWWGDtDk8/A==
+X-Gm-Gg: ASbGncthcYWwnAVqFuiWHuYOXC/vR5HUdGk5D44WLTb7Ev9kq33uR0f+ehyOnmif96a
+	rnjjVv4UEwzmXMCZOaTG9/ux3iJEi0SGWL4ptZp2TeGLiBLIivGcVdpJ69zqTpSLE3ArEHPlqil
+	stcJu/r8I60HtY6dXlmWOqsxMOAv3qgSunpIb9JWKtJUTpImtuhlqe9sdLjRhdyjCfx/GUvFOEb
+	xHy5upBoDjYo1O9Fc/Q0x8UjF5jN0+aMocgUj4fDMYuKqdOmrXkeAGsrd+RlY9JyYKjzF2HnLym
+	cSbU4ZNN59t4MiQMY7g/hM3eknllnO5AjMMps1m7QWgltnuPodMRgS/l9q4K1ZR3WjGLw+J5qoC
+	hpO/otHpzM9ZmSgILkMG5AvxAxfd7J3vNT6+HWqpom2n5MYJdLPy1blzBkBdiK2imMoqlWjTxUL
+	CQUDRrIPbYB+HfepKpDeQRkSBBdc634UF0nJHBr7uvW2z87dxGitoOJJ9V5fcaoOj7qwIHCQujI
+	zhbdqo=
+X-Google-Smtp-Source: AGHT+IF0dKQMctLSkd4qXSEnXRqPwvQ5TWac1/EzJdBKxCT0QRGMk7vNb6lFW2DDOrk55+uovWre8Q==
+X-Received: by 2002:a17:902:f70b:b0:283:c950:a76f with SMTP id d9443c01a7336-290cc2f91d2mr263984515ad.43.1761127676820;
+        Wed, 22 Oct 2025 03:07:56 -0700 (PDT)
 Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fdd10sm133774585ad.83.2025.10.22.03.07.48
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fdd10sm133774585ad.83.2025.10.22.03.07.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 03:07:52 -0700 (PDT)
+        Wed, 22 Oct 2025 03:07:56 -0700 (PDT)
 From: Takahiro Kuwano <tkuw584924@gmail.com>
 X-Google-Original-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Date: Wed, 22 Oct 2025 19:07:21 +0900
-Subject: [PATCH 2/3] mtd: spi-nor: sfdp: introduce smpt_map_id fixup hook
+Date: Wed, 22 Oct 2025 19:07:22 +0900
+Subject: [PATCH 3/3] mtd: spi-nor: spansion: SMPT fixups for S25FS-S
 MIME-Version: 1.0
-Message-Id: <20251022-s25fs-s-smpt-fixup-v1-2-ce26d4084b2d@infineon.com>
+Message-Id: <20251022-s25fs-s-smpt-fixup-v1-3-ce26d4084b2d@infineon.com>
 References: <20251022-s25fs-s-smpt-fixup-v1-0-ce26d4084b2d@infineon.com>
 In-Reply-To: <20251022-s25fs-s-smpt-fixup-v1-0-ce26d4084b2d@infineon.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -86,16 +86,16 @@ To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, tkuw584924@gmail.com
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1761127659; l=3033;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1761127659; l=3010;
  i=Takahiro.Kuwano@infineon.com; s=20250227; h=from:subject:message-id;
- bh=BOiQy4dkt6OnjJhuvrMGCPaSRKLELL+BS8cMn1Du9Sg=;
- b=Xv6/MqkpU/YGPwnfT1w6kk7uH7YbY+SaOmwrijqqxPSaYsfx0aw+bu55VD2QXPyeW5K9SbIvL
- 7L78EonnLmFD0zAWJeTxbcH9Sg8Qdb6d30Uj46pghfMDe4gR79e0+gr
+ bh=fLuO8IxKB26gg7ELkbxj90c+H+nFUPtNyWO7nnhkCfo=;
+ b=bltMHTs5AspF5ecMV3QBvbvqMd8jNFEudmeFnUVLAxuuGrO/QAtbtyiK/3a7pP7nayGZtn3hr
+ LMils1Ud7PUCyjP7O8WjupIXPM6w+lk8FcqePY079/f5M5jDtDdf6Fc
 X-Developer-Key: i=Takahiro.Kuwano@infineon.com; a=ed25519;
  pk=aS8V9WLuMUkl0vmgD0xJU19ZajdJmuyFBnBfVj0dfDs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251022_030753_632580_DB967137 
-X-CRM114-Status: GOOD (  17.19  )
+X-CRM114-CacheID: sfid-20251022_030757_708112_15B6A52D 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,70 +112,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some chips have inconsistency in SMPT that derives wrong map ID and
-fails to detect correct sector map. Introduce smpt_map_id() into
-struct spi_nor_fixups. That is called after map ID detection by SMPT
-and chip specific implementation can correct map ID.
+S25FS-S family supports SMPT that helps to detect sector layout settings
+in configuration registers, but some of parameters in the table are
+wrong or undetermined so the fixups below are required.
+
+Read Any Register op is used to read configuration registers that
+related to sector map. The op requires 8 cycles latency by default.
+Implement smpt_read_dummy() to set correct dummy cycles.
+
+Map ID is structured by combination of CR3NV[3], CR1NV[2], and CR3NV[1].
+However, in S25FS512S, CR3NV[1] is RFU and always 0, while map IDs
+defined in the table assume it is always 1. Implement smpt_map_id() to
+fix map ID for S25FS512S. Other densities in S25FS-S family (256Mb and
+128Mb) don't need this fix as CR3NV[1] in those chips is configurable
+and map IDs are correctly defined in SMPT.
 
 Co-developed-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
 Signed-off-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/core.h |  3 +++
- drivers/mtd/spi-nor/sfdp.c | 12 ++++++++++++
- 2 files changed, 15 insertions(+)
+ drivers/mtd/spi-nor/spansion.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 5ad46d95d09cc9d527f71579a71eed210e726f68..16b382d4f04f207aa26190ed8bdf2d19885f7315 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -411,6 +411,8 @@ struct spi_nor_flash_parameter {
-  * @post_bfpt: called after the BFPT table has been parsed
-  * @smpt_read_dummy: called during SMPT table is being parsed. Used to fix the
-  *                   number of dummy cycles in read register ops.
-+ * @smpt_map_id: called after map ID in SMPT table has been determined for the
-+ *               case the map ID is wrong and needs to be fixed.
-  * @post_sfdp: called after SFDP has been parsed (is also called for SPI NORs
-  *             that do not support RDSFDP). Typically used to tweak various
-  *             parameters that could not be extracted by other means (i.e.
-@@ -429,6 +431,7 @@ struct spi_nor_fixups {
- 			 const struct sfdp_parameter_header *bfpt_header,
- 			 const struct sfdp_bfpt *bfpt);
- 	void (*smpt_read_dummy)(const struct spi_nor *nor, u8 *read_dummy);
-+	void (*smpt_map_id)(const struct spi_nor *nor, u8 *map_id);
- 	int (*post_sfdp)(struct spi_nor *nor);
- 	int (*late_init)(struct spi_nor *nor);
- };
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 9a47dcaca06ae2ad85ac8503658083b1d56d8b96..a8324c2da0acf2953a4a62e2a9f7ed31fcd8b4f2 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -730,6 +730,16 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
- 	return read_dummy;
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index a0296c871634678be509cb30d26e18debff3066d..89e85eba2c31a4d74dcbfeffdeff7139b6e0f6b1 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -785,8 +785,42 @@ s25fs_s_nor_post_bfpt_fixups(struct spi_nor *nor,
+ 	return 0;
  }
  
-+static void spi_nor_smpt_map_id_fixups(const struct spi_nor *nor, u8 *map_id)
++static void s25fs_s_nor_smpt_read_dummy(const struct spi_nor *nor,
++					u8 *read_dummy)
 +{
-+	if (nor->manufacturer && nor->manufacturer->fixups &&
-+	    nor->manufacturer->fixups->smpt_map_id)
-+		nor->manufacturer->fixups->smpt_map_id(nor, map_id);
-+
-+	if (nor->info->fixups && nor->info->fixups->smpt_map_id)
-+		nor->info->fixups->smpt_map_id(nor, map_id);
++	/*
++	 * The configuration detection dwords in S25FS-S SMPT has 65h as
++	 * command instruction and 'variable' as configuration detection command
++	 * latency. Set 8 dummy cycles as it is factory default for 65h (read
++	 * any register) op.
++	 */
++	*read_dummy = 8;
 +}
 +
- /**
-  * spi_nor_get_map_in_use() - get the configuration map in use
-  * @nor:	pointer to a 'struct spi_nor'
-@@ -783,6 +793,8 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 		map_id = map_id << 1 | !!(*buf & read_data_mask);
- 	}
- 
-+	spi_nor_smpt_map_id_fixups(nor, &map_id);
++static void s25fs_s_nor_smpt_map_id_dummy(const struct spi_nor *nor, u8 *map_id)
++{
++	/*
++	 * The S25FS512S chip datasheet rev.O Table 71 on page 153
++	 * JEDEC Sector Map Parameter Dword-6 Config. Detect-3 does
++	 * use CR3NV bit 1 to discern 64kiB/256kiB uniform sectors
++	 * device configuration, however according to section 7.5.5.1
++	 * Configuration Register 3 Non-volatile (CR3NV) page 61, the
++	 * CR3NV bit 1 is RFU Reserved for Future Use, and is set to
++	 * 0 on newly manufactured devices, which means 64kiB sectors.
++	 * Since the device does not support 64kiB uniform sectors in
++	 * any configuration, parsing SMPT table cannot find a valid
++	 * sector map entry and fails. Fix this up by setting SMPT
++	 * configuration index bit 0, which is populated exactly by
++	 * the CR3NV bit 1 being 1.
++	 */
++	if (nor->params->size == SZ_64M)
++		*map_id |= BIT(0);
++}
 +
- 	/*
- 	 * If command descriptors are provided, they always precede map
- 	 * descriptors in the table. There is no need to start the iteration
+ static const struct spi_nor_fixups s25fs_s_nor_fixups = {
+ 	.post_bfpt = s25fs_s_nor_post_bfpt_fixups,
++	.smpt_read_dummy = s25fs_s_nor_smpt_read_dummy,
++	.smpt_map_id = s25fs_s_nor_smpt_map_id_dummy,
+ };
+ 
+ static const struct flash_info spansion_nor_parts[] = {
 
 -- 
 2.34.1
