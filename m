@@ -4,98 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AE91CCD195
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Oct 2025 10:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65999CCD1AB
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Oct 2025 10:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j75YXzvv8aS7lLFEIgDcMRUNMWmElIdLkxavuJyAaO4=; b=xMowQXPPQbphHx
-	s/LhS/+W8rfJwCsgriQQ4sqrS2UJJZvDpfpIwTIddJYfPCWaocCzT3mlnBdItjq34jocviGfyuoeW
-	+JvBRyZWQKFeDW8WS+zPO7QkPOMivkOUVztkOuxR/PSSxcUcm0HgBoTayAn0DU4ks4CD/h3Er2Z+P
-	hRGwy+XhfqlHsjRqurcrjD44U1SlPA/LTYkz/fNAadOHEqfCxgrGBgq/H8qtXAKm91YlAGA/nLdZd
-	MdCFpwUgh3MKtLP9os41eTS5UxZ7JQs537DIYjFcAKqgPtgg+2TUe6+JiyqYv00xUdRjqTg0m9RgF
-	P4d73BQvR2CNojMQKR4g==;
+	List-Owner; bh=tYJE9bnrrbBo2wo2QcEuyOiHcS62VOhrjcyGOnYplPM=; b=2bToarCUOIbo0t
+	esuEim+UlISswcG3wfKDeXYkJxwDCok/ZQEAXGUD26zZBgT9WErEmOLux3jxym9clSaQicmcp/6hp
+	rVzvXp/MOoKTZveWFEdvSPs/XabGs6Jcn3OqJvaeV6NnBygntdHugIRPMKs8p/qrwHqTh13cmpkyk
+	RdjheyyYauQM5MxB9BrmKjAaY0vPupJyae15bA3niIZt05ulblJJVO5UEPSue5zUoo8Iu+/iiQCZO
+	4PkpZPDz+g8kzeGg8AGCznMnFRuIYMSiPTrIFS1JdZIPmH9wtfw+GZuZwwIHtZoxhJFR/Zsc9lFdx
+	Zg0tzfvdqUYew1jk1i9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBVlB-00000002PSS-48jG;
-	Wed, 22 Oct 2025 10:08:01 +0000
-Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
+	id 1vBVqk-00000002QvH-1App;
+	Wed, 22 Oct 2025 10:13:46 +0000
+Received: from mail-qt1-f174.google.com ([209.85.160.174])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBVl7-00000002POj-2eQQ
+	id 1vBVqh-00000002Qsx-3287
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Oct 2025 10:07:59 +0000
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-b6cdcc27fb8so641856a12.1
-        for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2025 03:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761127677; x=1761732477; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BhhPNj408J9IsKyB0ngF4mWpHs2Tqp+ApiMYzTxgWxQ=;
-        b=QWp5uRA0IYmSp3NWugV2mH/wlcaJVszKoh5dO3ldx2U0yt/ub2WtJZvp1Gi92uJP+b
-         1P5JESCqt7iQHL0orml0IeEmVclL132im5JyonLnZzOmw6qkx56NYygs5eCcnXXIze54
-         ulrtF5nMxVT5YWjTI8mppWyoXlz8PI1F6o1TDIDGwKCtrI1sMbb8dMvH5BdqzAU4dVJl
-         +ZxoEEZYtkDqSoMtNyKg7usooxSRlmE+2iHD8qaboCulAKJP/sUGZvPPzHCrE5MTujBn
-         fV0DfmsD+7Mj3kIt1Z2IKgdMG0m/g65dawb8Sp9d9o2vsJJgszZCvL5UszvM6/29SM4M
-         DlzQ==
+	Wed, 22 Oct 2025 10:13:44 +0000
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4e89c4ce3f9so9066261cf.2
+        for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2025 03:13:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761127677; x=1761732477;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BhhPNj408J9IsKyB0ngF4mWpHs2Tqp+ApiMYzTxgWxQ=;
-        b=tEdSwpHWW/gG2vw9gkw0Mq/9OA1xIOS2F1+MNOxPpZWrboL8Xx1T8qaeUGUOgLGKtJ
-         vjDtHdyylTFqY9rYEclz/DbV36JOmrO56DOiFBckoBd9jrWsF/C5o1DcgvfzK4+CGm0M
-         rQPu4AD1GHLyOfm3GlLWFsT6AuN4DgZP89MlXIm7mYfm5ilpmZaZwcCuzeoWIz2siqR4
-         OHPt9/M6j/Y0PBN7viVsT/voYLwGih05QpUNZY6nCUvLWQVhigQqUT/q64OewzKEzA5m
-         1A++UTIe5tS7klgdhKtLOgV9DKUc3y7qvZUAmOacVa/ZWeAQF3SKLWXNMGy7F5YDomtX
-         pdew==
-X-Gm-Message-State: AOJu0YzpVlfKVxpJXeGwIl8CW/Ow+82Ny9am4fPl3euWpWCMpUcxt9Vr
-	rV49lyWuzz63EYzFVA4OuOJud9aSfZfyFZ406R6Gm1jXeNPWapIwWWGDtDk8/A==
-X-Gm-Gg: ASbGncthcYWwnAVqFuiWHuYOXC/vR5HUdGk5D44WLTb7Ev9kq33uR0f+ehyOnmif96a
-	rnjjVv4UEwzmXMCZOaTG9/ux3iJEi0SGWL4ptZp2TeGLiBLIivGcVdpJ69zqTpSLE3ArEHPlqil
-	stcJu/r8I60HtY6dXlmWOqsxMOAv3qgSunpIb9JWKtJUTpImtuhlqe9sdLjRhdyjCfx/GUvFOEb
-	xHy5upBoDjYo1O9Fc/Q0x8UjF5jN0+aMocgUj4fDMYuKqdOmrXkeAGsrd+RlY9JyYKjzF2HnLym
-	cSbU4ZNN59t4MiQMY7g/hM3eknllnO5AjMMps1m7QWgltnuPodMRgS/l9q4K1ZR3WjGLw+J5qoC
-	hpO/otHpzM9ZmSgILkMG5AvxAxfd7J3vNT6+HWqpom2n5MYJdLPy1blzBkBdiK2imMoqlWjTxUL
-	CQUDRrIPbYB+HfepKpDeQRkSBBdc634UF0nJHBr7uvW2z87dxGitoOJJ9V5fcaoOj7qwIHCQujI
-	zhbdqo=
-X-Google-Smtp-Source: AGHT+IF0dKQMctLSkd4qXSEnXRqPwvQ5TWac1/EzJdBKxCT0QRGMk7vNb6lFW2DDOrk55+uovWre8Q==
-X-Received: by 2002:a17:902:f70b:b0:283:c950:a76f with SMTP id d9443c01a7336-290cc2f91d2mr263984515ad.43.1761127676820;
-        Wed, 22 Oct 2025 03:07:56 -0700 (PDT)
-Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fdd10sm133774585ad.83.2025.10.22.03.07.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 03:07:56 -0700 (PDT)
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-X-Google-Original-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Date: Wed, 22 Oct 2025 19:07:22 +0900
-Subject: [PATCH 3/3] mtd: spi-nor: spansion: SMPT fixups for S25FS-S
+        d=1e100.net; s=20230601; t=1761128022; x=1761732822;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j9nsZS9cf0Yesyto3hqsvaV4sJKL6LJk8tudSlukngM=;
+        b=l/Dp1JbtfmUVC2SLysU+toURP5dhfii/OvyDHhiZsxKQglsBoA7wX+t63JVPM5jO/Z
+         5vtXtLIpuNzmGxDQQJyX2mHJKLj6HH7fEvD1G06Ta8dc+uTUL/B50sximSACKOOdAgYQ
+         FuVBxcamhPTDraHpQlHHBPAMe+zM7cQ8shO0G9IThLyoFODW2IusdgZddDcYSJ83SsMO
+         yhxYZzYF7OFQq4S/b4sef65B+RB4iip0XtajYpA2PQZPgQIKcA9iUoDezqhXR3fGLYso
+         AKqcHdCxbqbhe+YrnVQQjJL9wtRKYwPnUBcvw1vH0Fg2D8DQ1cJqsFgNnDDWQWbYoSCH
+         d0FA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqjYm0oYC2ygZygdH7GrsdxIKQoiGMCpZiQ71Qb+NxW5O84bj8F3qx/gdgHfUqkqHwqGlk3XUP77w=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx4yP6V85QBQd+nDeUdVc0kyK02DDYWfjn7Q68Zwo3NnZqcDqQU
+	r0YnYH6cpND/iwMCClxsU/NN6mGOJk3+HfFar+D01W+UBb+MzmHvd8T0bC5rTd+m
+X-Gm-Gg: ASbGncvXui6mf+0HNEPwaZL6Dk+CQBgTWb19drn8lsL4bQgPHzQXkDu2EGg300gLEG+
+	bqKvSFGVV9Z5+zWVUt5Rj2OHcWVCIgxPuzh82GF62mumLpJ/GqOE81454EADzNYlMi78yrX1d7l
+	VXrEHFP3DX6j4SplKnGWZkukfysncUQ7wMvFtotY2V6I3942/evSWoKKiJDjkJxpY43i5L1nWH4
+	kAfkViBlUK7GRrgrEnTB2/GkPhkxZRTromhqDX8HqbRHvjHBVke59EOWIZ393xW209QJbuDi5X0
+	89v0hZxL5hUEQ3iU2gBsXy19wi+Rdf4/zyPAiYwefx8ZyShnK/0p2jbDVc8NbyotnE57zTtWXLw
+	teUEMKLo4fJgwSolw90CQYjNCFIE6tNJDKq9Zf+nbOqExsAIxQnxUYz4i9XJm1QbsIvFIIeQPR7
+	VJS1bMfI+hsRbbqdtNt1ZnsBeNb39kPOq2DPovPxrkDiP2VwmQKCDKaZpc8hud6Do=
+X-Google-Smtp-Source: AGHT+IFkIKvwAXZkRxq0bw1n7p+QL6OHVoiqjG1c1p/rRPXrrjdifWh2Gslz4Rda3j2fXlI5mxNNww==
+X-Received: by 2002:ac8:59cd:0:b0:4e8:a0d5:45a6 with SMTP id d75a77b69052e-4e8a0d5531emr253603841cf.44.1761128022143;
+        Wed, 22 Oct 2025 03:13:42 -0700 (PDT)
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-87cf51fd17esm85200846d6.2.2025.10.22.03.13.41
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Oct 2025 03:13:42 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-89048f76ec2so887372985a.1
+        for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2025 03:13:41 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXCkbLmysXFZnJa62iHSFrEK0BBAtYEyBriXgwH30aHQIapTYDDwLKkc7T+1PzWnNni8ks9Dqcsugs=@lists.infradead.org
+X-Received: by 2002:a05:6102:32d3:b0:5d6:fcd:dc86 with SMTP id
+ ada2fe7eead31-5d7dd568745mr5376089137.4.1761127531051; Wed, 22 Oct 2025
+ 03:05:31 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <20251022-s25fs-s-smpt-fixup-v1-3-ce26d4084b2d@infineon.com>
-References: <20251022-s25fs-s-smpt-fixup-v1-0-ce26d4084b2d@infineon.com>
-In-Reply-To: <20251022-s25fs-s-smpt-fixup-v1-0-ce26d4084b2d@infineon.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Marek Vasut <marek.vasut+renesas@mailbox.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, tkuw584924@gmail.com
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1761127659; l=3010;
- i=Takahiro.Kuwano@infineon.com; s=20250227; h=from:subject:message-id;
- bh=fLuO8IxKB26gg7ELkbxj90c+H+nFUPtNyWO7nnhkCfo=;
- b=bltMHTs5AspF5ecMV3QBvbvqMd8jNFEudmeFnUVLAxuuGrO/QAtbtyiK/3a7pP7nayGZtn3hr
- LMils1Ud7PUCyjP7O8WjupIXPM6w+lk8FcqePY079/f5M5jDtDdf6Fc
-X-Developer-Key: i=Takahiro.Kuwano@infineon.com; a=ed25519;
- pk=aS8V9WLuMUkl0vmgD0xJU19ZajdJmuyFBnBfVj0dfDs=
+References: <20251020101311.256819-1-richard.genoud@bootlin.com> <20251020101311.256819-6-richard.genoud@bootlin.com>
+In-Reply-To: <20251020101311.256819-6-richard.genoud@bootlin.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 22 Oct 2025 12:05:20 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUVf2dgWqsfVt9HCytJmmRLYiCkhzSJVp3drZ6KDq0Wwg@mail.gmail.com>
+X-Gm-Features: AS18NWDWB3ss9iz68cJvppf6RUhrU6v4v0GhpWefkhntn5szf5Osn3JvNoovQ3I
+Message-ID: <CAMuHMdUVf2dgWqsfVt9HCytJmmRLYiCkhzSJVp3drZ6KDq0Wwg@mail.gmail.com>
+Subject: Re: [PATCH v3 05/15] mtd: rawnand: sunxi: rework pattern found registers
+To: Richard Genoud <richard.genoud@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@baylibre.com>, 
+	Wentao Liang <vulab@iscas.ac.cn>, Johan Hovold <johan@kernel.org>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mtd@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251022_030757_708112_15B6A52D 
-X-CRM114-Status: GOOD (  17.53  )
+X-CRM114-CacheID: sfid-20251022_031343_759113_4C150DD2 
+X-CRM114-Status: GOOD (  17.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,79 +103,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-S25FS-S family supports SMPT that helps to detect sector layout settings
-in configuration registers, but some of parameters in the table are
-wrong or undetermined so the fixups below are required.
+On Tue, 21 Oct 2025 at 22:51, Richard Genoud <richard.genoud@bootlin.com> wrote:
+> On H6/H616, the register ECC_PAT_FOUND is at its own address, and not
+> part of ECC status register.
+> So, introduce the pattern found register offset in sunxi_nfc_caps, along
+> with its mask.
+>
+> Also, introduce a non compile-time field_get() because FIELD_GET() and
+> u32_get_bits() don't work with non compile-time constant.
+> https://lore.kernel.org/lkml/cover.1739540679.git.geert+renesas@glider.be/
 
-Read Any Register op is used to read configuration registers that
-related to sector map. The op requires 8 cycles latency by default.
-Implement smpt_read_dummy() to set correct dummy cycles.
+FTR, v4 at
+https://lore.kernel.org/all/cover.1760696560.git.geert+renesas@glider.be
 
-Map ID is structured by combination of CR3NV[3], CR1NV[2], and CR3NV[1].
-However, in S25FS512S, CR3NV[1] is RFU and always 0, while map IDs
-defined in the table assume it is always 1. Implement smpt_map_id() to
-fix map ID for S25FS512S. Other densities in S25FS-S family (256Mb and
-128Mb) don't need this fix as CR3NV[1] in those chips is configurable
-and map IDs are correctly defined in SMPT.
+Gr{oetje,eeting}s,
 
-Co-developed-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
-Signed-off-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
- drivers/mtd/spi-nor/spansion.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index a0296c871634678be509cb30d26e18debff3066d..89e85eba2c31a4d74dcbfeffdeff7139b6e0f6b1 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -785,8 +785,42 @@ s25fs_s_nor_post_bfpt_fixups(struct spi_nor *nor,
- 	return 0;
- }
- 
-+static void s25fs_s_nor_smpt_read_dummy(const struct spi_nor *nor,
-+					u8 *read_dummy)
-+{
-+	/*
-+	 * The configuration detection dwords in S25FS-S SMPT has 65h as
-+	 * command instruction and 'variable' as configuration detection command
-+	 * latency. Set 8 dummy cycles as it is factory default for 65h (read
-+	 * any register) op.
-+	 */
-+	*read_dummy = 8;
-+}
-+
-+static void s25fs_s_nor_smpt_map_id_dummy(const struct spi_nor *nor, u8 *map_id)
-+{
-+	/*
-+	 * The S25FS512S chip datasheet rev.O Table 71 on page 153
-+	 * JEDEC Sector Map Parameter Dword-6 Config. Detect-3 does
-+	 * use CR3NV bit 1 to discern 64kiB/256kiB uniform sectors
-+	 * device configuration, however according to section 7.5.5.1
-+	 * Configuration Register 3 Non-volatile (CR3NV) page 61, the
-+	 * CR3NV bit 1 is RFU Reserved for Future Use, and is set to
-+	 * 0 on newly manufactured devices, which means 64kiB sectors.
-+	 * Since the device does not support 64kiB uniform sectors in
-+	 * any configuration, parsing SMPT table cannot find a valid
-+	 * sector map entry and fails. Fix this up by setting SMPT
-+	 * configuration index bit 0, which is populated exactly by
-+	 * the CR3NV bit 1 being 1.
-+	 */
-+	if (nor->params->size == SZ_64M)
-+		*map_id |= BIT(0);
-+}
-+
- static const struct spi_nor_fixups s25fs_s_nor_fixups = {
- 	.post_bfpt = s25fs_s_nor_post_bfpt_fixups,
-+	.smpt_read_dummy = s25fs_s_nor_smpt_read_dummy,
-+	.smpt_map_id = s25fs_s_nor_smpt_map_id_dummy,
- };
- 
- static const struct flash_info spansion_nor_parts[] = {
+                        Geert
 
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
