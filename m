@@ -4,79 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0825CCD1AB
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Oct 2025 11:16:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A620CCF9E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Oct 2025 14:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8OuMSab1bDQUUKH7FApa3bMb9J7MhfycBg1fKN9K51A=; b=nA/PJfoopAAm7V
-	CSWTtpLKBxNAfPEjpsKw37bGbKrSgLVisYwtKJn8tWDUQZ6P+R5RwZ1HJ1mknCW2zNG0Ma2BjghGL
-	EDDw1CzkjfghvsDQ6cqxTm/OgQZdaUG/ojP8dfr5Xb2MI/IdaO/e85sdnAyplk3hDJ6G1W/er/x7t
-	LMK1ZzYZBOVYy3OXMpmpjQbstlXculv0PzgDWVirZaXbMbYzg7KPsPbZa5xk6vx2pl2sD2zG4k8Ao
-	fSImqP05z8A5zLyIRBUxPEjoZL3QZ1MMA3TjOLIwvqo0PPKazWHRZjt4Kf4mVvw82CpLdr+O71k33
-	3Rqv2e67wSN+YAFIR3ZQ==;
+	List-Owner; bh=as0AKzSZYXyywZG/FXZU0lFeFZySCgoB1Kbg9OG2syk=; b=UX5GLI3N/+23MO
+	wZ7jZFOqH+1As2RAVyU6VX58WF7yj/fmI1IdTv2tSRbIFMz+M/Hxdufsh39hubMTwOPM0HzIoMqvP
+	70MBogM93Wfhq3EIycyygEpLF53DRcuEDe58iV5Zx07o/yYt7TJ1N7i1sDE5rArx9kMGv/HlUGVh4
+	Fm6qhagrrc8+36MlG5v6373K1ky9/8Jra0YGU4KMcPwg5/edIY/3hLmnJAXmlGF6cG6R/9AoCXIq3
+	+zJhDhJShFtC2RSv5XtfwDa6nuyHewYpJ5wgVFtwjZ7N9v8lHhmOS3+K6O6LWuETky5S22P0l5SXK
+	F5ro8xpLQgrx4D1vWzYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCFmt-000000099wO-1CLA;
-	Fri, 24 Oct 2025 11:16:51 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vCIWB-00000009csQ-3K8J;
+	Fri, 24 Oct 2025 14:11:47 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCFmr-000000099w1-3YCw
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 24 Oct 2025 11:16:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=BaDn986q5yhbWKKWBePyq6Pb8smvvlHHR98lZRxcrVQ=; b=d/7QhBKEhICUDqYwVeSgLy7SSj
-	vk3qkzMUaF9HbLlfGLd6jitGynK86tdi49KHaP7En5O746g5UWiUg2oWo+RGTkxNNcKmo7AiPz0L2
-	rag8zLDBEi7a9kDEunDcQJa/zeCjoVSrt8Dj9JzR9kFglqU7JpP1UZv3RRgQE/NUllSm6SN5VXcwJ
-	F7TRjB7eRR+ZucWNTDO0NY8AjIKXeLPMVBkpz6eEw3irvhjNjplTFB613kml2JOXA5wB9kgGueJAO
-	xd1+n2s2udJeSwLBWAT3j9MdGZz9l+XYGuM+Hcw83whnNSUgXTTrI2qEWrG7MWFKgjLDQzYzez3Nk
-	KDD6XdLg==;
-Received: from smtpout-02.galae.net ([185.246.84.56])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCEvA-00000002EPp-3Kia
-	for linux-mtd@lists.infradead.org;
-	Fri, 24 Oct 2025 10:21:22 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 405F81A1646;
-	Fri, 24 Oct 2025 11:16:44 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 16D3760703;
-	Fri, 24 Oct 2025 11:16:44 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A3237102F248F;
-	Fri, 24 Oct 2025 13:16:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761304603; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=BaDn986q5yhbWKKWBePyq6Pb8smvvlHHR98lZRxcrVQ=;
-	b=SAEP9+nackPJTf3w5lUHPqIxzSpqBkOG/SPRu/QjSdJ+uod2yNSqgvSUrBhLo1AVsPZNam
-	lDNtnlTZ5MPC9WCZmRBd8iBaYEHPuc+aPxOY+7CG/WxrhCmyN0MVK+1b5471Z/9lytvn46
-	eYYUcNBH2h2SFd/RXvZqG7s2prh4bi+FNDrSIdeQj9O1MIXtaET5ulyB/bDUGF8c+v3I7z
-	e+gmElP3nLpUqU+P0QgsmEpcgMwx9nHCYLsT2RsnmaoHNZ60suFMIr/ysqNs84jHrmcgM+
-	KUSYjNJWv41bUnO6CwaEPDAPJdgnth4UTaJ6KLbzRuS4kl5YBgTliEPDVPU5Zg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: niravkumarlaxmidas.rabara@altera.com
-Cc: richard@nod.at,  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: cadence: Add support for NV-DDR
- interface mode
-In-Reply-To: <20251024102611.310568-1-niravkumarlaxmidas.rabara@altera.com>
-	(niravkumarlaxmidas rabara's message of "Fri, 24 Oct 2025 18:26:11
-	+0800")
-References: <20251024102611.310568-1-niravkumarlaxmidas.rabara@altera.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Fri, 24 Oct 2025 13:16:40 +0200
-Message-ID: <87zf9gpn1j.fsf@bootlin.com>
+	id 1vCIWA-00000009crN-0vlY;
+	Fri, 24 Oct 2025 14:11:47 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 148CC40553;
+	Fri, 24 Oct 2025 14:11:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1996AC4CEF1;
+	Fri, 24 Oct 2025 14:11:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761315104;
+	bh=A2ibR8D3vX5O91d0A6dlXuJ33auKQkMfaPv3Zg/W9+8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BBL/0gMFAB6iXWn/03INztg9bjGFUFVZB5eEkShmlnZW6695iBe3ceBH7QqlkxLDu
+	 nF6DS3kY/hsSXGtbh3Nxk7Co4cRPzlPx//JB5m+xT2RmdIBEeH4YhCnuBClgHEkxOF
+	 TzjCuo9FD2PPHxhnIOKKdCZU0iw6F2v5AkruSO1vsmyNPpZgNlb1gVWIotAWmdcL7J
+	 nL2MB7mV5ifb7Y7EkH9R/jEE5kV0lq28zC2GmIJIniekDVOQ5pHjfExxhIYDXkYi3C
+	 5YSx+ApTyOqtJhIHDgos29oXb9L0QedvgUuT2eYn42m4MNZNdNZMbKC3GqbYlOaYK4
+	 dqC39Qu5dgZDA==
+Date: Fri, 24 Oct 2025 19:41:40 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Robert Foss <rfoss@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+	Xu Yilun <yilun.xu@intel.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Georgi Djakov <djakov@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Joerg Roedel <joro@8bytes.org>,
+	Jassi Brar <jassisinghbrar@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <ukleinek@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-fpga@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-pm@vger.kernel.org, iommu@lists.linux.dev,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pwm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Remove extra blank lines
+Message-ID: <aPuJHM6SRbMpAZ8t@vaman>
+References: <20251023143957.2899600-1-robh@kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <20251023143957.2899600-1-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251024_112120_980115_C4835403 
-X-CRM114-Status: UNSURE (   7.05  )
+X-CRM114-CacheID: sfid-20251024_071146_303539_75A3881B 
+X-CRM114-Status: UNSURE (   8.49  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,18 +117,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgo+ICsJaWYgKG5hbmRfaW50ZXJmYWNlX2lzX3Nkcihjb25mKSkgewo+ICsJCWNvbnN0IHN0
-cnVjdCBuYW5kX3Nkcl90aW1pbmdzICpzZHIgPSBuYW5kX2dldF9zZHJfdGltaW5ncyhjb25mKTsK
-PiArCj4gKwkJaWYgKElTX0VSUihzZHIpKQo+ICsJCQlyZXR1cm4gUFRSX0VSUihzZHIpOwo+ICsK
-PiArCQlyZXQgPSBjYWRlbmNlX25hbmRfc2V0dXBfc2RyX2ludGVyZmFjZShjaGlwLCBzZHIpOwo+
-ICsJfSBlbHNlIHsKPiArCQlpZiAoY2hpcG5yIDwgMCkKPiArCQkJcmV0dXJuIHJldDsKCkkgc3Rp
-bGwgdGhpbmsgdGhpcyBpcyBpbmNvcnJlY3QuIFRoZSBjaGlwbnIgdmFsdWUgc2hhbGwgbm90IGJl
-IHRyZWF0ZWQKZGlmZmVyZW50bHkgZnJvbSB0aGUgU0RSIHBhdGguCgpUaGFua3MsCk1pcXXDqGwK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 23-10-25, 09:37, Rob Herring (Arm) wrote:
+> Generally at most 1 blank line is the standard style for DT schema
+> files. Remove the few cases with more than 1 so that the yamllint check
+> for this can be enabled.
+> 
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+
+Acked-by: Vinod Koul <vkoul@kernel.org>
+
+-- 
+~Vinod
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
