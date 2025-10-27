@@ -4,83 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36BCFCCF9E9
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Oct 2025 20:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EF4FCCF9E5
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Oct 2025 01:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J3T0APV5QShKTxKMAza30OTH0xOf9IBn1yWPjSi1D/0=; b=hnAhurpj8fiQUL
-	BvVBYjgNo71s2BmGuope6V5hBUpS6ioSCBqVwricQn7q9ly/e/ieXziiT4/RreN1bx1bDXoTSZoWG
-	kbts/i/MvouI/8Qt9J4fy4bEUmIbzQsh8I0rn0wA3NzHxYzOT7f0ezBXcnIf/oa+tr+1p4g2kZRI7
-	AOaOg6xbl85+AXFBHw/L6V90oGZmqIPxMJghTOHHwR6v/3f1CwWquciU0JWbNJ+BaIvXtlbjg/uMx
-	/AJqlxn+TatlJFzcK5z25Wy0H7Er4o5gHc4k/v/KwLmXpZOIlRhhd0G8iWtAbHzmnsBIStgTI/mp3
-	vb+8ktvA1KF7c6ta5riw==;
+	List-Owner; bh=Znn9MZ8uIubtNQ0HAAxkwZmrJYf/YyIX/4Wd+WEpRps=; b=fZoh10NKDEz6CH
+	p21NbnmoupRpc50PrSBbhoXD5gqwV8xZjDbWjaQZTdU8EwyDUWkAKqT9Nk1ajwhJSF40QYeRcnFSY
+	o9cRYp7XuFKi9bxYCDjmu7X/sXjq+fBeimrFzjI+40WrEwIIzneDYCN2pTrDWR8F/66ucDfW7bz0y
+	oo3L2OPNTS2u56Mr+hE9Jg+TEi99a7GOS4EoqWnZisAmfwIlOmWchChC3+HZ8qLnHuuKDufxqFLvm
+	j8P6kjiYGoMzwU5418jh6xF9ORQLmJIyzT6j7lIyUSrXg0fNTnTVqj8iNmSvBevO7oBIh2NpQAyh1
+	cV+hnTLqrfI6fcxPGFIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vD6vM-0000000CgoC-2o9L;
-	Sun, 26 Oct 2025 20:01:08 +0000
-Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
+	id 1vDCNQ-0000000CykP-1aGC;
+	Mon, 27 Oct 2025 01:50:28 +0000
+Received: from mgamail.intel.com ([192.198.163.17])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vD6vK-0000000CgnI-2pTY
-	for linux-mtd@lists.infradead.org;
-	Sun, 26 Oct 2025 20:01:07 +0000
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-7a2852819a8so2274382b3a.3
-        for <linux-mtd@lists.infradead.org>; Sun, 26 Oct 2025 13:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761508866; x=1762113666; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hb6iCZLT+0XKfA4pR/3eh+yoD9wmq48M4TyTjs5dVsg=;
-        b=KHJqyHlp0f50P3YO4GH2we0z2PSE0HTr9PXIohosZEoQPb/QAc6HzoSkFycrKtoE0q
-         wear29qMMw/QtEZ5BLfRJAhugM99EppPgPFwAC0ULzH1wqjdHLdXPuslU9qYWPO9Fg/o
-         S4czwYKPqoEXnFZGccV6b5NuJKIjhTT6N7Saa0m7nPF1PMytZfkymRX032PgJDQ7gJJT
-         MJ2OC76el1SQz9sAhx3A7/IGEWzGaU7lts58aTqoKZodHTbc9yUNigHdrsc7WAV99jx0
-         ZUiRu7rmdt01jWf4vhbVoQv/IODosWHj6ZfOGoT5jWUmvyVfCDime8yfcCXcTuRBPSoP
-         Kn9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761508866; x=1762113666;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hb6iCZLT+0XKfA4pR/3eh+yoD9wmq48M4TyTjs5dVsg=;
-        b=DqCQ91deEFutarkuUXIeBkQBlTXFS3A3LThnv9oeOfuAWCTFSLnK1F7cMq1VHplfGz
-         mMucfDEMRi+A+qJvrqT3ZfH5Ed5Y9o2NPEhXnHAbVJ+O5lsg7wECJIRWGh6qR9o/hs9h
-         yOfldnm/aUDZYQdxh7qT2qXdmiMjQQA/T2qvnS0QPQxKeFbMmuxcT3XZeXpsc0jwtxXz
-         MCRGBrOX8LW+XAAUUjxn7XvxtOiVtp5JCWAQOEXnEreeRJxL4nHpRszZihns/5H89s+E
-         cbm9XySUpsvFvQ5xvGYFqLfy122NYYVjCNnnhLJ0DncK8uC8ayHB4z8GAXS6xQCtGrKp
-         DOwA==
-X-Gm-Message-State: AOJu0YycCBXUBXzA1UxLnM74fP6/uAIvMwiN+1wXuPagqDVV+arRKKDE
-	MPs+aEDSMxSVVUe5qjTt1gpIjtFk5UTC1UD9q+aDTcel9eX/BsICakwOQ+I+rw==
-X-Gm-Gg: ASbGnctxVirC8v5LOvdZ7m6+AP2w5F8+QgnI07KefTMk1z8EBZDowiZk1Hob0OK5H1R
-	LX3ZiZy8C2n0H5QlJF9C3phytdXzNQjNoSjHMM5BwSIBm0xpkXd1iSe6+lPqnwbdEdcf0M8Uo+P
-	a2aLAdlENYMLt17RpWmUf2sfEyWAQy3Q8gdfvOUa2OB2ZfmejryktJx5xtOhDr4iViEYL1hoqJV
-	/Mb04NLfrYB5qFhE8VW/UgtUtZuI3EOP1zF59JlG6SGXIr79N+VoNFzcpKjAfRItKEa/8kXnEnu
-	37TJhPKVHY5VlzXCAJhDr3hNRgyQpLEsRmnzrX+kXgWLPTJlehzw2kuRtiMwPV5Vn7CHYbIIAOo
-	aTe4ATaPhZ14PbYc4ti2z6jXy4CfDShcMjGN42vOLHI5B1XA=
-X-Google-Smtp-Source: AGHT+IH1UR44gREowlj75IDKEUkJUUeKj/0coghW+JAqXgXnmzibb52I5jNUoH1gBeeILZtDDzm2EA==
-X-Received: by 2002:a17:902:e74a:b0:290:dc5d:c0d0 with SMTP id d9443c01a7336-2946e247211mr162273445ad.49.1761508865561;
-        Sun, 26 Oct 2025 13:01:05 -0700 (PDT)
-Received: from ryzen ([2601:644:8000:8e26::ea0])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498cf352esm56444675ad.17.2025.10.26.13.01.04
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Oct 2025 13:01:05 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/5] mtd-utils: reduce linux/types.h usage
-Date: Sun, 26 Oct 2025 13:00:47 -0700
-Message-ID: <20251026200049.25152-3-rosenp@gmail.com>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251026200049.25152-1-rosenp@gmail.com>
-References: <20251026200049.25152-1-rosenp@gmail.com>
+	id 1vDCNN-0000000CyjW-1rom;
+	Mon, 27 Oct 2025 01:50:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761529825; x=1793065825;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=T3pkaI/GJuOsGFoVg5/R4SNriMbvV6bNB454qQaWZQ8=;
+  b=SFY3HsTqY2Ry2NQd3zO0yKdoJsln+nTLaiUb4zzF60W8D3fRq3fTXODw
+   vIBdycM9zJwvlhYvqOcGxcNv44Wqhmf9fou4m9uCosnAOkm6KckOTJUSi
+   nkN927iyFhYV3TRCynZEFAVQPkqrYSO/6TtlB7mDEjtvQ1U9lSgvnIdzd
+   XwnRRWL2OjwRSPQ87xHjhLVEbaRdYK45rUr66pRQNTdKsHayxukAQ/5wc
+   dIM67bUNf8kclm4K6Kwww5CDKvMH3gHlYXHgnPehlNFFU8HvWh+phtlbm
+   QuCapYO8U12dwTIYM86QRSxqOuwZLqOC3cCInr5Mx/LWbufk48meZkVPf
+   w==;
+X-CSE-ConnectionGUID: EjNrAoT2QeimWbddKFblBA==
+X-CSE-MsgGUID: tgzsK907Tp6tcdrer8j7Zw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="63512777"
+X-IronPort-AV: E=Sophos;i="6.19,257,1754982000"; 
+   d="scan'208";a="63512777"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2025 18:50:23 -0700
+X-CSE-ConnectionGUID: RqD3PVgcSpO3hdFc8HdBsw==
+X-CSE-MsgGUID: bAZX7S5kQLGkCNKy4yStdQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,257,1754982000"; 
+   d="scan'208";a="188967609"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa003.jf.intel.com with ESMTP; 26 Oct 2025 18:50:09 -0700
+Date: Mon, 27 Oct 2025 09:36:28 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Robert Foss <rfoss@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Georgi Djakov <djakov@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Joerg Roedel <joro@8bytes.org>,
+	Jassi Brar <jassisinghbrar@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <ukleinek@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-fpga@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-pm@vger.kernel.org, iommu@lists.linux.dev,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pwm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Remove extra blank lines
+Message-ID: <aP7MnJ8mIlZhT//S@yilunxu-OptiPlex-7050>
+References: <20251023143957.2899600-1-robh@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20251023143957.2899600-1-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251026_130106_713264_48175E20 
-X-CRM114-Status: GOOD (  10.74  )
+X-CRM114-CacheID: sfid-20251026_185025_528730_3C749A68 
+X-CRM114-Status: UNSURE (   9.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,95 +135,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In the cases where it's needed, replace with asm variant. It's more
-portable.
+On Thu, Oct 23, 2025 at 09:37:56AM -0500, Rob Herring (Arm) wrote:
+> Generally at most 1 blank line is the standard style for DT schema
+> files. Remove the few cases with more than 1 so that the yamllint check
+> for this can be enabled.
+> 
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- nor-utils/rfddump.c              | 1 -
- nor-utils/rfdformat.c            | 1 -
- ubifs-utils/common/compr.c       | 1 -
- ubifs-utils/common/linux_types.h | 2 +-
- ubifs-utils/common/sign.c        | 1 -
- ubifs-utils/common/sort.c        | 1 +
- 6 files changed, 2 insertions(+), 5 deletions(-)
+[...]
 
-diff --git a/nor-utils/rfddump.c b/nor-utils/rfddump.c
-index d6d7f68..2e9e275 100644
---- a/nor-utils/rfddump.c
-+++ b/nor-utils/rfddump.c
-@@ -24,7 +24,6 @@
- #include <getopt.h>
- 
- #include <mtd/mtd-user.h>
--#include <linux/types.h>
- #include <mtd_swab.h>
- 
- #include "common.h"
-diff --git a/nor-utils/rfdformat.c b/nor-utils/rfdformat.c
-index 0a3d9fb..6a78122 100644
---- a/nor-utils/rfdformat.c
-+++ b/nor-utils/rfdformat.c
-@@ -26,7 +26,6 @@
- #include <getopt.h>
- 
- #include <mtd/mtd-user.h>
--#include <linux/types.h>
- 
- #include "common.h"
- 
-diff --git a/ubifs-utils/common/compr.c b/ubifs-utils/common/compr.c
-index 6f90151..ef540ee 100644
---- a/ubifs-utils/common/compr.c
-+++ b/ubifs-utils/common/compr.c
-@@ -27,7 +27,6 @@
- #ifdef WITH_LZO
- #include <lzo/lzo1x.h>
- #endif
--#include <linux/types.h>
- #ifdef WITH_ZSTD
- #include <zstd.h>
- #endif
-diff --git a/ubifs-utils/common/linux_types.h b/ubifs-utils/common/linux_types.h
-index ebf9ecd..c172657 100644
---- a/ubifs-utils/common/linux_types.h
-+++ b/ubifs-utils/common/linux_types.h
-@@ -1,7 +1,7 @@
- #ifndef __LINUX_TYPES_H__
- #define __LINUX_TYPES_H__
- 
--#include <linux/types.h>
-+#include <asm/types.h>
- #include <sys/types.h>
- #include <byteswap.h>
- #include <stdint.h>
-diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
-index 032a6ac..379d2e4 100644
---- a/ubifs-utils/common/sign.c
-+++ b/ubifs-utils/common/sign.c
-@@ -28,7 +28,6 @@
- #include <openssl/conf.h>
- #include <err.h>
- 
--#include "linux_types.h"
- #include "sign.h"
- #include "ubifs.h"
- #include "defs.h"
-diff --git a/ubifs-utils/common/sort.c b/ubifs-utils/common/sort.c
-index d585836..a9cfa67 100644
---- a/ubifs-utils/common/sort.c
-+++ b/ubifs-utils/common/sort.c
-@@ -12,6 +12,7 @@
- 
- #include <stdio.h>
- #include <stdbool.h>
-+
- #include <linux/types.h>
- 
- #include "sort.h"
--- 
-2.51.1
+>  Documentation/devicetree/bindings/fpga/fpga-region.yaml      | 5 -----
 
+Acked-by: Xu Yilun <yilun.xu@intel.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
