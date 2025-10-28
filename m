@@ -4,81 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1BC8CCD1BF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Oct 2025 10:48:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 570AECCF9E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Oct 2025 15:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=D3GfUrm9K2UKF2JpIIDOSKs92RnxXT80d7Xu/5ZiLiw=; b=DyjitwNcYc784p
-	gvCxFhxP8pxtoK6x4DfVtXWXyuoyG8MF84RDI1gSoZ+ri8ky2B7utszngWMy8tkb72+JeYd9i4Vhl
-	V/jx6dr0Sp10ZVx89ienr96h8m27L3tql+SqmYUJpKyTWOu7RCZzIFYGUuoWAIA4WrDRA26DHMqC2
-	i3WAAwKlD9RDLhYGEHjYE4Uo6qctAeP+4cNgl8S8UfBfNgNoReW0eJLxjljS3tgubkFrhwknsK1qt
-	IIsGG11JinPJaUbPfjrlF1gm+ZeJ6tN1Vkig/IKTGedMxG1gmiITnbrcZhDJUUA4OSci1KCEhU0jH
-	VV9yqnYceMRf1pgLYAzQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=smAYlcau+NuNg6gonKMrBvlXkstx3zJvMx0R1STThUM=; b=ch5otG2Ity11lc
+	F92LFX7lgJqx9wDc4lnhrHytilabH3ROmisR1BTeupwF3dgI3/UFyttGdUdTgiuMw26kCoW4X540v
+	7U3/vczodlU3n8KoIW7hhDo2lSzpaFOmXxRl2pQMB3jSH1f7yfwQ4PXH+nbLCrqvh2zvBHA8FkNPk
+	s50qA/7I6ywoS8aH41n+L1dIIofuLXaN+YhAb3G/Mrx6eNklocC6/cKPFhX4IzM5EvWKh0HCFikkN
+	E0vFzM6c26+hV4qif7YOEU5RkE2O5HXIg6MA3glW7fGVVVon8p7QpM2U4/EJDSJqJFPQvNYQACxRW
+	7HvjpA3ae/drlfmamXVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDhFT-0000000Fn3g-2w7H;
-	Tue, 28 Oct 2025 10:48:19 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1vDlix-0000000GBiT-3SyB;
+	Tue, 28 Oct 2025 15:35:03 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDhFR-0000000Fn37-2ivW
+	id 1vDliv-0000000GBgj-0MuI
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 Oct 2025 10:48:18 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-591eb980286so6082954e87.2
-        for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2025 03:48:16 -0700 (PDT)
+	Tue, 28 Oct 2025 15:35:02 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3ee12807d97so5657837f8f.0
+        for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2025 08:35:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761648495; x=1762253295; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=k/dkCaYwuy6k/VCW4Ihz5PjQFBOcB6fd68PVzBYbeCU=;
-        b=NLiWkif4D8+ODEqoCubRdbbpW9Nt12AcyvQI2PFq1E4K/rE6Nqf62CbzhFsMyeh4e0
-         Xvs9ol3PtQIQ3PKb/+UjVflHLVlIw2YWDw/egyJjMWz1BEo2bWOp2ypkmfvYQLrGwq0u
-         fwtYUp2q5TLbK8+6QJVfW8efhPK8G7Lh3loLX9ohZITzCCbsCYxfI/YDNfXE0EOnN+h4
-         oLsULtOO7h7i+i3JPbJnkgsQpMutC+DrT0DbfMUT6OSUHpOEZ7YYT4HBNXoTp8vVBdiI
-         kZsBDZ5kcCPpDJ5EirdwZsuxRSgXXRJ25Zxa+vilf76p2oq+L4ud4DGo11EMqvmUWRY6
-         SlxQ==
+        d=gmail.com; s=20230601; t=1761665699; x=1762270499; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+zf/L6+BpO5HiQmCsVmEtAAefad0gqPlx28ytnkqVYY=;
+        b=IMgjqZ1NN1cqRTyMVWBquQdHxAgtRx26M9cbkYySpPX/B1cYhtT6nblxzBxM8YjCR0
+         rSO05ePP2UZVrGm5c0x0i2p+76W/If9WcRNF56fAl8K+3ksiFgjH5goeACKPVoXStiyt
+         vQIfc0/PShUNnBIeN6/SldLJsNlATguWQTrwgm+LiS24xfL8JZNnQ6+vXwWfBmyjjxTV
+         SMV5nKiT4AG40yjH/ytBuP8J6sjA4hjbsKzONDHBpGV1JgApkbhdKWaU7yMPyS5X8FCY
+         67L5nke16LMZFCi67rmffhBfQwMUcXuhB2oj1c/gXi/ghb3yz6xjcKUORNBOFD11Emqm
+         Z8nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761648495; x=1762253295;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k/dkCaYwuy6k/VCW4Ihz5PjQFBOcB6fd68PVzBYbeCU=;
-        b=xT3T3NnW56BXmNULbtpP4dp9Q6jn/bo0jNXKa6XcMHldvZSCBVslgKKO3QbMNlkU+6
-         d+8Yewt6L1mXL19bOU1+w0f+ETUhbHpMex3Bq3XUnqsGdO82pZAVxCav56md5eqdimJI
-         ISLuvWRqtMAaM2EUPAoMDAbRhHDXfaNp6XlM5fXyjhg4lXvShbs8zzmP6HMePCROgBdu
-         3k+p5+C0958l4Gs4FEG2U5DFuMvu5i1kZmCyruV9zLgXU8RCiVp/4GLXYlL46MpzKnOn
-         dJgT8CpZaYfcfd1/AYKMtHOxUQvPSien054tc3bcXDRGWtdlcAirc6oKcq5J13WfSLrt
-         Lcyw==
-X-Gm-Message-State: AOJu0Yw021nA01tRtFxtbA2Ze+iIYrHQ9hcvyFJYsLf3rD8qsHdfRi31
-	v19AkuME1f0AcG5Q6bejh1ufWIMOX+9X0vzC6KHtZVpe15arYANx5N6sJG+WhLMZYjIekQ==
-X-Gm-Gg: ASbGnct0rUVMOYn4OkuTdzHKDXtcQgyhYpAmQ95FkEPfFBIsjcmKwhle1EIP0Z1Zb09
-	gOuJuRGGP4KN01gtDPCvLMkNq2xjCAvVFRzrqdL1IzEPU3TwGjaSOO9I/ZPpNI9MFmETcLx82yQ
-	REnl5vHx8+AFoaHSEkKSWrXgKp3xNMW+2SE14KW+COpd/YCXI+5jZnHRtMFe2TR2Plhv1xS/kd9
-	NkdVzV0Rx11brAO1Ez1rXblrvHdO+cMQo2SVZYgJqxASMdGvQQc0lcSBbk5iwlImIh+g0F3mNAn
-	POXLzywRZblXN05t/o/DHjhoYWtz24yiroMAmMpL2Nk4W8KuTi6HFSOadeRqRx58ZgjGqZ11kJH
-	g5ufG7p6eJdZXEBzVTvsuescuUDhjtGH6bdVkVfHtGfIbFIMpKzUSWwyPUrf5eJ9SFhVRnfhN6u
-	oZMhI0yvybnuHt+FOq0g+2ngs0ctMYIzacDiVMbtMLzF3KNpr6GXWg46l3bnYp
-X-Google-Smtp-Source: AGHT+IEKIhjHuAZnA/7rxFzTb4SZln42CWK9VdWpUgZfoktpFAwwCdxcYmfMY5RcIagRbDjqzjO7vA==
-X-Received: by 2002:a05:6512:1188:b0:592:f9c6:972f with SMTP id 2adb3069b0e04-5930e9c9283mr1295470e87.54.1761648494793;
-        Tue, 28 Oct 2025 03:48:14 -0700 (PDT)
-Received: from lnb0tqzjk.rasu.local (109-252-120-31.nat.spd-mgts.ru. [109.252.120.31])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59302878849sm2952293e87.80.2025.10.28.03.48.13
+        d=1e100.net; s=20230601; t=1761665699; x=1762270499;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+zf/L6+BpO5HiQmCsVmEtAAefad0gqPlx28ytnkqVYY=;
+        b=xS57buTH47DQzjZ/pzcqO2b6zGhywD4ZzImMSRCFP3VcZZe4zEcYTZqQuSvQxZ1KYT
+         pqZp318u47LnIsSRU5J6YACNs7r39Szl3fQIbTNvByL/ACyNIHaSW9U7JpxHs/6NHEVj
+         SO2VA2D2xm3KnmBhhlkvM+eDbyyyXhBGSsxISbo2BZ6Sm5bKKqt3C5GYUq9TqRfXsmx9
+         lgrwfARsT6s3Tq4ZqlBndxZU7wcoAycpsSZ+VNfcp2oL9VOYP5HcenzR4n+YowgKE0tO
+         jys3XntIxo45I5zEAMAP3K02W7zYiVHu0v1ejGFUTMqQn6IsE3TsqjDqNeJkvZjMtxbk
+         mF4A==
+X-Forwarded-Encrypted: i=1; AJvYcCV8QPyRVhUOvTVDbICKN+uxXnxLl470oQCv0PqGog+VIkpDyR4zBUgjflnxA+n/zqhRWocaaWj5Mmg=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw7cW+/63jWo5bmZa3evVmjlV+6BtyiTVrf0rKJQmLl00POrqhD
+	WA7ecffeSeGcJGEAiH6aUiR91LTzSG2L7gq63VFTq2Fky0egoIyDy/6F
+X-Gm-Gg: ASbGncsIzoESaOjgQFcFSs7hKmHr/QLg+rK7VzSXBi8sdkUdN0htSLO2rgh8kUhvv7U
+	5jphAQtGiWJXr8yj+0S43y1+bdvZ4c87MeUtvRIosbOz8zlAeBfr3lhxizAHtARoE55mmldPNX/
+	Rj9hFarr3+kmsbwdlyPOtlCSNxuKKd2k/HgBiMRR0kZ7iqKP0KZqmXejK00sMUW7J2g3UdeHFKg
+	PED49u/UkNqDRvLDfxZRIj9nq9H9B2f2x0gkeDxU9RMkbjIF7qJ03mDUuQOJ6IUXsH82Mu/sH/y
+	9l5cSlq79P+mzoBqFeqzTUhFOWXOJwF9pi4RuvXQYFHPAhtSP/KE3ecvaQhUKbadOqapbnspHcc
+	OVe5eIYJVvqPiWjqLjRgcDucO0l31L+fniiNYsF/KxT8TG+BN9L3bAv5rO2jvuA9ACqHlv61XqE
+	qH9kpa4i2ua9Nds/v0MbIQQ0KaPKEd28Jgdj+6DjE1/W3j7XKFXwQYrjn/2g==
+X-Google-Smtp-Source: AGHT+IHQaqAyFKg0dIVlFNzHvuX0zpZSii67laWQ5yWofyqAlv0IPJ4MzzJSDYza6+cEoyhxJ1y+9w==
+X-Received: by 2002:a5d:5c89:0:b0:428:3f7c:bcf3 with SMTP id ffacd0b85a97d-429a7e86b07mr3600391f8f.49.1761665698923;
+        Tue, 28 Oct 2025 08:34:58 -0700 (PDT)
+Received: from jernej-laptop.localnet (178-79-73-218.dynamic.telemach.net. [178.79.73.218])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429952b7b43sm21334532f8f.6.2025.10.28.08.34.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Oct 2025 03:48:13 -0700 (PDT)
-From: Anton Moryakov <ant.v.moryakov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH] misc-utils: docfdisk.c: validate partition size to prevent arithmetic overflow
-Date: Tue, 28 Oct 2025 13:48:10 +0300
-Message-Id: <20251028104810.65250-1-ant.v.moryakov@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 28 Oct 2025 08:34:58 -0700 (PDT)
+From: Jernej =?UTF-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>,
+ Richard Genoud <richard.genoud@bootlin.com>
+Cc: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@baylibre.com>,
+ Wentao Liang <vulab@iscas.ac.cn>, Johan Hovold <johan@kernel.org>,
+ Maxime Ripard <mripard@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Richard Genoud <richard.genoud@bootlin.com>
+Subject: Re: [PATCH v4 03/16] mtd: rawnand: sunxi: Replace hard coded value by a
+ define
+Date: Tue, 28 Oct 2025 16:34:57 +0100
+Message-ID: <2017172.PYKUYFuaPT@jernej-laptop>
+In-Reply-To: <20251028073534.526992-4-richard.genoud@bootlin.com>
+References: <20251028073534.526992-1-richard.genoud@bootlin.com>
+ <20251028073534.526992-4-richard.genoud@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251028_034817_714461_CE277791 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20251028_083501_147840_D7B09EA3 
+X-CRM114-Status: GOOD (  10.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,49 +106,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-report of the static analyzer:
-Possible integer overflow: right operand is tainted.
-An integer overflow may occur due to arithmetic operation (addition)
-between variable 'block' and value { [1, 4294967295] } of 'nblocks[i]',
-when 'block' is equal to '1'
-
-correct explained:
-Added bounds check before incrementing block counter to ensure that
-adding nblocks[i] does not exceed totblocks. This prevents potential
-integer overflow when user-specified partition sizes are too large,
-which could lead to incorrect partition table layout and device corruption.
-The validation ensures safe arithmetic by checking block + nblocks[i] <= totblocks
-using unsigned comparison.
-
-Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
----
- misc-utils/docfdisk.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/misc-utils/docfdisk.c b/misc-utils/docfdisk.c
-index 486ce29..df070b2 100644
---- a/misc-utils/docfdisk.c
-+++ b/misc-utils/docfdisk.c
-@@ -255,6 +255,10 @@ int main(int argc, char **argv)
- 		ip->firstUnit = cpu_to_le32(block);
- 		if (!nblocks[i])
- 			nblocks[i] = totblocks - block;
-+		if (nblocks[i] > totblocks || block > totblocks - nblocks[i]) {
-+			printf("Requested partition size exceeds available device space.\n");
-+        	return 1;
-+    	}
- 		ip->virtualUnits = cpu_to_le32(nblocks[i]);
- 		block += nblocks[i];
- 		ip->lastUnit = cpu_to_le32(block-1);
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RG5lIHRvcmVrLCAyOC4gb2t0b2JlciAyMDI1IG9iIDA4OjM0OjU2IFNyZWRuamVldnJvcHNraSBz
+dGFuZGFyZG5pIMSNYXMgamUgUmljaGFyZCBHZW5vdWQgbmFwaXNhbChhKToKPiBUaGUgdXNlciBk
+YXRhIGxlbmd0aCAoNCkgdXNlZCBhbGwgb3ZlciB0aGUgY29kZSBoYXJkIGNvZGVkLgo+IEFuZCBz
+b21ldGltZXMsIGl0J3Mgbm90IHRoYXQgdHJpdmlhbCB0byBrbm93IHRoYXQgaXQncyB0aGUgdXNl
+ciBkYXRhCj4gbGVuZ3RoIGFuZCBub3Qgc29tZXRoaW5nIGVsc2UuCj4gTW9yZW92ZXIsIGZvciB0
+aGUgSDYvSDYxNiB0aGlzIHZhbHVlIGlzIG5vIG1vcmUgZml4ZWQgYnkgaGFyZHdhcmUsIGJ1dAo+
+IGNvdWxkIGJlIG1vZGlmaWVkLgo+IAo+IFVzaW5nIGEgZGVmaW5lIGhlcmUgbWFrZXMgdGhlIGNv
+ZGUgbW9yZSByZWFkYWJsZS4KPiAKPiBTdWdnZXN0ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gU2lnbmVkLW9mZi1ieTogUmljaGFyZCBHZW5vdWQgPHJp
+Y2hhcmQuZ2Vub3VkQGJvb3RsaW4uY29tPgoKQWNrZWQtYnk6IEplcm5laiBTa3JhYmVjIDxqZXJu
+ZWouc2tyYWJlY0BnbWFpbC5jb20+CgpCZXN0IHJlZ2FyZHMsCkplcm5lagoKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
