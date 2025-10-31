@@ -4,51 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E85CCCF9F8
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Oct 2025 17:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91758CCFA06
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Oct 2025 17:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SUqCPIKqeliv63a0xdijEeEKu/8DvPclxG5Pt7TNQ6g=; b=C5Q0OZg3u6MiGh
-	iqNRluekoITH6MGzKlDkLg4rUctbxF1/71Wjhk4yttYINNBf/CcY7XengQbKXcfzUzTvVCJVMnEhh
-	Fwwu1surL+8WyJIkL7f/ZE2nH9Lj52TnK8qgHJrXRWz4YQjk0wDHlC2tfxuKOirzvADXtMNq7Hc90
-	eg3KksgWUuK8PExue3JxAzKGOr4mTi1tIQH/NWKnz/v8wg2fxs1YULS1kvFqb5eU+1N/fWVscH+6K
-	Y8nhla0sNP2zYeONc0Fzc7ZakEC905t5XWJ23tfkUrRDnOckd6wjJ3gSvPV180ks9oFolr94daRe6
-	eUfbyzbYW0vQjtfYlrEA==;
+	List-Owner; bh=vx+a+NDZGLHeyBVn/JEIJ5uXoHE7uRSO7o5VwjPgiWg=; b=vT+OesA78b930i
+	BoE/eTPaVIt8TzeFfHMuT29wFZdjb4jwXroW1HPngbrm4ym8fARYs36eYnnJqd2W+GuBOOLGkpg3U
+	KTS8Rs/72vnZxRFm2i1n8Re+NLLrIg8CVfearLs+fPNfT9D7lVyCXHyPnC9NXNqa9IQnKTWqiRQ3a
+	r0TexUt7niidqHQ/+AYEP2nRjjec3Ie7029FFY5bwcTT9jcIAUAyyOM5Cs1qkr3umJUcr8CKASpdf
+	SozHJ2iEQoTepvCvUUkxrY2FAT33Lsml7J0EgBKpXIIP1PCcrcKM5rxZOM4kjQvPfz0v+8Ku32Mde
+	NPCg7hnAwuAy1bENF+lQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEsvK-00000006UF2-0Sqp;
-	Fri, 31 Oct 2025 17:28:26 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1vEsvL-00000006UGV-1eIz;
+	Fri, 31 Oct 2025 17:28:27 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEsv9-00000006U4p-1R7q
+	id 1vEsvA-00000006U5b-0NBq
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Oct 2025 17:28:19 +0000
+	Fri, 31 Oct 2025 17:28:20 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 70C424E41442;
-	Fri, 31 Oct 2025 17:28:13 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id AB4081A17C5;
+	Fri, 31 Oct 2025 17:28:14 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 477B860704;
-	Fri, 31 Oct 2025 17:28:13 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9AD781181800B;
-	Fri, 31 Oct 2025 18:28:11 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 821FB60704;
+	Fri, 31 Oct 2025 17:28:14 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E31F011818466;
+	Fri, 31 Oct 2025 18:28:12 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761931692; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1761931693; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=MQ2OSbA2wX7GpEne4dN3xY/3vjobyU3TcL9SV/CMJH8=;
-	b=vvI4HU/grcaLTF2EgrEQqMZN9bpaAXWY9kU/ltufl/+RXDyc8UiYJSFIMOx971wR5+m+mr
-	/QABjhbFEv4ePBgoNHVR2N6ddUH9WnFa5VkJJC9BJHzFGQU37w2MpQE8nPQXuSYqKVJxy2
-	/rJvT+fSBGXmFItqrda9qTNeJApBDcI5QZTN8G7TiTJ1D0+BpfSKYZACjPU3R4kDJG3DTA
-	21jLXXDmkN/Az90EQnn13I75WOxgp+gSlF7wrIQUAP0/vtsSZIt+qQPe5bJxz/VLZtu8yA
-	D8erudFjW/vAZudPrgCii7M+0HwZXQyns2C3vYuwNhvQKW0ERiV9I44Z6wRMTg==
+	bh=Cd1E/3COSsZlzYl0nvZBhxDTb/M09zD1KDjitt7bE84=;
+	b=jGqvtoEgGLnT2FvQCgdCkvNmT/ZZIAcSzIe3eAmD/fd49VWzBqmtx1ZAi5yAzMVIqGu+Kt
+	MZXAKpC1Aak5V/prgzt8vtmQ+barP3b7XHNvOiYzGiLSqBnaZeHbahS0VBtk09usO596GW
+	8Wq/YPez7gHEO/lsb6JpLaqeey7Sq9cuJEPT5Ew9MwvbRss91lXdLeC2M4tkmRRz++6eGu
+	wYzF4015/Ur39MQqXqOXpRz0GO20ZrzgZ2sbkYIZ0eO0tk+XaBrnWKMg8O+PrV1N3Jbsia
+	+wuyzvp7gue4DN4KO6czR8S002NDd/KVa/uX9NFueknXukxZQ5vBjRqOJ3SCpQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 31 Oct 2025 18:26:46 +0100
-Subject: [PATCH 02/28] spi: spi-mem: Create a repeated address operation
+Date: Fri, 31 Oct 2025 18:26:47 +0100
+Subject: [PATCH 03/28] spi: spi-mem: Limit octal DTR constraints to octal
+ DTR situations
 MIME-Version: 1.0
-Message-Id: <20251031-winbond-v6-17-rc1-oddr-v1-2-be42de23ebf1@bootlin.com>
+Message-Id: <20251031-winbond-v6-17-rc1-oddr-v1-3-be42de23ebf1@bootlin.com>
 References: <20251031-winbond-v6-17-rc1-oddr-v1-0-be42de23ebf1@bootlin.com>
 In-Reply-To: <20251031-winbond-v6-17-rc1-oddr-v1-0-be42de23ebf1@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -62,9 +63,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.2
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251031_102815_551438_9A96A284 
-X-CRM114-Status: UNSURE (   8.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251031_102816_279476_631041B7 
+X-CRM114-Status: GOOD (  11.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,36 +81,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In octal DTR mode, while the command opcode is *always* repeated,
-addresses may either be long enough to cover at least two bytes (in
-which case the existing macro works), or otherwise for single byte
-addresses, the byte must also be duplicated and sent twice: on each
-front of the clock. Create a macro for this common case.
+In this helper, any operation with a single DTR cycle (like 1S-1S-8D) is
+considered requiring a duplicated command opcode. This is wrong as this
+constraint only applies to octal DTR operations (8D-8D-8D).
+
+Narrow the application of this constraint to the concerned bus
+interface.
+
+Note: none of the possible XD-XD-XD pattern, with X being one of {1, 2,
+4} would benefit from this check either as there is only in octal DTR
+mode that a single clock edge would be enough to transmit the full
+opcode.
+
+Make sure the constraint of expecting two bytes for the command is
+applied to the relevant bus interface.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/spi/spi-mem.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/spi/spi-mem.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 81c9c7e793b6ab894675e0198d412d84b8525c2e..e4db0924898ce5b17d2b6d4269495bb968db2871 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -43,6 +43,14 @@
- 		.dtr = true,					\
- 	}
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 064b99204d9ac4bc233307609defa4fbbaf4534a..71e3eaf59df97cf6d04e6e674810f12d037f384b 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -175,8 +175,19 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 		if (op->data.swap16 && !spi_mem_controller_is_capable(ctlr, swap16))
+ 			return false;
  
-+#define SPI_MEM_DTR_OP_RPT_ADDR(__val, __buswidth)		\
-+	{							\
-+		.nbytes = 2,					\
-+		.val = __val | __val << 8,			\
-+		.buswidth = __buswidth,				\
-+		.dtr = true,					\
-+	}
+-		if (op->cmd.nbytes != 2)
+-			return false;
++		/* Extra 8D-8D-8D limitations */
++		if (op->cmd.dtr && op->cmd.buswidth == 8) {
++			if (op->cmd.nbytes != 2)
++				return false;
 +
- #define SPI_MEM_OP_NO_ADDR	{ }
- 
- #define SPI_MEM_OP_DUMMY(__nbytes, __buswidth)			\
++			if ((op->addr.nbytes % 2) ||
++			    (op->dummy.nbytes % 2) ||
++			    (op->data.nbytes % 2)) {
++				dev_err(&ctlr->dev,
++					"Even byte numbers not allowed in octal DTR operations\n");
++				return false;
++			}
++		}
+ 	} else {
+ 		if (op->cmd.nbytes != 1)
+ 			return false;
 
 -- 
 2.51.0
