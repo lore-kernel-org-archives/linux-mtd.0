@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8327BCCFA03
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Oct 2025 17:29:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00C11CCFA02
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Oct 2025 17:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zZW+bEyNl+zUtwdDe72UNG2ky8Sm2nGVL+9ijHxJcEY=; b=wADYpTaRAZblRK
-	SFN9YIniw+4v5UACq06QMlm98g+bNpZY3g85roUhtYvgNiQfp2lT8JdaA3SZPPL0cVRAyUVu/MBrs
-	H0I6Od7543jjR37G7k6kkLHRiTftIh7T2uH3UhQdgtYdZ5SHUu8SNvypbUJ/n4RqdVD8XTL+D6Yok
-	9bmaPar0xK3d2ra8AOOT4smBF1VeMnoU1IlXK/25ufFBXUlr6TVcSanFqVZ6Oiem8fFgsGLnpq3Kv
-	RWJb8tZihowQhfqbB2fz75zcGff+xJD18KCRgCwRbBnaPC/b0DOZveedzZZutJhmKHLHjuiDe/c+d
-	mpvmY5r9/FFYWWZfPQig==;
+	List-Owner; bh=uzLwKDwtBkLSDdikgTUQxzDQXldeWLzsHdXFn3Xk9ew=; b=k6OVhXWRt8O5Mf
+	07a9McgsiswEWHZzlyxswXRPIJmVPc2lcrxdcgr8FEfhf/O4nP0famMPBmd2ilO93KB7fQjJHvT2E
+	toerhtbNvDFqPgEukBtbe8EmJe8U5BrplJCGdr6rkqXk/S+QgkHuuwJ+evbmlfW5y2ixALXfKE4f7
+	bSW0XXfTiCGB0fUm6w9d64Zxd1Eqm8E3fmKg/45omoRUZK0HhgiSrDXy54j0059KS/LqAhRdcq2L1
+	vrpOUcMkbGfFF2UoCiTU2QB1ZViddsk+KIXdECWemQFBU2V0F24up3MtitR3qY0Mca9daEX+9aM9u
+	qHdMsVO25nPVT2bgVKIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEswM-00000006VUg-3j4e;
-	Fri, 31 Oct 2025 17:29:30 +0000
+	id 1vEswP-00000006VYn-2nXc;
+	Fri, 31 Oct 2025 17:29:33 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEsvO-00000006UJf-3v7x
+	id 1vEsvU-00000006UQu-0L4p
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Oct 2025 17:28:41 +0000
+	Fri, 31 Oct 2025 17:28:42 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 485E51A17C4;
-	Fri, 31 Oct 2025 17:28:29 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 9D80C1A17C2;
+	Fri, 31 Oct 2025 17:28:34 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 206F360704;
-	Fri, 31 Oct 2025 17:28:29 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6685E11818468;
-	Fri, 31 Oct 2025 18:28:27 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 7461360704;
+	Fri, 31 Oct 2025 17:28:34 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A938211818466;
+	Fri, 31 Oct 2025 18:28:32 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761931708; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1761931713; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=mXik5j5I11be7gGeEVhCzfvaeTWInz7PcYTvkv28QF0=;
-	b=hNMbrx24fu986J8m5f1/dnFgNLgPP2fiWJWkjZkyUgfgDAF7g1MBpAjsjzFp3+r43dZiQb
-	FaUqXKKkGcO7EcFKlORnUtq/ezPZfNS+gPEiWATs1WLqyIRepEtBhAJWBlUpfN+IO19ZLP
-	FjC3SeNvxJfaiT8TVReVsGcdFRlErz53p1uckIHnF47XO/utmjUihp4LhmH73wtJj82tuO
-	Q1zzXLRixFIp/yOlUOA16mHQeoMqMVWZT8bmINveTGX9W/9Vbxx8uFy747VD5+fiBlO6gG
-	9jV6+SOVxonAzMq5GjOgMxFv++cArYbstP9kLu0JqElIzD26/YTMmC4T+piNZA==
+	bh=qLn8pqGpyg4U7OLjWyRrfWQycUAFq+5725pA6nA01gM=;
+	b=UEe5WHxTMWNUU4sVtZJCYJu6Mgx3Z7Fcdlhkt0JsnLfHxQPyeTuP7KXuMD5arq8/mWdo95
+	4/QFu7UYGaPOYcbWh5NYEIOtRY9N76+ZDZw2YIwior6GT6Td4xU4YIhA14Fo5v6Cb73BTT
+	yWms+2/LBhlpVdl8SDCxgYsiRBC3h9QyJh/gYc0xxngoqMw61s3tAMYXxEMrGPl8MwssBT
+	J9uX6M4FZNnA7F7+ndzl2Yk2K7+YlAXa13JnA9JC+sOpoA+vFUHDMEay7yME4roDBsaZy1
+	y52H258HZf+jgJxxEFxstc4pNJ6L+PUQOQkHH94HQaH1HFNwFsF6rzimSfzcEg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 31 Oct 2025 18:26:58 +0100
-Subject: [PATCH 14/28] mtd: spinand: winbond: Convert W35N specific
- operation to SPINAND_OP()
+Date: Fri, 31 Oct 2025 18:27:02 +0100
+Subject: [PATCH 18/28] mtd: spinand: winbond: Register W35N vendor specific
+ operation
 MIME-Version: 1.0
-Message-Id: <20251031-winbond-v6-17-rc1-oddr-v1-14-be42de23ebf1@bootlin.com>
+Message-Id: <20251031-winbond-v6-17-rc1-oddr-v1-18-be42de23ebf1@bootlin.com>
 References: <20251031-winbond-v6-17-rc1-oddr-v1-0-be42de23ebf1@bootlin.com>
 In-Reply-To: <20251031-winbond-v6-17-rc1-oddr-v1-0-be42de23ebf1@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -63,8 +63,9 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.2
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251031_102831_623951_D538ACBC 
-X-CRM114-Status: GOOD (  11.87  )
+X-CRM114-CacheID: sfid-20251031_102837_305736_B3AFF338 
+X-CRM114-Status: UNSURE (   8.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,58 +82,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Winbond W35N* chips require a vendor specific operation to write their
-VCR register (a configuration register, typically used for tuning the
-number of dummy cycles and switching to a different bus
-interface). Instead of defining this op only in the function that needs
-it, hiding it from the core, make it a proper define like all other
-spi-mem operations, and implement the necessary spinand_fill_*_op()
-helper to make the SPINAND_OP() macro work. This way we can use it from
-any function without any extra handling outside of this helper when we
-will convert the core to support octal DDR busses.
+Provide the Winbond W35N specific "write VCR register" operation to let
+the core verify it is supported by the controller before using it.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/winbond.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/spi/winbond.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index dde59f8f63f511a298a43a5b43fe07c1d726f179..3003ad7e83ee8f553ec82a0326422916c0ed794c 100644
+index 36053f35ee5e84eb355343443a28d274cf7ea5c3..1c13dba08369c48ca26381c634abcea4e7360f30 100644
 --- a/drivers/mtd/nand/spi/winbond.c
 +++ b/drivers/mtd/nand/spi/winbond.c
-@@ -87,6 +87,18 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
- 		SPINAND_PROG_LOAD_1S_1S_4S_OP(false, 0, NULL, 0),
- 		SPINAND_PROG_LOAD_1S_1S_1S_OP(false, 0, NULL, 0));
+@@ -93,6 +93,9 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_DATA_OUT(1, buf, 1))
  
-+#define SPINAND_WINBOND_WRITE_VCR_1S_1S_1S(reg, buf)			\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(0x81, 1),				\
-+		   SPI_MEM_OP_ADDR(3, reg, 1),				\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(1, buf, 1))
++static SPINAND_OP_VARIANTS(winbond_w35_ops,
++		SPINAND_WINBOND_WRITE_VCR_1S_1S_1S(0, NULL));
 +
-+static struct spi_mem_op
-+spinand_fill_winbond_write_vcr_op(struct spinand_device *spinand, u8 reg, void *valptr)
-+{
-+	return (struct spi_mem_op)SPINAND_WINBOND_WRITE_VCR_1S_1S_1S(reg, valptr);
-+}
-+
- #define SPINAND_WINBOND_SELECT_TARGET_1S_0_1S(buf)			\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(0xc2, 1),				\
- 		   SPI_MEM_OP_NO_ADDR,					\
-@@ -329,11 +341,8 @@ static int w25n0xjw_hs_cfg(struct spinand_device *spinand)
- 
- static int w35n0xjw_write_vcr(struct spinand_device *spinand, u8 reg, u8 val)
+ static struct spi_mem_op
+ spinand_fill_winbond_write_vcr_op(struct spinand_device *spinand, u8 reg, void *valptr)
  {
--	struct spi_mem_op op =
--		SPI_MEM_OP(SPI_MEM_OP_CMD(0x81, 1),
--			   SPI_MEM_OP_ADDR(3, reg, 1),
--			   SPI_MEM_OP_NO_DUMMY,
--			   SPI_MEM_OP_DATA_OUT(1, spinand->scratchbuf, 1));
-+	struct spi_mem_op op = SPINAND_OP(spinand, winbond_write_vcr,
-+					  reg, spinand->scratchbuf);
- 	int ret;
- 
- 	*spinand->scratchbuf = val;
+@@ -469,6 +472,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_octal_variants,
+ 					      &update_cache_octal_variants),
+ 		     0,
++		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+ 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+ 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
+ 	SPINAND_INFO("W35N02JW", /* 1.8V */
+@@ -479,6 +483,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_octal_variants,
+ 					      &update_cache_octal_variants),
+ 		     0,
++		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+ 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+ 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
+ 	SPINAND_INFO("W35N04JW", /* 1.8V */
+@@ -489,6 +494,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_octal_variants,
+ 					      &update_cache_octal_variants),
+ 		     0,
++		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+ 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+ 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
+ 	/* 2G-bit densities */
 
 -- 
 2.51.0
