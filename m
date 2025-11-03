@@ -4,87 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B6D5CCF9F8
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Nov 2025 15:22:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB0C5CCFA03
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Nov 2025 16:21:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2A0hkfi0b0M5FOiQml6sppK1ONMSlLMVvwLi4ujRgz0=; b=pRbSwxxpDWfZ6N
-	NmtjKbb2RIimDlci8JQLN9SNeR66ZhasPRpXnlV26bumYn0qY+HBKge6EGKtfQ58bDElZUt3kPj49
-	QJaEb2yQ+1cEnZ+5TzJd+P/1NzYn5Guwl3bNQDy/H1xrz8I7tgEDPuluPntcDX8Y5Te+fbetbc+9n
-	27FCJ8o1UtllSlyOery52CFOZSVzTgbcdNlXFDaa+pXa+Qpx06rmVoWIaxfogWrU7/jcclL/Rpx1w
-	t2jUO6Qw7TA00UnYo/X7fQLvjpgCmZB9hlAtEWC7PeSNG4rlMx/El/aI46reVY249kpojSvx+CN7M
-	BzFMGMpycjd9fgjYcr9g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=N7qhuaNCJec1wj+Qig6GmZn/ulBmM90h1HKzNXJ6mCU=; b=Vad1twVSkrIw+I
+	izLkRY4PolhQZ/6fn0VkxYW7w3PB1vsDYgDaF0jdIXQjuJTAUTXFOcehGi3/7lgI5PYoiVyyUhXzU
+	fKHQo/r+k6tLSdmS0tYBJUMVq99cFaSN7/Ziw09gvhb1Vid7xKm7tdvXQ7k5+Uzqe+By3aH39J29M
+	f6ZjSWhUHVZuCq9GIJdGXl0kJI6mq91V/Yu1rHohCAMt0RYeZKKaNUqtQQkf3HDLCt7Ms7Qvd77/X
+	gaL0SUcb8C2U/6P72JKSffaxmf80JiyzVABtkDQJUPOMdspVmOrjK+UzirqZzhLyZFoV/wV4VTlOx
+	+2fV+8/EirG4b+LBEQbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vFwNf-0000000A8Jt-4263;
-	Mon, 03 Nov 2025 15:22:03 +0000
-Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+	id 1vFxJa-0000000AFkP-053d;
+	Mon, 03 Nov 2025 16:21:54 +0000
+Received: from mleia.com ([178.79.152.223] helo=mail.mleia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vFwNd-0000000A8JI-0EfG
-	for linux-mtd@lists.infradead.org;
-	Mon, 03 Nov 2025 15:22:02 +0000
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-29558061c68so20143835ad.0
-        for <linux-mtd@lists.infradead.org>; Mon, 03 Nov 2025 07:22:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cse-iitm-ac-in.20230601.gappssmtp.com; s=20230601; t=1762183319; x=1762788119; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sq46i+h051lR0zNhATSUzIFpyE1tPhlJ5BeZkc/DJ5Q=;
-        b=IYIdEw4GkuGM2vq7kRiW5/7p9PZIKnQG/f8DhQolfqTpRQlM8m+QOQCzevGqz6ZSgt
-         HQczUaIEnwIyysT8sOhkab0es5M8PopwW3oExCSd8p0MIujkWq1BFkZ1/3+ssyWiwSrT
-         xJaoSsOqSqw3p0yypVXgxjVOz98+Qc9ukNoORsI+6IoQXBLkz6Y9K854AxHYj68QlbDd
-         wtdgM3KcYrQzjK3gDIeFXQJyO3cP/pnH+NmqSMOjlXPYYXG+kF9feARxDjcwbTfwG/BO
-         ixTeSzCufEJCXZoQdXkat/YxwwPlE+2BCHG7XA0OHIiPpgMcSaPoYUb4ihMPpfAzN2BN
-         DNkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762183319; x=1762788119;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sq46i+h051lR0zNhATSUzIFpyE1tPhlJ5BeZkc/DJ5Q=;
-        b=KQCtf2ibP/qSmVbpSutvur49uVTE2sSv0AtnaGnVJcHrE7l4sxIruVrrwoCDojzxD4
-         nnx2wo2PjzmGmIcDVNNRGNdu+mMHZ3CQWWLAOgcpi1D5wDn7cQzza0/LS1PKIRDnSlLW
-         0aT+ZlRxNnzeVVKkVve8Gme9KrldoiFDD+OMBWRuecQ7znIFMvgct9XO6/uIQXgkoCvA
-         D7A+6R4l3ATy0ZtdtIeVjQmFRNpQZjXyQsTqStCuEQFCyE+3yYRlGFl4ap3P0fOghmBU
-         Ba1VM+JaCX5jev8juyVKWX395+1HcGzichZ05btruoT80dXL3jXS6b8a61S60361ssJb
-         PSmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdXrHU4jBZjh0h+BuQJTGpL1V6tsinC3r5J6LLlNoSRk5FRZzHKFPRrC6SqEKfNEMOyWNFX8Zj0fA=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw8LS3H69vfipwNnxWCMbfhj7ZGDgrjgCFmv7YTSgwedz38C8cK
-	1hXAf19A0SoE1FMBe1QAkKATRGt2ihklEheFM9L+DjVNwi3aWNmEX81Dxiwcj7pg3IQ=
-X-Gm-Gg: ASbGncurYcTwpmROR6t9SmUziUTeictWHpQkLDGksdoM5ikV7J1iUPfSFfHau/CT7W9
-	3iLoK78NnZd04jH1UDYD8pbwiNENI83TR7+rc8HuxZZj9fXkEAKYpH4vImTyCOkRbHXsltSIQQc
-	GgVDnkUKmnfXxhs22hvUcmaAEDMs8aYQeE6WkzVxI7gu6Umx+DChFglEtaP2g0Q0btRzWa+XI7r
-	OtnJAq5jcX+RgmJGxJWBSdlj0nOemxfFEVDAVYPilYFewuENK1+1s1CNiyiTlai8LOpGKXnoqRF
-	vECiOkNN4E6P7pTyJKPEvpr+5GFT6PxUxDdoE3qDS+npb0awear95A0O4qWmgcZspP12rmcYsGR
-	WVwmc61kxrQRBqwfG6EgxMPaMz4mdM+itVqll4bzmVPS3J1PJB+bfDGGH0DwWjnoyDUz3ZMcutK
-	ooj3BttoF6J/mY0A==
-X-Google-Smtp-Source: AGHT+IEZ36hQAR3lqXiWLha/EOf1Hq+fNo3sVkRglt1Vo/PD+PWu8Ym2w1I6vWFecirPPmZz+rgQiA==
-X-Received: by 2002:a17:902:e803:b0:295:5a15:63db with SMTP id d9443c01a7336-2955a16fd56mr110344515ad.61.1762183319268;
-        Mon, 03 Nov 2025 07:21:59 -0800 (PST)
-Received: from localhost.localdomain ([49.37.219.248])
-        by smtp.googlemail.com with ESMTPSA id 41be03b00d2f7-b93bf44ecdesm10731534a12.37.2025.11.03.07.21.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Nov 2025 07:21:58 -0800 (PST)
-From: Abdun Nihaal <nihaal@cse.iitm.ac.in>
-To: miquel.raynal@bootlin.com
-Cc: Abdun Nihaal <nihaal@cse.iitm.ac.in>,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: maps: pcmciamtd: fix potential memory leak in pcmciamtd_detach()
-Date: Mon,  3 Nov 2025 20:51:39 +0530
-Message-ID: <20251103152141.57160-1-nihaal@cse.iitm.ac.in>
-X-Mailer: git-send-email 2.43.0
+	id 1vFxJX-0000000AFje-1Zfx;
+	Mon, 03 Nov 2025 16:21:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mleia.com; s=mail;
+	t=1762186908; bh=/VbFNPsAjPx/Ya9C7TeCbLeOU9I9kKRA46UQ/FZCv0g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LYVLh+u39IoJPjE7h4ucaYQtPP5UtRleC7wsXbxDs/X8oXA49K2AMexgppGuxcVvF
+	 if3KHi0zHKd8bAZ9yZ7NoeczEN6uD5hYVBctF37oy77JA93Jkca8pH4norti5ZwKJr
+	 vAUiq3u3R05G3bmL1u0SKLg9BsbzNbyxA9Yb6XLF79LNksnF7J8/kLqqOYvUCENuR6
+	 M5UGa5XuJ3yxFeJFzpT+GJZKakaXsKHFo0m+sQkimO2AmFEa6f/HmXAJJFGvcsipNc
+	 vQlY0D9sNNOSxsY6WfXdXg612H8Rfsbr3Io0TxmicLIuPmtiWXrzKZ3dZAq7CCI1r1
+	 F30zLfWbo6SDw==
+Received: from mail.mleia.com (localhost [127.0.0.1])
+	by mail.mleia.com (Postfix) with ESMTP id 241B13DE8CC;
+	Mon,  3 Nov 2025 16:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mleia.com; s=mail;
+	t=1762186908; bh=/VbFNPsAjPx/Ya9C7TeCbLeOU9I9kKRA46UQ/FZCv0g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LYVLh+u39IoJPjE7h4ucaYQtPP5UtRleC7wsXbxDs/X8oXA49K2AMexgppGuxcVvF
+	 if3KHi0zHKd8bAZ9yZ7NoeczEN6uD5hYVBctF37oy77JA93Jkca8pH4norti5ZwKJr
+	 vAUiq3u3R05G3bmL1u0SKLg9BsbzNbyxA9Yb6XLF79LNksnF7J8/kLqqOYvUCENuR6
+	 M5UGa5XuJ3yxFeJFzpT+GJZKakaXsKHFo0m+sQkimO2AmFEa6f/HmXAJJFGvcsipNc
+	 vQlY0D9sNNOSxsY6WfXdXg612H8Rfsbr3Io0TxmicLIuPmtiWXrzKZ3dZAq7CCI1r1
+	 F30zLfWbo6SDw==
+Received: from [172.20.4.186] (unknown [185.60.252.187])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.mleia.com (Postfix) with ESMTPSA id D514A3DE66A;
+	Mon,  3 Nov 2025 16:21:47 +0000 (UTC)
+Message-ID: <57f7989d-6f05-4b1b-a31b-4b1dca308ffb@mleia.com>
+Date: Mon, 3 Nov 2025 18:21:47 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: rawnand: lpc32xx_slc: fix GPIO descriptor leak on
+ probe error and remove
+To: Haotian Zhang <vulab@iscas.ac.cn>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, piotr.wojtaszczyk@timesys.com
+Cc: dmitry.torokhov@gmail.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20251028094747.1089-1-vulab@iscas.ac.cn>
+From: Vladimir Zapolskiy <vz@mleia.com>
+In-Reply-To: <20251028094747.1089-1-vulab@iscas.ac.cn>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
+X-CRM114-CacheID: sfid-20251103_162148_170040_1F9A61DE 
+X-CRM114-Status: GOOD (  17.85  )
+/bin/ln: failed to access 'reaver_cache/texts/20251103_162148_170040_1F9A61DE': No such file or directory
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251103_072201_329230_EBB98BC7 
-X-CRM114-Status: UNSURE (   9.12  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251103_162148_170040_1F9A61DE 
+X-CRM114-Status: GOOD (  18.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,38 +84,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The memory allocated for struct pcmciamtd_dev in pcmciamtd_probe() is
-not freed in the corresponding remove function pcmciamtd_detach().
-Fix that by freeing it in the remove function.
+On 10/28/25 11:47, Haotian Zhang wrote:
+> The driver calls gpiod_get_optional() in the probe function but
+> never calls gpiod_put() in the remove function or in the probe
+> error path. This leads to a GPIO descriptor resource leak.
+> The lpc32xx_mlc.c driver in the same directory handles this
+> correctly by calling gpiod_put() on both paths.
+> 
+> Add gpiod_put() in the remove function and in the probe error path
+> to fix the resource leak.
+> 
+> Fixes: 6b923db2867c ("mtd: rawnand: lpc32xx_slc: switch to using gpiod API")
+> Signed-off-by: Haotian Zhang <vulab@iscas.ac.cn>
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Abdun Nihaal <nihaal@cse.iitm.ac.in>
----
-Compile tested only. Issue found using static analysis.
+The problem is well identified, thank you for the fix.
 
- drivers/mtd/maps/pcmciamtd.c | 1 +
- 1 file changed, 1 insertion(+)
+> ---
+>   drivers/mtd/nand/raw/lpc32xx_slc.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+> index b54d76547ffb..fea3705a2138 100644
+> --- a/drivers/mtd/nand/raw/lpc32xx_slc.c
+> +++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
+> @@ -937,6 +937,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>   	dma_release_channel(host->dma_chan);
+>   enable_wp:
+>   	lpc32xx_wp_enable(host);
+> +	gpiod_put(host->wp_gpio);
+>   
+>   	return res;
+>   }
+> @@ -962,6 +963,7 @@ static void lpc32xx_nand_remove(struct platform_device *pdev)
+>   	writel(tmp, SLC_CTRL(host->io_base));
+>   
+>   	lpc32xx_wp_enable(host);
+> +	gpiod_put(host->wp_gpio);
+>   }
+>   
+>   static int lpc32xx_nand_resume(struct platform_device *pdev)
 
-diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
-index 2ac79e1cedd9..206a3c463e6e 100644
---- a/drivers/mtd/maps/pcmciamtd.c
-+++ b/drivers/mtd/maps/pcmciamtd.c
-@@ -665,6 +665,7 @@ static void pcmciamtd_detach(struct pcmcia_device *link)
- 	}
- 
- 	pcmciamtd_release(link);
-+	kfree(dev);
- }
- 
- 
+The fix can be greatly improved though, I kindly ask you to send v2 by switching
+from gpiod_get_optional() to resource managed devm_gpiod_get_optional().
+
+Thank you in advance.
+
 -- 
-2.43.0
-
+Best wishes,
+Vladimir
 
 ______________________________________________________
 Linux MTD discussion mailing list
