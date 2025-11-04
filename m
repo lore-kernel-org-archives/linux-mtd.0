@@ -4,52 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68AAECCF9E3
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Nov 2025 09:02:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08F47CCF9E3
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Nov 2025 10:03:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eozQrVuilbHB5SomMAW22gytTEVJVBfzXjAD40UfPgs=; b=lxfCc1z+hnBXes
-	l+3OiXobjL/1KWLQDl9NiXENG4Mrq9kumd3ScigKAAeOITYWQ/EIntaaH0XpRYJ62DyKIx/gEUC73
-	WSXTQstp1ZkZUs2PTb4v+dvwrAmrc/ZIZggCudu1gxVbyby+JNDflqbZeWN2sk8xGD3gWAb//fSLe
-	mvfM+1JnI4yCPTX1uQ88JyZtePYIPfDo625r1rI/biGvdIpNNeEAH9s0o47vQC3ny2iuVARy+fD/y
-	vPAlGNeS6kxDnfaQQMNiSQkSo7tn9WmZgiegY/B/ctz2nmFDquct6gim2Xz5K3acnS0rFDrUlzNuV
-	P7Ukjm9uBPH1dclnXBtg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZwlwiadueOOssKhvOQeT+y2Yxab7qGJo8ZoS80AAOZQ=; b=Fg3hG2iTZe9Hhg
+	JQm/60C9BfPCRGN9+LIIv3Ed3YUD3Cw2xO6jGCZIavLUgR1jFUDnuF+OtHVzdFETwuVssAe/Kujqu
+	w4ZrS7MCixCfHSt4TvTtjZ9C+kDuSCR96jryg+SlLpoE2wZS+4P4ACQELS4qYcsXbSV6T8Sxx8Ugh
+	P6dgCETEN93n8kHrjwNTM/3oo0qwjVkkJUFvs6vgZqXMScHcsGBh/L55jSW8MtenMqkMlguObepKb
+	N1P4U6XY/qrn7j9TvN2/F5CD4GFv1/lHHdnxaM/mzjigOBlj6h7vEiBBtDgPjhpS98qh/mPc3Y/dQ
+	5k/q3XmY3OWySuZF6Z+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGCvn-0000000BUgk-1vpw;
-	Tue, 04 Nov 2025 09:02:23 +0000
-Received: from mail.zentro24.pl ([94.177.238.198])
+	id 1vGDsZ-0000000BZwU-2D9e;
+	Tue, 04 Nov 2025 10:03:07 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGCvk-0000000BUfS-1vvC
+	id 1vGDsW-0000000BZw7-2lMz
 	for linux-mtd@lists.infradead.org;
-	Tue, 04 Nov 2025 09:02:22 +0000
-Received: by mail.zentro24.pl (Postfix, from userid 1002)
-	id D0EA983797; Tue,  4 Nov 2025 10:01:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zentro24.pl; s=mail;
-	t=1762246868; bh=Q6bV6bAAmvv9IXDh6kMg2M1FJxSoLbfUIGwkPra0wkA=;
-	h=Date:From:To:Subject:From;
-	b=K9x7qPiNNjtOxg5xHctQooIDnbxt9yiC9Ed+S12PZIJhQs/T7z2TtNXq71plfwE/u
-	 1m5os7gBFbn4p4Vv/j0YMSYuqSD201o0C8ubFKraKiWqdKWUpN0BU5955eUrQf0Toc
-	 gjTOCyoWljpEvKbdBMGGf3xeZd0GJV8Ncbnyh/oC+U1P0rTsF2cucbvsoKSmaa7LZ3
-	 AF2CgkKd2jmd2Xsx/g3mEJ240vok1FKnppqN/x5pf7nQUP/lHykNCz52s5d7gFxYJp
-	 32l2m+TVn3fJAH0SRW5PYL+B3SzajU0yzyZf88siJk44WMvwdlupc+0cpw+qH7SEUV
-	 Oh+D54pj8JamA==
-Received: by mail.zentro24.pl for <linux-mtd@lists.infradead.org>; Tue,  4 Nov 2025 09:00:54 GMT
-Message-ID: <20251104085138-0.1.dt.1oh2l.0.r016md4n3n@zentro24.pl>
-Date: Tue,  4 Nov 2025 09:00:54 GMT
-From: "Tomasz Borgul" <tomasz.borgul@zentro24.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Dodatkowe_=C5=9Brodki_?=
-X-Mailer: mail.zentro24.pl
+	Tue, 04 Nov 2025 10:03:05 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 84726442DC;
+	Tue,  4 Nov 2025 10:03:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C7F4C4CEF7;
+	Tue,  4 Nov 2025 10:03:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762250583;
+	bh=2DvZOttmCMGhJVjRPtQmLNf9Cv5+1jUn6WqdwCDUNJI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y95QAXwx8mvpXm4IYCFvCUCKCQ5y4h4Mklc00Tmy25wZ83n7/bSXYXzRXJAIK68Mg
+	 kTFbicgW4b7aQp4kcY4qT+WUb3C+XJutOPY/INDaDxl7mVAmVffoM+pyI2TtGA/cA3
+	 0hYovc7OopGw1yWhwDapBsCXvOlBstR0+VqJKHkOraF7dBC1vnzIvqUVRy9gJtiN39
+	 OQCuqPLpFOWgLBjiKu1AGFdM0hc4a6kFB5JChVYRhBSSMCjtCSpDHu4iMCbCficebs
+	 gANKCfLy56LYExl0+IGSqqSKuiddZQ/4irYmbtg4mLozeWyqBNeYbUGmm4Pkz3WqyF
+	 LwXtFxFVOKoRw==
+Date: Tue, 4 Nov 2025 11:03:01 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Charan Pedumuru <charan.pedumuru@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	Jonathan Hunter <jonathanh@nvidia.com>, Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>, 
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-tegra@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: nvidia,tegra20-nand: convert to DT
+ schema
+Message-ID: <20251104-prompt-rampant-cat-30fd9a@kuoka>
+References: <20251030-nvidia-nand-v1-1-7614e1428292@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20251030-nvidia-nand-v1-1-7614e1428292@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251104_010221_563593_67DEA2A8 
-X-CRM114-Status: UNSURE (   2.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251104_020304_741997_55EBF08B 
+X-CRM114-Status: GOOD (  23.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,18 +73,191 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKY3p5IGFrdHVhbG5pZSByb3p3YcW8YWrEhSBQYcWEc3R3byBkb2RhdGtv
-d2Ugxbpyw7NkxYJvIGthcGl0YcWCdT8KClphcGV3bmlhbXkgZmluYW5zb3dhbmllIGRsYSBmaXJt
-IHogc2VrdG9yYSBNxZpQIOKAkyBuYXdldCBkbyA0MDAgMDAwIHrFgiBiZXogemLEmWRuZWogYml1
-cm9rcmFjamkuIAoKRGVjeXpqxJkgb3RyenltdWrEhSBQYcWEc3R3byB3IDI0IGdvZHppbnksIGEg
-d25pb3NlayBtb8W8bmEgesWCb8W8ecSHIGNhxYJrb3dpY2llIG9ubGluZS4KCkN6eSBtb2fEmSBw
-cnplZHN0YXdpxIcgc3pjemVnw7PFgnkgZG90eWN6xIVjZSB3YXJ1bmvDs3cgaSBwcm9jZXN1IHV6
-eXNrYW5pYSBmaW5hbnNvd2FuaWE/CgoKUG96ZHJhd2lhbQpUb21hc3ogQm9yZ3VsCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Thu, Oct 30, 2025 at 06:47:25PM +0000, Charan Pedumuru wrote:
+> Convert NVIDIA Tegra NAND Flash Controller binding to YAML format.
+> Changes during Conversion:
+> - Define new properties `power-domains` and `operating-points-v2`
+>   to resolve errors generated by `dtb_check`.
+
+instead - because existing in-tree DTS uses them.
+
+> - Add the `#address-cells` and `#size-cells` properties to the parent
+>   node to fix errors reported by `dt_check`, and include these properties
+
+What is dt_check? Aren't you adding them because other schema requires
+them? Then say that (and which schema...).
+
+
+>   in the `required` section, as they are not mentioned in the text binding.
+> 
+> Signed-off-by: Charan Pedumuru <charan.pedumuru@gmail.com>
+> ---
+>  .../bindings/mtd/nvidia,tegra20-nand.yaml          | 157 +++++++++++++++++++++
+>  .../bindings/mtd/nvidia-tegra20-nand.txt           |  64 ---------
+>  2 files changed, 157 insertions(+), 64 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
+> new file mode 100644
+> index 000000000000..67b3c45566db
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
+> @@ -0,0 +1,157 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/nvidia,tegra20-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NVIDIA Tegra NAND Flash Controller
+> +
+> +maintainers:
+> +  - Jonathan Hunter <jonathanh@nvidia.com>
+> +
+> +description:
+> +  Device tree bindings for the NVIDIA Tegra NAND Flash Controller (NFC).
+
+Drop sentencem completely redundant. Title already said that.
+
+> +  The controller supports a single NAND chip with specific properties.
+
+What is/are "specific properties"? Can properties be unspecific?
+
+> +
+> +properties:
+> +  compatible:
+> +    const: nvidia,tegra20-nand
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: nand
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    items:
+> +      - const: nand
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  operating-points-v2:
+> +    maxItems: 1
+> +
+> +patternProperties:
+> +  "^nand@[0-5]$":
+
+Keep consistent quotes, either ' or "
+
+> +    type: object
+> +    description: Individual NAND chip connected to the NAND controller
+> +    properties:
+> +      reg:
+> +        maxItems: 1
+> +
+> +      nand-ecc-mode:
+> +        description:
+> +          Operation mode of the NAND ECC, currently only hardware
+> +          mode supported
+> +        const: hw
+> +
+> +      nand-ecc-algo:
+> +        description: Algorithm for NAND ECC when using hw ECC mode
+> +        enum:
+> +          - rs
+> +          - bch
+> +
+> +      nand-bus-width:
+> +        description: Width of the NAND flash bus in bits
+> +        enum: [8, 16]
+> +        default: 8
+> +
+> +      nand-on-flash-bbt:
+> +        description: Use an on-flash bad block table to track bad blocks
+> +        type: boolean
+> +
+> +      nand-ecc-maximize:
+
+Why are you duplicating all these properties from nand schema?
+
+> +        description:
+> +          Maximize ECC strength for the NAND chip, overriding
+> +          default strength selection
+> +        type: boolean
+> +
+> +      nand-ecc-strength:
+> +        description: Number of bits to correct per ECC step (512 bytes)
+> +        enum: [4, 6, 8, 14, 16]
+> +
+> +      nand-is-boot-medium:
+> +        description: Ensures ECC strengths are compatible with the boot ROM
+> +        type: boolean
+> +
+> +      wp-gpios:
+> +        description: GPIO specifier for the write protect pin
+> +        maxItems: 1
+> +
+> +      '#address-cells':
+> +        const: 1
+> +
+> +      '#size-cells':
+> +        const: 1
+> +
+> +    patternProperties:
+> +      "^partition@[0-9a-f]+$":
+> +        $ref: /schemas/mtd/mtd.yaml#
+> +        description:
+> +          Optional MTD partitions for the NAND chip, as defined in mtd.yaml
+> +
+> +    required:
+> +      - reg
+> +
+> +    unevaluatedProperties: false
+
+So this should tell you that you miss proper ref
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - reset-names
+> +  - '#address-cells'
+> +  - '#size-cells'
+> +
+> +unevaluatedProperties: false
+
+Same here. Why do you use unevaluatedProperties if there is no ref?
+Please open other bindings to understand how MTD binding should be
+written.
+
+Best regards,
+Krzysztof
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
