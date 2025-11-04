@@ -4,82 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B1D4CCF9E3
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Nov 2025 10:11:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96F6DCCFA04
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Nov 2025 18:33:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HvsdpYupNQbkybvhpnIrb9jSM33+RsykClNf8VxSILY=; b=adXQRudT8+Mm7J
-	rTaKQpTNluTjNWAf7dSCR4MkAtG9Y9COadfSEm7NBXv0DDhA38zAIZ7D85xix4nqbVHveJjI9Rjss
-	Q5zdhnFfz0j1Plu3Q6GEPustQY3AVMvA7gly8typkhxr3+wQn5KkEMb2+Mq48sEAfNW/FzbpbAhJy
-	21HJ0T6xg1vlWXshSru53lc7dZATfwkHvE1kDzid7u3b4fa86FxKHqcBdhnrMTis/gkBGtawXtcPX
-	ta+KOP35lGMx9ZqGuph2vCKrAEWTOivcJpu4TkFMJY9lYgR57VkFFziY5j7T8EhKUrFbLcSTUMqh5
-	xQNvPlOSkWdFla5xwNyw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Subject:References:Cc:
+	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=F27Ly2FBJOT4ujZTUWVTHCZ5q+QdcSRsQZKMI/wEtdA=; b=giIBxoMBcQHHR/
+	7KiEfz70McpKsRv4SKZI4GgkGx6din9Vid5pQtGS2Oh5by85dtGx5zTwVrMQ4IYuoNm7ORMDjc4yn
+	ACMiNqJvL0p7NB0BhPsQPlS1UBDyush2dQLs2Sgps/55vcAfKf9qRMm4SrZ/uUKuYxTepVbBkUBty
+	af3fDZ5r8lcfGDbuCVVPh3aZo/oHpW9W3ZgBRlEchLr9q30WjcjWomW3nz35tm8IHrv4EoKPmetgV
+	9lcVgxGvBVRmAUEST+JsZ1WCswTJXC4NBOA3m3z6tQDbLILTFMq4Q0ME2sJw+pDP3GDCMCk/U0KI+
+	rlYlAhN9SH/lhnr+GLYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGE0q-0000000Baa4-2wMP;
-	Tue, 04 Nov 2025 10:11:40 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vGLqh-0000000CQla-1Tow;
+	Tue, 04 Nov 2025 18:33:43 +0000
+Received: from mout.web.de ([217.72.192.78])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGE0p-0000000BaZS-0Eri;
-	Tue, 04 Nov 2025 10:11:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=rN5ODJt8gRZPVAZI+k9gdjZVtwbWhw5xcB2Zk2D7cHE=; b=eCbLQzREsNTExVUsczDS0yaJji
-	8jm0RZQrBmx2dN38nVun2uezWF8xqcvi34nHY/4r0F5q02SVXcJb94GTeTUoaeorh3B7q9ptq1zC9
-	Lxe/PAyVJhy26LJkZmXdxlWgrzmk5PFdgeazWN2Dnjvt8dDTAClB1sc6LL0QiSuiSEX5YCSguydl7
-	ILMzU9oMA+WV73tPmvhG5Uq5rxQCyvoXB/xtYU8Pxhq75CHH8n3brqeqTmynGK/mMjXf10FyWXcZI
-	CrZDpb2M1rE5eweR85S7rzeCjVrI+RL7sw3g3Xh/gn8kX5MXXce4LBlxz157N5Ta33dWcpoFNm5x4
-	8FZ8E5JA==;
-Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGD92-0000000HMD8-2s7K;
-	Tue, 04 Nov 2025 09:16:07 +0000
-Received: from DESKTOP-L0HPE2S (unknown [124.16.141.245])
-	by APP-03 (Coremail) with SMTP id rQCowAAnpOst0QlpydtqAQ--.17454S2;
-	Tue, 04 Nov 2025 18:10:55 +0800 (CST)
-From: Haotian Zhang <vulab@iscas.ac.cn>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Haotian Zhang <vulab@iscas.ac.cn>
-Subject: [PATCH] mtd: rawnand: lpc32xx_slc: Convert to use devm_gpiod_get_optional()
-Date: Tue,  4 Nov 2025 18:08:41 +0800
-Message-ID: <20251104100842.369-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1.windows.1
+	id 1vGLqe-0000000CQkP-138b;
+	Tue, 04 Nov 2025 18:33:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1762281199; x=1762885999; i=markus.elfring@web.de;
+	bh=hglUExweMVsY7DSMynSy081FOf6eRb8tRUYRhO0Q/8g=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=Qfhc1Q3Ahhq2qUafW3xX70XeZbBtleb8cTBujSidrq/BqMPWoRd0BOii0+h+EX2R
+	 GmtcLxqq9NH6PdAIe/cPTgn6VXIg4JwlMmNwEFI7Efu6cB3rfYTY08qIQLSH23vAy
+	 E2+nWobgzLH6SydG3X4/hwyZsauoBOOWHwHgd9At2YeK4RENd7VxDnQuGioN6jqAv
+	 M1+2EbxuHzscfPD/jQWciPoaehgjpGWPcnZHW8GsPzkYnC9ViwTDa0oOqVwleE8zc
+	 aqpPGyYswEjLQ8UjNAV65tkZWiA+8vaa9GiXlxLD4xgXqHeFRGulmghO0fBhXa9rH
+	 p01Hct6jBPxRAbTcFg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.92.227]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MqqTb-1w3DFW0aLB-00o6JQ; Tue, 04
+ Nov 2025 19:33:19 +0100
+Message-ID: <ea93f13a-ed14-44c7-ae01-edaea845e65d@web.de>
+Date: Tue, 4 Nov 2025 19:33:14 +0100
 MIME-Version: 1.0
-X-CM-TRANSID: rQCowAAnpOst0QlpydtqAQ--.17454S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr4rGr18GFyUKw1kXw48Crg_yoW8XFWDpa
-	ykAFWIkrWUCF4xKanrWa1kZF1Yy3y0yrWUGrW0934F9w1DXr1jqas5KF1FvFn0yFWrGF4Y
-	vFZ7tF1rAw18Zr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
-	tVW8ZwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-	IFyTuYvjfU5FApDUUUU
-X-Originating-IP: [124.16.141.245]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgoQA2kJpV+0fgAAsP
+User-Agent: Mozilla Thunderbird
+To: vulab@iscas.ac.cn, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Vladimir Zapolskiy <vz@mleia.com>
+References: <20251104014042.1389-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH v2] mtd: rawnand: lpc32xx_slc: fix GPIO descriptor leak
+Content-Language: en-GB, de-DE
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20251104014042.1389-1-vulab@iscas.ac.cn>
+X-Provags-ID: V03:K1:KAY6UE17GKP5TI7ajDXJQsM3CZhA63IE27tryqBBHJtnt3maIEH
+ tDvJBsbGcH8RYSCf5nJYuFS6tGadmTM0Iep0doxSxmxFlYH5GjrdfKnEHHZu+bPa+bVNnJT
+ ByNkfgHK5bJm+2T3Ju8FFY1+P6D81vp4KXU3uUVsTyBdwGgnczcAT1mxvRuP/LgCCvf9io3
+ FUAILCimF8aLri+d9mBNg==
+UI-OutboundReport: notjunk:1;M01:P0:DDDlCo5CR4A=;rJ3ipbut/1toseLC1tZCjMW83S+ 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 80EHQylmKWI/yl0cKugkYYbLSk=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251104_091605_194703_32184537 
-X-CRM114-Status: GOOD (  10.38  )
+X-CRM114-CacheID: sfid-20251104_103340_575339_2BBF9FFF 
+X-CRM114-Status: UNSURE (   5.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,56 +80,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The initial fix for a GPIO descriptor leak added manual gpiod_put()
-calls in the error path and remove function.
-
-This follow-up patch improves upon the fix by switching to the
-resource-managed devm_gpiod_get_optional() API.
-
-Suggested-by: Vladimir Zapolskiy <vz@mleia.com>
-Signed-off-by: Haotian Zhang <vulab@iscas.ac.cn>
----
- drivers/mtd/nand/raw/lpc32xx_slc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index fea3705a2138..3ca30e7dce33 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -854,7 +854,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Start with WP disabled, if available */
--	host->wp_gpio = gpiod_get_optional(&pdev->dev, NULL, GPIOD_OUT_LOW);
-+	host->wp_gpio = devm_gpiod_get_optional(&pdev->dev, NULL, GPIOD_OUT_LOW);
- 	res = PTR_ERR_OR_ZERO(host->wp_gpio);
- 	if (res) {
- 		if (res != -EPROBE_DEFER)
-@@ -937,7 +937,6 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	dma_release_channel(host->dma_chan);
- enable_wp:
- 	lpc32xx_wp_enable(host);
--	gpiod_put(host->wp_gpio);
- 
- 	return res;
- }
-@@ -963,7 +962,6 @@ static void lpc32xx_nand_remove(struct platform_device *pdev)
- 	writel(tmp, SLC_CTRL(host->io_base));
- 
- 	lpc32xx_wp_enable(host);
--	gpiod_put(host->wp_gpio);
- }
- 
- static int lpc32xx_nand_resume(struct platform_device *pdev)
--- 
-2.50.1.windows.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+PiBUaGUgZHJpdmVyIGNhbGxzIGdwaW9kX2dldF9vcHRpb25hbCgpIGluIHRoZSBwcm9iZSBmdW5j
+dGlvbiBidXQKPiBuZXZlciBjYWxscyBncGlvZF9wdXQoKSBpbiB0aGUgcmVtb3ZlIGZ1bmN0aW9u
+IG9yIGluIHRoZSBwcm9iZQrigKYKCllvdSBtYXkgb2NjYXNpb25hbGx5IHB1dCBtb3JlIHRoYW4g
+NjMgY2hhcmFjdGVycyBpbnRvIHRleHQgbGluZXMKb2Ygc3VjaCBhIGNoYW5nZSBkZXNjcmlwdGlv
+bi4KaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFs
+ZHMvbGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9wcm9jZXNzL3N1Ym1pdHRpbmctcGF0Y2hl
+cy5yc3Q/aD12Ni4xOC1yYzQjbjY1OAoKUmVnYXJkcywKTWFya3VzCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
