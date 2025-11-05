@@ -4,71 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96F6DCCFA04
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Nov 2025 18:33:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92E59CCF9F8
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Nov 2025 07:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Subject:References:Cc:
-	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F27Ly2FBJOT4ujZTUWVTHCZ5q+QdcSRsQZKMI/wEtdA=; b=giIBxoMBcQHHR/
-	7KiEfz70McpKsRv4SKZI4GgkGx6din9Vid5pQtGS2Oh5by85dtGx5zTwVrMQ4IYuoNm7ORMDjc4yn
-	ACMiNqJvL0p7NB0BhPsQPlS1UBDyush2dQLs2Sgps/55vcAfKf9qRMm4SrZ/uUKuYxTepVbBkUBty
-	af3fDZ5r8lcfGDbuCVVPh3aZo/oHpW9W3ZgBRlEchLr9q30WjcjWomW3nz35tm8IHrv4EoKPmetgV
-	9lcVgxGvBVRmAUEST+JsZ1WCswTJXC4NBOA3m3z6tQDbLILTFMq4Q0ME2sJw+pDP3GDCMCk/U0KI+
-	rlYlAhN9SH/lhnr+GLYw==;
+	List-Owner; bh=Na/miVINaGI8HxZAJaZBngfjNDAKk0ypBR3Yjv9ebXs=; b=44AnoFtoRqnxY8
+	6yttTAGxs7KRxn8Vx2PECOgGaokdhpKsegIrIXjXMtxZJNutdltZWV7Z0Ww/9o/ANfX742t346Zzo
+	/2sTzGSzZkICk6cAX8yYv5y2i2rFqvMGmB8Gim3K3Om5a3X7Q3V7+fawVFojGs/k3ZAy7QrRopNXf
+	9qzIhzreDkqXVywwuYqT8f7npXDr2LvAbygiEcI4C9crab4Pc4gw8p0jt5x1V9sUzivvEwubehZqf
+	NPRVPifJZ7eaFh/Jn1CsAkr1L6JCbTzTG4aI74CMl+bIfffR7xOkfPc0nrdTfQPXLBcK0+1EaqliR
+	zLhmUSh3wcCHySpsEKQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGLqh-0000000CQla-1Tow;
-	Tue, 04 Nov 2025 18:33:43 +0000
-Received: from mout.web.de ([217.72.192.78])
+	id 1vGYGD-0000000DEAl-3PA5;
+	Wed, 05 Nov 2025 07:48:53 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGLqe-0000000CQkP-138b;
-	Tue, 04 Nov 2025 18:33:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1762281199; x=1762885999; i=markus.elfring@web.de;
-	bh=hglUExweMVsY7DSMynSy081FOf6eRb8tRUYRhO0Q/8g=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=Qfhc1Q3Ahhq2qUafW3xX70XeZbBtleb8cTBujSidrq/BqMPWoRd0BOii0+h+EX2R
-	 GmtcLxqq9NH6PdAIe/cPTgn6VXIg4JwlMmNwEFI7Efu6cB3rfYTY08qIQLSH23vAy
-	 E2+nWobgzLH6SydG3X4/hwyZsauoBOOWHwHgd9At2YeK4RENd7VxDnQuGioN6jqAv
-	 M1+2EbxuHzscfPD/jQWciPoaehgjpGWPcnZHW8GsPzkYnC9ViwTDa0oOqVwleE8zc
-	 aqpPGyYswEjLQ8UjNAV65tkZWiA+8vaa9GiXlxLD4xgXqHeFRGulmghO0fBhXa9rH
-	 p01Hct6jBPxRAbTcFg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.92.227]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MqqTb-1w3DFW0aLB-00o6JQ; Tue, 04
- Nov 2025 19:33:19 +0100
-Message-ID: <ea93f13a-ed14-44c7-ae01-edaea845e65d@web.de>
-Date: Tue, 4 Nov 2025 19:33:14 +0100
+	id 1vGYGC-0000000DEA5-0R6X
+	for linux-mtd@lists.infradead.org;
+	Wed, 05 Nov 2025 07:48:53 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-29599f08202so40844265ad.3
+        for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2025 23:48:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762328931; x=1762933731; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n2dXDMbS4ZadtFN+PyoUE4mGeEjAPz+823eSljV2/WM=;
+        b=KzqcvpwC66WDPwFJN1wGNCZLwtjHqCvOA2rlXVOKwWFfs/tcZeVbUAmPZysAodyLdj
+         Sm2nD68wai9d+4R7yM9G75RO93BrbyXKFr2ntLlvBRg4MRytoz58MQfm1PTib88QPseO
+         PQSYtyHGmMT+smWT2f048578YfyCo9pe/+VyFxg0WEIxZesv1SQowheyxXFVsJPLo1mB
+         9HU/GJWkQIuhdw4UWeZmyvtCnvVuwLNj/H9yju1hEtNea56STbF11pnBbcU95729KcOF
+         /Xk6h507jTP64wr4SEm8ZLjbSIrh8CtFyQncmwYNI4fhBr6wje93Wrqz2RjdqTImw6AE
+         rMQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762328931; x=1762933731;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n2dXDMbS4ZadtFN+PyoUE4mGeEjAPz+823eSljV2/WM=;
+        b=RxTgdgoZPrgSpue3gk2IcIfCEtQGrMRIOl+t/C36jwmLMXYrrhunEOqU30tPqDHKxG
+         piPwqZ7MUYqlIRBQVL9vlcfZyNdpWSjQa3zsYtn5cipDBWSJCHDXc428LFJaMW+rnWEd
+         +dLYommH9BdOkH3JHiwEhebdweQrh6e2G7uXmgDtmf/aXkKEn24D374uvWwIL5BEExOe
+         oewCDrCFeY9lKSRVGssSYrL9/tHvqs6MX23xhOc2e5iqvCsWF4Uoxhi9sXSDqzbpfOuV
+         RYttcMERNlNjJ2ZeYpGeBCwjrN/n6dbH1UPB5CTS99gYhEg9QMufp2X6w7kk3rNa0fBd
+         /TwQ==
+X-Gm-Message-State: AOJu0YwuDVKtTWiufkWQOztlk6ktA56S9x29N6UBnBYcyeE7ZgA5unGK
+	Kd+iuKn4wBtLrN8lbI6Rx0RUMA5Xc7eVLY+P6VSFCa+/kTEELM5F7UCR
+X-Gm-Gg: ASbGncvEDgYF+1uD29IB/292owanQA7xOUnpbWDLttN4QudSiaoVTjAOihUw3kvdU83
+	oDgRpSm3i3heqwWy4+i1A+ybhaXxS95IfhM8W5NEZMw2MzMCzBqLMJSIFYctx6JDXFc1KweJklE
+	qjS0HzGamippPi1KcfjfJ/uPZDvI/vpeLZsTqKU/eCkTDM8M5zcQyFKN8aHxEbsn09qdlTJVXN+
+	+Unw1i5ZyseRw9ceFbfZZ7P9msHVt+cn40ErYti4DU9TUdXw6iHfVa7UW7vk9QM8hWFxx0+t1RC
+	wufcJjFZFlzo9HjDpkigypb4ZvkEw9lC2Lr+TC3k9LdaFVsKQfwgXnZRz3LSHSEalfdXUYRVzAI
+	ejMMuSol8tU+40donIzpNAXEQi7ae1tmScbGRzoos9HNXKe7HXG0luZOrYEcSR4PAZcPvaA8S/4
+	OuvzR+1uEtLhdzEWQp1hTan65F3atCmzKhsTlURVKUJ1/Zw2KxD1IRNXWXKHErSiRyeH6m
+X-Google-Smtp-Source: AGHT+IGwjhbHCrSIYYxs5ggXUedTi5MyxYZDYcPG0zxnBQaAx/ghpOMWz8w4ztpv3bw1eLJhcf344w==
+X-Received: by 2002:a17:902:d505:b0:290:c0ed:de42 with SMTP id d9443c01a7336-2962ada2117mr36675415ad.36.1762328931245;
+        Tue, 04 Nov 2025 23:48:51 -0800 (PST)
+Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29601a5d74csm52174625ad.76.2025.11.04.23.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 23:48:50 -0800 (PST)
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+X-Google-Original-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Date: Wed, 05 Nov 2025 16:47:58 +0900
+Subject: [PATCH v2 1/3] mtd: spi-nor: sfdp: introduce smpt_read_dummy fixup
+ hook
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: vulab@iscas.ac.cn, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Vladimir Zapolskiy <vz@mleia.com>
-References: <20251104014042.1389-1-vulab@iscas.ac.cn>
-Subject: Re: [PATCH v2] mtd: rawnand: lpc32xx_slc: fix GPIO descriptor leak
-Content-Language: en-GB, de-DE
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20251104014042.1389-1-vulab@iscas.ac.cn>
-X-Provags-ID: V03:K1:KAY6UE17GKP5TI7ajDXJQsM3CZhA63IE27tryqBBHJtnt3maIEH
- tDvJBsbGcH8RYSCf5nJYuFS6tGadmTM0Iep0doxSxmxFlYH5GjrdfKnEHHZu+bPa+bVNnJT
- ByNkfgHK5bJm+2T3Ju8FFY1+P6D81vp4KXU3uUVsTyBdwGgnczcAT1mxvRuP/LgCCvf9io3
- FUAILCimF8aLri+d9mBNg==
-UI-OutboundReport: notjunk:1;M01:P0:DDDlCo5CR4A=;rJ3ipbut/1toseLC1tZCjMW83S+ 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 80EHQylmKWI/yl0cKugkYYbLSk=
+Message-Id: <20251105-s25fs-s-smpt-fixup-v2-1-c0fbd0f05ce7@infineon.com>
+References: <20251105-s25fs-s-smpt-fixup-v2-0-c0fbd0f05ce7@infineon.com>
+In-Reply-To: <20251105-s25fs-s-smpt-fixup-v2-0-c0fbd0f05ce7@infineon.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Marek Vasut <marek.vasut+renesas@mailbox.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, tkuw584924@gmail.com
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1762328922; l=3552;
+ i=Takahiro.Kuwano@infineon.com; s=20250227; h=from:subject:message-id;
+ bh=Y6gCu8pPNvoaaRlxS0r2zcF5cZ7AtnTriNRfIAsny+8=;
+ b=qm9kpfsjYgh2IDEtyLHT7wJAwnQk/1ZlXlG16ZoG+XF99c3jgO1rzmonmxivaARRWCziFjouU
+ 25dlgimw7u9CumWOY3/nTkb308qOvavwoP3UoGiHKGl95jBKq3iYUZG
+X-Developer-Key: i=Takahiro.Kuwano@infineon.com; a=ed25519;
+ pk=aS8V9WLuMUkl0vmgD0xJU19ZajdJmuyFBnBfVj0dfDs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251104_103340_575339_2BBF9FFF 
-X-CRM114-Status: UNSURE (   5.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251104_234852_175864_72309D41 
+X-CRM114-Status: GOOD (  17.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,18 +107,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-PiBUaGUgZHJpdmVyIGNhbGxzIGdwaW9kX2dldF9vcHRpb25hbCgpIGluIHRoZSBwcm9iZSBmdW5j
-dGlvbiBidXQKPiBuZXZlciBjYWxscyBncGlvZF9wdXQoKSBpbiB0aGUgcmVtb3ZlIGZ1bmN0aW9u
-IG9yIGluIHRoZSBwcm9iZQrigKYKCllvdSBtYXkgb2NjYXNpb25hbGx5IHB1dCBtb3JlIHRoYW4g
-NjMgY2hhcmFjdGVycyBpbnRvIHRleHQgbGluZXMKb2Ygc3VjaCBhIGNoYW5nZSBkZXNjcmlwdGlv
-bi4KaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFs
-ZHMvbGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9wcm9jZXNzL3N1Ym1pdHRpbmctcGF0Y2hl
-cy5yc3Q/aD12Ni4xOC1yYzQjbjY1OAoKUmVnYXJkcywKTWFya3VzCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+SMPT contains config detection info that describes opcode, address, and
+dummy cycles to read sector map config. The dummy cycles parameter can
+be SMPT_CMD_READ_DUMMY_IS_VARIABLE and in that case nor->read_dummy
+(initialized as 0) is used. In Infineon flash chips, Read Any Register
+command with variable dummy cycle is defined in SMPT. S25Hx/S28Hx flash
+has 0 dummy cycle by default to read volatile regiters and
+nor->read_dummy can work. S25FS-S flash has 8 dummy cycles so we need a
+hook that can fix dummy cycles with actually used value.
+
+Inroduce smpt_read_dummy() in struct spi_nor_fixups. It is called when
+the dummy cycle field in SMPT config detection is 'varialble'.
+
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Tested-by: Marek Vasut <marek.vasut+renesas@mailbox.org> # S25FS512S
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+---
+ drivers/mtd/spi-nor/core.h |  3 +++
+ drivers/mtd/spi-nor/sfdp.c | 18 ++++++++++++++++--
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index ceff412f7d65ab7b856795ca5c092cddbf598cd6..5ad46d95d09cc9d527f71579a71eed210e726f68 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -409,6 +409,8 @@ struct spi_nor_flash_parameter {
+  *                flash parameters when information provided by the flash_info
+  *                table is incomplete or wrong.
+  * @post_bfpt: called after the BFPT table has been parsed
++ * @smpt_read_dummy: called during SMPT table is being parsed. Used to fix the
++ *                   number of dummy cycles in read register ops.
+  * @post_sfdp: called after SFDP has been parsed (is also called for SPI NORs
+  *             that do not support RDSFDP). Typically used to tweak various
+  *             parameters that could not be extracted by other means (i.e.
+@@ -426,6 +428,7 @@ struct spi_nor_fixups {
+ 	int (*post_bfpt)(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+ 			 const struct sfdp_bfpt *bfpt);
++	void (*smpt_read_dummy)(const struct spi_nor *nor, u8 *read_dummy);
+ 	int (*post_sfdp)(struct spi_nor *nor);
+ 	int (*late_init)(struct spi_nor *nor);
+ };
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 21727f9a4ac6926080a116e30830c9533122fdad..9a47dcaca06ae2ad85ac8503658083b1d56d8b96 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -699,6 +699,17 @@ static u8 spi_nor_smpt_addr_nbytes(const struct spi_nor *nor, const u32 settings
+ 	}
+ }
+ 
++static void spi_nor_smpt_read_dummy_fixups(const struct spi_nor *nor,
++					   u8 *read_dummy)
++{
++	if (nor->manufacturer && nor->manufacturer->fixups &&
++	    nor->manufacturer->fixups->smpt_read_dummy)
++		nor->manufacturer->fixups->smpt_read_dummy(nor, read_dummy);
++
++	if (nor->info->fixups && nor->info->fixups->smpt_read_dummy)
++		nor->info->fixups->smpt_read_dummy(nor, read_dummy);
++}
++
+ /**
+  * spi_nor_smpt_read_dummy() - return the configuration detection command read
+  *			       latency, in clock cycles.
+@@ -711,8 +722,11 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
+ {
+ 	u8 read_dummy = SMPT_CMD_READ_DUMMY(settings);
+ 
+-	if (read_dummy == SMPT_CMD_READ_DUMMY_IS_VARIABLE)
+-		return nor->read_dummy;
++	if (read_dummy == SMPT_CMD_READ_DUMMY_IS_VARIABLE) {
++		read_dummy = nor->read_dummy;
++		spi_nor_smpt_read_dummy_fixups(nor, &read_dummy);
++	}
++
+ 	return read_dummy;
+ }
+ 
+
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
