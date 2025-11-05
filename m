@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92E59CCF9F8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6913CCFA15
 	for <linux-mtd@archiver.kernel.org>; Wed,  5 Nov 2025 07:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,70 +12,70 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Na/miVINaGI8HxZAJaZBngfjNDAKk0ypBR3Yjv9ebXs=; b=44AnoFtoRqnxY8
-	6yttTAGxs7KRxn8Vx2PECOgGaokdhpKsegIrIXjXMtxZJNutdltZWV7Z0Ww/9o/ANfX742t346Zzo
-	/2sTzGSzZkICk6cAX8yYv5y2i2rFqvMGmB8Gim3K3Om5a3X7Q3V7+fawVFojGs/k3ZAy7QrRopNXf
-	9qzIhzreDkqXVywwuYqT8f7npXDr2LvAbygiEcI4C9crab4Pc4gw8p0jt5x1V9sUzivvEwubehZqf
-	NPRVPifJZ7eaFh/Jn1CsAkr1L6JCbTzTG4aI74CMl+bIfffR7xOkfPc0nrdTfQPXLBcK0+1EaqliR
-	zLhmUSh3wcCHySpsEKQw==;
+	List-Owner; bh=NEozgSmVbQPXuUfTR0vnelC/1uLhwT4fwniNuzwngnE=; b=3FecGgKryQ1Bn1
+	E9qqbRtIBiTuToNYWIgYn7j8I55uLlKY6AhvYC3Z5fo1MnnBurB08DnRSNRqiiUP/mB3TByH6/bRK
+	xS1y2IUsgEqHjGFUHq0e7WxgqTb/3/y4dmMncDumXUzpAjHVrbYyR7330TG1wBt+31hoMJ4DX2t5K
+	8JEG+zK59S49uJPU1mQbtwoXcbhN7hiWLutJ/bhYdlJGIHWHfNzYpZVWVF1BOVJfZDDAexzTnwLL0
+	9C4RJv1UPdG8Vstci+QS8gwlELd8h50ghf1CRlcDI8hMJyPo4dtBCHOi7nJ2nnbeCz434vtKzcPUA
+	w38AfXt0VgJHzQletPQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGYGD-0000000DEAl-3PA5;
-	Wed, 05 Nov 2025 07:48:53 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1vGYGJ-0000000DEBt-298E;
+	Wed, 05 Nov 2025 07:48:59 +0000
+Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGYGC-0000000DEA5-0R6X
+	id 1vGYGG-0000000DEBF-1pkq
 	for linux-mtd@lists.infradead.org;
-	Wed, 05 Nov 2025 07:48:53 +0000
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-29599f08202so40844265ad.3
-        for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2025 23:48:51 -0800 (PST)
+	Wed, 05 Nov 2025 07:48:57 +0000
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-33b9dc8d517so5774728a91.0
+        for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2025 23:48:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762328931; x=1762933731; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1762328935; x=1762933735; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=n2dXDMbS4ZadtFN+PyoUE4mGeEjAPz+823eSljV2/WM=;
-        b=KzqcvpwC66WDPwFJN1wGNCZLwtjHqCvOA2rlXVOKwWFfs/tcZeVbUAmPZysAodyLdj
-         Sm2nD68wai9d+4R7yM9G75RO93BrbyXKFr2ntLlvBRg4MRytoz58MQfm1PTib88QPseO
-         PQSYtyHGmMT+smWT2f048578YfyCo9pe/+VyFxg0WEIxZesv1SQowheyxXFVsJPLo1mB
-         9HU/GJWkQIuhdw4UWeZmyvtCnvVuwLNj/H9yju1hEtNea56STbF11pnBbcU95729KcOF
-         /Xk6h507jTP64wr4SEm8ZLjbSIrh8CtFyQncmwYNI4fhBr6wje93Wrqz2RjdqTImw6AE
-         rMQw==
+        bh=SHv4nBRWTZt8vdLPnNPAb7DtW2NOOoy9mz9SlCozYmE=;
+        b=g5GCIOzShMEMAzzlpEHjxOZs1cjgCE6fB56V6BYaQbaLO4+UeB4weIX8c+S+xtzmMT
+         pGDYd50GkVDh7dtf5FY2NFH82EAgUACwRQe6niukXcV5QskHrBbVdeAI150wHjKuNOuj
+         biGEpBJbru33E83j1ltHIPOYYb/kDzOdMbayJBdU5xA05SiaFrtxTq7zxbsndO8W1Xy0
+         /y09KJSmAxmm9rCFagijI14ed2/ivCOyCuENjM2LUUxc+X3CwImZ8xOEYj+Y7tnUkPG+
+         CCVqNSp98ZKBtVu6HSxpN4qyoJH2M/vS+o6/ul+o5eKLR/ux9tkEHlsyp8kLoN5AwkZq
+         yNXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762328931; x=1762933731;
+        d=1e100.net; s=20230601; t=1762328935; x=1762933735;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n2dXDMbS4ZadtFN+PyoUE4mGeEjAPz+823eSljV2/WM=;
-        b=RxTgdgoZPrgSpue3gk2IcIfCEtQGrMRIOl+t/C36jwmLMXYrrhunEOqU30tPqDHKxG
-         piPwqZ7MUYqlIRBQVL9vlcfZyNdpWSjQa3zsYtn5cipDBWSJCHDXc428LFJaMW+rnWEd
-         +dLYommH9BdOkH3JHiwEhebdweQrh6e2G7uXmgDtmf/aXkKEn24D374uvWwIL5BEExOe
-         oewCDrCFeY9lKSRVGssSYrL9/tHvqs6MX23xhOc2e5iqvCsWF4Uoxhi9sXSDqzbpfOuV
-         RYttcMERNlNjJ2ZeYpGeBCwjrN/n6dbH1UPB5CTS99gYhEg9QMufp2X6w7kk3rNa0fBd
-         /TwQ==
-X-Gm-Message-State: AOJu0YwuDVKtTWiufkWQOztlk6ktA56S9x29N6UBnBYcyeE7ZgA5unGK
-	Kd+iuKn4wBtLrN8lbI6Rx0RUMA5Xc7eVLY+P6VSFCa+/kTEELM5F7UCR
-X-Gm-Gg: ASbGncvEDgYF+1uD29IB/292owanQA7xOUnpbWDLttN4QudSiaoVTjAOihUw3kvdU83
-	oDgRpSm3i3heqwWy4+i1A+ybhaXxS95IfhM8W5NEZMw2MzMCzBqLMJSIFYctx6JDXFc1KweJklE
-	qjS0HzGamippPi1KcfjfJ/uPZDvI/vpeLZsTqKU/eCkTDM8M5zcQyFKN8aHxEbsn09qdlTJVXN+
-	+Unw1i5ZyseRw9ceFbfZZ7P9msHVt+cn40ErYti4DU9TUdXw6iHfVa7UW7vk9QM8hWFxx0+t1RC
-	wufcJjFZFlzo9HjDpkigypb4ZvkEw9lC2Lr+TC3k9LdaFVsKQfwgXnZRz3LSHSEalfdXUYRVzAI
-	ejMMuSol8tU+40donIzpNAXEQi7ae1tmScbGRzoos9HNXKe7HXG0luZOrYEcSR4PAZcPvaA8S/4
-	OuvzR+1uEtLhdzEWQp1hTan65F3atCmzKhsTlURVKUJ1/Zw2KxD1IRNXWXKHErSiRyeH6m
-X-Google-Smtp-Source: AGHT+IGwjhbHCrSIYYxs5ggXUedTi5MyxYZDYcPG0zxnBQaAx/ghpOMWz8w4ztpv3bw1eLJhcf344w==
-X-Received: by 2002:a17:902:d505:b0:290:c0ed:de42 with SMTP id d9443c01a7336-2962ada2117mr36675415ad.36.1762328931245;
-        Tue, 04 Nov 2025 23:48:51 -0800 (PST)
+        bh=SHv4nBRWTZt8vdLPnNPAb7DtW2NOOoy9mz9SlCozYmE=;
+        b=imihdgjUtRNozDWouainG2+CtK4EY3KTFNKQy27Yr1g0tDWgxV9Gum9ijq+OZ//9x1
+         l5tjXgkHqZsebSb36E4/jMdox4IZ844JifszVBsBNwId3GocWO3mfufJ8LqO+nDgbiQl
+         PGmYfzsOEOIUyhHugIQJkmNROZpmHnEHBkHjqa6EwCsfgryN1ZaRnRCxlXv4CZDhEljR
+         Rq8/2r4a2Ltlt7B2hM1N0XtnUctu31QBNSsfrkXU7QgkDyZInEjnSxxgBrc32vhhxK/d
+         fvnsGf+siyQzk8LGxQQ+rfPHcz1xNhyvLi5McdHquii1wKo7TvCnHndlJadcIrViqNpx
+         dOzA==
+X-Gm-Message-State: AOJu0Yxb7BPzhz5Dm+Ht/PePwYuL5Q8PzECQ1dNpCQMw/e2vO6GJ3RTT
+	FVMlhhU94/JcglkSCeMhaHkmgCgd3uohZaOjjjiHfcaS0epLYtX+cd7m
+X-Gm-Gg: ASbGncvoAFFnstdVuhIWNIH1C4r6Jbvf2w165bQSw2PFDgjfANDMhAajP+3s3m+Sk5P
+	8GEAkUrOSBIVFVYY8UlCAKBXXhR2M8kczR4LbhuFiZ0V7DTGqzxRA4yOZES88FAyymTaTScMJxS
+	n/bg4xurcjTEuxpcZ9OQieWtvzHjHpBR3I44mtlnhNkqj6phPDGVry0ewSnsqRwyBduQ8CrHx5J
+	3NZwDK+Xdq5S2PaI9su/8aSQJlqQjYxV/exHAeQfao7ckzjCCgLFWo0ugnhHgmJcCQKg72q6dA8
+	ugyzu3A6YlfjZOmM3mL4dwEgNA7RiBB2wjA8BfmiWGG7PqJiGDA1Y2ExKF6Ws8fwc/Bde8rhyUt
+	0ZVC8x4us1VCk2odXWqBz+yGZ8OMjVLWX6YAJ4EANFZwRLPMDQuOZmDkdcqC++7C6Mk9ZhGI2Nc
+	IbFXd7hL5yWfWIT3vf6lFrXULXspv8URft+QbAxRygLq1F17Pc6y0oj7veUkw/fIBLMfqF
+X-Google-Smtp-Source: AGHT+IElVyESUBfM59SFNCufOWVW00WwLiAjs5x1QKfHQ/x0q29nn57QGeqQMEk8D/eNZfrpYehqaQ==
+X-Received: by 2002:a17:902:f550:b0:295:b7a3:323c with SMTP id d9443c01a7336-2962ae4c35bmr40142525ad.28.1762328935617;
+        Tue, 04 Nov 2025 23:48:55 -0800 (PST)
 Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29601a5d74csm52174625ad.76.2025.11.04.23.48.47
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29601a5d74csm52174625ad.76.2025.11.04.23.48.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 23:48:50 -0800 (PST)
+        Tue, 04 Nov 2025 23:48:55 -0800 (PST)
 From: Takahiro Kuwano <tkuw584924@gmail.com>
 X-Google-Original-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Date: Wed, 05 Nov 2025 16:47:58 +0900
-Subject: [PATCH v2 1/3] mtd: spi-nor: sfdp: introduce smpt_read_dummy fixup
+Date: Wed, 05 Nov 2025 16:47:59 +0900
+Subject: [PATCH v2 2/3] mtd: spi-nor: sfdp: introduce smpt_map_id fixup
  hook
 MIME-Version: 1.0
-Message-Id: <20251105-s25fs-s-smpt-fixup-v2-1-c0fbd0f05ce7@infineon.com>
+Message-Id: <20251105-s25fs-s-smpt-fixup-v2-2-c0fbd0f05ce7@infineon.com>
 References: <20251105-s25fs-s-smpt-fixup-v2-0-c0fbd0f05ce7@infineon.com>
 In-Reply-To: <20251105-s25fs-s-smpt-fixup-v2-0-c0fbd0f05ce7@infineon.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -86,16 +86,16 @@ To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, tkuw584924@gmail.com
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1762328922; l=3552;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1762328922; l=3412;
  i=Takahiro.Kuwano@infineon.com; s=20250227; h=from:subject:message-id;
- bh=Y6gCu8pPNvoaaRlxS0r2zcF5cZ7AtnTriNRfIAsny+8=;
- b=qm9kpfsjYgh2IDEtyLHT7wJAwnQk/1ZlXlG16ZoG+XF99c3jgO1rzmonmxivaARRWCziFjouU
- 25dlgimw7u9CumWOY3/nTkb308qOvavwoP3UoGiHKGl95jBKq3iYUZG
+ bh=nVurDGisbQbassAJC1QWOPaOxEMZSWrlBausbDp0Gps=;
+ b=U/A5PCXLDj1/YLoagxPCbAHte+oH8HOQeW3C0Momim8VXyrbo2zUdVGd+/RdqiiuwT3BlTbr7
+ g9pgun+A6Q/D/DDJ2xjxAUfiOjfvHmCvpLX9ou/6JrDO9tMABhcQEjB
 X-Developer-Key: i=Takahiro.Kuwano@infineon.com; a=ed25519;
  pk=aS8V9WLuMUkl0vmgD0xJU19ZajdJmuyFBnBfVj0dfDs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251104_234852_175864_72309D41 
-X-CRM114-Status: GOOD (  17.46  )
+X-CRM114-CacheID: sfid-20251104_234856_508184_9109D0DC 
+X-CRM114-Status: GOOD (  17.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,83 +112,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SMPT contains config detection info that describes opcode, address, and
-dummy cycles to read sector map config. The dummy cycles parameter can
-be SMPT_CMD_READ_DUMMY_IS_VARIABLE and in that case nor->read_dummy
-(initialized as 0) is used. In Infineon flash chips, Read Any Register
-command with variable dummy cycle is defined in SMPT. S25Hx/S28Hx flash
-has 0 dummy cycle by default to read volatile regiters and
-nor->read_dummy can work. S25FS-S flash has 8 dummy cycles so we need a
-hook that can fix dummy cycles with actually used value.
+Certain chips have inconsistent Sector Map Parameter Table (SMPT) data,
+which leads to the wrong map ID being identified, causing failures to
+detect the correct sector map.
 
-Inroduce smpt_read_dummy() in struct spi_nor_fixups. It is called when
-the dummy cycle field in SMPT config detection is 'varialble'.
+To fix this, introduce smpt_map_id() into the struct spi_nor_fixups.
+This function will be called after the initial SMPT-based detection,
+allowing chip-specific logic to correct the map ID.
 
+Infineon S25FS512S needs this fixup as it has inconsistency between map
+ID definition and configuration register value actually obtained.
+
+Co-developed-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
+Signed-off-by: Marek Vasut <marek.vasut+renesas@mailbox.org>
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 Tested-by: Marek Vasut <marek.vasut+renesas@mailbox.org> # S25FS512S
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
  drivers/mtd/spi-nor/core.h |  3 +++
- drivers/mtd/spi-nor/sfdp.c | 18 ++++++++++++++++--
- 2 files changed, 19 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/sfdp.c | 12 ++++++++++++
+ 2 files changed, 15 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index ceff412f7d65ab7b856795ca5c092cddbf598cd6..5ad46d95d09cc9d527f71579a71eed210e726f68 100644
+index 5ad46d95d09cc9d527f71579a71eed210e726f68..16b382d4f04f207aa26190ed8bdf2d19885f7315 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -409,6 +409,8 @@ struct spi_nor_flash_parameter {
-  *                flash parameters when information provided by the flash_info
-  *                table is incomplete or wrong.
+@@ -411,6 +411,8 @@ struct spi_nor_flash_parameter {
   * @post_bfpt: called after the BFPT table has been parsed
-+ * @smpt_read_dummy: called during SMPT table is being parsed. Used to fix the
-+ *                   number of dummy cycles in read register ops.
+  * @smpt_read_dummy: called during SMPT table is being parsed. Used to fix the
+  *                   number of dummy cycles in read register ops.
++ * @smpt_map_id: called after map ID in SMPT table has been determined for the
++ *               case the map ID is wrong and needs to be fixed.
   * @post_sfdp: called after SFDP has been parsed (is also called for SPI NORs
   *             that do not support RDSFDP). Typically used to tweak various
   *             parameters that could not be extracted by other means (i.e.
-@@ -426,6 +428,7 @@ struct spi_nor_fixups {
- 	int (*post_bfpt)(struct spi_nor *nor,
+@@ -429,6 +431,7 @@ struct spi_nor_fixups {
  			 const struct sfdp_parameter_header *bfpt_header,
  			 const struct sfdp_bfpt *bfpt);
-+	void (*smpt_read_dummy)(const struct spi_nor *nor, u8 *read_dummy);
+ 	void (*smpt_read_dummy)(const struct spi_nor *nor, u8 *read_dummy);
++	void (*smpt_map_id)(const struct spi_nor *nor, u8 *map_id);
  	int (*post_sfdp)(struct spi_nor *nor);
  	int (*late_init)(struct spi_nor *nor);
  };
 diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 21727f9a4ac6926080a116e30830c9533122fdad..9a47dcaca06ae2ad85ac8503658083b1d56d8b96 100644
+index 9a47dcaca06ae2ad85ac8503658083b1d56d8b96..a8324c2da0acf2953a4a62e2a9f7ed31fcd8b4f2 100644
 --- a/drivers/mtd/spi-nor/sfdp.c
 +++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -699,6 +699,17 @@ static u8 spi_nor_smpt_addr_nbytes(const struct spi_nor *nor, const u32 settings
- 	}
- }
- 
-+static void spi_nor_smpt_read_dummy_fixups(const struct spi_nor *nor,
-+					   u8 *read_dummy)
-+{
-+	if (nor->manufacturer && nor->manufacturer->fixups &&
-+	    nor->manufacturer->fixups->smpt_read_dummy)
-+		nor->manufacturer->fixups->smpt_read_dummy(nor, read_dummy);
-+
-+	if (nor->info->fixups && nor->info->fixups->smpt_read_dummy)
-+		nor->info->fixups->smpt_read_dummy(nor, read_dummy);
-+}
-+
- /**
-  * spi_nor_smpt_read_dummy() - return the configuration detection command read
-  *			       latency, in clock cycles.
-@@ -711,8 +722,11 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
- {
- 	u8 read_dummy = SMPT_CMD_READ_DUMMY(settings);
- 
--	if (read_dummy == SMPT_CMD_READ_DUMMY_IS_VARIABLE)
--		return nor->read_dummy;
-+	if (read_dummy == SMPT_CMD_READ_DUMMY_IS_VARIABLE) {
-+		read_dummy = nor->read_dummy;
-+		spi_nor_smpt_read_dummy_fixups(nor, &read_dummy);
-+	}
-+
+@@ -730,6 +730,16 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
  	return read_dummy;
  }
  
++static void spi_nor_smpt_map_id_fixups(const struct spi_nor *nor, u8 *map_id)
++{
++	if (nor->manufacturer && nor->manufacturer->fixups &&
++	    nor->manufacturer->fixups->smpt_map_id)
++		nor->manufacturer->fixups->smpt_map_id(nor, map_id);
++
++	if (nor->info->fixups && nor->info->fixups->smpt_map_id)
++		nor->info->fixups->smpt_map_id(nor, map_id);
++}
++
+ /**
+  * spi_nor_get_map_in_use() - get the configuration map in use
+  * @nor:	pointer to a 'struct spi_nor'
+@@ -783,6 +793,8 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+ 		map_id = map_id << 1 | !!(*buf & read_data_mask);
+ 	}
+ 
++	spi_nor_smpt_map_id_fixups(nor, &map_id);
++
+ 	/*
+ 	 * If command descriptors are provided, they always precede map
+ 	 * descriptors in the table. There is no need to start the iteration
 
 -- 
 2.34.1
