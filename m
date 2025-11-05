@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06B40CCF9F8
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Nov 2025 16:04:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9526ECCF9F8
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Nov 2025 16:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=h+hnkZl3zLlAPsYdFozzpzNpPOihZHT02u+HXVRxS9Y=; b=riNFN9TDUOt/hM
-	+25UDxfZh9eCyIhs0tKZ6wL2Y50rTUzytAtdNk3vCo7bc6GRiI4JRrPJTyXHaF9i5kAe/3n/k7/h/
-	JRskfzn6bihwUmCd6240m6HcUT0ePuzPlNZ38PU/h582AizrHGnhREpuZ/sOmQ/vXzgLrMin7MDzP
-	SEqMMGb0ZBZf0JkANvvSOot/1WzXQPduqqdY5DwDpgHwbSSEAF+b5FEo4rxrOZ52W1Y3B0giaGqVz
-	uRl4XofKSYbFYLM9AF053QEaNLvrSuR+wXUM/ZiS+oduIUtY9RNFR/32CBzVRgtts+Tam9CJJUf8W
-	4oSsiNANz6kfNsSU+tIQ==;
+	List-Owner; bh=WgGhSX6+w04qlOFAXPIpKcA8L+P5dDVNizB9DlK7k7Q=; b=QG0dmYtjL4H4EX
+	DKlPA41dOorHrMDjI9wQP3kO+x9Iym/0u+WiB90G5xWYbN2p9mPdjv6Q+KdFhQvzbUMmM2b0Qb5pN
+	pz2QVAMIN4S6bagOpMDu1HM7SocRq2X3sm5YW3JKURsk6nPvky4mc/DLXUbxAmwomlHh8L/LDDTVN
+	iUBYQHnTGIHQGKqErT1CT1vRhANYdDT0+gIRuCzP1YofCBYVnwBVdCA9nPlLRjzBEcwsCDxqe/KMk
+	SK04z0bhI8P1EoCNNMzU72JkVpMvTAao/Y1gnD2FBqqJewoDPy47qbBcniD9YOtsmrj7u18Dqp+aH
+	H7gOf0oYIAiCcDXMzaJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGfzh-0000000E1CQ-1zTt;
-	Wed, 05 Nov 2025 16:04:21 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1vGg0c-0000000E1QL-1ZSp;
+	Wed, 05 Nov 2025 16:05:18 +0000
+Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGfzf-0000000E1BS-05IV
+	id 1vGg0a-0000000E1PZ-2J6C
 	for linux-mtd@lists.infradead.org;
-	Wed, 05 Nov 2025 16:04:20 +0000
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-b727f452fffso79068866b.1
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2025 08:04:18 -0800 (PST)
+	Wed, 05 Nov 2025 16:05:17 +0000
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-6399328ff1fso11521635a12.0
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2025 08:05:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1762358657; x=1762963457; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1762358714; x=1762963514; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
         bh=gczMRuZ2fsGRpoCXUBhl7NeVLE82+ehtyW2OQrB7AVI=;
-        b=d5WAXDxehOhq1fPdt11RS+tB/5DIsG5qg5KbG24VsmI1V/PsEk/vy6cdOwgv1sYn25
-         cKu6+xlPa9sdV7Bpi4wRV8V/pEs6zUieVyR3pfwphynmd635TwA5LdVu2WFBdCaUbD/F
-         NyB23MDutKT8DTb1rwsr5WlPR3tL6pvMmuYuUMDfWUYKF0Q3jsaOkAPs+Axc3KFuX/Nv
-         xC8grtyz37cwjmDWHjgDFCtWcgpVFsNzsuow7OAM3jdzA1PIcE1hgYmYay/THJcC2Jc6
-         XDpVncsIXwkcy3onF78jes3GGAEsojlSGlM3tV+M2HBUw6LE7aV/hrJcPvJGYpLy5MLA
-         pTnA==
+        b=mBXGELq2Hg8qlgnaAGJ9NWA1y4zo0RjZcnmutyeCM07lxw2FMDQRWjdLRuoi3lmNJv
+         UluiTmLMHm6V05z6l/L3xsYmTtsTeVUDRooBmak/eUBcZHwUhxDpFwsmOfmEHN369q5L
+         hgBacJmApvac5dVHN9xiAXJd9zZfEmm0LQa5of4Md6zbppdzYtVUV9mPQspd/oWPCM0C
+         mSsgTwM+ZwEkuXBrdOYPcJIX4vm21DjG+0RmulrvvCMOEG8jiWo+rNPLTu0nwdB6IXdQ
+         IQ2/sTcGCaPGV28dqL1n8Md93UYHokO9begWADeQ7biDHcy9Ds58o+pUmAQt5C5zBGxC
+         PcuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762358657; x=1762963457;
+        d=1e100.net; s=20230601; t=1762358714; x=1762963514;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
         bh=gczMRuZ2fsGRpoCXUBhl7NeVLE82+ehtyW2OQrB7AVI=;
-        b=i2BQ30GzoKjazkB/DpPz1HKr53WB14QOasl3rC6WmuFLIijF3ODVKhDRPToEq6kE3M
-         big2hL/cmpjyGxKDv6pMcuclSJfDk16PXXhBd3RY4dOAQ5HQSCznrfnOjDiRu5G+MlBX
-         KjIA3na2W69S+5g9hUqumZH9stkeLLGMQ3XvGGA7uQGMG+oBbIX0848EWDfbryQGVZNL
-         YNy+t0qhDntwqc9epEZ41ubMoZjncX9azgAWi/EKZctIRutQEBoxGn2abduiDNS6jlnS
-         EyTIP7WJhXdIK6jvvFZfB/wcPBNkF9F7GbVei73lerhw5hvBLDogx/SzjFwa5HXuzEQ8
-         l8SA==
-X-Forwarded-Encrypted: i=1; AJvYcCUidUQm0Qzltnq9rwXas9lNprE2VYQrEd0bulQORJLumtI2hKKIacVrN86MSSQQIafmgH5GqNZggjU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YybxIVJcXCUl4mZZmvWDVgKTOZMX+NiEKsikfn26BS1F4Ko2SKM
-	ZeDn45rmMyFyjdbI4+Mw4HW6ICp2fcfrZ5YsV4jsJVQHHdf0ooZpscCmB0YRClVfolQ=
-X-Gm-Gg: ASbGnctdMjozVfS/qInc5TtZa0EnN8ns8dPFA1EGSyskap8ozfQBg4pWxg02FamdEl9
-	0VTH1EX6Fr06iaUrneAvRJbuGz/zKffS1ECiDL0FdBIUVZLF9E9p+b+qTJoRD7KL+gXEvqMQEXh
-	koeiAczjkAReEj470BIYakXR/OoYgN8k5PjEDvIz/G0ZsmOkjEru5Cjkf/8DhcGx7e/M3G4UxYa
-	+90+/aizP8yQrTjhJ7NXQ0pmqc3028Fv2VVz3KDqtSYzSr6A5A+Fjv4Sj2oSJMSJM0C12ZMX/JF
-	nj5gUmYZx1pGWdiK5nn7FPiX/hFAgt8XMa+/8GB+g4iwt50HKWB8b/gx8YS16sVkh64n9P/Mn0X
-	c6QsldpopvHsMchs/+Kjb5xJma6jqtUpg7n/mjkBwFDFByg7Sey8m8BNb+AEjapYzxTxMTm+YUl
-	H2V2Oepo88axtnQnI4SvhuBZw=
-X-Google-Smtp-Source: AGHT+IH+8UBl88iOFcuJ5mLvs7y03FE0ImwwlDmWIzieFw+K4sIaLEleiL54hEot6DxqVBsb24f+9A==
-X-Received: by 2002:a17:906:d54f:b0:b46:57fd:8443 with SMTP id a640c23a62f3a-b726323d55cmr451555866b.24.1762358657186;
-        Wed, 05 Nov 2025 08:04:17 -0800 (PST)
+        b=aCUPJYlC7nfqM3t5GH2iLjRaRAeIfuFO1GGgIVPrfUAzWcxgUTjjusSiRvlxKY5zUt
+         vt9uz8AA2SRjkkVxaj5RyLE5vgGreloi2dJNMOfjKXheSlng6KIAss43IfBYJlvLlof6
+         kyu3lVdKZfBsYZloMWdLs/A13hW0baxWjfKnb0xkkrfMabjvOjcrno9zsQO8ZkHVdmwe
+         XKFiS73sbPTviWTOXxVBepwHDq0jwwsM6MBQSFSTpppqbty/d5tmOM9qxUBgOsYa3DkU
+         cqZR6OTM2PzWHxIXRfDwo+KnCm5cipzwdZ6OMQeU186d8iGFNUiyAFOuVKV8SV6Mw33T
+         oJQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWV6ncZBiG3NVyww119VLJ3IbVWULg6TNeMphQRqyo+P2sIhvxQO0pZ1PZurdHbPLbPf/Z738bs5WA=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxeIBypVPPNJb7wNpcxC9QoWxy5u8rPA3zCMoDRz4I8pSB9ptm8
+	GAWFoclUajt35bJDh3eayBNP7jvHfvqdbZFFDSkA2Pi4PkSLZWXvVSfHRPymLTz9x90=
+X-Gm-Gg: ASbGncsgQZFnv0W580SFzXB5Av93X4klRUdGS7p2yYXUGud0TxUlI/SIyo+6H0wpIfj
+	nrOWilOJTxT/QXxUP98Kn3kcVYKeJNRFHV1/w5a6Hf9ZX3Z/e0xwzU3urGxdm+so2YU3pZjFQii
+	AeDtMV4enpps9EinoJwpmsyoKaHrLeaq/AZ2Uy7tBoNJqmU3JBsYdQK8w2x4jimGYseqta63vQD
+	t2cUdq1TOZAy54x8ETBEdjgal/gMrLBHYGLHdBH3VNkz88FDKt4KnTDPV9WOQ5f/SFP+oL7xx+Q
+	ND0U/6BOYMKvMSXAserOP5eq0XVUuIOhDqXEzO0swZXMBxOVL8KCXqEVpj660L++8zSN3V0Iw6n
+	lipk1+a56XF1yFNvyNZSFfy1P/Xd+x0u5JEKJzMDTmOgXzYgj5OwCyk7o2pK+1yRw9yeB4ZfFAF
+	WUt0LqzLhTLZpDank/PE98dzM=
+X-Google-Smtp-Source: AGHT+IEZ4jSMqgU1j3ShuBTWV7Zpy421hTwNR5u92fURxhF1PiKkkzbDZyzXF4ZYvCapBIQeuCyJsA==
+X-Received: by 2002:a05:6402:3247:10b0:63c:4da1:9a10 with SMTP id 4fb4d7f45d1cf-64105b9d03cmr2682548a12.31.1762358714583;
+        Wed, 05 Nov 2025 08:05:14 -0800 (PST)
 Received: from [172.20.148.132] ([87.213.113.147])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b723fa0828dsm518078166b.50.2025.11.05.08.04.16
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-640e680578esm4903569a12.10.2025.11.05.08.05.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Nov 2025 08:04:16 -0800 (PST)
-Message-ID: <89fc4526-db36-4974-8a38-554315fe76ed@linaro.org>
-Date: Wed, 5 Nov 2025 17:04:15 +0100
+        Wed, 05 Nov 2025 08:05:14 -0800 (PST)
+Message-ID: <fbe28f12-b462-4620-80ef-b6ba5ff3e0a3@linaro.org>
+Date: Wed, 5 Nov 2025 17:05:12 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/28] mtd: spinand: Add missing check
+Subject: Re: [PATCH 06/28] mtd: spinand: Remove stale definitions
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Mark Brown
  <broonie@kernel.org>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>
@@ -84,13 +84,13 @@ Cc: Pratyush Yadav <pratyush@kernel.org>,
  linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org
 References: <20251031-winbond-v6-17-rc1-oddr-v1-0-be42de23ebf1@bootlin.com>
- <20251031-winbond-v6-17-rc1-oddr-v1-5-be42de23ebf1@bootlin.com>
+ <20251031-winbond-v6-17-rc1-oddr-v1-6-be42de23ebf1@bootlin.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20251031-winbond-v6-17-rc1-oddr-v1-5-be42de23ebf1@bootlin.com>
+In-Reply-To: <20251031-winbond-v6-17-rc1-oddr-v1-6-be42de23ebf1@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251105_080419_092463_F406BF91 
-X-CRM114-Status: UNSURE (   4.80  )
+X-CRM114-CacheID: sfid-20251105_080516_591304_474E1F81 
+X-CRM114-Status: UNSURE (   4.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -109,7 +109,6 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
