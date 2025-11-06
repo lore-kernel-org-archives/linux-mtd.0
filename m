@@ -4,109 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D154CCFA03
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 12:08:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 496C1CCFA03
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Nlmcyd+BRolNPZXAYWZsgBo3eHj5AUlVUpnRHX4aETU=; b=Orm8macemJ955v
-	ri8b116cyEmOXno+Xc81jru181dc3aaf3PZ/KWTus5n+48XiiyyOP+aAoGF3XpN6XBMZ1FAG/KZRr
-	HFNOFcUFgpOlsfZ0ki/mXrmFFgUJ66HeZoqbF7bJ1db1YhZ3CgKh+4+IcndqQenrzF26D0houA1wI
-	7Y08k2FgkmAThaUBTQDdh5Vn3PxkkHw/4dSwdN4E1da2LpVuIyO/7dAXjhiZpAAsEyJR7RS82pwNo
-	d68jIDbQs3GBhiPdmR4BNjtkFiLueX3fmHxbgQgALGleiKdOxDa1pRMoAc8xZ0AXe086lqThj4H7y
-	DnKhZuzyHtwp5Wvar1fg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PS/4uoVYN+4gILUuQdacWqiKpm/y7BKfhVUGCCBzKac=; b=svRt1nTUV4ud6s
+	xb9XlcKIwh9jbEEhu7VTm8/kShKAIIzd9ScKU0+cXPCkAcPk76F5H+7TOeGcCfymq+63tNPer445l
+	m6ImZUW/vrIC/0DuG2MLsxARhwLub5VrM9gQ8eJ/K0lfMdwUeYCYRyUNSKZUHP6YVYsBPg1kpTo+H
+	oMPZG5M/cNNxRcJD283uQK5T5tEa+D9FgTHWVlfiwSeQ3lf/nj2ogLpCHjl12YmLb49P0QqB7ASb7
+	YVeT6Tw4Gcz+aLKgOmTHw384NXF7EKu2mDasJ0TlnN54+xjLFQk9IWIdB8uf/j24gsSWC1JzDZK8T
+	TGh12OGphxVkmi6omOTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGymW-0000000FQA6-2KZ5;
-	Thu, 06 Nov 2025 12:08:00 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vH08K-0000000Fa3X-2sAH;
+	Thu, 06 Nov 2025 13:34:36 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGymT-0000000FQ9f-39uP;
-	Thu, 06 Nov 2025 12:07:58 +0000
+	id 1vH08H-0000000Fa2y-21It;
+	Thu, 06 Nov 2025 13:34:35 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 32BDF40629;
-	Thu,  6 Nov 2025 12:07:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45F20C16AAE;
-	Thu,  6 Nov 2025 12:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762430876;
-	bh=ZSAzxLSRlNc7aHk3QQjU+Jn2ls3JaS1qMmMrb2/qUBM=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=VNzO3H2p6CwGtTyPbapCQ3QGkVPCDj0Gu4NOPyGtgJgmaYMtgBtFdfn1FNy5iqr6k
-	 vTv6ROHNpjvXI02lRsoWF/DhOh/uJCOWIGFqPaPNS7PcJjp39waeiJOYKbRPTwfrbU
-	 SMsnPJn43Jpt7c11rBBLMRgkivM7erknhuvz0QL9AVVVAnNexDJAeVEkJChDqH2EN6
-	 8oda1kH5rwMJrie0d3U1H9Cz/oc/yOp2QxL//jKy5IQ7gAhznsONMdqHufyuvBkH7Z
-	 SS+7EyYZ9fRip3j/kHm5jr4WaoPL6Ps8XzbBqB5YMKxF7epkNPAz2Ku5VI9q85h1pI
-	 bAkoyVAUJdhpA==
-Message-ID: <6758176514cdd6e2ceacb3bd0e4d63fb8784b7c6.camel@kernel.org>
-Subject: Re: [PATCH] vfs: remove the excl argument from the ->create()
- inode_operation
-From: Jeff Layton <jlayton@kernel.org>
-To: NeilBrown <neil@brown.name>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
- <lucho@ionkov.net>,  Dominique Martinet <asmadeus@codewreck.org>, Christian
- Schoenebeck <linux_oss@crudebyte.com>, David Sterba	 <dsterba@suse.com>,
- David Howells <dhowells@redhat.com>, Marc Dionne	
- <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner	 <brauner@kernel.org>, Jan Kara <jack@suse.cz>, "Tigran
- A. Aivazian"	 <aivazian.tigran@gmail.com>, Chris Mason <clm@fb.com>, Xiubo
- Li	 <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes	
- <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
- Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>, Namjae Jeon
- <linkinjeon@kernel.org>,  Sungjong Seo <sj1557.seo@samsung.com>, Yuezhang
- Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,  Andreas Dilger
- <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu
- <chao@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Miklos
- Szeredi <miklos@szeredi.hu>, Andreas Gruenbacher	 <agruenba@redhat.com>,
- Viacheslav Dubeyko <slava@dubeyko.com>, John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Richard
- Weinberger <richard@nod.at>,  Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Mikulas Patocka	
- <mikulas@artax.karlin.mff.cuni.cz>, Muchun Song <muchun.song@linux.dev>, 
- Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@redhat.com>,
- David Woodhouse <dwmw2@infradead.org>,  Dave Kleikamp <shaggy@kernel.org>,
- Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
- Ryusuke Konishi <konishi.ryusuke@gmail.com>, Konstantin Komarov
- <almaz.alexandrovich@paragon-software.com>,  Mark Fasheh <mark@fasheh.com>,
- Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
- Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>,
- Martin Brandenburg	 <martin@omnibond.com>, Amir Goldstein
- <amir73il@gmail.com>, Steve French	 <sfrench@samba.org>, Paulo Alcantara
- <pc@manguebit.org>, Ronnie Sahlberg	 <ronniesahlberg@gmail.com>, Shyam
- Prasad N <sprasad@microsoft.com>, Tom Talpey	 <tom@talpey.com>, Bharath SM
- <bharathsm@microsoft.com>, Zhihao Cheng	 <chengzhihao1@huawei.com>, Hans de
- Goede <hansg@kernel.org>, Carlos Maiolino	 <cem@kernel.org>, Hugh Dickins
- <hughd@google.com>, Baolin Wang	 <baolin.wang@linux.alibaba.com>, Andrew
- Morton <akpm@linux-foundation.org>,  Kees Cook <kees@kernel.org>, "Gustavo
- A. R. Silva" <gustavoars@kernel.org>, 	linux-kernel@vger.kernel.org,
- v9fs@lists.linux.dev, 	linux-fsdevel@vger.kernel.org,
- linux-afs@lists.infradead.org, 	linux-btrfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, 	codalist@coda.cs.cmu.edu,
- ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	gfs2@lists.linux.dev, linux-um@lists.infradead.org, linux-mm@kvack.org, 
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, 
-	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- ntfs3@lists.linux.dev, 	ocfs2-devel@lists.linux.dev,
- linux-karma-devel@lists.sourceforge.net, 	devel@lists.orangefs.org,
- linux-unionfs@vger.kernel.org, 	linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, 	linux-xfs@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Date: Thu, 06 Nov 2025 07:07:48 -0500
-In-Reply-To: <176237780417.634289.15818324160940255011@noble.neil.brown.name>
-References: <20251105-create-excl-v1-1-a4cce035cc55@kernel.org>
-	 <176237780417.634289.15818324160940255011@noble.neil.brown.name>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual; keydata=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 QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
-User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
+	by sea.source.kernel.org (Postfix) with ESMTP id 28529444CC;
+	Thu,  6 Nov 2025 13:34:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18EB8C116C6;
+	Thu,  6 Nov 2025 13:34:21 +0000 (UTC)
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Yury Norov <yury.norov@gmail.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Miller <davem@davemloft.net>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Crt Mori <cmo@melexis.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Alex Elder <elder@ieee.org>,
+	David Laight <david.laight.linux@gmail.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	Jason Baron <jbaron@akamai.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Tony Luck <tony.luck@intel.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Kim Seer Paller <kimseer.paller@analog.com>,
+	David Lechner <dlechner@baylibre.com>,
+	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Richard Genoud <richard.genoud@bootlin.com>,
+	Cosmin Tanislav <demonsingur@gmail.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Jianping Shen <Jianping.Shen@de.bosch.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	qat-linux@intel.com,
+	linux-gpio@vger.kernel.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-iio@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v6 00/26] Non-const bitfield helpers
+Date: Thu,  6 Nov 2025 14:33:48 +0100
+Message-ID: <cover.1762435376.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_040757_837829_25F47FEB 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20251106_053433_567267_785BF594 
+X-CRM114-Status: GOOD (  29.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,38 +112,208 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2025-11-06 at 08:23 +1100, NeilBrown wrote:
-> On Thu, 06 Nov 2025, Jeff Layton wrote:
-> > Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
-> > the "excl" argument to the ->create() inode_operation is always set to
-> > true. Remove it, and fix up all of the create implementations.
-> 
-> nonono
-> 
-> 
-> > @@ -3802,7 +3802,7 @@ static struct dentry *lookup_open(struct nameidata *nd, struct file *file,
-> >  		}
-> >  
-> >  		error = dir_inode->i_op->create(idmap, dir_inode, dentry,
-> > -						mode, open_flag & O_EXCL);
-> > +						mode);
-> 
-> "open_flag & O_EXCL" is not the same as "true".
-> 
-> It is true that "all calls to vfs_create() pass true for 'excl'"
-> The same is NOT true for inode_operations.create.
-> 
+	Hi all,
 
-I don't think this is a problem, actually:
+<linux/bitfield.h> contains various helpers for accessing bitfields, as
+typically used in hardware registers for memory-mapped I/O blocks.
+These helpers ensure type safety, and deduce automatically shift values
+from mask values, avoiding mistakes due to inconsistent shifts and
+masks, and leading to a reduction in source code size.
 
-Almost all of the existing ->create() operations ignore the "excl"
-bool. There are only two that I found that do not: NFS and GFS2. Both
-of those have an ->atomic_open() operation though, so lookup_open()
-will never call ->create() for those filesystems. This means that -
->create() _is_ always called with excl == true.
+The existing FIELD_{GET,PREP}() macros are limited to compile-time
+constants.  However, it is very common to prepare or extract bitfield
+elements where the bitfield mask is not a compile-time constant (e.g. it
+comes from a table, or is created by shifting a compile-time constant).
+To avoid this limitation, the AT91 clock driver introduced its own
+field_{prep,get}() macros.  During the past four years, these have been
+copied to multiple drivers, and more copies are on their way[1], leading
+to the obvious review comment "please move this to <linux/bitfield.h>".
+
+Hence this series
+  1. Takes preparatory steps in drivers definining local
+     field_{get,prep}() macros (patches 1-11),
+  2. Introduces __FIELD_{PREP,GET}() helpers to avoid clang W=1 warnings
+     (patch 12),
+  3. Makes field_{prep,get}() available for general use (patch 13),
+  4. Converts drivers with local variants to the common helpers (patches
+     14-24),
+  5. Converts a few Renesas drivers to the existing FIELD_{GET,PREP}()
+     and the new field_{get,prep}() helpers (patches 25-26).
+
+Alternatives would be to use the typed {u*,be*,le*,...}_{get,encode}_bits()
+macros instead (which currently do not work with non-constant masks
+either, and the first attempt to change that generates much worse code),
+or to store the low bit and width of the mask instead (which would
+require changing all code that passes masks directly, and also generates
+worse code).
+
+Changes compared to v5[2]:
+  - Add Acked-by, Reviewed-by,
+  - Update sunxi rawnand driver in linux-next,
+  - Align \,
+  - Add Return sections to kerneldoc,
+  - Document field_{get,prep} in top comment block,
+  - New patch to add less-checking __FIELD_{GET,PREP}() helpers,
+  - Use less-checking __FIELD_{GET,PREP}() to avoid build issues with
+    clang and W=1.
+
+Changes compared to v4[3]:
+  - Add preparatory patches to #undef field_{get,prep}() in individual
+    drivers before defining local variants,
+  - Update new smi330 IIO IMU driver in linux-next,
+  - Add Acked-by,
+  - Document that mask must be non-zero,
+  - Document typical usage pattern,
+  - Recommend using FIELD_{PREP,GET}() directly to ensure compile-time
+    constant masks,
+  - Check BITS_PER_TYPE(mask) instead of sizeof(mask),
+  - Wire field_{get,prep}() to FIELD_{GET,PREP}() when mask is
+    constant, to improve type checking,
+  - Extract conversion of individual drivers into separate patches.
+
+Changes compared to v3[4]:
+  - Update recently introduced FIELD_MODIFY() macro,
+  - Add Acked-by,
+  - Rebase on top of commit 7c68005a46108ffa ("crypto: qat - relocate
+    power management debugfs helper APIs") in v6.17-rc1,
+  - Convert more recently introduced upstream copies:
+      - drivers/edac/ie31200_edac.c
+      - drivers/iio/dac/ad3530r.c
+
+Changes compared to v2[5]:
+  - New patch "[PATCH v3 1/4] bitfield: Drop underscores from macro
+    parameters",
+  - Add Acked-by,
+  - Drop underscores from macro parameters,
+  - Use __auto_type where possible,
+  - Correctly cast reg to the mask type,
+  - Introduces __val and __reg intermediates to simplify the actual
+    operation,
+  - Drop unneeded parentheses,
+  - Clarify having both FIELD_{GET,PREP}() and field_{get,prep}(),
+
+Changes compared to v1[6]:
+  - Cast val resp. reg to the mask type,
+  - Fix 64-bit use on 32-bit architectures,
+  - Convert new upstream users:
+      - drivers/crypto/intel/qat/qat_common/adf_gen4_pm_debugfs.c
+      - drivers/gpio/gpio-aspeed.c
+      - drivers/iio/temperature/mlx90614.c
+      - drivers/pinctrl/nuvoton/pinctrl-ma35.c
+      - sound/usb/mixer_quirks.c
+  - Convert new user queued in renesas-devel for v6.15:
+      - drivers/soc/renesas/rz-sysc.c
+  - Drop the last 14 RFC patches.
+    They can be updated/resubmitted/applied later.
+
+In the meantime, two more copies ended up in the IIO and MTD trees and
+in linux-next (commit 89cba586b8b4cde0 ("iio: imu: smi330: Add driver"
+in next-20251021 and later, commits 6fc2619af1eb6f59 ("mtd: rawnand:
+sunxi: rework pattern found registers") and d21b4338159ff7d7 ("mtd:
+rawnand: sunxi: introduce ecc_mode_mask in sunxi_nfc_caps") in
+next-20251029 and later).  As these commits are not yet upstream, any
+updates (patches 10, 11, 23 and 24) for these drivers cannot be applied
+with the rest of this series yet.
+
+Yury kindly offered to take the lionshare of this series through his
+bitmap tree, thanks for that!
+I am fine with that, if he would also provide an immutable branch + tag,
+which I can merge into the Renesas tree before taking patches 25 and 26
+myself.  Once that tag has been merged in subsystem trees or upstream, I
+plan to update and resend actual conversions (see patches 4-17 in
+v1[6]).
+
+To avoid build issues in linux-next, the IIO resp. MTD maintainers
+should:
+  1. Apply patch 10 resp. 11 now, and
+  2. Apply patch 23 resp. 24 later, either after
+       a. merging the immutable branch/tag, or
+       b. the new helpers in <linux/bitfield.h> are upstream,
+
+Note that there is also a minor conflict with linux-next due to the
+removal of an include file from drivers/gpio/gpio-aspeed.c.
+
+Thanks!
+
+[1] Work-in-progress new copies posted during the last few months (there
+    may be more):
+      - "[PATCH v2 3/3] gpio: gpio-ltc4283: Add support for the LTC4283 Swap Controller"
+	https://lore.kernel.org/20250903-ltc4283-support-v2-3-6bce091510bf@analog.com
+      - "[PATCH v7 15/24] media: i2c: add Maxim GMSL2/3 serializer and deserializer framework"
+	https://lore.kernel.org/20250718152500.2656391-16-demonsingur@gmail.com
+[2] "[PATCH v5 00/23] Non-const bitfield helpers"
+    https://lore.kernel.org/all/cover.1761588465.git.geert+renesas@glider.be
+[3] "[PATCH v4 0/4] Non-const bitfield helpers"
+    https://lore.kernel.org/cover.1760696560.git.geert+renesas@glider.be
+[4] "[PATCH v3 0/4] Non-const bitfield helpers"
+    https://lore.kernel.org/all/cover.1739540679.git.geert+renesas@glider.be
+[5] "[PATCH v2 0/3] Non-const bitfield helpers"
+    https://lore.kernel.org/all/cover.1738329458.git.geert+renesas@glider.be
+[6] "[PATCH 00/17] Non-const bitfield helper conversions"
+    https://lore.kernel.org/all/cover.1637592133.git.geert+renesas@glider.be
+
+Geert Uytterhoeven (26):
+  clk: at91: pmc: #undef field_{get,prep}() before definition
+  crypto: qat - #undef field_get() before local definition
+  EDAC/ie31200: #undef field_get() before local definition
+  gpio: aspeed: #undef field_{get,prep}() before local definition
+  iio: dac: ad3530r: #undef field_prep() before local definition
+  iio: mlx90614: #undef field_{get,prep}() before local definition
+  pinctrl: ma35: #undef field_{get,prep}() before local definition
+  soc: renesas: rz-sysc: #undef field_get() before local definition
+  ALSA: usb-audio: #undef field_{get,prep}() before local definition
+  [-next] iio: imu: smi330: #undef field_{get,prep}() before definition
+  [-next] mtd: rawnand: sunxi: #undef field_{get,prep}() before local
+    definition
+  bitfield: Add less-checking __FIELD_{GET,PREP}()
+  bitfield: Add non-constant field_{prep,get}() helpers
+  clk: at91: Convert to common field_{get,prep}() helpers
+  crypto: qat - convert to common field_get() helper
+  EDAC/ie31200: Convert to common field_get() helper
+  gpio: aspeed: Convert to common field_{get,prep}() helpers
+  iio: dac: Convert to common field_prep() helper
+  iio: mlx90614: Convert to common field_{get,prep}() helpers
+  pinctrl: ma35: Convert to common field_{get,prep}() helpers
+  soc: renesas: rz-sysc: Convert to common field_get() helper
+  ALSA: usb-audio: Convert to common field_{get,prep}() helpers
+  [-next] iio: imu: smi330: Convert to common field_{get,prep}() helpers
+  [-next] mtd: rawnand: sunxi: Convert to common field_{get,prep}()
+    helpers
+  clk: renesas: Use bitfield helpers
+  soc: renesas: Use bitfield helpers
+
+ drivers/clk/at91/clk-peripheral.c             |  1 +
+ drivers/clk/at91/pmc.h                        |  3 -
+ drivers/clk/renesas/clk-div6.c                |  6 +-
+ drivers/clk/renesas/rcar-gen3-cpg.c           | 15 +--
+ drivers/clk/renesas/rcar-gen4-cpg.c           |  9 +-
+ .../intel/qat/qat_common/adf_pm_dbgfs_utils.c |  8 +-
+ drivers/edac/ie31200_edac.c                   |  4 +-
+ drivers/gpio/gpio-aspeed.c                    |  5 +-
+ drivers/iio/dac/ad3530r.c                     |  3 -
+ drivers/iio/imu/smi330/smi330_core.c          |  4 -
+ drivers/iio/temperature/mlx90614.c            |  5 +-
+ drivers/mtd/nand/raw/sunxi_nand.c             |  4 -
+ drivers/pinctrl/nuvoton/pinctrl-ma35.c        |  4 -
+ drivers/soc/renesas/renesas-soc.c             |  4 +-
+ drivers/soc/renesas/rz-sysc.c                 |  3 +-
+ include/linux/bitfield.h                      | 95 +++++++++++++++++--
+ sound/usb/mixer_quirks.c                      |  4 -
+ 17 files changed, 106 insertions(+), 71 deletions(-)
 
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.43.0
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
