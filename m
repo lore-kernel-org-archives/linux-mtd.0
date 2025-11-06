@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE953CCFA03
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:35:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E35E8CCFA05
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FpJxUV/mLM13R2m0fZ7wec4KC1Y6egSUkzkJl0gGMdo=; b=k2gbQlxmCZcd35
-	waplbcZ7Mkter0Lqieak0dDDsGKrpD3BvD2WS7tYQGnELlQFKVtOZE8OD8Z6HtCsfaRKUKs7dmjqZ
-	8PQ2xj3FG4kwawL4qhm+92BYTkL/eYCzXqm6ySHC0jrfOTnQ1/09GbsZx5dd1dVEGxZNrk6ozKIy1
-	kuj+UE/wVLedjKPizsfVWp7gcoxr1Ladlr8PEsMO2/1kuRe6QQ+sU/N/034PfMvnZJbNw9XtXSNqC
-	A5nJYBtIe2KDoW51f/rzkoCe0qOEFp2oJcYC7FVKKS7GYwqhGFcO3iJ4yFuCXnTgJuEpDNNKcSvTv
-	/4NgoJpk5ciXGJx3RTjw==;
+	List-Owner; bh=gCXR5HkaWfYSe5UgzurNWsX5R72v7xpOtQmzPJ5SK9s=; b=OC+kL9v8YPuL4B
+	G4wNrv5RNsVAkV8HJrx9WGhl8mdCkaotM29T0Ex4/uulqC4k9IT4VW0QzYoVYxVnAGgT6RLVG/GSI
+	KPwGLmHR2HEugdlCiU6QOlJA5RKPVbFPDU0ZQv3WiuuMSAM0rhCopiYQB/lTqZGjWxlAQ6zk/aUzu
+	oq7+QM2+4RoxPwU0hkwfZhMIbvLavPW8boGKeWKvtNHfUnTzDbkpKLI0ZAibmeU3gqzK6W5o35ZSO
+	8XMB7CHmgZW862JsBnHbmiYtU+H1iAPC2FhlZJ2lFWbbYCsWFf6tmjOue2HMm//VW4YhRGdjSt94Y
+	ZPBJNNE5Wy57MA2t1NEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09K-0000000FaWl-0MKP;
-	Thu, 06 Nov 2025 13:35:38 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vH09T-0000000FabX-0BCK;
+	Thu, 06 Nov 2025 13:35:47 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09I-0000000FaVj-0kzu;
-	Thu, 06 Nov 2025 13:35:36 +0000
+	id 1vH09R-0000000Faah-40QC;
+	Thu, 06 Nov 2025 13:35:46 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id E8C286021F;
+	by tor.source.kernel.org (Postfix) with ESMTP id 3F8C360223;
+	Thu,  6 Nov 2025 13:35:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0913AC4CEFB;
 	Thu,  6 Nov 2025 13:35:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB744C4CEF7;
-	Thu,  6 Nov 2025 13:35:24 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,9 +88,9 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 06/26] iio: mlx90614: #undef field_{get,prep}() before local definition
-Date: Thu,  6 Nov 2025 14:33:54 +0100
-Message-ID: <6c773f03da99ccc081a33d2363879957ac96ce33.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH v6 07/26] pinctrl: ma35: #undef field_{get,prep}() before local definition
+Date: Thu,  6 Nov 2025 14:33:55 +0100
+Message-ID: <0840ef3c986f6474a980c1e3e5e95aea803a3581.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
@@ -118,22 +118,23 @@ when introducing the common macros later.
 
 Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 v6:
-  - No changes,
+  - Add Acked-by,
 
 v5:
   - New.
 ---
- drivers/iio/temperature/mlx90614.c | 2 ++
+ drivers/pinctrl/nuvoton/pinctrl-ma35.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iio/temperature/mlx90614.c b/drivers/iio/temperature/mlx90614.c
-index 8a44a00bfd5ece38..de5615fdb396aa3c 100644
---- a/drivers/iio/temperature/mlx90614.c
-+++ b/drivers/iio/temperature/mlx90614.c
-@@ -69,7 +69,9 @@
- #define MLX90614_CONST_FIR 0x7 /* Fixed value for FIR part of low pass filter */
+diff --git a/drivers/pinctrl/nuvoton/pinctrl-ma35.c b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
+index cdad01d68a37e365..925dd717c9deead5 100644
+--- a/drivers/pinctrl/nuvoton/pinctrl-ma35.c
++++ b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
+@@ -82,7 +82,9 @@
+ #define MVOLT_3300			1
  
  /* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
 +#undef field_get
@@ -141,7 +142,7 @@ index 8a44a00bfd5ece38..de5615fdb396aa3c 100644
 +#undef field_prep
  #define field_prep(_mask, _val)	(((_val) << (ffs(_mask) - 1)) & (_mask))
  
- struct mlx_chip_info {
+ static const char * const gpio_group_name[] = {
 -- 
 2.43.0
 
