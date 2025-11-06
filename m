@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78845CCFA13
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:36:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADE7ACCFA03
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ak3srw+i2kkT6Ty54OSA7afmJbw8FH+d/1/jPUeT60o=; b=GMxI7frKEoGjdP
-	sXU9SjxoVGjFxWGxvnISdHaB1HF3cow+Sqhbg61L08WGJBRh3G4DBJL8v7QaWxV2h4K/T1xQ9BF51
-	o880senZZGdlkPmK841sNd1LDLRcxXAvue0fGGNQzH6B0e6ON70b27r3bZK+ziIRyfH03xp+2YhSw
-	iuAA6R1W5QVDEwRDM+E+82OLZh6MzMeEdeuSjvr9YgoDSTQ/L+MkY1tZIaHlZQJzyTtyQ7MLTGIov
-	7XVHg+/i/WtZ3+dRSck81Dj3Sk+ht8m7hwy7RKg0o4+6JU2Hb8O9A5rjnotaaMY12FsOszZmyeDRd
-	KNgMEnBLHC1QKDz+V1uw==;
+	List-Owner; bh=cLG4ZlbdE0bScVAlRLg/L8SB5v7JCn4zdf0satZ9DKg=; b=KnW8D86RNmSTg4
+	kypiYSF+cTgXOxlQXvZSs6Od59V9g0d4kg+00oh8MrIUEya3TOq3rXqYiMQDrMWITbxeZ8t97SDpO
+	ChvFbPzvYXZElhZW3zK1/Tvtf12oAbLEyZbfEyNroViC+jINSqszDvQRyBwnuPRpJG3nLZCf87Wzn
+	E1f6mY5In30pIZ/51CQho5J6fU6oDzme7V4JjyGlp4+AzKDjMV4CftbJw3wl9mC5jbnmE826WSPkt
+	Zut8vRVAr5Je4Nd26+tmbgQoV2zP1PdFxiofAYho/dGlV8F9VcZAlnjXZvmKswlTNdn30zVvf6oXh
+	O3n1A4NEsJKaoVy6isUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09x-0000000FaoH-4A5l;
-	Thu, 06 Nov 2025 13:36:17 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vH0A9-0000000Faug-28T2;
+	Thu, 06 Nov 2025 13:36:29 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09x-0000000FanU-08Ma;
-	Thu, 06 Nov 2025 13:36:17 +0000
+	id 1vH0A6-0000000FatG-3RFV;
+	Thu, 06 Nov 2025 13:36:27 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 4E19C601F7;
+	by sea.source.kernel.org (Postfix) with ESMTP id 6995C4455B;
+	Thu,  6 Nov 2025 13:36:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 629E3C4CEFB;
 	Thu,  6 Nov 2025 13:36:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E416C116C6;
-	Thu,  6 Nov 2025 13:36:05 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,13 +88,17 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH -next v6 10/26] iio: imu: smi330: #undef field_{get,prep}() before definition
-Date: Thu,  6 Nov 2025 14:33:58 +0100
-Message-ID: <54c739d05673e512d091bf78e54cd00e3655d7d4.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH -next v6 11/26] mtd: rawnand: sunxi: #undef field_{get,prep}() before local definition
+Date: Thu,  6 Nov 2025 14:33:59 +0100
+Message-ID: <703d7eec56074148daed4ea45b637f8a83f15305.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251106_053626_880202_68063C7B 
+X-CRM114-Status: UNSURE (   8.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,28 +124,25 @@ Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 v6:
-  - No changes,
-
-v5:
   - New.
 ---
- drivers/iio/imu/smi330/smi330_core.c | 2 ++
+ drivers/mtd/nand/raw/sunxi_nand.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iio/imu/smi330/smi330_core.c b/drivers/iio/imu/smi330/smi330_core.c
-index d9178725ade3da83..a79964fe68fadf47 100644
---- a/drivers/iio/imu/smi330/smi330_core.c
-+++ b/drivers/iio/imu/smi330/smi330_core.c
-@@ -68,7 +68,9 @@
- #define SMI330_SOFT_RESET_DELAY 2000
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index 031ab651c5a83b74..9dcdc93734cbff39 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -30,7 +30,9 @@
+ #include <linux/reset.h>
  
- /* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
+ /* non compile-time field get/prep */
 +#undef field_get
  #define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
 +#undef field_prep
  #define field_prep(_mask, _val) (((_val) << (ffs(_mask) - 1)) & (_mask))
  
- #define SMI330_ACCEL_CHANNEL(_axis) {					\
+ #define NFC_REG_CTL		0x0000
 -- 
 2.43.0
 
