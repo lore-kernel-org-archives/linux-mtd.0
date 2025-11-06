@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADE7ACCFA03
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05E1ACCFA13
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cLG4ZlbdE0bScVAlRLg/L8SB5v7JCn4zdf0satZ9DKg=; b=KnW8D86RNmSTg4
-	kypiYSF+cTgXOxlQXvZSs6Od59V9g0d4kg+00oh8MrIUEya3TOq3rXqYiMQDrMWITbxeZ8t97SDpO
-	ChvFbPzvYXZElhZW3zK1/Tvtf12oAbLEyZbfEyNroViC+jINSqszDvQRyBwnuPRpJG3nLZCf87Wzn
-	E1f6mY5In30pIZ/51CQho5J6fU6oDzme7V4JjyGlp4+AzKDjMV4CftbJw3wl9mC5jbnmE826WSPkt
-	Zut8vRVAr5Je4Nd26+tmbgQoV2zP1PdFxiofAYho/dGlV8F9VcZAlnjXZvmKswlTNdn30zVvf6oXh
-	O3n1A4NEsJKaoVy6isUA==;
+	List-Owner; bh=a1yEbpsJHv0keGSAa5T71GJQKX9aA0epRi2T+t2jfYg=; b=BGKwqmKG/E3tNi
+	BJCHZGJDzVjK46megjkrXs8iLc1yjADqaZIeXMG5CTbnq5mijIwR9+QtHJwdGLVxS5Y6XNc4dLGED
+	7fbqGVGqi7301rbEhZV4E0C4nyoCKokvmc1WnJRoUlOwrFdsq5kzU25pEdaMVLM+Pl87F3JWtN/vf
+	6umttFkT3uosX5kbqLB2ASPlgqwofxUP8Hr7cHLZtxzQPZff7aX78Wxt8nmtjOWXhclQc7IPPUQTU
+	DCwMUdb04FC4HSSfQ0Cx1dWjIK4jctp3F5yBhWLCRa2tLaYz2yEH0GdGsid34znzpUwVYE9IDYQcc
+	2RJ+srqzD4QLPO7MV+eg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0A9-0000000Faug-28T2;
-	Thu, 06 Nov 2025 13:36:29 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vH0AK-0000000Fb0C-16kU;
+	Thu, 06 Nov 2025 13:36:40 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0A6-0000000FatG-3RFV;
-	Thu, 06 Nov 2025 13:36:27 +0000
+	id 1vH0AH-0000000Fayh-2yrO;
+	Thu, 06 Nov 2025 13:36:38 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6995C4455B;
+	by tor.source.kernel.org (Postfix) with ESMTP id EE14A601B8;
+	Thu,  6 Nov 2025 13:36:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B23EDC116D0;
 	Thu,  6 Nov 2025 13:36:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 629E3C4CEFB;
-	Thu,  6 Nov 2025 13:36:16 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,17 +88,13 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH -next v6 11/26] mtd: rawnand: sunxi: #undef field_{get,prep}() before local definition
-Date: Thu,  6 Nov 2025 14:33:59 +0100
-Message-ID: <703d7eec56074148daed4ea45b637f8a83f15305.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH v6 12/26] bitfield: Add less-checking __FIELD_{GET,PREP}()
+Date: Thu,  6 Nov 2025 14:34:00 +0100
+Message-ID: <cfc32f8530d5c0d4a7fb33c482a4bf549f26ec24.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_053626_880202_68063C7B 
-X-CRM114-Status: UNSURE (   8.88  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,34 +111,126 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prepare for the advent of globally available common field_get() and
-field_prep() macros by undefining the symbols before defining local
-variants.  This prevents redefinition warnings from the C preprocessor
-when introducing the common macros later.
+The BUILD_BUG_ON_MSG() check against "~0ull" works only with "unsigned
+(long) long" _mask types.  For constant masks, that condition is usually
+met, as GENMASK() yields an UL value.  The few places where the
+constant mask is stored in an intermediate variable were fixed by
+changing the variable type to u64 (see e.g. [1] and [2]).
 
-Suggested-by: Yury Norov <yury.norov@gmail.com>
+However, for non-constant masks, smaller unsigned types should be valid,
+too, but currently lead to "result of comparison of constant
+18446744073709551615 with expression of type ... is always
+false"-warnings with clang and W=1.
+
+Hence refactor the __BF_FIELD_CHECK() helper, and factor out
+__FIELD_{GET,PREP}().  The later lack the single problematic check, but
+are otherwise identical to FIELD_{GET,PREP}(), and are intended to be
+used in the fully non-const variants later.
+
+[1] commit 5c667d5a5a3ec166 ("clk: sp7021: Adjust width of _m in
+    HWM_FIELD_PREP()")
+[2] commit cfd6fb45cfaf46fa ("crypto: ccree - avoid out-of-range
+    warnings from clang")
+
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 v6:
   - New.
----
- drivers/mtd/nand/raw/sunxi_nand.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 031ab651c5a83b74..9dcdc93734cbff39 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -30,7 +30,9 @@
- #include <linux/reset.h>
+Alternatively, FIELD_{GET,PREP}() could be duplicated, with the second
+parameter of __BF_FIELD_CHECK() changed from "0ULL" resp. "_reg" to
+"_mask":
+
+    #define __FIELD_PREP(_mask, _val)                                      \
+	   ({                                                              \
+		   __BF_FIELD_CHECK(_mask, _mask, _val, "__FIELD_PREP: "); \
+		   ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);   \
+	   })
+
+    #define __FIELD_GET(_mask, _reg)                                       \
+	   ({                                                              \
+		   __BF_FIELD_CHECK(_mask, _mask, 0U, "__FIELD_GET: ");    \
+		   (typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask)); \
+	   })
+
+But I think that is less intuitive, and prevents defining
+FIELD_{GET,PREP}() using __FIELD_{GET,PREP}().
+---
+ include/linux/bitfield.h | 36 ++++++++++++++++++++++++++++--------
+ 1 file changed, 28 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
+index 5355f8f806a97974..bf8e0ae4b5b41038 100644
+--- a/include/linux/bitfield.h
++++ b/include/linux/bitfield.h
+@@ -60,7 +60,7 @@
  
- /* non compile-time field get/prep */
-+#undef field_get
- #define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
-+#undef field_prep
- #define field_prep(_mask, _val) (((_val) << (ffs(_mask) - 1)) & (_mask))
+ #define __bf_cast_unsigned(type, x)	((__unsigned_scalar_typeof(type))(x))
  
- #define NFC_REG_CTL		0x0000
+-#define __BF_FIELD_CHECK(_mask, _reg, _val, _pfx)			\
++#define __BF_FIELD_CHECK_MASK(_mask, _val, _pfx)			\
+ 	({								\
+ 		BUILD_BUG_ON_MSG(!__builtin_constant_p(_mask),		\
+ 				 _pfx "mask is not constant");		\
+@@ -69,13 +69,33 @@
+ 				 ~((_mask) >> __bf_shf(_mask)) &	\
+ 					(0 + (_val)) : 0,		\
+ 				 _pfx "value too large for the field"); \
+-		BUILD_BUG_ON_MSG(__bf_cast_unsigned(_mask, _mask) >	\
+-				 __bf_cast_unsigned(_reg, ~0ull),	\
+-				 _pfx "type of reg too small for mask"); \
+ 		__BUILD_BUG_ON_NOT_POWER_OF_2((_mask) +			\
+ 					      (1ULL << __bf_shf(_mask))); \
+ 	})
+ 
++#define __BF_FIELD_CHECK_REG(mask, reg, pfx)				\
++	BUILD_BUG_ON_MSG(__bf_cast_unsigned(mask, mask) >		\
++			 __bf_cast_unsigned(reg, ~0ull),		\
++			 pfx "type of reg too small for mask")
++
++#define __BF_FIELD_CHECK(mask, reg, val, pfx)				\
++	({								\
++		__BF_FIELD_CHECK_MASK(mask, val, pfx);			\
++		__BF_FIELD_CHECK_REG(mask, reg, pfx);			\
++	})
++
++#define __FIELD_PREP(mask, val, pfx)					\
++	({								\
++		__BF_FIELD_CHECK_MASK(mask, val, pfx);			\
++		((typeof(mask))(val) << __bf_shf(mask)) & (mask);	\
++	})
++
++#define __FIELD_GET(mask, reg, pfx)					\
++	({								\
++		__BF_FIELD_CHECK_MASK(mask, 0U, pfx);			\
++		(typeof(mask))(((reg) & (mask)) >> __bf_shf(mask));	\
++	})
++
+ /**
+  * FIELD_MAX() - produce the maximum value representable by a field
+  * @_mask: shifted mask defining the field's length and position
+@@ -112,8 +132,8 @@
+  */
+ #define FIELD_PREP(_mask, _val)						\
+ 	({								\
+-		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");	\
+-		((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);	\
++		__BF_FIELD_CHECK_REG(_mask, 0ULL, "FIELD_PREP: ");	\
++		__FIELD_PREP(_mask, _val, "FIELD_PREP: ");		\
+ 	})
+ 
+ #define __BF_CHECK_POW2(n)	BUILD_BUG_ON_ZERO(((n) & ((n) - 1)) != 0)
+@@ -152,8 +172,8 @@
+  */
+ #define FIELD_GET(_mask, _reg)						\
+ 	({								\
+-		__BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: ");	\
+-		(typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask));	\
++		__BF_FIELD_CHECK_REG(_mask, _reg, "FIELD_GET: ");	\
++		__FIELD_GET(_mask, _reg, "FIELD_GET: ");		\
+ 	})
+ 
+ /**
 -- 
 2.43.0
 
