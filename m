@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5D6ECCFA05
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E737CCFA13
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hemZfRLxz8rx2G52VWMwYXmbSzHzcF6ZiyGQPP1fg6w=; b=AE4OSCiOR01xnn
-	COTUu9LTnT7TAN9uQpB1cN9AV2A6ZqHqfB1eBKueBZIxuZJN4nE1GjdWH9BM4m9OmeDeNEKb/J34y
-	GrB1N49NS6BAfWC4ltfjVSMQXhZD0yrEV9fKYNOvhnsGN8voUgCui5zYtTmv2aqWRVM/xc5zUr8L4
-	y2DqvCG2aAT/xSPHOhZg2urriZv4qFU0pp63F9vS4wRreD2VI8By7qG5L5CxGZZ6RPhqCST33LW0G
-	d8YxfQQe+bluLvjUzwMzL6A/G9JrLb/LlMvzeGhRwTSe0M0RElybc6aP/wBoo+5pCxAbG9GeezKll
-	61JrAbgwSAD1pg0I/CIA==;
+	List-Owner; bh=Ro1PFepX2RnLYm6b6Ryg1qp7JqPtdKxTda+EMtak/Mc=; b=KrhnEBRqiItPvk
+	1FclWszJs7bSuKbb7AczgAJ9TAcm8Zv674VVzlznUZN474IZYylRTohZar65WUEb3ISWJfnJqeuPx
+	tn7MSminsB9LRS7r6UBVA4U1L3O8lwyRgGdXMO4SRNTXxcqbfz1UbDyVJ3Nih/5LkndQ9BfWpb0Ed
+	76+08E9GIYOFG7XGdFiCKviQ8GoLNoWGqVgk7qfGUoD3rW6dBvTogeNZ17emwJkG1Jzub6nCfaVUi
+	hDN6PaaHUtFPwe9VfeYrfGw6CkctDPwsRhGQVEEv9wAFtE6Ky5T5sB9vl5RHsbxoOdsn3VnKvFlEW
+	2emZ7MKBoKfplmvKjvRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0C0-0000000Fbiu-35Sp;
-	Thu, 06 Nov 2025 13:38:24 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vH0CB-0000000Fbnk-21qX;
+	Thu, 06 Nov 2025 13:38:35 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0Bx-0000000FbhC-06LB;
-	Thu, 06 Nov 2025 13:38:22 +0000
+	id 1vH0C7-0000000Fbme-3cLF;
+	Thu, 06 Nov 2025 13:38:34 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9E97B40A8A;
+	by tor.source.kernel.org (Postfix) with ESMTP id 2A89860234;
+	Thu,  6 Nov 2025 13:38:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7E0CC19421;
 	Thu,  6 Nov 2025 13:38:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DDC1C4CEF7;
-	Thu,  6 Nov 2025 13:38:10 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -87,19 +87,14 @@ Cc: linux-clk@vger.kernel.org,
 	linux-sound@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v6 22/26] ALSA: usb-audio: Convert to common field_{get,prep}() helpers
-Date: Thu,  6 Nov 2025 14:34:10 +0100
-Message-ID: <ac8197f1278e43bdee22d45d81a95d0f3a04a217.1762435376.git.geert+renesas@glider.be>
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH -next v6 23/26] iio: imu: smi330: Convert to common field_{get,prep}() helpers
+Date: Thu,  6 Nov 2025 14:34:11 +0100
+Message-ID: <a2275bd69f25d33f9fd3345409b2d8ae6285b9a7.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_053821_106638_9640673B 
-X-CRM114-Status: UNSURE (   8.93  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,35 +115,33 @@ Drop the driver-specific field_get() and field_prep() macros, in favor
 of the globally available variants from <linux/bitfield.h>.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Takashi Iwai <tiwai@suse.de>
 ---
 v6:
-  - Add Acked-by,
+  - No changes,
 
 v5:
-  - Extracted from "bitfield: Add non-constant field_{prep,get}()
-    helpers".
+  - New.
 ---
- sound/usb/mixer_quirks.c | 6 ------
+ drivers/iio/imu/smi330/smi330_core.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 713a8498b975e1ac..6eee89cbc0867f2b 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -3311,12 +3311,6 @@ static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)
- #define RME_DIGIFACE_REGISTER(reg, mask) (((reg) << 16) | (mask))
- #define RME_DIGIFACE_INVERT BIT(31)
+diff --git a/drivers/iio/imu/smi330/smi330_core.c b/drivers/iio/imu/smi330/smi330_core.c
+index a79964fe68fadf47..83e0dff5d973d046 100644
+--- a/drivers/iio/imu/smi330/smi330_core.c
++++ b/drivers/iio/imu/smi330/smi330_core.c
+@@ -67,12 +67,6 @@
+ #define SMI330_CHIP_ID 0x42
+ #define SMI330_SOFT_RESET_DELAY 2000
  
--/* Nonconst helpers */
+-/* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
 -#undef field_get
 -#define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
 -#undef field_prep
 -#define field_prep(_mask, _val) (((_val) << (ffs(_mask) - 1)) & (_mask))
 -
- static int snd_rme_digiface_write_reg(struct snd_kcontrol *kcontrol, int item, u16 mask, u16 val)
- {
- 	struct usb_mixer_elem_list *list = snd_kcontrol_chip(kcontrol);
+ #define SMI330_ACCEL_CHANNEL(_axis) {					\
+ 	.type = IIO_ACCEL,						\
+ 	.modified = 1,							\
 -- 
 2.43.0
 
