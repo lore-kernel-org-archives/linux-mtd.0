@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E35E8CCFA05
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E68A9CCFA13
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:35:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gCXR5HkaWfYSe5UgzurNWsX5R72v7xpOtQmzPJ5SK9s=; b=OC+kL9v8YPuL4B
-	G4wNrv5RNsVAkV8HJrx9WGhl8mdCkaotM29T0Ex4/uulqC4k9IT4VW0QzYoVYxVnAGgT6RLVG/GSI
-	KPwGLmHR2HEugdlCiU6QOlJA5RKPVbFPDU0ZQv3WiuuMSAM0rhCopiYQB/lTqZGjWxlAQ6zk/aUzu
-	oq7+QM2+4RoxPwU0hkwfZhMIbvLavPW8boGKeWKvtNHfUnTzDbkpKLI0ZAibmeU3gqzK6W5o35ZSO
-	8XMB7CHmgZW862JsBnHbmiYtU+H1iAPC2FhlZJ2lFWbbYCsWFf6tmjOue2HMm//VW4YhRGdjSt94Y
-	ZPBJNNE5Wy57MA2t1NEg==;
+	List-Owner; bh=XzrMaCHWHGQiCmqa6zg+81Sz4AClHo7VObkF11RiaAY=; b=xtwLWzC91xLt/Q
+	pQ+ZtFsbBC5slt2oqk1GErNZMDnwWu/KWb/lPD4VqDPh+M4Em4CQS4jBK207XVgyAwe+YNDUwAwUd
+	RgzUVTuS4QytsGzrZSku1qp7GuEW0KJ2OQ7zTMsldfPclpzv4OcMDsEwlvS2VzzgZlBemAE5HYdWR
+	mN0yGvN7q0GbfcTwjOo1hB0A6GOqr3EF2bgiwXTrpA9v2AEmmEiqwpFQ0wYaDyVyPLA9w08dSXRMU
+	EFSYdOjjbQuybqkCYHPujfMOAEQA4+02Zv3v3xsKqSLAkqKVtIqqu7xh3fL0mgBXYsxiMkFsVIMhQ
+	G+xgC0ThgM4/wrgc8beQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09T-0000000FabX-0BCK;
-	Thu, 06 Nov 2025 13:35:47 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vH09e-0000000FagX-0ALl;
+	Thu, 06 Nov 2025 13:35:58 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09R-0000000Faah-40QC;
-	Thu, 06 Nov 2025 13:35:46 +0000
+	id 1vH09c-0000000Fafw-0vbh;
+	Thu, 06 Nov 2025 13:35:56 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 3F8C360223;
+	by tor.source.kernel.org (Postfix) with ESMTP id 823ED6022E;
+	Thu,  6 Nov 2025 13:35:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55176C116C6;
 	Thu,  6 Nov 2025 13:35:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0913AC4CEFB;
-	Thu,  6 Nov 2025 13:35:34 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,9 +88,9 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 07/26] pinctrl: ma35: #undef field_{get,prep}() before local definition
-Date: Thu,  6 Nov 2025 14:33:55 +0100
-Message-ID: <0840ef3c986f6474a980c1e3e5e95aea803a3581.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH v6 08/26] soc: renesas: rz-sysc: #undef field_get() before local definition
+Date: Thu,  6 Nov 2025 14:33:56 +0100
+Message-ID: <7feec8e9cf823dd365d6e0f21004f943964e52a0.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
@@ -111,38 +111,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prepare for the advent of globally available common field_get() and
-field_prep() macros by undefining the symbols before defining local
-variants.  This prevents redefinition warnings from the C preprocessor
-when introducing the common macros later.
+Prepare for the advent of a globally available common field_get() macro
+by undefining the symbol before defining a local variant.  This prevents
+redefinition warnings from the C preprocessor when introducing the common
+macro later.
 
 Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 v6:
-  - Add Acked-by,
+  - No changes,
 
 v5:
   - New.
 ---
- drivers/pinctrl/nuvoton/pinctrl-ma35.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/soc/renesas/rz-sysc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pinctrl/nuvoton/pinctrl-ma35.c b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
-index cdad01d68a37e365..925dd717c9deead5 100644
---- a/drivers/pinctrl/nuvoton/pinctrl-ma35.c
-+++ b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
-@@ -82,7 +82,9 @@
- #define MVOLT_3300			1
+diff --git a/drivers/soc/renesas/rz-sysc.c b/drivers/soc/renesas/rz-sysc.c
+index 9f79e299e6f41641..b9880085d3634065 100644
+--- a/drivers/soc/renesas/rz-sysc.c
++++ b/drivers/soc/renesas/rz-sysc.c
+@@ -16,6 +16,7 @@
  
- /* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
+ #include "rz-sysc.h"
+ 
 +#undef field_get
- #define field_get(_mask, _reg)	(((_reg) & (_mask)) >> (ffs(_mask) - 1))
-+#undef field_prep
- #define field_prep(_mask, _val)	(((_val) << (ffs(_mask) - 1)) & (_mask))
+ #define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
  
- static const char * const gpio_group_name[] = {
+ /**
 -- 
 2.43.0
 
