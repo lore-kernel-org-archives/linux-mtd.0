@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1523BCCFA05
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 15:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB602CCF9F8
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 15:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TyI+yL2cwu4BlGXATPl9xd0pK1qvq79KZ0vK2c3tEAQ=; b=zXB4evlN0qioin
-	Aavf5z9Jy2YamFZwAy9+TIhY1WxaR27VD88euiMVvy2YsnFaUj0d3rfD+F4joPspJTF6pI7mmjTXg
-	V+ekXZJX18Gs7q78Mg/RbHoAsf3Bk99OrejaD/7+W6X4+Sau7hiAocp+Z7hjm6eu5vt+4bfI+4U/3
-	LUm27w9d4I1i4uvtvG1twAxPH0CN9CWb0hWYyAB+LLz4TDORDdIxojPGk5hOP5x4iMrnoo4x/gVzQ
-	F64cRFA0sbXDaTg+3AjGo+Scfq0Un+1gNQ4j/pLIlMRzTUfzA3pq6YtX+j0SiW762tzT0imFbiwLs
-	ryzT14BECDZlGnkQKg7g==;
+	List-Owner; bh=aS1aQ7jNrxsoKCdx4tO7CTng+MzJupkZG7Y3IE0OJWs=; b=fEIAs90GDEefAY
+	K0QkV5X7N1KmEl2MdtC1qNGN2HT3+Oz+LlxTyyINa++K/1ZVtRXhuf0hVhozAd31lBhEKiO0F6Um+
+	GTa8sb1PMpHS6A+nh7kT+lcuSL/gtvL8UMH7kw8Uxnhd5DDnJcYZEKqOlGHyZmmfLPpLbgOr/Ai0P
+	h8iTad0jsnXZ72UNPbA1k2GWmDau0nHU8s1Zl5Zbnpc3SRCRFUrlFfCQx/dZNWA6y69FvT1+escOu
+	jtLp9Dj24tawXxva+gKFpqUfZVWNhbobJHjt38NAdPSX28NgJVPvP75+yeo1QJQna7xi7WqWM6cmT
+	PPO2Fv1e7EzURVywAG+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH22d-0000000FpWN-1l9w;
-	Thu, 06 Nov 2025 15:36:51 +0000
-Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+	id 1vH25n-0000000Fpko-0mF4;
+	Thu, 06 Nov 2025 15:40:07 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH22Y-0000000FpVf-0r3u
+	id 1vH25h-0000000FpjY-3y8x
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Nov 2025 15:36:49 +0000
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-477632b0621so6988005e9.2
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Nov 2025 07:36:45 -0800 (PST)
+	Thu, 06 Nov 2025 15:40:05 +0000
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-429b9b6ce96so844913f8f.3
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Nov 2025 07:40:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1762443404; x=1763048204; darn=lists.infradead.org;
+        d=tuxon.dev; s=google; t=1762443599; x=1763048399; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NoiFfWZaW31Ma9mD3WuZZQSDOEMD5VY8nTTYH6Ca1fs=;
-        b=BPaR5nZPkMy90pcievuc1nCa+XP6byENra9j3YQ7DGSDgbmNFfT00r7al9ykI/PBvQ
-         9X05ewL6oqQrV8sPfRTTDJdZd6nnXp31RkNgwUqXqOQuZyStqC5Y+OhBbh2oHhVMMZD5
-         a2TL8fbaiL/lseMp/iiLresiWDlaMW7nGNFc48yxayXDzUoLnnDv5J5/GqsTEyO2394S
-         WzgRyU6zmg/EfF+KDbdIHMM1vjYNfCWj3AWMDQc+GeIVDqEFMY1y6RhaJZ6lhU0N5aLm
-         o+xjGblMZfzFwArB1R9Irv4Ahr3mgzsSGRVRSgrMffLzOiu5ft+vdpnU3zH2Bt3OFZSU
-         KCwQ==
+        bh=NCImS8vAPGN6LTIAPQAR8IZZ+CU8X+89zO49Z6Ixv/M=;
+        b=JUGiVqzI5Upkwz2JUbKp1QZFBmhUzl3QuTgJXJUVs3e1CV/rIzrweEnsTzpGxd6VGY
+         s5Nud3k8Ky+YqG/TIc/8v+drd4O85+BahZk8RfmpxMwF9ts/5a+9gE7FfLVLprbxWXkw
+         kjHcw90aUQok1cuT3LcVTZB8LIUzHcsDLUcikzmfGOZUpW5esz/+yY1DAWIo+hYKIITP
+         2YEUWb0fBzA7knzLUx5gHp2f/uVN9eEc5/ya157LoHrK81yjMYtLMtdkciiqGVYcD/yI
+         CKSXqR5vzZO6l1DeVrlVT85qUSJ0F3G1WE3HDrNaa4HZDUU9fGjiQQjJ6SAuB50OF+6K
+         8/1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762443404; x=1763048204;
+        d=1e100.net; s=20230601; t=1762443599; x=1763048399;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NoiFfWZaW31Ma9mD3WuZZQSDOEMD5VY8nTTYH6Ca1fs=;
-        b=LrWCxT+IAIvlD+G7yPpR5DL1qFnldgpl+GJNnzZMPkVptxNsWJAsXAYEoXoJazMC37
-         Uaj9t9NARqR21jjhKvx00b4y5xeMpsLQPic8MxXkdXsfnZMrmzd0umNewWdiDryDWd/r
-         YxmNDeFQkGPi1A2KjevngTMA8o9nfrghr08RPz7w1pzBVZ58gsq8ebPb3/qUR2Tj7eK1
-         fGkaWrFGZfqyCZplgvYPw6XZgpc7X75d3zFBHPruHE8z0YypYuvidXCED5cez0VW/IvJ
-         F1BJV36LXlnU1ayPVPCZf0/cKx9aUC2E/r3x5OxxzV0UBJyW+xWlGiFkT9XL03cgeP8q
-         kY2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUAJwVH5JA1ssFqXygQEu7y83m6xS3kv8GphYcRMydUhoh1LbRT9l9AQ+/p4y7V+gRoVgrFLrgTB8M=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyPDl77MyoqjNJRRbElD3R5Yan7L1FvPByWG7W1FCqjsmTL7i2y
-	jpd2QFCpNJsxwC9JuheTA/SUpwEwwIWZWtZlPhuSscLKmuIWMJ4wrs29WU484+i7SkU=
-X-Gm-Gg: ASbGncud3Afg04hRFDKm4FOra56SkOINaRgkLjGQDLMO8zuHrTN40ZBEkIkhlA+ID16
-	i/aCcEq8glXSXqZ4BUGFt6Q8+fKZJN3pD/tY5x++m6kzTvuu9aO1PzaD+grFwjdl3wZMlc3eODO
-	a/+YS4hYZDcrVpnMn6PJqZ9gJ/zCq4Jg/WqI1VMG9K5XBn1kcO/Nwgl3/l5Cmkb1Zhg0fpwbAoZ
-	8G3ABJjXTmuzu1cH/vp3sBX1v4o4nT39njvw0/3g4o1WaUkfjxkrQcmPoMJoTTwfXHfy6dcFSJW
-	tb4TO7m+ToD9k2OouGDM4T/ohWtuU9WBd9Eouhml0Xgbv9RZABC3iPgS7rgiQfvBzWPinPzB10o
-	dig7/6jDk6vFv8pGOi+vPcypFtx9N/XYhL5ldX5rwzbVhxdabtM6/qCcvaxalNg0BqGVL+Ebxth
-	ItiLZKWkdPIdWd7nKTKy8=
-X-Google-Smtp-Source: AGHT+IHm/6/RnHvUQpqjyEKIYZGBSjHuPRp5b3DBLGbL1GoDEzCDZheRRGUhzX2BHAHpgilQLx/Q7g==
-X-Received: by 2002:a05:600c:621a:b0:471:14f5:126f with SMTP id 5b1f17b1804b1-4775ce206f3mr59734595e9.33.1762443404278;
-        Thu, 06 Nov 2025 07:36:44 -0800 (PST)
+        bh=NCImS8vAPGN6LTIAPQAR8IZZ+CU8X+89zO49Z6Ixv/M=;
+        b=EckJR2EKNHTNlcSpYlOVjMw2u0HwS+bDpAfVYE6mG6QvBYCmFYxlmr4mSlFzsWe61E
+         G5WtwIKN9xGxRQFPUP3/emjbK+OsRNCpnUNGCBIRC2aIafcS6mfikJuqe3Xm83Wrs95z
+         1Y3zuaa0WX2zfHx9/+fX15N0GKXC0cpBGfKEtKnT3dOq4A7CwEnXmo6Xqmbw+dauZt5C
+         mbWX6/DOCAaOJ9SWfUwTEK4LzrJUV5CcwdG5d8WBAsARz9B8oeK8/SfD6ul5S6wN+KBY
+         b9Zl7eItBTbvnX3WH8famUTz0uqM60n4+S6X7Q+ml+qeURDxgXSK7Te1vvNwEJ+cciz/
+         aYTw==
+X-Forwarded-Encrypted: i=1; AJvYcCXq7ISJf+NCORzEIXTlX8y9yaJYf1BieXDZ2OvBuLkVnG0vY3y1HYU3aqlBzWyYVVkFhUdc0T9VRbc=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw95E7PWRlOzdGUHwifyJuGInHEYpOrfPw8osp3pIdwIDuLxttV
+	XQtrTMZ9jaYnIIjvP4xh9aZdhtlGmODGlcothhCf/AcI7QMjsk0KeRQAa5EUyqynZAQ=
+X-Gm-Gg: ASbGncvcOVu2dALyikSzYmpKpwGLOyMU0V5cMpCgiRE2xivJHZU9zi2OrXn3sRhfCS+
+	V5XtP6fFZHCJhx63jp+mX1I1Fb8DGgGKpuUH0+1XF0vaVJWskzUqZi7XrnltgQraELtWw0IZXRU
+	U3qVaWD9BQXge1AmgQrJdwmDinbWCj64WTdOnV1Exd5dT+RFKaNAFiKSeoUSUFvEP5n3CDzuwgO
+	QctOGbKQdZUtP68VRtjZ9lZ65Hz0U7WdBnHx/ba60UxcjctQ84dCMh8BQOYo+2GYpO6Kk1PJQBg
+	xVAMm3JfqcUUQ2fQ/g0v8RFw3Zdf/zFG5g8qRyGmUkU7fuZFmdXf3XIozC47IrRDWXWhlbuQhKn
+	c1GZnMZZtW4dATma+kEcxkb8RQJXTBXPilo9xPaw9S/WEcrjqDrrnZuo3Fk4iiD4yRMYGAvc2wK
+	zaCsMhvo+e
+X-Google-Smtp-Source: AGHT+IEnd90RJHx7ZuzW87zs5Q4EEB4nWgY3Vtjy9fpk248/BemBXzC7fRUumPfx0M4xpvI1GCS0qw==
+X-Received: by 2002:a05:6000:2510:b0:429:d0b8:3850 with SMTP id ffacd0b85a97d-429e330b68dmr6675168f8f.48.1762443599342;
+        Thu, 06 Nov 2025 07:39:59 -0800 (PST)
 Received: from [192.168.50.4] ([82.78.167.134])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477622f42a5sm98437525e9.1.2025.11.06.07.36.41
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb4772basm6489913f8f.26.2025.11.06.07.39.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Nov 2025 07:36:43 -0800 (PST)
-Message-ID: <d1b02488-7722-4b39-bb8e-f7e5c8e11b1e@tuxon.dev>
-Date: Thu, 6 Nov 2025 17:36:40 +0200
+        Thu, 06 Nov 2025 07:39:58 -0800 (PST)
+Message-ID: <181cb561-4fdf-49c0-aeb0-85844411a6ad@tuxon.dev>
+Date: Thu, 6 Nov 2025 17:39:55 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/26] clk: at91: pmc: #undef field_{get,prep}() before
- definition
+Subject: Re: [PATCH v6 08/26] soc: renesas: rz-sysc: #undef field_get() before
+ local definition
 To: Geert Uytterhoeven <geert+renesas@glider.be>,
  Yury Norov <yury.norov@gmail.com>,
  Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
@@ -114,13 +114,13 @@ Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-sound@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 References: <cover.1762435376.git.geert+renesas@glider.be>
- <939d8c6da1f468026b1bb201413ba08b1d0751fd.1762435376.git.geert+renesas@glider.be>
+ <7feec8e9cf823dd365d6e0f21004f943964e52a0.1762435376.git.geert+renesas@glider.be>
 From: Claudiu Beznea <claudiu.beznea@tuxon.dev>
 Content-Language: en-US
-In-Reply-To: <939d8c6da1f468026b1bb201413ba08b1d0751fd.1762435376.git.geert+renesas@glider.be>
+In-Reply-To: <7feec8e9cf823dd365d6e0f21004f943964e52a0.1762435376.git.geert+renesas@glider.be>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_073646_286780_C383B211 
-X-CRM114-Status: UNSURE (   7.40  )
+X-CRM114-CacheID: sfid-20251106_074002_047149_DF128A6C 
+X-CRM114-Status: UNSURE (   7.42  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -141,16 +141,16 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 11/6/25 15:33, Geert Uytterhoeven wrote:
-> Prepare for the advent of globally available common field_get() and
-> field_prep() macros by undefining the symbols before defining local
-> variants.  This prevents redefinition warnings from the C preprocessor
-> when introducing the common macros later.
+> Prepare for the advent of a globally available common field_get() macro
+> by undefining the symbol before defining a local variant.  This prevents
+> redefinition warnings from the C preprocessor when introducing the common
+> macro later.
 > 
 > Suggested-by: Yury Norov <yury.norov@gmail.com>
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Acked-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
