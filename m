@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EE4ACCFA03
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:38:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA156CCFA05
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fDLIlMP34ePXtLFQl05x4tvAzIetYJ7nCYoPeSf0UHg=; b=duCTYocbjQaaSq
-	3rFQrtGoQ9KMwhGb5CbmnNnflp+ApemOUTdyr7YlUAI78QBjh4bzbUuoBhpx7Dean85GHnI79PH4e
-	feacGDSPjNb0TlYBOR+cNa2gWZv+D+6fQNN/aQ0jAqaJEWF/HuRyxNU7oYDsLmeYi7cJk7Dk5ZV5B
-	if3jakz7r/LT9WF8tgDRd58ZRNguZWfN7LiZbb3wdzMNwXMCYfCE/k2uD+LEOLS2PybzU/8kAJ5vc
-	h5GgNgM5EJP6ff9sMcQspx4Q94VfH+GazV1VwuRXfMdPZpaTAPUIB3wOedyJsXJq4H2fgLwASRu85
-	lBRVxr9fUDiEUwVa9QyA==;
+	List-Owner; bh=gKSC+DhEnhO3u398EGtCBntGOcvqW10K0WFWhSrujDY=; b=Stimmva5MgI8tZ
+	wtakuOZ7l3QXFoRab9kDnykGwT94SUHTTrIUwpXpU9W2QxUFDr/zXLolZlubHQpoiCLrdiscKRY8H
+	TkNO0bPSkofPh+fRTdtGCsQnJKYfp7h5YDyIHH8S+J0KdUr/aDN5Y5JtWoc1cDn1owpITisnIFEG/
+	5qU3wFwkue8kudZYKfLArBQd6yfL1jrcWikgk4S0cUeWSRvTcc/EJUwH8L0SCgyIigJlX9r9qM61Y
+	jpvjv1JFn6T0zBOzLIvzmYD0iWl9zujG8JwtTTHvlHj4yJDn570DF9dEs2B8sY0eBQpm1vCh0oina
+	pTzTwnXb4O0oovxqDo9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0Be-0000000FbZH-0eAE;
-	Thu, 06 Nov 2025 13:38:02 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vH0Bo-0000000Fbdf-4ATE;
+	Thu, 06 Nov 2025 13:38:12 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0Bc-0000000FbYg-3d4Z;
-	Thu, 06 Nov 2025 13:38:00 +0000
+	id 1vH0Bn-0000000Fbd3-0eae;
+	Thu, 06 Nov 2025 13:38:11 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 20BBD6021A;
+	by tor.source.kernel.org (Postfix) with ESMTP id 6AD6860235;
+	Thu,  6 Nov 2025 13:38:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 360D9C4CEFB;
 	Thu,  6 Nov 2025 13:38:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF761C16AAE;
-	Thu,  6 Nov 2025 13:37:49 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,9 +88,9 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 20/26] pinctrl: ma35: Convert to common field_{get,prep}() helpers
-Date: Thu,  6 Nov 2025 14:34:08 +0100
-Message-ID: <2e7d92c7b668ae1f669177a47928548eceb9351b.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH v6 21/26] soc: renesas: rz-sysc: Convert to common field_get() helper
+Date: Thu,  6 Nov 2025 14:34:09 +0100
+Message-ID: <ed045ec4db284ca8b4ec0c5b6ff334e459d14096.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
@@ -111,39 +111,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drop the driver-specific field_get() and field_prep() macros, in favor
-of the globally available variants from <linux/bitfield.h>.
+Drop the driver-specific field_get() macro, in favor of the globally
+available variant from <linux/bitfield.h>.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 v6:
-  - Add Reviewed-by,
+  - No changes,
 
 v5:
   - Extracted from "bitfield: Add non-constant field_{prep,get}()
     helpers".
 ---
- drivers/pinctrl/nuvoton/pinctrl-ma35.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/soc/renesas/rz-sysc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/nuvoton/pinctrl-ma35.c b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
-index 925dd717c9deead5..8d71dc53cc1de1f8 100644
---- a/drivers/pinctrl/nuvoton/pinctrl-ma35.c
-+++ b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
-@@ -81,12 +81,6 @@
- #define MVOLT_1800			0
- #define MVOLT_3300			1
+diff --git a/drivers/soc/renesas/rz-sysc.c b/drivers/soc/renesas/rz-sysc.c
+index b9880085d3634065..73eaf8b9d69f7208 100644
+--- a/drivers/soc/renesas/rz-sysc.c
++++ b/drivers/soc/renesas/rz-sysc.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2024 Renesas Electronics Corp.
+  */
  
--/* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
++#include <linux/bitfield.h>
+ #include <linux/cleanup.h>
+ #include <linux/io.h>
+ #include <linux/mfd/syscon.h>
+@@ -16,9 +17,6 @@
+ 
+ #include "rz-sysc.h"
+ 
 -#undef field_get
--#define field_get(_mask, _reg)	(((_reg) & (_mask)) >> (ffs(_mask) - 1))
--#undef field_prep
--#define field_prep(_mask, _val)	(((_val) << (ffs(_mask) - 1)) & (_mask))
+-#define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
 -
- static const char * const gpio_group_name[] = {
- 	"gpioa", "gpiob", "gpioc", "gpiod", "gpioe", "gpiof", "gpiog",
- 	"gpioh", "gpioi", "gpioj", "gpiok", "gpiol", "gpiom", "gpion",
+ /**
+  * struct rz_sysc - RZ SYSC private data structure
+  * @base: SYSC base address
 -- 
 2.43.0
 
