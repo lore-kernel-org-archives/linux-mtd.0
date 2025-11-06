@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F1B3CCFA13
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19E14CCFA03
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FApmVk8YWl+HSVMSDxC32tmS1JxT2Tx3cyUqtyxZC+g=; b=gMyk+50Ri7KFd2
-	jm2yZnZ0OqyK8k6gHYXIPpzjkNUWHsnyFUjXDj2+6dIey/f7DxMgJQECYkqkg6V04yXsYtDGE8UFq
-	zYx52GvouX9WmQhV55GvYhV7O8dKQmn/4b9fr5sjhL5IyCBvfH3EuJ4MbN+3fS7ZzSUqgX8zoyMU3
-	iGQVoalmkVScDK6+Vd58nOr/Z9Y1NvtvjDp4CQv9Bq7w5Kj4JL/n4MwWYnipfGDt9OazJUZlpTpy9
-	oiB60BFOa18OhpXvXvXulW66K4+65lfvf+NUHD+dUJHLgO6yV3HH8WSC9XQ42hY6Oh25q2d9iYxvE
-	+yDEv/M7TvqMEkBKgivQ==;
+	List-Owner; bh=YyB1YNPztnYjxrH8JYRQ44NFMQWdRAN798ZNSYtDAoA=; b=CWPJjR8CxZgJFk
+	NVirjxapfERhLiNEqAfk6raHJv62OFF8Oc1pCivPTxcS4oUK8maoNeNmLfGqtKRo48EAMyMnDfCZc
+	oh4tp2jdWbcwoONE6d0PIrXtqthRFBA5XQ1+5pzTlHFm+sB/dG76rqTfETyh/l8+jQmeIKgb+RK3W
+	sgen4EJ8Y1XwAoNW+QG76QeGrPuu2GwibNN8c1Hy1Se7F21a9pSKIemJVTGRkvEWQ3UZjpg7gHzPI
+	XQhnB11lFPXXE8S2OsAfwjSsOosmjidhbJs7ndfj0zD55LsvxD2yjm+gOpIgpKlKXoPS6/qp7rJwI
+	Iqa4RBB/UU/y2jhnVcCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0Az-0000000FbIH-3Abr;
-	Thu, 06 Nov 2025 13:37:21 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vH0B9-0000000FbMa-26MX;
+	Thu, 06 Nov 2025 13:37:31 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0Aw-0000000FbGt-3GNX;
-	Thu, 06 Nov 2025 13:37:19 +0000
+	id 1vH0B7-0000000FbLq-2J6R;
+	Thu, 06 Nov 2025 13:37:29 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5CA9541B74;
+	by tor.source.kernel.org (Postfix) with ESMTP id D50846022D;
+	Thu,  6 Nov 2025 13:37:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4618C4CEFB;
 	Thu,  6 Nov 2025 13:37:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57804C4CEFB;
-	Thu,  6 Nov 2025 13:37:08 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,16 +88,13 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 16/26] EDAC/ie31200: Convert to common field_get() helper
-Date: Thu,  6 Nov 2025 14:34:04 +0100
-Message-ID: <56ec4d8e40d24ead68a14948cbbe122c5aaa1405.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH v6 17/26] gpio: aspeed: Convert to common field_{get,prep}() helpers
+Date: Thu,  6 Nov 2025 14:34:05 +0100
+Message-ID: <ffb0f5369c393ccbf5c2cc6de877984d9c15fa62.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_053718_854440_C1B6F35D 
-X-CRM114-Status: GOOD (  10.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,8 +111,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drop the driver-specific field_get() macro, in favor of the globally
-available variant from <linux/bitfield.h>.
+Drop the driver-specific field_get() and field_prep() macros, in favor
+of the globally available variants from <linux/bitfield.h>.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
@@ -126,32 +123,34 @@ v5:
   - Extracted from "bitfield: Add non-constant field_{prep,get}()
     helpers".
 ---
- drivers/edac/ie31200_edac.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/gpio/gpio-aspeed.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/edac/ie31200_edac.c b/drivers/edac/ie31200_edac.c
-index 72290f430126c631..dfc9a9cecd74207d 100644
---- a/drivers/edac/ie31200_edac.c
-+++ b/drivers/edac/ie31200_edac.c
-@@ -44,6 +44,7 @@
-  * but lo_hi_readq() ensures that we are safe across all e3-1200 processors.
+diff --git a/drivers/gpio/gpio-aspeed.c b/drivers/gpio/gpio-aspeed.c
+index ef4ccaf74a5b379e..3da999334971d501 100644
+--- a/drivers/gpio/gpio-aspeed.c
++++ b/drivers/gpio/gpio-aspeed.c
+@@ -5,6 +5,7 @@
+  * Joel Stanley <joel@jms.id.au>
   */
  
 +#include <linux/bitfield.h>
- #include <linux/module.h>
- #include <linux/init.h>
- #include <linux/pci.h>
-@@ -139,10 +140,6 @@
- #define IE31200_CAPID0_DDPCD		BIT(6)
- #define IE31200_CAPID0_ECC		BIT(1)
+ #include <linux/cleanup.h>
+ #include <linux/clk.h>
+ #include <linux/gpio/aspeed.h>
+@@ -31,12 +32,6 @@
+ #include <linux/gpio/consumer.h>
+ #include "gpiolib.h"
  
--/* Non-constant mask variant of FIELD_GET() */
+-/* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
 -#undef field_get
--#define field_get(_mask, _reg)  (((_reg) & (_mask)) >> (ffs(_mask) - 1))
+-#define field_get(_mask, _reg)	(((_reg) & (_mask)) >> (ffs(_mask) - 1))
+-#undef field_prep
+-#define field_prep(_mask, _val)	(((_val) << (ffs(_mask) - 1)) & (_mask))
 -
- static int nr_channels;
- static struct pci_dev *mci_pdev;
- static int ie31200_registered = 1;
+ #define GPIO_G7_IRQ_STS_BASE 0x100
+ #define GPIO_G7_IRQ_STS_OFFSET(x) (GPIO_G7_IRQ_STS_BASE + (x) * 0x4)
+ #define GPIO_G7_CTRL_REG_BASE 0x180
 -- 
 2.43.0
 
