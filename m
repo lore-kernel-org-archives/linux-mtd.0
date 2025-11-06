@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BB64CCFA13
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:37:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EE4ACCFA03
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:38:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eBoB91PPCsq+kZmbYTB5PdPSlf4lKJzEQY8LHTovL70=; b=kQw4o2ywAUk+ra
-	dVDLutAWpNYgeSDTnCBTvGpcLTQTWfa3aCF9l7HNo+C64jepWu6FgNlwuydoA/X27sHhRw9OkDked
-	ZwXKzoj+flyeWwaVKDU8EZog2II/+5IyJugJ2tVuY75XrPdARAJYPKyC/1+HFcLeOBH5N8ZWzVBf/
-	AZKzuIYJ+BPjhchyQucR1gL0/YMzeswES5riqBFdHUhbWcyN/+muQ0huNLh2vnXMKvMFAzL7iS8mp
-	TAzZmd8IZAAqx3U2GNs6/axnvFJxBL0SVs0ebK9Z9r4CXJdktnMuvQ9qbaWwh1kvPzGiCtz6IidE0
-	hyG5jFY0gXbkHskt7GrQ==;
+	List-Owner; bh=fDLIlMP34ePXtLFQl05x4tvAzIetYJ7nCYoPeSf0UHg=; b=duCTYocbjQaaSq
+	3rFQrtGoQ9KMwhGb5CbmnNnflp+ApemOUTdyr7YlUAI78QBjh4bzbUuoBhpx7Dean85GHnI79PH4e
+	feacGDSPjNb0TlYBOR+cNa2gWZv+D+6fQNN/aQ0jAqaJEWF/HuRyxNU7oYDsLmeYi7cJk7Dk5ZV5B
+	if3jakz7r/LT9WF8tgDRd58ZRNguZWfN7LiZbb3wdzMNwXMCYfCE/k2uD+LEOLS2PybzU/8kAJ5vc
+	h5GgNgM5EJP6ff9sMcQspx4Q94VfH+GazV1VwuRXfMdPZpaTAPUIB3wOedyJsXJq4H2fgLwASRu85
+	lBRVxr9fUDiEUwVa9QyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0BU-0000000FbUd-3Lyh;
-	Thu, 06 Nov 2025 13:37:52 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vH0Be-0000000FbZH-0eAE;
+	Thu, 06 Nov 2025 13:38:02 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0BS-0000000FbTf-04MO;
-	Thu, 06 Nov 2025 13:37:51 +0000
+	id 1vH0Bc-0000000FbYg-3d4Z;
+	Thu, 06 Nov 2025 13:38:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 98B7644800;
+	by tor.source.kernel.org (Postfix) with ESMTP id 20BBD6021A;
+	Thu,  6 Nov 2025 13:38:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF761C16AAE;
 	Thu,  6 Nov 2025 13:37:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BA7CC116C6;
-	Thu,  6 Nov 2025 13:37:39 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -87,18 +87,14 @@ Cc: linux-clk@vger.kernel.org,
 	linux-sound@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v6 19/26] iio: mlx90614: Convert to common field_{get,prep}() helpers
-Date: Thu,  6 Nov 2025 14:34:07 +0100
-Message-ID: <007e72b33aee33726e161acd9d92f801b7051838.1762435376.git.geert+renesas@glider.be>
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v6 20/26] pinctrl: ma35: Convert to common field_{get,prep}() helpers
+Date: Thu,  6 Nov 2025 14:34:08 +0100
+Message-ID: <2e7d92c7b668ae1f669177a47928548eceb9351b.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_053750_093152_81F8B37B 
-X-CRM114-Status: GOOD (  10.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,34 +115,25 @@ Drop the driver-specific field_get() and field_prep() macros, in favor
 of the globally available variants from <linux/bitfield.h>.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Crt Mori <cmo@melexis.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 v6:
-  - No changes,
+  - Add Reviewed-by,
 
 v5:
   - Extracted from "bitfield: Add non-constant field_{prep,get}()
     helpers".
 ---
- drivers/iio/temperature/mlx90614.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/pinctrl/nuvoton/pinctrl-ma35.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/iio/temperature/mlx90614.c b/drivers/iio/temperature/mlx90614.c
-index de5615fdb396aa3c..1ad21b73e1b44cb0 100644
---- a/drivers/iio/temperature/mlx90614.c
-+++ b/drivers/iio/temperature/mlx90614.c
-@@ -22,6 +22,7 @@
-  * the "wakeup" GPIO is not given, power management will be disabled.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/gpio/consumer.h>
-@@ -68,12 +69,6 @@
- #define MLX90614_CONST_SCALE 20 /* Scale in milliKelvin (0.02 * 1000) */
- #define MLX90614_CONST_FIR 0x7 /* Fixed value for FIR part of low pass filter */
+diff --git a/drivers/pinctrl/nuvoton/pinctrl-ma35.c b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
+index 925dd717c9deead5..8d71dc53cc1de1f8 100644
+--- a/drivers/pinctrl/nuvoton/pinctrl-ma35.c
++++ b/drivers/pinctrl/nuvoton/pinctrl-ma35.c
+@@ -81,12 +81,6 @@
+ #define MVOLT_1800			0
+ #define MVOLT_3300			1
  
 -/* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
 -#undef field_get
@@ -154,9 +141,9 @@ index de5615fdb396aa3c..1ad21b73e1b44cb0 100644
 -#undef field_prep
 -#define field_prep(_mask, _val)	(((_val) << (ffs(_mask) - 1)) & (_mask))
 -
- struct mlx_chip_info {
- 	/* EEPROM offsets with 16-bit data, MSB first */
- 	/* emissivity correction coefficient */
+ static const char * const gpio_group_name[] = {
+ 	"gpioa", "gpiob", "gpioc", "gpiod", "gpioe", "gpiof", "gpiog",
+ 	"gpioh", "gpioi", "gpioj", "gpiok", "gpiol", "gpiom", "gpion",
 -- 
 2.43.0
 
