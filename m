@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E68A9CCFA13
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:35:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07CD0CCFA13
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:36:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XzrMaCHWHGQiCmqa6zg+81Sz4AClHo7VObkF11RiaAY=; b=xtwLWzC91xLt/Q
-	pQ+ZtFsbBC5slt2oqk1GErNZMDnwWu/KWb/lPD4VqDPh+M4Em4CQS4jBK207XVgyAwe+YNDUwAwUd
-	RgzUVTuS4QytsGzrZSku1qp7GuEW0KJ2OQ7zTMsldfPclpzv4OcMDsEwlvS2VzzgZlBemAE5HYdWR
-	mN0yGvN7q0GbfcTwjOo1hB0A6GOqr3EF2bgiwXTrpA9v2AEmmEiqwpFQ0wYaDyVyPLA9w08dSXRMU
-	EFSYdOjjbQuybqkCYHPujfMOAEQA4+02Zv3v3xsKqSLAkqKVtIqqu7xh3fL0mgBXYsxiMkFsVIMhQ
-	G+xgC0ThgM4/wrgc8beQ==;
+	List-Owner; bh=kyKGD1z98inItu15J/h3BqoQ9lympDR+yO/m5M6pwyk=; b=NxxyJnySeOvtId
+	ncyrTEc0qv9SYiplkxtZF/mjKKDGUh4HWsjheBi74ASWX2uaPcBTt0AuNuhUyRDFFMBnBUcDoe5YI
+	e1QFNZQOP+oSLuvLNywIC5jVs8Xc9SSWXT/9tMYfoxxY5moJuDQFvr5Tr6+QIEHSGAgORN8Orag85
+	fjDrB2xcz03iqZPH0qlPa/Y7Wv9qioqflmSC5dtWd93uUuNTw3XozcGXYQM1J/EmtJBZj+4wydpy8
+	R/kedUQbV1qdJN9TPOIsaO3WvOkc3301lOeMUWarLpAuHt5Odm4fWWJrR8s7q6z+0pSaiJgeF2DSK
+	pORs4c+9vFri/IJl+KTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09e-0000000FagX-0ALl;
-	Thu, 06 Nov 2025 13:35:58 +0000
+	id 1vH09r-0000000FalD-03vG;
+	Thu, 06 Nov 2025 13:36:11 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH09c-0000000Fafw-0vbh;
-	Thu, 06 Nov 2025 13:35:56 +0000
+	id 1vH09m-0000000Fajp-32Ze;
+	Thu, 06 Nov 2025 13:36:09 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 823ED6022E;
+	by tor.source.kernel.org (Postfix) with ESMTP id 0A69860226;
+	Thu,  6 Nov 2025 13:36:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97896C4CEFB;
 	Thu,  6 Nov 2025 13:35:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55176C116C6;
-	Thu,  6 Nov 2025 13:35:45 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -87,10 +87,11 @@ Cc: linux-clk@vger.kernel.org,
 	linux-sound@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 08/26] soc: renesas: rz-sysc: #undef field_get() before local definition
-Date: Thu,  6 Nov 2025 14:33:56 +0100
-Message-ID: <7feec8e9cf823dd365d6e0f21004f943964e52a0.1762435376.git.geert+renesas@glider.be>
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v6 09/26] ALSA: usb-audio: #undef field_{get,prep}() before local definition
+Date: Thu,  6 Nov 2025 14:33:57 +0100
+Message-ID: <57114f0f4fcd3fcf8bbbcb5eaa2c0b4d22e9075c.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
@@ -111,35 +112,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prepare for the advent of a globally available common field_get() macro
-by undefining the symbol before defining a local variant.  This prevents
-redefinition warnings from the C preprocessor when introducing the common
-macro later.
+Prepare for the advent of globally available common field_get() and
+field_prep() macros by undefining the symbols before defining local
+variants.  This prevents redefinition warnings from the C preprocessor
+when introducing the common macros later.
 
 Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Takashi Iwai <tiwai@suse.de>
 ---
 v6:
-  - No changes,
+  - Add Acked-by,
 
 v5:
   - New.
 ---
- drivers/soc/renesas/rz-sysc.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/mixer_quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/soc/renesas/rz-sysc.c b/drivers/soc/renesas/rz-sysc.c
-index 9f79e299e6f41641..b9880085d3634065 100644
---- a/drivers/soc/renesas/rz-sysc.c
-+++ b/drivers/soc/renesas/rz-sysc.c
-@@ -16,6 +16,7 @@
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 828af3095b86ee0a..713a8498b975e1ac 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -3312,7 +3312,9 @@ static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)
+ #define RME_DIGIFACE_INVERT BIT(31)
  
- #include "rz-sysc.h"
- 
+ /* Nonconst helpers */
 +#undef field_get
  #define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
++#undef field_prep
+ #define field_prep(_mask, _val) (((_val) << (ffs(_mask) - 1)) & (_mask))
  
- /**
+ static int snd_rme_digiface_write_reg(struct snd_kcontrol *kcontrol, int item, u16 mask, u16 val)
 -- 
 2.43.0
 
