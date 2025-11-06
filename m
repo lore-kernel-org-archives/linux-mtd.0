@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09976CCFA05
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B50ECCFA03
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b74WLPRxrJL2O8bgsYwvUl0FnSoede26veOfWRXZuCw=; b=u02LzvsepPKSfP
-	I0J4GPB0YR/Av0uinsVr92FrWsQy5AVLVwm+R+OOhBMqhO4Q0d6R+/LsXs7Tb1wknzLcHOrATG6fk
-	wFl5ukHQYVcJbnspsKdCHGdJJfldhSPKheTRLdq4Yh1ORM6X5YRFiQyvBZgWI1ZTLdyJpdrD2TXrq
-	Q1nk7fli9dTtLI0FAUBflg5lQuR143ExF4BJOL4kWRZ05gEYaf2P1xtaFef0r0U7udlKak4bnTRLd
-	kpMCXYj9cjOrzBSfy+qIc6ZgBWMLzvHCqMAGqjdMr+6smZso3mxGAz/2Kc/cizMg3jQvA5LLW8CkL
-	d87kVlzBImFKUqDOM9vw==;
+	List-Owner; bh=hasLfFMlw13gLD0AsTLrtz7ZyW4TII4BWirqbKhj3ps=; b=aGst5pJkAGQGbj
+	OVdmCJvse+t+DitbohgqJb+ZLUrT8fDGOQpnn4hQtdpDoRDHUiU+IFQJlzYN48rUcuIUEmz0MI94K
+	P6hPJPF0tAkstaaqcmxUk0NbtddgbaWvATqC+Yr5j07Zmil+V5upthMoQSXbtm26BtWTaOBO8/W7b
+	bUM8HuSy4aGwWj0djspIMmCo2kNCBUgLKcbcsDVJPWQHMmCVN9/4sij2oPCQvL2pvQejv7jMgnRPE
+	tZHaoNcTw1LAq/Muug7jQBJW+m5z5eG4Tlh8nxX8+rxGvC28gyNXIUIwB+xmF7qgMB26fT6vl45Z8
+	io9MAkPDWYkPoCA0gW6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH08p-0000000FaH6-0CD9;
-	Thu, 06 Nov 2025 13:35:07 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vH08z-0000000FaM1-25w1;
+	Thu, 06 Nov 2025 13:35:17 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH08m-0000000FaFZ-0Lyp;
-	Thu, 06 Nov 2025 13:35:05 +0000
+	id 1vH08x-0000000FaKn-18Zt;
+	Thu, 06 Nov 2025 13:35:15 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id A200C444CC;
+	by tor.source.kernel.org (Postfix) with ESMTP id 4F486601DA;
+	Thu,  6 Nov 2025 13:35:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBD19C4CEFB;
 	Thu,  6 Nov 2025 13:35:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FCF9C19424;
-	Thu,  6 Nov 2025 13:34:53 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -87,18 +87,15 @@ Cc: linux-clk@vger.kernel.org,
 	linux-sound@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 03/26] EDAC/ie31200: #undef field_get() before local definition
-Date: Thu,  6 Nov 2025 14:33:51 +0100
-Message-ID: <581bca4d109242bb5acb3be49dbf1bde780f2884.1762435376.git.geert+renesas@glider.be>
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v6 04/26] gpio: aspeed: #undef field_{get,prep}() before local definition
+Date: Thu,  6 Nov 2025 14:33:52 +0100
+Message-ID: <d1442e895f689ed1872c3cccd04f01f2aa38c37b.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_053504_156783_D0B3513A 
-X-CRM114-Status: UNSURE (   9.17  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,35 +112,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prepare for the advent of a globally available common field_get() macro
-by undefining the symbol before defining a local variant.  This prevents
-redefinition warnings from the C preprocessor when introducing the common
-macro later.
+Prepare for the advent of globally available common field_get() and
+field_prep() macros by undefining the symbols before defining local
+variants.  This prevents redefinition warnings from the C preprocessor
+when introducing the common macros later.
 
 Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
 v6:
-  - No changes,
+  - Add Acked-by,
 
 v5:
   - New.
 ---
- drivers/edac/ie31200_edac.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpio/gpio-aspeed.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/edac/ie31200_edac.c b/drivers/edac/ie31200_edac.c
-index 5a080ab65476dacf..72290f430126c631 100644
---- a/drivers/edac/ie31200_edac.c
-+++ b/drivers/edac/ie31200_edac.c
-@@ -140,6 +140,7 @@
- #define IE31200_CAPID0_ECC		BIT(1)
+diff --git a/drivers/gpio/gpio-aspeed.c b/drivers/gpio/gpio-aspeed.c
+index 7953a9c4e36d7550..ef4ccaf74a5b379e 100644
+--- a/drivers/gpio/gpio-aspeed.c
++++ b/drivers/gpio/gpio-aspeed.c
+@@ -32,7 +32,9 @@
+ #include "gpiolib.h"
  
- /* Non-constant mask variant of FIELD_GET() */
+ /* Non-constant mask variant of FIELD_GET() and FIELD_PREP() */
 +#undef field_get
- #define field_get(_mask, _reg)  (((_reg) & (_mask)) >> (ffs(_mask) - 1))
+ #define field_get(_mask, _reg)	(((_reg) & (_mask)) >> (ffs(_mask) - 1))
++#undef field_prep
+ #define field_prep(_mask, _val)	(((_val) << (ffs(_mask) - 1)) & (_mask))
  
- static int nr_channels;
+ #define GPIO_G7_IRQ_STS_BASE 0x100
 -- 
 2.43.0
 
