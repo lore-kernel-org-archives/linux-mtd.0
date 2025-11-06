@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19E94CCFA1A
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE68ECCFA13
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DyNh/hb9ZayJ4QwaYU1G/mBTkwVxBHromZdgkOK+zVE=; b=KQL/iq5CK2cR5G
-	nOWOe2ZPI01G+yXh4PO27OA20XUpC/HUTNOzS0FQLEVHEZeMct++80B7Xw3Jei80oVJeAuWvs6kif
-	DjtYFVMsoLEUOaYkqn7Ml1cpjbJPtu/5vl34SAH5u4JCg1qJiZh7KhE8CoeiVCHJpkAjI0ClvtS7c
-	N2VRpaDeZviznNNZ0KeeEwwMh91pmMFwkute2nv4L6ND9t/f6t93GxoJLKAXRZ8QYGBRJc8FfnDjC
-	+ZNpivj1+TbiGQKhhaWmH4Eyl5zIk6NbURM8UOJq6HJaR2m68z4fPhLm6VpuF/tjuvDpxYqvl+h65
-	84NP+XqxPd3Ai7205Ipg==;
+	List-Owner; bh=C00+J4hHSKlT3NxJWSsZ7MgMQ9oKHNM3W3RCS5clOM0=; b=xhfKx8QLAaSyWX
+	FLQu+V1oCMP9izjNd1LN7TDq/n3q8UwlBk0udmMPBrOk3/z/isi5P7HMH9g9xGK6akYBMPwhc6tW3
+	D6A3caxS5F62/xYIB+NMhXBwBuRzjHRi0VCH24CpkwiC+ZcCkQWS5cYRe8P4QxEUVfhwL2uU+1WlP
+	HYKk/RLihWhqDHygPymoqAcdPuKmuUOyVOF0TfGbtpo5ntqWyQ4nsrudnJ/9tLXiYHXyhgTclPtXC
+	y1h+xu20UcG8yNKNv7eze5WnBh0Jxchn5idzfm1CJm0SFZ1J249zQK1egG2CMIXl0gCvLbgl6CUAy
+	sPUatncrQ/IPxb2ohzzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH08U-0000000Fa7W-3qKy;
-	Thu, 06 Nov 2025 13:34:47 +0000
+	id 1vH08e-0000000FaBr-0HJL;
+	Thu, 06 Nov 2025 13:34:56 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH08R-0000000Fa5N-2ZdK;
-	Thu, 06 Nov 2025 13:34:44 +0000
+	id 1vH08b-0000000FaAf-2Tx0;
+	Thu, 06 Nov 2025 13:34:54 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id E314344969;
-	Thu,  6 Nov 2025 13:34:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70790C4CEF7;
-	Thu,  6 Nov 2025 13:34:32 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3526A4020C;
+	Thu,  6 Nov 2025 13:34:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36DD8C4CEFB;
+	Thu,  6 Nov 2025 13:34:43 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,16 +88,16 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 01/26] clk: at91: pmc: #undef field_{get,prep}() before definition
-Date: Thu,  6 Nov 2025 14:33:49 +0100
-Message-ID: <939d8c6da1f468026b1bb201413ba08b1d0751fd.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH v6 02/26] crypto: qat - #undef field_get() before local definition
+Date: Thu,  6 Nov 2025 14:33:50 +0100
+Message-ID: <9300ac4c91dc565dcc81f002306e74399f5d4090.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_053443_701893_0AFDA5A1 
-X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-CacheID: sfid-20251106_053453_670905_41BA05C2 
+X-CRM114-Status: UNSURE (   9.31  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -115,14 +115,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prepare for the advent of globally available common field_get() and
-field_prep() macros by undefining the symbols before defining local
-variants.  This prevents redefinition warnings from the C preprocessor
-when introducing the common macros later.
+Prepare for the advent of a globally available common field_get() macro
+by undefining the symbol before defining a local variant.  This prevents
+redefinition warnings from the C preprocessor when introducing the common
+macro later.
 
 Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 ---
 v6:
   - Add Acked-by,
@@ -130,23 +130,21 @@ v6:
 v5:
   - New.
 ---
- drivers/clk/at91/pmc.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index 5daa32c4cf2540d7..78a87d31463e98b0 100644
---- a/drivers/clk/at91/pmc.h
-+++ b/drivers/clk/at91/pmc.h
-@@ -117,7 +117,9 @@ struct at91_clk_pms {
- 	unsigned int parent;
- };
- 
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c b/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c
+index 69295a9ddf0ac92f..6186fafb4a7b0dab 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c
+@@ -11,6 +11,7 @@
+  * pm_scnprint_table(), making it not compile time constant, so the compile
+  * asserts from FIELD_GET() or u32_get_bits() won't be fulfilled.
+  */
 +#undef field_get
  #define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
-+#undef field_prep
- #define field_prep(_mask, _val) (((_val) << (ffs(_mask) - 1)) & (_mask))
  
- #define ndck(a, s) (a[s - 1].id + 1)
+ #define PM_INFO_MAX_KEY_LEN	21
 -- 
 2.43.0
 
