@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3949CCFA05
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E990FCCFA13
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Nov 2025 13:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4mDROaUcGd54HK+LJNf/gMeuxd6znxm46nWDBXeX5vM=; b=DoDAAVXQW/XSK4
-	4Kxb0wbAnwTDWP3rLVHhQ5H507ZEVLBuTh7Tu7NVxIn29YcOlYh2lyIJgj//GW2b0wuj8RJSMG/Aw
-	gmzPlL5w8x+PRpQ1HG6jz27hio2rZPxKCGpIY98akvHvphbJMEuSwU6qFNaJCIzsLn/u/PDwooP0A
-	EE+LayrV4KIM3+Cadzlvz8JFgy9vEqb4z320Rhsec5PVUIRFv1pB4tCcbkIQH8LNYzklT9dAeyYtT
-	oSDJAPxIP2ME4axX4etbGZHGbaeNMPqYLgwjNw0nKbPTQ/QHWzGGAfbeeDVAeV4n2w5TG0J69tCQY
-	IqHNCBleLSpcLM9Ff5Aw==;
+	List-Owner; bh=jRGUMYDIdGPX1dcVcHwUX4k6RjK0fd0Pw/3TjacGo/A=; b=DW5vwpLZVfrTlx
+	mAVGS4wmNwPKEKCcNAz8+Qk+YhM2HFYw5rHXJSe7F2HrGONrfukMASNP2cH8IpqX51YtGX0P4NxKm
+	w0vFwNgCV6T+S5AwzLg1oxOT3xiZsVUt8E6I3yTv+/LL88o6XOeEuJdJoXPrGVnp3OdUnKG+/YE6L
+	UBJ6amz8w8gQlplbAX+/vVOXp9QRqfiARVOdaKrSqgBvW7aUhuk1onEvwifBgemLd10Wyfbwisqpt
+	QVLLKFGSa6vcz2jqAzyVnk1umSB+/DXWUcs5h2ehDlVJ6t+3g9+5bYJ/alUu2dswj4ukkXA9u6H6w
+	DRCZ+GkmCNXn2WPvvV2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0Ae-0000000Fb8E-395k;
-	Thu, 06 Nov 2025 13:37:00 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vH0Ao-0000000FbDQ-49ra;
+	Thu, 06 Nov 2025 13:37:10 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vH0Ac-0000000Fb7D-0S3L;
-	Thu, 06 Nov 2025 13:36:59 +0000
+	id 1vH0Am-0000000FbBu-1sWy;
+	Thu, 06 Nov 2025 13:37:10 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id B1465401AB;
+	by sea.source.kernel.org (Postfix) with ESMTP id 0EFA74361F;
+	Thu,  6 Nov 2025 13:37:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 056E1C4CEF7;
 	Thu,  6 Nov 2025 13:36:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B14A4C4CEFB;
-	Thu,  6 Nov 2025 13:36:47 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Yury Norov <yury.norov@gmail.com>,
 	Michael Turquette <mturquette@baylibre.com>,
@@ -88,16 +88,16 @@ Cc: linux-clk@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6 14/26] clk: at91: Convert to common field_{get,prep}() helpers
-Date: Thu,  6 Nov 2025 14:34:02 +0100
-Message-ID: <7414c080bbacc3c5be00c0eec4f5cbca386acaf3.1762435376.git.geert+renesas@glider.be>
+Subject: [PATCH v6 15/26] crypto: qat - convert to common field_get() helper
+Date: Thu,  6 Nov 2025 14:34:03 +0100
+Message-ID: <950aacf2c39845b20f33696fe178a435140f28fe.1762435376.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762435376.git.geert+renesas@glider.be>
 References: <cover.1762435376.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251106_053658_186037_DD368DCB 
-X-CRM114-Status: GOOD (  10.50  )
+X-CRM114-CacheID: sfid-20251106_053709_016420_F05C46CD 
+X-CRM114-Status: GOOD (  10.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,51 +114,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drop the driver-specific field_get() and field_prep() macros, in favor
-of the globally available variants from <linux/bitfield.h>.
+Drop the driver-specific field_get() macro, in favor of the globally
+available variant from <linux/bitfield.h>.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 ---
 v6:
-  - No changes,
+  - Add Acked-by,
 
 v5:
   - Extracted from "bitfield: Add non-constant field_{prep,get}()
     helpers".
 ---
- drivers/clk/at91/clk-peripheral.c | 1 +
- drivers/clk/at91/pmc.h            | 5 -----
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-peripheral.c b/drivers/clk/at91/clk-peripheral.c
-index e700f40fd87f9327..e7208c47268b6397 100644
---- a/drivers/clk/at91/clk-peripheral.c
-+++ b/drivers/clk/at91/clk-peripheral.c
-@@ -3,6 +3,7 @@
-  *  Copyright (C) 2013 Boris BREZILLON <b.brezillon@overkiz.com>
-  */
- 
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c b/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c
+index 6186fafb4a7b0dab..4ccc94ed9493a64c 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs_utils.c
+@@ -1,19 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* Copyright(c) 2025 Intel Corporation */
 +#include <linux/bitfield.h>
  #include <linux/bitops.h>
- #include <linux/clk-provider.h>
- #include <linux/clkdev.h>
-diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index 78a87d31463e98b0..543d7aee8d248cdb 100644
---- a/drivers/clk/at91/pmc.h
-+++ b/drivers/clk/at91/pmc.h
-@@ -117,11 +117,6 @@ struct at91_clk_pms {
- 	unsigned int parent;
- };
+ #include <linux/sprintf.h>
+ #include <linux/string_helpers.h>
  
+ #include "adf_pm_dbgfs_utils.h"
+ 
+-/*
+- * This is needed because a variable is used to index the mask at
+- * pm_scnprint_table(), making it not compile time constant, so the compile
+- * asserts from FIELD_GET() or u32_get_bits() won't be fulfilled.
+- */
 -#undef field_get
 -#define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
--#undef field_prep
--#define field_prep(_mask, _val) (((_val) << (ffs(_mask) - 1)) & (_mask))
 -
- #define ndck(a, s) (a[s - 1].id + 1)
- #define nck(a) (a[ARRAY_SIZE(a) - 1].id + 1)
+ #define PM_INFO_MAX_KEY_LEN	21
  
+ static int pm_scnprint_table(char *buff, const struct pm_status_row *table,
 -- 
 2.43.0
 
