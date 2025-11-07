@@ -4,173 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE663CCF9F8
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Nov 2025 23:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 787E5CCF9E3
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Nov 2025 23:49:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-id:Date:References:
-	In-reply-to:Subject:Cc:To:From:MIME-Version:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bL3zwUVFz6lIZSZ3mWMXjso5SH4DT3YrxIVEZZQHuMg=; b=3nl+YIHACJYGci
-	BIX1C2o1B+S6xgokQqxAtRzp39t+w4+2k1ov+kbdspSUm4t35CF2xwGQqOyTmv0l8WACCuVH+b02V
-	D7yulo8AJ8WpKGH/NIAyVdRj1/v0VCroUq5E6AV6fUWuVt5YorJoao5MrKrGPzAHHHfL7ceEnwfVC
-	J9mHF/8us7Ha/ecMNIpWlgXAyDaFNMo1fIgIvHGGrB4EkFMaNOkkttCSmjUy1WaLAwpnAeJxh6Niq
-	mUV5sL1RrVninuu4cxgQxPKUH3ZLCXhHqUF71vi45rzjjKnYyPsa+sw1eCGVbB2n1Txdr9q5EVu3d
-	7fbh5hQjuAdEMnfOVLtg==;
+	List-Owner; bh=9uF4MLDvEkwnejfCDMluXEk54LEGPTC6Q5wTFwjDsZk=; b=Q0KuD9WRUVhqhx
+	oAvV4ViAh5LUIyTPWj2bP2jmJ71r9kJuxyGOFT4PU/Fc/yQnzDxetylSOoJYLz29pLZLpHDoI0lnA
+	Tpv6K7mbbJajfy/2Vr3ed7ySu4SKJjHHpKbq/dlpYgt5eRk/9h90ytyLZwSq1SHXazQhDSpGenncV
+	mx7ynsvQlQnyGEuFEAFbofcyS+ZEMz/JjOWLY2KHJ7MPOz3hyT392xu/TZXEJRNy4AZvmVpmZiKd5
+	ejjCpe90awG3L+q40UDYcoPI0pQxNkhgOgNnVCDKH8u4K/mAhY9M2ZZpvL3wKZiKGcfW+C8mvh8nX
+	nImSLVVErMsKuBg/2LzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHW1z-00000001ZV9-0V2B;
-	Fri, 07 Nov 2025 23:38:11 +0000
-Received: from flow-b3-smtp.messagingengine.com ([202.12.124.138])
+	id 1vHWDB-00000001blE-1Qk6;
+	Fri, 07 Nov 2025 23:49:45 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHW1v-00000001ZTb-3ZhS;
-	Fri, 07 Nov 2025 23:38:09 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.stl.internal (Postfix) with ESMTP id 3696013001EB;
-	Fri,  7 Nov 2025 18:38:03 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Fri, 07 Nov 2025 18:38:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to; s=fm3; t=
-	1762558683; x=1762565883; bh=ZcRWR0XGRVohQHNqpTmVOGqvgKfDCmeABc6
-	Q5B6kVA0=; b=E4OMnSLCME0PmpfRUhAwNxIceLFq3/FAK5GtwevM7iICUCUuV5x
-	chVCFB6fdmay7+ooFw0uv6Azy1ChdRqJqvR+mkrCRIpg73LnR+/X59PszjPwZ/rz
-	8CPuwHb/xwC5N1QSJvSaLdjI57addGAeTJRkLimMYRo6wgCZPhDhW+hNxZlCxMuJ
-	hAPkIxK9zjio+5tvTHBm3a+bqM8CDMop81FHuSYzFd2NCfNmjV5NgDtUDa2Eyf25
-	3VuDhIEZvIbIrGiHuAnMLfItwaVgsWO7Q33GX+ggP6/jGDAegWeYBoQRn47aNko2
-	PunoNsPduYvN8zewgDdm1dEy75bfZgIQYaQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1762558683; x=
-	1762565883; bh=ZcRWR0XGRVohQHNqpTmVOGqvgKfDCmeABc6Q5B6kVA0=; b=a
-	v+lzygtoc1HX4ZadDskwTpZwJtb1oG3peL6O0gr4iO5O5jYd+vaRP7/no7N27oF3
-	EzxSXy6KoH6IHmfzzAjLPr0QATO37tQfExkHIQ/kLMEtcMIpZa9opvRREQRlIldG
-	Q9D0WkBAPuYtKKTvP1JAxo1/Rx7n6G2bitd51++grbdTyzCWIWx3DW0/Nhivcp1A
-	s7ZtqshuHntLjgQgQJ+crHlgWYzKyD5izePEyTID8AqXRiIHiDEt9qwC/wQbmAXC
-	g/7fHF+pLwFi9swg49B8mIz8mdbJ+nyJwVG9AYbNRT/JTg129nrTn8NZkPgHxX+2
-	7BatW30ZGfoIC5BANZTig==
-X-ME-Sender: <xms:04IOaUS1llkqfnpj0hP0k9hck1nUGtgZum40Y0dtCM64yfklBqqJ5g>
-    <xme:04IOaV4vrSP4x6QNhepje5WcwIcNTd1apJim4xvCzIrniX8SAiYXqKNGGHIuD1WKQ
-    33nU51_RKbR52XMFfrIspvHlzrBn079yJ8CWMmi6dxhoUy63Q>
-X-ME-Received: <xmr:04IOaT3MWpLgDLL757W25o-tMfqjGpak2vFwG2uUDPGL2GuLLHFgVWSCwflcxilp3PZXpLTiHfR-SxGJx5w8TjROMf9sHRUcJd4NP_ZWYt62>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduledutddtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnegouf
-    hprghmfghrlhculdeftddtmdenucfjughrpegtgfgghffvvefujghffffkrhesthhqredt
-    tddtjeenucfhrhhomheppfgvihhluehrohifnhcuoehnvghilhgssehofihnmhgrihhlrd
-    hnvghtqeenucggtffrrghtthgvrhhnpedvueetleekjeekveetteevtdekgeeludeifedt
-    feetgfdttdeljefglefgveffieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuuf
-    hprghmfghrlhephhhtthhpshemsddslhhorhgvrdhkvghrnhgvlhdrohhrghdsrghllhds
-    jeeiieeffeeileekvdeltdehuddurdehfedtvdekfeekqdelqdgurghvvgdrhhgrnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsges
-    ohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepleejpdhmohguvgepshhmthhpoh
-    huthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpdhr
-    tghpthhtohepfhhrrghnkhdrlhhisehvihhvohdrtghomhdprhgtphhtthhopehlihhnuh
-    igqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidq
-    uhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
-    igqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhu
-    gidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqd
-    hkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhig
-    qdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
-    hinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:04IOaUUP8Agp5i-ePskgdOIZ3qDw3X8wH2n0PkSgIS-qUH6nBwUnqg>
-    <xmx:04IOaTnQGxLDK6TRtOgEGVijEWvd6FvZOuwL0vyqcWwYM4LX-zVZXA>
-    <xmx:04IOaVhEuGeVrKovELx7lzKD-9IxEW9YEYZ2LQZX-iUA996QSWwOgg>
-    <xmx:04IOab5K6Z-7wWhbIK2-S_EvLNyL4_2HwgPfi2l7GSRp7-b2X_0qug>
-    <xmx:24IOabMc8-grgTNo-sBp23kB4IC_01hhvLJuap-Y8_HG_nozNoQTctxM>
-Feedback-ID: iab3e480c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Nov 2025 18:37:32 -0500 (EST)
+	id 1vHWD7-00000001bjr-3xuE
+	for linux-mtd@lists.infradead.org;
+	Fri, 07 Nov 2025 23:49:43 +0000
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A7INsPQ001084;
+	Fri, 7 Nov 2025 23:49:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=JrAmSA
+	5BdwcrTdGcgekVRkIjRdfQs+pfWYGhRccUzVE=; b=OgD++bijhOJ3+i6gBF4pD4
+	f9R2OPsLCdMQ3V9ZMg7xHOyDl2vqgr7UDTwFq7qeYgRFv3YqCWFy2Jks2+YUi0p7
+	E0x0s4uOvv7crKi/wzZ4nusvExUVsW61Tt2BE0XDSMACtkvEzxgExQm7NdwblW/w
+	UznEPnKGsZJ8v5ulCmuSn+FzlkX7BHfwP43FuPmO/zuz6WAgC7BRSTY0HOvoBq0q
+	Fzzt5C2uU5Fl44enNtC1ObUKzNuapFoN88dVCfbO68mCgZomc0pUvakvm41rL3AY
+	B1yq7DlP7D/zyQ7HVs3NPetgq6b40OBCfM11ziqYSP/0yuRzF00dfX6r5mDgh7LA
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a9p0j9420-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Nov 2025 23:49:35 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5A7NnZfL023197;
+	Fri, 7 Nov 2025 23:49:35 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a9p0j941w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Nov 2025 23:49:35 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A7Mpkx1018784;
+	Fri, 7 Nov 2025 23:49:34 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4a5whnwagb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Nov 2025 23:49:34 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A7NnXVL56033542
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 7 Nov 2025 23:49:34 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF78C5805A;
+	Fri,  7 Nov 2025 23:49:33 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9D2DE58051;
+	Fri,  7 Nov 2025 23:49:33 +0000 (GMT)
+Received: from [9.61.104.176] (unknown [9.61.104.176])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  7 Nov 2025 23:49:33 +0000 (GMT)
+Message-ID: <84354d51-bfa2-4d6b-895f-f9cf610d4bb6@linux.ibm.com>
+Date: Fri, 7 Nov 2025 17:49:33 -0600
 MIME-Version: 1.0
-From: NeilBrown <neilb@ownmail.net>
-To: "Jeff Layton" <jlayton@kernel.org>
-Cc: "Jonathan Corbet" <corbet@lwn.net>,
- "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Sterba" <dsterba@suse.com>, "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
- "Chris Mason" <clm@fb.com>, "Xiubo Li" <xiubli@redhat.com>,
- "Ilya Dryomov" <idryomov@gmail.com>, "Jan Harkes" <jaharkes@cs.cmu.edu>,
- coda@cs.cmu.edu, "Tyler Hicks" <code@tyhicks.com>,
- "Jeremy Kerr" <jk@ozlabs.org>, "Ard Biesheuvel" <ardb@kernel.org>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sungjong Seo" <sj1557.seo@samsung.com>,
- "Yuezhang Mo" <yuezhang.mo@sony.com>, "Theodore Ts'o" <tytso@mit.edu>,
- "Andreas Dilger" <adilger.kernel@dilger.ca>,
- "Jaegeuk Kim" <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>,
- "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
- "Miklos Szeredi" <miklos@szeredi.hu>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Viacheslav Dubeyko" <slava@dubeyko.com>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Yangtao Li" <frank.li@vivo.com>, "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Mikulas Patocka" <mikulas@artax.karlin.mff.cuni.cz>,
- "Muchun Song" <muchun.song@linux.dev>,
- "Oscar Salvador" <osalvador@suse.de>,
- "David Hildenbrand" <david@redhat.com>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Dave Kleikamp" <shaggy@kernel.org>,
- "Trond Myklebust" <trondmy@kernel.org>,
- "Anna Schumaker" <anna@kernel.org>,
- "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
- "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
- "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>,
- "Bob Copeland" <me@bobcopeland.com>,
- "Mike Marshall" <hubcap@omnibond.com>,
- "Martin Brandenburg" <martin@omnibond.com>,
- "Amir Goldstein" <amir73il@gmail.com>,
- "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
- "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>, "Tom Talpey" <tom@talpey.com>,
- "Bharath SM" <bharathsm@microsoft.com>,
- "Zhihao Cheng" <chengzhihao1@huawei.com>,
- "Hans de Goede" <hansg@kernel.org>, "Carlos Maiolino" <cem@kernel.org>,
- "Hugh Dickins" <hughd@google.com>,
- "Baolin Wang" <baolin.wang@linux.alibaba.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Kees Cook" <kees@kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
- linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
- codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
- linux-um@lists.infradead.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
- linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
- linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
- linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: LLM disclosure (was: [PATCH v2] vfs: remove the excl argument
- from the ->create() inode_operation)
-In-reply-to: <f5a2c41e4f272fef9f1525e17b494dd4b4bcb529.camel@kernel.org>
-References: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>,
- <176255458305.634289.5577159882824096330@noble.neil.brown.name>,
- <87ikfl1nfe.fsf@trenco.lwn.net>,
- <f5a2c41e4f272fef9f1525e17b494dd4b4bcb529.camel@kernel.org>
-Date: Sat, 08 Nov 2025 10:37:30 +1100
-Message-id: <176255865045.634289.1814933499430115577@noble.neil.brown.name>
+User-Agent: Mozilla Thunderbird
+Subject: Re: UBIFS errors since Linux 5.15
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+        chengzhihao1 <chengzhihao1@huawei.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, sethjenkins@google.com,
+        adobriyan <adobriyan@gmail.com>
+References: <068ba254-0053-46d5-bff4-74c948d2e8ac@linux.ibm.com>
+ <55378147.159026.1762545799936.JavaMail.zimbra@nod.at>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <55378147.159026.1762545799936.JavaMail.zimbra@nod.at>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: L0WOTQbhFUvL-8cou71wMTniaW70b_Zq
+X-Authority-Analysis: v=2.4 cv=J9enLQnS c=1 sm=1 tr=0 ts=690e858f cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=JfrnYn6hAAAA:8 a=i0EeH86SAAAA:8 a=voM4FWlXAAAA:8
+ a=VwQbUJbxAAAA:8 a=1XWaLZrsAAAA:8 a=pGLkceISAAAA:8 a=nqgInfV_ZEBXBheio9IA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=1CNFftbPRP8L7MoqJWF3:22
+ a=IC2XNlieTeVoXbcui8wp:22 a=HhbK4dLum7pmb74im6QT:22 a=cPQSjfK2_nFv0Q5t_7PE:22
+ a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTA3MDE1MiBTYWx0ZWRfX1k3PHk+j8Dt0
+ cMZeqSga0+OjtpH80ajmkygex0suaKwe+TwcNYuL8T9jFP/tBGUC+4l+KH6iWDlncnqaxWIdK22
+ IC5L7ew1Kn/uYLDliSK5BztvuY7+1dtC7k7Z02UhAbKnktuE8Y2LMokd/2H8QWcr+EGAZfojysP
+ kS9iRew5NDcFn3ZKPMUC1aV5E0Rq8dClw3UMNnSkgxK1Nq+dS4cPPMDF4sJuUwygKs8BtvZ7Bwh
+ JIKUtCXbh4eCXT6SEmJO7hjg85z7VwylqrbZAO3Y/qxxXxwu0gXwd/IjT2IpTwkN3xeiy0y86kO
+ TRTbDJe9XIEFZKR+8ClqKMkLtPZtBWxV/TtHTkNLoAHO5/GrC0i/4Y8aE/Pld6IEu7ObeVxneSz
+ I4btkb5k+BzGG+aVEhWFfXJW3z+rbg==
+X-Proofpoint-GUID: -SncNA1_bQtn9klT9qKdm9kGWUfGckyo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-07_07,2025-11-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 impostorscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ bulkscore=0 adultscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511070152
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251107_153808_417958_4457F156 
-X-CRM114-Status: GOOD (  17.77  )
+X-CRM114-CacheID: sfid-20251107_154942_457594_3486BAED 
+X-CRM114-Status: GOOD (  15.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -182,62 +127,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: NeilBrown <neil@brown.name>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 08 Nov 2025, Jeff Layton wrote:
-> On Fri, 2025-11-07 at 15:35 -0700, Jonathan Corbet wrote:
-> > NeilBrown <neilb@ownmail.net> writes:
-> > 
-> > > On Sat, 08 Nov 2025, Jeff Layton wrote:
-> > 
-> > > > Full disclosure: I did use Claude code to generate the first
-> > > > approximation of this patch, but I had to fix a number of things that it
-> > > > missed.  I probably could have given it better prompts. In any case, I'm
-> > > > not sure how to properly attribute this (or if I even need to).
-> > > 
-> > > My understanding is that if you fully understand (and can defend) the
-> > > code change with all its motivations and implications as well as if you
-> > > had written it yourself, then you don't need to attribute whatever fancy
-> > > text editor or IDE (e.g.  Claude) that you used to help produce the
-> > > patch.
-> > 
-> > The proposed policy for such things is here, under review right now:
-> > 
-> >   https://lore.kernel.org/all/20251105231514.3167738-1-dave.hansen@linux.intel.com/
-> > 
-> > jon
-> 
-> Thanks Jon.
-> 
-> I'm guessing that this would fall under the "menial task"
-> classification, and therefore doesn't need attribution. This seems
-> applicable:
-> 
-> + - Purely mechanical transformations like variable renaming
-> 
-> This is a little different, but it's a similar rote task.
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
-
-The bit I particularly liked was:
-
-+
-+Even if your tool use is out of scope you should still always consider
-+if it would help reviewing your contribution if the reviewer knows
-+about the tool that you used.
-+
-
-"would it help the reviewer"?  I agree that is a key question.  In your
-case I cannot see how it would help.
-
-Thanks,
-NeilBrown
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIDExLzcvMjUgMjowMyBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEVkZGllLAo+
+Cj4gLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBWb246ICJFZGRpZSBKYW1lcyIg
+PGVhamFtZXNAbGludXguaWJtLmNvbT4KPj4gQW46ICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlz
+dHMuaW5mcmFkZWFkLm9yZz4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiY2hlbmd6aGlo
+YW8xIiA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+LAo+PiAiT3BlbkJNQyBNYWlsbGlzdCIgPG9w
+ZW5ibWNAbGlzdHMub3psYWJzLm9yZz4sICJsaW51eC1rZXJuZWwiIDxsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnPiwgc2V0aGplbmtpbnNAZ29vZ2xlLmNvbSwKPj4gImFkb2JyaXlhbiIgPGFk
+b2JyaXlhbkBnbWFpbC5jb20+Cj4+IEdlc2VuZGV0OiBGcmVpdGFnLCA3LiBOb3ZlbWJlciAyMDI1
+IDE4OjM4OjU0Cj4+IEJldHJlZmY6IFVCSUZTIGVycm9ycyBzaW5jZSBMaW51eCA1LjE1Cj4+IEhl
+bGxvLAo+Pgo+PiBXZSBhcmUgdXBkYXRpbmcgc29tZSBCTUMgKEFzcGVlZCBBU1QyNjAwLCBBUk0z
+Mikgc3lzdGVtcyB0aGF0IHdlcmUgb24KPj4gTGludXggNS40IGJ1dCBvYnNlcnZlIGNvbnNpc3Rl
+bnQgVUJJRlMgZXJyb3JzIHdpdGggTGludXggNS4xNSBhbmQgbGF0ZXIuCj4+IFRoZSBlcnJvcnMg
+c2VlbSB0byB2YXJ5OyB0aGVyZSBpcyBhIHNhbXBsaW5nIGJlbG93Lgo+Pgo+Pgo+PiBXZSBwZXJm
+b3JtZWQgYSBnaXQgYmlzZWN0IGFuZCBjYW1lIHVwIHdpdGggdGhlIGZvbGxvd2luZyBjb21taXQs
+IHdoaWNoCj4+IG9mIGNvdXJzZSBpcyBjb21wbGV0ZWx5IHVucmVsYXRlZCB0byBVQklGUy4gUmV2
+ZXJ0aW5nIGl0IGRvZXMgcHJldmVudAo+PiB0aGUgaXNzdWUuLi4gRG9lcyBhbnlvbmUgaGF2ZSBh
+bnkgc3VnZ2VzdGlvbnM/Cj4+Cj4+IGNvbW1pdCAzM2ZjOWUyNmI3Y2IzOWYwZDQyMTljODc1YTI0
+NTE4MDIyNDljMjI1Cj4+IEF1dGhvcjogU2V0aCBKZW5raW5zIDxzZXRoamVua2luc0Bnb29nbGUu
+Y29tPgo+PiBEYXRlOsKgIMKgVGh1IE9jdCAyNyAxMTozNjo1MiAyMDIyIC0wNDAwCj4gVGhhdCdz
+IGluZGVlZCBzdHJhbmdlLgo+IEFyZSB5b3UgYWJzb2x1dGVseSBzdXJlIHRoYXQgdGhpcyBjb21t
+aXQgdHJpZ2dlcnMgdGhlIGlzc3VlPwo+IEUuZy4gaWYgeW91IHJldmVydCBpdCBvbiB0b3Agb2Yg
+NS4xNSB0aGUgaXNzdWUgdmFuaXNoZXMgYW5kIHdoZW4geW91Cj4gcmUtYXBwbHkgaXQsIHRoZSBp
+c3N1ZSBpcyBiYWNrPwoKClRoYW5rcyBmb3IgeW91ciBxdWljayByZXBseS4gWWVzLCB0aGF0IGlz
+IHRoZSBjYXNlOyBpdCdzIG5vdCB2ZXJ5IApsb2dpY2FsLiBXZSBhcmUgY3VycmVudGx5IHJ1bm5p
+bmcgbW9yZSBleHRlbmRlZCB0ZXN0cyB3aXRoIDUuMTUgd2l0aCAKMzNmYzllMjZiIHJldmVydGVk
+LiBJIGFzc3VtZSB0aGUgcG90ZW50aWFsIGZvciBjb3JydXB0aW9uIGlzIHRoZXJlIAp3aXRob3V0
+IHRoaXMgY29tbWl0IHRvbywgYnV0IHNvbWVob3cgaXQgZG9lc24ndCBoYXBwZW4uCgoKRWRkaWUK
+Cgo+Cj4gVGhhbmtzLAo+IC8vcmljaGFyZAo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
