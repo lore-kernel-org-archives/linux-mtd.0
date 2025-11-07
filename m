@@ -4,66 +4,168 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3318CCF9F8
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Nov 2025 20:03:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B01D5CCF9E3
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Nov 2025 22:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=yCCTRuLS54/Cm2OrMzk2QVAtEG4mO6z0SBvOl8G6+vM=; b=EUqtaHtS2DOTNPiGT6FS0aeh/h
-	FTX9stXMOhmCLzqWwitl+1M8zaKvqUE7b3HpfeL3kxCfpi4cjX1L4+tL5O5FDeq+G4yr9UR1SdAA2
-	c00+kBcshR/yAgXcdPWsVj0F81VPn8oIHssEwQuk+wSX7/NsX1fmUFvvN1WVr4X1o5a/fmrKIhHM9
-	lKjoO8cTVfx0sslBs9iBrYjqZALtB2s7WZbmRPxWmkVEt858ADQkGH4Mz3If0A0XbUWA5r3cpwDks
-	Rhg8+hENMRsokEJQElGGHop/HHBof6eAbZCf/FzMoJ/MoOYRQSLT7U4H2Q2JFeqA1yzKxnwpZPGim
-	oMB1o4Ag==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-id:Date:References:
+	In-reply-to:Subject:Cc:To:From:MIME-Version:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=tpoC30EZYyL+lNFXIa2MR/GkDlBq78x+g6V/Jag4XqQ=; b=OEcvxc5bwFosyV
+	WKPKG1L6xn4QO+BDx/TqBvCHYx9GGXDD9KVN5xhgRoLVZ8zTQ74T/QXU9nSeHwfeDiJpADEylPp8H
+	sIE6zfJea//6cgvJBEzqNhW69SV/DqJ2Qm2OC+DrAWeIv69NmYx0q4GECtb5xXjq2tBO3JPAhUc34
+	O+w6puD1la2DMMilP2UwafTHhPU7Ua/enQs9xEmGs8jj1fLNogH+WFoBzzijBC2DyfQCYp/QkZlUy
+	2zDYnrmkc72r/sKIvSysdg8zS+t7OIsucxYjfBVfAZaEvIUctQSnDKHNCEANdgwsa2cGtRbKSof2S
+	goXiPaGIR+1GugkZyFsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHSgC-00000000rFL-0J8l;
-	Fri, 07 Nov 2025 20:03:28 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
+	id 1vHUyL-00000001LRV-3Vlg;
+	Fri, 07 Nov 2025 22:30:21 +0000
+Received: from flow-b3-smtp.messagingengine.com ([202.12.124.138])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHSg8-00000000rEQ-3T6N
-	for linux-mtd@lists.infradead.org;
-	Fri, 07 Nov 2025 20:03:26 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id A8D3F2B03EC;
-	Fri,  7 Nov 2025 21:03:21 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id X-nbup-2UNCI; Fri,  7 Nov 2025 21:03:20 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 553D011C057;
-	Fri,  7 Nov 2025 21:03:20 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 51_Gcrbkj5Yv; Fri,  7 Nov 2025 21:03:20 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 2DA3911C056;
-	Fri,  7 Nov 2025 21:03:20 +0100 (CET)
-Date: Fri, 7 Nov 2025 21:03:19 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Eddie James <eajames@linux.ibm.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
-	chengzhihao1 <chengzhihao1@huawei.com>, 
-	OpenBMC Maillist <openbmc@lists.ozlabs.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, sethjenkins@google.com, 
-	adobriyan <adobriyan@gmail.com>
-Message-ID: <55378147.159026.1762545799936.JavaMail.zimbra@nod.at>
-In-Reply-To: <068ba254-0053-46d5-bff4-74c948d2e8ac@linux.ibm.com>
-References: <068ba254-0053-46d5-bff4-74c948d2e8ac@linux.ibm.com>
-Subject: Re: UBIFS errors since Linux 5.15
+	id 1vHUyJ-00000001LQw-1pH7;
+	Fri, 07 Nov 2025 22:30:20 +0000
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailflow.stl.internal (Postfix) with ESMTP id 793A513004D8;
+	Fri,  7 Nov 2025 17:30:15 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Fri, 07 Nov 2025 17:30:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to; s=fm3; t=
+	1762554615; x=1762561815; bh=ZwkPbF9nsnt/dQhVAIT39vJvv4cO/9hCxNu
+	UVfACV+4=; b=RSl+2OvmuLLOe4+H9eKpqC9RuowrdRH1jGe8qwVoOfdZ4I27ekS
+	h347QoJGR7MbFLykEaO1W0OFpHRCXityFGk6z/rxp66MZo+KGt12LqqTInEw2CYx
+	3UVsJ0CnGd7WLdxCGmc3/jPkOyINCLxKnxNZklsUc3J3YikUBo2z3iRjiXQtMcY8
+	yq2lYeSEAVc2EWLQj1vGWye7x7mEIpjRksMMLReKQwYai89hN6GT0qLs9w2fXT/S
+	aMCWnv9MVDkZT/W5daTSkcLSwc8NcaRJOdNaOs10bJXlSp1ckOlZsLuPaoex29HZ
+	f8A5rEk01MsQM2q7vJ8gaDY5oWS9+X43upg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1762554615; x=
+	1762561815; bh=ZwkPbF9nsnt/dQhVAIT39vJvv4cO/9hCxNuUVfACV+4=; b=U
+	uwaUA5HM3Mo8/6XH0sr3iEvIm8qkyq18WHGz5dmT4o3VuNPYFK0sT5/XwMakgpxt
+	Ddom64XoCKrACYy2h4ZcgV+Tb8PW+9ZOvOvsw3PhcaXohwqssibqLdWfGuvkRTof
+	t0u6Tm24jIfdJQPXMml4ZsBV3LhgKvo8idsWtpOv2NMgA6+6q/kF7vulaDiw1Wu8
+	QXM1pWPcrGZS5Ickwb89bPU2A6H7dDCOZcL68OGNiBqQPLXtlFiE4VEh4FSXHbCH
+	jVfBahE281hNyxR2h1puiT9DkuKNVkHHM+JFBCiTT4EucRcOcOrhAYY2UT2c/Eoo
+	JZasuDe2hIsiAlgrLmPZw==
+X-ME-Sender: <xms:8HIOaWcJ3fvBIlxYhSXg2q9kliHbCJheSrwA-afUtv0OZvqwXLDyaQ>
+    <xme:8HIOaUV0elXG3FvBZLynkKLK1KgrkL5csSh7j4QStWTKC78ohwNtKKCTXTTHgS-gp
+    tx6yHyJkUTuEkTZ5fK6ZZAuUD2GiIcU7CC_2eZ5UrNZYjQDQA>
+X-ME-Received: <xmr:8HIOaZisnAl3bLTOnvZKYyms_eoqV6GZneXYuZmTxpw76w3Ai29fkPeeLdpc1Or3ahBpEelhGgOyPonxIcN_mwWmfK2BHg0p1qv3ZiVRU6Jc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduledtkeejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurheptgfgggfhvfevufgjfhffkfhrsehtjeertddttdejnecuhfhrohhmpefpvghilheu
+    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
+    epudetfefhudevhedvfeeufedvffekveekgfdtfefggfekheejgefhteeihffggfelnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepleejpdhmohguvgepshhmthhp
+    ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
+    hrtghpthhtohepfhhrrghnkhdrlhhisehvihhvohdrtghomhdprhgtphhtthhopehlihhn
+    uhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugi
+    dquhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
+    uhigqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
+    hugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhig
+    qdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
+    igqdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:8HIOaQRYcr2XZwYm0IZqPOguq_RH9vLLuCtHHjKz_7fIxkwW75Seeg>
+    <xmx:8HIOaYxjBK0ZJhgdNXL6-GZM5wqctaqKx4DPCA07b6HaSPRwb68vzg>
+    <xmx:8HIOaa-QnxtUrxuCdvh7t737bdTRYVtIsmaz5JhvP3JtprsULcfyDA>
+    <xmx:8HIOacn1Ltrl3NwobU3IDf3ppIfGvZcjgmhPN9__dNGKj77ZkqtQiQ>
+    <xmx:93IOadG3kN8Y0sl9-bllfvn04bE55YSNPrlPh3KgJLC15UMHH_zqyJDP>
+Feedback-ID: iab3e480c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 7 Nov 2025 17:29:44 -0500 (EST)
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF143 (Linux)/8.8.12_GA_3809)
-Thread-Topic: UBIFS errors since Linux 5.15
-Thread-Index: +EEJ8XwfiheRTquyWgicZAVkYE0nQQ==
+From: NeilBrown <neilb@ownmail.net>
+To: "Jeff Layton" <jlayton@kernel.org>
+Cc: "Eric Van Hensbergen" <ericvh@kernel.org>,
+ "Latchesar Ionkov" <lucho@ionkov.net>,
+ "Dominique Martinet" <asmadeus@codewreck.org>,
+ "Christian Schoenebeck" <linux_oss@crudebyte.com>,
+ "David Sterba" <dsterba@suse.com>, "David Howells" <dhowells@redhat.com>,
+ "Marc Dionne" <marc.dionne@auristor.com>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
+ "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+ "Chris Mason" <clm@fb.com>, "Xiubo Li" <xiubli@redhat.com>,
+ "Ilya Dryomov" <idryomov@gmail.com>, "Jan Harkes" <jaharkes@cs.cmu.edu>,
+ coda@cs.cmu.edu, "Tyler Hicks" <code@tyhicks.com>,
+ "Jeremy Kerr" <jk@ozlabs.org>, "Ard Biesheuvel" <ardb@kernel.org>,
+ "Namjae Jeon" <linkinjeon@kernel.org>,
+ "Sungjong Seo" <sj1557.seo@samsung.com>,
+ "Yuezhang Mo" <yuezhang.mo@sony.com>, "Theodore Ts'o" <tytso@mit.edu>,
+ "Andreas Dilger" <adilger.kernel@dilger.ca>,
+ "Jaegeuk Kim" <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>,
+ "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
+ "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "Viacheslav Dubeyko" <slava@dubeyko.com>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "Yangtao Li" <frank.li@vivo.com>, "Richard Weinberger" <richard@nod.at>,
+ "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "Mikulas Patocka" <mikulas@artax.karlin.mff.cuni.cz>,
+ "Muchun Song" <muchun.song@linux.dev>,
+ "Oscar Salvador" <osalvador@suse.de>,
+ "David Hildenbrand" <david@redhat.com>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ "Dave Kleikamp" <shaggy@kernel.org>,
+ "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>,
+ "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
+ "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>,
+ "Bob Copeland" <me@bobcopeland.com>,
+ "Mike Marshall" <hubcap@omnibond.com>,
+ "Martin Brandenburg" <martin@omnibond.com>,
+ "Amir Goldstein" <amir73il@gmail.com>,
+ "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
+ "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>, "Tom Talpey" <tom@talpey.com>,
+ "Bharath SM" <bharathsm@microsoft.com>,
+ "Zhihao Cheng" <chengzhihao1@huawei.com>,
+ "Hans de Goede" <hansg@kernel.org>, "Carlos Maiolino" <cem@kernel.org>,
+ "Hugh Dickins" <hughd@google.com>,
+ "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Kees Cook" <kees@kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ "Jonathan Corbet" <corbet@lwn.net>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+ linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+ linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
+ linux-um@lists.infradead.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+ linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+ linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+ linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+ samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+ "Jeff Layton" <jlayton@kernel.org>
+Subject: Re: [PATCH v2] vfs: remove the excl argument from the ->create()
+ inode_operation
+In-reply-to: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
+References: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
+Date: Sat, 08 Nov 2025 09:29:43 +1100
+Message-id: <176255458305.634289.5577159882824096330@noble.neil.brown.name>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251107_120325_012550_E6C1AF62 
-X-CRM114-Status: UNSURE (   7.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251107_143019_589996_EB06FD09 
+X-CRM114-Status: GOOD (  16.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,32 +177,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: NeilBrown <neil@brown.name>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RWRkaWUsCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiRWRkaWUgSmFt
-ZXMiIDxlYWphbWVzQGxpbnV4LmlibS5jb20+Cj4gQW46ICJsaW51eC1tdGQiIDxsaW51eC1tdGRA
-bGlzdHMuaW5mcmFkZWFkLm9yZz4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiY2hlbmd6
-aGloYW8xIiA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+LAo+ICJPcGVuQk1DIE1haWxsaXN0IiA8
-b3BlbmJtY0BsaXN0cy5vemxhYnMub3JnPiwgImxpbnV4LWtlcm5lbCIgPGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmc+LCBzZXRoamVua2luc0Bnb29nbGUuY29tLAo+ICJhZG9icml5YW4iIDxh
-ZG9icml5YW5AZ21haWwuY29tPgo+IEdlc2VuZGV0OiBGcmVpdGFnLCA3LiBOb3ZlbWJlciAyMDI1
-IDE4OjM4OjU0Cj4gQmV0cmVmZjogVUJJRlMgZXJyb3JzIHNpbmNlIExpbnV4IDUuMTUKCj4gSGVs
-bG8sCj4gCj4gV2UgYXJlIHVwZGF0aW5nIHNvbWUgQk1DIChBc3BlZWQgQVNUMjYwMCwgQVJNMzIp
-IHN5c3RlbXMgdGhhdCB3ZXJlIG9uCj4gTGludXggNS40IGJ1dCBvYnNlcnZlIGNvbnNpc3RlbnQg
-VUJJRlMgZXJyb3JzIHdpdGggTGludXggNS4xNSBhbmQgbGF0ZXIuCj4gVGhlIGVycm9ycyBzZWVt
-IHRvIHZhcnk7IHRoZXJlIGlzIGEgc2FtcGxpbmcgYmVsb3cuCj4gCj4gCj4gV2UgcGVyZm9ybWVk
-IGEgZ2l0IGJpc2VjdCBhbmQgY2FtZSB1cCB3aXRoIHRoZSBmb2xsb3dpbmcgY29tbWl0LCB3aGlj
-aAo+IG9mIGNvdXJzZSBpcyBjb21wbGV0ZWx5IHVucmVsYXRlZCB0byBVQklGUy4gUmV2ZXJ0aW5n
-IGl0IGRvZXMgcHJldmVudAo+IHRoZSBpc3N1ZS4uLiBEb2VzIGFueW9uZSBoYXZlIGFueSBzdWdn
-ZXN0aW9ucz8KPiAKPiBjb21taXQgMzNmYzllMjZiN2NiMzlmMGQ0MjE5Yzg3NWEyNDUxODAyMjQ5
-YzIyNQo+IEF1dGhvcjogU2V0aCBKZW5raW5zIDxzZXRoamVua2luc0Bnb29nbGUuY29tPgo+IERh
-dGU6wqAgwqBUaHUgT2N0IDI3IDExOjM2OjUyIDIwMjIgLTA0MDAKClRoYXQncyBpbmRlZWQgc3Ry
-YW5nZS4KQXJlIHlvdSBhYnNvbHV0ZWx5IHN1cmUgdGhhdCB0aGlzIGNvbW1pdCB0cmlnZ2VycyB0
-aGUgaXNzdWU/CkUuZy4gaWYgeW91IHJldmVydCBpdCBvbiB0b3Agb2YgNS4xNSB0aGUgaXNzdWUg
-dmFuaXNoZXMgYW5kIHdoZW4geW91CnJlLWFwcGx5IGl0LCB0aGUgaXNzdWUgaXMgYmFjaz8KClRo
-YW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Sat, 08 Nov 2025, Jeff Layton wrote:
+> With two exceptions, ->create() methods provided by filesystems ignore
+> the "excl" flag.  Those exception are NFS and GFS2 which both also
+> provide ->atomic_open.
+> 
+> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
+> the "excl" argument to the ->create() inode_operation is always set to
+> true in vfs_create(). The ->create() call in lookup_open() sets it
+> according to the O_EXCL open flag, but is never called if the filesystem
+> provides ->atomic_open().
+> 
+> The excl flag is therefore always either ignored or true.  Remove it,
+> and change NFS and GFS2 to act as if it were always true.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+> Note that this is based on top of the dir delegation series [1]. LMK
+> if the Documentation/ updates are too wordy.
+
+Patch is very nice.  I don't think the documentation is too wordy.
+I think it is good that the two changes to the different files say
+essentially the same thing but use different words.  That helps.
+
+Reviewed-by: NeilBrown <neil@brown.name>
+
+> 
+> Full disclosure: I did use Claude code to generate the first
+> approximation of this patch, but I had to fix a number of things that it
+> missed.  I probably could have given it better prompts. In any case, I'm
+> not sure how to properly attribute this (or if I even need to).
+
+My understanding is that if you fully understand (and can defend) the
+code change with all its motivations and implications as well as if you
+had written it yourself, then you don't need to attribute whatever fancy
+text editor or IDE (e.g.  Claude) that you used to help produce the
+patch.
+
+Thanks,
+NeilBrown
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
