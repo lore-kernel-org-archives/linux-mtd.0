@@ -4,48 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02AADCCFA18
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Nov 2025 06:13:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2CB3CCFA18
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Nov 2025 09:19:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9pzhsXiX34ARFVL0K4hzI0GNEYeKNshRl8m9qYHj3QA=; b=toFKzq/5qMZeZX
-	6S/qkwizA+MGbxVhvlSuhFSgyk52nOefCU3Me/QeX13ttxOn6Aw6flsjlVufkD5DIb2+k49dn/rpH
-	I3dSQseeLPNHeZZNeO1/3aHyPSGosmcomHeGi2VdulnVPzDQO19sbenWIHz7QGfGFg+7ZL6A1TzRp
-	tt7g8azpikXXKGtfLZXg4nN8Pp6b9Rww+DVtaz35Bvp6Da0VnIqYzd5TMLzAJcX7vBbuv76T37H9a
-	izD9RbXhNNS/tc4821DX4pcY2845/OkZkDqxIsS7Vkbm3FNegmVlSSH7U3HyWJMWVy6N/3/sNJkxC
-	VaoovNCXp2P2wKDljTtA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+IpDXVGor6WlPS03BkfmY2555qrC2lwADD6K3oOBJYU=; b=aKysKp3gKqB6FHBgu62o0cy0i9
+	enw7Duu4Fcp8bFXXf9zKmMIDsDoayEnls7fioCgQOzHtugnRhshlPvQrfCu+WxQOxoHRpvNQChCzi
+	GQoU7HKztp+aI7crGmomX4U2u7CDrXX6FTjoLNl0zzNoS44jsOCvWaW3lNwSTNFjCF7DDI++mQB7B
+	xQ1tTmfdAnPnPma8Hv+EkKSrkkdgo3uOx+df2zV4NeAU+W1Cs6dfPE/mJvmhBtGRn0BrbSzKR6IbR
+	6ytbsuLJ4hBHq6KngicZzEWway8ksj5EdHcD6HTFWvQh55KtaXRNE43bot9C3F/pW1fmuLIChZmz6
+	KRkJo8rQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHcC8-00000002aMP-0XpO;
-	Sat, 08 Nov 2025 06:13:04 +0000
-Received: from submarine.notk.org ([62.210.214.84])
-	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHcC4-00000002aLm-2aHl;
-	Sat, 08 Nov 2025 06:13:02 +0000
-Received: from gaia.codewreck.org (localhost [127.0.0.1])
-	by submarine.notk.org (Postfix) with ESMTPS id A419014C2D3;
-	Sat,  8 Nov 2025 07:12:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org;
-	s=2; t=1762582373;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LTM5LkyL3mfB0IbHJeS1oRharyj4iNDNdaZ7y5irjmg=;
-	b=B+D3byKtJ5aLyRiu2rooP0B2TJlyh9NnWKaBHKY3oGl5WrI9R/ZTOokRqfrmQkRjA4d6PF
-	hVA+2jtaIxDHKJVm19YOlIu00RJFzbMjiJ2IJMY5v8SjTtfCjEZWBxEPfRtzuPasj++KiY
-	8Sahe5eVbfmwmhQeo5uzL3Rp7AKK7Nzr7m3ipU5qmaiTEStLej1x9iBcfVqKnY9WidAi8X
-	rwVB6qqUGBZMEcUSkoPWBbqf240gmgWcLbAb7B4RNHuho0O1rPy72OuweBfiXGGrgaJqO1
-	amO1aDXHVrMyRWIApKs7c+o9NFvUODZZvMkcXugNCGdZ2S65dzPgh2BACKmoHA==
-Received: from localhost (gaia.codewreck.org [local])
-	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 26a2c8b4;
-	Sat, 8 Nov 2025 06:12:25 +0000 (UTC)
-Date: Sat, 8 Nov 2025 15:12:10 +0900
-From: Dominique Martinet <asmadeus@codewreck.org>
-To: Jeff Layton <jlayton@kernel.org>
+	id 1vHf6l-00000002xka-1rON;
+	Sat, 08 Nov 2025 09:19:43 +0000
+Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vHf6g-00000002xiq-1IcC
+	for linux-mtd@lists.infradead.org;
+	Sat, 08 Nov 2025 09:19:40 +0000
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-7ade456b6abso1295164b3a.3
+        for <linux-mtd@lists.infradead.org>; Sat, 08 Nov 2025 01:19:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762593577; x=1763198377; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xMJJSbsWQXZcDWYlPD+q/sMKmcoPg7XO2KNCJJBRcPk=;
+        b=Lmyigp8GWiatW2ItchEJ36AD6kVkLwsAeAynuWKlVTG5yRaNyO+8W2LS62ea535RqI
+         VUKhBwRh9BauktKwQi4OBmFKp9pDn20L4Qg0BCRTjktCqibHwzFb6T/f+vKgMcWrAE7T
+         CaQ6w0+sbdFYjv2znl2GyeN4ETJVNpTqizCB9TrggpffLZra9DmjBsJE7PvoT2+iBq/I
+         6wyyn0AITzOpuyfDZMkfjIX8j1cCu31ij+dgiTs+EId1VQm0WyW6K2IvJ4IADECk+tKa
+         DO3Bc2UYEcuJTCV+4jNRzBZ2OhQX8ydwqq5kE6dhXXXsVPSRH9qwlS+gRPp90PseM0Tr
+         yM4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762593577; x=1763198377;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xMJJSbsWQXZcDWYlPD+q/sMKmcoPg7XO2KNCJJBRcPk=;
+        b=fnHrR4U7XFqvQDUVyOnaOomHej+oXHYNHcm889EvI9X179dbZ7xB5j9xYlrZ46EHX8
+         bZ8gjtZMW+c3mvF2lHC4SZQQX/QKW4VWf1ldDB1Upe2CGMjInTQ4eMTxdXadghTkPjVc
+         +LS9eZiev6+CgZUZmy646ITaznSOf8YC3dfv9a/mLag4cggQLSBZnNiWS+rYA70sVF7L
+         KPKtvfRBmvBybUU3zfwUE9hETro9a6pukjb6P/XN0zz9NYHRqflqg0yqasPPjETkDScP
+         e2+PIdPPfz/MXGS0/9KyZ0rv8BwDYYoWnt+mh8db+7LCjMLdRzK6a12EE12TaToIhffL
+         b9Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQrMNlXetiGZ6v/07gBvu62b7KYcsUxQMTe9qYqHo90VDCa99+cCSOriizsEJUBheKwI2lUkq1q8A=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyNn4EycAyWB2VKmjFhrKRA0fuiFPw7k4L3PWTkfOG/wSm7o66q
+	pT+MhPUdAoE6arHgCXD5kGmkA7uNNjcRw+2l794VXbPWXKvlTmnx9HXF
+X-Gm-Gg: ASbGncuivMFUy2QMcehrqwAGC+EGrG7NGC84hIqUZGyDHEDXZm4cBFZM3Y3xd+Hj2Mz
+	CPqwtRoiKQtVUkVdeRr3Zk2a9nJUsfBWi+f33symOme6OJrGNh2e7Ge/E2poVnhAh2Hbq3YUsfl
+	+iOMt7dMraSboeqZpuD0gYNCBUG1qHX1D4xt2hth52WK2CU/Z1/lELcx8hAINl7gdZQISgQt9iu
+	UlHBkIVHJ1z+rLLWrTM3DxykjvC5sLPfch+hGrDwzBV8i3a9jJtiSE/dV1eMBm7DXYw/MRe2Fqr
+	DRzCtrBf8w0EpJAg0lAuXKZOUe0GanBxjjpFRO7fjJlneX6/d0lYkClMP49MV71seT6ijw6vBoi
+	MAJVZxfXZx1p+CnkaRZxy+61a/JUi65HmKF5BG55gxrnMnvLWCnetsQKVOjGZUe83PrsMSe4ZrK
+	q9
+X-Google-Smtp-Source: AGHT+IF0YP4Otkbzly3RQbSixJdpmmdp1zu3glQ2poSUDNCvD7oGyUzRXByQOYxnN497yc+CfkoJmg==
+X-Received: by 2002:a05:6a00:a8d:b0:7ac:69cd:ea0d with SMTP id d2e1a72fcca58-7b226f8dd18mr2391831b3a.19.1762593576763;
+        Sat, 08 Nov 2025 01:19:36 -0800 (PST)
+Received: from archie.me ([210.87.74.117])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c953cf79sm5483323b3a.3.2025.11.08.01.19.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Nov 2025 01:19:35 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 77412400200B; Sat, 08 Nov 2025 16:19:33 +0700 (WIB)
+Date: Sat, 8 Nov 2025 16:19:33 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Dominique Martinet <asmadeus@codewreck.org>,
+	Jeff Layton <jlayton@kernel.org>
 Cc: Eric Van Hensbergen <ericvh@kernel.org>,
 	Latchesar Ionkov <lucho@ionkov.net>,
 	Christian Schoenebeck <linux_oss@crudebyte.com>,
@@ -119,14 +148,14 @@ Cc: Eric Van Hensbergen <ericvh@kernel.org>,
 	linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org
 Subject: Re: [PATCH v2] vfs: remove the excl argument from the ->create()
  inode_operation
-Message-ID: <aQ7fOmknHIxcxuha@codewreck.org>
+Message-ID: <aQ8LJfKC0R-4ehLU@archie.me>
 References: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
+ <aQ7fOmknHIxcxuha@codewreck.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
+In-Reply-To: <aQ7fOmknHIxcxuha@codewreck.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251107_221301_072936_674B4C53 
-X-CRM114-Status: GOOD (  18.36  )
+X-CRM114-CacheID: sfid-20251108_011938_374186_780E673B 
+X-CRM114-Status: GOOD (  22.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,53 +167,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8342092263199536524=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Jeff Layton wrote on Fri, Nov 07, 2025 at 10:05:03AM -0500:
-> With two exceptions, ->create() methods provided by filesystems ignore
-> the "excl" flag.  Those exception are NFS and GFS2 which both also
-> provide ->atomic_open.
-> 
-> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
-> the "excl" argument to the ->create() inode_operation is always set to
-> true in vfs_create(). The ->create() call in lookup_open() sets it
-> according to the O_EXCL open flag, but is never called if the filesystem
-> provides ->atomic_open().
-> 
-> The excl flag is therefore always either ignored or true.  Remove it,
-> and change NFS and GFS2 to act as if it were always true.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Good cleanup, just one whitespace nitpick below but:
-Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
+--===============8342092263199536524==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hTQgJTXrd9+JcPiP"
+Content-Disposition: inline
 
 
-> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-> index 4f13b01e42eb5e2ad9d60cbbce7e47d09ad831e6..7a55e491e0c87a0d18909bd181754d6d68318059 100644
-> --- a/Documentation/filesystems/vfs.rst
-> +++ b/Documentation/filesystems/vfs.rst
-> @@ -505,7 +505,10 @@ otherwise noted.
->  	if you want to support regular files.  The dentry you get should
->  	not have an inode (i.e. it should be a negative dentry).  Here
->  	you will probably call d_instantiate() with the dentry and the
-> -	newly created inode
-> +        newly created inode. This operation should always provide O_EXCL
+--hTQgJTXrd9+JcPiP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This and the block below change halfway from tab (old text) to spaces
-(your patch)
+On Sat, Nov 08, 2025 at 03:12:10PM +0900, Dominique Martinet wrote:
+> Jeff Layton wrote on Fri, Nov 07, 2025 at 10:05:03AM -0500:
+> > diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesyst=
+ems/vfs.rst
+> > index 4f13b01e42eb5e2ad9d60cbbce7e47d09ad831e6..7a55e491e0c87a0d18909bd=
+181754d6d68318059 100644
+> > --- a/Documentation/filesystems/vfs.rst
+> > +++ b/Documentation/filesystems/vfs.rst
+> > @@ -505,7 +505,10 @@ otherwise noted.
+> >  	if you want to support regular files.  The dentry you get should
+> >  	not have an inode (i.e. it should be a negative dentry).  Here
+> >  	you will probably call d_instantiate() with the dentry and the
+> > -	newly created inode
+> > +        newly created inode. This operation should always provide O_EX=
+CL
+>=20
+> This and the block below change halfway from tab (old text) to spaces
+> (your patch)
+>=20
+> Looks like the file has a few space-indented sections though so it won't
+> be the first if that goes in as is, the html-rendering doesn't seem to
+> care :)
 
-Looks like the file has a few space-indented sections though so it won't
-be the first if that goes in as is, the html-rendering doesn't seem to
-care :)
+FYI: I'm using Vim. My important settings (in ~/.vimrc) are:
 
-Cheers,
--- 
-Dominique Martinet | Asmadeus
+```
+set nojoinspaces
+set textwidth=3D0
+set backspace=3D2
+```
+
+However, ftplugin override these for each file type, so you have to essenti=
+ally
+"fork" the relevant ftplugin file for each type if you want for your settin=
+gs
+to take precedence. For example, in case of reST, copy
+/usr/share/vim/vim91/ftplugin/rst.vim to ~/.vim/ftplugin/rst and override t=
+he
+already defined options there:
+
+```
+=2E..
+" keep tabs as-is
+setlocal comments=3Dfb:.. commentstring=3D..\ %s noexpandtab
+=2E..
+if exists("g:rst_style") && g:rst_style !=3D 0
+    setlocal noexpandtab shiftwidth=3D8 softtabstop=3D0 tabstop=3D8
+endif
+=2E..
+```
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--hTQgJTXrd9+JcPiP
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaQ8LHwAKCRD2uYlJVVFO
+o2WVAPsFBRuUsYfWxAnWROgP/61sBqVYDc/UsPimcXm5dJJfgQD9ESTXpfxlpefS
+VKeWBneX6svZYShHE5RzrbcYO+G5GA0=
+=gW2v
+-----END PGP SIGNATURE-----
+
+--hTQgJTXrd9+JcPiP--
+
+
+--===============8342092263199536524==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8342092263199536524==--
+
