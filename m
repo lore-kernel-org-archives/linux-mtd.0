@@ -4,220 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23118CCF9E3
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Nov 2025 14:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2731FCCFA13
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Nov 2025 16:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9aI1JKddzig5wor1VRLm41LkVivASWZ9J1ii7rhFjWE=; b=ZYAosJNu+Mq+OW
-	y9PxbeNAtZ7EnjznEtSNkkvQWxBBJ12QcE4WXiQm+PpWKUYeQ5sQ1XnHpzRXSNBZreTiJ+l4zupFF
-	tKh0fmxecSppPlj2CBIRswW5FUv8WhvRdBE3T9FDTNEngDEn82tc1AasiIRDjokSgWzaE8el36X/+
-	HVEoRZBEHFKojJxhYlUJgyPns1TMamw2BNnMDVtcYPk4FcAw33b4HLTllPXJW/xjCIVEDuT6/PqmY
-	jDp+cu8k/b2ZrD0dBRlkPSLVrVwlKyhnkmTOzRfG/CkzjPnQ+7n39ZbOdxRy3Nul5wjER9P7mby2L
-	K5RTDPUEfxhQFshEr7Nw==;
+	List-Owner; bh=VKJXBqORq7qS4IZGN4I9wURM9LkS2d4lIyg3GQwa3IE=; b=hPERD7CB6cg8RT
+	X1lzCjmQ0zwjjcrKCR5muAIZUbVnFGIoQzzMI9bQfCaI8Unp41K9EQ0xU0YxEtVTZ7UNvBROAgjH8
+	N8w0hwROFKE2VEY1NAQapdur1iofWZMU3PpKRamnWHNofjROu2MA/baN37EJVFGNhRid95X2Ibxwt
+	qa7hoJqrdMOSWuKH5Wtmr6mIkticMEPUBKr1b2ypbp+T6ZIyj+P2wjnNtmUSu54PSn1ftLA+C9ijI
+	lUN5xQySurgnu7nVGOaecarrD1yNTvmjeM9TIJUN4cFqzeaIiOkjWFrNZXXJXz0SWnr3JO+6PR3Tr
+	JRCxAHE1681+eqBAwvQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vISUn-00000005Y6K-2OHD;
-	Mon, 10 Nov 2025 14:03:49 +0000
-Received: from mgamail.intel.com ([192.198.163.12])
+	id 1vIUtD-00000005oAx-41bE;
+	Mon, 10 Nov 2025 16:37:11 +0000
+Received: from out-178.mta0.migadu.com ([91.218.175.178])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vISUk-00000005Y5w-1pC7;
-	Mon, 10 Nov 2025 14:03:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1762783427; x=1794319427;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Ti3QfC4kLuRh/p3T4LZ8K0uYWdBUcfZzpFVkYEWehFY=;
-  b=J5pUT8iL1KPT2oZCqbXbfwrL0KAXb27cph/Ws6XWC1+fStWptnU2xduv
-   pv4/YCRcMx3c+8foAxfITfdi/6hF4+fGahy20SJPpUGCShRullHVcOsfl
-   rGBLy5aQbSx5OqzdmhDP1zW+tod1zEBKofKr7aWOrmnF8CXQudjVuaDFa
-   svKU5G7KBlzdtNoW8ZzRVYkQSkvQtpKV1GRKlQfnSCqbSoCV0rE+X7sMp
-   XDRxLY255Uy1FoXJnHBB1gOSx6eEFSkvFx1korVGODHpelzXcu016G2AE
-   YjYLEhtkl+uZSoQutWQpiIqCt7J2Kq1yW1XKWO7xjj0u0tOqw44dBlZdF
-   g==;
-X-CSE-ConnectionGUID: p509+f9iSmqqe9q2XOHh8Q==
-X-CSE-MsgGUID: zXSXevwzTD2xwTv9TD3cmA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11609"; a="68690794"
-X-IronPort-AV: E=Sophos;i="6.19,293,1754982000"; 
-   d="scan'208";a="68690794"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2025 06:03:45 -0800
-X-CSE-ConnectionGUID: 94E4WRgpS+yx+Ck0PSdIKw==
-X-CSE-MsgGUID: Q/8P3qqHTpu6Vi8g89usZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,293,1754982000"; 
-   d="scan'208";a="187989543"
-Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
-  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2025 06:03:44 -0800
-Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Mon, 10 Nov 2025 06:03:43 -0800
-Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27 via Frontend Transport; Mon, 10 Nov 2025 06:03:43 -0800
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (52.101.43.63) by
- edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Mon, 10 Nov 2025 06:03:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hqIPCzk+WbZaq3xwuGppGS5thN6dNC4t1/35aJsDPK9qWBFOBIi5ZWy+xCICwmBN9Hij7+cXRRi0hSg+poLncyKMyAeQjY5VZQ0MOObwV1yPkUIjthH6lmwCt1g1KB73FOdV/sbER2DU27EsTTytQP8RvsJv37mrnY7BTxm0ITT+xsZvcY4D21pXoZyP6zSP84ODLMipxUV3OVIiVeUNW3o6RgR1GIiImS6UVBIJhBGJadKSFRTOKXjO5d0t1nUUGUFrz1d5JWv7SRPBWOj6A5KHdhJYQQz8yZtseitE7aqQo1ZR9kXa3e1hio+Y6RqTSmaEeFpA5qZegPXMEhudkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ti3QfC4kLuRh/p3T4LZ8K0uYWdBUcfZzpFVkYEWehFY=;
- b=YE4oltW0ccHZO8AxeYzvQiH1urmwxxKEK8woSwNG01o8t2jEdSIA9wKI4Ib4UhGT1HJJlBzcdvkMITadQiHkTNkILeCAPN+/MGZOY8qlQgu+La7sKP2wH0lgqk+tg2cRxpkUwHEkrysrpwHXy02TxjSOV8Y/AZnmyGsafoCbwMghQ61VKJs4DEEFpSqze5gTTpksKWe6vjvsDU/diYR/I3a4srOwJBOe393fN1gZYk3jUcHIBjftc1mZFTPbhAlk6BsCbxCiY1pckjaPQLTozGR9sURCFkOfRhkvAH4MZHvg26HdPhYb17AAjbrH/Oov20l1WRJ2joAdLLE9dIK3/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CY8PR11MB7134.namprd11.prod.outlook.com (2603:10b6:930:62::17)
- by DS4PPF7A0031045.namprd11.prod.outlook.com (2603:10b6:f:fc02::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.16; Mon, 10 Nov
- 2025 14:03:41 +0000
-Received: from CY8PR11MB7134.namprd11.prod.outlook.com
- ([fe80::5670:5b2e:6ecb:dcaf]) by CY8PR11MB7134.namprd11.prod.outlook.com
- ([fe80::5670:5b2e:6ecb:dcaf%4]) with mapi id 15.20.9298.015; Mon, 10 Nov 2025
- 14:03:41 +0000
-From: "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>, Yury Norov
-	<yury.norov@gmail.com>, Michael Turquette <mturquette@baylibre.com>, "Stephen
- Boyd" <sboyd@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea
-	<claudiu.beznea@tuxon.dev>, "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>, David Miller <davem@davemloft.net>,
-	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
-	<brgl@bgdev.pl>, Joel Stanley <joel@jms.id.au>, Andrew Jeffery
-	<andrew@codeconstruct.com.au>, Crt Mori <cmo@melexis.com>, Jonathan Cameron
-	<jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Jacky Huang
-	<ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>, Rasmus Villemoes
-	<linux@rasmusvillemoes.dk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>, Johannes Berg <johannes@sipsolutions.net>, Jakub Kicinski
-	<kuba@kernel.org>, Alex Elder <elder@ieee.org>, David Laight
-	<david.laight.linux@gmail.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@alien8.de>, "Luck, Tony"
-	<tony.luck@intel.com>, Michael Hennerich <Michael.Hennerich@analog.com>, "Kim
- Seer Paller" <kimseer.paller@analog.com>, "Lechner, David"
-	<dlechner@baylibre.com>, =?iso-8859-1?Q?Nuno_S=E1?= <nuno.sa@analog.com>,
-	Andy Shevchenko <andy@kernel.org>, Richard Genoud
-	<richard.genoud@bootlin.com>, Cosmin Tanislav <demonsingur@gmail.com>, "Biju
- Das" <biju.das.jz@bp.renesas.com>, Jianping Shen
-	<Jianping.Shen@de.bosch.com>, Nathan Chancellor <nathan@kernel.org>, "Nick
- Desaulniers" <nick.desaulniers+lkml@gmail.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>
-CC: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-renesas-soc@vger.kernel.org"
-	<linux-renesas-soc@vger.kernel.org>, "linux-crypto@vger.kernel.org"
-	<linux-crypto@vger.kernel.org>, "linux-edac@vger.kernel.org"
-	<linux-edac@vger.kernel.org>, qat-linux <qat-linux@intel.com>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	"linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-	"linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 16/26] EDAC/ie31200: Convert to common field_get()
- helper
-Thread-Topic: [PATCH v6 16/26] EDAC/ie31200: Convert to common field_get()
- helper
-Thread-Index: AQHcTyO4u5UeWvoBYU2LiD69V832hrTr9xnA
-Date: Mon, 10 Nov 2025 14:03:40 +0000
-Message-ID: <CY8PR11MB7134E33018D0A0BB4FBA477089CEA@CY8PR11MB7134.namprd11.prod.outlook.com>
-References: <cover.1762435376.git.geert+renesas@glider.be>
- <56ec4d8e40d24ead68a14948cbbe122c5aaa1405.1762435376.git.geert+renesas@glider.be>
-In-Reply-To: <56ec4d8e40d24ead68a14948cbbe122c5aaa1405.1762435376.git.geert+renesas@glider.be>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY8PR11MB7134:EE_|DS4PPF7A0031045:EE_
-x-ms-office365-filtering-correlation-id: 621cb6b4-fb1a-423b-b05f-08de2061f405
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016|38070700021|921020;
-x-microsoft-antispam-message-info: =?iso-8859-1?Q?qwNJE0AKgyrcoqKyDVu/dw1hkRrF5/gnKFiftxCCQtMk3cBIO8K/h7XW0t?=
- =?iso-8859-1?Q?jlSrVfktdkGaGkaF8uLblZ0zIXqizcDnq/lgf20S6Oo870O8oSiHXKhCiN?=
- =?iso-8859-1?Q?iIxffZuSksONEh4TBYFtftCok/98ubrX7oMAEVtX8yvkgZIn88VkWlXAqn?=
- =?iso-8859-1?Q?XKIFOzw7vWNTXpwy15tJLw6y8Kwfng2apjx8eHe7wKMRdPsNbxf/4vS79Y?=
- =?iso-8859-1?Q?lfi4C38TzPd0f/T1LbB4eKdNF1TOXCg+sA3bAEQDDBeADoWN9groEE2c07?=
- =?iso-8859-1?Q?ldieEyBfPNGssxc/2by+lA+kFUMdpIIXbqLnQ0VBPx699CBYbvHrOH9ldt?=
- =?iso-8859-1?Q?tfqfADlSFIbBHRAE7sSsVobnFhBiEc47odNrqXZsE1+vbK/vs2OzfV7FTg?=
- =?iso-8859-1?Q?xvugCm+gEDkre1EPvgexmbNRLeyYOtFLgAndgWk/RiPMyXw5si6QBe3XFz?=
- =?iso-8859-1?Q?da4tkpT8H2cz0WeBV/FbSgS6GRXfaWXDloXHPSulEsMJOl24wwIfsIYi5o?=
- =?iso-8859-1?Q?8JNTVRYbrEJTtMOveBzmAVM9Zpr2W/xEKgiyrXdS9XBGlD7Dvddx4d0RvV?=
- =?iso-8859-1?Q?jDfe2iRgrD3fxsUlp3xt+bDzPZtRBbJn1AyyNSDp4Wrsjm3fcDz8CS1KjP?=
- =?iso-8859-1?Q?8YNOTIZ8PjJt8Bd5ktt2ruQa9Ok8Og4WtJZwBT6ZzIrnb74fkpQND/lHAK?=
- =?iso-8859-1?Q?bAsYPoMfiydIeiMn5Fr3seKlVxV4BWu1BMlCJhLbhwg66MFfUPm6JEMyzK?=
- =?iso-8859-1?Q?MXcqfSf0m2T71S8Mtx8i82VMOp+tNAUF6Dduw+/y4KAplhD4XEmBJlpHIR?=
- =?iso-8859-1?Q?18CrJoNQSJmrBTfAm23p2mY5iV5XnQj0/WedtsGvXXRGI/hjPIfCCWBMWt?=
- =?iso-8859-1?Q?NDwpu4BK6ucXp9Pka+RNYB+rWpwPDmQqTvNN+rml1l2vimHv9ojo7Xqly8?=
- =?iso-8859-1?Q?olXujx19RffjTOCVMxHZ3+lNhrwoq9KKWdX/bN50YBIOo4AhQaHEGQ2WAU?=
- =?iso-8859-1?Q?6sFeHXfqZhpfZWHRlruGEhpUTRhZRrAu6Z832KbXbCj7o56oo2kzg0tGlw?=
- =?iso-8859-1?Q?ciV5o9Q4MJLAQNcK2Mhu0RhggncFOjPzCRYhPSUtYBpYh7QK27HUKR7q2Q?=
- =?iso-8859-1?Q?X8Ob8wgV/1FuquyNFjvrIXIfCljV4CU6TNlHpjqGMSHH0Ln5YAss/sBCDU?=
- =?iso-8859-1?Q?7Wsbo3C9k9MmPAt9YEy3Aa4ZqdTrYHQSlaCJ8TPJaVVSULjaGU0lPn6Mit?=
- =?iso-8859-1?Q?goav0TPhA3Fx/62IHHYAeVWZ1SRBOKLvAR59qRwx3M3ZgcvG6si7Fd5Dl8?=
- =?iso-8859-1?Q?OJssNf9PBrwZpW8c5UgjlJ3PTzOU3jlpAXN7rgwjBN/LOwc5mroXwQuOEO?=
- =?iso-8859-1?Q?LjdHlmzJKMcCSuGC1WrWRiM0HpIEnf9sQGpV+WiGPvHluGVaOjumbCRYhd?=
- =?iso-8859-1?Q?AGsrDRdhmZZT1UslPLz8yiqc3eJJzAVdYd99UCNXk2I4p2GPnYlO4hLxsP?=
- =?iso-8859-1?Q?235F9bp1GdllSs4XW0JK86aQYUCcT/+K1c8kfYjcnsNnO15fconWD0ErRp?=
- =?iso-8859-1?Q?8/FudqvKrsR+ILjUGVQUDG410je9cnQHLYHQG1WtLSkwmeIzAQ=3D=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR11MB7134.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(38070700021)(921020);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?bzaCV2nYWMMpwye3ErfcmsY66BV1CZiT4xDSBYY4aqqjOSAJb4Sgmj2IFN?=
- =?iso-8859-1?Q?KqWFAVC/6SDfEaqPyrujW3Zs1nAW9LMZ/Ev2nFZG1BEXFULyP9YSBLV3cO?=
- =?iso-8859-1?Q?OShX45a7aR5V4q4UogInsm2jw7i1eBbbFc36qOWRYPOUllsBhXYppEjtNw?=
- =?iso-8859-1?Q?fqmVBtSizUcK5bCLbLAZvUEV1ouUvMbzCuvzRJ4RGLGW476C4P3wwnbpuz?=
- =?iso-8859-1?Q?K6/0rTTLX3x8COzI2L5jMcNasjigWD+ITQigkZL7YctTl+j9pbW4VMN0fJ?=
- =?iso-8859-1?Q?+iqtGYDJbhVQSVC9SsyZkgGes5SjqfqCn2FUSmV+v+zcpADYRnjmYOrdfF?=
- =?iso-8859-1?Q?we+N9ujoIlnRFxczETRpb7CgvV4mOV/Luw7PK53npbpsFgOX9+EAQptIyf?=
- =?iso-8859-1?Q?+05p08ScnRdUo31NJ/3nE/JfQCvTnV1tmYBaKFHkQZwHLZhyMNhq9g9WFm?=
- =?iso-8859-1?Q?Gh4SZZjHZvOem7m3gVHFVFkJkuPI9l3dbgQVDyURA8XIb4nmUNlB2vcuZS?=
- =?iso-8859-1?Q?peTDxddhfebXC2/7cSWcDEuFZGvwEi9PrJ6dSI7cDlyeyBmkaHCv3D382v?=
- =?iso-8859-1?Q?hwWKhbC/jdUG1DG01Yia+WGTItiU4YWOKB2VhsVNJkZz4yoB/pwpSwllXz?=
- =?iso-8859-1?Q?6FqMORGdiDwy/mOxtcIkDc5Rij8TqnZFyl7VZXKUSt3uSIsS8TL3AMFZcq?=
- =?iso-8859-1?Q?nJVO05cCCNNYI1GHlmcU+i20kQlN+UQDaIdNwYsUj2Y6SupxYavflSnrsc?=
- =?iso-8859-1?Q?tx/0Ha37uUBRZtAvEoDs/rNuLpPv5yPoMNogGOqbR6IkFfpNigdIryI0fl?=
- =?iso-8859-1?Q?E5ruXCsjUTkuaG26iXv8uKShp8dWJ1PbQEZ859PFSM+U/RwzYHr7LlgyAF?=
- =?iso-8859-1?Q?Yh79Re/Blg2pvz9ZoqxI/WslauhN2h2fMUJd0sFe12tV+Id97v4FSFoLEu?=
- =?iso-8859-1?Q?27CiIx1pwWGml8hq7yErj4Q+2yECbtWCG50rtZ+KAD0WIhcHS8VG/pn4qE?=
- =?iso-8859-1?Q?rWuqb7bs8K8P1s+5V5Tp43OeWvZ+Oax0RDdL+jEzKwlbe1eaw6MQ+BU/z9?=
- =?iso-8859-1?Q?l9aldRwvLQrp0uKXNRbrSRbVTPsu7J1RTx24JLF8aluo+4JN4EuvTGbdVc?=
- =?iso-8859-1?Q?Va+M6C+jCFabUM8Fyz5m0rcXoQovL2aR1JcwEkLiOI0KNVoDZUKPnOTSzE?=
- =?iso-8859-1?Q?vlRQT+PAO6RByg+i4otVP0TcqooxaJiO2JbW941MAU6LUlycpY1jn5hDxx?=
- =?iso-8859-1?Q?T181iPrpGxA/Lx3RyQZRhNN/1WdDspxzAm7mcpU+7knCYqYiXDVXXWLawi?=
- =?iso-8859-1?Q?50NH2/lEjXsgJUlI3zwdqgM5DSl6JLCG4WsPaBIKdYmMhEBgZBdS/xJ2ut?=
- =?iso-8859-1?Q?wiIObCffh8N9PgZlzGznZy4qv+wjCXvPS3JK860lGI+N/4fDCFG+XSxXff?=
- =?iso-8859-1?Q?Xn/+f7qndLXYNcuQKUE1Y5VyBfLBqjcdV1oPeJoK20jvmBj+3QYFFHWmnX?=
- =?iso-8859-1?Q?IAaDIEHzwyMagunYXRJvErDO7sESCGakDX2SS4p2FIhjPZ/9IJ5zwF1i9w?=
- =?iso-8859-1?Q?HqNL75xadzQf4Bhi4HPtANW69LUp7i71w9EQ0T6aEFhVRRPWp6pfcRuKgt?=
- =?iso-8859-1?Q?8uvWEUnho6PUrWKtt0ua9OwJM5UU5GRIV8?=
+	id 1vIUt7-00000005o3Z-3969
+	for linux-mtd@lists.infradead.org;
+	Mon, 10 Nov 2025 16:37:09 +0000
+Message-ID: <76896942-0f84-47d0-90ca-7bfc5d39318c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762792601;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P+P7K+rz0Ws/ScnZWiTNIBElASi6e33VQ2WL92YsmHM=;
+	b=aZDpW1Rc7Ox8OUMVxRfBV2n7iIwaFCOTeIgUYRm3px8cVyQGd9a1anbO4V2kjPTBssfN/W
+	/cYMhiR8uPV0c+kKOjL76dp82ahwxOgJl1sxHQxy4EL/PBmaO6cV0HRkBRw6H+Wk6pGc/C
+	VO8EIEQF8c8iuyGTBo4W2gwM84TXMS4=
+Date: Mon, 10 Nov 2025 11:36:37 -0500
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR11MB7134.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 621cb6b4-fb1a-423b-b05f-08de2061f405
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2025 14:03:40.9992
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: O3Dclrjj610Ir3Bm2a9SMkkSvUoUKI6zM63G2VVWbICpObVUDqzYheQpuhprb4FVflm9Yfg3Wx+DWYrRtibAIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PPF7A0031045
-X-OriginatorOrg: intel.com
+Subject: Re: [PATCH] mtd: spi-nor: Enable locking for n25q00a
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>
+Cc: Michael Walle <mwalle@kernel.org>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+References: <20251006223409.3475001-1-sean.anderson@linux.dev>
+ <mafs0ecreontu.fsf@kernel.org>
+ <4888cefa-e8be-4f0d-9d4a-c82f9ff6cda0@linux.dev>
+ <mafs05xcpo9sz.fsf@kernel.org>
+ <26a795ac-e6ff-4363-a8b9-38793a9be794@linux.dev>
+ <mafs0ikgnn07u.fsf@kernel.org>
+ <d00d42ce-4262-4736-8c73-5d2544e86d33@linux.dev>
+ <33cbbac1-c247-4644-b555-998eea6e8305@linaro.org>
+ <92e99a96-5582-48a5-a4f9-e9b33fcff171@linux.dev>
+ <31d01667-e80e-423c-bdab-8d05831d575d@linaro.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <31d01667-e80e-423c-bdab-8d05831d575d@linaro.org>
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251110_060346_495286_26C730AF 
-X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-CacheID: sfid-20251110_083706_319254_FA65CACB 
+X-CRM114-Status: UNSURE (   7.30  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -230,66 +77,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> From: Geert Uytterhoeven <geert+renesas@glider.be>
-> Sent: Thursday, November 6, 2025 9:34 PM
-> To: Yury Norov <yury.norov@gmail.com>; Michael Turquette
-> <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>; Nicolas
-> Ferre <nicolas.ferre@microchip.com>; Alexandre Belloni
-> <alexandre.belloni@bootlin.com>; Claudiu Beznea
-> <claudiu.beznea@tuxon.dev>; Cabiddu, Giovanni
-> <giovanni.cabiddu@intel.com>; Herbert Xu <herbert@gondor.apana.org.au>;
-> David Miller <davem@davemloft.net>; Linus Walleij
-> <linus.walleij@linaro.org>; Bartosz Golaszewski <brgl@bgdev.pl>; Joel Sta=
-nley
-> <joel@jms.id.au>; Andrew Jeffery <andrew@codeconstruct.com.au>; Crt
-> Mori <cmo@melexis.com>; Jonathan Cameron <jic23@kernel.org>; Lars-
-> Peter Clausen <lars@metafoo.de>; Jacky Huang <ychuang3@nuvoton.com>;
-> Shan-Chun Hung <schung@nuvoton.com>; Rasmus Villemoes
-> <linux@rasmusvillemoes.dk>; Jaroslav Kysela <perex@perex.cz>; Takashi Iwai
-> <tiwai@suse.com>; Johannes Berg <johannes@sipsolutions.net>; Jakub
-> Kicinski <kuba@kernel.org>; Alex Elder <elder@ieee.org>; David Laight
-> <david.laight.linux@gmail.com>; Vincent Mailhol
-> <mailhol.vincent@wanadoo.fr>; Jason Baron <jbaron@akamai.com>; Borislav
-> Petkov <bp@alien8.de>; Luck, Tony <tony.luck@intel.com>; Michael
-> Hennerich <Michael.Hennerich@analog.com>; Kim Seer Paller
-> <kimseer.paller@analog.com>; Lechner, David <dlechner@baylibre.com>;
-> Nuno S=E1 <nuno.sa@analog.com>; Andy Shevchenko <andy@kernel.org>;
-> Richard Genoud <richard.genoud@bootlin.com>; Cosmin Tanislav
-> <demonsingur@gmail.com>; Biju Das <biju.das.jz@bp.renesas.com>;
-> Jianping Shen <Jianping.Shen@de.bosch.com>; Nathan Chancellor
-> <nathan@kernel.org>; Nick Desaulniers <nick.desaulniers+lkml@gmail.com>;
-> Miquel Raynal <miquel.raynal@bootlin.com>; Richard Weinberger
-> <richard@nod.at>; Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: linux-clk@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linu=
-x-
-> renesas-soc@vger.kernel.org; linux-crypto@vger.kernel.org; linux-
-> edac@vger.kernel.org; qat-linux <qat-linux@intel.com>; linux-
-> gpio@vger.kernel.org; linux-aspeed@lists.ozlabs.org; linux-
-> iio@vger.kernel.org; linux-sound@vger.kernel.org; linux-
-> mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Geert Uytterhoeven
-> <geert+renesas@glider.be>
-> Subject: [PATCH v6 16/26] EDAC/ie31200: Convert to common field_get()
-> helper
-> =
+On 11/10/25 02:08, Tudor Ambarus wrote:
+> 
+> The locking tests look fine to me:
+> 
+> Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> 
+> Sean, if you care you can extend the documentation on how to test locking.
 
-> Drop the driver-specific field_get() macro, in favor of the globally avai=
-lable
-> variant from <linux/bitfield.h>.
-> =
+I'll take a look.
 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Also, you may drop the non SFDP data from the flash's static definition as
+> a follow up patch.
 
-Good to see the global field_{get,prep}() macros are available for use.
-Thanks.
+I don't understand what you mean by "non SFDP data".
 
-Reviewed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-
-> [...]
+--Sean
 
 ______________________________________________________
 Linux MTD discussion mailing list
