@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA1F6CCFA1A
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Nov 2025 06:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DF18CCF9E3
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Nov 2025 06:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WCp1rZPynLhQFxlWP20sLOY0HKlMfpItUuDqRfOX440=; b=RCS9IsFgyvDAGn
-	qKArKKkamw8QT8HCq9YO3mjocdtX6n/FaTmojLZ7SHKycoOr/lj7qlTYNM04HWYY7ZdUZ6K0Uiqq7
-	cexEBdk3lWiFv6TCzo09bla7/XxPh+Eb61oBDWvTljWh/9JH/pULgCsjYDRRzB0FDZvkh8uQqiXwQ
-	8pkdUKgVGtZ3nsP5CMTnfLMfCHPDGv1icE1EtQKXEZTuHnbo0iuIOkhsJntd/l338jbH4sF/naTFZ
-	oRWRWwPhf3OyKv+HkX6EekLzy9WwXfTKhyHjdeIypxlOD0JxbbAuOeYGD7ATkHl1SSMMRxLvJP90O
-	BcxiFcKzTMx1O5dqaUvg==;
+	List-Owner; bh=cR3zYXZzh+ckbho9Px2PlZwAmAAIQS7tW2wuwUgEDfo=; b=33w/fBGi0Yhopg
+	ccF9/Hdz9vuG5AmxK0xX4iY1stAiQmGtKBuaYqgXV0Tntwd0D+/6dKnH2zyWLQZRc65Pp3QpEECd3
+	82DbywJAqsP3KuycVSQ4I/A4p5Fd7kCItRy9v5A2JJLsOh6LKctq8uSY3dxa+4PtbIQ+x2xynHkx4
+	1DZU4nRhPapQOniXYDieuXEMTf3pA1SgfL0O2b7zdMeH4T3TrhuisSfvRu3mtJSMqB3MVLH1a7iGi
+	YJmMnPB3ORIeFOfh3cENSAkrkUDNwMK06TfEU7xrN4/6ZATsvYHsdn5VtMY89XyXTG7B8qEogX6Am
+	cGlwPggzf9PXBDr6ZoFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vILbT-00000004qQz-08e3;
-	Mon, 10 Nov 2025 06:42:15 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1vILfE-00000004qoa-21sW;
+	Mon, 10 Nov 2025 06:46:08 +0000
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vILbP-00000004qQM-0dWU
+	id 1vILf9-00000004qnR-1LUX
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Nov 2025 06:42:14 +0000
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4775ae77516so31304555e9.1
-        for <linux-mtd@lists.infradead.org>; Sun, 09 Nov 2025 22:42:10 -0800 (PST)
+	Mon, 10 Nov 2025 06:46:07 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-477619f8ae5so20257615e9.3
+        for <linux-mtd@lists.infradead.org>; Sun, 09 Nov 2025 22:46:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1762756929; x=1763361729; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1762757161; x=1763361961; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=l6bovgW6M7IaME8m+3MWwurxo5DAnDQ6F4m1f8PyL1M=;
-        b=vMgsJ0VLVNDDokQGq76IIEhqaJ5Mz9TpXAC0QOTLQi645TO6ckG5cVTM+DvA5+nDK3
-         QQjxQAsnqwvWYK9EKPTqjUlrkLmJWSk9py9dQ1BhJTcScOkvFrklhZ434TvljtdXeSQv
-         tEJBq1dUTdqbAUjoytOlc7s0stL1eI1of7FCrMihqtZCKAFOFgpUp+vK4nm4GMvc0thK
-         8XxUnM9OARajHd2B4Xo/fi/FTLvDFHeELA4nZiaDLLU974pakK9BG6lBUaAO9yQ7N5px
-         nlD/Rd+eQ1hxfXirWKIJJxY04F5wo17S6tfGjFidf9lqQCVHO65FfcBWAIicaAdDnCts
-         z/7w==
+        bh=Pu1XhH2ZxG6Wd4en1D4CkiVWQG6H8ikgU7y2tqQz8Z4=;
+        b=nCLzDAYi7vCy4Xwx5Vre3W8a1oxE9bHI0tqVTrhk/+RjucxqIQiLXrLr31DR1zpyZj
+         lkXAQgZSMEITLGhgeOjLUGEPxAzS6Zp4brfh1YX/js0+tXlFHJ7FZXcF5zknYycJ69by
+         dfEEqoHodhNC0zMfLmXjU/QibdgpRmaOlXQ0uP8MCAiTD47obSRc2Er+Jmi/PqMjynow
+         4FAbThYALID18IjX38vw/F+2LULoZBEQIj0ek51KLEQaQjbAnUBHheDLqWL2BtKQZqWR
+         sbS7fznGxgtAbDnhPfZVcq825xrub++NyHUGO6S4jiaffjcPyCBZzynYgUFZlkde8V9E
+         BR/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762756929; x=1763361729;
+        d=1e100.net; s=20230601; t=1762757161; x=1763361961;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=l6bovgW6M7IaME8m+3MWwurxo5DAnDQ6F4m1f8PyL1M=;
-        b=WmW4lsxC5X5JQFSzmvTmCsGnsV02/fSs3NTxNPKs1mYArVRycDTgQxwYQgY2Yuk9y4
-         sBiAi41z3g9L2FTC+fKXPHoCogddEQ2qVgRPUhVNbXuOlV/S/bofo7VrZZqHlPMH4kEg
-         e7qINWHoMVRtlaPnyoAq9FkS472KlLkjyGWveTPUdZdWayJP/SvBfQyJl4DrMQzrpYsr
-         SnTrPZ++86qtjR7XVYM/KOnPrnokojoKogm9+af557daCxTq9OYNmGYYuV/BxVWTvq+L
-         fnRim/2xnU0gweuq5AzDIsLZvsaJxQDA5pc8y8PAoghdLsvtFET6o04xEi1M6mt1hwHe
-         5kag==
-X-Gm-Message-State: AOJu0YxthGAgolds6w1T4lHgTkt7mrUjy4eBmaYWdff7XavrHDUPBzJN
-	+90s278UCW9Dp2kV1BaHv5R98ByTgtl1Y6U3/WVtfAmoBTTOscSRb5UqCf3jjRamojQsCWMVAQ5
-	W/epQ
-X-Gm-Gg: ASbGncuHOpP7m/iA9LHg2q62vG61Ne2df/zebRUF+5IVoEe63vorHNYyRC2gubknHR6
-	X1JQ1X3qDdWIR2jsCwx8VG97rdggHYT0S7wAJeySU0MnCgdcqbCPx5BvSBz++Wafam5fIFIO+iL
-	ahaCImCdbJ9cc1ItHRppeWI/Pi/TK9xUMZgIwfbu5/lRFFgxmajeiJdTKCmM8EJPLFYwJbXktAS
-	iVrJp04khLFeXlkwecKq/DCDGI9IB6ushQHgvCnAW6LH53FTGciFltYLKKHuGVTvEfJuEGa1qsd
-	ZxdMKgKNr3ZqN2aCgtqXvo8KIF2Id2F8gxaxOw2FKmWFddho3SBH0a6CMBwNC3acAnTV+oWo+7K
-	IOWA6nMKBnQo++shtsxyf8+2Wjux//jMP1ijPddHKTdi9/ThVHW1sPzzKIq6NJlB0W4YmDcuHFI
-	jciNOKk80aDNYO0HnqeouCxX3bq08=
-X-Google-Smtp-Source: AGHT+IFeQlHe6Lgxh0t0G+yg4ltlGLrSe2rLWiTzLA7NtqazJKMqLz3Vmd4kQU1Tog7Gnfuon0XUgA==
-X-Received: by 2002:a05:600c:1c8e:b0:475:dc5c:3a89 with SMTP id 5b1f17b1804b1-47773288fa6mr64526045e9.34.1762756929296;
-        Sun, 09 Nov 2025 22:42:09 -0800 (PST)
+        bh=Pu1XhH2ZxG6Wd4en1D4CkiVWQG6H8ikgU7y2tqQz8Z4=;
+        b=p/z/+5qC8e1nFKFcAGMroEve2LWgyEdfIzbcfDlqtMfpl8VY8n2ls//zhYKBKURQ0J
+         k2Y6FEQVheO1CLw7XSrVYPgcTJBcSiAZiYulQrCMaz2sw/s/vf+1pHDchkwz8em0Zhgz
+         sd0Bq7uCuHQibsCkMWdeZBxECeJeJkOPSlStl9nCmIPTEWyYdSGjqv9uqNM+wTrRUP2t
+         FDYjIAvGe3G9RoGLZ5wJwS72hjH0EaBrZBpGgYUkO+AFp7HIo/kawUTkFr2ooD++4JXV
+         RiTZEB3QShPUyNe69H8CKP5UmfLrqT4dFDFMohmMDYMORy/+6qcJ8KWuYOEi8lebyNZn
+         eCxQ==
+X-Gm-Message-State: AOJu0YwZ6wh6t8fBM08JceCAoWHIKgaR8vV2iFxKAebeaBmZTFqHsEuL
+	qV+/Y7juAXDCsuca52CZUCRUEBTRyYIriwMfJB4ZhIGN4+iWHxgA4ElpsHaj5PlQAXk=
+X-Gm-Gg: ASbGncsOqoMyNstyJfxL1wuMQCy/bOVE1Bw3lU6jbRPd58rDDF0UeQ2EmbGNqmspGqd
+	zT6npn3bpzmmVa6vm6AiQx6lfuvwmmEuBhWMzDkSRaBiI/LDw7s7UAYwgN5abmsWmAO9hAw0du3
+	7Ep8jn4dAdYJp5pLj52rcEYzM1Rqs8QInNR8A18DkHnWN3RT11dS2GGshSyeP2N4OySCroGJOjR
+	RRWd97X3ArkwysKrK+dDB7hmP5Owk17+AORWI5FKvhyZFor+26/Rl11DS+eBKLsNEpigX7itBTO
+	fBDZGig/vQQCLv3pE8FROJPrUEPFnD/U8xTkiHPJwoL4TX/T0v4xgFN/khg6EwoMX5MpN3XbObK
+	E2F4v15gr9kQmPIGkpbCkMjZzheBhoALV7yLtIx4tIXohQazgJL/oV9xveouYHnyLBfsWiZUWaE
+	oIKaR0Z+fdsPp0LKdI
+X-Google-Smtp-Source: AGHT+IH7hyQPKhcZy8yzJus1HIGOBdpu+NzRSyrvlskw5IUKjuHbd1YMpjBQn0eJHTMLn2IbItWT0w==
+X-Received: by 2002:a05:6000:1847:b0:429:cf88:f7ac with SMTP id ffacd0b85a97d-42b2dca2e52mr5114061f8f.44.1762757161534;
+        Sun, 09 Nov 2025 22:46:01 -0800 (PST)
 Received: from [10.11.12.107] ([5.12.85.52])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42abe63e13csm20193170f8f.19.2025.11.09.22.42.08
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b2dd927d5sm13577288f8f.24.2025.11.09.22.46.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 09 Nov 2025 22:42:08 -0800 (PST)
-Message-ID: <b046d19f-6e55-47db-b7a8-6c8766da2e7f@linaro.org>
-Date: Mon, 10 Nov 2025 08:42:07 +0200
+        Sun, 09 Nov 2025 22:46:01 -0800 (PST)
+Message-ID: <7d8b0062-a6ec-43a9-ab00-3e11f0e2fb26@linaro.org>
+Date: Mon, 10 Nov 2025 08:45:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] mtd: spi-nor: micron-st: add mt35xu01gbba support
+Subject: Re: [PATCH 4/4] mtd: spi-nor: micron-st: enable 8D-8D-8D mode and die
+ erase for mt35xu02gcba
 To: Haibo Chen <haibo.chen@nxp.com>, Pratyush Yadav <pratyush@kernel.org>,
  Michael Walle <mwalle@kernel.org>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
@@ -83,13 +83,13 @@ To: Haibo Chen <haibo.chen@nxp.com>, Pratyush Yadav <pratyush@kernel.org>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  imx@lists.linux.dev
 References: <20251110-nor-v1-0-cde50c81db05@nxp.com>
- <20251110-nor-v1-3-cde50c81db05@nxp.com>
+ <20251110-nor-v1-4-cde50c81db05@nxp.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20251110-nor-v1-3-cde50c81db05@nxp.com>
+In-Reply-To: <20251110-nor-v1-4-cde50c81db05@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251109_224211_252610_F38CDD4F 
-X-CRM114-Status: GOOD (  13.23  )
+X-CRM114-CacheID: sfid-20251109_224604_574061_C3FA08ED 
+X-CRM114-Status: GOOD (  18.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,66 +109,63 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 11/10/25 6:02 AM, Haibo Chen wrote:
-> mt35xu01gbba is similar with mt35xu512aba, but with two dies.
-> SFDP contain the wrong size, so define the size dierctly in
-> the flash info. And it also support 8D-8D-8D mode, but SFDP
-> lack SNOR_F_IO_MODE_EN_VOLATILE, so add this fixup flags here.
+> mt35xu02gcba is similar with mt35xu01gbba and mt35xu512aba, but with
+> four dies inside. And it also support 8D-8D-8D mode, but SFDP lack
+> SNOR_F_IO_MODE_EN_VOLATILE, so add this fixup flags here.
 > 
 > Link: https://datasheet.octopart.com/MT35XU02GCBA1G12-0AAT-Micron-datasheet-138896808.pdf
 > Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-> 
 > ---
-> 1) This mt35xu01gbba is populated on the imx95-19x19-evk board, was
->    tested at 200MHz using nxp,imx95-fspi SPI controller.
-> 2) root@imx95evk:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partname
->    mt35xu01gbba
->    root@imx95evk:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_id
->    2c5b1b
->    root@imx95evk:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer
->    micron
->    root@imx95evk:~# hexdump -Cv /sys/bus/spi/devices/spi1.0/spi-nor/sfdp
->    00000000  53 46 44 50 0a 01 03 ff  00 08 01 17 30 00 00 ff  |SFDP........0...|
->    00000010  84 00 01 02 90 00 00 ff  05 01 01 06 a0 00 00 ff  |................|
->    00000020  0a 00 01 08 b0 00 00 ff  ff ff ff ff ff ff ff ff  |................|
->    00000030  e5 20 8a ff ff ff ff 3f  00 00 00 00 00 00 00 00  |. .....?........|
->    00000040  ee ff ff ff ff ff 00 00  ff ff 00 00 0c 20 11 d8  |............. ..|
->    00000050  0f 52 00 00 39 61 99 00  87 8e 03 d3 ac a1 27 3d  |.R..9a........'=|
->    00000060  7a 75 7a 75 fb bd d5 5c  00 00 70 ff 81 50 f8 a1  |zuzu...\..p..P..|
->    00000070  2f cb 27 8b 00 00 04 01  00 06 01 00 ff ff ff 8e  |/.'.............|
->    00000080  00 00 00 00 00 00 00 00  00 00 00 00 ff ff ff ff  |................|
->    00000090  43 0e ff ff 21 dc 5c ff  ff ff ff ff ff ff ff ff  |C...!.\.........|
->    000000a0  00 0b 80 9e b1 81 b5 85  00 f0 ff 9f 00 0a 00 00  |................|
->    000000b0  00 0a 1a 88 10 00 00 00  ff ff ff ff ff ff ff ff  |................|
->    000000c0  00 00 06 01 00 00 00 00  14 01 81 03 00 00 00 00  |................|
->    000000d0
 
-you have SFDP here
+please dump the SFDP data for every flash that you touch, it helps
+us with the sfdp database
 
-cut
-
-> +	}, {
-> +		.id = SNOR_ID(0x2c, 0x5b, 0x1b),
-> +		.name = "mt35xu01gbba",
-
-drop the name field and add it as a comment. See recent flash additions commits.> +		.sector_size = SZ_128K,
-> +		.size = SZ_128M,
-
-drop these, SFDP shall handle them.
-
-> +		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ |
-> +				 SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP,
-
-Drop this line, let SFDP handle it
-
-> +		.mfr_flags = USE_FSR,
-> +		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
-
-can we drop SPI_NOR_4B_OPCODES?
-
-> +		.fixups = &mt35xu01gbba_fixups,
+>  drivers/mtd/spi-nor/micron-st.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+> index f724313f4dd3720908968c670e8d3d58f41c099c..b36174436b7aa0f7768dbe48e4ad4927c08a3d6d 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -214,6 +214,12 @@ static const struct spi_nor_fixups mt35xu01gbba_fixups = {
+>  	.late_init = micron_st_nor_two_die_late_init,
+>  };
+>  
+> +static const struct spi_nor_fixups mt35xu02gcba_fixups = {
+> +	.default_init = mt35xu512aba_default_init,
+> +	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
+> +	.late_init = micron_st_nor_four_die_late_init,
+> +};
+> +
+>  static const struct flash_info micron_nor_parts[] = {
+>  	{
+>  		.id = SNOR_ID(0x2c, 0x5b, 0x1a),
+> @@ -237,12 +243,13 @@ static const struct flash_info micron_nor_parts[] = {
+>  		.fixups = &mt35xu01gbba_fixups,
 >  	}, {
 >  		.id = SNOR_ID(0x2c, 0x5b, 0x1c),
->  		.name = "mt35xu02g",
+> -		.name = "mt35xu02g",
+> +		.name = "mt35xu02gcba",
+
+we don't care about the name, drop the name and add it as a comment.
+
+>  		.sector_size = SZ_128K,
+>  		.size = SZ_256M,
+>  		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ,
+>  		.mfr_flags = USE_FSR,
+> -		.fixup_flags = SPI_NOR_4B_OPCODES,
+> +		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
+
+Whenever you can, remove the non-sfdp static data and rely on the SFDP
+driver to handle it. Can you please drop sector_size, no_sfdp_flags and
+SPI_NOR_4B_OPCODES?
+
+Then do the testing and sysfs/debugfs dumps to prove the flash works okay.
+Thanks!
+ta> +		.fixups = &mt35xu02gcba_fixups,
+>  	},
+>  };
+>  
 > 
 
 
