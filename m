@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B03EECCF9E3
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Nov 2025 08:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DDD3CCFA18
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Nov 2025 08:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=afGNYJxZjrseC/rlUT7vVVZ+bKcGtm2HL2WHxDw2hSs=; b=UBYLavkoCZ2pHP
-	cKkF0hwidK1139+zwF3QDvBbVfb4FZZnak2Poa454CvH1wZIF/oTu/V9kfe587+6z+l38OfA98LZT
-	trueNpET507mY6v4XiqMcdlka9lyeQfjOqZTSM7/bj2r70c0CbTR6bWV2MAN44HS9noXlK58CCdn2
-	kIlZ0lPH4vyj7i1Sq3/xYGiO4DK78d134N2hAOyr/Ibrtxt/d3E8OVzk8m8fpahx3fX9Mh8yk9YaQ
-	Qk/zg+AJ4V+6bjHM9E/Z+FYmEmogGe/U0PlJGH7CRp1T+EblbVf7Aq8kXSugVczUMKKszvwoa+9rc
-	iHC5oXJnFsDflbqdTXHg==;
+	List-Owner; bh=cutYl1XchqsfH/UCD6WwOPf0qslZ09AJ+SE+X16UyBM=; b=UROMimSv1ikE3D
+	3DW4vx6AweKjkAV2Dl0/6N++piAL79s1gMFA0A4jWTv0iCag2LaI6n1apMzrgK4mDLr+vrni19rgO
+	SpNkKsQi5du3PKzHUWJXc4aRgOQo6NK29MP06lmFl7A7YCqIQs9EQAYhA1ss5D0PgwqQM3TEr+SWZ
+	i/IpzWQYWqrj9BoKA3QWWwpIWZFFMoB3amE2QX28sEFkE85IJpUSs4BpnC/yW0eIKGv4Mris3rpSQ
+	qDeh2fXCYf+QCOPsw9c2ZGEFMm6Grwd0xaavLSEckO7no5ykCqUGb+ILN01Jz6URexV23VtFKf+8z
+	AT0QfUhHwJqL6NvcfqNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vIjfH-00000006mQ6-2czb;
-	Tue, 11 Nov 2025 08:23:47 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1vIjkY-00000006mjc-3ZmY;
+	Tue, 11 Nov 2025 08:29:14 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vIjfG-00000006mPA-0NWG
+	id 1vIjkW-00000006mjC-1i4G
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Nov 2025 08:23:47 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-42b3720e58eso1947928f8f.3
-        for <linux-mtd@lists.infradead.org>; Tue, 11 Nov 2025 00:23:45 -0800 (PST)
+	Tue, 11 Nov 2025 08:29:13 +0000
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-47755a7652eso25636115e9.0
+        for <linux-mtd@lists.infradead.org>; Tue, 11 Nov 2025 00:29:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1762849424; x=1763454224; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1762849750; x=1763454550; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1A/s7LNYfJ23Wps55qnqVv15lrsujszwGxWt6oo6eiM=;
-        b=sHp55C6Z+HnN0iPjJ6VW4uxK2CwM29Wc/rQdYzrvZF9e11TyezmuKnMVtLAbjx7J45
-         0a14qOdZQ+b066tqKkFoQEPMX0ydeX87ut2GD+NOsWW2G3yNHa1Kcla+LD0suBCZjQ66
-         yAlhSjlqwZXWG8mzWtR9ydif2UCdDxyGfZaMOaH0Iqy9CihgyXtlr/WCw/Ps8pnPRJDm
-         aT5LRVZGqeNR+9YmCETa7EqHnDvIG97Lct5+4iZbzCHTS7Q65e1WXBR0t9DNPycb5DOj
-         m7Q1mTEYrn8dD+Gf4rHgBhZsHhKmB9JOVuS7nduJomJCjieK9Z82aGBfUjQ5i5LVbxIc
-         hKGQ==
+        bh=VN4ssHT4SWqYZ2DLb2tv38+O6ZY23WjOxSeg+Op1aEM=;
+        b=Qq3v1y2HEw5DKb4UEbBXyAgPntwmBBbAV2QYxO1Y0co2GF/mb4FWvOxUBefqgmnoD6
+         0AR7HDskjqQvE3T/u2+Y85TeJs/tlwev5OqtWpdIbP5nbMp4n0B3Fnhi7j12JP/6ZFgj
+         vQ6vtj4piD9JKm4pL3aGgcmiDs8TdB5o3mGcV0k+ssT2GZ/TaaXi0m8LETBsRr6YtFOI
+         q8VJWZOpVoFzNM4+/3qH1m6rd13STbCRYKC2IeeJMtfOABKXo17AZY7jli6I6Kgsc+0O
+         yh82WujX0EfXBH6VCHGPTq2QWGbob33XjxoZBjsMGy2oDDqgUwc5zFq7pysql/icoeHN
+         c5rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762849424; x=1763454224;
+        d=1e100.net; s=20230601; t=1762849750; x=1763454550;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1A/s7LNYfJ23Wps55qnqVv15lrsujszwGxWt6oo6eiM=;
-        b=OMiQ/G9eDY4NQpTd646ukwRkKzVSf94W1d3VVjQbP0B6/EXenlZ6w6sQ8eE4b6d50a
-         JiWBuBG4hctv47FiZ50S4dG/hpcPAO2q1GfOrvoRD3+kjdq8dnBC62yDRJeYTzHznpin
-         62jw0QwkYVLNRFmzdzE4cOc1krrSe+wUXvsUnNWTW+modh8iNIPEWfKJwY3QPJSM4v0h
-         Oah+gDIuGAD/DHDFwbYPQJyxS24vYUEY0bbfdxGMThoVJ3prlZOOAe8vAopkB1g7fekb
-         GXxPQAJjzm7TqhDdFTfXi/TUj9YTS2FRcXE+LeswjOG/+8kMtSydcSyEXie9HqAce2C2
-         fIog==
-X-Gm-Message-State: AOJu0Yzy9G24+s8IYvB37e/8itJ2mi/R8EgefjjNuySYUFVkIrHqQVmP
-	9ruR9vZMVhYE3x4LAU2FxUx/SUyt545S4p3tNVz2YpFpvjPYarIaznErkNjCGShxpeQ=
-X-Gm-Gg: ASbGncsCHM58JQUOII4VE7EwstOocATbOHz+47I+rk4UIH5Jx6fE6ANbKSpOtXcpnS7
-	xNep7PfmeiXxrvuYUK5fog+jnrw/Vh4kvVboTGi49HLIngRAKHfaB9RrwtRjizDeOBPm4h3idDn
-	3gqOFCV2IKTU6jCdasdwDtzyYYJ1HAPQSCK+2TrP0htJKblpnylzRoAYQdU2gRUo6JAl6UWqiJX
-	QuPW3yTrZfdMz6c9zQoxMctWs4od9C56+RTujFw68v24hUiEdBV5zmaqaV+lnPw5CSNh+iImXmo
-	3e1iJ2cFEchg9iwXi8Y7sYDg2qfNDq6/3KM+ehSOJl3RZRunrNffzr4N/O8YkN40N64GIspEuAL
-	X+HigSVEkOGzisdcI4QfDDEqyS102jNzaPd2XYiBckZT/iVbca1OwH0k7e+DEOvCgjlJT0lvckK
-	jiifn9Cw==
-X-Google-Smtp-Source: AGHT+IGcFfxooTzh9xp8g3qMI+6yiTxMXMVuORbnPO/aK2mPEX+2okAsm7MZP8Iv/tFdfF65sQ80Tw==
-X-Received: by 2002:a05:6000:4107:b0:42b:2a41:f3d with SMTP id ffacd0b85a97d-42b2dc2d0cbmr8067270f8f.19.1762849423687;
-        Tue, 11 Nov 2025 00:23:43 -0800 (PST)
+        bh=VN4ssHT4SWqYZ2DLb2tv38+O6ZY23WjOxSeg+Op1aEM=;
+        b=mhrTjwLxQdAPYWu+yzaQAKh2LCRbj3MpZGyc35Xji6pLjboP1H42TqWEgpiH1ZkgZm
+         51mm9b58MwJzbb/17EL7sXrMDThKUH9A5MVz6EWY5YqkY0abUlteQ/VCro7SmQHil67y
+         9IEeJuMAORS6D7Zfl9Rvj6QkmLpOUoRPBBY8y50aXSDaFmmQU9t/UlC0iP/wq0jGsHU1
+         T+qeDNFotPt3r4k1Yv3fbEgliMeMxdp/bnZSJwNF/PU2XPJYVvm5S68R5zUSp1VGjxdx
+         Kv1qoZ4vEknpz8+modSl4A8CVRfSc3B4YLMqYk9fqbMFGfDv8B/aNDe2sAg8HuhQ1+2j
+         Mx6w==
+X-Gm-Message-State: AOJu0Yz8aEf/yGBcvXTnMr4Sw5uAYLRM1z4HARfQe5RbmaVcYPq0EQ4E
+	3JGo2pK+82drO0wjPQJvJhBQyvT0jgR32t9IFO17ViuNJZM2UiVwvfuOxcIh3pbFEj0=
+X-Gm-Gg: ASbGncu0kYfIN9HB4yrSef4Sli9is4LiN7mKwgB+tNbqnR2GZiHXWGMBmbfSQINb3wc
+	44cH2u+ZaMQ6o7HzrSeJonJTuEASeXN5BUrnR55l/sb0djOyQXFfxEitjRIEHyeBKQgLNOgCFnk
+	f6CnrZi31HqE2RlULKjIHiol2Rxa1BCgtQMc6PWiqjNYe87tV9eXM3pO+w9gNlhNB1dQ3HNQsUw
+	dfEDEQKl8BSX2lCAXxOa4n7dTcAqUC5nqjTdk7x6zillGnKoV7mlFT48gAHiPI+4S5Td4O6DKCE
+	kvIB8+08ci1ObQ+Sq1JhpPQ8ZHDy+1Qf3n3ERp1Cv+iZ1hDV3ZKeMQcuvmPnz/38082vglvTE9g
+	SE6QsMC3GdK1EM7uO2W9GFfLOkA89bja2ZcjyakqS3BU0hxRLr7dWz5ErTOByAG62OuondbxyuY
+	+k9YjYRcnjOEMN4mdF
+X-Google-Smtp-Source: AGHT+IEjfzQTdf31JT46i170Kox8+e9rzC9EAL1JgWdVxYnSZfKWgA72lGNi/67uAlpLK3cpt/PArA==
+X-Received: by 2002:a05:600c:4f0b:b0:477:76c2:49c9 with SMTP id 5b1f17b1804b1-4778049cfe2mr34227345e9.2.1762849750375;
+        Tue, 11 Nov 2025 00:29:10 -0800 (PST)
 Received: from [10.11.12.107] ([5.12.85.52])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b314dae4bsm17131179f8f.34.2025.11.11.00.23.41
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b2f7a0512sm19591853f8f.18.2025.11.11.00.29.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Nov 2025 00:23:43 -0800 (PST)
-Message-ID: <afe767f4-6534-40d7-b4c2-f4bf16cb74e3@linaro.org>
-Date: Tue, 11 Nov 2025 10:23:40 +0200
+        Tue, 11 Nov 2025 00:29:09 -0800 (PST)
+Message-ID: <8263aa0b-f223-4e67-9923-9f7882b90646@linaro.org>
+Date: Tue, 11 Nov 2025 10:29:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] mtd: spi-nor: micron-st: add mt35xu01gbba support
+Subject: Re: [PATCH 4/4] mtd: spi-nor: micron-st: enable 8D-8D-8D mode and die
+ erase for mt35xu02gcba
 To: Bough Chen <haibo.chen@nxp.com>, Pratyush Yadav <pratyush@kernel.org>,
  Michael Walle <mwalle@kernel.org>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
@@ -83,15 +84,15 @@ Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "imx@lists.linux.dev" <imx@lists.linux.dev>
 References: <20251110-nor-v1-0-cde50c81db05@nxp.com>
- <20251110-nor-v1-3-cde50c81db05@nxp.com>
- <b046d19f-6e55-47db-b7a8-6c8766da2e7f@linaro.org>
- <DU0PR04MB949675657F9A4C52A0C5E19B90CFA@DU0PR04MB9496.eurprd04.prod.outlook.com>
+ <20251110-nor-v1-4-cde50c81db05@nxp.com>
+ <7d8b0062-a6ec-43a9-ab00-3e11f0e2fb26@linaro.org>
+ <DU0PR04MB9496D24A8424C578C942CDE590CFA@DU0PR04MB9496.eurprd04.prod.outlook.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <DU0PR04MB949675657F9A4C52A0C5E19B90CFA@DU0PR04MB9496.eurprd04.prod.outlook.com>
+In-Reply-To: <DU0PR04MB9496D24A8424C578C942CDE590CFA@DU0PR04MB9496.eurprd04.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251111_002346_188581_4DEF22C5 
-X-CRM114-Status: GOOD (  10.98  )
+X-CRM114-CacheID: sfid-20251111_002912_461194_F3846B12 
+X-CRM114-Status: GOOD (  12.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,25 +109,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-did you use html format when replying? Use plaintext, please.
 
-On 11/11/25 9:54 AM, Bough Chen wrote:
->>> +		.size = SZ_128M,
-> I did consider to remove the size and other flags since SFDP can handle that, but if remove the .size here.
-> Micron spi-nor do not have a chance to execute
-> 
-> params->set_octal_dtr = micron_st_nor_set_octal_dtr;
-> 
-> because in micron-st, params->set_octal_dtr is defined in flash_info->fixups-> default_init.
-> And flash_info->fixups-> default_init can only be called in spi_nor_init_params_deprecated-> spi_nor_manufacturer_init_params
-> If no .size define in flash_info, spi_nor_needs_sfdp() will return true, no chance to call spi_nor_init_params_deprecated.
-> 
-> If need to remove the .size here, seems to move the params->set_octal_dtr to spi_nor_manufacturer-> fixups-> late_init or flash_info->fixups->late_init.
-> 
-> I notice macronix already did like that, I will add this change in the next version.
 
-Yes, move that to late_int(). We'd like to remove default_init()
-if possible.
+On 11/11/25 10:00 AM, Bough Chen wrote:
+>> please dump the SFDP data for every flash that you touch, it helps us with the
+>> sfdp database
+> Hi Tudor,
+> 
+> I do not have this mt35xu02gcba on hand, I only has mt35xu512aba and mt35xu01gbba.
+> I touch this chip because I notice these three chips share one datasheet, and seems only
+> has different number of dies.
+> 
+> So should I drop this patch?
+
+Ideally we don't change functionality for flashes if we can't test them.
+If you feel this flash entry does not work okay, which seems it's the
+case based on your previous patches, then just add a comment above this
+flash entry and tell what should be changed. Then if someone cares and
+have the flash, can do the changes and fix it as you suggest. Does this
+sound like a reasonable compromise?
 
 Cheers,
 ta
