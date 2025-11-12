@@ -4,94 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1800DCCF9F8
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Nov 2025 09:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64562CCFA1E
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Nov 2025 09:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q52wu4nlwwgrGrdZC1BK5OjXuu/FcYipIjV+H54qBsk=; b=j2mhbgbtMDv4ae
-	hqbw4fJho9DBmp23dFT5bDUqjg86he7EckCZKHicf5OkIKY+ftxCQaDN0p8Yy8pu/6k3xcIKc2Iwf
-	Jgys1Wuy4lTzRjElZ5KWkSpawGxe5YQDaAJ7s+S8Wjv2U5//pXDbBu322+k2vecPYW4WrCGb98AWU
-	s0sr2UdEy5SUbpzSIx8VYRF0nzjH6Wjt2jpY6mAxW3F+jqKAu+rXGqcMI38bc5bVyZdlZmrD3SzJX
-	qgI3IZr1swoen4V5zW6fZKLS60hWqj0wimmCAt0UegOMtsorGVqcwT+U2AdF0e4db3u7RMdP8BtD9
-	DptuFP/NLosZMed+o40A==;
+	List-Owner; bh=J4HlL2uV5B07RvE6EYAKrSXaBmOmZwbvDYa6pInS5D4=; b=oyTjMZEVLTOscn
+	AhYvtwi1HGZmMEgicCfhmXVpSzPsDhupysYnYtPELy3Eo9tiow975k+Ut94a5OwHl0j9cE+YMVxPU
+	1TxU4aQrXTD7zEfyDOBdU6S4NJYu9KBFP0xUO56OV1gjT9htMfnxXVJWqaWkJcHDmi93gwvdLEhtk
+	ZU9geCrhyJjWhi5ugGdef6J909hVZ032hvouW3vAx3O45588tlF2B0ztp46YtYtpmS/P152VpSZdQ
+	wbQagoU/4Df35qT/GO3qAnxpclwpFhhkXO2ZD9ytJWdBZTeinMsMy8+MMkhayDZxuokBz+vVb7Rmg
+	vVC4n3qQT4SytpSM9xCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJ7IO-00000008Tuz-2LGl;
-	Wed, 12 Nov 2025 09:37:44 +0000
-Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
+	id 1vJ7Nt-00000008UaD-2rNW;
+	Wed, 12 Nov 2025 09:43:25 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJ7IM-00000008TuP-1Yse
+	id 1vJ7Nq-00000008UZU-2uWr
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Nov 2025 09:37:43 +0000
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-42b31507ed8so470778f8f.1
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Nov 2025 01:37:41 -0800 (PST)
+	Wed, 12 Nov 2025 09:43:23 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4777771ed1aso4147605e9.2
+        for <linux-mtd@lists.infradead.org>; Wed, 12 Nov 2025 01:43:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1762940260; x=1763545060; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9kkR3PECBtgg2Ta+T3zNVyfwyQ39/v40ObIhIUJF1Ho=;
-        b=DKsq210njwMnuSEfwJYIdA4zVyzPKAtPA857ExuhRgHP6seyhyEfikh5BqNt7ftnj0
-         ShSlxHVZI+pgTRYpdgG0RY/EOxl6fUbtlijK25Quc5e7VjTXvf1mXghPPMffUBSw+jMP
-         cc0GXuOHFy9Bi42DNi+1g8Q+CprAtKIfhmG18cuHAMsV534nRu4KJ4KT7ueeNtBmkM8/
-         UhTciMGEqyKFY2lbtWrdWAWtFCbYaHrVfUVL6SSaX13Z3bLOVSbaOJ/ZhnzgX3dO/yax
-         E169hcfW144mCBa6yL8Uvv1Ds7/U+d7fqrQYie8XtYeG10QjJC5lrc/TP1/eEwhJn7bx
-         nflw==
+        d=gmail.com; s=20230601; t=1762940601; x=1763545401; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2sZZR13em2kFK9vuHhMagBqaNxcu6HaXgiKpBFvnH0=;
+        b=OYkei69Pw63SALfd5sKIj4wOqHCOj8L6kFYy229v3/iYS1DQrfdw/NNN7wVs8L2wrT
+         7NULVGZQy6DbDuAdNGxXo0t+Kv5gfDB6biyFQNNUVP4O1tipxE7VEuH95JA3DMTitL/3
+         4GFAT7rWjgEapQLocA3zab7qpNCqOowLf5x1WUa/x1duW4Kjyc7FugizbdvCx3qe0LAM
+         DWxiecGcXgQM/W9IG242ShKjwYAPwC/k7rCka0tsT4SfbCFKgbzkWOVlOhSJsQBBbWDL
+         4kuNC+u4jyOKgiqhbraE1hSgKfgzZA/xo0k0Ce55OccXtsYQHHWRnYSZIRqOxLnWriUr
+         A49w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762940260; x=1763545060;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9kkR3PECBtgg2Ta+T3zNVyfwyQ39/v40ObIhIUJF1Ho=;
-        b=f8+QJq5RVvPBnUwHG2/VRq/YxsXGpnw2rWbvKjt4EyGbrmBvnVQW+yKtXItSywvDj1
-         R4X9Umkx+o7eI5K+hevpV/6QG1krBrYO1K72QWp6DWxGTr60ra6NazRRJXpr03YdlcDh
-         kqqAPQq/364PShT7D4WAZpux8VClk613mjpVo6KlB9QtOkLqUA1POOqurPvRouCLk2Fh
-         JulIkEwnH3kOVFARg4SkQN8EJGy15zMdgP/mFiHCG68sw7VZOf2jlxg77Lo+9S3Uxxu8
-         W20ngtoOvIHecJ/sCRJO6iudl2VYsqE8R89RiKeBwl51KuryTC5o8payBZ85Gh6yY0QB
-         5mpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVfImmCTsEeuDu005eQn+0lb99dmUEz1stYmy1Tr1w1tjZU540C+zAw/U0Ud1VAtecRLjAa47WYv/k=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzHeC1yPfIQ/g0sn5KcNEnPahEy0XAYOSx8JlGv1q6vGEX2YPzh
-	OCPDXaeVjp4MQvnbkqty9lrcs9sUcq1iG+Mqr0GHmz/m99XQkvQwwwqyF0ARTKMTRiA=
-X-Gm-Gg: ASbGnctSRMz7ItYguabHkrlNrwa5DuRurQTBPE0id0UZm0MvyzK3OzS0F+As3vD0JDf
-	cQJA/sb7S9zRvIfw16lcGTXnhOKSCY2S66cxB68NhuAinHgp4Z+yenThKx+4DKIdm1CsVVkNTCl
-	YC00EdErbGY4C8UY502NDb0e/+5/TS9tM02+XFDiAl9LNokgbBtdoypcQmUMBrEPB18S1QXZeWu
-	OfUbbFI5NwHeTDs026CoGfFDhoUth7mQ1ondTH6+k0mjGx66Afysd7sHSQaplhCR4gevij5m8eW
-	5xrnzT9X7q8htQwIl9WPSGEFVIFJNtRhgrFTCrrKdBPUWBuuAzK+/O1cA4iXDoPP7pVrJFGO3Nz
-	suNnDC1PllhNhVjo7SMweOBN6WgFB6/tpbDZzqYq394nhLfYu1d+gQwKMUt1J2upvffk2ibqi4C
-	PF99IOrA==
-X-Google-Smtp-Source: AGHT+IGZSi7yScfYmi/h+1qIucc+YYMtcUxa9jmazfcfm23PzWB2Va5yBYWI09vRuMxpAqpjCguVyw==
-X-Received: by 2002:a05:6000:1847:b0:42b:3dfb:645f with SMTP id ffacd0b85a97d-42b4bdb7d81mr1738754f8f.47.1762940260515;
-        Wed, 12 Nov 2025 01:37:40 -0800 (PST)
-Received: from [10.11.12.107] ([5.12.85.52])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42abe63ba87sm33821589f8f.14.2025.11.12.01.37.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Nov 2025 01:37:40 -0800 (PST)
-Message-ID: <8a370764-e093-4987-9a5f-3a8c1d6d900c@linaro.org>
-Date: Wed, 12 Nov 2025 11:37:38 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/6] Hello,
+        d=1e100.net; s=20230601; t=1762940601; x=1763545401;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y2sZZR13em2kFK9vuHhMagBqaNxcu6HaXgiKpBFvnH0=;
+        b=VsUhgIQueY9w1GOpzTJR8GeJpGDutO+2nfVSpj3oVLxMyZJwWHjllKWE+2FeH9hNiX
+         XMwtdGY9khsDSMbQ+VyOJO7b+nBvyao4FIg+xQXrL3IpE7xhHO61egOVa3tvP/UR+6Nl
+         mwfJKLShvPe5JowHgBOzpWmZdyBxpSP3tcw/yfr1xXmKK1lSUCgFYdseutBdStgPiJE8
+         eZTyZjiIulMMlApgEbg7wC5qd1cytFsIMiHXWs97noX5joPPy4VnBDClVed5oAQrYS3V
+         f+DgqgvWTEBxV7TiPBQoVeZ4BD29uDBqkdhJeDqdZPy9ON+qinPqQFviJ9OqzgbhEOQQ
+         0xAw==
+X-Forwarded-Encrypted: i=1; AJvYcCVFrlMGLbxjsd7cyUmv2DAAeoDK5+2kMjS+q1gAJphxMZRjq0I5GwrndfYDrik/HFBvNoUShw38DGM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwODk9nnbDj1JgAZ92mvIuKaJMNtnR9xIOn80J13wZ4xYwDoCrl
+	n3/Tb8KBnEUR49oy/JwRty5jXYZgqgF/cW35UKDY9esZycmUkB+V44Em
+X-Gm-Gg: ASbGncvtv0YCCEgW5yrs7lHvlaGRDzvxf76BwLb/5tOdI4TVYi7W5b+J9M4opsEDWWU
+	ZT0qSYuCCGuzMlMtwzaddHdOLvtp9VYQB58qa/iHSbpPHABBf1Z9iKyDj0lOW99nPUOJUhAUtT0
+	FnAbISk8WNihBZKl3Gpt4nSr2dCzYPfb8hrtYZfq3kKFPKVCoKzhWBpvfr6g/csau/0LLh9c45p
+	Zu0YQPvk0ZOCQlJJi6nYOXJAFny1IioCKEQkrNIRW0fU/yNy14FvABs0ROhx0UMZ8YYQto0U6zN
+	LJ7CvDQLR95MB6OBTTzZiC9VeuaaxR+siwpB6TuR5yQm6tNoSkWnUZKtfc+Y5DZWkr6rqEHigiU
+	Up3qJsYgzXCc2z40gJDZ73q+KpoQwYwgUS2bum18TnAz2ca1+XTWzM6VnD/LisROxbLKdPVHaA2
+	douARt76kGdJWUp23MefFBs65XtE9j
+X-Google-Smtp-Source: AGHT+IFWRLil5c9QrjCfrciKn0pCpnUeeuzlRecgpwrZi29ini7Fw+ZEevTQknhxTgQmz8r53cyk/w==
+X-Received: by 2002:a05:600c:3550:b0:471:9da:524c with SMTP id 5b1f17b1804b1-477870468eemr22102045e9.12.1762940600679;
+        Wed, 12 Nov 2025 01:43:20 -0800 (PST)
+Received: from Ansuel-XPS. (93-34-90-37.ip49.fastwebnet.it. [93.34.90.37])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787e8e743sm24556415e9.15.2025.11.12.01.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Nov 2025 01:43:20 -0800 (PST)
+Message-ID: <691456b8.050a0220.3c21b3.5c4c@mx.google.com>
+X-Google-Original-Message-ID: <aRRWtShR36d_16eS@Ansuel-XPS.>
+Date: Wed, 12 Nov 2025 10:43:17 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Steam Lin <STLin2@winbond.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Sean Anderson <sean.anderson@linux.dev>
-References: <20251105-winbond-v6-18-rc1-spi-nor-v1-0-42cc9fb46e1b@bootlin.com>
- <c67466c0-c133-4fac-82d5-b412693f9d30@linaro.org>
- <87seej7fv6.fsf@bootlin.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <87seej7fv6.fsf@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: mtdpart: ignore error -ENOENT from parsers on
+ subpartitions
+References: <20251109115247.15448-1-ansuelsmth@gmail.com>
+ <87y0ob7fyy.fsf@bootlin.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87y0ob7fyy.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251112_013742_438455_09E6CA3A 
-X-CRM114-Status: GOOD (  10.47  )
+X-CRM114-CacheID: sfid-20251112_014322_747162_89118BAB 
+X-CRM114-Status: GOOD (  23.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,29 +100,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAxMS8xMi8yNSAxMTozNSBBTSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBPbiAxMC8xMS8y
-MDI1IGF0IDA4OjU0OjI0ICswMiwgVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8u
-b3JnPiB3cm90ZToKPiAKPj4gSGksIE1pcXVlbCwKPj4KPj4gT24gMTEvNS8yNSA3OjI2IFBNLCBN
-aXF1ZWwgUmF5bmFsIHdyb3RlOgo+Pj4gSGVyZSBpcyBhIHNlcmllcyBhZGRpbmcgc3VwcG9ydCBm
-b3IgNiBXaW5ib25kIFNQSSBOT1IgY2hpcHMuIERlc2NyaWJpbmcKPj4+IHRoZXNlIGNoaXBzIGlz
-IG5lZWRlZCBvdGhlcndpc2UgdGhlIGJsb2NrIHByb3RlY3Rpb24gZmVhdHVyZSBpcyBub3QKPj4+
-IGF2YWlsYWJsZS4gRXZlcnl0aGluZyBlbHNlIGxvb2tzIGZpbmUgb3RoZXJ3aXNlLgo+Pgo+PiBJ
-J20gZ2xhZCB0byBzZWUgdGhpcywgeW91J3JlIGFuIGxvY2tpbmcgZXhwZXJ0IG5vdyA6KS4gRG8g
-eW91IGNhcmUgdG8KPj4gZXh0ZW5kIHRoZSBTUEkgTk9SIHRlc3RpbmcgcmVxdWlyZW1lbnRzIFsx
-XSB3aXRoIHN0ZXBzIG9uIGhvdyB0byB0ZXN0IHRoZQo+PiBsb2NraW5nPyBUaGVyZSdzIHNvbWUg
-dGVzdGluZyBwcm9wb3NlZCBhdCBbMl0sIHdvdWxkIHlvdSBwbGVhc2UgY2hlY2sgYW5kCj4+IHJl
-dmlldyBpdD8KPiAKPiBHb29kIGlkZWEuIExldCBtZSBoYXZlIGEgbG9vdCBhdCB3aGF0IFNlYW4g
-cHJvcG9zZWQuCgpJIHByb3Bvc2VkIHRvIGhpbSBhcyB3ZWxsIHRvIHVwZGF0ZSB0aGUgdGVzdGlu
-ZyByZXF1aXJlbWVudHMgaWYgaGUgY2FyZXMsCmhlIHNhaWQgaGUnbGwgdGFrZSBhIGxvb2suIFN5
-bmMgd2l0aCBoaW0gcGxlYXNlLgoKQ2hlZXJzLAp0YQoKPiAKPj4gWzFdIGh0dHBzOi8vZG9jcy5r
-ZXJuZWwub3JnL2RyaXZlci1hcGkvbXRkL3NwaS1ub3IuaHRtbCNtaW5pbXVtLXRlc3RpbmctcmVx
-dWlyZW1lbnRzCj4+IFsyXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1tdGQvOTJlOTlh
-OTYtNTU4Mi00OGE1LWE0ZjktZTliMzNmY2ZmMTcxQGxpbnV4LmRldi8KPiAKPiBUaGFua3MsCj4g
-TWlxdcOobAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Wed, Nov 12, 2025 at 10:33:25AM +0100, Miquel Raynal wrote:
+> Hi Christian,
+> 
+> On 09/11/2025 at 12:52:44 +01, Christian Marangi <ansuelsmth@gmail.com> wrote:
+> 
+> > Commit 5c2f7727d437 ("mtd: mtdpart: check for subpartitions parsing
+> > result") introduced some kind of regression with parser on subpartitions
+> > where if a parser emits an error then the entire parsing process from the
+> > upper parser fails and partitions are deleted.
+> >
+> > Not checking for error in subpartitions was originally intended as
+> > special parser can emit error also in the case of the partition not
+> > correctly init (for example a wiped partition) or special case where the
+> > partition should be skipped due to some ENV variables externally
+> > provided (from bootloader for example)
+> >
+> > One example case is the TRX partition where, in the context of a wiped
+> > partition, returns a -ENOENT as the trx_magic is not found in the
+> > expected TRX header (as the partition is wiped)
+> 
+> I didn't had in mind this was a valid case. I am a bit puzzled because
+> it opens the breach to other special cases, but at the same time I have
+> no strong arguments to refuse this situation so let's go for it.
+> 
+
+Thanks a lot for accepting this. I checked all the parser both upstream
+and downstream and I found this ""undocumented"" pattern of returning
+-ENOENT. [1] [2] [3]
+
+For sure it's a regression, we had various device on OpenWrt that broke
+from migrating from 6.6 to 6.12. I agree there is the risk you are
+pointing out but I feel this is a good compromise to restore original
+functionality of the upstream parsers.
+
+(the other error condition are -ENOMEM or sometimes -EINVAL for parser
+header present but very wrong)
+
+[1] https://elixir.bootlin.com/linux/v6.17.7/source/drivers/mtd/parsers/tplink_safeloader.c#L93
+[2] https://elixir.bootlin.com/linux/v6.17.7/source/drivers/mtd/parsers/scpart.c#L170
+[3] https://elixir.bootlin.com/linux/v6.17.7/source/drivers/mtd/parsers/ofpart_bcm4908.c#L47
+
+-- 
+	Ansuel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
