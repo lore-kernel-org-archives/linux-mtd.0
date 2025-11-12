@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E47ADCCF9F8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08A75CD13D3
 	for <linux-mtd@archiver.kernel.org>; Wed, 12 Nov 2025 06:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -13,50 +13,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Message-Id:Subject:Date:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=SV843cMTxzfZ9Gasw+DY8YI2TyMlxdNxbMJEWMyzea4=; b=bF8dhWKXjoVUIiuNWU2M2Oa0Cg
-	Eb5Sd+VjYA69Q1lA6iOAX1ko9BHWjeezG2G8AdSzirBIoXDDNy70Z+2UrJsA9gupar0/50RGYBzjV
-	XrH7Fz0kD0SSeaxfAIXXbxaoyNLmcNacmZUtBJgct0ZINfpEaUwLlglOjVt6n6/4+8/9HJM8xRfoz
-	n/1gJW/pnOXFGB7A6Yv+pEq5z59JSEG06XZ3Ux7vHcIcj0tfeRW/tw30AzxyEJOmBv1W9q6ugbmqC
-	CwZNAVC4coqMdtr4dyeIkDjXeP9UomN4rMoHedoUc+z1iKtFUQB2RmSxYbZZaLC8x+wqFv7XRPocm
-	/NKArNcA==;
+	bh=GCewBWXrp9vGauPU4chzXJjkfBw3f75WYuPO9hbIZIY=; b=VhWaq2cnAvYGXW3FQIx93r7lIw
+	2dQBQv7YblP22hMsXVsfpdPUSEpXtgfsrFMetCx4yT07k1UwpU7aLvys5WdGeIaxM+5Gqnrt5Pspf
+	9F67tLG2+3Py5vrHt3NCYlumaR1ZkzTiXkqAuUbaurE4DVL2BRP2vscjPMReqBkl3tpYB6Rnyv3cX
+	YSpdaEVynBQkZyEKwk26/CaJgO4/Wq7DiEJ1V1iaEvyIoyQrUvJgX6FTXL/BpBS6N3ui++AVvQMqa
+	aEqVxOMT6CUknVUjF/+2eabm9mV0H060qnqVe/3WWayrqQBZHcJOZsInouyz6smAntbByXIgH4nyF
+	GkLmoYBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJ4Sp-00000008CgC-2nUK;
-	Wed, 12 Nov 2025 06:36:19 +0000
+	id 1vJ4Sm-00000008CeT-2K4j;
+	Wed, 12 Nov 2025 06:36:16 +0000
 Received: from mail-northeuropeazlp170120005.outbound.protection.outlook.com ([2a01:111:f403:c200::5] helo=DUZPR83CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJ4Sm-00000008Cct-40ng
+	id 1vJ4Sj-00000008Cct-41Lw
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Nov 2025 06:36:18 +0000
+	Wed, 12 Nov 2025 06:36:14 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=j5Ff2hzLaGo1plUXqGf5+8p9hEasBnVHftTY42qmQfWQb65eGlUsK4pkTUWbDGlk1mTUnvRHhWD5sBtL/6wl5KYLbxkJdan/1IRTZePL8UvWNsL1Cg1ROQK5t5vTRcOD7TfRQKApgyNBUUenDYWupMR1jkDncZ5g+CbySse107c29sR2baMwVwC+kVBzjbObyho5j9Kh27qUZ5r0bkPgoPcHf9J9bDYY7Ylsj0gzWo6F09jYSSvQ1spjxQ4Xe53qS3M4/geotlNYI2dM4pS0inSreuHCy4BphFl64cJQMjngm9tugpQ+o2Lndv2bFkoZfUHldrNEodkNxRhh59aAxg==
+ b=f/1LiZEsorOfpbFcmrjAxF0+2fJfIpkzDSkflS8VJA+L/o+ZAWFFvKpqteAJfFtAdwt4PVsBkgWETldhFvBZ+uD/KENncFPToA/COLYC8Xs82WYUITiZQOXaOL4EPNZC4bCZ6kIJwQu+/EpbW17P+kRdQw8LDuxrGWaNxBIsDWiuzeCuRX27iw6ikPvPwtQh07rovasRGfUKmKAlFEWyLdeWJ0/lfSz56eWNnTAEdZ0ZwQasro2WkKW0y7X66jcesMW/y/poymWMQDWKpmtD9hmr9uIDDm7LDx4eAecpAq82npMM9XdnCYNX1s+DdCgg+qHW8IHS1cZivgbsFbw+Fw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RunJnqTqTUPygsSQzMHiAbCecp0YEtqYme/+VgtNSXY=;
- b=mkLXNM0yxf9DKQcFA2XQ3KST0gca52beb5CycMxBKRFMGT7oOySq76/Qt8MZs345CPTa9S+txCvv4el0qfpUSaUX6k++G0KGSVg3lpql4QWnBkFuXwsenhTOiuhZNE0/abK8imwOVCkHK+G0OrCvgONYG748F7IlOjEamitON0FFgLV2GJwZuxi86vD792qkazqSLTscfeCFfVanMQPM75LqyWGa0nsZEnR26JCcwfjuBar0+5X/sLl5KGWQlNakyjusj/FiAXQbff/vPaYmY4eTcNn03gNXFLQLVfM9CNpChOAAJfjWcV3vxNs9C79L6Vo0p1S1h4yFrboaSCcgxg==
+ bh=y/UaVx79feLzt/kwGhD1/HTo9b4GEKUxtKNcavU67kw=;
+ b=EfSGBfAnR6Fex83ojIp1fxvz2CAcED5kT8DN99UIKDzXzcvdMyEquv4bC8mnu43uxwUOyhpMZuSoOp9Khnmybg0HtTZFeekgEEEnmMLS3ARupDaL2SxAxyiM2C3XPUonGTwwLNyBmKHCV5Kc6qwIwBMTXnSMTMDt5ZoH9t/sytbqBrtv7XHNVrHtf01IJmsriSHb9wXuewRJtNxOTh+ovWhLZqxR9fTK3epQLPzxil51Uql/qnRPNMkEaZw2Su4g5JJWN0yFbOc1WbS3vlasN51LSIiE4i+7GG2TX1RfB3GuoO1MK8WKRVooXeEPonxAgrmlfmPQqfp4BYw+6sdY9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RunJnqTqTUPygsSQzMHiAbCecp0YEtqYme/+VgtNSXY=;
- b=f7OBgP8VJm7wZYxsy3FwI0q5g3UvifLxkCdznzr2allMgAt447BRLEb9qJifE1Eh+RWSTx97Y+KLnXuhrYMk1xzwyINPRDEBN5zro9wphZIH4Henu1rflPiMw42CuiTUELQdDIpwNZOESO8SdL7ahGvms+/JN6XD2O+dMLg95BT3YD4Y/8f9sn0+qA3O8p8ey0eE4XtxV98ighNtacS6TfrmtGn9d14NFe8Y3u+iVFzEfhSzTizK7Th6VIPkiLfmhQgezQxoEn4q+Z7WHSfjpM6BIrES1INgP6j/ygYaWhkZ8TE5vKlwOooDihvMdC+IVdMZcm9edLc2vYA7jnhJ1Q==
+ bh=y/UaVx79feLzt/kwGhD1/HTo9b4GEKUxtKNcavU67kw=;
+ b=OYfHEYuAYMlNIZ+KLIhbpnHPVMnrWELTPI8YRC4LGEfoEN2RIVQtJK4dbK7vxpcYUYahCnm1oFJJi4WtSqGDEcXoLbWizW+HqP7CMq1WgQfochApsHTDCf0Dtw6cocZPPrDQ5vnl/mblULC7fAmJzIHpAqbFiOpZmRQ2F6QdHAF/R8ovGz0wOkr3AenLcrTNtHLO1B0m+brV30KRJ66V6Mq9Dwis46z+1j+EXoT8Zls/XS7LTsO63vSK6IRMzjHxi4wrVT2LYkTidi/LrO5lulRuiVlsZR8qZIf8kjr01BvoY8VhR0/kATuqB048R6V2lZd9A6FuUJSJ62h8UKVlug==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from DU0PR04MB9496.eurprd04.prod.outlook.com (2603:10a6:10:32d::19)
  by DB9PR04MB8187.eurprd04.prod.outlook.com (2603:10a6:10:24a::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.16; Wed, 12 Nov
- 2025 06:36:15 +0000
+ 2025 06:36:08 +0000
 Received: from DU0PR04MB9496.eurprd04.prod.outlook.com
  ([fe80::868b:3935:5e0f:6a33]) by DU0PR04MB9496.eurprd04.prod.outlook.com
  ([fe80::868b:3935:5e0f:6a33%6]) with mapi id 15.20.9320.013; Wed, 12 Nov 2025
- 06:36:15 +0000
+ 06:36:08 +0000
 From: Haibo Chen <haibo.chen@nxp.com>
-Date: Wed, 12 Nov 2025 14:36:21 +0800
-Subject: [PATCH v2 3/5] mtd: spi-nor: micron-st: use SFDP of mt35xu512aba
-Message-Id: <20251112-nor-v2-3-8699383714b9@nxp.com>
+Date: Wed, 12 Nov 2025 14:36:19 +0800
+Subject: [PATCH v2 1/5] mtd: spi-nor: micron-st: rename the die_late_init
+ functions
+Message-Id: <20251112-nor-v2-1-8699383714b9@nxp.com>
 References: <20251112-nor-v2-0-8699383714b9@nxp.com>
 In-Reply-To: <20251112-nor-v2-0-8699383714b9@nxp.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -66,11 +67,11 @@ To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Haibo Chen <haibo.chen@nxp.com>, imx@lists.linux.dev
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1762929419; l=6839;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1762929419; l=3812;
  i=haibo.chen@nxp.com; s=20250421; h=from:subject:message-id;
- bh=9z04Ep0G5ElhiVUuj0x/xZiFASLE/QZ1KwvnBGySPBQ=;
- b=TMUlhO3TJMhEP2wb8AJPc1Bhkst64PECLFbcihAHh/rMgzikNAJgiKagf4Ita5hPAIbljyT8w
- 6EeQobrKM8JB0VOSYaUMXwItk8EnTH4J4XMI4w/WX8kzaL0Rr+bGwBX
+ bh=SM+ARwu3tWLUueEvcjbe4AknlOqtRSUPy4ZdW/TaTcg=;
+ b=OOD4+T9VsfOtJCrkUSOe+zj6RZ9D7hed3RYI8cVDgp8V4H9swcDUdf58XysNmQ/Aw929r82Y5
+ X+H0Q0xl33kAAbZnGjQyDLEoN8EvnFrB6xtUbe/FhmnXMGXV3/D4jXV
 X-Developer-Key: i=haibo.chen@nxp.com; a=ed25519;
  pk=HR9LLTuVOg3BUNeAf4/FNOIkMaZvuwVJdNrGpvKDKaI=
 X-ClientProxiedBy: SG2PR02CA0075.apcprd02.prod.outlook.com
@@ -79,98 +80,97 @@ X-ClientProxiedBy: SG2PR02CA0075.apcprd02.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR04MB9496:EE_|DB9PR04MB8187:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4d710171-c1bd-4d77-6ebb-08de21b5c764
+X-MS-Office365-Filtering-Correlation-Id: 1e675e3e-51aa-417d-b691-08de21b5c342
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|19092799006|376014|52116014|366016|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?elBwRkNSUEcwbWJyeE1sdGFpVklJT2JheHdqNVBDaWs1bi9zR1hYZytwRFV0?=
- =?utf-8?B?NU9YbUJkdDJoTnZXazMzNDZndmpNdWdpRmoyaDRtQjlWTE9zZUZQK2psay96?=
- =?utf-8?B?RVM1T2FHb3ZuMGdCVmcrZ0lCMTA3eHNSRGFsNzFPSW1qbDdMbVVzc2dneWlW?=
- =?utf-8?B?alFiQzN6RUExN21mS3QwNHdCRTNNWkFTdk5JVDVPS2VibXJHcGhDT1NvZlJH?=
- =?utf-8?B?TGZRNUFmbCtpaHQ3THZsNVpQR3VSa3RFcjkrbU91NHkyR1lWUXBrU1BqdUNz?=
- =?utf-8?B?MUpTb3pEMjREbnRLRW1udzBlRXZ1SGpmRUhIQWlEcTgyKy9SNDFidGNtVzFw?=
- =?utf-8?B?Ym9uTVo5NkRHazZ0dVhBTSs1bkxvczVUTTgwOG9DbEtxOGNlYVlGR3BaS1Fn?=
- =?utf-8?B?STF4aVdhZStOdlZWNTVsbjBiOE9jQ0sxNmEwSXM5ZGR1dXVMc0I4TUlCT2R3?=
- =?utf-8?B?V1NrZmlHRWFVV3JRK0RTaWdJdit3OUdIRWFiaU5ZSTZzUThOeXFOM29NZDVO?=
- =?utf-8?B?dmxxWmlmS2pzd1dxU0FpTDV4MkYvYTJYMnRwdExHZ1FBTnRxdFJzVlc3MFBh?=
- =?utf-8?B?b3lyLzV5N054VG1NRWVQSkgrcUFteDRTckVLWmpTeXBrN1pPTWRhWlBqNFF5?=
- =?utf-8?B?U2c0eUVBL2NzUDdGT2pKRmM4RHRWSzcrUytyQlZVMzdScDlGWlZpdjVXK0lr?=
- =?utf-8?B?VEJXZWJvV28yMlU3WlR5dVZFbEcweXQxQ1JZdGx3VzlGeU1GUWVJTmh2SVlJ?=
- =?utf-8?B?UFVhaWo5QW1GQncxTUVGWnVhZmFNckUxYnd5RC9FYXJ3b3V5Q05vZ0txdTZz?=
- =?utf-8?B?aE15Yi9yR0I5QWtNT3A3bjNPQ2UxWnBMcnVOMTk0N3dqT0JxSW5HOXVmZVNt?=
- =?utf-8?B?SGtzREJXK0xuZVVwd1dBZStKWS9TNHc3NGY5Q3pmckZmOXM0d2ZySnJIb1o5?=
- =?utf-8?B?djlEemdQNnRhL0JlZGJXMkFPVHhYYnlsZXc0dlk1YXlQeEdZdmlwaTRCVlhR?=
- =?utf-8?B?NTdMQnZxYzNnZ1dqS0dWOVJOMUVRK3BxNXUxYk9EWFBCRWJiOWlrVzBPM1JF?=
- =?utf-8?B?NGhnSjIwMnlaVHZUQ0t1WWxsditHZjZFV0x4R2ZHaGRnSVA2WHBUbG1xMm9V?=
- =?utf-8?B?NXNsOG9oOWZ3L3Q2K3owdVJGd0xlcmxVTDE2cHNiWkZmazI5MVRVU0hkR3Vq?=
- =?utf-8?B?RmhmeFhERFk0Z1Jqdkp2S1E1L2JYZzF3dk81Y1pjOUMwaWYxSzlLb1IzTU1z?=
- =?utf-8?B?N0dYK3U3ZmI4NnhaZW4wSDlNbWtyUjNQZ2lZOVhoY2UzanpjZ1hOUU1pZFpz?=
- =?utf-8?B?dkhlYTJ3bG9IUkNrdzd5Y2dyR0xIU0RvaG1aSmVjTlloSFIzS3ZQaVZycHUw?=
- =?utf-8?B?WGRhTmRHcVNCR0JvdDJXK2tIMDExNW9oS2oxRXNTeUhqczFTVThhV3Rtd3Rt?=
- =?utf-8?B?azBpMTNiNUpPSmo4N1FPSzNMdWVqbHAxTDY3QUpqZ1o3L21HR0FhYm1MMG9o?=
- =?utf-8?B?VWExdzdBQzhFbmtxSVI0cWFGYVBucmFyY0x1U1BBc1NzZ2w3VXE2U25EV2Vu?=
- =?utf-8?B?bGVYMjFNNStaYVUzeGZxclY3dnowNFlhQUtRWXpIenpxUVBKSzlqSWlVUnRM?=
- =?utf-8?B?YTlWbXRmR044OW5Kd2tUYkNVVWl5ZnVnYWNpNVJWSUtISE9tV3pmVFpLemcx?=
- =?utf-8?B?TDdGTE82SVdsa3RRbWo3MTV0NS9xUzNVT2xSMEN3NFN2MUxWZjBNbHpQVXJj?=
- =?utf-8?B?NThYVUg1OHBMOXg3UEZkTTBqZGQ4M2hLT3hBK0k2YUlOYWN4cXNiWnE3SVEz?=
- =?utf-8?B?ZDZzSElJb2hrbXBnbUxVRk9xN212bjhkaGxiOWhVR1JyNG5NdDZIeGU2R0Zz?=
- =?utf-8?B?d3lISlJqdUpHTVEzRDZ3TUp0VXg0U2t5RkNDTnM1aXZxOFlhNU02R0k0dFNU?=
- =?utf-8?B?NEJ6UkpDd05hRno5eHNQQUFCdmZLVU1ickhKSTFaekxPTFJiSVVlTjNodkZq?=
- =?utf-8?B?Z3BBYTVHRms5VUxaR3hSVWhiU2ZOYkRORzBndXBRNU0yUkxOSGpQSU8xNzVt?=
- =?utf-8?Q?pjZsAS?=
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?T0s1aUEzMzNtYkNyMm1XSGZDalY0T1FTWVVrOHQ5dVNFdWl1TTZscXN4Wkoz?=
+ =?utf-8?B?ZWx6ajIxMUFPdGJvNXZvUHJ1ZVMxV1JKQnN4ejJMSG40K0ZNRzBlSHFIMlBZ?=
+ =?utf-8?B?RGw0TDZxL0s4NS9Ybk9maTBlVXNjd3E5NklmcnZmdlkrVzFOcW95RnlpaEJp?=
+ =?utf-8?B?cFBFeXBJRlpsZGR6NTFKRWZ3YVhQektMbUZxTEFUbWxpRkEyR0ZZbVVhcWx6?=
+ =?utf-8?B?Q3c1Z1Q1SWoxeGlrQ2hYbFRaZVlUeEh4UUt2eURjUXV1Q3ZWa3VhK1BTeWly?=
+ =?utf-8?B?NVR1ZFFTS3o4bXZ6OEJUUUVtWjBvM296TTlHZzc2cjZKVXNOWVhsb1lFdURl?=
+ =?utf-8?B?ZTJkWlRuNzNmWVFsZzlRRThmWHpqSWtJNmovYjNJQllzR1hiSlFNM3A4akQ2?=
+ =?utf-8?B?T2RBVTI1ZVNVQXJLWUlRSEVkVHlOcm9Hb2VVU0d0cVdZc1NzcjV1VG1TTDcw?=
+ =?utf-8?B?Vmp4NXZuMDY4QXZWTk9samF1aDBXQm1US2VNWXRuRkFXeXZwdmxaRzJuTmJS?=
+ =?utf-8?B?RVdyTDh0OHBHdkIyMHFZa0U3TTdXdHFLQjA4aVR3NkpzdE1Gd3FjWUI3dlR5?=
+ =?utf-8?B?Y0pzN09UZWhod1RlT3I0eVFHK3loWjlkTWpHUVN0dHYzdjYrbU9UNHNXYmNj?=
+ =?utf-8?B?RzZjTHQ4U2U4VmlQTVlrSC91Q3ZtdzVVU25EeWcxTmg2TjR4dmlheHFBRm1t?=
+ =?utf-8?B?YlM2bnorUU82c2FnZ2RDWHFpWUZoQ01mWFVnRjdPUS9xQmFtazlFc0lZT1VX?=
+ =?utf-8?B?TWFXS2VaZzlpMTd3UHVoTVhSUmRTdHdtOHpmL08wYTFpV3ZETXQ0QStXc0Zh?=
+ =?utf-8?B?cFpaamh5UWdrWHp5eVhSVzJuVHlVdG5BdzE0aFV6NDNHTkhESXZ6OXE2U1No?=
+ =?utf-8?B?bHFRZ0pSUUsyTmN3eU91V0hELzdQV0VIYXpqNnd3YmtxRzhib1YxTDA1SFVt?=
+ =?utf-8?B?MlFxei9wT2NPcXBTY1pCa25pNGIxRnpSMEtUWE0wR3VTdHN4YnFXZlBOaXNl?=
+ =?utf-8?B?ek4vRzZ1Z3VDL2pTUjZVT3V5MkxRUllvTTlHQXdyVU51aVVZclJ5UEdRallO?=
+ =?utf-8?B?d2hucHZnNExCRzI4WCtoSWRDaEowZVlLcGh1aTNzQXRoUG1hRnhKcGxFazVw?=
+ =?utf-8?B?TSthZ3BzZDY2UFlIVEhCc1BlOFlvUGNqSjVIeVVlVmhtR25ySTFqdHZ4Y1Fp?=
+ =?utf-8?B?OTM3QjI2Nm9BZTY1cUtZMVFQWjZhaVJvN2hvQTJyVXNmdHVXK2xLZ2JKOXlI?=
+ =?utf-8?B?VThMcGc0R0JHQVBKWHdhN2c4Q3Vwd0QxKzMwWUMwUWc2eTBnR0JMNTVqK0VE?=
+ =?utf-8?B?eHZWbHUyMVBPVUo4R0ZiSTZJSGkwTlRrLzY5NjMwMjJVV2V1SFBWSzJDSVlK?=
+ =?utf-8?B?RWhYTzlZQ0FHZG5FSXNtY0k5T3BFeWZiTytORWViYWdBazlLSzFiSnRkMk5N?=
+ =?utf-8?B?Q3ZoSHhCTnJUbWNZVm4zMURjY05WMDRZb2JKVDJXMWFMVzRNSzJpSDkvbC9Z?=
+ =?utf-8?B?ckNyaFZsKzR4WHVVWk9yOFdnNGE2bmxVckErV2RxdkNMVDFxYUVpUTNrTTdh?=
+ =?utf-8?B?dTZWL3gvUGtSQnpjZm42UXBoZEVRVUY4SDYybmo1bU4zNmtZL2dVeEV1MW1Q?=
+ =?utf-8?B?ditmcysyUG1PaW80RFREalVKL3lFN1Z5ZGhGYWhTTi9YNGU3aTJlNXpheE0x?=
+ =?utf-8?B?MS9mc3RwUVdGY3JocWp4ajJ6ajJMNlJHRGgwb3lxdDB5QWZoNmU4ZCsyRFFl?=
+ =?utf-8?B?SHhlSXN2ZFFDeEIyV1Jkai9XdUJVME1TUXlNTlBMclhXQ3hpa2hjSTNNc3pj?=
+ =?utf-8?B?aWluQTlPcVBPNHdsY29BWkRndVZvQWg3akZ6S3JLZGdOQkxVQ3RHTnhyaVJT?=
+ =?utf-8?B?cVZURXo4czRFTzVxYlFNL0VybysrVTh1eVZNQXIzV0ljQTMweTVUNmZqUE5Y?=
+ =?utf-8?B?NDlCeldFcEJBRDM2eExGRU45U2JWbmhCZmxKM1dBRkUvZUo0YmFQU0t5Qm5j?=
+ =?utf-8?B?am1zZWZtREp3WjM0M092S3BRRG5XSlh1TmZ5UDh0V3VMWTNsWXZBeXNOT3Mx?=
+ =?utf-8?Q?s9Wvtd?=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9496.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(376014)(52116014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a0Ftakl2SDF5VE1FbE05KzRjRXA4Z3pvTU0xQ1NxZWQ1M2t4bGc5RzlWdm8z?=
- =?utf-8?B?YnZOcjEwZDNZN2tWTW9sQ3pGdk9tM3dEZ2QvZG9BRGN5UElLcCtaRzVtOTBY?=
- =?utf-8?B?VEpjUzc4Smlwai9vRjRUK0Z5YTVWWFhIL0tyYmx2aXNCclhQR1FzRlZDWmJz?=
- =?utf-8?B?S1pYcStwK09iU2FkaVFOR0o0aXUxS1ZRM09aZ2JEMjFWQ1FhV1ZRcFhtZW9Y?=
- =?utf-8?B?VWZlQ0k3dmpLMk55cEl5T091ejlQL05mLzhkck80TmZreGdVNTB4NDBmTi9l?=
- =?utf-8?B?TnFvY0UwNDZIaXpNdnRjekJhRFZuRnpIWW1jQ2M4SVhRK3Y5SUNkcUNEejM1?=
- =?utf-8?B?Vk9PUiszMnhoT0hQNWRmaEl6bFFYbDlNYzd6TVNFUzhHZjBaa3NORlYzRWpj?=
- =?utf-8?B?QWZEaUI5Tnk4R1lXODJjT01vZ2l1U0xTbWp1TGEyMmtvK2tRcGpSRm5tSGVy?=
- =?utf-8?B?RUZHYnRpa1RBbHpkcTJGL1JhWGVNZk1oekUrZjl1ZjgxOEJVWmFsVnFnalZC?=
- =?utf-8?B?eXVVcWtFVGJ3d20xV2hDWWJlTTJ5VlgxWTNnUmFudDhyQXlGRTZxRVdocDBI?=
- =?utf-8?B?RXJtV0ZRYWV0NUZEMENOZENtN0l4QjZmRVZZNUhsYTg0ejk1cU9LeHYwNDJB?=
- =?utf-8?B?dFhEYnV0N0IrUUJ3MFlBbVducHZpNmlhNjZ1bW5DZnArNWFZVFcveEVGVjk5?=
- =?utf-8?B?K2w5aGl0QStUY1ZBNEcrNHluWVIyNm9QR2xkbUVDaVFkTllJc2dScWUrcml4?=
- =?utf-8?B?VndKc3oxbGNOUGpJOVBvWEZ1blhadng4a1RGU2F2S1hGWlQvbnd4WWtxWnls?=
- =?utf-8?B?dGZwVzVjT0N1bHZ5L0RwUkdVZElIVjV3ZXR1bWlmRGI2QWg1cVdib25JRlFt?=
- =?utf-8?B?a0toQ1dLR0xZa3czUHF3VTRycmJQTUlCOFVRYng2dXZHRzA1SWcxNDJDMjVp?=
- =?utf-8?B?KzIxQjRJRDhLN1BaWHlscWh5bXlSNGF0bzBMaGpsS2M3MnFNSG04T2M4cnZB?=
- =?utf-8?B?SlZkUFJvU0g3ekt4T1JxZm5COTRTSjFLTzlhRnNjY3pCOTltZkFObzV0UlZZ?=
- =?utf-8?B?dndDTHRiNGcvV2piY3RUQWNFZmRNdWpaNk1aYlB6RXVPd1haSUZnV3VmamJQ?=
- =?utf-8?B?VG40UzBJRnhjeVhrQjU5NWZhRmpKUXR2RTZxOG1sODFYRFNrNXBkQk4xU3BG?=
- =?utf-8?B?N0FTL3EvMFZhLzZrRzNSanM4U0Y3RnB0bGJNdDR6dWMxTGlhajVJY2xlSFo4?=
- =?utf-8?B?U1V0Y25STGdjSmlReEdXdEhPb25sOW0vb0xZcmhianRzRXlNcEJ5VUV2VDR1?=
- =?utf-8?B?T0pML0V6WW0xYnV1ZHFST2Y2SG9oR0RLK2VOREZnUE0zcGUxeHA5M3pWaHE2?=
- =?utf-8?B?M1pYd1dlQ2NSSWEwVkIvNUlDa05Rc3pKaXZwcnBnRHRxK1Mrbk8rbFNIdGp1?=
- =?utf-8?B?bHFtRzVKdERDTU5MY3F4QldmcmRCMlcyTSt2ZXdOcXp3VmorT0UyS2RFRlNl?=
- =?utf-8?B?WE1uOEE3MDkxRnA1eUYwTTZXWmI5MVo4TjlXU1owSGlyRnhPUG9Wb0M3TW9Z?=
- =?utf-8?B?UWpSajd0R2RwSmIzL3RuZk93YmpYUFBLaWk3TzJ3WVBxTlZIS1NmcGFnYUxH?=
- =?utf-8?B?NHA5dktNMk1pRDFPaCtjYWVkNXppOWFzNVBMdmJNZmVzWmpxWERwRTBzdUNT?=
- =?utf-8?B?czFhZG1oZENwM3htTHo2em1nWDFkUmZTMnJnYngxbFFMM2w0b1M4dlZvdnVR?=
- =?utf-8?B?c1d0MVV2aVQzTzVMejQ1RDBVRXRqM3Q0T3NxaUlBYURvWHJTRVpwN3dlUnY3?=
- =?utf-8?B?M2ttL1hqVzl4bHhzOWw5cVFvbDFCSlVWNXh0QnFKOVk4cWVVaC9Ea0k3cWdK?=
- =?utf-8?B?QmpMcks1cm9PRDlUTUtSWU00MEtZRzVqNTQ2TWx3TElLZmgvN3pnU1NmSEhw?=
- =?utf-8?B?UTZFcW9RVDVaYk1HRm9CblBjaG16OVRLUFNaSjhCNkVONVk3QURKdGYyRGVt?=
- =?utf-8?B?Z05jNWdQdGx3cncyNEtNWURTTXByZ1B4OThZeHZKR1B2R3FKd29jb3hDSEFI?=
- =?utf-8?B?Y25MR2l2MVp2MFdnMk54U2x0QWtzMkhHdGVlK2R1MTR2Mk1saStZZU43bGs0?=
- =?utf-8?Q?dCmhIbLtTq3CMJI/YmBNUnSqL?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ck1idEhsYjczQmtkUkFTV1d6Z2hIcWJnTFhKeDNUcW1BSm1LOEt5Z09xTyto?=
+ =?utf-8?B?dWc3cG1jYTlTVHFZMlpwNE4yZUFaaW5IYUZQc0dtdWJnVTNnRUYzRFBEczdX?=
+ =?utf-8?B?NEoyY0xnNUZYQmVGUDh1Z0RSb3pBNHBlV1lpSXI5SGJSUUFuajZUZWJkeWtO?=
+ =?utf-8?B?RWN5NkQ0NEhyUWVTa1RQcXcvbUF3TS80WFdNb2lKUjEzZXZqRlVFeDZ0T2NU?=
+ =?utf-8?B?Yld2eWRIVExXYUVJaCtMOEh3aTlrNUFSdHFsWFVkWXp4MzVIRnhYL1FzeEln?=
+ =?utf-8?B?ck9SSmRNem5ZRUp5dUdaQ3FTT1owTUp1MEdKbmQzb1I4OERwZTRDYXl5MEZt?=
+ =?utf-8?B?Wk5WUzB0bW8yVzFscXJaalJxTFNvQ2dROVVQT1BETERhMDBmd2pIL2F1TmVJ?=
+ =?utf-8?B?TlpQb3hQL1FjMlVQc0w4M1lJcXdESnNoem5lTlRuN0Y2M0JYdHB0am1OS09X?=
+ =?utf-8?B?d1ZtcENPMnFXSnJJZDhKUTFEYk1GT0VXSnQ5RUV2MDg2T1pKN0NYbUo1bFN1?=
+ =?utf-8?B?cHRoeEFrRnhSangwcFpGd0VoNWxGZmxwS0JETDJmTEVMYzN5a2J3TkZFcDlB?=
+ =?utf-8?B?Nm01OHJ2Q1VuRGxaeEw1Smx1VFdtdWExWjcwempma2dnK3VIaDVpZ3JoaEVr?=
+ =?utf-8?B?UVA4SWJzby9MNmVRcnZva0wxWlVsSlI3c1FXU1BSSDFBcXozN05QNFRqRGZE?=
+ =?utf-8?B?ZHl2SWViOGFxN20veEtnVElVUlBucTFyL3BHNkVDTEZ6VjIrS1VqblZrcFkw?=
+ =?utf-8?B?eVdMeGFyMGdvcmtnczg1UzJnUGRSczFyNGVEcldlTjYyaUh2T25mWnBEcEJn?=
+ =?utf-8?B?UDc2VkZmZFZvM2NCUDNOS1pBdHVWL1dZc2p2TXFyNXMyZUxONjVJcmRaY0xi?=
+ =?utf-8?B?RmF3RU5FNk4zeXh6ajhRd2RVc3JqODI0aEoxdTBqTVZDWXRhaFF1UUtKbGd4?=
+ =?utf-8?B?b2tLK2IvWjVGRHhUelpSaHV5UnRMcVduTTBPMGJaRVhWT1ZLUGY1K2xiN2M4?=
+ =?utf-8?B?M1J3bUk5U2l1cTJ2T1RVemNwRmkvMFpSRHUvT293NDZpVEpPVzRGaEZOcndx?=
+ =?utf-8?B?S3JzVnBCQjJQRUtON2hqVTdsb0M0QmE0MUgzRXlZZll0VEF3dk9SNXY1aEJU?=
+ =?utf-8?B?U0p3VEphdmNIK1hrQUkrRFdLaUtPSlJoM01ZOGZGTk14dE83MTJvaWQzdERZ?=
+ =?utf-8?B?bkpBVGUwTHV3K0I2WSt5NDhQS0YxeExpY0h6UzZQd21UZTFuYUdsc280eDRE?=
+ =?utf-8?B?UE9oTUJRTHVEemNXeEpiSWE2a0ROdnV3cGM1UDhzOUJrZUhJb3B2V0RIL1R3?=
+ =?utf-8?B?TmRIVTY3Zk81K0hxUC9XamRTZThGMHNuWWdoWlliQUROTlJaa0lhQzhwU3hl?=
+ =?utf-8?B?UXhEdWVWczlUS3FCQUhScnVtWnh4eFZBMTJhRENYNGNsMGl6cDFwWm80L3BZ?=
+ =?utf-8?B?QlMyQTlWTTBmT1Q1K0lRcDJSYW5lS0NsS1N4bklmWEhIT0lkVDFyOHc3NGF4?=
+ =?utf-8?B?bVRwQjZYbFlEVjBkWGt6RjNuWDlsS1VnbmtRayswWEZycTQvb3FSemJpTDUw?=
+ =?utf-8?B?L2hmSHM3T0VBVVMvZ3pvOG1XY0dKZzN1OUlzMkZCam82VUxoZllPMVU0N21v?=
+ =?utf-8?B?Ti9GcjN0Z0YrKzZHYm5uTEg2blN2MHljOHVPYllVeG9vTWhIMWVRL3o4NXlP?=
+ =?utf-8?B?cERaSFF0cG44eC8yd0g4SFFQQ1FTMklXbDRvV2tndzRWTWpHeUZXeEdPdmtx?=
+ =?utf-8?B?bks3WFdmOU9QdGFVak5LeDdrN3V0Y0Iyd2Z3QmZIR1dNbjJ3dHpQMWxSOUNL?=
+ =?utf-8?B?cjVjUVFob296RnRhdDZLWnBOMEZaK0tvNml0QldVbFdxT0tPbG8wZGxmaXl4?=
+ =?utf-8?B?dzVaYUJxQzdyYXlwQ3V1QjRHVkZvOHM2UzNrRldaZ2cvblEya1dmNm1RYVho?=
+ =?utf-8?B?R1RSeFJIeGt3L2orNkFJTVJIa2hNcURsTi92SzdXUkZPelBvMzEvanlTM2Qv?=
+ =?utf-8?B?d1hsYnI2YzN3WjdwQnllMDRncVRVSTJoQVl3ZkhMQVl6TERaelhObnFCK042?=
+ =?utf-8?B?Y2l3dTFDOUxGd0J3YUFXRzBMc05JOXNuUHBRVnptVFkxc3hzZ2Y0elJhbFVR?=
+ =?utf-8?Q?9H3y3GoaNJCtls3utb3G52OpZ?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d710171-c1bd-4d77-6ebb-08de21b5c764
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e675e3e-51aa-417d-b691-08de21b5c342
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9496.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2025 06:36:15.3021
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2025 06:36:08.3994
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +qGjPJWx3WceaWqPWAq0AhlYpFO79ty9pX4P4NI2Ezuw/dfxErqMmIh/c/QtFXaaoPOWeYfVPYENktVvSpYdQQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: TZs7XdusIZQE9AZ16q9UumQJhxcZGaqVzjupb9T6ETbmHYzsptO/H690UMdqYLHW475jqU7+AwXkI1B5jF5omA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8187
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251111_223617_148021_032F1967 
-X-CRM114-Status: UNSURE (   9.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251111_223614_005656_A0049774 
+X-CRM114-Status: GOOD (  13.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -187,172 +187,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mt35xu512aba has SFDP, already contain the necessary
-information, so remove size and some flags here.
+st_nor_two/four_die_late_init() also suit for micron chips,
+so rename to micron_st_nor_two/four_die_late_init(), and move
+these functions up, then micron can use these function without
+declaration.
 
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-
 ---
-1) This mt35xu512aba is populated on the imx943-evk board, was
-   tested at 200MHz using nxp,imx94-xspi SPI controller.
-2) root@imx943evk:~# cat /sys/bus/spi/devices/spi8.0/spi-nor/jedec_id
-   2c5b1a
-   root@imx943evk:~# cat /sys/bus/spi/devices/spi8.0/spi-nor/manufacturer
-   micron
-   root@imx943evk:~# hexdump -Cv /sys/bus/spi/devices/spi8.0/spi-nor/sfdp
-   00000000  53 46 44 50 0a 01 03 ff  00 08 01 17 30 00 00 ff  |SFDP........0...|
-   00000010  84 00 01 02 90 00 00 ff  05 01 01 06 a0 00 00 ff  |................|
-   00000020  0a 00 01 08 b0 00 00 ff  ff ff ff ff ff ff ff ff  |................|
-   00000030  e5 20 8a ff ff ff ff 1f  00 00 00 00 00 00 00 00  |. ..............|
-   00000040  ee ff ff ff ff ff 00 00  ff ff 00 00 0c 20 11 d8  |............. ..|
-   00000050  0f 52 00 00 39 61 99 00  87 8e 03 d3 ac a1 27 3d  |.R..9a........'=|
-   00000060  7a 75 7a 75 fb bd d5 5c  00 00 70 ff 81 50 f8 a1  |zuzu...\..p..P..|
-   00000070  2f cb 27 8b 00 00 04 01  00 06 01 00 ff ff ff 8e  |/.'.............|
-   00000080  00 00 00 00 00 00 00 00  00 00 00 00 ff ff ff ff  |................|
-   00000090  43 0e ff ff 21 dc 5c ff  ff ff ff ff ff ff ff ff  |C...!.\.........|
-   000000a0  00 0b 80 9e b1 81 b5 85  00 f0 ff 9f 00 0a 00 00  |................|
-   000000b0  00 0a 1a 88 10 00 00 00  ff ff ff ff ff ff ff ff  |................|
-   000000c0  00 00 06 01 00 00 00 00  14 01 81 03 00 00 00 00  |................|
-   000000d0
-   root@imx943evk:~# sha256sum /sys/bus/spi/devices/spi8.0/spi-nor/sfdp
-   809cbdfc57ae56771e017ff7bfdae7122afcbcbb238f2502420cfe3b2fe20d11  /sys/bus/spi/devices/spi8.0/spi-nor/sfdp
-3) root@imx943evk:~# cat /sys/kernel/debug/spi-nor/spi8.0/capabilities
-   Supported read modes by the flash
-    1S-1S-1S
-     opcode        0x13
-     mode cycles   0
-     dummy cycles  0
-    1S-1S-8S
-     opcode        0x7c
-     mode cycles   1
-     dummy cycles  7
-    1S-8S-8S
-     opcode        0xcc
-     mode cycles   1
-     dummy cycles  15
-    8D-8D-8D
-     opcode        0xfd
-     mode cycles   0
-     dummy cycles  20
-
-   Supported page program modes by the flash
-    1S-1S-1S
-     opcode        0x12
-     8D-8D-8D
-     opcode        0x12
-
-   root@imx943evk:~# cat /sys/kernel/debug/spi-nor/spi8.0/params
-   name            (null)
-   id              2c 5b 1a 10 41 00
-   size            64.0 MiB
-   write size      1
-   page size       256
-   address nbytes  4
-   flags           4B_OPCODES | HAS_4BAIT | HAS_16BIT_SR | IO_MODE_EN_VOLATILE | SOFT_RESET
-
-   opcodes
-    read           0xfd
-      dummy cycles  20
-    erase          0xdc
-    program        0x12
-    8D extension   repeat
-
-   protocols
-    read           8D-8D-8D
-    write          8D-8D-8D
-    register       8D-8D-8D
-
-   erase commands
-    21 (4.00 KiB) [1]
-    5c (32.0 KiB) [2]
-    dc (128 KiB) [3]
-    c7 (64.0 MiB)
-
-   sector map
-    region (in hex)   | erase mask | overlaid
-    ------------------+------------+----------
-    00000000-03ffffff |     [   3] | no
-4) root@imx943evk:~# dd if=/dev/urandom of=./spi_test bs=1M count=2
-   2+0 records in
-   2+0 records out
-   2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0213893 s, 98.0 MB/s
-   root@imx943evk:~# mtd_debug erase /dev/mtd0 0 2097152
-   Erased 2097152 bytes from address 0x00000000 in flash
-   root@imx943evk:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
-   Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-   root@imx943evk:~# hexdump spi_read
-   0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-   *
-   0200000
-   root@imx943evk:~# sha256sum spi_read
-   4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-   root@imx943evk:~# mtd_debug write /dev/mtd0 0 2097152 spi_test
-   Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-   root@imx943evk:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
-   Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-   root@imx943evk:~# sha256sum spi*
-   f7d59270621c04aac29df9fc1742d0a0882047c618833ecf1577a57d109060ab  spi_read
-   f7d59270621c04aac29df9fc1742d0a0882047c618833ecf1577a57d109060ab  spi_test
-   root@imx943evk:~# mtd_debug erase /dev/mtd0 0 2097152
-   Erased 2097152 bytes from address 0x00000000 in flash
-   root@imx943evk:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
-   Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-   root@imx943evk:~# sha256sum spi*
-   4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-   f7d59270621c04aac29df9fc1742d0a0882047c618833ecf1577a57d109060ab  spi_test
-   root@imx943evk:~# hexdump spi_read
-   0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-   *
-   0200000
-   root@imx943evk:~# mtd_debug info /dev/mtd0
-   mtd.type = MTD_NORFLASH
-   mtd.flags = MTD_CAP_NORFLASH
-   mtd.size = 67108864 (64M)
-   mtd.erasesize = 131072 (128K)
-   mtd.writesize = 1
-   mtd.oobsize = 0
-   regions = 0
-   root@imx943evk:~# mtd_debug write /dev/mtd0 0 2097152 spi_test
-   Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-   root@imx943evk:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
-   Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-   root@imx943evk:~# hexdump spi_read -n 20
-   0000000 f3af 8ec6 388f 56a7 4b69 0859 7bde 910b
-   0000010 ea09 0762
-   0000014
-   root@imx943evk:~# flash_erase /dev/mtd0 0 0
-   Erasing 65536 Kibyte @ 0 -- 100 % complete
-   root@imx943evk:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
-   Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-   root@imx943evk:~# hexdump spi_read
-   0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-   *
-   0200000
----
- drivers/mtd/spi-nor/micron-st.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/micron-st.c | 70 ++++++++++++++++++++---------------------
+ 1 file changed, 35 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 81a9bead1434056cce0893c97bd35ea248c15894..4cfa89b0fc3dcc16fe47fc58c043971f4c474ba4 100644
+index 187239ccd549510c6e9a6eacf4ae41158287e077..92eb14ca76c57f29ece1edb3fe652c56d1c2888f 100644
 --- a/drivers/mtd/spi-nor/micron-st.c
 +++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -187,14 +187,11 @@ static const struct spi_nor_fixups mt35xu512aba_fixups = {
+@@ -127,6 +127,38 @@ static int micron_st_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+ 			micron_st_nor_octal_dtr_dis(nor);
+ }
  
- static const struct flash_info micron_nor_parts[] = {
- 	{
-+		/* MT35XU512ABA */
- 		.id = SNOR_ID(0x2c, 0x5b, 0x1a),
--		.name = "mt35xu512aba",
- 		.sector_size = SZ_128K,
--		.size = SZ_64M,
--		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ |
--				 SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP,
- 		.mfr_flags = USE_FSR,
--		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
-+		.fixup_flags = SPI_NOR_IO_MODE_EN_VOLATILE,
- 		.fixups = &mt35xu512aba_fixups,
- 	}, {
- 		.id = SNOR_ID(0x2c, 0x5b, 0x1c),
++static int micron_st_nor_four_die_late_init(struct spi_nor *nor)
++{
++	struct spi_nor_flash_parameter *params = nor->params;
++
++	params->die_erase_opcode = SPINOR_OP_MT_DIE_ERASE;
++	params->n_dice = 4;
++
++	/*
++	 * Unfortunately the die erase opcode does not have a 4-byte opcode
++	 * correspondent for these flashes. The SFDP 4BAIT table fails to
++	 * consider the die erase too. We're forced to enter in the 4 byte
++	 * address mode in order to benefit of the die erase.
++	 */
++	return spi_nor_set_4byte_addr_mode(nor, true);
++}
++
++static int micron_st_nor_two_die_late_init(struct spi_nor *nor)
++{
++	struct spi_nor_flash_parameter *params = nor->params;
++
++	params->die_erase_opcode = SPINOR_OP_MT_DIE_ERASE;
++	params->n_dice = 2;
++
++	/*
++	 * Unfortunately the die erase opcode does not have a 4-byte opcode
++	 * correspondent for these flashes. The SFDP 4BAIT table fails to
++	 * consider the die erase too. We're forced to enter in the 4 byte
++	 * address mode in order to benefit of the die erase.
++	 */
++	return spi_nor_set_4byte_addr_mode(nor, true);
++}
++
+ static void mt35xu512aba_default_init(struct spi_nor *nor)
+ {
+ 	nor->params->set_octal_dtr = micron_st_nor_set_octal_dtr;
+@@ -193,48 +225,16 @@ static const struct spi_nor_fixups mt25qu512a_fixups = {
+ 	.post_bfpt = mt25qu512a_post_bfpt_fixup,
+ };
+ 
+-static int st_nor_four_die_late_init(struct spi_nor *nor)
+-{
+-	struct spi_nor_flash_parameter *params = nor->params;
+-
+-	params->die_erase_opcode = SPINOR_OP_MT_DIE_ERASE;
+-	params->n_dice = 4;
+-
+-	/*
+-	 * Unfortunately the die erase opcode does not have a 4-byte opcode
+-	 * correspondent for these flashes. The SFDP 4BAIT table fails to
+-	 * consider the die erase too. We're forced to enter in the 4 byte
+-	 * address mode in order to benefit of the die erase.
+-	 */
+-	return spi_nor_set_4byte_addr_mode(nor, true);
+-}
+-
+-static int st_nor_two_die_late_init(struct spi_nor *nor)
+-{
+-	struct spi_nor_flash_parameter *params = nor->params;
+-
+-	params->die_erase_opcode = SPINOR_OP_MT_DIE_ERASE;
+-	params->n_dice = 2;
+-
+-	/*
+-	 * Unfortunately the die erase opcode does not have a 4-byte opcode
+-	 * correspondent for these flashes. The SFDP 4BAIT table fails to
+-	 * consider the die erase too. We're forced to enter in the 4 byte
+-	 * address mode in order to benefit of the die erase.
+-	 */
+-	return spi_nor_set_4byte_addr_mode(nor, true);
+-}
+-
+ static const struct spi_nor_fixups n25q00_fixups = {
+-	.late_init = st_nor_four_die_late_init,
++	.late_init = micron_st_nor_four_die_late_init,
+ };
+ 
+ static const struct spi_nor_fixups mt25q01_fixups = {
+-	.late_init = st_nor_two_die_late_init,
++	.late_init = micron_st_nor_two_die_late_init,
+ };
+ 
+ static const struct spi_nor_fixups mt25q02_fixups = {
+-	.late_init = st_nor_four_die_late_init,
++	.late_init = micron_st_nor_four_die_late_init,
+ };
+ 
+ static const struct flash_info st_nor_parts[] = {
 
 -- 
 2.34.1
