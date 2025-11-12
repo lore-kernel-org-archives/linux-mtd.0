@@ -4,91 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64562CCFA1E
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Nov 2025 09:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC17CCCFA1A
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Nov 2025 10:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J4HlL2uV5B07RvE6EYAKrSXaBmOmZwbvDYa6pInS5D4=; b=oyTjMZEVLTOscn
-	AhYvtwi1HGZmMEgicCfhmXVpSzPsDhupysYnYtPELy3Eo9tiow975k+Ut94a5OwHl0j9cE+YMVxPU
-	1TxU4aQrXTD7zEfyDOBdU6S4NJYu9KBFP0xUO56OV1gjT9htMfnxXVJWqaWkJcHDmi93gwvdLEhtk
-	ZU9geCrhyJjWhi5ugGdef6J909hVZ032hvouW3vAx3O45588tlF2B0ztp46YtYtpmS/P152VpSZdQ
-	wbQagoU/4Df35qT/GO3qAnxpclwpFhhkXO2ZD9ytJWdBZTeinMsMy8+MMkhayDZxuokBz+vVb7Rmg
-	vVC4n3qQT4SytpSM9xCA==;
+	List-Owner; bh=8rRwz6K5OKjh54L+dL+OSuPdB1h7628piKIz/vB7cd4=; b=nmaVbjSZezW9RN
+	gYSDVQHfEzIOqYRV/xEJmftqIVL3KFYyHP9MapAufUAOWyNyqa4b0GwxJKRe7dv9TqHCOfdbRgJC2
+	aZGWmqss3t9ZbX2+vXagqrFWPor730UGrDLMGhkzTXcidMODFt+w5dhkilkHeZPEibOgvNn5Bjfrl
+	4blq2+j8D2TkTkMP0NwGxQf16BuND+RbIsUxu9v9NNsoYZLErWK/gEo0JBpXeqlvPOA5o5dnI79ZW
+	eI8ZSTmR8gTMeNqhLltPsBOZ+1LQhG8lNu6iUTk/iINEYyN/CYk8RIIgA+grX1qotelEtSta5/TXH
+	fvmalCGOBPekL8e1OiUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJ7Nt-00000008UaD-2rNW;
-	Wed, 12 Nov 2025 09:43:25 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1vJ8R6-00000008c9L-0Mlx;
+	Wed, 12 Nov 2025 10:50:48 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJ7Nq-00000008UZU-2uWr
+	id 1vJ8R2-00000008c8n-34o8
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Nov 2025 09:43:23 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4777771ed1aso4147605e9.2
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Nov 2025 01:43:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762940601; x=1763545401; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y2sZZR13em2kFK9vuHhMagBqaNxcu6HaXgiKpBFvnH0=;
-        b=OYkei69Pw63SALfd5sKIj4wOqHCOj8L6kFYy229v3/iYS1DQrfdw/NNN7wVs8L2wrT
-         7NULVGZQy6DbDuAdNGxXo0t+Kv5gfDB6biyFQNNUVP4O1tipxE7VEuH95JA3DMTitL/3
-         4GFAT7rWjgEapQLocA3zab7qpNCqOowLf5x1WUa/x1duW4Kjyc7FugizbdvCx3qe0LAM
-         DWxiecGcXgQM/W9IG242ShKjwYAPwC/k7rCka0tsT4SfbCFKgbzkWOVlOhSJsQBBbWDL
-         4kuNC+u4jyOKgiqhbraE1hSgKfgzZA/xo0k0Ce55OccXtsYQHHWRnYSZIRqOxLnWriUr
-         A49w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762940601; x=1763545401;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y2sZZR13em2kFK9vuHhMagBqaNxcu6HaXgiKpBFvnH0=;
-        b=VsUhgIQueY9w1GOpzTJR8GeJpGDutO+2nfVSpj3oVLxMyZJwWHjllKWE+2FeH9hNiX
-         XMwtdGY9khsDSMbQ+VyOJO7b+nBvyao4FIg+xQXrL3IpE7xhHO61egOVa3tvP/UR+6Nl
-         mwfJKLShvPe5JowHgBOzpWmZdyBxpSP3tcw/yfr1xXmKK1lSUCgFYdseutBdStgPiJE8
-         eZTyZjiIulMMlApgEbg7wC5qd1cytFsIMiHXWs97noX5joPPy4VnBDClVed5oAQrYS3V
-         f+DgqgvWTEBxV7TiPBQoVeZ4BD29uDBqkdhJeDqdZPy9ON+qinPqQFviJ9OqzgbhEOQQ
-         0xAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFrlMGLbxjsd7cyUmv2DAAeoDK5+2kMjS+q1gAJphxMZRjq0I5GwrndfYDrik/HFBvNoUShw38DGM=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwODk9nnbDj1JgAZ92mvIuKaJMNtnR9xIOn80J13wZ4xYwDoCrl
-	n3/Tb8KBnEUR49oy/JwRty5jXYZgqgF/cW35UKDY9esZycmUkB+V44Em
-X-Gm-Gg: ASbGncvtv0YCCEgW5yrs7lHvlaGRDzvxf76BwLb/5tOdI4TVYi7W5b+J9M4opsEDWWU
-	ZT0qSYuCCGuzMlMtwzaddHdOLvtp9VYQB58qa/iHSbpPHABBf1Z9iKyDj0lOW99nPUOJUhAUtT0
-	FnAbISk8WNihBZKl3Gpt4nSr2dCzYPfb8hrtYZfq3kKFPKVCoKzhWBpvfr6g/csau/0LLh9c45p
-	Zu0YQPvk0ZOCQlJJi6nYOXJAFny1IioCKEQkrNIRW0fU/yNy14FvABs0ROhx0UMZ8YYQto0U6zN
-	LJ7CvDQLR95MB6OBTTzZiC9VeuaaxR+siwpB6TuR5yQm6tNoSkWnUZKtfc+Y5DZWkr6rqEHigiU
-	Up3qJsYgzXCc2z40gJDZ73q+KpoQwYwgUS2bum18TnAz2ca1+XTWzM6VnD/LisROxbLKdPVHaA2
-	douARt76kGdJWUp23MefFBs65XtE9j
-X-Google-Smtp-Source: AGHT+IFWRLil5c9QrjCfrciKn0pCpnUeeuzlRecgpwrZi29ini7Fw+ZEevTQknhxTgQmz8r53cyk/w==
-X-Received: by 2002:a05:600c:3550:b0:471:9da:524c with SMTP id 5b1f17b1804b1-477870468eemr22102045e9.12.1762940600679;
-        Wed, 12 Nov 2025 01:43:20 -0800 (PST)
-Received: from Ansuel-XPS. (93-34-90-37.ip49.fastwebnet.it. [93.34.90.37])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787e8e743sm24556415e9.15.2025.11.12.01.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 01:43:20 -0800 (PST)
-Message-ID: <691456b8.050a0220.3c21b3.5c4c@mx.google.com>
-X-Google-Original-Message-ID: <aRRWtShR36d_16eS@Ansuel-XPS.>
-Date: Wed, 12 Nov 2025 10:43:17 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
+	Wed, 12 Nov 2025 10:50:46 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 181C54E41667;
+	Wed, 12 Nov 2025 10:50:41 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id C59876070B;
+	Wed, 12 Nov 2025 10:50:40 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 768F3102F1699;
+	Wed, 12 Nov 2025 11:50:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1762944640; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=0+unaSKUFdFHJhkY4RjZVR+uXBrXziaM/doRPyYlSzQ=;
+	b=mizS3kv6uoJgba8W4pJm2oS1mrMVnDNPFVJGQtU9ZgSJ701Y4ZdRvd79WEdYs8x9oSCo2s
+	eib7tTolLYvjh7nAX9IW6fY5GD8Dgi75aZpad/kIZtuuxlEK/m2S4KhbjV1/IpEbPG4YM2
+	BFwpY/jSKDhFPWfHHmicaiK5iFxE+KicBh5szT0Jp1pNgGc7eO6h5gHI90amSMyC1579zS
+	Bz8F33OK+M9WL7/qMB9goIa/Hl52oAH+mAW7AeSQ+z73GxrFCxw7aWX7rc5S4dU7E2bytQ
+	Vego2TDdagK+fyvI6188iQ+SZ7qAHIr4CIpclwQWxXBNFSNm/te+7wtwhoAAEA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  stable@vger.kernel.org
 Subject: Re: [PATCH] mtd: mtdpart: ignore error -ENOENT from parsers on
  subpartitions
+In-Reply-To: <691456b8.050a0220.3c21b3.5c4c@mx.google.com> (Christian
+	Marangi's message of "Wed, 12 Nov 2025 10:43:17 +0100")
 References: <20251109115247.15448-1-ansuelsmth@gmail.com>
- <87y0ob7fyy.fsf@bootlin.com>
+	<87y0ob7fyy.fsf@bootlin.com>
+	<691456b8.050a0220.3c21b3.5c4c@mx.google.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Wed, 12 Nov 2025 11:50:36 +0100
+Message-ID: <87ikffikxv.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87y0ob7fyy.fsf@bootlin.com>
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251112_014322_747162_89118BAB 
-X-CRM114-Status: GOOD (  23.02  )
+X-CRM114-CacheID: sfid-20251112_025045_090481_384651D3 
+X-CRM114-Status: GOOD (  22.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,55 +76,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 12, 2025 at 10:33:25AM +0100, Miquel Raynal wrote:
-> Hi Christian,
-> 
-> On 09/11/2025 at 12:52:44 +01, Christian Marangi <ansuelsmth@gmail.com> wrote:
-> 
-> > Commit 5c2f7727d437 ("mtd: mtdpart: check for subpartitions parsing
-> > result") introduced some kind of regression with parser on subpartitions
-> > where if a parser emits an error then the entire parsing process from the
-> > upper parser fails and partitions are deleted.
-> >
-> > Not checking for error in subpartitions was originally intended as
-> > special parser can emit error also in the case of the partition not
-> > correctly init (for example a wiped partition) or special case where the
-> > partition should be skipped due to some ENV variables externally
-> > provided (from bootloader for example)
-> >
-> > One example case is the TRX partition where, in the context of a wiped
-> > partition, returns a -ENOENT as the trx_magic is not found in the
-> > expected TRX header (as the partition is wiped)
-> 
-> I didn't had in mind this was a valid case. I am a bit puzzled because
-> it opens the breach to other special cases, but at the same time I have
-> no strong arguments to refuse this situation so let's go for it.
-> 
-
-Thanks a lot for accepting this. I checked all the parser both upstream
-and downstream and I found this ""undocumented"" pattern of returning
--ENOENT. [1] [2] [3]
-
-For sure it's a regression, we had various device on OpenWrt that broke
-from migrating from 6.6 to 6.12. I agree there is the risk you are
-pointing out but I feel this is a good compromise to restore original
-functionality of the upstream parsers.
-
-(the other error condition are -ENOMEM or sometimes -EINVAL for parser
-header present but very wrong)
-
-[1] https://elixir.bootlin.com/linux/v6.17.7/source/drivers/mtd/parsers/tplink_safeloader.c#L93
-[2] https://elixir.bootlin.com/linux/v6.17.7/source/drivers/mtd/parsers/scpart.c#L170
-[3] https://elixir.bootlin.com/linux/v6.17.7/source/drivers/mtd/parsers/ofpart_bcm4908.c#L47
-
--- 
-	Ansuel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMTIvMTEvMjAyNSBhdCAxMDo0MzoxNyArMDEsIENocmlzdGlhbiBNYXJhbmdpIDxhbnN1ZWxz
+bXRoQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IE9uIFdlZCwgTm92IDEyLCAyMDI1IGF0IDEwOjMzOjI1
+QU0gKzAxMDAsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+IEhpIENocmlzdGlhbiwKPj4gCj4+IE9u
+IDA5LzExLzIwMjUgYXQgMTI6NTI6NDQgKzAxLCBDaHJpc3RpYW4gTWFyYW5naSA8YW5zdWVsc210
+aEBnbWFpbC5jb20+IHdyb3RlOgo+PiAKPj4gPiBDb21taXQgNWMyZjc3MjdkNDM3ICgibXRkOiBt
+dGRwYXJ0OiBjaGVjayBmb3Igc3VicGFydGl0aW9ucyBwYXJzaW5nCj4+ID4gcmVzdWx0IikgaW50
+cm9kdWNlZCBzb21lIGtpbmQgb2YgcmVncmVzc2lvbiB3aXRoIHBhcnNlciBvbiBzdWJwYXJ0aXRp
+b25zCj4+ID4gd2hlcmUgaWYgYSBwYXJzZXIgZW1pdHMgYW4gZXJyb3IgdGhlbiB0aGUgZW50aXJl
+IHBhcnNpbmcgcHJvY2VzcyBmcm9tIHRoZQo+PiA+IHVwcGVyIHBhcnNlciBmYWlscyBhbmQgcGFy
+dGl0aW9ucyBhcmUgZGVsZXRlZC4KPj4gPgo+PiA+IE5vdCBjaGVja2luZyBmb3IgZXJyb3IgaW4g
+c3VicGFydGl0aW9ucyB3YXMgb3JpZ2luYWxseSBpbnRlbmRlZCBhcwo+PiA+IHNwZWNpYWwgcGFy
+c2VyIGNhbiBlbWl0IGVycm9yIGFsc28gaW4gdGhlIGNhc2Ugb2YgdGhlIHBhcnRpdGlvbiBub3QK
+Pj4gPiBjb3JyZWN0bHkgaW5pdCAoZm9yIGV4YW1wbGUgYSB3aXBlZCBwYXJ0aXRpb24pIG9yIHNw
+ZWNpYWwgY2FzZSB3aGVyZSB0aGUKPj4gPiBwYXJ0aXRpb24gc2hvdWxkIGJlIHNraXBwZWQgZHVl
+IHRvIHNvbWUgRU5WIHZhcmlhYmxlcyBleHRlcm5hbGx5Cj4+ID4gcHJvdmlkZWQgKGZyb20gYm9v
+dGxvYWRlciBmb3IgZXhhbXBsZSkKPj4gPgo+PiA+IE9uZSBleGFtcGxlIGNhc2UgaXMgdGhlIFRS
+WCBwYXJ0aXRpb24gd2hlcmUsIGluIHRoZSBjb250ZXh0IG9mIGEgd2lwZWQKPj4gPiBwYXJ0aXRp
+b24sIHJldHVybnMgYSAtRU5PRU5UIGFzIHRoZSB0cnhfbWFnaWMgaXMgbm90IGZvdW5kIGluIHRo
+ZQo+PiA+IGV4cGVjdGVkIFRSWCBoZWFkZXIgKGFzIHRoZSBwYXJ0aXRpb24gaXMgd2lwZWQpCj4+
+IAo+PiBJIGRpZG4ndCBoYWQgaW4gbWluZCB0aGlzIHdhcyBhIHZhbGlkIGNhc2UuIEkgYW0gYSBi
+aXQgcHV6emxlZCBiZWNhdXNlCj4+IGl0IG9wZW5zIHRoZSBicmVhY2ggdG8gb3RoZXIgc3BlY2lh
+bCBjYXNlcywgYnV0IGF0IHRoZSBzYW1lIHRpbWUgSSBoYXZlCj4+IG5vIHN0cm9uZyBhcmd1bWVu
+dHMgdG8gcmVmdXNlIHRoaXMgc2l0dWF0aW9uIHNvIGxldCdzIGdvIGZvciBpdC4KPj4gCj4KPiBU
+aGFua3MgYSBsb3QgZm9yIGFjY2VwdGluZyB0aGlzLiBJIGNoZWNrZWQgYWxsIHRoZSBwYXJzZXIg
+Ym90aCB1cHN0cmVhbQo+IGFuZCBkb3duc3RyZWFtIGFuZCBJIGZvdW5kIHRoaXMgIiJ1bmRvY3Vt
+ZW50ZWQiIiBwYXR0ZXJuIG9mIHJldHVybmluZwo+IC1FTk9FTlQuIFsxXSBbMl0gWzNdCj4KPiBG
+b3Igc3VyZSBpdCdzIGEgcmVncmVzc2lvbiwgd2UgaGFkIHZhcmlvdXMgZGV2aWNlIG9uIE9wZW5X
+cnQgdGhhdCBicm9rZQo+IGZyb20gbWlncmF0aW5nIGZyb20gNi42IHRvIDYuMTIuIEkgYWdyZWUg
+dGhlcmUgaXMgdGhlIHJpc2sgeW91IGFyZQo+IHBvaW50aW5nIG91dCBidXQgSSBmZWVsIHRoaXMg
+aXMgYSBnb29kIGNvbXByb21pc2UgdG8gcmVzdG9yZSBvcmlnaW5hbAo+IGZ1bmN0aW9uYWxpdHkg
+b2YgdGhlIHVwc3RyZWFtIHBhcnNlcnMuCj4KPiAodGhlIG90aGVyIGVycm9yIGNvbmRpdGlvbiBh
+cmUgLUVOT01FTSBvciBzb21ldGltZXMgLUVJTlZBTCBmb3IgcGFyc2VyCj4gaGVhZGVyIHByZXNl
+bnQgYnV0IHZlcnkgd3JvbmcpCj4KPiBbMV0gaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGlu
+dXgvdjYuMTcuNy9zb3VyY2UvZHJpdmVycy9tdGQvcGFyc2Vycy90cGxpbmtfc2FmZWxvYWRlci5j
+I0w5Mwo+IFsyXSBodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC92Ni4xNy43L3NvdXJj
+ZS9kcml2ZXJzL210ZC9wYXJzZXJzL3NjcGFydC5jI0wxNzAKPiBbM10gaHR0cHM6Ly9lbGl4aXIu
+Ym9vdGxpbi5jb20vbGludXgvdjYuMTcuNy9zb3VyY2UvZHJpdmVycy9tdGQvcGFyc2Vycy9vZnBh
+cnRfYmNtNDkwOC5jI0w0NwoKVGhhbmtzIGZvciB0aGUgZGlnZ2luZy4gSSB3aWxsIGFwcGx5IHRo
+aXMgdG8gLW5leHQgYW5kIG5vdCAtZml4ZXMuIEl0CndpbGwgYmUgc2xpZ2h0bHkgbG9uZ2VyIHRv
+IGdldCBpdCBiYWNrcG9ydGVkLCBidXQgdGhpcyBnaXZlcyBhIGJpdCBtb3JlCnRpbWUgZm9yIHRo
+aXMgcGF0Y2ggdG8gYmUgdGhvdWdodCBhYm91dCBhcyBJIHBsYW4gb24gc2VuZGluZyBteSBmaXhl
+cyBQUgppbiB0aGUgbmV4dCBkYXlzLgoKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
