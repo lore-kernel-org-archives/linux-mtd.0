@@ -4,185 +4,159 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7266FCCFA1A
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Nov 2025 14:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C390ECD4F57
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Nov 2025 08:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:Message-ID:
-	Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=scSZelhddGoGRCo2pEoftI2R94VqijHzHqIy751zr1c=; b=ZOU6tGGV3S6vnE+4t7WCR9TqQ5
-	YiKeDODqdn7rKqV6ZKZuZ0XdBm8V/BLRgGdpCTWyikixAyOlv+qKjw/p5AEUrzj3NSGQJZuiWi2F7
-	uC0PngxkTBjvuDdp8HZ2arCWoJmxD8W9GSjGbIqQla57mPABG1VjFoQXKvuHxYtWaLkaPQ4GD2JP4
-	8tRGs+qkHa/uEN1ryhEdAmvhyanzC4HUIKWpPcHXCdk4YLhOdc8CsM2JwXm6mjZ+lVx9PFp1CHpJK
-	Ai2cBBt4UhPFuUkoNvE+jXNairAEVDkk8D4C6XBAHsM78BQIpTl1AEJKoIcmZ2/ap0b6BJEjdAQ1a
-	tPLKfBPA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:Cc:From:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=C86gnq4117HQ16iQzkSwkciEcwBaos0l1xOxgDJQC9Q=; b=I+tZxflwRPUwpI
+	txFGqsq5ylA5LszX4LhQOWu/dD+wZD9Y/P8MUyWzl1E4gV53g+BSsTB1fVdgTssU9/D/3VIBcfx3m
+	tRwCjx7l1SdkF1Io3zTlsUqEb5yub0owpNkJRb1Cmr/LdcOl4xyHpGhCHYtxfPTJcVuaqUw+DF945
+	mcLADtFeDtyJVHNBH9afDSwq3nHu5ZhSOCai0wPZvmETF6q65+k60BjQDdflYdhVpZtSzQZaU7d/Q
+	4KNsgS92sOGgfiX17GlkbkRvU0BiEUobrStDNGzAT50XaqiO8LrU7THfEq5lAneYZmoNpquyc7KDN
+	CRo16ZvPICZN4AXzbQUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJCIT-00000008zq1-30lI;
-	Wed, 12 Nov 2025 14:58:09 +0000
-Received: from mgamail.intel.com ([198.175.65.19])
+	id 1vJShz-0000000A6Kg-3SAa;
+	Thu, 13 Nov 2025 08:29:35 +0000
+Received: from mail-japanwestazon11020114.outbound.protection.outlook.com ([52.101.228.114] helo=OS0P286CU011.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJCIP-00000008zpJ-1sri
+	id 1vJShv-0000000A6KA-3szu
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Nov 2025 14:58:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1762959485; x=1794495485;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=vg5aN5BxuTejyO7i3CmMAHKTCUSpL2zNxJpdzbxVLd0=;
-  b=J6yo/BnyGROivWtjSYRzCEem0rq7onQdN9StOtP9Cxym1M7/I6cgTsE5
-   Q5CJ05YC3uoEDkODwSXquha/m9yE+MLuFd3sgTHgx/XbdqnQf+24yMdOG
-   v3BTvg0E/YYDgg3BKioVUK9ksPOHNnikcl0ASmyXOgjj3SIFB1bfLeAIO
-   iCWCcIahiEtQuTynZg+JVLXOZ0geFI0x5+F6X98Y9GHeLD+R/zbTfzBOU
-   CQku6k+ugHS3cT/am9/lEKs1ByRPC6dgr50i43ObSldWBxmJn4AamtERI
-   9EBtotN+EOkWjCmZcgRAEh03tZM+fQAZH5dv5BZiyTsrwKz384r23aqlp
-   w==;
-X-CSE-ConnectionGUID: c8fjVIsATESAZRGlKzbHXA==
-X-CSE-MsgGUID: fFnw/JOnRcqHDyuSw8wlhg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11611"; a="64905821"
-X-IronPort-AV: E=Sophos;i="6.19,299,1754982000"; 
-   d="scan'208";a="64905821"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2025 06:57:53 -0800
-X-CSE-ConnectionGUID: mHYOu9DmSCOYEib37WUDug==
-X-CSE-MsgGUID: DuUBkOWaS4atg6sRRWZ7dA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,299,1754982000"; 
-   d="scan'208";a="194431271"
-Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
-  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2025 06:57:53 -0800
-Received: from FMSMSX901.amr.corp.intel.com (10.18.126.90) by
- fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Wed, 12 Nov 2025 06:57:52 -0800
-Received: from fmsedg901.ED.cps.intel.com (10.1.192.143) by
- FMSMSX901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27 via Frontend Transport; Wed, 12 Nov 2025 06:57:52 -0800
-Received: from BL2PR02CU003.outbound.protection.outlook.com (52.101.52.64) by
- edgegateway.intel.com (192.55.55.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Wed, 12 Nov 2025 06:57:51 -0800
+	Thu, 13 Nov 2025 08:29:33 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=jfp90D1Tfry8J2+Q8jIYfGIeKU7GtrZ90yzmsdZtCbgcc7XZn8qKTueZtrcEN8PyLmPtPBXhx8uy0cI1nlyDOQUKU2GnRabK4Fox+1bbw9+tgEKeks6GeEI/fpcxsUYMxRgT5cH55TbAMtrjIOscv6KSn4LPb8rK9Yi5qFIlVuLlo6RkJrXJhMyqhByJmr9LooMYhrkG1EFeZvUVU6ti3OXxEz6wr2CSkGMtaNMOnLPfhKDV/Q7D6JuksqWOKn9wgvd9fGumyJ7gQrJPrPctY6p29l+4yiKkGSkiABPFgi0cfnkiUoxHcx8aRVENVSmJA+/pm6xTgrY67cyfxeugfA==
+ b=Vw8T43pQfqYErVzG0YmNI1Eu8vmpAgxukgZ+3oAWR7DCxXeiIl5CQeuktDGAFbw4yABrq1QkTj6lOcQp9yVacBYMP9w//IEGlNDWOdM5ZXez+SOo41sbM7yFu/EiGPaz5nb7WRbZELgTsU13O2FeZnBtYDXmMUJFEN5iEJ2DcS4Hn161+adhPSAXvQxUnJJ5XReRBaj0EL3vRjKFU3fzVU88bPtrrGk4s3IfCQ10jUu0h4IA3+OJXPBnOoGjjVzGS+++T13rDIi6qbwlClmC3c4pNio1ux4NgAr1zPWdbfPVzrunlKYAVb698vYL5CGBQWRYmuS1RDKIqXun46olgg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Rkn1GmeL5h2UGpI8tlppW817Rg0F2hmYF4iJsgbTxI=;
- b=AR3/jUwWvpYndt2FjunPZ+/ZzoN3qAPPIFvohso1xLgNK2gPKCvsYHPRtvpBEFHKouoIaNcNq5SFUIb31KHyNIgnxGJ7WIoIJ9iXe/a2p4AqilQKCrQvpS4ONRRfypCNmWhJbWooROQ41wKh0Q2vG0g5je1GksPVMbxXdU+46AALZIG8y/J+8EdBT0ToZDexJ/0MbPWfxcc/yoWOOgfCEYEY+SlGGb0keaSKy6+V0y3QwYNr5Wcvm/oR0G+G7KmZ5XwuKoaJTzUSjmmXnkDd79cD7moVXl7mf7bWSaAO2CrcSQcZUoNCylAt/xWE+lUPSKMT63nUjmtee2BbtO+pxA==
+ bh=47dcaO1FbOQ7arW2XIfB0UaeL2DG02KHlph2wzqNtnI=;
+ b=Mne+V/a9iDPdD2ZRx3jSOYB0zpGuj09oD/lL3fe3u+tH9bG25S2fWwFx0rEWASkH2BJbeLPjuR5zcmWnU60xvRPWzabeFPDSkbkDTvtatiXeTwtbKIv3HLyMFXTzFoRHzEp12PH3F0+FjpEF1uEXP4UUTZ/sa8fSqHSovQnSNK+Vzly7XuiC5Vrri09Qk5Ln052jdEWK2Jn7EFzoPnNPppby+jOluPfQ55nuEKhK9xUIdhyrkHZhM5q8B0UEa+QbUraZqM7igc0YvrAWO7dLIYrV4ZSDVCa1BsCsNHSq+tSe73LjgIyYhJIqQxhG/nF0cgiLnFnwL967iysY61C2MQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=lineo.co.jp; dmarc=pass action=none header.from=lineo.co.jp;
+ dkim=pass header.d=lineo.co.jp; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lineo.co.jp;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=47dcaO1FbOQ7arW2XIfB0UaeL2DG02KHlph2wzqNtnI=;
+ b=gJBxzDxxP4GVHBUJn+OBFlgCUoNvdW+wXVhOGj/IeKSkP5K1RtP4wqtLBT+sqL/azsYAyr9oZvvvEiAXfM9KeGIt7nsuk60C3sthWITs3ftUo1eLZ5d7TiTE5q9gfPi6OYz8/xWnIwmj2YVmlc8G3Qt9OGEhWYNZN1C2QblOWbWAGU1UUzUM6j2FWyQdjaT7C8MuXjtovPn9VshilsZb6BWrD7C1MTX+M4feug+dbxr4+gLNv930BE8rD8QFeCFrjHeZPUwAluDnDhZ4wWz35qB5OwmId0VWo/4c8YjwMDg5HBe5Lh6A6ZXZJR4qHSywg9bAo0jun9Ap8FXkRd1K/g==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by PH0PR11MB5111.namprd11.prod.outlook.com (2603:10b6:510:3c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.13; Wed, 12 Nov
- 2025 14:57:49 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::7141:316f:77a0:9c44]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::7141:316f:77a0:9c44%6]) with mapi id 15.20.9320.013; Wed, 12 Nov 2025
- 14:57:49 +0000
-Date: Wed, 12 Nov 2025 08:57:46 -0600
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-CC: Jani Nikula <jani.nikula@linux.intel.com>, Jani Partanen
-	<jiipee@sotapeli.fi>, "intel-xe@lists.freedesktop.org"
-	<intel-xe@lists.freedesktop.org>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Subject: Re: Possible bug?
-Message-ID: <3oma7kpe3fzt2kch3g7h5ejmpkni4arf3sm65gfojrkhu6ih26@seedyt6xjwhv>
-References: <caca6c67-4f1d-49f1-948f-e63b6b937b29@sotapeli.fi>
- <75a84e116f2f1120a02e8ff81ca5343621bd04fc@intel.com>
- <zh45kns66vc62eldccyoefrjtylkqpexns4hli2j7jqpwwhvzn@viqinx2he3il>
- <CY5PR11MB636652A1A7F88249BD81047DEDCFA@CY5PR11MB6366.namprd11.prod.outlook.com>
- <98df450751f934f3a5c20ec09a08b72ef8fa2763@intel.com>
- <CY5PR11MB6366FD61EF0FC69D077F80E0EDCFA@CY5PR11MB6366.namprd11.prod.outlook.com>
-Content-Disposition: inline
-In-Reply-To: <CY5PR11MB6366FD61EF0FC69D077F80E0EDCFA@CY5PR11MB6366.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BYAPR03CA0010.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::23) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+ header.d=none;dmarc=none action=none header.from=lineo.co.jp;
+Received: from TYRPR01MB15417.jpnprd01.prod.outlook.com
+ (2603:1096:405:286::14) by TY7PR01MB13682.jpnprd01.prod.outlook.com
+ (2603:1096:405:1ed::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.17; Thu, 13 Nov
+ 2025 08:29:18 +0000
+Received: from TYRPR01MB15417.jpnprd01.prod.outlook.com
+ ([fe80::1186:b5a0:9df9:a9ee]) by TYRPR01MB15417.jpnprd01.prod.outlook.com
+ ([fe80::1186:b5a0:9df9:a9ee%7]) with mapi id 15.20.9320.013; Thu, 13 Nov 2025
+ 08:29:18 +0000
+Message-ID: <9276ac09-7c7d-41df-9ee2-094f1c8edf93@lineo.co.jp>
+Date: Thu, 13 Nov 2025 17:29:17 +0900
+User-Agent: Mozilla Thunderbird
+From: Yuta Hayama <hayama@lineo.co.jp>
+Content-Language: en-US
+Cc: Yuta Hayama <hayama@lineo.co.jp>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH mtd-utils 0/2] mtd-utils: fsck.ubifs: fixes several undefined
+ behaviors
+X-ClientProxiedBy: TY4P301CA0053.JPNP301.PROD.OUTLOOK.COM
+ (2603:1096:405:36b::17) To TYRPR01MB15417.jpnprd01.prod.outlook.com
+ (2603:1096:405:286::14)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|PH0PR11MB5111:EE_
-X-MS-Office365-Filtering-Correlation-Id: b4e7b520-cbc9-4909-d71f-08de21fbd8d9
+X-MS-TrafficTypeDiagnostic: TYRPR01MB15417:EE_|TY7PR01MB13682:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8338e83d-396f-4821-81b9-08de228ebd04
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?09jT90uU59rqQuUWEpycX4GwRk4xaZo0hdNwaKgUhIl8abEdlt2bWRICnK10?=
- =?us-ascii?Q?ndKBBCnIDeFzFrJY9FpAEUUKYex5nafLXYIZl9xGBXHFWRGzt15EWqwEdHta?=
- =?us-ascii?Q?gGKDb5AnLHCYfJaJRuL3VIxigav7EgJy2DlRr6hV3KVOBcXN8PFPWT3dvwg1?=
- =?us-ascii?Q?PIioek3w9R0r0DpOogL5sCSHPNCYwr8yn9ftN3aPokltBIZL5WbTX22vqFCo?=
- =?us-ascii?Q?puS2gpY1cNs2x72iVMjJKEXgv5o2hZuD2R6DN+4hy/2U1q/y1mFeonKFm0QY?=
- =?us-ascii?Q?IbYIJS3WbfkQKErcplF0iTvkfh6uwS2KfFE7Z8VqOmdqeX3e240GLYfZWTJO?=
- =?us-ascii?Q?L1cRRlNy4U+yQSIL2dcIhprnEVWHp9RrMbNAo6ApE/fQMsHElu+wwj1bcKjL?=
- =?us-ascii?Q?odxQkQSGW5I1s6yXagm7WabWT1DH5pIRyDpyXRoAygzcrad4o7Qj0LCCGfUV?=
- =?us-ascii?Q?9VGm2rNe+HsgQ0R+cdxqmLIN4sSO7+sYaCDricXZT1bzagdUIH9jZHoyl683?=
- =?us-ascii?Q?Wyv0RFMuBHIg5/jJ3fweiKWNVGV4gvljlirMGycLtKChRexsSwYMtBqqy84G?=
- =?us-ascii?Q?8qH73uFcQMG4b7VdSNbo9rlQTMV+/O0vYZpf5tEbqN15a7M4b2mxwP3U5qyg?=
- =?us-ascii?Q?hiwurk9muwDJc2M9s7cWErvgwHr2+9DGqgr1QOL5QRibOE3z6lagZtt8++WU?=
- =?us-ascii?Q?nZB0HR2vMymRSoMl5GX2miI0VN1jdas6kNcCuJAjxaPTJGfaOCtxbHAMYliV?=
- =?us-ascii?Q?HhQV2aTCIbS7XG7bFZHHxVkuryBk4J9bpGI8cNE/i/fpWHLwFNVmTkSX824X?=
- =?us-ascii?Q?FTyG68gnES2q889VmuMo2NBCANN4oQ3E0u1LDLOU91+eQC+AdoHWSf62mkfR?=
- =?us-ascii?Q?22um9c7YLM40+BxjvTR9oVOaShzI4paVRCWTK+C7w/XnSUfMnO0yOF/rz+Wm?=
- =?us-ascii?Q?mx/HYdKBem0eM0PASMFRms7UmuBVDtDf1mBnmPE0/aHp8Zwmh+y31aG9gyrw?=
- =?us-ascii?Q?I6xe3upWJkQ6LNBVxJleQwHq5GfXJfC+Qu0mnD1R6XQQzq/szYoqvnE3XCNj?=
- =?us-ascii?Q?j2Mz7i5a3qIsIqRIZtFFQAyUcF9gq3b1LkDEg3WFpg9u3KZgBqv2rK9zrDKz?=
- =?us-ascii?Q?5rPDDrpzXuhhwgrb8BPdxoky6mtGYuYBNJ5EYFIt+JVgVkNAMjRo3BP5EQ0l?=
- =?us-ascii?Q?LevqkQKLRFNM69+4raGKMQlE8AfP5JPdzGKFbFaVcQs013FwUPey9cv+uKHJ?=
- =?us-ascii?Q?53i4iDLdTHyTgBWG8J7snzrzZSu4RclMFrehG+LOfR36OVYsb65IxFGOMvPF?=
- =?us-ascii?Q?t4u/ljJAGCQ6/VY5b0ZzIocOyc8Ojtp+SmixXoefU+rVeLMFFPo51aHE1L23?=
- =?us-ascii?Q?u0ChJQVB8xc7z+vweqpQhnnvpvJ1hx81WSBUG9l3LibxAOovCjHHjb/7IJAL?=
- =?us-ascii?Q?QCCFRjfmm4Zrv2p4EqUUFV2M2BPmAimUDUWA+NPubLG/1wj8cHK2FQ=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|13003099007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?bkxvSlFiVGxPSG0xT0hFZTcvYkJxb1dHeGF2bzFHNFdTNHN0bVFhb0pjODhB?=
+ =?utf-8?B?RGRRcnVudDI4TFBMRXM4eXZ4YlBoSDIzbEpscUwxaG1UYU53V3ZYbk9RMnBR?=
+ =?utf-8?B?RnpBdDNmTm5zbXV3YmNXVGc1OUpPSzhDVjdqYVNWSHpLWGhORzdsQ0lCSzVu?=
+ =?utf-8?B?RnAvQlBvRzJIOUY1K1F0eHI5d0VwdFBhTVVIMGJpN1hDa3V3dm9QZmdpV3BX?=
+ =?utf-8?B?enV4K0Z6cTRDZVEzYk9mQnJtclh6SEtab3Zyek8wTEdBOEx1ZDdNRjFjclN4?=
+ =?utf-8?B?ZE9KMmxnRzFvaUlPaW1QT3cxbFJQZHVlSEVDeTl4WEZpV1dXaEwxQ2srRmZI?=
+ =?utf-8?B?eHdqaUZoUDYxYU12SHBxV3hzenMxakpMWGNYdEY4TjlrdXZodXdBclRuWjdX?=
+ =?utf-8?B?M1VucmdmTWNmWXdpSmFVTVpCY2dJNFVneXJwanpxVHFaOW83cjdWdDRZMWUw?=
+ =?utf-8?B?QjF5UVhiV1dJbWVhMHliNFBEdlRYR2tSVGxjM3pzaml1MFhyTmZSZWVjT1pa?=
+ =?utf-8?B?dG1ZTGhMUUxNMlZFK0hmMUhmMVdNaGd4MXo3SXE2Z1Y5RUNsaVRxblZEcFZI?=
+ =?utf-8?B?YzROSkZKaGo5ZktyeEJzOS9oc1hQejJYeGhMK2RCZXhObDljdU91bTd3eUZr?=
+ =?utf-8?B?OTFHMjdFS2ptZzg1c0dJdGhaT2ordzZhRWNjYzdvS0JHQVJqWUhqZldrMml0?=
+ =?utf-8?B?UTJwcFRQZ3JkdWVWTzE3Yk5vSnJJMHhJTTFTRHNjNDJlL1E3OWYxVW5xU2JO?=
+ =?utf-8?B?V3dZTDRZT0Ridm02SGN3NDJ3VUUrSk9zSmNqOWUyYSs3U0QxbDN5SlBOQklD?=
+ =?utf-8?B?NGo1cmpKSU9sc0tOSlVFVkduOWlCcFVyMnV6ODBRS2o3K2wzZDJNNDR2dnA3?=
+ =?utf-8?B?NWRvMEhqalZrRnFnUFd5OGhhTk5PU2tmVTQvZ01CeDdzcVBXY00zdGdmYUtE?=
+ =?utf-8?B?bFI4S2xiVm5Ndmhja2x2aVBFYmxkRWY2cEhuY1V5UXJnb1BuOVVrVXl6b05W?=
+ =?utf-8?B?WmlOV2phSi9La1pZZGE2UDlHYzRTTHBydFNPdVVyYTdHZTl6Ri9YWkZsQlpj?=
+ =?utf-8?B?aEtWdzdWMTVvYUpOWndRNTI2ZDRuNXMveC9ZUE1YbDB2MG5udFBYY21NU0NN?=
+ =?utf-8?B?ZVlNTWsyVWRBNDFCRzJDYVowaktOME90RmFzYndFYzNsSlJIWDlDM1Q4b3Zm?=
+ =?utf-8?B?bTZpTzZ2SXdRRWVUUjVlaUhTUUxmekFLZkFFam5wVVJmcVM3OW5Odm5HOStY?=
+ =?utf-8?B?eVM4L2RjNzdUcWNhY3ZnenNSSHE1REdKY1FoTnQ1KzI0bnNTejF1eGkrL3Zu?=
+ =?utf-8?B?TTQ2R3ZqdG4wTmVmYnRsRFczSjEyZ2NEeVpFNWhucUNUNFhtTW9YTi9UdXlT?=
+ =?utf-8?B?bDkzSFNvTnhHcFdFYU1vT2NuTzZyU2JXbFU1SUhOaEtwYjFZMHZTd1NuTXVD?=
+ =?utf-8?B?c2d5bkt4RlFZdUtZSmlPb1dsTDRrQkxQc1VCRjhnZ1pmVlY5eXBHaGVHQmlM?=
+ =?utf-8?B?S1BzQnEvL2c2STV4Zm0rNGY1MFNQNDZrNXc2cTF5SUJ5a0x2S1Rydy9Da2lY?=
+ =?utf-8?B?aUNRTHc1eFk1ZHM0dFVSNkFOd3dRNEgzMWhjTmdWVzM5SlYrd0JXN3IvL0pD?=
+ =?utf-8?B?cVdBbHZyZmtMVXdsTXZLakxKclN4d3BqcTBaUHl5R0FlS3RQK1pNYWRvYS9m?=
+ =?utf-8?B?R0dCekF4QmV6QVB5TGU1bStxblhXQ1lvc1hmaWkyWmZ3Y1V1elNnN3FUcmxQ?=
+ =?utf-8?B?a25tN3dEd291dXJ1Ry9jdDNHUHlJcVZLTWJRcXRKTTRRT1BGWU91cVZiMVJv?=
+ =?utf-8?B?VlducXYyUk9VT3pJVVhwMThlQ2FxVVl1N0tTNGxiWlNRN3VuK1VqbzFYa3ZW?=
+ =?utf-8?B?K2kyVGh4UGp5UHZ1YWdBYnpuckM1WHhVMVBobTE2Vmd0Snc9PQ==?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYRPR01MB15417.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(13003099007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FEpl9GwVrAe5XUQVXt2UdNuXFGY/jvQLlPoO0g45QhIZ9Nxr9ZnrMsbYQT28?=
- =?us-ascii?Q?ElO3T0wS79iGp+3kkb9T94vqsVDLIK+BdbMdOx5Ve2OQh8mEM7kPPMA14ORm?=
- =?us-ascii?Q?xilyFWNJPbHbrsBKNGzAFLS1U3ugGIwLMRJEfsmnkJY8CXS2eaIbJQrvXuBU?=
- =?us-ascii?Q?0ufwnaCeJRnSXIoR3CXoolHxRGDusjXgGgnXGUVEDxEbcp6shBK7sqnOT0zz?=
- =?us-ascii?Q?gxG5HyHw3vBF56YVgKUFRR9/Fxe9r52mAaKw5UxNvlBxrChEFabWyO2tCtz9?=
- =?us-ascii?Q?zeYvqFYoh8cWd4fNrwb0tgys0rAAnCRVUeDuHg27JiZiNquZ6WiT0ThKliVQ?=
- =?us-ascii?Q?3CKiYMGnBgw2KAWLS1YItieph9cvOuLJfbi3R9f2Up+mw0YWJrxayodcQ50m?=
- =?us-ascii?Q?PPJYqig3e6PdmkVo9xTZVO++qAr9+7Ej7HcdM89R2Xt/f5005nUBy2n6vTbN?=
- =?us-ascii?Q?iDBS/I8uVvXUSHK5Yqm8KG3M5lD4b4WklmON11nWB52Jn0mTJNexQ62ra0rQ?=
- =?us-ascii?Q?yLsY3QrV2P6l7r/BMfhAuCkox3h46YtMXjuUY8uAelGupBA63swP4ZSPaSii?=
- =?us-ascii?Q?uSzF9pThIZop5/hxqCMks+FmL/NYHprVDkR7iaYAfhPFTxX+d/ez4t6ms5A6?=
- =?us-ascii?Q?Y4rH2tg45LWMdqUtiSmZgkjbnRGWm5p/lfv3IXs9cOgk4r99KQyGPaUuh5Dm?=
- =?us-ascii?Q?PPJRhFpVh8QvXy/zdABdJGVk6pjsqzLrbDWwYlVJaowiyOWHEtNxyn2vVVpO?=
- =?us-ascii?Q?MFY6JBH12y0OnmMcJUWTiGd6UyfCTkPCsQj9rsjmz+9FLcKZdhNsZVetzc0D?=
- =?us-ascii?Q?gDHbKW102Z7fhsdzk7fuNy02bk9yDqtuM7SGtsS1hBgaqd8K4DRs7aihfyGs?=
- =?us-ascii?Q?hSL44RtvCcwvYIznWlRLEGNw6IqCHbXOksptcgFirmMCrQTMU0t4gbCVbpjB?=
- =?us-ascii?Q?8DzKbbZaYrlaXUuw/RyJ9dmi+CTA5UCXHWc15IPTNAKzjF1m/PF4eBLoOtrE?=
- =?us-ascii?Q?g08xssiVRYEx/aaOOhQzP0YOCFcUtQQUx+6PLOHSg1TVu6w8rWYP5tTcPHSp?=
- =?us-ascii?Q?fu27K6pdMVDTJ9MuYa16Rz3tO7yCfMAQmETaJz5I3yE3fRjFoy6XzzJEtDT3?=
- =?us-ascii?Q?nc6sgjd5sFZbSiD+x+tKYae/TAgUwVbrl/MLNhwAMnitOBjIOBun+IP5IG2z?=
- =?us-ascii?Q?dwk020Git0u/4QQMK5Yq/47a9G8tLO++HfDBeL+Pa0wfncrdqL4lSECjFy8f?=
- =?us-ascii?Q?8JiSwRsjQ2LyLX4x8eSonwTLFrGSgWLI1jNwEdWKXFvEtpFF/ShWP9LhP4u3?=
- =?us-ascii?Q?9PZRrglCw++Miqu7Sf13w/2VDzw17G2/ztbOLuT06tNgGWPe+V83wG4H+06l?=
- =?us-ascii?Q?wNd1jYPbB5FfzANEBoKM2RV9VTEbwVPTdBfCjV1HKl05TathF5e3rfQ1iD9+?=
- =?us-ascii?Q?3Nk7ym9YFGkU9JNNNMR/AmrrwfoPk0tV5V0LRpKGTpYRtBDojWA5bqObrhIg?=
- =?us-ascii?Q?dr3PysPc37gYaPwt73KU+VoQ4O5WH3xopzIcf06zNqfdQdpi4xCn0qXiDhil?=
- =?us-ascii?Q?G0PeHpXUiSEzKfK7ztRiSXMUQBGMHYy+eq3uTvGKWsDazvPjCirYlOpFVIG8?=
- =?us-ascii?Q?SA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4e7b520-cbc9-4909-d71f-08de21fbd8d9
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVN0bWJscGVlZjJlczU4dU92bzVtMU9qelJvY21kRGFIZDJSak00VlgvVTlI?=
+ =?utf-8?B?UVlWVjZwbHZUcVlXREFHb1pHRjh3WFlhOUJ1bXFUWUg1Sy9xdHI2anZ1VEhF?=
+ =?utf-8?B?cXJiQmY1czVaUWR5UW1aaXNTVVl5bExmR0xyNUlmaWNMQzRLMUk5VUpRb1dV?=
+ =?utf-8?B?VVprZzRrVFB1SEZWbG5NR1pZNW9jTzdSb091dVlNMGcyTGdqSXJReHM5NkFZ?=
+ =?utf-8?B?aUFkeFYwaTBzS3JzVkZYdWU0UzBpcmV4UG9jWDU2TW1JanFVeGptRWs1L1A1?=
+ =?utf-8?B?UkovdDdHcWsxSUUzd1lsc0N2RmRCTWg2ZCtFM244aVIzZjhFNnJ0dGlPWkgy?=
+ =?utf-8?B?VnpMa3Rjb0lFYkYxbjd0V3FlUlorZ1Fva3c3TXNsTTI4Njd4REJkQ1paTDVN?=
+ =?utf-8?B?bGx1ZTVnM2NaWTBGNFdsMTFyT28zRHIxY25XUUtxQXdldVFtdlgrQXQwd1A4?=
+ =?utf-8?B?NGhaeTM1MjZyR0FaZ2JnRG1INE5OcW1iMEhhcXlvUmpiS3BEMWN1NXI5V1NP?=
+ =?utf-8?B?NnNYRXUvUzNVVi95dUZYYkZZSVFkblF6TDBOdVFjc1R2NDZjWGtQNW16RW02?=
+ =?utf-8?B?UUZvYTNOdFpaL0tqWGRiSlh0ODBNcHM2b0R6WjZEZFJCaEc1RGQzQWwwQTM3?=
+ =?utf-8?B?NlVlVFUxNWJHVlgrT2kyRmYyYyt3d2NiYWlsM1FRNGZ1QXdGOXBLNWp4djFV?=
+ =?utf-8?B?eHJXZ0kyQUcyMXU4QWhZUzhCUmhFaXg2TzlyMytHTlRueTZvS1hHYTRwYkVz?=
+ =?utf-8?B?TFJjU2ptMkxBbm1HUTgwSnhtOTQ5TTNudk5YcTFFaU50amlrbXFmV0tpbXdu?=
+ =?utf-8?B?SFBOMDdXckI2Y0xIMGhKaE82WXJqVlUyeC9LS05JZkh3KzFKQzhNa2RtNVda?=
+ =?utf-8?B?L1BCUTRSVEpaWlFrTnhrUHFFSUZDN0dUakZ4UHYxMHVSY3dvb25tWGt6K0RK?=
+ =?utf-8?B?bnZFbjdjRWF5THk5L2ZYenhqU1ZacVUrbFp1REQ5Z3NWeW0xd0dwdHlISnpF?=
+ =?utf-8?B?cVgvZ1o4U3JyL1IyTW9LZ3Bvc1BzbTZ6dVltY1BhWW53YnoxMHJ1K2VYSEMz?=
+ =?utf-8?B?SVRyTGxTY2JlS0NVODJpQUhVelJtNVNQRDFqdTgvUGoxb0pzUjErZDgrL1J0?=
+ =?utf-8?B?M2s3TFA5OWQzR1h2U3Z2UGY4ekVmbTB1NEtGZkVRN0NoSllqelZYeHM0MEpp?=
+ =?utf-8?B?TGdEeDFyUEJ4dytBdHB0ZGh4N0M2MnV5aDlJOGZqakl4cU9FZDR3UnN3Vklw?=
+ =?utf-8?B?aFVGODhlM2RpNzBVcHV5R0puaW4zM3JEc2UxckJVZUVMTFZqQm1uVUhZeWpa?=
+ =?utf-8?B?S3BrM3dJZml3UHhmMzlWMW9pMXBxVXZSdnFaUCtTRWhFZ3RlMWlNNHQyZmRL?=
+ =?utf-8?B?OGxrUnd2MzhNek5hdlFySjNmZHJ6b3NSWUJ5ZVErRmN6MHlsQzkyQzlRcTZI?=
+ =?utf-8?B?MDArVVRlSGd1dUdtYUtuc2ZISzA0YmVBNE1tVkRxNFJnSmZYa0ZST2FBZWJG?=
+ =?utf-8?B?Q1F5RWc0dXJTTE96a1c5R0FXVlFpeUowcDlBdXFlV01RQUEvZWxCUXhybGx1?=
+ =?utf-8?B?Y2NEODlIS2tQamJIaVpkWXVkZ3NjbHdtZmI2VUVRc3hEbTFzQzUvTHRrd252?=
+ =?utf-8?B?ZzMzMDlsekRlK0pueXZvaDkzc0RVWitKRlJMOGVLOEtJZDlteHFCWGlVUHU0?=
+ =?utf-8?B?c1pDQnUxVmJXR2ZKV3lsREswWDEyR0oxZ0tKbG5DcCtLTzA1NURmd1NKN3pJ?=
+ =?utf-8?B?RWxIRW9yRFBqMDVSZERjalh3am5oMXZtRmJjaVRmRGdBa2d3NHBqNThLLzZu?=
+ =?utf-8?B?NzBYMUlobEZjVDVvb0VJQk42dFBYUnBVQm0wYkdsNFdZcnFla2xLb1k2V2Zx?=
+ =?utf-8?B?a29uMXJ2VUFURStodHBOek56Wk1XdGFqQUlQZ1ZiKzJkVkQ5Zk96SWJ4Rmhk?=
+ =?utf-8?B?RWxhV3VibElJbVZUK285dGw5SVdvS2NEWUI2VkJXclFwd0VNdFVycVN4a2dX?=
+ =?utf-8?B?bmh3T1M4S25ocFY3dXZNY2tBQ3RXbGZqZklsN2RROFdHR05EZmdMWFVPOGhR?=
+ =?utf-8?B?Y1hRU1ZZaW00TVk3b2VneTYvT1BOTHhHWGZldlJnRkJ4QWpIYlpzWmg1L0hp?=
+ =?utf-8?Q?sft9CwfPRAJD2UBI8OF884fL+?=
+X-OriginatorOrg: lineo.co.jp
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8338e83d-396f-4821-81b9-08de228ebd04
+X-MS-Exchange-CrossTenant-AuthSource: TYRPR01MB15417.jpnprd01.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2025 14:57:49.3918
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2025 08:29:18.6179
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 850e1ad4-d43d-42a8-82ab-c68675f36887
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SVTMOAobhDIG2S/u+9I7ArUiG4ZsJEuApD/njPXAehiwI5T31Ev1s6mu8gSNyZ/kQw5IsxXZS6JieVzkQdJmBZ6jaXV2MThjidJ1W4k1opY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5111
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: V81DVvdimfzSCFxVdyTZquiBx6WbjyEyb0ZnzcLq3ZwJSByBaux/DuaKWzVNjBIVIVKBfB7J3uP6DCt1hJpiBQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY7PR01MB13682
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251112_065805_559065_A3807EC9 
-X-CRM114-Status: GOOD (  12.06  )
+X-CRM114-CacheID: sfid-20251113_002932_466894_4A611611 
+X-CRM114-Status: UNSURE (   7.01  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -194,45 +168,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 11, 2025 at 10:58:03AM +0000, Usyskin, Alexander wrote:
->> >> >
->> >> >It's probably due to struct intel_dg_nvm regions[] member being
->> >> >__counted_by(nregions) but regions[] is indexed before nregions has
->> been
->> >> >initialized.
->> >>
->> >> yeah... and we shouldn't silently continue hiding the ENOMEM... Sasha,
->> >> something like this?
->> >>
->> >
->> > In general, looks good for me, but I see that we can fill less entries because
->> of
->> >                 if (!invm->regions[i].name)
->> >                         continue;
->> >
->> > Let's leave 'nvm->nregions = n;' in place, only need to fix the comment.
->>
->> You have this in place, nregions already accouns for them:
->>
->> 	/* count available regions */
->> 	for (nregions = 0, i = 0; i < INTEL_DG_NVM_REGIONS; i++) {
->> 		if (invm->regions[i].name)
->> 			nregions++;
->> 	}
->>
->
->Yeah, missed this, so original fix from Lucas is ok
+The first patch fixes the use of pointers to out-of-scope local variables.
+The second patch fixes an issue where printf reads variables from the wrong
+address due to an incorrect printf format length specifier. Note that the
+former issue was detected by the cppcheck tool.
 
-I submitted it as a proper patch with commit message:
+  $ cppcheck fsck.ubifs/
+  Checking fsck.ubifs/check_files.c ...
+  fsck.ubifs/check_files.c:104:48: error: Using pointer to local variable 'ino_node' that is out of scope. [invalidLifetime]
+     inum, ubifs_get_key_name(key_type(c, key)), sn->lnum, sn->offs,
+                                                 ^
+  fsck.ubifs/check_files.c:71:31: note: Address of variable taken here.
+    sn = (struct scanned_node *)&ino_node;
+                                ^
+  fsck.ubifs/check_files.c:64:27: note: Variable created here.
+    struct scanned_ino_node ino_node;
+                            ^
+  fsck.ubifs/check_files.c:104:48: note: Using pointer to local variable 'ino_node' that is out of scope.
+     inum, ubifs_get_key_name(key_type(c, key)), sn->lnum, sn->offs,
+                                                 ^
+  fsck.ubifs/check_files.c:104:48: error: Using pointer to local variable 'dent_node' that is out of scope. [invalidLifetime]
+     inum, ubifs_get_key_name(key_type(c, key)), sn->lnum, sn->offs,
+                                                 ^
+  fsck.ubifs/check_files.c:84:31: note: Address of variable taken here.
+    sn = (struct scanned_node *)&dent_node;
+                                ^
+  fsck.ubifs/check_files.c:77:28: note: Variable created here.
+    struct scanned_dent_node dent_node;
+                             ^
+  fsck.ubifs/check_files.c:104:48: note: Using pointer to local variable 'dent_node' that is out of scope.
+     inum, ubifs_get_key_name(key_type(c, key)), sn->lnum, sn->offs,
+                                                 ^
+  fsck.ubifs/check_files.c:104:48: error: Using pointer to local variable 'data_node' that is out of scope. [invalidLifetime]
+     inum, ubifs_get_key_name(key_type(c, key)), sn->lnum, sn->offs,
+                                                 ^
+  fsck.ubifs/check_files.c:96:31: note: Address of variable taken here.
+    sn = (struct scanned_node *)&data_node;
+                                ^
+  fsck.ubifs/check_files.c:89:28: note: Variable created here.
+    struct scanned_data_node data_node;
+                             ^
+  fsck.ubifs/check_files.c:104:48: note: Using pointer to local variable 'data_node' that is out of scope.
+     inum, ubifs_get_key_name(key_type(c, key)), sn->lnum, sn->offs,
+                                                 ^
+  fsck.ubifs/check_files.c:106:40: error: Using pointer to local variable 'ino_node' that is out of scope. [invalidLifetime]
+   return insert_or_update_file(c, tree, sn, key_type(c, key), inum);
+                                         ^
+  fsck.ubifs/check_files.c:71:31: note: Address of variable taken here.
+    sn = (struct scanned_node *)&ino_node;
+                                ^
+  fsck.ubifs/check_files.c:64:27: note: Variable created here.
+    struct scanned_ino_node ino_node;
+                            ^
+  fsck.ubifs/check_files.c:106:40: note: Using pointer to local variable 'ino_node' that is out of scope.
+   return insert_or_update_file(c, tree, sn, key_type(c, key), inum);
+                                         ^
+  fsck.ubifs/check_files.c:106:40: error: Using pointer to local variable 'dent_node' that is out of scope. [invalidLifetime]
+   return insert_or_update_file(c, tree, sn, key_type(c, key), inum);
+                                         ^
+  fsck.ubifs/check_files.c:84:31: note: Address of variable taken here.
+    sn = (struct scanned_node *)&dent_node;
+                                ^
+  fsck.ubifs/check_files.c:77:28: note: Variable created here.
+    struct scanned_dent_node dent_node;
+                             ^
+  fsck.ubifs/check_files.c:106:40: note: Using pointer to local variable 'dent_node' that is out of scope.
+   return insert_or_update_file(c, tree, sn, key_type(c, key), inum);
+                                         ^
+  fsck.ubifs/check_files.c:106:40: error: Using pointer to local variable 'data_node' that is out of scope. [invalidLifetime]
+   return insert_or_update_file(c, tree, sn, key_type(c, key), inum);
+                                         ^
+  fsck.ubifs/check_files.c:96:31: note: Address of variable taken here.
+    sn = (struct scanned_node *)&data_node;
+                                ^
+  fsck.ubifs/check_files.c:89:28: note: Variable created here.
+    struct scanned_data_node data_node;
+                             ^
+  fsck.ubifs/check_files.c:106:40: note: Using pointer to local variable 'data_node' that is out of scope.
+   return insert_or_update_file(c, tree, sn, key_type(c, key), inum);
+                                         ^
 
-https://lore.kernel.org/all/20251111-mtd-nregions-v1-1-61db61e78c63@intel.com/
+Yuta Hayama (2):
+  fsck.ubifs: don't use pointers that reference out-of-scope variables
+  fsck.ubifs: use the appropriate format specifiers for ino_t and loff_t
 
-Lucas De Marchi
+ ubifs-utils/fsck.ubifs/check_files.c         |  20 +--
+ ubifs-utils/fsck.ubifs/extract_files.c       | 179 ++++++++++---------
+ ubifs-utils/fsck.ubifs/handle_disconnected.c |  10 +-
+ ubifs-utils/fsck.ubifs/problem.c             |  36 ++--
+ ubifs-utils/fsck.ubifs/rebuild_fs.c          |   8 +-
+ ubifs-utils/libubifs/dir.c                   |   8 +-
+ 6 files changed, 130 insertions(+), 131 deletions(-)
+
+-- 
+2.43.0
 
 
 ______________________________________________________
