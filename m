@@ -4,107 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32522CE8D4F
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Nov 2025 16:22:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D540CE8D55
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Nov 2025 17:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zo3YiE1K022eUmvqrRMgZWaU0WktPCYrrRkxKKJKN4E=; b=18XaKceg8NvoRb
-	VPECZY1x84My0FQ7jhEZWWwKQWgU5BQz37ssZ5oOWKZ3TJU6rh7qe6hv78V9ejbjqC0fwJHAGbI9+
-	OULPnpgRP4C0cs5POSe3T+i19VX3lNoW6mwvMsm/4eqcdWy3Y+zpdRaHrcp+heMyAtQ4slQKHEOQ3
-	Lqyq/KgcSHEhK7l3/hjm1VzDF2JK52qqo6haGMU9YE2EWQ5qVntru4uQhDvToX/5HzcTuUI8qwodn
-	ysfsCmgfFhgPMgQf4tKje8Y+DEYeWrnRiYZTnAhYnrbY2hSli1lLoEx2gYdYre5Zfg+aNF6LqqMWp
-	Y38+ZsuSEroq6S3ySO4A==;
+	List-Owner; bh=34At5IC1wr+iPF4oMXZ3mENw0lyrqru6yCyCBkEw3k8=; b=jOP8B1vBwdsUZe
+	nRY7GAIBvVjWS9+CPHlHJV55HEqAuFvo9ImBScBJg0/XrhXU7kndtGuCmdVo4p5pqrWNBKZccev2A
+	Ep/E//+zUTlHZUGtU4QHUb0jrjJSAzJxfDRUWpUr4rflFKNBYJEp/y3pMsij7LNCaHQqhGM9zWp+0
+	PEeAHrPAKwKZEET2L1k7azZwv6euGJJY7js06o3qZ6w40pnPE/aO8EQx/pyGbjTUmpM2rjb5ePKsf
+	Pk5pMUu+wKvsnJ4nHxPWUi1aa88E+fqPmuMm244U4K3sgqwM0vXmp4yVz0qPN+Y2Ue0lPuRJduAgK
+	TqICaYRy+gh1hnUCAgpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJwZM-0000000CjVr-0pLC;
-	Fri, 14 Nov 2025 16:22:40 +0000
-Received: from se.sotapeli.fi ([2a13:7c81:40::2])
+	id 1vJxB0-0000000Cnib-2ios;
+	Fri, 14 Nov 2025 17:01:34 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJwZH-0000000CjUG-2yzr
+	id 1vJxAx-0000000Cnhs-44QO
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Nov 2025 16:22:37 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0272A181AA00;
-	Fri, 14 Nov 2025 17:22:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
-	t=1763137344; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
-	bh=HGaeTixCEYtVZPa/9mnBAaR0ro5gdRziLjqh2q7e75A=;
-	b=TtyzcBPcnaNZhPD7tU+luXBtFfeXRB5qpsXH6cgsaIsfuRSgP8jUvff0iUJZMoo749zGWb
-	Konf0Rsq+RLbrd7Rn3LXubJ0yMO/IjOoEcjYoC2H7gNb+AtkFmUTEoeS9OlC3i7mB/cF4z
-	ZhH/ALZdeJTiDYpnhSahmTYzQEePRbw6hynaCVKhJ7tGWbcPZ8aav1aknURIym+W5FMaHo
-	DOT8teR8VD2ncNRyWPxmr7+VWbdYIff0jdHiJIaGJDyO5kMLkbkFskzXJbN5eLEYzcj5fB
-	eVTHDSehDK9XwY0Q/lE9BJgWRDPHodYUMAZXw7+QkhnV4BxEbYoVRhLiTKDiug==
-Message-ID: <1774d0f9-9d9c-4636-93eb-bfae8d1ed3ec@sotapeli.fi>
-Date: Fri, 14 Nov 2025 18:22:14 +0200
+	Fri, 14 Nov 2025 17:01:33 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id B8E9A43833;
+	Fri, 14 Nov 2025 17:01:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81D0BC4CEFB;
+	Fri, 14 Nov 2025 17:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763139690;
+	bh=xo93xhtQbjPmQQpRAXzz2hy+EkMDFlHK8+leO+CYunA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=depSgkpCCepPRRW+haC+ZhH06xBPr/5yQrjHaIoFlCz8xf8fUrGtSukow5jCP6oM6
+	 j5NyYWNTFcBHltRN23qEwrkCZX8ywI0nDaOSwiC7jaIV2zCl42k5JLmQLo1htaeT9D
+	 FLysup2+Q9ecjIW+VpnTOKXOGk1P3nYyqiwxtuuBWlyWOJ6qiiMuvBO3jGauhnsTcj
+	 fDKSSau3RCn0+rOF3PNnMYFN/kNzwwH+Y8rpihOFPMXz0mwunqvfR4694a4G3XPgM0
+	 ruI8Q+WEJ27xbie0fKMrkI5oYeRBOb2IYG9UxoyxU58e9E8+mLINYLKgYPYMbZtBtA
+	 rTGeGAjEsMHPA==
+Date: Fri, 14 Nov 2025 09:01:29 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	gfs2@lists.linux.dev, io-uring@vger.kernel.org,
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
+Subject: Re: re-enable IOCB_NOWAIT writes to files
+Message-ID: <20251114170129.GI196370@frogsfrogsfrogs>
+References: <20251114062642.1524837-1-hch@lst.de>
+ <b7e8d5e3a0ce8da103f4591afc1f4a9c683ef3c7.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Possible bug?
-To: Lucas De Marchi <lucas.demarchi@intel.com>,
- "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>,
- "intel-xe@lists.freedesktop.org" <intel-xe@lists.freedesktop.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <caca6c67-4f1d-49f1-948f-e63b6b937b29@sotapeli.fi>
- <75a84e116f2f1120a02e8ff81ca5343621bd04fc@intel.com>
- <zh45kns66vc62eldccyoefrjtylkqpexns4hli2j7jqpwwhvzn@viqinx2he3il>
- <CY5PR11MB636652A1A7F88249BD81047DEDCFA@CY5PR11MB6366.namprd11.prod.outlook.com>
- <98df450751f934f3a5c20ec09a08b72ef8fa2763@intel.com>
- <CY5PR11MB6366FD61EF0FC69D077F80E0EDCFA@CY5PR11MB6366.namprd11.prod.outlook.com>
- <3oma7kpe3fzt2kch3g7h5ejmpkni4arf3sm65gfojrkhu6ih26@seedyt6xjwhv>
-Content-Language: en-US
-From: Jani Partanen <jiipee@sotapeli.fi>
-Autocrypt: addr=jiipee@sotapeli.fi; keydata=
- xsFNBGT+fKABEADD4vjnZhAQu2eexHX8BoH4X6bWSNRZT0TbOkzuRBlln8T5BixMcItkF+x4
- wBNQrotQGVetb5CIC9MpnDve5NaevpzBPjkTYLK7MLnAt9ar808YCvmPiwY3Wl1zKKIF4cA1
- iSpvx/ywVbrzLHAR2r0VhNpK+62QjVwB9nZtJDmOmmMHx/jB4TepL0GYTiXL0Fb43ZSp1KIS
- dj3d8e7hBoPzo/Y8vyEP99H02srd0HJGna0b1zwwofWri5y6Xlf5urR4np7Eg5x+MTcO9Lvk
- xQGEhHngLsp3EtzYF8sg/uTeyl+fDOlF2X4IA0uNgXGcCTEJK6WwEEuaUHFnenVAr6kO0Ekz
- sGEMmwNUPRW9b6LMhuvvVdcSIMHslPXgH8IrTuI/mvs2LirqLP8q1nbj3ElSHRnCb1IlrWmk
- 6zAvAQkL5VcF9zZ188YS9fyR9k3wZw74Og3aMdgfdNvWFbphxD8crROUkR1geLFrtTqfi/I+
- fLUp7CSmU4tJcuvMUB8CKQKCvi1nX29fKoj5blX3+rQ76kPR4mM8VFoTMg9ea0u+PDverbG3
- /a2IQmnuoWLbeQju3+n8wuQOnDcPqDd6pWp3VHnO6kWuS0R9DYGilo/s1EZJY30uukRdS8WX
- gvr+glNWuXySOMrNRv1J3aSupfF8foSKagSEv3u5FkJytBNQPQARAQABzSJKYW5pIFBhcnRh
- bmVuIDxqaWlwZWVAc290YXBlbGkuZmk+wsGNBBMBCAA3FiEEZBllEaGa181p3ndbYtKyRR32
- Z1MFAmT+fKEFCQWjmoACGwMECwkIBwUVCAkKCwUWAgMBAAAKCRBi0rJFHfZnU24jEACwwdJ1
- FglMM5wZRK3KVSGaHhhdUWO57h9dWy0LXJ23jF0ZUBOkGF/GhkpCB4q2/uI/7TIxJrYTaykz
- 6NI4wln4970/BW6vGEbPUmAKVrn6UdtR1JEGHN1qq8QIX4epCA4OaBqPdTIH3ALDen4xQKRh
- RDTO4JvImhKXyLUJLD4936B0UOMq+VK/rZ/D8Bw42MvYrY93nFWhc6H2ucOfIJfji1bJBje+
- F8Jls0Y9DjmkJ+d0oO//Y6Pc9/OdexeUDyvSPnuYZOgFEhHRlRAGc89MKiufDaoNkCudXpOD
- FZnfRfD3KZYdu/Ahzda6X79Q2VCgbNqa+oI3IDcCYDZjOdfkY1ooVnS/Rb+zkECP46Pe7BKA
- XMN1cwnpyCq7oX3dQLdy/vp+kx0Weto2B+8KWQv/Dak12J4knlj9/z6kvMgBlO3lsNCpjK37
- FV71qkSWrSjmw0PDHPd3C1k2TbkM3CP3vuWEdBEwRV087voaTvh4kqXpGxZF+TznzU8m9Jfc
- uFD3LrVn2xw5mqmXwOj483KL8VZOcpIUcVCyLs/9Ki1Wmd/KVOnQyk0yH2ekMuhvbsqWXp59
- Y0lGjjEw6k975v1/prTvLKYPDHaDk5JbAD7ZrmGu9ExJy7QOtrioFRqK36NmHSu83ZvWf3LN
- MJBC+NU6EP+DU3T35qy+0FyeHqoUzs7BTQRk/nyhARAA9rmpAGPiLM6YwSZ4Tt3WA35TtrDo
- QlUqkxbs1EoBOA+KC/uyj3P1XgZ+9JwLDcI6Qfk7mQJvCAdAM6nxQvVCCVkSm11FwPOl88zJ
- HpfwCZ8L86q3eRpNdFMyRBBe2fWIAwoxRF9W6F7Ajnft1831z07HVzEWVnfv+/DFfV9w5cJW
- Lq1API3JM6S0l3st6fo5RgqbV3uRvbo8FygDjQ3Fw7dGRn1Z3RoaeDVb4B3vcc7bPdFugOBd
- XA0GRqJprynCn3yclUf0/QXG2IyYO96LFBMaiY4yU0lBsVFqjNeq97l59c/Vrzv7AlpYw4vH
- +RYumgk2Nmg4rGxl95ei90WpjGuSfW504PDCe0W5I37EpmakBB45EbhgtoGk4qI5pEdNVC9U
- XPKAggwLj4iWRNVcxqMe381DaMhREI4V8q48zulEVT/KWI0v6WKCcZx3mkgtFUYciGlMU2gj
- 99dpBQcu5I8pfDJoke6+Q/c6QJyD2gDu/DW6haT8iBDx1eTRmisCcnwnVlAsuDM2XKxTssNk
- ur/y++2YQSB0BzhJccUuW/jQOmZHYQ4CAS7sFi5FjHhKYTeatlotkwOlj+hsXg23U47vZqVQ
- jgyl82kge+iFk2jid9cwWX5qVqrl7f4iCQ5zNHQlTJ6kL74ZbhNOvmP5BGESBPxVsWgGVbr9
- G2YRigsAEQEAAcLBfAQYAQgAJhYhBGQZZRGhmtfNad53W2LSskUd9mdTBQJk/nyiBQkFo5qA
- AhsMAAoJEGLSskUd9mdT0ZwQAL1Uvdk9Q1f83mG+W1C3EQTQ6Sj3aDbzXCPsqhJWLP81Amkk
- G2Yr3cGORZGWl+5eLkeqIPAnJm005Q6L4+0sWsOHg2l/hC809+tzXM9QQzSxlUMhUCq/33UD
- xLbK6/iSERgOCBbE+bxeHiuUKgRECYEhlru7OvKetgaY2ejvIqJ45nlGQ51fU6FO7q6zrVED
- gJ6dANxl+0Dqgg84ELn0cjO7fLwnFM2OyEal0e5ESCLEE3Ruqy/whsft7f0hjcb6C1SHqYZS
- MCUPHQ0tZxLg74XfkwxxHkn2+JKM7y25GFcpqnZbxQXlx6eJqm/T4R4RBpt9Qj8WPlQsxPix
- kmQSP1fagxZxxu/J91cnmSiCnSbRCqnZ/6UuU1pMLkuYW8RBdnzo+BpGwtnTcSDIUfR37ydQ
- //cjOeSE4XNvyOXFn0ePOZTxuXUYbPya5nnv/6uRgeURtt7St/ljx/5ieqzSYnXuMDdeyHpu
- A5SEgX7tlnGaWHcH1go9Z/ElSwnyQsRKUMEitxo/q7R8InF8Rf3xLarK27WUGxX4i2uU0ilK
- TavzdWRG0zG2TEKvmX5Ks118pVC/F/WWBQ8Z1ygW4Qek/zgTKfr3d3nR52s91PV8qUyatmZ8
- Li0pNGD1d+9nlNIj2m1iIpBSQ5Bj+XBW+MQRMWKUlpAK4quC32wV95k2ZOrX
-In-Reply-To: <3oma7kpe3fzt2kch3g7h5ejmpkni4arf3sm65gfojrkhu6ih26@seedyt6xjwhv>
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <b7e8d5e3a0ce8da103f4591afc1f4a9c683ef3c7.camel@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251114_082236_374366_67A08BBE 
-X-CRM114-Status: GOOD (  10.81  )
+X-CRM114-CacheID: sfid-20251114_090132_050514_C4B156AC 
+X-CRM114-Status: GOOD (  30.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,35 +76,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SSB3YXMgZmluYWxseSBhYmxlIHRvIHRlc3QgdGhpcyBhbmQgaXRzIHdvcmtpbmcuCgoKVGhhbmtz
-IGZvciBxdWljayBmaXguCgoKLy8gSmFuaQoKCk9uIDEyLzExLzIwMjUgMTYuNTcsIEx1Y2FzIERl
-IE1hcmNoaSB3cm90ZToKPiBPbiBUdWUsIE5vdiAxMSwgMjAyNSBhdCAxMDo1ODowM0FNICswMDAw
-LCBVc3lza2luLCBBbGV4YW5kZXIgd3JvdGU6Cj4+PiA+PiA+Cj4+PiA+PiA+SXQncyBwcm9iYWJs
-eSBkdWUgdG8gc3RydWN0IGludGVsX2RnX252bSByZWdpb25zW10gbWVtYmVyIGJlaW5nCj4+PiA+
-PiA+X19jb3VudGVkX2J5KG5yZWdpb25zKSBidXQgcmVnaW9uc1tdIGlzIGluZGV4ZWQgYmVmb3Jl
-IG5yZWdpb25zIGhhcwo+Pj4gYmVlbgo+Pj4gPj4gPmluaXRpYWxpemVkLgo+Pj4gPj4KPj4+ID4+
-IHllYWguLi4gYW5kIHdlIHNob3VsZG4ndCBzaWxlbnRseSBjb250aW51ZSBoaWRpbmcgdGhlIEVO
-T01FTS4uLiAKPj4+IFNhc2hhLAo+Pj4gPj4gc29tZXRoaW5nIGxpa2UgdGhpcz8KPj4+ID4+Cj4+
-PiA+Cj4+PiA+IEluIGdlbmVyYWwsIGxvb2tzIGdvb2QgZm9yIG1lLCBidXQgSSBzZWUgdGhhdCB3
-ZSBjYW4gZmlsbCBsZXNzIAo+Pj4gZW50cmllcyBiZWNhdXNlCj4+PiBvZgo+Pj4gPsKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghaW52bS0+cmVnaW9uc1tpXS5uYW1lKQo+Pj4g
-PsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb250aW51
-ZTsKPj4+ID4KPj4+ID4gTGV0J3MgbGVhdmUgJ252bS0+bnJlZ2lvbnMgPSBuOycgaW4gcGxhY2Us
-IG9ubHkgbmVlZCB0byBmaXggdGhlIAo+Pj4gY29tbWVudC4KPj4+Cj4+PiBZb3UgaGF2ZSB0aGlz
-IGluIHBsYWNlLCBucmVnaW9ucyBhbHJlYWR5IGFjY291bnMgZm9yIHRoZW06Cj4+Pgo+Pj4gwqDC
-oMKgwqAvKiBjb3VudCBhdmFpbGFibGUgcmVnaW9ucyAqLwo+Pj4gwqDCoMKgwqBmb3IgKG5yZWdp
-b25zID0gMCwgaSA9IDA7IGkgPCBJTlRFTF9ER19OVk1fUkVHSU9OUzsgaSsrKSB7Cj4+PiDCoMKg
-wqDCoMKgwqDCoCBpZiAoaW52bS0+cmVnaW9uc1tpXS5uYW1lKQo+Pj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBucmVnaW9ucysrOwo+Pj4gwqDCoMKgwqB9Cj4+Pgo+Pgo+PiBZZWFoLCBtaXNzZWQg
-dGhpcywgc28gb3JpZ2luYWwgZml4IGZyb20gTHVjYXMgaXMgb2sKPgo+IEkgc3VibWl0dGVkIGl0
-IGFzIGEgcHJvcGVyIHBhdGNoIHdpdGggY29tbWl0IG1lc3NhZ2U6Cj4KPiBodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9hbGwvMjAyNTExMTEtbXRkLW5yZWdpb25zLXYxLTEtNjFkYjYxZTc4YzYzQGlu
-dGVsLmNvbS8gCj4KPgo+IEx1Y2FzIERlIE1hcmNoaQo+CgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+On Fri, Nov 14, 2025 at 09:04:58AM -0500, Jeff Layton wrote:
+> On Fri, 2025-11-14 at 07:26 +0100, Christoph Hellwig wrote:
+> > Hi all,
+> > 
+> > commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+> > effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+> > always require blocking, and the modern timestamp resolution means we
+> > always update timestamps.  This leads to a lot of context switches from
+> > applications using io_uring to submit file writes, making it often worse
+> > than using the legacy aio code that is not using IOCB_NOWAIT.
+> > 
+> > This series allows non-blocking updates for lazytime if the file system
+> > supports it, and adds that support for XFS.
+> > 
+> > It also fixes the layering bypass in btrfs when updating timestamps on
+> > device files for devices removed from btrfs usage, and FMODE_NOCMTIME
+> > handling in the VFS now that nfsd started using it.  Note that I'm still
+> > not sure that nfsd usage is fully correct for all file systems, as only
+> > XFS explicitly supports FMODE_NOCMTIME, but at least the generic code
+> > does the right thing now.
+> > 
+> > Diffstat:
+> >  Documentation/filesystems/locking.rst |    2 
+> >  Documentation/filesystems/vfs.rst     |    6 ++
+> >  fs/btrfs/inode.c                      |    3 +
+> >  fs/btrfs/volumes.c                    |   11 +--
+> >  fs/fat/misc.c                         |    3 +
+> >  fs/fs-writeback.c                     |   53 ++++++++++++++----
+> >  fs/gfs2/inode.c                       |    6 +-
+> >  fs/inode.c                            |  100 +++++++++++-----------------------
+> >  fs/internal.h                         |    3 -
+> >  fs/orangefs/inode.c                   |    7 ++
+> >  fs/overlayfs/inode.c                  |    3 +
+> >  fs/sync.c                             |    4 -
+> >  fs/ubifs/file.c                       |    9 +--
+> >  fs/utimes.c                           |    1 
+> >  fs/xfs/xfs_iops.c                     |   29 ++++++++-
+> >  fs/xfs/xfs_super.c                    |   29 ---------
+> >  include/linux/fs.h                    |   17 +++--
+> >  include/trace/events/writeback.h      |    6 --
+> >  18 files changed, 152 insertions(+), 140 deletions(-)
+> 
+> This all looks pretty reasonable to me. There are a few changelog and
+> subject line typos, but the code changes look fine. You can add:
+> 
+> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> 
+> As far as nfsd's usage of FMODE_NOCMTIME, it looks OK to me. That's
+> implemented today by the check in file_modified_flags(), which is
+> generic and should work across filesystems.
+> 
+> The main exception is xfs_exchange_range() which has some special
+> handling for it, but nfsd doesn't use that functionality so that
+> shouldn't be an issue.
+> 
+> Am I missing some subtlety?
+
+In exchangerange specifically?
+
+The FMODE_NOCMTIME checks in xfs_exchange_range exist to tell the
+exchange-range code to update cmtime, but only if it decides to actually
+go through with the mapping exchange.  Since the mapping exchange
+requires a transaction anyway, it's cheap to bundle in timestamp
+updates.
+
+Also there's no way that we can do nonblocking exchangerange so a NOWAIT
+flag wouldn't be much help here anyway.
+
+(I hope that answers your question)
+
+--D
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
