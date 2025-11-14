@@ -4,54 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE304CDE011
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Nov 2025 06:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD6C2CE7A89
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Nov 2025 08:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qk4N1iS7BJZi7DrINxM1f3PUmKnSYOOl+xZWQPImJe4=; b=cutvU1iFJkTgjI
-	+jS2sffjPshGYpSX0gcOBlUykpgd8ieK0MrcT2ziC2rkAokHS4QHya8KPM0YGunMq8807bMppJHas
-	KVUDu5wSGlyVvlR1G0zej5s3/rmSXGfGgth6dHNbXm7aETd0M0KhjxH04NZFX3fpcu92OC9C7UBoo
-	OK16lXhOvU5aqLkcc3LZLgXzoDrxsxIo66XrjMqhXSNyTj+GdqAdFoRKMp5GLGAW61SSwfvYfy6QS
-	PptOcENdLQZtB6CYP7asrZz06bJ2ni0Gw82KyVgMwbWa8Cm9YKkEsfZLCqVLAz1vCyahd2uG0FMhM
-	jGBVi0OTTFR0oMO7obDQ==;
+	List-Owner; bh=oTSDQ90Ut91uNO9rJlm2bu4mzQocnTqozlY7yBMeoh8=; b=fOwzFp5thdPova
+	qqSAqC1/J2FgSPUAzbAC67r05VfuiUp+KO5ORHr7I6gCCL9fgIdKJ83nWpfO5iGVbSjwKu8CqG6Kd
+	tpbz28ExnMoswkCPLjzh5hngjtN0cAe+ighT6sd5INdAy4q05lUN7Iau6W0ceu5SXYGUPu25H2Fql
+	MWaeDthRT+w+rBYFowUjHaQmKs8rBmJLm3FE5I8B4cL3TG4w28Dj0W90htq+B7GV2oyMvq2ig6GXI
+	562561eZ3GrCd60Cx8ewcBKriqZUTnGdfp6KHotoI37+i6QhlwjLZyLnbWlBUR8ULQpv0zk+Z9gv1
+	k7HlgjGVvH7GI8RCeLIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJnIK-0000000BfGp-44hw;
-	Fri, 14 Nov 2025 06:28:28 +0000
-Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJnIJ-0000000BfCq-0DHz;
-	Fri, 14 Nov 2025 06:28:27 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>,
-	Jan Kara <jack@suse.cz>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	io-uring@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org
-Subject: [PATCH 14/14] xfs: enable non-blocking timestamp updates
-Date: Fri, 14 Nov 2025 07:26:17 +0100
-Message-ID: <20251114062642.1524837-15-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251114062642.1524837-1-hch@lst.de>
-References: <20251114062642.1524837-1-hch@lst.de>
+	id 1vJpDq-0000000Bocg-0xMI;
+	Fri, 14 Nov 2025 08:31:58 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vJpDo-0000000BocD-1Iv1
+	for linux-mtd@lists.infradead.org;
+	Fri, 14 Nov 2025 08:31:57 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 63F261A1A9E;
+	Fri, 14 Nov 2025 08:31:53 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 2A9666060E;
+	Fri, 14 Nov 2025 08:31:53 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A1C46102F29CE;
+	Fri, 14 Nov 2025 09:31:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1763109112; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=6PpAftnPCjZrCB5oWldRnnnZnYTJ9d955gTmWsXKxsI=;
+	b=mPqF3wiDb3hiEXablEkO+FbWqrMXoQvr4Z2nIWlAP5Y+OlfwiEnItF0/n3SmpGNspg/vH7
+	U2uvtvHn4fDSCy3Kf6xzhmMbpCZHC5VvzX2wc3BS7bIFT9RJiDHXDTNf89+vggA6pO6eBP
+	BKWXlCW6dQanxtkogIL5oM0yZL3xNYyTfchfaNWDxVJQpv1PLDlP7itWoDTHjltxMs2CYE
+	bSI9NLPshgTcYxAw+xXy/2PlfkvDuEoLujjeLE5CbH7VscEq4YTzHnLgeyTdQiiTR4+i98
+	54OojWhBuRRNFwGOMB2D8qh1rmQA71zmOvNxFsFBK5vn8K6YuEUE4NvRtXuqkQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Cheng Ming Lin <linchengming884@gmail.com>
+Cc: richard@nod.at,  chengzhihao1@huawei.com,  vigneshr@ti.com,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  alvinzhou@mxic.com.tw,  leoyu@mxic.com.tw,  Cheng Ming Lin
+ <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH v2 1/1] mtd: ubi: skip programming unused bits in ubi
+ headers
+In-Reply-To: <20251114024452.2927429-2-linchengming884@gmail.com> (Cheng Ming
+	Lin's message of "Fri, 14 Nov 2025 10:44:52 +0800")
+References: <20251114024452.2927429-1-linchengming884@gmail.com>
+	<20251114024452.2927429-2-linchengming884@gmail.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Fri, 14 Nov 2025 09:31:47 +0100
+Message-ID: <87qzu1f218.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251114_003156_480510_E72F898F 
+X-CRM114-Status: UNSURE (   6.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,49 +76,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The lazytime path using generic_update_time can never block in XFS
-because there is no ->dirty_inode method that could block.  Allow
-non-blocking timestamp updates for this case.
-
-Fixes: 66fa3cedf16a ("fs: Add async write file modification handling.")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/xfs/xfs_iops.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index bd0b7e81f6ab..3d7b89ffacde 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -1195,9 +1195,6 @@ xfs_vn_update_time(
- 
- 	trace_xfs_update_time(ip);
- 
--	if (flags & S_NOWAIT)
--		return -EAGAIN;
--
- 	if (inode->i_sb->s_flags & SB_LAZYTIME) {
- 		if (!((flags & S_VERSION) &&
- 		      inode_maybe_inc_iversion(inode, false)))
-@@ -1207,6 +1204,9 @@ xfs_vn_update_time(
- 		log_flags |= XFS_ILOG_CORE;
- 	}
- 
-+	if (flags & S_NOWAIT)
-+		return -EAGAIN;
-+
- 	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
- 	if (error)
- 		return error;
--- 
-2.47.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hlbmcgTWluZywKCj4gQEAgLTExNTAsNiArMTE1MiwxNCBAQCBpbnQgdWJpX2lvX3dyaXRl
+X3ZpZF9oZHIoc3RydWN0IHViaV9kZXZpY2UgKnViaSwgaW50IHBudW0sCj4gIAkJcmV0dXJuIC1F
+Uk9GUzsKPiAgCX0KPiAgCj4gKwlpZiAodWJpLT52aWRfaGRyX3NoaWZ0KSB7Cj4gKwkJbWVtc2V0
+KChjaGFyICopcCwgMHhGRiwgdWJpLT52aWRfaGRyX3NoaWZ0KTsKPiArCQltZW1zZXQoKGNoYXIg
+KilwICsgdWJpLT52aWRfaGRyX3NoaWZ0ICsgVUJJX1ZJRF9IRFJfU0laRSwgMHhGRiwKPiArCQkg
+ICAgICAgdWJpLT52aWRfaGRyX2Fsc2l6ZSAtICh1YmktPnZpZF9oZHJfc2hpZnQgKyBVQklfVklE
+X0hEUl9TSVpFKSk7Cj4gKwl9IGVsc2Ugewo+ICsJCW1lbXNldCgoY2hhciAqKXAgKyBVQklfVklE
+X0hEUl9TSVpFLCAweEZGLCB1YmktPnZpZF9oZHJfYWxzaXplIC0gVUJJX1ZJRF9IRFJfU0laRSk7
+Cj4gKwl9Cj4gKwoKSXMgaXQgbm90IHBvc3NpYmxlIHRvIG1lbXNldCgpIHRoZSBidWZmZXIgYmVm
+b3JlIHdyaXRpbmcgdGhlIFZJRCBoZWFkZXI/CkkgaGF2ZW4ndCBmb3VuZCBxdWlja2x5IGEgZ29v
+ZCBwbGFjZSB0byBkbyB0aGF0LCBzbyBpbiBhbnkgY2FzZSwKClJldmlld2VkLWJ5OiBNaXF1ZWwg
+UmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgoKVGhhbmtzLApNaXF1w6hsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
