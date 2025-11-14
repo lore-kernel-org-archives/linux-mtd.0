@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6E8ACDE006
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Nov 2025 06:28:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE304CDE011
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Nov 2025 06:28:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+11A+vfTcUNjpEBjRXOJGx4xthg7hWh1hl7Df9kHMr8=; b=jZjsjhYg+E5AqB
-	8VY9yYZq/Vgnly6xT4LfbT8+ATALUY0+6+wuKSYs7LcWgpo9jum4ZIoQiXFqwIgh4CIK2ZKc/z1Yv
-	E0aMR2NV2kN17u4JicPkZUSGU2a4hQGGuXbspQsj5RVmZIrqYmIGwCsaAvjsRDxc4O63owLk37S0V
-	UKCqewtDb7bns49L0laV5IQbhwxBupIZ+6q5oRa7ZZ5llbpP19e9U5qsnT0vmLPRzHlsqBqO65RVt
-	2c/xwx/0joglyN3DXhHoPu7IJNURHPObfHVEKioBfnh7bTKW4H4upMzzMBf4/vR0jDaOVyI8Uf2NN
-	Xb1HlT/pjhLbBHko/RSA==;
+	List-Owner; bh=qk4N1iS7BJZi7DrINxM1f3PUmKnSYOOl+xZWQPImJe4=; b=cutvU1iFJkTgjI
+	+jS2sffjPshGYpSX0gcOBlUykpgd8ieK0MrcT2ziC2rkAokHS4QHya8KPM0YGunMq8807bMppJHas
+	KVUDu5wSGlyVvlR1G0zej5s3/rmSXGfGgth6dHNbXm7aETd0M0KhjxH04NZFX3fpcu92OC9C7UBoo
+	OK16lXhOvU5aqLkcc3LZLgXzoDrxsxIo66XrjMqhXSNyTj+GdqAdFoRKMp5GLGAW61SSwfvYfy6QS
+	PptOcENdLQZtB6CYP7asrZz06bJ2ni0Gw82KyVgMwbWa8Cm9YKkEsfZLCqVLAz1vCyahd2uG0FMhM
+	jGBVi0OTTFR0oMO7obDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJnIF-0000000BfDT-2lik;
-	Fri, 14 Nov 2025 06:28:23 +0000
+	id 1vJnIK-0000000BfGp-44hw;
+	Fri, 14 Nov 2025 06:28:28 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJnID-0000000Bf9v-1vMy;
-	Fri, 14 Nov 2025 06:28:21 +0000
+	id 1vJnIJ-0000000BfCq-0DHz;
+	Fri, 14 Nov 2025 06:28:27 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -45,9 +45,9 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	linux-mtd@lists.infradead.org,
 	linux-xfs@vger.kernel.org,
 	linux-nfs@vger.kernel.org
-Subject: [PATCH 13/14] xfs: implement ->sync_lazytime
-Date: Fri, 14 Nov 2025 07:26:16 +0100
-Message-ID: <20251114062642.1524837-14-hch@lst.de>
+Subject: [PATCH 14/14] xfs: enable non-blocking timestamp updates
+Date: Fri, 14 Nov 2025 07:26:17 +0100
+Message-ID: <20251114062642.1524837-15-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251114062642.1524837-1-hch@lst.de>
 References: <20251114062642.1524837-1-hch@lst.de>
@@ -68,121 +68,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Switch to the new explicit lazytime syncing method instead of trying
-to second guess what could be a lazytime update in ->dirty_inode.
+The lazytime path using generic_update_time can never block in XFS
+because there is no ->dirty_inode method that could block.  Allow
+non-blocking timestamp updates for this case.
 
+Fixes: 66fa3cedf16a ("fs: Add async write file modification handling.")
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/xfs/xfs_iops.c  | 20 ++++++++++++++++++++
- fs/xfs/xfs_super.c | 29 -----------------------------
- 2 files changed, 20 insertions(+), 29 deletions(-)
+ fs/xfs/xfs_iops.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index da055dade25f..bd0b7e81f6ab 100644
+index bd0b7e81f6ab..3d7b89ffacde 100644
 --- a/fs/xfs/xfs_iops.c
 +++ b/fs/xfs/xfs_iops.c
-@@ -1227,6 +1227,22 @@ xfs_vn_update_time(
- 	return xfs_trans_commit(tp);
- }
+@@ -1195,9 +1195,6 @@ xfs_vn_update_time(
  
-+static void
-+xfs_vn_sync_lazytime(
-+	struct inode		*inode)
-+{
-+	struct xfs_inode	*ip = XFS_I(inode);
-+	struct xfs_mount	*mp = ip->i_mount;
-+	struct xfs_trans	*tp;
-+
-+	if (xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp))
-+		return;
-+	xfs_ilock(ip, XFS_ILOCK_EXCL);
-+	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
-+	xfs_trans_log_inode(tp, ip, XFS_ILOG_TIMESTAMP);
-+	xfs_trans_commit(tp);
-+}
-+
- STATIC int
- xfs_vn_fiemap(
- 	struct inode		*inode,
-@@ -1270,6 +1286,7 @@ static const struct inode_operations xfs_inode_operations = {
- 	.listxattr		= xfs_vn_listxattr,
- 	.fiemap			= xfs_vn_fiemap,
- 	.update_time		= xfs_vn_update_time,
-+	.sync_lazytime		= xfs_vn_sync_lazytime,
- 	.fileattr_get		= xfs_fileattr_get,
- 	.fileattr_set		= xfs_fileattr_set,
- };
-@@ -1296,6 +1313,7 @@ static const struct inode_operations xfs_dir_inode_operations = {
- 	.setattr		= xfs_vn_setattr,
- 	.listxattr		= xfs_vn_listxattr,
- 	.update_time		= xfs_vn_update_time,
-+	.sync_lazytime		= xfs_vn_sync_lazytime,
- 	.tmpfile		= xfs_vn_tmpfile,
- 	.fileattr_get		= xfs_fileattr_get,
- 	.fileattr_set		= xfs_fileattr_set,
-@@ -1323,6 +1341,7 @@ static const struct inode_operations xfs_dir_ci_inode_operations = {
- 	.setattr		= xfs_vn_setattr,
- 	.listxattr		= xfs_vn_listxattr,
- 	.update_time		= xfs_vn_update_time,
-+	.sync_lazytime		= xfs_vn_sync_lazytime,
- 	.tmpfile		= xfs_vn_tmpfile,
- 	.fileattr_get		= xfs_fileattr_get,
- 	.fileattr_set		= xfs_fileattr_set,
-@@ -1334,6 +1353,7 @@ static const struct inode_operations xfs_symlink_inode_operations = {
- 	.setattr		= xfs_vn_setattr,
- 	.listxattr		= xfs_vn_listxattr,
- 	.update_time		= xfs_vn_update_time,
-+	.sync_lazytime		= xfs_vn_sync_lazytime,
- 	.fileattr_get		= xfs_fileattr_get,
- 	.fileattr_set		= xfs_fileattr_set,
- };
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index 1067ebb3b001..230153d6815a 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -712,34 +712,6 @@ xfs_fs_destroy_inode(
- 	xfs_inode_mark_reclaimable(ip);
- }
+ 	trace_xfs_update_time(ip);
  
--static void
--xfs_fs_dirty_inode(
--	struct inode			*inode,
--	int				flags)
--{
--	struct xfs_inode		*ip = XFS_I(inode);
--	struct xfs_mount		*mp = ip->i_mount;
--	struct xfs_trans		*tp;
+-	if (flags & S_NOWAIT)
+-		return -EAGAIN;
 -
--	if (!(inode->i_sb->s_flags & SB_LAZYTIME))
--		return;
--
--	/*
--	 * Only do the timestamp update if the inode is dirty (I_DIRTY_SYNC)
--	 * and has dirty timestamp (I_DIRTY_TIME). I_DIRTY_TIME can be passed
--	 * in flags possibly together with I_DIRTY_SYNC.
--	 */
--	if ((flags & ~I_DIRTY_TIME) != I_DIRTY_SYNC || !(flags & I_DIRTY_TIME))
--		return;
--
--	if (xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp))
--		return;
--	xfs_ilock(ip, XFS_ILOCK_EXCL);
--	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
--	xfs_trans_log_inode(tp, ip, XFS_ILOG_TIMESTAMP);
--	xfs_trans_commit(tp);
--}
--
- /*
-  * Slab object creation initialisation for the XFS inode.
-  * This covers only the idempotent fields in the XFS inode;
-@@ -1304,7 +1276,6 @@ xfs_fs_show_stats(
- static const struct super_operations xfs_super_operations = {
- 	.alloc_inode		= xfs_fs_alloc_inode,
- 	.destroy_inode		= xfs_fs_destroy_inode,
--	.dirty_inode		= xfs_fs_dirty_inode,
- 	.drop_inode		= xfs_fs_drop_inode,
- 	.evict_inode		= xfs_fs_evict_inode,
- 	.put_super		= xfs_fs_put_super,
+ 	if (inode->i_sb->s_flags & SB_LAZYTIME) {
+ 		if (!((flags & S_VERSION) &&
+ 		      inode_maybe_inc_iversion(inode, false)))
+@@ -1207,6 +1204,9 @@ xfs_vn_update_time(
+ 		log_flags |= XFS_ILOG_CORE;
+ 	}
+ 
++	if (flags & S_NOWAIT)
++		return -EAGAIN;
++
+ 	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
+ 	if (error)
+ 		return error;
 -- 
 2.47.3
 
