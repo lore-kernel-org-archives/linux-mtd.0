@@ -4,98 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5490CEBF8A
-	for <linux-mtd@archiver.kernel.org>; Sun, 16 Nov 2025 08:23:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3776BCD4F3E
+	for <linux-mtd@archiver.kernel.org>; Sun, 16 Nov 2025 13:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=y5mVpfuB983ExScaVkZN3uzZ0JzGb1CYP65OXn5/Cn4=; b=JPzJ+5A8C/+cJx
-	VIQjrcKB+gWQDzQ+X6O2wiSesn5cJdJETL1VuQa4VfYcE2Zp2V5f4UArV6kRV2DFXNzEZo/x2RA/o
-	7LCruGki/4mlz4bEYj+FWkuW5f+H8rLw2viFAM2Yb70kP1pBQwJLxs6ELc2OoFZQGFV0a5xdxI71s
-	OZ3KWdVV42yUsx31aUOqsbyl14vSzgymet1lbrfS3CfKxVubwwKNHrhBFhlgMZONhUdgYkcjsqzgM
-	fcjeFsFgFaPofZE1+HybvpVagdbpoYFRRgLf2jrnabXCbwESXYRJZYgz/16GTLt5DhHxpX1V0Ce66
-	b13cDrXAjm71DHNMv0Hw==;
+	List-Owner; bh=+cVHHssXAg1ro3q46xFJMs1j+Pi9kyI3TpNr9QUl4BE=; b=0pBfgnOks5cL+E
+	nzU275NIXiCX44TbdxI/YFQ/acBduHUwQEiHyzwsx+uJxjrXVmrJ1l/poM3EHVRtyiguYfI0tLWVJ
+	YIuvsP9POm9zFNC4dff/WsiSQtKdPaigPWS6FTf1f8N3Pzq8WoVR/hf+7D/eBRgPonqBjXR2xRGQs
+	sGs+jasvV6/SZ9YlWDerdlvgQqOOqiB6o4At3npE5LBXEeGBp7urOtKawrq8/JmENgr9y2NKwhNZr
+	oV5SlvzZqGydSP748HXcc5zKvwXShYj+iBFpfBeqanH+3a0rBC0l+CTENNiSUHCB3VEPQK+dWu6ok
+	aIOP1lQxvnRNj7h1T6qA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vKY2Y-0000000ETm1-13f0;
-	Sun, 16 Nov 2025 08:23:18 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1vKdBV-0000000EiUa-1u90;
+	Sun, 16 Nov 2025 13:52:53 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vKY2W-0000000ETlb-0K4Y
+	id 1vKdBR-0000000EiU2-1q4M
 	for linux-mtd@lists.infradead.org;
-	Sun, 16 Nov 2025 08:23:17 +0000
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-298287a26c3so41284025ad.0
-        for <linux-mtd@lists.infradead.org>; Sun, 16 Nov 2025 00:23:15 -0800 (PST)
+	Sun, 16 Nov 2025 13:52:51 +0000
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-297d4a56f97so36741445ad.1
+        for <linux-mtd@lists.infradead.org>; Sun, 16 Nov 2025 05:52:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1763281395; x=1763886195; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M4MaMBAoduJmljAfpOLsOwZXGopJOVWqjmgthPn26W4=;
-        b=vTZXmwVlJ0ksDhaF4s5oTI8AWZE8UCvFyuLjQQqn0gTdXuZpN7j/KFx+mdcnhpV+Dw
-         kX4493ejygP6szdrKQbv+PaA5SmTikiUIEXJHcdaaHdRlSyUCBqmGLsEdFdJ+BbNjSS6
-         zFPPFnJJrc2n0zE/U7VoQkPdvlZjbMnEGxvxZ4W9w96KPlPF/lzpt37OtDXsgTOe/sK2
-         hJy5eL3uINbxv9DRkG13d451yW4OjywssbNqQtyM68lDzoStH9afG5IaX2L52ls2Lzzj
-         /sZKmFjPwl1Om8C4nxU9nOuuj6RKcubbvuyH25PSTCPgY+fG24+UDS7P1+HEgtxNRvP6
-         5NdQ==
+        d=gmail.com; s=20230601; t=1763301169; x=1763905969; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mGznwiXto53wUSL9K3WoozgllAs4fYYvMV0IcFo9qMc=;
+        b=jKB1CvmBJVHvdJnqJEJc/5r6tR1we+AaCAJDnq7cVu4FdcMEalUE2OUJ+AZEMw2mXa
+         qt1V0qKXvm7DUvLMWlXSb89qXg6ZpiE6+LkPIosF/10MXE4ZU+WmmhBJItkNjCwJycVW
+         +mV9OJlbEQxTRvO3Th0VQfyscOgV2n/uiewej5vZsSNtUfyXZ8Ef/bJd5NwtN3j4xrgk
+         E0skh+YcVlRMkXnxeAF91/4t7w5Aaj8xt4sZqIMFKDnQIRZswaF0NLZ0RqRXzpZ/symL
+         9Cp3fP8L8YONYq/Mwy0MFksytJnqJQHYT3Qs23DsPG0EaqqGtIaKY2V4yZCcrFEJ1EsF
+         swNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763281395; x=1763886195;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M4MaMBAoduJmljAfpOLsOwZXGopJOVWqjmgthPn26W4=;
-        b=IZ3ExwHqYZC2Lsbxatiz3ue3xkQXuF/namw7BXU2lA+bL0utBXd+nMroY1zxom9D6W
-         OvnTV/O9GNEZU2cNd7/0oPYVPm0DXCpmoDmPLnYhsCVv9mwJUMQFLSbiLIEtMTraqK2R
-         j0vH1gBYsLR16BT5hPh8SDAvYdzz6AcbWxtrQzWMJkIcFL0F2nIHv+IHF8ZaDYhjm/L+
-         6dZeVMFNrEwvQqAO/i+bON2705ipxNv5gYyJMNN1Fjohr3U9H9YOV1yoXhrax02hJehL
-         BbT+HvsLkjc0pOsBCzMD8r5bSJHtm4mU0/Np47oaGRAQilEPhJ5UafRnAp6t7GL8V/1R
-         nWFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVnm8KbBwTuF2xQYwsii0Nrhg5Mrr2zxMHRYbD5Rj2fZhlTr82LA2gMdWyI2XVU0JUcQNlfX5T8JWg=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yyn5B8EuzzQorHcnb/2YgD8sUAuhkW6wTjrXuqR9Ic3Ou6XT74l
-	YqkOPD/MuriTfH1NJK3/4kYYazg6QZejZ40At2xxD1iyOBqFRvHLSuaVKYrhcgF4JAg=
-X-Gm-Gg: ASbGncudYQqtX5iwHLZnQA6FZzAO3wgachDE4Ol8leo4ZOtkTVkCkFBRKGLqDHz+M3u
-	ZAokrNT7MJiNFmsnoONA+tYvgNoPtMhOToNmp3NoC8dCgvm0GVGikRoeORIw7c/aF4kmn6gG6Ls
-	KogQ+qjkd+6lmEB3p3rKlhZ/eU/8GBq+Ndu4KYOTvoU6/IgkAHVcI4tHjFnOAL3H0wWRdGVXj1C
-	/ZJwL4+ortomek8X/e1S4Vd899GL8QJBQ+O2EgSPfEc2v8h7Oy/3k3sWTRZpFRPncPlCLnKs81U
-	CJNpkTMy9g+wclpg80uTtAgC+PMqOHDzRWdh9bN4/946hSxmdEoqcfyffynIIXxZD8tiChtbH6D
-	MQHgDd8mGhiPt9LZIRN1xmhcX2VVAymO6AyyWuez85S/3V2xB3c8PTfMS6jjTHYwRQv7ulVoTwC
-	dcpUxNP+30ysbHYYPlA/nVBOCqyPeoCSsgVU8rFJ7/EvoanP8lZddY9lgA5fzZxg==
-X-Google-Smtp-Source: AGHT+IE2kISBEpmbZV/bnZzdrwmOacrEejG6ljtHkn9ZRcGe++TC5tzXGzGVsKaVV/gcvGARY/ZhHw==
-X-Received: by 2002:a17:903:41ca:b0:294:ec7d:969c with SMTP id d9443c01a7336-2986a769988mr112616935ad.49.1763281394800;
-        Sun, 16 Nov 2025 00:23:14 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-58-136.pa.nsw.optusnet.com.au. [49.181.58.136])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29864b00fc9sm79958015ad.40.2025.11.16.00.23.14
+        d=1e100.net; s=20230601; t=1763301169; x=1763905969;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=mGznwiXto53wUSL9K3WoozgllAs4fYYvMV0IcFo9qMc=;
+        b=f46HK48482az+YewZ5xbnLTnZ4INaCaleeqot0J3M11t4rpagcGg44+rhqo3mhC1jf
+         mYkuM/yQSejWdfrn6hFnpiMxs1Xr6eI19V963sJ3sVmxFw7m1DGFZYBfb5PEA2JkrGRJ
+         04iPgk7ZXCWRE6Z064hRFAKHn9nF97A6M7HIz2eiTEqGvziNXhyjZRf+hCZQ3RLBoxMd
+         96nu7A5c6F5SOvfRol0IX+2M+mq2vacFLAaOTe0Qw8FMaL8BCXUjGTUfD2hsfouaMhPb
+         9WQ5nZcNO73Nxz1UFksGf+uCN00RGbFM958GCXEur2tyNXqjxmN2sizLRzy3XBmEfLv+
+         FT2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX56vXpHyLsmuivirNiaGWjfR5rXI22wL5jtqibLv1e4ZpO6MEf4w+iMwFi2c9vAwUJeJ0aFSxitQs=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxAqmTq9ktcQsuF9WP7YhMC8qir5kr0YGVzQh06NU1byqtJZ4WB
+	2tuliUn4Xs2U2nST+Tzn7ARCg6/sqnMNuTXQG199RIuMKT7Gc6MJWytN
+X-Gm-Gg: ASbGncsv81N2GuC64EbIUHgmSrbcSYuZ4bXvqVkfwyMSIVag8EUTJUC4sS/Gff1DBeQ
+	WsvtAyX8R9NCdDoYUWglkQW8yRBnoDAayy9tKFuWBzYBk8IZWEP5UK7/lUiFcsYL8UG1niHEbx+
+	TjiEnZk4ELhdf5V+7NQoSqMTIeUW4g838sCdQOMqGS2oiL8cdFaDejZwN9RV8wgQqPEwrbBYPZI
+	EgsGPSAMPCWxy7QRWf+ZWXBfy24SSlKr6MgonM4FAP40otTMC+WA/O8VX41JKP+pD3sEADKBkCK
+	wBAmy4yExlI+bNpJo3dyyS/zWcw9m5UL8QPSXOgA4Brz3nGqAINompQgNQMB75hIrpbmtI8IUZ6
+	jdZoVRqQEhRQFX+xZSxW2Gul3V69KuD1JXgFJT27+M2bi+U+vUUZ/gaRLNOPksqectV6A6xMGhI
+	VxNplFGMl72HtewiaeYnSMJ43Nil1uD2JGsWVFlWTG5tJE/aPX0nG+WKBVU442rlg2691AC/p3E
+	iwBX3hssRI/N9sQIZRxNPLMLA==
+X-Google-Smtp-Source: AGHT+IEwPKkAp9hQXoh80zvBevxtrCNr0J0sKz+4Ri9LRg43IJRW+3sSv7/mmP8fdgQqOx+K4hfjnQ==
+X-Received: by 2002:a17:902:f70c:b0:298:3e3a:ae6 with SMTP id d9443c01a7336-2986a7420f6mr109348405ad.48.1763301168634;
+        Sun, 16 Nov 2025 05:52:48 -0800 (PST)
+Received: from x570.spacecubics.com (221x245x252x90.ap221.ftth.ucom.ne.jp. [221.245.252.90])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b0d91sm111436505ad.63.2025.11.16.05.52.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Nov 2025 00:23:14 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98.2)
-	(envelope-from <david@fromorbit.com>)
-	id 1vKY2R-0000000BUhZ-3a27;
-	Sun, 16 Nov 2025 19:23:11 +1100
-Date: Sun, 16 Nov 2025 19:23:11 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
-	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev,
-	io-uring@vger.kernel.org, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 14/14] xfs: enable non-blocking timestamp updates
-Message-ID: <aRmJ728evgFnBLhn@dread.disaster.area>
-References: <20251114062642.1524837-1-hch@lst.de>
- <20251114062642.1524837-15-hch@lst.de>
+        Sun, 16 Nov 2025 05:52:48 -0800 (PST)
+From: Yasushi SHOJI <yasushi.shoji@gmail.com>
+X-Google-Original-From: Yasushi SHOJI <yashi@spacecubics.com>
+To: tkuw584924@gmail.com
+Cc: Takahiro.Kuwano@infineon.com,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	marek.vasut+renesas@mailbox.org,
+	miquel.raynal@bootlin.com,
+	mwalle@kernel.org,
+	pratyush@kernel.org,
+	richard@nod.at,
+	tudor.ambarus@linaro.org,
+	vigneshr@ti.com,
+	yashi@spacecubics.com
+Subject: Re: [PATCH v2 0/3] mtd: spi-nor: spansion: Add SMPT fixup for S25FS-S
+Date: Sun, 16 Nov 2025 22:52:35 +0900
+Message-ID: <20251116135235.1479860-1-yashi@spacecubics.com>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251105-s25fs-s-smpt-fixup-v2-0-c0fbd0f05ce7@infineon.com>
+References: <20251105-s25fs-s-smpt-fixup-v2-0-c0fbd0f05ce7@infineon.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251114062642.1524837-15-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251116_002316_117196_337D4AF1 
-X-CRM114-Status: GOOD (  20.08  )
+X-CRM114-CacheID: sfid-20251116_055249_489968_8F1E6CEF 
+X-CRM114-Status: UNSURE (   5.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,51 +112,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Nov 14, 2025 at 07:26:17AM +0100, Christoph Hellwig wrote:
-> The lazytime path using generic_update_time can never block in XFS
-> because there is no ->dirty_inode method that could block.  Allow
-> non-blocking timestamp updates for this case.
-> 
-> Fixes: 66fa3cedf16a ("fs: Add async write file modification handling.")
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/xfs/xfs_iops.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index bd0b7e81f6ab..3d7b89ffacde 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -1195,9 +1195,6 @@ xfs_vn_update_time(
->  
->  	trace_xfs_update_time(ip);
->  
-> -	if (flags & S_NOWAIT)
-> -		return -EAGAIN;
-> -
->  	if (inode->i_sb->s_flags & SB_LAZYTIME) {
->  		if (!((flags & S_VERSION) &&
->  		      inode_maybe_inc_iversion(inode, false)))
-> @@ -1207,6 +1204,9 @@ xfs_vn_update_time(
->  		log_flags |= XFS_ILOG_CORE;
->  	}
->  
-> +	if (flags & S_NOWAIT)
-> +		return -EAGAIN;
-> +
->  	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
->  	if (error)
->  		return error;
+Hello,
 
-Not sure this is correct - this can now bump iversion and then
-return -EAGAIN. That means S_VERSION likely won't be set on the
-retry, and we'll go straight through the non-blocking path to
-generic_update_time() and skip logging the iversion update....
+I've seen the problem this patchset is aming at. I've tried this
+patchset on both the latest and the 6.12 LTS, and I can confirm that
+it fixes both.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+For 6.12 LTS, you need to use spi_nor_get_params(), though.
+
+Thus, if possible please forward it linux-stable. Let me know I can be
+of any help.
+
+Best,
+--
+    yashi
 
 ______________________________________________________
 Linux MTD discussion mailing list
