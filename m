@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 779B0CEACEF
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Nov 2025 07:38:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48A94CEACEF
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Nov 2025 07:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KPGBNIKWN/n9jfTA9CyjuhsofhJbkBXBKZqo5XFMcGA=; b=0442St7bIYRc7t
-	+CUqoum9/nEL5bqolaa3D+H/TSyEOuSxQq9pRpnaeOLKpo1AuYDPhCf2dW1j5xVa6F5srTFhqlO08
-	6LEFLpp3vqegDBCAybkKS/CTjw1UDJLKSgjxFeD53zw+CMnNDLmKD1pGj1p6cZZPSP57adO5lZeKx
-	i7sDhVanhgsawRQ7Dxz76LmG5U1WBs7KcZBo04ku9rfVMmj/k8QHuS4izqBQERMBKS8verFW7ZDEz
-	BFEcN4oEVdLU9wKGrueoRwcsU8bA9GIy0I1CBwyB75WOVpolXFwQcU7gRYK3f4ArlVnv3+0t0kG3W
-	IXaoBXblBmiBsmgrd2NQ==;
+	List-Owner; bh=8Or8LtqbH3zz6G6rwJShDdURMkTvfN/0FaNT23f3lsw=; b=Hl8ulK+Ac049Mq
+	fPOJpT58wf0KluXqq4sEwEk+TE5ahrMwoqqdyonHJE1vPTupV86XY2gM07fprkav6f3WQjdhtl3F7
+	wHblHOYAUOvYIkmtsCkIaaCQOwRwXkxjsHu8dhALlYNvhRwTM40IfXOY3lDa5/1TdLxgpcICw/LXh
+	0VL81RQ5HI+pH8aGj/9FB0Bn2D95qdOWzFQ68GOOm5UfW29s4HirDCKfH8T5zoauUuEKxYnWS5osv
+	pBeRbDO9XTRJGXJrt8jgIrugTFQ0FdEMXVr9FJ1fp+qEJjQ6/54nYNTWjLBsWFCJDpK+tXWAI62et
+	dqohLgBM3y2y5abNB5/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vKtor-0000000FdR8-3KSL;
-	Mon, 17 Nov 2025 07:38:37 +0000
-Received: from mail-centralusazon11010063.outbound.protection.outlook.com ([52.101.61.63] helo=DM1PR04CU001.outbound.protection.outlook.com)
+	id 1vKu0c-0000000Fe2I-2Nol;
+	Mon, 17 Nov 2025 07:50:46 +0000
+Received: from mail-westus3azon11011022.outbound.protection.outlook.com ([40.107.208.22] helo=PH0PR06CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vKtoo-0000000FdQW-1lVD
+	id 1vKu0Z-0000000Fe1o-48PB
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Nov 2025 07:38:36 +0000
+	Mon, 17 Nov 2025 07:50:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=OzQXuoNCdaNMamm90B6NzU6CQl2DrNPTHu/lHs//ZqgDWP7FE5cZdm2TMJyas+a0yhn2W5KeRHBsbZr4+VuXA0mIacCMLgdT1XlECE9c6+ZhDMSqnRVVDvBOxfdJIdrM3gvBXz3XtQ0dJ2CqqiIlkeM3KC89fnTqvDQw4LjNW2+rJuFkaZfmA6HgcuhlDA099txvZAy9hHoeWw/jkgWw5oum144EjbbfRS4BQXpnfyyJ2bHyh1pEJSB8G1pJj3jx2c0vTUu+B1LW0JiU2NMx/9WJHzEedn+Gp7luCiUKxwx7CtaIjwVtZM7suaPo+eB+P9i/YCXh9P4knhX0R2hMLg==
+ b=LeZSa0Cxe4yZBJdMYM2n/gkb7KB2/sVsyORjji7JSG5tq6iJL6tWvwe+RtGLOEyzgY18JS/EIimc9lUBIhs8r6U3OlUu82/nkOemlWJFMIHJeMZ4kWUdON+DLXYWlL0Hz5joic63mevVYBDzTbLOtgyGdpc1KxF3aks0KbnsfZNxcRMdFt0DXjcDyfPyyj/OyJsBRzEtW55lWNXDlOekkglWlW67WHhpUpAB9wNGFLtuSSfEVfLElc9AUBbic2Uz3hNgY35ngXyay/a5yoBrIHcWVVMjKZUpAG6PUeEbcnMIZL558WGwxU3mmLIQAdkR7LfculxwOkOuaHbRotzttQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KfksTT9MPO7DX2djdHxphQSTBxmszsv+aWJP0tc8FF8=;
- b=H02BqJH0CTqGRhvmzuwa1J9XQ7pRKY4TPPrRC0SAYlYLciMrPA4Z5PE19UjgQ1AgXTEi/Q09wC5kPmUCNYw/eAcqQnasxZK8JPDK0saPT9D6LxR97Vy5083GPxEW5OcD/KY44n0yL97Q1oPeV0GaV0QEr1psoik5tr9HuHHZVyaqEIs9kBYHL755ahY3DCIJH/2DywfzSOsu6nbICWPcuJTiANM+8tEDlYjvxywJ4dfRciP21b56ofxnLPkq5XeXInvzcjQWS8P/PGe8DQfKnYrA4o/QMpp6W7/5AFjf8utKEWyzxU08hDpREqEkODpWgI4QO09aSjedvtn9pNORzQ==
+ bh=H/QZNWwgyFrCjdBD6cnuu0jW2iPQRa87idIB3yC/hn4=;
+ b=mqRft+xdzOfy2/i/0WD2KU2eV7eQyBShROLv5t5wyjgNOgmqUHcXJujHbuDmq+h4G1p7Sa+DBj5m7rxrTZhQNjkdtUQmz/xrlbulzIaJG7YmiYjnU0StUrtweEdeurTIu2SxFDKNIc+kZTAgGeXQRcEnBTW5BEEgC7xJewScxkVeQ5h+3hfJkQtBwoWcKrggno3JLoBpbf9BUXO7cjhibUrrJNLW15Adc4yp2iIo7aYkJRek9dAoD6XZyHuLSgTrycrJwlMFiEZ5X9gDfBzeuoIv/4Sv2kEJdvLQ0772wr7/WfgqN+Su8igMpOaJMeMJI+hyqGh7NILdxzMAErMyYQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KfksTT9MPO7DX2djdHxphQSTBxmszsv+aWJP0tc8FF8=;
- b=L4b72QCwuou2rEy9L/jNl7p9OCUiKSGSOiqCYcLVQRf8jk2tOZFqsyqaGnKlbLaJGDcE3RAAEpycNYOcAkX9WKFK36Dae6Ucprg7rYxlBhIGWuukNK7CYUx7BE0S4T/eiKXYwSCfPozm4O/AE03lTzL/GIWwnB/+97hB5xVLdh1l+I3JQebZRovcZmK61xQgAlKafNij84PWZ3YNrsMwHE2QNmh2Y0jRHSnDC5YWAwUITSJS7luIzJpELmD3H4bNHh7XKkgaLy59PBJpcyesRA7Yvnt+QkCYH5lNgpJQLrkVfGyp8o/bAHuVWbnq8KyacduhM+eUtqwBibnX0vJvRg==
+ bh=H/QZNWwgyFrCjdBD6cnuu0jW2iPQRa87idIB3yC/hn4=;
+ b=hvK8+zoyQBPdWARsfnIYylQ/lV6a43mJroj886+kzA44MKhjA4GMi9OQ/mwCVhs8tKMSC8DgOREeOAl7/aZ4CDexnDqkOdkYkxII+1OM/MFO1HZl56Q9J2KNryTwbW6yoiC9e6IClewbR06jg07fMo7mVaGzzwNwfNmIdcAkgzX+Q47hm3/Hd4kWTSK6zaL0MyUzm/EnVnsmZEA5qdllJd1d/S+oFCo+YGlAGn3S/Z1zJmAuE3D9IAR69pGlbFB9DbkrglBFDtzqN8Bn5iPq/4usdCEv11Uhnv5YwFk/epxi6CvgtHialf++GItlrVJcEDfhO8WGjgJVnUk3i0lgwQ==
 Received: from LV3PR12MB9404.namprd12.prod.outlook.com (2603:10b6:408:219::9)
- by PH0PR12MB5629.namprd12.prod.outlook.com (2603:10b6:510:141::10) with
+ by SA1PR12MB7152.namprd12.prod.outlook.com (2603:10b6:806:2b2::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.21; Mon, 17 Nov
- 2025 07:38:29 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.16; Mon, 17 Nov
+ 2025 07:50:39 +0000
 Received: from LV3PR12MB9404.namprd12.prod.outlook.com
  ([fe80::57ac:82e6:1ec5:f40b]) by LV3PR12MB9404.namprd12.prod.outlook.com
  ([fe80::57ac:82e6:1ec5:f40b%5]) with mapi id 15.20.9320.021; Mon, 17 Nov 2025
- 07:38:29 +0000
+ 07:50:38 +0000
 From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
 To: Christoph Hellwig <hch@lst.de>, Christian Brauner <brauner@kernel.org>
 CC: Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Jan
@@ -66,14 +66,14 @@ CC: Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Jan
 	<linux-mtd@lists.infradead.org>, "linux-xfs@vger.kernel.org"
 	<linux-xfs@vger.kernel.org>, "linux-nfs@vger.kernel.org"
 	<linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 10/14] fs: factor out a sync_lazytime helper
-Thread-Topic: [PATCH 10/14] fs: factor out a sync_lazytime helper
-Thread-Index: AQHcVTBWu7YlmtLPv06FPmR4YBj4MLT2f/MA
-Date: Mon, 17 Nov 2025 07:38:29 +0000
-Message-ID: <cff9dffc-dd49-45db-bc47-efab498065c4@nvidia.com>
+Subject: Re: [PATCH 11/14] fs: add a ->sync_lazytime method
+Thread-Topic: [PATCH 11/14] fs: add a ->sync_lazytime method
+Thread-Index: AQHcVTDviPep/5c710KCD/va/1nG0bT2g1gA
+Date: Mon, 17 Nov 2025 07:50:38 +0000
+Message-ID: <47527262-c79b-43da-ad72-f52474c2cf30@nvidia.com>
 References: <20251114062642.1524837-1-hch@lst.de>
- <20251114062642.1524837-11-hch@lst.de>
-In-Reply-To: <20251114062642.1524837-11-hch@lst.de>
+ <20251114062642.1524837-12-hch@lst.de>
+In-Reply-To: <20251114062642.1524837-12-hch@lst.de>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -82,101 +82,101 @@ user-agent: Mozilla Thunderbird
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV3PR12MB9404:EE_|PH0PR12MB5629:EE_
-x-ms-office365-filtering-correlation-id: 2264c477-119d-4bec-abca-08de25ac4d61
+x-ms-traffictypediagnostic: LV3PR12MB9404:EE_|SA1PR12MB7152:EE_
+x-ms-office365-filtering-correlation-id: 796a1a89-e520-4f86-d70e-08de25ae000d
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014|10070799003|38070700021;
-x-microsoft-antispam-message-info: =?utf-8?B?azBIbG9CWkZGUFBwTGpNMDJKOGdFeWJHTEJJT1VNUHJzemxnNFlPaGt5cVdE?=
- =?utf-8?B?d3lja3p6czVBM3hsang2YmxlUHB6LzRnYnpWN2p5eWR3WldPZXlCeFdZM01R?=
- =?utf-8?B?NFZlR1h3UEVGajg5R3Y3aGhaSENKSmEyWk9HcDBSTGk4OVZ5MHdScnA2U1B1?=
- =?utf-8?B?cEV1UXlab1RwK2tkRXRrWU9uV2VHdDhueUxUS0s2c1BGSERKTFhKUW9DcFhK?=
- =?utf-8?B?UUUvb2hwd1BFWnMrVGw3SUhUSGVIbmVVdmpMSkJWY2pnQno5Y0t2bVZBZTBU?=
- =?utf-8?B?Y0tjNFVON1JVT3ZEVS9nSldxUUZHVEk0ZkJiSFJWZU9PVlQ4aldJaDJmeS9R?=
- =?utf-8?B?VGhKSFJJR1A3clVCN3R0WWdZOGRvZnFING1FSFUvUDV1dW1KSWFvZXFSRC92?=
- =?utf-8?B?aXJ1UjRXc2lPcTc3N3B0VjI3eURZMklQUE42R2lKa3N6V3VlbWpycWZ5YUxt?=
- =?utf-8?B?MGtORWQ1ZExDdk5rb0hhNGV5VWluQTNEcWpNVG1qME9GUGtlQkRHQmk0enJm?=
- =?utf-8?B?UTlFVWpmY09hMW5oaVFZdlBzdEFYTVBsamhmTHZkL2FmQWV3a29xR09ISXpK?=
- =?utf-8?B?Qm5CQlh1eHN1elFQNjJKbzlqdlpCVTFUa2hNQ1lpdUZmVDhkMWYzRHRlbnVl?=
- =?utf-8?B?M2d1eU90MitpTHZjMGNTbVFFazlNT2lOYUgyYnZXT2pheFQ5SzFhRVR5NGRk?=
- =?utf-8?B?ZkVvMDBHcUgzMzNaWVRTUzdBdk5rNWx1NWsvVTNZS0pvV2t6N2VOb3I2WkxG?=
- =?utf-8?B?MGVDMjlzU0hYSTBpQzZUdHM3UVVPVWNVRDVFckI4OGp2VEkzZ2VRWldueUY2?=
- =?utf-8?B?bHhySjF1SUVObEhEOEI4b3RGN0VmWFN2UEpUczBsK1FVMEpuR2hZTGswRVcy?=
- =?utf-8?B?UE9JcDBZRS9lYVBESUc3ZlF5K004R3R1ajRUbWFUa3JqOFhKZk0rZ2VDbnZX?=
- =?utf-8?B?aEJaTFFIZFZ2K1U1ZTBNT05JMG5IQVF0MWF6T29EMDZob2g2cmFWWGhTUUdF?=
- =?utf-8?B?V3ZDaDNxNTBMSHQrSUtEZldzdUtrQlpvaVkwZVJqNllSbHcrMWhmaUs3dCtu?=
- =?utf-8?B?d3VjUlNYWWhRblBScmVRVHRsNy9NVFkyQkhsVU5pL3FzaXJyaFlKZHZheXlM?=
- =?utf-8?B?bUpHbW1HN1laNDBYQTBJVHdjMCtPdzBuc1YrYTBsS3cvT21IcGVyRi9wTnIw?=
- =?utf-8?B?SkhMYlVWRkZFWjBPY2NWUUxuc05QUFVJQk9NanVNbE5Xa2htbFJvTWp1WVlO?=
- =?utf-8?B?VENxSE5uS3lzci9BbXcxeEltMnJla0YxTnpyc2JCYlJmZDBtYkVPdnp6a2J5?=
- =?utf-8?B?WFdUYzBRdHBkbjJzQkFUa0dqYnIrdzVhVjNmc3NpVFROc0Ywai91dzhyRENv?=
- =?utf-8?B?aWtubmp1emc5Nnc0R3puYmVVZzRLaHA2ZUZPOTgzL3RVaHBHZlpuZ01KaFRI?=
- =?utf-8?B?WHhDbi9wR0NlK1luRGlCZzQ5SC9sNWRVcHZjL1VLZFB6T3dCVHpJd2s0ZlNz?=
- =?utf-8?B?dk9pTmRSamEybGpyMDFoN0tmaXRaZ3VkYURZMnRNSWlsSXpzTkQ3aU5nditw?=
- =?utf-8?B?NXBHT3JWRGY5YjByRy9XMmt3QjdPZWRNYVlWeHRwSjZidWtZNWdOUEd3WnhW?=
- =?utf-8?B?STE2M3pUeStrZ0srVG1WZEQvTHQ3dXFTY1pESFI3cTlMUWczVzJSNERNQ0c0?=
- =?utf-8?B?d0M2dU4zdk5XWE5HNWdYSHRoMDl5MkU3QjVJMkMvbXBnZGFaMlMxRTdlcW9O?=
- =?utf-8?B?K29wR1lqVDFHSUhVOHVSc053T2pQc0lOMEdCemx3K2JMQytXTm1GR2F1VjFu?=
- =?utf-8?B?NHo3eWlua05JblRkNGpIUUF4cUFRYjZUU2txN3FPdGRCU0tUT1J2WTR1Qkxl?=
- =?utf-8?B?d3ZLTmJmTEhwMCt6eGc5RW5xd3Y5U0hpZ1Y1YTFYUnlsMEJUd1BOZ0c5TkYv?=
- =?utf-8?B?ZGJxZ3E3NE5NMUFPUHRZVEJYejNVaHhMNVJSck9MbUZxYnI3TWJtNHZkS0FG?=
- =?utf-8?B?cnd5T1ZLTUF0cFA1RkcvSGQ4cDNOQmwzU0FuK1lvb3dPdTh2MERrU1FlVG16?=
- =?utf-8?Q?v/RTEo?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9404.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(10070799003)(38070700021);DIR:OUT;SFP:1101;
+x-microsoft-antispam: BCL:0;ARA:13230040|10070799003|366016|1800799024|376014|7416014|38070700021;
+x-microsoft-antispam-message-info: =?utf-8?B?OEVmQm5GVzZYYUlTNnBFZXBxVHYwU2l6enQ2dmRscGNOeklpcWtTdHF6QUlu?=
+ =?utf-8?B?aW91OFFUWVNjNW5ZUG1jeVE0Z3NxOXhCWEpncGowbmZCNWVTeHlMR202d2hB?=
+ =?utf-8?B?Si95TWJBVnRrWjU4RVpBS3RadTRxa29QRmxNd0ppZGt5aGNlTFNUTW82MVlQ?=
+ =?utf-8?B?M1lEZ2cwWGk4bFc2a2drbjJMVFo5SDRUU2UxcmkvZWM2ajFyQThLT3R4dWQ4?=
+ =?utf-8?B?NkdTZXJmK3huREVVaU1wejBEK0t6VXExMnA5dGtZYURpNzhZNW1ZeGdhdUQw?=
+ =?utf-8?B?NnUzYzQrRTFRUGtaQjFrbzY1VEZmdlQwV2R5RGczL2RBTDNwVnRCNkVSZVlr?=
+ =?utf-8?B?UnN6TG8wYlQvbG1YYjJxWTlPeFFQelFkUGZUZjhJcTA5V2JKb24xMmd2dTVE?=
+ =?utf-8?B?bjk0TExUbGV0NmNJN0FPUHdId1ZvNUQ1VFF1ZkxpaFJVKzFZcG5xMzdJQUxr?=
+ =?utf-8?B?K3pBK3R4empDcmsxVk1QZk9DZngvK1ZacjdlTUxoZWtPU0YxL1dxYzc4dUZP?=
+ =?utf-8?B?TXNJSVlLaFlGQldKN0pvbnR4VlZNT2EvQWhMZitxeFRsMXlpd0RubWsrQTNR?=
+ =?utf-8?B?L0FKWTNjZ1pnRVNjZkFielRodzBEcFErK3VZNlBYU1NYaHgvVUYzNE9hSC9i?=
+ =?utf-8?B?MHFsNE5xWFFidmxEOTVGZG1xcVlONHZmUUM5a2RvckpjaFAxVG9sQndPVUZ5?=
+ =?utf-8?B?SUFDQllpL1Yrd243cGVxVlZvbFM5TUs3VnJYY2xWek4raVN5YnNIUFdOV0tU?=
+ =?utf-8?B?L1Bpc0NiVTRTZUI0cVRJcVkzWEFIT2N5dTVlUkVtVlpyTGk2ZFVYVVV6Tlh2?=
+ =?utf-8?B?cjlRT25yZ3Ewb2ZIckZpaTNzRFgwbE9ZUzR0Wk9GT0Q1ODh0cXhSam05dDZD?=
+ =?utf-8?B?dmh4NGZndTBQMGdFbTZQNklTUjlLcFBNc2cvSGd2VXZlcVFjRWVMdG00aE5Q?=
+ =?utf-8?B?cEJXdjlDVlhHbG5ubUtIeTJmS013T2JGUS8zc0RaUUJldDZ1VllrcW1CWXhq?=
+ =?utf-8?B?WjVrWkpkaFB3MXB2STM5T003bkhyeU9Fa1VSVVFjNTNTSTJmU1JpZ05pZ1F5?=
+ =?utf-8?B?YjlUbFdveWo2aDRuQXFYT2pKNEJtVytzNHMrMWFGcXhrQWJ5eU50clR4WWZW?=
+ =?utf-8?B?ckFCSC9IeXlVeGxZcjZPeHNNYXV2VUFSeDlpVE9mTkFVVnJhUUhIRGJGalRM?=
+ =?utf-8?B?bjBGNkhVRXluN2hLamxnL0pHUyt0M0UremFZNWVpeXkyZ1pTSVBqM01JYURD?=
+ =?utf-8?B?dkhZNXhJZVpXcVVHV2pXdVpUWGJtZXZINEk4V0tQV0J3d2wrZ3l5d1JEam4w?=
+ =?utf-8?B?U2Z3NnBLOXRVemEzTVNPdTlybVh3MTVMWk5hT1dycitubkFla3ZhZk9NSW9h?=
+ =?utf-8?B?SDZQTnMyVmcyMTFURGZSZktYb1FhbmRqY3JWdTVhT200ekdUN2lHUVhpaFRZ?=
+ =?utf-8?B?YU9aYVlCbGdrSEVRTTFOWEdEanNXYWJTTXZ5aTR4cFlHNHNSOVFwNmRpOUxK?=
+ =?utf-8?B?cVdINGY5WTRuV0M5K1lqWHZQMW1DL1JpaUhEeCtkd0hjNzRhMTEzNjZ4VENO?=
+ =?utf-8?B?UVZIdGlPZmNpWllHa2pKODBrVUdWS0NZN0lORmh4dGFKQTFhMTlBc1dDekho?=
+ =?utf-8?B?MktJV0VTS01Bbzd5czk2S09TMDYvSGZnR0ZjLytvNzZLZ252YjEvQUEyUXVC?=
+ =?utf-8?B?S3grdG5WZkM3YjZCcFMyazlHTkduVnB2TXd2NXgvMzNGTFlmQ3ZxOUZmMFln?=
+ =?utf-8?B?azV5M255QUppUWJZQURTYmVwVDB4Y1hvdFBVRFNLbVp4QjRZUU5rcmxsckRX?=
+ =?utf-8?B?dmdRU1RrOEd4dkI1NFN1NWtHSTlFcmtEeEk2dyszbVhqN0xkcTZTb3krLzVo?=
+ =?utf-8?B?M21iaTYwbWpDT0k2d3JRbnJlSEo2MEluWUVkRi9oVEZKZ1NiT2pmWjNxYjFL?=
+ =?utf-8?B?SktGd1AxcitPKzB4MkduZWswcGQyelBqYmJUMTVKN1NON24xYStjWlBSMnZP?=
+ =?utf-8?B?aUhJb09zTFI0cGdidU9rdjBIR0lCanZnSEV6SExoVlIzYTV5cWlESE9jL3lN?=
+ =?utf-8?Q?9megtH?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9404.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(366016)(1800799024)(376014)(7416014)(38070700021);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TGg4Tk03OU5ZUnRxd0ZFVUZ0WHpxaGVzL1h1R1BHTy9nei9TcVBucm50R3h1?=
- =?utf-8?B?L2t3ZkRMV2tVSHgrWXdpbzVUME8vODBSYmZkV04vdlRPbVQvZG4ydGJvRVZ3?=
- =?utf-8?B?U3NsZlkrVEFaY1V0d2JtNHZ6MGRPWjJDRGZPblZpdzRkb01SUXVjb25tR1FC?=
- =?utf-8?B?anozSFYzNUljRTRoODIxRElvZFJRSlFJOUNWRnllV2U5eFBVVjhaRnRZSUp0?=
- =?utf-8?B?WUczY2QwK2FNaGdQNTkzbUZPbjF1THd6VmtTVEhKWjlZQ0FmdFd2MWNoTks0?=
- =?utf-8?B?dHFQd0pxRituSXNRbTZmUEY5REpXTW4wekl1RGdKYWhCeWYxQ0JhMEVTR1Mw?=
- =?utf-8?B?SUV3VmpxZEtUZnJpQ2Y1VG5PblEybWNaQU9oS0trYXI1M3EzRm9SVHRuZUZE?=
- =?utf-8?B?c0NyeDBlK0VoQXM4V3dtSFU5Q1UveHNjZ1pacUN4UHlzK0dkcVdid3dRK1g3?=
- =?utf-8?B?YmI4NWgyV1o4UU9ZUDdzcEtQVmcvT2c2aUFyZUp5K1JWbHNRTFRqR0pTdUZ1?=
- =?utf-8?B?V0tzYW1ySTlEMVNVQ3RtaFVDeDR3bDdyVEtTN0ZmQmlId1dmOWtBQ1diTkdr?=
- =?utf-8?B?R0xhMVRqbDk5cFl1L2ZPNzFBeE5hUjdkMlJkUC9qTE1HRmhQYllxRHI3Mlpv?=
- =?utf-8?B?WGpBM3B4OUt0bDFpN2pXTW5RRWh6VHlvRzNHYjB1N3ErV2hCNTJIRDh3VWlH?=
- =?utf-8?B?TkFwZDlMQ3ZhWGFCZ1AyY0c1ZnVKaVpHZ1MrYlhmV3RGYTlOQWROazdBQ1A4?=
- =?utf-8?B?a1F5NlZqdXBoMDJra25ndHhxRWpSdkw3cm9GU2dzc1d0VTBpWjFOU0tXbFc1?=
- =?utf-8?B?bWIrdUdoaTJFdU0yazJjQisxb0dodDl3RGQ5T2JLTGd5M0dUZm5iN05KMHNx?=
- =?utf-8?B?R2lMaGFuVVJPc3c3OWRmL0VaK3JRdnFlSERVcXA2d1AybzFPSy9GT3FuNkNp?=
- =?utf-8?B?eS9SY25GUVRSRW1IUzloR1cwMHlUVmhwUTJVZjllNWlhYlhHVnMxRmxENDJ5?=
- =?utf-8?B?QVlacHp4QjJwOEJIR2FKcWZyL0JadGJqZFAzdUNRb0MrSzlOSDVnaVVRcGVG?=
- =?utf-8?B?YzFvSnpGQ1FPM2w5cWJOU0x5Y3JxWDBTMytEaXgwQmh1cmV1TUd2L29qdHhT?=
- =?utf-8?B?d2xJY2VHMmxOOTlNWmhzck1SOHdvYVNvQ0haRldMa2N4aWh5TkplZFpnRUtR?=
- =?utf-8?B?YTFkRnNZMm8zY0RqeUxBV051djA0T2RCbWgwZlFzckF5eHpaaHFBOTk4ei9D?=
- =?utf-8?B?R01BbnFVSFNCYW1wRHluYTJ4bno5cVNwcXNXQWllbDNZZEdFZlJzbE9OS3hM?=
- =?utf-8?B?Y3p0YW9Xb0p3NlRha25wZFhxMWcwN3JpS0hhT3VnYXNoOCs2UTdYbTFZQ3Qx?=
- =?utf-8?B?VEdPWlBpNWJGY1B4TXo2cDI4Mkg4aHJySyt4R09IMmxZZXFXd2FjekhoYU51?=
- =?utf-8?B?eGhvWXZGYnAvbGhSMGp0YUNkUTlOVXNPQXExM2RSejg3bC9INTRrOEp5N0k4?=
- =?utf-8?B?ei9NbzBpYzZFUVc0UEtGQmFBdVpyUTZ3eGFidVFhVEM2NVNwRjVBOVFvQlpp?=
- =?utf-8?B?RU03N0lqUlp2NWNHT3g3T29xWDlOZGsyaFk1RzVtYWFmT1UzY0ZlQUMzRUY3?=
- =?utf-8?B?bjZWaVJxTWFCd1huVkU0Q1BPOUxMSEtUWndwYWlUNEo0cVhEc0NwZ2lkY0RN?=
- =?utf-8?B?enE3Sjg4RlNNdGkxY01FMUJBZTdlNm9FYzQweW5CdGNkYmRPWG9qMnB4MGdz?=
- =?utf-8?B?Kzk3a012VzhhOVZ2ZGpMeE5zNjNkTXZhQlBNdVZnU2F2anJXcU1KUkZGSTQw?=
- =?utf-8?B?bURxOFlONityTmJoTGZLb09jd3U3aTNwSE5yZmpYQTQ3bVZSSjBIVkZwUlo3?=
- =?utf-8?B?YU5QQ09Pb0JjOWRCK0ZzZ0hkNTJDMDQyMStqMGdoUHhEaXkwM0tOdkVLcCtl?=
- =?utf-8?B?S1BiMzBGd3RwQ2NYWGp5YmlUaXU5UTl6ampmdFJUTWJWRlBsc1ErTGlRK3dG?=
- =?utf-8?B?SkNzQnIvc2h3YVBwVW9FcmNJOW5tMGdzRW9XcmJPV0FDckhTdXcvbU9ST3JH?=
- =?utf-8?B?QTJJcGpqUWZaUGppbWU1T1ArRC8zb1ZIaWkzMkZWSWpZcC9SS3FvcENtTzkx?=
- =?utf-8?B?eG84SGF3NTVLUU1FOXRZdWRMMTVJRm9oT2pGSnczWFlVTlpyLzE5SzFlb0lR?=
- =?utf-8?Q?AK7wbHJjcYnBj09HyuMN3Z99tuEsvu3oHVQQVrr+sJRJ?=
-Content-ID: <58D8676D718B754184FF7E052797999D@namprd12.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q3VUTGlLdzZtb3FBc1gvZUZaMUpOTDRYUXFvUkpwUDlmT29hYU01ajJObkdL?=
+ =?utf-8?B?a0ZqQjFCWWxWV1lkck5lL2hzcmU3bGVLWEwrbGlBOGl2bE9sYWVoUjFVUFBu?=
+ =?utf-8?B?NGJCOE50OW5SWnExQ3A2RlN4Qk1yUkJPWTFZQmFMTGZaNUZwdUgraGJEKy9s?=
+ =?utf-8?B?eWdnd0JobFFRYTIvTnkvNXp6cWtCbFhRQjc4V292bzFuQ0c2dE1ldVQyN2E5?=
+ =?utf-8?B?QlRmemtERnBFdUx4YTNaaXY3RW93WmpXVDRrc0xzU3ZsNm9PaFRtZnY2R1hC?=
+ =?utf-8?B?ZkRKa01xRFhUVndocXRud0dVaWZSaUY2N2pkWkF5MXJHMkxTV2h6aGlyUVdo?=
+ =?utf-8?B?SWtvM2lUa2ZxS3VQWWdXaTUyUFV6KzdYRlBMaTRkc3RtMFNRS2NVK2d1K0Rw?=
+ =?utf-8?B?UHNoOURDWDAxVFRkeFBlQkxZa3o1TUc3NjA4ai9aaFV2KzFLTGM1UVdTUlZS?=
+ =?utf-8?B?ZlJQR0lXRHVkK2F3WFlHNXhDL1U5M0YwUTFVbWI3eENYd0Y2ajBtaUNCV3Iz?=
+ =?utf-8?B?ZUdtTVY2UUJnSmdRMGZ6Ymp5UnJvaXArb1Q3V2M1dHA2OXFEaE92N01ZZytr?=
+ =?utf-8?B?bWtES1Q1dkR3MTB1K1FYQVB4MHFhc1BHZUFqM1RORnZlbTUreHl3Ri8za21M?=
+ =?utf-8?B?c1hwMEZmYU80S1MvM2JSQ0RCWGhqbUtpcnFkK0p1T2Z4QUMrd0lJVnFDdFlJ?=
+ =?utf-8?B?QkkvbnN4dGFXYW12NERNMDFFZERWb0ZSeDZWTVJoUS8zaDRTR281T2VCTm1R?=
+ =?utf-8?B?Mm5JZlBxb1gySHlOUjlGWVBVMk50MGFoUUtSVUVJdndhcyt2eU1IRHBoTHVI?=
+ =?utf-8?B?aUZrVm5VK2ZndytGd2lUdXk2WUVBVjhMWXNQNU1qZk1MUU5waXVWZXhqcTAw?=
+ =?utf-8?B?MWxBRUp5T2VTNXZEbjEwUlBHdktMZ1ptYlArTW9VNkk2eTlvNWxwcm1mbjVy?=
+ =?utf-8?B?V2tNZzIxYTZ0dWt3ZFlMNnZYdUhQY29nTlZiNGFpYzBVNUxyMXZVZXdWaXZM?=
+ =?utf-8?B?QlJwbFVNM3BrR2YzVXJIcStJV2tuUlREUTBFTTNuOU05WktsdEFXajV1eHkv?=
+ =?utf-8?B?bmtScWdYcnpERXdJTlBhNk9VVk95UHcrN29EMVY3dEVHNEJ3UUp2dnhFdUsr?=
+ =?utf-8?B?OU01bzR6R3dYeVNrM2l2K2NqT1hzWlFyWkN1YytVSFVwZnk2QVpRVGlMa0dV?=
+ =?utf-8?B?RS85Ti9GaUgrSXljT2pGMG01U3c1KzJMdzVPOGFtdnNGTm82NndWQmJUWWpi?=
+ =?utf-8?B?RUNMR0ZEUzFSK21GYjBLTnJYQlo5YTQyZUYvWkVuOE1HbGNmNXNFTWZWVm96?=
+ =?utf-8?B?NTBIaUt6MTdsZ2kxSUdjVXBTa3hmeUUxQVV6Nk90WVVjbmg0Q29DUWoyWWtZ?=
+ =?utf-8?B?U2hZOGFwdWh6ODluSS9RaFc5dVBoOWZsNHpOYTVpcUJBdnJKWUozTEtDN2xB?=
+ =?utf-8?B?RXJiSldlY1VTRk1hV1FXWkQ2Q0NCWXJyN0hsNklRbkpXUjRpT3VSYUQvVG1t?=
+ =?utf-8?B?YytIUUpOYnlWczQydU1BaW92YzFudzhOcWJLa1NkQ1hyT2VETmh0Y3hUNnh4?=
+ =?utf-8?B?NEZUZ2lQbDR2VnROS1o5NUVRdnB5dnFHUElsOXRPOTM2TTZrQ01sT1lpS0V2?=
+ =?utf-8?B?emZoeVZUT3R1c3NURlErcG1OSGxMdjVFbVhoUis4SlhBY1ZFSDNRcHpzV3Zl?=
+ =?utf-8?B?U2pkMU1UT1duNzY3UUtLSEMyaXZWNjBUKytid2dSTnY3YzViazRWaWM1eEdk?=
+ =?utf-8?B?QnpMQm1xQ2dkQmFkcTRGaEs2Q3VnVnViUUVDU0tIazFCWURSbVB2ZUtaUEpL?=
+ =?utf-8?B?dVVWRlQwR2pPV3V1cjJpdnlFYWZsYlFCYjhYS2tPdjBVVlpqNjJjSUpTdWkw?=
+ =?utf-8?B?OXpzbzFmNDRmZzBySmVFcGlHT29ZRUF3VjVSNDU5NHR5YnNGamhrYmxsU2Vn?=
+ =?utf-8?B?dTNXUzcrSmFwSlpMSVk3bS9KRzFHUGxkNG9OSjhrV1U0ai9mWDJwdllNRFFY?=
+ =?utf-8?B?dEpMeW1uZzlvd0xrK1JMTlRTTkZMdDh6alZ2a0NHRWtkek1XL2RTYXRhaDFr?=
+ =?utf-8?B?ODF3OG9yZG5tcThrbmFwRElGNFlzeUlmK3htN0F6OHdjOThJUEVFM0tsRE5B?=
+ =?utf-8?B?ZjVuR0ZoTkZLOTZEUnBjY0pYV2g1THdwcTNzbzNHZTF5OFRnUUpJdWY2bnYw?=
+ =?utf-8?Q?zGW6F19UDWYT6/yJG8jzChyXnvQW5PzrKqgGDjIB8Crf?=
+Content-ID: <2C395380C56B2A45A8F7FBB2C8988710@namprd12.prod.outlook.com>
 MIME-Version: 1.0
 X-OriginatorOrg: Nvidia.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: LV3PR12MB9404.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2264c477-119d-4bec-abca-08de25ac4d61
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2025 07:38:29.5688
+X-MS-Exchange-CrossTenant-Network-Message-Id: 796a1a89-e520-4f86-d70e-08de25ae000d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2025 07:50:38.8311
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KogLpJ8/3aX8Av8x2dCpA5ir74sA8SBSq6HZbZy1cc8CIu0glsVd2Pm/6b/LmR7ZSo/V8ibVrc8yy535SZs2BQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5629
+X-MS-Exchange-CrossTenant-userprincipalname: t5Gy7O4RxrKpZb2fyfZ+1oNjtWN5LD/+hPndVU8sTDfCrdR8iYUc3aGyJp5l1buwk9+Bpsa4vdew9Y3Qb9KOVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7152
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251116_233834_696551_7D539B65 
-X-CRM114-Status: GOOD (  25.03  )
+X-CRM114-CacheID: sfid-20251116_235044_087197_BA3C91A7 
+X-CRM114-Status: GOOD (  22.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -194,91 +194,106 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 11/13/25 22:26, Christoph Hellwig wrote:
-> Centralize how we synchronize a lazytime update into the actual on-disk
-> timestamp into a single helper.
+> Allow the file system to explicitly implement lazytime syncing instead
+> of pigging back on generic inode dirtying.  This allows to simplify
+> the XFS implementation and prepares for non-blocking lazytime timestamp
+> updates.
 >
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Christoph Hellwig<hch@lst.de>
 > ---
->   fs/fs-writeback.c                | 27 +++++++++++++++++----------
->   fs/inode.c                       |  5 +----
->   fs/internal.h                    |  3 ++-
->   fs/sync.c                        |  4 ++--
->   include/trace/events/writeback.h |  6 ------
->   5 files changed, 22 insertions(+), 23 deletions(-)
+>   Documentation/filesystems/locking.rst |  2 ++
+>   Documentation/filesystems/vfs.rst     |  6 ++++++
+>   fs/fs-writeback.c                     | 13 +++++++++++--
+>   include/linux/fs.h                    |  1 +
+>   4 files changed, 20 insertions(+), 2 deletions(-)
 >
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index 77704fde9845..9b2f14ada8cd 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -81,6 +81,7 @@ prototypes::
+>   	ssize_t (*listxattr) (struct dentry *, char *, size_t);
+>   	int (*fiemap)(struct inode *, struct fiemap_extent_info *, u64 start, u64 len);
+>   	void (*update_time)(struct inode *, struct timespec *, int);
+> +	void (*sync_lazytime)(struct inode *inode);
+>   	int (*atomic_open)(struct inode *, struct dentry *,
+>   				struct file *, unsigned open_flag,
+>   				umode_t create_mode);
+> @@ -117,6 +118,7 @@ getattr:	no
+>   listxattr:	no
+>   fiemap:		no
+>   update_time:	no
+> +sync_lazytime:	no
+>   atomic_open:	shared (exclusive if O_CREAT is set in open flags)
+>   tmpfile:	no
+>   fileattr_get:	no or exclusive
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 4f13b01e42eb..ff59760daae2 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -486,6 +486,7 @@ As of kernel 2.6.22, the following members are defined:
+>   		int (*getattr) (struct mnt_idmap *, const struct path *, struct kstat *, u32, unsigned int);
+>   		ssize_t (*listxattr) (struct dentry *, char *, size_t);
+>   		void (*update_time)(struct inode *, struct timespec *, int);
+> +		void (*sync_lazytime)(struct inode *inode);
+>   		int (*atomic_open)(struct inode *, struct dentry *, struct file *,
+>   				   unsigned open_flag, umode_t create_mode);
+>   		int (*tmpfile) (struct mnt_idmap *, struct inode *, struct file *, umode_t);
+> @@ -642,6 +643,11 @@ otherwise noted.
+>   	an inode.  If this is not defined the VFS will update the inode
+>   	itself and call mark_inode_dirty_sync.
+>   
+> +``sync_lazytime``:
+> +	called by the writeback code to update the lazy time stamps to
+> +	regular time stamp updates that get syncing into the on-disk
+> +	inode.
+> +
+>   ``atomic_open``
+>   	called on the last component of an open.  Using this optional
+>   	method the filesystem can look up, possibly create and open the
 > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 930697f39153..ae6d1f1ccc71 100644
+> index ae6d1f1ccc71..7245f547416f 100644
 > --- a/fs/fs-writeback.c
 > +++ b/fs/fs-writeback.c
-> @@ -1693,6 +1693,16 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
->   	}
+> @@ -1699,7 +1699,10 @@ bool sync_lazytime(struct inode *inode)
+>   		return false;
+>   
+>   	trace_writeback_lazytime(inode);
+> -	mark_inode_dirty_sync(inode);
+> +	if (inode->i_op->sync_lazytime)
+> +		inode->i_op->sync_lazytime(inode);
+> +	else
+> +		mark_inode_dirty_sync(inode);
+>   	return false;
 >   }
 >   
-> +bool sync_lazytime(struct inode *inode)
-> +{
-> +	if (!(inode->i_state & I_DIRTY_TIME))
-> +		return false;
+> @@ -2547,6 +2550,8 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+>   	trace_writeback_mark_inode_dirty(inode, flags);
+>   
+>   	if (flags & I_DIRTY_INODE) {
+> +		bool was_dirty_time = true;
 > +
-> +	trace_writeback_lazytime(inode);
-> +	mark_inode_dirty_sync(inode);
-> +	return false;
-> +}
-> +
+>   		/*
+>   		 * Inode timestamp update will piggback on this dirtying.
+>   		 * We tell ->dirty_inode callback that timestamps need to
+> @@ -2557,6 +2562,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+>   			if (inode->i_state & I_DIRTY_TIME) {
+>   				inode->i_state &= ~I_DIRTY_TIME;
+>   				flags |= I_DIRTY_TIME;
+> +				was_dirty_time = true;
+>   			}
+>   			spin_unlock(&inode->i_lock);
+>   		}
 
-This sync_lazytime() will always return false ?
-shouldn't this be returning true at sometime if not then why not
-change return type to void ?
+was_dirty_time is initialized it to true and above true again,
+perhaps it should be initialized it to false, so it will be only set to
+true when inode->i_state &= I_DIRTY_TIME; ?
 
-returning same value doesn't add any value here ..
+if was_dirty_time always set to true at the time of initialization then
+below check will always call as long as callback is set
+inode->i_op->sync_lazytime(), irrespective of
+inode->i_state &= I_DIRTY_TIME; assignment.
 
->   /*
->    * Write out an inode and its dirty pages (or some of its dirty pages, depending
->    * on @wbc->nr_to_write), and clear the relevant dirty flags from i_state.
-> @@ -1732,17 +1742,14 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
->   	}
->   
->   	/*
-> -	 * If the inode has dirty timestamps and we need to write them, call
-> -	 * mark_inode_dirty_sync() to notify the filesystem about it and to
-> -	 * change I_DIRTY_TIME into I_DIRTY_SYNC.
-> +	 * For data integrity writeback, or when the dirty interval expired,
-> +	 * ask the file system to propagata lazy timestamp updates into real
-> +	 * dirty state.
->   	 */
-> -	if ((inode->i_state & I_DIRTY_TIME) &&
-> -	    (wbc->sync_mode == WB_SYNC_ALL ||
-> -	     time_after(jiffies, inode->dirtied_time_when +
-> -			dirtytime_expire_interval * HZ))) {
-> -		trace_writeback_lazytime(inode);
-> -		mark_inode_dirty_sync(inode);
-> -	}
-> +	if (wbc->sync_mode == WB_SYNC_ALL ||
-> +	    time_after(jiffies, inode->dirtied_time_when +
-> +			dirtytime_expire_interval * HZ))
-> +		sync_lazytime(inode);
->   
->   	/*
->   	 * Get and clear the dirty flags from i_state.  This needs to be done
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 559ce5c07188..34d572c99313 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1942,11 +1942,8 @@ void iput(struct inode *inode)
->   	if (atomic_add_unless(&inode->i_count, -1, 1))
->   		return;
->   
-> -	if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
-> -		trace_writeback_lazytime_iput(inode);
-> -		mark_inode_dirty_sync(inode);
-> +	if (inode->i_nlink && sync_lazytime(inode))
-
-since sync_lazytime() is always returning false goto below will
-never execute ? which makes following goto dead code in this patch ?
-
-
-otherwise, looks good.
-
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
 
 -ck
 
