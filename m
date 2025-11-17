@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D68F7CEBF91
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Nov 2025 22:47:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EEE8CE8D6B
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Nov 2025 22:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+KZa0jcxSE+0RiTc+tYsAogWcBpe0Eg+3ynbIJLH0d0=; b=2cw0+WB8evtw3f
-	HEMRWLQB5IElMps2E7G9FcOr7t5wZStX6GCJrFPIpUXwlza4xrBPNx0Zt7pcA3qtSwhsU+OQXt896
-	0A4OqtfFHVKd2ZTVSk9fc8a5WCWsV9XPTjQwVj00/jCestriKdelf5K7CMX1Pnq8usxp4E2fBDhT7
-	m97vhb4DlutU9YhhJJJkUxisRR9rFtJkk0fw+62677WMUgJmxa/xKzyPcqVqkCmc5xGQkuq/F2cfT
-	Vz4kwIxntC5f9CsJ2nCxKhwwF2jeB+hwIf9UbMZ/IcXlhGQHdEGpZAB74aTcCv7NP2Mucvqgd91n7
-	cuhDSfCD9Ew8WQnGolYw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=YNn7uKGxBMLJYE3d/LINzbidI4r1VbsYvNImK6KxWyk=; b=iITqhLXVf80AQI
+	/svSkmGHcVbh4LHvKC/KgGNw1gG6Fy5epWnDPcoNKzVs/ZzjkBxT77UEnNzhc6HSXb3VJUp5A1otT
+	idn8JdYvHWQnf8x8snLVXAvjHLytwpwqaxOjBmfDa88s2m0mOV7yDkMP86zqS6tn6j4rkNu+QzYyL
+	a6hhcdsNiahOQSCwt3ze23xJ4qJyqWOp4hSWQSLIX3tDNKzjGD7zvNIvppONQqZjX0LiN7vPR1yQH
+	YwHXFQU904JHQxuXDQBUnZQ/2EK7aITAKB4Q4MGFRZgFE8qOwEyTxo3smiFT0RMS+xzkUfLDP0C7l
+	I2bRqbzcjvEH7jGClswg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vL7zs-0000000Gy8Q-1H9y;
-	Mon, 17 Nov 2025 22:46:56 +0000
-Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
+	id 1vL7zw-0000000Gy9y-3ddX;
+	Mon, 17 Nov 2025 22:47:00 +0000
+Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vL7zp-0000000Gy73-0Y7n
+	id 1vL7zu-0000000Gy8c-2MOv
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Nov 2025 22:46:54 +0000
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-640b0639dabso8519339a12.3
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2025 14:46:52 -0800 (PST)
+	Mon, 17 Nov 2025 22:46:59 +0000
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-b72cbc24637so834502366b.0
+        for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2025 14:46:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763419611; x=1764024411; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vQx5Zus/kcblPuTEEWB+BahVU8fEHd8HqEQoD7L2fXk=;
-        b=OToDrpQnXInBND2oBYnlVCU4Kn1QEH67WoSCXb/ssZ235P4LiskLEPSd5A9AYocW/V
-         Ka7IZpWHbXlZudBPef/LU2rIIL0X8Wm6NVP6n31kYOeHf+6q1L4d8MEztshLgLaqS0KN
-         1bzAnho8E1/0AKo/FtYyKmSgmbgcGgewVaRwd9GnPj4zC3ntJlW5Ffc+7z+OJIXzNvSZ
-         f6ny7FYCxUF/pRHIlxP2QVl/YM0VT+UihhYx2qh0lTJ64x2pG0q5ZVl3OrARbBXGyA/Z
-         ANi86R2xGigpAaz0A7pKpn+VWnb2GjmqNGJ+dzuloiRNHomXNMaA+tCvdDRBoczPMZc2
-         zksA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763419611; x=1764024411;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1763419617; x=1764024417; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vQx5Zus/kcblPuTEEWB+BahVU8fEHd8HqEQoD7L2fXk=;
-        b=Rvw9/a94n1vtiV9mKxPYgBWkOJpXEIZO3ntTd/zqhQJ0nStL0kvrB1knVYjAM1Rw0f
-         eH3FEzG6gMvylcplcKqzJHk2fAqZcqYuGamRH6b78+NmEclPRYhi/u9Ijyy5ygnb1zGB
-         ybeubAOW66jMBkXdt1XfHbOaYsmWvhpNz0pM4LSLtZRxewWC2cMhwx9CPxZaqiou9VlJ
-         tOepZe2rAB7CbZ7bVk25tOpFZxlWN/9s3SPjXcsZQ+c/ezby85Fk21Xo4ce2ZPZAx0Ig
-         MamBjKOwubPZjSw/wtRL4AoyzHuQ/tL9YkJGG70blIFZoMUTvF7LQ8jkn3G/W9DFWBDl
-         PmIw==
-X-Forwarded-Encrypted: i=1; AJvYcCU8Qx9TpLH9+f0YtFfx1we7d42Pq6DyclkmgGAaf+v7bY0E6sJZ4y+B2QCkMfms/HcSto12sKMV8FY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwOLF4ETjidz0FRy67zYj9VFIcqP9b9161MBi6bntpGoV7ZO5Hl
-	5uLkRR5elmSnazUoA5wfM69Oed07GxORP7cwkpE3Gs2Op/hfzXfy4fs=
-X-Gm-Gg: ASbGncsqyVGjSmzVnwTTznkhYXG8ZX+uhkLMWOGzjzwqgvmalCtOhac+qwXIikvwjX7
-	jAAA8vDTW9y7/iVKDSznXFN6ufLYZsgVqP/gPQRpq6oWUq2DPye5F/7BPMjf0iqNCImfeid/iXl
-	yWzlpvqSfH0VgBdqv5/9HeZwea8/PDix2YIhE+Ux5XzpFi+mYKr2HIIjffo9hhvsmL67ClDiEAD
-	0shJZKr+V9Dkl+KjldkD6DVBSNU3PkJmf6MQPvcn+zALHSNQxuDg1LrXz2gxtRfVAENys6MKSiB
-	50Oo8Ul3KwUxFjQIQ01b7iNgTquOYA+bsEuU7PgpI3p/mIxfJOfcsmbwNuWblCw21r/IBac756p
-	JpMeAUfkkB0rN5fbEsCxtMkbcTylZr+5tBxMJjD4+XDWN7bv54//pj7yIHnFSM8oWHIbkRHavK/
-	IZIv9rKxre98i4MXp8ggK+0qlYA0cs/UWuepFeUFmaZqPwbUdR0KTN8lVm4TQLT8uymcfJJyNg+
-	TMcjF/dbcSrzWw0FpobfZJ8
-X-Google-Smtp-Source: AGHT+IE7k66LCLymhdfQOLn0JxvzsVErM9Ncx8SurVFaS1hwSAHD12i4vAoErL5LnOE7oFHNVJw/uw==
-X-Received: by 2002:a05:6402:90b:b0:643:8301:d10f with SMTP id 4fb4d7f45d1cf-6438301d619mr6480812a12.31.1763419610795;
-        Mon, 17 Nov 2025 14:46:50 -0800 (PST)
-Received: from localhost (ip5f5be9e8.dynamic.kabel-deutschland.de. [95.91.233.232])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-6433a3f94f8sm11266265a12.13.2025.11.17.14.46.50
+        bh=Kvi8PD7ux6OLYIZX+/H0obhuKo5+FvClrvPgKMpP5Nk=;
+        b=V+aZjZjoIHW+tq/3BGWppturA3B/KE0KdzMRiPl+nKft07w9UZJsm9GOwbiBZIepfI
+         GRdSLwjh5lYYakQtLL1DDUUykyo77PcjHbm9tFmchhvnL6SQNybgtHGqN03CyHo2Mzi4
+         8OinjX4/wdchUQEy29bZByNmr9HPyxOAPem6/PLvV126NRYAB91DnqAlgNgwmeE9gWyo
+         pvIeR5UssiEIi+UkPlq7wB4OJa3yRK/aaGNfv8XRptbewTv2M8yYtFwmiZVnE4D5+ugt
+         5Kj74FW6RlQlc5bj5yztrQ/56zD6dzxemR0pvGVdOeGrHxt9a6AV5vwBdOaxa75YCjgR
+         yxOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763419617; x=1764024417;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Kvi8PD7ux6OLYIZX+/H0obhuKo5+FvClrvPgKMpP5Nk=;
+        b=wOHieNWKMjtxjxXroK7/DTKa7duzIg+/hBzkEFdji+tJ+cSM81EoqGVfBFW1y68/BS
+         amtcZ9MH1v/Qy+bs4hUyLIljSV0Exf+YCRgTKFl5zxr7vq1L641Yf+snQ9SNBKP/isUl
+         WcBdVpjf/aFteEjZ+DZzY9YeCtk/vG30GM2cSjDCxfkg/57xNQ61mayhejVQspICmrAf
+         oD9++b5bg3ZPrrBL89RkxdubmwKV6W/+lKpbp26kkmtiFJ2nUoj7YulAoUCFSSCp8jVg
+         sbLlHtQ4WEKuAcOOEzcxSxQZnWuh0SOXgam+Cz97/0Chu9cdFrqXF7mwk1GyJGpMnKgP
+         IAdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDf2TdmafhJThrmZJ5z0xqPKJ+v3azNkeI0CFP8/2nsdZ58YDX6BOEIFaEWHDk5DuN9TasaaLwhvY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzpXUNx3JepQ56vjHb0s18sC+HPpfDLfXbMXQ3HmC4kzazc1IFu
+	oPjZfCf62zA7xtNNosp2I5pWO11cnzM35eJT2Pl57cQQXSX7vH65bsU=
+X-Gm-Gg: ASbGnct5DmF4Cf+XSP6nrSHa7YoKHY47P8m1DzflXlkVjm2w9E4XZ32yZt5LPGFFn/Z
+	k8nsabgOmoBiPmfHTrQGRQpsCMv07lBHRlBDv1i8gIp/fKvj9t9T6JZwwww8vEwZ2madBzsKkgy
+	aEJtNdEh75ahTOfeK8vnMqkpZ8f7JUturZq+rGu5E/SR5bv/w61H5pOei4pNeqNdUHYq9oP55fS
+	l4oLA+4tlIH+87Twl3PxAXLn3agXcpW60alkrhEmIUtYvQpENi3VVilTahE4aNxTOhu5nidXXUK
+	ejFlHr32ftDRta1S4eTx1WDAVOG1SSZ2F2gtJiQfuQEj83ysehwxiYtafgzXoQn7aEZbfOLECoU
+	eAX6mZs7WW9lz+GEmh+YG0t7zupGlk0Ud+HXX0wFgqDQbKrfOwxfLFpcM0Px1yBlIanyFXfWIBv
+	+y3HFzkQveJRyyzKFUHnTl6hu9E9BTsUf+YaocREMCXctRDIrPYD5bhDCxonviWu2pHQV8
+X-Google-Smtp-Source: AGHT+IES8z9W/ZUewPDopCjp1qbQPjkzW7d/3SgBKJxsPR6cY33LGwmeBi3Hmms3epl6sy2024347A==
+X-Received: by 2002:a17:906:fe43:b0:b75:8b9f:de3a with SMTP id a640c23a62f3a-b758b9fe481mr127507866b.59.1763419616710;
+        Mon, 17 Nov 2025 14:46:56 -0800 (PST)
+Received: from localhost ([2a02:810d:4a94:b300:232f:6d66:f093:4e68])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b734fed9e9fsm1179130666b.69.2025.11.17.14.46.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Nov 2025 14:46:50 -0800 (PST)
+        Mon, 17 Nov 2025 14:46:56 -0800 (PST)
 From: Florian Fuchs <fuchsfl@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -80,14 +80,16 @@ Cc: linux-sh@vger.kernel.org,
 	Rich Felker <dalias@libc.org>,
 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
 	Florian Fuchs <fuchsfl@gmail.com>
-Subject: [PATCH 0/3] mtd: maps: vmu-flash: Fix build and runtime errors 
-Date: Mon, 17 Nov 2025 23:44:05 +0100
-Message-ID: <20251117224408.498449-1-fuchsfl@gmail.com>
+Subject: [PATCH 2/3] mtd: maps: vmu-flash: Fix fault in unaligned fixup
+Date: Mon, 17 Nov 2025 23:44:07 +0100
+Message-ID: <20251117224408.498449-3-fuchsfl@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20251117224408.498449-1-fuchsfl@gmail.com>
+References: <20251117224408.498449-1-fuchsfl@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251117_144653_174516_CA5E03B7 
-X-CRM114-Status: GOOD (  10.90  )
+X-CRM114-CacheID: sfid-20251117_144658_836687_1E465E07 
+X-CRM114-Status: GOOD (  11.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,41 +106,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+Use kcalloc() / kzalloc() to allocate the memcard structs, instead of
+kmalloc() / kmalloc_array() to prevent access to uninitialized data.
 
-This small series fixes build and runtime errors in the vmu-flash driver
-(enabled by CONFIG_MTD_VMU) and the included maple.h. These changes were
-verified on real Dreamcast hardware with a physical VMU. The VMU can now
-be successfully probed, read and written with MTD tools like mtd_info and
-mtd_debug. Previously, the driver failed to build or crashed during
-probing.
+This fixes runtime error: Fault in unaligned fixup: 0000 [#1] at
+mtd_get_fact_prot_info.
 
-	bash-5.3# mtdinfo /dev/mtd0
-	mtd0
-	Name:                           vmu2.1.0
-	Type:                           mlc-nand
-	Eraseblock size:                512 bytes
-	Amount of eraseblocks:          256 (131072 bytes, 128.0 KiB)
-	Minimum input/output unit size: 512 bytes
-	Sub-page size:                  512 bytes
-	Character device major/minor:   90:0
-	Bad blocks are allowed:         true
-	Device is writable:             true
+Signed-off-by: Florian Fuchs <fuchsfl@gmail.com>
+---
+ drivers/mtd/maps/vmu-flash.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
-Florian
-
-Florian Fuchs (3):
-  sh: maple: Fix build error due to missing include of linux/device.h
-  mtd: maps: vmu-flash: Fix fault in unaligned fixup
-  mtd: maps: vmu-flash: Fix NULL pointer dereference in initialization
-
- drivers/mtd/maps/vmu-flash.c | 8 +++++---
- include/linux/maple.h        | 2 --
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-
-base-commit: 97315e7c901a1de60e8ca9b11e0e96d0f9253e18
+diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
+index 53019d313db7..d0793f1b0fac 100644
+--- a/drivers/mtd/maps/vmu-flash.c
++++ b/drivers/mtd/maps/vmu-flash.c
+@@ -609,7 +609,7 @@ static int vmu_connect(struct maple_device *mdev)
+ 
+ 	basic_flash_data = be32_to_cpu(mdev->devinfo.function_data[c - 1]);
+ 
+-	card = kmalloc(sizeof(struct memcard), GFP_KERNEL);
++	card = kzalloc(sizeof(struct memcard), GFP_KERNEL);
+ 	if (!card) {
+ 		error = -ENOMEM;
+ 		goto fail_nomem;
+@@ -627,14 +627,14 @@ static int vmu_connect(struct maple_device *mdev)
+ 	* Not sure there are actually any multi-partition devices in the
+ 	* real world, but the hardware supports them, so, so will we
+ 	*/
+-	card->parts = kmalloc_array(card->partitions, sizeof(struct vmupart),
++	card->parts = kcalloc(card->partitions, sizeof(struct vmupart),
+ 				    GFP_KERNEL);
+ 	if (!card->parts) {
+ 		error = -ENOMEM;
+ 		goto fail_partitions;
+ 	}
+ 
+-	card->mtd = kmalloc_array(card->partitions, sizeof(struct mtd_info),
++	card->mtd = kcalloc(card->partitions, sizeof(struct mtd_info),
+ 				  GFP_KERNEL);
+ 	if (!card->mtd) {
+ 		error = -ENOMEM;
 -- 
 2.43.0
 
