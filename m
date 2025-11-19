@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45CA1CF318A
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Nov 2025 10:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 532ACCF318C
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Nov 2025 10:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Cc:
-	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:From:Cc:Subject:
+	To:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iD7R+WdwCc6n2fO2+NrRJkioNF/MD/Cjt0jUyk6SL0U=; b=LCDlWIYOwKQXXh
-	eXLK30F2U994huWh490pULfwVFcTGJp+s0OfxnC0aDp/s5WnSDaWlFCeLq8YmDMW2WszDpNnUm0AW
-	mVXIuxOEHNBwZagJn/ISJtyNwF6O9lLAT8CXYD6pbAJfRTcPCAZ1dNUFnzhxpM4rmFR9usikG8USf
-	jvNWTm/luZenkco3zJWxLHc41xdn8GIqH9v9+G9LgREqhLp7ppME95SSwngTLK95LEM6eT5zWaS5k
-	tXYtqzsdRGi/8CefZn1N6TCWxMKaJNUg4cjA+uUZsToiu/ln+0OS11dhTMulwU3Hn1iTi3Au2JouW
-	PZ5KxqSABgbTOihGotpA==;
+	List-Owner; bh=sZEB0JY5epVo73gkGgVnwPBtPUmLd4NEPTbm6Y+MqfA=; b=JdegkFHhx65SC1
+	ngJq7lskySFNPxKEgL4ShsO/+IoxI9skz/uWa757l+bS2ymadcvSGkj8ATfojE7JDVEcNrafAdSbB
+	+TVJN1lF8xWSQYKu0c/h6IccKYbp6MKFVYxI6x19niAgYvCaEpI1dlCPKbtVbvK5RT/ViUg15fl76
+	hc6JEHzYMcVbDAkd2Rj1XjSXpbkEq3OsfVQKTvZDlU4XIJeIapY3DV7Q0AAbc+tcBt/DHWlXyaqaL
+	IYULzlOpXXYkWh6BhuAvkTXmP1Tg1iUoK/aRkZ1qCrExrpInfZi4HVG4Z7k5jb3yxPD2BTyYHVi37
+	7rm9czaAibv2Z/YEm+qA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLfPd-00000002y3G-2Xs7;
-	Wed, 19 Nov 2025 10:27:45 +0000
+	id 1vLflx-00000002zWC-3rWS;
+	Wed, 19 Nov 2025 10:50:49 +0000
 Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLfPa-00000002y1M-1S2L
+	id 1vLflw-00000002zVm-0qFe
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Nov 2025 10:27:44 +0000
+	Wed, 19 Nov 2025 10:50:49 +0000
 Received: from localhost (unknown [IPv6:2a00:20:d30b:5ad2:4685:ff:fe12:5967])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 90C5B4C0;
-	Wed, 19 Nov 2025 11:27:27 +0100 (CET)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 8277E3CC;
+	Wed, 19 Nov 2025 11:50:43 +0100 (CET)
 Mime-Version: 1.0
-Date: Wed, 19 Nov 2025 11:27:27 +0100
-Message-Id: <DECLLWEB1UTF.JO173TKNZ28M@kernel.org>
-Subject: Re: [PATCH 16/19] mtd: spi-nor: Add steps for testing locking
- support
+Date: Wed, 19 Nov 2025 11:50:42 +0100
+Message-Id: <DECM3POB6LJF.2LZA9PMGSJBVR@kernel.org>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 15/19] mtd: spi-nor: debugfs: Add locking support
 Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Pratyush Yadav"
  <pratyush@kernel.org>, "Richard Weinberger" <richard@nod.at>, "Vignesh
  Raghavendra" <vigneshr@ti.com>, "Jonathan Corbet" <corbet@lwn.net>, "Sean
@@ -46,13 +46,12 @@ Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Pratyush Yadav"
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-doc@vger.kernel.org>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
 X-Mailer: aerc 0.20.0
-References: <20251114-winbond-v6-18-rc1-spi-nor-swp-v1-0-487bc7129931@bootlin.com> <20251114-winbond-v6-18-rc1-spi-nor-swp-v1-16-487bc7129931@bootlin.com> <DEBTGMKJKVAC.OT51M7UDN4IV@kernel.org> <87tsyqcqcl.fsf@bootlin.com>
-In-Reply-To: <87tsyqcqcl.fsf@bootlin.com>
+References: <20251114-winbond-v6-18-rc1-spi-nor-swp-v1-0-487bc7129931@bootlin.com> <20251114-winbond-v6-18-rc1-spi-nor-swp-v1-15-487bc7129931@bootlin.com> <DEBTY3TV74T2.2N3VRS6HGWDXD@kernel.org> <87o6oycpx6.fsf@bootlin.com>
+In-Reply-To: <87o6oycpx6.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251119_022742_539055_61D29EF7 
-X-CRM114-Status: GOOD (  31.91  )
+X-CRM114-CacheID: sfid-20251119_025048_397744_DCA469CA 
+X-CRM114-Status: GOOD (  29.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,97 +63,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkIE5vdiAxOSwgMjAyNSBhdCAxMDo0MCBBTSBDRVQsIE1pcXVlbCBSYXluYWwgd3JvdGU6
-Cj4gT24gMTgvMTEvMjAyNSBhdCAxMzoyNDowMiArMDEsICJNaWNoYWVsIFdhbGxlIiA8bXdhbGxl
-QGtlcm5lbC5vcmc+IHdyb3RlOgo+Cj4+IE9uIEZyaSBOb3YgMTQsIDIwMjUgYXQgNjo1MyBQTSBD
-RVQsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+PiBBcyByZWNlbnRseSByYWlzZWQgb24gdGhlIG1h
-aWxpbmcgbGlzdCwgaXQgbWF5IGJlIHVzZWZ1bCB0byBwcm9wb3NlIGEKPj4+IGxpc3Qgb2Ygc3Rl
-cHMgdG8gZ28gdGhyb3VnaCBpbiBvcmRlciB0byBwcm9vdmUgdGhlIGRldmljZXMgaGF2ZSBiZWVu
-Cj4+PiBkZXNjcmliZWQgY29ycmVjdGx5LCBlc3BlY2lhbGx5IHNpbmNlIGFsbCB0aGUgYmxvY2sg
-cHJvdGVjdGlvbgo+Pj4gaW5mb3JtYXRpb24gaXMgbm90IHN0b3JlZCBpbiBhbnkga2luZCBvZiB0
-YWJsZSBhbmQgaXMgaW5zdGVhZCBmaWxsZWQKPj4+IG1hbnVhbGx5IGJ5IGRldmVsb3BwZXJzLgo+
-Pj4KPj4+IFVzZSB0aGUgZGVidWdmcyBvdXRwdXQgdG8gZWFzZSB0aGUgY29tcGFyaXNvbiBiZXR3
-ZWVuIGV4cGVjdGF0aW9ucyBhbmQKPj4+IHJlYWxpdHkuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTog
-TWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPj4+IC0tLQo+Pj4gIERv
-Y3VtZW50YXRpb24vZHJpdmVyLWFwaS9tdGQvc3BpLW5vci5yc3QgfCAxMTggKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKwo+Pj4gIDEgZmlsZSBjaGFuZ2VkLCAxMTggaW5zZXJ0aW9ucygr
-KQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvbXRkL3NwaS1u
-b3IucnN0IGIvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL210ZC9zcGktbm9yLnJzdAo+Pj4gaW5k
-ZXggMTQ4ZmE0Mjg4NzYwYjZiYTQ3ZDUzMGVkNzJjNWVmODEzOTdkNTk4Zi4uZDU2ZmY1YzQyYTk4
-YWYyM2E2NTA5N2M5Yjc3Y2QyMGVmMjUwNGE0OSAxMDA2NDQKPj4+IC0tLSBhL0RvY3VtZW50YXRp
-b24vZHJpdmVyLWFwaS9tdGQvc3BpLW5vci5yc3QKPj4+ICsrKyBiL0RvY3VtZW50YXRpb24vZHJp
-dmVyLWFwaS9tdGQvc3BpLW5vci5yc3QKPj4+IEBAIC0yMDMsMyArMjAzLDEyMSBAQCBzZWN0aW9u
-LCBhZnRlciB0aGUgYGAtLS1gYCBtYXJrZXIuCj4+PiAgICAgIG10ZC53cml0ZXNpemUgPSAxCj4+
-PiAgICAgIG10ZC5vb2JzaXplID0gMAo+Pj4gICAgICByZWdpb25zID0gMAo+Pj4gKwo+Pj4gKzUp
-IElmIHlvdXIgZmxhc2ggc3VwcG9ydHMgbG9ja2luZywgYWxzbyBmb2xsb3cgdGhlIGZvbGxvd2lu
-ZyB0ZXN0Cj4+PiArICAgcHJvY2VkdXJlIHRvIG1ha2Ugc3VyZSBpdCBjb3JyZWN0bHkgYmVoYXZl
-cy4gVGhlc2UgdGVzdHMgbXVzdCBiZQo+Pj4gKyAgIGNvbmR1Y3RlZCB3aXRoICNXUCBoaWdoIChu
-byBoYXJkd2FyZSBwcm90ZWN0aW9uKSBvciB0aGUgYG5vLXdwYAo+Pj4gKyAgIHByb3BlcnR5IGlu
-IHRoZSBEVCBub2RlLgo+Pgo+PiBPcj8gSWYgV1BuIGlzIGxvdywgdGhlIG5vLXdwIHByb3BlcnR5
-IGRvZXNuJ3QgbWF0dGVyLgo+PiBJdCdzIGhhcmR3YXJlIHdyaXRlIHByb3RlY3RlZC4KPgo+IFRo
-aXMgaXMgb25seSBjb3JyZWN0IGlmIHRoZSBTUlAgYml0IGlzIHNldC4gSWYgdGhlIFNSUCBiaXQg
-aXMgdW5zZXQsICNXUAo+IGxvdyBzdGlsbCBoYXMgbm8gaW1wYWN0LiBBbmQgdGhpcyBpcyB3aHkg
-c2V0dGluZyB0aGUgbm8td3AgcHJvcGVydHkKPiBtYXR0ZXJzLCBiZWNhdXNlIG90aGVyd2lzZSB0
-aGUgU1JfU1JXRCBiaXQgZ2V0cyBzZXQgYXQgdGhlIGZpcnN0IGxvY2tpbmcKPiBjb21tYW5kLgoK
-WWVzLCBidXQgb25seSBpZiBpdCdzIG5vdCB3cml0ZS1wcm90ZWN0ZWQgYmVmb3JlLiBUaGUgdGV4
-dCByZWFkIGFzCmlmIHlvdSBjb3VsZCBpZ25vcmUgdGhlIGhhcmR3YXJlIHdyaXRlIHByb3RlY3Rp
-b24uIE1vcmUgYmVsb3cuCgo+IEkgZGlzbGlrZWQgdGhpcyBiZWhhdmlvdXIgYXMgSSBhY3R1YWxs
-eSBnb3QgYWxtb3N0IGxvY2tlZCB3aXRoCj4gYSBub24gZHJpdmFibGUgI1dQIHBpbiBhbmQgaGFk
-IHRvIHBsYXkgd2l0aCBwaW5jdHJsIGluIG9yZGVyIHRvIGZvcmNlIGl0Cj4gaGlnaCBhbmQgYWxs
-b3cgbWUgdG8gb3ZlcndyaXRlIHRoZSBTUl9TUldEIGJpdCBiYWNrLgoKVGhhdCBuby13cCBwcm9w
-ZXJ0eSB3YXMgcmVjZW50bHkgaW50cm9kdWNlZCBiZWNhdXNlIG9mIGZhdWx0eQpoYXJkd2FyZS4g
-QmVmb3JlIHRoYXQsIGxvY2tpbmcgd2FzIGFsd2F5cyB0aGUgInJlYWwiIGhhcmR3YXJlCndyaXRl
-LXByb3RlY3Rpb24uCgo+PiBBbHNvIHRoZXJlIGlzIHRoYXQgY29ybmVyIGNhc2UsIHdoZXJlIHlv
-dSBjYW4KPj4gYWN0dWFsbHkgZnVsbHkgbG9jayB5b3VyIGZsYXNoOiBXUG4gaGFyZCB0aWVkIHRv
-IGxvdy4gQmUgYXdhcmUsIHRoYXQKPj4geW91IGNhbiBlbmFibGUgbG9ja2luZyBldmVuIGlmIFdQ
-biBpcyB0aWVkIGxvdy4gVGhhdCBoYXMgdGhlIHVzZQo+PiBjYXNlIHRvIGluaXRpYWxseSBwcm9n
-cmFtIHRoZSBmbGFzaCBhbmQgdGhlbiBsb2NrIGl0IGZvcmV2ZXIuIFNvIHdlCj4+IG1pZ2h0IGFk
-ZCBhIHdhcm5pbmcgbm90ZSwgdGhhdCBXUG4gc2hvdWxkIHNvbWVob3cgYmUgY29udHJvbGxhYmxl
-Cj4+IChvciBiZSBzdXJlIHRoYXQgaXMgdGllZCBoaWdoKSBiZWZvcmUgY29uZHVjdGluZyB0aGUg
-bG9ja2luZyB0ZXN0cy4KPgo+IFllcywgdGhhdCBpcyB0aGUgc2l0dWF0aW9uIEkgbWV0LCBpdCBp
-cyBub3QgZG9jdW1lbnRlZCBhbnl3aGVyZSBleGNlcHQKPiB0aGUgY29kZS4KPgo+IE15IGludGVu
-dCB3aXRoIHRoaXMgcGFyYWdyYXBoIHdhcyB0byBoaW50IHBlb3BsZSBub3QgdG8gY29uZHVjdCB0
-aGVzZQo+IHRlc3RzIHVuZGVyIGNlcnRhaW4gc2l0dWF0aW9ucywgYnV0IHdlIGNhbiBkZWZpbml0
-ZWx5IGltcHJvdmUgdGhhdC4gV2hhdAo+IGFib3V0Ogo+Cj4gNSkgSWYgeW91ciBmbGFzaCBzdXBw
-b3J0cyBsb2NraW5nLCBwbGVhc2UgZ290IHRocm91Z2ggdGhlIGZvbGxvd2luZyB0ZXN0Cj4gICAg
-cHJvY2VkdXJlIHRvIG1ha2Ugc3VyZSBpdCBjb3JyZWN0bHkgYmVoYXZlcy4KPgo+ICAgIFdhcm5p
-bmc6IFRoZXNlIHRlc3RzIG1heSBoYXJkIGxvY2sgeW91ciBkZXZpY2UhIE1ha2Ugc3VyZToKPiAg
-ICAtIFRoZSBkZXZpY2UgaXMgbm90IGhhcmQgbG9ja2VkIGFscmVhZHkgKCNXUCBzdHJhcHBlZCB0
-byBsb3cgYW5kCj4gICAgICBTUl9TUldEIGJpdCBzZXQpCj4gICAgLSBJZiB5b3UgaGF2ZSBhICNX
-UCBwaW4sIHlvdSBtYXkgd2FudCB0byBzZXQgYG5vLXdwYCBpbiB5b3VyIERUIGZvcgo+ICAgICAg
-dGhlIHRpbWUgb2YgdGhlIHRlc3QsIHRvIG9ubHkgbWFrZSB1c2Ugb2Ygc29mdHdhcmUgcHJvdGVj
-dGlvbi4KClllcyB0aGF0IGlzIG11Y2ggYmV0dGVyLiBCVFcsIEkndmUgbmV2ZXIgc2VlbiAiI3Np
-Z25hbCIgYnV0IG9ubHkKU0lHIywgblNJRywgU0lHbiBvciAvU0lHLCBtYXliZSBJIGhhdmVuJ3Qg
-cGFpZCB0b28gbXVjaCBhdHRlbnRpb24uCgo+IFBsZWFzZSBhbWVuZCB0aGlzIHRleHQgaWYgeW91
-IHN0aWxsIHRoaW5rIGl0IGlzIG1pc3NpbmcgaGlzIGdvYWwuCgpXaGF0IGFib3V0CgogICAgLSBJ
-ZiB5b3UgaGF2ZSBhIFdQbiBwaW4sIHlvdSBtYXkgd2FudCB0byBzZXQgYG5vLXdwYCBpbiB5b3Vy
-IERUIGZvcgogICAgICB0aGUgdGltZSBvZiB0aGUgdGVzdCwgdG8gb25seSBtYWtlIHVzZSBvZiBz
-b2Z0d2FyZSBwcm90ZWN0aW9uLgogICAgICBPdGhlcndpc2UsIGNsZWFyaW5nIHRoZSBsb2NraW5n
-IHN0YXRlIGRlcGVuZHMgb24gdGhlIFdQbgogICAgICBzaWduYWwgYW5kIGlmIGl0IGlzIHRpZWQg
-dG8gbG93LCB0aGUgZmxhc2ggd2lsbCBiZSBwZXJtYW5lbnRseQogICAgICBsb2NrZWQuCgoKPgo+
-Pj4gKyAgICByb290QDE6fiMgZmxhc2hfbG9jayAtdSAvZGV2L210ZDAKPj4+ICsgICAgcm9vdEAx
-On4jIGZsYXNoX2xvY2sgLWwgL2Rldi9tdGQwICQoKCRzaXplIC0gKDIgKiAkYnMpKSkgMiAjIGxh
-c3QgdHdvCj4+PiArICAgIHJvb3RAMTp+IyBzaG93X3NlY3RvcnMKPj4+ICsgICAgc29mdHdhcmUg
-bG9ja2VkIHNlY3RvcnMKPj4+ICsgICAgIHJlZ2lvbiAoaW4gaGV4KSAgIHwgc3RhdHVzICAgfCAj
-YmxvY2tzCj4+PiArICAgICAtLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLSstLS0tLS0tLQo+
-Pj4gKyAgICAgMDAwMDAwMDAtMDNmZGZmZmYgfCB1bmxvY2tlZCB8IDEwMjIKPj4+ICsgICAgIDAz
-ZmUwMDAwLTAzZmZmZmZmIHwgICBsb2NrZWQgfCAyCj4+PiArICAgIHJvb3RAMTp+IyBmbGFzaF9s
-b2NrIC11IC9kZXYvbXRkMCAkKCgkc2l6ZSAtICgyICogJGJzKSkpIDEgIyBsYXN0IG9uZQo+Pgo+
-PiBodWg/IHNob3VsZG4ndCB0aGF0IGJlIDEgKiAkYnM/Cj4KPiBJIGRvbid0IHRoaW5rIHNvOgo+
-IC0gZmlyc3Qgd2UgbG9jayB0aGUgbGFzdCB0d28gYmxvY2tzIChvZmZzZXQ6IHNpemUgLSAyIGJs
-b2NrcywgbGVuZ3RoOiAyCj4gICBibG9ja3MpCj4gLSB0aGVuIHdlIHVubG9jayB0aGUgcGVudWx0
-aW1hdGUgYmxvY2sgc28gdGhhdCBvbmx5IHRoZSBsYXN0IGJsb2NrCj4gICByZW1haW5zIGxvY2tl
-ZCAob2Zmc2V0OiBzaXplIC0gMiBibG9ja3MsIGxlbmd0aCAxKS4KClllcyB5b3UncmUgY29ycmVj
-dC4gSSd2ZSByZWFkIHRoZSAtdSBmb3IgYSAtbCAoYW5kIHNvbWVob3cgYXNzdW1lZAphIGNvbXBs
-ZXRlIHVubG9jayBpbiBiZXR3ZWVuKS4KCj4gSSB3ZSB3ZXJlIGRvaW5nIGZsYXNoX2xvY2sgLXUg
-PG10ZD4gJCgoJHNpemUgLSAoMSAqICRicykpKSAxLCB3ZSB3b3VsZAo+IGJlIGFza2luZyB0byB1
-bmxvY2sgdGhlIHZlcnkgbGFzdCBibG9jayBhbmQga2VlcCBvbmx5IHRoZSBwZW51bHRpbWF0ZQo+
-IGJsb2NrIGxvY2tlZCwgd2hpY2ggd291bGQgbm90IGJlIHN1cHBvcnRlZC4KPgo+IFRoYW5rcywK
-PiBNaXF1w6hsCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Wed Nov 19, 2025 at 10:49 AM CET, Miquel Raynal wrote:
+> Hello,
+>
+> On 18/11/2025 at 13:46:52 +01, "Michael Walle" <mwalle@kernel.org> wrote:
+>
+>> On Fri Nov 14, 2025 at 6:53 PM CET, Miquel Raynal wrote:
+>>> The ioctl output may be counter intuitive in some cases. Asking for a
+>>> "locked status" over a region that is only partially locked will return
+>>> "unlocked" whereas in practice maybe the biggest part is actually
+>>> locked.
+>>>
+>>> Knowing what is the real software locking state through debugfs would be
+>>> very convenient for development/debugging purposes, hence this proposal
+>>> for adding two extra blocks at the end of the file:
+>>> - A "software locked sectors" array which lists every section, if it is
+>>> locked or not, showing both the address ranges and the sizes in numbers
+>>> of blocks.
+>>
+>> I know the file is called software write protection (or swp) but
+>> it's really a hardware write protection, isn't it?
+>
+> Well, it depends on your configuration I guess? Without #WP pin I don't
+> know how to call that. I had in mind that software meant "using the BP
+> pins" and "hardware" meant "toggling #WP". But I have no strong opinion
+> about this wording.
+
+See my previous mail and commit 18d7d01a0a0e ("mtd: spi-nor: Avoid
+setting SRWD bit in SR if WP# signal not connected"). Personally, I
+really don't like the "software" write protection, I mean you can
+just use read-only for that partition or whatever. Locking for me is
+really backed by the hardware. I.e. we use that to be really sure,
+that we have a bootable bootloader and no one can break it.
+
+>>> 64kiB-sectors locking map (x: locked, .: unlocked)
+>>> |.....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+>>>  ...........................|
+>>
+>> Maybe put it into an own file. In any case, a sane line wrapping
+>> would be good. And add a leading offset, ie, "0000: xxxx.....".
+>
+> I was unsure about doing that, but yes that makes sense. May I call it
+> "locked_sectors_map"?
+
+I don't have a strong opinion here, but locking might be on a finer
+granularity than sectors. Not with the BP scheme but IIRC I've seen
+locking schemes with 4k blocks for example. So maybe just something
+more general like "locked_erase_blocks_map" or just
+"locked_blocks_map", up to you.  It's just debugfs ;)
+
+> [...]
+>
+>>> +	sr[0] = nor->bouncebuf[0];
+>>> +
+>>> +	if (!(nor->flags & SNOR_F_NO_READ_CR)) {
+>>> +		ret = spi_nor_read_cr(nor, nor->bouncebuf + 1);
+>>> +		if (ret)
+>>> +			return ret;
+>>> +	}
+>>> +
+>>> +	sr[1] = nor->bouncebuf[1];
+>>
+>> Shouldn't that go into the former if conditional? bouncebuf[1] might
+>> never be read.
+>
+> Yes, that's correct. I don't remember why I did it this way, probably a
+> bug, I'll move that line.
+>
+>> Also, until now, reading the "params" debug file never interacts
+>> with the flash, but with this patch it does. We don't do locking
+>> here which looks wrong. Maybe we should just cache the protection
+>> bits. Not sure.
+>
+> I guess caching the status registers makes sense, but we'll still have a
+> possible race when accessing the 2 registers. Is it okay to
+> ignore this very unlikely case in debugfs? Otherwise I might just lock
+> the entire device for the time we access the cached registers.
+
+Oh I meant caching it in the core/swp.c (and invalidating/updating
+when the bits are written) and just display it here. That way we
+just keep that reading this file won't actually trigger any SPI
+xfers.
+
+>>> +	spi_nor_get_locked_range_sr(nor, sr, &lock_start, &lock_length);
+>>> +	if (!lock_length || lock_length == params->size) {
+>>> +		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, params->size - 1,
+>>> +			   lock_length ? "  locked" : "unlocked", params->size / min_prot_len);
+>>> +	} else if (!lock_start) {
+>>> +		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_length - 1,
+>>> +			   "  locked", lock_length / min_prot_len);
+>>> +		seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_length, params->size - 1,
+>>> +			   "unlocked", (params->size - lock_length) / min_prot_len);
+>>> +	} else {
+>>> +		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_start - 1,
+>>> +			   "unlocked", lock_start / min_prot_len);
+>>> +		seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_start, params->size - 1,
+>>> +			   "  locked", lock_length / min_prot_len);
+>>> +	}
+>>> +
+>>> +	seq_printf(s, "\n%dkiB-sectors locking map (x: locked, .: unlocked)\n",
+>>> +		   min_prot_len / 1024);
+>>> +	seq_puts(s, "|");
+>>> +	for (i = 0; i < params->size; i += min_prot_len)
+>>> +		seq_printf(s, spi_nor_is_locked_sr(nor, i, min_prot_len, sr) ? "x" : ".");
+>>
+>> As mentioned above, newlines as well as a leading offset counter
+>> would be nice :)
+>
+> Arf, I was hoping I could escape that step, but ok, fair enough :-)
+
+:)
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
