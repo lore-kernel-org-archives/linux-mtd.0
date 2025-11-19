@@ -4,65 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4008ECF34AC
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Nov 2025 19:34:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2793CCF58FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Nov 2025 21:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=a4nBZOviq50nQCccZ7hpKWZqYFx8g0m+Iw4FL3JRQKg=; b=r6luNesF7O/TRt
-	J6mMh9jDLUVUadEsF2ZMxd3St7aOwkv8KfubPd5YRXdN0MKdthKt+YOyQu09eqXFAmB3Az2Ey7dgQ
-	Fu3tF3G0aFjm5BHDUl8p+wBx7A6tddXrMChe+3hWY1c8fbEgPqVt7OWRD6n84ibKosY45FhqwLpF2
-	wUGPF5VuKsl6JuYn/+UHk7QTlnh7ZqXIr8o/l8mk7tTkcVXWjE5ALrJVf98Ck0aKTrs2DrzAiW6QR
-	YdtSUI3Mp0fwj+Z/eMp4WvyQ6gAnaEdYGZDwqIpwczp/VShwDfb2EhpNg/ZCJJxW/XPQSUIPowKv/
-	xlX7B6xBuzGNObV5n7Fg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2utd0r3wFXMQHTFn/oD2DZ3TTNy5uZLlYzz0dVwJ+9A=; b=HU3CScKnbEIHJ9LpzdIagXbaux
+	djCQO8x6AD1UFITjluU1SvkCINw91Dt2aVLF8fO//hFw+pQSNYJMjFPECJ1iq7WKq1EapxJAuxIhv
+	BFjQpeoUn06y/u1wUGi98oNB2A6vkwHIA1W+n2UUwXMGdqb1IKX+HOrYMu+CvrwQ80eZ0iKy4zgeA
+	1dQkfiWc6d1cGrEjS20sDziO5xRzVAWGhZ8smoP6xLUvjQum/J7cuoqmR5VoDs6hBrD2e2h8DtwgH
+	zzwV0zmwHYcEyQ+5OVSBabrjH/54RZ/kmTCbnV3DVZH9uqAaWudBKL/kpQ2Hxj7cSf9EUrDLjR6Yn
+	Ad+ZbwKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLnwP-000000054lz-48JF;
-	Wed, 19 Nov 2025 19:34:09 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1vLpr1-00000005lUU-0QGL;
+	Wed, 19 Nov 2025 21:36:43 +0000
+Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLnwM-000000054jX-3OkA
+	id 1vLpqx-00000005lTz-3Voq
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Nov 2025 19:34:09 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id F413D4E417A9;
-	Wed, 19 Nov 2025 19:34:02 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B738660699;
-	Wed, 19 Nov 2025 19:34:02 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 43F2A102F2165;
-	Wed, 19 Nov 2025 20:33:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1763580842; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=L+b15rNijrloVZKbtZ9F1GGYw86d4sq/42MKZh2Rtzw=;
-	b=ZBpzjazDRABbSZddoCmy9i0GULuM/VjNltQEc12jIQULvIHkcDB5wCme2WIM4XwG77e40p
-	IkUtfMAWAx4+n7BE7RE/+KFhbNkK9wgSWg8p9qeT7Xhk/5h2Sf30VPBvs/ZJVBxoBBBgyO
-	DSE2YFetJfr3fjorKJE4yBVN1pKcKYbSMdBnj+TIL666RM3a/UZjOvoB5rbZCqdXBjAP/a
-	JFZ21bWSQhhQWcCt6S2X5D0CsB84Ojfz/0rOhej7GpY3wYgqGM51G89AK3HeO7JSvGECu2
-	CEU6XXtv62xWLDrOkgLObNRnYM1ZJ3jIvNdV4bnyAPn/14c/UO2v9r4cZwhd4w==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	kernel test robot <lkp@intel.com>,
-	Markus Stockhausen <markus.stockhausen@gmx.de>
-Subject: [PATCH] mtd: nand: realtek-ecc: Fix Kconfig dependencies
-Date: Wed, 19 Nov 2025 20:33:57 +0100
-Message-ID: <20251119193357.127469-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.51.1
+	Wed, 19 Nov 2025 21:36:41 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0ACAC4443D;
+	Wed, 19 Nov 2025 21:36:31 +0000 (UTC)
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Date: Wed, 19 Nov 2025 22:36:31 +0100
+From: Artur Rojek <contact@artur-rojek.eu>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Florian Fuchs
+ <fuchsfl@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Rich Felker <dalias@libc.org>, Paul Cercueil
+ <paul@crapouillou.net>
+Subject: Re: [PATCH 0/3] mtd: maps: vmu-flash: Fix build and runtime errors
+In-Reply-To: <6e2e9edcd9247c216bfe1ba637629a9a838f9fed.camel@physik.fu-berlin.de>
+References: <20251117224408.498449-1-fuchsfl@gmail.com>
+ <6e2e9edcd9247c216bfe1ba637629a9a838f9fed.camel@physik.fu-berlin.de>
+Message-ID: <5a4f8f1d543ef90aae3299b0f8803fb3@artur-rojek.eu>
+X-Sender: contact@artur-rojek.eu
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdehvdelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhfkgigtgfesthejjhdttddtvdenucfhrhhomheptehrthhurhcutfhojhgvkhcuoegtohhnthgrtghtsegrrhhtuhhrqdhrohhjvghkrdgvuheqnecuggftrfgrthhtvghrnheptdejuedtgefgtdfhgfdugefgffffteetteffuddtgfefheekgedvtdekvddvtdeknecukfhppedutddrvddttddrvddtuddrudelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddtrddvtddtrddvtddurdduledphhgvlhhopeifvggsmhgrihhlrdhgrghnughirdhnvghtpdhmrghilhhfrhhomheptghonhhtrggtthesrghrthhurhdqrhhojhgvkhdrvghupdhnsggprhgtphhtthhopedutddprhgtphhtthhopehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdqsggvrhhlihhnrdguvgdprhgtphhtthhopehfuhgthhhsfhhlsehgmhgrihhlrdgtohhmpdhrtghpthhtohepmhhiqhhuvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdprhgtphhtthhopehrihgthhgrrhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtghpthhtoheplhhin
+ hhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhshhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-GND-Sasl: contact@artur-rojek.eu
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251119_113406_979962_2EC8FF8B 
-X-CRM114-Status: GOOD (  10.66  )
+X-CRM114-CacheID: sfid-20251119_133640_027102_6BBE7334 
+X-CRM114-Status: GOOD (  16.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,40 +64,129 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The driver uses DMA but does not mark it as a prerequisite in
-Kconfig. As it is also defined with COMPILE_TEST, autobuilders complain
-about certain symbols not being available when linking on architectures
-without DMA support (?) like sh.
+On 2025-11-18 08:31, John Paul Adrian Glaubitz wrote:
+> Hi Florian,
+> 
+> On Mon, 2025-11-17 at 23:44 +0100, Florian Fuchs wrote:
+>> This small series fixes build and runtime errors in the vmu-flash 
+>> driver
+>> (enabled by CONFIG_MTD_VMU) and the included maple.h. These changes 
+>> were
+>> verified on real Dreamcast hardware with a physical VMU. The VMU can 
+>> now
+>> be successfully probed, read and written with MTD tools like mtd_info 
+>> and
+>> mtd_debug. Previously, the driver failed to build or crashed during
+>> probing.
+>> 
+>> 	bash-5.3# mtdinfo /dev/mtd0
+>> 	mtd0
+>> 	Name:                           vmu2.1.0
+>> 	Type:                           mlc-nand
+>> 	Eraseblock size:                512 bytes
+>> 	Amount of eraseblocks:          256 (131072 bytes, 128.0 KiB)
+>> 	Minimum input/output unit size: 512 bytes
+>> 	Sub-page size:                  512 bytes
+>> 	Character device major/minor:   90:0
+>> 	Bad blocks are allowed:         true
+>> 	Device is writable:             true
+> 
+> Thanks again for this series. Before this can be picked up, I would 
+> like again
+> Artur Rojek to test it on his Dreamcast, so let's loop him in.
+> 
+> If he confirms the functionality, I'll pick it up. I'll try to get it 
+> reviewed
+> later this week.
+> 
+> Adrian
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202511071114.8WeW2GZK-lkp@intel.com
-Cc: Markus Stockhausen <markus.stockhausen@gmx.de>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Florian,
+thanks for this series!
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 4a17271076bc..1e57c8de8578 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -63,7 +63,7 @@ config MTD_NAND_ECC_MEDIATEK
- 
- config MTD_NAND_ECC_REALTEK
-         tristate "Realtek RTL93xx hardware ECC engine"
--        depends on HAS_IOMEM
-+        depends on HAS_IOMEM && HAS_DMA
-         depends on MACH_REALTEK_RTL || COMPILE_TEST
-         select MTD_NAND_ECC
-         help
--- 
-2.51.1
+Without the maple port fix, this works as intended only when all
+four maple ports are populated. I am able to read from multiple VMUs in
+various slots.
 
+However, with even one port not populated, it causes a panic:
+> Maple (null): detected Dreamcast Controller: function 0x1: at (0, 0)
+> Maple (null): no driver found
+> Maple (null): detected Dreamcast Controller: function 0x1: at (1, 0)
+> Maple (null): no driver found
+> Maple (null): detected Visual Memory: function 0xE: at (0, 1)
+> Maple (null): no driver found
+> BUG: unable to handle kernel paging request at 00400000
+> PC: [<8c2aecee>] maple_send.part.0+0x102/0x1c8
+> Pgd = (ptrval)
+> [00400000] *pgd=00000000
+> Oops: 0000 [#1]
+> Modules linked in:
+> 
+> CPU: 0 UID: 0 PID: 11 Comm: kworker/0:1 Not tainted 
+> 6.18.0-rc5-next-20251114-00003-gb6bcd2e803f3 #25 PREEMPT
+> Workqueue: even maple_dma_handler (events)
+> PC is at maple_send.part.0+0x102/0x1c8
+> PR is at maple_send.part.0+0x5c/0x1c8
+> PC  : 8c2aecee SP  : 8c85bef8 SR  : 40008000 TEA : 00400000
+> R0  : 0000002c R1  : 003fffc4 R2  : 00400004 R3  : 8c4e3d18
+> R4  : 8c92c024 R5  : 8c4e3d18 R6  : 0000002b R7  : 8c92c030
+> R8  : 00000000 R9  : 8c4e3d18 R10 : 00000016 R11 : 8c6aacdc
+> R12 : 00000007 R13 : 8c914c20 R14 : 8c92c030
+> MACH: 00000001 MACL: 000006cc GBR : 8c000000 PR  : 8c2aec48
+> 
+> Call trace:
+>  [<8c030c50>] process_one_work+0x114/0x290
+>  [<8c00b6a0>] arch_local_irq_restore+0x0/0x24
+>  [<8c3dac3a>] schedule+0x22/0x108
+>  [<8c03144a>] worker_thread+0x27e/0x3bc
+>  [<8c030b3c>] process_one_work+0x0/0x290
+>  [<8c0379c2>] kthread+0xde/0x1c0
+>  [<8c0311cc>] worker_thread+0x0/0x3bc
+>  [<8c0374fc>] to_kthread+0x0/0x1c
+>  [<8c00b6a0>] arch_local_irq_restore+0x0/0x24
+>  [<8c00f200>] ret_from_kernel_thread+0xc/0x14
+>  [<8c00b698>] arch_local_save_flags+0x0/0x8
+>  [<8c0418b0>] schedule_tail+0x0/0x78
+>  [<8c0378e4>] kthread+0x0/0x1c0
+> 
+> Process: kworker/0:1 (pid: 11, stack limit = (ptrval))
+> Stack: (0x8c85bef8 to 0x8c85c000)
+> Bee0:                                                       8c030c50 
+> 8c00b6a0
+> Bf00: 8c80817c 8c808105 8c8462c0 8c808100 8c4e3d38 8c846280 00000000 
+> 48f0d9a1
+> Bf20: 8c3dac3a 8c85bf40 8c846280 00000000 8c03144a 8c8462c0 8c846280 
+> 8c4ca36c
+> Bf40: 8c8462a8 8c4da400 8c4ca388 8c030b3c 8c857ebc 8c80797c 8c0379c2 
+> 8c846280
+> Bf60: 8c0311cc 8c0374fc 8c857ebc 8c00b6a0 8c807960 8c805b40 00000000 
+> 8c85bf98
+> Bf80: 48f0d9a1 8c00f200 8c839f08 8c4dbbd8 8c493688 8c82c77c 8c00b698 
+> 00000000
+> Bfa0: 8c0418b0 00000000 00000000 00000000 00000000 8c805b40 8c0378e4 
+> 00000000
+> Bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+> 00000000
+> Bfe0: 00000000 00000000 00000000 40008000 00000000 00000000 00000000 
+> 00000000
+> ---[ end trace 0000000000000000 ]---
+
+This means we can't apply this series without the maple fix, and as such
+I'll recommend that this waits until hotplug is fixed.
+
+PS. I don't know if it's down to the same issue, but once I remove and
+re-attach a VMU, it cannot be read from anymore:
+> Dreamcast_visual_memory 0:01.E: VMU at (0, 1) is busy
+
+PS. Adding Paul in the CC, he might be interested to test in the future.
+
+Cheers,
+Artur
 
 ______________________________________________________
 Linux MTD discussion mailing list
