@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 299EACF64BB
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07DE8CF8549
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=dlFpXWuszM3iXM+qHjR7hgiYAkAZVGSOPtcywKuY0gs=; b=cpF9VDLj/PBEnx
-	HAyq0mmnK+sNh0rl1F164zqyfZS5sp/GawBFA+7eaaHAk+RIN4V5eIrJM8xY5iethNaALlM+knolk
-	U/XBXGABzG5sMEMPeStIzBxSZ7qp7nR/fUhvS6tiMZdhEgnwaKGMfxvoijgmPLj+oIOo4Q1ExQZVU
-	AoD4HSG+I/nOdV98dod5fZOnvx6pSi60vHcdd897peW0KEekP8kW9ZHe++puI9CNUablq3r4gtOg6
-	Hi+5j92Npb/MZ/ysVucwtvGnULApLUt1bbnx1iiw0bDIlFp3e6uj3sAElhrZ5ysND5Qve2Mv171Kc
-	1cUcV6Wqk9ZFtOiLc+zQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=4TKBlYmyIg2OIuPhSJ4FjmrB/RVxBEIhN25qMupYToY=; b=tO7tYeCZYMzHdS
+	+JwrepNDOzyCRCdRCtOGWXmsDy/6I+f/4Xey1MjGCrNDZaRl3t5Y72okCURsSUEhvU7y/EXkj4PUU
+	QA5C8BYTb2++JuJ9yBd5jfkdL6GLISc8sph8rqCfYQ98naCSW7Fgx9k+Cl2xVmYBoBBo/aLHMGYer
+	m4eFY+bLVE0F7PH5TAqgiz+O1+XDo7idangjzUWX7e5I7dkFX96ktU7yLAAZdmYRrpZ1FvyRqxFXE
+	hWlYCOqHHEshT1QM35kpt2lzS1+MNW4lEri4tsz7+1eQMcxxb4ns/TRg7MnicpzfZUuJcXFmhtDXl
+	Nt+26hV5oHiUG6Vb85rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyTe-00000006EdO-3skB;
-	Thu, 20 Nov 2025 06:49:10 +0000
+	id 1vLyTr-00000006EeZ-0t0q;
+	Thu, 20 Nov 2025 06:49:23 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyTc-00000006Ed6-2HbS;
-	Thu, 20 Nov 2025 06:49:09 +0000
+	id 1vLyTk-00000006EdI-3znm;
+	Thu, 20 Nov 2025 06:49:21 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -45,11 +45,14 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	linux-unionfs@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org
-Subject: re-enable IOCB_NOWAIT writes to files v2
-Date: Thu, 20 Nov 2025 07:47:21 +0100
-Message-ID: <20251120064859.2911749-1-hch@lst.de>
+	linux-nfs@vger.kernel.org,
+	Chaitanya Kulkarni <kch@nvidia.com>
+Subject: [PATCH 01/16] fs: refactor file timestamp update logic
+Date: Thu, 20 Nov 2025 07:47:22 +0100
+Message-ID: <20251120064859.2911749-2-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
+References: <20251120064859.2911749-1-hch@lst.de>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -67,55 +70,125 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+Currently the two high-level APIs use two helper functions to implement
+almost all of the logic.  Refactor the two helpers and the common logic
+into a new file_update_time_flags routine that gets the iocb flags or
+0 in case of file_update_time passed so that the entire logic is
+contained in a single function and can be easily understood and modified.
 
-commit 66fa3cedf16a ("fs: Add async write file modification handling.")
-effectively disabled IOCB_NOWAIT writes as timestamp updates currently
-always require blocking, and the modern timestamp resolution means we
-always update timestamps.  This leads to a lot of context switches from
-applications using io_uring to submit file writes, making it often worse
-than using the legacy aio code that is not using IOCB_NOWAIT.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/inode.c | 54 +++++++++++++++++-------------------------------------
+ 1 file changed, 17 insertions(+), 37 deletions(-)
 
-This series allows non-blocking updates for lazytime if the file system
-supports it, and adds that support for XFS.
+diff --git a/fs/inode.c b/fs/inode.c
+index cff1d3af0d57..540f4a28c202 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -2322,10 +2322,12 @@ struct timespec64 current_time(struct inode *inode)
+ }
+ EXPORT_SYMBOL(current_time);
+ 
+-static int inode_needs_update_time(struct inode *inode)
++static int file_update_time_flags(struct file *file, unsigned int flags)
+ {
++	struct inode *inode = file_inode(file);
+ 	struct timespec64 now, ts;
+-	int sync_it = 0;
++	int sync_mode = 0;
++	int ret = 0;
+ 
+ 	/* First try to exhaust all avenues to not sync */
+ 	if (IS_NOCMTIME(inode))
+@@ -2335,29 +2337,23 @@ static int inode_needs_update_time(struct inode *inode)
+ 
+ 	ts = inode_get_mtime(inode);
+ 	if (!timespec64_equal(&ts, &now))
+-		sync_it |= S_MTIME;
+-
++		sync_mode |= S_MTIME;
+ 	ts = inode_get_ctime(inode);
+ 	if (!timespec64_equal(&ts, &now))
+-		sync_it |= S_CTIME;
+-
++		sync_mode |= S_CTIME;
+ 	if (IS_I_VERSION(inode) && inode_iversion_need_inc(inode))
+-		sync_it |= S_VERSION;
++		sync_mode |= S_VERSION;
+ 
+-	return sync_it;
+-}
+-
+-static int __file_update_time(struct file *file, int sync_mode)
+-{
+-	int ret = 0;
+-	struct inode *inode = file_inode(file);
++	if (!sync_mode)
++		return 0;
+ 
+-	/* try to update time settings */
+-	if (!mnt_get_write_access_file(file)) {
+-		ret = inode_update_time(inode, sync_mode);
+-		mnt_put_write_access_file(file);
+-	}
++	if (flags & IOCB_NOWAIT)
++		return -EAGAIN;
+ 
++	if (mnt_get_write_access_file(file))
++		return 0;
++	ret = inode_update_time(inode, sync_mode);
++	mnt_put_write_access_file(file);
+ 	return ret;
+ }
+ 
+@@ -2377,14 +2373,7 @@ static int __file_update_time(struct file *file, int sync_mode)
+  */
+ int file_update_time(struct file *file)
+ {
+-	int ret;
+-	struct inode *inode = file_inode(file);
+-
+-	ret = inode_needs_update_time(inode);
+-	if (ret <= 0)
+-		return ret;
+-
+-	return __file_update_time(file, ret);
++	return file_update_time_flags(file, 0);
+ }
+ EXPORT_SYMBOL(file_update_time);
+ 
+@@ -2406,7 +2395,6 @@ EXPORT_SYMBOL(file_update_time);
+ static int file_modified_flags(struct file *file, int flags)
+ {
+ 	int ret;
+-	struct inode *inode = file_inode(file);
+ 
+ 	/*
+ 	 * Clear the security bits if the process is not being run by root.
+@@ -2415,17 +2403,9 @@ static int file_modified_flags(struct file *file, int flags)
+ 	ret = file_remove_privs_flags(file, flags);
+ 	if (ret)
+ 		return ret;
+-
+ 	if (unlikely(file->f_mode & FMODE_NOCMTIME))
+ 		return 0;
+-
+-	ret = inode_needs_update_time(inode);
+-	if (ret <= 0)
+-		return ret;
+-	if (flags & IOCB_NOWAIT)
+-		return -EAGAIN;
+-
+-	return __file_update_time(file, ret);
++	return file_update_time_flags(file, flags);
+ }
+ 
+ /**
+-- 
+2.47.3
 
-It also fixes the layering bypass in btrfs when updating timestamps on
-device files for devices removed from btrfs usage, and FMODE_NOCMTIME
-handling in the VFS now that nfsd started using it.  Note that I'm still
-not sure that nfsd usage is fully correct for all file systems, as only
-XFS explicitly supports FMODE_NOCMTIME, but at least the generic code
-does the right thing now.
-
-Changes since v1:
- - more regular numbering of the S_* flags
- - fix XFS to actually not block
- - don't ignore the generic_update_time return value in
-   file_update_time_flags
- - fix the sync_lazytime return value
- - fix an out of data comment in btrfs
- - fix a race that would update i_version before returning -EAGAIN in XFS
-
-Diffstat:
- Documentation/filesystems/locking.rst |    2 
- Documentation/filesystems/vfs.rst     |    6 +
- fs/btrfs/inode.c                      |   15 ++-
- fs/btrfs/volumes.c                    |   11 --
- fs/fat/misc.c                         |    3 
- fs/fs-writeback.c                     |   56 ++++++++++---
- fs/gfs2/inode.c                       |    6 -
- fs/inode.c                            |  143 ++++++++++++++++------------------
- fs/internal.h                         |    3 
- fs/nfs/inode.c                        |    4 
- fs/orangefs/inode.c                   |   10 ++
- fs/overlayfs/inode.c                  |    3 
- fs/sync.c                             |    4 
- fs/ubifs/file.c                       |   11 +-
- fs/utimes.c                           |    1 
- fs/xfs/xfs_iops.c                     |   35 +++++++-
- fs/xfs/xfs_super.c                    |   29 ------
- include/linux/fs.h                    |   19 ++--
- include/trace/events/writeback.h      |    6 -
- 19 files changed, 209 insertions(+), 158 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
