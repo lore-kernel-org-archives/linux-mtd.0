@@ -4,52 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 949D3CFA446
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 21:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B312CFA441
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 21:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sAKJntU+o8clD8bFkHPdYCGFdgOPLCaw2dMIpSUkekQ=; b=U5xD3DKh6txUBp
-	++ObninYReGjkEz8fBY6G0FgCrY/HM/GjKRgMq/VqSCTyxZmuEpCsqqHJ1R9SCpyrJ4K8miTQHknZ
-	zduyMJXi+0vU3mgLQdHBZKe3CjjHDkKZGdTlc1CAAzzUV0apVtzAFGAHKEWmGxFBCuxsZofAdtWBU
-	IshIlSntfFoS3U94q1FEORVguRAhO23Rvj6jWXjBL40BLfwvJ06mGtGZIvUK0LBEY7LYVpfAn032+
-	l9+oVYHe8J//qyTnsv7kr1Segw/lfN3MJF/yuiFelh5E33iCma2FPylF1SuKUQkDbQ0xtWgPeOo6U
-	cFQXCdj1prBZ40IerDkA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uvWVY5Ap/GHtAUg+EUhVfYZe8d/d3Rd7Ebl6qEMle4o=; b=F2npOx6HhhebOd
+	f9BhZxYp7tBNYiahXdZ9NiG/sLZC2F6SkrCDIWzhFYI/Uh7beJ1aUVHCx8ncWMiTSl9d3ps83NMaf
+	rrG3ci4N4aHVDf6HCfx7ZLMoigf4eG1ZrrHef6/l3DtO4yXLfgSdwwlvZ6879hDdaD0EFxkicq1Q+
+	5XdYUaQbIRCvG3Sr6t4861NJSXSB0gGpQD5frZ3xMoakIcgchjju4EL94tFsuiLYAlQIa4TGrho1O
+	x9rk5AD7A+qSnnaumTpEdUxAFD5Hz3MZBUerfhWaZaGRAjjpmS9oJpK2sVSZMwIKyND152xiZSYmW
+	R2G1hZogAUN/vMLQiSbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMCM0-00000007TI7-2ixZ;
+	id 1vMCM0-00000007TIH-3sE2;
 	Thu, 20 Nov 2025 21:38:12 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMCLw-00000007TGB-2PFC;
+	id 1vMCLx-00000007TGC-2ESf;
 	Thu, 20 Nov 2025 21:38:10 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id DDF9741777;
-	Thu, 20 Nov 2025 21:38:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9663FC4CEF1;
-	Thu, 20 Nov 2025 21:38:07 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3C1F041997;
+	Thu, 20 Nov 2025 21:38:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC99AC4CEF1;
+	Thu, 20 Nov 2025 21:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763674687;
-	bh=1BDDDcVfQtzBnr9L2D6gF5aeR5iOya1diUp8Au6Msz8=;
-	h=From:Subject:Date:To:Cc:From;
-	b=TEKNWEBve0Af7iv+D+r2cjg8t39cHgEp/e4h8iGuhn6PEXxAxKOAqVOLUeQuFgs/R
-	 AABGkFDCupa5inaB0D3LjwtLEL6FCqq0d9dCL3RoqHyy/yyZATGDY/r6EK74QqnuPs
-	 W16eY18FLTHtVgnxk+4cjBydylYhlgJ8SkbuC413ejZqKlWyimMiJ1Wy7szLd+l1wi
-	 +we/M9dEHvAwn8lOY7SMajQHtCtR2774deExwCvLx+mpdl/dbsuCv5YsZg1v+p7GaE
-	 goah48ru70strcOzI3F1GL48XLUarBBWWLjz5h62cs6XOVS7+PnFJj0SiYTtOE+VFJ
-	 Wa7P/jSsVYrWQ==
+	s=k20201202; t=1763674689;
+	bh=AffBdJpBJNkMq6q+gab85JaLyJuW8lq6N0V1nRo4XCs=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=Bj8mutabVPHyktTyLd9TY5vo/A8XPwZ6BREa1Usx2c8WN6k7j6Jkc0qfXaPWMUpiX
+	 MAkKwwCXMgPpkNxJGCvEBOeSL3XaXD3HhpGnjhtIkppzOFik2EMCPB+BOGzrwSLAEg
+	 aJsNaGxWn+5sznzZ856zKaYLJVveTVeQ6xH6IhNU/5ZGBKPDD/He5sFpZNEAIo47m8
+	 8yM2tX5cMp6DTyakQtZ/eeM2Qo1v5Ga9ewWG+7lQcBcGBGZTxlrZekWO0FylPy9g+Y
+	 frAzCbHSMPD4+J0DzoScvnlJPTRUnCnALHyOeKe/I/zDvRtMG3ngmWaKQZuhUJhiBr
+	 /WQLkhWnatK+Q==
 From: "Rob Herring (Arm)" <robh@kernel.org>
-Subject: [PATCH v2 0/3] at91: Remove of_platform_default_populate() calls
-Date: Thu, 20 Nov 2025 15:37:49 -0600
-Message-Id: <20251120-at91-probe-v2-0-8c8592f02e8e@kernel.org>
+Date: Thu, 20 Nov 2025 15:37:50 -0600
+Subject: [PATCH v2 1/3] mtd: nand: atmel: Defer probe if SRAM is missing
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAC2KH2kC/x3MQQqAIBBA0avIrBN0oMCuEi00x5qNikYE4t2Tl
- m/xf4NKhanCKhoUerhyigM4CTguG0+S7IcBFc5ao5L2NlrmkhxJVMEdZOzitYMR5EKB33+27b1
- /PW8rqFwAAAA=
-X-Change-ID: 20251120-at91-probe-20fbce9a6d1b
+Message-Id: <20251120-at91-probe-v2-1-8c8592f02e8e@kernel.org>
+References: <20251120-at91-probe-v2-0-8c8592f02e8e@kernel.org>
+In-Reply-To: <20251120-at91-probe-v2-0-8c8592f02e8e@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Nicolas Ferre <nicolas.ferre@microchip.com>, 
@@ -60,9 +58,8 @@ Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org
 X-Mailer: b4 0.15-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251120_133809_391728_A6E208B8 
-X-CRM114-Status: UNSURE (   8.70  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251120_133809_593780_480B6A2C 
+X-CRM114-Status: GOOD (  11.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,43 +76,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is another attempt at removing of_platform_default_populate() calls 
-on at91 platforms. The last attempts were in 2018[1] and 2023[2]. The 
-problems reported are PM and NAND failures. Both of these depend on SRAM 
-pool which doesn't have any fw_devlink tracking. Also, the PM code is 
-not a driver, so fw_devlink wouldn't help. For the NAND driver, we can 
-simply defer probe. For the PM init, we can move it to the .late_init 
-hook.
-
-Rob
-
-[1] https://lore.kernel.org/all/20180712192222.32481-1-robh@kernel.org/
-[2] https://lore.kernel.org/all/3908fa6f-dc33-4aac-c21f-4a676a3a6b23@microchip.com/
+The Atmel NAND controller driver depends on an SRAM pool and has an
+implicit assumption that the SRAM pool has already been created.
+Changing the initcall ordering can break this. Unfortunately, fw_devlink
+can't save us here as there's not a standard property to track the
+dependency. So it's up to deferring probe to save us.
 
 Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
-Rob Herring (1):
-      ARM: at91: Move PM init functions to .init_late hook
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Rob Herring (Arm) (2):
-      mtd: nand: atmel: Defer probe if SRAM is missing
-      ARM: at91: remove unnecessary of_platform_default_populate calls
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index 83ba4ebd02d4..e60998eb754b 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -2306,7 +2306,7 @@ atmel_hsmc_nand_controller_init(struct atmel_hsmc_nand_controller *nc)
+ 					 "atmel,nfc-sram", 0);
+ 	if (!nc->sram.pool) {
+ 		dev_err(nc->base.dev, "Missing SRAM\n");
+-		return -ENOMEM;
++		return -EPROBE_DEFER;
+ 	}
+ 
+ 	nc->sram.virt = (void __iomem *)gen_pool_dma_alloc(nc->sram.pool,
 
- arch/arm/mach-at91/at91rm9200.c              | 12 +-----------
- arch/arm/mach-at91/at91sam9.c                | 12 +-----------
- arch/arm/mach-at91/sam9x60.c                 | 12 +-----------
- arch/arm/mach-at91/sam9x7.c                  | 12 +-----------
- arch/arm/mach-at91/sama5.c                   | 21 +++------------------
- arch/arm/mach-at91/sama7.c                   | 11 +----------
- drivers/mtd/nand/raw/atmel/nand-controller.c |  2 +-
- 7 files changed, 9 insertions(+), 73 deletions(-)
----
-base-commit: 3a8660878839faadb4f1a6dd72c3179c1df56787
-change-id: 20251120-at91-probe-20fbce9a6d1b
-
-Best regards,
---  
-Rob Herring (Arm) <robh@kernel.org>
+-- 
+2.51.0
 
 
 ______________________________________________________
