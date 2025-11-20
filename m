@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D29ECF64BB
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A0CCF8548
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eoLo8om9JSqlW71/fuL9cNc+i7QAf3NkYEfZQlJoZwg=; b=bgK65mv7Qmacu0
-	BziX2dvXX07Kg7Ze0joV8oFLwpw9v03znkLIQSjKUJJzj7I71nHRb7lfrB7quyoLcz8OiajUAayeM
-	1WwJKNFZLXKn/rAgOoYkPfftV2hIeD8vJtA6R3Tk2LG/qDMB22msCaqZPadEeCnZY1GI+FWWPRnAH
-	gZS2rfLvVDMvuT7E1GefgYSkpTiIdezJlD0uAglWgj+KHLNMzYFCFWv/fe8vPVg1scycP0OU8r3Rl
-	xGB3gHRHuPKuzrWhI54CJSRHT4eipoJpxuVkQIwp47sfg9RkkoYs+TXA9HdiIRerBQheojFUmP3/H
-	PewQxdRL4DBskIsXy23w==;
+	List-Owner; bh=9i4scs+A7pAdeECBr1w3P8H2DYZGLowkyuW4CevcI/M=; b=TPs8eTFYKGL5oq
+	PgXMhBU7ap7O79WPkRIIfvQTIvJVdChrgfuX3uFlyHaSKYj9EGaAfEP1QYzdUIAZINapbVlRAour9
+	a5L0pYSJCmyCEakzicag52eWH/mG5/m4XU5HhVcQc8tAhjsZdCjtQLucMmRgk1im0Fo+UxvFZ1lM2
+	1Lfjv7RkgNnEbvRwqPvhkMD4smH4XjbV0g0xHAmNB1gydRB5ZpIUWgUiiiOilMp9sFVDXgj2gQQFQ
+	4l3Niw4NMEsyfxmxcgXsCKJWh3krUrPF1cFc0PwO0aD43eeazz5ZCcVn6YBx1LDMjiOkNvZRIfCUL
+	ddC2S6gtQ5tt1vAX7pRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyUA-00000006Elm-0PiT;
-	Thu, 20 Nov 2025 06:49:42 +0000
+	id 1vLyUH-00000006Eou-1p6d;
+	Thu, 20 Nov 2025 06:49:49 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyU9-00000006Ein-02Nc;
-	Thu, 20 Nov 2025 06:49:41 +0000
+	id 1vLyUF-00000006ElW-0NA4;
+	Thu, 20 Nov 2025 06:49:47 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -46,9 +46,9 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	linux-mtd@lists.infradead.org,
 	linux-xfs@vger.kernel.org,
 	linux-nfs@vger.kernel.org
-Subject: [PATCH 04/16] btrfs: use vfs_utimes to update file timestamps
-Date: Thu, 20 Nov 2025 07:47:25 +0100
-Message-ID: <20251120064859.2911749-5-hch@lst.de>
+Subject: [PATCH 05/16] btrfs: fix the comment on btrfs_update_time
+Date: Thu, 20 Nov 2025 07:47:26 +0100
+Message-ID: <20251120064859.2911749-6-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
 References: <20251120064859.2911749-1-hch@lst.de>
@@ -69,49 +69,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Btrfs updates the device node timestamps for block device special files
-when it stop using the device.
+Since commit e41f941a2311 ("Btrfs: move over to use ->update_time") this
+is not a copy of the high-level file_update_time helper.
 
-Commit 8f96a5bfa150 ("btrfs: update the bdev time directly when closing")
-switch that update from the correct layering to directly call the
-low-level helper on the bdev inode.  This is wrong and got fixed in
-commit 54fde91f52f5 ("btrfs: update device path inode time instead of
-bd_inode") by updating the file system inode instead of the bdev inode,
-but this kept the incorrect bypassing of the VFS interfaces and file
-system ->update_times method.  Fix this by using the propet vfs_utimes
-interface.
-
-Fixes: 8f96a5bfa150 ("btrfs: update the bdev time directly when closing")
-Fixes: 54fde91f52f5 ("btrfs: update device path inode time instead of bd_inode")
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/btrfs/volumes.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ fs/btrfs/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 2bec544d8ba3..259e8b0496df 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2002,14 +2002,11 @@ static int btrfs_add_dev_item(struct btrfs_trans_handle *trans,
- static void update_dev_time(const char *device_path)
- {
- 	struct path path;
--	int ret;
- 
--	ret = kern_path(device_path, LOOKUP_FOLLOW, &path);
--	if (ret)
--		return;
--
--	inode_update_time(d_inode(path.dentry), S_MTIME | S_CTIME | S_VERSION);
--	path_put(&path);
-+	if (!kern_path(device_path, LOOKUP_FOLLOW, &path)) {
-+		vfs_utimes(&path, NULL);
-+		path_put(&path);
-+	}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 6282911e536f..05f6d272c5d7 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6291,8 +6291,8 @@ static int btrfs_dirty_inode(struct btrfs_inode *inode)
  }
  
- static int btrfs_rm_dev_item(struct btrfs_trans_handle *trans,
+ /*
+- * This is a copy of file_update_time.  We need this so we can return error on
+- * ENOSPC for updating the inode in the case of file write and mmap writes.
++ * We need our own ->update_time so that we can return error on ENOSPC for
++ * updating the inode in the case of file write and mmap writes.
+  */
+ static int btrfs_update_time(struct inode *inode, int flags)
+ {
 -- 
 2.47.3
 
