@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60A47CF8549
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA44BCF64BB
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vcvdQnrTVVscKhV6rvRgD2VE+Nk22XONMCtCflUyoaQ=; b=WqmeX+LtIn2fYW
-	mUEgfnOQX5BrmCN5xMyvdLqXcGAFsDa8oT1Ij2v1Kmec7lhpzTlbC9/GjyliY9y4ZTV6ZajQ7Ytax
-	uEO3F6syhT3jImPDrlHAJqJme6mSfkQKbQvLWf9mOo9qdrqwC2V30RqwG3lmxvYM43BrqXmxWEd9x
-	j7vORwkGUN+U+C9jx5L09kIQ4s/vGioAl2KEp44ZGklq+kj4NXkDGSQqIN++P3asH95zDyVsX+b77
-	u4RJqgg1ccGU7yXVsa/44jsAP4cnzTju/z+auns0dsk9lsnvvqFctrIYVzG0puO/KiS4b8zx4F231
-	CtmX7+5LW+BvZJtxpZ4g==;
+	List-Owner; bh=Icc4lWwTzUyysi3TknUAALdRRwtN3SFEbmVL5aY3oGM=; b=rSRy232uAgmVAV
+	eltyLdNTN0JNAjMI2NIWil9Mv7drjX+0Hu5MJAfW+UbdWRoPaY0CEJYmLFc4FpbQfl78oeyxE/0tI
+	7SgKbqK0iRs8gzzI1AslN3dfYToPgMc083PCnJHv2pzDtXq5aonk73QEc907OJFjMVL4IqA+hwMlk
+	RuAfv9ai5hZjZOmeNZrxpdR6QaFXt/4KIOT7NShVjAUsbWcSkVArCjqYkbiNzdGaPihIiCbGX3mhY
+	c28PKJn/zbp0l4dqiN67Yz9Wn27f6blmfg4Xfdh6DbFnT/WjenMsxok1B0NVdDsXN2kpRiKMdGAYL
+	5VmqcxHslZNQyMwJU67Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyTy-00000006Eh0-28PM;
-	Thu, 20 Nov 2025 06:49:30 +0000
+	id 1vLyU3-00000006Eir-3NR6;
+	Thu, 20 Nov 2025 06:49:35 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyTw-00000006EeT-0m56;
-	Thu, 20 Nov 2025 06:49:28 +0000
+	id 1vLyU2-00000006Egn-2OMT;
+	Thu, 20 Nov 2025 06:49:34 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -47,9 +47,9 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	linux-xfs@vger.kernel.org,
 	linux-nfs@vger.kernel.org,
 	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: [PATCH 02/16] fs: lift the FMODE_NOCMTIME check into file_update_time_flags
-Date: Thu, 20 Nov 2025 07:47:23 +0100
-Message-ID: <20251120064859.2911749-3-hch@lst.de>
+Subject: [PATCH 03/16] fs: export vfs_utimes
+Date: Thu, 20 Nov 2025 07:47:24 +0100
+Message-ID: <20251120064859.2911749-4-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
 References: <20251120064859.2911749-1-hch@lst.de>
@@ -70,49 +70,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-FMODE_NOCMTIME used to be just a hack for the legacy XFS handle-based
-"invisible I/O", but commit e5e9b24ab8fa ("nfsd: freeze c/mtime updates
-with outstanding WRITE_ATTRS delegation") started using it from
-generic callers.
+This will be used to replace an incorrect direct call into
+generic_update_time in btrfs.
 
-I'm not sure other file systems are actually read for this in general,
-so the above commit should get a closer look, but for it to make any
-sense, file_update_time needs to respect the flag.
-
-Lift the check from file_modified_flags to file_update_time so that
-users of file_update_time inherit the behavior and so that all the
-checks are done in one place.
-
-Fixes: e5e9b24ab8fa ("nfsd: freeze c/mtime updates with outstanding WRITE_ATTRS delegation")
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
 Reviewed-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/utimes.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 540f4a28c202..2c55ec49b023 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -2332,6 +2332,8 @@ static int file_update_time_flags(struct file *file, unsigned int flags)
- 	/* First try to exhaust all avenues to not sync */
- 	if (IS_NOCMTIME(inode))
- 		return 0;
-+	if (unlikely(file->f_mode & FMODE_NOCMTIME))
-+		return 0;
- 
- 	now = current_time(inode);
- 
-@@ -2403,8 +2405,6 @@ static int file_modified_flags(struct file *file, int flags)
- 	ret = file_remove_privs_flags(file, flags);
- 	if (ret)
- 		return ret;
--	if (unlikely(file->f_mode & FMODE_NOCMTIME))
--		return 0;
- 	return file_update_time_flags(file, flags);
+diff --git a/fs/utimes.c b/fs/utimes.c
+index c7c7958e57b2..3e7156396230 100644
+--- a/fs/utimes.c
++++ b/fs/utimes.c
+@@ -76,6 +76,7 @@ int vfs_utimes(const struct path *path, struct timespec64 *times)
+ out:
+ 	return error;
  }
++EXPORT_SYMBOL_GPL(vfs_utimes);
  
+ static int do_utimes_path(int dfd, const char __user *filename,
+ 		struct timespec64 *times, int flags)
 -- 
 2.47.3
 
