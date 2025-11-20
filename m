@@ -4,75 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2197CF856E
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 09:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5A24CF8575
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 09:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qQLE2NNd1YG/eLbK7WxlIYERA4vVAalTQC7UtIRGsoA=; b=MqutSiY8luX5Rm
-	xTRrtOpea9c/QgyAy4iflXnFJaQjNRNptdqKszb2NmT0WBRx1/6eCDCSNCJ2q00Rg9JvDC0Z4Ilah
-	YzV17tHNR2mmEV9c008qVSwZrfl7hhJQP0WDY1heLrZ9zclQIgJXGrsato3kYQFxDEyT+bwoak4uh
-	kiEBFfLf6BGStjPVVqgtCRydST7h0h6w8GoFJ8bHLcCjn2u1wGQRmes48u4FJRnr9JmR9FJ9qyTQH
-	0yN+Hw/FHRg/i/wctrcnx6l5weCrk6IN+128Is5OlqRqscUwov0OEHrcB6bewbc0iJwOMmHaW0/Gp
-	O61Oay4vrcTXDmtlUbsA==;
+	List-Owner; bh=JYC+xBuuVs03FERo7rpApv372SusqRFM1tNi5r1vHls=; b=hHaGHtiVZkFMiA
+	twZVVVU1NEvtdom5nvjfBt+az0JX6nC1Ndb74/HyCkzoC8gr1iSAa5jB7xKoyFZqp3Inysu/dc6Xm
+	ojpqiOOykJChd0JyYrwW5bgcfaW7jLz2hHUVv12/N1i+nxqPqW7mm8AvdSzhqFY+rLyHBGOH+Picy
+	HOvahiFtKWcxVupQbJ+5JlEAeOsuOc1CCslhti7sAdaiYzOAGMob5ClemJA3E6ilFzVGmKN4FceUF
+	PrrloRi30AkGcc0qHx3q9XF2l7irkYybmtjWMKj2BlU26NLDAmehtTZFI6iJDFrCw6hRcGszuOnVG
+	elXx06Jmo+3pay9NA44Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vM0fl-00000006OmN-0R2T;
-	Thu, 20 Nov 2025 09:09:49 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1vM0wW-00000006Q59-2qqz;
+	Thu, 20 Nov 2025 09:27:08 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vM0fi-00000006OkG-0fta
+	id 1vM0wU-00000006Q52-2dws
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Nov 2025 09:09:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=MIkMyymAp0Jp7wym9tGsnnLHss4tCJVvVVCKNCnFAKM=; t=1763629786;
-	x=1764234586; b=f7hppZ7/YNHCZ95o8FOZGYOACUn8S2MfCItr5Tz8TibU5hPATUT6zPU+yfN8L
-	GaakcWtUdnfTP3ryn/sWA5lh3LATbmJ0y4EO94Gdi65Kn0ZpDh2jPMizpk70NzbKhWljODjlSwPip
-	y6nO9EH0dVxEmFeREAmOuj+xBenkyrjDPBAzOknOpjef7gyaBGO7OkaZ35I5AQQDQ7EFzltFppA6s
-	yA2z0G4xzO8DIyBz666s+BdjuL1jU/SHhHEgP5N9Bcgevq7YLmsyy+DS8EalAPEQvz4s6jiJ/Hebe
-	VFez4FP70kC6dUNengOc+ZMBSH0Tx0Mk6JqwuLUuKGf42CbiKw==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1vM0fZ-00000000lIM-2RK3; Thu, 20 Nov 2025 10:09:37 +0100
-Received: from p5b13aa34.dip0.t-ipconnect.de ([91.19.170.52] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1vM0fZ-00000001mug-1Jxq; Thu, 20 Nov 2025 10:09:37 +0100
-Message-ID: <1c738766a6a7de25276b5d249398d4b891380655.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 0/3] mtd: maps: vmu-flash: Fix build and runtime errors
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Florian Fuchs <fuchsfl@gmail.com>, Artur Rojek <contact@artur-rojek.eu>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	 <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Rich Felker <dalias@libc.org>, Paul Cercueil
-	 <paul@crapouillou.net>
-Date: Thu, 20 Nov 2025 10:09:36 +0100
-In-Reply-To: <aR7Wvxzy0aiosDYK@lithos>
-References: <20251117224408.498449-1-fuchsfl@gmail.com>
-	 <6e2e9edcd9247c216bfe1ba637629a9a838f9fed.camel@physik.fu-berlin.de>
-	 <5a4f8f1d543ef90aae3299b0f8803fb3@artur-rojek.eu> <aR46Kw5n4hIAZCcn@lithos>
-	 <b5aa220dee9d7dcecea398ec0e33b4cf@artur-rojek.eu> <aR7Wvxzy0aiosDYK@lithos>
-User-Agent: Evolution 3.58.1 
+	Thu, 20 Nov 2025 09:27:06 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 5987F6014E;
+	Thu, 20 Nov 2025 09:27:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A700C4CEF1;
+	Thu, 20 Nov 2025 09:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763630825;
+	bh=CTONTXlpIBOdxpIZBCXGsNld855TC4euuS5HGWFE5zA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=KF/c9Fn3Zv/uihzuTZGrdFwHThuDVRPtwuBCWPGLXoCU8ZpDmJUiIK3KDT3pfaayV
+	 0+DH1Zi7XYe87iHPCc92j405P1PBx9+nf8g1kvJMfZur4yJt01yU+jmu2GlWYY0fwy
+	 ZjDZIUD/iwgQTsXZJl7Xho3nJIJLAcZjjAvAwlbtqmZdB5JboyUVXg/myFk5GKhe2r
+	 NAGqCgY5wY9IKI2lILvtzlj6j7CL9dynuxcbdZQmS1ZewyMkb1gJ+hrZ0EJf0qrn22
+	 khhLMag9uzFqyKyHQfw+F1dWET0Ysf37Cn6r7B4oUO+qkt8zKd/XKYrSA7qslbp063
+	 edHBen3xoU7BA==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Jakub Czapiga
+ <czapiga@google.com>,  Tudor Ambarus <tudor.ambarus@linaro.org>,  Michael
+ Walle <mwalle@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  Konrad Adamczyk <konrada@google.com>,
+  Adeel Arshad <adeel.arshad@intel.com>,  Mika Westerberg
+ <mika.westerberg@linux.intel.com>,  Kornel Duleba <korneld@google.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: core: Check read CR support
+In-Reply-To: <20251118-stereotyped-quizzical-dolphin-9a7bb4@lemur> (Konstantin
+	Ryabitsev's message of "Tue, 18 Nov 2025 09:20:48 -0500")
+References: <20250919181547.2172319-1-czapiga@google.com>
+	<mafs0v7j74iz0.fsf@kernel.org>
+	<20251118-stereotyped-quizzical-dolphin-9a7bb4@lemur>
+Date: Thu, 20 Nov 2025 10:27:02 +0100
+Message-ID: <mafs0ecpt2gwp.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.170.52
-X-ZEDAT-Hint: PO
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251120_010946_349499_DC098580 
-X-CRM114-Status: GOOD (  14.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,39 +78,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Florian,
+On Tue, Nov 18 2025, Konstantin Ryabitsev wrote:
 
-On Thu, 2025-11-20 at 09:52 +0100, Florian Fuchs wrote:
-> I mean, I guess it's ok, as the code is like this for a long time, so it
-> should be alright, when it keeps like this for a few weeks now, until an
-> extensive fix. I just sent it now for a gradual improvement, in my
-> opinion, as I need to invest a bit more debugging for the maple
-> misbehaviour than for the obvious build breakage.
+> On Tue, Nov 18, 2025 at 01:34:59PM +0100, Pratyush Yadav wrote:
+>> BTW, b4 complains that DKIM fails on your email. Please check.
+>
+> This is due to Google's policy of setting very short expiration dates in their
+> DKIM headers:
+>
+>     t=1758305794; x=1758910594;
+>
+> It's set to invalidate after 1 week:
+>
+>     $ date -d '@1758305794'
+>     Fri 19 Sep 2025 02:16:34 PM EDT
+>     $ date -d '@1758910594'
+>     Fri 26 Sep 2025 02:16:34 PM EDT
 
-Thank you for your patience. I hope that you don't read Artur's recommendation
-as a general dismissal of your work because it's not meant that way.
-
-It's highly appreciated that you are stepping up to work on the Dreamcast code
-and I will absolutely be happy to pick up your patches once the runtime checks
-are positive and Artur is satisfied as well.
-
-It's perfectly normal that some patch series can take several rounds until
-everyone is happy. But it's usually worth the effort and you will also be
-able to learn from others.
-
-> Thank you for your kind words, I don't take them for granted!
-> And I will certainly hang around in #linux-sh as I have a few other
-> things there to debug were I really need some additional input.
-
-Really looking forward to this! A warm welcome to the SH community ;-).
-
-Adrian
+I see. Thanks for explaining!
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
