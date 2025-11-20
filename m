@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D96DCF8552
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 08:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 582CBCF855C
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 08:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G2ZW36DMPnghXa0LAgyPjH3HTDHptKfDwvSYPOPKN14=; b=fRF+gBFZQZMo8/
-	mtyrnumA7BozQ168cYbqkJuy4hemn4KhXI1tRGZHlX+gGMBbK9kiYKNdEamLgBX/7GHJaVrC1o2n+
-	QuwE5q7BBdhwd503RJY523PSiGC2YPTfKNS+tj1E41/XRhYMtFaSZMEtBMHq3Tghh4Hk9PkgdLWkG
-	KQZwFdqrBiw62JT/JSUv3i75goRC5JCfTWcYOxPI+Mdd2xA3fPeR9+Ck8Z4qi20rPCr1/Utp869yU
-	9P3cl0dXYdk5QbUjGm0gwcB/Nh5ViBaIEXAuKYJLwUBUf/YTJfwWeHx/ydo6aiOcuyppWXbS1Mi9r
-	wJdpa28GmPF17Abvqr8w==;
+	List-Owner; bh=Qde7pch7SApAkwk0q9ZOeK1+dTOsWFnMcZnMb3lXuck=; b=TTUAj4/kvVPJfC
+	FJS9D1VSK4CG/7SoetpGtQOcKl3GiiDIa902M55j6SNrGb+GRlU4CQkKJylsMHFBIc/oH40a9QN9+
+	NAkis0vAHa9Atu2DxT5/MCY0nY583AhuLcZkHgwNm4ySgfb40uaArbwIssLGCdh38rhWeWtporrRN
+	2YEN9acB1sVQBuHGQkVU2P7ocpY+4+NQfWF48+97yYfKle7R6w38r0BwV7ArhGCm+qW0NOrHszQRk
+	IteGpYyFTLOXtJ3/O0fSiS4yMpLXADLOMR/lQKENWsoLyTC801tsxpQLhO3VnMdvBypKsVwEKItzZ
+	LWAUEYWbpta7IY41LSoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLzfb-00000006KZH-3Efm;
-	Thu, 20 Nov 2025 08:05:35 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1vM08w-00000006Mhv-2mvB;
+	Thu, 20 Nov 2025 08:35:54 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLzfZ-00000006KYs-1jlJ
+	id 1vM08u-00000006MhZ-1fsb
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Nov 2025 08:05:35 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-42b3c965ca9so304961f8f.1
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Nov 2025 00:05:32 -0800 (PST)
+	Thu, 20 Nov 2025 08:35:53 +0000
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-47798ded6fcso3214525e9.1
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Nov 2025 00:35:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1763625931; x=1764230731; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1763627750; x=1764232550; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8PztCW99nsI9W45kahbPszZ32SfHFrWK98zZmX/7wnE=;
-        b=fHXBTLXkM1QZeM4umyFTAuf0mpixTg//TttX8qHDEFZkDRMqrrCWo7NvsuBB6gvpvc
-         /lNX3tMoHQY6xXa3mkL3v5eqzRI7y/qjnXgXs+ev2Nk02uocJw/84Dcuh6bVr0s/2jmS
-         NI6H7Q78ydmsuWJ7cK7ow3hmzacq30awLlxs0lrI8SnhFggwCil5x1b8p63RYRY0zpzj
-         9jcyL7LiwFmypq0oQlI9wDsT88Ag855Rbaej7In3sGRR96O7IFpkR6q3wh/TGKcCL4ia
-         OQXjkCeW0IoPGpbfLTdMvjOaMRME3J13Dkii0k7Ym0ycmet5h4R+78VRRr1lHafeBp+j
-         3XVg==
+        bh=i1jSWZCgeAfmjjyjsevv49mjqnEq82g0aMsUmMetKc4=;
+        b=qdRoZDlySE4djPOI6zismV5CxY4zBY2Xy11S3DXutBRbdKNtD8KFc344ca52cwgOhs
+         1ZnGwI+ZG66on+TviAfk0km3sdN1Sln+JtcBOXi1E3c8zTqOsxxqLoCj29hosUKYgumC
+         DONGPBs7zni/sx2s1GL0FKnXc/IAOEd/iYyQu+sHWDTzAt8Mawok95jIvGcouMjtuReK
+         Y6a5XHzm3YpjTEu+b73HtV+YoHYT6/tY2Qgrgy2nQOG5lB8UMEjnsjEEvR7v1K7bhecG
+         mVPQ3ixaWdqgC5LlFBIsI7kDH3c9H+9J9gAHnkG2SwTB7OmZimb0kE/bUdOw5XbQpXPB
+         70Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763625931; x=1764230731;
+        d=1e100.net; s=20230601; t=1763627750; x=1764232550;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8PztCW99nsI9W45kahbPszZ32SfHFrWK98zZmX/7wnE=;
-        b=Po4kxiTaxFW7MZBXGXoMuLjP3Kr68IJK1/iZGGPygJ9cs90TGQhjhBQ/2EauX98Pom
-         qhHSgb2KtJVlGTqTSlnxMNOVFnU5GW/HjCyDP2xxzAdVZZYqDTlHIGZXH49qWjrUhSsW
-         8t/bYeNSRhl2gdEBKQ9ABf+g8vcgV98u9PDAtWSNJG+xTIz/tFjpawJb0W//O8rjbw41
-         YtKMw1s1fhTFaar/BkyZhfcbeiJ0HIwII9SZeni9+8HllUM023CjggCArqBWFDY373gW
-         qJ/3Q9tNimZg9UZuDOlTFFbj8ynalyaO63ou283DCf/sUElAjvdoi5jEjiR+h1QFQftI
-         oY+g==
-X-Forwarded-Encrypted: i=1; AJvYcCU74odfxyG0mc3lGJ6rVUD/ei+tpP7jp0geO5diABsOmhANjzE2yBDtqWRowbk8Ow1HDCfjGGzq3QM=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxaqypWNwZ6mpLeN5Pl2MTKj7RQ2LDCvZBVECDRYUnRtC4kHI7R
-	QyAM7lR0OJx5iZXeNBmLy7VolLR5iOCoOdcjUdqh4OpM9yZdgQYeYBFlXupsbTSkGd0=
-X-Gm-Gg: ASbGnctnNzQnAGSWCy4VQBzyUT2TipqF6aSfrti7XU37M4GhC6QB28qwiFTmRmaOIpg
-	AonARSoC1nVvaagigL/kaKPlBflwJmVw+kwwh4YLpLi2lwop60T+uWUxnTKFAwFzDxpzpd0kHZv
-	xoY8hcW3Xuy3q3sAzwI5phIWkYiZpz6J/FeoWoHwQml2D5bwz1CL+lPDCjdYa8l8X1iwWSOY2OP
-	J6xW2awZ5aQrqRth0VEChY8tr6MpqkFcKsh4PnWaJSw/f5rFziHwFjyE/3khdzIv16gOGSpI2hT
-	M1zkgXcPGdV+HYIPzy3VA24EAqHRXx5sZ7gk/v+QqsbBOSz7N7dqVDpLw1Iut/46sD7MAQL9ziG
-	VuvXJRGGKRX8OAcptPQDKXLypBTWFvPJbmPYuJL3XdFqQbFfj+fPXne4g2QX1MDTcnMb1GqMSDI
-	+1jAZM3vgcasp343lQ
-X-Google-Smtp-Source: AGHT+IE5v+9a80Zn9J2fmQEfUzMbSA47PM8PvbAZc/vWxwU72hK4Du32I64ZpwzSWFiC0CaXw3Jplw==
-X-Received: by 2002:a05:6000:26d0:b0:42b:3023:66a6 with SMTP id ffacd0b85a97d-42cbb2aa131mr1087403f8f.40.1763625931093;
-        Thu, 20 Nov 2025 00:05:31 -0800 (PST)
+        bh=i1jSWZCgeAfmjjyjsevv49mjqnEq82g0aMsUmMetKc4=;
+        b=p/DVbGwIyXMUEAmRlu8TkYpJDiUXqehSa4IZb7/y+3bYGO315kcS4tYliUkUCizjpu
+         0UZOJ0v5YXnbNg/X67eOg96gh+dLWsogNKh5NgqJxgzZQ4ScHEGAdFP+fLDQHoj4VfhR
+         pqMhBhnvr4+y48zQrN2dpRc6YEWSVkMG2PIoYDKjzqSqkPp1yy/1QXzh0Jbhvwhvi5HS
+         Aw/cLDH7ajXCxxfyq475pPlIxkER4mY5YlybpC0tCN06pLtIVqkZTbsv0+asw0PvryXI
+         QLl5Vx72MC1Rj5QhAAEVTWxwVd+nRd3eGS/DEiAbw44P2YtQSlozbEtTfc9AHyum+xsu
+         jtuw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGnk/Cp+e7EOJ8f82S7lI4rEXR0mP6v6WaiMCsZB3s1Xxf7BHjPSt8DaUhjslEzuAPbfcf6xlVBlo=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw9oUhDmUIqzHHjjXT8N0YMFsOqLQUQbH+LbkYG+atFBkec2Bxc
+	YZrgB3Gq1xF2vaUOYVYAfDrktLY4XW3kqM4Bk9u7UZh7fP4fVPWgeuCC+TTeRxu5atY=
+X-Gm-Gg: ASbGncvycFRIC6BNBLHuKHN5WbyUuJ/wxwreazEJ4AFVzDpt/a1M8E3VBvvGoHaj4ST
+	mJ34X3qBRoQWTT5uL1XMfJmlEKMJeuQz7W64uW0aYlTV+trTNPST9vG82WyI0PIVcR9pO3pXEap
+	h5Xx3kZvV8LGe4YAKCCcwSIKn8RU+Rgu+NKd/0H3b/JY/hDtvL0eWlvzUiFZGcLNLtyfR5plEP0
+	jaUt3snrD1YY7qaMzZCs6v9bqpJ+xxEknC8JGWvLdf5QqvJgoVcq/XYVHGpa5JJkI53dQiUC132
+	cMWT/HjSGAXp0t7yYy/YfpoCCsL4mNW9UF3P1+5W3tUPW6qvBVznJDjx2y/jGcc1QSllmEZeNJn
+	/kmKo2Ka+cY6WxKVH1iuZpmPuI2Og50oxMvQT9j5BgdxdJ9Y61+u0SHUnj8bKTyHkhXdu+NOwzN
+	7U6XGRe9ItjKnHkoAj
+X-Google-Smtp-Source: AGHT+IF1ZFBDL71uBaSwbhNDatpe1vIJpFPHU6lONyVDyD5pnpwHGngatw+aFLHLdudpyOTvNR4+Tg==
+X-Received: by 2002:a05:600c:1d01:b0:475:daba:d03c with SMTP id 5b1f17b1804b1-477b89541d7mr19670195e9.13.1763627750364;
+        Thu, 20 Nov 2025 00:35:50 -0800 (PST)
 Received: from [10.11.12.107] ([5.12.85.52])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7f34ffesm4477241f8f.10.2025.11.20.00.05.28
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7f34ffesm4648081f8f.10.2025.11.20.00.35.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Nov 2025 00:05:30 -0800 (PST)
-Message-ID: <f8981eae-3f1b-48e6-b74c-95810af3e5f0@linaro.org>
-Date: Thu, 20 Nov 2025 10:05:28 +0200
+        Thu, 20 Nov 2025 00:35:49 -0800 (PST)
+Message-ID: <81a0af49-9c0c-43e7-9a40-d66ba95c578c@linaro.org>
+Date: Thu, 20 Nov 2025 10:35:48 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/28] mtd: spinand: Fix kernel doc
+Subject: Re: [PATCH 10/28] mtd: spinand: Make use of the operation templates
+ through SPINAND_OP()
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>,
  Vignesh Raghavendra <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
@@ -84,15 +85,15 @@ Cc: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>,
  linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org
 References: <20251031-winbond-v6-17-rc1-oddr-v1-0-be42de23ebf1@bootlin.com>
- <20251031-winbond-v6-17-rc1-oddr-v1-4-be42de23ebf1@bootlin.com>
- <efb8bba5-8805-4c95-ba1b-3bde46a4e528@linaro.org>
- <87v7j6aqlr.fsf@bootlin.com>
+ <20251031-winbond-v6-17-rc1-oddr-v1-10-be42de23ebf1@bootlin.com>
+ <5680a2a8-aeb3-4274-a264-4ff658cc9246@linaro.org>
+ <87jyzmaqcq.fsf@bootlin.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <87v7j6aqlr.fsf@bootlin.com>
+In-Reply-To: <87jyzmaqcq.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251120_000534_019594_75F22087 
-X-CRM114-Status: GOOD (  14.46  )
+X-CRM114-CacheID: sfid-20251120_003552_473620_67870ABA 
+X-CRM114-Status: GOOD (  12.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,40 +112,33 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 11/19/25 7:18 PM, Miquel Raynal wrote:
-> On 05/11/2025 at 16:57:39 +01, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+On 11/19/25 7:23 PM, Miquel Raynal wrote:
+> On 05/11/2025 at 17:28:29 +01, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
 > 
 >> On 10/31/25 6:26 PM, Miquel Raynal wrote:
->>> The @data buffer is 5 bytes, not 4, it has been extended for the need of
->>> devices with an extra ID bytes.
->>>
->>> Fixes: 34a956739d29 ("mtd: spinand: Add support for 5-byte IDs")
+>>> index 4afebaf5f0195b9bc617ea1f125f637f76fff9f8..a8fd04a67cfa9925bd68c57539d86e0816b76274 100644
+>>> --- a/include/linux/mtd/spinand.h
+>>> +++ b/include/linux/mtd/spinand.h
+>>> @@ -701,6 +701,93 @@ struct spinand_device {
+>>>  			     unsigned int retry_mode);
+>>>  };
+>>>  
+>>> +static inline struct spi_mem_op
 >>
->> no fixes tag for documentation.
->>
->> with that:
->> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>
->> (commit msg can be updated to smth like "update kernel doc comment"
->> too)
+>> Do we still do inlines?
 > 
-> I partially disagree. Tell me if I'm wrong, but may I guess that you
-> have backports in mind? As opposed to backporting comment fixes which
+> Defining functions in headers like that, I think yes? (static inline,
+> not just inline). The full line is something like:
+> 
+> +static inline struct spi_mem_op
+> +spinand_fill_reset_op(struct spinand_device *spinand)
+> +{
+> 
+> So it's not an inline declaration of a variable, but the definition of a
+> function (just saying, in case the diff mislead you).
 
-
-yes, I was thinking on stable rules, where trivial fixes like this,
-are not accepted. But you didn't cc stable, so I think that's fine.
-
-> might not make much sense indeed, _fixing_ a comment makes sense. We
-> know that stable maintainers, even though they ask people to Cc stable
-> for backports, they automatically pick with the help of AI almost any
-> commit with a Fixes tag. I believe it is wrong to not mark such commit
-> and even change the title (because "fix" in the title may also lead to
-> an automatic backport) to circumvent their tooling. The tooling must
-> adapt, not the accuracy of the commits. Plus, backporting this kind of
-> commit is harmless, so I wouldn't care too much?
-
-okay
+I saw it's a static inline function. Check this please:
+https://lore.kernel.org/all/Pine.LNX.4.64.0601021105000.3668@g5.osdl.org/T/#u
 
 ______________________________________________________
 Linux MTD discussion mailing list
