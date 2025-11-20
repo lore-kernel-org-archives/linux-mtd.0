@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A0CCF8548
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F33FCF8548
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Nov 2025 06:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9i4scs+A7pAdeECBr1w3P8H2DYZGLowkyuW4CevcI/M=; b=TPs8eTFYKGL5oq
-	PgXMhBU7ap7O79WPkRIIfvQTIvJVdChrgfuX3uFlyHaSKYj9EGaAfEP1QYzdUIAZINapbVlRAour9
-	a5L0pYSJCmyCEakzicag52eWH/mG5/m4XU5HhVcQc8tAhjsZdCjtQLucMmRgk1im0Fo+UxvFZ1lM2
-	1Lfjv7RkgNnEbvRwqPvhkMD4smH4XjbV0g0xHAmNB1gydRB5ZpIUWgUiiiOilMp9sFVDXgj2gQQFQ
-	4l3Niw4NMEsyfxmxcgXsCKJWh3krUrPF1cFc0PwO0aD43eeazz5ZCcVn6YBx1LDMjiOkNvZRIfCUL
-	ddC2S6gtQ5tt1vAX7pRA==;
+	List-Owner; bh=EntNBP6BaunZcY7IAMOO1/+9gZ353DXwloG05HEGgg0=; b=uBiUleN1ii/vWF
+	5jzfphHyrqRKxdTu/sFnpP+o3AdoFI+KS+1OsdT3QaMTd5CYy+Id05Z9PMpC2Fl4U0MkpGTM1PAdq
+	w452lzzI3v7rzZnK0X+t1OkloOC+SgOwmTkxZ5W13Nz+McoN8TDKfnMrhBSnfK3BZbcFwM3xR5BCT
+	HZtXe3ONxlhJ7+bqIiaOi5SP+EZl1SqISbKv+3gvvAVCdo6ZeDvrN2zlL5+Z/f57zfWMqUzWQPAoE
+	5FFWE1oTc/DtJ2QTV7Gd173sJ8UOsxGNCHUSd+cZWA6BJRLTjrbq8k0Lllu2zeyyY2pnhBY+0DDCi
+	MVm/UFMpWHliJRixwY1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyUH-00000006Eou-1p6d;
-	Thu, 20 Nov 2025 06:49:49 +0000
+	id 1vLyUN-00000006Erc-3BKt;
+	Thu, 20 Nov 2025 06:49:55 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyUF-00000006ElW-0NA4;
-	Thu, 20 Nov 2025 06:49:47 +0000
+	id 1vLyUM-00000006EoQ-0JMD;
+	Thu, 20 Nov 2025 06:49:54 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -46,9 +46,9 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	linux-mtd@lists.infradead.org,
 	linux-xfs@vger.kernel.org,
 	linux-nfs@vger.kernel.org
-Subject: [PATCH 05/16] btrfs: fix the comment on btrfs_update_time
-Date: Thu, 20 Nov 2025 07:47:26 +0100
-Message-ID: <20251120064859.2911749-6-hch@lst.de>
+Subject: [PATCH 06/16] orangefs: use inode_update_timestamps directly
+Date: Thu, 20 Nov 2025 07:47:27 +0100
+Message-ID: <20251120064859.2911749-7-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
 References: <20251120064859.2911749-1-hch@lst.de>
@@ -69,29 +69,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since commit e41f941a2311 ("Btrfs: move over to use ->update_time") this
-is not a copy of the high-level file_update_time helper.
+Orangefs has no i_version handling and __orangefs_setattr already
+explicitly marks the inode dirty.  So instead of the using
+the flags return value from generic_update_time, just call the
+lower level inode_update_timestamps helper directly.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/btrfs/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/orangefs/inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6282911e536f..05f6d272c5d7 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6291,8 +6291,8 @@ static int btrfs_dirty_inode(struct btrfs_inode *inode)
- }
+diff --git a/fs/orangefs/inode.c b/fs/orangefs/inode.c
+index a01400cd41fd..55f6c8026812 100644
+--- a/fs/orangefs/inode.c
++++ b/fs/orangefs/inode.c
+@@ -878,7 +878,9 @@ int orangefs_update_time(struct inode *inode, int flags)
  
- /*
-- * This is a copy of file_update_time.  We need this so we can return error on
-- * ENOSPC for updating the inode in the case of file write and mmap writes.
-+ * We need our own ->update_time so that we can return error on ENOSPC for
-+ * updating the inode in the case of file write and mmap writes.
-  */
- static int btrfs_update_time(struct inode *inode, int flags)
- {
+ 	gossip_debug(GOSSIP_INODE_DEBUG, "orangefs_update_time: %pU\n",
+ 	    get_khandle_from_ino(inode));
+-	flags = generic_update_time(inode, flags);
++
++	flags = inode_update_timestamps(inode, flags);
++
+ 	memset(&iattr, 0, sizeof iattr);
+         if (flags & S_ATIME)
+ 		iattr.ia_valid |= ATTR_ATIME;
 -- 
 2.47.3
 
