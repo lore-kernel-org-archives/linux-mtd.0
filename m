@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0493FCFC28F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFAC2CFC28B
 	for <linux-mtd@archiver.kernel.org>; Fri, 21 Nov 2025 15:42:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f9P9Bahpgrfr/yO2OOkBtOi64zcheUl8+X8EoFSpS7E=; b=V2gSz0Xn1epOTP
-	/QglZ4FfWh1S4srHqu/BZ4JDWEEomjeP3Yhsiwl2GaAce6+/E1x3f5kdXtvfInAhAgHW1/xTT4GU/
-	6KWdsCVMBGODhZzhVbIy4FnEi9TVMBBg4ShV3uBDyZ/BrOQDCeWEWKno1SZGZY0UGqxyHm/jZro3k
-	TouDVl0eNiuxTHJ42RQ4n2/NA7guYaVO1hsdjAYqqArZSMULnAFwjuBg68a5MEwnxdC4M/F8lHULP
-	ovl4ikvE400nXUn4Uc1cezCEbyn1hzTrrhiMLmv7ognRKPSxdQejzjdrOffbOXtq5kpq8KRIgOuNE
-	4eR6su9ZiYpAsKp79Tzg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=/I+dkYVNlwYf5XG6UgxpCoftsO9DQ+qKRWg76WjMles=; b=AHLBlrlzDAoKgA
+	GykGd3N+HqhmyMk3c56PvmgwNpHppRKLzHEeP/AWdUbGkMxnDhSE3aLlT/ReCkw/0pwV/DEWpYdXf
+	YAx289A4QEURm6Awv8BWn/boFOxJO0F3jxASg1UbMWdWiYaemPulibVGonGwv8j+sQKeFdeAdx42Q
+	XG5RsQMHm7tPxYBYl2uXDqxrsSuX9703mBbeUQTdOekYz3WipgkXHfPCPY2gAE/d1zFgGu9S7tB2V
+	9mbGnX8wkTDNMJn5QjK+WY5TDc7g4SI/964Vkw1FyDX0EEjwHci7MLm3KjltV+8lPibOmqViAIdMI
+	IN/BYrzlPzbkHi/Kejlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMTHh-00000008dD1-1xD7;
-	Fri, 21 Nov 2025 15:42:53 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1vMTHd-00000008dB8-2Bkc;
+	Fri, 21 Nov 2025 15:42:49 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMTHc-00000008d9k-0mlT
-	for linux-mtd@lists.infradead.org;
-	Fri, 21 Nov 2025 15:42:50 +0000
+	id 1vMTHY-00000008d9Q-2zE6;
+	Fri, 21 Nov 2025 15:42:47 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id CBB0B1A1C97;
-	Fri, 21 Nov 2025 15:42:46 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id C84B3C1019F;
+	Fri, 21 Nov 2025 15:42:18 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9E51D60719;
-	Fri, 21 Nov 2025 15:42:46 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A793210372188;
-	Fri, 21 Nov 2025 16:42:44 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 19DEE60719;
+	Fri, 21 Nov 2025 15:42:41 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1DFBD10372188;
+	Fri, 21 Nov 2025 16:42:37 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1763739765; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=BTriyQZYYbnJqpQ9NHQXwg7JbzvLw55voRo8bIRkgF0=;
-	b=cvmVBhT6OnVhWqrq/NM5dwpFkuXvXiRy+NzWEqJJOy1dNawbXqrlhyFSOExl1av7RgTWXV
-	pWRRuJ25YYOIquXNd9ssNDDExXKSelGjameE8FGYnF45biWFSmLXHqd7NiRdfEUBkIq76I
-	RuddAFVlYFKhIGyPdGXHVZ4A/S6uL7Gj7R3KqfpoSxfh9UJTQG8TXuYNEyh1rYYdm1Yo7X
-	/i1Io1C8oJUV0ljSZZbRYVVbRlmdvAlQTYKATPKK0XFHTSO/MLb16BIY1vO5E5j4auqknt
-	URLxal3XwSQOoUZ3rsexAtskjDkthSvpHJSr0R/ehNAJiNfrdJ8LF1yl8SL3vw==
+	t=1763739760; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=yTl8T9kOPsRlZLi/qxLvoBg6wGqTVmaXfk9LwQI9gG0=;
+	b=Ao77SuV1edzIejLmr9NePiyIi6sDLyET5aHhLyRUZYC3OmM3c5LiAnuKMdqHGrow6OWaCg
+	54OyYzdJpRo81tUPqvjP0zv6xlkRPt85CCRGCRiOYHiBIP2y5cn2YoUj2DjiLR7PJIN3dY
+	71M+9AbGuTSCcGXHjwMlGbxF4E2wt+yNyODv0jKqaOs3pBZq0qJSQxoOZ1i90/MsymcfIS
+	azL8tDVsuXpqOIY9ZmIrQ8/HUB1WlepKdtSH6886eq3/qZQTc3fMjKhPxmNbXsNVoIIXTN
+	Pq0EvQQzy8Nl4Qbs44rAVOTSCz4g+r0LyuACqKWf3f/typfuD+/7/Iu9hTbnjA==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
-Date: Fri, 21 Nov 2025 16:42:37 +0100
-Subject: [PATCH v2 3/3] mtd: physmap: Add support for RAM reserved memory
- regions
+Subject: [PATCH v2 0/3] MTD physmap: Adding reserved RAM support and fixing
+ reserved_mem limitations
+Date: Fri, 21 Nov 2025 16:42:34 +0100
+Message-Id: <20251121-mtd-memregion-v2-0-c5535fdcebe4@bootlin.com>
 MIME-Version: 1.0
-Message-Id: <20251121-mtd-memregion-v2-3-c5535fdcebe4@bootlin.com>
-References: <20251121-mtd-memregion-v2-0-c5535fdcebe4@bootlin.com>
-In-Reply-To: <20251121-mtd-memregion-v2-0-c5535fdcebe4@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAGqIIGkC/3WMQQ7CIBBFr9LMWgxD01JdeQ/TRQtjO4kUA4RoG
+ u4udu/y/fz3dogUmCJcmx0CZY7stwrq1IBZp20hwbYyKKk6RNTCJSscuUBLfYphaKVBa7U0BNV
+ 5BXrw++jdx8orx+TD58hn/K3/ShmFFHpuux7R6MvU32bv05O3s/EOxlLKF7EcAKusAAAA
+X-Change-ID: 20251117-mtd-memregion-8830c1dd70ce
 To: Rob Herring <robh@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
@@ -67,8 +67,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251121_074248_396589_8D7F3535 
-X-CRM114-Status: GOOD (  22.74  )
+X-CRM114-CacheID: sfid-20251121_074245_256104_D51EB879 
+X-CRM114-Status: GOOD (  10.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,130 +80,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MTD fixed-partitions can now be exposed for reserved RAM regions, not
-just ROM reg regions. This is achieved by using a memory-region
-phandle to reference the reserved RAM region instead of the reg
-property.
-
-Based on the work of Muhammad Musa <muhammad.musa@intel.com>
-
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- drivers/mtd/maps/physmap-core.c | 56 ++++++++++++++++++++++++++++++++++-------
- 1 file changed, 47 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 2bd7a1af898c9..f084f6f34d611 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -39,6 +39,7 @@
- #include <linux/mtd/cfi_endian.h>
- #include <linux/io.h>
- #include <linux/of.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pm_runtime.h>
- #include <linux/gpio/consumer.h>
- 
-@@ -263,6 +264,14 @@ static const struct of_device_id of_flash_match[] = {
- 		.type = "rom",
- 		.compatible = "direct-mapped"
- 	},
-+	{
-+		.compatible = "mtd-mem",
-+		.data = "map_ram",
-+	},
-+	{
-+		.compatible = "mtd-memro",
-+		.data = "map_rom",
-+	},
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, of_flash_match);
-@@ -446,8 +455,9 @@ static int physmap_flash_pdata_init(struct platform_device *dev)
- static int physmap_flash_probe(struct platform_device *dev)
- {
- 	struct physmap_flash_info *info;
--	int err = 0;
--	int i;
-+	struct resource *res_array;
-+	int err = 0, is_rsvd_mem = 0, nreg = 0;
-+	int i, curr_reg;
- 
- 	if (!dev->dev.of_node && !dev_get_platdata(&dev->dev))
- 		return -EINVAL;
-@@ -459,9 +469,13 @@ static int physmap_flash_probe(struct platform_device *dev)
- 	while (platform_get_resource(dev, IORESOURCE_MEM, info->nmaps))
- 		info->nmaps++;
- 
--	if (!info->nmaps)
--		return -ENODEV;
--
-+	if (!info->nmaps) {
-+		info->nmaps = of_reserved_mem_region_total_count(dev->dev.of_node);
-+		if (info->nmaps > 0)
-+			is_rsvd_mem = 1;
-+		else
-+			return -ENODEV;
-+	}
- 	info->maps = devm_kzalloc(&dev->dev,
- 				  sizeof(*info->maps) * info->nmaps,
- 				  GFP_KERNEL);
-@@ -503,7 +517,23 @@ static int physmap_flash_probe(struct platform_device *dev)
- 	for (i = 0; i < info->nmaps; i++) {
- 		struct resource *res;
- 
--		info->maps[i].virt = devm_platform_get_and_ioremap_resource(dev, i, &res);
-+		if (is_rsvd_mem) {
-+			if (nreg <= i) {
-+				int cnt = of_reserved_mem_region_to_resource_array(&dev->dev,
-+							   dev->dev.of_node, i, &res_array);
-+				if (cnt < 0) {
-+					err = cnt;
-+					goto err_out;
-+				}
-+				nreg += cnt;
-+				curr_reg = 0;
-+			}
-+			res = &res_array[curr_reg++];
-+			info->maps[i].virt = devm_ioremap_resource(&dev->dev, res);
-+		} else {
-+			info->maps[i].virt = devm_platform_get_and_ioremap_resource(dev, i, &res);
-+		}
-+
- 		if (IS_ERR(info->maps[i].virt)) {
- 			err = PTR_ERR(info->maps[i].virt);
- 			goto err_out;
-@@ -519,9 +549,17 @@ static int physmap_flash_probe(struct platform_device *dev)
- 			info->maps[i].phys = res->start;
- 
- 		info->win_order = fls64(resource_size(res)) - 1;
--		info->maps[i].size = BIT(info->win_order +
--					 (info->gpios ?
--					  info->gpios->ndescs : 0));
-+		/* When using a memory region, the size is not necessarily a
-+		 * power of 2, so win_order is not applicable. Since GPIOs are
-+		 * unavailable in this context, directly using the region's size
-+		 * is safe.
-+		 */
-+		if (is_rsvd_mem)
-+			info->maps[i].size = resource_size(res);
-+		else
-+			info->maps[i].size = BIT(info->win_order +
-+						 (info->gpios ?
-+						  info->gpios->ndescs : 0));
- 
- 		info->maps[i].map_priv_1 = (unsigned long)dev;
- 
-
--- 
-2.51.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpXaGlsZSB3b3JraW5nIG9uIGFkZGluZyByZXNlcnZlZCBSQU0gc3VwcG9ydCB0byB0
+aGUgTVREIHBoeXNtYXAKZHJpdmVyLCBJIGVuY291bnRlcmVkIGEgbGltaXRhdGlvbiBpbiB0aGUg
+a2VybmVsJ3MgcmVzZXJ2ZWQgbWVtb3J5CnN1cHBvcnQ6IGFsdGhvdWdoIHRoZSBEZXZpY2UgVHJl
+ZSBzcGVjaWZpY2F0aW9uIGFsbG93cyBtdWx0aXBsZSByZWcKZW50cmllcyBmb3IgYSBtZW1vcnkt
+cmVnaW9uIG5vZGUsIHRoZSBrZXJuZWwgb25seSBwcm9jZXNzZWQgdGhlIGZpcnN0Cm9uZS4gVGhp
+cyBsaW1pdGF0aW9uIHByZXZlbnRlZCBwcm9wZXIgc3VwcG9ydCBmb3IgcmVzZXJ2ZWQgUkFNIHJl
+Z2lvbnMKaW4gTVRELgoKVGhpcyBzZXJpZXMgYWRkcmVzc2VzIGJvdGggaXNzdWVzOgoKRmlyc3Qs
+IHRoZSByZXNlcnZlZCBtZW1vcnkgc3VwcG9ydCBpcyBleHRlbmRlZCB0byBmdWxseSBzdXBwb3J0
+Cm11bHRpcGxlIHJlZyBlbnRyaWVzIHBlciBtZW1vcnktcmVnaW9uIG5vZGUsIGVuc3VyaW5nIGNv
+bXBsaWFuY2Ugd2l0aAp0aGUgRGV2aWNlIFRyZWUgc3BlY2lmaWNhdGlvbi4KClRoZW4sIHdpdGgg
+dGhpcyBmb3VuZGF0aW9uIGluIHBsYWNlLCB0aGUgc2VyaWVzIHVwZGF0ZXMgdGhlIE1URApwaHlz
+bWFwIGRyaXZlciB0byBzdXBwb3J0IHJlc2VydmVkIFJBTSByZWdpb25zLiBUaGUgRFQgYmluZGlu
+Z3MgYXJlCmV4dGVuZGVkIHRvIGFsbG93IG1lbW9yeS1yZWdpb24gcGhhbmRsZXMgZm9yIFJBTSBh
+Y2Nlc3MsIGFuZCB0aGUKcGh5c21hcCBkcml2ZXIgaXMgbW9kaWZpZWQgdG8gdXNlIHRoZXNlIHJl
+Z2lvbnMuCgpHcmVnb3J5CgpTaWduZWQtb2ZmLWJ5OiBHcmVnb3J5IENMRU1FTlQgPGdyZWdvcnku
+Y2xlbWVudEBib290bGluLmNvbT4KLS0tCkNoYW5nZXMgaW4gdjI6CgotIFByb3Blcmx5IG1hbmFn
+ZWQgY2FzZXMgd2hlcmUgcmVnaXN0ZXIgZW50cmllcyB1c2VkIGJ5IHRoZSBtZW1vcnkKICByZWdp
+b24gYXJlIG91dCBvZiBvcmRlciwgcGFydGljdWxhcmx5IHdoZW4gb25lIG9yIG1vcmUgcmVnaXN0
+ZXIKICBlbnRyaWVzIGFyZSBtaXhlZCB3aXRoIG1lbW9yeSByZWdpb24gZW50cmllcyBpbiBhbiBv
+dGhlciBub2RlLgotIFVzZWQgIm1lbWxvZyIgYXMgdGhlIG5vZGUgbmFtZSBpbnN0ZWFkIG9mICJz
+cmFtLCIgd2hpY2ggd2FzIG1pc2xlYWRpbmcuCi0gTGluayB0byB2MTogaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvci8yMDI1MTExNy1tdGQtbWVtcmVnaW9uLXYxLTAtN2IzNTYxMWM3OWE2QGJvb3Rs
+aW4uY29tCgotLS0KR3JlZ29yeSBDTEVNRU5UICgzKToKICAgICAgb2Y6IHJlc2VydmVkX21lbTog
+U3VwcG9ydCBtdWx0aXBsZSAncmVnJyBlbnRyaWVzIGZvciBtZW1vcnktcmVnaW9uCiAgICAgIGR0
+LWJpbmRpbmdzOiBtdGQ6IHBoeXNtYXA6IEFsbG93IHVzaW5nIG1lbW9yeS1yZWdpb24gdG8gYWNj
+ZXNzIG1lbW9yeSByZXNvdXJjZXMKICAgICAgbXRkOiBwaHlzbWFwOiBBZGQgc3VwcG9ydCBmb3Ig
+UkFNIHJlc2VydmVkIG1lbW9yeSByZWdpb25zCgogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
+L210ZC1waHlzbWFwLnlhbWwgICAgICAgfCAgNTkgKysrKysrLS0tCiBkcml2ZXJzL210ZC9tYXBz
+L3BoeXNtYXAtY29yZS5jICAgICAgICAgICAgICAgICAgICB8ICA1NiArKysrKysrLS0KIGRyaXZl
+cnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMgICAgICAgICAgICAgICAgICAgICAgIHwgMTM5ICsrKysr
+KysrKysrKysrKysrKystLQogaW5jbHVkZS9saW51eC9vZl9yZXNlcnZlZF9tZW0uaCAgICAgICAg
+ICAgICAgICAgICAgfCAgIDQgKwogNCBmaWxlcyBjaGFuZ2VkLCAyMTggaW5zZXJ0aW9ucygrKSwg
+NDAgZGVsZXRpb25zKC0pCi0tLQpiYXNlLWNvbW1pdDogYjU1ZDQyNmMzOTBmMmE0NzYyYjJhODhi
+MTEzY2M0NGMzN2UwOGU0NgpjaGFuZ2UtaWQ6IDIwMjUxMTE3LW10ZC1tZW1yZWdpb24tODgzMGMx
+ZGQ3MGNlCgpCZXN0IHJlZ2FyZHMsCi0tIApHcsOpZ29yeSBDTEVNRU5ULCBCb290bGluCkVtYmVk
+ZGVkIExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcKaHR0cHM6Ly9ib290bGluLmNvbQoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
