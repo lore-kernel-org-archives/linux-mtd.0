@@ -4,43 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76047CCD193
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Oct 2025 18:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05843CFC295
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Nov 2025 17:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Subject:Cc:To:From:
-	MIME-Version:Content-Type:Reply-To:Message-ID:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=kPTTi64eP+w6kjiLMkUtteZqA20D4CMDkaZrYHP1104=; b=nfqiFGxDmB8sF9mtf58w5OzH9y
-	tFCoF+RVWuVUGDJCacUP8YbCO7drK8nrE4f3AWTbussboAU/4a8X3yA/uvfNXsS1N14yCsB+rqJUo
-	9hibhmFYbL49Wvkokj3XEhnTaZqT0hOC4xYO6WFoaDfNOXtgWXK9nhDf4knG06zAFcdvu7TZzQXMm
-	Ov6lDcYml2E5jr7Ue+z+OG7tId+9SeLlNf124Q9cjdGKSMEjdMkWZwPQY9I5oEcqymitdlseo1YlA
-	O9qRzaPZthTbcRDGgMvVMGGGzsKXiY6XFMcIBqkpO7LwsNel7LBHXYAvMm2YoASSQXNSYncPZaZpQ
-	ORGctAQQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
+	In-Reply-To:To:Cc:From:MIME-Version:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=lc7bMQFOzCFoNebx+M3nSXq/4FbuWodd62xMPleU8EY=; b=OIuVlq9U8762VHjk965uK3ZK53
+	H32I/CYOWRV3QWXBTFlKw9j3d7HCK8pJ93arG3MP6vAskglnTNsBhSmgvYsxMY4H0uGH0MHz/mYZ4
+	BJXHtzMSm7k5/FG0hVIyuWI9qfhVo7E9paqf64PrruA7/oG8YYJFpe4NWeY4zqDKSHJkxAOMKIIhk
+	/+XV3UU+tx342hacNTKRmBq30zamWu/cV1Kk2/O38ZINPkDL1h7cRCUuG3yzSlZdLcq0r11RL6Vu+
+	4g6c2ZzeoJo5A2grzFqYSQ8GEtCtflV/4gFQIohsePqkGUvXdq3/rQavedzU2ltJVXud2gWrSIYb1
+	IuOyVW5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vAuFJ-0000000Ea0w-3nMD;
-	Mon, 20 Oct 2025 18:04:37 +0000
-Received: from out28-116.mail.aliyun.com ([115.124.28.116])
+	id 1vMUV3-00000008lbp-358l;
+	Fri, 21 Nov 2025 17:00:45 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vAuFH-0000000EZzg-10l7
-	for linux-mtd@lists.infradead.org;
-	Mon, 20 Oct 2025 18:04:36 +0000
-Received: from DESKTOP-D69P20T(mailfrom:micah.klein@vic-insightslab.com fp:SMTPD_---.f3KzPSS_1760983463 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Tue, 21 Oct 2025 02:04:27 +0800
-Content-Type: multipart/mixed; boundary="===============0145272079=="
+	id 1vMUV1-00000008lbY-38zL;
+	Fri, 21 Nov 2025 17:00:43 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id D1D2D60515;
+	Fri, 21 Nov 2025 17:00:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C79C116D0;
+	Fri, 21 Nov 2025 17:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763744442;
+	bh=90DNGtFm9MdQlp4AmTDRnAxa7ja0sbcC058ubJ/XCpw=;
+	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
+	b=QXVqhXKQsC6vuM6z3TZJVHYw9E2N8BceNMfCU1JtZYQ68/XXZg61NXd+fcuWoybbs
+	 m+gutwnYEnCnNLvDInugffbf6Yv9bNdhrwq5rvl0NPaZcTB4KtneQT/TdKmvjTDtwC
+	 0SEVb7NSsf0ombKmQSJtUKNiY5EkjvtuAVCszqp9CgNIkqwsb2Cu0xTtOHpZ503+MB
+	 Vsg0kyP7Q74kvbGwUcEN+hYObx2LbE2Gys8tDJlDl7ZeP8C9YOiMsK6pd3iZF9o7YE
+	 NVC7CYwgT3ESn9aUWU0jRWXqiCyHe82/sRK/Kf/dBx+zo3F1/yjLQld8Ew/IAcQQUm
+	 RkTuipMD7zikQ==
+Date: Fri, 21 Nov 2025 11:00:41 -0600
 MIME-Version: 1.0
-From: micah.klein@vic-insightslab.com
-To: marketkkyplus@163.com
-Cc: marketkkyplus@163.com
-Subject: =?utf-8?q?DRAM_for_Automotive_For_Review?=
-Date: Mon, 20 Oct 2025 18:04:22 -0000
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251020_110435_418898_9F72F3FE 
-X-CRM114-Status: UNSURE (   1.75  )
-X-CRM114-Notice: Please train this message.
+From: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ Vignesh Raghavendra <vigneshr@ti.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ linux-arm-kernel@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Richard Weinberger <richard@nod.at>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>
+In-Reply-To: <20251121-mtd-memregion-v2-2-c5535fdcebe4@bootlin.com>
+References: <20251121-mtd-memregion-v2-0-c5535fdcebe4@bootlin.com>
+ <20251121-mtd-memregion-v2-2-c5535fdcebe4@bootlin.com>
+Message-Id: <176374444102.1332163.10540866248088706987.robh@kernel.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: mtd: physmap: Allow using
+ memory-region to access memory resources
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -52,36 +74,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
-Message-ID: <20251020180422.uK18ys8WKs-oJThdUvoz1vrgAFJ8o95bI_M3yVhmv4A@z>
 
---===============0145272079==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
 
-RGVhci4KCldlIGhhdmUgcmVsZWFzZWQgYSByZXBvcnQgb24gdGhlIGxhdGVzdCBEUkFNIGZvciBB
-dXRvbW90aXZlIG1hcmtldCByZXNlYXJjaC4KUGxzIGZlZWwgZnJlZSB0byBjb250YWN0IEphbWVz
-QHZpY21hcmtldHJlc2VhcmNoLmNvbSBpZiB5b3UgYXJlIGludGVyZXN0ZWQgaW4gaXQuIEEgc2Ft
-cGxlIHJlcG9ydCB3aWxsIGJlIHNlbnQgdG8geW91LgoKVGhlIGZvbGxvd2luZyBtYW51ZmFjdHVy
-ZXJzIGFyZSBjb3ZlcmVkIGluIHRoaXMgcmVwb3J0OgpNaWNyb24gVGVjaG5vbG9neQpTYW1zdW5n
-IFNlbWljb25kdWN0b3IKU0sgaHluaXgKSVNTSQpOYW55YSBUZWNobm9sb2d5IENvcnBvcmF0aW9u
-CldpbmJvbmQgRWxlY3Ryb25pY3MgQ29ycG9yYXRpb24KRXRyb24gVGVjaG5vbG9neQrigKbigKYK
-VGhlcmUgYXJlIG1vcmUgY29tcGFuaWVzIG5vdCBsaXN0ZWQgaGVyZS4KClRoaXMgbWF5IGJlIGhl
-bHBmdWwgdG8gdGhlIFJlbGF0ZWQgRGVwYXJ0bWVudHMgb3IgdGhlIHBlcnNvbiBpbiBjaGFyZ2Ug
-b2YgeW91ciBjb21wYW55LgoKQmVzdCByZWdhcmRzIC8gTWl0IGZyZXVuZGxpY2hlbiBHcsO8w59l
-biAvIOatpOiHtOaVrOaEjwpKYW1lcwoKW1Vuc3Vic2NyaWJlXQ==
+On Fri, 21 Nov 2025 16:42:36 +0100, Gregory CLEMENT wrote:
+> Enable access to memory resources not only via I/O address using reg,
+> but also through a portion of main memory using memory-region. To
+> achieve this, new compatible strings have been introduced: mtd-mem and
+> mtd-memro.
+> 
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> ---
+>  .../devicetree/bindings/mtd/mtd-physmap.yaml       | 59 +++++++++++++++-------
+>  1 file changed, 40 insertions(+), 19 deletions(-)
+> 
 
---===============0145272079==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: memlog (mtd-mem): $nodename:0: 'memlog' does not match '^(flash|.*sram|nand)(@.*)?$'
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20251121-mtd-memregion-v2-2-c5535fdcebe4@bootlin.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============0145272079==--
-
