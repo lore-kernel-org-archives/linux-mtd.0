@@ -4,85 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98262CFC538
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Nov 2025 14:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC3CCCFC51F
+	for <linux-mtd@archiver.kernel.org>; Sat, 22 Nov 2025 15:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=6VIKVd77plQBs3JL8be/92+we6+nrRAIlISona/VDG4=; b=zpF9Cs4NVvqc4F
-	18Vjxain7x4sPIZPXFGDBnf1ddcbH3MQ1n9e/B1Xh29obS6MasSTas7z8wRy4kK4sGcYYloU5eL1J
-	fkjKYkNWTOBSEo92m3XwqFG9PhXgmK8zgYaC+ZiiOseSmpduJh2fj+TUn6YDNSV7w/d5kQZs4q6MA
-	TXz85Yuub8c70WXn5IBV8euWCpM+CfL//+cmUajLLQCeStfNBFD/AQcIoio9OL3PkebZ0uaycw1cp
-	oY2S1MgskeshVg0RgU4AFStSmW1AZBSntwTta+dVaZbczB1r1k7e8mF3WXvBp5VHxPHUkzHbYF3wC
-	VV+v18+sVex6s5EUyN2Q==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=b2MBxskZZhtBDo1iyfFsBb63Boj9f5A+L+JGTcJNHMw=; b=eoCsbqGiYuIiGG
+	D7ujOj9AioKQNdgayhuhiuijy0Zc/uFuMgElGhX6JR0Chd7M6IuH0Qx1zf+Joz6Fm9CFkTGDrGYHd
+	PX4zhzIp/IJDBhRMEVq8PJyyzedXBoJwsf47/SQ6eRF41Uca9bTzR2ixjhvNdjy23FHk3DKMjMm3m
+	iADpkJ2GVyH0CCWHT+plvT3NmxY4J29FSfQ2GCyI39fOmKTjqjHCYc27pNb+NBubh9Icfey2abBKa
+	w7A8VHmLq9HbGXmIaGwMoXGTNSox4u9Szy0o1femQYk6dGSxRq05664PmVAxMsl5a3r/6+A3lqCgz
+	KPD5UhTDtyNtSbisGbjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vModU-00000009fKj-4770;
-	Sat, 22 Nov 2025 14:30:48 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1vMpgB-00000009hNE-3nMp;
+	Sat, 22 Nov 2025 15:37:39 +0000
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vModQ-00000009fKC-36Mu
+	id 1vMpg8-00000009hMS-1A8f
 	for linux-mtd@lists.infradead.org;
-	Sat, 22 Nov 2025 14:30:46 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-b737d4cde73so50742766b.2
-        for <linux-mtd@lists.infradead.org>; Sat, 22 Nov 2025 06:30:43 -0800 (PST)
+	Sat, 22 Nov 2025 15:37:38 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-477563e28a3so20249155e9.1
+        for <linux-mtd@lists.infradead.org>; Sat, 22 Nov 2025 07:37:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763821842; x=1764426642; darn=lists.infradead.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/IonXB13b+5hfzrrB25ARqMCumn5bxMg4g17Kb2I3Is=;
-        b=naXD+UZTNhEfd7ugB8Fmt2o0mnew/DuV3EEb/5eJPVcGwEup2Ccn+xv7Qs+Wnth13d
-         LK4o4BpEZPzx6sqtc2yUErWzkV/2q/WAYKq0TAG1gHFmykrhCYe7MHNdtqvFzoLTadzu
-         bCChyljpdqsGPbbo8RQQVLd7bh67Qg9m8G1A7+EX8tZTqF0kvk5x2i0DeHozwiOTRu+d
-         YHXHT/KOjodJTuqW1t5s1k5QY5mlN3deO/UbZ4B1z8Y1pXHrociYkeLkxO5axffk6E8o
-         XKdICVow/G6MSWxYuGzCkXYnsiwnX7o8Z+M9ZLhne28oLSkFgbYNcdHI7E3Ieriyux94
-         nOEA==
+        d=tuxon.dev; s=google; t=1763825854; x=1764430654; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eTyNC1+UYoKVAcGxt2SVHOhb/Uf0xrNXGcZihp5xtts=;
+        b=QGRWZ5Dkx3yUnV//B3/k7HhXr3diqu87CcBqvuu1q85FpTa+jNd8ZxmxqETIh/5WOa
+         d1OfCDamKe72Wqsa7Z1P83O6kxSVuEaY8IdcV7r8w1n5I/U76ubGdV30OBV+n8DJRKDq
+         Q5HWZ2Jb3HoqzLruXLrEtKmdvGZzZ5Z9wUu3YcZuQou31YSNkkhSkKZATFzzrwS3vtTe
+         twq1TMq524lhVfroYMCaboPqCkFpBCntBxHj1vCvVoWXb+FmLO8e26N2sxR4PTQX3x5A
+         Sae8ffDK13S+4qCEX8EZNHr1fbt95P8fIdJdQbYqFhKLs+YhsHoguVI7fFFr3zpUv79t
+         Rx+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763821842; x=1764426642;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :mime-version:date:message-id:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/IonXB13b+5hfzrrB25ARqMCumn5bxMg4g17Kb2I3Is=;
-        b=GyxsWhZxaq2BOdRRAyBBpnh5SQDPmwrjTAxwdC/AhYCk/USXPwzy7w5Lbg5pmZ3GS5
-         G5/f7RAHBfr2Kk124e17qumYFmNkiyG7SbaVtiCSmCYrgAiT/b/AX308XKOTsXualweL
-         N/cvIhaKOFG/KnRyUt4c0QwIke+kDj7jn+7V4k3Rbam7J3n/cztqr0Hx7GteK0PR8wes
-         t80PoLodvlEI/eSSWYNNc2L+MFijp+6K2Kup6fSoD62456e+fTDlN3Z10YAb/JnaRbcA
-         eGIaR9eLoVXX2aidzC7lNsPwxqN9yxLYjK6cW6R9o65fLcPHvVSoETZ0oORNe759vG8p
-         E4AQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVn83Fkh+ZNXW9Qq403XgGkNleO5n5Uzp1+OBymiyJrBdiW3MPx1ao/yDyBDouqTutrLWcc/TQG/WA=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwB6CvSzawg4Mgk0asBZSPArlF2uNyS8mCXuJfKNvLD6onVEDLG
-	No+H2KsnUh5G1inPbPKJryNplV6AjSHv76mMxiLo+TnTsouYRkkHf1QB
-X-Gm-Gg: ASbGncvkytI2YeKRxcvoqTWIO0Q6RTRCw32vcHLg+IsdmwZ4xlGbT59484oOyOQjsSL
-	R06dpWO6+v6o91aTbw6VMXuSrP01TFlE64haNkeRMAPM5/C4deKRwkkxXyf6spIk39vc72ZOFD5
-	8Sfoh7ZrgzkzQ/Qk55YqZV/BX70nI99zXLsoe9BxT/breqRU1BFCwpAs5824nOVLHTBu9vUE0YP
-	UWKFCWWVjSfjWWQKPgt3u/nK86UxEYlgcq0b06wDOnJjVuuGR6bNrmCz0UFSC6aqWtzjqgMIfiT
-	cUeItAgRIErquHMO/oRfpiXp/ybLDfsIRy2pb8ZeX79BxuR1a9cw5Zl3GLl5fzK5D8N+fk3k6wD
-	176PrpdnWVFagujWvbVajEmHCO0w3xxLljk3GSwJJCxA1dqu/JICkXNRT0Sbdf96CpgG1DIIGD3
-	rRhTGXbuBftypSukAoGF/fBkpdOn1h+t79L9FRXfK9qetoMw==
-X-Google-Smtp-Source: AGHT+IGB/wGkOMQJWYBkXIrr+tQ+4PNhJvM5RG4W26+gkmSj+MzOzzn6h95JtNEIgBCNJWWiq+rcOw==
-X-Received: by 2002:a05:6402:518a:b0:640:be87:a86b with SMTP id 4fb4d7f45d1cf-6455469953amr3140835a12.5.1763821842143;
-        Sat, 22 Nov 2025 06:30:42 -0800 (PST)
-Received: from ?IPV6:2001:470:b51d:1200:19d:5bbe:f594:c1bd? ([2a09:bac1:6180:3380::388:3e])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6453645f2easm6865096a12.33.2025.11.22.06.30.39
+        d=1e100.net; s=20230601; t=1763825854; x=1764430654;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eTyNC1+UYoKVAcGxt2SVHOhb/Uf0xrNXGcZihp5xtts=;
+        b=P+8zQ39STG0yR76/g9AQ6D3SM6ndVeA5S/M/faRdF02DD4s+ZrmjhKYPw13bGXYj+L
+         bjdNiN5RktpQRb0KXn1N7cmAssANtzMP9ceqxLpReS+e7UO9Rk/W6oYahtS3zjO5XsCg
+         dDkoOKtOkJbpgo66sGJhv3JvewFCx/zA6lXkTFlwr3vIUt57AHRSdjIFf2iSwojxaH0q
+         TyQuVF/I2A++aq55yssQJPW5SKxJ5kZw4DeEiV20FZ4apGK6jAdzfAPpZM4aSwi9UpnX
+         X3+8cl6bCLDhIMVkqzIsdxkJFZgfFE7QoGwX6WsBNXWFYMuwm0ywwGYIRGuqRgBH5IoU
+         RvBg==
+X-Gm-Message-State: AOJu0Yx36ecbnPro2+96Cx+fkRTqARdQY+UDzH9xDWkr+HI4ep/E1Rel
+	dNpesC54R6Et2bXQ69xygh4CmsmlxmgcMTWeRpDnJJMDxYAsLK6mIecp4SG7lnXWnKA=
+X-Gm-Gg: ASbGncu0Y8Iry7X8yX7GIhzT49j4eRQNJvU472isMxay4X/O8+POTViZiKps7d9w1+r
+	Or91A056fxw49GwBMqbypeC7/c5qLW7c26dzoNmzJG2jrl8AwMw0qTEJloXAj5OTmsZ2Vpfmzsd
+	6vGC5f9fSC4boDcqAQ70BdY+wQNvaxpMX/awXUcIMZ8ozwDGZGyhKt0w7H8KIg+s0aEZMRSJ81G
+	ybChD8Z7u8j0htnq+dux4x2fKUvqKD9S4XlpSwbT1d9OwFEmip81f9NsqhGWtr7v/nZtNJPmjes
+	Z+vkvzX2BjCOp5+elUJam6/4rLmX1Z+71Up4QeicVr7sE75/4blKgMIakr0HQNjHdlxpOkS89f/
+	Wlf3kzPNs1VpsTyExUZHH1tYPFUHRoX5fLq3Exa4BtIW/TI7KV0XNrI90XZRoj+I2rQuglRdkkM
+	T808NxwE1TWcllpcs7X4DzWBCkWLjetQ==
+X-Google-Smtp-Source: AGHT+IGNsCW8GaBWE80eC552ADlIIeLb1DFaNnNWkr5NJ5EoHsoPa7vEmJGXkXIjZpH3a0KG8muD6g==
+X-Received: by 2002:a05:600c:4f45:b0:45d:5c71:769d with SMTP id 5b1f17b1804b1-477c04db9a0mr64162485e9.8.1763825854228;
+        Sat, 22 Nov 2025 07:37:34 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.134])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477bf3aef57sm93496025e9.11.2025.11.22.07.37.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Nov 2025 06:30:40 -0800 (PST)
-Message-ID: <130e0f3f-93e4-47cf-82f0-93ba58a3a670@gmail.com>
-Date: Sat, 22 Nov 2025 17:30:38 +0300
+        Sat, 22 Nov 2025 07:37:33 -0800 (PST)
+Message-ID: <ece2d53c-3e16-4e5e-9bb9-3ed7bb362b7b@tuxon.dev>
+Date: Sat, 22 Nov 2025 17:37:31 +0200
 MIME-Version: 1.0
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] ARM: at91: Move PM init functions to .init_late
+ hook
+To: Rob Herring <robh@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>, Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-From: Mikhail Zhilkin <csharper2005@gmail.com>
-Subject: [PATCH] mtd: spinand: add support for FudanMicro FM25S01BI3
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Russell King <linux@armlinux.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20251120-at91-probe-v2-0-8c8592f02e8e@kernel.org>
+ <20251120-at91-probe-v2-2-8c8592f02e8e@kernel.org>
+From: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Content-Language: en-US
+In-Reply-To: <20251120-at91-probe-v2-2-8c8592f02e8e@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251122_063044_803752_38B42755 
-X-CRM114-Status: GOOD (  10.26  )
+X-CRM114-CacheID: sfid-20251122_073736_351685_9B99FAEE 
+X-CRM114-Status: GOOD (  14.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,121 +107,152 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for FudanMicro FM25S01BI3 SPI NAND.
+Hi, Rob,
 
-Link: https://www.fmsh.com/nvm/FM25S01BI3_ds_eng.pdf
+On 11/20/25 23:37, Rob Herring wrote:
+> Move the AT91 PM init functions to .init_late hook to ensure driver
+> dependencies have probed.
+> 
+> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 
-Signed-off-by: Mikhail Zhilkin <csharper2005@gmail.com>
----
- drivers/mtd/nand/spi/fmsh.c | 72 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/fmsh.c b/drivers/mtd/nand/spi/fmsh.c
-index c2b9a8c113cb..f417955f7d1c 100644
---- a/drivers/mtd/nand/spi/fmsh.c
-+++ b/drivers/mtd/nand/spi/fmsh.c
-@@ -9,6 +9,13 @@
- #include <linux/kernel.h>
- #include <linux/mtd/spinand.h>
- 
-+#define FM25S01BI3_STATUS_ECC_MASK		(7 << 4)
-+	#define FM25S01BI3_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-+	#define FM25S01BI3_STATUS_ECC_1_3_BITFLIPS	(1 << 4)
-+	#define FM25S01BI3_STATUS_ECC_UNCOR_ERROR	(2 << 4)
-+	#define FM25S01BI3_STATUS_ECC_4_6_BITFLIPS	(3 << 4)
-+	#define FM25S01BI3_STATUS_ECC_7_8_BITFLIPS	(5 << 4)
-+
- #define SPINAND_MFR_FMSH		0xA1
- 
- static SPINAND_OP_VARIANTS(read_cache_variants,
-@@ -45,11 +52,66 @@ static int fm25s01a_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
-+static int fm25s01bi3_ecc_get_status(struct spinand_device *spinand,
-+				     u8 status)
-+{
-+	switch (status & FM25S01BI3_STATUS_ECC_MASK) {
-+	case FM25S01BI3_STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case FM25S01BI3_STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case FM25S01BI3_STATUS_ECC_1_3_BITFLIPS:
-+		return 3;
-+
-+	case FM25S01BI3_STATUS_ECC_4_6_BITFLIPS:
-+		return 6;
-+
-+	case FM25S01BI3_STATUS_ECC_7_8_BITFLIPS:
-+		return 8;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int fm25s01bi3_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				    struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = 64;
-+	region->length = 64;
-+
-+	return 0;
-+}
-+
-+static int fm25s01bi3_ooblayout_free(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 4;
-+	region->length = 12;
-+
-+	return 0;
-+}
-+
- static const struct mtd_ooblayout_ops fm25s01a_ooblayout = {
- 	.ecc = fm25s01a_ooblayout_ecc,
- 	.free = fm25s01a_ooblayout_free,
- };
- 
-+static const struct mtd_ooblayout_ops fm25s01bi3_ooblayout = {
-+	.ecc = fm25s01bi3_ooblayout_ecc,
-+	.free = fm25s01bi3_ooblayout_free,
-+};
-+
- static const struct spinand_info fmsh_spinand_table[] = {
- 	SPINAND_INFO("FM25S01A",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xE4),
-@@ -60,6 +122,16 @@ static const struct spinand_info fmsh_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&fm25s01a_ooblayout, NULL)),
-+	SPINAND_INFO("FM25S01BI3",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xd4),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&fm25s01bi3_ooblayout,
-+				      fm25s01bi3_ecc_get_status)),
- };
- 
- static const struct spinand_manufacturer_ops fmsh_spinand_manuf_ops = {
--- 
-2.40.1
+'From: Rob Herring <robh@kernel.org>' != 'Signed-off-by: Rob Herring (Arm)
+<robh@kernel.org>
 
 
+> ---
+> v2:
+>  - new patch
+> ---
+>  arch/arm/mach-at91/at91rm9200.c | 3 +--
+>  arch/arm/mach-at91/at91sam9.c   | 3 +--
+>  arch/arm/mach-at91/sam9x60.c    | 3 +--
+>  arch/arm/mach-at91/sam9x7.c     | 3 +--
+>  arch/arm/mach-at91/sama5.c      | 2 +-
+>  arch/arm/mach-at91/sama7.c      | 3 +--
+>  6 files changed, 6 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm/mach-at91/at91rm9200.c b/arch/arm/mach-at91/at91rm9200.c
+> index 4f8186211619..2ac564eb8bbb 100644
+> --- a/arch/arm/mach-at91/at91rm9200.c
+> +++ b/arch/arm/mach-at91/at91rm9200.c
+> @@ -17,8 +17,6 @@
+>  static void __init at91rm9200_dt_device_init(void)
+>  {
+>  	of_platform_default_populate(NULL, NULL, NULL);
+> -
+> -	at91rm9200_pm_init();
+>  }
+>  
+>  static const char *const at91rm9200_dt_board_compat[] __initconst = {
+> @@ -27,6 +25,7 @@ static const char *const at91rm9200_dt_board_compat[] __initconst = {
+>  };
+>  
+>  DT_MACHINE_START(at91rm9200_dt, "Atmel AT91RM9200")
+> +	.init_late	= at91rm9200_pm_init,
+>  	.init_machine	= at91rm9200_dt_device_init,
+>  	.dt_compat	= at91rm9200_dt_board_compat,
+>  MACHINE_END
+> diff --git a/arch/arm/mach-at91/at91sam9.c b/arch/arm/mach-at91/at91sam9.c
+> index 7e572189a5eb..cf07cba4ee5d 100644
+> --- a/arch/arm/mach-at91/at91sam9.c
+> +++ b/arch/arm/mach-at91/at91sam9.c
+> @@ -17,8 +17,6 @@
+>  static void __init at91sam9_init(void)
+>  {
+>  	of_platform_default_populate(NULL, NULL, NULL);
+> -
+> -	at91sam9_pm_init();
+>  }
+>  
+>  static const char *const at91_dt_board_compat[] __initconst = {
+> @@ -28,6 +26,7 @@ static const char *const at91_dt_board_compat[] __initconst = {
+>  
+>  DT_MACHINE_START(at91sam_dt, "Atmel AT91SAM9")
+>  	/* Maintainer: Atmel */
+> +	.init_late	= at91sam9_pm_init,
+>  	.init_machine	= at91sam9_init,
+>  	.dt_compat	= at91_dt_board_compat,
+>  MACHINE_END
+> diff --git a/arch/arm/mach-at91/sam9x60.c b/arch/arm/mach-at91/sam9x60.c
+> index d8c739d25458..a31beaaeffcd 100644
+> --- a/arch/arm/mach-at91/sam9x60.c
+> +++ b/arch/arm/mach-at91/sam9x60.c
+> @@ -18,8 +18,6 @@
+>  static void __init sam9x60_init(void)
+>  {
+>  	of_platform_default_populate(NULL, NULL, NULL);
+> -
+> -	sam9x60_pm_init();
+>  }
+>  
+>  static const char *const sam9x60_dt_board_compat[] __initconst = {
+> @@ -29,6 +27,7 @@ static const char *const sam9x60_dt_board_compat[] __initconst = {
+>  
+>  DT_MACHINE_START(sam9x60_dt, "Microchip SAM9X60")
+>  	/* Maintainer: Microchip */
+> +	.init_late	= sam9x60_pm_init,
+>  	.init_machine	= sam9x60_init,
+>  	.dt_compat	= sam9x60_dt_board_compat,
+>  MACHINE_END
+> diff --git a/arch/arm/mach-at91/sam9x7.c b/arch/arm/mach-at91/sam9x7.c
+> index e1ff30b5b09b..0c73f7fefd4f 100644
+> --- a/arch/arm/mach-at91/sam9x7.c
+> +++ b/arch/arm/mach-at91/sam9x7.c
+> @@ -17,8 +17,6 @@
+>  static void __init sam9x7_init(void)
+>  {
+>  	of_platform_default_populate(NULL, NULL, NULL);
+> -
+> -	sam9x7_pm_init();
+>  }
+>  
+>  static const char * const sam9x7_dt_board_compat[] __initconst = {
+> @@ -28,6 +26,7 @@ static const char * const sam9x7_dt_board_compat[] __initconst = {
+>  
+>  DT_MACHINE_START(sam9x7_dt, "Microchip SAM9X7")
+>  	/* Maintainer: Microchip */
+> +	.init_late	= sam9x7_pm_init,
+>  	.init_machine	= sam9x7_init,
+>  	.dt_compat	= sam9x7_dt_board_compat,
+>  MACHINE_END
+> diff --git a/arch/arm/mach-at91/sama5.c b/arch/arm/mach-at91/sama5.c
+> index bf2b5c6a18c6..efae697ce29c 100644
+> --- a/arch/arm/mach-at91/sama5.c
+> +++ b/arch/arm/mach-at91/sama5.c
+> @@ -33,7 +33,6 @@ static void __init sama5_secure_cache_init(void)
+>  static void __init sama5_dt_device_init(void)
+>  {
+>  	of_platform_default_populate(NULL, NULL, NULL);
+> -	sama5_pm_init();
+>  }
+>  
+>  static const char *const sama5_dt_board_compat[] __initconst = {
+> @@ -43,6 +42,7 @@ static const char *const sama5_dt_board_compat[] __initconst = {
+>  
+>  DT_MACHINE_START(sama5_dt, "Atmel SAMA5")
+>  	/* Maintainer: Atmel */
+> +	.init_late	= sama5_pm_init,
+>  	.init_machine	= sama5_dt_device_init,
+>  	.dt_compat	= sama5_dt_board_compat,
+>  MACHINE_END
+> diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
+> index bd43733ede18..3e28727f2a8e 100644
+> --- a/arch/arm/mach-at91/sama7.c
+> +++ b/arch/arm/mach-at91/sama7.c
+> @@ -17,8 +17,6 @@
+>  static void __init sama7_dt_device_init(void)
+>  {
+>  	of_platform_default_populate(NULL, NULL, NULL);
+> -	sama7_pm_init();
+> -}
+
+} was dropped as well.
+
+Thank you,
+Claudiu
 
 ______________________________________________________
 Linux MTD discussion mailing list
