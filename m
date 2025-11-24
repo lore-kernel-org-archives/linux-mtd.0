@@ -4,83 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 431FBCFD313
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Nov 2025 13:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECCD1CFD317
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Nov 2025 13:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=y4wVzFLijPuYY2cOETWkCyLTM3CoytetAIHgwjvTF6w=; b=LVHBcGqJLJby0K
-	m7STeSsY6/l2AqVT3satFCJedlp3+TGyqXczVUoHgarshXByA5RaKPwDE4a7jx8ywjhODC6egOb3I
-	THx0Mm1puiC253PGnFq2qOkEoLRcqXFC+Pg++voJumD1K4ZNyJ1XxR+yRO3D2rQS0pquM3ZlxQIqC
-	fNXjEJcNZX2M6kvbNV2055ZgICAvCgzzdeQ2A/ZR/At38Pzr10WL8e7dweg2m5Ky/m46nUtmXEf+U
-	EQPEHVLt0hj7Rl34spnrduM485e2Zo4RxT8x37Q4bIAf6Qr5XBGD/D1ioyjvMTTMklSQnFrpDD/p4
-	65MwSHBozaEenDxrpHRw==;
+	List-Owner; bh=ff19UQHjZDDUMvJPuI8XCjICF1TBpBpRB9n4bWlooEQ=; b=ASy/zsjQCYD0Ew
+	L+9ZFmoQGWGsVsSyccHF9fwPZs4obCMoffy4ASRvEgE48t6Wk+GtCaK4qHja4b6nanOmEHXyIZIH1
+	235GiPmbRJdOau1347Qc4/Cxec6qe9F/dxnHkjfbgJhlVzHGnJX3Pvo75Tuupc/Pv5aEm0jhAv4mW
+	k/XSQbHl3a3GylgAjba3MQKSM5YA0g2GqRnyaLsBwbfhFLirJXdxN694Ho0ttl3AtkkEid0Y1P1Qh
+	gPiqF7Z/NC+VD0Fg3qZkdxHdx/k9//rym12oeHryp1+IB8g5V5MHDlCdkbrdd3cBGeliSr/JlrRVP
+	lgT4y2+OJcs4T/YcQZhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNWOd-0000000BiQs-3jZh;
-	Mon, 24 Nov 2025 13:14:23 +0000
-Received: from mail-vk1-f179.google.com ([209.85.221.179])
+	id 1vNWXB-0000000BjFT-1BiT;
+	Mon, 24 Nov 2025 13:23:13 +0000
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNWOa-0000000BiPu-2mo1
+	id 1vNWX4-0000000Bj8t-1Fsu
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Nov 2025 13:14:22 +0000
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-55b1dde0961so2903816e0c.2
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2025 05:14:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763990059; x=1764594859;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1bHE9e9lyhwQFjGP9yIqci5PhFl7iYu+8qK6gTUGgmE=;
-        b=eLUd+UoMniNtPVcb/GfbGiuMFE6PI6IIlf+h0+O0aDxlIruBCPASO7EUaZI6uLDmql
-         CwfbhJs+woH2r9r0Yf1PxEV/KUuADtVG5IjE7FEsqHrRVlsuNFBZI8qKhV4NdebF5cGL
-         zLaDhiI39LjgrpGqKK6l5T69CIQ9xkuDMwj6Os9kUwyyVQWYaaTAyr0VmmABAORY4cCo
-         ZtXnnV8RCQC3gqELxgpX2IdIcyJVVg+FfF5UF3IJUbyZMHX+x9kxP0Tmzt2KHmQTecPo
-         5Hn6We4gibH0lYz5QeePJLJ9Ctp+KSsC7NXeGyc+IrUuTPK3eS4dXjH6Vxkkh4t//eHB
-         ON6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVeWCpx09REw9DgLv3ZqKS2KxQ1VCKQwLCgsNSboNaKOFgwso3k32a6yHJY0Yb850/5Q2xapC911Kw=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yyr6/qHbD/m5qSFJ0CchpjnRLpRWf3LRrTRLTyyhiv8sWmawMD9
-	IziCZLOb2ulRduy3jI2uL2trrUBJz0HK+4Fekjwp4ZD01HNXPYAOin1UTq0UGzYm
-X-Gm-Gg: ASbGnct0ZNxG31kjhQgyFBiU131bGgZHnrsvusLcVpQ60tGyIw6BGX2G7Ad0qhY9kxH
-	CgmaCMvw0JZK19O35n8ioQrSgOWVwS8choQdrEr6L8oIhuJzavWGJ0EsRGghn/14gql2OeMrWRq
-	5rJTY5qfmiZyqF6MS/RVa9XWimFZCKF5jZu8BVL3HP4VSApEtrDLQRSB6gjoQofPB1K6sWZ1sVk
-	IuTw2bZGluTshIBfTvXftpDEF8CS3xax9Wx1AeZ8iTM6ZfQgkRTAm9MBCo3d9FF6w6iolZMrkC7
-	Pyuy7srhxnliq76ntXaqFRPpJw1os2CtF0DCDxtXad6fMrSHEbCWh2qu/2MAYHrO0u12l+w1eqZ
-	qR3iosv2l037m6VLHizDXLWsrtfluSsiXJ2rcK4MOttjya1Bs4XxjUhB74oqy7JwOB4Rm6Bvzen
-	3gdea0mWKTTcEF5dLqkSnZ23AX60hQknG9uyxpKHJMIWTTNJdf
-X-Google-Smtp-Source: AGHT+IHvWKF9OkNbYwW13JYmpiJAOYWo9ci/JFwzrKwMIdbY/mjv4iUkvXjCXGIk9LH5WS/MSLyZ3g==
-X-Received: by 2002:a05:6122:3bcd:b0:544:c8bf:6509 with SMTP id 71dfb90a1353d-55b8d6ec7a8mr3649726e0c.4.1763990058913;
-        Mon, 24 Nov 2025 05:14:18 -0800 (PST)
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-55b806c3b4asm5564208e0c.0.2025.11.24.05.14.18
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Nov 2025 05:14:18 -0800 (PST)
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-5dfae681ff8so3044641137.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2025 05:14:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU0O+zYzRAwm7B0nBtakzfTvW0UC23Yw4Vb6+Fv7TfAEDEC8tgFWmSaPwV2rhDncmTZQQiEV2uFL54=@lists.infradead.org
-X-Received: by 2002:a05:6102:418c:b0:5dd:b2a0:ac6a with SMTP id
- ada2fe7eead31-5e1de0099ccmr3268164137.9.1763990058356; Mon, 24 Nov 2025
- 05:14:18 -0800 (PST)
+	Mon, 24 Nov 2025 13:23:07 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 44DA122439;
+	Mon, 24 Nov 2025 13:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763990584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FPNZIZGEngYR7OWv1Yo0iyX474sGJnGUprBV/QxqdPE=;
+	b=ap9z4K9hzosFq0AwJa+fOE2AS3tDIUXpoKhxLaJuQNbFAhf1GuHf4i90s05tM1v+p1hT/1
+	TFZPBO+rkFoyIrNXpugfwsfZkcQjPFH8/59AB6a5vw9UHpWWDJjh3RqxUwRy4rcClTaSWb
+	ejjNnhti15Vz94OomuuhECLZsLp3ES0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763990584;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FPNZIZGEngYR7OWv1Yo0iyX474sGJnGUprBV/QxqdPE=;
+	b=SBeLE8V5C8vimCF6tacHZDiXrpV+wgqP3Xoj2dmoCAMSLwKqmQqfzPMiZDRYQYcLLhPfQC
+	H2zGWBLQDfPoLwCw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ap9z4K9h;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SBeLE8V5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763990584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FPNZIZGEngYR7OWv1Yo0iyX474sGJnGUprBV/QxqdPE=;
+	b=ap9z4K9hzosFq0AwJa+fOE2AS3tDIUXpoKhxLaJuQNbFAhf1GuHf4i90s05tM1v+p1hT/1
+	TFZPBO+rkFoyIrNXpugfwsfZkcQjPFH8/59AB6a5vw9UHpWWDJjh3RqxUwRy4rcClTaSWb
+	ejjNnhti15Vz94OomuuhECLZsLp3ES0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763990584;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FPNZIZGEngYR7OWv1Yo0iyX474sGJnGUprBV/QxqdPE=;
+	b=SBeLE8V5C8vimCF6tacHZDiXrpV+wgqP3Xoj2dmoCAMSLwKqmQqfzPMiZDRYQYcLLhPfQC
+	H2zGWBLQDfPoLwCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 38F783EA64;
+	Mon, 24 Nov 2025 13:23:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vuvmDThcJGkaUAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 24 Nov 2025 13:23:04 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D1748A0A04; Mon, 24 Nov 2025 14:22:59 +0100 (CET)
+Date: Mon, 24 Nov 2025 14:22:59 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
+	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, Jeff Layton <jlayton@kernel.org>, 
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, 
+	io-uring@vger.kernel.org, devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 09/14] fs: factor out a mark_inode_dirty_time helper
+Message-ID: <fbym7i2zelbatxbhy5eeffwpa3ni7bstjddbf7ran7djzthwjo@kfxj3wrxeuou>
+References: <20251114062642.1524837-1-hch@lst.de>
+ <20251114062642.1524837-10-hch@lst.de>
 MIME-Version: 1.0
-References: <20251123163551.1781-1-vulab@iscas.ac.cn>
-In-Reply-To: <20251123163551.1781-1-vulab@iscas.ac.cn>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 24 Nov 2025 14:14:05 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUP+8ZWsTP-PHBOuNSTL7jeRHsXwf5Gg21vHL1=St-cxQ@mail.gmail.com>
-X-Gm-Features: AWmQ_blEpUB3KHQH888MRi9b9TpaEf5WWmlFZbr6ESxPlHyyvt-aFINqUoOx-oo
-Message-ID: <CAMuHMdUP+8ZWsTP-PHBOuNSTL7jeRHsXwf5Gg21vHL1=St-cxQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: renesas: Handle devm_pm_runtime_enable() errors
-To: Haotian Zhang <vulab@iscas.ac.cn>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
-	linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+Content-Disposition: inline
+In-Reply-To: <20251114062642.1524837-10-hch@lst.de>
+X-Rspamd-Queue-Id: 44DA122439
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,lst.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Rspamd-Action: no action
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251124_051420_708899_AECCF92D 
-X-CRM114-Status: GOOD (  23.68  )
+X-CRM114-CacheID: sfid-20251124_052306_636236_C8BAA71D 
+X-CRM114-Status: GOOD (  26.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,51 +146,99 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Haotian,
+On Fri 14-11-25 07:26:12, Christoph Hellwig wrote:
+> Factor out the inode dirtying vs lazytime logic from generic_update_time
+> into a new helper so that it can be reused in file system methods.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/fs-writeback.c  | 15 +++++++++++++++
+>  fs/inode.c         | 14 +++-----------
+>  include/linux/fs.h |  3 ++-
+>  3 files changed, 20 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 2b35e80037fe..930697f39153 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -2671,6 +2671,21 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+>  }
+>  EXPORT_SYMBOL(__mark_inode_dirty);
+>  
+> +void mark_inode_dirty_time(struct inode *inode, unsigned int flags)
 
-On Sun, 23 Nov 2025 at 17:36, Haotian Zhang <vulab@iscas.ac.cn> wrote:
-> devm_pm_runtime_enable() can fail due to memory allocation failures.
-> The current code ignores its return value and proceeds with
-> pm_runtime_resume_and_get(), which may operate on incorrectly
-> initialized runtime PM state.
->
-> Check the return value of devm_pm_runtime_enable() and return the
-> error code if it fails.
->
-> Fixes: 6a2277a0ebe7 ("mtd: rawnand: renesas: Use runtime PM instead of the raw clock API")
-> Signed-off-by: Haotian Zhang <vulab@iscas.ac.cn>
+What I find a bit concerning here is that mark_inode_dirty_time() takes a
+different kind of flags than __mark_inode_dirty() so it's relatively easy
+to confuse. Proper typing of 'flags' would be nice here but it's a bit
+cumbersome to do in C so I'm not sure if it's worth it for this relatively
+limited use. So I guess feel free to add:
 
-Thanks for your patch!
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-> --- a/drivers/mtd/nand/raw/renesas-nand-controller.c
-> +++ b/drivers/mtd/nand/raw/renesas-nand-controller.c
-> @@ -1336,7 +1336,9 @@ static int rnandc_probe(struct platform_device *pdev)
->         if (IS_ERR(rnandc->regs))
->                 return PTR_ERR(rnandc->regs);
->
-> -       devm_pm_runtime_enable(&pdev->dev);
-> +       ret = devm_pm_runtime_enable(&pdev->dev);
-> +       if (ret)
-> +               return ret;
+								Honza
 
-Perhaps insert a blank line here?
-
->         ret = pm_runtime_resume_and_get(&pdev->dev);
->         if (ret < 0)
->                 return ret;
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+> +{
+> +	if (inode->i_sb->s_flags & SB_LAZYTIME) {
+> +		int dirty_flags = 0;
+> +
+> +		if (flags & (S_ATIME | S_MTIME | S_CTIME))
+> +			dirty_flags = I_DIRTY_TIME;
+> +		if (flags & S_VERSION)
+> +			dirty_flags |= I_DIRTY_SYNC;
+> +		__mark_inode_dirty(inode, dirty_flags);
+> +	} else {
+> +		mark_inode_dirty_sync(inode);
+> +	}
+> +}
+> +
+>  /*
+>   * The @s_sync_lock is used to serialise concurrent sync operations
+>   * to avoid lock contention problems with concurrent wait_sb_inodes() calls.
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 57c458ee548d..559ce5c07188 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2095,17 +2095,9 @@ EXPORT_SYMBOL(inode_update_timestamps);
+>   */
+>  int generic_update_time(struct inode *inode, int flags)
+>  {
+> -	int updated = inode_update_timestamps(inode, flags);
+> -	int dirty_flags = 0;
+> -
+> -	if (!updated)
+> -		return 0;
+> -
+> -	if (updated & (S_ATIME|S_MTIME|S_CTIME))
+> -		dirty_flags = inode->i_sb->s_flags & SB_LAZYTIME ? I_DIRTY_TIME : I_DIRTY_SYNC;
+> -	if (updated & S_VERSION)
+> -		dirty_flags |= I_DIRTY_SYNC;
+> -	__mark_inode_dirty(inode, dirty_flags);
+> +	flags = inode_update_timestamps(inode, flags);
+> +	if (flags)
+> +		mark_inode_dirty_time(inode, flags);
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(generic_update_time);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c1077ae7c6b2..5c762d80b8a8 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2608,7 +2608,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+>  	};
+>  }
+>  
+> -extern void __mark_inode_dirty(struct inode *, int);
+> +void mark_inode_dirty_time(struct inode *inode, unsigned int flags);
+> +void __mark_inode_dirty(struct inode *inode, int flags);
+>  static inline void mark_inode_dirty(struct inode *inode)
+>  {
+>  	__mark_inode_dirty(inode, I_DIRTY);
+> -- 
+> 2.47.3
+> 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
