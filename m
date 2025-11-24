@@ -4,60 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3176CFA466
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Nov 2025 08:50:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E072BCFA466
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Nov 2025 09:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sv51dZu9dPkFU2s7FVDTno7ryJVlqM5wDdGYp2JbK1g=; b=xr4h4NTa5er656i8KsEbMWGprs
-	4RWROkFJy2aqdk/8iB67BqqNonD8HTIj/tZ2GXvR9cbshfoUb9fE2QoXaxxHevwgvzN81aUTOhZgI
-	AKl/WpCfG1WplVEaIvDfCON3asFqKK+Ze3+uVNpC3dnYVQjufoLPxxjU64pS1wwmrUjECXOgPAryR
-	7nTKJz0hvdS4eKnvWtikxJsjGhPLD5fguicMNdlTX6XrXQj5JR3rtXAycEcl7Bx2ROA7ubIK1UAxv
-	Y5gL73qjjpRU8CF4LcO+SZOAYSAFoyw3EWHebWz9AeY9FLtZE2f0IIL3xgqNV3wykJuuYatBP6m3N
-	SsOPacfg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=d2gT2qUm94bHLDmfoDT/yJL2gRJjXmvx5YyzcAlmj8I=; b=tUodG1VH8RlAoP
+	rt9J+E92JZ2u48AKfbtwP+lsZ3fzwUH4gF1A3k0Glk1SZaKdN35M+5NVG59NsR08YoMedL+agfkNs
+	OvzD38hGPnCwq9tfzwcuRqrvYQJNC/F5rPZHsq2bHrd5RzVo7wxncMzIdiImL1SODvsXRgIpaXfvy
+	/GC08Nz2cpYrCVIwIV+wvHwnsTGOxmgQ49Zzk+vzE/FDoWV8Z+ZTS/HQhmHcHmb4EoSrk0A40j4HC
+	CtsQe5EmaQwocG0mqGOpnikP1ucvdLuYMVCX5+8ZY9q5UuCIbur9q9/CEDbCRNMve+HIlFNNphj1r
+	rUHwMSTGYY7/7dqkW/KA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNSHO-0000000BIfq-25eq;
-	Mon, 24 Nov 2025 08:50:38 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vNSfb-0000000BK8q-0r6Q;
+	Mon, 24 Nov 2025 09:15:39 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNSHN-0000000BIfk-34UE
+	id 1vNSfY-0000000BK82-1tky
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Nov 2025 08:50:37 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D1E92601A5;
-	Mon, 24 Nov 2025 08:50:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F03C4CEF1;
-	Mon, 24 Nov 2025 08:50:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763974236;
-	bh=nZ5XJHT6b6jo0JMJAgi257X1GZmJ6tQvUT4N0yyiC+U=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To:From;
-	b=MKa5CCwKcUOYlf1AXmhUo6IAFW8+DslNPhxHjgQigf7qstRZQUel9phhR5xYzTrnc
-	 U4pkH552xZRNV5bSp8rx1ajHFy9xe13jzE3ymR57M9n7gSiEG9lLV9VzUcyViJU1K5
-	 mRZjeDsTqP+XNzeeAZwFcrgB7OX0e3H0OBGXVXChotDd711AkZSuBJ5jqK4iH7HfRG
-	 ZWep8RSaF13+WLZWq+rYj76HkeLEb/J0n4qyKO9zKc4RqkJC19y8ckfo/Y0EyIwodM
-	 XmKdSDUsNyWDdcIAhChHWWoE87D+ECzg77SQqkWFW0vRkKDM2wl940pjtICBa3Hjmb
-	 3fIGhIFbNMUNw==
-Mime-Version: 1.0
-Date: Mon, 24 Nov 2025 09:50:27 +0100
-Message-Id: <DEGSOCUMG4WZ.3IYU22B83Z2AI@kernel.org>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+	Mon, 24 Nov 2025 09:15:38 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id E71D5C13998;
+	Mon, 24 Nov 2025 09:15:10 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 640AF606FC;
+	Mon, 24 Nov 2025 09:15:33 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9D5AF103713AF;
+	Mon, 24 Nov 2025 10:15:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1763975732; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=03OD2P7ERGBbMgJiyugvPdSPJyomRkhnTmtbVz/dSh0=;
+	b=HpnpNCbVCEwC6zcDqvyAMfa0wevqDDYwnID803/o1/ZYO2X9sgXnfGlg6YxuRZsReGrPSr
+	ZkocVNZdOQkdG8Mws2I91qKyek+7zXoH5FkA4vpRu2FQqhfGVx55zwfRONcOtR3AR8mOCE
+	OxGWOkZjQsD5bxDK9YlRFepLYJ4b8U7HfrYkymd6yIZddecTunyOKrHvBp440Yh7cdOxnl
+	KCana2Ac57SJNXctzJ4Zj3KhKQN2nHjJJe3R6qmtM3QCzrK7VAtuD++30a3+BH5SBqAlCT
+	VZJPBbV7joyaK2E2DGd++X5wKQuSXiEa16WTsMj7+plr0s2xC8KR7NnqH9uIvw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Michael Walle" <mwalle@kernel.org>
+Cc: "Marc Olberding" <molberding@nvidia.com>,  "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>,  "Pratyush Yadav" <pratyush@kernel.org>,
+  "Richard Weinberger" <richard@nod.at>,  "Vignesh Raghavendra"
+ <vigneshr@ti.com>,  <linux-mtd@lists.infradead.org>,
+  <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] mtd: spi-nor: Fix w25q01jv flags
-Cc: "Marc Olberding" <molberding@nvidia.com>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-X-Mailer: aerc 0.20.0
+In-Reply-To: <DEGSOCUMG4WZ.3IYU22B83Z2AI@kernel.org> (Michael Walle's message
+	of "Mon, 24 Nov 2025 09:50:27 +0100")
 References: <20251121-w25q01jv_fixup-v1-1-3d175050db73@nvidia.com>
- <87jyzfzwpw.fsf@bootlin.com> <DEGRVEN1ZNUY.OCJLFWDG8XD4@kernel.org>
- <87bjkrzvk7.fsf@bootlin.com>
-In-Reply-To: <87bjkrzvk7.fsf@bootlin.com>
+	<87jyzfzwpw.fsf@bootlin.com> <DEGRVEN1ZNUY.OCJLFWDG8XD4@kernel.org>
+	<87bjkrzvk7.fsf@bootlin.com> <DEGSOCUMG4WZ.3IYU22B83Z2AI@kernel.org>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Mon, 24 Nov 2025 10:15:28 +0100
+Message-ID: <87wm3fyeof.fsf@bootlin.com>
+MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251124_011536_642531_4C881BCA 
+X-CRM114-Status: GOOD (  22.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,110 +76,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2697870718789083739=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============2697870718789083739==
-Content-Type: multipart/signed;
- boundary=936d147121f3cbc70ca7a52323f099e93918d9f04cfc98dca8630d4a857f;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-
---936d147121f3cbc70ca7a52323f099e93918d9f04cfc98dca8630d4a857f
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-On Mon Nov 24, 2025 at 9:25 AM CET, Miquel Raynal wrote:
-> Hi,
->
-> On 24/11/2025 at 09:12:38 +01, "Michael Walle" <mwalle@kernel.org> wrote:
->
->> Hi,
->>
->>>> +		.no_sfdp_flags =3D SECT_4K,
->>>
->>> This one is the right fix and should stand alone in its own patch (firs=
-t
->>> in the series if you add support for the block protection).
->>
->> Only if that flash really doesn't have SFDP. But since the entry
->> didn't have a size property the flash *must* have SFDP in the first
->> place.  Otherwise it won't even be probed. Please provide a dump of
->> the SFDP tables, see [1].
->
-> SFDP data is in lore
-
-At least yours :) And if I decode that correctly by hand, it has the
-4k erase size bit set as well as the correct opcode 20h or 21h for
-4byte addressing.
-
-> , but not the params which are missing (?) Marc, can
-> you compare with your data?
-> https://lore.kernel.org/all/20250110-winbond-6-12-rc1-nor-volatile-bit-v3=
--1-735363f8cc7d@bootlin.com/
->
->> Also please provide the contents of
->> /sys/kernel/debug/spi-nor/spiN.N/params.
->>
->> -michael
->
-> My understanding (which may clearly be erroneous) is that most of these
-> flashes support 4K blocks but somehow don't advertise it in their SFDP
-> data, so every time we describe a chip we must remember to tick that
-> flag.
-
-Which flag? SECT_4K? I don't think that will be used at all, does
-it? It's only used in spi_nor_no_sfdp_init_params() which in turn is
-only called in spi_nor_init_params_deprecated() (or if SKIP_SFDP is
-set).=20
-
-> I guess all^Wmost chips have 4k blocks compatibility support, but in
-> general we prefer to use bigger blocks (the ones advertised in the SFDP
-> data). Michael, am I being mislead by the decades of history that went
-> through the spi-nor core? :)
-
-You mean CONFIG_MTD_SPI_NOR_USE_4K_SECTORS? But that has nothing to
-to with the flashdb/sfdp parsing.
-
--michael
-
->
->> [1] https://docs.kernel.org/driver-api/mtd/spi-nor.html#minimum-testing-=
-requirements
->>
->>>
->>>>  		.fixups =3D &winbond_nor_multi_die_fixups,
->>>>  	}, {
->>>>  		.id =3D SNOR_ID(0xef, 0x50, 0x12),
->>>
->>> Thanks,
->>> Miqu=C3=A8l
-
-
---936d147121f3cbc70ca7a52323f099e93918d9f04cfc98dca8630d4a857f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaSQcUxIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/iT8QF+LY0WWwF1vuL3tDvq9wEHkNHwFMeuYn89
-irBj2dPTSbq/h1QLcTLWRx46g8jFB/jSAXoCN/ljYV8oI98R8bamIhSvjOUlSIsL
-QaZLtiQgcr7CsE9hZc00JkdDGxfWoc+beWc=
-=PtPP
------END PGP SIGNATURE-----
-
---936d147121f3cbc70ca7a52323f099e93918d9f04cfc98dca8630d4a857f--
-
-
---===============2697870718789083739==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2697870718789083739==--
-
+T24gMjQvMTEvMjAyNSBhdCAwOTo1MDoyNyArMDEsICJNaWNoYWVsIFdhbGxlIiA8bXdhbGxlQGtl
+cm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBNb24gTm92IDI0LCAyMDI1IGF0IDk6MjUgQU0gQ0VULCBN
+aXF1ZWwgUmF5bmFsIHdyb3RlOgo+PiBIaSwKPj4KPj4gT24gMjQvMTEvMjAyNSBhdCAwOToxMjoz
+OCArMDEsICJNaWNoYWVsIFdhbGxlIiA8bXdhbGxlQGtlcm5lbC5vcmc+IHdyb3RlOgo+Pgo+Pj4g
+SGksCj4+Pgo+Pj4+PiArCQkubm9fc2ZkcF9mbGFncyA9IFNFQ1RfNEssCj4+Pj4KPj4+PiBUaGlz
+IG9uZSBpcyB0aGUgcmlnaHQgZml4IGFuZCBzaG91bGQgc3RhbmQgYWxvbmUgaW4gaXRzIG93biBw
+YXRjaCAoZmlyc3QKPj4+PiBpbiB0aGUgc2VyaWVzIGlmIHlvdSBhZGQgc3VwcG9ydCBmb3IgdGhl
+IGJsb2NrIHByb3RlY3Rpb24pLgo+Pj4KPj4+IE9ubHkgaWYgdGhhdCBmbGFzaCByZWFsbHkgZG9l
+c24ndCBoYXZlIFNGRFAuIEJ1dCBzaW5jZSB0aGUgZW50cnkKPj4+IGRpZG4ndCBoYXZlIGEgc2l6
+ZSBwcm9wZXJ0eSB0aGUgZmxhc2ggKm11c3QqIGhhdmUgU0ZEUCBpbiB0aGUgZmlyc3QKPj4+IHBs
+YWNlLiAgT3RoZXJ3aXNlIGl0IHdvbid0IGV2ZW4gYmUgcHJvYmVkLiBQbGVhc2UgcHJvdmlkZSBh
+IGR1bXAgb2YKPj4+IHRoZSBTRkRQIHRhYmxlcywgc2VlIFsxXS4KPj4KPj4gU0ZEUCBkYXRhIGlz
+IGluIGxvcmUKPgo+IEF0IGxlYXN0IHlvdXJzIDopIEFuZCBpZiBJIGRlY29kZSB0aGF0IGNvcnJl
+Y3RseSBieSBoYW5kLCBpdCBoYXMgdGhlCj4gNGsgZXJhc2Ugc2l6ZSBiaXQgc2V0IGFzIHdlbGwg
+YXMgdGhlIGNvcnJlY3Qgb3Bjb2RlIDIwaCBvciAyMWggZm9yCj4gNGJ5dGUgYWRkcmVzc2luZy4K
+Pgo+PiAsIGJ1dCBub3QgdGhlIHBhcmFtcyB3aGljaCBhcmUgbWlzc2luZyAoPykgTWFyYywgY2Fu
+Cj4+IHlvdSBjb21wYXJlIHdpdGggeW91ciBkYXRhPwo+PiBodHRwczovL2xvcmUua2VybmVsLm9y
+Zy9hbGwvMjAyNTAxMTAtd2luYm9uZC02LTEyLXJjMS1ub3Itdm9sYXRpbGUtYml0LXYzLTEtNzM1
+MzYzZjhjYzdkQGJvb3RsaW4uY29tLwo+Pgo+Pj4gQWxzbyBwbGVhc2UgcHJvdmlkZSB0aGUgY29u
+dGVudHMgb2YKPj4+IC9zeXMva2VybmVsL2RlYnVnL3NwaS1ub3Ivc3BpTi5OL3BhcmFtcy4KPj4+
+Cj4+PiAtbWljaGFlbAo+Pgo+PiBNeSB1bmRlcnN0YW5kaW5nICh3aGljaCBtYXkgY2xlYXJseSBi
+ZSBlcnJvbmVvdXMpIGlzIHRoYXQgbW9zdCBvZiB0aGVzZQo+PiBmbGFzaGVzIHN1cHBvcnQgNEsg
+YmxvY2tzIGJ1dCBzb21laG93IGRvbid0IGFkdmVydGlzZSBpdCBpbiB0aGVpciBTRkRQCj4+IGRh
+dGEsIHNvIGV2ZXJ5IHRpbWUgd2UgZGVzY3JpYmUgYSBjaGlwIHdlIG11c3QgcmVtZW1iZXIgdG8g
+dGljayB0aGF0Cj4+IGZsYWcuCj4KPiBXaGljaCBmbGFnPyBTRUNUXzRLPyBJIGRvbid0IHRoaW5r
+IHRoYXQgd2lsbCBiZSB1c2VkIGF0IGFsbCwgZG9lcwo+IGl0PyBJdCdzIG9ubHkgdXNlZCBpbiBz
+cGlfbm9yX25vX3NmZHBfaW5pdF9wYXJhbXMoKSB3aGljaCBpbiB0dXJuIGlzCj4gb25seSBjYWxs
+ZWQgaW4gc3BpX25vcl9pbml0X3BhcmFtc19kZXByZWNhdGVkKCkgKG9yIGlmIFNLSVBfU0ZEUCBp
+cwo+IHNldCkuIAo+Cj4+IEkgZ3Vlc3MgYWxsXldtb3N0IGNoaXBzIGhhdmUgNGsgYmxvY2tzIGNv
+bXBhdGliaWxpdHkgc3VwcG9ydCwgYnV0IGluCj4+IGdlbmVyYWwgd2UgcHJlZmVyIHRvIHVzZSBi
+aWdnZXIgYmxvY2tzICh0aGUgb25lcyBhZHZlcnRpc2VkIGluIHRoZSBTRkRQCj4+IGRhdGEpLiBN
+aWNoYWVsLCBhbSBJIGJlaW5nIG1pc2xlYWQgYnkgdGhlIGRlY2FkZXMgb2YgaGlzdG9yeSB0aGF0
+IHdlbnQKPj4gdGhyb3VnaCB0aGUgc3BpLW5vciBjb3JlPyA6KQo+Cj4gWW91IG1lYW4gQ09ORklH
+X01URF9TUElfTk9SX1VTRV80S19TRUNUT1JTPyBCdXQgdGhhdCBoYXMgbm90aGluZyB0bwo+IHRv
+IHdpdGggdGhlIGZsYXNoZGIvc2ZkcCBwYXJzaW5nLgoKV2VsbCBJIGV4cGVjdCBDT05GSUdfTVRE
+X1NQSV9OT1JfVVNFXzRLX1NFQ1RPUlMgdG8gaGF2ZSBubyBlZmZlY3QKaWYgdGhlIFNFQ1RfNEsg
+ZmxhZyBpcyB1bnNldC4gSSBiZWxpZXZlIE1hcmMgaXMgdXNpbmcgdGhlIHNhbWUgY2hpcCBhcyBJ
+CmFtLCBidXQgZW5hYmxlZCB0aGlzIG9wdGlvbiBmb3IgY29tcGF0aWJpbGl0eSByZWFzb25zPwoK
+QnV0IGFzIHlvdSBzYXksIHRoaXMgNEsgY2FwYWJpbGl0eSBpcyBhZHZlcnRpc2VkIGJ5ICJteSIg
+Y2hpcCwgc28gaWYKTWFyYyBmYWNlcyBhbiBpc3N1ZSB3aXRoIGl0LCBpdCBtYXkgaW5kaWNhdGUg
+dGhhdCB3ZSBhcmUgaGF2aW5nIGFuIElECmNvbGxpc2lvbj8KClRoYW5rcywKTWlxdcOobAoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
