@@ -4,52 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C05D2CFD379
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Nov 2025 08:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00736CFD315
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Nov 2025 09:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wpDAJ6AMdynJQz0BQx/c6NBmNYbWqBbd1mU1AV4jx6c=; b=xZiJv9t78cyseA
-	0AuK3R0LNCuA4ko+qUoZm9ot0/1M6gB00tyzNXMAVhEk9MaxdEg5daHzN80gkTTMNdSioG86jsB6Y
-	l9vjRfNlL5lXVN2Ry03/M0hmjZUuQ9wmUxeTeQyXzUWuKH81JD44UhmT5NmkCHLZauMjOVziH/0PP
-	yhT7XPsX+m8NKUbV2hXeGB/xgLsok24yRVy+8brInGBhHa+OGqNRrVFOZGlsXDARMsWwDetDGmYKc
-	0vbhFB29CK4oe6Juz6dB+2dNuWjSKCEH9CHxZlIPws6oLf0TM+Etp4GMq+3PnST/sPo3AL6wlsHtq
-	PHEdk61cjnCxi5GYGu4g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=I81YtHJGdgTekpAK86OGYYLngfZfwu3vGMxGKla9bx4=; b=BK/xWlC210cJbe
+	tF1fTfNPssaXg5wRWpzANewqn0m9KYQ1wIL+xFyaKUnwzatEt9dymkClfwxB/ms90XbVwZR4LtZM0
+	Vpkjt+Llm0q+8QXOAFqwEIg5C3gferDHmSFKgHUPL++/G8A3jJxgPCmU0jHykrcBraUy8QmrphlnX
+	bkeIPYs6Xee7+8v6xRqY7zkn3fKuCvYSxqonOVmLIQxDEOOTRJ3sh+A2yJxDkmruY07piZlIdnL9s
+	H4HfwqbAAqLtnuPIG6Hw5gPARd37Dj90cH2pndoD5GbwYzpCcC5DeSj/rUQp79qtlICAClybUeVuF
+	n3bmpgkTnSaVuEIrQkRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNolT-0000000Cza9-44vO;
-	Tue, 25 Nov 2025 08:51:11 +0000
-Received: from mail.optivobiz.pl ([51.195.45.234])
+	id 1vNpC5-0000000D19Z-0ej8;
+	Tue, 25 Nov 2025 09:18:41 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vNolR-0000000CzZ5-2sOA
+	id 1vNpC3-0000000D19M-2NIL
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Nov 2025 08:51:11 +0000
-Received: by mail.optivobiz.pl (Postfix, from userid 1002)
-	id BEB4FA6C7D; Tue, 25 Nov 2025 09:50:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=optivobiz.pl; s=mail;
-	t=1764060663; bh=B+kicJ2U0DZeZyJfBITI5a/fHSQxPQMoq3se7lAh4rU=;
-	h=Date:From:To:Subject:From;
-	b=Ul2OZ1ufAQiKXS33v0jA9MpLdW0AZoEcG8zjXLz2CtT4gMY5SM64TFI1zu4fYgjau
-	 MAaH0woSsxY86BgN29txX/E+UVr5s/TWlkBMAtEGsMUeZ22wmFxufizANAMcZtapAe
-	 ZBsakuGLbYYxCRK7NsCZd0PexKNMoB4Mcr6SonvXCmPKzVXDaH3RCm7njHmEa4LDQo
-	 BQ2M/ERWsQadIaBYt9ZiHBlYr9BA3pvA2YLUAc1+lMBOZTMnvxmMZCK+2bDdgp6Oa7
-	 vtVysEYvM/9NqmRdTzyuJ+CYI8dW40kvXb2/mYwFPQgm1eLc+vncXqZtztq6ZLNOz4
-	 NBaw4ZAV+msrQ==
-Received: by mail.optivobiz.pl for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2025 08:50:56 GMT
-Message-ID: <20251125084500-0.1.sa.37e81.0.i6a16m9cel@optivobiz.pl>
-Date: Tue, 25 Nov 2025 08:50:56 GMT
-From: =?UTF-8?Q?"Karol_Zdu=C5=84ski"?= <karol.zdunski@optivobiz.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: Nowe lokalizacje magazynowe
-X-Mailer: mail.optivobiz.pl
+	Tue, 25 Nov 2025 09:18:39 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id ADB946019D;
+	Tue, 25 Nov 2025 09:18:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62470C4CEF1;
+	Tue, 25 Nov 2025 09:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764062318;
+	bh=U9iYrYsglLkG8TnBDbI9yrwUWiI8plUWD8Oh3w7r1lw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sctjiYa/DATKoaFc3hWyAe155qdsmeZ0LOX1jyiLgNBS5DiZw+4snbDy8w3moMIlw
+	 qD25hlXOxRpAQw7ks/SOJcVlNOSn2alp+vSe+skncJ9fnv47blkRv/OO1HEnfaLieL
+	 Pdfx8nRHNYcPX7bTnyTH+HvgbdCM1/yJVva5Dr3pvCvteXBjjd4kwFh15WUdPqWtXT
+	 KDE5JgmgqxTmE7mMVxru75iVNEw+PlMkuj4dLF4KAWCHoOTXoPZcis8CK0XFDtFgFD
+	 fKp2aeOAxiijY6s+DoOEPPdvCjJNOF89n2osZI1BVl6VydJ00KKVQTPicDc0+hBj82
+	 /u0YfbHQEuJ6g==
+Date: Tue, 25 Nov 2025 10:18:32 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, 
+	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>, 
+	Martin Brandenburg <martin@omnibond.com>, Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, 
+	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev, io-uring@vger.kernel.org, 
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: re-enable IOCB_NOWAIT writes to files v2
+Message-ID: <20251125-loten-fabuliert-c0fb6b195b53@brauner>
+References: <20251120064859.2911749-1-hch@lst.de>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251125_005110_005890_2864CFC4 
-X-CRM114-Status: UNSURE (   2.04  )
-X-CRM114-Notice: Please train this message.
+Content-Disposition: inline
+In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,21 +69,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKa29uaWVjIHJva3UgdG8gb2Rwb3dpZWRuaSBtb21lbnQgbmEgem5hbGV6
-aWVuaWUgbW/FvGxpd2/Fm2NpIG9ibmnFvGVuaWEga29zenTDs3cgbmFqbXUgbWFnYXp5bsOzdyBi
-ZXogcHJ6ZXJ5d2FuaWEgYmllxbzEhWN5Y2ggb3BlcmFjamkuIAoKVyB3aWVsdSBwcnp5cGFka2Fj
-aCB1ZGFqZSBzacSZIG5hbSB0byBwcnpleiByZW5lZ29jamFjasSZIHVtw7N3IGx1YiBsZXBzemVt
-dSBkb3Bhc293YW5pdSBsb2thbGl6YWNqaSAod29qLiBtYXpvd2llY2tpZSBpIHdpZWxrb3BvbHNr
-aWUpLiAKCkplxZtsaSBQYcWEc3R3YSBmaXJtYSBwbGFudWplIHBvZG9ibmUgZHppYcWCYW5pYSwg
-Y2jEmXRuaWUgcHJ6ZWRzdGF3acSZIGtvbmtyZXRuZSBtb8W8bGl3b8WbY2ksIGt0w7NyZSBtb2fF
-gnlieSBwcnplxYJvxbx5xIcgc2nEmSBuYSBvc3pjesSZZG5vxZtjaSBpIGxlcHN6ZSBkb3Bhc293
-YW5pZSBwb3dpZXJ6Y2huaS4gCgpDenkgY2hjaWVsaWJ5IFBhxYRzdHdvIHBvem5hxIcgc3pjemVn
-w7PFgnkgb2ZlcnR5IGkgdW3Ds3dpxIcgc2nEmSBuYSBwcmV6ZW50YWNqxJkgbWFnYXp5bnU/CgoK
-UG96ZHJhd2lhbQpLYXJvbCBaZHXFhHNraQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu, Nov 20, 2025 at 07:47:21AM +0100, Christoph Hellwig wrote:
+> Hi all,
+> 
+> commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+> effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+> always require blocking, and the modern timestamp resolution means we
+> always update timestamps.  This leads to a lot of context switches from
+> applications using io_uring to submit file writes, making it often worse
+> than using the legacy aio code that is not using IOCB_NOWAIT.
+> 
+> This series allows non-blocking updates for lazytime if the file system
+> supports it, and adds that support for XFS.
+> 
+> It also fixes the layering bypass in btrfs when updating timestamps on
+> device files for devices removed from btrfs usage, and FMODE_NOCMTIME
+> handling in the VFS now that nfsd started using it.  Note that I'm still
+> not sure that nfsd usage is fully correct for all file systems, as only
+> XFS explicitly supports FMODE_NOCMTIME, but at least the generic code
+> does the right thing now.
+
+It's a bit too close to the merge window for my taste and we have about
+17 pull request topics for this cycle already.
+
+So I'll take this for vfs-6.20.iomap. As usual I'll create that branch
+now so that the patches don't get lost and will rebase once v6.19-rc1 is
+out.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
