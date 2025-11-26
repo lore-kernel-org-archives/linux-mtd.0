@@ -4,52 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 964ACD10390
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Nov 2025 09:01:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85474D10F51
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Nov 2025 13:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2wEJJVjRyUHOqVc1FvVUz3gfk4jb89TPla5NCnWIayg=; b=bHWhvNIZHvrDod
-	/unTzt7e/fkEMl5zCpOzeqjSirsGWsk210BOd4+K3tDMpihES3rjh+K2H6ydLIGMGi2CS64uXF9xV
-	9/701LVGSPwK6sBFYDcUnBsgv9uX8aLy9l8q3hOCd2PArAFjZf2JUC/S/ZDP3OSNAtJnAwuKUKvaz
-	OblvXRx5wxOhyRJbJyXujt+iAUhx93oVcV2synkQ6tUGNmuNxGzpVPVR4VHID/GeVUBe5soQWi0VX
-	9c2M9qVI3USHOsDC/Cap5sRpGT0RQZsBTQ29jkDy1a3HnurqNolKDOz7ABDbkkYNsIGa32m2STucL
-	TqSN4aURXEGpXJVsVMzA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=J/cZR+fJXQQiIeiulZy5WbpfIo9gHwQWOgm+A7CJVXo=; b=oGkF0lhgDh0LDS
+	1T7/Y2R1NidW5S+P4/yMBoCpstmZr+eIDepUvWfTfPgWWuo1bWQMUMyBqH9FunuepbvT0RkhxJjiJ
+	/1RDzLAnF7UNcABtVRS+Y3uRFHTHf/cGP31t26l1qZ3Jxa2zxLZb38ajV6J6qFoHgDPnSGdleSnad
+	e2UFicfvRTC5YDfT2loTF1Y+gnnnfUYZTgf12tgVn2gsSNb05fTgAfr5k0TClycEdKbPkYnZ7C2uq
+	ESFd8yd8qwzMBCezQO+ors81wgeaEOsDIx7hgJTWvKi7qqdA3EKx4KpL0rf2odpiWp8TrhP+6qL2V
+	npTGf+WfIpmjVvi853Vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOBPI-0000000EfSP-3283;
-	Wed, 26 Nov 2025 09:01:48 +0000
-Received: from mail.vexro.pl ([141.94.250.70])
+	id 1vOFva-0000000F3sU-2oxO;
+	Wed, 26 Nov 2025 13:51:26 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOBPF-0000000EfRU-476w
+	id 1vOFvX-0000000F3sM-3q6L
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Nov 2025 09:01:47 +0000
-Received: by mail.vexro.pl (Postfix, from userid 1002)
-	id 5F72BA8547; Wed, 26 Nov 2025 10:01:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=vexro.pl; s=mail;
-	t=1764147704; bh=Q6Mp/vCJCiZNgk6fb7utkqIErbcoVoR/CugPofoeCtU=;
-	h=Date:From:To:Subject:From;
-	b=tyQfKUK+NoqaqnCIYzowqbWGWvtQfUrI0BGc/HmM8ZIM62n/RXownVUdIcaayCn1d
-	 vwz1QHZOWLaT6vRGZti8Y8kLSE1DnfDKigymmrIOTdrZO+V5G0x/mWtPqewJly7Og7
-	 U51Z39lCdcyDVOTVwA3PIurNbinZfmPfYUqq1Gvqs7Wib0P2SrMHw9KOphZR9TFEGA
-	 wNLW90XhNQnb6ZQRw+SEsG7uTooLDJ2d55kQrsPpZ80NZJmQeZXDsUo8PTIjY3z9l4
-	 ciXCbbg8fTvID3lt5pgezyRJUm2/2pfOO48qsRNPQq6gk5/C6uPe3C8Ab+F6DSh5zH
-	 wMP/lPyfwlpKg==
-Received: by mail.vexro.pl for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2025 09:00:51 GMT
-Message-ID: <20251126084500-0.1.ot.4m8la.0.n0apbfh8lx@vexro.pl>
-Date: Wed, 26 Nov 2025 09:00:51 GMT
-From: "Adam Drzewiecki" <adam.drzewiecki@vexro.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Pytanie_o_samoch=C3=B3d_?=
-X-Mailer: mail.vexro.pl
+	Wed, 26 Nov 2025 13:51:24 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id A5A1C601B5;
+	Wed, 26 Nov 2025 13:51:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ADBEC4CEF8;
+	Wed, 26 Nov 2025 13:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764165082;
+	bh=yUKYtxHtKaR+6m/xsrQsQe67bKqXRGc4JbcKnKX+a20=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=J8iRE1/WnH5hQhQsb+gz1I+WE9aSLdfLQQiRWd7g4hWBfFLiJ7GeKN9MfcROfuy14
+	 Bg5ifG0mRnEDa0wLCNWcaWSef/QLNZ9iuJt146gvNW8/fk6cYnq1PxKc4hQKhLNIBA
+	 sNEXQMAYyhZpIavSfz+KkkZ7tBQo4jX83xz4wgdkgk+sAnQZiGPm4kG9cVpDUNx50f
+	 GszRnMspkE9d7aOOvEx8eAK322hwR8CBYnIQYVbVZy8dg9+z7898oFiThB1IRsH5Xr
+	 Ex3oGaOerSkIflHQPu0XSvcuPfWP3Yma6L1dTMlIVWE32f0gwXl7q8tXr7D18MuVes
+	 /vgMU+UkTu2HA==
+From: Christian Brauner <brauner@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
+Subject: Re: (subset) re-enable IOCB_NOWAIT writes to files v2
+Date: Wed, 26 Nov 2025 14:51:10 +0100
+Message-ID: <20251126-freigaben-fixkosten-7f8ba6710fce@brauner>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
+References: <20251120064859.2911749-1-hch@lst.de>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251126_010146_156987_FB34BE23 
-X-CRM114-Status: UNSURE (   2.61  )
-X-CRM114-Notice: Please train this message.
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1827; i=brauner@kernel.org; h=from:subject:message-id; bh=yUKYtxHtKaR+6m/xsrQsQe67bKqXRGc4JbcKnKX+a20=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSqs17kYtX3/zt7guqDZZHcotIzSu/JuZ8vW1f2x9Tzn jjvrEs8HaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABP5NJ/hfwz3tQVV/86ebZ6Q ZOX2S/x94+vvFxzsdzFb2M/tOJ9ddJzhf+6cWXKXJ/IYCjVvXXqrOyfkypPfnuY+G+fPOLtET2K HGS8A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,14 +83,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKQ3p5IGludGVyZXN1amUgUGHFhHN0d2Egcm96d2nEhXphbmllIHVtb8W8
-bGl3aWFqxIVjZSBtb25pdG9yb3dhbmllIHNhbW9jaG9kw7N3IGZpcm1vd3ljaCBvcmF6IG9wdHlt
-YWxpemFjasSZIGtvc3p0w7N3IGljaCB1dHJ6eW1hbmlhPyAKCgpQb3pkcmF3aWFtCkFkYW0gRHJ6
-ZXdpZWNraQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu, 20 Nov 2025 07:47:21 +0100, Christoph Hellwig wrote:
+> commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+> effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+> always require blocking, and the modern timestamp resolution means we
+> always update timestamps.  This leads to a lot of context switches from
+> applications using io_uring to submit file writes, making it often worse
+> than using the legacy aio code that is not using IOCB_NOWAIT.
+> 
+> [...]
+
+Applied to the vfs-6.19.misc branch of the vfs/vfs.git tree.
+Patches in the vfs-6.19.misc branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-6.19.misc
+
+[01/16] fs: refactor file timestamp update logic
+        https://git.kernel.org/vfs/vfs/c/3cd9a42f1b5e
+[02/16] fs: lift the FMODE_NOCMTIME check into file_update_time_flags
+        https://git.kernel.org/vfs/vfs/c/7f30e7a42371
+[03/16] fs: export vfs_utimes
+        https://git.kernel.org/vfs/vfs/c/013983665227
+[04/16] btrfs: use vfs_utimes to update file timestamps
+        https://git.kernel.org/vfs/vfs/c/ded99587047c
+[05/16] btrfs: fix the comment on btrfs_update_time
+        https://git.kernel.org/vfs/vfs/c/f981264ae75e
+[06/16] orangefs: use inode_update_timestamps directly
+        https://git.kernel.org/vfs/vfs/c/eff094a58d00
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
