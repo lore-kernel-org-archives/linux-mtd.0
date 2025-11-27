@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5166CFD2F6
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Nov 2025 19:59:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66B29D111A8
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Nov 2025 20:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=odyHl49Y5OvEJAgKL5JhtH4Jek1Od8pSedSiPeEg8tA=; b=bi8QJrKpb6LRYD
-	vEqDM1doUuS4fOkrNH5373aWu+w1r809E9bUuF97g89PD+TP1w0FI4kC3cGtNNyhNHsfBa7gD0YxM
-	c9ZQ4J5ZsASDw6AbSRPewmGTwxWs8lWzhxY1mY3inSI2zQQB3Xxdh7/phuGNLFg6dQwzyENolm1Qy
-	EoFroWUW4W6lB6G7xUPffoJUf1UAJIsfFD7Jur729wpmwhDa4oLY3L91GB4wWlZE7x/sQAOkX0TC2
-	N1NmLnWg4nehOASSHW1HnI7TI8Q58FRPNdOC0PJ7zIJlMf2cDJhdUKIwDNxpwKKGC70gcj8OeaseF
-	3c06oWaRrMkjK3kpUdjw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TahxOnLqrUEziDBJQwObxnWBVrJAFd3bLZVk2dgyNVs=; b=uU/lmL2y52mrvW
+	zInKana4bX0gQAgSQnk6zNhasJ746ccp41sEd+Ww7qKuiAwtEtKl8BDJlrOpYIEYBDe3fjG6onR1s
+	fAxlgR+NgOZnTciauPmsEx6NDWgYrlatUWPQyBNB4H1y7Tyy7wG6a47wFcXwsZdsTFPD46UW4bWQK
+	peOQH7fjFy9B3W3RQXaqwv9o6Q6Xfry3aSuXhFEqCq0hbPx8Q0Hb2ockyXqjiBGzNhjPWDrJ0I7PD
+	KIYoc3FCu6/KT1bqRsUDLfNpKnB7r2poqFE6jyIgEowrAsrnGgzDH3Rp/QIgpJaZK0+PyiJ7DSEqA
+	3EzUARled4IcMZjnn5kQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOi9S-0000000HAkn-0nke;
-	Thu, 27 Nov 2025 19:59:38 +0000
-Received: from mail-lj1-x22d.google.com ([2a00:1450:4864:20::22d])
+	id 1vOiGo-0000000HBKW-2lIv;
+	Thu, 27 Nov 2025 20:07:14 +0000
+Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOi9P-0000000HAjm-2RFf
+	id 1vOiGm-0000000HBJz-3iLq
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Nov 2025 19:59:37 +0000
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-37b9879f5e2so2343211fa.1
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Nov 2025 11:59:34 -0800 (PST)
+	Thu, 27 Nov 2025 20:07:14 +0000
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-37b9552618aso859091fa.0
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Nov 2025 12:07:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764273573; x=1764878373; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hBL0OLiRvOy+2BpJaN3HpSOOdnUWxf+kwsaabH1QSOE=;
-        b=Ek/x/bdTr/UZrEeXzJfraLhtvq1+GYvgWKdBG1NfAHcpEblSLOGp+ZUTLZbxnPJcOk
-         JnZpsTvitpwu3h8uDRo89WUZi+yWj5y9GwLTcJkBITNn5Qkpwu06mXfEAJWrz3a01rlT
-         TNTzDYTBxOzUuvibsWtSSb+LZTBPTOWYpWqIu/gTBKMDWmq+0Cu11cmU9hx3tX52bI6B
-         yto4SQmWQmuWQpAzGLPAQToxSEI71T8jD6BFmondHE9UUMpPGnHtPsWsCefTwg0goD07
-         TIEsnCvZ8vUaQiuIGd/7xFyQdk6jIm6UzO0aV6X8gALTEFT+jptXaI0HBj7W3OcgczzR
-         60Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764273573; x=1764878373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1764274031; x=1764878831; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hBL0OLiRvOy+2BpJaN3HpSOOdnUWxf+kwsaabH1QSOE=;
-        b=DWYFeI3sJIBLPUk2tvCVVu8+8LwWco+JLkKEAVgaeUsZqKI1onY6Cng5y0KgR5JIbB
-         sjOEyWiN0QR/jOFlVgOzi0/6A1o8T/0zSX1t7vKNohSt93omiMEG5hrNduIRbZeP39/f
-         w/HhLiMGepsKqMbfivaJm02RQa6NfbHSy4F5wAEqcwtyK4cdou0LYYbemQ8bjHll0A7R
-         +BMShQ73yao94iaigGPQa5YFrOKPO+HWoh4XuT5aSEbta6niQ9mHVV4w+0ogvkW5l7m1
-         2CNnokZ2wfay7J/N0pxytaBDVmhlRpOC43YGNi1nq99IGBKqFpC/qYPF6HovcVRI40pF
-         Rz0g==
-X-Forwarded-Encrypted: i=1; AJvYcCV3fYXdibRCtCpT3vFHb69lVsKOPcLrnEOORdm4O0BE9JJb76pAIiUv/mu3/cjTMXYrUdueb66fZ9w=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx3gBVumBUQCzih9I5RdsyaNKajlrJgIvDJrHWBSPBhsxOJfevg
-	L6Jf9MrKpj7VMsj0j2GghU2xmQWLon9Ds26bSnQDaREx40CTGocei6kY
-X-Gm-Gg: ASbGnctOj1q5fQGD+Niv4y0ikJuKs/oIJFQj8YBPHp48acZvxyFlAonZvDciH7swFMe
-	78tYBOV3FQe9P84oWH/ZjQviD+r0+4cspKgiRJMSHqS3+jYr43fSMGxe7Uh6DFvuLODLEZXow3c
-	t3WpjLENe1x3dx3WfBqCgVGFygzlg77P9xe45COK4HfzlD1ff4FevUXvbn5PvDveGloWVTxbgEz
-	ZQlwlMGyqygnK3UxdlZUQ6R68wK4DUfcv4KAqB0Ew+nv3vAEnjFKYy6RvsYdy40Kt39Xpzvgi1x
-	DmtGlq1HcrC70KQ6g/+lH4QFSWfMDjcU7lV5vW94X3BfpHwHvm+12M7g0Buk036PvjLBOlJ0+oD
-	GTpJMjdmFeomoqkUk1sRDdv1ZYD0eozPfPVpB5UMaSEnIRFsRvHnMFak9rMSQa9DMk+0T0qHC7D
-	4lO+wISg9doywA6eMIroqIdw==
-X-Google-Smtp-Source: AGHT+IGe9iNDDYMZJ98ditRBL3ZHvUepuL6pZwenkzZTL2HMWvvHwT4yZRX6OzgYSzxEorsHxkqVGA==
-X-Received: by 2002:a2e:2284:0:b0:37a:9595:a77a with SMTP id 38308e7fff4ca-37cdc38bd0bmr29811421fa.5.1764273572996;
-        Thu, 27 Nov 2025 11:59:32 -0800 (PST)
+        bh=+UgsGyEmzjD3zZqRcsR9R8lzA7lCFWx5G8khkdgaryE=;
+        b=fpdKFgRAaQh++k/93d8iNSeqAVs0Nu99ao0FBAptt65Gb1rifg9RfCMAmGvn1jc7r3
+         JoDF+RN/8M1QKrM46bhQ5NoQpASsmOiBL92RH2EqpSgWkefxaUqjy/qaCgIikshkdxxW
+         1jdN8AId/v9YP+kJzzF16Q9tEY82FEPciVy+cqX3iosknfKmzEdFw7GygmmdZ+7PVJst
+         9Jz0Qo5DEuUgZzpgL26JBWWA/EnVhnd5bwPIxmkn29BAzKycDyXzldXasAU7C8RTiiv1
+         08cYofgEcXD31efw/McbpMOrRvwZV5OAxJjL0hrEjxZNx5qOogXB5Hm47n6O9sj3To4k
+         zUlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764274031; x=1764878831;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=+UgsGyEmzjD3zZqRcsR9R8lzA7lCFWx5G8khkdgaryE=;
+        b=Rr3V0R+pc2+dftD770gE+tDj8nxM/gVRn/2BUXYdcWXHjf29XOXWL+iUd99f7NmJ2D
+         13KzHfZw+s+yp8rjegBYzlbxN06N+X+PwdENUWUrk/9nKPzmeeIfG/Afeh9Jwt9RVwlv
+         zvBG5LMTNEz9wqs27KsFOEQdWWUOfUtpNYWdajNVTgTC07zZxNbnOeO0nKy9RMAuAktL
+         iR2Jer0raYi+VxuW/CTCLOH8oB2qurGlRdg18wvJPk88d9l64fzZjqZWY2dVhJbLDmK7
+         lXT6Ks5HHdUyzn9uh8D1Aw5p8NvB4DzBUvbJW7HgexlhsUP4BMkksq23bVwU4uRwrTSU
+         0tLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVqN/7+dx/BrvLauQ9LfBvgB9XEVcaNiJUNXbXsFjmxwJ26BhzI9KHiJqJ0bZICWbAH42OnVe59ABY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzQOePoOEGdnlEyre5gCjD6ROYkR8zAdEvT7WYHu+rSJJ88Ldte
+	IKwDKZW7ByxURUqvGZRP99xiGVF/tG/NvVYUu9BGc6m22bR5Ob8x9iB7
+X-Gm-Gg: ASbGncumLObUz3R4/9Ioo7KmY4J3iwd8TjB6WaM5T6qa93wACpNZfEkKPf3HCTQMc0k
+	EWQqMOel1WQjMiVqoqXjCeymEJY1kc6MkAGLXO8IQwxxjDD57NHoY2iFdx2TQLz+PdQTQffQzqF
+	rjLpeT33MdRitsYz+dNZQy3dQ49hGLJ/J4p6dyO9MYBYwZUHXNI8BhHkj8Bj/DUNNWE35OOh6hB
+	xWQSyVr8GaO4AxwSksY8+MWVz5j3xLnAUG45/zGgWr23HUdJmwsV3eM4w0c4bp89ige4MVvx2C1
+	c064S4BwaH78a+olfUtrhm44/T9QMtuTpFABgoPUg6gNgOsqpyWbShNiWQP5nE2TkfCgdycy4ti
+	YVxD3BbXhRmSzP2CQ63q7wBZ5ql24fOdGTSzAXnWnSWzq7Lk1aNX2bFSmVWmGk5gFuS5o9kr6a9
+	DMe/DPr8IhOyBvV9P6vChi5NzghKCFwkzt
+X-Google-Smtp-Source: AGHT+IF/44ITaswa6rozZNEwQl6xaBJ3UNk3ke9A4XGy43wr6AalhiPDUIHzjZYcf8j29Qi6jji1IQ==
+X-Received: by 2002:a05:6512:39cc:b0:595:834a:b1f0 with SMTP id 2adb3069b0e04-596a52a9215mr4638447e87.7.1764274030551;
+        Thu, 27 Nov 2025 12:07:10 -0800 (PST)
 Received: from OpenwrtBuild.lan ([178.207.14.215])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-37d24102440sm5610761fa.41.2025.11.27.11.59.32
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-596c2c243a2sm14408e87.31.2025.11.27.12.07.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Nov 2025 11:59:32 -0800 (PST)
+        Thu, 27 Nov 2025 12:07:10 -0800 (PST)
 From: Mikhail Zhilkin <csharper2005@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Mark Brown <broonie@kernel.org>
-Cc: Mikhail Zhilkin <csharper2005@gmail.com>,
+To: miquel.raynal@bootlin.com
+Cc: broonie@kernel.org,
+	csharper2005@gmail.com,
 	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: spinand: add support for FudanMicro FM25S01BI3
-Date: Thu, 27 Nov 2025 22:59:00 +0300
-Message-Id: <20251127195900.2562-1-csharper2005@gmail.com>
+	linux-mtd@lists.infradead.org,
+	richard@nod.at,
+	tudor.ambarus@linaro.org,
+	vigneshr@ti.com
+Subject: Re: [PATCH] mtd: spinand: add support for FudanMicro FM25S01BI3
+Date: Thu, 27 Nov 2025 23:07:08 +0300
+Message-Id: <20251127200708.2689-1-csharper2005@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <87v7ivs7y9.fsf@bootlin.com>
+References: <87v7ivs7y9.fsf@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251127_115935_660946_62096FBA 
-X-CRM114-Status: GOOD (  13.39  )
+X-CRM114-CacheID: sfid-20251127_120712_933983_AEBDB69D 
+X-CRM114-Status: UNSURE (   8.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,131 +101,15 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for FudanMicro FM25S01BI3 SPI NAND.
-
-Link: https://www.fmsh.com/nvm/FM25S01BI3_ds_eng.pdf
-
-Signed-off-by: Mikhail Zhilkin <csharper2005@gmail.com>
----
-
-Changes in v2:
-- Rebase with nand/next
-
----
- drivers/mtd/nand/spi/fmsh.c | 72 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/fmsh.c b/drivers/mtd/nand/spi/fmsh.c
-index 8b2097bfc771..43689b91dc28 100644
---- a/drivers/mtd/nand/spi/fmsh.c
-+++ b/drivers/mtd/nand/spi/fmsh.c
-@@ -9,6 +9,13 @@
- #include <linux/kernel.h>
- #include <linux/mtd/spinand.h>
- 
-+#define FM25S01BI3_STATUS_ECC_MASK		(7 << 4)
-+	#define FM25S01BI3_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-+	#define FM25S01BI3_STATUS_ECC_1_3_BITFLIPS	(1 << 4)
-+	#define FM25S01BI3_STATUS_ECC_UNCOR_ERROR	(2 << 4)
-+	#define FM25S01BI3_STATUS_ECC_4_6_BITFLIPS	(3 << 4)
-+	#define FM25S01BI3_STATUS_ECC_7_8_BITFLIPS	(5 << 4)
-+
- #define SPINAND_MFR_FMSH		0xA1
- 
- static SPINAND_OP_VARIANTS(read_cache_variants,
-@@ -45,11 +52,66 @@ static int fm25s01a_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
-+static int fm25s01bi3_ecc_get_status(struct spinand_device *spinand,
-+				     u8 status)
-+{
-+	switch (status & FM25S01BI3_STATUS_ECC_MASK) {
-+	case FM25S01BI3_STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case FM25S01BI3_STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case FM25S01BI3_STATUS_ECC_1_3_BITFLIPS:
-+		return 3;
-+
-+	case FM25S01BI3_STATUS_ECC_4_6_BITFLIPS:
-+		return 6;
-+
-+	case FM25S01BI3_STATUS_ECC_7_8_BITFLIPS:
-+		return 8;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int fm25s01bi3_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				    struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = 64;
-+	region->length = 64;
-+
-+	return 0;
-+}
-+
-+static int fm25s01bi3_ooblayout_free(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 4;
-+	region->length = 12;
-+
-+	return 0;
-+}
-+
- static const struct mtd_ooblayout_ops fm25s01a_ooblayout = {
- 	.ecc = fm25s01a_ooblayout_ecc,
- 	.free = fm25s01a_ooblayout_free,
- };
- 
-+static const struct mtd_ooblayout_ops fm25s01bi3_ooblayout = {
-+	.ecc = fm25s01bi3_ooblayout_ecc,
-+	.free = fm25s01bi3_ooblayout_free,
-+};
-+
- static const struct spinand_info fmsh_spinand_table[] = {
- 	SPINAND_INFO("FM25S01A",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xE4),
-@@ -60,6 +122,16 @@ static const struct spinand_info fmsh_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&fm25s01a_ooblayout, NULL)),
-+	SPINAND_INFO("FM25S01BI3",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xd4),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&fm25s01bi3_ooblayout,
-+				      fm25s01bi3_ecc_get_status)),
- };
- 
- static const struct spinand_manufacturer_ops fmsh_spinand_manuf_ops = {
--- 
-2.40.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gTWlxdcOobCwKCk9uIDExLzI3LzIwMjUgODoyNiBQTSwgTWlxdWVsIFJheW5hbCB3cm90
+ZToKCj4gSXQgbm8gbG9uZ2VyIGFwcGxpZXMgb24gbmFuZC9uZXh0LCBjYW4geW91IHBsZWFzZSBy
+ZWJhc2UgYW5kIHJlc2VuZD8gRWl0aGVyIHRvbW9ycm93IG9yIG90aGVyd2lzZSBhdCAtcmMxLgoK
+RG9uZS4gVGhhbmsgeW91IQoKPiBUaGFua3MhCj4gTWlxdcOobAoKLS0gCkJlc3QgcmVnYXJkcywK
+TWlraGFpbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
