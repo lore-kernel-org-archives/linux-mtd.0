@@ -4,155 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 235E8D1269A
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Dec 2025 10:19:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D76CD12D69
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Dec 2025 14:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CCfxM7xbN0pYu8Lq+T2Knbp/u8v3aRycgGlDJoA5Xoc=; b=eWhgnqW3xiO70p
-	pwW5dUufNwR9HVaoOhm+iAUEMQSrvBO2Uft73yZMrtR4+8jwTr5775JHlXBCrpf0XOf1QqkJk6W+H
-	kEXagCwCRm0sI10s+wgvgHTHmIY/c24XRQviNNelNSwD37B67ZWevL3a6Ws/+0iEkk0Y17Kh3Kz+W
-	r5s6iaSFdz0mG/NQj7dOn/oKyMyMqlpHwRjwtwaHu5fO9/59qOiBtWu20twa20/DPp56U9x4E3NL9
-	15VtijyiIjgXWlngw9LaTidVPb+SraJNgyln48Hqt9Sg1G6MTAlDzI9CcmX0B2VaRzjLTKWPrgh0S
-	rzlhWabBkw4b/xdgwc0w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FwFNoRwBLVnVPSHT7jUda3RJkH5NBsU04WMytMUujqk=; b=0qm7tkZeszq1JFgCF4izz/XRSZ
+	1g/JzvNIBFSiwd+pWD5ckyGTwk0ZJ/wwI/hLkGMdbwB1XerNhIDVgKwmXOMeC7LudAF5rkbnF4WRi
+	M4HcBRZOdu/IujNmhcRnsNattxE7MWGzDUy4HQU4Ag72/SFrzx3u+GflEILa1rwqtNV46M06WvBAp
+	hzgSaX86rqqnS6rxZC9pGP8JOBa9p2bDyimbVH7/sl4m6KjYOECu2sjiSzg01fi/LFV+aS79tIzvO
+	Z/THr3ygK5P1g8SedbHBg/nYGeN/YSDaY6zvQ8vdWEJWWxBIFWMz8bJbB9rcc/Tuq/jd+/qEdpX3a
+	EsBzjzUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQjx6-00000006RbG-0YFs;
-	Wed, 03 Dec 2025 10:19:16 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vQnad-00000006dJt-46pt;
+	Wed, 03 Dec 2025 14:12:19 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQjx2-00000006RaZ-3vhG;
-	Wed, 03 Dec 2025 10:19:14 +0000
+	id 1vQnab-00000006dJV-0wCC
+	for linux-mtd@lists.infradead.org;
+	Wed, 03 Dec 2025 14:12:17 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id BE02C40235;
-	Wed,  3 Dec 2025 10:19:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25361C113D0;
-	Wed,  3 Dec 2025 10:18:49 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 604D960158;
+	Wed,  3 Dec 2025 14:12:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0173C4CEF5;
+	Wed,  3 Dec 2025 14:12:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764757150;
-	bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Sia1MYILwN3OHyU8vJVbFzEbPmh+E9Rkdc13NmENJiNAQwujMzrx7aLJDYQwnRJH2
-	 icv0Cs7+2DiJlUtJrJ3jFjsxz5e5SC+H4b4cDPm/4/s+aTZepyO4AvrHMcRjPs8po7
-	 P0lAluHlqilBXk1Sh/B/XN0TZMdipTL7EolZ0FehsZ8XGO0/aidHMHK8ayQiiiT5TA
-	 U6OOgYna9Ec2DgYD68Hcv9/StfMLZVIApf1YAZumWdYivMJy+S1b4NF19fKc5R60wD
-	 vv/cJLS0nI7ttPeXB8OyKOFM1iSYjxfn/4avfs6o2Xu7czGUpIFQziUIbMv79dw+WM
-	 YExRE41C2xh0g==
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	NeilBrown <neilb@ownmail.net>,
-	linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-afs@lists.infradead.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-mm@kvack.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-xfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	NeilBrown <neil@brown.name>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu,
-	Tyler Hicks <code@tyhicks.com>,
-	Jeremy Kerr <jk@ozlabs.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Yangtao Li <frank.li@vivo.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Hans de Goede <hansg@kernel.org>,
-	Carlos Maiolino <cem@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	David Hildenbrand <david@kernel.org>
-Subject: Re: [PATCH RESEND v3] vfs: remove the excl argument from the ->create() inode_operation
-Date: Wed,  3 Dec 2025 11:18:32 +0100
-Message-ID: <20251203-sechzehn-lethargisch-cd739d4ff49a@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
-References: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1370; i=brauner@kernel.org; h=from:subject:message-id; bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQa8NXdfyOWEe7C1j7j3H39MtmOfckhfYU3uPbO3GJ5W X9idSdfRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwER6JjEyXElxiNLjXsTcG/zF veHQZtE3X3LuXMnZx/2vIaPja/5RBYb/9Vo7JnHefOS2MX2Dr5zm5id7fnmJz3GXVk7n4Wu5Kpf KBAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251203_021913_043409_864E0287 
-X-CRM114-Status: GOOD (  14.28  )
+	s=k20201202; t=1764771136;
+	bh=smbaWDGg/XgShh3qJ1kJgBiM9HCBn2o9QjOA/nMQgHA=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=sqed4hwiCoFNaVTddXS0Qs7ceF/63n7aHJob0t6Y95d271Z+o6SF8Ttg/KZ02HLts
+	 SiEnV9cgctW2gz+IGkWqoLx6cp4XDjCBSb0b6YB+7drw3s/+7UGYYQxVnaPjWoMrAI
+	 ohZOQSzJ6pIixCgAD3YHjsXj1XSv4tUgJNoFd52MiuN4AVM3z6RuiSVy66iPZ5/efa
+	 VmRgAu0hG6pyWOyYNSC2lvn9edlrvyGkDUDpYXH36QS1meks8SZ+vuuCIe+CL2Pyr1
+	 4mhgIanOKcPJGHjhEbvbQsxa/8aDtx8XMrFkLU4CkGeD+Wsk2AzaOjI52YyqL/7SvU
+	 ZwHNED+xh2rCg==
+Mime-Version: 1.0
+Date: Wed, 03 Dec 2025 15:12:11 +0100
+Message-Id: <DEON5LMMZLWG.21BQCPB0YE904@kernel.org>
+Subject: Re: [RFC PATCH 01/10] spi: spi-mem: Introduce support for tuning
+ controller
+Cc: "Santhosh Kumar K" <s-k6@ti.com>, "Pratyush Yadav"
+ <pratyush@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+ <broonie@kernel.org>, <tudor.ambarus@linaro.org>, <p-mantena@ti.com>,
+ <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <a-dutta@ti.com>, <u-kumar1@ti.com>,
+ <praneeth@ti.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+X-Mailer: aerc 0.20.0
+References: <20250811193219.731851-1-s-k6@ti.com>
+ <20250811193219.731851-2-s-k6@ti.com> <87seguemzu.fsf@bootlin.com>
+ <cb04a4ec-c643-4b80-9288-8fd8944cb4f7@ti.com>
+ <mafs0ikf74fja.fsf@kernel.org>
+ <fe103265-7a68-41b8-b168-15a5e19abb3f@ti.com>
+ <DEOH4AUI33SQ.DGKJ4W258658@kernel.org> <87jyz3ao8b.fsf@bootlin.com>
+In-Reply-To: <87jyz3ao8b.fsf@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,42 +74,91 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8239022667586197660=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 01 Dec 2025 08:11:42 -0500, Jeff Layton wrote:
-> With three exceptions, ->create() methods provided by filesystems ignore
-> the "excl" flag.  Those exception are NFS, GFS2 and vboxsf which all also
-> provide ->atomic_open.
-> 
-> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
-> the "excl" argument to the ->create() inode_operation is always set to
-> true in vfs_create(). The ->create() call in lookup_open() sets it
-> according to the O_EXCL open flag, but is never called if the filesystem
-> provides ->atomic_open().
-> 
-> [...]
+--===============8239022667586197660==
+Content-Type: multipart/signed;
+ boundary=6941430842e239d7e819f952f573a6859b1df98f21af7b294888dab18d54;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Applied to the vfs-6.20.mkdir branch of the vfs/vfs.git tree.
-Patches in the vfs-6.20.mkdir branch should appear in linux-next soon.
+--6941430842e239d7e819f952f573a6859b1df98f21af7b294888dab18d54
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+On Wed Dec 3, 2025 at 10:50 AM CET, Miquel Raynal wrote:
+>
+>>>> I think we should start with the requirement to have the pattern flash=
+ed
+>>>> already and figure out how SPI NOR or SPI NAND can discover that
+>>>> (perhaps via NVMEM?).
+>>
+>> But we should also keep in mind that certain flashes might return
+>> tuning data during the dummy cycles. I.e. the PHY might probably be
+>> tuned on each read and there is no need for any pre-programmed
+>> pattern.
+>>
+>> I'm not saying it should be implemented, but the current
+>> implementation should be that flexible that it will be easy to add
+>> that later.
+>
+> Conceptually, yes, but in practice, I know no controller capable of
+> using just a few cycles every transfer to calibrate themselves
+> automatically and reaching such an optimized speed state as the cadence
+> controller is capable of ATM.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+Then have a look at the flexspi controller. I.e. look at the LS1028A
+reference manual "18.5.15.1 Data Learning with Flash providing
+preamble bit".  The sequence is a follows:
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+<CMD> <ADDR> <MODE> <DUMMY> <LEARN> <READ>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.20.mkdir
+There's an example with the learning pattern as short as 8 bit, or
+- I guess - 8 clock cycles.
 
-[1/1] vfs: remove the excl argument from the ->create() inode_operation
-      https://git.kernel.org/vfs/vfs/c/7d91315b4335
+> Despite the end result being close, I would still consider this other
+> way to optimize the I/Os somewhat orthogonal. If someone has some
+> knowledge to share about the training patterns sent during the dummy
+> cycles, I am all ears though.
+
+There's also a short chapter about the training. Basically, it will
+just compare the read bits with a predefined value (which is max
+32 bit long) of 16 different clock phases. Which one is chosen is
+not answered though (ideally it should be the one at the center of
+all matching clock phases).
+
+Now how good that tuning actually is, I don't know. But the
+procedure sounds sane. I'm also not sure whether this (any?) tuning
+will account for different I/O trace lengths of if it is assumed
+that they have to be trace length matched for multi IO flashes.
+
+-michael
+
+--6941430842e239d7e819f952f573a6859b1df98f21af7b294888dab18d54
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaTBFPBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gFxAGA345hIX5hVf+9gNV8VQGZ/W8e18oDeiPO
+ouutCQKJYiK9yVJt7BxAwxMeRd06U7AmAYDZ6LvqZBAFmTXZ0Laz9hafCPqdLrsF
+bGpFhMoP+zwdx97ipbv3m1PmbCS/nvLEEbQ=
+=0tUN
+-----END PGP SIGNATURE-----
+
+--6941430842e239d7e819f952f573a6859b1df98f21af7b294888dab18d54--
+
+
+--===============8239022667586197660==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8239022667586197660==--
+
