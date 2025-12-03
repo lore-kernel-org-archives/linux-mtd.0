@@ -4,72 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32944D12696
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Dec 2025 09:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 235E8D1269A
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Dec 2025 10:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IHQ/EtBbfqaO7c5nje2U9a4OTuKAKF6rsCGeebbwDbw=; b=Z8PcQg5flZAu4T
-	bgOar1Ai5dDvLP8nDnwZHRupkwZVwnDu6cMZgD4kPvXuNB3MkX9W3rbjgsXYTsY+zIBOnkt/vUTG+
-	/kyuNUr8AtmR6PWPgrOStAAiWDWMdl2eA8gPmt85EO5Kie+d155eVIQbqg+D6AEFIgLBNWgVGamzH
-	+fSplSNYS98ANcYLLHcjHhM/2kwdCWKInCad0ve9/K+aASMgG8heZFp720GARQvkZJu9S1mC7qzcx
-	0pmpUNaAATiI7JVoLJWXsHU9ZmZolKpnrMbqu2nKeFyWug+/Rvog3qFsNhHjMFdqMXBigWAItk6Ay
-	2qWNlQiHyxTq9Imq/8SQ==;
+	List-Owner; bh=CCfxM7xbN0pYu8Lq+T2Knbp/u8v3aRycgGlDJoA5Xoc=; b=eWhgnqW3xiO70p
+	pwW5dUufNwR9HVaoOhm+iAUEMQSrvBO2Uft73yZMrtR4+8jwTr5775JHlXBCrpf0XOf1QqkJk6W+H
+	kEXagCwCRm0sI10s+wgvgHTHmIY/c24XRQviNNelNSwD37B67ZWevL3a6Ws/+0iEkk0Y17Kh3Kz+W
+	r5s6iaSFdz0mG/NQj7dOn/oKyMyMqlpHwRjwtwaHu5fO9/59qOiBtWu20twa20/DPp56U9x4E3NL9
+	15VtijyiIjgXWlngw9LaTidVPb+SraJNgyln48Hqt9Sg1G6MTAlDzI9CcmX0B2VaRzjLTKWPrgh0S
+	rzlhWabBkw4b/xdgwc0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQjVG-00000006PdU-2l2s;
-	Wed, 03 Dec 2025 09:50:30 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1vQjx6-00000006RbG-0YFs;
+	Wed, 03 Dec 2025 10:19:16 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQjV8-00000006PbR-0Oqi
-	for linux-mtd@lists.infradead.org;
-	Wed, 03 Dec 2025 09:50:29 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 61BCC1A1EEB;
-	Wed,  3 Dec 2025 09:50:19 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 3637B60706;
-	Wed,  3 Dec 2025 09:50:19 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 411F411920314;
-	Wed,  3 Dec 2025 10:50:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1764755418; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=bwV59Poqvr4TETkpzfKMM8Wo2Gkh86LU/Q3T3dW528g=;
-	b=d89o6SPV3H8UwGn6tgVBA2/mYk+pxDiQAuMzVnhJM36IBfoxayPN3cWwAbKYoiXDBLzgGs
-	6YFdxEIuw0wWd+bdS6rbXC3DDWSTGWvsMX5LbNUWN3BHtvYlgltchwOoaIifHyJEMD9zEU
-	34CxwQXoPwOLh1c59fEdszpQB/rFWdiaIAvglgrGWeMm+Lb+AWF9tsGaLXDuxJ70qBEq0B
-	2vFBpgbUhVoX2J8xuayyuhU5NKydMAmSrvsahoBAlvbITuXBgsAQZAOg5Rp0x8QeD7dp9Y
-	3q5pKQaPhX0kepssvyQBErbERYG+HixhosZNBonmXOgcg3N22rEc0pxg5QJLfg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Santhosh Kumar K" <s-k6@ti.com>,  "Pratyush Yadav"
- <pratyush@kernel.org>,  <richard@nod.at>,  <vigneshr@ti.com>,
-  <broonie@kernel.org>,  <tudor.ambarus@linaro.org>,  <p-mantena@ti.com>,
-  <linux-spi@vger.kernel.org>,  <linux-mtd@lists.infradead.org>,
-  <linux-kernel@vger.kernel.org>,  <a-dutta@ti.com>,  <u-kumar1@ti.com>,
-  <praneeth@ti.com>
-Subject: Re: [RFC PATCH 01/10] spi: spi-mem: Introduce support for tuning
- controller
-In-Reply-To: <DEOH4AUI33SQ.DGKJ4W258658@kernel.org> (Michael Walle's message
-	of "Wed, 03 Dec 2025 10:28:23 +0100")
-References: <20250811193219.731851-1-s-k6@ti.com>
-	<20250811193219.731851-2-s-k6@ti.com> <87seguemzu.fsf@bootlin.com>
-	<cb04a4ec-c643-4b80-9288-8fd8944cb4f7@ti.com>
-	<mafs0ikf74fja.fsf@kernel.org>
-	<fe103265-7a68-41b8-b168-15a5e19abb3f@ti.com>
-	<DEOH4AUI33SQ.DGKJ4W258658@kernel.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Wed, 03 Dec 2025 10:50:12 +0100
-Message-ID: <87jyz3ao8b.fsf@bootlin.com>
+	id 1vQjx2-00000006RaZ-3vhG;
+	Wed, 03 Dec 2025 10:19:14 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id BE02C40235;
+	Wed,  3 Dec 2025 10:19:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25361C113D0;
+	Wed,  3 Dec 2025 10:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764757150;
+	bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Sia1MYILwN3OHyU8vJVbFzEbPmh+E9Rkdc13NmENJiNAQwujMzrx7aLJDYQwnRJH2
+	 icv0Cs7+2DiJlUtJrJ3jFjsxz5e5SC+H4b4cDPm/4/s+aTZepyO4AvrHMcRjPs8po7
+	 P0lAluHlqilBXk1Sh/B/XN0TZMdipTL7EolZ0FehsZ8XGO0/aidHMHK8ayQiiiT5TA
+	 U6OOgYna9Ec2DgYD68Hcv9/StfMLZVIApf1YAZumWdYivMJy+S1b4NF19fKc5R60wD
+	 vv/cJLS0nI7ttPeXB8OyKOFM1iSYjxfn/4avfs6o2Xu7czGUpIFQziUIbMv79dw+WM
+	 YExRE41C2xh0g==
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	NeilBrown <neilb@ownmail.net>,
+	linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu,
+	ecryptfs@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	gfs2@lists.linux.dev,
+	linux-um@lists.infradead.org,
+	linux-mm@kvack.org,
+	linux-mtd@lists.infradead.org,
+	jfs-discussion@lists.sourceforge.net,
+	linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org,
+	ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
+	linux-xfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	NeilBrown <neil@brown.name>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Sterba <dsterba@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+	Chris Mason <clm@fb.com>,
+	Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>,
+	coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>,
+	Jeremy Kerr <jk@ozlabs.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Yuezhang Mo <yuezhang.mo@sony.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Yangtao Li <frank.li@vivo.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>,
+	Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Bob Copeland <me@bobcopeland.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Tom Talpey <tom@talpey.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Carlos Maiolino <cem@kernel.org>,
+	Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	David Hildenbrand <david@kernel.org>
+Subject: Re: [PATCH RESEND v3] vfs: remove the excl argument from the ->create() inode_operation
+Date: Wed,  3 Dec 2025 11:18:32 +0100
+Message-ID: <20251203-sechzehn-lethargisch-cd739d4ff49a@brauner>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
+References: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1370; i=brauner@kernel.org; h=from:subject:message-id; bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQa8NXdfyOWEe7C1j7j3H39MtmOfckhfYU3uPbO3GJ5W X9idSdfRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwER6JjEyXElxiNLjXsTcG/zF veHQZtE3X3LuXMnZx/2vIaPja/5RBYb/9Vo7JnHefOS2MX2Dr5zm5id7fnmJz3GXVk7n4Wu5Kpf KBAA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251203_015022_263706_0EEF6971 
-X-CRM114-Status: GOOD (  20.83  )
+X-CRM114-CacheID: sfid-20251203_021913_043409_864E0287 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,58 +164,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cj4+PiBJIHRoaW5rIHdlIHNob3VsZCBzdGFydCB3aXRoIHRoZSByZXF1aXJlbWVudCB0byBoYXZl
-IHRoZSBwYXR0ZXJuIGZsYXNoZWQKPj4+IGFscmVhZHkgYW5kIGZpZ3VyZSBvdXQgaG93IFNQSSBO
-T1Igb3IgU1BJIE5BTkQgY2FuIGRpc2NvdmVyIHRoYXQKPj4+IChwZXJoYXBzIHZpYSBOVk1FTT8p
-Lgo+Cj4gQnV0IHdlIHNob3VsZCBhbHNvIGtlZXAgaW4gbWluZCB0aGF0IGNlcnRhaW4gZmxhc2hl
-cyBtaWdodCByZXR1cm4KPiB0dW5pbmcgZGF0YSBkdXJpbmcgdGhlIGR1bW15IGN5Y2xlcy4gSS5l
-LiB0aGUgUEhZIG1pZ2h0IHByb2JhYmx5IGJlCj4gdHVuZWQgb24gZWFjaCByZWFkIGFuZCB0aGVy
-ZSBpcyBubyBuZWVkIGZvciBhbnkgcHJlLXByb2dyYW1tZWQKPiBwYXR0ZXJuLgo+Cj4gSSdtIG5v
-dCBzYXlpbmcgaXQgc2hvdWxkIGJlIGltcGxlbWVudGVkLCBidXQgdGhlIGN1cnJlbnQKPiBpbXBs
-ZW1lbnRhdGlvbiBzaG91bGQgYmUgdGhhdCBmbGV4aWJsZSB0aGF0IGl0IHdpbGwgYmUgZWFzeSB0
-byBhZGQKPiB0aGF0IGxhdGVyLgoKQ29uY2VwdHVhbGx5LCB5ZXMsIGJ1dCBpbiBwcmFjdGljZSwg
-SSBrbm93IG5vIGNvbnRyb2xsZXIgY2FwYWJsZSBvZgp1c2luZyBqdXN0IGEgZmV3IGN5Y2xlcyBl
-dmVyeSB0cmFuc2ZlciB0byBjYWxpYnJhdGUgdGhlbXNlbHZlcwphdXRvbWF0aWNhbGx5IGFuZCBy
-ZWFjaGluZyBzdWNoIGFuIG9wdGltaXplZCBzcGVlZCBzdGF0ZSBhcyB0aGUgY2FkZW5jZQpjb250
-cm9sbGVyIGlzIGNhcGFibGUgb2YgQVRNLgoKRGVzcGl0ZSB0aGUgZW5kIHJlc3VsdCBiZWluZyBj
-bG9zZSwgSSB3b3VsZCBzdGlsbCBjb25zaWRlciB0aGlzIG90aGVyCndheSB0byBvcHRpbWl6ZSB0
-aGUgSS9PcyBzb21ld2hhdCBvcnRob2dvbmFsLiBJZiBzb21lb25lIGhhcyBzb21lCmtub3dsZWRn
-ZSB0byBzaGFyZSBhYm91dCB0aGUgdHJhaW5pbmcgcGF0dGVybnMgc2VudCBkdXJpbmcgdGhlIGR1
-bW15CmN5Y2xlcywgSSBhbSBhbGwgZWFycyB0aG91Z2guCgo+PiBGb3IgU1BJIE5PUiwgd2UgZG8g
-bm90IGhhdmUgYW4gZXF1aXZhbGVudCAid3JpdGUtdG8tY2FjaGUiIHBvc3NpYmxlLCBzbwo+PiB3
-ZSBzdGlsbCByZXF1aXJlIGEgcHJlLWZsYXNoZWQgcGF0dGVybiByZWdpb24uIEF0IHRoZSBtb21l
-bnQgdGhpcyBpcwo+PiBwcm92aWRlZCB2aWEgYSBkZWRpY2F0ZWQgInBoeXBhdHRlcm4iIHBhcnRp
-dGlvbiwgYW5kIGl0cyBvZmZzZXQgaXMKPj4gb2J0YWluZWQgdGhyb3VnaCB0aGUgb2ZfZ2V0Xyog
-QVBJcy4KPj4KPj4gUmVnYXJkaW5nIHdheXMgdG8gbG9jYXRlIHRoZSBwYXJ0aXRpb246Cj4+Cj4+
-IDEuIFVzaW5nIE5WTUVNOgo+PiAgICAgYS4gRXhwb3NpbmcgdGhlIHBoeXBhdHRlcm4gcGFydGl0
-aW9uIGFzIGFuIE5WTUVNIGNlbGwgYW5kIGlzc3VpbmcgYW4KPj4gICAgICAgIE5WTUVNIHJlYWQg
-ZHVyaW5nIHR1bmluZyBkb2VzIG5vdCB3b3JrIHJlbGlhYmx5LCBiZWNhdXNlIE5WTUVNCj4+ICAg
-ICAgICBlbmRzIHVwIGNhbGxpbmcgaW50byB0aGUgTVREIHJlYWQgcGF0aCBhbmQgd2UgY2Fubm90
-IGNvbnRyb2wgd2hpY2gKPj4gICAgICAgIHJlYWRfb3AgdmFyaWFudCBpcyB1c2VkIGZvciB0aGUg
-cmVhZC4KPj4KPj4gICAgIGIuIEFkdmVydGlzaW5nIHRoZSBwYXJ0aXRpb24gYXMgYW4gTlZNRU0g
-Y2VsbCBhbmQgdXNpbmcgTlZNRU0gb25seQo+PiAgICAgICAgdG8gZmV0Y2ggdGhlIG9mZnNldCBp
-cyBub3QgcG9zc2libGUgZWl0aGVyLiBOVk1FTSBhYnN0cmFjdHMgdGhlCj4+ICAgICAgICBwcml2
-YXRlIGRhdGEsIGluY2x1ZGluZyBwYXJ0aXRpb24gb2Zmc2V0cywgc28gd2UgY2FuJ3QgcmV0cmll
-dmUKPj4gICAgICAgIHRoZSBvZmZzZXQgYXMgd2VsbC4KPgo+IFlvdSBjYW4gcHJvYmFibHkgZXh0
-ZW5kIHRoZSBOVk1FTSBBUEkgaW4gc29tZSB3YXkgLSBvciBzd2l0Y2hpbmcgdGhlCj4gcmVhZF9v
-cCBvbiB0aGUgZmx5Lgo+Cj4+IDIuIFVzaW5nIG9mX2dldF8qIEFQSXM6Cj4+ICAgICAgICBVc2lu
-ZyB0aGUgc3RhbmRhcmQgT0YgaGVscGVycyB0byBsb2NhdGUgdGhlIHBoeXBhdHRlcm4gcGFydGl0
-aW9uCj4+ICAgICAgICBhbmQgcmV0cmlldmUgaXRzIG9mZnNldCBpcyBib3RoIHJlbGlhYmxlIGFu
-ZCBzdHJhaWdoZm9yd2FyZCwgYW5kCj4+ICAgICAgICBpcyB0aGUgYXBwcm9hY2ggY3VycmVudGx5
-IGltcGxlbWVudGVkIGluIHYyLgo+Cj4gSSBkb24ndCBsaWtlIHRoYXQgaGFyZGNvZGVkIHBhcnRp
-dGlvbiBuYW1lIHdoaWNoIGlzIGJhc2ljYWxseQo+IGJlY29taW5nIGFuIEFCSSB0aGVuLgo+Cj4g
-QXQgbGVhc3Qgd2UnZCBuZWVkIHNvbWUga2luZCBvZiBwaGFuZGxlIHRvIHRoZSBwYXJ0aXRpb24g
-aW5zaWRlIHRoZQo+IGNvbnRyb2xsZXIgbm9kZSAoYW5kIGdldCB0aGUgQUNLIGZyb20gdGhlIERU
-IG1haW50YWluZXJzKS4KClllcywgYWdyZWVkLCB0aGlzIGlzIGNvbnRyb2xsZXIgc3BlY2lmaWMs
-IGlmIHdlIG5lZWQgdG8gdXNlIGFuIG9mXyBBUEkKKHdoaWNoIGlzIHN0aWxsIG5vdCBuZWVkZWQg
-Zm9yIFNQSSBOQU5Ecywgb25seSBmb3IgdHVuaW5nIHRoZSByZWFkIFNQSQpOT1IgcGF0aCksIGl0
-IHNob3VsZCBub3QganVzdCBiZSBhIHBhcnRpdGlvbiBoYXJkY29kZWQgbmFtZSBidXQgYQpwaGFu
-ZGxlIGluIHRoZSBjb250cm9sbGVyIG5vZGUuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+On Mon, 01 Dec 2025 08:11:42 -0500, Jeff Layton wrote:
+> With three exceptions, ->create() methods provided by filesystems ignore
+> the "excl" flag.  Those exception are NFS, GFS2 and vboxsf which all also
+> provide ->atomic_open.
+> 
+> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
+> the "excl" argument to the ->create() inode_operation is always set to
+> true in vfs_create(). The ->create() call in lookup_open() sets it
+> according to the O_EXCL open flag, but is never called if the filesystem
+> provides ->atomic_open().
+> 
+> [...]
+
+Applied to the vfs-6.20.mkdir branch of the vfs/vfs.git tree.
+Patches in the vfs-6.20.mkdir branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-6.20.mkdir
+
+[1/1] vfs: remove the excl argument from the ->create() inode_operation
+      https://git.kernel.org/vfs/vfs/c/7d91315b4335
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
