@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DA1ED116F3
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Dec 2025 08:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FDF4D1266D
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Dec 2025 08:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5tLzC55OPLGhU+7Rp3K/JLT7nIv5+csGfsrETe72PL4=; b=i3zq1394t1fnwu
-	B2O1YapWeGwQFMQmySp6hTkuboyAUfCfvtl/KNu8LNotRYUTjvqKjUJ8IxqOhmElidZ+ssD4BKYqa
-	3GOjZLYFXQ1aMnpZWOQMw5hsxk4MsiHEQreMbObQkNkjKXYU0MUgGyto/Jd49IM2xfYIRW9NxgNjQ
-	zaqbiSGLbKqbHMPl2aykKIIIDPEXIUM9OrlANzERBWu2s93sXdtI3abqiW0WLZWYXy9E+VQ4GIL0C
-	PAf/BYt/M5pIdyo1fRNUDtZmWVGMhsOOMeYDSy1u+lfvF2URzF8ilIC6JC35p28YNG3ivKJSK5C7g
-	Pw7zvRkToBqZxJ+I+tFQ==;
+	List-Owner; bh=zd7pfUfN+Z91vHwQ5c+8tq+6cxHV9ygSay/yrfj7ZC4=; b=baetfEstxNnfNW
+	AfWPif+7Zt/lctEBNA8FgAm1j2uWAz1oBqF6tj7Wly4W7y4m5U0CFsz6Qj82e95ajXhOSCHJ2AsvJ
+	hVaNnk/EiBzxX81Q7wJ5MSDSCRsLdkIYUowmkscKIoCyidbD/Qf9lWWIqoZyBNzbF7Souvza7HKGY
+	o9RVNwyY8PteYo5UOj/Oa8pHpKcd/Er8SFZajNAMk3s/IaGmaQy5uvPk8BA0deA0XNvsKMZQ6Xsju
+	UqU2WopRWvxMJrE4NlM5VtS6xRRTOxd3VG+cuVwpJqx/qGd1P8Q2lN5FiVDmQkyWFYc+z7HriBpwE
+	hMviGsQqMh/TYvrIz8hA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQhos-00000006HOZ-1OCY;
-	Wed, 03 Dec 2025 08:02:38 +0000
-Received: from mail-southcentralusazlp170130001.outbound.protection.outlook.com ([2a01:111:f403:c10c::1] helo=SA9PR02CU001.outbound.protection.outlook.com)
+	id 1vQhoq-00000006HO6-23Ll;
+	Wed, 03 Dec 2025 08:02:36 +0000
+Received: from mail-westusazlp170120002.outbound.protection.outlook.com ([2a01:111:f403:c001::2] helo=SJ2PR03CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vQhoq-00000006HNs-0wFp
+	id 1vQhom-00000006HNU-45de
 	for linux-mtd@lists.infradead.org;
-	Wed, 03 Dec 2025 08:02:37 +0000
+	Wed, 03 Dec 2025 08:02:34 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VneX0jf0ao9oBAinKs5cALaV7FHnpB1Mk20t5s5UyDPAtEDkcyjrVU9Fk8wxZWR6tZxnsKMSlSLmArd87hiqxzQdEdxyzeqgjvRenLIW7E6PsHLmwkH+fprqNSnunDP1CnYG529nhME8NTNfTesEs8B97K6w0SePokWsTg7q6QnyR+oz8dMAfOJgV2koODmJsvLWITocSCNapAtyHZpdOLFcGkr0IHcB3zerQzuwZhBImTrnvp/JnsDt50jb+3WO907ohFocPkoFxS4rl/BoZrFLvxoGzyaCPQNG3nQm/K29Csq1Et+HNqcigmfHfe9B/MM2QG26p0ymO22YHcCWlg==
+ b=Ejm6dvYTxHp6jh35WU2gWJkJHatA4uLM451TTBU8jwA6OAZvqeyYO3uMrHqDkO+TMe906XwykIfwF/TznK7kYQPytJRdAnXD5OBHh8VXUhGB2G0LfhKNTPxiuNMl7zvos4qK/5cyM6m5DH/6YciuTlBopj75dx0tGUWa60FKL3Ammpmdu+yOIV86Jw1CI0xz6K4sW/+MR5JNRBnmMFj4ismZQlie+1utsl5y1Grs0fmIgqbTREreSEiUllH3RTWiRnDgJkVG8hdbD/GGz3I7iNbAMOvtURJRlb9aseYwg8Zs9tm2qP6cxRuKdcnkPCq2LoY3nGEw/KXjWdnmyckEuw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=feOAxHfutAQypO6ut2f22CEz7nDMcOW4yrtaH9x7wls=;
- b=cI9z64cvOjRfBcIt8Fwfiy16Tk4wAcXsTHKyNbugQDNK89Cah6fk+SCMDSjPUuHqcQm1LHI2ZqdjRgIyj8yGdavFqFwWwPM+vb/dyqE7bNjZ79kFqXklx1P21S+la3xPm8lK5ZZ4R2mCmvtwCXAyAs8sKpxEynp9E4lOmvG/vx7356895F9xlppWjSNIPlKsX2MhP51JLEg72fBZTlFxJ8c7f2e6nrTAFYpq+dlUgayWxfW+Tmry8Wulu6D/h6QmMKaX7Zntf5TtsuC3PGMrsfwovD4ZZl3M+tzdfETHTRGUt9MIGg+GsQ/QyVOuMxcc1HiutKzh1MRmi+eHEzVTBg==
+ bh=ksLulRlPbfpxkXMMTW+rTsj1x6Z7CVk3fdSGMh+h8ZM=;
+ b=e9twPzQNJRy39mGKnY0dIsVKHQCzF/mh7qiXa0tfp4pyhGRt1ZKJdNvH3oEQ4Zd2NHAW91WJUHa/dboug0trdKs+b6SpDN0WIyhBdHPVWefD4CGaL6cHvpZnziSpI+78PYFBW36tkEetbiJf/+Nn7PuKMmYk5pz9DuVgFrqyQuheeO29mZFWyRs+2GhjGTyEuYPp6sSIJbdBXq4hM9fhpW9jbo25eCosEqqZ7D2g9UfIwyiqebJ1f0O1LSBgP8U71HayOb68+sYqfYVmAfwRxKClQiMQx5+tkP+T7QKkeQazFup+VDi2rZawzJU8dihYriAMMdQkCDJBZVx+ooYn4Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  198.47.21.194) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=ti.com;
  dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=feOAxHfutAQypO6ut2f22CEz7nDMcOW4yrtaH9x7wls=;
- b=jT85B3pGGSmMUr1kI070xsKEqG4RsRIuWoA810AQDv0e62JUwQTxWM9RiUgulGGMeDxTC771NnIR6V7uJSoI2+tIrVv0i2As8rlP/CAKjnWO7kB/y4tf60jERUj+YG/hRfYl5EgJ7NoadZEHwb6mIKo+RRoIP7Dr9Da28vSwWRU=
-Received: from MN2PR15CA0038.namprd15.prod.outlook.com (2603:10b6:208:237::7)
- by IA3PR10MB8114.namprd10.prod.outlook.com (2603:10b6:208:513::15) with
+ bh=ksLulRlPbfpxkXMMTW+rTsj1x6Z7CVk3fdSGMh+h8ZM=;
+ b=fW5alWo5GxHBv3uykJQtuZgabZbiROdYs7Km77yAUy/BJsEOPIY7gYViwCjkrLT8hp/zXtAAJU4mvZT4BJeU4Kkb1pieQMzrfFzWcE+yPo3NxCqjoIdKya3bK6zsl/ysLAmB6Q7KgkWC+xOQNLG7u0bSuPmKM3JVYLl0UzSHi7Q=
+Received: from BL1PR13CA0096.namprd13.prod.outlook.com (2603:10b6:208:2b9::11)
+ by SN7PR10MB7104.namprd10.prod.outlook.com (2603:10b6:806:343::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9366.17; Wed, 3 Dec
- 2025 08:02:32 +0000
-Received: from BL6PEPF0001AB76.namprd02.prod.outlook.com
- (2603:10b6:208:237:cafe::76) by MN2PR15CA0038.outlook.office365.com
- (2603:10b6:208:237::7) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9366.17 via Frontend Transport; Wed,
- 3 Dec 2025 08:02:32 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9388.9; Wed, 3 Dec
+ 2025 08:02:26 +0000
+Received: from BL6PEPF0001AB78.namprd02.prod.outlook.com
+ (2603:10b6:208:2b9:cafe::98) by BL1PR13CA0096.outlook.office365.com
+ (2603:10b6:208:2b9::11) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9388.9 via Frontend Transport; Wed, 3
+ Dec 2025 08:02:26 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
  smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
  action=none header.from=ti.com;
@@ -59,103 +59,100 @@ Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
  198.47.21.194 as permitted sender) receiver=protection.outlook.com;
  client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
 Received: from flwvzet200.ext.ti.com (198.47.21.194) by
- BL6PEPF0001AB76.mail.protection.outlook.com (10.167.242.169) with Microsoft
+ BL6PEPF0001AB78.mail.protection.outlook.com (10.167.242.171) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9388.8 via Frontend Transport; Wed, 3 Dec 2025 08:02:31 +0000
-Received: from DFLE212.ent.ti.com (10.64.6.70) by flwvzet200.ext.ti.com
+ 15.20.9388.8 via Frontend Transport; Wed, 3 Dec 2025 08:02:24 +0000
+Received: from DFLE207.ent.ti.com (10.64.6.65) by flwvzet200.ext.ti.com
  (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 3 Dec
- 2025 02:02:20 -0600
-Received: from DFLE206.ent.ti.com (10.64.6.64) by DFLE212.ent.ti.com
- (10.64.6.70) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 02:02:13 -0600
+Received: from DFLE210.ent.ti.com (10.64.6.68) by DFLE207.ent.ti.com
+ (10.64.6.65) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 3 Dec
- 2025 02:02:20 -0600
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE206.ent.ti.com
- (10.64.6.64) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 02:02:13 -0600
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE210.ent.ti.com
+ (10.64.6.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Wed, 3 Dec 2025 02:02:20 -0600
+ Transport; Wed, 3 Dec 2025 02:02:13 -0600
 Received: from [172.24.233.254] (santhoshkumark.dhcp.ti.com [172.24.233.254])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5B3829xC3686810;
-	Wed, 3 Dec 2025 02:02:16 -0600
-Message-ID: <cf87ced7-aa66-4b15-98e5-92cb76737073@ti.com>
-Date: Wed, 3 Dec 2025 13:32:16 +0530
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5B3829xB3686810;
+	Wed, 3 Dec 2025 02:02:10 -0600
+Message-ID: <fe103265-7a68-41b8-b168-15a5e19abb3f@ti.com>
+Date: Wed, 3 Dec 2025 13:32:08 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH 01/10] spi: spi-mem: Introduce support for tuning
  controller
-To: Pratyush Yadav <pratyush@kernel.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>
-CC: <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
-	<tudor.ambarus@linaro.org>, <mwalle@kernel.org>, <p-mantena@ti.com>,
-	<linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <a-dutta@ti.com>, <u-kumar1@ti.com>,
-	<praneeth@ti.com>, <s-k6@ti.com>
+To: Pratyush Yadav <pratyush@kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>, <broonie@kernel.org>, <tudor.ambarus@linaro.org>,
+	<mwalle@kernel.org>, <p-mantena@ti.com>, <linux-spi@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<a-dutta@ti.com>, <u-kumar1@ti.com>, <praneeth@ti.com>, <s-k6@ti.com>
 References: <20250811193219.731851-1-s-k6@ti.com>
  <20250811193219.731851-2-s-k6@ti.com> <87seguemzu.fsf@bootlin.com>
- <cb04a4ec-c643-4b80-9288-8fd8944cb4f7@ti.com> <87qzunt4n4.fsf@bootlin.com>
- <ea19bc64-a775-4309-8f3b-ce9dd8ac02ee@ti.com> <87ecqcakjo.fsf@bootlin.com>
- <mafs0ms4j4fuz.fsf@kernel.org>
+ <cb04a4ec-c643-4b80-9288-8fd8944cb4f7@ti.com> <mafs0ikf74fja.fsf@kernel.org>
 Content-Language: en-US
 From: Santhosh Kumar K <s-k6@ti.com>
-In-Reply-To: <mafs0ms4j4fuz.fsf@kernel.org>
+In-Reply-To: <mafs0ikf74fja.fsf@kernel.org>
 X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB76:EE_|IA3PR10MB8114:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2c6e3a80-e5d8-45ca-c7ac-08de32424f6e
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB78:EE_|SN7PR10MB7104:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2002c00c-378a-47a2-27a2-08de32424b69
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?aHpRa1RPQnA1ZlFHUmpYKzNzV2lyeEE4Tk44TUJLWkk2RjE3Ny9EUmVKbjd1?=
- =?utf-8?B?eVh3OGd3bEtXWmI4SGk5ckFyR3RUSmExbG8zdTVvcUpXRmkrck8ybnJCQmJj?=
- =?utf-8?B?d0RFZ0hRVEpsa252d2FaQXVuMFFoeGdmbVJ0c3NsY2pSelg2ZDdtcTBZTE9N?=
- =?utf-8?B?eks0ekZrNzNsNStOR21GcHRybU5LSXNjUGsxSTdsZC8wR0hzY0orYXhTNHhO?=
- =?utf-8?B?cHdDeGo0QVROOC9VZE9mNGEza2tHU2FpVDc0M20wYThjU3BmVWVxeURDYUJh?=
- =?utf-8?B?UUpXcVRUc0d4S3lxVDMyUjFpN2dLR0VGK3U1U0t0U3I1YlJBNGNldFA0bUdO?=
- =?utf-8?B?N011NFJlck9aU3UzNVhSb3JMTmo4RExYZE1rYkhGNDJlQzhJcFJ4NTU2RGt3?=
- =?utf-8?B?eDNSWWUvL0x1YnpwWXZWQUJSZ3pKalBIdE9tY2tlcUFrZ25IZDlPOTViRm1X?=
- =?utf-8?B?V0NOR2FiK2R5R1ZPZ0RqOTJHTUhvKzJGY0tjczdSekZVaWo0TDJaSEN1cGVB?=
- =?utf-8?B?MVptWFd6aHYydUYyU3AxN1Y1Q0UxZHMzeFRRbktNaVBKdTBzMXA3MnlITzVI?=
- =?utf-8?B?c3c5cHV0aW1CT2k5cWxJaTd4UjBkUmQ3Zjl5M05WaXVuSnRXalQwRHRqa05T?=
- =?utf-8?B?MkM2a05aTk9wQWFjaEsvWjhENEsySm5WdExXQTZnaDNKSzd4RVNqWmx4VXRl?=
- =?utf-8?B?dWZSRk5VTVFIb05tOXYzb1YxV1k1QVd2ZFRpRkpvLzN1MTBCV3hDbVJkV2pM?=
- =?utf-8?B?cktMTVdPZi9BY1JoWEFiRWkwOTF0cE9xVzZUa3lDOVhLRTVqK0VEcUsrY3JM?=
- =?utf-8?B?clZtQzk4bWhtYkNCYWFmRis2NnlvVWFPZDB0YlFzdWZaSTRXMGlhYVZQd1Ev?=
- =?utf-8?B?TVdkYlUyTG1JM1FjUFhFcVVxbVVYNHZVOEpEamMrT2JkbmtxZExaV2Q1cDAz?=
- =?utf-8?B?aEcxdGVTbzQ3WkZSMmtLN2Ywd2NQdWRpTDlSY2wrRzJ6bzYyMGZZNkx6aEl4?=
- =?utf-8?B?bGExUGgxbGtpUlNaU0RuQWhidGJOVEhkaTlrb2ZDSnBPY296VTVXelIvc0w2?=
- =?utf-8?B?MzdIdmxYVXRTNFhkWEY2d2ZmMW9GZVExc3RxcHNjcGU0RmZYVEkwWUJhQTVv?=
- =?utf-8?B?UGwrNk42ckt5d0JHbWYvZkJ4bG1hT3Vja0l4ak8rMkNyc3FpdUkxYUhuWVJU?=
- =?utf-8?B?NDJRb1ovKzdYdVp3TUU5bDdlSkxVbkxCbjBmZFlmd0dDNlp0TUVPSkR0RWhL?=
- =?utf-8?B?Ym1QTjJwd1ZucVViOWVlcEZMTUlRZTZET3lrQWVHTDI3QTh3K0FXSms5SVND?=
- =?utf-8?B?d0lkS0dhc2ptWkoranRkalFJVDBXZVorVDVlai9obnZPV1NZSDdYd0hONEky?=
- =?utf-8?B?Q2FYV3lRcHJaY2Y1MitBalhsdWJiclV6dWYzVy84WUxoakg3cHNxN2daeDU2?=
- =?utf-8?B?YXhaMTFlczJBTkJwVjVIeldrTEo4ellaSXZjd2RlSllnNjd3a21nWEkzK1Ur?=
- =?utf-8?B?b2R6OEVoNTdYMm9RR2NsY1ZzdU9FSHhDZldsVjNJM0dWMXZaaWcweXF3TG1P?=
- =?utf-8?B?TzJ5ejU3LzdWUUd6R1NZUi9lZXRrWVMrMmtRMm5zOFg5TTVyUGY1QXQwcEs5?=
- =?utf-8?B?ank1UXdqOVZEYm00R29qLzhpYWxGSWNaTHJkMDU2Nk9TOHpXNXlGWnMwTW1a?=
- =?utf-8?B?L1RVbGJiSFVFOHlYcElxZ01wcE12NVJpTWpqeGh3MTZXbXZmeDNDVjFETHN2?=
- =?utf-8?B?ei9wZUhMcmduaU5ENm45TFd4aUI4WE50R3dNTVJBSWlSSXpWSk1vdi9Pc0pv?=
- =?utf-8?B?MFFzZDRaN0tTM0FuZVVuYU41YVlTRUZNWFQzWVFWYUR6RURMSUtINnpZN1Iz?=
- =?utf-8?B?K0JHNktSZlB0ejN2Q2h2TlkrUUNWNldvZU9lK2FwZkxGVEp1a0xBZnc5b0sr?=
- =?utf-8?B?RWxOeDNBWHRYeTV2Z013aW40RnluYjNqNGNDemR2WlFwV0ZjTWRCMk5GQmox?=
- =?utf-8?B?N1gwVE44Tkt4RjdaMjJJOGRBRW8wQzBOZjZRZTloYzFsajQxMlNnM1FPVWE1?=
- =?utf-8?B?U2U3SFBoUFBFOXl2d1RkcGNQMHo0cldEdVVJKzJsT3RDbVBpUTBWY0tPWEE1?=
- =?utf-8?Q?qi98=3D?=
-X-Forefront-Antispam-Report: CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700013|376014|82310400026|1800799024;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?eG1UeC9JUy9kYldBcENqTVd4SDVzSWJqUHZFQlYxZjFTMjFYcW9ub0p2bFlH?=
+ =?utf-8?B?S2xoK0FYWUlhakxOT3NUcUxkU3R3TTdYUyswMjUrZTJ4TlhmaXpmdStPZ2xG?=
+ =?utf-8?B?eU5FNTRTUFQyQnlnblJoZUUzVk9PVU54V0MrUEE3QVcvRjNxTXA5NWMxbFda?=
+ =?utf-8?B?WDBnelhyalg3YkJweFpxTEEveVF2MzlkM0dWbHJmN2NvbUEvYVdPbTQ1Q1JJ?=
+ =?utf-8?B?OENPaFBOMklyNklSOXNrSjVWVEVETjcvQXJpTkZvV1A1UUJhZGFxV3JNMzNi?=
+ =?utf-8?B?ZFBySkhHQlE3dS9SNEZ4dk85UXhpZlVxaUJld1djMUtMWFVoTXlJdEtDMzJ3?=
+ =?utf-8?B?UnlnMXNvSG4zMHd6UWhXNXRjdENLa1RRUmRBL1NadlZ3ejA2M1VmQ3ZINkxN?=
+ =?utf-8?B?MnZBNVJiUWNDQzgwS2lvWEJOMW1IMjVkb3ZNTzZnMCtNTjNEcVFGTEtGWlh1?=
+ =?utf-8?B?NXpYaS9CVjZkemIzU3FXNDVHSlhSM2RETjRZS3FiMGVxb2ptKzE5aFgxd25y?=
+ =?utf-8?B?VlQzM3hCcUZRK1BQTi9hNnRYWXNoNW9CeURHNlptRURnRVAybE9jT1JaQnZa?=
+ =?utf-8?B?V3JnWTk5L1YrcU5pb2FhZHdydXpYSDdnVjU4QldJVEpnZDI3emo1RVhKcnBl?=
+ =?utf-8?B?am1vcnJFTmp5ZFVXZFF1b3BBVGNrc2lqT3ovSmpDZ2RSK05nSm9mMkFMOVRP?=
+ =?utf-8?B?K2RZUlA1dW41TW9DRjQrZGtHK3JIeU43WDY1dmYyTlR6dEIwaDVZNmFpN041?=
+ =?utf-8?B?T2FYUWZhRC8wMWplcGR3bGwzSXBoVnZIVkVoTXlLQWxOVkZISTZaL0IxM09C?=
+ =?utf-8?B?L2lnd3pOL0VYM1IrU1dPZVVLM1FUV2c2VG5hdjB5dGF4eVlKYjJod0J4ajV6?=
+ =?utf-8?B?WVZqQmZQUHBZQnk0QzV4TnlKRUVUS1hzTGZDT0ZaS2RBTFllRXI4VHNLSno1?=
+ =?utf-8?B?b1pBQnBPRmUzanFCc2pvUkxGOEJGcU1WdkxzS1ZZTXpNL0lkbkJSakZpaDJB?=
+ =?utf-8?B?RENoU0NLRE54N09JZG1kWlN0M3RDaW0xVUxMVm5jK0NVWitTMkxFSitLbjUr?=
+ =?utf-8?B?Z3ZpeWpNMmYreHkyWlVySEJJVk9xTEIrQXh1ZlNtRWtqWnptVEh4dThUUERM?=
+ =?utf-8?B?YWQwQmh0K2Uxbzcxc2JYVTdSYWxGNlp5VUkvZWFOT1gwcHNJc0paOXFMN2ZI?=
+ =?utf-8?B?ZzdMejlZeWxjZXVvV0dQbUhQNUxaVklPYjBtdUwrVHdDWkkzS01LbXhzVXZv?=
+ =?utf-8?B?ZzJ6RGsrN0VjaXNwODM3S0diSmN0Snk1dVNwTmJFRVNPQiszSTg2SmZOUGZB?=
+ =?utf-8?B?dDF4TW1wQVIrRHZCQnJXTkl1R0NWWFlkY1ZrS00wb2Z0b1N2VjF0eE5Vc1l0?=
+ =?utf-8?B?Q0hJcWM4N3lCUWJhOXI2aG02NkswdU8wbjR1dUEvWWZvRE12ajlnNWh2N0FP?=
+ =?utf-8?B?UDdCdlZ5ckFTUGtvYW1vWGxtRVZrR3ZSQzR5MnVYNnRUTE12UEEwZU9tdnFY?=
+ =?utf-8?B?bVFHNU0ybnJmMFR4eWVyU1MxNHNZTmI3aSs4UHAvaEJIbWtrWEhyRTNoNHgy?=
+ =?utf-8?B?Nm84UTZBTXI5STZHUy8ySkhzQktveCtTdThtZmtTdGwxZ1dLTkxHa0pwbHpS?=
+ =?utf-8?B?aGorME5mVmFkSHVwaEZpaGhPblpTaVVWMkZFaWRTUE5zelVmUmgrbkxEbk9F?=
+ =?utf-8?B?aVFLWlh3ZnAxUTNGUlREdmVKeDM4TXRtMUpGdU85czIyY0xRQmRhemlhNEdt?=
+ =?utf-8?B?SFFKY29PUmE1bytENHFPY2d5c3loYWcrTTlLL0ltc0h0cjE1aFlUY3VLQjVi?=
+ =?utf-8?B?MURKUHRLSFEzQmNYeWFPeXdHTkQrWDZGVXJMZjJMMENkZ2R1Z3RIejFJRVVG?=
+ =?utf-8?B?aW84amlCNyt6eWlmaXBvYXEwZGhUL0IxOVZ4bWhEVk1QWlorR3JGWW1abWxq?=
+ =?utf-8?B?RDY4ZDN2N1RPL2ovbHF1UUJuaENHNlNFbEx5b3A1RURtbGl3MDUwSHpSQm9C?=
+ =?utf-8?B?bFRWcTNSVlVJb1dxdEsxQ0k3RVZvUm1IVXlIbC9WL3FzRC9SblRaU21XOFI1?=
+ =?utf-8?B?eHExSm9tMXpKZzh1ZEdESnkvN3JXNXZ3TnZsZFgwOHllQ3AyYzRHSWprQkk4?=
+ =?utf-8?Q?CI9g=3D?=
+X-Forefront-Antispam-Report: CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(1800799024);DIR:OUT;SFP:1101;
 X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 08:02:31.4138
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 08:02:24.6418
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c6e3a80-e5d8-45ca-c7ac-08de32424f6e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2002c00c-378a-47a2-27a2-08de32424b69
 X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB76.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB78.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA3PR10MB8114
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB7104
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251203_000236_265564_092151E1 
-X-CRM114-Status: GOOD (  28.21  )
+X-CRM114-CacheID: sfid-20251203_000233_053268_B0D23B3C 
+X-CRM114-Status: GOOD (  39.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -167,80 +164,164 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTWlxdWVsIGFuZCBQcmF0eXVzaCwKCk9uIDE4LzExLzI1IDE5OjEyLCBQcmF0eXVzaCBZ
-YWRhdiB3cm90ZToKPiBPbiBXZWQsIE5vdiAwNSAyMDI1LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+
-IAo+PiBIZWxsbyBTYW50aG9zaCwKPj4KPj4+Pj4gICAgICAtIE9uIHR1bmluZyBmYWlsdXJlLCBy
-ZXRyeSBieSByZS1ydW5uaW5nIHNwaV9tZW1fbmVlZHNfdHVuaW5nKCkgd2l0aAo+Pj4+PiB0aGUg
-c2Vjb25kIGJlc3Qgc2V0IG9mIG9wcyAobWF4IHRocm91Z2hwdXQgLSAxKQo+Pj4+IEkgd291bGQg
-bGlrZSB0byBjaGFsbGVuZ2UgdGhpcyBuZWVkLiBDYW4gdGhlIHNhbWUgY2FsaWJyYXRpb24gZmFp
-bCBpZgo+Pj4+IGF0dGVtcHRlZCBtdWx0aXBsZSB0aW1lcyAoZWcuIGJlY2F1c2Ugb2YgdGhlIGhl
-YXQ/KSBJZiB5ZXMsIHRoZW4gd2UgbmVlZAo+Pj4+IGEgZmFsbGJhY2sgaW5kZWVkLiBPdGhlcndp
-c2UsIEknZCBiZSBpbiBmYXZvciBvZiBqdXN0IGZhaWxpbmcgdGhlCj4+Pj4gcHJvYmUuIENhbGli
-cmF0aW9uIGlzIGFuIG9wdC1pbiAtPiB1c2VycyBtdXN0IGFsbG93IGEgaGlnaGVyIGZyZXF1ZW5j
-eQo+Pj4+IHRoYW4gdGhleSB1c2UgdG8gaW4gb3JkZXIgdG8gZW5hYmxlIHRoZSBmZWF0dXJlPwo+
-Pj4KPj4+IEl0J3MgcG9zc2libGUgdGhlIHNhbWUgY2FsaWJyYXRpb24gd2lsbCBmYWlsIGludGVy
-bWl0dGVudGx5IGZvcgo+Pj4gZGlmZmVyZW50IHJlYXNvbnMgKHRlbXBlcmF0dXJlIGNoYW5nZXMs
-IGFzIHlvdSBtZW50aW9uZWQpLiBJZiB0dW5pbmcKPj4+IGZhaWxzLCB0aGUgZHJpdmVyIHNob3Vs
-ZCBmYWxsYmFjayB0byB0aGUgbm9uLVBIWSBmcmVxdWVuY3kgc28gdGhlIGZsYXNoCj4+PiBjb250
-aW51ZXMgb3BlcmF0aW5nIHdpdGggc2xvd2VyIHJlYWRzL3dyaXRlcyByYXRoZXIgdGhhbiBmYWls
-aW5nIHRoZQo+Pj4gcHJvYmUgKGF2YWlsYWJpbGl0eSBzaG91bGQgYmUgcHJpb3JpdGl6ZWQsIHJp
-Z2h0PykuCj4+Cj4+IEFncmVlZCwgaWYgdGhlIHR1bmluZyBtYXkgZmFpbCB3ZSBtdXN0IGZhbGxi
-YWNrIGluIHRoaXMgY2FzZS4gSG93ZXZlcgo+PiB0aGVyZSBpcyBhbm90aGVyIHNpdHVhdGlvbiB0
-aGF0IG11c3QgYmUgaGFuZGxlZCBpbiB0aGlzIGNhc2U6IG9uY2UKPj4gdHVuaW5nIGlzIGRvbmUg
-YW5kIHdlIHdhbnQgdG8gdXNlIFBIWS1vcHRpbWl6ZWQgcGF0aHMsIHdlIG11c3QgZmFsbGJhY2sK
-Pj4gdG8gbW9yZSBiYXNpYy9zbG93ZXIgcmVhZHMgaWYgZm9yIHNvbWUgZXh0ZXJuYWwgcmVhc29u
-LCB0aGV5IHN0YXJ0Cj4+IGZhaWxpbmcsIHJpZ2h0Pwo+IAo+IEhvdyB3b3VsZCB5b3UgZXZlbiBk
-ZXRlY3QgdGhhdCB5b3VyIHR1bmluZyBpcyBvdXQtb2YtZGF0ZSBiZWNhdXNlIG9mCj4gdGVtcGVy
-YXR1cmUgY2hhbmdlcz8gWW91IHdvdWxkIG5lZWQgc29tZSBzb3J0IG9mIG9uLWZsYXNoIEVDQyB0
-byBkZXRlY3QKPiB0aGF0LiBJIHRoaW5rIG1hbnkgb2YgdGhlIGZsYXNoZXMgdGhhdCBzdXBwb3J0
-IEREUiByZWFkcyBhdCBoaWdoCj4gZnJlcXVlbmNpZXMgYWxzbyBoYXZlIEVDQywgYnV0IEFGQUlL
-IHRoZSBTUEkgTk9SIGNvcmUgZG9lcyBub3Qgc3VwcG9ydAo+IGl0Lgo+IAo+IEFueXdheSwgSSB0
-aGluayB3ZSBzaG91bGQgbGltaXQgdGhlIHNjb3BlIG9mIHRoZSBwcm9ibGVtLiBMZXQncyBmaXJz
-dAo+IHN0YXJ0IHdpdGggdGhlIGV4cGVjdGF0aW9uIHRoYXQgdGhlIHR1bmluZyBzdXBwb3J0cyB0
-aGUgd2hvbGUgb3BlcmF0aW9uCj4gcmFuZ2Ugb2YgdGhlIGRldmljZS4gVGhpcyB3YXMgdHJ1ZSBh
-dCBsZWFzdCBmb3IgdGhlIHNwaS1jYWRlbmNlLXF1YWRzcGkKPiB0dW5pbmcgdGhhdCBJIHdvcmtl
-ZCBvbiB3aGVuIEkgd2FzIGF0IFRJLiBUaGUgdHVuaW5nIHBhcmFtZXRlcnMgaGFkCj4gZW5vdWdo
-IG1hcmdpbiB0byBlbnN1cmUgaXQgd29ya2VkIGZvciB0aGUgZGV2aWNlJ3Mgd2hvbGUgdGVtcGVy
-YXR1cmUKPiByYW5nZS4KPiAKPiBJZiB0aGVyZSBpcyBhIHR1bmluZyBhbGdvcml0aG0gdGhhdCBj
-YW4ndCBkbyB0aGF0LCB0aGVuIHdlIGNhbiBleHRlbmQKPiB0aGUgY29yZSB0byBlaXRoZXIgZG8g
-RUNDIG9yIHBlcmhhcHMgbGV0IHRlbXBlcmF0dXJlIHNlbnNvcnMgc2lnbmFsIHRoZQo+IG5lZWQg
-Zm9yIHJlLWNhbGlicmF0aW9uLgo+IAo+IEJ1dCBmb3Igbm93IEkgdGhpbmsgaXQgaXMgZWFzaWVz
-dCB0byBqdXN0IGlnbm9yZSB0aGUgcHJvYmxlbSBhbmQgZm9jdXMKPiBvbiB0aGUgb3RoZXIgb25l
-cyBsaWtlIGhvdyB0byBnZXQgdGhlIGNhbGlicmF0aW9uIHBhdHRlcm4gYW5kIGhvdyB0byBkbwo+
-IHRoZSB0dW5pbmcuCj4gCj4+Cj4+IFRoZSBvYnZpb3VzIGNob2ljZSBpbiB0aGlzIGNhc2Ugd291
-bGQgYmUgdG8gbGV0IHRoaXMgZXJyb3IgaGFuZGxpbmcgdG8KPj4gdGhlIGNvbnRyb2xsZXIgZHJp
-dmVyLiBSZS11c2luZyB0aGUgc2FtZSBvcGVyYXRpb24gYXQgYSBsb3dlciBzcGVlZAo+PiB3b3Vs
-ZCBiZSBzdWJvcHRpbWFsLCBiZWNhdXNlIHRoZSBmYXN0ZXN0IG9wZXJhdGlvbiBhdCBhIGhpZ2gg
-c3BlZWQgbWlnaHQKPj4gbm90IGJlIHRoZSBtb3N0IGVmZmljaWVudCBhdCBzbG93ZXIgc3BlZWRz
-IGR1ZSB0byB0aGUgbnVtYmVyIG9mIGR1bW15Cj4+IGN5Y2xlcyBuZWVkZWQsLiBCdXQgSSBiZWxp
-ZXZlIHRoaXMgaXMgbmVnbGlnaWJsZSBiYXNlZCBvbiB0aGUgZmFjdCB0aGF0Cj4+IHdlIGFscmVh
-ZHkgYXJlIGluIGRlZ3JhZGVkIG1vZGUgYXQgdGhhdCBzdGFnZS4KPj4KPj4gSG93ZXZlciwgdGhp
-cyBtYXkgY29uZmxpY3Qgd2l0aDoKPj4gLSByZWFkIHJldHJpZXMKPj4gLSBjb250aW51b3VzIHJl
-YWRzICg/KQo+Pgo+PiBTbyBpbiBwcmFjdGljZSB0aGUgZmFsbGJhY2sgbWlnaHQgYmUgbmVlZGVk
-IG9uIHRoZSBTUEkgTkFORC9OT1Igc2lkZQo+PiAodGhpcyBjYW4gYmUgZnVydGhlciBkaXNjdXNz
-ZWQpLgoKSnVzdCB0byBzdW1tYXJpemUsIGZhbGxiYWNrIGxvZ2ljIGR1cmluZyBwcm9iZToKICAg
-IC0gSWYgdGhlIGNvbnRyb2xsZXIgcmVwb3J0cyBhIHR1bmluZyBmYWlsdXJlLCB0aGUgc3BpLW1l
-bSBjbGllbnQgbWF5CmVpdGhlciByZXRyeSB0dW5pbmcgd2l0aCB0aGUgbmV4dC1iZXN0IChtYXgt
-MSkgb3BlcmF0aW9uIG9yIGZhbGxiYWNrIHRvCnRoZSBub24tUEhZLCBzbG93ZXIgb3BlcmF0aW9u
-IGFuZCBhZGp1c3QgdGhlIGR1bW15IGN5Y2xlcyBhY2NvcmRpbmdseSB0bwp1c2UgdGhlIG9wdGlt
-YWwgbm9uLVBIWSB2YXJpYW50LgoKQW5kIHllcywgZm9yIG5vdyB0aGUgcHJpb3JpdHkgaXMgdG8g
-aGF2ZSBhIHJvYnVzdCBwcm9iZS10aW1lIHR1bmluZyBmbG93CmJlZm9yZSBhZGRyZXNzaW5nIGFu
-eSBydW50aW1lIHR1bmluZyBjb25jZXJucy4KCj4+Cj4+IEJ1dCBvbmNlIHdlIHNvbHZlIHRoaXMs
-IGNvbWVzIGEgc2ltaWxhciBwcm9ibGVtIG9uIHRoZSB3cml0ZSBzaWRlLiBIb3cKPj4gZG8gd2Ug
-a25vdyBpZiBhIHdyaXRlIHdpbGwgb3IgZGlkIGZhaWwgYmVjYXVzZSBvZiBhIHRlbXBlcmF0dXJl
-IGNoYW5nZT8KPj4gV2hhdCBtYXkgYmUgdGhlIGhldXJpc3RpY3MgdG8gZmFsbGJhY2sgaW4gdGhp
-cyBjYXNlPwo+IAo+IFNhbnRob3NoLCBkbyB5b3UgaGF2ZSBhbnkgbnVtYmVycyBvbiB3cml0ZSBw
-ZXJmb3JtYW5jZSBpbXByb3ZlbWVudHM/IEkKPiBhbSBjdXJpb3VzIGlmIGl0IGlzIGV2ZW4gd29y
-dGggdGhlIGVmZm9ydC4KClRoZXJlJ3Mgbm8gcmVhbCBwZXJmb3JtYW5jZSBnYWluIGZvciBTUEkg
-Tk9SLCBidXQgU1BJIE5BTkQgc2hvd3Mgbm90YWJsZQppbXByb3ZlbWVudCB3cnQuIHBhZ2Ugc2l6
-ZS4KCldyaXRlIHBlcmZvcm1hbmNlIG51bWJlcnMgZnJvbSBBTTYyQSBTSyB3aXRoIFczNU4wMUpX
-IE9TUEkgTkFORDoKCiAgICAtIHdpdGhvdXQgUEhZOiA2IE1CL3MKICAgIC0gd2l0aCBQSFk6IDku
-MiBNQi9zCgpUaGFua3MsClNhbnRob3NoLgoKPiAKPj4KPj4gVGhhbmtzLAo+PiBNaXF1w6hsCj4g
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hello Pratyush,
+
+On 18/11/25 19:19, Pratyush Yadav wrote:
+> On Sat, Sep 20 2025, Santhosh Kumar K wrote:
+> 
+> [...]
+>>> This is actually wrong. Tuning is way more generic than that :)
+>>> If someone wants to use a chip at a high frequency (50MHz in your case,
+>>> but whatever, there is a threshold above which additional care must be
+>>> taken), it must go through the calibration step. It does not matter in
+>>> which mode you are. Calibration would still be relevant in single SDR
+>>> mode.
+>>> This 50MHz bothered Mark because it is too Cadence specific. Maybe this
+>>> should be a controller parameter? If the spi-mem core (or even the spi
+>>> core, by extensino) sees that the design allows running at XMHz (due to
+>>> the SPI peripheral properties or simply the absence of any limitation),
+>>> and if the controller states that it requires an extra tuning step above
+>>> YMHz (and X > Y), then it launches the calibration.
+>>>   From a core perspective, I would like the calibration hook to be as
+>>> simple as possible, because what "calibration" means is highly
+>>> controller and chip specific.
+>>
+>> I understand the concern here.
+>>
+>> Let me point out the options for launching the tuning procedure, along
+>> with the issues in each approach.
+>>
+>> Option 1: Launch tuning as part of spi_mem_exec_op()
+>>     - After spi_mem_access_start(), introduce a spi_mem_needs_tuning()
+>> check (a new callback to SPI MEM controller) to check whether the
+>> current op requires tuning
+>>     - If yes, we call spi_mem_execute_tuning()
+>>          - on success, mark tuning complete in a flag within SPI MEM
+>> Controller private data
+>>          - on failure, we attempt a fallback by calling
+>> spi_mem_adjust_op_freq() and drop to a lower supported frequency
+>>
+>> Option 2: Launch tuning within spi_controller->exec_op() implementation
+>>     - Very similar to option 1, except that the spi_mem_execute_tuning()
+>> is triggered from within the controller's exec_op() implementation
+>> (no need for spi_mem_needs_tuning())
+>>
+>> Drawbacks in option 1 and 2:
+>>     - Tuning requires multiple reads of a known pattern, but the flash
+>> may not always be in a state to allow read commands
+>>     - No fallback on failures, can't make flash-specific adjustments in
+>> case of a tuning failure
+>>     - No access to write_op() to write known pattern temporarily to an
+>> on-die cache. Pattern needs to be always burnt into the flash
+>>
+>>     - Plus, in option 2 - we can't call spi_mem_adjust_op_freq()
+>>
+>> While the need for tuning is dictated by Controller specific
+>> characteristics the ops (and state of the chip) required to complete
+>> tuning is under the control of spi-mem users (spi-nand/spi-nor).
+>> So, it's impossible to achieve tuning without the help of spi-mem users.
+>>
+>> So, Option 3: Launch from SPI MEM clients
+>>                            (mtd/nand/spi or mtd/spi-nor, etc.,)
+>>     - Once the spi-mem chip is completely enumerated and best read and
+>> write ops are chosen call spi_mem_needs_tuning(read_op, write_op) as
+>> a part of .probe()
+>>     - If tuning is required, call
+>> spi_mem_execute_tuning(read_op, write_op)
+>>          - If only read_op is provided, it implies the tuning pattern is
+>> pre-flashed to the partition
+>>     - On tuning failure, retry by re-running spi_mem_needs_tuning() with
+>> the second best set of ops (max throughput - 1)
+>>
+>> With option 3, spi_mem users are limited to calling
+>> spi_mem_needs_tuning() and spi_mem_execute_tuning(). Rest is hidden
+>> within the controller drivers. If spi-mem users change read/write ops,
+>> the above sequence can be re-issued.
+>>
+>> The controller can store the read_op and write_op in case of a tuning
+>> success and periodically re-run tuning, ensuring we always have valid
+>> tuning parameters.
+>>
+>> One concern with option 3 is that we may not be able to make use of
+>> static data on certain flash as tuning patterns (like reading parameter
+>> page or SFDP table for tuning instead of controller specific attack
+>> patterns).
+> 
+> Why not? How else would tuning work? Do you expect controllers to first
+> flash the tuning pattern and then tune the reads? That is a hard no I
+> think, since you don't want to over-write user data and I don't think we
+> will ever have any area of memory we can reliably over-write without
+> risking that.
+> 
+> I think we should start with the requirement to have the pattern flashed
+> already and figure out how SPI NOR or SPI NAND can discover that
+> (perhaps via NVMEM?).
+
+I agree - having the controller overwrite user data is a hard no!
+
+For SPI NAND, a program operation happens in two steps: data is first
+copied into the internal cache, and only then written to the flash
+during the program-execute phase. This is why the tuning flow writes
+the pattern only to the device's internal cache and reads it back it
+from there. This avoids touching any user data on the flash and is
+already implemented in v2 (which I'll post shortly).
+
+For SPI NOR, we do not have an equivalent "write-to-cache" possible, so
+we still require a pre-flashed pattern region. At the moment this is
+provided via a dedicated "phypattern" partition, and its offset is
+obtained through the of_get_* APIs.
+
+Regarding ways to locate the partition:
+
+1. Using NVMEM:
+    a. Exposing the phypattern partition as an NVMEM cell and issuing an
+       NVMEM read during tuning does not work reliably, because NVMEM
+       ends up calling into the MTD read path and we cannot control which
+       read_op variant is used for the read.
+
+    b. Advertising the partition as an NVMEM cell and using NVMEM only
+       to fetch the offset is not possible either. NVMEM abstracts the
+       private data, including partition offsets, so we can't retrieve
+       the offset as well.
+
+2. Using of_get_* APIs:
+       Using the standard OF helpers to locate the phypattern partition
+       and retrieve its offset is both reliable and straighforward, and
+       is the approach currently implemented in v2.
+
+> 
+> I think SFDP is quite nice for this, but IIRC for spi-candence-quadspi,
+> that was not a viable option due to some reasons. If you can now make it
+> work with SFDP, then that would be even better, since we don't have to
+> deal with the pain of pre-flashing.
+
+The current tuning flow requires a specific stress pattern to ensure
+robustness, and the SFDP data aren't good enough for it.
+
+> 
+> Overall, I think option 3 is the most promising. Options 1 and 2 will
+> likely add so much overhead they will end up being slower than non-PHY
+> reads, since tuning is usually quite expensive.
+
+Thanks,
+Santhosh.
+
+> 
+>>
+>> Please let me know your thoughts on which of these directions makes the
+>> most sense.
+>>
+>> Thanks,
+>> Santhosh.
+>>
+> 
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
