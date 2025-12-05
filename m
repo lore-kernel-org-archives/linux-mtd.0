@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4035DD3748A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F853D37490
 	for <linux-mtd@archiver.kernel.org>; Fri,  5 Dec 2025 19:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hJ1+CQ4b/A/pKPfRN1cqWPkyALi5L6LCfbxrMgW78ik=; b=lNuzObuRAxWrQY
-	ZqlnJQKcAmefrSkgQsOucPOePztbKe3g2WzYMkbtFFa7ClgM/fHLZO5EZ3pCNtfpuzJh0D+V3hY+l
-	81RMaiYqWpDlKXxIypCEcPIdQIIVMFi+R91ZOEzD3iY88aWoqH6cmyTxkedwYSwi2694RmXR0mHxy
-	HJMGpOdtETOfSEnQhthVNJEVGBF8PvrKG/aMnFbq18N3pqob1Fg0PFm1DA5xjlvpSajywM1RCYpxq
-	GI8ay/bFg9A4WJuawpOKXoPioFtATbH/LtxNOcJDmW+wZrJpmIcRJSEc+R1X3h87Oh7U/vT2yehTx
-	LGcEBJHeFIH3T5aQHcOA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LxhSSkwYAPYLyjhPbApGeb2jGUCAiNTgpFKePPd8Xow=; b=a7QPj3k9KKiw6Q
+	Pk6DaXWkeN1vwo+k/3j4osS81uiR+k08Ly7Rx0LmXklKLKNEnbuleVRjye/3WiaX1XuYf8gxAacJg
+	xow1MqDRdgF/YeRyzjBBsRvqeFt1sT8uQNu34s/8embb2IvxiWsGJzkg3IW/9xa4SYUUfl/5zB/+9
+	t3r5GytxKR6oGnOjOiqXfLGMm7ZbhanAwS0bFfb8YVkwJS2sq/Nl088YPADdK6TQlxDD3GsrsXl+r
+	vOsnANNgvKz5IMlBSlxLXUvgTSutCZjbpcoyKySStvWfsZJm1jdmEF5ENtx3rLPkNkl81/sC2XKMd
+	B7a/zfxiKqXN80iBuGzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vRbed-00000009xKi-1tCo;
-	Fri, 05 Dec 2025 19:39:47 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1vRbef-00000009xLy-3AZW;
+	Fri, 05 Dec 2025 19:39:49 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vRbeZ-00000009xJX-0BhV
+	id 1vRbed-00000009xKM-1sIz
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Dec 2025 19:39:45 +0000
+	Fri, 05 Dec 2025 19:39:48 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 6C34F1A1F9C;
-	Fri,  5 Dec 2025 19:39:39 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 0BB684E41A72;
+	Fri,  5 Dec 2025 19:39:46 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 34479606AC;
-	Fri,  5 Dec 2025 19:39:39 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AAEBA102F170A;
-	Fri,  5 Dec 2025 20:39:32 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id D70CC606AC;
+	Fri,  5 Dec 2025 19:39:45 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 456D9102F170A;
+	Fri,  5 Dec 2025 20:39:43 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1764963578; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=0Qawmau/PjPZ3PGQY+c8TNDQ5ZTEU3SIELVRk+KNuaE=;
-	b=ePySEHFg8LAQLNMkVoZk/Ez1k9esGYMFwX9Oq8QNhRJwip1xOS9k00gAoYewbHvH8iokJl
-	bBLJ2U78g0/iq+/Gf3BKBVT0dmK+rNoFYvPeTcdVoCZcredcK3FDrOoDZK1UGlB/fiMpAq
-	1BjG2nrox6wsA0KfBY/US87eL7pE9p22sTO/o+DS1ecSOS6J1YRtVton3TPpcsFcj1FlyN
-	ptT39Zpd77e6RKOn9HLFOIviMgeDfN8h+x+VAPF2b+pOLGxDV/N+0308QNQnyh2iPZrTQk
-	fiqDBDsVBVRJLyjz4i4Ret9FmjrJ6STkiCbVbSkj7bUbS9MPlDYP3OXEhrjppA==
+	t=1764963585; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=EMGpx1MzAg6O8NLZEwbaJM17V1d6KdJfLT/hxVY3Xs4=;
+	b=aKWi69wqYVysNMyrftPssWDmkIa8f8R9dT8gmxcN+8e0mdsA4bY3Pg33colA+ecbDjOTMy
+	B56XCj5cmtA2GOpR0qlgG4kEqxeYU73gBu94dlmCrKWFTBWF3/7RzDBLGFMFzUUoZrioTu
+	Xvrnm51iWn2q06pQ+dnHJJoAHkiyKQ0N6Y+7Z8jvY7T+lGJG+h9YoBI8K2Mp4+E/WWoiAt
+	E9tqOrnuy9Mse6k60/dv5C7n10rrb4Tg4HXKq+TXBMCQ5tX21gSlJYQl63XTrFPoSgRYkT
+	WfzD8yofRYqIGFo6sr5ULVyb9AY5LmSp0uC9klZkK1nDtkA2s4OSgA+iPaiPCw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH RFC 0/8] mtd: spinand: Winbond continuous read support
-Date: Fri, 05 Dec 2025 20:38:51 +0100
-Message-Id: <20251205-winbond-v6-18-rc1-cont-read-v1-0-01bc48631c73@bootlin.com>
+Date: Fri, 05 Dec 2025 20:38:54 +0100
+Subject: [PATCH RFC 3/8] mtd: spinand: Drop ECC dirmaps
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MOw7CMAwA0KtUnrFUhxI+KxIHYK0Y2tiAF6dyU
- KlU9e5EjG95KxRxlQKXZgWXWYtmq6BdA+k92EtQuRpCGw4U2g6/amM2xjkindATYcr2QZeBMcb
- ueCbmMcQ91GFyeery33u4367w2LYfWEP9DnIAAAA=
-X-Change-ID: 20251204-winbond-v6-18-rc1-cont-read-664791ddb263
+Message-Id: <20251205-winbond-v6-18-rc1-cont-read-v1-3-01bc48631c73@bootlin.com>
+References: <20251205-winbond-v6-18-rc1-cont-read-v1-0-01bc48631c73@bootlin.com>
+In-Reply-To: <20251205-winbond-v6-18-rc1-cont-read-v1-0-01bc48631c73@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
  Vignesh Raghavendra <vigneshr@ti.com>, Michael Walle <mwalle@kernel.org>
 Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -63,8 +62,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251205_113943_561349_FC48BE8B 
-X-CRM114-Status: GOOD (  17.16  )
+X-CRM114-CacheID: sfid-20251205_113947_625706_CC04BC53 
+X-CRM114-Status: GOOD (  17.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,97 +75,163 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpTUEkgTkFORCBjb250aW51b3VzIHJlYWQgc3VwcG9ydCBoYXMgYWxyZWFkeSBiZWVu
-IGFkZGVkIGEgZmV3IHJlbGVhc2VzCmFnbywgYnV0IG9ubHkgTWFjcm9uaXggY2hpcHMgd2VyZSBi
-ZW5lZml0aW5nIGZyb20gdGhpcyBzdXBwb3J0LiBXaW5ib25kCmNoaXBzIGFsc28gaGF2ZSBhIGNv
-bnRpbnVvdXMgcmVhZCBmZWF0dXJlLCB3aGljaCBpcyBzbGlnaHRseSBtb3JlCmNvbXBsZXggdG8g
-dXNlIGluIHRoZSBzY29wZSBvZiB0aGUgTGludXgga2VybmVsLCBiZWNhdXNlIHRoZXkgdGhlc2UK
-Y2hpcHMgZXhwZWN0IGEgZGlmZmVyZW50IHJlYWQgZnJvbSBjYWNoZSBvcGVyYXRpb24gb25jZSBp
-biBjb250aW51b3VzCm1vZGUuCgpJbiBvcmRlciB0byBiZSBtb3JlIGZsZXhpYmxlLCB0aGlzIHNl
-cmllcyBjaGFuZ2VzIHRoZSBsb2dpYyBiZWhpbmQKZGlybWFwcy4gRGlyZWN0IG1hcHBpbmdzIHVz
-ZWQgdG8gYmUgdmVyeSBzdGF0aWMsIG5vdCBmbGV4aWJsZS4gSSBhbQpwcm9wb3NpbmcgdG8gY2hh
-bmdlIHRoaXMgYW5kIHR1cm4gdGhlbSBpbiB0byBzbGlnaHRseSBtb3JlIGR5bmFtaWMKaW50ZXJm
-YWNlcywgd2hlcmUgZm9yIGluc3RhbmNlIHdlIGNhbjoKLSBFbmFibGUvZGlzYWJsZSB0aGUgY29y
-cmVjdGlvbiAod2FzIHByZXZpb3VzbHkgaGFuZGxlZCBieSBjcmVhdGluZyB5ZXQKICBhbm90aGVy
-IHBhaXIgb2YgZGlyZWN0IG1hcHBpbmdzIHBlciB0YXJnZXQpLgotIFNlbGVjdCBvbmUgb3IgYW5v
-dGhlciB2YXJpYW50IGZvciB0aGUgY2FjaGUgb3BlcmF0aW9ucy4KCkkgcHJvcG9zZSB0byBuYW1l
-IHRoZSB2YXJpYW50cyBhdmFpbGFibGUgaW4gYSBkaXJlY3QgbWFwcGluZyAicHJpbWFyeSIKYW5k
-ICJzZWNvbmRhcnkiLCBhbmQgbGV0IHRoZSB1cHBlciBsYXllciAoU1BJIE5PUiBvciBTUEkgTkFO
-RCkgcG9pbnQgdG8KdGhlIG9uZSB0aGF0IG5lZWRzIHRvIGJlIHVzZWQgZm9yIHRoZSBvcGVyYXRp
-b24uIENvbnRyb2xsZXIgZHJpdmVycwpzaG91bGQgbm90IHJlYWxseSBjYXJlIGFib3V0IHRoaXMg
-Y2hhbmdlLCBleHBlY3QgdGhlIGZhY3QgdGhhdCB0aGV5CnNob3VsZCBub3Qga2VlcCBhIHN0YXRp
-YyByZXByZXNlbnRhdGlvbiBvZiB0aGUgdGVtcGxhdGUgb24gdGhlaXIKc2lkZS4gQmVjYXVzZSBv
-ZiB0aGF0LCBJIGFtIGNyZWF0aW5nIGEgY2FwYWJpbGl0eSBib29sZWFuIHRvIGZsYWcKZHJpdmVy
-cyB0aGF0IHN1cHBvcnQgdGhpcyBjYXBhYmlsaXR5ICh0aGUgZmxhZyBpcyBpZ25vcmVkIGluIHRo
-ZQpub2Rpcm1hcCBjYXNlKS4KClRoaXMgc2VyaWVzIGlzIHNlbnQgYXMgYW4gUkZDIGJlY2F1c2Ug
-aXQgY2hhbmdlcyB0aGUgd2F5IGRpcmVjdCBtYXBwaW5ncwp3b3JrLCBldmVuIHRob3VnaCBpbiBw
-cmFjdGljZSBJIGV4cGVjdCBubyByZWdyZXNzaW9uc+KEoi4gSSBhbSBpbnRlcmVzdGVkCnRvIGdl
-dCBhbiAiZWFybHkiIGZlZWRiYWNrIG9uIGl0LiBJIGhhdmUgYWxzbyBub3QgeWV0IGV4cGVyaW1l
-bnRhbGx5CnRlc3RlZCBhbGwgY29tYmluYXRpb25zIHlldCAobGFzdCBwYXRjaCBpcyBvbmx5IGNv
-bXBpbGUgdGVzdGVkKSwgYW5kCmJlY2F1c2UgdGhpcyB3aWxsIHRha2UgYSBsb3Qgb2YgdGltZSwg
-SSB3b3VsZCBsaWtlIHRvIHZhbGlkYXRlIHRoZQphcHByb2FjaCBmaXJzdC4KClRoZSBzZXJpZXMg
-bXVzdCBiZSBhcHBsaWVkIG9uIHRvcCBvZiB0aGUgU1BJIE5BTkQgT2N0YWwgRFRSIHNlcmllcywg
-YXMgSQp3YW50ZWQgdG8gaW5jbHVkZSB0aGUgb2N0YWwgRFRSIHZhcmlhbnRzIGluIG15IHRlc3Rp
-bmcvYmVuY2htYXJrcy4KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDI1MTAzMS13
-aW5ib25kLXY2LTE3LXJjMS1vZGRyLXYxLTAtYmU0MmRlMjNlYmYxQGJvb3RsaW4uY29tCgpIZXJl
-IGlzIGEgYmVuY2htYXJrIHdpdGggdGhlIGZhc3RlciBXaW5ib25kIGNoaXAgSSBoYXZlLCBXMzVO
-MDJKVyBvbiBhClRJIEFNNjJhNyBMUCBTSyBmZWF0dXJpbmcgdGhlIENhZGVuY2UgUVNQSSBjb250
-cm9sbGVyLCBjbG9ja2VkIGF0CjI1TUh6LiBTcGVlZCBnYWluIGZvciBhIDEwLXBhZ2UgcmVhZCBp
-cyBhYm91dCArMzIlIGluIG9jdGFsIFNEUiBtb2RlLAorNDclIGZvciBhIDEwLXBhZ2UgcmVhZCBp
-biBvY3RhbCBEVFIgbW9kZSBhbmQgdXAgdG8gKzgzJSBmb3IgYSBlbnRpcmUKYmxvY2sgcmVhZCEK
-CiAgICAxUy04Uy04Uywgbm8gY29udGludW91cyByZWFkOgoKICAgICAgIDY0IHBhZ2UgcmVhZCBz
-cGVlZCBpcyAxNTA1OCBLaUIvcwoKICAgIDFTLThTLThTLCB3aXRoIGNvbnRpbnVvdXMgcmVhZHM6
-CgogICAgICAgMSBwYWdlIHJlYWQgc3BlZWQgaXMgMTUwNTggS2lCL3MKICAgICAgIDIgcGFnZSBy
-ZWFkIHNwZWVkIGlzIDE1MDU4IEtpQi9zCiAgICAgICAzIHBhZ2UgcmVhZCBzcGVlZCBpcyAxNjgw
-MCBLaUIvcwogICAgICAgNCBwYWdlIHJlYWQgc3BlZWQgaXMgMTcwNjYgS2lCL3MKICAgICAgIDUg
-cGFnZSByZWFkIHNwZWVkIGlzIDE4NDYxIEtpQi9zCiAgICAgICA2IHBhZ2UgcmVhZCBzcGVlZCBp
-cyAxODQ2MSBLaUIvcwogICAgICAgNyBwYWdlIHJlYWQgc3BlZWQgaXMgMTkzODQgS2lCL3MKICAg
-ICAgIDggcGFnZSByZWFkIHNwZWVkIGlzIDE5NjkyIEtpQi9zCiAgICAgICA5IHBhZ2UgcmVhZCBz
-cGVlZCBpcyAxOTM4NCBLaUIvcwogICAgICAgMTAgcGFnZSByZWFkIHNwZWVkIGlzIDIwMDAwIEtp
-Qi9zCiAgICAgICAxMSBwYWdlIHJlYWQgc3BlZWQgaXMgMjAwMDAgS2lCL3MKICAgICAgIDEyIHBh
-Z2UgcmVhZCBzcGVlZCBpcyAyMDAwMCBLaUIvcwogICAgICAgMTMgcGFnZSByZWFkIHNwZWVkIGlz
-IDIwODAwIEtpQi9zCiAgICAgICAxNCBwYWdlIHJlYWQgc3BlZWQgaXMgMjAzNjMgS2lCL3MKICAg
-ICAgIDE1IHBhZ2UgcmVhZCBzcGVlZCBpcyAyMDAwMCBLaUIvcwogICAgICAgMTYgcGFnZSByZWFk
-IHNwZWVkIGlzIDE5NjkyIEtpQi9zCiAgICAgICAzMiBwYWdlIHJlYWQgc3BlZWQgaXMgMTk2OTIg
-S2lCL3MKICAgICAgIDY0IHBhZ2UgcmVhZCBzcGVlZCBpcyAxOTY5MiBLaUIvcwoKICAgIDhELThE
-LThELCBubyBjb250aW51b3VzIHJlYWQ6CgogICAgICAgNjQgcGFnZSByZWFkIHNwZWVkIGlzIDIz
-MjcyIEtpQi9zCgogICAgOEQtOEQtOEQsIHdpdGggY29udGludW91cyByZWFkOgoKICAgICAgIDEg
-cGFnZSByZWFkIHNwZWVkIGlzIDIzMjcyIEtpQi9zCiAgICAgICAyIHBhZ2UgcmVhZCBzcGVlZCBp
-cyAyMzI3MiBLaUIvcwogICAgICAgMyBwYWdlIHJlYWQgc3BlZWQgaXMgMjgwMDAgS2lCL3MKICAg
-ICAgIDQgcGFnZSByZWFkIHNwZWVkIGlzIDMyMDAwIEtpQi9zCiAgICAgICA1IHBhZ2UgcmVhZCBz
-cGVlZCBpcyAzNDI4NSBLaUIvcwogICAgICAgNiBwYWdlIHJlYWQgc3BlZWQgaXMgMzQyODUgS2lC
-L3MKICAgICAgIDcgcGFnZSByZWFkIHNwZWVkIGlzIDM2MDAwIEtpQi9zCiAgICAgICA4IHBhZ2Ug
-cmVhZCBzcGVlZCBpcyAzNjU3MSBLaUIvcwogICAgICAgOSBwYWdlIHJlYWQgc3BlZWQgaXMgMzYw
-MDAgS2lCL3MKICAgICAgIDEwIHBhZ2UgcmVhZCBzcGVlZCBpcyAzNDI4NSBLaUIvcwogICAgICAg
-MTEgcGFnZSByZWFkIHNwZWVkIGlzIDM2NjY2IEtpQi9zCiAgICAgICAxMiBwYWdlIHJlYWQgc3Bl
-ZWQgaXMgNDAwMDAgS2lCL3MKICAgICAgIDEzIHBhZ2UgcmVhZCBzcGVlZCBpcyA0MTYwMCBLaUIv
-cwogICAgICAgMTQgcGFnZSByZWFkIHNwZWVkIGlzIDM3MzMzIEtpQi9zCiAgICAgICAxNSBwYWdl
-IHJlYWQgc3BlZWQgaXMgNDAwMDAgS2lCL3MKICAgICAgIDE2IHBhZ2UgcmVhZCBzcGVlZCBpcyAz
-NjU3MSBLaUIvcwogICAgICAgMzIgcGFnZSByZWFkIHNwZWVkIGlzIDQyNjY2IEtpQi9zCiAgICAg
-ICA2NCBwYWdlIHJlYWQgc3BlZWQgaXMgNDI2NjYgS2lCL3MKClRoYW5rcyEKTWlxdcOobAoKLS0t
-Ck1pcXVlbCBSYXluYWwgKDgpOgogICAgICBtdGQ6IHNwaW5hbmQ6IERyb3AgYSB0b28gc3Ryb25n
-IGxpbWl0YXRpb24KICAgICAgbXRkOiBzcGluYW5kOiBFeHBvc2Ugc3BpbmFuZF9vcF9pc19vZHRy
-KCkKICAgICAgbXRkOiBzcGluYW5kOiBEcm9wIEVDQyBkaXJtYXBzCiAgICAgIHNwaTogc3BpLW1l
-bTogVHJhbnNmb3JtIHRoZSByZWFkIG9wZXJhdGlvbiB0ZW1wbGF0ZQogICAgICBzcGk6IHNwaS1t
-ZW06IENyZWF0ZSBhIHNlY29uZGFyeSByZWFkIG9wZXJhdGlvbgogICAgICBtdGQ6IHNwaW5hbmQ6
-IFVzZSBzZWNvbmRhcnkgb3BzIGZvciBjb250aW51b3VzIHJlYWRzCiAgICAgIG10ZDogc3BpbmFu
-ZDogd2luYm9uZDogQWRkIHN1cHBvcnQgZm9yIGNvbnRpbnVvdXMgcmVhZHMgb24gVzM1Tnh4SlcK
-ICAgICAgbXRkOiBzcGluYW5kOiB3aW5ib25kOiBBZGQgc3VwcG9ydCBmb3IgY29udGludW91cyBy
-ZWFkcyBvbiBXMjVOeHhKVwoKIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyAgICB8IDEyNSAr
-KysrKysrKysrKysrKy0tLS0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9zcGkvd2luYm9uZC5jIHwg
-MjI3ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tCiBkcml2ZXJzL210
-ZC9zcGktbm9yL2NvcmUuYyAgICAgfCAgMjAgKystLQogZHJpdmVycy9zcGkvc3BpLW1lbS5jICAg
-ICAgICAgIHwgIDMyICsrKystLQogaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oICAgIHwgIDE2
-ICsrLQogaW5jbHVkZS9saW51eC9zcGkvc3BpLW1lbS5oICAgIHwgICA4ICstCiA2IGZpbGVzIGNo
-YW5nZWQsIDMzNiBpbnNlcnRpb25zKCspLCA5MiBkZWxldGlvbnMoLSkKLS0tCmJhc2UtY29tbWl0
-OiBkYmIxYzA3ZDc2NTRlMzYwOWNhODkyZmNlYmFmZGU3ZjMzZDY3YzM4CmNoYW5nZS1pZDogMjAy
-NTEyMDQtd2luYm9uZC12Ni0xOC1yYzEtY29udC1yZWFkLTY2NDc5MWRkYjI2MwoKQmVzdCByZWdh
-cmRzLAotLSAKTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Direct mappings are very static concepts, which allow us to reuse a
+template to perform reads or writes in a very efficient manner after a
+single initialization. With the introduction of pipelined ECC engines
+for SPI controllers, the need to differentiate between an operation with
+and without correction has arised. The chosen solution at that time has
+been to create new direct mappings for these operations, jumping from 2
+to 4 dirmaps per target. Enabling ECC was done by choosing the correct
+dirmap.
+
+Today, we need to further parametrize dirmaps. With the goal to enable
+continuous reads on a wider range of devices, we will need more
+flexibility regarding the read from cache operation template to pick at
+run time, for instance to use shorter "continuous read from cache"
+variants.
+
+We could create other direct mappings, but it would increase the matrix
+by a power of two, bringing the theoretical number of dirmaps to
+8 (read/write, ecc, shorter read variants) per target. This grow is not
+sustainable, so let's change how dirmaps work - a little bit.
+
+Operations already carry an ECC parameter, use it to indicate whether
+error correction is required or not. In practice this change happens
+only at the core level, SPI controller drivers do not care about the
+direct mapping structure in this case, they just pick whatever is in the
+template as a base. As a result, we allow the core to dynamically change
+the content of the templates.
+
+He who can do more can do less, so during the checking steps, make sure
+to enable the ECC requirement just for the time of the checks.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/spi/core.c | 52 +++++++++++++++++----------------------------
+ include/linux/mtd/spinand.h |  2 --
+ 2 files changed, 20 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 3765fcc95c4a..086c9f293373 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -397,10 +397,13 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+ 		}
+ 	}
+ 
+-	if (req->mode == MTD_OPS_RAW)
+-		rdesc = spinand->dirmaps[req->pos.plane].rdesc;
++	rdesc = spinand->dirmaps[req->pos.plane].rdesc;
++
++	if (nand->ecc.engine->integration == NAND_ECC_ENGINE_INTEGRATION_PIPELINED &&
++	    req->mode != MTD_OPS_RAW)
++		rdesc->info.op_tmpl.data.ecc = true;
+ 	else
+-		rdesc = spinand->dirmaps[req->pos.plane].rdesc_ecc;
++		rdesc->info.op_tmpl.data.ecc = false;
+ 
+ 	if (spinand->flags & SPINAND_HAS_READ_PLANE_SELECT_BIT)
+ 		column |= req->pos.plane << fls(nanddev_page_size(nand));
+@@ -489,10 +492,13 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
+ 			       req->ooblen);
+ 	}
+ 
+-	if (req->mode == MTD_OPS_RAW)
+-		wdesc = spinand->dirmaps[req->pos.plane].wdesc;
++	wdesc = spinand->dirmaps[req->pos.plane].wdesc;
++
++	if (nand->ecc.engine->integration == NAND_ECC_ENGINE_INTEGRATION_PIPELINED &&
++	    req->mode != MTD_OPS_RAW)
++		wdesc->info.op_tmpl.data.ecc = true;
+ 	else
+-		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
++		wdesc->info.op_tmpl.data.ecc = false;
+ 
+ 	if (spinand->flags & SPINAND_HAS_PROG_PLANE_SELECT_BIT)
+ 		column |= req->pos.plane << fls(nanddev_page_size(nand));
+@@ -1133,12 +1139,17 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+ 	struct spi_mem_dirmap_info info = { 0 };
+ 	struct spi_mem_dirmap_desc *desc;
++	bool enable_ecc = false;
++
++	if (nand->ecc.engine->integration == NAND_ECC_ENGINE_INTEGRATION_PIPELINED)
++		enable_ecc = true;
+ 
+ 	/* The plane number is passed in MSB just above the column address */
+ 	info.offset = plane << fls(nand->memorg.pagesize);
+ 
++	/* Write descriptor */
+ 	info.length = nanddev_page_size(nand) + nanddev_per_page_oobsize(nand);
+-	info.op_tmpl = *spinand->op_templates->update_cache;
++	info.op_tmpl.data.ecc = enable_ecc;
+ 	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
+ 					  spinand->spimem, &info);
+ 	if (IS_ERR(desc))
+@@ -1146,38 +1157,15 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
+ 
+ 	spinand->dirmaps[plane].wdesc = desc;
+ 
++	/* Read descriptor */
+ 	info.op_tmpl = *spinand->op_templates->read_cache;
++	info.op_tmpl.data.ecc = enable_ecc;
+ 	desc = spinand_create_rdesc(spinand, &info);
+ 	if (IS_ERR(desc))
+ 		return PTR_ERR(desc);
+ 
+ 	spinand->dirmaps[plane].rdesc = desc;
+ 
+-	if (nand->ecc.engine->integration != NAND_ECC_ENGINE_INTEGRATION_PIPELINED) {
+-		spinand->dirmaps[plane].wdesc_ecc = spinand->dirmaps[plane].wdesc;
+-		spinand->dirmaps[plane].rdesc_ecc = spinand->dirmaps[plane].rdesc;
+-
+-		return 0;
+-	}
+-
+-	info.length = nanddev_page_size(nand) + nanddev_per_page_oobsize(nand);
+-	info.op_tmpl = *spinand->op_templates->update_cache;
+-	info.op_tmpl.data.ecc = true;
+-	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
+-					  spinand->spimem, &info);
+-	if (IS_ERR(desc))
+-		return PTR_ERR(desc);
+-
+-	spinand->dirmaps[plane].wdesc_ecc = desc;
+-
+-	info.op_tmpl = *spinand->op_templates->read_cache;
+-	info.op_tmpl.data.ecc = true;
+-	desc = spinand_create_rdesc(spinand, &info);
+-	if (IS_ERR(desc))
+-		return PTR_ERR(desc);
+-
+-	spinand->dirmaps[plane].rdesc_ecc = desc;
+-
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index a90e873cf693..5ca1181048f7 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -681,8 +681,6 @@ struct spinand_info {
+ struct spinand_dirmap {
+ 	struct spi_mem_dirmap_desc *wdesc;
+ 	struct spi_mem_dirmap_desc *rdesc;
+-	struct spi_mem_dirmap_desc *wdesc_ecc;
+-	struct spi_mem_dirmap_desc *rdesc_ecc;
+ };
+ 
+ /**
+
+-- 
+2.51.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
