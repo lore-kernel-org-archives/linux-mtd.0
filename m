@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25883D3ABE7
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Dec 2025 03:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4012BD1CDC6
+	for <linux-mtd@archiver.kernel.org>; Sun,  7 Dec 2025 15:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YNvRMQnx5P09RFKjPPi/urac454McZU8E1EsIKTYLjw=; b=SBYgYrRFWb6d87
-	8CpenGnBRlipB9VfFNUYsvlVWKiGiNUS781YwAbphjyTI26hvDRUf37KTzXsKOloP7Ezqxr90RNX/
-	4YdRBkIeI9toJO3iA8qhcCnvZzM1JKczveNsEGs1t6Jg+QgNQayCLqGmzOE3KynIpiW00crWlyx/c
-	hzv+J0aLh8OJ99/BdBYTF+fWlbnm77gXkgjS6PYKAxchqSEUP/u/rozLgPLA9KTCmeOAdFyksdM8R
-	sq43M2xnxRjylMMQogVnF4ahJSzJdYgY7WWNOmb1PjpvmV3gjY9at6vRr/SOisqax4latppym0UcD
-	5pLMksfbQ9LFHe8UnEZw==;
+	List-Owner; bh=aVzwTLXqRuvEr7qpwtiEZx8KGGgMfzdrR55uaWnW1ko=; b=AjnE7K5bLW2XNW
+	mAXW0oWlma8RyvZSukREMDzVW61+gyJny2T5KqqKTn8JFJgTZjrQ603ZB5TLhitFoNZ8wLKHQNEkx
+	yBfJiQGHy6FQsJP6ZwF/S5far+llT2flj9f8pHPmRzAdS9x366wnCahSz1XImzPSDsHLb9IaoO2p+
+	5kZawV0jJCw720Un2//StGftK2UJNtzsoYJuZ/OfeNVgPcmuiVtjWQGcM0kqlKNX+j9d5ryOfTbEM
+	KXE2j/khnujDsIsuHkgTAqJicY+7Q3qQHp3R2D2Uvnf4dW+XPFGyRJB/fOLLoYpX/fUGgs00PKdo4
+	aVMe4vUouv2b4T9GlnfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vRjMg-0000000AZYY-02ds;
-	Sat, 06 Dec 2025 03:53:46 +0000
-Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
+	id 1vSGUN-0000000C2cb-3p9O;
+	Sun, 07 Dec 2025 15:15:55 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vRjMe-0000000AZY8-04Lh
+	id 1vSGUK-0000000C2bn-0gTU
 	for linux-mtd@lists.infradead.org;
-	Sat, 06 Dec 2025 03:53:45 +0000
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-29d7b8bd6b0so16780465ad.0
-        for <linux-mtd@lists.infradead.org>; Fri, 05 Dec 2025 19:53:43 -0800 (PST)
+	Sun, 07 Dec 2025 15:15:53 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-3436d6bdce8so3921753a91.3
+        for <linux-mtd@lists.infradead.org>; Sun, 07 Dec 2025 07:15:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764993223; x=1765598023; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1765120551; x=1765725351; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xp4habiAbNow2Q2nLJqK4WvF0gGCPqnNUANZfkwc1F8=;
-        b=Teqeng8z62BgBo86r8mgX3kHtvoT+rFzPW7U1fSi+dwJm+WVFoljQQ4dH+1aZdrbL4
-         YvMwAanXeC3fkhIUGTTjb8uo15h6hBzkME63TXKhLnnUX2DLvpTwobB1ac+NJlIMSpBj
-         9FNghpy4c3bWuk9M4KXc0bdgBOChQhxXNiFIoJAR5NtZn1PL+ntJvEsSry4ozOcf2fSR
-         mPHSxRIJlBvyncLKhvrQWTS9gc3sd/IhyALXUtmVpbxXTbJSYhzBRgSP6wmyQXymecvC
-         K6jdQjO8qXh0hz9hFh9HpvEi8co0WPRjLw6ue+wzausdnwcG9CYdG2KNhoNwAq+5Tsqp
-         iQRg==
+        bh=AW/SIHpTu5saVqUrGNp93/YDlgqpa/dxJaNUAEC/8LU=;
+        b=Y5gfE4nFiyza/VUYs+OwAV6uxrI7Ql6SKk/NV6hXaOQsk/T14TeKRnCMqeRp3nm2/E
+         GHVcnLeW3txRJbM/JyH98QUUkWpRM2NebbAXDGRP/Gwnh5eXbefQqdmF65T3SxfgSrAg
+         UUx+vJrzV4LScXbcdtLJjYe9FQb50UXlVWH4XxsxWm75BkzK6aYp8Nm8s96MnfQaLUjQ
+         QSAtkFJzYxQFC7ptl9+bbwFuilucYsX63qaaPQzNi+c3vx7NPvO92deKJAKURrVoC/Si
+         i8hSmPWxGBblYb8zk4T1IT1OE912Olw4w56K+yAauRtX/amYHBLXpFHrxqAh1wWM33sW
+         BWbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764993223; x=1765598023;
+        d=1e100.net; s=20230601; t=1765120551; x=1765725351;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xp4habiAbNow2Q2nLJqK4WvF0gGCPqnNUANZfkwc1F8=;
-        b=ZwCfOQBYAD9Ou9G6NvScyoOXJrpR6KHxUa7oDYBMTI/7XJ1feT1Awc/4v9iPVSNzU2
-         KA7mpOnujUi5PHpe8XTaf5sVG1YU+U/Y3/K1COnMn3gNS1Q52tr931FNsqL3y5Oc4YLW
-         41DNhfQtsoAbmTMG/UHoz8m99co7D2CZGUd66Wi34sHPAva4knMoLkjxl1GDn1Ones8p
-         EoHPRRv3WwEThIP5bhNYTd8WTyQ/AcuRR9g/+GZu2t6d8uOaJUBL8++slAWcJ50bxJIi
-         eO6Wy6+759ZRkgKIfObuGkS5XLJ3jFOCH6gZQfyYVOoZxsk7uAouxUlDJ/B+nWT+wl8a
-         XVvQ==
-X-Gm-Message-State: AOJu0YzXTTg9ES41PkljZR833RQimxNpQ8D6eBRINUXB8Jn8mYb/cZWV
-	2hxnqJHEmun/sJoJlN9LUezApctm8PNEzJR3pYInm8rKwNsoeT1gEP2r
-X-Gm-Gg: ASbGnctloxXl8wLERBA+uTV64rbB1q7l5+RWYko3x8N+PorKaVs6XehFEdNEBV6uQNY
-	2c9T6z14e6aeEX19WuTLipZtN8i1lF/BR8V/e6ABH0QlgHKeVHuPS1VeogVi2H9bp4nDJnTvMbL
-	XLqgQwndXoCXbXZaxGgQ6uU1dvuMGPfsATbwzGEhaclZvN87GN0GqB9s7BTgVHKwaxjQ1AsGEuh
-	3sldwF0c1JiXzhU6IxAaMx9308lG6vEEs3eRY63nKvPCPtZ229FHpPbcAFOZR8PBcQurDr7pI08
-	1KdRh6IgzU9WBoFBBSKA2RqNDSPlZl36SenK76HJBElIUWzLNf//nIMtHQVtdxDjbnkabT5TyyF
-	xGLgXqQGDV8as/0zGBXPOSKXdFJmfBZnPrtr8Mmii33DI7dl7mYX+4G5XuqpcPoWalgpgwDJmfF
-	7fPbxnXvbOfB/cSDwq8ee1iWzWXMiw/DJF52lXrf/Enw==
-X-Google-Smtp-Source: AGHT+IECHCzvg2dPpQMNfR3Ad6XNxcN8LiBrxGsedR08VJUQWMTAG662Cl4arK396Ch6yaQqZcEyew==
-X-Received: by 2002:a17:902:c946:b0:267:8b4f:df36 with SMTP id d9443c01a7336-29d9eda6c2fmr113818695ad.29.1764993222583;
-        Fri, 05 Dec 2025 19:53:42 -0800 (PST)
-Received: from localhost.localdomain ([103.98.63.195])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29daeaabf5fsm61995125ad.78.2025.12.05.19.53.40
+        bh=AW/SIHpTu5saVqUrGNp93/YDlgqpa/dxJaNUAEC/8LU=;
+        b=RTtOPQeKJwyRmKr7b1AOV8DVNNCvd3c+OVrwUZxwe/cKnRy77w/IAqcSSzKTH292wt
+         mYw+VWRshuKx5wAGlZYClaAarxK6l5Pe9SPDiPj2Q2hrmgrZq5oraxYd4yAHKMGvEpqB
+         Lb3OAWE6CXoM8i618kmBcFiRuMsWuNXREHyaYqLIAy5ChpQXr0Og+IZdCfCEnIE2DVNV
+         /mKD4mz2OotmAbSyxQqVqTp6FyMZh8SPE5DpB02By1qtUNL/ZkjqpNBuBVGAcmC79I3/
+         hXVp14TP8IUlV0b2aLcoL3WcnWiAkoP871FO8pbHFzncUHN2yoYU9goOY8/zGvKBbl6i
+         iIqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXufZoxjgO9Yh6eHy/GiALTG6coflvPwlSA0J5zYTAXJUXU4TifG50iHRblX1JVHJyaPebt2extu/w=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwO88XryhFHCvDk7/OEaURdeeOwB0XMzZ/4D6/OAtUNEbc+uiYY
+	sWNrwtrCtWEUWHpJ/zDjxLMdVdHlGVjMT/1dxlY2oKcdHM7bTg9X3YC2
+X-Gm-Gg: ASbGnct1jKVTuGzrfaZ+klXotnyqF1eA78QEWpJejYOuqvaNl1szuSpktqO6itRtb+f
+	2lAcjUmSng4KO2ZQWVQmMWRMHGURS9qoMmbr51BTeBo+gEW1lbgGuhwDwQjka1fQvMAwXh9UOGK
+	w7JQiCF96p3azD7b4BFMiSQL/jxcpjHillzshL2ZL0ihcXdvsPnLEBAYBs7DRV26nnfAMxtVtHZ
+	FEWuVeBk3dlzT8dEIMdZNLDvsoSLpXMoawnbalFOR0fwNZhJa2F6M7MFodaqqT4Aa9v5ijXadlP
+	9SgM//y68RB8Y7dl+h4hf8HwGRZTL0KGwuHJYnlTEIvnTgeMyhUFeKOY3LbaII36PHl+yDUvYK2
+	PEs0ii6CDwqjYeerxPDUCZFHgAyKzO0lh7lWmmw5wflppr0OOe2cZ2Cyf7nVcoaTlioYx0Je2jU
+	ajfbl9dkym3I6ymuu7DF/u
+X-Google-Smtp-Source: AGHT+IGXwjXVzHDGJyzEJ4hoUe5aKOA+cQUse3BL/DgwoE4uYyqJXGEPhYE60wRerGH3VHaI561pig==
+X-Received: by 2002:a17:90b:28c5:b0:32e:a5ae:d00 with SMTP id 98e67ed59e1d1-349a24e47d3mr4003674a91.13.1765120550830;
+        Sun, 07 Dec 2025 07:15:50 -0800 (PST)
+Received: from DESKTOP-TIT0J8O.dm.ae ([49.47.198.227])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34912896983sm5951923a91.0.2025.12.07.07.15.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Dec 2025 19:53:42 -0800 (PST)
-From: Dharanitharan R <dharanitharan725@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sun, 07 Dec 2025 07:15:50 -0800 (PST)
+From: Ahmed Naseef <naseefkm@gmail.com>
+To: 
+Cc: Ahmed Naseef <naseefkm@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org,
-	Dharanitharan R <dharanitharan725@gmail.com>
-Subject: [PATCH v1] mtd: sm_ftl: use strscpy() in sm_attr_show()
-Date: Sat,  6 Dec 2025 03:53:13 +0000
-Message-ID: <20251206035313.10190-1-dharanitharan725@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spinand: add support for Dosilicon DS35Q1GA/DS35M1GA
+Date: Sun,  7 Dec 2025 19:09:20 +0400
+Message-Id: <20251207150923.86328-1-naseefkm@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251205_195344_078732_90874677 
-X-CRM114-Status: GOOD (  11.07  )
+X-CRM114-CacheID: sfid-20251207_071552_246426_215E1B23 
+X-CRM114-Status: GOOD (  17.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,47 +101,142 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In sm_ftl.c, the sm_attr_show() function currently copies
-attribute data using:
+Add support for Dosilicon DS35Q1GA and DS35M1GA SPI NAND.
+Datasheet:
+ https://www.dosilicon.com/resources/SPI%20NAND/DS35X1GAXXX_rev08.pdf
 
-    strncpy(buf, sm_attr->data, sm_attr->len);
-    return sm_attr->len;
+Tested on Genexis Platinum 4410 (EcoNet EN751221).
 
-Using strncpy() can be unsafe because it does not guarantee
-a NUL terminator if the source length equals the buffer size.
-Although sm_attr->data comes from internal structures and
-is NUL-terminated, it is cleaner and safer to use strscpy(),
-which guarantees NUL termination and avoids zero-padding.
-
-The destination buffer is PAGE_SIZE bytes, which is sufficient
-to hold sm_attr->data without truncation. The return value
-of strscpy() matches the expected behavior of sm_attr_show().
-
-Replace the strncpy() call with:
-
-    return strscpy(buf, sm_attr->data, PAGE_SIZE);
-
-Signed-off-by: Dharanitharan R <dharanitharan725@gmail.com>
+Signed-off-by: Ahmed Naseef <naseefkm@gmail.com>
 ---
- drivers/mtd/sm_ftl.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/nand/spi/Makefile    |  4 +-
+ drivers/mtd/nand/spi/core.c      |  1 +
+ drivers/mtd/nand/spi/dosilicon.c | 77 ++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h      |  1 +
+ 4 files changed, 81 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/mtd/nand/spi/dosilicon.c
 
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index abc7b186353f..229fdc4a754a 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -44,8 +44,7 @@ static ssize_t sm_attr_show(struct device *dev, struct device_attribute *attr,
- 	struct sm_sysfs_attribute *sm_attr =
- 		container_of(attr, struct sm_sysfs_attribute, dev_attr);
- 
--	strncpy(buf, sm_attr->data, sm_attr->len);
--	return sm_attr->len;
-+	return strscpy(buf, sm_attr->data, PAGE_SIZE);
- }
- 
- 
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 6d3d203df..a47bd22cd 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ spinand-objs := core.o otp.o
+-spinand-objs += alliancememory.o ato.o esmt.o fmsh.o foresee.o gigadevice.o macronix.o
+-spinand-objs += micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
++spinand-objs += alliancememory.o ato.o dosilicon.o esmt.o fmsh.o foresee.o gigadevice.o
++spinand-objs += macronix.o micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index d20728657..0346916b0 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1227,6 +1227,7 @@ static const struct nand_ops spinand_ops = {
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&alliancememory_spinand_manufacturer,
+ 	&ato_spinand_manufacturer,
++	&dosilicon_spinand_manufacturer,
+ 	&esmt_8c_spinand_manufacturer,
+ 	&esmt_c8_spinand_manufacturer,
+ 	&fmsh_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/dosilicon.c b/drivers/mtd/nand/spi/dosilicon.c
+new file mode 100644
+index 000000000..95ec27a1a
+--- /dev/null
++++ b/drivers/mtd/nand/spi/dosilicon.c
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Author: Ahmed Naseef <naseefkm@gmail.com>
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_DOSILICON        0xE5
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int ds35xx_ooblayout_ecc(struct mtd_info *mtd, int section,
++				struct mtd_oob_region *region)
++{
++	return -ERANGE;
++}
++
++static int ds35xx_ooblayout_free(struct mtd_info *mtd, int section,
++				 struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++	region->offset = 2;
++	region->length = 62;
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops ds35xx_ooblayout = {
++	.ecc = ds35xx_ooblayout_ecc,
++	.free = ds35xx_ooblayout_free,
++};
++
++static const struct spinand_info dosilicon_spinand_table[] = {
++	SPINAND_INFO("DS35Q1GA",
++		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x71),
++		NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		NAND_ECCREQ(4, 512),
++		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					 &write_cache_variants,
++					 &update_cache_variants),
++		SPINAND_HAS_QE_BIT,
++		SPINAND_ECCINFO(&ds35xx_ooblayout, NULL)),
++	SPINAND_INFO("DS35M1GA",
++		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x21),
++		NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		NAND_ECCREQ(4, 512),
++		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					 &write_cache_variants,
++					 &update_cache_variants),
++		SPINAND_HAS_QE_BIT,
++		SPINAND_ECCINFO(&ds35xx_ooblayout, NULL)),
++};
++
++static const struct spinand_manufacturer_ops dosilicon_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer dosilicon_spinand_manufacturer = {
++	.id = SPINAND_MFR_DOSILICON,
++	.name = "Dosilicon",
++	.chips = dosilicon_spinand_table,
++	.nchips = ARRAY_SIZE(dosilicon_spinand_table),
++	.ops = &dosilicon_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index ce76f5c63..c50a43b44 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -354,6 +354,7 @@ struct spinand_manufacturer {
+ /* SPI NAND manufacturers */
+ extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
+ extern const struct spinand_manufacturer ato_spinand_manufacturer;
++extern const struct spinand_manufacturer dosilicon_spinand_manufacturer;
+ extern const struct spinand_manufacturer esmt_8c_spinand_manufacturer;
+ extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
+ extern const struct spinand_manufacturer fmsh_spinand_manufacturer;
 -- 
-2.43.0
+2.34.1
 
 
 ______________________________________________________
