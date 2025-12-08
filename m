@@ -4,77 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5E49D3B7EA
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Dec 2025 19:44:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69FABD3B7EA
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Dec 2025 20:16:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8t1kzfIVDBkO6zDPoGcIeAEXAKSiBAk8yiBteP08tK8=; b=1TLvsENpzX4pjM
-	tDCBurZLxBsvWQqE7nncq+2TxQpvaxWHnfgToBGMEAZK6/DhyPrDLM4WVeHBu0I3A601kUxQwD5h1
-	uLXTUu2bl+5UyZfdoUqaQTX2UWsBPCo1kIaGYLGmKUyevjYBB8Qc0N0E0rjPFnyhnW0ArPaAp95Cv
-	BHJPhJo4cYPuPSC7ixP3ZTqKM+T+dXJGn4cfq9HyP+f5kiQpgjDk+8VF7/68WP0qlWjUFlsE6FpdD
-	rv+F2BFb4pgbNh3ftH13Bg4XwtgsQDvxSaFmzgY48kz78o/zBrLXDUhIWXrNjoh4YBvGM28Hn85ib
-	K0E0brzUKDYQu/8RDPgQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JzYbLzZ34yd1ffhvO6VjoJXQ+vL5iiM1otgt3Ldt7eU=; b=PdrqPvVoFZvXa4
+	WaUZmSIzNf9NgWhTURy/RaQLmaxeG6uT+B7lx5r+CHFEJfkH60HLFW1AcFaX0fxvjyAtW0FwP6RCz
+	kb11LY4geYJ3AiAuaRsdRF3l53JMmJk7k6JLQEPvyDEq+d0bT2YDWQXVUlSI/2lrtQxCkweWfP3Nb
+	owiE38617jLIyo3KDxtyGMieRszcP1P3OQwLzQizBfBNPO/uQkt1YgaYfJ6yRMFbx4CwrK+9wr8Yi
+	piensqOObNVQhF905ayeR0eYv6GVet6g2roIwWNmaUzJ4Wx4bOR+oVdKfakAd/Bsvzkqj/bKrQCnE
+	B1NLoJAxWq9FwUF7e9gw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vSh9V-0000000DTmq-29S8;
-	Mon, 08 Dec 2025 19:44:09 +0000
-Received: from mgamail.intel.com ([192.198.163.16])
+	id 1vSheG-0000000DVgE-3q9W;
+	Mon, 08 Dec 2025 20:15:56 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vSh9Q-0000000DTm5-2OWF
+	id 1vSheD-0000000DVfp-2uhr
 	for linux-mtd@lists.infradead.org;
-	Mon, 08 Dec 2025 19:44:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1765223044; x=1796759044;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wcMnMtK161kIDworbzGp6TgxmSb4xyAnFrgCUDSvOEQ=;
-  b=gvUMaBLOXNypz21sGjLnK7A+nFPNVQZG7yRJIY6v2Pb6qEzNC9Py9e1S
-   rnezsRuU5ZUUemgzhbQrlxM+4KgSSy9SRkOPiau8JSgCGiVDwISkyezaV
-   N65olHeGYw5xhl59g2YWCyBSvr/2Ddppg5gap/2D5T/2Uz08fXSGxNVNN
-   zLo0opPGCZ4Wh3D7OJN8y0K+p8o9W5n5jdUTiEanhC1XhfziUsgtlwG7x
-   5kSukVagHWxrOGv8VrmhSGU7/F9pOROqANnZPrw2eRa0RIyv1cASuRv3p
-   +Yi3fuUqMFWdeT/HLjoeygGt/urHXVMjfdA8bVCVbhgH4+4H0q3Odzv0o
-   A==;
-X-CSE-ConnectionGUID: O2FavbrUTxm4CPl+SzLoxA==
-X-CSE-MsgGUID: 2H6b4KhpS/WH+DOp6oKsRQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11636"; a="54714109"
-X-IronPort-AV: E=Sophos;i="6.20,259,1758610800"; 
-   d="scan'208";a="54714109"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2025 11:44:03 -0800
-X-CSE-ConnectionGUID: YIF/7oclRyuxtqCQCitc+g==
-X-CSE-MsgGUID: W+YiVbniQH2zNkOY6n5lmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,259,1758610800"; 
-   d="scan'208";a="195921749"
-Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 08 Dec 2025 11:44:01 -0800
-Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vSh9K-000000000ml-0vvU;
-	Mon, 08 Dec 2025 19:43:58 +0000
-Date: Tue, 9 Dec 2025 03:43:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ahmed Naseef <naseefkm@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, Ahmed Naseef <naseefkm@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spinand: add support for Dosilicon DS35Q1GA/DS35M1GA
-Message-ID: <202512090327.X5PXotX9-lkp@intel.com>
-References: <20251207150923.86328-1-naseefkm@gmail.com>
+	Mon, 08 Dec 2025 20:15:55 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4777771ed1aso40445085e9.2
+        for <linux-mtd@lists.infradead.org>; Mon, 08 Dec 2025 12:15:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1765224951; x=1765829751; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3D3vIJGJPnYyuNbe5ScxA0aV0FwmwGapHVC8g/aGFTg=;
+        b=SeBkNUStltzy1dtA6KrG8Yg7ZitcTlJ+9Ea0BwrKdwej3MukmaDZwic3roV1vYcSqM
+         Wb0193uCB3peKK9rNC5yT5fIPfx0XixrZm1zxphAvDxVZ7+nNzDlO/n0EegUgi+rYY5/
+         dUTEoVTYITid13o+TSthtpXwrMD5NzyyDvtl4u0zaE9BngmbPwfP+m7AeNnlfr7TpstG
+         uVuNKEUeBcKFrMbAfnbtSWaVECpqDwMkXI9pr3Z7uSMC5dd5czkpJFKoTZzXTMwS19o+
+         v3x7j8xm4/5eEdRlA4BY9kIobYbisWlT4+zdWdbpOdcar3wDZzvJk75H1g9fInbxUD+O
+         8JNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765224951; x=1765829751;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3D3vIJGJPnYyuNbe5ScxA0aV0FwmwGapHVC8g/aGFTg=;
+        b=eaZhVk8VChlWeyKdm21fqjbkuGO13ixH8cXebWQXTcEcRoNpdTj8J/FgGeKU/mw+2O
+         nuJvirQuWiH/4R44Elf2p1HL3dpQCVjUycZXXXYOYJNiWEVf2vQkiGqfPZSLT9xIvRtQ
+         J/fKHeg51vskA/E9Is3A2bPirnaXNy0FpVJDAYBXLyU5pmuk7MOUhC8uEyrmQyUpohlW
+         Dblfry+5fYoSisWiCldhaugLbCv8KgUs/WYpKiXLhBw6k5dQvG4vmIgWP31+XJwVUEuP
+         90ZxfCPR94WbmSWd8jw/xJsx0jvn7a2pB/S2n/Kznptk5iJ5ON3sC2ROG3MzGMDnmNCd
+         iaGg==
+X-Forwarded-Encrypted: i=1; AJvYcCW8DIRqves29bLGjVZzzIUgUGvcbJlJ+AqtcvCccQ0gR2nmwB6fix4ajT27qCBGlCVnCpY7yAhuL5o=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzAp25RDt0oifg6p9LugHXoHH8rGOYHyEhaqNfF0Od28ZBOGxnj
+	La509FFi+4QV+ln45LckVKclOBlylHrPzm1twR4SIWGUqBheBB8q2rCXNrJdc1DoR8czfyIWSmH
+	CoDLXaFM=
+X-Gm-Gg: ASbGncudJuyCWxQ5M4H4Wk345j0HaxV8HNRngc8sJrCZOjUr8chQRHhc+fW9qmq75ve
+	ZJBgb+Kvavcz2fAoifSdsABJtNa3KarmwssmUT1WKY9r2NusR9ydD4WzbwZ3ot06g0tHCTStsxQ
+	BSNRlJzYzLWkmPH7wB3n8/DroqCbOMV0bmkLuQqPuLQHo7Na6nJ+sZHWeE8Gbig05f6wsVgCfGb
+	YzxC0JdhgnjN0nTAYX1sG68zEeBWMgEg5igdvQghcrrh4uTBmfPIviVnEJBMBDUZCOBjnq4ewIo
+	mfEiMQrcyjYF0ilup1nsLIUGB/Lvtxufwiu1roQ6gquSg69IV8gsw1GHFc2byp5RaD0u2xrfcn8
+	rxitavFLTWVx82T1seX1ozWn4cFFM/ig5Xjh+J85xFwe2z2X8v+V3IpJzG377iw/QXi0zOHvfXk
+	a+POaWZBlmRkr2EZYRA6zPU+fIyMY94e6qYj5OEBRuMSRwZcFpi0Hj
+X-Google-Smtp-Source: AGHT+IFvXUeNU9HRRpuulWo5t52sUGh8YJNYwt+0V2JdO62mDhCnEF9wKyJaWWqewTP1fusx1UOK7g==
+X-Received: by 2002:a05:600c:6014:b0:479:3a2a:94e7 with SMTP id 5b1f17b1804b1-4793a2a952fmr67424175e9.10.1765224951165;
+        Mon, 08 Dec 2025 12:15:51 -0800 (PST)
+Received: from somecomputer (85-127-105-34.dsl.dynamic.surfer.at. [85.127.105.34])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47a7d6fcffesm2502815e9.6.2025.12.08.12.15.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Dec 2025 12:15:50 -0800 (PST)
+From: Richard Weinberger <richard@sigma-star.at>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [GIT PULL] UBI and UBIFS changes for v6.19-rc1
+Date: Mon, 08 Dec 2025 21:15:50 +0100
+Message-ID: <21252217.fSG56mABFh@nailgun>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251207150923.86328-1-naseefkm@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251208_114404_697907_3ADE2A83 
-X-CRM114-Status: GOOD (  13.12  )
+X-CRM114-CacheID: sfid-20251208_121554_098966_3AE7219F 
+X-CRM114-Status: UNSURE (   8.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,365 +97,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Ahmed,
+Linus,
 
-kernel test robot noticed the following build errors:
+The following changes since commit 6a23ae0a96a600d1d12557add110e0bb6e32730c:
 
-[auto build test ERROR on mtd/nand/next]
-[also build test ERROR on linus/master next-20251208]
-[cannot apply to v6.18]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+  Linux 6.18-rc6 (2025-11-16 14:25:38 -0800)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ahmed-Naseef/mtd-spinand-add-support-for-Dosilicon-DS35Q1GA-DS35M1GA/20251207-232019
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20251207150923.86328-1-naseefkm%40gmail.com
-patch subject: [PATCH] mtd: spinand: add support for Dosilicon DS35Q1GA/DS35M1GA
-config: nios2-allmodconfig (https://download.01.org/0day-ci/archive/20251209/202512090327.X5PXotX9-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 11.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251209/202512090327.X5PXotX9-lkp@intel.com/reproduce)
+are available in the Git repository at:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512090327.X5PXotX9-lkp@intel.com/
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.19-rc1
 
-All error/warnings (new ones prefixed by >>):
+for you to fetch changes up to 0695aef23d674815c352293c49d944a2375ee9c9:
 
-   In file included from drivers/mtd/nand/spi/dosilicon.c:8:
-   drivers/mtd/nand/spi/dosilicon.c:13:17: error: implicit declaration of function 'SPINAND_PAGE_READ_FROM_CACHE_X4_OP'; did you mean 'SPINAND_PAGE_READ_FROM_CACHE_1S_1D_4D_OP'? [-Werror=implicit-function-declaration]
-      13 |                 SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
-   drivers/mtd/nand/spi/dosilicon.c:14:17: error: implicit declaration of function 'SPINAND_PAGE_READ_FROM_CACHE_X2_OP'; did you mean 'SPINAND_PAGE_READ_FROM_CACHE_1S_2S_2S_OP'? [-Werror=implicit-function-declaration]
-      14 |                 SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
-   drivers/mtd/nand/spi/dosilicon.c:15:17: error: implicit declaration of function 'SPINAND_PAGE_READ_FROM_CACHE_OP'; did you mean 'SPINAND_PAGE_READ_FROM_CACHE_1S_1D_4D_OP'? [-Werror=implicit-function-declaration]
-      15 |                 SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:24: warning: missing braces around initializer [-Wmissing-braces]
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                        ^
-   drivers/mtd/nand/spi/dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:46: error: initializer element is not constant
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   drivers/mtd/nand/spi/dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:46: note: (near initialization for 'read_cache_variants')
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   drivers/mtd/nand/spi/dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:32: warning: missing braces around initializer [-Wmissing-braces]
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                ^
-   drivers/mtd/nand/spi/dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: error: initializer element is not constant
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   drivers/mtd/nand/spi/dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: note: (near initialization for 'read_cache_variants')
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   drivers/mtd/nand/spi/dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:388:49: warning: missing braces around initializer [-Wmissing-braces]
-     388 |         const struct spinand_op_variants name = {                       \
-         |                                                 ^
-   drivers/mtd/nand/spi/dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   drivers/mtd/nand/spi/dosilicon.c:19:17: error: implicit declaration of function 'SPINAND_PROG_LOAD_X4'; did you mean 'SPINAND_CMD_PROG_LOAD_X4'? [-Werror=implicit-function-declaration]
-      19 |                 SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
-   drivers/mtd/nand/spi/dosilicon.c:20:17: error: implicit declaration of function 'SPINAND_PROG_LOAD' [-Werror=implicit-function-declaration]
-      20 |                 SPINAND_PROG_LOAD(true, 0, NULL, 0));
-         |                 ^~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:24: warning: missing braces around initializer [-Wmissing-braces]
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                        ^
-   drivers/mtd/nand/spi/dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:46: error: initializer element is not constant
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   drivers/mtd/nand/spi/dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:46: note: (near initialization for 'write_cache_variants')
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   drivers/mtd/nand/spi/dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:32: warning: missing braces around initializer [-Wmissing-braces]
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                ^
-   drivers/mtd/nand/spi/dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: error: initializer element is not constant
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   drivers/mtd/nand/spi/dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: note: (near initialization for 'write_cache_variants')
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   drivers/mtd/nand/spi/dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:388:49: warning: missing braces around initializer [-Wmissing-braces]
-     388 |         const struct spinand_op_variants name = {                       \
-         |                                                 ^
-   drivers/mtd/nand/spi/dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:24: warning: missing braces around initializer [-Wmissing-braces]
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                        ^
-   drivers/mtd/nand/spi/dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:46: error: initializer element is not constant
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   drivers/mtd/nand/spi/dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:46: note: (near initialization for 'update_cache_variants')
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   drivers/mtd/nand/spi/dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:32: warning: missing braces around initializer [-Wmissing-braces]
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                ^
-   drivers/mtd/nand/spi/dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: error: initializer element is not constant
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   drivers/mtd/nand/spi/dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: note: (near initialization for 'update_cache_variants')
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   drivers/mtd/nand/spi/dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:388:49: warning: missing braces around initializer [-Wmissing-braces]
-     388 |         const struct spinand_op_variants name = {                       \
-         |                                                 ^
-   drivers/mtd/nand/spi/dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
---
-   In file included from dosilicon.c:8:
-   dosilicon.c:13:17: error: implicit declaration of function 'SPINAND_PAGE_READ_FROM_CACHE_X4_OP'; did you mean 'SPINAND_PAGE_READ_FROM_CACHE_1S_1D_4D_OP'? [-Werror=implicit-function-declaration]
-      13 |                 SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
-   dosilicon.c:14:17: error: implicit declaration of function 'SPINAND_PAGE_READ_FROM_CACHE_X2_OP'; did you mean 'SPINAND_PAGE_READ_FROM_CACHE_1S_2S_2S_OP'? [-Werror=implicit-function-declaration]
-      14 |                 SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
-   dosilicon.c:15:17: error: implicit declaration of function 'SPINAND_PAGE_READ_FROM_CACHE_OP'; did you mean 'SPINAND_PAGE_READ_FROM_CACHE_1S_1D_4D_OP'? [-Werror=implicit-function-declaration]
-      15 |                 SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:24: warning: missing braces around initializer [-Wmissing-braces]
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                        ^
-   dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:46: error: initializer element is not constant
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:46: note: (near initialization for 'read_cache_variants')
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:32: warning: missing braces around initializer [-Wmissing-braces]
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                ^
-   dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: error: initializer element is not constant
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: note: (near initialization for 'read_cache_variants')
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:388:49: warning: missing braces around initializer [-Wmissing-braces]
-     388 |         const struct spinand_op_variants name = {                       \
-         |                                                 ^
-   dosilicon.c:12:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      12 | static SPINAND_OP_VARIANTS(read_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   dosilicon.c:19:17: error: implicit declaration of function 'SPINAND_PROG_LOAD_X4'; did you mean 'SPINAND_CMD_PROG_LOAD_X4'? [-Werror=implicit-function-declaration]
-      19 |                 SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-         |                 ^~~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
-   dosilicon.c:20:17: error: implicit declaration of function 'SPINAND_PROG_LOAD' [-Werror=implicit-function-declaration]
-      20 |                 SPINAND_PROG_LOAD(true, 0, NULL, 0));
-         |                 ^~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:48: note: in definition of macro 'SPINAND_OP_VARIANTS'
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                                ^~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:24: warning: missing braces around initializer [-Wmissing-braces]
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                        ^
-   dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:46: error: initializer element is not constant
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:46: note: (near initialization for 'write_cache_variants')
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:32: warning: missing braces around initializer [-Wmissing-braces]
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                ^
-   dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: error: initializer element is not constant
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: note: (near initialization for 'write_cache_variants')
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:388:49: warning: missing braces around initializer [-Wmissing-braces]
-     388 |         const struct spinand_op_variants name = {                       \
-         |                                                 ^
-   dosilicon.c:18:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      18 | static SPINAND_OP_VARIANTS(write_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:24: warning: missing braces around initializer [-Wmissing-braces]
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                        ^
-   dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
->> include/linux/mtd/spinand.h:389:46: error: initializer element is not constant
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:389:46: note: (near initialization for 'update_cache_variants')
-     389 |                 .ops = (struct spi_mem_op[]) { __VA_ARGS__ },           \
-         |                                              ^
-   dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:32: warning: missing braces around initializer [-Wmissing-braces]
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                ^
-   dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: error: initializer element is not constant
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:390:53: note: (near initialization for 'update_cache_variants')
-     390 |                 .nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /  \
-         |                                                     ^
-   dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   include/linux/mtd/spinand.h:388:49: warning: missing braces around initializer [-Wmissing-braces]
-     388 |         const struct spinand_op_variants name = {                       \
-         |                                                 ^
-   dosilicon.c:22:8: note: in expansion of macro 'SPINAND_OP_VARIANTS'
-      22 | static SPINAND_OP_VARIANTS(update_cache_variants,
-         |        ^~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+  ubifs: vmalloc(array_size()) -> vmalloc_array() (2025-11-28 21:52:55 +0100)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UBI and UBIFS:
+
+UBIFS:
+	- Misc code cleanups such as removal of unnecessary variables
+
+UBI:
+	- No longer program unused bit in UBI headers
+
+----------------------------------------------------------------
+Cheng Ming Lin (1):
+      mtd: ubi: skip programming unused bits in ubi headers
+
+Liyuan Pang (1):
+      ubi: fastmap: fix ubi->fm memory leak
+
+Qianfeng Rong (1):
+      ubifs: vmalloc(array_size()) -> vmalloc_array()
+
+Xichao Zhao (3):
+      ubifs: Remove unnecessary parameters '*c'
+      ubifs: Simplify the code using ubifs_crc_node
+      ubifs: Remove unnecessary variable assignments
+
+ drivers/mtd/ubi/attach.c     |  4 +++-
+ drivers/mtd/ubi/fastmap-wl.c |  8 +-------
+ drivers/mtd/ubi/io.c         | 10 ++++++++++
+ drivers/mtd/ubi/ubi.h        | 12 ++++++++++++
+ fs/ubifs/io.c                | 13 ++++---------
+ fs/ubifs/lpt.c               | 12 ++++++------
+ fs/ubifs/recovery.c          |  4 +---
+ fs/ubifs/tnc_misc.c          |  9 +--------
+ fs/ubifs/ubifs.h             |  2 +-
+ 9 files changed, 39 insertions(+), 35 deletions(-)
 
 
-vim +389 include/linux/mtd/spinand.h
 
-7529df4652482c Peter Pan 2018-06-22  386  
-7529df4652482c Peter Pan 2018-06-22  387  #define SPINAND_OP_VARIANTS(name, ...)					\
-7529df4652482c Peter Pan 2018-06-22  388  	const struct spinand_op_variants name = {			\
-7529df4652482c Peter Pan 2018-06-22 @389  		.ops = (struct spi_mem_op[]) { __VA_ARGS__ },		\
-7529df4652482c Peter Pan 2018-06-22  390  		.nops = sizeof((struct spi_mem_op[]){ __VA_ARGS__ }) /	\
-7529df4652482c Peter Pan 2018-06-22  391  			sizeof(struct spi_mem_op),			\
-7529df4652482c Peter Pan 2018-06-22  392  	}
-7529df4652482c Peter Pan 2018-06-22  393  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
