@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6D6DD6407C
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Dec 2025 06:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07B84D6407D
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Dec 2025 06:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KokqFeTCR7imaaZqfMk+jP1TGVeQyl98h6Znia+UNtc=; b=uAd9KRjdewmRZO
-	a/Uj+OkpTGBn2k89sGSjhVBG8SDNwMXOTBSHjz5uZUNBHScYLL9uD7hrKTFQwmYNh5Ux5X7ovMYqZ
-	DBpj8Nx5zFG/oHSXSUjLMtL0xrJJZDDbd721Zz99HpgM0XiDPVPmkHGMSGN9N0W3Q+WtgpvZQ0eca
-	5mpzPUZU9XwTlMF4ALN7/4XcJB82nmC7wxgvuPj9MdtIh2poDy9UWR7YQVV8C6N/bGc2iKEU1OrBs
-	XzuQBlz5A6KDjNc2hoDzmjOSYGi7Iesfz7vjFEu+njkNxxeKJBg79MYLDE9oni/IPW0vk6L7jFW0O
-	BOr8JSEteTX/AJpncAlQ==;
+	List-Owner; bh=BgaT7hGJTE6lrR+vFtdcuk7Hh8gurGIbRO8dYzKhwaI=; b=oOW/hKkZQOpCF1
+	ROnTTvTkUnz5JfFP77T4vt2kO/pNo/IwCFdj5EJCmL1eJGSVwdzTsuVvpAzZjOYMFN/TMLjZls0z7
+	0GgbhYBCm/A8F2a3n9FFFl39z6o2U3eW5ld0qTxmLmQX58pLPN66GCWIrWBm/gWEo9miDv2AQjEiW
+	npKxHZm1OlLn0duS/GX7J2tb9jkqYBCmudDAIDgVA6tKAYU575gLVBhB9PQO2vQ9/rLSqFpzxUpQa
+	4rPB/1ojowgEC+23V7B8NWVlEmk0vFujbkKLv0p8aLO4WA9DSQcrs1q20LX2nJwi/aA4+rSpHELbS
+	9bmcd7aKyfiypotk7Gqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vVkkL-00000006DYa-0zRS;
-	Wed, 17 Dec 2025 06:10:49 +0000
+	id 1vVkkS-00000006Ddu-2NMM;
+	Wed, 17 Dec 2025 06:10:56 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vVkkJ-00000006DSK-2847;
-	Wed, 17 Dec 2025 06:10:48 +0000
+	id 1vVkkQ-00000006DYH-2pOM;
+	Wed, 17 Dec 2025 06:10:55 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -45,10 +45,11 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	linux-unionfs@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org
-Subject: [PATCH 03/10] fs: exit early in generic_update_time when there is no work
-Date: Wed, 17 Dec 2025 07:09:36 +0100
-Message-ID: <20251217061015.923954-4-hch@lst.de>
+	linux-nfs@vger.kernel.org,
+	Chaitanya Kulkarni <kch@nvidia.com>
+Subject: [PATCH 04/10] fs: factor out a mark_inode_dirty_time helper
+Date: Wed, 17 Dec 2025 07:09:37 +0100
+Message-ID: <20251217061015.923954-5-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251217061015.923954-1-hch@lst.de>
 References: <20251217061015.923954-1-hch@lst.de>
@@ -69,31 +70,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Exit early if no attributes are to be updated, to avoid a spurious call
-to __mark_inode_dirty which can turn into a fairly expensive no-op due to
-the extra checks and locking.
+Factor out the inode dirtying vs lazytime logic from generic_update_time
+into a new helper so that it can be reused in file system methods.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
 Reviewed-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/inode.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/fs-writeback.c  | 16 ++++++++++++++++
+ fs/inode.c         | 14 +++-----------
+ include/linux/fs.h |  3 ++-
+ 3 files changed, 21 insertions(+), 12 deletions(-)
 
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 6800886c4d10..7870c158e4a2 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -2692,6 +2692,22 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+ }
+ EXPORT_SYMBOL(__mark_inode_dirty);
+ 
++void mark_inode_dirty_time(struct inode *inode, unsigned int flags)
++{
++	if (inode->i_sb->s_flags & SB_LAZYTIME) {
++		int dirty_flags = 0;
++
++		if (flags & (S_ATIME | S_MTIME | S_CTIME))
++			dirty_flags = I_DIRTY_TIME;
++		if (flags & S_VERSION)
++			dirty_flags |= I_DIRTY_SYNC;
++		__mark_inode_dirty(inode, dirty_flags);
++	} else {
++		mark_inode_dirty_sync(inode);
++	}
++}
++EXPORT_SYMBOL_GPL(mark_inode_dirty_time);
++
+ /*
+  * The @s_sync_lock is used to serialise concurrent sync operations
+  * to avoid lock contention problems with concurrent wait_sb_inodes() calls.
 diff --git a/fs/inode.c b/fs/inode.c
-index 7eb28dd45a5a..876641a6e478 100644
+index 876641a6e478..17ecb7bb5067 100644
 --- a/fs/inode.c
 +++ b/fs/inode.c
-@@ -2148,6 +2148,9 @@ int generic_update_time(struct inode *inode, int flags)
- 	int updated = inode_update_timestamps(inode, flags);
- 	int dirty_flags = 0;
+@@ -2145,17 +2145,9 @@ EXPORT_SYMBOL(inode_update_timestamps);
+  */
+ int generic_update_time(struct inode *inode, int flags)
+ {
+-	int updated = inode_update_timestamps(inode, flags);
+-	int dirty_flags = 0;
+-
+-	if (!updated)
+-		return 0;
+-
+-	if (updated & (S_ATIME|S_MTIME|S_CTIME))
+-		dirty_flags = inode->i_sb->s_flags & SB_LAZYTIME ? I_DIRTY_TIME : I_DIRTY_SYNC;
+-	if (updated & S_VERSION)
+-		dirty_flags |= I_DIRTY_SYNC;
+-	__mark_inode_dirty(inode, dirty_flags);
++	flags = inode_update_timestamps(inode, flags);
++	if (flags)
++		mark_inode_dirty_time(inode, flags);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(generic_update_time);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index fccb0a38cb74..66d3d18cf4e3 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2189,7 +2189,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+ 	};
+ }
  
-+	if (!updated)
-+		return 0;
-+
- 	if (updated & (S_ATIME|S_MTIME|S_CTIME))
- 		dirty_flags = inode->i_sb->s_flags & SB_LAZYTIME ? I_DIRTY_TIME : I_DIRTY_SYNC;
- 	if (updated & S_VERSION)
+-extern void __mark_inode_dirty(struct inode *, int);
++void mark_inode_dirty_time(struct inode *inode, unsigned int flags);
++void __mark_inode_dirty(struct inode *inode, int flags);
+ static inline void mark_inode_dirty(struct inode *inode)
+ {
+ 	__mark_inode_dirty(inode, I_DIRTY);
 -- 
 2.47.3
 
