@@ -4,152 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23915FA3741
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jan 2026 14:00:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0476BFA3752
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jan 2026 15:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EjZCBGeKQESD6U4QV9rkobM6PA7Gqx4FeuDKp9XevPg=; b=LCKokE2/tSPQVt
-	4f399uPAKIxOP1PJSRHimEAgsFcV6kWPg1sysnIlhUrSocxPKbUGjanGsvsS7IZVpzIzzm3H09Bb2
-	n0qmPACX2DK7Ogk2ypDslr+OYzpl/SPylJV3SdkTxe3L/8dRLv5Cney8oIxKLPAmYsNiWcyo1xd4d
-	XjqfS4Z/eFEBo08YFmTQAsG/5jpoYPncYjjrcAZDcSRs9g9bVNMQycOTrBqcKvx+fnBn7JfT0Nksc
-	YR19K9yoXsXb9RE5gTcVZ7WIAQN2zccSK33+ZFoFkUhtrMaG/d3FuqdTWvuRGcenfuEJQibw7lFAN
-	mjvs/q5D+XAyCYNdXVaw==;
+	List-Owner; bh=D7IxFUuXLRogelfwhmmyEo3x6+qUCIz6+iugT7DMBlw=; b=uyso08tLsYlOS6
+	Bfk1MRH4Z5todMJVUIPsd9CrNQX9PYZvcdJXZjSy2yW196SJq034pmkdH0ZveVS0Sot+vuFopR/sY
+	BOkn/Zgl3+1KUHe5z5X1/o94u/drZTkmjFgreCINyagSmcykxuYRxx40DBUZmEfuPLE9xOsFG9vli
+	E53f5mPLMtLt4I+PnWt1bJFl4HaNs/3iB/w78oXbTjUoQ3gEsVOsRbGcn+APKzBhjUNG9befFJB5I
+	p2jab+vgB0P4R1UfdQyuuMEbIL4U5+zJGytr/onKdds1gh7T/0IPRWTWi48OnqQJ3MggARdhZaXMM
+	g/puxBT3ht8jvs4VrjgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbfhH-00000008KJ1-1mzD;
-	Fri, 02 Jan 2026 14:00:07 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1vbhY1-00000008T4l-3jVr;
+	Fri, 02 Jan 2026 15:58:41 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbfhE-00000008KIX-3pJa
+	id 1vbhXz-00000008T4I-2MOv
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Jan 2026 14:00:06 +0000
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6029WBQ1637864
-	for <linux-mtd@lists.infradead.org>; Fri, 2 Jan 2026 14:00:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	x03N+1nkxwtdppRPIJ+rN+xH+oPAXikV45X3MjLLm/U=; b=pQZjxdWu146rz+Ln
-	wuEZ+TCxIwl//TICA4OB9Agfc5KjyaBO4Drs1tF7fJmgmnyyDzye7dgTtPIC9rdq
-	1QFZfBeidguqVdKffIcb4wcbfUl/ztF5N/+2FqpRLQEsl7wuEe+WbOdEl4M9CXpH
-	UDffpQNRqkEPUmPofSE2jY8U9uBNNCshP1x1f+NYdNA3BaiMyGxfXkFN5/AYqxCH
-	OUOCEtymcAH8Tgz/KFq3oKiTJL3zw40Fx1v558dDqRFOMKhyvwuX5DqbPPaPJxOp
-	h7mAodYiwpP25mTBVszDgmZ2Dgx/8lcmz1qP7lsHhiGlA/jYHwyjsWfjy1DVsW72
-	XnJAaw==
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4bd3v8uxce-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Fri, 02 Jan 2026 14:00:03 +0000 (GMT)
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4f357ab5757so56731481cf.0
-        for <linux-mtd@lists.infradead.org>; Fri, 02 Jan 2026 06:00:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1767362402; x=1767967202; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=x03N+1nkxwtdppRPIJ+rN+xH+oPAXikV45X3MjLLm/U=;
-        b=XlqAZx5UT9BfRckSqag7pmzlmwjkgI1A6J3GAEap2IE2CLT2T5q/GIRCwbq93z+C1d
-         1e7Pi+JKFSb1N2EQJ4vVV9CT7m69uiElewSG49ixxbQodI0C/8z2FgY7Sav1syX3XUIO
-         XE2p9ihBw0wXGn+DQakuvghUgzJSKCX3MsETRz7z1Epbp6eLFkcypChcAmZpOP2m2UaQ
-         UubrsffPoYdZT2bLLXgle+g8/f2qaud2BC5XcjNdPMdiaePQwP7p4RTT6evqX2AQa0UN
-         AfgK10fpiRJvYeIq4Nnkgms7/swKg8HT6l/RCcos8I0aWpKgF4T+HfVc/AS3WJzG/SUu
-         RltQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767362402; x=1767967202;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x03N+1nkxwtdppRPIJ+rN+xH+oPAXikV45X3MjLLm/U=;
-        b=hGTMM7mS5JbkO0282Df4xhw0a390yAL7jsa91UX+/0xeqZWrQLewgqo7zHYXDiQ/t/
-         aq7opwEBGLcQBFLqd9et23Zt3EFLGH7PucyKaHSFkBZNawdxoKRaim4aUTqolAGiPabZ
-         zHsH+mfdHfFlJQhEXpiadEhSNQx4S8aZxthshnV21Z6o9h4mjeRPpBByrTCnaoomT9j5
-         2lXl/SwBtGVOCwHMlH9tMsu0UVZDUFTB7oxdpnM1O7tRHcOYlqW9EgoH0pPp7+jA2cZk
-         2MkWmPs+GlLJoBMHJENnD3ckgG7cITk5a5vtYfKnN/lRvY3R8RleJwL7mclmznKh3uq2
-         g53Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX8vctBQ2niEuP61WI95C/TziI7dFbFsxIIP0NHyJNY/VwjolPOj5ff/XHnrCe3YnrmMXunxuiTi4k=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwehkHkRA/LAMfg9CeMu2BGRQWPHc0t6GnEzM0dMolqGNRc9sTH
-	Or3zUTigvh5j6dsG7lI8tHkrj/bpNl0qldDldJLP3K/NUMswERuH94c14FJ8/a39Uq07PZKjwUB
-	FkS1l3QXsDJKi0qDmnyJyePWH5nu1yfYWOYMLdNQ9AhkvvucKruvTz2IicEHhUoS3uedH
-X-Gm-Gg: AY/fxX4RRwc23jugKjhbYK5F0tBQ/B334FfmRM/C5DjrBuiYBOV+1Eu+spnHw2RTXAg
-	wVJEOIaVSHLKao6HAPCU3Auu0T8QDiD1WFWw0Udl0APq7jf+NJTwMi5GtzfiDBMhVdNRZqEUObh
-	di9k7cXPIlrZ7JNbWaiHVubzSESA/yRHDR0WgMQZK4jVTh8m5zaH2Jg2HR7ORO8Lio6i44sBEf6
-	tmroJmDzW3xVBVEbr015Tx6i9AUzSFUtd+iv/4+nWuL0hZUJZt6SfiOoakt5ZZaTNPh8eMWnrYm
-	OO2RY6tOX8mLnsy2WrhOteVEl2sJ9ZtlEXMajSqPTYofeVVrSwNuBEL4SKnm0PUMAoFx/BcTvRv
-	Mb6uMutCj4u4ZPoQDlT82bxrbUPxf6iJ66i1yHF0JPz9DuPhgf3GdLq1Mrn3niOJZnA==
-X-Received: by 2002:ac8:598f:0:b0:4f1:dffa:7834 with SMTP id d75a77b69052e-4f4abd7613dmr434910601cf.7.1767362402420;
-        Fri, 02 Jan 2026 06:00:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEBkOKZSWRFsB6BJFVbH93340vfDP9YfJ3KoJRojpfsiJwEKriedd/ViwC+9G4nwS5XjYG7SQ==
-X-Received: by 2002:ac8:598f:0:b0:4f1:dffa:7834 with SMTP id d75a77b69052e-4f4abd7613dmr434910091cf.7.1767362401838;
-        Fri, 02 Jan 2026 06:00:01 -0800 (PST)
-Received: from [192.168.119.72] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64b91056731sm43735803a12.8.2026.01.02.05.59.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jan 2026 06:00:01 -0800 (PST)
-Message-ID: <22121c9e-1cb6-4948-93d3-6e9f9d7922b8@oss.qualcomm.com>
-Date: Fri, 2 Jan 2026 14:59:57 +0100
+	Fri, 02 Jan 2026 15:58:40 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id C2765408EC;
+	Fri,  2 Jan 2026 15:58:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F92C116B1;
+	Fri,  2 Jan 2026 15:58:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767369518;
+	bh=PPpDFLKy+MzvxXHjluPSv/KXPSJTNW+J04zNHdxiXE8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Lg5xcQkFX76bBotONUpLGc6Wei1S7UNg/nZ3yvWe/MQ234Q4YalthRijWTFUdP2rH
+	 NJYHaJdgMQdgItxpEqYC6EKNytLGJYMmRJ2M6ncFlAJG5CnXp245f6pGeE+XsfxWqP
+	 70FgYgV2fRp1Wm5Br6JLHcUj5jj9Je0eAVyOR7/d7HS+5iDQMrZkKZSFCIBFFCmeiw
+	 qQIh1R2KqoVZY9l7kM1p4MaGcNLRMRAVgbZgzZ8WmhXD69kIAhKMhoYs05RNdotU2m
+	 cNcGycccxNIUtznysD2a6JAkKZbRm5O3GUxfH76gjSqd3o2bEaN+r4vSzExoxltg1Y
+	 ypsasO1Z0gKNw==
+Date: Fri, 2 Jan 2026 09:58:37 -0600
+From: Rob Herring <robh@kernel.org>
+To: Charan Pedumuru <charan.pedumuru@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] dt-bindings: mtd: nvidia,tegra20-nand: convert to DT
+ schema
+Message-ID: <20260102155837.GA3840725-robh@kernel.org>
+References: <20251231-nvidia-nand-v3-1-2e67664d3674@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] mtd: rawnand: qcom: Simplify with scoped for each OF
- child loop
-To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Kamal Dasu <kamal.dasu@broadcom.com>,
-        Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Paul Cercueil
- <paul@crapouillou.net>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Michael Walle <mwalle@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, llvm@lists.linux.dev
-References: <20260102124927.64703-8-krzysztof.kozlowski@oss.qualcomm.com>
- <20260102124927.64703-11-krzysztof.kozlowski@oss.qualcomm.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20260102124927.64703-11-krzysztof.kozlowski@oss.qualcomm.com>
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTAyMDEyMiBTYWx0ZWRfX/yh7QK8L80tw
- K8MwrgneuhNLr2SLP9ce/T45sbaiNS2hGf4Xhn28ANY7vX+xsVuzI1m/edQ1ktFn81Iz29QiYwj
- CAocjI2r9yq6XmccS66cTJWCbFjKVT+wrRrjz/JXTPAeCLovyoBgYiaf3IOCgEbUhiRBDpNsrdC
- mU9fH9Bx1Av+bjboW7lrvIKmv2fI7Fo1P/zXJCntW9kGKL/vIRSXxKkQzjeunC4EZATJ3EcJi+L
- GYA6sa68loDbgPZ7du+ta/xWF9fggjTJkuPBggRc4qtS7NEz04ohyX8cQmXfqOhbFkWHDJsGk2c
- OOTywajmpWmDuobtFkImuXMfymNTQ/3LXwqfM12sY/4GuUFm4npNef1XOcMqp1ZOakymhSNXfR8
- Td0+w0npGDkTaqrQeSpjn59zLVRYPn7THFQ/BCBbDB8IvbKr5kiMp9v+uUdPY7hOA4gX+V/QiTK
- pES3G37FJiLkoLXOqpQ==
-X-Authority-Analysis: v=2.4 cv=JdOxbEKV c=1 sm=1 tr=0 ts=6957cf63 cx=c_pps
- a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=FpWmc02/iXfjRdCD7H54yg==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=EUspDBNiAAAA:8 a=9ra_KJl88v3tURVkoeQA:9
- a=QEXdDO2ut3YA:10 a=dawVfQjAaf238kedN5IG:22
-X-Proofpoint-GUID: FjnRs2riWccFgmfchkWXoSZY-9l_BZIj
-X-Proofpoint-ORIG-GUID: FjnRs2riWccFgmfchkWXoSZY-9l_BZIj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-02_02,2025-12-31_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 phishscore=0 clxscore=1011
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2512120000
- definitions=main-2601020122
+Content-Disposition: inline
+In-Reply-To: <20251231-nvidia-nand-v3-1-2e67664d3674@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260102_060005_105145_633FC866 
-X-CRM114-Status: GOOD (  10.04  )
+X-CRM114-CacheID: sfid-20260102_075839_643181_6B7A98C4 
+X-CRM114-Status: GOOD (  20.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -166,16 +81,107 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/2/26 1:49 PM, Krzysztof Kozlowski wrote:
-> Use scoped for-each loop when iterating over device nodes to make code a
-> bit simpler.
+On Wed, Dec 31, 2025 at 09:29:32AM +0000, Charan Pedumuru wrote:
+> Convert NVIDIA Tegra NAND Flash Controller binding to YAML format.
+> Changes during Conversion:
+> - Define new properties `power-domains` and `operating-points-v2`
+>   because the existing in tree DTS uses them.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+> Signed-off-by: Charan Pedumuru <charan.pedumuru@gmail.com>
 > ---
+> Changes in v3:
+> - Removed pattern properties for partition.
+> - Used single quotes for nand string in pattern properties.
+> - Modified maxItems value and added minItems to reg property under nand child node.
+> - Link to v2: https://lore.kernel.org/r/20251229-nvidia-nand-v2-1-b697d9724b0b@gmail.com
+> 
+> Changes in v2:
+> - Edited the commit description to match the updated changes.
+> - Modified the description for the YAML.
+> - Removed all the duplicated properties, defined a proper ref for both parent
+>   and child nodes.
+> - Removed unnecessary properties from the required following the old
+>   text binding.
+> - Link to v1: https://lore.kernel.org/r/20251030-nvidia-nand-v1-1-7614e1428292@gmail.com
+> ---
+>  .../bindings/mtd/nvidia,tegra20-nand.yaml          | 103 +++++++++++++++++++++
+>  .../bindings/mtd/nvidia-tegra20-nand.txt           |  64 -------------
+>  2 files changed, 103 insertions(+), 64 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
+> new file mode 100644
+> index 000000000000..632cfd7dc5e2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
+> @@ -0,0 +1,103 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/nvidia,tegra20-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NVIDIA Tegra NAND Flash Controller
+> +
+> +maintainers:
+> +  - Jonathan Hunter <jonathanh@nvidia.com>
+> +
+> +allOf:
+> +  - $ref: nand-controller.yaml
+> +
+> +description:
+> +  The NVIDIA NAND controller provides an interface between NVIDIA SoCs
+> +  and raw NAND flash devices. It supports standard NAND operations,
+> +  hardware-assisted ECC, OOB data access, and DMA transfers, and
+> +  integrates with the Linux MTD NAND subsystem for reliable flash management.
+> +
+> +properties:
+> +  compatible:
+> +    const: nvidia,tegra20-nand
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: nand
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    items:
+> +      - const: nand
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  operating-points-v2:
+> +    maxItems: 1
+> +
+> +patternProperties:
+> +  '^nand@':
+> +    type: object
+> +    description: Individual NAND chip connected to the NAND controller
+> +    $ref: raw-nand-chip.yaml#
+> +
+> +    properties:
+> +      reg:
+> +        minItems: 1
+> +        maxItems: 5
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+Sigh. I gave you the exact schema to use. How is 5 address ENTRIES 
+valid? Again:
 
-Konrad
+reg:
+  maximum: 5
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
