@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C9CEFA3727
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jan 2026 10:18:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5A84FA3726
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jan 2026 10:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PWnGWq3mzxpXX+2FrFxHhH0wsAHG2wSxV0i0GgiJODc=; b=eyIg5EdwUPjXOU
-	HFX4J2aW5UUzhO9VkGoRZC2IUNawig33Lf1K6uwM4oGDzRLb85w1udpncdGCiRiJHvgZc5PD+0Xaz
-	bjnCsBe7RT6L3SN8NqmqHAFzLTRd0NRMZSmuA4kkIJYp9iyzYMp7pxFgddBK2OlLgZuTDuBksQf48
-	cH/QTbe8HxQSfb1E5ZKvDGWeXaUPgcBFUAbWoITTt02Gj+q53n/A+d2AyCbd6A99k9tFfPQE7Prq6
-	qi0Lt8qOIwFToS98EJIL2Nl+36BBOCRVOO7B2FwtZBYYRHFCqrpAjBtVSnlTU0vdn9dUEnhJ3i0Ad
-	khfTJjNLerNIlRZeKevg==;
+	List-Owner; bh=Dn363MX1JshiYP1KLMsa92ZoJir5uButV8Io7yvqjFQ=; b=o7RP7Zr3PKRLRb
+	ATO9fmLSnMKPtPCDM+0HPCw45hD0k1/KnVTUuKUfDmt+bbZVNKYUKJSc2uNAQMlC+92FAsmeglR00
+	E8DjAprwXDghAYsb69BwicR2N+IUoPpjujk27EoJySZlXNYGo83dQIoEhrf9Z072G3VEBcacHN31L
+	w4wgSwBfIeO3Wc84EU4ZaD/dqzatuvPQ6V/ST2CLtWmuAW8JBSK9lb4ilxUhzan0oNCVtONifPsHd
+	vtCWANE/Gb/In/+d2OJEniKCZnAqIgyM4krDwRp4lOPz09nQaFHFLTDJuyk7rz7VHSnbvP3mS/MIa
+	BpIsi8qY1Ym9NITnYQgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbcFF-000000083sI-0Z1O;
-	Fri, 02 Jan 2026 10:18:57 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vbcFg-000000083vZ-1sRF;
+	Fri, 02 Jan 2026 10:19:24 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbcFC-000000083rt-2bIH
+	id 1vbcFd-000000083v3-2Bam
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Jan 2026 10:18:55 +0000
+	Fri, 02 Jan 2026 10:19:22 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id D54314322C;
-	Fri,  2 Jan 2026 10:18:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8377EC16AAE;
-	Fri,  2 Jan 2026 10:18:51 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 2FB6C40AE9;
+	Fri,  2 Jan 2026 10:19:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D30AEC116B1;
+	Fri,  2 Jan 2026 10:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767349133;
-	bh=9odtNBrC0S9pC/xt5KpmOy/Y1mH2OudFUDaxB9qu1qU=;
+	s=k20201202; t=1767349161;
+	bh=iX0Ubl2uw91MOdrVadOhHPbnGjWQaLyrpD5NP7rz4Ic=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YSprAcSfKOotnAEnUIdVRyn31wIghyefEgxOZDi+YUB/KIDRDI7VinRK8isBx489G
-	 +mFAe9bUyQJ+NRQ9cO9lVnXofXqKCXuSBLUk2ncFs2g/9dfiCn5U1OZhxx81ifVpOM
-	 H49lXxunHm+o00wJRns3dg6/olwjyOOVwYVrBDHcJr9FwkZX4f6yx8a4CB8Yiu6gtQ
-	 K6Fkns8EZJPIc4eYqNX8ElB064EZGuynx3SQ7yfpx5dwY34grXvTNaXiNNs5nd5swn
-	 uSERTb4Y2xruOY/tpz13BwbstOOGzwMTPBby5uMB+n7VzZuKPpzELj6NnRN4PKJJKd
-	 yBGIDeyUJG0gg==
-Message-ID: <baa3ff2a-6569-4b36-aed1-651f83fa175b@kernel.org>
-Date: Fri, 2 Jan 2026 11:18:49 +0100
+	b=si9aLGqNQiRhooP53CbhxsQsnFvLM7zrboE7fQSnNADRhQwuq8d09Od/puQ4UypRL
+	 8HiXx/v/XeQuEJmEkKfaA0lIGwjvX4kJqoBEH0NiA7RTUxnj5dQs2f3VxU8KrLe3+x
+	 sPcRRDV0xphSovI2idKsfooOr+FYjfWysV20ikmLNSNWNV4EKw2TZXUz0nb4+kWokq
+	 GwldKo/IdAKYtyuDnKi287py9Mfwc4qa6vKdSyfFoYxNy68GCIyc+j71VSFGolvlU6
+	 5ythhJtZtRFCXY28ayp/9S1L51peAwuRQxhiw3vglc6g30sjiS7zEcfXZKYqnaHXb1
+	 aJb6yc+9XXZ/Q==
+Message-ID: <6100a708-097c-4a97-925a-44dfe115ffc9@kernel.org>
+Date: Fri, 2 Jan 2026 11:19:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] dt-bindings: mtd: microchip,mchp23k256: convert to DT
@@ -57,6 +57,7 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 References: <20251229-nxp-v1-1-a415fe0080a8@gmail.com>
  <20251230-kagu-of-scientific-enrichment-6fcd4c@quoll>
  <0363ac61-0872-42da-91b8-78966a2537ce@gmail.com>
+ <cfe2550d-52d4-400e-903e-f32031ebd5ee@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -102,10 +103,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <0363ac61-0872-42da-91b8-78966a2537ce@gmail.com>
+In-Reply-To: <cfe2550d-52d4-400e-903e-f32031ebd5ee@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260102_021854_704732_2F68E67A 
-X-CRM114-Status: UNSURE (   9.37  )
+X-CRM114-CacheID: sfid-20260102_021921_608192_60B05737 
+X-CRM114-Status: UNSURE (   8.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -123,32 +124,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/01/2026 09:17, Akhila YS wrote:
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - microchip,mchp23k256
->>> +      - microchip,mchp23lcv1024
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  "#address-cells":
->>> +    const: 1
->>> +
->>> +  "#size-cells":
->>> +    const: 1
->> Pretty incomplete. Old binding and above cells claim there can be child
->> nodes, so please add them and test. Works? No. Shall work? Yes... so
->> either old binding was incorrect or new binding is incomplete. I did not
->> check the driver, though.
+On 02/01/2026 11:08, Akhila YS wrote:
 > 
-> 
-> Size cells and Address cells are not required as there is no child node
+> On 02-01-2026 13:47, Akhila YS wrote:
+>>
+>>
+>> On 30-12-2025 18:02, Krzysztof Kozlowski wrote:
+>>> On Mon, Dec 29, 2025 at 12:49:00PM +0000, Akhila YS wrote:
+>>>> +---
+>>>> +$id: http://devicetree.org/schemas/mtd/microchip,mchp23k256.yaml#
+>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>> +
+>>>> +title: Microchip 23K256 (and similar) SPI SRAM MTD driver
+>>> driver? Bindings are for hardware.
+>>
+>>
+>> Sure, I will fix it.
 
-Then what is the point of address/size cells if you do not have children?
 
-Anyway, read carefully old binding and the driver code.
+I don't know what's this - empty email.
+
+Please kindly trim the replies from unnecessary context. It makes it
+much easier to find new content.
 
 Best regards,
 Krzysztof
