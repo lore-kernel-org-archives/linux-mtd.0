@@ -4,62 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C218CFC617E
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jan 2026 17:22:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39A76C2A061
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jan 2026 23:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bWev1E5VRD/94IxdZNFz0wVP1hCy5Bzysnux1ohHJSM=; b=VgjPdi/fo+1g7r
-	TS/r2y7E5REvGUBj+snyWgXy8dZWBhNYGrLQCRbOEuz/Uv9tDwKCM7n7Gqc33YQ06FBgwz1WeIKGY
-	nk0KxSfngtUePkxYcrX6JL5mwT6t9LB0AGopRXlw8AjiPG/mY5DoM8Mz4ny6kUkczVcXfl4ur+YOB
-	28jPoH7XrEpc9OS7gK+BcffzYm0ni6yqfzVtuY9sbetSLLB6Nf09b+QWkWMDHj+wZPdC/eO9buLXr
-	1yGCLGqZ+inOHJV/1eGyxird4p0Z6BPh6EZ7+XXir2Duvf8HTG4Kj53o2G+89Jlu4EtDJjh/aTBlc
-	BohIyQrp+p5Lq1zgb3vw==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:References:In-Reply-To:
+	Message-Id:Cc:To:From:Date:MIME-Version:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=3rlxEvnlnspct/+DBIThG/ik8o45PESx2yocPJ2PdlU=; b=C8nb2oDlYCaJYObvZ3CJEqkjX8
+	eO4LZuHpM6Htnv3BE98nWO2aCkJbg1OSoU5+1EYW3jD+JVBuCDMN/sCFViwNSFrLqvUM6+YGGNRI6
+	JBwW12UV6nI6whEw132+AKcXPWrITnGY/6krxtcoybN93Y/BJjIcMxg3ETBpp8Lka3gW8NGa/3rtx
+	YzsDbB6F86+lnWphk1JluYwoWks4Hxn4tjGQv56QmDoOLTgqjje9AFHIoSHVpf8QsfGbSYTwkyKnF
+	eDcvVJGg98LXjFxCrBS5cgEYq+kQ3Tnq6+3cyFpPJQH1CurLFk12SFbaCtONSX8/FG9IYInXGnIvH
+	TTZ1iCfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vc5KJ-00000009fO5-2nL5;
-	Sat, 03 Jan 2026 17:22:07 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vcB48-00000009trr-1DRS;
+	Sat, 03 Jan 2026 23:29:48 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vc5KI-00000009fNx-0dAS
+	id 1vcB44-00000009trP-1Pw5
 	for linux-mtd@lists.infradead.org;
-	Sat, 03 Jan 2026 17:22:06 +0000
+	Sat, 03 Jan 2026 23:29:45 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9A8E560017;
-	Sat,  3 Jan 2026 17:22:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44AD6C113D0;
-	Sat,  3 Jan 2026 17:22:03 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 6AA3F4406D;
+	Sat,  3 Jan 2026 23:29:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E30FC4AF0B;
+	Sat,  3 Jan 2026 23:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767460924;
-	bh=cxq0eS5NMjuJ68h3ON+M0YVTIPA5LFnQQvKn7hcQiJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zqyyrl+BJjZw/5fSPFEEqSVt9/Y3xIBJXs0+lRDhrQVgoaqyFVbS71a4//T6xpMeE
-	 7U+PjLC0LAmRHXWRQpVo1lsAdY2cBPVgNpg9pClTQnfhlw4BgZSXc3SJajYjX6QKPH
-	 kdvY96riNIFag+2CTEFkhIopfkvcAr+9Q08nwtCmHuZXu2PsO2zGpSfYladMawq+z0
-	 U087TVFwYKQ7THXwId1+09Um7xrOrb7Ay8vV7Kmo/eaPX3WtECnNYB1FXVdZuqmRGx
-	 HQ1qbhYtHdGB2sFokqQ9AEFUmITHgbEhKN3/KVRexAkGB9iqbIaS4ZYc9sFyJ10mlW
-	 S1di6gxOk9RpQ==
-Date: Sat, 3 Jan 2026 11:22:01 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Junhao Xie <bigfoot@radxa.com>
-Cc: Konrad Dybcio <konradybcio@kernel.org>, Xilin Wu <sophon@radxa.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tomas Winkler <tomasw@gmail.com>, Raag Jadav <raag.jadav@intel.com>, 
-	Krzysztof Kozlowski <krzk@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Alexander Usyskin <alexander.usyskin@intel.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] firmware: qcom: scm: Add SCM storage interface
- support
-Message-ID: <kmdf2rws5yf2wcyqkoyredpyg2njqwxgjq5qbsqmmimlqktfli@cjthcl3zw4un>
-References: <20251218180205.930961-1-bigfoot@radxa.com>
- <155C9F219E5A9219+20251218180205.930961-2-bigfoot@radxa.com>
+	s=k20201202; t=1767482981;
+	bh=yrlIZZmC5Lkf636QMdCK3gAWLqc/QTEizMpkoKTohjo=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=E9U15b9RxY6HTYs6wpRuWwsmCm4OU8ivllYcEyE2knOFNPiBusMUjUKDpZz6g2cs2
+	 60/u4xJvoMD9fO1XPikWOC6Td8bT8qpS0ZnDjvM9XoFfnIWQu3aPZNLVfZCv3JSu7v
+	 vNmBkg55lYvymbtUXxIg0vVaKerIC5AMKQ8ZyjRNcVYtGot3A72L1sMdczTc8gSrt7
+	 5YNfVDOH6fQV3uiSZbN1lkLXo7u67gTGl4i8kF81pfNJnbk5EUc3CH+sFc1nrlq403
+	 SwXAJdbQewUUPyaNeJIRp77912vc+uRumzuKe6nSZqGTgNUg+XBWVRtsEEyQa04zTj
+	 xodVamwZZpnZw==
+Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
+	by mailfauth.phl.internal (Postfix) with ESMTP id B831BF40069;
+	Sat,  3 Jan 2026 18:29:39 -0500 (EST)
+Received: from phl-imap-09 ([10.202.2.99])
+  by phl-compute-12.internal (MEProxy); Sat, 03 Jan 2026 18:29:39 -0500
+X-ME-Sender: <xms:Y6ZZaeesRuDLLoCJ67QcNN-RasOsGOFeJ3Vhg79_u5ZPi7alvY7DWw>
+    <xme:Y6ZZaTD88Y8d0pPH5o6dmhda915lkc3vzwY9TN8u_FPx3kHgpdw0x0u1lvM_PqwOV
+    1KioqlqL2qgwL-M1VaT7eBaRzewVdr6DoQNNA-jCFUgE_VRkTrELzE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdelvdekiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdfrrhgrthih
+    uhhshhcujggruggrvhdfuceophhrrghthihushhhsehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnheptdelledvjedtieduhfdtveefueejhffgteelieefffelveettdeg
+    veekhefhledunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepmhgvodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqddugeejfedujedt
+    tdekqdeftddvleekfeeitddqphhrrghthihushhhpeepkhgvrhhnvghlrdhorhhgseihrg
+    gurghvphhrrghthihushhhrdgtohhmpdhnsggprhgtphhtthhopedvvddpmhhouggvpehs
+    mhhtphhouhhtpdhrtghpthhtohepshhtvghfrghnsegrghhnvghrrdgthhdprhgtphhtth
+    hopehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtohhmpdhrtghpthhtohep
+    sggtmhdqkhgvrhhnvghlqdhfvggvuggsrggtkhdqlhhishhtsegsrhhorggutghomhdrtg
+    homhdprhgtphhtthhopehkrghmrghlrdgurghsuhessghrohgruggtohhmrdgtohhmpdhr
+    tghpthhtohepphgruhhlsegtrhgrphhouhhilhhlohhurdhnvghtpdhrtghpthhtoheptg
+    homhhpuhhtvghrshhfohhrphgvrggtvgesghhmrghilhdrtghomhdprhgtphhtthhopehh
+    rghrvhgvhihhuhhnthhnvgiguhhssehgmhgrihhlrdgtohhmpdhrtghpthhtohepnhhitg
+    hkrdguvghsrghulhhnihgvrhhsodhlkhhmlhesghhmrghilhdrtghomhdprhgtphhtthho
+    pehjuhhsthhinhhsthhithhtsehgohhoghhlvgdrtghomh
+X-ME-Proxy: <xmx:Y6ZZaQ7mQXPQkcM4NvdmDqFOL812AD7VtG0uOOwUNuaOKuldo7cKrA>
+    <xmx:Y6ZZadcuuUbRXaECpqepJDIaKplrZbJZa4BxI7qZ0jPeNJOZS4zSTw>
+    <xmx:Y6ZZafe3HOucT5EYIwZCRjzwdVLXkIFe_j6Eoe9LeTskBgOVbqUp6A>
+    <xmx:Y6ZZaaExh7RtaodQZNUCVajs76K9DnvNnhTpsnGk-iPIQVV9lr1H6Q>
+    <xmx:Y6ZZaWHYvgqSjc0X8gGrH6Fx_Kfz73xdC9aa3PF1PZU_GL1Y392Hn-Qm>
+Feedback-ID: id4c94969:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 8F3E63020061; Sat,  3 Jan 2026 18:29:39 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <155C9F219E5A9219+20251218180205.930961-2-bigfoot@radxa.com>
+X-ThreadId: A8SErWKoyjPZ
+Date: Sun, 04 Jan 2026 00:28:48 +0100
+From: "Pratyush Yadav" <pratyush@kernel.org>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@oss.qualcomm.com>
+Cc: "Brian Norris" <computersforpeace@gmail.com>,
+ "Kamal Dasu" <kamal.dasu@broadcom.com>,
+ "Broadcom internal kernel review list" <bcm-kernel-feedback-list@broadcom.com>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Harvey Hunt" <harveyhuntnexus@gmail.com>,
+ "Paul Cercueil" <paul@crapouillou.net>,
+ "Manivannan Sadhasivam" <mani@kernel.org>, "Stefan Agner" <stefan@agner.ch>,
+ "Tudor Ambarus" <tudor.ambarus@linaro.org>,
+ "Michael Walle" <mwalle@kernel.org>, "Nathan Chancellor" <nathan@kernel.org>,
+ "Nick Desaulniers" <nick.desaulniers+lkml@gmail.com>,
+ "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ llvm@lists.linux.dev
+Message-Id: <230bd4a1-7ccf-479e-acbb-8eb8440ec0e1@app.fastmail.com>
+In-Reply-To: <e2e72720-5541-44cc-a000-c469d7873c06@oss.qualcomm.com>
+References: <20260102124927.64703-8-krzysztof.kozlowski@oss.qualcomm.com>
+ <20260102124927.64703-14-krzysztof.kozlowski@oss.qualcomm.com>
+ <86a4yw87g8.fsf@kernel.org>
+ <e2e72720-5541-44cc-a000-c469d7873c06@oss.qualcomm.com>
+Subject: Re: [PATCH 7/7] mtd: spi-nor: hisi-sfc: Simplify with scoped for each OF child
+ loop
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260103_152944_425383_0549B21D 
+X-CRM114-Status: GOOD (  15.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,351 +127,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 19, 2025 at 02:02:04AM +0800, Junhao Xie wrote:
-> Add infrastructure to support accessing TrustZone-protected storage
-> devices through SCM (Secure Channel Manager) calls. Some Qualcomm
-> platforms protect their firmware storage (typically SPI NOR flash)
-> via TrustZone, making it inaccessible from the non-secure world.
-> 
-> Currently allowlisted for Radxa Dragon Q6A (QCS6490) where it has been
-> validated. Additional platforms can be added as they are tested.
-> 
+(writing from my phone so please excuse the formatting)
 
-By adding the relevant compatible, I'm able to read something from the
-SPI-NOR on the SC8280XP CRD as well.
+On Sat, Jan 3, 2026, at 1:38 PM, Krzysztof Kozlowski wrote:
+> On 02/01/2026 14:33, Pratyush Yadav wrote:
+>> Hi Kyzystof,
+>> 
+>> Thanks for the cleanup.
+>> 
+>> On Fri, Jan 02 2026, Krzysztof Kozlowski wrote:
+>> 
+>>> Use scoped for-each loop when iterating over device nodes to make code a
+>>> bit simpler.
+>> 
+>> Nit: the commit message is a bit too dry. I had to go and look what the
+>> difference between the two variants was. I could make an educated guess
+>> by looking at the patch, but still.
+>
+> Really? That's old and widely used syntax, replaced so many times and
+> sorry, but really obvious.
+>
+> We should not explain core kernel API in commit msgs, except maybe first
+> months of usage.
 
-This brings us to the next question, what data do you actually have in
-your SPI-NOR? In what way do you use the mtd device that is presented?
+Dunno. It's the first time I'm seeing these. So this was my first reaction. I think the patch would read nicer if you explain why the new variant is better even if it is widely used.
 
-On the laptop targets, the SPI-NOR is partitioned with a GPT partition
-table, and there's one of more partitions that would be of interest to
-parse/access from the kernel...
+Anyway, I don't want to waste either of our energy arguing this, so if you don't want to add the one liner, that's fine by me too.
 
-> Signed-off-by: Junhao Xie <bigfoot@radxa.com>
-> Tested-by: Xilin Wu <sophon@radxa.com>
-> ---
->  drivers/firmware/qcom/qcom_scm.c       | 183 +++++++++++++++++++++++++
->  drivers/firmware/qcom/qcom_scm.h       |   3 +
->  include/linux/firmware/qcom/qcom_scm.h |  47 +++++++
->  3 files changed, 233 insertions(+)
-> 
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 731074ca1ebbe..b117e1b58e363 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -66,6 +66,21 @@ struct qcom_scm_mem_map_info {
->  	__le64 mem_size;
->  };
->  
-> +struct qcom_scm_storage_cmd {
-> +	__le64 storage_type;
-> +	__le64 slot_num;
-> +	__le64 lun;
-> +	__le64 guid_ptr;
-> +	__le64 storage_cmd;
-> +};
-> +
-> +struct qcom_scm_storage_cmd_details {
-> +	__le64 lba;
-> +	__le64 length;
-> +	__le64 data_ptr;
-> +	__le64 data_size;
-> +};
-> +
->  /**
->   * struct qcom_scm_qseecom_resp - QSEECOM SCM call response.
->   * @result:    Result or status of the SCM call. See &enum qcom_scm_qseecom_result.
-> @@ -111,6 +126,15 @@ enum qcom_scm_qseecom_tz_cmd_info {
->  	QSEECOM_TZ_CMD_INFO_VERSION		= 3,
->  };
->  
-> +enum qcom_scm_storage_result {
+>> 
+>> If you end up doing a v2, a one-liner explanation of the difference
+>> between the two loop variants would be nice to have.
 
-These aren't really "enumerations", they are specifically defined
-constants, please use #define.
-
-> +	STORAGE_RESULT_SUCCESS			= 0,
-> +	STORAGE_RESULT_NO_MEMORY		= 1,
-> +	STORAGE_RESULT_INVALID_PARAMETER	= 2,
-> +	STORAGE_RESULT_STORAGE_ERROR		= 3,
-> +	STORAGE_RESULT_ACCESS_DENIED		= 4,
-> +	STORAGE_RESULT_NOT_SUPPORTED		= 5,
-> +};
-> +
->  #define QSEECOM_MAX_APP_NAME_SIZE		64
->  #define SHMBRIDGE_RESULT_NOTSUPP		4
->  
-> @@ -2214,6 +2238,159 @@ static void qcom_scm_qtee_init(struct qcom_scm *scm)
->  	devm_add_action_or_reset(scm->dev, qcom_scm_qtee_free, qtee_dev);
->  }
->  
-> +#if IS_ENABLED(CONFIG_MTD_QCOM_SCM_STORAGE)
-> +
-> +int qcom_scm_storage_send_cmd(enum qcom_scm_storage_type storage_type,
-> +			      enum qcom_scm_storage_cmd_id cmd_id,
-> +			      u64 lba, void *payload, size_t size)
-> +{
-> +	struct qcom_scm_res scm_res = {};
-> +	struct qcom_scm_desc desc = {};
-> +	struct qcom_scm_storage_cmd *cmd;
-> +	struct qcom_scm_storage_cmd_details *details;
-> +	size_t buf_size;
-> +	void *payload_buf;
-> +	int ret;
-> +
-> +	buf_size = sizeof(*cmd) + sizeof(*details);
-> +	if (payload)
-> +		buf_size += size;
-> +	void *data __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
-> +							 buf_size,
-> +							 GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +	memset(data, 0, buf_size);
-> +	if (payload) {
-> +		payload_buf = data + sizeof(*cmd) + sizeof(*details);
-> +		memcpy(payload_buf, payload, size);
-> +	}
-> +
-> +	cmd = data;
-> +	cmd->storage_type = storage_type;
-
-storage_type is CPU endian, cmd->storage_type is __le64, so all of these
-needs cpu_to_le64().
-
-> +	cmd->storage_cmd = cmd_id;
-> +
-> +	details = data + sizeof(*cmd);
-> +	details->lba = lba;
-> +	if (payload)
-> +		details->data_ptr = qcom_tzmem_to_phys(payload_buf);
-> +	details->length = size;
-> +
-> +	desc.svc = QCOM_SCM_SVC_STORAGE;
-> +	desc.cmd = QCOM_SCM_STORAGE_CMD;
-> +	desc.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_RO, QCOM_SCM_VAL,
-> +				     QCOM_SCM_RW, QCOM_SCM_VAL);
-> +	desc.args[0] = qcom_tzmem_to_phys(cmd);
-> +	desc.args[1] = sizeof(*cmd);
-> +	desc.args[2] = qcom_tzmem_to_phys(details);
-> +	desc.args[3] = sizeof(*details);
-> +	desc.owner = ARM_SMCCC_OWNER_SIP;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, &scm_res);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (payload)
-> +		memcpy(payload, payload_buf, size);
-> +
-> +	switch (scm_res.result[0]) {
-> +	case STORAGE_RESULT_SUCCESS:
-> +		return 0;
-> +	case STORAGE_RESULT_NO_MEMORY:
-> +		return -ENOMEM;
-> +	case STORAGE_RESULT_INVALID_PARAMETER:
-> +		return -EINVAL;
-> +	case STORAGE_RESULT_STORAGE_ERROR:
-> +		return -EIO;
-> +	case STORAGE_RESULT_ACCESS_DENIED:
-> +		return -EACCES;
-> +	case STORAGE_RESULT_NOT_SUPPORTED:
-> +		return -EOPNOTSUPP;
-> +	default:
-> +		return -EIO;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_scm_storage_send_cmd);
-> +
-> +/*
-> + * Allowlist of platforms known to support and have tested SCM storage interface.
-> + * This is a safety mechanism to prevent exposing potentially dangerous firmware
-> + * access on untested platforms. New platforms should be added here after validation.
-> + */
-> +static const struct of_device_id qcom_scm_storage_allowlist[] = {
-> +	{ .compatible = "radxa,dragon-q6a" },
-> +	{ }
-> +};
-> +
-> +static bool qcom_scm_storage_machine_is_allowed(void)
-> +{
-> +	struct device_node *np;
-> +	bool match;
-> +
-> +	np = of_find_node_by_path("/");
-> +	if (!np)
-> +		return false;
-> +
-> +	match = of_match_node(qcom_scm_storage_allowlist, np);
-> +	of_node_put(np);
-> +
-> +	return match;
-
-This function can be rewritten as:
-
-	return !!of_machine_device_match(qcom_scm_storage_allowlist);
-
-> +}
-> +
-> +static void qcom_scm_storage_free(void *data)
-> +{
-> +	struct platform_device *storage_dev = data;
-> +
-> +	platform_device_unregister(storage_dev);
-> +}
-> +
-> +static int qcom_scm_storage_init(struct qcom_scm *scm)
-> +{
-> +	struct qcom_scm_storage_info info;
-> +	struct platform_device *storage_dev;
-> +	int ret;
-> +
-> +	ret = qcom_scm_storage_send_cmd(QCOM_SCM_STORAGE_SPINOR,
-> +					QCOM_SCM_STORAGE_GET_INFO,
-> +					0, &info, sizeof(info));
-> +	if (ret < 0) {
-> +		dev_info(scm->dev, "scm storage not available: %d\n", ret);
-> +		return 0;
-> +	}
-> +
-> +	if (!qcom_scm_storage_machine_is_allowed()) {
-> +		dev_info(scm->dev, "scm storage untested, skipping\n");
-> +		return 0;
-> +	}
-> +
-> +	dev_info(scm->dev, "scm storage size %llu bytes\n",
-> +		 info.total_blocks * info.block_size);
-> +
-> +	storage_dev = platform_device_alloc("qcom_scm_storage", -1);
-> +	if (!storage_dev)
-> +		return -ENOMEM;
-> +
-> +	storage_dev->dev.parent = scm->dev;
-> +
-> +	ret = platform_device_add(storage_dev);
-> +	if (ret) {
-> +		platform_device_put(storage_dev);
-> +		return ret;
-> +	}
-> +
-> +	return devm_add_action_or_reset(scm->dev, qcom_scm_storage_free,
-> +					storage_dev);
-> +}
-> +
-> +#else /* CONFIG_MTD_QCOM_SCM_STORAGE */
-> +
-> +static int qcom_scm_storage_init(struct qcom_scm *scm)
-> +{
-> +	return 0;
-> +}
-> +
-> +#endif /* CONFIG_MTD_QCOM_SCM_STORAGE */
-> +
->  /**
->   * qcom_scm_is_available() - Checks if SCM is available
->   */
-> @@ -2449,6 +2626,12 @@ static int qcom_scm_probe(struct platform_device *pdev)
->  	/* Initialize the QTEE object interface. */
->  	qcom_scm_qtee_init(scm);
->  
-> +	/*
-> +	 * Initialize the SCM storage interface.
-> +	 */
-> +	ret = qcom_scm_storage_init(scm);
-> +	WARN(ret < 0, "failed to initialize scm storage: %d\n", ret);
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-> index a56c8212cc0c4..3b68b33c5ccc3 100644
-> --- a/drivers/firmware/qcom/qcom_scm.h
-> +++ b/drivers/firmware/qcom/qcom_scm.h
-> @@ -149,6 +149,9 @@ int qcom_scm_shm_bridge_enable(struct device *scm_dev);
->  #define QCOM_SCM_SMMU_CONFIG_ERRATA1		0x03
->  #define QCOM_SCM_SMMU_CONFIG_ERRATA1_CLIENT_ALL	0x02
->  
-> +#define QCOM_SCM_SVC_STORAGE			0x1a
-> +#define QCOM_SCM_STORAGE_CMD			0x01
-> +
->  #define QCOM_SCM_SVC_WAITQ			0x24
->  #define QCOM_SCM_WAITQ_RESUME			0x02
->  #define QCOM_SCM_WAITQ_GET_WQ_CTX		0x03
-> diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-> index a55ca771286bf..41f799d8de54f 100644
-> --- a/include/linux/firmware/qcom/qcom_scm.h
-> +++ b/include/linux/firmware/qcom/qcom_scm.h
-> @@ -53,6 +53,36 @@ enum qcom_scm_ice_cipher {
->  	QCOM_SCM_ICE_CIPHER_AES_256_CBC = 4,
->  };
->  
-> +enum qcom_scm_storage_cmd_id {
-
-As with qcom_scm_storage_result above, this isn't really an enumeration,
-but as it provides you with the type for the function parameters below,
-I think it's okay. So, feel free to leave this and qcom_scm_storage_type
-as is.
-
+-- 
 Regards,
-Bjorn
-
-> +	QCOM_SCM_STORAGE_INIT      = 0,
-> +	QCOM_SCM_STORAGE_READ      = 1,
-> +	QCOM_SCM_STORAGE_WRITE     = 2,
-> +	QCOM_SCM_STORAGE_ERASE     = 3,
-> +	QCOM_SCM_STORAGE_GET_INFO  = 4,
-> +	QCOM_SCM_STORAGE_DEINIT    = 5,
-> +};
-> +
-> +enum qcom_scm_storage_type {
-> +	QCOM_SCM_STORAGE_NULL    = 0,
-> +	QCOM_SCM_STORAGE_SPINOR  = 1,
-> +};
-> +
-> +#define QCOM_SCM_STORAGE_FW_VER_LEN	32
-> +#define QCOM_SCM_STORAGE_MEM_TYPE_LEN	5
-> +#define QCOM_SCM_STORAGE_PROD_NAME_LEN	32
-> +
-> +struct qcom_scm_storage_info {
-> +	u64 total_blocks;
-> +	u32 block_size;
-> +	u32 page_size;
-> +	u32 num_physical;
-> +	u64 manufacturer_id;
-> +	u64 serial_num;
-> +	char fw_version[QCOM_SCM_STORAGE_FW_VER_LEN];
-> +	char memory_type[QCOM_SCM_STORAGE_MEM_TYPE_LEN];
-> +	char product_name[QCOM_SCM_STORAGE_PROD_NAME_LEN];
-> +} __packed;
-> +
->  #define QCOM_SCM_PERM_READ       0x4
->  #define QCOM_SCM_PERM_WRITE      0x2
->  #define QCOM_SCM_PERM_EXEC       0x1
-> @@ -181,4 +211,21 @@ int qcom_scm_qtee_invoke_smc(phys_addr_t inbuf, size_t inbuf_size,
->  int qcom_scm_qtee_callback_response(phys_addr_t buf, size_t buf_size,
->  				    u64 *result, u64 *response_type);
->  
-> +#if IS_ENABLED(CONFIG_MTD_QCOM_SCM_STORAGE)
-> +
-> +int qcom_scm_storage_send_cmd(enum qcom_scm_storage_type storage_type,
-> +			      enum qcom_scm_storage_cmd_id cmd_id,
-> +			      u64 lba, void *payload, size_t size);
-> +
-> +#else /* CONFIG_MTD_QCOM_SCM_STORAGE */
-> +
-> +static inline int qcom_scm_storage_send_cmd(enum qcom_scm_storage_type storage_type,
-> +					    enum qcom_scm_storage_cmd_id cmd_id,
-> +					    u64 lba, void *payload, size_t size)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +#endif /* CONFIG_MTD_QCOM_SCM_STORAGE */
-> +
->  #endif
-> -- 
-> 2.51.2
-> 
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
