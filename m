@@ -4,96 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8030CFC6160
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jan 2026 04:50:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E546DFC6170
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jan 2026 05:09:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=owa2Cwcft5LOJt0qrNQdwapaoe7f3XFMtroaxpUwtck=; b=Y/6GSPJdQJEVXl
-	9iVhHeEBX8DxOO4g4i75Y8c5qaeJXL42k59sf9d/8yxGMXSkGYHl01ismcOfKx/PemoWIaKlaKEZM
-	C48MM8kV4vAcwL0BvhHz/rx3aJJT4MdouXAzgcRQk4RkAuG/v7KGf27PNkPKZlDmSY7ERggnFZuJD
-	N9SiMwsxMtqDRFoVYfX4cCKVXPqN6pJ5PDYPAbhCumeNYWWO5iNTXHiZKFoLcTVfHSfGvFAaTA3Mf
-	60eF0yNDjSChWQYox/NT4hD5yRhBdKE247xbWityXjiSZ8PjueF5D7K8ZbSUwzKKBEeYBBLRO20Qe
-	PyyW0BDGZRAhfUjtIlwg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Reh6sEXHnne0QtDPI3lW1bj2xifqzchU8wGvSlTu9KM=; b=rQU3RkZHRZNrsH
+	dThE7HyADBkUQkMjM532SK8a22vdHjG3voeJp98dpr2IEkKZf/mHU62hdKdtZan8xft7Nr5FfepTD
+	/8ePMPBn9m07Uu13bGBY294WsAS4gny3xLP2ZSTcQ4XVkKhSvlE5K8LYpEqYRUfSTEzfiQl6gcBXl
+	JQHIGSuYsqdqrk1LRgd7p+tzVGXddfABcnvPSfeO3S3G5saVmQQB8rq6oKO7n2tLHXu5YXVUyy3qS
+	2Otd5ncYxeHh9C43C3jRM/3TyOw3+Iz2DdSwi7zZO3YRJjdIfbr1HX0ymZ7u3WJa3OFf0/pjZiXYR
+	VeZhWU1qaUv3RY39LrfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbtax-00000008yZH-3Jsv;
-	Sat, 03 Jan 2026 04:50:31 +0000
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+	id 1vbtt6-00000008z7y-3c0e;
+	Sat, 03 Jan 2026 05:09:16 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vbtas-00000008yYm-1wdD
+	id 1vbtt2-00000008z7Z-2nJI
 	for linux-mtd@lists.infradead.org;
-	Sat, 03 Jan 2026 04:50:30 +0000
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-7b89c1ce9easo14008047b3a.2
-        for <linux-mtd@lists.infradead.org>; Fri, 02 Jan 2026 20:50:25 -0800 (PST)
+	Sat, 03 Jan 2026 05:09:15 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-2a110548cdeso170037435ad.0
+        for <linux-mtd@lists.infradead.org>; Fri, 02 Jan 2026 21:09:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767415825; x=1768020625; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YsHYW0GcvEr1wxZPwcWK3GbPG5TTUN++8f/TrGKFv8c=;
-        b=X84gtQjPx0/9W8rCygnAvI6/1omdBunr40td+n2+O9BsFWdctTXSw9jxO5okr3SyR9
-         jUEz42ngQxiSCNHTKrw8wZkPcEtXy5YNbErP0JCk132LaK3oBRuvN2Zx++dnat5CEpi/
-         nfZhqIR5gimntE4Gb58Y2ARFIrej/Nsri17qwfJI95CK0vYEBnKDi+q7WdNP+wrLU0fX
-         gvpO05UTJ7PZscqAPuwSB0hnKXTyMi4XT9pXHO8FC3+9jREKNmKyHqSUsMtNYyEVsU3v
-         EjXYOOXgcLepJqiW1+z24mMVz60nQvTflexDBvyVH1N0dwxA+azT9sxQ2TDG4QF+Wpdi
-         wRjg==
+        d=gmail.com; s=20230601; t=1767416952; x=1768021752; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8+CQv8mpkcn2J1lV6g4DbhVMQ5AvRmITHsSXIikepw=;
+        b=FZ8ar49HH5myvWTW7t6JbUG4hNb8dAEbCiVZ+YXqFXt+sGHN/I0iQKM7IkQqTfoxB4
+         oZ86tYcAKzYUAbL8/2suevWMvUFd2LtvSQ+ud16UewTmUO6eKpV0/dhqrzYgeKsHo21+
+         pBVJPIP7HspQVEZZu0V/JnVQ4CwovNhV/4ULGMpU1gLLeKheONJJXVE38eCkD6rjaRNq
+         5twuKz2j2IaHg03+T+KsfyPvnjYAoOg1JBwJYt+FDt45bdx3KuxDCR3I6vAKO1hNQg+o
+         PEfaZKBWmpG1k/J6+1UHztBOwNS9x3B6hOnCj9cqJQXZCR/CG6lDuITOdXfqAEzOg6AR
+         Sn1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767415825; x=1768020625;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YsHYW0GcvEr1wxZPwcWK3GbPG5TTUN++8f/TrGKFv8c=;
-        b=nF7fr/d6K93SxjwFKQllgQWyI57wV99PcknIXKG53pKmpum8DGiIoJitMTybLSwzQH
-         4s4FR7Qy0eEfafxnIP5D1zIYeczvu4vDIx8g5SL99u9jcFkLDQvgixxa7a0Bn76GYQTp
-         q2UzOQ2LKod4vyxOSoMx9SFuXn29CgbBJ/1JLV7p+JjSapcr1+8YL8tQHVnjLnf4RbH/
-         sCSSV4YWYXUUTeLXKItXskNCAy9UK9ktzHqrCxKVBpjPBkmkFNh2R7fmnQbzW8dQr/bj
-         Tm3f47boXZfr4jatK6PtoSkHvv2b6BpuFKNuxs2MRdTYfNTyTDAynOKDfGgQ3eAAEnWW
-         r+zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjK4dgtOnjESotbrXa0GthhTJOcN0LOW5eXRdeIywD5BaouagCvijA7xMgOg4oLkDvL+/BKUBSpq4=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy4A5plV+OJuPghDtPYy/xbWjYrr+0gEq+qY+qCWwh+cfWTgY0i
-	7dLbKQMKjc74sfVdYeuwEiW6yluZUNYrpg8Jaaw8gIsVj5s1R7goXArv
-X-Gm-Gg: AY/fxX6vyqIBiPbKQBTlKlnp1fzyHsNKQ18l5kekO75hr5r6IwB0Xjz13ITDx9KQ/hL
-	Mkf37N0UD7XW9egE4BMUQDwR1DZsfDlfrjM7AQFbIVW/LGbfKRkwG9TrHQ64A5KlXiqE+RZSbpO
-	UnnwVhDPf4G4xQq38N4DceiXHNKGiq7KSFfAeJGpJgr4R3q26FeOv090yTsSxzuZcc8IIM2LH1j
-	yxS6ITIfG3HevFpbrWgiFUehq1AsrMDH0SlBWKg5nAbeNzXR9FJ/oCW5btyQO6SFhAjI1tuuJ4R
-	QkDvIn9rwx1Lcpx3+54t6YKSc+p1dpKbKOeMhEMa0/U13rfWJEYEU1tAShIBOTT3FAW7BGef2zi
-	ccCK6U7D/kHIfjKT4vdW9cUZ1VqK///Pcs0qKQUZUPcNLbCj79NSELTbDDJnQBg91eS5DCUp/vt
-	G++HCqjjEPdaQoddHzdDMNjfNfJbuTH/b9YjQ=
-X-Google-Smtp-Source: AGHT+IF90F2fmF2eDjyjEfoyNC/ZcIHn8WEhhBEdVO3NdOHkunZm7QOXXUBNNdZq4w6luowRDJ47oA==
-X-Received: by 2002:a05:6a20:9389:b0:371:5a31:e477 with SMTP id adf61e73a8af0-376a8eb7dfamr41941867637.25.1767415825019;
-        Fri, 02 Jan 2026 20:50:25 -0800 (PST)
-Received: from [192.168.1.4] ([122.181.60.165])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c1e7bd61b40sm36952261a12.23.2026.01.02.20.50.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jan 2026 20:50:24 -0800 (PST)
-Message-ID: <180afaec-c9fb-4845-a1b9-6adc7b9c7434@gmail.com>
-Date: Sat, 3 Jan 2026 10:20:18 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] dt-bindings: mtd: nvidia,tegra20-nand: convert to DT
- schema
-To: Rob Herring <robh@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Stefan Agner <stefan@agner.ch>,
- Lucas Stach <dev@lynxeye.de>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20251231-nvidia-nand-v3-1-2e67664d3674@gmail.com>
- <20260102155837.GA3840725-robh@kernel.org>
-Content-Language: en-US
+        d=1e100.net; s=20230601; t=1767416952; x=1768021752;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T8+CQv8mpkcn2J1lV6g4DbhVMQ5AvRmITHsSXIikepw=;
+        b=kfeGUisovXNndzfA9hNjJpgH2QsxNzYRSeL7RougmYVopHvXM50/y6PQszBwr3cFNl
+         5SJoUbK9XBXYmdPE3dZwlsdY0/jppTapvprN7W2xQ+duRFr/QCeiLW7Ycv/3Cf46Oraf
+         wE13a+EEVXiugPz8wJC0rNulWF61oXuxWh6VE3jCip6ji9UWN9cu1w7pPxok36A4wkH8
+         /xnmjzOJb6QoftZ480eSHwiKeGMCSZNnXx5bHMYB9Jr3REySRFUlVdS1YaQymMYcrpPZ
+         9G2XlRvGCx4Myht6zRTDe9fBNgkapNBTyfBH/aflYwn5MXRLFjr2rinNCDy4L2GVeJk4
+         a9iQ==
+X-Gm-Message-State: AOJu0YxmWVGvUxU6nIxY0K/FjqC1dq2Xm9CRgWc4Xspr9Gc10jRCvq3O
+	Ex7NVt3M1OGWpCb+K0o+N21ao3s7ckXR/MzcuvcOVfC2DOYJ/B+jwS5v
+X-Gm-Gg: AY/fxX4d7tJSteWtnR4m1TPcAmwKEixgilNGH9GU6z1MNiCM83ThHU1wWuq5prL6g7P
+	tM8wSQfpteB7FBJ2BhIYoU9BBDtyvkZQ4OpvfwfANLw0WsDPruqee9Nso+z7y4+ME0M06JpIevX
+	Yxqy/lgmomL6H1oWdtDiAz5ccnLhkkGvZjuWQboKOD7NipD02Zm61O9woikbOqdQqSJ3oN/l5Yy
+	UvIEBAmJP2PvFYOkA4+XCv4tiWcMLER4f6VAOk/R/ZiQrsr/gMH9Pr44cQXJg6YkT6vr4Nbhogo
+	0Cx+Zv/ZzJrFdk3GRT7n0TeALh1R6BhH6lZMCVrRD7Dlp9kuJzhC3lHQuwAZNYjbhAT7bUa3Svf
+	oJXGmjT8URWCXVW45fst3Qo/OOzuTZ/6R4Zz4KLeo9jVdX7Gwyu8CtpUknCAq9xfJwRbsg28M25
+	tGC3BnXVRpiChzPCxxBXf4Sz57MiSdSPCcHw==
+X-Google-Smtp-Source: AGHT+IHTfufJ/COdXwRuMAWT7oXqPfmJjDOSy+SnVq08RYmkgw57v883SQY7Br9m7vBEu9FM9Q73bg==
+X-Received: by 2002:a17:902:e94f:b0:267:a5df:9b07 with SMTP id d9443c01a7336-2a2f2212844mr375644785ad.12.1767416951595;
+        Fri, 02 Jan 2026 21:09:11 -0800 (PST)
+Received: from Black-Pearl.localdomain ([122.181.60.165])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2a2f3c8a8e3sm386171725ad.41.2026.01.02.21.09.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jan 2026 21:09:11 -0800 (PST)
 From: Charan Pedumuru <charan.pedumuru@gmail.com>
-In-Reply-To: <20260102155837.GA3840725-robh@kernel.org>
+Date: Sat, 03 Jan 2026 05:09:05 +0000
+Subject: [PATCH v4] dt-bindings: mtd: nvidia,tegra20-nand: convert to DT
+ schema
+MIME-Version: 1.0
+Message-Id: <20260103-nvidia-nand-v4-1-3156f46f3a5e@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAHCkWGkC/13O0QrCIBTG8VcJrzP0aDq76j2iC6e2HWguXEgx9
+ u65EbR1+R34/TkjGULCMJDTbiQpZBywj2XI/Y641sYmUPRlE2Bw5IxzGjN6tDTa6CkD6Zy2oaq
+ ZJUU8Urjha6ldrmW3ODz79F7imc/Xb0ewTSdzyqlWXAYuoQID56azeD+4viNzJ8PPApithWJrZ
+ bQ3GmTN6n8rVlZs/8+iWAhKKyW9UFqu7TRNHzhsaHoeAQAA
+X-Change-ID: 20251011-nvidia-nand-024cc7ae8b0a
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, Stefan Agner <stefan@agner.ch>, 
+ Lucas Stach <dev@lynxeye.de>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Charan Pedumuru <charan.pedumuru@gmail.com>
+X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260102_205026_544748_7DB0739E 
-X-CRM114-Status: GOOD (  19.22  )
+X-CRM114-CacheID: sfid-20260102_210912_722220_9516CB94 
+X-CRM114-Status: GOOD (  20.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,117 +109,222 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Convert NVIDIA Tegra NAND Flash Controller binding to YAML format.
+Changes during Conversion:
+- Define new properties `power-domains` and `operating-points-v2`
+  because the existing in tree DTS uses them.
 
+Signed-off-by: Charan Pedumuru <charan.pedumuru@gmail.com>
+---
+Changes in v4:
+- Changed the the reg property for nand child node.
+- Link to v3: https://lore.kernel.org/r/20251231-nvidia-nand-v3-1-2e67664d3674@gmail.com
 
-On 02-01-2026 21:28, Rob Herring wrote:
-> On Wed, Dec 31, 2025 at 09:29:32AM +0000, Charan Pedumuru wrote:
->> Convert NVIDIA Tegra NAND Flash Controller binding to YAML format.
->> Changes during Conversion:
->> - Define new properties `power-domains` and `operating-points-v2`
->>   because the existing in tree DTS uses them.
->>
->> Signed-off-by: Charan Pedumuru <charan.pedumuru@gmail.com>
->> ---
->> Changes in v3:
->> - Removed pattern properties for partition.
->> - Used single quotes for nand string in pattern properties.
->> - Modified maxItems value and added minItems to reg property under nand child node.
->> - Link to v2: https://lore.kernel.org/r/20251229-nvidia-nand-v2-1-b697d9724b0b@gmail.com
->>
->> Changes in v2:
->> - Edited the commit description to match the updated changes.
->> - Modified the description for the YAML.
->> - Removed all the duplicated properties, defined a proper ref for both parent
->>   and child nodes.
->> - Removed unnecessary properties from the required following the old
->>   text binding.
->> - Link to v1: https://lore.kernel.org/r/20251030-nvidia-nand-v1-1-7614e1428292@gmail.com
->> ---
->>  .../bindings/mtd/nvidia,tegra20-nand.yaml          | 103 +++++++++++++++++++++
->>  .../bindings/mtd/nvidia-tegra20-nand.txt           |  64 -------------
->>  2 files changed, 103 insertions(+), 64 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
->> new file mode 100644
->> index 000000000000..632cfd7dc5e2
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
->> @@ -0,0 +1,103 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/nvidia,tegra20-nand.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: NVIDIA Tegra NAND Flash Controller
->> +
->> +maintainers:
->> +  - Jonathan Hunter <jonathanh@nvidia.com>
->> +
->> +allOf:
->> +  - $ref: nand-controller.yaml
->> +
->> +description:
->> +  The NVIDIA NAND controller provides an interface between NVIDIA SoCs
->> +  and raw NAND flash devices. It supports standard NAND operations,
->> +  hardware-assisted ECC, OOB data access, and DMA transfers, and
->> +  integrates with the Linux MTD NAND subsystem for reliable flash management.
->> +
->> +properties:
->> +  compatible:
->> +    const: nvidia,tegra20-nand
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  clock-names:
->> +    items:
->> +      - const: nand
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  reset-names:
->> +    items:
->> +      - const: nand
->> +
->> +  power-domains:
->> +    maxItems: 1
->> +
->> +  operating-points-v2:
->> +    maxItems: 1
->> +
->> +patternProperties:
->> +  '^nand@':
->> +    type: object
->> +    description: Individual NAND chip connected to the NAND controller
->> +    $ref: raw-nand-chip.yaml#
->> +
->> +    properties:
->> +      reg:
->> +        minItems: 1
->> +        maxItems: 5
-> 
-> Sigh. I gave you the exact schema to use. How is 5 address ENTRIES 
-> valid? Again:
-> 
-> reg:
->   maximum: 5
+Changes in v3:
+- Removed pattern properties for partition.
+- Used single quotes for nand string in pattern properties.
+- Modified maxItems value and added minItems to reg property under nand child node.
+- Link to v2: https://lore.kernel.org/r/20251229-nvidia-nand-v2-1-b697d9724b0b@gmail.com
 
-Okay, I thought it's an invalid syntax as I never used it to represent reg property before, I will fix it in the next revision. Thanks.
+Changes in v2:
+- Edited the commit description to match the updated changes.
+- Modified the description for the YAML.
+- Removed all the duplicated properties, defined a proper ref for both parent
+  and child nodes.
+- Removed unnecessary properties from the required following the old
+  text binding.
+- Link to v1: https://lore.kernel.org/r/20251030-nvidia-nand-v1-1-7614e1428292@gmail.com
+---
+ .../bindings/mtd/nvidia,tegra20-nand.yaml          | 102 +++++++++++++++++++++
+ .../bindings/mtd/nvidia-tegra20-nand.txt           |  64 -------------
+ 2 files changed, 102 insertions(+), 64 deletions(-)
 
-> 
-> Rob
+diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
+new file mode 100644
+index 000000000000..b417d72fa0de
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.yaml
+@@ -0,0 +1,102 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/nvidia,tegra20-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NVIDIA Tegra NAND Flash Controller
++
++maintainers:
++  - Jonathan Hunter <jonathanh@nvidia.com>
++
++allOf:
++  - $ref: nand-controller.yaml
++
++description:
++  The NVIDIA NAND controller provides an interface between NVIDIA SoCs
++  and raw NAND flash devices. It supports standard NAND operations,
++  hardware-assisted ECC, OOB data access, and DMA transfers, and
++  integrates with the Linux MTD NAND subsystem for reliable flash management.
++
++properties:
++  compatible:
++    const: nvidia,tegra20-nand
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: nand
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    items:
++      - const: nand
++
++  power-domains:
++    maxItems: 1
++
++  operating-points-v2:
++    maxItems: 1
++
++patternProperties:
++  '^nand@':
++    type: object
++    description: Individual NAND chip connected to the NAND controller
++    $ref: raw-nand-chip.yaml#
++
++    properties:
++      reg:
++        maximum: 5
++
++    unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - resets
++  - reset-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/tegra20-car.h>
++    #include <dt-bindings/gpio/tegra-gpio.h>
++
++    nand-controller@70008000 {
++        compatible = "nvidia,tegra20-nand";
++        reg = <0x70008000 0x100>;
++        interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++        clock-names = "nand";
++        resets = <&tegra_car 13>;
++        reset-names = "nand";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nand@0 {
++            reg = <0>;
++            #address-cells = <1>;
++            #size-cells = <1>;
++            nand-bus-width = <8>;
++            nand-on-flash-bbt;
++            nand-ecc-algo = "bch";
++            nand-ecc-strength = <8>;
++            wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_LOW>;
++        };
++    };
++...
+diff --git a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
+deleted file mode 100644
+index 4a00ec2b2540..000000000000
+--- a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
++++ /dev/null
+@@ -1,64 +0,0 @@
+-NVIDIA Tegra NAND Flash controller
+-
+-Required properties:
+-- compatible: Must be one of:
+-  - "nvidia,tegra20-nand"
+-- reg: MMIO address range
+-- interrupts: interrupt output of the NFC controller
+-- clocks: Must contain an entry for each entry in clock-names.
+-  See ../clocks/clock-bindings.txt for details.
+-- clock-names: Must include the following entries:
+-  - nand
+-- resets: Must contain an entry for each entry in reset-names.
+-  See ../reset/reset.txt for details.
+-- reset-names: Must include the following entries:
+-  - nand
+-
+-Optional children nodes:
+-Individual NAND chips are children of the NAND controller node. Currently
+-only one NAND chip supported.
+-
+-Required children node properties:
+-- reg: An integer ranging from 1 to 6 representing the CS line to use.
+-
+-Optional children node properties:
+-- nand-ecc-mode: String, operation mode of the NAND ecc mode. Currently only
+-		 "hw" is supported.
+-- nand-ecc-algo: string, algorithm of NAND ECC.
+-		 Supported values with "hw" ECC mode are: "rs", "bch".
+-- nand-bus-width : See nand-controller.yaml
+-- nand-on-flash-bbt: See nand-controller.yaml
+-- nand-ecc-strength: integer representing the number of bits to correct
+-		     per ECC step (always 512). Supported strength using HW ECC
+-		     modes are:
+-		     - RS: 4, 6, 8
+-		     - BCH: 4, 8, 14, 16
+-- nand-ecc-maximize: See nand-controller.yaml
+-- nand-is-boot-medium: Makes sure only ECC strengths supported by the boot ROM
+-		       are chosen.
+-- wp-gpios: GPIO specifier for the write protect pin.
+-
+-Optional child node of NAND chip nodes:
+-Partitions: see mtd.yaml
+-
+-  Example:
+-	nand-controller@70008000 {
+-		compatible = "nvidia,tegra20-nand";
+-		reg = <0x70008000 0x100>;
+-		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
+-		clock-names = "nand";
+-		resets = <&tegra_car 13>;
+-		reset-names = "nand";
+-
+-		nand@0 {
+-			reg = <0>;
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			nand-bus-width = <8>;
+-			nand-on-flash-bbt;
+-			nand-ecc-algo = "bch";
+-			nand-ecc-strength = <8>;
+-			wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_LOW>;
+-		};
+-	};
 
+---
+base-commit: 43edce71d70c603d3f3f1b1c886f65cd02d80c24
+change-id: 20251011-nvidia-nand-024cc7ae8b0a
+
+Best regards,
 -- 
-Best Regards,
-Charan.
+Charan Pedumuru <charan.pedumuru@gmail.com>
 
 
 ______________________________________________________
