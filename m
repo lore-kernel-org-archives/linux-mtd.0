@@ -4,105 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F9B4C2A061
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jan 2026 23:58:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06FFEC2A06C
+	for <linux-mtd@archiver.kernel.org>; Sun,  4 Jan 2026 10:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RhqIIcOX/oz/ZzW2q0mKXNb4Y3MyykHvpDVm9/fldzg=; b=ymfowmhN+FYlyl
-	HX/644XyMZDAH9cTjxkfqy5TMLjFCS5XixLLTF6+2/kdF5/ZSk9hA4RyimJANDBk0M6SXexZMGjUz
-	PWLRvBk62qMEgRr0ndBA+8J0MUExpelSV3roXfvgSgbcuWYoBeSPve+XOlHv6I8rkQH8RfqEpD8Vv
-	eEv4UcBhC7CdSy0lS28MFnOof3UCDa2rGEcUC9jaelC2FX3GOXfZJwxC76SAz1k5y+gvso+8mMeXw
-	VIpnEhSZuGS/nPvdDs2wUFmNus4mhX3T9wUje4FHVPZP/X7mDK2Q4TRgi35AERMhRYDwLNElCERwK
-	fJGXkuBn8YdmuArHQQiA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mQcdMe6MSwg9SU1gp+sV4A7TfcFLgsMOUsXlq0WgzS4=; b=QXuZSeVWVuTyji
+	/xj50SZ85ru7aR472JgXWAOSrqs3wb1qC4ffXUXQOiyHPRX+/WDi7wETb6lEzA26FmG85Sf8WNoVO
+	d5Bd0dYuXG0HFSiHs4xNV85SVSRmkOb3+lCQiHohEHgtIDRfu1IgsfPg8D3TklS+NvBUNwCOW9AAn
+	6jFqLpieMMupYdhduMWV7hE/PeYhRLV11jv+dDBwVY0FGXFp6aXG0zuAYgRLLtOfwjfrBasO4NVXZ
+	3Ouk0vuYb5me5y+5qGemHvruSFocR2yCmAXpBkwhYQf5EkxaQrLO2bpISHr9Gpsi7FUEW2eBcZcOF
+	FZibwJLVV/5Vavp7flCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcBVg-00000009uHz-2Zxv;
-	Sat, 03 Jan 2026 23:58:16 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1vcKw4-0000000A9qc-0ES9;
+	Sun, 04 Jan 2026 10:02:08 +0000
+Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcBVQ-00000009uHb-1a0T
+	id 1vcKw1-0000000A9qH-0vmU
 	for linux-mtd@lists.infradead.org;
-	Sat, 03 Jan 2026 23:58:15 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-598e9f63169so1204074e87.2
-        for <linux-mtd@lists.infradead.org>; Sat, 03 Jan 2026 15:57:58 -0800 (PST)
+	Sun, 04 Jan 2026 10:02:06 +0000
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-34b75f7a134so9620106a91.0
+        for <linux-mtd@lists.infradead.org>; Sun, 04 Jan 2026 02:02:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1767484677; x=1768089477; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dB1LagwegptwwLHmXyd1osJA27FSZTcIsYt0ExTrUgg=;
-        b=CcmWJF1bs7Hs8kpNsHD8tZdrHfuB9X4jl5Evcs75v1twgSy3R0IKHnqApgU8eJ1Qyi
-         LzNKE/ICGyYCaGp4tCQcMUWuyTscGhYi5DUrnDVdVLMg7GTYpgHUCHZYX14gI/UcTFsi
-         YPXoVIFs5oQBAbI77JLolIkzNh41BBgL6cuc8kcDzndgynR4Q3KB8kqVZM0+jSu/uwak
-         njCnCE6rUAneO3aTFmzO8nasyJ5IsHNb9Th8anmfrrt2jRCltFfMWjqOA4bd0A8OYkMP
-         EYjSTAY4U4SLNFGNqJJmfHGVhmkNJrphLANhwZgltpL21Cju02Uouh+J/Y3bLjezoEbg
-         u/qA==
+        d=thingy.jp; s=google; t=1767520924; x=1768125724; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LxO4CmHvbs5IX2zszHvbq/kpDg48hQV47bQLUQlGXrQ=;
+        b=NdrKFrrPuM7eSeXbBfYJD5PjKRaFn4KE3snpBOEbK/Mr+7jgshUNBC1TUQjLktEX1z
+         o2HmZn4Nm0OxzG4Mw4qW7uQFym8I/c3zEr9zPDTDJtW/YltgDAM3K0SF7fFzTrA1QUBE
+         WQohABOlFhi5A7U+chxL1Ipy/hfWfU0fpC/Ls=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767484677; x=1768089477;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dB1LagwegptwwLHmXyd1osJA27FSZTcIsYt0ExTrUgg=;
-        b=VEoFmGS0EW0SwqdhrYO0adBPL0UnpgGZifSa0tSXJOzXqVSjwKvVGZ0PBhyhlSldc8
-         zr77XXuXPOXdWrZviLjioAcSBf0XVs8KkyhyupEF9vJlXh7+UWsUWa9hRcJmyJg37UVc
-         fRqE4IyHDP01l7ZsA3mjkgWZW0PsZUagkm+LJ+BSYR0nEXFmXF/f5tCr80SLqL3/gJNH
-         wPKM39iGRXwZajSTj3sGFDRg07N0KDc77v9BL1BPDoxqvaj+WGz+zM7MaG5XbCQc8eRK
-         Z5/z44yoh9OPvYTO0/FJvIPgpiAVkUjzSxjxwLVbjjkiQkkpzgX0/63NPMYM0R9J/zt2
-         /JQg==
-X-Forwarded-Encrypted: i=1; AJvYcCWEjcSPPrEIKcoLDeaCv9zh0mdoTTcHgR/q8eFZP4ww3u+SLqjrJ3ILJoAvS71EScBM6JnRCQAQ1wI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YywM7va9mW5+OMXLeCn2y4wQ9Bhc5CRtVkAorpKvPAaMiWf+of6
-	nwakwVjFsQydLOww7RXpzQ2sCD4LH+k1PfayJyvwB75y/+lDX4qF2X3rifcdsnv9bgU=
-X-Gm-Gg: AY/fxX4dwXDjKWPDHDangIEa2WnvnTwoH+/FHFAqhuGg5lKgbHB2CG9DfSUez/cZ+Wb
-	3C4ODH2fOgk+MWHRaEmp744Scyo2L3ZzrYYCcsdHTJP4UdbkW3jTxbLvuRRq2l7HVRvDubcXopx
-	FLW/1l1HSBjX9m0Ofp/qJAwTlelPUMgkPMIAYVrrT3ausq78yDxV41Gqtgm1QcUTJdUPnyVPSuD
-	tCaoUVcAu+2bVsEYF+vAXjxmSHnoFJ6qoghsg6rPRwzMe8JMoErcURKe2rLklnqdmw2I7lwM9pK
-	+Htp9QuLoywWNpTfnT1GArU2cRp1L6M27sQeKfJ9iWm8iFAsws4ckQIggY86axJkuz9Y1cIem80
-	z6CxPiiNPWPZnOQXZI8Wg41dWL5R6fPOqZolH+mM0NsKyLooTw1lspn+hQ1fSfg0AiKXMXg91qo
-	2cX0c2kfgUesxSGkbuUasUTu5HqaWqx+VTXXVVbhgNOFdqRJ8tBOBNo7x/XCj40TYNKg==
-X-Google-Smtp-Source: AGHT+IHsnTa0hbn+0Wh1C3VR25cgPSQ44uvQseVE0kXGNojATuxFAd6n7Pd80xTUUipMQpgZdEmtvQ==
-X-Received: by 2002:a05:6512:3ba3:b0:597:d7d6:eae1 with SMTP id 2adb3069b0e04-59a17d74eb7mr10048358e87.2.1767484677292;
-        Sat, 03 Jan 2026 15:57:57 -0800 (PST)
-Received: from [192.168.1.100] (91-159-24-186.elisa-laajakaista.fi. [91.159.24.186])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59a185dd90esm13558109e87.31.2026.01.03.15.57.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Jan 2026 15:57:55 -0800 (PST)
-Message-ID: <ad801501-cd9f-41f5-97b3-bf8b628d6e1d@linaro.org>
-Date: Sun, 4 Jan 2026 01:57:48 +0200
+        d=1e100.net; s=20230601; t=1767520924; x=1768125724;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LxO4CmHvbs5IX2zszHvbq/kpDg48hQV47bQLUQlGXrQ=;
+        b=plvedKp8MnfEOU3dY9s6DMl50N+BtWooq2U6WSIOziZ8cmg9ZOMbWC5/8M3xxSFv5F
+         IgYE5WmSLmzgCjDX5ifY7A8GPwiQG9hFOimudDlR7lxHv5LHrxA2VQSQb4GKAcjpoVv1
+         PgFBgDRVJvQIDRkrPSMMtWXkvMKYKWNSM4l4A2PwT+HDv3q8OpHB9obm1vRJxWw48HHn
+         k/RVYwS7l0/AJqpGOjG1GmNfro5iqklz5/Buom4P8swb+mdLXZFXVyYoDM8M8hhsr6FQ
+         kCwnBpgVJT29v8cRer5nmkpV81veUzOZxJ1TtH+TwzuP1XyFaVWLYL7d3XeXMROtRYK/
+         M8ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUj1SiT/opT33TASNYTn6pGa4wl5RKFVGIdWsgwgTgtVACPoG7Yn11OJSTv8nRbe56OndnyoO/U5+s=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxDNTCv0ZnSMBd+h3o77qYY7YSE0DrWRauSrou6K8DIfj03XZO1
+	dglcgfB7bh8p72Vv/TtrTGfFI5jYt3lAbuZ0HuhdzChQpYb1AD0Nz7o/Q9xLLBr9LaE=
+X-Gm-Gg: AY/fxX6mx7+on6tsiG4qv7gkbtDfOqWnGJuT/6NEqEhGzupJFcwwku0R3YM9kKrZzaT
+	U/cteBzZkGQiZ3VxYJl8YJ8p5STk7SncZoLad4EQdkjqyb4/DEKNamnHr4aN1m3xI0YwtqT7K62
+	fPs4asVhs/2kjYx3/8nsvdYI7coJdxEi+bCDLgnJnETFZh4ULbjSGMMyoG0TX+NLlrDdRo7zFsj
+	k99pcFL2ufjW3ZW85yHKEx2t/otjp58Mir0Pg72qCffnZkBe2SBKHsee3tnVYVe0kNBvTLhWc0M
+	zrdSQ1rCHbw3RpacOo+aMFlAKOcWMMLv1HmVIp+N/IaFsRS+z0UEnkKMWejoClm9MDmZzHpy6G8
+	cxI8u3yK9/qyDdDty4z0gcaFLKpA0MJDF+iE9vkP4iTS3Bihy+woiA41M0Bikwf4RdqrGgJ+fgx
+	ktHKYtIlFulfAdDseyd8FOzZZZHHiJJusiV7LkBl2zvks4yrNXlvjT3NJvNx0e+dPg5Ksfzyvai
+	vI=
+X-Google-Smtp-Source: AGHT+IHoffS/7yWJB4nhd2QWoukImGAGgvYz07KAWU1mQA/srAsoHCH79yzY4kDbBdUFKRZOCq1CXw==
+X-Received: by 2002:a17:90a:d64b:b0:33f:f22c:8602 with SMTP id 98e67ed59e1d1-34e921cba61mr40911683a91.26.1767520923615;
+        Sun, 04 Jan 2026 02:02:03 -0800 (PST)
+Received: from kinako.work.home.arpa (p1536247-ipxg00c01sizuokaden.shizuoka.ocn.ne.jp. [122.26.212.247])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-34f4775df7bsm3458539a91.10.2026.01.04.02.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Jan 2026 02:02:03 -0800 (PST)
+From: Daniel Palmer <daniel@thingy.jp>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: [PATCH] mtd: parsers: ofpart: Remove code/data for disabled custom parsers
+Date: Sun,  4 Jan 2026 19:01:51 +0900
+Message-ID: <20260104100151.1400182-1-daniel@thingy.jp>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/7] mtd: spi-nor: hisi-sfc: Simplify with scoped for each
- OF child loop
-To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
- Pratyush Yadav <pratyush@kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kamal.dasu@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>, Paul Cercueil
- <paul@crapouillou.net>, Manivannan Sadhasivam <mani@kernel.org>,
- Stefan Agner <stefan@agner.ch>, Tudor Ambarus <tudor.ambarus@linaro.org>,
- Michael Walle <mwalle@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- llvm@lists.linux.dev
-References: <20260102124927.64703-8-krzysztof.kozlowski@oss.qualcomm.com>
- <20260102124927.64703-14-krzysztof.kozlowski@oss.qualcomm.com>
- <86a4yw87g8.fsf@kernel.org>
- <e2e72720-5541-44cc-a000-c469d7873c06@oss.qualcomm.com>
-From: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-In-Reply-To: <e2e72720-5541-44cc-a000-c469d7873c06@oss.qualcomm.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260103_155800_470071_FC90532E 
-X-CRM114-Status: GOOD (  17.28  )
+X-CRM114-CacheID: sfid-20260104_020205_487598_39925C8F 
+X-CRM114-Status: GOOD (  13.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,55 +93,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/3/26 14:38, Krzysztof Kozlowski wrote:
-> On 02/01/2026 14:33, Pratyush Yadav wrote:
->> Hi Kyzystof,
->>
->> Thanks for the cleanup.
->>
->> On Fri, Jan 02 2026, Krzysztof Kozlowski wrote:
->>
->>> Use scoped for-each loop when iterating over device nodes to make code a
->>> bit simpler.
->>
->> Nit: the commit message is a bit too dry. I had to go and look what the
->> difference between the two variants was. I could make an educated guess
->> by looking at the patch, but still.
-> 
-> Really? That's old and widely used syntax, replaced so many times and
-> sorry, but really obvious.
+Currently even if none of the custom parsers are selected a struct
+of_device_id and a dummy function that just returns -EOPNOTSUPP is
+compiled in for each of them.
 
-The made conversion changes are not exactly the ones, which were asked to
-be done.
+Its not obvious from the code but struct of_device_id is massive,
+196 or 200 bytes (see link), so this is a lot more wasteful than you'd
+think just skimming the code and assuming the wasted size is just the
+length of the string with some small overhead.
 
-Commit 34af4554fb0c ("of: Introduce for_each_*_child_of_node_scoped()
-to automate of_node_put() handling") says it clearly:
+If they aren't enabled use ifdef's to avoid anything being compiled
+in and remove the dummy functions.
 
-     Note that, in the vast majority of cases, the _available_ form should be
-     used and as code is converted to these scoped handers, we should confirm
-     that any cases that do not check for available have a good reason not
-     to.
+Link: https://lore.kernel.org/all/ef59d6fd3b2201b912d5eaa7f7a037d8f9adb744.1636561068.git.geert+renesas@glider.be/
+Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+---
+ drivers/mtd/parsers/ofpart_bcm4908.h    | 6 ------
+ drivers/mtd/parsers/ofpart_core.c       | 8 ++++++++
+ drivers/mtd/parsers/ofpart_linksys_ns.h | 7 -------
+ 3 files changed, 8 insertions(+), 13 deletions(-)
 
-So, likely this and many other similar changes miss information in their
-commit messages, why for_each_available_child_of_node_scoped() form is
-inapplicable, thus it still could be improved.
-
-> We should not explain core kernel API in commit msgs, except maybe first
-> months of usage.
-> 
->>
->> If you end up doing a v2, a one-liner explanation of the difference
->> between the two loop variants would be nice to have.
-> 
-
+diff --git a/drivers/mtd/parsers/ofpart_bcm4908.h b/drivers/mtd/parsers/ofpart_bcm4908.h
+index 80f8c086641f..f96dcd5275a7 100644
+--- a/drivers/mtd/parsers/ofpart_bcm4908.h
++++ b/drivers/mtd/parsers/ofpart_bcm4908.h
+@@ -4,12 +4,6 @@
+ 
+ #ifdef CONFIG_MTD_OF_PARTS_BCM4908
+ int bcm4908_partitions_post_parse(struct mtd_info *mtd, struct mtd_partition *parts, int nr_parts);
+-#else
+-static inline int bcm4908_partitions_post_parse(struct mtd_info *mtd, struct mtd_partition *parts,
+-						int nr_parts)
+-{
+-	return -EOPNOTSUPP;
+-}
+ #endif
+ 
+ #endif
+diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
+index abfa68798918..e04eee028f63 100644
+--- a/drivers/mtd/parsers/ofpart_core.c
++++ b/drivers/mtd/parsers/ofpart_core.c
+@@ -23,13 +23,17 @@ struct fixed_partitions_quirks {
+ 	int (*post_parse)(struct mtd_info *mtd, struct mtd_partition *parts, int nr_parts);
+ };
+ 
++#ifdef CONFIG_MTD_OF_PARTS_BCM4908
+ static struct fixed_partitions_quirks bcm4908_partitions_quirks = {
+ 	.post_parse = bcm4908_partitions_post_parse,
+ };
++#endif
+ 
++#ifdef CONFIG_MTD_OF_PARTS_LINKSYS_NS
+ static struct fixed_partitions_quirks linksys_ns_partitions_quirks = {
+ 	.post_parse = linksys_ns_partitions_post_parse,
+ };
++#endif
+ 
+ static const struct of_device_id parse_ofpart_match_table[];
+ 
+@@ -192,8 +196,12 @@ static const struct of_device_id parse_ofpart_match_table[] = {
+ 	/* Generic */
+ 	{ .compatible = "fixed-partitions" },
+ 	/* Customized */
++#ifdef CONFIG_MTD_OF_PARTS_BCM4908
+ 	{ .compatible = "brcm,bcm4908-partitions", .data = &bcm4908_partitions_quirks, },
++#endif
++#ifdef CONFIG_MTD_OF_PARTS_LINKSYS_NS
+ 	{ .compatible = "linksys,ns-partitions", .data = &linksys_ns_partitions_quirks, },
++#endif
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, parse_ofpart_match_table);
+diff --git a/drivers/mtd/parsers/ofpart_linksys_ns.h b/drivers/mtd/parsers/ofpart_linksys_ns.h
+index 730c46812ebf..6537aa37c0aa 100644
+--- a/drivers/mtd/parsers/ofpart_linksys_ns.h
++++ b/drivers/mtd/parsers/ofpart_linksys_ns.h
+@@ -6,13 +6,6 @@
+ int linksys_ns_partitions_post_parse(struct mtd_info *mtd,
+ 				     struct mtd_partition *parts,
+ 				     int nr_parts);
+-#else
+-static inline int linksys_ns_partitions_post_parse(struct mtd_info *mtd,
+-						   struct mtd_partition *parts,
+-						   int nr_parts)
+-{
+-	return -EOPNOTSUPP;
+-}
+ #endif
+ 
+ #endif
 -- 
-Best wishes,
-Vladimir
+2.51.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
