@@ -4,81 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B942AC79F9E
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 15:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F09E7C79FA3
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 16:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=826zW+6vdOJuYZOFMhMTo2ChazH7xb/PtZjySJhyGy0=; b=yQmjNETpEXs/3t
-	z8Lk8ckdWvSggv55TBcpjdIv3L67GGFov4s7cNQV5UEFs2ScVRMC8MpGcSstHzcZKoSmjmglfPSZN
-	goJ9afbdvyErNFRDQB1WQhnH9Wm51A1X8DexCzSA2bnBcDRm5pTa19D2/Qy7oiQ/SmcrDZpqQ8gxg
-	+9Z0aZAkLhmg7Uz9oMlNeiFG/5AZdeONcKMXga611gtDhc4i+aoF3VhAeKAdHheoDjMgDin3grDrO
-	vWuJlZGAJqp+SuRLciozsjM9+Z3NEydfQzTQECxJOY++IVrgU3cyupZoTh7NQluUKQ6ws+DkD/UyD
-	kqNFC5JCNB4zshG+coOQ==;
+	List-Owner; bh=l+58452cteURF8OtQdXIZufqJ7ca2/Di7uxb6w43zeA=; b=ics05rhN6+rRMl
+	ndgvRMQtU9jekKIYhb0x8mBrmtzJ6VdwnrtO22CIHnYx6At1ak2v7JyO502bHI7g2BI7mfXQl+JjJ
+	32KoaDBqIBRyvb0cZofx/GiVWOyu5tR+Lah/us/W46q2dwwkJLeFMnM/QgNe9myj7JeYfrkkTkIQh
+	DQUyqtkcaeodBsq5hmgryFsHz6JzJSt++aBXQ0AKkj8TtiM10N9GfJoIZCoWdJlYqOWtGKXq/S7bS
+	U/D3fEEvb502LYZeU2fbNluBoBwr0xcPnOnQcw5k4sVWQLlQYafQWXT0XUi8jlwJvxFwRMnbX/flr
+	b0NUB3wkNTbCVeZ1v2+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcmBq-0000000Bac7-13PO;
-	Mon, 05 Jan 2026 15:08:14 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1vcn7s-0000000BhZ4-06Qw;
+	Mon, 05 Jan 2026 16:08:12 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcmBk-0000000Bab4-3xls
+	id 1vcn7o-0000000BhYh-3HCW
 	for linux-mtd@lists.infradead.org;
-	Mon, 05 Jan 2026 15:08:13 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2a0d6f647e2so229658915ad.1
-        for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2026 07:08:08 -0800 (PST)
+	Mon, 05 Jan 2026 16:08:10 +0000
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-2a0a95200e8so483785ad.0
+        for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2026 08:08:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767625688; x=1768230488; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1767629287; x=1768234087; darn=lists.infradead.org;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x1jKy4PLpiDv5jQtyPtMkgdBDMPguDaYeUut8IL2qu0=;
-        b=fJzSLuxnG/J9RGnxl5ptD2gQ0PECrMiYn9lbYXJmdY7znvlUA+kWzYE4AMCsjfTGVT
-         Xnz9YmKrczXS9Y+/k4gYBHELoVX2KyJI7V93pvVEwlCwkQQNwuCgL1GCrcGWeyyqsluH
-         qiUMf5Q0EQoXWKpfDJUSJaz8fgRWS4SsraaMRb9hT66hHrQFpcK9p6DmscPWen9YSK9G
-         +A8GiBJBWEscpUx6NPMLq4KEyENUq+C10iOC9W1zaw05oNo+5djwjl/X1u6WjHHp6TVC
-         kOdHHPtCYXsH3AK0E/v39mP/mupQWbiM4tj8hFX6GwV5jKoE8K8R+0lpKltqv7mBUDdY
-         kTtw==
+        bh=a4aPx9Ksdn2f1hkjywQffSfK3dmxxEtjfJVrjCoq+cE=;
+        b=jzexV1le7yYqUikgghUPdIJqOO795s80PoAoJT7ANNP8UEt2c15qMTkoFLrQKaRbwC
+         nwDjnw6MprZbQNfGWemIxbUcuDw+mZ+WrR3/CJvhy9pi8FRl2nBKNVaSGHf8IuOPlnDB
+         UjezZMpxL5sIlkjgZSQeJ2XWbDaurQeQvzjADZqO4PB39Uh/Jm7HwG0V+zUrghuKKEZi
+         PvLt/3ZxRTaKliW9D4VyI0BN2CnDfJzc14gtTwuWD9X42hjz9e9bHGdK8lOhqFaqhPAu
+         sw6JcEjoZahMuDk1vjdyILzgsF9v6/3ysCpWL6zanKhTFKLEKlxwoKpgPbG1o8sTEXoP
+         PLHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767625688; x=1768230488;
+        d=1e100.net; s=20230601; t=1767629287; x=1768234087;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x1jKy4PLpiDv5jQtyPtMkgdBDMPguDaYeUut8IL2qu0=;
-        b=HazkchTd/1YI+hpNNw3S7FjobfFLxWFqv3XIcVqzvD7ORJGRLKHkJ/Yi/Vif8D0atG
-         06V5NB4Fx2xB0rQ49oP068dxg8dUZiftPlf3agbgVnM6qN7dZRxDNm/apwaAFb3tOoHF
-         kISaDrMRe4rQMsC5NPC71+KuUz/Zji7UGis49DSF8u98SCdmdcfd2GiJPjp5mT74eUdY
-         tTxuZlaEctyYZYrszrVkSyjndpdhA1SnGEWHJuaIhb1p5xp3NAAcMcNEjV388/FFGllh
-         XM/N3jvTdHISDZ9z3VtYm3eDyUhzcYqIknhxzOBQugxzf31HpwW+XYYepX+JzkylYvyq
-         FTEA==
-X-Gm-Message-State: AOJu0YypkEiBwJvErIG7DNpctaqwHSoD+6v0Zo7/+f2cgyZm9dYX9ul7
-	guWfBczkOU6tCnIzAqRgWonrKji7qpBTtMyJFOyFTbZORHjaKxue2nvF
-X-Gm-Gg: AY/fxX5qEkxkRbYorzeZaoJOEBR/Z8Cf8RMhIsvaWAk0+XCD3JJ2KjGKDSjlTioSYLM
-	3NKeCi58BMCsFN6UmnApX63liew8gjYfxR8oBSWeJzieecCTI8MpoNKDYBC27OpsodqHonV3WJ7
-	die4mXnDh58c48wFo2Q0AF2txsxPjjR/SFfpBWmYy+V0NbS8J/uAhHbZRRSxnfZSXitQhl7fQli
-	WM+YdFjtwNPa8egtY/MgoAyx3L8T4qry9QtawajwzIm6KEpGGdde9l9vd977TN5AETtDxj6JdCf
-	xKn5a+3DfvzZx5e3IDKnzWm6U5NtKE6L5bX0PLFFJ3Mxtt6jrZuXDhlh17/eqKp8W4EpE2D5r7g
-	xRg/cGct/rkA+WUD3oRArqsJMaYXTYdwuTe5+lNi5jdhn9uhvsLpAiVZv6rCPPx3cyADr/BdeXE
-	srKJfFWnknzLIlFEFZ7LRNFAwz7IJIw7/qauYRSg==
-X-Google-Smtp-Source: AGHT+IGhkCdU2DgtXw80a0qwTPN/B41vQB1JkqB9e8jnObox0EpIMbkYAzguoHeMXBySPLMGasdaPQ==
-X-Received: by 2002:a17:902:ea07:b0:29e:fd60:2cf9 with SMTP id d9443c01a7336-2a3e2e1e31fmr105955ad.54.1767625687767;
-        Mon, 05 Jan 2026 07:08:07 -0800 (PST)
+        bh=a4aPx9Ksdn2f1hkjywQffSfK3dmxxEtjfJVrjCoq+cE=;
+        b=Wy+QnNv0rQNhOwZRPC+Xu1t/NCpqTcvnMoxXwTa1q90CWIeCFl1D4wefYy4AOdYW56
+         vDgdznn3wDz2o65zLpywlQShbcie+xLjUOy8bGBfy516ka9CiudLfAi5g/fZASXSzUwG
+         feL0cZ0FFwl5IH67nOOTyB9nB1lAB7zEeLoK6J/MA0ZKVwlsKR+uuBOc78OC8B0lw8tx
+         Y9Z4nRTszHkxfKmdS1z34Jj4tcnsXY6Ahfy66nG3PZyTrr5pv3qjjZXR7SPDB5z7WfkJ
+         5Elmolvl3RzUHA3vChMCUw/KgcOSsLxBY15FgCWLdpvRXt3pqk2/En+uMuKvp80S5MBj
+         uIBA==
+X-Gm-Message-State: AOJu0YygroJlK41NTXIWP5Uxcx7KTt7Z8YJcyN0gqZjZWxHEj7P08UP4
+	hH7oJkeXfcx2jmO594xWSGfxdeoN+W15Y+n06H03R/eDUoy3ERGDKckhZrZs7g==
+X-Gm-Gg: AY/fxX7nID/2wuhn4Z9uS/bXm62Ciqj2VIwtvSudcpJANaHxq4sg0N+M88EgiSmu06Z
+	mJZ4J7vCHTj9N8fioTpK/WGv9JVGX/eInocrmzy2ClRC3IQycUZ/vlX3z3+VBKqbddmiOD8YZ83
+	9ksxbrDKLDR9tfD1FjAdrQsNwxKBezO5TJnA8wj5OOpfS8PlHbZY9GiuhIdsLaQ9DJbmqLwfWKG
+	aQijRx49Fgbui9eCyt7i0aIsjWpt/jjw17/Eb/dCNta3OqfDPCoK4dN5hyZ2kJxslQ2YxEw1FDt
+	yMsOKo9ihePVzB/WvUpoExSzqpHgHOD2c/JsLTOk+jRyxYnBECHQ6c1s5acv4d3Auo5onc+PN5S
+	6u/u72Wg9Ggci7rUp1pzPRg4oOpkxjWJibqkFtU927bapEVldd48EMa9sPmj84PvXl1bL0R7iZu
+	UOAHI/XVrbo8sqKK+g4b3lJVKarj04AxaSq9FKYQ==
+X-Google-Smtp-Source: AGHT+IHmTtNImRFcMTd9bEdO5bmpDmbMDapPG+W7jQiu3FXqxaDNoVVpZNJnkHcYnELInEv2WJGx3w==
+X-Received: by 2002:a17:902:dac3:b0:2a1:2ebc:e633 with SMTP id d9443c01a7336-2a3e2c921e2mr2509815ad.4.1767629287115;
+        Mon, 05 Jan 2026 08:08:07 -0800 (PST)
 Received: from LAPTOP-872M7T80.localdomain ([223.181.104.101])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2a3e2ab1a0esm1174215ad.16.2026.01.05.07.08.04
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2a3e2b6991dsm2066095ad.48.2026.01.05.08.08.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 07:08:07 -0800 (PST)
+        Mon, 05 Jan 2026 08:08:06 -0800 (PST)
 From: Akhila YS <akhilayalmati@gmail.com>
-Date: Mon, 05 Jan 2026 15:08:00 +0000
-Subject: [PATCH v3] dt-bindings: mtd: microchip,mchp23k256: convert to DT
- schema
+Date: Mon, 05 Jan 2026 16:07:59 +0000
+Subject: [PATCH] dt-bindings: mtd: st,spi-fsm: convert to DT schema
 MIME-Version: 1.0
-Message-Id: <20260105-nxp-v3-1-05af634831ef@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAM/TW2kC/1XMTQrCMBCG4auUWRtJxqY2rryHuAjNpB2wPyQSK
- qV3N60IunyHeb4FIgWmCJdigUCJI49DjtOhgKazQ0uCXW5AiVohGjHMk9BYERpnjUcD+XMK5Hn
- eV2733B3H5xhe+2hS2/XfJyWUsKXSnqSspa2vbW/5cWzGHjaf8GsqqSR+DGYjtdfOmfJcavNr1
- nV9A+DUilDKAAAA
-X-Change-ID: 20251229-nxp-526e29da9f29
+Message-Id: <20260105-st-fsm-v1-1-d1dd935ccee4@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAN7hW2kC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1NDI2ND3eIS3bTiXF0LkyRjE2NTQ3MDY1MloOKCotS0zAqwQdGxtbUAZIF
+ QwVgAAAA=
+X-Change-ID: 20251231-st-fsm-84b343517035
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -87,8 +85,8 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, Akhila YS <akhilayalmati@gmail.com>
 X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_070808_995002_5202AB31 
-X-CRM114-Status: GOOD (  16.28  )
+X-CRM114-CacheID: sfid-20260105_080808_898664_A672879F 
+X-CRM114-Status: GOOD (  15.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,111 +103,128 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert Microchip 23K256 SPI SRAM MTD binding to YAML format.
-Changes during conversion:
-- Remove "address-cells" and "size-cells" from properties and
-  required sections as there is no child node for sram.
+Convert STMicroelectronics SPI FSM Serial NOR Flash Controller binding
+to YAML format.
 
 Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
 ---
-Changes in v3:
-- Changed commit description to document changes during yaml conversion.
-- Corrected indentation for example.
-- Link to v2: https://lore.kernel.org/r/20260102-nxp-v2-1-05f5dd947459@gmail.com
+ .../devicetree/bindings/mtd/st,spi-fsm.yaml        | 72 ++++++++++++++++++++++
+ Documentation/devicetree/bindings/mtd/st-fsm.txt   | 25 --------
+ 2 files changed, 72 insertions(+), 25 deletions(-)
 
-Changes in v2:
-- Removed "#address-cells" and "#size-cells" from the required, properties
-  and example. 
-- Changed description and title for yaml.
-- Link to v1: https://lore.kernel.org/r/20251229-nxp-v1-1-a415fe0080a8@gmail.com
----
- .../bindings/mtd/microchip,mchp23k256.txt          | 18 --------
- .../bindings/mtd/microchip,mchp23k256.yaml         | 49 ++++++++++++++++++++++
- 2 files changed, 49 insertions(+), 18 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
-deleted file mode 100644
-index 7328eb92a03c..000000000000
---- a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--* MTD SPI driver for Microchip 23K256 (and similar) serial SRAM
--
--Required properties:
--- #address-cells, #size-cells : Must be present if the device has sub-nodes
--  representing partitions.
--- compatible : Must be one of "microchip,mchp23k256" or "microchip,mchp23lcv1024"
--- reg : Chip-Select number
--- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
--
--Example:
--
--	spi-sram@0 {
--		#address-cells = <1>;
--		#size-cells = <1>;
--		compatible = "microchip,mchp23k256";
--		reg = <0>;
--		spi-max-frequency = <20000000>;
--	};
-diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.yaml b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.yaml
+diff --git a/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml b/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml
 new file mode 100644
-index 000000000000..32e9124594ac
+index 000000000000..f374c6aaa185
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++++ b/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/mtd/microchip,mchp23k256.yaml#
++$id: http://devicetree.org/schemas/mtd/st,spi-fsm.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Microchip 23K256 SPI SRAM
++title: STMicroelectronics SPI FSM Serial NOR Flash Controller
 +
 +maintainers:
++  - Miquel Raynal <miquel.raynal@bootlin.com>
 +  - Richard Weinberger <richard@nod.at>
 +
 +description:
-+  The Microchip 23K256 is a 256 Kbit (32 Kbyte) serial SRAM with an
-+  SPI interface,supporting clock frequencies up to 20 MHz. It features
-+  a 32-byte page size for writes and supports byte, page, and
-+  sequential access modes.
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++  The STMicroelectronics Fast Sequence Mode (FSM) controller is a dedicated
++  hardware accelerator integrated in older STiH4xx/STiDxxx set-top box SoCs
++  (such as STiH407, STiH416, STiD127). It connects directly to a single
++  external serial flash device used as the primary boot device. The FSM
++  executes hard-coded or configurable instruction sequences in hardware,
++  providing low-latency reads suitable for execute-in-place (XIP) boot
++  and high read bandwidth.
 +
 +properties:
 +  compatible:
-+    enum:
-+      - microchip,mchp23k256
-+      - microchip,mchp23lcv1024
++    const: st,spi-fsm
 +
 +  reg:
 +    maxItems: 1
 +
++  reg-names:
++    const: spi-fsm
++
++  interrupts:
++    maxItems: 1
++
++  pinctrl-0:
++    maxItems: 1
++
++  st,syscfg:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: Phandle to the system configuration registers used for boot-device selection.
++
++  st,boot-device-reg:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Offset of the boot-device register within the st,syscfg node.
++
++  st,boot-device-spi:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Expected boot-device value when booting from this SPI controller.
++
 +required:
-+  - reg
 +  - compatible
-+  - spi-max-frequency
++  - reg
++  - reg-names
++  - interrupts
++  - pinctrl-0
 +
 +unevaluatedProperties: false
 +
 +examples:
 +  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        sram@0 {
-+            compatible = "microchip,mchp23k256";
-+            reg = <0>;
-+            spi-max-frequency = <20000000>;
-+        };
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    spifsm@fe902000 {
++        compatible = "st,spi-fsm";
++        reg = <0xfe902000 0x1000>;
++        reg-names = "spi-fsm";
++        interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
++        pinctrl-0 = <&pinctrl_fsm>;
++        st,syscfg = <&syscfg_rear>;
++        st,boot-device-reg = <0x958>;
++        st,boot-device-spi = <0x1a>;
 +    };
 +...
+diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
+deleted file mode 100644
+index 54cef9ef3083..000000000000
+--- a/Documentation/devicetree/bindings/mtd/st-fsm.txt
++++ /dev/null
+@@ -1,25 +0,0 @@
+-* ST-Microelectronics SPI FSM Serial (NOR) Flash Controller
+-
+-Required properties:
+-  - compatible : Should be "st,spi-fsm"
+-  - reg        : Contains register's location and length.
+-  - reg-names  : Should contain the reg names "spi-fsm"
+-  - interrupts : The interrupt number
+-  - pinctrl-0  : Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
+-
+-Optional properties:
+-  - st,syscfg          : Phandle to boot-device system configuration registers
+-  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
+-  - st,boot-device-spi : Expected boot-device value if booted via this device
+-
+-Example:
+-	spifsm: spifsm@fe902000{
+-	        compatible         = "st,spi-fsm";
+-	        reg                =  <0xfe902000 0x1000>;
+-	        reg-names          = "spi-fsm";
+-	        pinctrl-0          = <&pinctrl_fsm>;
+-		st,syscfg	   = <&syscfg_rear>;
+-	        st,boot-device-reg = <0x958>;
+-	        st,boot-device-spi = <0x1a>;
+-	};
+-
 
 ---
 base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
-change-id: 20251229-nxp-526e29da9f29
+change-id: 20251231-st-fsm-84b343517035
 
 Best regards,
 -- 
