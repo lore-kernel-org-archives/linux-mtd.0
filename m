@@ -4,78 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC824C79F9A
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 14:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B942AC79F9E
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 15:08:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K6Hy4Bw2Mrd+rHealuOJS5xzJoF/CDFoD91EvYul7AA=; b=s1AnT6v+t9DF8e
-	0R+BSKFQWi87Xw2Py+bRl7vNGP4KejnyOGIo21o0M1/UZkmN6qYHdiHhXeXWHpZACWQzcH4M0MCGi
-	1q4s9kSevW5BNRH4Ogg0QVQMkfDuEk7KN5zjBegsZdkDmmPHebaGf/zCn2W8VSGV8+zj3pyt0Knhv
-	u+YJ7e8tC7Ow3Xm+xTaVdty57AFtQbr1ZGdUNnB8LDcBRnYeqJ65vm9UkE0SVq0VZGsDxXXOJEoLo
-	PUrCkmfklf0+MZd8IXu5cyg26ag8bZDTYE91XYe4HxkBsZKyuCl+Iu6XjFeYdvFFM7XB2dTyj6gKu
-	a3KD6fO2/9u2pMAh7jSA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=826zW+6vdOJuYZOFMhMTo2ChazH7xb/PtZjySJhyGy0=; b=yQmjNETpEXs/3t
+	z8Lk8ckdWvSggv55TBcpjdIv3L67GGFov4s7cNQV5UEFs2ScVRMC8MpGcSstHzcZKoSmjmglfPSZN
+	goJ9afbdvyErNFRDQB1WQhnH9Wm51A1X8DexCzSA2bnBcDRm5pTa19D2/Qy7oiQ/SmcrDZpqQ8gxg
+	+9Z0aZAkLhmg7Uz9oMlNeiFG/5AZdeONcKMXga611gtDhc4i+aoF3VhAeKAdHheoDjMgDin3grDrO
+	vWuJlZGAJqp+SuRLciozsjM9+Z3NEydfQzTQECxJOY++IVrgU3cyupZoTh7NQluUKQ6ws+DkD/UyD
+	kqNFC5JCNB4zshG+coOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcl9e-0000000BVnp-36XU;
-	Mon, 05 Jan 2026 14:01:54 +0000
-Received: from smtpbgeu2.qq.com ([18.194.254.142])
+	id 1vcmBq-0000000Bac7-13PO;
+	Mon, 05 Jan 2026 15:08:14 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcl9Y-0000000BVh4-2OZx
+	id 1vcmBk-0000000Bab4-3xls
 	for linux-mtd@lists.infradead.org;
-	Mon, 05 Jan 2026 14:01:53 +0000
-X-QQ-mid: esmtpsz20t1767621659t7d83f390
-X-QQ-Originating-IP: 53eMKruBCBwdR5W5Egryq/zqXjgdWwfvH5WQniWkHZU=
-Received: from [192.168.0.109] ( [121.207.53.173])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 05 Jan 2026 22:00:57 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 19132313025302152
-EX-QQ-RecipientCnt: 10
-Message-ID: <64CBDD3CF274E966+d1faba44-e3aa-4c2f-9819-a24e4ddca468@radxa.com>
-Date: Mon, 5 Jan 2026 22:00:39 +0800
+	Mon, 05 Jan 2026 15:08:13 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2a0d6f647e2so229658915ad.1
+        for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2026 07:08:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767625688; x=1768230488; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x1jKy4PLpiDv5jQtyPtMkgdBDMPguDaYeUut8IL2qu0=;
+        b=fJzSLuxnG/J9RGnxl5ptD2gQ0PECrMiYn9lbYXJmdY7znvlUA+kWzYE4AMCsjfTGVT
+         Xnz9YmKrczXS9Y+/k4gYBHELoVX2KyJI7V93pvVEwlCwkQQNwuCgL1GCrcGWeyyqsluH
+         qiUMf5Q0EQoXWKpfDJUSJaz8fgRWS4SsraaMRb9hT66hHrQFpcK9p6DmscPWen9YSK9G
+         +A8GiBJBWEscpUx6NPMLq4KEyENUq+C10iOC9W1zaw05oNo+5djwjl/X1u6WjHHp6TVC
+         kOdHHPtCYXsH3AK0E/v39mP/mupQWbiM4tj8hFX6GwV5jKoE8K8R+0lpKltqv7mBUDdY
+         kTtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767625688; x=1768230488;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x1jKy4PLpiDv5jQtyPtMkgdBDMPguDaYeUut8IL2qu0=;
+        b=HazkchTd/1YI+hpNNw3S7FjobfFLxWFqv3XIcVqzvD7ORJGRLKHkJ/Yi/Vif8D0atG
+         06V5NB4Fx2xB0rQ49oP068dxg8dUZiftPlf3agbgVnM6qN7dZRxDNm/apwaAFb3tOoHF
+         kISaDrMRe4rQMsC5NPC71+KuUz/Zji7UGis49DSF8u98SCdmdcfd2GiJPjp5mT74eUdY
+         tTxuZlaEctyYZYrszrVkSyjndpdhA1SnGEWHJuaIhb1p5xp3NAAcMcNEjV388/FFGllh
+         XM/N3jvTdHISDZ9z3VtYm3eDyUhzcYqIknhxzOBQugxzf31HpwW+XYYepX+JzkylYvyq
+         FTEA==
+X-Gm-Message-State: AOJu0YypkEiBwJvErIG7DNpctaqwHSoD+6v0Zo7/+f2cgyZm9dYX9ul7
+	guWfBczkOU6tCnIzAqRgWonrKji7qpBTtMyJFOyFTbZORHjaKxue2nvF
+X-Gm-Gg: AY/fxX5qEkxkRbYorzeZaoJOEBR/Z8Cf8RMhIsvaWAk0+XCD3JJ2KjGKDSjlTioSYLM
+	3NKeCi58BMCsFN6UmnApX63liew8gjYfxR8oBSWeJzieecCTI8MpoNKDYBC27OpsodqHonV3WJ7
+	die4mXnDh58c48wFo2Q0AF2txsxPjjR/SFfpBWmYy+V0NbS8J/uAhHbZRRSxnfZSXitQhl7fQli
+	WM+YdFjtwNPa8egtY/MgoAyx3L8T4qry9QtawajwzIm6KEpGGdde9l9vd977TN5AETtDxj6JdCf
+	xKn5a+3DfvzZx5e3IDKnzWm6U5NtKE6L5bX0PLFFJ3Mxtt6jrZuXDhlh17/eqKp8W4EpE2D5r7g
+	xRg/cGct/rkA+WUD3oRArqsJMaYXTYdwuTe5+lNi5jdhn9uhvsLpAiVZv6rCPPx3cyADr/BdeXE
+	srKJfFWnknzLIlFEFZ7LRNFAwz7IJIw7/qauYRSg==
+X-Google-Smtp-Source: AGHT+IGhkCdU2DgtXw80a0qwTPN/B41vQB1JkqB9e8jnObox0EpIMbkYAzguoHeMXBySPLMGasdaPQ==
+X-Received: by 2002:a17:902:ea07:b0:29e:fd60:2cf9 with SMTP id d9443c01a7336-2a3e2e1e31fmr105955ad.54.1767625687767;
+        Mon, 05 Jan 2026 07:08:07 -0800 (PST)
+Received: from LAPTOP-872M7T80.localdomain ([223.181.104.101])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2a3e2ab1a0esm1174215ad.16.2026.01.05.07.08.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jan 2026 07:08:07 -0800 (PST)
+From: Akhila YS <akhilayalmati@gmail.com>
+Date: Mon, 05 Jan 2026 15:08:00 +0000
+Subject: [PATCH v3] dt-bindings: mtd: microchip,mchp23k256: convert to DT
+ schema
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] firmware: qcom: scm: Add SCM storage interface
- support
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Konrad Dybcio <konradybcio@kernel.org>, Xilin Wu <sophon@radxa.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-mtd@lists.infradead.org, Junhao Xie <bigfoot@radxa.com>
-References: <20251218180205.930961-1-bigfoot@radxa.com>
- <155C9F219E5A9219+20251218180205.930961-2-bigfoot@radxa.com>
- <kmdf2rws5yf2wcyqkoyredpyg2njqwxgjq5qbsqmmimlqktfli@cjthcl3zw4un>
-From: Junhao Xie <bigfoot@radxa.com>
-In-Reply-To: <kmdf2rws5yf2wcyqkoyredpyg2njqwxgjq5qbsqmmimlqktfli@cjthcl3zw4un>
-X-QQ-SENDSIZE: 520
-Feedback-ID: esmtpsz:radxa.com:qybglogicsvrsz:qybglogicsvrsz4b-0
-X-QQ-XMAILINFO: Nty3yXuijLhXC0TiQzPiFOc5PeHCFklySlXc7ebC4GqMEIAZcHg5zSRV
-	5zEX7foSRsnZZyM0XChQx6x3eLshB4yKXjGOUaukaXo5xv0oSe1lLz8KMwk8F6e61x3h5U4
-	Y3l/zEALeMcaHDa7Vv59hgQh+63jCwamk0i4Wk6xo560Rp6yJKLdo8ljwXd0U3WnSPU63lo
-	cVwaoC/vr9cvbMEm7bjcq4JsTDCGaYCtnMBjn91MxIR9HOnkIlUeMyfco93ozdHDFsJLk64
-	qtv/DXy90ExtrWJvwvwLjx6udIzgQ7bb9B2cLs4D9i/F5BQKETXezE7iW+WPsCKqXW5paBt
-	0ab8U6lBpF3PVOZCnKzQ2idYKrcJzASz/ifoLoKb9miFoBUtw/bs8Cp9fkCfjiPQPQdjc2b
-	aD9OUj0J6dbzJscBKUkTEjNoCsC4qJRfKdsKmorzvCxv57ckOf9lv3gNVeT5hmW0VEw4gKB
-	S6zt18+vJ6bpLPjZwWDsG4uIgyvyv+4y58v7IFQ/R2lwGzkXYI8rFuLUc1zCB4zXk9ARmSJ
-	AoHzMm0Ts10cBbS4TsxhW8j/VsbieD7N5iRHOxiZxpNVZDHZ236RXP+4kH8iL7qfmvVzdIq
-	cjCt4LTGfkm01fGj37mMRrVwlJNUg4T1KaYIcL9PtdkUyPJjmcW9lOYJB/b2uuKgOIXGjmv
-	Tho+xKZKGwA5st3wcP13D594AE7onRIZTswtAjGyGaJJ+xCxS/AlY3FJXMi+p5igXv4Sd+o
-	02vdlybuvZW+kHzkfY2vtcJt0LBo7YeIXTXJmzR84wL2w6Eg4Cqtjb+H4b2RuLLmhT2ZPES
-	yWL4pefJ71iabaGxy4TckyMdZ8Wh4fbyJMAKKqxCqOgzfSq7MWbmDlEzA1dm2qAmDapfmb6
-	7GJjQ98ZU1iTlm985wjUBWOqUEtWvcmQSXprIBIne/9+jRU7yCyM7vHWW5GVI7rP9LPOiq5
-	bWERWSJtb/UYXPq2MWszKBDV+YtSTz6Rf9NhDkVV9GM+g31sIgSg7zpachr70RzUpOcVZeB
-	6WBbSfjhH9jkNlsxwO
-X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
-X-QQ-RECHKSPAM: 0
+Message-Id: <20260105-nxp-v3-1-05af634831ef@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAM/TW2kC/1XMTQrCMBCG4auUWRtJxqY2rryHuAjNpB2wPyQSK
+ qV3N60IunyHeb4FIgWmCJdigUCJI49DjtOhgKazQ0uCXW5AiVohGjHMk9BYERpnjUcD+XMK5Hn
+ eV2733B3H5xhe+2hS2/XfJyWUsKXSnqSspa2vbW/5cWzGHjaf8GsqqSR+DGYjtdfOmfJcavNr1
+ nV9A+DUilDKAAAA
+X-Change-ID: 20251229-nxp-526e29da9f29
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Akhila YS <akhilayalmati@gmail.com>
+X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_060149_111517_8D48A5C9 
-X-CRM114-Status: GOOD (  29.36  )
+X-CRM114-CacheID: sfid-20260105_070808_995002_5202AB31 
+X-CRM114-Status: GOOD (  16.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,188 +100,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2026/1/4 1:22, Bjorn Andersson wrote:
-> On Fri, Dec 19, 2025 at 02:02:04AM +0800, Junhao Xie wrote:
->> Add infrastructure to support accessing TrustZone-protected storage
->> devices through SCM (Secure Channel Manager) calls. Some Qualcomm
->> platforms protect their firmware storage (typically SPI NOR flash)
->> via TrustZone, making it inaccessible from the non-secure world.
->>
->> Currently allowlisted for Radxa Dragon Q6A (QCS6490) where it has been
->> validated. Additional platforms can be added as they are tested.
->>
-> By adding the relevant compatible, I'm able to read something from the
-> SPI-NOR on the SC8280XP CRD as well.
->
-> This brings us to the next question, what data do you actually have in
-> your SPI-NOR? In what way do you use the mtd device that is presented?
->
-> On the laptop targets, the SPI-NOR is partitioned with a GPT partition
-> table, and there's one of more partitions that would be of interest to
-> parse/access from the kernel...
+Convert Microchip 23K256 SPI SRAM MTD binding to YAML format.
+Changes during conversion:
+- Remove "address-cells" and "size-cells" from properties and
+  required sections as there is no child node for sram.
 
-On the Radxa Dragon Q6A, the SPI-NOR stores boot firmware (XBL, TZ, etc.)
-and is accessed via SCM only when the system is booted from SPI-NOR.
+Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
+---
+Changes in v3:
+- Changed commit description to document changes during yaml conversion.
+- Corrected indentation for example.
+- Link to v2: https://lore.kernel.org/r/20260102-nxp-v2-1-05f5dd947459@gmail.com
 
-Earlier Q6A revisions used LE firmware, where the QSPI controller was
-directly accessible from Linux. This platform is now transitioning to WP,
-where QSPI is exclusively used by TZ and SPI-NOR can only be accessed via
-SCM, similar to laptop platforms.
+Changes in v2:
+- Removed "#address-cells" and "#size-cells" from the required, properties
+  and example. 
+- Changed description and title for yaml.
+- Link to v1: https://lore.kernel.org/r/20251229-nxp-v1-1-a415fe0080a8@gmail.com
+---
+ .../bindings/mtd/microchip,mchp23k256.txt          | 18 --------
+ .../bindings/mtd/microchip,mchp23k256.yaml         | 49 ++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 18 deletions(-)
 
-The exposed MTD device provides generic access to this storage. One of its
-practical uses is firmware update and recovery. Since Q6A is a development
-board, being able to update boot firmware directly from Linux (for example
-using edl-ng together with this patch series) is preferred over EFI capsule
-based flows.
+diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+deleted file mode 100644
+index 7328eb92a03c..000000000000
+--- a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-* MTD SPI driver for Microchip 23K256 (and similar) serial SRAM
+-
+-Required properties:
+-- #address-cells, #size-cells : Must be present if the device has sub-nodes
+-  representing partitions.
+-- compatible : Must be one of "microchip,mchp23k256" or "microchip,mchp23lcv1024"
+-- reg : Chip-Select number
+-- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
+-
+-Example:
+-
+-	spi-sram@0 {
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		compatible = "microchip,mchp23k256";
+-		reg = <0>;
+-		spi-max-frequency = <20000000>;
+-	};
+diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.yaml b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.yaml
+new file mode 100644
+index 000000000000..32e9124594ac
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/microchip,mchp23k256.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip 23K256 SPI SRAM
++
++maintainers:
++  - Richard Weinberger <richard@nod.at>
++
++description:
++  The Microchip 23K256 is a 256 Kbit (32 Kbyte) serial SRAM with an
++  SPI interface,supporting clock frequencies up to 20 MHz. It features
++  a 32-byte page size for writes and supports byte, page, and
++  sequential access modes.
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    enum:
++      - microchip,mchp23k256
++      - microchip,mchp23lcv1024
++
++  reg:
++    maxItems: 1
++
++required:
++  - reg
++  - compatible
++  - spi-max-frequency
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        sram@0 {
++            compatible = "microchip,mchp23k256";
++            reg = <0>;
++            spi-max-frequency = <20000000>;
++        };
++    };
++...
 
->> Signed-off-by: Junhao Xie <bigfoot@radxa.com>
->> Tested-by: Xilin Wu <sophon@radxa.com>
->> ---
->>   drivers/firmware/qcom/qcom_scm.c       | 183 +++++++++++++++++++++++++
->>   drivers/firmware/qcom/qcom_scm.h       |   3 +
->>   include/linux/firmware/qcom/qcom_scm.h |  47 +++++++
->>   3 files changed, 233 insertions(+)
->>
->> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
->> index 731074ca1ebbe..b117e1b58e363 100644
->> --- a/drivers/firmware/qcom/qcom_scm.c
->> +++ b/drivers/firmware/qcom/qcom_scm.c
->> @@ -66,6 +66,21 @@ struct qcom_scm_mem_map_info {
->>   	__le64 mem_size;
->>   };
->>   
->> +struct qcom_scm_storage_cmd {
->> +	__le64 storage_type;
->> +	__le64 slot_num;
->> +	__le64 lun;
->> +	__le64 guid_ptr;
->> +	__le64 storage_cmd;
->> +};
->> +
->> +struct qcom_scm_storage_cmd_details {
->> +	__le64 lba;
->> +	__le64 length;
->> +	__le64 data_ptr;
->> +	__le64 data_size;
->> +};
->> +
->>   /**
->>    * struct qcom_scm_qseecom_resp - QSEECOM SCM call response.
->>    * @result:    Result or status of the SCM call. See &enum qcom_scm_qseecom_result.
->> @@ -111,6 +126,15 @@ enum qcom_scm_qseecom_tz_cmd_info {
->>   	QSEECOM_TZ_CMD_INFO_VERSION		= 3,
->>   };
->>   
->> +enum qcom_scm_storage_result {
-> These aren't really "enumerations", they are specifically defined
-> constants, please use #define.
-
-I will convert them into macros.
-
->> +	STORAGE_RESULT_SUCCESS			= 0,
->> +	STORAGE_RESULT_NO_MEMORY		= 1,
->> +	STORAGE_RESULT_INVALID_PARAMETER	= 2,
->> +	STORAGE_RESULT_STORAGE_ERROR		= 3,
->> +	STORAGE_RESULT_ACCESS_DENIED		= 4,
->> +	STORAGE_RESULT_NOT_SUPPORTED		= 5,
->> +};
->> +
->>   #define QSEECOM_MAX_APP_NAME_SIZE		64
->>   #define SHMBRIDGE_RESULT_NOTSUPP		4
->>   
->> @@ -2214,6 +2238,159 @@ static void qcom_scm_qtee_init(struct qcom_scm *scm)
->>   	devm_add_action_or_reset(scm->dev, qcom_scm_qtee_free, qtee_dev);
->>   }
->>   
->> +#if IS_ENABLED(CONFIG_MTD_QCOM_SCM_STORAGE)
->> +
->> +int qcom_scm_storage_send_cmd(enum qcom_scm_storage_type storage_type,
->> +			      enum qcom_scm_storage_cmd_id cmd_id,
->> +			      u64 lba, void *payload, size_t size)
->> +{
->> +	struct qcom_scm_res scm_res = {};
->> +	struct qcom_scm_desc desc = {};
->> +	struct qcom_scm_storage_cmd *cmd;
->> +	struct qcom_scm_storage_cmd_details *details;
->> +	size_t buf_size;
->> +	void *payload_buf;
->> +	int ret;
->> +
->> +	buf_size = sizeof(*cmd) + sizeof(*details);
->> +	if (payload)
->> +		buf_size += size;
->> +	void *data __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
->> +							 buf_size,
->> +							 GFP_KERNEL);
->> +	if (!data)
->> +		return -ENOMEM;
->> +	memset(data, 0, buf_size);
->> +	if (payload) {
->> +		payload_buf = data + sizeof(*cmd) + sizeof(*details);
->> +		memcpy(payload_buf, payload, size);
->> +	}
->> +
->> +	cmd = data;
->> +	cmd->storage_type = storage_type;
-> storage_type is CPU endian, cmd->storage_type is __le64, so all of these
-> needs cpu_to_le64().
-
-I will add the missing endian conversion for all le values.
-
->> +	cmd->storage_cmd = cmd_id;
->> +
->> +	details = data + sizeof(*cmd);
->> +	details->lba = lba;
-[...]
->> +static bool qcom_scm_storage_machine_is_allowed(void)
->> +{
->> +	struct device_node *np;
->> +	bool match;
->> +
->> +	np = of_find_node_by_path("/");
->> +	if (!np)
->> +		return false;
->> +
->> +	match = of_match_node(qcom_scm_storage_allowlist, np);
->> +	of_node_put(np);
->> +
->> +	return match;
-> This function can be rewritten as:
->
-> 	return !!of_machine_device_match(qcom_scm_storage_allowlist);
-
-I will replace this with a check using __qcom_scm_is_call_available(),
-which avoids the need for a machine allowlist and provides a more
-generic capability-based test, Thank you for your suggestion!
-
->> +}
->> +
-[...]
->> --- a/include/linux/firmware/qcom/qcom_scm.h
->> +++ b/include/linux/firmware/qcom/qcom_scm.h
->> @@ -53,6 +53,36 @@ enum qcom_scm_ice_cipher {
->>   	QCOM_SCM_ICE_CIPHER_AES_256_CBC = 4,
->>   };
->>   
->> +enum qcom_scm_storage_cmd_id {
-> As with qcom_scm_storage_result above, this isn't really an enumeration,
-> but as it provides you with the type for the function parameters below,
-> I think it's okay. So, feel free to leave this and qcom_scm_storage_type
-> as is.
->
-> Regards,
-> Bjorn
->
-
-Thank you for the review, I will incorporate these changes in v2.
+---
+base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
+change-id: 20251229-nxp-526e29da9f29
 
 Best regards,
-Junhao Xie
+-- 
+Akhila YS <akhilayalmati@gmail.com>
 
 
 ______________________________________________________
