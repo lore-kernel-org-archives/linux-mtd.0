@@ -4,65 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 883DFCD0414
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 21:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22B97CD041B
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 22:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eYgCeVEuaMGTDl9WJMJ6n+t9LBJf6WtyNwA6+hTIqtM=; b=UFP7YUrrCxJMS0
-	XeHk1J4acfPTHOcZND4w9ozuuyck2pJ20ZlJF76dLZQykzVd0J/Rx7oGdDSGzERO0DyMBwSSiqf95
-	/WOV0110S3Kk5dfqLV4lgU81chDVE77AYmBBWaArTvKQYNktT6lNp6UnjbHV+awkie6ycqT/IInrP
-	uyEoaqsGYHZ8erQ4RjtWxYtWa2+ARRzcRibeBqOk0w7jYnpTQlw5pvXs7eWeDVfupRLene3IYKvDZ
-	f6NY8+m5s0McjRNbSOOsH7RCbBaXavwj9jL1dx4/UIQKPqDYC2hF/900chmzR8AZlbMEuyBpWsfvc
-	lWR+97HyqOdONWB/449g==;
+	List-Owner; bh=u5e95w172Td0CGXaB7krwi3EHFDTcPoNn3ZPg+X71Q4=; b=l09D6y2q3mo60N
+	Csnd1G56X8MWewIneRpj86lnT5S8rA2seELmIyQSWVboM50N3I0u1LdLh9Xe7hrnCln57r0oFnmcj
+	xUuqeyeLvW85ym+xTh4wAsE0uU9Z1MptLnlN2ue3vgA8aVqk2uXY/IFfIgtJqn59hVtIGBxV07h/C
+	FB3xgnK2bcs5FAdHKkGdAYQFd2X8QIEAjSXvyrccySmbNt+S8nhdwpMy/U/W3RZYKwTO7V8RgT7og
+	f5tLdPaKzmPZv8oBP9bpSG6Q4G891CiXUIZ+kp4TjNr1mQUfeGegBXDtafnkSZ3WeREj67yUf5O0H
+	MvHL4K53cTS1Kx2whq6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcsal-0000000C8lG-1nzi;
-	Mon, 05 Jan 2026 21:58:23 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vcsxj-0000000C9ir-0bjd;
+	Mon, 05 Jan 2026 22:22:07 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcsaj-0000000C8ks-0pDO
+	id 1vcsxh-0000000C9ia-1aQk
 	for linux-mtd@lists.infradead.org;
-	Mon, 05 Jan 2026 21:58:22 +0000
+	Mon, 05 Jan 2026 22:22:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 77F9A406C1;
-	Mon,  5 Jan 2026 21:58:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C931C116D0;
-	Mon,  5 Jan 2026 21:58:20 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 80E8860010;
+	Mon,  5 Jan 2026 22:22:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A28FC116D0;
+	Mon,  5 Jan 2026 22:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767650300;
-	bh=iEw+W7eYpml0+ut1H65CELRyHgaqnq0z2gPAIWzmZ/s=;
+	s=k20201202; t=1767651724;
+	bh=Rq6g/l9utXxueKr4jKBRBLc6p6iXOMwYYJrHMGcfRpY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BQENB4zbTdWIHNQka6uoWjzsVoD8hGLZLzKiVCdNW9Lxo+pqcT7KTv9OxvQhULNbA
-	 BK9IapF5VDdAEJ2/LFVQufoNksK48JMpZ3y69u18t6E4agT/TdMndWiDHbUxVhoxQq
-	 jBvxlPH6JdmBCNcyEP72p3cpv13dydQeSJM4i3kPFINpvU0+ImNLdjtlszc5h3pnEk
-	 xirHpXOuzDzKj7345LyomYxy+hzYoB3Ag2jtZWs/8LoTeEEfGWTRDvrx45K6FHSrEv
-	 sAaUzGvSFx39F6FbHEtORGEKV0iuA7BunnD9zB4DbXJsZVFKEITUJc2MIO4uuF26Fm
-	 YiHZdKSe3BFYA==
-Date: Mon, 5 Jan 2026 15:58:19 -0600
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Charan Pedumuru <charan.pedumuru@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
-	Lucas Stach <dev@lynxeye.de>, Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Weinberger <richard@nod.at>, Stefan Agner <stefan@agner.ch>,
+	b=FA0w3RziFQZSrAKNxno9GZIZiUbz+WNTw0Oe/g0DlQYqoTyww3K+2pwJ+DyhrF1/J
+	 UUtnymDpyI+S0deJTDUwCv0zthhPD7qrOJvgVA8T75oSxjnMDGX/EVNg2j66/Re4+P
+	 QHtrkFQNsKiwRPFDfU6FF2WOd5KMpLbNQfMepUaHeibhWAVGikCVFJWs5ZMfcRG/Yh
+	 H4zq8puVfbyBcz/DHDyRwQBWxPpeho13zIbUPoeYidZd2pvCAkLfqgFGvLflIYwOf9
+	 1JfORXqcYOIB0F1IxLJEfECuld00A/gIfnVcoUqzNWxU7PkZ32GgT4unBK+iTyl3cp
+	 qPS4LRiklC6Vg==
+Date: Mon, 5 Jan 2026 16:22:03 -0600
+From: Rob Herring <robh@kernel.org>
+To: Akhila YS <akhilayalmati@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v5] dt-bindings: mtd: nvidia,tegra20-nand: convert to DT
- schema
-Message-ID: <176765029770.3496261.3882475061714506998.robh@kernel.org>
-References: <20260104-nvidia-nand-v5-1-0e147e416b4b@gmail.com>
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: st,spi-fsm: convert to DT schema
+Message-ID: <20260105222203.GA3627973-robh@kernel.org>
+References: <20260105-st-fsm-v1-1-d1dd935ccee4@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260104-nvidia-nand-v5-1-0e147e416b4b@gmail.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_135821_283335_19B116F8 
-X-CRM114-Status: GOOD (  14.55  )
+In-Reply-To: <20260105-st-fsm-v1-1-d1dd935ccee4@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,47 +73,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Mon, Jan 05, 2026 at 04:07:59PM +0000, Akhila YS wrote:
+> Convert STMicroelectronics SPI FSM Serial NOR Flash Controller binding
+> to YAML format.
 
-On Sun, 04 Jan 2026 11:23:04 +0000, Charan Pedumuru wrote:
-> Convert NVIDIA Tegra NAND Flash Controller binding to YAML format.
-> Changes during Conversion:
-> - Define new properties `power-domains` and `operating-points-v2`
->   because the existing in tree DTS uses them.
-> - Modify MAINTAINERS references to point the created YAML file.
+s/YAML/DT Schema/
+
 > 
-> Signed-off-by: Charan Pedumuru <charan.pedumuru@gmail.com>
+> Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
 > ---
-> Changes in v5:
-> - Modify MAINTAINERS references to point YAML instead of TEXT file.
-> - Link to v4: https://lore.kernel.org/r/20260103-nvidia-nand-v4-1-3156f46f3a5e@gmail.com
+>  .../devicetree/bindings/mtd/st,spi-fsm.yaml        | 72 ++++++++++++++++++++++
+>  Documentation/devicetree/bindings/mtd/st-fsm.txt   | 25 --------
+>  2 files changed, 72 insertions(+), 25 deletions(-)
 > 
-> Changes in v4:
-> - Changed the the reg property for nand child node.
-> - Link to v3: https://lore.kernel.org/r/20251231-nvidia-nand-v3-1-2e67664d3674@gmail.com
+> diff --git a/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml b/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml
+> new file mode 100644
+> index 000000000000..f374c6aaa185
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml
+> @@ -0,0 +1,72 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/st,spi-fsm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: STMicroelectronics SPI FSM Serial NOR Flash Controller
+> +
+> +maintainers:
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> +  - Richard Weinberger <richard@nod.at>
+
+This should be someone with this h/w, not the subsystem maintainers.
+
+> +
+> +description:
+> +  The STMicroelectronics Fast Sequence Mode (FSM) controller is a dedicated
+> +  hardware accelerator integrated in older STiH4xx/STiDxxx set-top box SoCs
+> +  (such as STiH407, STiH416, STiD127). It connects directly to a single
+> +  external serial flash device used as the primary boot device. The FSM
+> +  executes hard-coded or configurable instruction sequences in hardware,
+> +  providing low-latency reads suitable for execute-in-place (XIP) boot
+> +  and high read bandwidth.
+> +
+> +properties:
+> +  compatible:
+> +    const: st,spi-fsm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reg-names:
+> +    const: spi-fsm
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  pinctrl-0:
+> +    maxItems: 1
+
+Drop. pinctrl properties are implicit.
+
+> +
+> +  st,syscfg:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Phandle to the system configuration registers used for boot-device selection.
+> +
+> +  st,boot-device-reg:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Offset of the boot-device register within the st,syscfg node.
+> +
+> +  st,boot-device-spi:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Expected boot-device value when booting from this SPI controller.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - pinctrl-0
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    spifsm@fe902000 {
+> +        compatible = "st,spi-fsm";
+> +        reg = <0xfe902000 0x1000>;
+> +        reg-names = "spi-fsm";
+> +        interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+> +        pinctrl-0 = <&pinctrl_fsm>;
+> +        st,syscfg = <&syscfg_rear>;
+> +        st,boot-device-reg = <0x958>;
+> +        st,boot-device-spi = <0x1a>;
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
+> deleted file mode 100644
+> index 54cef9ef3083..000000000000
+> --- a/Documentation/devicetree/bindings/mtd/st-fsm.txt
+> +++ /dev/null
+> @@ -1,25 +0,0 @@
+> -* ST-Microelectronics SPI FSM Serial (NOR) Flash Controller
+> -
+> -Required properties:
+> -  - compatible : Should be "st,spi-fsm"
+> -  - reg        : Contains register's location and length.
+> -  - reg-names  : Should contain the reg names "spi-fsm"
+> -  - interrupts : The interrupt number
+> -  - pinctrl-0  : Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
+> -
+> -Optional properties:
+> -  - st,syscfg          : Phandle to boot-device system configuration registers
+> -  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
+> -  - st,boot-device-spi : Expected boot-device value if booted via this device
+> -
+> -Example:
+> -	spifsm: spifsm@fe902000{
+> -	        compatible         = "st,spi-fsm";
+> -	        reg                =  <0xfe902000 0x1000>;
+> -	        reg-names          = "spi-fsm";
+> -	        pinctrl-0          = <&pinctrl_fsm>;
+> -		st,syscfg	   = <&syscfg_rear>;
+> -	        st,boot-device-reg = <0x958>;
+> -	        st,boot-device-spi = <0x1a>;
+> -	};
+> -
 > 
-> Changes in v3:
-> - Removed pattern properties for partition.
-> - Used single quotes for nand string in pattern properties.
-> - Modified maxItems value and added minItems to reg property under nand child node.
-> - Link to v2: https://lore.kernel.org/r/20251229-nvidia-nand-v2-1-b697d9724b0b@gmail.com
-> 
-> Changes in v2:
-> - Edited the commit description to match the updated changes.
-> - Modified the description for the YAML.
-> - Removed all the duplicated properties, defined a proper ref for both parent
->   and child nodes.
-> - Removed unnecessary properties from the required following the old
->   text binding.
-> - Link to v1: https://lore.kernel.org/r/20251030-nvidia-nand-v1-1-7614e1428292@gmail.com
 > ---
->  .../bindings/mtd/nvidia,tegra20-nand.yaml          | 102 +++++++++++++++++++++
->  .../bindings/mtd/nvidia-tegra20-nand.txt           |  64 -------------
->  MAINTAINERS                                        |   2 +-
->  3 files changed, 103 insertions(+), 65 deletions(-)
+> base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
+> change-id: 20251231-st-fsm-84b343517035
 > 
-
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-
+> Best regards,
+> -- 
+> Akhila YS <akhilayalmati@gmail.com>
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
