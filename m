@@ -4,89 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F09E7C79FA3
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 16:08:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EE2FCD0406
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jan 2026 21:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=l+58452cteURF8OtQdXIZufqJ7ca2/Di7uxb6w43zeA=; b=ics05rhN6+rRMl
-	ndgvRMQtU9jekKIYhb0x8mBrmtzJ6VdwnrtO22CIHnYx6At1ak2v7JyO502bHI7g2BI7mfXQl+JjJ
-	32KoaDBqIBRyvb0cZofx/GiVWOyu5tR+Lah/us/W46q2dwwkJLeFMnM/QgNe9myj7JeYfrkkTkIQh
-	DQUyqtkcaeodBsq5hmgryFsHz6JzJSt++aBXQ0AKkj8TtiM10N9GfJoIZCoWdJlYqOWtGKXq/S7bS
-	U/D3fEEvb502LYZeU2fbNluBoBwr0xcPnOnQcw5k4sVWQLlQYafQWXT0XUi8jlwJvxFwRMnbX/flr
-	b0NUB3wkNTbCVeZ1v2+w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6KilqmCeUDH9RLl2NgJfgeCvYqrZaOFZy4ax1SiKaAk=; b=4qtfeEuO087X0s
+	ae6w0wsFkrp+sxcrZO4cJb5/QIz0IAGgitqGUv302vhI2tqPcfFrfGG+k0UMBsmeYyX1iXPhf38Yh
+	2Td6iKJ6OjNSW847fZe94ruwQvzANca5aaEri4ioXTnonxNvs/XU43eVAEuGZ2F4Ga5muPVRLc+Zp
+	rhzTKau5je8sVq+6lVQtJpsmzyyfBSH4TsQTVEJIjAyw48ddVPSroiEHh7CvIZL5WK8NQdayJ8VDq
+	wt+sJbUTtS3g2qbhoi6K0eBuRhySIY6HsGPijz328vBRhPAxDnyec5Fs5D6sHPaI8tte4Gq8lUAr4
+	pnKy8NrWzE1TDcmG624g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcn7s-0000000BhZ4-06Qw;
-	Mon, 05 Jan 2026 16:08:12 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1vcrn1-0000000C5r6-0TFK;
+	Mon, 05 Jan 2026 21:06:59 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcn7o-0000000BhYh-3HCW
-	for linux-mtd@lists.infradead.org;
-	Mon, 05 Jan 2026 16:08:10 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-2a0a95200e8so483785ad.0
-        for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2026 08:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767629287; x=1768234087; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a4aPx9Ksdn2f1hkjywQffSfK3dmxxEtjfJVrjCoq+cE=;
-        b=jzexV1le7yYqUikgghUPdIJqOO795s80PoAoJT7ANNP8UEt2c15qMTkoFLrQKaRbwC
-         nwDjnw6MprZbQNfGWemIxbUcuDw+mZ+WrR3/CJvhy9pi8FRl2nBKNVaSGHf8IuOPlnDB
-         UjezZMpxL5sIlkjgZSQeJ2XWbDaurQeQvzjADZqO4PB39Uh/Jm7HwG0V+zUrghuKKEZi
-         PvLt/3ZxRTaKliW9D4VyI0BN2CnDfJzc14gtTwuWD9X42hjz9e9bHGdK8lOhqFaqhPAu
-         sw6JcEjoZahMuDk1vjdyILzgsF9v6/3ysCpWL6zanKhTFKLEKlxwoKpgPbG1o8sTEXoP
-         PLHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767629287; x=1768234087;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a4aPx9Ksdn2f1hkjywQffSfK3dmxxEtjfJVrjCoq+cE=;
-        b=Wy+QnNv0rQNhOwZRPC+Xu1t/NCpqTcvnMoxXwTa1q90CWIeCFl1D4wefYy4AOdYW56
-         vDgdznn3wDz2o65zLpywlQShbcie+xLjUOy8bGBfy516ka9CiudLfAi5g/fZASXSzUwG
-         feL0cZ0FFwl5IH67nOOTyB9nB1lAB7zEeLoK6J/MA0ZKVwlsKR+uuBOc78OC8B0lw8tx
-         Y9Z4nRTszHkxfKmdS1z34Jj4tcnsXY6Ahfy66nG3PZyTrr5pv3qjjZXR7SPDB5z7WfkJ
-         5Elmolvl3RzUHA3vChMCUw/KgcOSsLxBY15FgCWLdpvRXt3pqk2/En+uMuKvp80S5MBj
-         uIBA==
-X-Gm-Message-State: AOJu0YygroJlK41NTXIWP5Uxcx7KTt7Z8YJcyN0gqZjZWxHEj7P08UP4
-	hH7oJkeXfcx2jmO594xWSGfxdeoN+W15Y+n06H03R/eDUoy3ERGDKckhZrZs7g==
-X-Gm-Gg: AY/fxX7nID/2wuhn4Z9uS/bXm62Ciqj2VIwtvSudcpJANaHxq4sg0N+M88EgiSmu06Z
-	mJZ4J7vCHTj9N8fioTpK/WGv9JVGX/eInocrmzy2ClRC3IQycUZ/vlX3z3+VBKqbddmiOD8YZ83
-	9ksxbrDKLDR9tfD1FjAdrQsNwxKBezO5TJnA8wj5OOpfS8PlHbZY9GiuhIdsLaQ9DJbmqLwfWKG
-	aQijRx49Fgbui9eCyt7i0aIsjWpt/jjw17/Eb/dCNta3OqfDPCoK4dN5hyZ2kJxslQ2YxEw1FDt
-	yMsOKo9ihePVzB/WvUpoExSzqpHgHOD2c/JsLTOk+jRyxYnBECHQ6c1s5acv4d3Auo5onc+PN5S
-	6u/u72Wg9Ggci7rUp1pzPRg4oOpkxjWJibqkFtU927bapEVldd48EMa9sPmj84PvXl1bL0R7iZu
-	UOAHI/XVrbo8sqKK+g4b3lJVKarj04AxaSq9FKYQ==
-X-Google-Smtp-Source: AGHT+IHmTtNImRFcMTd9bEdO5bmpDmbMDapPG+W7jQiu3FXqxaDNoVVpZNJnkHcYnELInEv2WJGx3w==
-X-Received: by 2002:a17:902:dac3:b0:2a1:2ebc:e633 with SMTP id d9443c01a7336-2a3e2c921e2mr2509815ad.4.1767629287115;
-        Mon, 05 Jan 2026 08:08:07 -0800 (PST)
-Received: from LAPTOP-872M7T80.localdomain ([223.181.104.101])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2a3e2b6991dsm2066095ad.48.2026.01.05.08.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 08:08:06 -0800 (PST)
-From: Akhila YS <akhilayalmati@gmail.com>
-Date: Mon, 05 Jan 2026 16:07:59 +0000
-Subject: [PATCH] dt-bindings: mtd: st,spi-fsm: convert to DT schema
+	id 1vcrmv-0000000C5my-41mA;
+	Mon, 05 Jan 2026 21:06:55 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id A5376443EF;
+	Mon,  5 Jan 2026 21:06:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A8CEC116D0;
+	Mon,  5 Jan 2026 21:06:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767647213;
+	bh=xTzY1wDaAQkjeeTLkTSAa8tj3Kl+yUVQWDNwIYcpXnQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=YKNTIDH0O5+FY20pBs59xQ4+kewAZwQzpPR3qyIBCNwGsJKZdNQEa4ozqA8kI4zko
+	 3pqIpkSLkQ/whkiC4SGn/NWtG01qH0PqBaEF76DyC1hUgMczK0YvRZMiStaaeYfK85
+	 wyHLx1Ff6bFVT/asXiHYMTWYx7g/LnUINAQGV/WRO8w30inA8VxcmIesekotm9dlJy
+	 jwVgg41CY8n4U9SvdsPJFlDhx82IYGP31TajLDaW4ecpKGEpBiei4TqF5ozLTDBpoK
+	 JeO7tXCPFHfSmGTmSQ2Qjt69FmB6Xw+0PgcC+UpiKY/M9M5wdfUS84vnbNCGBedL2q
+	 itbizmI/QO2kw==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+Date: Mon, 05 Jan 2026 15:06:45 -0600
+Subject: [PATCH v3 3/3] ARM: at91: remove unnecessary
+ of_platform_default_populate calls
 MIME-Version: 1.0
-Message-Id: <20260105-st-fsm-v1-1-d1dd935ccee4@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAN7hW2kC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1NDI2ND3eIS3bTiXF0LkyRjE2NTQ3MDY1MloOKCotS0zAqwQdGxtbUAZIF
- QwVgAAAA=
-X-Change-ID: 20251231-st-fsm-84b343517035
+Message-Id: <20260105-at91-probe-v3-3-594013ff2965@kernel.org>
+References: <20260105-at91-probe-v3-0-594013ff2965@kernel.org>
+In-Reply-To: <20260105-at91-probe-v3-0-594013ff2965@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Akhila YS <akhilayalmati@gmail.com>
-X-Mailer: b4 0.14.3
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Russell King <linux@armlinux.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+X-Mailer: b4 0.15-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_080808_898664_A672879F 
-X-CRM114-Status: GOOD (  15.46  )
+X-CRM114-CacheID: sfid-20260105_130654_657703_8281F3A8 
+X-CRM114-Status: UNSURE (   9.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,132 +78,247 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert STMicroelectronics SPI FSM Serial NOR Flash Controller binding
-to YAML format.
+The DT core will call of_platform_default_populate, so it is not
+necessary for machine specific code to call it unless there are custom
+match entries, auxdata or parent device. Neither of those apply here, so
+remove the call.
 
-Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- .../devicetree/bindings/mtd/st,spi-fsm.yaml        | 72 ++++++++++++++++++++++
- Documentation/devicetree/bindings/mtd/st-fsm.txt   | 25 --------
- 2 files changed, 72 insertions(+), 25 deletions(-)
+v3:
+ - Fixup split between patch 2 and 3.
 
-diff --git a/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml b/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml
-new file mode 100644
-index 000000000000..f374c6aaa185
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/st,spi-fsm.yaml
-@@ -0,0 +1,72 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/st,spi-fsm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics SPI FSM Serial NOR Flash Controller
-+
-+maintainers:
-+  - Miquel Raynal <miquel.raynal@bootlin.com>
-+  - Richard Weinberger <richard@nod.at>
-+
-+description:
-+  The STMicroelectronics Fast Sequence Mode (FSM) controller is a dedicated
-+  hardware accelerator integrated in older STiH4xx/STiDxxx set-top box SoCs
-+  (such as STiH407, STiH416, STiD127). It connects directly to a single
-+  external serial flash device used as the primary boot device. The FSM
-+  executes hard-coded or configurable instruction sequences in hardware,
-+  providing low-latency reads suitable for execute-in-place (XIP) boot
-+  and high read bandwidth.
-+
-+properties:
-+  compatible:
-+    const: st,spi-fsm
-+
-+  reg:
-+    maxItems: 1
-+
-+  reg-names:
-+    const: spi-fsm
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  pinctrl-0:
-+    maxItems: 1
-+
-+  st,syscfg:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: Phandle to the system configuration registers used for boot-device selection.
-+
-+  st,boot-device-reg:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Offset of the boot-device register within the st,syscfg node.
-+
-+  st,boot-device-spi:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Expected boot-device value when booting from this SPI controller.
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - pinctrl-0
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    spifsm@fe902000 {
-+        compatible = "st,spi-fsm";
-+        reg = <0xfe902000 0x1000>;
-+        reg-names = "spi-fsm";
-+        interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
-+        pinctrl-0 = <&pinctrl_fsm>;
-+        st,syscfg = <&syscfg_rear>;
-+        st,boot-device-reg = <0x958>;
-+        st,boot-device-spi = <0x1a>;
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-deleted file mode 100644
-index 54cef9ef3083..000000000000
---- a/Documentation/devicetree/bindings/mtd/st-fsm.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--* ST-Microelectronics SPI FSM Serial (NOR) Flash Controller
--
--Required properties:
--  - compatible : Should be "st,spi-fsm"
--  - reg        : Contains register's location and length.
--  - reg-names  : Should contain the reg names "spi-fsm"
--  - interrupts : The interrupt number
--  - pinctrl-0  : Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
--
--Optional properties:
--  - st,syscfg          : Phandle to boot-device system configuration registers
--  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
--  - st,boot-device-spi : Expected boot-device value if booted via this device
--
--Example:
--	spifsm: spifsm@fe902000{
--	        compatible         = "st,spi-fsm";
--	        reg                =  <0xfe902000 0x1000>;
--	        reg-names          = "spi-fsm";
--	        pinctrl-0          = <&pinctrl_fsm>;
--		st,syscfg	   = <&syscfg_rear>;
--	        st,boot-device-reg = <0x958>;
--	        st,boot-device-spi = <0x1a>;
--	};
--
-
+v2:
+ - Dust off and rebase to 6.18-rc1
+ - Add new platforms added since v1
 ---
-base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
-change-id: 20251231-st-fsm-84b343517035
+ arch/arm/mach-at91/at91rm9200.c |  9 ---------
+ arch/arm/mach-at91/at91sam9.c   |  9 ---------
+ arch/arm/mach-at91/sam9x60.c    |  9 ---------
+ arch/arm/mach-at91/sam9x7.c     |  9 ---------
+ arch/arm/mach-at91/sama5.c      | 16 ----------------
+ arch/arm/mach-at91/sama7.c      |  9 ---------
+ 6 files changed, 61 deletions(-)
 
-Best regards,
+diff --git a/arch/arm/mach-at91/at91rm9200.c b/arch/arm/mach-at91/at91rm9200.c
+index 2ac564eb8bbb..d15997fff5d7 100644
+--- a/arch/arm/mach-at91/at91rm9200.c
++++ b/arch/arm/mach-at91/at91rm9200.c
+@@ -7,18 +7,10 @@
+  *                2012 Joachim Eastwood <manabian@gmail.com>
+  */
+ 
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
+-
+ #include <asm/mach/arch.h>
+ 
+ #include "generic.h"
+ 
+-static void __init at91rm9200_dt_device_init(void)
+-{
+-	of_platform_default_populate(NULL, NULL, NULL);
+-}
+-
+ static const char *const at91rm9200_dt_board_compat[] __initconst = {
+ 	"atmel,at91rm9200",
+ 	NULL
+@@ -26,6 +18,5 @@ static const char *const at91rm9200_dt_board_compat[] __initconst = {
+ 
+ DT_MACHINE_START(at91rm9200_dt, "Atmel AT91RM9200")
+ 	.init_late	= at91rm9200_pm_init,
+-	.init_machine	= at91rm9200_dt_device_init,
+ 	.dt_compat	= at91rm9200_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-at91/at91sam9.c b/arch/arm/mach-at91/at91sam9.c
+index cf07cba4ee5d..b9d2909d1b65 100644
+--- a/arch/arm/mach-at91/at91sam9.c
++++ b/arch/arm/mach-at91/at91sam9.c
+@@ -6,19 +6,11 @@
+  *                2011 Nicolas Ferre <nicolas.ferre@atmel.com>
+  */
+ 
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
+-
+ #include <asm/mach/arch.h>
+ #include <asm/system_misc.h>
+ 
+ #include "generic.h"
+ 
+-static void __init at91sam9_init(void)
+-{
+-	of_platform_default_populate(NULL, NULL, NULL);
+-}
+-
+ static const char *const at91_dt_board_compat[] __initconst = {
+ 	"atmel,at91sam9",
+ 	NULL
+@@ -27,6 +19,5 @@ static const char *const at91_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(at91sam_dt, "Atmel AT91SAM9")
+ 	/* Maintainer: Atmel */
+ 	.init_late	= at91sam9_pm_init,
+-	.init_machine	= at91sam9_init,
+ 	.dt_compat	= at91_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-at91/sam9x60.c b/arch/arm/mach-at91/sam9x60.c
+index a31beaaeffcd..744bab2cbb92 100644
+--- a/arch/arm/mach-at91/sam9x60.c
++++ b/arch/arm/mach-at91/sam9x60.c
+@@ -7,19 +7,11 @@
+  * Author: Claudiu Beznea <claudiu.beznea@microchip.com>
+  */
+ 
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
+-
+ #include <asm/mach/arch.h>
+ #include <asm/system_misc.h>
+ 
+ #include "generic.h"
+ 
+-static void __init sam9x60_init(void)
+-{
+-	of_platform_default_populate(NULL, NULL, NULL);
+-}
+-
+ static const char *const sam9x60_dt_board_compat[] __initconst = {
+ 	"microchip,sam9x60",
+ 	NULL
+@@ -28,6 +20,5 @@ static const char *const sam9x60_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(sam9x60_dt, "Microchip SAM9X60")
+ 	/* Maintainer: Microchip */
+ 	.init_late	= sam9x60_pm_init,
+-	.init_machine	= sam9x60_init,
+ 	.dt_compat	= sam9x60_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-at91/sam9x7.c b/arch/arm/mach-at91/sam9x7.c
+index 0c73f7fefd4f..166c8625509d 100644
+--- a/arch/arm/mach-at91/sam9x7.c
++++ b/arch/arm/mach-at91/sam9x7.c
+@@ -7,18 +7,10 @@
+  * Author: Varshini Rajendran <varshini.rajendran@microchip.com>
+  */
+ 
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
+-
+ #include <asm/mach/arch.h>
+ 
+ #include "generic.h"
+ 
+-static void __init sam9x7_init(void)
+-{
+-	of_platform_default_populate(NULL, NULL, NULL);
+-}
+-
+ static const char * const sam9x7_dt_board_compat[] __initconst = {
+ 	"microchip,sam9x7",
+ 	NULL
+@@ -27,6 +19,5 @@ static const char * const sam9x7_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(sam9x7_dt, "Microchip SAM9X7")
+ 	/* Maintainer: Microchip */
+ 	.init_late	= sam9x7_pm_init,
+-	.init_machine	= sam9x7_init,
+ 	.dt_compat	= sam9x7_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-at91/sama5.c b/arch/arm/mach-at91/sama5.c
+index 576654cba82d..e56022f00800 100644
+--- a/arch/arm/mach-at91/sama5.c
++++ b/arch/arm/mach-at91/sama5.c
+@@ -6,9 +6,6 @@
+  *                2013 Ludovic Desroches <ludovic.desroches@atmel.com>
+  */
+ 
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
+-
+ #include <asm/hardware/cache-l2x0.h>
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+@@ -30,11 +27,6 @@ static void __init sama5_secure_cache_init(void)
+ 		outer_cache.write_sec = sama5_l2c310_write_sec;
+ }
+ 
+-static void __init sama5_dt_device_init(void)
+-{
+-	of_platform_default_populate(NULL, NULL, NULL);
+-}
+-
+ static const char *const sama5_dt_board_compat[] __initconst = {
+ 	"atmel,sama5",
+ 	NULL
+@@ -43,7 +35,6 @@ static const char *const sama5_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(sama5_dt, "Atmel SAMA5")
+ 	/* Maintainer: Atmel */
+ 	.init_late	= sama5_pm_init,
+-	.init_machine	= sama5_dt_device_init,
+ 	.dt_compat	= sama5_dt_board_compat,
+ MACHINE_END
+ 
+@@ -54,17 +45,11 @@ static const char *const sama5_alt_dt_board_compat[] __initconst = {
+ 
+ DT_MACHINE_START(sama5_alt_dt, "Atmel SAMA5")
+ 	/* Maintainer: Atmel */
+-	.init_machine	= sama5_dt_device_init,
+ 	.init_late	= sama5_pm_init,
+ 	.dt_compat	= sama5_alt_dt_board_compat,
+ 	.l2c_aux_mask	= ~0UL,
+ MACHINE_END
+ 
+-static void __init sama5d2_init(void)
+-{
+-	of_platform_default_populate(NULL, NULL, NULL);
+-}
+-
+ static const char *const sama5d2_compat[] __initconst = {
+ 	"atmel,sama5d2",
+ 	NULL
+@@ -72,7 +57,6 @@ static const char *const sama5d2_compat[] __initconst = {
+ 
+ DT_MACHINE_START(sama5d2, "Atmel SAMA5")
+ 	/* Maintainer: Atmel */
+-	.init_machine	= sama5d2_init,
+ 	.init_early	= sama5_secure_cache_init,
+ 	.init_late	= sama5d2_pm_init,
+ 	.dt_compat	= sama5d2_compat,
+diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
+index 8bf57a020f1c..f56828d61199 100644
+--- a/arch/arm/mach-at91/sama7.c
++++ b/arch/arm/mach-at91/sama7.c
+@@ -6,19 +6,11 @@
+  *
+  */
+ 
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
+-
+ #include <asm/mach/arch.h>
+ #include <asm/system_misc.h>
+ 
+ #include "generic.h"
+ 
+-static void __init sama7_dt_device_init(void)
+-{
+-	of_platform_default_populate(NULL, NULL, NULL);
+-}
+-
+ static const char *const sama7_dt_board_compat[] __initconst = {
+ 	"microchip,sama7",
+ 	NULL
+@@ -27,7 +19,6 @@ static const char *const sama7_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(sama7_dt, "Microchip SAMA7")
+ 	/* Maintainer: Microchip */
+ 	.init_late	= sama7_pm_init,
+-	.init_machine	= sama7_dt_device_init,
+ 	.dt_compat	= sama7_dt_board_compat,
+ MACHINE_END
+ 
+
 -- 
-Akhila YS <akhilayalmati@gmail.com>
+2.51.0
 
 
 ______________________________________________________
