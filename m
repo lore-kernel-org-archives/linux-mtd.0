@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD1FAC47BC4
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jan 2026 07:51:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E545C47BC4
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jan 2026 07:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kuU1S8gH+5B5kvDhXoCkUSNrBs4Jfg555lD0DpaWO+4=; b=49dx4WRZIJqcqL
-	lDqVWfbQnqa5vU4pVvWbhD9ENCe9/xzOyffvGV7ANqSQl3qgYm/yH8HLu5QarchpeMiUjL+rT+tnd
-	3so8JMzBuht8KMKtKpm8yfi/IPnWFCf4KPlb7XWC3FAvPoI3co7aPoMUILWlqomk5F/WcoGCwSBGw
-	/X+rBel/UdBCbG7oS/tCHJN2IXe/ygnBsGEAHX8bYWtkXA02OLDCam0e4NxNP0czr34gy9FjfzjOF
-	C4PwFxMBBP+wbK+ee4NQdS7/OEyeFBzgBblgXtHgnoie/aADWqzSR5YWAHgBjCu5o0cWcQLUFoTcV
-	cpNC09mHC1rt9Pdgzq5w==;
+	List-Owner; bh=d/ePg2NbRRB2r7gJvnKGnx9ImhJLwiD/u4MjQlP6DQU=; b=fD4ePIr4t8PSzF
+	+jTct+wYRXf7dvfDDhUl0QQMKfN1oX0z59CfnpfBmvdtIv+N+7SxDF0mtMOCuip77vKtsuUYqP7VC
+	RMtlXXX93J7VTfoR6Z5kkQTY2x8Zy3zCltCzg87I1BWtaRpteXekKTbtIWXB8FMqrIPSxfC91yz5N
+	8q12Ue+DK1g6P3VrLOUebMq6+eHyMWWM5GE2mMz1rtIudPOqJVQ5Bwh+UvBZwYHtJ1SrxOHTIFIv8
+	ZQaVa5ZdGdxtkUwo5hVAZutgXtXzbhJjU19fggDrDmWWMkro/uO9udeLVmBct19H6XAhJohYaY91a
+	pdesNY+Sttzk2QB/cGSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vd1r2-0000000CZIZ-0BLr;
-	Tue, 06 Jan 2026 07:51:48 +0000
-Received: from [2001:4bb8:2af:87cb:5562:685f:c094:6513] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vd1qz-0000000CZDD-1dBW;
-	Tue, 06 Jan 2026 07:51:45 +0000
+	id 1vd1u3-0000000CZmO-30AO;
+	Tue, 06 Jan 2026 07:54:55 +0000
+Received: from verein.lst.de ([213.95.11.211])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vd1u1-0000000CZlj-1iaE
+	for linux-mtd@lists.infradead.org;
+	Tue, 06 Jan 2026 07:54:55 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 6732E6732A; Tue,  6 Jan 2026 08:54:49 +0100 (CET)
+Date: Tue, 6 Jan 2026 08:54:49 +0100
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>,
-	Jan Kara <jack@suse.cz>,
-	Mike Marshall <hubcap@omnibond.com>,
+Cc: Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>,
 	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Stefan Roesch <shr@fb.com>,
+	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
 	Jeff Layton <jlayton@kernel.org>,
 	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
 	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	io-uring@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: [PATCH 11/11] xfs: enable non-blocking timestamp updates
-Date: Tue,  6 Jan 2026 08:50:05 +0100
-Message-ID: <20260106075008.1610195-12-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260106075008.1610195-1-hch@lst.de>
-References: <20260106075008.1610195-1-hch@lst.de>
+	Anna Schumaker <anna@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev, io-uring@vger.kernel.org,
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
+Subject: Re: re-enable IOCB_NOWAIT writes to files v5
+Message-ID: <20260106075449.GA19152@lst.de>
+References: <20260106074628.1609575-1-hch@lst.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260106074628.1609575-1-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260105_235453_589894_435AAD4A 
+X-CRM114-Status: UNSURE (   8.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,55 +72,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The lazytime path using the generic helpers can never block in XFS
-because there is no ->dirty_inode method that could block.  Allow
-non-blocking timestamp updates for this case by replacing
-generic_update_time with the open coded version without the S_NOWAIT
-check.
-
-Fixes: 66fa3cedf16a ("fs: Add async write file modification handling.")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
----
- fs/xfs/xfs_iops.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index 338f3113f674..1cdd8a360510 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -1195,16 +1195,22 @@ xfs_vn_update_time(
- 
- 	trace_xfs_update_time(ip);
- 
--	if (flags & IOCB_NOWAIT)
--		return -EAGAIN;
--
- 	if (inode->i_sb->s_flags & SB_LAZYTIME) {
--		if (type == FS_UPD_ATIME ||
--		    !inode_maybe_inc_iversion(inode, false))
--			return generic_update_time(inode, type, flags);
-+		int dirty;
-+
-+		dirty = inode_update_time(inode, type, flags);
-+		if (dirty <= 0)
-+			return dirty;
-+		if (dirty == I_DIRTY_TIME) {
-+			__mark_inode_dirty(inode, I_DIRTY_TIME);
-+			return 0;
-+		}
- 
- 		/* Capture the iversion update that just occurred */
- 		log_flags |= XFS_ILOG_CORE;
-+	} else {
-+		if (flags & IOCB_NOWAIT)
-+			return -EAGAIN;
- 	}
- 
- 	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
--- 
-2.47.3
+Sorry, sending this got interrupted by the broken train wifi.
+Please look at the immediately following full series instead.
 
 
 ______________________________________________________
