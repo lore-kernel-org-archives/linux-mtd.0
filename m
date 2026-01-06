@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD591CD043F
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jan 2026 06:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3EF3C47BC5
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jan 2026 07:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ksgdexyPymYQc6xYPeoFVWE0Gd1W0Uic3r+pRBQZyeQ=; b=lT1z9vV6ov9uh5
-	s1Vwcu2QbTDeJEqZVMGZ554f1MVg7zaVm3OGBUd1VDJz3nGfO2haPl+orlZjvfy0+svG+S+hBJMHV
-	t0k6FsLA2PSqfx+7jq7jbsRxaCx8QlM4OHZLpS5ceof33Z/r8maSqSuEK86TTeAOwW6g5VU96qYuh
-	m6JM/XJzrbo6uJc+DiAWrpBzAWftL5idc+89pE61Qa3hwfrJP3Ct0ri1ItpxXHn+TfSKJ0Tg/lD1T
-	PmXrR1iRX8fP3kcmkByf8a85intAFTooUvi5tggopONFgox8/8XHbc7es7cPRQ39DMDmBwwWT4gQN
-	wxZNSnjNCNbRXYjtT0AA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oxjJLzMjtYCv2flpzRwFQbZfUBm+4pfiDmevEVS17oQ=; b=iXvtnsRm26VKZn
+	nh+cp7ygWs4k/9oWNJ7Hcx5pgDSRaTnu+XkrBlWrJ0V+8ie7OdQPQBWlOAl68g9kjggZmz2jklNJ+
+	QNhK5KX3VB8uLASZjpBJM+8cqH+iPTHMSxJOuT8V4QqDEvO0qMeDfugCOuDNAkuBX1v7d3LZNg+kL
+	wpJQiZ4FiJBBgZFlEq3TvsEfzGLo+GVkX9TVHYTwXHd6ZKwFosOKY4RzZPWIo9lku+/ltzPWo2Lh4
+	Mcb05pnG6GczILaRoE3CfXxGr4lzJqieoLd013M9IGiUWlc5mMzvaqgXZtbxVo1/jnFXptytMglbB
+	r8WfezmXCkNtL3DqkSPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vd0UO-0000000CT3h-3u0f;
-	Tue, 06 Jan 2026 06:24:20 +0000
-Received: from verein.lst.de ([213.95.11.211])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vd0UM-0000000CT39-0Z7u
-	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jan 2026 06:24:19 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 630CF6732A; Tue,  6 Jan 2026 07:24:09 +0100 (CET)
-Date: Tue, 6 Jan 2026 07:24:09 +0100
+	id 1vd1m3-0000000CXpR-2rQW;
+	Tue, 06 Jan 2026 07:46:39 +0000
+Received: from [213.208.157.59] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vd1lz-0000000CXop-1G7J;
+	Tue, 06 Jan 2026 07:46:35 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>,
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>,
 	Mike Marshall <hubcap@omnibond.com>,
 	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev, io-uring@vger.kernel.org,
-	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	Carlos Maiolino <cem@kernel.org>,
+	Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org,
 	linux-nfs@vger.kernel.org
-Subject: Re: re-enable IOCB_NOWAIT writes to files v4
-Message-ID: <20260106062409.GA16998@lst.de>
-References: <20251223003756.409543-1-hch@lst.de> <20251224-zusah-emporsteigen-764a9185a0a1@brauner>
+Subject: re-enable IOCB_NOWAIT writes to files v5
+Date: Tue,  6 Jan 2026 08:44:54 +0100
+Message-ID: <20260106074628.1609575-1-hch@lst.de>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20251224-zusah-emporsteigen-764a9185a0a1@brauner>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_222418_315846_C01F2EF8 
-X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,14 +70,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> Applied to the vfs-7.0.nonblocking_timestamps branch of the vfs/vfs.git tree.
-> Patches in the vfs-7.0.nonblocking_timestamps branch should appear in linux-next soon.
+Hi all,
 
-Umm, as in my self reply just before heading out for vacation, Julia
-found issues in it using static type checking tools.  I have a new
-version that fixes that and sorts out the S_* mess.  So please drop
-it again for now, I'll resend the fixed version ASAP.
+commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+always require blocking, and the modern timestamp resolution means we
+always update timestamps.  This leads to a lot of context switches from
+applications using io_uring to submit file writes, making it often worse
+than using the legacy aio code that is not using IOCB_NOWAIT.
 
+This series allows non-blocking updates for lazytime if the file system
+supports it, and adds that support for XFS.
+
+Changes since v4:
+ - replace the S_* flags with an enum indicating either access or
+   modification time updates to make the logic less fragile and to
+   fix a bug in the previous version
+
+Changes since v3:
+ - fix was_dirty_time handling in __mark_inode_dirty for the racy flag
+   update case
+ - refactor inode_update_timestamps to make the lazytime vs blocking
+   logical more clear
+ - allow non-blocking timestamp updates for fat
+
+Changes since v2:
+ - drop patches merged upstream
+ - adjust for the inode state accesors
+ - keep a check in __writeback_single_inode instead of exercising
+   potentially undefined behavior
+ - more spelling fixes
+
+Changes since v1:
+ - more regular numbering of the S_* flags
+ - fix XFS to actually not block
+ - don't ignore the generic_update_time return value in
+   file_update_time_flags
+ - fix the sync_lazytime return value
+ - fix an out of data comment in btrfs
+ - fix a race that would update i_version before returning -EAGAIN in XFS
+
+Diffstat:
+ Documentation/filesystems/locking.rst |    2 
+ Documentation/filesystems/vfs.rst     |    6 +
+ fs/btrfs/inode.c                      |    8 +-
+ fs/fs-writeback.c                     |   33 +++++++---
+ fs/gfs2/inode.c                       |    6 +
+ fs/inode.c                            |  111 +++++++++++++++++++++-------------
+ fs/internal.h                         |    3 
+ fs/nfs/inode.c                        |    4 -
+ fs/orangefs/inode.c                   |    5 +
+ fs/overlayfs/inode.c                  |    2 
+ fs/sync.c                             |    4 -
+ fs/ubifs/file.c                       |   13 ++-
+ fs/xfs/xfs_iops.c                     |   34 +++++++++-
+ fs/xfs/xfs_super.c                    |   29 --------
+ include/linux/fs.h                    |   27 ++++++--
+ include/trace/events/writeback.h      |    6 -
+ 16 files changed, 182 insertions(+), 111 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
