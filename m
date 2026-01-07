@@ -4,52 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9A6CCF6C1B
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jan 2026 09:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7FF2CFD624
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jan 2026 13:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=DeZU/w4iD+quBXxltblpNHJHrUOPeWw0Vu713bzyAnI=; b=RY6wiNuwDu7h+s
-	6nYMTk8ql9m1G5qQPBSzdiKRqP4jxMv0AdQr4+dvrQeUqP5144jWbJxA+5tuVLlFKaQ5cc6jcLv/z
-	YLNogrKdF65QEB9Jy3fmVgCXFfd0Z4r3VTX/vktlfHbsCv+fOjDMQAbgc9fJ5VMs/K+Eem3uDnmwo
-	O5sSQLszT34K19eUAPj4FFdo/rrL3VMBXBHnY7SK1OdbBmi7kgavfNMhC2gStuDA/TtkH7Uew7qK1
-	J2Uw7ru56BVFEJmpnlS5kNEqyxMAmOibpJl0fsfsv2EW83dYta09ewWpdJJQkj+R6K+SJgldLAmuS
-	PoXkMl8SdpWrVo9yPraA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nDFCpm4H99y1oGXfzGwji2T51UaDttX4LBVLjrW2/G8=; b=opx+yf+rveu38q
+	tNdv4Hhe0QnrMl2L79T2IyehiWGvx4RB7RJEU8WEWeV6/QqXS6zJbvjsbLxV7pPcNB3jHyj2AdfKd
+	kAvgCZPDETbWhJeIFnFua3w5YB8zpAmFVC93TKbuyQ2fxCbqtgtyhckWpK9bcuYbA/3ibYZPE07PN
+	kRTZFwVfENUcDcedKmqEizAbSFamau9CNXPfuBrumyZ1L51RBjsgQ9zUarZUBScDPXdvYGlHeJni9
+	XLuzQF7qGnxTquNy87HJ6tygqrKyyKROP9imKVsCG3yEcWeRBrUaSrYc49DABXxM5jKjuoyrt+ENT
+	Ca4QYbOIULc5jxkWHqTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdPhI-0000000EVd5-4B8r;
-	Wed, 07 Jan 2026 09:19:20 +0000
-Received: from mail.nexaro24.pl ([51.75.71.133])
+	id 1vdTE9-0000000Ex5u-2Luu;
+	Wed, 07 Jan 2026 13:05:29 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdPhE-0000000EVcP-2Riq
-	for linux-mtd@lists.infradead.org;
-	Wed, 07 Jan 2026 09:19:18 +0000
-Received: by mail.nexaro24.pl (Postfix, from userid 1002)
-	id 1D419A5283; Wed,  7 Jan 2026 10:17:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nexaro24.pl; s=mail;
-	t=1767777493; bh=ZC5JV21fWFTo+uXJYW+dr6G1mneZxc9rdVRgBpPDkO4=;
-	h=Date:From:To:Subject:From;
-	b=HXzmdHuJxpSOUZN0H06zFrE1JdF6nAGciOjIYvtP8YOL9+eLHRohNRNSOae1abe4J
-	 QAgg49CWztelx+jB6yXMorMn/zjLETjOehsNtoi+uEcXH1d0jVU6r2j/MB7VdW03o0
-	 2mdgBupCuExkUSDGyfPptaSlhCE2Wc5png14Sgawayp6h889dcCYTFq2rDq8x9Sp9u
-	 uXLhWfc28AAgGZjsHmFJhNVsf2W47BR93b/+hkn0+GHMwG+nZHxa23jT6nCrfvFUta
-	 bv+hkPxweI+5wn2Cl7d7F8YPsUL9JpIfnFWhKp4y0PvAGq9A61M/fW124w9U5fjE4J
-	 48yK908nOdBeg==
-Received: by mail.nexaro24.pl for <linux-mtd@lists.infradead.org>; Wed,  7 Jan 2026 09:16:17 GMT
-Message-ID: <20260107083400-0.1.r0.5wit1.0.d71ag9bdc3@nexaro24.pl>
-Date: Wed,  7 Jan 2026 09:16:17 GMT
-From: "Tomasz Chabierski" <tomasz.chabierski@nexaro24.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Dostawa_sprz=C4=99tu?=
-X-Mailer: mail.nexaro24.pl
+	id 1vdTE4-0000000Ex1a-32bP;
+	Wed, 07 Jan 2026 13:05:26 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 544184E41FDE;
+	Wed,  7 Jan 2026 13:05:21 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 293AC606F8;
+	Wed,  7 Jan 2026 13:05:21 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1DC51103C821A;
+	Wed,  7 Jan 2026 14:05:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1767791120; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=v86K00C2fNx5hWbvxkan6t0DbijjMzvVsdWXGbU7/lY=;
+	b=ewS7wwGIxnLGvlW1n7rbyYVE272yKtFwMLpXA5dQxwBgkXDCDIjJ/00Crbfj/yjvQoF3KO
+	Tx11D+DGgmI67oFQcEmX+DLOztgWjbGAhymtnaevZ/myz5iv283sMxkj7DacsQAV4NEdVC
+	nBRLthQpl9T4htROsyNVba4lV3jZbja1UpM5F/XhsaEeDHxzwnPPzt2CBAlpzfU7JrGBr5
+	fuhxbzmg80sngjZygGzgi8Usi8M9d/2iqtt0Ua/gkP6KNf8aAtw82k6Ff+QZgxrkxijLu/
+	FJnMWcTNqpIBmus89VnLtyDYJww8qXlPXa7us9UgAMbcfqPZtc96NXcaVqYQ0g==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+Date: Wed, 07 Jan 2026 14:04:54 +0100
+Subject: [PATCH v3 3/4] dt-bindings: mtd: physmap: Allow using
+ memory-region to access memory resources
 MIME-Version: 1.0
+Message-Id: <20260107-mtd-memregion-v3-3-f9fc9107b992@bootlin.com>
+References: <20260107-mtd-memregion-v3-0-f9fc9107b992@bootlin.com>
+In-Reply-To: <20260107-mtd-memregion-v3-0-f9fc9107b992@bootlin.com>
+To: Rob Herring <robh@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260107_011917_088294_7773E43C 
-X-CRM114-Status: UNSURE (   2.26  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260107_050524_903089_946E4FF1 
+X-CRM114-Status: GOOD (  10.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,21 +79,125 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKcmVwcmV6ZW50dWrEmSBkeXN0cnlidXRvcmEgc3ByesSZdHUgZWxla3Ry
-b25pY3puZWdvIGkgSVQsIG9mZXJ1asSFY2VnbyBwb25hZCA5MCAwMDAgcHJvZHVrdMOzdyBvZCAx
-IDEwMCBtYXJlayB6IG1vxbxsaXdvxZtjacSFIHd5c3nFgmtpIHRlZ28gc2FtZWdvIGRuaWEuCgpX
-c3BpZXJhbXkgZmlybXkgdyBkb2JvcnplIG9kcG93aWVkbmljaCByb3p3acSFemHFhCDigJMgb2Qg
-YWtjZXNvcmnDs3cgcG8gbm93b2N6ZXNuZSB0ZWNobm9sb2dpZSB6d2nEmWtzemFqxIVjZSBlZmVr
-dHl3bm/Fm8SHIG9wZXJhY3lqbsSFLiBaYXBld25pYW15IHBlxYJuZSB3c3BhcmNpZSBla3NwZXJ0
-w7N3IG9yYXogbW/FvGxpd2/Fm8SHIHByemV0ZXN0b3dhbmlhIHByb2R1a3TDs3cgcHJ6ZWQgd2nE
-mWtzenltIHphbcOzd2llbmllbS4KCkNoxJl0bmllIHBvcm96bWF3aWFtIG8gdHltLCBqYWsgbW/F
-vGVteSB3c3BpZXJhxIcgUGHFhHN0d2EgY2VsZSBiaXpuZXNvd2UuIAoKS2llZHkgbW9nbGliecWb
-bXkgdW3Ds3dpxIcgc2nEmSBuYSByb3ptb3fEmT8KCgpQb3pkcmF3aWFtClRvbWFzeiBDaGFiaWVy
-c2tpCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Enable access to memory resources not only via I/O address using reg,
+but also through a portion of main memory using memory-region. To
+achieve this, new compatible strings have been introduced: mtd-mem and
+mtd-memro.
+
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ .../devicetree/bindings/mtd/mtd-physmap.yaml       | 69 ++++++++++++++++------
+ 1 file changed, 52 insertions(+), 17 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml b/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+index a9ec3ca002c7d..98d45982d8eb9 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+@@ -13,10 +13,6 @@ description: |
+   Flash chips (Memory Technology Devices) are often used for solid state
+   file systems on embedded devices.
+ 
+-allOf:
+-  - $ref: mtd.yaml#
+-  - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
+-
+ properties:
+   compatible:
+     oneOf:
+@@ -61,6 +57,8 @@ properties:
+           - jedec-flash
+           - mtd-ram
+           - mtd-rom
++          - mtd-mem
++          - mtd-memro
+ 
+   reg:
+     description: |
+@@ -141,19 +139,37 @@ required:
+   - compatible
+   - reg
+ 
+-if:
+-  properties:
+-    compatible:
+-      contains:
+-        const: cortina,gemini-flash
+-then:
+-  properties:
+-    syscon:
+-      $ref: /schemas/types.yaml#/definitions/phandle
+-      description:
+-        Phandle to the syscon controller
+-  required:
+-    - syscon
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: cortina,gemini-flash
++    then:
++      properties:
++        syscon:
++          $ref: /schemas/types.yaml#/definitions/phandle
++          description:
++            Phandle to the syscon controller
++          required:
++            - syscon
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - mtd-mem
++              - mtd-memro
++    then:
++      $ref: /schemas/reserved-memory/reserved-memory.yaml
++      required:
++        - no-map
++      properties:
++        addr-gpios: false
++    else:
++      allOf:
++        - $ref: /schemas/mtd/mtd.yaml
++        - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
+ 
+ unevaluatedProperties: false
+ 
+@@ -233,4 +249,23 @@ examples:
+             reg = <0 0x04000000>;
+         };
+     };
++
++  - |
++    /* An example using mtd-mem/mtd-memro */
++    reserved-memory {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        bm_logs_reserved: bm_logs_reserved@10000800 {
++            compatible = "mtd-mem";
++            reg = <0x1 0x0000800 0x0 0x0010000>;
++            no-map;
++        };
++
++        sys_logs_reserved: sys_logs_reserved@100120000  {
++            compatible = "mtd-memro";
++            reg = <0x1 0x00120000 0x0 0x0010000>;
++            no-map;
++        };
++    };
+ ...
+
+-- 
+2.51.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
