@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE619CF6BF1
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jan 2026 07:36:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3203CCF6BF4
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jan 2026 07:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZMa4eYdYW+awlFbKKLP4oyL5ds25FDMl8cP6x5l1HgM=; b=R83WQtQDkJ1LAB
-	QrWcIS1Sts8mfKKU2E5IRnU0v7H/9SKHjUdWm0+zoyiayqYP/x8GAdoEs50NfoInAGkPeMfs6Ts+v
-	i0mXT8F3NiaKIxnbEkpxdVqwT/SKxXkQ/VQMsBW+524dn3JVH5U7ZnG3NPIccSu7sea0SVefLqqJe
-	HgtJqnVxlbi58T1fEZ+Rif3Di9KJGzK9VOlQiFH8S1gp/QkJ2lL0/KOAzUXtRkiZ/5d4s1dK+9mJ0
-	yMnz6zNO2LeciqdMY/xPRisj2lF1X2Q4LuqDmPmGRSZHQCqoDMjWk5MtoRVDOiI5fpy5llHJL95zA
-	iap7NNopctgKmexlTlHw==;
+	List-Owner; bh=Y/vfNhASCQm32RZ41ZHl9MaZz8/0asI1ueTqJMCWjQU=; b=UxkgpW3MUNAgV6
+	BANysA9YHhUdwNI+eFU9qPoRKUOuXZBmub4eqkt9lB5nh3Tpt/xpbG6Nyrkst5dV5oVd9s4mkrJxY
+	3c1UoGk2Sxpyqlu87tLX+rnWDX36nf4Lul9E3X6BPnA1bRKjdHpJduSGjwF30cIuZgHwba7VqNeFF
+	i/r7Ht/PQjQ0XisQEKcxg5L1Zgg+rtyfhykeL2MPAqfsECMsv9qEd046soajS7dxPFSj8vMyMdZ89
+	6bVtWcvToX+MS2q1K4gMTvRsQvDcs6f5tfwImeZQ+rm5PXXrRc4mYrt1J4Jll4FuDhGpFTcmrNdYa
+	hK3xSV219vuNJbYpB2Gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdO61-0000000EINR-00RQ;
-	Wed, 07 Jan 2026 07:36:45 +0000
+	id 1vdOCv-0000000EJAe-0Sag;
+	Wed, 07 Jan 2026 07:43:53 +0000
 Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdO5z-0000000EIN3-0gCo
+	id 1vdOCs-0000000EJA2-3J2B
 	for linux-mtd@lists.infradead.org;
-	Wed, 07 Jan 2026 07:36:44 +0000
+	Wed, 07 Jan 2026 07:43:52 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 78F41227A87; Wed,  7 Jan 2026 08:36:39 +0100 (CET)
-Date: Wed, 7 Jan 2026 08:36:39 +0100
+	id 7108E227A87; Wed,  7 Jan 2026 08:43:46 +0100 (CET)
+Date: Wed, 7 Jan 2026 08:43:46 +0100
 From: Christoph Hellwig <hch@lst.de>
-To: Jeff Layton <jlayton@kernel.org>
+To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 Cc: Christoph Hellwig <hch@lst.de>, Christian Brauner <brauner@kernel.org>,
 	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
 	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>,
 	Martin Brandenburg <martin@omnibond.com>,
 	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Jeff Layton <jlayton@kernel.org>,
 	Trond Myklebust <trondmy@kernel.org>,
 	Anna Schumaker <anna@kernel.org>, linux-kernel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -45,16 +45,16 @@ Cc: Christoph Hellwig <hch@lst.de>, Christian Brauner <brauner@kernel.org>,
 	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
 	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
 	linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 05/11] fs: refactor ->update_time handling
-Message-ID: <20260107073639.GC17448@lst.de>
-References: <20260106075008.1610195-1-hch@lst.de> <20260106075008.1610195-6-hch@lst.de> <b208c2a6e1a3ab44e3c820af106b5be99279d986.camel@kernel.org>
+Subject: Re: [PATCH 04/11] fat: cleanup the flags for fat_truncate_time
+Message-ID: <20260107074346.GA18258@lst.de>
+References: <20260106075008.1610195-1-hch@lst.de> <20260106075008.1610195-5-hch@lst.de> <87cy3nrpdu.fsf@mail.parknet.co.jp> <878qeask1x.fsf@mail.parknet.co.jp>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <b208c2a6e1a3ab44e3c820af106b5be99279d986.camel@kernel.org>
+In-Reply-To: <878qeask1x.fsf@mail.parknet.co.jp>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260106_233643_347336_FCAD4DD7 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20260106_234350_968113_83F3C82C 
+X-CRM114-Status: GOOD (  13.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,17 +71,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 06, 2026 at 07:09:04AM -0500, Jeff Layton wrote
-> On Tue, 2026-01-06 at 08:49 +0100, Christoph Hellwig wrote:
-> > Pass the type of update (atime vs c/mtime plus version) as an enum
+On Wed, Jan 07, 2026 at 02:55:06AM +0900, OGAWA Hirofumi wrote:
+> > Thanks.
+> 
+> Ah, I was overlooking that new value is using same value with S_*.
 
-[...]
+Still not a good idea to not create a bisection hazard.  I've added
+a local fat_flags variable and a translation for this patch, even
+if that will go away in the next patch to be 100% sane.
 
-I scrolled through this but only found a full quote but no actual reply
-from you.
+> Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-Can you please follow standard email protocol and only quote relevant
-parts?
+But I've kept the ACK.  Let me know if I should drop it for now with
+the change instead.
 
 
 ______________________________________________________
