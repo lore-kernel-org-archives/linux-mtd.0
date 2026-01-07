@@ -4,57 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3203CCF6BF4
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jan 2026 07:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9A6CCF6C1B
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jan 2026 09:19:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y/vfNhASCQm32RZ41ZHl9MaZz8/0asI1ueTqJMCWjQU=; b=UxkgpW3MUNAgV6
-	BANysA9YHhUdwNI+eFU9qPoRKUOuXZBmub4eqkt9lB5nh3Tpt/xpbG6Nyrkst5dV5oVd9s4mkrJxY
-	3c1UoGk2Sxpyqlu87tLX+rnWDX36nf4Lul9E3X6BPnA1bRKjdHpJduSGjwF30cIuZgHwba7VqNeFF
-	i/r7Ht/PQjQ0XisQEKcxg5L1Zgg+rtyfhykeL2MPAqfsECMsv9qEd046soajS7dxPFSj8vMyMdZ89
-	6bVtWcvToX+MS2q1K4gMTvRsQvDcs6f5tfwImeZQ+rm5PXXrRc4mYrt1J4Jll4FuDhGpFTcmrNdYa
-	hK3xSV219vuNJbYpB2Gg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=DeZU/w4iD+quBXxltblpNHJHrUOPeWw0Vu713bzyAnI=; b=RY6wiNuwDu7h+s
+	6nYMTk8ql9m1G5qQPBSzdiKRqP4jxMv0AdQr4+dvrQeUqP5144jWbJxA+5tuVLlFKaQ5cc6jcLv/z
+	YLNogrKdF65QEB9Jy3fmVgCXFfd0Z4r3VTX/vktlfHbsCv+fOjDMQAbgc9fJ5VMs/K+Eem3uDnmwo
+	O5sSQLszT34K19eUAPj4FFdo/rrL3VMBXBHnY7SK1OdbBmi7kgavfNMhC2gStuDA/TtkH7Uew7qK1
+	J2Uw7ru56BVFEJmpnlS5kNEqyxMAmOibpJl0fsfsv2EW83dYta09ewWpdJJQkj+R6K+SJgldLAmuS
+	PoXkMl8SdpWrVo9yPraA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdOCv-0000000EJAe-0Sag;
-	Wed, 07 Jan 2026 07:43:53 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1vdPhI-0000000EVd5-4B8r;
+	Wed, 07 Jan 2026 09:19:20 +0000
+Received: from mail.nexaro24.pl ([51.75.71.133])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdOCs-0000000EJA2-3J2B
+	id 1vdPhE-0000000EVcP-2Riq
 	for linux-mtd@lists.infradead.org;
-	Wed, 07 Jan 2026 07:43:52 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 7108E227A87; Wed,  7 Jan 2026 08:43:46 +0100 (CET)
-Date: Wed, 7 Jan 2026 08:43:46 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: Christoph Hellwig <hch@lst.de>, Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
-	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev, io-uring@vger.kernel.org,
-	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 04/11] fat: cleanup the flags for fat_truncate_time
-Message-ID: <20260107074346.GA18258@lst.de>
-References: <20260106075008.1610195-1-hch@lst.de> <20260106075008.1610195-5-hch@lst.de> <87cy3nrpdu.fsf@mail.parknet.co.jp> <878qeask1x.fsf@mail.parknet.co.jp>
+	Wed, 07 Jan 2026 09:19:18 +0000
+Received: by mail.nexaro24.pl (Postfix, from userid 1002)
+	id 1D419A5283; Wed,  7 Jan 2026 10:17:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nexaro24.pl; s=mail;
+	t=1767777493; bh=ZC5JV21fWFTo+uXJYW+dr6G1mneZxc9rdVRgBpPDkO4=;
+	h=Date:From:To:Subject:From;
+	b=HXzmdHuJxpSOUZN0H06zFrE1JdF6nAGciOjIYvtP8YOL9+eLHRohNRNSOae1abe4J
+	 QAgg49CWztelx+jB6yXMorMn/zjLETjOehsNtoi+uEcXH1d0jVU6r2j/MB7VdW03o0
+	 2mdgBupCuExkUSDGyfPptaSlhCE2Wc5png14Sgawayp6h889dcCYTFq2rDq8x9Sp9u
+	 uXLhWfc28AAgGZjsHmFJhNVsf2W47BR93b/+hkn0+GHMwG+nZHxa23jT6nCrfvFUta
+	 bv+hkPxweI+5wn2Cl7d7F8YPsUL9JpIfnFWhKp4y0PvAGq9A61M/fW124w9U5fjE4J
+	 48yK908nOdBeg==
+Received: by mail.nexaro24.pl for <linux-mtd@lists.infradead.org>; Wed,  7 Jan 2026 09:16:17 GMT
+Message-ID: <20260107083400-0.1.r0.5wit1.0.d71ag9bdc3@nexaro24.pl>
+Date: Wed,  7 Jan 2026 09:16:17 GMT
+From: "Tomasz Chabierski" <tomasz.chabierski@nexaro24.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Dostawa_sprz=C4=99tu?=
+X-Mailer: mail.nexaro24.pl
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <878qeask1x.fsf@mail.parknet.co.jp>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260106_234350_968113_83F3C82C 
-X-CRM114-Status: GOOD (  13.84  )
+X-CRM114-CacheID: sfid-20260107_011917_088294_7773E43C 
+X-CRM114-Status: UNSURE (   2.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,26 +61,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 07, 2026 at 02:55:06AM +0900, OGAWA Hirofumi wrote:
-> > Thanks.
-> 
-> Ah, I was overlooking that new value is using same value with S_*.
-
-Still not a good idea to not create a bisection hazard.  I've added
-a local fat_flags variable and a translation for this patch, even
-if that will go away in the next patch to be 100% sane.
-
-> Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-
-But I've kept the ACK.  Let me know if I should drop it for now with
-the change instead.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKcmVwcmV6ZW50dWrEmSBkeXN0cnlidXRvcmEgc3ByesSZdHUgZWxla3Ry
+b25pY3puZWdvIGkgSVQsIG9mZXJ1asSFY2VnbyBwb25hZCA5MCAwMDAgcHJvZHVrdMOzdyBvZCAx
+IDEwMCBtYXJlayB6IG1vxbxsaXdvxZtjacSFIHd5c3nFgmtpIHRlZ28gc2FtZWdvIGRuaWEuCgpX
+c3BpZXJhbXkgZmlybXkgdyBkb2JvcnplIG9kcG93aWVkbmljaCByb3p3acSFemHFhCDigJMgb2Qg
+YWtjZXNvcmnDs3cgcG8gbm93b2N6ZXNuZSB0ZWNobm9sb2dpZSB6d2nEmWtzemFqxIVjZSBlZmVr
+dHl3bm/Fm8SHIG9wZXJhY3lqbsSFLiBaYXBld25pYW15IHBlxYJuZSB3c3BhcmNpZSBla3NwZXJ0
+w7N3IG9yYXogbW/FvGxpd2/Fm8SHIHByemV0ZXN0b3dhbmlhIHByb2R1a3TDs3cgcHJ6ZWQgd2nE
+mWtzenltIHphbcOzd2llbmllbS4KCkNoxJl0bmllIHBvcm96bWF3aWFtIG8gdHltLCBqYWsgbW/F
+vGVteSB3c3BpZXJhxIcgUGHFhHN0d2EgY2VsZSBiaXpuZXNvd2UuIAoKS2llZHkgbW9nbGliecWb
+bXkgdW3Ds3dpxIcgc2nEmSBuYSByb3ptb3fEmT8KCgpQb3pkcmF3aWFtClRvbWFzeiBDaGFiaWVy
+c2tpCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
