@@ -4,65 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A909FCEFD16
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jan 2026 21:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7524CF6BF1
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jan 2026 07:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4VNw1shMu8UAIbFVsJoShGl3tE5cEomEniYeZt7n3kA=; b=1SeXxIQpoCZAdo
-	//C5GFUhbD51ed2/4E9xKj+knGcRHhlNL/+ZbRKvLBA5u9RweufMOVEraOTIaVL1ois3YNPLJ09F1
-	FOrfltFO9VN1iiweinQQC1XBKLjPjBOeaekCK+50487Yodmm6COEUoqMUFrkAr/Vf8UL0YqqPpAZp
-	Fa9bnqJzbxkvTvbXNMTYco9zsJWRXjkb3e3Ifh+e3SxYlaXZ8gcyhrXf9FQgppBt4EkboASBC6+vv
-	rpdWYr5dZRG3MJ6xdvd40d5kAHClbUH2gQgoesXspc0WrCc1t8/QZjEUN1CmpaZCPRpaYa2VM1xUo
-	fbjftlR2rVMvlELnx+pA==;
+	List-Owner; bh=+EC1aC1hItYKMKTY0Ldwf3/hKY6WC8pfEEFWrDPgq/0=; b=1Bj/T6pz8sf0iY
+	IXlEcq8PvOUUB33AdzhFaWrwMk7db+cXm+FA8x0yYclfWPPr0uq1lqVpAobEr8UGPFtIc/jCDbzzK
+	kKoI+V2yphREvJgKqBAlLzaGyuNSYcuvBtiCE/JVETK7b/ivc2Q87Jx2Wv7PrAwtWy5thqEveb/PR
+	9YEEYgI+M2dd17BFkVRsArXP31/7f+xW3sducak/U4OIIjg4+tSvs2F2Ii7ykSYw9+YgDwAXxv46C
+	zhfXfx+UPLuwvpQOTyC4tZjuJROZ/7HHjoTCo3HFyBQVQB+jlYGWRuYshvqrztyAJl2NfdkOXZR0K
+	YDhErsTNYwysYC0B4S0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdEqN-0000000Dscj-1nLV;
-	Tue, 06 Jan 2026 21:43:59 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vdO2N-0000000EI8M-07yh;
+	Wed, 07 Jan 2026 07:32:59 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdEqK-0000000Dsc1-3iCp
+	id 1vdO2K-0000000EI7r-1Vpu
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jan 2026 21:43:57 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id E8723438DB;
-	Tue,  6 Jan 2026 21:43:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1127C116C6;
-	Tue,  6 Jan 2026 21:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767735835;
-	bh=oy0nq2zmkLlQ8H2hYCSqLD1m9F9tLj75bp9TRPzk9nM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sxvm20hE+Y7hNroZuQmjk2Hk3ZkHX6MDfP9oEcQv2V8VwA6ijnWVVjdCIUkpvBFm8
-	 GDImaxG+L4xFILzUiX5hvqWw+uQSanWkyG4HZLd6jLk+FbSbAsUtzi6I/+PyE4HMLU
-	 rcuCeMAqaqP73xT9SNOxAUIeaBr+I1iLvMFBIHhkrdKyW3ZsKbQF51b1RsuHqoMa9L
-	 3Ybt9gkFk4x2VPZ9ZpZWF2XzVkjTqmobY6LBgjg33uYVWLB0M4T82oejV3ON7Y9PiR
-	 8al5v9sdVf6qKwJRzzRzNQNHsrCJIKkf6wlcNffIiwlbTPk/2ww0YF4quW5B4zpuZ7
-	 x5Kf4szM/lVMw==
-Date: Tue, 6 Jan 2026 22:43:49 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, 
-	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>, 
-	Martin Brandenburg <martin@omnibond.com>, Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, 
-	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev, io-uring@vger.kernel.org, 
-	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
+	Wed, 07 Jan 2026 07:32:57 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id C876467373; Wed,  7 Jan 2026 08:32:47 +0100 (CET)
+Date: Wed, 7 Jan 2026 08:32:47 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev, io-uring@vger.kernel.org,
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
 Subject: Re: re-enable IOCB_NOWAIT writes to files v4
-Message-ID: <20260106-bequem-albatros-3c747261974f@brauner>
-References: <20251223003756.409543-1-hch@lst.de>
- <20251224-zusah-emporsteigen-764a9185a0a1@brauner>
- <20260106062409.GA16998@lst.de>
+Message-ID: <20260107073247.GA17448@lst.de>
+References: <20251223003756.409543-1-hch@lst.de> <20251224-zusah-emporsteigen-764a9185a0a1@brauner> <20260106062409.GA16998@lst.de> <20260106-bequem-albatros-3c747261974f@brauner>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260106062409.GA16998@lst.de>
+In-Reply-To: <20260106-bequem-albatros-3c747261974f@brauner>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260106_134356_943671_313C7C36 
-X-CRM114-Status: GOOD (  12.09  )
+X-CRM114-CacheID: sfid-20260106_233256_563894_EA5D6FC9 
+X-CRM114-Status: GOOD (  13.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,17 +69,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 06, 2026 at 07:24:09AM +0100, Christoph Hellwig wrote:
-> > Applied to the vfs-7.0.nonblocking_timestamps branch of the vfs/vfs.git tree.
-> > Patches in the vfs-7.0.nonblocking_timestamps branch should appear in linux-next soon.
+On Tue, Jan 06, 2026 at 10:43:49PM +0100, Christian Brauner wrote:
+> > Umm, as in my self reply just before heading out for vacation, Julia
+> > found issues in it using static type checking tools.  I have a new
+> > version that fixes that and sorts out the S_* mess.  So please drop
+> > it again for now, I'll resend the fixed version ASAP.
 > 
-> Umm, as in my self reply just before heading out for vacation, Julia
-> found issues in it using static type checking tools.  I have a new
-> version that fixes that and sorts out the S_* mess.  So please drop
-> it again for now, I'll resend the fixed version ASAP.
+> It has never been pushed nor applied as I saw your mail right before all
+> of that.
 
-It has never been pushed nor applied as I saw your mail right before all
-of that.
+Thanks.  But maybe you can fix up the applied messages to be more
+specific?  We had various issues in the past with them, where they
+were sent, but things did not end up in the tree for various reasons.
 
 ______________________________________________________
 Linux MTD discussion mailing list
