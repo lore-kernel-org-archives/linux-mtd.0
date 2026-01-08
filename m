@@ -4,52 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ABEBD1D480
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 16:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E8E5D1D480
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 16:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dXKdnbjopPCE05PFKCqrzk0n7bN0AJ4WXv1XxFHgmBQ=; b=sL0qIVRO1EnfVk
-	pTuH07n9AfoUdRLmcwFhm7TzJ9rkauVGZKb5vSJOVRaZjujz+w48wbWt8oyl8Z7s5a+6NGKqKMFIo
-	shZP8/4YR6+ujjUFESOhYGo85btf/HEJybKUrpOxelRSjlYD1svXYHxilnv5lqQGVrALGZO1t5PF5
-	Xxx4I6fiDrV/C1uGWbzyyIM1k9TVz8oRAiwKDkd9yt4DnOOSAIR+eg0CGvY+JmXd6UwS2JDlhjh+B
-	/WXfBuOXNTxswXhIBsa9HOfQVTY7K+cQQLO0eYxEc+JCJdPLcwMvLmPrXh4BSn8gLgzERdd+2jWxr
-	LPR/0qcg6jMYiotjk2ww==;
+	List-Owner; bh=9DYNS2t9pxcRExz0/n1cfOPkPfVJl5rT7LLM+FbHIJ0=; b=RAgrQFRYYDyXdK
+	MjRzyXFrvxku9E3PLNic5ufEvoAZ3+SMV+F7Vz7/HPwmoAPj1EikQGqO8a/Jpq3DKY4KYO+AUZg9d
+	8FVrYoGeET0PazCpXrWfOcORyBeqoIHYiKW/mIcm07RdLWZz0AOHBvZ6SkVcGn29bitwHV/pLRhAB
+	iKAo5LnFZcKHWhL1VTL+RQPqNA/14P7MAMK12UbIpC4vyrfLkybgiHml2MDijyBg1rx01JQ9Jn0bO
+	lmiW+fafQ+cPXs6sc2nCq6AoqiC901EOjk/6ENF8K0jqciqNI4TsJHfCeOXQAwDQaDX+ze43p7ewM
+	haps0TSgPKr4lzcjcQpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtLx-00000000FRI-1YeE;
-	Thu, 08 Jan 2026 16:59:17 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1vdtM5-00000000FZG-1bQp;
+	Thu, 08 Jan 2026 16:59:25 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtLo-00000000FFq-2Cys
+	id 1vdtLx-00000000FPq-13CN
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 08 Jan 2026 16:59:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=oqqmuaxM0JPFUFPYjxJGr40Kx4IWxVfbQQsEuyrgdv8=; b=EBt+uCmwcKcn620HX6gMBXC3MV
+	/9KSJCc0+6vBJk0/Kb80P3L3vP5i9Ai4vdBww8+PRnDkrq420aLzRuunGk1h4w0rjUGGitEF5LHR/
+	L9KoMuJ/xqObt9bL0wYJp1JRURnItgn6Ku+iWjihgasfkWsBt6kZkZOf7HIFI1/i/OXHGy21EHafA
+	ZvEYHrcQQbyaOcYV1Qzy9GxhbhA/4Mgz0j3kY+jQLE8eysDYppVx2GAkAZ0P1PApuTIQOfGl77Hu8
+	xCVcs4eoZqCGBBZg04AeumsVdago3shiqwnq4LmXAx0VlGwVYo3Lte/kZCmsBrT1/Oe6emsT2uMJL
+	0mImaS+g==;
+Received: from smtpout-03.galae.net ([185.246.85.4])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vdtLu-0000000DjT1-1Ddz
 	for linux-mtd@lists.infradead.org;
-	Thu, 08 Jan 2026 16:59:13 +0000
+	Thu, 08 Jan 2026 16:59:16 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 119831A2716;
-	Thu,  8 Jan 2026 16:59:07 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 0F0614E42000;
+	Thu,  8 Jan 2026 16:59:12 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id DAED66072B;
-	Thu,  8 Jan 2026 16:59:06 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0A989103C8897;
-	Thu,  8 Jan 2026 17:59:03 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id D80AD6072B;
+	Thu,  8 Jan 2026 16:59:11 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 58415103C8811;
+	Thu,  8 Jan 2026 17:59:09 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1767891546; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1767891551; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=huIAGKBLlYy5bqenkOHYpgkreeVYU/erjhzN9EO+unQ=;
-	b=GJHV90KAn5BplDmegOH6ZQ7at+qPro0BfkjbGBhomazuYXWs00i/7419WmJ6gHDGgev4jJ
-	cwCQ+8yptInUmtnaam4ab4ycLj6YXhaXgRV9li1quGGh6RlvmINpvA3u6MGN/T+jSPOOyC
-	iyT9Xy+RP7R1ewzKQ+T6JjzJP2mlqrtqIqTB6GnxIctNnVeO8iFe1x1m1W0SSyl58BWX+a
-	r6R9vKrUzplyum+6lGGkXV8aH29v3Ix12Qr6cV5Ryu7bLY9juyxhaJyVrXjBXDfJKGYlh1
-	0wp1tQMu0fEpT0gbS6zqkdY3fsHVsN3mLW8/40iw4tLDdIBkW0tKDipCudOaDQ==
+	bh=oqqmuaxM0JPFUFPYjxJGr40Kx4IWxVfbQQsEuyrgdv8=;
+	b=S9M7Ejen/u7DrEf1yJnaoIpPSZJqMrkISaFjTKDPP5QFj/Sw4zggU2NptvXNDeTNf6AxYx
+	ROZhJFHNw7g2vTX7h+LkUq4w4Bp6OTsIyvBzLbMOFipeUccHy/D1t9WQfcM0wSvnB/XSBK
+	H2k/QIuyMcOcKAKJ64h51zPW2NzZdJUEuTjb8ovI/P/TA2Xs3hpUj2L+ybmQZlIyF1+8Jw
+	gY3niszpu19blIgJr6igQy5YaaeKcjmt7hTQbmqu7OeX5sjak992qi7fFv4/ZKsP+9FCfW
+	E6ZTbedF/vAcCbZeonr10vibmpWuLGqierWvIjWfW5It5kA6XfWbaT2hwmiGKQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 08 Jan 2026 17:57:43 +0100
-Subject: [PATCH v2 10/27] mtd: spi-nor: swp: Create a helper that writes
- SR, CR and checks
+Date: Thu, 08 Jan 2026 17:57:45 +0100
+Subject: [PATCH v2 12/27] mtd: spi-nor: swp: Create a TB intermediate
+ variable
 MIME-Version: 1.0
-Message-Id: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-10-c462ef806130@bootlin.com>
+Message-Id: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-12-c462ef806130@bootlin.com>
 References: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-0-c462ef806130@bootlin.com>
 In-Reply-To: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-0-c462ef806130@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -64,8 +79,9 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260108_085908_707028_33653F6B 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20260108_165914_406115_05C39D19 
+X-CRM114-Status: UNSURE (   9.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,117 +98,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are many helpers already to either read and/or write SR and/or CR,
-as well as sometimes check the returned values. In order to be able to
-switch from a 1 byte status register to a 2 bytes status register while
-keeping the same level of verification, let's introduce a new helper
-that writes them both (atomically) and then reads them back (separated)
-to compare the values.
-
-In case 2 bytes registers are not supported, we still have the usual
-fallback available in the helper being exported to the rest of the core.
+Ease the future reuse of the tb (Top/Bottom) boolean by creating an
+intermediate variable.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.h |  1 +
- 2 files changed, 66 insertions(+)
+ drivers/mtd/spi-nor/swp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8d91052cc21e..97da30d9f6c1 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -976,6 +976,54 @@ int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
- 	return 0;
- }
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index 66f85826ba0d..f068cb9c8f6d 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -60,6 +60,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
+ 	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
+ 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+ 	u8 bp, val = sr[0] & bp_mask;
++	bool tb = (nor->flags & SNOR_F_HAS_SR_TB) ? sr[0] & tb_mask : 0;
  
-+/**
-+ * spi_nor_write_16bit_sr_cr_and_check() - Write the Status Register 1 and the
-+ * Configuration Register in one shot. Ensure that the bytes written in both
-+ * registers match the received value.
-+ * @nor:	pointer to a 'struct spi_nor'.
-+ * @regs:	two-byte array with values to be written to the status and
-+ *		configuration registers.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_write_16bit_sr_cr_and_check(struct spi_nor *nor, const u8 *regs)
-+{
-+	u8 written_regs[2];
-+	int ret;
-+
-+	written_regs[0] = regs[0];
-+	written_regs[1] = regs[1];
-+	nor->bouncebuf[0] = regs[0];
-+	nor->bouncebuf[1] = regs[1];
-+
-+	ret = spi_nor_write_sr(nor, nor->bouncebuf, 2);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_read_sr(nor, &nor->bouncebuf[0]);
-+	if (ret)
-+		return ret;
-+
-+	if (written_regs[0] != nor->bouncebuf[0]) {
-+		dev_dbg(nor->dev, "SR: Read back test failed\n");
-+		return -EIO;
-+	}
-+
-+	if (nor->flags & SNOR_F_NO_READ_CR)
-+		return 0;
-+
-+	ret = spi_nor_read_cr(nor, &nor->bouncebuf[1]);
-+	if (ret)
-+		return ret;
-+
-+	if (written_regs[1] != nor->bouncebuf[1]) {
-+		dev_dbg(nor->dev, "CR: read back test failed\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * spi_nor_write_sr_and_check() - Write the Status Register 1 and ensure that
-  * the byte written match the received value without affecting other bits in the
-@@ -993,6 +1041,23 @@ int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1)
- 	return spi_nor_write_sr1_and_check(nor, sr1);
- }
+ 	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
+ 		val = (val & ~SR_BP3_BIT6) | SR_BP3;
+@@ -79,7 +80,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
+ 	if (*len > nor->params->size)
+ 		*len = nor->params->size;
  
-+/**
-+ * spi_nor_write_sr_cr_and_check() - Write the Status Register 1 and ensure that
-+ * the byte written match the received value. Same for the Control Register if
-+ * available.
-+ * @nor:	pointer to a 'struct spi_nor'.
-+ * @regs:	byte array to be written to the registers.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_write_sr_cr_and_check(struct spi_nor *nor, const u8 *regs)
-+{
-+	if (nor->flags & SNOR_F_HAS_16BIT_SR)
-+		return spi_nor_write_16bit_sr_cr_and_check(nor, regs);
-+
-+	return spi_nor_write_sr1_and_check(nor, regs[0]);
-+}
-+
- /**
-  * spi_nor_write_sr2() - Write the Status Register 2 using the
-  * SPINOR_OP_WRSR2 (3eh) command.
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 16b382d4f04f..3dc9ba3bc6da 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -632,6 +632,7 @@ int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
- int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
- int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
- int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr);
-+int spi_nor_write_sr_cr_and_check(struct spi_nor *nor, const u8 *regs);
- 
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
- 			  u8 *buf);
+-	if (nor->flags & SNOR_F_HAS_SR_TB && sr[0] & tb_mask)
++	if (tb)
+ 		*ofs = 0;
+ 	else
+ 		*ofs = nor->params->size - *len;
 
 -- 
 2.51.1
