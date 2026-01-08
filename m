@@ -4,123 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBDD7D1D478
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 15:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C338D1D478
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 16:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hm82oPgYmpKKAhLqNEPYf9v1nsps3EL94JQ3D5ykK7k=; b=T+HnVErvs74ZLw
-	yHC6z9BeNS7aPdTsieGEg4MAV0JYFuLswvwmoRrHwwIjiYvH6iIo48SZCkqZXpLJXZQjYIlmEY5mt
-	2icgNijxjRXR72Tb/UmCvzc1q2joiTOEFVI5gJ4++pCkm+YvNlMKry9G438S3sW5QVfOIopIL3npM
-	L7opFBTY59TDDGerjsb94jQu7RxCAfelfic01VXYzID8R9r4Hgvd6ByHR6ixhNwjWTQr+DJviLMYR
-	ofPFpKJia2nJv5CduWkYM55cmzSZH4/SPCfUZN29DzlGOqURV2ou06dRQbH/Soywrakm2NvXBFvZG
-	XUlgaLALsWKcpneMXlEg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=eEqY02OEj5Raym23QolJNqQgD1AascVXUTPI7PvvUiw=; b=Lb1zA/QGuRBHxX
+	2MsvOGmrd0uy1Ktg9IfBgLMhcJh2eQuWub9EBsdSFc6Xi49hH/apLyQqeKYa59TyUiahI5TbTqOcQ
+	6qJbVBI/XN2oUykALjalpo/hpx3gyYxl0OhAowKG29AGr3zaPUeVQkQzQoNO9+5FESQE1BVkW4sF0
+	X8hys2Rvw/kpmdfOfNf1z3dgvMp2a/GMDB3xEAulibXep0vNuL9IcsEEMUUVgExx1nb1+TYtDv9IG
+	Zg21GSrDd7G5p3CtLZFKbEKtk8gYrG/qNAultjTdHrbH4gpw3S54waDyYJNHvY8E6/NGwyS/NeGaL
+	JjsKTiYn4q2SgnqNyVwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdrsQ-0000000HVqI-3EBF;
-	Thu, 08 Jan 2026 15:24:42 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1vdtLU-00000000F3o-1CKJ;
+	Thu, 08 Jan 2026 16:58:48 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdrsO-0000000HVpZ-0tgr
+	id 1vdtLQ-00000000F1h-2Lre
 	for linux-mtd@lists.infradead.org;
-	Thu, 08 Jan 2026 15:24:41 +0000
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A391F5C8BF;
-	Thu,  8 Jan 2026 15:24:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767885877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V+qK+dnL46nUtN+uNEFs23QanVQbnXiphSQbt6qXpT4=;
-	b=JCYjElFavA1D+JD67g7P3npPC+qKEUU/TbXUobTNoT7l1cVaT7b4XmIGbh8npgaG+jLv/V
-	6AckBleiCx8a50E72AwF4VkGql2Dsd8QC+IUgJ2KIt0GlENPgQOJtkIyZ+IMt5mWrZpF6P
-	/r1aau7+l5M8SCkXKYQEUfSfYOfbnog=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767885877;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V+qK+dnL46nUtN+uNEFs23QanVQbnXiphSQbt6qXpT4=;
-	b=d2ChgALPnQVQKorF2BkYW7JgTwnMO5Lu5PPBlhswk0qAlUgGRqAbHwNO++BK2PotRdsuOn
-	EUNmEnGr6rkOyZAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767885877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V+qK+dnL46nUtN+uNEFs23QanVQbnXiphSQbt6qXpT4=;
-	b=JCYjElFavA1D+JD67g7P3npPC+qKEUU/TbXUobTNoT7l1cVaT7b4XmIGbh8npgaG+jLv/V
-	6AckBleiCx8a50E72AwF4VkGql2Dsd8QC+IUgJ2KIt0GlENPgQOJtkIyZ+IMt5mWrZpF6P
-	/r1aau7+l5M8SCkXKYQEUfSfYOfbnog=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767885877;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V+qK+dnL46nUtN+uNEFs23QanVQbnXiphSQbt6qXpT4=;
-	b=d2ChgALPnQVQKorF2BkYW7JgTwnMO5Lu5PPBlhswk0qAlUgGRqAbHwNO++BK2PotRdsuOn
-	EUNmEnGr6rkOyZAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 933BE3EA63;
-	Thu,  8 Jan 2026 15:24:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id R8DvIzXMX2kSewAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 08 Jan 2026 15:24:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4D1D8A09CF; Thu,  8 Jan 2026 16:24:37 +0100 (CET)
-Date: Thu, 8 Jan 2026 16:24:37 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, Jeff Layton <jlayton@kernel.org>, 
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Trond Myklebust <trondmy@kernel.org>, 
-	Anna Schumaker <anna@kernel.org>, linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev, io-uring@vger.kernel.org, 
-	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH 07/11] fs: add a ->sync_lazytime method
-Message-ID: <w35hgsrv4xxwlq2ncsukzc5s6qwjq3qmnbpvyltj2ljmc357dh@4hcrqlekhxdh>
-References: <20260108141934.2052404-1-hch@lst.de>
- <20260108141934.2052404-8-hch@lst.de>
+	Thu, 08 Jan 2026 16:58:46 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 62BD1C1ECBD;
+	Thu,  8 Jan 2026 16:58:15 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 96DB66072B;
+	Thu,  8 Jan 2026 16:58:41 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 666D9103C8891;
+	Thu,  8 Jan 2026 17:58:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1767891520; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=E+E90BltAoO+qn8F30WKKOmABemNtGnZLPXKAjs4xnI=;
+	b=MZ/dyuSyCdfnO7r8Z3aYcq+P7lQSXYQT08myG7d7wTE6630zfJ2I15slCXCRz/7JhWTMcn
+	BbEUgkXvj6Q/z1Z5YOcn0BQjQp1JX3eAqh7WsEzjSDkP+JRuhgFKpIyp6CEU2qWFB4wH9I
+	XsdYXe32VMhMMqKjazEqufx3ylFqdrktKZyVd11jqdIVnYDzHrocAF/9JGzRKzgTSnFB5j
+	0sQs4EQPCZ8PBoJh8K0zoWpskcCTvtzkn97wLf05SeR7MeIp06NBAfduP1U0sjRcwXlqYB
+	GIwIXgXhI8KPeKzS8ZBM3+ApAzuPTVNyRSaFGw6skA/WgiD81qluApSFKxHx0g==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 00/27] mtd: spi-nor: Enhance software protection
+Date: Thu, 08 Jan 2026 17:57:33 +0100
+Message-Id: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-0-c462ef806130@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260108141934.2052404-8-hch@lst.de>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,nvidia.com:email,imap1.dmz-prg2.suse.org:helo,lst.de:email]
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/43NQQ6CMBCF4auQWTuGKVDAlfcwLKQUmUQ7pCVFQ
+ 7i7lRO4/N7ifxsE69kGuGQbeBs5sLgEdcrATHf3sMhDMqhcVURU4squFzdg1EgNekMYZkYnHsM
+ 6Y6OrodBjOeq2gtSYvR35ffRvXfLEYRH/Oe4i/dZ/y5Ewx7Kpe1OTatuCrr3I8mR3NvKCbt/3L
+ 3o/I3LMAAAA
+X-Change-ID: 20251114-winbond-v6-18-rc1-spi-nor-swp-865d36f4f695
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Jonathan Corbet <corbet@lwn.net>
+Cc: Sean Anderson <sean.anderson@linux.dev>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Steam Lin <STLin2@winbond.com>, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, stable@kernel.org
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260108_072440_555871_9A8A381F 
-X-CRM114-Status: GOOD (  29.36  )
+X-CRM114-CacheID: sfid-20260108_085844_886516_A9D458CF 
+X-CRM114-Status: GOOD (  21.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,138 +83,127 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 08-01-26 15:19:07, Christoph Hellwig wrote:
-> Allow the file system to explicitly implement lazytime syncing instead
-> of pigging back on generic inode dirtying.  This allows to simplify
-> the XFS implementation and prepares for non-blocking lazytime timestamp
-> updates.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Hello,
 
-Looks good. Feel free to add:
+As recently raised on the mailing-list (link below), it seems that the
+"locking" support in SPI NOR could benefit from some enhancements. As I
+myself had to dig into it recently, here is a proposal.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+First issue that I see, the MEMLOCK ioctl is not behaving correctly
+in some cases, as addressed in:
 
-								Honza
+    mtd: spi-nor: swp: Improve locking user experience
 
-> ---
->  Documentation/filesystems/locking.rst |  2 ++
->  Documentation/filesystems/vfs.rst     |  6 ++++++
->  fs/fs-writeback.c                     | 13 +++++++++++--
->  include/linux/fs.h                    |  1 +
->  4 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
-> index 37a4a7fa8094..0312fba6d73b 100644
-> --- a/Documentation/filesystems/locking.rst
-> +++ b/Documentation/filesystems/locking.rst
-> @@ -82,6 +82,7 @@ prototypes::
->  	int (*fiemap)(struct inode *, struct fiemap_extent_info *, u64 start, u64 len);
->  	void (*update_time)(struct inode *inode, enum fs_update_time type,
->  			    int flags);
-> +	void (*sync_lazytime)(struct inode *inode);
->  	int (*atomic_open)(struct inode *, struct dentry *,
->  				struct file *, unsigned open_flag,
->  				umode_t create_mode);
-> @@ -118,6 +119,7 @@ getattr:	no
->  listxattr:	no
->  fiemap:		no
->  update_time:	no
-> +sync_lazytime:	no
->  atomic_open:	shared (exclusive if O_CREAT is set in open flags)
->  tmpfile:	no
->  fileattr_get:	no or exclusive
-> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-> index 51aa9db64784..d8cb181f69f8 100644
-> --- a/Documentation/filesystems/vfs.rst
-> +++ b/Documentation/filesystems/vfs.rst
-> @@ -487,6 +487,7 @@ As of kernel 2.6.22, the following members are defined:
->  		ssize_t (*listxattr) (struct dentry *, char *, size_t);
->  		void (*update_time)(struct inode *inode, enum fs_update_time type,
->  				    int flags);
-> +		void (*sync_lazytime)(struct inode *inode);
->  		int (*atomic_open)(struct inode *, struct dentry *, struct file *,
->  				   unsigned open_flag, umode_t create_mode);
->  		int (*tmpfile) (struct mnt_idmap *, struct inode *, struct file *, umode_t);
-> @@ -643,6 +644,11 @@ otherwise noted.
->  	an inode.  If this is not defined the VFS will update the inode
->  	itself and call mark_inode_dirty_sync.
->  
-> +``sync_lazytime``:
-> +	called by the writeback code to update the lazy time stamps to
-> +	regular time stamp updates that get syncing into the on-disk
-> +	inode.
-> +
->  ``atomic_open``
->  	called on the last component of an open.  Using this optional
->  	method the filesystem can look up, possibly create and open the
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 3d68b757136c..62658be2578b 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -1717,7 +1717,10 @@ bool sync_lazytime(struct inode *inode)
->  		return false;
->  
->  	trace_writeback_lazytime(inode);
-> -	mark_inode_dirty_sync(inode);
-> +	if (inode->i_op->sync_lazytime)
-> +		inode->i_op->sync_lazytime(inode);
-> +	else
-> +		mark_inode_dirty_sync(inode);
->  	return true;
->  }
->  
-> @@ -2569,6 +2572,8 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  	trace_writeback_mark_inode_dirty(inode, flags);
->  
->  	if (flags & I_DIRTY_INODE) {
-> +		bool was_dirty_time = false;
-> +
->  		/*
->  		 * Inode timestamp update will piggback on this dirtying.
->  		 * We tell ->dirty_inode callback that timestamps need to
-> @@ -2579,6 +2584,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  			if (inode_state_read(inode) & I_DIRTY_TIME) {
->  				inode_state_clear(inode, I_DIRTY_TIME);
->  				flags |= I_DIRTY_TIME;
-> +				was_dirty_time = true;
->  			}
->  			spin_unlock(&inode->i_lock);
->  		}
-> @@ -2591,9 +2597,12 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  		 * for just I_DIRTY_PAGES or I_DIRTY_TIME.
->  		 */
->  		trace_writeback_dirty_inode_start(inode, flags);
-> -		if (sb->s_op->dirty_inode)
-> +		if (sb->s_op->dirty_inode) {
->  			sb->s_op->dirty_inode(inode,
->  				flags & (I_DIRTY_INODE | I_DIRTY_TIME));
-> +		} else if (was_dirty_time && inode->i_op->sync_lazytime) {
-> +			inode->i_op->sync_lazytime(inode);
-> +		}
->  		trace_writeback_dirty_inode(inode, flags);
->  
->  		/* I_DIRTY_INODE supersedes I_DIRTY_TIME. */
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 35b3e6c6b084..7837db1ba1d2 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2024,6 +2024,7 @@ struct inode_operations {
->  		      u64 len);
->  	int (*update_time)(struct inode *inode, enum fs_update_time type,
->  			   unsigned int flags);
-> +	void (*sync_lazytime)(struct inode *inode);
->  	int (*atomic_open)(struct inode *, struct dentry *,
->  			   struct file *, unsigned open_flag,
->  			   umode_t create_mode);
-> -- 
-> 2.47.3
-> 
+Then there is no clear explanation of the shortcuts taken by the kernel
+in terms of uAPI, so there is an attempt to list them in:
+
+    mtd: spi-nor: swp: Explain the MEMLOCK ioctl implementation behaviour
+
+Plus, Tudor also asked if we could cover locking in the testing
+procedure, which is done in:
+
+    mtd: spi-nor: Add steps for testing locking support
+
+In order to simplify this procedure, and because it got very helpful
+during my testing/development, I want to propose additions to the
+debugfs output:
+
+    mtd: spi-nor: debugfs: Add locking support TODO: make the captures again
+
+Finally, I am providing an implementation for the complement (CMP)
+feature in order to allow finer control of the regions locked. This
+feature is for instance available on Winbond chips:
+
+    [core] mtd: spi-nor: swp: Add support for the complement feature
+    [doc]  mtd: spi-nor: Add steps for testing locking with CMP
+    [use]  mtd: spi-nor: winbond: Add CMP locking support
+
+Disclaimer: it was much less straightforward than I initially thought to
+get the CMP feature working correctly. I tested it with as much focus as
+I could, and I am improving the test coverage for the new cases, I am
+also providing extra test cases in the metadata of the commit (which do
+not make sense to test for chip additions, but may be sensible show when
+making core additions like this one), but honestly there are so many
+possibilities, I may still be missing corner cases. I hope this will
+anyway be helpful to others!
+
+All the other patches are misc improvements or style fixes which I faced
+and fixed during my development.
+
+Link: https://lore.kernel.org/linux-mtd/92e99a96-5582-48a5-a4f9-e9b33fcff171@linux.dev/
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+Changes in v2:
+- Collect tags.
+- Add missing Fixes/Cc: stable tags.
+- Add a comment explaining why can_be_top && can_be_bottom is a specific
+  condition.
+- Fix commit logs following Michael Walle's reviews.
+- Amend the documentation following our discussion with Michael Walle as
+  well.
+- Cache the SR register for debugfs use.
+- Create a locked sector map file instead of dumping it as part of the
+  `params` file output.
+- Improved greatly the output of the map as suggested by Michael.
+- Add a patch fixing a duplicate dependency in Kconfig.
+- Add an important comment in the doc about the small 4kiB erase size
+  choice.
+- Add test runs for each and every chip for which the CMP feature is
+  added. This prove me that testing of each and every chip was needed,
+  as some of them seem to feature a broken BFPT table which does not
+  advertise a working 35h (Read CR) command.
+- Added a condition on which the CMP feature is enabled: RDCR must be
+  possible.
+- Link to v1: https://lore.kernel.org/r/20251114-winbond-v6-18-rc1-spi-nor-swp-v1-0-487bc7129931@bootlin.com
+
+---
+Miquel Raynal (27):
+      mtd: spi-nor: Drop duplicate Kconfig dependency
+      mtd: spi-nor: debugfs: Fix the flags list
+      mtd: spi-nor: swp: Improve locking user experience
+      mtd: spi-nor: Improve opcodes documentation
+      mtd: spi-nor: debugfs: Align variable access with the rest of the file
+      mtd: spi-nor: debugfs: Enhance output
+      mtd: spi-nor: swp: Explain the MEMLOCK ioctl implementation behaviour
+      mtd: spi-nor: swp: Clarify a comment
+      mtd: spi-nor: swp: Use a pointer for SR instead of a single byte
+      mtd: spi-nor: swp: Create a helper that writes SR, CR and checks
+      mtd: spi-nor: swp: Rename a mask
+      mtd: spi-nor: swp: Create a TB intermediate variable
+      mtd: spi-nor: swp: Create helpers for building the SR register
+      mtd: spi-nor: swp: Simplify checking the locked/unlocked range
+      mtd: spi-nor: swp: Cosmetic changes
+      mtd: spi-nor: Create a local SR cache
+      mtd: spi-nor: debugfs: Add locking support
+      mtd: spi-nor: debugfs: Add a locked sectors map
+      mtd: spi-nor: Add steps for testing locking support
+      mtd: spi-nor: swp: Add support for the complement feature
+      mtd: spi-nor: Add steps for testing locking with CMP
+      mtd: spi-nor: winbond: Add W25H512NWxxAM CMP locking support
+      mtd: spi-nor: winbond: Add W25H01NWxxAM CMP locking support
+      mtd: spi-nor: winbond: Add W25H02NWxxAM CMP locking support
+      mtd: spi-nor: winbond: Add W25H01NWxxIQ CMP locking support
+      mtd: spi-nor: winbond: Add W25Q01NWxxIM CMP locking support
+      mtd: spi-nor: winbond: Add W25Q02NWxxIM CMP locking support
+
+ Documentation/driver-api/mtd/spi-nor.rst | 164 ++++++++++++++
+ drivers/mtd/spi-nor/Kconfig              |   1 -
+ drivers/mtd/spi-nor/core.c               |  74 ++++++-
+ drivers/mtd/spi-nor/core.h               |  10 +
+ drivers/mtd/spi-nor/debugfs.c            |  63 +++++-
+ drivers/mtd/spi-nor/swp.c                | 359 ++++++++++++++++++++++++-------
+ drivers/mtd/spi-nor/winbond.c            |  41 +++-
+ include/linux/mtd/spi-nor.h              |   7 +-
+ 8 files changed, 631 insertions(+), 88 deletions(-)
+---
+base-commit: 99bb09369a9eaed5de0e647cc1aab215668ddc6f
+change-id: 20251114-winbond-v6-18-rc1-spi-nor-swp-865d36f4f695
+
+Best regards,
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Miquel Raynal <miquel.raynal@bootlin.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
