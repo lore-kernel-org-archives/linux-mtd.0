@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23499D1D482
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 17:28:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37FF3D1D482
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 17:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gPGVFBgr+xFF+0LQqT5K0nG9dDyuiQ4YkyVeLV3/5wM=; b=kYNZB4jfq6QKqk
-	/Jr9rJnJgheIdMcBqb3YBIlt0AMMnELQaiuQjp9pJgyWdd0H4J2BkWaSTvBJ2cplJN59H5gMUjGdG
-	isH00956pDKWQ3r9lsJXIXH4x05jZ7ty5APqnBh0mh27f9cmzwI013CtLnvSbHZGsvu7t0nUX2dC3
-	wwwWx2pdlvT1mLporGSUzYYe0Cm4Bnll2rRtOHzLjG1bl7UnkfoM4CwPR9Knnp/n9nDLWTmNZiK3m
-	OKDl+B3JM7/htCqqzVXJ+050emTb7HdX+RFCWZIQDqrvHhE4SwFeTsDCT9nhvR8AHWMwKW2IkxTIx
-	iFbGmDoBCVAMmnpvMhWg==;
+	List-Owner; bh=yLUdY6gPHDqk4hPCP4L/83BJ1YvLcr15SjCBAtOk7ms=; b=q8NLjBJcsYBDn1
+	jRS2HptLi8inKOTl3+OqZLOnd9EvkrHlcGOTXWi2u69+ulmBcMG41TE1VJs5pukSpxXgDx0cewdMM
+	JHJtEcHbUjIUZMQNyie9qy/NFz+7J5514y9/1wW7vPROYpLU+xQ3Pds7hsNWuymtNoN0eFxg0oXDM
+	nZNkWiReveXZkvO18lBKsw11xPJoHhLi3lGtdwTiCtJoEQvC5n3qgJKVBZ2c+Re2xYyyM+ChAxqI1
+	hdirvMXte6EQ99qQBEPospgFWKwP7CNsv77Zyo8DZweEUgUFH9OOybdLFLUoz4tbE5GtIUHikn5i7
+	vwbtRWzkXc39eFoi/aWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtnx-00000000OPK-1F2V;
-	Thu, 08 Jan 2026 17:28:13 +0000
-Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
+	id 1vdtoH-00000000OUv-2kz5;
+	Thu, 08 Jan 2026 17:28:33 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtnu-00000000OOL-23Gy
+	id 1vdtoE-00000000OTi-0sGi
 	for linux-mtd@lists.infradead.org;
-	Thu, 08 Jan 2026 17:28:11 +0000
+	Thu, 08 Jan 2026 17:28:31 +0000
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0A3CB345BB;
-	Thu,  8 Jan 2026 17:28:07 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 31252346D1;
+	Thu,  8 Jan 2026 17:28:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767893288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1767893308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dRR5MJyX+HDqbBmCwQZHQRTY+WXgey6jvqbxMzndKRo=;
-	b=d4rSDFVrXJSP77CIbAOSkyHjsRgNACqSgQbCVEPwZM/7zstbAcRfpaKGt2UisstM25nHN7
-	1Bgquq3HKv8seUDn0gF0sfxOp2JusCFG/9EjeeXW5wzvXBXqmCE1wFrQAYKngFoA0v5P6u
-	83axHXkSOymjejIcnA/3CWyrtM2EjP0=
+	bh=LZmRq1jobUO8YamiQvtoLSiP3S45TLaZihc+2opPu78=;
+	b=PgM0qTCXZ2X5Z3hkK3jtzjZOvDMZLm/E4JYhqQ6em+5IaD4UT31FECDXudaGiS5xM4DJ0y
+	CjQygviac/9t0aQvin8JilOeYO3xwSNnNhPdm0cnkvbpJgP68yJhD2J3X6sGHvKGWvyaXj
+	1+h9HLpBlNo8eR3zYHP8X4pAMSGnU84=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767893288;
+	s=susede2_ed25519; t=1767893308;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dRR5MJyX+HDqbBmCwQZHQRTY+WXgey6jvqbxMzndKRo=;
-	b=DgBHV1jqSF0+H7pOM/PFFepN4UptQo4Xm9zzBWmsA8HM9uc0EEx2dxtRo2p/BgW1yiLhLp
-	aLSuKnoBqXXSPuAw==
+	bh=LZmRq1jobUO8YamiQvtoLSiP3S45TLaZihc+2opPu78=;
+	b=7I3Psqn1KNPxXCXm9PcU1P3QCaLnWDhGBG6oy6mEBBHZkBtmbJGI/TRrEDw+5SLm4knqEo
+	+ceMclR97Y1K14AQ==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DLUw9TrT;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WJmCqN15
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PgM0qTCX;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7I3Psqn1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767893287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1767893308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dRR5MJyX+HDqbBmCwQZHQRTY+WXgey6jvqbxMzndKRo=;
-	b=DLUw9TrTi3ictVL6EEioV8vKn1Tnf6kctL6QZRX5vF/5rVSvqfOAvG70NWVYOUzLZYrPPv
-	JdngfH9/bOKbMsGeD044ITXU8l7U5S8cTiEyCgEXIEkp5Gs8xEtWYMvaxY2N8yBFRKBhTZ
-	gG0Ba6Ai4Hwdwd3g0MwV58QLPOnmVNI=
+	bh=LZmRq1jobUO8YamiQvtoLSiP3S45TLaZihc+2opPu78=;
+	b=PgM0qTCXZ2X5Z3hkK3jtzjZOvDMZLm/E4JYhqQ6em+5IaD4UT31FECDXudaGiS5xM4DJ0y
+	CjQygviac/9t0aQvin8JilOeYO3xwSNnNhPdm0cnkvbpJgP68yJhD2J3X6sGHvKGWvyaXj
+	1+h9HLpBlNo8eR3zYHP8X4pAMSGnU84=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767893287;
+	s=susede2_ed25519; t=1767893308;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dRR5MJyX+HDqbBmCwQZHQRTY+WXgey6jvqbxMzndKRo=;
-	b=WJmCqN15jIu+CIYMzqKepntgbV5TrDYXbl8J/P+sr5x+oDHQQw2miYcNGTvbX94SXnz0Fo
-	fZFJjn0j2xx8QWBw==
+	bh=LZmRq1jobUO8YamiQvtoLSiP3S45TLaZihc+2opPu78=;
+	b=7I3Psqn1KNPxXCXm9PcU1P3QCaLnWDhGBG6oy6mEBBHZkBtmbJGI/TRrEDw+5SLm4knqEo
+	+ceMclR97Y1K14AQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E447E3EA65;
-	Thu,  8 Jan 2026 17:28:06 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2203C3EA65;
+	Thu,  8 Jan 2026 17:28:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iBi3NybpX2lLdwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 08 Jan 2026 17:28:06 +0000
+	id 9BtLCDzpX2lmdwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 08 Jan 2026 17:28:28 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 92F9DA0B23; Thu,  8 Jan 2026 18:28:02 +0100 (CET)
-Date: Thu, 8 Jan 2026 18:28:02 +0100
+	id D507AA0B23; Thu,  8 Jan 2026 18:28:27 +0100 (CET)
+Date: Thu, 8 Jan 2026 18:28:27 +0100
 From: Jan Kara <jack@suse.cz>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Luis de Bethencourt <luisbg@kernel.org>, 
@@ -121,13 +121,13 @@ Cc: Luis de Bethencourt <luisbg@kernel.org>,
 	linux-xfs@vger.kernel.org, linux-mm@kvack.org, gfs2@lists.linux.dev, 
 	linux-doc@vger.kernel.org, v9fs@lists.linux.dev, ceph-devel@vger.kernel.org, 
 	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
-Subject: Re: [PATCH 05/24] ext2: add setlease file operation
-Message-ID: <pqnz52eipormcmskhnn6m4d6tzfnjrzk7qhohxri2euftpzjwx@l5zfqgeenvge>
+Subject: Re: [PATCH 06/24] ext4: add setlease file operation
+Message-ID: <4vqji2aypves2bafiyxtpw442nxzhbipvayyl3jky6uogdks6s@l6tfwl272v7e>
 References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
- <20260108-setlease-6-20-v1-5-ea4dec9b67fa@kernel.org>
+ <20260108-setlease-6-20-v1-6-ea4dec9b67fa@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260108-setlease-6-20-v1-5-ea4dec9b67fa@kernel.org>
+In-Reply-To: <20260108-setlease-6-20-v1-6-ea4dec9b67fa@kernel.org>
 X-Spamd-Result: default: False [-2.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -149,7 +149,7 @@ X-Spamd-Result: default: False [-2.51 / 50.00];
 	FREEMAIL_CC(0.00)[kernel.org,gmail.com,fluxnic.net,infradead.org,suse.cz,alarsen.net,zeniv.linux.org.uk,suse.com,fb.com,linux.alibaba.com,google.com,huawei.com,vivo.com,mit.edu,dilger.ca,mail.parknet.co.jp,nod.at,dubeyko.com,paragon-software.com,fasheh.com,evilplan.org,omnibond.com,szeredi.hu,squashfs.org.uk,linux-foundation.org,samsung.com,sony.com,oracle.com,redhat.com,lwn.net,ionkov.net,codewreck.org,crudebyte.com,samba.org,manguebit.org,microsoft.com,talpey.com,vger.kernel.org,lists.ozlabs.org,lists.sourceforge.net,lists.infradead.org,lists.linux.dev,lists.orangefs.org,kvack.org,lists.samba.org];
 	DKIM_TRACE(0.00)[suse.cz:+];
 	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -159,13 +159,13 @@ X-Spamd-Result: default: False [-2.51 / 50.00];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email]
-X-Rspamd-Queue-Id: 0A3CB345BB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Queue-Id: 31252346D1
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260108_092810_823960_8B913F7B 
-X-CRM114-Status: GOOD (  19.73  )
+X-CRM114-CacheID: sfid-20260108_092830_541265_C7EADD6F 
+X-CRM114-Status: GOOD (  19.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -182,9 +182,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 08-01-26 12:13:00, Jeff Layton wrote:
-> Add the setlease file_operation to ext2_file_operations and
-> ext2_dir_operations, pointing to generic_setlease.  A future patch will
+On Thu 08-01-26 12:13:01, Jeff Layton wrote:
+> Add the setlease file_operation to ext4_file_operations and
+> ext4_dir_operations, pointing to generic_setlease.  A future patch will
 > change the default behavior to reject lease attempts with -EINVAL when
 > there is no setlease file operation defined. Add generic_setlease to
 > retain the ability to set leases on this filesystem.
@@ -198,48 +198,48 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 								Honza
 
 > ---
->  fs/ext2/dir.c  | 2 ++
->  fs/ext2/file.c | 2 ++
+>  fs/ext4/dir.c  | 2 ++
+>  fs/ext4/file.c | 2 ++
 >  2 files changed, 4 insertions(+)
 > 
-> diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
-> index b07b3b369710c4848d6091742cdd0b5c42d4674d..395fc36c089b7bb6360a8326727bd5606c7e2476 100644
-> --- a/fs/ext2/dir.c
-> +++ b/fs/ext2/dir.c
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index 256fe2c1d4c1619eb2cd915d8b6b05bce72656e7..00c4b3c82b6534790962dc3964c0c557162b6dff 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
 > @@ -24,6 +24,7 @@
 >  
->  #include "ext2.h"
+>  #include <linux/fs.h>
 >  #include <linux/buffer_head.h>
 > +#include <linux/filelock.h>
->  #include <linux/pagemap.h>
->  #include <linux/swap.h>
+>  #include <linux/slab.h>
 >  #include <linux/iversion.h>
-> @@ -734,4 +735,5 @@ const struct file_operations ext2_dir_operations = {
->  	.compat_ioctl	= ext2_compat_ioctl,
+>  #include <linux/unicode.h>
+> @@ -690,4 +691,5 @@ const struct file_operations ext4_dir_operations = {
 >  #endif
->  	.fsync		= ext2_fsync,
+>  	.fsync		= ext4_sync_file,
+>  	.release	= ext4_release_dir,
 > +	.setlease	= generic_setlease,
 >  };
-> diff --git a/fs/ext2/file.c b/fs/ext2/file.c
-> index 76bddce462fced77b24d64416cb9fdb172d8270b..ebe356a38b185e0d8662f704ad20e42fe618284e 100644
-> --- a/fs/ext2/file.c
-> +++ b/fs/ext2/file.c
-> @@ -22,6 +22,7 @@
->  #include <linux/time.h>
->  #include <linux/pagemap.h>
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 7a8b3093218921f26a7f8962f94739ba49431230..534cf864101f8d1e5f4106b61c0580c858bc0e27 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/mount.h>
+>  #include <linux/path.h>
 >  #include <linux/dax.h>
 > +#include <linux/filelock.h>
 >  #include <linux/quotaops.h>
->  #include <linux/iomap.h>
+>  #include <linux/pagevec.h>
 >  #include <linux/uio.h>
-> @@ -325,6 +326,7 @@ const struct file_operations ext2_file_operations = {
->  	.get_unmapped_area = thp_get_unmapped_area,
->  	.splice_read	= filemap_splice_read,
->  	.splice_write	= iter_file_splice_write,
+> @@ -980,6 +981,7 @@ const struct file_operations ext4_file_operations = {
+>  	.fop_flags	= FOP_MMAP_SYNC | FOP_BUFFER_RASYNC |
+>  			  FOP_DIO_PARALLEL_WRITE |
+>  			  FOP_DONTCACHE,
 > +	.setlease	= generic_setlease,
 >  };
 >  
->  const struct inode_operations ext2_file_inode_operations = {
+>  const struct inode_operations ext4_file_inode_operations = {
 > 
 > -- 
 > 2.52.0
