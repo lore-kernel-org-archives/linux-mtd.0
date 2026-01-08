@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8AC8D1D480
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 17:16:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DCB5D1D483
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 17:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1XoiCF/5yC7/quDKFZB/g9aM3uIVJ77XgWRpL/jPcts=; b=mauhG2a29UoZRL
-	BmbY2JaoOFjQJ1GIIDl/fvWiZgKit4E2TwQ8v0OzZ83H1TG2xZORbfashUQISZ988cBVPU1/TsKeJ
-	rfboGNV4isWHYRJV6vj/uVIiuGHsCEkj+/uUNJZqGcnYyCzxLRhmyIOvwegAtuP52mAZknPtw3QFz
-	7euJYYPlIhtHN1BveNypgi/fuYl1BsbP5lgo5EyGe4nX6AOJ4NaiI54ZN3s7xQBFfNIE3VclEeP7x
-	OZk0TTaLBr6podnTYfZLnP4PdwoBlnBFhP+2wjsPxcYTx/rBnRR4WFpli80+lBpInmPJqVzQquhw+
-	mFHgEEKgw4wcupi9AEQg==;
+	List-Owner; bh=R79CCdDpTcU9PItrjQGO7R1jnGyB9j4bnwFbLP/gwao=; b=Kc1dIbJRbiG2fJ
+	7RAbAzXWUMdK3Lts2D03TwbIvlnSKEDCWPuQbPAJHvinplAt96OYQxnJUfEg+2SiI1qd9gRKlOzxM
+	BxY1A4qHARoc4TmSbm39t/10hH/ssIsCWOu1z6RU+KbUfXWtV5D89pxxWBFA6G/xk84s6VwmVnALK
+	IKdgYHRf0uJAlzdW3hNOARjBtajuF5RS/aP25LJ2WfvyTZPRUvdGYLTtqT/yPZAwvskutRO1Pwif1
+	9CPpHryMZbYQxCStzLj2W5i0NryiFnQAmvLQoigSBrCag7t58SkxWAzq/iEUdT8Qm8Cv0h+m6tG4f
+	/+5+pAhnQASWnckLXuiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtcc-00000000LXS-43mY;
-	Thu, 08 Jan 2026 17:16:30 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vdtcd-00000000LYH-1aDE;
+	Thu, 08 Jan 2026 17:16:31 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtcU-00000000LMm-2rRB
+	id 1vdtcc-00000000LWg-3sky
 	for linux-mtd@lists.infradead.org;
-	Thu, 08 Jan 2026 17:16:28 +0000
+	Thu, 08 Jan 2026 17:16:31 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3859A42BAD;
+	by tor.source.kernel.org (Postfix) with ESMTP id 2F3396014F;
+	Thu,  8 Jan 2026 17:16:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5037FC19422;
 	Thu,  8 Jan 2026 17:16:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9066C2BCAF;
-	Thu,  8 Jan 2026 17:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767892582;
-	bh=uKAoYiUzb2k4mWk3DPDn1qw2MlMadC9ZK+Ro0COSfEk=;
+	s=k20201202; t=1767892589;
+	bh=31kaSpuGA79pOQvjYXOIwkMusZ5I/9kl0pI7vxo79B0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=N+KAwUSN5aLOeh58U18x1Ce3wnLpBZV5zhe4kxwBm8fPRX5wOYoSQkrqxYodHIYXJ
-	 aw/tNdkO6s3F+xmbKKmGdGwZPQ7OcAFF6cZu+pkYIBzXkHIXu/l1HGZ9m9oVzb233T
-	 pb1QsAcwbdSOEG0g3hYn9b8h5rMA3FQ1auQxixaZPSb3Gnid38yhHfa7DN45lRpFNy
-	 HnYLVP3j5rN6nuQ5tFXKqOBNLvl4XnhrEDVD/oaSpKYeACD6sLQ5WeBkAwtRRf89Oj
-	 Mszb3PGelES2eFWGjjvA1vTJCZKTNjzsErMgOooBsTzqIDIIX6sREpum3rJfPfbZjq
-	 ncrWyVUiaiNNQ==
+	b=ka0wy7tfVbqJ8biZkl1dnF7zdBNpw2I/HL9Z4qvT7canG8yWttWmWRQ8y2bA5H2Ne
+	 Hg1kLSaeL/MJqN/eLQrJ+0D74nyBul/1dg48cm4KybwYHPFxN2jDA0DG0JbZS9GgJH
+	 YX0bgPuTqTt2qOuABV3Sh0WjERkrVZ8mA5j1puaJ7vvJQEjbKd1eF8mVQZSJI+ZJKN
+	 +fRHCYR9Jhj0ZnSLSNSehLByTqec+/NNwTFW6FjkwP2zNBKgrJjpIbdazH4MUrGCoN
+	 YFM4uhC2WPpbzqLdGmh6J9z/myyIQ398y3DCiuGgy6lIDUaJ/QXycwYIOEvZGejZ9n
+	 yymoliwZ3EoMw==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 08 Jan 2026 12:13:16 -0500
-Subject: [PATCH 21/24] ufs: add setlease file operation
+Date: Thu, 08 Jan 2026 12:13:17 -0500
+Subject: [PATCH 22/24] xfs: add setlease file operation
 MIME-Version: 1.0
-Message-Id: <20260108-setlease-6-20-v1-21-ea4dec9b67fa@kernel.org>
+Message-Id: <20260108-setlease-6-20-v1-22-ea4dec9b67fa@kernel.org>
 References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
 In-Reply-To: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
 To: Luis de Bethencourt <luisbg@kernel.org>, 
@@ -103,25 +103,22 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
  Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1554; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=uKAoYiUzb2k4mWk3DPDn1qw2MlMadC9ZK+Ro0COSfEk=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpX+W9x3bW7J65LYqA4RAoS8vIXUjkwwPn2jjsp
- UmXLATAbCmJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaV/lvQAKCRAADmhBGVaC
- FSNEEACZcBsWRq9qFYTe80h8vRRw2k3rdL23HiT2BsxfSAAZFyBsEvwK9+kuhY3wgeDrU4j9WnH
- /GIsJmvdTFgf55rZbEZRkM+UjSpTNkca8KYJYfCKqOUpyDrGNxHkRKAibGXOuEhKan0kUm3i96K
- UpbDBsdke1UPupTK3TAK6QO1LnUpZROD/waUOPEAqTpxmgOGUircRjljFXwTtS4WNtwDpwaw9/v
- 59rhsifvhQg50TiVS3DGlyav9p3uOTznw2pu1n016JFbPDKtUHQQTKWCFllVRGBBN0SrVjUZCvZ
- ysFLmyL6FEXsBc06lpevB/4OZTOHEMAKH6GCviniXzi/Q9mNaGzw7SywSs2UpLRuBEl1F0o2nC/
- gSEYJYJtSUyPrcLRO+sqctPdB0z0c9N5ja1qbzwPysDOGONbqHHZRAwl+/fAm03pvjcgj+Ek4y1
- z4l9I32yHoGA0elIfZ94CnUbSLjHhHp99E6+gneCtLeJNF/V2UdqW8YbC7syjZmYsL9/32uBR+F
- Y05Bwybcvu6omNnCSV8mOat6qwJVat/Xp9cczO7bcMz5ufYYpeQfx8tSA4zKqAhTV7fCQ+3WbrC
- B4bB30ktO7leILwAVHcE6hs0zFGzhxVYBn5+WP2mhpy5Eq42GL6xsEhdCeW6GB9eJoBmuml53dB
- 1zKY0MNAGgIkj8w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1348; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=31kaSpuGA79pOQvjYXOIwkMusZ5I/9kl0pI7vxo79B0=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpX+W+/CMV6M0nr3SG7lwo2cpM9G7b0LqWdi9Ol
+ v2q/8PSRRqJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaV/lvgAKCRAADmhBGVaC
+ FVSQEAChykiIZZ2qCoDgb3e10KiOX4j3Kq9XSCEqphrg9Pr8U0yza5P36Vy+bUEGsdgKPjDLqTQ
+ q/949XOcYbiBcP+IEI7/gYaaYVJMEiIGImK6lABXNO2oMGOM6vLmEd3C+hnmhZlK8h2vCSnhIkw
+ CqkUAOpj20VyRsjZhxXC62TQQO8/8Y1QDjwRM24rZXa9NLMVNIb9Nn085XnNY8+Ppa3eFSktXW9
+ ihb7fODPt1Vn6Y+eTsFtU5FsC6SwCxOTMnfRJEfY2C9Yl+7ldIyvY+NSWFbd1iWDZ7EmBaqU6PK
+ qrBu72lJYpbsDQz6g8wjru4v4bG8N8o0uQm0wo9K5ZDw3DyjYaa3ja3+c2uHUSiA7BKqCAx4smU
+ Q5mE5CbEcfBU8OthZWBuIhfbrZeYXgiGW0722Wz/sF8uiPVXx0NNUtIVMw1iSvsgI2McyL2JLrj
+ 4VZm70XFpXu8ld9+0yoAZ/mUgmn4HBfNNG5qyOqJfFnnEteSMeBnpbPbC7mihmnqF+bUwfFMpx2
+ rPK/34X8VljljNjLqhFk7XbPZz6v6m6AhuTblY7PbDlKBRzMM6jNhafVfVXrC23FeDGkeeeS0wq
+ afbmnpmPSBOCXki9yf314rYtODExHP9j/c/bZvezn9USBq8VM89wiKzdf3Lm2UXyjR/QYwfw5Or
+ Ae8nSsnmq7yvMOQ==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260108_091622_887244_BBA47ED8 
-X-CRM114-Status: GOOD (  11.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,7 +135,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the setlease file_operation pointing to generic_setlease to the ufs
+Add the setlease file_operation pointing to generic_setlease to the xfs
 file_operations structures. A future patch will change the default
 behavior to reject lease attempts with -EINVAL when there is no
 setlease file operation defined. Add generic_setlease to retain the
@@ -146,44 +143,33 @@ ability to set leases on this filesystem.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/ufs/dir.c  | 2 ++
- fs/ufs/file.c | 2 ++
- 2 files changed, 4 insertions(+)
+ fs/xfs/xfs_file.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/ufs/dir.c b/fs/ufs/dir.c
-index 0388a1bae326ba41bc03471fcb7ed01098a707d8..43f1578ab8666a9611d4a77f5aababfce812fbe4 100644
---- a/fs/ufs/dir.c
-+++ b/fs/ufs/dir.c
-@@ -19,6 +19,7 @@
- 
- #include <linux/time.h>
- #include <linux/fs.h>
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 7874cf745af372fe8d90af09c6916d4c635472e0..ecd7bf42446b38e075986d1c774dea4e8c0c0d01 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -36,6 +36,7 @@
+ #include <linux/mman.h>
+ #include <linux/fadvise.h>
+ #include <linux/mount.h>
 +#include <linux/filelock.h>
- #include <linux/swap.h>
- #include <linux/iversion.h>
  
-@@ -653,4 +654,5 @@ const struct file_operations ufs_dir_operations = {
- 	.iterate_shared	= ufs_readdir,
- 	.fsync		= generic_file_fsync,
- 	.llseek		= ufs_dir_llseek,
+ static const struct vm_operations_struct xfs_file_vm_ops;
+ 
+@@ -2007,6 +2008,7 @@ const struct file_operations xfs_file_operations = {
+ 	.fop_flags	= FOP_MMAP_SYNC | FOP_BUFFER_RASYNC |
+ 			  FOP_BUFFER_WASYNC | FOP_DIO_PARALLEL_WRITE |
+ 			  FOP_DONTCACHE,
 +	.setlease	= generic_setlease,
  };
-diff --git a/fs/ufs/file.c b/fs/ufs/file.c
-index c2a391c17df7f34d9961973909d1985f5f786e92..809c7a4603f863025caa947b2e08f0c2922ad619 100644
---- a/fs/ufs/file.c
-+++ b/fs/ufs/file.c
-@@ -25,6 +25,7 @@
-  */
  
- #include <linux/fs.h>
-+#include <linux/filelock.h>
- 
- #include "ufs_fs.h"
- #include "ufs.h"
-@@ -43,4 +44,5 @@ const struct file_operations ufs_file_operations = {
- 	.fsync		= generic_file_fsync,
- 	.splice_read	= filemap_splice_read,
- 	.splice_write	= iter_file_splice_write,
+ const struct file_operations xfs_dir_file_operations = {
+@@ -2019,4 +2021,5 @@ const struct file_operations xfs_dir_file_operations = {
+ 	.compat_ioctl	= xfs_file_compat_ioctl,
+ #endif
+ 	.fsync		= xfs_dir_fsync,
 +	.setlease	= generic_setlease,
  };
 
