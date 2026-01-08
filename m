@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45DBFD1D478
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 17:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D861AD1D483
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 17:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mzDBsdatf8SDrarN9GvTYo+QudHeGLJ2QLzFXIiFB9s=; b=udayRlB/qblDe8
-	63lVZ7mAWF7dIQO9JZO27AG4Bp2CBm8cA8/8IYYfkbXNquzZAumhjwt0lmyk/KC8whsTfqV6ZbBgX
-	KXvFPikzvf/jHdLfR9uFd1pID4b/Oc/y2fUFHoTdE/21qv7KPcQlg2UVyiXhbtC4OoyztHvc2dXEu
-	KLZdjYl0gHBOe69FIdG36BUo8PIKQDlYLSn5aqy0K5tT6RR645al0eb2tGWk+LJzQG1yFv+gtqaqa
-	dONHDuNLNj/cPszFEKuGaQD6o80ed0RDpjLsbvCxFAxf7B2FCZE9SYm6gQ7GZB4hvVus7oy6vvmtO
-	n6I4YXo0/sCzKpLnTGVg==;
+	List-Owner; bh=SnAepHnX12SodHdTYBHuTPmXUej9Bj/WgBwTiLBNfg8=; b=m6NP/b/M09bv/F
+	OXcx8y5qWz+y0Y8YUoqjRJcaX2UuJb875FsR3eURtxalQKhf2IFfXzpUY3k8IFsTNW/sfCbLEhPlb
+	fW8C1rjOBQ2I6S3ZdChayVZP5yBP1sR0bGgltq0ZKr6a8KEfmb5pJOApoxg4wkOo+ohPgs/T5ojJ3
+	ZOYfmEU7W/B4w7cqf+dS7mptn9fYyep8r3nYWhFovH6MnXNrH1J6nloV0PN4l3kZsfg+FbuY2TBaU
+	iALUjD00fW1N6doXPgZyicomlo+JnJD/pM7iRA9EcN52II5x7bntK0a2BVcm30257eiOI1qCiRqTk
+	+orOhPLDCt1K39vV2E4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtaJ-00000000Jow-2eN6;
-	Thu, 08 Jan 2026 17:14:07 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vdtaR-00000000JuM-1kOO;
+	Thu, 08 Jan 2026 17:14:15 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtaI-00000000JoD-0e6C
+	id 1vdtaP-00000000Jse-0Zim
 	for linux-mtd@lists.infradead.org;
-	Thu, 08 Jan 2026 17:14:06 +0000
+	Thu, 08 Jan 2026 17:14:14 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 4C6A06012B;
+	by sea.source.kernel.org (Postfix) with ESMTP id AF05844447;
+	Thu,  8 Jan 2026 17:14:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4074CC19425;
 	Thu,  8 Jan 2026 17:14:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8029C116D0;
-	Thu,  8 Jan 2026 17:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767892445;
-	bh=r6yK8bK+kkMgdLh1w8q65yIEqjkb/IjmfMvjzt63UDI=;
+	s=k20201202; t=1767892452;
+	bh=VftDczW/RHsJtQlFSh7tMNcNMgHiKsCQqbNqeRwhe8M=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Qr7TVxvjzjLDifiDNwgbz5Utlv1xXYOFRFXz45doMG8Cdh5Klxpemaa34l6LJokhA
-	 LFa84+w6J2qISvcYOsLfUBUSL9MwYOCY+AMEM0SAde8YfqlKywdQkHZSg+Ogf9pjzQ
-	 aFpq+UOCKzyyuR2vxCOphzBHlhmhgOw3MDspuwMRqEYAJz9tNnga4+EJpK1D2ociJW
-	 SANMkPyTno9YLvlxnw/Lsx6RGruAjUhICO986WMabplDp+6TiuUuX2xPPwNcBFGQfF
-	 69HtUgtVBqbMsF7uMl1/aNC1vnXN6NRGfWYioeAlTU2AE6rPRYyHHQqJes8E1lstCt
-	 KWb4D2+xXXgCQ==
+	b=j99SvAItuEybJQBvSLRmS84TU6WfiMXcwP4088ncl0dJj+X259KHWw6MyQaVA6kzG
+	 oPECA4FMVMlKYCaehvDpXJop8Q5F9GB6xcIpkmXdQfwEeHYkZKRbSQo/tX0X0Vod+F
+	 YwJ8wOS73tcNHPzcd/R3k0xGjyff89YBIGM88fZxZiGqpb1rNl4GH4X0MfrQbUz5X/
+	 deIlelXnp2vAuxtcCCSrk8BdHKA7r5LVJ4LthrAmFJ6fKW4CsejZe4y3BBnBYmqLEo
+	 B5FNDOVl5khkljZAkIaZIcl517lxY8NW1YoU4ftIV+/iXX2kw7jQlQAxoYIM0yzy85
+	 WjVk+AL/vpoKw==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 08 Jan 2026 12:12:58 -0500
-Subject: [PATCH 03/24] btrfs: add setlease file operation
+Date: Thu, 08 Jan 2026 12:12:59 -0500
+Subject: [PATCH 04/24] erofs: add setlease file operation
 MIME-Version: 1.0
-Message-Id: <20260108-setlease-6-20-v1-3-ea4dec9b67fa@kernel.org>
+Message-Id: <20260108-setlease-6-20-v1-4-ea4dec9b67fa@kernel.org>
 References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
 In-Reply-To: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
 To: Luis de Bethencourt <luisbg@kernel.org>, 
@@ -103,22 +103,25 @@ Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
  Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1874; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=r6yK8bK+kkMgdLh1w8q65yIEqjkb/IjmfMvjzt63UDI=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpX+W59KQJzkynnqRywsxn8vf6E7WkYLaalZHcn
- hqXE1iesQmJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaV/luQAKCRAADmhBGVaC
- FaJdD/4l9fv7mklHKjKkjTHpTVCuJPpIKuHhUtEoAqSprUNpwgQfDYLR6f54jMEQA9jS1LBj+Dy
- QyeVCVp55DoP+wWIXayOwD+klKX2cjtKHEwQH5WNOE+citJTM6zNMzIBsDuWMPletL+BrqbrBxR
- HQDrOyGoBCNw3T1Y3bJodEqe17RMpbrM5KQW+uFl//FLm8KIwd3cLbRjHZuex9cILVJooiBg9l7
- hUE52fcXEYxfjxHGR+zyVf6kogJj4y74vQx4i8b8B2Ji0IdoaBOVwiZpxIuDdQRGx00T4PkN5pE
- bI0JaolvkVkIP58mQT0gLpRrctVhJ7Fm0DRISz+BmhTcfaaeTwcgO2m35EL5Df2ExhjnuyRvPIR
- 79MM+Z+RIyV4mUCgXq2Ew49Qxpsd50AoG1moCPbZ/o5bQwqkL1OW1HDV8svhp7gU1n4Pmsf5he6
- U8/NR75X8fqtFciebf0UxTzmneWSw0zcIw2QKAsBUmQukDXYH/gJYnWSF9UAj/JrIC3fNunArUq
- llAH6702SuQcGU6kAt4IxAZNCFIjdu1g5UiVgOaxJcCh3emmvOFhVMzCWpAuGiOFbdbwEed/7pH
- iNMhOMoloJOXkThvtx3egvJavKsX+vhYLTgSnhPuQ83dhuILLuHFQaySEbcaXOac64sdVpwJc3b
- Yr+dTsCBfX540XQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1708; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=VftDczW/RHsJtQlFSh7tMNcNMgHiKsCQqbNqeRwhe8M=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpX+W5D39raWTfk9/NpmK8oPAiQK6j/fZNQTiK0
+ mXiB1deOuGJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaV/luQAKCRAADmhBGVaC
+ FbTRD/9xYLwsFFCpMX2yKeF7C19Mw/69euFVil3d3rGhY6NZgqpWQsWs+JPk6AGiudh1ympKi5w
+ KDV+WfIgFEJmQLVRx4btFU2+9X7RuD8uopNt2+hBQ9T04zGegtApypSIVLnGs1+r9L4qJl3HyIS
+ uFJEFRe2WEdQMdw75UuDMHDhTG4JauCXcBvhHzNkUJ929nJ2ydpltqDWjFB+0DpLJ7azASrMhyb
+ krcESpUqm0OlIHWMdMjbnGjzyPJCqQ8hCoF3VzawdQKOgREhTJjubThh1DEd0yHIp+IHGoZ0wc8
+ +u56IZBx9vRkFGSfFplpt859W+e30+UTK6xtuPKcctDAT3jzkQUPcm9U3vHJfCajQkRp1BmCXBS
+ WsSqysXEnUswTRGrUYEOXJoyumVWdylrjPfxGAWgI8dFJGz9hlkCzbMkX+HLFcvprO1JUqkpN5F
+ QPlVLf+TnsluOr22vHgTLRlGSJ9nipt+5o0qpPTapb+lL0rrnjQYmW66aW7Vo13m0r6awIecRPL
+ Ce4ct5XpiPQhWFVrIoB2IgvkQ5jt9+F4VUtIRTXttAYxGyrYjRT/5UwkyQmJgSuGZePp/Ui3unG
+ 0fryUPfSGOknDKNo1Rkpn48p7/uO4AnZ/pW355qfgq3htYkBkKrNbtxG6WL/qG03/mNBF7dnRxn
+ F798ZpjLR9Wc1wg==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260108_091413_317986_8513A342 
+X-CRM114-Status: GOOD (  11.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -135,59 +138,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the setlease file_operation to btrfs_file_operations and
-btrfs_dir_file_operations, pointing to generic_setlease.  A future
-patch will change the default behavior to reject lease attempts with
--EINVAL when there is no setlease file operation defined. Add
-generic_setlease to retain the ability to set leases on this
-filesystem.
+Add the setlease file_operation to erofs_file_fops and erofs_dir_fops,
+pointing to generic_setlease.  A future patch will change the default
+behavior to reject lease attempts with -EINVAL when there is no
+setlease file operation defined. Add generic_setlease to retain the
+ability to set leases on this filesystem.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/btrfs/file.c  | 2 ++
- fs/btrfs/inode.c | 2 ++
+ fs/erofs/data.c | 2 ++
+ fs/erofs/dir.c  | 2 ++
  2 files changed, 4 insertions(+)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 1abc7ed2990e0e956dc0550cba8b0cfc90109e65..aca2b541e72df3638bdc6cd7551a018ae959039b 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -10,6 +10,7 @@
- #include <linux/string.h>
- #include <linux/backing-dev.h>
- #include <linux/falloc.h>
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index bb13c4cb845563492a616fc000910112b92df555..e2941b4715616528ddede2dbb9c0744db5d11be5 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2021, Alibaba Cloud
+  */
+ #include "internal.h"
 +#include <linux/filelock.h>
- #include <linux/writeback.h>
- #include <linux/compat.h>
- #include <linux/slab.h>
-@@ -3867,6 +3868,7 @@ const struct file_operations btrfs_file_operations = {
- 	.remap_file_range = btrfs_remap_file_range,
- 	.uring_cmd	= btrfs_uring_cmd,
- 	.fop_flags	= FOP_BUFFER_RASYNC | FOP_BUFFER_WASYNC,
+ #include <linux/sched/mm.h>
+ #include <trace/events/erofs.h>
+ 
+@@ -483,4 +484,5 @@ const struct file_operations erofs_file_fops = {
+ 	.mmap_prepare	= erofs_file_mmap_prepare,
+ 	.get_unmapped_area = thp_get_unmapped_area,
+ 	.splice_read	= filemap_splice_read,
 +	.setlease	= generic_setlease,
  };
- 
- int btrfs_fdatawrite_range(struct btrfs_inode *inode, loff_t start, loff_t end)
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 599c03a1c5737ee4129c0bc1743b345847fa5dfc..5d1bdc862ed2711e349af085512f3bda6cb63278 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8,6 +8,7 @@
- #include <linux/bio.h>
- #include <linux/blk-cgroup.h>
- #include <linux/file.h>
+diff --git a/fs/erofs/dir.c b/fs/erofs/dir.c
+index 32b4f5aa60c986dc2acf209960ff6df4077c7aa1..e5132575b9d3ef958a8acbe80bd0d2ddbd865135 100644
+--- a/fs/erofs/dir.c
++++ b/fs/erofs/dir.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2022, Alibaba Cloud
+  */
+ #include "internal.h"
 +#include <linux/filelock.h>
- #include <linux/fs.h>
- #include <linux/fs_struct.h>
- #include <linux/pagemap.h>
-@@ -10573,6 +10574,7 @@ static const struct file_operations btrfs_dir_file_operations = {
+ 
+ static int erofs_fill_dentries(struct inode *dir, struct dir_context *ctx,
+ 			       void *dentry_blk, struct erofs_dirent *de,
+@@ -127,4 +128,5 @@ const struct file_operations erofs_dir_fops = {
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl   = erofs_compat_ioctl,
  #endif
- 	.release        = btrfs_release_file,
- 	.fsync		= btrfs_sync_file,
 +	.setlease	= generic_setlease,
  };
- 
- /*
 
 -- 
 2.52.0
