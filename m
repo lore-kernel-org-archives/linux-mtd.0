@@ -4,64 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA112D185E8
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 12:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35180D1488B
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 14:19:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XcFa2awmmID+O7Uc5SFxTRw5WKfnAZCtaDPflwUlsMs=; b=cCeCr9QTh+eU4x
-	w2T8ssgdLFx43uY7PCvDUzMl7an3cK2g0R1fcCLWTuDX+qS11V9NRxTEBK6Dk+3lWZGRkhKntfWMS
-	UVvBXPECBebAJZWukPPiMoe+P2oLtGCXRQ7UX8D1Isjji8NJ21+7HAUDrBOXDCyUMZ06cId5DPc/+
-	Keq3IFmaF3irJuFKsMEtq78gczq7kwWIkwsLSLlaE/lLENzbTlGsrZBHzeLP4beBRLslKM52A7VeW
-	Tvy4De7IIgqPA/cCjNNym6NZASp6LhUHebiv5jj3Y0jOKY3lCClgj9IsbIMBA52JjGc2mqX8qBTyi
-	d8WXKA74zdjHYZe/ClkA==;
+	List-Owner; bh=CZA7G75sHGcH/kaf9JJO5OiFthKxkREyeheMvTqRJTU=; b=mwPnqYv9pxFDik
+	lOMMmaUi3a4EmIACin16dZAZOP8YhJtdxV5cH6wob5xk6U7Z1rKvHBQpF8xYzl8BBS746V2uEKY1l
+	GUDA3/DLlW3wL7YIwQMr41dI9g/GIE1VeNtnogMfKpq6oOHL5AumuLRdCP4tbYVOGrxFaxLVtoWju
+	7MV9u1wz9pe3zaG71g4FVstF7Px49QS8Q/aVNy0/++MOdGnCfSKImfq4drJ9TLxPKJ9+9sAqfffrw
+	7rvqvMQgTgwb+lm4yinygtqeoXCHRaHcRbAU/0G5FX03DYCNjTU4+ArV7zV6fA3PeOrS0TbofWxOq
+	pmoneGkR3Sit6Kzf27ew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdoud-0000000Gx6Z-08II;
-	Thu, 08 Jan 2026 12:14:47 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdouX-0000000Gx4F-2XLI
-	for linux-mtd@lists.infradead.org;
-	Thu, 08 Jan 2026 12:14:44 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 18BFD4E41FF6;
-	Thu,  8 Jan 2026 12:14:36 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id DA600606B6;
-	Thu,  8 Jan 2026 12:14:35 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 131FF103C884B;
-	Thu,  8 Jan 2026 13:14:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1767874475; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=U8AMlOAXuvdOQIU+BpPDe2HHzjRW2TslN/Gs7O4DKCc=;
-	b=lS23nRVp8TrGPyC3Ad9ZZvaZEyXpfPsimXF+OOrsl/5EBM28T8hmbsTuxZdaozezCQcioy
-	NIFa/4VADoRx8KkWboAeDB5QJiEobvsnjAid8WWb0unAVFbvuhIYrVDx+/zA4wpEjb0Fhn
-	UGeos2pDig/ihH5kF4Z2hfSbSFdtNBAMUjeoHcKUC8Av5Sq5WVUMgJQGLrVyN82OWqyGV4
-	ZEeVoEBcDw/y+xaTfu4CB2rFA4Ir8XyJ4QgzwWXNpuixvKAhIxMKPb0am13yhHvGcrkE89
-	u/ozGVBR1UF+Dd69Io96uJ5n7kDoMdJ79+oQoCk4T1yuxYBxMFgeiWwHsiQqlg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Jakub Czapiga <czapiga@google.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 1/2] mtd: spi-nor: Fix RDCR controller capability core check
-Date: Thu,  8 Jan 2026 13:14:29 +0100
-Message-ID: <20260108121430.1096844-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.51.1
+	id 1vdqra-0000000HJ9V-0cBi;
+	Thu, 08 Jan 2026 14:19:46 +0000
+Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vdqrX-0000000HJ7f-3drf;
+	Thu, 08 Jan 2026 14:19:44 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
+Subject: re-enable IOCB_NOWAIT writes to files v6
+Date: Thu,  8 Jan 2026 15:19:00 +0100
+Message-ID: <20260108141934.2052404-1-hch@lst.de>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260108_041442_221197_A45FC650 
-X-CRM114-Status: GOOD (  16.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,49 +70,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support") adds a
-controller check to make sure the core will not use CR reads on
-controllers not supporting them. The approach is valid but the fix is
-incorrect. Unfortunately, the author could not catch it, because the
-expected behavior was met. The patch indeed drops the RDCR capability,
-but it does it for all controllers!
+Hi all,
 
-The issue comes from the use of spi_nor_spimem_check_op() which is an
-internal helper dedicated to check page operations, ie. it is only used
-for page reads and page programs (despite its generic name).
+commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+always require blocking, and the modern timestamp resolution means we
+always update timestamps.  This leads to a lot of context switches from
+applications using io_uring to submit file writes, making it often worse
+than using the legacy aio code that is not using IOCB_NOWAIT.
 
-This helper looks for the biggest number of address bytes that can be
-used for a page operation and tries 4 then 3. It then calls the usual
-spi-mem helpers to do the checks. These will always fail because there
-is now an inconsistency: the address cycles are forced to 4 (then 3)
-bytes, but the bus width during the address cycles rightfully remains 0:
-impossible, the operation is invalid.
+This series allows non-blocking updates for lazytime if the file system
+supports it, and adds that support for XFS.
 
-The correct check in this case is to directly call spi_mem_supports_op()
-which doesn't messes up with the operation content.
+Changes since v5:
+ - sample ctime before calling inode_set_ctime_current
+ - fix a mild bisection hazard in fat
 
-Fixes: 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/spi-nor/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v4:
+ - replace the S_* flags with an enum indicating either access or
+   modification time updates to make the logic less fragile and to
+   fix a bug in the previous version
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index d3f8a78efd3b..1f2e312feec7 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2466,7 +2466,7 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
--		if (spi_nor_spimem_check_op(nor, &op))
-+		if (!spi_mem_supports_op(nor->spimem, &op))
- 			nor->flags |= SNOR_F_NO_READ_CR;
- 	}
- }
--- 
-2.51.1
+Changes since v3:
+ - fix was_dirty_time handling in __mark_inode_dirty for the racy flag
+   update case
+ - refactor inode_update_timestamps to make the lazytime vs blocking
+   logical more clear
+ - allow non-blocking timestamp updates for fat
 
+Changes since v2:
+ - drop patches merged upstream
+ - adjust for the inode state accesors
+ - keep a check in __writeback_single_inode instead of exercising
+   potentially undefined behavior
+ - more spelling fixes
+
+Changes since v1:
+ - more regular numbering of the S_* flags
+ - fix XFS to actually not block
+ - don't ignore the generic_update_time return value in
+   file_update_time_flags
+ - fix the sync_lazytime return value
+ - fix an out of data comment in btrfs
+ - fix a race that would update i_version before returning -EAGAIN in XFS
+
+Diffstat:
+ Documentation/filesystems/locking.rst |    2 
+ Documentation/filesystems/vfs.rst     |    6 +
+ fs/btrfs/inode.c                      |    8 +-
+ fs/fs-writeback.c                     |   33 +++++++---
+ fs/gfs2/inode.c                       |    6 +
+ fs/inode.c                            |  111 +++++++++++++++++++++-------------
+ fs/internal.h                         |    3 
+ fs/nfs/inode.c                        |    4 -
+ fs/orangefs/inode.c                   |    5 +
+ fs/overlayfs/inode.c                  |    2 
+ fs/sync.c                             |    4 -
+ fs/ubifs/file.c                       |   13 ++-
+ fs/xfs/xfs_iops.c                     |   34 +++++++++-
+ fs/xfs/xfs_super.c                    |   29 --------
+ include/linux/fs.h                    |   27 ++++++--
+ include/trace/events/writeback.h      |    6 -
+ 16 files changed, 182 insertions(+), 111 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
