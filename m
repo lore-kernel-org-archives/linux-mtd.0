@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D6ED1D480
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 16:58:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A94E9D1D483
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 16:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eKHxSZHNEPWUX2LVI22RedITSkfPAoyjMv6QuJJx4r0=; b=Kek9ncIPrDNc+I
-	dWAEfSEfsB4Y9u9H28EvBO7fo/OifmRX7yDLb2MUuSjOvWs7a7gYQKnrn1EVLeE7SYIq/t4TfloKs
-	KBo3zE8udz3lYDs1bt/Zjk/vfausbq+Dsee1De1kr3SqDcIvuoaOFX6VvTSzXSdy+RO3vO13k0BWH
-	6qVLd5JHqO0hN7bEqo2Flar8K7ldPDsH+GJ15C5g/uDPDDByCCKNr/7k3c8BClmgDwEKztZhbsQoO
-	7/PFw/M0En9Dc+nDS/Px62Bm4uS/gZ9JHIo0u8SzAKuQHwWki1F5JCxqsDqzGTV3lUwLur0p7GoaZ
-	W7CEgM6tbF2lBIc522eA==;
+	List-Owner; bh=5r0y88QPsIFRwaI0fkh7tL00IZmy4bZzYlaZZQyKVsk=; b=N3BHALduoOdOq1
+	IQSHKxwOeLaly/LmeIGbGCMLfTaiYpHYqDbo44SDvWmfusKTIz0ZG0CCP92hS7BUyX8gP2prdQS5O
+	bvY9AEEW9yxTB4jBhFd3lAG3zEvUJj6gB2hfTh7bsvB5CXM3uCU9jCHsFl0uK84HT3MV0ewUhqgBf
+	L3IpO2z/iyYHSpPtMbAdvWXzZB5486eCTvuE+0T+TwZUESEcPQ7qDb+N1ipGwOJVtk6v2i0/FDmwK
+	iBzYHfEOrIqYMj0+FYzn3/bRkOZysNlTO63cYF7X9gGFqK6pcmcHwcKbtqZ6a4Ey08sRDztCnQUbm
+	Z8V3tZFPLQDf0P0vixBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtLZ-00000000F6P-2O20;
-	Thu, 08 Jan 2026 16:58:53 +0000
+	id 1vdtLb-00000000F6a-0clc;
+	Thu, 08 Jan 2026 16:58:55 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdtLT-00000000F2z-1yuY
+	id 1vdtLU-00000000F3M-16Nr
 	for linux-mtd@lists.infradead.org;
-	Thu, 08 Jan 2026 16:58:48 +0000
+	Thu, 08 Jan 2026 16:58:52 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 627E94E42004;
-	Thu,  8 Jan 2026 16:58:44 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id D72DB4E42005;
+	Thu,  8 Jan 2026 16:58:46 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 35CA86072B;
-	Thu,  8 Jan 2026 16:58:44 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5FF53103C880B;
-	Thu,  8 Jan 2026 17:58:41 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id AB1726072B;
+	Thu,  8 Jan 2026 16:58:46 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D6CA6103C86ED;
+	Thu,  8 Jan 2026 17:58:43 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1767891523; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1767891526; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=g8a/PlagiX2Mh+RpGwzeXyISQH6TyEi6QFQhZ/6T7+o=;
-	b=Z3XQ8MxGpCox0fnOd8mSkAEiFTGG7Zwt9VOWVG/eMgs66ZDmE62SZ67bx3BNTyfeLCfX9c
-	K9hkEIU+uzb7YcqaUwctR/mcnbCIyujSQDsOPuMo+DUIOjKz3zIo8dznQvHnDVNuhqYbGz
-	y0usVYRdFadSGUBkAiz6cSXLW1in0zMKAngVo/eL7gAT4j3saLH+YkUUFqxiOogzVNpKT1
-	v1KTjSFy6IgoJK125n33Fkl3yOsW6Jj9BqKAUPIT8Z2Z+1tD16AqSTzrH2PS5vKVPtUNFD
-	RMAzXnQWeY6LzZMXW99vOWJRG4Oky3I2J3+qto2q/4MxGLtN0E0d6nRgyLRU8w==
+	bh=stZFrqO/Xzy7EKE+3DmnORMCs6+d8LeG2HLgrVddfK8=;
+	b=gqtQnL2OsdXjNBE3M9/quf5kgyFJI+wHYRhHS4X87X5BdpzOWU2QntXQxPTTfkcgMvgPaV
+	cR88U1jJxTHYyfS6poHH1RfMxWnDHfKPR6Mgm2lGDMbYg1vEiZizGk6JWHtCAhk0D40n4F
+	cpEU2DRS+obfm/uqu09+mCDv8kSIMneYX+CHCXiGquQ3Nkqd5M3OUiGw6ZIoFcl9y/Naqm
+	1HFcuTwFrGjgVrIB+rwwXqy1LQlfCyj/yo4GgfUf6L6Wv02UwcyjQVrHfd8vYcQ9nuu9AQ
+	hJi8oNaTUwn6kjzBPcaEQFcCXXrCmijUE0dpUpIb9FUK/HmrbyMlH27i5cj1Rw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 08 Jan 2026 17:57:34 +0100
-Subject: [PATCH v2 01/27] mtd: spi-nor: Drop duplicate Kconfig dependency
+Date: Thu, 08 Jan 2026 17:57:35 +0100
+Subject: [PATCH v2 02/27] mtd: spi-nor: debugfs: Fix the flags list
 MIME-Version: 1.0
-Message-Id: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-1-c462ef806130@bootlin.com>
+Message-Id: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-2-c462ef806130@bootlin.com>
 References: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-0-c462ef806130@bootlin.com>
 In-Reply-To: <20260108-winbond-v6-18-rc1-spi-nor-swp-v2-0-c462ef806130@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -63,8 +63,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260108_085847_646389_52667807 
-X-CRM114-Status: UNSURE (   9.90  )
+X-CRM114-CacheID: sfid-20260108_085848_453939_4A98FAFF 
+X-CRM114-Status: UNSURE (   8.12  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,28 +82,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I do not think the MTD dependency is needed twice. This is likely a
-duplicate coming from a former rebase when the spi-nor core got cleaned
-up a while ago. Remove the extra line.
+As mentioned above the spi_nor_option_flags enumeration in core.h, this
+list should be kept in sync with the one in the core.
 
-Fixes: b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
+Add the missing flag.
+
+Fixes: 6a42bc97ccda ("mtd: spi-nor: core: Allow specifying the byte order in Octal DTR mode")
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/spi-nor/debugfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 24cd25de2b8b..fd05a24d64a9 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig MTD_SPI_NOR
- 	tristate "SPI NOR device support"
--	depends on MTD
- 	depends on MTD && SPI_MASTER
- 	select SPI_MEM
- 	help
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index fa6956144d2e..d700e0b27182 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -28,6 +28,7 @@ static const char *const snor_f_names[] = {
+ 	SNOR_F_NAME(RWW),
+ 	SNOR_F_NAME(ECC),
+ 	SNOR_F_NAME(NO_WP),
++	SNOR_F_NAME(SWAP16),
+ };
+ #undef SNOR_F_NAME
+ 
 
 -- 
 2.51.1
