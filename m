@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50124D1488B
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 14:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D68FD0D17F
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jan 2026 14:20:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HsrboklseZnIFJfxKiKyCIfeItK1xqKqqcESr566yj4=; b=D4lwEhkEjEbL2V
-	tgDtjaDG9cpoy+rriNu+QtToeDWgoy7Tgwxd6ucSa+p5bww1wqOR3Ao4dHRt2WNmb7FMPgIhGOyVD
-	bya1lTU32sVprKid+93QyUWRHWxcy7aLoHvP5Nmr9qLp9mScTIMqXx/nRavRZEfHah9LhDAei9cxa
-	2g5Pw2MiGSPB1wwM8hnwagW5dFsOHihl2K2x74AvDGNdNvMO/fgxnyXknYjFbXEvR6kFWUcDFF293
-	gnsROzUtocyoo1dT/+8Z5wevvJseU2CPOglG/ANbes2b3jir4A5LFE/OfxisuYVqMc8t77ZsueGM7
-	R7lzqbpp3XSSSdYKCCTw==;
+	List-Owner; bh=Iv7OVUkfiNtSZFRMusypqFd9ascpg5nCjRPiR0aG6ic=; b=RSrjikL5LDhREh
+	aIN80vlkTxczq6IuZsUY8xtl/q/hNegbxsugwy/B0OspF9NN29dkD7n8RYkoAbaKh4jfTqJ28XlBr
+	rg7niGjC0QpcZITnbbtIG8vCzy8D2qEqniHbWCr3Zol4RL4y2T/11WPJee9/GPlrkjedolCypPo8N
+	xl8LsZQlgXqur9Ei6rG3kbIZxVbohwKlD/mqDUdwOaTq44eLPnA3rZcWkrNFXfcbPLYZJrEK5EOjs
+	5S0OnsZ7XRHp9M1uzOqmD8uye9nvGOkEMetLkqPqIWYmydelo2NJmyjeAhA49Fba+w2yxQ9UW+Gpg
+	0AU7rwF4/3q59ALf9+Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdqrv-0000000HJLR-36ni;
-	Thu, 08 Jan 2026 14:20:07 +0000
+	id 1vdqs8-0000000HJRb-2dl4;
+	Thu, 08 Jan 2026 14:20:20 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdqrt-0000000HJDZ-1zTq;
-	Thu, 08 Jan 2026 14:20:06 +0000
+	id 1vdqs4-0000000HJKg-2Exj;
+	Thu, 08 Jan 2026 14:20:18 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -48,11 +48,10 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	linux-unionfs@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: [PATCH 02/11] fs: allow error returns from generic_update_time
-Date: Thu,  8 Jan 2026 15:19:02 +0100
-Message-ID: <20260108141934.2052404-3-hch@lst.de>
+	linux-nfs@vger.kernel.org
+Subject: [PATCH 03/11] nfs: split nfs_update_timestamps
+Date: Thu,  8 Jan 2026 15:19:03 +0100
+Message-ID: <20260108141934.2052404-4-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260108141934.2052404-1-hch@lst.de>
 References: <20260108141934.2052404-1-hch@lst.de>
@@ -73,108 +72,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that no caller looks at the updated flags, switch generic_update_time
-to the same calling convention as the ->update_time method and return 0
-or a negative errno.
-
-This prepares for adding non-blocking timestamp updates that could return
--EAGAIN.
+The VFS paths update either the atime or ctime and mtime but never mix
+between atime and the others.  Split nfs_update_timestamps to match this
+to prepare for cleaning up the VFS interfaces.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
 Reviewed-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/gfs2/inode.c    | 3 +--
- fs/inode.c         | 4 ++--
- fs/ubifs/file.c    | 6 ++----
- fs/xfs/xfs_iops.c  | 6 ++----
- include/linux/fs.h | 2 +-
- 5 files changed, 8 insertions(+), 13 deletions(-)
+ fs/nfs/inode.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
-diff --git a/fs/gfs2/inode.c b/fs/gfs2/inode.c
-index 36618e353199..e08eb419347c 100644
---- a/fs/gfs2/inode.c
-+++ b/fs/gfs2/inode.c
-@@ -2257,8 +2257,7 @@ static int gfs2_update_time(struct inode *inode, int flags)
- 		if (error)
- 			return error;
- 	}
--	generic_update_time(inode, flags);
--	return 0;
-+	return generic_update_time(inode, flags);
+diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
+index 84049f3cd340..3be8ba7b98c5 100644
+--- a/fs/nfs/inode.c
++++ b/fs/nfs/inode.c
+@@ -669,35 +669,31 @@ static void nfs_set_timestamps_to_ts(struct inode *inode, struct iattr *attr)
+ 	NFS_I(inode)->cache_validity &= ~cache_flags;
  }
  
- static const struct inode_operations gfs2_file_iops = {
-diff --git a/fs/inode.c b/fs/inode.c
-index 07effa0cb999..7eb28dd45a5a 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -2141,7 +2141,7 @@ EXPORT_SYMBOL(inode_update_timestamps);
-  * or S_VERSION need to be updated we attempt to update all three of them. S_ATIME
-  * updates can be handled done independently of the rest.
-  *
-- * Returns a S_* mask indicating which fields were updated.
-+ * Returns a negative error value on error, else 0.
-  */
- int generic_update_time(struct inode *inode, int flags)
+-static void nfs_update_timestamps(struct inode *inode, unsigned int ia_valid)
++static void nfs_update_atime(struct inode *inode)
  {
-@@ -2153,7 +2153,7 @@ int generic_update_time(struct inode *inode, int flags)
- 	if (updated & S_VERSION)
- 		dirty_flags |= I_DIRTY_SYNC;
- 	__mark_inode_dirty(inode, dirty_flags);
--	return updated;
-+	return 0;
- }
- EXPORT_SYMBOL(generic_update_time);
+-	enum file_time_flags time_flags = 0;
+-	unsigned int cache_flags = 0;
++	inode_update_timestamps(inode, S_ATIME);
++	NFS_I(inode)->cache_validity &= ~NFS_INO_INVALID_ATIME;
++}
  
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index c3265b8804f5..ec1bb9f43acc 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1379,10 +1379,8 @@ int ubifs_update_time(struct inode *inode, int flags)
- 			.dirtied_ino_d = ALIGN(ui->data_len, 8) };
- 	int err, release;
- 
--	if (!IS_ENABLED(CONFIG_UBIFS_ATIME_SUPPORT)) {
--		generic_update_time(inode, flags);
--		return 0;
+-	if (ia_valid & ATTR_MTIME) {
+-		time_flags |= S_MTIME | S_CTIME;
+-		cache_flags |= NFS_INO_INVALID_CTIME | NFS_INO_INVALID_MTIME;
 -	}
-+	if (!IS_ENABLED(CONFIG_UBIFS_ATIME_SUPPORT))
-+		return generic_update_time(inode, flags);
+-	if (ia_valid & ATTR_ATIME) {
+-		time_flags |= S_ATIME;
+-		cache_flags |= NFS_INO_INVALID_ATIME;
+-	}
+-	inode_update_timestamps(inode, time_flags);
+-	NFS_I(inode)->cache_validity &= ~cache_flags;
++static void nfs_update_mtime(struct inode *inode)
++{
++	inode_update_timestamps(inode, S_MTIME | S_CTIME);
++	NFS_I(inode)->cache_validity &=
++		~(NFS_INO_INVALID_CTIME | NFS_INO_INVALID_MTIME);
+ }
  
- 	err = ubifs_budget_space(c, &req);
- 	if (err)
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index ad94fbf55014..9dedb54e3cb0 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -1197,10 +1197,8 @@ xfs_vn_update_time(
+ void nfs_update_delegated_atime(struct inode *inode)
+ {
+ 	spin_lock(&inode->i_lock);
+ 	if (nfs_have_delegated_atime(inode))
+-		nfs_update_timestamps(inode, ATTR_ATIME);
++		nfs_update_atime(inode);
+ 	spin_unlock(&inode->i_lock);
+ }
  
- 	if (inode->i_sb->s_flags & SB_LAZYTIME) {
- 		if (!((flags & S_VERSION) &&
--		      inode_maybe_inc_iversion(inode, false))) {
--			generic_update_time(inode, flags);
--			return 0;
--		}
-+		      inode_maybe_inc_iversion(inode, false)))
-+			return generic_update_time(inode, flags);
+ void nfs_update_delegated_mtime_locked(struct inode *inode)
+ {
+ 	if (nfs_have_delegated_mtime(inode))
+-		nfs_update_timestamps(inode, ATTR_MTIME);
++		nfs_update_mtime(inode);
+ }
  
- 		/* Capture the iversion update that just occurred */
- 		log_flags |= XFS_ILOG_CORE;
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index ee623c16d835..fccb0a38cb74 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2399,7 +2399,7 @@ extern void ihold(struct inode * inode);
- extern void iput(struct inode *);
- void iput_not_last(struct inode *);
- int inode_update_timestamps(struct inode *inode, int flags);
--int generic_update_time(struct inode *, int);
-+int generic_update_time(struct inode *inode, int flags);
- 
- /* /sys/fs */
- extern struct kobject *fs_kobj;
+ void nfs_update_delegated_mtime(struct inode *inode)
+@@ -747,7 +743,10 @@ nfs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 						ATTR_ATIME|ATTR_ATIME_SET);
+ 			}
+ 		} else {
+-			nfs_update_timestamps(inode, attr->ia_valid);
++			if (attr->ia_valid & ATTR_MTIME)
++				nfs_update_mtime(inode);
++			if (attr->ia_valid & ATTR_ATIME)
++				nfs_update_atime(inode);
+ 			attr->ia_valid &= ~(ATTR_MTIME|ATTR_ATIME);
+ 		}
+ 		spin_unlock(&inode->i_lock);
 -- 
 2.47.3
 
