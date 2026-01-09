@@ -4,69 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F995D1A623
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jan 2026 13:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01E64D26D68
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jan 2026 15:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V9hvhq2rb01FAK3hpp15nKe3BUMP5VohhVusQpzl7yI=; b=2Mhwcmt1CTrs2k
-	2b54Ty/Z7M5OMgoHBT0GEJH2sxDRt64ItfAeH6eLx0B5hANgAy2T2kpMenStLQVuamCdQIHoSjqxv
-	m+ZaZbTLgrAowekje8FCTCcmJ6nCEKgvWHHKi2TTqchYcaqk84R8CDfTzv4YQvjPd8gWMj65nXp+c
-	401UMSi/CEpefQAHKJFujbG/KE+puvehdxzOVhQMiSKelZfmZjkjAqTHYFxywEPViXhDHy5oJvab+
-	ymNCbfpysFkqc35FnHJJzLPtm65Xy+27HEvjrZKSFV/Of4RCw/pyygysYFdlgUQFyisW57CZ3OQca
-	WrQ7y1u6CQZEsaKORTxA==;
+	List-Owner; bh=gRaSqh8RL4mIP+pHaTJYmGwx0vFbOHSIZ5atm66p2aE=; b=IE3wCzXPJazbV5
+	YoJVndi+2R21txDtM1iJNn/xl0ZvTXRLgOvkZ6OOUP6JgyLAMvoyt0diCwnd2HIKdrlOpKBcPk70t
+	tWly9/LDNVcWLHN6CSajMwqs1d9OEQ2/FNqxZLsmcuaUH6bIZSwD0iziWSo+XKL1gBTpLNoWry8IB
+	zSJt99yxZUjNuaNHpo3Ir1RH/IGoVJF1FDwLrPBFKDr7n4TX8CLxzR12g3f905rYltsG1b4iGkZAE
+	kwrEzEh4Jgu4ERqH+C5G1FF6RqZbNH0xSERdX8He720/dqoIMvoaLCLcTHd6dyaNXmfJf9a1uYw6Q
+	BhySEKxfP+wa6NM7zUZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veCsr-00000002NGQ-4Asl;
-	Fri, 09 Jan 2026 13:50:33 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1veEEH-00000002So2-0rKE;
+	Fri, 09 Jan 2026 15:16:45 +0000
+Received: from mgamail.intel.com ([192.198.163.18])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veCsm-00000002NFn-1AR7
+	id 1veEEF-00000002Snh-1W2S
 	for linux-mtd@lists.infradead.org;
-	Fri, 09 Jan 2026 13:50:30 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id ED7B74E42023;
-	Fri,  9 Jan 2026 13:50:23 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B428E606C6;
-	Fri,  9 Jan 2026 13:50:23 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EE4EA103C8329;
-	Fri,  9 Jan 2026 14:50:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1767966623; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=7zjuKf+UIxL3bVA44Jw3Yx6helDynPKRicBwZQnETMM=;
-	b=d0aTQxGsylzWCcJ5fUfL8+ZNebSEojE2M/GcU0sjfELjBB41JEP78+mhpOsqLNVRRdgqB5
-	EoucvonRbo3e914sIVvlidNUHYWsEPClnCO9pKYvAd3mnNMFW/gI1PwNLsG0mHhrJ7IfRh
-	rixwSyhKoIwZ1vHTVdICtZCC0a/RMFCfu6sILe8sAU8fMgGRlj0ikxutSud32ieKdgvPVX
-	kJSGCyhHNubMt7NDeqZfUuq3HuvwGsd0a+7F9febBhoefUyU/CUg4IRjdQpk+2tiBlhADp
-	r8fuKUqHaNiTa4wu1pcNc/YiVHiKe6MhsE3n3QflzWzvy+rSy/3r5WrAv9ta0A==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>,  "Gustavo A. R. Silva"
- <gustavoars@kernel.org>,  Alexander Usyskin <alexander.usyskin@intel.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Rodrigo Vivi <rodrigo.vivi@intel.com>,  Tomas Winkler
- <tomasw@gmail.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  linux-hardening@vger.kernel.org
+	Fri, 09 Jan 2026 15:16:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1767971803; x=1799507803;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TwCIHc4FDKyAmychWf6wK9UKfVVSINwm2NA+GwALIUQ=;
+  b=DH07fKYPH3jsPpRJz3c1wwxuLIMtfKsBw9w3/QYM/WBqvzg3Ncf43s0h
+   thQ/R8frisI6wUCMir+4n+zGL0Fz7tmq5PkFCr6/R4VG6QXgVo+64TErN
+   bkYvBu13L2ecxLGNNNn5XP0jCe/Pwr0PJ9h2qddfj/cTSDj4tswsE4VVE
+   NaQXxXge1vKvlvlfDeO6sDJVL1JfUr7WIQJRWxLDyo4YBqOdxtk/OyQkC
+   sTNotmdJHf1Eu7n8YBjm1AqJi4k7S/djrpjFAsUxNcJPE+nmx8j5Eq883
+   NevLOeaouu3reKbiEaJb7MsL4FyOya1dkTxxNN3wmF4HdEDUxMMG4Muem
+   g==;
+X-CSE-ConnectionGUID: IvB0I8ZOSf+dfkCK4y0BaQ==
+X-CSE-MsgGUID: uBMRsQyjSoWe6L4iUQJdfQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11666"; a="68553656"
+X-IronPort-AV: E=Sophos;i="6.21,214,1763452800"; 
+   d="scan'208";a="68553656"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2026 07:16:41 -0800
+X-CSE-ConnectionGUID: rAY08spDT1KBcZcWw1GZ7Q==
+X-CSE-MsgGUID: 8ZEnHRCBRnGnY0nObmfolA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,214,1763452800"; 
+   d="scan'208";a="203778588"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2026 07:16:39 -0800
+Date: Fri, 9 Jan 2026 16:16:36 +0100
+From: Raag Jadav <raag.jadav@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Alexander Usyskin <alexander.usyskin@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tomas Winkler <tomasw@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH] mtd: intel-dg: fix array-index-out-of-bounds in
  intel_dg_mtd_probe()
-In-Reply-To: <aWDNNOoYTa0Mi7LM@black.igk.intel.com> (Raag Jadav's message of
-	"Fri, 9 Jan 2026 10:41:08 +0100")
-References: <aUZFLezigzZQVt55@kspp> <aUZLNTOMgvJ8WrIy@black.igk.intel.com>
-	<0c69b711-4c88-4e64-afe7-f7de147a490b@infradead.org>
-	<aWDNNOoYTa0Mi7LM@black.igk.intel.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Fri, 09 Jan 2026 14:50:18 +0100
-Message-ID: <87a4ymyjxh.fsf@bootlin.com>
+Message-ID: <aWEb1BF786hX6gmo@black.igk.intel.com>
+References: <aUZFLezigzZQVt55@kspp>
+ <aUZLNTOMgvJ8WrIy@black.igk.intel.com>
+ <0c69b711-4c88-4e64-afe7-f7de147a490b@infradead.org>
+ <aWDNNOoYTa0Mi7LM@black.igk.intel.com>
+ <87a4ymyjxh.fsf@bootlin.com>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <87a4ymyjxh.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260109_055028_825253_022E9852 
-X-CRM114-Status: GOOD (  13.52  )
+X-CRM114-CacheID: sfid-20260109_071643_443767_7F8DEB3D 
+X-CRM114-Status: GOOD (  19.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,35 +90,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDkvMDEvMjAyNiBhdCAxMDo0MTowOCArMDEsIFJhYWcgSmFkYXYgPHJhYWcuamFkYXZAaW50
-ZWwuY29tPiB3cm90ZToKCj4gT24gV2VkLCBKYW4gMDcsIDIwMjYgYXQgMDM6MTc6NDBQTSAtMDgw
-MCwgUmFuZHkgRHVubGFwIHdyb3RlOgo+PiBIaSwKPj4gCj4+IE9uIDEyLzE5LzI1IDExOjA3IFBN
-LCBSYWFnIEphZGF2IHdyb3RlOgo+PiA+IE9uIFNhdCwgRGVjIDIwLCAyMDI1IGF0IDAzOjQxOjQ5
-UE0gKzA5MDAsIEd1c3Rhdm8gQS4gUi4gU2lsdmEgd3JvdGU6Cj4+ID4+IEZpeCB0aGUgVUJTQU46
-IGFycmF5LWluZGV4LW91dC1vZi1ib3VuZHMgaXNzdWUgYmVsb3cgYnkgdXBkYXRpbmcKPj4gPj4g
-Y291bnRlciBudm0tPm5yZWdpb25zIGJlZm9yZSB0aGUgZmlyc3QgYWNjZXNzIHRvIGZsZXhpYmxl
-LWFycmF5Cj4+ID4+IG1lbWJlciBudm0tPnJlZ2lvbnNbXS4KPj4gPj4KPj4gPj4gZnJvbSBrZXJu
-ZWwgYnVnemlsbGE6Cj4+ID4+IGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5j
-Z2k/aWQ9MjIwODIzCj4+ID4+Cj4+ID4+IERlYyAxNSAyMjowMTo1MiBvcnBoZXVzIGtlcm5lbDog
-VUJTQU46IGFycmF5LWluZGV4LW91dC1vZi1ib3VuZHMgaW4KPj4gPj4gL3Zhci90bXAvcG9ydGFn
-ZS9zeXMta2VybmVsL2dlbnRvby1rZXJuZWwtNi4xOC4xL3dvcmsvbGludXgtNi4xOC9kcml2ZXJz
-L210ZC9kZXZpY2VzL210ZF9pbnRlbF9kZy5jOjc1MDoxNQo+PiA+Pgo+PiA+PiBOb3RpY2UgdGhh
-dCB0aGlzIGZsZXhpYmxlIGFycmF5IGlzIGFubm90YXRlZCB3aXRoIHRoZSBjb3VudGVkX2J5KCkK
-Pj4gPj4gYXR0cmlidXRlLCBoZW5jZSB0aGUgY291bnRlciBtdXN0IGFsd2F5cyBiZSB1cGRhdGVk
-IGJlZm9yZSB0aGUKPj4gPj4gZmlyc3QgYWNjZXNzIHRvIHRoZSBhcnJheS4KPj4gPiAKPj4gPiBB
-bHJlYWR5IGZpeGVkWzFdLCBidXQgbm90IHN1cmUgaWYgaXQncyBsYW5kZWQgeWV0Lgo+PiA+IAo+
-PiA+IFsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1tdGQvMjAyNTExMTEtbXRkLW5y
-ZWdpb25zLXYxLTEtNjFkYjYxZTc4YzYzQGludGVsLmNvbS8KPj4gCj4+IFdoYXQncyB0aGUgc3Rh
-dHVzIG9mIHRoaXMgcGF0Y2gsIHBsZWFzZT8KPgo+IEknbSBhc3N1bWluZyBpdCdsbCBnbyB0aHJv
-dWdoIG10ZCB0cmVlPyBNaXF1ZWw/CgpJdCBzaG91bGQgaW5kZWVkLiBIb3dldmVyIG9ubHkgdGhl
-IG10ZCBsaXN0IGhhcyBiZWVuIGluY2x1ZGVkLCBzbyBpdAp3b24ndCBhcHBlYXIgaW4gIm15IiB0
-b2RvIGxpc3QuIEx1Y2FzIGNhbiB5b3UgcGxlYXNlIHJlc2VuZCwgYW5kIHVzZSBhCnRvb2wgc3Vj
-aCBhcyBiNCB0byBtYW5hZ2UgdGhlIHNlcmllcyBvciBhdCBsZWFzdCBydW4gZ2V0X21haW50YWlu
-ZXJzLnBsPwoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, Jan 09, 2026 at 02:50:18PM +0100, Miquel Raynal wrote:
+> On 09/01/2026 at 10:41:08 +01, Raag Jadav <raag.jadav@intel.com> wrote:
+> > On Wed, Jan 07, 2026 at 03:17:40PM -0800, Randy Dunlap wrote:
+> >> Hi,
+> >> 
+> >> On 12/19/25 11:07 PM, Raag Jadav wrote:
+> >> > On Sat, Dec 20, 2025 at 03:41:49PM +0900, Gustavo A. R. Silva wrote:
+> >> >> Fix the UBSAN: array-index-out-of-bounds issue below by updating
+> >> >> counter nvm->nregions before the first access to flexible-array
+> >> >> member nvm->regions[].
+> >> >>
+> >> >> from kernel bugzilla:
+> >> >> https://bugzilla.kernel.org/show_bug.cgi?id=220823
+> >> >>
+> >> >> Dec 15 22:01:52 orpheus kernel: UBSAN: array-index-out-of-bounds in
+> >> >> /var/tmp/portage/sys-kernel/gentoo-kernel-6.18.1/work/linux-6.18/drivers/mtd/devices/mtd_intel_dg.c:750:15
+> >> >>
+> >> >> Notice that this flexible array is annotated with the counted_by()
+> >> >> attribute, hence the counter must always be updated before the
+> >> >> first access to the array.
+> >> > 
+> >> > Already fixed[1], but not sure if it's landed yet.
+> >> > 
+> >> > [1] https://lore.kernel.org/linux-mtd/20251111-mtd-nregions-v1-1-61db61e78c63@intel.com/
+> >> 
+> >> What's the status of this patch, please?
+> >
+> > I'm assuming it'll go through mtd tree? Miquel?
+> 
+> It should indeed. However only the mtd list has been included, so it
+> won't appear in "my" todo list. Lucas can you please resend, and use a
+> tool such as b4 to manage the series or at least run get_maintainers.pl?
+
+Lucas is no longer with Intel. Sasha, would you be up for it?
+
+Raag
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
