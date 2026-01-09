@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DA4AD26D7A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B997D26D6F
 	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jan 2026 17:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,43 +12,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9ArRzNPt4JXsjf7sYLOEn1eLHjkwY2Nh337sA28dBRY=; b=x3uJhLPqoeYk/n
-	YQw7ijkPVRTARUFqyFQNvNw2/UuQRFJ6KrsHTl+Tul1nd9pYf0/40kxwvtil3iU7pVr0Lo8a2HBk4
-	D+31ViEKJcSmvTwzMILC12QfTZtPGvBEysFKdqxqQBOHEUACHTCC0O6Ql5O24I+eLKBOQsxJ0vw4q
-	PtosZhcgujg7qLC+clMo4wKlA0AQpz5n7QUVp7/3Ftij5FnrcnSp6cMrKr5MC7I8vSGaGGiWkLEpA
-	K53fNpY00QqFyq251cShibC+QLGF6ikD/tbsTWcQ3/w2StXKxke5vLscjU5b89BG+qVM5YocJ6Lbf
-	iwMohYZ4wdw/7/skP05w==;
+	List-Owner; bh=oouxZTfpPaucFhAX+4Vphmxp1lW2/FwOA3Wjxp/Ot+4=; b=F1z/mXX/qOjV4e
+	fKXoMij0aF//iGUo/PLU67JqWIMRDHzOcUyjtehTAhB4DFOeXmCWaIyExlqthJLOn/TxiWObEAZZy
+	1uEpPpdLE6T3o7HGwdZqVe53f7ZmencKhFuiDx7ZZhBQzb5AsmxoPqONp/A3l4OE4w0Amp1OvygE0
+	9FPPq48pL3A9OeKIcjhQA6nCEfAq9UWtpHeG25XNsAuqdWSDtJnIGpLvUwfEu7Wi0QZCShzwf4raT
+	6/v36EcRCkGfeLbmIvX8oNHmqCU5sjcUfWYysTtUU8j+NswLVEEu5G0EKlMFyx4QQViFSdSo5Dvn1
+	MVt4Bsadm0fmgUI5sKhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veG82-00000002loy-1AaN;
-	Fri, 09 Jan 2026 17:18:26 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1veG83-00000002lpT-2OJI;
+	Fri, 09 Jan 2026 17:18:27 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veG7z-00000002lma-0QXE
+	id 1veG80-00000002lmd-0JBA
 	for linux-mtd@lists.infradead.org;
-	Fri, 09 Jan 2026 17:18:24 +0000
+	Fri, 09 Jan 2026 17:18:25 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 4FB80C1F6E6;
-	Fri,  9 Jan 2026 17:17:55 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 869654E42029;
+	Fri,  9 Jan 2026 17:18:20 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 988A9606C6;
-	Fri,  9 Jan 2026 17:18:21 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 06108103C89AD;
-	Fri,  9 Jan 2026 18:18:19 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 5C00C606C6;
+	Fri,  9 Jan 2026 17:18:20 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8D19C103C89AB;
+	Fri,  9 Jan 2026 18:18:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1767979100; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1767979099; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=TdRhJU2g1aCtWJB6jVyDXMoLZUtYtJ3QCG7nSo0yd9g=;
-	b=fZkuhbynJrZvzxDpARwKOTLI3aT3fjUyhlxHsZ06G115O4FLa1GKpHCfaXHScGSyaI9wck
-	aLA61q9c2slPTNSddPoe8ODdLC4Oen3wdse/fMEAArrNSDuJxV5YUdpRCoZ5C2n6h7oVzQ
-	KEEJCox7EXLcRnorC/jUkUeFyFZ9lAOO/NFTSdfEvg0Zb3YncDOEjtAU4mqd8OL5lC+pvT
-	NuaIM87WIJwreaivgtDkddUZK9ACL4LaUo5JF5j6d7sqX2SZKNHoOCJN2oIrmcRzpU+DRB
-	5wW/hjSx3j4YNEo4JLAUmfWHwPOHF6lAAfB7k0UzYkzbGXUe9BWHBS2AyjKveg==
+	bh=9G/aUTnLmrJx/EKe3AC5h2XyiwOQM2CjA2RNxNPKj0U=;
+	b=kZLAZdgIAwwqf4/dpch+VvSRsdxmzJOwoZw/n74dUBbuRHzqQq73AtLYqXxZE9RWElkG7z
+	cuEmfLJs6HB1OxVZEY8Tgt0+XOgyEXW5KYVpWL4f4jlkZhX3NGcjiKzAeb/EUU6s9qK/LZ
+	WKF+QYKqvk8puaW2J9zUrTfEQVjLGqL+XVtKlQWaaowwTeb2+RJELxICAvojzDrIrwvYpc
+	1TC1MyITJv0iQyQ2i67SJGKf4YJ+mW8L04IckabagghPW3cIkJ0TzY3ynAhkbPc5Q2rk5B
+	CPzye2lc21wnp3qd8G1GwwpiJyeiXsyTiFB3p4dnndZ3QA4LepsrzCSwKvQdWQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 09 Jan 2026 18:18:00 +0100
-Subject: [PATCH v2 02/27] spi: spi-mem: Create a repeated address operation
+Date: Fri, 09 Jan 2026 18:17:59 +0100
+Subject: [PATCH v2 01/27] spi: spi-mem: Make the DTR command operation
+ macro more suitable
 MIME-Version: 1.0
-Message-Id: <20260109-winbond-v6-17-rc1-oddr-v2-2-1fff6a2ddb80@bootlin.com>
+Message-Id: <20260109-winbond-v6-17-rc1-oddr-v2-1-1fff6a2ddb80@bootlin.com>
 References: <20260109-winbond-v6-17-rc1-oddr-v2-0-1fff6a2ddb80@bootlin.com>
 In-Reply-To: <20260109-winbond-v6-17-rc1-oddr-v2-0-1fff6a2ddb80@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -62,9 +63,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260109_091823_284038_F5DD4D79 
-X-CRM114-Status: UNSURE (   8.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260109_091824_273010_5F458F02 
+X-CRM114-Status: GOOD (  10.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,37 +81,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In octal DTR mode addresses may either be long enough to cover at least
-two bytes (in which case the existing macro works), or otherwise for
-single byte addresses, the byte must also be duplicated and sent twice:
-on each front of the clock.
+In order to introduce DTR support in SPI NAND, a number of macros had to
+be created in the spi-mem layer. One of them remained unused at this
+point, SPI_MEM_DTR_OP_CMD. Being in the process of introducing octal DTR
+support now, experience shows that as-is the macro is not useful. In
+order to be really useful in octal DTR mode, the command opcode (one
+byte) must always be transmitted on the 8 data lines on both the rising
+and falling edge of the clock. Align the macro with the real needs by
+duplicating the opcode in the buffer and doubling its size.
 
-Create a macro for this common case.
-
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/spi/spi-mem.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/spi/spi-mem.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 81c9c7e793b6..e4db0924898c 100644
+index 82390712794c..81c9c7e793b6 100644
 --- a/include/linux/spi/spi-mem.h
 +++ b/include/linux/spi/spi-mem.h
-@@ -43,6 +43,14 @@
- 		.dtr = true,					\
+@@ -20,10 +20,10 @@
+ 		.opcode = __opcode,				\
  	}
  
-+#define SPI_MEM_DTR_OP_RPT_ADDR(__val, __buswidth)		\
-+	{							\
+-#define SPI_MEM_DTR_OP_CMD(__opcode, __buswidth)		\
++#define SPI_MEM_DTR_OP_RPT_CMD(__opcode, __buswidth)		\
+ 	{							\
+-		.nbytes = 1,					\
+-		.opcode = __opcode,				\
 +		.nbytes = 2,					\
-+		.val = __val | __val << 8,			\
-+		.buswidth = __buswidth,				\
-+		.dtr = true,					\
-+	}
-+
- #define SPI_MEM_OP_NO_ADDR	{ }
- 
- #define SPI_MEM_OP_DUMMY(__nbytes, __buswidth)			\
++		.opcode = __opcode | __opcode << 8,		\
+ 		.buswidth = __buswidth,				\
+ 		.dtr = true,					\
+ 	}
 
 -- 
 2.51.1
