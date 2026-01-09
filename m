@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5267CD232EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jan 2026 08:56:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1E45D232F8
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jan 2026 08:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QacS7sOVW6K7vmZynPsm83CCPX+gPn2XyD819TkMiPA=; b=kOpDS/bCC9naAt
-	d8xBsn7g37lSjKxKeneFE+Znk9VAO9qwgjGCZCg1blBLfKT2R1qE+QfNaOVxETCOMn2Qg8s2sVGze
-	X6dJffTziZGtRb5EyxVor3ifb4MGmTYR/ujPQYp8XvNLIBbqdbJZPPh59KWV8Rr82/MG9mALJJER+
-	2qkP6noLVNH/I72FkjX8EyxOlgJcLFfYrUPLYvJtXN7WdIaOcYr/8dJqUkOdf/1DKqkYkCJqaC0i8
-	PlVGJAgHR27bLkit2NhY8BIw8Mad2SxHcU6G0Pk+YdGpGTWAwnEEyedEB5zFZERX6xr+/vEy+BIPh
-	WyYjVaPUmzRZFVmS719Q==;
+	List-Owner; bh=6Ea/K6SWrJymyHefFMpfw+vieR6n4fYgeAbeOOs8HHM=; b=t2svJgV2PFfVyg
+	0+phfw0FtiD1PA8YXa8gypZBctcPjNkQV5EGEDZfqAN19wCqopY9ihbdIX6hoAZOQOedzJMstjyN1
+	xheDxLi9xBZ2ys7Bu1v8mwcAXrDezVfeQrRmU44TQQkYigcwSfgqnczn3fWqtYsm/+8H+GLkiCwJa
+	p8NnmXYqfzC4r/tGvnccKWQRjZ/187fka5HGiBDH0b9hIfMVB6ZInKYpIL4u3+qilP27CSGiyBbe8
+	IcteyYKKXZzOif2aunjrqitLgDn5mremkcNnEb0HuiKcdcyBoO3wzJsz2TDA9vzzEgs2hBiB0HrUT
+	zrla3/o3sKRpoS1fvXuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ve8Ie-00000001wnt-3Ctc;
-	Fri, 09 Jan 2026 08:56:52 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1ve8K3-00000001wuU-1ELS;
+	Fri, 09 Jan 2026 08:58:19 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ve8Ic-00000001wn9-34RL
+	id 1ve8Jz-00000001wu0-2tmk
 	for linux-mtd@lists.infradead.org;
-	Fri, 09 Jan 2026 08:56:51 +0000
+	Fri, 09 Jan 2026 08:58:17 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 25F5D40550;
-	Fri,  9 Jan 2026 08:56:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77B0BC4CEF7;
-	Fri,  9 Jan 2026 08:56:48 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id F22BD41B34;
+	Fri,  9 Jan 2026 08:58:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52239C16AAE;
+	Fri,  9 Jan 2026 08:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767949010;
-	bh=wyApNeKzNR8bAWt1nSZg/uwaAH7GLDy3BTDew/IwPJU=;
+	s=k20201202; t=1767949094;
+	bh=ojRtnWmofiQARBjo7qW80usOLanqMK69sII42EyQ+c8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RGGQXVZhDKTVj6dkXaQRyXSgA39RMuvlB/5kD++1j+l98uNsRGYS6I9UwJlOe1fXs
-	 WePrAu1DVbmpDP3w7JCJKBrbJaYGwgOSmRANbFfiJgTYTHMkCcB3tAR5EkJaZ6gsvI
-	 KjZxVbZehBoY8/Mx8pSedNbkfu1iSaaVpTMGRVahllSvwOBQhAjMkqBwvCjg2HxFfY
-	 Sgqxl+qeSZiKe2c1vOGDK4WHD6x6IZQTJRWBD8wvxwmn8XwDRZcxeoeljoJwgWEeEI
-	 YfrucDPAytxiZozzuPT9yeBEDWGP7J58vjx7y2ybF8NSzjJc1FC0IeXal+O2SK2l9w
-	 RvNd0d3fVZJug==
-Date: Fri, 9 Jan 2026 09:56:46 +0100
+	b=Nb0ayqB/SCXA98L61KR3yBuhxUIb5T3KqLoO9s1MORr+OPktlhNuvICzGLOC7RNJy
+	 F6Mmi6hEisoKXaZXsXVEGq46+lPrjwncQfvVVajBz2FxVRki4h4tVdAd4xwiGkLiDu
+	 6dcK3LmWBm3bguWgXvIKRbhGoVY8hGZHaztObxn8q638ywiikcnw993nvWpmXXxCk/
+	 U+zrptLJ0zUnT+bzAdNcrstJ+tUeC9cwNoSQbNWYZFFK3aznWhAmYIvWNE3Azv2HwP
+	 4krcHSEvQdt+SfcPvPt8vHgI0IfrLvwkaZwAZitTOAzormvp0N+uOttVJWIHabvWG7
+	 Em8XymrfSgC1Q==
+Date: Fri, 9 Jan 2026 09:58:12 +0100
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: "Rob Herring (Arm)" <robh@kernel.org>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -55,17 +55,18 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Marcus Folkesson <marcus.folkesson@gmail.com>, Tony Lindgren <tony@atomide.com>, 
 	Roger Quadros <rogerq@kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org, 
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: Re: [PATCH 01/10] dt-bindings: mtd: brcm,brcmnand: Drop
- "brcm,brcmnand" compatible for iProc
-Message-ID: <20260109-enthusiastic-nickel-mouse-c8d1ea@quoll>
+Subject: Re: [PATCH 02/10] dt-bindings: mtd: fixed-partitions: Move
+ "compression" to partition node
+Message-ID: <20260109-didactic-knowing-buffalo-528062@quoll>
 References: <20260108-dt-mtd-partitions-v1-0-124a53ce6279@kernel.org>
- <20260108-dt-mtd-partitions-v1-1-124a53ce6279@kernel.org>
+ <20260108-dt-mtd-partitions-v1-2-124a53ce6279@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260108-dt-mtd-partitions-v1-1-124a53ce6279@kernel.org>
+In-Reply-To: <20260108-dt-mtd-partitions-v1-2-124a53ce6279@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260109_005650_812359_F21CA77F 
-X-CRM114-Status: GOOD (  10.92  )
+X-CRM114-CacheID: sfid-20260109_005816_555713_49F1DC61 
+X-CRM114-Status: UNSURE (   9.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,15 +83,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 08, 2026 at 11:53:10AM -0600, Rob Herring (Arm) wrote:
-> Some users of "brcm,nand-iproc" include "brcm,brcmnand" and some don't.
-> The "brcm,brcmnand" compatible is not useful for iProc systems as
-> there's a separate driver for iProc. So drop it as a fallback.
+On Thu, Jan 08, 2026 at 11:53:11AM -0600, Rob Herring (Arm) wrote:
+> The "compression" property is defined in the wrong place as it applies
+> to individual partitions nodes, not all nodes.
 > 
+> Fixes: 8baba8d52ff5 ("dt-bindings: mtd: fixed-partitions: Add compression property")
 > Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 > ---
->  Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml | 1 -
->  1 file changed, 1 deletion(-)
+>  .../bindings/mtd/partitions/fixed-partitions.yaml      | 18 ------------------
+>  .../devicetree/bindings/mtd/partitions/partition.yaml  | 18 ++++++++++++++++++
+>  2 files changed, 18 insertions(+), 18 deletions(-)
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 
