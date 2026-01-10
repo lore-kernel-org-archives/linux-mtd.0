@@ -4,107 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A974D277CA
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Jan 2026 01:48:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 980E7D277C1
+	for <linux-mtd@archiver.kernel.org>; Sat, 10 Jan 2026 15:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:Cc:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9a762X7HzLsOqQaR6ceY7d3cRidj0IsEuIvDmRKLHlE=; b=oN23czhPdht2xE
-	YNJep7J0CkgIns4XDP8v3aSjEYWXbk40OC6BOx1s09rHBCLC/YlVrr1I8NojY86SQwcEIPoBRQL+Z
-	4ds9TF33taVbdkpLFwiUFeGhddQzGUF/J6CpRZMGZdYEGNt2Ry6Yk/bnDt9HlxA5sxAsJ+oEqO3M6
-	5ZWxCYA7byMJMo9G8HbC2FKtyKvjAekJVKbl+6dNxTfgf0P08L9VXzeTOhTJmX/397CzBRCg9D3v9
-	DeDRGSzGwKOjekpaJ9tM0OrSGoFlAVIQy44Wk/I0FnoegTPs7U+T2t1dYxReb2224bCMyeu8hAo30
-	8FjtU4yzj2FhlQYqIAtw==;
+	List-Owner; bh=M38NUikAEn6G1v070BrQzFluMtzlUVNVSf5JB3BjqkQ=; b=Ggv9dLLQ9n18hv
+	LAGaWQN7PVvphpY63INLt8NrVMaO70rHmk0BUtaMh0QgYUJQom8HC7juUJs5EmGxoH+Jl7Huw4cm9
+	qkYB6yy3H/e7XsuOBjvBjM8wbREL2qen5jqzEX+VE29GDe8zzFmSPcZVjgvlMrWgU0a9xgQ/4Huwl
+	vr535fro49ajLBXL9iMINu6L1z6EFGiAZUR0w5t+1fh+yILlzEtC3wN1lIT1WtclDIMN+b5jFF5iV
+	XdH62mY9KFKDzS6lYuyMwycah9A3DiQ64A4OaryrncGEmhpaYocwOzlS5agxsCYAf21g3/ZyqeNVT
+	GEAWP3zPPF80rvi9lWGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veO5E-00000003Als-32ZI;
-	Sat, 10 Jan 2026 01:48:04 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vebLq-00000003X7i-3oTT;
+	Sat, 10 Jan 2026 15:58:06 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veO5C-00000003AlU-29QI
+	id 1vebLm-00000003X72-2FX1
 	for linux-mtd@lists.infradead.org;
-	Sat, 10 Jan 2026 01:48:03 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1AC574021D;
-	Sat, 10 Jan 2026 01:48:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AAB1C16AAE;
-	Sat, 10 Jan 2026 01:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768009682;
-	bh=cdF01HTymcjwXfQS8AcBirvW01pDXmvEycM3L47DM38=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=Fu7FxrURqv63o/6rCcdW5OUCW4q5tJDwdMX16lkstwj96Y3ue96Q6p+PXYcAkBSTE
-	 UuBIQcMoCb8UBhZ3VgYGY9Hs+mposZy8O/TAd1t9B2FHXb83g+J13cZy/S+COvLI7A
-	 AVzdxtl+7sZ+ARe92YM2Pq5SJrqPzbyS3fbZcI0XyVKr6eLq08Q3Rx/Lu5Az1QejVf
-	 c5L1AD5mIN6/tM9/vPJ6O4DOb+2koTVlkEeccrf23n1J/Asfg2W7yZt4cZtExuiJ/F
-	 dREajCpoYlb46NKuspiGJYA2YFWhQ/LnSHS5B/M4V94u/4Hn/t/pnkaQiawh8m0Fnu
-	 nh/QGL+jmgSBA==
-Message-ID: <772e9b7d-6d83-4495-864d-f506211a9d62@kernel.org>
-Date: Sat, 10 Jan 2026 09:47:58 +0800
+	Sat, 10 Jan 2026 15:58:03 +0000
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-47d5e021a53so38186835e9.3
+        for <linux-mtd@lists.infradead.org>; Sat, 10 Jan 2026 07:58:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1768060680; x=1768665480; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MstKQXEBKQFl1f23eAMncxqsqWPHstHgdU9Q+t8Q39Y=;
+        b=ae3tTKn3W4GUjGXmNNwYpxhhZEfSwo8c7dC69ImtYlvidL2Q1FawyIZC/L6KJxWvMx
+         nHRuMqghNmJsYQWzTIH6IHQIDq55nSJvWJiDmJXMIvpm2cTsHcJ3uK3tVmnrTpA3Hr6k
+         gF+AFTBszuQLoICKgCx/Cl6089Kd4bRP7OK6mpuULheoDR9HvbWy9MlXQzQeNU0Lhx4+
+         biA5MjUFmlHxNcbjoi3+JPX64p49u997ifZZ7Ql2yQOBqTQDx91SL4YKHFE3BUR6GR5q
+         HMv0ZCS2s9nNK1dDF+FsmEcM+rUixmacbAxZBOJ0+IluJ/YQY2v46xXhgthjLjbxOPgN
+         wvDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768060680; x=1768665480;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MstKQXEBKQFl1f23eAMncxqsqWPHstHgdU9Q+t8Q39Y=;
+        b=dLDDaqP1Uc1EKw6RKcMdO53D92zci28dX4lXlBD5UHxbMBR1cGpcBFgYzg5diJrthy
+         Cm+cWkbEjgCJR7utfje2qc7R5EfESpMc152q0ZzONfyl2VCtALw6roL4ztNR9n2igQLy
+         indFmoZTM0s2Ihmz7dKOqVaKKRgo+2UrJrdM2Pk2x2muc+3vqZBMWuOhQ4aGryYxosHm
+         cUy0I2RYco56bF5SPaeBCHutNH30i7tzBYdRZPyhxqtlNDQopBqgSW3Ey2FklGEouKVa
+         YJoygcMkL50OGd+EnC8YBOe17no2a7gsbhjr6zt6DLX44Zd03pR8l8g/FV3TPBFIM0Yj
+         UDBw==
+X-Gm-Message-State: AOJu0Yyt+xScyQodURrJI9P9AhyfDCTpeAT0hrOO2TB8gdAZnq40waSu
+	XYRrGplbRsNLtoH9ysl7sMXSQCHDd7WjVAKJNmJTW85csz+M4Aqm+I/w+RfOECiRWHs=
+X-Gm-Gg: AY/fxX6+qmqR6Pmflr+dr07Ux93SSVsMtSW0eaZaWbF4vfX4lWTYYEVXMa+/WmjC5c1
+	BoRjb/Hq4XWtzqOG1mIJBn2nnRAALoaQk3XNoJi71BT46N2D1zoV98I2ekGTdP+tt9EKTjrh+Mi
+	hcwkT7INPXBas1h9Ln0alhVZi0clnY+NPJJ+euQJf4e98g3+kyugbEcD+hLzqEyFm8VTUUkZmY7
+	waMCdhkX2NO3Godt2ETBNByjXAF15/bKALiyO76VnyXYmIzofEGM7NKRFwbSU0mF04RZwJ2RYqn
+	2n4VHpQJ+M1hTUDjfmyxlgOMoZK1I81x+FSAFHmS3W0nOQ6JRBtK2Z1oZCUX3X/CjqY+sd59jUB
+	Tkk9uP/jmral5rQND6x248E5aa0H+IwkteizSuQTmOd+UAexq9uKlQ0dMI3rnzUWiS43kvUyTtj
+	1rfy8TY1x+tcqBo3cMcA==
+X-Google-Smtp-Source: AGHT+IFYcunSwtyzYzP/GgN+bi6QmSaJiBJZBLYMQbalcyroaWLcgspATNjy9vqQEsUZ4z3Uv8byVA==
+X-Received: by 2002:a05:600c:4447:b0:477:3e0b:c0e3 with SMTP id 5b1f17b1804b1-47d84b3b8b9mr141151465e9.32.1768060680374;
+        Sat, 10 Jan 2026 07:58:00 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.31])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d7f41eb3bsm273462685e9.7.2026.01.10.07.57.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Jan 2026 07:57:59 -0800 (PST)
+Message-ID: <45802d15-e094-4033-8810-a19ea5a501be@tuxon.dev>
+Date: Sat, 10 Jan 2026 17:57:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: chao@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
- ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
- devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-mm@kvack.org, gfs2@lists.linux.dev,
- linux-doc@vger.kernel.org, v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org
-Subject: Re: [PATCH 08/24] f2fs: add setlease file operation
-To: Jeff Layton <jlayton@kernel.org>, Luis de Bethencourt
- <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>,
- Nicolas Pitre <nico@fluxnic.net>, Christoph Hellwig <hch@infradead.org>,
- Jan Kara <jack@suse.cz>, Anders Larsen <al@alarsen.net>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, David Sterba <dsterba@suse.com>,
- Chris Mason <clm@fb.com>, Gao Xiang <xiang@kernel.org>,
- Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
- Sandeep Dhavale <dhavale@google.com>, Hongbo Li <lihongbo22@huawei.com>,
- Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>,
- Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- Dave Kleikamp <shaggy@kernel.org>,
- Ryusuke Konishi <konishi.ryusuke@gmail.com>,
- Viacheslav Dubeyko <slava@dubeyko.com>,
- Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
- Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
- Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall
- <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>,
- Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>,
- Phillip Lougher <phillip@squashfs.org.uk>, Carlos Maiolino <cem@kernel.org>,
- Hugh Dickins <hughd@google.com>, Baolin Wang
- <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>,
- Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>,
- Yuezhang Mo <yuezhang.mo@sony.com>, Chuck Lever <chuck.lever@oracle.com>,
- Alexander Aring <alex.aring@gmail.com>,
- Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
- <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
- Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li
- <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
- Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
- Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>,
- Ronnie Sahlberg <ronniesahlberg@gmail.com>,
- Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
- Bharath SM <bharathsm@microsoft.com>, Hans de Goede <hansg@kernel.org>
-References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
- <20260108-setlease-6-20-v1-8-ea4dec9b67fa@kernel.org>
+Subject: Re: [PATCH v3 0/3] at91: Remove of_platform_default_populate() calls
+To: "Rob Herring (Arm)" <robh@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Russell King <linux@armlinux.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20260105-at91-probe-v3-0-594013ff2965@kernel.org>
 Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20260108-setlease-6-20-v1-8-ea4dec9b67fa@kernel.org>
+From: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20260105-at91-probe-v3-0-594013ff2965@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260109_174802_598899_D0C62934 
-X-CRM114-Status: UNSURE (   8.88  )
+X-CRM114-CacheID: sfid-20260110_075802_608514_16780AFB 
+X-CRM114-Status: UNSURE (   5.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -122,18 +107,14 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/9/2026 1:13 AM, Jeff Layton wrote:
-> Add the setlease file_operation to f2fs_file_operations and
-> f2fs_dir_operations, pointing to generic_setlease.  A future patch will
-> change the default behavior to reject lease attempts with -EINVAL when
-> there is no setlease file operation defined. Add generic_setlease to
-> retain the ability to set leases on this filesystem.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Reviewed-by: Chao Yu <chao@kernel.org>
 
-Thanks,
+On 1/5/26 23:06, Rob Herring (Arm) wrote:
+> Rob Herring (Arm) (3):
+>        ARM: at91: Move PM init functions to .init_late hook
+>        ARM: at91: remove unnecessary of_platform_default_populate calls
+
+Applied to at91-soc, thanks!
 
 ______________________________________________________
 Linux MTD discussion mailing list
