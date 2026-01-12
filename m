@@ -4,80 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5EEEC9EC88
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jan 2026 13:02:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEC70C9EC8B
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jan 2026 13:22:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=up0Okc+WYZb4XqkApLUdrl1VEWBdqCIoVD83RpPrz8c=; b=LEpSoygpwRygCQ
-	tYdp/xyeEp2MsvR9Jg6w4RCnBkvSD+fUVZITWTF+HSE9W2gRLtCTp5waBIdv6M2NvFM1SeojiMSWT
-	uBPcaImonGRMO76kGbK+8cWWJTW7c5bV1tVqJmjVmA+dFDllxgNPH76PuuDtLH1wUpzzZpCM7AGRT
-	bWLWuKjpK6mKv02LGkx3PpRnvo05cnZRR5SWa4zYDOEYO/lqQDxAgEQs9nQhUR0Z8lqQOAUvQOg/P
-	RhKt0Qz67S4GxfBPkR+v/3/Eb6i+mwYacmEFfElfHIalaETJrdB/CfeE4a160NF+UslrigNx+mlLQ
-	QhLHxNIjEDSao4jhL2kw==;
+	List-Owner; bh=m3gsWnO6Rm5liigBPD2CIEKVOIoriQSN/G/OFTz2liM=; b=FndG5uLa9PWEaE
+	wSL6rDBfFPPohunOnuNyZ8wSS4+L18IPcOvCAi3D3c1FdWsaws6yu+LsomWPzOTFToZL02FzYv1IU
+	8zN8aPOfgF2NF/SfMH9+QbmgByawqvr9ROXxMXWNp7oVVWntEKHxgcoEzbcUfCprqV1amvPs3QpEC
+	hX1hlG2JpnA89xoAUR+yTi7gaaBBvreWbHchvd6pc4RfWnRCe27KBMsZqR46UkcYwaoaFGu6GV+Iw
+	fxWYYxLyk1w7cjwXzL5GaqCZZnHZYABluOLAmy/yutAIZOTlQLA/jM4RTBGjCYSy4KaPE8Aci/2NV
+	hgVIFNlasacPv3QEzsHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfHYl-00000005MxT-3z36;
-	Mon, 12 Jan 2026 13:02:15 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vfHsC-00000005OmF-3KyP;
+	Mon, 12 Jan 2026 13:22:20 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfHYj-00000005Mwb-0Ca8
+	id 1vfHsA-00000005Olw-3vcX
 	for linux-mtd@lists.infradead.org;
-	Mon, 12 Jan 2026 13:02:14 +0000
+	Mon, 12 Jan 2026 13:22:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1CD7B42B00;
-	Mon, 12 Jan 2026 13:02:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34EF4C16AAE;
-	Mon, 12 Jan 2026 13:02:07 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id F3C7A6013A;
+	Mon, 12 Jan 2026 13:22:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D36AC19422;
+	Mon, 12 Jan 2026 13:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768222932;
-	bh=RIH5DGw9iaODSe+GboFTs0O7c0cEBRdRfN8567Qvz9A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GuBawYgiub2dv2qsF9RKZVhe0V/aSnkEu4nPJWorZt+trDE7QgUWV0DL+v3F9lYFb
-	 S8jkjZescwZ86TegZq0zHtZhaq9OiP/XT4Ek5oC6djgknJE1zX7QEA/iqpuP2EIHYd
-	 i/AUasa7Z7UImS/J0tHpsy/U9HlOS5XOAxCNzfi5lx8vhyf2Wb4IsdXz0HYl/2ybgd
-	 zyMbLaIzdD+bTqh0IYPV9h+8sw3TKlpbpGyacEvIK+RA3MswzE5pZ8VVVdUD7aZwhB
-	 Xj9stBjtg4cBkuHHRQP3fuSvhrKmcBkeAARfw51Fmp9ppfpQRplOXvMpP4uYYgpMYD
-	 hcqUp5Kh8q71w==
+	s=k20201202; t=1768224137;
+	bh=BDUIckWVUD1RagFJ5xtI1INGnjOo0Mtn45L5+aqLxUo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LNIEc6WcDx/szM8jktnG2voPpypdHDEA3wNwBsS5urMtvVE/RJR4Qx+GlS2vTfgdL
+	 z3g0WuJBsYVMpOlpti9ggZFdF2XlmmEqFtVAtthTSnvQDbiaSwRRshgiK5wt+Hv4Op
+	 gMgXisTKe9rQ2wpuEf56WS8TQjShDXGVrTVnkYWTpnkz2yPcB21TzwF7D+jAypeJde
+	 guQZ9tsxbFISMUtu+DdRRSEp33HOe+1UGmKeveLm1+VzC3l5QaOfFQRPNzRuHAJZ4p
+	 t7onerDFPgLsmiZZzPb2urdwXIucijdwljWTYh6SIa9RV9g8WRyD6sTf8WYWuDcdOt
+	 j4TC128wA5czQ==
+Date: Mon, 12 Jan 2026 14:22:11 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>,
-	Jan Kara <jack@suse.cz>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	io-uring@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org
-Subject: Re: re-enable IOCB_NOWAIT writes to files v6
-Date: Mon, 12 Jan 2026 14:02:02 +0100
-Message-ID: <20260112-geben-ausrichten-20a6cad7e163@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260108141934.2052404-1-hch@lst.de>
-References: <20260108141934.2052404-1-hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, 
+	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>, 
+	Martin Brandenburg <martin@omnibond.com>, Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, 
+	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev, io-uring@vger.kernel.org, 
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: re-enable IOCB_NOWAIT writes to files v4
+Message-ID: <20260112-canceln-skript-95f066b9fcc1@brauner>
+References: <20251223003756.409543-1-hch@lst.de>
+ <20251224-zusah-emporsteigen-764a9185a0a1@brauner>
+ <20260106062409.GA16998@lst.de>
+ <20260106-bequem-albatros-3c747261974f@brauner>
+ <20260107073247.GA17448@lst.de>
+ <20260112-adelstitel-propaganda-ef80e3d2f8ca@brauner>
+ <20260112100558.GA7670@lst.de>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2358; i=brauner@kernel.org; h=from:subject:message-id; bh=RIH5DGw9iaODSe+GboFTs0O7c0cEBRdRfN8567Qvz9A=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSmfDgTzOJR2bBdxfHs4lPvNzr2Vs6TUNwx6US+esA93 wOa+bFsHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABN5dI2R4ZP6ftH/fWt4PbWW uef2Z5wtW9WpnhlzeM35ddH5pfqvghj+lxkqrN5Xtz+j/JXujQs9eTrzbzdP4Od/964lr1hHb7E MCwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260112_050213_125706_F57D987A 
-X-CRM114-Status: GOOD (  12.49  )
+Content-Disposition: inline
+In-Reply-To: <20260112100558.GA7670@lst.de>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,53 +80,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 08 Jan 2026 15:19:00 +0100, Christoph Hellwig wrote:
-> commit 66fa3cedf16a ("fs: Add async write file modification handling.")
-> effectively disabled IOCB_NOWAIT writes as timestamp updates currently
-> always require blocking, and the modern timestamp resolution means we
-> always update timestamps.  This leads to a lot of context switches from
-> applications using io_uring to submit file writes, making it often worse
-> than using the legacy aio code that is not using IOCB_NOWAIT.
+On Mon, Jan 12, 2026 at 11:05:58AM +0100, Christoph Hellwig wrote:
+> On Mon, Jan 12, 2026 at 11:04:17AM +0100, Christian Brauner wrote:
+> > On Wed, Jan 07, 2026 at 08:32:47AM +0100, Christoph Hellwig wrote:
+> > > On Tue, Jan 06, 2026 at 10:43:49PM +0100, Christian Brauner wrote:
+> > > > > Umm, as in my self reply just before heading out for vacation, Julia
+> > > > > found issues in it using static type checking tools.  I have a new
+> > > > > version that fixes that and sorts out the S_* mess.  So please drop
+> > > > > it again for now, I'll resend the fixed version ASAP.
+> > > > 
+> > > > It has never been pushed nor applied as I saw your mail right before all
+> > > > of that.
+> > > 
+> > > Thanks.  But maybe you can fix up the applied messages to be more
+> > > specific?  We had various issues in the past with them, where they
+> > > were sent, but things did not end up in the tree for various reasons.
+> > 
+> > What are you thinking of exactly?
 > 
-> [...]
+> Only send out the applied message when something is actually pushed
+> to the public tree?
 
-Applied to the vfs-7.0.nonblocking_timestamps branch of the vfs/vfs.git tree.
-Patches in the vfs-7.0.nonblocking_timestamps branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-7.0.nonblocking_timestamps
-
-[01/11] fs: remove inode_update_time
-        https://git.kernel.org/vfs/vfs/c/20b781834ea0
-[02/11] fs: allow error returns from generic_update_time
-        https://git.kernel.org/vfs/vfs/c/dc9629faef0a
-[03/11] nfs: split nfs_update_timestamps
-        https://git.kernel.org/vfs/vfs/c/b8b3002fbfef
-[04/11] fat: cleanup the flags for fat_truncate_time
-        https://git.kernel.org/vfs/vfs/c/1cbc82281675
-[05/11] fs: refactor ->update_time handling
-        https://git.kernel.org/vfs/vfs/c/761475268fa8
-[06/11] fs: factor out a sync_lazytime helper
-        https://git.kernel.org/vfs/vfs/c/188344c8ac0b
-[07/11] fs: add a ->sync_lazytime method
-        https://git.kernel.org/vfs/vfs/c/5cf06ea56ee6
-[08/11] fs: add support for non-blocking timestamp updates
-        https://git.kernel.org/vfs/vfs/c/85c871a02b03
-[09/11] fs: refactor file_update_time_flags
-        https://git.kernel.org/vfs/vfs/c/2d72003ba244
-[10/11] xfs: implement ->sync_lazytime
-        https://git.kernel.org/vfs/vfs/c/f92f8eddbbfb
-[11/11] xfs: enable non-blocking timestamp updates
-        https://git.kernel.org/vfs/vfs/c/08489c4f4133
+When that happens it usually means that it's still waiting on tests.
+I can pay more attention to this but don't expect it to be perfect in
+all cases.
 
 ______________________________________________________
 Linux MTD discussion mailing list
