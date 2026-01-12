@@ -4,55 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCBE0D26D9B
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jan 2026 10:06:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5EEEC9EC88
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jan 2026 13:02:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OlgR3DPlVO/msVoaY7283usWVvborhEhkHMvQEgrqeI=; b=qbP97xq0wrU1HS
-	4by8V08f7YWoNJ/OBMGwuuf3qhtp8FxWqCVUYaEYHQ+YqVe2Tr1VXj8MspibVWkYXpxQ+YjIU2VPP
-	Ep67uAx8+YAIDhufn9HdRClsbnV/r73XPx65HRKr4/rffqt6Pi/Vra3bBa9WlmNhufpKRiPY6A5ti
-	e3m/piMNyT8wbqvpUw29ib90nppNg98KcLDBYoCHkGx0jlde14C9aCdNK8jCFjRY4+ScEBXqgqC8D
-	QkmhKsnklOdCZCdMWBNVoPn0c1Gf8P+cDdw9n39H2gAfwRwmPoFBOp7TSY7cD5fSdrPa31mgO7SpB
-	YJCXgltN+KbMklLX+3cA==;
+	List-Owner; bh=up0Okc+WYZb4XqkApLUdrl1VEWBdqCIoVD83RpPrz8c=; b=LEpSoygpwRygCQ
+	tYdp/xyeEp2MsvR9Jg6w4RCnBkvSD+fUVZITWTF+HSE9W2gRLtCTp5waBIdv6M2NvFM1SeojiMSWT
+	uBPcaImonGRMO76kGbK+8cWWJTW7c5bV1tVqJmjVmA+dFDllxgNPH76PuuDtLH1wUpzzZpCM7AGRT
+	bWLWuKjpK6mKv02LGkx3PpRnvo05cnZRR5SWa4zYDOEYO/lqQDxAgEQs9nQhUR0Z8lqQOAUvQOg/P
+	RhKt0Qz67S4GxfBPkR+v/3/Eb6i+mwYacmEFfElfHIalaETJrdB/CfeE4a160NF+UslrigNx+mlLQ
+	QhLHxNIjEDSao4jhL2kw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfEoO-000000057gg-0dLl;
-	Mon, 12 Jan 2026 10:06:12 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1vfHYl-00000005MxT-3z36;
+	Mon, 12 Jan 2026 13:02:15 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfEoK-000000057gK-2Bzg
+	id 1vfHYj-00000005Mwb-0Ca8
 	for linux-mtd@lists.infradead.org;
-	Mon, 12 Jan 2026 10:06:10 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 09124227A8E; Mon, 12 Jan 2026 11:05:59 +0100 (CET)
-Date: Mon, 12 Jan 2026 11:05:58 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>,
+	Mon, 12 Jan 2026 13:02:14 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 1CD7B42B00;
+	Mon, 12 Jan 2026 13:02:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34EF4C16AAE;
+	Mon, 12 Jan 2026 13:02:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768222932;
+	bh=RIH5DGw9iaODSe+GboFTs0O7c0cEBRdRfN8567Qvz9A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=GuBawYgiub2dv2qsF9RKZVhe0V/aSnkEu4nPJWorZt+trDE7QgUWV0DL+v3F9lYFb
+	 S8jkjZescwZ86TegZq0zHtZhaq9OiP/XT4Ek5oC6djgknJE1zX7QEA/iqpuP2EIHYd
+	 i/AUasa7Z7UImS/J0tHpsy/U9HlOS5XOAxCNzfi5lx8vhyf2Wb4IsdXz0HYl/2ybgd
+	 zyMbLaIzdD+bTqh0IYPV9h+8sw3TKlpbpGyacEvIK+RA3MswzE5pZ8VVVdUD7aZwhB
+	 Xj9stBjtg4cBkuHHRQP3fuSvhrKmcBkeAARfw51Fmp9ppfpQRplOXvMpP4uYYgpMYD
+	 hcqUp5Kh8q71w==
+From: Christian Brauner <brauner@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>,
 	Mike Marshall <hubcap@omnibond.com>,
 	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev, io-uring@vger.kernel.org,
-	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	Carlos Maiolino <cem@kernel.org>,
+	Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org,
 	linux-nfs@vger.kernel.org
-Subject: Re: re-enable IOCB_NOWAIT writes to files v4
-Message-ID: <20260112100558.GA7670@lst.de>
-References: <20251223003756.409543-1-hch@lst.de> <20251224-zusah-emporsteigen-764a9185a0a1@brauner> <20260106062409.GA16998@lst.de> <20260106-bequem-albatros-3c747261974f@brauner> <20260107073247.GA17448@lst.de> <20260112-adelstitel-propaganda-ef80e3d2f8ca@brauner>
+Subject: Re: re-enable IOCB_NOWAIT writes to files v6
+Date: Mon, 12 Jan 2026 14:02:02 +0100
+Message-ID: <20260112-geben-ausrichten-20a6cad7e163@brauner>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260108141934.2052404-1-hch@lst.de>
+References: <20260108141934.2052404-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260112-adelstitel-propaganda-ef80e3d2f8ca@brauner>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2358; i=brauner@kernel.org; h=from:subject:message-id; bh=RIH5DGw9iaODSe+GboFTs0O7c0cEBRdRfN8567Qvz9A=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSmfDgTzOJR2bBdxfHs4lPvNzr2Vs6TUNwx6US+esA93 wOa+bFsHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABN5dI2R4ZP6ftH/fWt4PbWW uef2Z5wtW9WpnhlzeM35ddH5pfqvghj+lxkqrN5Xtz+j/JXujQs9eTrzbzdP4Od/964lr1hHb7E MCwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260112_020608_724699_AE9F9619 
-X-CRM114-Status: GOOD (  21.70  )
+X-CRM114-CacheID: sfid-20260112_050213_125706_F57D987A 
+X-CRM114-Status: GOOD (  12.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,25 +94,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 12, 2026 at 11:04:17AM +0100, Christian Brauner wrote:
-> On Wed, Jan 07, 2026 at 08:32:47AM +0100, Christoph Hellwig wrote:
-> > On Tue, Jan 06, 2026 at 10:43:49PM +0100, Christian Brauner wrote:
-> > > > Umm, as in my self reply just before heading out for vacation, Julia
-> > > > found issues in it using static type checking tools.  I have a new
-> > > > version that fixes that and sorts out the S_* mess.  So please drop
-> > > > it again for now, I'll resend the fixed version ASAP.
-> > > 
-> > > It has never been pushed nor applied as I saw your mail right before all
-> > > of that.
-> > 
-> > Thanks.  But maybe you can fix up the applied messages to be more
-> > specific?  We had various issues in the past with them, where they
-> > were sent, but things did not end up in the tree for various reasons.
+On Thu, 08 Jan 2026 15:19:00 +0100, Christoph Hellwig wrote:
+> commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+> effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+> always require blocking, and the modern timestamp resolution means we
+> always update timestamps.  This leads to a lot of context switches from
+> applications using io_uring to submit file writes, making it often worse
+> than using the legacy aio code that is not using IOCB_NOWAIT.
 > 
-> What are you thinking of exactly?
+> [...]
 
-Only send out the applied message when something is actually pushed
-to the public tree?
+Applied to the vfs-7.0.nonblocking_timestamps branch of the vfs/vfs.git tree.
+Patches in the vfs-7.0.nonblocking_timestamps branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-7.0.nonblocking_timestamps
+
+[01/11] fs: remove inode_update_time
+        https://git.kernel.org/vfs/vfs/c/20b781834ea0
+[02/11] fs: allow error returns from generic_update_time
+        https://git.kernel.org/vfs/vfs/c/dc9629faef0a
+[03/11] nfs: split nfs_update_timestamps
+        https://git.kernel.org/vfs/vfs/c/b8b3002fbfef
+[04/11] fat: cleanup the flags for fat_truncate_time
+        https://git.kernel.org/vfs/vfs/c/1cbc82281675
+[05/11] fs: refactor ->update_time handling
+        https://git.kernel.org/vfs/vfs/c/761475268fa8
+[06/11] fs: factor out a sync_lazytime helper
+        https://git.kernel.org/vfs/vfs/c/188344c8ac0b
+[07/11] fs: add a ->sync_lazytime method
+        https://git.kernel.org/vfs/vfs/c/5cf06ea56ee6
+[08/11] fs: add support for non-blocking timestamp updates
+        https://git.kernel.org/vfs/vfs/c/85c871a02b03
+[09/11] fs: refactor file_update_time_flags
+        https://git.kernel.org/vfs/vfs/c/2d72003ba244
+[10/11] xfs: implement ->sync_lazytime
+        https://git.kernel.org/vfs/vfs/c/f92f8eddbbfb
+[11/11] xfs: enable non-blocking timestamp updates
+        https://git.kernel.org/vfs/vfs/c/08489c4f4133
 
 ______________________________________________________
 Linux MTD discussion mailing list
