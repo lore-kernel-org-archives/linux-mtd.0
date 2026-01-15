@@ -4,81 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC6D2D44C43
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jan 2026 12:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 930B6D44C42
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jan 2026 13:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cAlING0bcC4lQcaTolSVEYsYkeL63HW48egz3sb2oKU=; b=WHERoOoylEm54u
-	XEj/k/GrIEdd9xW0T1OnVakRvS/WysJWqdD5Q7F8ruki2a7hiu69iuBNFKmPex/iRzZCZ0Lb3J5Mw
-	IoX0s3lfDKtWKlzTUfjLz1Q6VOA++iGBkiVz/zYib4BoH5mYa0OUSTPGgRQpseMaCQYH0te6JJtO/
-	gBDpC4jJLYDLZ9W+FiNalc0wIew+4t5uy0SaTgKMQ9B0YG1r5Vaq3rdPb0YF6rAtpCu3FoYLsBwS8
-	U7vCajFwD2bIfWTofa+hU0AfGxWlxXzqQQwWMqZGxU/cJpI5UxH2Nte3suYw4U9IG+RwH382TKPJp
-	i3g+mxFVyVMhUY42IcAQ==;
+	List-Owner; bh=tGJfE1TvwcHGKOTF9vOi6ui8AO18fV+ru99PZrBKih4=; b=suTONKuOtcpUwT
+	jzK7pBXHy8sDgHA1aBFf4ThiCnZdFDUSMSVHgL50i5lkdm+Zn0Hlm7aeg0wVcBavfK2tF+Z0oJoB5
+	oGG2TP3tHnV8TDHLT+W4lpGN1VVFEzN/bzWfkFrQmyzbTGg9HpKfCUCRm9UvlXVxWwJdYpKw1nGsi
+	QAgEwJ3EBMyDBNfO7q6dZtbsRH7OK+T98MwIpTr8u+zDzhu2P1DGHcdnHfy6i+7nSANs5loSHjd78
+	e3QqjdotpTXj9nnqme1W2+ZhNweu7+kDy28sb+AtgYTlW711aCyNWiYP7fatNIwRcwK9nxKe5IWEy
+	AZSpZ+dOojJOYjvPsdLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgMuL-0000000CMaR-3XFT;
-	Thu, 15 Jan 2026 12:57:01 +0000
-Received: from bali.collaboradmins.com ([2a01:4f8:201:9162::2])
+	id 1vgNDh-0000000COrO-0Dd5;
+	Thu, 15 Jan 2026 13:17:01 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgMuE-0000000CMRY-1woz;
-	Thu, 15 Jan 2026 12:56:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1768481811;
-	bh=5c73jSB5V916CT35L36ZsmgrVWA8Vvvy6jaycwwPDQU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JZhEIDgYj+2dJ+8Z6AaGGwdgiGAncfG9P2Xmzf5svHPgghSEuJPkGFH5elw7IlPsj
-	 muU/qnYPTm4Hh9mdj6J5OusJyq+W8ijj5/WNgbfV+CTzzB+fjkO64H9KXrzF5JzTg/
-	 fpnGdYyLvrueNp+46fsxBduHSQZkhR1S+hyNJtVJgB5cJRgVNKTrmkA+1ZlsOijZqp
-	 nF5am7vlnuY+ILx/dm+m30Aw7bvKHYviokJMaX+yPUHawgBsrMi6ZeALFR9TbzU7Bn
-	 BqVjexWJ+YSP6x2TRA+Je5x7CTpjGJgc+FW2PfR5PPGyTnpnQqhR62DVRmPj2iz6TK
-	 XPNoA6ClZoR5w==
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id 9907A17E1406;
-	Thu, 15 Jan 2026 13:56:50 +0100 (CET)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: robh@kernel.org
-Cc: krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	julien.massot@collabora.com,
-	eugen.hristev@linaro.org,
-	jiaxin.yu@mediatek.com,
-	shane.chien@mediatek.com,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	kernel@collabora.com
-Subject: [PATCH 4/4] arm64: dts: mediatek: mt8192: Rename mt8192-afe-pcm to audio-controller
-Date: Thu, 15 Jan 2026 13:56:24 +0100
-Message-ID: <20260115125624.73598-5-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260115125624.73598-1-angelogioacchino.delregno@collabora.com>
+	id 1vgNDf-0000000COqf-2yDp;
+	Thu, 15 Jan 2026 13:16:59 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 2862460195;
+	Thu, 15 Jan 2026 13:16:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0634BC116D0;
+	Thu, 15 Jan 2026 13:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768483018;
+	bh=NEHndrv/GFLkXIcpeLx+QdTY9TQn1VHLAJq60OQCti0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=NTNrOMeDrEwZPo0YuwydGexojvyGkalxYJsGJuevjCwnIuZyq7chxL69MRA1sxONM
+	 iqkmkPjX1P5gPB8knUCiRkNirOCBmtiZuFWKQdVreqOcZrncGESC9hY5gzUT0BDF9Y
+	 OJ70HjfDAtGrcOu4tXbtxCgV+j0Im8Rsnr0VgPAJypz+dzEOk+MIax888XnRWFKhl1
+	 6ub7q9aDNDNJD2DEvH6O5j7AfkvKGt7m7qKjfmTwRMnbzGMFBR7HMvFoJVCbrNJ6bo
+	 41TmKxXa3Q+stIjrAo4N+YevgIs3h/eeR62Rj9KqUDGoZnWI5jJhTNQTbNhrosIC8g
+	 W08/SSRR5Yshw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: robh@kernel.org,  krzk+dt@kernel.org,  conor+dt@kernel.org,
+  tudor.ambarus@linaro.org,  pratyush@kernel.org,  mwalle@kernel.org,
+  miquel.raynal@bootlin.com,  richard@nod.at,  vigneshr@ti.com,
+  lgirdwood@gmail.com,  broonie@kernel.org,  matthias.bgg@gmail.com,
+  julien.massot@collabora.com,  eugen.hristev@linaro.org,
+  jiaxin.yu@mediatek.com,  shane.chien@mediatek.com,
+  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  linux-sound@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,
+  linux-mediatek@lists.infradead.org,  kernel@collabora.com
+Subject: Re: [PATCH 1/4] dt-bindings: mtd: jedec,spi-nor: Add Winbond
+ W25Q(32/64/128/256)JWM
+In-Reply-To: <20260115125624.73598-2-angelogioacchino.delregno@collabora.com>
+	(AngeloGioacchino Del Regno's message of "Thu, 15 Jan 2026 13:56:21
+	+0100")
 References: <20260115125624.73598-1-angelogioacchino.delregno@collabora.com>
+	<20260115125624.73598-2-angelogioacchino.delregno@collabora.com>
+Date: Thu, 15 Jan 2026 13:16:53 +0000
+Message-ID: <2vxz5x93818a.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260115_045654_668954_B2E8732C 
-X-CRM114-Status: UNSURE (   9.46  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,33 +80,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Device tree nodes should have generic names, and this one doesn't.
-Rename the mt8192-afe-pcm subnode of audsys to `audio-controller`.
+On Thu, Jan 15 2026, AngeloGioacchino Del Regno wrote:
 
-This commit brings no functional changes, but resolves dtbs_check
-warnings.
+> Add Winbond W25Q32JWM, W25Q64JWM, W25Q128JWM, W25Q256JWM to the
+> allowed compatible strings pattern.
+>
+> This also resolves a dtbs_check warning happening on all of the
+> MediaTek MT8192 Chromebooks devicetrees (for winbond,w25q64jwm).
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We normally don't allow adding any more device-specific compatibles.
+This list here is only for legacy DTS. You should be using
+"jedec,spi-nor" in your device trees.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 47dea10dd3b8..9f8f115edd4c 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -973,7 +973,7 @@ audsys: syscon@11210000 {
- 			reg = <0 0x11210000 0 0x2000>;
- 			#clock-cells = <1>;
- 
--			afe: mt8192-afe-pcm {
-+			afe: audio-controller {
- 				compatible = "mediatek,mt8192-audio";
- 				interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH 0>;
- 				resets = <&watchdog 17>;
+>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> index 587af4968255..2db446c9ca9b 100644
+> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> @@ -29,7 +29,7 @@ properties:
+>                (sst,)?sst26wf016b|\
+>                (sst,)?sst25wf(040b|080)|\
+>                winbond,w25x(80|32)|\
+> -              (winbond,)?w25q(16|32(w|dw)?|64(dw)?|80bl|128(fw)?|256))$"
+> +              (winbond,)?w25q(16|32(w|dw)?|64(dw|jwm)?|80bl|128(fw|jwm)?|256(jwm)?))$"
+>            - const: jedec,spi-nor
+>        - items:
+>            - enum:
+
 -- 
-2.52.0
-
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
