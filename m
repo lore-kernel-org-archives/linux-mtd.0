@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CA33D46604
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jan 2026 17:49:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D23AAD4660A
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jan 2026 17:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KvEZZi+pcsEwSJ9kGKSjJwp0ZeQpJtolhHg6/qgKMzo=; b=4aD3rnybBhWilX
-	azGTPVBFcMn09Y6rjJhLEZhECgQ5Jtk1JrGQ5nUyIvht8N7fD/bEomr6ZON6uWMKp4Sd0yhOWRv8G
-	xzxnshFERQgrPU6KBMncrcYpg8UDPuYPBCYULK1UgWhy5o+1f7+6lKh/q/rimIPY1l0JHjKWIjdSf
-	PWdZJirDkP5MIslZbJwThFZd1jZMFWL0Phy/a7Az3It7DlWDK+a/XUasd3aT+r6RzFMFccMUxTlWC
-	QTSD+GUqlqqmEDH85X+cyTGuuEJ+DVPDzlY73+nW+HapTpVefC0mBKnGLlKzGBL92s1JlTSytyot6
-	4/bALqgqTrufe/D+9Y5g==;
+	List-Owner; bh=Hk4/Zp+O6TRApUxQGxlJmbeHU0F5rFsXmnE+CFypyW4=; b=nkJdfjtIrpzqSR
+	6K3U8Hy1rHgfBjOUftFYiMU2Kc/585asr6rgrE4PIT0P4ASUH5Yfsex/S2cRe9zXfbutmsd5KgsN4
+	2dH6oyJ88R5l0QDSwki+bv9a6CconWzC3f2092JqQrRFf06qyYsxXosl2X80EaLc4aH+Zwbccwenn
+	DcdVx25CrNk9iIPDUPkO6SSft61JMkStJNIz8+MzEHzm4VScczIiyfPv04nAjPo6uS1kaGfw7/aPe
+	7ZNyx51zcZAIG7Dd7V/3V2Nj8ZsnfR5JJJ1BB1mXJRsHju4CtSCmZZ6L3qNdpIeNmYn1TYvpMZ5HN
+	hH0pq6jYLKOgH+vM2Miw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgRTb-0000000CtHI-0FKs;
-	Thu, 15 Jan 2026 17:49:43 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vgRTj-0000000CtMX-1fLb;
+	Thu, 15 Jan 2026 17:49:51 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgRTa-0000000CtGn-2gJU
+	id 1vgRTg-0000000CtKi-3kpJ
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jan 2026 17:49:42 +0000
+	Thu, 15 Jan 2026 17:49:50 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id ED4F9601D3;
+	by sea.source.kernel.org (Postfix) with ESMTP id 687B844413;
+	Thu, 15 Jan 2026 17:49:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2463C19425;
 	Thu, 15 Jan 2026 17:49:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA99C116D0;
-	Thu, 15 Jan 2026 17:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768499381;
-	bh=3GhJ/qRusFZtrc5r83Yz5fW+XL13TprQK4YWfiaNH7c=;
+	s=k20201202; t=1768499388;
+	bh=4X4oMdETf1MDXNVdTj8Mvnuo+gH/VRKi/jbZgD6BtXE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=HpFXXnu7ERkPUAIQm1ZPAcxGId6eeLxlE0JRxT5UA4b8o91JC6MhQ6hmR8WhJIGya
-	 u0ZPgVTfRojyBSEkyDYI3DwAmQo9WILZExRwe2UwHFCiNlmisjZ+6bSd+aE7ib61oJ
-	 kNhQchrck1aUUpJ+OwOj/fCqXIwNg0ZxkdeofNkXA7xP2g7DfotgAEoSVqgkuY6SM5
-	 Wpz8EZYj9+4Xj3LStuJyRf3j5Keqh7naAgj8vpr+lOmqqV4kroZVB7N0Bl859ATYgI
-	 uzM5fmBJ5J7caSvvjP71MlmxnFVv4DuzFN9zwjzsgrw+/9iNkIATGHL5NAfE8fKRC8
-	 k5qPRrxpUVgbQ==
+	b=HXF5eSd16LXlk2pg+ykoxFtOltKLYcVhDbq4eu1qwmD9XuCNWEyYNq/SBbzMC2xZp
+	 Us30TUq2Qf0LqFXcegPXmaUXk++IckN9SudLLGy1m2S/IWaC9Fe3O7QdJixMC/QzW2
+	 HJf9rCe/ppr7ZNSUKpXLcTQLpiUAT0OY1jeKS3UdP9YlVuUmo+x7zxnsNV6KlYZ7IU
+	 OaZtTAo6JUCABYVdaE5e1ipItaqt9i4ljmLQp4ZO65psdJ+V6VolZKMHaqtQRalSo4
+	 sMz1xXvAVGjzhRpu823inA7f7eVi+tZrnpoSlK6flDgUJfBJnR2OMCIZpueoNVb0Or
+	 MITNRwqqqmCUw==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 15 Jan 2026 12:47:46 -0500
-Subject: [PATCH 15/29] smb/client: add EXPORT_OP_STABLE_HANDLES flag to
- export operations
+Date: Thu, 15 Jan 2026 12:47:47 -0500
+Subject: [PATCH 16/29] ovl: add EXPORT_OP_STABLE_HANDLES flag to export
+ operations
 MIME-Version: 1.0
-Message-Id: <20260115-exportfs-nfsd-v1-15-8e80160e3c0c@kernel.org>
+Message-Id: <20260115-exportfs-nfsd-v1-16-8e80160e3c0c@kernel.org>
 References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
 In-Reply-To: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
 To: Christian Brauner <brauner@kernel.org>, 
@@ -95,22 +95,25 @@ Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
  linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
  linux-f2fs-devel@lists.sourceforge.net, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=733; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=3GhJ/qRusFZtrc5r83Yz5fW+XL13TprQK4YWfiaNH7c=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpaShHXNqSO0AaJtAQ6e0iebWGL9gXuZogZL4NQ
- nd3994d03SJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaWkoRwAKCRAADmhBGVaC
- FcJZD/995y2baNrZV9uOL0TNknTnSY1b+KmL3xbwd6ELV1X5P9GTRow0w8qgNhTp6DEdep17Xnl
- lV5nNz22mRp/8t/3leQwRnNobdVyWDmG+86VPwmUWRp3avVeIoa2Hq0+unljlviLLfMZvqyYy/P
- Kxs6fTJykAgSKjLX6C+rJOV1Mp3siFq7qgMalb81NvBiX9zHp1owHcyMqSQLk6dnRVhBpwvq8Yr
- HCE92A8xDJ3Ip129dtLuJhd2DRJMhmD7P0OezVt522x2tAQ1uGW9+y22/6QjAyty5uFASKCHvSI
- w3UV0CUln2DLh1/ExYGFtAVStJTrIxdzaoVBW95Wv/hqgnHPTA5ZPK9Mb7x6p1hGhTPsJyTJD+D
- ZfwxsjYG9BWi0T9CmUy63xFCzNqUQ2yS/5IVjEWwR90w95fFyvbdRWQqfBLXJR7156JlOwG9lmm
- LvYK/T5yQAN1YkPNeGXb/ojuDS1Qhax9xPuYWlGmJhpq9kmhgnNhCBrmeRxuXoSdsL8s3e0HFVx
- wPMeDrxdnCq4FIgMAjIVmEOYsxOVRowPOzVRxqVmY6La6z0MHQ1RC9VLmEOUHKcW5IQjJLDb2ld
- 98lJr3+W1h6zW0rigSWwt4z1k87pChOwiG5A2qRhX7v35TRycTLzvQDQnkxDqIXyxoiRfeYXqGm
- 8SLFEajMop9ifew==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=920; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=4X4oMdETf1MDXNVdTj8Mvnuo+gH/VRKi/jbZgD6BtXE=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpaShIaOS03XvPpRfdi/+BkUUJRyp+R3CppMLW3
+ ZiynNioo6+JAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaWkoSAAKCRAADmhBGVaC
+ FSKRD/9yG9hD8ojJ6IljtJlzqxX5Mrd2/ao56DDsFXOA9FWMnwCaPHEJAENPNEWtwbmo+vNTjlp
+ lQudXpKYDOeNMFVDBXjh6s7BskipekJgzjceXBd/7Z6OS9tRE/xrCWPE15WxooWzDH+MPSod03a
+ dXyjbFBx/fMXGVLhHNec09c5PmN/AeUd28FN9pbOkV9+YFIABVgdQ4JjsdPqcHRpqcAiW6j5R1x
+ HgNZYRunFukBcUwYHbHQXKQXMa7FEMKpQjmiWSpu4vL15ExPUoGC/AV541L9S3ZmMEFY2SqHxsR
+ Fd/cWtvMpc0G5qWAV7q1qmHzpe5466KioKlFxu3HYEz3QVwWi2q2URf34dPKhYlj/SMZ9oDE3H6
+ 5ijLnuOZj7i/WgY+01ZxkNw0O8sebKJEN3+oguERhCG1jmSPmhERSbTg59Jh1Rpt6wU/eJ8MRSP
+ mp5A0ii8f1xcVwyBnfe0wxC7fwXmPZorUgXv0TuPX54mAhzf0J+50OTuensdWi4sVgUyQ4Rv26c
+ fUkFlkdWL6b67iWWqJHGyiPP/+lmavFA665rkX/WhAw4ATTVYmqKAJ3kI/M+4G/svV+Cq5ZxfPJ
+ 4W9/XSnk5zbuOwc/0/q/U5L4RAyIQDrojuGi7pHqgMXVPyD6jrJYx5YsZIgEyYbJcrMh6+zUrz0
+ s2rdJhIgISrWcqQ==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260115_094948_989997_DCAD6C2C 
+X-CRM114-Status: GOOD (  10.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,26 +130,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the EXPORT_OP_STABLE_HANDLES flag to cifs export operations to indicate
+Add the EXPORT_OP_STABLE_HANDLES flag to overlayfs export operations to indicate
 that this filesystem can be exported via NFS.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/smb/client/export.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/overlayfs/export.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/smb/client/export.c b/fs/smb/client/export.c
-index d606e8cbcb7db2b4026675bd9cbc264834687807..c1c23e21bfe610f1b5bf8d0eea64ab49e2c6ee3a 100644
---- a/fs/smb/client/export.c
-+++ b/fs/smb/client/export.c
-@@ -47,6 +47,7 @@ const struct export_operations cifs_export_ops = {
-  * Following export operations are mandatory for NFS export support:
-  *	.fh_to_dentry =
-  */
-+	.flags = EXPORT_OP_STABLE_HANDLES,
+diff --git a/fs/overlayfs/export.c b/fs/overlayfs/export.c
+index 83f80fdb156749e65a4ea0ab708cbff338dacdad..17c92a228120e1803135cc2b4fe4180f5e343f88 100644
+--- a/fs/overlayfs/export.c
++++ b/fs/overlayfs/export.c
+@@ -865,9 +865,11 @@ const struct export_operations ovl_export_operations = {
+ 	.fh_to_parent	= ovl_fh_to_parent,
+ 	.get_name	= ovl_get_name,
+ 	.get_parent	= ovl_get_parent,
++	.flags		= EXPORT_OP_STABLE_HANDLES,
  };
  
- #endif /* CONFIG_CIFS_NFSD_EXPORT */
+ /* encode_fh() encodes non-decodable file handles with nfs_export=off */
+ const struct export_operations ovl_export_fid_operations = {
+ 	.encode_fh	= ovl_encode_fh,
++	.flags		= EXPORT_OP_STABLE_HANDLES,
+ };
 
 -- 
 2.52.0
