@@ -4,69 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 707B4D44C5C
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jan 2026 14:46:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21631D46609
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jan 2026 17:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uVRCcixfakoIbSzNGKUmYDfoCTL9dbE7Hi9hzqOPSGE=; b=fn+OF/1vsvKTQB
-	cksXuP03XaUd7LNayP7SuilDsD2P1t2ljGcGYp4HKHU07XYwA1xfN0te2czVfjPq2KA7+AzIiLChP
-	haOh87lPGXXrJTeKT4FNgm1CH7NZmLhVvb4RH9nxzsfI93lzdHrO3Wxd2VndRo8LsYmeoPrl5zT0r
-	7E2RS1pHIiQHbSFU8Wh/d+eA/8JVZFAfoV9r7u/baEpBjk/WR0l8I9TU/zjzBs0RZde0OaAcw/Am0
-	stK9qQOX/fX5aENMKVCZoj7uZEwPyZRoksaQyIBtTF2v4KrRDeLt7JUUpFlvFPwzqgp7+pO53mXh8
-	2Gv5DRhz74UpGFYbh5Qg==;
+	List-Owner; bh=pphKA5RxZyZS67HeblhZkY895eQurTM8GB2qdvRVyOY=; b=zObKbb5nzXGTgK
+	zYrIeIGqjHc9TFbuG/1BG569nQOCGzww4GnU4mJ6+cGFyTCdoAq0SdyxexOTuYoJWvFXrTxzbsUHh
+	vXTuo6v68ywPtTYptzF3jANU3oGbg1nN8H1FmQGCw2b8FYSBduINd4EZHdRhYqPAqiteLOsxTd2fc
+	rzlxI82adnEsw9b2UnGnsWTS4N0KX+Y2S1S0nNgB7PDdgCtmjRYnjebioLgI0sCV+q/R7T1DLk5PE
+	0o6bi1fDSLUf6IE0ylOoXV0szWImS9r6P/ciQiWYEdXlDczV2KAgTVM3sI0K7r3XpoQlCStRfM+fo
+	57jkn42dpgE4j2oSDl5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgOcE-0000000CWMb-2v1S;
-	Thu, 15 Jan 2026 14:46:26 +0000
-Received: from bali.collaboradmins.com ([2a01:4f8:201:9162::2])
+	id 1vgRS9-0000000CsMd-4A0n;
+	Thu, 15 Jan 2026 17:48:13 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgOcB-0000000CWLw-134A;
-	Thu, 15 Jan 2026 14:46:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1768488380;
-	bh=jj97+Ps1LFlcOetqgPF2yqCP0vAX9DGF0PsamF0O6ys=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iyvHDksdgHMVpY0GgTUbNVDq1NnY/xck9IKdaWo6Ag1YX6SFMrbZ2RRG7BLt83Uwy
-	 4xJdC3geHTdhzfMndGNVFtgsycJfY71AMjnzVJX+6kgZ9AjOZv1aVJL8LH0mhyK7+r
-	 xn1oh+h93TqSg86bp9LU3QNunqM8IoKwEtRExGIP07tb19NlZQr+qY9eDAVc8NKy8S
-	 pBGeO8fsYdWnhXDMr63YtIcESRU6LwCvsDam5RfQtiIaShHj+k7Tv0jAkNWe6bMFP3
-	 5VDLiWgKJJTIJ9zVNMQ63rhO2MrjI2AkGxFy5oLDwcK4diJiR3dM5ICDbUqjcblucf
-	 mzPYrzcE6Ia7w==
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id 8CCDD17E0CB0;
-	Thu, 15 Jan 2026 15:46:19 +0100 (CET)
-Message-ID: <9bb24b4a-248d-4a97-a9fc-a00b5237f548@collabora.com>
-Date: Thu, 15 Jan 2026 15:46:18 +0100
+	id 1vgRS7-0000000CsL1-29Y2
+	for linux-mtd@lists.infradead.org;
+	Thu, 15 Jan 2026 17:48:13 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id E875144322;
+	Thu, 15 Jan 2026 17:48:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76392C2BCAF;
+	Thu, 15 Jan 2026 17:48:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768499288;
+	bh=RatR/m42YXTf7CDA2CRhGedueCSbBBqPoEedVs8C9UA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=VOFwUkEJYHXeJXZRL0zb6eR6uUkxRN6kee6xDzHjmgu/5n0uJWSJAGIa3iEZf2Lg5
+	 lrmFB48PnhjOkIGftUE7FVsqT4OhDUbx7K94Awns52sziz0jZpwHnSwAotvQh9go6G
+	 Zo5qVJrJCTeW+EYm8RkT1AHIIjI4FEVXimKg+J0MhIDVSiFaPKoaNwen3lqywhgu7/
+	 6LXz5VvJpXQJcRFroHj6/0MKUhMKcD4/ei6N/XtrqN80C8gSBdoXmdkSxh52BGo+am
+	 jWfhM+WqcPi6cHCYVvHnXDhmoAc7qwGGCr9+E9m6pasHToUBBOCqkijjTvFPBJ55ff
+	 ezWMduEtFCLPg==
+From: Jeff Layton <jlayton@kernel.org>
+Date: Thu, 15 Jan 2026 12:47:32 -0500
+Subject: [PATCH 01/29] exportfs: add new EXPORT_OP_STABLE_HANDLES flag
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] ASoC: dt-bindings: mt8192-afe-pcm: Fix clocks and
- clock-names
-To: Eugen Hristev <eugen.hristev@linaro.org>
-Cc: krzk+dt@kernel.org, conor+dt@kernel.org, tudor.ambarus@linaro.org,
- pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
- matthias.bgg@gmail.com, julien.massot@collabora.com, jiaxin.yu@mediatek.com,
- shane.chien@mediatek.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, kernel@collabora.com, robh@kernel.org
-References: <20260115125624.73598-1-angelogioacchino.delregno@collabora.com>
- <20260115125624.73598-3-angelogioacchino.delregno@collabora.com>
- <e1ed2a68-683c-4235-890b-9b2c5ad93e38@linaro.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <e1ed2a68-683c-4235-890b-9b2c5ad93e38@linaro.org>
+Message-Id: <20260115-exportfs-nfsd-v1-1-8e80160e3c0c@kernel.org>
+References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
+In-Reply-To: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
+To: Christian Brauner <brauner@kernel.org>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, 
+ Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+ Tom Talpey <tom@talpey.com>, Amir Goldstein <amir73il@gmail.com>, 
+ Hugh Dickins <hughd@google.com>, 
+ Baolin Wang <baolin.wang@linux.alibaba.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, Theodore Ts'o <tytso@mit.edu>, 
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, 
+ Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, 
+ Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, 
+ Sandeep Dhavale <dhavale@google.com>, Hongbo Li <lihongbo22@huawei.com>, 
+ Chunhai Guo <guochunhai@vivo.com>, Carlos Maiolino <cem@kernel.org>, 
+ Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, 
+ Viacheslav Dubeyko <slava@dubeyko.com>, Chris Mason <clm@fb.com>, 
+ David Sterba <dsterba@suse.com>, Luis de Bethencourt <luisbg@kernel.org>, 
+ Salah Triki <salah.triki@gmail.com>, 
+ Phillip Lougher <phillip@squashfs.org.uk>, Steve French <sfrench@samba.org>, 
+ Paulo Alcantara <pc@manguebit.org>, 
+ Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
+ Shyam Prasad N <sprasad@microsoft.com>, 
+ Bharath SM <bharathsm@microsoft.com>, Miklos Szeredi <miklos@szeredi.hu>, 
+ Mike Marshall <hubcap@omnibond.com>, 
+ Martin Brandenburg <martin@omnibond.com>, Mark Fasheh <mark@fasheh.com>, 
+ Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
+ Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
+ Dave Kleikamp <shaggy@kernel.org>, David Woodhouse <dwmw2@infradead.org>, 
+ Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>, 
+ Andreas Gruenbacher <agruenba@redhat.com>, 
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+ Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-mm@kvack.org, linux-ext4@vger.kernel.org, 
+ linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org, 
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+ linux-unionfs@vger.kernel.org, devel@lists.orangefs.org, 
+ ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev, 
+ linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
+ linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
+ linux-f2fs-devel@lists.sourceforge.net, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2664; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=RatR/m42YXTf7CDA2CRhGedueCSbBBqPoEedVs8C9UA=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpaShEw8HrDl/7ZIM2OU/hVtFHsnd81WblzyW/e
+ yPqA+8+5UGJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaWkoRAAKCRAADmhBGVaC
+ FYotEACEnxwn1zEGzienetvotgfcnP0KEaEoc3vEq4xPjrvl8qD8AzHl5lAD9pOV95V0vyU1jWl
+ F+LEfCXY/wJ0q8m3Y2mFHyBxMY8nD5PoBm5N4fXW/WYFI8u99g9N4VNJkrMQ9HTzKeVAKTl/M1J
+ mrbI22t/onu2ymRGzRqNb/kAFe3UnZKq5nzacFwoBRbfAKrjqjfaJPjermi4aUlVjCjekIh0TEE
+ Ds0g+E5VMeObKsUc14iLHgf2OKqEIRvMP8DaK6mlvpMXaAD3YHzptTey4nYKQUZRFFZcleYPplo
+ SWrEuNsKUdPrwdG65vHBuaIE9yEzchlvNdGyIGc7aqrMOax0dCU8qPoLhlLadC25xQrrazgFoH2
+ l/Y92N1//yzg8uUwnicfsrF77KdgC9ImgrgBPrbAboDvmBqOCGgIiepgsb7Q62IXUYph956Fup4
+ YiuHKS6eRp+flNlvzvNOVL21skn3W1rV/ffia9WkmS52EfWCBJLfMVFLlM5Fxs+XfASNsPkZcjk
+ 7A3T0E92BC/sj2ln5xSO/2PWamRs0o+Fjo1zTnuo4iAMVwDZQ5EpZMWc7wQnI3KnxwLfagRAPXu
+ 7gOokL39dJc1Puy9BUCKYlRaUcifcB3ctHJTgr0/wiT5j/Fovcjx2nirH3rLSgIbyorjoAiOcP2
+ f+X4rzQbvEzY5lw==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260115_064623_666874_01D3C9B1 
-X-CRM114-Status: GOOD (  15.94  )
+X-CRM114-CacheID: sfid-20260115_094812_078150_BA9D67EE 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,262 +124,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Il 15/01/26 14:28, Eugen Hristev ha scritto:
-> 
-> 
-> On 1/15/26 14:56, AngeloGioacchino Del Regno wrote:
->> Both clocks and clock-names are missing (a lot of) entries: add
->> all the used audio clocks and their description and also fix the
->> example node.
-> 
-> Hi Angelo,
-> 
-> This does not really look like a fix, if it was a fix I would expect a
-> Fixes tag, otherwise, it looks like you are adding a lot of clocks which
-> were not defined before
-> 
-> Eugen
+At one time, nfsd could take the presence of struct export_operations to
+be an indicator that a filesystem was exportable via NFS. Since then, a
+lot of filesystems have grown export operations in order to provide
+filehandle support. Some of those (e.g. kernfs, pidfs, and nsfs) are not
+suitable for export via NFS since they lack filehandles that are
+stable across reboot.
 
-Hey. Yes, right, that makes sense.
+Add a new EXPORT_OP_STABLE_HANDLES flag that indicates that the
+filesystem supports perisistent filehandles, a requirement for nfs
+export. While in there, switch to the BIT() macro for defining these
+flags.
 
-I wonder if the Fixes tag can be added while applying.
+For now, the flag is not checked anywhere. That will come later after
+we've added it to the existing filesystems that need to remain
+exportable.
 
-In case...
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ include/linux/exportfs.h | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-
-Fixes: c861af7861aa ("ASoC: dt-bindings: mediatek: mt8192: re-add audio afe document")
-
-Cheers,
-Angelo
-
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   .../bindings/sound/mt8192-afe-pcm.yaml        | 176 ++++++++++++++++--
->>   1 file changed, 162 insertions(+), 14 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
->> index 8ddf49b0040d..16ae3328f70d 100644
->> --- a/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
->> +++ b/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
->> @@ -47,16 +47,118 @@ properties:
->>         - description: AFE clock
->>         - description: ADDA DAC clock
->>         - description: ADDA DAC pre-distortion clock
->> -      - description: audio infra sys clock
->> -      - description: audio infra 26M clock
->> +      - description: ADDA ADC clock
->> +      - description: ADDA6 ADC clock
->> +      - description: Audio low-jitter 22.5792m clock
->> +      - description: Audio low-jitter 24.576m clock
->> +      - description: Audio PLL1 tuner clock
->> +      - description: Audio PLL2 tuner clock
->> +      - description: Audio Time-Division Multiplexing interface clock
->> +      - description: ADDA ADC Sine Generator clock
->> +      - description: audio Non-LE clock
->> +      - description: Audio DAC High-Resolution clock
->> +      - description: Audio High-Resolution ADC clock
->> +      - description: Audio High-Resolution ADC SineGen clock
->> +      - description: Audio ADDA6 High-Resolution ADC clock
->> +      - description: Tertiary ADDA DAC clock
->> +      - description: Tertiary ADDA DAC pre-distortion clock
->> +      - description: Tertiary ADDA DAC Sine Generator clock
->> +      - description: Tertiary ADDA DAC High-Resolution clock
->> +      - description: Audio infra sys clock
->> +      - description: Audio infra 26M clock
->> +      - description: Mux for audio clock
->> +      - description: Mux for audio internal bus clock
->> +      - description: Mux main divider by 4
->> +      - description: Primary audio mux
->> +      - description: Primary audio PLL
->> +      - description: Secondary audio mux
->> +      - description: Secondary audio PLL
->> +      - description: Primary audio en-generator clock
->> +      - description: Primary PLL divider by 4 for IEC
->> +      - description: Secondary audio en-generator clock
->> +      - description: Secondary PLL divider by 4 for IEC
->> +      - description: Mux selector for I2S port 0
->> +      - description: Mux selector for I2S port 1
->> +      - description: Mux selector for I2S port 2
->> +      - description: Mux selector for I2S port 3
->> +      - description: Mux selector for I2S port 4
->> +      - description: Mux selector for I2S port 5
->> +      - description: Mux selector for I2S port 6
->> +      - description: Mux selector for I2S port 7
->> +      - description: Mux selector for I2S port 8
->> +      - description: Mux selector for I2S port 9
->> +      - description: APLL1 and APLL2 divider for I2S port 0
->> +      - description: APLL1 and APLL2 divider for I2S port 1
->> +      - description: APLL1 and APLL2 divider for I2S port 2
->> +      - description: APLL1 and APLL2 divider for I2S port 3
->> +      - description: APLL1 and APLL2 divider for I2S port 4
->> +      - description: APLL1 and APLL2 divider for IEC
->> +      - description: APLL1 and APLL2 divider for I2S port 5
->> +      - description: APLL1 and APLL2 divider for I2S port 6
->> +      - description: APLL1 and APLL2 divider for I2S port 7
->> +      - description: APLL1 and APLL2 divider for I2S port 8
->> +      - description: APLL1 and APLL2 divider for I2S port 9
->> +      - description: Top mux for audio subsystem
->> +      - description: 26MHz clock for audio subsystem
->>   
->>     clock-names:
->>       items:
->>         - const: aud_afe_clk
->>         - const: aud_dac_clk
->>         - const: aud_dac_predis_clk
->> +      - const: aud_adc_clk
->> +      - const: aud_adda6_adc_clk
->> +      - const: aud_apll22m_clk
->> +      - const: aud_apll24m_clk
->> +      - const: aud_apll1_tuner_clk
->> +      - const: aud_apll2_tuner_clk
->> +      - const: aud_tdm_clk
->> +      - const: aud_tml_clk
->> +      - const: aud_nle
->> +      - const: aud_dac_hires_clk
->> +      - const: aud_adc_hires_clk
->> +      - const: aud_adc_hires_tml
->> +      - const: aud_adda6_adc_hires_clk
->> +      - const: aud_3rd_dac_clk
->> +      - const: aud_3rd_dac_predis_clk
->> +      - const: aud_3rd_dac_tml
->> +      - const: aud_3rd_dac_hires_clk
->>         - const: aud_infra_clk
->>         - const: aud_infra_26m_clk
->> +      - const: top_mux_audio
->> +      - const: top_mux_audio_int
->> +      - const: top_mainpll_d4_d4
->> +      - const: top_mux_aud_1
->> +      - const: top_apll1_ck
->> +      - const: top_mux_aud_2
->> +      - const: top_apll2_ck
->> +      - const: top_mux_aud_eng1
->> +      - const: top_apll1_d4
->> +      - const: top_mux_aud_eng2
->> +      - const: top_apll2_d4
->> +      - const: top_i2s0_m_sel
->> +      - const: top_i2s1_m_sel
->> +      - const: top_i2s2_m_sel
->> +      - const: top_i2s3_m_sel
->> +      - const: top_i2s4_m_sel
->> +      - const: top_i2s5_m_sel
->> +      - const: top_i2s6_m_sel
->> +      - const: top_i2s7_m_sel
->> +      - const: top_i2s8_m_sel
->> +      - const: top_i2s9_m_sel
->> +      - const: top_apll12_div0
->> +      - const: top_apll12_div1
->> +      - const: top_apll12_div2
->> +      - const: top_apll12_div3
->> +      - const: top_apll12_div4
->> +      - const: top_apll12_divb
->> +      - const: top_apll12_div5
->> +      - const: top_apll12_div6
->> +      - const: top_apll12_div7
->> +      - const: top_apll12_div8
->> +      - const: top_apll12_div9
->> +      - const: top_mux_audio_h
->> +      - const: top_clk26m_clk
->>   
->>   required:
->>     - compatible
->> @@ -83,23 +185,69 @@ examples:
->>       afe: mt8192-afe-pcm {
->>           compatible = "mediatek,mt8192-audio";
->>           interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>;
->> +        clocks = <&audsys CLK_AUD_AFE>, <&audsys CLK_AUD_DAC>,
->> +                 <&audsys CLK_AUD_DAC_PREDIS>, <&audsys CLK_AUD_ADC>,
->> +                 <&audsys CLK_AUD_ADDA6_ADC>, <&audsys CLK_AUD_22M>,
->> +                 <&audsys CLK_AUD_24M>, <&audsys CLK_AUD_APLL_TUNER>,
->> +                 <&audsys CLK_AUD_APLL2_TUNER>, <&audsys CLK_AUD_TDM>,
->> +                 <&audsys CLK_AUD_TML>, <&audsys CLK_AUD_NLE>,
->> +                 <&audsys CLK_AUD_DAC_HIRES>, <&audsys CLK_AUD_ADC_HIRES>,
->> +                 <&audsys CLK_AUD_ADC_HIRES_TML>, <&audsys CLK_AUD_ADDA6_ADC_HIRES>,
->> +                 <&audsys CLK_AUD_3RD_DAC>, <&audsys CLK_AUD_3RD_DAC_PREDIS>,
->> +                 <&audsys CLK_AUD_3RD_DAC_TML>, <&audsys CLK_AUD_3RD_DAC_HIRES>,
->> +                 <&infracfg CLK_INFRA_AUDIO>, <&infracfg CLK_INFRA_AUDIO_26M_B>,
->> +                 <&topckgen CLK_TOP_AUDIO_SEL>, <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
->> +                 <&topckgen CLK_TOP_MAINPLL_D4_D4>, <&topckgen CLK_TOP_AUD_1_SEL>,
->> +                 <&topckgen CLK_TOP_APLL1>, <&topckgen CLK_TOP_AUD_2_SEL>,
->> +                 <&topckgen CLK_TOP_APLL2>, <&topckgen CLK_TOP_AUD_ENGEN1_SEL>,
->> +                 <&topckgen CLK_TOP_APLL1_D4>, <&topckgen CLK_TOP_AUD_ENGEN2_SEL>,
->> +                 <&topckgen CLK_TOP_APLL2_D4>, <&topckgen CLK_TOP_APLL_I2S0_M_SEL>,
->> +                 <&topckgen CLK_TOP_APLL_I2S1_M_SEL>, <&topckgen CLK_TOP_APLL_I2S2_M_SEL>,
->> +                 <&topckgen CLK_TOP_APLL_I2S3_M_SEL>, <&topckgen CLK_TOP_APLL_I2S4_M_SEL>,
->> +                 <&topckgen CLK_TOP_APLL_I2S5_M_SEL>, <&topckgen CLK_TOP_APLL_I2S6_M_SEL>,
->> +                 <&topckgen CLK_TOP_APLL_I2S7_M_SEL>, <&topckgen CLK_TOP_APLL_I2S8_M_SEL>,
->> +                 <&topckgen CLK_TOP_APLL_I2S9_M_SEL>, <&topckgen CLK_TOP_APLL12_DIV0>,
->> +                 <&topckgen CLK_TOP_APLL12_DIV1>, <&topckgen CLK_TOP_APLL12_DIV2>,
->> +                 <&topckgen CLK_TOP_APLL12_DIV3>, <&topckgen CLK_TOP_APLL12_DIV4>,
->> +                 <&topckgen CLK_TOP_APLL12_DIVB>, <&topckgen CLK_TOP_APLL12_DIV5>,
->> +                 <&topckgen CLK_TOP_APLL12_DIV6>, <&topckgen CLK_TOP_APLL12_DIV7>,
->> +                 <&topckgen CLK_TOP_APLL12_DIV8>, <&topckgen CLK_TOP_APLL12_DIV9>,
->> +                 <&topckgen CLK_TOP_AUDIO_H_SEL>, <&clk26m>;
->> +        clock-names = "aud_afe_clk", "aud_dac_clk",
->> +                      "aud_dac_predis_clk", "aud_adc_clk",
->> +                      "aud_adda6_adc_clk", "aud_apll22m_clk",
->> +                      "aud_apll24m_clk", "aud_apll1_tuner_clk",
->> +                      "aud_apll2_tuner_clk", "aud_tdm_clk",
->> +                      "aud_tml_clk", "aud_nle",
->> +                      "aud_dac_hires_clk", "aud_adc_hires_clk",
->> +                      "aud_adc_hires_tml", "aud_adda6_adc_hires_clk",
->> +                      "aud_3rd_dac_clk", "aud_3rd_dac_predis_clk",
->> +                      "aud_3rd_dac_tml", "aud_3rd_dac_hires_clk",
->> +                      "aud_infra_clk", "aud_infra_26m_clk",
->> +                      "top_mux_audio", "top_mux_audio_int",
->> +                      "top_mainpll_d4_d4", "top_mux_aud_1",
->> +                      "top_apll1_ck", "top_mux_aud_2",
->> +                      "top_apll2_ck", "top_mux_aud_eng1",
->> +                      "top_apll1_d4", "top_mux_aud_eng2",
->> +                      "top_apll2_d4", "top_i2s0_m_sel",
->> +                      "top_i2s1_m_sel", "top_i2s2_m_sel",
->> +                      "top_i2s3_m_sel", "top_i2s4_m_sel",
->> +                      "top_i2s5_m_sel", "top_i2s6_m_sel",
->> +                      "top_i2s7_m_sel", "top_i2s8_m_sel",
->> +                      "top_i2s9_m_sel", "top_apll12_div0",
->> +                      "top_apll12_div1", "top_apll12_div2",
->> +                      "top_apll12_div3", "top_apll12_div4",
->> +                      "top_apll12_divb", "top_apll12_div5",
->> +                      "top_apll12_div6", "top_apll12_div7",
->> +                      "top_apll12_div8", "top_apll12_div9",
->> +                      "top_mux_audio_h", "top_clk26m_clk";
->> +        memory-region = <&afe_dma_mem>;
->> +        power-domains = <&scpsys MT8192_POWER_DOMAIN_AUDIO>;
->>           resets = <&watchdog MT8192_TOPRGU_AUDIO_SW_RST>;
->>           reset-names = "audiosys";
->>           mediatek,apmixedsys = <&apmixedsys>;
->>           mediatek,infracfg = <&infracfg>;
->>           mediatek,topckgen = <&topckgen>;
->> -        power-domains = <&scpsys MT8192_POWER_DOMAIN_AUDIO>;
->> -        clocks = <&audsys CLK_AUD_AFE>,
->> -                 <&audsys CLK_AUD_DAC>,
->> -                 <&audsys CLK_AUD_DAC_PREDIS>,
->> -                 <&infracfg CLK_INFRA_AUDIO>,
->> -                 <&infracfg CLK_INFRA_AUDIO_26M_B>;
->> -        clock-names = "aud_afe_clk",
->> -                      "aud_dac_clk",
->> -                      "aud_dac_predis_clk",
->> -                      "aud_infra_clk",
->> -                      "aud_infra_26m_clk";
->> -        memory-region = <&afe_dma_mem>;
->>       };
->>   
->>   ...
-> 
-
+diff --git a/include/linux/exportfs.h b/include/linux/exportfs.h
+index f0cf2714ec52dd942b8f1c455a25702bd7e412b3..159b679ef176dc710e9d0107ff9315534c44f715 100644
+--- a/include/linux/exportfs.h
++++ b/include/linux/exportfs.h
+@@ -3,6 +3,7 @@
+ #define LINUX_EXPORTFS_H 1
+ 
+ #include <linux/types.h>
++#include <linux/bits.h>
+ #include <linux/path.h>
+ 
+ struct dentry;
+@@ -277,15 +278,16 @@ struct export_operations {
+ 			     int nr_iomaps, struct iattr *iattr);
+ 	int (*permission)(struct handle_to_path_ctx *ctx, unsigned int oflags);
+ 	struct file * (*open)(const struct path *path, unsigned int oflags);
+-#define	EXPORT_OP_NOWCC			(0x1) /* don't collect v3 wcc data */
+-#define	EXPORT_OP_NOSUBTREECHK		(0x2) /* no subtree checking */
+-#define	EXPORT_OP_CLOSE_BEFORE_UNLINK	(0x4) /* close files before unlink */
+-#define EXPORT_OP_REMOTE_FS		(0x8) /* Filesystem is remote */
+-#define EXPORT_OP_NOATOMIC_ATTR		(0x10) /* Filesystem cannot supply
++#define EXPORT_OP_NOWCC			BIT(0) /* don't collect v3 wcc data */
++#define EXPORT_OP_NOSUBTREECHK		BIT(1) /* no subtree checking */
++#define EXPORT_OP_CLOSE_BEFORE_UNLINK	BIT(2) /* close files before unlink */
++#define EXPORT_OP_REMOTE_FS		BIT(3) /* Filesystem is remote */
++#define EXPORT_OP_NOATOMIC_ATTR		BIT(4) /* Filesystem cannot supply
+ 						  atomic attribute updates
+ 						*/
+-#define EXPORT_OP_FLUSH_ON_CLOSE	(0x20) /* fs flushes file data on close */
+-#define EXPORT_OP_NOLOCKS		(0x40) /* no file locking support */
++#define EXPORT_OP_FLUSH_ON_CLOSE	BIT(5) /* fs flushes file data on close */
++#define EXPORT_OP_NOLOCKS		BIT(6) /* no file locking support */
++#define EXPORT_OP_STABLE_HANDLES	BIT(7) /* required for nfsd export */
+ 	unsigned long	flags;
+ };
+ 
 
 -- 
-AngeloGioacchino Del Regno
-Senior Software Engineer
+2.52.0
 
-Collabora Ltd.
-Platinum Building, St John's Innovation Park, Cambridge CB4 0DS, UK
-Registered in England & Wales, no. 5513718
 
 ______________________________________________________
 Linux MTD discussion mailing list
