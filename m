@@ -4,51 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21631D46609
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B8A8D46604
 	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jan 2026 17:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pphKA5RxZyZS67HeblhZkY895eQurTM8GB2qdvRVyOY=; b=zObKbb5nzXGTgK
-	zYrIeIGqjHc9TFbuG/1BG569nQOCGzww4GnU4mJ6+cGFyTCdoAq0SdyxexOTuYoJWvFXrTxzbsUHh
-	vXTuo6v68ywPtTYptzF3jANU3oGbg1nN8H1FmQGCw2b8FYSBduINd4EZHdRhYqPAqiteLOsxTd2fc
-	rzlxI82adnEsw9b2UnGnsWTS4N0KX+Y2S1S0nNgB7PDdgCtmjRYnjebioLgI0sCV+q/R7T1DLk5PE
-	0o6bi1fDSLUf6IE0ylOoXV0szWImS9r6P/ciQiWYEdXlDczV2KAgTVM3sI0K7r3XpoQlCStRfM+fo
-	57jkn42dpgE4j2oSDl5g==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=fzqpMG8DptH1tzbpWhLJkL8Bewkzpom1qv5ovACa6a0=; b=1JKtabWUD0uiE5
+	rWAn3DgTzqRIaco7JLcTGtFVtzfcDa2ZW6vWF1YGKK0MppRPb/uoYs2h0tE/7h+BxjgvAz1R16p1E
+	wpUIcOBnWA7ZkBmxRvHN95CB4hwd/05X4gYVRlJVvclAVcPhbDBTRh0bR6KJOxgs6gS2Eq2mwWu6w
+	uITL+h/MSKBihI6+2EKPhu8aUoGlmaCpBp/pMgK7boNhCy90H8QZeAbPY4oImjyLC0hjXuX2lL8ss
+	eGXyz+cpUFuLX9Aq+OAgZWdJ0fdMZYHtYAoiIoc2Xm/6PoiorAHim5ltgvifbOk4RlNleM6JNqwyW
+	pbioGCBnhiT9l0anHyvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgRS9-0000000CsMd-4A0n;
-	Thu, 15 Jan 2026 17:48:13 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vgRS5-0000000CsL2-2xwb;
+	Thu, 15 Jan 2026 17:48:09 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgRS7-0000000CsL1-29Y2
+	id 1vgRS3-0000000CsKF-0Dbo
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jan 2026 17:48:13 +0000
+	Thu, 15 Jan 2026 17:48:09 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id E875144322;
-	Thu, 15 Jan 2026 17:48:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76392C2BCAF;
+	by sea.source.kernel.org (Postfix) with ESMTP id 5B75441B3A;
 	Thu, 15 Jan 2026 17:48:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6A44C16AAE;
+	Thu, 15 Jan 2026 17:47:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768499288;
-	bh=RatR/m42YXTf7CDA2CRhGedueCSbBBqPoEedVs8C9UA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=VOFwUkEJYHXeJXZRL0zb6eR6uUkxRN6kee6xDzHjmgu/5n0uJWSJAGIa3iEZf2Lg5
-	 lrmFB48PnhjOkIGftUE7FVsqT4OhDUbx7K94Awns52sziz0jZpwHnSwAotvQh9go6G
-	 Zo5qVJrJCTeW+EYm8RkT1AHIIjI4FEVXimKg+J0MhIDVSiFaPKoaNwen3lqywhgu7/
-	 6LXz5VvJpXQJcRFroHj6/0MKUhMKcD4/ei6N/XtrqN80C8gSBdoXmdkSxh52BGo+am
-	 jWfhM+WqcPi6cHCYVvHnXDhmoAc7qwGGCr9+E9m6pasHToUBBOCqkijjTvFPBJ55ff
-	 ezWMduEtFCLPg==
+	s=k20201202; t=1768499282;
+	bh=Jgrg+43s0ldgv37NKbEktTlLcn8JlZ4Z62/aDsJl2fE=;
+	h=From:Subject:Date:To:Cc:From;
+	b=sv2wZs8WpKeI0wpddsdCzx5FPuJfiv0htyo+0abzJrCCFK9q4146ZE28BG441jorg
+	 Qo1tIee7N/1MnShJaAey62z4lfLsmhIXMLkZMLSEMlmEhDwdr2qsSYaFrVZPxb77cF
+	 i3aSCJl0gIo+M7JBkTxdAg7VvCpYnqzbG7R2Ohvdin1j12CbILNcI3w/DNWL7f9jbe
+	 DBukUrRoDDoNluFnmhgrGDxPlIkvSUMcrjLUpjjJ1T7VqZOaz0YENa8tKyKu6CaX47
+	 KOmCoEsEsYyGz5wli5gj5MnM7JWLaAPtkHWHG4sSZOBoGuAC5psY5ECRaP4FTl6A5n
+	 5/8prxsy2NgBw==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 15 Jan 2026 12:47:32 -0500
-Subject: [PATCH 01/29] exportfs: add new EXPORT_OP_STABLE_HANDLES flag
+Subject: [PATCH 00/29] fs: require filesystems to explicitly opt-in to nfsd
+ export support
+Date: Thu, 15 Jan 2026 12:47:31 -0500
+Message-Id: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
 MIME-Version: 1.0
-Message-Id: <20260115-exportfs-nfsd-v1-1-8e80160e3c0c@kernel.org>
-References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
-In-Reply-To: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MQQqAIBBA0avErBMcyaKuEi0kx5qNhhMRiHdPW
+ r7F/wWEMpPA0hXI9LBwig3Yd7CfLh6k2DeD0WbUiIOi90r5DqJiEK/QWLR6MjS7GVpzZQr8/r9
+ 1q/UDI1yMc18AAAA=
+X-Change-ID: 20260114-exportfs-nfsd-12515072e9a9
 To: Christian Brauner <brauner@kernel.org>, 
  Alexander Viro <viro@zeniv.linux.org.uk>, 
  Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, 
@@ -94,25 +97,25 @@ Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
  linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
  linux-f2fs-devel@lists.sourceforge.net, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2664; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=RatR/m42YXTf7CDA2CRhGedueCSbBBqPoEedVs8C9UA=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpaShEw8HrDl/7ZIM2OU/hVtFHsnd81WblzyW/e
- yPqA+8+5UGJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaWkoRAAKCRAADmhBGVaC
- FYotEACEnxwn1zEGzienetvotgfcnP0KEaEoc3vEq4xPjrvl8qD8AzHl5lAD9pOV95V0vyU1jWl
- F+LEfCXY/wJ0q8m3Y2mFHyBxMY8nD5PoBm5N4fXW/WYFI8u99g9N4VNJkrMQ9HTzKeVAKTl/M1J
- mrbI22t/onu2ymRGzRqNb/kAFe3UnZKq5nzacFwoBRbfAKrjqjfaJPjermi4aUlVjCjekIh0TEE
- Ds0g+E5VMeObKsUc14iLHgf2OKqEIRvMP8DaK6mlvpMXaAD3YHzptTey4nYKQUZRFFZcleYPplo
- SWrEuNsKUdPrwdG65vHBuaIE9yEzchlvNdGyIGc7aqrMOax0dCU8qPoLhlLadC25xQrrazgFoH2
- l/Y92N1//yzg8uUwnicfsrF77KdgC9ImgrgBPrbAboDvmBqOCGgIiepgsb7Q62IXUYph956Fup4
- YiuHKS6eRp+flNlvzvNOVL21skn3W1rV/ffia9WkmS52EfWCBJLfMVFLlM5Fxs+XfASNsPkZcjk
- 7A3T0E92BC/sj2ln5xSO/2PWamRs0o+Fjo1zTnuo4iAMVwDZQ5EpZMWc7wQnI3KnxwLfagRAPXu
- 7gOokL39dJc1Puy9BUCKYlRaUcifcB3ctHJTgr0/wiT5j/Fovcjx2nirH3rLSgIbyorjoAiOcP2
- f+X4rzQbvEzY5lw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4009; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=Jgrg+43s0ldgv37NKbEktTlLcn8JlZ4Z62/aDsJl2fE=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpaSg9V9dGf/ZUraP4b1Pq5RtyBLPKPHN6qkaxn
+ 8S9nULay2GJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaWkoPQAKCRAADmhBGVaC
+ FU2HEACr1dom+IcUewiIOnk7xEbGWbqcKSzh/u8bfD7LubFnaY7GNt5n6p3PgjmIFAgE/Lfk2v+
+ Do5G648LuI9AgNBffpq3Rou0EGw9+wxjXyRaSItdEWDshxbLnMS5D2dtmXeB4x2mF6Xo8wPho9c
+ ncOUEwjZL61T/UOLGxpSOojluUsBXenixeUCTgPYWeDSKZSd1PrbfIIvNT3wwmmIpQAv0lasork
+ Zl4qe+BiG1G0IPtketcJGFYIgXNp76Hnll+P8/EqVrDG+4nPn8MGAy3xqMQyq4+dCzENDy0DmS3
+ AJMlGepQMU/y0tAmS4R1R2P27jpCMwpBj8HhdNo0JThYFgmCYeGwPxsTOTNG8XmrWn4zye1BAl9
+ Oz/kXfQnSFwMzweZ9J7fT16IxYVpb12aXvYdwcnZ+IE/Suh66Nx8n52d4tuSwNkKYQf6d05G1bU
+ I+lA7kAnXjIh/p4o4pNnALEld2Rn49OAx/yxtN5VOYrjpBIK6yRyYTXjz0PnCRFsn3V65+xhhPM
+ CJTSVK9ZzU4nspmDSK5hdCvs1pnGqYR9dLF7QV60eUBpiDYnfsiOG+KZmrsLuWOd2/7/8V8giqf
+ SBbuLOXJmeBQ1IbyaaZbzwsaK+7PAPY92+HTJ8jsZ6+vQhAXLJ40Y1ug6UAG1bGirhSbW+Ru3JH
+ SgoO6jBDoISNHpA==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260115_094812_078150_BA9D67EE 
-X-CRM114-Status: GOOD (  13.46  )
+X-CRM114-CacheID: sfid-20260115_094807_131932_6360FF8D 
+X-CRM114-Status: GOOD (  10.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,66 +132,89 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-At one time, nfsd could take the presence of struct export_operations to
-be an indicator that a filesystem was exportable via NFS. Since then, a
-lot of filesystems have grown export operations in order to provide
-filehandle support. Some of those (e.g. kernfs, pidfs, and nsfs) are not
-suitable for export via NFS since they lack filehandles that are
-stable across reboot.
+In recent years, a number of filesystems that can't present stable
+filehandles have grown struct export_operations. They've mostly done
+this for local use-cases (enabling open_by_handle_at() and the like).
+Unfortunately, having export_operations is generally sufficient to make
+a filesystem be considered exportable via nfsd, but that requires that
+the server present stable filehandles.
 
-Add a new EXPORT_OP_STABLE_HANDLES flag that indicates that the
-filesystem supports perisistent filehandles, a requirement for nfs
-export. While in there, switch to the BIT() macro for defining these
-flags.
-
-For now, the flag is not checked anywhere. That will come later after
-we've added it to the existing filesystems that need to remain
-exportable.
+This patchset declares a new EXPORT_OP_STABLE_HANDLES flag, adds it to
+all of the filesystems that have stable filehandles, and then adds a
+check in nfsd to ensure that that flag is set for any filesystem to
+which it has been presented a handle. When a filesystem doesn't have
+this flag, it will treat the filehandle as stale.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
+Jeff Layton (29):
+      exportfs: add new EXPORT_OP_STABLE_HANDLES flag
+      tmpfs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      ext4: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      ext2: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      erofs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      efs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      xfs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      ceph: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      btrfs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      befs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      ufs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      udf: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      affs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      squashfs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      smb/client: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      ovl: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      orangefs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      ocfs2: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      ntfs3: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      nilfs2: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      nfs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      jfs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      jffs2: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      isofs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      gfs2: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      fuse: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      fat: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      f2fs: add EXPORT_OP_STABLE_HANDLES flag to export operations
+      nfsd: only allow filesystems that set EXPORT_OP_STABLE_HANDLES
+
+ fs/affs/namei.c          |  1 +
+ fs/befs/linuxvfs.c       |  1 +
+ fs/btrfs/export.c        |  1 +
+ fs/ceph/export.c         |  1 +
+ fs/efs/super.c           |  1 +
+ fs/erofs/super.c         |  1 +
+ fs/ext2/super.c          |  1 +
+ fs/ext4/super.c          |  1 +
+ fs/f2fs/super.c          |  1 +
+ fs/fat/nfs.c             |  2 ++
+ fs/fuse/inode.c          |  2 ++
+ fs/gfs2/export.c         |  1 +
+ fs/isofs/export.c        |  1 +
+ fs/jffs2/super.c         |  1 +
+ fs/jfs/super.c           |  1 +
+ fs/nfs/export.c          |  3 ++-
+ fs/nfsd/nfsfh.c          |  4 ++++
+ fs/nilfs2/namei.c        |  1 +
+ fs/ntfs3/super.c         |  1 +
+ fs/ocfs2/export.c        |  1 +
+ fs/orangefs/super.c      |  1 +
+ fs/overlayfs/export.c    |  2 ++
+ fs/smb/client/export.c   |  1 +
+ fs/squashfs/export.c     |  3 ++-
+ fs/udf/namei.c           |  1 +
+ fs/ufs/super.c           |  1 +
+ fs/xfs/xfs_export.c      |  1 +
  include/linux/exportfs.h | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ mm/shmem.c               |  1 +
+ 29 files changed, 45 insertions(+), 9 deletions(-)
+---
+base-commit: c537e12daeecaecdcd322c56a5f70659d2de7bde
+change-id: 20260114-exportfs-nfsd-12515072e9a9
 
-diff --git a/include/linux/exportfs.h b/include/linux/exportfs.h
-index f0cf2714ec52dd942b8f1c455a25702bd7e412b3..159b679ef176dc710e9d0107ff9315534c44f715 100644
---- a/include/linux/exportfs.h
-+++ b/include/linux/exportfs.h
-@@ -3,6 +3,7 @@
- #define LINUX_EXPORTFS_H 1
- 
- #include <linux/types.h>
-+#include <linux/bits.h>
- #include <linux/path.h>
- 
- struct dentry;
-@@ -277,15 +278,16 @@ struct export_operations {
- 			     int nr_iomaps, struct iattr *iattr);
- 	int (*permission)(struct handle_to_path_ctx *ctx, unsigned int oflags);
- 	struct file * (*open)(const struct path *path, unsigned int oflags);
--#define	EXPORT_OP_NOWCC			(0x1) /* don't collect v3 wcc data */
--#define	EXPORT_OP_NOSUBTREECHK		(0x2) /* no subtree checking */
--#define	EXPORT_OP_CLOSE_BEFORE_UNLINK	(0x4) /* close files before unlink */
--#define EXPORT_OP_REMOTE_FS		(0x8) /* Filesystem is remote */
--#define EXPORT_OP_NOATOMIC_ATTR		(0x10) /* Filesystem cannot supply
-+#define EXPORT_OP_NOWCC			BIT(0) /* don't collect v3 wcc data */
-+#define EXPORT_OP_NOSUBTREECHK		BIT(1) /* no subtree checking */
-+#define EXPORT_OP_CLOSE_BEFORE_UNLINK	BIT(2) /* close files before unlink */
-+#define EXPORT_OP_REMOTE_FS		BIT(3) /* Filesystem is remote */
-+#define EXPORT_OP_NOATOMIC_ATTR		BIT(4) /* Filesystem cannot supply
- 						  atomic attribute updates
- 						*/
--#define EXPORT_OP_FLUSH_ON_CLOSE	(0x20) /* fs flushes file data on close */
--#define EXPORT_OP_NOLOCKS		(0x40) /* no file locking support */
-+#define EXPORT_OP_FLUSH_ON_CLOSE	BIT(5) /* fs flushes file data on close */
-+#define EXPORT_OP_NOLOCKS		BIT(6) /* no file locking support */
-+#define EXPORT_OP_STABLE_HANDLES	BIT(7) /* required for nfsd export */
- 	unsigned long	flags;
- };
- 
-
+Best regards,
 -- 
-2.52.0
+Jeff Layton <jlayton@kernel.org>
 
 
 ______________________________________________________
