@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19536D47CD6
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jan 2026 10:47:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8552D47CD6
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jan 2026 10:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IzahdwTFU9FUuxY980inYkIrUJj12dsELo8StWY05b0=; b=T3A7O2K/WKSJQY
-	O69N7yeTfTbMBK3nMwNhVfzmuq76bRQYflBh5Y+OrFg0FUBwjqKhtSLa2PhEQP4SLylOcIs3/pSAG
-	I0na+LGI8Xc3pANItWAWzMCi7EYLJMqvw4IX/usPbCjtHHviWCejEJjZ+6Ef4EKUXnLC9JsWcacQS
-	9Ow0/x6VMRHlebPyJF3nvilYyZZVgVaLc2fmxAddgwiKpS/8DHfILbdWUfwB6tmhL47j0avR5kvGX
-	nEQmZERKGF7vcArl+ixlShXbum5o8V8ajoZ8m1mCILd0wRgY16oQLzX5n3u65kXe1J+fGw8OaFsZf
-	CwFyqVd0ex59qW9XWxfw==;
+	List-Owner; bh=FYJHs4SIf0xcmpKomu3DYuWm2PnS0TXPe66kKUHFwF4=; b=pMmnhVwKLXvElC
+	RKn/An1VcAEwJh+LrNHLCu0I0VYQdTvKV9DWcKK9qt6Y/SESp0xUfQyyfFKw2x9cqQT7s81MWfWSP
+	g2/dRUVs0odrYeOCDQ4UenFkhzhpnv0/l61ZIuPD1Vy7vtk41IPeDSx/ctXahpwyrfQE7J1Rq/nI/
+	g5L2lsdQQBwIlIB3Un9e6zhtp0jy2CXIFkGmSfoqz5LytRCai9fEx8NaM491H6UtbfEaAPzynGqF2
+	0udjQ3rZl+e1U87MkDTbmCJpvU4hO8jmECjSDr/6gNL90dCo7Wuj0jR68oYlKqc7L0/msdtuukLGz
+	cKC56HtHqhVtfH79gyYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vghMa-0000000DyhJ-2Tug;
-	Fri, 16 Jan 2026 10:47:32 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1vghMv-0000000Dymh-0mJA;
+	Fri, 16 Jan 2026 10:47:53 +0000
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vghMX-0000000Dyfv-3AgH
+	id 1vghMs-0000000Dylc-2jpI
 	for linux-mtd@lists.infradead.org;
-	Fri, 16 Jan 2026 10:47:31 +0000
+	Fri, 16 Jan 2026 10:47:52 +0000
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EF1155BCCB;
-	Fri, 16 Jan 2026 10:47:27 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E9DC4336BA;
+	Fri, 16 Jan 2026 10:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768560448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1768560469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=Ftw/w48AH2FIze8c5NCpGY+5XO/vnHkjGCmtVV9PTeJB6y2k7VTfqEVHahDLJnyaun4vrT
-	jZwEXiGVCIwZUyt3JbbArZXWmWmE5e5aZEA1Gruu+xovaSyAFw4iXisViVzre8n7BBI/TR
-	X0JT5TV78n0RM2yYJOHbOFg0cunt5rE=
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=NAigHHJefgDlX6mRySbG7B5iCmL36aEduQNmXj2EvsoYBrU7/VTo8/WNZrc+jBxVmYwek3
+	innlofjWnNur4gO64jxDUWQVk3pm53xXSuys1aTGTWpFtvR1Xd4ONEVhhk+B034xGJPlVB
+	qicHNvV2T2n+PsShv1UvN/CV4roIDw8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768560448;
+	s=susede2_ed25519; t=1768560469;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=/0mnXymQoI/apVzzXrkGOFLQrtf7ARYoukgV2ygH5/30E/hcAH6PZ8LZ8kwGADlW1g3sJT
-	6D8IQPk6mXId1oDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="Ftw/w48A";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/0mnXymQ"
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=wAaeVaZXVSmCCp/Ci8z3PCyFT3ubSWVNcMQNxpoFpxosJZqqzSMYJQTVEe91z3AbyBwRES
+	hgYeQWFl3/XVwuCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Vqd1Y4ym;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7Gjt5tLm
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768560448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1768560468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=Ftw/w48AH2FIze8c5NCpGY+5XO/vnHkjGCmtVV9PTeJB6y2k7VTfqEVHahDLJnyaun4vrT
-	jZwEXiGVCIwZUyt3JbbArZXWmWmE5e5aZEA1Gruu+xovaSyAFw4iXisViVzre8n7BBI/TR
-	X0JT5TV78n0RM2yYJOHbOFg0cunt5rE=
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=Vqd1Y4ymZFbiTB3W7/+krX5l7W5sxL7aNuHpBkJYaPRDypTZKpWZDKux+L+iC/0RWALCc4
+	Wl+guT58YT9lXH7G1B0VaMoNprxzvexhqTpUZyuh7OzKnAPdgG0Xbfk0EUDTxkORMoIq4Q
+	yoxjYuhlhqs/kbTHf/h7VyrYgdeD378=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768560448;
+	s=susede2_ed25519; t=1768560468;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=/0mnXymQoI/apVzzXrkGOFLQrtf7ARYoukgV2ygH5/30E/hcAH6PZ8LZ8kwGADlW1g3sJT
-	6D8IQPk6mXId1oDA==
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=7Gjt5tLmv8pwoPI4+tAhdd+IkW9SPQOahLPixnGtYy+H9R2r0zQYbKm8w1G8zq15sjbdtX
+	okoOuMG52JxjWaBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DF7B83EA63;
-	Fri, 16 Jan 2026 10:47:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DAAB63EA63;
+	Fri, 16 Jan 2026 10:47:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sMCYNj8XamkZDAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 16 Jan 2026 10:47:27 +0000
+	id JhtdNVQXamm8DAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 16 Jan 2026 10:47:48 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A8D37A091D; Fri, 16 Jan 2026 11:47:27 +0100 (CET)
-Date: Fri, 16 Jan 2026 11:47:27 +0100
+	id A1819A091D; Fri, 16 Jan 2026 11:47:48 +0100 (CET)
+Date: Fri, 16 Jan 2026 11:47:48 +0100
 From: Jan Kara <jack@suse.cz>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Christian Brauner <brauner@kernel.org>, 
@@ -115,14 +115,14 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org, 
 	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
 	linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 02/29] tmpfs: add EXPORT_OP_STABLE_HANDLES flag to export
+Subject: Re: [PATCH 18/29] ocfs2: add EXPORT_OP_STABLE_HANDLES flag to export
  operations
-Message-ID: <epeo3w56c33kgxtx7jj6xyjl2gq3n67y6eqq4jlxfvg2qrgjod@3fn2xqpb66bw>
+Message-ID: <7ez6obuswq26r3fi5es44rv25motvmcc7iuv7mpj7s2cnb4i4i@di4z7eug36t7>
 References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
- <20260115-exportfs-nfsd-v1-2-8e80160e3c0c@kernel.org>
+ <20260115-exportfs-nfsd-v1-18-8e80160e3c0c@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260115-exportfs-nfsd-v1-2-8e80160e3c0c@kernel.org>
+In-Reply-To: <20260115-exportfs-nfsd-v1-18-8e80160e3c0c@kernel.org>
 X-Spamd-Result: default: False [-2.51 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -152,13 +152,13 @@ X-Spamd-Result: default: False [-2.51 / 50.00];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.com:email]
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: EF1155BCCB
+X-Rspamd-Queue-Id: E9DC4336BA
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260116_024730_087202_1F05F76A 
-X-CRM114-Status: GOOD (  17.32  )
+X-CRM114-CacheID: sfid-20260116_024750_993185_FF578D71 
+X-CRM114-Status: GOOD (  17.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -175,8 +175,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 15-01-26 12:47:33, Jeff Layton wrote:
-> Add the EXPORT_OP_STABLE_HANDLES flag to tmpfs export operations to indicate
+On Thu 15-01-26 12:47:49, Jeff Layton wrote:
+> Add the EXPORT_OP_STABLE_HANDLES flag to ocfs2 export operations to indicate
 > that this filesystem can be exported via NFS.
 > 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
@@ -188,21 +188,19 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 								Honza
 
 > ---
->  mm/shmem.c | 1 +
+>  fs/ocfs2/export.c | 1 +
 >  1 file changed, 1 insertion(+)
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index ec6c01378e9d2bd47db9d7506e4d6a565e092185..c64c4410b4fd9961599a5ea768b469d8184e713e 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -4477,6 +4477,7 @@ static const struct export_operations shmem_export_ops = {
->  	.get_parent     = shmem_get_parent,
->  	.encode_fh      = shmem_encode_fh,
->  	.fh_to_dentry	= shmem_fh_to_dentry,
+> diff --git a/fs/ocfs2/export.c b/fs/ocfs2/export.c
+> index b95724b767e150e991ae4b8ea5d0505c1ae95984..77d82ff994c86037c14fbf7a1d9706f1dd2b87ac 100644
+> --- a/fs/ocfs2/export.c
+> +++ b/fs/ocfs2/export.c
+> @@ -280,4 +280,5 @@ const struct export_operations ocfs2_export_ops = {
+>  	.fh_to_dentry	= ocfs2_fh_to_dentry,
+>  	.fh_to_parent	= ocfs2_fh_to_parent,
+>  	.get_parent	= ocfs2_get_parent,
 > +	.flags		= EXPORT_OP_STABLE_HANDLES,
 >  };
->  
->  enum shmem_param {
 > 
 > -- 
 > 2.52.0
