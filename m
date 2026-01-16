@@ -4,64 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5146AC982CD
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jan 2026 15:08:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1D5CC982CD
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jan 2026 15:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7wPbXbYKCZftVDMo/K5XhWDQSy+jZLfowJYwHHyg0UA=; b=kN0LlEuMo8V38k
-	bDpIkI/aBHMHytIWBfsDGfIIoDEp5gjkOxPUqKV+ZMcjogtQbrfgZtnwNa9zQEUtyGtembcRS8/c3
-	hzDnRxCg1RnkU5nUxY6vCrU3tlIGGOh4n/Z491q73TYaNZPEJGvVUTZvUNKqfxzUvIBKsm2NRoz5J
-	UJVONb5P9SeB9tm5fFpIWzvqrlZZO1BG5PBbOkzg1JR4+dLK1v9XTpg4ZL/eNehf0tg0ne4x1MgMs
-	Zx1FSZYa3IYBe99PnSJNb/ao0/NRPySZx+z5UdCMWwb0JLmq2iKtWWmiIHgA0mstJtBgI2h0jhasv
-	/W8vh+bTybST9TIcAfAg==;
+	List-Owner; bh=tmtZZ7GhOgTN19Cs1WFb4rVHgQrlah5BRG9RM8gRkMo=; b=hRD2bG2atGaafD
+	1ftFCS8iWGWP5DR0Tt+u9FIwB/ILtjxAzZhnYdA/IoZDgyG4GoM6m412VrvMeGCDKnk0FoQsVPSCU
+	WjNlBhV13N0RK1BNeGzpglSia3f39colGFT/A2djCaYAbD/zFRx8DsC9VzVYGp8LoxY9Z18KT9nN8
+	JVO7ma1V25BFhxMivhrdbKGY7To834caODfg5oE52IqyQMEIQEdqu47aoCQ2xwSLs8Ld1gb+AZsnB
+	LxWovczIkGa/APgnIU3fW8RIhrmmmU11Z2ap6kuWqrLPPR1QleJMp4vs2RQteSHrj99KOLmvS+uZa
+	MMtmYZijZC0Xy6jT4GdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vglR4-0000000EJnZ-0Dl1;
-	Fri, 16 Jan 2026 15:08:26 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vglRN-0000000EJtO-249c;
+	Fri, 16 Jan 2026 15:08:45 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vglR1-0000000EJms-2kVp;
-	Fri, 16 Jan 2026 15:08:23 +0000
+	id 1vglRK-0000000EJrt-1sOM;
+	Fri, 16 Jan 2026 15:08:43 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id A6CD760150;
-	Fri, 16 Jan 2026 15:08:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 337A6C116C6;
-	Fri, 16 Jan 2026 15:08:22 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id A93FC4342E;
+	Fri, 16 Jan 2026 15:08:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60600C116C6;
+	Fri, 16 Jan 2026 15:08:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768576102;
-	bh=L/HOSpJtqEp/e3nyMrq+9QjC47mSPiJ2Yziy3NYJolc=;
+	s=k20201202; t=1768576121;
+	bh=GsDoofD9Db2+ABthdz0H2fcd39DOVi6IJIg7YdoRj8w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d16C+y/Tumd22i1N3bhbuh6anO7hRSMRvfqsosQvfyI6puDbKWSdeAMoEmifacdPV
-	 h9xDJLP70dxRnBDSPEKx3bBXmnlCLss2YRLbSL8wnmgqMcnScfX5OcmZIcfBughyF9
-	 PKE8T7dtdo4k7s5BWWcEJRIs3X53HkgUMNG3satOdGM9L26bKTa46VM2oTzt3Nf6Nu
-	 Iy4fp5NtMrrBWrgtfvO4r4svFtADUNVnmSkYNBGwazaLMc08aFKJQhdO7l290lUsjR
-	 r1Jv6zkZ3vkqXcqLWdSUl1PVV0XCg5yRRcyOg1nQ/y3z4GWg68Yzeu9Ustnz+StorA
-	 UbTj/lEbA6Uzw==
-Date: Fri, 16 Jan 2026 09:08:21 -0600
-From: Rob Herring <robh@kernel.org>
+	b=uVy8+kY7ZWBm2uJM1aPcj6Se4PHtz7GAXz4wHdMyGVhlhemIZzP9df1+u1DnzKyds
+	 ksyaEv0+Bq5NpSZIvTBFguO/zUpvHpZzl9EFrLjQRH4VbY1T1dWk+K2gub43Awo052
+	 1qCUQMmvRmhvZT37qXm5NREEYSGMTEwgAto0d81wJIil7TMVuslj4lFh38sgmVPrRP
+	 hbxWJHYTAjrnXlWg5zrL8vivybNTm9fP7DGDkSO4V0vi/dOYERuucSUXATODdfhwsH
+	 xLfVKus6wrbYIDbIBetj6BOSpHUofKtyqhUdz30yJMWPWfdrevgJ7nQYR7cIFVylgr
+	 4yTinFtN6iMrQ==
+Date: Fri, 16 Jan 2026 09:08:40 -0600
+From: "Rob Herring (Arm)" <robh@kernel.org>
 To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: krzk+dt@kernel.org, conor+dt@kernel.org, tudor.ambarus@linaro.org,
-	pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
-	richard@nod.at, vigneshr@ti.com, lgirdwood@gmail.com,
-	broonie@kernel.org, matthias.bgg@gmail.com,
-	julien.massot@collabora.com, eugen.hristev@linaro.org,
-	jiaxin.yu@mediatek.com, shane.chien@mediatek.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH 4/4] arm64: dts: mediatek: mt8192: Rename mt8192-afe-pcm
- to audio-controller
-Message-ID: <20260116150821.GA1576159-robh@kernel.org>
+Cc: linux-mediatek@lists.infradead.org, julien.massot@collabora.com,
+	linux-sound@vger.kernel.org, pratyush@kernel.org,
+	tudor.ambarus@linaro.org, devicetree@vger.kernel.org,
+	shane.chien@mediatek.com, richard@nod.at, krzk+dt@kernel.org,
+	lgirdwood@gmail.com, conor+dt@kernel.org,
+	linux-mtd@lists.infradead.org, jiaxin.yu@mediatek.com,
+	broonie@kernel.org, vigneshr@ti.com, matthias.bgg@gmail.com,
+	eugen.hristev@linaro.org, linux-arm-kernel@lists.infradead.org,
+	miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
+	mwalle@kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 3/4] dt-bindings: arm: mediatek: audsys: Support
+ mt8192-audsys variant
+Message-ID: <176857611991.1604366.11152222679883744313.robh@kernel.org>
 References: <20260115125624.73598-1-angelogioacchino.delregno@collabora.com>
- <20260115125624.73598-5-angelogioacchino.delregno@collabora.com>
+ <20260115125624.73598-4-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260115125624.73598-5-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20260115125624.73598-4-angelogioacchino.delregno@collabora.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260116_070842_505385_409EDAF6 
+X-CRM114-Status: UNSURE (   8.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,19 +82,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 15, 2026 at 01:56:24PM +0100, AngeloGioacchino Del Regno wrote:
-> Device tree nodes should have generic names, and this one doesn't.
-> Rename the mt8192-afe-pcm subnode of audsys to `audio-controller`.
+
+On Thu, 15 Jan 2026 13:56:23 +0100, AngeloGioacchino Del Regno wrote:
+> Add support for the mediatek,mt8192-audsys compatible, which uses
+> a different audio controller (mt8192-afe-pcm) compared to mt8183
+> and mt2701.
 > 
-> This commit brings no functional changes, but resolves dtbs_check
-> warnings.
+> This resolves a dtbs_check warning on all MT8192 devicetrees.
 > 
 > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > ---
->  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../arm/mediatek/mediatek,audsys.yaml         | 46 +++++++++++++------
+>  1 file changed, 33 insertions(+), 13 deletions(-)
+> 
 
-Acked-by: Rob Herring (Arm) <robh@kernel.org>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
