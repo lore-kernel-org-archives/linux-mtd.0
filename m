@@ -4,50 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6E8FD29C41
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jan 2026 16:28:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E450D29C46
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jan 2026 16:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OoUKztDrxguoODnAiLjzR+gwo4LiYnNvY6Z0FOLU3MA=; b=L/mOxHXLQSc+Xr
-	b99lASZ3XNTimJPkwL50ckjFN4QDbAp6p7LFeodG74/gQTk0wenimmOLT/DaTnmEW14zGTJtQ0IKN
-	wgZd8Y8UbUafgLNhx8o+LoSR5Q0cN29HXMXWHRSgjYgnZ8owQFyjPBHAZT7t9kjDY2nQqByurfYph
-	Biu3algUqpOpSgd/1kvqJsZIGkcf0KZmzlL+SkzX+0LjOueKRxg5LL/Wg0QEbY2JKb/tfUbNOtpQH
-	l2trrBNrJy4wh44TKfjeOxcdXEoUOub+Z/23aCM9djreLvaoYVc05Wif72pt5NR+kj+MUp6S5ssl7
-	ZH1xiaephCJeLYrser7A==;
+	List-Owner; bh=3QSr7cPWLYeYSV/Uq73sL8kBDij70U24nDmqCs6N9Gk=; b=WO6n7VcPaHpsp6
+	E6zrCnDayDY+YN8Op8GPozIhp52G0aPQ8D0jZKhR1G7OQieEf1LtG0wTad6HjC0t+zrnBrnn944Rq
+	MOZ0zE7T/BcpNeWXwcmjimLu93nF7w9NGkAjtCne29x73xjN0nj3ICi2HDyFAoPz2VQlqo1PMbAn3
+	k4Eao6EJOH4s60bVKTj+MHQSRkL2SgoqL+XL98pdsrLtLuP7JMESNvDbtJAC4S2ExAREXTJmfrdbd
+	cp3leyX/J2a1LkYXB1trwcTAdEjn2Kjg/E+R1sv8w8OaSCYbNN+IAqsLeM1+NaHLn8DNCC37EUpEV
+	Y12XwGInWc8BL+995CxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhs7W-00000002ToP-0BXU;
-	Mon, 19 Jan 2026 16:28:50 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vhs7Z-00000002TqC-1SZu;
+	Mon, 19 Jan 2026 16:28:53 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhs7L-00000002TlL-3lV2
+	id 1vhs7X-00000002Tom-0hHA
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 19 Jan 2026 16:28:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=hIUiCiYvj4+PQCXeGc2dRPv9jWC04oKwYnr+8nkAWKs=; b=Lu6smQcanurs/uwK74DF7IdSzA
+	HCwJuplg9C5TAu2qWRE+twhPG5E+2PEth0tNJXtmLcOzvGs7chmhzMdCrMblq0JlDrjQQtrSH9rsy
+	qgxywDajhJ9FlDyPGj43QyK25iufH8b1bz3tkBIxciMlQxgwwuC5Nfmp423FsgsyfD7rKbtFlugjd
+	jquHNfF3RggcSLlc+M0lR6yYFNLulz2RG4pMPaDcIQTco/DvGmFJeCVFKkHu7ZJNgBejMFoiIF3W6
+	FkRSxLgyhVIbruRs1nQMibahnJhkt2TBPQnGfzNwVvIlaBj00qmFUMe0IlUKwt5X0e2cfXpSE6NWQ
+	haKqFmlw==;
+Received: from sea.source.kernel.org ([172.234.252.31])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vhs7T-0000000CWC6-2ELN
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jan 2026 16:28:47 +0000
+	Mon, 19 Jan 2026 16:28:50 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1700B6014E;
-	Mon, 19 Jan 2026 16:28:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7F5DC116C6;
-	Mon, 19 Jan 2026 16:28:31 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0A398444E6;
+	Mon, 19 Jan 2026 16:28:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D33BC19424;
+	Mon, 19 Jan 2026 16:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768840118;
-	bh=FgvaakP+KkZTiWPmd/GcmMQL5i/gToOI+UK+TD05398=;
+	s=k20201202; t=1768840125;
+	bh=ttUZbbEr4qNvBmzcmWXht/0+Ro1g2UQElLV80PGUEuE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Wgi+FWvLw0MQ+2HORgz5R2DzsE3xTDpIeJv3h1S0cFNs6i9UQbBFBYRNiA8j8Fg9+
-	 KHV2BRMV8sc5hIpryCF11pPiQxFsp5jsFeGRgjvKpjnr50AHMK8gIN85Nf3HliIyJN
-	 fVEnoXFDYtI2qYy/Ygj8CYKdqJi8j61eA8sNsahGBpQ1xk2jp5P4+4TfuS7JqNHmrB
-	 NIwutz+PXPre13vg54KrR7HlTKnjxB4xKcJY/PQYeRmbOh3hCGCON9Juobo7p2e8vA
-	 llAP9XHmK5riLuTYR5uf34R6+LIIkqWX0A7ghO8ELhidE6qt+BMPFR9uiYqbZgi+m3
-	 4gFfkEvNqWt6w==
+	b=ule0GqUZw08XdIdQXdwy8YF/nQZodPwE+3Ap+rnwUArUvUqLP17fDeYXRDi2IiJSJ
+	 HElLEOqGF8Xtj5odBgm9/xe2Fz8Lpg4CQVge093nGn4xj01wGTq2ovDCqHyWi3whi6
+	 GiA7vqdnJNtVL1EejI20NzzJ8W3JehC438yl3lV9CColr9gUKT7C8Gess01Bet1SrQ
+	 PrQr6QQdWmaEfrtIG3pvYB570DREtCmV8GhL9h0FkDCPMA6q1tkaEv2Ke3A6GDO2bF
+	 U5S0zkEUQzmWWKRbsGGvLtUiO3iuk83JuTbFoFx1FOKcFkMCOPVXsSh7hBRH5E9yC4
+	 +L7N+wmfPdx7Q==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 19 Jan 2026 11:26:28 -0500
-Subject: [PATCH v2 11/31] befs: add EXPORT_OP_STABLE_HANDLES flag to export
+Date: Mon, 19 Jan 2026 11:26:29 -0500
+Subject: [PATCH v2 12/31] ufs: add EXPORT_OP_STABLE_HANDLES flag to export
  operations
 MIME-Version: 1.0
-Message-Id: <20260119-exportfs-nfsd-v2-11-d93368f903bd@kernel.org>
+Message-Id: <20260119-exportfs-nfsd-v2-12-d93368f903bd@kernel.org>
 References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
 In-Reply-To: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
 To: Christian Brauner <brauner@kernel.org>, 
@@ -97,22 +112,25 @@ Cc: David Laight <david.laight.linux@gmail.com>,
  gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net, 
  linux-doc@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=706; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=FgvaakP+KkZTiWPmd/GcmMQL5i/gToOI+UK+TD05398=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpbltbCPwpzNwYdBr0vFnmbNYzyzE/ZPMcrbCYA
- XY3FvJ2K7mJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaW5bWwAKCRAADmhBGVaC
- FXLLEAC5N5AzFG4uvYDzXr4HYnhMSx1oslQeDc2aNn/1b0a0OMrmi86P7CYesaBsl2EI1ujp33F
- OtWIgVKwOCZ0pSCYP3crtFEbaq0Aw+i2Iyap1/h/6lHHzapF70M0725+Adlu3M9tGmo7Bjn9ZY1
- o3g1+ZCSHq7lVtNiYMCk90mQ1RLDIva6G7gisSZ0fNGeM5YvlxzF/PsylbBWHu0MnsIQSKTN08x
- 8lcD3ifSkZh+XuXVyuqGPPojdmvdQH2+KTj3ye6IdrjX67X6HUS0cJHLPZZGYv7qZ3zhHIZ4ocP
- S/4ZMNiZoheepK1QszjjTUh6OgEpzWX6wDrw4HIBp5sFA/qKKcltgPiGeItaZGnb1zHxgxKhEta
- 6rCEV1Z4hVXYA8qhEdd4mlpJrN8I8crXV7Byc5x1gTg2LAwlNXNqDY/AMBY65Lo1Tz9AEHmByTu
- PIcDAm+N9dxEnC1iKlTmlUoJ1KSXFME0B0IxTb4/5lkGTrgiT3NRCOY53lJ/4kY9QRJuuJUjLhb
- r/b3XrJj5q2R9ASU1G78XzaNpdcTx7XqsTf/VCB6XsMbLtDtkBv5HFeP4Ggahuw4xSJoK3HHhbz
- KtCZVqPbkuk5PQxouzkrY9RyqOAz4a3KbwGRNzNuGfTCJBDAUCM6LBh2uoT33ckjofS0O6ihZ3r
- s+733coP9qobvCw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=697; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=ttUZbbEr4qNvBmzcmWXht/0+Ro1g2UQElLV80PGUEuE=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpbltcC/d9PP4aKa1xZTIbsY8CXA+EgyYZnzp6u
+ eqLCl6YoqCJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaW5bXAAKCRAADmhBGVaC
+ FcT3D/90eYAzQC5Ne5cbyw12ND7qM7cfJyie2ZHptiKyfxnrDewCraAH2ILNT0v39bZUSzit5Gs
+ Dp5q4Xuq8NV8sm7oeyHsAsvfrB0u5QB3QM4VXZcrkXJ0ErzuiUa2Tr+cq3pQ5pq2gCIQW5z/Sv+
+ LcW01jSHo4HndfR9FeCIg0wJ6nykbVpLEItP7xqwBtoda8oVtuolVChc9C+1uSm4O7O8mkccJMI
+ UufpLPQb0K/tczA2KhXXQ+lJsW6GWXxIlKymNU57VfW0P7dsWrjj6cw9SZ1JSlLRZGHjpShbfaO
+ cPXNsIxonKRlx+AgvCq0scgb7hsdna6caMEyA35No4+7Gk7rLbjOo7vF0Q38piD8irZS+7nDBmv
+ HzGjOL+7GtCUUOLuVIxhNq+iP/45+G8zEyg9nAA4e3C3amjEnCFWG/KPszGPgRO2CV0ckSNxCxk
+ dSMgIVWYwARpWcBPwyMJh9tzAIuLNmQl4WkxQ6H2j7KE+ormAsK7xTHyxJBEFVc6nPSyDnSEX9W
+ LY6mTb62j1OHP8s3CsAjsMyeBpffAO7JIwboIgy4g6m3Z6fb1a6hXz7o3R5y9yEZmZzey9GSbo/
+ G0ji6Q00W5ZxB3zg7itpWnOVS1npMB/HvC0SwP+JLcb2i6uiA0+Zw42RyX/lbDLVzkG5PMY8jGV
+ CxntFIUPzGwJI4g==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260119_162848_000271_BC56D4EC 
+X-CRM114-Status: GOOD (  10.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,26 +147,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the EXPORT_OP_STABLE_HANDLES flag to befs export operations to indicate
+Add the EXPORT_OP_STABLE_HANDLES flag to ufs export operations to indicate
 that this filesystem can be exported via NFS.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/befs/linuxvfs.c | 1 +
+ fs/ufs/super.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/fs/befs/linuxvfs.c b/fs/befs/linuxvfs.c
-index 9fcfdd6b8189aaf5cc3b68aa8dff4798af5bdcbc..1f358d58af8b4de9bc840b9926970340395bc9e4 100644
---- a/fs/befs/linuxvfs.c
-+++ b/fs/befs/linuxvfs.c
-@@ -99,6 +99,7 @@ static const struct export_operations befs_export_operations = {
- 	.fh_to_dentry	= befs_fh_to_dentry,
- 	.fh_to_parent	= befs_fh_to_parent,
- 	.get_parent	= befs_get_parent,
+diff --git a/fs/ufs/super.c b/fs/ufs/super.c
+index 6e4585169f94bb9652aac29a14b0a64a7bb710d8..9cd9b6691849d52701058973f6b684f101df2634 100644
+--- a/fs/ufs/super.c
++++ b/fs/ufs/super.c
+@@ -141,6 +141,7 @@ static const struct export_operations ufs_export_ops = {
+ 	.fh_to_dentry	= ufs_fh_to_dentry,
+ 	.fh_to_parent	= ufs_fh_to_parent,
+ 	.get_parent	= ufs_get_parent,
 +	.flags		= EXPORT_OP_STABLE_HANDLES,
  };
  
- /*
+ #ifdef CONFIG_UFS_DEBUG
 
 -- 
 2.52.0
