@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E450D29C46
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jan 2026 16:28:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 971A3D29C45
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jan 2026 16:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3QSr7cPWLYeYSV/Uq73sL8kBDij70U24nDmqCs6N9Gk=; b=WO6n7VcPaHpsp6
-	E6zrCnDayDY+YN8Op8GPozIhp52G0aPQ8D0jZKhR1G7OQieEf1LtG0wTad6HjC0t+zrnBrnn944Rq
-	MOZ0zE7T/BcpNeWXwcmjimLu93nF7w9NGkAjtCne29x73xjN0nj3ICi2HDyFAoPz2VQlqo1PMbAn3
-	k4Eao6EJOH4s60bVKTj+MHQSRkL2SgoqL+XL98pdsrLtLuP7JMESNvDbtJAC4S2ExAREXTJmfrdbd
-	cp3leyX/J2a1LkYXB1trwcTAdEjn2Kjg/E+R1sv8w8OaSCYbNN+IAqsLeM1+NaHLn8DNCC37EUpEV
-	Y12XwGInWc8BL+995CxA==;
+	List-Owner; bh=0v7K0CEjpJR+b/yTA5839077VUBEBfY8T8DUcjKKMlo=; b=NM2+27D8FI0eay
+	Y1KSswDZ+WXbH09YPeEwuxEZcV+qz7MDdMS3zhOK6Ih5sPbxvWa63sWPkaemjwej48l9o4hWwrVaq
+	VNJre7Pvkkud4wiBnIpJuKchFuHEEQNiiQ4395z/NJW+mzYwFAQahWejRqPnXf9sf0UiJo1rzePHm
+	OieyPBp4g9EN/yKUzzJ5bPxQ3cjxXmXqiwwTrcaeMgAWZS5iWq9AWVMrSCROvULmP2sQbDvEZpgXZ
+	mSXRnfUgoGFtvBi1BCn5eDWQarmwXH+FBncvoyhXhUceeRQVyBtO/1bxwM6YLueITjVgJlSBEqr9a
+	Nm2lMUohFePrF0tmviQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhs7Z-00000002TqC-1SZu;
-	Mon, 19 Jan 2026 16:28:53 +0000
+	id 1vhs7j-00000002Tty-0aT0;
+	Mon, 19 Jan 2026 16:29:03 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhs7X-00000002Tom-0hHA
+	id 1vhs7d-00000002TsO-2kZT
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 19 Jan 2026 16:28:51 +0000
+	Mon, 19 Jan 2026 16:28:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=hIUiCiYvj4+PQCXeGc2dRPv9jWC04oKwYnr+8nkAWKs=; b=Lu6smQcanurs/uwK74DF7IdSzA
-	HCwJuplg9C5TAu2qWRE+twhPG5E+2PEth0tNJXtmLcOzvGs7chmhzMdCrMblq0JlDrjQQtrSH9rsy
-	qgxywDajhJ9FlDyPGj43QyK25iufH8b1bz3tkBIxciMlQxgwwuC5Nfmp423FsgsyfD7rKbtFlugjd
-	jquHNfF3RggcSLlc+M0lR6yYFNLulz2RG4pMPaDcIQTco/DvGmFJeCVFKkHu7ZJNgBejMFoiIF3W6
-	FkRSxLgyhVIbruRs1nQMibahnJhkt2TBPQnGfzNwVvIlaBj00qmFUMe0IlUKwt5X0e2cfXpSE6NWQ
-	haKqFmlw==;
+	bh=7KH9GAMr/eWsf2mOE7iYyuOGJooyfONtnMuRkvbB1nI=; b=IhOrisKzA6Q8MvGO3hUNg1fbxY
+	MwMGJJB9RubLuP8KOydCm8NYzTdIKqdu+oxsZ6JL5nps1KcGGyOwhR/62cG8sj1CdZrRO4JQCnlKN
+	j64DPnXt1WZrUUB/LNMHj75EMZXGjwEiZIbZe7xigHFWUI+D5dILB1tq2ssAIONBEbbJ8XfqoBD53
+	sjXmfGe28Gt310iM32+tIkH6lrOgf/wxZuRayVrI0Jl3yb4I5js+8TIt7Y93bIsVE8BsEEhFGVy3c
+	DX0tFTlYD6tpc0atX1frh9Y1QN6BPwXdFYcaD7dv5j73dAFz6DXM6M1osOa0Srz5oq2SlMlcPOKCs
+	fB4FVYSA==;
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhs7T-0000000CWC6-2ELN
+	id 1vhs7a-0000000CWEB-2JPO
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jan 2026 16:28:50 +0000
+	Mon, 19 Jan 2026 16:28:56 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0A398444E6;
+	by sea.source.kernel.org (Postfix) with ESMTP id 215E543453;
+	Mon, 19 Jan 2026 16:28:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27114C116C6;
 	Mon, 19 Jan 2026 16:28:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D33BC19424;
-	Mon, 19 Jan 2026 16:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768840125;
-	bh=ttUZbbEr4qNvBmzcmWXht/0+Ro1g2UQElLV80PGUEuE=;
+	s=k20201202; t=1768840133;
+	bh=DOe7Zr+SC0SYYE7gHRN3EzdcslwerK27BkcLvt/YLFc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ule0GqUZw08XdIdQXdwy8YF/nQZodPwE+3Ap+rnwUArUvUqLP17fDeYXRDi2IiJSJ
-	 HElLEOqGF8Xtj5odBgm9/xe2Fz8Lpg4CQVge093nGn4xj01wGTq2ovDCqHyWi3whi6
-	 GiA7vqdnJNtVL1EejI20NzzJ8W3JehC438yl3lV9CColr9gUKT7C8Gess01Bet1SrQ
-	 PrQr6QQdWmaEfrtIG3pvYB570DREtCmV8GhL9h0FkDCPMA6q1tkaEv2Ke3A6GDO2bF
-	 U5S0zkEUQzmWWKRbsGGvLtUiO3iuk83JuTbFoFx1FOKcFkMCOPVXsSh7hBRH5E9yC4
-	 +L7N+wmfPdx7Q==
+	b=gLSidMGqIduwhhiZBRl97kiG2r0WSem//2Bu5eDamZwGlTsr9LrpoWaTD9OIQfiWG
+	 PIcjpOsrKsKKoBTdH0RVx2h9oNObYSeGccUXe0tJOExLbMz6brRFhHfwX/xW4p00iT
+	 0Aapwu+EBjx7X/ebQKY2u7Oc8Xm18MDBtNma1ZzvpgTWbbE40PXPlZWrfrPbUzljXx
+	 ti2hbcDLHS2Mtd0BBszkVSvql1u5IKlKWMkfPiUeXlny3aVa3EZJYwuW6qOP2hLnJa
+	 Sg5Vh/88liPis+95Wn+gdIj3gOvrNfxxM7In62NU0dbDOMh6+HROaUGGYnEd+tPfR/
+	 KjdC6A4vI7Quw==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 19 Jan 2026 11:26:29 -0500
-Subject: [PATCH v2 12/31] ufs: add EXPORT_OP_STABLE_HANDLES flag to export
+Date: Mon, 19 Jan 2026 11:26:30 -0500
+Subject: [PATCH v2 13/31] udf: add EXPORT_OP_STABLE_HANDLES flag to export
  operations
 MIME-Version: 1.0
-Message-Id: <20260119-exportfs-nfsd-v2-12-d93368f903bd@kernel.org>
+Message-Id: <20260119-exportfs-nfsd-v2-13-d93368f903bd@kernel.org>
 References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
 In-Reply-To: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
 To: Christian Brauner <brauner@kernel.org>, 
@@ -112,25 +112,25 @@ Cc: David Laight <david.laight.linux@gmail.com>,
  gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net, 
  linux-doc@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=697; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=ttUZbbEr4qNvBmzcmWXht/0+Ro1g2UQElLV80PGUEuE=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpbltcC/d9PP4aKa1xZTIbsY8CXA+EgyYZnzp6u
- eqLCl6YoqCJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaW5bXAAKCRAADmhBGVaC
- FcT3D/90eYAzQC5Ne5cbyw12ND7qM7cfJyie2ZHptiKyfxnrDewCraAH2ILNT0v39bZUSzit5Gs
- Dp5q4Xuq8NV8sm7oeyHsAsvfrB0u5QB3QM4VXZcrkXJ0ErzuiUa2Tr+cq3pQ5pq2gCIQW5z/Sv+
- LcW01jSHo4HndfR9FeCIg0wJ6nykbVpLEItP7xqwBtoda8oVtuolVChc9C+1uSm4O7O8mkccJMI
- UufpLPQb0K/tczA2KhXXQ+lJsW6GWXxIlKymNU57VfW0P7dsWrjj6cw9SZ1JSlLRZGHjpShbfaO
- cPXNsIxonKRlx+AgvCq0scgb7hsdna6caMEyA35No4+7Gk7rLbjOo7vF0Q38piD8irZS+7nDBmv
- HzGjOL+7GtCUUOLuVIxhNq+iP/45+G8zEyg9nAA4e3C3amjEnCFWG/KPszGPgRO2CV0ckSNxCxk
- dSMgIVWYwARpWcBPwyMJh9tzAIuLNmQl4WkxQ6H2j7KE+ormAsK7xTHyxJBEFVc6nPSyDnSEX9W
- LY6mTb62j1OHP8s3CsAjsMyeBpffAO7JIwboIgy4g6m3Z6fb1a6hXz7o3R5y9yEZmZzey9GSbo/
- G0ji6Q00W5ZxB3zg7itpWnOVS1npMB/HvC0SwP+JLcb2i6uiA0+Zw42RyX/lbDLVzkG5PMY8jGV
- CxntFIUPzGwJI4g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=773; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=DOe7Zr+SC0SYYE7gHRN3EzdcslwerK27BkcLvt/YLFc=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpbltcB67I3Cfm08JpbcXHGEkrLfaJbcvd3qnwq
+ BhDRd4AN+OJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaW5bXAAKCRAADmhBGVaC
+ FbS8D/432THFEGWROgX8dP/qCEuSNPHNLeycBv+YXQdISlJtiHD4iuhGoQ+OgERyuJmu3TcYkEQ
+ P0eYFomKXV8jqpqGO2/2SDRE8CSame7BrqEo+F6vqJ6h4aVkE6ufeuJybyvumep1nUmlsIk2DsU
+ u0fENt3ExKeLea7brus3iT8xHM0CItU8XQS5RVMuiU/SxqPPEs6Gb5NrQ0Nb/yKLHlN0JpOjBD1
+ u5kv+v0F3ZlB9nG8fp17BTBsCD/QSUkuv/VXguesgG1a1OdU1QlUIJf1bvZTI1eDySl/V1zJ/ys
+ pB7kAyYPYpDzTxPmSOSrYVzGbRdfgIfCzChXnUTHchfvlYDkLqmoNjSVx4VcTmBHGy0wZq+p3Ij
+ gw4LUOedWkbXdEWCD1VLGQ2lmsKA6KzmNxKG2DguLX57oTKI9hKSx1QkPTgioRhhpjAffxxzZzK
+ YG/0f5pV4d15jKegKxjp7WbBOW2h9cYTfkca9b3NtC/IUE/cP6DzojeN7GJRXhtM/23HU+stsUF
+ PYmwauk2mN1n1kuL/EXO+pG81cd36tlZ+q+6noHC81NKX6rfqcujUI2rrAH+gabLD5BcxHCkrQM
+ nn8xl4i9spqRbsniTmZPDusVh+1BEp/XL0fHi6MMd2JHyHZaS6gOgg4V3V4ygHuuECMOaIqJVcC
+ YlFVQwsgmBIRBJg==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260119_162848_000271_BC56D4EC 
-X-CRM114-Status: GOOD (  10.82  )
+X-CRM114-CacheID: sfid-20260119_162854_972258_D343F5A1 
+X-CRM114-Status: GOOD (  10.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -147,26 +147,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the EXPORT_OP_STABLE_HANDLES flag to ufs export operations to indicate
+Add the EXPORT_OP_STABLE_HANDLES flag to udf export operations to indicate
 that this filesystem can be exported via NFS.
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/ufs/super.c | 1 +
+ fs/udf/namei.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/fs/ufs/super.c b/fs/ufs/super.c
-index 6e4585169f94bb9652aac29a14b0a64a7bb710d8..9cd9b6691849d52701058973f6b684f101df2634 100644
---- a/fs/ufs/super.c
-+++ b/fs/ufs/super.c
-@@ -141,6 +141,7 @@ static const struct export_operations ufs_export_ops = {
- 	.fh_to_dentry	= ufs_fh_to_dentry,
- 	.fh_to_parent	= ufs_fh_to_parent,
- 	.get_parent	= ufs_get_parent,
+diff --git a/fs/udf/namei.c b/fs/udf/namei.c
+index 5f2e9a892bffa9579143cedf71d80efa7ad6e9fb..7b8db8331c77bb43d9a3c4528aee535eac2bbd37 100644
+--- a/fs/udf/namei.c
++++ b/fs/udf/namei.c
+@@ -1012,6 +1012,7 @@ const struct export_operations udf_export_ops = {
+ 	.fh_to_dentry   = udf_fh_to_dentry,
+ 	.fh_to_parent   = udf_fh_to_parent,
+ 	.get_parent     = udf_get_parent,
 +	.flags		= EXPORT_OP_STABLE_HANDLES,
  };
  
- #ifdef CONFIG_UFS_DEBUG
+ const struct inode_operations udf_dir_inode_operations = {
 
 -- 
 2.52.0
