@@ -4,38 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E301FD2ECF7
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 07:38:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5CB5D2ECF7
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 07:44:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=23iASQTJf+ExoRmMPB2LuF2RJe2ZGOLoFALRWMQ/yxE=; b=cYlXqiRsxXqlAA
-	Tkfw1jPnMKjKYtKcBtdu9Ar2OxZfPYrtJhZo8FNZmnusyrLIrfgbqa4nUs/6GFOZTqaKuKx2RjptZ
-	jkdnDDJS3VYZuuo7n8ViXFXEqaJL8xvYFHh64Bp6BkOAOX75w7Fi94cCdaH8omQQVbHGk+bquJGuN
-	vnY9cIqwx6FVxECe8ezjy+4SF8ux0+2So7D3etpt9VkdKw/kzjTewxmaKb49FhsnExZ3KnVGJ2frq
-	Wceqfl9AVZC92a/gJJIBkyiJuo3BfIhzCLOLPub+jGY+ZPRagX5tlQmbEX4YnQIyQkj7Z8vcAXv4T
-	sJF/D4yUpCOBnD5inwag==;
+	List-Owner; bh=GyWEapazf7rRXL5+lHeux3ihAubf2zEbyaRXXw1/wsA=; b=QQngXRcw5AXfTR
+	9fHa/7JVX2yzVsDzYo2rOjCj7PZ/Yi4/dXekSOKrMfXJUakpxV0fLdymgFFS86bi26xXztU7JjgdP
+	HW8EcT6XUIBH7mLL6lV2/seRAKFJ2W/mi8pwXdeFj3rxfqi2KL9gLsaGv+Yqyghcr8FcQwR1jH7+s
+	OPTr1p94ESwJEACDyZp60+EAcU6M909Kfv97xedr2wA1UMstuK7zbh5CYjjdMxp7Y2Kpup63VFQpH
+	wNzXeMOggNOxw4t3WD1AWqv6OzfWNqMA7SJxLHKx+/j+5c4tqArGJX58cnJICenLGcLyHJB2u/n+X
+	o1xGwA5MGapkb+MdLzOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi6JU-00000003MRp-18bm;
-	Tue, 20 Jan 2026 07:38:08 +0000
+	id 1vi6Pd-00000003Ms7-0E2e;
+	Tue, 20 Jan 2026 07:44:29 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi6JN-00000003MRN-2vIx;
-	Tue, 20 Jan 2026 07:38:01 +0000
-Date: Mon, 19 Jan 2026 23:38:01 -0800
+	id 1vi6PX-00000003MrT-17WL;
+	Tue, 20 Jan 2026 07:44:23 +0000
+Date: Mon, 19 Jan 2026 23:44:23 -0800
 From: Christoph Hellwig <hch@infradead.org>
-To: NeilBrown <neil@brown.name>
+To: Jeff Layton <jlayton@kernel.org>
 Cc: Christian Brauner <brauner@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Jeff Layton <jlayton@kernel.org>,
-	Amir Goldstein <amir73il@gmail.com>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chuck Lever <chuck.lever@oracle.com>,
+	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>,
 	Olga Kornievskaia <okorniev@redhat.com>,
 	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Amir Goldstein <amir73il@gmail.com>,
 	Hugh Dickins <hughd@google.com>,
 	Baolin Wang <baolin.wang@linux.alibaba.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -71,30 +69,27 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>,
 	Andreas Gruenbacher <agruenba@redhat.com>,
 	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, linux-nfs@vger.kernel.org,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	David Laight <david.laight.linux@gmail.com>,
+	Dave Chinner <david@fromorbit.com>,
+	Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
 	linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
 	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
-	devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
-	ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
-	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
-	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
- nfsd export support
-Message-ID: <aW8w2SRyFnmA2uqk@infradead.org>
-References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
- <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
- <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
- <176877859306.16766.15009835437490907207@noble.neil.brown.name>
- <aW3SAKIr_QsnEE5Q@infradead.org>
- <176880736225.16766.4203157325432990313@noble.neil.brown.name>
- <20260119-kanufahren-meerjungfrau-775048806544@brauner>
- <176885553525.16766.291581709413217562@noble.neil.brown.name>
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-unionfs@vger.kernel.org, devel@lists.orangefs.org,
+	ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev,
+	linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org, gfs2@lists.linux.dev,
+	linux-f2fs-devel@lists.sourceforge.net, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
+Message-ID: <aW8yV6v8ZDiynOUm@infradead.org>
+References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
+ <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <176885553525.16766.291581709413217562@noble.neil.brown.name>
+In-Reply-To: <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,16 +106,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 20, 2026 at 07:45:35AM +1100, NeilBrown wrote:
-> This sounds like you are recommending that we give in to bullying.
+On Mon, Jan 19, 2026 at 11:26:18AM -0500, Jeff Layton wrote:
+> +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Some
+> +    filesystems cannot properly support file locking as implemented by
+> +    nfsd. A case in point is reexport of NFS itself, which can't be done
+> +    safely without coordinating the grace period handling. Other clustered
+> +    and networked filesystems can be problematic here as well.
 
-I find your suggestion that anything you disagree with is bullying
-extremely offensive.  If you have valid reasons for naming something
-after the user instead of explaining the semantics, please explain that.
-
-If you think NFS actually explains the semantics pretty well, please
-explain that too, especially in forms that can be put into
-documentation, including for the user ABI.
+I'm not sure this is very useful.  It really needs to document what
+locking semantics nfs expects, because otherwise no reader will know
+if they set this or not.
 
 
 ______________________________________________________
