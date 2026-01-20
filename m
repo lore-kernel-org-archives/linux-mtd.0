@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5CB5D2ECF7
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 07:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A9CED2ECF9
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 07:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GyWEapazf7rRXL5+lHeux3ihAubf2zEbyaRXXw1/wsA=; b=QQngXRcw5AXfTR
-	9fHa/7JVX2yzVsDzYo2rOjCj7PZ/Yi4/dXekSOKrMfXJUakpxV0fLdymgFFS86bi26xXztU7JjgdP
-	HW8EcT6XUIBH7mLL6lV2/seRAKFJ2W/mi8pwXdeFj3rxfqi2KL9gLsaGv+Yqyghcr8FcQwR1jH7+s
-	OPTr1p94ESwJEACDyZp60+EAcU6M909Kfv97xedr2wA1UMstuK7zbh5CYjjdMxp7Y2Kpup63VFQpH
-	wNzXeMOggNOxw4t3WD1AWqv6OzfWNqMA7SJxLHKx+/j+5c4tqArGJX58cnJICenLGcLyHJB2u/n+X
-	o1xGwA5MGapkb+MdLzOA==;
+	List-Owner; bh=2rDqbEnzQtqtmSIk0IXDYIKp+Yx8fRCJCRilmbQsLpo=; b=eym9kB1MfvoVfJ
+	AlXXuFk7SVUU/CidimTbKpMWluqZ3KLH4uZUwVTKhqivGMoGzI/YhpygC/SQSapehdKw7GTbOeqgK
+	NVad/omVCSO7x2jYD2fkWrmQVqkIh8jvjfLMsTc+DUu7KrzhcDH/mKHsrPmAsjnNW9Gur8VEAX8Oi
+	XmG4wzgLbI043a2gd4IRwKdFqe1LasE9BQUzu7wv95Q0/mJ3ynl3FZjQmqvu2qfyqxzmfmomnFrYl
+	xxiM2lZlDT9NY7vE6qWCWg9iiyCBHw5KiMrge0WhWNfsgH5sjIotJl5PMPwjRLbviGh9LnnnPycoT
+	rPvGZZPA/1g/om3k5Z8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi6Pd-00000003Ms7-0E2e;
-	Tue, 20 Jan 2026 07:44:29 +0000
+	id 1vi6VH-00000003NIw-1qHD;
+	Tue, 20 Jan 2026 07:50:19 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi6PX-00000003MrT-17WL;
-	Tue, 20 Jan 2026 07:44:23 +0000
-Date: Mon, 19 Jan 2026 23:44:23 -0800
+	id 1vi6VB-00000003NIK-3jXc;
+	Tue, 20 Jan 2026 07:50:15 +0000
+Date: Mon, 19 Jan 2026 23:50:13 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Christian Brauner <brauner@kernel.org>,
@@ -83,13 +83,13 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
 	linux-mtd@lists.infradead.org, gfs2@lists.linux.dev,
 	linux-f2fs-devel@lists.sourceforge.net, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
-Message-ID: <aW8yV6v8ZDiynOUm@infradead.org>
+Subject: Re: [PATCH v2 02/31] exportfs: add new EXPORT_OP_STABLE_HANDLES flag
+Message-ID: <aW8ztQ-RbhxwzMk7@infradead.org>
 References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
- <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
+ <20260119-exportfs-nfsd-v2-2-d93368f903bd@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
+In-Reply-To: <20260119-exportfs-nfsd-v2-2-d93368f903bd@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,16 +106,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 19, 2026 at 11:26:18AM -0500, Jeff Layton wrote:
-> +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Some
-> +    filesystems cannot properly support file locking as implemented by
-> +    nfsd. A case in point is reexport of NFS itself, which can't be done
-> +    safely without coordinating the grace period handling. Other clustered
-> +    and networked filesystems can be problematic here as well.
+On Mon, Jan 19, 2026 at 11:26:19AM -0500, Jeff Layton wrote:
+> +  EXPORT_OP_STABLE_HANDLES - This filesystem provides filehandles that are
+> +    stable across the lifetime of a file. This is a hard requirement for export
+> +    via nfsd. Any filesystem that is eligible to be exported via nfsd must
+> +    indicate this guarantee by setting this flag. Most disk-based filesystems
+> +    can do this naturally. Pseudofilesystems that are for local reporting and
+> +    control (e.g. kernfs, pidfs, nsfs) usually can't support this.
 
-I'm not sure this is very useful.  It really needs to document what
-locking semantics nfs expects, because otherwise no reader will know
-if they set this or not.
+Suggested rewording, taking some of the ideas from Dave Chinners earlier
+comments into account:
+
+  EXPORT_OP_STABLE_HANDLES - This filesystem provides filehandles that are
+    stable across the lifetime of a file.  A file in this context is an
+    instantiated inode reachable by one or more file names, or still open after
+    the last name has been unlinked.  Reuses of the same on-disk inode structure
+    are considered new files and must provide different file handles from the
+    previous incarnation.  Most file systems designed to store user data
+    naturally provide this capability.  Pseudofilesystems that are for local
+    reporting and control (e.g. kernfs, pidfs, nsfs) usually can't support this.
+
+    This flags is a hard requirement for export via nfsd. Any filesystem that
+    is eligible to be exported via nfsd must indicate this guarantee by
+    setting this flag.
 
 
 ______________________________________________________
