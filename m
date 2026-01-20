@@ -4,54 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5124ED2ECFB
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E71ACD2ECFD
 	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 01:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vIYndvjiw/WEWLTLxuqlICDPkllf75P+1B6gKCpXQqw=; b=jwap+9PqugdbFF
-	VG+xrpqmv8FMS5t/tzHNabS53Sd44od3adOyxr2Cz9P7nKqlK+7oYNrub8pr5m+ub9Z9EAdRkSmRP
-	rvQSEOTsiVvBaxG6KaqYAmpZokgdtthxgc0fGGexIJMNeH5cJ2My6QkjujcnKhFG2PoeTXW0Ik8+G
-	eeMaPRBlluz+g7rhM1C48iM+YopmgM4UWenpDWnQgOqSjzg9WDSanyj8exEDjXniFdGDs6AoWJdxM
-	t2KGwJhv1X3IVn/rZJ6YM8hFZXbA5dWsIvJtf3cvX36yPpzsotK174GgZgTpIqFI+6k44y0uchX2o
-	je+RlB7KSV62T15tGoIA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=UjDSWTzBE2qC6YBCoTaRkMkfIMh3aZUW9X4Ww9A79V8=; b=4tarN2/aUOAnXj
+	SQebdwoAoqgYnhl/eo/g6iVtZSMuhY1DFjLqxbZNKlOvFd9tbUIoU8R28OaUjRVs1RyTukal2RpO8
+	Yxr0B47dYL+8cdK3IiplphJMrj4KrOlvTWh/z05MOKZwn/hjmJxvYizTweEQdjxMgUjtJmYyJHSWy
+	uWBFAS3pc2U3DmiXeUSowlYStSVV4lIPXNp7FCrCFjdI0Hp+PCMNqeXSDEOqqouX28JldKylLcvYJ
+	kskXMTBtfrcJ5WYp2wonwjqlAE751PXpsaJ4ZVzy6DPbkzZJVV2zNJh52yvwaTAzHGRBk/Gu0iWws
+	3AMNbp/W/mdIJO/+OrsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi0rf-000000033eW-3aLg;
-	Tue, 20 Jan 2026 01:49:03 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vi0rd-000000033d9-0j6I;
+	Tue, 20 Jan 2026 01:49:01 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi0ra-000000033cG-2aPX
+	id 1vi0rc-000000033ck-0a3u
 	for linux-mtd@lists.infradead.org;
 	Tue, 20 Jan 2026 01:49:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id E5622403F6;
-	Tue, 20 Jan 2026 01:48:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1C5BC116C6;
-	Tue, 20 Jan 2026 01:48:56 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 15ABB6015A;
+	Tue, 20 Jan 2026 01:48:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C09D0C116C6;
+	Tue, 20 Jan 2026 01:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768873736;
-	bh=9ZjpuakurDGJy/MQHe8tjppqpyV7PRn2yRritAjgYVE=;
-	h=From:Subject:Date:To:Cc:From;
-	b=N/z37+rtTvXz2v7eVPkIP373YNS7Mhsw3N8/Z3J6771p24bYGmMMt7TJx1aBzGzxH
-	 rY/GBOO79P+2DYYovugGnjq8Tao6eQ0POnu2hC6a67MWsyvEqNdGs/LjiHALELKMD0
-	 fBvupMHPPbTwFzU71HHI9E2cQsY6E0UQs50Jx6iSUHJKdnLlc9J6Ae9P9u/ba1M/XP
-	 v82lzvVTd7FvWKk6gvD4BI7NDijTBUeoFuKq4vDAi0DQhEDXdgBZXfFfpJQ2zxrHMU
-	 oxGtjNrz+SuAJyHYtIA2AR6xCutsUBW4UnsrCmq4cVVW4z/i6FLeai8sD7yJAT93Q3
-	 EI9QKB1qJNmkg==
+	s=k20201202; t=1768873738;
+	bh=g/uMQusRPTzXLgyH55SF2Z0Ew27f2Lx3R56DScAIcKE=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=Ncyo4giv2phgkfri7JiliRauLyWNGyPHeJ7eBayc+j+tixYyhVmHowa/m4lPQ1UH1
+	 5LpZkYZ/yBich6u93+kfAo9UaIPDemKL4XZX4mlpbf2NfCFeKBdRn/B3aLX0/ptu8c
+	 k0rviGH3w/irU75dZ1gyGKjIMQiv9SeWr1oyQLgvjs9MnfjsZ79a5YE5XWZdGGCgid
+	 QC9Fy4buIEv5Aw+XF7ZZUy+OXXBpkvm10vpB5eHf0SVE3uxpe2qLONpFFeb2bKZxG7
+	 mm4dyEo2nU94gC8AXqsWaqPIStNQIPoN3BCJuW5Q85oUxzyFLvXfgFvImwhAER7nUm
+	 xOD7dw562bH2g==
 From: "Rob Herring (Arm)" <robh@kernel.org>
-Subject: [PATCH v2 00/10] dt-bindings: mtd: Partition binding fixes and
- restructuring
-Date: Mon, 19 Jan 2026 19:48:21 -0600
-Message-Id: <20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org>
+Date: Mon, 19 Jan 2026 19:48:23 -0600
+Subject: [PATCH v2 02/10] dt-bindings: mtd: fixed-partitions: Move
+ "compression" to partition node
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOXebmkC/32NQQ6CMBBFr0Jm7Zi2CCIr72FYVDqFiQpk2hAN6
- d2tHMDl+/n//Q0CCVOAtthAaOXA85TBHAroRzsNhOwyg1GmVlo16CK+osPFSuSYywFL76qG7tZ
- 5qyDvFiHP79156zKPHOIsn/1i1b/0n23VqFCbk63KnmpzvlwfJBM9j7MM0KWUvuhOAhKzAAAA
-X-Change-ID: 20260108-dt-mtd-partitions-3fd58ebadfa0
+Message-Id: <20260119-dt-mtd-partitions-v2-2-77ebb958a312@kernel.org>
+References: <20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org>
+In-Reply-To: <20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -68,12 +66,9 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Hauke Mehrtens <hauke@hauke-m.de>
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
- Simon Glass <simon.glass@canonical.com>
+ Simon Glass <simon.glass@canonical.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 X-Mailer: b4 0.15-dev
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260119_174858_712521_1F06CEAF 
-X-CRM114-Status: GOOD (  11.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,76 +80,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The partition bindings fail to restrict undefined properties. This is 
-primarily on fixed-partitions which can be nested and partition nodes 
-without a compatible string. This series fixes those issues and then 
-several problems exposed by restricting undefined properties. As part of 
-this, the schema structure is reworked to follow more conventional 
-structure of applying schemas by compatible and a schema only checks 1 
-level of nodes (unless possible child nodes are fixed).
-
-In theory, we could have all sorts of combinations of different 
-partition types nesting, and those may or may not work. No attempt is 
-made to support them here. Only the known cases are supported.
-
-Rob
-
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
----
-Changes in v2:
-- Rebase on mtd/next
-- Link to v1: https://patch.msgid.link/20260108-dt-mtd-partitions-v1-0-124a53ce6279@kernel.org
-
----
-Rob Herring (Arm) (10):
-      dt-bindings: mtd: brcm,brcmnand: Drop "brcm,brcmnand" compatible for iProc
-      dt-bindings: mtd: fixed-partitions: Move "compression" to partition node
-      dt-bindings: mtd: partitions: Move "sercomm,scpart-id" to partition.yaml
-      dt-bindings: mtd: partitions: Allow "nvmem-layout" in generic partition nodes
-      dt-bindings: mtd: partitions: Define "#{address,size}-cells" in specific schemas
-      dt-bindings: mtd: partitions: Drop partitions.yaml
-      dt-bindings: mtd: Ensure partition node properties are documented
-      dt-bindings: mtd: fixed-partitions: Restrict undefined properties
-      dt-bindings: mtd: partitions: Convert brcm,trx to DT schema
-      dt-bindings: mtd: partitions: Combine simple partition bindings
-
- .../devicetree/bindings/mmc/mmc-card.yaml          | 20 ++-----
- .../devicetree/bindings/mtd/brcm,brcmnand.yaml     |  1 -
- Documentation/devicetree/bindings/mtd/mtd.yaml     | 10 +---
- .../mtd/partitions/arm,arm-firmware-suite.yaml     |  2 -
- .../devicetree/bindings/mtd/partitions/binman.yaml | 53 ------------------
- .../mtd/partitions/brcm,bcm4908-partitions.yaml    |  8 +--
- .../partitions/brcm,bcm947xx-cfe-partitions.yaml   |  2 -
- .../mtd/partitions/brcm,bcm963xx-imagetag.txt      | 45 ---------------
- .../bindings/mtd/partitions/brcm,trx.txt           | 42 --------------
- .../bindings/mtd/partitions/brcm,trx.yaml          | 65 ++++++++++++++++++++++
- .../bindings/mtd/partitions/fixed-partitions.yaml  | 43 ++++----------
- .../mtd/partitions/linksys,ns-partitions.yaml      | 10 +---
- .../bindings/mtd/partitions/partition.yaml         | 44 ++++++++++++++-
- .../bindings/mtd/partitions/partitions.yaml        | 42 --------------
- .../bindings/mtd/partitions/redboot-fis.yaml       |  4 --
- .../devicetree/bindings/mtd/partitions/seama.yaml  | 44 ---------------
- .../bindings/mtd/partitions/simple-partition.yaml  | 61 ++++++++++++++++++++
- .../partitions/tplink,safeloader-partitions.yaml   |  2 +-
- .../devicetree/bindings/mtd/partitions/u-boot.yaml |  2 +-
- .../devicetree/bindings/mtd/ti,davinci-nand.yaml   |  4 +-
- .../devicetree/bindings/mtd/ti,gpmc-onenand.yaml   |  2 +-
- MAINTAINERS                                        |  5 --
- 22 files changed, 196 insertions(+), 315 deletions(-)
----
-base-commit: 779c59274d03cc5c07237a2c845dfb71cff77705
-change-id: 20260108-dt-mtd-partitions-3fd58ebadfa0
-
-Best regards,
---  
-Rob Herring (Arm) <robh@kernel.org>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhlICJjb21wcmVzc2lvbiIgcHJvcGVydHkgaXMgZGVmaW5lZCBpbiB0aGUgd3JvbmcgcGxhY2Ug
+YXMgaXQgYXBwbGllcwp0byBpbmRpdmlkdWFsIHBhcnRpdGlvbnMgbm9kZXMsIG5vdCBhbGwgbm9k
+ZXMuCgpGaXhlczogOGJhYmE4ZDUyZmY1ICgiZHQtYmluZGluZ3M6IG10ZDogZml4ZWQtcGFydGl0
+aW9uczogQWRkIGNvbXByZXNzaW9uIHByb3BlcnR5IikKUmV2aWV3ZWQtYnk6IFNpbW9uIEdsYXNz
+IDxzaW1vbi5nbGFzc0BjYW5vbmljYWwuY29tPgpSZXZpZXdlZC1ieTogS3J6eXN6dG9mIEtvemxv
+d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBvc3MucXVhbGNvbW0uY29tPgpTaWduZWQtb2ZmLWJ5
+OiBSb2IgSGVycmluZyAoQXJtKSA8cm9iaEBrZXJuZWwub3JnPgotLS0KIC4uLi9iaW5kaW5ncy9t
+dGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwgICAgICB8IDE4IC0tLS0tLS0tLS0t
+LS0tLS0tLQogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFydGl0aW9u
+LnlhbWwgIHwgMTggKysrKysrKysrKysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDE4IGluc2Vy
+dGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwgYi9E
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvZml4ZWQtcGFy
+dGl0aW9ucy55YW1sCmluZGV4IDYyMDg2MzY2ODM3Yy4uNzNkNzRjMGY1Y2I3IDEwMDY0NAotLS0g
+YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvZml4ZWQt
+cGFydGl0aW9ucy55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
+dGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKQEAgLTI5LDI0ICsyOSw2IEBAIHBy
+b3BlcnRpZXM6CiAKICAgIiNzaXplLWNlbGxzIjogdHJ1ZQogCi0gIGNvbXByZXNzaW9uOgotICAg
+ICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3N0cmluZwotICAgIGRlc2Ny
+aXB0aW9uOiB8Ci0gICAgICBDb21wcmVzc2lvbiBhbGdvcml0aG0gdXNlZCB0byBzdG9yZSB0aGUg
+ZGF0YSBpbiB0aGlzIHBhcnRpdGlvbiwgY2hvc2VuCi0gICAgICBmcm9tIGEgbGlzdCBvZiB3ZWxs
+LWtub3duIGFsZ29yaXRobXMuCi0KLSAgICAgIFRoZSBjb250ZW50cyBhcmUgY29tcHJlc3NlZCB1
+c2luZyB0aGlzIGFsZ29yaXRobS4KLQotICAgIGVudW06Ci0gICAgICAtIG5vbmUKLSAgICAgIC0g
+YnppcDIKLSAgICAgIC0gZ3ppcAotICAgICAgLSBsem9wCi0gICAgICAtIGx6NAotICAgICAgLSBs
+em1hCi0gICAgICAtIHh6Ci0gICAgICAtIHpzdGQKLQogcGF0dGVyblByb3BlcnRpZXM6CiAgICJA
+WzAtOWEtZl0rJCI6CiAgICAgJHJlZjogcGFydGl0aW9uLnlhbWwjCmRpZmYgLS1naXQgYS9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFydGl0aW9uLnlh
+bWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFy
+dGl0aW9uLnlhbWwKaW5kZXggODBkMDQ1MmEyYTMzLi4wYjk4OTAzN2EwMDUgMTAwNjQ0Ci0tLSBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRp
+b24ueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRp
+dGlvbnMvcGFydGl0aW9uLnlhbWwKQEAgLTEwOCw2ICsxMDgsMjQgQEAgcHJvcGVydGllczoKICAg
+ICAgIHdpdGggdGhlIHBhZGRpbmcgYnl0ZXMsIHNvIG1heSBncm93LiBJZiDigJhhbGlnbi1lbmTi
+gJkgaXMgbm90IHByb3ZpZGVkLAogICAgICAgbm8gYWxpZ25tZW50IGlzIHBlcmZvcm1lZC4KIAor
+ICBjb21wcmVzc2lvbjoKKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9u
+cy9zdHJpbmcKKyAgICBkZXNjcmlwdGlvbjogfAorICAgICAgQ29tcHJlc3Npb24gYWxnb3JpdGht
+IHVzZWQgdG8gc3RvcmUgdGhlIGRhdGEgaW4gdGhpcyBwYXJ0aXRpb24sIGNob3NlbgorICAgICAg
+ZnJvbSBhIGxpc3Qgb2Ygd2VsbC1rbm93biBhbGdvcml0aG1zLgorCisgICAgICBUaGUgY29udGVu
+dHMgYXJlIGNvbXByZXNzZWQgdXNpbmcgdGhpcyBhbGdvcml0aG0uCisKKyAgICBlbnVtOgorICAg
+ICAgLSBub25lCisgICAgICAtIGJ6aXAyCisgICAgICAtIGd6aXAKKyAgICAgIC0gbHpvcAorICAg
+ICAgLSBsejQKKyAgICAgIC0gbHptYQorICAgICAgLSB4egorICAgICAgLSB6c3RkCisKIGlmOgog
+ICBub3Q6CiAgICAgcmVxdWlyZWQ6IFsgcmVnIF0KCi0tIAoyLjUxLjAKCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
