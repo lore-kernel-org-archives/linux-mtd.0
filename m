@@ -4,155 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB025D2ECE6
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jan 2026 20:46:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5124ED2ECFB
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 01:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-id:Date:References:
-	In-reply-to:Subject:Cc:To:From:MIME-Version:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AwvSVtVrnV0nzWQBY40poeKZoHWMRV4FHF0M38ZRK3Q=; b=c8J0HM3jMiSAN3
-	q71PcuLsz/kONgJSSDw0FbFTn3GGCXDqbRWP0qg3Gz9tWRbxyUNECw4VfVY0CtthA/OU6SqDmcdmj
-	MOe84wOAgCIuofgjwE/0JyNDJh/4iz1yJn8QaWBBpOPIPXX4YZC3sXyybM2VtJrlXpLk7H8I4YFSF
-	Cy2gO0Ltc3zesjhlZ6INUmpMygHvFOXEtsFpnKWeUDkRrjlLPCjpmCWpjsrWLF5PWMYzS9MUHmugf
-	vAj9iM2fMCJ5okCkAV+rZRhPpXY3LARgmmownjmOZXB0rpXazL10A5wTdj7DEq5C8G1DYtK5P1JxM
-	87kuxQCxpLgSol00VkYg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vIYndvjiw/WEWLTLxuqlICDPkllf75P+1B6gKCpXQqw=; b=jwap+9PqugdbFF
+	VG+xrpqmv8FMS5t/tzHNabS53Sd44od3adOyxr2Cz9P7nKqlK+7oYNrub8pr5m+ub9Z9EAdRkSmRP
+	rvQSEOTsiVvBaxG6KaqYAmpZokgdtthxgc0fGGexIJMNeH5cJ2My6QkjujcnKhFG2PoeTXW0Ik8+G
+	eeMaPRBlluz+g7rhM1C48iM+YopmgM4UWenpDWnQgOqSjzg9WDSanyj8exEDjXniFdGDs6AoWJdxM
+	t2KGwJhv1X3IVn/rZJ6YM8hFZXbA5dWsIvJtf3cvX36yPpzsotK174GgZgTpIqFI+6k44y0uchX2o
+	je+RlB7KSV62T15tGoIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhw8W-00000002qXF-3HcG;
-	Mon, 19 Jan 2026 20:46:08 +0000
-Received: from flow-b3-smtp.messagingengine.com ([202.12.124.138])
+	id 1vi0rf-000000033eW-3aLg;
+	Tue, 20 Jan 2026 01:49:03 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhw8R-00000002qWY-1a71
+	id 1vi0ra-000000033cG-2aPX
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jan 2026 20:46:08 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.stl.internal (Postfix) with ESMTP id C9DA613010D8;
-	Mon, 19 Jan 2026 15:45:59 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Mon, 19 Jan 2026 15:46:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to; s=fm2; t=
-	1768855559; x=1768862759; bh=v4LtkcerTNcKdHBuxb989VhIuXJUmGOFYwT
-	3m9zCWpQ=; b=Lc0EYW6ibUUqVQJUKzaim23Euwd0BGgFRXe5DALzfEojg7VN6rT
-	B6DiPIhAD3IC7M+5XEsbPahQ32cVgcxSRShqrzfxc+w2dQttIp0GWIrdUpX55qw0
-	1YJfvLNEex4MDg629sJRt0DIagYZ7O2YgHGEWRwCbzJK6pewaTBy/LwbN/3UuIrH
-	D1X+l3ArslIHe9m6/MxEM+BHkwyONj/QBcgvUoddEjQn2rtqiXm8XIlcaUBBGYcG
-	L51CiT0gWDAG38s7mrfim3JvqvUewVVj4jdamfv/vGEC6XVs37En7pvh86V+RKx9
-	u1Btsigj5UNDPW1ltBPZUH8SSA1nKU+SOjA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768855559; x=
-	1768862759; bh=v4LtkcerTNcKdHBuxb989VhIuXJUmGOFYwT3m9zCWpQ=; b=e
-	xt14fYhTflITcl6YnaiRNNIPiieIuY3T2ekw4mgpmY/v/o1D6Rm9og97ySUxlRr7
-	FuBeLtlEdjDnDlXWSfPcQ5AbZapLP6oLiXJHFrRkIH0gKfaYLMLYjIQO36N4L42d
-	r+sxyuyT+2Dw0f4nF6Lb5U2/7dD8/gO1shUXevXTcOuhLj1lVMOynN4dkejCogfQ
-	7OuzydzQDyp0GPeNwjKBxultpJ+adDUHRpRjZpvqCu+f30BBcE9P8TFFL51mFFSd
-	5nqf/ngi6HPQpjIzif8UMR8pgDgY3x6Ww4kDrS1yWA5BVy+Nd5cITHqHPkkjbEzT
-	FALc3wWKIrn/NhNHGyWNw==
-X-ME-Sender: <xms:BJhuaSbEzFcWy9Pk6146wE82fhYm_CxjTiFHqGZKgwA0vYGamqcSmg>
-    <xme:BJhuaSwoBnyfk0eKn4-Aohsxi2pWCriN6dRenPPaxnkZL7_MsdqbsQlFS_j1eycjJ
-    snQClQFRDDxmckQGHACK4fSLzS3RfNjJQu9JuQvNfYNBDMQpQ>
-X-ME-Received: <xmr:BJhuaSJdRJMi7-ZpoAEIl9nJ6TzUD9unJMV7r6q_QrUGstq03Bv3pQ2jFX3ElyETlEyXOOSz_dMOZCxbyCO3448TMs1hLaDXJLozABR1b4SI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufeekheehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurheptgfgggfhvfevufgjfhffkfhrsehtqhertddttdejnecuhfhrohhmpefpvghilheu
-    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
-    epleejtdefgeeukeeiteduveehudevfeffvedutefgteduhfegvdfgtdeigeeuudejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
-    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepjedvpdhmohguvgepshhmthhp
-    ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
-    hrtghpthhtohepghhuohgthhhunhhhrghisehvihhvohdrtghomhdprhgtphhtthhopehl
-    ihhnuhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
-    hugidquhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
-    ihhnuhigqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
-    hinhhugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
-    uhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlih
-    hnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    lhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:BJhuaSBO9clKpBY1c8tqtIkxX8-Yutqel2bbB8TbvrqddamOXX7Ykg>
-    <xmx:BJhuaRhuOPQDyCA_KFYnfcdaAOzKUXr3io07nJfde0jw7wudsjV9Bg>
-    <xmx:BJhuade95jkbwLWPmv5m35H6i7zd7TYoRjmUJ2fQMpOWq-IJ6QyQ1w>
-    <xmx:BJhuaelSBffgMjviuHAjgSaIv0cuzLl42YuUELeDiPJYohFPRx_JkA>
-    <xmx:B5huacYgAtwv-dw4ucg_ORya8hJwBFrWvyIGFRHLnxavffYq8g3321NH>
-Feedback-ID: iab3e480c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 19 Jan 2026 15:45:39 -0500 (EST)
+	Tue, 20 Jan 2026 01:49:00 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id E5622403F6;
+	Tue, 20 Jan 2026 01:48:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1C5BC116C6;
+	Tue, 20 Jan 2026 01:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768873736;
+	bh=9ZjpuakurDGJy/MQHe8tjppqpyV7PRn2yRritAjgYVE=;
+	h=From:Subject:Date:To:Cc:From;
+	b=N/z37+rtTvXz2v7eVPkIP373YNS7Mhsw3N8/Z3J6771p24bYGmMMt7TJx1aBzGzxH
+	 rY/GBOO79P+2DYYovugGnjq8Tao6eQ0POnu2hC6a67MWsyvEqNdGs/LjiHALELKMD0
+	 fBvupMHPPbTwFzU71HHI9E2cQsY6E0UQs50Jx6iSUHJKdnLlc9J6Ae9P9u/ba1M/XP
+	 v82lzvVTd7FvWKk6gvD4BI7NDijTBUeoFuKq4vDAi0DQhEDXdgBZXfFfpJQ2zxrHMU
+	 oxGtjNrz+SuAJyHYtIA2AR6xCutsUBW4UnsrCmq4cVVW4z/i6FLeai8sD7yJAT93Q3
+	 EI9QKB1qJNmkg==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+Subject: [PATCH v2 00/10] dt-bindings: mtd: Partition binding fixes and
+ restructuring
+Date: Mon, 19 Jan 2026 19:48:21 -0600
+Message-Id: <20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org>
 MIME-Version: 1.0
-From: NeilBrown <neilb@ownmail.net>
-To: "Christian Brauner" <brauner@kernel.org>
-Cc: "Christoph Hellwig" <hch@infradead.org>,
- "Jeff Layton" <jlayton@kernel.org>,
- "Amir Goldstein" <amir73il@gmail.com>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Chuck Lever" <chuck.lever@oracle.com>,
- "Olga Kornievskaia" <okorniev@redhat.com>,
- "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
- "Hugh Dickins" <hughd@google.com>,
- "Baolin Wang" <baolin.wang@linux.alibaba.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Theodore Ts'o" <tytso@mit.edu>,
- "Andreas Dilger" <adilger.kernel@dilger.ca>, "Jan Kara" <jack@suse.com>,
- "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
- "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
- "Sandeep Dhavale" <dhavale@google.com>,
- "Hongbo Li" <lihongbo22@huawei.com>, "Chunhai Guo" <guochunhai@vivo.com>,
- "Carlos Maiolino" <cem@kernel.org>, "Ilya Dryomov" <idryomov@gmail.com>,
- "Alex Markuze" <amarkuze@redhat.com>,
- "Viacheslav Dubeyko" <slava@dubeyko.com>, "Chris Mason" <clm@fb.com>,
- "David Sterba" <dsterba@suse.com>,
- "Luis de Bethencourt" <luisbg@kernel.org>,
- "Salah Triki" <salah.triki@gmail.com>,
- "Phillip Lougher" <phillip@squashfs.org.uk>,
- "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
- "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Bharath SM" <bharathsm@microsoft.com>,
- "Miklos Szeredi" <miklos@szeredi.hu>,
- "Mike Marshall" <hubcap@omnibond.com>,
- "Martin Brandenburg" <martin@omnibond.com>,
- "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>,
- "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
- "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
- "Trond Myklebust" <trondmy@kernel.org>,
- "Anna Schumaker" <anna@kernel.org>, "Dave Kleikamp" <shaggy@kernel.org>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Richard Weinberger" <richard@nod.at>, "Jan Kara" <jack@suse.cz>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
- "Jaegeuk Kim" <jaegeuk@kernel.org>, linux-nfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-ext4@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
- devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
- ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
- jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
- nfsd export support
-In-reply-to: <20260119-kanufahren-meerjungfrau-775048806544@brauner>
-References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>,
- <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>,
- <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>,
- <176877859306.16766.15009835437490907207@noble.neil.brown.name>,
- <aW3SAKIr_QsnEE5Q@infradead.org>,
- <176880736225.16766.4203157325432990313@noble.neil.brown.name>,
- <20260119-kanufahren-meerjungfrau-775048806544@brauner>
-Date: Tue, 20 Jan 2026 07:45:35 +1100
-Message-id: <176885553525.16766.291581709413217562@noble.neil.brown.name>
+X-B4-Tracking: v=1; b=H4sIAOXebmkC/32NQQ6CMBBFr0Jm7Zi2CCIr72FYVDqFiQpk2hAN6
+ d2tHMDl+/n//Q0CCVOAtthAaOXA85TBHAroRzsNhOwyg1GmVlo16CK+osPFSuSYywFL76qG7tZ
+ 5qyDvFiHP79156zKPHOIsn/1i1b/0n23VqFCbk63KnmpzvlwfJBM9j7MM0KWUvuhOAhKzAAAA
+X-Change-ID: 20260108-dt-mtd-partitions-3fd58ebadfa0
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Brian Norris <computersforpeace@gmail.com>, 
+ Kamal Dasu <kdasu.kdev@gmail.com>, 
+ William Zhang <william.zhang@broadcom.com>, Nick Terrell <terrelln@fb.com>, 
+ David Sterba <dsterba@suse.com>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Simon Glass <sjg@chromium.org>, Linus Walleij <linusw@kernel.org>, 
+ Ulf Hansson <ulf.hansson@linaro.org>, 
+ Marcus Folkesson <marcus.folkesson@gmail.com>, 
+ Tony Lindgren <tony@atomide.com>, Roger Quadros <rogerq@kernel.org>, 
+ Hauke Mehrtens <hauke@hauke-m.de>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
+ Simon Glass <simon.glass@canonical.com>
+X-Mailer: b4 0.15-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260119_124603_742057_1558386E 
-X-CRM114-Status: GOOD (  33.65  )
+X-CRM114-CacheID: sfid-20260119_174858_712521_1F06CEAF 
+X-CRM114-Status: GOOD (  11.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,84 +85,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: NeilBrown <neil@brown.name>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 19 Jan 2026, Christian Brauner wrote:
-> On Mon, Jan 19, 2026 at 06:22:42PM +1100, NeilBrown wrote:
-> > On Mon, 19 Jan 2026, Christoph Hellwig wrote:
-> > > On Mon, Jan 19, 2026 at 10:23:13AM +1100, NeilBrown wrote:
-> > > > > This was Chuck's suggested name. His point was that STABLE means that
-> > > > > the FH's don't change during the lifetime of the file.
-> > > > > 
-> > > > > I don't much care about the flag name, so if everyone likes PERSISTENT
-> > > > > better I'll roll with that.
-> > > > 
-> > > > I don't like PERSISTENT.
-> > > > I'd rather call a spade a spade.
-> > > > 
-> > > >   EXPORT_OP_SUPPORTS_NFS_EXPORT
-> > > > or
-> > > >   EXPORT_OP_NOT_NFS_COMPATIBLE
-> > > > 
-> > > > The issue here is NFS export and indirection doesn't bring any benefits.
-> > > 
-> > > No, it absolutely is not.  And the whole concept of calling something
-> > > after the initial or main use is a recipe for a mess.
-> > 
-> > We are calling it for it's only use.  If there was ever another use, we
-> > could change the name if that made sense.  It is not a public name, it
-> > is easy to change.
-> > 
-> > > 
-> > > Pick a name that conveys what the flag is about, and document those
-> > > semantics well.  This flag is about the fact that for a given file,
-> > > as long as that file exists in the file system the handle is stable.
-> > > Both stable and persistent are suitable for that, nfs is everything
-> > > but.
-> > 
-> > My understanding is that kernfs would not get the flag.
-> > kernfs filehandles do not change as long as the file exist.
-> > But this is not sufficient for the files to be usefully exported.
-> > 
-> > I suspect kernfs does re-use filehandles relatively soon after the
-> > file/object has been destroyed.  Maybe that is the real problem here:
-> > filehandle reuse, not filehandle stability.
-> > 
-> > Jeff: could you please give details (and preserve them in future cover
-> > letters) of which filesystems are known to have problems and what
-> > exactly those problems are?
-> > 
-> > > 
-> > > Remember nfs also support volatile file handles, and other applications
-> > > might rely on this (I know of quite a few user space applications that
-> > > do, but they are kinda hardwired to xfs anyway).
-> > 
-> > The NFS protocol supports volatile file handles.  knfsd does not.
-> > So maybe
-> >   EXPORT_OP_NOT_NFSD_COMPATIBLE
-> > might be better.  or EXPORT_OP_NOT_LINUX_NFSD_COMPATIBLE.
-> > (I prefer opt-out rather than opt-in because nfsd export was the
-> > original purpose of export_operations, but it isn't something
-> > I would fight for)
-> 
-> I prefer one of the variants you proposed here but I don't particularly
-> care. It's not a hill worth dying on. So if Christoph insists on the
-> other name then I say let's just go with it.
-> 
+The partition bindings fail to restrict undefined properties. This is 
+primarily on fixed-partitions which can be nested and partition nodes 
+without a compatible string. This series fixes those issues and then 
+several problems exposed by restricting undefined properties. As part of 
+this, the schema structure is reworked to follow more conventional 
+structure of applying schemas by compatible and a schema only checks 1 
+level of nodes (unless possible child nodes are fixed).
 
-This sounds like you are recommending that we give in to bullying.
-I would rather the decision be made based on the facts of the case, not
-the opinions that are stated most bluntly.
+In theory, we could have all sorts of combinations of different 
+partition types nesting, and those may or may not work. No attempt is 
+made to support them here. Only the known cases are supported.
 
-I actually think that what Christoph wants is actually quite different
-from what Jeff wants, and maybe two flags are needed.  But I don't yet
-have a clear understanding of what Christoph wants, so I cannot be sure.
+Rob
 
-NeilBrown
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+---
+Changes in v2:
+- Rebase on mtd/next
+- Link to v1: https://patch.msgid.link/20260108-dt-mtd-partitions-v1-0-124a53ce6279@kernel.org
+
+---
+Rob Herring (Arm) (10):
+      dt-bindings: mtd: brcm,brcmnand: Drop "brcm,brcmnand" compatible for iProc
+      dt-bindings: mtd: fixed-partitions: Move "compression" to partition node
+      dt-bindings: mtd: partitions: Move "sercomm,scpart-id" to partition.yaml
+      dt-bindings: mtd: partitions: Allow "nvmem-layout" in generic partition nodes
+      dt-bindings: mtd: partitions: Define "#{address,size}-cells" in specific schemas
+      dt-bindings: mtd: partitions: Drop partitions.yaml
+      dt-bindings: mtd: Ensure partition node properties are documented
+      dt-bindings: mtd: fixed-partitions: Restrict undefined properties
+      dt-bindings: mtd: partitions: Convert brcm,trx to DT schema
+      dt-bindings: mtd: partitions: Combine simple partition bindings
+
+ .../devicetree/bindings/mmc/mmc-card.yaml          | 20 ++-----
+ .../devicetree/bindings/mtd/brcm,brcmnand.yaml     |  1 -
+ Documentation/devicetree/bindings/mtd/mtd.yaml     | 10 +---
+ .../mtd/partitions/arm,arm-firmware-suite.yaml     |  2 -
+ .../devicetree/bindings/mtd/partitions/binman.yaml | 53 ------------------
+ .../mtd/partitions/brcm,bcm4908-partitions.yaml    |  8 +--
+ .../partitions/brcm,bcm947xx-cfe-partitions.yaml   |  2 -
+ .../mtd/partitions/brcm,bcm963xx-imagetag.txt      | 45 ---------------
+ .../bindings/mtd/partitions/brcm,trx.txt           | 42 --------------
+ .../bindings/mtd/partitions/brcm,trx.yaml          | 65 ++++++++++++++++++++++
+ .../bindings/mtd/partitions/fixed-partitions.yaml  | 43 ++++----------
+ .../mtd/partitions/linksys,ns-partitions.yaml      | 10 +---
+ .../bindings/mtd/partitions/partition.yaml         | 44 ++++++++++++++-
+ .../bindings/mtd/partitions/partitions.yaml        | 42 --------------
+ .../bindings/mtd/partitions/redboot-fis.yaml       |  4 --
+ .../devicetree/bindings/mtd/partitions/seama.yaml  | 44 ---------------
+ .../bindings/mtd/partitions/simple-partition.yaml  | 61 ++++++++++++++++++++
+ .../partitions/tplink,safeloader-partitions.yaml   |  2 +-
+ .../devicetree/bindings/mtd/partitions/u-boot.yaml |  2 +-
+ .../devicetree/bindings/mtd/ti,davinci-nand.yaml   |  4 +-
+ .../devicetree/bindings/mtd/ti,gpmc-onenand.yaml   |  2 +-
+ MAINTAINERS                                        |  5 --
+ 22 files changed, 196 insertions(+), 315 deletions(-)
+---
+base-commit: 779c59274d03cc5c07237a2c845dfb71cff77705
+change-id: 20260108-dt-mtd-partitions-3fd58ebadfa0
+
+Best regards,
+--  
+Rob Herring (Arm) <robh@kernel.org>
 
 
 ______________________________________________________
