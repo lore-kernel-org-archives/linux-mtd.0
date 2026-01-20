@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E71ACD2ECFD
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA1C2D2ECFF
 	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 01:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UjDSWTzBE2qC6YBCoTaRkMkfIMh3aZUW9X4Ww9A79V8=; b=4tarN2/aUOAnXj
-	SQebdwoAoqgYnhl/eo/g6iVtZSMuhY1DFjLqxbZNKlOvFd9tbUIoU8R28OaUjRVs1RyTukal2RpO8
-	Yxr0B47dYL+8cdK3IiplphJMrj4KrOlvTWh/z05MOKZwn/hjmJxvYizTweEQdjxMgUjtJmYyJHSWy
-	uWBFAS3pc2U3DmiXeUSowlYStSVV4lIPXNp7FCrCFjdI0Hp+PCMNqeXSDEOqqouX28JldKylLcvYJ
-	kskXMTBtfrcJ5WYp2wonwjqlAE751PXpsaJ4ZVzy6DPbkzZJVV2zNJh52yvwaTAzHGRBk/Gu0iWws
-	3AMNbp/W/mdIJO/+OrsQ==;
+	List-Owner; bh=UcAdzxt77nAtlcj+nQV0KCVrZO8KThaPer1ahov5u34=; b=EvFQJEZXJnnhbD
+	FgFs+yCMeixmRNiuVZ2rZSoS1RJykeRvLOvXr02/O7CR8y8W/ZZ48GxYiaI7mJ/cd5ShW9oY1/xSd
+	NgYSBuZiN797eNKXE3P/N3h1NNCGTwO9DKu13iRpEynZtIV6iYe4gayAstslPBDVagUA7oCr3URh0
+	6/7usmZKMXDjpALsmsAiVbifbbosncvgF93grIaeIwqgCTisAtiSWxuHK5KbYpKGr9SKlmYGwefSp
+	5FKqR0UDkoOZdNwGzH7+xYNGfee1Qv/UFkpgMcCwCzKHdKYCDYKjcEaJDmLBtX2gFrKgg9fPkD0a8
+	Zj2u2EWEDzlbr2FVdTgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi0rd-000000033d9-0j6I;
-	Tue, 20 Jan 2026 01:49:01 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi0rc-000000033ck-0a3u
-	for linux-mtd@lists.infradead.org;
+	id 1vi0rc-000000033cw-34ly;
 	Tue, 20 Jan 2026 01:49:00 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vi0ra-000000033cH-39fH
+	for linux-mtd@lists.infradead.org;
+	Tue, 20 Jan 2026 01:48:59 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 15ABB6015A;
-	Tue, 20 Jan 2026 01:48:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C09D0C116C6;
-	Tue, 20 Jan 2026 01:48:58 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id F1A0744363;
+	Tue, 20 Jan 2026 01:48:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B110BC19424;
+	Tue, 20 Jan 2026 01:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768873738;
-	bh=g/uMQusRPTzXLgyH55SF2Z0Ew27f2Lx3R56DScAIcKE=;
+	s=k20201202; t=1768873737;
+	bh=/ZlnKnKx7utqc5wND/d2GRMNuYYpxYnoMehK3GUY9hQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Ncyo4giv2phgkfri7JiliRauLyWNGyPHeJ7eBayc+j+tixYyhVmHowa/m4lPQ1UH1
-	 5LpZkYZ/yBich6u93+kfAo9UaIPDemKL4XZX4mlpbf2NfCFeKBdRn/B3aLX0/ptu8c
-	 k0rviGH3w/irU75dZ1gyGKjIMQiv9SeWr1oyQLgvjs9MnfjsZ79a5YE5XWZdGGCgid
-	 QC9Fy4buIEv5Aw+XF7ZZUy+OXXBpkvm10vpB5eHf0SVE3uxpe2qLONpFFeb2bKZxG7
-	 mm4dyEo2nU94gC8AXqsWaqPIStNQIPoN3BCJuW5Q85oUxzyFLvXfgFvImwhAER7nUm
-	 xOD7dw562bH2g==
+	b=jEEJuJljiPATumdLNELfSGh7SGdYUJPcXbVE72c0SE+CmKNtyUkkUcwSSI/xF8p8J
+	 nIQlT/T/JDUB+L+uusoha0kDwwf2R8Dw4MR+sX+NwKkVeRFi2jt9ZPEtZ2fk198SXJ
+	 +7hodq5wcKqUa8qP4OjlULgqBhRU00zCvGqvxdQFk/tFeHClxFByruqorCUCAxLeng
+	 tCufp3bTckdf6sPsdwrhN7e5Vn1GReYH3WGkLMtIeLn0UWh3qpToDfeYCpR1/SDHHA
+	 585R1tsBEZjSctmvOMO6THZYJvMLDIe/rvapAvmRvgVonendHKK3sKYH0KdbeVb5P7
+	 WLwlZ47KalCcw==
 From: "Rob Herring (Arm)" <robh@kernel.org>
-Date: Mon, 19 Jan 2026 19:48:23 -0600
-Subject: [PATCH v2 02/10] dt-bindings: mtd: fixed-partitions: Move
- "compression" to partition node
+Date: Mon, 19 Jan 2026 19:48:22 -0600
+Subject: [PATCH v2 01/10] dt-bindings: mtd: brcm,brcmnand: Drop
+ "brcm,brcmnand" compatible for iProc
 MIME-Version: 1.0
-Message-Id: <20260119-dt-mtd-partitions-v2-2-77ebb958a312@kernel.org>
+Message-Id: <20260119-dt-mtd-partitions-v2-1-77ebb958a312@kernel.org>
 References: <20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org>
 In-Reply-To: <20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -66,9 +66,12 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Hauke Mehrtens <hauke@hauke-m.de>
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- Simon Glass <simon.glass@canonical.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 X-Mailer: b4 0.15-dev
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260119_174858_813725_0471C580 
+X-CRM114-Status: UNSURE (   9.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,53 +83,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlICJjb21wcmVzc2lvbiIgcHJvcGVydHkgaXMgZGVmaW5lZCBpbiB0aGUgd3JvbmcgcGxhY2Ug
-YXMgaXQgYXBwbGllcwp0byBpbmRpdmlkdWFsIHBhcnRpdGlvbnMgbm9kZXMsIG5vdCBhbGwgbm9k
-ZXMuCgpGaXhlczogOGJhYmE4ZDUyZmY1ICgiZHQtYmluZGluZ3M6IG10ZDogZml4ZWQtcGFydGl0
-aW9uczogQWRkIGNvbXByZXNzaW9uIHByb3BlcnR5IikKUmV2aWV3ZWQtYnk6IFNpbW9uIEdsYXNz
-IDxzaW1vbi5nbGFzc0BjYW5vbmljYWwuY29tPgpSZXZpZXdlZC1ieTogS3J6eXN6dG9mIEtvemxv
-d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBvc3MucXVhbGNvbW0uY29tPgpTaWduZWQtb2ZmLWJ5
-OiBSb2IgSGVycmluZyAoQXJtKSA8cm9iaEBrZXJuZWwub3JnPgotLS0KIC4uLi9iaW5kaW5ncy9t
-dGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwgICAgICB8IDE4IC0tLS0tLS0tLS0t
-LS0tLS0tLQogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFydGl0aW9u
-LnlhbWwgIHwgMTggKysrKysrKysrKysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDE4IGluc2Vy
-dGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvZml4ZWQtcGFy
-dGl0aW9ucy55YW1sCmluZGV4IDYyMDg2MzY2ODM3Yy4uNzNkNzRjMGY1Y2I3IDEwMDY0NAotLS0g
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvZml4ZWQt
-cGFydGl0aW9ucy55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
-dGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKQEAgLTI5LDI0ICsyOSw2IEBAIHBy
-b3BlcnRpZXM6CiAKICAgIiNzaXplLWNlbGxzIjogdHJ1ZQogCi0gIGNvbXByZXNzaW9uOgotICAg
-ICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3N0cmluZwotICAgIGRlc2Ny
-aXB0aW9uOiB8Ci0gICAgICBDb21wcmVzc2lvbiBhbGdvcml0aG0gdXNlZCB0byBzdG9yZSB0aGUg
-ZGF0YSBpbiB0aGlzIHBhcnRpdGlvbiwgY2hvc2VuCi0gICAgICBmcm9tIGEgbGlzdCBvZiB3ZWxs
-LWtub3duIGFsZ29yaXRobXMuCi0KLSAgICAgIFRoZSBjb250ZW50cyBhcmUgY29tcHJlc3NlZCB1
-c2luZyB0aGlzIGFsZ29yaXRobS4KLQotICAgIGVudW06Ci0gICAgICAtIG5vbmUKLSAgICAgIC0g
-YnppcDIKLSAgICAgIC0gZ3ppcAotICAgICAgLSBsem9wCi0gICAgICAtIGx6NAotICAgICAgLSBs
-em1hCi0gICAgICAtIHh6Ci0gICAgICAtIHpzdGQKLQogcGF0dGVyblByb3BlcnRpZXM6CiAgICJA
-WzAtOWEtZl0rJCI6CiAgICAgJHJlZjogcGFydGl0aW9uLnlhbWwjCmRpZmYgLS1naXQgYS9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFydGl0aW9uLnlh
-bWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFy
-dGl0aW9uLnlhbWwKaW5kZXggODBkMDQ1MmEyYTMzLi4wYjk4OTAzN2EwMDUgMTAwNjQ0Ci0tLSBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRp
-b24ueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRp
-dGlvbnMvcGFydGl0aW9uLnlhbWwKQEAgLTEwOCw2ICsxMDgsMjQgQEAgcHJvcGVydGllczoKICAg
-ICAgIHdpdGggdGhlIHBhZGRpbmcgYnl0ZXMsIHNvIG1heSBncm93LiBJZiDigJhhbGlnbi1lbmTi
-gJkgaXMgbm90IHByb3ZpZGVkLAogICAgICAgbm8gYWxpZ25tZW50IGlzIHBlcmZvcm1lZC4KIAor
-ICBjb21wcmVzc2lvbjoKKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9u
-cy9zdHJpbmcKKyAgICBkZXNjcmlwdGlvbjogfAorICAgICAgQ29tcHJlc3Npb24gYWxnb3JpdGht
-IHVzZWQgdG8gc3RvcmUgdGhlIGRhdGEgaW4gdGhpcyBwYXJ0aXRpb24sIGNob3NlbgorICAgICAg
-ZnJvbSBhIGxpc3Qgb2Ygd2VsbC1rbm93biBhbGdvcml0aG1zLgorCisgICAgICBUaGUgY29udGVu
-dHMgYXJlIGNvbXByZXNzZWQgdXNpbmcgdGhpcyBhbGdvcml0aG0uCisKKyAgICBlbnVtOgorICAg
-ICAgLSBub25lCisgICAgICAtIGJ6aXAyCisgICAgICAtIGd6aXAKKyAgICAgIC0gbHpvcAorICAg
-ICAgLSBsejQKKyAgICAgIC0gbHptYQorICAgICAgLSB4egorICAgICAgLSB6c3RkCisKIGlmOgog
-ICBub3Q6CiAgICAgcmVxdWlyZWQ6IFsgcmVnIF0KCi0tIAoyLjUxLjAKCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+Some users of "brcm,nand-iproc" include "brcm,brcmnand" and some don't.
+The "brcm,brcmnand" compatible is not useful for iProc systems as
+there's a separate driver for iProc. So drop it as a fallback.
+
+Reviewed-by: William Zhang <william.zhang@broadcom.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+index 064e840aeaa1..3105f8e6cbd6 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+@@ -66,7 +66,6 @@ properties:
+         items:
+           - const: brcm,nand-iproc
+           - const: brcm,brcmnand-v6.1
+-          - const: brcm,brcmnand
+       - description: BCM63168 SoC-specific NAND controller
+         items:
+           - const: brcm,nand-bcm63168
+
+-- 
+2.51.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
