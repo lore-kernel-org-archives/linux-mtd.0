@@ -4,45 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CC6ED2ECF7
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 07:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45C11D2ECF7
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jan 2026 07:55:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IFp3d2ftwvtf9hsqtaZrABbejPtGdEK4tw+ZWxx/5kM=; b=VJYUlNCdVrNQDL
-	WpwEWTqsIj5PLk9w4A4whae7rN+Iakr34qWRqoDt//KpxWCla2Rm4EOusscrKo34gmHn2JlLDJ02a
-	Bl0yDnU7wFakqmF0iGpq9ccFc/ksPP9lehs3KF89TVuEC3oKoa3wedY4NJSebvkPDtdHav/bd/JU6
-	JkRGPQD6YNMGqOniicSy/aL6f1DA3sGXt+H0Q+B89ICVrrbW13gYI9JEaxeuz+OFWQ8346GRiNcwL
-	kuUGOo+nIdxhsfLGhjOBNVg83gR0KUzjGUUzw0tcTkzYNk4PmXsEWplq4Vbwc6uBG3zvTct8Em0SO
-	DTiFA4M3sifpZVb1evIg==;
+	List-Owner; bh=rhUXEz7dZU6/cS2Wt9LVmSdr5nFrlKv59f0C/0cepqU=; b=mhrRQPseQD3SJj
+	HPlMGREH8AVHiT7IKZKuh55rHjVNBKyX+2djmQzzlATaym7YaZwSPtUfYTL0BZscNrxuIEVB9hJtx
+	G3uGelUwFUBNijUZRvmRM/aIVV57iSNFaGEyeBN1I3OBwVce0aYgFqK7f/xtXva3Um5JBHQOD1Tle
+	mI1DbjGb/uugN0ctdjg5jhk8rUqgII7xrsXrG+Lyh5+Ccrmpyeo+yyPHR2GTiUqjoaP4b2wbGPyiW
+	wWDAZjeymdnNC4w54hhaZ1kdn1NWWo+CXb9jUBGOmEmG+Qv6DU8gGlI9Wqk/5+FdaVI1UteH0rWVm
+	BHNcNg6oC9jaGZAeeBDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi6Zf-00000003Nak-0GSE;
-	Tue, 20 Jan 2026 07:54:51 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vi6aa-00000003NnB-19yM;
+	Tue, 20 Jan 2026 07:55:48 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi6Zc-00000003NaD-0MUs
+	id 1vi6aY-00000003NmZ-1qkP
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 20 Jan 2026 07:55:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Tcx8064/hGaAIMalVw9EaFRdmKraWOd4lVgzKYeyuA0=; b=HI+UoOq0yRxgtphTIrQ1HxqpVu
+	4bW7DjTJJcWNEx3FfcsXKIRzD/l9r7Zu66bAl+//2QfCB2MpEomNkLj0j40kpyBq4gmFWEYWrzfdA
+	rvXIfe9t9mvIBlZLE/qBvaJuFN3wWiwsklTFfb3SLK1+ffCd2TIjq0KTgb0WwHU1GoI47bvS5gBaP
+	pumI+FKiW86ypa2TgRDNNApPl3py2aONUnYdVHp7ZuI5/SgqocD5zTD5bC+WrD23I1mP7Bzvk6+88
+	cGcAj/Y/aoVolmK7185bBpdu8hTYNX064qA3QGEX7Qxhn/41b9onR4qPYmNuxVa4HMyFxm6HcikKi
+	FXIgTUoA==;
+Received: from sea.source.kernel.org ([172.234.252.31])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vi6aV-0000000DWS6-2hkC
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 Jan 2026 07:54:49 +0000
+	Tue, 20 Jan 2026 07:55:45 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2D5CC600C3;
-	Tue, 20 Jan 2026 07:54:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F985C16AAE;
-	Tue, 20 Jan 2026 07:54:46 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id D128540563;
+	Tue, 20 Jan 2026 07:55:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33330C16AAE;
+	Tue, 20 Jan 2026 07:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768895686;
-	bh=B726PHTSmFoDDIvtou6n2TxR0c1xXbiJY524zsjJtpo=;
+	s=k20201202; t=1768895739;
+	bh=BBTRxbnKPyoh+nTPUz7ZafUr9MPEx37RGzF8gtkMZ6E=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H0C6eT+994EWlYBN33+wT2pGsYHsDgja6wB3ZmJcS8QQAeSIinXoiartbKEzfPZAi
-	 IfDUu5MoQ5sQrnfa2tdGy3frZrkMgsM9flVupYVy3J8umUc2jwa9Wgams+vfJgLdVr
-	 4edxaL24YiiBITeEarfWWqOjszsdvy0on8c7pdpQGB7/MrsEGgS3l+wR+NcSB12u4+
-	 eIlS0x4Av9Wzl8hTr7cSaTNLBwivl2zF7pRz4cxgThRykeEupIEqX8WPJCQEdHva9J
-	 hPFLeEU41UFX4KJpIODM5XUvjkrNqS2HhOxOT3vHHx0Ud/YeDSCn5d5TiMJEgshkrC
-	 Xix/LScERsVfw==
-Date: Tue, 20 Jan 2026 08:54:44 +0100
+	b=L3I6E/Nl/zHSfUZCfHsYpca4lxQuvK8u9O3KqSQo4iypJgrx3Wo0qJe34m2sIVG/9
+	 e0Y8DpX1UTtGvizfEVk8c71JXlnAXmCEcpdMvLFuKf3L1JF/v7M6W10Gbsjw3zSx7d
+	 mpbjMZP9HYVmaQz7MABdgd5q8hWPOSZwGGgUl2Iq+DhASzqwB4AcHpERlGj44nxL7G
+	 Y70OCPuwVTrbEcHb/xLMU0v8Skp1PEXS1nRkR1nLpLjsQRYMZEo9u7uXrL9fN1BY1O
+	 rZd/dCgwmMzvrJINFlGtVIeEHeGcGltIu2PKY07HOpo9NOLcGn0fOyMKvUBetmSahN
+	 uYODJ+I0qRgTw==
+Date: Tue, 20 Jan 2026 08:55:37 +0100
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: "Rob Herring (Arm)" <robh@kernel.org>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -55,14 +70,17 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Marcus Folkesson <marcus.folkesson@gmail.com>, Tony Lindgren <tony@atomide.com>, 
 	Roger Quadros <rogerq@kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org, 
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: Re: [PATCH v2 08/10] dt-bindings: mtd: fixed-partitions: Restrict
- undefined properties
-Message-ID: <20260120-lime-nautilus-of-promise-8db3a2@quoll>
+Subject: Re: [PATCH v2 06/10] dt-bindings: mtd: partitions: Drop
+ partitions.yaml
+Message-ID: <20260120-ingenious-auk-of-enrichment-eae4f9@quoll>
 References: <20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org>
- <20260119-dt-mtd-partitions-v2-8-77ebb958a312@kernel.org>
+ <20260119-dt-mtd-partitions-v2-6-77ebb958a312@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260119-dt-mtd-partitions-v2-8-77ebb958a312@kernel.org>
+In-Reply-To: <20260119-dt-mtd-partitions-v2-6-77ebb958a312@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260120_075543_923296_26719EEB 
+X-CRM114-Status: GOOD (  13.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,15 +97,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 19, 2026 at 07:48:29PM -0600, Rob Herring (Arm) wrote:
-> The fixed-partitions schema allowed undefined properties in order to
-> avoid warnings when there are nested fixed-partitions.
+On Mon, Jan 19, 2026 at 07:48:27PM -0600, Rob Herring (Arm) wrote:
+> The partitions.yaml schema is an unusual structure in that it includes
+> all possible partition types, and it disables the normal matching by
+> compatible strings. As partitions.yaml has nothing to match on, it is
+> only applied when explicitly referenced. The use of "oneOf" also results
+> in misleading warnings which are difficult to understand. Drop
+> partitions.yaml and rely on the standard compatible matching instead.
+> 
+> The "mmc-card" case previously allowed any partition type, but now only
+> allows "fixed-partitions". There aren't any users and the original
+> intent appeared to be only for "fixed-partitions".
 > 
 > Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 > ---
->  .../devicetree/bindings/mtd/partitions/fixed-partitions.yaml       | 7 +++++--
->  Documentation/devicetree/bindings/mtd/partitions/partition.yaml    | 2 +-
->  2 files changed, 6 insertions(+), 3 deletions(-)
+>  .../devicetree/bindings/mmc/mmc-card.yaml          | 20 ++++--------
+>  Documentation/devicetree/bindings/mtd/mtd.yaml     |  2 +-
+>  .../mtd/partitions/arm,arm-firmware-suite.yaml     |  2 --
+>  .../mtd/partitions/brcm,bcm4908-partitions.yaml    |  2 --
+>  .../partitions/brcm,bcm947xx-cfe-partitions.yaml   |  2 --
+>  .../mtd/partitions/linksys,ns-partitions.yaml      |  2 --
+>  .../bindings/mtd/partitions/partitions.yaml        | 36 ----------------------
+>  .../devicetree/bindings/mtd/ti,davinci-nand.yaml   |  4 ++-
+>  8 files changed, 10 insertions(+), 60 deletions(-)
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 
