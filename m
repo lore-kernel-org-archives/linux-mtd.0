@@ -4,37 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E31BC44501
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 09:17:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F900C44501
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 09:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wOVbnKrAXjLIpiIRbkDoBrv2VLxB9T/ahrsUxRWPzLU=; b=KklL3sOzGruMIf
-	TD6Uxcew9jTO4YlzOWFNbuL/qDRimLcruUngN7mtCvsXs0u8DTqcWWXmzIwj6eNCYRI2dIvXxDmLu
-	cFKM5xUhi4a1nCfex3MMhlOtichE6DZHwY7GnvYtjLNpO3cEcEIF5/vytdhQ+QxZLLfHg8WT8cCxQ
-	DmRwwJtA+VGpDaCpD9y1XttADlQeb+GjqDgsZ3XX6Oi+K8vs0EiQ+sbqbC1scg3Lt5m5A7oXwuxbR
-	jYXo2ijP86MnBIt8izUtM7c3EKb3gZUjKR9NihKXmMhXwWhBaRBg2Yhc90kOdBBZBUr6/YvCoG1tU
-	/V9hnWkh9Uwe1v5V0IDA==;
+	List-Owner; bh=WuYhKMNFjV6wylzeQGjqBucCYXKBBI9eIUUWUEABAe0=; b=YZkvzMcYWUk1VY
+	icq4aCGUk8ltYrz7IpON5hMmW7k1DjLfV56Otx6vZWFlQosxqc9DGykbH/VD3BwnRiuKKYBEknYJp
+	e6lwJSrD9VjAFI5D5HzmhQv4Fw1w6YxfrvUsuy1OAOO28/fQEeSBn3pTMUQwrxtv4iolJC9EENERM
+	J2+3nvoT+YxgWodnLTkUw60e8QZizVQoFu3t0jRAsOTX5ajXPaOzamsL9w17oZYHK+TAobILZA5dC
+	ajV6Th7+MBRt34g9GT2UY7e1UZldbGEWiGJpfrP5ahGKxZNqt8Js/WPlMv+XAiE2i0OWMeGzDgr/a
+	QvQARCE72vFBHFqaUcTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viULQ-00000005AqX-2Rf7;
-	Wed, 21 Jan 2026 09:17:44 +0000
+	id 1viUpP-00000005D63-01TS;
+	Wed, 21 Jan 2026 09:48:43 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viULN-00000005Aph-3NRp;
-	Wed, 21 Jan 2026 09:17:41 +0000
-Date: Wed, 21 Jan 2026 01:17:41 -0800
+	id 1viUpM-00000005D5S-1Xs6;
+	Wed, 21 Jan 2026 09:48:40 +0000
+Date: Wed, 21 Jan 2026 01:48:40 -0800
 From: Christoph Hellwig <hch@infradead.org>
-To: Jeff Layton <jlayton@kernel.org>
+To: NeilBrown <neil@brown.name>
 Cc: Christoph Hellwig <hch@infradead.org>,
 	Christian Brauner <brauner@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>,
+	Chuck Lever <chuck.lever@oracle.com>,
 	Olga Kornievskaia <okorniev@redhat.com>,
 	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Amir Goldstein <amir73il@gmail.com>,
 	Hugh Dickins <hughd@google.com>,
 	Baolin Wang <baolin.wang@linux.alibaba.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -70,30 +71,32 @@ Cc: Christoph Hellwig <hch@infradead.org>,
 	Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>,
 	Andreas Gruenbacher <agruenba@redhat.com>,
 	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	David Laight <david.laight.linux@gmail.com>,
-	Dave Chinner <david@fromorbit.com>, linux-nfs@vger.kernel.org,
+	Jaegeuk Kim <jaegeuk@kernel.org>, linux-nfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
 	linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
 	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-unionfs@vger.kernel.org, devel@lists.orangefs.org,
-	ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, gfs2@lists.linux.dev,
-	linux-f2fs-devel@lists.sourceforge.net, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
-Message-ID: <aXCZtS2_A_GCvcQ6@infradead.org>
-References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
- <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
- <aW8yV6v8ZDiynOUm@infradead.org>
- <9b64bed72e43d0bf24e9b1e3bc770c4a87082762.camel@kernel.org>
- <707f08e114bf603caf7de020bb630d5477e86bca.camel@kernel.org>
- <2ed97731c54ef130ea58861a91c80dacd785de9a.camel@kernel.org>
+	linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
+	devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
+	ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
+	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
+ nfsd export support
+Message-ID: <aXCg-MqXH0E6IuwS@infradead.org>
+References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
+ <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
+ <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
+ <176877859306.16766.15009835437490907207@noble.neil.brown.name>
+ <aW3SAKIr_QsnEE5Q@infradead.org>
+ <176880736225.16766.4203157325432990313@noble.neil.brown.name>
+ <20260119-kanufahren-meerjungfrau-775048806544@brauner>
+ <176885553525.16766.291581709413217562@noble.neil.brown.name>
+ <aW8w2SRyFnmA2uqk@infradead.org>
+ <176890126683.16766.5241619788613840985@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2ed97731c54ef130ea58861a91c80dacd785de9a.camel@kernel.org>
+In-Reply-To: <176890126683.16766.5241619788613840985@noble.neil.brown.name>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,10 +113,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 20, 2026 at 09:35:48AM -0500, Jeff Layton wrote:
-> Even better, I think?
+On Tue, Jan 20, 2026 at 08:27:46PM +1100, NeilBrown wrote:
+> > If you think NFS actually explains the semantics pretty well, please
+> > explain that too, especially in forms that can be put into
+> > documentation, including for the user ABI.
+> 
+> There are multiple issues here:
+> 
+>  - filehandle stability.  As far as I know all filesystems provide
+>    stable filehandles when the "subtree_check" export option is not used.
 
-This sounds great, thanks!
+That is news to me, but certainly interesting.  Does this include not
+reusing the file handle for a new incarnation of the same thing?
+
+>    Certainly cgroupfs does.  So having an EXPORT_OP_STABLE_HANDLES
+>    flag would mean it was set for every filesystem - unless there is
+>    something else I'm not aware of.  That is certainly possible and I
+>    hope someone will let me know if I'm missing something.
+
+Well, if does not provide stable file handles with the subtree_check
+export option, or more importantly with the CONNECTABLE flag passed
+to encode_fh, which is the level we're operating on, it can't set the
+flag.
+
+>  - filehandle uniqueness.  This is somewhat important and if a
+>    filesystem doesn't provide it, that should be considered a bug.  In a
+>    different thread Christian has observed that there would be benefit
+>    if pidfs and nsfs provided uniqueness across reboots.  It is quite
+>    easy for a virtual filesystem to generate a 64 bit random number when
+>    the fs is initialised, and include that in file handles.  Having a
+>    EXPORT_OP_REUSES_HANDLES flag could mark filesystems that are still
+>    buggy if that is thought to be useful.
+
+Yes.
+
+>  - GETATTR always reporting file size of 0.  This is the only concrete
+>    symptom that Jeff has reported (that I have seen).  This  makes it
+>    impossible to read files over NFS even if they have content.
+>    Would EXPORT_OP_INACCURATE_SIZE be useful?
+
+i_size = 0 for a regular file sounds like a genuine bug to me.  I'm
+actually surprised anything works with that.
+
+>  - maintainer feature choice.  A maintainer may choose not to support
+>    export over NFS because they feel that there is no value and the
+>    possible support burden would not be worth it.
+
+The maintainer has no way to disallow exporting through nfs.  They can
+at best disallow exporting using the kernel nfs daemon if we provide
+that facility.  But as I've argued multiple times, making arbitrary,
+selective and very narrow choices about use cases without technical
+backing for them (which then would be expressable as a flag like those
+listed by you above) is really bad software development practice, and
+not something that we usually do in the Linux kernel.
+
+>    There may be locking
+>    / lease / etc issues that further complicate things.  So it might be
+>    reasonable for a maintainer to choose to forbid NFS export while
+>    allowing local fhandle access. EXPORT_OP_NO_NFS_EXPORT.
+
+We already have a EXPORT_OP_NOLOCKS flag to deal with this.
+
+> 
+> It took me a while to sift through the code/patches/comments and come to
+> this understanding and I apologise if I wasn't as clear earlier.  But
+> my intuition was always that file handle stability was never the real
+> issue, and maintainer choice was.  Hence my rejection of the
+> "STABLE_HANDLES" name.
+
+Why do you keep ignoring the fat that the stable handles are really
+important for anyone wanting to actually use them for their original
+storage purpose, be that for knfsd, a userland nfs damon, or other
+storage applications in userspace despite explaining this countless
+times?
 
 
 ______________________________________________________
