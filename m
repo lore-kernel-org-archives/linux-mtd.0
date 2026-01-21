@@ -4,32 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F900C44501
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 09:48:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19094C44502
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 09:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WuYhKMNFjV6wylzeQGjqBucCYXKBBI9eIUUWUEABAe0=; b=YZkvzMcYWUk1VY
-	icq4aCGUk8ltYrz7IpON5hMmW7k1DjLfV56Otx6vZWFlQosxqc9DGykbH/VD3BwnRiuKKYBEknYJp
-	e6lwJSrD9VjAFI5D5HzmhQv4Fw1w6YxfrvUsuy1OAOO28/fQEeSBn3pTMUQwrxtv4iolJC9EENERM
-	J2+3nvoT+YxgWodnLTkUw60e8QZizVQoFu3t0jRAsOTX5ajXPaOzamsL9w17oZYHK+TAobILZA5dC
-	ajV6Th7+MBRt34g9GT2UY7e1UZldbGEWiGJpfrP5ahGKxZNqt8Js/WPlMv+XAiE2i0OWMeGzDgr/a
-	QvQARCE72vFBHFqaUcTA==;
+	List-Owner; bh=asrABggytSHl8w1+j4bE3LWcNPnxkMivAYAJmsCH+wU=; b=WgtTosFacQXJhI
+	b7uoQkq6HWGRAwWWO5XQdOdR7Q0AoSL67uYr8LJphp9u+RgDuZ2qg1/gUyXooCoAZx7fbGtPEnqiR
+	dlHUKQmiC8x+S28U46xFL70uXJSwlXJtl4oMrtN1X+gobgnC1EiQDEP2fYLFlD7qSKWqrz/69OvHA
+	WvjqLHmlyGNpcu32Ift1VAZ1+fnVrJ6Kf4G+Hmkrsi64kA0WuqY0d9LtMyGi8oiYSfPoTEOg+8rB4
+	0/mLY3av2icxyFgiG7MknJXiS9JG3A9lhAxS8nVnRYZcxsJIgn7EMhuVWfsFpwCe6pVw/NbxZ8prz
+	ifstZYFp3tzlNW0DE9BA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viUpP-00000005D63-01TS;
-	Wed, 21 Jan 2026 09:48:43 +0000
+	id 1viUtH-00000005DjL-4AZB;
+	Wed, 21 Jan 2026 09:52:43 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viUpM-00000005D5S-1Xs6;
-	Wed, 21 Jan 2026 09:48:40 +0000
-Date: Wed, 21 Jan 2026 01:48:40 -0800
+	id 1viUtD-00000005Dic-3hpF;
+	Wed, 21 Jan 2026 09:52:39 +0000
+Date: Wed, 21 Jan 2026 01:52:39 -0800
 From: Christoph Hellwig <hch@infradead.org>
-To: NeilBrown <neil@brown.name>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
+To: Christian Brauner <brauner@kernel.org>
+Cc: NeilBrown <neil@brown.name>, Christoph Hellwig <hch@infradead.org>,
 	Jeff Layton <jlayton@kernel.org>,
 	Amir Goldstein <amir73il@gmail.com>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -83,7 +82,7 @@ Cc: Christoph Hellwig <hch@infradead.org>,
 	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
 Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
  nfsd export support
-Message-ID: <aXCg-MqXH0E6IuwS@infradead.org>
+Message-ID: <aXCh55UplHkplhFe@infradead.org>
 References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
  <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
  <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
@@ -92,11 +91,10 @@ References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
  <176880736225.16766.4203157325432990313@noble.neil.brown.name>
  <20260119-kanufahren-meerjungfrau-775048806544@brauner>
  <176885553525.16766.291581709413217562@noble.neil.brown.name>
- <aW8w2SRyFnmA2uqk@infradead.org>
- <176890126683.16766.5241619788613840985@noble.neil.brown.name>
+ <20260120-entmilitarisieren-wanken-afd04b910897@brauner>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <176890126683.16766.5241619788613840985@noble.neil.brown.name>
+In-Reply-To: <20260120-entmilitarisieren-wanken-afd04b910897@brauner>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,79 +111,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 20, 2026 at 08:27:46PM +1100, NeilBrown wrote:
-> > If you think NFS actually explains the semantics pretty well, please
-> > explain that too, especially in forms that can be put into
-> > documentation, including for the user ABI.
+On Tue, Jan 20, 2026 at 10:04:02AM +0100, Christian Brauner wrote:
+> > I actually think that what Christoph wants is actually quite different
+> > from what Jeff wants, and maybe two flags are needed.  But I don't yet
+> > have a clear understanding of what Christoph wants, so I cannot be sure.
 > 
-> There are multiple issues here:
-> 
->  - filehandle stability.  As far as I know all filesystems provide
->    stable filehandles when the "subtree_check" export option is not used.
+> I've tried to indirectly ask whether you would be willing to compromise
+> here or whether you want to insist on your alternative name. Apparently
+> that didn't come through.
 
-That is news to me, but certainly interesting.  Does this include not
-reusing the file handle for a new incarnation of the same thing?
-
->    Certainly cgroupfs does.  So having an EXPORT_OP_STABLE_HANDLES
->    flag would mean it was set for every filesystem - unless there is
->    something else I'm not aware of.  That is certainly possible and I
->    hope someone will let me know if I'm missing something.
-
-Well, if does not provide stable file handles with the subtree_check
-export option, or more importantly with the CONNECTABLE flag passed
-to encode_fh, which is the level we're operating on, it can't set the
-flag.
-
->  - filehandle uniqueness.  This is somewhat important and if a
->    filesystem doesn't provide it, that should be considered a bug.  In a
->    different thread Christian has observed that there would be benefit
->    if pidfs and nsfs provided uniqueness across reboots.  It is quite
->    easy for a virtual filesystem to generate a 64 bit random number when
->    the fs is initialised, and include that in file handles.  Having a
->    EXPORT_OP_REUSES_HANDLES flag could mark filesystems that are still
->    buggy if that is thought to be useful.
-
-Yes.
-
->  - GETATTR always reporting file size of 0.  This is the only concrete
->    symptom that Jeff has reported (that I have seen).  This  makes it
->    impossible to read files over NFS even if they have content.
->    Would EXPORT_OP_INACCURATE_SIZE be useful?
-
-i_size = 0 for a regular file sounds like a genuine bug to me.  I'm
-actually surprised anything works with that.
-
->  - maintainer feature choice.  A maintainer may choose not to support
->    export over NFS because they feel that there is no value and the
->    possible support burden would not be worth it.
-
-The maintainer has no way to disallow exporting through nfs.  They can
-at best disallow exporting using the kernel nfs daemon if we provide
-that facility.  But as I've argued multiple times, making arbitrary,
-selective and very narrow choices about use cases without technical
-backing for them (which then would be expressable as a flag like those
-listed by you above) is really bad software development practice, and
-not something that we usually do in the Linux kernel.
-
->    There may be locking
->    / lease / etc issues that further complicate things.  So it might be
->    reasonable for a maintainer to choose to forbid NFS export while
->    allowing local fhandle access. EXPORT_OP_NO_NFS_EXPORT.
-
-We already have a EXPORT_OP_NOLOCKS flag to deal with this.
-
-> 
-> It took me a while to sift through the code/patches/comments and come to
-> this understanding and I apologise if I wasn't as clear earlier.  But
-> my intuition was always that file handle stability was never the real
-> issue, and maintainer choice was.  Hence my rejection of the
-> "STABLE_HANDLES" name.
-
-Why do you keep ignoring the fat that the stable handles are really
-important for anyone wanting to actually use them for their original
-storage purpose, be that for knfsd, a userland nfs damon, or other
-storage applications in userspace despite explaining this countless
-times?
+Btw, I don't think the name is the primary problem, as we seem to
+disagree even about the problem space.  The current patch series
+from Jeff helps with the stable handle problem, which is an important
+one, although maybe not the one you and Amir care about most.  I care
+about it most, because the addition of unstable handles caused problems
+and I really want that fixed before it spreads further, and I think
+anything mentioning NFS in that is factually wrong.  If we need
+additional flags to work around other issues (as in the list compiled
+by Neil) I'd still prefer them to be named about what issues they
+deal with, but folks get too tired of that I could probably with a
+"NFSD get the f^&&& out" name if we'd just keep shouting at each
+other otherwise.
 
 
 ______________________________________________________
