@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DB1BC44506
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCE29D46972
 	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 19:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sTSeYlvwVpBETHJxGR95qU3xVFQiz14HUO5FsiGqq9k=; b=a0yJ9cz7y3JYcK
-	Fo4hEPwyGTRvQ+AfJPa0MgJX4rPI88ZZHf3n6t2msF55ASPxY5i3Ebzs6hZC6Xyd+Nu8zgL9ob9iS
-	05HKfxnjRtr8hqveYp1TucsCfe8PGZLBDJAxatPvRSuCriQrF58RJUNLbiQvoUFepTIoQVdCyUuOD
-	g7913dXIsME59rrOP35Ad7GNgUamqOXeWEdvyEMt+sHU4t+I5QW6OGOnGpR4ImK6N/DVhAa2Exj9C
-	Gh20DV8d6Y3p/cJE859ec0tlqgOQN/E8tUf1PhvLNsM+2QUnEv6vZaTAq6m4VgCyzwVAQXy1yBQY1
-	KIISwCrlJwF22njmnZsg==;
+	List-Owner; bh=1XWDP8eiZOgmZHyQEEYt0r4OK1WWmyFUn6p3u8m/EKU=; b=wfsL9vgPEQUk6t
+	k0PZC+Sr4C8YJH4tnYKygsON8fahu28prwNscENcZnD0Sfzl4Dcc1mhyGsWBKiw8leCr9veKa5q+9
+	qb6TkPwS3S3w3us6YNh7SsUI+kTXFr5xxX/NN3LeEGK7pQ2MDDn3FjiuzVBN27X3DW5fhfojMjo6u
+	wHYE25jbuugmlMfBaou2quO7dr7aMcE+Yz9zkpEbsQkHI6iZFM1/ngOxYimFfGU670uvV1OS8YvC0
+	XglIG4CHe52QsILFdyH+06uFWl1s8VDcArza+Itq+/U+tOIICJVuMPoXkwTfY0z8oysIF67HNMvVV
+	Kfq+mq+6OZwIdErMrUJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vieK9-00000005zjy-1iRG;
+	id 1vieK9-00000005zkQ-34hK;
 	Wed, 21 Jan 2026 19:57:05 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vieK5-00000005zgp-3La2
+	id 1vieK7-00000005zi9-3GLh
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Jan 2026 19:57:02 +0000
+	Wed, 21 Jan 2026 19:57:03 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 20FC2408FA;
-	Wed, 21 Jan 2026 19:57:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9A5EC19424;
-	Wed, 21 Jan 2026 19:57:00 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 376D960130;
+	Wed, 21 Jan 2026 19:57:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C862DC4CEF1;
+	Wed, 21 Jan 2026 19:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769025421;
-	bh=lNztnI4QcVHyFig2NE9Jca79n6y7e/q4hG9Afn4a2J8=;
+	s=k20201202; t=1769025422;
+	bh=bA0IrXZIRAmvLVMEUnj2msq0bjns/r0LlSygkXY7W14=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=c2c7upRnt8HsVzca0u4hvucw45+nRTSBGjjsZDsvurEJ2eVuXjB02zP0M2Q22KLAv
-	 wTabPm4JWD8j2Y2i1uH2EGoOdvkrZFlFg8MFgD04SwWt5QeCSvtrHZrOSDvOAaBtmk
-	 VsnZwUQekO+4dpbHUvaGV2XrMFG1BUyeM3S9haVpjtgIV4W6rXuErAbhcn6MNuKAWG
-	 g+UggfSlaq4WURxyVBUWwrcrhizLzdQwc0O8rkQj9vyH+B3tPy8jQjNcWyQsY9ns4P
-	 pDGCElumR75VnrbbMeE5fi5K6L3qTEn2fuFBAtjS3BLKSnMxjuOHbrktzlBYt1iEMp
-	 EOcXhMPxauSIQ==
+	b=ru4sJb+aJUJEHhmUlzhvQv36xoUGNyPg+YRCDt4jJBk0qYnPq6baZoCfgzYB3Gl5y
+	 owypAn504JSqmytb9A9I7TZ3kSJFtk+2TAsNkRhcdcHOA9VB//gD069/DzpU0/T5Ia
+	 MVnIyQcsIvG9+Zq/iEjRC5/D8F3zC9tL1E70um/6I1D/iDKuhkCVrnU9b0INMqoCrh
+	 JVUBgg/ATkL2p99x5eDOU8ZUdDqO2idOuBdlFajKBg9M4MTHUKUDvanXewwNMAz8we
+	 rK+S8Tb54JolMRoYhafvB1buf6uSML9xfUERS85XoSRCCbEkf8KJdK7PeCVSM5smAX
+	 8yns/iR/aMHcg==
 From: "Rob Herring (Arm)" <robh@kernel.org>
-Date: Wed, 21 Jan 2026 13:56:38 -0600
-Subject: [PATCH v3 05/10] dt-bindings: mtd: partitions: Define
- "#{address,size}-cells" in specific schemas
+Date: Wed, 21 Jan 2026 13:56:40 -0600
+Subject: [PATCH v3 07/10] dt-bindings: mtd: Ensure partition node
+ properties are documented
 MIME-Version: 1.0
-Message-Id: <20260121-dt-mtd-partitions-v3-5-ec3af93c8f93@kernel.org>
+Message-Id: <20260121-dt-mtd-partitions-v3-7-ec3af93c8f93@kernel.org>
 References: <20260121-dt-mtd-partitions-v3-0-ec3af93c8f93@kernel.org>
 In-Reply-To: <20260121-dt-mtd-partitions-v3-0-ec3af93c8f93@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -68,9 +68,6 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 X-Mailer: b4 0.15-dev
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260121_115701_888248_D36152F5 
-X-CRM114-Status: GOOD (  10.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,68 +84,117 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Whether "#address-cells" and "#size-cells" are used or not depends on
-the specific partition type, so drop them from partitions.yaml and
-define them in the specific partition schemas as needed.
+Partition nodes without a compatible have no restrictions on additional
+properties. Fix this by ensuring 'unevaluatedProperties' is set when
+there's no compatible property. If there is a compatible property, then
+there should be a specific schema for it which will enforce
+'unevaluatedProperties'.
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- .../devicetree/bindings/mtd/partitions/fixed-partitions.yaml        | 6 ++++--
- Documentation/devicetree/bindings/mtd/partitions/partitions.yaml    | 6 ------
- Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml   | 4 ----
- 3 files changed, 4 insertions(+), 12 deletions(-)
+ Documentation/devicetree/bindings/mtd/mtd.yaml               |  8 ++------
+ .../devicetree/bindings/mtd/partitions/fixed-partitions.yaml |  2 +-
+ .../devicetree/bindings/mtd/partitions/partition.yaml        | 12 ++++++++++++
+ .../mtd/partitions/tplink,safeloader-partitions.yaml         |  2 +-
+ Documentation/devicetree/bindings/mtd/partitions/u-boot.yaml |  2 +-
+ Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml   |  2 +-
+ 6 files changed, 18 insertions(+), 10 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+index e56dba83f00a..5a2d06c96c0d 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -36,12 +36,8 @@ properties:
+       - compatible
+ 
+ patternProperties:
+-  "@[0-9a-f]+$":
+-    $ref: partitions/partition.yaml
+-    deprecated: true
+-
+-  "^partition@[0-9a-f]+":
+-    $ref: partitions/partition.yaml
++  "(^partition)?@[0-9a-f]+$":
++    $ref: /schemas/mtd/partitions/partition.yaml#/$defs/partition-node
+     deprecated: true
+ 
+   "^otp(-[0-9]+)?$":
 diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-index b504d4376d0b..26bef777353d 100644
+index 26bef777353d..4d79f786fcd5 100644
 --- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
 +++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-@@ -25,9 +25,11 @@ properties:
-           - const: sercomm,sc-partitions
-           - const: fixed-partitions
- 
--  "#address-cells": true
-+  "#address-cells":
-+    enum: [ 1, 2 ]
- 
--  "#size-cells": true
-+  "#size-cells":
-+    enum: [ 1, 2 ]
+@@ -33,7 +33,7 @@ properties:
  
  patternProperties:
    "@[0-9a-f]+$":
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747b..76199506d690 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -26,12 +26,6 @@ oneOf:
- properties:
-   compatible: true
+-    $ref: partition.yaml#
++    $ref: partition.yaml#/$defs/partition-node
  
--  '#address-cells':
--    enum: [1, 2]
--
--  '#size-cells':
--    enum: [1, 2]
--
- patternProperties:
-   "^partition(-.+|@[0-9a-f]+)$":
-     $ref: partition.yaml
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
-index ba7445cd69e8..ba627f51840b 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
-@@ -28,10 +28,6 @@ properties:
-       device. On a flash memory with 32KB eraseblocks, 0 means the first
-       eraseblock at 0x00000000, 1 means the second eraseblock at 0x00008000 and so on.
- 
--  '#address-cells': false
--
--  '#size-cells': false
--
  required:
-   - compatible
-   - fis-index-block
+   - "#address-cells"
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+index fe2f7d622e8b..51fd48af55ec 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+@@ -149,6 +149,18 @@ then:
+ # This is a generic file other binding inherit from and extend
+ additionalProperties: true
+ 
++$defs:
++  partition-node:
++    type: object
++    if:
++      not:
++        required: [ compatible ]
++    then:
++      $ref: '#'
++      unevaluatedProperties: false
++    else:
++      $ref: '#'
++
+ examples:
+   - |
+     partitions {
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/tplink,safeloader-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/tplink,safeloader-partitions.yaml
+index a24bbaac3a90..40e6eaab03ce 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/tplink,safeloader-partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/tplink,safeloader-partitions.yaml
+@@ -38,7 +38,7 @@ properties:
+ 
+ patternProperties:
+   "^partition-.*$":
+-    $ref: partition.yaml#
++    $ref: partition.yaml#/$defs/partition-node
+ 
+ required:
+   - partitions-table-offset
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/u-boot.yaml b/Documentation/devicetree/bindings/mtd/partitions/u-boot.yaml
+index 327fa872c001..d51bdcb7e585 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/u-boot.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/u-boot.yaml
+@@ -29,7 +29,7 @@ properties:
+ 
+ patternProperties:
+   "^partition-.*$":
+-    $ref: partition.yaml#
++    $ref: partition.yaml#/$defs/partition-node
+ 
+ unevaluatedProperties: false
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+index 7d3ace4f5505..8db991dee7eb 100644
+--- a/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
++++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+@@ -36,7 +36,7 @@ properties:
+ 
+ patternProperties:
+   "@[0-9a-f]+$":
+-    $ref: /schemas/mtd/partitions/partition.yaml
++    $ref: /schemas/mtd/partitions/partition.yaml#/$defs/partition-node
+ 
+ allOf:
+   - $ref: /schemas/memory-controllers/ti,gpmc-child.yaml
 
 -- 
 2.51.0
