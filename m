@@ -4,52 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3EA6D46971
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 19:57:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33850D4696F
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 19:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hfhq2R32oDqFArQwK/wJGJu62EecLhJkDUBqwCkNXBM=; b=a+0tU0x0mLGhOT
-	rY5Vw9q5l3tIs8D1j1cwqNyEMQwp+vKEEaya9FRcGZ0ADNW0KFgTfv4vx94Wbj1x4ZoAUXeJAK61N
-	+cxWIus4jjQe1o+5xeJjUdPf44KeVc3g4jVkas1HelqUS4Nif2IebN3lC7mUoED4bNgzEFypMYCVI
-	LkZRJtPPEFobRwMC3aNXT4HDussvPf6mz2zVmSfJlrzyXng9awEUb4NdfPBDt4HI3ppuzaejZ+hf9
-	hmDuIC/1cM/2jYo6vpRGPCAHHkobSbIV0PTVQTGLKaIhwUh4r5vBHFH7i1oZI9HCYu8s3Jmrk2mFz
-	SknCTK6T6bdOEksCntVg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JA72HJ1WhDU5i8R6yV3LWsA316vsMrgKdwPnE7adGN8=; b=aW2tj1zce7adhW
+	8pofsCsyrKbp434sH6EdvVcVjC8mq3F9ggxCNqZ2Lj1ZpI7O/oRGeAgrhcaHfAi+FyYijCpiGJeFA
+	nqL5SUdI0u8GGLjTVpvw9ikoQ6/VYKuPSHa7GttzGxryOyo2d62Nu9fTynwF/uOKywDkh4CLXBXUt
+	+T2BD2w0ShQ2V6e2DKvzSxQ3XWh+uXTFJvvVQZRF6Pk4Ak1f04MdNYSC91lUs1OKbTcYpTPWZMWbn
+	FA90gKFwoibSC/IHHB60wlsw/AbQzXArpFLZudaLZvI6fzvaIhdyr4ycUfd8tPZaRvRMrMX5f4Sit
+	GlZxKqALPvy/PDpyFWJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vieK7-00000005ziJ-3MHZ;
-	Wed, 21 Jan 2026 19:57:03 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vieK3-00000005zfu-07ux;
+	Wed, 21 Jan 2026 19:56:59 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vieK4-00000005zgW-3UG6
+	id 1vieK1-00000005zfd-0BEJ
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Jan 2026 19:57:00 +0000
+	Wed, 21 Jan 2026 19:56:57 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 434BD600AA;
-	Wed, 21 Jan 2026 19:57:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D362DC4CEF1;
-	Wed, 21 Jan 2026 19:56:59 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 21AE360131;
+	Wed, 21 Jan 2026 19:56:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0D6CC4CEF1;
+	Wed, 21 Jan 2026 19:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769025420;
-	bh=OsjbooI0PzsSGUgngyI7clHgsjttkcXNF84NTeIQn64=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=nAMgMGsAlFypN4Ya2goe99Kc/ynhx11xJAcCtHPXg+DD1DaBZeFLBLUzVUtT0zcn3
-	 B7oWBBg71kLI6delh0CBhqJHStvuws/Eba2MC08DMRf7TwoZbBK1+CWCyQYph8Lw9I
-	 /t938+stLXCjaERmVrW5MuO6I2xzCRNiuUF6YY4RRuirkjUNtprI0WpqrU87ZS2cZ/
-	 Cn6d5o3sk6RjxS7AVcvEM1EF+vn9NiNUBDqjMkvKcSTepD1PSwSFrR0Qfe/6iwRZm3
-	 rI1CUk/IFLnuBmfzEwdQdWRISU4xBiXWInmijLXz0NthsliZR7vNRhYHRdeD0xx2KV
-	 R+G9i3bAYdoFA==
+	s=k20201202; t=1769025415;
+	bh=O2g4aZxguQSd3/Hhutlh4goIwEfHLGt72wUIY/7+5pE=;
+	h=From:Subject:Date:To:Cc:From;
+	b=DIZCFNUqn4U1f9tXUbuxL+XFPQF+6044rzFpWFYeEnc7lSbRPPchLdba5j8tbqRIi
+	 Ewdwehg03Jf+Zcl8jlur20CU8WyiAZTANNGQac1SW2rPM7EMXM+fAZMdKMpjXR1PFx
+	 2ZMo28+2BX20B4iBvUElMWVKVe+droUyp0nM+l4YdL9KPSYvQUQ7dGfgAeU4lGl49k
+	 CC4xk/1iyrwHuJPbCrJ86J5X+fHh5cb5FbHKcbeugyATIEy0zvLeHYM1Ck2IGXRi37
+	 UlesgQ/tARMiKxhbULrurMM8GOaKXaUl+5ITAjcRapfxrP4vP088JsaWNLo4WYe1Ru
+	 CZoaCRBCZ0VWg==
 From: "Rob Herring (Arm)" <robh@kernel.org>
-Date: Wed, 21 Jan 2026 13:56:37 -0600
-Subject: [PATCH v3 04/10] dt-bindings: mtd: partitions: Allow
- "nvmem-layout" in generic partition nodes
+Subject: [PATCH v3 00/10] dt-bindings: mtd: Partition binding fixes and
+ restructuring
+Date: Wed, 21 Jan 2026 13:56:33 -0600
+Message-Id: <20260121-dt-mtd-partitions-v3-0-ec3af93c8f93@kernel.org>
 MIME-Version: 1.0
-Message-Id: <20260121-dt-mtd-partitions-v3-4-ec3af93c8f93@kernel.org>
-References: <20260121-dt-mtd-partitions-v3-0-ec3af93c8f93@kernel.org>
-In-Reply-To: <20260121-dt-mtd-partitions-v3-0-ec3af93c8f93@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAHEvcWkC/33NzQ6CMAzA8VcxPTuzdfLlyfcwHgYrsKhAumXRE
+ N7dwUkT4/HftL/O4IkdeTjtZmCKzrtxSKH3O2h6M3QknE0NKDGXSpbCBvEIVkyGgwtp2Qvd2qy
+ k2tjWSEh3E1Prnpt5uabunQ8jv7YXUa3Tf1pUQgqFR5PphnIsqvONeKD7YeQOVi7iB6GqXwQmo
+ iiorqusNFrhF7EsyxuIbSGl9gAAAA==
+X-Change-ID: 20260108-dt-mtd-partitions-3fd58ebadfa0
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -66,7 +69,8 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Hauke Mehrtens <hauke@hauke-m.de>
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+ Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
+ Simon Glass <simon.glass@canonical.com>
 X-Mailer: b4 0.15-dev
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,31 +88,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-An "nvmem-layout" node can be used in any partition node, so add it.
+The partition bindings fail to restrict undefined properties. This is 
+primarily on fixed-partitions which can be nested and partition nodes 
+without a compatible string. This series fixes those issues and then 
+several problems exposed by restricting undefined properties. As part of 
+this, the schema structure is reworked to follow more conventional 
+structure of applying schemas by compatible and a schema only checks 1 
+level of nodes (unless possible child nodes are fixed).
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+In theory, we could have all sorts of combinations of different 
+partition types nesting, and those may or may not work. No attempt is 
+made to support them here. Only the known cases are supported.
+
+Rob
+
 Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/partitions/partition.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+Changes in v3:
+- Add $ref to partition.yaml for brcm,bcm4908-partitions child nodes in 
+  patch 10. Patches 1-9 unchanged.
+- Link to v2: https://patch.msgid.link/20260119-dt-mtd-partitions-v2-0-77ebb958a312@kernel.org
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-index 568fac50f921..fe2f7d622e8b 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-@@ -135,6 +135,9 @@ properties:
-       but may differ if device has bad eraseblocks on a flash.
-     $ref: /schemas/types.yaml#/definitions/uint32
- 
-+  nvmem-layout:
-+    $ref: /schemas/nvmem/layouts/nvmem-layout.yaml
-+
- if:
-   not:
-     required: [ reg ]
+Changes in v2:
+- Rebase on mtd/next
+- Link to v1: https://patch.msgid.link/20260108-dt-mtd-partitions-v1-0-124a53ce6279@kernel.org
 
--- 
-2.51.0
+---
+Rob Herring (Arm) (10):
+      dt-bindings: mtd: brcm,brcmnand: Drop "brcm,brcmnand" compatible for iProc
+      dt-bindings: mtd: fixed-partitions: Move "compression" to partition node
+      dt-bindings: mtd: partitions: Move "sercomm,scpart-id" to partition.yaml
+      dt-bindings: mtd: partitions: Allow "nvmem-layout" in generic partition nodes
+      dt-bindings: mtd: partitions: Define "#{address,size}-cells" in specific schemas
+      dt-bindings: mtd: partitions: Drop partitions.yaml
+      dt-bindings: mtd: Ensure partition node properties are documented
+      dt-bindings: mtd: fixed-partitions: Restrict undefined properties
+      dt-bindings: mtd: partitions: Convert brcm,trx to DT schema
+      dt-bindings: mtd: partitions: Combine simple partition bindings
+
+ .../devicetree/bindings/mmc/mmc-card.yaml          | 20 ++-----
+ .../devicetree/bindings/mtd/brcm,brcmnand.yaml     |  1 -
+ Documentation/devicetree/bindings/mtd/mtd.yaml     | 10 +---
+ .../mtd/partitions/arm,arm-firmware-suite.yaml     |  2 -
+ .../devicetree/bindings/mtd/partitions/binman.yaml | 53 ------------------
+ .../mtd/partitions/brcm,bcm4908-partitions.yaml    |  8 +--
+ .../partitions/brcm,bcm947xx-cfe-partitions.yaml   |  2 -
+ .../mtd/partitions/brcm,bcm963xx-imagetag.txt      | 45 ---------------
+ .../bindings/mtd/partitions/brcm,trx.txt           | 42 --------------
+ .../bindings/mtd/partitions/brcm,trx.yaml          | 65 ++++++++++++++++++++++
+ .../bindings/mtd/partitions/fixed-partitions.yaml  | 43 ++++----------
+ .../mtd/partitions/linksys,ns-partitions.yaml      | 10 +---
+ .../bindings/mtd/partitions/partition.yaml         | 44 ++++++++++++++-
+ .../bindings/mtd/partitions/partitions.yaml        | 42 --------------
+ .../bindings/mtd/partitions/redboot-fis.yaml       |  4 --
+ .../devicetree/bindings/mtd/partitions/seama.yaml  | 44 ---------------
+ .../bindings/mtd/partitions/simple-partition.yaml  | 61 ++++++++++++++++++++
+ .../partitions/tplink,safeloader-partitions.yaml   |  2 +-
+ .../devicetree/bindings/mtd/partitions/u-boot.yaml |  2 +-
+ .../devicetree/bindings/mtd/ti,davinci-nand.yaml   |  4 +-
+ .../devicetree/bindings/mtd/ti,gpmc-onenand.yaml   |  2 +-
+ MAINTAINERS                                        |  5 --
+ 22 files changed, 196 insertions(+), 315 deletions(-)
+---
+base-commit: 779c59274d03cc5c07237a2c845dfb71cff77705
+change-id: 20260108-dt-mtd-partitions-3fd58ebadfa0
+
+Best regards,
+--  
+Rob Herring (Arm) <robh@kernel.org>
 
 
 ______________________________________________________
