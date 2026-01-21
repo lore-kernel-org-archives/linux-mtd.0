@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD884C44502
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 10:00:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E935AC44501
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 10:01:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Qrjzo+g9a8oQrKj4xd3fE1lTfwInepfj9YksCChEhz0=; b=htiNmNsVDg7kNN
-	k5r7ffPwkF9y1OYMF5K2PKCbtkD9ess17BSquPj8rN8Cwepr+vMWWc7/sFwYWO2kpgK9gkYBbuK+m
-	DaseG6UROkYH1/qryucbMUIk2ku+QcNp2t7IaqrVepZPdAtj+0b5462FVrdCp2wWDCqWEHRF6u2xq
-	vszLcAHoCo089yhxlI940eOB6CmC/vaeQ3KKq5bwT+1L2NBbM9c4InrWEqbTqZYV2jnCiVcZIjGtM
-	8HS3i2R/dkFzFlJXsU9TVjSA8rET9++3wTlotVvj6TC4lG/yYNWmNIoSkFAnsPVKLzRtbiPrvBUdR
-	el9/emGDHgCAahac8dvQ==;
+	List-Owner; bh=fBp6qCLUNRt1+qR6wEBMBrn4+NT59CRr4y90YF6Enfw=; b=lfNYISAFTtLq7M
+	wR5bQXZ/8y0odLTYp1lV1pFQH8kXFhZl3xtt9WHalnhsfYHm+YeG7rYAK3+lwtWbKzhLJVKe0c3wj
+	gFiUW/q4aJ79wJ2jrnD672MIDikZ54RiyGdji7ZUZS80ScPx6kgWc+xC6qidaI3Cbim4wAlyG+UaD
+	XT6vVcDIpHOmXWORnEGEpsg/KVOUdnVfVI3F+sC4oTzaJXsNNspEi89LqlTmdi/scfv5ZDcqfLrS4
+	XVGaS6jfUMH48UGI7h0J/sMUHfCjg/rMBTnygrZZL5Ea35tCmQGvkAHHXoHjrLsUcBmB9TrJJqO6Y
+	8IbWLcVfddBs8bzKptYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viV0e-00000005EMu-4357;
-	Wed, 21 Jan 2026 10:00:20 +0000
+	id 1viV1k-00000005EUH-1GbC;
+	Wed, 21 Jan 2026 10:01:28 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viV0b-00000005EMZ-1e4Z;
-	Wed, 21 Jan 2026 10:00:17 +0000
-Date: Wed, 21 Jan 2026 02:00:17 -0800
+	id 1viV1i-00000005ETt-0UQN;
+	Wed, 21 Jan 2026 10:01:26 +0000
+Date: Wed, 21 Jan 2026 02:01:26 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Christian Brauner <brauner@kernel.org>, NeilBrown <neil@brown.name>,
@@ -82,7 +82,7 @@ Cc: Christian Brauner <brauner@kernel.org>, NeilBrown <neil@brown.name>,
 	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
 Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
  nfsd export support
-Message-ID: <aXCjsTBnHGuqTJdb@infradead.org>
+Message-ID: <aXCj9ooYaqsL9oyP@infradead.org>
 References: <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
  <176877859306.16766.15009835437490907207@noble.neil.brown.name>
  <aW3SAKIr_QsnEE5Q@infradead.org>
@@ -113,24 +113,15 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Tue, Jan 20, 2026 at 07:50:32AM -0500, Jeff Layton wrote:
-> > > and it DOES provide stable filehandles.
-> > 
-> 
-> Across reboot? Not really.
-> 
-> It's quite possible that we may end up with the same "id" numbers in
-> cgroupfs on a new incarnation of the filesystem after a reboot. The
-> files in there are not the same ones as the ones before, but their
-> filehandles may match because kernfs doesn't factor in an i_generation
-> number.
-> 
-> Could we fix it by adding a random i_generation value or something?
-> Possibly, but there really isn't a good use-case that I can see for
-> allowing cgroupfs to be exported via nfsd. Best to disallow it until
-> someone comes up with one.
+> At this point, maybe we should just go with Neil's 
+> EXPORT_OP_SUPPORTS_NFS_EXPORT or something. It's much more arbitrary,
+> than trying to base this on criteria about filehandle stability, but it
+> would give us the effect we want.
 
-Yeah.  And I'm pretty sure everyone here will push back hard on any
-such use case.
+We'll still need a stable handles flag, and expose it to userspace
+to avoid applications being tricked into using broken non-stable
+file handles.  We should have caught that when they were added, but
+didn't unfortunately.
 
 
 ______________________________________________________
