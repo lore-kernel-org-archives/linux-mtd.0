@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E20FFC44501
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 09:59:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD884C44502
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 10:00:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V6benaZA3E20deht/2ry61/9Tfqu8ESFJ3tEBO5t+44=; b=Uey3t7wixd72zM
-	DtVOg+zpfCBED6j655WvIFAGHXaUZgJdYMcGbwa2HkfirG3R3w3LE70N3erVQTdAzVoA8Qwibg7qa
-	wbfPpa5At9sULof2bQhU0jxbenlQNip6OhnfiRf8olC8jjSS5IlKB71UqcIYZ5Aj3vy4JJWpJIh9n
-	ABu6bV/t3ht5Xd2VW7H6Qq/AUUcLYbvD0PMVBlaU2x+0XuhS2msl/UwcJqOnIXtIObGxsTMLMmucI
-	LUYguufVqzqtVmyOjlS9oFGrfczr7ewxgV95KET6ItTjzF1ZO/fhteS+MNQ0W/c1/xCXDvOsMT40f
-	rEVxXb2i/DK8O37i0Gig==;
+	List-Owner; bh=Qrjzo+g9a8oQrKj4xd3fE1lTfwInepfj9YksCChEhz0=; b=htiNmNsVDg7kNN
+	k5r7ffPwkF9y1OYMF5K2PKCbtkD9ess17BSquPj8rN8Cwepr+vMWWc7/sFwYWO2kpgK9gkYBbuK+m
+	DaseG6UROkYH1/qryucbMUIk2ku+QcNp2t7IaqrVepZPdAtj+0b5462FVrdCp2wWDCqWEHRF6u2xq
+	vszLcAHoCo089yhxlI940eOB6CmC/vaeQ3KKq5bwT+1L2NBbM9c4InrWEqbTqZYV2jnCiVcZIjGtM
+	8HS3i2R/dkFzFlJXsU9TVjSA8rET9++3wTlotVvj6TC4lG/yYNWmNIoSkFAnsPVKLzRtbiPrvBUdR
+	el9/emGDHgCAahac8dvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viUzN-00000005EEA-29Yy;
-	Wed, 21 Jan 2026 09:59:01 +0000
+	id 1viV0e-00000005EMu-4357;
+	Wed, 21 Jan 2026 10:00:20 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viUzJ-00000005EDM-2rax;
-	Wed, 21 Jan 2026 09:58:57 +0000
-Date: Wed, 21 Jan 2026 01:58:57 -0800
+	id 1viV0b-00000005EMZ-1e4Z;
+	Wed, 21 Jan 2026 10:00:17 +0000
+Date: Wed, 21 Jan 2026 02:00:17 -0800
 From: Christoph Hellwig <hch@infradead.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: NeilBrown <neil@brown.name>, Christoph Hellwig <hch@infradead.org>,
-	Jeff Layton <jlayton@kernel.org>,
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, NeilBrown <neil@brown.name>,
+	Christoph Hellwig <hch@infradead.org>,
 	Amir Goldstein <amir73il@gmail.com>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
 	Chuck Lever <chuck.lever@oracle.com>,
@@ -82,9 +82,8 @@ Cc: NeilBrown <neil@brown.name>, Christoph Hellwig <hch@infradead.org>,
 	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
 Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
  nfsd export support
-Message-ID: <aXCjYY9tVKWv29fN@infradead.org>
-References: <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
- <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
+Message-ID: <aXCjsTBnHGuqTJdb@infradead.org>
+References: <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
  <176877859306.16766.15009835437490907207@noble.neil.brown.name>
  <aW3SAKIr_QsnEE5Q@infradead.org>
  <176880736225.16766.4203157325432990313@noble.neil.brown.name>
@@ -93,9 +92,10 @@ References: <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
  <20260120-entmilitarisieren-wanken-afd04b910897@brauner>
  <176890211061.16766.16354247063052030403@noble.neil.brown.name>
  <20260120-hacken-revision-88209121ac2c@brauner>
+ <a35ac736d9ebc6c92a6e7d61aeb5198234102442.camel@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260120-hacken-revision-88209121ac2c@brauner>
+In-Reply-To: <a35ac736d9ebc6c92a6e7d61aeb5198234102442.camel@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,18 +112,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 20, 2026 at 11:31:54AM +0100, Christian Brauner wrote:
-> It is very much fine for a filesystems to support file handles without
-> wanting to support exporting via NFS. That is especially true for
-> in-kernel pseudo filesystems.
+On Tue, Jan 20, 2026 at 07:50:32AM -0500, Jeff Layton wrote:
+> > > and it DOES provide stable filehandles.
+> > 
+> 
+> Across reboot? Not really.
+> 
+> It's quite possible that we may end up with the same "id" numbers in
+> cgroupfs on a new incarnation of the filesystem after a reboot. The
+> files in there are not the same ones as the ones before, but their
+> filehandles may match because kernfs doesn't factor in an i_generation
+> number.
+> 
+> Could we fix it by adding a random i_generation value or something?
+> Possibly, but there really isn't a good use-case that I can see for
+> allowing cgroupfs to be exported via nfsd. Best to disallow it until
+> someone comes up with one.
 
-I'm still amazed at this statement.  "Wanting to export" is not
-something for the file system to decide on in any kind of sane
-layering.  The file systems exports features, and layers higher
-in the stack make use of it.  We just need to be precise in describing
+Yeah.  And I'm pretty sure everyone here will push back hard on any
+such use case.
 
-In-kernel code will then we so nice to respect it.  But for userspace
-even then all bets are off.
 
 ______________________________________________________
 Linux MTD discussion mailing list
