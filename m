@@ -4,70 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B3F8C44536
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F8A9D46950
 	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jan 2026 15:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
-	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KekFqSY6fJ/JB2oHieOviyRrpdpXA02PKFMVKm+JLys=; b=vYTlCjgxqdYMwO
-	gX+hQV53vNEf6XIHM4+O4YEi/nVHG13Cix9iyhiPuNrT8EEWevPj9+VBBMC+pUX3kkeNnkVza9BHh
-	9w7n0O0xYFJenJDWO96M/voUWgXT0JHVcAXh22uMvsP2LIxQShW4uzvCqmQzA/EIMZyD0fgMNUiQH
-	KRHoq60TWSTtuo7ftEAAcrz8+sHesp7JV6I6By1ZUxexK28IhiS/EqAlpAHssn5GMZaObwtBpTDUS
-	Wf04ZRiw62LQMsAwGOX1tpgyBKkpTv1NkgzEtjQQFwsJOo4ENIirxm5T/QfnDaZrQj+6PeGZxBOMD
-	jCBeFVgR9hUg7rxWRQAA==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
+	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Fck3cwjJWjI6H1t7NF68McscnKAydBIBuGwlt2qECuM=; b=j6BwOpcOzEIDpX
+	+HnxFoEOrR7CLG4fF+c7vCJHAlQWAUFGkZuBTJciqSxBLFrzPA9kNTmG16IWZsNyPHYn4NjVvRO5v
+	EKQWlGr9zASGIbhmLrg3V3LcHeAI3Hc258b0ctu8ND+1797niNYSyhkBNQ+kXeMVrywh/KDUxKC8w
+	5CubtGMM9wioB4XaGJrhAbnHiK3STED4KGIyr54ODy2IzvP2GseneSVTgozU5esUpq23lJBAVZXlC
+	ME008Nrs3puYrgmwTDYhKRHeecQofAnCtN0PAB5I+hB7UMJ+45AjETsPguUK7dduS0dQ5Nh86Di4f
+	C+aiqDPVb1zKPH9GMQbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viaUO-00000005kB4-3RQq;
-	Wed, 21 Jan 2026 15:51:24 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1viaUQ-00000005kBC-0QyO;
+	Wed, 21 Jan 2026 15:51:26 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viaUN-00000005kA7-07sC
+	id 1viaUN-00000005kA6-0s51
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Jan 2026 15:51:23 +0000
+	Wed, 21 Jan 2026 15:51:24 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0796A600AE;
-	Wed, 21 Jan 2026 15:51:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B37F5C19421;
+	by sea.source.kernel.org (Postfix) with ESMTP id C843940332;
+	Wed, 21 Jan 2026 15:51:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A6C74C4CEF1;
 	Wed, 21 Jan 2026 15:51:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1769010681;
-	bh=UUE836v8cvihk8IfosjMQaRYSGydDbQU3XprtYIeQiA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=IsasMCDMbVYUpfPWTwJ+KyKl0MaTDTK6oEW7yRtUDCPXm82/T+kW5Z+9W5sYu5M8Q
-	 lKCnB7WyfuuMlkNMRbHLa5FHTOBSYCS+fFxrEhREyyOJu3ERCe1ljQF73kARsopbTV
-	 nRBkpxdAUYFH71b4WPGkVSkZWO/uHAgcNRTzuxJK4gDa+71VLV1CdBl1LvA6JeWWg5
-	 +R8FDOoMrMebuEbxVYj7nxOM1CJxQBfItEM2SynUEt4cIazjhbZuyHxDuJyN2+ZR0x
-	 brBpF81k1QX+p156090D6o3934xt3o8uZPGwDzWDAEXWhZ8HTb7NmzNA3xmHP0p6uL
-	 PRMbeTQcWFHYA==
+	bh=khWQPZnCxP+KVyhqb4DgCCB+QpPliQS5oDegCApIqSw=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=jlnJmu/1ctZnIcdarDlVIFXpJcaJeeVKjS9jTvD2dLNSIxSP3W5I5XPmBOxnGZidA
+	 ET3CE18TAEwMxorBMflH4ktp4IqDPutY+CA5CefHXOjty/mbnISKapPeJ8yGlSQUHE
+	 SYhWDS6dRT7t+Gpp9DD9VYnJHTrGZE+qdNLajLJTgfgPhqy1x9n2ug3FtWGNcpewMu
+	 UIRGJMX3RMxP4rfX+yAoofeQ0KjUkNHMmlJqUeaBGJuVCXlFWZgp6kJUZvLc1wqAQu
+	 jk/bScpyHLatKOgMW9htZYkTlNc7H+7L+2L1T+Wrja4dpx3gpN6grabP/kyvO0XB80
+	 7EpXxVWLLwCxA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8B94D46950;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97C6FC44536;
 	Wed, 21 Jan 2026 15:51:21 +0000 (UTC)
 From: Andrea Scian via B4 Relay <devnull+andrea.scian.dave.eu@kernel.org>
-Date: Wed, 21 Jan 2026 16:51:03 +0100
-Subject: [PATCH 1/2] mtd: rawnand: pl353: Fix software ECC support
+Subject: [PATCH 0/2] PL353 SW ECC fixes
+Date: Wed, 21 Jan 2026 16:51:02 +0100
+Message-Id: <20260121-pl353-soft-ecc-support-v1-0-00ad8e160d83@dave.eu>
 MIME-Version: 1.0
-Message-Id: <20260121-pl353-soft-ecc-support-v1-1-00ad8e160d83@dave.eu>
-References: <20260121-pl353-soft-ecc-support-v1-0-00ad8e160d83@dave.eu>
-In-Reply-To: <20260121-pl353-soft-ecc-support-v1-0-00ad8e160d83@dave.eu>
+X-B4-Tracking: v=1; b=H4sIAOb1cGkC/x3MQQqAIBBA0avErBtIraSuEi3EphqIFKciiO6et
+ HyL/x8QSkwCffFAoouFw56hygL86vaFkKds0JVuK6UVxs00BiXMB5L3KGeMIR1ou5oU2cZY4yD
+ HMdHM9z8exvf9AEreUH9oAAAA
+X-Change-ID: 20260121-pl353-soft-ecc-support-794e1e75373a
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Michal Simek <michal.simek@amd.com>, Richard Weinberger <richard@nod.at>, 
  Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Andrea Scian <andrea.scian@dave.eu>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1769010680; l=930;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1769010680; l=972;
  i=andrea.scian@dave.eu; s=20260121; h=from:subject:message-id;
- bh=pjp7e5XqvjwdI+0l+aByZIcrYrWvIGxc1jaHj+aNu4Q=;
- b=wEfXL24bmliEiOvDo17zS+BJG8c3FiWIrlardBZflj7/oV7+sc4HEGIKNuA7Lun59cUh2bhe+
- ocgi6K3cLrYCKyoxgzlodA176byaPsu2DWTnMSAumVl36UrBKX9vTnG
+ bh=khWQPZnCxP+KVyhqb4DgCCB+QpPliQS5oDegCApIqSw=;
+ b=dFhodP5oDA5NEuu5IVJKHO+GrKJfxfiL0zGvD5Bq9nDEjgJspuZpu/hM1pFM/lVcvXbU7IeMk
+ yCuO/Rl8kMYBKQpLywWArg178bwnqLjvIgffiyJ12VDNlpu+DFOoGTy
 X-Developer-Key: i=andrea.scian@dave.eu; a=ed25519;
  pk=PMQL72nEsyoiJCobnq0uEXwUFpVmkwoWIx317WvaQOU=
 X-Endpoint-Received: by B4 Relay for andrea.scian@dave.eu/20260121 with
  auth_id=613
 X-Original-From: Andrea Scian <andrea.scian@dave.eu>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260121_075123_276511_D7915CD1 
+X-CRM114-Status: UNSURE (   7.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,32 +91,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Andrea Scian <andrea.scian@dave.eu>
+PL353 has some known errata with its ECC implementation and it may be
+useful to switch to software ECC, to avoid issue with this.
 
-We need to set another couple of fields in ecc structure to allow
-choosing SW ECC instead of HW one, otherwise write operation fail.
+On-die ECC is already supported (while I didn't test it) but when
+enabling SW ECC we get operation-not-supported error during page write
+(page read already work correctly)
+
+IMHO it's enough to have 1-bit Hamming ECC correction, because this is
+the only one supported on PL353, but this might be a wrong assumption.
+
+This has been tested with nandflipbits and mtd_nandbiterrs
 
 Signed-off-by: Andrea Scian <andrea.scian@dave.eu>
 ---
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 2 ++
- 1 file changed, 2 insertions(+)
+Andrea Scian (2):
+      mtd: rawnand: pl353: Fix software ECC support
+      mtd: rawnand: pl353: Add message about ECC mode
 
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-index 11bd90e3f18cb..fcb62b9ec947b 100644
---- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -976,6 +976,8 @@ static int pl35x_nand_attach_chip(struct nand_chip *chip)
- 		fallthrough;
- 	case NAND_ECC_ENGINE_TYPE_NONE:
- 	case NAND_ECC_ENGINE_TYPE_SOFT:
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
- 		break;
- 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
- 		ret = pl35x_nand_init_hw_ecc_controller(nfc, chip);
+ drivers/mtd/nand/raw/pl35x-nand-controller.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+---
+base-commit: 24d479d26b25bce5faea3ddd9fa8f3a6c3129ea7
+change-id: 20260121-pl353-soft-ecc-support-794e1e75373a
 
+Best regards,
 -- 
-2.43.0
+Andrea Scian <andrea.scian@dave.eu>
 
 
 
