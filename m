@@ -4,89 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A84ECF65DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Jan 2026 11:09:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06A0ACF65DB
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Jan 2026 11:46:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xfwcegbXNwHMRBJfopuYLtnZ6lnL7biun0WIOrpBfoE=; b=V82GIIRO2ZmrhO
-	SqaALVBkDxzE+0+0HAS0VL7gwUcfjVfp2+HhXMIXFA9t2iWSobFn8FvQHf1aBmxkByULZhYbIR7Y4
-	bcCOMyKeYroywNsefu7m+KGNKHGAN3VurBo6oHWc6zLsmKl+7xs5nPP5OfptzTA6JEJbPnecerjlq
-	urQzNlRSX/tGdokqt6NkVYz1IdFZ1XsPCRQ5iW74qcFVFnZ/++iaXMJS+Ufw0WH2b4ZVIHHcHTsrc
-	NYVYVnUaHncwFF0S3NiuAVEcPXUKX5sA4kOhmsBuNpX4u3998LWZIcVd+EauJ+TxAQIRdLbsnaCcz
-	D1HfuVoDH6KBl9DpmvDw==;
+	List-Owner; bh=rp78BNcSIOzHuTUtdus/lPSVlXBR1W4ccI2Hsb7eOIE=; b=bt7qR0HMEJgQAy
+	G2bB72psCb0djyas066PRtQ8TcmF07DcXfa8UMpBvuCU0iV/kOTH8kKpoxpw/YdUWOIueEkTy4rHz
+	4NAaI8vz24otqJoOUJisR37JX6EzBlYIpczUZrUI2536vq4WYuQ0prU8H3pkvrxNO56dCJ6s4HIkV
+	wa+L4F52l0M2EzlrhZjGvWEZhG1m0ioJnpD8OBFsn9tIJRaDjx7wkIMVaD4WQiNG7NGIm8/N0gtTD
+	4CBUEVuJoXra1z4R0MLtXCOm+srZM7fzLsY+5H8rAMKMjEaSZ21XZ9GBTxMVqqqgAiIw1p/IeVbIe
+	g/6bQnwy+4C+Z3zj0Jew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkKTK-0000000COEJ-3ZUL;
-	Mon, 26 Jan 2026 11:09:30 +0000
-Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
+	id 1vkL36-0000000CRgI-3F1Q;
+	Mon, 26 Jan 2026 11:46:28 +0000
+Received: from smtpbguseast2.qq.com ([54.204.34.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkKTI-0000000CODX-3Oqz
+	id 1vkL30-0000000CR8C-1Uk6
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Jan 2026 11:09:30 +0000
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-81f4e36512aso4296721b3a.3
-        for <linux-mtd@lists.infradead.org>; Mon, 26 Jan 2026 03:09:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769425767; x=1770030567; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=67m4LZM7BNmUt9VQQdT7oliQJgO7RfphJV9m4Mf+Fmc=;
-        b=ctCWM13/MkuPnE6TqbJ1e11sRKXP7KVnULs3dryyFk/3BYBWVxZTWL0NP909H+7ONL
-         v0UkJ7mCEwhUz6o3DU8kPT7VoNv9ie5oFlTWCN2yUg8IsADLAhx36jahZKjta3xtOpwr
-         Kvq5s1bJbHPy63Bf1IZ0pJs/TRdZJ1aGWrJ7gF+4YZAPNmQVmLaxKFYC9Rm1pcp1AP3r
-         HisdVdc54JQJFQHok0bNwaox+XMAlrvqQ78IFQZICPMpK4zDuAZ8TsHN7N1/FJxw6O/4
-         1eorPRZFN8uP4UweVrwuA8ta2093NFrOiJT9b7e7XQ0lTMx4cvDeZlI8zynVlGsEYLsm
-         Sh3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769425767; x=1770030567;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=67m4LZM7BNmUt9VQQdT7oliQJgO7RfphJV9m4Mf+Fmc=;
-        b=hISHm8iu6s33oFrAsF6LTD/T/hIu4JRolGhhwTmy2bnBaDSgVhokGIkSIYoLttOzm+
-         TiycgP492jbIOzh/jNoOtYnCHeKzBTcKdh8R+gc9lr6duqCnaA2eGAo2JIaa9FWmj1kv
-         sm510WcOabgVZUX7OiVm9W/CriyQxnqJba4gUu940w3dTjvC7aO+X0A4ptZ4I+Dopasb
-         Kk2QOfKNtatGyZ8RGMIIr2vD3j+0Oyyp/QmCheMjhg3LpZcwCR0DrjzfHVkSN08fdaTF
-         FQk8sT1PDU/fUrA9EVsGTzWH0tiP0Fz15Nr4sM5DPoCzkh29onO3GTlzimZOghk0rwS8
-         Ik7w==
-X-Gm-Message-State: AOJu0YzGTS8CN7Vu+1fm0YUuu9Nr+S7aUr4XHhKrbb+eX1g+/CZFxv+2
-	fNd5+DkK24zQUE+mhXBWaPaIQY7gNwEl49djPc7SVCy40/cWRWN8xXuhuhLH8R7I
-X-Gm-Gg: AZuq6aJTFVzaibWZw8uyebGOiCjNH54ctBMFrI7nxfwEiaSMxMRVydeIcm12SmgFbWy
-	eIumWVaSmY7o4Ptib+htdYok3KmIXdG7MMf+N9J4nA/zBE2iUVYjB+pbwNY8XF55ACCHEDV9rAS
-	x8Me9k2c/mCkG8Xcb10KYKStjAJNu3ffg9gckRxjuns8qIplnEYiR9yGCEcd8sRuXshJX1Le/Aw
-	xTSqeXHn9IqtT9a5gmy8fOHqQsr6NeYdD+8X9unTP4rgPUJdk/FaaKZvKQq1DxSu6M8tg0WgN3A
-	PUXr383TRdUWU3uvzQMKktmlul2Q01S9ev84mNIC6Vej33TAZrVXjy7vuCRJQnPEx0qg/aj/v0f
-	y5KPDDaipVZRtHDWlUXSq8itXpHd28pDn2nD3byrygGUSUfahHW4eosRXVKCMKWrn0yCTrNWda9
-	Fyql4lx4o8McSb9KtHcuQNuwE7mP5Z/8rHVy6Rpmr0L6pWdr4=
-X-Received: by 2002:a05:6a00:1988:b0:81f:61d2:84a7 with SMTP id d2e1a72fcca58-823412d51d0mr3824832b3a.59.1769425767323;
-        Mon, 26 Jan 2026 03:09:27 -0800 (PST)
-Received: from LAPTOP-872M7T80.localdomain ([122.168.70.239])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-8234fd9a5a7sm1682394b3a.63.2026.01.26.03.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jan 2026 03:09:26 -0800 (PST)
-From: Akhila YS <akhilayalmati@gmail.com>
-Date: Mon, 26 Jan 2026 11:09:20 +0000
-Subject: [PATCH] dt-bindings: mtd: mxic,multi-itfc-v009-nand-controller:
- convert to DT schema
+	Mon, 26 Jan 2026 11:46:26 +0000
+X-QQ-mid: zesmtpgz1t1769427929t1c42b85a
+X-QQ-Originating-IP: Rfa6DbbZm+1vuZAT/eJ6XIX9TSNim9BfhYRpLc/O2Js=
+Received: from [127.0.1.1] ( [183.250.239.212])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 26 Jan 2026 19:45:27 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 6064080622083273045
+EX-QQ-RecipientCnt: 10
+From: Junhao Xie <bigfoot@radxa.com>
+Subject: [PATCH v2 0/2] mtd: devices: Qualcomm SCM storage support
+Date: Mon, 26 Jan 2026 19:44:50 +0800
+Message-Id: <20260126-scm-storage-v2-v2-0-fa045c7e7699@radxa.com>
 MIME-Version: 1.0
-Message-Id: <20260126-mxic-nand-v1-1-557df4a0dfa7@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAF9Ld2kC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDQyMj3dyKzGTdvMS8FF1zEyNDC2NDI9NUA2MloPqCotS0zAqwWdGxtbU
- AG98tDlsAAAA=
-X-Change-ID: 20260122-mxic-nand-742183125e03
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Akhila YS <akhilayalmati@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/3WMTQ6DIBBGr2Jm3WkGag105T0aFwhjZaE00BAbw
+ 92L7rt838/bIXH0nODR7BA5++TDWkFeGrCzWV+M3lUGSbIjITtMdsH0CdHUKksk00431kSjUlB
+ P78iT307hc6g8+2P8Pf1ZHOlfVRZIqJwZ3V23TivbR+M2c7VhgaGU8gNAyoWXrAAAAA==
+X-Change-ID: 20260126-scm-storage-v2-0a4f3e900b88
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konradybcio@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, Xilin Wu <sophon@radxa.com>, 
+ Junhao Xie <bigfoot@radxa.com>
 X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1769427927; l=2625;
+ i=bigfoot@radxa.com; s=20251219; h=from:subject:message-id;
+ bh=Ujl9YS0+fZ7IiZ9W7k222CK/XsTemUSZY78aIMY8+Tw=;
+ b=eTaCv1zhLOp9/ViZssM8iZQ0NAXPcsbDsYt3CfvHBkhprUeu6zrvnS0FBXELUgVSno2YpGVCQ
+ VsauMzQYCK1CVz1X4SgsZWExaspZy+rQlsWszN+lGw6mFHLIydjMBEJ
+X-Developer-Key: i=bigfoot@radxa.com; a=ed25519;
+ pk=aP5LX0jneuAa4pTVEww/6IbMlyp5VzzCwzcbMt1cpeI=
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpgz:radxa.com:qybglogicsvrsz:qybglogicsvrsz4b-0
+X-QQ-XMAILINFO: NVi1raGH3MCScA7tli4eeDVw+6YKUdFdzzZQG+JoU8clDXJCADv2jo/x
+	Ld+St6/jDBZzBrXT9qO+l11X+JAkK3BQOdyBnSi0O31YDYVwh85IuN70944uICLarikrgYU
+	hbv7+GRHGCrvyitIc9Vs4+L79TpjdjtY6WjhB6JJgbLWjHO++OhZUW4L8r2S4O9p842JfnM
+	/Qe+oyZMPvKCG8yEt16NWI0gcJAxmsKx2ebyQ9GnXSaW4H2+BwcsF9+5Klfs2HzjDxv009z
+	5qgTcsrehcwjxkC5F63bMZSqi9Gtq5UKVdCwxSjyVT7DhpsPSFpUI6KS2RZCI5tYKa8WTqu
+	CuX5umbDlWy2bkZeh/l17V60tuozUnpc9m3UE/jK4LzcmKtT3iMSimQMCxdTHeDg15ROJ77
+	sz5eBnbgtYvcO2q1WOg713eFvg0DlIMt0shiKCIrsxCc2rNddxFcg2PQ0je5DZ7++yuUpsq
+	eUrplPBbMp0+IwvqaOkTS2bSDGbroYacl4Oj7nj6GZfjqy8QOnMNZnA4KEeopLUzX6DjWJb
+	NJD2oYS8go/tDe1XbvHUp6+NUAVwWHV/dfIU0nNJ0DVIy2rhuKBXzjM+HF0frrYUOJxANjc
+	d1TdfXi9GpvlmCKvyJcbrR/THkP6o52lNOopsEmZGqlgRNphFRxrRM1ByUSZJF6LM3JRLuN
+	UQb7eYZO3mZUwIP2WzTp6XLz4R1+MbjjxvwFLMYyXfKb2PSI5/1M0LdltfpZsUehRTs8+Ya
+	iB6ynLnnGz463GCGIIwvNWVpZ1K3ooDGuHDiTtX7rGvYhkR53un6z3f2TQROFjC+MKz5uU/
+	4CaqzUu3EztVEDyFogOaO1VvbtzuaMc199Z3HYce/gnwuBLwARKva7qOJRRxRLt8IHB6DHx
+	xtDSZLJPaOswgRlPUYO0EAam20X6ToBfYsUPTMhaSqR0MKYKvf9zeIrx403AeWjkI7ZoTW/
+	XYM6yRzfLd/eJnU1Ge/WC+Ox4EShWYojFCL6gLAWr9U+n+BuDcVGey0hUl1qZje6uKGD66p
+	7eV8CNEp+2p3FmGu0SaoUAoc5WL5x/AmIQ1GOtzS3XgvESwzjX43Icj3HnB/GmZHpKK8KE8
+	tof0/b8Ee9lV4q15S/AlW16RTgXk8tB6U6ims3O8b98U1K1JTkAIVt9D7yejCp745HcG+WU
+	SAnS
+X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
+X-QQ-RECHKSPAM: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260126_030928_862244_EA46AD41 
-X-CRM114-Status: GOOD (  15.65  )
+X-CRM114-CacheID: sfid-20260126_034622_976766_7CE3E56F 
+X-CRM114-Status: GOOD (  13.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,149 +101,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert Macronix Raw NAND Controller Device Tree binding to DT Schema.
+This patch series adds support for accessing storage devices managed by
+Qualcomm TrustZone firmware via SCM (Secure Channel Manager) by
+introducing a new MTD driver.
 
-Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
+On some Qualcomm platforms, firmware or BIOS-related storage (typically
+SPI NOR flash) is not directly accessible from the non-secure world.
+All read, write, and erase operations must be performed through SCM
+interfaces provided by the secure firmware. As a result, existing MTD
+SPI NOR drivers cannot be used directly on these systems.
+
+This series introduces a new MTD device driver that exposes such
+firmware-managed storage as a standard MTD device in the Linux kernel.
+The driver is built on top of the existing Qualcomm SCM infrastructure
+and integrates with the MTD subsystem to provide a uniform interface to
+userspace.
+
+This driver has been tested on Radxa Dragon Q6A, based on the Qualcomm
+QCS6490 SoC, with a Winbond W25Q256JWPIQ SPI NOR flash device.
+
+Note that this platform previously used the standard Qualcomm Linux
+firmware, which allowed direct access to the QSPI controller without
+needing this driver. However, we plan to migrate to a Windows-compatible
+firmware which is more feature-complete but restricts direct access.
+Device tree changes for this transition will be sent separately.
+
+If kernel boots with EL2, access to the SCM storage will be denied. This
+needs more investigation.
+
+Changes in v2:
+- Convert enum qcom_scm_storage_result to macro definitions
+- Use __qcom_scm_is_call_available() instead of a machine allowlist
+- Add missing __packed annotations and endianness handling
+- Introduce struct qcom_scm_storage_payload to improve readability
+- Always compiled-in qcom_scm_storage_send_cmd() and qcom_scm_storage_init()
+https://lore.kernel.org/lkml/F138514E18CB55B6+20251218180205.930961-1-bigfoot@radxa.com/
+
+Tested-by: Xilin Wu <sophon@radxa.com>
+Signed-off-by: Junhao Xie <bigfoot@radxa.com>
 ---
- .../mtd/mxic,multi-itfc-v009-nand-controller.yaml  | 79 ++++++++++++++++++++++
- .../devicetree/bindings/mtd/mxic-nand.txt          | 36 ----------
- 2 files changed, 79 insertions(+), 36 deletions(-)
+Junhao Xie (2):
+      firmware: qcom: scm: Add SCM storage interface support
+      mtd: devices: Add Qualcomm SCM storage driver
 
-diff --git a/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
-new file mode 100644
-index 000000000000..97baac8b405a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/mxic,multi-itfc-v009-nand-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Macronix Raw NAND Controller
-+
-+maintainers:
-+  - Miquel Raynal <miquel.raynal@bootlin.com>
-+  - Richard Weinberger <richard@nod.at>
-+
-+description:
-+  The Macronix Multi-Interface Raw NAND Controller is a versatile flash
-+  memory controller for embedding in SoCs, capable of interfacing with
-+  various NAND devices. It requires dedicated clock inputs for core, data
-+  transmit, and delayed transmit paths along with register space and an
-+  interrupt line for operation.
-+
-+allOf:
-+  - $ref: nand-controller.yaml#
-+
-+properties:
-+  compatible:
-+    const: mxic,multi-itfc-v009-nand-controller
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  clocks:
-+    minItems: 3
-+    maxItems: 3
-+
-+  clock-names:
-+    items:
-+      - const: ps
-+      - const: send
-+      - const: send_dly
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - "#address-cells"
-+  - "#size-cells"
-+  - clocks
-+  - clock-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    nand-controller@43c30000 {
-+        compatible = "mxic,multi-itfc-v009-nand-controller";
-+        reg = <0x43c30000 0x10000>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <GIC_SPI 0x1d IRQ_TYPE_EDGE_RISING>;
-+        clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
-+        clock-names = "ps", "send", "send_dly";
-+
-+        nand@0 {
-+            reg = <0>;
-+            nand-ecc-mode = "soft";
-+            nand-ecc-algo = "bch";
-+        };
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/mtd/mxic-nand.txt b/Documentation/devicetree/bindings/mtd/mxic-nand.txt
-deleted file mode 100644
-index 46c55295a3e6..000000000000
---- a/Documentation/devicetree/bindings/mtd/mxic-nand.txt
-+++ /dev/null
-@@ -1,36 +0,0 @@
--Macronix Raw NAND Controller Device Tree Bindings
---------------------------------------------------
--
--Required properties:
--- compatible: should be "mxic,multi-itfc-v009-nand-controller"
--- reg: should contain 1 entry for the registers
--- #address-cells: should be set to 1
--- #size-cells: should be set to 0
--- interrupts: interrupt line connected to this raw NAND controller
--- clock-names: should contain "ps", "send" and "send_dly"
--- clocks: should contain 3 phandles for the "ps", "send" and
--	 "send_dly" clocks
--
--Children nodes:
--- children nodes represent the available NAND chips.
--
--See Documentation/devicetree/bindings/mtd/nand-controller.yaml
--for more details on generic bindings.
--
--Example:
--
--	nand: nand-controller@43c30000 {
--		compatible = "mxic,multi-itfc-v009-nand-controller";
--		reg = <0x43c30000 0x10000>;
--		#address-cells = <1>;
--		#size-cells = <0>;
--		interrupts = <GIC_SPI 0x1d IRQ_TYPE_EDGE_RISING>;
--		clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
--		clock-names = "send", "send_dly", "ps";
--
--		nand@0 {
--			reg = <0>;
--			nand-ecc-mode = "soft";
--			nand-ecc-algo = "bch";
--		};
--	};
-
+ drivers/firmware/qcom/qcom_scm.c       | 161 ++++++++++++++++++++
+ drivers/firmware/qcom/qcom_scm.h       |   3 +
+ drivers/mtd/devices/Kconfig            |  17 +++
+ drivers/mtd/devices/Makefile           |   1 +
+ drivers/mtd/devices/qcom_scm_storage.c | 265 +++++++++++++++++++++++++++++++++
+ include/linux/firmware/qcom/qcom_scm.h |  34 +++++
+ 6 files changed, 481 insertions(+)
 ---
-base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
-change-id: 20260122-mxic-nand-742183125e03
+base-commit: 63804fed149a6750ffd28610c5c1c98cce6bd377
+change-id: 20260126-scm-storage-v2-0a4f3e900b88
 
 Best regards,
 -- 
-Akhila YS <akhilayalmati@gmail.com>
+Junhao Xie <bigfoot@radxa.com>
 
 
 ______________________________________________________
