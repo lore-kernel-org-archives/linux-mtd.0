@@ -4,74 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07980D19506
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Jan 2026 16:59:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 388DBCA6CB6
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jan 2026 09:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
-	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KekFqSY6fJ/JB2oHieOviyRrpdpXA02PKFMVKm+JLys=; b=ySXk7dNIaECcUV
-	gpmf+ueVaAxq76aO+wYIQdWS4R984LqYukpap0liFTBV8QxSQnVy5bje9h9jn28+Vok4yOMpT6dN+
-	tc9UC5fmQsUyjlE4zfXtq2VxjMC+Iye4oWSRVnhrlAQgQl8L845E7S/8cKVhAvJgbPYSMRu3WUKd1
-	vNEFwKu7RfAWDwDvoP73AFcJ6flni0edpPF96SNIatNKDsEqwaau5btj41GOZpyvkn3IX8zWPQYc8
-	b6/mymMH+1YzjXr51MvjizgoRirqdKCUG4eWuLeRUgx8i8BInJ8BAeDoeBNs5TA5nsl9V/5zFBIa7
-	6YlG2TXwq/vU7J6GqhNQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=60sbJdIdv//IthjoDW33G9uMEplY8F88xC5qA4qITTw=; b=jh7vmzuvIFOG8W
+	VBcMFlRXttRX805LQ65Yng32TDUCkM979xKWOu8wO8eyQ9Wb51LYp17XURX6ERs/8mX9Ht0I29t7/
+	NKjWt3Mrwb+t4h+ctcDDbzYn3V1lE+Tlo3Mf7LZmwFBXYEr6h/NKRtQ/Dd44aBYNAlRVOJ0BPGqFq
+	iiEFO4Y5qsE8j+SpPsA/5YlgoV69u8SWpr7YUjc+vZH3th7mOOPeGJ4oP5sleRwxkXwJaw8Zpbjrf
+	ol4k3xa1g1a8rfgsF6X1jTGbGOP4WA1eWVxnnl7HYffkcWstW3mb5Pq4iHZAO6JAoQN7hXIJ0Fnmp
+	Tseia3Ou4W9R+UNpWdmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkPvh-0000000CuYQ-01Qc;
-	Mon, 26 Jan 2026 16:59:09 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vkexs-0000000DtdL-3kOw;
+	Tue, 27 Jan 2026 09:02:24 +0000
+Received: from mail.bizalt.pl ([141.94.250.68])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkPvc-0000000CuW2-4AW4
+	id 1vkexj-0000000Dtb7-3FVC
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Jan 2026 16:59:06 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7DD2F40527;
-	Mon, 26 Jan 2026 16:59:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5AD16C16AAE;
-	Mon, 26 Jan 2026 16:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769446743;
-	bh=UUE836v8cvihk8IfosjMQaRYSGydDbQU3XprtYIeQiA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=tCs9IqaZltdmyzLN4gEjLO+OJ7vXG7AurFGq2U0/Mskflrt6M91NXg+NmJ9a/P/cw
-	 f2rBcv8WlsG/V6oXGbeGJ/kBPu9ffJLXaZnK2C5Fyt9/ngE2sSZ+W8dhcOifgjr0Rv
-	 4zAhzwEwRah33v3nDlVyPEzQhz4Rq4KSewPzVk7Yf6U1IubDvauzJ3DNd9n9VIEKoh
-	 kWN1OutHJJsE3uBzO6Q/qlC+LHRunUCLMTbGKbG7t3uzdZRYEFdm5tZlRR8B8RUYtD
-	 AMkaZ7nAHIr/dOZJ95c2HKD6HcQbIPewicW6cDMZMvTUS8uCUAB0bogp6se5XzU/JC
-	 zWTqD1tavnJRQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 512C4D19501;
-	Mon, 26 Jan 2026 16:59:03 +0000 (UTC)
-From: Andrea Scian via B4 Relay <devnull+andrea.scian.dave.eu@kernel.org>
-Date: Mon, 26 Jan 2026 17:58:55 +0100
-Subject: [PATCH v2 1/2] mtd: rawnand: pl353: Fix software ECC support
+	Tue, 27 Jan 2026 09:02:23 +0000
+Received: by mail.bizalt.pl (Postfix, from userid 1002)
+	id 41FE0AAEAD; Tue, 27 Jan 2026 10:01:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizalt.pl; s=mail;
+	t=1769504481; bh=OnCy7IALU8WU2qOP9bhBk/voftnZuOdBsIhZTZPgF2c=;
+	h=Date:From:To:Subject:From;
+	b=NppMnMAheZcyWdOyvifV4VWCkc8pr/xkj1frUba7vRLQ3fEbXMeLFScZovhfjZ5b4
+	 KyfOiKIHbZ7dPIig9if4oKAIg4qfkt4Ej6uudOvNO5OcTe6vb3m5X7av45fNjr5BDX
+	 dIyL/8FCUttEJw0xO660iYeoMqxtjmK/5WqXhe+f7hUoIRdcwGBxG679Kzxt5sL3FS
+	 iIIr4Wbaav29habW3IDx7FhCd2vymzKWpXy6/azFbunbLlr5uT+WXBzUJlpfqi0xnr
+	 hu0ilw/Yba170gjMgeRgHIyMy4R2xQi5q+KBnmhTWcg8V+ZOHpdEbgGjtWEAvdbBGT
+	 Jpn49EkKMCprg==
+Received: by mail.bizalt.pl for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2026 09:01:15 GMT
+Message-ID: <20260127084500-0.1.sk.4hzq7.0.ckollxruoh@bizalt.pl>
+Date: Tue, 27 Jan 2026 09:01:15 GMT
+From: "Adam Wojciechowski" <adam.wojciechowski@bizalt.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
+X-Mailer: mail.bizalt.pl
 MIME-Version: 1.0
-Message-Id: <20260126-pl353-soft-ecc-support-v2-1-fcd74b6e955f@dave.eu>
-References: <20260126-pl353-soft-ecc-support-v2-0-fcd74b6e955f@dave.eu>
-In-Reply-To: <20260126-pl353-soft-ecc-support-v2-0-fcd74b6e955f@dave.eu>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Michal Simek <michal.simek@amd.com>, Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Amit Kumar <amit.kumar-mahapatra@amd.com>, 
- Andrea Scian <andrea.scian@dave.eu>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1769446742; l=930;
- i=andrea.scian@dave.eu; s=20260121; h=from:subject:message-id;
- bh=pjp7e5XqvjwdI+0l+aByZIcrYrWvIGxc1jaHj+aNu4Q=;
- b=XqkcYEu2zoXUaDXq30sYtPT/NnekjpeCT3cOKfKNN1+YiL3zej8d3DiZpVfT9Nx5rwkAb/U0/
- +74MntHAS0kDFwCdVVtOXNPlXeXK0I9a+KuigMg+5RjWATmN6WcPJxW
-X-Developer-Key: i=andrea.scian@dave.eu; a=ed25519;
- pk=PMQL72nEsyoiJCobnq0uEXwUFpVmkwoWIx317WvaQOU=
-X-Endpoint-Received: by B4 Relay for andrea.scian@dave.eu/20260121 with
- auth_id=613
-X-Original-From: Andrea Scian <andrea.scian@dave.eu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260126_085905_058271_BA2ED811 
-X-CRM114-Status: UNSURE (   9.09  )
+X-CRM114-CacheID: sfid-20260127_010216_333213_19149D42 
+X-CRM114-Status: UNSURE (   2.39  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,41 +61,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: andrea.scian@dave.eu
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Andrea Scian <andrea.scian@dave.eu>
-
-We need to set another couple of fields in ecc structure to allow
-choosing SW ECC instead of HW one, otherwise write operation fail.
-
-Signed-off-by: Andrea Scian <andrea.scian@dave.eu>
----
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-index 11bd90e3f18cb..fcb62b9ec947b 100644
---- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -976,6 +976,8 @@ static int pl35x_nand_attach_chip(struct nand_chip *chip)
- 		fallthrough;
- 	case NAND_ECC_ENGINE_TYPE_NONE:
- 	case NAND_ECC_ENGINE_TYPE_SOFT:
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
- 		break;
- 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
- 		ret = pl35x_nand_init_hw_ecc_controller(nfc, chip);
-
--- 
-2.43.0
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
+cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
+xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
+Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
+ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbQpBZGFtIFdvamNpZWNob3dza2kKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
