@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15575D2F000
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jan 2026 12:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1B96D2F011
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jan 2026 13:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RNMYKfIhrwQKfKceCWK5AuO6XIMR0B9VGwbyTelgYfg=; b=vU92c5TM2Y2rhB
-	Y6Hh92d4nQ7jfZB7RQApFCOSlny37RCUKj5UGlE/Tk9F7Nh1LG0FBYGYUf3B9KbRZRmFZsl3Q2Z2P
-	4XPqv6I3FzlL7AikouhfoIPr/GNG0AQEveEHeUt3GpsIGfnGwnJct+K77/msInLh0jv6ltr4i/+mD
-	LKHRIW3ye+fA4IJvXl0r9X2uvxFNpmJoFonJ0EwVkiXUc5Mvvvummjmu1AIhYzp+R0j0Md6lkXMNO
-	hRiH20DtxOXVHotmczLZ1lfc6XUu62DGu3DjDduDjbO4/Ju5HKNrK16kXDBTzxoYV1mISnmBFm1IV
-	buwrKrrRFAq3WtazLCPA==;
+	List-Owner; bh=2fsupP5ueUXNW6Jd1Q1tuz3yY0LjCxQmlmGzghCn2Sg=; b=hOj21DqPGo9fFL
+	IUqWAjSyxJqEfEARaSGLe8hAcUGiW5kQswbvAC4hbNJTV/BD9yDFjMhjPgerPCUOpqjzSUK8Nix/o
+	46firy2NrlyDXBFFRgzkmlfVRvhoX9G/9I9PLqzmLbQLe+7RH81jcci5+Cjjj/ZA8ho/WsG39HRVt
+	RRYXVgTagiOih4cBBGdkP7Miz0U/WLL5FwRpWR/enb6vvreoYGE96L+8dC/T7hNJJKDKQT4k+1QiI
+	9HYJHxsNTakleIPTGkSiITSbtwW7MqEvDwgAKSHuV0svtNmuF8QoytYFUMoZ5Yo8Qt4Y4vsIOJadk
+	uWk8YHWrsBC56HmxeFpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkid0-0000000EHRX-2ww9;
-	Tue, 27 Jan 2026 12:57:06 +0000
-Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
+	id 1vkivl-0000000EIPf-1eWn;
+	Tue, 27 Jan 2026 13:16:29 +0000
+Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkicy-0000000EHQj-1mwp
+	id 1vkivj-0000000EIP8-0reE
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Jan 2026 12:57:05 +0000
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-38316445a67so45724801fa.3
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2026 04:57:03 -0800 (PST)
+	Tue, 27 Jan 2026 13:16:28 +0000
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-382f9211cbfso50428951fa.0
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2026 05:16:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769518622; x=1770123422; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1769519785; x=1770124585; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGrxqlHzNMQeiVoywnrVnMTjya8BAHM6PM6nVP9XmDA=;
-        b=ilnByHVsNJmDJF57X2agoQMXr++xmZVabuD/mt3bYn5+2XIKMXRfMtIILweo0Or5h9
-         c9gabLoRM22LZypu2ZtVXPX7t1s9ck+9P2N06xSJLutkMDRGTZcOaX3I/9ZBWaSfvmmB
-         4iE7VNo2sRYDIwVY2Co4ZDxLSwW3lb2fArG4OyNJTvw7pTeCRqDtrZjxAxN662YUVao3
-         XIVo8T9lcStkg5oQaLGxU0g0YCVnGARj6zAwUVhsKli75xnK1VhzHrnuV01idgIqFcPx
-         /taVOSM08GJv14w1sjaSB+OH80az3lDK0nbHo6J4I0bz9vO4NTwUkj/hNvqWtDUXT9Tm
-         s+Lw==
+        bh=ksQzxRuarB8sEU9IfyFq1yud94HvFMUMMVPuG8fO9R4=;
+        b=jnq6zZwOWqCMEATIz8od1p+DZvLg7bN+i0rz84dF7whLxMSST4hFRIK4ICwWjldCao
+         vDmgDEq2Z+h5ASFL9YlMcGq/59sdvW8HPcdcyNTPReeGloPsInFr5rUaiqFRlWWcHWeb
+         WCpla1LCGif7aC4w89q+GV/30EjQ1mepDDFnfzMpSCdOWhGLJ/wIEp0irqjPox8ZfCDE
+         XbBgVmV2SbeGbp7ti0D/89dTqxZIMdMuGkdpqSzOpOaJQiJZZKrRKw3otmBuKM9cj4K5
+         u6ITjqFMExF/kyXEIkOPQ8Rcp+NqEn2xj4i5lkEDjiI9f6kFiYU+w3aI5XMqwAJPHXwS
+         6/Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769518622; x=1770123422;
+        d=1e100.net; s=20230601; t=1769519785; x=1770124585;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CGrxqlHzNMQeiVoywnrVnMTjya8BAHM6PM6nVP9XmDA=;
-        b=gzCf2Im/uwSGZlbMUoPsRS3cwLkXHSZD1dzuI5AP2JyzfeLPQgGmz4KJ5c/6/nhqH7
-         SSgKaOZyDgMbPrVFziBFwVMmEGlS1sk38whvuTSFY0FJ8KweocNlLasvsRwdXNPvTSnM
-         pPvj5DCpZpd5BkYkXRuCwGoiYhZKmJtdDCxeshJ4A+C4w/qYmV61fJyt+1fzbec1No2I
-         oMWQ6idXmTZInoUQtI/oRhUoJLaF5CmG5PYs34XcCa9/nTbxqKUqOU8M1Fx5Sg6M6yvl
-         VHauwLUHoj7Ybxj0aGOPwnN4YWkVa/mg6v6KM6sxchH4alyPLGDN2Yjx/TukErHVUQUO
-         qd+g==
-X-Gm-Message-State: AOJu0YzcqjVYYnEa+SOWx1w9x4kwFvlTRWtxNSnhazt0r9K97MchoLg1
-	DzU8ifyOKO63YfnYxyr6ToDg75cCoRhnckUg78KI/PS/KOLzsJHAPjQCoJf4d9x+h0Q=
-X-Gm-Gg: AZuq6aJxl/59cQwa4xettx+4XZbZMfik8pBWURfM2JRdSXQmPyF6UUjUIya1uTsG4IK
-	ZzsXOA6cShHbMOwrMnWsj81xt3wfPRjyziM8kRfCSXx5oiqfD60fLqJjGmQZd8SFR2l/DDl4ia7
-	F4WHknxRQaJtQv5ORhBoaKcVojtZ9LzePKwM8InZHD702Ni2UjpLxal9+/ReLxBLmplcBYBXqJH
-	1MzP3yZJcWWJ+XkkiWAPFTs7u01aOuPznX8Gla1OAKtVgTqLfADv1+U5olTT/26Lo8l9YpuLhGi
-	EGJ8Ti9Y+GEOmjP7fCha2nZJ9TEiYEYe/lrqvWOKfzkMCfEBnJ+t1qCXHdo3U8os70vjeXFcpx5
-	29FVEOwaCKbT9XyDfMzsLn3WixX/FcdHY4hTk+hCqZ4zQxpUPjef3vWxoIP3DoXSwF6IJvn4QLA
-	fu46BVRzSVdQPlsNnOtmzScJzjipLTEI0DKt15uKvbdD7ZrlBOkqaSCYMCXf+L52YhEzYcYA==
-X-Received: by 2002:a2e:a547:0:b0:383:213c:fc41 with SMTP id 38308e7fff4ca-3861c835edbmr7887291fa.7.1769518621720;
-        Tue, 27 Jan 2026 04:57:01 -0800 (PST)
+        bh=ksQzxRuarB8sEU9IfyFq1yud94HvFMUMMVPuG8fO9R4=;
+        b=T7fs8MUSlaQb2pnXDT85oM7NMWa8nW6M2Xk9V487CWZoz1dCht6RQ2U/k1DAFKSA47
+         adY4Hd/cgx7KeWSdSGFn+S4uHj5SZaSwh48/kpngVxYxk4Q0liACYnB1WIBrDvxyDDMJ
+         sl30Ko8ajUR5kukXOhxMtMvofDtO5ImMgyx9KgrMRlDKTkapqiNYoK4VkLLPG44NXW61
+         rSJ6zAEVZgDcMogDXQTTDxTP0m4pbVyJeKvLbJPgpha3yE2PWRnJGB3YOoScLgDMAUot
+         5C/oxxIG4T1uczseqi0TYZ7xDj2tVv2KpsY0UfkWfH/8xsTvnL/oFsHE7/HDu+OZY/9i
+         aGWA==
+X-Gm-Message-State: AOJu0YxGxsfWm1zm4EMs+aUDcjyHOgZpAXiv72bQ1Z3D5dcwaHMVZZQO
+	g4h01/Cb19cXBvWFfCxAiruMUYFL/MOPx2F2ghn/KkQyud1bEIg1PIDW1bZhoH3eO0I=
+X-Gm-Gg: AZuq6aJqtrANInIPy0bZomgTdvy8NizAEyP3PWWNYuyp60ka9h1Z54tVht3yPY4+n1J
+	W1aOzhgWABzHk+JJr0hwMqM625SdrCXOjvsYV6dp3FTx0S/yP8Rj+JSwOK/xturNE9a+hCvIkZS
+	siRjQMe+KQTQqJ4vUjfO/Kqv+Bha0tgbmBYUfsAMEdyD5Rwh/7x/r7bL5PWyPxc0urrw566RvpP
+	LHp4Zne+/mpu2dCDiwHc1RRT7d7GPi6kmE/qaachUxDocYjtVvdL/hrF43WN+b9YkmR4Wp5YtIR
+	VdR2ed7vvJJ7wuTGQGTnlsQOBJxrNVbjY4eYkhg1FV/ZZB8TF/ey4RaJ62zpcZmtLu0QMJ9x0V+
+	vy5CTv02iG6QqdCVHccIxscDtzZCI7Y7arVsrLmwk2UmzxZL/B+cyZQjsGPKTo73gqOEM5br1We
+	UgivO2/RM9MKe87z0NjASQD9nMi675KKT/MNfhpYMnVImz9sBXpShEc8apS3I=
+X-Received: by 2002:a2e:be91:0:b0:37f:c5ca:b737 with SMTP id 38308e7fff4ca-3861c83f9bemr7613961fa.1.1769519784425;
+        Tue, 27 Jan 2026 05:16:24 -0800 (PST)
 Received: from lnb0tqzjk.rasu.local ([178.66.156.79])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-385d9e55b3bsm33028481fa.0.2026.01.27.04.57.00
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-385da017b5esm35130981fa.19.2026.01.27.05.16.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jan 2026 04:57:01 -0800 (PST)
+        Tue, 27 Jan 2026 05:16:23 -0800 (PST)
 From: Anton Moryakov <ant.v.moryakov@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
 	Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH] iniparser: prevent signed integer underflow in line length calculation
-Date: Tue, 27 Jan 2026 15:56:57 +0300
-Message-Id: <20260127125657.50784-1-ant.v.moryakov@gmail.com>
+Subject: [PATCH] nftl_format: prevent buffer overflow in BadUnitTable access
+Date: Tue, 27 Jan 2026 16:16:09 +0300
+Message-Id: <20260127131609.53932-1-ant.v.moryakov@gmail.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260127_045704_510505_C789282D 
-X-CRM114-Status: GOOD (  11.69  )
+X-CRM114-CacheID: sfid-20260127_051627_386600_8BCCF3B5 
+X-CRM114-Status: GOOD (  10.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,42 +95,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In iniparser_load_file(), the code computed:
-    len = (int)strlen(line) - 1;
-If the input line was empty (e.g. started with a null byte), strlen()
-returned 0, leading to len = -1. This caused:
-  - A signed integer underflow (detected by static analyzers)
-  - Potential out-of-bounds access when checking line[len]
+In the INFTL formatting path, the code iterates over erase blocks from
+`pezstart` to `maxzones` (total blocks on device) and accesses
+`BadUnitTable[ezone]`. However, `BadUnitTable` is a fixed-size array of
+`MAX_ERASE_ZONES` elements (typically 1024 or 4096).
 
-Fix by:
-  - Using size_t for strlen() result
-  - Checking for zero length before subtraction
-  - Computing len as (int)(line_len - 1) only when safe
+If the MTD device has more erase blocks than `MAX_ERASE_ZONES`,
+`ezone` can exceed the array bounds, causing a buffer overflow.
+
+Fix by limiting the loop upper bound to `MIN(maxzones, MAX_ERASE_ZONES)`.
 
 Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
 ---
- lib/libiniparser.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ nand-utils/nftl_format.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/libiniparser.c b/lib/libiniparser.c
-index 4b21b34..1d6dbac 100644
---- a/lib/libiniparser.c
-+++ b/lib/libiniparser.c
-@@ -697,7 +697,13 @@ dictionary * iniparser_load_file(FILE * in, const char * ininame)
- 
-     while (fgets(line+last, ASCIILINESZ-last, in)!=NULL) {
-         lineno++ ;
--        len = (int)strlen(line)-1;
-+        size_t line_len = strlen(line);
-+                if (line_len == 0) {
-+            memset(line, 0, ASCIILINESZ);
-+            last = 0;
-+            continue;
-+        }
-+        len = (int)(line_len - 1);
-         if (len<=0)
-             continue;
-         /* Safety check against buffer overflows */
+diff --git a/nand-utils/nftl_format.c b/nand-utils/nftl_format.c
+index c8b8b50..0d38ddd 100644
+--- a/nand-utils/nftl_format.c
++++ b/nand-utils/nftl_format.c
+@@ -372,7 +372,8 @@ int main(int argc, char **argv)
+ 		pezstart = startofs / meminfo.erasesize + 1;
+ 		pezend = startofs / meminfo.erasesize + ezones - 1;
+ 		numvunits = (ezones - 2) * PERCENTUSED / 100;
+-		for (ezone = pezstart; ezone < maxzones; ezone++) {
++		unsigned long max_iter = (maxzones < MAX_ERASE_ZONES) ? maxzones : MAX_ERASE_ZONES;
++		for (ezone = pezstart; ezone < max_iter; ezone++) {
+ 			if (BadUnitTable[ezone] != ZONE_GOOD) {
+ 				if (numvunits > 1)
+ 					numvunits--;
 -- 
 2.39.2
 
