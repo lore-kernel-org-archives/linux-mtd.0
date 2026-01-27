@@ -4,81 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1B96D2F011
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jan 2026 13:16:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF7A8D3409E
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jan 2026 16:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2fsupP5ueUXNW6Jd1Q1tuz3yY0LjCxQmlmGzghCn2Sg=; b=hOj21DqPGo9fFL
-	IUqWAjSyxJqEfEARaSGLe8hAcUGiW5kQswbvAC4hbNJTV/BD9yDFjMhjPgerPCUOpqjzSUK8Nix/o
-	46firy2NrlyDXBFFRgzkmlfVRvhoX9G/9I9PLqzmLbQLe+7RH81jcci5+Cjjj/ZA8ho/WsG39HRVt
-	RRYXVgTagiOih4cBBGdkP7Miz0U/WLL5FwRpWR/enb6vvreoYGE96L+8dC/T7hNJJKDKQT4k+1QiI
-	9HYJHxsNTakleIPTGkSiITSbtwW7MqEvDwgAKSHuV0svtNmuF8QoytYFUMoZ5Yo8Qt4Y4vsIOJadk
-	uWk8YHWrsBC56HmxeFpA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3WPXBFy4ve4w4ToiGEGxemJ8M2GJs7B+qszxX/oLRm8=; b=N1pupi59krJKag
+	Jp3hrT7fdmE6aS6KGzAn70cpsVIn4nYRxJsAuebgzVPMWsyyL3IEw5IgsJ4T+Ao/v53vYb90EDJzp
+	KQ3ss5LKcs4ebjBbTk43Jx2YKjIZ9DELDbvD8cycYrWwbBKXDSamK+09tN0S2LmLP1Fl41mXXKFwS
+	q+mn8dVc3/uFKO/qaZQpEylkTLEdyIGaahs42Z3rh30CEJAcBqL8GHdEhyJwq7gBCy6TOEBZHYuWn
+	H/+jZahBr/T7bGvQxIpBcm6TNDzDT34Wfos8Tq5xGbKcQh/WA9L8tTNyujoMf8cIYW61ToGIU5pRP
+	yl8OM1ojrdgzSOjJqqMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkivl-0000000EIPf-1eWn;
-	Tue, 27 Jan 2026 13:16:29 +0000
-Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
+	id 1vklmN-0000000Edsq-3fId;
+	Tue, 27 Jan 2026 16:18:59 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkivj-0000000EIP8-0reE
+	id 1vklmK-0000000EdrE-1WR1
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Jan 2026 13:16:28 +0000
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-382f9211cbfso50428951fa.0
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2026 05:16:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769519785; x=1770124585; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ksQzxRuarB8sEU9IfyFq1yud94HvFMUMMVPuG8fO9R4=;
-        b=jnq6zZwOWqCMEATIz8od1p+DZvLg7bN+i0rz84dF7whLxMSST4hFRIK4ICwWjldCao
-         vDmgDEq2Z+h5ASFL9YlMcGq/59sdvW8HPcdcyNTPReeGloPsInFr5rUaiqFRlWWcHWeb
-         WCpla1LCGif7aC4w89q+GV/30EjQ1mepDDFnfzMpSCdOWhGLJ/wIEp0irqjPox8ZfCDE
-         XbBgVmV2SbeGbp7ti0D/89dTqxZIMdMuGkdpqSzOpOaJQiJZZKrRKw3otmBuKM9cj4K5
-         u6ITjqFMExF/kyXEIkOPQ8Rcp+NqEn2xj4i5lkEDjiI9f6kFiYU+w3aI5XMqwAJPHXwS
-         6/Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769519785; x=1770124585;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ksQzxRuarB8sEU9IfyFq1yud94HvFMUMMVPuG8fO9R4=;
-        b=T7fs8MUSlaQb2pnXDT85oM7NMWa8nW6M2Xk9V487CWZoz1dCht6RQ2U/k1DAFKSA47
-         adY4Hd/cgx7KeWSdSGFn+S4uHj5SZaSwh48/kpngVxYxk4Q0liACYnB1WIBrDvxyDDMJ
-         sl30Ko8ajUR5kukXOhxMtMvofDtO5ImMgyx9KgrMRlDKTkapqiNYoK4VkLLPG44NXW61
-         rSJ6zAEVZgDcMogDXQTTDxTP0m4pbVyJeKvLbJPgpha3yE2PWRnJGB3YOoScLgDMAUot
-         5C/oxxIG4T1uczseqi0TYZ7xDj2tVv2KpsY0UfkWfH/8xsTvnL/oFsHE7/HDu+OZY/9i
-         aGWA==
-X-Gm-Message-State: AOJu0YxGxsfWm1zm4EMs+aUDcjyHOgZpAXiv72bQ1Z3D5dcwaHMVZZQO
-	g4h01/Cb19cXBvWFfCxAiruMUYFL/MOPx2F2ghn/KkQyud1bEIg1PIDW1bZhoH3eO0I=
-X-Gm-Gg: AZuq6aJqtrANInIPy0bZomgTdvy8NizAEyP3PWWNYuyp60ka9h1Z54tVht3yPY4+n1J
-	W1aOzhgWABzHk+JJr0hwMqM625SdrCXOjvsYV6dp3FTx0S/yP8Rj+JSwOK/xturNE9a+hCvIkZS
-	siRjQMe+KQTQqJ4vUjfO/Kqv+Bha0tgbmBYUfsAMEdyD5Rwh/7x/r7bL5PWyPxc0urrw566RvpP
-	LHp4Zne+/mpu2dCDiwHc1RRT7d7GPi6kmE/qaachUxDocYjtVvdL/hrF43WN+b9YkmR4Wp5YtIR
-	VdR2ed7vvJJ7wuTGQGTnlsQOBJxrNVbjY4eYkhg1FV/ZZB8TF/ey4RaJ62zpcZmtLu0QMJ9x0V+
-	vy5CTv02iG6QqdCVHccIxscDtzZCI7Y7arVsrLmwk2UmzxZL/B+cyZQjsGPKTo73gqOEM5br1We
-	UgivO2/RM9MKe87z0NjASQD9nMi675KKT/MNfhpYMnVImz9sBXpShEc8apS3I=
-X-Received: by 2002:a2e:be91:0:b0:37f:c5ca:b737 with SMTP id 38308e7fff4ca-3861c83f9bemr7613961fa.1.1769519784425;
-        Tue, 27 Jan 2026 05:16:24 -0800 (PST)
-Received: from lnb0tqzjk.rasu.local ([178.66.156.79])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-385da017b5esm35130981fa.19.2026.01.27.05.16.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jan 2026 05:16:23 -0800 (PST)
-From: Anton Moryakov <ant.v.moryakov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
-	Anton Moryakov <ant.v.moryakov@gmail.com>
-Subject: [PATCH] nftl_format: prevent buffer overflow in BadUnitTable access
-Date: Tue, 27 Jan 2026 16:16:09 +0300
-Message-Id: <20260127131609.53932-1-ant.v.moryakov@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	Tue, 27 Jan 2026 16:18:57 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 7E0E64005F;
+	Tue, 27 Jan 2026 16:18:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3754DC116C6;
+	Tue, 27 Jan 2026 16:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769530731;
+	bh=cyt06RXJUBnyvd+rDscVy+C+X/eqB2fWQSj539VtPJg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C+7uSikCiRnhCCypeIwP3zThpixogQdAMob/hrAgGC5aN3mFG3mo3K8bL9Gj4D5iJ
+	 mlRIA/x9KX0iTeGZDEcP+u/Vri4Htd4P4oPAskQq9RLzdfA+ewSZnL5vMdWP6llvh+
+	 1GYZY6ZCp24IZI8/J7wSbTX3gg2Rf0/px3XgNPRaw+gGzcpdIGPy8e16eGK/n3WvnF
+	 Ca6e0GEolE2ajsV8HdNbXv1n3dDcg4TBtC4d4Xd5wSFLeJKKdD8c77fg9C5UsuuOJ9
+	 ZffR5ckNFO/8+h8vLqyPLc0UIxOKXIhc5Cg4sZciTJAklnb7fWjYvULpWIOB9UdOr+
+	 voPcT5RXeyB9Q==
+Date: Tue, 27 Jan 2026 10:18:50 -0600
+From: Rob Herring <robh@kernel.org>
+To: Akhila YS <akhilayalmati@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: mxic,multi-itfc-v009-nand-controller:
+ convert to DT schema
+Message-ID: <20260127161850.GA1968054-robh@kernel.org>
+References: <20260126-mxic-nand-v1-1-557df4a0dfa7@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260126-mxic-nand-v1-1-557df4a0dfa7@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260127_051627_386600_8BCCF3B5 
-X-CRM114-Status: GOOD (  10.61  )
+X-CRM114-CacheID: sfid-20260127_081856_417474_CA726F41 
+X-CRM114-Status: GOOD (  15.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,38 +77,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In the INFTL formatting path, the code iterates over erase blocks from
-`pezstart` to `maxzones` (total blocks on device) and accesses
-`BadUnitTable[ezone]`. However, `BadUnitTable` is a fixed-size array of
-`MAX_ERASE_ZONES` elements (typically 1024 or 4096).
+On Mon, Jan 26, 2026 at 11:09:20AM +0000, Akhila YS wrote:
+> Convert Macronix Raw NAND Controller Device Tree binding to DT Schema.
+> 
+> Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
+> ---
+>  .../mtd/mxic,multi-itfc-v009-nand-controller.yaml  | 79 ++++++++++++++++++++++
+>  .../devicetree/bindings/mtd/mxic-nand.txt          | 36 ----------
+>  2 files changed, 79 insertions(+), 36 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
+> new file mode 100644
+> index 000000000000..97baac8b405a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
+> @@ -0,0 +1,79 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/mxic,multi-itfc-v009-nand-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Macronix Raw NAND Controller
+> +
+> +maintainers:
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> +  - Richard Weinberger <richard@nod.at>
 
-If the MTD device has more erase blocks than `MAX_ERASE_ZONES`,
-`ezone` can exceed the array bounds, causing a buffer overflow.
+Should be someone with the h/w. Perhaps the driver author Mason Yang 
+<masonccyang@mxic.com.tw>.
 
-Fix by limiting the loop upper bound to `MIN(maxzones, MAX_ERASE_ZONES)`.
+Though the driver has zero driver specific changes since added in 2019 
+and there are no .dts files using it. Maybe it is unused and should be 
+dropped instead.
 
-Signed-off-by: Anton Moryakov <ant.v.moryakov@gmail.com>
----
- nand-utils/nftl_format.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+But otherwise, the schema looks good.
 
-diff --git a/nand-utils/nftl_format.c b/nand-utils/nftl_format.c
-index c8b8b50..0d38ddd 100644
---- a/nand-utils/nftl_format.c
-+++ b/nand-utils/nftl_format.c
-@@ -372,7 +372,8 @@ int main(int argc, char **argv)
- 		pezstart = startofs / meminfo.erasesize + 1;
- 		pezend = startofs / meminfo.erasesize + ezones - 1;
- 		numvunits = (ezones - 2) * PERCENTUSED / 100;
--		for (ezone = pezstart; ezone < maxzones; ezone++) {
-+		unsigned long max_iter = (maxzones < MAX_ERASE_ZONES) ? maxzones : MAX_ERASE_ZONES;
-+		for (ezone = pezstart; ezone < max_iter; ezone++) {
- 			if (BadUnitTable[ezone] != ZONE_GOOD) {
- 				if (numvunits > 1)
- 					numvunits--;
--- 
-2.39.2
-
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
