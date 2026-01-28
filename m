@@ -4,92 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DE78D35662
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Jan 2026 07:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E43DD35688
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Jan 2026 07:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cnUgMVpFcHaSCR2i8n9vkbmyqzkIxA/uyrm86Rk4/Iw=; b=dUDsYnrRg79uqi
-	mBmhZEGtKcVAMhYQEni6IjYu4J7VKG4LcLz+oIy09JXsqmhZPb1xw9JDG2RPFxRvfBimZiMM4W/qF
-	GiipY7NWOgCxU31m6fHfcDVpwLkIdjUL5JUgekjxDBwkbWYymoIgQ6Ejlik+d7f1YT88WwGMgf6O3
-	xn7LGkR+bm5jwyI8pJKfpcFs/DPQODrsEkU3no5id2+s8+BCZr1a8rP5ki+2xRZ5DV59taA2bNIz/
-	iieKNuwXrCkTqJFwo6DwXe75ppi/z4MACC/WQ2JzejLiFkMb/YO7YH2GokTV9u8t//uEziHS8wmnj
-	uxmWBhKVuZynV9ihrktw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=phONo49lHzzGNF89zJ5ds1gk7tyQvuU9v2MY+aPge5g=; b=U4/kdyXCa0e1kJ
+	wh6uk+sBWj1mzWGI6efABOePCbbavR4K2P6oX+Tzx/Qz/DpKG+E3q+Fs3Vd0rQjmXFkaRxso4CV/V
+	BOrErjeLCZKuDvE7xmfzgT8Iblva+EeMtw8WXsrZqBgt8ZVUw2c1keWSxLfiepF9liQbvVB3UcOpR
+	yZQx61abaCiCaxjdR2Qc+nCTc0piQs/dLKHp1dJ2FmO8x6kstFUJgCVr67P+it2OIBj+GOsBn/iE8
+	CB8nbNJbz5Eqx106GQVZ1a7BQe5WCZSzQHs/OOL3o1A4oY9KhVDruYrUdLZJSnH+aFoJfhsAbHlCs
+	WvOMuSYgNOc31yJL91QQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vl0QE-0000000Fcay-2POY;
-	Wed, 28 Jan 2026 07:57:06 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1vl0RH-0000000Fcg9-3sUB;
+	Wed, 28 Jan 2026 07:58:11 +0000
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vl0QC-0000000Fcad-3SZ8
+	id 1vl0RF-0000000Fcfe-1wBl
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Jan 2026 07:57:06 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-2a0834769f0so43353125ad.2
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2026 23:57:04 -0800 (PST)
+	Wed, 28 Jan 2026 07:58:10 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-34be2be4b7cso3570226a91.3
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2026 23:58:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769587023; x=1770191823; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=q3u2MzCpVX36oZ3vWzsYnd96x6eghsy01E0RtbVLfR8=;
-        b=YfChYnYhKDOo5eBS2rvMJoWrMmOx4dlFXi0DptqHgeKhjcX7noTe3Jg0vbZX20xwCZ
-         gK646U7Imxh8v85XY+2/Rwh8dCyCiuz6FicmGHugjUw2hkta33G2GuqTNFhfOF5dW9yl
-         /nN6amiC9xgkds+nYGAc1NfL5wf9GQzggeccBRFqeMUjdaUhCdjF5FG84TKhhFL6Xh/o
-         2nrNbxFnylhLJYpbJtsV7uuYsxZ44xWlh1myWmQeL1oFyiczeE7dlLoyfJE9V7iyyqEJ
-         nsSq3YyxMAjWchlPbJTjKSu28Ot7hTsQM96UpFLVXGUFqT+QfUZSp8iXwTVoF5LSWUKB
-         43eQ==
+        d=gmail.com; s=20230601; t=1769587088; x=1770191888; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GaIybHUeWAWPBlqCbml8/y9/Q+UCstHaUvRUJsd/Kic=;
+        b=CmmpAV+5NQizB6j67Vkog3QayowooyD+6KO9BLqZy8ilaa7z5ailPQzIRDWnZtgEPZ
+         b83EuCFsvela3YbiaLPzwORmwR4C6hiDetiYLFAYys8BrgojLQHMqGlStObYhQpS6YKB
+         fZEAwXR+5CdFQ1B1fRJXOrYZgRt/Rk5Xvmts5t4QonCkur5oJVRVBaPK7z4UIahUA9Mg
+         J3m0nzG2F60eCFiHmA8514z7E/td5vibCi1019BcCMQUYtzXCjRit8ONGshZOP7tI+1c
+         wd23rmeVdp/RZRS2yZ+Kw8SKlP5bSCq5ceeem52+t3iES7qV/fBtD/7Mzrv0xTDqmrxA
+         W5xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769587023; x=1770191823;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q3u2MzCpVX36oZ3vWzsYnd96x6eghsy01E0RtbVLfR8=;
-        b=qC9Isu/lMnKNUh7X0mbaQQUG9GxFIgF5rgQgIJ0nC0twO/fj8kmK9gjx3vF8d/XkMD
-         fdz9AuAtYL99aKUWgMc3hRRbLIn1uCDv17vlpYhd4Woe05jjiaYKAk8L4d3fyQPR27b8
-         /MgM4EbYUUD240yVPRpqRRe9ZbkTbMLCszfLcYa23kpTsXAn3mKlxpx3G3+qb1ykobFL
-         7a4sNSJDtAsU/FKkcXWhzlOQKDnJh5yrb17sacHmxQ8l6TZSaP9Lv/Ji04jC5l4BlsCX
-         xveXfbP0ZrCqdSNleIpt3QdvCeAcoRwsROkF1OhtL3eUdhKTbqCa8EYgWWyrX9toX354
-         nhFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVwP+ANvH7ySMime/6svQr1kkQvfXRG3vlLEbwMkH1TLIM3tgt3JZ+7tdjUwqFhNeQTXha+DZ5TvcY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwcgwFo0+Zgn38vi4WQ49g+oJwoVs6ZAXL4rXfqVP0kQ+UBbyBf
-	NXXnjWYXuiDR3XxRonAqHBBBT9t0l9KhRXZVysYjyTBGVriuTMsvjvQV
-X-Gm-Gg: AZuq6aJEM9FPURkEXQLE3nj0WbDr94+cNuLYim1UIMbwufKhQRDysAzw4l7df9WDzob
-	aaIua0tqyj0P/quJGf/KnHHQ4xnSMpAwH8M06gZmitOfqXNtTPLNNdztQgQQdBbUlvAyDrsn76w
-	JrZYP5IIY/DE/BiaZJyC/ejZoysV8/FWj5swmf65WvVgqfQyHddVmKr0apbXjhhHxCm39Gw2as8
-	utcxR0AWMX6pzKsFQtY7p6/xWsuJFxpTNfMp34Q6NPktgbmLw0e8UtHrXz6SrbB6y90k1pN/spx
-	KEYbn6nCbrAj3In3b18OWI81Z2paFO6JxS9vC66H3RpxN8SoiE8C6XP3cMMpOMrS0SybHY4cPAh
-	0Vnt3JaSULtaGqE5C4l4TpO79iLunVPbJcTO7oUT0AncfHM5/d3cbJSG1xdHFEvWC5StSnmH8/v
-	+bczRtDZKHX1PrmKnKn2rREeZ2WJPv4Sf2yDTpunxGi/sHuGGcwG1nzkdXbxpegordyw==
-X-Received: by 2002:a17:903:3d05:b0:2a7:9b6e:33df with SMTP id d9443c01a7336-2a870dd5732mr51694565ad.35.1769587023240;
-        Tue, 27 Jan 2026 23:57:03 -0800 (PST)
-Received: from ?IPV6:2401:4900:88cc:7d63:fcd9:6ef6:26f:677? ([2401:4900:88cc:7d63:fcd9:6ef6:26f:677])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a88b413c1asm14222915ad.28.2026.01.27.23.56.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jan 2026 23:57:02 -0800 (PST)
-Message-ID: <6eb5bb46-9c67-4cd2-87b0-511b792f9bbd@gmail.com>
-Date: Wed, 28 Jan 2026 13:26:57 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: mtd: mxic,multi-itfc-v009-nand-controller:
- convert to DT schema
-To: Rob Herring <robh@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260126-mxic-nand-v1-1-557df4a0dfa7@gmail.com>
- <20260127161850.GA1968054-robh@kernel.org>
-Content-Language: en-US
+        d=1e100.net; s=20230601; t=1769587088; x=1770191888;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GaIybHUeWAWPBlqCbml8/y9/Q+UCstHaUvRUJsd/Kic=;
+        b=RIoGfW9z7ZSY0zUtrtp+apkPoH0fRahU2nDvrrd6qh09dnk8tnWE33pZfy/CRnQNqv
+         PjZQjZ+8P095uadp0Ga64+vuFluyKHLv+5YhLA/iU8KAjGXIw9gm0UVldf8kmeoV1K6l
+         288Anw0vGV+6mqCAhd724UCxw7Anu80fEJFUVpKJIi4sjHrDZ2XjIy926aJtmtO9gaUZ
+         nMvJsUNTi7uENbJ2bUnbhqkKQG1czHBdIDjVptLpKd90qrCMpc9b/NIQrt2l+tXgPrUO
+         aM25rpBr0xxF3Alp3iQXlw26qCof9HCYHsTbFYwtU0/oifGduDIGuz4PjT0kR+c8HF3o
+         puOg==
+X-Gm-Message-State: AOJu0YwipkYMuR9JwqyluV45kXVV+rgUoc8FeCglmkpKQ/NgIkVbA7kd
+	gl0zkrqmlub6CQGro97iRmfGCC6OgeIoy1m4ykCUynGlEY89665fbt2X
+X-Gm-Gg: AZuq6aJArWu4kJJCUPd9kSf41oz0M7+G7KhfwBhxckmSjJ7At/5g34hiV9KH4yUScvB
+	iLTQIuFI2suyiQWutzEHh2PB9wJ+0OF5BMlQxJuqfJYkH4cvubXBfvBch7FmcSiC1tUAaSNGrwZ
+	dKjwXr6LuN+X3sfd20x+6E/HzxNvIzrZf8rxJgk2M7f1XqCsYlPoAQLEaxn2jaBW/7N4lc3oGC/
+	Ggz4HNBI0PylXUMizhH4B9dMzBIqpWOU4/KkPdQfarj8iOD51BPMGVtWuA9QpezFuyvLHFEY3oe
+	FVCWHTR0i0XzUKmXMnDH9goQmOmN91l8Y2ned/7F9S3asJo/mijwSWr1o+eRv6/R1a7XdZb0X9g
+	f6ZHZZFRik4jJytY/S6Krt9hPMM2n/kU0b5k7TT9Z7zLBr0SF/NTPMHWrJl9oH0TcdIiXpnfbdB
+	A7I9qIS2pwF3NGSFmLC0eMURf2A/4d0xjjQOFz
+X-Received: by 2002:a17:90b:1d48:b0:340:bc27:97bd with SMTP id 98e67ed59e1d1-353fecde7d8mr3872814a91.9.1769587088304;
+        Tue, 27 Jan 2026 23:58:08 -0800 (PST)
+Received: from LAPTOP-872M7T80.localdomain ([223.181.119.57])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-353f61e0230sm4637149a91.11.2026.01.27.23.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jan 2026 23:58:08 -0800 (PST)
 From: Akhila YS <akhilayalmati@gmail.com>
-In-Reply-To: <20260127161850.GA1968054-robh@kernel.org>
+Date: Wed, 28 Jan 2026 07:58:00 +0000
+Subject: [PATCH v2] dt-bindings: mtd: mxic,multi-itfc-v009-nand-controller:
+ convert to DT schema
+MIME-Version: 1.0
+Message-Id: <20260128-mxic-nand-v2-1-6f0cf94f2fd7@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAIfBeWkC/03MSwrCMBSF4a2UOzaS3DaNOHIf0kHIo71gUkkkV
+ Er2biwIDv/D4dshu0Quw7XbIblCmdbYAk8dmEXH2TGyrQE5jlwgsrCRYVFHy9SA4tILlI730P7
+ P5Dxth3WfWi+UX2t6H3QR3/WnjH9KEUwwKZX1g+bWa3Wbg6bH2awBplrrB4bQS+qiAAAA
+X-Change-ID: 20260122-mxic-nand-742183125e03
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Mason Yang <masonccyang@mxic.com.tw>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Akhila YS <akhilayalmati@gmail.com>
+X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260127_235704_872871_00B3630E 
-X-CRM114-Status: GOOD (  16.92  )
+X-CRM114-CacheID: sfid-20260127_235809_510366_E794E576 
+X-CRM114-Status: GOOD (  15.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,58 +103,152 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Convert Macronix Raw NAND Controller Device Tree binding to DT Schema.
 
-On 27-01-2026 21:48, Rob Herring wrote:
-> On Mon, Jan 26, 2026 at 11:09:20AM +0000, Akhila YS wrote:
->> Convert Macronix Raw NAND Controller Device Tree binding to DT Schema.
->>
->> Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
->> ---
->>  .../mtd/mxic,multi-itfc-v009-nand-controller.yaml  | 79 ++++++++++++++++++++++
->>  .../devicetree/bindings/mtd/mxic-nand.txt          | 36 ----------
->>  2 files changed, 79 insertions(+), 36 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
->> new file mode 100644
->> index 000000000000..97baac8b405a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
->> @@ -0,0 +1,79 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/mxic,multi-itfc-v009-nand-controller.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Macronix Raw NAND Controller
->> +
->> +maintainers:
->> +  - Miquel Raynal <miquel.raynal@bootlin.com>
->> +  - Richard Weinberger <richard@nod.at>
-> Should be someone with the h/w. Perhaps the driver author Mason Yang 
-> <masonccyang@mxic.com.tw>.
+Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
+---
+Changes in v2:
+- Add "Mason Yang" as maintainer.
+- Link to v1: https://lore.kernel.org/r/20260126-mxic-nand-v1-1-557df4a0dfa7@gmail.com
+---
+ .../mtd/mxic,multi-itfc-v009-nand-controller.yaml  | 78 ++++++++++++++++++++++
+ .../devicetree/bindings/mtd/mxic-nand.txt          | 36 ----------
+ 2 files changed, 78 insertions(+), 36 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
+new file mode 100644
+index 000000000000..97fe6681cc8c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
+@@ -0,0 +1,78 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/mxic,multi-itfc-v009-nand-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Macronix Raw NAND Controller
++
++maintainers:
++  -  Mason Yang <masonccyang@mxic.com.tw>
++
++description:
++  The Macronix Multi-Interface Raw NAND Controller is a versatile flash
++  memory controller for embedding in SoCs, capable of interfacing with
++  various NAND devices. It requires dedicated clock inputs for core, data
++  transmit, and delayed transmit paths along with register space and an
++  interrupt line for operation.
++
++allOf:
++  - $ref: nand-controller.yaml#
++
++properties:
++  compatible:
++    const: mxic,multi-itfc-v009-nand-controller
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  clocks:
++    minItems: 3
++    maxItems: 3
++
++  clock-names:
++    items:
++      - const: ps
++      - const: send
++      - const: send_dly
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - "#address-cells"
++  - "#size-cells"
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    nand-controller@43c30000 {
++        compatible = "mxic,multi-itfc-v009-nand-controller";
++        reg = <0x43c30000 0x10000>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++        interrupts = <GIC_SPI 0x1d IRQ_TYPE_EDGE_RISING>;
++        clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
++        clock-names = "ps", "send", "send_dly";
++
++        nand@0 {
++            reg = <0>;
++            nand-ecc-mode = "soft";
++            nand-ecc-algo = "bch";
++        };
++    };
++...
+diff --git a/Documentation/devicetree/bindings/mtd/mxic-nand.txt b/Documentation/devicetree/bindings/mtd/mxic-nand.txt
+deleted file mode 100644
+index 46c55295a3e6..000000000000
+--- a/Documentation/devicetree/bindings/mtd/mxic-nand.txt
++++ /dev/null
+@@ -1,36 +0,0 @@
+-Macronix Raw NAND Controller Device Tree Bindings
+--------------------------------------------------
+-
+-Required properties:
+-- compatible: should be "mxic,multi-itfc-v009-nand-controller"
+-- reg: should contain 1 entry for the registers
+-- #address-cells: should be set to 1
+-- #size-cells: should be set to 0
+-- interrupts: interrupt line connected to this raw NAND controller
+-- clock-names: should contain "ps", "send" and "send_dly"
+-- clocks: should contain 3 phandles for the "ps", "send" and
+-	 "send_dly" clocks
+-
+-Children nodes:
+-- children nodes represent the available NAND chips.
+-
+-See Documentation/devicetree/bindings/mtd/nand-controller.yaml
+-for more details on generic bindings.
+-
+-Example:
+-
+-	nand: nand-controller@43c30000 {
+-		compatible = "mxic,multi-itfc-v009-nand-controller";
+-		reg = <0x43c30000 0x10000>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		interrupts = <GIC_SPI 0x1d IRQ_TYPE_EDGE_RISING>;
+-		clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
+-		clock-names = "send", "send_dly", "ps";
+-
+-		nand@0 {
+-			reg = <0>;
+-			nand-ecc-mode = "soft";
+-			nand-ecc-algo = "bch";
+-		};
+-	};
 
-Sure.
+---
+base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
+change-id: 20260122-mxic-nand-742183125e03
 
->
-> Though the driver has zero driver specific changes since added in 2019 
-> and there are no .dts files using it. Maybe it is unused and should be 
-> dropped instead.
->
-> But otherwise, the schema looks good.
-
-
-Thanks for the review.
-
-
->
-> Rob
-
+Best regards,
 -- 
-Best Regards,
-Akhila.
+Akhila YS <akhilayalmati@gmail.com>
 
 
 ______________________________________________________
