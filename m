@@ -4,63 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF7A8D3409E
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jan 2026 16:19:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CF27D3567C
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Jan 2026 06:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3WPXBFy4ve4w4ToiGEGxemJ8M2GJs7B+qszxX/oLRm8=; b=N1pupi59krJKag
-	Jp3hrT7fdmE6aS6KGzAn70cpsVIn4nYRxJsAuebgzVPMWsyyL3IEw5IgsJ4T+Ao/v53vYb90EDJzp
-	KQ3ss5LKcs4ebjBbTk43Jx2YKjIZ9DELDbvD8cycYrWwbBKXDSamK+09tN0S2LmLP1Fl41mXXKFwS
-	q+mn8dVc3/uFKO/qaZQpEylkTLEdyIGaahs42Z3rh30CEJAcBqL8GHdEhyJwq7gBCy6TOEBZHYuWn
-	H/+jZahBr/T7bGvQxIpBcm6TNDzDT34Wfos8Tq5xGbKcQh/WA9L8tTNyujoMf8cIYW61ToGIU5pRP
-	yl8OM1ojrdgzSOjJqqMw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VPr058eiKkDkmpRSnTvWITJ9JCDMwaeBzBgTcXAR3gQ=; b=1mPkOqUfIyRZW5
+	PrxJjO4/fCmOaD8KYfV8lnkcT5AmjsLS2misgw1xYOrQYAeTnpIN6o3wuCIQ8RoAopMuQoVSd51y7
+	SCZhB5ZYsUjJJTTDVYLTJtyzda9mw70lcDHumwDufn+ShJ0r72WA5f6YeFMssof7sBjghJEKYglXh
+	DeB6Hz4HFyKsI7MOTpCowNKyrvG8SocTRDh8qUFfshbVkEHIR234Uje0oScXcMzJ7ghR7X2zP0Ds7
+	AZklg3nylD1JrIfJ9Z3fSVJHZup9dG7TvAV06/jLSwwrzdq0XZlQsN7CWZxW0zulToftU/hDo0Qoo
+	PEu8fk/lfqKocZ5YkMeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vklmN-0000000Edsq-3fId;
-	Tue, 27 Jan 2026 16:18:59 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vklmK-0000000EdrE-1WR1
-	for linux-mtd@lists.infradead.org;
-	Tue, 27 Jan 2026 16:18:57 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7E0E64005F;
-	Tue, 27 Jan 2026 16:18:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3754DC116C6;
-	Tue, 27 Jan 2026 16:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769530731;
-	bh=cyt06RXJUBnyvd+rDscVy+C+X/eqB2fWQSj539VtPJg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=C+7uSikCiRnhCCypeIwP3zThpixogQdAMob/hrAgGC5aN3mFG3mo3K8bL9Gj4D5iJ
-	 mlRIA/x9KX0iTeGZDEcP+u/Vri4Htd4P4oPAskQq9RLzdfA+ewSZnL5vMdWP6llvh+
-	 1GYZY6ZCp24IZI8/J7wSbTX3gg2Rf0/px3XgNPRaw+gGzcpdIGPy8e16eGK/n3WvnF
-	 Ca6e0GEolE2ajsV8HdNbXv1n3dDcg4TBtC4d4Xd5wSFLeJKKdD8c77fg9C5UsuuOJ9
-	 ZffR5ckNFO/8+h8vLqyPLc0UIxOKXIhc5Cg4sZciTJAklnb7fWjYvULpWIOB9UdOr+
-	 voPcT5RXeyB9Q==
-Date: Tue, 27 Jan 2026 10:18:50 -0600
-From: Rob Herring <robh@kernel.org>
-To: Akhila YS <akhilayalmati@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	id 1vkyyk-0000000FXGr-1PBK;
+	Wed, 28 Jan 2026 06:24:38 +0000
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vkyyh-0000000FXGb-0ldp;
+	Wed, 28 Jan 2026 06:24:35 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: mxic,multi-itfc-v009-nand-controller:
- convert to DT schema
-Message-ID: <20260127161850.GA1968054-robh@kernel.org>
-References: <20260126-mxic-nand-v1-1-557df4a0dfa7@gmail.com>
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] ubi: ubi.h: fix kernel-doc warnings
+Date: Tue, 27 Jan 2026 22:24:34 -0800
+Message-ID: <20260128062434.400750-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.52.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260126-mxic-nand-v1-1-557df4a0dfa7@gmail.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260127_081856_417474_CA726F41 
-X-CRM114-Status: GOOD (  15.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,44 +55,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 26, 2026 at 11:09:20AM +0000, Akhila YS wrote:
-> Convert Macronix Raw NAND Controller Device Tree binding to DT Schema.
-> 
-> Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
-> ---
->  .../mtd/mxic,multi-itfc-v009-nand-controller.yaml  | 79 ++++++++++++++++++++++
->  .../devicetree/bindings/mtd/mxic-nand.txt          | 36 ----------
->  2 files changed, 79 insertions(+), 36 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
-> new file mode 100644
-> index 000000000000..97baac8b405a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/mxic,multi-itfc-v009-nand-controller.yaml
-> @@ -0,0 +1,79 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/mxic,multi-itfc-v009-nand-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Macronix Raw NAND Controller
-> +
-> +maintainers:
-> +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> +  - Richard Weinberger <richard@nod.at>
+Fix all default warning level kernel-doc warnings in ubi.h:
 
-Should be someone with the h/w. Perhaps the driver author Mason Yang 
-<masonccyang@mxic.com.tw>.
+Warning: drivers/mtd/ubi/ubi.h:176 struct member 'u' not described in 'ubi_wl_entry'
+Warning: drivers/mtd/ubi/ubi.h:370 struct member 'is_dead' not described in 'ubi_volume'
+Warning: drivers/mtd/ubi/ubi.h:655 struct member 'is_dead' not described in 'ubi_device'
+Warning: drivers/mtd/ubi/ubi.h:743 bad line: all existing Fastmap data structures
+Warning: drivers/mtd/ubi/ubi.h:783 struct member 'vidb' not described in 'ubi_attach_info'
+Warning: drivers/mtd/ubi/ubi.h:1098 expecting prototype for ubi_init_vid_buf().
+ Prototype was for ubi_alloc_vid_buf() instead
 
-Though the driver has zero driver specific changes since added in 2019 
-and there are no .dts files using it. Maybe it is unused and should be 
-dropped instead.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org
 
-But otherwise, the schema looks good.
+ drivers/mtd/ubi/ubi.h |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Rob
+--- linux-next-20260126.orig/drivers/mtd/ubi/ubi.h
++++ linux-next-20260126/drivers/mtd/ubi/ubi.h
+@@ -160,6 +160,7 @@ struct ubi_vid_io_buf {
+  * struct ubi_wl_entry - wear-leveling entry.
+  * @u.rb: link in the corresponding (free/used) RB-tree
+  * @u.list: link in the protection queue
++ * @u: union of rb_node and list_head
+  * @ec: erase counter
+  * @pnum: physical eraseblock number
+  *
+@@ -282,6 +283,7 @@ struct ubi_eba_leb_desc {
+  * @writers: number of users holding this volume in read-write mode
+  * @exclusive: whether somebody holds this volume in exclusive mode
+  * @metaonly: whether somebody is altering only meta data of this volume
++ * @is_dead: prevents taking a reference to the volume
+  *
+  * @reserved_pebs: how many physical eraseblocks are reserved for this volume
+  * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
+@@ -449,6 +451,7 @@ struct ubi_debug_info {
+  *                @vol->eba_tbl.
+  * @ref_count: count of references on the UBI device
+  * @image_seq: image sequence number recorded on EC headers
++ * @is_dead: prevents taking a reference to the volume
+  *
+  * @rsvd_pebs: count of reserved physical eraseblocks
+  * @avail_pebs: count of available physical eraseblocks
+@@ -741,7 +744,7 @@ struct ubi_ainf_volume {
+  * @highest_vol_id: highest volume ID
+  * @is_empty: flag indicating whether the MTD device is empty or not
+  * @force_full_scan: flag indicating whether we need to do a full scan and drop
+-		     all existing Fastmap data structures
++ *		     all existing Fastmap data structures
+  * @min_ec: lowest erase counter value
+  * @max_ec: highest erase counter value
+  * @max_sqnum: highest sequence number value
+@@ -750,7 +753,7 @@ struct ubi_ainf_volume {
+  * @ec_count: a temporary variable used when calculating @mean_ec
+  * @aeb_slab_cache: slab cache for &struct ubi_ainf_peb objects
+  * @ech: temporary EC header. Only available during scan
+- * @vidh: temporary VID buffer. Only available during scan
++ * @vidb: temporary VID buffer. Only available during scan
+  *
+  * This data structure contains the result of attaching an MTD device and may
+  * be used by other UBI sub-systems to build final UBI data structures, further
+@@ -1090,7 +1093,7 @@ static inline void ubi_init_vid_buf(cons
+ }
+ 
+ /**
+- * ubi_init_vid_buf - Allocate a VID buffer
++ * ubi_alloc_vid_buf - Allocate a VID buffer
+  * @ubi: the UBI device
+  * @gfp_flags: GFP flags to use for the allocation
+  */
 
 ______________________________________________________
 Linux MTD discussion mailing list
