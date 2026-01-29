@@ -4,66 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35425D73E87
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jan 2026 19:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A2D3D73E84
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jan 2026 19:12:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gxtBRTiFZQYfqmMom1tY6PRr/trThb7bRlJrrCBMdzM=; b=wdPdTDK7joEzm7
-	Q1cuoglSkS043yLH0AtMeWIS/6hz0+K4CxNY6aDxbKCfrntT/PQV+4QU78xp15lvUXw7BzaXavAvx
-	a526Oiwl5eUGDoUk1TXbsN3euQ2uqXUmWYEwW07Rqi7Q0t1N4i0K10BeRQmWeyIEivwdGi5+fxe/h
-	5iZ1bQYNaZsHYN9BqnhVwAu0Qk4DB4AkdplNaK8ErMOf17irly7mOwiLLlV8EyZBaHwwUw0AGO2lc
-	oImo274+ppDFaDNQ+9ausO5iq5jmitfETt8GS1IFtd/RJRB/p+BUCbllUWUh8DElsnh0ZxblDY/Dy
-	YWG8Xrwyyj559H54wfNg==;
+	List-Owner; bh=ToaEvkf33RkYnj4G+3kCFK9qigf1l3u1II2vcs2OLBc=; b=0t2Jcjdqo22Zgy
+	5R+1qV72r/92QkSwZELLOsUzibuP03hpi3jaweEj89Ly5YfIGLAy29StctGTO5mYNb1ttv6c8QETW
+	/uas10MeLLiHrcC3j9L665gZvBV87BO1/C24151E7TUlI3/PYMcPBP22m5iwsv6CDOQGncGgnwnML
+	TR+y5xerv2/MzGhrKTjJVYNW4AwjIl94Beg6SEqoEtgFAQX7PsMarJddCrYHRNn5DvHZpNxWXqhf3
+	j3yXyILuq2H+/6/JR1oSLiWMIMRJ5KRJEdYdhHxOseuYeRv4EmbK3LmJz3Xg36Zt3MXCQC+KAhj4W
+	OEoVQzHEUdHY3TEgU3YA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlXRP-00000000Xwl-3UKk;
-	Thu, 29 Jan 2026 19:12:31 +0000
+	id 1vlXRS-00000000Xxn-0WpB;
+	Thu, 29 Jan 2026 19:12:34 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlXRN-00000000Xvl-3F1A
+	id 1vlXRO-00000000Xvm-2ZpK
 	for linux-mtd@lists.infradead.org;
 	Thu, 29 Jan 2026 19:12:31 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 576CF4E42326;
-	Thu, 29 Jan 2026 19:12:28 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 2E3304E42325;
+	Thu, 29 Jan 2026 19:12:29 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 2453160746;
-	Thu, 29 Jan 2026 19:12:28 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EBBE9119A880F;
-	Thu, 29 Jan 2026 20:12:24 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 0081760746;
+	Thu, 29 Jan 2026 19:12:29 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1649B119A8864;
+	Thu, 29 Jan 2026 20:12:27 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1769713947; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1769713948; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=G+qpvlG2xrJTTZN1oTAH5PVb1bJNZhMGlBHpdOodgpM=;
-	b=nbqWVRaWs2v1U+/1dC5sgiAiZvRkOvIHFBdDbmLZ2sqq1yR9oQnld2/x+VwZ+XVCcN5WuH
-	XhVGT1Ulrl8w0HDxGUBuSi+n95sZwvgvGRqksDL7Zdr8CtEUJIZK6yvllYYUCFiZ+ZD/+y
-	zD6xHt0YHvtZuwWCO31rE5G1/ZDrGyioXV8h58lfbcrDj7Z2lQKQzo4qcwOpHd1q3wgVXx
-	PXs7lqRHka7PW1lFQ884i9Ms71Wz+6hjlb75iqpl0AhQc/q2M8JsL+XogUY5r6Cu8fvq0Z
-	zVHbGJ+mVmau2LHomnym4y4WAfht4rvIUg3WGdhe5ij3aPHeG+om8vThOILZ5w==
+	bh=Q3CWvP5JLIJdDuUGCy6bV+F8zV/0FtEjbWQPXPcSFlA=;
+	b=TA+Qsabq+4fySWpU1Ewg+wxlnx8rpH0mqNXykj9K2U+dhivoV1g6l1s9l3+r+MNUBSg3zC
+	bkP2++0gonwdfnIGoQH5FoGN3Dd25LdgUyCfuMfmFTKLhpnFBUrp34dUFzHbvAx0lu9iCM
+	WjOll8sqAY27r5ldmnU+rdWx61I36gw537th6rn/FeWsViMaSwZh+NJWYwo0HA6VYGmG5m
+	ULRz0yXefXW/v70ULu0BC4ZUpUhCzFufR3tCSQM33GeaVXAtcnrNa8uPdOnJMM766cd5gO
+	er7YWT/pWNIlJJTAk0LBiEbSnrKOwf34x788xkbKcPoysGjkeKzIma+WR/CVwg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Mason Yang <masonccyang@mxic.com.tw>, 
- Akhila YS <akhilayalmati@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20260128-mxic-nand-v3-1-c61764e85f60@gmail.com>
-References: <20260128-mxic-nand-v3-1-c61764e85f60@gmail.com>
-Subject: Re: [PATCH v3] dt-bindings: mtd:
- mxic,multi-itfc-v009-nand-controller: convert to DT schema
-Message-Id: <176971394479.256159.17492450215654905937.b4-ty@bootlin.com>
-Date: Thu, 29 Jan 2026 20:12:24 +0100
+ Vignesh Raghavendra <vigneshr@ti.com>, Linus Walleij <linusw@kernel.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20260129-gemini-mtd-of-partition-parse-order-v1-1-c209dfd7c0ce@kernel.org>
+References: <20260129-gemini-mtd-of-partition-parse-order-v1-1-c209dfd7c0ce@kernel.org>
+Subject: Re: [PATCH] mtd: physmap-core: Prioritize ofparts for OF probe
+Message-Id: <176971394786.256159.18224773453751051734.b4-ty@bootlin.com>
+Date: Thu, 29 Jan 2026 20:12:27 +0100
 MIME-Version: 1.0
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260129_111229_959782_7CF5677F 
-X-CRM114-Status: UNSURE (   5.15  )
+X-CRM114-CacheID: sfid-20260129_111230_803101_D238E9B7 
+X-CRM114-Status: UNSURE (   9.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,12 +76,16 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCAyOCBKYW4gMjAyNiAxNTozNjoxMiArMDAwMCwgQWtoaWxhIFlTIHdyb3RlOgo+IENv
-bnZlcnQgTWFjcm9uaXggUmF3IE5BTkQgQ29udHJvbGxlciBEZXZpY2UgVHJlZSBiaW5kaW5nIHRv
-IERUIFNjaGVtYS4KPiAKPiAKCkFwcGxpZWQgdG8gbXRkL25leHQsIHRoYW5rcyEKClsxLzFdIGR0
-LWJpbmRpbmdzOiBtdGQ6IG14aWMsbXVsdGktaXRmYy12MDA5LW5hbmQtY29udHJvbGxlcjogY29u
-dmVydCB0byBEVCBzY2hlbWEKICAgICAgY29tbWl0OiBiY2Y4ZTIwNzYyNGQwNDRhMDYwYWM0YzZm
-OTg2MWYzNGFkZTQxY2E0CgpQYXRjaGUocykgc2hvdWxkIGJlIGF2YWlsYWJsZSBvbiBtdGQvbGlu
+T24gVGh1LCAyOSBKYW4gMjAyNiAwMDo1NTowOSArMDEwMCwgTGludXMgV2FsbGVpaiB3cm90ZToK
+PiBQbGFjZSB0aGUgb2ZwYXJ0cyBiZWZvcmUgUmVkQm9vdCBwYXJ0aXRpb25zIGluIHRoZSBPRiBw
+cm9iZQo+IHBhdGg6IHRoaXMgbWFrZXMgaXQgcG9zc2libGUgdG8gb3ZlcnJpZGUgYW55IGV4aXN0
+aW5nCj4gUmVkQm9vdCBwYXJ0aXRpb25zIHdpdGggZml4ZWQtcGFydGl0aW9ucyB3aGljaCBtYXkg
+YmUgbmVjZXNzYXJ5LAo+IHN1Y2ggYXMgd2hlbiB5b3UgbmVlZCB0byByZXBhcnRpdGlvbiB0aGUg
+Zmxhc2ggZnJvbSBMaW51eCcKPiBwb2ludCBvZiB2aWV3IGJ1dCBub3QgbmVjZXNzYXJ5IGZyb20g
+dGhlIGJvb3Rsb2FkZXJzIHBvaW50Cj4gb2Ygdmlldy4KPiAKPiBbLi4uXQoKQXBwbGllZCB0byBt
+dGQvbmV4dCwgdGhhbmtzIQoKWzEvMV0gbXRkOiBwaHlzbWFwLWNvcmU6IFByaW9yaXRpemUgb2Zw
+YXJ0cyBmb3IgT0YgcHJvYmUKICAgICAgY29tbWl0OiA4YTU2NWUzZWUxZWNjYWY3NTcwYTFjMTA3
+YjY4MzI3YmExYTY4Yjg0CgpQYXRjaGUocykgc2hvdWxkIGJlIGF2YWlsYWJsZSBvbiBtdGQvbGlu
 dXguZ2l0IGFuZCB3aWxsIGJlCnBhcnQgb2YgdGhlIG5leHQgUFIgKHByb3ZpZGVkIHRoYXQgbm8g
 cm9ib3QgY29tcGxhaW5zIGJ5IHRoZW4pLgoKS2luZCByZWdhcmRzLApNaXF1w6hsCgoKX19fX19f
 X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
