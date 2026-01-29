@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6BA8D6100C
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jan 2026 12:10:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 150B0D61010
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jan 2026 12:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YPyMA+RoEmZ8IL/G+vC/fRdRmhvm4QFg4nBZg2ytsZY=; b=TtV7GTc60aVkt2
-	WNy+YqPA9YfD8wdQdgOZclJaEl3oR6AtLuLcM83tV1Zo9KibgYS5fVq8NY8/v+DubmfoiB+ijtgTd
-	SWUZWD/9AtRUfUi5f2c5wWRu4i9OouKAxgsd2N/zHH7XBykPAhOysMH6mltWSguZqIz/E2iafab15
-	4zJidLWu6OvTkxKLfotxNWaMKdCZ2TqNCO7DHmKjeCenIsQAE/zXzuwTms8sthDcRGRdcOI83uvlB
-	oo8KYYJ4hWZUyLDNhlR1xWpc4I/x2zCjnmk3KssOgNoMNKm5Ga5lXqTXMFc1PbV5s89gZdHqZrvcb
-	XsMtUAKjQXLIYxxZtliQ==;
+	List-Owner; bh=v06fN7Zqa7hNPNJzauedUsw8832LdLNBTpON+TrwsuY=; b=MEwwhFyYQ82dtL
+	giO3u3X9Dj8Gn2zBMWTnZuY76uhWDfMwJwXU6EhTi8g/UsAVlRQQT0OzhrAFzjd8e+cjENiNtHoiB
+	C7vjhw302YuGRSj/HMsVJP0UcjEBVpy3t5cDvQZN2X0YNs7bqvQkmDdNYvL/pLF6sWZYEX3odmGC/
+	YTyLfdiu3xF4YtOGBOQ2j9xRs8TJb8rmlUbB3afRsLNHzkEmom537qayGmsTyNNmXzasLBDLYNl04
+	d0ksznFHhcuX9+FnDi0g7lEHw/UNPEAC/H1BhoLZsyql5x+PxpoO6ljsvoWGpQFhFXwq3tSAWxcCY
+	NVtO7nuZg5C2aEr5K9qg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlQqV-00000000545-0gI6;
-	Thu, 29 Jan 2026 12:09:59 +0000
+	id 1vlQqX-00000000555-1zpJ;
+	Thu, 29 Jan 2026 12:10:01 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlQqR-0000000052z-3ilN
+	id 1vlQqS-0000000053D-30VF
 	for linux-mtd@lists.infradead.org;
-	Thu, 29 Jan 2026 12:09:57 +0000
+	Thu, 29 Jan 2026 12:09:58 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 800B74E42317;
-	Thu, 29 Jan 2026 12:09:53 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 46F044E42318;
+	Thu, 29 Jan 2026 12:09:55 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 56084606B6;
-	Thu, 29 Jan 2026 12:09:53 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 36679119A884D;
-	Thu, 29 Jan 2026 13:09:50 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1C92F606B6;
+	Thu, 29 Jan 2026 12:09:55 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DAFCE119A882B;
+	Thu, 29 Jan 2026 13:09:52 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1769688591; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1769688594; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=oYbdI2fsKaGTvEp6wqBhR2QgtSukXpWA3HhYALr0rC8=;
-	b=DIXXMNMwjiOwbhuSitndltWIqs1OunowrNs18VXBxNmEjreeGNHAsd1hx/xnmWylTNXyaH
-	WtWsWNn6pUosl3uYUb3Jf7kuuyX19IAJNYxzAUxsjUsmCgGIr73tlKBY4VDKxZ0/bhV6Zt
-	s54C5EHAHHsgOSQXDeFQmGbEoxYyS/qFBfhMb4PkVUbJQJ+GVRxaY1fVM7bv9F1L4/3B1/
-	ezwUPcFKuL5hjV7n71o9snOAxY7JWHPKOk7NCOG2Nk99R4PWmJ4F/6kihjBldL1Um39PVS
-	v1U93VjMuZnYWX6D4B314jMP7A1miYNQYBqbjMZ/9lHNbsGvCTf22bEIAJ0a0g==
+	bh=N/5zFX37gkLq6zQzP//9Uu1etqb4FGSMMBO3Ww7P5LM=;
+	b=FBClNdApMgGANmMOaVTusO8jUimByyvt1k6XUcAIfX1A25ChtZ6rXNNfBaZnKp5KTx365m
+	3DztWDl1HLEURJA7P9AsYZFksQB7uJ3pSLcMFPDQYBCz6mmpvevihqYXMGUe+8H2w7ofBJ
+	wuDfPskhmrZiiWhCJSxaCdpRfZiq86XJlh1Z2BNE81Yf1OZuE8KXccMQ5VlXVI0AxA2J/6
+	I4Xvt3WvF8G2smiuXndE7rF7ksR3Zr7+BgMo/SyenZZS7dLZPhjoYa85ZELjZqYOtYelm2
+	O1Rhe5ObTqw2LwbKhvn1Ud7AhCf0JZ8eBYRpG3Ot+geXOIudXat6PMkkzywYQw==
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Thu, 29 Jan 2026 13:09:27 +0100
-Subject: [PATCH v15 1/3] dt-bindings: mtd: Describe MTD partitions
- concatenation
+Date: Thu, 29 Jan 2026 13:09:28 +0100
+Subject: [PATCH v15 2/3] mtd: Move struct mtd_concat definition to header
+ file
 MIME-Version: 1.0
-Message-Id: <20260129-mtd-virt-concat-v15-1-c56a232efbd2@bootlin.com>
+Message-Id: <20260129-mtd-virt-concat-v15-2-c56a232efbd2@bootlin.com>
 References: <20260129-mtd-virt-concat-v15-0-c56a232efbd2@bootlin.com>
 In-Reply-To: <20260129-mtd-virt-concat-v15-0-c56a232efbd2@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -66,8 +66,8 @@ Cc: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260129_040956_067532_F1989F7D 
-X-CRM114-Status: GOOD (  12.48  )
+X-CRM114-CacheID: sfid-20260129_040956_892967_46E4FD51 
+X-CRM114-Status: GOOD (  14.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,77 +86,62 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 
-The AMD QSPI controller supports an advanced connection modes called
-Stacked mode which allow the controller to treat two different flashes
-as one storage.
+To enable a more generic approach for concatenating MTD devices,
+struct mtd_concat should be accessible beyond the mtdconcat driver.
+Therefore, the definition is being moved to a header file.
 
-In Stacked connection mode flashes share the same SPI bus, but different CS
-line, controller driver asserts the CS of the flash to which it needs to
-communicate. Stacked mode is a software abstraction rather than a
-controller feature or capability. At any given time, the controller
-communicates with one of the two connected flash devices, as determined by
-the requested address and data length. If an operation starts on one flash
-and ends on the other, the mtd layer needs to split it into two separate
-operations and adjust the data length accordingly. For more information on
-the modes please feel free to go through the controller flash interface
-below [1].
-
-To support stacked mode, the existing MTD concat driver has been extended
-to be more generic, enabling multiple sets of MTD partitions to be
-virtually concatenated, with each set forming a distinct logical MTD
-device.
-
-A new Device Tree property is introduced to facilitate this, containing
-phandles of the partitions to be concatenated with the one where the
-property is defined. This approach supports multiple sets of concatenated
-partitions.
-
-[1] https://docs.amd.com/r/en-US/am011-versal-acap-trm/QSPI-Flash-Device-Interface
-
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Suggested-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- .../bindings/mtd/partitions/partition.yaml           | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/mtd/mtdconcat.c    | 12 ------------
+ include/linux/mtd/concat.h | 12 ++++++++++++
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-index 80d0452a2a33..c9aba6838b3c 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-@@ -57,6 +57,15 @@ properties:
-       user space from
-     type: boolean
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index f56f44aa8625..6f2aaceac669 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -20,18 +20,6 @@
  
-+  part-concat-next:
-+    description: List of phandles to MTD partitions that need be concatenated
-+      with the current partition.
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    minItems: 1
-+    maxItems: 16
-+    items:
-+      maxItems: 1
+ #include <asm/div64.h>
+ 
+-/*
+- * Our storage structure:
+- * Subdev points to an array of pointers to struct mtd_info objects
+- * which is allocated along with this structure
+- *
+- */
+-struct mtd_concat {
+-	struct mtd_info mtd;
+-	int num_subdev;
+-	struct mtd_info **subdev;
+-};
+-
+ /*
+  * how to calculate the size required for the above structure,
+  * including the pointer array subdev points to:
+diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
+index d6f653e07426..b42d9af87c4e 100644
+--- a/include/linux/mtd/concat.h
++++ b/include/linux/mtd/concat.h
+@@ -9,6 +9,18 @@
+ #define MTD_CONCAT_H
+ 
+ 
++/*
++ * Our storage structure:
++ * Subdev points to an array of pointers to struct mtd_info objects
++ * which is allocated along with this structure
++ *
++ */
++struct mtd_concat {
++	struct mtd_info mtd;
++	int num_subdev;
++	struct mtd_info **subdev;
++};
 +
-   align:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     minimum: 2
-@@ -138,4 +147,15 @@ examples:
-             reg = <0x200000 0x100000>;
-             align = <0x4000>;
-         };
-+
-+        part0: partition@400000 {
-+            part-concat-next = <&part1>;
-+            label = "part0_0";
-+            reg = <0x400000 0x100000>;
-+        };
-+
-+        part1: partition@800000 {
-+            label = "part0_1";
-+            reg = <0x800000 0x800000>;
-+        };
-     };
+ struct mtd_info *mtd_concat_create(
+     struct mtd_info *subdev[],  /* subdevices to concatenate */
+     int num_devs,               /* number of subdevices      */
 
 -- 
 2.52.0
