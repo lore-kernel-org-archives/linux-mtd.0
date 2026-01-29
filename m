@@ -4,61 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F34FD73E84
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jan 2026 19:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76EE0D73E87
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jan 2026 22:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0beE9zyoGBPfyD9/zNvYI6F/KlMcSU7/vFijyYBjIRw=; b=ZyW+nOFs7h0cXb
-	BuKEDiF758SLiQZZJHLVuZc3aBdSVXgZIDrfVg5T+0nMGCBXI5J8cT+c2qFbEFNJNnlt2y2Yuj5EB
-	L6v0RqN6i0R2Ugrem11oYZWxiKvpqGvZKm9g0KxFRWtsBbQuuTsFPnkhvy58kWZzEazqOtKpY0n4v
-	F5UTBegEs1ZQcORN3DUEiCqxG+yRnTKbkx6Bjusk7ehhqFh3zsol4t5rTS4kIumifPuSqzHrsAv6l
-	1ElcHcKwCwQ1hfYGciyue+r7/x7CiQVfZE6LrjkuqC5WphGWTtdDLeFT1qDWhbVeXVYRZzvtL/Ioq
-	0+TyEdm+R+blcH7HDSGA==;
+	List-Owner; bh=eGt6yaJRHUjx8pmzvBtN8PsiFUGwWm23Klm0NnT8dLM=; b=EMXycTMf1wscFF
+	FrcJnKtBBDiAdqE/zzkSfZWXRzpNwK/kdejTm6ponA9ncP1yeEoGGs5tmKnDktpqzCEmUjOYzcemR
+	8pFQzlyALUkad5z3jGt5JFBSg914N3fnJ1wSBMubvMGozZ0UzErTCNQohqP636pX3j8TLS4sMlf67
+	0EznDAk+lLJwlXyCp925kaCGNd5MJJmWOnmi4CV5d27IVGf/hTCGAnkuHQaF8X5wU8x4oTsuEl6uG
+	csnj0jUMiW0dFDqadv0GWJyBUJSVSCucCpMuylIH0u8HfGxC3KY+1GSBCwDnwEpGFfTuowU6znQD8
+	h7/KL1TlD6YbYM8tZ2Eg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlXo1-00000000ZRP-2rjN;
-	Thu, 29 Jan 2026 19:35:53 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1vlaJH-00000000igm-2td5;
+	Thu, 29 Jan 2026 22:16:19 +0000
+Received: from pdx-out-008.esa.us-west-2.outbound.mail-perimeter.amazon.com ([52.42.203.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlXnx-00000000ZQt-01zD
+	id 1vlaJF-00000000igK-2A4X
 	for linux-mtd@lists.infradead.org;
-	Thu, 29 Jan 2026 19:35:53 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id A2D3F4E42318;
-	Thu, 29 Jan 2026 19:35:46 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 64FB960746;
-	Thu, 29 Jan 2026 19:35:46 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8A88D119A880F;
-	Thu, 29 Jan 2026 20:35:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1769715345; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=UmJz8uv6hj9TJJXKRiIeCWh+SgTZWK5ogeUf/Hqg3w0=;
-	b=0S36is7SWnzBM5XDPW/pDrpN1fqSI6j9SKay2/0ojBRj3e4zoaxQBYaP5kWcBTpc3mw5qd
-	EkujvznuPAYovjcR7WmSMEFC1yNwvrAB7SvA6gHq9Ul6DMQN3yrhmbNFfPbhtIWWlgQIcb
-	OP4p+S1u67FhREsy9RHM+4emHmdIMxicUb5vW/MdVPm9D6SwAr6jOFLPvdOSjfqZEwPKzo
-	bbXRZMj9RHNaTMwe3jCC6keH9c4AbdAZX0aMrs4TDCqyxDtqqoHvAKznCz8vrcSuQ9elTM
-	RIGJCZrObGSOt8kOKKhDM9u9MY1QJxXsWJzsKO1i73ks/voqCn4kZQTHR0ELEA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Richard Weinberger <richard@nod.at>, Tudor Ambarus
- <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder
- Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>,
- Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [GIT PULL] mtd: Fixes for 6.19-rc8
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Thu, 29 Jan 2026 20:35:42 +0100
-Message-ID: <87jyx0jjox.fsf@bootlin.com>
+	Thu, 29 Jan 2026 22:16:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1769724977; x=1801260977;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hWdvUWW0Ad9qhyIEDQ11OCPpgS4C9PUnHfqSA+NtbDU=;
+  b=SkWTmRbBsc6ATbh+rT7y1PyJNVETxhrzO63KUoivXpEbW53Na+HhVfv9
+   ZR8Us9cqrCJRPebI6RwrVTtqfDi4K61vZKuXaVgdyIxkltAA5WEivyvic
+   HRj+SKAoBcOG+qnxkwqyug+FANA4i8Na2xjU7y/vHGh6PfL0+ZMe9wl2L
+   8JqvqFb1EGI/oAtMejJAVMDIT+54Mzvw/QyX+JB/1qgfZ0M5CoI0Ia88I
+   YCtEpLj/bOVTozdBaO8GnwtHFMR9VYpfkr96E/JPjMnXTovIdUV7ywLyA
+   HhisN4467LicmavRygfClVqnL1vU3szVsFzlkUw5RkOhbFVtNVkXX/uva
+   A==;
+X-CSE-ConnectionGUID: U46w1vRmQVOJAD4cbTOGMg==
+X-CSE-MsgGUID: 8kpImQZ0ROO3naXyL9pmLw==
+X-IronPort-AV: E=Sophos;i="6.21,261,1763424000"; 
+   d="scan'208";a="11871847"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-008.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2026 22:16:13 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.51:4250]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.45.176:2525] with esmtp (Farcaster)
+ id 7a772041-cd17-4e57-9f7d-f39ae12f9983; Thu, 29 Jan 2026 22:16:13 +0000 (UTC)
+X-Farcaster-Flow-ID: 7a772041-cd17-4e57-9f7d-f39ae12f9983
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
+ Thu, 29 Jan 2026 22:16:13 +0000
+Received: from 842f574e803f.amazon.com (10.187.171.32) by
+ EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
+ Thu, 29 Jan 2026 22:16:12 +0000
+From: David LaPorte <dalaport@amazon.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
+	<tudor.ambarus@linaro.org>, Martin Kurbanov <mmkurbanov@salutedevices.com>,
+	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>, Cheng Ming Lin
+	<chengminglin@mxic.com.tw>, Pratyush Yadav <pratyush@kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: David LaPorte <dalaport@amazon.com>, Gunnar Kudrjavets
+	<gunnarku@amazon.com>
+Subject: [PATCH] mtd: spinand: Disable continuous read during probe
+Date: Thu, 29 Jan 2026 14:15:59 -0800
+Message-ID: <20260129221606.35158-1-dalaport@amazon.com>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+X-Originating-IP: [10.187.171.32]
+X-ClientProxiedBy: EX19D041UWA003.ant.amazon.com (10.13.139.105) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260129_113549_202967_C40638BF 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20260129_141617_760011_661E3418 
+X-CRM114-Status: GOOD (  13.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,34 +89,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIGlzIGEgbGF0ZSBmaXhlcyBQUjsgSSB3YXMgd2FpdGluZyBmb3IgdGhyZWUg
-b3RoZXIgZml4ZXMgb24gdGhlIE1MCnRvIGJlIGFja25vd2xlZGdlZCBidXQgdGhpcyB0dXJuZWQg
-b3V0IHRvIG5vdCBoYXBwZW4gaW4gdGltZSwgc28gaGVyZSBpcwp0aGUgb25seSBmaXggd2hpY2gg
-bmVlZHMgdG8gZ2V0IGluIGZvciB0aGlzIHJlbGVhc2UsIGFuZCB0aGUgcmVzdCB3aWxsCmJlIGRl
-bGF5ZWQgdG8gdGhlIG5leHQgY3ljbGUsIGJ1eWluZyB1cyB0aW1lIHRvIHNldHRsZS4KClRoYW5r
-cywKTWlxdcOobAoKVGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA4ZjBiNGNjZTQ0
-ODFmYjIyNjUzNjk3Y2NlZDhkMGQwNDAyN2NiMWU4OgoKICBMaW51eCA2LjE5LXJjMSAoMjAyNS0x
-Mi0xNCAxNjowNTowNyArMTIwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5
-IGF0OgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRk
-L2xpbnV4LmdpdCB0YWdzL210ZC9maXhlcy1mb3ItNi4xOS1yYzgKCmZvciB5b3UgdG8gZmV0Y2gg
-Y2hhbmdlcyB1cCB0byAyZjZkMmM4ZDlhYzA1YTdhMWMwMjMzM2Y2YWQzMDg2ODI0Njg4MGQ4OgoK
-ICBSZXZlcnQgIm10ZDogc3BpbmFuZDogZXNtdDogZml4IGlkIGNvZGUgZm9yIEY1MEQxRzQxTEIi
-ICgyMDI1LTEyLTE2IDA5OjA4OjI4ICswMTAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBIHNpbmdsZSBsYXRlIE1URCBm
-aXgsIHdoaWNoIHJldmVydHMgYSBmaXggdGhhdCB0dXJuZWQgb3V0IHRvIGJlCmluY29ycmVjdC4g
-VGhlIG9ic2VydmF0aW9ucyBvZiB0aGUgY29tbWl0dGVyIHdhcyB0aGF0IHRoZSBudW1iZXIgb2Yg
-SURzCnRvIGJlIHVzZWQgdG8gcHJvYmUgYSBjaGlwIHdhcyBpbmNvcnJlY3QuIEl0IGhhcHBlbmVk
-IHRvIGJlIGEgbGltaXRhdGlvbgpvZiBoaXMgY29udHJvbGxlciwgbm90IGEgY2hpcCBpc3N1ZS4g
-UmVzdG9yZSB0aGUgY2hpcCBkZXNjcmlwdGlvbiwgYQpzb2x1dGlvbiBtdXN0IGJlIGZvdW5kIHNv
-bWV3aGVyZSBlbHNlLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpaaXlhbmcgSHVhbmcgKDEpOgogICAgICBSZXZlcnQgIm10
-ZDogc3BpbmFuZDogZXNtdDogZml4IGlkIGNvZGUgZm9yIEY1MEQxRzQxTEIiCgogZHJpdmVycy9t
-dGQvbmFuZC9zcGkvZXNtdC5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
-LCAxIGRlbGV0aW9uKC0pCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Macronix serial NAND devices with continuous read support do not
+clear the configuration register on soft reset and lack a hardware
+reset pin. When continuous read is interrupted (e.g., during reboot),
+the feature remains enabled at the device level.
+
+With continuous read enabled, the OOB area becomes inaccessible and
+all reads are instead directed to the main area. As a result, during
+partition allocation as part of MTD device registration, the first two
+bytes of the main area for the master block are read and indicate that
+the block is bad. This process repeats for every subsequent block for
+the partition.
+
+All reads and writes that reference the BBT find no good blocks and
+fail.
+
+The only paths for recovery from this state are triggering the
+continuous read feature by way of raw MTD reads or through a NAND
+device power drain.
+
+Disable continuous read explicitly during spinand probe to ensure
+quiescent feature state.
+
+Fixes: 631cfdd0520d ("mtd: spi-nand: Add continuous read support")
+Signed-off-by: David LaPorte <dalaport@amazon.com>
+Reviewed-by: Gunnar Kudrjavets <gunnarku@amazon.com>
+---
+Testing details:
+- Instrumented feature enablement and verified fix with affected Macronix
+  serial NAND device:  warm reboot without patch marks all blocks bad
+  during partition allocation; with patch applied, device registers
+  cleanly with no bad blocks marked
+- Patch cherry-picks cleanly to mainline v6.19-rc6 and builds without
+  warnings
+- Boot tested mainline + patch on aarch64 host without SPI interface
+---
+ drivers/mtd/nand/spi/core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index d207286572d8..1fb05ac8678b 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -859,6 +859,7 @@ static void spinand_cont_read_init(struct spinand_device *spinand)
+ 	    (engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE ||
+ 	     engine_type == NAND_ECC_ENGINE_TYPE_NONE)) {
+ 		spinand->cont_read_possible = true;
++		spinand_cont_read_enable(spinand, false);
+ 	}
+ }
+
+--
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
