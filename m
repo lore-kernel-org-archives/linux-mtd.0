@@ -4,80 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B7BD49C9B
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 10:59:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBA45E6BF0D
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 13:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B1gd9Ew7iKXI+8CbjkOyUwvOJKd7vge8asFq3jPXZ2M=; b=lhGEuMLhSkWyn8
-	+RE/rIed2CO/q4E/5Y5RPL3vJpzPq3kEXR0ltyiVjtfGqCkl6DVF6JeRcbCXXDBUv3eRIEJhxNZpX
-	FxQeh6zmELet0yvJAui4XinBmghwAlqOA/Wz26IvMFxCfRm7p/C7ZOhCo+4bzsrRMyTnrkkRF07ZB
-	lizWTc/INxXZ2B/qXHHj4v8XLG36qMg+SZcHbTzQZyRM6PD4x1V0ylWJPLPkReVl75hr37wDqn/cC
-	subgzNvNkKZF/rNvis+xb/k3fKRm3GbqXXz9whEeNfvZU0ZkKFF/uY/tdVGPoKU8T1osinuWa1Z1i
-	sV0Bimoswo8sTZutOnrQ==;
+	List-Owner; bh=1w99l1MFjX37fjxTuP5OIBrnMx63R6TlyZcAUVm8UJ4=; b=NCQpmK87+91pCS
+	fPY7O2kYOWfjbyVpV777q8FoU5Wlg2iPDwMqAKuMiR5KYnvkLG0wltA90RIjX35SyWJZDHf7Vb+LD
+	k90UBjUKAPSMtbdkHLXbQjhalyrQFtuQ+vsluPSAnxQxCEJsiIigblRAJ/NCnSEwy6JXThzsMYrTF
+	xG4GBpRomNwVk6wBA338yNGqhL7qJ+zg2zIrzwQQXFqEGCMACg+lwJGyD+jWHGzC8oxl8Oa6edGL8
+	li9sDLGPkGDyo3XB4JaYaEG63wRkah0PYAhZy7ZokZ8k6pwdXVMvPUl05n3fZtVNP++VBaObDanI+
+	ymMy/+TFvWQiTFejSkLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlmE8-00000001LUv-3ofz;
-	Fri, 30 Jan 2026 10:59:48 +0000
-Received: from smtpbg154.qq.com ([15.184.224.54])
+	id 1vlok0-00000001Y0p-18o2;
+	Fri, 30 Jan 2026 13:40:52 +0000
+Received: from smtpbguseast3.qq.com ([54.243.244.52])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlmE5-00000001LU2-1yPc
+	id 1vloju-00000001Xzo-3HiL
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jan 2026 10:59:47 +0000
-X-QQ-mid: esmtpgz10t1769770732t176c8529
-X-QQ-Originating-IP: L8IWA4HbVRjeQKViajbYKiM5sBQL3YPX8P/SIJYiBOs=
+	Fri, 30 Jan 2026 13:40:49 +0000
+X-QQ-mid: esmtpgz15t1769780391t7216e907
+X-QQ-Originating-IP: uxJwp3J5Jz7kasf0mzapFd1F9HCnZEW4Tuf3NAEbV2M=
 Received: from [192.168.0.109] ( [110.81.94.113])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 30 Jan 2026 18:58:50 +0800 (CST)
+	id ; Fri, 30 Jan 2026 21:39:49 +0800 (CST)
 X-QQ-SSF: 0000000000000000000000000000000
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3412299832332157637
-EX-QQ-RecipientCnt: 11
-Message-ID: <A87E0D60BEDCA22F+511dd411-a9a2-4894-8848-0c92ddf1a3ec@radxa.com>
-Date: Fri, 30 Jan 2026 18:58:49 +0800
+X-BIZMAIL-ID: 9357198044114509192
+EX-QQ-RecipientCnt: 10
+Message-ID: <86F97239DB3D962C+98826904-6649-4c19-815d-73003c046c14@radxa.com>
+Date: Fri, 30 Jan 2026 21:39:48 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] firmware: qcom: scm: Add SCM storage interface
- support
-To: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>,
+Subject: Re: [PATCH v2 0/2] mtd: devices: Qualcomm SCM storage support
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konradybcio@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Xilin Wu <sophon@radxa.com>,
  Junhao Xie <bigfoot@radxa.com>
 References: <20260126-scm-storage-v2-v2-0-fa045c7e7699@radxa.com>
- <20260126-scm-storage-v2-v2-1-fa045c7e7699@radxa.com>
- <2d28b5d0-c5f4-4085-b2d0-18128b021416@oss.qualcomm.com>
+ <x4sxekwxkrylw54rvtnvwjfyfruhd6bd2jlfe5nv4sehbosetn@sxf5wpb3nas2>
 From: Junhao Xie <bigfoot@radxa.com>
-In-Reply-To: <2d28b5d0-c5f4-4085-b2d0-18128b021416@oss.qualcomm.com>
+In-Reply-To: <x4sxekwxkrylw54rvtnvwjfyfruhd6bd2jlfe5nv4sehbosetn@sxf5wpb3nas2>
 X-QQ-SENDSIZE: 520
 Feedback-ID: esmtpgz:radxa.com:qybglogicsvrsz:qybglogicsvrsz4b-0
-X-QQ-XMAILINFO: Nx/b/ZER74yjVCCUvuY+g2WK/FESO45tChVmi5fuZcJrt04ObKWNvmHh
-	HAgg42i7s6U9Gpgb7kbcZjo5auoiM7+LHsTetbrBkipVGTmG7m4e/VV3WA56lED0OBDJIgT
-	At51sY8pnVJCd7twV06FvcOgq9epND6X94gCycyXJ+v7qT85WhmZSFBU7c9pABjMxynVwHD
-	2TZyqCcDq74drgBobEo6/7nR8Se8dNzSOcz1F8dGP8aFUPFtvb8wPEBO5/9kB8fjJpPx99G
-	h9xk1QkKkx9tMJzFkjXMjB3LTYX5ygTWXBHltf0yx8qcuqF8hTBrtW1dPR6gP6QXs0CgoSX
-	gtOUiiLj6uC71FSx6Ko2nGYK+e2P1XLXcw88On84qjxzOaKB017w+UaxIBh1LuxKlrw5dur
-	ToekkGoSwlUlBilL4lQjGldUEq9S+Yrmh6IGU80wYisRtagV+QEklSA0Ng6G+E/kBGsMeao
-	76bxbahvbfS9Yo0zwrYBEBEDIUY7uVW/gwBmLAcmFYUBIehWKAyPiBo1hUV5wrDJFOtPLyW
-	twoDHKcLCtw5JkNFTESlCTtgJ5wRWbNVdOtmDL6WriD1Isc07ivCZao669AqbI0jcHvLyK8
-	Wp2OFLiobbxzA0rdlI4UGb5Ug97QhG90FJ/VmC9SPI+zAuOm0UxHgaKBjIuobk2N7jXYRst
-	ZDQQAqh68sQZWd8/gl0t17lfPCT9ULH12KRhp/fHFHHaBK7nP2fO1L6/A4CuuTpfLTb7/4s
-	xozbxu/qt9hw6JAqterowEcu13BfDlwoX4cMGbzXlHH566w1ummx5bM8i+KSBdj/2Nan4Do
-	fnbM9TyM4CL0TnIImFlB2J24bzGSXqLjpvGGZMsUed1NIAauV8peC0TTAdakabHp23kpPXB
-	wVRVpFtQoEhiISKt+GHIp7CniBuyuH/1dBjMS2hwxCLzj2SuHlCRiviAK9MXGHA9+Japetf
-	FzFIGaWaOJTJm7rbpa30HhgTvtLFCYXsnuiLpW5xOKyABv310aznmjPTIB2ItRPDLkU+aXb
-	mavk631aQJ/ENqtA03
-X-QQ-XMRINFO: Nq+8W0+stu50tPAe92KXseR0ZZmBTk3gLg==
+X-QQ-XMAILINFO: MtYPpoBCfkHltRSTkjoOA0/9Fm2WPhrkzimI8jgFBCBF8yFwCl487xgK
+	iMG7vKY+qRBWQ4QDuLyN09/17DLv5ZtA1YrT6DOIzaersVjTcf/RGOIZcN5nCz/LLWClW7d
+	0sF7zqmYP7zF9QX4NwPi1x0EtCPm4dkx7KB+HyBGlEQlgf7jaQslA/bRGW2fVerK+OovvaY
+	dwuNlwFcP9kB7++vzCYdCfhDymfu7hfLmM4L4Kx1N1VDD04w7laHpQsel8Xb+szN52gXHvq
+	7leg6dYW8nihR/Ac+j9L7iTICpqkRciIqK79bwpoEWyU2EQWyhP7JY/pPmglXhYWMlsmdFq
+	AHWCm740TGkbVd/qWuxENu4VwAoelj86khb0gKMA01ra/vCCfVXR+pJu9wrqCY1pE7HJr7t
+	QWCmnQXzZ/h2lQ1/Orz7/QlqqsTnnqG2wvW1RkbCeokaprSk0D53h7JuxQiAKMCHu8ZATeF
+	jZ/ocqWRmyDgWhGWoXYCwEgSQZHi+ld+69wiy/8+y8I2MMKL72wVXJIZC291I2hW7tuU2Kp
+	uvR/2WXjJNf+j0W+taIE+qZ9p5Gr4scd0CydXZGFky+J3m2C6p0gvj+Ag2VbBMFkmgNX1Wj
+	vxfD4U8k6Z6j2Oiz4pvHq98p2PTw/LjOMqnbWL6Rr0Nwr3YWFjZpikOMfFO8C6izC640glB
+	1qCjHew925/UHBBSOPplo5IEXyS4QZQI3wAr6vAdBJs67VLQMEH1HoyUROBKU5wJ4+pcxAz
+	ZDs+maw8VXQysvs6gWQprs5kOVtP6DW4sioXfNysSOe3ETcRZGLVsMRfG1BYwJSeGQXROiM
+	OgQSwJh/5gnm9lXpVvenYZQUuwl9PoAcNfMSePk8UG7+wqs51Ekz6M7Yf6RTzBu14YFYA/M
+	zXgwfvhnL7ObI5xWl7kuJAhUScA+fDEjx4FkE2uZjnHCRizK7as/017RRt2OIQGaUufsvHq
+	VVH3UW9giR49lJ5wDhDqoLxAxzHoHtQMujjTHKQo5dEM6Q7OWOLvF9HrV4FOL3iwRwZUHmI
+	su6bb7AekWXbQfjgGwp/Ns+ZfuiDBku/aHc+MV2yXb/w3jefiM
+X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
 X-QQ-RECHKSPAM: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260130_025946_105174_428E806C 
-X-CRM114-Status: GOOD (  20.14  )
+X-CRM114-CacheID: sfid-20260130_054047_774003_A945A296 
+X-CRM114-Status: GOOD (  26.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,101 +91,71 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2026/1/28 21:39, Konrad Dybcio wrote:
-> On 1/26/26 12:44 PM, Junhao Xie wrote:
->> Add infrastructure to support accessing TrustZone-protected storage
->> devices through SCM (Secure Channel Manager) calls. Some Qualcomm
->> platforms protect their firmware storage (typically SPI NOR flash)
->> via TrustZone, making it inaccessible from the non-secure world.
+On 2026/1/29 4:42, Bjorn Andersson wrote:
+> On Mon, Jan 26, 2026 at 07:44:50PM +0800, Junhao Xie wrote:
+>> This patch series adds support for accessing storage devices managed by
+>> Qualcomm TrustZone firmware via SCM (Secure Channel Manager) by
+>> introducing a new MTD driver.
 >>
->> Signed-off-by: Junhao Xie <bigfoot@radxa.com>
->> Tested-by: Xilin Wu <sophon@radxa.com>
->> ---
-> [...]
+>> On some Qualcomm platforms, firmware or BIOS-related storage (typically
+>> SPI NOR flash) is not directly accessible from the non-secure world.
+>> All read, write, and erase operations must be performed through SCM
+>> interfaces provided by the secure firmware. As a result, existing MTD
+>> SPI NOR drivers cannot be used directly on these systems.
+>>
+>> This series introduces a new MTD device driver that exposes such
+>> firmware-managed storage as a standard MTD device in the Linux kernel.
+>> The driver is built on top of the existing Qualcomm SCM infrastructure
+>> and integrates with the MTD subsystem to provide a uniform interface to
+>> userspace.
+>>
+>> This driver has been tested on Radxa Dragon Q6A, based on the Qualcomm
+>> QCS6490 SoC, with a Winbond W25Q256JWPIQ SPI NOR flash device.
+>>
+>> Note that this platform previously used the standard Qualcomm Linux
+>> firmware, which allowed direct access to the QSPI controller without
+>> needing this driver. However, we plan to migrate to a Windows-compatible
+>> firmware which is more feature-complete but restricts direct access.
+>> Device tree changes for this transition will be sent separately.
+>>
+>> If kernel boots with EL2, access to the SCM storage will be denied. This
+>> needs more investigation.
+>>
+> Sorry, I missed your reply to me on v1.
 >
->> +int qcom_scm_storage_send_cmd(enum qcom_scm_storage_type storage_type,
->> +			      enum qcom_scm_storage_cmd_id cmd_id,
->> +			      u64 lba, void *data, size_t size)
-> Please add kerneldoc, as this is an exported function
-
-I will add kerneldoc for qcom_scm_storage_send_cmd in v3
-
->> +{
->> +	struct qcom_scm_storage_payload *payload __free(qcom_tzmem) = NULL;
->> +	struct qcom_scm_res scm_res = {};
->> +	struct qcom_scm_desc desc = {};
->> +	phys_addr_t payload_addr;
->> +	size_t buf_size;
->> +	int ret;
->> +
->> +	buf_size = sizeof(*payload);
->> +	if (data)
->> +		buf_size += size;
->> +
->> +	payload = qcom_tzmem_alloc(__scm->mempool, buf_size, GFP_KERNEL);
->> +	if (!payload)
->> +		return -ENOMEM;
->> +
->> +	memset(payload, 0, buf_size);
-> You're overwriting the data part a line below, let's just zero out the
-> cmd+details (sizeof(*payload)) part
 >
->> +	if (data)
-> (please add a \n above - normally
+> You replied that this allow your users to update "BIOS" firmware
+> directly from Linux, which I can see being more convenient than relying
+> on UEFI update capsules, in particular in a development environment.
 >
-> foo = xyz;
-> if (abc)
-> 	...
+> The concern I have with this is that I don't think an end-user of such
+> system, has a way to recover from breaking the content on their SPI-NOR.
 >
-> implies the condition takes into account the previous line)
-
-I will fix them in v3.
-
-> [...]
+> As such, exposing such a convenient interface for the end-user to brick
+> their devices is probably not a good idea.
 >
->> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_STORAGE,
->> +					 QCOM_SCM_STORAGE_CMD))
->> +		return;
->> +
->> +	ret = qcom_scm_storage_send_cmd(QCOM_SCM_STORAGE_SPINOR,
->> +					QCOM_SCM_STORAGE_GET_INFO,
->> +					0, &info, sizeof(info));
-> I'm curious what happens if the call is available but SPINOR is not
-> populated onboard..
+> I think we should somehow lock the interface down to be read-only by
+> default, and perhaps have some mechanism to unlock the write mode (like
+> a module parameter expecting the sentence "YES, I DO HAVE THE FIREHOSE
+> PROGRAMMER FOR THIS BOARD").
 >
-> I thiiiink it should return STORAGE_RESULT_INVALID_PARAMETER but I'm not
-> a 100% sure. Guess we'll see down the road.
-
-Yes, on platforms I tested (QCS6490 LE), it returns 
-STORAGE_RESULT_INVALID_PARAMETER.
-
->> +	if (ret < 0) {
->> +		dev_warn(scm->dev, "scm storage get info failed: %d\n", ret);
->> +		return;
->> +	}
->> +
->> +	total_blocks = le64_to_cpu(info.total_blocks);
->> +	block_size = le32_to_cpu(info.block_size);
->> +
->> +	dev_dbg(scm->dev, "scm storage size %llu bytes\n",
->> +		total_blocks * block_size);
->> +
->> +	storage_dev = platform_device_alloc("qcom_scm_storage", -1);
-> -1 is PLATFORM_DEVID_NONE
 >
-> Let's use PLATFORM_DEVID_AUTO to allow potentially multiple instances of
-> this driver being spawned down the road
+> I don't believe you answered my question regarding how to access this
+> interface from the kernel. On many of these devices we can find the MAC
+> addresses of the system in the "DPP" partition. Do you have any ideas
+> about how we could access this from within the kernel?
+>
+> Regards,
+> Bjorn
 
-I will change it to PLATFORM_DEVID_AUTO.
-But will they really have multiple instances?
+I agree with your point. I will add a module param in v3 for default
+read-only mode. e.g.: /sys/module/qcom_scm_storage/parameters/allow_write
 
-> Konrad
-
-Thank you for the review, I will incorporate these changes in v3.
+For something like the "DPP" partition, I think it's better to access it
+from userspace than from kernel.
 
 Best regards,
 Junhao Xie
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
