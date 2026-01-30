@@ -4,82 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F228E6BF1B
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 15:41:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5868FE6BF2A
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 16:43:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=54R6VQygXHf1oRtkU1F8M2dZAwTRCIV+w16Wd8YYW8M=; b=Reip7DplcXBKxi
-	8h8haoqF/NDslq/ZY17G9tHMBIFcAb+izl+HU7yx6eoTgZ2AtLTG9isljJVbF+FEYQTQ4QjNU1lJC
-	fMCL5nyPA4u1W2L86vFyi1fv7MYoQ9J5mOo3bFtixZtyH7KcgTUDc81gkOUE9tQdvX+Pgdyzyc7Og
-	GURUJ+Ibpipm8/ZwPXb4qSz3teyA498/+OMp3Z3a0DmLyD8y3uj3VcMpl8HEEnUr6FMh5L4CkjjKb
-	iMn3sshrAf6NxQI3BilQvFOycwcF1Bhpyf8dm9OQ/vdu0yCDO9c7pmdcV1atOSApxhAJZeP2PF5sf
-	GirvCKH7fPE6Grv7p3QA==;
+	List-Owner; bh=3zLADoNgiXpYhT9BoQPUrFDgDQfwIAJBiX2Awvo3eoo=; b=kjnuYoktEgu1cr
+	V/lS5qqLjcpqu2qqRQGbrjX0SGqp8r/cRsQlm3CHPyElXmMHMmZn271NIa7x1G8Vmz0+s3/atq6zp
+	9su+aoA11yA1VpiCeuiERlYK+z0NAmRb8aPqF2TcaRC7oa9fAidNJSt5ivzbTUQspzopZlkdcAq9s
+	GLseqIW3QSxnj7Kxazewzlj3s5yZjGqhmtqsvZrscATqdWK7gTgaYIv3h+8VBxFUMkFEtnTIok14T
+	JffFt1Einy3ZEngapLQJGEg0IS/pUbMpzSFQilzC/pK9JAHOii810jLrYrZ7eU0ALDtV5BoR5ouGR
+	DTzKvHgeRns0R5lp8RSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlqcf-00000001fbP-3c70;
-	Fri, 30 Jan 2026 15:41:25 +0000
-Received: from mgamail.intel.com ([192.198.163.15])
+	id 1vlrai-00000001jDD-1De5;
+	Fri, 30 Jan 2026 16:43:28 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlqcd-00000001fao-2A1L
+	id 1vlrag-00000001jCj-1JZJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jan 2026 15:41:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1769787683; x=1801323683;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0fUdsb6jhco8U17L+sRji5MQQAjibveGNe+u+9iEdOI=;
-  b=Noaq9QwNO4TJAdNlcyndvIpF0iL9I/Qqu135Mfo905zz/ydSsFNIFC8K
-   QwtESX9VWMHsx6+qPmP7Zb5XmqQ5GkKlNW14d0AGs4yNTRkGHKe4cFfir
-   vBDUp06qb18mz0j/VKqly+0MoP0AuFL6Y+BRSHnB+8ckZ0AcHhmR1E23L
-   xAMmnE3Vs6l+3WuSGJsHamKY1uSkHmTn8uzDItd5A0bdHZ0vmeFM3kiAu
-   VjpspQ1pVE/NEP5zg+oLeoIPB5CPQv3n7v+0VlsxrUTjsBdg4+HyX8Qbc
-   uKeJRxGGcchIepshNA+gaQLG0yb4gS7yZ2A9HpbYsqkRSZp48FcW9DFmt
-   Q==;
-X-CSE-ConnectionGUID: lQ3nXEqxTiWX3Td4GEfGaA==
-X-CSE-MsgGUID: reytV3jBR46aS1Xet6z4mw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11686"; a="71125045"
-X-IronPort-AV: E=Sophos;i="6.21,263,1763452800"; 
-   d="scan'208";a="71125045"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2026 07:41:21 -0800
-X-CSE-ConnectionGUID: noZ1Jk5fQzSqQ6+IGSaHug==
-X-CSE-MsgGUID: Rj9qDFhgQE2Yha4/nq5xzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,263,1763452800"; 
-   d="scan'208";a="208989560"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 30 Jan 2026 07:41:19 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vlqcV-00000000d5k-2BNW;
-	Fri, 30 Jan 2026 15:41:15 +0000
-Date: Fri, 30 Jan 2026 23:40:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cheng Ming Lin <linchengming884@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Richard Weinberger <richard@nod.at>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Martin Kurbanov <mmkurbanov@salutedevices.com>,
-	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
-	Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nand: Add support for randomizer
-Message-ID: <202601302312.JXeQH3ao-lkp@intel.com>
-References: <20260130092349.621034-2-linchengming884@gmail.com>
+	Fri, 30 Jan 2026 16:43:26 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 6BB276013A;
+	Fri, 30 Jan 2026 16:43:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C1E3C4CEF7;
+	Fri, 30 Jan 2026 16:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769791405;
+	bh=tXAL+Qg+AltobkuOnMSRrqShGxkMMFxiMYL7xv6KSWg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=RqRl1P/KlB+bF+MSGSpgrkei4edZCuisiiC4yDV7cSABYaMgH9JgDFoSBSs3/koLt
+	 wUGvzDKRWIinYD5LHPGfTLaru1iLEXcS2jMkmPiXCLgjH2rmq9BOkl6e41TS0v09IN
+	 fSimbrypbVOCsWoehgbhn7zQFj5oMmtL1j4o4gYYaw1cWbwcK89XK7NCGrs29DXg5F
+	 w2FFaGUyIF+5tRSbiR6wBrrJDAux0SZUxPEx/IsYd2mOcSYJmIiZImK7rQ4MpUSzq2
+	 6siDU7zkx79TnXJeqvUoDOlySx7nP3ndGdOLIq2G6PGRnmSgcR1XuH8FiII4ygnPcP
+	 7K2nJONis0J7w==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Bough Chen <haibo.chen@nxp.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
+ <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>,  Pratyush Yadav <p.yadav@ti.com>,
+  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "imx@lists.linux.dev" <imx@lists.linux.dev>
+Subject: Re: [PATCH] mtd: spi-nor: core: correct the op.dummy.nbytes when
+ check read operations
+In-Reply-To: <DU0PR04MB9496760AE1881329E33F0B7F909EA@DU0PR04MB9496.eurprd04.prod.outlook.com>
+	(Bough Chen's message of "Thu, 29 Jan 2026 01:56:40 +0000")
+References: <20251208-spi-nor-v1-1-f6669a645395@nxp.com>
+	<DU0PR04MB9496760AE1881329E33F0B7F909EA@DU0PR04MB9496.eurprd04.prod.outlook.com>
+Date: Fri, 30 Jan 2026 17:43:21 +0100
+Message-ID: <2vxz1pj79hli.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260130092349.621034-2-linchengming884@gmail.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260130_074123_572025_49C519F8 
-X-CRM114-Status: GOOD (  12.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,67 +72,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Cheng,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on v6.19-rc7]
-[also build test WARNING on linus/master next-20260129]
-[cannot apply to mtd/nand/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Cheng-Ming-Lin/mtd-spi-nand-Add-support-for-randomizer/20260130-173004
-base:   v6.19-rc7
-patch link:    https://lore.kernel.org/r/20260130092349.621034-2-linchengming884%40gmail.com
-patch subject: [PATCH v3 1/2] mtd: spi-nand: Add support for randomizer
-config: s390-randconfig-002-20260130 (https://download.01.org/0day-ci/archive/20260130/202601302312.JXeQH3ao-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 9b8addffa70cee5b2acc5454712d9cf78ce45710)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260130/202601302312.JXeQH3ao-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601302312.JXeQH3ao-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mtd/nand/spi/core.c:1234:4: warning: void function 'spinand_randomizer_init' should not return a value [-Wreturn-mismatch]
-    1234 |                         return ret;
-         |                         ^      ~~~
-   drivers/mtd/nand/spi/core.c:1237:2: warning: void function 'spinand_randomizer_init' should not return a value [-Wreturn-mismatch]
-    1237 |         return 0;
-         |         ^      ~
-   2 warnings generated.
-
-
-vim +/spinand_randomizer_init +1234 drivers/mtd/nand/spi/core.c
-
-  1226	
-  1227	static void spinand_randomizer_init(struct spinand_device *spinand)
-  1228	{
-  1229		int ret;
-  1230	
-  1231		if (spinand->set_randomizer) {
-  1232			ret = spinand_randomizer_enable(spinand, true);
-  1233			if (ret)
-> 1234				return ret;
-  1235		}
-  1236	
-  1237		return 0;
-  1238	}
-  1239	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpPbiBUaHUsIEphbiAyOSAyMDI2LCBCb3VnaCBDaGVuIHdyb3RlOgoKPiBHZW50bGUgcGlu
+Zy4uLgoKU29ycnksIHRoaXMgY3ljbGUgSSB3YXMgcmVhbGx5IGJ1c3kgd2l0aCBzb21lIG90aGVy
+IHRoaW5ncywgc28gSSBkaWRuJ3QKZ2V0IGEgY2hhbmNlIHRvIHF1ZXVlIGFueSBjb250ZW50IGZv
+ciB0aGlzIGN5Y2xlLiBJIHdpbGwgc3RhcnQgcXVldWVpbmcKcGF0Y2hlcyBvbmNlIHRoZSBtZXJn
+ZSB3aW5kb3cgZm9yIHRoZSBuZXh0IGtlcm5lbCBjbG9zZXMuCgo+Cj4+IC0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tCj4+IEZyb206IEJvdWdoIENoZW4gPGhhaWJvLmNoZW5AbnhwLmNvbT4KPj4g
+U2VudDogMjAyNeW5tDEy5pyIOOaXpSAxNzoxNAo+PiBUbzogVHVkb3IgQW1iYXJ1cyA8dHVkb3Iu
+YW1iYXJ1c0BsaW5hcm8ub3JnPjsgUHJhdHl1c2ggWWFkYXYKPj4gPHByYXR5dXNoQGtlcm5lbC5v
+cmc+OyBNaWNoYWVsIFdhbGxlIDxtd2FsbGVAa2VybmVsLm9yZz47IE1pcXVlbCBSYXluYWwKPj4g
+PG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+OyBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRA
+bm9kLmF0PjsgVmlnbmVzaAo+PiBSYWdoYXZlbmRyYSA8dmlnbmVzaHJAdGkuY29tPgo+PiBDYzog
+UHJhdHl1c2ggWWFkYXYgPHAueWFkYXZAdGkuY29tPjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVh
+ZC5vcmc7Cj4+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGlteEBsaXN0cy5saW51eC5k
+ZXY7IEJvdWdoIENoZW4KPj4gPGhhaWJvLmNoZW5AbnhwLmNvbT4KPj4gU3ViamVjdDogW1BBVENI
+XSBtdGQ6IHNwaS1ub3I6IGNvcmU6IGNvcnJlY3QgdGhlIG9wLmR1bW15Lm5ieXRlcyB3aGVuIGNo
+ZWNrCj4+IHJlYWQgb3BlcmF0aW9ucwo+PiAKPj4gV2hlbiBjaGVjayByZWFkIG9wZXJhdGlvbiwg
+bmVlZCB0byBzZXR0aW5nIHRoZSBvcC5kdW1teS5uYnl0ZXMgYmFzZWQgb24KPj4gY3VycmVudCBy
+ZWFkIG9wZXJhdGlvbiByYXRoZXIgdGhhbiB0aGUgbm9yLT5yZWFkX3Byb3RvLgo+PiAKPj4gRml4
+ZXM6IDBlMzBmNDcyMzJhYiAoIm10ZDogc3BpLW5vcjogYWRkIHN1cHBvcnQgZm9yIERUUiBwcm90
+b2NvbCIpCj4+IFNpZ25lZC1vZmYtYnk6IEhhaWJvIENoZW4gPGhhaWJvLmNoZW5AbnhwLmNvbT4K
+Wy4uLl0KCi0tIApSZWdhcmRzLApQcmF0eXVzaCBZYWRhdgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
