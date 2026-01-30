@@ -4,70 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 345B4E6BF18
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 14:33:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B67EE6BF1F
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 15:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pY59U9vdp5QA7VKlHutRdggtSLBy6U77Pzbm8Jb49AA=; b=QL4S2xaIq3qY1V
-	dj+OTmC7l9fIRfUMx7cqAttzC/PqodNeuwTjXtLvP8/Xj4BnpbPIPziEFvXUBJz1ql2/ATLb46uVd
-	BNlH0mvRK88MUywm5J+5TV2FGH53AC1jRpezPF9Wugetn4g/7o0j38+oeUlJHEW2iSdcevJeJVujy
-	MLDi5/FwnLjK5rHvedIhGwSfpiwFksV9/GvPIA/MhfiPxMBc+FCVSk+8Ihq2LJrE74iGuAsLsLovg
-	661pVW199kZRew0yCCDG6wYhwT2/PgaeLEkSpPTBem8Jkc/p4O31SxvIv/1y5LPTuOV6ji7744n5j
-	ccIFoq8YNwfR1igCDX+g==;
+	List-Owner; bh=xX/+1e/VUa3KtwQqJexaCsNmc6Yu/mzCEJHqqU79aTA=; b=V+f1LjBIKYI20X
+	t5WakNK92fZSDd5wlTgu/9lsoVBIgNuVfDUUHvYRquNVfSxQvXWYTHJawcSDp4G5XxH5EeEhCHe2c
+	8bNmEF7dA41V8vLXc59e36BpERDE3qYnYYJuhEZzNAWNPL/oYwW/CjwSPkZ7Q+Ili8fOXCrDA3eCm
+	2gdNwv3NFg48SGoaU54/hlVZ/OONMnhp6iQaI8RnsLxvbum/XFdnnoaTvEaI5m24wJc7cnk4mRod5
+	2LpCyNiKwZiEB7IaOSoruhb/PMZjwGVKkd987ypGV0TUHOat/eRWk30DICVk5uWkSvJYoAUozrAs4
+	mtMsnEY7xP6l9qnYXHMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlpYh-00000001agY-0ysS;
-	Fri, 30 Jan 2026 14:33:15 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1vlqSy-00000001eaE-16O0;
+	Fri, 30 Jan 2026 15:31:24 +0000
+Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlpYd-00000001ag2-3qYe
+	id 1vlqSv-00000001eZk-1XP9
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jan 2026 14:33:13 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 0B273C22F5F;
-	Fri, 30 Jan 2026 14:32:57 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 893836075A;
-	Fri, 30 Jan 2026 14:32:53 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 55F67119A8874;
-	Fri, 30 Jan 2026 15:32:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1769783572; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=A5can+eY+4csM5OYkATRQZryaMHBwuJRBTYQxU8KRLY=;
-	b=AgALEglGx71hlug2G5IZdRzlyVmvcTltLBAj+ZZHKaI3Kc0IyOU0/0GaS5xNDvIeBdxMj7
-	B25hAUkRjGJD2W+LdJlHeDaZktAYfWRDi4w4BBEY96fH3jBfMGhN8I0T5JKwaKKAcVPXJA
-	xKJpkjk1zGjZEacJGiqnYnHI3WksBM94b3QIlsgyJ03g/yMfWgNhqvbCWOTQDF7BrhW/ru
-	oQV+zeKvbaaEb9nrUslZcCEwCJ7aRx2qFQi3o4IfE6z0WzKHhmzYRr9fEXl6Wk6ysg2ObT
-	iD3zUHoHYmOf3uwCI4PZrHxVp+520ZSlh1+X2D4cF6e8P2D4I/F3PzvfwKte4w==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,  Rob Herring <robh@kernel.org>,
-  Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
- <conor+dt@kernel.org>,  =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>,  Luca Ceresoli
- <luca.ceresoli@bootlin.com>,  Amit Kumar Mahapatra
- <amit.kumar-mahapatra@amd.com>,  Michal Simek <monstr@monstr.eu>,
-  Bernhard Frauendienst <kernel@nospam.obeliks.de>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  linux-mtd@lists.infradead.org,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v15 0/3] mtd: Add support for stacked memories
-In-Reply-To: <176971398683.256348.665652099075371899.b4-ty@bootlin.com>
-	(Miquel Raynal's message of "Thu, 29 Jan 2026 20:15:32 +0100")
-References: <20260129-mtd-virt-concat-v15-0-c56a232efbd2@bootlin.com>
-	<176971398683.256348.665652099075371899.b4-ty@bootlin.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Fri, 30 Jan 2026 15:32:48 +0100
-Message-ID: <87h5s3i31r.fsf@bootlin.com>
+	Fri, 30 Jan 2026 15:31:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1769787081; x=1801323081;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/BTCSIhz5h5AdCXs/IeSYBwPtxUn2keWMYQIsXLWn0k=;
+  b=aD3QW4hOTbOaKILTeGKDacMJv5I8dHtXm08baV/onlI2gMrgfJL3ZX+w
+   qOTG73lZp2tRLiA7+yzyBubDi3AaSlP1BmZn6UeySvvD0nMPPQ8bcrSE/
+   i55oA7ir+loi4/bm789WWAZwx+Ls3fKFmpIbeRi2zEmfoRgOpgaoLrUVf
+   Kc4Xry0pE7d2v7HZ2dzBi3NN2JrvwSfz+f7EhHo7+GYOyIL5py2Y6gFfG
+   5/OoXKJYQ6ti84ycRJuznsEsn9Jnvguj/jsg4C7kXTqCrLR4XSx2AzAGM
+   dAxvqTU42l7X8/bp0ANSmXMIpcC7cKMM5eN7XYOc9taWFEXxeVhB86KLu
+   w==;
+X-CSE-ConnectionGUID: 79RJPzgZTMKxhTswnW8wEw==
+X-CSE-MsgGUID: gp+LkcMIRlC4kihCVW6EKQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11686"; a="73640457"
+X-IronPort-AV: E=Sophos;i="6.21,263,1763452800"; 
+   d="scan'208";a="73640457"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2026 07:31:21 -0800
+X-CSE-ConnectionGUID: fNx4iWmQSIGDVz/roeT1Gw==
+X-CSE-MsgGUID: juT+mXVkQxOVk50BPc/GXQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,263,1763452800"; 
+   d="scan'208";a="213774721"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 30 Jan 2026 07:31:18 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vlqSp-00000000d5C-1HMn;
+	Fri, 30 Jan 2026 15:31:15 +0000
+Date: Fri, 30 Jan 2026 23:30:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Cheng Ming Lin <linchengming884@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: oe-kbuild-all@lists.linux.dev, Richard Weinberger <richard@nod.at>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Martin Kurbanov <mmkurbanov@salutedevices.com>,
+	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
+	Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH v3 1/2] mtd: spi-nand: Add support for randomizer
+Message-ID: <202601302310.y3KX2o43-lkp@intel.com>
+References: <20260130092349.621034-2-linchengming884@gmail.com>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <20260130092349.621034-2-linchengming884@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260130_063312_121060_B90E1A3B 
-X-CRM114-Status: GOOD (  11.87  )
+X-CRM114-CacheID: sfid-20260130_073121_449721_7E4CA336 
+X-CRM114-Status: GOOD (  11.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,26 +90,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpPbiAyOS8wMS8yMDI2IGF0IDIwOjE1OjMyICswMSwgTWlxdWVsIFJheW5hbCA8bWlx
-dWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cgo+IE9uIFRodSwgMjkgSmFuIDIwMjYgMTM6
-MDk6MjYgKzAxMDAsIEx1Y2EgQ2VyZXNvbGkgd3JvdGU6Cj4+IFtUTDtEUiBmb3IgdjE1OiBhcyBh
-Z3JlZWQgd2l0aCBBbWl0IEknbSBzZW5kaW5nIGEgbmV3IGl0ZXJhdGlvbiBvZiBoaXMKPj4gcGF0
-Y2hlcyB0byBmaXggdGhlIGJ1aWxkLXRpbWUgZmFpbHVyZSBkdWUgdG8gYSBtb2R1bGUgZGVwZW5k
-ZW5jeQo+PiBsb29wLiBPcmlnaW5hbCBjb3ZlciBmb2xsb3dzLl0KPj4gCj4+IFRoaXMgcGF0Y2gg
-c2VyaWVzIGFkZHMgc3RhY2tlZCBzdXBwb3J0IGJ5IGVuaGFuY2luZyB0aGUgZXhpc3RpbmcgbXRk
-LWNvbmNhdAo+PiBkcml2ZXIgdG8gYmUgbW9yZSBnZW5lcmljLgo+PiAKPj4gWy4uLl0KPgo+IFRo
-YW5rIHlvdSBmb3IgZmluYWxseSByZS1zZW5kaW5nIHRoZSBzZXJpZXMgYWZ0ZXIgZml4aW5nIHRo
-ZSByb2JvdAo+IHdhcm5pbmcsIEkgd2lsbCBub3Qgd2FpdCBmb3IgbWVyZ2luZyBpdCBiZWNhdXNl
-IHRoaXMgbmVlZHMgdG8gZmluYWxseQo+IGdldCBpbiwgYW5kIGl0J3MgYmVlbiBvdmVyIHRoZSBt
-YWlsaW5nIGxpc3QgZm9yIDggbW9udGhzIHdpdGgganVzdCBhCj4gS2NvbmZpZyBzeW1ib2wgdG8g
-Zml4LCBzbzoKClVuZm9ydHVuYXRlbHksIGZvciB0aGUgdGhpcmQgdGltZSwgdGhpcyBzZXJpZXMg
-YnJlYWtzIHdoZW4gcm9ib3RzIGdvCm92ZXIgaXQgKHNlZSB0aGUgb2Uta2J1aWxkLWFsbEBsaXN0
-cy5saW51eC5kZXYgTUwpLCBzbyBJIHdpbGwgZHJvcCBpdAphZ2FpbiA6LS8KClNvcnJ5LApNaXF1
-w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Cheng,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on v6.19-rc7]
+[also build test ERROR on linus/master next-20260129]
+[cannot apply to mtd/nand/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Cheng-Ming-Lin/mtd-spi-nand-Add-support-for-randomizer/20260130-173004
+base:   v6.19-rc7
+patch link:    https://lore.kernel.org/r/20260130092349.621034-2-linchengming884%40gmail.com
+patch subject: [PATCH v3 1/2] mtd: spi-nand: Add support for randomizer
+config: i386-buildonly-randconfig-004-20260130 (https://download.01.org/0day-ci/archive/20260130/202601302310.y3KX2o43-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260130/202601302310.y3KX2o43-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202601302310.y3KX2o43-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/mtd/nand/spi/core.c: In function 'spinand_randomizer_init':
+>> drivers/mtd/nand/spi/core.c:1234:32: error: 'return' with a value, in function returning void [-Wreturn-mismatch]
+    1234 |                         return ret;
+         |                                ^~~
+   drivers/mtd/nand/spi/core.c:1227:13: note: declared here
+    1227 | static void spinand_randomizer_init(struct spinand_device *spinand)
+         |             ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/mtd/nand/spi/core.c:1237:16: error: 'return' with a value, in function returning void [-Wreturn-mismatch]
+    1237 |         return 0;
+         |                ^
+   drivers/mtd/nand/spi/core.c:1227:13: note: declared here
+    1227 | static void spinand_randomizer_init(struct spinand_device *spinand)
+         |             ^~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/return +1234 drivers/mtd/nand/spi/core.c
+
+  1226	
+  1227	static void spinand_randomizer_init(struct spinand_device *spinand)
+  1228	{
+  1229		int ret;
+  1230	
+  1231		if (spinand->set_randomizer) {
+  1232			ret = spinand_randomizer_enable(spinand, true);
+  1233			if (ret)
+> 1234				return ret;
+  1235		}
+  1236	
+  1237		return 0;
+  1238	}
+  1239	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
