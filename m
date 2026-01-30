@@ -4,80 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 128FED73EAA
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 01:33:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87543D73E86
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jan 2026 01:34:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TeA5sWGtm3gME5Iu8B/T0sqYPAgb0H2Rj3xk1IUklfc=; b=PNXTnDYmo/qX7o
-	yJUKIXGzmeYtVe5+vLlf/QkDCFngvWFcg7tGFuUzucYLJkX0bD90sxVdxE0OYUWfxe/UxN1CYex/4
-	S4O8XC/MkhdaKwb12XHd3QbLOiRViaYaQW+EWYN6JCp74fwHw8Hxv8c38hhJ4MWJA8IPVRKABsig6
-	Xif9UIVcrSf3LRnCYWJ4orM1B3PfKTtbqhm+Z0ALMQkbOipLY4zKYTwRVKCHtiNp5FTQBRsezEQ/i
-	ErwhHkUfAeEXfrCBkT5M90PzgiqFxvVhJGP4gGOHzlmDTDTNzTpQRFBdpoP/U2GrjA9Ds1QcL2aJv
-	5WgCEUWx6ClknOSYOb8g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=i/5MGnz75OkbENgHJl6WDAD48lf4/0sp4Mbvz0RzUoA=; b=JSSDFPRPQdeicfzYP8fabQ0DeL
+	nRDmYzDhd7oYrOXtPbGXQEfpnHYQibT8NRzRd1PCg6Z5SiPJ00UsljWCSkWOQlrETJlZtwd8UKwBy
+	EMW1YqqCmBXo7PIwcIKJs+qNNMcBruRWi424mibHw1YGm7wH3a3zy+y208WMIgimKYBDQGV8qz1a6
+	Y9EizdxY9lwXTyu9iTe4VS6GqKHlYXpC/LFEKvpW6U1pqxE7Ied5mp3ec2M75vzT4cBzwzE+GVVFD
+	9bfyf4676HaAvleIMJDJVAGTcLsbVvNXjTZXKV0PEyENgpLacby+5B1na6mkvF4Osf3WAwpORvNHN
+	W+Bu2E3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vldOO-00000000rOc-3cFE;
-	Fri, 30 Jan 2026 01:33:48 +0000
-Received: from pdx-out-004.esa.us-west-2.outbound.mail-perimeter.amazon.com ([44.246.77.92])
+	id 1vldP3-00000000rTV-0nqn;
+	Fri, 30 Jan 2026 01:34:29 +0000
+Received: from canpmsgout11.his.huawei.com ([113.46.200.226])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vldOL-00000000rNu-3jch
+	id 1vldOz-00000000rSh-0CfJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jan 2026 01:33:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1769736825; x=1801272825;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PC3sh08XqknfE1Fy9RIuBcYqxa7ZpUJE3jkTRSUpshc=;
-  b=kmRCTfaiYitL0eW6K8px/Cglm/xoyE0WfDgccBta8nfe0rSFXYLgVNkL
-   Br7o1WyodtSfS9T69zLIs5aMtyNvRmJ/OKc7PcuQQ+byC3gjQlqpQyMzR
-   r/r+nHxm473Sc3sHu5aMp/JLfOX7WfCbO7Qpb2M9yxuofl7KKqJBZHV0o
-   u3ZtsU4ueu/zUhmVRCLFnRChp5RhqrJ5m/hkd3m9nqxWJsbxrEBR5S5lv
-   w8LaJoOxLiXAiPqHUiqOJGs4Nrp9cqd6chtK9pxp3uWj4j6U1fwjcGZVo
-   V4sprlJMGv4JeX3LdpxbgnHBEB7Wg8NtnfL6iUKeiM0E6ZBHfZh+QdT17
-   A==;
-X-CSE-ConnectionGUID: GZL0syTtSAypUj0mcRqMrw==
-X-CSE-MsgGUID: ROnXOPF3Tc+c9kZ2ZTilog==
-X-IronPort-AV: E=Sophos;i="6.21,262,1763424000"; 
-   d="scan'208";a="11883224"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-004.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2026 01:33:41 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:18786]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.53.147:2525] with esmtp (Farcaster)
- id be9bdce5-5bcc-4da0-aac5-543c5eac1b37; Fri, 30 Jan 2026 01:33:41 +0000 (UTC)
-X-Farcaster-Flow-ID: be9bdce5-5bcc-4da0-aac5-543c5eac1b37
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
- Fri, 30 Jan 2026 01:33:41 +0000
-Received: from 842f574e803f.amazon.com (10.142.151.209) by
- EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
- Fri, 30 Jan 2026 01:33:40 +0000
-From: David LaPorte <dalaport@amazon.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
-	<tudor.ambarus@linaro.org>, Martin Kurbanov <mmkurbanov@salutedevices.com>,
-	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>, Cheng Ming Lin
-	<chengminglin@mxic.com.tw>, Pratyush Yadav <pratyush@kernel.org>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: David LaPorte <dalaport@amazon.com>, Gunnar Kudrjavets
-	<gunnarku@amazon.com>
-Subject: [PATCH v2] mtd: spinand: Disable continuous read during probe
-Date: Thu, 29 Jan 2026 17:33:22 -0800
-Message-ID: <20260130013334.72135-1-dalaport@amazon.com>
-X-Mailer: git-send-email 2.50.1
+	Fri, 30 Jan 2026 01:34:27 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=VWfT0T3BxfeG9kiXN0MZTdQOCnySOnp8sqp/EEvzqZw=;
+	b=pxpS/lS5mMsCq1/aHdUSzaM84eTcHPU7HSff81PLLxgI1wo0KmZLsypWnz4Mjj+eRjg05ZHaj
+	z0FDu8a3BwTYFyBKBLBZzJxUQHUFy1MVldxSaBadioIsQk6qvjfZjrBaGILEIq35Qn+kaLsIgVs
+	wpWYHOLE5DyHmB71KINhZKU=
+Received: from mail.maildlp.com (unknown [172.19.163.200])
+	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f2JP13wR2zKmB2;
+	Fri, 30 Jan 2026 09:30:45 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 37C1F40563;
+	Fri, 30 Jan 2026 09:34:15 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 30 Jan 2026 09:34:14 +0800
+Subject: Re: [BUG] UBIFS corruption on powerpc 32-bit targets
+To: Tomas Alvarez Vanoli <tomas.alvarez-vanoli@hitachienergy.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <DB9PR06MB784979B96C388174F81F9103C29EA@DB9PR06MB7849.eurprd06.prod.outlook.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <356439c2-5289-57d2-52d4-8b436252a630@huawei.com>
+Date: Fri, 30 Jan 2026 09:34:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.142.151.209]
-X-ClientProxiedBy: EX19D044UWA001.ant.amazon.com (10.13.139.100) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
+In-Reply-To: <DB9PR06MB784979B96C388174F81F9103C29EA@DB9PR06MB7849.eurprd06.prod.outlook.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260129_173345_991946_F191040D 
-X-CRM114-Status: GOOD (  15.42  )
+X-CRM114-CacheID: sfid-20260129_173425_723791_DB9C5CA1 
+X-CRM114-Status: GOOD (  28.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,77 +72,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Macronix serial NAND devices with continuous read support do not
-clear the configuration register on soft reset and lack a hardware
-reset pin. When continuous read is interrupted (e.g., during reboot),
-the feature remains enabled at the device level.
-
-With continuous read enabled, the OOB area becomes inaccessible and
-all reads are instead directed to the main area. As a result, during
-partition allocation as part of MTD device registration, the first two
-bytes of the main area for the master block are read and indicate that
-the block is bad. This process repeats for every subsequent block for
-the partition.
-
-All reads and writes that reference the BBT find no good blocks and
-fail.
-
-The only paths for recovery from this state are triggering the
-continuous read feature by way of raw MTD reads or through a NAND
-device power drain.
-
-Disable continuous read explicitly during spinand probe to ensure
-quiescent feature state.
-
-Fixes: 631cfdd0520d ("mtd: spi-nand: Add continuous read support")
-Signed-off-by: David LaPorte <dalaport@amazon.com>
-Reviewed-by: Gunnar Kudrjavets <gunnarku@amazon.com>
----
-Changes in V2:
-- Added comments to explain why cont_read is disabled here
-- Link to v1: https://lore.kernel.org/all/20260129221606.35158-1-dalaport@amazon.com/
----
-Testing details:
-- Instrumented feature enablement and verified fix on internal kernel
-  v6.12.64 build with affected Macronix MX35UF4GE4AD-Z4I hardware:
-  warm reboot without patch marks all 2048 blocks bad during partition
-  allocation; with patch applied, device registers cleanly with no bad
-  blocks marked
-- Patch cherry-picks cleanly to mainline v6.19-rc6 and builds without
-  warnings
-- Boot tested mainline + patch on aarch64 host without SPI interface
----
- drivers/mtd/nand/spi/core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index d207286572d8..9540fd04156c 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -859,6 +859,14 @@ static void spinand_cont_read_init(struct spinand_device *spinand)
- 	    (engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE ||
- 	     engine_type == NAND_ECC_ENGINE_TYPE_NONE)) {
- 		spinand->cont_read_possible = true;
-+
-+		/*
-+		 * Ensure continuous read is disabled on probe.
-+		 * Some devices retain this state across soft reset,
-+		 * which leaves the OOB area inaccessible and results
-+		 * in false positive returns from spinand_isbad().
-+		 */
-+		spinand_cont_read_enable(spinand, false);
- 	}
- }
-
---
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNi8xLzI5IDE4OjMwLCBUb21hcyBBbHZhcmV6IFZhbm9saSDQtLXAOgo+IEhlbGxvLAo+
+IAo+IEkgYW0gd3JpdGluZyBiZWFjdXNlIHdlIGFyZSBleHBlcmllbmNpbmcgdWJpZnMgY29ycnVw
+dGlvbiBvbiBvdXIgcG93ZXJwYyBib2FyZHMKPiBhZnRlciB1cGRhdGluZyBmcm9tIDYuMSB0byA2
+LjEyLjU3Lgo+IEkgaGF2ZW4ndCBwdWxsZWQgdGhlIGxhdGVzdCBVQklGUyBvciBVQkkgY29kZSwg
+SSBsb29rZWQgYXJvdW5kIHRoZSBjaGFuZ2VzIHNvbWUKPiB3ZWVrcyBhZ28gYW5kIGRpZCBub3Qg
+ZmluZCBzb21ldGhpbmcgdGhhdCBzZWVtZWQgcmVsZXZhbnQuCj4gCj4gV2UgaGF2ZSBhIHZhcmll
+dHkgb2YgYXJjaGl0ZWN0dXJlcyBydW5uaW5nIHByYWN0aWNhbGx5IHRoZSBzYW1lIGFwcGxpY2F0
+aW9uCj4gKHcuci50LiBmaWxlL2RiIHdyaXRpbmcpLCBhbmQgaGF2ZSBvbmx5IGV4cGVyaWVuY2Vk
+IHRoaXMgaW4gdGhlIHBvd2VycGMgYm9hcmRzLAo+IG5hbWVseSBvbmUgdXNpbmcgdGhlIGxheWVy
+c2NhcGUgdDEwNDAgaW4gMzItYml0IG1vZGUgYW5kIGFub3RoZXIgb25lIHVzaW5nCj4gTVBDODM2
+MC4KPiAKPiBDb3JydXB0aW9uIGFwcGVhcnMgb25seSB3aXRoIHRoZSBuZXdlciBrZXJuZWwsIHNh
+bWUgY29tcGlsZXIgYW5kIGxpYnJhcmllcyBhcwo+IG9sZGVyIG9uZS4KPiAKPiBXZSd2ZSByYW4g
+aW50ZWdjayBhbmQgZnNzdHJlc3MgZm9yIGxvbmcgcGVyaW9kcyBvZiB0aW1lIGluIHZhcmlvdXMg
+Ym9hcmRzIGJ1dCB3ZQo+IGhhdmUgbm90IGJlZW4gYWJsZSB0byByZXByb2R1Y2UgaXQsIGl0IGhh
+cHBlbnMgd2l0aCBzb21lIGF1dG9tYXRlZCB0ZXN0cyBvbiBvdXIKPiB0ZXN0IGxhYiwgYWZ0ZXIg
+c29tZSBob3VycyBvZiBydW5uaW5nIHRlc3RzIChub3Qgc3RyZXNzIHRlc3RzKS4gVGhlIGFwcGxp
+Y2F0aW9uCj4gdXNlcyBjKysncyBmaWxlc3lzdGVtIGxpYnJhcnkuCj4gCj4gV2UgaGF2ZSBhbiB1
+YmkgZGV2aWNlIChuYW5kIGZsYXNoKSBob2xkaW5nIG1vc3RseSByZWFkLW9ubHkgdm9sdW1lcyB3
+aXRoIGtlcm5lbHMKPiBhbmQgcm9vdGZzZXMsIG9uZSBydyB2b2x1bWUgZm9yIGNvbmZpZ3VyYXRp
+b25zICh1YmlmcykgYW5kIG9uZSBmb3Igc3RvcmluZwo+IGNvcmVkdW1wcyAoamZmczIpLgo+IAoK
+Wy4uLl0KPiBgYGAKPiAKPiBUaGUgZXJyb3Igd2UgYXJlIHNlZWluZyBpczoKPiAKPiBgYGAKPiBy
+b290QGttY2VudDI6fiMgZmluZCAvY2ZnLyAtbmFtZSAqdGFyLmd6Cj4gVUJJRlMgZXJyb3IgKHVi
+aTE6MCBwaWQgMTM0KTogdWJpZnNfaWdldDogZmFpbGVkIHRvIHJlYWQgaW5vZGUgMzkxNzc1OSwg
+ZXJyb3IgLTIKPiBVQklGUyBlcnJvciAodWJpMTowIHBpZCAxMzQpOiB1Ymlmc19sb29rdXA6IGRl
+YWQgZGlyZWN0b3J5IGVudHJ5ICduZV9jb25maWcueG1sLmd6JywgZXJyb3IgLTIKPiBVQklGUyB3
+YXJuaW5nICh1YmkxOjAgcGlkIDEzNCk6IHViaWZzX3JvX21vZGU6IHN3aXRjaGVkIHRvIHJlYWQt
+b25seSBtb2RlLCBlcnJvciAtMgoKSGksCldoYXQgaXMgdGhlIHR5cGUgb2Ygdm9sdW1lIHViaTE6
+MCwgcm8gb3Igcnc/ClRoZSBhcHBhcmVudCByZWFzb24gaXMgdGhhdCB0aGUgVUJJRlMgaW1hZ2Ug
+aXMgaW5jb25zaXN0ZW50LCB0aGUgaW5vZGUgCmNhbm5vdCBiZSBmb3VuZCBidXQgdGhlIGRlbnRy
+eShuZV9jb25maWcueG1sLmd6KSBzdGlsbCBleGlzdHMgb24gZmxhc2guIApXaGljaCBtZWFucyB0
+aGF0IHVzZXIgY2FuIHNlZSBhbGwgZGlyZWN0b3J5IGVudHJpZXMgdW5kZXIgCi9jZmcvYm9hcmQv
+Y2ZnL21vYi9iYWNrdXAvbmUvLCBidXQgZmlsZSAnbmVfY29uZmlnLnhtbC5neicgY2Fubm90IGJl
+IAphY2Nlc3NlZC4KCllvdSBjb3VsZCBkdW1wIHRoZSBtdGQgaW1hZ2UgZm9yICd1YmkxJyBieSB0
+aGUgY29tbWFuZCAnZGQgaWY9L2Rldi9tdGQxMCAKb2Y9bXRkX2ltYWdlIGJzPTFNJywgYW5kIHNl
+bmQgdGhlIGZpbGUgJ210ZF9pbWFnZScgdG8gdXMgYnkgZW1haWwsIG1heWJlIAp3ZSBjb3VsZCBn
+ZXQgbW9yZSBpbmZvcm1hdGlvbiBmcm9tIHRoZSBpbWFnZS4KQlRXLCBhcmUgdGhlcmUgYW55IGFi
+bm9ybWFsIGhpc3RvcnkgbG9ncyBhYm91dCB1YmkxIGJlZm9yZSB0aGUgZXJyb3IgCm1lc3NhZ2U/
+Cgo+IGZpbmQ6IC9jZmcvYm9hcmQvY2ZnL21vYi9iYWNrdXAvbmUvbmVfY29uZmlnLnhtbC5nejog
+Tm8gc3VjaCBmaUNQVTogMSBVSUQ6IDAgUElEOiAxMzQgQ29tbTogZmluZCBOb3QgdGFpbnRlZCA2
+LjEyLjU3LTAwNDM1LWdmOWUxMzk5NzBmMWYgIzAKPiBIYXJkd2FyZSBuYW1lOiBrZXltaWxlLGtt
+Y2VudDIgZTU1MDAgMHg4MDI0MTAyMSBDb3JlTmV0IEdlbmVyaWMKPiBDYWxsIFRyYWNlOgo+IFtj
+MmNhYmJhMF0gW2MwYmJmNTU4XSBkdW1wX3N0YWNrX2x2bCsweGZjLzB4MTIwICh1bnJlbGlhYmxl
+KQo+IFtjMmNhYmJjMF0gW2MwNDFjOGU0XSB1Ymlmc19sb29rdXArMHgzNzgvMHgzOTQKPiBbYzJj
+YWJjMjBdIFtjMDJmMTAwY10gX19sb29rdXBfc2xvdysweGIwLzB4MWMwCj4gW2MyY2FiYzYwXSBb
+YzAyZjYwZDRdIHdhbGtfY29tcG9uZW50KzB4MTU4LzB4MjRjCj4gW2MyY2FiYzkwXSBbYzAyZjcw
+NzhdIHBhdGhfbG9va3VwYXQrMHhhNC8weDIzOAo+IFtjMmNhYmNjMF0gW2MwMmY3N2I4XSBmaWxl
+bmFtZV9sb29rdXArMHhjYy8weDIwMAo+IFtjMmNhYmQ5MF0gW2MwMmU3YjA4XSB2ZnNfc3RhdHgr
+MHhhMC8weDE1MAo+IFtjMmNhYmRkMF0gW2MwMmU4NThjXSBkb19zdGF0eCsweDg0LzB4ZTQKPiBb
+YzJjYWJlYzBdIFtjMDJlODdjY10gc3lzX3N0YXR4KzB4OGMvMHgxMjAKPiBbYzJjYWJlZjBdIFtj
+MDAxMjdiY10gc3lzdGVtX2NhbGxfZXhjZXB0aW9uKzB4OWMvMHgxZTAKPiBbYzJjYWJmMTBdIFtj
+MDAxNzBlOF0gcmV0X2Zyb21fc3lzY2FsbCsweDAvMHgyOAo+IC0tLSBpbnRlcnJ1cHQ6IGMwMCBh
+dCAweGZlMzdiMDQKPiBOSVA6ICAwZmUzN2IwNCBMUjogMGZlMzdhZDAgQ1RSOiAwMDAwMDAwMAo+
+IFJFR1M6IGMyY2FiZjIwIFRSQVA6IDBjMDAgICBOb3QgdGFpbnRlZCAgKDYuMTIuNTctMDA0MzUt
+Z2Y5ZTEzOTk3MGYxZikKPiBNU1I6ICAwMDAyZDAwMiA8Q0UsRUUsUFIsTUU+ICBDUjogMjQwMDg0
+ODMgIFhFUjogMjAwMDAwMDAKPiAKPiBHUFIwMDogMDAwMDAxN2YgYmZlNTFmMzAgYjdlNTE4MDAg
+ZmZmZmZmOWMgMTAwZGMzNjAgMDAwMDA5MDAgMDAwMDA3ZmYgYmZlNTFmMzgKPiBHUFIwODogMDAw
+MDAwMDEgMDAwMDAwMDggMDAwMDhmZmEgYzJjYWJmMTAgMjQwMDQ4ODQgMTAwYzM2NWEgMDAwMDAw
+MDAgMTAxNDRiZjAKPiBHUFIxNjogMTAxNDAwMDAgMDAwMDAwMDAgMTAxNWMxMTAgMDAwMDAwMDAg
+MTAxNDAwMDAgMTAwMDQyZDAgYjdlN2ViZTggMTAwYzAwMDAKPiBHUFIyNDogMDAwMDAwMDAgMDAw
+MDAwMDAgMTAwYzAwMDAgMTAwZGMzNjAgYjdlMmUwMTAgMTAwZGMzNjAgMGZmMmFmYTggYmZlNTIw
+YzgKPiBOSVAgWzBmZTM3YjA0XSAweGZlMzdiMDQKPiBMUiBbMGZlMzdhZDBdIDB4ZmUzN2FkMAo+
+IC0tLSBpbnRlcnJ1cHQ6IGMwMAo+IGxlIG9yIGRpcmVjdG9yeQo+IGBgYAo+IAo+IEkgd2FudGVk
+IHRvIHBpY2sgdGhlIGxpc3RzJyBicmFpbiB0byBmaWd1cmUgb3V0IHdoYXQgZWxzZSB0byB0cnkg
+dG8gZGVidWcgb3IgdHJ5Cj4gdG8gcmVwcm9kdWNlIHRoaXMgbW9yZSByZWxpYWJseSwgb3IgaWYg
+dGhlcmUncyBhbnkgcmVsZXZhbnQgY2hhbmdlcyB0aGF0IHlvdQo+IHJlY2FsbCB0aGF0IGNvdWxk
+IGJlIGNhdXNpbmcgdGhpcyBpc3N1ZS4KPiAKPiBJIHdvdWxkIGFsc28gbGlrZSB0byBrbm93IGhv
+dyB0byBnbyBhYm91dCBkdW1waW5nIGFuZCBmbGFzaGluZyB0aGlzIGludG8gYW5vdGhlcgo+IGJv
+YXJkIG9yIHRvIGludmVzdGlnYXRpbmcgaXQgaW4gbXkgb3duIHBjLgoKVHJ5IGZvbGxvd2luZyBj
+b21tYW5kcz8KbmFuZGR1bXAgLW4gLW8gLWYgZmxhc2hfaW1hZ2UgL2Rldi9tdGRYCm5hbmR3cml0
+ZSAtbyAtbiAvZGV2L210ZFkgZmxhc2hfaW1hZ2UKCj4gCj4gSSB0cmllZCBkdW1waW5nIHdpdGgg
+bXRkX2RlYnVnIGFuZCBuYW5kZHVtcCBhbmQgdGhlbiB3cml0aW5nIGl0IHRvIGFub3RoZXIgYm9h
+cmQKPiBidXQgSSBnZXQgRUNDIGVycm9ycywgc3VyZWx5IEkgYW0gZG9pbmcgc29tZXRoaW5nIHdy
+b25nLgo+IAo+IFRoYW5rcyBhbmQgYmVzdCByZWdhcmRzLAo+IFRvbWFzIEFsdmFyZXogVmFub2xp
+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cj4gaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCj4gLgo+IAoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
