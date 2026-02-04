@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 789FBE8B362
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Feb 2026 21:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A822CE8B387
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Feb 2026 01:26:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Subject:From:To:
-	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vyfJ0ISUGCH099thA4twoIOUfA+EONoVTOwuxnwNkeY=; b=gBs0pTupBZEf/b
-	sacr3kKCmfRak72tGR2is+zDb6X8maSeYGb5rGWTjH/McBClQbMktBshvezu70fHhACJb7qQQ2K7w
-	y8WlKi9JzK2BcQsSj8bZffaxgQSIqzUzspBPPW4JdH1DUcY54aQmyaf5QYuqRVnCpyZACReHJs5w/
-	yqGuvl/jYWXPj3gzrltpjnnNoIH8jCMW2DITg7XNqWci/yUhXU1VC0zJ/ia6t5IaaulWakeVHxleb
-	xVRMsaBdTgiTo3QoHJKJjwhKDz9m9PDVFzYWipGtWKpOms6zLPOpJcdQgetkPGaygzBuZ0mbG1C9C
-	5rggKNxaOEINKGEpqqzA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=sPethWmugyxlCKY74WQcfSZOwa9qPFhk+drY8EsDodo=; b=AYVdjh4Og3oA9V
+	+MA+/fnnPZkXwB7i6pc1XG3IoHY3o5J8I8p6RkQK9QO2j6ZHSxmcyF6TR5/t0Rq7SfdBbPoxdkZDL
+	Uv0CynNUnPNJtWgl52XKevfK/VwuzLntB/S34OSc+syMGizHuetG+0Ux5y/tx++s77J2zxk8fdfAG
+	jGWOQOXXJ7i1zmQzBD7jXN+VbFr4NUkZjEeemaZKeiW+x6dyBfVINOMhm9EQyl+zb4Y40sctGr3e8
+	kns4Sc/awXAbRxSeJgNH4wE/OhQkAxmxodk5mSJPK2e23F2TklwLcd4usQXkEBYyP8vXOsERm3tYT
+	rLAoUMEdwlxU6ysE4Riw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnNv8-00000007NEj-1jsc;
-	Tue, 03 Feb 2026 21:26:50 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1vnRfJ-00000007gMP-1uwx;
+	Wed, 04 Feb 2026 01:26:45 +0000
+Received: from mgamail.intel.com ([198.175.65.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnNv5-00000007NEN-0EI4
+	id 1vnRfE-00000007gM4-0Q7l
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Feb 2026 21:26:48 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id B5CB21A2BCC;
-	Tue,  3 Feb 2026 21:26:44 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 805B760728;
-	Tue,  3 Feb 2026 21:26:44 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 86720119A8888;
-	Tue,  3 Feb 2026 22:26:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1770154003; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=/+q/af+ksPE7jzykWj7uXSqYHTn46N8s30ZmdgeaZUw=;
-	b=uOqf8q9gdfCzsbKOilwihAPJ5Fjpslxn5EEJlOaKrKxhFjn4XYA4frT6Ji5iawmkc8hQru
-	nG6d0X2J9FqSlTbwDDfYES1OF9+s5sFyiQiHtuCwQM7FTCYP8+IhuDC33qT54l/BFllSFa
-	SbSDQtHrbA1lKX6sfNp0EGR69Ll1b5fvDMiSBgmqbpgYmg2Y3MiROunVeQjnBGzOwkQ0fa
-	3o/g8RC6tUMSXE3k14cAFxZydStB9zftmUaCvfMp6EOhp7goFu9LMYD0CtPJKCldsh0Md4
-	etmkVCoG3NNiGaEmlXc1YJVdoqKbJOf2D+O+3UYGRXwBVzzO8ZW2UB+S0l4kgA==
-Mime-Version: 1.0
-Date: Tue, 03 Feb 2026 22:26:39 +0100
-Message-Id: <DG5N816NIGGQ.3NMTVNIAJP5AY@bootlin.com>
-Cc: "Amit Kumar Mahapatra" <amit.kumar-mahapatra@amd.com>, "Michal Simek"
- <monstr@monstr.eu>, "Bernhard Frauendienst" <kernel@nospam.obeliks.de>,
- "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-To: "Luca Ceresoli" <luca.ceresoli@bootlin.com>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Rob Herring" <robh@kernel.org>,
- "Krzysztof Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley"
- <conor+dt@kernel.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>
-From: "Luca Ceresoli" <luca.ceresoli@bootlin.com>
-Subject: Re: [PATCH v16 0/3] mtd: Add support for stacked memories
-X-Mailer: aerc 0.20.1
-References: <20260203-mtd-virt-concat-v16-0-a112a979c813@bootlin.com>
-In-Reply-To: <20260203-mtd-virt-concat-v16-0-a112a979c813@bootlin.com>
-X-Last-TLS-Session-Version: TLSv1.3
+	Wed, 04 Feb 2026 01:26:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770168401; x=1801704401;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eqOOBylonYvplI5oY6whGnLpzbR+o6tktKzu/UYpy6c=;
+  b=BmLbJzKUXOb5yxa0MkICkq0VsNzKzF8QhjPoktK6urUOX76fKnOxJ/r0
+   QNM17L5F0pptq1QFe8vSxYVe4uRC6F5XzKdXHAjahEnIBeVSNzqpWenuu
+   2bayU87xgs1q/u+Sp3j4WQtJAe+3FVfFWABcWKmnI2Nny6QBO05b/U17n
+   UFPxhu08Oyn2HiGo0nRWptR8V2L+UxB/+wr9IDup1Sm76/vdEmxc75LXZ
+   Cb0x4zvBTkveiVWC6zT02RKbaw1kdhCnnDGIUfK7MLztpJ6TqtRlIYxSw
+   54FBF97NG9Z87MhOaZtnB13ePk4OcyJvUU4CDsPGzL+RG0ePWRIyBUCwf
+   g==;
+X-CSE-ConnectionGUID: 2nLNT8ZPRM6dlFitow4YHA==
+X-CSE-MsgGUID: drhG7AVYShuKS4WrSnIMIA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="81664729"
+X-IronPort-AV: E=Sophos;i="6.21,271,1763452800"; 
+   d="scan'208";a="81664729"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 17:26:37 -0800
+X-CSE-ConnectionGUID: G065g25WToG4FwqiLMLWfg==
+X-CSE-MsgGUID: 9boM2/2fTHWjkifZLgTqvQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,271,1763452800"; 
+   d="scan'208";a="214987855"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by orviesa005.jf.intel.com with ESMTP; 03 Feb 2026 17:26:34 -0800
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id 60AE495; Wed, 04 Feb 2026 02:26:33 +0100 (CET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v2 1/1] mtd: cfi_cmdset_0001: Factor out do_write_buffer_locked() to reduce stack frame
+Date: Wed,  4 Feb 2026 02:25:27 +0100
+Message-ID: <20260204012630.2211832-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.50.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260203_132647_253195_71F4E1E1 
-X-CRM114-Status: GOOD (  16.29  )
+X-CRM114-CacheID: sfid-20260203_172640_217129_31278F0A 
+X-CRM114-Status: GOOD (  17.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,62 +82,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-On Tue Feb 3, 2026 at 9:39 PM CET, Luca Ceresoli wrote:
-> [TL;DR for v15: as agreed with Amit I'm sending a new iteration of his
-> patches to fix the build-time failure due to a module dependency
-> loop. Original cover follows.]
->
-> This patch series adds stacked support by enhancing the existing mtd-concat
-> driver to be more generic.
->
-> As background, a few years ago, Bernhard Frauendienst initiated an effort
-> [2] to achieve the same, which was later adapted by Miquel [1] to introduce
-> stacked mode support. In this approach, partitions to be concatenated were
-> specified using a DT property "part-concat" within the partitions
-> definition, allowing two MTD devices to function as a single larger one in
-> order to be able to define partitions across chip boundaries. However, the
-> bindings were not accepted. As a result, the mtd-concat approach was
-> dropped, and alternative DT bindings were introduced [3][4][5], describing
-> the two flash devices as one. Corresponding SPI core changes to support
-> these bindings were later added [6].
->
-> While integrating stacked mode support into SPI-NOR, Tudor provided
-> additional feedback, leading to discussions about updating the existing
-> DT bindings. To address this, I sent an RFC [7] to initiate discussions on
-> adapting the DT bindings as suggested by Miquel in [1]. Following that,
-> I am now submitting this patch series that updates the virtual concat DT
-> bindings and the driver referenced in [1], along with some minor mtdcore
-> changes.
-> Since I have taken ownership of this effort, I have included Bernhard and
-> Miquel under the "Suggested-by" tag.
->
-> [1] https://lore.kernel.org/linux-mtd/20191127105522.31445-1-miquel.raynal@bootlin.com/
-> [2] https://lwn.net/ml/linux-kernel/20180907173515.19990-1-kernel@nospam.obeliks.de/
-> [3] https://github.com/torvalds/linux/commit/f89504300e94524d5d5846ff8b728592ac72cec4
-> [4] https://github.com/torvalds/linux/commit/eba5368503b4291db7819512600fa014ea17c5a8
-> [5] https://github.com/torvalds/linux/commit/e2edd1b64f1c79e8abda365149ed62a2a9a494b4
-> [6] https://github.com/torvalds/linux/commit/4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b
-> [7] https://lore.kernel.org/all/20241026075347.580858-1-amit.kumar-mahapatra@amd.com/
->
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-
-Aargh, I forgot to add my SoB line! Please ignore this series, v17
-incoming. Sorry about the mess!
-
-Luca
-
---
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Q29tcGlsZXIgaXMgbm90IGhhcHB5IGFib3V0IHVzZWQgc3RhY2sgZnJhbWU6Cgpkcml2ZXJzL210
+ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYzogSW4gZnVuY3Rpb24gJ2RvX3dyaXRlX2J1ZmZlcic6
+CmRyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMS5jOjE4ODc6MTogZXJyb3I6IHRoZSBm
+cmFtZSBzaXplIG9mIDEyOTYgYnl0ZXMgaXMgbGFyZ2VyIHRoYW4gMTI4MCBieXRlcyBbLVdlcnJv
+cj1mcmFtZS1sYXJnZXItdGhhbj1dCgpGaXggdGhpcyBieSBmYWN0b3Jpbmcgb3V0IGRvX3dyaXRl
+X2J1ZmZlcl9sb2NrZWQoKS4KClNpZ25lZC1vZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5
+LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgotLS0KdjI6IGtlcHQgRElTL0VOQUJMRV9WUFAg
+cGFpcmVkCiBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYyB8IDgyICsrKysrKysr
+KysrKysrKysrLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgNDggaW5zZXJ0aW9ucygrKSwg
+MzQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNl
+dF8wMDAxLmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYwppbmRleCBjMTA2
+OTNiYTI2NWIuLmM0OTViZWUwNDA1MyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2Zp
+X2NtZHNldF8wMDAxLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAxLmMK
+QEAgLTE3MjAsNDIgKzE3MjAsMjQgQEAgc3RhdGljIGludCBjZmlfaW50ZWxleHRfd3JpdGVfd29y
+ZHMgKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgdG8gLCBzaXplX3QgbGUKIH0KIAogCi1z
+dGF0aWMgaW50IF9feGlwcmFtIGRvX3dyaXRlX2J1ZmZlcihzdHJ1Y3QgbWFwX2luZm8gKm1hcCwg
+c3RydWN0IGZsY2hpcCAqY2hpcCwKLQkJCQkgICAgdW5zaWduZWQgbG9uZyBhZHIsIGNvbnN0IHN0
+cnVjdCBrdmVjICoqcHZlYywKLQkJCQkgICAgdW5zaWduZWQgbG9uZyAqcHZlY19zZWVrLCBpbnQg
+bGVuKQorc3RhdGljIGludCBfX3hpcHJhbSBkb193cml0ZV9idWZmZXJfbG9ja2VkKHN0cnVjdCBt
+YXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAorCQkJCQkgICB1bnNpZ25lZCBsb25n
+IGNtZF9hZHIsIHVuc2lnbmVkIGxvbmcgYWRyLAorCQkJCQkgICBjb25zdCBzdHJ1Y3Qga3ZlYyAq
+KnB2ZWMsCisJCQkJCSAgIHVuc2lnbmVkIGxvbmcgKnB2ZWNfc2VlaywgaW50IGxlbikKIHsKIAlz
+dHJ1Y3QgY2ZpX3ByaXZhdGUgKmNmaSA9IG1hcC0+ZmxkcnZfcHJpdjsKIAltYXBfd29yZCBzdGF0
+dXMsIHdyaXRlX2NtZCwgZGF0dW07Ci0JdW5zaWduZWQgbG9uZyBjbWRfYWRyOwotCWludCByZXQs
+IHdidWZzaXplLCB3b3JkX2dhcCwgd29yZHM7CisJaW50IHJldCwgd29yZF9nYXAsIHdvcmRzOwog
+CWNvbnN0IHN0cnVjdCBrdmVjICp2ZWM7CiAJdW5zaWduZWQgbG9uZyB2ZWNfc2VlazsKIAl1bnNp
+Z25lZCBsb25nIGluaXRpYWxfYWRyOwogCWludCBpbml0aWFsX2xlbiA9IGxlbjsKIAotCXdidWZz
+aXplID0gY2ZpX2ludGVybGVhdmUoY2ZpKSA8PCBjZmktPmNmaXEtPk1heEJ1ZldyaXRlU2l6ZTsK
+LQlhZHIgKz0gY2hpcC0+c3RhcnQ7CiAJaW5pdGlhbF9hZHIgPSBhZHI7Ci0JY21kX2FkciA9IGFk
+ciAmIH4od2J1ZnNpemUtMSk7Ci0KLQkvKiBTaGFycCBMSDI4RjY0MEJGIGNoaXBzIG5lZWQgdGhl
+IGZpcnN0IGFkZHJlc3MgZm9yIHRoZQotCSAqIFBhZ2UgQnVmZmVyIFByb2dyYW0gY29tbWFuZC4g
+U2VlIFRhYmxlIDUgb2YKLQkgKiBMSDI4RjMyMEJGLCBMSDI4RjY0MEJGLCBMSDI4RjEyOEJGIFNl
+cmllcyAoQXBwZW5kaXggRlVNMDA3MDEpICovCi0JaWYgKGlzX0xIMjhGNjQwQkYoY2ZpKSkKLQkJ
+Y21kX2FkciA9IGFkcjsKIAogCS8qIExldCdzIGRldGVybWluZSB0aGlzIGFjY29yZGluZyB0byB0
+aGUgaW50ZXJsZWF2ZSBvbmx5IG9uY2UgKi8KIAlNd3JpdGVfY21kID0gKGNmaS0+Y2ZpcS0+UF9J
+RCAhPSBQX0lEX0lOVEVMX1BFUkZPUk1BTkNFKSA/IENNRCgweGU4KSA6IENNRCgweGU5KTsKIAot
+CW11dGV4X2xvY2soJmNoaXAtPm11dGV4KTsKLQlyZXQgPSBnZXRfY2hpcChtYXAsIGNoaXAsIGNt
+ZF9hZHIsIEZMX1dSSVRJTkcpOwotCWlmIChyZXQpIHsKLQkJbXV0ZXhfdW5sb2NrKCZjaGlwLT5t
+dXRleCk7Ci0JCXJldHVybiByZXQ7Ci0JfQotCi0JWElQX0lOVkFMX0NBQ0hFRF9SQU5HRShtYXAs
+IGluaXRpYWxfYWRyLCBpbml0aWFsX2xlbik7Ci0JRU5BQkxFX1ZQUChtYXApOwogCXhpcF9kaXNh
+YmxlKG1hcCwgY2hpcCwgY21kX2Fkcik7CiAKIAkvKiDCpzQuOCBvZiB0aGUgMjhGeHh4SjNBIGRh
+dGFzaGVldCBzYXlzICJBbnkgdGltZSBTUi40IGFuZC9vciBTUi41IGlzIHNldApAQCAtMTc4OSw3
+ICsxNzcxLDcgQEAgc3RhdGljIGludCBfX3hpcHJhbSBkb193cml0ZV9idWZmZXIoc3RydWN0IG1h
+cF9pbmZvICptYXAsIHN0cnVjdCBmbGNoaXAgKmNoaXAsCiAJCXhpcF9lbmFibGUobWFwLCBjaGlw
+LCBjbWRfYWRyKTsKIAkJcHJpbnRrKEtFUk5fRVJSICIlczogQ2hpcCBub3QgcmVhZHkgZm9yIGJ1
+ZmZlciB3cml0ZS4gWHN0YXR1cyA9ICVseCwgc3RhdHVzID0gJWx4XG4iLAogCQkJCW1hcC0+bmFt
+ZSwgWHN0YXR1cy54WzBdLCBzdGF0dXMueFswXSk7Ci0JCWdvdG8gb3V0OworCQlyZXR1cm4gcmV0
+OwogCX0KIAogCS8qIEZpZ3VyZSBvdXQgdGhlIG51bWJlciBvZiB3b3JkcyB0byB3cml0ZSAqLwpA
+QCAtMTg1Myw3ICsxODM1LDcgQEAgc3RhdGljIGludCBfX3hpcHJhbSBkb193cml0ZV9idWZmZXIo
+c3RydWN0IG1hcF9pbmZvICptYXAsIHN0cnVjdCBmbGNoaXAgKmNoaXAsCiAJCWNoaXAtPnN0YXRl
+ID0gRkxfU1RBVFVTOwogCQl4aXBfZW5hYmxlKG1hcCwgY2hpcCwgY21kX2Fkcik7CiAJCXByaW50
+ayhLRVJOX0VSUiAiJXM6IGJ1ZmZlciB3cml0ZSBlcnJvciAoc3RhdHVzIHRpbWVvdXQpXG4iLCBt
+YXAtPm5hbWUpOwotCQlnb3RvIG91dDsKKwkJcmV0dXJuIHJldDsKIAl9CiAKIAkvKiBjaGVjayBm
+b3IgZXJyb3JzICovCkBAIC0xODY2LDIxICsxODQ4LDUzIEBAIHN0YXRpYyBpbnQgX194aXByYW0g
+ZG9fd3JpdGVfYnVmZmVyKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlw
+LAogCQltYXBfd3JpdGUobWFwLCBDTUQoMHg3MCksIGNtZF9hZHIpOwogCQl4aXBfZW5hYmxlKG1h
+cCwgY2hpcCwgY21kX2Fkcik7CiAKLQkJaWYgKGNoaXBzdGF0dXMgJiAweDAyKSB7Ci0JCQlyZXQg
+PSAtRVJPRlM7Ci0JCX0gZWxzZSBpZiAoY2hpcHN0YXR1cyAmIDB4MDgpIHsKKwkJaWYgKGNoaXBz
+dGF0dXMgJiAweDAyKQorCQkJcmV0dXJuIC1FUk9GUzsKKworCQlpZiAoY2hpcHN0YXR1cyAmIDB4
+MDgpIHsKIAkJCXByaW50ayhLRVJOX0VSUiAiJXM6IGJ1ZmZlciB3cml0ZSBlcnJvciAoYmFkIFZQ
+UClcbiIsIG1hcC0+bmFtZSk7Ci0JCQlyZXQgPSAtRUlPOwotCQl9IGVsc2UgewotCQkJcHJpbnRr
+KEtFUk5fRVJSICIlczogYnVmZmVyIHdyaXRlIGVycm9yIChzdGF0dXMgMHglbHgpXG4iLCBtYXAt
+Pm5hbWUsIGNoaXBzdGF0dXMpOwotCQkJcmV0ID0gLUVJTlZBTDsKKwkJCXJldHVybiAgLUVJTzsK
+IAkJfQogCi0JCWdvdG8gb3V0OworCQlwcmludGsoS0VSTl9FUlIgIiVzOiBidWZmZXIgd3JpdGUg
+ZXJyb3IgKHN0YXR1cyAweCVseClcbiIsIG1hcC0+bmFtZSwgY2hpcHN0YXR1cyk7CisJCXJldHVy
+biAtRUlOVkFMOwogCX0KIAogCXhpcF9lbmFibGUobWFwLCBjaGlwLCBjbWRfYWRyKTsKLSBvdXQ6
+CURJU0FCTEVfVlBQKG1hcCk7CisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgX194aXByYW0g
+ZG9fd3JpdGVfYnVmZmVyKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlw
+LAorCQkJCSAgICB1bnNpZ25lZCBsb25nIGFkciwgY29uc3Qgc3RydWN0IGt2ZWMgKipwdmVjLAor
+CQkJCSAgICB1bnNpZ25lZCBsb25nICpwdmVjX3NlZWssIGludCBsZW4pCit7CisJc3RydWN0IGNm
+aV9wcml2YXRlICpjZmkgPSBtYXAtPmZsZHJ2X3ByaXY7CisJdW5zaWduZWQgbG9uZyBjbWRfYWRy
+OworCWludCByZXQsIHdidWZzaXplOworCisJd2J1ZnNpemUgPSBjZmlfaW50ZXJsZWF2ZShjZmkp
+IDw8IGNmaS0+Y2ZpcS0+TWF4QnVmV3JpdGVTaXplOworCWFkciArPSBjaGlwLT5zdGFydDsKKwlj
+bWRfYWRyID0gYWRyICYgfih3YnVmc2l6ZSAtIDEpOworCisJLyogU2hhcnAgTEgyOEY2NDBCRiBj
+aGlwcyBuZWVkIHRoZSBmaXJzdCBhZGRyZXNzIGZvciB0aGUKKwkgKiBQYWdlIEJ1ZmZlciBQcm9n
+cmFtIGNvbW1hbmQuIFNlZSBUYWJsZSA1IG9mCisJICogTEgyOEYzMjBCRiwgTEgyOEY2NDBCRiwg
+TEgyOEYxMjhCRiBTZXJpZXMgKEFwcGVuZGl4IEZVTTAwNzAxKSAqLworCWlmIChpc19MSDI4RjY0
+MEJGKGNmaSkpCisJCWNtZF9hZHIgPSBhZHI7CisKKwltdXRleF9sb2NrKCZjaGlwLT5tdXRleCk7
+CisJcmV0ID0gZ2V0X2NoaXAobWFwLCBjaGlwLCBjbWRfYWRyLCBGTF9XUklUSU5HKTsKKwlpZiAo
+cmV0KSB7CisJCW11dGV4X3VubG9jaygmY2hpcC0+bXV0ZXgpOworCQlyZXR1cm4gcmV0OworCX0K
+KworCVhJUF9JTlZBTF9DQUNIRURfUkFOR0UobWFwLCBhZHIsIGxlbik7CisJRU5BQkxFX1ZQUCht
+YXApOworCisJcmV0ID0gZG9fd3JpdGVfYnVmZmVyX2xvY2tlZChtYXAsIGNoaXAsIGNtZF9hZHIs
+IGFkciwgcHZlYywgcHZlY19zZWVrLCBsZW4pOworCisJRElTQUJMRV9WUFAobWFwKTsKIAlwdXRf
+Y2hpcChtYXAsIGNoaXAsIGNtZF9hZHIpOwogCW11dGV4X3VubG9jaygmY2hpcC0+bXV0ZXgpOwog
+CXJldHVybiByZXQ7Ci0tIAoyLjUwLjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
