@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44795ECD997
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 19:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F228ECD998
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 19:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tZKBFU9q76sjs+jh9S7ULeweeVYrgNtXFOYZJoRhpH0=; b=YOic4QnzBhY/1Q
-	Y0NGcXkY8mkXvM9+kDlp5wCcJLWRovqvF3OP6AJozPxsvAxp9uHXTBNRZ1BXAuh9EXyt41j7ZwOuH
-	vynhBZikbQX+Hl5K4j9kNLtsn1i2b7OWa/uZUXZaq+OTJJ4iiDMdReFwx5ISwI32ZHWfL0yk51+Ur
-	304suRpvM+aeqa6OrbP8Wwc2ZN4QUdN3w3r4MSGaYvdaLdFIEwW1eez67BS8XPjWWlg3za9Md5yQ7
-	ebXleZdkG/p7WiTQ9EJW5f0q+nTpy/tZLsrmenTWcJ26o63QSbIhnVN4MBD7iPk91Tc1Gu43Jsr28
-	ZIWT5cGgxU2kIBuhel5Q==;
+	List-Owner; bh=w/+cEzPr0k3OZjEhLdtD2oRdlrVv6JWb+MiREYNGCh4=; b=BElE6lXv13hy2R
+	BAlzdpJLP1J+GAItPLGoitfCK052l75by+TP+6Gx20Y5f7Hs4da9Ec3fqV3wGyLYOrAbG3OAWK9PW
+	uOD4XxswmEta3OO0ojmYZ8it4K+Sf4H6aQE9viFsSNoybGHHuBC48P/XBVs6Ze5JqIavXp7cIkV6Z
+	lt1S3412VZvKp+jY+DevqK8jlyLXMhU9XJUVBy1gfwEkmuSjRquN/FsQxHMspbDDtFXz6YpUWXMSX
+	XuJb7XM7O3z9l7nzcaP6zXMQaJBZZDDYay64ubWrFxb+XiXQG3Uxc1CyLWhcDvmAFuYelVCFFl0SY
+	mnJwQCZawNPETnBYqN3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo4hE-0000000APRL-3jjR;
-	Thu, 05 Feb 2026 19:07:20 +0000
+	id 1vo4hG-0000000APSx-37Cu;
+	Thu, 05 Feb 2026 19:07:22 +0000
 Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo4hB-0000000APOi-3S71
+	id 1vo4hD-0000000APQ3-40wq
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Feb 2026 19:07:19 +0000
+	Thu, 05 Feb 2026 19:07:21 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 7F19EC243B6;
-	Thu,  5 Feb 2026 19:07:22 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 9F210C243B7;
+	Thu,  5 Feb 2026 19:07:24 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 438C06074D;
-	Thu,  5 Feb 2026 19:07:16 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CF3F5119D1700;
-	Thu,  5 Feb 2026 20:07:13 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 64BFF6074D;
+	Thu,  5 Feb 2026 19:07:18 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E2208119D178B;
+	Thu,  5 Feb 2026 20:07:15 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1770318435; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1770318437; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=XDXLiZY8XfAXjeC91sKPVk2e9adP7fRa4aGhrR6KVTY=;
-	b=rjUwHRu9Qkn6W14cO/ZKOSolIGLNSKocJm4zDypZWWqeDewMU1T56965ZkP03j+DoH2tBI
-	6xdB7q+4xp1bAvm9HnG+gIREmDWdoqTTcBudla5AXh+31r5ZZHzPw/BuvCRY5UHX56xDcx
-	J1aHYwjE6/hG2tWCaq3fotlIrPme3f4gPMN6WXoFQR/e6mDuoUv8yEHppczTOctHX07LdL
-	g5Tdp28aSUhSC+yH5k+5diRJxghBVR2yeBYv060qEfxouDgAK22ooEWb//1qOq+C1VpPi6
-	1JgWE3gJMXQQl8GjqWqVPx0NXJDpFM1g+ZHculSIwFdqR9gV8ZRqtmNdK/DgHg==
+	bh=dYYkOMmkvYm09ui+5e6ZadWbVo/SG1FMXVi2GURuVG8=;
+	b=ciHAmq+nFySpzxqrOxnRMm491XzCE3ClAKpYW74F8w8q08takX5II9/7Nk/xgQyhIByA3b
+	vD4f+Git2Nrq5ypf7ZFmDJF6i+48n8KG89drsVwtyu7bDdA5QBFreqZ1c8feMYvA8I4b8O
+	ytC7XhvkgtsEEfK567U6lWksCetzINMiyyKcWt0VWM95EcK8kMQcPuIqFjlNKZUDnM/URq
+	k0XyoK/ls801GlMSGAmMMmxdXhg1gyb4RGb68mp/bXkAOJ5FVLF2YcXzgRtmrpIQEgJkOP
+	OyaeKqe3+3tF7N19oRwuU1B81REHxTU8un9CFOK3wdj9mIEZ38u/y7EUyowy7A==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 05 Feb 2026 20:07:00 +0100
-Subject: [PATCH RFC 3/4] mtd: spi-nand: winbond: Enable the DQS pin on
- W35N**JW series
+Date: Thu, 05 Feb 2026 20:07:01 +0100
+Subject: [PATCH DO NOT MERGE RFC 4/4] spi: cadence-qspi: Retrieve DQS
+ capability using the core helper
 MIME-Version: 1.0
-Message-Id: <20260205-winbond-nand-next-phy-tuning-v1-3-5e7d3976f0f1@bootlin.com>
+Message-Id: <20260205-winbond-nand-next-phy-tuning-v1-4-5e7d3976f0f1@bootlin.com>
 References: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
 In-Reply-To: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -61,8 +61,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260205_110718_013538_113D00A3 
-X-CRM114-Status: GOOD (  10.49  )
+X-CRM114-CacheID: sfid-20260205_110720_142353_E4B3BB35 
+X-CRM114-Status: GOOD (  12.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,59 +79,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These chips have a DQS pin, enable it by default in DTR mode because
-there is apparently no issue in setting it for lower frequencies, and
-the extra power consumption seems very low compared to the current drawn
-by the NAND array itself while operating.
+This is just a suggestion for Santhosh on how to get the DQS capability
+information without the DT property, to introduce in his Cadence QSPI
+PHY tuning series:
+https://lore.kernel.org/linux-spi/87v7gbdwdh.fsf@bootlin.com/T/#t
 
-This setting will be required for high speed I/O transfers (with PHY
-tuning).
+This patch shall not be applied as-is and is just given as an FYI.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/winbond.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/spi/spi-cadence-quadspi.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 6dfd0dcc8ee7..7401ee1007c0 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -437,7 +437,7 @@ static int w35n0xjw_vcr_cfg(struct spinand_device *spinand,
- 	else if (!single && !dtr)
- 		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_SDR;
- 	else if (!single && dtr)
--		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_DDR;
-+		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_DDR_DS;
- 	else
- 		return -EINVAL;
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 4f799f747346..0809846a6ef0 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -3476,6 +3476,12 @@ static int cqspi_mem_op_execute_tuning(struct spi_mem *mem,
+ 	if (!cqspi->ddata->execute_tuning)
+ 		return -EOPNOTSUPP;
  
-@@ -504,7 +504,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
- 					      &write_cache_octal_variants,
- 					      &update_cache_octal_variants),
--		     0,
-+		     SPINAND_HAS_DQS,
- 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
- 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
-@@ -515,7 +515,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
- 					      &write_cache_octal_variants,
- 					      &update_cache_octal_variants),
--		     0,
-+		     SPINAND_HAS_DQS,
- 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
- 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
-@@ -526,7 +526,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
- 					      &write_cache_octal_variants,
- 					      &update_cache_octal_variants),
--		     0,
-+		     SPINAND_HAS_DQS,
- 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
- 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
++	/*
++	 * FIXME: maybe this boolean could be queried when needed by
++	 * saving a pointer to the spi memory somewhere?
++	 */
++	cqspi->f_pdata->has_dqs = spi_mem_has_dqs(mem);
++
+ 	return cqspi->ddata->execute_tuning(mem, read_op, write_op);
+ }
+ 
+@@ -3517,8 +3523,6 @@ static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
+ 		f_pdata->non_phy_clk_rate =
+ 			f_pdata->cqspi->ddata->get_non_phy_clk_rate(f_pdata->cqspi);
+ 
+-	f_pdata->has_dqs = of_property_read_bool(np, "spi-has-dqs");
+-
+ 	return 0;
+ }
+ 
 
 -- 
 2.51.1
