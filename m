@@ -4,76 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5234DECD981
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 15:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62D15ECD993
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 17:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=20M4DUN42O4EOYQsbcxQhcVmj0b+uS8yU/EZR3+/iW4=; b=mpmYSaTyOG7MGU
-	EJrqWiqSKCbxk0iTHf8fIamonm7csBSGqVQ8rPPGoQ+yzzouPzDhIe7Ux4uXuD0gY3wpRPhhADLoE
-	CoascwPt1HE+0GcpMqibeqaS8D6ZzG2zH+g+6/4isKMWXD3KykQPK+0wAcsPDA/JLc5bPUu2No3E3
-	fdXuSYd/W0HzkKxK83NbuNa97Hi9v5InY3P5TVuwaToAakbo6JqKAhTNlQtp5dX/W6Om0yKWVgueg
-	29XkXFhb6rGaWdpy8nywyMrjOLSK0xXbnO0+r4So4BDvsZLhyecpufIeGuMvFgwqQmlAHAjwHIMEi
-	HMQE9bgu8Vw344NQJ+0Q==;
+	List-Owner; bh=HI/uRPABPxvG9S0aIUiCaN/nupKzz8WeQKAMztgfwdI=; b=dUOZ7wX43xJHvm
+	aVVA1oXZDLK06pgY57Rb6nOhts7GbshU/3LeoR6EvR12uGSn7BKvNJeQZcUqdjfv0nq725ZejrTbR
+	kyWBgWCNz97izuKlHrVAzah/J7m/wU4a9qsM01MI8QNsEipIda3JiVxUDnpN0wPylu88rGDFFVnVN
+	JH4zuCQTHhmJVMkrNdRgxOpp8j37T+bgFhJfSN2gomRbD7K6qHphFwI6rrP7CwHjJQExSaJElcumz
+	cXUjJzaSsaTJSanIAPx3HKo+yQDgU9BhroqnJxdScAalikJy1oSPWpvUnXTlpvwnx+iKGMYoGItJc
+	9c03h09ifT9GZyNGV1Rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo1jV-0000000ABby-30tx;
-	Thu, 05 Feb 2026 15:57:29 +0000
-Received: from mgamail.intel.com ([192.198.163.7])
+	id 1vo3FD-0000000AISy-1Tl5;
+	Thu, 05 Feb 2026 17:34:19 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo1jR-0000000ABbc-0YTa
+	id 1vo3F9-0000000AISM-34kJ
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Feb 2026 15:57:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770307045; x=1801843045;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FSJGCR5FLHXrzPlPXM11LUVlzH6IJFhUUCap2Vzlq1w=;
-  b=nGul5D4rzs7l5fp3mEuqNMdeSUIyaJIALqLH/DZDh7b2RRYnaxsPYgLV
-   BP3lGrZtcBOBcP3R7qKLdHkLhMEB6b/9ZSNHzRsjVeB9PWn0LfzVy2zwP
-   8OO/ecdIOiTQH7udRpPyMAC4a6lWO7CkIP38z8yYG8id8N9sUuouz/+ot
-   JD+JE7Qc+rA6V6ogFA5tRsMqVNxG/DGmLu5gOzQymCnTntc7z1N4bO5je
-   CjjujYpr5mQvTwiNDYBzwJ5T+D81+2cgRNCZAovxQBkCcMNkK2dvbJR+F
-   RX2KNGNFtI3gYYFN3MqKJh9WRmPuxquaVkta/m+LQiF6c5z4N8XzS/6dd
-   w==;
-X-CSE-ConnectionGUID: tUAoPhsGR2ia0vnG8RJR1w==
-X-CSE-MsgGUID: bXKlpNguQPOOfHpYcmXCGA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11692"; a="96963330"
-X-IronPort-AV: E=Sophos;i="6.21,274,1763452800"; 
-   d="scan'208";a="96963330"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2026 07:57:21 -0800
-X-CSE-ConnectionGUID: /hVbtxL3TTSV2kUnXfA0Lg==
-X-CSE-MsgGUID: 3Rt17CMxQNqHrWRlq/EFxQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,274,1763452800"; 
-   d="scan'208";a="241246646"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO localhost) ([10.245.244.142])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2026 07:57:19 -0800
-Date: Thu, 5 Feb 2026 17:57:17 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
+	Thu, 05 Feb 2026 17:34:18 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 9851A1A2C31
+	for <linux-mtd@lists.infradead.org>; Thu,  5 Feb 2026 17:34:12 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 6DDEB6074D;
+	Thu,  5 Feb 2026 17:34:12 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3BD70102F1B6D;
+	Thu,  5 Feb 2026 18:34:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1770312851; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=xv3D4MHpekKTqeVvmwQRXxftSB+jQG+0xkfUDkkrFE0=;
+	b=Y4cMb5hiK6hrywbwv6QUkfc3iLE78cmu/42KkasTAoxx6ksnJrHYr96KgtcCpjmr7m9yZ2
+	elulqXOTdG4gLlapqTWOmFQBtUa8FKZHajAc7gRGgM1EqNzSQuxLXvj8gy2tIU8OLJhGnN
+	YVQpcL87726sK+tXk7tw75hAc5wv/jz0NKxIBfkGfz2Y2jJd0JsIn5lwq5hQM1fQJ2VLIY
+	V1wydXix0PaKo3SD9UEcc1NuPfmQNSzNPhbXS4mNXIeE3QGLm5/i2HVYmHoilA/CnhJVRM
+	EaMR5pmB5//Rj1QtGQFOpvBMKLD+LS1rgr8URHjO1NWcS+hgcdZn71vdPl6wFg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  Richard
+ Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>
 Subject: Re: [PATCH v2 1/1] mtd: cfi_cmdset_0001: Factor out
  do_write_buffer_locked() to reduce stack frame
-Message-ID: <aYS93aJ_TlN3C3-T@smile.fi.intel.com>
+In-Reply-To: <aYS93aJ_TlN3C3-T@smile.fi.intel.com> (Andy Shevchenko's message
+	of "Thu, 5 Feb 2026 17:57:17 +0200")
 References: <20260204012630.2211832-1-andriy.shevchenko@linux.intel.com>
- <aYO2IPsoxmDtTsec@smile.fi.intel.com>
- <87a4xnfu8j.fsf@bootlin.com>
+	<aYO2IPsoxmDtTsec@smile.fi.intel.com> <87a4xnfu8j.fsf@bootlin.com>
+	<aYS93aJ_TlN3C3-T@smile.fi.intel.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Thu, 05 Feb 2026 18:34:07 +0100
+Message-ID: <87y0l7gkmo.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87a4xnfu8j.fsf@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260205_075725_379543_292E8388 
-X-CRM114-Status: GOOD (  17.03  )
+X-CRM114-CacheID: sfid-20260205_093416_054611_4469D810 
+X-CRM114-Status: GOOD (  16.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,40 +74,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 05, 2026 at 09:51:56AM +0100, Miquel Raynal wrote:
-> On 04/02/2026 at 23:12:00 +02, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Feb 04, 2026 at 02:25:27AM +0100, Andy Shevchenko wrote:
-> >> Compiler is not happy about used stack frame:
-> >> 
-> >> drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
-> >> drivers/mtd/chips/cfi_cmdset_0001.c:1887:1: error: the frame size of 1296 bytes is larger than 1280 bytes [-Werror=frame-larger-than=]
-> >> 
-> >> Fix this by factoring out do_write_buffer_locked().
-> >
-> > My gosh, I already sent a v2 earlier and there were some replies,
-> > I need to check...
-> 
-> I'm not sure I get what you mean here? I got no reply (in my inbox) to
-> your v2. I am letting a bit of time for Vignesh to take a look, but I
-> know he's busy so I might take it nevertheless by the end of the week as
-> we are approaching the merge window.
-
-I got some strange LKP reports, I need to check them.
-Please, discard this email thread as we have it there
-
-https://lore.kernel.org/r/20260124133730.3454241-1-andriy.shevchenko@linux.intel.com
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMDUvMDIvMjAyNiBhdCAxNzo1NzoxNyArMDIsIEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNo
+ZXZjaGVua29AbGludXguaW50ZWwuY29tPiB3cm90ZToKCj4gT24gVGh1LCBGZWIgMDUsIDIwMjYg
+YXQgMDk6NTE6NTZBTSArMDEwMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPj4gT24gMDQvMDIvMjAy
+NiBhdCAyMzoxMjowMCArMDIsIEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVua29AbGlu
+dXguaW50ZWwuY29tPiB3cm90ZToKPj4gPiBPbiBXZWQsIEZlYiAwNCwgMjAyNiBhdCAwMjoyNToy
+N0FNICswMTAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6Cj4+ID4+IENvbXBpbGVyIGlzIG5vdCBo
+YXBweSBhYm91dCB1c2VkIHN0YWNrIGZyYW1lOgo+PiA+PiAKPj4gPj4gZHJpdmVycy9tdGQvY2hp
+cHMvY2ZpX2NtZHNldF8wMDAxLmM6IEluIGZ1bmN0aW9uICdkb193cml0ZV9idWZmZXInOgo+PiA+
+PiBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYzoxODg3OjE6IGVycm9yOiB0aGUg
+ZnJhbWUgc2l6ZSBvZiAxMjk2IGJ5dGVzIGlzIGxhcmdlciB0aGFuIDEyODAgYnl0ZXMgWy1XZXJy
+b3I9ZnJhbWUtbGFyZ2VyLXRoYW49XQo+PiA+PiAKPj4gPj4gRml4IHRoaXMgYnkgZmFjdG9yaW5n
+IG91dCBkb193cml0ZV9idWZmZXJfbG9ja2VkKCkuCj4+ID4KPj4gPiBNeSBnb3NoLCBJIGFscmVh
+ZHkgc2VudCBhIHYyIGVhcmxpZXIgYW5kIHRoZXJlIHdlcmUgc29tZSByZXBsaWVzLAo+PiA+IEkg
+bmVlZCB0byBjaGVjay4uLgo+PiAKPj4gSSdtIG5vdCBzdXJlIEkgZ2V0IHdoYXQgeW91IG1lYW4g
+aGVyZT8gSSBnb3Qgbm8gcmVwbHkgKGluIG15IGluYm94KSB0bwo+PiB5b3VyIHYyLiBJIGFtIGxl
+dHRpbmcgYSBiaXQgb2YgdGltZSBmb3IgVmlnbmVzaCB0byB0YWtlIGEgbG9vaywgYnV0IEkKPj4g
+a25vdyBoZSdzIGJ1c3kgc28gSSBtaWdodCB0YWtlIGl0IG5ldmVydGhlbGVzcyBieSB0aGUgZW5k
+IG9mIHRoZSB3ZWVrIGFzCj4+IHdlIGFyZSBhcHByb2FjaGluZyB0aGUgbWVyZ2Ugd2luZG93Lgo+
+Cj4gSSBnb3Qgc29tZSBzdHJhbmdlIExLUCByZXBvcnRzLCBJIG5lZWQgdG8gY2hlY2sgdGhlbS4K
+PiBQbGVhc2UsIGRpc2NhcmQgdGhpcyBlbWFpbCB0aHJlYWQgYXMgd2UgaGF2ZSBpdCB0aGVyZQo+
+Cj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDI2MDEyNDEzMzczMC4zNDU0MjQxLTEtYW5k
+cml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tCgpBaCwgdGhpcyBkaWQgbm90IHJlYWNoIG15
+IGluYm94LCBtYXJrZWQgU1BBTS4uLiBJJ2xsIGRpc2NhcmQgdGhpcyBwYXRjaApmb3IgdGhpcyBj
+eWNsZSwgZmVlbCBmcmVlIHRvIHJlc2VuZCBvbmNlIHRoZSByZXBvcnQgaGFzIGJlZW4gZmlndXJl
+ZApvdXQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
