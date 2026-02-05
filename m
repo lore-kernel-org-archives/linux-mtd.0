@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F228ECD998
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 19:07:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CF6EECD995
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 19:12:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w/+cEzPr0k3OZjEhLdtD2oRdlrVv6JWb+MiREYNGCh4=; b=BElE6lXv13hy2R
-	BAlzdpJLP1J+GAItPLGoitfCK052l75by+TP+6Gx20Y5f7Hs4da9Ec3fqV3wGyLYOrAbG3OAWK9PW
-	uOD4XxswmEta3OO0ojmYZ8it4K+Sf4H6aQE9viFsSNoybGHHuBC48P/XBVs6Ze5JqIavXp7cIkV6Z
-	lt1S3412VZvKp+jY+DevqK8jlyLXMhU9XJUVBy1gfwEkmuSjRquN/FsQxHMspbDDtFXz6YpUWXMSX
-	XuJb7XM7O3z9l7nzcaP6zXMQaJBZZDDYay64ubWrFxb+XiXQG3Uxc1CyLWhcDvmAFuYelVCFFl0SY
-	mnJwQCZawNPETnBYqN3g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=AwPR3JTztBfUXI1RPe3ErboHniuj7/cT7VEwpFfTgds=; b=N1JM/u7awJgeg1afLGSB4SoLVS
+	ii84xt2nz+FQl5DKhuG8kifxUFuK7Z2dvfzJs69MTcTiuMRDl+uUvinmLphwRHQhXYu7x2z54+3bv
+	VMVAPGr0dxBXc8OCMrCUVajB4BiNQ61PYRmaZ+hzSYfFcTfegH9wffx7EQQ0giuaiFiyyU7Xcg8KN
+	ejEkV7qUJIQK5St3fxjf0ddLj57AHLbWyOZ7ZTVQ/jJkXtMArCvN1D5E/wBXkr5rhh3z1y187X3AM
+	srIEnuube9i5s6PwHe2ugbeUkVVqVkBxDV/xTo9z7QxLZ51Oi8nl4UMwtwqxD7Z7ICNxwsqsoImLl
+	Wbn/E6Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo4hG-0000000APSx-37Cu;
-	Thu, 05 Feb 2026 19:07:22 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1vo4lj-0000000APxJ-1wsl;
+	Thu, 05 Feb 2026 19:11:59 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo4hD-0000000APQ3-40wq
+	id 1vo4le-0000000APwx-0NSy
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Feb 2026 19:07:21 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 9F210C243B7;
-	Thu,  5 Feb 2026 19:07:24 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 64BFF6074D;
-	Thu,  5 Feb 2026 19:07:18 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E2208119D178B;
-	Thu,  5 Feb 2026 20:07:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1770318437; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=dYYkOMmkvYm09ui+5e6ZadWbVo/SG1FMXVi2GURuVG8=;
-	b=ciHAmq+nFySpzxqrOxnRMm491XzCE3ClAKpYW74F8w8q08takX5II9/7Nk/xgQyhIByA3b
-	vD4f+Git2Nrq5ypf7ZFmDJF6i+48n8KG89drsVwtyu7bDdA5QBFreqZ1c8feMYvA8I4b8O
-	ytC7XhvkgtsEEfK567U6lWksCetzINMiyyKcWt0VWM95EcK8kMQcPuIqFjlNKZUDnM/URq
-	k0XyoK/ls801GlMSGAmMMmxdXhg1gyb4RGb68mp/bXkAOJ5FVLF2YcXzgRtmrpIQEgJkOP
-	OyaeKqe3+3tF7N19oRwuU1B81REHxTU8un9CFOK3wdj9mIEZ38u/y7EUyowy7A==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 05 Feb 2026 20:07:01 +0100
-Subject: [PATCH DO NOT MERGE RFC 4/4] spi: cadence-qspi: Retrieve DQS
- capability using the core helper
-MIME-Version: 1.0
-Message-Id: <20260205-winbond-nand-next-phy-tuning-v1-4-5e7d3976f0f1@bootlin.com>
+	Thu, 05 Feb 2026 19:11:55 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 604E24388F;
+	Thu,  5 Feb 2026 19:11:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C26EAC4CEF7;
+	Thu,  5 Feb 2026 19:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770318711;
+	bh=Jdvd9biND/r/WdJrI+oQtO2ma4r8HnLxLMFiFKljoGs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I1NgKviaI4JOd1E8pD76RmjeItc+e94R9UbnXP1I+nyqakLlx6/YENdvaqUSVj/LJ
+	 fd8xjPcJ1LqK+5fApY5852xi9G4JcGRtI7KmEsqOGM9XHjPpGfBjRNQAVhN3poeOTw
+	 vgvH3isrJxqTp//AGHRV6k026/WL7b7UXP+7KCacznQMs/IAt4rx4gSax+E5Z8gFM+
+	 XGDzdbQ7QxIp1J3n+pmc5rhQEOAQN2PaAC7y7nC9xum6ciP43yr+jVmYwBHkw7UFMS
+	 a6JTa55F2titDZFbzBBTZFS3TyiWjt0LOKAmS+NuY+3iuI3Gk3EiSU8jn39fs8X5qs
+	 T6vi/UNcXGWNQ==
+Date: Thu, 5 Feb 2026 19:11:45 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com,
+	u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH RFC 1/4] spi: spi-mem: Flag DQS capability
+Message-ID: <9aaeca54-292a-42f7-90d6-a533ff1f5022@sirena.org.uk>
 References: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
-In-Reply-To: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com, 
- u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com, 
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+ <20260205-winbond-nand-next-phy-tuning-v1-1-5e7d3976f0f1@bootlin.com>
+MIME-Version: 1.0
+In-Reply-To: <20260205-winbond-nand-next-phy-tuning-v1-1-5e7d3976f0f1@bootlin.com>
+X-Cookie: Non-sequiturs make me eat lampshades.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260205_110720_142353_E4B3BB35 
-X-CRM114-Status: GOOD (  12.48  )
+X-CRM114-CacheID: sfid-20260205_111154_162561_E9432B95 
+X-CRM114-Status: GOOD (  12.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,54 +72,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1884100740851243149=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is just a suggestion for Santhosh on how to get the DQS capability
-information without the DT property, to introduce in his Cadence QSPI
-PHY tuning series:
-https://lore.kernel.org/linux-spi/87v7gbdwdh.fsf@bootlin.com/T/#t
 
-This patch shall not be applied as-is and is just given as an FYI.
+--===============1884100740851243149==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="24J2+o9y03R8IWgG"
+Content-Disposition: inline
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/spi/spi-cadence-quadspi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 4f799f747346..0809846a6ef0 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -3476,6 +3476,12 @@ static int cqspi_mem_op_execute_tuning(struct spi_mem *mem,
- 	if (!cqspi->ddata->execute_tuning)
- 		return -EOPNOTSUPP;
- 
-+	/*
-+	 * FIXME: maybe this boolean could be queried when needed by
-+	 * saving a pointer to the spi memory somewhere?
-+	 */
-+	cqspi->f_pdata->has_dqs = spi_mem_has_dqs(mem);
-+
- 	return cqspi->ddata->execute_tuning(mem, read_op, write_op);
- }
- 
-@@ -3517,8 +3523,6 @@ static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
- 		f_pdata->non_phy_clk_rate =
- 			f_pdata->cqspi->ddata->get_non_phy_clk_rate(f_pdata->cqspi);
- 
--	f_pdata->has_dqs = of_property_read_bool(np, "spi-has-dqs");
--
- 	return 0;
- }
- 
+--24J2+o9y03R8IWgG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-2.51.1
+On Thu, Feb 05, 2026 at 08:06:58PM +0100, Miquel Raynal wrote:
+> DQS is a typical SPI memory signal used to help with reading the data on
+> the bus at high speeds (especially in DTR mode) by avoiding clock
+> skews. The chip generates a clock signal synchronized with its data
+> output fronts, also called data strobe.
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+This seems fine if the rest of the series is fine; if people like this
+approach then it's probably sensible to merge along with the MTD patches
+using it and then send me a tag with the SPI bit for me to apply the
+SPI driver changes.
+
+--24J2+o9y03R8IWgG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmmE63EACgkQJNaLcl1U
+h9BNjwf9EUEUuHY+UB0cc4qKd+WC0rtyswcboXBt489rM6eND+4A6ZkjdoOZ7QuQ
+KiaxQpPtbbTkDO9lfadMjHSk/jlEX+eZjF+SIYFcOYJ7L2ycEpcvIzsjuz2Kfl2X
+07ZyH+I0nW9rI7Er/o6ceAeuS3G7b0li69IJ4yO9Lc/YWe4J+QA5ZeR0Zu10vkr7
+9t1xIb2G2m1dIpAwTlwMYe5MrmpyYNwLjcAooykRvw7HHi+pKvCMS2pOBSljZzkk
+kBasI38h4e48hUVuOzbNUVh3PWtyCI988FeD55mMPVf5ANL7ZI+TJLkz1YLtQFL8
+psAixJqHyXyMLpXqTi9fx9+81IAohg==
+=TaJd
+-----END PGP SIGNATURE-----
+
+--24J2+o9y03R8IWgG--
+
+
+--===============1884100740851243149==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1884100740851243149==--
+
