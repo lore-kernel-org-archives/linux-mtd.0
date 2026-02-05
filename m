@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F142CECD998
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 19:07:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44795ECD997
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 19:07:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WuSNVqcZeKyJYssoWZIsmN4zIkzZZ53sCbFCGx/2bnc=; b=glOlplwHAukeIF
-	3mmWFv3t9szQ3DDNrUkriHM7qRDQRq5T/P0NlOjW9HOnh0Jb8l4i0x3BATtTZORS2Ht2ySh3RjHvd
-	14QFQLOJuYpBxT/ICMcBP6LTpMgKz41G0kF/twIfltm7MgNIHpeUKC8t2C73Gbte3sFb/03XDyyMs
-	W1EHnMSanKmTgQzELHy9nwl9orWHY6YKrgMsXR/dIUYlriWss6U36QWi4afOY0ZuoTeeMM6YL2teJ
-	J6pyclFJ8brZaJSXkxv4QEABG/W4dhTuX170EWiMza3VKC53lQISCDYC5AVK4wbklL6TELLK5xqed
-	tJgdQy23kM9k8+HBnlJw==;
+	List-Owner; bh=tZKBFU9q76sjs+jh9S7ULeweeVYrgNtXFOYZJoRhpH0=; b=YOic4QnzBhY/1Q
+	Y0NGcXkY8mkXvM9+kDlp5wCcJLWRovqvF3OP6AJozPxsvAxp9uHXTBNRZ1BXAuh9EXyt41j7ZwOuH
+	vynhBZikbQX+Hl5K4j9kNLtsn1i2b7OWa/uZUXZaq+OTJJ4iiDMdReFwx5ISwI32ZHWfL0yk51+Ur
+	304suRpvM+aeqa6OrbP8Wwc2ZN4QUdN3w3r4MSGaYvdaLdFIEwW1eez67BS8XPjWWlg3za9Md5yQ7
+	ebXleZdkG/p7WiTQ9EJW5f0q+nTpy/tZLsrmenTWcJ26o63QSbIhnVN4MBD7iPk91Tc1Gu43Jsr28
+	ZIWT5cGgxU2kIBuhel5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo4hC-0000000APPn-2UIg;
-	Thu, 05 Feb 2026 19:07:18 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1vo4hE-0000000APRL-3jjR;
+	Thu, 05 Feb 2026 19:07:20 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo4hA-0000000APNg-03wJ
+	id 1vo4hB-0000000APOi-3S71
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Feb 2026 19:07:17 +0000
+	Thu, 05 Feb 2026 19:07:19 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 41B381A2C34;
-	Thu,  5 Feb 2026 19:07:14 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 7F19EC243B6;
+	Thu,  5 Feb 2026 19:07:22 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 18ACA6074D;
-	Thu,  5 Feb 2026 19:07:14 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9F7EE119D1750;
-	Thu,  5 Feb 2026 20:07:11 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 438C06074D;
+	Thu,  5 Feb 2026 19:07:16 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CF3F5119D1700;
+	Thu,  5 Feb 2026 20:07:13 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1770318433; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1770318435; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=BpN8z+kIDrZwG5aYIIQwAbhujY/X57BjDOA4OXNNt5U=;
-	b=IKjNbScyxiCWSy2AsHFNMEJUi48XhsOcZqxIPvPwn1COX5iJ1z9G5/O5BygSEOUlUC5puN
-	ShRwiOqUNxajOf/8BsVnL6rnvbMJksMlGYGS5/2z6zTN1rp/uzYfRBkS2IGDuESKEsc6XM
-	dhSz6PiqGjZPNAxSrYzkDYFYMFcNUw80rEK1bHqBXdqEwmPgBVoc6Y2nzTYjW80FIaMWsl
-	4f8hC9lTitTbFQ2Thvcb9vGXt0osF5+DRc8uXv1rI8lvcKdi+c52X/7HaZIEQY8sFJRo9n
-	+yDyfLk2mMivtIi3EibJ1jTNVF8cfV8J/PasDJXJdKh/sxL8F7Z1NdtKpsVmRg==
+	bh=XDXLiZY8XfAXjeC91sKPVk2e9adP7fRa4aGhrR6KVTY=;
+	b=rjUwHRu9Qkn6W14cO/ZKOSolIGLNSKocJm4zDypZWWqeDewMU1T56965ZkP03j+DoH2tBI
+	6xdB7q+4xp1bAvm9HnG+gIREmDWdoqTTcBudla5AXh+31r5ZZHzPw/BuvCRY5UHX56xDcx
+	J1aHYwjE6/hG2tWCaq3fotlIrPme3f4gPMN6WXoFQR/e6mDuoUv8yEHppczTOctHX07LdL
+	g5Tdp28aSUhSC+yH5k+5diRJxghBVR2yeBYv060qEfxouDgAK22ooEWb//1qOq+C1VpPi6
+	1JgWE3gJMXQQl8GjqWqVPx0NXJDpFM1g+ZHculSIwFdqR9gV8ZRqtmNdK/DgHg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 05 Feb 2026 20:06:59 +0100
-Subject: [PATCH RFC 2/4] mtd: spi-nand: Set the DQS spi-mem capability if
- available
+Date: Thu, 05 Feb 2026 20:07:00 +0100
+Subject: [PATCH RFC 3/4] mtd: spi-nand: winbond: Enable the DQS pin on
+ W35N**JW series
 MIME-Version: 1.0
-Message-Id: <20260205-winbond-nand-next-phy-tuning-v1-2-5e7d3976f0f1@bootlin.com>
+Message-Id: <20260205-winbond-nand-next-phy-tuning-v1-3-5e7d3976f0f1@bootlin.com>
 References: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
 In-Reply-To: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -61,8 +61,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260205_110716_198577_6BEFAE68 
-X-CRM114-Status: GOOD (  11.77  )
+X-CRM114-CacheID: sfid-20260205_110718_013538_113D00A3 
+X-CRM114-Status: GOOD (  10.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,48 +79,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Check whether the NAND is capable of generating a DQS signal and set the
-flag accordingly.
+These chips have a DQS pin, enable it by default in DTR mode because
+there is apparently no issue in setting it for lower frequencies, and
+the extra power consumption seems very low compared to the current drawn
+by the NAND array itself while operating.
 
-Not wiring the DQS signal on a DQS capable chip that will be used at
-frequency requiring this signal may be considered a hardware bug, so
-let's assume this line will be routed "in most cases". If/when we get
-issues with this assumption, a DT property describing the lacking line
-in the routing can be created.
+This setting will be required for high speed I/O transfers (with PHY
+tuning).
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/core.c | 4 ++++
- include/linux/mtd/spinand.h | 1 +
- 2 files changed, 5 insertions(+)
+ drivers/mtd/nand/spi/winbond.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 95df4dd5330d..67270e49c179 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1974,6 +1974,10 @@ static int spinand_probe(struct spi_mem *mem)
- 	read_op = *spinand->op_templates->read_cache;
- 	write_op = *spinand->op_templates->write_cache;
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index 6dfd0dcc8ee7..7401ee1007c0 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -437,7 +437,7 @@ static int w35n0xjw_vcr_cfg(struct spinand_device *spinand,
+ 	else if (!single && !dtr)
+ 		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_SDR;
+ 	else if (!single && dtr)
+-		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_DDR;
++		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_DDR_DS;
+ 	else
+ 		return -EINVAL;
  
-+	/* Assume manufacturer drivers will enable the DQS pin if it is available */
-+	if (spinand->flags & SPINAND_HAS_DQS)
-+		spi_mem_set_dqs(mem);
-+
- 	ret = spi_mem_execute_tuning(mem, &read_op, &write_op);
- 	if (ret && ret != -EOPNOTSUPP) {
- 		dev_warn(&mem->spi->dev, "Failed to execute PHY tuning: %d\n",
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 58abd306ebe3..72babba69c7a 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -483,6 +483,7 @@ struct spinand_ecc_info {
- #define SPINAND_HAS_PROG_PLANE_SELECT_BIT		BIT(2)
- #define SPINAND_HAS_READ_PLANE_SELECT_BIT		BIT(3)
- #define SPINAND_NO_RAW_ACCESS				BIT(4)
-+#define SPINAND_HAS_DQS					BIT(5)
- 
- /**
-  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+@@ -504,7 +504,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
+ 					      &write_cache_octal_variants,
+ 					      &update_cache_octal_variants),
+-		     0,
++		     SPINAND_HAS_DQS,
+ 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+ 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+ 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
+@@ -515,7 +515,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
+ 					      &write_cache_octal_variants,
+ 					      &update_cache_octal_variants),
+-		     0,
++		     SPINAND_HAS_DQS,
+ 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+ 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+ 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
+@@ -526,7 +526,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
+ 					      &write_cache_octal_variants,
+ 					      &update_cache_octal_variants),
+-		     0,
++		     SPINAND_HAS_DQS,
+ 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+ 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+ 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
 
 -- 
 2.51.1
