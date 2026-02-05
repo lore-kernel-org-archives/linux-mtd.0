@@ -4,45 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5770FECD993
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 17:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ED96ECD994
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Feb 2026 17:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=r/QkmzynoVHDL5aex/FEgFjL/sKyBU8OqUiZoLAdbSk=; b=NEsnUYZ2xK/vU6
-	pAzjGFcLYMCIlOcd4Ydb0cWLOKs7mlsJBRffOsCw1T9QHwglw1zH/CUpDnhb26Tr7xO9RpES8sGZu
-	9dqk/De88mCkUTA+y2GcO/qn/fG+7AG2QLdZXcB2wUb5nG0xIusknEl12QLq+A4d4iYZFYgett8Ya
-	EVV9ykpylpl7IpG1nAyDhX+RkjICDMIOWWAzEP5fLfDFoF7q5mcDGPR01GhNLidYjn4BXvtCE9MhU
-	DuEv0HRSF5uGVWEoH2Dhnyt/kgeMEG3ZNX1vbJ0Nway6sTczMUWtlUgpL7PDhJaxv6OJx2sm1KmHG
-	9HBnkwpoSFn++Yd2d/4A==;
+	List-Owner; bh=J/TuJEMWfSKHOCATM2fAuTi0jsqnYKtPL3Gv4aL6bUM=; b=oAcMeUTQsdUeZZ
+	sk7SWFUtc/K05Y7oQHpjSkmk7u7xrIgxP07xadQWOLY18IyNdfzCEHBGO1dOaF9c6I9s/IHIJvL6v
+	TE8LLChntkAM8Zlek9OWCvceYXOfhcpJS0Gch45wft/Kmfckthruzb+jocC/7TGeu6UJr0O6rFzz4
+	17PD2VBxa2nCDYISWZ1Fkx1R5BxWp4eZTWdvOMibkRAT/k8OieyuU2OvvOoHBBQeR+fz5eIw5ai/E
+	fsDlBK3nfcEEl3q/6mzB1HQNj3bt4L88wlYllcc97IvA3rtUnFycoHVzsKNYAa20fQx774iybHFVr
+	14sNDknQamktVk6BbX+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo3Gg-0000000AIjK-1XZH;
-	Thu, 05 Feb 2026 17:35:50 +0000
+	id 1vo3Gr-0000000AInl-37oT;
+	Thu, 05 Feb 2026 17:36:01 +0000
 Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vo3Ge-0000000AIi9-0HgD
+	id 1vo3Gn-0000000AIlO-3237
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Feb 2026 17:35:49 +0000
+	Thu, 05 Feb 2026 17:36:00 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id B89FCC243B0;
-	Thu,  5 Feb 2026 17:35:52 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 4F34AC243B0;
+	Thu,  5 Feb 2026 17:36:02 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8F98C6074D;
-	Thu,  5 Feb 2026 17:35:46 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 73086102F2A49;
-	Thu,  5 Feb 2026 18:35:43 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 264766074D;
+	Thu,  5 Feb 2026 17:35:56 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1B300119D1669;
+	Thu,  5 Feb 2026 18:35:52 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1770312945; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=P7qPm+Qj6DOdJcE5S4qzCC8CDusFkdDkAEcNAPbSTjs=;
-	b=2tByKqO6OicYo2ldtnWeiYKqZls56u4AqRmLJ8hXdSkgrY3Gq+WqFwi+0LHSUE0ApE+5Jg
-	Tj7MhfMmj1q58Q66l2391dNNcK7Zq35shpb5uP3K6RF3bKuQJlOP70IfvjPrbfZodDl49v
-	dh0qdNGvPESgdtKY1/fGCpzxWgd4LAc4qfDddLOFD3/SnZyfuvHCwSZp9xy4zNe+5vI/xM
-	F3h+tb4rKt55GlZP0D+XD+cRe9keq8fP/u2YuborlJN/UZuZS7t7IIXZYJ4GPlQcmtJhwm
-	pyg6LYMUBn24EnUuQ+57IZ8tz+Vn/EtbHONBmtFfvI2qfYFrc2xuACag3rgGLg==
+	t=1770312954; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=sTbcat/+A6pqTkLaPExMkSATvgcyd738Gv6Z0JtLFV8=;
+	b=DsmEtDfBzlkSTDMTDA4BperDN1egi5Qee+7H3rX5dPxeDebP7b3hZTsqiSmbvSXsmhwult
+	dgz+lqxGKXFQwccpPf1apwYMBBYy0GwoUrmGP1qbHk1+xyRRK6RkmH6Hr3EH/A8ozlfzp6
+	Oj9Igv8TTlMXWjllQX9c7Vuu/66YUipW201sVOOE8WE0DblM/Q8tr21ePNk0SNrS5pWnLB
+	BOs8FyPJEQNVCwpin6bqKIgeHW2xHy7sVGlweXwPYax1sLXJuNny8eQQ/eTRgNAfhT7OZ6
+	zZi1HIdeES6vzV4HmuEzJyIHkIauom7+DApSGVdN4YYSNpSJoW2C+okbNH5AYg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Santhosh Kumar K <s-k6@ti.com>
 Cc: <broonie@kernel.org>,  <robh@kernel.org>,  <krzk+dt@kernel.org>,
@@ -52,21 +53,20 @@ Cc: <broonie@kernel.org>,  <robh@kernel.org>,  <krzk+dt@kernel.org>,
   <linux-kernel@vger.kernel.org>,  <linux-mtd@lists.infradead.org>,
   <praneeth@ti.com>,  <u-kumar1@ti.com>,  <p-mantena@ti.com>,
   <a-dutta@ti.com>
-Subject: Re: [RFC PATCH v2 07/12] spi: cadence-quadspi: add DQS support to
- read data capture
-In-Reply-To: <20260113141617.1905039-8-s-k6@ti.com> (Santhosh Kumar K.'s
-	message of "Tue, 13 Jan 2026 19:46:12 +0530")
+Subject: Re: [RFC PATCH v2 08/12] spi: cadence-quadspi: read 'has-dqs' DT
+ property
+In-Reply-To: <20260113141617.1905039-9-s-k6@ti.com> (Santhosh Kumar K.'s
+	message of "Tue, 13 Jan 2026 19:46:13 +0530")
 References: <20260113141617.1905039-1-s-k6@ti.com>
-	<20260113141617.1905039-8-s-k6@ti.com>
+	<20260113141617.1905039-9-s-k6@ti.com>
 User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Thu, 05 Feb 2026 18:35:42 +0100
-Message-ID: <87ldh7gkk1.fsf@bootlin.com>
+Date: Thu, 05 Feb 2026 18:35:51 +0100
+Message-ID: <87h5rvgkjs.fsf@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260205_093548_246324_061EBE1A 
-X-CRM114-Status: UNSURE (   4.18  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260205_093557_902978_1954A9AE 
+X-CRM114-Status: GOOD (  10.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,21 +78,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 13/01/2026 at 19:46:12 +0530, Santhosh Kumar K <s-k6@ti.com> wrote:
-
-> Add DQS (Data Strobe) parameter to cqspi_readdata_capture() to control
-> data capture timing. DQS mode uses a dedicated strobe signal for
-> improved timing margins in high-speed SPI modes.
->
-> Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
-
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMTMvMDEvMjAyNiBhdCAxOTo0NjoxMyArMDUzMCwgU2FudGhvc2ggS3VtYXIgSyA8cy1rNkB0
+aS5jb20+IHdyb3RlOgoKPiBBZGQgYSBib29sZWFuIGZpZWxkIHRvIHN0cnVjdCBjcXNwaV9mbGFz
+aF9wZGF0YSB0byBzdG9yZSB3aGV0aGVyIHRoZQo+IGF0dGFjaGVkIGZsYXNoIGRldmljZSBzdXBw
+b3J0cyBEUVMgKERhdGEgU3Ryb2JlKSBtb2RlLiBSZWFkIHRoaXMgZnJvbQo+IHRoZSAnc3BpLWhh
+cy1kcXMnIGRldmljZSB0cmVlIHByb3BlcnR5IGR1cmluZyBmbGFzaCBub2RlIHBhcnNpbmcuCj4K
+PiBUaGlzIGlzIHByZXBhcmF0b3J5IGluZnJhc3RydWN0dXJlIGZvciBQSFkgdHVuaW5nIHN1cHBv
+cnQuIFRoZSBmaWVsZAo+IHdpbGwgYmUgdXNlZCBieSBzdWJzZXF1ZW50IHBhdGNoZXMgdG8gY29u
+ZmlndXJlIHJlYWQgZGF0YSBjYXB0dXJlIHRpbWluZwo+IHdpdGggRFFTIGVuYWJsZWQgZm9yIGlt
+cHJvdmVkIG1hcmdpbnMgaW4gaGlnaC1zcGVlZCBvcGVyYXRpb25zLgo+Cj4gU2lnbmVkLW9mZi1i
+eTogU2FudGhvc2ggS3VtYXIgSyA8cy1rNkB0aS5jb20+CgpBcyBtZW50aW9uZWQgaW4gbXkgYW5z
+d2VyIHRvIHRoZSBjb3ZlciBsZXR0ZXIsIEkgYW0gbm90IHRvbyBtdWNoIGluCmZhdm91ciBvZiB0
+aGlzIHByb3BlcnR5IGJlY2F1c2UgdGhpcyBpcyBzb21ldGhpbmcgdGhhdCBpcyBzb21ld2hhdApy
+ZWxhdGVkIHRvIHRoZSBjaGlwIElELCB0aHVzIGRpc2NvdmVyYWJsZS4gSSBkcmFmdGVkIHNvbWV0
+aGluZyB0byBnZXQKcmlkIG9mIHRoaXMgcHJvcGVydHkgYWxyZWFkeSwgSSB3aWxsIHNoYXJlIGl0
+IGZvciBvcGVuaW5nIHRoZQpkaXNjdXNzaW9uLgoKSG93ZXZlciwgZm9yIG5vdyBJIGFtIGNsb3Np
+bmcgbXkgZXllcyBvbiB0aGUgZmFjdCB0aGF0IHRoZSBEUVMgcGluIG1pZ2h0Cm5vdCBiZSB3aXJl
+ZCB0byB0aGUgY29udHJvbGxlci4gSW4gdGhpcyBjYXNlIHdlIHdpbGwgbmVlZCBzb21lIGtpbmQg
+b2YKImRxcy1ub3Qtd2lyZWQiIERUIHByb3BlcnR5LCB0aGF0J3MgdHJ1ZSwgYnV0IGFsc28gZWFz
+aWx5IG1hbmFnZWFibGUgYXQKdGhlIGNvcmUgbGV2ZWwgbGF0ZXIsIHdoZW4vaWYgdGhlIG5lZWQg
+YXJpc2VzLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
