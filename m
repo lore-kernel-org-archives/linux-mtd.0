@@ -4,98 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A44DEE6B45
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Feb 2026 17:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBB53EE6B48
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Feb 2026 18:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CpsBr7ZxBR+WNdvxsuSH1FOhOkg63W2usELqSiECqaI=; b=nfReHcV1z09/TM
-	xHYWcPL+EnriEPvcZrWBLSVMklpqt4nOW8JnR6Av7T1t7GKbSuGUyhLVy52jjXhDBFISuzAcLXx6d
-	esTGiivM8WHUReEGTA9wic8vOfC12A4uszO9PN3zjsQCiddFvhUyRUkdOlfFxbvluUCnTBF4P9FgL
-	8mKWaKnPEPC7u6RkOvkypzHdd9Tfd5gZ+TAHnaMv6qKJwfIeYFiHyvvB0kVIvr4wM/6Qy9bW/BpN/
-	wKWIq52mWrL92cybvUF3b2f64BqI5mung52wcsx5DqqR61yQRgVJ7TGK4agLcK/LksbMv2Tnq6tuj
-	mew6QxUQsUbDYvAPB3mQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:
+	In-Reply-To:References:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZZczErwI09DoAOjqNeOaj7OiJ/DWoeW7TZyOpdJDbFU=; b=uwstb/G97cFaYX
+	irzqAWJP/1SDvOGZnKl+/I1rdWGVuDo2RQt0UviFUnkxBI4ETONwl3ODfMB0I6X2OoAbkMRNNB0K7
+	fnJaXyfejlvXfPkxQnELARFbfYdw1RdF5BiCXKiOh2q8cOKBvbD7cF+pyZ6Upn7otQWhp632+xzcM
+	OK1rIly8d4MqZFAbXwIZU1QR5tki2DhdwZaIBjRZr4k2K8ULnRCyRBA7cD1/4sh5/8tgVvPwk4jhU
+	ty72lGfMbHinz5vb5yO1BhcZrSRIY9hP3+IAa8e07gT+M0Qz/z0XjMMdGgB3B8dx0L8pYF404jTJD
+	JvMCXGnXEPD8oFRJVZ3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1voQ3r-0000000Bdva-3fNC;
-	Fri, 06 Feb 2026 17:56:07 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1voQXp-0000000Bggy-1uXk;
+	Fri, 06 Feb 2026 18:27:05 +0000
+Received: from mout.gmx.net ([212.227.17.22])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1voQ3p-0000000BdvH-048w
+	id 1voQXn-0000000BggA-05zi
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Feb 2026 17:56:06 +0000
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-382f0732612so6428581fa.1
-        for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2026 09:56:03 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770400562; cv=none;
-        d=google.com; s=arc-20240605;
-        b=R3OD49FwzwckzxoxpuYfbRF1IjYjsWj7WVN1mn6cTCAudd328JPZ61Z9ncGoIZ1cGZ
-         NpeyzslSS7jTsS3sL9m7QAbnEKC+bGAnm7V6BhfT6oPtHg63diXw+wzl9T09CoHeea85
-         xwbEZZy+IjGg1U0Gpg99yf5JxTtClaCHidjbHeFk/vDHaUJvJ5qxx+c+DPL3ihYXbVeh
-         s09rex0Xs+U4quM2SWuk2cNbntAlXhX3QGtawaK12lJVxmzDFVhKI7cQqas6mT/upBBc
-         D+WTqHcMS23nthSoQM9nCnGVvUiawRnEst+bD3cJbM2gi+74l82pQZzGQtP9Plb76YWl
-         /Jkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=q8kxVDUGhiSlFDsGsGtilgcUfUBCSynTPCrH5G1wS5c=;
-        fh=TFov4JuW4s4MeZmKQvhzKfADMpRVOFqx1Ag4LFLut38=;
-        b=EWXlVm2la1eo8fG7yZ57z43qTqaC5V7jq4U3Z3csYcRhfY8HcSKdmrrVyemgIqD+dC
-         KtP37x+w1MYCFGCpRL8cU6d+xCWqYZTZ+3KAZOyOtylH7Lwe+Ii3fh9hYrH6dJ3wz3xY
-         alPk4qxGWJCrb8rKN6cXUYm3OE/Apalg2631RaJWSs3UMjmFbwTTzB5miSSI7rWKvDGa
-         rqoYwZ6ZH2EeWZmISTcdHDuBg4r+w4okFaChCT0m+DzKzmudQeIOEdDi322zTzULXJuB
-         BjkvarodVydZnis2C3UhGfPD33ip5Ec+zCX5H26kUqMv6gand0uakUXoTnxBV+VWG+8Z
-         lbGg==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770400562; x=1771005362; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=q8kxVDUGhiSlFDsGsGtilgcUfUBCSynTPCrH5G1wS5c=;
-        b=JFmoPla5fca/QHAaACcRV+MYOyaDAbKl2G2PdedEKPs3PMhujfWnttseppSdt7d4Yn
-         KvDwPJGyrTPMmgGO+6s3hgAHy/nV64TQ3eCBQop2vPqwuft1WxWWsbqQmcGKPB/+jxbW
-         DvAYkz2oyph0horp/KcY9dFc0+bYNZW+UID9C79HWX2bzVAusvfvSv87DsrJeYyB62n8
-         Akb7p8eL0hinhWQgBYpO/udl+UfkKwYjUTRum3Iusywf8ZmxGNb+dHJ0gjTmvTyxUk7N
-         idARhxKB0LxQkPUQxsywZRxdwPd6Y9UDsl+cFhNbZ2YdwhgWvXsv6Y87LqLUmL0VRXs+
-         tNiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770400562; x=1771005362;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q8kxVDUGhiSlFDsGsGtilgcUfUBCSynTPCrH5G1wS5c=;
-        b=o53uvY7xb45XZuGDJzJ3fbbMKVxJSHa7mwQVZePmyKK14MnSXln+h3WKPtSDBFTINR
-         ok+UtiAmTpYicVItdSKb72Pjw4hd2i0CRo091fUnK+0mhu2Z3tti84jLbQgxP7xav+8B
-         nDTVthwpdUE+huj9iPCnmyxrxqaOhQKQtwLkOMeasLx6hXTOadzRXEsdXj+qqMN27wpq
-         oq3riGqkOw5kupSbjtyjk4xBZKPEauTJENVTwUUG9/Hy6Nj8XYnszFK6FtaVsXJHjj2d
-         pi9hiJR0v6zOT7S4Pb7GWCtQOQdIzQxFvLNG51reWgSIVWBAjqdFioy4LVPAu5pYHy99
-         vfUA==
-X-Forwarded-Encrypted: i=1; AJvYcCUzzYXsmgD4V+buDgO+nQtwHnw0qvnJEyC7+JGs7Rv28nVg28d3EAJtdlTrNjc906WZd69S/JweE0Q=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy5eS3myJwsGfBaLIPPEEapMOO4KyEY+1Dy9y3/3GdN9mwRAW3W
-	POpVm3QiN2t0ShpcfIhFHYhR6G0GLSgUEXTEn7XliwNd+EBjyMh6/RKTlaQY1nq6vWa1UdejB5l
-	Sh5XvYgYcP+CITe/8G+DtfXpah2EWvO0=
-X-Gm-Gg: AZuq6aIxjBr0mSA5WuDL4HblsdW907C5t9PBTaRzbSgFn+eboVl95KEcknvsn6EiHEz
-	jN+OWp3uw6zR7xtevufcsQIQNS5qcSwRZU83xQh0u/2SbiYKwdPzyiBQF0BlXJB4YXZ/CAVyrzI
-	0PsovySkD6yL+lo6AWzxodBVMmZlr6SiGgUrw1INcPnAbii8NS7vSUZl0lXtvzPqu95IViLntjb
-	jfhrrdZUPrSECTHjJEYHlxVLbvvNPNTpIIAaGdOC2M6Vy8EOwZ/caCo4Z2wS9MPTgJEdC7jvb/W
-	M+J3PakfWTvxMskjqWNaKNmo/zA=
-X-Received: by 2002:a05:651c:54d:b0:384:9355:6a3c with SMTP id
- 38308e7fff4ca-386b50cabe2mr11749381fa.24.1770400561931; Fri, 06 Feb 2026
- 09:56:01 -0800 (PST)
+	Fri, 06 Feb 2026 18:27:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1770402417; x=1771007217;
+	i=markus.stockhausen@gmx.de;
+	bh=2iumJ9LjGTkmfv0YIpi8xXcEknkCFVizhG4S/4SfUWw=;
+	h=X-UI-Sender-Class:From:To:Cc:References:In-Reply-To:Subject:Date:
+	 Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=mo0lOx2CgV7oRYbH3enR2iTsX2fclIVGwjRbkjeWx+WlWj+2coqUpGCwapciSds3
+	 fllI4LN+C51NGSu1yE1fEDdCqJ2Ss0hq+loAyjB09GIVywSGou7DL5PSHzr/4oJv0
+	 A43CLWXSQAOodrzN+CN/W6M1YAfcgt6FEg+L58l7xY5vADbss0qbvjR1s7iOOeKul
+	 gpteO0K3Os3WtBXIrIXskFATUoag0i7iCJQZi4ZCheXiKA89/oz3+D9K1MSCA3vBg
+	 6OoxbFYmufc9plyRN/CYLZf4e/RmwIjdbIHoQuS1fRRM8jyUR5F+RcLITOfIOeju+
+	 kXcO/mp48TwDMOo3PQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from colnote55 ([94.31.93.28]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MA7GM-1vyqfD1AbK-001pS0; Fri, 06
+ Feb 2026 19:26:57 +0100
+From: <markus.stockhausen@gmx.de>
+To: "'Ahmed Naseef'" <naseefkm@gmail.com>
+Cc: <miquel.raynal@bootlin.com>,
+	<richard@nod.at>,
+	<vigneshr@ti.com>,
+	<linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+References: <028201dc9759$52e364f0$f8aa2ed0$@gmx.de> <aYXrYC06slPu1EUJ@DESKTOP-TIT0J8O.localdomain>
+In-Reply-To: <aYXrYC06slPu1EUJ@DESKTOP-TIT0J8O.localdomain>
+Subject: AW: [PATCH] mtd: nand: realtek-ecc: relax OOB size check to minimum
+Date: Fri, 6 Feb 2026 19:26:56 +0100
+Message-ID: <05ea01dc9796$2d228d80$8767a880$@gmx.de>
 MIME-Version: 1.0
-From: Fabio Estevam <festevam@gmail.com>
-Date: Fri, 6 Feb 2026 14:55:50 -0300
-X-Gm-Features: AZwV_QioU8KiIiOOC8Njw3nNJBOGL-MqyzHYdCzSGvYQJkZiGSUbEiGtfQhPhv4
-Message-ID: <CAOMZO5Bdxv2ifJ8XUq-dcE=NZ=DJdDfw+du-CQ_BTUigxcKV6A@mail.gmail.com>
-Subject: SPI-NAND crash on linux-next
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	linux-mtd <linux-mtd@lists.infradead.org>
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQLa2LfCVmrlWVTz5m0rNefyS0gZqwGf6rins2x2/SA=
+Content-Language: de
+X-Provags-ID: V03:K1:QnwDPU1GklBld1R/gRoiVTvo1C563gA4WCariet8hAL5FvawHIA
+ 0QyNyHYnDPkDTQxa7jEwDYerB08lJj0EXk5g6wxTOtYOmgafn0faOwJQtteEr45idE8mQUk
+ eKKjw4t5orCA7xGBlXFQmcYynaHVdZnU27eoHeQ3C2p42AFfkkIhZTG9cRLDOyhAqiMEple
+ Is9rlqWNb/eVnWRBkq9Bw==
+UI-OutboundReport: notjunk:1;M01:P0:E9ic7Qo2oyI=;WvPWsfTFXnndqoo+t7mX274Ervg vlxk5M2nJ6qFeaLROtmCwo5tFd4W+XNNHm80Of6ZiWmUqF8PWs7/b33ialXeVrrqbjZjRyja2 oouDp64ZhI4Y9jja8HChPYtXyEWui+qgF+CfQMGRtVHXJNUf6+CEz+IlUzlaGwmHdXMWMl4tQ f0ZBAWS62yTyRnUppfDmknWbqVA5pLmGfUkcpkYlru+zLZa/uPjwOKn/G8QjLWaSVgsEjJ9qr JrSPeLABvJCESoEkbhxP53+eUI5SR8//Nx8Kf5stBibnsbPFXqeCScwaEjIm3/XyD5R585LoB AczfFOHjS8iGRi67lIAG32exzzFXNr16JL4pisMarlk3Ctfg9G1RGoqaTWt4DT478Xa2QY+uL MNCO3ZapQQl3ZPorFfknLNFS/5hGpmkPRFC8ZpT7RGWruAFGuNjwSUgirOji2o4RW7QIwShr+ WR5FInEgL5l2lbgbVfXyEoY6JHxs/kU9fMmLlts5nI4MRKtkKBmte6RqvC40fFoSv9BxGGTZ2 poi3vgZknx09lI+7oQY8VukNuUQVTt39FD6Fa87w/uZTT9lZzWh00co1z6q9uSAkOxBTOuTn+ E7XSfLa9hyJHTOlpaJ9nhuWLey5pExYUDKFP3JlA+5l+ToiWnUqmgX65pdfoG1j0mdmqFATWT rqd/+sr+8FFSH6WwXjZutiTxknI33SC7ypaVMyE874m/DZnvdJfgaPhxNSRSZH8nFnazNQPUM k09YOGB1v1iolMPP84/05tPW88ZpTW1dIT+YagSrdmx5aaupvIM5f/oBsQO3tC+IqmhZ/knd7 2u5pUhxDyG2M6a7eetvMOGa7mKA+zfWMtpQRkWkNMiEkqcME+sD9pI/q6Y8p7PSyW/OOqAZFp RxxfBG5+UZ7TpCQqy/qqh9okIiDQiPFFw0ocFveVMPFEcWLNAYQzpkOehl9hvdrqhLZnhtk/M 7Rqbu3BOD9KdjX/JqLgVpgcjfvgVYm/mw316AsBzbLtw9bUx8qCzGS9TWbznNTG9RXAHYeu/o l0tuSFMtuOyTwo1kiAlYEIhXDBeOfoGw1ULJlhuJZWntjZp0riMd7fQhPgWmIwYVP8XHozJ1G 6mXdFzj1mGQzumvMMGAwGQaFwUuegUGh25l9/fwno5sE512Sdib6ArKaCZS2FGfqiVq8GVqae E26QxQqrFE3S42Nh06rAs6DiPsA901mKB8Rcpy5dJtPv2BXSBYBIK195cjF+/RsDF1eEAO25T WPiK1u3hsjSdREdFKuwhz1U0RniMTw7QZD9/Iy4l5ynThsNtRq+b0SjpDbf3U/BTJGl0Dcrlv sGY/jpOZ5l6aVVLSaY3wAeRR4JA/R16ck+/q+2b3uYVtoMZzLLpo/lBz99+xsIlyVg+L3YrLW BzB1Vtvdpw3grn+QMkH+qEmRfYsNaJapOnTGERDgm6gGdGCdFy3JK23Vpb14erfQgQ4gzmKRm p2ToLuXXjxWFnfATYjcTy4mzU9BvVhOV1x1+un61G7H2Mqef9kgpZSC7aNnb7HY1gPy3G7X2g 9obiGJTkURhJUIgXjeDV7D2C5BOYTBHU32NRWpk8KIX5lRY9ILLkI2WAZnMkTgckQq2lh+fJ1 ovwNSqSqlv/cL3k8Y1Muj905feOo5FOtHqcIU6suqHqkW9gEw+krFaTI96oyN773RiakkiMwp C6IWyrC9XocslInv8srN6+URNKUGJ+QR3tOwdUtuGcDhCu35gBrjAK7CpazKBlz7EOWKiAB56 rtvwFsjX07TdKS2DqIdnieqx9V/bHA/4snaoN6tEa2sw9v88Eq7SwO0XMboZYnxG8HZWXE/Ql L5guZQ81GAIKNmKx0bf8Ti23fP3pOqB3l4t9Ts4k8lwWsqicPbIBkSHxpeLxVjE17WxdcYMV/ 3nXI0JrqNDRNssUKnYUEH2eZFDNFQ40YBRj0ZyGMiUJ3i4zB0bbxleKvM2XjCfb1YOr8Z3B9y QrSsBZStyM2rf/dtkV8UJz6SY2PTXKHihxjfo7qZWhvIrgFUU4VT4Vm+wXCPMrc26KIdl5CYY Hjgyc0OUa6AlsAGCyKjM93WjP7tQYywCrytOxdPwRXZ8+zoxPrmdWO/4C2+MOQS/3UWxu9jzu HQtm/zcrQrwRgHPsjRyzaHoSqAlbaG5ufdEwxOv67FmxQYgvK8q4jtWFFX0vi3Q4vpp4oMQHO 7uyZGrex10HXTSsDEjNEwm8gfJ+Jg73QKaPHSuKhaWlQSaP4UYynUy4IvG4kjdXf34k8IX0ax +IfTe7fOHiVUBTy0tZjTUa9wTZPAipe8bXAAweg30AS3XMeX6R/wTXpfHSEAdhMlriO5mjQ14 Tmbo03I/d7Il620nqa2j8HrrMaj2PU9pvJZ8M0EYGXhfI946Yj73PiWddrgwExE4gX093ljX8 S8BnqHDnaylRbg/HDvB4WyW7Eaf9/Q8spJMUb0cmfm2EW9wZ7Q8MYytjpHv9ZjzIQ46xnpTRf JfbSISZLTxpmSsolebIS4frG7i5UmtrIg1Gooc7aa2USZTDMXeg03CDGxwexlQTXSsiUmlFTK nyjVZmefTa9O3kAi5wgsLliEU1iI0ngy5QYJn47uuWFByeFpG00oaTzPKv+JyY4UoOQYtgv73 LHQNDhCNLZw3DqlNAp+HOXSrHB0W7uY7jUrEwCOdUmjMwOVebsX6AoL6UEgTZeASzPjAXPKb+ /YzEm0GtUcP4SmXgjcpOGXbJ+0KpRG9o/vYHLh0fqDv9wx2tUyjzEHogzMWsa91cUJV6YBOj3 ONToJhg28Zq0+Eny5VKr03WzbdyWCYO9CFDXK0xGfoAaqaNdSREOf9k1aSjcqoels47rfikcu IND15pJBr7Vnr8mdHv8qsMP0g2WGy1Iz2PPTPo6D0SPCIDpZpY+yWysPkoiMWkAn4TdD6esUL EM+I8MpZ/fd3uXPxToTXYKvkLx90HW5SjFRhjRbPXexYdldUbnYmGG6tOZty1pDZTkBy6k5JQ 0oS+y24A/lC5QJxTQf1JAyJHAxGCd5nUJhWJ9uOTMUGhstpc8MBVYPmX+3y1eNtgSs0jsf1rz 8LVmt4OYkkt8iV+sNWieU0nUV0qIMDbvxLl5vj5ZNnKVt8DvbkU1vR7FD03GqEcTIAEKBuvAn LrBvx6AVJYbXxdIpqsgGOL2SIAtBnuJrZzM+6gnXl3ZZ5iostiYq2hht4f4mrzto0JEyACwJv iQ/QfaL3f/27KvcNDBvIe3Lb6yyoqBSNBUWcGvmQXC+8UpBDlL+C2M90PJHdsdR2VTrwc9ST3 1pcvYgH//heY9dtWSd+3rAWbL6MxeUjtF9n2FWDmlFvt6Z6CeLnhVt8MP/bgzwyd48+74Jgyy 4e//ygZtDRGSQeN40HOHFuzlEF1wv6UsdSWyOVn0kfl8WFrPVz/GWwqJ2ev1GePx6kIx3BVEA CBy+9ZjyglLyCUr5C2OXpZTb1AC0yQmZwG1c3j2tWgYxYfa1Lg2n9O1CEOrOIDSP71L4qFVS9 CQWTMF44Gz2A/aineIs2wW/g8BNAXUsWfQ5syjd0JrHQbktccG6+Yt/4dgIZLG4Qzmgm/MVTe zrC9X7txGWFaQEA8/eB0oD4ESJM/BFO/cFXZAzsKyN38vm7A4iZIciJR4gJe4n4npd9gHi/u4 WStggn/RAK1li0MWj7sWRsVWfAx7ps9dbIbacsfWV9RxT253hhRCsfVYW2vj8m91NtCsbeZ/s RJtMYqCSCBiW1Wk+iPbi8AzEybwp8qqTp2senjDYEMY8pjEhu3jVNuotMxMcgu4vlcbatQb3d fZYSMY9oq7VMGSnG77j4ffWp6MGD74i4fnFMq679aD1Zbd64gic59OXAgiacDHe8Bx0jBqr5E pj+povsmGgwR9dk3vNQ+0NwufwU1JqeskN+zkFGzgXGsVRY2udKBxN2vhWywinUS1tLi93d2q
+ Y2wmsagyjqMZ61Geyr6/l29ahwd/fF9B3XUyR6+q33aXNEi97XQKU2F5KSxnHlWOCOBy6B56t dlVZ6VbYGwpakx1tCb+go8U17tJ5ZPzBlFt/s+EY5KjBZxRS3TfsYKOQ8F5zPN9N12UHy4dPb fQ597G+QLk0Z3pZ8XRe9dzmSYyKTkOnDCmj2g8MG7UnFLzCY2X/IGjdKeBhZlLJpvpXlAF50R EzxtiwmUBfY0r38lcCwXkPUl1xgmBqFwVrDjFy4M7H6IcwQVLnTYDC0j+zzyAUeMdIFnmAykM gLuNHdERfPM0B/l7pMRiOMaVCGw/PAWazMBiH4Lq4XWvGHzR6ZN3Ob2VxJSJbJO/m7kwk/sG3 hU+7AuTlD8pvyyns1u4E8/BE4kk7pgOJ+uHk35vtk3TpeszsstV+vBZnhtYB/gcBhbIM3NTMB hE4zD6NVEH63pc9o9VxN/7TXcWvhRXVtD7LuKjJXsLXNHRlNENpCuN7RTXBghoJpJ04Ccmh/T 5RJcmy4PxqFCmLqxQSWGtf35lFJKUH0cnFc0hjy/WIZkFA72QSGM3JtdyYl/hcvu9ffHz3ttt WJ+z13iN1Xg0LTgaPm1cpV1HN1xBRO8vB+VStgMs5PGw4AG6S7Iix5Y3oqTUwf9TMVrr88eNg 1xIOX4IjbCD9oQ0DuQQUKAVykCvwn99sjBjx3WhkS1cWU3t0xX6UiSXzop2nw79yL/aE5YPXJ NsAMg+bTkJQiLDf2AMkK7atX+4ttMdi675G4rQBPYpxISFi91jsnsU38BVlq41NLGr+dvut0Q 6ny3K3RHnLzMvuZHpzrSEevoImjc+wGNlLJbCWeANtvtRaA+NMQ50wpqIfqpBb43lY8SA5KvR 3QqH2ZnAgyhZhgme6B1Y5Gq7Fvl38E6iWQSPk3h0i7Pt1ZU60wttZfhs9XBruRnMqBpBY7wp/ qysWxLayYVnI3a6lv4zuX42Z1ds1ztinBB1bn+uvKlAuyiiItqA+noxUWR9LekOkhtFjRd42o dGhYXRgGcrLBYZpSjgRYAbfqP5dULWCzLbBHL+A2cBOOQituf1eB90TTcizjCLZ2UeYoPrgVE nrWyaWHWZq/eLE/xFzX2/q4mzhqINrceN3yicbqAkh1L7dD6Ehl75zmgF3f0rNc0o0JT9uIuM rqTFKVYeEWAVmRZC7MMnrPxmUPwgSjNK/Asa59c6BSdEZ6yV0jtsXShlYn5XG7WLLSAjysSvl JOx2qUSn5ZzXYO9FdPge3OkZjoZXkPtHcxl11VVcY0JIaY1yDqLy2RlF5y29vSnv4aewQjBX9 fAoySR6k=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260206_095605_167234_04195F44 
-X-CRM114-Status: UNSURE (   7.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260206_102703_345938_8F1364EA 
+X-CRM114-Status: GOOD (  14.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,193 +81,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-With kernel 6.19-rc8, the W25N02KVZEIR SPI NAND flash is correctly
-detected on a Rockchip board:
-
-[    2.012543] spi-nand spi0.0: Winbond SPI NAND was found.
-[    2.018512] spi-nand spi0.0: 256 MiB, block size: 128 KiB, page
-size: 2048, OOB size: 128
-[    2.027874] 5 fixed-partitions partitions found on MTD device spi0.0
-[    2.035035] Creating 5 MTD partitions on "spi0.0":
-[    2.040387] 0x000000000000-0x000000040000 : "env"
-[    2.069278] 0x000000040000-0x000000140000 : "idblock"
-[    2.077356] 0x000000140000-0x000000240000 : "uboot"
-[    2.085266] 0x000000240000-0x000000a40000 : "boot"
-[    2.095699] 0x000000a40000-0x000010000000 : "ubi"
-
-
-When I try linux-next 20260205, it crashes:
-
-[    1.963763] 8<--- cut here ---
-[    1.967204] Unable to handle kernel NULL pointer dereference at
-virtual address 00000004 when read
-[    1.977285] [00000004] *pgd=00000000
-[    1.981297] Internal error: Oops: 5 [#1] SMP ARM
-[    1.986460] Modules linked in:
-[    1.989876] CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted
-6.19.0-rc8-next-20260205-00011-g45de7a4ee41d #8 VOLUNTARY
-[    2.001935] Hardware name: Generic DT based system
-[    2.007288] PC is at spinand_match_and_init+0x13c/0x4a8
-[    2.013137] LR is at 0x2
-[    2.015966] pc : [<c07c9dfc>]    lr : [<00000002>]    psr: a0000053
-[    2.022969] sp : d0811b50  ip : 00000000  fp : c0b66924
-[    2.028808] r10: c0b66900  r9 : c195c7e4  r8 : c0b668f8
-[    2.034646] r7 : c195c3cc  r6 : 00000000  r5 : c0b668b0  r4 : c195c040
-[    2.041940] r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : c101db48
-[    2.049237] Flags: NzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM
-Segment none
-[    2.057312] Control: 10c5387d  Table: 0000406a  DAC: 00000051
-[    2.063732] Register r0 information: non-slab/vmalloc memory
-[    2.070062] Register r1 information: NULL pointer
-[    2.075319] Register r2 information: NULL pointer
-[    2.080577] Register r3 information: NULL pointer
-[    2.085835] Register r4 information: slab kmalloc-4k start c195c000
-pointer offset 64 size 4096
-[    2.095577] Register r5 information: non-slab/vmalloc memory
-[    2.101903] Register r6 information: NULL pointer
-[    2.107161] Register r7 information: slab kmalloc-4k start c195c000
-pointer offset 972 size 4096
-[    2.116996] Register r8 information: non-slab/vmalloc memory
-[    2.123322] Register r9 information: slab kmalloc-4k start c195c000
-pointer offset 2020 size 4096
-[    2.133253] Register r10 information: non-slab/vmalloc memory
-[    2.139676] Register r11 information: non-slab/vmalloc memory
-[    2.146099] Register r12 information: NULL pointer
-[    2.151452] Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
-[    2.158167] Stack: (0xd0811b50 to 0xd0812000)
-[    2.163038] 1b40:                                     00000002
-c0b662cc c0b6228c c195c040
-[    2.172181] 1b60: 00000002 c0b62290 00000002 c195c440 c0cc2990
-c07ca1c4 c195c040 00000001
-[    2.181316] 1b80: 00000000 c1d4f800 c1d4f800 c07ca4e4 c191e900
-c0ad7764 00000080 00000dc0
-[    2.190460] 1ba0: c191e900 c02dbdb8 00000000 00000000 c1bbbf80
-c1d4f800 c1d4f800 c1bbbfc0
-[    2.199603] 1bc0: c1d4f9a8 c0740a98 c1bbbf80 00000053 c1d4f800
-c0741204 c1d4f800 00000000
-[    2.208747] 1be0: c1d4fc00 b445b6c1 c1d4f800 00000000 c101c0f4
-00000000 c1998740 c1013e5c
-[    2.217891] 1c00: d0811d44 c073c000 c1d4f800 c101c0f4 c1d4f800
-00000000 c1998740 c073c288
-[    2.227033] 1c20: 60000053 c1013e5c c10972d4 c101c0f4 c1d4f800
-00000000 c1998740 c073c468
-[    2.236176] 1c40: 00000001 c101c0f4 d0811c9c c1d4f800 c1998740
-c073c5d0 00000000 c1998700
-[    2.245318] 1c60: d0811c9c c073c53c c1998740 c073a2dc c1d4fc84
-c199876c c1d67cb8 b445b6c1
-[    2.254463] 1c80: d0811d44 c1d4f800 00000001 c1d4f844 c1998700
-c073c944 cffceae4 c1d4f800
-[    2.263597] 1ca0: 00000001 b445b6c1 c1998700 c1d4f800 c1998700
-c073cb9c c1d4f800 c1d4f800
-[    2.272742] 1cc0: c1998700 c073b110 c1d4f800 00000000 cffce918
-c1d4fc00 00000000 c0738cb8
-[    2.281885] 1ce0: c0cc2990 c07ecaa4 c1d4f800 00000000 c189a410
-b445b6c1 00000000 c1d4f800
-[    2.291029] 1d00: c1d4fc00 c189a410 00000000 c0cc2828 00000001
-c07ef0d8 00000000 c1d4f800
-[    2.300171] 1d20: cffce90c c1d4fe1c c0cc2828 c07ef984 00000000
-c191e900 00000004 c1d4fc00
-[    2.309315] 1d40: ffffffff 047868c0 c1d67080 00000000 c189a410
-a0000053 c189a5b8 c0740a98
-[    2.318457] 1d60: c1d67080 c0e966e0 c189a410 c0741010 c0cb18b0
-00003e00 cffce90c b445b6c1
-[    2.327602] 1d80: 00000000 c1d4fc00 00000000 cffce90c cffce970
-c0cc2cbc c189a510 00003e00
-[    2.336744] 1da0: c0d3fa54 c07f0114 c1d67640 0000001f c19a2b80
-c189a410 ffffffff c1cb8000
-[    2.345887] 1dc0: c1d4fc00 c189a410 c189a410 c1d4ff40 c189a510
-00003e00 c0d3fa54 c07f03e8
-[    2.355030] 1de0: c1cb8000 c1d4fc00 c189a400 c07f5db8 00000000
-00000000 c1d4ff40 c06c2e28
-[    2.364174] 1e00: c189a410 c101fcf4 c101fcf4 00000000 c189a40f
-c0ced088 c0e5c858 c073eb74
-[    2.373316] 1e20: c189a410 00000000 c101fcf4 c073c000 c189a410
-c101fcf4 c189a410 00000000
-[    2.382460] 1e40: c189a40f c073c288 60000053 c0ced088 c10972d4
-c101fcf4 c189a410 00000000
-[    2.391603] 1e60: c189a40f c073c468 c189a410 c101fcf4 c189a454
-00000001 c189a40f c073c6fc
-[    2.400746] 1e80: 00000000 c101fcf4 c073c644 c181df00 c1d679b8
-c073a028 c181df00 c181df58
-[    2.409889] 1ea0: c1982934 b445b6c1 c0e2a8dc c101fcf4 c1d67980
-00000000 c181df00 c073b314
-[    2.419034] 1ec0: c0cc355c 00000000 c101fcf4 c0e2a8dc c0e5c838
-c191e900 00000000 c073d788
-[    2.428176] 1ee0: c104ce60 c0e2a8dc c0e5c838 c01109cc 00000492
-00000000 c18b5385 c18b5300
-[    2.437320] 1f00: c18b5384 c01572f4 c18a290c c0cc4298 000000ea
-00000000 00000000 c0e004dc
-[    2.446462] 1f20: 00000006 00000006 c191e900 c18b539b c18b53a6
-b445b6c1 0000001b b445b6c1
-[    2.455606] 1f40: c18b5300 c0e86768 c18b5300 c0e5c838 00000007
-c104ce60 c0ced088 c0e0145c
-[    2.464740] 1f60: 00000006 00000006 00000000 c0e004dc 000000ea
-c0e004dc c0ad3fac c0f04f80
-[    2.473885] 1f80: c0ad3fac 00000000 00000000 00000000 00000000
-00000000 00000000 c0ad3fc4
-[    2.483026] 1fa0: 00000000 c0ad3fac 00000000 c010014c 00000000
-00000000 00000000 00000000
-[    2.492170] 1fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[    2.501312] 1fe0: 00000000 00000000 00000000 00000000 00000013
-00000000 00000000 00000000
-[    2.510453] Call trace:
-[    2.510464]  spinand_match_and_init from spinand_manufacturer_match+0x5c/0x7c
-[    2.521273]  spinand_manufacturer_match from spinand_probe+0x300/0x870
-[    2.528577]  spinand_probe from really_probe+0xc8/0x2c8
-[    2.534424]  really_probe from __driver_probe_device+0x88/0x1a0
-[    2.541044]  __driver_probe_device from driver_probe_device+0x30/0x104
-[    2.548345]  driver_probe_device from __device_attach_driver+0x94/0x108
-[    2.555742]  __device_attach_driver from bus_for_each_drv+0x84/0xdc
-[    2.562759]  bus_for_each_drv from __device_attach+0xac/0x1d0
-[    2.569189]  __device_attach from device_initial_probe+0x3c/0x48
-[    2.575907]  device_initial_probe from bus_probe_device+0x28/0x7c
-[    2.582726]  bus_probe_device from device_add+0x564/0x74c
-[    2.588770]  device_add from __spi_add_device+0x14c/0x21c
-[    2.594808]  __spi_add_device from of_register_spi_device+0x5c0/0x970
-[    2.602017]  of_register_spi_device from spi_register_controller+0x3e0/0x6a0
-[    2.609908]  spi_register_controller from
-devm_spi_register_controller+0x14/0x58
-[    2.618177]  devm_spi_register_controller from rockchip_sfc_probe+0x2b0/0x468
-[    2.626163]  rockchip_sfc_probe from platform_probe+0x5c/0x98
-[    2.632591]  platform_probe from really_probe+0xc8/0x2c8
-[    2.638533]  really_probe from __driver_probe_device+0x88/0x1a0
-[    2.645152]  __driver_probe_device from driver_probe_device+0x30/0x104
-[    2.652452]  driver_probe_device from __driver_attach+0xb8/0x1bc
-[    2.659162]  __driver_attach from bus_for_each_dev+0x70/0xc4
-[    2.665493]  bus_for_each_dev from bus_add_driver+0xcc/0x1ec
-[    2.671821]  bus_add_driver from driver_register+0x7c/0x114
-[    2.678058]  driver_register from do_one_initcall+0x48/0x2b8
-[    2.684393]  do_one_initcall from kernel_init_freeable+0x1dc/0x268
-[    2.691314]  kernel_init_freeable from kernel_init+0x18/0x12c
-[    2.697739]  kernel_init from ret_from_fork+0x14/0x28
-[    2.703390] Exception stack(0xd0811fb0 to 0xd0811ff8)
-[    2.709035] 1fa0:                                     00000000
-00000000 00000000 00000000
-[    2.718178] 1fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[    2.727321] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    2.734718] Code: e3500000 0a0000d9 e58405c8 e5952064 (e5923004)
-[    2.741612] ---[ end trace 0000000000000000 ]---
-[    2.817296] Kernel panic - not syncing: Attempted to kill init!
-exitcode=0x0000000b
-[    2.825900] ---[ end Kernel panic - not syncing: Attempted to kill
-init! exitcode=0x0000000b ]---
-
-I haven't started bisecting yet, but just wanted to report in case
-someone has any suggestions.
-
-Thanks,
-
-Fabio Estevam
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+PiBWb246IEFobWVkIE5hc2VlZiA8bmFzZWVma21AZ21haWwuY29tPiAKPiBBbjogbWFya3VzLnN0
+b2NraGF1c2VuQGdteC5kZQo+IEJldHJlZmY6IFJlOiBbUEFUQ0hdIG10ZDogbmFuZDogcmVhbHRl
+ay1lY2M6IHJlbGF4IE9PQiBzaXplIGNoZWNrIHRvIG1pbmltdW0KPiAuLi4KPiA+ID4gU2lnbmVk
+LW9mZi1ieTogQWhtZWQgTmFzZWVmIDxuYXNlZWZrbUBnbWFpbC5jb20+Cj4gPiA+IFN1Z2dlc3Rl
+ZC1ieTogTWFya3VzIFN0b2NraGF1c2VuIDxtYXJrdXMuc3RvY2toYXVzZW5AZ214LmRlPgo+ID4g
+Cj4gPiBJSVJDIHRoaXMgc2hvdWxkIGJlIHRoZSBvdGhlciB3YXkgcm91bmQuCj4gPiAKPiBDb3Vs
+ZCB5b3UgY2xhcmlmeSB3aGF0IHlvdSBtZWFudCBieSAidGhlIG90aGVyIHdheSByb3VuZCIg4oCU
+IGRvIHlvdQo+IG1lYW4gdGhlIG9yZGVyaW5nIG9mIHRoZSBTdWdnZXN0ZWQtYnkvU2lnbmVkLW9m
+Zi1ieSB0YWdzLCBvciB0aGUKPiBhdHRyaWJ1dGlvbiBpdHNlbGY/CgpUaGUgb25lIHdobyBoYWQg
+dGhlIHBhdGNoIGluIGhpcy9oZXIgaGFuZHMgbGFzdCwgbXVzdCBiZSBvbiB0aGUgYm90dG9tIApv
+ZiB0aGUgbGlzdC4gQ2hyb25vbG9naWNhbCBvcmRlciBzbyB0byBzYXkuCgo+IFJlZ2FyZGluZyB0
+aGUgY29tbWVudCBhYm91dCB0aGUgdHdvIGtub3duIGRldmljZXMg4oCUIEkgd2FzIHBsYW5uaW5n
+Cj4gdG8gdXBkYXRlIGl0IHRvIHNvbWV0aGluZyBsaWtlOgoKICAgICogSXQgY2FuIHJ1biBmb3Ig
+YXJiaXRyYXJ5IE5BTkQgZmxhc2ggY2hpcHMgd2l0aCBkaWZmZXJlbnQgYmxvY2sgYW5kIE9PQiBz
+aXplcy4gQ3VycmVudGx5IHRoZXJlCiAgICAqIGFyZSBhIGZldyBrbm93biBkZXZpY2VzIGluIHRo
+ZSB3aWxkIHRoYXQgbWFrZSB1c2Ugb2YgdGhpcyBFQ0MgZW5naW5lCiAgICAqIChMaW5rc3lzIExH
+UzMyOEMsIExHUzM1MkMgJiBOZXRsaW5rIEhHMzIzREFDKS4gVG8ga2VlcCBjb21wYXRpYmlsaXR5
+IHdpdGggdmVuZG9yIGZpcm13YXJlLAogICAgKiBuZXcgbW9kZXMgY2FuIG9ubHkgYmUgYWRkZWQg
+d2hlbiBuZXcgZGF0YSBsYXlvdXRzIGhhdmUgYmVlbiBhbmFseXplZC4gRm9yIG5vdyBhbGxvdyBC
+Q0g2IG9uCiAgICAqIGZsYXNoIHdpdGggMjA0OCBieXRlIGJsb2NrcyBhbmQgYXQgbGVhc3QgNjQg
+Ynl0ZXMgb29iLiBTb21lIHZlbmRvcnMgbWFrZSB1c2Ugb2YKICAgICogMTI4IGJ5dGVzIE9PQiBO
+QU5EIGNoaXBzIChlLmcuIE1hY3Jvbml4IE1YMzVMRjFHMjRBRCkgYnV0IG9ubHkgdXNlIEJDSDYg
+YW5kIHRodXMgdGhlIGZpcnN0CiAgICAqIDY0IGJ5dGVzIG9mIHRoZSBPT0IgYXJlYS4gSW4gdGhp
+cyBjYXNlIHRoZSBlbmdpbmUgbGVhdmVzIGFueSBleHRyYSBieXRlcyB1bnVzZWQuCgpTbWFsbCBh
+ZGFwdGlvbnMgZnJvbW0geSBzaWRlIGluIHRoZSBjb21tZW50IGFib3ZlLiBDaGVjayBmb3Igc3Bl
+bGxpbmcgCm1pc3Rha2VzIGFuZCBsaW5lIGxlbmd0aHMuIFdpdGggdGhpcyBnb29kIHRvIGdvIGZy
+b20gbXkgc2lkZS4KCk1hcmt1cwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
