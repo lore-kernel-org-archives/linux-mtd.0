@@ -4,156 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0437EEE6B4C
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Feb 2026 19:32:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F8BFEE6B6F
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Feb 2026 02:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q7OOQjXPd4hoJFr5SXCQqqthekdVJT8qvsW8LJpFS2w=; b=lITU44d3Pai5bZ
-	OuwffJ+q7ewpcvBsY1awpkjD99bFZGBvFaGk/8szfH0oue2+pMqECM2qMinK9BrEYmOO2qyGV57Hw
-	bxrfo8oRPjL5a8WkNOQeD+iMUtc1FEk24l0pkup5EFfrFSi6SRVJvJmKfKSkHHDvChCiTnaVJBzAJ
-	MzCr3IShRkqZlTnfK4m+BPwL07625gP2ad6u1JNZ4Ls7mZeWYZ9e/sxvfvNrwOMZc2fdJj2TRDpbk
-	plWBbZ+ye/wreQ2cNM3LklcexdUoG1Zamqoh11wBGz2lgnS/Rc36KCJeGRtDpXfPHowARdvLKy7Hy
-	4Batr1cOGGOKi5FBumaA==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2BocOa6wHn+tk4ybX981zhtdXvOTtcCGxoTSLQJGKeY=; b=jl5re/hG/I8xlLDhl+5gghBFVc
+	0W7gqx7NqsbWCJ+p1KCqrFoTvcOAhpno2ZrU5bh+PJOr7ezlzKi8dMppff05VwewMuSW7s7SxHs3+
+	m+zJ1i03XcabYhL9U8HCCXux8TPFKnfqr75EE43N0X53w8+yfKm4jVeHGcDy7V9uP1VM+0zVwjlhp
+	oZ1sI2iJ/WyTY1Av7udgxWFA6bDyUvXbnscf5vXaakQdy5Woux1kRNDX6lEyhxnEp6aW9A7lM6ad0
+	7/OY4S4hqFBbyL/QfF9f2/mN2xDQAwx6soaOR1xZfc5KD+TYnQ9+AQd6X9l457Q/cZ1SlONklJg1n
+	pSi1stdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1voRZ7-0000000BkY3-09PG;
-	Fri, 06 Feb 2026 19:32:29 +0000
-Received: from mail-westcentralusazlp170130007.outbound.protection.outlook.com ([2a01:111:f403:c112::7] helo=CY3PR05CU001.outbound.protection.outlook.com)
+	id 1voYBp-0000000C3YU-3vmS;
+	Sat, 07 Feb 2026 02:36:53 +0000
+Received: from canpmsgout11.his.huawei.com ([113.46.200.226])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1voRZ5-0000000BkX4-09Vq
+	id 1voYBj-0000000C3Xs-2lXd
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Feb 2026 19:32:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SssBANvf5jBEGBrFZ4ysNK7I22AJhGsuXgZ9g2SkNRZBRLHCvL8o4Bwo1o6pgAV+rAk2+XZCKow4CKlymumE289KU0H6AYfH1qgp+Ph6w0HX+41g5f3B3dq9pGdzb1BiCAkAwqUqbbg94tIeJ1LQKXFdlqGXE8tYI37E+9wrN8dVQ7KHDKrNAjqxcIxR0jktQTCf2SsNpAbvEkhzsqeU+mBmkGuq7Y7baMgU1FyrAD1/WQ4WndVyV71oED1qmbVntjlY0Es95DhrZTpcDCSoqnu6SW8lFGSI8Kl2ASuko5TGRcVrLJhQ49rAr6v+LdZODx83PvQJ5HKijbDK0XASxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5MpZC1ev4ph/0v1Arn5ZY5WpdTgWI2MnuvXC4CosclA=;
- b=uu+Ym54RLme7+m0d0A6N3qf/inD5oqI6VHGZBMp/o6YclxD8XmiakhkUPbi4eXei7lkgID+OLcJFnTyAXuoRcstWMqdAvLaL1+jBHStc8XNUghXtlZq+W8Lmub9/atwQ6CbVx9EPoICxaDGFpYyQlZBrCv9BK7RYrXmgOed+bAPqluelY2EK//evUIBlKhgJThC+/P9uj4MOImf01/bZRZDDJel44Io73ccAKXABvp0gdgnpm3Nqa2iDoDYi8q9ifL4CyfYPA6wHjOJNgOeYP+QviRat/aeWK4f2LGMBUbhisl0aTkDwj2tbLafOpeUoNFdvMUSNoYJ/YMQidbLKaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.23.194) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5MpZC1ev4ph/0v1Arn5ZY5WpdTgWI2MnuvXC4CosclA=;
- b=T4nCEZXmsrC/SMrGdPyTRCMN3OFXQK5R3NfXH+o6vkjWPVWz1U7r3YcfbpMIVs2X4j/7JLrYADpWq/4vv+lYgp3I1KSrjU2JgfSRxUehG/M0P5h0F4Dr4fNCtsD0HcSDgA0XBnzKixjWmoEg48IKLj4y50wIW6QEu4nlvDYBSA4=
-Received: from BLAPR03CA0156.namprd03.prod.outlook.com (2603:10b6:208:32f::29)
- by LV3PR10MB8153.namprd10.prod.outlook.com (2603:10b6:408:287::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.12; Fri, 6 Feb
- 2026 19:32:20 +0000
-Received: from BL6PEPF0001AB72.namprd02.prod.outlook.com
- (2603:10b6:208:32f:cafe::b) by BLAPR03CA0156.outlook.office365.com
- (2603:10b6:208:32f::29) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9587.16 via Frontend Transport; Fri,
- 6 Feb 2026 19:32:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.194)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.23.194 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.23.194; helo=lewvzet200.ext.ti.com; pr=C
-Received: from lewvzet200.ext.ti.com (198.47.23.194) by
- BL6PEPF0001AB72.mail.protection.outlook.com (10.167.242.165) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9587.10 via Frontend Transport; Fri, 6 Feb 2026 19:32:20 +0000
-Received: from DLEE214.ent.ti.com (157.170.170.117) by lewvzet200.ext.ti.com
- (10.4.14.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 6 Feb
- 2026 13:32:17 -0600
-Received: from DLEE206.ent.ti.com (157.170.170.90) by DLEE214.ent.ti.com
- (157.170.170.117) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 6 Feb
- 2026 13:32:16 -0600
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE206.ent.ti.com
- (157.170.170.90) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Fri, 6 Feb 2026 13:32:16 -0600
-Received: from [172.24.233.254] (santhoshkumark.dhcp.ti.com [172.24.233.254])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 616JWCZt1846514;
-	Fri, 6 Feb 2026 13:32:13 -0600
-Message-ID: <41f49187-e68b-4731-ac86-7c346de63173@ti.com>
-Date: Sat, 7 Feb 2026 01:02:12 +0530
+	Sat, 07 Feb 2026 02:36:49 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=wfqvc3BXrGKiR4wiQAq3dq087OBHYWgm5FyBM0o1zqU=;
+	b=pHdd7CtMBE+Pyp6R7lFfBDivBhuvfbpjF6C52PrCIj6lwXNllHIYNHYJeS8i24cIRDZRY1F0d
+	homzgMAuXmQwiaZyzcDXCJ6xW/YFZDff0aX1Qvd6Q81LNfYhv2ys7uo2oRhY+CWjWjDCkP8fj5J
+	AHwREK7j2GIWKcs5DeP2NaU=
+Received: from mail.maildlp.com (unknown [172.19.163.15])
+	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f7FMt6JTbzKm4t;
+	Sat,  7 Feb 2026 10:31:54 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3E9004056D;
+	Sat,  7 Feb 2026 10:36:31 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 7 Feb 2026 10:36:30 +0800
+Subject: Re: [PATCH] jffs2: use fs_umode_to_dtype() for dirent type
+To: Adarsh Das <adarshdas950@gmail.com>, <dwmw2@infradead.org>,
+	<richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20260206115100.84852-1-adarshdas950@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <134dec36-3bcf-89a4-2817-a880afa4280f@huawei.com>
+Date: Sat, 7 Feb 2026 10:36:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/4] mtd/spi-mem: Enable DQS support
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Mark Brown
-	<broonie@kernel.org>, Richard Weinberger <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>
-CC: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, <praneeth@ti.com>,
-	<u-kumar1@ti.com>, <p-mantena@ti.com>, <a-dutta@ti.com>,
-	<linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, <s-k6@ti.com>
-References: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
-Content-Language: en-US
-From: Santhosh Kumar K <s-k6@ti.com>
-In-Reply-To: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB72:EE_|LV3PR10MB8153:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99d7b127-a0f6-4745-6908-08de65b671e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|36860700013|82310400026;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?QlJPcFBSNXRIZHhLeGRzQ0s0bld4RTZFVjhKamFFcVFkZTJFekMybk5FcDVQ?=
- =?utf-8?B?cG1hVjFXT1FsdlJjSGRxblJmOEE2dVRvMDBQdVEwYkw3VHVQV0ROdkRSeXpt?=
- =?utf-8?B?TGdGMlZpMEFsQmxOMDJGZ3BKQTRmSWhnMlhjQktlS1F5ZDVVWEYySWg3RU9N?=
- =?utf-8?B?WXQ5M0tpWE8zMG81ejVUQ3V2MTBPVWRocXVBL0ZFcUV4eFhvY2lHZGdZQkl0?=
- =?utf-8?B?OVZFTnkzUHIzOEc5MUhqSkVnNzlhRjhEQXl6d3FNd1BOZXdDeXFpTkJ0Q3ZY?=
- =?utf-8?B?LzAyeGJXeVE1N0xWRWlHaHo2b3hwN2V6Y3YvTG1PWmhnekR6ZTF3LzMyVTJx?=
- =?utf-8?B?M1JVRFdvSVAwamZTNW80OCtsTXhvK1hjS2ZpRS84OWUyZ0tnY2FkcUxwcWMz?=
- =?utf-8?B?UVZneHcrTUdLRTIxZDZNZ3BpKzlZeTBwdlZNbWd1b2RjS0FsQ1BNTlpQalVZ?=
- =?utf-8?B?YmtSVm01THdRazNOZ3haTUY5M0ZDbjlhRk9TN1hWQWVYa2tVTzIyQnBvdG9v?=
- =?utf-8?B?N25ENEpNOEhvZFBsVWNHb3JmK2tPdkduWllpWXE2bGRJSE5JMlNYMGgyckp2?=
- =?utf-8?B?VUpWSHQrSEtCKytXb29vaUJPamtGbEk2aEVXYUM0M0RadGNWY1d5MEdjbDJK?=
- =?utf-8?B?aUR6V21FbjhPWnJUTmFIVWhvQjRvN0F4ZWVJSm9rTGtlVFlsbkpuWFdQYm1K?=
- =?utf-8?B?V01hTVhlNlh3c2FvNnJWYldZcjN0MnB6LzV4MGtoUVdPbkFjancvWmt1dkpL?=
- =?utf-8?B?RmVvV1FsMFB5RzF2SDJ3ZUFkSFlONkpObU90RTlwMk9JOW8rc1h0V2lNTFRN?=
- =?utf-8?B?cG1JNHBKV2tBeFI1cXNPTWx6VW1JdHBoMEE2QTJEWEFndXRhNjJoL09ZUE1G?=
- =?utf-8?B?ZVkzOWR4VGc2ay9oeEF4a3hycWQ2UXJwelk3VDNmanpzOTlHa21iNzgxY2Js?=
- =?utf-8?B?VFpjV3IxL3lrZUFPdHFXaURib05nWFA0Z2lTTzEveS90VTJRKzgrbGlOZXB3?=
- =?utf-8?B?RE5yencvTEdrWTVhbDRsN0dac1ByTm5xTithQ2RxRmRiYzJEeUF1VEUza3F5?=
- =?utf-8?B?ZVp1azRWbGxkMFpBSTl6WG14NmtDU3dCVkQyTmJVZFhYVGNrMGhuSy9UcG9m?=
- =?utf-8?B?RE5FRXkvM3J1SUdpclFXdzJyQzlaU01YbkF5TCs4eDVQV2p6Skt5dVZBUHNZ?=
- =?utf-8?B?ZE84MXhGWmlQSGhEQ0M1aVh3ekdOUkRwVko3ems5OE1KSVZzMGRjVE9OSnBP?=
- =?utf-8?B?VjhGTmRXczcvK0s0VDNvQXpTcjBKUFRTYzUxQnUrRk1DLzFCMk1LRm5wOVN4?=
- =?utf-8?B?TnBJMTl4Y2wrM1RzVGlYZFNKaU9nd0RBbTVZK2hid0h4d1ROVTFoaXVqYmtR?=
- =?utf-8?B?OHhUL3c2S21jd3Z3engzOUNZbE03d0pDS3dKQys0R01OUjR5Tnd6Vjk3WlJs?=
- =?utf-8?B?MWtYRlRiUnhYZUt2T3FKL2phS0hEM0k0eVArOHoxL0pudVZkaSttazA2NFZ4?=
- =?utf-8?B?Q1lnNGhsTjduSXY0eGdWRzVUNUpTOFY5OWQ0U2t3SExhMzV6alVwKzQraXVv?=
- =?utf-8?B?ZkUvTW02ekxucDhMeGtpbzZkblZ1MUduMEt6aFBYcWRsMUtweUhLOVFQOFNP?=
- =?utf-8?B?RXJxK2ZwSDNLUlZHbXRrMkNtaHlQQXJ4dnRTaWhTQm5HL2lRTzE3QWRRTXB1?=
- =?utf-8?B?VnFoRVVVSUN4RWt1L3EyYWM5eUloWTEyOUdpWGNDMDNHS3N3a01RWjMreWZt?=
- =?utf-8?B?K0xyYWZDLzROSFFvTFh3czlWTmc2WGpyTGlzSTAvSlc4WTU5ZTBITHZYcXlO?=
- =?utf-8?B?WElDWHFMc1hFKzI1UVQrR2o1NHVOaUc0eElkSHR1eTdYQnM5cytReHRRRTRu?=
- =?utf-8?B?OVo2YS9aMEUwUml0aFB2YUNNSXdkRTBlRXQybE94SmNQeHU2ZXMvVnJqVFFp?=
- =?utf-8?B?RUpHaTFpcDU0Sk1NTWR5SnhIc3RRc1FXK2RPYUR5dWYzV3RPVWRaQ25oUEp5?=
- =?utf-8?B?blFMOTQ2ZUErSFp1VGdpV1QrQ3FxSnNiWnc4cGZHdmovTDdUeUxzV0dIemI4?=
- =?utf-8?B?ODJzZjBSMVpiakd5T3NEMzFtYlpBdFRNZE96eXdvOUVyYkZYc0J4TGpqUmxn?=
- =?utf-8?B?dkNBSGplUStSK0ZPdTNWem1YSTJ2MzZ1Uzg4WWNpOFBmQktRdjdJcWpNdDdV?=
- =?utf-8?Q?CxjV1CglKqyhoxIr0MkTVTc=3D?=
-X-Forefront-Antispam-Report: CIP:198.47.23.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet200.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(1800799024)(36860700013)(82310400026);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: +1cNRni+HtiHaS6OmKgVSDBZkhBOx7+9awAqN+AAcwbYerr7HbhlDndpNrQDCgNPF8BWuONN01o99kzeGJeLVWA+83b7s9pRp6Rw/DYOq5aYorcvPAPp3gY2ETJlC+6T7vlmIpArmtx6FI61e6vwuFEK1GMg4kEhRbTcJ/SEPrYwTER0u/jgR7aIu/OAU+8Zg4c07pu0tFSCwa4ob4096TNLT0BCigIyb6CPOS/mES4n1A1SX30hoakqi39DXOAFfNwEsYr5D0AEMBbD3WazsSV/D8hs7HMgmpRhp48ebTHUlqWQh1NOlP4vVcO7wl0NXWNEqlih7T0hjl15MhcxKBdN1NbDZUVFCCDQFzCgUabBZGyHXIv4vyWKercLUskElFPAPp6q77PaOCCtBfjGsxf+PRdt/9JVhtt6eL/qznKUeafc+0Kl1P7UOO4qtqWL
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2026 19:32:20.0962
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99d7b127-a0f6-4745-6908-08de65b671e1
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.194];Helo=[lewvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB72.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR10MB8153
+In-Reply-To: <20260206115100.84852-1-adarshdas950@gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260206_113227_085938_7E6D69D2 
-X-CRM114-Status: GOOD (  20.40  )
+X-CRM114-CacheID: sfid-20260206_183648_210266_B7AB0DFF 
+X-CRM114-Status: GOOD (  12.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -165,76 +73,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Miquel,
-
-On 06/02/26 00:36, Miquel Raynal wrote:
-> For his PHY tuning series on the Cadence QSPI controller embedded in TI
-> SoCs, Santhosh needs to access the availability of the DQS (data strobe)
-> signal. This is a chip dependent capability, which may sometimes be
-> enabled.
-> 
-> Create a SPI memory flag for it, let the SPI NAND core set this flag
-> when it knows about the capability, and show how to use it from a SPI
-> controller driver.
-> 
-> This is an alternative at needing a DT property. Please note that there
-> are a few blind spots:
-> - the line may not be wired (this would be surprising, but can be
->    flagged this time by a DT property)
-> - manufacturer drivers must enable the feature if it is
->    available (especially for high speed DTR modes)
-> - this implementation is proposed for SPI NANDs only, if this proposal
->    is accepted the same approach must be taken in SPI NOR.
-
-Thank you for the series!
-
-As mentioned in the tuning series, in addition to the flash advertising
-its DQS capability, we also need a DT property to describe whether DQS
-is physically connected to the controller. This can be represented using
-either a "dqs-wired" or "dqs-not-wired" property; the exact naming can
-be chosen based on the majority case.
-
-With this series, the controller will enable or disable DQS by logically
-AND-ing both pieces of information.
-
-Regards,
-Santhosh.
-
-> 
-> Here is the original thread which lead to this series:
-> https://lore.kernel.org/linux-spi/87v7gbdwdh.fsf@bootlin.com/T/#ma79fc364d7b882a48dbdf47203dde75df4bb0ec4
-> 
-> This series was compile tested only at this stage. As DDR tuning does
-> not yet work on my board, I cannot make sure this change has a real
-> impact.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
-> Miquel Raynal (4):
->        spi: spi-mem: Flag DQS capability
->        mtd: spi-nand: Set the DQS spi-mem capability if available
->        mtd: spi-nand: winbond: Enable the DQS pin on W35N**JW series
->        [DO NOT MERGE] spi: cadence-qspi: Retrieve DQS capability using the core helper
-> 
->   drivers/mtd/nand/spi/core.c       |  4 ++++
->   drivers/mtd/nand/spi/winbond.c    |  8 ++++----
->   drivers/spi/spi-cadence-quadspi.c |  8 ++++++--
->   drivers/spi/spi-mem.c             | 32 ++++++++++++++++++++++++++++++++
->   include/linux/mtd/spinand.h       |  1 +
->   include/linux/spi/spi-mem.h       |  4 ++++
->   6 files changed, 51 insertions(+), 6 deletions(-)
-> ---
-> base-commit: c5884449d02575c7984000eb30d2a2971c7dfcc7
-> change-id: 20260205-winbond-nand-next-phy-tuning-aabefc018032
-> 
-> Best regards,
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNi8yLzYgMTk6NTEsIEFkYXJzaCBEYXMg0LS1wDoKPiBVc2UgZnNfdW1vZGVfdG9fZHR5
+cGUoKSBpbnN0ZWFkIG9mIGRpcmVjdCBiaXQgc2hpZnRpbmcgd2hlbgo+IHNldHRpbmcgZGlyZWN0
+b3J5IGVudHJ5IHR5cGUuCj4gCj4gU2lnbmVkLW9mZi1ieTogQWRhcnNoIERhcyA8YWRhcnNoZGFz
+OTUwQGdtYWlsLmNvbT4KPiAtLS0KPiAgIGZzL2pmZnMyL2Rpci5jIHwgMTEgKysrLS0tLS0tLS0K
+PiAgIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCj4gCj4g
+ZGlmZiAtLWdpdCBhL2ZzL2pmZnMyL2Rpci5jIGIvZnMvamZmczIvZGlyLmMKPiBpbmRleCBkZDkx
+ZjcyNWRlZDYuLjE4NWNmNzZhMDYxZSAxMDA2NDQKPiAtLS0gYS9mcy9qZmZzMi9kaXIuYwo+ICsr
+KyBiL2ZzL2pmZnMyL2Rpci5jCj4gQEAgLTI2MSw4ICsyNjEsNyBAQCBzdGF0aWMgaW50IGpmZnMy
+X2xpbmsgKHN0cnVjdCBkZW50cnkgKm9sZF9kZW50cnksIHN0cnVjdCBpbm9kZSAqZGlyX2ksIHN0
+cnVjdCBkZQo+ICAgCWlmIChkX2lzX2RpcihvbGRfZGVudHJ5KSkKPiAgIAkJcmV0dXJuIC1FUEVS
+TTsKPiAgIAo+IC0JLyogWFhYOiBUaGlzIGlzIHVnbHkgKi8KPiAtCXR5cGUgPSAoZF9pbm9kZShv
+bGRfZGVudHJ5KS0+aV9tb2RlICYgU19JRk1UKSA+PiAxMjsKPiArCXR5cGUgPSBmc191bW9kZV90
+b19kdHlwZShkX2lub2RlKG9sZF9kZW50cnkpLT5pX21vZGUpOwo+ICAgCWlmICghdHlwZSkgdHlw
+ZSA9IERUX1JFRzsKCkhpIEFkYXJzaCwKVGhlIGNvbnZlcnRpb24gcmVzdWx0IGlzIHdyb25nIGZv
+ciBqZmZzMl9kb19saW5rLgpUaGUgaV9tb2RlIG9mIG9sZF9kZW50cnkgaXMgJ1NfSUZJRk8nLCB0
+aGUgamZmczIgZ2V0cyB0eXBlIERUX0ZJRk8oMSkgCmFuZCBwYXNzIGl0IHRvICdyZC0+dHlwZScg
+YnkgamZmczJfZG9fbGluay4gSG93ZXZlciwgYWZ0ZXIgdGhlIHBhdGNoIAphcHBsaWVkLCBqZmZz
+MiBnZXRzIHR5cGUgRlRfRklGTyg1KSwgd2hpY2ggd2lsbCBjb25mdXNlIG90aGVyICdyZC0+dHlw
+ZScgCmFjY2Vzc2luZyBwcm9jZXNzZXMoZWcuIGpmZnMyX3NjYW5fZGlyZW50X25vZGVbcmQtPnR5
+cGVdLCAKamZmczJfYnVpbGRfZmlsZXN5c3RlbVtmZC0+dHlwZV0pLgoKPiAgIAo+ICAgCW5vdyA9
+IEpGRlMyX05PVygpOwo+IEBAIC03MzAsMTAgKzcyOSw3IEBAIHN0YXRpYyBpbnQgamZmczJfbWtu
+b2QgKHN0cnVjdCBtbnRfaWRtYXAgKmlkbWFwLCBzdHJ1Y3QgaW5vZGUgKmRpcl9pLAo+ICAgCXJk
+LT5pbm8gPSBjcHVfdG9famUzMihpbm9kZS0+aV9pbm8pOwo+ICAgCXJkLT5tY3RpbWUgPSBjcHVf
+dG9famUzMihKRkZTMl9OT1coKSk7Cj4gICAJcmQtPm5zaXplID0gbmFtZWxlbjsKPiAtCj4gLQkv
+KiBYWFg6IFRoaXMgaXMgdWdseS4gKi8KPiAtCXJkLT50eXBlID0gKG1vZGUgJiBTX0lGTVQpID4+
+IDEyOwo+IC0KPiArCXJkLT50eXBlID0gZnNfdW1vZGVfdG9fZHR5cGUobW9kZSk7Cj4gICAJcmQt
+Pm5vZGVfY3JjID0gY3B1X3RvX2plMzIoY3JjMzIoMCwgcmQsIHNpemVvZigqcmQpLTgpKTsKPiAg
+IAlyZC0+bmFtZV9jcmMgPSBjcHVfdG9famUzMihjcmMzMigwLCBkZW50cnktPmRfbmFtZS5uYW1l
+LCBuYW1lbGVuKSk7Cj4gICAKPiBAQCAtODExLDggKzgwNyw3IEBAIHN0YXRpYyBpbnQgamZmczJf
+cmVuYW1lIChzdHJ1Y3QgbW50X2lkbWFwICppZG1hcCwKPiAgIAo+ICAgCS8qIE1ha2UgYSBoYXJk
+IGxpbmsgKi8KPiAgIAo+IC0JLyogWFhYOiBUaGlzIGlzIHVnbHkgKi8KPiAtCXR5cGUgPSAoZF9p
+bm9kZShvbGRfZGVudHJ5KS0+aV9tb2RlICYgU19JRk1UKSA+PiAxMjsKPiArCXR5cGUgPSBmc191
+bW9kZV90b19kdHlwZShkX2lub2RlKG9sZF9kZW50cnkpLT5pX21vZGUpOwo+ICAgCWlmICghdHlw
+ZSkgdHlwZSA9IERUX1JFRzsKPiAgIAo+ICAgCW5vdyA9IEpGRlMyX05PVygpOwo+IAoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
