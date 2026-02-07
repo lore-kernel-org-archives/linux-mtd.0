@@ -4,103 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12031EE6B70
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Feb 2026 03:31:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85DBAEE6B74
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Feb 2026 07:04:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UVc7060J40DOND2uW+7LT7Ix7DS+tvKU+g5YKeqgF7A=; b=mLHlX78YdTOlAt
-	NuUlsukpohyPataIYEZYFq2DaENaDrb0rgOOjIp9wfJTFG3LdU4VCeb9BHZCZNUSG3e+Nz45ac8VL
-	JQbgbSsRgfCL48AWPBxGdZpKEKjv6d7AJnAKGlrji+pYb0Bp6XGZu8fS0OU1sJpwqSVy3A5BRth5F
-	qKmmrcgtYqDtmlZrgYLD7CN3PLCHzscDW2PwDo3X9AJ76amM6RM/ywV3K4r6ZACvTyDSOPd3feF/y
-	BjjsXexdLUqSNDZE7wNUkj4Jdw5f6uCyXUoNl/F91vfmKmONY5SkytY9XO9axCLbtqYlqRlwgD8CS
-	XHrTvV1E9JW/OWPipZWg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zfrTqOSUG7AD+lakq500tzmKNF21DsNTmAF+QN+Ny/E=; b=mO9J26SiYVikGg
+	cROvERRJxBLjdUoVjp9fFMhVElqUtTQdLegeCfdAgpH1DsXqr6Cl3sTy66D0H8Q807rkbIyXEI7FJ
+	GCLw6GoGJ3LOeAJD+iV1tVNeV0pCYMM+PCH6GuqJtVMA1c/DHq4db8D9LcpsEjPoTN+/+Re6S/Oh1
+	B9Whujjh5fp/5CbW33Hi5SifNc2nMWTU3aOEknlDT85BHVbC1N+DGKqxCiGOUrbdwtWpIJhQSOIW4
+	tGb/3+IYi4rJaI1IsKUpbDkx9tLnLKW0ITjg+nZ/t6x5Pt8nq0zG55g4QLJAZSlg/ISuzdFNyT09Q
+	4eQrWXUQJAlkbvyjWrTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1voZ2v-0000000C5Fk-0aXQ;
-	Sat, 07 Feb 2026 03:31:45 +0000
-Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
+	id 1vocMS-0000000CCFV-0CNT;
+	Sat, 07 Feb 2026 07:04:08 +0000
+Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1voZ2s-0000000C5FO-275P
+	id 1vocMO-0000000CCF4-2J9L
 	for linux-mtd@lists.infradead.org;
-	Sat, 07 Feb 2026 03:31:43 +0000
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-382fd8aaa6eso23640471fa.1
-        for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2026 19:31:41 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770435100; cv=none;
-        d=google.com; s=arc-20240605;
-        b=bcYTt3QvnDsleFMXp60k+3KBOwNT4aWk3L7+U6C65KEWoK6AChNvppvX2i3qAQayyd
-         jR4RSZNGkQ04Ey5HSFegiSME/oQ99lsj+HY7wzV/uYjq22+1KHL1oSSA+FRiZtm43Um/
-         rbwyMTR2MDlQ+pO8HnSLsZPL4HZSKOn7sLXsOKy2MifSP88gbaKtSvaXhbrl2SJ923BU
-         UAdS8Tu6nNH61/FkZV66SWkOn1V8vodo/eaDasMJLsy4XsnuPRwOWsG510Q/awRnMJb7
-         TpwgXgA45qnvdBuuT+kNyYk5uDFP0oW+MSUHTeS5NHJoC99VpsiLAfrPnAz3ICVYhN8d
-         /+Ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=prespqLTo0fP6d8n2xzukW5DAXpxkGCJl7iE++gp+Zg=;
-        fh=fKTchESYroQAauR0DJVzWMIKQanvB7SLTtA8jkKz5pY=;
-        b=Bl2trBM+pJGYW34MVcJiu43+DzSOMBilyI8yRV8uYtvL/aHw4P/pJIIflVPJVY06ZG
-         E8cqZEtgk9GS+zd9Y8Zs7CrOSwxy0q9fFTHfvklNed9d8GJyWPKvJrgicEagoHa0wxhb
-         3Wa6Bg+csY5idmvccVR6AcnBPwwtZQEgBu9PxCphUGTrDtrOpM1ShUUoShil5FYqUVnI
-         YhC32n951HawT+aQuQ9N1JtXmW5vgazcie8UPiZGfV4gHljpvTytzEI322M6S/wk4sJR
-         58UiwJ7cV3Q4cFNQjzKLCFCwKmKPKkGFTllpkMbQNHjmCzkVEVs5flLCp6J75Ag/qdmC
-         l4TA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Sat, 07 Feb 2026 07:04:06 +0000
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-823075fed75so1706905b3a.1
+        for <linux-mtd@lists.infradead.org>; Fri, 06 Feb 2026 23:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770435100; x=1771039900; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=prespqLTo0fP6d8n2xzukW5DAXpxkGCJl7iE++gp+Zg=;
-        b=kg1ZOxLcAj+Z3NLriW9ZHBdsmMTpoYyU5kh0WAcNhChix96a/89prLW7NBXOaijE5d
-         sPDCVaqxRUcspDEfzOMfpor+B0kz0q0gMRQItZonPFUId5CTDpucLHSRs/PhpLrwzyzL
-         t/MTPT/mvqGLL7F2bxIAxiq5JLLtd7M9EGmsKyoU7dBwvjGTK5+M9RnjLoetA/npzR+I
-         3cvMmUXa2QkqERnizJDkAIzqECEGGJrNWRjc+reyupI1g+0gTCYw9riRuVD/Z99dQBm6
-         PvM1LEJqjUAmdrPWX1cVPi+DzxnMOWLEUUbWldRXPMFelPSij/6XDok/FlU1lYMJgUnR
-         MRkg==
+        d=gmail.com; s=20230601; t=1770447843; x=1771052643; darn=lists.infradead.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=09LJ83o11Ex+v61x2aS+6WHjo6AYzF1e7mZQxiT7CPg=;
+        b=mLbohfi1vh3eESZRGsE+8YKGHttTSsj/c9e+QQJswEmPZJZ+UdeHuvCHldUtBVQxQu
+         f3YMEv6taO+itMuKmJ0BbHSWmA6c5zrBy9GNky3/jkLo7S6a1c+wtvE74DDdOlX0B79B
+         Ty9hwDT2CxGJR5ILLEKHzL0CKHUpRMwlz3AtjAysNE5K0r8E4jq2zvXtNMKK0/dvSpnf
+         g5chlpif1l0775bb0NW05DJKF/5sBAAUC1x+QkemBWGjKCe1DT5OOmT26oLe0dhZuiZ3
+         kUO1GdRU+dt49Y71NOK+8PtrBH3YiOusaRm0Ue9yEqV7SaCUBy+ZitgEZ4Lx9ZpvZE6k
+         UHeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770435100; x=1771039900;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=prespqLTo0fP6d8n2xzukW5DAXpxkGCJl7iE++gp+Zg=;
-        b=cqQxA3Pinmn30Ar2PlZD6+bVJfjCufBQWp7FkJGr6O05wQWFln483qNJIxwIH8E4KS
-         NtbMU+x/QtOxqkvI9abOEdeQYhgefTVkqCSWe+ri+Zu4CTn4q+7awDMZMS8wJOT7Fou/
-         LM1HBEJZtvC5ju0PkmcZVPKkC0wxh8KddnUsyEg4/yjNlMwH9RdXyUfDjZagGvUAiFPj
-         QwOSCnyaer1lLOpfPtDMX604nLEScLo1Fq1fEr8ULNpgn4nVMGx3Xb0d6hTf9AjvY44W
-         Q/gIfjLMU393Sndh5Q85QkGi9KseiN0Y03EVev56nnEz+y/OcY4y3He2q9OBJTtBObmz
-         PhBw==
-X-Forwarded-Encrypted: i=1; AJvYcCU9ibz7BN2ySI7lFlakuTqCN2aYGQKZZ94LcBR4KNyOp1VFt454RJothCi/DWaVdwl9fWYaIitlquU=@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywh3XP5i+UfeAithNatyvDwURH/8TwV2I7ZCZ6/h8hCQqcN17hW
-	IPIqZ8D891ydirxtdy6CRPDrcdRGP2bhDG40WX7L5Acn5uSvX/ISZ7n8XkLwu0JcWFMGdMP3Z9B
-	icpe5bPn1+ZtjxMOHjXts3Rkpck/FM4g=
-X-Gm-Gg: AZuq6aJiJRLulx83vz/7shjyG0YrSXUCru+MmDIlgpcfaaWIixZe9dFv9xiIgMCwnv/
-	T06KdfLJ6JtZRjPcE+bUXc8R0auOsUUphjny2genzqKNotIKKx1tsRk11IbksvpTuhv8ai5xn1F
-	NxvRcIOOw7BIjnd3AtkvwlqHEj4Q6VWPwWFZ9gvNIg/9nJu8buaL7i8DQjCuBZafvb959mddi0n
-	pY9Q4YVRCwTAtqF919RrkpBPNlOyV7pzHH3myrous1GbBtwc1Tq/0sZDPNzCSHbJR73goDgxBYi
-	F6QZOBs7JgmcdNgOE+e0LBy4SjA=
-X-Received: by 2002:a05:651c:509:b0:383:5ea4:20b4 with SMTP id
- 38308e7fff4ca-386b4f05676mr14885281fa.13.1770435099673; Fri, 06 Feb 2026
- 19:31:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1770447843; x=1771052643;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=09LJ83o11Ex+v61x2aS+6WHjo6AYzF1e7mZQxiT7CPg=;
+        b=a6dihZ5q/d9udm2AS8Al2T7X6e57C9V3prhz1BrCi6C0eXod0TmlXTQJxMkFCGOhyA
+         EWuDx8vBvitI6q+pQ4c9T+y2JbjSLgfsiv1ck79tA8umsXlK6tkf0d/ErTQQlf648dkD
+         rx2PyGHAF9FGWRA/x2AgkshX93tPVm6numx6zrqsNFQMWIrmZlXr16ufhdOyUw65UITs
+         VaMi3x0gzq2qzKs0d5G/ymmFIpTsDn20fSOJLiDnV0GxdWuiQqM8T5rdlQ0oOcv4fi6L
+         RujhZr4XmSMLWQxdvw6+VXFKQa1whsf2gYVoaKQJnSlqiYsE2pljopCzODm8ro79ontc
+         GRew==
+X-Forwarded-Encrypted: i=1; AJvYcCUnbB/707ZuRyTkpExOfPhNEIvBNrofoDRtIuu5qKfEXLCSMBn+sMetnu315DUa/JfA4yVaOtqQaNo=@lists.infradead.org
+X-Gm-Message-State: AOJu0YynEP6hP7oRShaMZ3gskUsYOWjwR+2f6GEj1bcaQ7abWECjBRxK
+	b7xxY+6CzdZ0CI6qqKwtbmF7Dd5s4jwoFZ+gf948PKhN8sWaTVvJhN+N
+X-Gm-Gg: AZuq6aKNazUtwFaCyaOtvoDQ5hF9I8nJtQtaxWj2jFivZoNFG9ndxUyOk05jJNPikdV
+	F31goeacK84KWz8G/rD0E50p+/P39jrRXdRJ16v7ZfoZDSwWUJgKBaHLTwGQdrPDXuPQDXlhcKY
+	OBe87Fygs+CFqlzBaHxWkgDc8Dig2GM5OawLtdPCEqrXyAl7Z2Z90GX9GqZLt91clZm2oOsUgMZ
+	lNxxAM4XugcJOi/a6/GIFLU2xlrSLDgEGDtoNJPQ32Aa221znKL6yjdHoceUvaXRwKuidirNUKw
+	WG8/B0lu0fNW9qy6+i6zQobkj9468Usnv23i89XvO1yb7Ah2FNZDm0pG3PiU6ssWcrkIzRKN4C/
+	NzUl53D08KXoOZ6ecSKsE0zD7myQDAZuc6g92YcOtQfCp7zaocIdsQWtYUbePpNMXTqfaDeqnFY
+	DzzD+q4FvBazbOezzS+yurq44PI8w/soiubltahTs=
+X-Received: by 2002:a05:6a00:228c:b0:822:69b2:7ed0 with SMTP id d2e1a72fcca58-82440c1d429mr5231599b3a.6.1770447843215;
+        Fri, 06 Feb 2026 23:04:03 -0800 (PST)
+Received: from DESKTOP-TIT0J8O.localdomain ([49.47.198.227])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-824418b60easm4250622b3a.55.2026.02.06.23.03.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Feb 2026 23:04:02 -0800 (PST)
+Date: Sat, 7 Feb 2026 11:02:43 +0400
+From: Ahmed Naseef <naseefkm@gmail.com>
+To: Miquel@desktop-tit0j8o.localdomain, Raynal@desktop-tit0j8o.localdomain,
+	miquel.raynal@bootlin.com, Richard@desktop-tit0j8o.localdomain,
+	Weinberger@desktop-tit0j8o.localdomain, richard@nod.at,
+	Vignesh@desktop-tit0j8o.localdomain,
+	Raghavendra@desktop-tit0j8o.localdomain, vigneshr@ti.com,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Markus Stockhausen <markus.stockhausen@gmx.de>, naseefkm@gmail.com
+Subject: [PATCH v2] mtd: nand: realtek-ecc: relax OOB size check to minimum
+Message-ID: <aYbjk7vRA/gMZPSx@DESKTOP-TIT0J8O.localdomain>
 MIME-Version: 1.0
-References: <CAOMZO5Bdxv2ifJ8XUq-dcE=NZ=DJdDfw+du-CQ_BTUigxcKV6A@mail.gmail.com>
-In-Reply-To: <CAOMZO5Bdxv2ifJ8XUq-dcE=NZ=DJdDfw+du-CQ_BTUigxcKV6A@mail.gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Sat, 7 Feb 2026 00:31:28 -0300
-X-Gm-Features: AZwV_Qg29YV6QCzIqwSibue5KPoHITNOwE9ROV6idrfTcSBGgc77hNpU6R4A2TY
-Message-ID: <CAOMZO5BQs8Ny_i3gNr3C_LJHOZ6i7+SogYAjaf5xuxqBJAHXQA@mail.gmail.com>
-Subject: Re: SPI-NAND crash on linux-next
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	linux-mtd <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260206_193142_555616_57B931A9 
-X-CRM114-Status: UNSURE (   6.24  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260206_230405_224451_34F6848B 
+X-CRM114-Status: GOOD (  17.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,17 +95,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBGZWIgNiwgMjAyNiBhdCAyOjU14oCvUE0gRmFiaW8gRXN0ZXZhbSA8ZmVzdGV2YW1A
-Z21haWwuY29tPiB3cm90ZToKCj4gV2hlbiBJIHRyeSBsaW51eC1uZXh0IDIwMjYwMjA1LCBpdCBj
-cmFzaGVzOgo+Cj4gWyAgICAxLjk2Mzc2M10gODwtLS0gY3V0IGhlcmUgLS0tCj4gWyAgICAxLjk2
-NzIwNF0gVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0
-CgpUaGlzIGhhcyBiZWVuIGZpeGVkIGJ5OgoKaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgt
-bXRkLzE3NzAzODUxMDIzOC4xMTgyMzM2LjEwODE4MzE0MTIzNTU4ODY0OTkzLmI0LXR5QGJvb3Rs
-aW4uY29tL1QvI3QKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+The ECC engine strictly validates that flash OOB size equals exactly
+64 bytes. However, some NAND chips have a larger physical OOB while
+vendor firmware only uses the first 64 bytes for the ECC layout. For
+example the Macronix MX35LF1G24AD found in the Netlink HG323DAC has
+128 byte physical OOB but vendor firmware only uses the first 64
+bytes (24 bytes free + 40 bytes BCH6 parity), leaving bytes 64-127
+unused.
+
+Since the engine only operates on the first 64 bytes of OOB
+regardless of the physical size, change the check from exact match
+to minimum size. Flash with OOB >= 64 bytes works correctly with
+the engine's 64-byte layout.
+
+Suggested-by: Markus Stockhausen <markus.stockhausen@gmx.de>
+Signed-off-by: Ahmed Naseef <naseefkm@gmail.com>
+---
+On the Netlink HG323DAC with the Macronix MX35LF1G24AD (ID: 0xc2,
+0x14), the Realtek ECC engine probe fails with:
+
+  spi-nand spi0.0: Macronix SPI NAND was found.
+  spi-nand spi0.0: 128 MiB, block size: 128 KiB, page size: 2048, OOB size: 128
+  rtl-nand-ecc-engine 1801a600.ecc: only flash geometry data=2048, oob=64 supported
+  nand: No suitable ECC configuration
+  spi-nand spi0.0: probe with driver spi-nand failed with error -22
+
+The chip has 128 bytes of physical OOB but the OEM firmware only uses
+64 bytes (24 free + 40 BCH6 parity). The OEM bootlog confirms:
+
+  nand: device found, Manufacturer ID: 0xc2, Chip ID: 0x14
+  nand: Macronix
+  nand: 128MiB, SLC, page size: 2048, OOB size: 64
+
+The rtl9607c GPL sources have no specific entry for chip ID 0x14 in
+the Macronix SPI NAND table and fall back to the default 64-byte
+spare configuration with BCH6 ECC.
+
+I verified this by booting an OpenWrt initramfs with the ECC engine
+disabled and inspecting raw OOB via nanddump --noecc --oob. Both
+the env and kernel partitions confirm the OEM layout uses only the
+first 64 bytes:
+
+  - OOB[0:23]:   24 bytes free  (4 steps x 6 bytes)
+  - OOB[24:63]:  40 bytes BCH6 parity (4 steps x 10 bytes)
+  - OOB[64:127]: unused (all 0xFF)
+
+This matches the engine's expected format exactly. Since the engine
+only operates on the first 64 bytes, the relaxation from exact match
+to minimum size is safe for any flash with OOB >= 64.
+
+Changes in v2:
+  - Reorder Suggested-by before Signed-off-by
+  - Update driver comment per Markus's review
+
+ drivers/mtd/nand/ecc-realtek.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/ecc-realtek.c b/drivers/mtd/nand/ecc-realtek.c
+index 0046da37e..7d003fd72 100644
+--- a/drivers/mtd/nand/ecc-realtek.c
++++ b/drivers/mtd/nand/ecc-realtek.c
+@@ -17,10 +17,12 @@
+  * - BCH12 : Generate 20 ECC bytes from 512 data bytes plus 6 free bytes
+  *
+  * It can run for arbitrary NAND flash chips with different block and OOB sizes. Currently there
+- * are only two known devices in the wild that have NAND flash and make use of this ECC engine
+- * (Linksys LGS328C & LGS352C). To keep compatibility with vendor firmware, new modes can only
+- * be added when new data layouts have been analyzed. For now allow BCH6 on flash with 2048 byte
+- * blocks and 64 bytes oob.
++ * are a few known devices in the wild that make use of this ECC engine
++ * (Linksys LGS328C, LGS352C & Netlink HG323DAC). To keep compatibility with vendor firmware,
++ * new modes can only be added when new data layouts have been analyzed. For now allow BCH6 on
++ * flash with 2048 byte blocks and at least 64 bytes oob. Some vendors make use of
++ * 128 bytes OOB NAND chips (e.g. Macronix MX35LF1G24AD) but only use BCH6 and thus the first
++ * 64 bytes of the OOB area. In this case the engine leaves any extra bytes unused.
+  *
+  * This driver aligns with kernel ECC naming conventions. Neverthless a short notice on the
+  * Realtek naming conventions for the different structures in the OOB area.
+@@ -39,7 +41,7 @@
+  */
+ 
+ #define RTL_ECC_ALLOWED_PAGE_SIZE 	2048
+-#define RTL_ECC_ALLOWED_OOB_SIZE	64
++#define RTL_ECC_ALLOWED_MIN_OOB_SIZE	64
+ #define RTL_ECC_ALLOWED_STRENGTH	6
+ 
+ #define RTL_ECC_BLOCK_SIZE 		512
+@@ -310,10 +312,10 @@ static int rtl_ecc_check_support(struct nand_device *nand)
+ 	struct mtd_info *mtd = nanddev_to_mtd(nand);
+ 	struct device *dev = nand->ecc.engine->dev;
+ 
+-	if (mtd->oobsize != RTL_ECC_ALLOWED_OOB_SIZE ||
++	if (mtd->oobsize < RTL_ECC_ALLOWED_MIN_OOB_SIZE ||
+ 	    mtd->writesize != RTL_ECC_ALLOWED_PAGE_SIZE) {
+-		dev_err(dev, "only flash geometry data=%d, oob=%d supported\n",
+-			RTL_ECC_ALLOWED_PAGE_SIZE, RTL_ECC_ALLOWED_OOB_SIZE);
++		dev_err(dev, "only flash geometry data=%d, oob>=%d supported\n",
++			RTL_ECC_ALLOWED_PAGE_SIZE, RTL_ECC_ALLOWED_MIN_OOB_SIZE);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
