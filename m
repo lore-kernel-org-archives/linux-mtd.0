@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1DE9E7E0BB
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Feb 2026 10:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F19C0E7E0C1
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Feb 2026 10:31:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QqwybM/slmQWrYhsdiO0UyQuG2V8l+e0Q1/Q9rN3BEQ=; b=Toig+l0nONOGT4pSC+GvPKIX8L
-	YnvTGiK0YL0tLLleC2TFm3SNNVWM30o/KUuG1n225Nlai1sw8LW/nOLBZ8kudPUcQEUhXzDOm60TU
-	84fqjCoMG+vC6juHtKWVKB9djhELVO80KQID1tAvx3lARUt6mRHy/4M0tSLUa60zay9wQC79kpW7j
-	oeD1lPn2MX5QHoxvzMUmcWe+dseigyPZTzniguK7UcThDvzYChzCipi7zkjU7LZ069IO2WOV9Z5vQ
-	byPdmxT73ZbXDitXuAV1ecf3X7htsTNmGIJuJYVM43qAfKn3gW3Uh87rbr/0+pERSy8ikARrwUMGC
-	DT4EfMJw==;
+	bh=6VL9djF4weveVBZDJCX19Z9hvf5RffhoswB2QhuohpY=; b=sc2tZuVnR7OZZr7o5vjC2i0UqB
+	CogoRSuVrBXoXBpVypVHQQpSZa9R3dm6GvDzYx52VyBtFCaAwLkcCzVKmq+EVqTaylaRmzNi2gDAi
+	CohTKuDl8UjGx8FXNu9Cy116EuKxTU7jxKgNYn7t7Y0DbyDsClgazDceOBq+FaFoQsYeCEQUQIWr/
+	KVxuRz0zjxRkoAkuNIVQk6JOf39Pjd49QU1ZNHREFqCXTby26xxOYURNHB4TJ6tchD1GL+51DVNsr
+	ADMKBcw1ZP1Nkxw3XvJnctsROH60JA9H5Myi1IvdO6lT3KwZHDAs/OtZUrx7+eUCBCxyxj52GzAuT
+	EJ4C+gNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpO8g-0000000FDV5-0BDh;
-	Mon, 09 Feb 2026 10:05:06 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vpOYF-0000000FF4n-30b8;
+	Mon, 09 Feb 2026 10:31:31 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpO8c-0000000FDTs-0o7U
+	id 1vpOYE-0000000FF4h-3fV0
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Feb 2026 10:05:04 +0000
+	Mon, 09 Feb 2026 10:31:30 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 88FB0441E9;
-	Mon,  9 Feb 2026 10:05:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14559C116C6;
-	Mon,  9 Feb 2026 10:05:00 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id F14BE60008;
+	Mon,  9 Feb 2026 10:31:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B76EC116C6;
+	Mon,  9 Feb 2026 10:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770631501;
-	bh=HWKJIQNONMVQSZ4SSnN2RacPR7HLBIc33yAACZJdKz0=;
+	s=k20201202; t=1770633089;
+	bh=TwBzdsVRrRybLDrsjk53rOG84qihoqSrcyNa1p9EUdI=;
 	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=f1fn5+pj4ITHRHHkNblo7H2WXpzkCo+/DzDlxL7FmJtxlsv6yqOKShGFCPbomxUEv
-	 4BXxWvLJfM16FPKdItEfenlgWxuzWZb2fm6oqeUTepDzJGKt2mpnwf/T5SwwgVKls7
-	 c8FCtV5qxr7mSS+jn36NGGRVRyVMsptDQBqiLBvhqTgo2t2o8rWnh3olVawVy5lRhO
-	 9gWERGs8+x4+C7Kwx+j+moooorCRMJTJQrGq1ghoVgeTRLP+ES6ZAA+bRo8/t0Q6lL
-	 Sm5FF+CrIvVo2FgGtBPID7SNlr+7/d2KhpX0vS2C573ph4gbkCep8HIXGfqYFFYUCF
-	 4hRuMTd/5dedA==
+	b=bOJ1/z/cYdv86jCNXgWrawsbiYDjfW3JigQma1OyEPFuj9u7q0lgq0m5xPzm01TYQ
+	 i9FcHzQ+F6xUKVXahi2LydOQZI1n8ppFRxUwCDqSkOJNN9JK9w4MK1r5NV6YCkcHIV
+	 0PC9YZmcx5dKU6LZh+XI4vCZH+9xK2udQQJQZvRsy8T7HfMFoZ8NqXRfjj0GvETocN
+	 aCUMx3/tvc32/dPXehz/Hm+foAp129A8onIgz7ss4CpNA9b7sAh3y7XD/CapdErCqJ
+	 keb/mHKDngvAAufCsGRppBhjEYqBrEZfGYbr7cQ1wFbU5FNpTTh1xwGtJqCfm8qvCm
+	 Ci5gEve6qgXLg==
 Mime-Version: 1.0
-Date: Mon, 09 Feb 2026 11:04:57 +0100
-Message-Id: <DGACHCLD50YM.14CAK78PEJ6O3@kernel.org>
-Subject: Re: [PATCH v3] mtd: spi-nor: micron-st: add SNOR_CMD_PP_8_8_8_DTR
- sfdp fixup for mt35xu512aba
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <imx@lists.linux.dev>, <han.xu@nxp.com>
+Date: Mon, 09 Feb 2026 11:31:25 +0100
+Message-Id: <DGAD1M64X2PO.3CLYHIAZQRLI7@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: swp: check SR_TB flag when getting
+ tb_mask
+Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Pratyush Yadav"
+ <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Haibo Chen" <haibo.chen@nxp.com>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
+To: "Shiji Yang" <yangshiji66@outlook.com>, <linux-mtd@lists.infradead.org>
 X-Mailer: aerc 0.20.0
-References: <20251223-nor-v3-1-09e26797a8b5@nxp.com>
-In-Reply-To: <20251223-nor-v3-1-09e26797a8b5@nxp.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260209_020502_250018_53ED2E0A 
-X-CRM114-Status: GOOD (  11.12  )
+References: <TYRPR01MB135884849485DE52A81D94965BC91A@TYRPR01MB13588.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYRPR01MB135884849485DE52A81D94965BC91A@TYRPR01MB13588.jpnprd01.prod.outlook.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,54 +67,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4091841237960840289=="
+Content-Type: multipart/mixed; boundary="===============0825786728717127767=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4091841237960840289==
+--===============0825786728717127767==
 Content-Type: multipart/signed;
- boundary=96026a0e31e1c8ea8b7c7b82368b053a9042163358dd4836ab796c2f20bd;
+ boundary=3a0cbeae8d59140c80745bc1636a288489d9709fcbb5063fa72cad364e60;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---96026a0e31e1c8ea8b7c7b82368b053a9042163358dd4836ab796c2f20bd
+--3a0cbeae8d59140c80745bc1636a288489d9709fcbb5063fa72cad364e60
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-On Tue Dec 23, 2025 at 4:01 AM CET, Haibo Chen wrote:
-> Find two batches mt35xu512aba has different SFDP but with same
-> jedec ID. The batch which use the new version of SFDP contain
-> all the necessary information to support OCT DTR mode. The batch
-> with old version do not contain the OCT DTR command information,
-> but in fact it did support OCT DTR mode.
+On Wed Jan 28, 2026 at 1:42 PM CET, Shiji Yang wrote:
+> When the chip does not support top/bottom block protect, the tb_mask
+> must be set to 0, otherwise SR1 bit5 will be unexpectedly modified.
 >
-> Current mt35xu512aba_post_sfdp_fixup() add some setting including
-> SNOR_CMD_READ_8_8_8_DTR, but still lack SNOR_CMD_PP_8_8_8_DTR. Meet
-> issue on the batch mt35xu512aba with old SFDP version. Because no
-> SNOR_CMD_PP_8_8_8_DTR, micron_st_nor_octal_dtr_en() will not be
-> called, then use SNOR_CMD_READ_8_8_8_DTR will meet issue.
->
-> Fixes: 44dd635cd632 ("mtd: spi-nor: micron-st: use SFDP of mt35xu512aba")
-> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-> Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+> Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
 
+It goes all the way back to the very first commit..
+
+Fixes: 3dd8012a8eeb ("mtd: spi-nor: add TB (Top/Bottom) protect support")
 Reviewed-by: Michael Walle <mwalle@kernel.org>
 
---96026a0e31e1c8ea8b7c7b82368b053a9042163358dd4836ab796c2f20bd
+-michael
+
+--3a0cbeae8d59140c80745bc1636a288489d9709fcbb5063fa72cad364e60
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaYmxSRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/iCewF/VSY38d3rTvpLro4TmcOw0yK8cmKoLAm4
-bJ2MOYpPmdS5hWjK5OJnXqCT9ur7qtLgAXsHJpY3Ck9DzjtgsRtJRnXY74pnT7JO
-9YYdBz9Da8f/M8trY6b36LNnS90qyaPGMik=
-=GaJr
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaYm3fRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/iKpAF8CDyRUYovF37XMeqHzzqdW33hta7ep+Ky
+H/Oi/IwS07OPNZyBw7i+tlgl2ryxNHY8AYDCmvEf3rLCrHZX0UybMS4XmHP5/nWJ
+qS8iTw4CtYqq5P5/c4EjUC0l4LsIaEsB3ik=
+=JGHc
 -----END PGP SIGNATURE-----
 
---96026a0e31e1c8ea8b7c7b82368b053a9042163358dd4836ab796c2f20bd--
+--3a0cbeae8d59140c80745bc1636a288489d9709fcbb5063fa72cad364e60--
 
 
---===============4091841237960840289==
+--===============0825786728717127767==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -128,5 +118,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============4091841237960840289==--
+--===============0825786728717127767==--
 
