@@ -4,150 +4,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A810E7E0D0
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Feb 2026 11:37:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26012E81BD3
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Feb 2026 15:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/c4uCQcT06HPLKqzDj7kvArc5CEZDrjho9DqwsXJuD8=; b=aTmuYCyFUcDuTT
-	x62Xh51/fvg6YuXmGYEW13jRdjbhBjhF9EAFeQMmlE6cE6EmOwt3mc7bnhznIkvVgJ71kHRw6T4QW
-	Xr+C3kDAGV9pHuf2LJz+6xIx+sdxEgwLlJH1/BdB5WLJF0kcxuRzabM++Psy9h+lvwYVZSspNELcX
-	kI4r/3GC+5pZ7GDmpuoI85gMz92RDzCYw9HdSN6kYpAasTGuFAZFIMyCdy7fRh8RXAYJWH53A9eL2
-	H41zDhEta1Nq5aEKrqzLSl7Ifjqv9So43bDktG02yCBLXNr+dGWxrzr05rnXtM01dubu+V10O7uvV
-	9JvhfNt2F/UDoeeffdIA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qjFIVDK7pKPN/8gReqNSCbdKJxdO4xj63NQQmeTZ0fo=; b=hZ7C+UvaXMCorQ
+	qv2JcycvLqBpb+UYXL0dQ9w6MAXHFQdNkL02D27h/P9JpzLW7t/vNqoOSCZLY6DyYS8cM8YMVIbUc
+	MTZU8up+HKk78t3IE/Aix610bG0bdFNeG7hT/zPgNtoR53zjU58pCdfToDogVnfOAdMToR3d3DgEY
+	A6BWA3d5f6dd6cE/6GQgT+ClyO7h6PfWYd4gT0dlK5rnKWWqra5lAQ/hrE2/JlDQramFA1yaULiHL
+	zF+4LKdLYiJBRcVasZg+jfwfxGNcHEJNW+cpWKCxscvBc5ZfQ5tL6ZptgAddxesNSk0OF877tOQp9
+	Ncl8RRRp5+TUEmnce9GQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpPaO-0000000FJQe-2y5m;
-	Mon, 09 Feb 2026 11:37:48 +0000
-Received: from mail-italynorthazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c215::1] helo=MI1P293CU004.outbound.protection.outlook.com)
+	id 1vpTSK-0000000FdPJ-3t23;
+	Mon, 09 Feb 2026 15:45:44 +0000
+Received: from mail-swedencentralazlp170130007.outbound.protection.outlook.com ([2a01:111:f403:c202::7] helo=GVXPR05CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpPaL-0000000FJQ7-0MXZ
+	id 1vpTRw-0000000FdL2-07Oa
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Feb 2026 11:37:47 +0000
+	Mon, 09 Feb 2026 15:45:42 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=spECur7+5UBhg4XA0cpWJQGAUp0aRTUv8ttRxjpAJWP8J8p/FSk7SYB/eUreFvKrVzPUD9PBL4J9OwfNdw8R/ZJ4xUwLY6QHqDm2MNYWLMFsL5aFyHRuKcWuM0MeQl0YDW9d09srnNhdUJmbsD/kmnUpC1TI27IotrxcmDLLNjSwYCP7GpYayecEI7mWZgkPTygXmhP1tl8DbulGG/rrXLChWF1iEVFm6yDu/GulIlQ7wv/YplTeepi2YquuRfjWjmq3PrjFIGCotDgQH2syu+yIx14knWMAf/qk81rVOE1X/yLVfoWkhlLa8TwjShTQQo5Zpl+HEYuiF1cwvbWFxA==
+ b=XQsduMsMJt4IMDqNN361H/FMOfFsRHsPKzBVbLARYf+mauHiSqe16tVi4vXAOJQrVhhgX7vKnoZfUWsv8N1qD5mhYKabsKgIgyWv37kaj6ZofSNvWoj2yXsGcaebW8xIw9TUpJXwezqRJMuqTw7YbvZZd6x53+pp1eDoVWxHY2lZAbrpJQcSX/tW4Lj8wfor24wMZpTU6uitLqE6b5x61uz+TA3McavrcupUMh9rd7Bjm3xuBDlNVlaUN7KiT8uDGctPsXk7+yd2Im93d+BD0LpxRNwtQ9lXygEXFrbNBp2Krz9TFClu8b6YtdvX71m6MZ6M5pc6qQWZbz95UTzDXA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OtTndpVGwqXy5oOF6lUnbYNJEDA2OW5HWuhPa7frPw0=;
- b=JQ1V+kLPyTAuDwvepkApLc3VKw1Bs3UtBiQ2UTvlwCgNRwLbSeazFVAb6/KncIWj32it9b0b1wAby6+79xOSjnnALpLv+v+Dbbc5UfcsRsfrPNODaA3J2x/djOVME7G88woncnpw6HKqaCcqVKLbY6xR5B0j5svEmSZUNq9GS3gPom9bUqLL8aseFXom/dsAj6mdU4ZTAdE90P7oysvty0s1MGyFmvMhgNsiYevcpiFA4hxIdSdWQGy4Zu3VDT+ze0vhD2ImYYViUAwW2sUmksPZYlwyIteAq8IyzlqNEKYIN+4UfAy1WSY/NEqyzzBiblwmzAIyulK2IrUXNPoSnQ==
+ bh=bQkPtfl6IKlnKwA7uVDSUsewOH6zD8+wqQhi5w05k30=;
+ b=N+3fOPIH4TkFbllyapNBycgADcKx34IE8E2s95hIzQaOuBmmRBr7S0qmiJtTaOEcfqz27dHq1JIvUmejWT6ugc4Fsk+K7Gb8OU42z/sYsPHqHb6drzEj3tVDWcyJEjEJ6RpPYWYcA4PVuI4o9RgZoorGHC4ER8n+03eR0m4wxV5DihUVSV3KvSQ7gqNluCU+E4IhBsTw3kLGTgfLTtm8JWL138IB0j0w1wHzexCiLu0OcLet/WQx171vIUFHTqpML8kwxdJFQVbqk55meVZpWqU3uhbBx/sqi4Rv2IOZU7cclFCxqT9lGxwF59+5PFLXirJy83DE16iRzBYWQKG+KA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dave.eu; dmarc=pass action=none header.from=dave.eu; dkim=pass
- header.d=dave.eu; arc=none
-Received: from MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM (2603:10a6:290:50::6) by
- MI0P293MB0047.ITAP293.PROD.OUTLOOK.COM (2603:10a6:290:36::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9587.18; Mon, 9 Feb 2026 11:37:37 +0000
-Received: from MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM
- ([fe80::5fc8:9a15:2d20:a015]) by MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM
- ([fe80::5fc8:9a15:2d20:a015%4]) with mapi id 15.20.9587.017; Mon, 9 Feb 2026
- 11:37:37 +0000
-From: Andrea Scian <andrea.scian@dave.eu>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, "michal.simek@amd.com"
-	<michal.simek@amd.com>, "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com"
-	<vigneshr@ti.com>, "amit.kumar-mahapatra@amd.com"
-	<amit.kumar-mahapatra@amd.com>
-Subject: PL353 NAND Controller - SW vs HW ECC
-Thread-Topic: PL353 NAND Controller - SW vs HW ECC
-Thread-Index: AQHcmabaLgRDqovB5Ui7aOICxUgxvw==
-Date: Mon, 9 Feb 2026 11:37:37 +0000
-Message-ID: <MI2P293MB02644DC5515E56A2539C65739765A@MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM>
-Accept-Language: it-IT, en-US
-Content-Language: it-IT
+ smtp.mailfrom=hitachienergy.com; dmarc=pass action=none
+ header.from=hitachienergy.com; dkim=pass header.d=hitachienergy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hitachienergy.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bQkPtfl6IKlnKwA7uVDSUsewOH6zD8+wqQhi5w05k30=;
+ b=fBmr+q1b8/nISe2ljnDl3AXRrsgjc5rrgbwrrVjnwtej5jKFc2cG5gCkI7cAesoyT0jkOpCHjYrsuoVztMgz7qO6SpLYCq056wimAu3CQPjDJvTIqE58XhsvzUNet2qAkVYclg3Dg5zL6CltEzY0X11c4rRTp0fHpUzpZbWAHP8bimLZdhGagWYDmBhT2yQnfCfYNzpP53Y5xtlE9X7Wp76tEeym1BsPluNWw97FSqm5KVswjBghuJh33+vlLVuSDmuya2Fxt9cA3E82q7xcSt2ZI8bqkG3qR9JN241xaS/OHAY4SYC3TdyMgqV05tRKahmOSyBYFg2rJwLmZrKpOQ==
+Received: from DB9PR06MB7849.eurprd06.prod.outlook.com (2603:10a6:10:291::22)
+ by GVUPR06MB10880.eurprd06.prod.outlook.com (2603:10a6:150:33c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.12; Mon, 9 Feb
+ 2026 15:45:13 +0000
+Received: from DB9PR06MB7849.eurprd06.prod.outlook.com
+ ([fe80::f0f5:da:c159:65ab]) by DB9PR06MB7849.eurprd06.prod.outlook.com
+ ([fe80::f0f5:da:c159:65ab%5]) with mapi id 15.20.9587.017; Mon, 9 Feb 2026
+ 15:45:13 +0000
+From: Tomas Alvarez Vanoli <tomas.alvarez-vanoli@hitachienergy.com>
+To: Zhihao Cheng <chengzhihao1@huawei.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+Subject: Re: [BUG] UBIFS corruption on powerpc 32-bit targets
+Thread-Topic: [BUG] UBIFS corruption on powerpc 32-bit targets
+Thread-Index: AdyRCkfQa4Zi0XkcSIOaDwEHvEKqQgAfkK0AANfexzAAKpBxgAASt8aTABoBiQAAHEXIlAAWQcWAAB0NmY8AFokAgAB/U8m+
+Date: Mon, 9 Feb 2026 15:45:13 +0000
+Message-ID: <DB9PR06MB78496EADCD11536AA66C22CFC265A@DB9PR06MB7849.eurprd06.prod.outlook.com>
+References: <DB9PR06MB784979B96C388174F81F9103C29EA@DB9PR06MB7849.eurprd06.prod.outlook.com>
+ <356439c2-5289-57d2-52d4-8b436252a630@huawei.com>
+ <DB9PR06MB78490A50AB800FB36AEF5E74C29BA@DB9PR06MB7849.eurprd06.prod.outlook.com>
+ <b93ff0e5-79ad-ff73-bdb3-e7e7d5c35256@huawei.com>
+ <DB9PR06MB78498340513D9788FC7576FDC298A@DB9PR06MB7849.eurprd06.prod.outlook.com>
+ <d0eb0572-e383-466e-7b4f-97e4a853b7c5@huawei.com>
+ <DB9PR06MB7849BCA2FA49A7AEE3D03104C299A@DB9PR06MB7849.eurprd06.prod.outlook.com>
+ <2e8dee20-842e-e946-87a0-9ff0190600ab@huawei.com>
+ <DB9PR06MB7849E51C72D54F8109C55714C266A@DB9PR06MB7849.eurprd06.prod.outlook.com>
+ <581cbf94-a48b-3670-27bf-3ecca07ddcb8@huawei.com>
+In-Reply-To: <581cbf94-a48b-3670-27bf-3ecca07ddcb8@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 msip_labels: 
-undefined: 5804773
-drawingcanvaselements: []
-composetype: newMail
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=dave.eu;
+ header.d=none;dmarc=none action=none header.from=hitachienergy.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MI2P293MB0264:EE_|MI0P293MB0047:EE_
-x-ms-office365-filtering-correlation-id: 1bd9ade5-42c4-455a-384d-08de67cfa003
+x-ms-traffictypediagnostic: DB9PR06MB7849:EE_|GVUPR06MB10880:EE_
+x-ms-office365-filtering-correlation-id: b4dbf68b-5de0-40ff-893d-08de67f236b7
+x-he-o365-outbound: HEO365Out
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|19092799006|376014|366016|1800799024|38070700021;
-x-microsoft-antispam-message-info: =?iso-8859-1?Q?wXXwVbIO68gOmFxCASsGmw+cyZx2Bah8I3AcDLL8Tg5Bt/J5+Y/+ML1OYt?=
- =?iso-8859-1?Q?dG5aZ36mKJaOp4OfSynvZd5Q3Z4i0VzNuiX18a7FAkvdanA0UWnxTt3RXj?=
- =?iso-8859-1?Q?dvCmCZyRASqYEvar1GG2CZmBBcGVCMICjOlfyjgrfp1/+//PDn33PSylkl?=
- =?iso-8859-1?Q?S7YLri/Y0+iOLBrypZxEWZ6e2RMrKyPl+1vbdZBqOJiTN/GoY+EhWs8FgH?=
- =?iso-8859-1?Q?R7LO28D5Z/J7Ue5RDTmTv+I8uDflkcczyg1XLc2uhdMEfJybb7qVrhSM6Y?=
- =?iso-8859-1?Q?20HbBW4B4m9JF2OG0vbW8K0cBoOmZOW7TIRsanEF2XgUsNv/7Z5EAr0+Qp?=
- =?iso-8859-1?Q?VA//ckAxTVWo8WRU6h3VSt4W+VUq5J5H9GcjnFzUv0Nt7oZAv+FZBUlOsA?=
- =?iso-8859-1?Q?VMWK9uoqNzyxbqGmSL7yDAUSR4aUDL0FuVVDU/n+4I+vB8oBin+5WbDqMr?=
- =?iso-8859-1?Q?xeP8vb7uR9HaPps4eB5/0Lkw2gxAdEHNGHAP0gCeuGFTAK9C82M26EC3Gc?=
- =?iso-8859-1?Q?yUGojbm1A0aH8P4Xe6cXDIytoR2wlE6/ALFSXkRCJiO6goIEkVAT0FkP4l?=
- =?iso-8859-1?Q?etVpV5CSMOuKVjX695vBmVfM6fZXzX7iVq2x3M7p9zxbdVBEcazYjbJLhD?=
- =?iso-8859-1?Q?x/ZRfb3s2VyYfqRTNZX2hxVejqFXf6OvK7b8Txn3RDjXA8NmmGivnl5VK0?=
- =?iso-8859-1?Q?X5dEubEC7hJiZMbhg3OR9TFZWpMmV20KL/dVIA9Op0PQzgQN+fKsuOvtUw?=
- =?iso-8859-1?Q?ph2wg1f1IsYzSnI2zgV+BzxNUui0LdXmwpvUR1FNYXCBxpdpYk7fEPO+T8?=
- =?iso-8859-1?Q?X0TF9EzSdNbKw/D1rrzuiCXhapYurA0txJRRfpGvawf6IMiDJ/o7sAy59w?=
- =?iso-8859-1?Q?PfOBYfXu3GJzREaQ8S3i6owNgtfXvlBOX9elFZQ/HbCHSfknT3Y29TTlVW?=
- =?iso-8859-1?Q?EDb7b8oyf5ffGmqdMvi1ams2LT8dVbeUG2v8ShTD/oAiD4pFQaohvyqESw?=
- =?iso-8859-1?Q?ONwn0yQHJ4HvKuzSg4Sjz8SW0+tzT0EoiY71ySDfxOVgWIqoknFBreEt7u?=
- =?iso-8859-1?Q?eiktD0aoemME8O8CmBmMUAlCZ8qkhvmhfzuS+bNnHtcfsq0LY1VT6YQxI0?=
- =?iso-8859-1?Q?stnevstINktQAlJpIkMDCYljqoqkuYO52vLGmoDxtNpLmlzLsrNO3XaPhr?=
- =?iso-8859-1?Q?ujwnDm2PrlAdUvXv9jqYQAhil3n5EsNEfiHcBCXqG81XfUOirxin2mXx9U?=
- =?iso-8859-1?Q?WpmYpuTTTcHIWNMzzyAQKDxxP/pyoEL4tt/FzS6yhWQyAHl568phOTyD3l?=
- =?iso-8859-1?Q?WqE+MQm9bfirfI4Ea+l32VLqeZ0rIFBBFbU0o/L8Trg9pso+MpH0K2XLG3?=
- =?iso-8859-1?Q?EJXH+SoIUXhl4PXlfulxQJfBlfsdVzQCyHL2lVAz+LANjjhlqh4bepF+/k?=
- =?iso-8859-1?Q?AsBVxnkMaL89SPxi67HwXaSIeQjUv1uP8gx8xu3P4qJaUOuFAxNJcQjRzm?=
- =?iso-8859-1?Q?ByYrdVBrYzJs+XGyHvESEX8LA98lKTX9QFmhJpDK+QaLMP1eNpmw141go9?=
- =?iso-8859-1?Q?7e5BQozwa8v5MR/K0+uZztAzNxCXczTlKolUU47WnJ8p+muI3yIMm2+jon?=
- =?iso-8859-1?Q?+fqeeOzUKsyIZuzWjewKbyQq58z1kMdP9S9SDrGJL6U93AQva3P1KndLnY?=
- =?iso-8859-1?Q?kZQOt/uvZOW8y2C5fsI=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(376014)(366016)(1800799024)(38070700021);DIR:OUT;SFP:1102;
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700021;
+x-microsoft-antispam-message-info: =?iso-8859-1?Q?RgqQ5GBeeRHjPQS7UOSRon5wkS+6UNf3BLXmwUc2DSI68UjdSowGS09uR0?=
+ =?iso-8859-1?Q?DMCbFNUI9OQKp3IvEZTonB7HUItv2LhdX5afKSvt9sPBSX8haAM7/qrQHe?=
+ =?iso-8859-1?Q?sb2qop3YrmEtpqmqLp7MQ9SzhEbOK0vdlQQLsZlumwriufyvkYJhOVl4Po?=
+ =?iso-8859-1?Q?GGFko76nq17waI/DL/6xrQE5O3gOwJGHutbNKI6Fib3hcYPoZZmmOvPNuz?=
+ =?iso-8859-1?Q?dLFR8oUnBOcSckRKceS8bXyf418iVB7EiChpnS6Qwyw7U424uIWkRzwkKO?=
+ =?iso-8859-1?Q?FtqqigHEkrHoQ708BVgHwBzHW+7oXPDg2ywqz/uqfPY4lYlXJ54Um0Kcws?=
+ =?iso-8859-1?Q?g4Qel9AWIwHiBhLyNNB6xHAUg07ZWnDfe4sxQHE4MTMmw1X+cstU6Vd26v?=
+ =?iso-8859-1?Q?hXci1h3MbUSQ35v6nhhiyT67juMFX6k+JtMCvir+X9fQLJSGY3RymfxGJ5?=
+ =?iso-8859-1?Q?LenpC4bL2Z58b1TfhT2zqIZzh8cV29pXOF3JQzOEjUGRgjYDVwB+Fc93M3?=
+ =?iso-8859-1?Q?VJY6S9YnJBJLWzsgwHygVWn+3LzAI0HoijeCOB6rqIxmM35Mu6yV+uJw+d?=
+ =?iso-8859-1?Q?3SqCBkwVBXR+MueaDvtH5qlArnRYQTWj08IN+Gdat8sLxVSJ/Qttftl4T2?=
+ =?iso-8859-1?Q?39f3R8KaSR9ReyFzNQ/0Jji7U1aASKsiqnA4Dox5s7jLnqdam0C6HH3opo?=
+ =?iso-8859-1?Q?RB2b6x6BkFevHmp/76K8RJ4zrDCmxInmwFRbx0Vc+e7495d0qSicW8lMIW?=
+ =?iso-8859-1?Q?kO2QGH4XwQTgpEZOJ7IboSUfZR2pjf71qereOY0091bq4mTBYqqrYUuSya?=
+ =?iso-8859-1?Q?uI6y9DvNSVf2bLQ3vtsy/cBzA56ciVtd/USYmuX2DUUjWOwWEXuaCUGLur?=
+ =?iso-8859-1?Q?/33HusDqFQifkOfyMvxPvU5br2pF5RGPEiV5570p1tqStZBWgS9WR5XvA3?=
+ =?iso-8859-1?Q?HdY/q54N3J4jibBoV1BMe9yIcrvxVImvhtenRyA58d1x2rnL/OrYOLiXiA?=
+ =?iso-8859-1?Q?fFiNp6C7jk+FmWbbYvF/AWTrmEVxa/Kw4/6pBvlM+8DCAPSyT5Hw8XOFNz?=
+ =?iso-8859-1?Q?wtZGVaXJCROyskMi9uAMqWyOUozbzV/zpVdKMpg/c7OpLbWtCt9uOUpvoq?=
+ =?iso-8859-1?Q?xkaBM4L8lfKSPQKDo0mfxz2POrZ5giSH/LpKZplckKNezKvqq2f/50vTFY?=
+ =?iso-8859-1?Q?e+MMmrQA+kSsuUSkcHsLpEUZfLVTWA9YzepXg8EP7QFuvVemUW7ceXMFkz?=
+ =?iso-8859-1?Q?jdl6cq0+BdoQIhjy0WkaVzA07sIXon3Hhq2B5zl4zPlOYIuMwT/8MskeaI?=
+ =?iso-8859-1?Q?N6m/HjucrFQd7oe/bEXmndrfvkeqf+pvuaZu8xH06TXsHFRrKGCQ/QLZJh?=
+ =?iso-8859-1?Q?NhODE3FDMrkDoqOIFMnhZLfC6Mx6aRJst4JVNV810v16Pyi09SgJiWOjIl?=
+ =?iso-8859-1?Q?aGMFCdmfRsUorh2Cb7D/zQEyeILPkJjCkcv/ORRALc9jS7kuX8jcldLnbQ?=
+ =?iso-8859-1?Q?XVp6UXNz1GuwKvClEDCfyv5FdrAPkUj7WsBs2E1r0rvc8LmE4ldpN7WQRz?=
+ =?iso-8859-1?Q?l/tWV40VPd1y1In5F3+I7iq7f8mv4WfT/Gypo57l7MBJL9oqj1lM9o8tVl?=
+ =?iso-8859-1?Q?aY2cmwwZUz0LcphW9LMwjPF0pf3bqz11IitnR+2z7u1oKpuA8z6f1OBBnA?=
+ =?iso-8859-1?Q?7KoQfqhJAvnqYaXPjxk=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR06MB7849.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700021);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?H8B7qFmnvsOai+hjpPFagvxBjicJy0mY/8pC0OikuMlsHiOwXjlEsOtZmU?=
- =?iso-8859-1?Q?bdbx4Y2X+P2G/HnUz1qIut6USaz5g659YLJsUhsoMMextj2n0NQ1of1RQg?=
- =?iso-8859-1?Q?pgr2Nf0t5iFtYMJAjZmrbkuLnQQA0Bv0Wdf3ExBr83NQxGoKWy9owcoSTh?=
- =?iso-8859-1?Q?jXYD+WOiZqCrZpveUytYZAf/nNolYg2YDztVAy2cBiAa9zSr3TutrcpVwv?=
- =?iso-8859-1?Q?zyQbw7qppoevWJgDWdC7sAjwDEd786BG/3mCgEtUNJCt3NNz/xMwChAxGg?=
- =?iso-8859-1?Q?icuIuBhIWB7P81uOBnLCPQlkl0fGm2f9FtvgtrC4U3IHJPIWVfqw93VFn0?=
- =?iso-8859-1?Q?3zpjlTzPJo3YHrW8U+DRvpR9fJ0X11GT2iuxxcCZLX2vfJXOIyYe064mK7?=
- =?iso-8859-1?Q?xKgmeqZjaW7QzgQML2qg3um84VpXl+JuAPMr5sK0fOXk2PcDlhosF0Zzk0?=
- =?iso-8859-1?Q?psyxJA0VlANclVMLL45/rQZBd6tyNmZkP1cvv63kUOwx823fHRFMS5aAe0?=
- =?iso-8859-1?Q?4M5cOKKPYwnYwTZqqtDYFO2e03k8xaWyaREJZdfuXvI/wmXGBn+GSwP4dj?=
- =?iso-8859-1?Q?kP25564QWM3zk4bP0puybi7yIpWOCa/GktboZSOfycPqtzhUwtOgR1EC2l?=
- =?iso-8859-1?Q?tXvsG6hpUbJvHprqzpjFWIygWHND5W8JCCJcu8F3ALuUPDQEkZoJvYRwY+?=
- =?iso-8859-1?Q?cqf/bq8gMatjgYnxkkZnhUvtIrV9xPJL6wcywu3EMAQcwumvoQKiOCjeY3?=
- =?iso-8859-1?Q?zmYhBdwgqVYC1wWJ+jc3yCH3jltdk5ScpVp32mf6pGkJ/IQUPZPi+G2rkA?=
- =?iso-8859-1?Q?wvHrcJWDo51HgG1PJ4Z2le4SScIUjxEXD9bWrAmRtbnE7Lf5/i22fspAyq?=
- =?iso-8859-1?Q?llBy8AsAIZE9qqNeVWZfzoAkUHt6uyKD9/vYKPq58GeRzu4QLFaw3PD4UR?=
- =?iso-8859-1?Q?xuvDAONhgRreYQi9hat2Hp+01IQaNF4XZ+13PqVo70zv+06Utcv0QzZ3W3?=
- =?iso-8859-1?Q?3KGPo9R2fetkHWC53A42FZmtMIR5Gw2xAvpc7Q0XDXhNC308ZaAmKzTr5Z?=
- =?iso-8859-1?Q?GHeubnaYn10hdDZQj1g0cPy0pHh+FDl/QQWe1K3FwSvz2l7a5IunmBSgeD?=
- =?iso-8859-1?Q?B3t7h0TzCJXPWGTQPQ/ESyJSsbZzSqO2zPAXQVXbGVdxqiILI0jemJCF2x?=
- =?iso-8859-1?Q?HXCyDrjaUrj8/+WS98jWxAkkjT4TlrnRDVSdk46doZdPFkmGE1ZOLBZbrV?=
- =?iso-8859-1?Q?GVKgjvLmj1ydQxqH13TNR8zqwO8VbzstW0rvHhe8jk3CQXvx7Fyiphk546?=
- =?iso-8859-1?Q?vjTRoSPkqrgjNGTLb4fOO74Yrv1eQwE8lQ6YTjZJMm8eJbzKI+tDUK+9tn?=
- =?iso-8859-1?Q?c/T7A7sC/ZhC8dKw9HEKVsT92y8FBOlYFod/JWYnIVaToMzMmVd+NNeyhl?=
- =?iso-8859-1?Q?IO6Vb5DqNJEwWy+u1OpIlP0gAQ3DZBdnXpVxUgbYCDjMst/6gcwmWVT3yc?=
- =?iso-8859-1?Q?4z45W8z6wh3YWldjFS8zHFm5nqj1oxg/GruSFAux4iXolyClorcj44QUg7?=
- =?iso-8859-1?Q?KDqp2b023J+YvvjJ57AFkk5sNoj2Ykw+sHdol+Hcl5X+mLH+pNCegsJWxm?=
- =?iso-8859-1?Q?7dmYI0xDQLuCcf0Y9FrDbvxypgRi0QwqAcW1tINApEhbI6woL1f4zGlL8v?=
- =?iso-8859-1?Q?y4BzPujEBQTX9/3oR/J/EO6SW+VwpxZczSmDQTPAwVrlx785s5yR33eP/C?=
- =?iso-8859-1?Q?Zt4DG40jNy66n/HWx0GjP4jq6HQqnJBL6kGg/drsuzoVuR?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Uh4erGnxXHIHhoFIkisHYCq0fs1h/lus1EySN98Lyo40PWE4y6cN0BM7vs?=
+ =?iso-8859-1?Q?1u3RsnMHpO6O0HYTJ3BUYdtaLoIz/703KwjoxXzPOrEU6eN/aJZ0KqMWzb?=
+ =?iso-8859-1?Q?OkahVl1YVEAmF5yTn7ER8T7fqfCM8lcPFRk6jPQ66trs+gvHHi5TT87D+t?=
+ =?iso-8859-1?Q?/ZrPeiGAnxE3sMEvRklDIXPlVw/nWYwGx3TyNpGOwb9pV4NA8kyJojicH5?=
+ =?iso-8859-1?Q?TXpc3adXs0HR0/n0mIpz9u905YeOmKmc7O3CXL8A49RgqJ4SQ9PAXbnRg2?=
+ =?iso-8859-1?Q?zT/ZVxjVbqzlI1+h5JL+Ux3fVof+l2wvp7UolW+2+bQc/dwlTUqiWGNpvz?=
+ =?iso-8859-1?Q?bxc/kBQWFb6AivqBVwqQE1hDLfK1zldnTMWWA5Dai7Pu7MxYysOLnF4Pa4?=
+ =?iso-8859-1?Q?eLpbma8ggKwqoDU2efVT01O4rjWouIqpdVkgKUyxV4oydJtvquYM9W3FXD?=
+ =?iso-8859-1?Q?WPyYY/K6Ya9BWAZ7j6f/TIT9GgzIY1rwftZNRg9Noh4i/W+IpLbdPLBcby?=
+ =?iso-8859-1?Q?5gk3XxHJyrfA6QwUhoY/Qc/1mTrmuWM+ymJdvkKskD6z/YoG8Y+qtrL1MW?=
+ =?iso-8859-1?Q?Tge0D4Z40e/6JWZ7Wy0YNkUaUg2WhEGkd3hInuYO0DMHe1L9HYjEGAbSLf?=
+ =?iso-8859-1?Q?GA8J4FYSLsRCQWzgjtdudhxroHK9Pr98UqRFixNZ48tBxdQtgN4q/zZB5M?=
+ =?iso-8859-1?Q?c6lOztOuvpUrBea/peysm5R718ssKM9tk15Ps9rtfCtL1flGJ2dBrnWLMn?=
+ =?iso-8859-1?Q?+BXAiIi9pP1Wx9aQG6kncCMq8O36dnc/6oYHyVHoVz0ti5xNyF2IA5GyMm?=
+ =?iso-8859-1?Q?7PliI8Lf4/SWEBrT0ZuAxjF27jvXiLN0wbu40DOskwtGZDkmQh0Kt2pNai?=
+ =?iso-8859-1?Q?buHvcVqIQm2EttttAkSid0i1hzcQSnhhpZnxmqxWfzlP9dgLCCqBCclAyw?=
+ =?iso-8859-1?Q?qwWMZSYKNsghd+IobYsYm3huo40T8PbkhQMzm7g+ytlX7lQyGw5sGNjc5C?=
+ =?iso-8859-1?Q?N17Yzef/LNJ41dvLbXjOfRzMU9tIiPBsG7coKAX6mjDqgh+oWq8DJ7uxkn?=
+ =?iso-8859-1?Q?rqYKtyyStOSKNMY/wdcasHOaYww6Dsf96nd65g20vCALpz/18e0v5UEtHK?=
+ =?iso-8859-1?Q?nexKlYyl1WQLH7IN76jdCCC2E82SdzBDGBHMepoOdWrefe0ENp99E5HmZU?=
+ =?iso-8859-1?Q?fBf/sgH40ZUnqc+lJaALBzHfYvaifIoeZXZWW3+0kB/F+vkstovU6fqObJ?=
+ =?iso-8859-1?Q?wa3OgyF/ZHBAAUPJ/dBsWZq0RedmGCwS7N7K+8PQgOPZtyVXmmZZjkD9Co?=
+ =?iso-8859-1?Q?jU9WKfyCN3PoOXqJ1Q8FY3ZRca/poT63masfz+x8mVu5mI3bg1Ho+fmZTD?=
+ =?iso-8859-1?Q?Gkv45idmD0yV2QLgxVSZE+NGiy08DpSFCYCDgRsLBtj9eez5zCMxKESiT3?=
+ =?iso-8859-1?Q?PTb/QA7SCqORCeB/jCL8EzrFsZHO9Rs83DpMHD4YV01HgTTbdNV4KPHn1/?=
+ =?iso-8859-1?Q?03xNyh0ooCpKmj4AOiUYsj/YyzXGdySvVfrvD8GqNHogfDBINw61uLz1Jg?=
+ =?iso-8859-1?Q?eVFFNfDwZlJujMjttuGTHolo1mnf8/0ilJ5JSW+7rsUyWmyC0jXqINByQT?=
+ =?iso-8859-1?Q?lPCkOsx6+4HncIBMvsAX8KIytlzZHO6dYbYQSLnHYcOPYZO+snTOZk/CdY?=
+ =?iso-8859-1?Q?u5dbYgUbL2XAlLa1b9MKRoIxED8pSdaOs8t0gw9J7liktKYihOJbSz9F7J?=
+ =?iso-8859-1?Q?Jec2D9xvojyuOCdbAotz1eDNcFRqPpzl47+kvRdoIf44l0XkMV3Ec4cvwf?=
+ =?iso-8859-1?Q?MBRHnEbK+Ifj6ILht+MDCSmZxABD8prfTtXXL3w95nnEaD8a+qI3?=
 MIME-Version: 1.0
-X-OriginatorOrg: dave.eu
+X-OriginatorOrg: hitachienergy.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bd9ade5-42c4-455a-384d-08de67cfa003
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2026 11:37:37.3603
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR06MB7849.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4dbf68b-5de0-40ff-893d-08de67f236b7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2026 15:45:13.0290
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4c85ddbc-ed10-48cc-8f28-5d7f9561238a
+X-MS-Exchange-CrossTenant-id: 7831e6d9-dc6c-4cd1-9ec6-1dc2b4133195
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tF01pNO1Eq1gqDAVU464gzIJYuGwQJ0tScgHZZdob/OtzOPQ3bMtX1wrWQJyCAIX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MI0P293MB0047
+X-MS-Exchange-CrossTenant-userprincipalname: wjbtO5lCBIIbpnymbC3Ssv3LsoKXQvjkMa9ccEZ3hb1qEbO6foZ8V8cuRJPoulzQyoz8BeSBaRXv2eRnQTPGYi1sNVLowjdWoWXnSUfeuWvX9C+NPi8AoXWhBtztKjFT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVUPR06MB10880
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260209_033745_313117_C9DC1F08 
-X-CRM114-Status: GOOD (  15.28  )
+X-CRM114-CacheID: sfid-20260209_074520_084985_26F3BE0E 
+X-CRM114-Status: GOOD (  16.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,250 +177,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Dear all,
+>>
+>> Just as a summary of the whole thing:
+>>
+>> - Happens only when we introduce 6.12.57 kernel into our testing system.
+>>
+>> - The boards go from running 6.12.57, to 4.14.20, to 6.1.75 for 
+>> testing old release. When the 6.1.75 tries to access files in the cfg 
+>> volume, there we see the error.
+> The same ubifs image is loaded by 6.12.57, 4.14.20 and 6.1.75? And the ubi
+> volume won't be formatted after switching kernel?
 
-I hope I don't annoying you by putting directly in CC, but these people are the one that were already involved in my patch to fix SW ECC support in PL353 NAND controller (mainly used in Xilinx/AMD Zynq7k SoC), and I think are the one that might help me with this follow-up.
+Yes, the same ubifs image is shared by the kernels/applications.
 
-Our standard HW/SW validation procedure for BSPs includes (after some basic functional tests) raw NAND MTD tests.
+> If I understand right, do you backport ubifs bugfix patches to 4.14?
 
-Usually we check ECC functionality with mtd_nandbiterrs but it's way of testing ECC correction is quite obscure and unmaintained (see a thread between me and Miquel on this mailing list in December 2025 on this topic).
+No we don't. The application that uses 4.14.20 is the read-only factory image,
+which is not updated normally. It mounts the ubi volume but it only reads a file
+from it, won't do much to it. This one in particular was compiled in 2018 for
+example, so it does not include those commits.
 
-We've thus moved to userspace nandflipbits which give much more control on bitflip generation, making easier to understand if everything's fine or not.
+> Following commits could corrupt the ubifs image, which may lead to the
+> problem:
+> 1. ee1438ce5dc4d67dd8dd1ff51583122a61f5bd9e ubifs: Check link count of inodes
+> when killing orphans.
+> 2. 4ab25ac8b2b5514151d5f91cf9514df08dd26938 ubifs: Fix
+> ubifs_tnc_lookup() usage in do_kill_orphans()
+>
+>It would be better to apply fix patches through 4.14~HEAD.
+> (git log v4.14..HEAD fs/ubifs/)
 
-By using this tool, I'm able to reproduce what I think is a PL353 HW ECC malfunction, that I think is hardware related (there's some, cryptic IMHO, errata on this) but I may be missing something and it may be "just" a software bug
-There's also the obvious 3rd option: PEBKAC. I'm doing something wrong with my test setup, either on kernel/test configuration/usage or in hw setup ;-) )
+By this you mean that these patches can lead to corruption when switching to a
+version of the kernel that does not have them? If that is what you mean, I don't
+think it is the case because we have been running 6.1 with these patches for
+more than a year and never seen the issue, however it appears within hours of
+introducing 6.12 into the mix.
 
-Step 1 - SW ECC
+Somehow there is some difference in between 6.12 and 6.1 that makes this error
+happen, but it could potentially have to do also with jumping from 6.12 to 4.14,
+even though jumping from 6.1 to 4.14 has not caused the problem for the past 1+
+year.
 
-Thanks to my patch (and mailing list review) now I can use SW Hamming ECC on Zynq7k based devices. So this test is about using software hamming ECC on (1 bit on 256 byte)
+Best regards,
+Tomas
 
-This is the device tree
-
-&nfc0 {
-  status = "okay";
-  nand@0 {
-    reg = <0x0>;
-    #address-cells = <0x1>;
-    #size-cells = <0x1>;
-
-    nand-ecc-mode = "soft";
-    nand-ecc-algo = "hamming";
-    nand-ecc-strength = <1>;
-    nand-ecc-step-size = <256>;
-
-    nand-on-flash-bbt;
-
-    nand-bus-width = <8>;
-    status = "okay";
-
-    partition@nand-ubi {
-      label = "ubi";
-      reg = <0x00000000 0x0>;
-    };
-  };
-};
-
-To make it quick, I'm using just the first EB, with a simple string on it (in my case,
-this is useful for testing on u-boot too, but this is for another separate thread ;-) )
-
-root@sw0005-devel:~# flash_erase /dev/mtd0 0 1
-Erasing 128 Kibyte @ 0 -- 100 % complete
-root@sw0005-devel:~# echo just testing | nandwrite -p /dev/mtd0
-Writing data to block 0 at offset 0x0
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-0x00000000: 6a 75 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |just testing....|
-
-I'm now inserting one bitflip, which is detected and corrected as expected
-
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@1
-root@sw0005-devel:~# nanddump -n -c -s 0 --length=100 /dev/mtd0  | head -n 1
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-0x00000000: 6a 74 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |jtst testing....|
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-ECC: 1 corrected bitflip(s) at offset 0x00000000
-0x00000000: 6a 75 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |just testing....|
-
-With an additional bitflip, we have an uncorrectable error (and this is, again, expected)
-
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@2
-root@sw0005-devel:~# nanddump -n -c -s 0 --length=100 /dev/mtd0  | head -n 1
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-0x00000000: 6a 74 72 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |jtrt testing....|
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 0
-ECC corrected: 1
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-ECC: 1 uncorrectable bitflip(s) at offset 0x00000000
-0x00000000: 6a 74 72 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |jtrt testing....|
-
-The same applies to another combination of bitflips (this will be useful later and don't look at ECC counters.. I had to reboot the system ;-) )
-
-root@sw0005-devel:~# flash_erase /dev/mtd0 0 1
-Erasing 128 Kibyte @ 0 -- 100 % complete
-root@sw0005-devel:~# echo just testing | nandwrite -p /dev/mtd0
-Writing data to block 0 at offset 0x0
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@1
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@0
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-ECC: 1 uncorrectable bitflip(s) at offset 0x00000000
-0x00000000: 6b 74 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |ktst testing....|
-
-
-
-Step 2 - PL353 HW ECC
-
-The device tree is now
-&nfc0 {
-  status = "okay";
-  nand@0 {
-    reg = <0x0>;
-    #address-cells = <0x1>;
-    #size-cells = <0x1>;
-
-    nand-ecc-mode = "hw";
-    nand-ecc-strength = <1>;
-    nand-ecc-step-size = <256>;
-
-    nand-on-flash-bbt;
-
-    nand-bus-width = <8>;
-    status = "okay";
-
-    partition@nand-ubi {
-      label = "ubi";
-      reg = <0x00000000 0x0>;
-    };
-  };
-};
-
-Please note that PL353 is not using nand-ecc-step-size property correctly, but this is a secondary issue (this NAND device requires 1 bit on 512 byte, so it's fine anyway)
-
-root@sw0005-devel:/lib/modules# cat /sys/class/mtd/mtd0/ecc_step_size
-512
-
-Re-doing the same test as above
-
-root@sw0005-devel:~# flash_erase /dev/mtd0 0 1
-Erasing 128 Kibyte @ 0 -- 100 % complete
-root@sw0005-devel:~# echo just testing | nandwrite -p /dev/mtd0
-Writing data to block 0 at offset 0x0
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-0x00000000: 6a 75 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |just testing....|
-
-One single bitflip is detected and corrected as expected:
-
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@1
-root@sw0005-devel:~# nanddump -n -c -s 0 --length=100 /dev/mtd0  | head -n 1
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-0x00000000: 6a 74 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |jtst testing....|
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-ECC: 1 corrected bitflip(s) at offset 0x00000000
-0x00000000: 6a 75 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |just testing....|
-
-a 2nd bitflip is detected as uncorrectable as expected:
-
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@2
-root@sw0005-devel:~# nanddump -n -c -s 0 --length=100 /dev/mtd0  | head -n 1
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-0x00000000: 6a 74 72 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |jtrt testing....|
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 0
-ECC corrected: 1
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-ECC: 1 uncorrectable bitflip(s) at offset 0x00000000
-0x00000000: 6a 74 72 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |jtrt testing....|
-
-But there's some corner case, e.g. double bit flip that are detected (wrongly) as single bitflip and return wrong data:
-
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@2
-root@sw0005-devel:~# nandflipbits /dev/mtd0 1@1
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 1
-ECC corrected: 2
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-ECC: 1 corrected bitflip(s) at offset 0x00000000
-0x00000000: 6a 76 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |jvst testing....|
-
-Another full test from scratch (ECC corrected counter is bigger that expected because I had to try a few combination, without rebooting ;-) )
-
-root@sw0005-devel:~# flash_erase /dev/mtd0 0 1
-Erasing 128 Kibyte @ 0 -- 100 % complete
-root@sw0005-devel:~# echo just testing | nandwrite -p /dev/mtd0
-Writing data to block 0 at offset 0x0
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@1
-root@sw0005-devel:~# nandflipbits /dev/mtd0 0@0
-root@sw0005-devel:~# nanddump -c -s 0 --length=100 /dev/mtd0  | head -n 1
-ECC failed: 1
-ECC corrected: 6
-Number of bad blocks: 0
-Number of bbt blocks: 4
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000064...
-ECC: 1 corrected bitflip(s) at offset 0x00000000
-0x00000000: 6b 74 73 74 20 74 65 73 74 69 6e 67 0a ff ff ff  |ktst testing....|
-
-
-Conclusions:
-
-IIUC with the results of the above test, we have an issue on PL353 because it cannot detect double bit errors (at least some combination of them) and, while this is a rare event on SLC NAND devices (that requires 1 bit ECC to guarantee 100k PE cycles), I think that this might give some catastrophic failures on field (because, AFAIK, upper MTD layers, like UBI, don't expect this situation).
-Am I wrong?
-I kindly ask to the MTD experts if I have to worry about this or if we can assume that correcting 1 bit error is enough for this subsystem.
-If this is not acceptable, I think we have to update the driver at least to warn the user about this and use SW ECC where possible. WDTY?
-
-If anybody in this list can also help me in understanding if I'm doing something wrong with my test or may have some setup/configuration error, it's appreciated and I can make some additional test.
-
-In the mean time, as my previous patch anticipate, I'm trying to setup a configuration using only SW ECC (I'm currently stuck in Linux/U-Boot compatibility, but this might not the right ML to discuss this topic)
-
-Any feedback is appreciated. Kind Regards,
-
-Andrea SCIAN
-
-SW Development Manager
-
-DAVE Embedded Systems
 
 ______________________________________________________
 Linux MTD discussion mailing list
