@@ -4,70 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44603EA8121
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Feb 2026 14:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58FF6EA8121
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Feb 2026 14:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w7KbLncgW5YhOz90zGs0A/5MwWsftIvlA44kAoIqD2Q=; b=hlv76snRTOtpAQ
-	nrrZg0u4KNn08pyAl/2R+ZuGsaPrCKRCPtWidfNXzvVweZXMqID0BU0WRtAe5KBk1L7zh3CcVpfeO
-	WZtEQnVSSzqfKwJVgJRPd04inQwzRDv3K+9WD1MJvDySpWuD9awUG1cbijMKzpjp7+q2QtaFEfAE7
-	283apYLkBVh11GRf1st8XbGgFTxsegtPQeiL8ocCXnha1o2/cY2oNL27QpNeq2ATHvBG+MdPHVJRk
-	7918SQUoZfYBna3QkscQAuHOqhhKaf0PAVye3i6YNnibY/hdBrcwq9icOwkuathYmkl0fHpnUJmse
-	g4HllK1uEmHSuBV3ZDXg==;
+	List-Owner; bh=I8oP0XCAvMChsIBY3RDpqcYgVNPcAkmbMVOhNgyE47Q=; b=Hyzi9fcFUfAOM9
+	CJNz6c1nvKOZDS2aanJgJQXI4LHMJweMCbFk35hy1eEv7mXbsw6OKbj2zqVVSSE6QZRDIs4ShNYt/
+	g1obTZiTnonl1GjrbYyrclt68avbL+G5XlZDrOaNIfR7eT7qwZDy1caDLjCC2eD6Kq1TEzhxD9Q8l
+	TDtoWUyPNWW6U3IDK0VKHj7bGfp4nhySw0N5pZwqnInenyYNIggnmwI59CN/dFPuxBOrbZG2lenGF
+	S0gLZhkzTdWtij391rB+u83b3DjjvTi45sIeiI/0xx+uUbn2ia+TH8hGofg87GasDd+s9NLlUnxNF
+	Y1lqQ0/r8fWvWNGRCHKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpoj3-0000000H363-0vKc;
-	Tue, 10 Feb 2026 14:28:25 +0000
-Received: from bali.collaboradmins.com ([148.251.105.195])
+	id 1vpozU-0000000H3nF-2BIO;
+	Tue, 10 Feb 2026 14:45:24 +0000
+Received: from mgamail.intel.com ([198.175.65.9])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpoiz-0000000H34i-2if8;
-	Tue, 10 Feb 2026 14:28:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1770733698;
-	bh=muVQ1zQzdc9CjW+SMGZIOKie1oQVfcVMN3gvbBxDNQw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=n6QsXv0HmwEC4rsdnP2MtqVr7K2V/6R9qghoJSN7lLgDKzayX8QLq7Z3JT7nF2b11
-	 f2goSCY2LqBw56NAm/s7IDxxyiAL74ofPiLNc56kPLdOXYIrEstWGiTlmHD4QuSI9Y
-	 q4ruM/bLlfad2Oq1DPAzvWtDSrVWgRt4Uw17mlDQW9GUIUGgw++IO8KB4vheHBEsIk
-	 iyHxWEuVbE7mU9q+xwO258CHdCPasCNjmHKZotgf0LC8P3RKGpVQpjEvybX/hDkxYS
-	 2KAhXNLy9yjE1oRVvxgeghNTrq9YjsqBhOYJNDIdJtV0S03hT+PXjpOPqeHIEdZByC
-	 PfVZ0TBb919dg==
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id E580C17E12A9;
-	Tue, 10 Feb 2026 15:28:17 +0100 (CET)
-Message-ID: <0ccca45c-34af-4d38-ad0f-6cd080f2882d@collabora.com>
-Date: Tue, 10 Feb 2026 15:28:17 +0100
+	id 1vpozR-0000000H3mp-2nnI
+	for linux-mtd@lists.infradead.org;
+	Tue, 10 Feb 2026 14:45:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770734721; x=1802270721;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Yltjel1XmY4Ww8KkB64cnTsT+2R71mBZ+oug87haKX8=;
+  b=MxMIgtumGCeFDq+mj6HeeaM8S9MqpUE9/H9O+VhAj+0yeDK5KkAi5sao
+   bdeeu+oP5qoubEUGEz2kX1kbaqqVlOyUsHdvk1frp6KqzTbne+Gce3izW
+   sv03l5/cXgCCd58oIfKn3KrXGxdLcxZcW70SyZOhqEzc0QS8uELs1Ej2n
+   WzXzae9nfdQY6XRdzEbc632gWFCxz9x3xLLtWdTOyIGs6IB4bnaGQVjAC
+   LhPRIpwgpO9pQ32jYKghvmVYSVoFrvngu3xourQhI4MAw5xNV+0LUC1TT
+   Kdx6UOecOmNLwkIrOEKvjPA9WJSZ9HJc8V5v8XQRmwCFvUYX+vXEMgU0m
+   g==;
+X-CSE-ConnectionGUID: YV+o7xNJQ6y5R13BP0alXQ==
+X-CSE-MsgGUID: YdIseMGwS+uuPPhA8Ix+rA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11697"; a="94506238"
+X-IronPort-AV: E=Sophos;i="6.21,283,1763452800"; 
+   d="scan'208";a="94506238"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2026 06:45:19 -0800
+X-CSE-ConnectionGUID: aSxYArWMRgqYsYncyDnQ4g==
+X-CSE-MsgGUID: eLGGViCFTSCpAy3KCVuVrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,283,1763452800"; 
+   d="scan'208";a="249583389"
+Received: from egrumbac-mobl6.ger.corp.intel.com (HELO localhost) ([10.245.244.39])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2026 06:45:18 -0800
+Date: Tue, 10 Feb 2026 16:45:15 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 1/1] mtd: cfi_cmdset_0001: Factor out
+ do_write_buffer_locked() to reduce stack frame
+Message-ID: <aYtEe1xtm740HqPL@smile.fi.intel.com>
+References: <20260124133730.3454241-1-andriy.shevchenko@linux.intel.com>
+ <202601250653.LXBUL5W6-lkp@intel.com>
+ <afc434a2-07d0-4a25-803a-4a42a4da8e3d@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] dt-bindings: arm: mediatek: audsys: Support
- mt8192-audsys variant
-To: Rob Herring <robh@kernel.org>
-Cc: krzk+dt@kernel.org, conor+dt@kernel.org, tudor.ambarus@linaro.org,
- pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
- matthias.bgg@gmail.com, julien.massot@collabora.com,
- eugen.hristev@linaro.org, jiaxin.yu@mediatek.com, shane.chien@mediatek.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-sound@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel@collabora.com
-References: <20260115125624.73598-1-angelogioacchino.delregno@collabora.com>
- <20260115125624.73598-4-angelogioacchino.delregno@collabora.com>
- <CAL_JsqL=zAqyVDAP_B1VW1FWKoS9OEdTNZiZabSNxDscBryYgw@mail.gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <CAL_JsqL=zAqyVDAP_B1VW1FWKoS9OEdTNZiZabSNxDscBryYgw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <afc434a2-07d0-4a25-803a-4a42a4da8e3d@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260210_062821_863018_AFE20DC2 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20260210_064521_754460_3D708F35 
+X-CRM114-Status: GOOD (  21.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,59 +85,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SWwgMTAvMDIvMjYgMTQ6NDEsIFJvYiBIZXJyaW5nIGhhIHNjcml0dG86Cj4gT24gVGh1LCBKYW4g
-MTUsIDIwMjYgYXQgNjo1NuKAr0FNIEFuZ2Vsb0dpb2FjY2hpbm8gRGVsIFJlZ25vCj4gPGFuZ2Vs
-b2dpb2FjY2hpbm8uZGVscmVnbm9AY29sbGFib3JhLmNvbT4gd3JvdGU6Cj4+Cj4+IEFkZCBzdXBw
-b3J0IGZvciB0aGUgbWVkaWF0ZWssbXQ4MTkyLWF1ZHN5cyBjb21wYXRpYmxlLCB3aGljaCB1c2Vz
-Cj4+IGEgZGlmZmVyZW50IGF1ZGlvIGNvbnRyb2xsZXIgKG10ODE5Mi1hZmUtcGNtKSBjb21wYXJl
-ZCB0byBtdDgxODMKPj4gYW5kIG10MjcwMS4KPj4KPj4gVGhpcyByZXNvbHZlcyBhIGR0YnNfY2hl
-Y2sgd2FybmluZyBvbiBhbGwgTVQ4MTkyIGRldmljZXRyZWVzLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5
-OiBBbmdlbG9HaW9hY2NoaW5vIERlbCBSZWdubyA8YW5nZWxvZ2lvYWNjaGluby5kZWxyZWdub0Bj
-b2xsYWJvcmEuY29tPgo+PiAtLS0KPj4gICAuLi4vYXJtL21lZGlhdGVrL21lZGlhdGVrLGF1ZHN5
-cy55YW1sICAgICAgICAgfCA0NiArKysrKysrKysrKysrLS0tLS0tCj4+ICAgMSBmaWxlIGNoYW5n
-ZWQsIDMzIGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRlayxh
-dWRzeXMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vbWVkaWF0
-ZWsvbWVkaWF0ZWssYXVkc3lzLnlhbWwKPj4gaW5kZXggZjNhNzYxY2JkMGZkLi4wOWE2YzE2ZTdl
-ODIgMTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0v
-bWVkaWF0ZWsvbWVkaWF0ZWssYXVkc3lzLnlhbWwKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRlayxhdWRzeXMueWFtbAo+PiBAQCAt
-NDgsMTkgKzQ4LDM5IEBAIHJlcXVpcmVkOgo+PiAgICAgLSBjb21wYXRpYmxlCj4+ICAgICAtICcj
-Y2xvY2stY2VsbHMnCj4+Cj4+IC1pZjoKPj4gLSAgcHJvcGVydGllczoKPj4gLSAgICBjb21wYXRp
-YmxlOgo+PiAtICAgICAgY29udGFpbnM6Cj4+IC0gICAgICAgIGNvbnN0OiBtZWRpYXRlayxtdDgx
-ODMtYXVkaW9zeXMKPj4gLXRoZW46Cj4+IC0gIHByb3BlcnRpZXM6Cj4+IC0gICAgYXVkaW8tY29u
-dHJvbGxlcjoKPj4gLSAgICAgICRyZWY6IC9zY2hlbWFzL3NvdW5kL21lZGlhdGVrLG10ODE4My1h
-dWRpby55YW1sIwo+PiAtZWxzZToKPj4gLSAgcHJvcGVydGllczoKPj4gLSAgICBhdWRpby1jb250
-cm9sbGVyOgo+PiAtICAgICAgJHJlZjogL3NjaGVtYXMvc291bmQvbWVkaWF0ZWssbXQyNzAxLWF1
-ZGlvLnlhbWwjCj4+ICthbGxPZjoKPj4gKyAtIGlmOgo+IAo+IERvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9hcm0vbWVkaWF0ZWsvbWVkaWF0ZWssYXVkc3lzLnlhbWw6NTI6MjoKPiBb
-d2FybmluZ10gd3JvbmcgaW5kZW50YXRpb246IGV4cGVjdGVkIDIgYnV0IGZvdW5kIDEgKGluZGVu
-dGF0aW9uKQo+IAo+IAo+PiArICAgICBwcm9wZXJ0aWVzOgo+PiArICAgICAgIGNvbXBhdGlibGU6
-Cj4+ICsgICAgICAgICBjb250YWluczoKPj4gKyAgICAgICAgICAgZW51bToKPj4gKyAgICAgICAg
-ICAgICAtIG1lZGlhdGVrLG10MjcwMS1hdWRzeXMKPj4gKyAgICAgICAgICAgICAtIG1lZGlhdGVr
-LG10NzYyMi1hdWRzeXMKPj4gKyAgIHRoZW46Cj4+ICsgICAgIHByb3BlcnRpZXM6Cj4+ICsgICAg
-ICAgYXVkaW8tY29udHJvbGxlcjoKPj4gKyAgICAgICAgICRyZWY6IC9zY2hlbWFzL3NvdW5kL21l
-ZGlhdGVrLG10MjcwMS1hdWRpby55YW1sIwo+PiArCj4+ICsgLSBpZjoKPj4gKyAgICAgcHJvcGVy
-dGllczoKPj4gKyAgICAgICBjb21wYXRpYmxlOgo+PiArICAgICAgICAgY29udGFpbnM6Cj4+ICsg
-ICAgICAgICAgIGNvbnN0OiBtZWRpYXRlayxtdDgxODMtYXVkaW9zeXMKPj4gKyAgIHRoZW46Cj4+
-ICsgICAgIHByb3BlcnRpZXM6Cj4+ICsgICAgICAgYXVkaW8tY29udHJvbGxlcjoKPj4gKyAgICAg
-ICAgICRyZWY6IC9zY2hlbWFzL3NvdW5kL21lZGlhdGVrLG10ODE4My1hdWRpby55YW1sIwo+PiAr
-Cj4+ICsgLSBpZjoKPj4gKyAgICAgcHJvcGVydGllczoKPj4gKyAgICAgICBjb21wYXRpYmxlOgo+
-PiArICAgICAgICAgY29udGFpbnM6Cj4+ICsgICAgICAgICAgIGNvbnN0OiBtZWRpYXRlayxtdDgx
-OTItYXVkc3lzCj4+ICsgICB0aGVuOgo+PiArICAgICBwcm9wZXJ0aWVzOgo+PiArICAgICAgIGF1
-ZGlvLWNvbnRyb2xsZXI6Cj4+ICsgICAgICAgICAkcmVmOiAvc2NoZW1hcy9zb3VuZC9tdDgxOTIt
-YWZlLXBjbS55YW1sIwo+PiArCj4+Cj4gCj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL2FybS9tZWRpYXRlay9tZWRpYXRlayxhdWRzeXMueWFtbDo4NDoxOgo+IFt3YXJuaW5nXSB0
-b28gbWFueSBibGFuayBsaW5lcyAoMiA+IDEpIChlbXB0eS1saW5lcykKPiAKPiBQbGVhc2UgZml4
-IGFzIHRoZXNlIGFyZSB3YXJuaW5ncyBpbiBsaW51eC1uZXh0IG5vdy4KPiAKCkFjay4gU29ycnkg
-Zm9yIHRoZSBtaXN0YWtlcy4gTm90IHN1cmUgaG93IHRoaXMgaGFwcGVuZWQuCgpMZXQgbWUgc2Vl
-IHdoZW4gSSBjYW4gZ2V0IHNvbWUgbWludXRlcyB0byBnZXQgdGhpcyBhZGRyZXNzZWQuCgpDaGVl
-cnMsCkFuZ2VsbwoKPiAKPj4gICBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UKPj4KPj4gLS0K
-Pj4gMi41Mi4wCj4+CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Tue, Feb 10, 2026 at 03:35:39PM +0530, Vignesh Raghavendra wrote:
+> On 25/01/26 04:11, kernel test robot wrote:
+
+> > kernel test robot noticed the following build warnings:
+> > 
+> > [auto build test WARNING on mtd/mtd/next]
+> > [also build test WARNING on mtd/mtd/fixes linus/master v6.19-rc6 next-20260123]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > 
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/mtd-cfi_cmdset_0001-Factor-out-do_write_buffer_locked-to-reduce-stack-frame/20260124-213936
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
+> > patch link:    https://lore.kernel.org/r/20260124133730.3454241-1-andriy.shevchenko%40linux.intel.com
+> > patch subject: [PATCH v2 1/1] mtd: cfi_cmdset_0001: Factor out do_write_buffer_locked() to reduce stack frame
+> > config: xtensa-randconfig-002-20260125 (https://download.01.org/0day-ci/archive/20260125/202601250653.LXBUL5W6-lkp@intel.com/config)
+> > compiler: xtensa-linux-gcc (GCC) 8.5.0
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260125/202601250653.LXBUL5W6-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202601250653.LXBUL5W6-lkp@intel.com/
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> >    drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer_locked':
+> >>> drivers/mtd/chips/cfi_cmdset_0001.c:1734:6: warning: unused variable 'initial_len' [-Wunused-variable]
+> >      int initial_len = len;
+> >          ^~~~~~~~~~~
+> >>> drivers/mtd/chips/cfi_cmdset_0001.c:1733:16: warning: variable 'initial_adr' set but not used [-Wunused-but-set-variable]
+> >      unsigned long initial_adr;
+> >                    ^~~~~~~~~~~
+> 
+> Copying my response here again from [1] , as this LKP report seems to on a 
+> different thread:
+
+Thanks! I will look at this after -rc1 is out. Maybe earlier, but quite busy
+with other issue(s).
+
+> Things become tricky with CONFIG_MTD_XIP enabled. With
+> XIP_INVAL_CACHED_RANGE() moved to caller, initial_adr becomes unused
+> when CONFIG_MTD_XIP=y
+> 
+> One solution maybe to move calls to XIP_INVAL_CACHED_RANGE(),
+> ENABLE_VPP(map) and xip_disable() and their complementary functions to
+> do_write_buffer_locked() as these calls need to repeated for every
+> writes (if and when we find need to reuse do_write_buffer_locked())
+> 
+> Alternately move INVAL_CACHE_AND_WAIT() and everything after that to 
+> caller
+
+[...]
+
+> [1] https://lore.kernel.org/all/4d4ab8af-3e09-4e48-a79d-0af3453600c3@ti.com/
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
