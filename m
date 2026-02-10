@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C508EA3F16
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Feb 2026 07:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E88EEA3F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Feb 2026 07:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:References:To:From:Subject:Message-Id:Date:Mime-Version:Reply-To:
 	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pp3HrYDUbiDaOUwkx3Xm6ZTAFtoMmOtL0smUmwF+5e8=; b=2nU4ZIpKtj6lBQ2zwshB+ImdAj
-	jkGpSxL+r7ehQCl1Is3XwBQWDJ/byyUw/rp+/Ju7Vf37a61aNiYz01E3Nr9+7Il/qCqJ59aA6P4od
-	01VLIYn9Buo5jKRCCdVaZ5iCaFqGxXjn4g3OR6Urldszx6t6U06pLrzXXGRWEdvPGtaUlhxROgmN+
-	VFfFciaITZkjP+zsIEivGBkX74//LuoDtwP/t9ij4m2y+2pS1+hdYzqKcEOVGBOW83lCB4+jU5HYI
-	m2FPDV4zqW2TO8x9507COX4Ohx1/8ocWVJv0EeWpGCZrcFIlpuOGcHQjY0OyMybFkPO9nMMup7Uf4
-	Ic7XYKmA==;
+	bh=od1TvvtRAVFPztYANkoWxtPDWJKe77aYZsgiHL+6axc=; b=c+hhBVkho551hPiT1/ztQWEeCd
+	9jxt8oBwntwau8BIOtqO1H5m274fT46i286P3HsC0Nv7Sp+xZMCPv4zhTTsnQ+ZNPg7X4kAnXiuk/
+	rY1F+MtCDjLcwgqtbJ5ALBk4+fFEGfCUFKEwodigCylNgpr0d1/3qfPDZaRzSzwyjY+Wefh+LIiKa
+	ClGH9O4lGECKxomfEixC32Wck0DwQ89ZRs+eDU7bWKuuEa5bOiC4LE1i9oK6hlQYD8FuuIaI75B54
+	HnLiIfHKvjQ/n3bR6ijqPMr7w659HXh50KzC2NkWyHwdneANgldehsTNtjXYHTZScj4wTGgkTZDOI
+	va4QFYxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpiJ2-0000000Gdkv-06VY;
-	Tue, 10 Feb 2026 07:37:08 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vpiKs-0000000Gdqn-28ku;
+	Tue, 10 Feb 2026 07:39:02 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vpiIz-0000000GdkU-3RMu
+	id 1vpiKr-0000000Gdqg-1PJk
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Feb 2026 07:37:07 +0000
+	Tue, 10 Feb 2026 07:39:01 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0ED81434DA;
-	Tue, 10 Feb 2026 07:37:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64092C19424;
-	Tue, 10 Feb 2026 07:37:04 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7BEDE6013D;
+	Tue, 10 Feb 2026 07:39:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3ED1C19421;
+	Tue, 10 Feb 2026 07:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770709024;
-	bh=HmJ7OijHDPgsC5trPZ9j8lShrJlC7K9JlcZxWROVB4o=;
+	s=k20201202; t=1770709140;
+	bh=B0b3B0Qs5/qfPBaaRXW4KMtzJHv7uO/t40eDFJuptU4=;
 	h=Date:Subject:From:To:References:In-Reply-To:From;
-	b=uVq7lokh9jJqQCMvKaYLm9zbGtPRZQEtPY90Ir+a2La1SIgaHCIZOjyHl+Zgjgr6e
-	 TWaIMfMy3sR9AjvZ1trX8oQihHHEHc4VbxJsAUXRUACK3xHlxEEgY2Igt1+/gu2XgO
-	 mCHwBINDBrSJoP6+w+4ROm44jqzmpoqxq4VcHYp51LPb7A7ZX2ntmoLUb9qB/p6i4u
-	 MRuM2+QpUY7B6GvvohO3tT2bMvrZWW3dsITlSsZbbK6zmi2yoYi5a4PplIW7jOHrPJ
-	 Dj5oajiFbl9sfO1fbGrW1NiNhm3XL2lGEVDSYpDMBtdKG9M65dS+KQX6GcfLVuGJN6
-	 5luQV2tHFZdwA==
+	b=vFrVT8EtdhrkE4evqH6Njmi2jJtu+hkLrThz1DcKBsUiwLZH4/f5XlN7kSUxirgBv
+	 wtFeAefFaADN/CWR6oU2FACCW77JaefFbtoQ+vYvHZviJVormhTqnTGipyD4XTOmDu
+	 eFUhrT9C+4xD7xGlMNkiX0wzPmUMBUEvqWlebYnmSnK21dp45Wnux0DwhDEtQeaZIZ
+	 EtX0/epshi6HwmQnKQQTQrWkEDPKhn6MkreMmB3gOYlNoRNgudsDp2j3PoDxLPsrwt
+	 bH55LVkr8JpnwLJ9EHA29UZkiVp7bOJkb7FGrtiJh5KiEdnX34g72z4JRV/rwKbZVQ
+	 4SzMKJG2qNCGg==
 Mime-Version: 1.0
-Date: Tue, 10 Feb 2026 08:37:00 +0100
-Message-Id: <DGB3YMAGZPPF.3OZ1TGVVNJ5TI@kernel.org>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: winbond: Fix protection handling and
- enable dual/quad reads
+Date: Tue, 10 Feb 2026 08:38:56 +0100
+Message-Id: <DGB403FZHES3.1QMYF6PL3O2YV@kernel.org>
+Subject: Re: [PATCH 1/4] mtd: spi-nor: winbond: Fix locking support for
+ w25q256jwm
 From: "Michael Walle" <mwalle@kernel.org>
 To: "Eliav Farber" <farbere@amazon.com>, <tudor.ambarus@linaro.org>,
  <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
@@ -54,10 +54,8 @@ To: "Eliav Farber" <farbere@amazon.com>, <tudor.ambarus@linaro.org>,
  <linux-kernel@vger.kernel.org>
 X-Mailer: aerc 0.20.0
 References: <20260208061919.30498-1-farbere@amazon.com>
-In-Reply-To: <20260208061919.30498-1-farbere@amazon.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260209_233705_880802_A5551F9C 
-X-CRM114-Status: GOOD (  12.25  )
+ <20260208061919.30498-2-farbere@amazon.com>
+In-Reply-To: <20260208061919.30498-2-farbere@amazon.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,72 +67,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3706685131464721396=="
+Content-Type: multipart/mixed; boundary="===============5290297655934968764=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============3706685131464721396==
+--===============5290297655934968764==
 Content-Type: multipart/signed;
- boundary=9085e451e96b7c81c2ccf1cb3c65a6a29e9f6a7092163991673c021d5645;
+ boundary=e30df2874f9189943a99ced2374909534207af888b11016e532adc210f49;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---9085e451e96b7c81c2ccf1cb3c65a6a29e9f6a7092163991673c021d5645
+--e30df2874f9189943a99ced2374909534207af888b11016e532adc210f49
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
 On Sun Feb 8, 2026 at 7:19 AM CET, Eliav Farber wrote:
-> This series fixes block protection handling for the following Winbond
-> SPI-NOR devices:
->  - w25q256jwm
->  - w25q256jw
->  - w25q64jvm
+> The Winbond w25q256jwm device supports four Block Protect (BP) bits and
+> uses Status Register bit 6 as the Top/Bottom (TB) protect bit.
 >
-> The devices do not correctly describe their Status Register layout and
-> protection capabilities (locking flags, TB bit, BP bit configuration).
-> As a result, the spi-nor core rejects protection requests and locking
-> operations fail with -EINVAL, e.g.:
+> Update the flash parameters by enabling SPI_NOR_4BIT_BP and
+> SPI_NOR_TB_SR_BIT6. Without these flags, the locking configuration is
+> incorrect.
 >
->   flash_lock -l /dev/mtd29
->   flash_lock: error!: could not lock device: /dev/mtd29
->   error 22 (Invalid argument)
+> Reference:
+> https://www.winbond.com/hq/support/documentation/levelOne.jsp?__locale=3D=
+en&DocNo=3DDA00-W25Q256JW.1
 >
-> Update the device flags to match the actual hardware behavior so that
-> locking and unlocking regions work correctly.
+> Signed-off-by: Eliav Farber <farbere@amazon.com>
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Additionally, enable Dual and Quad read support for w25q64jvm when SFDP
-> is not used.
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.=
+c
+> index fb855fe44733..55f1209936d5 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -337,7 +337,7 @@ static const struct flash_info winbond_nor_parts[] =
+=3D {
+>  		.id =3D SNOR_ID(0xef, 0x80, 0x19),
+>  		.name =3D "w25q256jwm",
+>  		.size =3D SZ_32M,
+> -		.flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+> +		.flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SP=
+I_NOR_4BIT_BP,
+>  		.no_sfdp_flags =3D SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+>  	}, {
+>  		.id =3D SNOR_ID(0xef, 0x80, 0x20),
 
-Do you really have devices without SFDP tables?
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 
->
-> All changes were validated using flash_lock on the affected devices.
-
-Great thanks!
-
-Could you also please dump the SFDP tables from all these devices,
-see [1].
-
-Thanks,
 -michael
 
-[1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
-
---9085e451e96b7c81c2ccf1cb3c65a6a29e9f6a7092163991673c021d5645
+--e30df2874f9189943a99ced2374909534207af888b11016e532adc210f49
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaYrgHRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/juWQGAx2h6X0tbeOrOS1w3iFc0qNBUmMysW3Zq
-9jlvQ8i1JpgouqCNlY9MnYKwXKBb+AEVAX0Wi/7nwzMz6Bwqx349XpE62HVZFlrY
-kNXaHtURBMdbWvsCWc6WwRku0f7euE6qywA=
-=rJ5H
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaYrgkBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/jF3QF9EQgzY2hTHby+BzXVzdSSsdl0BkdXH8n6
+STtVdonFVaANpGL2DzJ9mBboRrYsPoTgAX0aEl+QptOBsm4GD7GR2oFKMdXJg5nx
+3c4TnoRroSQAyhzyVvImIX9kk3D1qQYQpbE=
+=3tDT
 -----END PGP SIGNATURE-----
 
---9085e451e96b7c81c2ccf1cb3c65a6a29e9f6a7092163991673c021d5645--
+--e30df2874f9189943a99ced2374909534207af888b11016e532adc210f49--
 
 
---===============3706685131464721396==
+--===============5290297655934968764==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -144,5 +143,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============3706685131464721396==--
+--===============5290297655934968764==--
 
