@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8D42EB597A
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Feb 2026 07:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 293ABEB5976
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Feb 2026 08:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=4LMedud1/c7d18aoa00r4WN541SZgxtpvZ/W+XgEg48=; b=vaVEEFzTOzy0GD
-	pcu1wibhMSlJ4Ri053wXgP2MJq3VwIAEElnq/7PZAEgxLYwPh1ZfZ1+WAM776tTkHqvzh09YW9r/K
-	5yelShs0VqCwuMd02qmJLNVozTaOzI9Kpd8hN1PAjNhl9qM9v7yQoXET1efFjQZRogDLrxW1FIKa5
-	v3Z3HZxLIxp1jM3gDrQxG7R9N7ycEjI5yFRHwHG26FFFLfhZqiXvZjRsEYq6tsTWabqAjRpPCVSar
-	DczYRrzTeqV8Vwd2z0vVjVjDQPyezeuc40tmAfPajNgrcYKmoqNXdupUKrDxLPqeyOqCCu/uqpsxg
-	NxDicVbsifEQ8H5HUY3g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JDcUZ/zn7KDZjz2lp6QdtgnvVFyG+fABjsgUfMT+1rA=; b=rokcsxYuN1b3MmyVp5hFUEYNYt
+	eYxdJuoMlfkuItTlzPrjxV3lDsMgUdb6T8FucDSa1M2IOm1IybgqBhq25HOMw4ZriMpMYjIiIoZWX
+	ZOJENS1yNzERYePgAaLspeEaSBn7W+xFfHHcBgeN0Tz34r6xZRr4/u+XiF2NMUHESyMvmnNekvYxK
+	48RAMeS6IL5VcJgSFrvyPrYRCK3Nq9ApEYLpKYqWZCezk0TLZMo7jVVsCA9yCXq37n8zPE6/qBf1O
+	KLkNP7dYAv/PY/i7uZlcRgKvPis2fTPqnVxlNXu3eNf6XvlNa0mbi78mJU7ecCXIIc1YQLlhtkzHs
+	ukZmZdpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vq4qM-00000000LjT-2yNp;
-	Wed, 11 Feb 2026 07:41:02 +0000
-Received: from mxhk.zte.com.cn ([160.30.148.34])
+	id 1vq5rb-00000000OwX-0jcf;
+	Wed, 11 Feb 2026 08:46:23 +0000
+Received: from canpmsgout04.his.huawei.com ([113.46.200.219])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vq4qJ-00000000Lj6-1YG7
+	id 1vq5rX-00000000Ow5-2OGP
 	for linux-mtd@lists.infradead.org;
-	Wed, 11 Feb 2026 07:41:01 +0000
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4f9r2W734yz5B11P;
-	Wed, 11 Feb 2026 15:40:51 +0800 (CST)
-Received: from xaxapp02.zte.com.cn ([10.88.97.241])
-	by mse-fl1.zte.com.cn with SMTP id 61B7eeAI045696;
-	Wed, 11 Feb 2026 15:40:41 +0800 (+08)
-	(envelope-from fan.yu9@zte.com.cn)
-Received: from mapi (xaxapp02[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Wed, 11 Feb 2026 15:40:43 +0800 (CST)
-X-Zmail-TransId: 2afa698c327bc49-e12cb
-X-Mailer: Zmail v1.0
-Message-ID: <20260211154043158VVS6WEc8yD82HcqScmYUn@zte.com.cn>
-Date: Wed, 11 Feb 2026 15:40:43 +0800 (CST)
-Mime-Version: 1.0
-From: <fan.yu9@zte.com.cn>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>
-Cc: <cui.jinpeng2@zte.com.cn>, <zhang.yue5@zte.com.cn>, <xu.xin16@zte.com.cn>,
-        <yang.tao172@zte.com.cn>, <yang.yang29@zte.com.cn>,
-        <hu.shengming@zte.com.cn>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?W1BBVENIXSB1YmlmczogcHJldmVudCBjb3JydXB0ZWQgZGF0YSB3cml0ZSB2aWEgZXJyb3JfcmVtb3ZlX2ZvbGlv?=
-X-MAIL: mse-fl1.zte.com.cn 61B7eeAI045696
-X-TLS: YES
-X-SPF-DOMAIN: zte.com.cn
-X-ENVELOPE-SENDER: fan.yu9@zte.com.cn
-X-SPF: None
-X-SOURCE-IP: 10.5.228.132 unknown Wed, 11 Feb 2026 15:40:52 +0800
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 698C3283.001/4f9r2W734yz5B11P
+	Wed, 11 Feb 2026 08:46:21 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=qdcNhSHrowEuEYMYv+Z16qnzSkVK1+NEopaQdKqnxDM=;
+	b=j8WrBdP/xe+yMdEgvaZ53beC+xEcFfXFOdoCpGa4QsLJjJg/jjFqb4ND53vskp8qHVpy9gxCi
+	a/Li2K/ndYTAoTUwNAHDmmIAOUDE5klHVS0v8QDk8/Pi7W+KDUb1V2avGsvQ0aNBhxL4IpmE4IZ
+	NselEtgkDUWSOlWWzSFr6Vc=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4f9sNT1DkQz1prRB;
+	Wed, 11 Feb 2026 16:41:29 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id F2D4D40561;
+	Wed, 11 Feb 2026 16:46:09 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 11 Feb 2026 16:46:08 +0800
+Subject: Re: [PATCH] ubifs: prevent corrupted data write via
+ error_remove_folio
+To: <fan.yu9@zte.com.cn>, <richard@nod.at>
+CC: <cui.jinpeng2@zte.com.cn>, <zhang.yue5@zte.com.cn>, <xu.xin16@zte.com.cn>,
+	<yang.tao172@zte.com.cn>, <yang.yang29@zte.com.cn>,
+	<hu.shengming@zte.com.cn>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20260211154043158VVS6WEc8yD82HcqScmYUn@zte.com.cn>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f800d3d3-4d57-f28c-bece-d95af0d22159@huawei.com>
+Date: Wed, 11 Feb 2026 16:46:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20260211154043158VVS6WEc8yD82HcqScmYUn@zte.com.cn>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260210_234059_589412_0744A165 
-X-CRM114-Status: UNSURE (   6.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260211_004620_103874_2C194C11 
+X-CRM114-Status: GOOD (  14.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,42 +76,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
-
-When a memory corruption event triggers memory_failure, ext4 releases references to the affected dirty pages,
-ensuring that no corrupted data is written to disk. However, ubifs currently lacks the error_remove_folio capability
-and therefore cannot release references to faulty private memory. As a result, corrupted data may eventually be
-written to flash storage.
-
-Add generic_error_remove_folio support to ubifs, preventing corrupted memory data from being persisted to flash.
-
-Signed-off-by: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
-Signed-off-by: Fan Yu <fan.yu9@zte.com.cn>
-Cc: Shengming Hu <hu.shengming@zte.com.cn>
----
- fs/ubifs/file.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 3dc3ca1..34445b7 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1631,6 +1631,7 @@ static int ubifs_symlink_getattr(struct mnt_idmap *idmap,
-    .dirty_folio    = ubifs_dirty_folio,
-    .migrate_folio  = filemap_migrate_folio,
-    .release_folio  = ubifs_release_folio,
-+   .error_remove_folio = generic_error_remove_folio,
- };
-
- const struct inode_operations ubifs_file_inode_operations = {
---
-1.8.3.1
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjYvMi8xMSAxNTo0MCwgZmFuLnl1OUB6dGUuY29tLmNuIOWGmemBkzoKPiBGcm9tOiBK
+aW5wZW5nIEN1aSA8Y3VpLmppbnBlbmcyQHp0ZS5jb20uY24+Cj4gCj4gV2hlbiBhIG1lbW9yeSBj
+b3JydXB0aW9uIGV2ZW50IHRyaWdnZXJzIG1lbW9yeV9mYWlsdXJlLCBleHQ0IHJlbGVhc2VzIHJl
+ZmVyZW5jZXMgdG8gdGhlIGFmZmVjdGVkIGRpcnR5IHBhZ2VzLAo+IGVuc3VyaW5nIHRoYXQgbm8g
+Y29ycnVwdGVkIGRhdGEgaXMgd3JpdHRlbiB0byBkaXNrLiBIb3dldmVyLCB1YmlmcyBjdXJyZW50
+bHkgbGFja3MgdGhlIGVycm9yX3JlbW92ZV9mb2xpbyBjYXBhYmlsaXR5Cj4gYW5kIHRoZXJlZm9y
+ZSBjYW5ub3QgcmVsZWFzZSByZWZlcmVuY2VzIHRvIGZhdWx0eSBwcml2YXRlIG1lbW9yeS4gQXMg
+YSByZXN1bHQsIGNvcnJ1cHRlZCBkYXRhIG1heSBldmVudHVhbGx5IGJlCj4gd3JpdHRlbiB0byBm
+bGFzaCBzdG9yYWdlLgo+IAo+IEFkZCBnZW5lcmljX2Vycm9yX3JlbW92ZV9mb2xpbyBzdXBwb3J0
+IHRvIHViaWZzLCBwcmV2ZW50aW5nIGNvcnJ1cHRlZCBtZW1vcnkgZGF0YSBmcm9tIGJlaW5nIHBl
+cnNpc3RlZCB0byBmbGFzaC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBKaW5wZW5nIEN1aSA8Y3VpLmpp
+bnBlbmcyQHp0ZS5jb20uY24+Cj4gU2lnbmVkLW9mZi1ieTogRmFuIFl1IDxmYW4ueXU5QHp0ZS5j
+b20uY24+Cj4gQ2M6IFNoZW5nbWluZyBIdSA8aHUuc2hlbmdtaW5nQHp0ZS5jb20uY24+Cj4gLS0t
+Cj4gICBmcy91Ymlmcy9maWxlLmMgfCAxICsKPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
+bigrKQo+IAoKVGhlICdlcnJvcl9yZW1vdmVfZm9saW8nIHdhcyBpbnRyb2R1Y2VkIGluIGNvbW1p
+dCAKMjU3MTg3MzYyMTIzZjE1ZDlkMSgiSFdQT0lTT046IERlZmluZSBhIG5ldyBlcnJvcl9yZW1v
+dmVfcGFnZSBhZGRyZXNzIApzcGFjZSBvcCBmb3IgYXN5bmMgdHJ1bmNhdGlvbiIpIHRvIGRpc3Rp
+bmd1aXNoIHRoZSBlcnJvciBoYW5kbGluZyAKYmVoYXZpb3IgYmV0ZXdlZW4gbWV0YWRhdGEgcGFn
+ZSBhbmQgZGF0YSBwYWdlLiBGaWxlcycgZGF0YXBhZ2Ugd2lsbCBiZSAKdHJ1bmNhdGVkIGlmIG1l
+bW9yeSBlcnJvciBoYXBwZW5zIGR1cmluZyBwYWdlIGNvcHkoZWcuIG1pZ3JhdGlvbiwgCm1tYXBf
+Y293KS4gVGhlbiBzZXZlcmFsIGZpbGVzeXN0ZW1zKHdpdGggJy5taWdyYXRlX3BhZ2UnIGltcGxl
+bXRlbnRlZCkgCnN1cHBvcnR0ZWQgaXQuIFNvLCBJJ20gZmluZSB3aXRoIHRoaXMgcGF0Y2guCgpS
+ZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBkaWZm
+IC0tZ2l0IGEvZnMvdWJpZnMvZmlsZS5jIGIvZnMvdWJpZnMvZmlsZS5jCj4gaW5kZXggM2RjM2Nh
+MS4uMzQ0NDViNyAxMDA2NDQKPiAtLS0gYS9mcy91Ymlmcy9maWxlLmMKPiArKysgYi9mcy91Ymlm
+cy9maWxlLmMKPiBAQCAtMTYzMSw2ICsxNjMxLDcgQEAgc3RhdGljIGludCB1Ymlmc19zeW1saW5r
+X2dldGF0dHIoc3RydWN0IG1udF9pZG1hcCAqaWRtYXAsCj4gICAgICAuZGlydHlfZm9saW8gICAg
+PSB1Ymlmc19kaXJ0eV9mb2xpbywKPiAgICAgIC5taWdyYXRlX2ZvbGlvICA9IGZpbGVtYXBfbWln
+cmF0ZV9mb2xpbywKPiAgICAgIC5yZWxlYXNlX2ZvbGlvICA9IHViaWZzX3JlbGVhc2VfZm9saW8s
+Cj4gKyAgIC5lcnJvcl9yZW1vdmVfZm9saW8gPSBnZW5lcmljX2Vycm9yX3JlbW92ZV9mb2xpbywK
+PiAgIH07Cj4gCj4gICBjb25zdCBzdHJ1Y3QgaW5vZGVfb3BlcmF0aW9ucyB1Ymlmc19maWxlX2lu
+b2RlX29wZXJhdGlvbnMgPSB7Cj4gLS0KPiAxLjguMy4xCj4gLgo+IAoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
