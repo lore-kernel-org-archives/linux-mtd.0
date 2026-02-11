@@ -4,101 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A92A0EB26EB
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Feb 2026 10:07:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 884F7E9E310
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Feb 2026 14:15:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6vTiH1zhGpnmZ9cz/QenZS2c7z9DK8UjdQ8k8o7Gh94=; b=wvfOKtrv0/TDNe
-	5mAzHghimpShJs2szHfiaglYOtvuGaSKAq1uFSzQRJH6PxfdatqIv/TJMuaPWK4foEUBfFSxeVpnB
-	eaycvtoMXksV+siHJJIplfVsKtTWU/Zmisk8syTkWYQSzqrHRYrKzw8p40jkUvHbxMyRwTO8OtOal
-	qS+Yr1A3rO8Q3ahAHI1t8KAjIYiOclzcTu4rBu6nPC7hCsi0ZapEkQvp61QSWVbmkl6z8davNxQPn
-	80zbo5DF2ha9XWFni8mYxUBTrmXfnslcFesHsqXCC9Sodfi6jwzbmIeJbh5TBEGI6D1EQbbkUsCTe
-	F6xH5SGj8PNwqysvWFgw==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Uc8hLYLoZBj8qKAgX7DPDKybPsW6m3ZUqTlTi9EbCTI=; b=FKGmiS/nbYJyRG
+	Q+taXVhsy18C0t05H3EvgxJrVemVMupMbf/k03nRlmFQrSADCp5hST4BJMvcp3xPXs1da9TSHNbH7
+	aaoe9UNtnqICug0ZuEq0k78zviBgLwpJN6ApZqnK9Jw/xa4ut848D51I/xJUJgkKEwDIXGokuMnHl
+	6u7sxGe1NIhphyT9y7zt6VdaZGoAcSItCvPPEMxvsXcR3M1r+ePLirghNgdWFIJgHkQDrzql1Soh0
+	zmhL+BBoSm3d4gBS4SpsX5+fcnqfJtyU+8l/kFN+YLty3x6wtGfbW/vtT23daQmawjFtaGkZpQPP/
+	iFSAhwmK3IdgkufpDK0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vq781-00000000Tas-2LdY;
-	Wed, 11 Feb 2026 10:07:25 +0000
-Received: from mail-pg1-x52a.google.com ([2607:f8b0:4864:20::52a])
+	id 1vqB0I-00000000iTq-3QlD;
+	Wed, 11 Feb 2026 14:15:42 +0000
+Received: from mxhk.zte.com.cn ([160.30.148.34])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vq77w-00000000TZA-2eAC
+	id 1vqB0E-00000000iTW-1U2L
 	for linux-mtd@lists.infradead.org;
-	Wed, 11 Feb 2026 10:07:23 +0000
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-c6c444e89bcso692378a12.2
-        for <linux-mtd@lists.infradead.org>; Wed, 11 Feb 2026 02:07:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770804439; x=1771409239; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sn/Y69Rs16zIbCUr1d6TW/gMLK4puZ79zycPXpVzP0A=;
-        b=P7af5L23ms+w+LX79eD9C2D0L24Ly8A2rQTOXxpqiVMxr7RVz4cw0EY58Vf9bb2Sby
-         JC5XgOc3zRoSmAkdkUMwLeluHUpi8UJVjIiVoosjV+Y9NG1JwcNCXxJBr4K1T5Fpr7Kw
-         CzMdUV7oTMI91zka6odSr3aX9cKEqOs+9U7CIWd/aA3IQs9PqbJb3M/bOqkxtjNgG+Rw
-         eqbqzzp5awzIEsBfkLs2qhIhkFhfma3McBMFEnnaS268ZkkJ1mu6hBGpFpADPpwA7MjW
-         FbUhsVJgsJTqszBLKAAxI+jadgA9ixA2QXppfF/ClXuPm4QkvN1YP+Lxu5CwJyQoPSBe
-         3X2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770804439; x=1771409239;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=sn/Y69Rs16zIbCUr1d6TW/gMLK4puZ79zycPXpVzP0A=;
-        b=VfzBl0nCPbpwyfxS/0iwGvRsu9YDc5ezeh0fz+Vn8x+RUiw0dmqwYmr1UTUKv/oMrz
-         unnb2dbRS4kb4LGIcaVeFrOYMz3ERmk30axgLpICv/LCkQM3xCbBnj7jF57XEOKL4pfY
-         xCYRTWax69pilOTCGUQsr54ZFs1VDBn4I/qdlXyZUsOFSqCViBX3n9b4Rkf/p8m0/XVW
-         Gv+xvQNe5sHXqpOqayCGIpLWYELbFd1G8d9ECEi4uipgChi5YegER5YfwQNlBHdEvccN
-         cdr4Sx1HREy3Ob3UInek0HsXGSedaHloNARBDaIcNYWPCOQ8P7vMKGa7YuubKQQDFLe9
-         xhCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAXEigYZQI827E0DW4CCKfn2vUiSXXflFCUuFamqOCrAy/XH1pouRc4Ncnuoz27CE3Q+WLDFVUPj8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxxaYxGAzgEMqlIEFtTIQmLIJbnQYsE5akxryCqadvbFc+aFbEz
-	S0pg2XF5RwauHSn5qEiprtG0pzsKMNWPM1a9mIixYz7Qcdfd0s1aL/yK
-X-Gm-Gg: AZuq6aKiGHrDfezOTDiG1pKdqYn+E65Mh2QijTYn9lyMBJHy4G+J3cM10K8glcZJXkT
-	XSErkiLtmhFYQnInT4ihU61/zEW+Ly2sKMDPPgIMg/gl/Uv7ksW0twCwTLk9ldgun+sOvH4fiKf
-	zF/41qaku9cDwgXM1RW9dykQ78e/LBHuDmEBYqPkjI6kEt76xc8CJ3dgs6KltciQJTlGTS5oFcN
-	i1V//E0hROpD1fEsUUC4dvn7ChokHSkmnaHtGbBizF4RE4D/1t6aEiJKRt/tTNbxplXjRRJzrov
-	2anYzzPLNQQIw9PSoWOMDmS07qPKUh9d+eQ+qZ1zG86MKusvznH4qt4IOGVP8rudhxB3FlZx8IX
-	3xzOYRky/WZ+BoZo3k6uZMxKvVNxe7skNHnP3pWplJUuib4ESaHLgnjb4+6aJjlmXMkcv0DVkZ1
-	8vHZlZHaTVD+goC0+d3mknaf7BDAXDWnmvYenXh/RU+v03pQ==
-X-Received: by 2002:a17:90b:4a08:b0:354:b2f6:b4e4 with SMTP id 98e67ed59e1d1-354b39da597mr13513502a91.0.1770804439383;
-        Wed, 11 Feb 2026 02:07:19 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3567e9fb4bfsm1632089a91.8.2026.02.11.02.07.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Feb 2026 02:07:19 -0800 (PST)
-Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id E8D704136074;
-	Wed, 11 Feb 2026 18:07:16 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
-	Pablo Martin-Gomez <pmartin-gomez@freebox.fr>,
-	Tianling Shen <cnsztl@gmail.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alvinzhou@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v5 1/3] dt-bindings: mtd: spinand: Add randomizer enable/disable properties
-Date: Wed, 11 Feb 2026 18:05:51 +0800
-Message-Id: <20260211100553.907585-2-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260211100553.907585-1-linchengming884@gmail.com>
-References: <20260211100553.907585-1-linchengming884@gmail.com>
-MIME-Version: 1.0
+	Wed, 11 Feb 2026 14:15:41 +0000
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4fB0nw1DTKz5B13Y;
+	Wed, 11 Feb 2026 22:15:32 +0800 (CST)
+Received: from xaxapp05.zte.com.cn ([10.99.98.109])
+	by mse-fl2.zte.com.cn with SMTP id 61BEFQVq009838;
+	Wed, 11 Feb 2026 22:15:26 +0800 (+08)
+	(envelope-from fan.yu9@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Wed, 11 Feb 2026 22:15:29 +0800 (CST)
+X-Zmail-TransId: 2af9698c8f01f01-ae3b8
+X-Mailer: Zmail v1.0
+Message-ID: <20260211221529715WQDbX2CWifJrBOSLR_8XF@zte.com.cn>
+Date: Wed, 11 Feb 2026 22:15:29 +0800 (CST)
+Mime-Version: 1.0
+From: <fan.yu9@zte.com.cn>
+To: <richard@nod.at>, <chengzhihao1@huawei.com>
+Cc: <cui.jinpeng2@zte.com.cn>, <zhang.yue5@zte.com.cn>, <xu.xin16@zte.com.cn>,
+        <yang.tao172@zte.com.cn>, <yang.yang29@zte.com.cn>,
+        <hu.shengming@zte.com.cn>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIIHYyXSB1YmlmczogcHJldmVudCBjb3JydXB0ZWQgZGF0YSB3cml0ZSB2aWEgZXJyb3JfcmVtb3ZlX2ZvbGlvwqA=?=
+X-MAIL: mse-fl2.zte.com.cn 61BEFQVq009838
+X-TLS: YES
+X-SPF-DOMAIN: zte.com.cn
+X-ENVELOPE-SENDER: fan.yu9@zte.com.cn
+X-SPF: None
+X-SOURCE-IP: 10.5.228.133 unknown Wed, 11 Feb 2026 22:15:32 +0800
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 698C8F04.000/4fB0nw1DTKz5B13Y
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260211_020720_678236_A8ECC849 
-X-CRM114-Status: UNSURE (   9.87  )
+X-CRM114-CacheID: sfid-20260211_061538_568365_59D7CBAD 
+X-CRM114-Status: UNSURE (   6.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -116,62 +80,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
 
-Add "nand-randomizer-enable" and "nand-randomizer-disable" boolean
-properties.
+When a memory corruption event triggers memory_failure, ext4 releases
+references to the affected dirty pages, ensuring that no corrupted data
+is written to disk.
 
-These properties allow enabling or disabling the randomizer feature
-via the device tree.
+However, ubifs currently lacks the error_remove_folio capabilityand
+therefore cannot release references to faulty private memory. As a result,
+corrupted data may eventually be written to flash storage.
 
-According to JEDEC standard JESD22-A117E, no single data pattern
-represents a universal worst-case for all NAND flash failure mechanisms.
-Different patterns, such as fully programmed, checkerboard, or mostly
-erased, can disproportionately stress specific cells (e.g., programmed,
-erased, or those influenced by adjacent states).
+Add generic_error_remove_folio support to ubifs,
+preventing corrupted memory data from being persisted to flash.
 
-Given that no fixed pattern can cover all scenarios, the use of a
-randomized data pattern is a practical and effective mitigation strategy.
-Our hardware implements a randomizer feature that scrambles user data
-before it is written to the flash and restores the original data upon read.
-
-This ensures the data stored on the media is more evenly distributed,
-thus reducing pattern-dependent degradation. This is especially crucial
-for preventing errors caused by unbalanced data (e.g., all zeros or
-all ones) in blocks with high program/erase (P/E) cycle counts.
-Ultimately, the randomizer improves the long-term reliability and
-endurance of the flash device.
-
-Please refer to the following link for randomizer feature:
-Link: https://www.mxic.com.tw/Lists/ApplicationNote/Attachments/2151/AN1051V1-The%20Introduction%20of%20Randomizer%20Feature%20on%20MX30xFxG28AD_MX35xFxG24AD.
-
-Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+Signed-off-by: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
+Signed-off-by: Shengming Hu <hu.shengming@zte.com.cn>
+Signed-off-by: Fan Yu <fan.yu9@zte.com.cn>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- Documentation/devicetree/bindings/mtd/nand-chip.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Changes in v2:
+- Some format fixes according to
+https://lore.kernel.org/all/20260211173233604W9pVxv17lV3V2uYD3zCOq@zte.com.cn/
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
-index 609d4a4ddd80..2fcbc4b73e95 100644
---- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
-@@ -67,6 +67,14 @@ properties:
-       the secure regions present.
-     $ref: /schemas/types.yaml#/definitions/uint64-matrix
- 
-+  nand-randomizer-enable:
-+    description: Enable the randomizer feature.
-+    type: boolean
-+
-+  nand-randomizer-disable:
-+    description: Disable the randomizer feature.
-+    type: boolean
-+
- required:
-   - reg
- 
+ fs/ubifs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index ca41ce8208c4..730318eb1ba8 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1635,6 +1635,7 @@ const struct address_space_operations ubifs_file_address_operations = {
+ 	.dirty_folio	= ubifs_dirty_folio,
+ 	.migrate_folio	= filemap_migrate_folio,
+ 	.release_folio	= ubifs_release_folio,
++	.error_remove_folio = generic_error_remove_folio,
+ };
+
+ const struct inode_operations ubifs_file_inode_operations = {
 -- 
 2.25.1
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
