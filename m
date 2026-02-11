@@ -4,76 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0ED1EB596D
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Feb 2026 07:01:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8D42EB597A
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Feb 2026 07:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	To:From:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=77RfIAHXBVxQD192WAkBJBNDBpbGFhjdykWldk0wzBc=; b=WsJem+uysgIVSA3aPYNwmdBdXs
-	XZccf6PLIK8f7eBchwlE9sXw2yWXJy4Jbi9CybN+M9puqMtnbA71p+XnoWrsuD9PLhFwHwfDqt7i8
-	5Nzj+juCJSQ1WjU8Bh0DcIPOayafMXV1hfEcoJ95gthdEybgQvKX8u2qWc3tYOqn/TM20eHxa/PKE
-	HeVQKiC33Z+LEjjs1yAiYFHHRrrDgUpYSIWr1qHRQrdpBVZUxucDjVns85PLaJqymYMp8VluNJCG2
-	BgBKjka2Vo+JN85INlIr0HNE8CxifDGUPWjR2RXXTaauIxygF1j7lg6UrB+hxBCdfWwAmDZCz6roV
-	4zZTurZg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=4LMedud1/c7d18aoa00r4WN541SZgxtpvZ/W+XgEg48=; b=vaVEEFzTOzy0GD
+	pcu1wibhMSlJ4Ri053wXgP2MJq3VwIAEElnq/7PZAEgxLYwPh1ZfZ1+WAM776tTkHqvzh09YW9r/K
+	5yelShs0VqCwuMd02qmJLNVozTaOzI9Kpd8hN1PAjNhl9qM9v7yQoXET1efFjQZRogDLrxW1FIKa5
+	v3Z3HZxLIxp1jM3gDrQxG7R9N7ycEjI5yFRHwHG26FFFLfhZqiXvZjRsEYq6tsTWabqAjRpPCVSar
+	DczYRrzTeqV8Vwd2z0vVjVjDQPyezeuc40tmAfPajNgrcYKmoqNXdupUKrDxLPqeyOqCCu/uqpsxg
+	NxDicVbsifEQ8H5HUY3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vq4EQ-00000000JQR-0z1O;
-	Wed, 11 Feb 2026 07:01:50 +0000
-Received: from canpmsgout05.his.huawei.com ([113.46.200.220])
+	id 1vq4qM-00000000LjT-2yNp;
+	Wed, 11 Feb 2026 07:41:02 +0000
+Received: from mxhk.zte.com.cn ([160.30.148.34])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vq4EN-00000000JPx-0doo
+	id 1vq4qJ-00000000Lj6-1YG7
 	for linux-mtd@lists.infradead.org;
-	Wed, 11 Feb 2026 07:01:49 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=H0avCy7RRyNlO0BP2Du2yyroG/JOosAezn8W6Y/ZVmM=;
-	b=mrkUhB27zsgvRuxSKPF9UK7ION2wFj8bW7fHG7HsSYp4c8pj/iK6yv0mHk5N+i5YAx7vklqt0
-	8dHQSawC/j5+Abamri1jrWFCRP9OHwuSFR3sMto78vYvWQ3X/JrdZdgs+ufYJb65XXEF9XS/INf
-	pxN0yDRSr8/FOU65kIlvkLU=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4f9q3k6M5zz12LCc;
-	Wed, 11 Feb 2026 14:56:50 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 917DF404AD;
-	Wed, 11 Feb 2026 15:01:39 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 11 Feb 2026 15:01:39 +0800
-Subject: Re: [BUG] UBIFS corruption on powerpc 32-bit targets
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: Tomas Alvarez Vanoli <tomas.alvarez-vanoli@hitachienergy.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <DB9PR06MB784979B96C388174F81F9103C29EA@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <356439c2-5289-57d2-52d4-8b436252a630@huawei.com>
- <DB9PR06MB78490A50AB800FB36AEF5E74C29BA@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <b93ff0e5-79ad-ff73-bdb3-e7e7d5c35256@huawei.com>
- <DB9PR06MB78498340513D9788FC7576FDC298A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <d0eb0572-e383-466e-7b4f-97e4a853b7c5@huawei.com>
- <DB9PR06MB7849BCA2FA49A7AEE3D03104C299A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <2e8dee20-842e-e946-87a0-9ff0190600ab@huawei.com>
- <DB9PR06MB7849E51C72D54F8109C55714C266A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <581cbf94-a48b-3670-27bf-3ecca07ddcb8@huawei.com>
- <DB9PR06MB78496EADCD11536AA66C22CFC265A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <8f65d531-b752-b058-4163-09a66fd9a7a1@huawei.com>
- <DB9PR06MB78496CB06BF8E60582CF40F7C262A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <abfe8c37-11ea-a76d-5aea-014b39fcdf2e@huawei.com>
-Message-ID: <d5c8fe2d-2b78-3459-d176-da15ae24d1ab@huawei.com>
-Date: Wed, 11 Feb 2026 15:01:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <abfe8c37-11ea-a76d-5aea-014b39fcdf2e@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+	Wed, 11 Feb 2026 07:41:01 +0000
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4f9r2W734yz5B11P;
+	Wed, 11 Feb 2026 15:40:51 +0800 (CST)
+Received: from xaxapp02.zte.com.cn ([10.88.97.241])
+	by mse-fl1.zte.com.cn with SMTP id 61B7eeAI045696;
+	Wed, 11 Feb 2026 15:40:41 +0800 (+08)
+	(envelope-from fan.yu9@zte.com.cn)
+Received: from mapi (xaxapp02[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Wed, 11 Feb 2026 15:40:43 +0800 (CST)
+X-Zmail-TransId: 2afa698c327bc49-e12cb
+X-Mailer: Zmail v1.0
+Message-ID: <20260211154043158VVS6WEc8yD82HcqScmYUn@zte.com.cn>
+Date: Wed, 11 Feb 2026 15:40:43 +0800 (CST)
+Mime-Version: 1.0
+From: <fan.yu9@zte.com.cn>
+To: <richard@nod.at>, <chengzhihao1@huawei.com>
+Cc: <cui.jinpeng2@zte.com.cn>, <zhang.yue5@zte.com.cn>, <xu.xin16@zte.com.cn>,
+        <yang.tao172@zte.com.cn>, <yang.yang29@zte.com.cn>,
+        <hu.shengming@zte.com.cn>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIXSB1YmlmczogcHJldmVudCBjb3JydXB0ZWQgZGF0YSB3cml0ZSB2aWEgZXJyb3JfcmVtb3ZlX2ZvbGlv?=
+X-MAIL: mse-fl1.zte.com.cn 61B7eeAI045696
+X-TLS: YES
+X-SPF-DOMAIN: zte.com.cn
+X-ENVELOPE-SENDER: fan.yu9@zte.com.cn
+X-SPF: None
+X-SOURCE-IP: 10.5.228.132 unknown Wed, 11 Feb 2026 15:40:52 +0800
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 698C3283.001/4f9r2W734yz5B11P
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260210_230147_576356_13B92FA8 
-X-CRM114-Status: GOOD (  30.42  )
+X-CRM114-CacheID: sfid-20260210_234059_589412_0744A165 
+X-CRM114-Status: UNSURE (   6.55  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,132 +75,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjYvMi8xMSAxNDo1OCwgWmhpaGFvIENoZW5nIOWGmemBkzoKPiDlnKggMjAyNi8yLzEx
-IDA6NDAsIFRvbWFzIEFsdmFyZXogVmFub2xpIOWGmemBkzoKPj4+IElzIHRoZSB1YmlmcyBtb3Vu
-dGVkIGluIHJlYWRvbmx5IG1vZGUgaW4gNC4xND8KPj4+IElmIG5vdCwgdGhlIGRvX2tpbGxfb3Jw
-aGFuIHByb2Nlc3Mgd2lsbCBiZSBjb21taXR0ZWQgb24gZmxhc2guCj4+Cj4+IE5vLCBpdCBpcyBu
-b3QgcmVhZCBvbmx5Lgo+Pgo+Pj4gVGhlIGNvbW1pdCAzYWYyZDNhOGM1NmZlN2RjMjRmNjBjNGRm
-MGFiODViN2FjOTQxOTAyKCJ1YmlmczogRml4Cj4+PiB1bmF0dGFjaGVkIGlub2RlIHdoZW4gcG93
-ZXJjdXQgaGFwcGVucyBpbiBjcmVhdGluZyIpIFt2Ni4xMV0gaXMKPj4+IGludHJvZHVjZWQgYmV0
-d2VlbiA2LjEgYW5kIDYuMTIsIHdoaWNoIHdpbGwgYWRkIGV2ZXJ5IGlub2RlIGludG8gb3JwaGFu
-Cj4+PiBhcmVhIGF0IHRoZSBiZWdpbmluZyBvZiBjcmVhdGlvbi4KPj4KPj4gQnkgY3JlYXRpb24g
-eW91IG1lYW4gdGhlIGZpcnN0IG9jY3VyZW5jZSBvZiBpdCBvciB3aGVuZXZlciB0aGVyZSdzIGFu
-IAo+PiB1cGRhdGU/Cj4+Cj4+IElmIEkgdW5kZXJzdGFuZCBjb3JyZWN0bHksIHdoYXQgeW91IHN1
-Z2dlc3QgaXMgdGhhdCBpdCdzIHBvc3NpYmxlIHRoYXQgYXMKPj4gdGhlIG5ldyBpbm9kZSBpcyBh
-ZGRlZCB0byBvcnBoYW4gYXJlYSBhbmQgdGhlIGJvYXJkIGlzIHJlc2V0IGFuZCAKPj4gYm9vdGVk
-IGludG8gdGhlCj4+IG9sZGVyIGtlcm5lbCwgd2hpY2ggdGhlbiBjbGVhbnMgYWxsIHRoZSBvcnBo
-YW5zIGV2ZW4gaWYgdGhleSBoYXZlIGxpbmsgCj4+IGNvdW50LAo+PiBsZWF2aW5nIHRoZSBmcyBi
-cm9rZW4/Cj4+Cj4+IFNvLCBpbiBvdGhlciB3b3JkcywgbXkgdW5kZXJzdGFuZGluZyBvZiB3aGF0
-IHlvdSBzYXkgaXMgdGhhdCBmb3IKPj4gM2FmMmQzYThjNTZmZTdkYzI0ZjYwYzRkZjBhYjg1Yjdh
-Yzk0MTkwMiB0byBub3QgYnJlYWsgYW55dGhpbmcsIGFueSAKPj4ga2VybmVsIHRoYXQKPj4gbW91
-bnRzIHRoZSBzYW1lIHBhcnRpdGlvbiBuZWVkcyAKPj4gZWUxNDM4Y2U1ZGM0ZDY3ZGQ4ZGQxZmY1
-MTU4MzEyMmE2MWY1YmQ5ZSBhbmQKPj4gNGFiMjVhYzhiMmI1NTE0MTUxZDVmOTFjZjk1MTRkZjA4
-ZGQyNjkzOCAuCj4gCj4gQ29ycmVjdC4KPj4KPj4+IFNvLCB5b3UgbWF5IHRyeSBvcHRpb27CoCAx
-IG9yIDIgYW5kIGNoZWNrIHdoZXRoZXIgdGhlIHByb2JsZW0gY291bGQgCj4+PiBoYXBwZW46Cj4+
-PiAxLiBtb3VudCA0LjE0IHJlYWRvbmx5Cj4+PiAyLiBiYWNrcG9ydCBmaXggcGF0Y2hlcyBvbiA0
-LjE0Cj4+Cj4+IFBvdGVudGlhbGx5IGFsc28gcmVwbGFjaW5nIHRoZSA0LjE0IGFwcGxpY2F0aW9u
-IHdpdGggYW4gYXBwbGljYXRpb24gCj4+IGJhc2VkIG9uCj4+IDYuMT8KPiAKPiBXaGF0IGRvZXMg
-J2FwcGxpY2F0aW9uJyBtZWFuPwo+Pgo+PiBJIGFtIGFsc28gaW50ZXJlc3RlZCBpbiBjb25zaXN0
-ZW50bHkgcmVwcm9kdWNpbmcgdGhpcyBhdCBteSBkZXNrLiBJIAo+PiBoYXZlIGJlZW4KPj4gdGlu
-a2VyaW5nIHdpdGggYWRkaW5nIGEgbWVzc2FnZSArIGEgMTAgc2Vjb25kIGRlbGF5IGF0IHBvaW50
-cyBpbiB0aGUgCj4+IHViaWZzIGNvZGUKPj4gc28gdGhhdCBJIGNhbiByZXNldCB0aGUgYm9hcmQg
-YW5kIGJvb3QgdGhlIG9sZCBrZXJuZWwgdG8gdHJpZ2dlciB0aGlzIAo+PiBiZWhhdmlvdXIuCj4+
-IFdvdWxkIHlvdSBrbm93IGF0IHdoaWNoIGV4YWN0IHBvaW50L2NvbmRpdGlvbnMgaXQgd291bGQg
-bWFrZSBzZW5zZSB0byAKPj4gYWRkIHRoaXM/Cj4+IE9yIGlzIGl0IG5vdCBwb3NzaWJsZT8KPj4g
-SSBkbyBub3QgZnVsbHkgdW5kZXJzdGFuZCB5b3VyIHRoZW9yeSwgSSBoYXZlIHJlYWQgdGhlIGRv
-Y3MgZm9yIHRoZSBmcyAKPj4gYnV0IEkKPj4gaGF2ZSBsaXR0bGUgZXhwZXJpZW5jZSB3aXRoIGZp
-bGVzeXN0ZW0gaW1wbGVtZW50YXRpb24gaW4gZ2VuZXJhbCwgc28gSSAKPj4gYW0gbm90Cj4+IHN1
-cmUgaG93IGZlYXNpYmxlIHRoaXMgImhhY2siIGlzLgo+IAo+IEFwcGx5IGZvbGxvd2luZyBwYXRj
-aCBpbiA2LjEyOgo+IApkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvZGlyLmMgYi9mcy91Ymlmcy9kaXIu
-YwppbmRleCAzYzNkM2FkNGZhNmMuLjNkMmYwZjZiOWEwNyAxMDA2NDQKLS0tIGEvZnMvdWJpZnMv
-ZGlyLmMKKysrIGIvZnMvdWJpZnMvZGlyLmMKQEAgLTMwMiw2ICszMDIsOCBAQCBzdGF0aWMgaW50
-IHViaWZzX3ByZXBhcmVfY3JlYXRlKHN0cnVjdCBpbm9kZSAqZGlyLCAKc3RydWN0IGRlbnRyeSAq
-ZGVudHJ5LAogIAlyZXR1cm4gZnNjcnlwdF9zZXR1cF9maWxlbmFtZShkaXIsICZkZW50cnktPmRf
-bmFtZSwgMCwgbm0pOwogIH0KCisjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KK2V4dGVybiBpbnQg
-Z193YWl0OwogIHN0YXRpYyBpbnQgdWJpZnNfY3JlYXRlKHN0cnVjdCBtbnRfaWRtYXAgKmlkbWFw
-LCBzdHJ1Y3QgaW5vZGUgKmRpciwKICAJCQlzdHJ1Y3QgZGVudHJ5ICpkZW50cnksIHVtb2RlX3Qg
-bW9kZSwgYm9vbCBleGNsKQogIHsKQEAgLTM0MSw2ICszNDMsMTMgQEAgc3RhdGljIGludCB1Ymlm
-c19jcmVhdGUoc3RydWN0IG1udF9pZG1hcCAqaWRtYXAsIApzdHJ1Y3QgaW5vZGUgKmRpciwKICAJ
-aWYgKGVycikKICAJCWdvdG8gb3V0X2lub2RlOwoKKwlwcl9lcnIoIndhaXQgc3luYyBhbmQgd3Jp
-dGUgb3JwaGFuc1xuIik7CisJd2hpbGUgKCFnX3dhaXQpIHsKKwkJc21wX3JtYigpOworCQltc2xl
-ZXAoMTApOworCX0KKwlwcl9lcnIoIndhaXQgZG9uZVxuIik7CisKICAJc2V0X25saW5rKGlub2Rl
-LCAxKTsKICAJbXV0ZXhfbG9jaygmZGlyX3VpLT51aV9tdXRleCk7CiAgCWRpci0+aV9zaXplICs9
-IHN6X2NoYW5nZTsKZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL29ycGhhbi5jIGIvZnMvdWJpZnMvb3Jw
-aGFuLmMKaW5kZXggNTU1NWRkNzQwODg5Li45NDNjOTNlMmY0OWQgMTAwNjQ0Ci0tLSBhL2ZzL3Vi
-aWZzL29ycGhhbi5jCisrKyBiL2ZzL3ViaWZzL29ycGhhbi5jCkBAIC0yODQsNiArMjg0LDcgQEAg
-c3RhdGljIGludCBkb193cml0ZV9vcnBoX25vZGUoc3RydWN0IHViaWZzX2luZm8gKmMsIAppbnQg
-bGVuLCBpbnQgYXRvbWljKQogICAqIG9ycGhhbiBoZWFkLiBPbiBzdWNjZXNzLCAlMCBpcyByZXR1
-cm5lZCwgb3RoZXJ3aXNlIGEgbmVnYXRpdmUgZXJyb3IgCmNvZGUKICAgKiBpcyByZXR1cm5lZC4K
-ICAgKi8KK2ludCBnX3dhaXQgPSAwOwogIHN0YXRpYyBpbnQgd3JpdGVfb3JwaF9ub2RlKHN0cnVj
-dCB1Ymlmc19pbmZvICpjLCBpbnQgYXRvbWljKQogIHsKICAJc3RydWN0IHViaWZzX29ycGhhbiAq
-b3JwaGFuLCAqY25leHQ7CkBAIC0zMTgsNiArMzE5LDggQEAgc3RhdGljIGludCB3cml0ZV9vcnBo
-X25vZGUoc3RydWN0IHViaWZzX2luZm8gKmMsIGludCAKYXRvbWljKQogIAkJb3JwaGFuID0gY25l
-eHQ7CiAgCQl1Ymlmc19hc3NlcnQoYywgb3JwaGFuLT5jbXQpOwogIAkJb3JwaC0+aW5vc1tpXSA9
-IGNwdV90b19sZTY0KG9ycGhhbi0+aW51bSk7CisJCXByX2Vycigid3JpdGUgb3JwaGFuICVsdVxu
-Iiwgb3JwaGFuLT5pbnVtKTsKKwkJZ193YWl0ID0gMTsKICAJCW9ycGhhbi0+Y210ID0gMDsKICAJ
-CWNuZXh0ID0gb3JwaGFuLT5jbmV4dDsKICAJCW9ycGhhbi0+Y25leHQgPSBOVUxMOwo+IAo+IEFw
-cGx5IGZvbGxvd2luZyBwYXRjaCBpbiA0LjE0Ogo+IApkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvb3Jw
-aGFuLmMgYi9mcy91Ymlmcy9vcnBoYW4uYwppbmRleCA4ZjcwNDk0ZWZiMGMuLmYwNGE5NjA5Yzc1
-MyAxMDA2NDQKLS0tIGEvZnMvdWJpZnMvb3JwaGFuLmMKKysrIGIvZnMvdWJpZnMvb3JwaGFuLmMK
-QEAgLTYxNCw2ICs2MTQsNyBAQCBzdGF0aWMgaW50IGRvX2tpbGxfb3JwaGFucyhzdHJ1Y3QgdWJp
-ZnNfaW5mbyAqYywgCnN0cnVjdCB1Ymlmc19zY2FuX2xlYiAqc2xlYiwKICAJCQlpbnVtID0gbGU2
-NF90b19jcHUob3JwaC0+aW5vc1tpXSk7CiAgCQkJZGJnX3JjdnJ5KCJkZWxldGluZyBvcnBoYW5l
-ZCBpbm9kZSAlbHUiLAogIAkJCQkgICh1bnNpZ25lZCBsb25nKWludW0pOworCQkJcHJfZXJyKCJy
-ZW1vdmUgaW5vICVsdVxuIiwgaW51bSk7CiAgCQkJZXJyID0gdWJpZnNfdG5jX3JlbW92ZV9pbm8o
-YywgaW51bSk7CiAgCQkJaWYgKGVycikKICAJCQkJcmV0dXJuIGVycjsKCj4gCj4gUnVuOgoKTXkg
-dWJpZnMgaW1hZ2UgaXMgbWtmcyBpbiA0LjE0Lgo+IHN0YXJ0IGtlcm5lbCA2LjEyCj4gJCB0b3Vj
-aCAkTU5UL2ZpbGUgIyBjbWQgd2lsbCBzdHVjaywgJE1OVCBpcyB0aGUgdWJpZnMgbW50cG9pbnQK
-PiAkIGRtZXNnICMgeW91IHdpbGwgc2VlIGtlcm5lbCBtZXNzYWdlICd3YWl0IHN5bmMgYW5kIHdy
-aXRlIG9ycGhhbnMnLCAKPiBvcGVuIGFub3RoZXIgdGVybWluYWwKPiAkIHN5bmMgIyBvcGVuIGFu
-b3RoZXIgdGVybWluYWwsIHlvdSB3aWxsIHNlZSBrZXJuZWwgbWVzc2FnZSAnd3JpdGUgCj4gb3Jw
-aGFuIFhYJywgYW5kIHRoZSAndG91Y2gnIGNtZCBnb2VzIG9uCj4gJCBkZCBpZj0vZGV2L210ZDAg
-b2Y9Zmxhc2ggYnM9MU0KPiAkIHN5bmMgYW5kIHBvd2Vyb2ZmCj4gCj4gc3RhcnQga2VybmVsIDQu
-MTQKPiAkIGZsYXNoX2VyYXNlYWxsIC9kZXYvbXRkMAo+ICQgZGQgaWY9Zmxhc2ggb2Y9L2Rldi9t
-dGQwIGJzPTFNICMgbWFrZSBzdXJlIG10ZDAgaXMgbm90IGF0dGFjaGVkIGJ5IHViaQo+ICQgdWJp
-YXR0YWNoIC1tMAo+ICQgbW91bnQgL2Rldi91YmkwXzAgdGVtcCAjIGRtZXNnIHdpbGwgc2hvdyAn
-cmVtb3ZlIGlubyBYWCcKPiAkIGxzIHRlbXAKPiBsczogY2Fubm90IGFjY2VzcyAndGVtcC9maWxl
-JzogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+IGZpbGUKPiAkIGRtZXNnCj4gW8KgwqAgNjku
-MjAwNjM5XSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAxNTg3KTogdWJpZnNfaWdldCBbdWJpZnNd
-OiBmYWlsZWQgCj4gdG8gcmVhZCBpbm9kZSA2NSwgZXJyb3IgLTIKPiBbwqDCoCA2OS4yMDYyMTRd
-IFVCSUZTIGVycm9yICh1YmkwOjAgcGlkIDE1ODcpOiB1Ymlmc19sb29rdXAgW3ViaWZzXTogZGVh
-ZCAKPiBkaXJlY3RvcnkgZW50cnkgJ2ZpbGUnLCBlcnJvciAtMgo+IFvCoMKgIDY5LjIwNzQ4Ml0g
-VUJJRlMgd2FybmluZyAodWJpMDowIHBpZCAxNTg3KTogdWJpZnNfcm9fbW9kZSBbdWJpZnNdOiAK
-PiBzd2l0Y2hlZCB0byByZWFkLW9ubHkgbW9kZSwgZXJyb3IgLTIKPiBbwqDCoCA2OS4yMDg3ODNd
-IENQVTogMiBQSUQ6IDE1ODcgQ29tbTogbHMgTm90IHRhaW50ZWQgCj4gNC4xOS45MC0wMDAwNi1n
-MzMyMDQzNjMwYWUxLWRpcnR5ICM1MAo+IFvCoMKgIDY5LjIwOTgzN10gSGFyZHdhcmUgbmFtZTog
-UUVNVSBTdGFuZGFyZCBQQyAoaTQ0MEZYICsgUElJWCwgMTk5NiksIAo+IEJJT1MgPy0yMDE5MDcy
-N18wNzM4MzYtYnVpbGR2bS1wcGM2NGxlLTE2LnBwYy5mZWRvcmFwcm9qZWN0Lm9yZy0zLmZjMzEg
-Cj4gMDQvMDEvMjAxNAo+IFvCoMKgIDY5LjIxMTU0NV0gQ2FsbCBUcmFjZToKPiBbwqDCoCA2OS4y
-MTE5MjFdwqAgZHVtcF9zdGFjaysweGI4LzB4ZWYKPiBbwqDCoCA2OS4yMTIzNzBdwqAgdWJpZnNf
-cm9fbW9kZSsweDU0LzB4NjAgW3ViaWZzXQo+IFvCoMKgIDY5LjIxMjk1MF3CoCB1Ymlmc19sb29r
-dXArMHgzYjYvMHg1NTAgW3ViaWZzXQo+IFvCoMKgIDY5LjIxMzUzNV3CoCBfX2xvb2t1cF9zbG93
-KzB4OWUvMHgyMTAKPiBbwqDCoCA2OS4yMTQwNDVdwqAgbG9va3VwX3Nsb3crMHg0Ni8weDcwCj4g
-W8KgwqAgNjkuMjE0NDkxXcKgIHdhbGtfY29tcG9uZW50KzB4MjY1LzB4NGMwCj4gW8KgwqAgNjku
-MjE1MDEzXcKgIHBhdGhfbG9va3VwYXQuaXNyYS4wKzB4OWUvMHgzNjAKPiBbwqDCoCA2OS4yMTU1
-ODhdwqAgZmlsZW5hbWVfbG9va3VwKzB4YjUvMHgyMzAKPiBbwqDCoCA2OS4yMTYxMDddwqAgPyBf
-cmF3X3NwaW5fdW5sb2NrX2lycXJlc3RvcmUrMHgzZi8weDgwCj4gW8KgwqAgNjkuMjE2NzY5XcKg
-ID8gX190aGlzX2NwdV9wcmVlbXB0X2NoZWNrKzB4MTcvMHgyMAo+IFvCoMKgIDY5LjIxNzM4Nl3C
-oCA/IF9fbG9jYWxfYmhfZW5hYmxlX2lwKzB4NjIvMHgxMTAKPiBbwqDCoCA2OS4yMTgwMzhdwqAg
-PyBfcmF3X3NwaW5fdW5sb2NrX2JoKzB4MmUvMHg0MAo+IFvCoMKgIDY5LjIxODc2MV3CoCA/IHdi
-X3dha2V1cF9kZWxheWVkKzB4NTYvMHg5MAo+IFvCoMKgIDY5LjIxOTMwMV3CoCA/IGttZW1fY2Fj
-aGVfYWxsb2MrMHgxMTAvMHgzZDAKPiBbwqDCoCA2OS4yMTk4NTJdwqAgdXNlcl9wYXRoX2F0X2Vt
-cHR5KzB4NDMvMHg2MAo+IFvCoMKgIDY5LjIyMDM5MV3CoCB2ZnNfc3RhdHgrMHg5MC8weDE1MAo+
-IFvCoMKgIDY5LjIyMDg0N13CoCA/IF9fc2JfZW5kX3dyaXRlKzB4NWYvMHhiMAo+IFvCoMKgIDY5
-LjIyMTM1NF3CoCBfX3NlX3N5c19uZXdsc3RhdCsweDQ2LzB4YTAKPiBbwqDCoCA2OS4yMjE4OTJd
-wqAgPyBfX3NlX3N5c19nZXRkZW50cysweGUwLzB4MWMwCj4gW8KgwqAgNjkuMjIyNDY1XcKgID8g
-ZmlsbGRpcjY0KzB4MzQwLzB4MzQwCj4gW8KgwqAgNjkuMjIyOTU4XcKgIF9feDY0X3N5c19uZXds
-c3RhdCsweDFhLzB4MzAKPiBbwqDCoCA2OS4yMjM0OTldwqAgZG9fc3lzY2FsbF82NCsweDk1LzB4
-NDYwCj4gW8KgwqAgNjkuMjI0MDA0XcKgID8gcHJlcGFyZV9leGl0X3RvX3VzZXJtb2RlKzB4YWEv
-MHgxODAKPiBbwqDCoCA2OS4yMjQ2NTJdwqAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1l
-KzB4NWMvMHhjMQo+IAo+Pgo+PiBUaGFua3MgZm9yIGFsbCB5b3VyIHN1cHBvcnQhCj4+IEJlc3Qg
-cmVnYXJkcywKPj4gVG9tYXMKPj4gLgo+Pgo+IAo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
+
+When a memory corruption event triggers memory_failure, ext4 releases references to the affected dirty pages,
+ensuring that no corrupted data is written to disk. However, ubifs currently lacks the error_remove_folio capability
+and therefore cannot release references to faulty private memory. As a result, corrupted data may eventually be
+written to flash storage.
+
+Add generic_error_remove_folio support to ubifs, preventing corrupted memory data from being persisted to flash.
+
+Signed-off-by: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
+Signed-off-by: Fan Yu <fan.yu9@zte.com.cn>
+Cc: Shengming Hu <hu.shengming@zte.com.cn>
+---
+ fs/ubifs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 3dc3ca1..34445b7 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1631,6 +1631,7 @@ static int ubifs_symlink_getattr(struct mnt_idmap *idmap,
+    .dirty_folio    = ubifs_dirty_folio,
+    .migrate_folio  = filemap_migrate_folio,
+    .release_folio  = ubifs_release_folio,
++   .error_remove_folio = generic_error_remove_folio,
+ };
+
+ const struct inode_operations ubifs_file_inode_operations = {
+--
+1.8.3.1
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
