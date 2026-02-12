@@ -4,81 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 040C3E9E31B
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Feb 2026 01:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44133EDF020
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Feb 2026 03:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2yi5Fi17KwGDhk47VDpRul63pvA/z9I81wG2T7QG5M0=; b=TnNIowcloZysJz
-	BUOBSPDti35HWoVEhtgiezMwhvbt4LVrHwuMZxvvqlRVR9az1lApPMvU9YaihwJOM8pSCyZC4Wm2W
-	KjsIl4ZwodddOUutbxAHLyfr+NYk6SdVykXKuIevgTjgykrVyq0OwhZb3mR3khhYqzYSAWSg1g5ZQ
-	Xz/T5iF1inH/ClsWas7+l5PGfYtGJZrICcKXoi2QAthvHUJxbgq1mWA7pA3AIB5hIkBDhslagvixS
-	ZGTA5ndmapIQOLep/uIHmsC/2b1zG3vImCyYjeHpKDwhckRwbQPl2OmDjQ10V18WozMvYtRhgd/1/
-	WYDH1AhksCk/xj2gkLXQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=QY3WbOiTJ4VcwTdr7qOrMF0AF9l2PekL+ZzspKQniSs=; b=2tmie9BAEbwZQD/7CpenZpZS5T
+	IlI2eC+QjABp5WH5UetLpIrl0SHQLIj7eFiwZE74xrOhZRBWhuWAWLsOs16Od4g9w4oXjKjvkqQFR
+	adA/eVF+4A4uinJwb4S2vzWoUIGY7CSdZeTTpDK9VutPUAelSQUEK4GJZbLnzppJ2ReuJN3sup4y6
+	tdXu6/L8S8M3CVe2JHYJImpMEmM3gp/vWN2TRd0ddY7nTrjoD1L8Lh/8TpOPXyUUNHShk+J49g7dr
+	edBzhaUFlZZxEuav3Ramda0LAg1NxJwL6kEU3g9bkPrvcQqjArVtkKubIDH/vsUwBkPIuXyzD8l1S
+	VF8SNTTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqLcv-00000001H37-3pwN;
-	Thu, 12 Feb 2026 01:36:17 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1vqNBb-00000001XXU-0R1A;
+	Thu, 12 Feb 2026 03:16:11 +0000
+Received: from canpmsgout01.his.huawei.com ([113.46.200.216])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqLcu-00000001H2h-220q
+	id 1vqNBY-00000001XVt-1BrD
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Feb 2026 01:36:17 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-824a3ba5222so698934b3a.2
-        for <linux-mtd@lists.infradead.org>; Wed, 11 Feb 2026 17:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770860175; x=1771464975; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fyj9qVJ+d5PGTRFtyEyJQqxrIudvTNp2ouLgJKsvN04=;
-        b=PFMDhC+I9VRTCiSqYUV/c/WkULdD6vV9v8+hOLMi5A1KEMcLrUdQ7F1teu59PSr02h
-         virsShcngrKVdFYZN50D3IgZ/992h+9B27iXnp67sfsfE6ccHp2pPEZ7d2wl2mN1aoJm
-         fm7GWhvZJj7N75fTxeA6sd178JjGrkuUrukTdLqSCXaosVVPKjEGRCH5ombyGJjlMPQF
-         njqbmqkYTaV1fNwmP735Qsi+4FFjEKyyZN6FQ8RiiFzgFYRHwkAUqxQPMbyO1ioR17Iq
-         cH/cXjEEtLJIFjJCR1OzngpR6nTUXPJiuSYdMb1xkAn14IJnQMZB2n8ZSCCWGPcc4VDH
-         p2Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770860175; x=1771464975;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fyj9qVJ+d5PGTRFtyEyJQqxrIudvTNp2ouLgJKsvN04=;
-        b=prhl9QoPQQdXja4TZz0DNGFhvs3CgAysrS5ZGekfeICRmtl8aVJApCxNfjsoTrHcmb
-         lj1XwpTa2wjOv2qe01rYFMfQ2V5MxgD/DhNhoBJhlOv4n1s3yQ/sGiZhBEUUfXqfhJZp
-         asOIFTsx2V5NB/f8pXvu69ehkRkTpcvnBJxv+XwUBHkUqqLpKGgyVhhnJU7L6PXLy2u4
-         Y0Rp7jdCTP1pZDPQ1QXkW33fjnjbH14S4MVa7n9RmWyH5Jsd79tC016ko4zdbIOWYiIx
-         V+P9cj6X72sZMI7dkpcAsWDChvGl/wa2PVYSO/POy3R58kQiT8hicnKar3PhZHvejHiw
-         mu7g==
-X-Gm-Message-State: AOJu0YwrK67Hijj8DtUe1ei41akzZWZVUdYj7iELc/JPhGvcW2ThF3QD
-	Lc2CNzS30FNuHsLV3X782+cRfHCVF0Hop6Rs/CM7SmxS/pdjjo5mxjND
-X-Gm-Gg: AZuq6aJ7NYCjjXBcGifQIyEsYXIn6++Ikz/9mbDYaAtevlp28guty9RyRWA3DMiD+qO
-	n5iOxkqFmxM9iDNac/U61+Gal6U/ZFzY1K2WgqreYBprShTVsbluscYgioB1qiHXASPQQsqMBp3
-	H7ecs0KfWDG96C64xDZSLCNH12r3PpI/S9FeZyiqbNtN8jJxyHtsYL1CrGz8KEX3e/mU6bO5nj4
-	rVqRTg2FE8IpKwl6dU807UaBMFNcbVS6CfK1IV+VYLZVGdPI7mLT9Ksq8stjeeE2kHSV2eo0VLD
-	niUQRKBGA+1+VOYWcXzDRbB7M3b4uJeSYgxT5rHFbs06S3RzUbyIDuFw//SER8Vp/b4Z/HvOcQF
-	s/znb+jo/6NtNR+b/8gKcvo1/4n+OUAyNZxTZ/JYavTQtSHQayXpJrKwXSaNXq4fpaDtzwBpMLP
-	n1jW/ZefSOi56VBZjxchPjVlRUTOSgxNPGPIvVK0ZwWu52Lhc436CU
-X-Received: by 2002:a05:6a21:339d:b0:384:d0fc:f517 with SMTP id adf61e73a8af0-3944880fa41mr1064655637.51.1770860175531;
-        Wed, 11 Feb 2026 17:36:15 -0800 (PST)
-Received: from ubuntu ([175.145.217.65])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c6e1aec1b85sm2990237a12.4.2026.02.11.17.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Feb 2026 17:36:15 -0800 (PST)
-From: Mohammad Rahimi <rahimi.mhmmd@gmail.com>
-To: david.oberhollenzer@sigma-star.at
-Cc: linux-mtd@lists.infradead.org,
-	Mohammad Rahimi <rahimi.mhmmd@gmail.com>
-Subject: [PATCH] ubiattach: fix wording in usage example
-Date: Thu, 12 Feb 2026 01:35:42 +0000
-Message-ID: <20260212013542.22699-1-rahimi.mhmmd@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	Thu, 12 Feb 2026 03:16:10 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=+gqK1yOcyrucD509c0NtbF1xPrLpwBnTBJBl7Jfkq+U=;
+	b=PjwQHRgVFI5sa5kQ9YWN0MEaUVdka55U3bERd/1p+tvdLA0vfTRpJu73tN56RB2BR7jeq/kjk
+	dMA0FgSmfCA4JErZjU8kvPh+Jsnp+Uv6t5PGf7gKEifakUtq0ImyYY9HmCuo9uIP4rC1SOQxOR+
+	PWa/NhHgBBvS+057lkNHxvE=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4fBL196zB7z1T4Fj;
+	Thu, 12 Feb 2026 11:11:25 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3E77F40561;
+	Thu, 12 Feb 2026 11:15:59 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 12 Feb 2026 11:15:57 +0800
+Subject: Re: [PATCH] ubiattach: fix wording in usage example
+To: Mohammad Rahimi <rahimi.mhmmd@gmail.com>,
+	<david.oberhollenzer@sigma-star.at>
+CC: <linux-mtd@lists.infradead.org>
+References: <20260212013542.22699-1-rahimi.mhmmd@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <41f7b452-5d9d-5bca-62db-8b997ce3ed1f@huawei.com>
+Date: Thu, 12 Feb 2026 11:15:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20260212013542.22699-1-rahimi.mhmmd@gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260211_173616_521239_5C83FE7E 
-X-CRM114-Status: GOOD (  11.26  )
+X-CRM114-CacheID: sfid-20260211_191608_798739_9516CAC5 
+X-CRM114-Status: GOOD (  15.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,41 +73,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The usage example 4 describing reserved eraseblocks had awkward and
-slightly incorrect phrasing ("is total flash chip eraseblocks count").
-Reword it for clarity and readability without changing the meaning.
-
-Signed-off-by: Mohammad Rahimi <rahimi.mhmmd@gmail.com>
----
- ubi-utils/ubiattach.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/ubi-utils/ubiattach.c b/ubi-utils/ubiattach.c
-index e758dab..11e171b 100644
---- a/ubi-utils/ubiattach.c
-+++ b/ubi-utils/ubiattach.c
-@@ -92,9 +92,9 @@ static const char usage[] =
- "           and create UBI device number 3 (ubi3)\n"
- "Example 4: " PROGRAM_NAME " -m 1 -b 25 - attach /dev/mtd1 to UBI and reserve\n"
- "           25*C/1024 eraseblocks for bad block handling, where C is the flash\n"
--"           is total flash chip eraseblocks count, that is flash chip size in\n"
--"           eraseblocks (including bad eraseblocks). E.g., if the flash chip\n"
--"           has 4096 PEBs, 100 will be reserved.";
-+"           chip total eraseblocks count, that is flash chip size in eraseblocks\n"
-+"           (including bad eraseblocks). E.g., if the flash chip has 4096 PEBs,\n"
-+"           100 will be reserved.";
- 
- static const struct option long_options[] = {
- 	{ .name = "devn",            .has_arg = 1, .flag = NULL, .val = 'd' },
--- 
-2.51.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNi8yLzEyIDk6MzUsIE1vaGFtbWFkIFJhaGltaSDQtLXAOgo+IFRoZSB1c2FnZSBleGFt
+cGxlIDQgZGVzY3JpYmluZyByZXNlcnZlZCBlcmFzZWJsb2NrcyBoYWQgYXdrd2FyZCBhbmQKPiBz
+bGlnaHRseSBpbmNvcnJlY3QgcGhyYXNpbmcgKCJpcyB0b3RhbCBmbGFzaCBjaGlwIGVyYXNlYmxv
+Y2tzIGNvdW50IikuCj4gUmV3b3JkIGl0IGZvciBjbGFyaXR5IGFuZCByZWFkYWJpbGl0eSB3aXRo
+b3V0IGNoYW5naW5nIHRoZSBtZWFuaW5nLgo+IAo+IFNpZ25lZC1vZmYtYnk6IE1vaGFtbWFkIFJh
+aGltaSA8cmFoaW1pLm1obW1kQGdtYWlsLmNvbT4KPiAtLS0KPiAgIHViaS11dGlscy91YmlhdHRh
+Y2guYyB8IDYgKysrLS0tCj4gICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRl
+bGV0aW9ucygtKQoKUmV2aWV3ZWQtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdl
+aS5jb20+Cj4gCj4gZGlmZiAtLWdpdCBhL3ViaS11dGlscy91YmlhdHRhY2guYyBiL3ViaS11dGls
+cy91YmlhdHRhY2guYwo+IGluZGV4IGU3NThkYWIuLjExZTE3MWIgMTAwNjQ0Cj4gLS0tIGEvdWJp
+LXV0aWxzL3ViaWF0dGFjaC5jCj4gKysrIGIvdWJpLXV0aWxzL3ViaWF0dGFjaC5jCj4gQEAgLTky
+LDkgKzkyLDkgQEAgc3RhdGljIGNvbnN0IGNoYXIgdXNhZ2VbXSA9Cj4gICAiICAgICAgICAgICBh
+bmQgY3JlYXRlIFVCSSBkZXZpY2UgbnVtYmVyIDMgKHViaTMpXG4iCj4gICAiRXhhbXBsZSA0OiAi
+IFBST0dSQU1fTkFNRSAiIC1tIDEgLWIgMjUgLSBhdHRhY2ggL2Rldi9tdGQxIHRvIFVCSSBhbmQg
+cmVzZXJ2ZVxuIgo+ICAgIiAgICAgICAgICAgMjUqQy8xMDI0IGVyYXNlYmxvY2tzIGZvciBiYWQg
+YmxvY2sgaGFuZGxpbmcsIHdoZXJlIEMgaXMgdGhlIGZsYXNoXG4iCj4gLSIgICAgICAgICAgIGlz
+IHRvdGFsIGZsYXNoIGNoaXAgZXJhc2VibG9ja3MgY291bnQsIHRoYXQgaXMgZmxhc2ggY2hpcCBz
+aXplIGluXG4iCj4gLSIgICAgICAgICAgIGVyYXNlYmxvY2tzIChpbmNsdWRpbmcgYmFkIGVyYXNl
+YmxvY2tzKS4gRS5nLiwgaWYgdGhlIGZsYXNoIGNoaXBcbiIKPiAtIiAgICAgICAgICAgaGFzIDQw
+OTYgUEVCcywgMTAwIHdpbGwgYmUgcmVzZXJ2ZWQuIjsKPiArIiAgICAgICAgICAgY2hpcCB0b3Rh
+bCBlcmFzZWJsb2NrcyBjb3VudCwgdGhhdCBpcyBmbGFzaCBjaGlwIHNpemUgaW4gZXJhc2VibG9j
+a3NcbiIKPiArIiAgICAgICAgICAgKGluY2x1ZGluZyBiYWQgZXJhc2VibG9ja3MpLiBFLmcuLCBp
+ZiB0aGUgZmxhc2ggY2hpcCBoYXMgNDA5NiBQRUJzLFxuIgo+ICsiICAgICAgICAgICAxMDAgd2ls
+bCBiZSByZXNlcnZlZC4iOwo+ICAgCj4gICBzdGF0aWMgY29uc3Qgc3RydWN0IG9wdGlvbiBsb25n
+X29wdGlvbnNbXSA9IHsKPiAgIAl7IC5uYW1lID0gImRldm4iLCAgICAgICAgICAgIC5oYXNfYXJn
+ID0gMSwgLmZsYWcgPSBOVUxMLCAudmFsID0gJ2QnIH0sCj4gCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
