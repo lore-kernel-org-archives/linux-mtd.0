@@ -4,86 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB35EDF170
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Feb 2026 14:42:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6DDEEEA860
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Feb 2026 17:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jX54VAF/kkE+7i191hI/3RvSCffwdQxUekgaDsv4YaI=; b=CsiH0wek1pBBuE
-	J0amJ+dDEpxLWzoyqQa+lNDRWwi3i5o/4xGbO8RnQsnUGVEMtrAj+Hx30c7A1F+NV3cd004a3SROr
-	CJBJjfW2zQBKO2rcGuyRsByoFExZUqL8/5nXEuQt/PMGj3yj9GQBuqmtqO4y7n7mIRLO7TrcPo9ba
-	8rirf2YBaadHHTkPKAF27pql88DXyd8ScII7StST46UDms0lovaja/iuI+ZjYUfkc/WuU/62g40Wz
-	9SGYuHI6qXDOqjt6rbUP2ag8QbvxHUCKixyn6cxiJ/IuZ6iZVhDLp40mOCwhtD7TPeI/oUPXBL0kj
-	7jyDE6Y7gs2f6NscJzxw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6rUQgJEWk0jihkI+wobHN0KY2MIbiRGjS326LN6ITJc=; b=bOqLlVD0kPcrMV
+	R2q8tWXAg15K8oWVSHK3mErS7Yo9nssYKSs3VoaXn0rkICUWvjErd4CKFbIpuI09/TJxyGn2Ovs+O
+	Ousy0BmOWFAKR6IhGYDxS9TAsWnIahLAIRv0rIyYOx1qYETmlBM8w+WRaye9+SQx5WLjNttFV7Wbo
+	DP5B0nB7e8nKMSIOEjKxIt3+Sv6Iemc3apDc+h+4lO7Mc14/m2BhpLVGNaGHvfHE3caOpjP45pQb5
+	VOdekJA0XMN79iTg1cRKxhiGZkvKv7cvWm9Jbrjo6/1e4TK7/J1H2km29rS4E04Qutm3l9Ws49pPa
+	FKLf0T6EqNdu1xJfvvqQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vquNi-00000003ZgP-1VII;
-	Fri, 13 Feb 2026 14:42:54 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1vqwZC-00000003hyK-0ZWZ;
+	Fri, 13 Feb 2026 17:02:54 +0000
+Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vquNe-00000003Zg6-3lRj
+	id 1vqwZ3-00000003hx7-244m
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Feb 2026 14:42:52 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-8230d228372so621251b3a.1
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Feb 2026 06:42:49 -0800 (PST)
+	Fri, 13 Feb 2026 17:02:50 +0000
+Received: by mail-wm1-x342.google.com with SMTP id 5b1f17b1804b1-4836f4cbe0bso9772635e9.3
+        for <linux-mtd@lists.infradead.org>; Fri, 13 Feb 2026 09:02:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1770993769; x=1771598569; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=i4TERTZEfw2ao4mNycWjP5pqv35fCyvygFnss7HI/Yk=;
-        b=wRISpDHhZI3zDDfPalutXfKqutU6FWN6Wu3/WW1kBbQivSqAKG/92sV5WZ6dJbPUd8
-         /6uMJUHESKZz7RUvg2nxnbdn7ggI6Jsw+8FUHezprcSbKhu/+MmRxWmQj+e9KPfHkF7J
-         C90ZgCJm9ogil49nad2lmB3SD0q5CtnJ8bEMU7XVjcbTW+EN0LQ490ZpWvIh6/jfFXYp
-         WXbTDlWSS5suBH6r9v6BuAU4fTDtLTSEqGO8ie9k+8wqDcgS2rF5TPgRyNMBsrxZ25Mr
-         X2bDWCJ7XZOQdyKOwKtV9pZvBDRz27qGj89AQOfGCs7IMiQM3yMUk/Ljf+LxWjUIB9lH
-         0ptw==
+        d=linaro.org; s=google; t=1771002163; x=1771606963; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u2YGh4NiP0Nx8j0GHt6YfLNiLNPi/OXDTyfN1j1b2Wc=;
+        b=MTh/jhvusM6HDW2Hdq2YcOLP1RoN5oDSTQSUd5F91nfvCGigxaRhSdHT4f+Yf9exf2
+         l6916gt5oWwxIRfQ5+DDD+8C4PYOleMgymiXP1Q1xETSyxFKw20z7UIZIfBJFi/FGsYQ
+         ZmCaOZedsaI2I6RRhX0inZJZT4X+PGl3iZEVPBq+Xndv9rgwkIXtGD4QeRKM9hyXQQpe
+         wASjoU9yCuF42Yo7mWmGg/uZRqdo2CAJE6fODdU5n0yUvMjDcoQVBX8lhwoJLRkyKwmL
+         VUBqIPNE0tYCOhbj1/x1X1BsLVN35ZnNQw2jXvXhfju6C7T5ZNmdIGZZfJHds2ZGpkXt
+         b9WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770993769; x=1771598569;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i4TERTZEfw2ao4mNycWjP5pqv35fCyvygFnss7HI/Yk=;
-        b=NzeDBhcVV8jjQq2rGtd8toRYtZZltCtE+SQRMr1apkrzWztAxn86GM5RgSCLixXSg/
-         ZPcZWPaFsZhfNG7qBx4JdC3tQ4Txva/kQnJE9nHQGeSUhcBSDcxZUKHUfdwGulE1IC5s
-         +QjDaBp12W383azkWN1+Ic1oplbnRH4FpQPiDA7nt/KCX8SdXcG098IcMOici26OADDG
-         goQVppvKyTugYsCNqbFDq7Q8jnYnHGy4oHnKH0R0ecyLTiyLSMAjNkhFjVgup0lqIH+7
-         JP7eIFBKC6XU0e13VA0vonosuWqh8vJOEFxVKHlZ3ADZpuaNQadKneP/M1k5S+ya/eJs
-         bsmw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMVnFExG+L+PNDVLUgsuH3VBtb4OxGrj3EO9DJGYCYZFJ2cX+m9hh97uVF55SdpdPX+moU0ij2bSo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxSF8tgorfgKbLXrO8vgzCovPIhvP2UNzpe740tux2wuFahYRDA
-	r3xZrV38ADc7GXe5ep9e/DNPKTAnFUKhRiyNptLbI91hWuSqaVkk7Q8QE7slKpyC/Ghp2EMhLxY
-	Q17nhz2KH9Q==
-X-Gm-Gg: AZuq6aLwD9gfcXdfUX+aiKUbYRQ6IYKWlfqk68Jhrh+Qru7YweIvTi7hNimqF4EhPiT
-	F/++Dp+vZnu7mx9y1nvclXHQtQlRyiZOH0oAPmMYU+ZLom20ZMLCLeq0X9fIhm8AZX3v1jb9V/F
-	q5vtun68+KMjl+zY+HuroLVU6rUqY4DU5lj+CrfdAosBh06jaPtyDtF5PAzLbsgzEB8NrBQspa1
-	V+F4T5Fx029L4Vq3xTexnHooTCnboayodT0wtM//ILn3yiLaudPXxCExhseTZHQLFc5LEVWFT/2
-	jtY2G0zBYbNhK2+N+UrJ+pmAhWUpGdissYOyXC/IdWw6MkrH5OZ9JndoOfedUDrPa3mIKGR4SMA
-	+IdsJd/eG8PjRyOsMxSBwCs3ardZTTCUjz/JnqeFA+iWVFeGp/ln/Lc4JasidJhxGKC6JsYXmTw
-	khGI7NEzWERS5D9qBohxoFWJ/3QNrH47rkMX5mMPdsyeQDLVxWCKA0Mmfcu7aeJmo=
-X-Received: by 2002:a05:6a21:1fc8:b0:366:14ac:e20f with SMTP id adf61e73a8af0-3946c9726camr1908662637.77.1770993769034;
-        Fri, 13 Feb 2026 06:42:49 -0800 (PST)
-Received: from ubuntu2404.huaqin.com ([103.117.77.120])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c6e197d93c0sm7912513a12.17.2026.02.13.06.42.46
+        d=1e100.net; s=20230601; t=1771002163; x=1771606963;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=u2YGh4NiP0Nx8j0GHt6YfLNiLNPi/OXDTyfN1j1b2Wc=;
+        b=rRk7PdL2YZtZPzlH+fHo60QgFaG1DpJgPa/3vQ25PHlG4vP32EMlnjpjZBzxY7d1J4
+         edckGJWrGqTdzccDRKQhO2AvI4ux3Vuhcl+7YRGiLKItZycGJ/jJyJ97m48QjrLcHnhY
+         UD3qEcfHYF3GNYGN9tC+XC8gqHGFfVSWMd66/7dsZBrKjUfP5i+sOkeR635uwlk/h8m9
+         ISzyvRjR8ZrBBLx+3esHN0myjGq0wJvsj0aRxIdNP51i1q6YHow+919TTwicSCvHEIfE
+         MhJpYDwcIZ+80LKSdFpgoC1vTJZENTp/tK5t2Red4AHGjRcpk2jIIGPsia/xYN733VYZ
+         +Tyg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3RlNa23GMby9ea4Wj0Rnx7ivpFv/IgzHTWkuLYiX82g5euFUCYyIp6E3yUyhFUy3oyo8AzpQkc5c=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxNlctvzvo5i4+B6v6jV1kQ9JMLCt5/fP5rnDq9hFwQCmcMfkdt
+	qsD1JIlfv32VAu1PcLqdSs9g8aglkfaduNTgFFLyvOew0+x7BJENDVIx1o7JAl2hnJM=
+X-Gm-Gg: AZuq6aJLkIDJAvkGq9d/VwvTdlKhI5B3jlxWkvrgm9Q09KdEpikH2HBOEbaiDP2z1lt
+	OaPZduXYMaqfH5z0RZTAXLWeEape0O8qOhwvvaJC5cEA4tuyZ1MLV6i/FK00REsgo7n0l3q5byw
+	GkeRk1IQHFnOuhcpE80LTyryxyJlRV1DyiDc8KD2AUkvlLj7RRa3oeTJP7H/BLl/SojsBRC8P9/
+	affiS4xFgfbCTxl1G4Fq3XDff4KzC+5PgPfY5e09HUXLp0OqEVONIwPmyauoNAi4f8jUsdHzGal
+	vKTgHbIm2N99rszYIHu/PWrcJptnd2QS2SBekQOZaBXLtT2JGQCxGZ9pMOPAR41IgFVvCb1XSOz
+	YA2Ik/ncIbDd8s0lXWxMvG7ImscMc8HJrX/CYep50J7SZuaj+18Csh/6TEoTevrIgrYgZTQiTIE
+	WnT8F2haK9rETiMM5ZRwjazO+IEGCMD3EzvXLbqZq/R7jqkDlbO6eSPwtz9puQTPtc00iNc3RhU
+	OS9euc2kjSzlUS5Bw==
+X-Received: by 2002:a05:600c:818c:b0:483:709e:f239 with SMTP id 5b1f17b1804b1-48373a5d56dmr39731925e9.22.1771002162818;
+        Fri, 13 Feb 2026 09:02:42 -0800 (PST)
+Received: from ta2.c.googlers.com (140.204.78.34.bc.googleusercontent.com. [34.78.204.140])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48371a41fd5sm20333245e9.27.2026.02.13.09.02.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Feb 2026 06:42:48 -0800 (PST)
-From: Weimin Wu <wuweimin@huaqin.corp-partner.google.com>
-To: tudor.ambarus@linaro.org
-Cc: pratyush@kernel.org,
-	mwalle@kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Weimin Wu <wuweimin@huaqin.corp-partner.google.com>
-Subject: [PATCH] mtd: spi-nor: gigadevice: add support for GD25LQ255E
-Date: Fri, 13 Feb 2026 22:41:33 +0800
-Message-ID: <20260213144133.1778932-1-wuweimin@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.43.0
+        Fri, 13 Feb 2026 09:02:42 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Date: Fri, 13 Feb 2026 17:02:33 +0000
+Subject: [PATCH 1/2] MAINTAINERS: remove Tudor Ambarus as SPI NOR
+ maintainer
 MIME-Version: 1.0
+Message-Id: <20260213-remove-tambarus-from-spi-nor-v1-1-6caefb1a63ae@linaro.org>
+References: <20260213-remove-tambarus-from-spi-nor-v1-0-6caefb1a63ae@linaro.org>
+In-Reply-To: <20260213-remove-tambarus-from-spi-nor-v1-0-6caefb1a63ae@linaro.org>
+To: pratyush@kernel.org, mwalle@kernel.org
+Cc: takahiro.kuwano@infineon.com, miquel.raynal@bootlin.com, richard@nod.at, 
+ vigneshr@ti.com, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Tudor Ambarus <tudor.ambarus@linaro.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1771002160; l=791;
+ i=tudor.ambarus@linaro.org; s=20241212; h=from:subject:message-id;
+ bh=gAv+0Vzeh6NJYqWWZUHu2X0vgP1uUsaCojEV/34abv8=;
+ b=yCsfpIPl1CDO2enkGPyWGx5uKbrMf0fGkMl9LC++tnpuqmlUR6jWAq5Z/rnKIVJnl2PU2+Wy1
+ 4vr8NJhuf6YAX0lVM+WobeYi1L8iPYDGhCh4/U4dhshCqmmynpuCTFI
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=ed25519;
+ pk=uQzE0NXo3dIjeowMTOPCpIiPHEz12IA/MbyzrZVh9WI=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260213_064251_104478_37A11D7E 
-X-CRM114-Status: UNSURE (   9.37  )
+X-CRM114-CacheID: sfid-20260213_090245_544943_8722AD56 
+X-CRM114-Status: UNSURE (   8.15  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -101,125 +110,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-gd25lq255e is similar with gd25lq256d, has 32MB of total capacity.
-It support Quad Page Program which mean programming the memory using
-four pins: IO0, IO1, IO2, and IO3.
+I have not been actively involved in SPI NOR development recently and
+would like to step down to focus on my current day-to-day work.
 
-Signed-off-by: Weimin Wu <wuweimin@huaqin.corp-partner.google.com>
+The subsystem remains in good hands with Pratyush and Michael.
 
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
-/ # cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-gd25lq256d
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
 
-/ # cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-gigadevice
-
-/ # cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c86019
-
-/ # xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450060102ff00060110300000ffc8000103900000ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520f3ffffffff0f44eb086b
-083b42bbfeffffffffff00ffffff44eb0c200f5210d800ffd439a5fe82e4
-1452ec6216337a757a7504bdd55c2906140008500001ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffff002050169df9
-77648fdbffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffff0effff215cdcff
-
-/ # sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-9f56d460181f7c0b6cc16a69554e3b587948b5f65323e976d0a4f1dbbcb93d94  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-
-/ # cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode	0x13
-  mode cycles	0
-  dummy cycles	0
- 1S-1S-1S (fast read)
-  opcode	0x0c
-  mode cycles	0
-  dummy cycles	8
- 1S-1S-2S
-  opcode	0x3c
-  mode cycles	0
-  dummy cycles	8
- 1S-2S-2S
-  opcode	0xbc
-  mode cycles	2
-  dummy cycles	2
- 1S-1S-4S
-  opcode	0x6c
-  mode cycles	0
-  dummy cycles	8
- 1S-4S-4S
-  opcode	0xec
-  mode cycles	2
-  dummy cycles	4
- 4S-4S-4S
-  opcode	0xec
-  mode cycles	2
-  dummy cycles	4
-
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode	0x12
- 1S-1S-4S
-  opcode	0x34
-
-/ # cat /sys/kernel/debug/spi-nor/spi0.0/params
-name		gd25lq256d
-id		c8 60 19 c8 60 19
-size		32.0 MiB
-write size	1
-page size	256
-address nbytes	4
-flags		HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_16BIT_SR | NO_READ_CR | SOFT_RESET
-
-opcodes
- read		0x0c
-  dummy cycles	8
- erase		0xdc
- program	0x12
- 8D extension	none
-
-protocols
- read		1S-1S-1S
- write		1S-1S-1S
- register	1S-1S-1S
-
-erase commands
- 21 (4.00 KiB) [1]
- 5c (32.0 KiB) [2]
- dc (64.0 KiB) [3]
- c7 (32.0 MiB)
-
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+----------
- 00000000-01ffffff |     [   3] | no
----
- drivers/mtd/spi-nor/gigadevice.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index ef1edd0ad..356a3f196 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -82,6 +82,12 @@ static const struct flash_info gigadevice_nor_parts[] = {
- 		.size = SZ_16M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x60, 0x19),
-+		.name = "gd25lq256d",
-+		.size = SZ_32M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_QUAD_PP,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 	},
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 46126ce2f968e4f9260263f1574ee29f5ff0de1c..c6ee223f6c2db2ed5595e19f5fabc098ff767b3a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -24197,7 +24197,6 @@ F:	drivers/clk/spear/
+ F:	drivers/pinctrl/spear/
  
+ SPI NOR SUBSYSTEM
+-M:	Tudor Ambarus <tudor.ambarus@linaro.org>
+ M:	Pratyush Yadav <pratyush@kernel.org>
+ M:	Michael Walle <mwalle@kernel.org>
+ L:	linux-mtd@lists.infradead.org
+
 -- 
-2.43.0
+2.53.0.335.g19a08e0c02-goog
 
 
 ______________________________________________________
