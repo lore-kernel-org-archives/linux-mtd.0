@@ -4,76 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37B54EEA871
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Feb 2026 01:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 845FBEF48DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Feb 2026 07:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Vm4i6W1wWURRpWNJLZtBuMsHQAcZyEPOzpVdET4ApnY=; b=pbtnPLjbHvUSSUqAl4beG6S0DV
-	6msR4oxkQ2q1P5gxIjQExBZEb+oe8WTASv0H69dIEvdHhUt/P92Q8Nd8BALcPJ2M8sZ7F2Zxdt1og
-	PD2cSCAOvyEGyYVAYbC3eJoExnWQkPnWF65JcwIfxeb3cSvZEdfTtvDOTyFQZ4Xx86fZCZw4Zp4Ia
-	J1zNKupVf/k7oKp7+PtE0F5FlQAU3P5X08mQD27kZ9gF5V/arORW59IpR3PKkpwt2LzH0Bmqy/F9S
-	8mSejgiHaVrMMSpwR4MeNlQTv4fJN2nBsBbP3exb6Du7JJjtNZ6GEoeqWGr0UEidWjTb4GpPPCww1
-	z6qJ/l4w==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MnSjWMdQXHZ07Ta59W0oloGuTRzAKUD3NqlC3toP5Ms=; b=Dq6hHUkBxCZhh1DdIovItkK1pI
+	7WvqlaqKr+fv9KQPRe9uMi7BdFNRCdiyjoYZZdkYWxhwyEh0pVwtbpaG6Dlw72RGWqLc9KR/1RbCF
+	ET//hN98WTI5svJIKHxuFJ50i05AXWiQNsJIBLcE8mW305gCZWt2oLfmNBhSOaRHF7r9Qa1wC04c1
+	yg/Dmr9ivfhHTKQ3OtQt8ih87cu8tJsluRZP+XklaviJMUoCEZoZCty1S9oongQGC5AO+uYvhZ19w
+	jivMtTflePi0jZBsAsNH1YuAd8r1eMuXrZ1umgqQlvXzhZgqlXp78sX7276gIIADTuRnjynv6yX0Y
+	0lmQSICg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqhnc-00000002oci-3N54;
-	Fri, 13 Feb 2026 01:16:48 +0000
-Received: from canpmsgout08.his.huawei.com ([113.46.200.223])
+	id 1vqna5-000000036II-3hwZ;
+	Fri, 13 Feb 2026 07:27:13 +0000
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqhnZ-00000002obD-0fUC
+	id 1vqna1-000000036Gp-22CJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Feb 2026 01:16:47 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=PDBtkcGgE2bTdLWKv0QUvjkQEEOWK7+mQz9j9Ab9Ceo=;
-	b=ZmbQ4olQIWAcEio7rudrEETQqIBhx+8NJizP1GUvF513q39jlhvogW1ZuT1f4ZTOh0nb7q27k
-	xVcZXRmR1PsNpmDyLwqG5hBFYhPrJxedPp5fhCKFBb+fz79umDcdDyk3keqXqiq8CrTZXPGqvfQ
-	ZWvbih2tjEGO+is74ey0u/U=
-Received: from mail.maildlp.com (unknown [172.19.163.163])
-	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4fBvJg6S4MzmV6v;
-	Fri, 13 Feb 2026 09:11:47 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2B4914048B;
-	Fri, 13 Feb 2026 09:16:28 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 13 Feb 2026 09:16:27 +0800
-Subject: Re: [BUG] UBIFS corruption on powerpc 32-bit targets
-To: Tomas Alvarez Vanoli <tomas.alvarez-vanoli@hitachienergy.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <DB9PR06MB784979B96C388174F81F9103C29EA@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <d0eb0572-e383-466e-7b4f-97e4a853b7c5@huawei.com>
- <DB9PR06MB7849BCA2FA49A7AEE3D03104C299A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <2e8dee20-842e-e946-87a0-9ff0190600ab@huawei.com>
- <DB9PR06MB7849E51C72D54F8109C55714C266A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <581cbf94-a48b-3670-27bf-3ecca07ddcb8@huawei.com>
- <DB9PR06MB78496EADCD11536AA66C22CFC265A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <8f65d531-b752-b058-4163-09a66fd9a7a1@huawei.com>
- <DB9PR06MB78496CB06BF8E60582CF40F7C262A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <abfe8c37-11ea-a76d-5aea-014b39fcdf2e@huawei.com>
- <d5c8fe2d-2b78-3459-d176-da15ae24d1ab@huawei.com>
- <DB9PR06MB7849403569974A214C101D77C263A@DB9PR06MB7849.eurprd06.prod.outlook.com>
- <01bac338-856c-599d-85d5-ed6485707310@huawei.com>
- <DB9PR06MB7849BA3437461A502A4C115BC260A@DB9PR06MB7849.eurprd06.prod.outlook.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <34046952-73cc-5a51-330c-ae841cf7cb95@huawei.com>
-Date: Fri, 13 Feb 2026 09:16:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Fri, 13 Feb 2026 07:27:11 +0000
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-483703e4b08so4219455e9.1
+        for <linux-mtd@lists.infradead.org>; Thu, 12 Feb 2026 23:27:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1770967627; x=1771572427; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8T5o+WgGfW/lBoBXgg51mLpZKPQ9oP0YY1GV2iyeVDY=;
+        b=KjfMZgh/fyMjNirGLUCpzhNIzQXNWtMUGsUM3ywZON6P6CJ/8H+PFFpXaVdXHNjdcs
+         t06O+IvWA81tkNsyxSO54PaOAaSvOou9GvRx3Ehz59Gex3U+sNpFiYdw5see6lCnfZbl
+         tFhKUmtpJt8wJhP0CLqlPiyDyNusNASHqeclgf7Ly3J+KDO7TOCthPhO5whm+LktX1eJ
+         DIQEJvbHvJILrKGOVxz6Bwa9Vt2p9JS9js/Nip+Oz0EneX5cKDSxkK17EE8xOfru+v80
+         5TdZi2yYvQAF+9Of7LT3vOGDDuEhWmHBL3pI1vmFTf8tESYxGC6/Kbw0BNES6pAEvIao
+         UmXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770967627; x=1771572427;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8T5o+WgGfW/lBoBXgg51mLpZKPQ9oP0YY1GV2iyeVDY=;
+        b=PuylMuY5a1BXGSEsXu5/t46BVKwYEGyHkpPkT/p5t9V9tkQVp+XwHc+8DfuR4FyMUP
+         tX8Wp2BfmrNzdkLsQrnE28H/ZYQOGxbu3Ep9R6vblZ+2EvXs/UOQSE+VQWBXXuJIUMib
+         ReZkZEXnJhyxlulY+l/XgMn/3z/RzHbNnHaWTEloF0eXe336rkWumXPxt9BqPHM28+gf
+         rROi8C5Jn3Z4Ok3MGRK++g5Br5A0WuZJihX8zo5T91KYTIxjdp7bPqrINrs19yVqdDKL
+         QLBkH4+z8rhb0XCcz0F6rhBrre5vOYDhSscTEaVm+bO4qzI6ij16WObL+C9UrPA0IEhU
+         pguQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUuWyC5wahZoB2P5GeZ+YbW906XMWJglgYhAb9Px/yrkElXlv2TwiHeyz7D4juuz9KAJdbThoXViBI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzoYXR0KSpdwsIM1aEUdvxWfRaQuRi3tXJx24QNgHg5Vzy7BoeX
+	nvOvTv30Ff5Rzpn0CdjFSMCxcb1Mz5gUgPcPWS6id5axGxwzquhv9V0EmLiQ5wl/Cc8=
+X-Gm-Gg: AZuq6aJrF6k6uxxDKEBLMiUzIaFV4h/4sJZvGLH7/fRPShLlr1FOyL8u7MWCP+pFF/O
+	tTsx+S6qFwxouP64Y1CDaBk66OKnfQvxc0qNFNnwurrzdRGnKu7lXxghU/wvrCIj0uuOi13NmKL
+	jGEBD9bXwRxaKIi9Sgw74YDPM6/DrLq9vCyZnkcse7HL5SPc/6MRs7ko/RqgedDTlDIrveQD2lP
+	W+GQ8jIURKLx+LOjM1hJxsnGZNx/0t2cMDfwWDiQ0ipGXLDvjCgjTFZMDQ8LGUZtarXIJHCcVmc
+	jHdQiJ/vfnIErTDTOlg6eB8LEyYWamlJFGHPe67uA8L8Z8IKDhH4DULRydGFk8d75TfUt8ytFH6
+	BxnwkQFJTD74lXHIMbO9MtASpH4l6z1rmKnyJ9FZlm6cp7OD1rP6dvoXCJHRCAeRAcckvXTcUbL
+	wPKQ2EGQMfT3ZU36KirYuDx093TfcKT6uOJuHitPQAspAJfkzQTjwqmc0PhilisEz/adAn1Z+C2
+	0OLRyxKhdbk428=
+X-Received: by 2002:a05:600c:34c1:b0:475:ddad:c3a9 with SMTP id 5b1f17b1804b1-48372fd3c43mr11757265e9.13.1770967626654;
+        Thu, 12 Feb 2026 23:27:06 -0800 (PST)
+Received: from localhost (p200300f65f20eb04101188b09ed9186a.dip0.t-ipconnect.de. [2003:f6:5f20:eb04:1011:88b0:9ed9:186a])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-48371a10cacsm17260195e9.4.2026.02.12.23.27.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Feb 2026 23:27:06 -0800 (PST)
+Date: Fri, 13 Feb 2026 08:27:05 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] RM: dts: imx: set #size-cells to 0 to align with
+ nand-controller.yaml
+Message-ID: <aY7SFS3LUC6rFwSB@monoceros>
+References: <20260211-imx25_nand_dtb_warnings-v1-0-2f06aaa1e3b9@nxp.com>
+ <20260211-imx25_nand_dtb_warnings-v1-2-2f06aaa1e3b9@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <DB9PR06MB7849BA3437461A502A4C115BC260A@DB9PR06MB7849.eurprd06.prod.outlook.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+In-Reply-To: <20260211-imx25_nand_dtb_warnings-v1-2-2f06aaa1e3b9@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260212_171645_855985_9F1EBE20 
-X-CRM114-Status: GOOD (  15.66  )
+X-CRM114-CacheID: sfid-20260212_232709_677499_E3720FED 
+X-CRM114-Status: GOOD (  10.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,36 +100,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============6620297311108995690=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNi8yLzEyIDIzOjQzLCBUb21hcyBBbHZhcmV6IFZhbm9saSDQtLXAOgo+PiBUaGUgJ3N5
-bmMnIHN5c2NhbGwgd2lsbCBjYWxsIHViaWZzX29ycGhhbl9lbmRfY29tbWl0IGlmIHRoZSBvcmhw
-YW4gbGlzdAo+PiBpcyBub3QgZW1wdHkuCj4+IHViaWZzX3N5bmNfZnMgLT4gdWJpZnNfcnVuX2Nv
-bW1pdCAtPiBkb19jb21taXQgLT4gdWJpZnNfb3JwaGFuX2VuZF9jb21taXQKPj4KPj4gSW4gdWJp
-ZnNfY3JlYXRlLCB0aGUgbmV3IGlub2RlIHdpbGwgYmUgYWRkZWQgaW50byBvcnBoYW4gbGlzdC4K
-Pj4gdWJpZnNfY3JlYXRlIC0+IHViaWZzX25ld19pbm9kZSAtPiB1Ymlmc19hZGRfb3JwaGFuCj4+
-Cj4+IFlvdSBjYW4gYWRkIHNvbWUgZGVidWcgbWVzc2FnZXMgdG8gY2hlY2sgd2hpY2ggY29uZGl0
-aW9uIGlzIGJyb2tlbi4KPiAKPiBBbHJpZ2h0LCBpdCB3YXMgc29tZSB1c2VyIGVycm9yIDopIEkg
-YW0gYWJsZSB0byByZXByb2R1Y2UgaXQgY29uc2lzdGVudGx5IG5vdy4KPiAKPiBXZSB3aWxsIGhh
-dmUgdG8gYW5hbHl6ZSB3aGF0IHRvIGRvIGluIHRoZSBlbmQgYWJvdXQgdGhpcywgYmVjYXVzZSB3
-ZSBoYXZlIG5vCj4gY29udHJvbCBvZiB3aGF0IHZlcnNpb25zIGFyZSBiZWluZyByYW4gaW4gd2hh
-dCBvcmRlciBpbiB0aGUgZmllbGQuIEJhY2t3YXJkcwo+IGNvbXBhdGliaWxpdHkgYW5kIGJlaW5n
-IGFibGUgdG8gc3dpdGNoIHZlcnNpb25zIGlzIGltcG9ydGFudC4gU2luY2UgdGhpcwo+IHZvbHVt
-ZSBkb2VzIG5vdCB1c2UgZW5jcnlwdGlvbiBhbmQgM2FmMmQzYThjNTZmZTdkYzI0ZjYwYzRkZjBh
-Yjg1YjdhYzk0MTkwMgo+IHNlZW1zIHRvIGJlIGZpeGluZyBhIGJ1ZyByZWxhdGVkIG9ubHkgdG8g
-ZW5jcnlwdGlvbiwgd2UgbWlnaHQganVzdCByZXZlcnQgdGhlCj4gY29tbWl0IGZvciB0aGUgYWZm
-ZWN0ZWQgYm9hcmRzLiBIb3BlZnVsbHkgdGhpcyB3aWxsIG5vdCBnZW5lcmF0ZSBvdGhlcgo+IHVu
-Zm9yc2VlbiBjb25zZWN1ZW5jZXMuCgpJZiB0aGUgeGF0dHIoc2VsaW51eCxlbmNyeXB0aW9uLHVz
-ZXJfeGF0dHIpIGlzIG5vdCBlbmFibGVkLCAKM2FmMmQzYThjNTZmZTdkYzI0ZjYwYzRkZjBhYjg1
-YjdhYzk0MTkwMiBjYW4gYmUgcmV2ZXJ0ZWQuIEJ1dCB0aGUgCnByb2JsZW0gbWF5IHN0aWxsIGhh
-cHBlbmQgaWYgYXBwbGljYXRpb24gbGlua3MgdGVtcGZpbGUuCj4gCj4gSSdsbCBzdWJtaXQgdGhl
-IGZpeGVzIGZvciBtdGQtdXRpbHMgdG9tb3Jyb3cuClRoYW5rcy4gSSdsbCB0YWtlIGEgd2Vlay1s
-b25nIHZhY2F0aW9uIHN0YXRydGluZyBmcm9tIDIuMTUuIFRoZXJlZm9yZSwgSSAKbWlnaHQgbm90
-IGJlIGFibGUgdG8gcmVzcG9uZCBpbiB0aW1lLgo+IAo+IFRoYW5rcyBmb3IgYWxsIHRoZSBoZWxw
-Cj4gQmVzdCBSZWdhcmRzLAo+IFRvbWFzLgo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+
+--===============6620297311108995690==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="suzgqi3scqpas5au"
+Content-Disposition: inline
+
+
+--suzgqi3scqpas5au
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 2/3] RM: dts: imx: set #size-cells to 0 to align with
+ nand-controller.yaml
+MIME-Version: 1.0
+
+On Wed, Feb 11, 2026 at 04:19:40PM -0500, Frank Li wrote:
+> Set #size-cells to 0 to align with nand-controller.yaml. Remove the
+> redundant empty clock-names property from the NFC node.
+>=20
+> Fix below CHECK_DTBS warning:
+> arch/arm/boot/dts/nxp/imx/imx25-karo-tx25.dtb: nand-controller@bb000000 (=
+fsl,imx25-nand): #size-cells: 0 was expected
+>         from schema $id: http://devicetree.org/schemas/mtd/nand-controlle=
+r.yam
+                                                                           =
+     ^
+Missing 'l' I guess -------------------------------------------------------=
+-----'
+
+Best regards
+Uwe
+
+--suzgqi3scqpas5au
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmmO0kYACgkQj4D7WH0S
+/k5AVgf/QsQPSAIdM1RxlXudv1+osYGz6GEEo592KE57oRkdUvtyYxJXlqICexVq
+CcrktfuQdhxHkTa+TGp6zt0D5ud0nzXjBYtGZVIhE6iKYiav5EiFArQ3wPcvnDQP
+3x1upQR/8SgvfyApCIlLo47oipzbM/RDXrq7oKBgQQlvfjTdDJWeEn/+DAMULR//
+7/32JHfGYcuRTzcn5CRi8QotO47K9uUcx3Hp96n78OcP2CgahlMpdlQTU3k4YDMZ
+Yn1AJ+Ip34Pnhwi6RKW3AtyTLTsSmsgtogie1n20MHuTG7FGGLFze6oP6AWaxmDl
+Ed8LGzeR90IPomEYk2RYoB/o4eurFg==
+=y1p4
+-----END PGP SIGNATURE-----
+
+--suzgqi3scqpas5au--
+
+
+--===============6620297311108995690==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6620297311108995690==--
+
