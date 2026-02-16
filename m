@@ -4,88 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE2E3E63F2A
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Feb 2026 07:05:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 189A4E63F3A
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Feb 2026 08:32:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Subject:From:Message-ID:
-	Cc:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2uLQcJPuVHGkoXwTbkyUV7NO3ZBaiBMAH8EqtWAXYtU=; b=TyIaHiKH6pM17o
-	k3n633ciim6birQbPdSlWfYROnOD5fDLEozU/fXvWviRqbAv4qBYmUwISdVsBzTCVvSj4bq11hfak
-	0MlUUnGaYkIb2+aKyH5IE3Pc+5iavK4xYYvXrOP8Zywqj3BqI1Z96cSGCLJ6cXwnarCcFpC4FmeaQ
-	U8b37vtJByWHYpy3H0zT48HFLdBbg6Kb7fHtViCWV4m+q7djnhr1jUuKZqzKlAiPO9mkcgH3XIE0Y
-	USGETa7Bh9GmQZR+a7w43QTDH6YAMTo62PuFQNJbNvVRBocAeBuWuURH2oRdmVjZ0Ik9eZ4ocM4Ne
-	5uNtY3pYwcJ0diJi6CBQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=l+LhMOD5QmleY6C9ZonZDp57QlQDOnlDqK+C64L86PQ=; b=LwEsaGXVcn8xDBRcEiFLKlxozv
+	GxnN3omGVIPm6RWK3ka5HniATS/0lLBfvBdsXBoXR0ObfX2hnXSJa3IExZtosJljsMBui6GWz8O4s
+	HORaNxU60T2FuHPXBRJw+SC9E9/r8K30URIO+m3PJQoNNPpgnUgNSHvslg/ngRANzAOFn0odnVsYO
+	8dSglhY2kmUwEoZDkp8Xda4F/57HuyT4OXlAyaOEnfPbanQFdYCdM9OvHqtUfu4vIvS5g9rgUPJnE
+	S5jboOZv09SSik02wwZvWvjzB8sy/Q14evgsY0KWXVGZBb58d7EdfXYuqeDa/uMpg4pbdurJusDDk
+	PObxSH7A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrsfe-0000000641E-29gl;
-	Mon, 16 Feb 2026 07:05:26 +0000
-Received: from fhigh-a2-smtp.messagingengine.com ([103.168.172.153])
+	id 1vru1f-000000069aQ-3zt8;
+	Mon, 16 Feb 2026 08:32:15 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrsfa-0000000640p-3Xqx
+	id 1vru1d-000000069ZB-1Rvt
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Feb 2026 07:05:25 +0000
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 6445C14000B2;
-	Mon, 16 Feb 2026 02:05:17 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Mon, 16 Feb 2026 02:05:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1771225517; x=1771311917; bh=SqSMnR1aNHeLFEbaIrIJdQySfKhX
-	CHZWc8Vomx9GKhE=; b=aeS4tgojApQXR2hzTYJTvi/eh5mPAyi0sdjCOrRaeEYC
-	CmohH+mqxYzTxws4fv6JtyXD98tDnz3gBwS3gSHUHiTPTLLSU1rdvYlNgxe5+yZE
-	xn+1mx4jS/Ac30NAhiZZ2DhnAN/99ApOa/zjtqCEkJGgFJbGsUo6JhtpapBhBaHr
-	gpKBFNTWEV+MtNge3KZMJ4gO8syPRLxB058XSnkabLCQ49rD/TlLxM1q1ko6SEA+
-	MDJ223ZbMwT7o7LPd9GBX4TL6XrAxtVhMkacmifj99CSvhu96A4c/+Fi0gNnsfXY
-	SFMxjrPiKTnE3WsutsP+OSqAkJdbmXAdYoGQ+of4aw==
-X-ME-Sender: <xms:rMGSafu06X_84LrxxZa5HPWSYAAf82VRziHSiAnwbyPrE0gGNQ1fFw>
-    <xme:rMGSaTBxMyMhkEPl-2bi64wIDxL8ZJmc-SfUm8tkCigLnelpkYWSi85c7TzwSL38Y
-    AIQ7qBuuD8Z-E_XE0PXYJ9OJ4TG60jIoOE90QHi7c5VVNeGJ_i06L8>
-X-ME-Received: <xmr:rMGSaWYm9rPmoQ-4qrRoZFxClK-O9TrytPapaH0PAsh-PvHqW-shO9OSoytkT5WDPio__C3LzzBVPRzoygpEvtdd94nk-JVXA0s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvudeivdefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcu
-    oehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    ekffejgfehheehkeekffffveekteevvddvveelhffgffetteefgfeutdehleetheenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdp
-    nhgspghrtghpthhtohepkedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhhiqh
-    huvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdprhgtphhtthhopehrihgthhgr
-    rhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtg
-    hpthhtohepkhgvvghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsthgrsghlvges
-    vhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhhrghruggvnh
-    hinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhht
-    ugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqd
-    hkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:rMGSaeWy4q1bRth2zeRvN7PhjhaNZeEFtDfXBmts5lsf8Q39VRBwdw>
-    <xmx:rMGSaVMZ3LjNHQ_ZaV0lSrmopi-jfDeyZnBFB3i6de38won0740bnA>
-    <xmx:rMGSaYYQndhKMHGWEULjbW-SyiiQ8vWEufJgLPkjV2BBOvcYmFrhnA>
-    <xmx:rMGSaU9pR5BptDKGzFeE4Fdc3OveaPopGEBXQpEyB6rsL8EA_DnMoQ>
-    <xmx:rcGSaZg5QLDK6SeihI8K5VyTZIwYmT7GmkAPYxnb8XerNDJ_31VJSmw3>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 16 Feb 2026 02:05:13 -0500 (EST)
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-    Richard Weinberger <richard@nod.at>,
-    Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Kees Cook <kees@kernel.org>,
-    stable@vger.kernel.org,
-    linux-hardening@vger.kernel.org,
-    linux-mtd@lists.infradead.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <e11761ba31af4fd1d310f40f9b6a1753a0227025.1771225290.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v2] mtd: Avoid boot crash in RedBoot partition table parser
-Date: Mon, 16 Feb 2026 18:01:30 +1100
+	Mon, 16 Feb 2026 08:32:14 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 2D2CD40ACB;
+	Mon, 16 Feb 2026 08:32:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896D3C19424;
+	Mon, 16 Feb 2026 08:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771230731;
+	bh=9X0nEUB5rzAxyhqL1WMI5u45dpRCptwZKGM/Zcqyc7o=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=q87OTSS/XYOHbIdWENqgK+rSteugWjc4IxbyAm57ETuFi8X5Jp3dZ471risRCHDo1
+	 8xifUwz9o+r38SkgRXKAy0VzjbxXjjSwlH6lguux5PUzCsZYKiAXuuYGTdvCH/Sff3
+	 +akvvoObjxgfjUeiks2bz+QVvFvbM4i442GTefdqJg8umZpW9x8cM3DGVCVQaXVfMQ
+	 bl4w3dMMqhGWrYoS9UBvlZPb3JLvNyeOo5+C+/whHjVaAu+eG+qdKnUSvL4mfmcS4g
+	 TDlGKmb97fCYqTsfQGN1LuT7rmNKf3oQa/Hj8RimwxBz6/bT7ZbcYmLXMKR3VZknj9
+	 HRlieUxdiWZpQ==
+Mime-Version: 1.0
+Date: Mon, 16 Feb 2026 09:32:06 +0100
+Message-Id: <DGG8W2SIQXMZ.1ZQ6TN7S2LKTW@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: add support for Fudan Microelectronics
+ FM25Q256
+Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
+ <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Cole Leavitt" <cole@unwrap.rs>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>
+X-Mailer: aerc 0.20.0
+References: <20260214062002.17862-1-cole@unwrap.rs>
+In-Reply-To: <20260214062002.17862-1-cole@unwrap.rs>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260215_230523_133724_14013315 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20260216_003213_428023_C3E31D25 
+X-CRM114-Status: GOOD (  21.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,63 +70,156 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1119381945495440800=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Given CONFIG_FORTIFY_SOURCE=y and a recent compiler,
-commit 439a1bcac648 ("fortify: Use __builtin_dynamic_object_size() when
-available") produces the warning below and an oops.
+--===============1119381945495440800==
+Content-Type: multipart/signed;
+ boundary=d30bffce1857dd382e1f939adca20263e3ea0f0f57a14c26e18846cf0a7b;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-    Searching for RedBoot partition table in 50000000.flash at offset 0x7e0000
-    ------------[ cut here ]------------
-    WARNING: lib/string_helpers.c:1035 at 0xc029e04c, CPU#0: swapper/0/1
-    memcmp: detected buffer overflow: 15 byte read of buffer size 14
-    Modules linked in:
-    CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted 6.19.0 #1 NONE
+--d30bffce1857dd382e1f939adca20263e3ea0f0f57a14c26e18846cf0a7b
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-As Kees said, "'names' is pointing to the final 'namelen' many bytes
-of the allocation ... 'namelen' could be basically any length at all.
-This fortify warning looks legit to me -- this code used to be reading
-beyond the end of the allocation."
+Hi,
 
-Since the size of the dynamic allocation is calculated with strlen()
-we can use strcmp() instead of memcmp() and remain within bounds.
+On Sat Feb 14, 2026 at 7:20 AM CET, Cole Leavitt wrote:
+> Add support for the Fudan Microelectronics FM25Q256 (JEDEC ID f7 f0 30),
 
-Cc: Kees Cook <kees@kernel.org>
-Cc: stable@vger.kernel.org
-Cc: linux-hardening@vger.kernel.org
-Link: https://lore.kernel.org/all/202602151911.AD092DFFCD@keescook/
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Suggested-by: Kees Cook <kees@kernel.org>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- drivers/mtd/parsers/redboot.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+So F7 (without continuation codes) is ZMD. Fudan Micro is 7F 7F 7F
+7F 7F 7F 7F A1 or if you (wrongly) ignore the continuation codes A1.
 
-diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
-index 3b55b676ca6b..c06ba7a2a34b 100644
---- a/drivers/mtd/parsers/redboot.c
-+++ b/drivers/mtd/parsers/redboot.c
-@@ -270,9 +270,9 @@ static int parse_redboot_partitions(struct mtd_info *master,
- 
- 		strcpy(names, fl->img->name);
- #ifdef CONFIG_MTD_REDBOOT_PARTS_READONLY
--		if (!memcmp(names, "RedBoot", 8) ||
--		    !memcmp(names, "RedBoot config", 15) ||
--		    !memcmp(names, "FIS directory", 14)) {
-+		if (!strcmp(names, "RedBoot") ||
-+		    !strcmp(names, "RedBoot config") ||
-+		    !strcmp(names, "FIS directory")) {
- 			parts[i].mask_flags = MTD_WRITEABLE;
- 		}
- #endif
--- 
-2.49.1
+That's also what's described in the datasheet, mentioned below. Do
+you really have a Fudan Micro flash?
 
+> a 256Mbit (32MB) SPI NOR flash chip. This chip is found on Lenovo
+> ThinkPad P16 Gen 3 (Arrow Lake-S) platforms as the SPI flash backing
+> the UEFI firmware.
+>
+> The chip supports 4K sector erase, dual read, and quad read modes.
+>
+> Without this patch, the kernel's spi-nor driver reports:
+>   spi-nor spi0.0: unrecognized JEDEC id bytes: f7 f0 30
+
+Do you use the latest kernel? Doesn't the flash provide SFDP? I've
+looked at [1] (there is none for the 256Mbit variant) and that one
+supports SFDP.
+
+-michael
+
+[1] https://eng.fmsh.com/nvm/FM25Q128_ds_eng.pdf
+
+> and refuses to create an MTD device, preventing userspace tools from
+> accessing the flash.
+>
+> Signed-off-by: Cole Leavitt <cole@unwrap.rs>
+> ---
+>  drivers/mtd/spi-nor/Makefile |  1 +
+>  drivers/mtd/spi-nor/core.c   |  1 +
+>  drivers/mtd/spi-nor/core.h   |  1 +
+>  drivers/mtd/spi-nor/fudan.c  | 25 +++++++++++++++++++++++++
+>  4 files changed, 28 insertions(+)
+>  create mode 100644 drivers/mtd/spi-nor/fudan.c
+>
+> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> index 5dd9c35f6b6f..2c8b9b3e08bb 100644
+> --- a/drivers/mtd/spi-nor/Makefile
+> +++ b/drivers/mtd/spi-nor/Makefile
+> @@ -5,6 +5,7 @@ spi-nor-objs			+=3D atmel.o
+>  spi-nor-objs			+=3D eon.o
+>  spi-nor-objs			+=3D esmt.o
+>  spi-nor-objs			+=3D everspin.o
+> +spi-nor-objs			+=3D fudan.o
+>  spi-nor-objs			+=3D gigadevice.o
+>  spi-nor-objs			+=3D intel.o
+>  spi-nor-objs			+=3D issi.o
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index d3f8a78efd3b..395ff5c39883 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1944,6 +1944,7 @@ static const struct spi_nor_manufacturer *manufactu=
+rers[] =3D {
+>  	&spi_nor_eon,
+>  	&spi_nor_esmt,
+>  	&spi_nor_everspin,
+> +	&spi_nor_fudan,
+>  	&spi_nor_gigadevice,
+>  	&spi_nor_intel,
+>  	&spi_nor_issi,
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 16b382d4f04f..be63273677c8 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -594,6 +594,7 @@ extern const struct spi_nor_manufacturer spi_nor_atme=
+l;
+>  extern const struct spi_nor_manufacturer spi_nor_eon;
+>  extern const struct spi_nor_manufacturer spi_nor_esmt;
+>  extern const struct spi_nor_manufacturer spi_nor_everspin;
+> +extern const struct spi_nor_manufacturer spi_nor_fudan;
+>  extern const struct spi_nor_manufacturer spi_nor_gigadevice;
+>  extern const struct spi_nor_manufacturer spi_nor_intel;
+>  extern const struct spi_nor_manufacturer spi_nor_issi;
+> diff --git a/drivers/mtd/spi-nor/fudan.c b/drivers/mtd/spi-nor/fudan.c
+> new file mode 100644
+> index 000000000000..e9a4d3ed3cd0
+> --- /dev/null
+> +++ b/drivers/mtd/spi-nor/fudan.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Fudan Microelectronics SPI NOR flash support.
+> + *
+> + * JEDEC manufacturer ID 0xf7.
+> + */
+> +
+> +#include <linux/mtd/spi-nor.h>
+> +
+> +#include "core.h"
+> +
+> +static const struct flash_info fudan_nor_parts[] =3D {
+> +	{
+> +		.id =3D SNOR_ID(0xf7, 0xf0, 0x30),
+> +		.name =3D "fm25q256",
+> +		.size =3D SZ_32M,
+> +		.no_sfdp_flags =3D SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+> +	},
+> +};
+> +
+> +const struct spi_nor_manufacturer spi_nor_fudan =3D {
+> +	.name =3D "fudan",
+> +	.parts =3D fudan_nor_parts,
+> +	.nparts =3D ARRAY_SIZE(fudan_nor_parts),
+> +};
+>
+> base-commit: 2687c848e57820651b9f69d30c4710f4219f7dbf
+
+
+--d30bffce1857dd382e1f939adca20263e3ea0f0f57a14c26e18846cf0a7b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaZLWBxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gwWQGAzWA6cwG8VFRs6lHDqFdctR07APzEYSqT
+rgFEGXVEnoFoJ3CfhMAVq/X3dwR/L3ZSAYCTdC5TCEWbl1G0+wdsNP6liwANATHg
+fYl136IXTmbyAK+YaCnDVMzFzI/vleyhM2I=
+=c5v/
+-----END PGP SIGNATURE-----
+
+--d30bffce1857dd382e1f939adca20263e3ea0f0f57a14c26e18846cf0a7b--
+
+
+--===============1119381945495440800==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1119381945495440800==--
+
