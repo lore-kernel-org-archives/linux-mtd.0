@@ -4,59 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F74FE63F25
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Feb 2026 03:48:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE2E3E63F2A
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Feb 2026 07:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ECnFu2AWSi/0CXqLix/XZsuTO4JCrYtR9xXEE81ou0c=; b=n70KeoMlZ7deoA
-	XNZuF4uFhafTIGvii0yrLiQcGZw7IWCfP/YU1YCbEQNvobOp9GmGDg8g75sf4wd8cTKnwKl29rDGL
-	eQ27rpt46qc8J3OOWwtI824KzNStdcmpxR6NaTNQMCt5S35H6DUen2pU3Q1iknQuIrtSHDqq2IN0B
-	jVqcoCQleQdvW5rYIRKDLaV8IRbB8A2FaSkN/elEYtLYVdfwlWZS5jk0SLb3Pa1oBYWiz7RvSy7Gp
-	O2GtXziWqg/OQuw25dL1rR9/S5Q1iQI0gdHgCZORYO8cBF1kd3YwiGUsa0d+zkYgKUGIS55yVosvm
-	/aU1c0UR501D19c2e8kw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Subject:From:Message-ID:
+	Cc:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2uLQcJPuVHGkoXwTbkyUV7NO3ZBaiBMAH8EqtWAXYtU=; b=TyIaHiKH6pM17o
+	k3n633ciim6birQbPdSlWfYROnOD5fDLEozU/fXvWviRqbAv4qBYmUwISdVsBzTCVvSj4bq11hfak
+	0MlUUnGaYkIb2+aKyH5IE3Pc+5iavK4xYYvXrOP8Zywqj3BqI1Z96cSGCLJ6cXwnarCcFpC4FmeaQ
+	U8b37vtJByWHYpy3H0zT48HFLdBbg6Kb7fHtViCWV4m+q7djnhr1jUuKZqzKlAiPO9mkcgH3XIE0Y
+	USGETa7Bh9GmQZR+a7w43QTDH6YAMTo62PuFQNJbNvVRBocAeBuWuURH2oRdmVjZ0Ik9eZ4ocM4Ne
+	5uNtY3pYwcJ0diJi6CBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrpan-00000005v2J-23qD;
-	Mon, 16 Feb 2026 03:48:13 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vrsfe-0000000641E-29gl;
+	Mon, 16 Feb 2026 07:05:26 +0000
+Received: from fhigh-a2-smtp.messagingengine.com ([103.168.172.153])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrpak-00000005v2D-0a6R
+	id 1vrsfa-0000000640p-3Xqx
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Feb 2026 03:48:10 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 206916013F;
-	Mon, 16 Feb 2026 03:48:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5B08C116C6;
-	Mon, 16 Feb 2026 03:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771213688;
-	bh=/NPRv+JQITdsPcw91sGKoR3MwuItH/IfrV7CAXxvdLY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VL3XD3fbyw22MhDDqOFJdA+5mYO6/roW15CItSAIEQLzhRtQfPbWE7ul+2/9BjBL7
-	 Ww9lnvmAgWCjAv8G1Oar+k8JAyRBS5g+Wd20y3uPKWkBK4ZaYeEjpNNmh15TSg5vhy
-	 p4YXKpHsFbMfPadGW3yY6kHZMG9J/nCdCsN10TBeMaGSAvc2G8CsH5pfJCO68XJSJk
-	 Iu7fP+5f0SUWSj28PrWyoR+IPnb+4WEjMa9R74QByK64ZoTxsMjytkuDeOIq9xGNql
-	 WB/aO3tT4pddNr7qYP9svlNInez/SxOOfFlANHtOsei1dzdJKntdyVsZyH2OtbrKEy
-	 Yyr/hx/6vlEwA==
-Date: Sun, 15 Feb 2026 19:48:08 -0800
-From: Kees Cook <kees@kernel.org>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Miguel Ojeda <ojeda@kernel.org>, stable@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: Avoid boot crash in RedBoot partition table parser
-Message-ID: <202602151911.AD092DFFCD@keescook>
-References: <92af570970aadee773f2b0b18179efef0f34be93.1771114891.git.fthain@linux-m68k.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <92af570970aadee773f2b0b18179efef0f34be93.1771114891.git.fthain@linux-m68k.org>
+	Mon, 16 Feb 2026 07:05:25 +0000
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 6445C14000B2;
+	Mon, 16 Feb 2026 02:05:17 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Mon, 16 Feb 2026 02:05:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1771225517; x=1771311917; bh=SqSMnR1aNHeLFEbaIrIJdQySfKhX
+	CHZWc8Vomx9GKhE=; b=aeS4tgojApQXR2hzTYJTvi/eh5mPAyi0sdjCOrRaeEYC
+	CmohH+mqxYzTxws4fv6JtyXD98tDnz3gBwS3gSHUHiTPTLLSU1rdvYlNgxe5+yZE
+	xn+1mx4jS/Ac30NAhiZZ2DhnAN/99ApOa/zjtqCEkJGgFJbGsUo6JhtpapBhBaHr
+	gpKBFNTWEV+MtNge3KZMJ4gO8syPRLxB058XSnkabLCQ49rD/TlLxM1q1ko6SEA+
+	MDJ223ZbMwT7o7LPd9GBX4TL6XrAxtVhMkacmifj99CSvhu96A4c/+Fi0gNnsfXY
+	SFMxjrPiKTnE3WsutsP+OSqAkJdbmXAdYoGQ+of4aw==
+X-ME-Sender: <xms:rMGSafu06X_84LrxxZa5HPWSYAAf82VRziHSiAnwbyPrE0gGNQ1fFw>
+    <xme:rMGSaTBxMyMhkEPl-2bi64wIDxL8ZJmc-SfUm8tkCigLnelpkYWSi85c7TzwSL38Y
+    AIQ7qBuuD8Z-E_XE0PXYJ9OJ4TG60jIoOE90QHi7c5VVNeGJ_i06L8>
+X-ME-Received: <xmr:rMGSaWYm9rPmoQ-4qrRoZFxClK-O9TrytPapaH0PAsh-PvHqW-shO9OSoytkT5WDPio__C3LzzBVPRzoygpEvtdd94nk-JVXA0s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvudeivdefucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcu
+    oehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpe
+    ekffejgfehheehkeekffffveekteevvddvveelhffgffetteefgfeutdehleetheenucff
+    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdp
+    nhgspghrtghpthhtohepkedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhhiqh
+    huvghlrdhrrgihnhgrlhessghoohhtlhhinhdrtghomhdprhgtphhtthhopehrihgthhgr
+    rhgusehnohgurdgrthdprhgtphhtthhopehvihhgnhgvshhhrhesthhirdgtohhmpdhrtg
+    hpthhtohepkhgvvghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsthgrsghlvges
+    vhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhhrghruggvnh
+    hinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhht
+    ugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqd
+    hkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:rMGSaeWy4q1bRth2zeRvN7PhjhaNZeEFtDfXBmts5lsf8Q39VRBwdw>
+    <xmx:rMGSaVMZ3LjNHQ_ZaV0lSrmopi-jfDeyZnBFB3i6de38won0740bnA>
+    <xmx:rMGSaYYQndhKMHGWEULjbW-SyiiQ8vWEufJgLPkjV2BBOvcYmFrhnA>
+    <xmx:rMGSaU9pR5BptDKGzFeE4Fdc3OveaPopGEBXQpEyB6rsL8EA_DnMoQ>
+    <xmx:rcGSaZg5QLDK6SeihI8K5VyTZIwYmT7GmkAPYxnb8XerNDJ_31VJSmw3>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 16 Feb 2026 02:05:13 -0500 (EST)
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+    Richard Weinberger <richard@nod.at>,
+    Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Kees Cook <kees@kernel.org>,
+    stable@vger.kernel.org,
+    linux-hardening@vger.kernel.org,
+    linux-mtd@lists.infradead.org,
+    linux-kernel@vger.kernel.org
+Message-ID: <e11761ba31af4fd1d310f40f9b6a1753a0227025.1771225290.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v2] mtd: Avoid boot crash in RedBoot partition table parser
+Date: Mon, 16 Feb 2026 18:01:30 +1100
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260215_230523_133724_14013315 
+X-CRM114-Status: GOOD (  11.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,48 +97,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Feb 15, 2026 at 11:21:31AM +1100, Finn Thain wrote:
->     memcmp: detected buffer overflow: 15 byte read of buffer size 14
-> [...]
-> -		    !memcmp(names, "RedBoot config", 15) ||
+Given CONFIG_FORTIFY_SOURCE=y and a recent compiler,
+commit 439a1bcac648 ("fortify: Use __builtin_dynamic_object_size() when
+available") produces the warning below and an oops.
 
-The warning is saying that "names" is detected to be 14 bytes in size. It
-is allocated here, and nulllen can be ignored (it is fixed size, either 0
-or sizeof(nullstring), and skipped over):
+    Searching for RedBoot partition table in 50000000.flash at offset 0x7e0000
+    ------------[ cut here ]------------
+    WARNING: lib/string_helpers.c:1035 at 0xc029e04c, CPU#0: swapper/0/1
+    memcmp: detected buffer overflow: 15 byte read of buffer size 14
+    Modules linked in:
+    CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted 6.19.0 #1 NONE
 
-        parts = kzalloc(sizeof(*parts) * nrparts + nulllen + namelen, GFP_KERNEL);
-	...
-        nullname = (char *)&parts[nrparts];
-	...
-        names = nullname + nulllen;
+As Kees said, "'names' is pointing to the final 'namelen' many bytes
+of the allocation ... 'namelen' could be basically any length at all.
+This fortify warning looks legit to me -- this code used to be reading
+beyond the end of the allocation."
 
-so "names" is pointing to the final "namelen" many bytes of the
-allocation. Calculating "namelen" happens via an earlier for loop:
+Since the size of the dynamic allocation is calculated with strlen()
+we can use strcmp() instead of memcmp() and remain within bounds.
 
-        buf = vmalloc(master->erasesize);
-	...
-        ret = mtd_read(master, offset, master->erasesize, &retlen,
-                       (void *)buf);
-	...
-        numslots = (master->erasesize / sizeof(struct fis_image_desc));
-	...
-        for (i = 0; i < numslots; i++) {
-		...
-                namelen += strlen(buf[i].name) + 1;
-
-So namelen could be basically any length at all. This fortify warning
-looks legit to me -- this code used to be reading beyond the end of
-the allocation.
-
-Your patch looks technically correct, but why not just use strcmp? Both
-arguments are NUL-terminated. The memcmp() calls were all including the
-NUL byte, so they're effectively doing strcmp except that they weren't
-stopping at the first NUL byte. So probably just better to do:
+Cc: Kees Cook <kees@kernel.org>
+Cc: stable@vger.kernel.org
+Cc: linux-hardening@vger.kernel.org
+Link: https://lore.kernel.org/all/202602151911.AD092DFFCD@keescook/
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Suggested-by: Kees Cook <kees@kernel.org>
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+ drivers/mtd/parsers/redboot.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
 index 3b55b676ca6b..c06ba7a2a34b 100644
@@ -128,10 +150,9 @@ index 3b55b676ca6b..c06ba7a2a34b 100644
  			parts[i].mask_flags = MTD_WRITEABLE;
  		}
  #endif
-
-
 -- 
-Kees Cook
+2.49.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
