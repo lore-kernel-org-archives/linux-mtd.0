@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 545CBE9A04A
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Feb 2026 21:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39367E9A03E
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Feb 2026 22:15:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9ySFBiPRojDxDsfTeedoN0gSLzfqWfYfmMeMq4jsqWY=; b=bO4N4HVowVJ4yI
-	zL0/vlRI+bBJAu0K5GqeY4KYUjmVIWTodIeQw48Y21+gWWHXd4qsPeFLnZVmekwbQ9I9QCDmClnch
-	Pt0FIykpVQGw94jYEPHVdRCI+EJf3bFlro1UJ/e4pI8qwFMmph4gkYf92hVWsdyo/ItCLiOoOsGak
-	NR+2wJdDG5n4hQgi5h3G5AHVs7FN3iQwZjvW6X8rpCtCjaax3l5+im2rT4ZSCO9r+mqJOVgH5nldg
-	f0gR/x7fjdZotpvzRNQilYfjTquWBzCFeQE8v4u92TCyASPTROrczwMxcDMgDEFYsks8T2ysms/vJ
-	Wzts3KzIsSkf3Jp9YaBw==;
+	List-Owner; bh=dYXmqk3titLvo854a/tDm/FcIffAHbYZkIM/EN5ltkQ=; b=3Huenh7gmNC96O
+	D5svIzwjWkKJXyMtg9Pf/8hnyXutW1YX0eoy3674F/6MkXuntXt2L+b+x9IOTW/udehtN4rZZC1a9
+	VZC5uxMoXGCWMUy/TgzqV3lE6cBKueRDQ36ie/TonkLHm5j3NzyYDo8jAARG8O17zOM/szpooVGMA
+	VI9XevNCSLpImVv2QeG+e4uzp+LMLbdj9dyMuXYZTjbs6epfujDj0nbHq7kRBD0uRMEdDmxIEKK3j
+	f59wsuLt20tZi7yxPZS4xabZIfXHMH4pSSXpKqdB7zVxt+yKHiHSJx6iR9AJmyp6AMRDkaGgKsFZV
+	B9q3q+CmwEyS9Hpmr33A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsSPF-00000008tGA-45UZ;
-	Tue, 17 Feb 2026 21:14:53 +0000
-Received: from mail-qv1-xf2f.google.com ([2607:f8b0:4864:20::f2f])
+	id 1vsTLO-00000008yCk-35mQ;
+	Tue, 17 Feb 2026 22:14:58 +0000
+Received: from mail-qv1-xf34.google.com ([2607:f8b0:4864:20::f34])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsSPC-00000008tFE-3ZI3
+	id 1vsTLM-00000008yCN-2O9I
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Feb 2026 21:14:52 +0000
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-89473dca8aaso60793666d6.0
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Feb 2026 13:14:50 -0800 (PST)
+	Tue, 17 Feb 2026 22:14:57 +0000
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-8954c9daaeaso65686306d6.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Feb 2026 14:14:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771362889; x=1771967689; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1771366495; x=1771971295; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lGuWbmaSOlBrmN/0lXpNFGjgLAKCjErByEWK0/R4iRI=;
-        b=I9aY3RZa5kREZg+BowNnUAz0YhTErCvui7z7EWS6ymkMjF6r6fJ8Yd+JFjF/uETnqO
-         VmDoyltCV3HYzehgp+1WA5A8YyG9wKpI3v4o87bnvGjjtMTKcqfrGM+3VwJ1iE7a1NCq
-         EJA79vXCATcfbNylsOOcYxvmTpXHUI2QDL/n6gi3NzhTWh5YzsATHzMnDCAP2+nyOuGI
-         gkv+2XHBOdhV5Hd9oy0zL4MTPyspcOB9Xy8SlxHVTQuSGUxiTX8vkJL2qo1mFJVnSZws
-         bxcVzYAls+wFdVJ4LSaS2ub7xAXS/WgXCCoNXIU7VyPLNNlA1jdyR05lIaCAYUgczdMI
-         wIkw==
+        bh=ex1+/gblJkmklt0qn4fCR0hlDJHh6uIwSzRJi9ZYNVA=;
+        b=Bu1rCDIg0l8xVi4cALTt4vHoP63+ZvpeFTXqloIJ+Og3l72PVo0D9nvwlBY7vR4HNq
+         uT3w9k20trARECwteUa/5baxUALK4YzsVqWgFmQsTER8NF79QkfTkCrEQWabYDmmM1Kt
+         4grneWDgh10vrVMeTzldeD3OUYnVXRcArxxYjDDiV7eDyPc71UbwFO6r2e8a0g7NUCch
+         72WH1kxjqYB7/f32cZUB1akCrp8dJRBEvX34KNUiqZa+lL43NlRqadTi3OSrjgpG8aO2
+         eHJD37fIW/+pdrV9hnrsIM3F8z9W3t11JvhTYqWSBffQns9n+lur3JZ7ZX1Ke3byXd45
+         ISEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771362889; x=1771967689;
+        d=1e100.net; s=20230601; t=1771366495; x=1771971295;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lGuWbmaSOlBrmN/0lXpNFGjgLAKCjErByEWK0/R4iRI=;
-        b=r1AxCC1ijaK1xy/ABlqKenKEmfq2R5A/hOx3woXvIPQIyITN8nMZcXqFAZgPfn4K8R
-         yGRWdt4sVhyTrqNzUKQoOqQkY2gQeeP+GjdhlabFWLSpdKs6ko/qux0CljYe30j1XWcK
-         AcmRCxytM/wHYU6WRB68BIYqvxjn/3yQSq2ygfuOOm5Idz03kgR2YmkwKBj9Qd1vGNeN
-         /I3zKYrw7v607uum/540hGxfcTV8fReD+EExtOlFnDBO4ktjtk2Qdc3vRo0AQLKKIwKM
-         DCXsqFVauFqKL2YZH9Xho1OuYhQOtNtj47AfgUkoyLysPXTJeO8zHS75vRAKSi4ddUqi
-         ///w==
-X-Gm-Message-State: AOJu0YwOfVVvRXUP/Skl8jayja9S0txSk3R0y1yKAtmtTh8UsnB3jsZ6
-	iMq9b5hpQTMTpUIqZxuOcF4+L4Jm6Uyn3CVeTPEc78zkqh7BX7TpCVycQyZ1C5I0
-X-Gm-Gg: AZuq6aLJxAFwH/75tkT2H1ONlwM/9QYkTr1spGci9CrP38uXHEwMCqUBbmxLwr2B8ud
-	PZrKYnQouB2uSwSf05IPEVFy5/dE21s9OUZxS4TfKiKDipCKyy3keVozHSkdxen/4QV2u7AQ/re
-	v6FnTrwJ1/gjwbiSNYv+LUBM402r3COH5tnrW6jpVxnoMysJZN/v9O8UXsGRhIYezJuOBQ1i9JH
-	rOUp4otqBQHXf4YhQ+fsvOZgTIk2FRkaM++EDNx9qEwr46Nt9ITEx7Di4YD3t6huBfUolUQZb8K
-	2xig8ruAXlzYpMa4RdONL0t+gjc9/fLaNF0X+NFbfyJKpzTPUtnQ58L49QD00MR/Vsib/+Kn/+o
-	9qpq1fLY28PPpBChWKtkZxIFzocCyCJLcrQbOjrasfxoPs/wHQhIpqPKm3qNNiPn1pLGlHiZIJ2
-	JII9vedn3/jqEsWLuZu3kCKNPehhimsLosqa7grhtoqCM3RzUY4ClgCARHFweLWCj0+opDH72A1
-	zOkNJI=
-X-Received: by 2002:a05:6214:da1:b0:888:89fd:a727 with SMTP id 6a1803df08f44-897404b6a0bmr191256456d6.49.1771362888953;
-        Tue, 17 Feb 2026 13:14:48 -0800 (PST)
+        bh=ex1+/gblJkmklt0qn4fCR0hlDJHh6uIwSzRJi9ZYNVA=;
+        b=K1D+f5IcGPyS8CfMcJlJ6S/8YLIXEbTkm96UFE1DFvP5cMK3P8kApe7fFE/D0lYcEf
+         Hzice5nF0rrN6ijqrlNcuTZO88HBbjNyIIZf0QW8EB7/Iq8ClOUsJfVURTq20gIfY3HW
+         BCAVf9fUMewAJ3a8OVdFqdd5SEKr6KBR/Cgws3p52Bsi2D9G1e44yBFLw0ADRMjlwB36
+         YyQ6SLk0k7uxOLd6dg4sdZYXo/eAR2Z5HK659CXgIoSNh6EBhGinDIYQLjoLonoP+JOS
+         VY/iWdXswZq1KVEvhu+rZj0lkpXrl+pontqlMPeIlsF6Y5nwSUmupRpxsGdwwkHVPqNm
+         bvlw==
+X-Gm-Message-State: AOJu0YykbSQkiCGGj7eelxse6N8rB+kuiG9u4Dlnwp6qdpcp+L8LuyKL
+	6a4i0X+e0geQDW/blmj5dM32kO8YM4OslmDCh2IyXgL98Ttv2wVShbjiM1UIUWkD
+X-Gm-Gg: AZuq6aJq+SQ8YD8P5SIcq2VL/iOqKVaIIqrvOxDbQQGURaZnqbILZTYLzTLTdZxbj4u
+	/e6Fm/20PKqfJVJsGijKaBEXF6NR420AfWQ7RXQT8pLYmTeRpnhHKCNwK8LPlyJrKXF9H3BAr1j
+	UU3+70NSm+wGeElLXFk6TQ/dQXji1BudEAKSLrrEHpqUg4A77KTz+zTyc0WvA5eWXTtKg3y2sxV
+	QMjJD8IIBWrYah/8t3SphxuoPx+8jpRA/6Fm8ym4YUrQh5p4nkSbNlqaIbAeah0P62lHy2QQgDP
+	8boqIF4E2ziirzcztvbuEuxQvwk9wBygCAVe6c09xGBstHdksqR2AWImKVKZMrSsOrNyGWt6D1h
+	JWM4/nkhwQpkv+MFy8kMXVYIumimilxVBuONee5vpbJ1rSt3hnjN6dUMR3IWgQOKEfhpe8IGMOF
+	c4MLelDAJDTCMH+TmNzvC/zGyry1166gElUeleWCVmt/UwE9OlMaY5cttpsAvvj7J0m69Avun9o
+	S5tWQc=
+X-Received: by 2002:ad4:4ee4:0:b0:896:f320:b18c with SMTP id 6a1803df08f44-89734881468mr241769086d6.6.1771366494809;
+        Tue, 17 Feb 2026 14:14:54 -0800 (PST)
 Received: from localhost.localdomain ([94.156.149.171])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8971cd8d33fsm166944226d6.30.2026.02.17.13.14.46
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8971cc7bd20sm175255436d6.2.2026.02.17.14.14.52
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 17 Feb 2026 13:14:48 -0800 (PST)
+        Tue, 17 Feb 2026 14:14:54 -0800 (PST)
 From: Qing Wu <ses1er@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Qing Wu <ses1er@gmail.com>
-Subject: [PATCH] mtd: spinand: add support for additional Dosilicon models
-Date: Tue, 17 Feb 2026 16:14:27 -0500
-Message-ID: <20260217211427.9120-1-ses1er@gmail.com>
+Subject: [PATCH] [v2] mtd: spinand: add support for additional Dosilicon models
+Date: Tue, 17 Feb 2026 17:14:44 -0500
+Message-ID: <20260217221444.11171-1-ses1er@gmail.com>
 X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260217_131450_948519_A289BF59 
-X-CRM114-Status: GOOD (  14.79  )
+X-CRM114-CacheID: sfid-20260217_141456_665985_A816B747 
+X-CRM114-Status: GOOD (  14.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,13 +101,19 @@ Datasheets for chips included in this patch: https://www.dosilicon.com/SPI%20NAN
 
 Tested on a TP-Link TL-7DR7250 with a Dosilicon DS35Q1GB (0xE5 0xF1)
 
+Link: https://lore.kernel.org/all/20260217211427.9120-1-ses1er@gmail.com/
+
 Signed-off-by: Qing Wu <ses1er@gmail.com>
 ---
- drivers/mtd/nand/spi/dosilicon.c | 219 ++++++++++++++++++++++++++++---
- 1 file changed, 204 insertions(+), 15 deletions(-)
+Changes in v2:
+- Fixed compilation errors.
+- Link to v1: https://lore.kernel.org/all/20260217211427.9120-1-ses1er@gmail.com
+---
+ drivers/mtd/nand/spi/dosilicon.c | 203 +++++++++++++++++++++++++++++--
+ 1 file changed, 196 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/dosilicon.c b/drivers/mtd/nand/spi/dosilicon.c
-index f99899866ceb..790671b65060 100644
+index f99899866ceb..6a5100c6bf99 100644
 --- a/drivers/mtd/nand/spi/dosilicon.c
 +++ b/drivers/mtd/nand/spi/dosilicon.c
 @@ -1,6 +1,7 @@
@@ -118,7 +124,7 @@ index f99899866ceb..790671b65060 100644
   */
  
  #include <linux/device.h>
-@@ -9,21 +10,27 @@
+@@ -9,6 +10,12 @@
  
  #define SPINAND_MFR_DOSILICON        0xE5
  
@@ -129,26 +135,11 @@ index f99899866ceb..790671b65060 100644
 +#define DOSICON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
 +
  static SPINAND_OP_VARIANTS(read_cache_variants,
--		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_2S_OP(0, 1, NULL, 0, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_FAST_1S_1S_1S_OP(0, 1, NULL, 0, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_1S_OP(0, 1, NULL, 0, 0));
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
- 
- static SPINAND_OP_VARIANTS(write_cache_variants,
--		SPINAND_PROG_LOAD_1S_1S_4S_OP(true, 0, NULL, 0),
--		SPINAND_PROG_LOAD_1S_1S_1S_OP(true, 0, NULL, 0));
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
- 
- static SPINAND_OP_VARIANTS(update_cache_variants,
--		SPINAND_PROG_LOAD_1S_1S_4S_OP(false, 0, NULL, 0),
--		SPINAND_PROG_LOAD_1S_1S_1S_OP(false, 0, NULL, 0));
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_2S_OP(0, 1, NULL, 0, 0),
+@@ -23,7 +30,7 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
+ 		SPINAND_PROG_LOAD_1S_1S_4S_OP(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD_1S_1S_1S_OP(false, 0, NULL, 0));
  
 -static int ds35xx_ooblayout_ecc(struct mtd_info *mtd, int section,
 +static int ds35xxga_ooblayout_ecc(struct mtd_info *mtd, int section,
