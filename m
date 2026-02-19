@@ -4,56 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65ADFE9A03B
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Feb 2026 07:52:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05785E9A03B
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Feb 2026 08:33:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Subject:Message-Id:Date:Mime-Version:Reply-To:
-	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TWjwj8WN5KS6NwLUPR1WRmkOsBaiZlrPiLSzfQ21GP8=; b=bvhdrYPt2cZXZir39de3ml4Xvl
-	t7OzS/T1tnPAK+NTNFWDY1r7Ql8AqpY5iJqZG8LU7ChAv1joVyFwgC7r8Vn4FZQTqv3r4WpxO0PDj
-	/ax8I6LAgRmuOYuJzxe8k776YJ4jbn4w7p7tK2z6P4ft4ebB0ooZd+ziaGeeA5IYc/KZ4HlAQoTzs
-	5YDsgJCPITH9b6ZfrVYhu/0wGOBUfqxvBum2DfixVp9lpmvdM/x90/3XHKFD7f0mZvdfPcwXlm0ZK
-	FSk90DSZwWZwnUu/AQwZpzphLZj3BX7Q0G8zmCyvKQhYdAv9re0UNe+soeSBXVfwAjNZF0Bg4B/PM
-	Zdm9GbjQ==;
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=iUkgSbNJHvy3uJaFJ2lJd+81DfqcrYlJxizlB5oO6Ns=; b=hew5+N0DLCb0t/8yw9ZDjc9u0e
+	E5imnGqcXD1o4pFQL204AAX3HY70VYayAfpclCN5QUYK55Zz5AGbi8fYZ5D2WWZY82/iE0FHY+s3M
+	dZluwZz58OLahjavGITEG+MTuVOcSI+RZqCOZQN7qoAcWDDreuFTUsH3rwBxWwIrZ5LLHusPqWXpM
+	kDpFkPTqoIrIhdjIdsK0Rl9sg0XYT5nSz98SYQyo39E/zGWSYwaWbS4Bsf0f9c7la3rhML7BGR1RO
+	SniFyOUPuaqzLTtg8g8w5JsvBFxk/hWxF2QkTi5bUOq1KKmeID6ClnEqVxb/zBg84XD5x5YT6q6zI
+	Qtr1TTcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsypL-0000000B4bI-0zHS;
-	Thu, 19 Feb 2026 07:51:59 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vszTN-0000000B89P-0SXT;
+	Thu, 19 Feb 2026 08:33:21 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsypK-0000000B4b6-2idn
+	id 1vszTI-0000000B88c-01iW
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Feb 2026 07:51:58 +0000
+	Thu, 19 Feb 2026 08:33:19 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id CD4D760145;
-	Thu, 19 Feb 2026 07:51:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2768FC4CEF7;
-	Thu, 19 Feb 2026 07:51:56 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3B99743DFF;
+	Thu, 19 Feb 2026 08:33:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DC66C4CEF7;
+	Thu, 19 Feb 2026 08:33:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771487517;
-	bh=BftuWu5xc6UDS/Cu2AeKUgqwOXx8OPwjeNoP/kExL5U=;
-	h=Date:Subject:From:To:References:In-Reply-To:From;
-	b=Asarl1dgd5jUHWdLztz1U/iLWw5CC2QJmOhJ/zbdWG8OTNtZVqtfyDgjg/vgq3iHS
-	 YxWuTnAx0CNIa6XOtgLJlPJSQh6dPMDlyAY3+L3g1tyjYe09J4nNuBlYUfnL0M2fQe
-	 7BEY2UNXXxK7ciVMSwIFgUEJm5yxjixW3F1AM4gFXQWiCKshOvp4Xhwrjg1if/KZQx
-	 dxU4/+for58XnjM2SFTJyBh4zlFV5TlYmlOFg9U6vdyEzma2cja1qH7yGx2WqvUI22
-	 QkJqhJIuy5YdrZeey3y8/6M/RleM6MzQeaXAbUIwYt4Pk+yRKzlEo4fYjXw43PFLVV
-	 o3lJWCZ7jXjNg==
+	s=k20201202; t=1771489994;
+	bh=7CuuK/0ziAW4syVDA6KX77tamFKsOSxget6SwWeQIlk=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=D9Mr9LYCm37L/N1CWOpScJRdqgnZLzw4qLlvMjs+U00wtD7L8FxIQgmfyJq6xksQL
+	 OAN8I/siEyhOeWyxAzw7tKW1rHgcWRCtG+2KcOOONTvuQr6RAV1VhKvC/8sfDYjjf4
+	 IRbtuSI/rrxB5oIQPKbv36fnl8PjnBY1DuBHNJmUJZbfgtc4nrAQPZNfHmw2E1IuGI
+	 bvY/ScaFuLc6wK/UGnsHPf2AvvHygy95AGF7eC/9vneFb8kwH/4t95qZX84vnZsjz7
+	 E16MGADpdkNdgRZeERs5NXewPl+d6hCNykOiiEqukdVPfoYga3iVPAWm1Ac7/T8scz
+	 SKsxbN6W4tZAQ==
 Mime-Version: 1.0
-Date: Thu, 19 Feb 2026 08:51:53 +0100
-Message-Id: <DGIRWWVSU5XE.2DMCL0H8D53MI@kernel.org>
-Subject: Re: [PATCH v2 0/3] mtd: spi-nor: winbond: Fix protection handling
+Date: Thu, 19 Feb 2026 09:33:09 +0100
+Message-Id: <DGISSIKZERL6.22GCNLNJG9KBY@kernel.org>
+Subject: Re: [RFC PATCH v2 09/12] spi: cadence-quadspi: add PHY tuning
+ infrastructure
+Cc: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+ <conor+dt@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+ <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+ <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <praneeth@ti.com>, <u-kumar1@ti.com>, <p-mantena@ti.com>, <a-dutta@ti.com>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Eliav Farber" <farbere@amazon.com>, <tudor.ambarus@linaro.org>,
- <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
+To: "Santhosh Kumar K" <s-k6@ti.com>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>
 X-Mailer: aerc 0.20.0
-References: <20260218143523.17467-1-farbere@amazon.com>
-In-Reply-To: <20260218143523.17467-1-farbere@amazon.com>
+References: <20260113141617.1905039-1-s-k6@ti.com>
+ <20260113141617.1905039-10-s-k6@ti.com>
+ <DGAC4N62UZQQ.3R7TLX87PECU3@kernel.org> <87qzqqxml7.fsf@bootlin.com>
+ <DGCXTWSCAH6R.22SIL82AUVGYI@kernel.org> <87fr76xgsl.fsf@bootlin.com>
+ <54964ad3-64d7-4f4e-bcf9-f0b92b1df034@ti.com>
+In-Reply-To: <54964ad3-64d7-4f4e-bcf9-f0b92b1df034@ti.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260219_003316_093343_80F7C509 
+X-CRM114-Status: GOOD (  25.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,84 +77,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1594556453577164387=="
+Content-Type: multipart/mixed; boundary="===============0455817472266742457=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============1594556453577164387==
+--===============0455817472266742457==
 Content-Type: multipart/signed;
- boundary=b4c395245128df01f78d3065ca2b3b2b7429c3dffa2013c7e6473e9923a2;
+ boundary=8180e7ca633d8ac0d60acc5bb8be376c76d43e2963a101100fb17d52ff94;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---b4c395245128df01f78d3065ca2b3b2b7429c3dffa2013c7e6473e9923a2
+--8180e7ca633d8ac0d60acc5bb8be376c76d43e2963a101100fb17d52ff94
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-Hi Eliav,
-
-On Wed Feb 18, 2026 at 3:35 PM CET, Eliav Farber wrote:
-> This series fixes block protection handling for the following Winbond
-> SPI-NOR devices:
->  - w25q256jwm
->  - w25q256jw
->  - w25q64jvm
+On Wed Feb 18, 2026 at 7:07 PM CET, Santhosh Kumar K wrote:
+> Hello Michael and Miquel,
 >
-> The devices do not correctly describe their Status Register layout and
-> protection capabilities (locking flags, TB bit, BP bit configuration).
-> As a result, the spi-nor core rejects protection requests and locking
-> operations fail with -EINVAL, e.g.:
+> On 12/02/26 18:25, Miquel Raynal wrote:
+>> Hello,
+>>=20
+>>>>>> +	for_each_child_of_node(partition_np, part_np) {
+>>>>>> +		if (of_property_read_string(part_np, "label", &label) ||
+>>>>>> +		    !strstr(label, "phypattern"))
+>>>>>> +			continue;
+>>>>>
+>>>>> There was already a review comment on the last version. Moving this
+>>>>> into the driver doesn't make it any better. In fact this might
+>>>>> create a (bad) precedent for future drivers.
+>>>>
+>>>> I remember complaining about it but not if there was a solution
+>>>> foreseen. In SPI NAND the solution has been found: the pattern is in t=
+he
+>>>> driver and we load it into cache before PHY tuning. But for SPI NOR I
+>>>> understood this wasn't possible. What would be an alternative?
+>>>
+>>> I'm not complaining about using a partition for the pattern but
+>>> about the hardcoded name of it.
+>>>
+>>> It was proposed to use at least a device tree phandle to point to a
+>>> partition (or so).
+>>=20
+>> Ah, yes indeed, thanks for clarifying this up (again) for me. I also
+>> agree the hardcoded name is not ideal.
 >
->   flash_lock -l /dev/mtd29
->   flash_lock: error!: could not lock device: /dev/mtd29
->   error 22 (Invalid argument)
->
-> Update the device flags to match the actual hardware behavior so that
-> locking and unlocking regions work correctly.
->
-> All changes were validated using flash_lock on the affected devices.
->
-> Changes in v2:
-> - Remove last patch in series that added dual/quad read for w25q64jvm
+> I remember this was discussed in the previous version. As mentioned
+> in v1, using a phandle may not be ideal since a single controller can
+> be associated with multiple flashes. Regarding the suggestion to
+> maintain an array of phandles - consider a configuration with three
+> flashes (NAND, NOR, and another NAND). In such a case, we would not
+> need a phandle for the NAND devices, right?
 
-Why? Unfortunately, you didn't answer my questions.
+Miquel said:
+ | I find pretty strange to have this property in the flash node,
+ | even though I understand the reason. Perhaps an array of phandles
+ | may work in the controller node instead?  So maybe the phandle
+ | should be inside the flash node?
 
-> - Added Minimum testing requirements for w25q256jwm and w25q64jvm
+But why is this strange? Can't we treat it as some kind of hint for
+the controller, esp. because as we now learned, that it's not needed
+for NAND flashes?
 
-Thanks, but why was the w25q256jw left out?
+I.e. for phy tuning to work you'll have either:
+ - nand flash, there it just works out of the box
+ - nor flash, you'll need a phy-calibration-pattern-hint property in
+   the flash node pointing to a flash partition.
 
-> Eliav Farber (3):
->   mtd: spi-nor: winbond: Fix locking support for w25q256jwm
->   mtd: spi-nor: winbond: Fix locking support for w25q256jw
->   mtd: spi-nor: winbond: Fix locking support for w25q64jvm
+If you think about it, a flash partition with a fixed name is also
+part of the flash node. You just add one more indirection to get rid
+of the hardcoded name and have a proper DT ABI.
 
-You're supposed to pick the Reviewed-by: tags up before sending a
-new version, see [1].
+> Also, I'm trying to understand the practical difference between using
+> the partition name versus a phandle. Since the phandle would still be
+> named something like "phy_partition", it seems functionally similar.
+> Please let me know if I'm missing something here.
+
+A phandle will be part of the DT ABI. And it will be configurable by
+the user.
 
 -michael
 
-[1] https://docs.kernel.org/process/submitting-patches.html
-
->
->  drivers/mtd/spi-nor/winbond.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-
-
---b4c395245128df01f78d3065ca2b3b2b7429c3dffa2013c7e6473e9923a2
+--8180e7ca633d8ac0d60acc5bb8be376c76d43e2963a101100fb17d52ff94
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaZbBGRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/gY1QGAz96mfu3GzNXMFKVHYODQNoiKDamF7Zwq
-LTovXhA66TEqJYm1/GftvloFjBIkamn/AYC43AXEoGpbMDV80m5IUzGWbCtD2Qoj
-IhQu9UfPwOwb8YhHNJPbWyY5Hx4wbFPs8TY=
-=cPZG
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaZbKxhIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gfIQGAhm4BHvpagP/nqVzn2KYHGkLZLYVEFUXO
+Eu1rxUUExUUxthrES6MNO5nq1l0/ShbSAYDvtKFe7f4djqUowfoczDGG2uyRYY+Q
+C5mflOiigfpnGTVRUXm0MTFX+V7jb9vpNWc=
+=Mowf
 -----END PGP SIGNATURE-----
 
---b4c395245128df01f78d3065ca2b3b2b7429c3dffa2013c7e6473e9923a2--
+--8180e7ca633d8ac0d60acc5bb8be376c76d43e2963a101100fb17d52ff94--
 
 
---===============1594556453577164387==
+--===============0455817472266742457==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -152,5 +181,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============1594556453577164387==--
+--===============0455817472266742457==--
 
