@@ -4,72 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18F3AE9A03B
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Feb 2026 10:34:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6945E9A03B
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Feb 2026 12:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nf+8LC1QD9iYDj9ye8uRyrm2v116dHlWbPAIUw8Lrkk=; b=rwtwE/MajqH2VZ
-	IQASIrvGTIjaIHzyqLOsIVtpJUBgxU8umqv64OG9cswj5Wh+3qBNEk71cqG/yg85d+yBG+ge8MjMr
-	tXrXl+Mz0lHNUJCkLb7/KdTrwSfBC+jOZEHGjSVA5IUOqmIjOUsB1qwjPWeRxhzhAtk11gyUst3ak
-	DWqt5/1cuEege75kBzG+Bf1ZRR7w895OMP/h+O+vAN9zRwEL2DJcLCcujunjr/5RspQ1vw7AFp1RQ
-	BHpP0ky02/ndSAKWMFwNHHLbpA2nHlOiFGOfkoKdcVG+KxLkdTp4aWT2N5mbL5UiCf+V2ICCZhqgJ
-	1/C0GmRVc6MSbz5MVo3w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=AB5f4K0qvOlttcv2KkqutFQj6M1StTeOdWH9ssT1k1s=; b=vdJDvCOEv3U9lBAlPuFjUNCj7b
+	cDUjmq1ykL5/DmA9pfA+JM1F/UP4uH4pB/nCjOqOIppYiZBTw43lsOeG8LJxzvuQZNRE9VcMgDxnV
+	FRvHrIBlTzW6xbEeEvN9kO++DdbAI97bo/p08X+scMyD3DEUQcZt5YOy165PitLsLNAbqhparix+O
+	GZ2fbjLDzPHLwu+oc+Vld09mSNJAj6nnhqWRGHKPN2rvrE8UEy3o9+f7xL80r+36XJeArrs8UVThG
+	6klSxDKMroDxnpc20S8hQe+UxuldUejHqNNYQqPT5RxOL0vvGnTu2Fr+NA3fpioWseiTJwEi7QMZP
+	PEI8L0Hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vt1N1-0000000BERE-2TUo;
-	Thu, 19 Feb 2026 10:34:55 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1vt2vf-0000000BJyj-1ygK;
+	Thu, 19 Feb 2026 12:14:47 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vt1My-0000000BEQq-2TQN
+	id 1vt2vc-0000000BJyK-2QqA
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Feb 2026 10:34:53 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id F2AC4C2F4EF;
-	Thu, 19 Feb 2026 10:35:02 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9CBF55FB45;
-	Thu, 19 Feb 2026 10:34:50 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D7E05102F175B;
-	Thu, 19 Feb 2026 11:34:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1771497289; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=S/icmQtLFk7NKlE6/ITNmjfkCaauJszmzt1HAFFFVM0=;
-	b=cW98++mQOsRHtNGKlHdBK2Ni8lc9CQgCiVv+uI60rXe4NnFwjLpkEHOxQxjZ4abdFSNSCy
-	03fdbIfYnpvw26AC6hpr37UrjJqaihno22zsGzrOurg0wF4GsoVQG56Fv28eaH9uxVoHK1
-	6BHYSEBwJXrYXoMBi9v6vaDHYA4nmdhJFGUEuBradbcCIyCWmydlwWV3OGWoczxmK7snkm
-	8OINAM7SJXJPBUrjwTLW1C05/xd3gdREV/Hl44/J5dN6HWhf4+X4MMMdKh9iOeSjXxCVkh
-	Z6esTw2vEvVvqBYnLEcPk3Vl6Gcp8XIbYPgJZcmG+uZv2WWOcksmMwxGwyhDEA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Santhosh Kumar K <s-k6@ti.com>
-Cc: Michael Walle <mwalle@kernel.org>,  <broonie@kernel.org>,
-  <robh@kernel.org>,  <krzk+dt@kernel.org>,  <conor+dt@kernel.org>,
-  <richard@nod.at>,  <vigneshr@ti.com>,  <tudor.ambarus@linaro.org>,
-  <pratyush@kernel.org>,  <linux-spi@vger.kernel.org>,
-  <devicetree@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
-  <linux-mtd@lists.infradead.org>,  <praneeth@ti.com>,  <u-kumar1@ti.com>,
-  <p-mantena@ti.com>,  <a-dutta@ti.com>
-Subject: Re: [RFC PATCH v2 09/12] spi: cadence-quadspi: add PHY tuning
- infrastructure
-In-Reply-To: <54964ad3-64d7-4f4e-bcf9-f0b92b1df034@ti.com> (Santhosh Kumar
-	K.'s message of "Wed, 18 Feb 2026 23:37:00 +0530")
+	Thu, 19 Feb 2026 12:14:45 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id E617A4445E;
+	Thu, 19 Feb 2026 12:14:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45AF8C4CEF7;
+	Thu, 19 Feb 2026 12:14:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771503283;
+	bh=hxSCJULIk3S57PIoIXZwF+R4TIgdUV4y4Fpg2rlZIo4=;
+	h=Date:To:Subject:Cc:From:References:In-Reply-To:From;
+	b=qp/ApliPrsrwlR/JHVXYzV19s2uUGZ5UF2wu1w3MdpN6L+8jhxgGugk7ak0qY8Xl4
+	 BFRZei7FoCJkatL1MjbDRu9JzWu0JfTYdqagH0/astqyeB+KNqAZ4z3B5bjOCbeNN6
+	 VDvvpLY+hsvk3F8lnnNmkmA0JvS7x7UVDjvGsWnTG6zRdTgVxNNqQ+ocEcv13CXBrs
+	 0LLE3zcfG8idmyKF9J4HIuwlQ4eK8AzkI2795xFuY69P4X9d+NnhSuPbb5krW/ZN4i
+	 kD64mA96w7O3C1Jc9zafJrA/eyyjCQdcsv+03q11Q5TJve7AJkmLTrpbiObg+VuZ2f
+	 xbPL9Yrhmo4BQ==
+Mime-Version: 1.0
+Date: Thu, 19 Feb 2026 13:14:39 +0100
+Message-Id: <DGIXI3RVPSJW.3J77RFU4JK6O2@kernel.org>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Santhosh Kumar K"
+ <s-k6@ti.com>
+Subject: Re: [RFC PATCH v2 08/12] spi: cadence-quadspi: read 'has-dqs' DT
+ property
+Cc: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+ <conor+dt@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+ <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+ <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <praneeth@ti.com>, <u-kumar1@ti.com>, <p-mantena@ti.com>, <a-dutta@ti.com>
+From: "Michael Walle" <mwalle@kernel.org>
+X-Mailer: aerc 0.20.0
 References: <20260113141617.1905039-1-s-k6@ti.com>
-	<20260113141617.1905039-10-s-k6@ti.com>
-	<DGAC4N62UZQQ.3R7TLX87PECU3@kernel.org> <87qzqqxml7.fsf@bootlin.com>
-	<DGCXTWSCAH6R.22SIL82AUVGYI@kernel.org> <87fr76xgsl.fsf@bootlin.com>
-	<54964ad3-64d7-4f4e-bcf9-f0b92b1df034@ti.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Thu, 19 Feb 2026 11:34:46 +0100
-Message-ID: <877bs9t41l.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+ <20260113141617.1905039-9-s-k6@ti.com> <87h5rvgkjs.fsf@bootlin.com>
+In-Reply-To: <87h5rvgkjs.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260219_023452_774872_CB7D49FC 
-X-CRM114-Status: GOOD (  18.74  )
+X-CRM114-CacheID: sfid-20260219_041444_668870_34C49732 
+X-CRM114-Status: GOOD (  18.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,46 +74,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1878650966943433530=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTgvMDIvMjAyNiBhdCAyMzozNzowMCArMDUzMCwgU2FudGhvc2ggS3VtYXIgSyA8cy1rNkB0
-aS5jb20+IHdyb3RlOgoKPiBIZWxsbyBNaWNoYWVsIGFuZCBNaXF1ZWwsCj4KPiBPbiAxMi8wMi8y
-NiAxODoyNSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPj4gSGVsbG8sCj4+IAo+Pj4+Pj4gKwlmb3Jf
-ZWFjaF9jaGlsZF9vZl9ub2RlKHBhcnRpdGlvbl9ucCwgcGFydF9ucCkgewo+Pj4+Pj4gKwkJaWYg
-KG9mX3Byb3BlcnR5X3JlYWRfc3RyaW5nKHBhcnRfbnAsICJsYWJlbCIsICZsYWJlbCkgfHwKPj4+
-Pj4+ICsJCSAgICAhc3Ryc3RyKGxhYmVsLCAicGh5cGF0dGVybiIpKQo+Pj4+Pj4gKwkJCWNvbnRp
-bnVlOwo+Pj4+Pgo+Pj4+PiBUaGVyZSB3YXMgYWxyZWFkeSBhIHJldmlldyBjb21tZW50IG9uIHRo
-ZSBsYXN0IHZlcnNpb24uIE1vdmluZyB0aGlzCj4+Pj4+IGludG8gdGhlIGRyaXZlciBkb2Vzbid0
-IG1ha2UgaXQgYW55IGJldHRlci4gSW4gZmFjdCB0aGlzIG1pZ2h0Cj4+Pj4+IGNyZWF0ZSBhIChi
-YWQpIHByZWNlZGVudCBmb3IgZnV0dXJlIGRyaXZlcnMuCj4+Pj4KPj4+PiBJIHJlbWVtYmVyIGNv
-bXBsYWluaW5nIGFib3V0IGl0IGJ1dCBub3QgaWYgdGhlcmUgd2FzIGEgc29sdXRpb24KPj4+PiBm
-b3Jlc2Vlbi4gSW4gU1BJIE5BTkQgdGhlIHNvbHV0aW9uIGhhcyBiZWVuIGZvdW5kOiB0aGUgcGF0
-dGVybiBpcyBpbiB0aGUKPj4+PiBkcml2ZXIgYW5kIHdlIGxvYWQgaXQgaW50byBjYWNoZSBiZWZv
-cmUgUEhZIHR1bmluZy4gQnV0IGZvciBTUEkgTk9SIEkKPj4+PiB1bmRlcnN0b29kIHRoaXMgd2Fz
-bid0IHBvc3NpYmxlLiBXaGF0IHdvdWxkIGJlIGFuIGFsdGVybmF0aXZlPwo+Pj4KPj4+IEknbSBu
-b3QgY29tcGxhaW5pbmcgYWJvdXQgdXNpbmcgYSBwYXJ0aXRpb24gZm9yIHRoZSBwYXR0ZXJuIGJ1
-dAo+Pj4gYWJvdXQgdGhlIGhhcmRjb2RlZCBuYW1lIG9mIGl0Lgo+Pj4KPj4+IEl0IHdhcyBwcm9w
-b3NlZCB0byB1c2UgYXQgbGVhc3QgYSBkZXZpY2UgdHJlZSBwaGFuZGxlIHRvIHBvaW50IHRvIGEK
-Pj4+IHBhcnRpdGlvbiAob3Igc28pLgo+PiBBaCwgeWVzIGluZGVlZCwgdGhhbmtzIGZvciBjbGFy
-aWZ5aW5nIHRoaXMgdXAgKGFnYWluKSBmb3IgbWUuIEkgYWxzbwo+PiBhZ3JlZSB0aGUgaGFyZGNv
-ZGVkIG5hbWUgaXMgbm90IGlkZWFsLgo+Cj4gSSByZW1lbWJlciB0aGlzIHdhcyBkaXNjdXNzZWQg
-aW4gdGhlIHByZXZpb3VzIHZlcnNpb24uIEFzIG1lbnRpb25lZAo+IGluIHYxLCB1c2luZyBhIHBo
-YW5kbGUgbWF5IG5vdCBiZSBpZGVhbCBzaW5jZSBhIHNpbmdsZSBjb250cm9sbGVyIGNhbgo+IGJl
-IGFzc29jaWF0ZWQgd2l0aCBtdWx0aXBsZSBmbGFzaGVzLiBSZWdhcmRpbmcgdGhlIHN1Z2dlc3Rp
-b24gdG8KPiBtYWludGFpbiBhbiBhcnJheSBvZiBwaGFuZGxlcyAtIGNvbnNpZGVyIGEgY29uZmln
-dXJhdGlvbiB3aXRoIHRocmVlCj4gZmxhc2hlcyAoTkFORCwgTk9SLCBhbmQgYW5vdGhlciBOQU5E
-KS4gSW4gc3VjaCBhIGNhc2UsIHdlIHdvdWxkIG5vdAo+IG5lZWQgYSBwaGFuZGxlIGZvciB0aGUg
-TkFORCBkZXZpY2VzLCByaWdodD8KCldlIGNvdWxkIGhhdmUgYSBwZXItY2hpcCBwaHktdHVuaW5n
-LWRhdGEgcGhhbmRsZT8KCj4gQWxzbywgSSdtIHRyeWluZyB0byB1bmRlcnN0YW5kIHRoZSBwcmFj
-dGljYWwgZGlmZmVyZW5jZSBiZXR3ZWVuIHVzaW5nCj4gdGhlIHBhcnRpdGlvbiBuYW1lIHZlcnN1
-cyBhIHBoYW5kbGUuIFNpbmNlIHRoZSBwaGFuZGxlIHdvdWxkIHN0aWxsIGJlCj4gbmFtZWQgc29t
-ZXRoaW5nIGxpa2UgInBoeV9wYXJ0aXRpb24iLCBpdCBzZWVtcyBmdW5jdGlvbmFsbHkgc2ltaWxh
-ci4KPiBQbGVhc2UgbGV0IG1lIGtub3cgaWYgSSdtIG1pc3Npbmcgc29tZXRoaW5nIGhlcmUuCgpG
-dW5jdGlvbmFsbHksIHllcywgYnV0IGNvbmNlcHR1YWxseSBJJ2Qgc2F5IGl0IGxvb2tzIGNsZWFu
-ZXIgKGFuZApzb21ld2hhdCBhIGJpdCBmYXN0ZXIgd2hlbiB0aGVyZSBhcmUgbWFueSBwYXJ0aXRp
-b25zKS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+--===============1878650966943433530==
+Content-Type: multipart/signed;
+ boundary=789f55f8419955e9a8d78cb3b3e5bcab957df757f53d5db9f426fb813101;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--789f55f8419955e9a8d78cb3b3e5bcab957df757f53d5db9f426fb813101
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+On Thu Feb 5, 2026 at 6:35 PM CET, Miquel Raynal wrote:
+> On 13/01/2026 at 19:46:13 +0530, Santhosh Kumar K <s-k6@ti.com> wrote:
+>
+>> Add a boolean field to struct cqspi_flash_pdata to store whether the
+>> attached flash device supports DQS (Data Strobe) mode. Read this from
+>> the 'spi-has-dqs' device tree property during flash node parsing.
+>>
+>> This is preparatory infrastructure for PHY tuning support. The field
+>> will be used by subsequent patches to configure read data capture timing
+>> with DQS enabled for improved margins in high-speed operations.
+>>
+>> Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+>
+> As mentioned in my answer to the cover letter, I am not too much in
+> favour of this property because this is something that is somewhat
+> related to the chip ID, thus discoverable. I drafted something to get
+> rid of this property already, I will share it for opening the
+> discussion.
+>
+> However, for now I am closing my eyes on the fact that the DQS pin might
+> not be wired to the controller. In this case we will need some kind of
+> "dqs-not-wired" DT property, that's true, but also easily manageable at
+> the core level later, when/if the need arises.
+
+Usually, a DQS pin is optional. AFAIK, there is no requirement for
+it. I.e. it will probably work fine with slower frequencies and
+using an internal loopback. So if you run your flash with slower
+frequency you can probably save one pin and use it for something
+different.
+
+What I wanted to say is, that not having a DQS pin wired is not
+really a mistake. But "dqs-not-wired" sounds exactly like it.
+So IMHO it should be the other way around and the device tree should
+tell you that *is* wired, if we cannot find detect it otherwise,
+like looking at pinmuxing for example (not sure that is feasible
+though).
+
+-michael
+
+--789f55f8419955e9a8d78cb3b3e5bcab957df757f53d5db9f426fb813101
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaZb+rxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hX7gGAj59K5l6FuqHIr1P5IbyI4Z0sXZHmHc1o
+mDd2Q85Sij8uG8z4QIYml9Qi/puGcxn6AX9WLWJocfkBRAQ6y5MLqQi4fl9IzeI+
+dVa+uqTigEU7b9VOdNknXxmEnzfxKWiRiTo=
+=bXm6
+-----END PGP SIGNATURE-----
+
+--789f55f8419955e9a8d78cb3b3e5bcab957df757f53d5db9f426fb813101--
+
+
+--===============1878650966943433530==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1878650966943433530==--
+
