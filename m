@@ -4,62 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03777E98E0F
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Feb 2026 09:29:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04636E98E14
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Feb 2026 10:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=N3zDgLQTANVUIIiORxBae9l3EmxEHnCRtyOK0Vgqz+s=; b=YoymTZ20mbsa14tiRyjBpc2fcm
-	dhFbeiCl4T1AuB/3YC+7PKlVDTpLaqLlpTdKYp6mBs7EEsHXo4m1/T0t2pmLNH1x/HnrHBgWoUsnm
-	5J3rA9/Z60AUyz1wBPWVF8Y6PWQNdkGkJWN8uw94IujdmGCGbtRf33TltUBXK0SNloSbSQqFCmUWF
-	baM4gbtQjleavX5/A+oRPyeBFrveYjEgu52rBChiv96+Qy3ickSsD//PrAT3+PHWav7jheVp//maC
-	+fxoMbTbxlIhNxoHfu9L6qtQh3/Ap8DHg/x5GANIWBUvmuJghEXCAlRUC6L2Z+13yFXIPlhD89lOf
-	heqHrYfQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/45lgiKapiffTi35DeE3mjy4Ztn2muDYrEfpvkifN9w=; b=eB3QEk9tgkGNtT
+	G4v+78y6Q+279rllFEbVUIGUoz4VyayqL2DYmOOL2SHPVnTSXZfpvnqVmFOBsFKuFRMomyffsk6H+
+	BjgF8ziACMeFabGy8qn1cUHWN7VSJfV0J5LoH20X899iYvRHroZZRFTk/t8JbfDG/W9WZZqIhPBcs
+	c0FD77REerFaOdLe0o8XE1gtRchgUn8OVTb4WdshvDLz0rexMwz8eyYyNH3OeKZy2v0NnvLXYPT/A
+	4tI7a/kiIdtBtAGwyK7qvlX7D0M7YwfNYKaWbeF7R5CZQtkyWWHBBBfBVUMHk2nRvZnaS4b2E0Tkd
+	SbMSPbrlt/+7T3JSbauw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vuSFs-0000000HXR9-2SDy;
-	Mon, 23 Feb 2026 09:29:28 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vuT0a-000000001fQ-42ZU;
+	Mon, 23 Feb 2026 10:17:44 +0000
+Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vuSFp-0000000HXQj-2PEi
+	id 1vuT0Y-000000001f7-03xi
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Feb 2026 09:29:27 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7FE48432CA;
-	Mon, 23 Feb 2026 09:29:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE1BC19421;
-	Mon, 23 Feb 2026 09:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771838964;
-	bh=qSc8GpjmV8N4ESmmtoyex8meT32NYtvc0z27Ol22oBY=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=Fp7TxbYfRJ5481Vdo9QJM9dPqJgvg1E1O1mnF6BNpUF6Xdoi1VVrNAhpVPa3L6sEQ
-	 n0cfQ5fmYCAyikDxWMi/lniSdpOLEwjm55C3nzOL108Tbumr6RYbrhrJ9zeMyk+5aJ
-	 xDJy4f2dOxPBFrb8sOQiLdEZU3H0kvkWMbOkMPckE3KUCQv7wL0PSRti3ALWjYOevn
-	 5x4c/Fqups+tmKAqPX3YiW0iDo68lJuwdB+Yk/1L62wGy8MCI1X+JCo254VaGzv0YE
-	 E/tzJQun95dLQEY1qjDYxshd9wmfgNUcEavoK/Uep1X42CJ4XN1P8YEu/H8XlpOf/0
-	 1vcXj3Wz5+Q9Q==
-Mime-Version: 1.0
-Date: Mon, 23 Feb 2026 10:29:20 +0100
-Message-Id: <DGM8HPC181AF.3FCCS4MIE4A43@kernel.org>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: sst: Fix write enable before AAI
- sequence
-Cc: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <richard@nod.at>,
- <sanjaikumar.vs@dicortech.com>, <stable@vger.kernel.org>,
- <tudor.ambarus@linaro.org>, <vigneshr@ti.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Sanjaikumar V S" <sanjaikumarvs@gmail.com>
-X-Mailer: aerc 0.20.0
-References: <DGM6ZPOT1WCR.157JI0LW4W3E8@kernel.org>
- <20260223091733.47-1-sanjaikumarvs@gmail.com>
-In-Reply-To: <20260223091733.47-1-sanjaikumarvs@gmail.com>
+	Mon, 23 Feb 2026 10:17:43 +0000
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-2a8fba3f769so18233965ad.2
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Feb 2026 02:17:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1771841861; x=1772446661; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=48RL7VeEp2klLp0X3X13j82DHjMKhg6nQjIVmjSYm8g=;
+        b=fV7X7ydHWWSsZG7LQVGZi1XBeEWoT8SB4HK4QR+8hb06FNZNWmcjFxFhCncZ3DJJnn
+         F0tZgwbXznFaK8XqeBmvDE9JsnFbhz4KFXz3Zdk61rbqpdLzytIS0wfP+GYijtb7RGHe
+         0TRpBF4HLY5UXg2WGwdUcdtexllFOkNoEPYDsYuzSJJeu7q/spseoSfpcm2knK5Jp+nS
+         T0Q7L1i0NGlaP0w/cjEHAEoBiKjbxVP/oHLJHX6lvtVwV+dOD0RrBnk3Nx1Ghl2Y/z1f
+         r1jrd+/KJ8FdfUD2e/bfjhLRLvhzn44JNHVEGwk8arElk/OLbUlb5Pv/lceFdIlL8EXi
+         pgQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771841861; x=1772446661;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=48RL7VeEp2klLp0X3X13j82DHjMKhg6nQjIVmjSYm8g=;
+        b=MNXw1sC3voZuge7VjTMYKVF9NljXNMIYMsHS64jvCEY6r4lcuhGpezq4Y+Y6jt2t4N
+         z1zuOYngDrjKMaGKiTHYKn+yFXXbOluJc2JL2zArOhDVm5x7Ue5/fa/uMCLfAmKuupTC
+         mkfPWFgRbnNljYlWwsGQ08J00li7BguRMxjIzZF9NJy/grRLX+UT5qQQ9WAMYEbkgECT
+         A5giPi9BPZ3P45hLg6cPhvN8PXeVtygiwFVtGz8I8zRxgUuJ1OsAP8kVrsMf+uAAEFYn
+         CLXq4ExpuwdiM2JQZzCCfxQwQYOaTX/DcZLBxFKucgCpSsuzS/8SkRE6yL26/+NOatd1
+         j6ow==
+X-Forwarded-Encrypted: i=1; AJvYcCXxfhoNRcS0Nt/tNplvzNjNGL67rcHOii31S4Pt64rcjaJ2gIfUf+HiHfpmyrU7hNdxv60N2d3H0/k=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy3qeD7y/PDQI16ZX8t42/IGBbpZWjJzVoavaLFd/fkfYOq1dWL
+	S8b7FzKpPOX7WOosccuwH78VukGgX/VgblD4QOeqIu/VvXCqRrQUXhsF
+X-Gm-Gg: ATEYQzyvzprK++PvVR7RpqK1ReyvkHKiKlgnp54fLGVLF5zWgO/7fOTqBGDMRp6Mjx2
+	K+wsFbTwmqH5Ns7GDb6Nfx4qFLDbWYbhaG2euA35vyYNHHHAcZ1iaN1U8drHFIgLxYiB9z+FjUJ
+	B5dSpRDxRupoZYNeqWrrGP1OnzD+uXF9rGklFn51XisztfS2LutQxp5m/0mqahjBZCAgSNOAQfR
+	n2SMesrgm6i5ARCaF3w7ng2MvUtTkQSxwSOceutjzjnEVs8bp/0SzNtr12pYtl8cCHVzeEBLV0V
+	ZpKPc+hdejiP5sVDdt1ydv8GUrYm/FB07NZVgzeEsJPMznJdMFodFm1DoRdmYdGigs17q1WG3+Y
+	pYK1AHkwpFfLCdYkQYyTYQCt9dsE0q6AjLvjZU0cF7Vik+/chkIvMu0/VWByTbJdtjIaYkucMXh
+	yrCxfPvR63nCAY+Wz8JWjJ1gTwwbyoZQ==
+X-Received: by 2002:a17:902:cec3:b0:2a8:7814:47cc with SMTP id d9443c01a7336-2ad744649b5mr63594245ad.16.1771841860595;
+        Mon, 23 Feb 2026 02:17:40 -0800 (PST)
+Received: from c6dfb3cc7c9a ([115.245.213.202])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad74e3425dsm66574795ad.16.2026.02.23.02.17.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Feb 2026 02:17:39 -0800 (PST)
+From: Sanjaikumar V S <sanjaikumarvs@gmail.com>
+To: mwalle@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	miquel.raynal@bootlin.com,
+	pratyush@kernel.org,
+	richard@nod.at,
+	sanjaikumarvs@gmail.com,
+	sanjaikumar.vs@dicortech.com,
+	tudor.ambarus@linaro.org,
+	stable@vger.kernel.org,
+	vigneshr@ti.com
+Subject: [PATCH v3 0/2] mtd: spi-nor: Fix SST AAI write mode
+Date: Mon, 23 Feb 2026 10:17:16 +0000
+Message-ID: <20260223101718.89-1-sanjaikumarvs@gmail.com>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260220094236.28-1-sanjaikumarvs@gmail.com>
+References: <20260220094236.28-1-sanjaikumarvs@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260223_012925_796472_B926B1C3 
-X-CRM114-Status: GOOD (  20.77  )
+X-CRM114-CacheID: sfid-20260223_021742_102300_A78F3BAF 
+X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,96 +103,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7768480872581008421=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7768480872581008421==
-Content-Type: multipart/signed;
- boundary=adf5d6bf2817c52630721166249761492ef851abe98547b5f7470d47818c;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+From: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
 
---adf5d6bf2817c52630721166249761492ef851abe98547b5f7470d47818c
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+This patch series addresses two distinct problems affecting SST flash
+Auto Address Increment write functionality:
 
-Hi,
+1. When writes begin at odd addresses, a single byte is programmed first
+   using byte program command, which clears the Write Enable Latch. The
+   driver fails to re-enable writes before the AAI sequence.
 
-On Mon Feb 23, 2026 at 10:17 AM CET, Sanjaikumar V S wrote:
->> Raises concern about writes ending at odd offsets potentially
->> having the same issue
->
-> The odd end address case (trailing byte) is already handled in the
-> existing code at lines 243-255:
->
-> /* Write out trailing byte if it exists. */
-> if (actual !=3D len) {
->     ret =3D spi_nor_write_enable(nor);
->     ...
->     ret =3D sst_nor_write_data(nor, to, 1, buf + actual);
-> }
+2. When the SPI controller lacks direct mapping support, the fallback
+   path uses a probe-time operation template with standard page program
+   opcodes instead of AAI opcodes.
 
-Ah, I must be blind. I stopped reading at the write_disable.
+Changes in v3:
+- Patch 1/2: Use local boolean 'needs_write_enable' for clarity as
+  suggested by Michael Walle
+- Patch 1/2: Improved comment explaining the fix
+- Patch 1/2: Added Fixes tag
 
-> So write_enable is already called before writing the trailing
-> byte. My patch only addresses the odd start case where BP clears
-> WEL before the AAI sequence begins.
->
->> Suggests simplifying the conditional logic by removing the length
->> check
->
-> The condition `if (actual < len - 1)` avoids an unnecessary
-> write_enable when len =3D=3D 1 (single byte write at odd address, no
-> AAI follows). But if you prefer unconditional write_enable for
-> simplicity, I can change it in v3.
+Changes in v2:
+- Split fixes into separate patches
+- Added detailed commit messages
 
-I know, but I actually don't like repeating the condition in the for
-loop. So I'd prefer to have a local "needs_write_enable" boolean
-which will be set to true. But then, I wouldn't care too much if
-there is a write enable followed by a write disable for a rare case.
+Sanjaikumar V S (2):
+  mtd: spi-nor: sst: Fix write enable before AAI sequence
+  mtd: spi-nor: core: Fix AAI mode when dirmap is not available
 
->> Notes the patch lacks runtime testing
->
-> I don't have the hardware setup to test odd-address writes at the
-> moment. The fix is based on code analysis. I have tested patch 2/2
-> (dirmap fallback) on hardware.
+ drivers/mtd/spi-nor/core.c |  2 +-
+ drivers/mtd/spi-nor/sst.c  | 13 +++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-I'm hesitant - because like I said, if there is really a bug - it
-would have never worked correctly, since day 1. But yeah, I've also
-read the datasheet and it clearly states that the byte write will
-clear the write enable latch.
+--
+2.43.0
 
-> Please let me know if you'd like me to send a v3 with the
-> simplified unconditional write_enable.
-
-Please see above.
-
--michael
-
---adf5d6bf2817c52630721166249761492ef851abe98547b5f7470d47818c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaZwd8BIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/gD+AF+PMpnOIUXZU15ZBDAvkgvNBLt4H5g2WC7
-aDt3o03I0g2/SHw0sv84Dd1FQiMqqAVxAYCjWOam711N/Ut6j2f+6MXK9h9dIcwO
-dmEauy79oSIIyC7Q8J0sTI1nFnBaJSKRk+k=
-=CCQO
------END PGP SIGNATURE-----
-
---adf5d6bf2817c52630721166249761492ef851abe98547b5f7470d47818c--
-
-
---===============7768480872581008421==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7768480872581008421==--
-
