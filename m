@@ -4,98 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 839D7E98DED
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Feb 2026 06:19:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEAD7E98DF9
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Feb 2026 08:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qA1SGuyF7gDi9pyYdVPloELChhA6TdzPiLLnWww4DOM=; b=03QV86eqFyYNZh
-	LIwxUVhw3A1pZM4h1DJ2I2r/uEFHwApmwvZYsDIb/hEvTRvr0Wu23rM6GsUQGj/qB0OAvX5TJf2b4
-	hcf1ArCQFjnbLCmtb4V6jY+UyatXg6IdazLxlyfTGzfnwyVj8vPg6iwmosv4mXOHm9wydlYzczaI1
-	uNsOSCigMsuCE1LL9D7GCAeVexGY/+SfwBB8uw+4dgAb45xnHeyropp94CMbFGFSi3OCMdsbRWioA
-	EsvQgUPQf3cHSZUOZsGfNq3HHBJ2g+PmdyJxw/auGqKyRvlGxqY6eJtLCsJMTULiuCZCEUhhtEHxH
-	7FquLN49VE4fRX62+kOg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LsHSQlmrJYgWD93OF4r6I/dtapxGSDFFIFaDMuyLkdI=; b=QvaFvEdNh5THrtp4TFcLD0Q2cq
+	PHqsdbzzp/o5etNnFjS56dp9cBOjrI8WZWLVsWE5avirbPcmWO1PnDM9RbLDCuQwS02n4rn7rAC8m
+	Pb3/zLLQSrwW3SppUMeuQH97CDYKkZudoBM24E//SLt2rb0HpRKBEaXSKZ990gal2J59qqg1eNz9t
+	e7Xt0wPBxbZn8fuiOJPrcs9T4tsISW5bK4egJ3zx2fr64cKE6PNm8jMweWC+BuZ/j7CkR7N4qCjwN
+	F+mT1BMmc3WteYS4+/aRa0JLfd4XLPcwH2DVtMbiFHZYSRrlc0ATF7hR+PNnE+cwZzaVJjQY8gQ0V
+	nItUBB+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vuPIH-0000000HHyX-2LBH;
-	Mon, 23 Feb 2026 06:19:45 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
+	id 1vuR9e-0000000HPqx-2Irs;
+	Mon, 23 Feb 2026 08:18:58 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vuPIC-0000000HHtF-0tnz
+	id 1vuR9c-0000000HPqQ-0lU5
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Feb 2026 06:19:43 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-3549bba5302so2420241a91.1
-        for <linux-mtd@lists.infradead.org>; Sun, 22 Feb 2026 22:19:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771827579; x=1772432379; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tUDuyjYYyo0et9UR9kj7eT6N1xShJC+WOFmEXeoTNp4=;
-        b=Os2j5rsAenWC9grHXhZfsCPQCNfo/x6mrq0bheukhXVMBEVaGAzrxT/Hfkc4pxMFx1
-         gTglA8BVlS7F4x93pEB63mqzYD++3kpv6dZFcQjxEtrmBjSalVI+9akOqs1JGhwnAODA
-         m4JSVOjvSQtAP/k22vC6sHYcj1yBv+WjYv3Ja9sptjY21y8N9ZHqWLLbSq1O12DjZzQK
-         jC0ZA28tuGQwZqQK+DopTkBFsQlLGqTq5L+egcRiUpaB5Q8YvFTzMZlaXn6Ve+7d0WI2
-         8BpBabVkSllLvmnHhM5U8XatbuahEQatb346AlM6B1KdAhBfZ2LKnPMUattbLjXhkMMn
-         abWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771827579; x=1772432379;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tUDuyjYYyo0et9UR9kj7eT6N1xShJC+WOFmEXeoTNp4=;
-        b=k9FD7xmS+amIFzx165NNBUIk9wNZzHLuunrLVvF/UKIwVcGwAmcrYj6Ij5XK5TJV5w
-         8Uy5XEqQkk2oRnDk6NIvliJKEcTM+dDROQh/EDQZGhLS33uFco3MmmDJGKs92R3MbWWR
-         98e6SRoVOzQrcsqXx7Pjf2k9hRIwWfapxtFGqoSUqjOIGnI7oENaVxXzjv3rkqUxBvWS
-         2YTc6nLMekMYOE+ulAx+MVtv+TLzmzSeS7DxhLwgJ1GuK+f4lP2koX0cEjEXhFl34IWR
-         aspeDzgKflXyk3bphVn0NLGQyCxtT+xeGlk/Ha38a3eCKlSkeS7SofxINjYTyA3ei14l
-         eb8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXx16Y61xDFkm/B2XsNbr23dw+myJf02OGrK72xr8EWQUlFi4o0RX7i6f+jBb07lrzY24dcT9fgYJk=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxo/stfB3roiDHuWj3kByBFmYEGNVohndt4RuqPLkZ3D722B7mh
-	8dD66kANelsKGO0w1MNqVxT8GVwWrgqNo0PIvnxCX3wYd+Q/bvK6wLfu
-X-Gm-Gg: ATEYQzwLZZiBlShMxZQTaJaOs37sDNMhcgQaj6vF42IIE+7qmsdTA5R2ijkebcwvkAk
-	+5BI30MhjEtdygPjBiQjA80cj1VbyzIwsujqE0LI7F+h+dE61LPG/6RYUnY4vpL3POjfVZLoUsa
-	DQ50Jr5nC1u8mspoeYrhc7ZkDBNyY/j7ySDOTZ6ZbjfDl4pgKAdOim2Bx3sZoJql2/Dl0jC/qiw
-	JItZoLZTdYF/PJLqizakZLeFsGZ09n3esj0/UA9fNsk3EVvrAfh2OMpDIK39njAtwItfVwlVNY+
-	PvYQlpHYc533Wvl+u/cIICKmS8+ti0L1wet9OpICpT4di6hzaoV2NOQ1KPR5cBffbVUATbaklfY
-	Y3Ba1XFIX/Tn50nDAAvv89vEGFSg+g/M4tjzW1ig38gwnXC5A4w3aMzKf/GxKYUs/NcY2LUd9Wp
-	FMLHbJwDNRnGShLPMYhwYSqf9Sr+rJCq+/lLZ5wOTNwxEEGg==
-X-Received: by 2002:a17:90b:37ce:b0:34a:47d0:9a82 with SMTP id 98e67ed59e1d1-358ae8c12b7mr6448583a91.23.1771827579357;
-        Sun, 22 Feb 2026 22:19:39 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-358a2af412bsm5694769a91.6.2026.02.22.22.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 22:19:38 -0800 (PST)
-Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id C0F0F4136071;
-	Mon, 23 Feb 2026 14:19:36 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
-	Pablo Martin-Gomez <pmartin-gomez@freebox.fr>,
-	Tianling Shen <cnsztl@gmail.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alvinzhou@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v6 0/3] mtd: spi-nand: Add support for randomizer feature
-Date: Mon, 23 Feb 2026 14:17:03 +0800
-Message-Id: <20260223061706.1027986-1-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+	Mon, 23 Feb 2026 08:18:57 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 714574339C;
+	Mon, 23 Feb 2026 08:18:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE270C116C6;
+	Mon, 23 Feb 2026 08:18:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771834733;
+	bh=mfi2oIDXNC1HeAdz8FltvcXDHo2fg6vdS90o6q5YbVM=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=od8D7jdW7TFsA+JB6QfJ2xsO67R7VAugMTfRmqNDSI7mN+E8B2btyjyCFEFhb9b+s
+	 fLdO+k+OXWCFbv0RubweEW+mB/kC97QA1sAHe9CPo6Si1gh4Jbsv/YZq9ymqxsrBdC
+	 84GY8nmrFmXw6HXr+i5vrCkUNx1AKnocG7TxA/wWdP6azdf7hQJKmwoFPIANXjNScg
+	 sliuYuOGm3H0iH9IzJfbh3ur775I4a93YYRiAxxgLqj+f4h9Ej+mDesUeMj9a6hDL4
+	 0izYKEsVNyqib0e1brhpuDgBzs6h/Y01HDSVAUn8jmXOE1Im44NRVbj5AHH7Z+1bv1
+	 n2VPW98pf8/UQ==
+Mime-Version: 1.0
+Date: Mon, 23 Feb 2026 09:18:49 +0100
+Message-Id: <DGM6ZPOT1WCR.157JI0LW4W3E8@kernel.org>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: sst: Fix write enable before AAI
+ sequence
+Cc: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-kernel@vger.kernel.org>, "Sanjaikumar V S"
+ <sanjaikumar.vs@dicortech.com>, <stable@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Sanjaikumar V S" <sanjaikumarvs@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.20.0
+References: <20260220094236.28-1-sanjaikumarvs@gmail.com>
+ <20260220094236.28-2-sanjaikumarvs@gmail.com>
+In-Reply-To: <20260220094236.28-2-sanjaikumarvs@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260222_221940_286765_F2226358 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20260223_001856_364036_221BD6DC 
+X-CRM114-Status: GOOD (  21.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,75 +72,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7370075151277910645=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+--===============7370075151277910645==
+Content-Type: multipart/signed;
+ boundary=ccacc5352b054326ba4c60c385f192b499ae4e18e1c3c67f98baab600635;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+Content-Transfer-Encoding: quoted-printable
 
-This patch series introduces randomizer support for SPI NAND devices.
+--ccacc5352b054326ba4c60c385f192b499ae4e18e1c3c67f98baab600635
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-- Patch 1: add the nand-randomizer-enable and nand-randomizer-disable
-           boolean properties to the generic nand-chip.yaml bindings.
-- Patch 2: add the initialization logic and the set_randomizer callback
-           to the core framework. The core will now parse the device tree
-           properties and enable or disable the randomizer accordingly
-           during spinand_init.
-- Patch 3: implement the set_randomizer callback specifically for Macronix
-           chips (MX35LF/UF series) to handle the vendor-specific register
-           operations.
+Hi,
 
-v6:
-* Added mutual-exclusive constraints using not with required for
-  nand-randomizer-enable and nand-randomizer-disable properties based
-  on Krzysztof's feedback.
-* Simplified the return path in macronix_set_randomizer() to directly
-  return ret; and dropped unrelated formatting changes.
+On Fri Feb 20, 2026 at 10:42 AM CET, Sanjaikumar V S wrote:
+> From: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
+>
+> When writing to SST flash starting at an odd address, a single byte is
+> first programmed using the byte program (BP) command. After this
+> operation completes, the flash hardware automatically clears the Write
+> Enable Latch (WEL) bit.
+>
+> If an AAI (Auto Address Increment) word program sequence follows, it
+> requires WEL to be set. Without re-enabling writes, the AAI sequence
+> fails.
+>
+> Add spi_nor_write_enable() after the odd-address byte program, but only
+> when an AAI sequence will follow (len > 2 bytes remaining).
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
 
-v5:
-* Promoted the randomizer configuration to use generic NAND properties
-  (nand-randomizer-enable and nand-randomizer-disable) instead of
-  vendor-specific bindings.
-* Refactored the initialization architecture in core.c. The core framework
-  is now responsible for parsing the device tree properties and deciding
-  whether to enable or disable the randomizer.
+Very strange. If that is correct, it actually never worked
+correctly.
 
-v4:
-* Fix a build error in spinand_randomizer_init() where a value was
-  returned from a void function. (Reported by kernel test robot)
-* Update the return type to int.
+Fixes: b199489d37b2 ("mtd: spi-nor: add the framework for SPI NOR")
 
-v3:
-* Revert the device tree property to the vendor-specific
-  "mxic,randomizer-enable" to strictly follow vendor-specific bindings.
+You've said, you didn't test this. Shouldn't it be pretty easy to
+write to an odd offset? Also, from reading the code, it looks like
+if write ends on an odd offset, it doesn't work either?
 
-* Update the 'set_randomizer' callback signature to accept a boolean
-  'enable' argument, allowing the feature to be explicitly enabled or
-  disabled.
+> ---
+>  drivers/mtd/spi-nor/sst.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+> index 175211fe6a5e..fe714e6d0914 100644
+> --- a/drivers/mtd/spi-nor/sst.c
+> +++ b/drivers/mtd/spi-nor/sst.c
+> @@ -210,6 +210,13 @@ static int sst_nor_write(struct mtd_info *mtd, loff_=
+t to, size_t len,
+> =20
+>  		to++;
+>  		actual++;
+> +
+> +		/* BP clears WEL, re-enable if AAI sequence follows */
+> +		if (actual < len - 1) {
 
-* Switch the implementation to use the standard SET_FEATURE command
-  to modify the Configuration Register (0x10), replacing the previous
-  special program command method.
+For brevity, I'd drop the repeated condition and just do the
+write_enable unconditionally.
 
-v2:
-* Create a global NAND DT property
+-michael
 
-Cheng Ming Lin (3):
-  dt-bindings: mtd: spinand: Add randomizer enable/disable properties
-  mtd: spi-nand: Add support for randomizer
-  mtd: spi-nand: macronix: Enable randomizer support
+> +			ret =3D spi_nor_write_enable(nor);
+> +			if (ret)
+> +				goto out;
+> +		}
+>  	}
+> =20
+>  	/* Write out most of the data here. */
 
- .../devicetree/bindings/mtd/nand-chip.yaml    | 18 ++++++++
- drivers/mtd/nand/spi/core.c                   | 27 ++++++++++++
- drivers/mtd/nand/spi/macronix.c               | 42 ++++++++++++++-----
- include/linux/mtd/spinand.h                   |  9 ++++
- 4 files changed, 86 insertions(+), 10 deletions(-)
 
--- 
-2.25.1
+--ccacc5352b054326ba4c60c385f192b499ae4e18e1c3c67f98baab600635
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaZwNaRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gLsQGApjeWKQX5yJH4CBKLSNiWdTrh4NTbDWUt
+lptAM8AtNMVx31LV6DaadYlN0foO+Y4IAYDaz0UUpx1XRDDBfte/N9aQlQhPeA4I
+06h0L+1+WOBKvarpcFSW3Cu6R3D1PmZgD1Y=
+=kEFN
+-----END PGP SIGNATURE-----
+
+--ccacc5352b054326ba4c60c385f192b499ae4e18e1c3c67f98baab600635--
+
+
+--===============7370075151277910645==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7370075151277910645==--
+
