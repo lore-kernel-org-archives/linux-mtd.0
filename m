@@ -4,93 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D5CEEFB7EB
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Feb 2026 02:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DE04EFB7F9
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Feb 2026 08:08:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WGCcOS0Zm8SCEKkjmafyZo18tollU/P7WubtVZjhRrI=; b=iiaJWear/ZjSa4
-	WbTRew6Id4eA01lOEEaCO5ng3fzjXlFaHKxfcO1kmZrY6cNQy38fV3mCG1XTfqBmy99iPFI+FIgBx
-	2WBdnYJmfcgr9Uu0atLqztyiKjV2ks/PNVplPjo6qGemnTkws9VT9JVpxRLuX5IRwCW4CuU/sWeIr
-	MxJRIY0HSZaB4P4mH1aP9zHXNdfqW9QC737ZwXIBmHBIXzbgn7oizyRDQPgRN+Puz7gUB0MU9UW7K
-	2cKvJDZzLbwwCgMYRQyCKhVXEtoQ3lGyTBtWtaxUogX6LMqkGfPRfkqB70RZq0L/I86jqDHhvrAXE
-	eZxSX+iZ0CKvYIy81eQw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=pPSWgASDFJkPuE9Vso0PSH941k0hgoXb4GH+/90tTfQ=; b=lfpnX5LimF68y1
+	iCzJT7Zs3ctTErwSNvSpZBjCtvSfymYjcASKiBLxwvm0QUy9W5jGucfSvfNa+ExPl7+oI6FbptQ1+
+	xpWJ/Lx3D8HS8EK7lbf/nhesyillJmUW9x4o5kHkeTx1x9OIGuoECN3W+lKnwXDshD0sJoIkq5Eqq
+	gH1ZO53OjRz3kHHetQ4LAXgc8ltTJY5WdFq2AcEYL4cLasxThR16fF4be3F0egvANhb2D8sTO0nqr
+	pyA+B/OQt8bR/uqnqxbOxF3PvwBc/lZlgd71K++LInsm7oDjpZZauQ67De6XEVXzT1RWHhmO3MolS
+	HLg9Gvol/ui2T77DK2Xg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vuict-00000001NgM-1U2p;
-	Tue, 24 Feb 2026 02:58:19 +0000
-Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
+	id 1vunSj-00000001cQR-3XFZ;
+	Tue, 24 Feb 2026 08:08:09 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vuicr-00000001Nfo-1nJ6
+	id 1vunSc-00000001cQ5-3yYl
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Feb 2026 02:58:18 +0000
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-824b32875e7so2355514b3a.3
-        for <linux-mtd@lists.infradead.org>; Mon, 23 Feb 2026 18:58:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771901896; x=1772506696; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=66KCJd/pILWRGdHs3t4QOX0a1rmkvvfDci4VwcS/sME=;
-        b=Zu7H8+L7QgAVBV9i0MWNa6FlBGz24Ea0pSxxtJCjSMGnCI57O0mWhF5rS+QOtup7wq
-         a4hXZrXY2gsiIEpdaaeRKQUBlt0hF6LTstKp03J5NozfhEEUz5KpOJArqex0ZzJs1j5L
-         VQJliGBx9Qr4oOr5WMVFTsptI86TyzYQV4jbQ0HmuA/y+Luvm8mthWq2xDA2SdksG45F
-         hmgV4umwxNs2KatrutLtt/b+wsQFhDIhlzS3pFezdus4WC+h+gowYMSPEONgHpzEZTQq
-         BoWlCCDQcXUsLNeEhDIDZHBnksdT5wMv+cby0oAjTuI75I/dSNDIn15zhV3HIQzQzpdL
-         4j5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771901896; x=1772506696;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=66KCJd/pILWRGdHs3t4QOX0a1rmkvvfDci4VwcS/sME=;
-        b=uXySzcesOjrI5JlRwk+Did0I1CGY1lvvBaMEwIEi92ZfA4tInbXttT2K1r1o8bXBtW
-         dABlFH68rHmSOKBxsk8bLjJ+eH3XoYN8ox5WN4bqfaXLrKunJji80IvHMn7MRxcQ4Or/
-         7St22982GmW7r2tSId6Pj8T+i2ywI4zFN7NdxP4L7LC5YwrWlwKEk57hckWYlRbV490Q
-         JMRADr3d5+Xu1/vn1i5mM9YykM9N+ejfumXnYdRjwvHDQd9W9yCoDr3/p3d3zwh+V+Bt
-         78AbWKcY7ayVmlQ7hrnR5nq7eDyH5kSgHLBXqlY0A2qLSzHdKj34+C0dEmYut+lzTvlF
-         LLBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUL/bo7rKS2Z1r36Rhlbh44xWRQeSytQKJ38osG35NaMBPwSB8ETXwuNr+dQoLOowP4nu16aDr1two=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxNi1spOd3M3S4mjSoSaL0BUpGjL2gsFODNKOOs4gIypmpe769n
-	yeeyn50BmUYJnDu8TDk5fpEkkyXAs70JwtKI3x4eOndUoia58PN5HA0K
-X-Gm-Gg: ATEYQzw+qOAOOGmjjh74eWmIWAvODyCqx5Ei+fVUo6shZo3oG4PPZPUDZMqGB1QYkxn
-	tz7KUuQUPcfcLOvxf/zY0xkvP1YoCZKfwlcGccRbUwMz98Acpk69echoGlsHL+ssHan3g8IGXdK
-	QT3OpstafMTjxHZPN3XEBQY9xjzhHTHgQZdCPGnhHoBBqwZkm/qGBm1HWR3GNWXYb0CxYrspDRa
-	rryGdDnxOxPnH1rTgC4udMOD8Yq4oBE8ajrU0i0AotXMicTho0U+mGIXOXKwQE50wMDdFlleJ4p
-	qs8jLh/9uUVE+QFPD9z4J/t1qIUstQ96umBZkFTArB3v0BryuBLM/p1cbErYYFuJ9XVBxrnb+Bn
-	6DaPys4wv5rDD67fzOpSQv+D6d9hlFaQIE8UftyxNL/uwXuBw9UNAcnxRnheQBBHS342Np3jJ8I
-	Eninkhbfqu5KfAq7mHPUfAwCdnhu05Vb0/n2VPxs2XgQMn9PwbKHKV+zrm
-X-Received: by 2002:a05:6a00:854:b0:81c:717b:9d38 with SMTP id d2e1a72fcca58-826daa25785mr8203782b3a.47.1771901895957;
-        Mon, 23 Feb 2026 18:58:15 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-826dd68e147sm8121442b3a.19.2026.02.23.18.58.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 18:58:15 -0800 (PST)
-Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 9F1094136071;
-	Tue, 24 Feb 2026 10:58:13 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Jakub Czapiga <czapiga@google.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	alvinzhou@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH] mtd: spi-nor: core: Fix false positive in Read CR capability check
-Date: Tue, 24 Feb 2026 10:55:50 +0800
-Message-Id: <20260224025550.1102660-1-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	Tue, 24 Feb 2026 08:08:05 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id CE5D44E41053;
+	Tue, 24 Feb 2026 08:07:58 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9BE915FD9D;
+	Tue, 24 Feb 2026 08:07:58 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 815A510368B61;
+	Tue, 24 Feb 2026 09:07:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1771920478; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=TaJCoEzyy8/qyHP+aY5MjoQOqpny2lOYc4aC6Qi5m7o=;
+	b=FMoMg+TevYPvQOPakVZImQMcGYsIhOLaSJm+4y+ceQm8niOg7tOHpd3aIX520FYMRCN/iU
+	55pED53fwapJTbHJZWy9HZgwSdsxPoGdjdFAqUdYF2foeQ47nbMymvSqTI6C7qQKDL0Thv
+	7JkGDTKBd1HKBpVYJeaU3+X667Uv0p30UTMkrh1clzfbfw/2/ymxHSaz7/gIyGwClKMneZ
+	cYwotoSPZd6YpoD/hU4JQP2ZgGo4rScexYf0sJ020nS866Q0qiZUKX3xzRbQH+Lxkw4XN5
+	CmQr2Xr7wtnoVV4k1yAmHIcnmYIYT84ouAc51ec1ggCJGrgw3EchhQkTQ7Jt2Q==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Andrea Scian <andrea.scian@dave.eu>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+  "michal.simek@amd.com" <michal.simek@amd.com>,  "richard@nod.at"
+ <richard@nod.at>,  "vigneshr@ti.com" <vigneshr@ti.com>,
+  "amit.kumar-mahapatra@amd.com" <amit.kumar-mahapatra@amd.com>
+Subject: Re: PL353 NAND Controller - SW vs HW ECC
+In-Reply-To: <f6a240d3-2447-4edf-9314-347160878d9a@dave.eu> (Andrea Scian's
+	message of "Mon, 23 Feb 2026 17:39:50 +0100")
+References: <MI2P293MB02644DC5515E56A2539C65739765A@MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM>
+	<87v7g4zz36.fsf@bootlin.com>
+	<f05f27ac-abaf-43fc-8f77-8f729741d03f@dave.eu>
+	<87wm0ixn16.fsf@bootlin.com>
+	<f6a240d3-2447-4edf-9314-347160878d9a@dave.eu>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Tue, 24 Feb 2026 09:07:54 +0100
+Message-ID: <87jyw2r2cl.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260223_185817_496468_0A0754D1 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20260224_000803_362966_577CEF55 
+X-CRM114-Status: GOOD (  16.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,55 +77,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
-
-The current code uses spi_nor_spimem_check_op() to check if the SPI
-controller supports the Read CR operation. However, this leads to a
-false positive where capable controllers are wrongly flagged with
-SNOR_F_NO_READ_CR.
-
-SPI_NOR_RDCR_OP defines an operation without an address phase
-(addr.nbytes = 0, addr.buswidth = 0). When this operation is passed
-to spi_nor_spimem_check_op(), the function overwrites op->addr.nbytes
-to 3 or 4 to test addressing capabilities (as it was originally designed
-for data read/write ops).
-
-This modified operation is then rejected by spi_mem_check_op() in the
-core spi-mem.c because it has a non-zero address length but a zero address
-buswidth, which is an invalid combination.
-
-Fix this by bypassing spi_nor_spimem_check_op() for register operations.
-Instead, directly call spi_mem_supports_op() to test the exact operation
-without altering its address phase.
-
-Fixes: 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support")
-Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
----
- drivers/mtd/spi-nor/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8ffeb41c3e08..13201908a69f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2466,7 +2466,7 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
--		if (spi_nor_spimem_check_op(nor, &op))
-+		if (!spi_mem_supports_op(nor->spimem, &op))
- 			nor->flags |= SNOR_F_NO_READ_CR;
- 	}
- }
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQW5kcmVhLAoKPj4+PiBUaGlzIGlzIG9idmlvdXNseSBqdXN0IHNwZWN1bGF0aW9uLCBtYXli
+ZSB0aGUgZXJyYXRhIHlvdSBtZW50aW9uZWQgYWJvdmUKPj4+PiB3aWxsIGJyaW5nIGFuIG9idmlv
+dXMgaGFyZHdhcmUgZmFpbHVyZSB0byBvdXIgYXR0ZW50aW9uLiBUaGUgQXJhc2FuIElQCj4+Pj4g
+dXNlZCBvbiBaeW5xTVAgYWxzbyBzdWZmZXJzIGZyb20gYSBzaW1pbGFyIGxpbWl0YXRpb24gKG5v
+dCBhYmxlIHRvCj4+Pj4gY29ycmVjdGx5IHJlcG9ydCBmYWlsdXJlcykgYW5kIEkgZGVjaWRlZCB0
+byBpbXBsZW1lbnQgb25lIHBhdGggdXNpbmcgdGhlCj4+Pj4gc29mdHdhcmUgQkNIIGVuZ2luZSwg
+d2l0aCBhIHRpbWUgcGVuYWx0eSBvZiBjb3Vyc2UuCj4+Pgo+Pj4gU28gdGhhdCdzIG5lYXJseSB0
+aGUgc2FtZSByZXN1bHQgSSdtIHRyeWluZyB0byBnZXQgd2l0aCBaeW5xN2sKPj4+IHBsYXRmb3Jt
+IDstKQo+PiBJbiB0aGlzIGNhc2UsIEkgY2FuIG9ubHkgcmVjb21tZW5kIHRoZSBibG9nIHBvc3Qg
+SSB3cm90ZSBmb3IgdGhlCj4+IEFyYXNhbgo+PiBjb250cm9sbGVyLiBJIGJlbGlldmUgaXQgc2hv
+dWxkIGJlIGVhc2llciB0byBkbyBhcyB5b3Ugd29uJ3QgbmVlZCB0aGUKPj4gcG9seW5vbWlhbCBy
+ZXRyby1lbmdpbmVlcmluZy4KPj4gTGluazoKPj4gaHR0cHM6Ly9ib290bGluLmNvbS9ibG9nL3N1
+cHBvcnRpbmctYS1taXNiZWhhdmluZy1uYW5kLWVjYy1lbmdpbmUvCj4KPiBUaGFua3MgZm9yIHRo
+aXMgZGV0YWlsZWQgYXJ0aWNsZSEKPiBJIHRoaW5rIEknbGwgbW92ZSB0byBoYW1taW5nIGNvZGUg
+KGlmIEkgbWFrZSBpdCB3b3JrIGluIHUtYm9vdCkgb3IgQkNICj4gKGFmdGVyIGV2YWx1YXRpbmcg
+dGhlIHBlcmZvcm1hbmNlIGltcGFjdCkKCkVpdGhlciB5b3Ugd2FudCB0byBsZXZlcmFnZSB0aGUg
+ZW5naW5lIGluIHRoZSB3cml0ZSBwYXRoIChiZWNhdXNlIGl0IGlzCmZhc3RlciB0aGFuIGRvaW5n
+IGl0IHdpdGggdGhlIENQVSkgYW5kIHlvdSBtdXN0IGltcGxlbWVudCBIYW1taW5nIGFzCnRoYXQn
+cyB0aGUgb25seSBjYXBhYmlsaXR5IG9mIHRoZSBjb250cm9sbGVyLCBvciB5b3Ugd2FudCBiZXR0
+ZXIKc3RyZW5ndGggYW5kIGluIHRoaXMgY2FzZSB5b3UgZG8gbm90IGhhdmUgYW55dGhpbmcgdG8g
+ZG8gZXhjZXB0CmNvbmZpZ3VyaW5nIGZvciBzb2Z0d2FyZSBFQ0MgZW5naW5lcyBpbiB0aGUgRFQu
+CgpCdXQgZm9yIGFuIHVwc3RyZWFtIGZpeCwgd2hpY2ggSSB3b3VsZCB3ZWxjb21lLCB5b3UgbmVl
+ZCB0byB1c2UgdGhlCkhhbW1pbmcgaGFyZHdhcmUgZm9yIHRoZSB3cml0ZSBwYXRoIGFuZCBzb2Z0
+d2FyZSBpbiB0aGUgcmVhZCBwYXRoLgoKPiBJIGhhdmUgc29tZSBpc3N1ZSB3aXRoIExpbnV4IHRv
+IFUtQm9vdCBpbnRlcm9wZXJhYmlsaXR5IChzaW5nbGUgYml0Cj4gZXJyb3IgYXJlIG5vdCBjb3Jy
+ZWN0bHkgaGFuZGxlZCBpbiB1LWJvb3QgaGFtbWluZyBpbXBsZW1lbnRhdGlvbiksIGlzCj4gdGhp
+cyB0aGUgcmlnaHQgbWFpbGluZyBsaXN0IHRvIGFzayBmb3IgYWR2aWNlIG9yIHNob3VsZCBJIG1v
+dmUgdG8KPiB1LWJvb3QgTUw/CgpZb3UgY291bGQgY3JlYXRlIGEgdGhyZWFkIHdpdGggYm90aCwg
+SSBndWVzcywgaWYgdGhlcmUgaXMgYW4KaW50ZXJvcGVyYWJpbGl0eSBpc3N1ZS4KClRoYW5rcywK
+TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
