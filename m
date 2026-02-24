@@ -4,106 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A4C2EFB817
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Feb 2026 08:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDDEFF3C991
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Feb 2026 15:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=la3Qp8J3mKstFbrCueWnc/nwbIfWZOWn5uUa4ypy9Fo=; b=Y2KACjk3ATfVlW
-	MjL9Ezw4oy9xmY54lUyqZ874iccVm2WUPiyVJHl5qL8zRFwvUp2zCRima6zPJwyi4f23Tgf3vy4X8
-	bL8XyR0I182D9DQ4R5vxdMPCdaoesxKX22Su9GziD5Yo0JA8TP525Rn79ng1qEjhKSt/oxgOVoHVb
-	QB/+K8juqK27yH0y91apZ5b1PJt3vXbixiXQ/BpeJWlf27swZck8VKMQGNdQlxjAKV2NaCZtl+ntv
-	Unm+ppNxdFSZmAaSbF2M4vik5DbvQHxeZfaRUogYcW2oaQ4AnwrCS4gHU33Vf8dccRh/UzCk+WzLW
-	4Q/p03asUR9jGkzhR3YQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=jR6MI5H+NrGfDcFAcyojwb0ZxptYm4OOl/1iAG0zCic=; b=dL9ER5Ik7/xIjt
+	IQ8G4rIy0ot4ToSBL+FK/2VDnfDuBN6P56atN4ellipggH4OI76uiiJd6fPp8oOViv5Ka7p+ghZNA
+	N2sQQmN/VJZmgMpkIi/eHLowVDF56hoUS1M7GC8I2NI6Bba1qxJHX6epY3kjbFGbEWlav9W9as0dV
+	k5wMPZRZiQmkCDNUsZrQcsQrhz/SDfb9lS7pDFkNzSVUE9G2jPwNhkmG7+xu1V5pQZDU3oPLSJb/S
+	SQjUxtJRFu129CbTi+oUIxqc8AXpcodcMRU3Vh7yzcagQbXVBJMBXabaG8eEVw4EqGzW/UhVRcin1
+	WZ3FU7qP63ROoZvPPEwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vuns2-00000001eP4-2LCI;
-	Tue, 24 Feb 2026 08:34:18 +0000
-Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	id 1vuuVc-00000002Kc3-1R2r;
+	Tue, 24 Feb 2026 15:39:36 +0000
+Received: from mgamail.intel.com ([198.175.65.13])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vunrz-00000001eOX-3Rzp
+	id 1vuuVZ-00000002Kbh-3Of6
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Feb 2026 08:34:17 +0000
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-2a7a23f5915so31179585ad.2
-        for <linux-mtd@lists.infradead.org>; Tue, 24 Feb 2026 00:34:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771922055; cv=none;
-        d=google.com; s=arc-20240605;
-        b=YSnZuWcDqAVPETY6C/K69QlXxEYu4wOU0syBqTqqkH4Ns4LLCJlN7vc/R5/iN/3FG2
-         l5VeWhknyFaIMc0wSJZ2nH2YDEfGWis8sRE8SAU1dnAZ5H4qnjJo672Xs5H18fPEinZT
-         V9pgRh6+N475sOBhaRmdA4ogg/a/01+tneNlSszVonXkUggFtE3PR/3HK69mFJNJKGy4
-         G8ZEG845AyM/jVcCpg+SmUF8N8tk9fNb0UXSWmmvCbj1WCke7FJ+33IIpRtqsT+BJNqT
-         OOBUNfNpDxxBZSjo9HkGwuZWDaCVsetM0hTGG99DNB7qy5YrSwHcrXuJ7I+s12sgqOaN
-         pOfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=BOp69aoXyTerJNnUrclzJdYCnnjdh4YYaM9YJxNzM3w=;
-        fh=/Nz1NJaMraz1MDyFtQ8OszeJbPeD4s4yxDTDncnRmbI=;
-        b=HhuIsB1VjPmTVCZL6vSHqMX2p7csZk5KM0VkU4UBQ+IhRsOdF1ILrOyULQXqlI2jL1
-         sx9hhut/czfLNTA+PMbkvElIJvTwxTyy5WrZ2IXbhiwDoSvtEE4CAoTNDUkdKkDON3Xw
-         yOglqJ0MFv6roj3L+fb6L2AxIIbD6h0W0yozJe7Z9WONAHFBllnU2oywWELgZdVqI2Xl
-         j+9flTabHv3trQi/Cc+hcYiifHlD574LDw2XskQ2u/+VOFE6n8F2XnhCcKKz8n7JOua/
-         gSJvE+IGFmgJWGDpTQtaXUjG62NyQklbjf63YKHEiUUbvDmQQExPX73j9jfldPkqajAf
-         THmw==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771922055; x=1772526855; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BOp69aoXyTerJNnUrclzJdYCnnjdh4YYaM9YJxNzM3w=;
-        b=bOuaTKzK4adEkFet1sUbu8v50Sj8u38FWPZz/zx+4sIZZEZOQrVLqQrtwGKyBbabHT
-         1Tuihe54CghOUqmCyYjbb12Q/COsjhNpfYYR8Edyh3FyxyXnnLnEDS4qBLp+9fEjWySr
-         j+un2hCeckPkyMLivGvPk8rQ+zBU1iO8kHgZb8s7T8BOu+tG5l/QKpjRCbUZby2NaT8e
-         7LR6ipJkS0FziWevBnInvpDSLAntOcl5GcdUoL6ZAZpS3y56jZy7vrWVM5u5dzJxT+UX
-         /66rsVWZsrXxN3b4UJZ12l3ZjU5aMNXc/wqa78fC6x+E+15H1UYBeM95h3yGCeLPaZj2
-         6eyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771922055; x=1772526855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=BOp69aoXyTerJNnUrclzJdYCnnjdh4YYaM9YJxNzM3w=;
-        b=s4gk+7Q7XxpgnkMbWDRELRDt6zeXUCMxbjoZEbDEEsDP7wvqGVhCpn1k2aYpFX7Wo7
-         y+YD6wuIja7gKXPOuVEh0iybBZsJyBtINXtjIssxwbs1zWFPwyvy41C/PjGUNu43kBsq
-         l5g66pTEF2/E3ch1UptLuUVFlBsc8nCrDDy9190tW7XMgc69j5X3B5lYh3rSDyquigpM
-         y8giS8zYhtuMzqSVXairerW2zYjR07XKzTLGIpBJdy3EQfdTQjsBYVy9/jdXnY918h2O
-         YEDgysVYglftP0xpIKAHwnybBPJnBTvT+Dx6RZiZz5pdFgn4iow4O+a14wWiltUVWWpN
-         l+DA==
-X-Forwarded-Encrypted: i=1; AJvYcCXjq+L7GMfz+19E/shkpVlH2zBmp0KeQx3x8jPZENi9b5MQSGPTYsKuAvrWnseTrY3feqnX0LPtZr0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyuEDIPnW/UXn758g+EP2SEveDCvODnAtH77xu3DxTIIo+BJp5x
-	WPraMtYWjK4GQiw/p5bOtNGeS2to8/FRzxzz2nvNuoGDLDt3U1NhbMJrw2Mkuq5oYPc+x3/aLCN
-	YWfSgJg63379GdZDVW8wMTRmTHyxKYVU=
-X-Gm-Gg: ATEYQzwgPVcibYbzRK7etMSIKcMNZJcA89p9EyKsdvID2xIfbUjmBp2Qfpq6KiQDpDr
-	l3TR2vXAvOm8HoZ9FuF8hZFUGoxttidjiJUBH+EJgxGMlaRndbCx1qS49vC8ZcE3JiXpnJ80ynq
-	dE7lJDTryK1pQNyoKmJsBzI5EKRQkNY4r+j3RYvvg0ENVffiKPgWvdIZBUe7/BJU63D9mOa0IYk
-	RXcxYltTi76mo2NrNiPM5nhOmRHz0QXaGz3ZGuiHB4Kvve/a7Ut/J38BfDx9FN0Mt8ugwVYyHTG
-	IAbQwdI=
-X-Received: by 2002:a17:902:f68d:b0:2aa:e3ba:d045 with SMTP id
- d9443c01a7336-2ad74419c74mr110311295ad.8.1771922054591; Tue, 24 Feb 2026
- 00:34:14 -0800 (PST)
+	Tue, 24 Feb 2026 15:39:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1771947574; x=1803483574;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=F33cmMw8QgcBvaDT7U3nVndApBI3V5VbWFuMOCfXKn8=;
+  b=FkH6sP6IaABncTmcetqPIbVr/TLKyx4uZzdWwMpePnFj0GMTjISRpWVd
+   m3yBR/ewAWcuoiV86Ot623VFnEEKqmA1snAY4X4sCFUPyEqwNKxFF8UwY
+   vNxWzqamNoqWKLkZOIYk3tDprByru6p17zodbralSHBl6dsKMcvAWDhNO
+   thAAXfLmFiMgtxfyh8s4O6Wlr2lK0c7yAFtDE0F9ak/5F4vrAE5ganDz/
+   dd6ys+9Hr+lSK3mCZb88bu2BqYBDujYq+++F2RVSSMA9TXBOlFjGpwAAR
+   Mz/wjOBFxJoTpo8aEyeej6NPuzCkyXTFs6OBe82nJ9ZMW+h+z8sDMvUs1
+   Q==;
+X-CSE-ConnectionGUID: AD9f0rsQTLeSNiNaKQUVGQ==
+X-CSE-MsgGUID: ZE2zAmxMQoWOehUCH6oPOw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11711"; a="84059197"
+X-IronPort-AV: E=Sophos;i="6.21,308,1763452800"; 
+   d="scan'208";a="84059197"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2026 07:39:32 -0800
+X-CSE-ConnectionGUID: QUDZCH6PTMOZf1+dcEKW1w==
+X-CSE-MsgGUID: ZP1rp3ZzR1aQ4LvsAiHk1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,308,1763452800"; 
+   d="scan'208";a="215035154"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by orviesa006.jf.intel.com with ESMTP; 24 Feb 2026 07:39:30 -0800
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id 5F7CA98; Tue, 24 Feb 2026 16:39:28 +0100 (CET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] mtd: physmap: physmap-bt1-rom: Remove not-going-to-be-supported code for Baikal SoC
+Date: Tue, 24 Feb 2026 16:39:27 +0100
+Message-ID: <20260224153927.3627867-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-References: <20260224025550.1102660-1-linchengming884@gmail.com> <87ecmar1lc.fsf@bootlin.com>
-In-Reply-To: <87ecmar1lc.fsf@bootlin.com>
-From: Cheng Ming Lin <linchengming884@gmail.com>
-Date: Tue, 24 Feb 2026 16:32:19 +0800
-X-Gm-Features: AaiRm52n38wsv3oieVThWjDdwKzwY9H4OQ4IYvdXW07PHUve2nRzTc-ATUf5yZQ
-Message-ID: <CAAyq3SbkLxKKnadVZX6YVQDY18EDkMvA46xeq=oN4EEFpUAJVQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: core: Fix false positive in Read CR
- capability check
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
-	Michael Walle <mwalle@kernel.org>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Jakub Czapiga <czapiga@google.com>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, alvinzhou@mxic.com.tw, 
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260224_003415_900796_673132B9 
-X-CRM114-Status: GOOD (  27.04  )
+X-CRM114-CacheID: sfid-20260224_073933_939637_08A88F57 
+X-CRM114-Status: GOOD (  20.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,55 +83,217 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4g5pa8
-IDIwMjblubQy5pyIMjTml6XpgLHkuowg5LiL5Y2INDoyNOWvq+mBk++8mgo+Cj4gSGkgQ2hlbmcg
-TWluZywKPgo+IE9uIDI0LzAyLzIwMjYgYXQgMTA6NTU6NTAgKzA4LCBDaGVuZyBNaW5nIExpbiA8
-bGluY2hlbmdtaW5nODg0QGdtYWlsLmNvbT4gd3JvdGU6Cj4KPiA+IEZyb206IENoZW5nIE1pbmcg
-TGluIDxjaGVuZ21pbmdsaW5AbXhpYy5jb20udHc+Cj4gPgo+ID4gVGhlIGN1cnJlbnQgY29kZSB1
-c2VzIHNwaV9ub3Jfc3BpbWVtX2NoZWNrX29wKCkgdG8gY2hlY2sgaWYgdGhlIFNQSQo+ID4gY29u
-dHJvbGxlciBzdXBwb3J0cyB0aGUgUmVhZCBDUiBvcGVyYXRpb24uIEhvd2V2ZXIsIHRoaXMgbGVh
-ZHMgdG8gYQo+ID4gZmFsc2UgcG9zaXRpdmUgd2hlcmUgY2FwYWJsZSBjb250cm9sbGVycyBhcmUg
-d3JvbmdseSBmbGFnZ2VkIHdpdGgKPiA+IFNOT1JfRl9OT19SRUFEX0NSLgo+ID4KPiA+IFNQSV9O
-T1JfUkRDUl9PUCBkZWZpbmVzIGFuIG9wZXJhdGlvbiB3aXRob3V0IGFuIGFkZHJlc3MgcGhhc2UK
-PiA+IChhZGRyLm5ieXRlcyA9IDAsIGFkZHIuYnVzd2lkdGggPSAwKS4gV2hlbiB0aGlzIG9wZXJh
-dGlvbiBpcyBwYXNzZWQKPiA+IHRvIHNwaV9ub3Jfc3BpbWVtX2NoZWNrX29wKCksIHRoZSBmdW5j
-dGlvbiBvdmVyd3JpdGVzIG9wLT5hZGRyLm5ieXRlcwo+ID4gdG8gMyBvciA0IHRvIHRlc3QgYWRk
-cmVzc2luZyBjYXBhYmlsaXRpZXMgKGFzIGl0IHdhcyBvcmlnaW5hbGx5IGRlc2lnbmVkCj4gPiBm
-b3IgZGF0YSByZWFkL3dyaXRlIG9wcykuCj4gPgo+ID4gVGhpcyBtb2RpZmllZCBvcGVyYXRpb24g
-aXMgdGhlbiByZWplY3RlZCBieSBzcGlfbWVtX2NoZWNrX29wKCkgaW4gdGhlCj4gPiBjb3JlIHNw
-aS1tZW0uYyBiZWNhdXNlIGl0IGhhcyBhIG5vbi16ZXJvIGFkZHJlc3MgbGVuZ3RoIGJ1dCBhIHpl
-cm8gYWRkcmVzcwo+ID4gYnVzd2lkdGgsIHdoaWNoIGlzIGFuIGludmFsaWQgY29tYmluYXRpb24u
-Cj4gPgo+ID4gRml4IHRoaXMgYnkgYnlwYXNzaW5nIHNwaV9ub3Jfc3BpbWVtX2NoZWNrX29wKCkg
-Zm9yIHJlZ2lzdGVyIG9wZXJhdGlvbnMuCj4gPiBJbnN0ZWFkLCBkaXJlY3RseSBjYWxsIHNwaV9t
-ZW1fc3VwcG9ydHNfb3AoKSB0byB0ZXN0IHRoZSBleGFjdCBvcGVyYXRpb24KPiA+IHdpdGhvdXQg
-YWx0ZXJpbmcgaXRzIGFkZHJlc3MgcGhhc2UuCj4gPgo+ID4gRml4ZXM6IDUwMDhjM2VjM2Y4OSAo
-Im10ZDogc3BpLW5vcjogY29yZTogQ2hlY2sgcmVhZCBDUiBzdXBwb3J0IikKPiA+IFNpZ25lZC1v
-ZmYtYnk6IENoZW5nIE1pbmcgTGluIDxjaGVuZ21pbmdsaW5AbXhpYy5jb20udHc+Cj4KPiBUaGF0
-IGlzIGluZGVlZCBhIHByb2JsZW0sIEkgYWxyZWFkeSBzZW50IGEgcGF0Y2ggZm9yIHRoYXQgYnV0
-IHRoZXJlIGlzIGEKPiBiaXQgb2YgdHVybm92ZXIgaW4gdGhlIHNwaS1ub3IgdGVhbS4gSXQgaGFz
-bid0IGJlZW4gYWNrZWQgc28gSSBkaWRuJ3QKPiB0b29rIGl0IHRocm91Z2ggdGhlIGZpbmFsIE1S
-LiBUaGUgcHJvYmxlbSBub3cgZXhpc3RzIGluIDcuMC1yYzEsIHNlZToKPgo+IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2xpbnV4LW10ZC8yMDI2MDEwODEyMTQzMC4xMDk2ODQ0LTEtbWlxdWVsLnJh
-eW5hbEBib290bGluLmNvbS8KClVuZGVyc3Rvb2QsIHRoYW5rIHlvdSBmb3IgcG9pbnRpbmcgdGhh
-dCBvdXQuIEkgY29tcGxldGVseSBtaXNzZWQgeW91cgpwcmV2aW91cyBwYXRjaCB3aGVuIEkgd2Fz
-IGxvb2tpbmcgaW50byB0aGlzIGlzc3VlLgoKVGhhbmtzIGFnYWluIGZvciB0aGUgY2xhcmlmaWNh
-dGlvbiEKCj4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jIHwgMiArLQo+
-ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+ID4KPiA+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyBiL2RyaXZlcnMvbXRkL3Nw
-aS1ub3IvY29yZS5jCj4gPiBpbmRleCA4ZmZlYjQxYzNlMDguLjEzMjAxOTA4YTY5ZiAxMDA2NDQK
-PiA+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jCj4gPiArKysgYi9kcml2ZXJzL210
-ZC9zcGktbm9yL2NvcmUuYwo+ID4gQEAgLTI0NjYsNyArMjQ2Niw3IEBAIHNwaV9ub3Jfc3BpbWVt
-X2FkanVzdF9od2NhcHMoc3RydWN0IHNwaV9ub3IgKm5vciwgdTMyICpod2NhcHMpCj4gPgo+ID4g
-ICAgICAgICAgICAgICBzcGlfbm9yX3NwaW1lbV9zZXR1cF9vcChub3IsICZvcCwgbm9yLT5yZWdf
-cHJvdG8pOwo+ID4KPiA+IC0gICAgICAgICAgICAgaWYgKHNwaV9ub3Jfc3BpbWVtX2NoZWNrX29w
-KG5vciwgJm9wKSkKPiA+ICsgICAgICAgICAgICAgaWYgKCFzcGlfbWVtX3N1cHBvcnRzX29wKG5v
-ci0+c3BpbWVtLCAmb3ApKQo+ID4gICAgICAgICAgICAgICAgICAgICAgIG5vci0+ZmxhZ3MgfD0g
-U05PUl9GX05PX1JFQURfQ1I7Cj4gPiAgICAgICB9Cj4gPiAgfQoKQmVzdCByZWdhcmRzLApDaGVu
-ZyBNaW5nIExpbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+As noticed in the discussion [1] the Baikal SoC and platforms
+are not going to be finalized, hence remove stale code.
+
+Link: https://lore.kernel.org/lkml/22b92ddf-6321-41b5-8073-f9c7064d3432@infradead.org/ [1]
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mtd/maps/Kconfig           |  11 ---
+ drivers/mtd/maps/Makefile          |   1 -
+ drivers/mtd/maps/physmap-bt1-rom.c | 125 -----------------------------
+ drivers/mtd/maps/physmap-bt1-rom.h |  17 ----
+ 4 files changed, 154 deletions(-)
+ delete mode 100644 drivers/mtd/maps/physmap-bt1-rom.c
+ delete mode 100644 drivers/mtd/maps/physmap-bt1-rom.h
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 8a8b19874e23..99d5ff9a1fbe 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -75,17 +75,6 @@ config MTD_PHYSMAP_OF
+ 	  physically into the CPU's memory. The mapping description here is
+ 	  taken from OF device tree.
+ 
+-config MTD_PHYSMAP_BT1_ROM
+-	bool "Baikal-T1 Boot ROMs OF-based physical memory map handling"
+-	depends on MTD_PHYSMAP_OF
+-	depends on MIPS_BAIKAL_T1 || COMPILE_TEST
+-	select MTD_COMPLEX_MAPPINGS
+-	select MULTIPLEXER
+-	select MUX_MMIO
+-	help
+-	  This provides some extra DT physmap parsing for the Baikal-T1
+-	  platforms, some detection and setting up ROMs-specific accessors.
+-
+ config MTD_PHYSMAP_VERSATILE
+ 	bool "ARM Versatile OF-based physical memory map handling"
+ 	depends on MTD_PHYSMAP_OF
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 019f1e92cc41..51af1d2ebd52 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -19,7 +19,6 @@ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+ physmap-y			:= physmap-core.o
+-physmap-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
+ physmap-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
+ physmap-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
+ physmap-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
+deleted file mode 100644
+index 60dccc48f99e..000000000000
+--- a/drivers/mtd/maps/physmap-bt1-rom.c
++++ /dev/null
+@@ -1,125 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (C) 2020 BAIKAL ELECTRONICS, JSC
+- *
+- * Authors:
+- *   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+- *
+- * Baikal-T1 Physically Mapped Internal ROM driver
+- */
+-#include <linux/bits.h>
+-#include <linux/device.h>
+-#include <linux/kernel.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/xip.h>
+-#include <linux/mux/consumer.h>
+-#include <linux/of.h>
+-#include <linux/platform_device.h>
+-#include <linux/string.h>
+-#include <linux/types.h>
+-
+-#include "physmap-bt1-rom.h"
+-
+-/*
+- * Baikal-T1 SoC ROMs are only accessible by the dword-aligned instructions.
+- * We have to take this into account when implementing the data read-methods.
+- * Note there is no need in bothering with endianness, since both Baikal-T1
+- * CPU and MMIO are LE.
+- */
+-static map_word __xipram bt1_rom_map_read(struct map_info *map,
+-					  unsigned long ofs)
+-{
+-	void __iomem *src = map->virt + ofs;
+-	unsigned int shift;
+-	map_word ret;
+-	u32 data;
+-
+-	/* Read data within offset dword. */
+-	shift = (uintptr_t)src & 0x3;
+-	data = readl_relaxed(src - shift);
+-	if (!shift) {
+-		ret.x[0] = data;
+-		return ret;
+-	}
+-	ret.x[0] = data >> (shift * BITS_PER_BYTE);
+-
+-	/* Read data from the next dword. */
+-	shift = 4 - shift;
+-	if (ofs + shift >= map->size)
+-		return ret;
+-
+-	data = readl_relaxed(src + shift);
+-	ret.x[0] |= data << (shift * BITS_PER_BYTE);
+-
+-	return ret;
+-}
+-
+-static void __xipram bt1_rom_map_copy_from(struct map_info *map,
+-					   void *to, unsigned long from,
+-					   ssize_t len)
+-{
+-	void __iomem *src = map->virt + from;
+-	unsigned int shift, chunk;
+-	u32 data;
+-
+-	if (len <= 0 || from >= map->size)
+-		return;
+-
+-	/* Make sure we don't go over the map limit. */
+-	len = min_t(ssize_t, map->size - from, len);
+-
+-	/*
+-	 * Since requested data size can be pretty big we have to implement
+-	 * the copy procedure as optimal as possible. That's why it's split
+-	 * up into the next three stages: unaligned head, aligned body,
+-	 * unaligned tail.
+-	 */
+-	shift = (uintptr_t)src & 0x3;
+-	if (shift) {
+-		chunk = min_t(ssize_t, 4 - shift, len);
+-		data = readl_relaxed(src - shift);
+-		memcpy(to, (char *)&data + shift, chunk);
+-		src += chunk;
+-		to += chunk;
+-		len -= chunk;
+-	}
+-
+-	while (len >= 4) {
+-		data = readl_relaxed(src);
+-		memcpy(to, &data, 4);
+-		src += 4;
+-		to += 4;
+-		len -= 4;
+-	}
+-
+-	if (len) {
+-		data = readl_relaxed(src);
+-		memcpy(to, &data, len);
+-	}
+-}
+-
+-int of_flash_probe_bt1_rom(struct platform_device *pdev,
+-			   struct device_node *np,
+-			   struct map_info *map)
+-{
+-	struct device *dev = &pdev->dev;
+-
+-	/* It's supposed to be read-only MTD. */
+-	if (!of_device_is_compatible(np, "mtd-rom")) {
+-		dev_info(dev, "No mtd-rom compatible string\n");
+-		return 0;
+-	}
+-
+-	/* Multiplatform guard. */
+-	if (!of_device_is_compatible(np, "baikal,bt1-int-rom"))
+-		return 0;
+-
+-	/* Sanity check the device parameters retrieved from DTB. */
+-	if (map->bankwidth != 4)
+-		dev_warn(dev, "Bank width is supposed to be 32 bits wide\n");
+-
+-	map->read = bt1_rom_map_read;
+-	map->copy_from = bt1_rom_map_copy_from;
+-
+-	return 0;
+-}
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.h b/drivers/mtd/maps/physmap-bt1-rom.h
+deleted file mode 100644
+index 6782899598a4..000000000000
+--- a/drivers/mtd/maps/physmap-bt1-rom.h
++++ /dev/null
+@@ -1,17 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-#include <linux/mtd/map.h>
+-#include <linux/of.h>
+-
+-#ifdef CONFIG_MTD_PHYSMAP_BT1_ROM
+-int of_flash_probe_bt1_rom(struct platform_device *pdev,
+-			   struct device_node *np,
+-			   struct map_info *map);
+-#else
+-static inline
+-int of_flash_probe_bt1_rom(struct platform_device *pdev,
+-			   struct device_node *np,
+-			   struct map_info *map)
+-{
+-	return 0;
+-}
+-#endif
+-- 
+2.50.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
