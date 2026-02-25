@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82EC6F55434
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9949BF5543B
 	for <linux-mtd@archiver.kernel.org>; Wed, 25 Feb 2026 01:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,65 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ir5WetZuCiKXXQMq6cKAqEvX/En3vNj+0lXdCgF+wmo=; b=qTl2RkL6tnVdx5
-	NCKyXxlFuiE6mtWqQZDP1kbAao785Cg5uEe08cYbwbephkc6N041ST3PntANkddNGV7K4g5kvDcc8
-	0tXV3W6ZAstxDJ3qpqqeXpaCxZw8Ob0i40LLoI1+jnq2xFxi8rkJeW+nSwxr29bPK6wIm34ikgyzw
-	E2jkTscM1D2GEmxT8hEGZ20wDl240wa/a70HYn5HRBt2h5BSqpu1XOd2fq98pqVSaONkzBf4fhHUG
-	id0Z1+1z4sk8QB18anUcp5CXkJesoS6AosYHFe1nfSUfis4qIEe3UJ29LyX2dHkvQM4Ehx7o23acg
-	sb+tZwTuMKJpaXhyOmlQ==;
+	List-Owner; bh=agWjBNvEyHwv59Rit1U3lGwBAITSDkCKsUwmU7ifsjo=; b=EWs7dqBa6sWLDi
+	vEB4rEUu3d3aCLLB2MG9NpiYI+IMZmtj4a9Gne88D6419pfOahPxm/DNE1a74dxXkL1YCyBAVxGzk
+	qxZsPKSpPBObf8MPqEjnaOVezbzr3pPzUmp38zhh/gSPS8bF0IV+5H74XEzxE1vgYYi2fUvwgFM6n
+	Ehdf9+ylGTcNOyXcbkclGMS6lPVWpeEqRJLqu53K5mv7CQxdwckbvTv3ZSx64h1+i3xKrdaW1QW3N
+	2pnrSi5Ti6dPZ8CW8PV83K9MXJ59SX3qZvFEcLBUoYBYAkvdUG3hl8Wnxd08omdv+345SJfumhMxj
+	vBuvNTsqannRo+BGoTDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vv4BB-000000033oT-3haZ;
-	Wed, 25 Feb 2026 01:59:09 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1vv4BA-000000033np-047d;
+	Wed, 25 Feb 2026 01:59:08 +0000
+Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vv4B8-000000033mK-0GRl
+	id 1vv4B7-000000033mF-2hhV
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Feb 2026 01:59:07 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-82310b74496so3196232b3a.3
+	Wed, 25 Feb 2026 01:59:06 +0000
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-2ab46931cf1so2524335ad.0
         for <linux-mtd@lists.infradead.org>; Tue, 24 Feb 2026 17:59:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1771984745; x=1772589545; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3zvwKD7V2YKpGMLkJEO1tU3ZqnJ4SfaB+coADDuVirU=;
-        b=e3Adn69CkTR4rcYVBH3brqL0HJTtkHvu5VoJrKapAPiabQuqovQv9cHXzJqk2uoaAq
-         awNf0imzDmTvG+OYG4fAmduiwAek4i2BmarVpj9gRYWirTpyaKPWEHO2dh+TFunGCyGV
-         S7f0B1bEI+iPy9UFIcvl/fqdf5VKKzSeij4xMbhJDSuiQxhMiIDJL7RTya2boVbkViup
-         eARMwyPynUMtTBy8jknKIu8EErM9C6yillDzP+DyyvjXmIMDrMOkGgjMTj5cGAzIHtIz
-         0x//qzErTozX2LKyd/FpHDnHXvfkCuzdy1+IsBfAdyEOV6gBvR2BFGfxc++9NjHP7eqA
-         Zbuw==
+        bh=nILoW48W9hqLRwmHITphjoIJRhEY+2JRSNwPbSj3wbI=;
+        b=E6+znnXilZZthP4ZdQ5vS38ngndbUs9jb9+Ex0Nub6mpmP+gGm0WlsZ9o+euewVQES
+         1zNN4t4jF7jm1pFzN4EWwoT1lpt26LdPjMBre32K6FplXO9v4mvmT+TuD0Sia6rtSVPI
+         1uDikBq6GesMO9gkFS6jUAM1SprXjO7JZnbDD4eEFQkrRXMcAgF2dMXXU4x51kzDNfOZ
+         or5RQwiR+5IseMJR2cebE7cHI+3LhozkVDprD7wZonjGTRw+QGKvFaa3QGZDLptZr7Fr
+         eB/Jjx1fu3ZtBJR8na/LFeotkqZEwry4rLw7cr79+f4cdJlD/75FJEGalRh+0sr8+yiP
+         nylA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1771984745; x=1772589545;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=3zvwKD7V2YKpGMLkJEO1tU3ZqnJ4SfaB+coADDuVirU=;
-        b=Oi0DcYXr17KxmMHey+WE/x7xFgxLKGKTujZWGNmomPHrfDzWmv4apqA7z2+OhxXEzJ
-         q6dkrAJDX+bRaQXpeqv4qc1iUvWFcsv+1D46BRCgK9vHzCUpbd6hcblvbobqeMn2253v
-         nIOUSEhZhZoEACKZWeN4v4gih+nIGxhNwEHAK5Anrnz8hMMdTvecgNkSNNd+jeQg3VoT
-         kgwD+xyllnXcru+FwaIs0dv8/wh0VjS/mmv2ZU2isyfEPR5Yh3EwG/z2p7p+npifI+be
-         XVuCjjkUJsH0V13IArefEh7bOajUifwfPvRzcCk1R/9AP27Rfby4Tnz8XiVrOWDcqhYW
-         qwZg==
-X-Forwarded-Encrypted: i=1; AJvYcCUnqIONpBkVZ7P7TvfMOLTEoez6KtxqFc8gIl+fezsCg3JKW24XJPHqEXuXHOkag1KKmCnPwvOdfz8=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw8hwjnlM0pF79oI4hsxLBlZCE9WHG6/cjSSUOZeZmo2q9yzQHn
-	OjSp8Sdk02WNY2DlJHFTSsX6JlsZUdkSHS3D7rwULDvjqGOKzZnaIxrK
-X-Gm-Gg: ATEYQzyj/Ddn6ianQ2PsnlVb5zQYs76UDIUExQTu8Q9t4Q2rJzLyosLKdxEsLfNMpVn
-	Amy3cgx6oVsmh+BbHv4/pFduxuRD5SRTv+ULt4T8lH19qa7EvZWEYloxxzB6nvEfkRXkPl7yQRT
-	mzIix2hPjSNZs3bhtWoUwVWU59AohMsGITdgYDC0EQp+OqfDWbmOpUpUjxiyZnqhffBiQ6Ix20n
-	UY+KsJAlSpJZgbVoRydiL87+S1HJbq13yUnqBHJC7BUiG2++zcpaIBFo+o7w1xBngpw3onwFOHT
-	QgncObprwpI2llUOxA+k8XjKeW/1DVJL9fsnY+jprfyX9yGXRA6Gb5/sVH3wz7QPyiQwO0TK0Pl
-	25lXXYt4rSm417tmnXuOwj97ExlKXzG/YKb1oO0GIl7QW9uimftj44oUVghQ8+JMHMbQRYVBbIr
-	qZHFOY87lSHSuO+EkLHcynTy3cg0xzmxfmKtFC9SELyIGqVQ==
-X-Received: by 2002:a05:6a21:898b:b0:34f:ec81:bc3d with SMTP id adf61e73a8af0-39545f7a3bamr11523634637.44.1771984744888;
+        bh=nILoW48W9hqLRwmHITphjoIJRhEY+2JRSNwPbSj3wbI=;
+        b=GBr9r8O8+W6s8OlKG00+E2+lsJefVVEODPe6IAQJpMcRhQbPSkPjlR4R9xJwu5yid9
+         Kua0sTNSO7C9Um9LF9+P4/aHvjZZiNMkyCxzN8uMUsfQFsDauiwbadGi/UFr3XC81iPv
+         2ARZexRaS3EWa7xzhs2ywh4HchBP0EahXHvIjSkTUEOwmz5428yf+TcJ5IvQleIvTCjS
+         ou8k66ZawpFKYN70vypBoGKgX7FGzGeFY+Z9F2bXiPUiagsnAlfn5+YVxuPNHjCD8hEk
+         Zpgc+65B/0/CmPnTIaK6CpUREy1PP+PGeIQDQ8ApeRi/Yga4UleeYCFA84c5GWwE53ST
+         zEzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVrOGaMA+ze1iLmdKlI9cJCIB4fv2C73jxaKCab8gnCzb+r6HaQs8jeD96ObTmrCPrdj6VfbH+dlRU=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwvWADCbPgqYH9NSkqI3704V3SVJKC1jI8sM9kuRZ6tzy0b0s5f
+	9mTZemI6dHoW6yCe9ZMr8exWCccQwMh+P7ceLPqHuukO9PuiGA7NytUf
+X-Gm-Gg: ATEYQzygGtEZVNt7Q1ZRljI5LqVub8p6V10E97itvD3ydPA6HYgJIXKfUDkGQef8Rmn
+	5cXA/KeNjlWQljJrf7dz3xDZZLXK0GLaP0dWxFJYoCHk+L1M3xnoOrYcU6BS7+rX2CZJCItQgl5
+	B7FDL0boPeQ2XVkKfgPPjy1g05nBSaBAetnFcvo/NFpvCLfHeO5TeogWxPHPqBelGrQIIaOz12b
+	/i8HiF82neId8G7GcYambyUAQ9A/ooJb8VkMCmVNRQCL8O6kSWMBucpVQ6ShAgrftCDMwrm+3P8
+	w+ON74IZkXk9EMMleG/dBH5cMHr5Z9USXgHMQ7GBFilZKhXR5GcJQxAvzGPjskxzwtOYWhI+7dt
+	giPakv/Xmc/RYuiGZJIQQeSriGEy7w40d7yWEfgImkyY/taQUIqErPk5oduCIroKg8YdDZF15ZN
+	qNJypHml7pLVBvvqIuroxHAcbBQFY4G8K/YgIayCoBRWbmJA==
+X-Received: by 2002:a17:903:2350:b0:2aa:e238:e20c with SMTP id d9443c01a7336-2adbdcd8822mr19122275ad.19.1771984744512;
         Tue, 24 Feb 2026 17:59:04 -0800 (PST)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35900700e69sm1002312a91.0.2026.02.24.17.59.04
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad7503fcc5sm118566325ad.76.2026.02.24.17.59.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 24 Feb 2026 17:59:04 -0800 (PST)
 Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 8DB204136074;
+	by twhmp6px (Postfix) with ESMTPS id 93A694136075;
 	Wed, 25 Feb 2026 09:59:02 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -89,17 +89,16 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	alvinzhou@mxic.com.tw,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v7 1/3] dt-bindings: mtd: spinand: Add randomizer enable/disable properties
-Date: Wed, 25 Feb 2026 09:57:03 +0800
-Message-Id: <20260225015705.1113199-2-linchengming884@gmail.com>
+Subject: [PATCH v7 2/3] mtd: spi-nand: Add support for randomizer
+Date: Wed, 25 Feb 2026 09:57:04 +0800
+Message-Id: <20260225015705.1113199-3-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260225015705.1113199-1-linchengming884@gmail.com>
 References: <20260225015705.1113199-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260224_175906_125078_3DC012F9 
-X-CRM114-Status: UNSURE (   9.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260224_175905_684988_85A38865 
+X-CRM114-Status: GOOD (  17.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,67 +117,121 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-Add "nand-randomizer-enable" and "nand-randomizer-disable" boolean
-properties.
+This patch adds support for the randomizer feature.
 
-These properties allow enabling or disabling the randomizer feature
-via the device tree.
+It introduces a 'set_randomizer' callback in 'struct spinand_info' and
+'struct spinand_device'.
 
-According to JEDEC standard JESD22-A117E, no single data pattern
-represents a universal worst-case for all NAND flash failure mechanisms.
-Different patterns, such as fully programmed, checkerboard, or mostly
-erased, can disproportionately stress specific cells (e.g., programmed,
-erased, or those influenced by adjacent states).
-
-Given that no fixed pattern can cover all scenarios, the use of a
-randomized data pattern is a practical and effective mitigation strategy.
-Our hardware implements a randomizer feature that scrambles user data
-before it is written to the flash and restores the original data upon read.
-
-This ensures the data stored on the media is more evenly distributed,
-thus reducing pattern-dependent degradation. This is especially crucial
-for preventing errors caused by unbalanced data (e.g., all zeros or
-all ones) in blocks with high program/erase (P/E) cycle counts.
-Ultimately, the randomizer improves the long-term reliability and
-endurance of the flash device.
-
-Please refer to the following link for randomizer feature:
-Link: https://www.mxic.com.tw/Lists/ApplicationNote/Attachments/2151/AN1051V1-The%20Introduction%20of%20Randomizer%20Feature%20on%20MX30xFxG28AD_MX35xFxG24AD.
+If a driver implements this callback, the core will invoke it during
+device initialization (spinand_init) to enable or disable the randomizer
+feature based on the device tree configuration.
 
 Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 ---
- .../devicetree/bindings/mtd/nand-chip.yaml     | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/mtd/nand/spi/core.c | 27 +++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h |  9 +++++++++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
-index 609d4a4ddd80..2559cd97ccc5 100644
---- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
-@@ -67,6 +67,24 @@ properties:
-       the secure regions present.
-     $ref: /schemas/types.yaml#/definitions/uint64-matrix
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 8aa3753aaaa1..77a0371010c4 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1307,6 +1307,29 @@ static int spinand_create_dirmaps(struct spinand_device *spinand)
+ 	return 0;
+ }
  
-+  nand-randomizer-enable:
-+    description:
-+      Enable the randomizer feature. This property is mutually-exclusive
-+      with nand-randomizer-disable.
-+    type: boolean
++static int spinand_randomizer_init(struct spinand_device *spinand)
++{
++	struct device_node *np = spinand->spimem->spi->dev.of_node;
++	bool enable = false;
++	int ret;
 +
-+  nand-randomizer-disable:
-+    description:
-+      Disable the randomizer feature. This property is mutually-exclusive
-+      with nand-randomizer-enable.
-+    type: boolean
++	if (!spinand->set_randomizer)
++		return 0;
 +
-+dependencies:
-+  nand-randomizer-enable:
-+    not:
-+      required:
-+        - nand-randomizer-disable
++	if (of_property_read_bool(np, "nand-enable-randomizer"))
++		enable = true;
++	else if (of_property_read_bool(np, "nand-disable-randomizer"))
++		enable = false;
++	else
++		return 0;
 +
- required:
-   - reg
++	ret = spinand->set_randomizer(spinand, enable);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
+ static const struct nand_ops spinand_ops = {
+ 	.erase = spinand_erase,
+ 	.markbad = spinand_markbad,
+@@ -1594,6 +1617,7 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ 		spinand->user_otp = &table[i].user_otp;
+ 		spinand->read_retries = table[i].read_retries;
+ 		spinand->set_read_retry = table[i].set_read_retry;
++		spinand->set_randomizer = table[i].set_randomizer;
  
+ 		/* I/O variants selection with single-spi SDR commands */
+ 
+@@ -1881,6 +1905,9 @@ static int spinand_init(struct spinand_device *spinand)
+ 	 * ECC initialization must have happened previously.
+ 	 */
+ 	spinand_cont_read_init(spinand);
++	ret = spinand_randomizer_init(spinand);
++	if (ret)
++		goto err_cleanup_nanddev;
+ 
+ 	mtd->_read_oob = spinand_mtd_read;
+ 	mtd->_write_oob = spinand_mtd_write;
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6a024cf1c53a..6a68a6c3866a 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -584,6 +584,7 @@ enum spinand_bus_interface {
+  * @user_otp: SPI NAND user OTP info.
+  * @read_retries: the number of read retry modes supported
+  * @set_read_retry: enable/disable read retry for data recovery
++ * @set_randomizer: enable/disable randomizer support
+  *
+  * Each SPI NAND manufacturer driver should have a spinand_info table
+  * describing all the chips supported by the driver.
+@@ -612,6 +613,8 @@ struct spinand_info {
+ 	unsigned int read_retries;
+ 	int (*set_read_retry)(struct spinand_device *spinand,
+ 			     unsigned int read_retry);
++	int (*set_randomizer)(struct spinand_device *spinand,
++			      bool enable);
+ };
+ 
+ #define SPINAND_ID(__method, ...)					\
+@@ -668,6 +671,9 @@ struct spinand_info {
+ 	.read_retries = __read_retries,					\
+ 	.set_read_retry = __set_read_retry
+ 
++#define SPINAND_RANDOMIZER(__set_randomizer)				\
++	.set_randomizer = __set_randomizer
++
+ #define SPINAND_INFO(__model, __id, __memorg, __eccreq, __op_variants,	\
+ 		     __flags, ...)					\
+ 	{								\
+@@ -753,6 +759,7 @@ struct spinand_mem_ops {
+  * @user_otp: SPI NAND user OTP info.
+  * @read_retries: the number of read retry modes supported
+  * @set_read_retry: Enable/disable the read retry feature
++ * @set_randomizer: Enable/disable the randomizer feature
+  */
+ struct spinand_device {
+ 	struct nand_device base;
+@@ -786,6 +793,8 @@ struct spinand_device {
+ 	bool cont_read_possible;
+ 	int (*set_cont_read)(struct spinand_device *spinand,
+ 			     bool enable);
++	int (*set_randomizer)(struct spinand_device *spinand,
++			      bool enable);
+ 
+ 	const struct spinand_fact_otp *fact_otp;
+ 	const struct spinand_user_otp *user_otp;
 -- 
 2.25.1
 
