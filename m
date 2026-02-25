@@ -4,88 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5269EFD3760
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Feb 2026 15:03:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B88EFD3764
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Feb 2026 15:10:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9PQ7EsI0iBnfbEy3T6D8H8Qyy4oYi6hczGiQWnDk34g=; b=zd9tqnaX3Cnoat
-	K+044sGAUGH79r0+jicaoYsfmnY6K3Q37T0x433BNx/uWewX+YYovTz+wN/MCBuh2AkUMfPjvlmbZ
-	b7xG5FhvXT4NvJnrMkUrdAqmJA0iD3Wd8kycKAzOFbauExglB015IUAAzzUymRLxohByBH7FL+y3a
-	ERfuGkIch8d0nMHpukkb2V5fjmm8RhmjwS9CivmwdHwDVJddgliLzG05CKN/1oELl0HdOn5Tl28Z4
-	OYE5a7vv+asV0O1ljQp9O91ehoirbZCcI2jFX908aaCRaT3ycqSAMk9TyFsqsM29KrODYu12uygPK
-	0NRHaNcYp9R9XuI0Izbg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=U29iXetP/7Qr6Tr76peMCiHjzqxS8kNulQzX2ptRMQA=; b=yiXkFgCVR6i3+g
+	usWiEEjjqBtWscO3Z8aVoSe+3jRg20az/wt5+bbAOLKGB2Yr9nRTP/MJ4tHF15hLnqiTO0VPQwGsl
+	56A8g8lOdgmlVvutObuXeLaBUybqtBEdIcdcV2qr3ifv+Lb+8RotEW36Dho6RcZjVuSIxHEBUNcGt
+	w5vTwPYqVopft8PVUarrsi8UBXO0WXTSSf6s9mEUvuJObTsntJRfhEQu4oN+W/3GM/t2+cpzu2/DF
+	xh4AX1LOMQpP08hsvtVIUF9sL/9Y9/tFZlUff/TMUV5sP2dl0NhJb/vz2nVTAVPL1fsTxIfKccQCH
+	0lReIfjKo4wZ8Eei1Xiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvGPq-00000004F4c-48jm;
-	Wed, 25 Feb 2026 15:03:07 +0000
-Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
+	id 1vvGWX-00000004Fau-01uC;
+	Wed, 25 Feb 2026 15:10:01 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvGPn-00000004F40-2TmJ
+	id 1vvGWT-00000004FaE-02Cu
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Feb 2026 15:03:06 +0000
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-824b5f015bcso6539211b3a.1
-        for <linux-mtd@lists.infradead.org>; Wed, 25 Feb 2026 07:03:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772031783; x=1772636583; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EqP6EGsW9F6euNXh865lM+yV/zkikpG3s/C0DdTEp4s=;
-        b=eDy3+E/R/cg881AxjNbeREpL5nt6dAEpakJ2UgdO9GAV7A2AEFXzxOShRLBA85oW0U
-         Wv5ODo5AInW6kLApUaiwT+rTHGIYfzfhV+3/bURel1zXL+b0etU8+M0w79u2l897HqB/
-         /8muSWNCPGp4M0zRyiEKXH5LcgXvQrv1Ic4zwj4nv0o5JjWuoQWHPcoM2GmFH+eTF7M7
-         6UrXJTCbsjBWGXh2jtenVYG06b/8KZ3Q+frdD7JNcxUrDdN2f6T2Rkhb9ULuZVZ4K+Q5
-         xoJts7Jh76YY2/zk/DwMXbhfe2L37UlxyJGIHCp2dch51XwrahqYbCESrCaieZTGE6j1
-         Ru0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772031783; x=1772636583;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EqP6EGsW9F6euNXh865lM+yV/zkikpG3s/C0DdTEp4s=;
-        b=uCF67wd4Nb5mSGWaz2PEVWJ1dATGLbXbmDm2ideQTNVgbD6KZCX8r0Ct1lD+HkVBG6
-         X/4NwHbhQwcx6215zkuAdFufexgE2qETnQU4c/iVdV3F0Z0qjYh2ln2c7lqCTXpBMsoV
-         axHYAoXZ1apadF9fSWmOqsdPx2ugvwoA0/aceew433uhHQ/qh/4R2sbaeYCfnkYO3bDf
-         F4NdNHA3HpgSesXbl6OHSBJja9wXGmpdQfZSzTreu397uQ35HR00rw2HXURme7Izrhnc
-         xXX+73Clgwm/W+CdQCQSwYXKMY4QOr8D1zzPJRGNJVBVcUSbVfX0gOo7c9xF5lGNI5l1
-         X7WQ==
-X-Gm-Message-State: AOJu0YxVxtKf70LfTVZuyTaihrKu7t7vK//H0yP++wi7kDGO9r0OIZhr
-	wak0+I1KseenG3Q1cG62L2PdqdiIK8IuJAZzsevv7ooYYQdH+sLfbMy4
-X-Gm-Gg: ATEYQzz+z5TdImKJyoXee8VqV4KOCBqgf5N0VUA5pB/vSnhPY9vIO8F+KALSWlnPB2k
-	Pht44VUm7TucaijbNM5+hFGcY6gX/tE2Vk3OqigcdE2fY517KZS6c6+OoQJzrqBr8auPAV/5b0k
-	an3q4wVKKoAFDQ7yhIvbNCOH1tSUcc00h/u6rCIGs3CxPC2iDfLkcd41ZzsqnuWzxXWn9eWUMhR
-	QJYevFZBAcuSDe+dNpNAwrOZRumc55CExwbtQ7SGALFIqbhahOMBblw1It/lDnAH7qlinW4/4ut
-	MjiCH1v/j/4seYP3Qab8YdwyoCMNT+KwshUniQUnpX3FKKzGjZJMTx3LrRmi0r+oUY9BEcLmYJc
-	85faWhjtC4JPIny5QsFS/vE+b2kcsFiv9UmhjcjDRsoce4YCWGT9vpG82IXaPwOK8+x7ZYUWNEv
-	gl3EOxDdA4RoP1csF+e2oDy5tKh3qMShmm9ffl+ryquSqA01hVhgu+45tuWL4=
-X-Received: by 2002:a05:6a00:440f:b0:824:93e4:2ddf with SMTP id d2e1a72fcca58-826da8c0f3emr13497351b3a.13.1772031782044;
-        Wed, 25 Feb 2026 07:03:02 -0800 (PST)
-Received: from LAPTOP-872M7T80.localdomain ([122.183.54.224])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-826dd86c494sm13799030b3a.30.2026.02.25.07.02.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Feb 2026 07:03:01 -0800 (PST)
-From: Akhila YS <akhilayalmati@gmail.com>
-Date: Wed, 25 Feb 2026 15:02:50 +0000
-Subject: [PATCH v2] dt-bindings: mtd: st,spear600-smi: convert to DT schema
+	Wed, 25 Feb 2026 15:09:59 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 51DDD4E410F8;
+	Wed, 25 Feb 2026 15:09:53 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1BFEB5FDE6;
+	Wed, 25 Feb 2026 15:09:53 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 334D410369260;
+	Wed, 25 Feb 2026 16:09:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1772032191; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=HgUlI7q2fA9MZdaUIYY0d5mtoXIeH07oXQLHKae4E8E=;
+	b=gKss4o40gnoZRYfhulIOZSS3nn8HKYV+6mmPlIuaHhJE9kk46pLruEtjnzlFW8jyb2Nz7A
+	bx2nHBEKr5Kyqg7Gra1uTvM7H6LpcP0MJBCLwaKatyM4l5D6mYAOzepRsJ3GDyDm7dcbPR
+	bDuKQuchs4d9PqXCjsN9AtV+OIhtFNxXH8LBkSXqFWDlaLapzamBjDJETt1FYEr+myyMC1
+	ENUKo+b2pKQDFTiLyD+V8J9IvuK0qI6KhSur1m9pdxSMs5jdTD4BbtzssA6SmIGX+0S6wd
+	TjcJWumXbBLQ42yDL1nd8QxDMqpA0C8GJWhGaDuzZtANnhET6hz+5UNtYCJeEw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Cheng Ming Lin <linchengming884@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Rob Herring <robh@kernel.org>,  Krzysztof Kozlowski
+ <krzk+dt@kernel.org>,  Conor Dooley <conor+dt@kernel.org>,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Mikhail Kshevetskiy
+ <mikhail.kshevetskiy@iopsys.eu>,  Pablo Martin-Gomez
+ <pmartin-gomez@freebox.fr>,  Tianling Shen <cnsztl@gmail.com>,  Pratyush
+ Yadav <pratyush@kernel.org>,  linux-mtd@lists.infradead.org,
+  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  alvinzhou@mxic.com.tw,  Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH v7 1/3] dt-bindings: mtd: spinand: Add randomizer
+ enable/disable properties
+In-Reply-To: <20260225015705.1113199-2-linchengming884@gmail.com> (Cheng Ming
+	Lin's message of "Wed, 25 Feb 2026 09:57:03 +0800")
+References: <20260225015705.1113199-1-linchengming884@gmail.com>
+	<20260225015705.1113199-2-linchengming884@gmail.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Wed, 25 Feb 2026 16:09:45 +0100
+Message-ID: <87o6lcq2py.fsf@bootlin.com>
 MIME-Version: 1.0
-Message-Id: <20260225-spear-v2-1-021bcb670601@gmail.com>
-X-B4-Tracking: v=1; b=H4sIABkPn2kC/13MQQ6DIBCF4auYWZdGpqihK+/RuEAYdZIqBhrSx
- nD3Updd/i8v3wGRAlOEe3VAoMSR/VYCLxXYxWwzCXalAWtsa4ko4k4mCGq0dlZRRzeE8t0DTfw
- +ncdQeuH48uFzskn+1n8hSSHF5JQabadb3Yz9vBp+Xq1fYcg5fwFlDgl2mgAAAA==
-X-Change-ID: 20260122-spear-e599dc4e7e32
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Akhila YS <akhilayalmati@gmail.com>
-X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260225_070305_223313_2BC6AFFC 
-X-CRM114-Status: GOOD (  17.17  )
+X-CRM114-CacheID: sfid-20260225_070957_203394_74719858 
+X-CRM114-Status: GOOD (  16.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,159 +80,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert STMicroelectronics SPEAr600 Serial Memory Interface (SMI)
-Controller binding to YAML format.
-
-Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
----
-Changes in v2:
-- Removed allOf ref as it is misleading the existing node.
-- Defined pattern properties for the child node.
-- Link to v1: https://lore.kernel.org/r/20260122-spear-v1-1-fd44bc79695b@gmail.com
----
- .../devicetree/bindings/mtd/spear_smi.txt          | 29 --------
- .../devicetree/bindings/mtd/st,spear600-smi.yaml   | 83 ++++++++++++++++++++++
- 2 files changed, 83 insertions(+), 29 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/spear_smi.txt b/Documentation/devicetree/bindings/mtd/spear_smi.txt
-deleted file mode 100644
-index c41873e92d26..000000000000
---- a/Documentation/devicetree/bindings/mtd/spear_smi.txt
-+++ /dev/null
-@@ -1,29 +0,0 @@
--* SPEAr SMI
--
--Required properties:
--- compatible : "st,spear600-smi"
--- reg : Address range of the mtd chip
--- #address-cells, #size-cells : Must be present if the device has sub-nodes
--  representing partitions.
--- interrupts: Should contain the STMMAC interrupts
--- clock-rate : Functional clock rate of SMI in Hz
--
--Optional properties:
--- st,smi-fast-mode : Flash supports read in fast mode
--
--Example:
--
--	smi: flash@fc000000 {
--		compatible = "st,spear600-smi";
--		#address-cells = <1>;
--		#size-cells = <1>;
--		reg = <0xfc000000 0x1000>;
--		interrupt-parent = <&vic1>;
--		interrupts = <12>;
--		clock-rate = <50000000>;	/* 50MHz */
--
--		flash@f8000000 {
--			st,smi-fast-mode;
--			...
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/mtd/st,spear600-smi.yaml b/Documentation/devicetree/bindings/mtd/st,spear600-smi.yaml
-new file mode 100644
-index 000000000000..189bc111b470
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/st,spear600-smi.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/st,spear600-smi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics SPEAr600 Serial Memory Interface (SMI) Controller
-+
-+maintainers:
-+  - Richard Weinberger <richard@nod.at>
-+
-+description:
-+  The SPEAr600 Serial Memory Interface (SMI) is a dedicated serial flash
-+  controller supporting up to four chip selects for serial NOR flashes
-+  connected in parallel. The controller is memory-mapped and the attached
-+  flash devices appear in the CPU address space.The driver
-+  (drivers/mtd/devices/spear_smi.c) probes the attached flashes
-+  dynamically by sending commands (e.g., RDID) to each bank.
-+  Flash sub nodes describe the memory range and optional per-flash
-+  properties.
-+
-+properties:
-+  compatible:
-+    const: st,spear600-smi
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+  clock-rate:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Functional clock rate of the SMI controller in Hz.
-+
-+patternProperties:
-+  "^flash@[0-9a-f]+$":
-+    type: object
-+
-+    properties:
-+      reg:
-+        maxItems: 1
-+
-+      st,smi-fast-mode:
-+        type: boolean
-+        description:
-+          Indicates that the attached flash supports fast read mode.
-+
-+    required:
-+      - reg
-+
-+    unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - clock-rate
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    flash@fc000000 {
-+        compatible = "st,spear600-smi";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        reg = <0xfc000000 0x1000>;
-+        interrupt-parent = <&vic1>;
-+        interrupts = <12>;
-+        clock-rate = <50000000>;  /* 50 MHz */
-+
-+        flash@f8000000 {
-+            reg = <0xf8000000 0x1000>;
-+            st,smi-fast-mode;
-+        };
-+    };
-+...
-
----
-base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
-change-id: 20260122-spear-e599dc4e7e32
-
-Best regards,
--- 
-Akhila YS <akhilayalmati@gmail.com>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjUvMDIvMjAyNiBhdCAwOTo1NzowMyArMDgsIENoZW5nIE1pbmcgTGluIDxsaW5jaGVuZ21p
+bmc4ODRAZ21haWwuY29tPiB3cm90ZToKCj4gRnJvbTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWlu
+Z2xpbkBteGljLmNvbS50dz4KPgo+IEFkZCAibmFuZC1yYW5kb21pemVyLWVuYWJsZSIgYW5kICJu
+YW5kLXJhbmRvbWl6ZXItZGlzYWJsZSIgYm9vbGVhbgo+IHByb3BlcnRpZXMuCj4KPiBUaGVzZSBw
+cm9wZXJ0aWVzIGFsbG93IGVuYWJsaW5nIG9yIGRpc2FibGluZyB0aGUgcmFuZG9taXplciBmZWF0
+dXJlCj4gdmlhIHRoZSBkZXZpY2UgdHJlZS4KPgo+IEFjY29yZGluZyB0byBKRURFQyBzdGFuZGFy
+ZCBKRVNEMjItQTExN0UsIG5vIHNpbmdsZSBkYXRhIHBhdHRlcm4KPiByZXByZXNlbnRzIGEgdW5p
+dmVyc2FsIHdvcnN0LWNhc2UgZm9yIGFsbCBOQU5EIGZsYXNoIGZhaWx1cmUgbWVjaGFuaXNtcy4K
+PiBEaWZmZXJlbnQgcGF0dGVybnMsIHN1Y2ggYXMgZnVsbHkgcHJvZ3JhbW1lZCwgY2hlY2tlcmJv
+YXJkLCBvciBtb3N0bHkKPiBlcmFzZWQsIGNhbiBkaXNwcm9wb3J0aW9uYXRlbHkgc3RyZXNzIHNw
+ZWNpZmljIGNlbGxzIChlLmcuLCBwcm9ncmFtbWVkLAo+IGVyYXNlZCwgb3IgdGhvc2UgaW5mbHVl
+bmNlZCBieSBhZGphY2VudCBzdGF0ZXMpLgo+Cj4gR2l2ZW4gdGhhdCBubyBmaXhlZCBwYXR0ZXJu
+IGNhbiBjb3ZlciBhbGwgc2NlbmFyaW9zLCB0aGUgdXNlIG9mIGEKPiByYW5kb21pemVkIGRhdGEg
+cGF0dGVybiBpcyBhIHByYWN0aWNhbCBhbmQgZWZmZWN0aXZlIG1pdGlnYXRpb24gc3RyYXRlZ3ku
+Cj4gT3VyIGhhcmR3YXJlIGltcGxlbWVudHMgYSByYW5kb21pemVyIGZlYXR1cmUgdGhhdCBzY3Jh
+bWJsZXMgdXNlciBkYXRhCj4gYmVmb3JlIGl0IGlzIHdyaXR0ZW4gdG8gdGhlIGZsYXNoIGFuZCBy
+ZXN0b3JlcyB0aGUgb3JpZ2luYWwgZGF0YSB1cG9uIHJlYWQuCj4KPiBUaGlzIGVuc3VyZXMgdGhl
+IGRhdGEgc3RvcmVkIG9uIHRoZSBtZWRpYSBpcyBtb3JlIGV2ZW5seSBkaXN0cmlidXRlZCwKPiB0
+aHVzIHJlZHVjaW5nIHBhdHRlcm4tZGVwZW5kZW50IGRlZ3JhZGF0aW9uLiBUaGlzIGlzIGVzcGVj
+aWFsbHkgY3J1Y2lhbAo+IGZvciBwcmV2ZW50aW5nIGVycm9ycyBjYXVzZWQgYnkgdW5iYWxhbmNl
+ZCBkYXRhIChlLmcuLCBhbGwgemVyb3Mgb3IKPiBhbGwgb25lcykgaW4gYmxvY2tzIHdpdGggaGln
+aCBwcm9ncmFtL2VyYXNlIChQL0UpIGN5Y2xlIGNvdW50cy4KPiBVbHRpbWF0ZWx5LCB0aGUgcmFu
+ZG9taXplciBpbXByb3ZlcyB0aGUgbG9uZy10ZXJtIHJlbGlhYmlsaXR5IGFuZAo+IGVuZHVyYW5j
+ZSBvZiB0aGUgZmxhc2ggZGV2aWNlLgo+Cj4gUGxlYXNlIHJlZmVyIHRvIHRoZSBmb2xsb3dpbmcg
+bGluayBmb3IgcmFuZG9taXplciBmZWF0dXJlOgo+IExpbms6Cj4gaHR0cHM6Ly93d3cubXhpYy5j
+b20udHcvTGlzdHMvQXBwbGljYXRpb25Ob3RlL0F0dGFjaG1lbnRzLzIxNTEvQU4xMDUxVjEtVGhl
+JTIwSW50cm9kdWN0aW9uJTIwb2YlMjBSYW5kb21pemVyJTIwRmVhdHVyZSUyMG9uJTIwTVgzMHhG
+eEcyOEFEX01YMzV4RnhHMjRBRC4KClRoaXMgbGluayBicmluZ3MgbWUgdG8gYSAiV2UgaGF2ZSBt
+b3ZlZCB0byBvdXIgbmV3IGhvbWUiIHBhZ2UuCgpBbnlob3csIHRoaXMgTGlua3MgZG9lcyBub3Qg
+bWFrZSBtdWNoIHNlbnNlIGluIHRoZSBiaW5kaW5nLiBJZiB0aGlzIGlzIGEKdmVyeSBnZW5lcmlj
+IEFOLCB3aHkgbm90LCBidXQgbWF5YmUgSSdkIG1vdmUgaXQgdG8gdGhlIFNQSSBOQU5EIHBhdGNo
+ZXMsCmFzIHRoZSBuYW1lIGltcGxpZXMgdGhhdCBpdCBpcyBhIGJpdCBzcGVjaWZpYyB0byBNYWNy
+b25peCBjaGlwcy4KCj4gU2lnbmVkLW9mZi1ieTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWluZ2xp
+bkBteGljLmNvbS50dz4KCk90aGVyd2lzZSBib3RoIHRoZSBiaW5kaW5nIGFuZCBjb2RlIGxvb2sg
+b2sgZnJvbSBteSBQb1YuIFNvIGJlc2lkZXMgdGhlCkxpbmsgdGhhdCBtdXN0IGJlIG1vdmVkIGFu
+ZCBmaXhlZCwgSSdsbCB3YWl0IGZvciBiaW5kaW5nIGFwcHJvdmFsLgoKVGhhbmtzLApNaXF1w6hs
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
