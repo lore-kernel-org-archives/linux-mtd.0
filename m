@@ -4,48 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67A0BFD8FCE
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 15:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2C66FD8FCE
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 15:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sg6Su2Go6UBkSrCOj0YYQzRX0+tGdUQO6uph6c88rJ8=; b=HuW2kQkueEFflE
-	yQuiCCLq6yDW3uEGGWvpyDvhicnd6j96CV5+PrbYW2O3Jy7DMmXl73VvM/taLD894ZTG3eLrO0iqf
-	GgHd4sM2sRAlwcusBR19euoon/qDa2YkBz19RXJ7qOvV4vc0s6ONUfy1XKU0JJ3yGrrHWH8O1+9gA
-	L+XIDg5gfh3MVwsP82p1FLboWZr+8tcFjqFtjEBZ6S/ABzu6RXFXyDSTXHSlRwz1BFLCBLZ5hZFXC
-	X2BvwWAVYz+RwbZL4REDu5DhA3fxOn+tZ2wjpIl7TTiWyx4eBnTQmCrgcMsuxAywBkH7s4mLUn23T
-	v1oP8UKYVKViN85m0Rqg==;
+	List-Owner; bh=rtT8p1UEwEHqwnVZTfMBBllQI8CTfP9ASJFZ2f/OTWU=; b=5F8tMg7nSsx0oS
+	jlWkcg1XfJzuUNlaWIwMgmKKnvn1AKyFnlkSmMebhDzKAzng1Wyo/ZQpknQiUmnfDgEAyBUcIZAtT
+	maP9vw0u1pRsBMoOUPmLyZyiHyUTfVCHotveBzxLHcVwoAGhTk3FxMTskVo9Iw8q0DtDIiDe4aD9K
+	chC2JNW+hqFk5+8KBxpJHhGBctAsFJ7NY/rcmveFyRYvn6W2iScL9CWi7txGdbxGe1/HiHiZH/wCh
+	hIRADikiOvR0RClvDAzKneBmGif5t8hl2mTT1aMKYpy/b8nAee2JsfnYIZLK2Qemgl97fJYbQKtuz
+	W/ND+b6GQPpCZsgyOktA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdm8-00000006bJf-0kti;
-	Thu, 26 Feb 2026 15:59:40 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vvdmQ-00000006bVj-1DD8;
+	Thu, 26 Feb 2026 15:59:58 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdm7-00000006bIk-0sjE;
-	Thu, 26 Feb 2026 15:59:39 +0000
+	id 1vvdmO-00000006bUK-49mb;
+	Thu, 26 Feb 2026 15:59:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=fLYlAfCr7Wgwg8RdGI5wMtP38MakqNwQ+MvPQWIW2oc=; b=U8sKIyvQPPhLbFGpZ9ibTBekOH
+	GEEtyRzMbgz8qpv7rqNiIemQloutSCeBs9QY5lNJaHgtuNPvwoOCVk/Pxb5ho13PCSMqNxl6MxbkR
+	Vabcmtz3Bw8tJKF6+DLDatsJLrb1WlRdXeJM+FtzKcCZ5rR1ExcpSEvi+PRidmi5/+FQVHDmTsiUL
+	yIhKZ7UtYRq89w3WWDgYyUZwI8wmqyPhbeRcfH7gGlSLv3hKDmcBTVFjNvgxSdI1lwTgm2XEXXv7J
+	1tIuzpTwj/dm0fhiQybrdM2gnF+cFlaaxKNrg0sXgAfKeCeq4LS9AITtHXyyuxfXMkucuIxtPTBBX
+	zPEWu3vw==;
+Received: from sea.source.kernel.org ([172.234.252.31])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vvdmK-0000000BP6u-1fIv;
+	Thu, 26 Feb 2026 15:59:55 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9EF5F60180;
+	by sea.source.kernel.org (Postfix) with ESMTP id EBA8640115;
+	Thu, 26 Feb 2026 15:59:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D436C19424;
 	Thu, 26 Feb 2026 15:59:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BBD8C116C6;
-	Thu, 26 Feb 2026 15:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772121578;
-	bh=ThZbEdE3fPtaNvZtxaKlshpGf4FAsWPlvcoxqlVwDyM=;
+	s=k20201202; t=1772121590;
+	bh=VTT0KHR7BbAQYop9anH+bkuQB0B7NoPjk1NTpo2tzcg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=IX2sqEs0O6na6HJTocJskWpMYuHFfQV8vUqhJnqj2Y8zBnHbLKufy+/Xl0cocKdwI
-	 SZTOTJbwYkTz/dDjSF6zX+KhvivpLyajtGTkOfuUg5wnarmiCkmBgFFIXG8PBYfmt7
-	 Esbx22XwmFb6InsAawDLtovAny0MJIPFwK8QE53pIcbO1XmaSkreEphNK+o2r6ML0U
-	 E3m38IUPPc8olwFy10dVyHFSslFtH3sv6/vtlA0AED3tFl2ElsIxtzkKBV55HK3A6y
-	 r1wT6n+54mF7+J0PaPg8SgdUY+cy8drwiBiMO6Q9htgUeiNhuaNJsFHKFGh3yCdgyv
-	 U7ij5otTQQpFw==
+	b=ltBuCaFEtGvQHRlHx7pSUXMJvQ2xqMGVdp2WfZjMtqntvXbs73LaqWDDb/K9Ip4UM
+	 WRyGhv9Bh7nqFwL3Y9NEqAa9S+7r5/WaP+0M8Vtq5KWyHP7cOFpBHkYyuYEC0EkLdW
+	 RNeSDZSVjQrHEVPs3VNrgT5LhT3a5BD55uNYm+lN4FCpcHKGZ1Qvt1Wcv3HZsN4478
+	 zMx7LgvHJGjHVaO7Jk1T3HnLLWhEenCFZPvOTaFwZ0oJiXZhe7F1QF8BVQXd7TOjF/
+	 Xxal7t9LtS7+l05rnICV0YN5kkfsRFxBg4nMbOsdXU/klL1SbDKKEsFyTY8fGuJG7j
+	 9adU9Gu3fkmRQ==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 26 Feb 2026 10:55:18 -0500
-Subject: [PATCH 16/61] proc: update /proc/PID/maps for u64 i_ino
+Date: Thu, 26 Feb 2026 10:55:19 -0500
+Subject: [PATCH 17/61] nilfs2: update for u64 i_ino
 MIME-Version: 1.0
-Message-Id: <20260226-iino-u64-v1-16-ccceff366db9@kernel.org>
+Message-Id: <20260226-iino-u64-v1-17-ccceff366db9@kernel.org>
 References: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 In-Reply-To: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>
@@ -69,22 +83,25 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
  linux-x25@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1805; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=ThZbEdE3fPtaNvZtxaKlshpGf4FAsWPlvcoxqlVwDyM=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0ITSPuDdR9Gj/ig3ZtcRQGCHeH8mI0/2qy7
- PsZ/MjzRK6JAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtCAAKCRAADmhBGVaC
- FQN4D/9u3DKuuUXkp5KUC0TUDHURuhUhUrh0shsxfkBNauCalAPfBUCQWocWndKNnQFHUWA/f9D
- 5mhKW+CC/8BKE/xHqDiDMKidjthZUU7Bl/tpVDRmJrL4PIdyLKj3OvGX7xoKH8qNJEWQQvB4olD
- MhhLcHPdrpX1fJVLou4zxDF4zNZSkNu00eO6FMKJ+Uctq7lroPKIIEk91a3VIZhj2V9SzT8oI0G
- jk+sfvrI82HE7l7D1K1H9uf410MjvGRpblEFJgoswRQYwZz3W/lCu3ygduWQgEV7itgi9kp3Jyj
- so/2UCNbZgyw3hqlvGjsSizBOu1/Q4yayK/Jt20hokTkODtyEimtoYYJlRlhzhGVq6xOHHuCPSb
- DjvttQUcBGanGFWUy8Z+Gm3rgL+XF0b6xYfFtkH0bb2S2wJZ3zaV/jTNnKQ+CjQAxfxxAA1d2ua
- oUz07JrDPpX/EpaOj7sBBKzlGKjFAZJ/1CFUwgmfZKZSfsQTflrNdRrxGjBTUd4KOngF2P59Gac
- CYXeC4wcb7YvcOfV5xatXfobRbLZUp03OPafdufx8Z2dBFKzUfbjaSUzaErMMhgvw4+IUdZYUDN
- xWotZg5Lp9u+Am1S1/LbrioVly7Hos50RzfPL7qHTpEMYeGDWQhVltAuhRUZ0zKdgs3Ho2bkJMd
- AV49qtfyuI36HyQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=16417; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=VTT0KHR7BbAQYop9anH+bkuQB0B7NoPjk1NTpo2tzcg=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0IK3Uiz7/OGLiZ1boS/yxgMZlT/xNxGiqhR
+ FULecILsxaJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtCAAKCRAADmhBGVaC
+ FTQLD/9IPHA4Me/91ZDcjNOI16Cy7+JCps1N405Mt0z2eytOxfFlSuDruRvCwzNwPJfCKifLm0Y
+ enWqScM5706EZSgSBIEQCzQ1MwJC1DhXN66P/KNVC7QasVMV3j/Dt0dTlzJcSxfG9HrgeAZjKlP
+ rK8I4ZGcI56XctLmPip7GPreUU40toONLe9BHh0bJB0WrD0eMLONPAqobOZsA4jTxGT3zBS7Ke3
+ ifnQU1MlfIcght2gGch5jMKDto2dYZ4St0BVDjHAH5B77CeSa2fk9wobPM9AaQtPgH7oOZswn78
+ e9G1I0GdeLc31O7pPNcwiVdFccLIcK7vrMfjqrbOxE8Xy4AafjFwvyqH/XbwgGdUVvgX3/SsU38
+ 9sXNl2wur+tE3cXzd9Eq61ZPpSMf9z5mEwuU9WbRKxkd0O5Zn5dtoDg4bJBkFm9GRXR1Ve4JTFX
+ rMeFciaYCiQireLZ7neiQS0lCesWLXeE71w53juyXfd0udVQgOmJmnWaok6q/ggallPNp7aaD+x
+ orBRW8dUEwPGWVkCC/crJ1ErfNUnT8ZGU+/RTxXTMDaZtFPL9O+pT+h7t9PYWQPWcYXCN+Fye45
+ 4bS4Wb43IgUmfaIozc0AKQTbJitp/56x4fYxWAv8eFOdQuj8qXp0AqY3Nr+n7JQ1JfGxAOj6+io
+ 7vFdF/gxNNtHu/g==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260226_155952_887175_E57DF70E 
+X-CRM114-Status: GOOD (  17.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,51 +118,390 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Update the local ino variable type from unsigned long to u64, and change
-the format string from %lu to %llu when printing it. The variable is
-assigned from inode->i_ino which is now u64.
+Update nilfs2 trace events and filesystem code for u64 i_ino:
+
+- Change __field(ino_t, ...) to __field(u64, ...) in trace events
+- Update format strings from %lu to %llu
+- Cast to (unsigned long long) in TP_printk
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/proc/fd.c       | 2 +-
- fs/proc/task_mmu.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ fs/nilfs2/alloc.c             | 10 +++++-----
+ fs/nilfs2/bmap.c              |  2 +-
+ fs/nilfs2/btnode.c            |  2 +-
+ fs/nilfs2/btree.c             | 12 ++++++------
+ fs/nilfs2/dir.c               | 12 ++++++------
+ fs/nilfs2/direct.c            |  4 ++--
+ fs/nilfs2/gcinode.c           |  2 +-
+ fs/nilfs2/inode.c             |  8 ++++----
+ fs/nilfs2/mdt.c               |  2 +-
+ fs/nilfs2/namei.c             |  2 +-
+ fs/nilfs2/segment.c           |  2 +-
+ include/trace/events/nilfs2.h | 12 ++++++------
+ 12 files changed, 35 insertions(+), 35 deletions(-)
 
-diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-index 9eeccff49b2abf57d766ce17fe47070c379ed2c8..aae1a83e884686471758703634f0d3479e77c9a7 100644
---- a/fs/proc/fd.c
-+++ b/fs/proc/fd.c
-@@ -54,7 +54,7 @@ static int seq_show(struct seq_file *m, void *v)
- 	if (ret)
- 		return ret;
+diff --git a/fs/nilfs2/alloc.c b/fs/nilfs2/alloc.c
+index e7eebb04f9a4080a39f17d4123e58ed7df6b2f4b..7b1cd2baefcf21e54f9260845b02c7c95c148c64 100644
+--- a/fs/nilfs2/alloc.c
++++ b/fs/nilfs2/alloc.c
+@@ -707,7 +707,7 @@ void nilfs_palloc_commit_free_entry(struct inode *inode,
  
--	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\nino:\t%lu\n",
-+	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\nino:\t%llu\n",
- 		   (long long)file->f_pos, f_flags,
- 		   real_mount(file->f_path.mnt)->mnt_id,
- 		   file_inode(file)->i_ino);
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index e091931d7ca19d71f31699913d177eec0821ca7b..751b9ba160fbf15499555875871d727644b0df44 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -442,7 +442,7 @@ static void get_vma_name(struct vm_area_struct *vma,
- static void show_vma_header_prefix(struct seq_file *m,
- 				   unsigned long start, unsigned long end,
- 				   vm_flags_t flags, unsigned long long pgoff,
--				   dev_t dev, unsigned long ino)
-+				   dev_t dev, u64 ino)
- {
- 	seq_setwidth(m, 25 + sizeof(void *) * 6 - 1);
- 	seq_put_hex_ll(m, NULL, start, 8);
-@@ -465,7 +465,7 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
- 	const struct path *path;
- 	const char *name_fmt, *name;
- 	vm_flags_t flags = vma->vm_flags;
--	unsigned long ino = 0;
-+	u64 ino = 0;
- 	unsigned long long pgoff = 0;
- 	unsigned long start, end;
- 	dev_t dev = 0;
+ 	if (!nilfs_clear_bit_atomic(lock, group_offset, bitmap))
+ 		nilfs_warn(inode->i_sb,
+-			   "%s (ino=%lu): entry number %llu already freed",
++			   "%s (ino=%llu): entry number %llu already freed",
+ 			   __func__, inode->i_ino,
+ 			   (unsigned long long)req->pr_entry_nr);
+ 	else
+@@ -748,7 +748,7 @@ void nilfs_palloc_abort_alloc_entry(struct inode *inode,
+ 
+ 	if (!nilfs_clear_bit_atomic(lock, group_offset, bitmap))
+ 		nilfs_warn(inode->i_sb,
+-			   "%s (ino=%lu): entry number %llu already freed",
++			   "%s (ino=%llu): entry number %llu already freed",
+ 			   __func__, inode->i_ino,
+ 			   (unsigned long long)req->pr_entry_nr);
+ 	else
+@@ -861,7 +861,7 @@ int nilfs_palloc_freev(struct inode *inode, __u64 *entry_nrs, size_t nitems)
+ 			if (!nilfs_clear_bit_atomic(lock, group_offset,
+ 						    bitmap)) {
+ 				nilfs_warn(inode->i_sb,
+-					   "%s (ino=%lu): entry number %llu already freed",
++					   "%s (ino=%llu): entry number %llu already freed",
+ 					   __func__, inode->i_ino,
+ 					   (unsigned long long)entry_nrs[j]);
+ 			} else {
+@@ -906,7 +906,7 @@ int nilfs_palloc_freev(struct inode *inode, __u64 *entry_nrs, size_t nitems)
+ 							      last_nrs[k]);
+ 			if (ret && ret != -ENOENT)
+ 				nilfs_warn(inode->i_sb,
+-					   "error %d deleting block that object (entry=%llu, ino=%lu) belongs to",
++					   "error %d deleting block that object (entry=%llu, ino=%llu) belongs to",
+ 					   ret, (unsigned long long)last_nrs[k],
+ 					   inode->i_ino);
+ 		}
+@@ -923,7 +923,7 @@ int nilfs_palloc_freev(struct inode *inode, __u64 *entry_nrs, size_t nitems)
+ 			ret = nilfs_palloc_delete_bitmap_block(inode, group);
+ 			if (ret && ret != -ENOENT)
+ 				nilfs_warn(inode->i_sb,
+-					   "error %d deleting bitmap block of group=%lu, ino=%lu",
++					   "error %d deleting bitmap block of group=%lu, ino=%llu",
+ 					   ret, group, inode->i_ino);
+ 		}
+ 	}
+diff --git a/fs/nilfs2/bmap.c b/fs/nilfs2/bmap.c
+index ccc1a7aa52d2064d56b826058554264c498d592f..824f2bd91c167965ec3a660202b6e6c5f1fe007e 100644
+--- a/fs/nilfs2/bmap.c
++++ b/fs/nilfs2/bmap.c
+@@ -33,7 +33,7 @@ static int nilfs_bmap_convert_error(struct nilfs_bmap *bmap,
+ 
+ 	if (err == -EINVAL) {
+ 		__nilfs_error(inode->i_sb, fname,
+-			      "broken bmap (inode number=%lu)", inode->i_ino);
++			      "broken bmap (inode number=%llu)", inode->i_ino);
+ 		err = -EIO;
+ 	}
+ 	return err;
+diff --git a/fs/nilfs2/btnode.c b/fs/nilfs2/btnode.c
+index 56836712909201775907483887e8a0022851bbec..2e553d698d0f3980de98fced415dfd819ddbca0a 100644
+--- a/fs/nilfs2/btnode.c
++++ b/fs/nilfs2/btnode.c
+@@ -64,7 +64,7 @@ nilfs_btnode_create_block(struct address_space *btnc, __u64 blocknr)
+ 		 * clearing of an abandoned b-tree node is missing somewhere).
+ 		 */
+ 		nilfs_error(inode->i_sb,
+-			    "state inconsistency probably due to duplicate use of b-tree node block address %llu (ino=%lu)",
++			    "state inconsistency probably due to duplicate use of b-tree node block address %llu (ino=%llu)",
+ 			    (unsigned long long)blocknr, inode->i_ino);
+ 		goto failed;
+ 	}
+diff --git a/fs/nilfs2/btree.c b/fs/nilfs2/btree.c
+index dd0c8e560ef6a2c96515025321914e0d73f41144..3c03f5a741d144d22d1ffb5acf43a035e88c00dc 100644
+--- a/fs/nilfs2/btree.c
++++ b/fs/nilfs2/btree.c
+@@ -353,7 +353,7 @@ static int nilfs_btree_node_broken(const struct nilfs_btree_node *node,
+ 		     nchildren <= 0 ||
+ 		     nchildren > NILFS_BTREE_NODE_NCHILDREN_MAX(size))) {
+ 		nilfs_crit(inode->i_sb,
+-			   "bad btree node (ino=%lu, blocknr=%llu): level = %d, flags = 0x%x, nchildren = %d",
++			   "bad btree node (ino=%llu, blocknr=%llu): level = %d, flags = 0x%x, nchildren = %d",
+ 			   inode->i_ino, (unsigned long long)blocknr, level,
+ 			   flags, nchildren);
+ 		ret = 1;
+@@ -384,7 +384,7 @@ static int nilfs_btree_root_broken(const struct nilfs_btree_node *node,
+ 		     nchildren > NILFS_BTREE_ROOT_NCHILDREN_MAX ||
+ 		     (nchildren == 0 && level > NILFS_BTREE_LEVEL_NODE_MIN))) {
+ 		nilfs_crit(inode->i_sb,
+-			   "bad btree root (ino=%lu): level = %d, flags = 0x%x, nchildren = %d",
++			   "bad btree root (ino=%llu): level = %d, flags = 0x%x, nchildren = %d",
+ 			   inode->i_ino, level, flags, nchildren);
+ 		ret = 1;
+ 	}
+@@ -453,7 +453,7 @@ static int nilfs_btree_bad_node(const struct nilfs_bmap *btree,
+ 	if (unlikely(nilfs_btree_node_get_level(node) != level)) {
+ 		dump_stack();
+ 		nilfs_crit(btree->b_inode->i_sb,
+-			   "btree level mismatch (ino=%lu): %d != %d",
++			   "btree level mismatch (ino=%llu): %d != %d",
+ 			   btree->b_inode->i_ino,
+ 			   nilfs_btree_node_get_level(node), level);
+ 		return 1;
+@@ -521,7 +521,7 @@ static int __nilfs_btree_get_block(const struct nilfs_bmap *btree, __u64 ptr,
+  out_no_wait:
+ 	if (!buffer_uptodate(bh)) {
+ 		nilfs_err(btree->b_inode->i_sb,
+-			  "I/O error reading b-tree node block (ino=%lu, blocknr=%llu)",
++			  "I/O error reading b-tree node block (ino=%llu, blocknr=%llu)",
+ 			  btree->b_inode->i_ino, (unsigned long long)ptr);
+ 		brelse(bh);
+ 		return -EIO;
+@@ -2104,7 +2104,7 @@ static int nilfs_btree_propagate(struct nilfs_bmap *btree,
+ 	if (ret < 0) {
+ 		if (unlikely(ret == -ENOENT)) {
+ 			nilfs_crit(btree->b_inode->i_sb,
+-				   "writing node/leaf block does not appear in b-tree (ino=%lu) at key=%llu, level=%d",
++				   "writing node/leaf block does not appear in b-tree (ino=%llu) at key=%llu, level=%d",
+ 				   btree->b_inode->i_ino,
+ 				   (unsigned long long)key, level);
+ 			ret = -EINVAL;
+@@ -2146,7 +2146,7 @@ static void nilfs_btree_add_dirty_buffer(struct nilfs_bmap *btree,
+ 	    level >= NILFS_BTREE_LEVEL_MAX) {
+ 		dump_stack();
+ 		nilfs_warn(btree->b_inode->i_sb,
+-			   "invalid btree level: %d (key=%llu, ino=%lu, blocknr=%llu)",
++			   "invalid btree level: %d (key=%llu, ino=%llu, blocknr=%llu)",
+ 			   level, (unsigned long long)key,
+ 			   btree->b_inode->i_ino,
+ 			   (unsigned long long)bh->b_blocknr);
+diff --git a/fs/nilfs2/dir.c b/fs/nilfs2/dir.c
+index b243199036dfa1ab2299efaaa5bdf5da2d159ff2..3653db5cdb65137d1e660bb509c14ec4cbc8840b 100644
+--- a/fs/nilfs2/dir.c
++++ b/fs/nilfs2/dir.c
+@@ -150,7 +150,7 @@ static bool nilfs_check_folio(struct folio *folio, char *kaddr)
+ 
+ Ebadsize:
+ 	nilfs_error(sb,
+-		    "size of directory #%lu is not a multiple of chunk size",
++		    "size of directory #%llu is not a multiple of chunk size",
+ 		    dir->i_ino);
+ 	goto fail;
+ Eshort:
+@@ -169,7 +169,7 @@ static bool nilfs_check_folio(struct folio *folio, char *kaddr)
+ 	error = "disallowed inode number";
+ bad_entry:
+ 	nilfs_error(sb,
+-		    "bad entry in directory #%lu: %s - offset=%lu, inode=%lu, rec_len=%zd, name_len=%d",
++		    "bad entry in directory #%llu: %s - offset=%lu, inode=%lu, rec_len=%zd, name_len=%d",
+ 		    dir->i_ino, error, (folio->index << PAGE_SHIFT) + offs,
+ 		    (unsigned long)le64_to_cpu(p->inode),
+ 		    rec_len, p->name_len);
+@@ -177,7 +177,7 @@ static bool nilfs_check_folio(struct folio *folio, char *kaddr)
+ Eend:
+ 	p = (struct nilfs_dir_entry *)(kaddr + offs);
+ 	nilfs_error(sb,
+-		    "entry in directory #%lu spans the page boundary offset=%lu, inode=%lu",
++		    "entry in directory #%llu spans the page boundary offset=%lu, inode=%lu",
+ 		    dir->i_ino, (folio->index << PAGE_SHIFT) + offs,
+ 		    (unsigned long)le64_to_cpu(p->inode));
+ fail:
+@@ -251,7 +251,7 @@ static int nilfs_readdir(struct file *file, struct dir_context *ctx)
+ 
+ 		kaddr = nilfs_get_folio(inode, n, &folio);
+ 		if (IS_ERR(kaddr)) {
+-			nilfs_error(sb, "bad page in #%lu", inode->i_ino);
++			nilfs_error(sb, "bad page in #%llu", inode->i_ino);
+ 			ctx->pos += PAGE_SIZE - offset;
+ 			return -EIO;
+ 		}
+@@ -336,7 +336,7 @@ struct nilfs_dir_entry *nilfs_find_entry(struct inode *dir,
+ 		/* next folio is past the blocks we've got */
+ 		if (unlikely(n > (dir->i_blocks >> (PAGE_SHIFT - 9)))) {
+ 			nilfs_error(dir->i_sb,
+-			       "dir %lu size %lld exceeds block count %llu",
++			       "dir %llu size %lld exceeds block count %llu",
+ 			       dir->i_ino, dir->i_size,
+ 			       (unsigned long long)dir->i_blocks);
+ 			goto out;
+@@ -382,7 +382,7 @@ struct nilfs_dir_entry *nilfs_dotdot(struct inode *dir, struct folio **foliop)
+ 	return next_de;
+ 
+ fail:
+-	nilfs_error(dir->i_sb, "directory #%lu %s", dir->i_ino, msg);
++	nilfs_error(dir->i_sb, "directory #%llu %s", dir->i_ino, msg);
+ 	folio_release_kmap(folio, de);
+ 	return NULL;
+ }
+diff --git a/fs/nilfs2/direct.c b/fs/nilfs2/direct.c
+index 2d8dc6b35b5477947ca12a70288d3a3cce858aab..8bd0b1374e25f8ff510f3b36dbde2acc01aafc1e 100644
+--- a/fs/nilfs2/direct.c
++++ b/fs/nilfs2/direct.c
+@@ -338,7 +338,7 @@ static int nilfs_direct_assign(struct nilfs_bmap *bmap,
+ 	key = nilfs_bmap_data_get_key(bmap, *bh);
+ 	if (unlikely(key > NILFS_DIRECT_KEY_MAX)) {
+ 		nilfs_crit(bmap->b_inode->i_sb,
+-			   "%s (ino=%lu): invalid key: %llu",
++			   "%s (ino=%llu): invalid key: %llu",
+ 			   __func__,
+ 			   bmap->b_inode->i_ino, (unsigned long long)key);
+ 		return -EINVAL;
+@@ -346,7 +346,7 @@ static int nilfs_direct_assign(struct nilfs_bmap *bmap,
+ 	ptr = nilfs_direct_get_ptr(bmap, key);
+ 	if (unlikely(ptr == NILFS_BMAP_INVALID_PTR)) {
+ 		nilfs_crit(bmap->b_inode->i_sb,
+-			   "%s (ino=%lu): invalid pointer: %llu",
++			   "%s (ino=%llu): invalid pointer: %llu",
+ 			   __func__,
+ 			   bmap->b_inode->i_ino, (unsigned long long)ptr);
+ 		return -EINVAL;
+diff --git a/fs/nilfs2/gcinode.c b/fs/nilfs2/gcinode.c
+index 561c220799c7aee879ad866865e377799c8ee6bb..62d4c1b787e95c961a360a4214d621d564ad8b4c 100644
+--- a/fs/nilfs2/gcinode.c
++++ b/fs/nilfs2/gcinode.c
+@@ -137,7 +137,7 @@ int nilfs_gccache_wait_and_mark_dirty(struct buffer_head *bh)
+ 		struct inode *inode = bh->b_folio->mapping->host;
+ 
+ 		nilfs_err(inode->i_sb,
+-			  "I/O error reading %s block for GC (ino=%lu, vblocknr=%llu)",
++			  "I/O error reading %s block for GC (ino=%llu, vblocknr=%llu)",
+ 			  buffer_nilfs_node(bh) ? "node" : "data",
+ 			  inode->i_ino, (unsigned long long)bh->b_blocknr);
+ 		return -EIO;
+diff --git a/fs/nilfs2/inode.c b/fs/nilfs2/inode.c
+index 51bde45d586509dda3ef0cb7c46facb7fb2c61dd..51f7e125a311b868860e3e111700d49d4cb98fa6 100644
+--- a/fs/nilfs2/inode.c
++++ b/fs/nilfs2/inode.c
+@@ -108,7 +108,7 @@ int nilfs_get_block(struct inode *inode, sector_t blkoff,
+ 				 * be locked in this case.
+ 				 */
+ 				nilfs_warn(inode->i_sb,
+-					   "%s (ino=%lu): a race condition while inserting a data block at offset=%llu",
++					   "%s (ino=%llu): a race condition while inserting a data block at offset=%llu",
+ 					   __func__, inode->i_ino,
+ 					   (unsigned long long)blkoff);
+ 				err = -EAGAIN;
+@@ -789,7 +789,7 @@ static void nilfs_truncate_bmap(struct nilfs_inode_info *ii,
+ 		goto repeat;
+ 
+ failed:
+-	nilfs_warn(ii->vfs_inode.i_sb, "error %d truncating bmap (ino=%lu)",
++	nilfs_warn(ii->vfs_inode.i_sb, "error %d truncating bmap (ino=%llu)",
+ 		   ret, ii->vfs_inode.i_ino);
+ }
+ 
+@@ -1026,7 +1026,7 @@ int nilfs_set_file_dirty(struct inode *inode, unsigned int nr_dirty)
+ 			 * this inode.
+ 			 */
+ 			nilfs_warn(inode->i_sb,
+-				   "cannot set file dirty (ino=%lu): the file is being freed",
++				   "cannot set file dirty (ino=%llu): the file is being freed",
+ 				   inode->i_ino);
+ 			spin_unlock(&nilfs->ns_inode_lock);
+ 			return -EINVAL; /*
+@@ -1057,7 +1057,7 @@ int __nilfs_mark_inode_dirty(struct inode *inode, int flags)
+ 	err = nilfs_load_inode_block(inode, &ibh);
+ 	if (unlikely(err)) {
+ 		nilfs_warn(inode->i_sb,
+-			   "cannot mark inode dirty (ino=%lu): error %d loading inode block",
++			   "cannot mark inode dirty (ino=%llu): error %d loading inode block",
+ 			   inode->i_ino, err);
+ 		return err;
+ 	}
+diff --git a/fs/nilfs2/mdt.c b/fs/nilfs2/mdt.c
+index 946b0d3534a5f22f34ac44a91fb121541881c548..09adb40c65e505d92012a3d2f5fe8a5696e10056 100644
+--- a/fs/nilfs2/mdt.c
++++ b/fs/nilfs2/mdt.c
+@@ -203,7 +203,7 @@ static int nilfs_mdt_read_block(struct inode *inode, unsigned long block,
+ 	err = -EIO;
+ 	if (!buffer_uptodate(first_bh)) {
+ 		nilfs_err(inode->i_sb,
+-			  "I/O error reading meta-data file (ino=%lu, block-offset=%lu)",
++			  "I/O error reading meta-data file (ino=%llu, block-offset=%lu)",
+ 			  inode->i_ino, block);
+ 		goto failed_bh;
+ 	}
+diff --git a/fs/nilfs2/namei.c b/fs/nilfs2/namei.c
+index 40f4b1a28705b6e0eb8f0978cf3ac18b43aa1331..40ac679ec56e400b1df98e9be6fe9ca338a9ba51 100644
+--- a/fs/nilfs2/namei.c
++++ b/fs/nilfs2/namei.c
+@@ -292,7 +292,7 @@ static int nilfs_do_unlink(struct inode *dir, struct dentry *dentry)
+ 
+ 	if (!inode->i_nlink) {
+ 		nilfs_warn(inode->i_sb,
+-			   "deleting nonexistent file (ino=%lu), %d",
++			   "deleting nonexistent file (ino=%llu), %d",
+ 			   inode->i_ino, inode->i_nlink);
+ 		set_nlink(inode, 1);
+ 	}
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 098a3bd103e04cd09b0689fe2017380d74664496..4b1bf559f3524b1cc3965dae9fd3e5745718569d 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -2024,7 +2024,7 @@ static int nilfs_segctor_collect_dirty_files(struct nilfs_sc_info *sci,
+ 				ifile, ii->vfs_inode.i_ino, &ibh);
+ 			if (unlikely(err)) {
+ 				nilfs_warn(sci->sc_super,
+-					   "log writer: error %d getting inode block (ino=%lu)",
++					   "log writer: error %d getting inode block (ino=%llu)",
+ 					   err, ii->vfs_inode.i_ino);
+ 				return err;
+ 			}
+diff --git a/include/trace/events/nilfs2.h b/include/trace/events/nilfs2.h
+index 8880c11733dd307c223cc62ee34ebeff650ecb12..86a0011c9eeaf031cfa0b79875b2b106ef8b7cfd 100644
+--- a/include/trace/events/nilfs2.h
++++ b/include/trace/events/nilfs2.h
+@@ -165,14 +165,14 @@ TRACE_EVENT(nilfs2_segment_usage_freed,
+ 
+ TRACE_EVENT(nilfs2_mdt_insert_new_block,
+ 	    TP_PROTO(struct inode *inode,
+-		     unsigned long ino,
++		     u64 ino,
+ 		     unsigned long block),
+ 
+ 	    TP_ARGS(inode, ino, block),
+ 
+ 	    TP_STRUCT__entry(
+ 		    __field(struct inode *, inode)
+-		    __field(unsigned long, ino)
++		    __field(u64, ino)
+ 		    __field(unsigned long, block)
+ 	    ),
+ 
+@@ -182,7 +182,7 @@ TRACE_EVENT(nilfs2_mdt_insert_new_block,
+ 		    __entry->block = block;
+ 		    ),
+ 
+-	    TP_printk("inode = %p ino = %lu block = %lu",
++	    TP_printk("inode = %p ino = %llu block = %lu",
+ 		      __entry->inode,
+ 		      __entry->ino,
+ 		      __entry->block)
+@@ -190,7 +190,7 @@ TRACE_EVENT(nilfs2_mdt_insert_new_block,
+ 
+ TRACE_EVENT(nilfs2_mdt_submit_block,
+ 	    TP_PROTO(struct inode *inode,
+-		     unsigned long ino,
++		     u64 ino,
+ 		     unsigned long blkoff,
+ 		     enum req_op mode),
+ 
+@@ -198,7 +198,7 @@ TRACE_EVENT(nilfs2_mdt_submit_block,
+ 
+ 	    TP_STRUCT__entry(
+ 		    __field(struct inode *, inode)
+-		    __field(unsigned long, ino)
++		    __field(u64, ino)
+ 		    __field(unsigned long, blkoff)
+ 		    /*
+ 		     * Use field_struct() to avoid is_signed_type() on the
+@@ -214,7 +214,7 @@ TRACE_EVENT(nilfs2_mdt_submit_block,
+ 		    __entry->mode = mode;
+ 		    ),
+ 
+-	    TP_printk("inode = %p ino = %lu blkoff = %lu mode = %x",
++	    TP_printk("inode = %p ino = %llu blkoff = %lu mode = %x",
+ 		      __entry->inode,
+ 		      __entry->ino,
+ 		      __entry->blkoff,
 
 -- 
 2.53.0
